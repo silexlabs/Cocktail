@@ -340,15 +340,25 @@ class HTMLElement extends Element, implements IEventTarget
 	//TODO : doc
 	public function attach():Void
 	{
-		var parent:HTMLElement = cast(_parentNode);
+		if (_parentNode == null)
+		{
+
+			return;
+		}
 		
+		var parent:HTMLElement = cast(_parentNode);
+
 		if (parent.elementRenderer != null)
 		{
-			createElementRenderer();
+			if (_elementRenderer == null && isRendered() == true)
+			{
+				createElementRenderer();
+		
+			}
+			
 			if (_elementRenderer != null)
 			{
 				parent.elementRenderer.appendChild(_elementRenderer);
-				
 				for (i in 0..._childNodes.length)
 				{
 					switch (_childNodes[i].nodeType)
@@ -361,6 +371,7 @@ class HTMLElement extends Element, implements IEventTarget
 							var textRenderer:TextRenderer = new TextRenderer(_childNodes[i]);
 							textRenderer.coreStyle = _coreStyle;
 							_elementRenderer.appendChild(textRenderer);
+				
 					}
 				
 				}
@@ -370,6 +381,10 @@ class HTMLElement extends Element, implements IEventTarget
 	
 	public function detach():Void
 	{
+		if (_parentNode == null)
+		{
+			return;
+		}
 		var parent:HTMLElement = cast(_parentNode);
 		
 		if (parent.elementRenderer != null)
@@ -382,9 +397,65 @@ class HTMLElement extends Element, implements IEventTarget
 					child.detach();
 				}
 				parent.elementRenderer.removeChild(_elementRenderer);
+				_elementRenderer = null;
 			}
 			
 		}
+	}
+	
+	public function attachBefore(refChild:HTMLElement):Void
+	{
+		if (_parentNode == null)
+		{
+
+			return;
+		}
+		
+	
+		
+		var parent:HTMLElement = cast(_parentNode);
+
+		if (parent.elementRenderer != null)
+		{
+			if (_elementRenderer == null && isRendered() == true)
+			{
+				createElementRenderer();
+		
+			}
+			
+			if (_elementRenderer != null)
+			{
+				parent.elementRenderer.insertBefore(_elementRenderer, refChild.elementRenderer);
+				for (i in 0..._childNodes.length)
+				{
+					switch (_childNodes[i].nodeType)
+					{
+						case Node.ELEMENT_NODE:
+							var child:HTMLElement = cast(_childNodes[i]);
+							child.attach();
+							
+						case Node.TEXT_NODE:
+							var textRenderer:TextRenderer = new TextRenderer(_childNodes[i]);
+							textRenderer.coreStyle = _coreStyle;
+							_elementRenderer.appendChild(textRenderer);
+				
+					}
+				
+				}
+			}
+		}
+	}
+
+	override public function insertBefore(newChild:Node, refChild:Node):Node
+	{
+
+		super.insertBefore(newChild, refChild);
+		var child:HTMLElement = cast(newChild);
+		
+		var typedRefChild:HTMLElement = cast(refChild);
+		
+		child.attachBefore(typedRefChild);
+		return newChild;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -397,6 +468,14 @@ class HTMLElement extends Element, implements IEventTarget
 		{
 			_elementRenderer.invalidate();
 		}
+	}
+	
+	public function invalidateDisplay():Void
+	{
+		detach();
+		attach();
+		//TODO : should be invalidated by default when attached
+		//invalidateStyle();
 	}
 	
 	//TODO : clean-up
@@ -420,7 +499,7 @@ class HTMLElement extends Element, implements IEventTarget
 	
 	private function isRendered():Bool
 	{
-		return _coreStyle.computedStyle.display != Display.none;
+		return _coreStyle.display != Display.none;
 	}
 	
 	

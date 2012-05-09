@@ -323,21 +323,35 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	override public function childrenInline():Bool
 	{		
+		var childrenInline:Bool = true;
+		for (i in 0..._childNodes.length)
+		{
+			var child:ElementRenderer = cast(_childNodes[i]);
+			if (child.isInlineLevel() == false)
+			{
+				return false;
+			}
+		}
+		return true;
+		
+		//TODO : is the following still necessary ? Maybe should have another
+		//method to generate anonymous boxes
+		
 		//return false for a container with no children
-		if (_node.childNodes.length == 0)
+		if (_childNodes.length == 0)
 		{
 			return false;
 		}
 		
 		//establish if the first child is inline or block
 		//all other child must be of the same type
-		var ret:Bool = isChildInline(_node.childNodes[0]);
+		var ret:Bool = isChildInline(cast(_childNodes[0]));
 		
 		//loop in all children and throw an exception
 		//if one the children is not of the same type as the first
-		for (i in 0..._node.childNodes.length)
+		for (i in 0..._childNodes.length)
 		{
-			if (isChildInline(_node.childNodes[i]) != ret)
+			if (isChildInline(cast(_childNodes[i])) != ret)
 			{
 				//throw "children of a block container can only be either all block or all inline";
 			}
@@ -354,42 +368,32 @@ class FlowBoxRenderer extends BoxRenderer
 	/**
 	 * Determine wether a children is inline or not
 	 */
-	private function isChildInline(child:Node):Bool
+	private function isChildInline(child:ElementRenderer):Bool
 	{
 		var ret:Bool = true;
 		
-		//here the children is a HTMLElement
-		if (child.nodeType == Node.ELEMENT_NODE)
+		//here the child is of type block
+		if (child.isInlineLevel() == true)
 		{
-			var childHTMLElement:HTMLElement = cast(child);
-			//here the child is of type block
-			if (childHTMLElement.coreStyle.computedStyle.display == block)
+			//floated children are not taken into account 
+			if (child.isFloat() == false)
 			{
-				//floated children are not taken into account 
-				if (childHTMLElement.elementRenderer.isFloat() == false)
-				{
-					ret = false;
-				}
-				//absolutely positioned children are not taken into account but relative positioned are
-				else if (childHTMLElement.elementRenderer.isPositioned() == false || childHTMLElement.elementRenderer.isRelativePositioned() == true)
-				{
-					ret = false;
-				}
+				ret = false;
 			}
-			//here the child is inline
-			else
+			//absolutely positioned children are not taken into account but relative positioned are
+			else if (child.isPositioned() == false || child.isRelativePositioned() == true)
 			{
-				ret = true;
+				ret = false;
 			}
 		}
-		//here the children is a Text node, which is
-		//always inline as text is always displayed on a line
+		//here the child is inline
 		else
 		{
 			ret = true;
 		}
 		
-		return ret;
+		
+		return true;
 	}
 	
 	/**

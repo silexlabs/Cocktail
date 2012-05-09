@@ -110,6 +110,7 @@ class BoxRenderer extends ElementRenderer
 		//compute all the styles of the ElementRenderer
 		_coreStyle.computeDisplayStyles();
 		_coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
+
 		_coreStyle.computeBoxModelStyles(getRelevantContainingBlockData(containingBlockData, viewportData,  firstPositionedAncestorData.data), isReplaced());
 		
 		//layout all the children of the ElementRenderer if it has any

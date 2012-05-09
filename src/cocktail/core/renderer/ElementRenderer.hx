@@ -208,6 +208,18 @@ class ElementRenderer extends Node
 		//TODO : should be different for Text node
 		var elementRendererChild:ElementRenderer = cast(newChild);
 		elementRendererChild.attach();
+		invalidate();
+		return newChild;
+	}
+	
+	override public function insertBefore(newChild:Node, refChild:Node):Node
+	{
+		super.insertBefore(newChild, refChild);
+		
+		var child:ElementRenderer = cast(newChild);
+		child.attach();
+			invalidate();trace(child);
+		
 		return newChild;
 	}
 	
@@ -218,8 +230,9 @@ class ElementRenderer extends Node
 	override public function removeChild(oldChild:Node):Node
 	{
 		super.removeChild(oldChild);
-		var elementRendererChild:HTMLElement = cast(oldChild);
+		var elementRendererChild:ElementRenderer = cast(oldChild);
 		elementRendererChild.detach();
+		invalidate();
 		return oldChild;
 	}
 	
