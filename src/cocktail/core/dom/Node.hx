@@ -218,6 +218,7 @@ class Node
 			//throw DOMException.WRONG_DOCUMENT_ERR;
 		//}
 		//
+
 		removeFromParentIfNecessary(newChild);
 		
 		newChild.parentNode = this;
