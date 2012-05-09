@@ -208,7 +208,7 @@ class ListViewBase extends ViewBase
 		}
 	}
 	
-	/**
+	/** 
 	 * Refresh list styles
 	 */
 	public function refreshStyles():Void
