@@ -253,9 +253,8 @@ class CoreStyle
 	}
 	
 	/**
-	 * Init the standard default value for styles
-	 * 
-	 * TODO : doc tag name
+	 * Init the standard default value for styles,
+	 * using the tag name of the styled HTMLElement
 	 */
 	private function initDefaultStyleValues(tagName:String):Void
 	{
@@ -347,7 +346,7 @@ class CoreStyle
 	/**
 	 * reset/init the computed style structures
 	 */
-	private function initComputedStyles():Void
+	public function initComputedStyles():Void
 	{
 		 _computedStyle = {
 			width : 0,
@@ -552,16 +551,16 @@ class CoreStyle
 	/**
 	 * Computes the HTMLElement font and text styles (font size, font name, text color...)
 	 */
-	public function computeTextAndFontStyles(containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
+	public function computeTextAndFontStyles(containingBlockData:ContainingBlockData, containingBlockFontMetricsData:FontMetricsData):Void
 	{
-		FontAndTextStylesComputer.compute(this, containingHTMLElementData, containingHTMLElementFontMetricsData);
+		FontAndTextStylesComputer.compute(this, containingBlockData, containingBlockFontMetricsData);
 	}
 	
 	/**
 	 * Compute the box model styles (width, height, paddings, margins...) of the HTMLElement, based on
 	 * its positioning scheme
 	 */ 
-	public function computeBoxModelStyles(containingBlockDimensions:ContainingHTMLElementData, isReplaced:Bool):Void
+	public function computeBoxModelStyles(containingBlockDimensions:ContainingBlockData, isReplaced:Bool):Void
 	{
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer(isReplaced);
 		
@@ -577,7 +576,7 @@ class CoreStyle
 	 * 
 	 * @param	childrenHeight the total height of the children once laid out
 	 */
-	public function applyContentHeightIfNeeded(containingBlockDimensions:ContainingHTMLElementData, childrenHeight:Int, isReplaced:Bool):Int
+	public function applyContentHeightIfNeeded(containingBlockDimensions:ContainingBlockData, childrenHeight:Int, isReplaced:Bool):Int
 	{		
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer(isReplaced);		
 		return boxComputer.applyContentHeight(this, containingBlockDimensions, childrenHeight);
@@ -592,15 +591,15 @@ class CoreStyle
 	 * If the width of this HTMLElement is indeed shrinked, all
 	 * its children are laid out again
 	 * 
-	 * @param	containingHTMLElementData
+	 * @param	containingBlockData
 	 * @param	minimumWidth the width of the widest line of children laid out
 	 * by this HTMLElement which will be the minimum width that should
 	 * have this HTMLElement if it is shrinked to fit
 	 */
-	public function shrinkToFitIfNeeded(containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int, isReplaced:Bool):Int
+	public function shrinkToFitIfNeeded(containingBlockData:ContainingBlockData, minimumWidth:Int, isReplaced:Bool):Int
 	{		
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer(isReplaced);
-		return boxComputer.shrinkToFit(this, containingHTMLElementData, minimumWidth);
+		return boxComputer.shrinkToFit(this, containingBlockData, minimumWidth);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -381,6 +381,7 @@ class HTMLElement extends Element, implements IEventTarget
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	//TODO : clean-up
 	private function createElementRenderer(parentLayerRenderer:LayerRenderer):Void
 	{
 		switch (_coreStyle.computedStyle.display)

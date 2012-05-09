@@ -124,8 +124,6 @@ class ElementRenderer extends Node
 	/**
 	 * A reference to the Style which instantiated
 	 * the ElementRenderer
-	 * 
-	 * TODO : should be instantiated by the DOM tree instead ?
 	 */
 	private var _coreStyle:CoreStyle;
 	public var coreStyle(get_coreStyle, set_coreStyle):CoreStyle;
@@ -259,12 +257,12 @@ class ElementRenderer extends Node
 	}
 
 	
-	public function positionElement(lastPositionedHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData):Void
+	public function layoutPositionedChildren(firstPositionedAncestorData:ContainingBlockData, viewportData:ContainingBlockData):Void
 	{
 		
 	}
 	
-	public function layout(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{	
 		
 	}
@@ -310,11 +308,6 @@ class ElementRenderer extends Node
 	}
 	
 	public function isInitialContainer():Bool
-	{
-		return false;
-	}
-	
-	public function isDisplayed():Bool
 	{
 		return false;
 	}
