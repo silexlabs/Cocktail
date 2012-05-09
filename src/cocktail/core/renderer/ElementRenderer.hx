@@ -257,7 +257,7 @@ class ElementRenderer extends Node
 	}
 
 	
-	public function layoutPositionedChildren(firstPositionedAncestorData:ContainingBlockData, viewportData:ContainingBlockData):Void
+	public function layoutPositionedChild(firstPositionedAncestorData:ContainingBlockData, viewportData:ContainingBlockData):Void
 	{
 		
 	}
