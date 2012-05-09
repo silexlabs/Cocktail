@@ -17,7 +17,7 @@ import haxe.Log;
 
 /**
  * A block box renderer is an element which participate
- * in a block formatting context and which can start
+ * in a block formatting context and which can establish
  * either a block or inline formatting context.
  * 
  * When it starts an inline formatting context, it holds
@@ -28,7 +28,9 @@ import haxe.Log;
  */
 class BlockBoxRenderer extends FlowBoxRenderer
 {
-		
+	/**
+	 * class constructor
+	 */
 	public function new(node:Node) 
 	{
 		super(node);
@@ -39,9 +41,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Determine wether the HTMLElement
+	 * Determine wether the ElementRenderer
 	 * establishes a new formatting context for
-	 * its children
+	 * its children or participate in its
+	 * parent formatting context
 	 */
 	override public function establishesNewFormattingContext():Bool
 	{
@@ -66,9 +69,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				case inlineBlock:
 				establishesNewFormattingContext = true; 
 				
-				//a block HTMLElement may start a new inline
+				//a block ElementRenderer may start a new inline
 				//formatting context if all its children are inline,
-				//else its children participate in the current block formatting
+				//else it participates in the current block formatting
 				//context
 				case block:
 					if (childrenInline() == true)
@@ -80,27 +83,20 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			}
 		}
 		
-		//in the other cases such as an inline level inline container
-		//the current formatting context is used
+		//in the other cases, the block particpates in its parent's
+		//formatting context
 		
 		return establishesNewFormattingContext;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Return the right formatting context to layout this ElementRenderer's
-	 * children.
-	 * 
-	 * An HTMLElement can either establish a new formatting context
-	 * or participate in the current formatting context. If it participates
-	 * in the current formatting context, then the previous formatting
-	 * is returned else a new block or inline formatting context is
-	 * instantiated
-	 * 
-	 * @param	previousformattingContext the formatting context of the parent of this
-	 * HTMLElement, might be returned if the HTMLElement participates
-	 * in the same formatting context as its parent
-	 * 
-	 * @return an inline or block formatting context
+	 * children. Overriden as block box are the only sub class of ElementRenderer
+	 * which can establishe a new formatting context
 	 */
 	override private function getFormattingContext(previousformattingContext:FormattingContext):FormattingContext
 	{
