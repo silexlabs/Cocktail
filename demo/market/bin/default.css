@@ -41,6 +41,6 @@ text-decoration:none;*/
 -moz-user-select:none;
 
 /* used to have native scroll in iOS5 */
--webkit-overflow-scrolling: touch;
+/*-webkit-overflow-scrolling: touch;*/
 
 }
