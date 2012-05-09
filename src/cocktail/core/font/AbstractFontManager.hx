@@ -35,6 +35,12 @@ class AbstractFontManager
 	private static var _fontLoaderArray:Array<FontLoader>;
 	
 	/**
+	 * A cache of the computed font metrics where the
+	 * keys are the font name and the font size
+	 */
+	private static var _computedFontMetrics:Hash<Hash<FontMetricsData>>;
+	
+	/**
 	 * Constructor initializes the static attributes
 	 */
 	public function new()
@@ -43,6 +49,8 @@ class AbstractFontManager
 			_fontLoaderArray = new Array();
 		if(_loadedFonts == null)
 			_loadedFonts = new Array();
+		if (_computedFontMetrics == null)
+			_computedFontMetrics = new Hash();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -96,8 +104,35 @@ class AbstractFontManager
 	 */
 	public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
 	{
-		throw ("Virtual method should be implemented in sub class");
-		return null;
+		var fontMetrics:FontMetricsData;
+		
+		//this method caches all the generated font metrics and
+		//tries first to retrieve them on subsequent calls
+		
+		if (_computedFontMetrics.exists(fontFamily) == true)
+		{
+			var fontSizeHash:Hash<FontMetricsData> = _computedFontMetrics.get(fontFamily);
+			if (fontSizeHash.exists(Std.string(fontSize)) == true)
+			{
+				fontMetrics = fontSizeHash.get(Std.string(fontSize));
+			}
+			else
+			{
+				fontMetrics = doGetFontMetrics(fontFamily, fontSize);
+				fontSizeHash.set(Std.string(fontSize), fontMetrics);
+				_computedFontMetrics.set(fontFamily, fontSizeHash); 
+			}
+		}
+		else
+		{
+			fontMetrics = doGetFontMetrics(fontFamily, fontSize);
+			var fontSizeHash:Hash<FontMetricsData> = new Hash<FontMetricsData>();
+			fontSizeHash.set(Std.string(fontSize), fontMetrics);
+			
+			_computedFontMetrics.set(fontFamily, fontSizeHash); 
+		}
+		
+		return fontMetrics;
 	}
 	
 	/**
@@ -115,6 +150,12 @@ class AbstractFontManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Private methods, font rendering and measure
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function doGetFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
+	{
+		throw ("Virtual method should be implemented in sub class");
+		return null;
+	}
 	
 	/**
 	 * Transform a text letters into uppercase, lowercase
