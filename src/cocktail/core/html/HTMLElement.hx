@@ -744,7 +744,6 @@ class HTMLElement extends Element, implements IEventTarget
 	 */
 	private function get_id():String
 	{
-		trace("get id");
 		return getAttribute(HTML_ID_ATTRIBUTE);
 	}
 	

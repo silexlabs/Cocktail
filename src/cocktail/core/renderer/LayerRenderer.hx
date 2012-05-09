@@ -58,6 +58,7 @@ class LayerRenderer extends Node
 	 */
 	public function render(rootRenderer:ElementRenderer = null, renderChildLayers:Bool = true):Array<NativeElement>
 	{
+		
 		if (rootRenderer == null)
 		{
 			rootRenderer = _rootRenderer;
@@ -93,7 +94,7 @@ class LayerRenderer extends Node
 			
 			//TODO :  doc
 			var replacedBlockChildren:Array<NativeElement> = renderBlockReplacedChildren(rootRenderer);
-			
+	
 			for (i in 0...replacedBlockChildren.length)
 			{
 				nativeElements.push(replacedBlockChildren[i]);
@@ -368,10 +369,11 @@ class LayerRenderer extends Node
 				}
 				else if (child.coreStyle.display == block)
 				{
-					ret.push(cast(child));
+					ret.push(child);
 				}
 			}
 		}
+		
 		return ret;
 	}
 	

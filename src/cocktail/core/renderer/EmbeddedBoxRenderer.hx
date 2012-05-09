@@ -55,6 +55,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	{
 		_bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 		_bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+		
 		return _bounds;
 	}
 	
@@ -70,7 +71,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	override public function render():Array<NativeElement>
 	{
 		var backgroundManager:BackgroundManager = new BackgroundManager();
-		
+
 		var ret:Array<NativeElement> = backgroundManager.render(_bounds, _coreStyle);
 		#if (flash9 || nme)
 		for (i in 0...ret.length)
