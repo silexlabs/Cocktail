@@ -2910,7 +2910,7 @@ org.intermedia.view.DetailView = $hxClasses["org.intermedia.view.DetailView"] = 
 	this._descriptionElement = js.Lib.document.createTextNode("");
 	this._contentElement = js.Lib.document.createTextNode("");
 	org.intermedia.view.ViewBase.call(this);
-	this._moveHandler = new org.intermedia.view.Scroll2D(org.intermedia.view.ScrollType.vertical);
+	this._scrollHandler = new org.intermedia.view.Scroll2D(org.intermedia.view.ScrollType.vertical);
 };
 org.intermedia.view.DetailView.__name__ = ["org","intermedia","view","DetailView"];
 org.intermedia.view.DetailView.__super__ = org.intermedia.view.ViewBase;
@@ -2924,7 +2924,7 @@ org.intermedia.view.DetailView.prototype = $extend(org.intermedia.view.ViewBase.
 	,_descriptionElement: null
 	,_contentContainer: null
 	,_contentElement: null
-	,_moveHandler: null
+	,_scrollHandler: null
 	,buildView: function() {
 		org.intermedia.view.DetailStyle.setDetailStyle(this.node);
 		this._titleContainer = js.Lib.document.createElement("div");
@@ -2956,23 +2956,23 @@ org.intermedia.view.DetailView.prototype = $extend(org.intermedia.view.ViewBase.
 		this.node.appendChild(this._contentContainer);
 	}
 	,touchStart: function(event) {
-		this._moveHandler.initialScrollPosition = { x : this.node.scrollLeft, y : this.node.scrollTop};
-		this._moveHandler.touchHandler(event);
+		this._scrollHandler.initialScrollPosition = { x : this.node.scrollLeft, y : this.node.scrollTop};
+		this._scrollHandler.touchHandler(event);
 	}
 	,addTouchEvents: function() {
 		this.node.addEventListener("touchstart",this.touchStart.$bind(this),false);
-		this.node.addEventListener("touchmove",($_=this._moveHandler,$_.touchHandler.$bind($_)),false);
-		this.node.addEventListener("touchend",($_=this._moveHandler,$_.touchHandler.$bind($_)),false);
-		this.node.addEventListener("touchcancel",($_=this._moveHandler,$_.touchHandler.$bind($_)),false);
+		this.node.addEventListener("touchmove",($_=this._scrollHandler,$_.touchHandler.$bind($_)),false);
+		this.node.addEventListener("touchend",($_=this._scrollHandler,$_.touchHandler.$bind($_)),false);
+		this.node.addEventListener("touchcancel",($_=this._scrollHandler,$_.touchHandler.$bind($_)),false);
 	}
 	,unsetTouchEvents: function() {
 		this.node.removeEventListener("touchstart",this.touchStart.$bind(this),false);
-		this.node.removeEventListener("touchmove",($_=this._moveHandler,$_.touchHandler.$bind($_)),false);
-		this.node.removeEventListener("touchend",($_=this._moveHandler,$_.touchHandler.$bind($_)),false);
-		this.node.removeEventListener("touchcancel",($_=this._moveHandler,$_.touchHandler.$bind($_)),false);
+		this.node.removeEventListener("touchmove",($_=this._scrollHandler,$_.touchHandler.$bind($_)),false);
+		this.node.removeEventListener("touchend",($_=this._scrollHandler,$_.touchHandler.$bind($_)),false);
+		this.node.removeEventListener("touchcancel",($_=this._scrollHandler,$_.touchHandler.$bind($_)),false);
 	}
 	,onVerticalScroll: function(y) {
-		this.node.scrollTop = this._moveHandler.initialScrollPosition.y - y;
+		this.node.scrollTop = this._scrollHandler.initialScrollPosition.y - y;
 	}
 	,refreshStyles: function() {
 		org.intermedia.view.DetailStyle.setDetailStyle(this.node);
