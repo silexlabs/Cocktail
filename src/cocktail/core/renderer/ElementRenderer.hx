@@ -255,12 +255,6 @@ class ElementRenderer extends Node
 		return bounds;
 		
 	}
-
-	
-	public function layoutPositionedChild(firstPositionedAncestorData:ContainingBlockData, viewportData:ContainingBlockData):Void
-	{
-		
-	}
 	
 	public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{	
