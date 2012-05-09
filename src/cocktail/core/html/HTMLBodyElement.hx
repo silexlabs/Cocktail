@@ -29,10 +29,6 @@ class HTMLBodyElement extends HTMLElement
 	public function new() 
 	{	
 		super(HTML_BODY_TAG_NAME);
-		
-		//TODO : doc, should call attach instead ? Should be called by document ?
-		//createElementRenderer();
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +48,7 @@ class HTMLBodyElement extends HTMLElement
 					case Node.ELEMENT_NODE:
 						var child:HTMLElement = cast(_childNodes[i]);
 						child.attach();
+						
 						
 					case Node.TEXT_NODE:
 						var textRenderer:TextRenderer = new TextRenderer(_childNodes[i]);

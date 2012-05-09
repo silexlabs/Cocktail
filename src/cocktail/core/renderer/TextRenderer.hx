@@ -221,6 +221,12 @@ class TextRenderer extends ElementRenderer
 		return true;
 	}
 	
+	override public function isInlineLevel():Bool
+	{
+		return true;
+	}
+	
+	
 	
 	/**
 	 * Overriden as the bounds of a TextRenderer is formed

@@ -665,6 +665,7 @@ class CoreStyle
 				
 				//not supposed to happen
 				case none:
+					
 					boxComputer = null;
 				
 				case cssInline:
@@ -719,10 +720,18 @@ class CoreStyle
 	 * TODO : what to do when the value of a style changes ?
 	 * Invalidate the HTMLElement which in turn invalidate
 	 * ElementRenderer or set _coreStyle on ElementRenderer ?
+	 * 
+	 * TODO : should always be called AFTER style is set, it
+	 * only works for now because of the timer
 	 */
 	private function invalidate():Void
 	{
 		_htmlElement.invalidateStyle();
+	}
+	
+	private function invalidateDisplay():Void
+	{
+		_htmlElement.invalidateDisplay();
 	}
 	
 	/////////////////////////////////
@@ -814,8 +823,9 @@ class CoreStyle
 	
 	private function setDisplay(value:Display):Display 
 	{
-		invalidate();
-		return _display = value;
+		_display = value;
+		invalidateDisplay();
+		return value;
 	}
 	
 	private function setPosition(value:Position):Position 
