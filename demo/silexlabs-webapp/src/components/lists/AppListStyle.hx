@@ -7,18 +7,9 @@
 
 package components.lists;
 
-// DOM
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.DOMElement;
+import js.Lib;
+import js.Dom;
 
-// Native Elements
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
 import Constants;
 
 /**
@@ -30,7 +21,7 @@ import Constants;
 
 class AppListStyle
 {
-	static inline var cellWidth:Int = 60;
+	static inline var cellWidth:Int = 62;
 	static inline var cellHeight:Int = 43;
 	
 	/**
@@ -38,29 +29,30 @@ class AppListStyle
 	 * 
 	 * @param	domElement
 	 */
-	public static function getListStyle(domElement:DOMElement):Void
+	public static function getListStyle(domElement:HtmlDom):Void
 	{
-		domElement.style.position = PositionStyleValue.fixed;
-		domElement.style.display = DisplayStyleValue.inlineBlock;
+		domElement.style.position = "fixed";
+		domElement.style.display = "inline-block";
 		
-		domElement.style.marginLeft =MarginStyleValue.length(px(0));
-		domElement.style.marginRight = MarginStyleValue.length(px(0));
-		domElement.style.marginTop = MarginStyleValue.length(px(0));
-		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		domElement.style.marginLeft = "0";
+		domElement.style.marginRight = "0";
+		domElement.style.marginTop = "0";
+		domElement.style.marginBottom = "0";
 		
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
-		domElement.style.paddingBottom = PaddingStyleValue.length(px(0));
+		domElement.style.paddingLeft = "0";
+		domElement.style.paddingRight ="0";
+		domElement.style.paddingTop ="0";
+		domElement.style.paddingBottom = "0";
 
-		domElement.style.top = PositionOffsetStyleValue.autoValue;
-		domElement.style.bottom = PositionOffsetStyleValue.length(px(0));
-		domElement.style.left = PositionOffsetStyleValue.autoValue;
-		domElement.style.right = PositionOffsetStyleValue.autoValue;
-		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.length(px(Constants.footerHeight));
+		domElement.style.top = "auto";
+		domElement.style.bottom = "0";
+		domElement.style.left = "auto";
+		domElement.style.right = "auto";
+		domElement.style.minWidth = "100%";
+		domElement.style.width = "100%";
+		domElement.style.height = Constants.footerHeight + "px";
 
-		domElement.style.textAlign = TextAlignStyleValue.center;
+		domElement.style.textAlign = "center";
 
 	}
 	
@@ -69,18 +61,21 @@ class AppListStyle
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellStyle(domElement:ContainerDOMElement):Void
+	public static function getCellStyle(domElement:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.inlineBlock;
+		domElement.style.display = "inline-block";
 		
-		domElement.style.marginLeft = MarginStyleValue.length(px(0));
-		domElement.style.marginRight = MarginStyleValue.length(px(0));
-		domElement.style.marginTop = MarginStyleValue.length(px(2));
+		domElement.style.marginLeft = "0";
+		domElement.style.marginRight = "0";
+		domElement.style.marginTop = "2px";
 		//domElement.style.marginBottom = MarginStyleValue.length(px(10));
 		
-		domElement.style.width = DimensionStyleValue.length(px(cellWidth));
-		domElement.style.height = DimensionStyleValue.length(px(cellHeight));
-		domElement.style.color = ColorValue.hex('#BDBDCE');
+		domElement.style.width = cellWidth + "px";
+		domElement.style.height = cellHeight + "px";
+		domElement.style.color = '#BDBDCE';
+		
+		// workaround for Samsung TVs
+		//domElement.style.textAlign = TextAlignStyleValue.center;
 	}
 	
 	/**
@@ -88,15 +83,28 @@ class AppListStyle
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellSelectedStyle(domElement:ImageDOMElement):Void
+	public static function getCellSelectedStyle(domElement:Image):Void
 	{
-		domElement.style.position = PositionStyleValue.absolute;
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.marginLeft = MarginStyleValue.autoValue;
-		domElement.style.marginRight = MarginStyleValue.autoValue;
-		domElement.style.width = DimensionStyleValue.length(px(cellWidth));
-		domElement.style.height = DimensionStyleValue.length(px(cellHeight));
-		domElement.style.bottom = PositionOffsetStyleValue.length(px(2));
+		domElement.style.position = "absolute";
+		domElement.style.display = "block";
+		
+		//domElement.style.marginLeft = MarginStyleValue.autoValue;
+		//domElement.style.marginRight = MarginStyleValue.autoValue;
+		//domElement.style.marginTop = MarginStyleValue.autoValue;
+		//domElement.style.marginBottom = MarginStyleValue.autoValue;
+		domElement.style.marginLeft = "0";
+		domElement.style.marginRight = "0";
+		domElement.style.marginTop = "0";
+		domElement.style.marginBottom = "0";
+
+		domElement.style.paddingLeft = "0";
+		domElement.style.paddingRight = "0";
+		domElement.style.paddingTop = "0";
+		domElement.style.paddingBottom = "0";
+
+		domElement.style.width = cellWidth  + "px" ;
+		domElement.style.height = cellHeight + "px";
+		domElement.style.bottom = "2px";
 	}
 	
 	/**
@@ -104,13 +112,13 @@ class AppListStyle
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellImageStyle(domElement:DOMElement):Void
+	public static function getCellImageStyle(domElement:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.marginLeft = MarginStyleValue.autoValue;
-		domElement.style.marginRight = MarginStyleValue.autoValue;
-		domElement.style.height = DimensionStyleValue.length(px(31));
-		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		domElement.style.display = "block";
+		domElement.style.marginLeft = "auto";
+		domElement.style.marginRight = "auto";
+		domElement.style.height = "31px";
+		domElement.style.marginBottom = "0";
 	}
 	
 	/**
@@ -118,19 +126,16 @@ class AppListStyle
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellTextStyle(domElement:DOMElement):Void
+	public static function getCellTextStyle(domElement:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.marginTop = MarginStyleValue.length(px(0));
-		domElement.style.color = ColorValue.hex('#999999');
-			domElement.style.fontFamily =
-		[
-			FontFamilyStyleValue.familyName('HelveticaNeue'),
-			FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)
-		];
-		domElement.style.fontSize = FontSizeStyleValue.length(px(10));
-		domElement.style.fontWeight = FontWeightStyleValue.bold;
-		domElement.style.textAlign = TextAlignStyleValue.center;
+		domElement.style.display = "block";
+		domElement.style.marginTop = "0";
+		domElement.style.color = '#999999';
+		domElement.style.fontFamily = "HelveticaNeue, Sans-Serif";
+		
+		domElement.style.fontSize = "10px";
+		domElement.style.fontWeight = "bold";
+		domElement.style.textAlign = "center";
 	}
 
 	/**
@@ -138,7 +143,7 @@ class AppListStyle
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellMouseOverStyle(domElement:ContainerDOMElement):Void
+	public static function getCellMouseOverStyle(domElement:HtmlDom):Void
 	{
 
 	}
@@ -148,7 +153,7 @@ class AppListStyle
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellMouseOutStyle(domElement:ContainerDOMElement):Void
+	public static function getCellMouseOutStyle(domElement:HtmlDom):Void
 	{
 	}
 	
@@ -157,7 +162,7 @@ class AppListStyle
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellMouseDownStyle(domElement:ContainerDOMElement):Void
+	public static function getCellMouseDownStyle(domElement:HtmlDom):Void
 	{
 	}
 	
@@ -166,7 +171,7 @@ class AppListStyle
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellMouseUpStyle(domElement:ContainerDOMElement):Void
+	public static function getCellMouseUpStyle(domElement:HtmlDom):Void
 	{
 	}
 }

@@ -35,7 +35,7 @@ class UnitManager
 	/**
 	 * convert a string into a typed enum
 	 * works with Cocktail enums Dimension, Margin, Padding 
-	 * @example CSSParser.boxStyleEnum(Padding, "100 px ") returns Padding.length(Length.px(100))
+	 * @example UnitManager.boxStyleEnum(Padding, "100 px ") returns Padding.length(Length.px(100))
 	 */
 	static public function boxStyleEnum<EnumName>(enumType:Enum<EnumName>, string:String):EnumName{
 		if(string == "auto")
@@ -43,6 +43,7 @@ class UnitManager
 		
 		// split unit and value
 		var parsed:VUnit = string2VUnit(string);
+		
 		// convert into typed enum
 		return switch (parsed.unit){
 			case "%":
@@ -52,7 +53,10 @@ class UnitManager
 		}
 	}
 	
-	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.constrainedDimensionEnum("100 % ") returns ConstrainedDimension.percent((100))
+	 */
 	static public function constrainedDimensionEnum(string:String):ConstrainedDimension
 	{
 		if (string == "none")
@@ -73,6 +77,10 @@ class UnitManager
 		return  constrainedDimension;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.displayEnum("none") returns Display.none
+	 */
 	static public function displayEnum(string:String):Display
 	{
 		var parsed:String = trim(string);
@@ -94,13 +102,16 @@ class UnitManager
 				display = Display.none;
 				
 			default:
-				//TODO : throw exception ?
 				display = null;
 		}
 		
 		return  display;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.overflowEnum("hidden") returns Overflow.hidden
+	 */
 	static public function overflowEnum(string:String):Overflow
 	{
 		var parsed:String = trim(string);
@@ -122,13 +133,31 @@ class UnitManager
 				overflow = Overflow.hidden;
 				
 			default:
-				//TODO : throw exception ?
 				overflow = null;
 		}
 		
 		return  overflow;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * 
+	 * TODO : only supports units for now
+	 */
+	static public function fontSizeEnum(string:String):FontSize
+	{
+		string = trim(string);
+		
+		// split unit and value
+		var parsed:VUnit = string2VUnit(string);
+		
+		return FontSize.length(string2Length(parsed));
+	}
+	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.verticalAlignEnum("top") returns VerticalAlign.top
+	 */
 	static public function verticalAlignEnum(string:String):VerticalAlign
 	{
 		string = trim(string);
@@ -162,7 +191,6 @@ class UnitManager
 				verticalAlign = VerticalAlign.sub;		
 				
 			default:
-				//TODO : throw exception ?
 				verticalAlign = null;
 		}
 		
@@ -183,6 +211,10 @@ class UnitManager
 		return  verticalAlign;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.clearEnum("none") returns Clear.none
+	 */
 	static public function clearEnum(string:String):Clear
 	{
 		var parsed:String = trim(string);
@@ -204,13 +236,16 @@ class UnitManager
 				clear = Clear.none;
 				
 			default:
-				//TODO : throw exception ?
 				clear = null;
 		}
 		
 		return  clear;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.positionEnum("fixed") returns Position.fixed
+	 */
 	static public function positionEnum(string:String):Position
 	{
 		var parsed:String = trim(string);
@@ -232,13 +267,16 @@ class UnitManager
 				position = Position.fixed;
 				
 			default:
-				//TODO : throw exception ?
 				position = null;
 		}
 		
 		return  position;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.whiteSpaceEnum("preWrap") returns WhiteSpace.preWrap
+	 */
 	static public function whiteSpaceEnum(string:String):WhiteSpace
 	{
 		var parsed:String = trim(string);
@@ -263,13 +301,16 @@ class UnitManager
 				whiteSpace = WhiteSpace.preWrap;	
 				
 			default:
-				//TODO : throw exception ?
 				whiteSpace = null;
 		}
 		
 		return  whiteSpace;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.textAlignEnum("justify") returns TextAlign.justify
+	 */
 	static public function textAlignEnum(string:String):TextAlign
 	{
 		var parsed:String = trim(string);
@@ -291,13 +332,16 @@ class UnitManager
 				textAlign = TextAlign.justify;
 				
 			default:
-				//TODO : throw exception ?
 				textAlign = null;
 		}
 		
 		return  textAlign;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.fontWeightEnum("bold") returns FontWeight.bold
+	 */
 	static public function fontWeightEnum(string:String):FontWeight
 	{
 		var parsed:String = trim(string);
@@ -346,13 +390,16 @@ class UnitManager
 				fontWeight = FontWeight.css900;		
 				
 			default:
-				//TODO : throw exception ?
 				fontWeight = null;
 		}
 		
 		return  fontWeight;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.fontStyleEnum("italic") returns FontStyle.italic
+	 */
 	static public function fontStyleEnum(string:String):FontStyle
 	{
 		var parsed:String = trim(string);
@@ -368,13 +415,16 @@ class UnitManager
 				fontStyle = FontStyle.normal;
 				
 			default:
-				//TODO : throw exception ?
 				fontStyle = null;
 		}
 		
 		return  fontStyle;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.fontVariantEnum("normal") returns FontVariant.normal
+	 */
 	static public function fontVariantEnum(string:String):FontVariant
 	{
 		var parsed:String = trim(string);
@@ -390,13 +440,16 @@ class UnitManager
 				fontVariant = FontVariant.smallCaps;
 				
 			default:
-				//TODO : throw exception ?
 				fontVariant = null;
 		}
 		
 		return  fontVariant;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.textTransformEnum("none") returns TextTransform.none
+	 */
 	static public function textTransformEnum(string:String):TextTransform
 	{
 		var parsed:String = trim(string);
@@ -418,14 +471,16 @@ class UnitManager
 				textTransform = TextTransform.none;
 				
 			default:
-				//TODO : throw exception ?
 				textTransform = null;
 		}
 		
 		return  textTransform;
 	}
 	
-	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.visibilityEnum("visible") returns Visibility.visible
+	 */
 	static public function visibilityEnum(string:String):Visibility
 	{
 		var parsed:String = trim(string);
@@ -441,13 +496,16 @@ class UnitManager
 				visibility = Visibility.visible;
 				
 			default:
-				//TODO : throw exception ?
 				visibility = null;
 		}
 		
 		return  visibility;
 	}
 	
+	/**
+	 * convert a string into a typed enum
+	 * @example UnitManager.cursorEnum("default") returns Cursor.cssDefault
+	 */
 	static public function cursorEnum(string:String):Cursor
 	{
 		var parsed:String = trim(string);
@@ -469,7 +527,6 @@ class UnitManager
 				cursor = Cursor.cssDefault;		
 				
 			default:
-				//TODO : throw exception ?
 				cursor = null;
 		}
 		
@@ -639,7 +696,6 @@ class UnitManager
 				cssFloat = CSSFloat.none;
 				
 			default:
-				//TODO : throw exception ?
 				cssFloat = null;
 		}
 		
@@ -648,21 +704,22 @@ class UnitManager
 	
 	/**
 	 * convert a string into a typed Color enum
-	 * @example CSSParser.colorEnum("yellow") returns Color.yellow
+	 * @example UnitManager.colorEnum("yellow") returns Color.yellow
 	 */
 	static public function colorEnum(string:String):CSSColor{
 		// clean up a bit
 		string = trim(string);
+		
 		// case of hex values, e.g. #FFFFFF
 		if (StringTools.startsWith(string, "#"))
-			return hex(string.substr(1));
+			return hex(string);
 		// case of rgba values, e.g. rgba(255, 255, 255, 1)
-		if (StringTools.startsWith(string, "rgba")){
+		if (StringTools.startsWith(string, "rgba")) {
 			var vcol:VCol = string2RGBA(string);
 			return rgba(vcol.r, vcol.g, vcol.b, vcol.a);
 		} 
 		// case of rgb values, e.g. rgb(255, 255, 255)
-		if (StringTools.startsWith(string, "rgb")){
+		if (StringTools.startsWith(string, "rgb")) {
 			var vcol:VCol = string2RGB(string);
 			return rgb(vcol.r, vcol.g, vcol.b);
 		}
@@ -727,6 +784,7 @@ class UnitManager
 		// insert "0"s if some channels are missing
 		while(rgba.length < 3)
 			rgba.push("0");
+			
 		// return a typed object
 		return {
 			r:Std.parseInt(trim(rgba[0])),
@@ -747,9 +805,9 @@ class UnitManager
 	 */
 	static private function string2VUnit(string:String):VUnit
 	{
-		var r : EReg = ~/([0-9]*)(.*)/;
+		var r : EReg = ~/^(-?[0-9]+\.?[0-9]*)(.*)/;
 		r.match(string);
-//		trace("return "+r.matched(1)+"+"+r.matched(2));
+			//trace("return " + r.matched(1) + "+" + r.matched(2));
 		return {
 			value: r.matched(1), 
 			unit : trim(r.matched(2))
@@ -763,21 +821,21 @@ class UnitManager
 		return switch (parsed.unit)
 		{
 			case "in":
-				Length.cssIn(Std.parseInt(parsed.value));	
+				Length.cssIn(Std.parseFloat(parsed.value));
 			case "cm":
-				Length.cm(Std.parseInt(parsed.value));	
+				Length.cm(Std.parseFloat(parsed.value));	
 			case "em":
-				Length.em(Std.parseInt(parsed.value));	
+				Length.em(Std.parseFloat(parsed.value));	
 			case "ex":
-				Length.ex(Std.parseInt(parsed.value));	
+				Length.ex(Std.parseFloat(parsed.value));	
 			case "mm":
-				Length.mm(Std.parseInt(parsed.value));	
+				Length.mm(Std.parseFloat(parsed.value));	
 			case "pc":
-				Length.pc(Std.parseInt(parsed.value));	
+				Length.pc(Std.parseFloat(parsed.value));	
 			case "pt":
-				Length.pt(Std.parseInt(parsed.value));	
+				Length.pt(Std.parseFloat(parsed.value));	
 			case "px":
-				Length.px(Std.parseInt(parsed.value));
+				Length.px(Std.parseFloat(parsed.value));
 			case "":
 				// special case of "0" without unit
 				var v:Int = Std.parseInt(parsed.value);
@@ -882,7 +940,7 @@ class UnitManager
 				lengthValue = value * 1/0.75;	
 				
 			case cssIn(value):
-				lengthValue = value * (72 * (1/0.75));
+				lengthValue = value * (72 * (1 / 0.75));
 				
 			case pc(value):
 				lengthValue = value * (12 * (1 / 0.75));	

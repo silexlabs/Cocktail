@@ -1,7 +1,3 @@
-package cocktail.core.renderer;
-import cocktail.core.geom.Matrix;
-import cocktail.core.NativeElement;
-import haxe.Log;
 /*
 	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
 	This project is © 2010-2011 Silex Labs and is released under the GPL License:
@@ -9,7 +5,13 @@ import haxe.Log;
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
+package cocktail.core.renderer;
+
 import cocktail.core.style.StyleData;
+import cocktail.core.geom.Matrix;
+import cocktail.core.NativeElement;
+import cocktail.core.geom.GeomData;
+import haxe.Log;
 
 /**
  * A LayerRenderer is in charge of rendering 
@@ -46,91 +48,215 @@ class LayerRenderer
 	/////////////////////////////////
 	// PUBLIC METHODS
 	////////////////////////////////
-	
-	public function dispose():Void
-	{
-		_rootRenderer = null;
-	}
+
 	
 	/**
-	 * Render all the ElementRenderers using this LayerRenderer
+	 * Render all the ElementRenderers belonging to this LayerRenderer
 	 * in a defined order
 	 */
-	public function render():Array<NativeElement>
+	public function render(rootRenderer:ElementRenderer = null, renderChildLayers:Bool = true):Array<NativeElement>
 	{
-		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
-	
-		
-		if (_rootRenderer.canHaveChildren() == true && _rootRenderer.coreStyle.isInlineLevel() == false
-		|| _rootRenderer.coreStyle.display == inlineBlock)
+		if (rootRenderer == null)
 		{
-			var rootRendererBackground:Array<NativeElement> = _rootRenderer.renderBackground();
-			
-			for (i in 0...rootRendererBackground.length)
-			{
-				nativeElements.push(rootRendererBackground[i]);
-			}
-			
-			var childrenBlockContainerBackground:Array<NativeElement> = renderChildrenBlockContainerBackground();	
-				
-			for (i in 0...childrenBlockContainerBackground.length)
-			{
-				nativeElements.push(childrenBlockContainerBackground[i]);
-			}
-			
-			var inFlowChildren:Array<NativeElement> = renderInFlowChildren();
-			
-			for (i in 0...inFlowChildren.length)
-			{
-				nativeElements.push(inFlowChildren[i]);
-			}
-			
-		
-			var childLayers:Array<NativeElement> = renderChildLayer();
-
-			for (i in 0...childLayers.length)
-			{
-			//	nativeElements.push(childLayers[i]);
-			}
-	
-			#if (flash9 || nme)
-			for (i in 0...nativeElements.length)
-			{
-				nativeElements[i].x += _rootRenderer.bounds.x;
-				nativeElements[i].y += _rootRenderer.bounds.y; 
-				
-			}
-			#end
-	
-
-			
-			//TODO : retrieve and render floated elements	
-			//renderChildrenNonPositionedFloats();
+			rootRenderer = _rootRenderer;
 		}
 		
-		else
+		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
+		
+		//here the root renderer is a block box renderer. It can be an inline level
+		//which establishes an inline formatting context : an inline-block
+		if (rootRenderer.canHaveChildren() == true && rootRenderer.isInlineLevel() == false || 
+		rootRenderer.establishesNewFormattingContext() == true)
 		{
-			
-			
-			var rootRendererBackground:Array<NativeElement> = _rootRenderer.renderBackground();
-			
-			for (i in 0...rootRendererBackground.length)
-			{
-				nativeElements.push(rootRendererBackground[i]);
-			}
-			
-			var rootRendererElements = _rootRenderer.render();
+			//render the ElementRenderer which created this layer
+			var rootRendererElements:Array<NativeElement> = rootRenderer.render();
 			
 			for (i in 0...rootRendererElements.length)
 			{
 				nativeElements.push(rootRendererElements[i]);
 			}
 			
+			//TODO here : render children with negative z-index
+			
+			//render all the block container children belonging to this layer
+			var blockContainerChildren:Array<NativeElement> = renderBlockContainerChildren(rootRenderer);	
+				
+			for (i in 0...blockContainerChildren.length)
+			{
+				nativeElements.push(blockContainerChildren[i]);
+			}
+			
+			//TODO here : render non-positioned float
+			
+			//TODO :  doc
+			var replacedBlockChildren:Array<NativeElement> = renderBlockReplacedChildren(rootRenderer);
+			
+			for (i in 0...replacedBlockChildren.length)
+			{
+				nativeElements.push(replacedBlockChildren[i]);
+			}
+
+			//render all the line boxes belonging to this layer
+			var lineBoxesChildren:Array<NativeElement> = renderLineBoxes(rootRenderer);
+
+			for (i in 0...lineBoxesChildren.length)
+			{
+				nativeElements.push(lineBoxesChildren[i]);
+			}
+			
+			//TODO : doc, this fix is here to prevent inlineBlock from rendering their
+			//child layers, maybe add a new "if(inlineblock)" instead but should also
+			//work for float
+			if (renderChildLayers == true)
+			{
+				//render all the child layers with a z-index of 0
+				var childLayers:Array<NativeElement> = renderChildLayer(rootRenderer);
+
+				for (i in 0...childLayers.length)
+				{
+					nativeElements.push(childLayers[i]);
+				}
+			}
+			
 			
 		}
 		
+		//here the root renderer is an inline box renderer which doesn't establish a formatting context
+		else if (rootRenderer.canHaveChildren() == true && rootRenderer.isInlineLevel() == true)
+		{
+			//TODO : render child layers
+			var lineBoxesChildren:Array<NativeElement> = renderInlineBoxRenderer(rootRenderer);
+			for (i in 0...lineBoxesChildren.length)
+			{
+				nativeElements.push(lineBoxesChildren[i]);
+			}
+		}
+		
+		//here the root renderer is a replaced element
+		else
+		{
+			//render the replaced element, render its background and asset
+			var rootRendererElements:Array<NativeElement> = rootRenderer.render();
+			
+			for (i in 0...rootRendererElements.length)
+			{
+				nativeElements.push(rootRendererElements[i]);
+			}
+		}
+		
+		#if (flash9 || nme)
+		
+		//if the root renderer is relatively positioned,
+		//then its offset must be applied to all of 
+		//its children
+		if (rootRenderer.coreStyle.isRelativePositioned() == true)
+		{
+			for (i in 0...nativeElements.length)
+			{
+				//first try to apply the left offset of the root renderer if it is
+				//not auto
+				if (rootRenderer.coreStyle.left != PositionOffset.cssAuto)
+				{
+					nativeElements[i].x += rootRenderer.coreStyle.computedStyle.left;
+				}
+				//else the right offset,
+				else if (rootRenderer.coreStyle.right != PositionOffset.cssAuto)
+				{
+					nativeElements[i].x -= rootRenderer.coreStyle.computedStyle.right;
+				}
+				
+				//if both left and right offset is auto, then the root renderer uses its static
+				//position (its normal position in the flow) and no offset needs to be applied
+				//to its children
+			
+				//same for vertical offset
+				if (rootRenderer.coreStyle.top != PositionOffset.cssAuto)
+				{
+					nativeElements[i].y += rootRenderer.coreStyle.computedStyle.top; 
+				}
+				else if (rootRenderer.coreStyle.bottom != PositionOffset.cssAuto)
+				{
+					nativeElements[i].y -= rootRenderer.coreStyle.computedStyle.bottom; 
+				}
+			}
+		}
+		
+		#end
+		
 		
 		return nativeElements;
+	}
+	
+	public function getElementRenderersAtPoint(point:PointData):Array<ElementRenderer>
+	{
+		var elementRenderersAtPoint:Array<ElementRenderer> = getElementRenderersAtPointInLayer(_rootRenderer, point);
+
+		if (_rootRenderer.hasChildNodes() == true)
+		{
+			var childLayers:Array<LayerRenderer> = getChildLayers(cast(_rootRenderer), this);
+			
+			var elementRenderersAtPointInChildLayers:Array<ElementRenderer> = getElementRenderersAtPointInChildLayers(point, childLayers);
+			
+			for (i in 0...elementRenderersAtPointInChildLayers.length)
+			{
+				elementRenderersAtPoint.push(elementRenderersAtPointInChildLayers[i]);
+			}
+		}
+		
+		
+		return elementRenderersAtPoint;
+	}
+	
+	private function getElementRenderersAtPointInLayer(renderer:ElementRenderer, point:PointData):Array<ElementRenderer>
+	{
+		var elementRenderersAtPointInLayer:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		for (i in 0...renderer.childNodes.length)
+		{
+			var child:ElementRenderer = cast(renderer.childNodes[i]);
+			
+			if (child.layerRenderer == this)
+			{
+				if (isWithinBounds(point, child.globalBounds) == true)
+				{
+					elementRenderersAtPointInLayer.push(child);
+				}
+				
+				if (child.hasChildNodes() == true)
+				{
+					var childElementRenderersAtPointInLayer:Array<ElementRenderer> = getElementRenderersAtPointInLayer(child, point);
+					
+					for (j in 0...childElementRenderersAtPointInLayer.length)
+					{
+						elementRenderersAtPointInLayer.push(childElementRenderersAtPointInLayer[j]);
+					}
+				}
+			}
+		}
+		
+		return elementRenderersAtPointInLayer;
+	}
+	
+	private function getElementRenderersAtPointInChildLayers(point:PointData, childLayers:Array<LayerRenderer>):Array<ElementRenderer>
+	{
+		var elementRenderersAtPointInChildLayers:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		for (i in 0...childLayers.length)
+		{
+			var elementRenderersAtPointInChildLayer:Array<ElementRenderer> = childLayers[i].getElementRenderersAtPoint(point);
+			
+			for (j in 0...elementRenderersAtPointInChildLayer.length)
+			{
+				elementRenderersAtPointInChildLayers.push(elementRenderersAtPointInChildLayer[j]);
+			}
+		}
+		
+		return elementRenderersAtPointInChildLayers;
+	}
+	
+	private function isWithinBounds(point:PointData, bounds:RectangleData):Bool
+	{
+		return point.x > bounds.x && (point.x < bounds.x + bounds.width) && point.y > bounds.y && (point.y < bounds.y + bounds.height);	
 	}
 	
 	/////////////////////////////////
@@ -138,35 +264,29 @@ class LayerRenderer
 	////////////////////////////////
 	
 	/**
-	 * Render all the backgrounds of the block box of this LayerRenderer except for the
-	 * root renderer and return an array of native elements from it
+	 * Render all the block container children of the layer
 	 */
-	private function renderChildrenBlockContainerBackground():Array<NativeElement>
+	private function renderBlockContainerChildren(rootRenderer:ElementRenderer):Array<NativeElement>
 	{
-		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(cast(_rootRenderer));
+		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(cast(rootRenderer));
 		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
 		for (i in 0...childrenBlockContainer.length)
 		{
-			
-			var nativeElements:Array<NativeElement> = childrenBlockContainer[i].renderBackground();
+			var nativeElements:Array<NativeElement> = childrenBlockContainer[i].render();
 			
 			for (j in 0...nativeElements.length)
 			{
 				ret.push(nativeElements[j]);
 			}
 		}
-		
 		return ret;
 	}
 	
 	/**
 	 * Retrieve all the children block container of this LayerRenderer by traversing
 	 * recursively the rendering tree.
-	 * 
-	 * TODO : would also return the InlineBoxRenderer if they were attached to the
-	 * rendering tree as they should
 	 */
 	private function getBlockContainerChildren(rootRenderer:FlowBoxRenderer):Array<ElementRenderer>
 	{
@@ -178,13 +298,65 @@ class LayerRenderer
 			
 			if (child.layerRenderer == this)
 			{
-				if (child.canHaveChildren() == true)
+				//TODO : must add more condition, for instance, no float
+				if (child.canHaveChildren() == true && child.coreStyle.display != inlineBlock)
 				{
+					ret.push(cast(child));
+					
 					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(cast(child));
+					
 					for (j in 0...childElementRenderer.length)
 					{
 						ret.push(childElementRenderer[j]);
 					}
+				}
+			}
+		}
+		return ret;
+	}
+	
+	
+	//TODO : doc
+	private function renderBlockReplacedChildren(rootRenderer:ElementRenderer):Array<NativeElement>
+	{
+		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(cast(rootRenderer));
+		
+		var ret:Array<NativeElement> = new Array<NativeElement>();
+		
+		for (i in 0...childrenBlockReplaced.length)
+		{
+			var nativeElements:Array<NativeElement> = childrenBlockReplaced[i].render();
+			
+			for (j in 0...nativeElements.length)
+			{
+				ret.push(nativeElements[j]);
+			}
+		}
+		return ret;
+	}
+	
+	private function getBlockReplacedChildren(rootRenderer:FlowBoxRenderer):Array<ElementRenderer>
+	{
+		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		for (i in 0...rootRenderer.childNodes.length)
+		{
+			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
+			
+			if (child.layerRenderer == this)
+			{
+				//TODO : must add more condition, for instance, no float
+				if (child.canHaveChildren() == true && child.coreStyle.display == block)
+				{
+					var childElementRenderer:Array<ElementRenderer> = getBlockReplacedChildren(cast(child));
+					
+					for (j in 0...childElementRenderer.length)
+					{
+						ret.push(childElementRenderer[j]);
+					}
+				}
+				else if (child.coreStyle.display == block)
+				{
 					ret.push(cast(child));
 				}
 			}
@@ -192,16 +364,14 @@ class LayerRenderer
 		return ret;
 	}
 	
+	
 	/**
 	 * Render all the children LayerRenderer of this LayerRenderer
 	 * and return an array of NativeElements from it
 	 */
-	private function renderChildLayer():Array<NativeElement>
+	private function renderChildLayer(rootRenderer:ElementRenderer):Array<NativeElement>
 	{
-		var childLayers:Array<LayerRenderer> = getChildLayers(cast(_rootRenderer), this);
-		
-		//TODO : shouldn't have to do that
-		childLayers.reverse();
+		var childLayers:Array<LayerRenderer> = getChildLayers(cast(rootRenderer), this);
 		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
@@ -234,9 +404,10 @@ class LayerRenderer
 			if (child.layerRenderer == referenceLayer)
 			{
 				//if it can have children, recursively search for children layerRenderer
-				if (child.canHaveChildren() == true && child.coreStyle.display != inlineBlock)
+				if (child.canHaveChildren() == true)
 				{
 					var childElementRenderer:Array<LayerRenderer> = getChildLayers(cast(child), referenceLayer);
+					
 					for (j in 0...childElementRenderer.length)
 					{
 						childLayers.push(childElementRenderer[j]);
@@ -253,110 +424,90 @@ class LayerRenderer
 		return childLayers;
 	}
 	
-	/**
-	 * Render all the in flow children (not positioned) using
-	 * this LayerRenderer and return an array of NativeElement
-	 * from it
-	 */
-	private function renderInFlowChildren():Array<NativeElement>
+	private function renderInlineBoxRenderer(rootRenderer:ElementRenderer):Array<NativeElement>
 	{
-		var inFlowChildren:Array<ElementRenderer> = getInFlowChildren(cast(_rootRenderer));
-		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
-		for (i in 0...inFlowChildren.length)
+		for (i in 0...rootRenderer.lineBoxes.length)
 		{
-			var nativeElements:Array<NativeElement> = [];
-			if (inFlowChildren[i].coreStyle.display == inlineBlock)
-			{
-				//TODO : add missing rendering bits
-				//TODO : manage the case where inline-block is a replaced element
-						
-					var d = getChildLayers(cast(inFlowChildren[i]), this);
-					
-					for (l in 0...d.length)
-					{
-						var ne = d[l].render();
-						for (m in 0...ne.length)
-						{
-							#if (flash9 || nme)
-							ne[m].x += inFlowChildren[i].bounds.x;
-							ne[m].y += inFlowChildren[i].bounds.y;
-							#end
-						
-							nativeElements.push(ne[m]);
-						}
-	
-					}
-					
-					var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(inFlowChildren[i]));
-					for (l in 0...childElementRenderer.length)
-					{
-						childElementRenderer[l].bounds.x += inFlowChildren[i].bounds.x;
-						childElementRenderer[l].bounds.y += inFlowChildren[i].bounds.y;
-						
-						var el = childElementRenderer[l].render();
-						
-						for (k in 0...el.length)
-						{
-							nativeElements.push(el[k]);
-						}
-						
-					}
-			}
-				
-			else
-			{
-				nativeElements = inFlowChildren[i].render();
-			}
+			var childLineBoxes:Array<LineBox> = getLineBoxesInLine(rootRenderer.lineBoxes[i]);
 			
-			if (inFlowChildren[i].canHaveChildren() == false && inFlowChildren[i].isText() == false)
+			for (j in 0...childLineBoxes.length)
 			{
-				
-				var bg = inFlowChildren[i].renderBackground();
-				
-				for (j in 0...bg.length)
+				if (childLineBoxes[j].layerRenderer == this)
 				{
-					ret.push(bg[j]);
+					var lineBoxNativeElements:Array<NativeElement> = childLineBoxes[j].render();
+					for (k in 0...lineBoxNativeElements.length)
+					{
+						ret.push(lineBoxNativeElements[k]);
+					}
 				}
+				
 			}
-			
-			for (j in 0...nativeElements.length)
-			{
-				ret.push(nativeElements[j]);
-			}
-			
-			
 		}
 		
 		return ret;
 	}
 	
 	/**
+	 * Render all the in flow children (not positioned) using
+	 * this LayerRenderer and return an array of NativeElement
+	 * from it
+	 */
+	private function renderLineBoxes(rootRenderer:ElementRenderer):Array<NativeElement>
+	{
+		var lineBoxes:Array<LineBox> = getLineBoxes(cast(rootRenderer));
+
+		var ret:Array<NativeElement> = new Array<NativeElement>();
+		
+		for (i in 0...lineBoxes.length)
+		{
+			var nativeElements:Array<NativeElement> = [];
+			if (lineBoxes[i].establishesNewFormattingContext() == false)
+			{
+				nativeElements = lineBoxes[i].render();
+			}
+			else
+			{	
+				//TODO : doc, inlineBlock do not render the child layers, as it only simulates a new
+				//layer, will need to do the same thing for floats
+				nativeElements = lineBoxes[i].layerRenderer.render(lineBoxes[i].elementRenderer, false);
+			}
+			
+			for (j in 0...nativeElements.length)
+			{
+				ret.push(nativeElements[j]);
+			}
+	
+		}
+		
+		return ret;
+	}
+	
+	
+	/**
 	 * Return all the in flow children of this LayerRenderer by traversing
 	 * recursively the rendering tree
 	 */
-	private function getInFlowChildren(rootRenderer:FlowBoxRenderer):Array<ElementRenderer>
+	private function getLineBoxes(rootRenderer:FlowBoxRenderer):Array<LineBox>
 	{
-		
-		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
+		var ret:Array<LineBox> = new Array<LineBox>();
 		
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.coreStyle.childrenInline() == true)
 		{
-			
 			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
 			
 			for (i in 0...blockBoxRenderer.lineBoxes.length)
 			{
-				for (j in 0...blockBoxRenderer.lineBoxes[i].length)
+				var lineBoxes:Array<LineBox> = getLineBoxesInLine(blockBoxRenderer.lineBoxes[i]);
+				for (j in 0...lineBoxes.length)
 				{
-					if (blockBoxRenderer.lineBoxes[i][j].isPositioned() == false && blockBoxRenderer.lineBoxes[i][j].isDisplayed() == true)
+					if (lineBoxes[j].layerRenderer == this)
 					{
-						ret.push(blockBoxRenderer.lineBoxes[i][j]);
+						ret.push(lineBoxes[j]);
 					}
 				}
 			}
-			
 		}
 		else
 		{
@@ -369,20 +520,13 @@ class LayerRenderer
 					if (child.layerRenderer == this)
 					{
 						if (child.isPositioned() == false)
-						{
-							ret.push(child);
+						{	
 							if (child.canHaveChildren() == true)
-							{
-								var childElementRenderer:Array<ElementRenderer> = getInFlowChildren(cast(child));
-								for (j in 0...childElementRenderer.length)
+							{	
+								var childLineBoxes:Array<LineBox> = getLineBoxes(cast(child));
+								for (j in 0...childLineBoxes.length)
 								{
-									if (child.establishesNewFormattingContext() == true)
-									{
-										childElementRenderer[j].bounds.x += child.bounds.x;
-										childElementRenderer[j].bounds.y += child.bounds.y;
-									}
-								
-									ret.push(childElementRenderer[j]);
+									ret.push(childLineBoxes[j]);
 								}
 							}
 						}
@@ -394,6 +538,28 @@ class LayerRenderer
 		
 		return ret;
 	}
+	
+	private function getLineBoxesInLine(rootLineBox:LineBox):Array<LineBox>
+	{
+		var ret:Array<LineBox> = new Array<LineBox>();
+		
+		for (i in 0...rootLineBox.childNodes.length)
+		{
+			ret.push(cast(rootLineBox.childNodes[i]));
+			
+			if (rootLineBox.childNodes[i].hasChildNodes() == true)
+			{
+				var childLineBoxes:Array<LineBox> = getLineBoxesInLine(cast(rootLineBox.childNodes[i]));
+				for (j in 0...childLineBoxes.length)
+				{
+					ret.push(childLineBoxes[j]);
+				}
+			}
+		}
+		
+		return ret;
+	}
+	
 	
 	//TODO : implement layer renderer transformation
 	
@@ -459,5 +625,4 @@ class LayerRenderer
 		//currentMatrix.translate(this._nativeX, this._nativeY);
 		return currentMatrix;
 	}
-	
 }

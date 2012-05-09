@@ -8,7 +8,6 @@
 package cocktail.core.html;
 
 import cocktail.core.event.Event;
-import cocktail.core.nativeElement.NativeElementManager;
 import cocktail.core.style.BodyCoreStyle;
 
 /**
@@ -30,14 +29,6 @@ class HTMLBodyElement extends HTMLElement
 	public function new() 
 	{	
 		super(HTML_BODY_TAG_NAME);
-	}
-	
-	/**
-	 * overriden to use the root of the runtime
-	 */
-	override private function initNativeElement():Void
-	{
-		_nativeElement = NativeElementManager.getRoot();
 	}
 	
 	/**

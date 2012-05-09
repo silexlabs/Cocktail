@@ -15,7 +15,6 @@ import cocktail.core.event.MouseEvent;
 import cocktail.core.Keyboard;
 import cocktail.core.mouse.MouseData;
 import cocktail.core.dom.DOMData;
-import cocktail.core.nativeElement.NativeElementManager;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.dom.DOMData;
 

@@ -8,16 +8,12 @@
 package cocktail.port.flash_player;
 
 import cocktail.core.event.MouseEvent;
-import cocktail.core.html.HTMLElement;
 import cocktail.core.mouse.AbstractMouse;
-import cocktail.core.NativeElement;
-
-import cocktail.core.mouse.MouseData;
+import flash.Lib;
 
 /**
  * This is the flash AVM2 implementation of the mouse event manager.
- * Listens to flash native mouse event on the provided
- * flash display object.
+ * Listens to flash native mouse event on the flash Stage.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -27,43 +23,42 @@ class Mouse extends AbstractMouse
 	/**
 	 * class constructor.
 	 */
-	public function new(htmlElement:HTMLElement) 
+	public function new() 
 	{
-		super(htmlElement);
-		
-		//set the Flash event types
-		_clickEvent = flash.events.MouseEvent.CLICK;
-		_mouseDownEvent = flash.events.MouseEvent.MOUSE_DOWN;
-		_mouseUpEvent = flash.events.MouseEvent.MOUSE_UP;
-		_mouseOverEvent = flash.events.MouseEvent.MOUSE_OVER;
-		_mouseOutEvent = flash.events.MouseEvent.MOUSE_OUT;
-		_mouseMoveEvent = flash.events.MouseEvent.MOUSE_MOVE;
+		super();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden private mouse utils methods
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	/**
-	 * Actually remove and set listeners on the native flash DisplayObject. Listeners
-	 * are always removed, as they must be removed if the user either removes the 
-	 * listener or set a new one. Listeners are only added if the htmlElement callback
-	 * is not null
+	 * Set mouse listeners on the stage
 	 */
-	override private function updateListeners(mouseEvent:String, nativeCallback:Dynamic->Void, htmlElementCallback:MouseEvent->Void):Void
+	override private function setNativeListeners():Void
 	{
-		_htmlElement.nativeElement.removeEventListener(mouseEvent, nativeCallback);
-		
-		if (htmlElementCallback != null)
-		{
-			_htmlElement.nativeElement.addEventListener(mouseEvent, nativeCallback);
-		}
+		Lib.current.addEventListener(flash.events.MouseEvent.CLICK, onNativeClick);
+		Lib.current.addEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
+		Lib.current.addEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
+		Lib.current.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
 	}
 	
 	/**
-	 * Returns the current mouse data
+	 * Remove mouse listeners from the stage
+	 */
+	override private function removeNativeListeners():Void
+	{
+		Lib.current.removeEventListener(flash.events.MouseEvent.CLICK, onNativeClick);
+		Lib.current.removeEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
+		Lib.current.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
+		Lib.current.removeEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+	}
+	
+	/**
+	 * Create and return a cross-platform mouse event
+	 * form the flash mouse event
+	 * 
 	 * @param	event the native mouse event
-	 * @return a sruct containing the mouse current data
 	 */
 	override private function getMouseEvent(event:Dynamic):MouseEvent
 	{
@@ -81,13 +76,7 @@ class Mouse extends AbstractMouse
 				eventType = MouseEvent.MOUSE_DOWN;
 				
 			case flash.events.MouseEvent.MOUSE_UP:
-				eventType = MouseEvent.MOUSE_UP;	
-				
-			case flash.events.MouseEvent.MOUSE_OVER:
-				eventType = MouseEvent.MOUSE_OVER;
-				
-			case flash.events.MouseEvent.MOUSE_OUT:
-				eventType = MouseEvent.MOUSE_OUT;	
+				eventType = MouseEvent.MOUSE_UP;
 				
 			case flash.events.MouseEvent.MOUSE_MOVE:
 				eventType = MouseEvent.MOUSE_MOVE;	
@@ -96,7 +85,8 @@ class Mouse extends AbstractMouse
 				eventType = typedEvent.type;	
 		}
 		
-		var mouseEvent:MouseEvent = new MouseEvent(eventType, _htmlElement, 0.0, typedEvent.stageX, typedEvent.stageY,
+		//TODO : the target is now null, should be determined by HTMLDocument
+		var mouseEvent:MouseEvent = new MouseEvent(eventType, null, 0.0, typedEvent.stageX, typedEvent.stageY,
 		typedEvent.localX, typedEvent.localY, typedEvent.ctrlKey, typedEvent.shiftKey, typedEvent.altKey);
 		
 		return mouseEvent;

@@ -47,7 +47,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			var computedStyle:ComputedStyleData = style.computedStyle;
 			//compute the shrinked width
 			shrinkedWidth = doShrinkToFit(style, containingHTMLElementData, minimumWidth);
-			
+
 			//if both right and left are auto, use left static position, then deduce right
 			if (style.left == PositionOffset.cssAuto && style.right == PositionOffset.cssAuto)
 			{
@@ -162,12 +162,14 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			setComputedWidth(style, containingHTMLElementData.width - computedStyle.marginLeft - computedStyle.left - computedStyle.right - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight);
 		}
 		//if left, right and width are auto, then the width will be "shrinked-to-fit" once all the children have been laid out,
-		//so the width is first set to an "inifinite" width which will allow to find the max line width of the formatted children
+		//so the width is first set to an "infinite" width which will allow to find the max line width of the formatted children
 		//used by the shrink-to-fit method
 		else
 		{
-			//TODO : setting a number too big makes BitmapData crashes in Flash
-			setComputedWidth(style, 1000000);
+			//TODO : setting the containing element width is a hack which will not
+			//always work. The shrink to fit computation of this class needs to be 
+			//improved
+			setComputedWidth(style, containingHTMLElementData.width);
 		}
 	}
 	
@@ -326,7 +328,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			style.computedStyle.bottom = getComputedPositionOffset(style.bottom, containingHTMLElementData.height, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			style.computedStyle.top = containingHTMLElementData.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.bottom;
 		}
-		
+
 		//if top or bottom are auto, then the height will be computed once the layout
 		//of the HTMLElement children is done
 	}

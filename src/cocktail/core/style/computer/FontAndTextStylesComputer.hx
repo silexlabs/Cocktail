@@ -46,17 +46,9 @@ class FontAndTextStylesComputer
 	public static function compute(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
 	{
 		var computedStyle = style.computedStyle;
-		
-		if (containingHTMLElementFontMetricsData != null)
-		{
-			//font size
-			computedStyle.fontSize = getComputedFontSize(style, containingHTMLElementFontMetricsData.fontSize, containingHTMLElementFontMetricsData.xHeight);
-		}
-		else
-		{
-			//TODO : voir comment taille par défault du navigateur est géré, setter sur body en JS ?
-			computedStyle.fontSize = getComputedFontSize(style, 12.0, 10.0);
-		}
+
+		//font size
+		computedStyle.fontSize = getComputedFontSize(style, containingHTMLElementFontMetricsData.fontSize, containingHTMLElementFontMetricsData.xHeight);
 		
 		//line height
 		computedStyle.lineHeight = getComputedLineHeight(style);
@@ -124,7 +116,7 @@ class FontAndTextStylesComputer
 	
 	/**
 	 * Compute the vertical offset to apply to a HTMLElement in an inline
-	 * formatting context
+	 * formatting context.
 	 */
 	private static function getComputedVerticalAlign(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Float
 	{
@@ -136,8 +128,7 @@ class FontAndTextStylesComputer
 				verticalAlign = 0;
 				
 			case middle:
-				var offsetHeight:Int = style.computedStyle.height + style.computedStyle.paddingTop + style.computedStyle.paddingBottom;
-				verticalAlign = offsetHeight / 2 + containingHTMLElementFontMetricsData.xHeight / 2;
+				verticalAlign = 0;
 				
 			case sub:
 				verticalAlign = containingHTMLElementFontMetricsData.subscriptOffset;
@@ -147,11 +138,9 @@ class FontAndTextStylesComputer
 				
 			case textTop:
 				verticalAlign = 0;
-				//TODO : Align the top of the box with the top of the parent's content area
 				
 			case textBottom:
 				verticalAlign = 0;
-				//TODO : Align the bottom of the box with the bottom of the parent's content area 
 				
 			case percent(value):
 				verticalAlign = UnitManager.getPixelFromPercent(value, Math.round(style.computedStyle.lineHeight));

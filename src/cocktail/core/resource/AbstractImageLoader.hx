@@ -9,8 +9,6 @@ package cocktail.core.resource;
 
 import cocktail.core.MediaLoader;
 import cocktail.core.NativeElement;
-import cocktail.core.nativeElement.NativeElementManager;
-import cocktail.core.nativeElement.NativeElementData;
 import haxe.Http;
 import haxe.Log;
 
@@ -19,17 +17,18 @@ import haxe.Log;
  * pictures are loaded with the same instance, the picture is 
  * replaced
  * 
+ * TODO : shouldn't be done this way, each picture should be 
+ * stored in a different ResourceLoader which can then be retrieved
+ * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractImageLoader extends MediaLoader
 {
 	/**
-	 * class constructor. Instantiate
-	 * the right nativeElement to load a picture
+	 * class constructor
 	 */
 	public function new()
 	{
-		var nativeElement:NativeElement = NativeElementManager.createNativeElement(img);
-		super(nativeElement);
+		super();
 	}
 }

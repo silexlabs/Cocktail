@@ -16,17 +16,19 @@ import cocktail.mouse.MouseData;
 import cocktail.nativeElement.NativeElementManager;
 import cocktail.nativeElement.NativeElementData;
 import cocktail.textElement.TextElement;
+import components.lists.AppList;
+import components.lists.ListBaseUtils;
 
 // Style
 import cocktail.style.StyleData;
 import cocktail.unit.UnitData;
 
 // RichList specific
-import components.richList.RichList;
-import components.richList.RichListModels;
-import components.richList.StyleNormal;
-import components.richList.StyleApp;
-import components.richList.RichListUtils;
+import components.lists.RichList;
+//import components.lists.RichListModels;
+import components.lists.ListBaseModels;
+import components.lists.AppListStyle;
+import components.lists.RichListStyle;
 
 // Gallery specific
 import components.gallery.Gallery;
@@ -43,6 +45,10 @@ import Navigation;
 
 class ApplicationStructure 
 {
+	// base url
+	static inline var BASE_URL:String = "http://demos.silexlabs.org/cocktail/simple-webapp/";
+	
+	
 	// pagesContainer is the container for all pages
 	public var pagesContainer:ContainerDOMElement;
 
@@ -53,25 +59,31 @@ class ApplicationStructure
 	// the home page looking like a smartphone desktop
 	private var _homePage:ContainerDOMElement;
 	
-	// the calendar pages
+	// the calendar page
 	private var _calListPage:ContainerDOMElement;
 	private var _dayPage:ContainerDOMElement;
 	
-	// the gallery pages
+	// the gallery page
 	private var _galleryPage:ContainerDOMElement;
 	private var _imagePage:ContainerDOMElement;
 	// the gallery
 	private var _gallery:Gallery;
 		
-	// the music pages
+	// the music page
 	private var _artistListPage:ContainerDOMElement;
 	private var _albumListPage:ContainerDOMElement;
 	private var _songListPage:ContainerDOMElement;
 	private var _songPage:ContainerDOMElement;
 	
-	// the notes pages
+	// the notes page
 	private var _noteListPage:ContainerDOMElement;
 	private var _notePage:ContainerDOMElement;
+	
+	// the download page
+	private var _downloadPage:ContainerDOMElement;
+	
+	// the cocktail links page
+	private var _cocktailLinksPage:ContainerDOMElement;
 	
 	// the credit page
 	private var _creditsPage:ContainerDOMElement;
@@ -83,6 +95,12 @@ class ApplicationStructure
 		//IphoneStyle.getPageContainerStyle(pagesContainer);
 		
 		createAllPages();
+		
+		// keyboard event callback
+		#if js
+		js.Lib.document.onkeydown = onKeyDownPages;
+		#end
+
 	}
 	
 	private function createAllPages()
@@ -94,11 +112,11 @@ class ApplicationStructure
 		_calListPage = createHeaderListPage(
 			"Calendar",
 			[
-				{text:"June 1st", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_dayPage },
-				{text:"June 2nd", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_dayPage },
-				{text:"June 3rd", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_dayPage },
-				{text:"June 4th", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_dayPage },
-				{text:"June 5th", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_dayPage }
+				{content:{text:"June 1st", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_dayPage },
+				{content:{text:"June 2nd", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_dayPage },
+				{content:{text:"June 3rd", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_dayPage },
+				{content:{text:"June 4th", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_dayPage },
+				{content:{text:"June 5th", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_dayPage }
 			]
 		);
 
@@ -108,31 +126,31 @@ class ApplicationStructure
 		_songListPage = createHeaderListPage(
 			"Artist - Album",
 			[
-				{text:"Song 1", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_songPage },
-				{text:"Song 2", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_songPage },
-				{text:"Song 3", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_songPage },
-				{text:"Song 4", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_songPage },
-				{text:"Song 5", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_songPage }
+				{content:{text:"Song 1", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_songPage },
+				{content:{text:"Song 2", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_songPage },
+				{content:{text:"Song 3", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_songPage },
+				{content:{text:"Song 4", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_songPage },
+				{content:{text:"Song 5", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_songPage }
 			]
 		);
 		_albumListPage = createHeaderListPage(
 			"Albums",
 			[
-				{text:"Album 1", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_songListPage },
-				{text:"Album 2", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_songListPage },
-				{text:"Album 3", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_songListPage },
-				{text:"Album 4", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_songListPage },
-				{text:"Album 5", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_songListPage }
+				{content:{text:"Album 1", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_songListPage },
+				{content:{text:"Album 2", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_songListPage },
+				{content:{text:"Album 3", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_songListPage },
+				{content:{text:"Album 4", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_songListPage },
+				{content:{text:"Album 5", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_songListPage }
 			]
 		);
 		_artistListPage = createHeaderListPage(
 			"Artists",
 			[
-				{text:"Artist 1", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_albumListPage },
-				{text:"Artist 2", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_albumListPage },
-				{text:"Artist 3", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_albumListPage },
-				{text:"Artist 4", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_albumListPage },
-				{text:"Artist 5", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_albumListPage }
+				{content:{text:"Artist 1", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_albumListPage },
+				{content:{text:"Artist 2", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_albumListPage },
+				{content:{text:"Artist 3", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_albumListPage },
+				{content:{text:"Artist 4", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_albumListPage },
+				{content:{text:"Artist 5", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_albumListPage }
 			]
 		);
 
@@ -145,22 +163,48 @@ class ApplicationStructure
 		_noteListPage = createHeaderListPage(
 			"Notes",
 			[
-				{text:"Note 1", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage },
-				{text:"Note 2", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage },
-				{text:"Note 3", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage },
-				{text:"Note 4", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage },
-				{text:"Note 5", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage },
-				{text:"Note 6", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage },
-				{text:"Note 7", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage },
-				{text:"Note 8", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage },
-				{text:"Note 9", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage },
-				{text:"Note 10", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage },
-				{text:"Note 11", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage },
-				{text:"Note 12", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage },
-				{text:"Note 13", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage },
-				{text:"Note 14", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage },
-				{text:"Note 15", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage },
-				{text:"Note 16", imagePath:"images/chevron.png", action:"goToPage", actionTarget:_notePage }
+				{content:{text:"Note 1", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_notePage },
+				{content:{text:"Note 2", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_notePage },
+				{content:{text:"Note 3", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_notePage },
+				{content:{text:"Note 4", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_notePage },
+				{content:{text:"Note 5", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_notePage },
+				{content:{text:"Note 6", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_notePage },
+				{content:{text:"Note 7", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_notePage },
+				{content:{text:"Note 8", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_notePage },
+				{content:{text:"Note 9", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_notePage },
+				{content:{text:"Note 10", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_notePage },
+				{content:{text:"Note 11", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_notePage },
+				{content:{text:"Note 12", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_notePage },
+				{content:{text:"Note 13", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_notePage },
+				{content:{text:"Note 14", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_notePage },
+				{content:{text:"Note 15", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_notePage },
+				{content:{text:"Note 16", imagePath:"images/chevron.png"}, action:"goToPage", actionTarget:_notePage }
+			]
+		);
+		
+		// the download page
+		_downloadPage = createHeaderListPage(
+			"Downloads",
+			[
+			{content:{text:"Desktop (Air: Win,OSX,Linux)", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_air_desktop_and_tv.air" },
+			{content:{text:"TV (Air: Win,OSX,Linux)", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_air_desktop_and_tv.air" },
+			{content:{text:"Android app (Air)", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_android_Air.apk" },
+			{content:{text:"Android app (PhoneGap)", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_android_PhoneGap.apk" },
+			{content:{text:"iOS app (Air)", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_iOS_Air_OTA_install.html" },
+			{content:{text:"iOS app (PhoneGap)", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_iOS_PhoneGap_OTA_install.html" },
+			{content:{text:"BlackBerry app (PhoneGap)", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_BlackBerry_PhoneGap.jad" },
+			{content:{text:"webOS app (PhoneGap)", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_webOS_PhoneGap.ipk" },
+			{content:{text:"symbian app (PhoneGap)", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:BASE_URL + "native_apps/WebApp_symbian_PhoneGap.wgz" },
+			]
+		);
+		
+		// the cocktail links page
+		_cocktailLinksPage = createHeaderListPage(
+			"Links",
+			[
+			{content:{text:"JavaScript Web version", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:BASE_URL + "WebApp_js.html" },
+			{content:{text:"Flash AS3 Web version", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:BASE_URL + "WebApp_As3.html" },
+			{content:{text:"TV HbbTV version", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:BASE_URL + "WebApp_js_hbbtv.html" },
 			]
 		);
 		
@@ -168,36 +212,37 @@ class ApplicationStructure
 		_creditsPage = createHeaderListPage(
 			"Credits",
 			[
-			{text:"made with Cocktail", imagePath:"images/icone_cocktail.png", action:"goToUrl", actionTarget:"http://www.silexlabs.org/groups/labs/cocktail/" },
-			{text:"using haXe language", imagePath:"images/haxe.png", action:"goToUrl", actionTarget:"http://haxe.org/" },
-			{text:"done for Silex Labs", imagePath:"images/icone_silexlabs_noire.png", action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
-			{text:"by Raphael Harmel", imagePath:"images/google+.png", action:"goToUrl", actionTarget:"http://plus.google.com/104338051403006926915" },
-			{text:"source Code", imagePath:"images/github.jpg", action:"goToUrl", actionTarget:"https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp" },
-			{text:"", imagePath:"", action:"", actionTarget:"" },
-			{text:"based on jPint project idea", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.journyx.com/jpint/" },
-			{text:"which is based on iUI", imagePath:"images/chevron.png", action:"", actionTarget:"http://www.iui-js.org/" },
-			{text:"iconspedia.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconspedia.com/pack/iphone/" },
-			{text:"iconarchive.com", imagePath:"images/chevron.png", action:"goToUrl", actionTarget:"http://www.iconarchive.com/category/business/dragon-soft-icons-by-artua.html" }
+			{content:{text:"made with Cocktail", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:"http://haxe.org/com/libs/cocktail/" },
+			{content:{text:"using haXe language", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:"http://haxe.org/" },
+			{content:{text:"done for Silex Labs", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:"http://www.silexlabs.org/" },
+			{content:{text:"by Raphael Harmel", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:"http://plus.google.com/104338051403006926915" },
+			{content:{text:"source Code", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:"https://github.com/silexlabs/Cocktail/tree/develop/demo/simple-webapp" },
+			{content:{text:"", imagePath:""}, action:"", actionTarget:"" },
+			{content:{text:"design based on iUI", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:"http://www.iui-js.org/" },
+			{content:{text:"iconspedia.com", imagePath:"images/chevron.png"}, action:"goToUrl", actionTarget:"http://www.iconspedia.com/pack/iphone/" }
 			]
 		);
 		
 		// the home page
 		var homePageCells:Array<CellModel> =
-			[	{text:"Cal", imagePath:"images/calendrier_blanc.png", action:"goToPage", actionTarget:_calListPage },
-				{text:"Music", imagePath:"images/icone_music_blanc.png", action:"goToPage", actionTarget:_artistListPage },
-				{text:"Gallery", imagePath:"images/icone_gallery_blanche.png", action:"goToPage", actionTarget:_galleryPage },
-				{text:"Notes", imagePath:"images/icone_bloc_note-2.png", action:"goToPage", actionTarget:_noteListPage }
+			[	{content:{title:"Cal", icon:"images/calendrier_blanc.png"}, action:"goToPage", actionTarget:_calListPage },
+				{content:{title:"Music", icon:"images/icone_music_blanc.png"}, action:"goToPage", actionTarget:_artistListPage },
+				{content:{title:"Gallery", icon:"images/icone_gallery_blanche.png"}, action:"goToPage", actionTarget:_galleryPage },
+				{content:{title:"Notes", icon:"images/icone_bloc_note-2.png"}, action:"goToPage", actionTarget:_noteListPage }
 			];
-		homePageCells.push( { text:"Cocktail", imagePath:"images/icone_cocktail_blanche.png", action:"openUrl", actionTarget:"http://www.silexlabs.org/groups/labs/cocktail/" } );
-		homePageCells.push( { text:"haXe", imagePath:"images/icone_haxe_blanche.png", action:"openUrl", actionTarget:"http://haxe.org/" } );
-		homePageCells.push( { text:"Silex Labs", imagePath:"images/icone_silexlabs_blanche.png", action:"openUrl", actionTarget:"http://www.silexlabs.org/" } );
-		homePageCells.push( { text:"Intermedia", imagePath:"images/icone_intermedia_blanche.png", action:"", actionTarget:"" } );
-		homePageCells.push( {text:"Credits", imagePath:"images/icone_credits.png", action:"goToPage", actionTarget:_creditsPage } );
+		homePageCells.push({content:{ title:"Cocktail", icon:"images/icone_cocktail_blanche.png"}, action:"goToUrl", actionTarget:"http://haxe.org/com/libs/cocktail/" } );
+		homePageCells.push({content:{ title:"Download", icon:"images/icone_cocktail_blanche.png"}, action:"goToPage", actionTarget:_downloadPage } );
+		homePageCells.push({content:{ title:"Links", icon:"images/icone_cocktail_blanche.png"}, action:"goToPage", actionTarget:_cocktailLinksPage } );
+		homePageCells.push({content:{ title:"haXe", icon:"images/icone_haxe_blanche.png"}, action:"goToUrl", actionTarget:"http://haxe.org/" } );
+		homePageCells.push({content:{ title:"Silex Labs", icon:"images/icone_silexlabs_blanche.png"}, action:"goToUrl", actionTarget:"http://www.silexlabs.org/" } );
+		homePageCells.push({content:{ title:"Intermedia", icon:"images/icone_intermedia_blanche.png"}, action:"goToUrl", actionTarget:"http://www.intermedia-paris.fr/" } );
+		homePageCells.push({content:{title:"Credits", icon:"images/icone_credits.png"}, action:"goToPage", actionTarget:_creditsPage } );
 		
 		_homePage = createHomePage(homePageCells);
 		
 		// instanciate navigation class with pagesContainer and homePage
 		navigation = new Navigation(pagesContainer,_homePage);
+
 	}
 	
 	/**
@@ -219,7 +264,7 @@ class ApplicationStructure
 		backGround.load(homeTilePath);
 
 		// create richList data & style
-		var richList:RichList = createRichListHome(cellDataArray);
+		var richList:AppList = createRichListHome(cellDataArray);
 		
 		// rich list onChange callback
 		richList.onChange = onChangeListCallback;
@@ -259,8 +304,8 @@ class ApplicationStructure
 		richList.onChange = onChangeListCallback;
 		
 		// build hierarchy
-		page.addChild(header);
 		page.addChild(richList);
+		page.addChild(header);
 		WebAppStyle.getPageStyle(page);
 		
 		return page;
@@ -288,8 +333,8 @@ class ApplicationStructure
 		WebAppStyle.getTextContentStyle(textContainer);
 		
 		// build hierarchy
-		page.addChild(header);
 		page.addChild(textContainer);
+		page.addChild(header);
 		WebAppStyle.getPageStyle(page);
 		
 		return page;
@@ -336,8 +381,8 @@ class ApplicationStructure
 		_gallery = new Gallery(rssFeedPath);
 
 		// build hierarchy
-		page.addChild(header);
 		page.addChild(_gallery);
+		page.addChild(header);
 		
 		// set style
 		WebAppStyle.getPageStyle(page);
@@ -441,25 +486,26 @@ class ApplicationStructure
 	 * @param	content
 	 * @return	the corresponding richlist
 	 */
-	private function createRichListHome(content:Array<CellModel>):RichList
+	private function createRichListHome(content:Array<CellModel>):AppList
 	{
 		// data
-		var listData:RichListModel = RichListUtils.createRichListModel();
-		//listData.title.text = "Mon titre";
+		var listData:ListModel = ListBaseUtils.createListModel();
+
 		listData.content = content;
 		
 		// style
-		var listStyle:RichListStyleModel = {
-			list:StyleApp.getDefaultStyle,
-			cell:StyleApp.getCellStyle,
-			cellImage:StyleApp.getCellImageStyle,
-			cellText:StyleApp.getCellTextStyle,
-			cellMouseOver:StyleApp.getCellMouseOverStyle,
-			cellMouseOut:StyleApp.getCellMouseOutStyle,
-			cellMouseDown:StyleApp.getCellMouseDownStyle,
-			cellMouseUp:StyleApp.getCellMouseUpStyle}
+		var listStyle:Dynamic = {
+			list:AppListStyle.getDefaultStyle,
+			cell:AppListStyle.getCellStyle,
+			cellIcon:AppListStyle.getCellImageStyle,
+			cellTitle:AppListStyle.getCellTextStyle,
+			cellMouseOver:AppListStyle.getCellMouseOverStyle,
+			cellMouseOut:AppListStyle.getCellMouseOutStyle,
+			cellMouseDown:AppListStyle.getCellMouseDownStyle,
+			cellMouseUp:AppListStyle.getCellMouseUpStyle}
 		
-		var list:RichList = new RichList(listData, listStyle);
+		//var list:RichList = new RichList(listData, listStyle);
+		var list:AppList = new AppList(listData, listStyle);
 		
 		return list;
 	}
@@ -473,20 +519,21 @@ class ApplicationStructure
 	private function createArrowRichList(content:Array<CellModel>):RichList
 	{
 		// data
-		var listData:RichListModel = RichListUtils.createRichListModel();
+		var listData:ListModel = ListBaseUtils.createListModel();
 		
 		listData.content = content;
 		
 		// style
-		var listStyle:RichListStyleModel = {
-			list:StyleNormal.getDefaultStyle,
-			cell:StyleNormal.getCellStyle,
-			cellImage:StyleNormal.getCellImageStyle,
-			cellText:StyleNormal.getCellTextStyle,
-			cellMouseOver:StyleNormal.getCellMouseOverStyle,
-			cellMouseOut:StyleNormal.getCellMouseOutStyle,
-			cellMouseDown:StyleNormal.getCellMouseDownStyle,
-			cellMouseUp:StyleNormal.getCellMouseUpStyle}
+		var listStyle:Dynamic = {
+			list:RichListStyle.getDefaultStyle,
+			cell:RichListStyle.getCellStyle,
+			cellImage:RichListStyle.getCellImageStyle,
+			cellText:RichListStyle.getCellTextStyle,
+			cellLine:RichListStyle.getCellLineStyle,
+			cellMouseOver:RichListStyle.getCellMouseOverStyle,
+			cellMouseOut:RichListStyle.getCellMouseOutStyle,
+			cellMouseDown:RichListStyle.getCellMouseDownStyle,
+			cellMouseUp:RichListStyle.getCellMouseUpStyle}
 		
 		var list:RichList = new RichList(listData, listStyle);
 		
@@ -516,6 +563,28 @@ class ApplicationStructure
 	public function onChangeListCallback(cell:CellModel)
 	{
 		navigation.onChangeListCallback(cell);
+	}
+	
+	/**
+	 * Called when a key is pressed
+	 */
+	private function onKeyDownPages(key:Dynamic):Void
+	{
+		//trace("onKeyDownPages: " + key.keyCode);
+		
+		// if pressed key is either backspace or back remote key
+		if (key.keyCode == "8" || key.keyCode == "461")
+		{
+			//trace("back key pressed");
+			goToPreviousPage(null);
+		}
+		else
+		{
+			// dispatch menu list item change
+			// TODO: remove hardcoding
+			//_footer.children[1].child.onListKeyDown(key);
+			_homePage.children[1].child.onListKeyDown(key);
+		}
 	}
 	
 }

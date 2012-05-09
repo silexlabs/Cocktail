@@ -29,10 +29,6 @@ import cocktail.core.style.computer.DisplayStylesComputer;
 import cocktail.core.style.computer.FontAndTextStylesComputer;
 import cocktail.core.style.computer.VisualEffectStylesComputer;
 import cocktail.core.style.formatter.FormattingContext;
-import cocktail.core.style.positioner.AbsolutePositioner;
-import cocktail.core.style.positioner.BoxPositioner;
-import cocktail.core.style.positioner.FixedPositioner;
-import cocktail.core.style.positioner.RelativePositioner;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
@@ -55,7 +51,7 @@ import haxe.Timer;
  * 
  * During the layout, a rendering tree, paralleling the DOM tree
  * is built. The rendering tree contains objects of type
- * ElementRenderer. For instance, a ContainerStyle with TextElement
+ * ElementRenderer. For instance, a ContainerCoreStyle with Text node
  * children will build a tree containing TextRenderer and BlockBoxRenderer
  * or InlineBoxRenderer.
  * Those objects know how to render themselves.
@@ -64,13 +60,19 @@ import haxe.Timer;
  * - first the styles of the HTMLElement are computed into
  * usable values, for instance values defined as percentage
  * are converted to absolute values. During this phase, an
- * abstract rendering tree of the element is built, containing
- * an array of all its children (background, border, other HTMLElements...)
- * ordered by z-index
+ * abstract rendering tree of the element is built
  * - once all the styles are computed and the rendering tree is ready, it
  * renders itself
  * 
  * This class implements the default behaviour of an embedded HTMLElement
+ * 
+ * TODO IMPORTANT : eventually, this class and its subclasses should be merged
+ * with the classes of the renderer package as there is a lot of common code
+ * between the 2. This way, we can follow the same pattern as webkit with :
+	 * A DOM tree with the HTMLElement who ows the rendering tree
+	 * A rendering tree with the ElementRender classes merged with the CoreStyle classes, in
+	 * charge of the layout and of rendering themselves
+	 * A layer tree, in charge of rendering each layer of the rendering tree in the right order
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -81,7 +83,6 @@ class CoreStyle
 	// STYLES attributes
 	////////////////////////////////
 	
-
 	/**
 	 * display styles
 	 */
@@ -267,10 +268,11 @@ class CoreStyle
 	public var fontMetrics(getFontMetricsData, never):FontMetricsData;
 	
 	/**
-	 * determine wether the HTMLElement and its chidlren must
-	 * be laid out again
+	 * determine wether the HTMLElement is currently being
+	 * laid out, in which case it won't take any subsequent
+	 * layout request into account
 	 */
-	private var _isDirty:Bool;
+	private var _isLayingOut:Bool;
 	
 	/**
 	 * A reference to the rendering tree node created by this
@@ -293,7 +295,7 @@ class CoreStyle
 	public function new(htmlElement:HTMLElement) 
 	{
 		this._htmlElement = htmlElement;
-		this._isDirty = false;
+		this._isLayingOut = false;
 		
 		initDefaultStyleValues();
 	}
@@ -464,7 +466,7 @@ class CoreStyle
 	 * Apply the standard default CSS value according to this
 	 * document : http://www.w3.org/TR/CSS21/sample.html
 	 * 
-	 * This method should eventually be removed when a StyleManager
+	 * TODO : This method should eventually be removed when a StyleManager
 	 * is introduced which will prevent those styles from being hard-coded
 	 */
 	private function applyDefaultHTMLStyles():Void
@@ -521,7 +523,7 @@ class CoreStyle
 				
 			case "p" :
 				_display = Display.block;
-				_marginTop = _marginBottom = Margin.length(em(1.67));	
+				_marginTop = _marginBottom = Margin.length(em(1));	
 				
 			case "pre" : 
 				_display = Display.block;
@@ -604,37 +606,41 @@ class CoreStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * This method is in charge of placing "in-flow" HTMLElements (HTMLElement with a 'position' style of 'static' or 'relative') into
-	 * its parent flow and "positioned" HTMLElement (with a 'position' style of 'absolute' or 'fixed') relatively to its first positioned
-	 * ancestor.
+	 * This method is in charge of laying out an HTMLElement which consist in computing its styles (box model, font, text...)
+	 * into usable values and determining the bounds of its corresponding ElementRenderer in its containing block space.
 	 * 
-	 * The HTMLElement first compute its own styles (box model, font, text...), then insert its ElementRenderer into the document based 
-	 * on its positioning scheme.
+	 * This method is called recursively on every children of the HTMLElement if it has any to layout all of the rendering tree.
 	 * 
-	 * This method is called recursively on every children of the HTMLElement if it has any
+	 * After this method was called, each ElementRenderer in the rendering tree is aware of its bounds relative to
+	 * its containing block which is the HTMLElement which started the formatting context used to layout the ElementRenderer
 	 * 
-	 * @param	containingHTMLElementData the dimensions of the parent HTMLElement into which 
-	 * this HTMLElement must be laid out
-	 * @param	viewportData a reference to the viewport of the document. When positioning a fixed positioned HTMLElement
-	 * (a HTMLElement with a 'position' of 'fixed'), it is used as origin
+	 * @param	containingHTMLElementData the dimensions of the parent HTMLElement used to layout this
+	 * HTMLElement. for instance if this HTMLElement has a width style of 'auto', it will use the width
+	 * of its containing HTMLElement
+	 * @param	viewportData a reference to the dimensions of the viewport of the document. When laying out a fixed positioned HTMLElement
+	 * (a HTMLElement with a 'position' style of 'fixed'), its dimensions are used as containing dimensions
 	 * @param	lastPositionedHTMLElementData the dimensions of the first ancestor HTMLElement in the hierararchy which is 'positioned', meaning that
 	 * it has a 'position' other than 'static'. When laying out an absolutelty positioned HTMLElement ( a HTMLElement with a 'position' style
-	 * of 'absolute'), it it used as origin. It also contains a reference to each absolutely positioned AbstractStyle using it as origin
-	 * to position their HTMLElement
-	 * @param   containingHTMLElementFontMetricsData contains font metrics used to layout children in an inline formatting context
-	 * @param	formattingContext can be an inline or block formatting context. "In-flow" HTMLElements insert themselves into the 
-	 * formattingContext to be placed in the document flow
+	 * of 'absolute'), it it used as containing dimensions. It also contains a reference to each absolutely positioned ElementRenderer for whom
+	 * it is the first positioned ancestor
+	 * @param   containingHTMLElementFontMetricsData the font metrics of the containing block parent which might be necessary to compute some styles.
+	 * For instance, style defined with a length using the 'em' value will refer to the computed font size of the containing parent
+	 * @param	formattingContext The formatting context used by the parent HTMLElement. Can be an inline or block formatting context.
 	 * @param parentElementRenderer the parent node in the rendering tree
 	 */
-	public function flow(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
+	public function layout(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
 	{		
+		//the ElementRenderer removes itself from the parent if necessary as the new layout
+		//will create a new rendering tree
+		//
+		//TODO : shouldn't be necessary to remove and recreate ElementRenderer anymore
 		if (_elementRenderer != null && parentElementRenderer != null)
 		{
 			parentElementRenderer.removeChild(_elementRenderer);
 		}
 		
 		//do nothing if the HTMLElement must not be displayed, i.e, added
-		//to the display list
+		//to the DOM
 		if (isDisplayed() == false)
 		{
 			return;
@@ -650,10 +656,13 @@ class CoreStyle
 		computeHTMLElementStyles(containingHTMLElementData, viewportData, lastPositionedHTMLElementData.data, containingHTMLElementFontMetricsData);
 		
 		//the HTMLElement creates its own ElementRenderer
+		//
+		//TODO : should only be created/re-created when necessary, for instance
+		//after it is added to the DOM
 		_elementRenderer = createElementRenderer(parentElementRenderer);
 		
-		//flow all the children of the HTMLElement if it has any
-		flowChildren(containingHTMLElementData, viewportData, lastPositionedHTMLElementData, containingHTMLElementFontMetricsData, formattingContext);
+		//layout all the children of the HTMLElement if it has any
+		layoutChildren(containingHTMLElementData, viewportData, lastPositionedHTMLElementData, containingHTMLElementFontMetricsData, formattingContext);
 		
 		//when all the dimensions of the htmlElement are known, compute the 
 		//visual effects to apply (visibility, opacity, transform)
@@ -665,124 +674,177 @@ class CoreStyle
 		//some text and font styles needs to be re-computed now that all the dimension
 		//of the HTMLElement are known, for instance some values of the VerticalAlign style
 		//might need those dimensions to compute the right values
+		//
+		//TODO : shouldn't have to re-compute all of the font and text styles
 		computeTextAndFontStyles(containingHTMLElementData, containingHTMLElementFontMetricsData);
 		
 		//compute the background styles which can be computed at this time,
 		//such as the background color, most of the background styles will be computed
 		//during the rendering
+		//
+		//TODO : check if its still necessary that they are only computed
+		//during rendering
 		computeBackgroundStyles();
 		
-		//insert the HTMLElement in its parent's formatting context based on its positioning scheme
-		insertHTMLElement(formattingContext, lastPositionedHTMLElementData, viewportData);
+		//insert the HTMLElement in the absolutely positioned array if it is itself absolutely positioned
+		//so that it can be positioned by its first positioned ancestor once it is laid out
+		//
+		//TODO : should happen instead in doFlowChildren of ContainerCoreStyle ?
+		insertAbsolutelyPositionedHTMLElementIfNecessary(formattingContext, lastPositionedHTMLElementData);
 		
-		//The HTMLElement has been laid out and is now valid
-		this._isDirty = false;
-	}
-	
-	/**
-	 * Place a positioned HTMLElement (a HTMLElement with a position style of 'relative', 'absolute', or 'fixed') using either the normal
-	 * flow, the last positioned HTMLElement or the viewport of the document, then apply an offset defined by the 'top',
-	 * 'left', 'bottom' and 'right' computed styles values
-	 * 
-	 * @param lastPositionedHTMLElementData
-	 * @param viewportData
-	 * @param staticPosition the x,y position that the HTMLElement would have had if it were 'in-flow'
-	 */
-	public function positionElement(lastPositionedHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, staticPosition:PointData):ElementRenderer
-	{
-		//instantiate the right positioner
-		//class based on the value of the 'position' style
-		var positioner:BoxPositioner;
 		
-		switch (this._htmlElement.coreStyle.computedStyle.position)
-		{
-			//positioned 'relative' HTMLElement
-			case relative:
-				positioner = new RelativePositioner();
-				_elementRenderer = positioner.position(_elementRenderer, lastPositionedHTMLElementData, staticPosition);
-			
-			//positioned 'fixed' HTMLElement, use the viewport
-			case fixed:
-				positioner = new FixedPositioner();
-				_elementRenderer = positioner.position(_elementRenderer, viewportData, staticPosition);
-				
-			//positioned 'absolute' HTMLElement	
-			case absolute:
-				positioner = new AbsolutePositioner();
-				_elementRenderer = positioner.position(_elementRenderer, lastPositionedHTMLElementData, staticPosition);
-				
-			default:
-		}
-		
-		//update the bounds of the ElementRenderer
-		_elementRenderer.bounds.width = _computedStyle.width + _computedStyle.paddingLeft + _computedStyle.paddingRight;
-		_elementRenderer.bounds.height = _computedStyle.height + _computedStyle.paddingTop + _computedStyle.paddingBottom;
-		
-		return _elementRenderer;
+		//The HTMLElement has been laid out and can now be laid out again
+		//if it changes
+		this._isLayingOut = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-
-	
 	/**
-	 * Flow all the children of a HTMLElement if it has any
+	 * Layout all the children of a HTMLElement if it has any
 	 */
-	private function flowChildren(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	private function layoutChildren(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 		
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC ABSOLUTE POSITIONING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
-	 * Insert the HTMLElement in the document, in or out of the flow.
+	 * Position an absolutely positioned ElementRenderer (with a position style of 'fixed' or 'absolute')
+	 * using either the first positioned ancestor as reference or the viewport
 	 * 
-	 * @param	formattingContext the formatting context into which the HTMLElement insert itself if it
-	 * is 'in flow'
-	 * @param	lastPositionedHTMLElementData
-	 * @param	viewportData
+	 * TODO : tried to move it to ContainerCoreStyle but had problem has ElementRenderer
+	 * was passed by value instead of reference
+	 * 
+	 * @param lastPositionedHTMLElementData the dimensions of the first positioned ancestor
+	 * @param viewportData the dimensions of the viewport
 	 */
-	private function insertHTMLElement(formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData, viewportData:ContainingHTMLElementData):Void
+	public function positionElement(lastPositionedHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData):Void
 	{
-		//insert in the flow
-		if (isPositioned() == false)
-		{
-			formattingContext.insertElement(_elementRenderer);
+		switch (_elementRenderer.coreStyle.computedStyle.position)
+		{	
+			//positioned 'fixed' HTMLElement, use the viewport
+			case fixed:
+				doPositionElement(_elementRenderer, viewportData);
+				
+			//positioned 'absolute' HTMLElement	
+			case absolute:
+				doPositionElement(_elementRenderer, lastPositionedHTMLElementData);
+			default:
 		}
-		//else the HTMLElement is positioned
-		else
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE ABSOLUTE POSITIONING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Actually position the positioned ElementRenderer
+	 */
+	private function doPositionElement(elementRenderer:ElementRenderer, containingHTMLElementData:ContainingHTMLElementData):Void
+	{
+		//for horizonal offset, if both left and right are not auto,
+		//left takes precedance so we try to apply left offset first
+		if (elementRenderer.coreStyle.left != PositionOffset.cssAuto)
 		{
-			
-			//retrieve the static position (the position of the HTMLElement
-			//if its position style were 'static')
-			var staticPosition:PointData = formattingContext.getStaticPosition(_elementRenderer);
-			//a relative HTMLElement is both inserted in the flow
-			//and positioned
-			//
-			if (isRelativePositioned() == true)
-			{
-				formattingContext.insertElement(_elementRenderer);
-			}
-			
-			//insert as a positioned HTMLElement.
-			//an absolutely positioned HTMLElement is not positioned right away, it must
-			//wait for its first positioned ancestor to be laid out. The reason is that
-			//if the positioned ancestor height is 'auto', the height of the positioned
-			//ancestor is not yet determined and so this HTMLElement can't be positioned
-			//using the bottom or right style yet. Once the first ancestor is laid out, it
-			//calls the positionElement method on all the stored positioned children
-			//
-			//relative positioned HTMLElement are also stored in that array
-			//
-			var positionedHTMLElementData:PositionedHTMLElementData = {
-				staticPosition:staticPosition,
-				coreStyle:this
-			}
-			
-			//store the HTMLElement to be positioned later
-			lastPositionedHTMLElementData.children.push(positionedHTMLElementData);
+			elementRenderer.positionedOrigin.x = getLeftOffset(elementRenderer);
 		}
+		//if no left offset is defined, then try to apply a right offset.
+		//Right offset takes the containing HTMLElement width minus the
+		//width of the positioned children as value for a 0 right offset
+		else if (elementRenderer.coreStyle.right != PositionOffset.cssAuto)
+		{
+			elementRenderer.positionedOrigin.x = getRightOffset(elementRenderer, containingHTMLElementData.width);
+		}
+		//if both right and left are 'auto', then the HTMLElement is positioned to its
+		//static position, the position it would have had in the flow if it were positioned as 'static'.
+		//At this point the bounds of the ElementRenderer already matches its static position
+		
+		//for vertical offset, the same rule as horizontal offsets apply
+		if (elementRenderer.coreStyle.top != PositionOffset.cssAuto)
+		{
+			elementRenderer.positionedOrigin.y = getTopOffset(elementRenderer);
+		}
+		else if (htmlElement.coreStyle.bottom != PositionOffset.cssAuto)
+		{
+			elementRenderer.positionedOrigin.y = getBottomOffset(elementRenderer, containingHTMLElementData.height);
+		}
+	}
+	
+	/**
+	 * get the left offset to apply the ElementRenderer
+	 */
+	private function getLeftOffset(elementRenderer:ElementRenderer):Int
+	{
+		return elementRenderer.coreStyle.computedStyle.left + elementRenderer.coreStyle.computedStyle.marginLeft;
+	}
+	
+	/**
+	 * get the right offset to apply the ElementRenderer
+	 */
+	private function getRightOffset(elementRenderer:ElementRenderer, containingHTMLElementWidth:Int):Int
+	{
+		return containingHTMLElementWidth - elementRenderer.coreStyle.computedStyle.width + elementRenderer.coreStyle.computedStyle.paddingLeft
+		+ elementRenderer.coreStyle.computedStyle.paddingRight + elementRenderer.coreStyle.computedStyle.right - elementRenderer.coreStyle.computedStyle.marginRight;
+	}
+	
+	/**
+	 * get the top offset to apply the ElementRenderer
+	 */
+	private function getTopOffset(elementRenderer:ElementRenderer):Int
+	{
+		return elementRenderer.coreStyle.computedStyle.top + elementRenderer.coreStyle.computedStyle.marginTop;
+	}
+	
+	/**
+	 * get the bottom offset to apply the ElementRenderer
+	 */
+	private function getBottomOffset(elementRenderer:ElementRenderer, containingHTMLElementHeight:Int):Int
+	{
+		return containingHTMLElementHeight - elementRenderer.coreStyle.computedStyle.height + elementRenderer.coreStyle.computedStyle.paddingTop +
+		elementRenderer.coreStyle.computedStyle.paddingBottom - elementRenderer.coreStyle.computedStyle.bottom;
+	}
+	
+	/**
+	 * Insert the HTMLElement's ElementRenderer in the array of absolutely positioned elements if it
+	 * in fact an absolutely positioned element
+	 */
+	private function insertAbsolutelyPositionedHTMLElementIfNecessary(formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData):Void
+	{
+		//don't do anything for static or relative positioned elements.
+		//Relative positioning is only an offset applied during rendering
+		if (isPositioned() == false || isRelativePositioned() == true)
+		{
+			return;
+		}
+		
+		//TODO : setting static position might not be always necessary, let formatting context decide ?
+		
+		//set the static position (the position of the HTMLElement
+		//if its position style were 'static' relative to its containing block).
+		//This static position is stored in the bounds of the ElementRenderer
+		//and use if left and right or top and bottom both are auto
+		//
+		//TODO : maybe instead of having a separate method, formatting context takes care of the static position
+		//and don't account for absolute positioned elements ?
+		formattingContext.setStaticPosition(_elementRenderer);
+		
+		//store as a positioned ElementRenderer.
+		//an absolutely positioned ElementRenderer is not positioned right away, it must
+		//wait for its first positioned ancestor to be laid out. The reason is that
+		//if the positioned ancestor height is 'auto', the height of the positioned
+		//ancestor is not yet determined and so this ElementRenderer can't be positioned
+		//using the bottom or right style yet. Once the first ancestor is laid out, it
+		//position all the stored positioned children
+		
+		//store the ElementRenderer to be positioned later
+		lastPositionedHTMLElementData.elements.push(_elementRenderer);
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -806,14 +868,14 @@ class CoreStyle
 	public function invalidate(immediate:Bool = false):Void
 	{
 		//only invalidate the parent if it isn't
-		//done already or if an immediate layout is required
-		if (this._isDirty == false || immediate == true)
+		//already being laid out or if an immediate layout is required
+		if (this._isLayingOut == false || immediate == true)
 		{
-			//set the dirty flag to prevent multiple
+			//set the layout flag to prevent multiple
 			//layout of the HTMLElement in a row
 			//The HTMLElement will be able to be invalidated
 			//again once it has been laid out
-			this._isDirty = true;
+			this._isLayingOut = true;
 			
 			//if the HTMLElement doesn't have a parent, then it
 			//is not currently added to the DOM and doesn't require
@@ -837,7 +899,7 @@ class CoreStyle
 	 * position, display, float and clear.
 	 * 
 	 * It is public as it may be called by the
-	 * ContainerStyle of the parent HTMLElement
+	 * ContainerCoreStyle of the parent HTMLElement
 	 * which may need to known the display style of its
 	 * children to determine which type of formatting context
 	 * to establish for its children
@@ -912,8 +974,10 @@ class CoreStyle
 	
 	/**
 	 * instantiate the right box computer class
-	 *	based on the HTMLElement's positioning
-	 *	scheme
+	 * based on the HTMLElement's positioning
+	 * scheme
+	 * 
+	 * TODO : should the default be embedded box ?
 	 */
 	private function getBoxStylesComputer():BoxStylesComputer
 	{
@@ -952,44 +1016,35 @@ class CoreStyle
 	}
 	
 	/**
-	 * Get the right containing parent dimensions for a HTMLElement
+	 * Get the right containing parent dimensions for an HTMLElement
 	 * based on its position style value
 	 */
 	private function getContainingHTMLElementData(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:ContainingHTMLElementData):ContainingHTMLElementData
 	{
 		var containingBlockDimensions:ContainingHTMLElementData;
 		
-		//for 'positioned' HTMLElement
-		if (isPositioned() == true)
+		switch (_computedStyle.position)
 		{
 			//for 'fixed' HTMLElement, takes the viewport (the 'window' through which the document is viewed)
-			if (this._computedStyle.position == Position.fixed)
-			{
+			case fixed:
 				containingBlockDimensions = {
 					width:viewportData.width,
 					height:viewportData.height,
 					isHeightAuto:viewportData.isHeightAuto,
-					isWidthAuto:viewportData.isWidthAuto};
-			}
+					isWidthAuto:viewportData.isWidthAuto };
+					
 			//for 'absolute' takes the first positioned ancestor
-			else if (this._computedStyle.position == Position.absolute)
-			{
+			case absolute:
 				containingBlockDimensions = {
 					width:lastPositionedHTMLElementData.width,
 					height:lastPositionedHTMLElementData.height,
 					isHeightAuto:lastPositionedHTMLElementData.isHeightAuto,
 					isWidthAuto:lastPositionedHTMLElementData.isWidthAuto};
-			}
-			//else for 'relative', takes the parent as 'relative' are "in-flow" HTMLElements
-			else
-			{
+				
+			//for 'static' or 'relative' HTMLElement, takes the containing HTMLElement dimensions which is the parent		
+			case cssStatic, relative:
 				containingBlockDimensions = containingHTMLElementData;
-			}
-		}
-		//else, for not 'positioned' HTMLElement, takes the containing HTMLElement dimensions which is the parent
-		else
-		{
-			containingBlockDimensions = containingHTMLElementData;
+				
 		}
 		
 		return containingBlockDimensions;
@@ -1009,7 +1064,7 @@ class CoreStyle
 	 * starts below the float or if it is cleared
 	 * by another HTMLElement.
 	 * 
-	 * A HTMLElement is float if he declares either
+	 * An HTMLElement is float if he declares either
 	 * a left or right float
 	 */
 	public function isFloat():Bool
@@ -1087,6 +1142,8 @@ class CoreStyle
 	 * HTMLElement are inline-level. 
 	 * Default is false when the HTMLElement
 	 * can't have children
+	 * 
+	 * TODO : should replaced elements be default ?
 	 */
 	public function childrenInline():Bool
 	{
@@ -1124,6 +1181,8 @@ class CoreStyle
 	 * formatting context for its children.
 	 * Default is false as only ContainerHTMLElements
 	 * can start new formatting context
+	 * 
+	 * TODO : should replaced elements be default ?
 	 */
 	public function establishesNewFormattingContext():Bool
 	{
@@ -1168,11 +1227,21 @@ class CoreStyle
 	
 	/**
 	 * Return wether this Style is the 
-	 * offset parent for its children
+	 * offset parent for its children.
+	 * Meant to be overriden
 	 */
 	public function isOffsetParent():Bool
 	{
 		return isPositioned();
+	}
+	
+	/**
+	 * Determine wether the HTMLElement is added
+	 * to the document
+	 */
+	public function isDisplayed():Bool
+	{
+		return this._computedStyle.display != Display.none;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1201,15 +1270,6 @@ class CoreStyle
 		}
 		
 		return ret;
-	}
-	
-	/**
-	 * Determine wether the HTMLElement is added
-	 * to the document
-	 */
-	public function isDisplayed():Bool
-	{
-		return this._computedStyle.display != Display.none;
 	}
 	
 	/**
