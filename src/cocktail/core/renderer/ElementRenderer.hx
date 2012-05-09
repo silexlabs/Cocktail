@@ -197,6 +197,77 @@ class ElementRenderer extends Node
 		_lineBoxes = new Array<LineBox>();
 	}
 	
+	/**
+	 * invalidate Style after DOM change
+	 * 
+	 * TODO : update doc
+	 */
+	override public function appendChild(newChild:Node):Node
+	{
+		super.appendChild(newChild);
+		//TODO : should be different for Text node
+		var elementRendererChild:ElementRenderer = cast(newChild);
+		elementRendererChild.attach();
+		return newChild;
+	}
+	
+	
+	/**
+	 * invalidate Style after DOM change
+	 */
+	override public function removeChild(oldChild:Node):Node
+	{
+		super.removeChild(oldChild);
+		var elementRendererChild:HTMLElement = cast(oldChild);
+		elementRendererChild.detach();
+		return oldChild;
+	}
+	
+	private function establishesNewStackingContext():Bool
+	{
+		switch (_coreStyle.computedStyle.position)
+		{
+			case cssStatic :
+				return false;
+				
+			default:
+				return true;
+		}
+	}
+	
+	public function attach():Void
+	{
+		var parent:ElementRenderer = cast(_parentNode);
+		createLayer(parent.layerRenderer);
+	}
+	
+	private function createLayer(parentLayer:LayerRenderer):Void
+	{
+		if (establishesNewStackingContext() == true)
+		{
+			_layerRenderer = new LayerRenderer(this);
+			parentLayer.appendChild(_layerRenderer);
+		}
+		else
+		{
+			_layerRenderer = parentLayer;
+		}
+	}
+	
+	public function detach():Void
+	{
+		if (establishesNewStackingContext() == true)
+		{
+			var parent:ElementRenderer = cast(_parentNode);
+			if (parent != null)
+			{
+				parent.layerRenderer.removeChild(_layerRenderer);
+			}
+			
+			_layerRenderer = null;
+		}
+	}
+	
 	/////////////////////////////////
 	// PUBLIC METHODS
 	////////////////////////////////

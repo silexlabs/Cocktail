@@ -22,7 +22,6 @@ import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InlineBlockLineBox;
 import cocktail.core.renderer.InlineBoxRenderer;
-import cocktail.core.renderer.LayerRenderer;
 import cocktail.core.renderer.TextRenderer;
 import cocktail.core.style.adapter.Style;
 import cocktail.core.style.CoreStyle;
@@ -345,7 +344,7 @@ class HTMLElement extends Element, implements IEventTarget
 		
 		if (parent.elementRenderer != null)
 		{
-			createElementRenderer(parent.elementRenderer.layerRenderer);
+			createElementRenderer();
 			if (_elementRenderer != null)
 			{
 				parent.elementRenderer.appendChild(_elementRenderer);
@@ -361,7 +360,6 @@ class HTMLElement extends Element, implements IEventTarget
 						case Node.TEXT_NODE:
 							var textRenderer:TextRenderer = new TextRenderer(_childNodes[i]);
 							textRenderer.coreStyle = _coreStyle;
-							textRenderer.layerRenderer = _elementRenderer.layerRenderer;
 							_elementRenderer.appendChild(textRenderer);
 					}
 				
@@ -402,8 +400,10 @@ class HTMLElement extends Element, implements IEventTarget
 	}
 	
 	//TODO : clean-up
-	private function createElementRenderer(parentLayerRenderer:LayerRenderer):Void
+	private function createElementRenderer():Void
 	{
+		_coreStyle.computeDisplayStyles();
+		
 		switch (_coreStyle.computedStyle.display)
 		{
 			case block, inlineBlock:
@@ -416,31 +416,14 @@ class HTMLElement extends Element, implements IEventTarget
 				
 			case none:
 		}
-		
-		if (_elementRenderer != null)
-		{
-			if (establishesNewStackingContext() == false)
-			{
-				_elementRenderer.layerRenderer = parentLayerRenderer;
-			}
-			else
-			{
-				_elementRenderer.layerRenderer = new LayerRenderer(_elementRenderer);
-			}
-		}
 	}
 	
-	private function establishesNewStackingContext():Bool
+	private function isRendered():Bool
 	{
-		switch (_coreStyle.position)
-		{
-			case cssStatic :
-				return false;
-				
-			default:
-				return true;
-		}
+		return _coreStyle.computedStyle.display != Display.none;
 	}
+	
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
