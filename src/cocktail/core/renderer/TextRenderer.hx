@@ -12,8 +12,11 @@ import cocktail.core.dom.Text;
 import cocktail.core.NativeElement;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.style.formatter.FormattingContext;
 import haxe.Log;
 import cocktail.core.geom.GeomData;
+import cocktail.core.style.StyleData;
+import cocktail.core.font.FontData;
 
 /**
  * Renders a run of text by creating as many text line box
@@ -53,7 +56,7 @@ class TextRenderer extends ElementRenderer
 	private function init():Void
 	{
 		_textTokens = doGetTextTokens(_text.nodeValue);
-		
+		lineBoxes = [];
 		for (i in 0..._textTokens.length)
 		{
 			//create and store the line boxes
@@ -66,6 +69,11 @@ class TextRenderer extends ElementRenderer
 		_coreStyle = value;
 		init();
 		return _coreStyle;
+	}
+	
+	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	{	
+		init();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

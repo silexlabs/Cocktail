@@ -190,53 +190,6 @@ class BoxRenderer extends ElementRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC INVALIDATION METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Called when the value of a style that require
-	 * a re-layout (such as width, height, display...) is
-	 * changed.
-	 * 
-	 * An invalidated ElementRenderer will in turn invalidate its
-	 * parent and so on until the initial ElementRenderer is invalidated.
-	 * The initial ElementRenderer will then layout itself, laying out
-	 * at the same time all its invalidated children.
-	 * 
-	 * TODO : shouldn't need to invalidate all of the rendering tree
-	 * 
-	 * A layout can be immediate or scheduled asynchronously, which
-	 * increase preformance when many style value are set in a 
-	 * row as the layout only happen once
-	 */
-	override public function invalidate(immediate:Bool = false):Void
-	{
-		//only invalidate the parent if it isn't
-		//already being laid out or if an immediate layout is required
-		if (this._isLayingOut == false || immediate == true)
-		{
-			//set the layout flag to prevent multiple
-			//layout of the ElementRenderer in a row
-			//The ElementRenderer will be able to be invalidated
-			//again once it has been laid out
-			this._isLayingOut = true;
-			
-			//if the ElementRenderer doesn't have a parent, then it
-			//is not currently added to the DOM and doesn't require
-			//a layout
-			//
-			//TODO : not possible anymore, when an HTMLElement is not
-			//attached to the DOM, it doesn't create an ElementRenderer,
-			//only the initial ElementRenderer doesn't have a parent
-			if (this._parentNode != null)
-			{
-				var parent:ElementRenderer = cast(_parentNode);
-				parent.invalidate(immediate);	
-			}
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
