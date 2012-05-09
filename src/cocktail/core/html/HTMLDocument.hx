@@ -36,7 +36,7 @@ import haxe.Timer;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractHTMLDocument extends Document
+class HTMLDocument extends Document
 {
 	/**
 	 * special HTML tags
@@ -77,12 +77,6 @@ class AbstractHTMLDocument extends Document
 	 * resize events
 	 */
 	private var _window:Window;
-	
-	/**
-	 * The NativeElements created when rendering
-	 * this Document. They are runtime specific
-	 */
-	private var _nativeElements:Array<NativeElement>;
 	
 	/**
 	 *The activeElement set/get the element
@@ -127,8 +121,6 @@ class AbstractHTMLDocument extends Document
 		_body = cast(createElement(HTML_BODY_TAG_NAME));
 		_documentElement = createElement(HTML_HTML_TAG_NAME);
 		_documentElement.appendChild(_body);
-		
-		_nativeElements = new Array<NativeElement>();
 		
 		_focusManager = new FocusManager();
 		_activeElement = _body;
@@ -204,33 +196,7 @@ class AbstractHTMLDocument extends Document
 		return element;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * The Document is invalidated for instance when the
-	 * DOM changes after adding/removing a child or when
-	 * a style changes.
-	 * When this happen, the Document needs to be layout
-	 * and rendered again
-	 * 
-	 * @param immediate define wether the layout must be synchronous
-	 * or asynchronous
-	 */
-	public function invalidate(immediate:Bool = false):Void
-	{
-		//either schedule an asynchronous layout and rendering, or layout
-		//and render immediately
-		if (immediate == false)
-		{
-			scheduleLayoutAndRender();
-		}
-		else
-		{
-			layoutAndRender();
-		}
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE INPUT METHODS
@@ -436,107 +402,6 @@ class AbstractHTMLDocument extends Document
 			activeElement.onkeyup(keyEventData);
 		}
 	}
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * As the name implies,
-	 * layout the DOM, then render it
-	 */
-	private function layoutAndRender():Void
-	{
-		layout();
-		render();
-	}
-	
-	/**
-	 * start the layout, starting on the Body
-	 * element which is the root of the visual
-	 * elements in an HTML Document
-	 */
-	private function layout():Void
-	{
-		var initialContainer:InitialBlockRenderer = cast(_body.elementRenderer);
-		initialContainer.startLayout();
-	}
-	
-	/**
-	 * Start the rendering of the rendering tree
-	 * built during layout
-	 * and attach the resulting nativeElements (background,
-	 * border, embedded asset...) to the display root
-	 * of the runtime (for instance the Stage in Flash)
-	 */ 
-	private function render():Void
-	{
-		//first all the previous native elements
-		//are detached
-		detachNativeElements(_nativeElements);
-		
-		//start the rendering at the root layer renderer
-		_nativeElements = _body.elementRenderer.layerRenderer.render();
-		attachNativeElements(_nativeElements);
-	}
-	
-	/**
-	 * Attach a NativeElement to the
-	 * display root. Runtime specific
-	 */ 
-	private function attachNativeElement(nativeElement:NativeElement):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Remove a NativeElement from the
-	 * display root. Runtime specific.
-	 */
-	private function detachNativeElement(nativeElement:NativeElement):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Attach an array of NativeElement to the
-	 * display root
-	 */
-	private function attachNativeElements(nativeElements:Array<NativeElement>):Void
-	{
-		for (i in 0...nativeElements.length)
-		{
-			attachNativeElement(nativeElements[i]);
-		}
-	}
-	
-	/**
-	 * Remove an array of NativeElement from the
-	 * display root
-	 */
-	private function detachNativeElements(nativeElements:Array<NativeElement>):Void
-	{
-		for (i in 0...nativeElements.length)
-		{
-			detachNativeElement(nativeElements[i]);
-		}
-	}
-	
-	/**
-	 * Set a timer to trigger a layout and rendering of the HTML Document asynchronously.
-	 * Setting a timer to execute the layout and rendering ensure that the layout only happen once when a series of style
-	 * values are set or when many elements are attached/removed from the DOM, instead of happening for every change.
-	 */
-	private function scheduleLayoutAndRender():Void
-	{
-		var layoutAndRenderDelegate:Void->Void = layoutAndRender;
-		
-		//calling the methods 1 millisecond later is enough to ensure
-		//that first all synchronous code is executed
-		Timer.delay(function () { 
-			layoutAndRenderDelegate();
-		}, 1);
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
@@ -548,8 +413,10 @@ class AbstractHTMLDocument extends Document
 	 */
 	private function onWindowResize(event:Event):Void
 	{
-		scheduleLayoutAndRender();
+		_body.elementRenderer.invalidate();
 	}
+	
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS

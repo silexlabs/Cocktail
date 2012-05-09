@@ -16,6 +16,8 @@ import cocktail.core.html.HTMLAnchorElement;
  * Represents the window through which the Document is
  * viewed
  * 
+ * TODO : should implement onload callback
+ * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractWindow implements IEventTarget

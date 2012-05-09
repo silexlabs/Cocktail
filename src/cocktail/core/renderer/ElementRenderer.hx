@@ -403,7 +403,9 @@ class ElementRenderer extends Node
 	 
 	private function set_coreStyle(value:CoreStyle):CoreStyle
 	{
-		return _coreStyle = value;
+		_coreStyle = value;
+		invalidate();
+		return value;
 	}
 	
 	private function get_bounds():RectangleData

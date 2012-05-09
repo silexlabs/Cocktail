@@ -39,7 +39,7 @@ class HTMLBodyElement extends HTMLElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	override private function createElementRenderer(parentLayerRenderer:LayerRenderer):Void
-	{
+	{ 
 		_elementRenderer = new InitialBlockRenderer(this);
 		_elementRenderer.coreStyle = _coreStyle;
 		_elementRenderer.layerRenderer = new LayerRenderer(_elementRenderer);

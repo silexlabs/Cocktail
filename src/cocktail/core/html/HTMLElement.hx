@@ -11,7 +11,7 @@ import cocktail.core.dom.Attr;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.IEventTarget;
-import cocktail.core.HTMLDocument;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.hxtml.HxtmlConverter;
 import cocktail.core.NativeElement;
@@ -23,6 +23,7 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InlineBlockLineBox;
 import cocktail.core.renderer.InlineBoxRenderer;
 import cocktail.core.renderer.LayerRenderer;
+import cocktail.core.renderer.TextRenderer;
 import cocktail.core.style.adapter.Style;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;
@@ -319,7 +320,7 @@ class HTMLElement extends Element, implements IEventTarget
 	 */
 	private function initStyle():Void
 	{
-		_style = new Style(cast(_coreStyle));
+		_style = new Style(_coreStyle);
 	}
 	
 	/**
@@ -351,8 +352,19 @@ class HTMLElement extends Element, implements IEventTarget
 				
 				for (i in 0..._childNodes.length)
 				{
-					var child:HTMLElement = cast(_childNodes[i]);
-					child.attach();
+					switch (_childNodes[i].nodeType)
+					{
+						case Node.ELEMENT_NODE:
+							var child:HTMLElement = cast(_childNodes[i]);
+							child.attach();
+							
+						case Node.TEXT_NODE:
+							var textRenderer:TextRenderer = new TextRenderer(_childNodes[i]);
+							textRenderer.coreStyle = _coreStyle;
+							textRenderer.layerRenderer = _elementRenderer.layerRenderer;
+							_elementRenderer.appendChild(textRenderer);
+					}
+				
 				}
 			}
 		}
@@ -380,6 +392,15 @@ class HTMLElement extends Element, implements IEventTarget
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	public function invalidateStyle():Void
+	{
+		if (_elementRenderer != null)
+		{
+		
+			_elementRenderer.invalidate();
+		}
+	}
 	
 	//TODO : clean-up
 	private function createElementRenderer(parentLayerRenderer:LayerRenderer):Void
