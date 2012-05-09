@@ -39,6 +39,7 @@ class ViewManagerStyle
 		node.style.width = "100%";
 		//node.style.height = "130%";
 		//node.style.height = "100%";
+		node.style.height = "auto";
 		//node.style.height = Std.string(Lib.window.innerHeight - Constants.LIST_TOP) + "px";
 		
 		node.style.overflowX = "hidden";
