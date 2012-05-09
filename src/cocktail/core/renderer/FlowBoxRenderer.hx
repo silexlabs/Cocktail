@@ -191,7 +191,7 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function layoutPositionedChild(elementRenderer:ElementRenderer, firstPositionedAncestorData:ContainingBlockData, viewportData:ContainingBlockData):Void
 	{
-		switch (_coreStyle.computedStyle.position)
+		switch (elementRenderer.computedStyle.position)
 		{	
 			//positioned 'fixed' ElementRenderer, use the viewport
 			case fixed:
@@ -203,6 +203,8 @@ class FlowBoxRenderer extends BoxRenderer
 				
 			default:
 		}
+		
+		
 	}
 	
 	/**
