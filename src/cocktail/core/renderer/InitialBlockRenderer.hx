@@ -8,7 +8,6 @@
 package cocktail.core.renderer;
 
 import cocktail.core.background.BackgroundManager;
-import cocktail.core.background.InitialBlockBackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
@@ -111,12 +110,10 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	override public function invalidate(immediate:Bool = false):Void
 	{
-	
 		//don't call if the body has already scheduled a layout, unless
 		//an immediate layout is required
 		if (this._isLayingOut == false || immediate == true)
 		{
-				trace("in");
 			this._isLayingOut = true;
 			doInvalidate(immediate);
 		}
