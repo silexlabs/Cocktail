@@ -25,7 +25,7 @@ import haxe.Log;
 
 /**
  * Base class for embedded element
- * such as a picture. Those elements
+ * such as a picture.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -50,41 +50,10 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Layout all the children of a HTMLElement if it has any
-	 */
-	override private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
-	{
-		
-	}
-	
+
 	override public function isReplaced():Bool
 	{
 		return true;
-	}
-	
-	/**
-	 * Determine if all the children of the 
-	 * HTMLElement are inline-level. 
-	 * Default is false when the HTMLElement
-	 * can't have children
-	 * 
-	 */
-	override public function childrenInline():Bool
-	{
-		return false;
-	}
-	
-		/**
-	 * Wheter this HTMLElement starts a new
-	 * formatting context for its children.
-	 * Default is false as only ContainerHTMLElements
-	 * can start new formatting context
-	 * 
-	 */
-	override public function establishesNewFormattingContext():Bool
-	{
-		return false;
 	}
 	
 	/**

@@ -74,6 +74,8 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * of the all of the rendring tree elements relative to their containing block.
 	 * Then set the global bounds (relative to the window) for all of the elements
 	 * of the rendering tree
+	 * 
+	 * TODO : should be on ElementRenderer for incremental layout
 	 */
 	public function startLayout():Void
 	{
@@ -87,7 +89,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		
 		//layout all the HTMLElements. After that they all know their bounds relative to the containing
 		//blocks
-		layout(windowData, windowData, firstPositionedAncestorData, _coreStyle.fontMetrics, null);
+		layout(getContainerBlockData(), windowData, firstPositionedAncestorData, _coreStyle.fontMetrics, null);
 		//set the global bounds on the rendering tree. After that all the elements know their positions
 		//relative to the window
 		setGlobalOrigins(this,0,0, 0,0);
@@ -247,12 +249,9 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden for 2 reasons
-	 * 	- The initial ElementRenderer always layout its positioned children as it is the root of the rendering tree
-	 *  - it uses the viewport dimensions as first positioned ancestor dimensions for the 'absolute' children
-	 * 	instead of its own dimensions. For instance an ElementRenderer with a 'position' style of absolute' and a 'bottom'
-	 * style of 0 will always be displayed at the bottom of the viewport event if the initial ElementRenderer is not
-	 * as high as the viewport
+	 * Overriden as the initial ElementRenderer always layout its positioned children as it is the root of the rendering tree
+	 * 	
+	 * TODO : check that the childrenFirstPositionedAncestorData data is the viewport data
 	 */
 	override private function layoutAbsolutelyPositionedChildrenIfNeeded(childrenFirstPositionedAncestorData:FirstPositionedAncestorData, viewportData:ContainingBlockData):Void
 	{
@@ -260,7 +259,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		{
 			var element:ElementRenderer = childrenFirstPositionedAncestorData.elements[i];
 			//use the viewport dimensions both times
-			layoutPositionedChild(element, viewportData, viewportData);
+			layoutPositionedChild(element, childrenFirstPositionedAncestorData.data, viewportData);
 		}
 	}
 	
@@ -268,9 +267,17 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * The dimensions of the initital ElementRenderer are always
+	 * those of the window
+	 */
+	override private function getContainerBlockData():ContainingBlockData
+	{
+		return getWindowData();
+	}
 	
 	/**
-	 * The HTMLBodyElement is always a block container
+	 * The initital ElementRenderer is always a block container
 	 */
 	override public function isInlineLevel():Bool
 	{
@@ -291,11 +298,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * for its children
 	 */
 	override public function establishesNewFormattingContext():Bool
-	{
-		return true;
-	}
-	
-	override public function isInitialContainer():Bool
 	{
 		return true;
 	}

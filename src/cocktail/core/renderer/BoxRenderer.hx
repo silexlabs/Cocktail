@@ -349,84 +349,9 @@ class BoxRenderer extends ElementRenderer
 		return ret;
 	}
 	
-	/**
-	 * Determine wether the children of this ElementRenderer
-	 * are all block level or if they are all inline level
-	 * elements
-	 * 
-	 * TODO : throw exception when there is a float in the children
-	 * 
-	 * @return true if all children are inline level ElementRenderer
-	 */
-	override public function childrenInline():Bool
-	{		
-		//return false for a container with no children
-		if (_node.childNodes.length == 0)
-		{
-			return false;
-		}
-		
-		//establish if the first child is inline or block
-		//all other child must be of the same type
-		var ret:Bool = isChildInline(_node.childNodes[0]);
-		
-		//loop in all children and throw an exception
-		//if one the children is not of the same type as the first
-		for (i in 0..._node.childNodes.length)
-		{
-			if (isChildInline(_node.childNodes[i]) != ret)
-			{
-				//throw "children of a block container can only be either all block or all inline";
-			}
-		}
-		
-		return ret;
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Determine wether a children is inline or not
-	 */
-	private function isChildInline(child:Node):Bool
-	{
-		var ret:Bool = true;
-		
-		//here the children is a HTMLElement
-		if (child.nodeType == Node.ELEMENT_NODE)
-		{
-			var childHTMLElement:HTMLElement = cast(child);
-			//here the child is of type block
-			if (childHTMLElement.coreStyle.computedStyle.display == block)
-			{
-				//floated children are not taken into account 
-				if (childHTMLElement.elementRenderer.isFloat() == false)
-				{
-					ret = false;
-				}
-				//absolutely positioned children are not taken into account but relative positioned are
-				else if (childHTMLElement.elementRenderer.isPositioned() == false || childHTMLElement.elementRenderer.isRelativePositioned() == true)
-				{
-					ret = false;
-				}
-			}
-			//here the child is inline
-			else
-			{
-				ret = true;
-			}
-		}
-		//here the children is a Text node, which is
-		//always inline as text is always displayed on a line
-		else
-		{
-			ret = true;
-		}
-		
-		return ret;
-	}
 	
 	/**
 	 * Determine wether the ElementRenderer introduces

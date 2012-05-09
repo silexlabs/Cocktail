@@ -301,11 +301,6 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
-	public function isInitialContainer():Bool
-	{
-		return false;
-	}
-	
 	public function isRelativePositioned():Bool
 	{
 		return false;

@@ -214,6 +214,10 @@ class TextRenderer extends ElementRenderer
 	}
 	
 	
+	/**
+	 * Overriden as the bounds of a TextRenderer is formed
+	 * by the bounds of its formatted text line boxes
+	 */
 	override private function get_bounds():RectangleData
 	{
 		var textLineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
