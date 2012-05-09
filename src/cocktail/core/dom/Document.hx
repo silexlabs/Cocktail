@@ -181,7 +181,9 @@ class Document extends Node
 	 * document order with a given tag name and
 	 * are contained in the document.
 	 * 
-	 * TODO : should return array of HTMLElement to match haxe JS
+	 * IMPORTANT : this method is supposed to return an array of Element but to match
+	 * Haxe JS API, we return an array of HTMLElement instead. It might be a problem
+	 * eventually to use the lib with other XML format
 	 * 
 	 * @param	tagName The name of the tag to match on. The special value "*" matches all tags.
 	 * For XML, the tagname parameter is case-sensitive, otherwise
@@ -189,7 +191,7 @@ class Document extends Node
 	 * 
 	 * @return A new NodeList object containing all the matched Elements.
 	 */
-	public function getElementsByTagName(tagName:String):Array<Node>
+	public function getElementsByTagName(tagName:String):Array<HTMLElement>
 	{
 		//use the implementation on the document element (for instance,
 		//the HTML element in HTML)
