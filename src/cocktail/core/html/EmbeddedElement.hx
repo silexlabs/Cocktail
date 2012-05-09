@@ -113,7 +113,7 @@ class EmbeddedElement extends HTMLElement
 	{
 		_elementRenderer = new EmbeddedBoxRenderer(this);
 		_elementRenderer.coreStyle = _coreStyle;
-		trace("bime");
+		
 		if (_elementRenderer != null)
 		{
 			if (establishesNewStackingContext() == false)
