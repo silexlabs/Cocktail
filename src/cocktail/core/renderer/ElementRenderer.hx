@@ -153,6 +153,13 @@ class ElementRenderer extends Node
 	private var _isLayingOut:Bool;
 	
 	/**
+	 * Stores all of the value of styles once computed.
+	 * For example, if a size is set as a percentage, it will
+	 * be stored once computed to pixels into this structure
+	 */
+	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyleData;
+	
+	/**
 	 * class constructor. init class attribute
 	 * @param	style the Style which created
 	 * the ElementRenderer
@@ -417,6 +424,20 @@ class ElementRenderer extends Node
 			width:bounds.width,
 			height:bounds.height
 		}
+	}
+	
+		//////////////////////////////////////////////////////////////////////////////////////////
+	// GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function getComputedStyle():ComputedStyleData
+	{
+		return _coreStyle.computedStyle;
+	}
+	
+	private function setComputedStyle(value:ComputedStyleData):ComputedStyleData
+	{
+		return _coreStyle.computedStyle = value;
 	}
 	
 	private function getLineBoxes():Array<LineBox>
