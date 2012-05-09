@@ -9,13 +9,10 @@ package cocktail.core.background;
 
 import cocktail.core.geom.Matrix;
 import cocktail.core.NativeElement;
-import cocktail.core.nativeElement.NativeElementManager;
-import cocktail.core.nativeElement.NativeElementData;
-import cocktail.core.drawing.DrawingManager;
+import cocktail.core.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
-import cocktail.core.ImageLoader;
 import cocktail.core.dom.DOMData;
 import cocktail.core.unit.UnitManager;
 import haxe.Log;
@@ -36,9 +33,9 @@ class BackgroundDrawingManager extends DrawingManager
 	 * @param	nativeElement
 	 * @param	backgroundBox
 	 */
-	public function new(nativeElement:NativeElement, backgroundBox:RectangleData) 
+	public function new(backgroundBox:RectangleData) 
 	{
-		super(nativeElement, Math.round(backgroundBox.width), Math.round(backgroundBox.height));
+		super(Math.round(backgroundBox.width), Math.round(backgroundBox.height));
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -180,7 +177,7 @@ class BackgroundDrawingManager extends DrawingManager
 	 */
 	public function drawBackgroundGradient(gradient:GradientValue, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeat):Void
 	{
-		var gradientSurface:DrawingManager = new DrawingManager(NativeElementManager.createNativeElement(NativeElementTypeValue.canvas), computedBackgroundSize.width, computedBackgroundSize.height);
+		var gradientSurface:DrawingManager = new DrawingManager(computedBackgroundSize.width, computedBackgroundSize.height);
 		
 		var fillStyle:FillStyleValue;
 		var lineStyle = LineStyleValue.none;

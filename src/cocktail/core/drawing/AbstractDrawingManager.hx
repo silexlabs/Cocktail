@@ -43,9 +43,8 @@ class AbstractDrawingManager
 	/**
 	 * class constructor.
 	 */
-	public function new(nativeElement:NativeElement, width:Int, height:Int) 
+	public function new(width:Int, height:Int) 
 	{
-		this._nativeElement = nativeElement;
 		this._width = width;
 		this._height = height;
 	}

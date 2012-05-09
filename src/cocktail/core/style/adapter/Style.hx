@@ -130,7 +130,6 @@ class Style
 	
 	private function set_opacity(value:String):String
 	{
-		//TODO : implement in UnitManager to check the value ?
 		_coreStyle.opacity = Std.parseFloat(value);
 		return value;
 	}
@@ -395,6 +394,7 @@ class Style
 	
 	private function set_fontSize(value:String):String
 	{
+		_coreStyle.fontSize = UnitManager.fontSizeEnum(value);
 		return value;
 	}
 	

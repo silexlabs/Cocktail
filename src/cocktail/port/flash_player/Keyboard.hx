@@ -15,9 +15,8 @@ import haxe.Log;
 import cocktail.core.keyboard.AbstractKeyboard;
 
 /**
- * This is the flash AVM2 implementation of the keyboard abstraction.
- * Set listeners on native flash keyboard event and call the corresponding
- * callback
+ * This is the flash AVM2 implementation of the keyboard event manager.
+ * Listens to flash native keyboard event on the flash Stage.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -26,13 +25,9 @@ class Keyboard extends AbstractKeyboard
 	/**
 	 * class constructor
 	 */
-	public function new(htmlElement:HTMLElement) 
+	public function new() 
 	{
-		super(htmlElement);
-		
-		//set native Flash events
-		_keyDownEvent = flash.events.KeyboardEvent.KEY_DOWN;
-		_keyUpEvent = flash.events.KeyboardEvent.KEY_UP;
+		super();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -40,24 +35,28 @@ class Keyboard extends AbstractKeyboard
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Actually remove and set listeners on the nativeElement.
-	 * The listener is always removed and if the htmlElement
-	 * callback is not null a new listener is set
+	 * Set keyboard listeners on the stage
 	 */
-	override private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, htmlElementCallback:KeyboardEvent->Void):Void
+	override private function setNativeListeners():Void
 	{
-		_htmlElement.nativeElement.removeEventListener(keyboardEvent, nativeCallback);
-		
-		if (htmlElementCallback != null)
-		{
-			_htmlElement.nativeElement.addEventListener(keyboardEvent, nativeCallback);
-		}
+		Lib.current.stage.addEventListener(flash.events.KeyboardEvent.KEY_DOWN, onNativeKeyDown);
+		Lib.current.stage.addEventListener(flash.events.KeyboardEvent.KEY_UP, onNativeKeyUp);
 	}
 	
 	/**
-	 * Returns the key that triggered the keyboard event
-	 * @param	event the native key up or down event
-	 * @return a sruct containing the key code and other key values
+	 * REmove keyboard listeners from the stage
+	 */
+	override private function removeNativeListeners():Void
+	{
+		Lib.current.removeEventListener(flash.events.KeyboardEvent.KEY_DOWN, onNativeKeyDown);
+		Lib.current.removeEventListener(flash.events.KeyboardEvent.KEY_UP, onNativeKeyUp);
+	}
+	
+	/**
+	 * Create and return a cross-platform keyboard event
+	 * form the flash keyboard event
+	 * 
+	 * @param	event the native mouse event
 	 */
 	override private function getKeyData(event:Dynamic):KeyboardEvent
 	{
@@ -78,8 +77,10 @@ class Keyboard extends AbstractKeyboard
 				eventType = typedEvent.type;
 		}
 		
-		var keyboardEvent:KeyboardEvent = new KeyboardEvent(eventType, _htmlElement, 0.0, typedEvent.charCode, 
-		typedEvent.keyCode, typedEvent.ctrlKey, typedEvent.shiftKey, typedEvent.altKey);
+		//TODO : keyboard event is now null
+		//TODO : check if charcode and keycode return right values
+		var keyboardEvent:KeyboardEvent = new KeyboardEvent(eventType, null, 0.0, Std.string(typedEvent.charCode), 
+		Std.string(typedEvent.keyCode), typedEvent.ctrlKey, typedEvent.shiftKey, typedEvent.altKey);
 		
 		
 		return keyboardEvent;
