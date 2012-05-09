@@ -13,7 +13,6 @@ import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.renderer.FlowBoxRenderer;
 import haxe.Log;
 
 /**
@@ -107,18 +106,6 @@ class FormattingContext
 	public function format():Void
 	{	
 		doFormat();
-	}
-	
-	/**
-	 * Return the static position of an element renderer, the position it 
-	 * would have had if it were in flow
-	 * 
-	 * TODO : doesn't need a separate method for that ? Might happen
-	 * during regular formatting ?
-	 */
-	public function setStaticPosition(element:ElementRenderer):Void
-	{
-		doFormat(element);
 	}
 	
 	/////////////////////////////////

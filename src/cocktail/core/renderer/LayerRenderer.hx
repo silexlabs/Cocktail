@@ -7,6 +7,7 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.dom.Node;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
 import cocktail.core.NativeElement;
@@ -29,7 +30,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class LayerRenderer 
+class LayerRenderer extends Node
 {
 	/**
 	 * A reference to the ElementRenderer which
@@ -42,6 +43,7 @@ class LayerRenderer
 	 */
 	public function new(rootRenderer:ElementRenderer) 
 	{
+		super();
 		_rootRenderer = rootRenderer;
 	}
 	
@@ -56,6 +58,7 @@ class LayerRenderer
 	 */
 	public function render(rootRenderer:ElementRenderer = null, renderChildLayers:Bool = true):Array<NativeElement>
 	{
+		
 		if (rootRenderer == null)
 		{
 			rootRenderer = _rootRenderer;
@@ -65,9 +68,10 @@ class LayerRenderer
 		
 		//here the root renderer is a block box renderer. It can be an inline level
 		//which establishes an inline formatting context : an inline-block
-		if (rootRenderer.canHaveChildren() == true && rootRenderer.isInlineLevel() == false || 
+		if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == false || 
 		rootRenderer.establishesNewFormattingContext() == true)
 		{
+			
 			//render the ElementRenderer which created this layer
 			var rootRendererElements:Array<NativeElement> = rootRenderer.render();
 			
@@ -90,7 +94,7 @@ class LayerRenderer
 			
 			//TODO :  doc
 			var replacedBlockChildren:Array<NativeElement> = renderBlockReplacedChildren(rootRenderer);
-			
+	
 			for (i in 0...replacedBlockChildren.length)
 			{
 				nativeElements.push(replacedBlockChildren[i]);
@@ -122,7 +126,7 @@ class LayerRenderer
 		}
 		
 		//here the root renderer is an inline box renderer which doesn't establish a formatting context
-		else if (rootRenderer.canHaveChildren() == true && rootRenderer.isInlineLevel() == true)
+		else if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == true)
 		{
 			//TODO : render child layers
 			var lineBoxesChildren:Array<NativeElement> = renderInlineBoxRenderer(rootRenderer);
@@ -149,7 +153,7 @@ class LayerRenderer
 		//if the root renderer is relatively positioned,
 		//then its offset must be applied to all of 
 		//its children
-		if (rootRenderer.coreStyle.isRelativePositioned() == true)
+		if (rootRenderer.isRelativePositioned() == true)
 		{
 			for (i in 0...nativeElements.length)
 			{
@@ -194,7 +198,7 @@ class LayerRenderer
 		if (_rootRenderer.hasChildNodes() == true)
 		{
 			var childLayers:Array<LayerRenderer> = getChildLayers(cast(_rootRenderer), this);
-			
+		
 			var elementRenderersAtPointInChildLayers:Array<ElementRenderer> = getElementRenderersAtPointInChildLayers(point, childLayers);
 			
 			for (i in 0...elementRenderersAtPointInChildLayers.length)
@@ -211,17 +215,17 @@ class LayerRenderer
 	{
 		var elementRenderersAtPointInLayer:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
+		if (isWithinBounds(point, renderer.globalBounds) == true)
+		{
+			elementRenderersAtPointInLayer.push(renderer);
+		}
+		
 		for (i in 0...renderer.childNodes.length)
 		{
 			var child:ElementRenderer = cast(renderer.childNodes[i]);
 			
 			if (child.layerRenderer == this)
 			{
-				if (isWithinBounds(point, child.globalBounds) == true)
-				{
-					elementRenderersAtPointInLayer.push(child);
-				}
-				
 				if (child.hasChildNodes() == true)
 				{
 					var childElementRenderersAtPointInLayer:Array<ElementRenderer> = getElementRenderersAtPointInLayer(child, point);
@@ -229,6 +233,13 @@ class LayerRenderer
 					for (j in 0...childElementRenderersAtPointInLayer.length)
 					{
 						elementRenderersAtPointInLayer.push(childElementRenderersAtPointInLayer[j]);
+					}
+				}
+				else
+				{
+					if (isWithinBounds(point, child.globalBounds) == true)
+					{
+						elementRenderersAtPointInLayer.push(child);
 					}
 				}
 			}
@@ -250,6 +261,7 @@ class LayerRenderer
 				elementRenderersAtPointInChildLayers.push(elementRenderersAtPointInChildLayer[j]);
 			}
 		}
+		
 		
 		return elementRenderersAtPointInChildLayers;
 	}
@@ -288,7 +300,7 @@ class LayerRenderer
 	 * Retrieve all the children block container of this LayerRenderer by traversing
 	 * recursively the rendering tree.
 	 */
-	private function getBlockContainerChildren(rootRenderer:FlowBoxRenderer):Array<ElementRenderer>
+	private function getBlockContainerChildren(rootRenderer:ElementRenderer):Array<ElementRenderer>
 	{
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
@@ -299,11 +311,11 @@ class LayerRenderer
 			if (child.layerRenderer == this)
 			{
 				//TODO : must add more condition, for instance, no float
-				if (child.canHaveChildren() == true && child.coreStyle.display != inlineBlock)
+				if (child.isReplaced() == false && child.coreStyle.display != inlineBlock)
 				{
 					ret.push(cast(child));
 					
-					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(cast(child));
+					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(child);
 					
 					for (j in 0...childElementRenderer.length)
 					{
@@ -335,7 +347,7 @@ class LayerRenderer
 		return ret;
 	}
 	
-	private function getBlockReplacedChildren(rootRenderer:FlowBoxRenderer):Array<ElementRenderer>
+	private function getBlockReplacedChildren(rootRenderer:ElementRenderer):Array<ElementRenderer>
 	{
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
@@ -346,9 +358,9 @@ class LayerRenderer
 			if (child.layerRenderer == this)
 			{
 				//TODO : must add more condition, for instance, no float
-				if (child.canHaveChildren() == true && child.coreStyle.display == block)
+				if (child.isReplaced() == false && child.coreStyle.display == block)
 				{
-					var childElementRenderer:Array<ElementRenderer> = getBlockReplacedChildren(cast(child));
+					var childElementRenderer:Array<ElementRenderer> = getBlockReplacedChildren(child);
 					
 					for (j in 0...childElementRenderer.length)
 					{
@@ -357,10 +369,11 @@ class LayerRenderer
 				}
 				else if (child.coreStyle.display == block)
 				{
-					ret.push(cast(child));
+					ret.push(child);
 				}
 			}
 		}
+		
 		return ret;
 	}
 	
@@ -372,7 +385,7 @@ class LayerRenderer
 	private function renderChildLayer(rootRenderer:ElementRenderer):Array<NativeElement>
 	{
 		var childLayers:Array<LayerRenderer> = getChildLayers(cast(rootRenderer), this);
-		
+
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
 		for (i in 0...childLayers.length)
@@ -391,7 +404,7 @@ class LayerRenderer
 	 * Retrieve all the children LayerRenderer of this LayerRenderer by traversing
 	 * recursively the rendering tree.
 	 */
-	private function getChildLayers(rootRenderer:FlowBoxRenderer, referenceLayer:LayerRenderer):Array<LayerRenderer>
+	private function getChildLayers(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer):Array<LayerRenderer>
 	{
 		var childLayers:Array<LayerRenderer> = new Array<LayerRenderer>();
 		
@@ -404,9 +417,9 @@ class LayerRenderer
 			if (child.layerRenderer == referenceLayer)
 			{
 				//if it can have children, recursively search for children layerRenderer
-				if (child.canHaveChildren() == true)
+				if (child.isReplaced() == false)
 				{
-					var childElementRenderer:Array<LayerRenderer> = getChildLayers(cast(child), referenceLayer);
+					var childElementRenderer:Array<LayerRenderer> = getChildLayers(child, referenceLayer);
 					
 					for (j in 0...childElementRenderer.length)
 					{
@@ -489,11 +502,11 @@ class LayerRenderer
 	 * Return all the in flow children of this LayerRenderer by traversing
 	 * recursively the rendering tree
 	 */
-	private function getLineBoxes(rootRenderer:FlowBoxRenderer):Array<LineBox>
+	private function getLineBoxes(rootRenderer:ElementRenderer):Array<LineBox>
 	{
 		var ret:Array<LineBox> = new Array<LineBox>();
 		
-		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.coreStyle.childrenInline() == true)
+		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.childrenInline() == true)
 		{
 			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
 			
@@ -514,24 +527,22 @@ class LayerRenderer
 			for (i in 0...rootRenderer.childNodes.length)
 			{
 				var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
-				
-				if (child.isDisplayed() == true)
+
+				if (child.layerRenderer == this)
 				{
-					if (child.layerRenderer == this)
-					{
-						if (child.isPositioned() == false)
+					if (child.isPositioned() == false)
+					{	
+						if (child.isReplaced() == false)
 						{	
-							if (child.canHaveChildren() == true)
-							{	
-								var childLineBoxes:Array<LineBox> = getLineBoxes(cast(child));
-								for (j in 0...childLineBoxes.length)
-								{
-									ret.push(childLineBoxes[j]);
-								}
+							var childLineBoxes:Array<LineBox> = getLineBoxes(child);
+							for (j in 0...childLineBoxes.length)
+							{
+								ret.push(childLineBoxes[j]);
 							}
 						}
 					}
 				}
+				
 
 			}
 		}

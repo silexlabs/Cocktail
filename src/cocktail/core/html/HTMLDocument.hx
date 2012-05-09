@@ -9,6 +9,7 @@ package cocktail.core.html;
 
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Element;
+import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
@@ -23,7 +24,7 @@ import cocktail.core.keyboard.AbstractKeyboard;
 import cocktail.core.Mouse;
 import cocktail.core.NativeElement;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.style.BodyCoreStyle;
+import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.Window;
 import haxe.Log;
 import haxe.Timer;
@@ -35,7 +36,7 @@ import haxe.Timer;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractHTMLDocument extends Document
+class HTMLDocument extends Document
 {
 	/**
 	 * special HTML tags
@@ -78,13 +79,7 @@ class AbstractHTMLDocument extends Document
 	private var _window:Window;
 	
 	/**
-	 * The NativeElements created when rendering
-	 * this Document. They are runtime specific
-	 */
-	private var _nativeElements:Array<NativeElement>;
-	
-	/**
-	 *The activeElement set/get the element
+	 * The activeElement set/get the element
 	 * in the document which is focused.
 	 * If no element in the Document is focused, this returns the body element. 
 	 */
@@ -110,6 +105,13 @@ class AbstractHTMLDocument extends Document
 	private var _mouse:Mouse;
 	
 	/**
+	 * A reference to the HTMLElement currently hovered by the
+	 * mouse pointer. Used to detect when to dispatch mouse over
+	 * and mouse out events 
+	 */
+	private var _hoveredHTMLElement:HTMLElement;
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new() 
@@ -117,10 +119,10 @@ class AbstractHTMLDocument extends Document
 		super();
 		
 		_body = cast(createElement(HTML_BODY_TAG_NAME));
+		_body.attach();
+		
 		_documentElement = createElement(HTML_HTML_TAG_NAME);
 		_documentElement.appendChild(_body);
-		
-		_nativeElements = new Array<NativeElement>();
 		
 		_focusManager = new FocusManager();
 		_activeElement = _body;
@@ -133,7 +135,9 @@ class AbstractHTMLDocument extends Document
 		initMouseListeners();
 	}
 	
-	//TODO : doc
+	/**
+	 * init mouse listeners
+	 */
 	private function initMouseListeners():Void
 	{
 		_mouse = new Mouse();
@@ -148,7 +152,6 @@ class AbstractHTMLDocument extends Document
 	 */
 	private function initKeyboardListeners():Void
 	{
-		//listens for event on the root of the runtime
 		_keyboard = new Keyboard();
 		_keyboard.onKeyDown = onKeyDown;
 		_keyboard.onKeyUp = onKeyUp;
@@ -196,96 +199,165 @@ class AbstractHTMLDocument extends Document
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC METHOD
+	// PRIVATE INPUT METHODS
+	// TODO : duplicated code, use reflection to determine callback to call ?
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * The Document is invalidated for instance when the
-	 * DOM changes after adding/removing a child or when
-	 * a style changes.
-	 * When this happen, the Document needs to be layout
-	 * and rendered again
-	 * 
-	 * @param immediate define wether the layout must be synchronous
-	 * or asynchronous
+	 * Called when a mouse down event is dispatched.
+	 * Retrieve the top-most ElementRenderer under the mouse
+	 * pointer and call its mouse down down callback if provided
 	 */
-	public function invalidate(immediate:Bool = false):Void
-	{
-		//either schedule an asynchronous layout and rendering, or layout
-		//and render immediately
-		if (immediate == false)
-		{
-			scheduleLayoutAndRender();
-		}
-		else
-		{
-			layoutAndRender();
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	private function onMouseDown(mouseEvent:MouseEvent):Void
 	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+		//retrieve all the ElementRenderer under the mouse
+		//pointer
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
 
-		//TODO : if empty array, use body
+		//execute the callback of the first top-most
+		//ElementRenderer with a mouse down callback
+		//
+		//TODO : wrong order, top-most is last element of the array
 		for (i in 0...elementRenderersAtPoint.length)
 		{
-			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmousedown != null)
+			switch( elementRenderersAtPoint[i].node.nodeType)
 			{
-				elementRenderersAtPoint[i].coreStyle.htmlElement.onmousedown(mouseEvent);
-				break;
+				case Node.ELEMENT_NODE:
+					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
+					if (htmlElement.onmousedown != null)
+					{
+						htmlElement.onmousedown(mouseEvent);
+						//return as only one callback is executed
+						return;
+					}
 			}
-		}	
+			
+		}
+		
 	}
 	
+	/**
+	 * Called when a mouse click is dispatched. Same as 
+	 * for mouse down
+	 * 
+	 * TODO : should click be abstracted as a rapid sequence
+	 * of mouse down/ mouse up ?
+	 */
 	private function onClick(mouseEvent:MouseEvent):Void
 	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
-
-		//TODO : if empty array, use body
-		for (i in 0...elementRenderersAtPoint.length)
-		{
-			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onclick != null)
-			{
-				elementRenderersAtPoint[i].coreStyle.htmlElement.onclick(mouseEvent);
-				break;
-			}
-		}	
-	}
-	
-	//TODO : implement mouse over and mouse out with this method
-	private function onMouseMove(mouseEvent:MouseEvent):Void
-	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
 
 		for (i in 0...elementRenderersAtPoint.length)
 		{
-			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmousemove != null)
+			switch( elementRenderersAtPoint[i].node.nodeType)
 			{
-				elementRenderersAtPoint[i].coreStyle.htmlElement.onmousemove(mouseEvent);
-				break;
+				case Node.ELEMENT_NODE:
+					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
+					if (htmlElement.onclick != null)
+					{
+						htmlElement.onclick(mouseEvent);
+						//return as only one callback is executed
+						return;
+					}
 			}
-		}	
+			
+		}
+		
+		
 	}
 	
+	/**
+	 * Called when a mouse up is dispatched. Same as for 
+	 * mouse down
+	 */
 	private function onMouseUp(mouseEvent:MouseEvent):Void
 	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.coreStyle.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
 		
 		for (i in 0...elementRenderersAtPoint.length)
 		{
-			if (elementRenderersAtPoint[i].coreStyle.htmlElement.onmouseup != null)
+			switch( elementRenderersAtPoint[i].node.nodeType)
 			{
-				//shouldn't break if the executed behaviour is a default behaviour, for instance
-				//opening a document for an anchor element
-				elementRenderersAtPoint[i].coreStyle.htmlElement.onmouseup(mouseEvent);
-				break;
+				case Node.ELEMENT_NODE:
+					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
+					if (htmlElement.onmouseup != null)
+					{
+						htmlElement.onmouseup(mouseEvent);
+						//return as only one callback is executed
+						return;
+					}
 			}
-		}	
+			
+		}
+	}
+	
+	/**
+	 * Called when a mouse move is dispatched. Same as for 
+	 * mouse down
+	 * 
+	 * TODO : re-implement
+	 */
+	private function onMouseMove(mouseEvent:MouseEvent):Void
+	{
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+			
+		//TODO : doc for mouse over / out
+		
+		/**
+		if (elementRenderersAtPoint.length > 0)
+		{
+			if (elementRenderersAtPoint[elementRenderersAtPoint.length - 1] != _hoveredElementRenderer)
+			{
+				if (_hoveredElementRenderer != null)
+				{
+					
+					
+					if (_hoveredElementRenderer.htmlElement.onmouseout != null)
+					{
+						_hoveredElementRenderer.htmlElement.onmouseout(mouseEvent);
+					}
+				}
+				_hoveredElementRenderer = elementRenderersAtPoint[elementRenderersAtPoint.length - 1];
+				if (_hoveredElementRenderer.htmlElement.onmouseover != null)
+				{
+					_hoveredElementRenderer.htmlElement.onmouseover(mouseEvent);
+				}
+			}
+		}
+		else
+		{
+			//TODO : should be hoveredHTMLelement instead
+			if (_hoveredElementRenderer == null)
+			{
+				_hoveredElementRenderer = _body.elementRenderer;
+			}
+			
+			if (_hoveredElementRenderer.htmlElement != _body)
+			{
+				if (_hoveredElementRenderer != null)
+				{
+					if (_hoveredElementRenderer.htmlElement.onmouseout != null)
+					{
+						_hoveredElementRenderer.htmlElement.onmouseout(mouseEvent);
+					}
+				}
+				_hoveredElementRenderer = _body.elementRenderer;
+				if (_hoveredElementRenderer.htmlElement.onmouseover != null)
+				{
+					_hoveredElementRenderer.htmlElement.onmouseover(mouseEvent);
+				}
+			}
+		}
+			
+		for (i in 0...elementRenderersAtPoint.length)
+		{
+			if (elementRenderersAtPoint[i].htmlElement.onmousemove != null)
+			{
+				elementRenderersAtPoint[i].htmlElement.onmousemove(mouseEvent);
+				return;
+			}
+		}
+		*/
 	}
 	
 	/**
@@ -330,119 +402,18 @@ class AbstractHTMLDocument extends Document
 			activeElement.onkeyup(keyEventData);
 		}
 	}
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * As the name implies,
-	 * layout the DOM, then render it
-	 */
-	private function layoutAndRender():Void
-	{
-		layout();
-		render();
-	}
-	
-	/**
-	 * start the layout, starting on the Body
-	 * element which is the root of the visual
-	 * elements in an HTML Document
-	 */
-	private function layout():Void
-	{
-		var bodyCoreStyle:BodyCoreStyle = cast(_body.coreStyle);
-		bodyCoreStyle.startLayout();
-	}
-	
-	/**
-	 * Start the rendering of the rendering tree
-	 * built during layout
-	 * and attach the resulting nativeElements (background,
-	 * border, embedded asset...) to the display root
-	 * of the runtime (for instance the Stage in Flash)
-	 */ 
-	private function render():Void
-	{
-		//first all the previous native elements
-		//are detached
-		detachNativeElements(_nativeElements);
-		
-		//start the rendering at the root layer renderer
-		_nativeElements = _body.coreStyle.elementRenderer.layerRenderer.render();
-		attachNativeElements(_nativeElements);
-	}
-	
-	/**
-	 * Attach a NativeElement to the
-	 * display root. Runtime specific
-	 */ 
-	private function attachNativeElement(nativeElement:NativeElement):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Remove a NativeElement from the
-	 * display root. Runtime specific.
-	 */
-	private function detachNativeElement(nativeElement:NativeElement):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Attach an array of NativeElement to the
-	 * display root
-	 */
-	private function attachNativeElements(nativeElements:Array<NativeElement>):Void
-	{
-		for (i in 0...nativeElements.length)
-		{
-			attachNativeElement(nativeElements[i]);
-		}
-	}
-	
-	/**
-	 * Remove an array of NativeElement from the
-	 * display root
-	 */
-	private function detachNativeElements(nativeElements:Array<NativeElement>):Void
-	{
-		for (i in 0...nativeElements.length)
-		{
-			detachNativeElement(nativeElements[i]);
-		}
-	}
-	
-	/**
-	 * Set a timer to trigger a layout and rendering of the HTML Document asynchronously.
-	 * Setting a timer to execute the layout and rendering ensure that the layout only happen once when a series of style
-	 * values are set or when many elements are attached/removed from the DOM, instead of happening for every change.
-	 */
-	private function scheduleLayoutAndRender():Void
-	{
-		var layoutAndRenderDelegate:Void->Void = layoutAndRender;
-		
-		//calling the methods 1 millisecond later is enough to ensure
-		//that first all synchronous code is executed
-		Timer.delay(function () { 
-			layoutAndRenderDelegate();
-		}, 1);
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When the Window is resized, schedule
-	 * a layout and rendering
+	 * When the Window is resized, invalidate
+	 * the body
 	 */
 	private function onWindowResize(event:Event):Void
 	{
-		scheduleLayoutAndRender();
+		_body.invalidateStyle();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

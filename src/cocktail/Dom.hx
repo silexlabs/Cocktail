@@ -17,7 +17,7 @@ typedef Anchor = cocktail.core.html.HTMLAnchorElement;
 typedef Body = cocktail.core.html.HTMLBodyElement;
 typedef Style = cocktail.core.style.adapter.Style;
 typedef Window = cocktail.core.window.AbstractWindow;
-typedef Document = cocktail.core.html.AbstractHTMLDocument;
+typedef Document = cocktail.core.html.HTMLDocument;
 
 //TODO : how to match also keyboard event ? In Haxe JS, mouse
 //and keyboard info are mixed

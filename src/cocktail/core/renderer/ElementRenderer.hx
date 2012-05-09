@@ -8,11 +8,15 @@
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
+import cocktail.core.font.FontData;
+
 
 /**
  * This is the base class for element renderers.
@@ -114,14 +118,15 @@ class ElementRenderer extends Node
 	private var _globalPositionnedAncestorOrigin:PointData;
 	public var globalPositionnedAncestorOrigin(get_globalPositionnedAncestorOrigin, set_globalPositionnedAncestorOrigin):PointData;
 	
+	private var _node:Node;
+	public var node(get_node, never):Node;
+	
 	/**
 	 * A reference to the Style which instantiated
 	 * the ElementRenderer
-	 * 
-	 * TODO : should be instantiated by the DOM tree instead ?
 	 */
 	private var _coreStyle:CoreStyle;
-	public var coreStyle(getCoreStyle, never):CoreStyle;
+	public var coreStyle(get_coreStyle, set_coreStyle):CoreStyle;
 	
 	/**
 	 * A reference to the LayerRenderer rendering this
@@ -141,16 +146,32 @@ class ElementRenderer extends Node
 	public var lineBoxes(getLineBoxes, setLineBoxes):Array<LineBox>;
 	
 	/**
+	 * determine wether the HTMLElement is currently being
+	 * laid out, in which case it won't take any subsequent
+	 * layout request into account
+	 */
+	private var _isLayingOut:Bool;
+	
+	/**
+	 * Stores all of the value of styles once computed.
+	 * For example, if a size is set as a percentage, it will
+	 * be stored once computed to pixels into this structure
+	 */
+	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyleData;
+	
+	/**
 	 * class constructor. init class attribute
 	 * @param	style the Style which created
 	 * the ElementRenderer
 	 */
-	public function new(style:CoreStyle) 
+	public function new(node:Node) 
 	{
 		super();
-		
-		_coreStyle = style;
 
+		_node = node;
+		
+		_isLayingOut = false;
+		
 		_bounds = {
 			x:0.0,
 			y:0.0,
@@ -174,6 +195,81 @@ class ElementRenderer extends Node
 		}
 		
 		_lineBoxes = new Array<LineBox>();
+	}
+	
+	/**
+	 * invalidate Style after DOM change
+	 * 
+	 * TODO : update doc
+	 */
+	override public function appendChild(newChild:Node):Node
+	{
+		super.appendChild(newChild);
+		//TODO : should be different for Text node
+		var elementRendererChild:ElementRenderer = cast(newChild);
+		elementRendererChild.attach();
+		invalidate();
+		return newChild;
+	}
+	
+	
+	
+	
+	/**
+	 * invalidate Style after DOM change
+	 */
+	override public function removeChild(oldChild:Node):Node
+	{
+		super.removeChild(oldChild);
+		var elementRendererChild:ElementRenderer = cast(oldChild);
+		elementRendererChild.detach();
+		invalidate();
+		return oldChild;
+	}
+	
+	private function establishesNewStackingContext():Bool
+	{
+		switch (_coreStyle.computedStyle.position)
+		{
+			case cssStatic :
+				return false;
+				
+			default:
+				return true;
+		}
+	}
+	
+	public function attach():Void
+	{
+		var parent:ElementRenderer = cast(_parentNode);
+		createLayer(parent.layerRenderer);
+	}
+	
+	private function createLayer(parentLayer:LayerRenderer):Void
+	{
+		if (establishesNewStackingContext() == true)
+		{
+			_layerRenderer = new LayerRenderer(this);
+			parentLayer.appendChild(_layerRenderer);
+		}
+		else
+		{
+			_layerRenderer = parentLayer;
+		}
+	}
+	
+	public function detach():Void
+	{
+		if (establishesNewStackingContext() == true)
+		{
+			var parent:ElementRenderer = cast(_parentNode);
+			if (parent != null)
+			{
+				parent.layerRenderer.removeChild(_layerRenderer);
+			}
+			
+			_layerRenderer = null;
+		}
 	}
 	
 	/////////////////////////////////
@@ -242,10 +338,18 @@ class ElementRenderer extends Node
 		
 	}
 	
+	public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	{	
+		
+	}
+	
+	public function childrenInline():Bool
+	{
+		return false;
+	}
+	
 	/////////////////////////////////
 	// PUBLIC HELPER METHODS
-	// TODO : shouldn't have to repeat this
-	// from CoreStyle
 	////////////////////////////////
 	
 	public function establishesNewFormattingContext():Bool
@@ -253,29 +357,25 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
-	public function canHaveChildren():Bool
+	
+	public function isFloat():Bool
 	{
 		return false;
 	}
 	
-	public function isFloat():Bool
-	{
-		return _coreStyle.isFloat();
-	}
-	
 	public function isPositioned():Bool
 	{
-		return _coreStyle.isPositioned();
+		return false;
 	}
 	
 	public function isInlineLevel():Bool
 	{
-		return _coreStyle.isInlineLevel();
+		return false;
 	}
 	
-	public function isEmbedded():Bool
+	public function isReplaced():Bool
 	{
-		return true;
+		return false;
 	}
 	
 	public function isText():Bool
@@ -283,14 +383,57 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
-	public function isInitialContainer():Bool
+	public function isRelativePositioned():Bool
 	{
 		return false;
 	}
 	
-	public function isDisplayed():Bool
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when the value of a style that require
+	 * a re-layout (such as width, height, display...) is
+	 * changed.
+	 * 
+	 * An invalidated ElementRenderer will in turn invalidate its
+	 * parent and so on until the initial ElementRenderer is invalidated.
+	 * The initial ElementRenderer will then layout itself, laying out
+	 * at the same time all its invalidated children.
+	 * 
+	 * TODO : shouldn't need to invalidate all of the rendering tree
+	 * 
+	 * A layout can be immediate or scheduled asynchronously, which
+	 * increase preformance when many style value are set in a 
+	 * row as the layout only happen once
+	 */
+	public function invalidate(immediate:Bool = false):Void
 	{
-		return _coreStyle.isDisplayed();
+		//only invalidate the parent if it isn't
+		//already being laid out or if an immediate layout is required
+		if (this._isLayingOut == false || immediate == true)
+		{
+			//set the layout flag to prevent multiple
+			//layout of the ElementRenderer in a row
+			//The ElementRenderer will be able to be invalidated
+			//again once it has been laid out
+			this._isLayingOut = true;
+			
+			//if the ElementRenderer doesn't have a parent, then it
+			//is not currently added to the DOM and doesn't require
+			//a layout
+			//
+			//TODO : not possible anymore, when an HTMLElement is not
+			//attached to the DOM, it doesn't create an ElementRenderer,
+			//only the initial ElementRenderer doesn't have a parent
+			if (this._parentNode != null)
+			{
+				var parent:ElementRenderer = cast(_parentNode);
+				parent.invalidate(immediate);	
+			}
+		}
 	}
 	
 	/////////////////////////////////
@@ -358,6 +501,20 @@ class ElementRenderer extends Node
 		}
 	}
 	
+		//////////////////////////////////////////////////////////////////////////////////////////
+	// GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function getComputedStyle():ComputedStyleData
+	{
+		return _coreStyle.computedStyle;
+	}
+	
+	private function setComputedStyle(value:ComputedStyleData):ComputedStyleData
+	{
+		return _coreStyle.computedStyle = value;
+	}
+	
 	private function getLineBoxes():Array<LineBox>
 	{
 		return _lineBoxes;
@@ -378,9 +535,16 @@ class ElementRenderer extends Node
 		return _layerRenderer;
 	}
 	
-	private function getCoreStyle():CoreStyle
+	private function get_coreStyle():CoreStyle
 	{
 		return _coreStyle;
+	}
+	 
+	private function set_coreStyle(value:CoreStyle):CoreStyle
+	{
+		_coreStyle = value;
+		invalidate();
+		return value;
 	}
 	
 	private function get_bounds():RectangleData
@@ -421,5 +585,10 @@ class ElementRenderer extends Node
 	private function set_globalPositionnedAncestorOrigin(value:PointData):PointData 
 	{
 		return _globalPositionnedAncestorOrigin = value;
+	}
+	
+	private function get_node():Node
+	{
+		return _node;
 	}
 }

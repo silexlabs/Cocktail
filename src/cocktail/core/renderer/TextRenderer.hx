@@ -7,12 +7,16 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
 import cocktail.core.NativeElement;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.style.formatter.FormattingContext;
 import haxe.Log;
 import cocktail.core.geom.GeomData;
+import cocktail.core.style.StyleData;
+import cocktail.core.font.FontData;
 
 /**
  * Renders a run of text by creating as many text line box
@@ -39,11 +43,10 @@ class TextRenderer extends ElementRenderer
 	/**
 	 * Class constructor.
 	 */
-	public function new(style:CoreStyle, text:Text) 
+	public function new(node:Node) 
 	{
-		super(style);
-		_text = text;
-		init();
+		super(node);
+		_text = cast(node);
 	}
 	
 	/**
@@ -53,12 +56,24 @@ class TextRenderer extends ElementRenderer
 	private function init():Void
 	{
 		_textTokens = doGetTextTokens(_text.nodeValue);
-		
+		lineBoxes = [];
 		for (i in 0..._textTokens.length)
 		{
 			//create and store the line boxes
 			lineBoxes.push(createTextLineBoxFromTextToken(_textTokens[i]));
 		}
+	}
+	
+	override private function set_coreStyle(value:CoreStyle):CoreStyle
+	{
+		_coreStyle = value;
+		init();
+		return _coreStyle;
+	}
+	
+	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	{	
+		init();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -206,7 +221,17 @@ class TextRenderer extends ElementRenderer
 		return true;
 	}
 	
+	override public function isInlineLevel():Bool
+	{
+		return true;
+	}
 	
+	
+	
+	/**
+	 * Overriden as the bounds of a TextRenderer is formed
+	 * by the bounds of its formatted text line boxes
+	 */
 	override private function get_bounds():RectangleData
 	{
 		var textLineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
