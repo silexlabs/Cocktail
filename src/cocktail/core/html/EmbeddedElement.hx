@@ -109,6 +109,7 @@ class EmbeddedElement extends HTMLElement
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	//TODO : EmbeddedBoxRenderer should be virtual class
 	override private function createElementRenderer():Void
 	{
 		_elementRenderer = new EmbeddedBoxRenderer(this);
