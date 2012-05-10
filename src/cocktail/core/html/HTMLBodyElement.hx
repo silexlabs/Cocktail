@@ -7,6 +7,7 @@
 */
 package cocktail.core.html;
 import cocktail.core.dom.Node;
+import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.renderer.TextRenderer;
 

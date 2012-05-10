@@ -340,16 +340,12 @@ class HTMLElement extends Element, implements IEventTarget
 	//TODO : doc
 	public function attach():Void
 	{
-		if (_parentNode == null)
-		{
-
-			return;
-		}
-		
+	
 		var parent:HTMLElement = cast(_parentNode);
 
 		if (parent.elementRenderer != null)
 		{
+				
 			if (_elementRenderer == null && isRendered() == true)
 			{
 				createElementRenderer();
@@ -357,7 +353,8 @@ class HTMLElement extends Element, implements IEventTarget
 			
 			if (_elementRenderer != null)
 			{
-				parent.elementRenderer.appendChild(_elementRenderer);
+				parent.elementRenderer.insertBefore(_elementRenderer, getNextElementRendererSibling());
+				
 				for (i in 0..._childNodes.length)
 				{
 					switch (_childNodes[i].nodeType)
@@ -370,7 +367,6 @@ class HTMLElement extends Element, implements IEventTarget
 							var textRenderer:TextRenderer = new TextRenderer(_childNodes[i]);
 							textRenderer.coreStyle = _coreStyle;
 							_elementRenderer.appendChild(textRenderer);
-				
 					}
 				
 				}
@@ -378,12 +374,33 @@ class HTMLElement extends Element, implements IEventTarget
 		}
 	}
 	
+	
+	private function getNextElementRendererSibling():ElementRenderer
+	{
+		var nextSibling:HTMLElement = cast(nextSibling);
+		
+		if (nextSibling == null)
+		{
+			return null;
+		}
+		else
+		{
+			while (nextSibling != null)
+			{
+				if (nextSibling.elementRenderer != null)
+				{
+					return cast(nextSibling.elementRenderer);
+				}
+				
+				nextSibling = cast(nextSibling.nextSibling);
+			}
+		}
+		
+		return null;
+	}
+	
 	public function detach():Void
 	{
-		if (_parentNode == null)
-		{
-			return;
-		}
 		var parent:HTMLElement = cast(_parentNode);
 		
 		if (parent.elementRenderer != null)
@@ -419,26 +436,6 @@ class HTMLElement extends Element, implements IEventTarget
 	{
 		detach();
 		attach();
-		
-		if (_elementRenderer != null)
-		{
-			var parentHTML:HTMLElement = cast(_parentNode);
-			if (parentHTML.elementRenderer != null)
-			{
-				//TODO : big hack just to make the demo work
-				if (_elementRenderer.previousSibling != null)
-				{
-					
-					parentHTML.elementRenderer.insertBefore(_elementRenderer, _elementRenderer.previousSibling);
-					parentHTML.elementRenderer.invalidate();
-				}
-				
-				
-			}
-		}
-		
-		//TODO : should be invalidated by default when attached
-		//invalidateStyle();
 	}
 	
 	//TODO : clean-up
