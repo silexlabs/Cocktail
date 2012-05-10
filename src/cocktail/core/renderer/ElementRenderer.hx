@@ -207,7 +207,7 @@ class ElementRenderer extends Node
 		super.appendChild(newChild);
 		//TODO : should be different for Text node
 		var elementRendererChild:ElementRenderer = cast(newChild);
-		elementRendererChild.attach();
+		elementRendererChild.attachLayer();
 		invalidate();
 		return newChild;
 	}
@@ -220,11 +220,13 @@ class ElementRenderer extends Node
 	{
 		super.removeChild(oldChild);
 		var elementRendererChild:ElementRenderer = cast(oldChild);
-		elementRendererChild.detach();
+		elementRendererChild.detachLayer();
 		invalidate();
 		return oldChild;
 	}
 	
+	//TODO : should be false by default as only BoxRenderer can establish
+	//new LayerRenderer
 	private function establishesNewStackingContext():Bool
 	{
 		switch (_coreStyle.computedStyle.position)
@@ -238,7 +240,7 @@ class ElementRenderer extends Node
 	}
 	
 	//TODO : rename to attachLayer ?
-	public function attach():Void
+	public function attachLayer():Void
 	{
 		var parent:ElementRenderer = cast(_parentNode);
 		createLayer(parent.layerRenderer);
@@ -257,7 +259,7 @@ class ElementRenderer extends Node
 		}
 	}
 	
-	public function detach():Void
+	public function detachLayer():Void
 	{
 		if (establishesNewStackingContext() == true)
 		{
