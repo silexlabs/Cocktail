@@ -130,6 +130,7 @@ class LayerRenderer extends Node
 		{
 			//TODO : render child layers
 			var lineBoxesChildren:Array<NativeElement> = renderInlineBoxRenderer(rootRenderer);
+
 			for (i in 0...lineBoxesChildren.length)
 			{
 				nativeElements.push(lineBoxesChildren[i]);
@@ -385,7 +386,7 @@ class LayerRenderer extends Node
 	private function renderChildLayer(rootRenderer:ElementRenderer):Array<NativeElement>
 	{
 		var childLayers:Array<LayerRenderer> = getChildLayers(cast(rootRenderer), this);
-
+		
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
 		for (i in 0...childLayers.length)

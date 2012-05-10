@@ -84,7 +84,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		return backgrounds;
 	}
 	
-	override public function attach():Void
+	override public function attachLayer():Void
 	{
 		_layerRenderer = new LayerRenderer(this);
 	}
