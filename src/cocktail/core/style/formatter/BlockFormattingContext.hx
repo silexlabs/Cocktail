@@ -115,6 +115,10 @@ class BlockFormattingContext extends FormattingContext
 		{
 			elementRenderer.bounds.height = childHeight + elementRenderer.coreStyle.computedStyle.paddingBottom + elementRenderer.coreStyle.computedStyle.paddingTop ;
 		}
+		else
+		{
+			
+		}
 		
 		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingBottom + parentCollapsedMarginBottom;
 		

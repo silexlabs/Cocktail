@@ -127,7 +127,8 @@ class BoxRenderer extends ElementRenderer
 		//of the ElementRenderer are known, for instance some values of the VerticalAlign style
 		//might need those dimensions to compute the right values
 		//
-		//TODO : shouldn't be necessary anymore as vertical align is computed during formatting
+		//TODO : shouldn't be necessary anymore as vertical align is computed during formatting.
+		//Only used for vertical align and text indent
 		_coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
 		
 		//compute the background styles which can be computed at this time,
