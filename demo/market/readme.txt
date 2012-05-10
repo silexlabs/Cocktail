@@ -247,18 +247,20 @@ Alex:
 - quand le detail contient une image large, au retour a la liste ca bug => problème avec les iframes & images trop larges => OK
 - la barre d adresse du navigateur est a moitier remontee seulement => complètement désactivé => OK
 - le scroll vertical et son acceleration sont moins bien qu'avant
+
+Raph:
 -iPhone:
 	=> l'inertie du scroll n'est plus utilisable dans la swippable view une fois qu'on a cliqué dans une vue détail => OK
 	=> la list text n'a pas pas les lignes de séparation grises => OK
 	=> en arrivant sur l'app d'un lien externe, l'affichage bugue (réglé par le resize) => non reproductible
+-Navigateur desktop:
+	=> une scrollbar apparait de la hauteur de la page => réglé en metant le style display=block au lieu de inline-block sur la swippableView => OK
 
 -------------------------------------------------------------------------------------------------------------------------
 
 Fonctionnalités manquantes / bugs restants:
 -Générique:
 	=> quand on atteint la fin d'un contenu, le scroll s'arrete net. Il devrait rebondire avec un easeInOut
--Navigateur desktop:
-	=> une grosse scrollbar apparait
 -Galaxy note: le bouton de menu silicon sentier ne marche pas
 -error screen
 -auto-load rss: pour le flux silicon sentier, il y a a régulièrement deux cellules avec un contenu identique
