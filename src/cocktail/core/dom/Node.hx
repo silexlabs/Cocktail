@@ -275,21 +275,14 @@ class Node
 	 */
 	public function replaceChild(newChild:Node, oldChild:Node):Node
 	{
-		var newChildNodes:Array<Node> = new Array<Node>();
-		
 		for (i in 0..._childNodes.length)
 		{
 			if (_childNodes[i] == oldChild)
 			{
-				newChildNodes.push(newChild);
+				removeChild(oldChild);
 			}
-			else
-			{
-				newChildNodes.push(_childNodes[i]);
-			}
+			appendChild(newChild);
 		}
-		
-		_childNodes = newChildNodes;
 		
 		return oldChild;
 	}
