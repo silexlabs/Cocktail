@@ -213,8 +213,6 @@ class ElementRenderer extends Node
 	}
 	
 	
-	
-	
 	/**
 	 * invalidate Style after DOM change
 	 */
