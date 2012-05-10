@@ -2,8 +2,6 @@ package org.intermedia.view;
 
 import js.Lib;
 import js.Dom;
-//import core.HTMLElement;
-//import cocktail.node.HtmlDom;
 
 /**
  * Base class for views
@@ -20,7 +18,7 @@ class ViewBase
 	public var data(getData, setData):Dynamic;
 	
 	// style
-	private var _style:Dynamic;
+	//private var _style:Dynamic;
 	
 	//activate / deactivate the display of the loader.
 	public var displayLoading(null, setDisplayLoading):Bool;
@@ -29,7 +27,7 @@ class ViewBase
 
 	public function new()
 	{
-		//super();
+		// initialise node
 		node = Lib.document.createElement("div");
 		
 		// set the display attributes of the loading wheel to true
@@ -74,6 +72,7 @@ class ViewBase
 			// instanciate the loading view if not already done (done here instead of contructor to limit memory usage)
 			if (_loadingView == null)
 				_loadingView = new LoadingView();
+				
 			// if the loading view is not attached to this, display it
 			if (_loadingView.node.parentNode == null)
 				node.appendChild(_loadingView.node);

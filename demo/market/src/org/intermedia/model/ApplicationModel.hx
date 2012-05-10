@@ -21,11 +21,6 @@ class ApplicationModel
 	// Called when there was a loading error
 	public var onModelDataLoadError:Dynamic->Void;
 	
-	/*public function onModelDataLoadError(error:Dynamic):Void
-	{
-		trace("Error while loading model: " + Std.string(error));
-	}*/
-	
 	// Called when the loading starts
 	public var onModelStartsLoading:Void->Void;
 	
@@ -54,7 +49,6 @@ class ApplicationModel
 	 * Calls onModelStartsLoading, then calls load() on the DataLoader with the right number of cell to load
 	 * @param	numberOfCellsToLoad
 	 */
-	//public function loadCellData():Void
 	public function loadCellData(feed:String):Void
 	{
 		// if first data loading is occuring
@@ -68,8 +62,6 @@ class ApplicationModel
 		}
 		
 		// Calls load() on the DataLoader with the right number of cell to load
-		//_dataLoader.srcCellData(numberOfCellsToLoad,onCellsDataLoadComplete, onModelDataLoadError);
-		//_dataLoader.srcCellData(CELL_QTY,onCellsDataLoadComplete, onModelDataLoadError);
 		_dataLoader.loadCellData(feed, CELL_QTY,onCellsDataLoadComplete, onModelDataLoadError);
 	}
 	
@@ -93,7 +85,6 @@ class ApplicationModel
 	 * Call onModelCellDataLoaded with the cellData array
 	 * @param	cellsData
 	 */
-	//private function onCellsDataLoadComplete(cellsData:Array<CellData>):Void
 	private function onCellsDataLoadComplete(listData:ListData):Void
 	{
 		// reset _loadedCellsData
@@ -108,7 +99,6 @@ class ApplicationModel
 		// call onModelCellDataLoaded (if initialised) with _loadedCellsData as parameters
 		if (onModelCellDataLoaded != null)
 		{
-			//onModelCellDataLoaded(_loadedCellsData);
 			onModelCellDataLoaded(listData);
 		}
 
@@ -136,14 +126,6 @@ class ApplicationModel
  * Holds Title, author, thumbUrl...
  * Could also use a Hash with the id a key for faster search
  */
-//typedef	CellData =
-//{
-	//var id:Int;
-	//var title:String;
-	//var author:String;
-	//var thumbUrl:String;
-	//var category:String;
-//}
 typedef	CellData =
 {
 	var id:Int;
@@ -178,8 +160,6 @@ typedef ListData =
 	var cells:Array<CellData>;
 }
 
-//typedef ListData = Hash<Array<CellData>>;
-
 /**
  * Size defines the size of a dom
  */
@@ -188,4 +168,3 @@ typedef Size =
 	var width:Int;
 	var height:Int;
 }
-

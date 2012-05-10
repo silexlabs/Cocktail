@@ -27,7 +27,7 @@ class CellTextStyle
 	 * 
 	 * @param	node
 	 */
-	public static function setCellStyle(node:HtmlDom):Void
+	public static function setCellStyle(node:HtmlDom,?cellPerLine:Int=1):Void
 	{
 		node.style.display = "block";
 		node.style.position = "relative";
@@ -46,7 +46,6 @@ class CellTextStyle
 		
 		// apply border
 		CellStyle.addBorder(node,Constants.CELL_BORDER_WIDTH);
-		//node.style.borderStyle = "none none solid none";
 
 		node.style.backgroundColor = Constants.CELL_BG_COLOR;
 
@@ -65,9 +64,9 @@ class CellTextStyle
 		node.style.paddingLeft = "0px";
 		node.style.paddingRight = "0px";
 		
-		node.style.fontSize = "15px";
+		node.style.fontSize = "16px";
 		node.style.lineHeight = "normal";
-		node.style.fontWeight = "bold";
+		node.style.fontWeight = "normal";
 		node.style.fontStyle = "normal";
 		node.style.fontFamily = 'Arial, sans-serif';
 		node.style.fontVariant = "normal";
@@ -80,22 +79,7 @@ class CellTextStyle
 		
 		node.style.verticalAlign = "middle";
 		
-		node.style.color = '#666666';
-	}
-	
-	/**
-	 * Defines cell line Style
-	 * 
-	 * @param	node
-	 */
-	public static function setCellLineStyle(node:HtmlDom):Void
-	{
-		node.style.display = "block";
-		node.style.position = "relative";
-
-		node.style.width = "100%";
-		node.style.height = Std.string(1) + "px";
-		node.style.marginTop = Std.string(CELL_VERTICAL_SPACE) + "px";
+		node.style.color = Constants.CELL_FONT_COLOR;
 	}
 	
 }

@@ -41,14 +41,13 @@ class DetailStyle
 		
 		node.style.paddingLeft = Std.string(Constants.DETAIL_HORIZONTAL_PADDING_PERCENT) + "%";
 		node.style.paddingRight = Std.string(Constants.DETAIL_HORIZONTAL_PADDING_PERCENT) + "%";
-		node.style.paddingTop = "10px";
-		node.style.paddingBottom = "10px";
+		node.style.paddingTop = Std.string(Constants.DETAIL_VERTICAL_PADDING_PIXELS) + "px";
+		node.style.paddingBottom = Std.string(Constants.DETAIL_VERTICAL_PADDING_PIXELS) + "px";
 		
 		//node.style.width = "96%";
 		node.style.width = Std.string(Constants.DETAIL_HORIZONTAL_PERCENT) + "%";
 		//node.style.width = Std.string(Lib.window.innerWidth - 20) + "px";
 		//node.style.height = Std.string(Lib.window.innerHeight) + "px";
-		//node.style.height = "100px";
 		//node.style.height = "100%";
 		node.style.height = "auto";
 		//node.style.height = Std.string(Lib.window.innerHeight - Constants.HEADER_HEIGHT) + "px";
@@ -62,10 +61,7 @@ class DetailStyle
 		//node.style.overflowY = "visible";
 		//node.style.overflowY = "auto";
 		
-		
-		//node.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 255, 255, 1));
-		
-		
+		node.style.backgroundColor = Constants.DETAIL_BG_COLOR;
 	}
 
 	/**
@@ -103,17 +99,11 @@ class DetailStyle
 	 * 
 	 * @param	node
 	 */
-	public static function setTitle(node:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
-	//public static function setTitle(node:HtmlDom):Void
+	public static function setTitle(node:HtmlDom):Void
 	{
 		setText(node);
 		
-		var fontSize:Int = 14;
-		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 14;
-		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 16;
-		else  fontSize = 18;
-		
-		node.style.fontSize = Std.string(fontSize) + "px";
+		node.style.fontSize = "18px";
 		node.style.fontWeight = "bold";
 	}
 
@@ -122,17 +112,11 @@ class DetailStyle
 	 * 
 	 * @param	node
 	 */
-	public static function setAuthor(node:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
-	//public static function setAuthor(node:HtmlDom):Void
+	public static function setAuthor(node:HtmlDom):Void
 	{
 		setText(node);
 
-		var fontSize:Int = 10;
-		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 10;
-		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 11;
-		else  fontSize = 12;
-		
-		node.style.fontSize = Std.string(fontSize) + "px";
+		node.style.fontSize = "12px";
 		node.style.fontWeight = "normal";
 	}
 
@@ -145,11 +129,10 @@ class DetailStyle
 	{
 		setText(node);
 
-		node.style.marginTop = Std.string(10) + "px";
-		node.style.marginBottom = Std.string(10) + "px";
+		node.style.marginTop = Std.string(Constants.DETAIL_VERTICAL_PADDING_PIXELS) + "px";
+		node.style.marginBottom = Std.string(Constants.DETAIL_VERTICAL_PADDING_PIXELS) + "px";
 		
 		node.style.fontSize = "14px";
-		//node.style.fontWeight = "bold";
 	}
 	
 }

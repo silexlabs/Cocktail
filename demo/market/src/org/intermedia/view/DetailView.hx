@@ -58,7 +58,7 @@ class DetailView extends ViewBase
 		//_initialScrollPosition = { x:0, y:0 };
 		
 		// initialise move handler
-		_scrollHandler = new Scroll2D(ScrollType.vertical);
+		//_scrollHandler = new Scroll2D(ScrollType.vertical);
 		//_scrollHandler.onVerticalScroll = onVerticalScroll;
 
 		// js touch events handling
@@ -86,9 +86,9 @@ class DetailView extends ViewBase
 		node.appendChild(_authorContainer);
 		
 		// add thumbnail
-		_thumbnail = cast Lib.document.createElement("img");
-		DetailStyle.setThumbnail(_thumbnail);
-		node.appendChild(_thumbnail);
+		//_thumbnail = cast Lib.document.createElement("img");
+		//DetailStyle.setThumbnail(_thumbnail);
+		//node.appendChild(_thumbnail);
 		
 		// add description
 		//_descriptionContainer = Lib.document.createElement("div");
@@ -138,17 +138,16 @@ class DetailView extends ViewBase
 		// update description
 		/*_descriptionContainer.removeChild(_descriptionElement);
 		_descriptionElement.text = _data.description + "\n";
-		_descriptionContainer.appendChild(_descriptionElement);
+		_descriptionContainer.appendChild(_descriptionElement);*/
 		
 		// update content
-		_contentContainer.removeChild(_contentElement);
-		_contentElement.text = _data.content;
-		_contentContainer.appendChild(_contentElement);*/
+		// remove node
 		node.removeChild(_contentContainer);
 		_contentContainer.innerHTML = _data.content;
 		// resize children iframe & img
 		resizeNodeChildrenTag(_contentContainer,"iframe");
 		resizeNodeChildrenTag(_contentContainer, "img");
+		// attach node
 		node.appendChild(_contentContainer);
 		
 	}
@@ -168,7 +167,7 @@ class DetailView extends ViewBase
 	/**
 	 * Adds touch events
 	 */
-	public function addTouchEvents():Void
+	/*public function addTouchEvents():Void
 	{
 		#if js
 		untyped
@@ -185,7 +184,7 @@ class DetailView extends ViewBase
 	/**
 	 * Removes touch events
 	 */
-	public function unsetTouchEvents():Void
+	/*public function unsetTouchEvents():Void
 	{
 		#if js
 		untyped
@@ -203,7 +202,7 @@ class DetailView extends ViewBase
 	 * 
 	 * @param	e
 	 */
-    private function onVerticalScroll( y : Int )
+    /*private function onVerticalScroll( y : Int )
     {
 		node.scrollTop = _scrollHandler.initialScrollPosition.y - y;
     }
@@ -274,7 +273,6 @@ class DetailView extends ViewBase
 		//untyped { tagNodes[i].removeAttribute("width"); };
 		//untyped { tagNodes[i].removeAttribute("height"); };
 		
-		//return nodeToResize;
 	}
 
 }

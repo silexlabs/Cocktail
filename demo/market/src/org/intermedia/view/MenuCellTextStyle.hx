@@ -28,10 +28,9 @@ class MenuCellTextStyle
 	 * 
 	 * @param	node
 	 */
-	public static function setCellStyle(node:HtmlDom):Void
+	public static function setCellStyle(node:HtmlDom,?cellPerLine:Int=1):Void
 	{
 		node.style.display = "inline-block";
-		//node.style.position = "static";
 		node.style.position = "absolute";
 		
 		node.style.marginLeft = "0px";
@@ -44,10 +43,7 @@ class MenuCellTextStyle
 		node.style.paddingTop = Std.string(CELL_VERTICAL_SPACE) + "px";
 		node.style.paddingBottom = Std.string(CELL_VERTICAL_SPACE) + "px";
 		
-		//node.style.width = Std.string(100/3) + "%";
 		node.style.width = "auto";
-		//node.style.width = "100%";
-		//node.style.minWidth = "33%";
 
 		// remove border
 		CellStyle.removeBorder(node);
@@ -69,7 +65,6 @@ class MenuCellTextStyle
 		
 		node.style.fontSize = "16px";
 		node.style.lineHeight = "normal";
-		//node.style.fontWeight = "bold";
 		node.style.fontStyle = "normal";
 		node.style.fontFamily = 'Arial, sans-serif';
 		node.style.fontVariant = "normal";
@@ -82,7 +77,6 @@ class MenuCellTextStyle
 		node.style.verticalAlign = "middle";
 		
 		node.style.color = Constants.MENU_FONT_COLOR;
-		
 	}
 	
 }

@@ -11,7 +11,7 @@
 #-resource data/detail.rss@detail
 
 # minimize
-#--dead-code-elimination
+--dead-code-elimination
 -cmd haxelib install jsmin
 -cmd haxelib run jsmin ../bin/WebApp.js ../bin/WebApp_min.js
 -cmd move /Y ../bin/WebApp_min.js ../bin/WebApp.js

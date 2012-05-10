@@ -5,7 +5,7 @@ import js.Dom;
 import org.intermedia.model.ApplicationModel;
 
 /**
- * Base class for list cell. Each ListView has its own cell class inherited from this one.
+ * Base class for menu cell
  * 
  * @author Raphael Harmel
  */
@@ -26,7 +26,11 @@ class MenuCellText extends CellBase
 		// init style model
 		_style = {
 			cell:MenuCellTextStyle.setCellStyle,
-			text:MenuCellTextStyle.setCellTextStyle
+			thumbnailMask:null,
+			thumbnail:null,
+			textBlock:null,
+			title:MenuCellTextStyle.setCellTextStyle,
+			author:null
 		}
 	}
 
@@ -44,7 +48,7 @@ class MenuCellText extends CellBase
 			var textElement:HtmlDom = Lib.document.createTextNode(cellData.title);
 			cellTextContainer.appendChild(textElement);
 			node.appendChild(cellTextContainer);
-			_style.text(cellTextContainer);
+			_style.title(cellTextContainer);
 		}
 	}
 

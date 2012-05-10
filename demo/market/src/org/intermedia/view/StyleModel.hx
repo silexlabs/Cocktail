@@ -6,13 +6,14 @@ package org.intermedia.view;
  * @author Raphael Harmel
  */
 
+import js.Dom;
+ 
 typedef CellStyleModel =
 {
-	var cell:Dynamic;
-	var thumbnailMask:Dynamic;
-	var thumbnail:Dynamic;
-	var textBlock:Dynamic;
-	var title:Dynamic;
-	var author:Dynamic;
-	var line:Dynamic;
+	var cell:HtmlDom->?Int->Void;
+	var thumbnailMask:HtmlDom->Void;
+	var thumbnail:HtmlDom->Void;
+	var textBlock:HtmlDom->Void;
+	var title:HtmlDom->Void;
+	var author:HtmlDom->Void;
 }

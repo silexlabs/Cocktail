@@ -16,12 +16,11 @@ import org.intermedia.Settings;
 class ListViewBase extends ViewBase
 {
 
+	// style
+	private var _style:ListStyleModel;
+	
 	//Called when an item is selected.
 	public var onListItemSelected:CellData->Void;
-	
-	//Called when the user has scrolled to the bottom of the list, and
-	//more cell data might need to be fetched
-	//public var onListScrolled:String->Void;
 	
 	// called when the list is requesting more data to be loaded
 	public var onDataRequest:String->Void;
@@ -41,15 +40,11 @@ class ListViewBase extends ViewBase
 	// list bottom loader image
 	var _bottomLoaderImage:Image;
 
-	// _time is used to compute execution time for analysing performance
-	//private var _time:Float;
-	
 	public function new()
 	{
 		super();
 		
 		// init style
-		//if (_style == null) initStyle();
 		initStyle();
 		
 		// apply style
@@ -62,8 +57,6 @@ class ListViewBase extends ViewBase
 		
 		node.onscroll = onScrollCallback;
 		
-		//_time = Timer.stamp();
-		
 	}
 	
 	/**
@@ -73,9 +66,7 @@ class ListViewBase extends ViewBase
 	{
 		// init style model
 		_style = {
-			list:ListViewStyle.setListStyle,
-			//bottomLoaderImage:ListViewStyle.loaderImage,
-			//bottomLoaderCell:CellStyle.setCellStyle
+			list:ListViewStyle.setListStyle
 		}
 	}
 	
@@ -85,12 +76,10 @@ class ListViewBase extends ViewBase
 	private function buildBottomLoader():Void
 	{
 		_bottomLoaderImage = cast Lib.document.createElement("img");
-		//_style.bottomLoaderImage(_bottomLoaderImage);
 		ListViewStyle.loaderImage(_bottomLoaderImage);
 		_bottomLoaderImage.src = "assets/loading.gif";
 		_listBottomLoader = Lib.document.createElement("div");
 		_listBottomLoader.appendChild(_bottomLoaderImage);
-		//_style.bottomLoaderCell(_listBottomLoader);
 		CellStyle.setCellStyle(_listBottomLoader);
 	}
 	
@@ -128,9 +117,6 @@ class ListViewBase extends ViewBase
 		{
 			node.appendChild(_listBottomLoader);
 		}
-		
-		//haxe.Firebug.trace("List " + id + " updated in " + Std.string((Timer.stamp() - _time) * 1000).substr(0, 5) + "ms");
-		//trace("List " + id + " updated in " + Std.string((Timer.stamp() - _time) * 1000).substr(0, 5) + "ms");
 		
 		// if list is attached to body
 		if(node.parentNode.parentNode != null)
@@ -215,12 +201,17 @@ class ListViewBase extends ViewBase
 	{
 		// apply style
 		_style.list(node);
-		//ListViewStyle.setListStyle(node);
+		
+		// refresh cells
 		for (cell in _cells)
 		{
 			cell.refreshStyles();
 		}
 	}
 
+}
 
+typedef ListStyleModel =
+{
+	var list:HtmlDom->Void;
 }

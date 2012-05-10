@@ -16,7 +16,7 @@ import org.intermedia.view.Scroll2D;
 import feffects.easing.Quint;
 
 /**
- * Text list view
+ * Menu Text list view
  * 
  * @author Raphael Harmel
  */
@@ -120,7 +120,6 @@ class MenuListViewText extends ListViewBase
 		computeMenuItemsWidth();
 		
 		// set index to its initial value 
-		//_index = 1;
 		index = 1;
 		refreshStyles();
 	}	
@@ -227,20 +226,6 @@ class MenuListViewText extends ListViewBase
 		// depending on the index value, set each menu item left end position
 		switch(targetIndex)
 		{
-			// google+ menu style
-			//case 0:
-				//_menuItem0LeftTarget = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2);
-				//_menuItem1LeftTarget = Lib.window.innerWidth - _menuItem1Width;
-				//_menuItem2LeftTarget = Lib.window.innerWidth;
-			//case 1:
-				//_menuItem0LeftTarget = 0;
-				//_menuItem1LeftTarget = Std.int((Lib.window.innerWidth - _menuItem1Width) / 2);
-				//_menuItem2LeftTarget = Lib.window.innerWidth - _menuItem2Width;
-			//case 2:
-				//_menuItem0LeftTarget = -_menuItem0Width;
-				//_menuItem1LeftTarget = 0;
-				//_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2);
-			// android market style
 			case 0:
 				_menuItem0LeftTarget = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2 - BOLD_FONT_OFFSET/2);
 				_menuItem1LeftTarget = Std.int(Lib.window.innerWidth - Constants.MENU_LATERAL_OFFSET);
@@ -291,7 +276,6 @@ class MenuListViewText extends ListViewBase
     public function horizontalTweenEnd(newIndex:Int):Void
 	{
 		index = newIndex;
-		//computeMenuItemsLeftPos();
 		// styles are refreshed here to resolve bugs where menu items are not correctly positioned when a data loading is occuring
 		refreshStyles();
 	}
@@ -301,11 +285,14 @@ class MenuListViewText extends ListViewBase
 	 */
 	override public function refreshStyles():Void
 	{
-		// reset lists position
+		// compute lists positions
 		computeMenuItemsLeftTarget(_index);
+		
+		// reset lists position
 		menuItem0Move(_menuItem0LeftTarget);
 		menuItem1Move(_menuItem1LeftTarget);
 		menuItem2Move(_menuItem2LeftTarget);
+		
 		// reset left positions
 		computeMenuItemsLeftPos();
 	}	

@@ -36,36 +36,12 @@ class HeaderStyle
 		
 		node.style.minWidth = "100%";
 		node.style.width = "100%";
-		//node.style.height = Std.string(Constants.HEADER_HEIGHT) + "px";
-		node.style.height = Std.string(Constants.HEADER_WITH_SHADOW_HEIGHT) + "px";
+		node.style.height = Std.string(Constants.HEADER_HEIGHT) + "px";
 		
 		// set to the forehead
 		//node.style.zIndex = 1000;
 		
-		//node.style.backgroundImage = 'url(assets/headerGrey.jpg)';
 		node.style.backgroundImage = 'url(' + Constants.HEADER_BG_IMAGE_URL + ')';
-		
-		// background with gradients - not supported in HTML4, so not used to be HbbTV compliant
-		/*node.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.gradient(GradientValue.linear( { angle:GradientAngleValue.angle(AngleValue.deg(90)),
-		colorStops:[{color:ColorValue.rgba(0, 255, 0,0.7), stop:GradientStopValue.percent(0)}, {color:ColorValue.rgba(255, 0, 0,0.3), stop:GradientStopValue.percent(100)} ]} )))];*/
-	}
-
-	/**
-	 * Defines header static Style
-	 * done as a workaround to have a layout using a minimum of absolute values
-	 * 
-	 * @param	node
-	 */
-	public static function setHeaderStaticStyle(node:HtmlDom):Void
-	{
-		node.style.position = "static";
-		node.style.display = "block";
-
-		node.style.minWidth = "100%";
-		node.style.width = "100%";
-		//node.style.height = Std.string(Constants.HEADER_HEIGHT) + "px";
-		node.style.height = "58px";
-		
 	}
 
 	/**

@@ -11,7 +11,7 @@ import js.Dom;
 import org.intermedia.view.Constants;
 
 /**
- * This class defines the default style used by a ListView
+ * This class defines the default style used by a MenuListView
  * 
  * @author Raphael Harmel
  */
@@ -26,7 +26,6 @@ class MenuListViewStyle
 	public static function setMenuStyle(node:HtmlDom):Void
 	{
 		node.style.position = "fixed";
-		//node.style.position = "absolute";
 		node.style.display = "block";
 		
 		node.style.marginLeft = "0px";
@@ -51,6 +50,7 @@ class MenuListViewStyle
 		
 		// unset background color to remove list default bahaviour
 		node.style.backgroundColor = null;
+		
 		// add background image
 		node.style.backgroundImage = 'url(' + Constants.MENU_BG_IMAGE_URL + ')';
 
@@ -66,7 +66,6 @@ class MenuListViewStyle
 	public static function setListStyle(node:HtmlDom):Void
 	{
 		node.style.display = "inline-block";
-		//node.style.position = "absolute";
 		node.style.position = "static";
 		
 		node.style.marginLeft = "0px";
