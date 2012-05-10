@@ -239,7 +239,6 @@ class ElementRenderer extends Node
 		}
 	}
 	
-	//TODO : rename to attachLayer ?
 	public function attachLayer():Void
 	{
 		var parent:ElementRenderer = cast(_parentNode);

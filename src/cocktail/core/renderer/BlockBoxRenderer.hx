@@ -8,11 +8,17 @@
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
+import cocktail.core.event.Event;
+import cocktail.core.html.HTMLElement;
+import cocktail.core.html.ScrollBar;
 import cocktail.core.NativeElement;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.formatter.BlockFormattingContext;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.formatter.InlineFormattingContext;
+import cocktail.core.style.StyleData;
+import cocktail.core.font.FontData;
+import cocktail.core.geom.GeomData;
 import haxe.Log;
 
 /**
@@ -28,12 +34,116 @@ import haxe.Log;
  */
 class BlockBoxRenderer extends FlowBoxRenderer
 {
+	private var _horizontalScrollBar:HTMLElement;
+	
+	private var _verticalScrollBar:HTMLElement;
+	
+	private var _scrollableBounds:RectangleData;
+	
 	/**
 	 * class constructor
 	 */
 	public function new(node:Node) 
 	{
 		super(node);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Lay out all the children of the ElementRenderer
+	 * 
+	 */
+	override private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	{
+		super.layoutChildren(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
+		attachScrollBarsIfnecessary();
+	}
+	
+	private function getScrollableBounds():RectangleData
+	{
+		return { x:0.0, y:0.0, width:500.0, height:500.0 };
+	}
+	
+	private function attachScrollBarsIfnecessary():Void
+	{
+		if (canAlwaysOverflow() == true)
+		{
+			return;
+		}
+
+		if (_horizontalScrollBar == null)
+		{
+			//TODO : should use computed styles but not computed yet
+			switch (_coreStyle.overflowX)
+			{
+				case scroll:
+					attachHorizontalScrollBar();
+					
+				case hidden, visible:
+					
+				case cssAuto:
+					attachHorizontalScrollBarIfNecessary();
+			}
+		}
+		
+		if (_verticalScrollBar == null)
+		{
+			switch (_coreStyle.overflowY)
+			{
+				case scroll:
+					attachVerticalScrollBar();
+					
+				case hidden, visible:
+					
+				case cssAuto:
+					attachVerticalScrollBarIfNecessary();
+			}
+		}
+	}
+	
+	private function attachHorizontalScrollBar():Void
+	{
+		_horizontalScrollBar = new ScrollBar(false);
+		_horizontalScrollBar.attach();
+		appendChild(_horizontalScrollBar.elementRenderer);
+		_horizontalScrollBar.onscroll = onHorizontalScroll;
+	}
+	
+	private function attachHorizontalScrollBarIfNecessary():Void
+	{
+		if (_scrollableBounds.x < _bounds.x || _scrollableBounds.x + _scrollableBounds.width > _bounds.x + _bounds.width)
+		{
+			attachHorizontalScrollBar();
+		}
+	}
+	
+	private function attachVerticalScrollBar():Void
+	{
+		_verticalScrollBar = new ScrollBar(true);
+		_verticalScrollBar.attach();
+		appendChild(_verticalScrollBar.elementRenderer);
+		_verticalScrollBar.onscroll = onVerticalScroll;
+	}
+	
+	private function attachVerticalScrollBarIfNecessary():Void
+	{
+		if (_scrollableBounds.y < _bounds.y || _scrollableBounds.y + _scrollableBounds.height > _bounds.y + _bounds.height)
+		{
+			attachVerticalScrollBar();
+		}
+	}
+	
+	private function onHorizontalScroll(event:Event):Void
+	{
+		
+	}
+	
+	private function onVerticalScroll(event:Event):Void
+	{
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +162,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		//floats always establishes new formatting context
 		if (isFloat() == true)
+		{
+			establishesNewFormattingContext = true;
+		}
+		//block box renderer which may use scrollbars to display
+		//their children always establishes a new formatting context
+		else if (canAlwaysOverflow() == false)
 		{
 			establishesNewFormattingContext = true;
 		}
@@ -89,9 +205,45 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return establishesNewFormattingContext;
 	}
 	
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	//TODO : should use computed style (for instance for inherit) but not yet computed at this point
+	private function canAlwaysOverflow():Bool
+	{
+		switch (_coreStyle.overflowX)
+		{
+			case Overflow.visible:
+				
+			default:
+				return false;
+		}
+		
+		switch (_coreStyle.overflowY)
+		{
+			case Overflow.visible:
+				
+			default:
+				return false;
+		}
+		
+		return true;
+	}
+	
+	//TODO : doc
+	override private function establishesNewStackingContext():Bool
+	{
+		var establishesNewStackingContext:Bool = super.establishesNewStackingContext();
+		
+		if (establishesNewStackingContext == true)
+		{
+			return true;
+		}
+		
+		return canAlwaysOverflow() != true;
+	}
 	
 	/**
 	 * Return the right formatting context to layout this ElementRenderer's

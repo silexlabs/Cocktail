@@ -98,6 +98,14 @@ class FlowBoxRenderer extends BoxRenderer
 		{
 			shrinkToFitIfNeeded(containingBlockData, childrenFormattingContext.maxWidth, formattingContext, firstPositionedAncestorData, viewportData );
 		}
+		//else it is already computed and is set on the bounds
+		//of tht ElementRenderer
+		//
+		//TODO : shouldn't it be set during formatting instead ?
+		else
+		{
+			_bounds.width = _coreStyle.computedStyle.width;
+		}
 		
 		//if the 'height' style of this ElementRenderer is 
 		//defined as 'auto', then in most cases, it depends on its content height
@@ -125,6 +133,12 @@ class FlowBoxRenderer extends BoxRenderer
 			//TODO : check if this intermediate method is actually useful, seems to be only
 			//used for positioned elements
 			this.computedStyle.height = _coreStyle.applyContentHeightIfNeeded(getRelevantContainingBlockData(containingBlockData, viewportData,  firstPositionedAncestorData.data), Math.round(this.bounds.height), isReplaced());
+		}
+		//else it is already computed and is set on the bounds
+		//of tht ElementRenderer
+		else
+		{
+			_bounds.height = _coreStyle.computedStyle.height;
 		}
 		
 		//if this ElementRenderer is positioned, it means that it is the first positioned ancestor
@@ -333,68 +347,12 @@ class FlowBoxRenderer extends BoxRenderer
 			}
 		}
 		return true;
-		
-		//TODO : is the following still necessary ? Maybe should have another
-		//method to generate anonymous boxes
-		
-		//return false for a container with no children
-		if (_childNodes.length == 0)
-		{
-			return false;
-		}
-		
-		//establish if the first child is inline or block
-		//all other child must be of the same type
-		var ret:Bool = isChildInline(cast(_childNodes[0]));
-		
-		//loop in all children and throw an exception
-		//if one the children is not of the same type as the first
-		for (i in 0..._childNodes.length)
-		{
-			if (isChildInline(cast(_childNodes[i])) != ret)
-			{
-				//throw "children of a block container can only be either all block or all inline";
-			}
-		}
-		
-		return ret;
 	}
 	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Determine wether a children is inline or not
-	 */
-	private function isChildInline(child:ElementRenderer):Bool
-	{
-		var ret:Bool = true;
-		
-		//here the child is of type block
-		if (child.isInlineLevel() == true)
-		{
-			//floated children are not taken into account 
-			if (child.isFloat() == false)
-			{
-				ret = false;
-			}
-			//absolutely positioned children are not taken into account but relative positioned are
-			else if (child.isPositioned() == false || child.isRelativePositioned() == true)
-			{
-				ret = false;
-			}
-		}
-		//here the child is inline
-		else
-		{
-			ret = true;
-		}
-		
-		
-		return true;
-	}
 	
 	/**
 	 * Return the dimensions data
