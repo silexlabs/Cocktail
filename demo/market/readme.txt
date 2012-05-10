@@ -255,12 +255,12 @@ Raph:
 	=> en arrivant sur l'app d'un lien externe, l'affichage bugue (réglé par le resize) => non reproductible
 -Navigateur desktop:
 	=> une scrollbar apparait de la hauteur de la page => réglé en metant le style display=block au lieu de inline-block sur la swippableView => OK
+-Générique:
+	=> quand on atteint la fin d'un contenu, le scroll s'arrete net. Il devrait rebondire avec un easeInOut => réglé en utilisant le scroll natif => OK
 
 -------------------------------------------------------------------------------------------------------------------------
 
 Fonctionnalités manquantes / bugs restants:
--Générique:
-	=> quand on atteint la fin d'un contenu, le scroll s'arrete net. Il devrait rebondire avec un easeInOut
 -Galaxy note: le bouton de menu silicon sentier ne marche pas
 -error screen
 -auto-load rss: pour le flux silicon sentier, il y a a régulièrement deux cellules avec un contenu identique
