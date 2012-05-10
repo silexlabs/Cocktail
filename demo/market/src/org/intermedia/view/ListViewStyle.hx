@@ -32,7 +32,6 @@ class ListViewStyle
 		node.style.marginLeft = "0px";
 		node.style.marginRight = "0px";
 		node.style.marginTop = "0px";
-		//node.style.marginTop = Std.string(Constants.LIST_TOP) + "px";
 		node.style.marginBottom = "0px";
 		node.style.paddingLeft = "0px";
 		node.style.paddingRight = "0px";
@@ -43,8 +42,6 @@ class ListViewStyle
 		// set list width to 1/3 of the swippable list view
 		//node.style.width = Std.string(100/3) + "%";
 		node.style.width = Std.string(Lib.window.innerWidth) + "px";
-		//node.style.height = Std.string(Lib.window.innerHeight - Constants.LIST_TOP) + "px";
-		//node.style.height = "auto";
 		node.style.height = "100%";
 		
 		node.style.top = "0px";
@@ -52,8 +49,7 @@ class ListViewStyle
 		
 		node.style.verticalAlign = "top";
 		node.style.overflowX = "hidden";
-		node.style.overflowY = "scroll";
-		//node.style.overflowY = "auto";
+		node.style.overflowY = "auto";
 		
 		node.style.backgroundColor = Constants.LIST_BG_GREY_COLOR;
 	}
