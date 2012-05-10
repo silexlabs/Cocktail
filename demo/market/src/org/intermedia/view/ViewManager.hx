@@ -1,13 +1,10 @@
 package org.intermedia.view;
 
 import haxe.Firebug;
-import haxe.Http;
-import haxe.Timer;
 import js.Lib;
 import js.Dom;
 import org.intermedia.controller.ApplicationController;
 import org.intermedia.model.ApplicationModel;
-//import org.intermedia.view.SwippableListView;
 import org.intermedia.model.Feeds;
 
 /**
@@ -21,14 +18,12 @@ class ViewManager
 
 	// bodyDOMElement
 	private var _body:Body;
-	//private var _body:HtmlDom;
 	
 	//Reference to the header of the application, which is always displayed
 	private var _header:HeaderView;
 	
 	// reference to the menu
 	private var _menu:MenuListViewText;
-	//private var _menu:ScrollableMenu;
 	
 	//Ref to the container managing the swippable list view
 	private var _swippableListView:SwippableListView;
@@ -46,11 +41,8 @@ class ViewManager
 	//proxies interaction with the model
 	private var _applicationController:ApplicationController;
 	
-	//A ref to the currently displayed main view (not the header)
-	//private var _currentView:ViewBase;
-	
-	// _time is used to compute execution time for analysing performance
-	private var _time:Float;
+	// _currentView is used to store the current view
+	private var _currentView:ViewBase;
 	
 	/**
 	 * Store ref to application model and controller. Instantiate headerView, loadingView, swippableView then call init().
@@ -60,16 +52,6 @@ class ViewManager
 	 */
 	public function new(applicationModel:ApplicationModel, applicationController:ApplicationController)
 	{
-		// set the time
-		_time = Timer.stamp();
-
-		// simple haxe js test
-		//var text:HtmlDom = Lib.document.createTextNode("hello de LU");
-		//_body.appendChild(text);
-		//var image:Image = cast Lib.document.createElement("img");
-		//image.src = "assets/loading.gif";
-		//_body.appendChild(image);
-		
 		// Store ref to application model and controller
 		_applicationModel = applicationModel;
 		_applicationController = applicationController;
@@ -85,37 +67,27 @@ class ViewManager
 		
 		// init menu
 		_menu = new MenuListViewText();
-		//_menu = new ScrollableMenu();
 		_menu.displayListBottomLoader = false;
 		_body.appendChild(_menu.node);
 		_menu.data = [Feeds.FEED_1, Feeds.FEED_2, Feeds.FEED_3];
 		
 		// init swippable view
 		_swippableListView = new SwippableListView();
-		// set current view on swippable view
-		//_currentView = _swippableListView;
+		
 		// attach swippable view to body
 		_body.appendChild(_swippableListView.node);
+		
+		// set _currentView
+		_currentView = _swippableListView;
 		
 		// create detail view
 		_detailView = new DetailView();
 
 		// onresize callback
-		//Lib.window.onresize = onResizeCallback;
-		Lib.window.onresize = function (event:Event) { onResizeCallback();};
-		// on scroll callback is placed here for iPhone & Android phones, so that swippableView is resized when navigation bar is hidden
-		// can be removed in native apps
-		//Lib.window.onscroll = onResizeCallback;
-
+		Lib.window.onresize = function (event:Event) { refreshStyles();};
+		
 		// call init()
 		init();
-		
-		//_header.node.style.visibility = "hidden";
-		//_menu.node.style.visibility = "hidden";
-
-		//Firebug.trace("ViewManager built in " + Std.string((Timer.stamp() - _time) * 1000).substr(0, 5) + "ms");
-		//trace("ViewManager built in " + Std.string((Timer.stamp() - _time) * 1000).substr(0, 5) + "ms");
-		
 	}
 	
 	/**
@@ -139,7 +111,6 @@ class ViewManager
 		_swippableListView.onListItemSelected = onListItemSelectedCallback;
 		_swippableListView.onDataRequest = _applicationController.loadCellData;
 		_swippableListView.onHorizontalMove = _menu.moveHorizontally;
-		//_swippableListView.onHorizontalUp = _menu.horizontalUp;
 		_swippableListView.onHorizontalTweenEnd = _menu.horizontalTweenEnd;
 		
 		// Call loadCellData() on the application controller with the default cell number (between 5 to 10)
@@ -165,30 +136,20 @@ class ViewManager
 	 */
 	private function onListItemSelectedCallback(cellData:CellData):Void
 	{
-		//trace(Lib.window.innerWidth);
-		//trace(Lib.window.screen.width);
 		// remove swippable view touch events listener
 		//_swippableListView.unsetTouchEvents();
 		// remove swippableListView and menu and add empty detail view
 		_body.removeChild(_swippableListView.node);
 		_body.removeChild(_menu.node);
 
-		// to be used once switching to cocktail js version
-		//_swippableListView.style.visibility = VisibilityStyleValue.hidden;
-		//_menu.style.display = DisplayStyleValue.none;
-		
 		// create detail view and add it to the body
 		_detailView = new DetailView();
 		_body.appendChild(_detailView.node);
 		
-		// start listening to touch event on detail view
-		//_detailView.addTouchEvents();
+		// set _currentView
+		_currentView = _detailView;
 		
-		// set current view to detail view
-		//_currentView = _detailView;
-
 		// request detail view loading to controller
-		//_applicationController.openDetailView(cellData);
 		onDetailDataLoaded(cellData);
 	}
 	
@@ -197,24 +158,16 @@ class ViewManager
 	 * 
 	 * @param	cellsData
 	 */
-	//public function onCellDataLoaded(cellsData:Array<CellData>):Void
 	public function onCellDataLoaded(listData:ListData):Void
 	{
-		//trace("onCellDataLoaded");
 		// if no more data fetched, remove bottom loader
 		if (listData.cells.length == 0) _swippableListView.displayListBottomLoader = false;
 		
 		// update data
-		//_swippableListView.data = listData.cells;
 		_swippableListView.data = listData;
 		
 		// update header zIndex using a workaround so it always visible
 		updateZIndexes();
-		//setZIndexToMax(_menu);
-		//setZIndexToMax(_header);
-		
-		// remove loading view from swippable view
-		//_swippableListView.displayLoading = false;
 	}
 	
 	/**
@@ -226,19 +179,22 @@ class ViewManager
 	{
 		// update detail view data
 		_detailView.data = detailData;
+		
 		// update header title
 		_header.data = Constants.HEADER_DETAIL_TITLE;
+		
 		// display header back button
 		_header.displayBackButton = true;
 		
 		// update header zIndex using a workaround
-		//updateZIndexes();
 		setZIndexToMax(_header);
+		
+		// refresh styles
+		refreshStyles();
 		
 		// hide loader
 		_detailView.displayLoading = false;
 		
-		onResizeCallback();
 	}
 	
 	/**
@@ -246,7 +202,6 @@ class ViewManager
 	 */
 	public function onStartLoading():Void
 	{
-		//trace("onStartLoading");
 		//_currentView.displayLoading = true;
 	}
 	
@@ -264,13 +219,9 @@ class ViewManager
 	 */
 	public function onHeaderBackButtonPressed():Void
 	{
-		//trace(Lib.window.innerWidth);
-		//trace(Lib.window.screen.width);
-		
-		//_applicationController.goBackToListView();
-
 		// update header title
 		_header.data = Constants.HEADER_HOME_TITLE;
+		
 		// hide header back button
 		_header.displayBackButton = false;
 		
@@ -278,33 +229,21 @@ class ViewManager
 		_body.removeChild(_detailView.node);
 		_body.appendChild(_menu.node);
 		_body.appendChild(_swippableListView.node);
-		//_swippableListView.style.display = "inline-block";
-		//_swippableListView.isVisible = true;
-		
-		
-		// to be used once switching to cocktail js version
-		//_swippableListView.style.visibility = VisibilityStyleValue.hidden;
-		//_menu.style.display = "block";
 
-		
+		// set _currentView
+		_currentView = _swippableListView;
+
 		// update zIndex
 		updateZIndexes();
-		//setZIndexToMax(_menu);
-		//setZIndexToMax(_header);
 
-		// set current view on swippable view
-		//_currentView = _swippableListView;
-		
 		// remove detailview touch events listener
 		//_detailView.unsetTouchEvents();
 
-		// start listening to touch event on _swippableListView
-		//_swippableListView.addTouchEvents();
-		
 		// on resize callback is called here to resolve an Android Browser bug, where application width is not refreshed correctly
 		_swippableListView.scrollToCurrentList();
-		//Timer.delay( onResizeCallback, 1);
-		onResizeCallback();
+		
+		// refresh styles
+		refreshStyles();
 	}
 	
 	/**
@@ -331,17 +270,18 @@ class ViewManager
 	/**
 	 * on rezize callback
 	 */
-	//private function onResizeCallback(event:Event):Void
-	private function onResizeCallback():Void
+	private function refreshStyles():Void
 	{
-		// launch needed callbacks
-		//_header.refreshStyles();
-		//_menu.onResizeCallback();
-		_menu.refreshStyles();
-		//_swippableListView.onResizeCallback(event);
-		_swippableListView.refreshStyles();
-		
-		_detailView.refreshStyles();
+		// launch needed callbacks depending on the currentView
+		if(_currentView == _swippableListView)
+		{
+			_menu.refreshStyles();
+			_swippableListView.refreshStyles();
+		}
+		else if (_currentView == _detailView)
+		{
+			_detailView.refreshStyles();		
+		}
 	}
 
 	

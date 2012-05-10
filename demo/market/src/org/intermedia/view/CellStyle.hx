@@ -12,7 +12,7 @@ import js.Lib;
 import js.Dom;
 
 /**
- * This class defines the styles used by the CellThumb
+ * This class defines the styles used by the Cells
  * 
  * @author Raphael Harmel
  */
@@ -95,33 +95,22 @@ class CellStyle
 	}
 	
 	/**
-	 * Adds a border to the node, using CCS styles
+	 * Adds a border to the node, using workaround as not supported by cocktail yet
 	 * 
 	 * @param	node
 	 */
 	public static function addBorder(node:HtmlDom, borderWidth:Int):Void
 	{
 		// add border using margin and background as not supported by cocktail yet
-		//node.style.marginTop = Std.string(borderWidth) + "px";
 		node.style.marginBottom = Std.string(borderWidth) + "px";
 		node.style.marginLeft = Std.string(borderWidth) + "px";
-		// reduce width accordingly
-		// if unit is %
-		/*if (node.style.width.substr(-1) == "%")
-		{
-			//Firebug.trace(node.style.width);
-			//Firebug.trace(node.style.width.substr(0, -1));
-			node.style.width = Std.string( Std.parseInt(node.style.width.substr(0, -1)) - (borderWidth/Lib.window.innerWidth) ) + "%";
-			Firebug.trace(node.style.width);
-		}
-		// if unit is px
-		else if (node.style.width.substr( -2) == "px")
-		{
-			node.style.width = Std.string( Std.parseInt(node.style.width.substr(0, -2)) - borderWidth ) + "px";
-		}*/
-		
 	}
 	
+	/**
+	 * Adds a border to the node, using CCS styles
+	 * 
+	 * @param	node
+	 */
 	/*public static function addBorderCss(node:HtmlDom):Void
 	{
 		// add border
@@ -131,17 +120,25 @@ class CellStyle
 	}*/
 	
 	/**
-	 * Removes a border to the node, using CCS styles
+	 * Removes the border of the node, using workaround as not supported by cocktail yet
 	 * 
 	 * @param	node
 	 */
 	public static function removeBorder(node:HtmlDom):Void
 	{
-		// remove border
-		//node.style.borderStyle = "none";
-		
 		// remove border using margin as not supported by cocktail yet
 		node.style.margin = "0px";
 	}
+	
+	/**
+	 * Removes the border of the node, using CCS styles
+	 * 
+	 * @param	node
+	 */
+	/*public static function removeBorderCss(node:HtmlDom):Void
+	{
+		// remove border
+		node.style.borderStyle = "none";
+	}*/
 	
 }

@@ -1,24 +1,28 @@
 package org.intermedia.view;
 
-
-import org.intermedia.view.StyleModel;
-
 /**
- * Base class for list cell. Each ListView has its own cell class inherited from this one.
+ * Base class for cell. Each cell type has its own cell class inherited from this one.
  * 
  * @author Raphael Harmel
  */
 
+import js.Dom;
+import org.intermedia.view.StyleModel;
+
 class CellBase extends ViewBase
 {
 	
-	// number of celles per line
+	// number of cells per line
 	private var _cellPerLine:Int;
+	
+	// style
+	private var _style:CellStyleModel;
 	
 	public function new(?cellPerLine:Int = 1, ?style:CellStyleModel) 
 	{
 		super();
 		
+		_style = cast _style;
 		_cellPerLine = cellPerLine;
 		
 		// init style
@@ -36,7 +40,12 @@ class CellBase extends ViewBase
 	{
 		// init style model
 		_style = {
-			cell:CellStyle.setCellStyle
+			cell:CellStyle.setCellStyle,
+			thumbnailMask:null,
+			thumbnail:null,
+			textBlock:null,
+			title:null,
+			author:null
 		}
 	}
 	
@@ -48,5 +57,4 @@ class CellBase extends ViewBase
 		_style.cell(node,_cellPerLine);
 	}
 
-	
 }

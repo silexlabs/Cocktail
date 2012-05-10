@@ -50,37 +50,4 @@ class CellThumbText1BisStyle
 		
 	}
 	
-	/**
-	 * Defines image mask Style
-	 * 
-	 * @param	mask
-	 */
-/*	public static function setThumbnailMaskStyle(node:HtmlDom):Void
-	{
-		node.style.width = Std.string(CELL_THUMB_WIDTH_PERCENT) + "%";
-		node.style.height = Std.string(100) + "%";
-		
-		// apply mask style so it can crop the image
-		node.style.overflowX = "hidden";
-		node.style.overflowY = "hidden";
-		node.style.display = "inline-block";
-		//untyped { node.style.borderRadius = "10px"; };
-	}
-	
-	/**
-	 * Defines cell text block Style
-	 * 
-	 * @param	node
-	 */
-/*	public static function setTextBlockStyle(node:HtmlDom):Void
-	{
-		//setCellStyle(node);
-		
-		node.style.display = "inline-block";
-		node.style.marginLeft = "2%";
-		node.style.verticalAlign = "top";
-		node.style.width = Std.string(CELL_TEXT_WIDTH_PERCENT) + "%";
-		
-	}*/
-
 }

@@ -7,30 +7,23 @@
 
 package org.intermedia.view;
 
-//import cocktail.mouse.MouseData;
-import haxe.Firebug;
 import js.Lib;
 import org.intermedia.model.ApplicationModel;
-//import cocktail.node.HtmlDom;
+import org.intermedia.view.StyleModel;
 
 /**
- * This class defines a thumb & text cell
+ * This class defines a thumb & text cell having custom items in addition to its oawn cells
  * 
  * @author Raphael Harmel
  */
 
 class ThumbTextList1Bis extends ThumbTextList1
 {
-	//private var _homePageData:Array<Dynamic>;
 	private var _homePage:HomePage;
 	
-	//public function new(?cellPerLine:Int = 1, homePageData:Array<Dynamic>)
 	public function new(?cellPerLine:Int = 1)
 	{
-		//trace(homePageData);
-		//_homePageData = homePageData;
 		super(cellPerLine);
-		//ThumbTextList1BisStyle.setListStyle(node);
 	}
 
 	/**
@@ -40,9 +33,7 @@ class ThumbTextList1Bis extends ThumbTextList1
 	{
 		// init style model
 		_style = {
-			list:ThumbTextList1BisStyle.setListStyle,
-			//bottomLoaderImage:ListViewStyle.loaderImage,
-			//bottomLoaderCell:CellStyle.setCellStyle
+			list:ThumbTextList1BisStyle.setListStyle
 		}
 	}
 	
@@ -51,17 +42,11 @@ class ThumbTextList1Bis extends ThumbTextList1
 		// add home page data at the top of the list
 		var homePage:HomePage = new HomePage(homePageData);
 		homePage.onListItemSelected = onListItemSelectedCallback;
-		/*for (i in 0...homePage.node.childNodes.length)
-		{
-			// copy homepage children node to this.node. cloneNode Does not seem to work correctly here
-			//node.appendChild(homePage.node.childNodes[i].cloneNode(true));
-			// instead, children nodes are moved
-			node.appendChild(homePage.node.childNodes[0]);
-			
-		}*/
+
 		for (i in 0...homePage.cells.length)
 		{
-			// copy homepage children node to this.node. cloneNode Does not seem to work correctly here
+			// copy homepage children node to this.node
+			// following cloneNode method does not seem to work correctly here
 			//node.appendChild(homePage.node.childNodes[i].cloneNode(true));
 			// instead, children nodes are moves
 			_cells.push(homePage.cells[i]);
@@ -79,13 +64,13 @@ class ThumbTextList1Bis extends ThumbTextList1
 	override private function createCell():CellBase
 	{
 		// init style model
-		var cellStyle = {
+		var cellStyle:CellStyleModel = {
 			cell:CellThumbText1BisStyle.setCellStyle,
 			thumbnailMask:CellThumbText1Style.setThumbnailMaskStyle,
+			thumbnail:null,
 			textBlock:CellThumbText1Style.setTextBlockStyle,
 			title:CellThumbText1Style.setTitleStyle,
-			author:CellThumbText1Style.setAuthorStyle,
-			line:CellThumbText1Style.setLineStyle
+			author:null
 		}
 		
 		var cell:CellThumbText1 = new CellThumbText1(_cellsPerLine, cellStyle);

@@ -30,12 +30,6 @@ class DataLoader
 	// feed page index Hash containing page index for each already requested list
 	private var _pageIndexHash:Hash<Int>;
 
-	/*private function onLoadingError(unknown:Dynamic):Void
-	{
-		trace("error in DataLoader");
-	}*/
-	
-	//public function new(?itemsToLoad:Int = 10, ?pageIndex:Int = 1, ?online:Bool=true)
 	public function new(?online:Bool=true)
 	{
 		// init private attributes
@@ -64,6 +58,7 @@ class DataLoader
 		{			
 			// current list page index
 			var pageIndex:Int = 1;
+			
 			// handle page index
 			if (_pageIndexHash.exists(feed))
 			{
@@ -71,7 +66,7 @@ class DataLoader
 			}
 			_pageIndexHash.set(feed,pageIndex);
 			
-			//Firebug.trace(feed + " => " + pageIndex);
+			// build feed's full Url 
 			fullUrl = feed + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
 			
 			// load xml feed

@@ -21,9 +21,6 @@ import haxe.Timer;
 
 class ThumbTextListRssStandard 
 {
-	// _time is used to compute execution time for analysing performance
-	//static var _time:Float;
-	
 	/**
 	 * Converts a rss to an Array of CellDatas
 	 * 
@@ -32,9 +29,7 @@ class ThumbTextListRssStandard
 	 */
 	public static function rss2Cells(rss:Xml,?listId:String = ""):Array<CellData>
 	{
-		// set the time
-		//var _time:Float = Timer.stamp();
-
+		// init cells Array
 		var cells:Array<CellData> = new Array<CellData>();
 
 		// set channel node
@@ -85,15 +80,6 @@ class ThumbTextListRssStandard
 						// get the thumb image
 						cell.thumbUrl = getThumb(cell.description);
 						
-						//var node:HtmlDom = Lib.document.createElement("div");
-						//node.innerHTML = cell.description;
-						//var images:HtmlCollection<HtmlDom> = node.getElementsByTagName("img");
-						//if (images.length != 0)
-						//{
-							//Firebug.trace(images[0].getAttribute("src"));
-							//Firebug.trace(images[0]);
-							//images[0].parentNode.removeChild(images[0]);
-						//}
 					}
 					
 					// if node is a content
@@ -126,9 +112,7 @@ class ThumbTextListRssStandard
 				}
 			}
 		}
-		//haxe.Firebug.trace("Feed parsed in " + Std.string((Timer.stamp() - _time) * 1000).substr(0,5) + "ms");
-		//trace("Feed parsed in " + Std.string((Timer.stamp() - _time) * 1000).substr(0,5) + "ms");
-		// return cell array
+
 		return cells;
 	}
 	
@@ -192,7 +176,7 @@ class ThumbTextListRssStandard
 		// return the cleaned string
 		return text;
 		
-		// Nicolas Cannasse proposal to do it
+		// Nicolas Cannasse's proposal to do it
 		//~/&#([0-9A-Fa-f]+);/.customReplace(function(r) return String.fromCharCode(Std.parseInt("0x" + r.matched(1))));
 		
 		return text;
@@ -210,6 +194,7 @@ class ThumbTextListRssStandard
 		var imgNode:String = "";
 		var imgUrl:String = "";
 		var imgUrlStartIndex:Int = 0;
+		
 		// if img node name has been found
 		if ( imgNodeStartIndex != -1)
 		{
@@ -221,6 +206,7 @@ class ThumbTextListRssStandard
 			// get image url
 			var srcKeyWord:String = 'src=';
 			imgUrlStartIndex = imgNode.indexOf(srcKeyWord);
+			
 			// if srcKeyWord string has been found
 			if (imgUrlStartIndex != -1)
 			{
@@ -241,14 +227,8 @@ class ThumbTextListRssStandard
 			imgUrlStartIndex = htmlString.indexOf("<p>http://");
 			if ( imgUrlStartIndex != -1)
 			{
-				// get img node content
-				/*htmlString = htmlString.substr(imgNodeStartIndex);
-				var imgNodeEndIndex:Int = htmlString.indexOf(">") + 1;
-				imgNode = htmlString.substr(0, imgNodeEndIndex);*/
-				
 				// get image url
 				var srcKeyWord:String = '<p>';
-				//var imgUrlStartIndex:Int = imgNode.indexOf(srcKeyWord);
 				imgUrl = htmlString.substr(imgUrlStartIndex + srcKeyWord.length);
 				var imgUrlEndIndex:Int = imgUrl.indexOf("</p>");
 				imgUrl = imgUrl.substr(0, imgUrlEndIndex);

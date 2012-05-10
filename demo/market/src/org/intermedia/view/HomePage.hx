@@ -1,19 +1,17 @@
 package org.intermedia.view;
 
+import js.Lib;
+import js.Dom;
+import org.intermedia.view.Constants;
+import org.intermedia.model.ApplicationModel;
+import org.intermedia.view.StyleModel;
+
 /**
  * This class builds the static part of the home page
  * 
  * @author Raphael Harmel
  */
 
-import js.Lib;
-import js.Dom;
-import org.intermedia.view.Constants;
-import org.intermedia.view.StyleModel;
-import org.intermedia.model.ApplicationModel;
-
-
-//class HomePage extends ListViewBase
 class HomePage extends ViewBase
 {
 	
@@ -33,10 +31,14 @@ class HomePage extends ViewBase
 	override private function buildView():Void
 	{
 		// init style model
-		var cellStyle = {
+		var cellStyle:CellStyleModel = {
 			cell:CellThumbText1BisStyle.setCellStyle,
 			thumbnailMask:CellThumbStyle.setThumbnailMaskStyle,
-		}
+			thumbnail:null,
+			textBlock:null,
+			title:null,
+			author:null
+		};
 		
 		// add custom cells to the homepage
 		

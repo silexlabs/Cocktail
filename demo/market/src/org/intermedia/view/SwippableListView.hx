@@ -66,21 +66,12 @@ class SwippableListView extends ListViewBase
 	public var onHorizontalMove:Float->Void;
 	
 	// horizontal tween end
-	//public var onHorizontalTweenEnd:Float->Void;
 	public var onHorizontalTweenEnd:Int->Void;
-	
-	// horizontal tween end
-	public var onHorizontalUp:Int->Void;
-	
-	// _time is used to compute execution time for analysing performance
-	//private var _time:Float;
 	
 	public function new()
 	{
-		// set the time
-		//_time = Timer.stamp();
-		
 		super();
+		
 		// display loading
 		displayLoading = true;
 		
@@ -95,11 +86,6 @@ class SwippableListView extends ListViewBase
 		
 		_listsContainer = Lib.document.createElement("div");
 		SwippableListViewStyle.setListsContainerStyle(_listsContainer);
-		//node.appendChild(_listsContainer);
-		
-		// set onMouseDown callback
-		//onMouseDown = onDownCallback;
-		//onMouseDown = function(mouseEvent:MouseEventData) { onDownCallback(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };
 		
 		// set _listView array
 		_listViews = new Array<ListViewBase>();
@@ -130,6 +116,7 @@ class SwippableListView extends ListViewBase
 		
 		// set index
 		_index = 1;
+		
 		// set current list to list1
 		_currentListView = cast _listViews[_index];
 		
@@ -138,11 +125,9 @@ class SwippableListView extends ListViewBase
 		
 		// initialise move handler
 		_scrollHandler = new Scroll2D(ScrollType.both);
-		//_scrollHandler = new Scroll2D(ScrollType.horizontal);
 		_scrollHandler.onVerticalScroll = onVerticalScroll;
 		_scrollHandler.onHorizontalScroll = onHorizontalScrollCallback;
 		_scrollHandler.onHorizontalUp = onHorizontalUpCallback;
-		//_scrollHandler.onHorizontalTween = onHorizontalTweenCallback;
 		_scrollHandler.onHorizontalTween = onHorizontalScrollCallback;
 		_scrollHandler.onHorizontalTweenEnd = onHorizontalTweenEndCallback;
 		
@@ -253,10 +238,13 @@ class SwippableListView extends ListViewBase
 	{
 		// unset current list item selected callback
 		_currentListView.onListItemSelected = null;
+		
 		// set _index
 		_index = v;
+		
 		// update current list to new index
 		_currentListView = cast _listViews[v];
+		
 		// set current list item selected callback
 		_currentListView.onListItemSelected = onListItemSelectedCallback;
 		
@@ -323,17 +311,6 @@ class SwippableListView extends ListViewBase
     }
 	
 	/**
-	 * Horizontal tween callback
-	 * 
-	 * @param	XScroll	new scroll position
-	 */
-    /*private function onHorizontalTweenCallback(xOffset:Int):Void
-	{
-		//node.scrollLeft = xScroll;
-		node.scrollLeft = _scrollHandler.initialScrollPosition.x - xOffset;
-	}*/
-	
-	/**
 	 * Horizontal tween end callback
 	 * 
 	 * @param	XScroll	new scroll position
@@ -391,12 +368,6 @@ class SwippableListView extends ListViewBase
 		{
 			index = index;
 		}
-		
-		// js workaround to scroll up
-		/*#if js
-		js.Lib.window.scrollTo(0, 0);
-		//js.Lib.window.scrollTo(0,null);
-		#end*/
 		
 	}
 

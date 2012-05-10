@@ -12,7 +12,7 @@ import feffects.easing.Quad;
 import feffects.easing.Cubic;
 
 /**
- * This class handles the default behaviour when scrolling on a device with touch events or mouse events
+ * This class handles the default behaviour when scrolling on a device with touch events
  * 
  * @author Raphael Harmel
  */
@@ -21,9 +21,7 @@ class Scroll2D
 {
 
 	static inline var DIRECTION_PIXEL_MINIMUM:Int = 5;
-	//static inline var VERTICAL_TWEEN_DELTA:Int = 50;
 	static inline var TIME_DELTA:Int = 20;
-	//static inline var VERTICAL_RELEASE_TIME:Int = 200;
 	static inline var VERTICAL_RELEASE_DECELERATION:Float = 0.01;
 	static inline var VERTICAL_VELOCITY_MESURES:Int = 5;
 	
@@ -66,9 +64,6 @@ class Scroll2D
 	// vertical tween end
 	private var _verticalTween:Tween;
 	
-	// acceleration computing timer
-	private var _timer:Timer;
-	
 	// time marker
 	private var _time:Float;
 	
@@ -104,8 +99,7 @@ class Scroll2D
 		_yDelta = 0;
 		_time = Timer.stamp() * 1000;
 
-		// init timer & attributes used for acceleration computation
-		_timer = new Timer(TIME_DELTA);
+		// init attributes used for acceleration computation
 		_verticalVelocity = 0;
 		_previousY = 0;
 	}
@@ -120,10 +114,6 @@ class Scroll2D
 	{
 		switch(event.type)
 		{
-			//case "touchstart": type = "mousedown";
-			//case "touchmove":  type="mousemove";
-			//case "touchend":   type="mouseup";
-			//default: return;
 			case "touchstart":
 				// call onDownCallback
 				onDownCallback(event);
@@ -138,18 +128,15 @@ class Scroll2D
 	}
 
 	/**
-	 * A way to override onMouseDownCallback - not the best way, but Cocktail bug posted as no "nice" way to do it
+	 * Down callback
 	 * sets _xOffsetStart & _xInitial, and sets onMouseMove & onMouseUp callbacks
 	 * 
-	 * @param	mouseEventData
+	 * @param	event
 	 */
 	public function onDownCallback(event:Dynamic):Void
 	{
 		init();
 		
-		// stop all tweens
-		//stopTweens();
-
 		// Stop all initialised & running tweens
 		// only vertical tweenning is stopped otherwise horizontal scroll can stop between two lists
 		if ( (_horizontalTween != null) && _horizontalTween.isPlaying)
@@ -161,21 +148,9 @@ class Scroll2D
 			_verticalTween.stop();
 		}
 		
-		// set onMouseMove & onMouseUp callbacks
-		//onMouseMove = onMoveCallback;
-		//onMouseUp = onUpCallback;
-		//onMouseMove = function (mouseEvent:MouseEventData) { onMoveCallback(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };
-		//onMouseUp = function (mouseEvent:MouseEventData) { onUpCallback(mouseEvent.mousePosition.localX, mouseEvent.mousePosition.localY); };*/
-		
 		// initialise initial touch positions
 		_initialPosition.x = event.touches[0].pageX;
 		_initialPosition.y = event.touches[0].pageY;
-		
-		// stop timer if exists, done to avoid bug where swippableView is not scrollable anymore
-		if (_timer != null) _timer.stop();
-		// launch timer used for computing velocity and acceleration
-		//_timer.run = computeVelocity;
-		
 		
 		// set _direction
 		if (_scrollType == ScrollType.horizontal)
@@ -184,29 +159,19 @@ class Scroll2D
 			_direction = Direction.vertical;
 		else
 			_direction = Direction.notYetSet;
-		
 	}
 
 	/**
-	 * A way to override onMouseMoveCallback - not the best way, but Cocktail bug posted as no "nice" way to do it
+	 * Move callback
 	 * computes offset & moves the swippable view according to the offset
 	 * 
-	 * @param	mouseEventData
-	 * @return	the coordinate where to scroll to
+	 * @param	event
 	 */
 	public function onMoveCallback(event:Dynamic):Void
 	{
 		// compute x & y offset
 		_offset.x = Std.int(event.touches[0].pageX - _initialPosition.x);
 		_offset.y = Std.int(event.touches[0].pageY - _initialPosition.y);
-		
-		//_currentListView.onListItemSelected = null;
-		
-		// done to avoid top rebound effect - to be done also on bottom rebound one
-		//if (_currentListView.scrollTop <= 0 && _offset.y > 0)
-		//{
-			//event.preventDefault();
-		//}
 		
 		// if direction is not set
 		if (_direction == Direction.notYetSet)
@@ -233,20 +198,12 @@ class Scroll2D
 		// if direction is horizontal
 		if (_direction == Direction.horizontal)
 		{
-			// stops timer as only needed for vertical scroll
-			_timer.stop();
 			onHorizontalMoveCallback(event);
 		}
 		// if direction is vertical
 		else if (_direction == Direction.vertical)
 		{
 			onVerticalMoveCallback(event);
-			// if horizontal tween has been initialised, resume it. Done to avoid horizontal scroll stopping between 2 lists
-			// creates a bug !!!!!!!
-			//if ( (_horizontalTween != null) )
-			//{
-				//_horizontalTween.resume();
-			//}
 		}
 		
 	}
@@ -260,6 +217,7 @@ class Scroll2D
 	{
 		// prevent default scroll behaviour
 		event.preventDefault();
+		
 		// call horizontal scroll callback with correct x position
 		_scrollPosition = {x: initialScrollPosition.x - _offset.x, y: initialScrollPosition.y }
 		onHorizontalScrollCallback(_offset.x);
@@ -274,52 +232,41 @@ class Scroll2D
 	{
 		var timeDelta:Float = (Timer.stamp() * 1000) - _time;
 		_time = Timer.stamp() * 1000;
-		//_yDelta = _yDelta - Std.int(event.touches[0].pageY);
 		
-		computeVelocity2(timeDelta);
+		computeVelocity(timeDelta);
 		
-		// block left scroll position
-		//node.scrollLeft = initialScrollPosition.x;
+		// compute new scroll position
+		_scrollPosition = { x: initialScrollPosition.x, y: initialScrollPosition.y - _offset.y }
 		
-		// prevent default scroll behaviour
-		// can be removed to have top rebound effect, but conflicts with native scroll
-		event.preventDefault();
-		
-		// compute velocity
-		//_verticalVelocity = _yDelta / timeDelta;
-		//trace(_yDelta + ", " + timeDelta + ", " + _verticalVelocity);
+		// prevent default scroll behaviour but keep the top rebound effect on iOS as is
+		// if not done, conflicts with native scroll
+		if (_scrollPosition.y > 0)
+		{
+			event.preventDefault();
+		}
 		
 		// call vertical scroll callback with correct y position
-		_scrollPosition = { x: initialScrollPosition.x, y: initialScrollPosition.y - _offset.y }
 		onVerticalScrollCallback(_offset.y);
 	}
 
 		
 	/**
-	 * A way to override onMouseUpCallback - not the best way, but Cocktail bug posted as no "nice" way to do it
+	 * Up callback
 	 * unset onMouseMove & onMouseUp callbacks
 	 * 
-	 * @param	mouseEventData
-	 * @return	the coordinate where to scroll to
+	 * @param	event
 	 */
 	public function onUpCallback(event:Dynamic):Void
 	{
-		//event.preventDefault();
 		if (_direction == Direction.horizontal)
 		{
-			//event.preventDefault();
 			onHorizontalUpCallback(event);
 		}
 		else if (_direction == Direction.vertical)
 		{
-			//event.preventDefault();
 			verticalReleaseTween();
 		}
 			
-		// unset onMouseMove & onMouseUp callbacks
-		//onMouseMove = null;
-		//onMouseUp = null;
-		
 		// reset direction
 		_direction = Direction.notYetSet;
 
@@ -334,7 +281,6 @@ class Scroll2D
 	{
 		if (onHorizontalUp != null)
 		{
-			//event.preventDefault();
 			onHorizontalUp(event,_offset.x);
 		}
 	}
@@ -351,6 +297,7 @@ class Scroll2D
 		// create the tween
         _horizontalTween = new Tween( xOrigin, xTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quad.easeOut );
 		_horizontalTween.setTweenHandlers( onHorizontalScrollCallback, horizontalTweenEnd );
+		
         // launch the tween
         _horizontalTween.start();
 	}
@@ -364,7 +311,6 @@ class Scroll2D
     {
 		if (onHorizontalScroll != null)
 		{
-			//onHorizontalScroll(Std.int(e),_offset.x);
 			onHorizontalScroll(Std.int(xOffset));
 		}
     }
@@ -400,9 +346,6 @@ class Scroll2D
 	 */
 	private function verticalReleaseTween():Void
 	{
-		// stop timer to freeze computed values
-		//_timer.stop();
-		
 		_time = Timer.stamp() * 1000;
 		
 		// if scrolling direction is down
@@ -421,7 +364,6 @@ class Scroll2D
 		// scroll release automation
 		_decelerationTimer = new Timer(10);
 		_decelerationTimer.run = onVerticalReleaseCallback;
-		//trace(_verticalVelocity);
 		
 	}
 	
@@ -454,8 +396,8 @@ class Scroll2D
 			var amplitude:Float = _verticalVelocity * releaseTime;
 
 			// compute vertical release delta, based on _offset.y, velocity and deceleration
-			//var verticalReleaseDelta:Int = Std.int(_offset.y + (_verticalVelocity * timeDelta) + (_verticalReleaseDeceleration * Math.pow(timeDelta, 2) / 2));
-			var verticalReleaseDelta:Int = _offset.y + Std.int(amplitude * ( 1 - Math.exp(-timeDelta / releaseTime)));
+			var verticalReleaseDelta:Int = _offset.y + Std.int(amplitude * ( 1 - Math.exp( -timeDelta / releaseTime)));
+			
 			// call callback
 			onVerticalScroll(verticalReleaseDelta);
 
@@ -478,59 +420,13 @@ class Scroll2D
 	}
 	
 	/**
-	 * Stop all initialised & running tweens
-	 */
-	/*private function stopTweens():Void
-	{
-		// only vertical tweenning is stopped otherwise horizontal scroll can stop between two lists
-		if ( (_horizontalTween != null) && _horizontalTween.isPlaying)
-		{
-			_horizontalTween.pause();
-		}
-		if ( (_verticalTween != null) && _verticalTween.isPlaying)
-		{
-			_verticalTween.stop();
-		}
-	}*/
-	
-	/**
 	 * Computes instantaneous velocity
 	 * 
 	 * @return
 	 */
-	private function computeVelocity():Void
+	private function computeVelocity(time:Float):Void
 	{
-		// compute velocity
-		//trace(_previousY + ", " + _offset.y);
-		//_verticalVelocity = deriv(_previousY, _offset.y);
-		// an average velocity is computed to improve experience
-		//_verticalVelocity = (deriv(_previousY, _offset.y) + _verticalVelocity) / 2;
-		_verticalVelocity = deriv(_previousY, _offset.y);
-		_previousY = _offset.y;
-		
-		// store the newly computed velocity in the velocity array
-		if(_verticalVelocityArray.length < VERTICAL_VELOCITY_MESURES)
-		{
-			for (i in 0...VERTICAL_VELOCITY_MESURES)
-			{
-				_verticalVelocityArray.push(_verticalVelocity);
-			}
-		}
-		else
-		{
-			_verticalVelocityArray.unshift(_verticalVelocity);
-			_verticalVelocityArray.pop();
-		}
-	}
-	
-	/**
-	 * Computes instantaneous velocity
-	 * 
-	 * @return
-	 */
-	private function computeVelocity2(time:Float):Void
-	{
-		//_verticalVelocity = deriv(_previousY, _offset.y);
+		// compute vertical velocity & stores previous offset
 		_verticalVelocity = (_offset.y - _previousY)/time;
 		_previousY = _offset.y;
 		
@@ -552,18 +448,6 @@ class Scroll2D
 	}
 	
 	/**
-	 * Derivates 2 values based on time
-	 * 
-	 * @param	a
-	 * @param	b
-	 * @return
-	 */
-	private function deriv(a:Float, b:Float):Float
-	{
-		return (b - a) / TIME_DELTA;
-	}
-	
-	/**
 	 * compute AverageVelocity
 	 */
 	private function computeAverageVelocity():Void
@@ -571,6 +455,7 @@ class Scroll2D
 		_verticalVelocity = 0;
 		var sum:Float = 0;
 		
+		// compute average velocity using degressive weights
 		for (i in 0..._verticalVelocityArray.length)
 		{
 			sum += _verticalVelocityArray[i] * (VERTICAL_VELOCITY_MESURES - i);

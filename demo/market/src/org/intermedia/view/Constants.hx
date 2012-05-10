@@ -15,9 +15,6 @@ package org.intermedia.view;
 
 class Constants
 {
-	// Global constants
-	//public static inline var ONLINE:Bool = false;
-	
 	// production values
 	public static inline var HEADER_BG_IMAGE_URL:String = "assets/tile_french-tech.png";
 	public static inline var MENU_BG_IMAGE_URL:String = "assets/tile_french-tech2.png";
@@ -33,14 +30,11 @@ class Constants
 	//public static inline var CELL_BG_COLOR:String = "";
 	
 	
-	
 	// set header constants
 	public static inline var HEADER_HOME_TITLE:String = "French Tech";
 	public static inline var HEADER_DETAIL_TITLE:String = "Infos";
 	public static inline var HEADER_FONT_COLOR:String = '#EEEEEE';
 	public static inline var HEADER_HEIGHT:Int = 43;
-	public static inline var HEADER_WITH_SHADOW_HEIGHT:Int = 43;
-	//public static inline var HEADER_IMAGE_URL:String = "assets/rss-icon.png";
 	//public static inline var HEADER_IMAGE_URL:String = "";
 	
 	// set header constants
@@ -62,7 +56,7 @@ class Constants
 	public static inline var CELL_BORDER_WIDTH:Int = 1;
 	public static inline var CELL_BORDER_WIDTH_LARGE:Int = 4;
 	public static inline var CELL_BORDER_COLOR:String = "#CCCCCC";
-	//public static inline var CELL_RATIO:Float = 16/9;
+	public static inline var CELL_FONT_COLOR:String = "#444444";
 	public static inline var CELL_HEIGHT:Int = 90;
 	public static inline var CELL_MAX_HEIGHT:Int = 160;
 	public static inline var CELL_MIN_WIDTH:Int = 160;
@@ -74,8 +68,10 @@ class Constants
 	public static inline var CELL_THUMB_TEXT_TITLE_LENGTH:Int = 42;
 	
 	// set detail constants
+	public static inline var DETAIL_BG_COLOR:String = CELL_BG_COLOR;
 	public static inline var DETAIL_HORIZONTAL_PADDING_PERCENT:Int = 2;
 	public static inline var DETAIL_HORIZONTAL_PERCENT:Int = 100 - 2 * DETAIL_HORIZONTAL_PADDING_PERCENT;
+	public static inline var DETAIL_VERTICAL_PADDING_PIXELS:Int = 10;
 	
 	
 }

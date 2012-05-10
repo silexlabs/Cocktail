@@ -1,25 +1,23 @@
 package org.intermedia.view;
 
 import haxe.Firebug;
-import haxe.Timer;
 import js.Lib;
 import js.Dom;
-import org.intermedia.view.StyleModel;
 import org.intermedia.model.ApplicationModel;
 
 /**
- * Base class for thumb text list cell. Each ListView has its own cell class inherited from this one.
+ * Base class for thumb text list cell
  * 
  * @author Raphael Harmel
  */
+
+import org.intermedia.view.CellBase;
+import org.intermedia.view.StyleModel;
 
 class CellThumbText1 extends CellBase
 {
 	// cropping mask containing the image
 	private var _croppedImage:CroppedImage;
-
-	// blockThumb containing cropped image
-	//private var _blockThumb:BlockThumb;
 
 	/**
 	 * constructor
@@ -27,7 +25,7 @@ class CellThumbText1 extends CellBase
 	 * @param	?cellPerLine	number of cells per line
 	 * @param	?style		cell style
 	 */
-	public function new(?cellPerLine:Int = 1, ?style:Dynamic) 
+	public function new(?cellPerLine:Int = 1, ?style:CellStyleModel) 
 	{
 		super(cellPerLine,style);
 	}
@@ -41,10 +39,10 @@ class CellThumbText1 extends CellBase
 		_style = {
 			cell:CellThumbText1Style.setCellStyle,
 			thumbnailMask:CellThumbText1Style.setThumbnailMaskStyle,
+			thumbnail:null,
 			textBlock:CellThumbText1Style.setTextBlockStyle,
 			title:CellThumbText1Style.setTitleStyle,
-			author:CellThumbText1Style.setAuthorStyle,
-			line:CellThumbText1Style.setLineStyle
+			author:null
 		}
 		
 	}
@@ -61,20 +59,10 @@ class CellThumbText1 extends CellBase
 		// load cropped thumb image
 		if (_data.thumbUrl != "" && _data.thumbUrl != null)
 		{
-			// create cropped image
-			/*_croppedImage = new CroppedImage();
-			_croppedImage.onImageLoadSuccess = refreshStyles;
-			_croppedImage.loadThumb(_data.thumbUrl);
-			// apply style
-			_style.thumbnailMask(_croppedImage.node);
-			// attach it to hierarchy
-			node.appendChild(_croppedImage.node);*/
-
-			// create blockThumb containing cropped thumb image
+			// create cropped thumb image
 			_croppedImage = new CroppedImage(_style);
 			_croppedImage.data = _data;
-			node.appendChild(_croppedImage.node);
-			
+			node.appendChild(_croppedImage.node);	
 		}
 
 		
@@ -104,28 +92,6 @@ class CellThumbText1 extends CellBase
 			cellTextBlockContainer.appendChild(cellTitleContainer);
 		}
 		
-		// add author
-		/*if (_data.author != "" && _data.author != null)
-		{
-			var cellAuthorContainer:HtmlDom = Lib.document.createElement("div");
-			var textElement:HtmlDom = Lib.document.createTextNode(_data.author);
-			cellAuthorContainer.appendChild(textElement);
-			_style.author(cellAuthorContainer);
-			//listStyle.cellComment(cellAuthorContainer, screenResolutionSize);
-			cellTextBlockContainer.appendChild(cellAuthorContainer);
-		}*/
-		
-		
-		// LINE
-		
-		// add separation line
-		/*var line:HtmlDom = Lib.document.createElement("div");
-		// set image style
-		_style.line(line);
-		node.appendChild(line);
-		line.src("assets/greyPixel.png");*/
-
-		//Timer.delay(refreshStyles, Constants.CELL_STYLE_REFRESH_DELAY);
 	}
 	
 	override public function refreshStyles():Void 

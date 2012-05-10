@@ -128,6 +128,8 @@ Q/A:
 -scrollbar visible when using swippable view => corrected by using overflow=hidden on body
 -best way to update an image url without keeping visually the previous one (cf. detail view) => using visible none or loader image
 
+-------------------------------------------------------------------------------------------------------------------------
+
 To Do
 -is there a way to create dynamically lists with a specific cell type without creating a specific list for this type of cell
  => yes, by sending the cell type to the constructor
@@ -149,7 +151,7 @@ To Do
 -touchevents to be used on touch devices => OK, done in pure js
 -read specs to see if nothing is missing
  => missing error page with OK button
--handle resize
+-handle resize => OK
  => called on ipad when swipped
  => test with cocktail this.nativeElement.onResize
  => try with pure js js.Lib.body.onResize
@@ -201,24 +203,24 @@ To do Alex pre fine tuning:
 Feedback market Pol & Alex 24/04/2012
 
 Scroll swippable view
- => scroll horizontal a ameliorer (cf. Android Market)
- => release scroll vertical basé sur l'acceleration
+ => scroll horizontal a ameliorer (cf. Android Market) => OK
+ => release scroll vertical basé sur l'acceleration => OK
  => cellules clickées pendant le scroll => OK
 
 Pol:
- => tile header
- => tile menu
- => image header a revoir
- => background cellules texte
+ => tile header => OK
+ => tile menu => OK
+ => image header a revoir => retirée => OK
+ => background cellules texte => OK
 
 Menu:
  => police à changer:
      => donner la police à pol => OK
      => enlever le gras => OK
  => copier le menu d'android market
-     => déplacement
+     => déplacement => OK
      => menu latéraux
-       => position
+       => position => OK
        => ombre
  => couleur du bouton clické à retirer => OK: propriétés css non-génériques utilisées
  => bug release menu => OK
@@ -229,45 +231,82 @@ Point market 27/04/2012
 => redimensionement
 	=> propriété du viewport "height=device-height" retirée, résultat hide url bar ne fonctionne plus car impacte le redimmensionnement en mode paysage
 	=> OK
-=> auto-load rss: pour le flux silicon sentier, il y a a régulièrement deux cellules avec un contenu identique
-App native:
-=> performance à améliorer car l'appli freeze au niveau du chargement de nouveaux flux
-	=> parsage du xml à améliorer ? => après mesure, ce n'est pas la qu'il y a la plus grosse perte de temps
-	  => utiliser XML.Fast
-	  => parser les Xml sur le server, transmission à l'appli en haxe remoting
-	  => stoker les xml sur le serveur pour améliorer la vitesse de chargement
-	=> ajout de nouvelles cellules au DOM en detachant la liste parent puis en la réatachant
-	  => gain de 50% du temps moyen de creation du DOM (initial: 140ms - après optim: 70ms)
+App native via PhoneGap:
 => bottom loading screen non visible => OK
 => les flux locaux ne se chargent pas => Réglé en utilisant les fichiers locaux comme ressources haxe => OK
-
-Dans une prochaine version
-Créer une Home page contenant les icônes de chaque flux rss
- => un click sur le Header ramène à la homepage
-
-Taches restantes:
--Générique:
-	=> quand on atteint la fin d'un contenu, le scroll s'arrete net. Il devrait rebondire avec un easeInOut
--Galaxy note: le bouton de menu silicon sentier ne marche pas
--iPhone:
-	=> l'inertie du scroll n'est plus utilisable dans la swippable view une fois qu'on a cliqué dans une vue détail => OK
-	=> la list text n'a pas pas les lignes de séparation grises => OK
-	=> en arrivant sur l'app d'un lien externe, l'affichage bugue (réglé par le resize) => non reproductible
 
 Point market 04/05/2012
 Pol:
 -Toujours des données locales ?
  Le bandeau de haut de page est tellement rédhibitoire que si nous devons utiliser ces données il faudrait mettre à jour les références en terme de feed
  => OK
--Par ailleurs les "anims" sont vraiment heurtées au sens ou ce n'est pas fluide
--La version native rame sa mère
+-Par ailleurs les "anims" sont vraiment heurtées au sens ou ce n'est pas fluide => OK
+-La version native rame sa mère => OK
 
 Alex:
 - quand le detail contient une image large, au retour a la liste ca bug => problème avec les iframes & images trop larges => OK
 - la barre d adresse du navigateur est a moitier remontee seulement => complètement désactivé => OK
 - le scroll vertical et son acceleration sont moins bien qu'avant
+-iPhone:
+	=> l'inertie du scroll n'est plus utilisable dans la swippable view une fois qu'on a cliqué dans une vue détail => OK
+	=> la list text n'a pas pas les lignes de séparation grises => OK
+	=> en arrivant sur l'app d'un lien externe, l'affichage bugue (réglé par le resize) => non reproductible
 
+-------------------------------------------------------------------------------------------------------------------------
+
+Fonctionnalités manquantes / bugs restants:
+-Générique:
+	=> quand on atteint la fin d'un contenu, le scroll s'arrete net. Il devrait rebondire avec un easeInOut
+-Navigateur desktop:
+	=> une grosse scrollbar apparait
+-Galaxy note: le bouton de menu silicon sentier ne marche pas
+-error screen
+-auto-load rss: pour le flux silicon sentier, il y a a régulièrement deux cellules avec un contenu identique
+-items de menu latéraux a mettre avec une ombre visuelle
+-quand on revient à la vue liste, celle-ci ne devrait pas avoir changé de position
+
+-------------------------------------------------------------------------------------------------------------------------
 	
+Dans le futur
+-Pouvoir switcher entre les flux locaux & online
+	=> par click sur texte du header
+	=> avec un bouton dans le header
+-version online
+	=> Chargement des flux les plus récents
+		=> par scroll en haut de la liste
+		=> avec un bouton refresh
+	=> amélioration des performances
+		=> système de cache des flux rss au niveau du serveur Silex afin de limiter la dépendance au temps de génération de FrenchWeb et autres
+		=> ne pas charger automatiquement du nouveau contenu une fois le bas de la liste atteint, mais afficher le text "load more" ou une icone, chargeant davantage de données au click
+		=> parsage du xml à améliorer ? => après mesure, ce n'est pas la qu'il y a la plus grosse perte de temps
+		  => utiliser XML.Fast
+		  => parser les Xml sur le server, transmission à l'appli en haxe remoting
+		  => stoker les xml sur le serveur pour améliorer la vitesse de chargement
+		=> ajout de nouvelles cellules au DOM en detachant la liste parent puis en la réatachant
+		  => gain de 50% du temps moyen de creation du DOM (initial: 140ms - après optim: 70ms)
+-Créer une Home page contenant les icônes de chaque flux rss
+	=> un click sur le Header ramène à la homepage
+-Rendre le design responsive
+	=> étape 1 (rapide): changer le nombre de cellules en fonction de la taille de l'écran
+	=> étape 2 (rapide): changer la taille des cellules
+	=> étape 3 (long): faire un design competement adapté à l'iPad
+
+Remarques suite à une comparaison avec les application d'information existantes sur iPhone (Financial Times, Le Monde, France 24, France TV Info):
+-Dans la vue detail, ajouter la date
+-Il y a toujours une cellule par ligne, et jamais plus
+-Aucune ne fonctionne en mode paysage
+-effet rebond haut et bas: jouer avec la position plutot que le scroll
+-Les listes text sont pratiquement uniquement utilisées pour les catégories
+	=> remplacer la list texte par une liste de cellules TextThumb avec un élément par ligne sur les mobiles
+-loading screen
+	=> reprendre le design de celui de france 24
+		=> petit carré à bord rond central, transparence à 50%, contenant une wheel
+-Vue detail:
+	=> pour lire les articles suivants et précédents
+		=> ajouter des boutons avec icones flèches 
+		=> sroll latéral
+
+-------------------------------------------------------------------------------------------------------------------------
 	
 Cocktail remarks:
 -when using a text, I always end up using it within a container to apply the styles
@@ -301,6 +340,9 @@ CSS resolved issues:
 -issue with maxWidth on Alex' Android phone:
 	=> in detailView for iframes & img resize, the width is computed manually (without maxWidth)
 
+For AppStore submission:
+-ths "demos" word on the splash screen must be removed
+	
 Missing useful functionalities in cocktail
 -zIndex
 -not possible to replace text within a container

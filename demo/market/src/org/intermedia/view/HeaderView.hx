@@ -10,11 +10,8 @@ import js.Dom;
  */
 
 class HeaderView extends ViewBase
-//class HeaderView
 {
 
-	//public var dom:HtmlDom;
-	
 	// Called when the back button is clicked
 	public var onBackButtonClick:Void->Void;
 	
@@ -23,7 +20,6 @@ class HeaderView extends ViewBase
 	public var displayBackButton(getDisplayBackButton, setDisplayBackButton):Bool;
 	
 	// text container, to be built in the constructor
-	//private var _titleContainer:HtmlDom;
 	private var _titleContainer:HtmlDom;
 	
 	//private var _titleTextElement:HtmlDom;
@@ -33,7 +29,6 @@ class HeaderView extends ViewBase
 	private var _image:Image;
 	
 	// back button container, to be built in the constructor, and attached/detached depending on displayBackButton value
-	//private var _backButtonContainer:HtmlDom;
 	private var _backButtonContainer:HtmlDom;
 
 	public function new()
@@ -67,7 +62,6 @@ class HeaderView extends ViewBase
 		if (_displayBackButton)
 		{
 			//node.removeChild(_image);
-			//node.appendChild(_backButtonContainer);
 			node.appendChild(_backButtonContainer);
 		}
 		// if it has to be hidden, first check if back button is already attached to this, and then remove it and then add thumb
@@ -75,7 +69,6 @@ class HeaderView extends ViewBase
 		{
 			if(_backButtonContainer.parentNode != null)
 			{
-				//this.removeChild(_backButtonContainer);
 				node.removeChild(_backButtonContainer);
 				//node.appendChild(_image);
 			}
@@ -99,7 +92,6 @@ class HeaderView extends ViewBase
 		
 		// build title and attach it
 		_titleTextElement = Lib.document.createTextNode(_data);
-		//_titleTextElement = Lib.document.createTextNode("Yo");
 		_titleContainer = Lib.document.createElement("div");
 		_titleContainer.appendChild(_titleTextElement);
 		HeaderStyle.setHeaderTextStyle(_titleContainer);
@@ -145,7 +137,6 @@ class HeaderView extends ViewBase
 		backButtonContainer.appendChild(backButtonTextContainer);
 		
 		// set callback
-		//backButtonContainer.onMouseUp = function (mouseEvent:MouseEventData) { onBackButtonClickCallback(); };
 		backButtonContainer.onmouseup = function (event:Event) { onBackButtonClickCallback(); };
 		
 		return backButtonContainer;
@@ -161,14 +152,5 @@ class HeaderView extends ViewBase
 			onBackButtonClick();
 		}
 	}
-	
-	/**
-	 * Refresh styles
-	 */
-	/*public function refreshStyles():Void
-	{
-		// set header style
-		HeaderStyle.setHeaderStyle(node);
-	}*/
 	
 }
