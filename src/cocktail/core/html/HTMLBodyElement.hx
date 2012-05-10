@@ -64,7 +64,9 @@ class HTMLBodyElement extends HTMLElement
 	}
 	
 	/**
-	 * do nothing as there is no parent ElementRenderer
+	 * do nothing as there is no parent ElementRenderer. The HTMLBodyElement
+	 * is always attached to the HtmlHtmlElement which doesn't generate any 
+	 * ElementRenderer
 	 */
 	override private function attachToParentElementRenderer():Void
 	{

@@ -29,9 +29,13 @@ class HTMLHtmlElement extends HTMLElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE RENDERING METHODS
+	// OVERRIDEN PRIVATE RENDERING TREE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * This HTMLElement doesn't generate any visual content,
+	 * as the root of the visual content is the HTMLBodyElement
+	 */
 	override private function createElementRenderer():Void
 	{
 		
