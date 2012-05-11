@@ -205,6 +205,10 @@ class ElementRenderer extends Node
 		_lineBoxes = new Array<LineBox>();
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * invalidate Style after DOM change
 	 * 
@@ -233,34 +237,31 @@ class ElementRenderer extends Node
 		return oldChild;
 	}
 	
-	//TODO : should be false by default as only BoxRenderer can establish
-	//new LayerRenderer
-	private function establishesNewStackingContext():Bool
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC RENDERING METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Render the element using runtime specific
+	 * API and return an array of NativeElement from it
+	 */
+	public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		switch (_coreStyle.computedStyle.position)
-		{
-			case cssStatic :
-				return false;
-				
-			default:
-				return true;
-		}
+		
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC LAYOUT METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function createLayer(parentLayer:LayerRenderer):Void
-	{
-		if (establishesNewStackingContext() == true)
-		{
-			_layerRenderer = new LayerRenderer(this);
-			parentLayer.appendChild(_layerRenderer);
-			_hasOwnLayer = true;
-		}
-		else
-		{
-			_layerRenderer = parentLayer;
-		}
+	public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	{	
+		
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	public function attachLayer():Void
 	{
@@ -279,14 +280,13 @@ class ElementRenderer extends Node
 		}
 	}
 	
-	//TODO : might induce bug if detachLayer is called
-	//after that a property lke 'position' is changed
 	public function detachLayer():Void
 	{
 		//the HTMLElement is now attached and can attach its children
 		for (i in 0..._childNodes.length)
 		{
 			var child:ElementRenderer = cast(_childNodes[i]);
+			
 			child.detachLayer();
 		}
 		
@@ -296,7 +296,7 @@ class ElementRenderer extends Node
 
 			parent.layerRenderer.removeChild(_layerRenderer);
 			
-			
+			_layerRenderer.detach();
 			_hasOwnLayer = false;
 		}
 		
@@ -304,16 +304,71 @@ class ElementRenderer extends Node
 	}
 	
 	/////////////////////////////////
-	// PUBLIC METHODS
+	// PUBLIC HELPER METHODS
 	////////////////////////////////
 	
-	/**
-	 * Render the element using runtime specific
-	 * API and return an array of NativeElement from it
-	 */
-	public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	public function establishesNewFormattingContext():Bool
 	{
-		
+		return false;
+	}
+	
+	public function isFloat():Bool
+	{
+		return false;
+	}
+	
+	public function isPositioned():Bool
+	{
+		return false;
+	}
+	
+	public function isInlineLevel():Bool
+	{
+		return false;
+	}
+	
+	public function isReplaced():Bool
+	{
+		return false;
+	}
+	
+	public function isText():Bool
+	{
+		return false;
+	}
+	
+	public function isRelativePositioned():Bool
+	{
+		return false;
+	}
+	
+	public function childrenInline():Bool
+	{
+		return false;
+	}
+	
+	/////////////////////////////////
+	// PRIVATE HELPER METHODS
+	////////////////////////////////
+	
+	private function establishesNewStackingContext():Bool
+	{
+		return false;
+	}
+	
+	
+	private function createLayer(parentLayer:LayerRenderer):Void
+	{
+		if (establishesNewStackingContext() == true)
+		{
+			_layerRenderer = new LayerRenderer(this);
+			parentLayer.appendChild(_layerRenderer);
+			_hasOwnLayer = true;
+		}
+		else
+		{
+			_layerRenderer = parentLayer;
+		}
 	}
 	
 	private function getChildrenBounds(childrenBounds:Array<RectangleData>):RectangleData
@@ -368,57 +423,6 @@ class ElementRenderer extends Node
 		return bounds;
 		
 	}
-	
-	public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
-	{	
-		
-	}
-	
-	public function childrenInline():Bool
-	{
-		return false;
-	}
-	
-	/////////////////////////////////
-	// PUBLIC HELPER METHODS
-	////////////////////////////////
-	
-	public function establishesNewFormattingContext():Bool
-	{
-		return false;
-	}
-	
-	
-	public function isFloat():Bool
-	{
-		return false;
-	}
-	
-	public function isPositioned():Bool
-	{
-		return false;
-	}
-	
-	public function isInlineLevel():Bool
-	{
-		return false;
-	}
-	
-	public function isReplaced():Bool
-	{
-		return false;
-	}
-	
-	public function isText():Bool
-	{
-		return false;
-	}
-	
-	public function isRelativePositioned():Bool
-	{
-		return false;
-	}
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC INVALIDATION METHODS
@@ -475,9 +479,9 @@ class ElementRenderer extends Node
 		
 	}
 	
-	/////////////////////////////////
-	// SETTERS/GETTERS
-	////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function get_globalBounds():RectangleData
 	{
@@ -539,10 +543,6 @@ class ElementRenderer extends Node
 			height:bounds.height
 		}
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTER/SETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function getComputedStyle():ComputedStyleData
 	{

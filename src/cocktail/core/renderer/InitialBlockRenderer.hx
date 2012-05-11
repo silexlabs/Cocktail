@@ -47,21 +47,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
 	}
 	
-	/**
-	 * Render and position the background color and
-	 * image of the element using runtime specific
-	 * API and return an array of NativeElement from
-	 * it
-	 */
-	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+
+	//TODO : shouldn't have to override, initial block bounds should always be windows
+	override private function renderBackground(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var backgroundManager:BackgroundManager = new BackgroundManager();
-		
-		var width:Float = cocktail.Lib.window.innerWidth;
-		var height:Float = cocktail.Lib.window.innerHeight;
-		
-		_bounds.width = width;
-		_bounds.height = height;
 		
 		//TODO : should only pass dimensions instead of bounds
 		var backgrounds:Array<NativeElement> = backgroundManager.render(_bounds, _coreStyle);

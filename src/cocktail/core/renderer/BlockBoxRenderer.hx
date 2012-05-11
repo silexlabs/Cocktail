@@ -52,6 +52,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		super(node);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Render all the in flow children (not positioned) using
 	 * this LayerRenderer and return an array of NativeElement
@@ -78,6 +82,33 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 	}
 	
+	//TODO : doc
+	public function renderBlockReplacedChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this, _layerRenderer);
+		
+		for (i in 0...childrenBlockReplaced.length)
+		{
+			childrenBlockReplaced[i].render(graphicContext, relativeOffset);
+		}
+	}
+	
+	/**
+	 * Render all the block container children of the layer
+	 */
+	public function renderBlockContainerChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(this, _layerRenderer);
+		
+		for (i in 0...childrenBlockContainer.length)
+		{
+			childrenBlockContainer[i].render(graphicContext, relativeOffset);
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Return all the in flow children of this LayerRenderer by traversing
@@ -131,19 +162,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return ret;
 	}
 	
-	
-	
-	//TODO : doc
-	public function renderBlockReplacedChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
-	{
-		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this, _layerRenderer);
-		
-		for (i in 0...childrenBlockReplaced.length)
-		{
-			childrenBlockReplaced[i].render(graphicContext, relativeOffset);
-		}
-	}
-	
 	private function getBlockReplacedChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer):Array<ElementRenderer>
 	{
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
@@ -172,19 +190,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		
 		return ret;
-	}
-	
-	/**
-	 * Render all the block container children of the layer
-	 */
-	public function renderBlockContainerChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
-	{
-		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(this, _layerRenderer);
-		
-		for (i in 0...childrenBlockContainer.length)
-		{
-			childrenBlockContainer[i].render(graphicContext, relativeOffset);
-		}
 	}
 	
 	/**
@@ -230,6 +235,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		super.layoutChildren(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
 		attachScrollBarsIfnecessary();
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE SCROLLING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function getScrollableBounds():RectangleData
 	{
@@ -404,28 +413,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		};
 	}
 	
-	//TODO : should use computed style (for instance for inherit) but not yet computed at this point
-	private function canAlwaysOverflow():Bool
-	{
-		switch (_coreStyle.overflowX)
-		{
-			case Overflow.visible:
-				
-			default:
-				return false;
-		}
-		
-		switch (_coreStyle.overflowY)
-		{
-			case Overflow.visible:
-				
-			default:
-				return false;
-		}
-		
-		return true;
-	}
-	
 	//TODO : doc
 	override private function establishesNewStackingContext():Bool
 	{
@@ -467,5 +454,31 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		
 		return formattingContext;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	//TODO : should use computed style (for instance for inherit) but not yet computed at this point
+	private function canAlwaysOverflow():Bool
+	{
+		switch (_coreStyle.overflowX)
+		{
+			case Overflow.visible:
+				
+			default:
+				return false;
+		}
+		
+		switch (_coreStyle.overflowY)
+		{
+			case Overflow.visible:
+				
+			default:
+				return false;
+		}
+		
+		return true;
 	}
 }
