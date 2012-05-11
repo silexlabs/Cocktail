@@ -419,6 +419,15 @@ class HTMLElement extends Element, implements IEventTarget
 		}
 	}
 	
+	
+	public function invalidateText():Void
+	{
+		if (_elementRenderer != null)
+		{
+			_elementRenderer.invalidateText();
+		}
+	}
+	
 	/**
 	 * When the Display style this special case happen, as the 
 	 * ElementRenderer needs to be changed.

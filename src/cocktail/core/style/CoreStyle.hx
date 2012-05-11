@@ -739,6 +739,11 @@ class CoreStyle
 		_htmlElement.invalidateLayer();
 	}
 	
+	private function invalidateText():Void
+	{
+		_htmlElement.invalidateText();
+	}
+	
 	/////////////////////////////////
 	// SETTERS/GETTERS
 	////////////////////////////////
@@ -929,56 +934,56 @@ class CoreStyle
 	private function setFontSize(value:FontSize):FontSize
 	{
 		_fontSize = value;
-		invalidate();
+		invalidateText();
 		return value;
 	}
 	
 	private function setFontWeight(value:FontWeight):FontWeight
 	{
 		_fontWeight = value;
-		invalidate();
+		invalidateText();
 		return value;
 	}
 	
 	private function setFontStyle(value:FontStyle):FontStyle
 	{
 		_fontStyle = value;
-		invalidate();
+		invalidateText();
 		return value;
 	}
 	
 	private function setFontFamily(value:Array<String>):Array<String>
 	{
 		_fontFamily = value;
-		invalidate();
+		invalidateText();
 		return value;
 	}
 	
 	private function setFontVariant(value:FontVariant):FontVariant
 	{
 		_fontVariant = value;
-		invalidate();
+		invalidateText();
 		return value;
 	}
 	
 	private function setTextTransform(value:TextTransform):TextTransform
 	{
 		_textTransform = value;
-		invalidate();
+		invalidateText();
 		return value;
 	}
 	
 	private function setLetterSpacing(value:LetterSpacing):LetterSpacing
 	{
 		_letterSpacing = value;
-		invalidate();
+		invalidateText();
 		return value;
 	}
 	
 	private function setWordSpacing(value:WordSpacing):WordSpacing
 	{
 		_wordSpacing = value;
-		invalidate();
+		invalidateText();
 		return value;
 	}
 	
@@ -992,7 +997,7 @@ class CoreStyle
 	private function setColor(value:Color):Color
 	{
 		_color = value;
-		invalidate();
+		invalidateText();
 		return value;
 	}
 	
