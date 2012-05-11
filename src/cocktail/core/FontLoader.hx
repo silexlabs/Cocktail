@@ -14,6 +14,4 @@ package cocktail.core;
 
 #if (flash9 || nme)
 typedef FontLoader = cocktail.port.flash_player.FontLoader;
-#elseif js
-typedef FontLoader = cocktail.port.browser.FontLoader;
 #end	

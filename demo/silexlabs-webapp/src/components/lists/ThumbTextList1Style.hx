@@ -7,20 +7,9 @@
 
 package components.lists;
 
-// DOM
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.GraphicDOMElement;
-import cocktail.viewport.Viewport;
+import js.Lib;
+import js.Dom;
 
-// Native Elements
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
 import Constants;
 
 // list
@@ -45,23 +34,24 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getListStyle(domElement:DOMElement):Void
+	public static function getListStyle(domElement:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.position = PositionStyleValue.absolute;
 		
-		domElement.style.marginLeft = MarginStyleValue.length(px(0));
-		domElement.style.marginRight = MarginStyleValue.length(px(0));
-		domElement.style.marginTop = MarginStyleValue.length(px(0));
-		domElement.style.marginBottom = MarginStyleValue.length(px(0));
+		domElement.style.display = "block";
+		domElement.style.position = "absolute";
+		
+		domElement.style.marginLeft = "0";
+		domElement.style.marginRight = "0";
+		domElement.style.marginTop = "0";
+		domElement.style.marginBottom = "0";
 		//domElement.style.marginBottom = MarginStyleValue.length(px(Constants.footerHeight));
 		
-		domElement.style.paddingLeft = PaddingStyleValue.length(px(0));
-		domElement.style.paddingRight = PaddingStyleValue.length(px(0));
-		domElement.style.paddingTop = PaddingStyleValue.length(px(0));
-		domElement.style.paddingBottom = PaddingStyleValue.length(px(Constants.footerHeight));
+		domElement.style.paddingLeft = "0";
+		domElement.style.paddingRight = "0";
+		domElement.style.paddingTop = "0";
+		domElement.style.paddingBottom = Constants.footerHeight +"px";
 		
-		domElement.style.top = PositionOffsetStyleValue.length(px(43));
+		domElement.style.top = "43px";
 	}
 	
 	/**
@@ -69,12 +59,12 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellStyle(domElement:DOMElement):Void
+	public static function getCellStyle(domElement:HtmlDom):Void
 	{
-		domElement.style.paddingTop = PaddingStyleValue.percent(1);
+		domElement.style.paddingTop = "1%";
 		
 		// Samsung TV workaround
-		domElement.style.height = DimensionStyleValue.length(px(200));
+		domElement.style.height = "200px";
 		
 	}
 	
@@ -83,13 +73,13 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellInfoBlockStyle(domElement:DOMElement):Void
+	public static function getCellInfoBlockStyle(domElement:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.inlineBlock;
-		domElement.style.width = DimensionStyleValue.percent(10);
-		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
+		domElement.style.display = "inline-block";
+		domElement.style.width = "10%";
+		domElement.style.verticalAlign = "middle";
 		// workaround for Samsung TVs
-		domElement.style.textAlign = TextAlignStyleValue.center;
+		domElement.style.textAlign = "center";
 	}
 	
 	/**
@@ -97,7 +87,7 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellNumberStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
+	public static function getCellNumberStyle(domElement:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
 	{
 		getCellTextStyle(domElement);
 		
@@ -105,12 +95,12 @@ class ThumbTextList1Style
 		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 12;
 		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 16;
 		else  fontSize = 20;
-		domElement.style.fontSize = FontSizeStyleValue.length(px(fontSize));
+		domElement.style.fontSize = fontSize + "px";
 
-		domElement.style.fontWeight = FontWeightStyleValue.bold;
-		domElement.style.color = ColorValue.hex('#989898');
-		domElement.style.textAlign = TextAlignStyleValue.center;
-		domElement.style.paddingBottom = PaddingStyleValue.percent(2);
+		domElement.style.fontWeight = "bold";
+		domElement.style.color = '#989898';
+		domElement.style.textAlign = "center";
+		domElement.style.paddingBottom = "2%";
 	}
 	
 	/**
@@ -118,7 +108,7 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellCommentCountStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
+	public static function getCellCommentCountStyle(domElement:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
 	{
 		getCellTextStyle(domElement);
 		
@@ -126,11 +116,11 @@ class ThumbTextList1Style
 		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 11;
 		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 14;
 		else  fontSize = 17;
-		domElement.style.fontSize = FontSizeStyleValue.length(px(fontSize));
+		domElement.style.fontSize = fontSize + "px";
 
-		domElement.style.fontWeight = FontWeightStyleValue.bold;
-		domElement.style.color = ColorValue.hex('#CC3517');
-		domElement.style.textAlign = TextAlignStyleValue.center;
+		domElement.style.fontWeight = "bold";
+		domElement.style.color = '#CC3517';
+		domElement.style.textAlign = "center";
 	}
 	
 	/**
@@ -138,19 +128,19 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellInfoBlockLineStyle(domElement:ImageDOMElement,?screenResolutionSize:ScreenResolutionSize):Void
+	public static function getCellInfoBlockLineStyle(domElement:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
 	//public static function getCellInfoBlockLineStyle(domElement:ImageDOMElement):Void
 	{
 		var imageMaxWidth:Int = 50;
 		
-		domElement.style.display = DisplayStyleValue.block;
+		domElement.style.display = "block";
 		
-		domElement.style.marginLeft = MarginStyleValue.autoValue;
-		domElement.style.marginRight = MarginStyleValue.autoValue;
-		domElement.style.marginTop = MarginStyleValue.autoValue;
-		domElement.style.marginBottom = MarginStyleValue.autoValue;
-		domElement.style.paddingBottom = PaddingStyleValue.percent(5);
-		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
+		domElement.style.marginLeft = "auto";
+		domElement.style.marginRight = "auto";
+		domElement.style.marginTop = "auto";
+		domElement.style.marginBottom = "auto";
+		domElement.style.paddingBottom = "5%";
+		domElement.style.verticalAlign = "middle";
 		//domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(domElement.intrinsicWidth));
 
 		// Samsung TV bug workaround
@@ -161,13 +151,13 @@ class ThumbTextList1Style
 		// TODO: if no side-effects, could be removed
 		if(screenResolutionSize == ScreenResolutionSize.large)
 		{
-			domElement.style.width = DimensionStyleValue.length(px(imageMaxWidth));
-			domElement.style.height = DimensionStyleValue.length(px(2));
+			domElement.style.width = imageMaxWidth + "px";
+			domElement.style.height = "2px";
 		}
 		else
 		{
-			domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
-			domElement.style.width = DimensionStyleValue.percent(90);	
+			domElement.style.maxWidth = imageMaxWidth + "px";
+			domElement.style.width = "90%";	
 		}
 		// common use (Samsung TV + all other tagerts), done to emulate verticalAlign = middle, not working on samsung TV
 		//domElement.style.paddingLeft = PaddingStyleValue.percent(5);
@@ -178,27 +168,27 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellInfoBlockImageStyle(domElement:ImageDOMElement,?screenResolutionSize:ScreenResolutionSize):Void
+	public static function getCellInfoBlockImageStyle(domElement:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
 	//public static function getCellInfoBlockImageStyle(domElement:ImageDOMElement):Void
 	{
 		//domElement.style.display = DisplayStyleValue.block;
-		domElement.style.display = DisplayStyleValue.inlineBlock;
+		domElement.style.display = "block";
 		
-		domElement.style.marginLeft = MarginStyleValue.autoValue;
-		domElement.style.marginRight = MarginStyleValue.autoValue;
-		domElement.style.marginTop = MarginStyleValue.autoValue;
-		domElement.style.marginBottom = MarginStyleValue.autoValue;
-		domElement.style.paddingBottom = PaddingStyleValue.percent(2);
-		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
+		domElement.style.marginLeft = "auto";
+		domElement.style.marginRight = "auto";
+		domElement.style.marginTop = "auto";
+		domElement.style.marginBottom = "auto";
+		domElement.style.paddingBottom = "2%";
+		domElement.style.verticalAlign = "middle";
 		//domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(domElement.intrinsicWidth));
-		domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(20));
-		domElement.style.width = DimensionStyleValue.percent(50);
+		domElement.style.maxWidth = "20px";
+		domElement.style.width = "50%";
 		
 		// Samsung TV bug workaround
 		// Samsung use
 		if(screenResolutionSize == ScreenResolutionSize.large)
 		{
-			domElement.style.width = DimensionStyleValue.length(px(20));
+			domElement.style.width = "20px";
 		//domElement.style.textAlign = TextAlignStyleValue.center;
 		}
 	}
@@ -208,19 +198,19 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellThumbnailStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
+	public static function getCellThumbnailStyle(domElement:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
 	{
 		var imageMaxWidth:Int = 200;
 		
 		getCellStyle(domElement);
 		
-		domElement.style.display = DisplayStyleValue.inlineStyle;
+		domElement.style.display = "inline";
 		
-		domElement.style.paddingLeft = PaddingStyleValue.percent(1);
-		domElement.style.paddingRight = PaddingStyleValue.percent(1);
-		domElement.style.paddingBottom = PaddingStyleValue.percent(1);
+		domElement.style.paddingLeft = "1%";
+		domElement.style.paddingRight = "1%";
+		domElement.style.paddingBottom = "1%";
 
-		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
+		domElement.style.verticalAlign = "middle";
 		//domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
 		//domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
 		//domElement.style.width = DimensionStyleValue.percent(30);
@@ -228,15 +218,15 @@ class ThumbTextList1Style
 		// Samsung TV bug workaround
 		if(screenResolutionSize == ScreenResolutionSize.large)
 		{
-			domElement.style.width = DimensionStyleValue.length(px(imageMaxWidth));
-			domElement.style.height = DimensionStyleValue.autoValue;
+			domElement.style.width = imageMaxWidth + "px";
+			domElement.style.height = "auto";
 			//domElement.style.height = DimensionStyleValue.length(px(50));
 		}
 		else
 		{
-			domElement.style.maxWidth = ConstrainedDimensionStyleValue.length(px(imageMaxWidth));
-			domElement.style.maxHeight = ConstrainedDimensionStyleValue.percent(50);
-			domElement.style.width = DimensionStyleValue.percent(30);	
+			domElement.style.maxWidth = imageMaxWidth + "px";
+			domElement.style.maxHeight = "50%";
+			domElement.style.width = "30%";	
 		}
 		
 	}
@@ -246,11 +236,11 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellLineStyle(domElement:DOMElement):Void
+	public static function getCellLineStyle(domElement:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.width = DimensionStyleValue.percent(100);
-		domElement.style.height = DimensionStyleValue.length(px(1));
+		domElement.style.display = "inline";
+		domElement.style.width = "100%";
+		domElement.style.height = "1px";
 	}
 	
 	/**
@@ -258,14 +248,14 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellTextBlockStyle(domElement:DOMElement):Void
+	public static function getCellTextBlockStyle(domElement:HtmlDom):Void
 	{
 		getCellStyle(domElement);
 		
-		domElement.style.display = DisplayStyleValue.inlineBlock;
-		domElement.style.marginLeft = MarginStyleValue.percent(2);
-		domElement.style.verticalAlign = VerticalAlignStyleValue.middle;
-		domElement.style.width = DimensionStyleValue.percent(55);
+		domElement.style.display = "inline-block";
+		domElement.style.marginLeft = "2%";
+		domElement.style.verticalAlign = "middle";
+		domElement.style.width = "55%";
 	}
 
 	/**
@@ -273,15 +263,11 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellTextStyle(domElement:DOMElement):Void
+	public static function getCellTextStyle(domElement:HtmlDom):Void
 	{
-		domElement.style.display = DisplayStyleValue.block;
-		domElement.style.color = ColorValue.hex('#202020');
-		domElement.style.fontFamily =
-			[
-				FontFamilyStyleValue.familyName('HelveticaNeue'),
-				FontFamilyStyleValue.genericFamily(GenericFontFamilyValue.sansSerif)
-			];
+		domElement.style.display = "block";
+		domElement.style.color = '#202020';
+		domElement.style.fontFamily = "HelveticaNeue, Sans-Serif";
 	}
 
 	/**
@@ -289,7 +275,7 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellTitleStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
+	public static function getCellTitleStyle(domElement:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
 	{
 		getCellTextStyle(domElement);
 		
@@ -298,8 +284,8 @@ class ThumbTextList1Style
 		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 16;
 		else  fontSize = 18;
 		
-		domElement.style.fontSize = FontSizeStyleValue.length(px(fontSize));
-		domElement.style.fontWeight = FontWeightStyleValue.bold;
+		domElement.style.fontSize = fontSize + "px";
+		domElement.style.fontWeight = "bold";
 	}
 
 	/**
@@ -307,7 +293,7 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellCommentStyle(domElement:DOMElement,?screenResolutionSize:ScreenResolutionSize):Void
+	public static function getCellCommentStyle(domElement:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
 	{
 		getCellTextStyle(domElement);
 
@@ -316,8 +302,8 @@ class ThumbTextList1Style
 		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 11;
 		else  fontSize = 12;
 		
-		domElement.style.fontSize = FontSizeStyleValue.length(px(fontSize));
-		domElement.style.fontWeight = FontWeightStyleValue.normal;
+		domElement.style.fontSize = fontSize + "px";
+		domElement.style.fontWeight = "normal";
 	}
 
 	/**
@@ -325,12 +311,12 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellDescriptionStyle(domElement:DOMElement):Void
+	public static function getCellDescriptionStyle(domElement:HtmlDom):Void
 	{
 		getCellTextStyle(domElement);
 
-		domElement.style.fontSize = FontSizeStyleValue.length(px(14));
-		domElement.style.fontWeight = FontWeightStyleValue.bold;
+		domElement.style.fontSize = "14px";
+		domElement.style.fontWeight = "bold";
 	}
 
 	/**
@@ -338,7 +324,7 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellMouseOverStyle(domElement:ContainerDOMElement):Void
+	public static function getCellMouseOverStyle(domElement:HtmlDom):Void
 	{
 	}
 	
@@ -347,7 +333,7 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellMouseOutStyle(domElement:ContainerDOMElement):Void
+	public static function getCellMouseOutStyle(domElement:HtmlDom):Void
 	{
 	}
 	
@@ -356,7 +342,7 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellMouseDownStyle(domElement:ContainerDOMElement):Void
+	public static function getCellMouseDownStyle(domElement:HtmlDom):Void
 	{
 	}
 	
@@ -365,7 +351,7 @@ class ThumbTextList1Style
 	 * 
 	 * @param	domElement
 	 */
-	public static function getCellMouseUpStyle(domElement:ContainerDOMElement):Void
+	public static function getCellMouseUpStyle(domElement:HtmlDom):Void
 	{
 	}
 	

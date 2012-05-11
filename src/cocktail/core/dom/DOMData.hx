@@ -7,8 +7,10 @@
 */
 package cocktail.core.dom;
 
-import cocktail.core.HTMLElement;
-import cocktail.core.HTMLImageElement;
+import cocktail.core.html.HTMLElement;
+import cocktail.core.html.HTMLImageElement;
+import cocktail.core.NativeElement;
+import cocktail.core.renderer.TextLineBox;
 import cocktail.core.renderer.TextRenderer;
 import cocktail.core.unit.UnitData;
 
@@ -19,51 +21,8 @@ import cocktail.core.unit.UnitData;
  */
 
 /**
- * TextElement enum and struct
+ * TODO : obsolete, should now use the Canvas API
  */
-
-/**
- * Lists all the different consituant
- * of a plain text, including 
- * controls characters
- */
-enum TextTokenValue {
-	
-	/**
-	 * a word, surrounded by
-	 * spaces
-	 */
-	word(value:String);
-	
-	/**
-	 * represents one
-	 * space which can be 
-	 * between 2 words or among
-	 * a space sequence
-	 */
-	space;
-	
-	/**
-	 * a tabulation
-	 */
-	tab;
-	
-	/**
-	 * a line feed (starts
-	 * a new line)
-	 */
-	lineFeed;
-}
-
-/**
- * Holds a text token and its visual
- * representation (a TextRenderer)
- */
-typedef TextFragmentData = {
-	var textToken:TextTokenValue;
-	var textRenderer:TextRenderer;
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////
 // Graphic HTMLElement structures and enums
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -170,7 +129,7 @@ typedef TextFragmentData = {
 			
 			//a bitmap fill, created with the data of an image htmlElement.
 			//The fill might be repeated (tiled)
-			bitmap(htmlImageElement:HTMLImageElement, repeat:Bool);
+			bitmap(nativeElement:NativeElement, repeat:Bool);
 		}
 
 		/**
@@ -190,7 +149,7 @@ typedef TextFragmentData = {
 			
 			//a bitmap line, created with the data of an image htmlElement.
 			//The line fill might be repeated (tiled)
-			bitmap(htmlImageElement:HTMLImageElement, lineStyle:LineStyleData, repeat:Bool);
+			bitmap(nativeElement:NativeElement, lineStyle:LineStyleData, repeat:Bool);
 		}
 
 		/**

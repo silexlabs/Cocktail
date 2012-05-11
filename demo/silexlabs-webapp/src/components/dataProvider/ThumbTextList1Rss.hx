@@ -13,10 +13,6 @@ package components.dataProvider;
  * @author Raphael Harmel
  */
 
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
 
 import components.lists.ListBaseModels;
 import components.lists.ListBaseUtils;
@@ -35,10 +31,11 @@ class ThumbTextList1Rss
 
 		// set channel node
 		var channelNode:Xml = rss.firstElement().firstElement();
-		
+
 		// get the rss data
 		for ( channelChild in channelNode.elements() )
 		{
+			
 			if (channelChild.nodeName == "item")
 			{
 				var cell:CellModel = { content:Dynamic, action:"", actionTarget:"" };
@@ -48,15 +45,17 @@ class ThumbTextList1Rss
 				for (itemParam in channelChild.elements())
 				{
 					// Silex Labs feed
-					
+					/**
 					// if node is a thumbnail image
 					if (itemParam.nodeName == "post_thumbnail")
 					{
 						cellContent.thumbnail = itemParam.firstChild().nodeValue;
 					}
+					*/
 					// in case there is no thumbnail, fill with first image in the post
 					if (itemParam.nodeName == "post_images")
 					{
+						
 						if (!Reflect.hasField(cellContent, 'thumbnail') || (Reflect.field(cellContent, 'thumbnail') == ""))
 						{
 							for (elements in itemParam.elements())
@@ -126,16 +125,19 @@ class ThumbTextList1Rss
 					{
 						cellContent.commentCount = itemParam.firstChild().nodeValue;
 					}
-					
+						
 					// if node is the link to be opened
 					if (itemParam.nodeName == "guid")
 					{
 						cell.action = "goToUrl";
 						cell.actionTarget = itemParam.firstChild().nodeValue;
 					}
+					
 				}
+			
 				cell.content = cellContent;
 				cells.push(cell);
+				
 			}
 		}
 		return cells;

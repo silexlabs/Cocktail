@@ -5,24 +5,11 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 
-// DOM
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.EmbeddedDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.GraphicDOMElement;
-import cocktail.domElement.DOMElementData;
-import cocktail.geom.GeomData;
-import cocktail.resource.ResourceLoaderManager;
-import cocktail.mouse.MouseData;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
-import cocktail.textElement.TextElement;
+import js.Lib;
+import js.Dom;
+
 import components.dataProvider.XmlLoader;
 
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
 
 // Lists specific
 import components.lists.ListBase;
@@ -37,7 +24,6 @@ import components.lists.AppListStyle;
 // Navigation
 import Navigation;
 
-import cocktail.keyboard.KeyboardData;
 
 
 /**
@@ -50,7 +36,7 @@ import cocktail.keyboard.KeyboardData;
 class ApplicationStructure 
 {
 	// pagesContainer is the container for all pages
-	public var pagesContainer:ContainerDOMElement;
+	public var pagesContainer:HtmlDom;
 
 	// navigation is used for navigation
 	private var navigation:Navigation;
@@ -59,22 +45,22 @@ class ApplicationStructure
 	//private var _homePage:ContainerDOMElement;
 	
 	// footer
-	private var _footer:ContainerDOMElement;
+	private var _footer:HtmlDom;
 	
 	// page 1
-	private var _page1:ContainerDOMElement;
+	private var _page1:HtmlDom;
 	
 	// page 2
-	private var _page2:ContainerDOMElement;
+	private var _page2:HtmlDom;
 	
 	// page 3
-	private var _page3:ContainerDOMElement;
+	private var _page3:HtmlDom;
 	
 	// page 4
-	private var _page4:ContainerDOMElement;
+	private var _page4:HtmlDom;
 	
 	// page 5
-	private var _page5:ContainerDOMElement;
+	private var _page5:HtmlDom;
 	
 	// quantity of rss items to return
 	//static inline var ITEM_QUANTITY:Int = 5;
@@ -201,7 +187,7 @@ class ApplicationStructure
 		_page5 = createHeaderListPage(PAGE5_TITLE, cells);
 		
 		_footer = createFooterMenu();
-		pagesContainer.addChild(_footer);
+		pagesContainer.appendChild(_footer);
 		//pagesContainer.onKeyDown = onKeyDownPages;
 		
 		// workaround for browsers not supporting well css "fixed" position
@@ -210,7 +196,7 @@ class ApplicationStructure
 		function resetFooterStyle(event) {
 			// footer is removed and added again as a workaround
 			pagesContainer.removeChild(_footer);
-			pagesContainer.addChild(_footer);
+			pagesContainer.appendChild(_footer);
 		};
 		
 		js.Lib.window.onscroll = resetFooterStyle;
@@ -230,12 +216,12 @@ class ApplicationStructure
 	 * @param	cellDataArray
 	 * @return	the corresponding page
 	 */
-	private function createHeaderListPage(title:String, cellDataArray:Array<CellModel>):ContainerDOMElement
+	private function createHeaderListPage(title:String, cellDataArray:Array<CellModel>):HtmlDom
 	{
-		var page:ContainerDOMElement = Utils.getContainer();
+		var page = Utils.getContainer();
 		
 		// create header
-		var header:ContainerDOMElement = createHeader(title);
+		var header = createHeader(title);
 
 		
 		// create list data & style
@@ -246,8 +232,8 @@ class ApplicationStructure
 		//list.onChange = navigation.onChangeListCallback;
 		
 		// build hierarchy
-		page.addChild(list);
-		page.addChild(header);
+		page.appendChild(list.htmlDom);
+		page.appendChild(header);
 		WebAppStyle.getPageStyle(page);
 		
 		return page;
@@ -260,35 +246,35 @@ class ApplicationStructure
 	 * @param	title
 	 * @return	the header
 	 */
-	private function createHeader(title:String):ContainerDOMElement
+	private function createHeader(title:String):HtmlDom
 	{
 		// create header
-		var header:ContainerDOMElement = Utils.getContainer();
+		var header = Utils.getContainer();
 		
 		// Tile image
-		var headerTile:ImageDOMElement = new ImageDOMElement();
+		var headerTile:Image = cast(Lib.document.createElement("img"));
 		WebAppStyle.getHeaderTileStyle(headerTile);
 		var headerTilePath:String = "images/header.jpg";
-		headerTile.load(headerTilePath);
+		headerTile.src = headerTilePath;
 		// attach to header container
-		header.addChild(headerTile);
+		header.appendChild(headerTile);
 		
 		// Logo image
-		var headerLogo:ImageDOMElement = new ImageDOMElement();
+		var headerLogo:Image = cast(Lib.document.createElement("img"));
 		WebAppStyle.getHeaderLogoStyle(headerLogo);
 		var headerLogoPath:String = "images/silex-labs.png";
-		headerLogo.load(headerLogoPath);
+		headerLogo.src = headerLogoPath;
 		// attach to header container
-		header.addChild(headerLogo);
+		header.appendChild(headerLogo);
 		
 		
 		// header title
-		var headerTitle:TextElement = new TextElement(title);
-		var headerTitleContainer:ContainerDOMElement = Utils.getContainer();
-		headerTitleContainer.addText(headerTitle);
+		var headerTitle = Lib.document.createTextNode(title);
+		var headerTitleContainer = Utils.getContainer();
+		headerTitleContainer.appendChild(headerTitle);
 		WebAppStyle.getHeaderTextStyle(headerTitleContainer);
 		// attach to header container
-		header.addChild(headerTitleContainer);
+		header.appendChild(headerTitleContainer);
 		
 		
 		// build page style & domElement
@@ -302,20 +288,20 @@ class ApplicationStructure
 	 * 
 	 * @return	the footer
 	 */
-	private function createFooterMenu():ContainerDOMElement
+	private function createFooterMenu():HtmlDom
 	{
 		// create footer
-		var container:ContainerDOMElement = Utils.getContainer();
+		var container = Utils.getContainer();
 		// apply page style
 		WebAppStyle.getFooterStyle(container);
 		
 		// Tile image
-		var tile:ImageDOMElement = new ImageDOMElement();
+		var tile:Image = cast(Lib.document.createElement("img"));
 		var headerTilePath:String = "images/footer.jpg";
 		WebAppStyle.getFooterTileStyle(tile);
-		tile.load(headerTilePath);
+		tile.src = headerTilePath;
 		// build hierarchy
-		container.addChild(tile);
+		container.appendChild(tile);
 		
 		// Menu items
 		/*var menuList:AppList = createAppList(
@@ -356,7 +342,7 @@ class ApplicationStructure
 		// list keyboard down callback
 		//menuList.onKeyDown = onMenuKeyDown;
 		
-		container.addChild(menuList);
+		container.appendChild(menuList.htmlDom);
 		
 		return container;
 	}
@@ -434,7 +420,7 @@ class ApplicationStructure
 	 * 
 	 * @param	mouseEvent
 	 */
-	public function goToPreviousPage(mouseEvent:MouseEventData):Void
+	public function goToPreviousPage(mouseEvent:Event):Void
 	{
 		// show previous page in the history
 		navigation.goToPreviousPage();
@@ -461,7 +447,7 @@ class ApplicationStructure
 		{*/
 			// dispatch menu list item change
 			// TODO: remove hardcoding
-			_footer.children[1].child.onListKeyDown(key);
+			//_footer.childNodes[1].child.onListKeyDown(key);
 		/*}*/
 	}
 	

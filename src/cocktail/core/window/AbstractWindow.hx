@@ -10,10 +10,13 @@ package cocktail.core.window;
 import cocktail.core.dom.Document;
 import cocktail.core.event.Event;
 import cocktail.core.event.IEventTarget;
+import cocktail.core.html.HTMLAnchorElement;
 
 /**
  * Represents the window through which the Document is
  * viewed
+ * 
+ * TODO : should implement onload callback
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -54,6 +57,21 @@ class AbstractWindow implements IEventTarget
 	public function new(document:Document = null) 
 	{
 		_document = document;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Creates a new secondary browser window and loads the referenced resource.
+	 * 
+	 * TODO : this is a partial implementation for now, should return
+	 * the created window and allow parameters
+	 */
+	public function open(url:String, name:String = HTMLAnchorElement.TARGET_BLANK):Void
+	{
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

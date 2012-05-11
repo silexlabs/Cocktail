@@ -10,12 +10,11 @@ package cocktail.core.focus;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.html.HTMLBodyElement;
-import cocktail.core.HTMLElement;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.Keyboard;
 import cocktail.core.mouse.MouseData;
 import cocktail.core.dom.DOMData;
-import cocktail.core.nativeElement.NativeElementManager;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.dom.DOMData;
 
@@ -28,14 +27,7 @@ import cocktail.core.dom.DOMData;
  * @author Yannick DOMINGUEZ
  */
 class FocusManager
-{
-	/**
-	 * Holds a list of all the focusable
-	 * HTMLElements in the Document, ordered in the
-	 * right focus order
-	 */
-	private var _tabList:Array<HTMLElement>;
-	
+{	
 	/**
 	 * class constructor.
 	 */
@@ -49,26 +41,13 @@ class FocusManager
 	/////////////////////////////////
 	
 	/**
-	 * reset the tabList, so that it is re-build
-	 * on next tab focus
-	 */
-	public function invalidate():Void
-	{
-		_tabList = null;
-	}
-	
-	/////////////////////////////////
-	// PRIVATE METHODS
-	/////////////////////////////////
-	
-	/**
 	 * determine the next
-	 * HTMLElement in the _tabList array which
+	 * HTMLElement in the tabList array which
 	 * must be focused
 	 * 
 	 * @param	reverse if true,
 	 * focus the previous focusable HTMLElement in
-	 * the _tabList array
+	 * the tabList array
 	 * @param rootElement the root element of the Document, 
 	 * in an HTMLDocument, it is the HTMLBodyElement
 	 * @param activeElement the element which currently
@@ -76,12 +55,8 @@ class FocusManager
 	 */
 	public function getNextFocusedElement(reverse:Bool, rootElement:HTMLElement, activeElement:HTMLElement):HTMLElement
 	{
-		//build the tab list if it the first
-		//tab focus or if it was invalidated
-		if (_tabList == null)
-		{
-			_tabList = buildTabList(rootElement);
-		}
+		//build the list of focusable elements
+		var tabList:Array<HTMLElement> = buildTabList(rootElement);
 		
 		//will hold the index of the currently focused
 		//element and will be incremented/decremented to 
@@ -101,14 +76,14 @@ class FocusManager
 			}
 			else
 			{
-				tabListIndex = _tabList.length - 1;
+				tabListIndex = tabList.length - 1;
 			}
 		}
 		//if any other element than the body has currently the focus
 		else
 		{
 			//retrive the index of the activeElement
-			tabListIndex = getElementTabListIndex(activeElement);
+			tabListIndex = getElementTabListIndex(activeElement, tabList);
 			
 			//then increment or decrement its index to find the index of 
 			//the next focusable element
@@ -125,29 +100,33 @@ class FocusManager
 		//if the incremented tab list index is greater than the 
 		//elements in the tab list, it means a full loop has been done
 		//and the focus is set back to the first focusable element in the list
-		if (tabListIndex == _tabList.length)
+		if (tabListIndex == tabList.length)
 		{
 			tabListIndex = 0;
 		}
 		//same for the decremented tab list index
 		else if (tabListIndex == -1)
 		{
-			tabListIndex = _tabList.length - 1;
+			tabListIndex = tabList.length - 1;
 		}
 		
 		//return the element add the new tab list index
-		return _tabList[tabListIndex];
+		return tabList[tabListIndex];
 	}
+	
+	/////////////////////////////////
+	// PRIVATE METHODS
+	/////////////////////////////////
 	
 	/**
 	 * Return the index of an element in the 
 	 * tabList array
 	 */
-	private function getElementTabListIndex(element:HTMLElement):Int
+	private function getElementTabListIndex(element:HTMLElement, tabList:Array<HTMLElement>):Int
 	{
-		for (i in 0..._tabList.length)
+		for (i in 0...tabList.length)
 		{
-			if (_tabList[i] == element)
+			if (tabList[i] == element)
 			{
 				return i;
 			}

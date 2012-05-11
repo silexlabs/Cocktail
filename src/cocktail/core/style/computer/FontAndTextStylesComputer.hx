@@ -40,29 +40,21 @@ class FontAndTextStylesComputer
 	/**
 	 * compute all the font and text styles of the HTMLElement
 	 * @param	style
-	 * @param	containingHTMLElementData
-	 * @param	containingHTMLElementFontMetricsData
+	 * @param	containingBlockData
+	 * @param	containingBlockFontMetricsData
 	 */
-	public static function compute(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
+	public static function compute(style:CoreStyle, containingBlockData:ContainingBlockData, containingBlockFontMetricsData:FontMetricsData):Void
 	{
 		var computedStyle = style.computedStyle;
-		
-		if (containingHTMLElementFontMetricsData != null)
-		{
-			//font size
-			computedStyle.fontSize = getComputedFontSize(style, containingHTMLElementFontMetricsData.fontSize, containingHTMLElementFontMetricsData.xHeight);
-		}
-		else
-		{
-			//TODO : voir comment taille par défault du navigateur est géré, setter sur body en JS ?
-			computedStyle.fontSize = getComputedFontSize(style, 12.0, 10.0);
-		}
+
+		//font size
+		computedStyle.fontSize = getComputedFontSize(style, containingBlockFontMetricsData.fontSize, containingBlockFontMetricsData.xHeight);
 		
 		//line height
 		computedStyle.lineHeight = getComputedLineHeight(style);
 		
 		//vertival align
-		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingHTMLElementData, containingHTMLElementFontMetricsData);
+		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingBlockData, containingBlockFontMetricsData);
 		
 		//font weight
 		computedStyle.fontWeight = style.fontWeight;
@@ -86,7 +78,7 @@ class FontAndTextStylesComputer
 		computedStyle.wordSpacing = getComputedWordSpacing(style);
 		
 		//text indent
-		computedStyle.textIndent = getComputedTextIndent(style, containingHTMLElementData);
+		computedStyle.textIndent = getComputedTextIndent(style, containingBlockData);
 		
 		//white space
 		computedStyle.whiteSpace = style.whiteSpace;
@@ -106,7 +98,7 @@ class FontAndTextStylesComputer
 	/**
 	 * Compute the text indent to apply to the first line of an inline formatting context
 	 */
-	private static function getComputedTextIndent(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData):Int
+	private static function getComputedTextIndent(style:CoreStyle, containingBlockData:ContainingBlockData):Int
 	{
 		var textIndent:Float;
 		
@@ -116,7 +108,7 @@ class FontAndTextStylesComputer
 				textIndent = UnitManager.getPixelFromLength(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 				
 			case percentage(value):
-				textIndent = UnitManager.getPixelFromPercent(value, containingHTMLElementData.width);
+				textIndent = UnitManager.getPixelFromPercent(value, containingBlockData.width);
 		}
 		
 		return Math.round(textIndent);
@@ -124,9 +116,9 @@ class FontAndTextStylesComputer
 	
 	/**
 	 * Compute the vertical offset to apply to a HTMLElement in an inline
-	 * formatting context
+	 * formatting context.
 	 */
-	private static function getComputedVerticalAlign(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Float
+	private static function getComputedVerticalAlign(style:CoreStyle, containingBlockData:ContainingBlockData, containingBlockFontMetricsData:FontMetricsData):Float
 	{
 		var verticalAlign:Float;
 		
@@ -136,22 +128,19 @@ class FontAndTextStylesComputer
 				verticalAlign = 0;
 				
 			case middle:
-				var offsetHeight:Int = style.computedStyle.height + style.computedStyle.paddingTop + style.computedStyle.paddingBottom;
-				verticalAlign = offsetHeight / 2 + containingHTMLElementFontMetricsData.xHeight / 2;
+				verticalAlign = 0;
 				
 			case sub:
-				verticalAlign = containingHTMLElementFontMetricsData.subscriptOffset;
+				verticalAlign = containingBlockFontMetricsData.subscriptOffset;
 				
 			case cssSuper:
-				verticalAlign = containingHTMLElementFontMetricsData.superscriptOffset;
+				verticalAlign = containingBlockFontMetricsData.superscriptOffset;
 				
 			case textTop:
 				verticalAlign = 0;
-				//TODO : Align the top of the box with the top of the parent's content area
 				
 			case textBottom:
 				verticalAlign = 0;
-				//TODO : Align the bottom of the box with the bottom of the parent's content area 
 				
 			case percent(value):
 				verticalAlign = UnitManager.getPixelFromPercent(value, Math.round(style.computedStyle.lineHeight));

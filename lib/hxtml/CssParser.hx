@@ -27,6 +27,7 @@ enum Value {
 	VString( s : String );
 	VUnit( v : Float, unit : String );
 	VRGBA( v:String);
+	VRGB(v:String);
 	VFloat( v : Float );
 	VInt( v : Int );
 	VHex( v : String );
@@ -136,6 +137,21 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 		case "margin-top":
+			
+			// case negative int - hack
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VUnit(v, u):
+						s.setMarginTopNum(d, v * -1, u);
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
 			//case label (auto)
 			var val = getIdent(v);
 			if ( val != null) {
@@ -149,6 +165,28 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 		case "margin-bottom":
+			
+			// case negative int - hack
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VUnit(v, u):
+						s.setMarginBottomNum(d, v * -1, u);
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMarginBottomZero(d);
+				return true;
+			}
+			
 			//case label (auto)
 			var val = getIdent(v);
 			if ( val != null) {
@@ -214,12 +252,35 @@ class CssParser<DisplayObjectType> {
 			var i:Null<ValueObject> = getValueObject(v);
 			if( i != null ) { s.setPaddingBottom(d, i.value, i.unit); return true; }
 		case "width":
+			
+			//case label (auto)
+			var val = getIdent(v);
+			if ( val != null) {
+				s.setWidthKey(d, val);
+				return true;
+			}
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setWidthZero(d);
+				return true;
+			}
+			
 			var i:Null<ValueObject> = getValueObject(v);
 			if( i != null ) {
 				s.setWidth(d, i.value, i.unit);
 				return true;
 			}
 		case "height":
+			
+			//case label (auto)
+			var val = getIdent(v);
+			if ( val != null) {
+				s.setHeightKey(d, val);
+				return true;
+			}
+			
 			var i:Null<ValueObject> = getValueObject(v);
 			if( i != null ) {
 				s.setHeight(d, i.value, i.unit);
@@ -235,6 +296,9 @@ class CssParser<DisplayObjectType> {
 			case VRGBA(v):
 				s.setBgColorRGBA(d, v);
 				return true;
+			case VRGB(v):
+				s.setBgColorRGB(d, v);
+				return true;	
 			case VIdent(i): 
 				s.setBgColorKey(d, i);
 				return true;
@@ -365,6 +429,14 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 		case "line-height":
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setLineHeightZero(d);
+				return true;
+			}
+			
 			// case label (normal)
 			var val = getIdent(v);
 			if ( val != null) {
@@ -378,6 +450,21 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 			
+		case "vertical-align":
+			// case label (normal)
+			var val = getIdent(v);
+			if ( val != null) {
+				s.setVerticalAlignKey(d, val);
+				return true;
+			}
+			// case int
+			var l = getValueObject(v);
+			if( l != null ) {
+				s.setVerticalAlignNum(d, l.value, l.unit);
+				return true;
+			}
+				
+			
 		case "word-spacing":
 			//case label (normal)
 			var val = getIdent(v);
@@ -390,7 +477,7 @@ class CssParser<DisplayObjectType> {
 			if( l != null ) {
 				s.setWordSpacingNum(d, l.value, l.unit);
 				return true;
-			}
+			}	
 			
 		case "letter-spacing":
 			//case label (normal)
@@ -405,14 +492,51 @@ class CssParser<DisplayObjectType> {
 				s.setLetterSpacingNum(d, l.value, l.unit);
 				return true;
 			}	
+			
+		case "text-indent":
+			var l = getValueObject(v);
+			if( l != null ) {
+				s.setTextIndent(d, l.value, l.unit);
+				return true;
+			}	
+			
+		case "text-align":
+			var val = getIdent(v);
+			if ( val != null) {
+				s.setTextAlign(d, val);
+				return true;
+			}	
 //---------------------
 		case "top":
+			
+			// case negative int
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VUnit(v, u):
+						s.setTop(d, v * -1, u);
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
 			// case label (e.g. auto)
 			var val = getIdent(v);
 			if ( val != null) {
 				s.setTopKey(d, val);
 				return true;
 			}
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setTopZero(d);
+				return true;
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -421,12 +545,35 @@ class CssParser<DisplayObjectType> {
 			}
 			return true;
 		case "left":
+			
+			// case negative int
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VUnit(v, u):
+						s.setLeft(d, v * -1, u);
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
 			// case label (e.g. auto)
 			var val = getIdent(v);
 			if ( val != null) {
 				s.setLeftKey(d, val);
 				return true;
 			}
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setLeftZero(d);
+				return true;
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -435,12 +582,34 @@ class CssParser<DisplayObjectType> {
 			}
 			return true;
 		case "right":
+			// case negative int
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VUnit(v, u):
+						s.setRight(d, v * -1, u);
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
 			// case label (e.g. auto)
 			var val = getIdent(v);
 			if ( val != null) {
 				s.setRightKey(d, val);
 				return true;
 			}
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setRightZero(d);
+				return true;
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -448,13 +617,37 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 			return true;
+			
 		case "bottom":
+			
+			// case negative int
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VUnit(v, u):
+						s.setBottom(d, v * -1, u);
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
 			// case label (e.g. auto)
 			var val = getIdent(v);
 			if ( val != null) {
 				s.setBottomKey(d, val);
 				return true;
 			}
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setBottomZero(d);
+				return true;
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -465,6 +658,9 @@ class CssParser<DisplayObjectType> {
 //---------------------
 		case "display":
 			s.setDisplay(d, getIdent(v));
+			return true;
+		case "float":
+			s.setCssFloat(d, getIdent(v));
 			return true;
 		case "position":
 			s.setPosition(d, getIdent(v));
@@ -510,8 +706,17 @@ class CssParser<DisplayObjectType> {
 	// convert a Value (enum) to a ValueObject (typedef)
 	function getValueObject(i):Null<ValueObject>{
 		return switch( i ) {
-		case VUnit(v, u): {value:v, unit:u};
+		case VUnit(v, u): { value:v, unit:u };
 		default: null;
+		};
+	}
+	
+	//return wether value is an int with 0 value. Used
+	//for lengths
+	function isNullInt(v):Bool{
+		return switch(v) {
+			case VInt(v): v == 0;
+			default: false;
 		};
 	}
 	function getGroup<T>( v : Value, f : Value -> Null<T> ) : Null<Array<T>> {
@@ -836,6 +1041,9 @@ class CssParser<DisplayObjectType> {
 					
 				case "rgba":
 					readValueNext(VRGBA(readRGBA()));
+					
+				case "rgb":
+					readValueNext(VRGB(readRGB()));
 				default:
 					push(t);
 					v;
@@ -939,6 +1147,22 @@ class CssParser<DisplayObjectType> {
 	}
 	
 	function readRGBA() {
+		
+		var c = next();
+		while (isSpace(c) )
+			c = next();
+			
+		var start = pos - 1;
+		while( true ) {
+			if( StringTools.isEOF(c) )
+				break;
+			c = next();
+			if( c == ")".code ) break;
+		}
+		return StringTools.trim(css.substr(start, pos - start - 1));
+	}
+	
+	function readRGB() {
 		
 		var c = next();
 		while (isSpace(c) )

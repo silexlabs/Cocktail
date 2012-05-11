@@ -16,6 +16,4 @@ package cocktail.core;
 typedef FontManager = cocktail.port.flash_player.FontManager;
 #elseif nme
 typedef FontManager = cocktail.port.nme.FontManager;
-#elseif js
-typedef FontManager = cocktail.port.browser.FontManager;
 #end	

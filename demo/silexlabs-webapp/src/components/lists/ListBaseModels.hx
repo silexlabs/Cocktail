@@ -6,7 +6,6 @@
 */
 
 package components.lists;
-import cocktail.domElement.ContainerDOMElement;
 
 /**
  * The class defines the models used by the RichList

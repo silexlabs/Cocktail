@@ -8,15 +8,21 @@
 package cocktail.core.dom;
 
 import cocktail.core.dom.DOMData;
+import cocktail.core.html.HTMLElement;
 
 /**
  * The CharacterData interface extends Node with a set of attributes and methods for accessing character data in the DOM.
  * For clarity this set is defined here rather than on each object that uses these attributes and methods.
  * No DOM objects correspond directly to CharacterData, though Text and others do inherit the interface from it.
  * 
+ * IMPORTANT : this class isn't supposed to inherit from HTMLElement but from Node. However in Haxe/JS, 
+ * text nodes also inherit from the HTMLDom classes when they shouldn't. This should be corrected when
+ * the Haxe JS standard lib is updated.
+ * TODO : some fields like initStyle should be overriden to do nothing
+ * 
  * @author Yannick DOMINGUEZ
  */
-class CharacterData extends Node
+class CharacterData extends HTMLElement
 {
 	/**
 	 * The character data of the node that implements this interface. The DOM implementation 
@@ -33,7 +39,7 @@ class CharacterData extends Node
 	 */
 	public function new() 
 	{
-		super();
+		super("");
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

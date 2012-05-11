@@ -13,9 +13,6 @@ package cocktail.core;
 #if (flash9 || nme)
 typedef Window =  cocktail.port.flash_player.Window;
 
-#elseif js
-typedef Window =  cocktail.port.browser.Window;
-
 #elseif doc
 /**
  * This is the class that must be instantiated, it is implemented
