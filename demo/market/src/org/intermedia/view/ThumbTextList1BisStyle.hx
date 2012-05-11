@@ -7,36 +7,28 @@
 
 package org.intermedia.view;
 
-import org.intermedia.model.ApplicationModel;
+import js.Lib;
+import js.Dom;
+import org.intermedia.view.Constants;
 
 /**
- * This class defines a thumb list
+ * This class defines the default style used by a ListView
  * 
  * @author Raphael Harmel
  */
 
-class ThumbList extends ListViewBase
+class ThumbTextList1BisStyle
 {
-	// defines cells per line
-	private var _cellsPerLine:Int;
-	
-	public function new(?cellPerLine:Int = 1)
-	{
-		_cellsPerLine = cellPerLine;
-		super();
-	}
-	
 	/**
-	 * Creates a cell of the correct type
-	 * To be overriden in child classes
+	 * Defines default Style
 	 * 
-	 * @return
+	 * @param	node
 	 */
-	override private function createCell():CellBase
+	public static function setListStyle(node:HtmlDom):Void
 	{
-		var cell:CellThumb = new CellThumb(_cellsPerLine);
-		return cell;
+		ListViewStyle.setListStyle(node);
+		
+		node.style.backgroundColor = Constants.LIST_BG_BLACK_COLOR;
 	}
-	
 	
 }

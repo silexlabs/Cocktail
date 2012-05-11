@@ -13,13 +13,11 @@ package org.intermedia.model;
  * @author Raphael Harmel
  */
 
-////import cocktail.Cocktail;
-//import cocktail.node.HtmlDom;
-//import cocktail.node.HtmlDom;
-//import cocktail.NativeElementManager;
-//import cocktail.NativeElementData;
-
+import haxe.Firebug;
+import js.Dom;
+import js.Lib;
 import org.intermedia.model.ApplicationModel;
+import haxe.Timer;
 
 class ThumbTextListRssStandard 
 {
@@ -29,8 +27,9 @@ class ThumbTextListRssStandard
 	 * @param	rss
 	 * @return
 	 */
-	public static function rss2Cells(rss:Xml):Array<CellData>
+	public static function rss2Cells(rss:Xml,?listId:String = ""):Array<CellData>
 	{
+		// init cells Array
 		var cells:Array<CellData> = new Array<CellData>();
 
 		// set channel node
@@ -80,9 +79,10 @@ class ThumbTextListRssStandard
 						
 						// get the thumb image
 						cell.thumbUrl = getThumb(cell.description);
+						
 					}
 					
-					// if node is a description
+					// if node is a content
 					if (itemParam.nodeName == "content:encoded")
 					{
 						// get and clean the node text
@@ -94,6 +94,16 @@ class ThumbTextListRssStandard
 					
 				}
 				
+				// if thumb url is empty, fill it with default image
+				if (cell.thumbUrl == "")
+				{
+					// for silicon sentier feed, add thumb if missing
+					if (listId == Feeds.FEED_2.url)
+					{
+						cell.thumbUrl = Feeds.FEED_2.thumb;
+					}
+				}
+				
 				// if the cell contains at least a title, a thumb and a either a description or a content
 				if (cell.title != "" && cell.thumbUrl != ""  && ( cell.description != "" || cell.content != "" ) )
 				{
@@ -102,7 +112,7 @@ class ThumbTextListRssStandard
 				}
 			}
 		}
-		// return cell array
+
 		return cells;
 	}
 	
@@ -166,7 +176,7 @@ class ThumbTextListRssStandard
 		// return the cleaned string
 		return text;
 		
-		// Nicolas Cannasse proposal to do it
+		// Nicolas Cannasse's proposal to do it
 		//~/&#([0-9A-Fa-f]+);/.customReplace(function(r) return String.fromCharCode(Std.parseInt("0x" + r.matched(1))));
 		
 		return text;
@@ -184,6 +194,7 @@ class ThumbTextListRssStandard
 		var imgNode:String = "";
 		var imgUrl:String = "";
 		var imgUrlStartIndex:Int = 0;
+		
 		// if img node name has been found
 		if ( imgNodeStartIndex != -1)
 		{
@@ -195,6 +206,7 @@ class ThumbTextListRssStandard
 			// get image url
 			var srcKeyWord:String = 'src=';
 			imgUrlStartIndex = imgNode.indexOf(srcKeyWord);
+			
 			// if srcKeyWord string has been found
 			if (imgUrlStartIndex != -1)
 			{
@@ -215,14 +227,8 @@ class ThumbTextListRssStandard
 			imgUrlStartIndex = htmlString.indexOf("<p>http://");
 			if ( imgUrlStartIndex != -1)
 			{
-				// get img node content
-				/*htmlString = htmlString.substr(imgNodeStartIndex);
-				var imgNodeEndIndex:Int = htmlString.indexOf(">") + 1;
-				imgNode = htmlString.substr(0, imgNodeEndIndex);*/
-				
 				// get image url
 				var srcKeyWord:String = '<p>';
-				//var imgUrlStartIndex:Int = imgNode.indexOf(srcKeyWord);
 				imgUrl = htmlString.substr(imgUrlStartIndex + srcKeyWord.length);
 				var imgUrlEndIndex:Int = imgUrl.indexOf("</p>");
 				imgUrl = imgUrl.substr(0, imgUrlEndIndex);

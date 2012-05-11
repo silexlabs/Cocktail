@@ -3,7 +3,6 @@ package org.intermedia.view;
 import js.Lib;
 import js.Dom;
 import org.intermedia.model.ApplicationModel;
-import org.intermedia.view.StyleModel;
 
 
 /**
@@ -40,7 +39,6 @@ class LoadingView
 		node.appendChild(image);
 		// load image
 		image.src = "assets/loading.gif";
-		//image.src("assets/loading2.gif");
 	}
 	
 }

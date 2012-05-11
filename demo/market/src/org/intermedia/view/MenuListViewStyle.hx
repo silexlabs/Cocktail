@@ -11,7 +11,7 @@ import js.Dom;
 import org.intermedia.view.Constants;
 
 /**
- * This class defines the default style used by a ListView
+ * This class defines the default style used by a MenuListView
  * 
  * @author Raphael Harmel
  */
@@ -48,14 +48,49 @@ class MenuListViewStyle
 		
 		// set to the forehead
 		//node.style.zIndex = 1000;
+<<<<<<< HEAD
 		
 		// unset background color to remove list default bahaviour
 		node.style.backgroundColor = null;
+=======
+		
+		// unset background color to remove list default bahaviour
+		node.style.backgroundColor = null;
+		
+>>>>>>> 4f33027baa975cee5dc78da15d39744ef9d29ade
 		// add background image
 		node.style.backgroundImage = 'url(' + Constants.MENU_BG_IMAGE_URL + ')';
 
 		node.style.overflowX = "hidden";
-		node.style.overflowY = "auto";
+		node.style.overflowY = "hidden";
+	}
+	
+	/**
+	 * Defines default Style
+	 * 
+	 * @param	node
+	 */
+	public static function setListStyle(node:HtmlDom):Void
+	{
+		node.style.display = "inline-block";
+		node.style.position = "static";
+		
+		node.style.marginLeft = "0px";
+		node.style.marginRight = "0px";
+		node.style.marginTop = "0px";
+		node.style.marginBottom = "0px";
+		
+		node.style.paddingLeft = "0px";
+		node.style.paddingRight = "0px";
+		node.style.paddingTop = "0px";
+		node.style.paddingBottom = "0px";
+		
+		node.style.width = "100%";
+		node.style.height = "100%";
+
+		// unset background color
+		node.style.backgroundColor = null;
+	
 	}
 	
 	/**

@@ -7,7 +7,6 @@
 
 package org.intermedia.view;
 
-//import cocktail.mouse.MouseData;
 import org.intermedia.model.ApplicationModel;
 
 /**

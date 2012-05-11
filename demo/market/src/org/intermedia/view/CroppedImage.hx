@@ -23,8 +23,13 @@ import feffects.Tween;
 
 class CroppedImage extends ViewBase
 {
+<<<<<<< HEAD
 	// node which corresponds to the image mask
 	//public var node:HtmlDom;
+=======
+	// style
+	private var _style:Dynamic;
+>>>>>>> 4f33027baa975cee5dc78da15d39744ef9d29ade
 	
 	// image to crop
 	private var _image:Image;
