@@ -180,7 +180,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		//first all the previous native elements
 		//are detached
 		detachNativeElements(_nativeElements);
-		
+
 		//start the rendering at the root layer renderer
 		_nativeElements = _layerRenderer.render();
 		attachNativeElements(_nativeElements);
