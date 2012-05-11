@@ -734,6 +734,11 @@ class CoreStyle
 		_htmlElement.invalidateDisplay();
 	}
 	
+	private function invalidateLayer():Void
+	{
+		_htmlElement.invalidateLayer();
+	}
+	
 	/////////////////////////////////
 	// SETTERS/GETTERS
 	////////////////////////////////
@@ -830,7 +835,7 @@ class CoreStyle
 	
 	private function setPosition(value:Position):Position 
 	{
-		invalidate();
+		invalidateLayer();
 		return _position = value;
 	}
 	
@@ -1012,14 +1017,16 @@ class CoreStyle
 	
 	private function setOverflowX(value:Overflow):Overflow
 	{
-		invalidate();
-		return _overflowX = value;
+		_overflowX = value;
+		invalidateLayer();
+		return value;
 	}
 	
 	private function setOverflowY(value:Overflow):Overflow
 	{
-		invalidate();
-		return _overflowY = value;
+		_overflowY = value;
+		invalidateLayer();
+		return value;
 	}
 	
 	

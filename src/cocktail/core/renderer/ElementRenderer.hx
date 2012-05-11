@@ -16,6 +16,7 @@ import cocktail.core.style.CoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
+import haxe.Timer;
 
 
 /**
@@ -153,6 +154,12 @@ class ElementRenderer extends Node
 	private var _isLayingOut:Bool;
 	
 	/**
+	 * TODO : doc + not very clean, should layerRenderer be null instead
+	 * for ElementRenderernot starting a layer ?
+	 */
+	private var _hasOwnLayer:Bool;
+	
+	/**
 	 * Stores all of the value of styles once computed.
 	 * For example, if a size is set as a percentage, it will
 	 * be stored once computed to pixels into this structure
@@ -171,6 +178,7 @@ class ElementRenderer extends Node
 		_node = node;
 		
 		_isLayingOut = false;
+		_hasOwnLayer = false;
 		
 		_bounds = {
 			x:0.0,
@@ -239,11 +247,6 @@ class ElementRenderer extends Node
 		}
 	}
 	
-	public function attachLayer():Void
-	{
-		var parent:ElementRenderer = cast(_parentNode);
-		createLayer(parent.layerRenderer);
-	}
 	
 	private function createLayer(parentLayer:LayerRenderer):Void
 	{
@@ -251,6 +254,7 @@ class ElementRenderer extends Node
 		{
 			_layerRenderer = new LayerRenderer(this);
 			parentLayer.appendChild(_layerRenderer);
+			_hasOwnLayer = true;
 		}
 		else
 		{
@@ -258,18 +262,45 @@ class ElementRenderer extends Node
 		}
 	}
 	
-	public function detachLayer():Void
+	public function attachLayer():Void
 	{
-		if (establishesNewStackingContext() == true)
+		//create the ElementRenderer if needed
+		if (_layerRenderer == null)
 		{
 			var parent:ElementRenderer = cast(_parentNode);
-			if (parent != null)
-			{
-				parent.layerRenderer.removeChild(_layerRenderer);
-			}
-			
-			_layerRenderer = null;
+			createLayer(parent.layerRenderer);
 		}
+		
+		//the HTMLElement is now attached and can attach its children
+		for (i in 0..._childNodes.length)
+		{
+			var child:ElementRenderer = cast(_childNodes[i]);
+			child.attachLayer();
+		}
+	}
+	
+	//TODO : might induce bug if detachLayer is called
+	//after that a property lke 'position' is changed
+	public function detachLayer():Void
+	{
+		//the HTMLElement is now attached and can attach its children
+		for (i in 0..._childNodes.length)
+		{
+			var child:ElementRenderer = cast(_childNodes[i]);
+			child.detachLayer();
+		}
+		
+		if (_hasOwnLayer == true)
+		{
+			var parent:ElementRenderer = cast(_parentNode);
+
+			parent.layerRenderer.removeChild(_layerRenderer);
+			
+			
+			_hasOwnLayer = false;
+		}
+		
+		_layerRenderer = null;
 	}
 	
 	/////////////////////////////////
@@ -436,6 +467,14 @@ class ElementRenderer extends Node
 		}
 	}
 	
+	public function invalidateLayer():Void
+	{
+		detachLayer();
+		attachLayer();
+		invalidate();
+		
+	}
+	
 	/////////////////////////////////
 	// SETTERS/GETTERS
 	////////////////////////////////
@@ -501,7 +540,7 @@ class ElementRenderer extends Node
 		}
 	}
 	
-		//////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
