@@ -75,10 +75,6 @@ class BoxRenderer extends ElementRenderer
 			graphicContext.addChild(backgrounds[i]);
 			#end
 		}
-		
-		
-		
-		
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////

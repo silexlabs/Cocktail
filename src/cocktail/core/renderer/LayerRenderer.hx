@@ -85,23 +85,25 @@ class LayerRenderer extends Node
 		if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == false || 
 		rootRenderer.establishesNewFormattingContext() == true)
 		{
+			
+			var blockBoxRootRenderer:BlockBoxRenderer = cast(rootRenderer);
 		
 			//render the ElementRenderer which created this layer
-			rootRenderer.render(_graphicsContext, relativeOffset);
+			blockBoxRootRenderer.render(_graphicsContext, relativeOffset);
 		
 			
 			//TODO here : render children with negative z-index
 			
 			//render all the block container children belonging to this layer
-			renderBlockContainerChildren(_graphicsContext, relativeOffset,  rootRenderer);
+			blockBoxRootRenderer.renderBlockContainerChildren(_graphicsContext, relativeOffset);
 			
 			//TODO here : render non-positioned float
 			
 			//TODO :  doc
-			renderBlockReplacedChildren(_graphicsContext, relativeOffset, rootRenderer);
+			blockBoxRootRenderer.renderBlockReplacedChildren(_graphicsContext, relativeOffset);
 	
 			//render all the line boxes belonging to this layer
-			renderLineBoxes(_graphicsContext, relativeOffset, rootRenderer);
+			blockBoxRootRenderer.renderLineBoxes(_graphicsContext, relativeOffset);
 			
 			//TODO : doc, this fix is here to prevent inlineBlock from rendering their
 			//child layers, maybe add a new "if(inlineblock)" instead but should also
@@ -112,14 +114,16 @@ class LayerRenderer extends Node
 				renderChildLayer(_graphicsContext, relativeOffset);
 			}
 			
+			//TODO here : render children with positive z-index
 			
 		}
 		
 		//here the root renderer is an inline box renderer which doesn't establish a formatting context
 		else if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == true)
 		{
+			var inlineBoxRootRenderer:InlineBoxRenderer = cast(rootRenderer);
 			//TODO : render child layers
-			renderInlineBoxRenderer(_graphicsContext, relativeOffset, rootRenderer);
+			inlineBoxRootRenderer.renderInlineBoxRenderer(_graphicsContext, relativeOffset);
 		}
 		
 		//here the root renderer is a replaced element
@@ -269,90 +273,6 @@ class LayerRenderer extends Node
 	// PRIVATE METHODS
 	////////////////////////////////
 	
-	/**
-	 * Render all the block container children of the layer
-	 */
-	private function renderBlockContainerChildren(graphicContext:NativeElement, relativeOffset:PointData, rootRenderer:ElementRenderer):Void
-	{
-		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(cast(rootRenderer));
-		
-		for (i in 0...childrenBlockContainer.length)
-		{
-			childrenBlockContainer[i].render(graphicContext, relativeOffset);
-		}
-	}
-	
-	/**
-	 * Retrieve all the children block container of this LayerRenderer by traversing
-	 * recursively the rendering tree.
-	 */
-	private function getBlockContainerChildren(rootRenderer:ElementRenderer):Array<ElementRenderer>
-	{
-		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
-		
-		for (i in 0...rootRenderer.childNodes.length)
-		{
-			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
-			if (child.layerRenderer == this)
-			{
-				//TODO : must add more condition, for instance, no float
-				if (child.isReplaced() == false && child.coreStyle.display != inlineBlock)
-				{
-					ret.push(cast(child));
-					
-					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(child);
-					
-					for (j in 0...childElementRenderer.length)
-					{
-						ret.push(childElementRenderer[j]);
-					}
-				}
-			}
-		}
-		return ret;
-	}
-	
-	//TODO : doc
-	private function renderBlockReplacedChildren(graphicContext:NativeElement, relativeOffset:PointData, rootRenderer:ElementRenderer):Void
-	{
-		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(cast(rootRenderer));
-		
-		for (i in 0...childrenBlockReplaced.length)
-		{
-			childrenBlockReplaced[i].render(graphicContext, relativeOffset);
-		}
-	}
-	
-	private function getBlockReplacedChildren(rootRenderer:ElementRenderer):Array<ElementRenderer>
-	{
-		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
-		
-		for (i in 0...rootRenderer.childNodes.length)
-		{
-			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
-			
-			if (child.layerRenderer == this)
-			{
-				//TODO : must add more condition, for instance, no float
-				if (child.isReplaced() == false && child.coreStyle.display == block)
-				{
-					var childElementRenderer:Array<ElementRenderer> = getBlockReplacedChildren(child);
-					
-					for (j in 0...childElementRenderer.length)
-					{
-						ret.push(childElementRenderer[j]);
-					}
-				}
-				else if (child.coreStyle.display == block)
-				{
-					ret.push(child);
-				}
-			}
-		}
-		
-		return ret;
-	}
-	
 	
 	/**
 	 * Render all the children LayerRenderer of this LayerRenderer
@@ -385,121 +305,8 @@ class LayerRenderer extends Node
 		return childLayers;
 	}
 	
-	private function renderInlineBoxRenderer(graphicContext:NativeElement, relativeOffset:PointData, rootRenderer:ElementRenderer):Void
-	{
-		for (i in 0...rootRenderer.lineBoxes.length)
-		{
-			var childLineBoxes:Array<LineBox> = getLineBoxesInLine(rootRenderer.lineBoxes[i]);
-			
-			for (j in 0...childLineBoxes.length)
-			{
-				if (childLineBoxes[j].layerRenderer == this)
-				{
-					childLineBoxes[j].render(graphicContext, relativeOffset);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Render all the in flow children (not positioned) using
-	 * this LayerRenderer and return an array of NativeElement
-	 * from it
-	 */
-	private function renderLineBoxes(graphicContext:NativeElement, relativeOffset:PointData, rootRenderer:ElementRenderer):Void
-	{
-		var lineBoxes:Array<LineBox> = getLineBoxes(cast(rootRenderer));
 
-		for (i in 0...lineBoxes.length)
-		{
-			var nativeElements:Array<NativeElement> = [];
-			if (lineBoxes[i].establishesNewFormattingContext() == false)
-			{
-				lineBoxes[i].render(graphicContext, relativeOffset);
-			}
-			else
-			{	
-				//TODO : doc, inlineBlock do not render the child layers, as it only simulates a new
-				//layer, will need to do the same thing for floats
-				lineBoxes[i].layerRenderer.render(graphicContext, relativeOffset, lineBoxes[i].elementRenderer, false);
-			}
-		}
-		
-	}
 	
-	
-	/**
-	 * Return all the in flow children of this LayerRenderer by traversing
-	 * recursively the rendering tree
-	 */
-	private function getLineBoxes(rootRenderer:ElementRenderer):Array<LineBox>
-	{
-		var ret:Array<LineBox> = new Array<LineBox>();
-		
-		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.childrenInline() == true)
-		{
-			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
-			
-			for (i in 0...blockBoxRenderer.lineBoxes.length)
-			{
-				var lineBoxes:Array<LineBox> = getLineBoxesInLine(blockBoxRenderer.lineBoxes[i]);
-				for (j in 0...lineBoxes.length)
-				{
-					if (lineBoxes[j].layerRenderer == this)
-					{
-						ret.push(lineBoxes[j]);
-					}
-				}
-			}
-		}
-		else
-		{
-			for (i in 0...rootRenderer.childNodes.length)
-			{
-				var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
-
-				if (child.layerRenderer == this)
-				{
-					if (child.isPositioned() == false)
-					{	
-						if (child.isReplaced() == false)
-						{	
-							var childLineBoxes:Array<LineBox> = getLineBoxes(child);
-							for (j in 0...childLineBoxes.length)
-							{
-								ret.push(childLineBoxes[j]);
-							}
-						}
-					}
-				}
-				
-
-			}
-		}
-		
-		return ret;
-	}
-	
-	private function getLineBoxesInLine(rootLineBox:LineBox):Array<LineBox>
-	{
-		var ret:Array<LineBox> = new Array<LineBox>();
-		
-		for (i in 0...rootLineBox.childNodes.length)
-		{
-			ret.push(cast(rootLineBox.childNodes[i]));
-			
-			if (rootLineBox.childNodes[i].hasChildNodes() == true)
-			{
-				var childLineBoxes:Array<LineBox> = getLineBoxesInLine(cast(rootLineBox.childNodes[i]));
-				for (j in 0...childLineBoxes.length)
-				{
-					ret.push(childLineBoxes[j]);
-				}
-			}
-		}
-		
-		return ret;
-	}
 	
 	
 	//TODO : implement layer renderer transformation
