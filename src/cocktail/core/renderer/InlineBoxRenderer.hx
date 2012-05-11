@@ -30,6 +30,24 @@ class InlineBoxRenderer extends FlowBoxRenderer
 		super(node);
 	}
 	
+	public function renderInlineBoxRenderer(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		for (i in 0..._lineBoxes.length)
+		{
+			var childLineBoxes:Array<LineBox> = getLineBoxesInLine(_lineBoxes[i]);
+			
+			for (j in 0...childLineBoxes.length)
+			{
+				if (childLineBoxes[j].layerRenderer == _layerRenderer)
+				{
+					childLineBoxes[j].render(graphicContext, relativeOffset);
+				}
+			}
+		}
+	}
+	
+	
+	
 	/**
 	 * Overirden as the bounds of an inline box renderer is formed
 	 * by the bounds of all of the line boxes it creates during

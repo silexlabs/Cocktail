@@ -11,6 +11,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
+import cocktail.core.geom.GeomData;
 import cocktail.core.font.FontData;
 
 /**
@@ -29,6 +30,27 @@ class FlowBoxRenderer extends BoxRenderer
 	public function new(node:Node) 
 	{
 		super(node);
+	}
+	
+	private function getLineBoxesInLine(rootLineBox:LineBox):Array<LineBox>
+	{
+		var ret:Array<LineBox> = new Array<LineBox>();
+		
+		for (i in 0...rootLineBox.childNodes.length)
+		{
+			ret.push(cast(rootLineBox.childNodes[i]));
+			
+			if (rootLineBox.childNodes[i].hasChildNodes() == true)
+			{
+				var childLineBoxes:Array<LineBox> = getLineBoxesInLine(cast(rootLineBox.childNodes[i]));
+				for (j in 0...childLineBoxes.length)
+				{
+					ret.push(childLineBoxes[j]);
+				}
+			}
+		}
+		
+		return ret;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

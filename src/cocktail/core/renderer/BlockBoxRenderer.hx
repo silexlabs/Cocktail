@@ -52,6 +52,171 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		super(node);
 	}
 	
+	/**
+	 * Render all the in flow children (not positioned) using
+	 * this LayerRenderer and return an array of NativeElement
+	 * from it
+	 */
+	public function renderLineBoxes(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		var lineBoxes:Array<LineBox> = getLineBoxes(this);
+
+		for (i in 0...lineBoxes.length)
+		{
+			var nativeElements:Array<NativeElement> = [];
+			if (lineBoxes[i].establishesNewFormattingContext() == false)
+			{
+				lineBoxes[i].render(graphicContext, relativeOffset);
+			}
+			else
+			{	
+				//TODO : doc, inlineBlock do not render the child layers, as it only simulates a new
+				//layer, will need to do the same thing for floats
+				lineBoxes[i].layerRenderer.render(graphicContext, relativeOffset, lineBoxes[i].elementRenderer, false);
+			}
+		}
+		
+	}
+	
+	
+	/**
+	 * Return all the in flow children of this LayerRenderer by traversing
+	 * recursively the rendering tree
+	 */
+	private function getLineBoxes(rootRenderer:ElementRenderer):Array<LineBox>
+	{
+		var ret:Array<LineBox> = new Array<LineBox>();
+		
+		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.childrenInline() == true)
+		{
+			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
+			
+			for (i in 0...blockBoxRenderer.lineBoxes.length)
+			{
+				var lineBoxes:Array<LineBox> = getLineBoxesInLine(blockBoxRenderer.lineBoxes[i]);
+				for (j in 0...lineBoxes.length)
+				{
+					if (lineBoxes[j].layerRenderer == _layerRenderer)
+					{
+						ret.push(lineBoxes[j]);
+					}
+				}
+			}
+		}
+		else
+		{
+			for (i in 0...rootRenderer.childNodes.length)
+			{
+				var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
+
+				if (child.layerRenderer == _layerRenderer)
+				{
+					if (child.isPositioned() == false)
+					{	
+						if (child.isReplaced() == false)
+						{	
+							var childLineBoxes:Array<LineBox> = getLineBoxes(child);
+							for (j in 0...childLineBoxes.length)
+							{
+								ret.push(childLineBoxes[j]);
+							}
+						}
+					}
+				}
+				
+
+			}
+		}
+		
+		return ret;
+	}
+	
+	
+	
+	//TODO : doc
+	public function renderBlockReplacedChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this);
+		
+		for (i in 0...childrenBlockReplaced.length)
+		{
+			childrenBlockReplaced[i].render(graphicContext, relativeOffset);
+		}
+	}
+	
+	private function getBlockReplacedChildren(rootRenderer:ElementRenderer):Array<ElementRenderer>
+	{
+		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		for (i in 0...rootRenderer.childNodes.length)
+		{
+			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
+			
+			if (child.layerRenderer == _layerRenderer)
+			{
+				//TODO : must add more condition, for instance, no float
+				if (child.isReplaced() == false && child.coreStyle.display == block)
+				{
+					var childElementRenderer:Array<ElementRenderer> = getBlockReplacedChildren(child);
+					
+					for (j in 0...childElementRenderer.length)
+					{
+						ret.push(childElementRenderer[j]);
+					}
+				}
+				else if (child.coreStyle.display == block)
+				{
+					ret.push(child);
+				}
+			}
+		}
+		
+		return ret;
+	}
+	
+	/**
+	 * Render all the block container children of the layer
+	 */
+	public function renderBlockContainerChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(this);
+		
+		for (i in 0...childrenBlockContainer.length)
+		{
+			childrenBlockContainer[i].render(graphicContext, relativeOffset);
+		}
+	}
+	
+	/**
+	 * Retrieve all the children block container of this LayerRenderer by traversing
+	 * recursively the rendering tree.
+	 */
+	private function getBlockContainerChildren(rootRenderer:ElementRenderer):Array<ElementRenderer>
+	{
+		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		for (i in 0...rootRenderer.childNodes.length)
+		{
+			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
+			if (child.layerRenderer == _layerRenderer)
+			{
+				//TODO : must add more condition, for instance, no float
+				if (child.isReplaced() == false && child.coreStyle.display != inlineBlock)
+				{
+					ret.push(cast(child));
+					
+					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(child);
+					
+					for (j in 0...childElementRenderer.length)
+					{
+						ret.push(childElementRenderer[j]);
+					}
+				}
+			}
+		}
+		return ret;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
