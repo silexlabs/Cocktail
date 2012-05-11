@@ -44,8 +44,6 @@ import haxe.Log;
  */
 class BoxRenderer extends ElementRenderer
 {
-
-	
 	/**
 	 * class constructor
 	 */
@@ -54,13 +52,28 @@ class BoxRenderer extends ElementRenderer
 		super(node);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Render and position the background color and
 	 * image of the element using runtime specific
 	 * API and return an array of NativeElement from
 	 * it
+	 * 
+	 * TODO : apply transformations, opacity and visibility
 	 */
 	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		renderBackground(graphicContext, relativeOffset);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function renderBackground(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var backgroundManager:BackgroundManager = new BackgroundManager();
 		
@@ -78,7 +91,7 @@ class BoxRenderer extends ElementRenderer
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC LAYOUT METHODS
+	// OVERRIDEN PUBLIC LAYOUT METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -297,6 +310,22 @@ class BoxRenderer extends ElementRenderer
 		}
 		
 		return ret;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function establishesNewStackingContext():Bool
+	{
+		switch (_coreStyle.computedStyle.position)
+		{
+			case cssStatic :
+				return false;
+				
+			default:
+				return true;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -13,7 +13,6 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
 import flash.display.Sprite;
-import flash.text.engine.TextLine;
 import flash.geom.Rectangle;
 import haxe.Log;
 
@@ -66,11 +65,7 @@ class LayerRenderer extends Node
 	{
 		if (renderChildLayers == true)
 		{
-			//TODO : quick fix, should be abstracted
-			for (i in 0..._graphicsContext.numChildren)
-			{
-				_graphicsContext.removeChildAt(0);
-			}
+			detach();
 		}
 		
 		
@@ -120,6 +115,14 @@ class LayerRenderer extends Node
 			
 			//TODO here : render children with positive z-index
 			
+			//TODO : this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
+			if (rootRenderer.coreStyle.overflowX == Overflow.scroll)
+			{
+				_graphicsContext.x = rootRenderer.globalBounds.x;
+				_graphicsContext.y = rootRenderer.globalBounds.y;
+				_graphicsContext.scrollRect = new Rectangle(0, 0, rootRenderer.globalBounds.width, rootRenderer.globalBounds.height);
+			}
+			
 		}
 		
 		//here the root renderer is an inline box renderer which doesn't establish a formatting context
@@ -137,25 +140,21 @@ class LayerRenderer extends Node
 			rootRenderer.render(_graphicsContext, relativeOffset);
 		}
 		
-		//TODO : this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
-		if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == false || 
-		rootRenderer.establishesNewFormattingContext() == true)
-		{
-			if (rootRenderer.coreStyle.overflowX == Overflow.scroll)
-			{
-				//_graphicsContext.x = rootRenderer.globalBounds.x;
-				//_graphicsContext.y = rootRenderer.globalBounds.y;
-				//_graphicsContext.scrollRect = new Rectangle(0, 0, rootRenderer.globalBounds.width, rootRenderer.globalBounds.height);
-			}
-			
-		}
-		
 		if (renderChildLayers == true)
 		{
 			parentGraphicsContext.addChild(_graphicsContext);
 		}
 		
 		
+	}
+	
+	public function detach():Void
+	{
+		//TODO : quick fix, should be abstracted
+			for (i in 0..._graphicsContext.numChildren)
+			{
+				_graphicsContext.removeChildAt(0);
+			}
 	}
 	
 	//TODO : doc
