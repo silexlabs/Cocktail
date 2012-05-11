@@ -23,10 +23,10 @@ class Test
 	
 	public function new()
 	{
-		var test = '<div><p>Test passes if the upper-half of the box below is blue.</p>';
-		test += '<div style="width:200px; height:200px; position:absolute;" id="div1">';
-		test += '<div style="position:absolute; background-color:blue; display:inline; height:50%; width:100%;"></div>';
-		test += '</div></div>';
+		var test = '<div><div style="display:inline-block"><img src="bubble.png" style="display:block; margin-left:auto; margin-right:auto;" /></div></div>';
+		//test += '<div style="width:200px; height:200px; position:absolute;" id="div1">';
+		//test += '<div style="position:absolute; background-color:blue; display:inline; height:50%; width:100%;"></div>';
+		//test += '</div></div>';
 		
 		Lib.document.body.innerHTML = test;
 	}

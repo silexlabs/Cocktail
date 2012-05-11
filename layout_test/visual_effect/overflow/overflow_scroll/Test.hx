@@ -13,9 +13,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package ;
 import js.Lib;
 
-/**
- * TODO : fail text outside of orange box
- */
+
 class Test 
 {
 	public static function main()
@@ -26,13 +24,16 @@ class Test
 	public function new()
 	{
 		var test = '<div>';
-		test += '<div style="position:relative;">';
-		test += '<div style="background-color:orange; top:0.5in; position:absolute; height:1in; width:1in;">';
-		test += 'Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text ';
-		test += '</div>';
-		test += '<div style="background-color:blue; height:2in; width:0.5in; float:left;"></div>';
+		test += '<div id="scr" style="height:1in; width:1in;">';
+		test += '<div style="background-color:orange; height:2in; width:2in">Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler PASS PASS</div>';
 		test += '</div></div>';
 		
+	
+		
 		Lib.document.body.innerHTML = test;
+		
+		var div = Lib.document.getElementById("scr");
+		div.style.overflowX = "scroll";
+		div.style.overflowY = "scroll";
 	}
 }

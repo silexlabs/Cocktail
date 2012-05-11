@@ -13,9 +13,6 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package ;
 import js.Lib;
 
-/**
- * TODO : fail text outside of orange box
- */
 class Test 
 {
 	public static function main()
@@ -25,13 +22,15 @@ class Test
 	
 	public function new()
 	{
-		var test = '<div>';
-		test += '<div style="position:relative;">';
-		test += '<div style="background-color:orange; top:0.5in; position:absolute; height:1in; width:1in;">';
-		test += 'Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text ';
+		var test = '<div><p>Test passes if the last line of "Filler Text" inside the orange box below is on the same line as the arrows "--&gt" "&lt--".</p>';
+		test += '<div>';
+			test += '<span style="font-size:16px;">';
+				test += '--&gt';
+				test += '<span style="font-size:16px; width:5em; display:inline-block; background-color:orange;">Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text</span>';
+				test += '&lt--';
+			test += '</span>';	
 		test += '</div>';
-		test += '<div style="background-color:blue; height:2in; width:0.5in; float:left;"></div>';
-		test += '</div></div>';
+		test += '</div>';
 		
 		Lib.document.body.innerHTML = test;
 	}
