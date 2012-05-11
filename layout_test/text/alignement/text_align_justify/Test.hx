@@ -27,7 +27,7 @@ class Test
 	{
 		//TODO : should add border
 		var test = '<div><p>Test passes if the words "Filler Text" are justified and spaced out on the first two lines of text inside the blue box. The final line of text does not have to be justified but can be based on user agent implementation.</p>';
-		test += '<div style="text-align:justify; width:150px;">Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text</div>';
+		test += '<div style="text-align:justify; width:150px; color:green;">Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text</div>';
 		test += '</div>';
 		
 		Lib.document.body.innerHTML = test;
