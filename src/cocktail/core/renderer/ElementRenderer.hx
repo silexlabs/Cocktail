@@ -456,7 +456,7 @@ class ElementRenderer extends Node
 			//is not currently added to the DOM and doesn't require
 			//a layout
 			//
-			//TODO : not possible anymore, when an HTMLElement is not
+			//TODO : shouldn't be possible anymore, when an HTMLElement is not
 			//attached to the DOM, it doesn't create an ElementRenderer,
 			//only the initial ElementRenderer doesn't have a parent
 			if (this._parentNode != null)

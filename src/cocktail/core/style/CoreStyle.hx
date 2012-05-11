@@ -774,56 +774,65 @@ class CoreStyle
 	
 	private function setWidth(value:Dimension):Dimension 
 	{
+		_width = value;
 		invalidate();
-		return _width = value;
+		return value;
 	}
 	
 	private function setMarginLeft(value:Margin):Margin 
 	{
+		_marginLeft = value;
 		invalidate();
-		return _marginLeft = value;
+		return value;
 	}
 	
 	private function setMarginRight(value:Margin):Margin 
 	{
+		_marginRight = value;
 		invalidate();
-		return _marginRight = value;
+		return value;
 	}
 	
 	private function setMarginTop(value:Margin):Margin 
 	{
+		_marginTop = value;
 		invalidate();
-		return _marginTop = value;
+		return value;
 	}
 	
 	private function setMarginBottom(value:Margin):Margin 
 	{
+		_marginBottom = value;
 		invalidate();
-		return _marginBottom = value;
+		return value;
 	}
 	
 	private function setPaddingLeft(value:Padding):Padding 
 	{
+		_paddingLeft = value;
 		invalidate();
-		return _paddingLeft = value;
+		return value;
 	}
 	
 	private function setPaddingRight(value:Padding):Padding 
 	{
+		_paddingRight = value;
 		invalidate();
-		return _paddingRight = value;
+		return value;
 	}
 	
 	private function setPaddingTop(value:Padding):Padding 
 	{
+		_paddingTop = value;
 		invalidate();
-		return _paddingTop = value;
+		return value;
 	}
 	
 	private function setPaddingBottom(value:Padding):Padding 
 	{
+		_paddingBottom = value;
 		invalidate();
-		return _paddingBottom = value;
+		return value;
 	}
 	
 	private function setDisplay(value:Display):Display 
@@ -835,158 +844,184 @@ class CoreStyle
 	
 	private function setPosition(value:Position):Position 
 	{
+		_position = value;
 		invalidateLayer();
-		return _position = value;
+		return value;
 	}
 	
 	private function setHeight(value:Dimension):Dimension 
 	{
+		_height = value;
 		invalidate();
-		return _height = value;
+		return value;
 	}
 	
 	private function setMinHeight(value:ConstrainedDimension):ConstrainedDimension 
 	{
+		_minHeight = value;
 		invalidate();
-		return _minHeight = value;
+		return value;
 	}
 	
 	private function setMaxHeight(value:ConstrainedDimension):ConstrainedDimension 
 	{
+		_maxHeight = value;
 		invalidate();
-		return _maxHeight = value;
+		return value;
 	}
 	
 	private function setMinWidth(value:ConstrainedDimension):ConstrainedDimension 
 	{
+		_minWidth = value;
 		invalidate();
-		return _minWidth = value;
+		return value;
 	}
 	
 	private function setMaxWidth(value:ConstrainedDimension):ConstrainedDimension 
 	{
+		_maxWidth = value;
 		invalidate();
-		return _maxWidth = value;
+		return value;
 	}
 	
 	private function setTop(value:PositionOffset):PositionOffset 
 	{
+		_top = value;
 		invalidate();
-		return _top = value;
+		return value;
 	}
 	
 	private function setLeft(value:PositionOffset):PositionOffset 
 	{
+		_left = value;
 		invalidate();
-		return _left = value;
+		return value;
 	}
 	
 	private function setBottom(value:PositionOffset):PositionOffset 
 	{
+		_bottom = value;
 		invalidate();
-		return _bottom = value;
+		return value;
 	}
 	
 	private function setRight(value:PositionOffset):PositionOffset 
 	{
+		_right = value;
 		invalidate();
-		return _right = value;
+		return value;
 	}
 	
 	private function setCSSFloat(value:CSSFloat):CSSFloat 
 	{
+		_cssFloat = value;
 		invalidate();
-		return _cssFloat = value;
+		return value;
 	}
 	
 	private function setClear(value:Clear):Clear 
 	{
+		_clear = value;
 		invalidate();
-		return _clear = value;
+		return value;
 	}
 	
 	private function setFontSize(value:FontSize):FontSize
 	{
+		_fontSize = value;
 		invalidate();
-		return _fontSize = value;
+		return value;
 	}
 	
 	private function setFontWeight(value:FontWeight):FontWeight
 	{
+		_fontWeight = value;
 		invalidate();
-		return _fontWeight = value;
+		return value;
 	}
 	
 	private function setFontStyle(value:FontStyle):FontStyle
 	{
+		_fontStyle = value;
 		invalidate();
-		return _fontStyle = value;
+		return value;
 	}
 	
 	private function setFontFamily(value:Array<String>):Array<String>
 	{
+		_fontFamily = value;
 		invalidate();
-		return _fontFamily = value;
+		return value;
 	}
 	
 	private function setFontVariant(value:FontVariant):FontVariant
 	{
+		_fontVariant = value;
 		invalidate();
-		return _fontVariant = value;
+		return value;
 	}
 	
 	private function setTextTransform(value:TextTransform):TextTransform
 	{
+		_textTransform = value;
 		invalidate();
-		return _textTransform = value;
+		return value;
 	}
 	
 	private function setLetterSpacing(value:LetterSpacing):LetterSpacing
 	{
+		_letterSpacing = value;
 		invalidate();
-		return _letterSpacing = value;
+		return value;
 	}
 	
 	private function setWordSpacing(value:WordSpacing):WordSpacing
 	{
+		_wordSpacing = value;
 		invalidate();
-		return _wordSpacing = value;
+		return value;
 	}
 	
 	private function setLineHeight(value:LineHeight):LineHeight
 	{
+		_lineHeight = value;
 		invalidate();
-		return _lineHeight = value;
+		return value;
 	}
 	
 	private function setColor(value:Color):Color
 	{
+		_color = value;
 		invalidate();
-		return _color = value;
+		return value;
 	}
 	
 	private function setVerticalAlign(value:VerticalAlign):VerticalAlign
 	{
+		_verticalAlign = value;
 		invalidate();
-		return _verticalAlign = value;
+		return value;
 	}
 	
 	private function setTextIndent(value:TextIndent):TextIndent
 	{
+		_textIndent = value;
 		invalidate();
-		return _textIndent = value;
+		return value;
 	}
 	
 	private function setWhiteSpace(value:WhiteSpace):WhiteSpace
 	{
+		_whiteSpace = value;
 		invalidate();
-		return _whiteSpace = value;
+		return value;
 	}
 	
 	private function setTextAlign(value:TextAlign):TextAlign
 	{
+		 _textAlign = value;
 		invalidate();
-		return _textAlign = value;
+		return value;
 	}
 	
 	private function setOpacity(value:Opacity):Opacity
@@ -1005,14 +1040,16 @@ class CoreStyle
 	
 	private function setTransformOrigin(value:TransformOrigin):TransformOrigin
 	{
+		_transformOrigin = value;
 		invalidate();
-		return _transformOrigin = value;
+		return value;
 	}
 	
 	private function setTransform(value:Transform):Transform
 	{
+		_transform = value;
 		invalidate();
-		return _transform = value;
+		return value;
 	}
 	
 	private function setOverflowX(value:Overflow):Overflow
@@ -1236,8 +1273,9 @@ class CoreStyle
 	
 	private function setBackgroundColor(value:BackgroundColor):BackgroundColor
 	{
+		_backgroundColor = value;
 		invalidate();
-		return _backgroundColor = value;
+		return value;
 	}
 	
 	private function getBackgroundColor():BackgroundColor
@@ -1247,8 +1285,9 @@ class CoreStyle
 	
 	private function setBackgroundImage(value:Array<BackgroundImage>):Array<BackgroundImage>
 	{
+		_backgroundImage = value;
 		invalidate();
-		return _backgroundImage = value;
+		return value;
 	}
 	
 	private function getBackgroundImage():Array<BackgroundImage>
@@ -1269,8 +1308,9 @@ class CoreStyle
 	
 	private function setBackgroundSize(value:Array<BackgroundSize>):Array<BackgroundSize>
 	{
+		_backgroundSize = value;
 		invalidate();
-		return _backgroundSize = value;
+		return value;
 	}
 	
 	private function getBackgroundSize():Array<BackgroundSize>
@@ -1280,8 +1320,9 @@ class CoreStyle
 	
 	private function setBackgroundClip(value:Array<BackgroundClip>):Array<BackgroundClip>
 	{
+		_backgroundClip = value;
 		invalidate();
-		return _backgroundClip = value;
+		return value;
 	}
 	
 	private function getBackgroundClip():Array<BackgroundClip>
@@ -1291,8 +1332,9 @@ class CoreStyle
 	
 	private function setBackgroundPosition(value:Array<BackgroundPosition>):Array<BackgroundPosition>
 	{
+		_backgroundPosition = value;
 		invalidate();
-		return _backgroundPosition = value;
+		return value;
 	}
 	
 	private function getBackgroundPosition():Array<BackgroundPosition>
@@ -1302,8 +1344,9 @@ class CoreStyle
 	
 	private function setBackgroundOrigin(value:Array<BackgroundOrigin>):Array<BackgroundOrigin>
 	{
+		_backgroundOrigin = value;
 		invalidate();
-		return _backgroundOrigin = value;
+		return value;
 	}
 	
 	private function getBackgroundOrigin():Array<BackgroundOrigin>
