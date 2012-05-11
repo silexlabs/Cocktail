@@ -12,6 +12,8 @@ import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
+import flash.display.Sprite;
+import flash.text.engine.TextLine;
 import flash.geom.Rectangle;
 import haxe.Log;
 
@@ -193,9 +195,19 @@ class LayerRenderer extends Node
 		{
 			if (rootRenderer.coreStyle.overflowX == Overflow.scroll)
 			{
+				
 				for (i in 0...nativeElements.length)
 				{
-				//	nativeElements[i].scrollRect = new Rectangle(0.0, 0.0, 100.0, 100.0);
+				//	trace(nativeElements[i].x);
+				var scrollY:Float = 0.0;
+				if (Std.is(nativeElements[i], TextLine))
+				{
+					//scrollY -= nativeElements[i].y;
+					scrollY -= untyped nativeElements[i].ascent;
+					nativeElements[i].y -= untyped nativeElements[i].ascent;
+				}
+					nativeElements[i].scrollRect = new Rectangle(0.0, scrollY
+					, rootRenderer.globalBounds.width  - nativeElements[i].x , rootRenderer.globalBounds.height  - nativeElements[i].y);
 				}
 			}
 			
