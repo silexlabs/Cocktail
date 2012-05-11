@@ -29,9 +29,9 @@ class EmbeddedLineBox extends LineBox
 	}
 	
 	//TODO : messy ?
-	override public function render(graphicContext:NativeElement):Void
+	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		_elementRenderer.render(graphicContext);
+		_elementRenderer.render(graphicContext, relativeOffset);
 	}
 	
 	//TODO : messy ? return element renderer bounds, as embedded

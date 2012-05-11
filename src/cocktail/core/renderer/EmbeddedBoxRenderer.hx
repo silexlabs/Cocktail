@@ -68,7 +68,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * Render the embedded asset and return a
 	 * NativeElement from it
 	 */
-	override public function render(graphicContext:NativeElement):Void
+	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var backgroundManager:BackgroundManager = new BackgroundManager();
 
