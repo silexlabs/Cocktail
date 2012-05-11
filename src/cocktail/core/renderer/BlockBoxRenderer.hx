@@ -59,7 +59,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	public function renderLineBoxes(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		var lineBoxes:Array<LineBox> = getLineBoxes(this);
+		var lineBoxes:Array<LineBox> = getChilrenLineBoxes(this, _layerRenderer);
 
 		for (i in 0...lineBoxes.length)
 		{
@@ -83,7 +83,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Return all the in flow children of this LayerRenderer by traversing
 	 * recursively the rendering tree
 	 */
-	private function getLineBoxes(rootRenderer:ElementRenderer):Array<LineBox>
+	private function getChilrenLineBoxes(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer):Array<LineBox>
 	{
 		var ret:Array<LineBox> = new Array<LineBox>();
 		
@@ -96,7 +96,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				var lineBoxes:Array<LineBox> = getLineBoxesInLine(blockBoxRenderer.lineBoxes[i]);
 				for (j in 0...lineBoxes.length)
 				{
-					if (lineBoxes[j].layerRenderer == _layerRenderer)
+					if (lineBoxes[j].layerRenderer == referenceLayer)
 					{
 						ret.push(lineBoxes[j]);
 					}
@@ -109,13 +109,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{
 				var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
 
-				if (child.layerRenderer == _layerRenderer)
+				if (child.layerRenderer == referenceLayer)
 				{
 					if (child.isPositioned() == false)
 					{	
 						if (child.isReplaced() == false)
 						{	
-							var childLineBoxes:Array<LineBox> = getLineBoxes(child);
+							var childLineBoxes:Array<LineBox> = getChilrenLineBoxes(child, referenceLayer);
 							for (j in 0...childLineBoxes.length)
 							{
 								ret.push(childLineBoxes[j]);
@@ -136,7 +136,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//TODO : doc
 	public function renderBlockReplacedChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this);
+		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this, _layerRenderer);
 		
 		for (i in 0...childrenBlockReplaced.length)
 		{
@@ -144,7 +144,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	
-	private function getBlockReplacedChildren(rootRenderer:ElementRenderer):Array<ElementRenderer>
+	private function getBlockReplacedChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer):Array<ElementRenderer>
 	{
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
@@ -152,12 +152,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
 			
-			if (child.layerRenderer == _layerRenderer)
+			if (child.layerRenderer == referenceLayer)
 			{
 				//TODO : must add more condition, for instance, no float
 				if (child.isReplaced() == false && child.coreStyle.display == block)
 				{
-					var childElementRenderer:Array<ElementRenderer> = getBlockReplacedChildren(child);
+					var childElementRenderer:Array<ElementRenderer> = getBlockReplacedChildren(child, referenceLayer);
 					
 					for (j in 0...childElementRenderer.length)
 					{
@@ -179,7 +179,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	public function renderBlockContainerChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(this);
+		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(this, _layerRenderer);
 		
 		for (i in 0...childrenBlockContainer.length)
 		{
@@ -191,21 +191,21 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Retrieve all the children block container of this LayerRenderer by traversing
 	 * recursively the rendering tree.
 	 */
-	private function getBlockContainerChildren(rootRenderer:ElementRenderer):Array<ElementRenderer>
+	private function getBlockContainerChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer):Array<ElementRenderer>
 	{
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
 		for (i in 0...rootRenderer.childNodes.length)
 		{
 			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
-			if (child.layerRenderer == _layerRenderer)
+			if (child.layerRenderer == referenceLayer)
 			{
 				//TODO : must add more condition, for instance, no float
 				if (child.isReplaced() == false && child.coreStyle.display != inlineBlock)
 				{
 					ret.push(cast(child));
 					
-					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(child);
+					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(child, referenceLayer);
 					
 					for (j in 0...childElementRenderer.length)
 					{
