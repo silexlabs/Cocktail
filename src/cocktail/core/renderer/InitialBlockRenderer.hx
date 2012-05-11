@@ -60,7 +60,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * API and return an array of NativeElement from
 	 * it
 	 */
-	override public function render():Array<NativeElement>
+	override public function render(graphicContext:NativeElement):Void
 	{
 		var backgroundManager:BackgroundManager = new BackgroundManager();
 		
@@ -78,10 +78,9 @@ class InitialBlockRenderer extends BlockBoxRenderer
 			#if (flash9 || nme)
 			backgrounds[i].x = globalBounds.x;
 			backgrounds[i].y = globalBounds.y;
+			graphicContext.addChild(backgrounds[i]);
 			#end
 		}
-	
-		return backgrounds;
 	}
 	
 	override public function attachLayer():Void
@@ -182,7 +181,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		detachNativeElements(_nativeElements);
 
 		//start the rendering at the root layer renderer
-		_nativeElements = _layerRenderer.render();
+		_layerRenderer.render(Lib.current);
 		attachNativeElements(_nativeElements);
 	}
 	

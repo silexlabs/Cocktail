@@ -311,9 +311,9 @@ class ElementRenderer extends Node
 	 * Render the element using runtime specific
 	 * API and return an array of NativeElement from it
 	 */
-	public function render():Array<NativeElement>
+	public function render(graphicContext:NativeElement):Void
 	{
-		return [];
+		
 	}
 	
 	private function getChildrenBounds(childrenBounds:Array<RectangleData>):RectangleData

@@ -68,7 +68,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * Render the embedded asset and return a
 	 * NativeElement from it
 	 */
-	override public function render():Array<NativeElement>
+	override public function render(graphicContext:NativeElement):Void
 	{
 		var backgroundManager:BackgroundManager = new BackgroundManager();
 
@@ -79,6 +79,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 			
 			ret[i].x = globalBounds.x;
 			ret[i].y = globalBounds.y;
+			graphicContext.addChild(ret[i]);
 		
 		}
 		
@@ -87,7 +88,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	
 		var embeddedHTMLElement:EmbeddedElement = cast(_node);
 		
-		ret.push(embeddedHTMLElement.embeddedAsset);
+		graphicContext.addChild(embeddedHTMLElement.embeddedAsset);
 	
 		embeddedHTMLElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
 		embeddedHTMLElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
@@ -101,7 +102,6 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		
 		//TODO : opacity doesn't work on embedded asset and should also be applied to background
 		
-		return ret;
 	}
 	
 	
