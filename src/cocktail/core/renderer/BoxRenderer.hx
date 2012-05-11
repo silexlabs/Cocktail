@@ -30,6 +30,7 @@ import cocktail.core.style.formatter.InlineFormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 import cocktail.core.unit.UnitManager;
+import cocktail.core.geom.GeomData;
 import haxe.Log;
 
 /**
@@ -59,7 +60,7 @@ class BoxRenderer extends ElementRenderer
 	 * API and return an array of NativeElement from
 	 * it
 	 */
-	override public function render(graphicContext:NativeElement):Void
+	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var backgroundManager:BackgroundManager = new BackgroundManager();
 		
@@ -74,6 +75,10 @@ class BoxRenderer extends ElementRenderer
 			graphicContext.addChild(backgrounds[i]);
 			#end
 		}
+		
+		
+		
+		
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////

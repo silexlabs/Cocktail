@@ -30,12 +30,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	
 	
 	/**
-	 * The NativeElements created when rendering
-	 * this Document. They are runtime specific
-	 */
-	private var _nativeElements:Array<NativeElement>;
-	
-	/**
 	 * class constructor. Set the viewport as the bounds
 	 * of the ElementRenderer, as a BodyHTMLElement
 	 * always covers all of the viewport
@@ -44,7 +38,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	{
 		super(node);
 		
-		_nativeElements = new Array<NativeElement>();
 		
 
 		
@@ -60,7 +53,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * API and return an array of NativeElement from
 	 * it
 	 */
-	override public function render(graphicContext:NativeElement):Void
+	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var backgroundManager:BackgroundManager = new BackgroundManager();
 		
@@ -88,20 +81,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		_layerRenderer = new LayerRenderer(this);
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE RENDERING METHODS
-	// attach/detach the rendered native elements to/from the flash Stage
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	private function attachNativeElement(nativeElement:NativeElement):Void
-	{
-		flash.Lib.current.addChild(nativeElement);
-	}
-	
-	private function detachNativeElement(nativeElement:NativeElement):Void
-	{
-		flash.Lib.current.removeChild(nativeElement);
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC INVALIDATION METHODS
@@ -176,37 +155,9 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */ 
 	private function startRendering():Void
 	{
-		//first all the previous native elements
-		//are detached
-		detachNativeElements(_nativeElements);
 
 		//start the rendering at the root layer renderer
-		_layerRenderer.render(Lib.current);
-		attachNativeElements(_nativeElements);
-	}
-	
-	/**
-	 * Attach an array of NativeElement to the
-	 * display root
-	 */
-	private function attachNativeElements(nativeElements:Array<NativeElement>):Void
-	{
-		for (i in 0...nativeElements.length)
-		{
-			attachNativeElement(nativeElements[i]);
-		}
-	}
-	
-	/**
-	 * Remove an array of NativeElement from the
-	 * display root
-	 */
-	private function detachNativeElements(nativeElements:Array<NativeElement>):Void
-	{
-		for (i in 0...nativeElements.length)
-		{
-			detachNativeElement(nativeElements[i]);
-		}
+		_layerRenderer.render(Lib.current, {x:0.0, y:0.0});
 	}
 	
 	/**

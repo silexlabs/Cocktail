@@ -62,14 +62,22 @@ class LayerRenderer extends Node
 	 * Render all the ElementRenderers belonging to this LayerRenderer
 	 * in a defined order
 	 */
-	public function render(parentGraphicsContext:NativeElement, rootRenderer:ElementRenderer = null, renderChildLayers:Bool = true):Void
+	public function render(parentGraphicsContext:NativeElement, parentRelativeOffset:PointData, rootRenderer:ElementRenderer = null, renderChildLayers:Bool = true):Void
 	{
+		//TODO : quick fix, should be abstracted
+		for (i in 0..._graphicsContext.numChildren)
+		{
+			_graphicsContext.removeChildAt(0);
+		}
 		
 		if (rootRenderer == null)
 		{
 			rootRenderer = _rootRenderer;
 		}
-		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
+
+		var relativeOffset:PointData = getRelativeOffset(rootRenderer);
+		relativeOffset.x += parentRelativeOffset.x;
+		relativeOffset.y += parentRelativeOffset.y;
 		
 		//here the root renderer is a block box renderer. It can be an inline level
 		//which establishes an inline formatting context : an inline-block
@@ -79,21 +87,21 @@ class LayerRenderer extends Node
 		{
 		
 			//render the ElementRenderer which created this layer
-			rootRenderer.render(_graphicsContext);
+			rootRenderer.render(_graphicsContext, relativeOffset);
 		
 			
 			//TODO here : render children with negative z-index
 			
 			//render all the block container children belonging to this layer
-			renderBlockContainerChildren(_graphicsContext, rootRenderer);
+			renderBlockContainerChildren(_graphicsContext, relativeOffset,  rootRenderer);
 			
 			//TODO here : render non-positioned float
 			
 			//TODO :  doc
-			renderBlockReplacedChildren(_graphicsContext, rootRenderer);
+			renderBlockReplacedChildren(_graphicsContext, relativeOffset, rootRenderer);
 	
 			//render all the line boxes belonging to this layer
-			renderLineBoxes(_graphicsContext, rootRenderer);
+			renderLineBoxes(_graphicsContext, relativeOffset, rootRenderer);
 			
 			//TODO : doc, this fix is here to prevent inlineBlock from rendering their
 			//child layers, maybe add a new "if(inlineblock)" instead but should also
@@ -101,7 +109,7 @@ class LayerRenderer extends Node
 			if (renderChildLayers == true)
 			{
 				//render all the child layers with a z-index of 0
-				renderChildLayer(_graphicsContext);
+				renderChildLayer(_graphicsContext, relativeOffset);
 			}
 			
 			
@@ -111,83 +119,70 @@ class LayerRenderer extends Node
 		else if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == true)
 		{
 			//TODO : render child layers
-			renderInlineBoxRenderer(_graphicsContext, rootRenderer);
+			renderInlineBoxRenderer(_graphicsContext, relativeOffset, rootRenderer);
 		}
 		
 		//here the root renderer is a replaced element
 		else
 		{
 			//render the replaced element, render its background and asset
-			rootRenderer.render(_graphicsContext);
+			rootRenderer.render(_graphicsContext, relativeOffset);
 		}
 		
-		#if (flash9 || nme)
-		
-		//TODO : this logic should go into ElementRenderer.render
-		
-		//if the root renderer is relatively positioned,
-		//then its offset must be applied to all of 
-		//its children
-		if (rootRenderer.isRelativePositioned() == true)
-		{
-			for (i in 0...nativeElements.length)
-			{
-				//first try to apply the left offset of the root renderer if it is
-				//not auto
-				if (rootRenderer.coreStyle.left != PositionOffset.cssAuto)
-				{
-					nativeElements[i].x += rootRenderer.coreStyle.computedStyle.left;
-				}
-				//else the right offset,
-				else if (rootRenderer.coreStyle.right != PositionOffset.cssAuto)
-				{
-					nativeElements[i].x -= rootRenderer.coreStyle.computedStyle.right;
-				}
-				
-				//if both left and right offset is auto, then the root renderer uses its static
-				//position (its normal position in the flow) and no offset needs to be applied
-				//to its children
-			
-				//same for vertical offset
-				if (rootRenderer.coreStyle.top != PositionOffset.cssAuto)
-				{
-					nativeElements[i].y += rootRenderer.coreStyle.computedStyle.top; 
-				}
-				else if (rootRenderer.coreStyle.bottom != PositionOffset.cssAuto)
-				{
-					nativeElements[i].y -= rootRenderer.coreStyle.computedStyle.bottom; 
-				}
-			}
-		}
-		
-		#end
-		
-		//this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
+		//TODO : this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
 		if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == false || 
 		rootRenderer.establishesNewFormattingContext() == true)
 		{
 			if (rootRenderer.coreStyle.overflowX == Overflow.scroll)
 			{
-				
-				for (i in 0...nativeElements.length)
-				{
-				//	trace(nativeElements[i].x);
-				var scrollY:Float = 0.0;
-				if (Std.is(nativeElements[i], TextLine))
-				{
-					//scrollY -= nativeElements[i].y;
-					scrollY -= untyped nativeElements[i].ascent;
-					nativeElements[i].y -= untyped nativeElements[i].ascent;
-				}
-					nativeElements[i].scrollRect = new Rectangle(0.0, scrollY
-					, rootRenderer.globalBounds.width  - nativeElements[i].x , rootRenderer.globalBounds.height  - nativeElements[i].y);
-				}
+				_graphicsContext.x = rootRenderer.globalBounds.x;
+				_graphicsContext.y = rootRenderer.globalBounds.y;
+				_graphicsContext.scrollRect = new Rectangle(0, 0, rootRenderer.globalBounds.width, rootRenderer.globalBounds.height);
 			}
 			
 		}
 		
 		parentGraphicsContext.addChild(_graphicsContext);
 		
+	}
+	
+	//TODO : doc
+	private function getRelativeOffset(rootRenderer:ElementRenderer):PointData
+	{
+		var relativeOffset:PointData = { x:0.0, y:0.0 };
+		//if the root renderer is relatively positioned,
+		//then its offset must be applied to all of 
+		//its children
+		if (rootRenderer.isRelativePositioned() == true)
+		{
+			//first try to apply the left offset of the root renderer if it is
+			//not auto
+			if (rootRenderer.coreStyle.left != PositionOffset.cssAuto)
+			{
+				relativeOffset.x += rootRenderer.coreStyle.computedStyle.left;
+			}
+			//else the right offset,
+			else if (rootRenderer.coreStyle.right != PositionOffset.cssAuto)
+			{
+				relativeOffset.x -= rootRenderer.coreStyle.computedStyle.right;
+			}
+			
+			//if both left and right offset is auto, then the root renderer uses its static
+			//position (its normal position in the flow) and no offset needs to be applied
+			//to its children
+		
+			//same for vertical offset
+			if (rootRenderer.coreStyle.top != PositionOffset.cssAuto)
+			{
+				relativeOffset.y += rootRenderer.coreStyle.computedStyle.top; 
+			}
+			else if (rootRenderer.coreStyle.bottom != PositionOffset.cssAuto)
+			{
+				relativeOffset.y -= rootRenderer.coreStyle.computedStyle.bottom; 
+			}
+		}
+		
+		return relativeOffset;
 	}
 	
 	public function getElementRenderersAtPoint(point:PointData):Array<ElementRenderer>
@@ -277,13 +272,13 @@ class LayerRenderer extends Node
 	/**
 	 * Render all the block container children of the layer
 	 */
-	private function renderBlockContainerChildren(graphicContext:NativeElement, rootRenderer:ElementRenderer):Void
+	private function renderBlockContainerChildren(graphicContext:NativeElement, relativeOffset:PointData, rootRenderer:ElementRenderer):Void
 	{
 		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(cast(rootRenderer));
 		
 		for (i in 0...childrenBlockContainer.length)
 		{
-			childrenBlockContainer[i].render(graphicContext);
+			childrenBlockContainer[i].render(graphicContext, relativeOffset);
 		}
 	}
 	
@@ -318,13 +313,13 @@ class LayerRenderer extends Node
 	}
 	
 	//TODO : doc
-	private function renderBlockReplacedChildren(graphicContext:NativeElement, rootRenderer:ElementRenderer):Void
+	private function renderBlockReplacedChildren(graphicContext:NativeElement, relativeOffset:PointData, rootRenderer:ElementRenderer):Void
 	{
 		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(cast(rootRenderer));
 		
 		for (i in 0...childrenBlockReplaced.length)
 		{
-			childrenBlockReplaced[i].render(graphicContext);
+			childrenBlockReplaced[i].render(graphicContext, relativeOffset);
 		}
 	}
 	
@@ -363,13 +358,13 @@ class LayerRenderer extends Node
 	 * Render all the children LayerRenderer of this LayerRenderer
 	 * and return an array of NativeElements from it
 	 */
-	private function renderChildLayer(graphicContext:NativeElement):Void
+	private function renderChildLayer(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var childLayers:Array<LayerRenderer> = getChildLayers();
 		
 		for (i in 0...childLayers.length)
 		{
-			childLayers[i].render(graphicContext);
+			childLayers[i].render(graphicContext, relativeOffset);
 		}
 	}
 	
@@ -390,7 +385,7 @@ class LayerRenderer extends Node
 		return childLayers;
 	}
 	
-	private function renderInlineBoxRenderer(graphicContext:NativeElement, rootRenderer:ElementRenderer):Void
+	private function renderInlineBoxRenderer(graphicContext:NativeElement, relativeOffset:PointData, rootRenderer:ElementRenderer):Void
 	{
 		for (i in 0...rootRenderer.lineBoxes.length)
 		{
@@ -400,7 +395,7 @@ class LayerRenderer extends Node
 			{
 				if (childLineBoxes[j].layerRenderer == this)
 				{
-					childLineBoxes[j].render(graphicContext);
+					childLineBoxes[j].render(graphicContext, relativeOffset);
 				}
 			}
 		}
@@ -411,7 +406,7 @@ class LayerRenderer extends Node
 	 * this LayerRenderer and return an array of NativeElement
 	 * from it
 	 */
-	private function renderLineBoxes(graphicContext:NativeElement, rootRenderer:ElementRenderer):Void
+	private function renderLineBoxes(graphicContext:NativeElement, relativeOffset:PointData, rootRenderer:ElementRenderer):Void
 	{
 		var lineBoxes:Array<LineBox> = getLineBoxes(cast(rootRenderer));
 
@@ -420,13 +415,13 @@ class LayerRenderer extends Node
 			var nativeElements:Array<NativeElement> = [];
 			if (lineBoxes[i].establishesNewFormattingContext() == false)
 			{
-				lineBoxes[i].render(graphicContext);
+				lineBoxes[i].render(graphicContext, relativeOffset);
 			}
 			else
 			{	
 				//TODO : doc, inlineBlock do not render the child layers, as it only simulates a new
 				//layer, will need to do the same thing for floats
-				lineBoxes[i].layerRenderer.render(graphicContext, lineBoxes[i].elementRenderer, false);
+				lineBoxes[i].layerRenderer.render(graphicContext, relativeOffset, lineBoxes[i].elementRenderer, false);
 			}
 		}
 		

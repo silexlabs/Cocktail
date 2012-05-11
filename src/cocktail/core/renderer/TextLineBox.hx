@@ -9,6 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.FontManager;
 import cocktail.core.NativeElement;
+import cocktail.core.geom.GeomData;
 
 /**
  * A special kind of line box used to render text. A
@@ -72,7 +73,7 @@ class TextLineBox extends LineBox
 	 * TODO : should also render text decoration, or should
 	 * be on TextRenderer ?
 	 */
-	override public function render(graphicContext:NativeElement):Void
+	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		#if flash9
 		_nativeElement.x = _bounds.x + _elementRenderer.globalBounds.x;
