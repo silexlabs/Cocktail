@@ -59,7 +59,7 @@ class BoxRenderer extends ElementRenderer
 	 * API and return an array of NativeElement from
 	 * it
 	 */
-	override public function render():Array<NativeElement>
+	override public function render(graphicContext:NativeElement):Void
 	{
 		var backgroundManager:BackgroundManager = new BackgroundManager();
 		
@@ -71,10 +71,9 @@ class BoxRenderer extends ElementRenderer
 			#if (flash9 || nme)
 			backgrounds[i].x = globalBounds.x;
 			backgrounds[i].y = globalBounds.y;
+			graphicContext.addChild(backgrounds[i]);
 			#end
 		}
-	
-		return backgrounds;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////

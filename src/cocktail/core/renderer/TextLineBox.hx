@@ -72,7 +72,7 @@ class TextLineBox extends LineBox
 	 * TODO : should also render text decoration, or should
 	 * be on TextRenderer ?
 	 */
-	override public function render():Array<NativeElement>
+	override public function render(graphicContext:NativeElement):Void
 	{
 		#if flash9
 		_nativeElement.x = _bounds.x + _elementRenderer.globalBounds.x;
@@ -82,7 +82,7 @@ class TextLineBox extends LineBox
 		_nativeElement.y = _bounds.y - (leadedAscent + leadedDescent);
 		#end
 		
-		return [_nativeElement];
+		graphicContext.addChild(_nativeElement);
 	}
 	
 	/**

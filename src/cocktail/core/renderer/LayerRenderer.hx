@@ -40,6 +40,8 @@ class LayerRenderer extends Node
 	 * created the LayerRenderer
 	 */
 	private var _rootRenderer:ElementRenderer;
+	
+	private var _graphicsContext:NativeElement;
 
 	/**
 	 * class constructor
@@ -48,6 +50,7 @@ class LayerRenderer extends Node
 	{
 		super();
 		_rootRenderer = rootRenderer;
+		_graphicsContext = new Sprite();
 	}
 	
 	/////////////////////////////////
@@ -59,7 +62,7 @@ class LayerRenderer extends Node
 	 * Render all the ElementRenderers belonging to this LayerRenderer
 	 * in a defined order
 	 */
-	public function render(rootRenderer:ElementRenderer = null, renderChildLayers:Bool = true):Array<NativeElement>
+	public function render(parentGraphicsContext:NativeElement, rootRenderer:ElementRenderer = null, renderChildLayers:Bool = true):Void
 	{
 		
 		if (rootRenderer == null)
@@ -70,45 +73,27 @@ class LayerRenderer extends Node
 		
 		//here the root renderer is a block box renderer. It can be an inline level
 		//which establishes an inline formatting context : an inline-block
+		//TODO : this logic should instead go into ElementRenderer.render ?
 		if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == false || 
 		rootRenderer.establishesNewFormattingContext() == true)
 		{
 		
 			//render the ElementRenderer which created this layer
-			var rootRendererElements:Array<NativeElement> = rootRenderer.render();
-			
-			for (i in 0...rootRendererElements.length)
-			{
-				nativeElements.push(rootRendererElements[i]);
-			}
+			rootRenderer.render(_graphicsContext);
+		
 			
 			//TODO here : render children with negative z-index
 			
 			//render all the block container children belonging to this layer
-			var blockContainerChildren:Array<NativeElement> = renderBlockContainerChildren(rootRenderer);	
-
-			for (i in 0...blockContainerChildren.length)
-			{
-				nativeElements.push(blockContainerChildren[i]);
-			}
+			renderBlockContainerChildren(_graphicsContext, rootRenderer);
 			
 			//TODO here : render non-positioned float
 			
 			//TODO :  doc
-			var replacedBlockChildren:Array<NativeElement> = renderBlockReplacedChildren(rootRenderer);
+			renderBlockReplacedChildren(_graphicsContext, rootRenderer);
 	
-			for (i in 0...replacedBlockChildren.length)
-			{
-				nativeElements.push(replacedBlockChildren[i]);
-			}
-
 			//render all the line boxes belonging to this layer
-			var lineBoxesChildren:Array<NativeElement> = renderLineBoxes(rootRenderer);
-
-			for (i in 0...lineBoxesChildren.length)
-			{
-				nativeElements.push(lineBoxesChildren[i]);
-			}
+			renderLineBoxes(_graphicsContext, rootRenderer);
 			
 			//TODO : doc, this fix is here to prevent inlineBlock from rendering their
 			//child layers, maybe add a new "if(inlineblock)" instead but should also
@@ -116,12 +101,7 @@ class LayerRenderer extends Node
 			if (renderChildLayers == true)
 			{
 				//render all the child layers with a z-index of 0
-				var childLayers:Array<NativeElement> = renderChildLayer(rootRenderer);
-
-				for (i in 0...childLayers.length)
-				{
-					nativeElements.push(childLayers[i]);
-				}
+				renderChildLayer(_graphicsContext);
 			}
 			
 			
@@ -131,27 +111,19 @@ class LayerRenderer extends Node
 		else if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == true)
 		{
 			//TODO : render child layers
-			var lineBoxesChildren:Array<NativeElement> = renderInlineBoxRenderer(rootRenderer);
-
-			for (i in 0...lineBoxesChildren.length)
-			{
-				nativeElements.push(lineBoxesChildren[i]);
-			}
+			renderInlineBoxRenderer(_graphicsContext, rootRenderer);
 		}
 		
 		//here the root renderer is a replaced element
 		else
 		{
 			//render the replaced element, render its background and asset
-			var rootRendererElements:Array<NativeElement> = rootRenderer.render();
-			
-			for (i in 0...rootRendererElements.length)
-			{
-				nativeElements.push(rootRendererElements[i]);
-			}
+			rootRenderer.render(_graphicsContext);
 		}
 		
 		#if (flash9 || nme)
+		
+		//TODO : this logic should go into ElementRenderer.render
 		
 		//if the root renderer is relatively positioned,
 		//then its offset must be applied to all of 
@@ -190,6 +162,7 @@ class LayerRenderer extends Node
 		
 		#end
 		
+		//this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
 		if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == false || 
 		rootRenderer.establishesNewFormattingContext() == true)
 		{
@@ -212,9 +185,9 @@ class LayerRenderer extends Node
 			}
 			
 		}
-
 		
-		return nativeElements;
+		parentGraphicsContext.addChild(_graphicsContext);
+		
 	}
 	
 	public function getElementRenderersAtPoint(point:PointData):Array<ElementRenderer>
@@ -223,7 +196,7 @@ class LayerRenderer extends Node
 
 		if (_rootRenderer.hasChildNodes() == true)
 		{
-			var childLayers:Array<LayerRenderer> = getChildLayers(cast(_rootRenderer), this);
+			var childLayers:Array<LayerRenderer> = getChildLayers();
 		
 			var elementRenderersAtPointInChildLayers:Array<ElementRenderer> = getElementRenderersAtPointInChildLayers(point, childLayers);
 			
@@ -304,22 +277,14 @@ class LayerRenderer extends Node
 	/**
 	 * Render all the block container children of the layer
 	 */
-	private function renderBlockContainerChildren(rootRenderer:ElementRenderer):Array<NativeElement>
+	private function renderBlockContainerChildren(graphicContext:NativeElement, rootRenderer:ElementRenderer):Void
 	{
 		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(cast(rootRenderer));
-
-		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
 		for (i in 0...childrenBlockContainer.length)
 		{
-			var nativeElements:Array<NativeElement> = childrenBlockContainer[i].render();
-			
-			for (j in 0...nativeElements.length)
-			{
-				ret.push(nativeElements[j]);
-			}
+			childrenBlockContainer[i].render(graphicContext);
 		}
-		return ret;
 	}
 	
 	/**
@@ -352,24 +317,15 @@ class LayerRenderer extends Node
 		return ret;
 	}
 	
-	
 	//TODO : doc
-	private function renderBlockReplacedChildren(rootRenderer:ElementRenderer):Array<NativeElement>
+	private function renderBlockReplacedChildren(graphicContext:NativeElement, rootRenderer:ElementRenderer):Void
 	{
 		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(cast(rootRenderer));
 		
-		var ret:Array<NativeElement> = new Array<NativeElement>();
-		
 		for (i in 0...childrenBlockReplaced.length)
 		{
-			var nativeElements:Array<NativeElement> = childrenBlockReplaced[i].render();
-			
-			for (j in 0...nativeElements.length)
-			{
-				ret.push(nativeElements[j]);
-			}
+			childrenBlockReplaced[i].render(graphicContext);
 		}
-		return ret;
 	}
 	
 	private function getBlockReplacedChildren(rootRenderer:ElementRenderer):Array<ElementRenderer>
@@ -407,29 +363,21 @@ class LayerRenderer extends Node
 	 * Render all the children LayerRenderer of this LayerRenderer
 	 * and return an array of NativeElements from it
 	 */
-	private function renderChildLayer(rootRenderer:ElementRenderer):Array<NativeElement>
+	private function renderChildLayer(graphicContext:NativeElement):Void
 	{
-		var childLayers:Array<LayerRenderer> = getChildLayers(cast(rootRenderer), this);
-
-		var ret:Array<NativeElement> = new Array<NativeElement>();
+		var childLayers:Array<LayerRenderer> = getChildLayers();
 		
 		for (i in 0...childLayers.length)
 		{
-			var nativeElements:Array<NativeElement> = childLayers[i].render();
-			for (j in 0...nativeElements.length)
-			{
-				ret.push(nativeElements[j]);
-			}
+			childLayers[i].render(graphicContext);
 		}
-		
-		return ret;
 	}
 	
 	/**
 	 * Retrieve all the children LayerRenderer of this LayerRenderer by traversing
 	 * recursively the rendering tree.
 	 */
-	private function getChildLayers(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer):Array<LayerRenderer>
+	private function getChildLayers():Array<LayerRenderer>
 	{
 		var childLayers:Array<LayerRenderer> = new Array<LayerRenderer>();
 		
@@ -439,40 +387,11 @@ class LayerRenderer extends Node
 			childLayers.push(childLayer);
 		}
 		
-		/**
-		//loop in all the children of the root renderer of this LayerRenderer
-		for (i in 0...rootRenderer.childNodes.length)
-		{
-			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
-			
-			//if the child uses this layer
-			if (child.layerRenderer == referenceLayer)
-			{
-				//if it can have children, recursively search for children layerRenderer
-				if (child.isReplaced() == false)
-				{
-					var childElementRenderer:Array<LayerRenderer> = getChildLayers(child, referenceLayer);
-					
-					for (j in 0...childElementRenderer.length)
-					{
-						childLayers.push(childElementRenderer[j]);
-					}
-				}
-			}
-			//if the child has a different LayerRenderer, store it in the childLayers array
-			else
-			{
-				childLayers.push(child.layerRenderer);
-			}
-		}*/
-		
 		return childLayers;
 	}
 	
-	private function renderInlineBoxRenderer(rootRenderer:ElementRenderer):Array<NativeElement>
+	private function renderInlineBoxRenderer(graphicContext:NativeElement, rootRenderer:ElementRenderer):Void
 	{
-		var ret:Array<NativeElement> = new Array<NativeElement>();
-		
 		for (i in 0...rootRenderer.lineBoxes.length)
 		{
 			var childLineBoxes:Array<LineBox> = getLineBoxesInLine(rootRenderer.lineBoxes[i]);
@@ -481,17 +400,10 @@ class LayerRenderer extends Node
 			{
 				if (childLineBoxes[j].layerRenderer == this)
 				{
-					var lineBoxNativeElements:Array<NativeElement> = childLineBoxes[j].render();
-					for (k in 0...lineBoxNativeElements.length)
-					{
-						ret.push(lineBoxNativeElements[k]);
-					}
+					childLineBoxes[j].render(graphicContext);
 				}
-				
 			}
 		}
-		
-		return ret;
 	}
 	
 	/**
@@ -499,34 +411,25 @@ class LayerRenderer extends Node
 	 * this LayerRenderer and return an array of NativeElement
 	 * from it
 	 */
-	private function renderLineBoxes(rootRenderer:ElementRenderer):Array<NativeElement>
+	private function renderLineBoxes(graphicContext:NativeElement, rootRenderer:ElementRenderer):Void
 	{
 		var lineBoxes:Array<LineBox> = getLineBoxes(cast(rootRenderer));
 
-		var ret:Array<NativeElement> = new Array<NativeElement>();
-		
 		for (i in 0...lineBoxes.length)
 		{
 			var nativeElements:Array<NativeElement> = [];
 			if (lineBoxes[i].establishesNewFormattingContext() == false)
 			{
-				nativeElements = lineBoxes[i].render();
+				lineBoxes[i].render(graphicContext);
 			}
 			else
 			{	
 				//TODO : doc, inlineBlock do not render the child layers, as it only simulates a new
 				//layer, will need to do the same thing for floats
-				nativeElements = lineBoxes[i].layerRenderer.render(lineBoxes[i].elementRenderer, false);
+				lineBoxes[i].layerRenderer.render(graphicContext, lineBoxes[i].elementRenderer, false);
 			}
-			
-			for (j in 0...nativeElements.length)
-			{
-				ret.push(nativeElements[j]);
-			}
-	
 		}
 		
-		return ret;
 	}
 	
 	
