@@ -1,8 +1,10 @@
 ECHO OFF
 ECHO.
 SET config_file=config.xml
-SET input_files_path=icons splashScreens_PhoneGap config.xml index.html ../../bin/default.css ../../bin/images ../../bin/WebApp.js
+SET input_files_path=icons splashScreens_PhoneGap config.xml index.html ../../bin/default.css ../../bin/assets ../../bin/WebApp.js
 SET output_file_path=WebApp_PhoneGapBuild_AppStore.zip
+
+cls
 
 ECHO copying splashScreens directory to splashScreens_PhoneGap...
 xcopy splashScreens splashScreens_PhoneGap /Q /I
@@ -21,7 +23,7 @@ move splashScreens_PhoneGap\Default@2x.png splashScreens_PhoneGap\Default2x.png
 ECHO.
 
 ECHO Removing %output_file_path%...
-del %output_file_path% /Q /Scls
+del %output_file_path% /Q /S
 
 ECHO.
 

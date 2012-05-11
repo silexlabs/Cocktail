@@ -6,8 +6,11 @@ package org.intermedia.view;
  * @author Raphael Harmel
  */
 
+import js.Dom;
+ 
 typedef CellStyleModel =
 {
+<<<<<<< HEAD
 	var cell:Dynamic;
 	var thumbnailMask:Dynamic;
 	var thumbnail:Dynamic;
@@ -15,4 +18,12 @@ typedef CellStyleModel =
 	var title:Dynamic;
 	var author:Dynamic;
 	var line:Dynamic;
+=======
+	var cell:HtmlDom->?Int->Void;
+	var thumbnailMask:HtmlDom->Void;
+	var thumbnail:HtmlDom->Void;
+	var textBlock:HtmlDom->Void;
+	var title:HtmlDom->Void;
+	var author:HtmlDom->Void;
+>>>>>>> 4f33027baa975cee5dc78da15d39744ef9d29ade
 }
