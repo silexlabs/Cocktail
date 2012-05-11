@@ -471,6 +471,16 @@ class ElementRenderer extends Node
 		}
 	}
 	
+	public function invalidateText():Void
+	{
+		for (i in 0..._childNodes.length)
+		{
+			var child:ElementRenderer = cast(_childNodes[i]);
+			child.invalidateText();
+		}
+		invalidate();
+	}
+	
 	public function invalidateLayer():Void
 	{
 		detachLayer();
