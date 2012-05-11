@@ -64,11 +64,15 @@ class LayerRenderer extends Node
 	 */
 	public function render(parentGraphicsContext:NativeElement, parentRelativeOffset:PointData, rootRenderer:ElementRenderer = null, renderChildLayers:Bool = true):Void
 	{
-		//TODO : quick fix, should be abstracted
-		for (i in 0..._graphicsContext.numChildren)
+		if (renderChildLayers == true)
 		{
-			_graphicsContext.removeChildAt(0);
+			//TODO : quick fix, should be abstracted
+			for (i in 0..._graphicsContext.numChildren)
+			{
+				_graphicsContext.removeChildAt(0);
+			}
 		}
+		
 		
 		if (rootRenderer == null)
 		{
@@ -139,14 +143,18 @@ class LayerRenderer extends Node
 		{
 			if (rootRenderer.coreStyle.overflowX == Overflow.scroll)
 			{
-				_graphicsContext.x = rootRenderer.globalBounds.x;
-				_graphicsContext.y = rootRenderer.globalBounds.y;
-				_graphicsContext.scrollRect = new Rectangle(0, 0, rootRenderer.globalBounds.width, rootRenderer.globalBounds.height);
+				//_graphicsContext.x = rootRenderer.globalBounds.x;
+				//_graphicsContext.y = rootRenderer.globalBounds.y;
+				//_graphicsContext.scrollRect = new Rectangle(0, 0, rootRenderer.globalBounds.width, rootRenderer.globalBounds.height);
 			}
 			
 		}
 		
-		parentGraphicsContext.addChild(_graphicsContext);
+		if (renderChildLayers == true)
+		{
+			parentGraphicsContext.addChild(_graphicsContext);
+		}
+		
 		
 	}
 	

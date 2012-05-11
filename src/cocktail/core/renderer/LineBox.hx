@@ -151,6 +151,7 @@ class LineBox extends Node
 		}
 	}
 	
+
 	public function isText():Bool
 	{
 		return false;
