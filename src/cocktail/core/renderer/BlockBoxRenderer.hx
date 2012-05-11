@@ -38,6 +38,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	private var _verticalScrollBar:HTMLElement;
 	
+	//TODO : should be set during formatting, as only 
+	//block box establishing context need them
+	//must also add positionned element to those bounds, have a
+	//separate attribute ?
 	private var _scrollableBounds:RectangleData;
 	
 	/**
@@ -210,6 +214,31 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * TODO : doc
+	 */
+	override private function getContainerBlockData():ContainingBlockData
+	{
+		var width:Int = this.computedStyle.width;
+		if (_horizontalScrollBar != null)
+		{
+			width -= _horizontalScrollBar.coreStyle.computedStyle.width;
+		}
+		
+		var height:Int = this.computedStyle.height;
+		if (_verticalScrollBar != null)
+		{
+			height -= _verticalScrollBar.coreStyle.computedStyle.height;
+		}
+		
+		return {
+			width:width,
+			isWidthAuto:this._coreStyle.width == Dimension.cssAuto,
+			height:height,
+			isHeightAuto:this._coreStyle.height == Dimension.cssAuto
+		};
+	}
+	
 	//TODO : should use computed style (for instance for inherit) but not yet computed at this point
 	private function canAlwaysOverflow():Bool
 	{
@@ -241,7 +270,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			return true;
 		}
-		
 		return canAlwaysOverflow() != true;
 	}
 	

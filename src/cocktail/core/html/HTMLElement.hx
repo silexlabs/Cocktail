@@ -411,6 +411,14 @@ class HTMLElement extends Element, implements IEventTarget
 		}
 	}
 	
+	public function invalidateLayer():Void
+	{
+		if (_elementRenderer != null)
+		{
+			_elementRenderer.invalidateLayer();
+		}
+	}
+	
 	/**
 	 * When the Display style this special case happen, as the 
 	 * ElementRenderer needs to be changed.

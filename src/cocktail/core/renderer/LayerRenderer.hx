@@ -12,6 +12,9 @@ import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
+import flash.display.Sprite;
+import flash.text.engine.TextLine;
+import flash.geom.Rectangle;
 import haxe.Log;
 
 /**
@@ -63,7 +66,6 @@ class LayerRenderer extends Node
 		{
 			rootRenderer = _rootRenderer;
 		}
-		
 		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
 		
 		//here the root renderer is a block box renderer. It can be an inline level
@@ -71,7 +73,7 @@ class LayerRenderer extends Node
 		if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == false || 
 		rootRenderer.establishesNewFormattingContext() == true)
 		{
-			
+		
 			//render the ElementRenderer which created this layer
 			var rootRendererElements:Array<NativeElement> = rootRenderer.render();
 			
@@ -84,7 +86,7 @@ class LayerRenderer extends Node
 			
 			//render all the block container children belonging to this layer
 			var blockContainerChildren:Array<NativeElement> = renderBlockContainerChildren(rootRenderer);	
-				
+
 			for (i in 0...blockContainerChildren.length)
 			{
 				nativeElements.push(blockContainerChildren[i]);
@@ -188,6 +190,29 @@ class LayerRenderer extends Node
 		
 		#end
 		
+		if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == false || 
+		rootRenderer.establishesNewFormattingContext() == true)
+		{
+			if (rootRenderer.coreStyle.overflowX == Overflow.scroll)
+			{
+				
+				for (i in 0...nativeElements.length)
+				{
+				//	trace(nativeElements[i].x);
+				var scrollY:Float = 0.0;
+				if (Std.is(nativeElements[i], TextLine))
+				{
+					//scrollY -= nativeElements[i].y;
+					scrollY -= untyped nativeElements[i].ascent;
+					nativeElements[i].y -= untyped nativeElements[i].ascent;
+				}
+					nativeElements[i].scrollRect = new Rectangle(0.0, scrollY
+					, rootRenderer.globalBounds.width  - nativeElements[i].x , rootRenderer.globalBounds.height  - nativeElements[i].y);
+				}
+			}
+			
+		}
+
 		
 		return nativeElements;
 	}
@@ -282,7 +307,7 @@ class LayerRenderer extends Node
 	private function renderBlockContainerChildren(rootRenderer:ElementRenderer):Array<NativeElement>
 	{
 		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(cast(rootRenderer));
-		
+
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
 		for (i in 0...childrenBlockContainer.length)
@@ -308,7 +333,6 @@ class LayerRenderer extends Node
 		for (i in 0...rootRenderer.childNodes.length)
 		{
 			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
-			
 			if (child.layerRenderer == this)
 			{
 				//TODO : must add more condition, for instance, no float
@@ -386,7 +410,7 @@ class LayerRenderer extends Node
 	private function renderChildLayer(rootRenderer:ElementRenderer):Array<NativeElement>
 	{
 		var childLayers:Array<LayerRenderer> = getChildLayers(cast(rootRenderer), this);
-		
+
 		var ret:Array<NativeElement> = new Array<NativeElement>();
 		
 		for (i in 0...childLayers.length)
@@ -409,6 +433,13 @@ class LayerRenderer extends Node
 	{
 		var childLayers:Array<LayerRenderer> = new Array<LayerRenderer>();
 		
+		for (i in 0..._childNodes.length)
+		{
+			var childLayer:LayerRenderer = cast(_childNodes[i]);
+			childLayers.push(childLayer);
+		}
+		
+		/**
 		//loop in all the children of the root renderer of this LayerRenderer
 		for (i in 0...rootRenderer.childNodes.length)
 		{
@@ -433,7 +464,7 @@ class LayerRenderer extends Node
 			{
 				childLayers.push(child.layerRenderer);
 			}
-		}
+		}*/
 		
 		return childLayers;
 	}
