@@ -12,8 +12,8 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 
 package org.lexa.demo;
 
-import cocktail.Lib;
-import cocktail.Dom;
+import js.Lib;
+import js.Dom;
 
 class Lexa 
 {

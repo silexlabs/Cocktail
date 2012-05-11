@@ -49,6 +49,7 @@ class ListViewStyle
 		
 		node.style.verticalAlign = "top";
 		node.style.overflowX = "hidden";
+		//node.style.overflowY = "scroll";
 		node.style.overflowY = "auto";
 		
 		node.style.backgroundColor = Constants.LIST_BG_GREY_COLOR;

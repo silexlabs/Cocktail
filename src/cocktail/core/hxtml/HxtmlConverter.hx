@@ -1,6 +1,7 @@
 package cocktail.core.hxtml;
 
 import cocktail.core.dom.Node;
+import cocktail.core.html.HTMLElement;
 import hxtml.Browser;
 import cocktail.Lib;
 import cocktail.Dom;
@@ -26,11 +27,11 @@ class HxtmlConverter
 		browser = new Browser<Node>(Lib.document.createElement, Lib.document.createTextNode, appendChild, setAttribute, invalidate, s);
 		 
 		// parse the html data
-		try{
+	//	try{
 			browser.setHtml(htmlString);
-		}catch(e:String){ 
-			throw("Error parsing HTML in HXTML");
-		}
+		//}catch(e:String){ 
+			//throw("Error parsing HTML in HXTML");
+		//}
 		return browser.domRoot;
 	}
 	/**
@@ -48,7 +49,7 @@ class HxtmlConverter
 	}
 	public static function setAttribute(element:Node, a : String, v : String ):Void
 	{
-		cast(element, HtmlDom).setAttribute(a, v);
+		cast(element, HTMLElement).setAttribute(a, v);
 	}
 }
 /**
@@ -60,13 +61,12 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function new(){}
 	
 	public function setDisplay(element:Node, value:String):Void{
-		cast(element, HtmlDom).style.display = value;
+		cast(element, HTMLElement).style.display = value;
 	}
 	public function setPosition (element:Node, value:String):Void{
-		cast(element, HtmlDom).style.position = value;
+		cast(element, HTMLElement).style.position = value;
 	}
-/*	public function setCssFloat(element:Node, value:String):Void{
-		trace("cssFloat "+value);
+	public function setCssFloat(element:Node, value:String):Void{
 		cast(element, HtmlDom).style.cssFloat = value;
 	}
 /*	public function setClear (element:Node, value:String):Void{
@@ -84,77 +84,58 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setTransform (element:Node, value:String):Void{
 		cast(element, HtmlDom).style.transform = value;
 	}
-*/	public function setMarginLeftNum (element:Node, value:Int, unit:String):Void{
-		// TODO: take unit into account
-//		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
-		cast(element, HtmlDom).style.marginLeft = value + unit;
+*/	public function setMarginLeftNum (element:Node, value:Float, unit:String):Void{
+		cast(element, HTMLElement).style.marginLeft = value + unit;
 	}
 	public function setMarginLeftKey (element:Node, value:String):Void{
-		// TODO: take unit into account
-//		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
-		cast(element, HtmlDom).style.marginLeft = value;
+		cast(element, HTMLElement).style.marginLeft = value;
 	}
-	public function setMarginTopNum (element:Node, value:Int, unit:String):Void{
-		// TODO: take unit into account
-		cast(element, HtmlDom).style.marginTop = value + unit;
+	public function setMarginTopNum (element:Node, value:Float, unit:String):Void{
+		cast(element, HTMLElement).style.marginTop = value + unit;
 	}
 	public function setMarginTopKey (element:Node, value:String):Void{
-		// TODO: take unit into account
-		cast(element, HtmlDom).style.marginTop = value;
+		cast(element, HTMLElement).style.marginTop = value;
 	}
-	public function setMarginRightNum (element:Node, value:Int, unit:String):Void{
-		// TODO: take unit into account
-		cast(element, HtmlDom).style.marginRight = value + unit;
+	public function setMarginRightNum (element:Node, value:Float, unit:String):Void{
+		cast(element, HTMLElement).style.marginRight = value + unit;
 	}
 	public function setMarginRightKey (element:Node, value:String):Void{
-		// TODO: take unit into account
-//		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
-		cast(element, HtmlDom).style.marginRight = value;
+		cast(element, HTMLElement).style.marginRight = value;
 	}
-	public function setMarginBottomNum (element:Node, value:Int, unit:String):Void{
-		// TODO: take unit into account
-		cast(element, HtmlDom).style.marginBottom = value + unit;
+	public function setMarginBottomNum (element:Node, value:Float, unit:String):Void{
+		cast(element, HTMLElement).style.marginBottom = value + unit;
 	}
 	public function setMarginBottomKey (element:Node, value:String):Void{
-		// TODO: take unit into account
-		cast(element, HtmlDom).style.marginBottom = value;
+		cast(element, HTMLElement).style.marginBottom = value;
+	}
+	//TODO : duplicate for margin left, right and top
+	public function setMarginBottomZero (element:Node):Void{
+		cast(element, HTMLElement).style.marginBottom = "0";
 	}
 
-	public function setPaddingLeft (element:Node, value:Int, unit:String):Void{
-		// TODO: take unit into account
-		cast(element, HtmlDom).style.paddingLeft = value + unit;
+	public function setPaddingLeft (element:Node, value:Float, unit:String):Void{
+		cast(element, HTMLElement).style.paddingLeft = value + unit;
 	}
-	public function setPaddingTop (element:Node, value:Int, unit:String):Void{
-		// TODO: take unit into account
-		cast(element, HtmlDom).style.paddingTop = value + unit;
+	public function setPaddingTop (element:Node, value:Float, unit:String):Void{
+		cast(element, HTMLElement).style.paddingTop = value + unit;
 	}
-	public function setPaddingRight (element:Node, value:Int, unit:String):Void{
-		// TODO: take unit into account
-		cast(element, HtmlDom).style.paddingRight = value + unit;
+	public function setPaddingRight (element:Node, value:Float, unit:String):Void{
+		cast(element, HTMLElement).style.paddingRight = value + unit;
 	}
-	public function setPaddingBottom (element:Node, value:Int, unit:String):Void{
-		// TODO: take unit into account
-		cast(element, HtmlDom).style.paddingBottom = value + unit;
+	public function setPaddingBottom (element:Node, value:Float, unit:String):Void{
+		cast(element, HTMLElement).style.paddingBottom = value + unit;
 	}
 /*
 	public function setBorderLeft (element:Node, value:Int, unit:String):Void{
-		trace("setBorderLeft "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.borderLeft = Std.string(value) + unit;
 	}
 	public function setBorderTop (element:Node, value:Int, unit:String):Void{
-		trace("setBorderTop "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.borderTop = value + unit;
 	}
 	public function setBorderRight (element:Node, value:Int, unit:String):Void{
-		trace("setBorderRight "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.borderRight = value + unit;
 	}
 	public function setBorderBottom (element:Node, value:Int, unit:String):Void{
-		trace("setBorderBottom "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.borderBottom = value + unit;
 	}
 
@@ -166,11 +147,28 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	}
 	public function setBorderBottomColor (element:Node, value:String):Void{
 	}
-*/	public function setWidth (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.width = value+unit; 
+*/	public function setWidth(element:Node, value:Float, unit:String):Void {
+
+		cast(element, HTMLElement).style.width = value+unit; 
 	}
-	public function setHeight (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.height = value+unit; 
+	public function setWidthZero(element:Node):Void {
+
+		cast(element, HTMLElement).style.width = "0"; 
+	}
+	public function setWidthKey(element:Node, value:String):Void {
+
+		cast(element, HTMLElement).style.width = value; 
+	}
+	public function setHeight (element:Node, value:Float, unit:String):Void {
+		cast(element, HTMLElement).style.height = value+unit; 
+	}
+	public function setHeightZero(element:Node):Void {
+
+		cast(element, HTMLElement).style.height = "0"; 
+	}
+	public function setHeightKey(element:Node, value:String):Void {
+
+		cast(element, HTMLElement).style.height = value; 
 	}
 /*	public function setMinWidth (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.minWidth = value+unit; 
@@ -184,51 +182,69 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setMaxHeight (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.maxHeight = value+unit; 
 	}
-*/	public function setTop (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.top = value+unit; 
+*/	public function setTop (element:Node, value:Float, unit:String):Void{
+		cast(element, HTMLElement).style.top = value+unit; 
 	}
-	public function setLeft (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.left = value+unit; 
+	public function setTopZero (element:Node):Void{
+		cast(element, HTMLElement).style.top = "0"; 
 	}
-	public function setBottom (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.bottom = value+unit; 
+	public function setLeft (element:Node, value:Float, unit:String):Void{
+		cast(element, HTMLElement).style.left = value+unit; 
 	}
-	public function setRight (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.right = value+unit; 
+	public function setLeftZero (element:Node):Void{
+		cast(element, HTMLElement).style.left = "0"; 
+	}
+	public function setBottom (element:Node, value:Float, unit:String):Void{
+		cast(element, HTMLElement).style.bottom = value+unit; 
+	}
+	public function setBottomZero (element:Node):Void{
+		cast(element, HTMLElement).style.bottom = "0"; 
+	}
+	public function setRight (element:Node, value:Float, unit:String):Void {
+		cast(element, HTMLElement).style.right = value+unit; 
+	}
+	public function setRightZero (element:Node):Void{
+		cast(element, HTMLElement).style.right = "0"; 
 	}
 	public function setTopKey (element:Node, value:String):Void{
-		cast(element, HtmlDom).style.top = value; 
+		cast(element, HTMLElement).style.top = value; 
 	}
 	public function setLeftKey (element:Node, value:String):Void{
-		cast(element, HtmlDom).style.left = value; 
+		cast(element, HTMLElement).style.left = value; 
 	}
 	public function setBottomKey (element:Node, value:String):Void{
-		cast(element, HtmlDom).style.bottom = value; 
+		cast(element, HTMLElement).style.bottom = value; 
 	}
 	public function setRightKey (element:Node, value:String):Void{
-		cast(element, HtmlDom).style.right = value; 
+		cast(element, HTMLElement).style.right = value; 
 	}
 	public function setBgColorNum (element:Node, value:Int):Void{
-		cast(element, HtmlDom).style.backgroundColor = "#" + Std.string(value);
+		cast(element, HTMLElement).style.backgroundColor = "#" + Std.string(value);
 	}
 	public function setBgColorRGBA (element:Node, value:String):Void{
-		cast(element, HtmlDom).style.backgroundColor = "rgba("+value+")";
+		cast(element, HTMLElement).style.backgroundColor = "rgba("+value+")";
+	}
+	public function setBgColorRGB (element:Node, value:String):Void {
+		trace(value);
+		cast(element, HTMLElement).style.backgroundColor = "rgb("+value+")";
 	}
 	public function setBgColorKey (element:Node, value:String):Void{
-		cast(element, HtmlDom).style.backgroundColor = value;
+		cast(element, HTMLElement).style.backgroundColor = value;
 	}
 	public function setBgImage (element:Node, value:Array<String>):Void{
 		// TODO : check for space and do not add "
-		if (value.length > 0) 
-			cast(element, HtmlDom).style.backgroundImage = "\"" + value.join("\"");
+		if (value.length == 1) 
+			//TODO : hack to make it work for at least one background image
+			cast(element, HTMLElement).style.backgroundImage = "url(" + value[0] + ")";
+			//cast(element, HTMLElement).style.backgroundImage = "\"" + value.join("\"");
 		else
-			cast(element, HtmlDom).style.backgroundImage = "";
+			cast(element, HTMLElement).style.backgroundImage = "";
 	}
 	public function setBgAttachment (element:Node, value:String):Void{
 //		cast(element, HtmlDom).style.backgroundAttachment = value;
 	}
 	public function setBgRepeat (element:Node, value:Array<String>):Void{
-		cast(element, HtmlDom).style.backgroundRepeat = value.join(",");
+		cast(element, HTMLElement).style.backgroundRepeat = value.join(",");
 	}
 /*	public function setBgOrigin (element:Node, value:Array<String>):Void{
 		cast(element, HtmlDom).style.backgroundOrigin = value;
@@ -249,72 +265,81 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 		cast(element, HtmlDom).style.backgroundClip = value;
 	}
 */
-	public function setFontSizeNum (element:Node, value:Float, unit:String):Void{
-		cast(element, HtmlDom).style.fontSize = value+unit;
+	public function setFontSizeNum (element:Node, value:Float, unit:String):Void {
+		cast(element, HTMLElement).style.fontSize = value+unit;
 	}
 	public function setFontSizeKey (element:Node, value:String):Void{
-		cast(element, HtmlDom).style.fontSize = value;
+		cast(element, HTMLElement).style.fontSize = value;
 	}
 	public function setFontWeightNum (element:Node, value:Int):Void{
-		cast(element, HtmlDom).style.fontWeight = Std.string(value);
+		cast(element, HTMLElement).style.fontWeight = Std.string(value);
 	}
 	public function setFontWeightKey (element:Node, value:String):Void{
-		cast(element, HtmlDom).style.fontWeight = value;
+		cast(element, HTMLElement).style.fontWeight = value;
 	}
 	public function setFontStyle (element:Node, value:String):Void{
-		cast(element, HtmlDom).style.fontStyle = value;
+		cast(element, HTMLElement).style.fontStyle = value;
 	}
 	public function setFontFamily (element:Node, value:Array<String>):Void {
 		if (value.length > 0) 
-			cast(element, HtmlDom).style.fontFamily = value.join(",");
+			cast(element, HTMLElement).style.fontFamily = value.join(",");
 		else
-			cast(element, HtmlDom).style.fontFamily = "";
+			cast(element, HTMLElement).style.fontFamily = "";
 	}
 	public function setFontVariant (element:Node, value:String):Void{
-		cast(element, HtmlDom).style.fontVariant = value;
+		cast(element, HTMLElement).style.fontVariant = value;
 	}
 	public function setTextColorKey (element:Node, value:String):Void{
-		cast(element, HtmlDom).style.color = value;
+		cast(element, HTMLElement).style.color = value;
 	}
 	public function setTextColorNum (element:Node, value:Int):Void{
-		cast(element, HtmlDom).style.color = "#" + Std.string(value);
+		cast(element, HTMLElement).style.color = "#" + Std.string(value);
 	}
 	public function setTextDecoration (element:Node, value:String):Void{
 //		cast(element, HtmlDom).style.textDecoration = value;
 	}
 	public function setLineHeightKey (element:Node, value:String):Void{
-		cast(element, HtmlDom).style.lineHeight = value;
+		cast(element, HTMLElement).style.lineHeight = value;
+	}
+	public function setLineHeightZero (element:Node):Void{
+		cast(element, HTMLElement).style.lineHeight = "0";
 	}
 	public function setLineHeightNum (element:Node, value:Float, unit:String):Void{
-		cast(element, HtmlDom).style.lineHeight = value+unit;
+		cast(element, HTMLElement).style.lineHeight = value+unit;
 	}
 	public function setTextTransform (element:Node, value:String):Void{
-		cast(element, HtmlDom).style.textTransform = value;
+		cast(element, HTMLElement).style.textTransform = value;
 	}
 	public function setLetterSpacingNum (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.letterSpacing = value+unit;
+		cast(element, HTMLElement).style.letterSpacing = value+unit;
 	}
 	public function setLetterSpacingKey (element:Node, value:String):Void{
-		cast(element, HtmlDom).style.letterSpacing = value;
+		cast(element, HTMLElement).style.letterSpacing = value;
 	}
 	public function setWordSpacingNum (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.wordSpacing = value+unit;
+		cast(element, HTMLElement).style.wordSpacing = value+unit;
 	}
 	public function setWordSpacingKey (element:Node, value:String):Void{
-		cast(element, HtmlDom).style.wordSpacing = value;
+		cast(element, HTMLElement).style.wordSpacing = value;
+	}
+	public function setTextIndent (element:Node, value:Int, unit:String):Void{
+		cast(element, HtmlDom).style.textIndent = value + unit;
+	}
+	public function setTextAlign (element:Node, value:String):Void{
+		cast(element, HtmlDom).style.textAlign = value;
+	}
+	public function setVerticalAlignNum (element:Node, value:Int, unit:String):Void{
+		cast(element, HtmlDom).style.verticalAlign = value+unit;
+	}
+	public function setVerticalAlignKey (element:Node, value:String):Void{
+		cast(element, HtmlDom).style.verticalAlign = value;
 	}
 /*	public function setWhiteSpace (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.whiteSpace = value+unit;
 	}
-	public function setTextAlign (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.textAlign = value+unit;
-	}
-	public function setTextIndent (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.textIndent = value+unit;
-	}
-	public function setVerticalAlign (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.verticalAlign = value+unit;
-	}
+	
+	
+	
 	public function setOpacity (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.opacity = value+unit;
 	}
@@ -341,65 +366,53 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function new(){}
 	public function setMarginLeft (element:Node, value:Int, unit:String):Void{
 		trace("setMarginLeft "+value+unit);
-		// TODO: take unit into account
 //		cast(element, HtmlDom).style.marginLeft = CocktailCSSConverter.getMarginStyleValue(value);
 		cast(element, HtmlDom).style.marginLeft = value + unit;
 	}
 	public function setMarginTop (element:Node, value:Int, unit:String):Void{
 		trace("setMarginTop "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginTop = value + unit;
 	}
 	public function setMarginRight (element:Node, value:Int, unit:String):Void{
 		trace("setMarginRight "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginRight = value + unit;
 	}
 	public function setMarginBottom (element:Node, value:Int, unit:String):Void{
 		trace("setMarginBottom "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.marginBottom = value + unit;
 	}
 
 	public function setPaddingLeft (element:Node, value:Int, unit:String):Void{
 		trace("setPaddingLeft "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.paddingLeft = value + unit;
 	}
 	public function setPaddingTop (element:Node, value:Int, unit:String):Void{
 		trace("setPaddingTop "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.paddingTop = value + unit;
 	}
 	public function setPaddingRight (element:Node, value:Int, unit:String):Void{
 		trace("setPaddingRight "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.paddingRight = value + unit;
 	}
 	public function setPaddingBottom (element:Node, value:Int, unit:String):Void{
 		trace("setPaddingBottom "+value+unit);
-		// TODO: take unit into account
 		cast(element, HtmlDom).style.paddingBottom = value + unit;
 	}
 
 	public function setBorderLeft (element:Node, value:Int, unit:String):Void{
 		trace("setBorderLeft "+value+unit);
-		// TODO: take unit into account
 		//cast(element, HtmlDom).style.borderLeft = Std.string(value) + unit;
 	}
 	public function setBorderTop (element:Node, value:Int, unit:String):Void{
 		trace("setBorderTop "+value+unit);
-		// TODO: take unit into account
 		//cast(element, HtmlDom).style.borderTop = value + unit;
 	}
 	public function setBorderRight (element:Node, value:Int, unit:String):Void{
 		trace("setBorderRight "+value+unit);
-		// TODO: take unit into account
 		//cast(element, HtmlDom).style.borderRight = value + unit;
 	}
 	public function setBorderBottom (element:Node, value:Int, unit:String):Void{
 		trace("setBorderBottom "+value+unit);
-		// TODO: take unit into account
 		//cast(element, HtmlDom).style.borderBottom = value + unit;
 	}
 
@@ -444,7 +457,6 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	}
 	
 	public function setBgColorKeyword (element:Node, value:String):Void{
-		// TODO: handle transparent case
 	}
 	public function setBgColorNum (element:Node, value:Int):Void{
 		cast(element, HtmlDom).style.backgroundColor = Std.string(value); 

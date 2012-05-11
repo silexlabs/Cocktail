@@ -7,8 +7,7 @@
 */
 package cocktail.core.dom;
 
-import cocktail.core.HTMLElement;
-import cocktail.core.Text;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.dom.DOMData;
 
 /**
@@ -59,7 +58,10 @@ class Document extends Node
 	 * and localName, prefix, and namespaceURI set to null
 	 * 
 	 * TODO : for ownerDocument, when should it be set when
-	 * instantiating classes ?
+	 * instantiating classes instead of using factory method ?
+	 * 
+	 * TODO : should return Element instead of HTMLElement but necessary
+	 * to match Haxe JS API
 	 */
 	public function createElement(tagName:String):HTMLElement
 	{
@@ -107,10 +109,14 @@ class Document extends Node
 	 * If more than one element has an ID attribute with that value, return the first found one.
 	 * use Attr.isId to determine if an attribute is of type ID.
 	 * 
+	 * IMPORTANT : this method is supposed to return an Element but to match
+	 * Haxe JS API, we return an HTMLElement instead. It might be a problem
+	 * eventually to use the lib with other XML format
+	 * 
 	 * @param	elementId The unique id value for an element.
 	 * @return	The matching element or null if there is none.
 	 */
-	public function getElementById(elementId:String):Element
+	public function getElementById(elementId:String):HTMLElement
 	{
 		return doGetElementById(_documentElement, elementId);
 	}
@@ -124,14 +130,14 @@ class Document extends Node
 	 * elementId, by traversing recursively the 
 	 * DOM tree
 	 */
-	private function doGetElementById(node:Node, elementId:String):Element
+	private function doGetElementById(node:Node, elementId:String):HTMLElement
 	{
 		//call method recursively if node has child and is itself an element
 		if (node.hasChildNodes() == true && node.nodeType == Node.ELEMENT_NODE)
 		{
 			for (i in 0...node.childNodes.length)
 			{
-				var matchingElement:Element = doGetElementById(node.childNodes[i], elementId);
+				var matchingElement:HTMLElement = doGetElementById(node.childNodes[i], elementId);
 				//if a matching element is found, return it
 				if (matchingElement != null)
 				{
@@ -145,7 +151,7 @@ class Document extends Node
 		if (node.hasAttributes() == true)
 		{
 			var attributes:NamedNodeMap = node.attributes;
-			var element:Element = cast(node);
+			var element:HTMLElement = cast(node);
 			
 			//loop in all the element's attributes to find the
 			//Id attribute if defined
@@ -175,13 +181,17 @@ class Document extends Node
 	 * document order with a given tag name and
 	 * are contained in the document.
 	 * 
+	 * IMPORTANT : this method is supposed to return an array of Element but to match
+	 * Haxe JS API, we return an array of HTMLElement instead. It might be a problem
+	 * eventually to use the lib with other XML format
+	 * 
 	 * @param	tagName The name of the tag to match on. The special value "*" matches all tags.
 	 * For XML, the tagname parameter is case-sensitive, otherwise
 	 * it depends on the case-sensitivity of the markup language in use. 
 	 * 
 	 * @return A new NodeList object containing all the matched Elements.
 	 */
-	public function getElementsByTagName(tagName:String):Array<Node>
+	public function getElementsByTagName(tagName:String):Array<HTMLElement>
 	{
 		//use the implementation on the document element (for instance,
 		//the HTML element in HTML)

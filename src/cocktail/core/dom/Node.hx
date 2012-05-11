@@ -17,7 +17,7 @@ import haxe.Log;
  * interface may have children. For example, Text nodes may not have children, and adding children
  * to such nodes results in a DOMException being raised.
  * 
- * TODO : implement DOMException
+ * TODO : implement DOMException in all of the DOM package
  * 
  * The attributes nodeName, nodeValue and attributes are included as a mechanism to get at node
  * information without casting down to the specific derived interface.
@@ -210,6 +210,15 @@ class Node
 	 */
 	public function appendChild(newChild:Node):Node
 	{
+		//TODO : don't seem to work, bug with HTMLBodyElement ?
+		//if (newChild.ownerDocument != _ownerDocument)
+		//{
+			//Raised if newChild was created from a different
+			//document than the one that created this node.
+			//throw DOMException.WRONG_DOCUMENT_ERR;
+		//}
+		//
+
 		removeFromParentIfNecessary(newChild);
 		
 		newChild.parentNode = this;
@@ -240,18 +249,14 @@ class Node
 		{
 			removeFromParentIfNecessary(newChild);
 			
-			var newChildNodes:Array<Node> = new Array<Node>();
-			
 			for (i in 0..._childNodes.length)
 			{
 				if (_childNodes[i] == refChild)
 				{
-					newChildNodes.push(newChild);
+					appendChild(newChild);
 				}
-				newChildNodes.push(_childNodes[i]);
+				appendChild(_childNodes[i]);
 			}
-			
-			_childNodes = newChildNodes;
 		}
 		
 		return newChild;
@@ -270,21 +275,14 @@ class Node
 	 */
 	public function replaceChild(newChild:Node, oldChild:Node):Node
 	{
-		var newChildNodes:Array<Node> = new Array<Node>();
-		
 		for (i in 0..._childNodes.length)
 		{
 			if (_childNodes[i] == oldChild)
 			{
-				newChildNodes.push(newChild);
+				removeChild(oldChild);
 			}
-			else
-			{
-				newChildNodes.push(_childNodes[i]);
-			}
+			appendChild(newChild);
 		}
-		
-		_childNodes = newChildNodes;
 		
 		return oldChild;
 	}
@@ -380,7 +378,7 @@ class Node
 		
 		else if (_parentNode.lastChild != this)
 		{
-			//loop in all child to finf this node and return
+			//loop in all child to find this node and return
 			//the next one
 			for (i in 0..._parentNode.childNodes.length)
 			{
@@ -446,6 +444,12 @@ class Node
 	
 	private function set_nodeValue(value:String):String 
 	{
+		if (value != null)
+		{
+			//Raised when the node is readonly and if it is not defined to be null.
+			throw DOMException.NO_MODIFICATION_ALLOWED_ERR;
+		}
+		
 		return value;
 	}
 	

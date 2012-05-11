@@ -18,11 +18,10 @@ import cocktail.core.font.FontData;
 import flash.text.TextFieldAutoSize;
 import cocktail.core.style.StyleData;
 
-
 /**
- * TODO : doc 
+ * This is the nme port for the FontManager
  * 
- * @author lexa
+ * @author Yannick DOMINGUEZ
  */
 class FontManager extends AbstractFontManager
 {
@@ -59,17 +58,19 @@ class FontManager extends AbstractFontManager
 	// Overriden public virtual methods, font rendering and measure
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Return font metrics for a given font
+	 * at a given size using a Flash text field
+	 * to measure it
+	 */
 	override public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
 	{
 
-		//create the font metrics object only if null,
-		//else it is already cached
 		var textField:TextField = new TextField();
 		textField.autoSize = TextFieldAutoSize.LEFT;
 		
 		var textFormat:TextFormat = new TextFormat();
 		textFormat.size = fontSize;
-		//only one font is supported in nme
 		textFormat.font = fontFamily;
 		
 		textField.setTextFormat(textFormat);
@@ -77,40 +78,38 @@ class FontManager extends AbstractFontManager
 		textField.text = "x";
 		
 		var ascent:Float =  textField.textHeight / 2;
-		Log.trace(ascent);
+
 		textField.text = ",";
 		
 		var descent:Float = textField.textHeight / 2;
 		
 		textField.text = "x";
 		
-		var xHeight:Int = Math.round(textField.textHeight);
+		var xHeight:Float = textField.textHeight;
 	
 		textField.text = "M";
-		var spaceWidth:Int = Math.round(textField.textWidth);
-		
+		var spaceWidth:Float = textField.textWidth;
 		
 		var fontMetrics:FontMetricsData = {
 			fontSize:fontSize,
-			ascent:Math.round(ascent),
-			descent:Math.round(descent),
+			ascent:ascent,
+			descent:descent,
 			xHeight:xHeight,
 			spaceWidth:spaceWidth,
-			superscriptOffset:1,
-			subscriptOffset:1,
-			underlineOffset:1
+			superscriptOffset:1.0,
+			subscriptOffset:1.0,
+			underlineOffset:1.0
 		};
 		
-		
 		return fontMetrics;
-		
 	}
 	
+	/**
+	 * Create and return a flash text field
+	 */
 	override public function createNativeTextElement(text:String, computedStyle:ComputedStyleData):NativeElement
 	{
-		
 		text = applyTextTransform(text, computedStyle.textTransform);
-		
 		var textField:flash.text.TextField = new flash.text.TextField();
 		textField.text = text;
 		textField.selectable = false;
@@ -166,6 +165,10 @@ class FontManager extends AbstractFontManager
 		return fontFamily;
 	}
 	
+	/**
+	 * Return a flash TextFormat object, to be
+	 * used on the created Text Field
+	 */
 	private function getTextFormat(computedStyle:ComputedStyleData):TextFormat
 	{
 		
@@ -195,8 +198,5 @@ class FontManager extends AbstractFontManager
 		
 		textFormat.color = computedStyle.color.color;
 		return textFormat;
-		
 	}
-	
-	
 }

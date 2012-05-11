@@ -7,21 +7,15 @@
 
 package components.lists;
 
-// DOM
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.textElement.TextElement;
-import cocktail.mouse.MouseData;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
+
+import js.Lib;
+import js.Dom;
 
 // RichList specific
 import components.lists.ListBase;
 import components.lists.ListBaseModels;
 import components.lists.ListBaseUtils;
 
-import cocktail.keyboard.KeyboardData;
 
 /**
  * This class defines an app cell
@@ -32,7 +26,7 @@ import cocktail.keyboard.KeyboardData;
 class AppList extends ListBase
 {
 
-	public var _selectedMenuItemImage:ImageDOMElement;
+	public var _selectedMenuItemImage:Image;
 	
 	/**
 	 * constructor
@@ -45,11 +39,11 @@ class AppList extends ListBase
 		// create selectedImage
 		
 		// add selected menu item image over the selected menu item
-		_selectedMenuItemImage = new ImageDOMElement();
+		_selectedMenuItemImage = cast(Lib.document.createElement("img"));
 		// set image style
 		listStyle.cellSelected(_selectedMenuItemImage);
 		// load image
-		_selectedMenuItemImage.load("images/selectedMenuItem.png");
+		_selectedMenuItemImage.src = "images/selectedMenuItem.png";
 		
 		super(list, listStyle);
 		
@@ -73,23 +67,23 @@ class AppList extends ListBase
 	 * 
 	 * @return the array of data DOM to be added into the cell
 	 */
-	override private function getCellData(cellData:Dynamic, listStyle:Dynamic):Array<DOMElement>
+	override private function getCellData(cellData:Dynamic, listStyle:Dynamic):Array<HtmlDom>
 	{
 		//trace("getCellData");
-		var cellContent:Array<DOMElement> = new Array<DOMElement>();
+		var cellContent:Array<HtmlDom> = new Array<HtmlDom>();
 		
 		// THUMBNAIL
 		
 		// image part
 		if (cellData.icon != "" && cellData.icon != null)
 		{
-			var cellImage:ImageDOMElement = new ImageDOMElement();
+			var cellImage:Image = cast(Lib.document.createElement("img"));
 			// set image style
 			listStyle.cellIcon(cellImage);
 			// add image
 			cellContent.push(cellImage);
 			// load image
-			cellImage.load(cellData.icon);
+			cellImage.src = cellData.icon;
 		}
 		
 		// TEXT
@@ -97,9 +91,9 @@ class AppList extends ListBase
 		// add title
 		if (cellData.title != "" && cellData.title != null)
 		{
-			var cellTitleContainer:ContainerDOMElement = Utils.getContainer();
-			var textElement:TextElement = new TextElement(cellData.title);
-			cellTitleContainer.addText(textElement);
+			var cellTitleContainer = Utils.getContainer();
+			var textElement = Lib.document.createTextNode(cellData.title);
+			cellTitleContainer.appendChild(textElement);
 			listStyle.cellTitle(cellTitleContainer);
 			cellContent.push(cellTitleContainer);
 		}
@@ -111,13 +105,13 @@ class AppList extends ListBase
 	 * Select the cell and add a selected image to it
 	 */
 	//override private function selectCell(cell:ContainerDOMElement, listStyle:Dynamic):Void
-	override private function selectCell(cell:ContainerDOMElement):Void
+	override private function selectCell(cell:HtmlDom):Void
 	{
 		//super.selectCell(cell, listStyle);
 		super.selectCell(cell);
 		
 		// add image
-		cell.addChild(_selectedMenuItemImage);
+		cell.appendChild(_selectedMenuItemImage);
 	}
 	
 	/**

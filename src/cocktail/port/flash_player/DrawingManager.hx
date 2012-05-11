@@ -50,9 +50,13 @@ class DrawingManager extends AbstractDrawingManager
 	 * a default width and height. Add a bitmap display object that
 	 * will copy the vector drawing as they are drawn
 	 */
-	public function new(nativeElement:NativeElement, width:Int, height:Int) 
+	public function new(width:Int, height:Int) 
 	{
-		super(nativeElement, width, height);
+		//TODO : should be in an overriden method instead ?
+		this._nativeElement = new Sprite();
+		
+		
+		super(width, height);
 		
 		_typedNativeElement = cast(this._nativeElement);
 		
@@ -149,8 +153,8 @@ class DrawingManager extends AbstractDrawingManager
 		
 			//for a bitmap fill, use the natvie beginBitmapFill method, using
 			//an ImageHTMLElement as source for the bitmap data
-			case bitmap(imageHTMLElement, repeat):
-				_typedNativeElement.graphics.beginBitmapFill(getBitmapData(imageHTMLElement.nativeElement), new flash.geom.Matrix(), repeat);
+			case bitmap(nativeElement, repeat):
+				_typedNativeElement.graphics.beginBitmapFill(getBitmapData(nativeElement), new flash.geom.Matrix(), repeat);
 		}	
 	}
 	
@@ -203,7 +207,7 @@ class DrawingManager extends AbstractDrawingManager
 			//for a bitmap line style, use an ImageHTMLElement as the source
 			//for the BitmapData. The line style must also be set before
 			//setting the bitmap data on the line
-			case bitmap(imageHTMLElement, lineStyleData, repeat):
+			case bitmap(nativeElement, lineStyleData, repeat):
 				//set first the line style so that the line is visible	
 				_typedNativeElement.graphics.lineStyle(
 					lineStyleData.thickness,
@@ -216,7 +220,7 @@ class DrawingManager extends AbstractDrawingManager
 					lineStyleData.miterLimit);
 				
 				//then set the bitmap data on it
-				_typedNativeElement.graphics.lineBitmapStyle(getBitmapData(imageHTMLElement.nativeElement), new flash.geom.Matrix(), repeat);
+				_typedNativeElement.graphics.lineBitmapStyle(getBitmapData(nativeElement), new flash.geom.Matrix(), repeat);
 		}
 	}
 	

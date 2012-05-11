@@ -8,58 +8,47 @@
 package cocktail.core.keyboard;
 
 import cocktail.core.event.KeyboardEvent;
-import cocktail.core.HTMLElement;
+import cocktail.core.html.HTMLElement;
 import haxe.Log;
 import cocktail.core.NativeElement;
 
 /**
- * This package is made to offer a simple API for keyboard interactions.
- *
- * We choose not to use a singleton pattern or static class and found
- * a simple way for exposing the keyboard state and for calling a custom callback function.
+ * This class listens to native keyboard event
+ * using the API of the current platform.
  * 
- * The class is to be instantiated, and then you can set the instance attributes 
- * onKeyDown and onKeyUp to your callbacks.
+ * It then builds a cross-platform KeyboardEvent
+ * from the dispatched native keyboard events,
+ * and call the callback corresponding to 
+ * the keyboard event type if provided
  * 
- * This is a base abstract class, implemented for each runtime
+ * For instance in Flash, it listens to keyboard
+ * events on the Stage.
  * 
- * @author a.hoyau [at] silexlabs.org
  * @author Yannick DOMINGUEZ
  */
 class AbstractKeyboard 
 {
 	/**
 	 * The callback to call when
-	 * a key is pressed
+	 * a native key down event is dispatched
 	 */
 	private var _onKeyDown:KeyboardEvent->Void;
 	public var onKeyDown(getOnKeyDown, setOnKeyDown):KeyboardEvent->Void;
 	
 	/**
-	 * The callback to call when 
-	 * a key is released
+	 * The callback to call when
+	 * a native key up event is dispatched
 	 */
 	private var _onKeyUp:KeyboardEvent->Void;
 	public var onKeyUp(getOnKeyUp, setOnKeyUp):KeyboardEvent->Void;
-
-
-	/**
-	 * The HTMLElement on which keyboard event are listened to
-	 */
-	private var _htmlElement:HTMLElement;
-	
-	/**
-	 * keyboard event types
-	 */
-	private var _keyDownEvent:String;
-	private var _keyUpEvent:String;
 	
 	/**
 	 * class constructor
 	 */
-	public function new(htmlElement:HTMLElement) 
+	public function new() 
 	{
-		_htmlElement = htmlElement;
+		//starts to listen to native keyboard input
+		setNativeListeners();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -68,8 +57,11 @@ class AbstractKeyboard
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Calls the onKeyDown callback with the pressed key data
-	 * @param	event the native key down event
+	 * Create a cross-platform key down event from
+	 * the native key down event, and call
+	 * the key down callback if provided
+	 * 
+	 * @param	event the native mouse click event
 	 */
 	private function onNativeKeyDown(event:Dynamic):Void
 	{
@@ -80,9 +72,7 @@ class AbstractKeyboard
 	}
 	
 	/**
-	 * Calls the onKeyUp callback with the released
-	 * key data
-	 * @param	event the native key up event
+	 * same as key down event
 	 */
 	private function onNativeKeyUp(event:Dynamic):Void
 	{
@@ -98,7 +88,6 @@ class AbstractKeyboard
 	
 	private function setOnKeyDown(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
-		updateListeners(_keyDownEvent, onNativeKeyDown, value);
 		return _onKeyDown = value;
 	}
 	
@@ -109,7 +98,6 @@ class AbstractKeyboard
 	
 	private function setOnKeyUp(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
-		updateListeners(_keyUpEvent, onNativeKeyUp, value);
 		return _onKeyUp = value;
 	}
 	
@@ -123,22 +111,26 @@ class AbstractKeyboard
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Actually remove and set listeners on the nativeElement.
-	 * Implemented by each runtime
-	 * 
-	 * @param keyboardEvent the keyboard event type that must be listened to
-	 * @param nativeCallback the native, runtime-specific callback
-	 * @param htmlElementCallback the cross-platform keyboard callback defined on the HTMLElement
+	 * Set listeners for platform specific events
 	 */
-	private function updateListeners(keyboardEvent:String, nativeCallback:Dynamic->Void, htmlElementCallback:KeyboardEvent->Void):Void
+	private function setNativeListeners():Void
 	{
 		//abstract
 	}
 	
 	/**
-	 * Returns the key that triggered the keyboard event
-	 * @param	event the native key up or down event
-	 * @return a sruct containing the key code and ascii value
+	 * Remove listeners for platform specific events
+	 */
+	private function removeNativeListeners():Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Create and return a cross-platform keyboard event
+	 * from the dispatched native keyboard event
+	 * 
+	 * @param	event the native keyboard event
 	 */
 	private function getKeyData(event:Dynamic):KeyboardEvent
 	{

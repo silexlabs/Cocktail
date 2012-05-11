@@ -7,8 +7,9 @@
 */
 package cocktail.core.mouse;
 
-import cocktail.core.HTMLImageElement;
+import cocktail.core.html.HTMLImageElement;
 import cocktail.core.geom.GeomData;
+import cocktail.core.NativeElement;
 
 /**
  * This file contains mouse related structures
@@ -25,7 +26,7 @@ enum MouseCursorValue {
 	 * an image dom element. The hotSpot is the registration
 	 * point of the cursor.
 	 */
-	custom(htmlImageElement:HTMLImageElement, hotSpot:PointData);
+	custom(nativeElement:NativeElement, hotSpot:PointData);
 	
 	/**
 	 * Let the browser manage the mouse cursor

@@ -9,7 +9,6 @@ package cocktail.port.flash_player;
 
 import cocktail.core.NativeElement;
 import cocktail.core.resource.AbstractMediaLoader;
-import cocktail.core.resource.AbstractResourceLoader;
 import flash.display.Loader;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
@@ -34,9 +33,10 @@ class MediaLoader extends AbstractMediaLoader
 	/**
 	 * class constructor.
 	 */
-	public function new(nativeElement:NativeElement = null) 
+	public function new() 
 	{
-		super(nativeElement);
+		_nativeElement = new Loader();
+		super();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -122,8 +122,8 @@ class MediaLoader extends AbstractMediaLoader
 	 */
 	private function setIntrinsicDimensions(loader:Loader):Void
 	{
-		this._intrinsicHeight = Math.round(loader.content.height);
-		this._intrinsicWidth = Math.round(loader.content.width);
+		this._intrinsicHeight = Math.round(loader.contentLoaderInfo.height);
+		this._intrinsicWidth = Math.round(loader.contentLoaderInfo.width);
 		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
 	}
 	

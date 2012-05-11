@@ -1106,7 +1106,7 @@ import cocktail.core.renderer.TextRenderer;
 	 * Specify for each dimension if it is 'cssAuto', 
 	 * meaning it depends on its content dimension
 	 */
-	typedef ContainingHTMLElementData = {
+	typedef ContainingBlockData = {
 		var width:Int;
 		var isWidthAuto:Bool;
 		var height:Int;
@@ -1122,25 +1122,9 @@ import cocktail.core.renderer.TextRenderer;
 	 * as origin to layout an absolutely
 	 * positioned htmlElement.
 	 */
-	typedef LastPositionedHTMLElementData = {
-		var children:Array<PositionedHTMLElementData>;
-		var data:ContainingHTMLElementData;
-	}
-	
-	/**
-	 * Holds a reference to the Style of a
-	 * positioned htmlElement. The static position
-	 * is the x,y point where the htmlElement
-	 * would have been if its position style
-	 * had been 'static'.
-	 * 
-	 * It is used if left and right or
-	 * top and bottom styles are both
-	 * set to 'cssAuto'
-	 */
-	typedef PositionedHTMLElementData =  {
-		var coreStyle:CoreStyle;
-		var staticPosition:PointData;
+	typedef FirstPositionedAncestorData = {
+		var elements:Array<ElementRenderer>;
+		var data:ContainingBlockData;
 	}
 	
 	/**
@@ -1357,9 +1341,4 @@ import cocktail.core.renderer.TextRenderer;
 		var y:Int;
 		var width:Int;
 		var height:Int;
-	}
-	
-	typedef InlineBoxData = {
-		var element:InlineBoxRenderer;
-		var children:Array<ElementRenderer>;
 	}

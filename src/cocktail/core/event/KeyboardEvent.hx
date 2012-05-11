@@ -1,5 +1,5 @@
 package cocktail.core.event;
-import cocktail.core.HTMLElement;
+import cocktail.core.html.HTMLElement;
 
 /**
  * The KeyboardEvent interface provides specific contextual information associated with
@@ -20,9 +20,6 @@ class KeyboardEvent extends UIEvent
 	public static inline var KEY_DOWN:String = "keydown";
 	
 	public static inline var KEY_UP:String = "keyup";
-
-	
-	//TODO : should be String
 	
 	/**
 	 * char holds the character value of the key pressed.
@@ -30,16 +27,14 @@ class KeyboardEvent extends UIEvent
 	 * TODO : should be named char but prevent cpp
 	 * compilation
 	 */
-	private var _keyChar:Int;
-	public var keyChar(get_keyChar, null):Int;
-	
-	//TODO : should be String
+	private var _keyChar:String;
+	public var keyChar(get_keyChar, null):String;
 	
 	/**
 	 * key holds the key value of the key pressed.
 	 */
-	private var _key:Int;
-	public var key(get_key, null):Int;
+	private var _key:String;
+	public var key(get_key, null):String;
 	
 	/**
 	 * true if the 'Ctrl' (control) key modifier was active.
@@ -60,7 +55,7 @@ class KeyboardEvent extends UIEvent
 	public var altKey(get_altKey, null):Bool;
 	
 	
-	public function new(type:String, target:HTMLElement, detail:Float, keyChar:Int, key:Int, ctrlKey:Bool, shiftKey:Bool, altKey:Bool) 
+	public function new(type:String, target:HTMLElement, detail:Float, keyChar:String, key:String, ctrlKey:Bool, shiftKey:Bool, altKey:Bool) 
 	{
 		super(type, target, detail);
 		
@@ -90,12 +85,12 @@ class KeyboardEvent extends UIEvent
 		return _ctrlKey;
 	}
 	
-	private function get_keyChar():Int 
+	private function get_keyChar():String 
 	{
 		return _keyChar;
 	}
 	
-	private function get_key():Int 
+	private function get_key():String 
 	{
 		return _key;
 	}

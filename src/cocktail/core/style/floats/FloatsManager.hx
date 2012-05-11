@@ -8,7 +8,7 @@
 package cocktail.core.style.floats;
 
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.HTMLElement;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import haxe.Log;
@@ -44,13 +44,6 @@ class FloatsManager
 			left:floatsLeft,
 			right:floatsRight
 		}
-	}
-	
-	public function dispose():Void
-	{
-		_floats.left = null;
-		_floats.right = null;
-		_floats = null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

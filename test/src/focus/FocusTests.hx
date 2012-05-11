@@ -52,8 +52,6 @@ class FocusTests
 		
 		Lib.document.body.appendChild(div);
 		
-		fm.invalidate();
-		
 		nextFocusedElement = fm.getNextFocusedElement(false, Lib.document.body, link);
 		Assert.equals(nextFocusedElement, div);
 		

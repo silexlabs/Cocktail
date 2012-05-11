@@ -7,15 +7,26 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.background.BackgroundManager;
+import cocktail.core.dom.Node;
 import cocktail.core.html.EmbeddedElement;
 import cocktail.core.NativeElement;
+import cocktail.core.style.computer.boxComputers.BoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.font.FontData;
+import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
+import cocktail.core.geom.GeomData;
 import haxe.Log;
 
 /**
  * Base class for embedded element
- * such as a picture
+ * such as a picture.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -27,12 +38,30 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * of the element, as for embedded element
 	 * they are intrinsic to the embeddded asset
 	 */
-	public function new(style:CoreStyle) 
+	public function new(node:Node) 
 	{
-		super(style);
-		var computedStyle:ComputedStyleData = style.computedStyle;
+		super(node);
+		
+		//TODO : at this point, computed styles are false
+	
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+
+	override private function get_bounds():RectangleData
+	{
 		_bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 		_bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+		
+		return _bounds;
+	}
+	
+	override public function isReplaced():Bool
+	{
+		return true;
 	}
 	
 	/**
@@ -41,53 +70,33 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 */
 	override public function render():Array<NativeElement>
 	{
+		var backgroundManager:BackgroundManager = new BackgroundManager();
+
+		var ret:Array<NativeElement> = backgroundManager.render(_bounds, _coreStyle);
+		#if (flash9 || nme)
+		for (i in 0...ret.length)
+		{
+			
+			ret[i].x = globalBounds.x;
+			ret[i].y = globalBounds.y;
 		
-		var ret:Array<NativeElement> = [];
+		}
 		
 		//TODO : check here if it is an Image, Video... or should be instantiated in
 		//EmbeddedStyle ? -> Should be styles inheriting from EmbeddedStyle (ImageStyle, VideoStyle...)
-		
-		
 	
+		var embeddedHTMLElement:EmbeddedElement = cast(_node);
 		
-		#if (flash9 || nme)
-		
-	
-		
-		
-		//TODO : implement properly hit area for flash_player
-		var nativeElement:flash.display.Sprite = cast(_coreStyle.htmlElement.nativeElement);
-		
-		nativeElement.x = 0;
-		nativeElement.y = 0;
-		
-		nativeElement.graphics.clear();
-		#if flash9
-		nativeElement.graphics.beginFill(0xFF0000, 0.0);
-		//bug in nme, no click event for transparent rect
-		#elseif nme
-		nativeElement.graphics.beginFill(0xFF0000, 0.01);
-		#end
-		nativeElement.graphics.drawRect(_bounds.x,_bounds.y, _bounds.width,_bounds.height);
-		nativeElement.graphics.endFill();
-
-		var embeddedHTMLElement:EmbeddedElement = cast(_coreStyle.htmlElement);
 		ret.push(embeddedHTMLElement.embeddedAsset);
-		
-		embeddedHTMLElement.embeddedAsset.x = _bounds.x + _coreStyle.computedStyle.paddingLeft;
-		embeddedHTMLElement.embeddedAsset.y = _bounds.y + _coreStyle.computedStyle.paddingTop;
+	
+		embeddedHTMLElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
+		embeddedHTMLElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
 
 		embeddedHTMLElement.embeddedAsset.width = _coreStyle.computedStyle.width;
 		embeddedHTMLElement.embeddedAsset.height = _coreStyle.computedStyle.height;
 		
-	
-		
-		ret.push(nativeElement);
-		
-		
 		#end
-		
-		
+	
 		//TODO : apply transformations, opacity and visibility
 		
 		//TODO : opacity doesn't work on embedded asset and should also be applied to background
@@ -95,32 +104,13 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		return ret;
 	}
 	
-		/**
-	 * Render and position the background color and
-	 * image of the element using runtime specific
-	 * API and return an array of NativeElement from
-	 * it
-	 */
-	override public function renderBackground():Array<NativeElement>
-	{
-		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _coreStyle);
-		
-		for (i in 0...backgrounds.length)
-		{
-			#if (flash9 || nme)
-			backgrounds[i].x = _bounds.x;
-			backgrounds[i].y = _bounds.y;
-			#end
-		}
-		return backgrounds;
-	}
+	
 	
 	//TODO : re-implement + add an ImageRenderer
 	//
 	///**
 	 //* apply a bilinear filtering to the loaded picture
 	 //* 
-	 //* TODO : should be applied during rendering
 	 //*/
 	//private function smoothPicture():Void
 	//{

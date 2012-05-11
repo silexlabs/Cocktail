@@ -1,7 +1,13 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktail.core.html;
-import cocktail.core.nativeElement.NativeElementManager;
-import cocktail.core.nativeElement.NativeElementData;
-import cocktail.core.drawing.DrawingManager;
+
+import cocktail.core.DrawingManager;
 
 /**
  * ...
@@ -31,28 +37,24 @@ class HTMLCanvasElement extends EmbeddedElement
 	
 	public function new() 
 	{
-		super(HTML_CANVAS_TAG_NAME);
-		
 		_intrinsicHeight = CANVAS_INTRINSIC_HEIGHT;
 		_intrinsicWidth = CANVAS_INTRINSIC_WIDTH;
 		_intrinsicRatio = _intrinsicWidth / _intrinsicHeight;
 		
+		_drawingManager = new DrawingManager(_intrinsicHeight, _intrinsicWidth );
 		
+		super(HTML_CANVAS_TAG_NAME);
 	}
 	
 	override private function initEmbeddedAsset():Void
 	{
-		_embeddedAsset = _nativeElement;
+		_embeddedAsset = _drawingManager.nativeElement;
 	}
 	
 	public function getContext(contextID:String):DrawingManager
 	{	
 		if (contextID == CANVAS_2D_CONTEXT)
 		{
-			if (_drawingManager == null)
-			{
-				_drawingManager = new DrawingManager(_nativeElement, _intrinsicHeight, _intrinsicWidth );
-			}
 			return _drawingManager;
 		}
 		else

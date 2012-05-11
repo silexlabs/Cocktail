@@ -7,157 +7,210 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.dom.Node;
+import cocktail.core.dom.Text;
 import cocktail.core.NativeElement;
-import cocktail.core.dom.DOMData;
+import cocktail.core.renderer.RendererData;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.style.formatter.FormattingContext;
 import haxe.Log;
+import cocktail.core.geom.GeomData;
+import cocktail.core.style.StyleData;
+import cocktail.core.font.FontData;
 
 /**
- * Renders a text
+ * Renders a run of text by creating as many text line box
+ * as necessary for each word/space. Also in charge of separating
+ * the source text into an array of word, space, tab...
  * 
  * @author Yannick DOMINGUEZ
  */
 class TextRenderer extends ElementRenderer
 {
+	/**
+	 * An array where each item contains a text token,
+	 * representing the kind of text contained (a word,
+	 * a space, a tab...). For each, a Text Line Box
+	 * is created
+	 */
+	private var _textTokens:Array<TextToken>;
+	
+	/**
+	 * The unedited source text
+	 */
+	private var _text:Text;
+	
+	/**
+	 * Class constructor.
+	 */
+	public function new(node:Node) 
+	{
+		super(node);
+		_text = cast(node);
+	}
+	
+	/**
+	 * Separate the source text in an array of text token
+	 * and create a text line box for each one
+	 */
+	private function init():Void
+	{
+		_textTokens = doGetTextTokens(_text.nodeValue);
+		lineBoxes = [];
+		for (i in 0..._textTokens.length)
+		{
+			//create and store the line boxes
+			lineBoxes.push(createTextLineBoxFromTextToken(_textTokens[i]));
+		}
+	}
+	
+	override private function set_coreStyle(value:CoreStyle):CoreStyle
+	{
+		_coreStyle = value;
+		init();
+		return _coreStyle;
+	}
+	
+	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	{	
+		init();
+	}
+	
+	override private function establishesNewStackingContext():Bool
+	{
+		return false;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE STATIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Actually convert a text into an array
+	 * of text token.
+	 */
+	private static function doGetTextTokens(text:String):Array<TextToken>
+	{
+		var textTokens:Array<TextToken> = new Array<TextToken>();
 
-	/**
-	 * The text token (word, space, tab...)
-	 * used to generate the TextRenderer
-	 */
-	private var _textToken:TextTokenValue;
-	
-	private var _nativeElement:NativeElement;
-	
-	/**
-	 * Class constructor. Set the width and height bounds
-	 * to those of the generated text
-	 * 
-	 * @param htmlElement the generated text
-	 */
-	public function new(style:CoreStyle, nativeElement:NativeElement, textToken:TextTokenValue) 
-	{
-		_textToken = textToken;
+		var textToken:String = null;
 		
-		_nativeElement = nativeElement;
+		var i:Int = 0;
 		
-		super(style);
+		//Loop in all the text charachters
+		while (i < text.length)
+		{
+			if (text.charAt(i) == "\\")
+			{
+				if (i <text.length - 1)
+				{
+					//if a line feed is found
+					if (text.charAt(i + 1) == "n")
+					{
+						if (textToken != null)
+						{
+							//push the current word into the returned array
+							textTokens.push(word(textToken));
+							textToken = null;
+						}
+						//then push a line feed
+						textTokens.push(lineFeed);
+						i++;
+					}
+					//if a tab is found
+					else if (text.charAt(i + 1) == "t")
+					{
+						if (textToken != null)
+						{
+							//push the word into the returned array
+							textTokens.push(word(textToken));
+							textToken = null;
+						}
+						//then push a tab
+						textTokens.push(TextToken.tab);
+						i++;
+					}
+				}
+			}
+			
+			//If the character is a space
+			if (StringTools.isSpace(text, i) == true)
+			{
+				
+				//If a word was being formed by concatenating
+				//characters
+				if (textToken != null)
+				{
+					//push the word into the returned array
+					textTokens.push(word(textToken));
+					textToken = null;
+				}
+				
+				//push the space in the returned array
+				textTokens.push(TextToken.space);
+			}
+			//else the charachter belongs to a word
+			//and is added to the word which is being
+			//concatenated
+			else
+			{
+				if (textToken == null)
+				{
+					textToken = "";
+				}
+				textToken += text.charAt(i);
+			}
+			
+			i++;
+		}
 		
-		#if (flash9 || nme)
-		_bounds.width = getOffsetWidth();
-		_bounds.height = getOffsetHeight();
-		#end
-	}
-	
-	
-	
-	/////////////////////////////////
-	// OVERRIDEN PUBLIC METHODS
-	////////////////////////////////
-	
-	override public function dispose():Void
-	{
-		super.dispose();
-		
-		_textToken = null;
-		_nativeElement = null;
-	}
-	
-	/**
-	 * Renders the text using runtime specific API and return
-	 * the text NativeElement
-	 */
-	override public function render():Array<NativeElement>
-	{
-		
-		var ret:Array<NativeElement> = [];
-		#if flash9
-		_nativeElement.x = _bounds.x;
-		_nativeElement.y = _bounds.y;
-		#elseif nme
-		_nativeElement.x = _bounds.x;
-		_nativeElement.y = _bounds.y - (_coreStyle.fontMetrics.ascent + _coreStyle.fontMetrics.descent);
-		#end
-		
-		ret.push(_nativeElement);
-		
-		return ret;
+		//push the remaining word if text doesn't end with a space
+		//or control character
+		if (textToken != null)
+		{
+			textTokens.push(word(textToken));
+		}
+
+		return textTokens;
 	}
 	
 	/////////////////////////////////
 	// PRIVATE METHODS
 	////////////////////////////////
 	
-	#if flash9
-	
 	/**
-	 * The offset width for a text fragment is the width of its
-	 * text
+	 * Create and return a Text line box from a text token
 	 */
-	private function getOffsetWidth():Int
+	private function createTextLineBoxFromTextToken(textToken:TextToken):TextLineBox
 	{
+		//the text of the created text line box
+		var text:String;
 		
-		//in this case the text fragment is a space, as the flash
-		//text engine doesn't account for the width of space
-		if (untyped _nativeElement.textWidth == 0)
+		switch(textToken)
 		{
-			//for a space, the width of a space is retrieved from the font metrics, plus the letter spacing
-			//which also apply to space and the word spacing which aplies only to text
-			return _coreStyle.fontMetrics.spaceWidth + _coreStyle.computedStyle.letterSpacing + _coreStyle.computedStyle.wordSpacing;
+			case word(value):
+				text = value;
+		
+			case space:
+				text = " ";
+				
+			//TODO : implement tab and line feed	
+			case tab:
+				text = "";
+				
+			case lineFeed:
+				text = "";
 		}
-		//in this case the text fragment is a word, the text width is returned, it already
-		//contains the letter spacing which was applied when the text was rendered
-		else
-		{
-			return untyped _nativeElement.textWidth ;
-		}				
+		
+		var textLineBox:TextLineBox = new TextLineBox(this, text);
+		
+		return textLineBox;
 	}
-	
-	#elseif nme
-	/**
-	 * The offset width for a text fragment is the width of its
-	 * text
-	 */
-	private function getOffsetWidth():Int
-	{
-		//TODO : shouldn't be here but in a Document class
-		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
-		
-		var ret:Int = _nativeElement.textWidth;
-		
-		return ret;
-		
-		
-	}
-	
-	#end
 
-	/**
-	 * the height of a text fragment is the addition
-	 * of its leaded ascent and leaded descent
-	 */
-	private function getOffsetHeight():Int
-	{
-		
-		var ascent:Float =  _coreStyle.fontMetrics.ascent;
-		var descent:Float = _coreStyle.fontMetrics.descent;
-		
-		//the leading is an extra height to apply equally to the ascent
-		//and the descent when laying out lines of text
-		var leading:Float = _coreStyle.computedStyle.lineHeight - (ascent + descent);
-		
-		//apply leading to the ascent and descent
-		var leadedAscent:Float = (ascent + leading/2);
-		var leadedDescent:Float = (descent + leading / 2);
-		
-		return Math.round(leadedAscent + leadedDescent);
-		
-		return 50;
-	}
-	
 	/////////////////////////////////
 	// OVERRIDEN PUBLIC HELPER METHODS
 	////////////////////////////////
-	
+
 	override public function isFloat():Bool
 	{
 		return false;
@@ -173,54 +226,27 @@ class TextRenderer extends ElementRenderer
 		return true;
 	}
 	
-	override public function isSpace():Bool
+	override public function isInlineLevel():Bool
 	{
-		var isSpace:Bool;
-		
-		switch (_textToken)
-		{
-			case TextTokenValue.space:
-				isSpace = true;
-				
-			default:
-				isSpace = false;
-		}
-		
-		return isSpace;
+		return true;
 	}
 	
-	override public function isLineFeed():Bool
+	
+	
+	/**
+	 * Overriden as the bounds of a TextRenderer is formed
+	 * by the bounds of its formatted text line boxes
+	 */
+	override private function get_bounds():RectangleData
 	{
-		var isLineFeed:Bool;
-		
-		switch (_textToken)
+		var textLineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
+		for (i in 0..._lineBoxes.length)
 		{
-			case TextTokenValue.lineFeed:
-				isLineFeed = true;
-				
-			default:
-				isLineFeed = false;
+			textLineBoxesBounds.push(_lineBoxes[i].bounds);
 		}
 		
-		return isLineFeed;
+		return getChildrenBounds(textLineBoxesBounds);
 	}
-	
-	override public function isTab():Bool
-	{
-		var isTab:Bool;
-		
-		switch (_textToken)
-		{
-			case TextTokenValue.tab:
-				isTab = true;
-				
-			default:
-				isTab = false;
-		}
-		
-		return isTab;
-	}
-	
 	
 	
 }
