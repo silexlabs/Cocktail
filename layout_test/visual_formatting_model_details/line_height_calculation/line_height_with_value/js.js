@@ -1,5 +1,26 @@
-$estr = function() { return js.Boot.__string_rec(this,''); }
-Std = function() { }
+var $_, $hxClasses = $hxClasses || {}, $estr = function() { return js.Boot.__string_rec(this,''); }
+function $extend(from, fields) {
+	function inherit() {}; inherit.prototype = from; var proto = new inherit();
+	for (var name in fields) proto[name] = fields[name];
+	return proto;
+}
+var IntIter = $hxClasses["IntIter"] = function(min,max) {
+	this.min = min;
+	this.max = max;
+};
+IntIter.__name__ = ["IntIter"];
+IntIter.prototype = {
+	min: null
+	,max: null
+	,hasNext: function() {
+		return this.min < this.max;
+	}
+	,next: function() {
+		return this.min++;
+	}
+	,__class__: IntIter
+}
+var Std = $hxClasses["Std"] = function() { }
 Std.__name__ = ["Std"];
 Std["is"] = function(v,t) {
 	return js.Boot.__instanceof(v,t);
@@ -8,8 +29,7 @@ Std.string = function(s) {
 	return js.Boot.__string_rec(s,"");
 }
 Std["int"] = function(x) {
-	if(x < 0) return Math.ceil(x);
-	return Math.floor(x);
+	return x | 0;
 }
 Std.parseInt = function(x) {
 	var v = parseInt(x,10);
@@ -23,24 +43,10 @@ Std.parseFloat = function(x) {
 Std.random = function(x) {
 	return Math.floor(Math.random() * x);
 }
-Std.prototype.__class__ = Std;
-IntIter = function(min,max) {
-	if( min === $_ ) return;
-	this.min = min;
-	this.max = max;
+Std.prototype = {
+	__class__: Std
 }
-IntIter.__name__ = ["IntIter"];
-IntIter.prototype.min = null;
-IntIter.prototype.max = null;
-IntIter.prototype.hasNext = function() {
-	return this.min < this.max;
-}
-IntIter.prototype.next = function() {
-	return this.min++;
-}
-IntIter.prototype.__class__ = IntIter;
-Test = function(p) {
-	if( p === $_ ) return;
+var Test = $hxClasses["Test"] = function() {
 	var test = "<div><p>Test passes if the two boxes below are the same height.</p>";
 	test += "<div style=\"position:relative; width:1em;\">";
 	test += "<div style=\"position:relative; width:1em; background-color:black;  font-size:12pt; line-height:96px; font-family:ahem;\">X</div>";
@@ -48,53 +54,29 @@ Test = function(p) {
 	test += "</div>";
 	test += "</div>";
 	js.Lib.document.body.innerHTML = test;
-}
+};
 Test.__name__ = ["Test"];
 Test.main = function() {
 	new Test();
 }
-Test.prototype.__class__ = Test;
-if(typeof js=='undefined') js = {}
-js.Lib = function() { }
-js.Lib.__name__ = ["js","Lib"];
-js.Lib.isIE = null;
-js.Lib.isOpera = null;
-js.Lib.document = null;
-js.Lib.window = null;
-js.Lib.alert = function(v) {
-	alert(js.Boot.__string_rec(v,""));
+Test.prototype = {
+	__class__: Test
 }
-js.Lib.eval = function(code) {
-	return eval(code);
-}
-js.Lib.setErrorHandler = function(f) {
-	js.Lib.onerror = f;
-}
-js.Lib.prototype.__class__ = js.Lib;
-js.Boot = function() { }
+var js = js || {}
+js.Boot = $hxClasses["js.Boot"] = function() { }
 js.Boot.__name__ = ["js","Boot"];
 js.Boot.__unhtml = function(s) {
 	return s.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
 }
 js.Boot.__trace = function(v,i) {
 	var msg = i != null?i.fileName + ":" + i.lineNumber + ": ":"";
-	msg += js.Boot.__unhtml(js.Boot.__string_rec(v,"")) + "<br/>";
+	msg += js.Boot.__string_rec(v,"");
 	var d = document.getElementById("haxe:trace");
-	if(d == null) alert("No haxe:trace element defined\n" + msg); else d.innerHTML += msg;
+	if(d != null) d.innerHTML += js.Boot.__unhtml(msg) + "<br/>"; else if(typeof(console) != "undefined" && console.log != null) console.log(msg);
 }
 js.Boot.__clear_trace = function() {
 	var d = document.getElementById("haxe:trace");
 	if(d != null) d.innerHTML = "";
-}
-js.Boot.__closure = function(o,f) {
-	var m = o[f];
-	if(m == null) return null;
-	var f1 = function() {
-		return m.apply(o,arguments);
-	};
-	f1.scope = o;
-	f1.method = m;
-	return f1;
 }
 js.Boot.__string_rec = function(o,s) {
 	if(o == null) return "null";
@@ -145,7 +127,7 @@ js.Boot.__string_rec = function(o,s) {
 		if(hasp && !o.hasOwnProperty(k)) {
 			continue;
 		}
-		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__") {
+		if(k == "prototype" || k == "__class__" || k == "__super__" || k == "__interfaces__" || k == "__properties__") {
 			continue;
 		}
 		if(str.length != 2) str += ", \n";
@@ -236,7 +218,7 @@ js.Boot.__init = function() {
 	if(String.prototype.cca == null) String.prototype.cca = String.prototype.charCodeAt;
 	String.prototype.charCodeAt = function(i) {
 		var x = this.cca(i);
-		if(x != x) return null;
+		if(x != x) return undefined;
 		return x;
 	};
 	var oldsub = String.prototype.substr;
@@ -249,31 +231,44 @@ js.Boot.__init = function() {
 		} else if(len < 0) len = this.length + len - pos;
 		return oldsub.apply(this,[pos,len]);
 	};
-	$closure = js.Boot.__closure;
+	Function.prototype["$bind"] = function(o) {
+		var f = function() {
+			return f.method.apply(f.scope,arguments);
+		};
+		f.scope = o;
+		f.method = this;
+		return f;
+	};
 }
-js.Boot.prototype.__class__ = js.Boot;
-$_ = {}
+js.Boot.prototype = {
+	__class__: js.Boot
+}
+js.Lib = $hxClasses["js.Lib"] = function() { }
+js.Lib.__name__ = ["js","Lib"];
+js.Lib.isIE = null;
+js.Lib.isOpera = null;
+js.Lib.document = null;
+js.Lib.window = null;
+js.Lib.alert = function(v) {
+	alert(js.Boot.__string_rec(v,""));
+}
+js.Lib.eval = function(code) {
+	return eval(code);
+}
+js.Lib.setErrorHandler = function(f) {
+	js.Lib.onerror = f;
+}
+js.Lib.prototype = {
+	__class__: js.Lib
+}
 js.Boot.__res = {}
 js.Boot.__init();
-{
-	String.prototype.__class__ = String;
-	String.__name__ = ["String"];
-	Array.prototype.__class__ = Array;
-	Array.__name__ = ["Array"];
-	Int = { __name__ : ["Int"]};
-	Dynamic = { __name__ : ["Dynamic"]};
-	Float = Number;
-	Float.__name__ = ["Float"];
-	Bool = { __ename__ : ["Bool"]};
-	Class = { __name__ : ["Class"]};
-	Enum = { };
-	Void = { __ename__ : ["Void"]};
-}
 {
 	Math.__name__ = ["Math"];
 	Math.NaN = Number["NaN"];
 	Math.NEGATIVE_INFINITY = Number["NEGATIVE_INFINITY"];
 	Math.POSITIVE_INFINITY = Number["POSITIVE_INFINITY"];
+	$hxClasses["Math"] = Math;
 	Math.isFinite = function(i) {
 		return isFinite(i);
 	};
@@ -282,13 +277,29 @@ js.Boot.__init();
 	};
 }
 {
-	js.Lib.document = document;
-	js.Lib.window = window;
-	onerror = function(msg,url,line) {
-		var f = js.Lib.onerror;
-		if( f == null )
-			return false;
-		return f(msg,[url+":"+line]);
+	String.prototype.__class__ = $hxClasses["String"] = String;
+	String.__name__ = ["String"];
+	Array.prototype.__class__ = $hxClasses["Array"] = Array;
+	Array.__name__ = ["Array"];
+	var Int = $hxClasses["Int"] = { __name__ : ["Int"]};
+	var Dynamic = $hxClasses["Dynamic"] = { __name__ : ["Dynamic"]};
+	var Float = $hxClasses["Float"] = Number;
+	Float.__name__ = ["Float"];
+	var Bool = $hxClasses["Bool"] = Boolean;
+	Bool.__ename__ = ["Bool"];
+	var Class = $hxClasses["Class"] = { __name__ : ["Class"]};
+	var Enum = { };
+	var Void = $hxClasses["Void"] = { __ename__ : ["Void"]};
+}
+{
+	if(typeof document != "undefined") js.Lib.document = document;
+	if(typeof window != "undefined") {
+		js.Lib.window = window;
+		js.Lib.window.onerror = function(msg,url,line) {
+			var f = js.Lib.onerror;
+			if(f == null) return false;
+			return f(msg,[url + ":" + line]);
+		};
 	}
 }
 js.Lib.onerror = null;
