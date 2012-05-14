@@ -145,6 +145,7 @@ class LayerRenderer extends Node
 			//_graphicsContext.y = rootRenderer.globalBounds.y;
 		//	_graphicsContext.scrollRect = new Rectangle(0, 0, rootRenderer.globalBounds.width, rootRenderer.globalBounds.height);
 			blockBoxRootRenderer.renderScrollBars(_scrollBarsGraphicContext, relativeOffset);
+
 	
 			
 		}
@@ -173,7 +174,6 @@ class LayerRenderer extends Node
 	
 	public function scroll(x:Float, y:Float):Void
 	{
-		
 		_graphicsContext.x = _rootRenderer.globalBounds.x;
 		_graphicsContext.y = _rootRenderer.globalBounds.y;
 		
@@ -192,7 +192,6 @@ class LayerRenderer extends Node
 			height = _rootRenderer.globalBounds.height;
 		}
 	
-		
 		_graphicsContext.scrollRect = new Rectangle(x , y, width, height);
 	}
 	

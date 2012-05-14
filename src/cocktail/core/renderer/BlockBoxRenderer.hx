@@ -113,7 +113,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	public function renderBlockContainerChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(this, _layerRenderer);
-		
+
 		for (i in 0...childrenBlockContainer.length)
 		{
 			childrenBlockContainer[i].render(graphicContext, relativeOffset);
@@ -269,11 +269,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 
 		//TODO : this re-layout should only happen if at least one scrollbar is attached, return bool from attachScrollBarsIfnecessary ?
-		var childrenFormattingContext:FormattingContext = getFormattingContext(formattingContext);
-		var childrenContainingBlockData:ContainingBlockData = getContainerBlockData();
-		var childFirstPositionedAncestorData:FirstPositionedAncestorData = getChildrenFirstPositionedAncestorData(firstPositionedAncestorData);
-		doLayoutChildren(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, _coreStyle.fontMetrics, childrenFormattingContext);
-	
+		//var childrenFormattingContext:FormattingContext = getFormattingContext(formattingContext);
+		//var childrenContainingBlockData:ContainingBlockData = getContainerBlockData();
+		//var childFirstPositionedAncestorData:FirstPositionedAncestorData = getChildrenFirstPositionedAncestorData(firstPositionedAncestorData);
+		//doLayoutChildren(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, _coreStyle.fontMetrics, childrenFormattingContext);
+	//
 	}
 	
 	/**
@@ -394,6 +394,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	override private function set_scrollY(value:Float):Float 
 	{
+	
 		if (value < 0)
 		{
 			_scrollY = 0;
@@ -401,12 +402,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		else if (value > _scrollableBounds.height)
 		{
 			_scrollY = Math.round(_scrollableBounds.height);
+				trace(_scrollY);
 		}
 		else
 		{
 			_scrollY = value;
 		}
-		
 		updateScroll();
 		
 		return value;
@@ -414,7 +415,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	private function updateScroll():Void
 	{
-		_layerRenderer.scroll(_scrollX, _scrollY);
+		if (isXAxisClipped() == true || isYAxisClipped() == true)
+		{
+			_layerRenderer.scroll(_scrollX, _scrollY);
+		}
+		
 	}
 	
 	//TODO : should manage the following case : 
@@ -425,22 +430,44 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// not be scrolled and clipped
 	private function getScrollableBounds():RectangleData
 	{
+		return getChildrenBounds(doGetScrollableBounds(this));
+	}
+	
+	//TODO : work but shouldn't have to parse all rendering tree, should done during formatting
+	//and then another pass for absolutely positioned children. Maybe this way less expensive in
+	//the  end because onlt called when useful ?
+	private function doGetScrollableBounds(rootRenderer:ElementRenderer):Array<RectangleData>
+	{
 		var childrenBounds:Array<RectangleData> = new Array<RectangleData>();
 
-		for (i in 0..._childNodes.length)
+		for (i in 0...rootRenderer.childNodes.length)
 		{
 			
-			var child:ElementRenderer = cast(_childNodes[i]);
+			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
+			if (child.hasChildNodes() == true && child.establishesNewFormattingContext() == false)
+			{
+				var childChildrenBounds:Array<RectangleData> = doGetScrollableBounds(child);
+				
+				for (j in 0...childChildrenBounds.length)
+				{
+					childrenBounds.push(childChildrenBounds[j]);
+				}
+				
+			}
+			
 			childrenBounds.push(child.bounds);
 		}
 		
-		return getChildrenBounds(childrenBounds);
+		return childrenBounds;
+		
 	}
 	
 	//TODO : if at least one is attached, should do a new layout, 
 	//else the scrollbar is at first 0,0 at first rendering
 	//TODO : implement border case where one has scroll attached, and the 
 	//other is visible but should still display scroll
+	//
+	//TODO : should refresh maxScroll n attach scrollbars
 	private function attachScrollBarsIfnecessary():Void
 	{
 		if (canAlwaysOverflow() == true)
@@ -483,13 +510,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_horizontalScrollBar = new ScrollBar(false);
 		_horizontalScrollBar.attach();
 		appendChild(_horizontalScrollBar.elementRenderer);
-		_horizontalScrollBar.maxScroll = _bounds.width;
+		_horizontalScrollBar.maxScroll = bounds.width;
 		_horizontalScrollBar.onscroll = onHorizontalScroll;
 	}
 	
 	private function attachHorizontalScrollBarIfNecessary():Void
 	{
-		if (_scrollableBounds.x < _bounds.x || _scrollableBounds.x + _scrollableBounds.width > _bounds.x + _bounds.width)
+		if (_scrollableBounds.x < bounds.x || _scrollableBounds.x + _scrollableBounds.width > bounds.x + bounds.width)
 		{
 			attachHorizontalScrollBar();
 		}
@@ -500,13 +527,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_verticalScrollBar = new ScrollBar(true);
 		_verticalScrollBar.attach();
 		appendChild(_verticalScrollBar.elementRenderer);
-		_verticalScrollBar.maxScroll = _bounds.width;
+		_verticalScrollBar.maxScroll = bounds.height;
 		_verticalScrollBar.onscroll = onVerticalScroll;
 	}
 	
 	private function attachVerticalScrollBarIfNecessary():Void
 	{
-		if (_scrollableBounds.y < _bounds.y || _scrollableBounds.y + _scrollableBounds.height > _bounds.y + _bounds.height)
+		if (_scrollableBounds.y < bounds.y || _scrollableBounds.y + _scrollableBounds.height > bounds.y + bounds.height)
 		{
 			attachVerticalScrollBar();
 		}
