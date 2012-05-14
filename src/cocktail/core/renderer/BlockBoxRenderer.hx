@@ -285,9 +285,21 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		for (i in 0..._childNodes.length)
 		{
 			var childElementRenderer:ElementRenderer = cast(_childNodes[i]);
+			
+			//TODO : clean-up, this is used to send right containing dimensions to scrollbars.
+			// also, if both are displayed, how should they now the width/height to witdraw for
+			//the corner ?
 			if (_horizontalScrollBar != null)
 			{
 				if (childElementRenderer == _horizontalScrollBar.elementRenderer)
+				{
+					childFirstPositionedAncestorData.data = childrenContainingBlockData;
+					childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+				}
+			}
+			else if (_verticalScrollBar != null)
+			{
+				if (childElementRenderer == _verticalScrollBar.elementRenderer)
 				{
 					childFirstPositionedAncestorData.data = childrenContainingBlockData;
 					childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
@@ -307,6 +319,42 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		if (establishesNewFormattingContext() == true)
 		{
 			childrenFormattingContext.format();
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC SCROLLING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	public function isXAxisClipped():Bool
+	{
+		switch (computedStyle.overflowX)
+		{
+			case Overflow.hidden,
+			Overflow.scroll:
+				return true;
+				
+			case Overflow.cssAuto:
+				return _horizontalScrollBar != null;
+				
+			case Overflow.visible:
+				return false;
+		}
+	}
+	
+	public function isYAxisClipped():Bool
+	{
+		switch (computedStyle.overflowY)
+		{
+			case Overflow.hidden,
+			Overflow.scroll:
+				return true;
+				
+			case Overflow.cssAuto:
+				return _verticalScrollBar != null;
+				
+			case Overflow.visible:
+				return false;
 		}
 	}
 	
@@ -369,13 +417,30 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_layerRenderer.scroll(_scrollX, _scrollY);
 	}
 	
+	//TODO : should manage the following case : 
+	// - child is relative positioned,
+	// - child is absolute positioned
+	// - child is fixed positioned or absolute positoned but 
+	// block container is parent of this block box renderer and it must
+	// not be scrolled and clipped
 	private function getScrollableBounds():RectangleData
 	{
-		return { x:0.0, y:0.0, width:500.0, height:500.0 };
+		var childrenBounds:Array<RectangleData> = new Array<RectangleData>();
+
+		for (i in 0..._childNodes.length)
+		{
+			
+			var child:ElementRenderer = cast(_childNodes[i]);
+			childrenBounds.push(child.bounds);
+		}
+		
+		return getChildrenBounds(childrenBounds);
 	}
 	
 	//TODO : if at least one is attached, should do a new layout, 
 	//else the scrollbar is at first 0,0 at first rendering
+	//TODO : implement border case where one has scroll attached, and the 
+	//other is visible but should still display scroll
 	private function attachScrollBarsIfnecessary():Void
 	{
 		if (canAlwaysOverflow() == true)
