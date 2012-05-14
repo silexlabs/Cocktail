@@ -70,6 +70,9 @@ class CoreStyle
 	private var _clear:Clear;
 	public var clear(getClear, setClear):Clear;
 	
+	private var _zIndex:ZIndex;
+	public var zIndex(getZIndex, setZIndex):ZIndex;
+	
 	private var _transformOrigin:TransformOrigin;
 	public var transformOrigin(getTransformOrigin, setTransformOrigin):TransformOrigin;
 	
@@ -284,6 +287,8 @@ class CoreStyle
 		_display = Display.cssInline;
 		_position = Position.cssStatic;
 		
+		_zIndex = ZIndex.cssAuto;
+		
 		_top = PositionOffset.cssAuto;
 		_bottom = PositionOffset.cssAuto;
 		_left = PositionOffset.cssAuto;
@@ -386,6 +391,7 @@ class CoreStyle
 			textAlign:TextAlign.left,
 			color:{color:0, alpha:1.0},
 			visibility:true,
+			zIndex:ZIndex.cssAuto,
 			opacity:1.0,
 			overflowX: Overflow.visible,
 			overflowY: Overflow.visible,
@@ -931,6 +937,13 @@ class CoreStyle
 		return value;
 	}
 	
+	private function setZIndex(value:ZIndex):ZIndex 
+	{
+		_zIndex = value;
+		invalidateLayer();
+		return value;
+	}
+	
 	private function setFontSize(value:FontSize):FontSize
 	{
 		_fontSize = value;
@@ -1194,6 +1207,11 @@ class CoreStyle
 	private function getClear():Clear 
 	{
 		return _clear;
+	}
+	
+	private function getZIndex():ZIndex 
+	{
+		return _zIndex;
 	}
 	
 	private function getFontSize():FontSize

@@ -318,14 +318,7 @@ class BoxRenderer extends ElementRenderer
 	
 	override private function establishesNewStackingContext():Bool
 	{
-		switch (_coreStyle.computedStyle.position)
-		{
-			case cssStatic :
-				return false;
-				
-			default:
-				return true;
-		}
+		return isPositioned();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
