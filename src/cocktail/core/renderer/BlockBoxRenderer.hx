@@ -120,17 +120,18 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	
-	public function renderScrollBars(graphicContext:NativeElement, relativeOffset:PointData):Void
+	public function renderScrollBars(graphicContext:NativeElement, parentNonScrollableGraphicsContext:NativeElement, relativeOffset:PointData):Void
 	{
 		if (_horizontalScrollBar != null)
 		{
-			_horizontalScrollBar.elementRenderer.render(graphicContext, relativeOffset);
+			_horizontalScrollBar.elementRenderer.layerRenderer.render(graphicContext, parentNonScrollableGraphicsContext, relativeOffset);
+			
 			updateScroll();
 		}
 		
 		if (_verticalScrollBar != null)
 		{
-			_verticalScrollBar.elementRenderer.render(graphicContext, relativeOffset);
+			_verticalScrollBar.elementRenderer.layerRenderer.render(graphicContext, parentNonScrollableGraphicsContext, relativeOffset);
 			updateScroll();
 		}
 		

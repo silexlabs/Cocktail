@@ -1,6 +1,7 @@
 package cocktail.core.html;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.UIEvent;
+import cocktail.Lib;
 
 /**
  * ...
@@ -18,6 +19,8 @@ class ScrollBar extends HTMLElement
 	private var _scroll:Float;
 	public var scroll(get_scroll, set_scroll):Float;
 	
+	private var _scrollThumb:HTMLElement;
+	
 	public function new(isVertical:Bool) 
 	{
 		
@@ -26,6 +29,8 @@ class ScrollBar extends HTMLElement
 		
 		
 		_style.position = "absolute";
+		
+	
 		
 		if (_isVertical)
 		{
@@ -45,11 +50,72 @@ class ScrollBar extends HTMLElement
 		
 		_style.display = "block";
 		
+		
+		_scrollThumb = new HTMLElement("");
+		appendChild(_scrollThumb);
+		
+		_scrollThumb.onmousedown = onThumbMouseDown;
+		
+		_scrollThumb.style.backgroundColor = "green";
+		_scrollThumb.style.width = "15px";
+		_scrollThumb.style.height = "15px";
+		_scrollThumb.style.position = "absolute";
+		_scrollThumb.style.display = "block";
+		
 		onmousedown = onTrackMouseDown;
+	}
+	
+	//TODO : should add event listener to body instead of callback
+	//which erase all other callbacks
+	private function onThumbMouseDown(event:MouseEvent):Void
+	{
+		cocktail.Lib.document.body.onmousemove = onThumbMove;
+		cocktail.Lib.document.body.onmouseup = onThumbMouseUp;
+	}
+	
+	private function onThumbMouseUp(event:MouseEvent):Void
+	{
+		cocktail.Lib.document.body.onmousemove = null;
+		cocktail.Lib.document.body.onmouseup = null;
+	}
+	
+	private function onThumbMove(event:MouseEvent):Void
+	{
+		if (_isVertical == true)
+		{
+			_scrollThumb.style.top = event.clientY + "px";
+		}
+		else
+		{
+			_scrollThumb.style.left = event.clientX + "px";
+		}
+		
+		if (_isVertical == true)
+		{
+			_scroll = event.clientY;
+		}
+		else
+		{
+			_scroll = event.clientX;
+		}
+		
+			if (_onScroll != null)
+		{
+			_onScroll(new UIEvent("poj,",this, 0));
+		}
 	}
 	
 	private function onTrackMouseDown(event:MouseEvent):Void
 	{
+		if (_isVertical == true)
+		{
+			_scrollThumb.style.top = event.clientY + "px";
+		}
+		else
+		{
+			_scrollThumb.style.left = event.clientX + "px";
+		}
+		
 		if (_isVertical == true)
 		{
 			_scroll = event.clientY;

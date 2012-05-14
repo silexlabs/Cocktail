@@ -160,7 +160,7 @@ class LayerRenderer extends Node
 			//_graphicsContext.y = rootRenderer.globalBounds.y;
 		//	_graphicsContext.scrollRect = new Rectangle(0, 0, rootRenderer.globalBounds.width, rootRenderer.globalBounds.height);
 		
-			blockBoxRootRenderer.renderScrollBars(_scrollBarsGraphicContext, relativeOffset);
+			blockBoxRootRenderer.renderScrollBars(_scrollBarsGraphicContext, _nonScrollableGraphicsContext, relativeOffset);
 		}
 		
 		//here the root renderer is an inline box renderer which doesn't establish a formatting context

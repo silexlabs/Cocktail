@@ -270,11 +270,16 @@ class ElementRenderer extends Node
 	
 	public function attachLayer():Void
 	{
+
 		//create the ElementRenderer if needed
 		if (_layerRenderer == null)
 		{
 			var parent:ElementRenderer = cast(_parentNode);
-			createLayer(parent.layerRenderer);
+			if (parent.layerRenderer != null)
+			{
+				createLayer(parent.layerRenderer);
+			}
+			
 		}
 		
 		//the HTMLElement is now attached and can attach its children
@@ -283,6 +288,9 @@ class ElementRenderer extends Node
 			var child:ElementRenderer = cast(_childNodes[i]);
 			child.attachLayer();
 		}
+		
+		
+	
 	}
 	
 	public function detachLayer():Void
