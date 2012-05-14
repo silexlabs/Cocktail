@@ -118,7 +118,29 @@ class LayerRenderer extends Node
 			//TODO here : render children with positive z-index
 			
 			//TODO : this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
-
+			
+			if (blockBoxRootRenderer.isXAxisClipped() == true && blockBoxRootRenderer.isYAxisClipped() == true)
+			{
+				_graphicsContext.x = _rootRenderer.globalBounds.x;
+				_graphicsContext.y = _rootRenderer.globalBounds.y;
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, _rootRenderer.globalBounds.height);
+			}
+			else if (blockBoxRootRenderer.isXAxisClipped() == true)
+			{
+				_graphicsContext.x = _rootRenderer.globalBounds.x;
+				_graphicsContext.y = _rootRenderer.globalBounds.y;
+				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, 10000);
+			}
+			else if (blockBoxRootRenderer.isYAxisClipped() == true)
+			{
+				_graphicsContext.x = _rootRenderer.globalBounds.x;
+				_graphicsContext.y = _rootRenderer.globalBounds.y;
+				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, 10000, _rootRenderer.globalBounds.height);
+			}
+			
+			
 			//_graphicsContext.x = rootRenderer.globalBounds.x;
 			//_graphicsContext.y = rootRenderer.globalBounds.y;
 		//	_graphicsContext.scrollRect = new Rectangle(0, 0, rootRenderer.globalBounds.width, rootRenderer.globalBounds.height);
@@ -151,11 +173,30 @@ class LayerRenderer extends Node
 	
 	public function scroll(x:Float, y:Float):Void
 	{
+		
 		_graphicsContext.x = _rootRenderer.globalBounds.x;
 		_graphicsContext.y = _rootRenderer.globalBounds.y;
-		_graphicsContext.scrollRect = new Rectangle(x , y, _rootRenderer.globalBounds.width, _rootRenderer.globalBounds.height);
+		
+		
+		var width:Float;
+		var height:Float;
+		
+		if (_graphicsContext.scrollRect != null)
+		{
+			width = _graphicsContext.scrollRect.width;
+			height = _graphicsContext.scrollRect.height;
+		}
+		else
+		{
+			width =  _rootRenderer.globalBounds.width;
+			height = _rootRenderer.globalBounds.height;
+		}
+	
+		
+		_graphicsContext.scrollRect = new Rectangle(x , y, width, height);
 	}
 	
+
 	public function detach():Void
 	{
 		//TODO : quick fix, should be abstracted
