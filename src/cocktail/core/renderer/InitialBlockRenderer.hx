@@ -48,29 +48,99 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	}
 	
 
-	//TODO : shouldn't have to override, initial block bounds should always be windows
-	override private function renderBackground(graphicContext:NativeElement, relativeOffset:PointData):Void
-	{
-		var backgroundManager:BackgroundManager = new BackgroundManager();
-		
-		//TODO : should only pass dimensions instead of bounds
-		var backgrounds:Array<NativeElement> = backgroundManager.render(_bounds, _coreStyle);
-		
-		for (i in 0...backgrounds.length)
-		{
-			#if (flash9 || nme)
-			backgrounds[i].x = globalBounds.x;
-			backgrounds[i].y = globalBounds.y;
-			graphicContext.addChild(backgrounds[i]);
-			#end
-		}
-	}
 	
 	override public function attachLayer():Void
 	{
 		_layerRenderer = new LayerRenderer(this);
 	}
 	
+	
+	
+	
+	override private function attachVerticalScrollBarIfNecessary():Void
+	{
+		if (_scrollableBounds.y < bounds.y || _scrollableBounds.y + _scrollableBounds.height > cocktail.Lib.window.innerHeight)
+		{
+			attachVerticalScrollBar();
+		}
+	}
+	
+	override private function attachScrollBarsIfnecessary():Void
+	{
+		
+
+		if (_horizontalScrollBar == null)
+		{
+			//TODO : should use computed styles but not computed yet
+			switch (_coreStyle.overflowX)
+			{
+				case scroll:
+					attachHorizontalScrollBar();
+					
+				case hidden:
+					
+				case cssAuto, visible:
+					attachHorizontalScrollBarIfNecessary();
+			}
+		}
+		
+		if (_verticalScrollBar == null)
+		{
+			switch (_coreStyle.overflowY)
+			{
+				case scroll:
+					attachVerticalScrollBar();
+					
+				case hidden:
+					
+					case cssAuto, visible:
+					attachVerticalScrollBarIfNecessary();
+			}
+		}
+	}
+	
+	override public function isXAxisClipped():Bool
+	{
+		switch (computedStyle.overflowX)
+		{
+			case Overflow.hidden,
+			Overflow.scroll:
+				return true;
+				
+			case Overflow.cssAuto, visible:
+				return _horizontalScrollBar != null;
+				
+			
+		}
+	}
+	
+	override public function isYAxisClipped():Bool
+	{
+		switch (computedStyle.overflowY)
+		{
+			case Overflow.hidden,
+			Overflow.scroll:
+				return true;
+				
+			case Overflow.cssAuto, visible:
+				return _verticalScrollBar != null;
+				
+		
+		}
+	}
+	
+	override private function get_globalBounds():RectangleData
+	{
+		var width:Float = cocktail.Lib.window.innerWidth;
+		var height:Float = cocktail.Lib.window.innerHeight;
+		
+		return {
+			x:0.0,
+			y:0.0,
+			width:width,
+			height:height
+		}
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC INVALIDATION METHODS
@@ -371,6 +441,8 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	/**
 	 * The dimensions of the initital ElementRenderer are always
 	 * those of the window
+	 * 
+	 * TODO : should also take scrollbar dimensions into account if displayed
 	 */
 	override private function getContainerBlockData():ContainingBlockData
 	{
@@ -401,6 +473,20 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	override public function establishesNewFormattingContext():Bool
 	{
 		return true;
+	}
+	
+	override private function get_bounds():RectangleData
+	{
+		var width:Float = cocktail.Lib.window.innerWidth;
+		var height:Float = cocktail.Lib.window.innerHeight;
+		
+		
+		return {
+			x:0.0,
+			y:0.0,
+			width:width,
+			height:height
+		};
 	}
 	
 }

@@ -207,6 +207,9 @@ class HTMLDocument extends Document
 	 * Called when a mouse down event is dispatched.
 	 * Retrieve the top-most ElementRenderer under the mouse
 	 * pointer and call its mouse down down callback if provided
+	 * 
+	 * TODO IMPORTANT : should also now use scrollLeft and scrollTop to find
+	 * the clicked ElementRenderer
 	 */
 	private function onMouseDown(mouseEvent:MouseEvent):Void
 	{
@@ -224,10 +227,12 @@ class HTMLDocument extends Document
 			{
 				case Node.ELEMENT_NODE:
 					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
+				
 					if (htmlElement.onmousedown != null)
 					{
 						htmlElement.onmousedown(mouseEvent);
 						//return as only one callback is executed
+						
 						return;
 					}
 			}

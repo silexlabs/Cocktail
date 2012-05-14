@@ -93,7 +93,7 @@ class ScrollBar extends HTMLElement
 
 	private function get_scroll():Float
 	{
-		return (_scroll / _maxScroll) * 100;
+		return _scroll ;
 	}
 	
 	private function set_scroll(value:Float):Float 
