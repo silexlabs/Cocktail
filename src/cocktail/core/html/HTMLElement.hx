@@ -899,22 +899,38 @@ class HTMLElement extends Element, implements IEventTarget
 	
 	private function set_scrollLeft(value:Int):Int
 	{
-		return -1;
+		if (_elementRenderer != null)
+		{
+			_elementRenderer.scrollX = value;
+		}
+		return 0;
 	}
 	
 	private function get_scrollLeft():Int
 	{
-		return -1;
+		if (_elementRenderer != null)
+		{
+			return Math.round(_elementRenderer.scrollX);
+		}
+		return 0;
 	}
 	
 	private function set_scrollTop(value:Int):Int
 	{
-		return -1;
+		if (_elementRenderer != null)
+		{
+			_elementRenderer.scrollY = value;
+		}
+		return 0;
 	}
 	
 	private function get_scrollTop():Int
 	{
-		return -1;
+		if (_elementRenderer != null)
+		{
+			return Math.round(_elementRenderer.scrollY);
+		}
+		return 0;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

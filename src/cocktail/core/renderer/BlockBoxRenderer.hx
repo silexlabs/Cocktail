@@ -34,9 +34,9 @@ import haxe.Log;
  */
 class BlockBoxRenderer extends FlowBoxRenderer
 {
-	private var _horizontalScrollBar:HTMLElement;
+	private var _horizontalScrollBar:ScrollBar;
 	
-	private var _verticalScrollBar:HTMLElement;
+	private var _verticalScrollBar:ScrollBar;
 	
 	//TODO : should be set during formatting, as only 
 	//block box establishing context need them
@@ -44,12 +44,26 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//separate attribute ?
 	private var _scrollableBounds:RectangleData;
 	
+	//TODO : rename scrollLeft and scrollTop
+	private var _scrollX:Float;
+	
+	private var _scrollY:Float;
+	
 	/**
 	 * class constructor
 	 */
 	public function new(node:Node) 
 	{
 		super(node);
+		_scrollX = 0;
+		_scrollY = 0;
+		
+		_scrollableBounds = {
+			x:0.0,
+			y:0.0,
+			width:0.0,
+			height:0.0
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -104,6 +118,23 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			childrenBlockContainer[i].render(graphicContext, relativeOffset);
 		}
+	}
+	
+	public function renderScrollBars(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		if (_horizontalScrollBar != null)
+		{
+			_horizontalScrollBar.elementRenderer.render(graphicContext, relativeOffset);
+			updateScroll();
+		}
+		
+		if (_verticalScrollBar != null)
+		{
+			_verticalScrollBar.elementRenderer.render(graphicContext, relativeOffset);
+			updateScroll();
+		}
+		
+
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -233,18 +264,118 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	override private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 		super.layoutChildren(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
+		_scrollableBounds = getScrollableBounds();
 		attachScrollBarsIfnecessary();
+		
+
+		//TODO : this re-layout should only happen if at least one scrollbar is attached, return bool from attachScrollBarsIfnecessary ?
+		var childrenFormattingContext:FormattingContext = getFormattingContext(formattingContext);
+		var childrenContainingBlockData:ContainingBlockData = getContainerBlockData();
+		var childFirstPositionedAncestorData:FirstPositionedAncestorData = getChildrenFirstPositionedAncestorData(firstPositionedAncestorData);
+		doLayoutChildren(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, _coreStyle.fontMetrics, childrenFormattingContext);
+	
+	}
+	
+	/**
+	 * Actually layout all the children of the ElementRenderer by calling
+	 * the layout method recursively on all the children
+	 */
+	override private function doLayoutChildren(childrenContainingBlockData:ContainingBlockData, viewportData:ContainingBlockData, childFirstPositionedAncestorData:FirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):Void
+	{			
+		for (i in 0..._childNodes.length)
+		{
+			var childElementRenderer:ElementRenderer = cast(_childNodes[i]);
+			if (_horizontalScrollBar != null)
+			{
+				if (childElementRenderer == _horizontalScrollBar.elementRenderer)
+				{
+					childFirstPositionedAncestorData.data = childrenContainingBlockData;
+					childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+				}
+			}
+			childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+		}
+		
+		//prompt the children formatting context, to format all the children
+		//ElementRenderer belonging to it. After this call, all the
+		//ElementRenderer have the right bounds, in the space of the containing
+		//block which established the formatting context
+		//
+		//This method is only called if a new formatting
+		//context was established by this ElementRenderer,
+		//meaning that it also is responsible of formatting it
+		if (establishesNewFormattingContext() == true)
+		{
+			childrenFormattingContext.format();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE SCROLLING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	override private function get_scrollX():Float 
+	{
+		return _scrollX;
+	}
+	
+	override private function set_scrollX(value:Float):Float 
+	{
+		if (value < 0)
+		{
+			_scrollX = 0;
+		}
+		else if (value > _scrollableBounds.width)
+		{
+			_scrollY = Math.round(_scrollableBounds.width);
+		}
+		else
+		{
+			_scrollX = value;
+		}
+		
+		updateScroll();
+		
+		return value;
+	}
+	
+	override private function get_scrollY():Float 
+	{
+		return _scrollY;
+	}
+	
+	override private function set_scrollY(value:Float):Float 
+	{
+		if (value < 0)
+		{
+			_scrollY = 0;
+		}
+		else if (value > _scrollableBounds.height)
+		{
+			_scrollY = Math.round(_scrollableBounds.height);
+		}
+		else
+		{
+			_scrollY = value;
+		}
+		
+		updateScroll();
+		
+		return value;
+	}
+	
+	private function updateScroll():Void
+	{
+		_layerRenderer.scroll(_scrollX, _scrollY);
+	}
+	
 	private function getScrollableBounds():RectangleData
 	{
 		return { x:0.0, y:0.0, width:500.0, height:500.0 };
 	}
 	
+	//TODO : if at least one is attached, should do a new layout, 
+	//else the scrollbar is at first 0,0 at first rendering
 	private function attachScrollBarsIfnecessary():Void
 	{
 		if (canAlwaysOverflow() == true)
@@ -287,6 +418,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_horizontalScrollBar = new ScrollBar(false);
 		_horizontalScrollBar.attach();
 		appendChild(_horizontalScrollBar.elementRenderer);
+		_horizontalScrollBar.maxScroll = _bounds.width;
 		_horizontalScrollBar.onscroll = onHorizontalScroll;
 	}
 	
@@ -303,6 +435,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_verticalScrollBar = new ScrollBar(true);
 		_verticalScrollBar.attach();
 		appendChild(_verticalScrollBar.elementRenderer);
+		_verticalScrollBar.maxScroll = _bounds.width;
 		_verticalScrollBar.onscroll = onVerticalScroll;
 	}
 	
@@ -316,12 +449,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	private function onHorizontalScroll(event:Event):Void
 	{
-		
+		scrollX = _horizontalScrollBar.scroll;
 	}
 	
 	private function onVerticalScroll(event:Event):Void
 	{
-		
+		scrollY = _verticalScrollBar.scroll;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

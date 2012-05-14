@@ -1,5 +1,6 @@
 package cocktail.core.html;
 import cocktail.core.event.MouseEvent;
+import cocktail.core.event.UIEvent;
 
 /**
  * ...
@@ -10,6 +11,12 @@ class ScrollBar extends HTMLElement
 {
 
 	private var _isVertical:Bool;
+	
+	private var _maxScroll:Float;
+	public var maxScroll(get_maxScroll, set_maxScroll):Float;
+	
+	private var _scroll:Float;
+	public var scroll(get_scroll, set_scroll):Float;
 	
 	public function new(isVertical:Bool) 
 	{
@@ -24,7 +31,7 @@ class ScrollBar extends HTMLElement
 		{
 			_style.backgroundColor = "red";
 			_style.height = "100%";
-			_style.width = "30px";
+			_style.width = "15px";
 			_style.right = "0";
 			_style.top = "0";
 		}
@@ -32,7 +39,7 @@ class ScrollBar extends HTMLElement
 		{
 			_style.backgroundColor = "blue";
 			_style.width = "100%";
-			_style.height = "30px";
+			_style.height = "15px";
 			_style.bottom = "0";
 		}
 		
@@ -43,7 +50,19 @@ class ScrollBar extends HTMLElement
 	
 	private function onTrackMouseDown(event:MouseEvent):Void
 	{
-		trace(event);
+		if (_isVertical == true)
+		{
+			_scroll = event.clientY;
+		}
+		else
+		{
+			_scroll = event.clientX;
+		}
+		
+		if (_onScroll != null)
+		{
+			_onScroll(new UIEvent("poj,",this, 0));
+		}
 	}
 	
 	
@@ -62,4 +81,23 @@ class ScrollBar extends HTMLElement
 		
 	}
 	
+	private function get_maxScroll():Float 
+	{
+		return _maxScroll;
+	}
+	
+	private function set_maxScroll(value:Float):Float 
+	{
+		return _maxScroll = value;
+	}
+
+	private function get_scroll():Float
+	{
+		return (_scroll / _maxScroll) * 100;
+	}
+	
+	private function set_scroll(value:Float):Float 
+	{
+		return _scroll = value;
+	}
 }

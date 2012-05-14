@@ -240,6 +240,8 @@ class TextRenderer extends ElementRenderer
 	/**
 	 * Overriden as the bounds of a TextRenderer is formed
 	 * by the bounds of its formatted text line boxes
+	 * 
+	 * TODO : throw exception when lineboxes is null
 	 */
 	override private function get_bounds():RectangleData
 	{
