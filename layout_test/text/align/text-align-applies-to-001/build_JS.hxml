@@ -1,4 +1,0 @@
--js js.js
-#-cp ../../../src/
-#-cp ../../../lib/
--main Test
