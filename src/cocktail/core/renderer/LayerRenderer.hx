@@ -101,6 +101,7 @@ class LayerRenderer extends Node
 			//TODO here : render non-positioned float
 			
 			//TODO :  doc
+			//TODO : relative offset is no longer applied
 			blockBoxRootRenderer.renderBlockReplacedChildren(_graphicsContext, relativeOffset);
 	
 			//render all the line boxes belonging to this layer
@@ -144,6 +145,7 @@ class LayerRenderer extends Node
 			//_graphicsContext.x = rootRenderer.globalBounds.x;
 			//_graphicsContext.y = rootRenderer.globalBounds.y;
 		//	_graphicsContext.scrollRect = new Rectangle(0, 0, rootRenderer.globalBounds.width, rootRenderer.globalBounds.height);
+		
 			blockBoxRootRenderer.renderScrollBars(_scrollBarsGraphicContext, relativeOffset);
 
 	
