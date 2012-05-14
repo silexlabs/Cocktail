@@ -26,6 +26,7 @@ class Test
 	public function new()
 	{
 		var test = '<div>';
+		test += '<p>Test passes if the "Filler Text" overflows below the orange box and overlaps the bottom blue box.</p>';
 		test += '<div style="position:relative;">';
 		test += '<div style="background-color:orange; top:0.5in; position:absolute; height:1in; width:1in;">';
 		test += ' Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text ';
