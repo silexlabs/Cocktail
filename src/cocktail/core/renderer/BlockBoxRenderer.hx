@@ -268,12 +268,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		attachScrollBarsIfnecessary();
 		
 
-		//TODO : this re-layout should only happen if at least one scrollbar is attached, return bool from attachScrollBarsIfnecessary ?
+	//	TODO : this re-layout should only happen if at least one scrollbar is attached, return bool from attachScrollBarsIfnecessary ?
 		//var childrenFormattingContext:FormattingContext = getFormattingContext(formattingContext);
 		//var childrenContainingBlockData:ContainingBlockData = getContainerBlockData();
 		//var childFirstPositionedAncestorData:FirstPositionedAncestorData = getChildrenFirstPositionedAncestorData(firstPositionedAncestorData);
 		//doLayoutChildren(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, _coreStyle.fontMetrics, childrenFormattingContext);
-	//
+	
 	}
 	
 	/**
@@ -287,12 +287,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			var childElementRenderer:ElementRenderer = cast(_childNodes[i]);
 			
 			//TODO : clean-up, this is used to send right containing dimensions to scrollbars.
-			// also, if both are displayed, how should they now the width/height to witdraw for
+			// also, if both are displayed, how should they now the width/height to withdraw for
 			//the corner ?
 			if (_horizontalScrollBar != null)
 			{
 				if (childElementRenderer == _horizontalScrollBar.elementRenderer)
 				{
+					childrenContainingBlockData.width += _horizontalScrollBar.coreStyle.computedStyle.width;
 					childFirstPositionedAncestorData.data = childrenContainingBlockData;
 					childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
 				}
@@ -301,6 +302,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{
 				if (childElementRenderer == _verticalScrollBar.elementRenderer)
 				{
+					childrenContainingBlockData.height += _verticalScrollBar.coreStyle.computedStyle.height;
 					childFirstPositionedAncestorData.data = childrenContainingBlockData;
 					childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
 				}
@@ -402,7 +404,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		else if (value > _scrollableBounds.height)
 		{
 			_scrollY = Math.round(_scrollableBounds.height);
-				trace(_scrollY);
 		}
 		else
 		{

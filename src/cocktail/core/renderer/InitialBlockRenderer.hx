@@ -439,14 +439,23 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * The dimensions of the initital ElementRenderer are always
-	 * those of the window
-	 * 
-	 * TODO : should also take scrollbar dimensions into account if displayed
+	 * TODO : doc
 	 */
 	override private function getContainerBlockData():ContainingBlockData
 	{
-		return getWindowData();
+		var containerBlockData:ContainingBlockData = getWindowData();
+		
+		if (_horizontalScrollBar != null)
+		{
+			containerBlockData.width -= _horizontalScrollBar.coreStyle.computedStyle.width;
+		}
+		
+		if (_verticalScrollBar != null)
+		{
+			containerBlockData.height -= _verticalScrollBar.coreStyle.computedStyle.height;
+		}
+		
+		return containerBlockData;
 	}
 	
 	/**
