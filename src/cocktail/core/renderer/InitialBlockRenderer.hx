@@ -16,6 +16,7 @@ import cocktail.core.style.formatter.BlockFormattingContext;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.style.CoreStyle;
+import flash.display.Sprite;
 import flash.Lib;
 import haxe.Log;
 import haxe.Timer;
@@ -215,9 +216,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */ 
 	private function startRendering():Void
 	{
+		var nonScrollableGraphicContext:NativeElement = new Sprite();
 
+		Lib.current.addChild(nonScrollableGraphicContext);
 		//start the rendering at the root layer renderer
-		_layerRenderer.render(Lib.current, {x:0.0, y:0.0});
+		_layerRenderer.render(Lib.current, nonScrollableGraphicContext, {x:0.0, y:0.0});
 	}
 	
 	/**

@@ -90,7 +90,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{	
 				//TODO : doc, inlineBlock do not render the child layers, as it only simulates a new
 				//layer, will need to do the same thing for floats
-				lineBoxes[i].layerRenderer.render(graphicContext, relativeOffset, lineBoxes[i].elementRenderer, false);
+				lineBoxes[i].layerRenderer.render(graphicContext, null, relativeOffset, lineBoxes[i].elementRenderer, false);
 			}
 		}
 		
