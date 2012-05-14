@@ -45,6 +45,14 @@ class LayerRenderer extends Node
 	private var _nonScrollableGraphicsContext:NativeElement;
 	
 	private var _scrollBarsGraphicContext:NativeElement;
+	
+	private var _treeOrderChildLayers:Array<LayerRenderer>;
+	
+	private var _positiveOrderChildLayers:Array<LayerRenderer>;
+	
+	private var _negativeOrderChildLayers:Array<LayerRenderer>;
+	
+	public var zIndex(get_zIndex, never):ZIndex;
 
 	/**
 	 * class constructor
@@ -161,6 +169,7 @@ class LayerRenderer extends Node
 		//	_graphicsContext.scrollRect = new Rectangle(0, 0, rootRenderer.globalBounds.width, rootRenderer.globalBounds.height);
 		
 			blockBoxRootRenderer.renderScrollBars(_scrollBarsGraphicContext, _nonScrollableGraphicsContext, relativeOffset);
+			
 		}
 		
 		//here the root renderer is an inline box renderer which doesn't establish a formatting context
@@ -228,6 +237,67 @@ class LayerRenderer extends Node
 			{
 				_nonScrollableGraphicsContext.removeChildAt(0);
 			}
+	}
+	
+	override public function appendChild(newChild:Node):Node
+	{
+		super.appendChild(newChild);
+		
+		var childLayer:LayerRenderer = cast(newChild);
+		switch(childLayer.zIndex)
+		{
+			case ZIndex.cssAuto:
+				_treeOrderChildLayers.push(childLayer);
+				
+			case ZIndex.integer(value):
+				if (value == 0)
+				{
+					_treeOrderChildLayers.push(childLayer);
+				}
+				else if (value > 0)
+				{
+					insertPositiveOrderChildLayer(childLayer, value);
+				}
+				else if (value < 0)
+				{
+					insertNegativeOrderChildLayer(childLayer);
+				}
+				
+		}
+		
+		return newChild;
+	}
+	
+	private function insertPositiveOrderChildLayer(childLayer:LayerRenderer, childLayerZIndex:Int):Void
+	{
+		var newPositiveChildLayers:Array<LayerRenderer> = new Array<LayerRenderer>();
+		
+		for (i in 0..._positiveOrderChildLayers.length)
+		{
+			newPositiveChildLayers.push(_positiveOrderChildLayers[i]);
+			
+			var currentLayerZIndex:Int = 0;
+			
+			switch( _positiveOrderChildLayers[i].zIndex)
+			{
+				case ZIndex.integer(value):
+					currentLayerZIndex = value;
+					
+				default:	
+			}
+			
+			if (currentLayerZIndex <= childLayerZIndex)
+			{
+				newPositiveChildLayers.push(childLayer);
+			}
+		}
+		
+		_positiveOrderChildLayers = newPositiveChildLayers;
+	}
+	
+	private function insertNegativeOrderChildLayer(childLayer:LayerRenderer):Void
+	{
+		
 	}
 	
 	//TODO : doc
@@ -385,6 +455,11 @@ class LayerRenderer extends Node
 		return childLayers;
 	}
 	
+	
+	private function get_zIndex():ZIndex
+	{
+		return _rootRenderer.computedStyle.zIndex;
+	}
 
 	
 	
