@@ -165,6 +165,11 @@ class ElementRenderer extends Node
 	 * be stored once computed to pixels into this structure
 	 */
 	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyleData;
+		
+	public var scrollX(get_scrollX, set_scrollX):Float;
+	
+	public var scrollY(get_scrollY, set_scrollY):Float;
+	
 	
 	/**
 	 * class constructor. init class attribute
@@ -640,4 +645,27 @@ class ElementRenderer extends Node
 	{
 		return _node;
 	}
+	
+	private function get_scrollX():Float 
+	{
+		return 0;
+	}
+	
+	private function set_scrollX(value:Float):Float 
+	{
+		return value;
+	}
+	
+	private function get_scrollY():Float 
+	{
+		return 0;
+	}
+	
+	private function set_scrollY(value:Float):Float 
+	{
+		return value;
+	}
+	
+	
+	
 }

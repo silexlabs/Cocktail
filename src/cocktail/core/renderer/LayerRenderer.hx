@@ -41,6 +41,8 @@ class LayerRenderer extends Node
 	private var _rootRenderer:ElementRenderer;
 	
 	private var _graphicsContext:NativeElement;
+	
+	private var _scrollBarsGraphicContext:NativeElement;
 
 	/**
 	 * class constructor
@@ -50,6 +52,7 @@ class LayerRenderer extends Node
 		super();
 		_rootRenderer = rootRenderer;
 		_graphicsContext = new Sprite();
+		_scrollBarsGraphicContext = new Sprite();
 	}
 	
 	/////////////////////////////////
@@ -80,7 +83,6 @@ class LayerRenderer extends Node
 		
 		//here the root renderer is a block box renderer. It can be an inline level
 		//which establishes an inline formatting context : an inline-block
-		//TODO : this logic should instead go into ElementRenderer.render ?
 		if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == false || 
 		rootRenderer.establishesNewFormattingContext() == true)
 		{
@@ -116,12 +118,12 @@ class LayerRenderer extends Node
 			//TODO here : render children with positive z-index
 			
 			//TODO : this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
-			if (rootRenderer.coreStyle.overflowX == Overflow.scroll)
-			{
-				_graphicsContext.x = rootRenderer.globalBounds.x;
-				_graphicsContext.y = rootRenderer.globalBounds.y;
-				_graphicsContext.scrollRect = new Rectangle(0, 0, rootRenderer.globalBounds.width, rootRenderer.globalBounds.height);
-			}
+
+			//_graphicsContext.x = rootRenderer.globalBounds.x;
+			//_graphicsContext.y = rootRenderer.globalBounds.y;
+		//	_graphicsContext.scrollRect = new Rectangle(0, 0, rootRenderer.globalBounds.width, rootRenderer.globalBounds.height);
+			blockBoxRootRenderer.renderScrollBars(_scrollBarsGraphicContext, relativeOffset);
+	
 			
 		}
 		
@@ -143,9 +145,15 @@ class LayerRenderer extends Node
 		if (renderChildLayers == true)
 		{
 			parentGraphicsContext.addChild(_graphicsContext);
+			parentGraphicsContext.addChild(_scrollBarsGraphicContext);
 		}
-		
-		
+	}
+	
+	public function scroll(x:Float, y:Float):Void
+	{
+		_graphicsContext.x = _rootRenderer.globalBounds.x;
+		_graphicsContext.y = _rootRenderer.globalBounds.y;
+		_graphicsContext.scrollRect = new Rectangle(x , y, _rootRenderer.globalBounds.width, _rootRenderer.globalBounds.height);
 	}
 	
 	public function detach():Void
@@ -154,6 +162,11 @@ class LayerRenderer extends Node
 			for (i in 0..._graphicsContext.numChildren)
 			{
 				_graphicsContext.removeChildAt(0);
+			}
+			
+			for (i in 0..._scrollBarsGraphicContext.numChildren)
+			{
+				_scrollBarsGraphicContext.removeChildAt(0);
 			}
 	}
 	
