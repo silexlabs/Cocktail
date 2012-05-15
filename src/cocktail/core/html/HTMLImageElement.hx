@@ -11,6 +11,7 @@ import cocktail.core.dom.Attr;
 import cocktail.core.dom.Node;
 import cocktail.core.NativeElement;
 import cocktail.core.event.Event;
+import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.resource.ImageLoader;
 import haxe.Log;
 import cocktail.core.html.EmbeddedElement;
@@ -118,6 +119,19 @@ class HTMLImageElement extends EmbeddedElement
 		{
 			super.setAttribute(name, value);
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Instantiate an image specific renderer
+	 */
+	override private function createElementRenderer():Void
+	{
+		_elementRenderer = new ImageRenderer(this);
+		_elementRenderer.coreStyle = _coreStyle;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
