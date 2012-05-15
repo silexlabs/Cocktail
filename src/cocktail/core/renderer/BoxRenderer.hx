@@ -494,9 +494,12 @@ class BoxRenderer extends ElementRenderer
 	 * instance if they are positioned
 	 * 
 	 * TODO : add the z-index case
+	 * TODO : shouldn't have to compute display style before
+	 * 
 	 */
 	override private function establishesNewStackingContext():Bool
 	{
+		_coreStyle.computeDisplayStyles();
 		return isPositioned();
 	}
 	
