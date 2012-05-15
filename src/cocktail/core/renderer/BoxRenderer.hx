@@ -78,7 +78,7 @@ class BoxRenderer extends ElementRenderer
 		var backgroundManager:BackgroundManager = new BackgroundManager();
 		
 		//TODO : should only pass dimensions instead of bounds
-		var backgrounds:Array<NativeElement> = backgroundManager.render(_bounds, _coreStyle);
+		var backgrounds:Array<NativeElement> = backgroundManager.render(bounds, _coreStyle);
 		
 		for (i in 0...backgrounds.length)
 		{

@@ -182,7 +182,7 @@ class LayerRenderer extends Node
 	
 	public function scroll(x:Float, y:Float, startedScroll:Bool = true):Void
 	{
-		//TODO : big hack but will do for now
+		//TODO IMPORTANT: big hack but will do for now
 		//TODO : should be applied to every positioned element whose
 		//containing block is a parent of the root renderer.
 		//Add a public method on ElementRenderer ?

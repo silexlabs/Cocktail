@@ -99,7 +99,7 @@ class ScrollBar extends HTMLElement
 			_scroll = event.clientX;
 		}
 		
-			if (_onScroll != null)
+		if (_onScroll != null)
 		{
 			_onScroll(new UIEvent("poj,",this, 0));
 		}
