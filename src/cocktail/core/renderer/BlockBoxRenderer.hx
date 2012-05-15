@@ -45,9 +45,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private var _scrollableBounds:RectangleData;
 	
 	//TODO : rename scrollLeft and scrollTop
-	private var _scrollX:Float;
+	private var _scrollLeft:Float;
 	
-	private var _scrollY:Float;
+	private var _scrollTop:Float;
 	
 	/**
 	 * class constructor
@@ -55,8 +55,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	public function new(node:Node) 
 	{
 		super(node);
-		_scrollX = 0;
-		_scrollY = 0;
+		_scrollLeft = 0;
+		_scrollTop = 0;
 		
 		_scrollableBounds = {
 			x:0.0,
@@ -90,7 +90,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{	
 				//TODO : doc, inlineBlock do not render the child layers, as it only simulates a new
 				//layer, will need to do the same thing for floats
-				lineBoxes[i].layerRenderer.render(graphicContext, null, relativeOffset, lineBoxes[i].elementRenderer, false);
+				lineBoxes[i].layerRenderer.render(graphicContext, relativeOffset, lineBoxes[i].elementRenderer, false);
 			}
 		}
 		
@@ -120,18 +120,18 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	
-	public function renderScrollBars(graphicContext:NativeElement, parentNonScrollableGraphicsContext:NativeElement, relativeOffset:PointData):Void
+	public function renderScrollBars(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		if (_horizontalScrollBar != null)
 		{
-			_horizontalScrollBar.elementRenderer.layerRenderer.render(graphicContext, parentNonScrollableGraphicsContext, relativeOffset);
+			_horizontalScrollBar.elementRenderer.layerRenderer.render(graphicContext, relativeOffset);
 			
 			updateScroll();
 		}
 		
 		if (_verticalScrollBar != null)
 		{
-			_verticalScrollBar.elementRenderer.layerRenderer.render(graphicContext, parentNonScrollableGraphicsContext, relativeOffset);
+			_verticalScrollBar.elementRenderer.layerRenderer.render(graphicContext, relativeOffset);
 			updateScroll();
 		}
 		
@@ -365,24 +365,24 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// PRIVATE SCROLLING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override private function get_scrollX():Float 
+	override private function get_scrollLeft():Float 
 	{
-		return _scrollX;
+		return _scrollLeft;
 	}
 	
-	override private function set_scrollX(value:Float):Float 
+	override private function set_scrollLeft(value:Float):Float 
 	{
 		if (value < 0)
 		{
-			_scrollX = 0;
+			_scrollLeft = 0;
 		}
 		else if (value > _scrollableBounds.width)
 		{
-			_scrollY = Math.round(_scrollableBounds.width);
+			_scrollLeft = Math.round(_scrollableBounds.width);
 		}
 		else
 		{
-			_scrollX = value;
+			_scrollLeft = value;
 		}
 		
 		updateScroll();
@@ -390,25 +390,25 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return value;
 	}
 	
-	override private function get_scrollY():Float 
+	override private function get_scrollTop():Float 
 	{
-		return _scrollY;
+		return _scrollTop;
 	}
 	
-	override private function set_scrollY(value:Float):Float 
+	override private function set_scrollTop(value:Float):Float 
 	{
 	
 		if (value < 0)
 		{
-			_scrollY = 0;
+			_scrollTop = 0;
 		}
 		else if (value > _scrollableBounds.height)
 		{
-			_scrollY = Math.round(_scrollableBounds.height);
+			_scrollTop = Math.round(_scrollableBounds.height);
 		}
 		else
 		{
-			_scrollY = value;
+			_scrollTop = value;
 		}
 		updateScroll();
 		
@@ -419,7 +419,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		if (isXAxisClipped() == true || isYAxisClipped() == true)
 		{
-			_layerRenderer.scroll(_scrollX, _scrollY);
+			_layerRenderer.scroll(_scrollLeft, _scrollTop);
 		}
 		
 	}
@@ -543,12 +543,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	private function onHorizontalScroll(event:Event):Void
 	{
-		scrollX = _horizontalScrollBar.scroll;
+		scrollLeft = _horizontalScrollBar.scroll;
 	}
 	
 	private function onVerticalScroll(event:Event):Void
 	{
-		scrollY = _verticalScrollBar.scroll;
+		scrollTop = _verticalScrollBar.scroll;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

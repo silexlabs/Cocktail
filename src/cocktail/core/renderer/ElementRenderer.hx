@@ -21,11 +21,11 @@ import haxe.Timer;
 
 /**
  * This is the base class for element renderers.
- * An ElementRenderer is responsible for holding the data
- * used to display elements on the screen.
+ * An ElementRenderer is responsible for displaying
+ * an element of the DOM tree on screen
  * 
  * A tree of ElementRenderers, paralleling the DOM tree
- * is built for rendering.
+ * is built for rendering, starting at the HTMLBodyElement
  * 
  * Each element of the DOM tree which must be displayed
  * creates a corresponding ElementRenderer. For instance,
@@ -38,13 +38,17 @@ import haxe.Timer;
  * which holds all of the styles used to render the
  * ElementRenderer.
  * 
+ * An ElementRenderer knows how to layout itself, meaning
+ * that once laid out it knows all its necessary bounds
+ * to be rendered
+ * 
+ * It also knows how to render itself. The rendering will
+ * be started by the LayerRenderer associated with the
+ * ElementRenderer
+ * 
  * Once an ElementRenderer has been laid out, it holds
  * a reference to all the bounds needed to be rendered
  * on the screen
- * 
- * The ElementRenderer tree is actually rendered by a
- * LayerRenderer which is in charge of rendering
- * the ElementRenderers in the right order
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -60,14 +64,14 @@ class ElementRenderer extends Node
 	 * including the borders width.
 	 * 
 	 * For ElementRenderers not conforming to the box model,
-	 * for instance a TextRenderer, it is the wisdth and height
+	 * for instance a TextRenderer, it is the width and height
 	 * of their content. For instance, for a TextRenderer, the width
 	 * will be the width of the bounds of its formatted TextLineBoxes
 	 * 
 	 * The x and y of the bounds are relative to the padding edge of
 	 * the containing block of the ElementRenderer, which is the BlockBoxRenderer
-	 * which established the foratting context this ElementRenderer 
-	 * participates in
+	 * which established the formatting context this ElementRenderer 
+	 * participates in.
 	 */
 	private var _bounds:RectangleData;
 	public var bounds(get_bounds, set_bounds):RectangleData;
@@ -119,19 +123,24 @@ class ElementRenderer extends Node
 	private var _globalPositionnedAncestorOrigin:PointData;
 	public var globalPositionnedAncestorOrigin(get_globalPositionnedAncestorOrigin, set_globalPositionnedAncestorOrigin):PointData;
 	
+	/**
+	 * A reference to the Node in the DOM tree
+	 * which created this ElementRenderer. It might
+	 * be an HTMLElement or a Text node
+	 */
 	private var _node:Node;
 	public var node(get_node, never):Node;
 	
 	/**
-	 * A reference to the Style which instantiated
-	 * the ElementRenderer
+	 * A reference to the coreStyle from which
+	 * the styles of this ElementRenderer are retrieved
 	 */
 	private var _coreStyle:CoreStyle;
 	public var coreStyle(get_coreStyle, set_coreStyle):CoreStyle;
 	
 	/**
-	 * A reference to the LayerRenderer rendering this
-	 * ElementRenderer
+	 * A reference to the LayerRenderer in the LayerRenderer tree
+	 * responsible for rendering this ElementRenderer
 	 */
 	private var _layerRenderer:LayerRenderer;
 	public var layerRenderer(getLayerRenderer, setLayerRenderer):LayerRenderer;
@@ -154,7 +163,10 @@ class ElementRenderer extends Node
 	private var _isLayingOut:Bool;
 	
 	/**
-	 * TODO : doc + not very clean, should layerRenderer be null instead
+	 * Determine wheter this ElementRenderer establishes its own
+	 * stacking context (instantiates a new LayerRenderer)
+	 * 
+	 * TODO : not very clean, should layerRenderer be null instead
 	 * for ElementRenderernot starting a layer ?
 	 */
 	private var _hasOwnLayer:Bool;
@@ -165,16 +177,19 @@ class ElementRenderer extends Node
 	 * be stored once computed to pixels into this structure
 	 */
 	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyleData;
-		
-	public var scrollX(get_scrollX, set_scrollX):Float;
 	
-	public var scrollY(get_scrollY, set_scrollY):Float;
+	/**
+	 * get/set the scrolling in the x axis of this ElementRenderer
+	 */
+	public var scrollLeft(get_scrollLeft, set_scrollLeft):Float;
 	
+	/**
+	 * get/set the scrolling in the y axis of this ElementRenderer
+	 */
+	public var scrollTop(get_scrollTop, set_scrollTop):Float;
 	
 	/**
 	 * class constructor. init class attribute
-	 * @param	style the Style which created
-	 * the ElementRenderer
 	 */
 	public function new(node:Node) 
 	{
@@ -215,30 +230,29 @@ class ElementRenderer extends Node
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * invalidate Style after DOM change
-	 * 
-	 * TODO : update doc
+	 * overriden as when an ElementRenderer is appended, its LayerRenderer
+	 * must be attached so that it can be rendered
 	 */
 	override public function appendChild(newChild:Node):Node
 	{
 		super.appendChild(newChild);
-		//TODO : should be different for Text node
 		var elementRendererChild:ElementRenderer = cast(newChild);
 		elementRendererChild.attachLayer();
-		invalidate();
+		invalidateLayout();
 		return newChild;
 	}
 	
 	
 	/**
-	 * invalidate Style after DOM change
+	 * overriden as when an ElementRenderer is removed, its LayerRenderer
+	 * might be removed form the LayerRenderer tree if it created it
 	 */
 	override public function removeChild(oldChild:Node):Node
 	{
 		super.removeChild(oldChild);
 		var elementRendererChild:ElementRenderer = cast(oldChild);
 		elementRendererChild.detachLayer();
-		invalidate();
+		invalidateLayout();
 		return oldChild;
 	}
 	
@@ -247,31 +261,37 @@ class ElementRenderer extends Node
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Render the element using runtime specific
-	 * API and return an array of NativeElement from it
+	 * Render this ElementRenderer using the provided
+	 * graphic context as canvas
 	 */
 	public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC LAYOUT METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/*
+	 * Layout this ElementRenderer so that it knows its bounds and can be rendered to the screen
+	 */ 
 	public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{	
-		
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Attach the LayerRenderer of this ElementRenderer
+	 * to the LayerRenderer tree so that it can be rendered
+	 */
 	public function attachLayer():Void
 	{
-
-		//create the ElementRenderer if needed
+		//create the LayerRenderer if needed
 		if (_layerRenderer == null)
 		{
 			var parent:ElementRenderer = cast(_parentNode);
@@ -279,36 +299,36 @@ class ElementRenderer extends Node
 			{
 				createLayer(parent.layerRenderer);
 			}
-			
 		}
 		
-		//the HTMLElement is now attached and can attach its children
+		//the ElementRenderer is attached to the LayerRenderer
+		//tree and must now also attach its children
 		for (i in 0..._childNodes.length)
 		{
 			var child:ElementRenderer = cast(_childNodes[i]);
 			child.attachLayer();
 		}
-		
-		
-	
 	}
 	
+	/**
+	 * Detach the LayerRenderer of this ElementRenderer if necessary
+	 */
 	public function detachLayer():Void
 	{
-		//the HTMLElement is now attached and can attach its children
+		//first detach the LayerRenderer of all its children
 		for (i in 0..._childNodes.length)
 		{
 			var child:ElementRenderer = cast(_childNodes[i]);
-			
 			child.detachLayer();
 		}
 		
+		//only detach the LayerRenderer if this ElementRenderer
+		//created it, else it will be detached by the ElementRenderer
+		//which created it when detached
 		if (_hasOwnLayer == true)
 		{
 			var parent:ElementRenderer = cast(_parentNode);
-
 			parent.layerRenderer.removeChild(_layerRenderer);
-			
 			_layerRenderer.detach();
 			_hasOwnLayer = false;
 		}
@@ -369,7 +389,10 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
-	
+	/**
+	 * Create a new LayerRenderer for this ElementRenderer or
+	 * use the one from its parent
+	 */
 	private function createLayer(parentLayer:LayerRenderer):Void
 	{
 		if (establishesNewStackingContext() == true)
@@ -384,9 +407,12 @@ class ElementRenderer extends Node
 		}
 	}
 	
+	/**
+	 * Determine the bounds of the children of this ElementRenderer
+	 * from the array of their bounds
+	 */
 	private function getChildrenBounds(childrenBounds:Array<RectangleData>):RectangleData
 	{
-
 		var bounds:RectangleData;
 		
 		var left:Float = 50000;
@@ -422,7 +448,7 @@ class ElementRenderer extends Node
 					height :  bottom - top,
 				}
 		
-		//need to implement better fix,
+		//TODO : need to implement better fix,
 		//sould not be negative
 		if (bounds.width < 0)
 		{
@@ -457,7 +483,7 @@ class ElementRenderer extends Node
 	 * increase preformance when many style value are set in a 
 	 * row as the layout only happen once
 	 */
-	public function invalidate(immediate:Bool = false):Void
+	public function invalidateLayout(immediate:Bool = false):Void
 	{
 		//only invalidate the parent if it isn't
 		//already being laid out or if an immediate layout is required
@@ -479,7 +505,7 @@ class ElementRenderer extends Node
 			if (this._parentNode != null)
 			{
 				var parent:ElementRenderer = cast(_parentNode);
-				parent.invalidate(immediate);	
+				parent.invalidateLayout(immediate);	
 			}
 		}
 	}
@@ -491,14 +517,14 @@ class ElementRenderer extends Node
 			var child:ElementRenderer = cast(_childNodes[i]);
 			child.invalidateText();
 		}
-		invalidate();
+		invalidateLayout();
 	}
 	
 	public function invalidateLayer():Void
 	{
 		detachLayer();
 		attachLayer();
-		invalidate();
+		invalidateLayout();
 		
 	}
 	
@@ -605,7 +631,7 @@ class ElementRenderer extends Node
 	private function set_coreStyle(value:CoreStyle):CoreStyle
 	{
 		_coreStyle = value;
-		invalidate();
+		invalidateLayout();
 		return value;
 	}
 	
@@ -654,22 +680,22 @@ class ElementRenderer extends Node
 		return _node;
 	}
 	
-	private function get_scrollX():Float 
+	private function get_scrollLeft():Float 
 	{
 		return 0;
 	}
 	
-	private function set_scrollX(value:Float):Float 
+	private function set_scrollLeft(value:Float):Float 
 	{
 		return value;
 	}
 	
-	private function get_scrollY():Float 
+	private function get_scrollTop():Float 
 	{
 		return 0;
 	}
 	
-	private function set_scrollY(value:Float):Float 
+	private function set_scrollTop(value:Float):Float 
 	{
 		return value;
 	}

@@ -419,7 +419,7 @@ class HTMLDocument extends Document
 	 */
 	private function onWindowResize(event:Event):Void
 	{
-		_body.invalidateStyle();
+		_body.invalidateLayout();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

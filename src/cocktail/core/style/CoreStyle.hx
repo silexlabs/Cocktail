@@ -732,7 +732,7 @@ class CoreStyle
 	 */
 	private function invalidate():Void
 	{
-		_htmlElement.invalidateStyle();
+		_htmlElement.invalidateLayout();
 	}
 	
 	private function invalidateDisplay():Void

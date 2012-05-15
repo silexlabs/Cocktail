@@ -109,11 +109,11 @@ class ScrollBar extends HTMLElement
 	{
 		if (_isVertical == true)
 		{
-			_scrollThumb.style.top = event.clientY + "px";
+		//	_scrollThumb.style.top = event.clientY + "px";
 		}
 		else
 		{
-			_scrollThumb.style.left = event.clientX + "px";
+		//	_scrollThumb.style.left = event.clientX + "px";
 		}
 		
 		if (_isVertical == true)

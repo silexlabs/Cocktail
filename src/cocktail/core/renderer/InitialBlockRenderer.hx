@@ -152,7 +152,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * it always schedule a layout using the window dimensions as
 	 * its containing HTMLElement dimensions
 	 */
-	override public function invalidate(immediate:Bool = false):Void
+	override public function invalidateLayout(immediate:Bool = false):Void
 	{
 		//don't call if the body has already scheduled a layout, unless
 		//an immediate layout is required
@@ -216,11 +216,8 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */ 
 	private function startRendering():Void
 	{
-		var nonScrollableGraphicContext:NativeElement = new Sprite();
-
-		Lib.current.addChild(nonScrollableGraphicContext);
 		//start the rendering at the root layer renderer
-		_layerRenderer.render(Lib.current, nonScrollableGraphicContext, {x:0.0, y:0.0});
+		_layerRenderer.render(Lib.current, {x:0.0, y:0.0});
 	}
 	
 	/**

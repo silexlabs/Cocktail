@@ -63,7 +63,6 @@ class LayerRenderer extends Node
 		_rootRenderer = rootRenderer;
 		_graphicsContext = new Sprite();
 		_scrollBarsGraphicContext = new Sprite();
-		_nonScrollableGraphicsContext = new Sprite();
 	}
 	
 	/////////////////////////////////
@@ -75,7 +74,7 @@ class LayerRenderer extends Node
 	 * Render all the ElementRenderers belonging to this LayerRenderer
 	 * in a defined order
 	 */
-	public function render(parentGraphicsContext:NativeElement,  parentNonScrollableGraphicsContext:NativeElement, parentRelativeOffset:PointData, rootRenderer:ElementRenderer = null, renderChildLayers:Bool = true):Void
+	public function render(parentGraphicsContext:NativeElement, parentRelativeOffset:PointData, rootRenderer:ElementRenderer = null, renderChildLayers:Bool = true):Void
 	{
 		if (renderChildLayers == true)
 		{
@@ -91,17 +90,7 @@ class LayerRenderer extends Node
 		var relativeOffset:PointData = getRelativeOffset(rootRenderer);
 		relativeOffset.x += parentRelativeOffset.x;
 		relativeOffset.y += parentRelativeOffset.y;
-		
-		
-		var childGraphicContext:NativeElement;
-		if (rootRenderer.coreStyle.computedStyle.position == fixed)
-		{
-			childGraphicContext = _nonScrollableGraphicsContext;
-		}
-		else
-		{
-			childGraphicContext = _graphicsContext;
-		}
+
 		
 		//here the root renderer is a block box renderer. It can be an inline level
 		//which establishes an inline formatting context : an inline-block
@@ -112,22 +101,22 @@ class LayerRenderer extends Node
 			var blockBoxRootRenderer:BlockBoxRenderer = cast(rootRenderer);
 		
 			//render the ElementRenderer which created this layer
-			blockBoxRootRenderer.render(childGraphicContext, relativeOffset);
+			blockBoxRootRenderer.render(_graphicsContext, relativeOffset);
 		
 			
 			//TODO here : render children with negative z-index
 			
 			//render all the block container children belonging to this layer
-			blockBoxRootRenderer.renderBlockContainerChildren(childGraphicContext, relativeOffset);
+			blockBoxRootRenderer.renderBlockContainerChildren(_graphicsContext, relativeOffset);
 			
 			//TODO here : render non-positioned float
 			
 			//TODO :  doc
 			//TODO : relative offset is no longer applied
-			blockBoxRootRenderer.renderBlockReplacedChildren(childGraphicContext, relativeOffset);
+			blockBoxRootRenderer.renderBlockReplacedChildren(_graphicsContext, relativeOffset);
 	
 			//render all the line boxes belonging to this layer
-			blockBoxRootRenderer.renderLineBoxes(childGraphicContext, relativeOffset);
+			blockBoxRootRenderer.renderLineBoxes(_graphicsContext, relativeOffset);
 			
 			//TODO : doc, this fix is here to prevent inlineBlock from rendering their
 			//child layers, maybe add a new "if(inlineblock)" instead but should also
@@ -135,7 +124,7 @@ class LayerRenderer extends Node
 			if (renderChildLayers == true)
 			{
 				//render all the child layers with a z-index of 0
-				renderChildLayer(childGraphicContext, _nonScrollableGraphicsContext, relativeOffset);
+				renderChildLayer(_graphicsContext, relativeOffset);
 			}
 			
 			//TODO here : render children with positive z-index
@@ -144,23 +133,23 @@ class LayerRenderer extends Node
 			
 			if (blockBoxRootRenderer.isXAxisClipped() == true && blockBoxRootRenderer.isYAxisClipped() == true)
 			{
-				childGraphicContext.x = _rootRenderer.globalBounds.x;
-				childGraphicContext.y = _rootRenderer.globalBounds.y;
-				childGraphicContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, _rootRenderer.globalBounds.height);
+				_graphicsContext.x = _rootRenderer.globalBounds.x;
+				_graphicsContext.y = _rootRenderer.globalBounds.y;
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, _rootRenderer.globalBounds.height);
 			}
 			else if (blockBoxRootRenderer.isXAxisClipped() == true)
 			{
-				childGraphicContext.x = _rootRenderer.globalBounds.x;
-				childGraphicContext.y = _rootRenderer.globalBounds.y;
+				_graphicsContext.x = _rootRenderer.globalBounds.x;
+				_graphicsContext.y = _rootRenderer.globalBounds.y;
 				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
-				childGraphicContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, 10000);
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, 10000);
 			}
 			else if (blockBoxRootRenderer.isYAxisClipped() == true)
 			{
-				childGraphicContext.x = _rootRenderer.globalBounds.x;
-				childGraphicContext.y = _rootRenderer.globalBounds.y;
+				_graphicsContext.x = _rootRenderer.globalBounds.x;
+				_graphicsContext.y = _rootRenderer.globalBounds.y;
 				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
-				childGraphicContext.scrollRect = new Rectangle(0 , 0, 10000, _rootRenderer.globalBounds.height);
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, 10000, _rootRenderer.globalBounds.height);
 			}
 			
 			
@@ -168,7 +157,7 @@ class LayerRenderer extends Node
 			//_graphicsContext.y = rootRenderer.globalBounds.y;
 		//	_graphicsContext.scrollRect = new Rectangle(0, 0, rootRenderer.globalBounds.width, rootRenderer.globalBounds.height);
 		
-			blockBoxRootRenderer.renderScrollBars(_scrollBarsGraphicContext, _nonScrollableGraphicsContext, relativeOffset);
+			blockBoxRootRenderer.renderScrollBars(_scrollBarsGraphicContext, relativeOffset);
 			
 		}
 		
@@ -177,20 +166,19 @@ class LayerRenderer extends Node
 		{
 			var inlineBoxRootRenderer:InlineBoxRenderer = cast(rootRenderer);
 			//TODO : render child layers
-			inlineBoxRootRenderer.renderInlineBoxRenderer(childGraphicContext, relativeOffset);
+			inlineBoxRootRenderer.renderInlineBoxRenderer(_graphicsContext, relativeOffset);
 		}
 		
 		//here the root renderer is a replaced element
 		else
 		{
 			//render the replaced element, render its background and asset
-			rootRenderer.render(childGraphicContext, relativeOffset);
+			rootRenderer.render(_graphicsContext, relativeOffset);
 		}
 		
 		if (renderChildLayers == true)
 		{
 			parentGraphicsContext.addChild(_graphicsContext);
-			parentNonScrollableGraphicsContext.addChild(_nonScrollableGraphicsContext);
 			parentGraphicsContext.addChild(_scrollBarsGraphicContext);
 		}
 	}
@@ -231,18 +219,14 @@ class LayerRenderer extends Node
 			{
 				_scrollBarsGraphicContext.removeChildAt(0);
 			}
-			
-						
-			for (i in 0..._nonScrollableGraphicsContext.numChildren)
-			{
-				_nonScrollableGraphicsContext.removeChildAt(0);
-			}
 	}
 	
 	override public function appendChild(newChild:Node):Node
 	{
 		super.appendChild(newChild);
 		
+		//TODO : re-implement
+		/**
 		var childLayer:LayerRenderer = cast(newChild);
 		switch(childLayer.zIndex)
 		{
@@ -252,6 +236,7 @@ class LayerRenderer extends Node
 			case ZIndex.integer(value):
 				if (value == 0)
 				{
+					//TODO : might not put in the right order after DOM manipulation, use "insertBefore" ?
 					_treeOrderChildLayers.push(childLayer);
 				}
 				else if (value > 0)
@@ -260,11 +245,11 @@ class LayerRenderer extends Node
 				}
 				else if (value < 0)
 				{
-					insertNegativeOrderChildLayer(childLayer);
+					insertNegativeOrderChildLayer(childLayer, value);
 				}
 				
 		}
-		
+		*/
 		return newChild;
 	}
 	
@@ -295,9 +280,31 @@ class LayerRenderer extends Node
 		_positiveOrderChildLayers = newPositiveChildLayers;
 	}
 	
-	private function insertNegativeOrderChildLayer(childLayer:LayerRenderer):Void
+	private function insertNegativeOrderChildLayer(childLayer:LayerRenderer, childLayerZIndex:Int):Void
 	{
+		var newNegativeChildLayers:Array<LayerRenderer> = new Array<LayerRenderer>();
 		
+		for (i in 0..._negativeOrderChildLayers.length)
+		{
+			var currentLayerZIndex:Int = 0;
+			
+			switch( _positiveOrderChildLayers[i].zIndex)
+			{
+				case ZIndex.integer(value):
+					currentLayerZIndex = value;
+					
+				default:	
+			}
+			
+			if (currentLayerZIndex  > childLayerZIndex)
+			{
+				newNegativeChildLayers.push(childLayer);
+			}
+			
+			newNegativeChildLayers.push(_negativeOrderChildLayers[i]);
+		}
+		
+		_negativeOrderChildLayers = newNegativeChildLayers;
 	}
 	
 	//TODO : doc
@@ -428,13 +435,13 @@ class LayerRenderer extends Node
 	 * Render all the children LayerRenderer of this LayerRenderer
 	 * and return an array of NativeElements from it
 	 */
-	private function renderChildLayer(graphicContext:NativeElement, nonScrollableGraphicsContext:NativeElement, relativeOffset:PointData):Void
+	private function renderChildLayer(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var childLayers:Array<LayerRenderer> = getChildLayers();
 		
 		for (i in 0...childLayers.length)
 		{
-			childLayers[i].render(graphicContext, nonScrollableGraphicsContext, relativeOffset);
+			childLayers[i].render(graphicContext, relativeOffset);
 		}
 	}
 	
