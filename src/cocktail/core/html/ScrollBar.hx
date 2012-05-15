@@ -46,6 +46,7 @@ class ScrollBar extends HTMLElement
 			_style.width = "100%";
 			_style.height = "15px";
 			_style.bottom = "0";
+			_style.left = "0";
 		}
 		
 		_style.display = "block";
@@ -54,7 +55,7 @@ class ScrollBar extends HTMLElement
 		_scrollThumb = new HTMLElement("");
 		appendChild(_scrollThumb);
 		
-		_scrollThumb.onmousedown = onThumbMouseDown;
+		//_scrollThumb.onmousedown = onThumbMouseDown;
 		
 		_scrollThumb.style.backgroundColor = "green";
 		_scrollThumb.style.width = "15px";
@@ -62,7 +63,7 @@ class ScrollBar extends HTMLElement
 		_scrollThumb.style.position = "absolute";
 		_scrollThumb.style.display = "block";
 		
-		//onmousedown = onTrackMouseDown;
+		onmousedown = onTrackMouseDown;
 	}
 	
 	//TODO : should add event listener to body instead of callback
@@ -109,11 +110,11 @@ class ScrollBar extends HTMLElement
 	{
 		if (_isVertical == true)
 		{
-		//	_scrollThumb.style.top = event.clientY + "px";
+			_scrollThumb.style.top = event.clientY + "px";
 		}
 		else
 		{
-		//	_scrollThumb.style.left = event.clientX + "px";
+			_scrollThumb.style.left = event.clientX + "px";
 		}
 		
 		if (_isVertical == true)

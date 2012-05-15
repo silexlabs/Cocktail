@@ -330,18 +330,17 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{
 				if (childElementRenderer == _horizontalScrollBar.elementRenderer)
 				{
-					childrenContainingBlockData.height = _horizontalScrollBar.coreStyle.computedStyle.height;
+					//TODO : shouldn't modify by reference, should create copy
+					childrenContainingBlockData.height += _horizontalScrollBar.coreStyle.computedStyle.height;
 					childFirstPositionedAncestorData.data = childrenContainingBlockData;
-					childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
 				}
 			}
-			else if (_verticalScrollBar != null)
+			if (_verticalScrollBar != null)
 			{
 				if (childElementRenderer == _verticalScrollBar.elementRenderer)
 				{
 					childrenContainingBlockData.width += _verticalScrollBar.coreStyle.computedStyle.width;
 					childFirstPositionedAncestorData.data = childrenContainingBlockData;
-					childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
 				}
 			}
 			childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
@@ -591,10 +590,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					attachVerticalScrollBarIfNecessary();
 			}
 		}
-		else
-		{
-			
-		}
+		
 	}
 	
 	/**
