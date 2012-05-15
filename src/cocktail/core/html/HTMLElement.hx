@@ -11,7 +11,6 @@ import cocktail.core.dom.Attr;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
-import cocktail.core.event.IEventTarget;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.hxtml.HxtmlConverter;
@@ -39,7 +38,7 @@ import cocktail.core.style.StyleData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class HTMLElement extends Element, implements IEventTarget
+class HTMLElement extends Element
 {
 	/**
 	 * The name of the id attribute in HTML
