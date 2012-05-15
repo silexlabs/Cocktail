@@ -1,7 +1,7 @@
 package org.intermedia.model;
 
-//import cocktail.Cocktail;
-//import org.intermedia.model.XmlLoader;
+import js.Lib;
+import haxe.Firebug;
 import org.intermedia.model.ApplicationModel;
 
 /**
@@ -30,12 +30,6 @@ class DataLoader
 	// feed page index Hash containing page index for each already requested list
 	private var _pageIndexHash:Hash<Int>;
 
-	/*private function onLoadingError(unknown:Dynamic):Void
-	{
-		trace("error in DataLoader");
-	}*/
-	
-	//public function new(?itemsToLoad:Int = 10, ?pageIndex:Int = 1, ?online:Bool=true)
 	public function new(?online:Bool=true)
 	{
 		// init private attributes
@@ -64,6 +58,7 @@ class DataLoader
 		{			
 			// current list page index
 			var pageIndex:Int = 1;
+			
 			// handle page index
 			if (_pageIndexHash.exists(feed))
 			{
@@ -71,26 +66,30 @@ class DataLoader
 			}
 			_pageIndexHash.set(feed,pageIndex);
 			
+			// build feed's full Url 
 			fullUrl = feed + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
-			//haxe.Log.trace(fullUrl);
-			// handle page index
-			//_pageIndex++;
 			
+			// load xml feed
+			var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onCellsXmlLoaded, onLoadingError, feed);
 		}
 		// prepare local feed url
 		else
 		{
-			//fullUrl = "data/silex_plugins.rss";
+			// depending on the feed, load corresponding local xml ressource, parse it and call callback 
 			if (feed == Feeds.FEED_1.url)
-				fullUrl = "data/feed1.rss";
+			{
+				onCellsXmlLoaded(feed, Xml.parse(haxe.Resource.getString("feed1")));
+			}
 			else if (feed == Feeds.FEED_2.url)
-				fullUrl = "data/feed2.rss";
+			{
+				onCellsXmlLoaded(feed, Xml.parse(haxe.Resource.getString("feed2")));
+			}
 			else if (feed == Feeds.FEED_3.url)
-				fullUrl = "data/feed3.rss";
+			{
+				onCellsXmlLoaded(feed, Xml.parse(haxe.Resource.getString("feed3")));
+			}
 		}
 		
-		// load xml feed
-		var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onCellsXmlLoaded, onLoadingError, feed);
 	}
 	
 	/**
@@ -110,13 +109,21 @@ class DataLoader
 		var fullUrl:String = "";
 		
 		// prepare online feed url
-		if (_online) fullUrl = "http://www.silexlabs.org/feed/ep_get_item_info?format=rss2&p=" + cellData.id;
+		if (_online)
+		{
+			fullUrl = "http://www.silexlabs.org/feed/ep_get_item_info?format=rss2&p=" + cellData.id;
+			
+			// load xml feed
+			var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onLoadSuccessDelegate, onLoadingError);
+		}
 		// prepare local feed url
-		else fullUrl = "data/detail.rss";
+		else
+		{
+			// load local xml ressource, parse it and call callback 
+			onCellDetailXmlLoaded(Xml.parse(haxe.Resource.getString("detail")),cellData);
+		}
 		
-		// load xml feed
 		var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onLoadSuccessDelegate, onLoadingError);
-
 	}
 	
 	/**
@@ -127,7 +134,7 @@ class DataLoader
 	 */
 	private function onCellsXmlLoaded(listId:String, xml:Xml):Void
 	{
-		onCellDataLoaded({id:listId ,cells:ThumbTextListRssStandard.rss2Cells(xml)});
+		onCellDataLoaded({id:listId ,cells:ThumbTextListRssStandard.rss2Cells(xml,listId)});
 	}	
 	
 	/**

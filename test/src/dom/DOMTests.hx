@@ -12,6 +12,12 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 
 package dom;
 
+import cocktail.core.dom.Attr;
+import cocktail.core.dom.Element;
+import cocktail.core.dom.NamedNodeMap;
+import cocktail.core.dom.Node;
+import cocktail.core.dom.Text;
+import cocktail.core.html.HTMLElement;
 import cocktail.Lib;
 import cocktail.Dom;
 
@@ -120,16 +126,18 @@ class DOMTests
 		Assert.equals(siblingNode.lastChild, node);
 	}
 	
+	//note : forced to test HTMLElement to match Haxe JS API instead
+	//of just using
 	function testElement()
 	{
-		var el = new Element("div");
+		var el = new HTMLElement("div");
 		
 		Assert.equals(el.tagName, "div");
 		Assert.equals(el.nodeName, "div");
 		Assert.isNull(el.nodeValue);
 		Assert.equals(el.nodeType, Node.ELEMENT_NODE);
 		
-		var childEl = new Element("div");
+		var childEl = new HTMLElement("div");
 		el.appendChild(childEl);
 		
 		Assert.equals(el.firstElementChild, childEl);
@@ -141,7 +149,7 @@ class DOMTests
 		
 		Assert.equals(el.firstElementChild, childEl);
 		
-		var siblingEl =  new Element("div");
+		var siblingEl =  new HTMLElement("div");
 		
 		el.appendChild(siblingEl);
 		
@@ -162,6 +170,11 @@ class DOMTests
 		Assert.isTrue(el.hasAttributes());
 		
 		el.removeAttribute("test");
+		
+		//note : forced to remove also this attribute which is only on
+		//HTMLElement and not supposed to be on Element
+		el.removeAttribute("id");
+		
 		Assert.isFalse(el.hasAttribute("test"));
 		Assert.isFalse(el.hasAttributes());
 		
@@ -170,8 +183,8 @@ class DOMTests
 		
 		Assert.equals(el.getAttributeNode("test"), attr);
 		
-		
-		var childDivs = el.getElementsByTagName("div");
+
+		var childDivs:Array<HTMLElement> = el.getElementsByTagName("div");
 		
 		Assert.equals(childDivs[0], childEl);
 		Assert.equals(childDivs[1], siblingEl);
@@ -180,6 +193,17 @@ class DOMTests
 		
 		Assert.equals(childEls[0], childEl);
 		Assert.equals(childEls[1], siblingEl);
+		
+		
+		childEl.setAttribute("class", "testClass");
+		siblingEl.setAttribute("class", "testClass");
+		
+		var childClassEls = el.getElementsByClassName("testClass");
+		
+		Assert.equals(childClassEls[0], childEl);
+		Assert.equals(childClassEls[1], siblingEl);
+		
+		
 	}
 	
 	function testText()

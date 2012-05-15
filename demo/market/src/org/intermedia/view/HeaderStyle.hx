@@ -7,6 +7,7 @@
 
 package org.intermedia.view;
 
+import js.Lib;
 import js.Dom;
 import org.intermedia.view.Constants;
 
@@ -40,29 +41,7 @@ class HeaderStyle
 		// set to the forehead
 		//node.style.zIndex = 1000;
 		
-		//node.style.backgroundImage = 'url(assets/headerGrey.jpg)';
 		node.style.backgroundImage = 'url(' + Constants.HEADER_BG_IMAGE_URL + ')';
-		
-		// background with gradients - not supported in HTML4, so not used to be HbbTV compliant
-		/*node.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.gradient(GradientValue.linear( { angle:GradientAngleValue.angle(AngleValue.deg(90)),
-		colorStops:[{color:ColorValue.rgba(0, 255, 0,0.7), stop:GradientStopValue.percent(0)}, {color:ColorValue.rgba(255, 0, 0,0.3), stop:GradientStopValue.percent(100)} ]} )))];*/
-	}
-
-	/**
-	 * Defines header static Style
-	 * done as a workaround to have a layout using a minimum of absolute values
-	 * 
-	 * @param	node
-	 */
-	public static function setHeaderStaticStyle(node:HtmlDom):Void
-	{
-		node.style.position = "static";
-		node.style.display = "block";
-
-		node.style.minWidth = "100%";
-		node.style.width = "100%";
-		node.style.height = Std.string(Constants.HEADER_HEIGHT) + "px";
-		
 	}
 
 	/**
@@ -74,14 +53,14 @@ class HeaderStyle
 	{
 		node.style.position = "absolute";
 
-		node.style.color = '#454545';
+		node.style.color = Constants.HEADER_FONT_COLOR;
 		node.style.fontSize = "20px";
 		node.style.fontWeight = "bold";
 		node.style.fontStyle = "normal";
 		node.style.fontFamily = 'Arial, sans-serif';
 
 		node.style.textAlign = "center";
-		node.style.paddingTop = "8px";
+		node.style.paddingTop = "10px";
 	
 		node.style.minWidth = "100%";
 		node.style.top = "0px";
