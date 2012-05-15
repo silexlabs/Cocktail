@@ -48,8 +48,8 @@ class Event
 	/**
 	 * Used to indicate the event target
 	 */ 
-	private var _target:IEventTarget;
-	public var target(get_target, never):IEventTarget;
+	private var _target:EventTarget;
+	public var target(get_target, never):EventTarget;
 	
 	/**
 	 * Used to indicate whether Event.preventDefault()
@@ -61,7 +61,7 @@ class Event
 	/**
 	 * class constructor
 	 */
-	public function new(type:String, target:IEventTarget) 
+	public function new(type:String, target:EventTarget) 
 	{
 		_type = type;
 		_target = target;
@@ -102,7 +102,7 @@ class Event
 		return _type;
 	}
 	
-	private function get_target():IEventTarget
+	private function get_target():EventTarget
 	{
 		return _target;
 	}

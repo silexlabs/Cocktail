@@ -9,7 +9,7 @@ package cocktail.core.window;
 
 import cocktail.core.dom.Document;
 import cocktail.core.event.Event;
-import cocktail.core.event.IEventTarget;
+import cocktail.core.event.EventTarget;
 import cocktail.core.html.HTMLAnchorElement;
 
 /**
@@ -20,7 +20,7 @@ import cocktail.core.html.HTMLAnchorElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractWindow implements IEventTarget
+class AbstractWindow extends EventTarget
 {
 	/**
 	 * callback called when the window is resized, such as
@@ -56,6 +56,7 @@ class AbstractWindow implements IEventTarget
 	 */
 	public function new(document:Document = null) 
 	{
+		super();
 		_document = document;
 	}
 	
