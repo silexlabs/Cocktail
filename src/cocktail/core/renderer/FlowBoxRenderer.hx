@@ -381,20 +381,6 @@ class FlowBoxRenderer extends BoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Return the dimensions data
-	 * of the ElementRenderer
-	 */
-	private function getContainerBlockData():ContainingBlockData
-	{
-		return {
-			width:this.computedStyle.width,
-			isWidthAuto:this._coreStyle.width == Dimension.cssAuto,
-			height:this.computedStyle.height,
-			isHeightAuto:this._coreStyle.height == Dimension.cssAuto
-		};
-	}
-	
-	/**
 	 * Return the structure used to layout absolutely positioned
 	 * children. If this ElementRenderer is positioned, a new
 	 * structure is created, else the current one is used
