@@ -198,6 +198,21 @@ class Document extends Node
 		return _documentElement.getElementsByTagName(tagName);
 	}
 	
+	/**
+	 * Returns a set of elements which have all the given class names.
+	 * 
+	 * IMPORTANT : return array of HTMLElement because of haxe JS
+	 * 
+	 * @param	className the class name to match. If it is a list of class names
+	 * separated by spaces, it returns only the elements which matches all the class
+	 * names
+	 * @return A list of matching Element nodes.
+	 */
+	public function getElementsByClassName(className:String):Array<HTMLElement>
+	{
+		return _documentElement.getElementsByClassName(className);
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
