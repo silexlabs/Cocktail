@@ -72,6 +72,8 @@ class BoxRenderer extends ElementRenderer
 	
 	/**
 	 * Render the background of the box using the provided graphic context
+	 * 
+	 * TODO : opacity should be applied to background
 	 */
 	private function renderBackground(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
@@ -218,7 +220,6 @@ class BoxRenderer extends ElementRenderer
 			//positioned origin
 			if (elementRenderer.isPositioned() == true)
 			{
-				//TODO : use globalBounds to determine which bounds to add ?
 				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
 				{
 					if (elementRenderer.coreStyle.computedStyle.position == absolute)
@@ -227,7 +228,6 @@ class BoxRenderer extends ElementRenderer
 					}
 					//here the positioned ElementRenderer is fixed and is placed
 					//relative to the window. In this case, its x is not added
-					//TODO : complet doc + check if necessary everywhere
 					else
 					{
 						addedX = elementRenderer.positionedOrigin.x;
