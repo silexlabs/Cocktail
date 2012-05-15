@@ -278,6 +278,9 @@ class Element extends Node
 	
 	/**
 	 * Returns a set of elements which have all the given class names.
+	 * 
+	 * IMPORTANT : return array of HTMLElement because of haxe JS
+	 * 
 	 * @param	className the class name to match. If it is a list of class names
 	 * separated by spaces, it returns only the elements which matches all the class
 	 * names
@@ -333,7 +336,6 @@ class Element extends Node
 			for (i in 0...node.childNodes.length)
 			{
 				var childNode:Node = node.childNodes[i];
-				
 				switch (childNode.nodeType)
 				{
 					case Node.ELEMENT_NODE:
@@ -344,7 +346,7 @@ class Element extends Node
 						}
 				}
 				
-				doGetElementsByTagName(childNode, className, elements);
+				doGetElementsByClassName(childNode, className, elements);
 			}
 		}
 	}
