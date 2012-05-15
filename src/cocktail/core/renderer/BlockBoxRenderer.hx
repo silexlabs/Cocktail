@@ -737,16 +737,16 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	override private function getContainerBlockData():ContainingBlockData
 	{
-		var width:Int = this.computedStyle.width;
+		var height:Int = this.computedStyle.height;
 		if (_horizontalScrollBar != null)
 		{
-			width -= _horizontalScrollBar.coreStyle.computedStyle.width;
+			height -= _horizontalScrollBar.coreStyle.computedStyle.height;
 		}
 		
-		var height:Int = this.computedStyle.height;
+		var width:Int = this.computedStyle.width;
 		if (_verticalScrollBar != null)
 		{
-			height -= _verticalScrollBar.coreStyle.computedStyle.height;
+			width -= _verticalScrollBar.coreStyle.computedStyle.width;
 		}
 		
 		return {
