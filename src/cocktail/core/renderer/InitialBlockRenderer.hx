@@ -259,25 +259,39 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Retrieve the data of the viewport. The viewport
+	 * origin is always to the top left of the window
+	 * displaying the document
+	 */
+	override private function getWindowData():ContainingBlockData
+	{	
+		
+		var windowData:ContainingBlockData = {
+			isHeightAuto:false,
+			isWidthAuto:false,
+			width:cocktail.Lib.window.innerWidth,
+			height:cocktail.Lib.window.innerHeight
+		}
+		
+		if (_verticalScrollBar != null)
+		{
+			windowData.width -= _verticalScrollBar.coreStyle.computedStyle.width;
+		}
+		
+		if (_horizontalScrollBar != null)
+		{
+			windowData.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
+		}
+		
+		return windowData;
+	}
+	
+	/**
 	 * TODO : doc
 	 */
 	override private function getContainerBlockData():ContainingBlockData
 	{
-		var containerBlockData:ContainingBlockData = getWindowData();
-		
-		if (_verticalScrollBar != null)
-		{
-			containerBlockData.width -= _verticalScrollBar.coreStyle.computedStyle.width;
-		}
-		
-	
-		
-		if (_horizontalScrollBar != null)
-		{
-			containerBlockData.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
-		}
-		
-		return containerBlockData;
+		return getWindowData();
 	}
 	
 	/**
