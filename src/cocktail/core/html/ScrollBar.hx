@@ -62,7 +62,7 @@ class ScrollBar extends HTMLElement
 		_scrollThumb.style.position = "absolute";
 		_scrollThumb.style.display = "block";
 		
-		onmousedown = onTrackMouseDown;
+		//onmousedown = onTrackMouseDown;
 	}
 	
 	//TODO : should add event listener to body instead of callback
@@ -83,11 +83,11 @@ class ScrollBar extends HTMLElement
 	{
 		if (_isVertical == true)
 		{
-			_scrollThumb.style.top = event.clientY + "px";
+		//	_scrollThumb.style.top = event.clientY + "px";
 		}
 		else
 		{
-			_scrollThumb.style.left = event.clientX + "px";
+		//	_scrollThumb.style.left = event.clientX + "px";
 		}
 		
 		if (_isVertical == true)
@@ -104,7 +104,7 @@ class ScrollBar extends HTMLElement
 			_onScroll(new UIEvent("poj,",this, 0));
 		}
 	}
-	
+	 
 	private function onTrackMouseDown(event:MouseEvent):Void
 	{
 		if (_isVertical == true)

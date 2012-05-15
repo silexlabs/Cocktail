@@ -46,6 +46,11 @@ class HTMLElement extends Element, implements IEventTarget
 	 */
 	private static inline var HTML_ID_ATTRIBUTE:String = "id";
 	
+	/**
+	 * The name of the class attribute in HTML
+	 */
+	private static inline var HTML_CLASS_ATTRIBUTE:String = "class";
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Mouse attributes and callback
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -179,6 +184,16 @@ class HTMLElement extends Element, implements IEventTarget
 	 * map
 	 */
 	public var id(get_id, set_id):String;
+	
+	/**
+	 * get/set a class on the HTMLElement.
+	 * An array of class can be given by separating each
+	 * class name by a space
+	 * 
+	 * className is used instead of class for conflict with
+	 * language reserved word
+	 */
+	public var className(get_className, set_className):String;
 	
 	/**
 	 * sets or gets the HTML
@@ -957,6 +972,25 @@ class HTMLElement extends Element, implements IEventTarget
 	private function set_id(value:String):String
 	{
 		setAttribute(HTML_ID_ATTRIBUTE, value);
+		return value;
+	}
+	
+	/**
+	 * Return the class name value from the attributes
+	 * hash
+	 */
+	private function get_className():String
+	{
+		return getAttribute(HTML_CLASS_ATTRIBUTE);
+	}
+	
+	/**
+	 * set the class name value on the attributes
+	 * hash
+	 */
+	private function set_className(value:String):String
+	{
+		setAttribute(HTML_CLASS_ATTRIBUTE, value);
 		return value;
 	}
 	
