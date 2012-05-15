@@ -245,6 +245,15 @@ class TextRenderer extends ElementRenderer
 	 */
 	override private function get_bounds():RectangleData
 	{
+		if (_lineBoxes == null)
+		{
+			return {
+				x:0.0,
+				y:0.0,
+				width:0.0,
+				height:0.0
+			}
+		}
 		var textLineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
 		for (i in 0..._lineBoxes.length)
 		{

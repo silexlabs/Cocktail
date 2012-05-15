@@ -384,8 +384,9 @@ class HTMLElement extends Element, implements IEventTarget
 	 */
 	override public function removeChild(oldChild:Node):Node
 	{
-		super.removeChild(oldChild);
-		
+		//must happen before calling super, else
+		//the HTMLElement won't have a parent to be detached
+		//from anymore
 		switch (oldChild.nodeType)
 		{
 			case Node.ELEMENT_NODE:
@@ -396,6 +397,9 @@ class HTMLElement extends Element, implements IEventTarget
 				var textChild:Text = cast(oldChild);
 				textChild.detach();
 		}
+		
+		super.removeChild(oldChild);
+	
 	
 		return oldChild;
 	}
