@@ -186,6 +186,7 @@ class LayerRenderer extends Node
 		//TODO : should be applied to every positioned element whose
 		//containing block is a parent of the root renderer.
 		//Add a public method on ElementRenderer ?
+		//TODO : might be trouble for hit test
 		if (_rootRenderer.computedStyle.position == fixed)
 		{
 			_graphicsContext.y = y;

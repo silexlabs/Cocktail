@@ -124,7 +124,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	public function renderBlockReplacedChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this, _layerRenderer);
-		
 		for (i in 0...childrenBlockReplaced.length)
 		{
 			childrenBlockReplaced[i].render(graphicContext, relativeOffset);
