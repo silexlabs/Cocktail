@@ -403,11 +403,11 @@ class HTMLElement extends Element, implements IEventTarget
 	 * invalidated if this HTMLElement is being rendered as it 
 	 * might need a re-layout and re-rendering
 	 */
-	public function invalidateStyle(immediate:Bool = false):Void
+	public function invalidateLayout(immediate:Bool = false):Void
 	{
 		if (_elementRenderer != null)
 		{
-			_elementRenderer.invalidate(immediate);
+			_elementRenderer.invalidateLayout(immediate);
 		}
 	}
 	
@@ -901,7 +901,7 @@ class HTMLElement extends Element, implements IEventTarget
 	{
 		if (_elementRenderer != null)
 		{
-			_elementRenderer.scrollX = value;
+			_elementRenderer.scrollLeft = value;
 		}
 		return 0;
 	}
@@ -910,7 +910,7 @@ class HTMLElement extends Element, implements IEventTarget
 	{
 		if (_elementRenderer != null)
 		{
-			return Math.round(_elementRenderer.scrollX);
+			return Math.round(_elementRenderer.scrollLeft);
 		}
 		return 0;
 	}
@@ -919,7 +919,7 @@ class HTMLElement extends Element, implements IEventTarget
 	{
 		if (_elementRenderer != null)
 		{
-			_elementRenderer.scrollY = value;
+			_elementRenderer.scrollTop = value;
 		}
 		return 0;
 	}
@@ -928,7 +928,7 @@ class HTMLElement extends Element, implements IEventTarget
 	{
 		if (_elementRenderer != null)
 		{
-			return Math.round(_elementRenderer.scrollY);
+			return Math.round(_elementRenderer.scrollTop);
 		}
 		return 0;
 	}
@@ -1034,14 +1034,14 @@ class HTMLElement extends Element, implements IEventTarget
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		invalidateStyle(true);
+		invalidateLayout(true);
 		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_offsetHeight():Int
 	{
-		invalidateStyle(true);
+		invalidateLayout(true);
 		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
@@ -1049,13 +1049,13 @@ class HTMLElement extends Element, implements IEventTarget
 	//TODO : unit test
 	private function get_offsetLeft():Int
 	{
-		invalidateStyle(true);
+		invalidateLayout(true);
 		return Math.round(_elementRenderer.positionedOrigin.x);
 	}
 	
 	private function get_offsetTop():Int
 	{
-		invalidateStyle(true);
+		invalidateLayout(true);
 		return Math.round(_elementRenderer.positionedOrigin.y);
 	}
 	
@@ -1063,14 +1063,14 @@ class HTMLElement extends Element, implements IEventTarget
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		invalidateStyle(true);
+		invalidateLayout(true);
 		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_clientHeight():Int
 	{
-		invalidateStyle(true);
+		invalidateLayout(true);
 		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
@@ -1078,14 +1078,14 @@ class HTMLElement extends Element, implements IEventTarget
 	//TODO : should be top border height
 	private function get_clientTop():Int
 	{
-		invalidateStyle(true);
+		invalidateLayout(true);
 		return 0;
 	}
 	
 	//TODO : should be left border width
 	private function get_clientLeft():Int
 	{
-		invalidateStyle(true);
+		invalidateLayout(true);
 		return 0;
 	}
 	
