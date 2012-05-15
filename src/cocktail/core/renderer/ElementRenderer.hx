@@ -384,6 +384,11 @@ class ElementRenderer extends Node
 	// PRIVATE HELPER METHODS
 	////////////////////////////////
 	
+	/**
+	 * Determine wether this ElementRenderer creates a
+	 * new LayerRenderer for itself or use the
+	 * one of its parent
+	 */
 	private function establishesNewStackingContext():Bool
 	{
 		return false;
@@ -510,6 +515,11 @@ class ElementRenderer extends Node
 		}
 	}
 	
+	/**
+	 * Call when a style which require a re-layout
+	 * of the text (such as font-size, fon-family...)
+	 * is changed
+	 */
 	public function invalidateText():Void
 	{
 		for (i in 0..._childNodes.length)
@@ -520,6 +530,11 @@ class ElementRenderer extends Node
 		invalidateLayout();
 	}
 	
+	/**
+	 * Call when a style which might require altering
+	 * the LayerRenderer tree (such as position or
+	 * overflow) is changed
+	 */
 	public function invalidateLayer():Void
 	{
 		detachLayer();
@@ -532,23 +547,29 @@ class ElementRenderer extends Node
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Return the bounds of the ElementRenderer relative to the
+	 * Window, depending on its positioning scheme
+	 */
 	private function get_globalBounds():RectangleData
 	{
 		var globalX:Float;
 		var globalY:Float;
 		
+		//fixed positioned
 		if (_coreStyle.position == fixed)
 		{
-			
+			//here it uses its static position for x
 			if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
 			{
 				globalX = _globalContainingBlockOrigin.x + _bounds.x;
 			}
+			//here it uses its position relative to the Window for x
 			else
 			{
 				globalX = _positionedOrigin.x;
 			}
-			
+			//static position
 			if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
 			{
 				globalY = _globalContainingBlockOrigin.y + _bounds.y;
@@ -558,8 +579,10 @@ class ElementRenderer extends Node
 				globalY = _positionedOrigin.y;
 			}
 		}
+		//absolute positioned
 		else if (_coreStyle.position == absolute)
 		{
+			//static position for x
 			if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
 			{
 				globalX = _globalContainingBlockOrigin.x + _bounds.x;
@@ -568,7 +591,7 @@ class ElementRenderer extends Node
 			{
 				globalX = _globalPositionnedAncestorOrigin.x + _positionedOrigin.x;
 			}
-			
+			//static position for y
 			if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
 			{
 				globalY = _globalContainingBlockOrigin.y + _bounds.y;
@@ -578,6 +601,7 @@ class ElementRenderer extends Node
 				globalY = _globalPositionnedAncestorOrigin.y + _positionedOrigin.y;
 			}
 		}
+		//here the ElementRenderer uses the normal flow
 		else
 		{
 			globalX = _globalContainingBlockOrigin.x + _bounds.x;

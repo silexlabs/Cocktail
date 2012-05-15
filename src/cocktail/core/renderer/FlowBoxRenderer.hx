@@ -36,6 +36,10 @@ class FlowBoxRenderer extends BoxRenderer
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Return all the LineBoxes created by this ElementRenderer
+	 * in one line, as an array of LineBoxes
+	 */
 	private function getLineBoxesInLine(rootLineBox:LineBox):Array<LineBox>
 	{
 		var ret:Array<LineBox> = new Array<LineBox>();
@@ -53,7 +57,6 @@ class FlowBoxRenderer extends BoxRenderer
 				}
 			}
 		}
-		
 		return ret;
 	}
 	
@@ -63,7 +66,6 @@ class FlowBoxRenderer extends BoxRenderer
 	
 	/**
 	 * Lay out all the children of the ElementRenderer
-	 * 
 	 */
 	override private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
@@ -243,8 +245,6 @@ class FlowBoxRenderer extends BoxRenderer
 				
 			default:
 		}
-		
-		
 	}
 	
 	/**

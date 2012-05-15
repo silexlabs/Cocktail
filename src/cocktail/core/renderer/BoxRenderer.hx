@@ -57,10 +57,7 @@ class BoxRenderer extends ElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Render and position the background color and
-	 * image of the element using runtime specific
-	 * API and return an array of NativeElement from
-	 * it
+	 * overriden to render elements spefic to a box (background, border...)
 	 * 
 	 * TODO : apply transformations, opacity and visibility
 	 */
@@ -73,6 +70,9 @@ class BoxRenderer extends ElementRenderer
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Render the background of the box using the provided graphic context
+	 */
 	private function renderBackground(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var backgroundManager:BackgroundManager = new BackgroundManager();
@@ -167,7 +167,6 @@ class BoxRenderer extends ElementRenderer
 	
 	/**
 	 * Lay out all the children of the ElementRenderer
-	 * 
 	 */
 	private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
@@ -316,6 +315,12 @@ class BoxRenderer extends ElementRenderer
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Overriden as BoxRenderer might create new stacking context, for
+	 * instance if they are positioned
+	 * 
+	 * TODO : add the z-index case
+	 */
 	override private function establishesNewStackingContext():Bool
 	{
 		return isPositioned();
@@ -400,8 +405,4 @@ class BoxRenderer extends ElementRenderer
 		
 		return containingBlockDimensions;
 	}
-	
-
-	
-	
 }
