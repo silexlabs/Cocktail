@@ -16,7 +16,10 @@ import cocktail.core.geom.GeomData;
 /**
  * An Inline Box renderer is an element which participates
  * in an inline formatting context and which does not establishes
- * a formatting context
+ * a formatting context.
+ * 
+ * It generates a line box for each line into which one of its children
+ * participates
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -30,7 +33,15 @@ class InlineBoxRenderer extends FlowBoxRenderer
 		super(node);
 	}
 	
-	public function renderInlineBoxRenderer(graphicContext:NativeElement, relativeOffset:PointData):Void
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as rendering an inline box renderer consist in rendering all of the 
+	 * line boxes it generated
+	 */
+	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		for (i in 0..._lineBoxes.length)
 		{
@@ -46,7 +57,9 @@ class InlineBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	
-	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN GETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Overirden as the bounds of an inline box renderer is formed

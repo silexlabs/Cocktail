@@ -42,8 +42,6 @@ class LayerRenderer extends Node
 	
 	private var _graphicsContext:NativeElement;
 	
-	private var _nonScrollableGraphicsContext:NativeElement;
-	
 	private var _scrollBarsGraphicContext:NativeElement;
 	
 	private var _treeOrderChildLayers:Array<LayerRenderer>;
@@ -164,9 +162,8 @@ class LayerRenderer extends Node
 		//here the root renderer is an inline box renderer which doesn't establish a formatting context
 		else if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == true)
 		{
-			var inlineBoxRootRenderer:InlineBoxRenderer = cast(rootRenderer);
 			//TODO : render child layers
-			inlineBoxRootRenderer.renderInlineBoxRenderer(_graphicsContext, relativeOffset);
+			rootRenderer.render(_graphicsContext, relativeOffset);
 		}
 		
 		//here the root renderer is a replaced element
@@ -183,8 +180,29 @@ class LayerRenderer extends Node
 		}
 	}
 	
-	public function scroll(x:Float, y:Float):Void
+	public function scroll(x:Float, y:Float, startedScroll:Bool = true):Void
 	{
+		//TODO : big hack but will do for now
+		if (_rootRenderer.computedStyle.position == fixed)
+		{
+			_graphicsContext.y = y;
+			_graphicsContext.x = x;
+			return;
+		}
+		
+		if (startedScroll == false)
+		{
+			return;
+		}
+		
+		var childLayers:Array<LayerRenderer> = getChildLayers();
+		
+		
+		for (i in 0...childLayers.length)
+		{
+			childLayers[i].scroll(x, y, false);
+		}
+		
 		_graphicsContext.x = _rootRenderer.globalBounds.x;
 		_graphicsContext.y = _rootRenderer.globalBounds.y;
 		
