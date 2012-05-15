@@ -330,8 +330,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{
 				if (childElementRenderer == _horizontalScrollBar.elementRenderer)
 				{
-					//TODO : shouldn't modify by reference, should create copy
+					//TODO : shouldn't modify by reference, should create copy else, following positioned children will
+					//have wrong containing dimensions
 					childrenContainingBlockData.height += _horizontalScrollBar.coreStyle.computedStyle.height;
+					
 					childFirstPositionedAncestorData.data = childrenContainingBlockData;
 				}
 			}
@@ -340,6 +342,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				if (childElementRenderer == _verticalScrollBar.elementRenderer)
 				{
 					childrenContainingBlockData.width += _verticalScrollBar.coreStyle.computedStyle.width;
+					
 					childFirstPositionedAncestorData.data = childrenContainingBlockData;
 				}
 			}
@@ -828,5 +831,23 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		
 		return true;
+	}
+	
+
+	override private function get_globalBounds():RectangleData
+	{
+		var globalBounds:RectangleData = super.get_globalBounds();
+		
+		if (_horizontalScrollBar != null)
+		{
+			globalBounds.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
+		}
+		
+		if (_verticalScrollBar != null)
+		{
+			globalBounds.width -= _verticalScrollBar.coreStyle.computedStyle.width;
+		}
+		
+		return globalBounds;
 	}
 }

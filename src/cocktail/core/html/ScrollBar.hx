@@ -34,7 +34,7 @@ class ScrollBar extends HTMLElement
 		
 		if (_isVertical)
 		{
-			_style.backgroundColor = "red";
+			_style.backgroundColor = "rgba(255,0,0,0.7)";
 			_style.height = "100%";
 			_style.width = "15px";
 			_style.right = "0";
@@ -42,7 +42,7 @@ class ScrollBar extends HTMLElement
 		}
 		else
 		{
-			_style.backgroundColor = "blue";
+			_style.backgroundColor = "rgba(0,0,255,0.7)";
 			_style.width = "100%";
 			_style.height = "15px";
 			_style.bottom = "0";
