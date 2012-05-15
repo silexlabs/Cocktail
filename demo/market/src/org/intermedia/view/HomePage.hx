@@ -1,19 +1,17 @@
 package org.intermedia.view;
 
+import js.Lib;
+import js.Dom;
+import org.intermedia.view.Constants;
+import org.intermedia.model.ApplicationModel;
+import org.intermedia.view.StyleModel;
+
 /**
  * This class builds the static part of the home page
  * 
  * @author Raphael Harmel
  */
 
-import js.Lib;
-import js.Dom;
-import org.intermedia.view.Constants;
-import org.intermedia.view.StyleModel;
-import org.intermedia.model.ApplicationModel;
-
-
-//class HomePage extends ListViewBase
 class HomePage extends ViewBase
 {
 	
@@ -32,42 +30,31 @@ class HomePage extends ViewBase
 	
 	override private function buildView():Void
 	{
+		// init style model
+		var cellStyle:CellStyleModel = {
+			cell:CellThumbText1BisStyle.setCellStyle,
+			thumbnailMask:CellThumbStyle.setThumbnailMaskStyle,
+			thumbnail:null,
+			textBlock:null,
+			title:null,
+			author:null
+		};
+		
 		// add custom cells to the homepage
 		
-		var cell0 = new CellThumb(1);
-		cell0.data = _data[0];
-		// set mouseUp callback
-		cell0.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell0.data); };
-		node.appendChild(cell0.node);
+		var cell0 = new CellThumb(1,cellStyle);
 		cells.push(cell0);
 
-		var cell1 = new CellThumb(2);
-		cell1.data = _data[1];
-		// set mouseUp callback
-		cell1.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell1.data); };
-		node.appendChild(cell1.node);
+		var cell1 = new CellThumb(2,cellStyle);
 		cells.push(cell1);
 
-		var cell2 = new CellThumb(2);
-		cell2.data = _data[2];
-		// set mouseUp callback
-		cell2.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell2.data); };
-		node.appendChild(cell2.node);
+		var cell2 = new CellThumb(2,cellStyle);
 		cells.push(cell2);
 
-		var cell3 = new CellThumb(2);
-		cell3.data = _data[3];
-		//trace(cell3.data);
-		// set mouseUp callback
-		cell3.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell3.data); };
-		node.appendChild(cell3.node);
+		var cell3 = new CellThumb(2,cellStyle);
 		cells.push(cell3);
 
-		var cell4 = new CellThumb(2);
-		cell4.data = _data[4];
-		// set mouseUp callback
-		cell4.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell4.data); };
-		node.appendChild(cell4.node);
+		var cell4 = new CellThumb(2,cellStyle);
 		cells.push(cell4);
 		
 		/*var cell5 = new CellThumbText1(2);
@@ -93,6 +80,16 @@ class HomePage extends ViewBase
 		// set mouseUp callback
 		cell8.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell8.data); };
 		node.appendChild(cell8);*/
+		
+		for (i in 0...cells.length)
+		{
+			// fill cell with corresponding data
+			cells[i].data = _data[i];
+			// set mouseUp callback
+			cells[i].node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cells[i].data); };
+			// attach cell to homepage
+			node.appendChild(cells[i].node);
+		}
 
 	}
 	

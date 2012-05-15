@@ -43,7 +43,7 @@ Test = function(p) {
 	if( p === $_ ) return;
 	var test = "<div><p>Test passes if all the words \"Filler Text\" are on the same line and they are contained by a black box.</p>";
 	test += "<div style=\"width:600px;\">";
-	test += "<div style=\"display:inline;\">Filler Text </div>";
+	test += "<div style=\"display:inline; position:absolute;\">Filler Text absolute </div>";
 	test += "<div style=\"display:inline;\">Filler Text </div>";
 	test += "<div style=\"display:inline;\">Filler Text </div>";
 	test += "</div></div>";

@@ -11,6 +11,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
+import cocktail.core.geom.GeomData;
 import cocktail.core.font.FontData;
 
 /**
@@ -32,12 +33,39 @@ class FlowBoxRenderer extends BoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return all the LineBoxes created by this ElementRenderer
+	 * in one line, as an array of LineBoxes
+	 */
+	private function getLineBoxesInLine(rootLineBox:LineBox):Array<LineBox>
+	{
+		var ret:Array<LineBox> = new Array<LineBox>();
+		
+		for (i in 0...rootLineBox.childNodes.length)
+		{
+			ret.push(cast(rootLineBox.childNodes[i]));
+			
+			if (rootLineBox.childNodes[i].hasChildNodes() == true)
+			{
+				var childLineBoxes:Array<LineBox> = getLineBoxesInLine(cast(rootLineBox.childNodes[i]));
+				for (j in 0...childLineBoxes.length)
+				{
+					ret.push(childLineBoxes[j]);
+				}
+			}
+		}
+		return ret;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Lay out all the children of the ElementRenderer
-	 * 
 	 */
 	override private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
@@ -98,6 +126,14 @@ class FlowBoxRenderer extends BoxRenderer
 		{
 			shrinkToFitIfNeeded(containingBlockData, childrenFormattingContext.maxWidth, formattingContext, firstPositionedAncestorData, viewportData );
 		}
+		//else it is already computed and is set on the bounds
+		//of tht ElementRenderer
+		//
+		//TODO : shouldn't it be set during formatting instead ?
+		else
+		{
+			_bounds.width = _coreStyle.computedStyle.width;
+		}
 		
 		//if the 'height' style of this ElementRenderer is 
 		//defined as 'auto', then in most cases, it depends on its content height
@@ -125,6 +161,12 @@ class FlowBoxRenderer extends BoxRenderer
 			//TODO : check if this intermediate method is actually useful, seems to be only
 			//used for positioned elements
 			this.computedStyle.height = _coreStyle.applyContentHeightIfNeeded(getRelevantContainingBlockData(containingBlockData, viewportData,  firstPositionedAncestorData.data), Math.round(this.bounds.height), isReplaced());
+		}
+		//else it is already computed and is set on the bounds
+		//of tht ElementRenderer
+		else
+		{
+			_bounds.height = _coreStyle.computedStyle.height;
 		}
 		
 		//if this ElementRenderer is positioned, it means that it is the first positioned ancestor
@@ -203,8 +245,6 @@ class FlowBoxRenderer extends BoxRenderer
 				
 			default:
 		}
-		
-		
 	}
 	
 	/**
@@ -333,82 +373,12 @@ class FlowBoxRenderer extends BoxRenderer
 			}
 		}
 		return true;
-		
-		//TODO : is the following still necessary ? Maybe should have another
-		//method to generate anonymous boxes
-		
-		//return false for a container with no children
-		if (_childNodes.length == 0)
-		{
-			return false;
-		}
-		
-		//establish if the first child is inline or block
-		//all other child must be of the same type
-		var ret:Bool = isChildInline(cast(_childNodes[0]));
-		
-		//loop in all children and throw an exception
-		//if one the children is not of the same type as the first
-		for (i in 0..._childNodes.length)
-		{
-			if (isChildInline(cast(_childNodes[i])) != ret)
-			{
-				//throw "children of a block container can only be either all block or all inline";
-			}
-		}
-		
-		return ret;
 	}
 	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Determine wether a children is inline or not
-	 */
-	private function isChildInline(child:ElementRenderer):Bool
-	{
-		var ret:Bool = true;
-		
-		//here the child is of type block
-		if (child.isInlineLevel() == true)
-		{
-			//floated children are not taken into account 
-			if (child.isFloat() == false)
-			{
-				ret = false;
-			}
-			//absolutely positioned children are not taken into account but relative positioned are
-			else if (child.isPositioned() == false || child.isRelativePositioned() == true)
-			{
-				ret = false;
-			}
-		}
-		//here the child is inline
-		else
-		{
-			ret = true;
-		}
-		
-		
-		return true;
-	}
-	
-	/**
-	 * Return the dimensions data
-	 * of the ElementRenderer
-	 */
-	private function getContainerBlockData():ContainingBlockData
-	{
-		return {
-			width:this.computedStyle.width,
-			isWidthAuto:this._coreStyle.width == Dimension.cssAuto,
-			height:this.computedStyle.height,
-			isHeightAuto:this._coreStyle.height == Dimension.cssAuto
-		};
-	}
 	
 	/**
 	 * Return the structure used to layout absolutely positioned

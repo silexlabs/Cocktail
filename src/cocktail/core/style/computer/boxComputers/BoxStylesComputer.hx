@@ -685,7 +685,7 @@ class BoxStylesComputer
 			case percent(value):
 			
 				computedDimensions = Math.round(UnitManager.getPixelFromPercent(value, containingHTMLElementDimension));
-				
+
 			case cssAuto:
 				//Dealt with in the measureAutoHeight and measureAutoWidth
 				//methods

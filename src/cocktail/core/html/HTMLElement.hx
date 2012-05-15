@@ -10,6 +10,7 @@ package cocktail.core.html;
 import cocktail.core.dom.Attr;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
+import cocktail.core.dom.Text;
 import cocktail.core.event.IEventTarget;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
@@ -26,7 +27,7 @@ import cocktail.core.renderer.TextRenderer;
 import cocktail.core.style.adapter.Style;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;
-//import cocktail.core.focus.FocusManager;
+import cocktail.core.focus.FocusManager;
 import cocktail.core.Keyboard;
 import cocktail.core.Mouse;
 import cocktail.core.style.StyleData;
@@ -44,6 +45,11 @@ class HTMLElement extends Element, implements IEventTarget
 	 * The name of the id attribute in HTML
 	 */
 	private static inline var HTML_ID_ATTRIBUTE:String = "id";
+	
+	/**
+	 * The name of the class attribute in HTML
+	 */
+	private static inline var HTML_CLASS_ATTRIBUTE:String = "class";
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Mouse attributes and callback
@@ -180,6 +186,16 @@ class HTMLElement extends Element, implements IEventTarget
 	public var id(get_id, set_id):String;
 	
 	/**
+	 * get/set a class on the HTMLElement.
+	 * An array of class can be given by separating each
+	 * class name by a space
+	 * 
+	 * className is used instead of class for conflict with
+	 * language reserved word
+	 */
+	public var className(get_className, set_className):String;
+	
+	/**
 	 * sets or gets the HTML
 	 * syntax describing the element's descendants.
 	 */
@@ -192,7 +208,8 @@ class HTMLElement extends Element, implements IEventTarget
 	/**
 	 * This object is part of the rendering tree
 	 * and is used to render this HTMLElement using
-	 * its computed styles
+	 * its computed styles. It is only instantiated
+	 * if the HTMLElement must be displayed.
 	 */
 	private var _elementRenderer:ElementRenderer;
 	public var elementRenderer(get_elementRenderer, never):ElementRenderer;
@@ -334,114 +351,270 @@ class HTMLElement extends Element, implements IEventTarget
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC RENDERING METHODS
+	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : doc
-	public function attach():Void
+	/**
+	 * try to attach the new child to the
+	 * rendering tree
+	 */
+	override public function appendChild(newChild:Node):Node
 	{
-		if (_parentNode == null)
+		super.appendChild(newChild);
+		
+		//only element and text node are visual and can be
+		//attached to the rendering tree
+		switch (newChild.nodeType)
 		{
-
-			return;
+			case Node.ELEMENT_NODE:
+				var htmlChild:HTMLElement = cast(newChild);
+				htmlChild.attach();
+				
+			case Node.TEXT_NODE:
+				var textChild:Text = cast(newChild);
+				textChild.attach();
 		}
 		
-		var parent:HTMLElement = cast(_parentNode);
-
-		if (parent.elementRenderer != null)
+		return newChild;
+	}
+	
+	/**
+	 * try to detach the old child from the
+	 * rendering tree
+	 */
+	override public function removeChild(oldChild:Node):Node
+	{
+		super.removeChild(oldChild);
+		
+		switch (oldChild.nodeType)
 		{
+			case Node.ELEMENT_NODE:
+				var htmlChild:HTMLElement = cast(oldChild);
+				htmlChild.detach();
+				
+			case Node.TEXT_NODE:
+				var textChild:Text = cast(oldChild);
+				textChild.detach();
+		}
+	
+		return oldChild;
+	}
+	
+	/**
+	 * Overriden to make the tag name case-insensitive in an
+	 * HTML document
+	 */
+	override public function getElementsByTagName(tagName:String):Array<HTMLElement>
+	{
+		return super.getElementsByTagName(tagName.toLowerCase());
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When the value of a style changes, the ElementRenderer is 
+	 * invalidated if this HTMLElement is being rendered as it 
+	 * might need a re-layout and re-rendering
+	 */
+	public function invalidateLayout(immediate:Bool = false):Void
+	{
+		if (_elementRenderer != null)
+		{
+			_elementRenderer.invalidateLayout(immediate);
+		}
+	}
+	
+	public function invalidateLayer():Void
+	{
+		if (_elementRenderer != null)
+		{
+			_elementRenderer.invalidateLayer();
+		}
+	}
+	
+	
+	public function invalidateText():Void
+	{
+		if (_elementRenderer != null)
+		{
+			_elementRenderer.invalidateText();
+		}
+	}
+	
+	/**
+	 * When the Display style this special case happen, as the 
+	 * ElementRenderer needs to be changed.
+	 * 
+	 * For instance if the previous value of Display was
+	 * "block" and it is changed to "none", then the ElementRenderer
+	 * must be removed from the rendering tree and destroyed
+	 * 
+	 * Another example is if the value of Display if "inline" and
+	 * it is swiched to "blick", then the current inline ElementRenderer
+	 * must be replaced by a block ElementRenderer
+	 */
+	public function invalidateDisplay():Void
+	{
+		detach();
+		attach();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC RENDERING TREE METHODS
+	//
+	// The HTMLElement is in charge of attaching and detaching its ElementRenderer to/from
+	// the rendering tree when appropriate. The HTMLElement is only displayed to the screen
+	// when attached to the rendering tree
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Tries to attach the ElementRender to the rendering tree. If it is
+	 * in fact attached, all of its children will be attached too.
+	 * 
+	 * The parent HTMLElement's ElementRenderer is always attached before
+	 * its children ElementRenderers
+	 */
+	public function attach():Void
+	{
+		//if the parent HTMLElement ElementRenderers is null, then
+		//the parent is either not attached to the DOM or not rendered,
+		//and this HTMLElement is not rendered either
+		if (isParentRendered() == true)
+		{
+			//create the ElementRenderer if needed
 			if (_elementRenderer == null && isRendered() == true)
 			{
 				createElementRenderer();
 			}
 			
+			//if the ElementRenderer wasn't instantiated, then this
+			//HTMLElement is not supposed to be rendered
 			if (_elementRenderer != null)
 			{
-				parent.elementRenderer.appendChild(_elementRenderer);
+				//do attach to parent ElementRenderer
+				attachToParentElementRenderer();
+				
+				//the HTMLElement is now attached and can attach its children
 				for (i in 0..._childNodes.length)
 				{
+					//only text and element node can be attached, as other nodes
+					//typed are not visual
 					switch (_childNodes[i].nodeType)
 					{
 						case Node.ELEMENT_NODE:
 							var child:HTMLElement = cast(_childNodes[i]);
 							child.attach();
 							
+						//when one of the child is a text node, it is the responsability
+						//of the parent HTMLElement node to create a TextRenderer and attach it
+						//to the rendering tree
 						case Node.TEXT_NODE:
 							var textRenderer:TextRenderer = new TextRenderer(_childNodes[i]);
 							textRenderer.coreStyle = _coreStyle;
 							_elementRenderer.appendChild(textRenderer);
-				
 					}
-				
 				}
 			}
 		}
 	}
 	
+	/**
+	 * Detach the ElementRenderer from the rendering tree
+	 * and all of its children.
+	 * 
+	 * The children ElementRenderer are always detached before
+	 * their parent ElementRenderer
+	 */
 	public function detach():Void
 	{
-		if (_parentNode == null)
+		//if the parent is not attached, then this ElementRenderer
+		//is not attached
+		if (isParentRendered() == true)
 		{
-			return;
-		}
-		var parent:HTMLElement = cast(_parentNode);
-		
-		if (parent.elementRenderer != null)
-		{
+			var parent:HTMLElement = cast(_parentNode);
+			
+			//if this HTMLElement isn't currently rendered, not need
+			//to detach it
 			if (_elementRenderer != null)
 			{
+				//detach first all children
 				for (i in 0..._childNodes.length)
 				{
 					var child:HTMLElement = cast(_childNodes[i]);
 					child.detach();
 				}
-				parent.elementRenderer.removeChild(_elementRenderer);
+				
+				//then detach this ElementRenderer from the parent 
+				//ElementRenderer, then destroy it
+				detachFromParentElementRenderer();
 				_elementRenderer = null;
 			}
-			
 		}
 	}
 	
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE RENDERING METHODS
+	// PRIVATE RENDERING TREE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function invalidateStyle():Void
+	/**
+	 * Return the first HTMLElement sibling which has an
+	 * ElementRenderer attached to the rendering tree or null
+	 * if there is none. It is used to know where to attach this
+	 * HTMLElement's ElementRenderer in the rendering tree
+	 */
+	private function getNextElementRendererSibling():ElementRenderer
 	{
-		if (_elementRenderer != null)
-		{
-			_elementRenderer.invalidate();
-		}
-	}
-	
-	public function invalidateDisplay():Void
-	{
-		detach();
-		attach();
+		var nextSibling:HTMLElement = cast(nextSibling);
 		
-		if (_elementRenderer != null)
+		if (nextSibling == null)
 		{
-			var parentHTML:HTMLElement = cast(_parentNode);
-			if (parentHTML.elementRenderer != null)
+			return null;
+		}
+		else
+		{
+			while (nextSibling != null)
 			{
-				//TODO : big hack just to make the demo work
-				if (_elementRenderer.previousSibling != null)
+				if (nextSibling.elementRenderer != null)
 				{
-					
-					parentHTML.elementRenderer.insertBefore(_elementRenderer, _elementRenderer.previousSibling);
-					parentHTML.elementRenderer.invalidate();
+					return cast(nextSibling.elementRenderer);
 				}
 				
-				
+				nextSibling = cast(nextSibling.nextSibling);
 			}
 		}
 		
-		//TODO : should be invalidated by default when attached
-		//invalidateStyle();
+		return null;
 	}
 	
-	//TODO : clean-up
+	/**
+	 * attach the created ElementRenderer to the rendering tree before the ElementRenderer
+	 * of the first next HTMLElement sibling which also has an attached ElementRenderer.
+	 * If there is none such sibling, it is appended as the last child of this node of
+	 * the rendering tree
+	 */
+	private function attachToParentElementRenderer():Void
+	{
+		var parent:HTMLElement = cast(_parentNode);
+		parent.elementRenderer.insertBefore(_elementRenderer, getNextElementRendererSibling());
+	}
+	
+	/**
+	 * When this HTMLElement is detached, it detached its
+	 * ElementRenderer from its parent ElementRenderer
+	 */
+	private function detachFromParentElementRenderer():Void
+	{
+		var parent:HTMLElement = cast(_parentNode);
+		parent.elementRenderer.removeChild(_elementRenderer);
+	}
+	
+	/**
+	 * Instantiate the right ElementRenderer
+	 * based on the Display style and/or the 
+	 * type of HTMLElement
+	 */
 	private function createElementRenderer():Void
 	{
 		_coreStyle.computeDisplayStyles();
@@ -460,49 +633,37 @@ class HTMLElement extends Element, implements IEventTarget
 		}
 	}
 	
+	/**
+	 * Return wether this HTMLElement is supposed to be rendered
+	 * 
+	 * TODO : should use computed display style (although it computes
+	 * the same as the specified value ?) and also take into account
+	 * the HTML "hidden" attribute
+	 */
 	private function isRendered():Bool
 	{
 		return _coreStyle.display != Display.none;
 	}
 	
-	
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
-	 * invalidate Style after DOM change
-	 * 
-	 * TODO : update doc
+	 * Determine wether the parent HTMLElement is
+	 * rendered and attached to the rendering tree
 	 */
-	override public function appendChild(newChild:Node):Node
+	private function isParentRendered():Bool
 	{
-		super.appendChild(newChild);
-		//TODO : should be different for Text node
-		var htmlChild:HTMLElement = cast(newChild);
-		htmlChild.attach();
-		return newChild;
-	}
-	
-	/**
-	 * invalidate Style after DOM change
-	 */
-	override public function removeChild(oldChild:Node):Node
-	{
-		super.removeChild(oldChild);
-		var htmlChild:HTMLElement = cast(oldChild);
-		htmlChild.detach();
-		return oldChild;
-	}
-	
-	/**
-	 * Overriden to make the tag name case-insensitive in an
-	 * HTML document
-	 */
-	override public function getElementsByTagName(tagName:String):Array<HTMLElement>
-	{
-		return super.getElementsByTagName(tagName.toLowerCase());
+		if (_parentNode == null)
+		{
+			return false;
+		}
+		var htmlParent:HTMLElement = cast(_parentNode);
+		if (htmlParent.elementRenderer != null)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -753,22 +914,38 @@ class HTMLElement extends Element, implements IEventTarget
 	
 	private function set_scrollLeft(value:Int):Int
 	{
-		return -1;
+		if (_elementRenderer != null)
+		{
+			_elementRenderer.scrollLeft = value;
+		}
+		return 0;
 	}
 	
 	private function get_scrollLeft():Int
 	{
-		return -1;
+		if (_elementRenderer != null)
+		{
+			return Math.round(_elementRenderer.scrollLeft);
+		}
+		return 0;
 	}
 	
 	private function set_scrollTop(value:Int):Int
 	{
-		return -1;
+		if (_elementRenderer != null)
+		{
+			_elementRenderer.scrollTop = value;
+		}
+		return 0;
 	}
 	
 	private function get_scrollTop():Int
 	{
-		return -1;
+		if (_elementRenderer != null)
+		{
+			return Math.round(_elementRenderer.scrollTop);
+		}
+		return 0;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -795,6 +972,25 @@ class HTMLElement extends Element, implements IEventTarget
 	private function set_id(value:String):String
 	{
 		setAttribute(HTML_ID_ATTRIBUTE, value);
+		return value;
+	}
+	
+	/**
+	 * Return the class name value from the attributes
+	 * hash
+	 */
+	private function get_className():String
+	{
+		return getAttribute(HTML_CLASS_ATTRIBUTE);
+	}
+	
+	/**
+	 * set the class name value on the attributes
+	 * hash
+	 */
+	private function set_className(value:String):String
+	{
+		setAttribute(HTML_CLASS_ATTRIBUTE, value);
 		return value;
 	}
 	
@@ -872,14 +1068,14 @@ class HTMLElement extends Element, implements IEventTarget
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		//_coreStyle.invalidate(true);
+		invalidateLayout(true);
 		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_offsetHeight():Int
 	{
-		//_coreStyle.invalidate(true);
+		invalidateLayout(true);
 		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
@@ -887,13 +1083,13 @@ class HTMLElement extends Element, implements IEventTarget
 	//TODO : unit test
 	private function get_offsetLeft():Int
 	{
-		//_coreStyle.invalidate(true);
+		invalidateLayout(true);
 		return Math.round(_elementRenderer.positionedOrigin.x);
 	}
 	
 	private function get_offsetTop():Int
 	{
-		//_coreStyle.invalidate(true);
+		invalidateLayout(true);
 		return Math.round(_elementRenderer.positionedOrigin.y);
 	}
 	
@@ -901,15 +1097,14 @@ class HTMLElement extends Element, implements IEventTarget
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		//_coreStyle.invalidate(true);
+		invalidateLayout(true);
 		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_clientHeight():Int
 	{
-		//TODO : re-implement
-		//_coreStyle.invalidate(true);
+		invalidateLayout(true);
 		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
@@ -917,14 +1112,14 @@ class HTMLElement extends Element, implements IEventTarget
 	//TODO : should be top border height
 	private function get_clientTop():Int
 	{
-		//_coreStyle.invalidate(true);
+		invalidateLayout(true);
 		return 0;
 	}
 	
 	//TODO : should be left border width
 	private function get_clientLeft():Int
 	{
-		//_coreStyle.invalidate(true);
+		invalidateLayout(true);
 		return 0;
 	}
 	

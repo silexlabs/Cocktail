@@ -47,16 +47,21 @@ class TextRenderer extends ElementRenderer
 	{
 		super(node);
 		_text = cast(node);
+		
+		_lineBoxes = null;
 	}
 	
 	/**
 	 * Separate the source text in an array of text token
 	 * and create a text line box for each one
+	 * 
+	 * TODO : should find better name
 	 */
 	private function init():Void
 	{
 		_textTokens = doGetTextTokens(_text.nodeValue);
 		lineBoxes = [];
+		
 		for (i in 0..._textTokens.length)
 		{
 			//create and store the line boxes
@@ -64,16 +69,18 @@ class TextRenderer extends ElementRenderer
 		}
 	}
 	
-	override private function set_coreStyle(value:CoreStyle):CoreStyle
-	{
-		_coreStyle = value;
-		init();
-		return _coreStyle;
-	}
-	
 	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{	
-		init();
+		if (lineBoxes == null)
+		{
+			init();
+		}
+	}
+	
+	override public function invalidateText():Void
+	{
+		_lineBoxes = null;
+		invalidateLayout();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -226,11 +233,15 @@ class TextRenderer extends ElementRenderer
 		return true;
 	}
 	
-	
+	/////////////////////////////////
+	// OVERRIDEN SETTER/GETTER
+	////////////////////////////////
 	
 	/**
 	 * Overriden as the bounds of a TextRenderer is formed
 	 * by the bounds of its formatted text line boxes
+	 * 
+	 * TODO : throw exception when lineboxes is null
 	 */
 	override private function get_bounds():RectangleData
 	{

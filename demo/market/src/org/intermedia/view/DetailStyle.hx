@@ -29,33 +29,39 @@ class DetailStyle
 	public static function setDetailStyle(node:HtmlDom):Void
 	{
 		node.style.display = "inline-block";
-		node.style.position = "absolute";
+		//node.style.position = "absolute";
+		//node.style.position = "fixed";
+		node.style.position = "static";
 		
 		node.style.marginLeft = "0px";
 		node.style.marginRight = "0px";
-		node.style.marginTop = "0px";
+		//node.style.marginTop = "0px";
+		node.style.marginTop = Std.string(Constants.HEADER_HEIGHT) + "px";
 		node.style.marginBottom = "0px";
 		
-		node.style.paddingLeft = "2%";
-		node.style.paddingRight = "2%";
-		node.style.paddingTop = "10px";
-		node.style.paddingBottom = "10px";
+		node.style.paddingLeft = Std.string(Constants.DETAIL_HORIZONTAL_PADDING_PERCENT) + "%";
+		node.style.paddingRight = Std.string(Constants.DETAIL_HORIZONTAL_PADDING_PERCENT) + "%";
+		node.style.paddingTop = Std.string(Constants.DETAIL_VERTICAL_PADDING_PIXELS) + "px";
+		node.style.paddingBottom = Std.string(Constants.DETAIL_VERTICAL_PADDING_PIXELS) + "px";
 		
-		node.style.width = "96%";
-		node.style.height = "auto";
+		//node.style.width = "96%";
+		node.style.width = Std.string(Constants.DETAIL_HORIZONTAL_PERCENT) + "%";
+		//node.style.width = Std.string(Lib.window.innerWidth - 20) + "px";
 		//node.style.height = Std.string(Lib.window.innerHeight) + "px";
-		//node.style.height = "100px";
+		//node.style.height = "100%";
+		node.style.height = "auto";
+		//node.style.height = Std.string(Lib.window.innerHeight - Constants.HEADER_HEIGHT) + "px";
 		
 		node.style.top = Std.string(Constants.HEADER_HEIGHT) + "px";
 		node.style.bottom = "0px";
 		
 		node.style.overflowX = "hidden";
-		node.style.overflowY = "scroll";
+		node.style.overflowY = "hidden";
+		//node.style.overflowY = "scroll";
+		//node.style.overflowY = "visible";
+		//node.style.overflowY = "auto";
 		
-		
-		//node.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 255, 255, 1));
-		
-		
+		node.style.backgroundColor = Constants.DETAIL_BG_COLOR;
 	}
 
 	/**
@@ -65,14 +71,15 @@ class DetailStyle
 	 */
 	public static function setThumbnail(node:HtmlDom):Void
 	{
-		var imageMaxWidth:Int = 250;
+		var IMAGE_MAX_HEIGHT:Int = 120;
 		
 		node.style.display = "block";
 		
-			node.style.maxWidth = Std.string(imageMaxWidth) + "px";
-			node.style.maxHeight = "50%";
-			node.style.width = "80%";	
+		node.style.marginLeft = "auto";
+		node.style.marginRight = "auto";
 		
+		node.style.maxWidth = Std.string(Constants.DETAIL_HORIZONTAL_PERCENT) + "%";
+		node.style.maxHeight = Std.string(IMAGE_MAX_HEIGHT) + "px";
 	}
 	
 	/**
@@ -92,17 +99,11 @@ class DetailStyle
 	 * 
 	 * @param	node
 	 */
-	public static function setTitle(node:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
-	//public static function setTitle(node:HtmlDom):Void
+	public static function setTitle(node:HtmlDom):Void
 	{
 		setText(node);
 		
-		var fontSize:Int = 14;
-		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 14;
-		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 16;
-		else  fontSize = 18;
-		
-		node.style.fontSize = Std.string(fontSize) + "px";
+		node.style.fontSize = "18px";
 		node.style.fontWeight = "bold";
 	}
 
@@ -111,17 +112,11 @@ class DetailStyle
 	 * 
 	 * @param	node
 	 */
-	public static function setAuthor(node:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
-	//public static function setAuthor(node:HtmlDom):Void
+	public static function setAuthor(node:HtmlDom):Void
 	{
 		setText(node);
 
-		var fontSize:Int = 10;
-		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 10;
-		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 11;
-		else  fontSize = 12;
-		
-		node.style.fontSize = Std.string(fontSize) + "px";
+		node.style.fontSize = "12px";
 		node.style.fontWeight = "normal";
 	}
 
@@ -134,11 +129,10 @@ class DetailStyle
 	{
 		setText(node);
 
-		node.style.marginTop = Std.string(10) + "px";
-		node.style.marginBottom = Std.string(10) + "px";
+		node.style.marginTop = Std.string(Constants.DETAIL_VERTICAL_PADDING_PIXELS) + "px";
+		node.style.marginBottom = Std.string(Constants.DETAIL_VERTICAL_PADDING_PIXELS) + "px";
 		
 		node.style.fontSize = "14px";
-		//node.style.fontWeight = "bold";
 	}
 	
 }

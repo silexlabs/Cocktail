@@ -20,6 +20,8 @@ import haxe.Log;
  * style object and set/get those styles using CSS
  * which it converts into typed style object
  * 
+ * TODO : style value can't be set to null yet
+ * 
  * @author Yannick DOMINGUEZ
  */
 class Style 

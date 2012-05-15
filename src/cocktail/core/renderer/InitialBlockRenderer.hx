@@ -16,6 +16,7 @@ import cocktail.core.style.formatter.BlockFormattingContext;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.style.CoreStyle;
+import flash.display.Sprite;
 import flash.Lib;
 import haxe.Log;
 import haxe.Timer;
@@ -30,12 +31,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	
 	
 	/**
-	 * The NativeElements created when rendering
-	 * this Document. They are runtime specific
-	 */
-	private var _nativeElements:Array<NativeElement>;
-	
-	/**
 	 * class constructor. Set the viewport as the bounds
 	 * of the ElementRenderer, as a BodyHTMLElement
 	 * always covers all of the viewport
@@ -44,7 +39,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	{
 		super(node);
 		
-		_nativeElements = new Array<NativeElement>();
 		
 
 		
@@ -54,54 +48,99 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
 	}
 	
-	/**
-	 * Render and position the background color and
-	 * image of the element using runtime specific
-	 * API and return an array of NativeElement from
-	 * it
-	 */
-	override public function render():Array<NativeElement>
-	{
-		var backgroundManager:BackgroundManager = new BackgroundManager();
-		
-		var width:Float = cocktail.Lib.window.innerWidth;
-		var height:Float = cocktail.Lib.window.innerHeight;
-		
-		_bounds.width = width;
-		_bounds.height = height;
-		
-		//TODO : should only pass dimensions instead of bounds
-		var backgrounds:Array<NativeElement> = backgroundManager.render(_bounds, _coreStyle);
-		
-		for (i in 0...backgrounds.length)
-		{
-			#if (flash9 || nme)
-			backgrounds[i].x = globalBounds.x;
-			backgrounds[i].y = globalBounds.y;
-			#end
-		}
+
 	
-		return backgrounds;
-	}
-	
-	override public function attach():Void
+	override public function attachLayer():Void
 	{
 		_layerRenderer = new LayerRenderer(this);
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE RENDERING METHODS
-	// attach/detach the rendered native elements to/from the flash Stage
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	private function attachNativeElement(nativeElement:NativeElement):Void
+	
+	
+	
+	override private function attachVerticalScrollBarIfNecessary():Void
 	{
-		flash.Lib.current.addChild(nativeElement);
+		if (_scrollableBounds.y < bounds.y || _scrollableBounds.y + _scrollableBounds.height > cocktail.Lib.window.innerHeight)
+		{
+			attachVerticalScrollBar();
+		}
 	}
 	
-	private function detachNativeElement(nativeElement:NativeElement):Void
+	override private function attachScrollBarsIfnecessary():Void
 	{
-		flash.Lib.current.removeChild(nativeElement);
+		
+
+		if (_horizontalScrollBar == null)
+		{
+			//TODO : should use computed styles but not computed yet
+			switch (_coreStyle.overflowX)
+			{
+				case scroll:
+					attachHorizontalScrollBar();
+					
+				case hidden:
+					
+				case cssAuto, visible:
+					attachHorizontalScrollBarIfNecessary();
+			}
+		}
+		
+		if (_verticalScrollBar == null)
+		{
+			switch (_coreStyle.overflowY)
+			{
+				case scroll:
+					attachVerticalScrollBar();
+					
+				case hidden:
+					
+					case cssAuto, visible:
+					attachVerticalScrollBarIfNecessary();
+			}
+		}
+	}
+	
+	override public function isXAxisClipped():Bool
+	{
+		switch (computedStyle.overflowX)
+		{
+			case Overflow.hidden,
+			Overflow.scroll:
+				return true;
+				
+			case Overflow.cssAuto, visible:
+				return _horizontalScrollBar != null;
+				
+			
+		}
+	}
+	
+	override public function isYAxisClipped():Bool
+	{
+		switch (computedStyle.overflowY)
+		{
+			case Overflow.hidden,
+			Overflow.scroll:
+				return true;
+				
+			case Overflow.cssAuto, visible:
+				return _verticalScrollBar != null;
+				
+		
+		}
+	}
+	
+	override private function get_globalBounds():RectangleData
+	{
+		var width:Float = cocktail.Lib.window.innerWidth;
+		var height:Float = cocktail.Lib.window.innerHeight;
+		
+		return {
+			x:0.0,
+			y:0.0,
+			width:width,
+			height:height
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -113,7 +152,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * it always schedule a layout using the window dimensions as
 	 * its containing HTMLElement dimensions
 	 */
-	override public function invalidate(immediate:Bool = false):Void
+	override public function invalidateLayout(immediate:Bool = false):Void
 	{
 		//don't call if the body has already scheduled a layout, unless
 		//an immediate layout is required
@@ -138,7 +177,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * @param immediate define wether the layout must be synchronous
 	 * or asynchronous
 	 */
-	public function doInvalidate(immediate:Bool = false):Void
+	private function doInvalidate(immediate:Bool = false):Void
 	{
 		//either schedule an asynchronous layout and rendering, or layout
 		//and render immediately
@@ -166,8 +205,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		startRendering();
 	}
 	
-
-	
 	/**
 	 * Start the rendering of the rendering tree
 	 * built during layout
@@ -177,37 +214,8 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */ 
 	private function startRendering():Void
 	{
-		//first all the previous native elements
-		//are detached
-		detachNativeElements(_nativeElements);
-		
 		//start the rendering at the root layer renderer
-		_nativeElements = _layerRenderer.render();
-		attachNativeElements(_nativeElements);
-	}
-	
-	/**
-	 * Attach an array of NativeElement to the
-	 * display root
-	 */
-	private function attachNativeElements(nativeElements:Array<NativeElement>):Void
-	{
-		for (i in 0...nativeElements.length)
-		{
-			attachNativeElement(nativeElements[i]);
-		}
-	}
-	
-	/**
-	 * Remove an array of NativeElement from the
-	 * display root
-	 */
-	private function detachNativeElements(nativeElements:Array<NativeElement>):Void
-	{
-		for (i in 0...nativeElements.length)
-		{
-			detachNativeElement(nativeElements[i]);
-		}
+		_layerRenderer.render(Lib.current, {x:0.0, y:0.0});
 	}
 	
 	/**
@@ -226,184 +234,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		}, 1);
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Start the layout of all of the HTMLElements tree which set the bounds
-	 * of the all of the rendring tree elements relative to their containing block.
-	 * Then set the global bounds (relative to the window) for all of the elements
-	 * of the rendering tree
-	 * 
-	 * TODO : should be on ElementRenderer for incremental layout
-	 */
-	public function startLayout():Void
-	{
-		var windowData:ContainingBlockData = getWindowData();
-		
-		//the first positioned parent of the body is always the viewport					
-		var firstPositionedAncestorData:FirstPositionedAncestorData = {
-			elements: new Array<ElementRenderer>(),
-			data:windowData
-		}
-		
-		//layout all the HTMLElements. After that they all know their bounds relative to the containing
-		//blocks
-		layout(getContainerBlockData(), windowData, firstPositionedAncestorData, _coreStyle.fontMetrics, null);
-		//set the global bounds on the rendering tree. After that all the elements know their positions
-		//relative to the window
-		setGlobalOrigins(this,0,0, 0,0);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Set the global bounds (relative to the window) of all the elements of the rendering tree, by
-	 * traversing it recursively
-	 * 
-	 * TODO : should be on ElementRenderer instead for incremental layout
-	 * 
-	 * @param	elementRenderer the current node in the render tree onto which the global bounds are set
-	 * @param	addedX the added x position for the normal flow
-	 * @param	addedY the added y position for the norlam flow
-	 * @param	addedPositionedX the added X position for positioned elements
-	 * @param	addedPositionedY the added Y position for positioned elements
-	 */
-	private function setGlobalOrigins(elementRenderer:ElementRenderer, addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
-	{
-		//if the element establishes a new formatting context, then its
-		//bounds must be added to the global x and y bounds for the normal flow
-		if (elementRenderer.establishesNewFormattingContext() == true)
-		{
-			//if the element is positioned, it can either add its bounds
-			//or positioned origin to the global x and y for normal flow. If it
-			//uses its static position, it uses its bounds, else it uses its
-			//positioned origin
-			if (elementRenderer.isPositioned() == true)
-			{
-				//TODO : use globalBounds to determine which bounds to add ?
-				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
-				{
-					if (elementRenderer.coreStyle.computedStyle.position == absolute)
-					{
-						addedX += elementRenderer.positionedOrigin.x;
-					}
-					//here the positioned ElementRenderer is fixed and is placed
-					//relative to the window. In this case, its x is not added
-					//TODO : complet doc + check if necessary everywhere
-					else
-					{
-						addedX = elementRenderer.positionedOrigin.x;
-					}
-					
-				}
-				else
-				{
-					addedX += elementRenderer.bounds.x;
-				}
-				
-				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
-				{
-					if (elementRenderer.coreStyle.computedStyle.position == absolute)
-					{
-						addedY += elementRenderer.positionedOrigin.y;
-					}
-					else
-					{
-						addedY = elementRenderer.positionedOrigin.y;
-					}
-				}
-				else
-				{
-					addedY += elementRenderer.bounds.y;
-				}
-			}
-			//if the element is not positioned or relatively positioned, it always add
-			//its bounds to the global x and y flow
-			else
-			{
-				addedX += elementRenderer.bounds.x;
-				addedY += elementRenderer.bounds.y;
-			}
-		}
-		
-		//if the element is positioned, it must also add
-		//its bounds to the global positioned origin
-		if (elementRenderer.isPositioned() == true)
-		{
-			//absolutely positioned elements either add their static position
-			//or their positioned origin
-			if (elementRenderer.coreStyle.computedStyle.position != relative)
-			{
-				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
-				{
-					if (elementRenderer.coreStyle.computedStyle.position == absolute)
-					{
-						addedPositionedX += elementRenderer.positionedOrigin.x;
-					}
-					else
-					{
-						addedPositionedX = elementRenderer.positionedOrigin.x;
-					}
-					
-				}
-				else
-				{
-					addedPositionedX += elementRenderer.bounds.x;
-				}
-				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
-				{
-					if (elementRenderer.coreStyle.computedStyle.position == absolute)
-					{
-						addedPositionedY += elementRenderer.positionedOrigin.y;
-					}
-					else
-					{
-						addedPositionedY = elementRenderer.positionedOrigin.y;
-					}
-					
-				}
-				else
-				{
-					addedPositionedY += elementRenderer.bounds.y;
-				}
-			}
-			//relative positioned elements always use their bounds, as the relative
-			//offset is only applied at render time and isn't used in the bounds
-			//computation
-			else
-			{
-				addedPositionedX += elementRenderer.bounds.x;
-				addedPositionedY += elementRenderer.bounds.y;
-			}
-		}
-		
-		//for its child of the element
-		for (i in 0...elementRenderer.childNodes.length)
-		{
-			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
-			
-			//TODO : doc on added ody margin
-			child.globalContainingBlockOrigin = {
-				x: addedX + computedStyle.marginLeft,
-				y : addedY + computedStyle.marginTop
-			}
-			
-			child.globalPositionnedAncestorOrigin = {
-				x: addedPositionedX + computedStyle.marginLeft,
-				y : addedPositionedY + computedStyle.marginTop
-			}
-			
-			//call the method recursively if the child has children itself
-			if (child.hasChildNodes() == true)
-			{
-				setGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
-			}
-		}
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE LAYOUT METHODS
@@ -429,12 +259,23 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * The dimensions of the initital ElementRenderer are always
-	 * those of the window
+	 * TODO : doc
 	 */
 	override private function getContainerBlockData():ContainingBlockData
 	{
-		return getWindowData();
+		var containerBlockData:ContainingBlockData = getWindowData();
+		
+		if (_horizontalScrollBar != null)
+		{
+			containerBlockData.width -= _horizontalScrollBar.coreStyle.computedStyle.width;
+		}
+		
+		if (_verticalScrollBar != null)
+		{
+			containerBlockData.height -= _verticalScrollBar.coreStyle.computedStyle.height;
+		}
+		
+		return containerBlockData;
 	}
 	
 	/**
@@ -461,6 +302,20 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	override public function establishesNewFormattingContext():Bool
 	{
 		return true;
+	}
+	
+	override private function get_bounds():RectangleData
+	{
+		var width:Float = cocktail.Lib.window.innerWidth;
+		var height:Float = cocktail.Lib.window.innerHeight;
+		
+		
+		return {
+			x:0.0,
+			y:0.0,
+			width:width,
+			height:height
+		};
 	}
 	
 }
