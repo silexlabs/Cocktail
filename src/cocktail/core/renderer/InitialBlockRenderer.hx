@@ -265,14 +265,16 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	{
 		var containerBlockData:ContainingBlockData = getWindowData();
 		
-		if (_horizontalScrollBar != null)
-		{
-			containerBlockData.width -= _horizontalScrollBar.coreStyle.computedStyle.width;
-		}
-		
 		if (_verticalScrollBar != null)
 		{
-			containerBlockData.height -= _verticalScrollBar.coreStyle.computedStyle.height;
+			containerBlockData.width -= _verticalScrollBar.coreStyle.computedStyle.width;
+		}
+		
+	
+		
+		if (_horizontalScrollBar != null)
+		{
+			containerBlockData.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
 		}
 		
 		return containerBlockData;

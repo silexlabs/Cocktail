@@ -331,7 +331,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{
 				if (childElementRenderer == _horizontalScrollBar.elementRenderer)
 				{
-					childrenContainingBlockData.width += _horizontalScrollBar.coreStyle.computedStyle.width;
+					childrenContainingBlockData.height = _horizontalScrollBar.coreStyle.computedStyle.height;
 					childFirstPositionedAncestorData.data = childrenContainingBlockData;
 					childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
 				}
@@ -340,7 +340,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{
 				if (childElementRenderer == _verticalScrollBar.elementRenderer)
 				{
-					childrenContainingBlockData.height += _verticalScrollBar.coreStyle.computedStyle.height;
+					childrenContainingBlockData.width += _verticalScrollBar.coreStyle.computedStyle.width;
 					childFirstPositionedAncestorData.data = childrenContainingBlockData;
 					childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
 				}
@@ -516,18 +516,26 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		for (i in 0...rootRenderer.childNodes.length)
 		{
 			
+			
+			
 			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
-			if (child.hasChildNodes() == true && child.establishesNewFormattingContext() == false)
+			
+			
+			if (child.node != _horizontalScrollBar && child.node != _verticalScrollBar)
 			{
-				var childChildrenBounds:Array<RectangleData> = doGetScrollableBounds(child);
-				
-				for (j in 0...childChildrenBounds.length)
+				if (child.hasChildNodes() == true && child.establishesNewFormattingContext() == false)
 				{
-					childrenBounds.push(childChildrenBounds[j]);
+					var childChildrenBounds:Array<RectangleData> = doGetScrollableBounds(child);
+					
+					for (j in 0...childChildrenBounds.length)
+					{
+						childrenBounds.push(childChildrenBounds[j]);
+					}
 				}
+				
+				childrenBounds.push(child.bounds);
 			}
 			
-			childrenBounds.push(child.bounds);
 		}
 		
 		return childrenBounds;
@@ -577,11 +585,16 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				case scroll:
 					attachVerticalScrollBar();
 					
+					
 				case hidden, visible:
 					
 				case cssAuto:
 					attachVerticalScrollBarIfNecessary();
 			}
+		}
+		else
+		{
+			
 		}
 	}
 	
