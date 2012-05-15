@@ -249,9 +249,12 @@ class ElementRenderer extends Node
 	 */
 	override public function removeChild(oldChild:Node):Node
 	{
-		super.removeChild(oldChild);
+		//must happen before calling super, else the ElementRenderer
+		//won't have a parent anymore
 		var elementRendererChild:ElementRenderer = cast(oldChild);
 		elementRendererChild.detachLayer();
+		
+		super.removeChild(oldChild);
 		invalidateLayout();
 		return oldChild;
 	}

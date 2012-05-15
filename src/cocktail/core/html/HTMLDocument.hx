@@ -289,7 +289,7 @@ class HTMLDocument extends Document
 					{
 						htmlElement.onmouseup(mouseEvent);
 						//return as only one callback is executed
-						return;
+					//	return;
 					}
 			}
 			
