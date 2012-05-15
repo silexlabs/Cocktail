@@ -61,6 +61,10 @@ class LayerRenderer extends Node
 		_rootRenderer = rootRenderer;
 		_graphicsContext = new Sprite();
 		_scrollBarsGraphicContext = new Sprite();
+		
+		_treeOrderChildLayers = new Array<LayerRenderer>();
+		_positiveOrderChildLayers = new Array<LayerRenderer>();
+		_negativeOrderChildLayers = new Array<LayerRenderer>();
 	}
 	
 	/////////////////////////////////
@@ -104,6 +108,11 @@ class LayerRenderer extends Node
 			
 			//TODO here : render children with negative z-index
 			
+			if (renderChildLayers == true)
+			{
+				renderChildLayer(_negativeOrderChildLayers, _graphicsContext, relativeOffset);
+			}
+			
 			//render all the block container children belonging to this layer
 			blockBoxRootRenderer.renderBlockContainerChildren(_graphicsContext, relativeOffset);
 			
@@ -122,10 +131,15 @@ class LayerRenderer extends Node
 			if (renderChildLayers == true)
 			{
 				//render all the child layers with a z-index of 0
-				renderChildLayer(_graphicsContext, relativeOffset);
+				renderChildLayer(_treeOrderChildLayers, _graphicsContext, relativeOffset);
 			}
 			
 			//TODO here : render children with positive z-index
+			
+			if (renderChildLayers == true)
+			{
+				renderChildLayer(_positiveOrderChildLayers, _graphicsContext, relativeOffset);
+			}
 			
 			//TODO : this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
 			
@@ -232,6 +246,12 @@ class LayerRenderer extends Node
 
 	public function detach():Void
 	{
+		for (i in 0..._childNodes.length)
+		{
+			var child:LayerRenderer = cast(_childNodes[i]);
+			child.detach();
+		}
+		
 		//TODO : quick fix, should be abstracted
 			for (i in 0..._graphicsContext.numChildren)
 			{
@@ -248,9 +268,8 @@ class LayerRenderer extends Node
 	{
 		super.appendChild(newChild);
 		
-		//TODO : re-implement
-		/**
 		var childLayer:LayerRenderer = cast(newChild);
+
 		switch(childLayer.zIndex)
 		{
 			case ZIndex.cssAuto:
@@ -272,13 +291,50 @@ class LayerRenderer extends Node
 				}
 				
 		}
-		*/
+		
 		return newChild;
+	}
+	
+	override public function removeChild(oldChild:Node):Node
+	{
+		var childLayer:LayerRenderer = cast(oldChild);
+
+		switch(childLayer.zIndex)
+		{
+			case ZIndex.cssAuto:
+				_treeOrderChildLayers.remove(childLayer);
+				
+			case ZIndex.integer(value):
+				if (value == 0)
+				{
+					//TODO : might not put in the right order after DOM manipulation, use "insertBefore" ?
+					_treeOrderChildLayers.remove(childLayer);
+				}
+				else if (value > 0)
+				{
+					_positiveOrderChildLayers.remove(childLayer);
+				}
+				else if (value < 0)
+				{
+					_negativeOrderChildLayers.remove(childLayer);
+				}
+				
+		}
+		
+		super.removeChild(oldChild);
+		
+		
+		
+		return oldChild;
 	}
 	
 	private function insertPositiveOrderChildLayer(childLayer:LayerRenderer, childLayerZIndex:Int):Void
 	{
+		
+		
 		var newPositiveChildLayers:Array<LayerRenderer> = new Array<LayerRenderer>();
+		
+		var isInserted:Bool = false;
 		
 		for (i in 0..._positiveOrderChildLayers.length)
 		{
@@ -297,7 +353,13 @@ class LayerRenderer extends Node
 			if (currentLayerZIndex <= childLayerZIndex)
 			{
 				newPositiveChildLayers.push(childLayer);
+
 			}
+		}
+		
+		if (isInserted == false)
+		{
+			newPositiveChildLayers.push(childLayer);
 		}
 		
 		_positiveOrderChildLayers = newPositiveChildLayers;
@@ -458,13 +520,11 @@ class LayerRenderer extends Node
 	 * Render all the children LayerRenderer of this LayerRenderer
 	 * and return an array of NativeElements from it
 	 */
-	private function renderChildLayer(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderChildLayer(layers:Array<LayerRenderer>, graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		var childLayers:Array<LayerRenderer> = getChildLayers();
-		
-		for (i in 0...childLayers.length)
+		for (i in 0...layers.length)
 		{
-			childLayers[i].render(graphicContext, relativeOffset);
+			layers[i].render(graphicContext, relativeOffset);
 		}
 	}
 	
@@ -485,10 +545,10 @@ class LayerRenderer extends Node
 		return childLayers;
 	}
 	
-	
+	//TODO : should use computed style but not yet computed
 	private function get_zIndex():ZIndex
 	{
-		return _rootRenderer.computedStyle.zIndex;
+		return _rootRenderer.coreStyle.zIndex;
 	}
 
 	
