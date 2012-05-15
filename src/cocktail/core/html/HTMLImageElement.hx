@@ -156,7 +156,7 @@ class HTMLImageElement extends EmbeddedElement
 		this._intrinsicWidth = _imageLoader.intrinsicWidth;
 		this._intrinsicRatio = _intrinsicHeight / _intrinsicWidth;
 		
-		invalidateStyle();
+		invalidateLayout();
 		
 		//if provided, call the onload callback
 		if (onload != null)

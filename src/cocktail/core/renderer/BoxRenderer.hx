@@ -30,6 +30,7 @@ import cocktail.core.style.formatter.InlineFormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 import cocktail.core.unit.UnitManager;
+import cocktail.core.geom.GeomData;
 import haxe.Log;
 
 /**
@@ -43,8 +44,6 @@ import haxe.Log;
  */
 class BoxRenderer extends ElementRenderer
 {
-
-	
 	/**
 	 * class constructor
 	 */
@@ -53,13 +52,28 @@ class BoxRenderer extends ElementRenderer
 		super(node);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
-	 * Render and position the background color and
-	 * image of the element using runtime specific
-	 * API and return an array of NativeElement from
-	 * it
+	 * overriden to render elements spefic to a box (background, border...)
+	 * 
+	 * TODO : apply transformations, opacity and visibility
 	 */
-	override public function render():Array<NativeElement>
+	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		renderBackground(graphicContext, relativeOffset);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Render the background of the box using the provided graphic context
+	 */
+	private function renderBackground(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var backgroundManager:BackgroundManager = new BackgroundManager();
 		
@@ -71,14 +85,13 @@ class BoxRenderer extends ElementRenderer
 			#if (flash9 || nme)
 			backgrounds[i].x = globalBounds.x;
 			backgrounds[i].y = globalBounds.y;
+			graphicContext.addChild(backgrounds[i]);
 			#end
 		}
-	
-		return backgrounds;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC LAYOUT METHODS
+	// OVERRIDEN PUBLIC LAYOUT METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -127,7 +140,8 @@ class BoxRenderer extends ElementRenderer
 		//of the ElementRenderer are known, for instance some values of the VerticalAlign style
 		//might need those dimensions to compute the right values
 		//
-		//TODO : shouldn't be necessary anymore as vertical align is computed during formatting
+		//TODO : shouldn't be necessary anymore as vertical align is computed during formatting.
+		//Only used for vertical align and text indent
 		_coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
 		
 		//compute the background styles which can be computed at this time,
@@ -152,8 +166,181 @@ class BoxRenderer extends ElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Lay out all the children of the ElementRenderer
+	 * Start the layout of all of the HTMLElements tree which set the bounds
+	 * of the all of the rendring tree elements relative to their containing block.
+	 * Then set the global bounds (relative to the window) for all of the elements
+	 * of the rendering tree
 	 * 
+	 * TODO : for now only called by the InitialBlockRenderer but should be callable
+	 * by any BoxRenderer to prevent form laying out and rendering all of the rendering
+	 * tree
+	 */
+	private function startLayout():Void
+	{
+		var windowData:ContainingBlockData = getWindowData();
+		
+		//TODO : should retrieve the date of the first positioned ancestor
+		var firstPositionedAncestorData:FirstPositionedAncestorData = {
+			elements: new Array<ElementRenderer>(),
+			data:getContainerBlockData()
+		}
+		
+		//layout all the HTMLElements. After that they all know their bounds relative to the containing
+		//blocks
+		layout(getContainerBlockData(), windowData, firstPositionedAncestorData, _coreStyle.fontMetrics, null);
+		//set the global bounds on the rendering tree. After that all the elements know their positions
+		//relative to the window
+		
+		
+		setGlobalOrigins(this,globalBounds.x,globalBounds.y, positionedOrigin.x,positionedOrigin.y);
+	}
+	
+	/**
+	 * Set the global bounds (relative to the window) of all the elements of the rendering tree, by
+	 * traversing it recursively
+	 * 
+	 * 
+	 * @param	elementRenderer the current node in the render tree onto which the global bounds are set
+	 * @param	addedX the added x position for the normal flow
+	 * @param	addedY the added y position for the normal flow
+	 * @param	addedPositionedX the added X position for positioned elements
+	 * @param	addedPositionedY the added Y position for positioned elements
+	 */
+	private function setGlobalOrigins(elementRenderer:ElementRenderer, addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
+	{
+		//if the element establishes a new formatting context, then its
+		//bounds must be added to the global x and y bounds for the normal flow
+		if (elementRenderer.establishesNewFormattingContext() == true)
+		{
+			//if the element is positioned, it can either add its bounds
+			//or positioned origin to the global x and y for normal flow. If it
+			//uses its static position, it uses its bounds, else it uses its
+			//positioned origin
+			if (elementRenderer.isPositioned() == true)
+			{
+				//TODO : use globalBounds to determine which bounds to add ?
+				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
+				{
+					if (elementRenderer.coreStyle.computedStyle.position == absolute)
+					{
+						addedX += elementRenderer.positionedOrigin.x;
+					}
+					//here the positioned ElementRenderer is fixed and is placed
+					//relative to the window. In this case, its x is not added
+					//TODO : complet doc + check if necessary everywhere
+					else
+					{
+						addedX = elementRenderer.positionedOrigin.x;
+					}
+					
+				}
+				else
+				{
+					addedX += elementRenderer.bounds.x;
+				}
+				
+				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
+				{
+					if (elementRenderer.coreStyle.computedStyle.position == absolute)
+					{
+						addedY += elementRenderer.positionedOrigin.y;
+					}
+					else
+					{
+						addedY = elementRenderer.positionedOrigin.y;
+					}
+				}
+				else
+				{
+					addedY += elementRenderer.bounds.y;
+				}
+			}
+			//if the element is not positioned or relatively positioned, it always add
+			//its bounds to the global x and y flow
+			else
+			{
+				addedX += elementRenderer.bounds.x;
+				addedY += elementRenderer.bounds.y;
+			}
+		}
+		
+		//if the element is positioned, it must also add
+		//its bounds to the global positioned origin
+		if (elementRenderer.isPositioned() == true)
+		{
+			//absolutely positioned elements either add their static position
+			//or their positioned origin
+			if (elementRenderer.coreStyle.computedStyle.position != relative)
+			{
+				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
+				{
+					if (elementRenderer.coreStyle.computedStyle.position == absolute)
+					{
+						addedPositionedX += elementRenderer.positionedOrigin.x;
+					}
+					else
+					{
+						addedPositionedX = elementRenderer.positionedOrigin.x;
+					}
+					
+				}
+				else
+				{
+					addedPositionedX += elementRenderer.bounds.x;
+				}
+				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
+				{
+					if (elementRenderer.coreStyle.computedStyle.position == absolute)
+					{
+						addedPositionedY += elementRenderer.positionedOrigin.y;
+					}
+					else
+					{
+						addedPositionedY = elementRenderer.positionedOrigin.y;
+					}
+					
+				}
+				else
+				{
+					addedPositionedY += elementRenderer.bounds.y;
+				}
+			}
+			//relative positioned elements always use their bounds, as the relative
+			//offset is only applied at render time and isn't used in the bounds
+			//computation
+			else
+			{
+				addedPositionedX += elementRenderer.bounds.x;
+				addedPositionedY += elementRenderer.bounds.y;
+			}
+		}
+		
+		//for its child of the element
+		for (i in 0...elementRenderer.childNodes.length)
+		{
+			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
+			
+			//TODO : doc on added body margin. Shouldn't be always applied
+			child.globalContainingBlockOrigin = {
+				x: addedX + computedStyle.marginLeft,
+				y : addedY + computedStyle.marginTop
+			}
+			
+			child.globalPositionnedAncestorOrigin = {
+				x: addedPositionedX + computedStyle.marginLeft,
+				y : addedPositionedY + computedStyle.marginTop
+			}
+			
+			//call the method recursively if the child has children itself
+			if (child.hasChildNodes() == true)
+			{
+				setGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
+			}
+		}
+	}
+	
+	/**
+	 * Lay out all the children of the ElementRenderer
 	 */
 	private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
@@ -299,6 +486,21 @@ class BoxRenderer extends ElementRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as BoxRenderer might create new stacking context, for
+	 * instance if they are positioned
+	 * 
+	 * TODO : add the z-index case
+	 */
+	override private function establishesNewStackingContext():Bool
+	{
+		return isPositioned();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -324,6 +526,20 @@ class BoxRenderer extends ElementRenderer
 		}
 		
 		return ret;
+	}
+	
+	/**
+	 * Return the dimensions data
+	 * of the ElementRenderer
+	 */
+	private function getContainerBlockData():ContainingBlockData
+	{
+		return {
+			width:this.computedStyle.width,
+			isWidthAuto:this._coreStyle.width == Dimension.cssAuto,
+			height:this.computedStyle.height,
+			isHeightAuto:this._coreStyle.height == Dimension.cssAuto
+		};
 	}
 	
 	/**
@@ -377,8 +593,4 @@ class BoxRenderer extends ElementRenderer
 		
 		return containingBlockDimensions;
 	}
-	
-
-	
-	
 }

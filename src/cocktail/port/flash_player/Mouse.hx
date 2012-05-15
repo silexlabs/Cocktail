@@ -37,10 +37,10 @@ class Mouse extends AbstractMouse
 	 */
 	override private function setNativeListeners():Void
 	{
-		Lib.current.addEventListener(flash.events.MouseEvent.CLICK, onNativeClick);
-		Lib.current.addEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
-		Lib.current.addEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
-		Lib.current.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		Lib.current.stage.addEventListener(flash.events.MouseEvent.CLICK, onNativeClick);
+		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
+		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
+		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
 	}
 	
 	/**
@@ -48,10 +48,10 @@ class Mouse extends AbstractMouse
 	 */
 	override private function removeNativeListeners():Void
 	{
-		Lib.current.removeEventListener(flash.events.MouseEvent.CLICK, onNativeClick);
-		Lib.current.removeEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
-		Lib.current.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
-		Lib.current.removeEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		Lib.current.stage.removeEventListener(flash.events.MouseEvent.CLICK, onNativeClick);
+		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
+		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
+		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
 	}
 	
 	/**

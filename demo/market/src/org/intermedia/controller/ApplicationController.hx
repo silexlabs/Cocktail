@@ -1,6 +1,5 @@
 package org.intermedia.controller;
 
-//import cocktail.Cocktail;
 import haxe.Firebug;
 import org.intermedia.model.ApplicationModel;
 
@@ -38,10 +37,8 @@ class ApplicationController
 	 * Prompt the model to load more cell data
 	 * @param	feed
 	 */
-	//public function loadCellData():Void
 	public function loadCellData(feed:String):Void
 	{
-		//_applicationModel.loadCellData();
 		_applicationModel.loadCellData(feed);
 	}
 
@@ -51,7 +48,6 @@ class ApplicationController
 	 */
 	public function openDetailView(cellData:CellData):Void
 	{
-		//trace(cellData);
 		_applicationModel.loadDetailData(cellData);
 	}
 	

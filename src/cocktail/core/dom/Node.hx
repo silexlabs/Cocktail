@@ -249,18 +249,14 @@ class Node
 		{
 			removeFromParentIfNecessary(newChild);
 			
-			var newChildNodes:Array<Node> = new Array<Node>();
-			
 			for (i in 0..._childNodes.length)
 			{
 				if (_childNodes[i] == refChild)
 				{
-					newChildNodes.push(newChild);
+					appendChild(newChild);
 				}
-				newChildNodes.push(_childNodes[i]);
+				appendChild(_childNodes[i]);
 			}
-			
-			_childNodes = newChildNodes;
 		}
 		
 		return newChild;
@@ -279,21 +275,14 @@ class Node
 	 */
 	public function replaceChild(newChild:Node, oldChild:Node):Node
 	{
-		var newChildNodes:Array<Node> = new Array<Node>();
-		
 		for (i in 0..._childNodes.length)
 		{
 			if (_childNodes[i] == oldChild)
 			{
-				newChildNodes.push(newChild);
+				removeChild(oldChild);
 			}
-			else
-			{
-				newChildNodes.push(_childNodes[i]);
-			}
+			appendChild(newChild);
 		}
-		
-		_childNodes = newChildNodes;
 		
 		return oldChild;
 	}
@@ -389,7 +378,7 @@ class Node
 		
 		else if (_parentNode.lastChild != this)
 		{
-			//loop in all child to finf this node and return
+			//loop in all child to find this node and return
 			//the next one
 			for (i in 0..._parentNode.childNodes.length)
 			{

@@ -44,7 +44,7 @@ Test = function(p) {
 	var test = "<div>";
 	test += "<div style=\"position:relative;\">";
 	test += "<div style=\"background-color:orange; top:0.5in; position:absolute; height:1in; width:1in;\">";
-	test += " Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text ";
+	test += "Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text Filler Text ";
 	test += "</div>";
 	test += "<div style=\"background-color:blue; height:2in; width:0.5in; float:left;\"></div>";
 	test += "</div></div>";

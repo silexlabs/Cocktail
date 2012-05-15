@@ -7,11 +7,12 @@
 
 package org.intermedia.view;
 
+import haxe.Firebug;
 import js.Lib;
 import js.Dom;
 
 /**
- * This class defines the styles used by the CellThumb
+ * This class defines the styles used by the Cells
  * 
  * @author Raphael Harmel
  */
@@ -43,14 +44,6 @@ class CellStyle
 		// compute cell width in percentage depending on cellPerLine value
 		var cellWidthPercent:Float = computeWidthPercentage(cellPerLine);
 		node.style.width = Std.string(cellWidthPercent) + "%";
-		//node.style.height = Std.int(maskPixelSize.width / CELL_RATIO);
-		//node.style.height = Std.string(Constants.CELL_HEIGHT) + "px";
-		
-		// compute cell width in pixels depending on cellPerLine value
-		// 2 pixels are removed so that adding borders does not mess up layout
-		//var cellWidthPixels:Int = computeWidthPixels(cellPerLine);
-		//node.style.width = Std.string(cellWidthPixels - (2 * Constants.CELL_BORDER_WIDTH)) + "px";
-		//node.style.height = Std.int(maskPixelSize.width / CELL_RATIO);
 		
 		node.style.verticalAlign = "top";
 
@@ -66,25 +59,17 @@ class CellStyle
 	 * @param	cellPerLine
 	 * @return
 	 */
-	public static function computeWidthPercentage(cellPerLine):Float
+	public static function computeWidthPercentage(cellPerLine:Int, ?borderWidth:Int=0):Float
 	{
 		// compute cell width in percentage depending on cellPerLine value
 		var cellWidthPercent:Float = 100;
 		
 		if (cellPerLine != 0)
 		{
-			/*if (cellPerLine == 1)
-			{
-				// workaround so lines with 1 cell is aligned to those with two cells
-				cellWidthPercent -= 2;
-			}
-			else*/
-			if (cellPerLine != 1)
-			{
-				//cellWidthPercent = Std.int( 100 / cellPerLine);
-				cellWidthPercent = 100 / cellPerLine;
-				cellWidthPercent -= 0.95;
-			}
+			// cell width percent equals to 100/cellPerLine - left border - last right border
+			cellWidthPercent = (100 / cellPerLine)
+				- ( borderWidth * 100 / Lib.window.innerWidth)
+				- ( borderWidth * 100 / (Lib.window.innerWidth * cellPerLine)) ;
 		}
 		
 		return cellWidthPercent;
@@ -110,16 +95,22 @@ class CellStyle
 	}
 	
 	/**
+	 * Adds a border to the node, using workaround as not supported by cocktail yet
+	 * 
+	 * @param	node
+	 */
+	public static function addBorder(node:HtmlDom, borderWidth:Int):Void
+	{
+		// add border using margin and background as not supported by cocktail yet
+		node.style.marginBottom = Std.string(borderWidth) + "px";
+		node.style.marginLeft = Std.string(borderWidth) + "px";
+	}
+	
+	/**
 	 * Adds a border to the node, using CCS styles
 	 * 
 	 * @param	node
 	 */
-	public static function addBorder(node:HtmlDom):Void
-	{
-		// add border using margin and background as not supported by cocktail yet
-		node.style.margin = Std.string(Constants.CELL_BORDER_WIDTH) + "px";
-	}
-	
 	/*public static function addBorderCss(node:HtmlDom):Void
 	{
 		// add border
@@ -129,17 +120,25 @@ class CellStyle
 	}*/
 	
 	/**
-	 * Removes a border to the node, using CCS styles
+	 * Removes the border of the node, using workaround as not supported by cocktail yet
 	 * 
 	 * @param	node
 	 */
 	public static function removeBorder(node:HtmlDom):Void
 	{
-		// remove border
-		//node.style.borderStyle = "none";
-		
 		// remove border using margin as not supported by cocktail yet
 		node.style.margin = "0px";
 	}
+	
+	/**
+	 * Removes the border of the node, using CCS styles
+	 * 
+	 * @param	node
+	 */
+	/*public static function removeBorderCss(node:HtmlDom):Void
+	{
+		// remove border
+		node.style.borderStyle = "none";
+	}*/
 	
 }

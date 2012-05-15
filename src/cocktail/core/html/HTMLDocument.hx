@@ -207,6 +207,9 @@ class HTMLDocument extends Document
 	 * Called when a mouse down event is dispatched.
 	 * Retrieve the top-most ElementRenderer under the mouse
 	 * pointer and call its mouse down down callback if provided
+	 * 
+	 * TODO IMPORTANT : should also now use scrollLeft and scrollTop to find
+	 * the clicked ElementRenderer
 	 */
 	private function onMouseDown(mouseEvent:MouseEvent):Void
 	{
@@ -224,10 +227,12 @@ class HTMLDocument extends Document
 			{
 				case Node.ELEMENT_NODE:
 					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
+				
 					if (htmlElement.onmousedown != null)
 					{
 						htmlElement.onmousedown(mouseEvent);
 						//return as only one callback is executed
+						
 						return;
 					}
 			}
@@ -303,61 +308,62 @@ class HTMLDocument extends Document
 			
 		//TODO : doc for mouse over / out
 		
-		/**
+		
 		if (elementRenderersAtPoint.length > 0)
 		{
-			if (elementRenderersAtPoint[elementRenderersAtPoint.length - 1] != _hoveredElementRenderer)
+			if (elementRenderersAtPoint[elementRenderersAtPoint.length - 1].node != _hoveredHTMLElement)
 			{
-				if (_hoveredElementRenderer != null)
+				if (_hoveredHTMLElement != null)
 				{
 					
 					
-					if (_hoveredElementRenderer.htmlElement.onmouseout != null)
+					if (_hoveredHTMLElement.onmouseout != null)
 					{
-						_hoveredElementRenderer.htmlElement.onmouseout(mouseEvent);
+						_hoveredHTMLElement.onmouseout(mouseEvent);
 					}
 				}
-				_hoveredElementRenderer = elementRenderersAtPoint[elementRenderersAtPoint.length - 1];
-				if (_hoveredElementRenderer.htmlElement.onmouseover != null)
+				//TODO : should switch, might be TextRenderer that was hit
+				_hoveredHTMLElement = cast(elementRenderersAtPoint[elementRenderersAtPoint.length - 1].node);
+				if (_hoveredHTMLElement.onmouseover != null)
 				{
-					_hoveredElementRenderer.htmlElement.onmouseover(mouseEvent);
+					_hoveredHTMLElement.onmouseover(mouseEvent);
 				}
 			}
 		}
 		else
 		{
-			//TODO : should be hoveredHTMLelement instead
-			if (_hoveredElementRenderer == null)
+			if (_hoveredHTMLElement == null)
 			{
-				_hoveredElementRenderer = _body.elementRenderer;
+				_hoveredHTMLElement = _body;
 			}
 			
-			if (_hoveredElementRenderer.htmlElement != _body)
+			if (_hoveredHTMLElement != _body)
 			{
-				if (_hoveredElementRenderer != null)
+				if (_hoveredHTMLElement != null)
 				{
-					if (_hoveredElementRenderer.htmlElement.onmouseout != null)
+					if (_hoveredHTMLElement.onmouseout != null)
 					{
-						_hoveredElementRenderer.htmlElement.onmouseout(mouseEvent);
+						_hoveredHTMLElement.onmouseout(mouseEvent);
 					}
 				}
-				_hoveredElementRenderer = _body.elementRenderer;
-				if (_hoveredElementRenderer.htmlElement.onmouseover != null)
+				_hoveredHTMLElement = _body;
+				if (_hoveredHTMLElement.onmouseover != null)
 				{
-					_hoveredElementRenderer.htmlElement.onmouseover(mouseEvent);
+					_hoveredHTMLElement.onmouseover(mouseEvent);
 				}
 			}
 		}
 			
 		for (i in 0...elementRenderersAtPoint.length)
 		{
-			if (elementRenderersAtPoint[i].htmlElement.onmousemove != null)
+			var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
+			if (htmlElement.onmousemove != null)
 			{
-				elementRenderersAtPoint[i].htmlElement.onmousemove(mouseEvent);
+				htmlElement.onmousemove(mouseEvent);
 				return;
 			}
 		}
-		*/
+		
 	}
 	
 	/**
@@ -413,7 +419,7 @@ class HTMLDocument extends Document
 	 */
 	private function onWindowResize(event:Event):Void
 	{
-		_body.invalidateStyle();
+		_body.invalidateLayout();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
