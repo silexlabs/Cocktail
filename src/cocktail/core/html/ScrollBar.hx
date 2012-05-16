@@ -300,7 +300,11 @@ class ScrollBar extends HTMLElement
 		}
 		else
 		{
-			scroll = _mouseMoveStart + (event.screenX - _mouseMoveStart);
+			//TODO : doesn't work
+			var thumbDelta:Float = event.screenX - _mouseMoveStart;
+			scroll += thumbDelta;
+			
+			_mouseMoveStart = event.screenX;
 		}
 	}
 	 
@@ -376,6 +380,46 @@ class ScrollBar extends HTMLElement
 		dispatchScrollEvent();
 	}
 	
+	/**
+	 * When the max scroll offset changes, 
+	 * the size of the thumb to reflect
+	 * the amount of scrollablze offset
+	 */
+	private function updateThumbSize():Void
+	{
+		
+		if (_isVertical == true)
+		{
+			var thumbHeight:Float = _coreStyle.computedStyle.height - _downArrow.coreStyle.computedStyle.height - _upArrow.coreStyle.computedStyle.height - maxScroll;
+
+			//TODO : min size should not be hard-coded
+			if (thumbHeight < 15)
+			{
+				thumbHeight = 15;
+			}
+			
+			if (thumbHeight != _scrollThumb.coreStyle.computedStyle.height)
+			{
+				_scrollThumb.style.height = thumbHeight + "px";
+			}
+			
+		}
+		else
+		{
+			var thumbWidth:Float = _coreStyle.computedStyle.width - _downArrow.coreStyle.computedStyle.width - _upArrow.coreStyle.computedStyle.width - maxScroll;
+			
+			if (thumbWidth < 15)
+			{
+				thumbWidth = 15;
+			}
+			
+			if (thumbWidth != _scrollThumb.coreStyle.computedStyle.width)
+			{
+				_scrollThumb.style.width = thumbWidth + "px";
+			}
+		}
+	}
+	
 	private function dispatchScrollEvent():Void
 	{
 		if (_onScroll != null)
@@ -398,6 +442,7 @@ class ScrollBar extends HTMLElement
 	private function set_maxScroll(value:Float):Float 
 	{
 		_maxScroll = value;
+		updateThumbSize();
 		return value;
 	}
 
