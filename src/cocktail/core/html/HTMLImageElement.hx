@@ -175,7 +175,8 @@ class HTMLImageElement extends EmbeddedElement
 		//if provided, call the onload callback
 		if (onload != null)
 		{
-			var loadEvent:Event = new Event(Event.LOAD, this);
+			var loadEvent:Event = new Event();
+			loadEvent.initEvent(Event.LOAD, true, true);
 			onload(loadEvent);
 		}
 	}
@@ -190,7 +191,9 @@ class HTMLImageElement extends EmbeddedElement
 	{
 		if (onError != null)
 		{
-			onError(new Event(Event.ERROR, this));
+			var errorEvent:Event = new Event();
+			errorEvent.initEvent(Event.ERROR, true, true);
+			onError(errorEvent);
 		}
 	}
 	

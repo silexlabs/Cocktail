@@ -189,7 +189,9 @@ class XMLHTTPRequest extends EventTarget
 		_readyState = value;
 		if (onReadyStateChange != null)
 		{
-			onReadyStateChange(new Event(Event.READY_STATE_CHANGE, this));
+			var readyStateChangeEvent:Event = new Event();
+			readyStateChangeEvent.initEvent(Event.READY_STATE_CHANGE, false, false);
+			onReadyStateChange(readyStateChangeEvent);
 		}
 	}
 	
