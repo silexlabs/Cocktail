@@ -303,6 +303,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		attachScrollBarsIfnecessary();
 		
+		//test if either the vertical or horizontal scrollbar was just attached
 		if (horizontalScrollBarAttached != (_horizontalScrollBar != null)
 		|| verticalScrollBarAttached != (_verticalScrollBar != null))
 		{
@@ -391,7 +392,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	
-		
 	/**
 	 * Determine wheter the y axis of this BlockBoxRenderer
 	 * is clipped to its height
@@ -507,7 +507,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	//TODO : work but shouldn't have to parse all rendering tree, should done during formatting
 	//and then another pass for absolutely positioned children. Maybe this way less expensive in
-	//the  end because onlt called when useful ?
+	//the  end because only called when useful ?
 	/**
 	 * Get the bounds of all of the children
 	 * by traversing the rendering tree
@@ -535,19 +535,15 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				
 				childrenBounds.push(child.bounds);
 			}
-			
 		}
-		
+
 		return childrenBounds;
-		
 	}
 	
 	//TODO : if at least one is attached, should do a new layout, 
 	//else the scrollbar is at first 0,0 at first rendering
 	//TODO : implement border case where one has scroll attached, and the 
 	//other is visible but should still display scroll
-	//
-	//TODO : should refresh maxScroll n attach scrollbars
 	/**
 	 * Attach the horizontal and vertical scrollbar if they are
 	 * needed, based on the overflow style of the BlockBoxRenderer
@@ -728,7 +724,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		return establishesNewFormattingContext;
 	}
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS

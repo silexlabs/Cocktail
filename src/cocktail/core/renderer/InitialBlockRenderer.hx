@@ -281,7 +281,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 			width:cocktail.Lib.window.innerWidth,
 			height:cocktail.Lib.window.innerHeight
 		}
-		
+		//TODO : doc
 		if (_verticalScrollBar != null)
 		{
 			windowData.width -= _verticalScrollBar.coreStyle.computedStyle.width;
@@ -304,13 +304,12 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	}
 	
 	/**
-	 * The initital ElementRenderer is always a block container
+	 * The initial ElementRenderer is always a block container
 	 */
 	override public function isInlineLevel():Bool
 	{
 		return false;
 	}
-	
 	
 	/**
 	 * The root of the runtime always starts a block formatting context
