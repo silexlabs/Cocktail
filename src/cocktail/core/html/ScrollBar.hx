@@ -37,6 +37,8 @@ class ScrollBar extends HTMLElement
 		_downArrow = new HTMLElement("");
 	
 	
+		_scroll = 0;
+		_maxScroll = 0;
 		
 		initScrollBar();
 		
@@ -49,7 +51,7 @@ class ScrollBar extends HTMLElement
 			initHorizontalScrollBar();
 		}
 		
-		//_scrollThumb.onmousedown = onThumbMouseDown;
+		
 		
 		appendChild(_scrollThumb);
 		appendChild(_upArrow);
@@ -57,6 +59,7 @@ class ScrollBar extends HTMLElement
 		
 		onmousedown = onTrackMouseDown;
 		
+		_scrollThumb.onmousedown = onThumbMouseDown;
 		_downArrow.onmousedown = onDownArrowMouseDown;
 		_upArrow.onmousedown = onUpArrowMouseDown;
 		
@@ -96,6 +99,8 @@ class ScrollBar extends HTMLElement
 		_style.top = "0";
 		
 		_downArrow.style.bottom = "0";
+		
+		_scrollThumb.style.top = "15px";
 	}
 	
 	private function initHorizontalScrollBar():Void
@@ -106,6 +111,8 @@ class ScrollBar extends HTMLElement
 		_style.left = "0";
 		
 		_downArrow.style.right = "0";
+		
+		_scrollThumb.style.left = "15px";
 	}
 	
 	private function onDownArrowMouseDown(event:MouseEvent):Void
@@ -178,7 +185,11 @@ class ScrollBar extends HTMLElement
 		}
 		else
 		{
-			_scrollThumb.style.left = scroll + "px";
+			var thumbX:Int = Math.round(progress * (_coreStyle.computedStyle.width -
+			_upArrow.coreStyle.computedStyle.width - _downArrow.coreStyle.computedStyle.width - _scrollThumb.coreStyle.computedStyle.width)
+			+  _upArrow.coreStyle.computedStyle.width);
+			
+			_scrollThumb.style.left = thumbX + "px";
 		}
 		
 		dispatchScrollEvent();

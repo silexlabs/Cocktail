@@ -302,15 +302,23 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//TODO : shouldn't be computed each time
 		_scrollableBounds = getScrollableBounds();
 		
+		var horizontalScrollBarAttached:Bool = _horizontalScrollBar != null;
+		var verticalScrollBarAttached:Bool = _verticalScrollBar != null;
+		
 		attachScrollBarsIfnecessary();
+		
+		if (horizontalScrollBarAttached != (_horizontalScrollBar != null)
+		|| verticalScrollBarAttached != (_verticalScrollBar != null))
+		{
+			var childrenFormattingContext:FormattingContext = getFormattingContext(formattingContext);
+			var childrenContainingBlockData:ContainingBlockData = getContainerBlockData();
+			var childFirstPositionedAncestorData:FirstPositionedAncestorData = getChildrenFirstPositionedAncestorData(firstPositionedAncestorData);
+			doLayoutChildren(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, _coreStyle.fontMetrics, childrenFormattingContext);
+		}
 		
 
 	//	TODO : this re-layout should only happen if at least one scrollbar is attached, return bool from attachScrollBarsIfnecessary ?
-		//var childrenFormattingContext:FormattingContext = getFormattingContext(formattingContext);
-		//var childrenContainingBlockData:ContainingBlockData = getContainerBlockData();
-		//var childFirstPositionedAncestorData:FirstPositionedAncestorData = getChildrenFirstPositionedAncestorData(firstPositionedAncestorData);
-		//doLayoutChildren(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, _coreStyle.fontMetrics, childrenFormattingContext);
-	
+		
 	}
 	
 	/**
