@@ -336,7 +336,10 @@ class ElementRenderer extends Node
 		{
 			var parent:ElementRenderer = cast(_parentNode);
 			parent.layerRenderer.removeChild(_layerRenderer);
+			
+			//TODO : should be called in LayerRenderer.removeChild ?
 			_layerRenderer.detach();
+			
 			_hasOwnLayer = false;
 		}
 		

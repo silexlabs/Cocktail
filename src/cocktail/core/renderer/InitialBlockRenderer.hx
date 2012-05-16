@@ -328,11 +328,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		return true;
 	}
 	
+	//TODO : messy
 	override private function get_bounds():RectangleData
 	{
 		var width:Float = cocktail.Lib.window.innerWidth;
 		var height:Float = cocktail.Lib.window.innerHeight;
-		
 		
 		return {
 			x:0.0,

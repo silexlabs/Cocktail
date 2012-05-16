@@ -221,7 +221,6 @@ class HTMLDocument extends Document
 		//execute the callback of the first top-most
 		//ElementRenderer with a mouse down callback
 		//
-		//TODO : wrong order, top-most is last element of the array
 		
 		//TODO : hack
 		elementRenderersAtPoint.reverse();
@@ -337,7 +336,8 @@ class HTMLDocument extends Document
 						_hoveredHTMLElement.onmouseout(mouseEvent);
 					}
 				}
-				//TODO : should switch, might be TextRenderer that was hit
+				//TODO : should switch, might be TextRenderer that was hit, only works because text is HTMLElement because
+				//of Haxe JS
 				_hoveredHTMLElement = cast(elementRenderersAtPoint[elementRenderersAtPoint.length - 1].node);
 				if (_hoveredHTMLElement.onmouseover != null)
 				{
