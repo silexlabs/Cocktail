@@ -11,7 +11,7 @@ package cocktail.core.event;
  * The interface allows registration and removal 
  * of event listeners, and dispatch of events to an event target.
  * 
- * TODO : implement
+ * TODO : implement + doc
  * 
  * @author Yannick DOMINGUEZ
  */

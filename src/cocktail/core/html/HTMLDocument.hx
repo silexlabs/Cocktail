@@ -222,6 +222,10 @@ class HTMLDocument extends Document
 		//ElementRenderer with a mouse down callback
 		//
 		//TODO : wrong order, top-most is last element of the array
+		
+		//TODO : hack
+		elementRenderersAtPoint.reverse();
+		
 		for (i in 0...elementRenderersAtPoint.length)
 		{
 			switch( elementRenderersAtPoint[i].node.nodeType)
@@ -253,6 +257,9 @@ class HTMLDocument extends Document
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
 
+		//TODO : hack
+		elementRenderersAtPoint.reverse();
+		
 		for (i in 0...elementRenderersAtPoint.length)
 		{
 			switch( elementRenderersAtPoint[i].node.nodeType)
@@ -280,6 +287,9 @@ class HTMLDocument extends Document
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
 		
+		//TODO : hack
+		elementRenderersAtPoint.reverse();
+		
 		for (i in 0...elementRenderersAtPoint.length)
 		{
 			switch( elementRenderersAtPoint[i].node.nodeType)
@@ -290,6 +300,8 @@ class HTMLDocument extends Document
 					{
 						htmlElement.onmouseup(mouseEvent);
 						//return as only one callback is executed
+						
+						//TODO : hack
 					//	return;
 					}
 			}
@@ -309,6 +321,8 @@ class HTMLDocument extends Document
 			
 		//TODO : doc for mouse over / out
 		
+		//TODO : hack
+		elementRenderersAtPoint.reverse();
 		
 		if (elementRenderersAtPoint.length > 0)
 		{

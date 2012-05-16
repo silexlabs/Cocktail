@@ -297,11 +297,15 @@ class ElementRenderer extends Node
 		//create the LayerRenderer if needed
 		if (_layerRenderer == null)
 		{
-			var parent:ElementRenderer = cast(_parentNode);
-			if (parent.layerRenderer != null)
+			if (_parentNode != null)
 			{
-				createLayer(parent.layerRenderer);
+				var parent:ElementRenderer = cast(_parentNode);
+				if (parent.layerRenderer != null)
+				{
+					createLayer(parent.layerRenderer);
+				}
 			}
+		
 		}
 		
 		//the ElementRenderer is attached to the LayerRenderer

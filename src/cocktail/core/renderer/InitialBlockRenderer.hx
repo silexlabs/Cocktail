@@ -66,6 +66,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		}
 	}
 	
+	//TODO : a lot of dublicate code with BlockBoxRenderer
 	override private function attachScrollBarsIfnecessary():Void
 	{
 		
@@ -84,6 +85,10 @@ class InitialBlockRenderer extends BlockBoxRenderer
 					attachHorizontalScrollBarIfNecessary();
 			}
 		}
+		else
+		{
+			_horizontalScrollBar.maxScroll = bounds.width;
+		}
 		
 		if (_verticalScrollBar == null)
 		{
@@ -97,6 +102,10 @@ class InitialBlockRenderer extends BlockBoxRenderer
 					case cssAuto, visible:
 					attachVerticalScrollBarIfNecessary();
 			}
+		}
+		else
+		{
+			_verticalScrollBar.maxScroll = bounds.height;
 		}
 	}
 	

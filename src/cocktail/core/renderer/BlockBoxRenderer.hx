@@ -578,6 +578,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					attachHorizontalScrollBarIfNecessary();
 			}
 		}
+		else
+		{
+			_horizontalScrollBar.maxScroll = bounds.width;
+		}
 		
 		if (_verticalScrollBar == null)
 		{
@@ -592,6 +596,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				case cssAuto:
 					attachVerticalScrollBarIfNecessary();
 			}
+		}
+		else
+		{
+			_verticalScrollBar.maxScroll = bounds.height;
 		}
 		
 	}
