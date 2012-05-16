@@ -295,7 +295,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{	
 		super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
-		
+
 		_scrollableBounds = getScrollableBounds();
 		
 		var horizontalScrollBarAttached:Bool = _horizontalScrollBar != null;
@@ -307,6 +307,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		if (horizontalScrollBarAttached != (_horizontalScrollBar != null)
 		|| verticalScrollBarAttached != (_verticalScrollBar != null))
 		{
+			//TODO : bug, scrollbars not rendered until next layout
 			invalidateLayout();
 		}
 		
@@ -540,8 +541,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return childrenBounds;
 	}
 	
-	//TODO : if at least one is attached, should do a new layout, 
-	//else the scrollbar is at first 0,0 at first rendering
 	//TODO : implement border case where one has scroll attached, and the 
 	//other is visible but should still display scroll
 	/**

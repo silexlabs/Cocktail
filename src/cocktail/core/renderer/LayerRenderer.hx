@@ -299,46 +299,26 @@ class LayerRenderer extends Node
 	{
 		var childLayer:LayerRenderer = cast(oldChild);
 
-		switch(childLayer.zIndex)
-		{
-			case ZIndex.cssAuto:
-				_treeOrderChildLayers.remove(childLayer);
-				
-			case ZIndex.integer(value):
-				if (value == 0)
-				{
-					//TODO : might not put in the right order after DOM manipulation, use "insertBefore" ?
-					_treeOrderChildLayers.remove(childLayer);
-				}
-				else if (value > 0)
-				{
-					_positiveOrderChildLayers.remove(childLayer);
-				}
-				else if (value < 0)
-				{
-					_negativeOrderChildLayers.remove(childLayer);
-				}
-				
-		}
+		//TODO : shouldn't have ot try in each ?
+		_treeOrderChildLayers.remove(childLayer);
+		_positiveOrderChildLayers.remove(childLayer);
+		_negativeOrderChildLayers.remove(childLayer);
 		
 		super.removeChild(oldChild);
-		
-		
-		
+	
 		return oldChild;
 	}
 	
 	private function insertPositiveOrderChildLayer(childLayer:LayerRenderer, childLayerZIndex:Int):Void
 	{
-		
-		
 		var newPositiveChildLayers:Array<LayerRenderer> = new Array<LayerRenderer>();
+
 		
 		var isInserted:Bool = false;
 		
 		for (i in 0..._positiveOrderChildLayers.length)
 		{
-			newPositiveChildLayers.push(_positiveOrderChildLayers[i]);
+			
 			
 			var currentLayerZIndex:Int = 0;
 			
@@ -350,19 +330,23 @@ class LayerRenderer extends Node
 				default:	
 			}
 			
-			if (currentLayerZIndex <= childLayerZIndex)
+			if (childLayerZIndex < currentLayerZIndex && isInserted == false)
 			{
 				newPositiveChildLayers.push(childLayer);
+				isInserted = true;
 
 			}
+			
+			newPositiveChildLayers.push(_positiveOrderChildLayers[i]);
+			
 		}
 		
 		if (isInserted == false)
 		{
 			newPositiveChildLayers.push(childLayer);
 		}
-		
 		_positiveOrderChildLayers = newPositiveChildLayers;
+
 	}
 	
 	private function insertNegativeOrderChildLayer(childLayer:LayerRenderer, childLayerZIndex:Int):Void
