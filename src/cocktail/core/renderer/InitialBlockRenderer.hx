@@ -85,9 +85,9 @@ class InitialBlockRenderer extends BlockBoxRenderer
 					attachHorizontalScrollBarIfNecessary();
 			}
 		}
-		else
+		if (_horizontalScrollBar != null)
 		{
-			_horizontalScrollBar.maxScroll = bounds.width;
+			_horizontalScrollBar.maxScroll = _scrollableBounds.width - bounds.width;
 		}
 		
 		if (_verticalScrollBar == null)
@@ -103,9 +103,9 @@ class InitialBlockRenderer extends BlockBoxRenderer
 					attachVerticalScrollBarIfNecessary();
 			}
 		}
-		else
+		if (_verticalScrollBar != null)
 		{
-			_verticalScrollBar.maxScroll = bounds.height;
+			_verticalScrollBar.maxScroll = _scrollableBounds.height - bounds.height;
 		}
 	}
 	

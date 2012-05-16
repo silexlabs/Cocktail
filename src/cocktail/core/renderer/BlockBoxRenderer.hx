@@ -285,21 +285,17 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE LAYOUT METHODS
+	// OVERRIDEN PUBLIC LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Overriden to deal with the scrollbars once the children of this
 	 * BlockBoxRenderer are laid out
 	 */
-	override private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
-	{
-		super.layoutChildren(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
+	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	{	
+		super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
 		
-		//update the scrollable bounds, which might be useful for auto
-		//overflow
-		//
-		//TODO : shouldn't be computed each time
 		_scrollableBounds = getScrollableBounds();
 		
 		var horizontalScrollBarAttached:Bool = _horizontalScrollBar != null;
@@ -310,16 +306,14 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		if (horizontalScrollBarAttached != (_horizontalScrollBar != null)
 		|| verticalScrollBarAttached != (_verticalScrollBar != null))
 		{
-			var childrenFormattingContext:FormattingContext = getFormattingContext(formattingContext);
-			var childrenContainingBlockData:ContainingBlockData = getContainerBlockData();
-			var childFirstPositionedAncestorData:FirstPositionedAncestorData = getChildrenFirstPositionedAncestorData(firstPositionedAncestorData);
-			doLayoutChildren(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, _coreStyle.fontMetrics, childrenFormattingContext);
+			invalidateLayout();
 		}
 		
-
-	//	TODO : this re-layout should only happen if at least one scrollbar is attached, return bool from attachScrollBarsIfnecessary ?
-		
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Actually layout all the children of the ElementRenderer by calling
@@ -525,10 +519,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		for (i in 0...rootRenderer.childNodes.length)
 		{
 			
-			
-			
 			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
-			
 			
 			if (child.node != _horizontalScrollBar && child.node != _verticalScrollBar)
 			{
@@ -586,9 +577,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					attachHorizontalScrollBarIfNecessary();
 			}
 		}
-		else
+		
+		if (_horizontalScrollBar != null)
 		{
-			_horizontalScrollBar.maxScroll = bounds.width;
+			_horizontalScrollBar.maxScroll = _scrollableBounds.width - bounds.width;
 		}
 		
 		if (_verticalScrollBar == null)
@@ -605,9 +597,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					attachVerticalScrollBarIfNecessary();
 			}
 		}
-		else
+		if (_verticalScrollBar != null)
 		{
-			_verticalScrollBar.maxScroll = bounds.height;
+			_verticalScrollBar.maxScroll = _scrollableBounds.height - bounds.height;
 		}
 		
 	}
@@ -624,7 +616,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_horizontalScrollBar = new ScrollBar(false);
 		_horizontalScrollBar.attach();
 		appendChild(_horizontalScrollBar.elementRenderer);
-		_horizontalScrollBar.maxScroll = bounds.width;
 		_horizontalScrollBar.onscroll = onHorizontalScroll;
 	}
 	
@@ -648,7 +639,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_verticalScrollBar = new ScrollBar(true);
 		_verticalScrollBar.attach();
 		appendChild(_verticalScrollBar.elementRenderer);
-		_verticalScrollBar.maxScroll = bounds.height;
 		_verticalScrollBar.onscroll = onVerticalScroll;
 	}
 	

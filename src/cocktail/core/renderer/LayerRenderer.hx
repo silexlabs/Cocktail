@@ -239,7 +239,7 @@ class LayerRenderer extends Node
 			width =  _rootRenderer.globalBounds.width;
 			height = _rootRenderer.globalBounds.height;
 		}
-	
+		
 		_graphicsContext.scrollRect = new Rectangle(x , y, width, height);
 	}
 	
