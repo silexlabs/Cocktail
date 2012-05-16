@@ -687,7 +687,9 @@ class HTMLElement extends Element
 	{
 		if (_onClick != null)
 		{
-			_onClick(new MouseEvent(MouseEvent.CLICK, cast(this), 0, 0, 0, 0, 0, false, false, false));
+			var mouseEvent:MouseEvent = new MouseEvent();
+			mouseEvent.initMouseEvent(MouseEvent.CLICK, false, false, 0, 0, 0, 0, 0, false, false, false);
+			_onClick(mouseEvent);
 		}
 	}
 	

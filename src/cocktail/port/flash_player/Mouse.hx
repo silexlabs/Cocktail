@@ -86,8 +86,10 @@ class Mouse extends AbstractMouse
 		}
 		
 		//TODO : the target is now null, should be determined by HTMLDocument
-		var mouseEvent:MouseEvent = new MouseEvent(eventType, null, 0.0, typedEvent.stageX, typedEvent.stageY,
-		typedEvent.localX, typedEvent.localY, typedEvent.ctrlKey, typedEvent.shiftKey, typedEvent.altKey);
+		//TODO : clientX relative to the stage, should it be relative to the clicked component ?
+		var mouseEvent:MouseEvent = new MouseEvent();
+		mouseEvent.initMouseEvent(eventType, true, true, 0.0, typedEvent.stageX, typedEvent.stageY,
+		typedEvent.localX, typedEvent.localY, typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey);
 		
 		return mouseEvent;
 	}

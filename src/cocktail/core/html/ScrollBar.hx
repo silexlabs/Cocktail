@@ -102,7 +102,9 @@ class ScrollBar extends HTMLElement
 		
 		if (_onScroll != null)
 		{
-			_onScroll(new UIEvent("poj,",this, 0));
+			var scrollEvent:UIEvent = new UIEvent();
+			scrollEvent.initUIEvent(UIEvent.SCROLL, false, false, 0.0);
+			_onScroll(scrollEvent);
 		}
 	}
 	 
@@ -128,7 +130,9 @@ class ScrollBar extends HTMLElement
 		
 		if (_onScroll != null)
 		{
-			_onScroll(new UIEvent("poj,",this, 0));
+			var scrollEvent:UIEvent = new UIEvent();
+			scrollEvent.initUIEvent(UIEvent.SCROLL, false, false, 0.0);
+			_onScroll(scrollEvent);
 		}
 	}
 	
