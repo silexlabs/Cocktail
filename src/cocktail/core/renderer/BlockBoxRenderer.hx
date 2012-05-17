@@ -9,6 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
+import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.NativeElement;
@@ -514,7 +515,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	override private function set_scrollTop(value:Float):Float 
 	{
-	
 		if (value < 0)
 		{
 			_scrollTop = 0;
@@ -705,6 +705,18 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_verticalScrollBar.attach();
 		appendChild(_verticalScrollBar.elementRenderer);
 		_verticalScrollBar.onscroll = onVerticalScroll;
+		
+		var htmlElement:HTMLElement = cast(_node);
+		htmlElement.onmousewheel = onMouseWheel;
+		
+	}
+	
+	//TODO : work but very rough, should be implemented at HTMLElement level,
+	//so that it can be canceled
+	private function onMouseWheel(wheelEvent:WheelEvent):Void
+	{
+		scrollTop -= wheelEvent.deltaY * 10;
+		_verticalScrollBar.scroll = scrollTop;
 	}
 	
 	/**
