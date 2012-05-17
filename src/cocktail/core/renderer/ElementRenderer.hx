@@ -355,6 +355,11 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
+	public function isScrollBar():Bool
+	{
+		return false;
+	}
+	
 	public function isFloat():Bool
 	{
 		return false;

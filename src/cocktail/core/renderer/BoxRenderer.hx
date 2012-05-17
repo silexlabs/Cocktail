@@ -331,11 +331,29 @@ class BoxRenderer extends ElementRenderer
 				y : addedPositionedY + computedStyle.marginTop
 			}
 			
-			//call the method recursively if the child has children itself
-			if (child.hasChildNodes() == true)
+			//TODO : messy but works
+			if (child.isScrollBar() == true)
 			{
-				setGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
+				if (elementRenderer.isPositioned() == false)
+				{
+					child.globalPositionnedAncestorOrigin.x += elementRenderer.bounds.x;
+					child.globalPositionnedAncestorOrigin.y += elementRenderer.bounds.y;
+					
+					if (child.hasChildNodes() == true)
+					{
+						setGlobalOrigins(child, addedX, addedY, addedPositionedX + elementRenderer.bounds.x, addedPositionedY + elementRenderer.bounds.y);
+					}
+				}
 			}
+			else
+			{	
+				//call the method recursively if the child has children itself
+				if (child.hasChildNodes() == true)
+				{
+					setGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
+				}
+			}
+			
 		}
 	}
 	
