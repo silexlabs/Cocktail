@@ -9,6 +9,7 @@ package cocktail.core.html;
 
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.UIEvent;
+import cocktail.core.renderer.ElementRenderer;
 import cocktail.Lib;
 
 /**
