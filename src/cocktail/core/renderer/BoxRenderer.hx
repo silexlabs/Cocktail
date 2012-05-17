@@ -72,13 +72,15 @@ class BoxRenderer extends ElementRenderer
 	
 	/**
 	 * Render the background of the box using the provided graphic context
+	 * 
+	 * TODO : opacity should be applied to background
 	 */
 	private function renderBackground(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var backgroundManager:BackgroundManager = new BackgroundManager();
 		
 		//TODO : should only pass dimensions instead of bounds
-		var backgrounds:Array<NativeElement> = backgroundManager.render(_bounds, _coreStyle);
+		var backgrounds:Array<NativeElement> = backgroundManager.render(bounds, _coreStyle);
 		
 		for (i in 0...backgrounds.length)
 		{
@@ -218,7 +220,6 @@ class BoxRenderer extends ElementRenderer
 			//positioned origin
 			if (elementRenderer.isPositioned() == true)
 			{
-				//TODO : use globalBounds to determine which bounds to add ?
 				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
 				{
 					if (elementRenderer.coreStyle.computedStyle.position == absolute)
@@ -227,7 +228,6 @@ class BoxRenderer extends ElementRenderer
 					}
 					//here the positioned ElementRenderer is fixed and is placed
 					//relative to the window. In this case, its x is not added
-					//TODO : complet doc + check if necessary everywhere
 					else
 					{
 						addedX = elementRenderer.positionedOrigin.x;
@@ -494,9 +494,12 @@ class BoxRenderer extends ElementRenderer
 	 * instance if they are positioned
 	 * 
 	 * TODO : add the z-index case
+	 * TODO : shouldn't have to compute display style before
+	 * 
 	 */
 	override private function establishesNewStackingContext():Bool
 	{
+		_coreStyle.computeDisplayStyles();
 		return isPositioned();
 	}
 	

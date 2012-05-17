@@ -16,6 +16,8 @@ import cocktail.core.html.HTMLElement;
  */
 class UIEvent extends Event
 {
+	public static inline var SCROLL:String = "scroll";
+	
 	/**
 	 * Specifies some detail information about the Event,
 	 * depending on the type of event.
@@ -23,10 +25,34 @@ class UIEvent extends Event
 	private var _detail:Float;
 	public var detail(get_detail, set_detail):Float;
 	
-	public function new(type:String, target:HTMLElement, detail:Float) 
+	public function new() 
 	{
-		_detail = detail;
-		super(type, target);
+		super();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Initializes attributes of an UIEvent object.
+	 * This method has the same behavior as Event.initEvent().
+	 * 
+	 * TODO : missing arguments
+	 * 
+	 * TODO : should call initEvent, same for inheriting classes
+	 * 
+	 * @param	eventTypeArg Specifies Event.type, the name of the event type.
+	 * @param	canBubbleArg Specifies Event.bubbles. This parameter overrides the intrinsic bubbling behavior of the event.
+	 * @param	cancelableArg Specifies Event.cancelable. This parameter overrides the intrinsic cancelable behavior of the event.
+	 * @param	detailArg Specifies UIEvent.detail
+	 */
+	public function initUIEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, detailArg:Float):Void
+	{
+		_type = eventTypeArg;
+		_bubbles = canBubbleArg;
+		_cancelable = cancelableArg;
+		_detail = detailArg;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -723,12 +723,7 @@ class CoreStyle
 	
 
 	/**
-	 * TODO : what to do when the value of a style changes ?
-	 * Invalidate the HTMLElement which in turn invalidate
-	 * ElementRenderer or set _coreStyle on ElementRenderer ?
-	 * 
-	 * TODO : should always be called AFTER style is set, it
-	 * only works for now because of the timer
+	 * TODO : doc
 	 */
 	private function invalidate():Void
 	{

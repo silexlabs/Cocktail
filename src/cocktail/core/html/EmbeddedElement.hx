@@ -95,7 +95,6 @@ class EmbeddedElement extends HTMLElement
 	{
 		return newChild;
 	}
-	
 		
 	/**
 	 * Embedded elements can't have children
@@ -103,17 +102,6 @@ class EmbeddedElement extends HTMLElement
 	override public function removeChild(oldChild:Node):Node
 	{
 		return oldChild;
-	}
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	//TODO : EmbeddedBoxRenderer should be virtual class
-	override private function createElementRenderer():Void
-	{
-		_elementRenderer = new EmbeddedBoxRenderer(this);
-		_elementRenderer.coreStyle = _coreStyle;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -124,7 +124,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	public function renderBlockReplacedChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this, _layerRenderer);
-		
 		for (i in 0...childrenBlockReplaced.length)
 		{
 			childrenBlockReplaced[i].render(graphicContext, relativeOffset);
@@ -149,11 +148,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	public function renderScrollBars(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
+		
 		if (_horizontalScrollBar != null)
 		{
 			_horizontalScrollBar.elementRenderer.layerRenderer.render(graphicContext, relativeOffset);
 			
 			updateScroll();
+
 		}
 		
 		if (_verticalScrollBar != null)
@@ -266,6 +267,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		for (i in 0...rootRenderer.childNodes.length)
 		{
 			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
+
 			if (child.layerRenderer == referenceLayer)
 			{
 				//TODO : must add more condition, for instance, no float
@@ -286,33 +288,71 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE LAYOUT METHODS
+	// OVERRIDEN PUBLIC LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Overriden to deal with the scrollbars once the children of this
 	 * BlockBoxRenderer are laid out
 	 */
-	override private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
-	{
-		super.layoutChildren(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
+	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	{	
+		super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
 		
-		//update the scrollable bounds, which might be useful for auto
-		//overflow
-		//
-		//TODO : shouldn't be computed each time
 		_scrollableBounds = getScrollableBounds();
+		
+		var horizontalScrollBarAttached:Bool = _horizontalScrollBar != null;
+		var verticalScrollBarAttached:Bool = _verticalScrollBar != null;
 		
 		attachScrollBarsIfnecessary();
 		
-
-	//	TODO : this re-layout should only happen if at least one scrollbar is attached, return bool from attachScrollBarsIfnecessary ?
-		//var childrenFormattingContext:FormattingContext = getFormattingContext(formattingContext);
-		//var childrenContainingBlockData:ContainingBlockData = getContainerBlockData();
-		//var childFirstPositionedAncestorData:FirstPositionedAncestorData = getChildrenFirstPositionedAncestorData(firstPositionedAncestorData);
-		//doLayoutChildren(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, _coreStyle.fontMetrics, childrenFormattingContext);
-	
+		//test if either the vertical or horizontal scrollbar was just attached
+		if (horizontalScrollBarAttached != (_horizontalScrollBar != null)
+		|| verticalScrollBarAttached != (_verticalScrollBar != null))
+		{
+			//TODO : bug, scrollbars not rendered until next layout
+			invalidateLayout();
+		}
+		
+		var horizontalScrollBarContainerBlockData = getContainerBlockData();
+		
+		if (_horizontalScrollBar != null)
+		{
+			horizontalScrollBarContainerBlockData.height += _horizontalScrollBar.coreStyle.computedStyle.height;
+		}
+		if (_verticalScrollBar != null)
+		{
+			horizontalScrollBarContainerBlockData.width -= _verticalScrollBar.coreStyle.computedStyle.width;
+		}
+		
+		if (_horizontalScrollBar != null)
+		{	
+			layoutPositionedChild(_horizontalScrollBar.elementRenderer, horizontalScrollBarContainerBlockData, viewportData);
+		}
+		
+		var verticalScrollBarContainerBlockData = getContainerBlockData();
+		
+		if (_verticalScrollBar != null)
+		{
+			verticalScrollBarContainerBlockData.width += _verticalScrollBar.coreStyle.computedStyle.width;
+		}
+		
+		if (_horizontalScrollBar != null)
+		{
+			verticalScrollBarContainerBlockData.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
+		}
+		
+		if (_verticalScrollBar != null)
+		{
+			layoutPositionedChild(_verticalScrollBar.elementRenderer, verticalScrollBarContainerBlockData, viewportData);
+		}
+		
+		
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Actually layout all the children of the ElementRenderer by calling
@@ -331,22 +371,56 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{
 				if (childElementRenderer == _horizontalScrollBar.elementRenderer)
 				{
-					childrenContainingBlockData.width += _horizontalScrollBar.coreStyle.computedStyle.width;
-					childFirstPositionedAncestorData.data = childrenContainingBlockData;
-					childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+					//TODO : shouldn't modify by reference, should create copy else, following positioned children will
+					//have wrong containing dimensions
+				//	childrenContainingBlockData.height = _horizontalScrollBar.coreStyle.computedStyle.height;
+					
+				//	childFirstPositionedAncestorData.data = childrenContainingBlockData;
 				}
 			}
-			else if (_verticalScrollBar != null)
+			if (_verticalScrollBar != null)
 			{
 				if (childElementRenderer == _verticalScrollBar.elementRenderer)
 				{
-					childrenContainingBlockData.height += _verticalScrollBar.coreStyle.computedStyle.height;
-					childFirstPositionedAncestorData.data = childrenContainingBlockData;
-					childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+				//	childrenContainingBlockData.width += _verticalScrollBar.coreStyle.computedStyle.width;
+					
+				//	childFirstPositionedAncestorData.data = childrenContainingBlockData;
 				}
 			}
-			childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+			
+			if (childElementRenderer.node != _horizontalScrollBar && childElementRenderer.node != _verticalScrollBar)
+			{
+				childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+			}
 		}
+		
+		var elementsCopy:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		for (i in 0...childFirstPositionedAncestorData.elements.length)
+		{
+			elementsCopy.push(childFirstPositionedAncestorData.elements[i]);
+		}
+		
+		var scrollbarFirstPositionedAncestorData:FirstPositionedAncestorData = {
+			data:childrenContainingBlockData,
+			elements:elementsCopy
+		}
+	
+		if (_verticalScrollBar != null)
+		{
+			_verticalScrollBar.elementRenderer.layout(childrenContainingBlockData, viewportData, scrollbarFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+			//childFirstPositionedAncestorData.elements.push(_verticalScrollBar.elementRenderer);
+				
+		}
+		
+		if (_horizontalScrollBar != null)
+		{
+			_horizontalScrollBar.elementRenderer.layout(childrenContainingBlockData, viewportData, scrollbarFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+			//childFirstPositionedAncestorData.elements.push(_horizontalScrollBar.elementRenderer);
+
+		}
+		
+		
 		
 		//prompt the children formatting context, to format all the children
 		//ElementRenderer belonging to it. After this call, all the
@@ -388,7 +462,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	
-		
 	/**
 	 * Determine wheter the y axis of this BlockBoxRenderer
 	 * is clipped to its height
@@ -504,7 +577,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	//TODO : work but shouldn't have to parse all rendering tree, should done during formatting
 	//and then another pass for absolutely positioned children. Maybe this way less expensive in
-	//the  end because onlt called when useful ?
+	//the  end because only called when useful ?
 	/**
 	 * Get the bounds of all of the children
 	 * by traversing the rendering tree
@@ -517,29 +590,28 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			
 			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
-			if (child.hasChildNodes() == true && child.establishesNewFormattingContext() == false)
-			{
-				var childChildrenBounds:Array<RectangleData> = doGetScrollableBounds(child);
-				
-				for (j in 0...childChildrenBounds.length)
-				{
-					childrenBounds.push(childChildrenBounds[j]);
-				}
-			}
 			
-			childrenBounds.push(child.bounds);
+			if (child.node != _horizontalScrollBar && child.node != _verticalScrollBar)
+			{
+				if (child.hasChildNodes() == true && child.establishesNewFormattingContext() == false)
+				{
+					var childChildrenBounds:Array<RectangleData> = doGetScrollableBounds(child);
+					
+					for (j in 0...childChildrenBounds.length)
+					{
+						childrenBounds.push(childChildrenBounds[j]);
+					}
+				}
+				
+				childrenBounds.push(child.bounds);
+			}
 		}
-		
+
 		return childrenBounds;
-		
 	}
 	
-	//TODO : if at least one is attached, should do a new layout, 
-	//else the scrollbar is at first 0,0 at first rendering
 	//TODO : implement border case where one has scroll attached, and the 
 	//other is visible but should still display scroll
-	//
-	//TODO : should refresh maxScroll n attach scrollbars
 	/**
 	 * Attach the horizontal and vertical scrollbar if they are
 	 * needed, based on the overflow style of the BlockBoxRenderer
@@ -570,6 +642,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			}
 		}
 		
+		if (_horizontalScrollBar != null)
+		{
+			_horizontalScrollBar.maxScroll = _scrollableBounds.width - bounds.width;
+		}
+		
 		if (_verticalScrollBar == null)
 		{
 			switch (_coreStyle.overflowY)
@@ -577,12 +654,18 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				case scroll:
 					attachVerticalScrollBar();
 					
+					
 				case hidden, visible:
 					
 				case cssAuto:
 					attachVerticalScrollBarIfNecessary();
 			}
 		}
+		if (_verticalScrollBar != null)
+		{
+			_verticalScrollBar.maxScroll = _scrollableBounds.height - bounds.height;
+		}
+		
 	}
 	
 	/**
@@ -597,7 +680,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_horizontalScrollBar = new ScrollBar(false);
 		_horizontalScrollBar.attach();
 		appendChild(_horizontalScrollBar.elementRenderer);
-		_horizontalScrollBar.maxScroll = bounds.width;
 		_horizontalScrollBar.onscroll = onHorizontalScroll;
 	}
 	
@@ -621,7 +703,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_verticalScrollBar = new ScrollBar(true);
 		_verticalScrollBar.attach();
 		appendChild(_verticalScrollBar.elementRenderer);
-		_verticalScrollBar.maxScroll = bounds.height;
 		_verticalScrollBar.onscroll = onVerticalScroll;
 	}
 	
@@ -712,7 +793,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return establishesNewFormattingContext;
 	}
 	
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -724,16 +804,16 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	override private function getContainerBlockData():ContainingBlockData
 	{
-		var width:Int = this.computedStyle.width;
+		var height:Int = this.computedStyle.height;
 		if (_horizontalScrollBar != null)
 		{
-			width -= _horizontalScrollBar.coreStyle.computedStyle.width;
+			height -= _horizontalScrollBar.coreStyle.computedStyle.height;
 		}
 		
-		var height:Int = this.computedStyle.height;
+		var width:Int = this.computedStyle.width;
 		if (_verticalScrollBar != null)
 		{
-			height -= _verticalScrollBar.coreStyle.computedStyle.height;
+			width -= _verticalScrollBar.coreStyle.computedStyle.width;
 		}
 		
 		return {
@@ -820,5 +900,23 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		
 		return true;
+	}
+	
+
+	override private function get_globalBounds():RectangleData
+	{
+		var globalBounds:RectangleData = super.get_globalBounds();
+		
+		if (_horizontalScrollBar != null)
+		{
+			globalBounds.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
+		}
+		
+		if (_verticalScrollBar != null)
+		{
+			globalBounds.width -= _verticalScrollBar.coreStyle.computedStyle.width;
+		}
+		
+		return globalBounds;
 	}
 }

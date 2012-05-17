@@ -8,6 +8,7 @@
 package cocktail.core.dom;
 
 import cocktail.core.dom.DOMData;
+import cocktail.core.event.EventTarget;
 import haxe.Log;
 
 /**
@@ -27,7 +28,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Node 
+class Node extends EventTarget
 {
 	/**
 	 * The node is an Element.
@@ -167,6 +168,7 @@ class Node
 	 */
 	public function new() 
 	{
+		super();
 		_childNodes = new Array<Node>();
 	}
 	

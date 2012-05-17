@@ -49,13 +49,41 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	}
 	
 
-	
+	//TODO : shouldn't have to override this, should use other method, like
+	//establishes new stacking context
 	override public function attachLayer():Void
 	{
 		_layerRenderer = new LayerRenderer(this);
+		
+		for (i in 0..._childNodes.length)
+		{
+			var child:ElementRenderer = cast(_childNodes[i]);
+			child.attachLayer();
+		}
 	}
 	
-	
+	override public function detachLayer():Void
+	{
+		//first detach the LayerRenderer of all its children
+		for (i in 0..._childNodes.length)
+		{
+			var child:ElementRenderer = cast(_childNodes[i]);
+			child.detachLayer();
+		}
+		
+		//only detach the LayerRenderer if this ElementRenderer
+		//created it, else it will be detached by the ElementRenderer
+		//which created it when detached
+
+		
+			
+			//TODO : should be called in LayerRenderer.removeChild ?
+			_layerRenderer.detach();
+			
+		
+		
+		_layerRenderer = null;
+	}
 	
 	
 	override private function attachVerticalScrollBarIfNecessary():Void
@@ -66,6 +94,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		}
 	}
 	
+	//TODO : a lot of dublicate code with BlockBoxRenderer
 	override private function attachScrollBarsIfnecessary():Void
 	{
 		
@@ -84,6 +113,10 @@ class InitialBlockRenderer extends BlockBoxRenderer
 					attachHorizontalScrollBarIfNecessary();
 			}
 		}
+		if (_horizontalScrollBar != null)
+		{
+			_horizontalScrollBar.maxScroll = _scrollableBounds.width - bounds.width;
+		}
 		
 		if (_verticalScrollBar == null)
 		{
@@ -97,6 +130,10 @@ class InitialBlockRenderer extends BlockBoxRenderer
 					case cssAuto, visible:
 					attachVerticalScrollBarIfNecessary();
 			}
+		}
+		if (_verticalScrollBar != null)
+		{
+			_verticalScrollBar.maxScroll = _scrollableBounds.height - bounds.height;
 		}
 	}
 	
@@ -259,33 +296,48 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Retrieve the data of the viewport. The viewport
+	 * origin is always to the top left of the window
+	 * displaying the document
+	 */
+	override private function getWindowData():ContainingBlockData
+	{	
+		
+		var windowData:ContainingBlockData = {
+			isHeightAuto:false,
+			isWidthAuto:false,
+			width:cocktail.Lib.window.innerWidth,
+			height:cocktail.Lib.window.innerHeight
+		}
+		//TODO : doc
+		if (_verticalScrollBar != null)
+		{
+			windowData.width -= _verticalScrollBar.coreStyle.computedStyle.width;
+		}
+		
+		if (_horizontalScrollBar != null)
+		{
+			windowData.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
+		}
+		
+		return windowData;
+	}
+	
+	/**
 	 * TODO : doc
 	 */
 	override private function getContainerBlockData():ContainingBlockData
 	{
-		var containerBlockData:ContainingBlockData = getWindowData();
-		
-		if (_horizontalScrollBar != null)
-		{
-			containerBlockData.width -= _horizontalScrollBar.coreStyle.computedStyle.width;
-		}
-		
-		if (_verticalScrollBar != null)
-		{
-			containerBlockData.height -= _verticalScrollBar.coreStyle.computedStyle.height;
-		}
-		
-		return containerBlockData;
+		return getWindowData();
 	}
 	
 	/**
-	 * The initital ElementRenderer is always a block container
+	 * The initial ElementRenderer is always a block container
 	 */
 	override public function isInlineLevel():Bool
 	{
 		return false;
 	}
-	
 	
 	/**
 	 * The root of the runtime always starts a block formatting context
@@ -304,11 +356,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		return true;
 	}
 	
+	//TODO : messy
 	override private function get_bounds():RectangleData
 	{
 		var width:Float = cocktail.Lib.window.innerWidth;
 		var height:Float = cocktail.Lib.window.innerHeight;
-		
 		
 		return {
 			x:0.0,
