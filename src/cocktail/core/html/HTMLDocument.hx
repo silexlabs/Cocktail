@@ -216,7 +216,7 @@ class HTMLDocument extends Document
 	{
 		//retrieve all the ElementRenderer under the mouse
 		//pointer
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
 
 		//execute the callback of the first top-most
 		//ElementRenderer with a mouse down callback
@@ -254,7 +254,7 @@ class HTMLDocument extends Document
 	 */
 	private function onClick(mouseEvent:MouseEvent):Void
 	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
 
 		//TODO : hack
 		elementRenderersAtPoint.reverse();
@@ -284,7 +284,7 @@ class HTMLDocument extends Document
 	 */
 	private function onMouseUp(mouseEvent:MouseEvent):Void
 	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
 		
 		//TODO : hack
 		elementRenderersAtPoint.reverse();
@@ -316,7 +316,7 @@ class HTMLDocument extends Document
 	 */
 	private function onMouseMove(mouseEvent:MouseEvent):Void
 	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0 );
 			
 		//TODO : doc for mouse over / out
 		
