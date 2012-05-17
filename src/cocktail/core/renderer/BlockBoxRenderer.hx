@@ -298,11 +298,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{	
 		super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
-		
 
+		//TODO : should only be done if canAlwaysOverflow is false, but won't work with initialBlockRenderer
 		_scrollableBounds = getScrollableBounds();
 		
-
 		attachScrollBarsIfnecessary();
 		layoutScrollBarsIfNecessary(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
 		
@@ -315,8 +314,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Actually layout all the children of the ElementRenderer by calling
-	 * the layout method recursively on all the children
+	 * Overriden to prevent laying out the scrollbars like the other 
+	 * children as they have their own layout method
 	 */
 	override private function doLayoutChildren(childrenContainingBlockData:ContainingBlockData, viewportData:ContainingBlockData, childFirstPositionedAncestorData:FirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):Void
 	{			
@@ -324,13 +323,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			var childElementRenderer:ElementRenderer = cast(_childNodes[i]);
 			
-			//TODO : only necessary anymore just to prevent laying out scrollbars
 			if (childElementRenderer.node != _horizontalScrollBar && childElementRenderer.node != _verticalScrollBar)
 			{
 				childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
 			}
 		}
-		
 		
 		//prompt the children formatting context, to format all the children
 		//ElementRenderer belonging to it. After this call, all the
@@ -388,10 +385,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			horizontalScrollBarContainerBlockData.height += _horizontalScrollBar.coreStyle.computedStyle.height;
 		}
-		if (_verticalScrollBar != null)
-		{
-			//horizontalScrollBarContainerBlockData.width -= _verticalScrollBar.coreStyle.computedStyle.width;
-		}
 		
 		if (_horizontalScrollBar != null)
 		{	
@@ -403,11 +396,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		if (_verticalScrollBar != null)
 		{
 			verticalScrollBarContainerBlockData.width += _verticalScrollBar.coreStyle.computedStyle.width;
-		}
-		
-		if (_horizontalScrollBar != null)
-		{
-			//verticalScrollBarContainerBlockData.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
 		}
 		
 		if (_verticalScrollBar != null)
@@ -440,6 +428,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				return _horizontalScrollBar != null;
 				
 			case Overflow.visible:
+				if (treatVisibleOverflowAsAuto() == true)
+				{
+					return _horizontalScrollBar != null;
+				}
 				return false;
 		}
 	}
@@ -460,6 +452,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				return _verticalScrollBar != null;
 				
 			case Overflow.visible:
+				if (treatVisibleOverflowAsAuto() == true)
+				{
+					return _verticalScrollBar != null;
+				}
 				return false;
 		}
 	}
@@ -467,6 +463,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SCROLLING GETTERS/SETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	//TODO : add scrollWidth and scrollHeight for the HTMLElement
 	
 	/**
 	 * Overriden as BlockBoxRenderer might actually be scrolled
@@ -547,10 +545,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// - child is absolute positioned
 	// - child is fixed positioned or absolute positoned but 
 	// block container is parent of this block box renderer and it must
-	// not be scrolled and clipped
+	// not be scrolled and clipped. ElementRenderer should be able to know
+	//their containing block
+	
 	/**
 	 * Get the bounds of all of the children of this BlockBoxRenderer
-	 * 
 	 */
 	private function getScrollableBounds():RectangleData
 	{
@@ -618,10 +617,16 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				case scroll:
 					attachHorizontalScrollBar();
 					
-				case hidden, visible:
+				case hidden:
 					
 				case cssAuto:
 					attachHorizontalScrollBarIfNecessary();
+					
+				case visible:
+					if (treatVisibleOverflowAsAuto() == true)
+					{
+						attachHorizontalScrollBarIfNecessary();
+					}
 			}
 		}
 		
@@ -638,10 +643,16 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					attachVerticalScrollBar();
 					
 					
-				case hidden, visible:
+				case hidden:
 					
 				case cssAuto:
 					attachVerticalScrollBarIfNecessary();
+					
+				case visible:
+					if (treatVisibleOverflowAsAuto() == true)
+					{
+						attachVerticalScrollBarIfNecessary();
+					}	
 			}
 		}
 		if (_verticalScrollBar != null)
@@ -866,9 +877,15 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function canAlwaysOverflow():Bool
 	{
+		if (treatVisibleOverflowAsAuto() == true)
+		{
+			return false;
+		}
+		
 		switch (_coreStyle.overflowX)
 		{
 			case Overflow.visible:
+				
 				
 			default:
 				return false;
@@ -885,7 +902,28 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return true;
 	}
 	
-
+	/**
+	 * This helper method is used to differentiate between
+	 * a block box renderer and the initial block box renderer.
+	 * 
+	 * For the initial block box renderer, a computed value
+	 * of visible for overflow behaves the same as a computed
+	 * value of auto
+	 */
+	private function treatVisibleOverflowAsAuto():Bool
+	{
+		return false;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN GETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * overriden as scrollbar shuold be removed from 
+	 * the width and height of the bounds of this
+	 * ElementRenderer
+	 */
 	override private function get_globalBounds():RectangleData
 	{
 		var globalBounds:RectangleData = super.get_globalBounds();

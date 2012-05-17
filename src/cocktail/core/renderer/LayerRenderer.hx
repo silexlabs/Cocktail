@@ -512,6 +512,7 @@ class LayerRenderer extends Node
 			{
 				elementRenderersAtPointInChildLayer = childLayers[i].getElementRenderersAtPoint(point, scrollX, scrollY);
 			}
+			//TODO : also very messy, ElementRenderer should be aware of their scrollBounds
 			else if (untyped childLayers[i]._rootRenderer.coreStyle.position == fixed)
 			{
 				elementRenderersAtPointInChildLayer = childLayers[i].getElementRenderersAtPoint(point, scrollX , scrollY);
