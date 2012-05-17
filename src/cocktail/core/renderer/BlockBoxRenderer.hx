@@ -314,6 +314,40 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			invalidateLayout();
 		}
 		
+		var horizontalScrollBarContainerBlockData = getContainerBlockData();
+		
+		if (_horizontalScrollBar != null)
+		{
+			horizontalScrollBarContainerBlockData.height += _horizontalScrollBar.coreStyle.computedStyle.height;
+		}
+		if (_verticalScrollBar != null)
+		{
+			horizontalScrollBarContainerBlockData.width -= _verticalScrollBar.coreStyle.computedStyle.width;
+		}
+		
+		if (_horizontalScrollBar != null)
+		{	
+			layoutPositionedChild(_horizontalScrollBar.elementRenderer, horizontalScrollBarContainerBlockData, viewportData);
+		}
+		
+		var verticalScrollBarContainerBlockData = getContainerBlockData();
+		
+		if (_verticalScrollBar != null)
+		{
+			verticalScrollBarContainerBlockData.width += _verticalScrollBar.coreStyle.computedStyle.width;
+		}
+		
+		if (_horizontalScrollBar != null)
+		{
+			verticalScrollBarContainerBlockData.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
+		}
+		
+		if (_verticalScrollBar != null)
+		{
+			layoutPositionedChild(_verticalScrollBar.elementRenderer, verticalScrollBarContainerBlockData, viewportData);
+		}
+		
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -339,22 +373,54 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				{
 					//TODO : shouldn't modify by reference, should create copy else, following positioned children will
 					//have wrong containing dimensions
-					childrenContainingBlockData.height += _horizontalScrollBar.coreStyle.computedStyle.height;
+				//	childrenContainingBlockData.height = _horizontalScrollBar.coreStyle.computedStyle.height;
 					
-					childFirstPositionedAncestorData.data = childrenContainingBlockData;
+				//	childFirstPositionedAncestorData.data = childrenContainingBlockData;
 				}
 			}
 			if (_verticalScrollBar != null)
 			{
 				if (childElementRenderer == _verticalScrollBar.elementRenderer)
 				{
-					childrenContainingBlockData.width += _verticalScrollBar.coreStyle.computedStyle.width;
+				//	childrenContainingBlockData.width += _verticalScrollBar.coreStyle.computedStyle.width;
 					
-					childFirstPositionedAncestorData.data = childrenContainingBlockData;
+				//	childFirstPositionedAncestorData.data = childrenContainingBlockData;
 				}
 			}
-			childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+			
+			if (childElementRenderer.node != _horizontalScrollBar && childElementRenderer.node != _verticalScrollBar)
+			{
+				childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+			}
 		}
+		
+		var elementsCopy:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		for (i in 0...childFirstPositionedAncestorData.elements.length)
+		{
+			elementsCopy.push(childFirstPositionedAncestorData.elements[i]);
+		}
+		
+		var scrollbarFirstPositionedAncestorData:FirstPositionedAncestorData = {
+			data:childrenContainingBlockData,
+			elements:elementsCopy
+		}
+	
+		if (_verticalScrollBar != null)
+		{
+			_verticalScrollBar.elementRenderer.layout(childrenContainingBlockData, viewportData, scrollbarFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+			//childFirstPositionedAncestorData.elements.push(_verticalScrollBar.elementRenderer);
+				
+		}
+		
+		if (_horizontalScrollBar != null)
+		{
+			_horizontalScrollBar.elementRenderer.layout(childrenContainingBlockData, viewportData, scrollbarFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+			//childFirstPositionedAncestorData.elements.push(_horizontalScrollBar.elementRenderer);
+
+		}
+		
+		
 		
 		//prompt the children formatting context, to format all the children
 		//ElementRenderer belonging to it. After this call, all the
