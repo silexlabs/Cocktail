@@ -13,6 +13,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
+import cocktail.core.event.WheelEvent;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLElement;
@@ -146,6 +147,7 @@ class HTMLDocument extends Document
 		_mouse.onMouseUp = onMouseUp;
 		_mouse.onMouseMove = onMouseMove;
 		_mouse.onClick = onClick;
+		_mouse.onMouseWheel = onMouseWheel;
 	}
 	
 	/**
@@ -268,6 +270,36 @@ class HTMLDocument extends Document
 					if (htmlElement.onclick != null)
 					{
 						htmlElement.onclick(mouseEvent);
+						//return as only one callback is executed
+						return;
+					}
+			}
+			
+		}
+		
+		
+	}
+	
+	/**
+	 * Called when a mouse wheel event is dispatched. Same as 
+	 * for mouse down
+	 */
+	private function onMouseWheel(wheelEvent:WheelEvent):Void
+	{
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: wheelEvent.screenX, y:wheelEvent.screenY }, 0, 0  );
+
+		//TODO : hack
+		elementRenderersAtPoint.reverse();
+
+		for (i in 0...elementRenderersAtPoint.length)
+		{
+			switch( elementRenderersAtPoint[i].node.nodeType)
+			{
+				case Node.ELEMENT_NODE:
+					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
+					if (htmlElement.onmousewheel != null)
+					{
+						htmlElement.onmousewheel(wheelEvent);
 						//return as only one callback is executed
 						return;
 					}

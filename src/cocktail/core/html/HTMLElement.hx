@@ -11,6 +11,7 @@ import cocktail.core.dom.Attr;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
+import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.hxtml.HxtmlConverter;
@@ -91,6 +92,13 @@ class HTMLElement extends Element
 	 */
 	private var _onMouseMove:MouseEvent->Void;
 	public var onmousemove(get_onMouseMove, set_onMouseMove):MouseEvent->Void;
+	
+	/**
+	 * The callback called when the mouse wheel is rotated while the mouse
+	 * pointer is over this element
+	 */
+	private var _onMouseWheel:WheelEvent->Void;
+	public var onmousewheel(get_onMouseWheel, set_onMouseWheel):WheelEvent->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Keyboard attributes and callback
@@ -751,6 +759,16 @@ class HTMLElement extends Element
 	private function get_onMouseMove():MouseEvent->Void
 	{
 		return _onMouseMove;
+	}
+	
+	private function set_onMouseWheel(value:WheelEvent->Void):WheelEvent->Void
+	{
+		return _onMouseWheel = value;
+	}
+	
+	private function get_onMouseWheel():WheelEvent->Void
+	{
+		return _onMouseWheel;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
