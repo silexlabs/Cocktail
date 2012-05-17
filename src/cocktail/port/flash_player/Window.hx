@@ -91,7 +91,9 @@ class Window extends AbstractWindow
 	{
 		if (_onResize != null)
 		{
-			_onResize(new Event(Event.RESIZE, this));
+			var resizeEvent:Event = new Event();
+			resizeEvent.initEvent(Event.RESIZE, false, false);
+			_onResize(resizeEvent);
 		}
 	}
 	

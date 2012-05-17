@@ -33,6 +33,7 @@ class Style
 	public var position(get_position, set_position):String;
 	public var cssFloat(get_CSSFloat, set_CSSFloat):String;
 	public var clear(get_clear, set_clear):String;
+	public var zIndex(get_zIndex, set_zIndex):String;
 	
 	/**
 	 * box model styles
@@ -257,6 +258,17 @@ class Style
 		return value;
 	}
 	
+	private function get_zIndex():String
+	{
+		return UnitManager.getCSSZIndex(_coreStyle.zIndex);
+	}
+	
+	private function set_zIndex(value:String):String
+	{
+		_coreStyle.zIndex = UnitManager.zIndexEnum(value);
+		return value;
+	}
+	
 	private function get_width():String 
 	{
 		return UnitManager.getCSSDimension(_coreStyle.width);
@@ -432,6 +444,7 @@ class Style
 		_coreStyle.fontFamily = UnitManager.fontFamilyEnum(value);
 		return value;
 	}
+	
 
 	private function get_fontVariant():String
 	{

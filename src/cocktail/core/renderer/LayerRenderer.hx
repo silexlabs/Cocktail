@@ -61,6 +61,10 @@ class LayerRenderer extends Node
 		_rootRenderer = rootRenderer;
 		_graphicsContext = new Sprite();
 		_scrollBarsGraphicContext = new Sprite();
+		
+		_treeOrderChildLayers = new Array<LayerRenderer>();
+		_positiveOrderChildLayers = new Array<LayerRenderer>();
+		_negativeOrderChildLayers = new Array<LayerRenderer>();
 	}
 	
 	/////////////////////////////////
@@ -104,6 +108,11 @@ class LayerRenderer extends Node
 			
 			//TODO here : render children with negative z-index
 			
+			if (renderChildLayers == true)
+			{
+				renderChildLayer(_negativeOrderChildLayers, _graphicsContext, relativeOffset);
+			}
+			
 			//render all the block container children belonging to this layer
 			blockBoxRootRenderer.renderBlockContainerChildren(_graphicsContext, relativeOffset);
 			
@@ -122,10 +131,15 @@ class LayerRenderer extends Node
 			if (renderChildLayers == true)
 			{
 				//render all the child layers with a z-index of 0
-				renderChildLayer(_graphicsContext, relativeOffset);
+				renderChildLayer(_treeOrderChildLayers, _graphicsContext, relativeOffset);
 			}
 			
 			//TODO here : render children with positive z-index
+			
+			if (renderChildLayers == true)
+			{
+				renderChildLayer(_positiveOrderChildLayers, _graphicsContext, relativeOffset);
+			}
 			
 			//TODO : this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
 			
@@ -134,6 +148,7 @@ class LayerRenderer extends Node
 				_graphicsContext.x = _rootRenderer.globalBounds.x;
 				_graphicsContext.y = _rootRenderer.globalBounds.y;
 				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, _rootRenderer.globalBounds.height);
+
 			}
 			else if (blockBoxRootRenderer.isXAxisClipped() == true)
 			{
@@ -141,6 +156,7 @@ class LayerRenderer extends Node
 				_graphicsContext.y = _rootRenderer.globalBounds.y;
 				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
 				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, 10000);
+		
 			}
 			else if (blockBoxRootRenderer.isYAxisClipped() == true)
 			{
@@ -148,6 +164,7 @@ class LayerRenderer extends Node
 				_graphicsContext.y = _rootRenderer.globalBounds.y;
 				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
 				_graphicsContext.scrollRect = new Rectangle(0 , 0, 10000, _rootRenderer.globalBounds.height);
+	
 			}
 			
 			
@@ -182,10 +199,12 @@ class LayerRenderer extends Node
 	
 	public function scroll(x:Float, y:Float, startedScroll:Bool = true):Void
 	{
-		//TODO : big hack but will do for now
+		//TODO IMPORTANT: big hack but will do for now
 		//TODO : should be applied to every positioned element whose
 		//containing block is a parent of the root renderer.
 		//Add a public method on ElementRenderer ?
+		//TODO : might be trouble for hit test -> maybe not as done at ElementRenderer
+		//level, they now if they are subject to scroll or not
 		if (_rootRenderer.computedStyle.position == fixed)
 		{
 			_graphicsContext.y = y;
@@ -223,13 +242,19 @@ class LayerRenderer extends Node
 			width =  _rootRenderer.globalBounds.width;
 			height = _rootRenderer.globalBounds.height;
 		}
-	
+		
 		_graphicsContext.scrollRect = new Rectangle(x , y, width, height);
 	}
 	
 
 	public function detach():Void
 	{
+		for (i in 0..._childNodes.length)
+		{
+			var child:LayerRenderer = cast(_childNodes[i]);
+			child.detach();
+		}
+		
 		//TODO : quick fix, should be abstracted
 			for (i in 0..._graphicsContext.numChildren)
 			{
@@ -246,9 +271,8 @@ class LayerRenderer extends Node
 	{
 		super.appendChild(newChild);
 		
-		//TODO : re-implement
-		/**
 		var childLayer:LayerRenderer = cast(newChild);
+
 		switch(childLayer.zIndex)
 		{
 			case ZIndex.cssAuto:
@@ -270,17 +294,34 @@ class LayerRenderer extends Node
 				}
 				
 		}
-		*/
+		
 		return newChild;
+	}
+	
+	override public function removeChild(oldChild:Node):Node
+	{
+		var childLayer:LayerRenderer = cast(oldChild);
+
+		//TODO : shouldn't have ot try in each ?
+		_treeOrderChildLayers.remove(childLayer);
+		_positiveOrderChildLayers.remove(childLayer);
+		_negativeOrderChildLayers.remove(childLayer);
+		
+		super.removeChild(oldChild);
+	
+		return oldChild;
 	}
 	
 	private function insertPositiveOrderChildLayer(childLayer:LayerRenderer, childLayerZIndex:Int):Void
 	{
 		var newPositiveChildLayers:Array<LayerRenderer> = new Array<LayerRenderer>();
+
+		
+		var isInserted:Bool = false;
 		
 		for (i in 0..._positiveOrderChildLayers.length)
 		{
-			newPositiveChildLayers.push(_positiveOrderChildLayers[i]);
+			
 			
 			var currentLayerZIndex:Int = 0;
 			
@@ -292,13 +333,23 @@ class LayerRenderer extends Node
 				default:	
 			}
 			
-			if (currentLayerZIndex <= childLayerZIndex)
+			if (childLayerZIndex < currentLayerZIndex && isInserted == false)
 			{
 				newPositiveChildLayers.push(childLayer);
+				isInserted = true;
+
 			}
+			
+			newPositiveChildLayers.push(_positiveOrderChildLayers[i]);
+			
 		}
 		
+		if (isInserted == false)
+		{
+			newPositiveChildLayers.push(childLayer);
+		}
 		_positiveOrderChildLayers = newPositiveChildLayers;
+
 	}
 	
 	private function insertNegativeOrderChildLayer(childLayer:LayerRenderer, childLayerZIndex:Int):Void
@@ -456,13 +507,11 @@ class LayerRenderer extends Node
 	 * Render all the children LayerRenderer of this LayerRenderer
 	 * and return an array of NativeElements from it
 	 */
-	private function renderChildLayer(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderChildLayer(layers:Array<LayerRenderer>, graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		var childLayers:Array<LayerRenderer> = getChildLayers();
-		
-		for (i in 0...childLayers.length)
+		for (i in 0...layers.length)
 		{
-			childLayers[i].render(graphicContext, relativeOffset);
+			layers[i].render(graphicContext, relativeOffset);
 		}
 	}
 	
@@ -483,10 +532,10 @@ class LayerRenderer extends Node
 		return childLayers;
 	}
 	
-	
+	//TODO : should use computed style but not yet computed
 	private function get_zIndex():ZIndex
 	{
-		return _rootRenderer.computedStyle.zIndex;
+		return _rootRenderer.coreStyle.zIndex;
 	}
 
 	

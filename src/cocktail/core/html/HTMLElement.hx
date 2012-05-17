@@ -11,7 +11,6 @@ import cocktail.core.dom.Attr;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
-import cocktail.core.event.IEventTarget;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.hxtml.HxtmlConverter;
@@ -39,7 +38,7 @@ import cocktail.core.style.StyleData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class HTMLElement extends Element, implements IEventTarget
+class HTMLElement extends Element
 {
 	/**
 	 * The name of the id attribute in HTML
@@ -384,8 +383,9 @@ class HTMLElement extends Element, implements IEventTarget
 	 */
 	override public function removeChild(oldChild:Node):Node
 	{
-		super.removeChild(oldChild);
-		
+		//must happen before calling super, else
+		//the HTMLElement won't have a parent to be detached
+		//from anymore
 		switch (oldChild.nodeType)
 		{
 			case Node.ELEMENT_NODE:
@@ -396,6 +396,9 @@ class HTMLElement extends Element, implements IEventTarget
 				var textChild:Text = cast(oldChild);
 				textChild.detach();
 		}
+		
+		super.removeChild(oldChild);
+	
 	
 		return oldChild;
 	}
@@ -684,7 +687,9 @@ class HTMLElement extends Element, implements IEventTarget
 	{
 		if (_onClick != null)
 		{
-			_onClick(new MouseEvent(MouseEvent.CLICK, cast(this), 0, 0, 0, 0, 0, false, false, false));
+			var mouseEvent:MouseEvent = new MouseEvent();
+			mouseEvent.initMouseEvent(MouseEvent.CLICK, false, false, 0, 0, 0, 0, 0, false, false, false);
+			_onClick(mouseEvent);
 		}
 	}
 	
