@@ -299,8 +299,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{	
 		super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
 
-		//TODO : should only be done if canAlwaysOverflow is false, but won't work with initialBlockRenderer
-		_scrollableBounds = getScrollableBounds();
+		//only get scrollable bounds for bloc box renderer
+		//which might display scrollbars
+		if (canAlwaysOverflow() == false)
+		{
+			_scrollableBounds = getScrollableBounds();
+		}
 		
 		attachScrollBarsIfnecessary();
 		layoutScrollBarsIfNecessary(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
@@ -357,6 +361,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			}
 			
 			_verticalScrollBar.elementRenderer.layout(getContainerBlockData(), viewportData, scrollbarFirstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);				
+		
 		}
 		
 		if (_horizontalScrollBar != null)
@@ -400,6 +405,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (_verticalScrollBar != null)
 		{
+			//TODO : x and y position of scrollbar are false when block box is not positioned, as the scrollbar
+			//are positioned relative to the first positioned ancestor
 			layoutPositionedChild(_verticalScrollBar.elementRenderer, verticalScrollBarContainerBlockData, viewportData);
 		}
 		
@@ -868,7 +875,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : should use computed style (for instance for inherit) but not yet computed at this point
+	//TODO : should use computed style (for instance for inherit) but not yet computed at this point, when
+	//called from establishesNewStackingContext
 	/**
 	 * Determine wether this BlockBoxRenderer always overflows
 	 * in both x and y axis. If either overflow x or y

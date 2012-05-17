@@ -229,7 +229,6 @@ class LayerRenderer extends Node
 		_graphicsContext.x = _rootRenderer.globalBounds.x;
 		_graphicsContext.y = _rootRenderer.globalBounds.y;
 		
-		
 		var width:Float;
 		var height:Float;
 		
@@ -244,7 +243,7 @@ class LayerRenderer extends Node
 			height = _rootRenderer.globalBounds.height;
 		}
 		
-		_graphicsContext.scrollRect = new Rectangle(x , y, width, height);
+		_graphicsContext.scrollRect = new Rectangle(x + _rootRenderer.globalBounds.x, y + _rootRenderer.globalBounds.y, width, height);
 	}
 	
 
