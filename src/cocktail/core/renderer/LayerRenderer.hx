@@ -148,6 +148,7 @@ class LayerRenderer extends Node
 				_graphicsContext.x = _rootRenderer.globalBounds.x;
 				_graphicsContext.y = _rootRenderer.globalBounds.y;
 				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, _rootRenderer.globalBounds.height);
+
 			}
 			else if (blockBoxRootRenderer.isXAxisClipped() == true)
 			{
@@ -155,6 +156,7 @@ class LayerRenderer extends Node
 				_graphicsContext.y = _rootRenderer.globalBounds.y;
 				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
 				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, 10000);
+		
 			}
 			else if (blockBoxRootRenderer.isYAxisClipped() == true)
 			{
@@ -162,6 +164,7 @@ class LayerRenderer extends Node
 				_graphicsContext.y = _rootRenderer.globalBounds.y;
 				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
 				_graphicsContext.scrollRect = new Rectangle(0 , 0, 10000, _rootRenderer.globalBounds.height);
+	
 			}
 			
 			
