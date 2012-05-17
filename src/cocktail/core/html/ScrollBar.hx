@@ -43,6 +43,12 @@ class ScrollBar extends HTMLElement
 	 */
 	private static inline var TRACK_SCROLL_OFFSET:Int = 50;
 	
+	private static inline var THUMB_DEFAULT_DIMENSION:Int = 16;
+	
+	private static inline var ARROW_DEFAULT_DIMENSION:Int = 16;
+	
+	private static inline var TRACK_DEFAULT_DIMENSION:Int = 16;
+	
 	/**
 	 * wether tht scrollbar should be displayed vertically
 	 */
@@ -149,20 +155,20 @@ class ScrollBar extends HTMLElement
 		_scrollThumb.style.backgroundColor = "#AAAAAA";
 		_scrollThumb.style.position = "absolute";
 		_scrollThumb.style.display = "block";
-		_scrollThumb.style.width = "15px";
-		_scrollThumb.style.height = "15px";
+		_scrollThumb.style.width = THUMB_DEFAULT_DIMENSION +"px";
+		_scrollThumb.style.height = THUMB_DEFAULT_DIMENSION + "px";
 		
 		_upArrow.style.backgroundColor = "#CCCCCC";
 		_upArrow.style.position = "absolute";
 		_upArrow.style.display = "block";
-		_upArrow.style.width = "15px";
-		_upArrow.style.height = "15px";
+		_upArrow.style.width = ARROW_DEFAULT_DIMENSION +"px";
+		_upArrow.style.height = ARROW_DEFAULT_DIMENSION + "px";
 		
 		_downArrow.style.backgroundColor = "#CCCCCC";
 		_downArrow.style.position = "absolute";
 		_downArrow.style.display = "block";
-		_downArrow.style.width = "15px";
-		_downArrow.style.height = "15px";
+		_downArrow.style.width = ARROW_DEFAULT_DIMENSION + "px";
+		_downArrow.style.height = ARROW_DEFAULT_DIMENSION + "px";
 		
 	}
 	
@@ -172,13 +178,13 @@ class ScrollBar extends HTMLElement
 	private function initVerticalScrollBar():Void
 	{
 		_style.height = "100%";
-		_style.width = "15px";
+		_style.width = TRACK_DEFAULT_DIMENSION + "px";
 		_style.right = "0";
 		_style.top = "0";
 		
 		_downArrow.style.bottom = "0";
 		
-		_scrollThumb.style.top = "15px";
+		_scrollThumb.style.top = THUMB_DEFAULT_DIMENSION +"px";
 	}
 	
 		
@@ -188,13 +194,13 @@ class ScrollBar extends HTMLElement
 	private function initHorizontalScrollBar():Void
 	{
 		_style.width = "100%";
-		_style.height = "15px";
+		_style.height = TRACK_DEFAULT_DIMENSION + "px";
 		_style.bottom = "0";
 		_style.left = "0";
 		
 		_downArrow.style.right = "0";
 		
-		_scrollThumb.style.left = "15px";
+		_scrollThumb.style.left = THUMB_DEFAULT_DIMENSION +"px";
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -304,12 +310,15 @@ class ScrollBar extends HTMLElement
 	{
 		if (_isVertical == true)
 		{
-			scroll = _mouseMoveStart + (event.screenY - _mouseMoveStart) ;
-	
+			//TODO : not very precise
+			var thumbDelta:Float = event.screenY - _mouseMoveStart;
+			scroll += thumbDelta;
+			
+			_mouseMoveStart = event.screenY;
 		}
 		else
 		{
-			//TODO : doesn't work
+			//TODO : not very precise
 			var thumbDelta:Float = event.screenX - _mouseMoveStart;
 			scroll += thumbDelta;
 			
@@ -402,9 +411,9 @@ class ScrollBar extends HTMLElement
 			var thumbHeight:Float = _coreStyle.computedStyle.height - _downArrow.coreStyle.computedStyle.height - _upArrow.coreStyle.computedStyle.height - maxScroll;
 
 			//TODO : min size should not be hard-coded
-			if (thumbHeight < 15)
+			if (thumbHeight < THUMB_DEFAULT_DIMENSION)
 			{
-				thumbHeight = 15;
+				thumbHeight = THUMB_DEFAULT_DIMENSION;
 			}
 			
 			if (thumbHeight != _scrollThumb.coreStyle.computedStyle.height)
@@ -417,9 +426,9 @@ class ScrollBar extends HTMLElement
 		{
 			var thumbWidth:Float = _coreStyle.computedStyle.width - _downArrow.coreStyle.computedStyle.width - _upArrow.coreStyle.computedStyle.width - maxScroll;
 			
-			if (thumbWidth < 15)
+			if (thumbWidth < THUMB_DEFAULT_DIMENSION)
 			{
-				thumbWidth = 15;
+				thumbWidth = THUMB_DEFAULT_DIMENSION;
 			}
 			
 			if (thumbWidth != _scrollThumb.coreStyle.computedStyle.width)
