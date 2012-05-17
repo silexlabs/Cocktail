@@ -10,6 +10,7 @@ package cocktail.core.html;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.renderer.ElementRenderer;
+import cocktail.core.renderer.ScrollBarRenderer;
 import cocktail.Lib;
 
 /**
@@ -199,6 +200,13 @@ class ScrollBar extends HTMLElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING TREE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function createElementRenderer():Void
+	{
+		_elementRenderer = new ScrollBarRenderer(this);
+		_elementRenderer.coreStyle = _coreStyle;
+	}
+	
 	
 	/**
 	 * The Scrollbar has no DOM parent node as it is part of the Shadow DOM
