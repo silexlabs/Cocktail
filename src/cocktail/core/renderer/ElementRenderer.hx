@@ -462,7 +462,7 @@ class ElementRenderer extends Node
 					width : right - left,
 					height :  bottom - top,
 				}
-		
+				
 		//TODO : need to implement better fix,
 		//sould not be negative
 		if (bounds.width < 0)
