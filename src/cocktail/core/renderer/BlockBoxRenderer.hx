@@ -148,11 +148,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	public function renderScrollBars(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
+		
 		if (_horizontalScrollBar != null)
 		{
 			_horizontalScrollBar.elementRenderer.layerRenderer.render(graphicContext, relativeOffset);
 			
 			updateScroll();
+
 		}
 		
 		if (_verticalScrollBar != null)
@@ -265,6 +267,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		for (i in 0...rootRenderer.childNodes.length)
 		{
 			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
+
 			if (child.layerRenderer == referenceLayer)
 			{
 				//TODO : must add more condition, for instance, no float
@@ -295,7 +298,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{	
 		super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
-
+		
 		_scrollableBounds = getScrollableBounds();
 		
 		var horizontalScrollBarAttached:Bool = _horizontalScrollBar != null;

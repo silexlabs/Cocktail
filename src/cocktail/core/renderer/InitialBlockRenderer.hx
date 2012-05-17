@@ -49,13 +49,41 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	}
 	
 
-	
+	//TODO : shouldn't have to override this, should use other method, like
+	//establishes new stacking context
 	override public function attachLayer():Void
 	{
 		_layerRenderer = new LayerRenderer(this);
+		
+		for (i in 0..._childNodes.length)
+		{
+			var child:ElementRenderer = cast(_childNodes[i]);
+			child.attachLayer();
+		}
 	}
 	
-	
+	override public function detachLayer():Void
+	{
+		//first detach the LayerRenderer of all its children
+		for (i in 0..._childNodes.length)
+		{
+			var child:ElementRenderer = cast(_childNodes[i]);
+			child.detachLayer();
+		}
+		
+		//only detach the LayerRenderer if this ElementRenderer
+		//created it, else it will be detached by the ElementRenderer
+		//which created it when detached
+
+		
+			
+			//TODO : should be called in LayerRenderer.removeChild ?
+			_layerRenderer.detach();
+			
+		
+		
+		_layerRenderer = null;
+	}
 	
 	
 	override private function attachVerticalScrollBarIfNecessary():Void
