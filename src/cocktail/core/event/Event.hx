@@ -22,9 +22,7 @@ import cocktail.core.html.HTMLElement;
  * @author Yannick DOMINGUEZ
  */
 class Event 
-{
-	public static inline var SCROLL:String = "scroll";
-	
+{	
 	public static inline var LOAD:String = "load";
 	
 	public static inline var FOCUS:String = "focus";
@@ -37,7 +35,30 @@ class Event
 	
 	public static inline var RESIZE:String = "resize";
 	
-	//TODO : add current target
+	//PhaseType, An integer indicating which phase of the event flow is being processed
+	
+	/**
+	 * The current event phase is the capture phase.
+	 */
+	public static inline var CAPTURING_PHASE:Int = 1;
+	
+	/**
+	 * The current event is in the target phase, i.e., 
+	 * it is being evaluated at the proximal event target.
+	 */
+	public static inline var AT_TARGET:Int = 2;
+	
+	/**
+	 * The current event phase is the bubbling phase.
+	 */
+	public static inline var BUBBLING_PHASE:Int = 3;
+	
+	/**
+	 * Used to indicate which phase of event flow
+	 * is currently being accomplished.
+	 */
+	private var _eventPhase:Int;
+	public var eventPhase(get_eventPhase, never):Int;
 	
 	/**
 	 * The name of the event
@@ -46,10 +67,36 @@ class Event
 	public var type(get_type, never):String;
 	
 	/**
-	 * Used to indicate the event target
+	 * Used to indicate the event target. This attribute
+	 * contains the proximal event target when used with the Event dispatch and DOM event flow.
 	 */ 
-	private var _target:IEventTarget;
-	public var target(get_target, never):IEventTarget;
+	private var _target:EventTarget;
+	public var target(get_target, never):EventTarget;
+	
+	/**
+	 * Used to indicate the EventTarget whose EventListeners
+	 * are currently being processed. 
+	 * This is particularly useful during
+	 * the capture and bubbling phases. 
+	 * When used with the Event dispatch and DOM event flow,
+	 * this attribute contains the proximal event target or a target ancestor.
+	 */
+	private var _currentTarget:EventTarget;
+	public var currentTarget(get_currentTarget, never):EventTarget;
+	
+	/**
+	 * Used to indicate whether or not an event is a bubbling event.
+	 * If the event can bubble the value is true
+	 */
+	private var _bubbles:Bool;
+	public var bubbles(get_bubbles, never):Bool;
+	
+	/**
+	 * Used to indicate whether or not an event can have its default
+	 * action prevented. If the default action can be prevented it is true
+	 */
+	private var _cancelable:Bool;
+	public var canceleable(get_cancelable, never):Bool;
 	
 	/**
 	 * Used to indicate whether Event.preventDefault()
@@ -61,10 +108,9 @@ class Event
 	/**
 	 * class constructor
 	 */
-	public function new(type:String, target:IEventTarget) 
+	public function new() 
 	{
-		_type = type;
-		_target = target;
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -72,25 +118,90 @@ class Event
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * If an event is cancelable, the preventDefault method is used to signify
-	 * that the event is to be canceled, meaning any default action normally 
-	 * taken by the implementation as a result of the event will not occur.
-	 * If, during any stage of event flow, the preventDefault
-	 * method is called the event is canceled.
-	 * Any default action associated with the event will not occur.
-	 * Calling this method for a non-cancelable event has no effect.
-	 * Once preventDefault has been called it will remain in effect throughout
-	 * the remainder of the event's propagation.
-	 * This method may be used during any stage of event flow.
+	 * Initializes attributes of an Event created through the
+	 * DocumentEvent.createEvent method. This method may only 
+	 * be called before the Event has been dispatched via the EventTarget.dispatchEvent()
+	 * method. If the method is called several times before invoking EventTarget.dispatchEvent,
+	 * only the final invocation takes precedence. This method has no effect if called after
+	 * the event has been dispatched. If called from a subclass of the Event 
+	 * interface only the values specified in this method are modified, all
+	 * other attributes are left unchanged.This method sets the Event.type attribute
+	 * to eventTypeArg.
+	 * 
+	 * TODO : implement DocumentEvent.createEvent
+	 * TODO : should have no effect after dispatch
+	 * 
+	 * @param	eventTypeArg Specifies Event.type, the name of the event type.
+	 * @param	canBubbleArg Specifies Event.bubbles. This parameter overrides the intrinsic bubbling behavior of the event.
+	 * @param	cancelableArg Specifies Event.cancelable. This parameter overrides the intrinsic cancelable behavior of the event.
+	 */
+	public function initEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool):Void
+	{
+		_type = eventTypeArg;
+		_bubbles = canBubbleArg;
+		_cancelable = cancelableArg;
+	}
+	
+	/**
+	 * When this method is invoked, the event must be canceled,
+	 * meaning any default actions normally taken by the
+	 * implementation as a result of the event must not occur
+	 * 
+	 * Default actions which occur prior to the event's dispatch are reverted.
+	 * Calling this method for a non-cancelable event must have no effect.
+	 * If an event has more than one default action, each cancelable default
+	 action must be canceled. 
 	 */
 	public function preventDefault():Void
 	{
 		_defaultPrevented = true;
 	}
 	
+	/**
+	 * Prevents other event listeners from being triggered
+	 * but its effect must be deferred until all event
+	 * listeners attached on the Event.currentTarget have
+	 * been triggered. Once it has been called,
+	 * further calls to this method have no additional effect. 
+	 */
+	public function stopPropagation():Void
+	{
+		//TODO : implement
+	}
+	
+	/**
+	 * Prevents other event listeners from being triggered and,
+	 * unlike Event.stopPropagation() its effect must be immediate .
+	 * Once it has been called, further calls to this method have no additional effect. 
+	 */
+	public function stopImmediatePropagation():Void
+	{
+		//TODO : implement
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_currentTarget():EventTarget
+	{
+		return _currentTarget;
+	}
+	
+	private function get_eventPhase():Int
+	{
+		return _eventPhase;
+	}
+	
+	private function get_bubbles():Bool
+	{
+		return _bubbles;
+	}
+	
+	private function get_cancelable():Bool
+	{
+		return _cancelable;
+	}
 	
 	private function get_defaultPrevented():Bool 
 	{
@@ -102,7 +213,7 @@ class Event
 		return _type;
 	}
 	
-	private function get_target():IEventTarget
+	private function get_target():EventTarget
 	{
 		return _target;
 	}

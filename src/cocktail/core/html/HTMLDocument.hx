@@ -26,6 +26,7 @@ import cocktail.core.NativeElement;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.Window;
+import cocktail.core.event.FocusEvent;
 import haxe.Log;
 import haxe.Timer;
 
@@ -220,7 +221,10 @@ class HTMLDocument extends Document
 		//execute the callback of the first top-most
 		//ElementRenderer with a mouse down callback
 		//
-		//TODO : wrong order, top-most is last element of the array
+		
+		//TODO : hack
+		elementRenderersAtPoint.reverse();
+		
 		for (i in 0...elementRenderersAtPoint.length)
 		{
 			switch( elementRenderersAtPoint[i].node.nodeType)
@@ -252,6 +256,9 @@ class HTMLDocument extends Document
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
 
+		//TODO : hack
+		elementRenderersAtPoint.reverse();
+		
 		for (i in 0...elementRenderersAtPoint.length)
 		{
 			switch( elementRenderersAtPoint[i].node.nodeType)
@@ -279,6 +286,9 @@ class HTMLDocument extends Document
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
 		
+		//TODO : hack
+		elementRenderersAtPoint.reverse();
+		
 		for (i in 0...elementRenderersAtPoint.length)
 		{
 			switch( elementRenderersAtPoint[i].node.nodeType)
@@ -289,7 +299,9 @@ class HTMLDocument extends Document
 					{
 						htmlElement.onmouseup(mouseEvent);
 						//return as only one callback is executed
-						return;
+						
+						//TODO : hack
+					//	return;
 					}
 			}
 			
@@ -308,6 +320,8 @@ class HTMLDocument extends Document
 			
 		//TODO : doc for mouse over / out
 		
+		//TODO : hack
+		elementRenderersAtPoint.reverse();
 		
 		if (elementRenderersAtPoint.length > 0)
 		{
@@ -322,7 +336,8 @@ class HTMLDocument extends Document
 						_hoveredHTMLElement.onmouseout(mouseEvent);
 					}
 				}
-				//TODO : should switch, might be TextRenderer that was hit
+				//TODO : should switch, might be TextRenderer that was hit, only works because text is HTMLElement because
+				//of Haxe JS
 				_hoveredHTMLElement = cast(elementRenderersAtPoint[elementRenderersAtPoint.length - 1].node);
 				if (_hoveredHTMLElement.onmouseover != null)
 				{
@@ -452,14 +467,19 @@ class HTMLDocument extends Document
 			//else call the blur callback on the element
 			if (activeElement.onblur != null)
 			{
-				activeElement.onblur(new Event(Event.BLUR, activeElement));
+				var blurEvent:FocusEvent = new FocusEvent();
+				blurEvent.initFocusEvent(Event.BLUR, true, false, 0.0, null);
+				activeElement.onblur(blurEvent);
 			}
 			
 			//then store the new one and call the focus callback on it
 			_activeElement = value;
 			if (_activeElement.onfocus != null)
 			{
-				_activeElement.onfocus(new Event(Event.FOCUS, _activeElement));
+				var focusEvent:FocusEvent = new FocusEvent();
+				focusEvent.initFocusEvent(Event.FOCUS, true, false, 0.0, null);
+				
+				_activeElement.onfocus(focusEvent);
 			}
 		}
 		

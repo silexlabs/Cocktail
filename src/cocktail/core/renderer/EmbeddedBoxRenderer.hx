@@ -32,12 +32,6 @@ import haxe.Log;
  */
 class EmbeddedBoxRenderer extends BoxRenderer
 {
-
-	/**
-	 * class constructor. Set the width and height
-	 * of the element, as for embedded element
-	 * they are intrinsic to the embeddded asset
-	 */
 	public function new(node:Node) 
 	{
 		super(node);
@@ -47,12 +41,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	// OVERRIDEN PUBLIC RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Render the embedded asset and return a
-	 * NativeElement from it
-	 * 
-	 * TODO : re-implement image smoothing + add an ImageRenderer
-	 */
+
 	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		super.render(graphicContext, relativeOffset);
@@ -63,18 +52,9 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : opacity doesn't work on embedded asset and should also be applied to background
 	private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
 	{
-		var embeddedHTMLElement:EmbeddedElement = cast(_node);
-		
-		graphicContext.addChild(embeddedHTMLElement.embeddedAsset);
-	
-		embeddedHTMLElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
-		embeddedHTMLElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
-
-		embeddedHTMLElement.embeddedAsset.width = _coreStyle.computedStyle.width;
-		embeddedHTMLElement.embeddedAsset.height = _coreStyle.computedStyle.height;
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -90,6 +70,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	// OVERRIDEN SETTER/GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	//TODO : messy
 	override private function get_bounds():RectangleData
 	{
 		_bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;

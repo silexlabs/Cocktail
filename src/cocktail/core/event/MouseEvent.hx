@@ -119,19 +119,49 @@ class MouseEvent extends UIEvent
 	private var _altKey:Bool;
 	public var altKey(get_altKey, null):Bool;
 	
-	public function new(type:String, target:HTMLElement, detail:Float, screenX:Float, screenY:Float, clientX:Float, clientY:Float, 
-	ctrlKey:Bool, shiftKey:Bool, altKey:Bool) 
+	public function new() 
 	{
-		super(type, target, detail);
-		
-		_screenX = screenX;
-		_screenY = screenY;
-		_clientX = clientX;
-		_clientY = clientY;
-		_ctrlKey = ctrlKey;
-		_shiftKey = shiftKey;
-		_altKey = altKey;
+		super();
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The MouseEvent interface provides specific contextual information associated
+	 * with Mouse events. In the case of nested elements mouse events are always
+	 * targeted at the most deeply nested element. Ancestors of the targeted element
+	 * may use bubbling to obtain notification of mouse events which occur within 
+	 * their descendent elements.
+	 * 
+	 * To create an instance of the MouseEvent interface, use the
+	 * DocumentEvent.createEvent("MouseEvent") method call.
+	 * 
+	 * TODO : missing arguments
+	 * 
+	 * @param	eventTypeArg Specifies Event.type, the name of the event type.
+	 * @param	canBubbleArg Specifies Event.bubbles. This parameter overrides the intrinsic bubbling behavior of the event.
+	 * @param	cancelableArg Specifies Event.cancelable. This parameter overrides the intrinsic cancelable behavior of the event.
+	 * @param	detailArg Specifies UIEvent.detail
+	 */
+	public function initMouseEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, detailArg:Float,
+	screenXArg:Float, screenYArg:Float, clientXArg:Float, clientYArg:Float, ctrlKeyArg:Bool, altKeyArg:Bool,
+	shiftKeyArg:Bool):Void
+	{
+		_type = eventTypeArg;
+		_bubbles = canBubbleArg;
+		_cancelable = cancelableArg;
+		_detail = detailArg;
+		_screenX = screenXArg;
+		_screenY = screenYArg;
+		_clientX = clientXArg;
+		_clientY = clientYArg;
+		_ctrlKey = ctrlKeyArg;
+		_shiftKey = shiftKeyArg;
+		_altKey = altKeyArg;
+	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTERS

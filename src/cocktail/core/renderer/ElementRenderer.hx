@@ -249,9 +249,12 @@ class ElementRenderer extends Node
 	 */
 	override public function removeChild(oldChild:Node):Node
 	{
-		super.removeChild(oldChild);
+		//must happen before calling super, else the ElementRenderer
+		//won't have a parent anymore
 		var elementRendererChild:ElementRenderer = cast(oldChild);
 		elementRendererChild.detachLayer();
+		
+		super.removeChild(oldChild);
 		invalidateLayout();
 		return oldChild;
 	}
@@ -294,11 +297,15 @@ class ElementRenderer extends Node
 		//create the LayerRenderer if needed
 		if (_layerRenderer == null)
 		{
-			var parent:ElementRenderer = cast(_parentNode);
-			if (parent.layerRenderer != null)
+			if (_parentNode != null)
 			{
-				createLayer(parent.layerRenderer);
+				var parent:ElementRenderer = cast(_parentNode);
+				if (parent.layerRenderer != null)
+				{
+					createLayer(parent.layerRenderer);
+				}
 			}
+		
 		}
 		
 		//the ElementRenderer is attached to the LayerRenderer
@@ -329,7 +336,10 @@ class ElementRenderer extends Node
 		{
 			var parent:ElementRenderer = cast(_parentNode);
 			parent.layerRenderer.removeChild(_layerRenderer);
+			
+			//TODO : should be called in LayerRenderer.removeChild ?
 			_layerRenderer.detach();
+			
 			_hasOwnLayer = false;
 		}
 		
@@ -494,12 +504,6 @@ class ElementRenderer extends Node
 		//already being laid out or if an immediate layout is required
 		if (this._isLayingOut == false || immediate == true)
 		{
-			//set the layout flag to prevent multiple
-			//layout of the ElementRenderer in a row
-			//The ElementRenderer will be able to be invalidated
-			//again once it has been laid out
-			this._isLayingOut = true;
-			
 			//if the ElementRenderer doesn't have a parent, then it
 			//is not currently added to the DOM and doesn't require
 			//a layout
@@ -509,6 +513,12 @@ class ElementRenderer extends Node
 			//only the initial ElementRenderer doesn't have a parent
 			if (this._parentNode != null)
 			{
+				//set the layout flag to prevent multiple
+				//layout of the ElementRenderer in a row
+				//The ElementRenderer will be able to be invalidated
+				//again once it has been laid out
+				this._isLayingOut = true;
+				
 				var parent:ElementRenderer = cast(_parentNode);
 				parent.invalidateLayout(immediate);	
 			}
@@ -540,7 +550,6 @@ class ElementRenderer extends Node
 		detachLayer();
 		attachLayer();
 		invalidateLayout();
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

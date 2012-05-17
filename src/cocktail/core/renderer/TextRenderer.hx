@@ -51,29 +51,11 @@ class TextRenderer extends ElementRenderer
 		_lineBoxes = null;
 	}
 	
-	/**
-	 * Separate the source text in an array of text token
-	 * and create a text line box for each one
-	 * 
-	 * TODO : should find better name
-	 */
-	private function init():Void
-	{
-		_textTokens = doGetTextTokens(_text.nodeValue);
-		lineBoxes = [];
-		
-		for (i in 0..._textTokens.length)
-		{
-			//create and store the line boxes
-			lineBoxes.push(createTextLineBoxFromTextToken(_textTokens[i]));
-		}
-	}
-	
 	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{	
 		if (lineBoxes == null)
 		{
-			init();
+			createTextLines();
 		}
 	}
 	
@@ -181,6 +163,25 @@ class TextRenderer extends ElementRenderer
 	////////////////////////////////
 	
 	/**
+	 * Separate the source text in an array of text token
+	 * and create a text line box for each one
+	 * 
+	 * TODO : shouldn't have to recreate text token unless
+	 * node value changes
+	 */
+	private function createTextLines():Void
+	{
+		_textTokens = doGetTextTokens(_text.nodeValue);
+		lineBoxes = [];
+		
+		for (i in 0..._textTokens.length)
+		{
+			//create and store the line boxes
+			lineBoxes.push(createTextLineBoxFromTextToken(_textTokens[i]));
+		}
+	}
+	
+	/**
 	 * Create and return a Text line box from a text token
 	 */
 	private function createTextLineBoxFromTextToken(textToken:TextToken):TextLineBox
@@ -241,10 +242,19 @@ class TextRenderer extends ElementRenderer
 	 * Overriden as the bounds of a TextRenderer is formed
 	 * by the bounds of its formatted text line boxes
 	 * 
-	 * TODO : throw exception when lineboxes is null
+	 * TODO : messy to return a new bounds
 	 */
 	override private function get_bounds():RectangleData
 	{
+		if (_lineBoxes == null)
+		{
+			return {
+				x:0.0,
+				y:0.0,
+				width:0.0,
+				height:0.0
+			}
+		}
 		var textLineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
 		for (i in 0..._lineBoxes.length)
 		{
