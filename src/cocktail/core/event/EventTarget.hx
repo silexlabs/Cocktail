@@ -87,8 +87,10 @@ class EventTarget
 					//reset the event internal state, so that it
 					//can be reused
 					//first store the current defaultPrevented state, else
-					//it will be reset a the time of the return
+					//it will be reset a the time of the return, then tries to
+					//execute the default action before stopping event flow
 					var defaultPrevented:Bool = evt.defaultPrevented;
+					executeDefaultActionIfNeeded(defaultPrevented, evt);
 					evt.reset();
 					return defaultPrevented;
 				}
@@ -101,7 +103,9 @@ class EventTarget
 			//return if propagation must be stopped
 			if (evt.propagationStopped == true || evt.immediatePropagationStopped == true)
 			{
+				//TODO : duplicated code
 				var defaultPrevented:Bool = evt.defaultPrevented;
+				executeDefaultActionIfNeeded(defaultPrevented, evt);
 				evt.reset();
 				return defaultPrevented;
 			}
@@ -125,10 +129,14 @@ class EventTarget
 					if (evt.propagationStopped == true || evt.immediatePropagationStopped == true)
 					{
 						var defaultPrevented:Bool = evt.defaultPrevented;
+						executeDefaultActionIfNeeded(defaultPrevented, evt);
 						evt.reset();
 						return defaultPrevented;
 					}
 				}
+				
+				executeDefaultActionIfNeeded(evt.defaultPrevented, evt);
+				
 			}
 		}
 		//this part is executed for target ancestor and for the target
@@ -279,6 +287,15 @@ class EventTarget
 	private function getTargetAncestors():Array<EventTarget>
 	{
 		return [];
+	}
+	
+	/**
+	 * If the EventTarget is associated to a default action, execute
+	 * if it wasn't prevented during the event flow
+	 */
+	private function executeDefaultActionIfNeeded(defaultPrevented:Bool, event:Event):Void
+	{
+		//abstract
 	}
 	
 }

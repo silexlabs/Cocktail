@@ -16,6 +16,14 @@ package cocktail.core.event;
 class WheelEvent extends MouseEvent
 {
 	/**
+	 * 	
+	 * The mouse wheel event occurs when the mouse wheel is rotated
+	 * while the pointing device is over an HTMLElement
+	 */
+	public static inline var MOUSE_WHEEL:String = "wheel";
+	
+	
+	/**
 	 * This set of constants must be used to indicate the units of measurement for the delta values.
 	 * The precise measurement is specific to device, operating system, and application configurations.
 	 */

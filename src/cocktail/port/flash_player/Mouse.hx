@@ -114,7 +114,7 @@ class Mouse extends AbstractMouse
 		//TODO : clientX relative to the stage, should it be relative to the clicked component ? shouldn't use flash localX/Y anyway
 		var wheelEvent:WheelEvent = new WheelEvent();
 
-		wheelEvent.initWheelEvent(typedEvent.type, true, true, null, 0.0, typedEvent.stageX, typedEvent.stageY,
+		wheelEvent.initWheelEvent(WheelEvent.MOUSE_WHEEL, true, true, null, 0.0, typedEvent.stageX, typedEvent.stageY,
 		typedEvent.localX, typedEvent.localY, 0, null, "", 0, typedEvent.delta, 0, 0 );
 		
 		return wheelEvent;
