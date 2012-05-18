@@ -12,6 +12,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 
 package event;
 
+import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventListener;
 import cocktail.core.event.EventTarget;
@@ -108,6 +109,92 @@ class EventTests
 	
 	function testBubbling()
 	{
+		var node = new Node();
 		
+		var parentNode = new Node();
+		
+		parentNode.appendChild(node);
+		
+		var test = 0;
+		
+		parentNode.addEventListener("test", function(e) { test++; } );
+		
+		var evt = new Event();
+		evt.initEvent("test", true, true);
+		node.dispatchEvent(evt);
+		
+		Assert.equals(test, 1);
+		
+		var evt = new Event();
+		evt.initEvent("test", false, true);
+		node.dispatchEvent(evt);
+		
+		Assert.equals(test, 1);
+	}
+	
+	function testCapture()
+	{
+		var node = new Node();
+		
+		var parentNode = new Node();
+		
+		parentNode.appendChild(node);
+		
+		var test = 0;
+		
+		parentNode.addEventListener("test", function(e) { test++; }, true );
+		
+		var evt = new Event();
+		evt.initEvent("test", false, true);
+		node.dispatchEvent(evt);
+		
+		Assert.equals(test, 1);
+	}
+	
+	function testStopPropagation()
+	{
+		var node = new Node();
+		
+		var parentNode = new Node();
+		
+		parentNode.appendChild(node);
+		
+		var test = 0;
+		
+		node.addEventListener("test", function(e) { e.stopPropagation() ; } );
+		parentNode.addEventListener("test", function(e) { test++; });
+		
+		var evt = new Event();
+		evt.initEvent("test", true, true);
+		node.dispatchEvent(evt);
+		
+		Assert.equals(test, 0);
+	}
+	
+	function testStopImmediatePropagation()
+	{
+		var node = new Node();
+	
+		var test = 0;
+		
+		node.addEventListener("test", function(e) { e.stopImmediatePropagation() ;} );
+		node.addEventListener("test", function(e) { test++; });
+		
+		var evt = new Event();
+		evt.initEvent("test", true, true);
+		node.dispatchEvent(evt);
+		
+		Assert.equals(test, 0);
+	}
+	
+	function testPreventDefault()
+	{
+		var node = new Node();
+	
+		node.addEventListener("test", function(e) { e.preventDefault(); } );
+		var evt = new Event();
+		evt.initEvent("test", true, true);
+		
+		Assert.isTrue(node.dispatchEvent(evt));
 	}
 }
