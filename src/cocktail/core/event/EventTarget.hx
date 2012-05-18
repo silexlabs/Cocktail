@@ -17,11 +17,11 @@ package cocktail.core.event;
  */
 class EventTarget
 {
-	private var _eventHandlers:Hash<Array<IEventListener>>;
+	private var _registeredEventListeners:Hash<Array<EventListener>>;
 	
 	public function new() 
 	{
-		_eventHandlers = new Hash();
+		_registeredEventListeners = new Hash();
 	}
 
 	/**
@@ -36,7 +36,7 @@ class EventTarget
 	{
 		// Dispatch to objects that are registered as listeners for
 		// this object.
-		dispatchQueue(_eventHandlers.get(evt.type), evt);
+		dispatchQueue(_registeredEventListeners.get(evt.type), evt);
 		return evt.defaultPrevented;
 	}
 
@@ -65,15 +65,18 @@ class EventTarget
 	 * phase. If false, the event listener must only be triggered during
 	 * the target and bubbling phases.
 	 */
-	public function addEventListener(event:String, handler:IEventListener, useCapture:Bool = false):Void
+	public function addEventListener(type:String, listener:Event->Void, useCapture:Bool = false):Void
 	{
-		if (_eventHandlers.exists(event) == false)
+		if (_registeredEventListeners.exists(type) == false)
 		{
-			_eventHandlers.set(event, new Array<IEventListener>());
+			_registeredEventListeners.set(type, new Array<EventListener>());
 		}
 		
-		removeEventListener(event, handler);
-		_eventHandlers.get(event).push(handler);
+		removeEventListener(type, listener, useCapture);
+		
+		var eventListener:EventListener = new EventListener(type, listener, useCapture);
+		
+		_registeredEventListeners.get(type).push(eventListener);
 	}
 
 	/**
@@ -90,15 +93,15 @@ class EventTarget
 	 * phases does not affect the same event listener registered for the target and bubbling phases,
 	 * and vice versa.
 	 */
-	public function removeEventListener(event:String, handler:IEventListener, useCapture:Bool = false):Void
+	public function removeEventListener(type:String, listener:Event->Void, useCapture:Bool = false):Void
 	{
-		if (_eventHandlers.exists(event) == true)
+		if (_registeredEventListeners.exists(type) == true)
 		{
-			var registeredListeners:Array<IEventListener> = _eventHandlers.get(event);
+			var registeredListeners:Array<EventListener> = _registeredEventListeners.get(type);
 			for (i in 0...registeredListeners.length)
 			{
-				var eventListener:IEventListener = registeredListeners[i];
-				if (eventListener == handler) {
+				var eventListener:EventListener = registeredListeners[i];
+				if (eventListener.eventType == type) {
 					registeredListeners.splice(i, 1);
 					return;
 				}
@@ -106,13 +109,13 @@ class EventTarget
 		}
 	}
 	
-	private function dispatchQueue(queue:Array<IEventListener>, evt:Event):Void
+	private function dispatchQueue(queue:Array<EventListener>, evt:Event):Void
 	{
 		if (queue != null)
 		{
 			for (i in 0...queue.length)
 			{
-				var eventListener:IEventListener = queue[i];
+				var eventListener:EventListener = queue[i];
 				eventListener.handleEvent(evt);
 			}
 		}
