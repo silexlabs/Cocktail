@@ -40,8 +40,6 @@ class UIEvent extends Event
 	 * 
 	 * TODO : missing arguments
 	 * 
-	 * TODO : should call initEvent, same for inheriting classes
-	 * 
 	 * @param	eventTypeArg Specifies Event.type, the name of the event type.
 	 * @param	canBubbleArg Specifies Event.bubbles. This parameter overrides the intrinsic bubbling behavior of the event.
 	 * @param	cancelableArg Specifies Event.cancelable. This parameter overrides the intrinsic cancelable behavior of the event.
@@ -49,9 +47,7 @@ class UIEvent extends Event
 	 */
 	public function initUIEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, detailArg:Float):Void
 	{
-		_type = eventTypeArg;
-		_bubbles = canBubbleArg;
-		_cancelable = cancelableArg;
+		initEvent(eventTypeArg, canBubbleArg, cancelableArg);
 		_detail = detailArg;
 	}
 	

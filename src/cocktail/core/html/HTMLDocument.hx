@@ -210,9 +210,6 @@ class HTMLDocument extends Document
 	 * Called when a mouse down event is dispatched.
 	 * Retrieve the top-most ElementRenderer under the mouse
 	 * pointer and call its mouse down down callback if provided
-	 * 
-	 * TODO IMPORTANT : should also now use scrollLeft and scrollTop to find
-	 * the clicked ElementRenderer
 	 */
 	private function onMouseDown(mouseEvent:MouseEvent):Void
 	{
@@ -500,7 +497,7 @@ class HTMLDocument extends Document
 			if (activeElement.onblur != null)
 			{
 				var blurEvent:FocusEvent = new FocusEvent();
-				blurEvent.initFocusEvent(Event.BLUR, true, false, 0.0, null);
+				blurEvent.initFocusEvent(FocusEvent.BLUR, true, false, 0.0, null);
 				activeElement.onblur(blurEvent);
 			}
 			
@@ -509,7 +506,7 @@ class HTMLDocument extends Document
 			if (_activeElement.onfocus != null)
 			{
 				var focusEvent:FocusEvent = new FocusEvent();
-				focusEvent.initFocusEvent(Event.FOCUS, true, false, 0.0, null);
+				focusEvent.initFocusEvent(FocusEvent.FOCUS, true, false, 0.0, null);
 				
 				_activeElement.onfocus(focusEvent);
 			}

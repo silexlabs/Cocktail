@@ -41,17 +41,8 @@ class WheelEvent extends MouseEvent
 	screenXArg:Float, screenYArg:Float, clientXArg:Float, clientYArg:Float, ctrlKeyArg:Bool, altKeyArg:Bool,
 	shiftKeyArg:Bool, deltaYArg:Float):Void
 	{
-		_type = eventTypeArg;
-		_bubbles = canBubbleArg;
-		_cancelable = cancelableArg;
-		_detail = detailArg;
-		_screenX = screenXArg;
-		_screenY = screenYArg;
-		_clientX = clientXArg;
-		_clientY = clientYArg;
-		_ctrlKey = ctrlKeyArg;
-		_shiftKey = shiftKeyArg;
-		_altKey = altKeyArg;
+		initMouseEvent(eventTypeArg, canBubbleArg, cancelableArg, detailArg, screenXArg, screenYArg, clientXArg, clientYArg,
+		ctrlKeyArg, shiftKeyArg, altKeyArg);
 		_deltaY = deltaYArg;
 	}
 	

@@ -17,6 +17,10 @@ package cocktail.core.event;
  */
 class FocusEvent extends UIEvent
 {
+	public static inline var FOCUS:String = "focus";
+	
+	public static inline var BLUR:String = "blur";
+	
 	/**
 	 * Used to identify a secondary EventTarget related to a Focus event, 
 	 * depending on the type of event. For security reasons with nested
@@ -49,10 +53,7 @@ class FocusEvent extends UIEvent
 	 */
 	public function initFocusEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, detailArg:Float,relatedTargetArg:EventTarget):Void
 	{
-		_type = eventTypeArg;
-		_bubbles = canBubbleArg;
-		_cancelable = cancelableArg;
-		_detail = detailArg;
+		initUIEvent(eventTypeArg, canBubbleArg, cancelableArg, detailArg);
 		_relatedTarget = relatedTargetArg;
 	}
 	

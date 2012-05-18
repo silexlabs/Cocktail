@@ -170,12 +170,16 @@ class HTMLElement extends Element
 	public var scrollLeft(get_scrollLeft, set_scrollLeft):Int;
 	
 	/**
-	 * The scroll view height of the HTMLElement
+	 * The scroll view height of the HTMLElement. Returns either
+	 * the height of the HTMLElement or the height of its content,
+	 * whichever is greater. For instance if the HTMLElement displays
+	 * scrollbars because its content is higher than its content area,
+	 * scrollHeight will be larger than clientHeight
 	 */
 	public var scrollHeight(get_scrollHeight, never):Int;
 	
 	/**
-	 * The scroll view width of the HTMLElement
+	 * Same as scrollHeight for width
 	 */
 	public var scrollWidth(get_scrollWidth, never):Int;
 	
@@ -924,15 +928,24 @@ class HTMLElement extends Element
 		}
 	}
 	
-	//TODO : implement scroll
+	//TODO : should unit test, not very what this getter
+	//is supposed to return
 	private function get_scrollHeight():Int
 	{
-		return -1;
+		if (_elementRenderer != null)
+		{
+			return Math.round(_elementRenderer.scrollHeight);
+		}
+		return 0;
 	}
 	
 	private function get_scrollWidth():Int
 	{
-		return -1;
+		if (_elementRenderer != null)
+		{
+			return Math.round(_elementRenderer.scrollWidth);
+		}
+		return 0;
 	}
 	
 	private function set_scrollLeft(value:Int):Int
