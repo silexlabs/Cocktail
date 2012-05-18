@@ -47,9 +47,11 @@ class EventTarget
 			var targetAncestors:Array<EventTarget> = getTargetAncestors();
 
 			evt.eventPhase = Event.CAPTURING_PHASE;
-			
-			for (i in targetAncestors.length...0)
+
+			targetAncestors.reverse();
+			for (i in 0...targetAncestors.length)
 			{
+				
 				targetAncestors[i].dispatchEvent(evt);
 				if (evt.propagationStopped == true || evt.immediatePropagationStopped == true)
 				{
@@ -61,13 +63,17 @@ class EventTarget
 			evt.eventPhase = Event.AT_TARGET;
 		
 			dispatchEvent(evt);
-			
+			if (evt.propagationStopped == true || evt.immediatePropagationStopped == true)
+			{
+				evt.reset();
+				return evt.defaultPrevented;
+			}
 			
 			
 			if (evt.bubbles == true)
 			{
 				evt.eventPhase = Event.BUBBLING_PHASE;
-				
+				targetAncestors.reverse();
 				for (i in 0...targetAncestors.length)
 				{
 					targetAncestors[i].dispatchEvent(evt);
@@ -151,7 +157,7 @@ class EventTarget
 			for (i in 0...registeredListeners.length)
 			{
 				var eventListener:EventListener = registeredListeners[i];
-				if (eventListener.eventType == type) {
+				if (eventListener.eventType == type && eventListener.useCapture == useCapture && eventListener.listener == listener) {
 					eventListener.dispose();
 					registeredListeners.splice(i, 1);
 					return;
@@ -185,10 +191,8 @@ class EventTarget
 				}
 				else if (evt.eventPhase == Event.AT_TARGET)
 				{
-					trace("at target");
 					eventListener.handleEvent(evt);
 				}
-				
 				if (evt.immediatePropagationStopped == true)
 				{
 					return;

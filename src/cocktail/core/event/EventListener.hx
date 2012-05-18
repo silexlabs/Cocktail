@@ -33,14 +33,16 @@ class EventListener
 	private var _useCapture:Bool;
 	public var useCapture(get_useCapture, never):Bool;
 	
-	private var _eventCallback:Event->Void;
+	private var _listener:Event->Void;
+	public var listener(get_listener, never):Event->Void;
+	
 	
 	private var _eventType:String;
 	public var eventType(get_eventType, never):String;
 	
-	public function new(eventType:String, eventCallback:Event->Void, useCapture:Bool)
+	public function new(eventType:String, listener:Event->Void, useCapture:Bool)
 	{
-		_eventCallback = eventCallback;
+		_listener = listener;
 		_useCapture = useCapture;
 		_eventType = eventType;
 	}
@@ -54,17 +56,22 @@ class EventListener
 	 */
 	public function handleEvent(evt:Event):Void
 	{
-		_eventCallback(evt);
+		_listener(evt);
 	}
 	
 	public function dispose():Void
 	{
-		_eventCallback = null;
+		_listener = null;
 	}
 	
 	private function get_eventType():String
 	{
 		return _eventType;
+	}
+	
+	private function get_listener():Event->Void
+	{
+		return _listener;
 	}
 	
 	private function get_useCapture():Bool
