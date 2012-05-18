@@ -54,7 +54,7 @@ class EventListener
 	 */
 	public function handleEvent(evt:Event):Void
 	{
-		
+		_eventCallback(evt);
 	}
 	
 	private function get_eventType():String

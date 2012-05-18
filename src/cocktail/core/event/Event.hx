@@ -54,7 +54,7 @@ class Event
 	 * is currently being accomplished.
 	 */
 	private var _eventPhase:Int;
-	public var eventPhase(get_eventPhase, never):Int;
+	public var eventPhase(get_eventPhase, set_eventPhase):Int;
 	
 	/**
 	 * The name of the event
@@ -67,7 +67,7 @@ class Event
 	 * contains the proximal event target when used with the Event dispatch and DOM event flow.
 	 */ 
 	private var _target:EventTarget;
-	public var target(get_target, never):EventTarget;
+	public var target(get_target, set_target):EventTarget;
 	
 	/**
 	 * Used to indicate the EventTarget whose EventListeners
@@ -78,7 +78,7 @@ class Event
 	 * this attribute contains the proximal event target or a target ancestor.
 	 */
 	private var _currentTarget:EventTarget;
-	public var currentTarget(get_currentTarget, never):EventTarget;
+	public var currentTarget(get_currentTarget, set_currentTarget):EventTarget;
 	
 	/**
 	 * Used to indicate whether or not an event is a bubbling event.
@@ -100,6 +100,26 @@ class Event
 	 */
 	private var _defaultPrevented:Bool;
 	public var defaultPrevented(get_defaultPrevented, never):Bool;
+	
+	/**
+	 * Used to indicate wether Event.stopPropagation()
+	 * has been called for this event
+	 */
+	private var _propagationStopped:Bool;
+	public var propagationStopped(get_propagationStopped, never):Bool;
+	
+	/**
+	 * Used to indicate wether Event.stopImmediatePropagation()
+	 * has been called for this event
+	 */
+	private var _immediatePropagationStopped:Bool;
+	public var immediatePropagationStopped(get_immediatePropagationStopped, never):Bool;
+	
+	/**
+	 * Wheter this event has already been dispatched
+	 */
+	private var _dispatched:Bool;
+	public var dispatched(get_dispatched, set_dispatched):Bool;
 	
 	/**
 	 * class constructor
@@ -125,7 +145,6 @@ class Event
 	 * to eventTypeArg.
 	 * 
 	 * TODO : implement DocumentEvent.createEvent
-	 * TODO : should have no effect after dispatch
 	 * 
 	 * @param	eventTypeArg Specifies Event.type, the name of the event type.
 	 * @param	canBubbleArg Specifies Event.bubbles. This parameter overrides the intrinsic bubbling behavior of the event.
@@ -133,9 +152,32 @@ class Event
 	 */
 	public function initEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool):Void
 	{
+		//can't alter event after it has been dispatched
+		if (_dispatched == true)
+		{
+			return;
+		}
+		
 		_type = eventTypeArg;
 		_bubbles = canBubbleArg;
 		_cancelable = cancelableArg;
+	}
+	
+	/**
+	 * Reset the event to its initial state, so
+	 * that it can be re-dispatched
+	 */
+	public function reset():Void
+	{
+		_dispatched = false;
+		_defaultPrevented = false;
+		_propagationStopped = false;
+		_immediatePropagationStopped = false;
+		_target = null;
+		_currentTarget = null;
+		
+		//TODO : should it be 0 instead ?
+		_eventPhase = Event.CAPTURING_PHASE;
 	}
 	
 	/**
@@ -162,7 +204,7 @@ class Event
 	 */
 	public function stopPropagation():Void
 	{
-		//TODO : implement
+		_propagationStopped = true;
 	}
 	
 	/**
@@ -172,19 +214,39 @@ class Event
 	 */
 	public function stopImmediatePropagation():Void
 	{
-		//TODO : implement
+		_immediatePropagationStopped = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	private function get_dispatched():Bool
+	{
+		return _dispatched;
+	}
+
+	private function set_dispatched(value:Bool):Bool
+	{
+		return _dispatched = value;
+	}
+	
 	private function get_currentTarget():EventTarget
 	{
 		return _currentTarget;
 	}
 	
+	private function set_currentTarget(value:EventTarget):EventTarget
+	{
+		return _currentTarget = value;
+	}
+	
 	private function get_eventPhase():Int
+	{
+		return _eventPhase;
+	}
+	
+	private function set_eventPhase(value:Int):Int
 	{
 		return _eventPhase;
 	}
@@ -204,6 +266,16 @@ class Event
 		return _defaultPrevented;
 	}
 	
+	private function get_propagationStopped():Bool
+	{
+		return _propagationStopped;
+	}
+	
+	private function get_immediatePropagationStopped():Bool
+	{
+		return _immediatePropagationStopped;
+	}
+	
 	private function get_type():String 
 	{
 		return _type;
@@ -212,5 +284,10 @@ class Event
 	private function get_target():EventTarget
 	{
 		return _target;
+	}
+	
+	private function set_target(value:EventTarget):EventTarget
+	{
+		return _target = value;
 	}
 }

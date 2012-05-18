@@ -149,6 +149,12 @@ class MouseEvent extends UIEvent
 	screenXArg:Float, screenYArg:Float, clientXArg:Float, clientYArg:Float, ctrlKeyArg:Bool, altKeyArg:Bool,
 	shiftKeyArg:Bool):Void
 	{
+		//can't alter event after it has been dispatched
+		if (_dispatched == true)
+		{
+			return;
+		}
+		
 		initUIEvent(eventTypeArg, canBubbleArg, cancelableArg, detailArg);
 		_screenX = screenXArg;
 		_screenY = screenYArg;

@@ -47,6 +47,12 @@ class UIEvent extends Event
 	 */
 	public function initUIEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, detailArg:Float):Void
 	{
+		//can't alter event after it has been dispatched
+		if (_dispatched == true)
+		{
+			return;
+		}
+		
 		initEvent(eventTypeArg, canBubbleArg, cancelableArg);
 		_detail = detailArg;
 	}

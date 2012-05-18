@@ -53,6 +53,12 @@ class FocusEvent extends UIEvent
 	 */
 	public function initFocusEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, detailArg:Float,relatedTargetArg:EventTarget):Void
 	{
+		//can't alter event after it has been dispatched
+		if (_dispatched == true)
+		{
+			return;
+		}
+		
 		initUIEvent(eventTypeArg, canBubbleArg, cancelableArg, detailArg);
 		_relatedTarget = relatedTargetArg;
 	}

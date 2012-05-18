@@ -34,9 +34,57 @@ class EventTarget
 	 */
 	public function dispatchEvent(evt:Event):Bool
 	{
-		// Dispatch to objects that are registered as listeners for
-		// this object.
-		dispatchQueue(_registeredEventListeners.get(evt.type), evt);
+		evt.currentTarget = this;
+		
+		if (evt.dispatched == false)
+		{
+			evt.target = this;
+			
+			evt.dispatched = true;
+			
+			var targetAncestors:Array<EventTarget> = getTargetAncestors();
+			
+			evt.eventPhase = Event.CAPTURING_PHASE;
+			
+			for (i in targetAncestors.length...0)
+			{
+				targetAncestors[i].dispatchEvent(evt);
+				if (evt.propagationStopped == true || evt.immediatePropagationStopped == true)
+				{
+					evt.reset();
+					return evt.defaultPrevented;
+				}
+			}
+			
+			evt.eventPhase = Event.AT_TARGET;
+			
+			dispatchEvent(evt);
+			
+			
+			
+			if (evt.bubbles == true)
+			{
+				evt.eventPhase = Event.BUBBLING_PHASE;
+				
+				for (i in 0...targetAncestors.length)
+				{
+					targetAncestors[i].dispatchEvent(evt);
+					
+					if (evt.propagationStopped == true || evt.immediatePropagationStopped == true)
+					{
+						evt.reset();
+						return evt.defaultPrevented;
+					}
+				}
+			}
+		}
+		else
+		{
+			// Dispatch to objects that are registered as listeners for
+			// this object.
+			dispatchQueue(_registeredEventListeners.get(evt.type), evt);
+		}
+		
 		return evt.defaultPrevented;
 	}
 
@@ -116,9 +164,34 @@ class EventTarget
 			for (i in 0...queue.length)
 			{
 				var eventListener:EventListener = queue[i];
-				eventListener.handleEvent(evt);
+				
+				if (evt.eventPhase == Event.CAPTURING_PHASE)
+				{
+					if (eventListener.useCapture == true)
+					{
+						eventListener.handleEvent(evt);
+					}
+				}
+				else if (evt.eventPhase == Event.BUBBLING_PHASE)
+				{
+					if (eventListener.useCapture == false)
+					{
+						eventListener.handleEvent(evt);
+					}
+				}
+				
+				if (evt.immediatePropagationStopped == true)
+				{
+					return;
+				}
 			}
 		}
+	}
+	
+	//TODO : implemented in Node
+	private function getTargetAncestors():Array<EventTarget>
+	{
+		return [];
 	}
 	
 }
