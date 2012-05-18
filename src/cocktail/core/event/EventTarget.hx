@@ -42,8 +42,10 @@ class EventTarget
 			
 			evt.dispatched = true;
 			
-			var targetAncestors:Array<EventTarget> = getTargetAncestors();
 			
+			
+			var targetAncestors:Array<EventTarget> = getTargetAncestors();
+
 			evt.eventPhase = Event.CAPTURING_PHASE;
 			
 			for (i in targetAncestors.length...0)
@@ -57,7 +59,7 @@ class EventTarget
 			}
 			
 			evt.eventPhase = Event.AT_TARGET;
-			
+		
 			dispatchEvent(evt);
 			
 			
@@ -162,10 +164,11 @@ class EventTarget
 	{
 		if (queue != null)
 		{
+			
 			for (i in 0...queue.length)
 			{
 				var eventListener:EventListener = queue[i];
-				
+
 				if (evt.eventPhase == Event.CAPTURING_PHASE)
 				{
 					if (eventListener.useCapture == true)
@@ -179,6 +182,11 @@ class EventTarget
 					{
 						eventListener.handleEvent(evt);
 					}
+				}
+				else if (evt.eventPhase == Event.AT_TARGET)
+				{
+					trace("at target");
+					eventListener.handleEvent(evt);
 				}
 				
 				if (evt.immediatePropagationStopped == true)
