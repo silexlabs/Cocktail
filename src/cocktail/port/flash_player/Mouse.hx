@@ -8,6 +8,7 @@
 package cocktail.port.flash_player;
 
 import cocktail.core.event.MouseEvent;
+import cocktail.core.event.WheelEvent;
 import cocktail.core.mouse.AbstractMouse;
 import flash.Lib;
 import haxe.Log;
@@ -42,6 +43,7 @@ class Mouse extends AbstractMouse
 		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
 		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
 		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_WHEEL, onNativeMouseWheel);
 	}
 	
 	/**
@@ -53,6 +55,7 @@ class Mouse extends AbstractMouse
 		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
 		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
 		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_WHEEL, onNativeMouseWheel);
 	}
 	
 	/**
@@ -90,9 +93,30 @@ class Mouse extends AbstractMouse
 		//TODO : clientX relative to the stage, should it be relative to the clicked component ? shouldn't use flash localX/Y anyway
 		var mouseEvent:MouseEvent = new MouseEvent();
 
-		mouseEvent.initMouseEvent(eventType, true, true, 0.0, typedEvent.stageX, typedEvent.stageY,
-		typedEvent.localX, typedEvent.localY, typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey);
+		mouseEvent.initMouseEvent(eventType, true, true, null, 0.0, typedEvent.stageX, typedEvent.stageY,
+		typedEvent.localX, typedEvent.localY, typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, false, 0, null);
 		
 		return mouseEvent;
+	}
+	
+	/**
+	 * Create and return a cross-platform wheel event
+	 * form the flash mouse wheel event
+	 * 
+	 * @param	event the native mouse wheel event
+	 */
+	override private function getWheelEvent(event:Dynamic):WheelEvent
+	{
+		//cast as flash mouse event
+		var typedEvent:flash.events.MouseEvent = cast(event);
+		
+		//TODO : the target is now null, should be determined by HTMLDocument
+		//TODO : clientX relative to the stage, should it be relative to the clicked component ? shouldn't use flash localX/Y anyway
+		var wheelEvent:WheelEvent = new WheelEvent();
+
+		wheelEvent.initWheelEvent(WheelEvent.MOUSE_WHEEL, true, true, null, 0.0, typedEvent.stageX, typedEvent.stageY,
+		typedEvent.localX, typedEvent.localY, 0, null, "", 0, typedEvent.delta, 0, 0 );
+		
+		return wheelEvent;
 	}
 }

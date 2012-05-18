@@ -7,6 +7,14 @@
 */
 package cocktail.core.dom;
 
+import cocktail.core.event.CustomEvent;
+import cocktail.core.event.Event;
+import cocktail.core.event.FocusEvent;
+import cocktail.core.event.IDocumentEvent;
+import cocktail.core.event.KeyboardEvent;
+import cocktail.core.event.MouseEvent;
+import cocktail.core.event.UIEvent;
+import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.dom.DOMData;
 
@@ -22,8 +30,25 @@ import cocktail.core.dom.DOMData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Document extends Node
+class Document extends Node, implements IDocumentEvent
 {
+	/**
+	 * event interfaces const
+	 */
+	public static inline var EVENT_INTERFACE:String = "Event";
+	
+	public static inline var UI_EVENT_INTERFACE:String = "UIEvent";
+	
+	public static inline var MOUSE_EVENT_INTERFACE:String = "MouseEvent";
+	
+	public static inline var FOCUS_EVENT_INTERFACE:String = "FocusEvent";
+	
+	public static inline var KEYBOARD_EVENT_INTERFACE:String = "KeyboardEvent";
+	
+	public static inline var WHEEL_EVENT_INTERFACE:String = "WheelEvent";
+	
+	public static inline var CUSTOM_EVENT_INTERFACE:String = "CustomEvent";
+	
 	/**
 	 * This is a convenience attribute that allows direct access
 	 * to the child node that is the document element of the document.
@@ -42,7 +67,6 @@ class Document extends Node
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	
 	/**
 	 * Creates an element of the type specified. 
@@ -101,6 +125,47 @@ class Document extends Node
 	{
 		var attribute:Attr = new Attr(name);
 		return attribute;
+	}
+	
+	/**
+	 * The DocumentEvent interface provides a mechanism by which the user can create an Event object
+	 * of a type supported by the implementation.
+	 * If the feature “Events” is supported by the Document object, 
+	 * the DocumentEvent interface must be implemented on the same object.
+	 * Language-specific type casting may be required.
+	 * @param	eventInterface
+	 * @return
+	 */
+	public function createEvent(eventInterface:String):Event
+	{	
+		switch (eventInterface)
+		{
+			case EVENT_INTERFACE:
+				return new Event();
+				
+			case UI_EVENT_INTERFACE:
+				return new UIEvent();
+				
+			case CUSTOM_EVENT_INTERFACE:
+				return new CustomEvent();
+				
+			case MOUSE_EVENT_INTERFACE:
+				return new MouseEvent();
+				
+			case KEYBOARD_EVENT_INTERFACE:
+				return new KeyboardEvent();
+				
+			case FOCUS_EVENT_INTERFACE:
+				return new FocusEvent();
+				
+			case WHEEL_EVENT_INTERFACE:
+				return new WheelEvent();
+				
+			default:
+				throw DOMException.NOT_SUPPORTED_ERR;
+		}
+		
+		return null;
 	}
 	
 	/**
