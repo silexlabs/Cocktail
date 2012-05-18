@@ -92,7 +92,7 @@ class Event
 	 * action prevented. If the default action can be prevented it is true
 	 */
 	private var _cancelable:Bool;
-	public var canceleable(get_cancelable, never):Bool;
+	public var cancelable(get_cancelable, never):Bool;
 	
 	/**
 	 * Used to indicate whether Event.preventDefault()
@@ -143,8 +143,6 @@ class Event
 	 * interface only the values specified in this method are modified, all
 	 * other attributes are left unchanged.This method sets the Event.type attribute
 	 * to eventTypeArg.
-	 * 
-	 * TODO : implement DocumentEvent.createEvent
 	 * 
 	 * @param	eventTypeArg Specifies Event.type, the name of the event type.
 	 * @param	canBubbleArg Specifies Event.bubbles. This parameter overrides the intrinsic bubbling behavior of the event.

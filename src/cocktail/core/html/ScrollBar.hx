@@ -444,7 +444,7 @@ class ScrollBar extends HTMLElement
 		if (_onScroll != null)
 		{
 			var scrollEvent:UIEvent = new UIEvent();
-			scrollEvent.initUIEvent(UIEvent.SCROLL, false, false, 0.0);
+			scrollEvent.initUIEvent(UIEvent.SCROLL, false, false, null, 0.0);
 			_onScroll(scrollEvent);
 		}
 	}

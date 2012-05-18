@@ -497,7 +497,7 @@ class HTMLDocument extends Document
 			if (activeElement.onblur != null)
 			{
 				var blurEvent:FocusEvent = new FocusEvent();
-				blurEvent.initFocusEvent(FocusEvent.BLUR, true, false, 0.0, null);
+				blurEvent.initFocusEvent(FocusEvent.BLUR, true, false, null, 0.0, null);
 				activeElement.onblur(blurEvent);
 			}
 			
@@ -506,7 +506,7 @@ class HTMLDocument extends Document
 			if (_activeElement.onfocus != null)
 			{
 				var focusEvent:FocusEvent = new FocusEvent();
-				focusEvent.initFocusEvent(FocusEvent.FOCUS, true, false, 0.0, null);
+				focusEvent.initFocusEvent(FocusEvent.FOCUS, true, false, null, 0.0, null);
 				
 				_activeElement.onfocus(focusEvent);
 			}
