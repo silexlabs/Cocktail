@@ -41,6 +41,12 @@ class WheelEvent extends MouseEvent
 	screenXArg:Float, screenYArg:Float, clientXArg:Float, clientYArg:Float, ctrlKeyArg:Bool, altKeyArg:Bool,
 	shiftKeyArg:Bool, deltaYArg:Float):Void
 	{
+		//can't alter event after it has been dispatched
+		if (_dispatched == true)
+		{
+			return;
+		}
+		
 		initMouseEvent(eventTypeArg, canBubbleArg, cancelableArg, detailArg, screenXArg, screenYArg, clientXArg, clientYArg,
 		ctrlKeyArg, shiftKeyArg, altKeyArg);
 		_deltaY = deltaYArg;
