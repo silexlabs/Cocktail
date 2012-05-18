@@ -19,8 +19,7 @@ typedef Style = cocktail.core.style.adapter.Style;
 typedef Window = cocktail.core.window.AbstractWindow;
 typedef Document = cocktail.core.html.HTMLDocument;
 
-//TODO : how to match also keyboard event ? In Haxe JS, mouse
-//and keyboard info are mixed
-typedef Event = cocktail.core.event.MouseEvent;
+//TODO : problem as for mouse event, have to use untyped
+typedef Event = cocktail.core.event.Event;
 
 typedef XMLHTTPRequest = cocktail.core.resource.XMLHTTPRequest;

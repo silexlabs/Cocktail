@@ -93,8 +93,8 @@ class Mouse extends AbstractMouse
 		//TODO : clientX relative to the stage, should it be relative to the clicked component ? shouldn't use flash localX/Y anyway
 		var mouseEvent:MouseEvent = new MouseEvent();
 
-		mouseEvent.initMouseEvent(eventType, true, true, 0.0, typedEvent.stageX, typedEvent.stageY,
-		typedEvent.localX, typedEvent.localY, typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey);
+		mouseEvent.initMouseEvent(eventType, true, true, null, 0.0, typedEvent.stageX, typedEvent.stageY,
+		typedEvent.localX, typedEvent.localY, typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, false, 0, null);
 		
 		return mouseEvent;
 	}
@@ -114,8 +114,8 @@ class Mouse extends AbstractMouse
 		//TODO : clientX relative to the stage, should it be relative to the clicked component ? shouldn't use flash localX/Y anyway
 		var wheelEvent:WheelEvent = new WheelEvent();
 
-		wheelEvent.initWheelEvent(typedEvent.type, true, true, 0.0, typedEvent.stageX, typedEvent.stageY,
-		typedEvent.localX, typedEvent.localY, typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, typedEvent.delta);
+		wheelEvent.initWheelEvent(typedEvent.type, true, true, null, 0.0, typedEvent.stageX, typedEvent.stageY,
+		typedEvent.localX, typedEvent.localY, 0, null, "", 0, typedEvent.delta, 0, 0 );
 		
 		return wheelEvent;
 	}

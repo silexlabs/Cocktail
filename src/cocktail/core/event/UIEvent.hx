@@ -19,6 +19,15 @@ class UIEvent extends Event
 	public static inline var SCROLL:String = "scroll";
 	
 	/**
+	 * The view attribute identifies the 
+	 * AbstractView from which the event was generated.
+	 * 
+	 * TODO : what should abstractview be ?
+	 */
+	private var _view:Dynamic;
+	public var view(get_view, never):Dynamic;
+	
+	/**
 	 * Specifies some detail information about the Event,
 	 * depending on the type of event.
 	 */ 
@@ -43,9 +52,10 @@ class UIEvent extends Event
 	 * @param	eventTypeArg Specifies Event.type, the name of the event type.
 	 * @param	canBubbleArg Specifies Event.bubbles. This parameter overrides the intrinsic bubbling behavior of the event.
 	 * @param	cancelableArg Specifies Event.cancelable. This parameter overrides the intrinsic cancelable behavior of the event.
+	 * @param	viewArg Specifies UIEvent.view. This value may be null.
 	 * @param	detailArg Specifies UIEvent.detail
 	 */
-	public function initUIEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, detailArg:Float):Void
+	public function initUIEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, viewArg:Dynamic, detailArg:Float):Void
 	{
 		//can't alter event after it has been dispatched
 		if (_dispatched == true)
@@ -54,6 +64,7 @@ class UIEvent extends Event
 		}
 		
 		initEvent(eventTypeArg, canBubbleArg, cancelableArg);
+		_view = viewArg;
 		_detail = detailArg;
 	}
 	
@@ -69,5 +80,10 @@ class UIEvent extends Event
 	private function set_detail(value:Float):Float 
 	{
 		return _detail = value;
+	}
+	
+	private function get_view():Dynamic
+	{
+		return view;
 	}
 }

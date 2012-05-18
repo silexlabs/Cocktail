@@ -43,15 +43,14 @@ class FocusEvent extends UIEvent
 	 * Initializes attributes of a FocusEvent object. 
 	 * This method has the same behavior as UIEvent.initUIEvent(). 
 	 * 
-	 * TODO : missing arguments
-	 * 
 	 * @param	eventTypeArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.
 	 * @param	canBubbleArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.
 	 * @param	cancelableArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.
 	 * @param	detailArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.
+	 * @param	viewArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.
 	 * @param	relatedTargetArg Specifies FocusEvent.relatedTarget. This value may be null.
 	 */
-	public function initFocusEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, detailArg:Float,relatedTargetArg:EventTarget):Void
+	public function initFocusEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, viewArg:Dynamic, detailArg:Float,relatedTargetArg:EventTarget):Void
 	{
 		//can't alter event after it has been dispatched
 		if (_dispatched == true)
@@ -59,7 +58,7 @@ class FocusEvent extends UIEvent
 			return;
 		}
 		
-		initUIEvent(eventTypeArg, canBubbleArg, cancelableArg, detailArg);
+		initUIEvent(eventTypeArg, canBubbleArg, cancelableArg, viewArg, detailArg);
 		_relatedTarget = relatedTargetArg;
 	}
 	
