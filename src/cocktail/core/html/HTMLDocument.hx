@@ -13,6 +13,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
+import cocktail.core.event.WheelEvent;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLElement;
@@ -146,6 +147,7 @@ class HTMLDocument extends Document
 		_mouse.onMouseUp = onMouseUp;
 		_mouse.onMouseMove = onMouseMove;
 		_mouse.onClick = onClick;
+		_mouse.onMouseWheel = onMouseWheel;
 	}
 	
 	/**
@@ -208,15 +210,12 @@ class HTMLDocument extends Document
 	 * Called when a mouse down event is dispatched.
 	 * Retrieve the top-most ElementRenderer under the mouse
 	 * pointer and call its mouse down down callback if provided
-	 * 
-	 * TODO IMPORTANT : should also now use scrollLeft and scrollTop to find
-	 * the clicked ElementRenderer
 	 */
 	private function onMouseDown(mouseEvent:MouseEvent):Void
 	{
 		//retrieve all the ElementRenderer under the mouse
 		//pointer
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
 
 		//execute the callback of the first top-most
 		//ElementRenderer with a mouse down callback
@@ -231,14 +230,9 @@ class HTMLDocument extends Document
 			{
 				case Node.ELEMENT_NODE:
 					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-				
-					if (htmlElement.onmousedown != null)
-					{
-						htmlElement.onmousedown(mouseEvent);
-						//return as only one callback is executed
-						
-						return;
-					}
+					htmlElement.dispatchEvent(mouseEvent);
+					return;
+					
 			}
 			
 		}
@@ -254,7 +248,8 @@ class HTMLDocument extends Document
 	 */
 	private function onClick(mouseEvent:MouseEvent):Void
 	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+		//TODO : for mouse event, should only return top most ElementRenderer
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
 
 		//TODO : hack
 		elementRenderersAtPoint.reverse();
@@ -265,12 +260,63 @@ class HTMLDocument extends Document
 			{
 				case Node.ELEMENT_NODE:
 					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-					if (htmlElement.onclick != null)
+					
+					var nearestActivatableElement:HTMLElement = getNearestActivatableElement(htmlElement);
+					if (nearestActivatableElement != null)
 					{
-						htmlElement.onclick(mouseEvent);
-						//return as only one callback is executed
-						return;
+						nearestActivatableElement.runPreClickActivation();
 					}
+					
+					htmlElement.dispatchEvent(mouseEvent);
+					
+					if (nearestActivatableElement != null)
+					{
+						nearestActivatableElement.runPostClickActivationStep(mouseEvent);
+					}
+					
+					return;
+			}
+			
+		}
+		
+		
+	}
+	
+	//TODO : activation behaviour should be done by HTMLElement, this way it can be
+	//integrated with click synthesis
+	private function getNearestActivatableElement(htmlElement:HTMLElement):HTMLElement
+	{
+		while (htmlElement.hasActivationBehaviour() == false)
+		{
+			if (htmlElement.parentNode == null)
+			{
+				return null;
+			}
+			htmlElement = cast(htmlElement.parentNode);
+		}
+		
+		return htmlElement;
+	}
+	
+	/**
+	 * Called when a mouse wheel event is dispatched. Same as 
+	 * for mouse down
+	 */
+	private function onMouseWheel(wheelEvent:WheelEvent):Void
+	{
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: wheelEvent.screenX, y:wheelEvent.screenY }, 0, 0  );
+
+		//TODO : hack
+		elementRenderersAtPoint.reverse();
+
+		for (i in 0...elementRenderersAtPoint.length)
+		{
+			switch( elementRenderersAtPoint[i].node.nodeType)
+			{
+				case Node.ELEMENT_NODE:
+					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
+					htmlElement.dispatchEvent(wheelEvent);
+					return;
 			}
 			
 		}
@@ -284,7 +330,7 @@ class HTMLDocument extends Document
 	 */
 	private function onMouseUp(mouseEvent:MouseEvent):Void
 	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
 		
 		//TODO : hack
 		elementRenderersAtPoint.reverse();
@@ -295,14 +341,8 @@ class HTMLDocument extends Document
 			{
 				case Node.ELEMENT_NODE:
 					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-					if (htmlElement.onmouseup != null)
-					{
-						htmlElement.onmouseup(mouseEvent);
-						//return as only one callback is executed
-						
-						//TODO : hack
-					//	return;
-					}
+					htmlElement.dispatchEvent(mouseEvent);
+					return;
 			}
 			
 		}
@@ -316,7 +356,7 @@ class HTMLDocument extends Document
 	 */
 	private function onMouseMove(mouseEvent:MouseEvent):Void
 	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY } );
+		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0 );
 			
 		//TODO : doc for mouse over / out
 		
@@ -330,7 +370,7 @@ class HTMLDocument extends Document
 				if (_hoveredHTMLElement != null)
 				{
 					
-					
+					//TODO :  should create new MouseEvent for this
 					if (_hoveredHTMLElement.onmouseout != null)
 					{
 						_hoveredHTMLElement.onmouseout(mouseEvent);
@@ -372,11 +412,8 @@ class HTMLDocument extends Document
 		for (i in 0...elementRenderersAtPoint.length)
 		{
 			var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-			if (htmlElement.onmousemove != null)
-			{
-				htmlElement.onmousemove(mouseEvent);
-				return;
-			}
+			htmlElement.dispatchEvent(mouseEvent);
+			return;
 		}
 		
 	}
@@ -468,7 +505,7 @@ class HTMLDocument extends Document
 			if (activeElement.onblur != null)
 			{
 				var blurEvent:FocusEvent = new FocusEvent();
-				blurEvent.initFocusEvent(Event.BLUR, true, false, 0.0, null);
+				blurEvent.initFocusEvent(FocusEvent.BLUR, true, false, null, 0.0, null);
 				activeElement.onblur(blurEvent);
 			}
 			
@@ -477,7 +514,7 @@ class HTMLDocument extends Document
 			if (_activeElement.onfocus != null)
 			{
 				var focusEvent:FocusEvent = new FocusEvent();
-				focusEvent.initFocusEvent(Event.FOCUS, true, false, 0.0, null);
+				focusEvent.initFocusEvent(FocusEvent.FOCUS, true, false, null, 0.0, null);
 				
 				_activeElement.onfocus(focusEvent);
 			}

@@ -59,6 +59,7 @@ class TextRenderer extends ElementRenderer
 		}
 	}
 	
+	//TODO : bug text color won't change when redrawn -> due to lack of cascading ?
 	override public function invalidateText():Void
 	{
 		_lineBoxes = null;

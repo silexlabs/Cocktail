@@ -8,6 +8,7 @@
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
+import cocktail.core.html.ScrollBar;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
 import cocktail.core.NativeElement;
@@ -102,6 +103,7 @@ class LayerRenderer extends Node
 			
 			var blockBoxRootRenderer:BlockBoxRenderer = cast(rootRenderer);
 		
+			//TODO : block box background should not scroll with the rest of the children
 			//render the ElementRenderer which created this layer
 			blockBoxRootRenderer.render(_graphicsContext, relativeOffset);
 		
@@ -141,32 +143,7 @@ class LayerRenderer extends Node
 				renderChildLayer(_positiveOrderChildLayers, _graphicsContext, relativeOffset);
 			}
 			
-			//TODO : this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
-			
-			if (blockBoxRootRenderer.isXAxisClipped() == true && blockBoxRootRenderer.isYAxisClipped() == true)
-			{
-				_graphicsContext.x = _rootRenderer.globalBounds.x;
-				_graphicsContext.y = _rootRenderer.globalBounds.y;
-				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, _rootRenderer.globalBounds.height);
-
-			}
-			else if (blockBoxRootRenderer.isXAxisClipped() == true)
-			{
-				_graphicsContext.x = _rootRenderer.globalBounds.x;
-				_graphicsContext.y = _rootRenderer.globalBounds.y;
-				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
-				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, 10000);
-		
-			}
-			else if (blockBoxRootRenderer.isYAxisClipped() == true)
-			{
-				_graphicsContext.x = _rootRenderer.globalBounds.x;
-				_graphicsContext.y = _rootRenderer.globalBounds.y;
-				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
-				_graphicsContext.scrollRect = new Rectangle(0 , 0, 10000, _rootRenderer.globalBounds.height);
-	
-			}
-			
+			clip(blockBoxRootRenderer);
 			
 			//_graphicsContext.x = rootRenderer.globalBounds.x;
 			//_graphicsContext.y = rootRenderer.globalBounds.y;
@@ -195,6 +172,38 @@ class LayerRenderer extends Node
 			parentGraphicsContext.addChild(_graphicsContext);
 			parentGraphicsContext.addChild(_scrollBarsGraphicContext);
 		}
+	}
+	
+	public function clip(blockBoxRootRenderer:BlockBoxRenderer):Void
+	{
+		//TODO : this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
+			
+			if (blockBoxRootRenderer.isXAxisClipped() == true && blockBoxRootRenderer.isYAxisClipped() == true)
+			{
+				_graphicsContext.x = _rootRenderer.globalBounds.x;
+				_graphicsContext.y = _rootRenderer.globalBounds.y;
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, _rootRenderer.globalBounds.height);
+
+			}
+			else if (blockBoxRootRenderer.isXAxisClipped() == true)
+			{
+				_graphicsContext.x = _rootRenderer.globalBounds.x;
+				_graphicsContext.y = _rootRenderer.globalBounds.y;
+				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, 10000);
+		
+			}
+			else if (blockBoxRootRenderer.isYAxisClipped() == true)
+			{
+				_graphicsContext.x = _rootRenderer.globalBounds.x;
+				_graphicsContext.y = _rootRenderer.globalBounds.y;
+				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, 10000, _rootRenderer.globalBounds.height);
+			}
+			else
+			{
+				_graphicsContext.scrollRect = null;
+			}
 	}
 	
 	public function scroll(x:Float, y:Float, startedScroll:Bool = true):Void
@@ -228,7 +237,6 @@ class LayerRenderer extends Node
 		_graphicsContext.x = _rootRenderer.globalBounds.x;
 		_graphicsContext.y = _rootRenderer.globalBounds.y;
 		
-		
 		var width:Float;
 		var height:Float;
 		
@@ -243,7 +251,7 @@ class LayerRenderer extends Node
 			height = _rootRenderer.globalBounds.height;
 		}
 		
-		_graphicsContext.scrollRect = new Rectangle(x , y, width, height);
+		_graphicsContext.scrollRect = new Rectangle(x + _rootRenderer.globalBounds.x, y + _rootRenderer.globalBounds.y, width, height);
 	}
 	
 
@@ -418,15 +426,19 @@ class LayerRenderer extends Node
 		return relativeOffset;
 	}
 	
-	public function getElementRenderersAtPoint(point:PointData):Array<ElementRenderer>
+	public function getElementRenderersAtPoint(point:PointData, scrollX:Float, scrollY:Float):Array<ElementRenderer>
 	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = getElementRenderersAtPointInLayer(_rootRenderer, point);
+		var elementRenderersAtPoint:Array<ElementRenderer> = getElementRenderersAtPointInLayer(_rootRenderer, point, scrollX, scrollY);
 
 		if (_rootRenderer.hasChildNodes() == true)
 		{
 			var childLayers:Array<LayerRenderer> = getChildLayers();
 		
-			var elementRenderersAtPointInChildLayers:Array<ElementRenderer> = getElementRenderersAtPointInChildLayers(point, childLayers);
+			//scrollX += _rootRenderer.scrollLeft;
+			//scrollY += _rootRenderer.scrollTop;
+			
+			
+			var elementRenderersAtPointInChildLayers:Array<ElementRenderer> = getElementRenderersAtPointInChildLayers(point, childLayers, scrollX, scrollY);
 			
 			for (i in 0...elementRenderersAtPointInChildLayers.length)
 			{
@@ -438,14 +450,26 @@ class LayerRenderer extends Node
 		return elementRenderersAtPoint;
 	}
 	
-	private function getElementRenderersAtPointInLayer(renderer:ElementRenderer, point:PointData):Array<ElementRenderer>
+	private function getElementRenderersAtPointInLayer(renderer:ElementRenderer, point:PointData, scrollX:Float, scrollY:Float):Array<ElementRenderer>
 	{
 		var elementRenderersAtPointInLayer:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		if (isWithinBounds(point, renderer.globalBounds) == true)
+		
+		
+		var scrolledPoint:PointData = {
+			x:point.x + scrollX,
+			y:point.y + scrollY
+		}
+		
+		if (isWithinBounds(scrolledPoint, renderer.globalBounds) == true)
 		{
 			elementRenderersAtPointInLayer.push(renderer);
 		}
+		
+		scrollX += renderer.scrollLeft;
+		scrollY += renderer.scrollTop;
+		
+		
 		
 		for (i in 0...renderer.childNodes.length)
 		{
@@ -455,7 +479,7 @@ class LayerRenderer extends Node
 			{
 				if (child.hasChildNodes() == true)
 				{
-					var childElementRenderersAtPointInLayer:Array<ElementRenderer> = getElementRenderersAtPointInLayer(child, point);
+					var childElementRenderersAtPointInLayer:Array<ElementRenderer> = getElementRenderersAtPointInLayer(child, point, scrollX, scrollY);
 					
 					for (j in 0...childElementRenderersAtPointInLayer.length)
 					{
@@ -464,7 +488,12 @@ class LayerRenderer extends Node
 				}
 				else
 				{
-					if (isWithinBounds(point, child.globalBounds) == true)
+					var scrolledPoint:PointData = {
+						x:point.x + scrollX,
+						y:point.y + scrollY
+					}
+					
+					if (isWithinBounds(scrolledPoint, child.globalBounds) == true)
 					{
 						elementRenderersAtPointInLayer.push(child);
 					}
@@ -475,14 +504,34 @@ class LayerRenderer extends Node
 		return elementRenderersAtPointInLayer;
 	}
 	
-	private function getElementRenderersAtPointInChildLayers(point:PointData, childLayers:Array<LayerRenderer>):Array<ElementRenderer>
+	private function getElementRenderersAtPointInChildLayers(point:PointData, childLayers:Array<LayerRenderer>, scrollX:Float, scrollY:Float):Array<ElementRenderer>
 	{
 		var elementRenderersAtPointInChildLayers:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
 		for (i in 0...childLayers.length)
 		{
-			var elementRenderersAtPointInChildLayer:Array<ElementRenderer> = childLayers[i].getElementRenderersAtPoint(point);
 			
+			var elementRenderersAtPointInChildLayer:Array<ElementRenderer> = [];
+
+			//TODO IMPORTANT : works but very very very messy, done that because scrollbars, should not use the scroll
+			//of its parent for the hit test
+			if (untyped Std.is(childLayers[i]._rootRenderer.node, ScrollBar) == true)
+			{
+				elementRenderersAtPointInChildLayer = childLayers[i].getElementRenderersAtPoint(point, scrollX, scrollY);
+			}
+			//TODO : also very messy, ElementRenderer should be aware of their scrollBounds
+			else if (untyped childLayers[i]._rootRenderer.coreStyle.position == fixed)
+			{
+				elementRenderersAtPointInChildLayer = childLayers[i].getElementRenderersAtPoint(point, scrollX , scrollY);
+		
+			}
+			else
+			{
+				
+				elementRenderersAtPointInChildLayer = childLayers[i].getElementRenderersAtPoint(point, scrollX + _rootRenderer.scrollLeft, scrollY + _rootRenderer.scrollTop);
+			
+			}
+				
 			for (j in 0...elementRenderersAtPointInChildLayer.length)
 			{
 				elementRenderersAtPointInChildLayers.push(elementRenderersAtPointInChildLayer[j]);

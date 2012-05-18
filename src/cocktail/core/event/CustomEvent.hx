@@ -6,34 +6,29 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.event;
-import cocktail.core.html.HTMLElement;
 
 /**
- * The UIEvent interface provides specific contextual information
- * associated with User Interface events.
+ * The CustomEvent interface is the recommended interface for application-specific
+ * event types. Unlike the Event interface, it allows applications to provide
+ * contextual information about the event type. Application-specific
+ * event types should use a prefix string on the event type name
+ * to avoid clashes with future general-purpose event types.
+ * To create an instance of the CustomEvent interface,
+ * use the DocumentEvent.createEvent("CustomEvent") method call.
  * 
  * @author Yannick DOMINGUEZ
  */
-class UIEvent extends Event
+class CustomEvent extends Event
 {
-	public static inline var SCROLL:String = "scroll";
-	
 	/**
-	 * The view attribute identifies the 
-	 * AbstractView from which the event was generated.
-	 * 
-	 * TODO : what should abstractview be ?
+	 * Specifies some detail information about the Event.
 	 */
-	private var _view:Dynamic;
-	public var view(get_view, never):Dynamic;
+	private var _detail:Dynamic;
+	public var detail(get_detail, never):Dynamic;
 	
 	/**
-	 * Specifies some detail information about the Event,
-	 * depending on the type of event.
-	 */ 
-	private var _detail:Float;
-	public var detail(get_detail, set_detail):Float;
-	
+	 * class constructor
+	 */
 	public function new() 
 	{
 		super();
@@ -44,16 +39,14 @@ class UIEvent extends Event
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Initializes attributes of an UIEvent object.
-	 * This method has the same behavior as Event.initEvent().
+	 * Initializes attributes of a CustomEvent object. This method has the same behavior as Event.initEvent().
 	 * 
 	 * @param	eventTypeArg Specifies Event.type, the name of the event type.
 	 * @param	canBubbleArg Specifies Event.bubbles. This parameter overrides the intrinsic bubbling behavior of the event.
 	 * @param	cancelableArg Specifies Event.cancelable. This parameter overrides the intrinsic cancelable behavior of the event.
-	 * @param	viewArg Specifies UIEvent.view. This value may be null.
-	 * @param	detailArg Specifies UIEvent.detail
+	 * @param	detailArg Specifies CustomEvent.detail. This value may be null.
 	 */
-	public function initUIEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, viewArg:Dynamic, detailArg:Float):Void
+	public function initCustomEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, detailArg:Dynamic):Void
 	{
 		//can't alter event after it has been dispatched
 		if (_dispatched == true)
@@ -62,7 +55,6 @@ class UIEvent extends Event
 		}
 		
 		initEvent(eventTypeArg, canBubbleArg, cancelableArg);
-		_view = viewArg;
 		_detail = detailArg;
 	}
 	
@@ -70,18 +62,9 @@ class UIEvent extends Event
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_detail():Float 
+	private function get_detail():Dynamic
 	{
 		return _detail;
 	}
 	
-	private function set_detail(value:Float):Float 
-	{
-		return _detail = value;
-	}
-	
-	private function get_view():Dynamic
-	{
-		return view;
-	}
 }

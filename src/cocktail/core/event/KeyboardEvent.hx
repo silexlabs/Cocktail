@@ -23,6 +23,52 @@ import cocktail.core.html.HTMLElement;
  */
 class KeyboardEvent extends UIEvent
 {
+	/**
+	 * This set of constants must be used to indicate the location 
+	 * of a key on the device. In case a DOM implementation wishes
+	 * to provide a new location information, 
+	 * a value different from the following constant values must be used.
+	 */
+	
+	 /**
+	  * The key activation must not be distinguished 
+	  * as the left or right version of the key,
+	  * and did not originate from the numeric
+	  * keypad (or did not originate with a virtual 
+	  * key corresponding to the numeric keypad). 
+	  */
+	public static inline var DOM_KEY_LOCATION_STANDARD:Int = 0x00;
+	
+	/**
+	 * The key activated originated from the left 
+	 * key location (there is more than one possible location for this key)
+	 */
+	public static inline var DOM_KEY_LOCATION_LEFT:Int = 0x01;
+	
+	/**
+	 * The key activation originalted from the right key 
+	 * location (there is more than one possible location for this key)
+	 */
+	public static inline var DOM_KEY_LOCATION_RIGHT:Int = 0x02;
+	
+	/**
+	 * The key activation originated on the numeric keypad
+	 * or with a virtual key corresponding to the numeric keypad
+	 */
+	public static inline var DOM_KEY_LOCATION_NUMPAD:Int = 0x03;
+	
+	/**
+	 * The key activation originated on a mobile device,
+	 * either on a physical keypad or a virtual keyboard
+	 */
+	public static inline var DOM_KEY_LOCATION_MOBILE:Int = 0x04;
+	
+	/**
+	 * The key activation originated on a
+	 * game controller or a joystick on a mobile device
+	 */
+	public static inline var DOM_KEY_LOCATION_JOYSTICK:Int = 0x05;
+	
 	
 	//TODO : add keypress
 	public static inline var KEY_DOWN:String = "keydown";
@@ -45,6 +91,24 @@ class KeyboardEvent extends UIEvent
 	public var key(get_key, never):String;
 	
 	/**
+	 * The location attribute contains an indication of the 
+	 * location of the key on the device, as described in
+	 * Keyboard event types.
+	 */
+	private var _location:Int;
+	public var location(get_location, never):Int;
+	
+	/**
+	 * The locale attribute contains a 
+	 * BCP-47 tag indicating the locale for which the keyboard
+	 * originating the event is configured, e.g. "en-US".
+	 * May be the empty string when inapplicable or unknown,
+	 * e.g. when this information is not exposed by the underlying platform.
+	 */
+	private var _locale:String;
+	public var locale(get_locale, never):String;
+	
+	/**
 	 * true if the 'Ctrl' (control) key modifier was active.
 	 */
 	private var _ctrlKey:Bool;
@@ -61,6 +125,12 @@ class KeyboardEvent extends UIEvent
 	 */
 	private var _altKey:Bool;
 	public var altKey(get_altKey, never):Bool;
+	
+	/**
+	 * true if the meta (Meta) key modifier was active. 
+	 */ 
+	private var _metaKey:Bool;
+	public var metaKey(get_metaKey, never):Bool;
 	
 	/**
 	 * true if the key has been pressed in a sustained manner.
@@ -107,15 +177,21 @@ class KeyboardEvent extends UIEvent
 	 * @param	cancelableArg Specifies Event.cancelable. This parameter overrides the intrinsic cancelable behavior of the event.
 	 * @param	detailArg Specifies UIEvent.detail
 	 */
-	public function initKeyboardEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, charArg:String,
-	keyArg:String, repeat:Bool):Void
+	public function initKeyboardEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, viewArg:Dynamic, charArg:String,
+	keyArg:String, locationArg:Int, modifiersListArg:String, repeat:Bool, localeArg:String):Void
 	{
-		_type = eventTypeArg;
-		_bubbles = canBubbleArg;
-		_cancelable = cancelableArg;
+		//can't alter event after it has been dispatched
+		if (_dispatched == true)
+		{
+			return;
+		}
+		
+		initUIEvent(eventTypeArg, canBubbleArg, cancelableArg, viewArg, 0);
 		_keyChar = charArg;
 		_key = keyArg;
 		_repeat = repeat;
+		_location = locationArg;
+		_locale = localeArg;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -152,6 +228,20 @@ class KeyboardEvent extends UIEvent
 		return _repeat;
 	}
 	
+	private function get_location():Int
+	{
+		return _location;
+	}
+	
+	private function get_metaKey():Bool
+	{
+		return _metaKey;
+	}
+	
+	private function get_locale():String
+	{
+		return _locale;
+	}
 	
 	
 }

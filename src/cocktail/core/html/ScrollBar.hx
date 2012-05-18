@@ -9,7 +9,10 @@ package cocktail.core.html;
 
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.UIEvent;
+import cocktail.core.renderer.ElementRenderer;
+import cocktail.core.renderer.ScrollBarRenderer;
 import cocktail.Lib;
+import haxe.Log;
 
 /**
  * This HTMLElement is a scrollbar displayed as needed when the content
@@ -40,6 +43,12 @@ class ScrollBar extends HTMLElement
 	 * track is clicked
 	 */
 	private static inline var TRACK_SCROLL_OFFSET:Int = 50;
+	
+	private static inline var THUMB_DEFAULT_DIMENSION:Int = 16;
+	
+	private static inline var ARROW_DEFAULT_DIMENSION:Int = 16;
+	
+	private static inline var TRACK_DEFAULT_DIMENSION:Int = 16;
 	
 	/**
 	 * wether tht scrollbar should be displayed vertically
@@ -85,6 +94,10 @@ class ScrollBar extends HTMLElement
 	 */
 	private var _mouseMoveStart:Float;
 	
+	private var _thumbMoveDelegate:MouseEvent->Void;
+	
+	private var _thumbUpDelegate:MouseEvent->Void;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -127,11 +140,11 @@ class ScrollBar extends HTMLElement
 		appendChild(_downArrow);
 		
 		//set callbacks on the scrollbar parts
-		_onMouseDown = onTrackMouseDown;
-		_scrollThumb.onmousedown = onThumbMouseDown;
-		_downArrow.onmousedown = onDownArrowMouseDown;
-		_upArrow.onmousedown = onUpArrowMouseDown;
-		
+		//TODO : should be cleaned-up when detached, should keep ref to all the callback
+		addEventListener(MouseEvent.MOUSE_DOWN, cast(onTrackMouseDown));
+		_scrollThumb.addEventListener(MouseEvent.MOUSE_DOWN, cast(onThumbMouseDown));
+		_downArrow.addEventListener(MouseEvent.MOUSE_DOWN, cast(onDownArrowMouseDown));
+		_upArrow.addEventListener(MouseEvent.MOUSE_DOWN, cast(onUpArrowMouseDown));
 	}
 	
 	/**
@@ -147,20 +160,20 @@ class ScrollBar extends HTMLElement
 		_scrollThumb.style.backgroundColor = "#AAAAAA";
 		_scrollThumb.style.position = "absolute";
 		_scrollThumb.style.display = "block";
-		_scrollThumb.style.width = "15px";
-		_scrollThumb.style.height = "15px";
+		_scrollThumb.style.width = THUMB_DEFAULT_DIMENSION +"px";
+		_scrollThumb.style.height = THUMB_DEFAULT_DIMENSION + "px";
 		
 		_upArrow.style.backgroundColor = "#CCCCCC";
 		_upArrow.style.position = "absolute";
 		_upArrow.style.display = "block";
-		_upArrow.style.width = "15px";
-		_upArrow.style.height = "15px";
+		_upArrow.style.width = ARROW_DEFAULT_DIMENSION +"px";
+		_upArrow.style.height = ARROW_DEFAULT_DIMENSION + "px";
 		
 		_downArrow.style.backgroundColor = "#CCCCCC";
 		_downArrow.style.position = "absolute";
 		_downArrow.style.display = "block";
-		_downArrow.style.width = "15px";
-		_downArrow.style.height = "15px";
+		_downArrow.style.width = ARROW_DEFAULT_DIMENSION + "px";
+		_downArrow.style.height = ARROW_DEFAULT_DIMENSION + "px";
 		
 	}
 	
@@ -170,13 +183,13 @@ class ScrollBar extends HTMLElement
 	private function initVerticalScrollBar():Void
 	{
 		_style.height = "100%";
-		_style.width = "15px";
+		_style.width = TRACK_DEFAULT_DIMENSION + "px";
 		_style.right = "0";
 		_style.top = "0";
 		
 		_downArrow.style.bottom = "0";
 		
-		_scrollThumb.style.top = "15px";
+		_scrollThumb.style.top = THUMB_DEFAULT_DIMENSION +"px";
 	}
 	
 		
@@ -186,18 +199,25 @@ class ScrollBar extends HTMLElement
 	private function initHorizontalScrollBar():Void
 	{
 		_style.width = "100%";
-		_style.height = "15px";
+		_style.height = TRACK_DEFAULT_DIMENSION + "px";
 		_style.bottom = "0";
 		_style.left = "0";
 		
 		_downArrow.style.right = "0";
 		
-		_scrollThumb.style.left = "15px";
+		_scrollThumb.style.left = THUMB_DEFAULT_DIMENSION +"px";
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING TREE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function createElementRenderer():Void
+	{
+		_elementRenderer = new ScrollBarRenderer(this);
+		_elementRenderer.coreStyle = _coreStyle;
+	}
+	
 	
 	/**
 	 * The Scrollbar has no DOM parent node as it is part of the Shadow DOM
@@ -237,6 +257,9 @@ class ScrollBar extends HTMLElement
 	private function onDownArrowMouseDown(event:MouseEvent):Void
 	{
 		scroll += ARROW_SCROLL_OFFSET;
+		
+		//have to stop propagation else event bubbles to track
+		event.stopPropagation();
 	}
 	
 	/**
@@ -245,6 +268,7 @@ class ScrollBar extends HTMLElement
 	private function onUpArrowMouseDown(event:MouseEvent):Void
 	{
 		scroll -= ARROW_SCROLL_OFFSET;
+		event.stopPropagation();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -271,10 +295,14 @@ class ScrollBar extends HTMLElement
 		{
 			_mouseMoveStart = event.screenX;
 		}
-	
 		
-		cocktail.Lib.document.body.onmousemove = onThumbMove;
-		cocktail.Lib.document.body.onmouseup = onThumbMouseUp;
+		event.stopPropagation();
+		
+		_thumbMoveDelegate = onThumbMove;
+		_thumbUpDelegate = onThumbMouseUp;
+		
+		cocktail.Lib.document.body.addEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
+		cocktail.Lib.document.body.addEventListener(MouseEvent.MOUSE_UP, cast(_thumbUpDelegate));
 	}
 	
 	/**
@@ -282,8 +310,8 @@ class ScrollBar extends HTMLElement
 	 */
 	private function onThumbMouseUp(event:MouseEvent):Void
 	{
-		cocktail.Lib.document.body.onmousemove = null;
-		cocktail.Lib.document.body.onmouseup = null;
+		cocktail.Lib.document.body.removeEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
+		cocktail.Lib.document.body.removeEventListener(MouseEvent.MOUSE_UP, cast(_thumbUpDelegate));
 	}
 	
 	/**
@@ -295,12 +323,15 @@ class ScrollBar extends HTMLElement
 	{
 		if (_isVertical == true)
 		{
-			scroll = _mouseMoveStart + (event.screenY - _mouseMoveStart) ;
-	
+			//TODO : not very precise
+			var thumbDelta:Float = event.screenY - _mouseMoveStart;
+			scroll += thumbDelta;
+			
+			_mouseMoveStart = event.screenY;
 		}
 		else
 		{
-			//TODO : doesn't work
+			//TODO : not very precise
 			var thumbDelta:Float = event.screenX - _mouseMoveStart;
 			scroll += thumbDelta;
 			
@@ -385,7 +416,7 @@ class ScrollBar extends HTMLElement
 	 * the size of the thumb to reflect
 	 * the amount of scrollablze offset
 	 */
-	private function updateThumbSize():Void
+	public function updateThumbSize():Void
 	{
 		
 		if (_isVertical == true)
@@ -393,9 +424,9 @@ class ScrollBar extends HTMLElement
 			var thumbHeight:Float = _coreStyle.computedStyle.height - _downArrow.coreStyle.computedStyle.height - _upArrow.coreStyle.computedStyle.height - maxScroll;
 
 			//TODO : min size should not be hard-coded
-			if (thumbHeight < 15)
+			if (thumbHeight < THUMB_DEFAULT_DIMENSION)
 			{
-				thumbHeight = 15;
+				thumbHeight = THUMB_DEFAULT_DIMENSION;
 			}
 			
 			if (thumbHeight != _scrollThumb.coreStyle.computedStyle.height)
@@ -408,9 +439,9 @@ class ScrollBar extends HTMLElement
 		{
 			var thumbWidth:Float = _coreStyle.computedStyle.width - _downArrow.coreStyle.computedStyle.width - _upArrow.coreStyle.computedStyle.width - maxScroll;
 			
-			if (thumbWidth < 15)
+			if (thumbWidth < THUMB_DEFAULT_DIMENSION)
 			{
-				thumbWidth = 15;
+				thumbWidth = THUMB_DEFAULT_DIMENSION;
 			}
 			
 			if (thumbWidth != _scrollThumb.coreStyle.computedStyle.width)
@@ -425,7 +456,7 @@ class ScrollBar extends HTMLElement
 		if (_onScroll != null)
 		{
 			var scrollEvent:UIEvent = new UIEvent();
-			scrollEvent.initUIEvent(UIEvent.SCROLL, false, false, 0.0);
+			scrollEvent.initUIEvent(UIEvent.SCROLL, false, false, null, 0.0);
 			_onScroll(scrollEvent);
 		}
 	}
@@ -441,8 +472,19 @@ class ScrollBar extends HTMLElement
 	
 	private function set_maxScroll(value:Float):Float 
 	{
+		var scrollPercent:Float = _scroll / _maxScroll;
+		
+		if (_maxScroll == 0)
+		{
+			scrollPercent = 0;
+		}
+		
 		_maxScroll = value;
+		scroll = _maxScroll * scrollPercent; 
+		
+		
 		updateThumbSize();
+		
 		return value;
 	}
 
