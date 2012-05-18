@@ -142,32 +142,7 @@ class LayerRenderer extends Node
 				renderChildLayer(_positiveOrderChildLayers, _graphicsContext, relativeOffset);
 			}
 			
-			//TODO : this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
-			
-			if (blockBoxRootRenderer.isXAxisClipped() == true && blockBoxRootRenderer.isYAxisClipped() == true)
-			{
-				_graphicsContext.x = _rootRenderer.globalBounds.x;
-				_graphicsContext.y = _rootRenderer.globalBounds.y;
-				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, _rootRenderer.globalBounds.height);
-
-			}
-			else if (blockBoxRootRenderer.isXAxisClipped() == true)
-			{
-				_graphicsContext.x = _rootRenderer.globalBounds.x;
-				_graphicsContext.y = _rootRenderer.globalBounds.y;
-				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
-				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, 10000);
-		
-			}
-			else if (blockBoxRootRenderer.isYAxisClipped() == true)
-			{
-				_graphicsContext.x = _rootRenderer.globalBounds.x;
-				_graphicsContext.y = _rootRenderer.globalBounds.y;
-				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
-				_graphicsContext.scrollRect = new Rectangle(0 , 0, 10000, _rootRenderer.globalBounds.height);
-	
-			}
-			
+			clip(blockBoxRootRenderer);
 			
 			//_graphicsContext.x = rootRenderer.globalBounds.x;
 			//_graphicsContext.y = rootRenderer.globalBounds.y;
@@ -196,6 +171,38 @@ class LayerRenderer extends Node
 			parentGraphicsContext.addChild(_graphicsContext);
 			parentGraphicsContext.addChild(_scrollBarsGraphicContext);
 		}
+	}
+	
+	public function clip(blockBoxRootRenderer:BlockBoxRenderer):Void
+	{
+		//TODO : this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
+			
+			if (blockBoxRootRenderer.isXAxisClipped() == true && blockBoxRootRenderer.isYAxisClipped() == true)
+			{
+				_graphicsContext.x = _rootRenderer.globalBounds.x;
+				_graphicsContext.y = _rootRenderer.globalBounds.y;
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, _rootRenderer.globalBounds.height);
+
+			}
+			else if (blockBoxRootRenderer.isXAxisClipped() == true)
+			{
+				_graphicsContext.x = _rootRenderer.globalBounds.x;
+				_graphicsContext.y = _rootRenderer.globalBounds.y;
+				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, 10000);
+		
+			}
+			else if (blockBoxRootRenderer.isYAxisClipped() == true)
+			{
+				_graphicsContext.x = _rootRenderer.globalBounds.x;
+				_graphicsContext.y = _rootRenderer.globalBounds.y;
+				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, 10000, _rootRenderer.globalBounds.height);
+			}
+			else
+			{
+				_graphicsContext.scrollRect = null;
+			}
 	}
 	
 	public function scroll(x:Float, y:Float, startedScroll:Bool = true):Void
