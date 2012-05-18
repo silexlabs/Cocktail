@@ -246,7 +246,7 @@ class Event
 	
 	private function set_eventPhase(value:Int):Int
 	{
-		return _eventPhase;
+		return _eventPhase = value;
 	}
 	
 	private function get_bubbles():Bool
