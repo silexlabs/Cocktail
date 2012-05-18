@@ -94,6 +94,10 @@ class ScrollBar extends HTMLElement
 	 */
 	private var _mouseMoveStart:Float;
 	
+	private var _thumbMoveDelegate:MouseEvent->Void;
+	
+	private var _thumbUpDelegate:MouseEvent->Void;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -136,11 +140,11 @@ class ScrollBar extends HTMLElement
 		appendChild(_downArrow);
 		
 		//set callbacks on the scrollbar parts
-		_onMouseDown = onTrackMouseDown;
-		_scrollThumb.onmousedown = onThumbMouseDown;
-		_downArrow.onmousedown = onDownArrowMouseDown;
-		_upArrow.onmousedown = onUpArrowMouseDown;
-		
+		//TODO : should be cleaned-up when detached, should keep ref to all the callback
+		addEventListener(MouseEvent.MOUSE_DOWN, cast(onTrackMouseDown));
+		_scrollThumb.addEventListener(MouseEvent.MOUSE_DOWN, cast(onThumbMouseDown));
+		_downArrow.addEventListener(MouseEvent.MOUSE_DOWN, cast(onDownArrowMouseDown));
+		_upArrow.addEventListener(MouseEvent.MOUSE_DOWN, cast(onUpArrowMouseDown));
 	}
 	
 	/**
@@ -253,6 +257,9 @@ class ScrollBar extends HTMLElement
 	private function onDownArrowMouseDown(event:MouseEvent):Void
 	{
 		scroll += ARROW_SCROLL_OFFSET;
+		
+		//have to stop propagation else event bubbles to track
+		event.stopPropagation();
 	}
 	
 	/**
@@ -261,6 +268,7 @@ class ScrollBar extends HTMLElement
 	private function onUpArrowMouseDown(event:MouseEvent):Void
 	{
 		scroll -= ARROW_SCROLL_OFFSET;
+		event.stopPropagation();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -287,10 +295,14 @@ class ScrollBar extends HTMLElement
 		{
 			_mouseMoveStart = event.screenX;
 		}
-	
 		
-		cocktail.Lib.document.body.onmousemove = onThumbMove;
-		cocktail.Lib.document.body.onmouseup = onThumbMouseUp;
+		event.stopPropagation();
+		
+		_thumbMoveDelegate = onThumbMove;
+		_thumbUpDelegate = onThumbMouseUp;
+		
+		cocktail.Lib.document.body.addEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
+		cocktail.Lib.document.body.addEventListener(MouseEvent.MOUSE_UP, cast(_thumbUpDelegate));
 	}
 	
 	/**
@@ -298,8 +310,8 @@ class ScrollBar extends HTMLElement
 	 */
 	private function onThumbMouseUp(event:MouseEvent):Void
 	{
-		cocktail.Lib.document.body.onmousemove = null;
-		cocktail.Lib.document.body.onmouseup = null;
+		cocktail.Lib.document.body.removeEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
+		cocktail.Lib.document.body.removeEventListener(MouseEvent.MOUSE_UP, cast(_thumbUpDelegate));
 	}
 	
 	/**
