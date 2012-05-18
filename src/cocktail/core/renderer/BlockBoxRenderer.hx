@@ -772,7 +772,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			_verticalScrollBar.onscroll = onVerticalScroll;
 			
 			var htmlElement:HTMLElement = cast(_node);
-			htmlElement.onmousewheel = onMouseWheel;
+			htmlElement.addEventListener(WheelEvent.MOUSE_WHEEL, cast(onMouseWheel));
 		}
 		if (_verticalScrollBar != null)
 		{

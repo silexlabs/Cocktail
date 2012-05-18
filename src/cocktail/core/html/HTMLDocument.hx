@@ -230,14 +230,9 @@ class HTMLDocument extends Document
 			{
 				case Node.ELEMENT_NODE:
 					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-				
-					if (htmlElement.onmousedown != null)
-					{
-						htmlElement.onmousedown(mouseEvent);
-						//return as only one callback is executed
-						
-						return;
-					}
+					htmlElement.dispatchEvent(mouseEvent);
+					return;
+					
 			}
 			
 		}
@@ -253,6 +248,7 @@ class HTMLDocument extends Document
 	 */
 	private function onClick(mouseEvent:MouseEvent):Void
 	{
+		//TODO : for mouse event, should only return top most ElementRenderer
 		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
 
 		//TODO : hack
@@ -264,17 +260,40 @@ class HTMLDocument extends Document
 			{
 				case Node.ELEMENT_NODE:
 					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-					if (htmlElement.onclick != null)
+					
+					var nearestActivatableElement:HTMLElement = getNearestActivatableElement(htmlElement);
+					if (nearestActivatableElement != null)
 					{
-						htmlElement.onclick(mouseEvent);
-						//return as only one callback is executed
-						return;
+						nearestActivatableElement.runPreClickActivation();
 					}
+					
+					htmlElement.dispatchEvent(mouseEvent);
+					
+					if (nearestActivatableElement != null)
+					{
+						nearestActivatableElement.runPostClickActivationStep(mouseEvent);
+					}
+					
+					return;
 			}
 			
 		}
 		
 		
+	}
+	
+	private function getNearestActivatableElement(htmlElement:HTMLElement):HTMLElement
+	{
+		while (htmlElement.hasActivationBehaviour() == false)
+		{
+			if (htmlElement.parentNode == null)
+			{
+				return null;
+			}
+			htmlElement = cast(htmlElement.parentNode);
+		}
+		
+		return htmlElement;
 	}
 	
 	/**
@@ -294,12 +313,8 @@ class HTMLDocument extends Document
 			{
 				case Node.ELEMENT_NODE:
 					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-					if (htmlElement.onmousewheel != null)
-					{
-						htmlElement.onmousewheel(wheelEvent);
-						//return as only one callback is executed
-						return;
-					}
+					htmlElement.dispatchEvent(wheelEvent);
+					return;
 			}
 			
 		}
@@ -324,14 +339,8 @@ class HTMLDocument extends Document
 			{
 				case Node.ELEMENT_NODE:
 					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-					if (htmlElement.onmouseup != null)
-					{
-						htmlElement.onmouseup(mouseEvent);
-						//return as only one callback is executed
-						
-						//TODO : hack
-					//	return;
-					}
+					htmlElement.dispatchEvent(mouseEvent);
+					return;
 			}
 			
 		}
@@ -359,7 +368,7 @@ class HTMLDocument extends Document
 				if (_hoveredHTMLElement != null)
 				{
 					
-					
+					//TODO :  should create new MouseEvent for this
 					if (_hoveredHTMLElement.onmouseout != null)
 					{
 						_hoveredHTMLElement.onmouseout(mouseEvent);
@@ -401,11 +410,8 @@ class HTMLDocument extends Document
 		for (i in 0...elementRenderersAtPoint.length)
 		{
 			var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-			if (htmlElement.onmousemove != null)
-			{
-				htmlElement.onmousemove(mouseEvent);
-				return;
-			}
+			htmlElement.dispatchEvent(mouseEvent);
+			return;
 		}
 		
 	}

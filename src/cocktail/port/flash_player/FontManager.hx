@@ -271,7 +271,7 @@ class FontManager extends AbstractFontManager
 		
 		//color of the text
 		elementFormat.color = computedStyle.color.color;
-	
+
 		//normal or small caps
 		elementFormat.typographicCase = getNativeFontVariant(computedStyle.fontVariant);
 		

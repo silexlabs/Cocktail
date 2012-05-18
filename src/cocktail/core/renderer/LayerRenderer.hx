@@ -103,6 +103,7 @@ class LayerRenderer extends Node
 			
 			var blockBoxRootRenderer:BlockBoxRenderer = cast(rootRenderer);
 		
+			//TODO : block box background should not scroll with the rest of the children
 			//render the ElementRenderer which created this layer
 			blockBoxRootRenderer.render(_graphicsContext, relativeOffset);
 		

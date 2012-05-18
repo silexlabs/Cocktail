@@ -708,7 +708,17 @@ class HTMLElement extends Element
 	
 	private function set_onClick(value:MouseEvent->Void):MouseEvent->Void
 	{
-		return _onClick = value;
+		if (_onClick != null)
+		{
+			removeEventListener(MouseEvent.CLICK, cast(_onClick));
+		}
+		_onClick = value;
+		if (_onClick != null)
+		{
+			addEventListener(MouseEvent.CLICK, cast(_onClick));
+		}
+		
+		return value;
 	}
 	
 	private function get_onClick():MouseEvent->Void
@@ -718,7 +728,17 @@ class HTMLElement extends Element
 	
 	private function set_onMouseDown(value:MouseEvent->Void):MouseEvent->Void
 	{
-		return _onMouseDown = value;
+		if (_onMouseDown != null)
+		{
+			removeEventListener(MouseEvent.MOUSE_DOWN, cast(_onMouseDown));
+		}
+		_onMouseDown = value;
+		if (_onMouseDown != null)
+		{
+			addEventListener(MouseEvent.MOUSE_DOWN, cast(_onMouseDown));
+		}
+		
+		return value;
 	}
 	
 	private function get_onMouseDown():MouseEvent->Void
@@ -728,7 +748,17 @@ class HTMLElement extends Element
 	
 	private function set_onMouseUp(value:MouseEvent->Void):MouseEvent->Void
 	{
-		return _onMouseUp = value;
+		if (_onMouseUp != null)
+		{
+			removeEventListener(MouseEvent.MOUSE_UP, cast(_onMouseUp));
+		}
+		_onMouseUp = value;
+		if (_onMouseUp != null)
+		{
+			addEventListener(MouseEvent.MOUSE_UP, cast(_onMouseUp));
+		}
+		
+		return value;
 	}
 	
 	private function get_onMouseUp():MouseEvent->Void
@@ -900,6 +930,54 @@ class HTMLElement extends Element
 	private function get_tabIndex():Null<Int>
 	{
 		return _tabIndex;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// ACTIVATION BEHAVIOUR
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Certain elements in HTML have an activation behavior,
+	 * which means that the user can activate them. 
+	 * This triggers a sequence of events dependent on the activation mechanism,
+	 * and normally culminating in a click event, as described below.
+	 * 
+	 * For instance, an HTMLAnchorElement has the activation behaviour of
+	 * following a link. If one of its children is clicked by the user,
+	 * it will trigger its activation behaviour
+	 */
+	
+	 /**
+	  * Wheter this HTMLElement has any activation 
+	  * behaviour associated with it
+	  */
+	public function hasActivationBehaviour():Bool
+	{
+		return false;
+	}
+	
+	/**
+	 * called before the click event is dipatched
+	 */
+	public function runPreClickActivation():Void
+	{
+		
+	}
+	
+	/**
+	 * Called if the activation behaviour is cancelled
+	 */
+	public function runCanceledActivationStep():Void
+	{
+		
+	}
+	
+	/**
+	 * Called after the click was dispatched
+	 */
+	public function runPostClickActivationStep(event:MouseEvent):Void
+	{
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
