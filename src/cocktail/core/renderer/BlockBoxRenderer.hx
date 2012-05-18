@@ -47,10 +47,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private var _verticalScrollBar:ScrollBar;
 	
-	//TODO : should be set during formatting, as only 
-	//block box establishing context need them
-	//must also add positionned element to those bounds, have a
-	//separate attribute ?
 	/**
 	 * Those are the bounds of the children (both in-flow and positioned)
 	 * of the ElementRenderer, which are used when scrolling the
@@ -534,12 +530,44 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return value;
 	}
 	
+	/**
+	 * overriden as the scroll width for a block
+	 * box might be its scrollable bounds width
+	 * 
+	 * TODO : should it be only when scrollbars are
+	 * displayed ?
+	 */
+	override private function get_scrollWidth():Float
+	{
+		if (_scrollableBounds.width > bounds.width)
+		{
+			return _scrollableBounds.width;
+		}
+		
+		return bounds.width;
+	}
+	
+	override private function get_scrollHeight():Float
+	{
+		if (_scrollableBounds.height > bounds.height)
+		{
+			return _scrollableBounds.height;
+		}
+		
+		return bounds.height;
+	}
+	
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE SCROLLING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * When a scroll value changes, update the rendering
+	 * 
+	 * TODO : should also update the display of scrollbars if the scroll
+	 * wasn't triggered by user action, however there is a risk of infinite
+	 * update loop
 	 */
 	private function updateScroll():Void
 	{

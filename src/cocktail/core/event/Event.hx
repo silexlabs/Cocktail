@@ -25,10 +25,6 @@ class Event
 {	
 	public static inline var LOAD:String = "load";
 	
-	public static inline var FOCUS:String = "focus";
-	
-	public static inline var BLUR:String = "blur";
-	
 	public static inline var ERROR:String = "error";
 	
 	public static inline var READY_STATE_CHANGE:String = "readystatechange";

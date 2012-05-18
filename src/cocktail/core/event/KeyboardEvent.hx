@@ -110,9 +110,7 @@ class KeyboardEvent extends UIEvent
 	public function initKeyboardEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, charArg:String,
 	keyArg:String, repeat:Bool):Void
 	{
-		_type = eventTypeArg;
-		_bubbles = canBubbleArg;
-		_cancelable = cancelableArg;
+		initUIEvent(eventTypeArg, canBubbleArg, cancelableArg, 0);
 		_keyChar = charArg;
 		_key = keyArg;
 		_repeat = repeat;
