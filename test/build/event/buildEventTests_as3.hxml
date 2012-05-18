@@ -1,0 +1,8 @@
+-cp ../../../src/
+-cp ../../src/
+-cp ../../../lib/
+-main event.EventTests
+-lib utest
+-swf ../../bin/event/EventTestAs3.swf
+--remap js:cocktail
+-swf-version 10.2
