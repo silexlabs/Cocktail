@@ -8,25 +8,40 @@
 package cocktail.core.event;
 
 /**
- * The interface allows registration and removal 
+ * Allows registration and removal 
  * of event listeners, and dispatch of events to an event target.
- * 
- * TODO : implement + doc
  * 
  * @author Yannick DOMINGUEZ
  */
 class EventTarget
 {
-	private var _eventHandlers:Hash<Array<IEventListener>>;
+	/**
+	 * store the registered eventListeners in a hash
+	 * where the key is the event type. Each key
+	 * returns an array of the EventListeners registered
+	 * for this type of event, in the order where
+	 * they were registered
+	 */
+	private var _registeredEventListeners:Hash<Array<EventListener>>;
 	
+	/**
+	 * class constructor. Init class attributes
+	 */
 	public function new() 
 	{
-		_eventHandlers = new Hash();
+		_registeredEventListeners = new Hash();
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Dispatches an event into the implementation's event model.
 	 * The event target of the event must be the EventTarget object on which dispatchEvent is called. 
+	 * 
+	 * TODO : when event is dispatched by the HTMLBodyElement, should be dispatched
+	 * on the document and window
 	 * 
 	 * @param	evt The event to be dispatched.
 	 * @return Indicates whether any of the listeners which handled the event called Event.preventDefault().
@@ -34,9 +49,112 @@ class EventTarget
 	 */
 	public function dispatchEvent(evt:Event):Bool
 	{
-		// Dispatch to objects that are registered as listeners for
-		// this object.
-		dispatchQueue(_eventHandlers.get(evt.type), evt);
+		//the currentTarget because this EventTarget, as 
+		//it is now going to deal with its own registered
+		//EventListeners
+		evt.currentTarget = this;
+		
+		//this flag allow distinguishing between the EventTarget on 
+		//which the dispatchEvent method was first called and its ancestors,
+		//whose dispatchEvent method are called after
+		if (evt.dispatched == false)
+		{
+			//This EventTarget becomes the target of the event as dispatchEvent
+			//was called on it
+			evt.target = this;
+			
+			//set the flag so that next EventTarget knows they are ancestor
+			//of the event target
+			evt.dispatched = true;
+			
+			//retrieve all the target ancestor. For instance, for a Node,
+			//returns all ancestors from the Node to the root of the document
+			var targetAncestors:Array<EventTarget> = getTargetAncestors();
+
+			//the capturing phase of the event flow begins
+			evt.eventPhase = Event.CAPTURING_PHASE;
+
+			//reverse the target ancestors, as during capture phase, 
+			//the first ancestor whose dispatchEvent should be called is
+			//the root of the document
+			targetAncestors.reverse();
+			
+			//make all target ancestor dispatch their events
+			for (i in 0...targetAncestors.length)
+			{
+				targetAncestors[i].dispatchEvent(evt);
+				//if the previous target ancestor stopped propagation, stop
+				//the event flow
+				if (evt.propagationStopped == true || evt.immediatePropagationStopped == true)
+				{
+					//reset the event internal state, so that it
+					//can be reused
+					//first store the current defaultPrevented state, else
+					//it will be reset a the time of the return, then tries to
+					//execute the default action before stopping event flow
+					var defaultPrevented:Bool = evt.defaultPrevented;
+					executeDefaultActionIfNeeded(defaultPrevented, evt);
+					evt.reset();
+					return defaultPrevented;
+				}
+			}
+			
+			//the target phase begins, as the event target will now dispatch itself
+			evt.eventPhase = Event.AT_TARGET;
+			dispatchEvent(evt);
+			
+			//return if propagation must be stopped
+			if (evt.propagationStopped == true || evt.immediatePropagationStopped == true)
+			{
+				//TODO : duplicated code
+				var defaultPrevented:Bool = evt.defaultPrevented;
+				executeDefaultActionIfNeeded(defaultPrevented, evt);
+				evt.reset();
+				return defaultPrevented;
+			}
+			
+			//check if the event supports the bubbling phase
+			if (evt.bubbles == true)
+			{
+				//start the bubbling phase
+				evt.eventPhase = Event.BUBBLING_PHASE;
+				
+				//reverse the array again, as the bubbling phase starts with
+				//the parent of the event target and finish with the root
+				//of the document
+				targetAncestors.reverse();
+				
+				//dispatch all target ancestor, and stop propagation if needed
+				for (i in 0...targetAncestors.length)
+				{
+					targetAncestors[i].dispatchEvent(evt);
+					
+					if (evt.propagationStopped == true || evt.immediatePropagationStopped == true)
+					{
+						var defaultPrevented:Bool = evt.defaultPrevented;
+						executeDefaultActionIfNeeded(defaultPrevented, evt);
+						evt.reset();
+						return defaultPrevented;
+					}
+				}
+				
+				executeDefaultActionIfNeeded(evt.defaultPrevented, evt);
+				
+			}
+		}
+		//this part is executed for target ancestor and for the target
+		//itself at AT_TARGET phase
+		else
+		{
+			//tries to dispatch event registered for the event type
+			if (_registeredEventListeners.exists(evt.type) == true)
+			{
+				doDispatchEvent(_registeredEventListeners.get(evt.type), evt);
+			}
+		}
+		
+		//return wether any EventListener called event.preventDefault
+		//during event flow
 		return evt.defaultPrevented;
 	}
 
@@ -65,15 +183,18 @@ class EventTarget
 	 * phase. If false, the event listener must only be triggered during
 	 * the target and bubbling phases.
 	 */
-	public function addEventListener(event:String, handler:IEventListener, useCapture:Bool = false):Void
+	public function addEventListener(type:String, listener:Event->Void, useCapture:Bool = false):Void
 	{
-		if (_eventHandlers.exists(event) == false)
+		if (_registeredEventListeners.exists(type) == false)
 		{
-			_eventHandlers.set(event, new Array<IEventListener>());
+			_registeredEventListeners.set(type, new Array<EventListener>());
 		}
 		
-		removeEventListener(event, handler);
-		_eventHandlers.get(event).push(handler);
+		removeEventListener(type, listener, useCapture);
+		
+		var eventListener:EventListener = new EventListener(type, listener, useCapture);
+		
+		_registeredEventListeners.get(type).push(eventListener);
 	}
 
 	/**
@@ -90,15 +211,16 @@ class EventTarget
 	 * phases does not affect the same event listener registered for the target and bubbling phases,
 	 * and vice versa.
 	 */
-	public function removeEventListener(event:String, handler:IEventListener, useCapture:Bool = false):Void
+	public function removeEventListener(type:String, listener:Event->Void, useCapture:Bool = false):Void
 	{
-		if (_eventHandlers.exists(event) == true)
+		if (_registeredEventListeners.exists(type) == true)
 		{
-			var registeredListeners:Array<IEventListener> = _eventHandlers.get(event);
+			var registeredListeners:Array<EventListener> = _registeredEventListeners.get(type);
 			for (i in 0...registeredListeners.length)
 			{
-				var eventListener:IEventListener = registeredListeners[i];
-				if (eventListener == handler) {
+				var eventListener:EventListener = registeredListeners[i];
+				if (eventListener.eventType == type && eventListener.useCapture == useCapture && eventListener.listener == listener) {
+					eventListener.dispose();
 					registeredListeners.splice(i, 1);
 					return;
 				}
@@ -106,16 +228,77 @@ class EventTarget
 		}
 	}
 	
-	private function dispatchQueue(queue:Array<IEventListener>, evt:Event):Void
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Tries to dispatch the registered events listener for the  given
+	 * event type
+	 */
+	private function doDispatchEvent(eventListeners:Array<EventListener>, evt:Event):Void
 	{
-		if (queue != null)
+		for (i in 0...eventListeners.length)
 		{
-			for (i in 0...queue.length)
+			var eventListener:EventListener = eventListeners[i];
+
+			//check if the current phase matches the eventListener
+			//registered for phase
+			
+			//for capturing phase
+			if (evt.eventPhase == Event.CAPTURING_PHASE)
 			{
-				var eventListener:IEventListener = queue[i];
+				if (eventListener.useCapture == true)
+				{
+					eventListener.handleEvent(evt);
+				}
+			}
+			
+			//for bubbling phase
+			else if (evt.eventPhase == Event.BUBBLING_PHASE)
+			{
+				if (eventListener.useCapture == false)
+				{
+					eventListener.handleEvent(evt);
+				}
+			}
+			
+			//at "at target" phase, all the eventListeners are
+			//executed
+			//
+			//TODO :should they always be executed ?
+			else if (evt.eventPhase == Event.AT_TARGET)
+			{
 				eventListener.handleEvent(evt);
 			}
+			
+			//stop the event flow if the eventListener stopped
+			//immediate propagetion (called Event.stopImmediatePropagation)
+			//If an EventListener calls Event.stopPropagation, all the
+			//EventListener of the current target are executed
+			if (evt.immediatePropagationStopped == true)
+			{
+				return;
+			}
 		}
+	}
+	
+	/**
+	 * Return all the EventTarget ancestors of this EventTarget,
+	 * implemented by Node
+	 */
+	private function getTargetAncestors():Array<EventTarget>
+	{
+		return [];
+	}
+	
+	/**
+	 * If the EventTarget is associated to a default action, execute
+	 * if it wasn't prevented during the event flow
+	 */
+	private function executeDefaultActionIfNeeded(defaultPrevented:Bool, event:Event):Void
+	{
+		//abstract
 	}
 	
 }

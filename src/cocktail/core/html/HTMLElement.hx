@@ -11,6 +11,7 @@ import cocktail.core.dom.Attr;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
+import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.hxtml.HxtmlConverter;
@@ -92,6 +93,13 @@ class HTMLElement extends Element
 	private var _onMouseMove:MouseEvent->Void;
 	public var onmousemove(get_onMouseMove, set_onMouseMove):MouseEvent->Void;
 	
+	/**
+	 * The callback called when the mouse wheel is rotated while the mouse
+	 * pointer is over this element
+	 */
+	private var _onMouseWheel:WheelEvent->Void;
+	public var onmousewheel(get_onMouseWheel, set_onMouseWheel):WheelEvent->Void;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Keyboard attributes and callback
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -162,12 +170,16 @@ class HTMLElement extends Element
 	public var scrollLeft(get_scrollLeft, set_scrollLeft):Int;
 	
 	/**
-	 * The scroll view height of the HTMLElement
+	 * The scroll view height of the HTMLElement. Returns either
+	 * the height of the HTMLElement or the height of its content,
+	 * whichever is greater. For instance if the HTMLElement displays
+	 * scrollbars because its content is higher than its content area,
+	 * scrollHeight will be larger than clientHeight
 	 */
 	public var scrollHeight(get_scrollHeight, never):Int;
 	
 	/**
-	 * The scroll view width of the HTMLElement
+	 * Same as scrollHeight for width
 	 */
 	public var scrollWidth(get_scrollWidth, never):Int;
 	
@@ -688,14 +700,25 @@ class HTMLElement extends Element
 		if (_onClick != null)
 		{
 			var mouseEvent:MouseEvent = new MouseEvent();
-			mouseEvent.initMouseEvent(MouseEvent.CLICK, false, false, 0, 0, 0, 0, 0, false, false, false);
+			mouseEvent.initMouseEvent(MouseEvent.CLICK, false, false, null, 0, 0, 0, 0, 0, false, false, false, false,
+			0, null);
 			_onClick(mouseEvent);
 		}
 	}
 	
 	private function set_onClick(value:MouseEvent->Void):MouseEvent->Void
 	{
-		return _onClick = value;
+		if (_onClick != null)
+		{
+			removeEventListener(MouseEvent.CLICK, cast(_onClick));
+		}
+		_onClick = value;
+		if (_onClick != null)
+		{
+			addEventListener(MouseEvent.CLICK, cast(_onClick));
+		}
+		
+		return value;
 	}
 	
 	private function get_onClick():MouseEvent->Void
@@ -705,7 +728,17 @@ class HTMLElement extends Element
 	
 	private function set_onMouseDown(value:MouseEvent->Void):MouseEvent->Void
 	{
-		return _onMouseDown = value;
+		if (_onMouseDown != null)
+		{
+			removeEventListener(MouseEvent.MOUSE_DOWN, cast(_onMouseDown));
+		}
+		_onMouseDown = value;
+		if (_onMouseDown != null)
+		{
+			addEventListener(MouseEvent.MOUSE_DOWN, cast(_onMouseDown));
+		}
+		
+		return value;
 	}
 	
 	private function get_onMouseDown():MouseEvent->Void
@@ -715,7 +748,17 @@ class HTMLElement extends Element
 	
 	private function set_onMouseUp(value:MouseEvent->Void):MouseEvent->Void
 	{
-		return _onMouseUp = value;
+		if (_onMouseUp != null)
+		{
+			removeEventListener(MouseEvent.MOUSE_UP, cast(_onMouseUp));
+		}
+		_onMouseUp = value;
+		if (_onMouseUp != null)
+		{
+			addEventListener(MouseEvent.MOUSE_UP, cast(_onMouseUp));
+		}
+		
+		return value;
 	}
 	
 	private function get_onMouseUp():MouseEvent->Void
@@ -751,6 +794,16 @@ class HTMLElement extends Element
 	private function get_onMouseMove():MouseEvent->Void
 	{
 		return _onMouseMove;
+	}
+	
+	private function set_onMouseWheel(value:WheelEvent->Void):WheelEvent->Void
+	{
+		return _onMouseWheel = value;
+	}
+	
+	private function get_onMouseWheel():WheelEvent->Void
+	{
+		return _onMouseWheel;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -880,6 +933,54 @@ class HTMLElement extends Element
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// ACTIVATION BEHAVIOUR
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Certain elements in HTML have an activation behavior,
+	 * which means that the user can activate them. 
+	 * This triggers a sequence of events dependent on the activation mechanism,
+	 * and normally culminating in a click event, as described below.
+	 * 
+	 * For instance, an HTMLAnchorElement has the activation behaviour of
+	 * following a link. If one of its children is clicked by the user,
+	 * it will trigger its activation behaviour
+	 */
+	
+	 /**
+	  * Wheter this HTMLElement has any activation 
+	  * behaviour associated with it
+	  */
+	public function hasActivationBehaviour():Bool
+	{
+		return false;
+	}
+	
+	/**
+	 * called before the click event is dipatched
+	 */
+	public function runPreClickActivation():Void
+	{
+		
+	}
+	
+	/**
+	 * Called if the activation behaviour is cancelled
+	 */
+	public function runCanceledActivationStep():Void
+	{
+		
+	}
+	
+	/**
+	 * Called after the click was dispatched
+	 */
+	public function runPostClickActivationStep(event:MouseEvent):Void
+	{
+		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// SCROLLING SETTER/GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -906,15 +1007,24 @@ class HTMLElement extends Element
 		}
 	}
 	
-	//TODO : implement scroll
+	//TODO : should unit test, not very what this getter
+	//is supposed to return
 	private function get_scrollHeight():Int
 	{
-		return -1;
+		if (_elementRenderer != null)
+		{
+			return Math.round(_elementRenderer.scrollHeight);
+		}
+		return 0;
 	}
 	
 	private function get_scrollWidth():Int
 	{
-		return -1;
+		if (_elementRenderer != null)
+		{
+			return Math.round(_elementRenderer.scrollWidth);
+		}
+		return 0;
 	}
 	
 	private function set_scrollLeft(value:Int):Int

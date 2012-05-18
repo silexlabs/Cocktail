@@ -189,6 +189,22 @@ class ElementRenderer extends Node
 	public var scrollTop(get_scrollTop, set_scrollTop):Float;
 	
 	/**
+	 * get the larger width between the ElementRenderer's and its children
+	 * width
+	 * 
+	 * TODO : does it mean that scrollBounds should also be computed for
+	 * this ElementRenderer ? renamed as childrenBounds ?
+	 * check http://dev.w3.org/csswg/cssom-view/#dom-element-scrollwidth
+	 */
+	public var scrollWidth(get_scrollWidth, never):Float;
+	
+	/**
+	 * get the larger height between the ElementRenderer's and its children
+	 * height
+	 */
+	public var scrollHeight(get_scrollHeight, never):Float;
+	
+	/**
 	 * class constructor. init class attribute
 	 */
 	public function new(node:Node) 
@@ -355,6 +371,11 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
+	public function isScrollBar():Bool
+	{
+		return false;
+	}
+	
 	public function isFloat():Bool
 	{
 		return false;
@@ -462,7 +483,7 @@ class ElementRenderer extends Node
 					width : right - left,
 					height :  bottom - top,
 				}
-		
+				
 		//TODO : need to implement better fix,
 		//sould not be negative
 		if (bounds.width < 0)
@@ -731,6 +752,16 @@ class ElementRenderer extends Node
 	private function set_scrollTop(value:Float):Float 
 	{
 		return value;
+	}
+	
+	private function get_scrollWidth():Float
+	{
+		return bounds.width;
+	}
+	
+	private function get_scrollHeight():Float
+	{
+		return bounds.height;
 	}
 	
 	

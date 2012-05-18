@@ -7,6 +7,7 @@
 */
 package cocktail.core.html;
 
+import cocktail.core.event.Event;
 import cocktail.core.mouse.MouseCursorManager;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.dom.DOMData;
@@ -111,6 +112,34 @@ class HTMLAnchorElement extends HTMLElement
 			openDocument();
 		}
 	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN ACTIVATION BEHAVIOUR
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The anchor HTMLElement has the default behaviour
+	 * of following a link
+	 */
+	override public function hasActivationBehaviour():Bool
+	{
+		return true;
+	}
+	
+	/**
+	 * Follow the link after the click event was dispatched
+	 */
+	override public function runPostClickActivationStep(event:MouseEvent):Void
+	{
+		if (event.defaultPrevented == true)
+		{
+			return;
+		}
+		onMouseUpCallback(cast(event));
+		
+	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
