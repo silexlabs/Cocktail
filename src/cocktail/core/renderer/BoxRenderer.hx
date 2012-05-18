@@ -336,22 +336,12 @@ class BoxRenderer extends ElementRenderer
 			{
 				if (elementRenderer.isPositioned() == false)
 				{
-					var xOffset:Float = elementRenderer.bounds.x;
-					var yOffset:Float = elementRenderer.bounds.y;
-					
-					child.globalPositionnedAncestorOrigin.x += xOffset;
-					child.globalPositionnedAncestorOrigin.y += yOffset;
+					child.globalPositionnedAncestorOrigin.x += elementRenderer.bounds.x;
+					child.globalPositionnedAncestorOrigin.y += elementRenderer.bounds.y;
 					
 					if (child.hasChildNodes() == true)
 					{
-						setGlobalOrigins(child, addedX, addedY, addedPositionedX - elementRenderer.bounds.x , addedPositionedY  - elementRenderer.bounds.y );
-					}
-				}
-				else
-				{
-					if (child.hasChildNodes() == true)
-					{
-						setGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
+						setGlobalOrigins(child, addedX, addedY, addedPositionedX + elementRenderer.bounds.x, addedPositionedY + elementRenderer.bounds.y);
 					}
 				}
 			}

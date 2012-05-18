@@ -404,7 +404,7 @@ class ScrollBar extends HTMLElement
 	 * the size of the thumb to reflect
 	 * the amount of scrollablze offset
 	 */
-	private function updateThumbSize():Void
+	public function updateThumbSize():Void
 	{
 		
 		if (_isVertical == true)
