@@ -150,6 +150,7 @@ class EventTarget
 			{
 				var eventListener:EventListener = registeredListeners[i];
 				if (eventListener.eventType == type) {
+					eventListener.dispose();
 					registeredListeners.splice(i, 1);
 					return;
 				}

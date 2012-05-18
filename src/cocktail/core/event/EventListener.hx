@@ -57,6 +57,11 @@ class EventListener
 		_eventCallback(evt);
 	}
 	
+	public function dispose():Void
+	{
+		_eventCallback = null;
+	}
+	
 	private function get_eventType():String
 	{
 		return _eventType;
