@@ -47,8 +47,6 @@ class UIEvent extends Event
 	 * Initializes attributes of an UIEvent object.
 	 * This method has the same behavior as Event.initEvent().
 	 * 
-	 * TODO : missing arguments
-	 * 
 	 * @param	eventTypeArg Specifies Event.type, the name of the event type.
 	 * @param	canBubbleArg Specifies Event.bubbles. This parameter overrides the intrinsic bubbling behavior of the event.
 	 * @param	cancelableArg Specifies Event.cancelable. This parameter overrides the intrinsic cancelable behavior of the event.

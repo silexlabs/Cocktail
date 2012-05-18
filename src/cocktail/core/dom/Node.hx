@@ -328,6 +328,10 @@ class Node extends EventTarget
 	// OVERRIDEN PRIVATE METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Return all the parent of the node until the root
+	 * node is reached
+	 */
 	override private function getTargetAncestors():Array<EventTarget>
 	{
 		var parent:Node = _parentNode;
