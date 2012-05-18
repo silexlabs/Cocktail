@@ -130,7 +130,9 @@ class Document extends Node, implements IDocumentEvent
 	/**
 	 * The DocumentEvent interface provides a mechanism by which the user can create an Event object
 	 * of a type supported by the implementation.
-	 * If the feature “Events” is supported by the Document object, the DocumentEvent interface must be implemented on the same object. Language-specific type casting may be required.
+	 * If the feature “Events” is supported by the Document object, 
+	 * the DocumentEvent interface must be implemented on the same object.
+	 * Language-specific type casting may be required.
 	 * @param	eventInterface
 	 * @return
 	 */
