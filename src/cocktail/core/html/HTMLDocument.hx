@@ -282,6 +282,8 @@ class HTMLDocument extends Document
 		
 	}
 	
+	//TODO : activation behaviour should be done by HTMLElement, this way it can be
+	//integrated with click synthesis
 	private function getNearestActivatableElement(htmlElement:HTMLElement):HTMLElement
 	{
 		while (htmlElement.hasActivationBehaviour() == false)
