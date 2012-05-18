@@ -27,8 +27,24 @@ package cocktail.core.event;
  * 
  * @author Yannick DOMINGUEZ
  */
-interface IEventListener  
+class EventListener  
 {
+	
+	private var _useCapture:Bool;
+	public var useCapture(get_useCapture, never):Bool;
+	
+	private var _eventCallback:Event->Void;
+	
+	private var _eventType:String;
+	public var eventType(get_eventType, never):String;
+	
+	public function new(eventType:String, eventCallback:Event->Void, useCapture:Bool)
+	{
+		_eventCallback = eventCallback;
+		_useCapture = useCapture;
+		_eventType = eventType;
+	}
+	
 	/**
 	 * This method must be called whenever an event occurs of the
 	 * event type for which the EventListener interface was registered.
@@ -36,5 +52,18 @@ interface IEventListener
 	 * @param	evt The Event contains contextual 
 	 * information about the event.
 	 */
-	function handleEvent(evt:Event):Void;	
+	public function handleEvent(evt:Event):Void
+	{
+		
+	}
+	
+	private function get_eventType():String
+	{
+		return _eventType;
+	}
+	
+	private function get_useCapture():Bool
+	{
+		return _useCapture;
+	}
 }
