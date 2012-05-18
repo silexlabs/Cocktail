@@ -299,7 +299,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{	
 		super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
-
+		
+		_isLayingOut = true;
+		
 		//only get scrollable bounds for bloc box renderer
 		//which might display scrollbars
 		if (canAlwaysOverflow() == false)
@@ -362,7 +364,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			}
 			
 			_verticalScrollBar.elementRenderer.layout(getContainerBlockData(), viewportData, scrollbarFirstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);				
-		
+
 		}
 		
 		if (_horizontalScrollBar != null)
@@ -382,7 +384,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				elements:[]
 			}
 			
-			_verticalScrollBar.elementRenderer.layout(getContainerBlockData(), viewportData, scrollbarFirstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);				
+			_verticalScrollBar.elementRenderer.layout(getContainerBlockData(), viewportData, scrollbarFirstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);	
 		}
 		
 		var horizontalScrollBarContainerBlockData = getContainerBlockData();
@@ -607,92 +609,125 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function attachScrollBarsIfnecessary():Void
 	{
-		//do nothing if the overflow x and y are both set to
-		//visible
+		//only try to remove attached scrollbars if both
+		//overflow x and y are set to visible
 		if (canAlwaysOverflow() == true)
 		{
+			detachHorizontalScrollBar();
+			detachVerticalScrollBar();
 			return;
 		}
 		
-		//if horizontal scrollbar is not null, then it is already
-		//displayed
-		if (_horizontalScrollBar == null)
+
+		//TODO : should use computed styles but not computed yet
+		//tries to attach or detach horizontal scrollbar based on x
+		//overflow
+		switch (_coreStyle.overflowX)
 		{
-			//TODO : should use computed styles but not computed yet
-			switch (_coreStyle.overflowX)
-			{
-				case scroll:
-					attachHorizontalScrollBar();
-					
-				case hidden:
-					
-				case cssAuto:
-					attachHorizontalScrollBarIfNecessary();
-					
-				case visible:
-					if (treatVisibleOverflowAsAuto() == true)
-					{
-						attachHorizontalScrollBarIfNecessary();
-					}
-			}
+			case scroll:
+				attachHorizontalScrollBar();
+				
+			case hidden:
+				detachHorizontalScrollBar();
+				
+			case cssAuto:
+				attachOrDetachHorizontalScrollBarIfNecessary();
+				
+			case visible:
+				if (treatVisibleOverflowAsAuto() == true)
+				{
+					attachOrDetachHorizontalScrollBarIfNecessary();
+				}
+				else
+				{
+					detachHorizontalScrollBar();
+				}
 		}
-		
-		if (_horizontalScrollBar != null)
+
+		//tries to attach or detach vertical scrolbar based on 
+		//overflow y
+		switch (_coreStyle.overflowY)
 		{
-			_horizontalScrollBar.maxScroll = _scrollableBounds.width - getContainerBlockData().width;
+			case scroll:
+				attachVerticalScrollBar();
+				
+				
+			case hidden:
+				detachVerticalScrollBar();
+				
+			case cssAuto:
+				attachorDetachVerticalScrollBarIfNecessary();
+				
+			case visible:
+				if (treatVisibleOverflowAsAuto() == true)
+				{
+					attachorDetachVerticalScrollBarIfNecessary();
+				}	
+				else
+				{
+					detachVerticalScrollBar();
+				}
 		}
-		
-		if (_verticalScrollBar == null)
-		{
-			switch (_coreStyle.overflowY)
-			{
-				case scroll:
-					attachVerticalScrollBar();
-					
-					
-				case hidden:
-					
-				case cssAuto:
-					attachVerticalScrollBarIfNecessary();
-					
-				case visible:
-					if (treatVisibleOverflowAsAuto() == true)
-					{
-						attachVerticalScrollBarIfNecessary();
-					}	
-			}
-		}
-		if (_verticalScrollBar != null)
-		{
-			_verticalScrollBar.maxScroll = _scrollableBounds.height - getContainerBlockData().height;
-		}
-		
+
 	}
 	
 	/**
 	 * Instantiate the horizontal scrollbar DOM element
-	 * and attach it to the rendering tree.
+	 * and attach it to the rendering tree, if it isn't
+	 * already attached
 	 * 
 	 * Listen to scroll event on it to update the
 	 * scroll display as needed
 	 */
 	private function attachHorizontalScrollBar():Void
 	{
-		_horizontalScrollBar = new ScrollBar(false);
-		_horizontalScrollBar.attach();
-		appendChild(_horizontalScrollBar.elementRenderer);
-		_horizontalScrollBar.onscroll = onHorizontalScroll;
+		if (_horizontalScrollBar == null)
+		{
+			_horizontalScrollBar = new ScrollBar(false);
+			_horizontalScrollBar.attach();
+			appendChild(_horizontalScrollBar.elementRenderer);
+			_horizontalScrollBar.onscroll = onHorizontalScroll;
+		}
+		//refresh the max scroll when a layout of the BlockBoxRenderer happens
+		if (_horizontalScrollBar != null)
+		{
+			_horizontalScrollBar.maxScroll = _scrollableBounds.width - getContainerBlockData().width;
+		}
 	}
 	
 	/**
-	 * When overflow x is set to auto, only attach the horizontal scrollbar
-	 * if the children width is superior to the BlockBoxRenderer width
+	 * Detach the horizontal scrollbar if it is 
+	 * currently displayed
 	 */
-	private function attachHorizontalScrollBarIfNecessary():Void
+	private function detachHorizontalScrollBar():Void
+	{
+		if (_horizontalScrollBar != null)
+		{
+			_horizontalScrollBar.detach();
+			removeChild(_horizontalScrollBar.elementRenderer);
+			_horizontalScrollBar.onscroll = null;
+			_horizontalScrollBar = null;
+			
+			//reset scroll so that the display don't "jump" if
+			//the horizontal scrollbar is attached again
+			scrollLeft = 0;
+		}
+	}
+	
+	/**
+	 * When overflow x is set to auto, only try to attach the horizontal scrollbar
+	 * if the children width is superior to the BlockBoxRenderer width, else
+	 * try to detach it
+	 */
+	private function attachOrDetachHorizontalScrollBarIfNecessary():Void
 	{
 		if (_scrollableBounds.x < bounds.x || _scrollableBounds.x + _scrollableBounds.width > bounds.x + bounds.width)
 		{
 			attachHorizontalScrollBar();
+		}
+		else
+		{
+			detachHorizontalScrollBar();
 		}
 	}
 	
@@ -701,14 +736,43 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function attachVerticalScrollBar():Void
 	{
-		_verticalScrollBar = new ScrollBar(true);
-		_verticalScrollBar.attach();
-		appendChild(_verticalScrollBar.elementRenderer);
-		_verticalScrollBar.onscroll = onVerticalScroll;
-		
-		var htmlElement:HTMLElement = cast(_node);
-		htmlElement.onmousewheel = onMouseWheel;
-		
+		if (_verticalScrollBar == null)
+		{
+			_verticalScrollBar = new ScrollBar(true);
+			_verticalScrollBar.attach();
+			appendChild(_verticalScrollBar.elementRenderer);
+			_verticalScrollBar.onscroll = onVerticalScroll;
+			
+			var htmlElement:HTMLElement = cast(_node);
+			htmlElement.onmousewheel = onMouseWheel;
+		}
+		if (_verticalScrollBar != null)
+		{
+			_verticalScrollBar.maxScroll = _scrollableBounds.height - getContainerBlockData().height;
+		}
+	}
+	
+	/**
+	 * same as for horizontal scrollbar
+	 */
+	private function detachVerticalScrollBar():Void
+	{
+		if (_verticalScrollBar != null)
+		{
+			
+			removeChild(_verticalScrollBar.elementRenderer);
+			_verticalScrollBar.detach();
+			_verticalScrollBar.onscroll = null;
+			
+			var htmlElement:HTMLElement = cast(_node);
+			htmlElement.onmousewheel = null;
+			
+			_verticalScrollBar = null;
+			
+			//reset scroll so that the display don't "jump" if
+			//the vertical scrollbar is attached again
+			scrollTop = 0;
+		}
 	}
 	
 	//TODO : work but very rough, should be implemented at HTMLElement level,
@@ -722,11 +786,15 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	/**
 	 * same as for horizontal scrollbar
 	 */
-	private function attachVerticalScrollBarIfNecessary():Void
+	private function attachorDetachVerticalScrollBarIfNecessary():Void
 	{
 		if (_scrollableBounds.y < bounds.y || _scrollableBounds.y + _scrollableBounds.height > bounds.y + bounds.height)
 		{
 			attachVerticalScrollBar();
+		}
+		else
+		{
+			detachVerticalScrollBar();
 		}
 	}
 	

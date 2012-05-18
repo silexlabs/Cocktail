@@ -12,6 +12,7 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.ScrollBarRenderer;
 import cocktail.Lib;
+import haxe.Log;
 
 /**
  * This HTMLElement is a scrollbar displayed as needed when the content
@@ -459,8 +460,19 @@ class ScrollBar extends HTMLElement
 	
 	private function set_maxScroll(value:Float):Float 
 	{
+		var scrollPercent:Float = _scroll / _maxScroll;
+		
+		if (_maxScroll == 0)
+		{
+			scrollPercent = 0;
+		}
+		
 		_maxScroll = value;
+		scroll = _maxScroll * scrollPercent; 
+		
+		
 		updateThumbSize();
+		
 		return value;
 	}
 
