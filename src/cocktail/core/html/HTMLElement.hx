@@ -51,6 +51,11 @@ class HTMLElement extends Element
 	 */
 	private static inline var HTML_CLASS_ATTRIBUTE:String = "class";
 	
+	/**
+	 * the name of the tab index attribute in HTML
+	 */
+	private static inline var HTML_TAB_INDEX_ATTRIBUTE:String = "tabIndex";
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Mouse attributes and callback
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -123,16 +128,12 @@ class HTMLElement extends Element
 	/**
 	 * The tab index order of the HTMLElement. If the index
 	 * is set, it is used to determine focus order when the
-	 * user press the TAB key. If it is not set, the document
+	 * user press the TAB key. If it is not set or set to 0, the document
 	 * order is used to establish focus order and the HTMLElement
 	 * is only focused if it is intrinsically focusable, like for
 	 * instance an HTMLInputElement
-	 * 
-	 * TODO : should be stored in the attributes hash instead,
-	 * no need for class attribute
 	 */
-	private var _tabIndex:Null<Int>;
-	public var tabIndex(get_tabIndex, set_tabIndex):Null<Int>;
+	public var tabIndex(get_tabIndex, set_tabIndex):Int;
 	
 	/**
 	 * callback called when the HTMLElement receives 
@@ -423,6 +424,23 @@ class HTMLElement extends Element
 	{
 		return super.getElementsByTagName(tagName.toLowerCase());
 	}
+	
+	/**
+	 * Overriden to run through the necessary check for 
+	 * HTML attribute retrieval
+	 */
+	override public function getAttribute(name:String):String
+	{
+		if (name == HTML_TAB_INDEX_ATTRIBUTE)
+		{
+			return Std.string(get_tabIndex());
+		}
+		else
+		{
+			return super.getAttribute(name);
+		}
+	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC INVALIDATION METHODS
@@ -856,13 +874,11 @@ class HTMLElement extends Element
 		
 		//else, an element with a tab index 
 		//superior to 0 can receive focus
-		else if (tabIndex != null)
+		else if (tabIndex > 0)
 		{
-			if (tabIndex > 0)
-			{
-				return true;
-			}
+			return true;
 		}
+		
 		return false;
 	}
 	
@@ -922,14 +938,36 @@ class HTMLElement extends Element
 		return _onBlur;
 	}
 	
-	private function set_tabIndex(value:Null<Int>):Null<Int>
+	private function set_tabIndex(value:Int):Int
 	{
-		return _tabIndex = value;
+		setAttribute(HTML_TAB_INDEX_ATTRIBUTE, Std.string(value));
+		return value;
 	}
 	
-	private function get_tabIndex():Null<Int>
+	/**
+	 * Return the tab index as an int
+	 * @return
+	 */
+	private function get_tabIndex():Int
 	{
-		return _tabIndex;
+		var tabIndex:String = getAttribute(HTML_TAB_INDEX_ATTRIBUTE);
+		if (tabIndex == "")
+		{
+			//default value for focusable element is 0,
+			//else its -1
+			if (isDefaultFocusable() == true)
+			{
+				return 0;
+			}
+			else
+			{
+				return -1;
+			}
+		}
+		else
+		{
+			return Std.parseInt(tabIndex);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1027,6 +1065,10 @@ class HTMLElement extends Element
 		return 0;
 	}
 	
+	
+	//TODO : shouldn't HTMLElement be the model for all attributes
+	//instead ? Shouldn't ElementRenderer set the value of scrollLeft/scrollTop
+	//on the HTMLElement ?
 	private function set_scrollLeft(value:Int):Int
 	{
 		if (_elementRenderer != null)

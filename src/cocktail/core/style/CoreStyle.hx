@@ -430,7 +430,7 @@ class CoreStyle
 	 */
 	private function applyDefaultHTMLStyles(tagName:String):Void
 	{
-		switch (tagName)
+		switch (tagName.toLowerCase())
 		{
 			case "html", "adress",
 			"dd", "div", "dl", "dt", "fieldset",
