@@ -46,8 +46,6 @@ class HTMLDocument extends Document
 	
 	private static inline var HTML_IMAGE_ELEMENT_TAG_NAME:String = "img";
 	
-	private static inline var HTML_CANVAS_ELEMENT_TAG_NAME:String = "canvas";
-	
 	private static inline var HTML_INPUT_ELEMENT_TAG_NAME:String = "input";
 	
 	private static inline var HTML_ANCHOR_ELEMENT_TAG_NAME:String = "a";
@@ -176,9 +174,6 @@ class HTMLDocument extends Document
 		{
 			case HTML_IMAGE_ELEMENT_TAG_NAME:
 				element = new HTMLImageElement();
-				
-			case HTML_CANVAS_ELEMENT_TAG_NAME:
-				element = new HTMLCanvasElement();
 				
 			case HTML_INPUT_ELEMENT_TAG_NAME:
 				element = new HTMLInputElement();
