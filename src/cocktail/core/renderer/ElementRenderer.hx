@@ -269,7 +269,6 @@ class ElementRenderer extends Node
 		//won't have a parent anymore
 		var elementRendererChild:ElementRenderer = cast(oldChild);
 		elementRendererChild.detachLayer();
-		
 		super.removeChild(oldChild);
 		invalidateLayout();
 		return oldChild;

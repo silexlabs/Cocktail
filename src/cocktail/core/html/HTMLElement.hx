@@ -568,11 +568,12 @@ class HTMLElement extends Element
 		if (isParentRendered() == true)
 		{
 			var parent:HTMLElement = cast(_parentNode);
-			
-			//if this HTMLElement isn't currently rendered, not need
+
+			//if this HTMLElement isn't currently rendered, no need
 			//to detach it
 			if (_elementRenderer != null)
-			{
+			{	
+			
 				//detach first all children
 				for (i in 0..._childNodes.length)
 				{
@@ -657,6 +658,7 @@ class HTMLElement extends Element
 		{
 			case block, inlineBlock:
 				_elementRenderer = new BlockBoxRenderer(this);
+				//TODO : when creating, coreStyle should be reinitialised
 				_elementRenderer.coreStyle = _coreStyle;
 				
 			case cssInline:
@@ -1171,12 +1173,23 @@ class HTMLElement extends Element
 		{
 			return value;
 		}
-		var node:Node = HxtmlConverter.getNode(value);
+		
+		var bim:String = "<doc>";
+		bim += value;
+		bim += "</doc>";
+		
+		var node:Node = HxtmlConverter.getNode(bim);
 	
 		if (node != null)
 		{
 			appendChild(node);
 		}
+		
+		if (_tagName == "ul")
+				{
+					trace(firstChild.nodeName);
+					trace(firstChild.childNodes.length);
+				}
 		
 		return value;
 	}
@@ -1189,7 +1202,7 @@ class HTMLElement extends Element
 	 */
 	private function get_innerHTML():String
 	{
-		var xml =  doGetInnerHTML(this, Xml.createElement(_tagName));
+		var xml =  doGetInnerHTML(this, Xml.createElement(nodeName));
 		return xml.toString();
 	}
 	
