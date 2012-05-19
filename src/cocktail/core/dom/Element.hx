@@ -108,7 +108,7 @@ class Element extends Node
 		}
 		else
 		{
-			return null;
+			return "";
 		}
 	}
 	
