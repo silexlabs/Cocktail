@@ -1162,9 +1162,23 @@ class HTMLElement extends Element
 	{
 		for (i in 0..._childNodes.length)
 		{
-			removeChild(_childNodes[i]);
+			removeChild(_childNodes[0]);
 		}
-		appendChild(HxtmlConverter.getNode(value));
+		
+		//TODO : only detach all node in this case ?
+		if (value == "")
+		{
+			return value;
+		}
+		var node:Node = HxtmlConverter.getNode(value);
+	
+		if (node != null)
+		{
+			
+				trace(node);
+			appendChild(node);
+		}
+		
 		return value;
 	}
 	

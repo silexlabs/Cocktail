@@ -108,7 +108,7 @@ class Element extends Node
 		}
 		else
 		{
-			return "";
+			return null;
 		}
 	}
 	
@@ -289,6 +289,7 @@ class Element extends Node
 	public function getElementsByClassName(className:String):Array<HTMLElement>
 	{
 		var elements:Array<HTMLElement> = new Array<HTMLElement>();
+		trace(className);
 		doGetElementsByClassName(this, className, elements);
 		return elements;
 	}
@@ -340,9 +341,20 @@ class Element extends Node
 				{
 					case Node.ELEMENT_NODE:
 						var elementNode:Element = cast(childNode);
-						if (elementNode.getAttribute(CLASS_ATTRIBUTE) == className)
+						var elementClassName:String = elementNode.getAttribute(CLASS_ATTRIBUTE);
+						if (elementClassName != null)
 						{
-							elements.push(cast(elementNode));
+							var elementClassNames:Array<String> = elementClassName.split(" ");
+							
+							var foundFlag:Bool = false;
+							for (j in 0...elementClassNames.length)
+							{
+								if (elementClassNames[j] == className && foundFlag == false)
+								{
+									elements.push(cast(elementNode));
+									foundFlag = true;
+								}
+							}
 						}
 				}
 				
