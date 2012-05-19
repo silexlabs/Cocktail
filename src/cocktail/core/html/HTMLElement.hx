@@ -9,6 +9,7 @@ package cocktail.core.html;
 
 import cocktail.core.dom.Attr;
 import cocktail.core.dom.Element;
+import cocktail.core.dom.NamedNodeMap;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
 import cocktail.core.event.WheelEvent;
@@ -1174,8 +1175,6 @@ class HTMLElement extends Element
 	
 		if (node != null)
 		{
-			
-				trace(node);
 			appendChild(node);
 		}
 		
@@ -1190,7 +1189,45 @@ class HTMLElement extends Element
 	 */
 	private function get_innerHTML():String
 	{
-		return '';
+		var xml =  doGetInnerHTML(this, Xml.createElement(_tagName));
+		return xml.toString();
+	}
+	
+	private function doGetInnerHTML(node:Node, xml:Xml):Xml
+	{
+		
+		for (i in 0...node.childNodes.length)
+		{
+			var child:Node = node.childNodes[i];
+			
+			switch(child.nodeType)
+			{
+				case Node.ELEMENT_NODE:
+					var childXml:Xml = Xml.createElement(child.nodeName);
+					
+					var childAttributes:NamedNodeMap = child.attributes;
+					
+					for (j in 0...childAttributes.length)
+					{
+						var attribute:Attr = cast(childAttributes.item(j));
+						
+						if (attribute.specified == true)
+						{
+							childXml.set(attribute.name, attribute.value);
+						}
+					}
+					
+					xml.addChild(doGetInnerHTML(child, childXml));
+					
+				case Node.TEXT_NODE:
+					
+					var textXml:Xml = Xml.parse(child.nodeValue);
+					
+					xml.addChild(textXml.firstChild());
+			}
+		}
+		
+		return xml;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -289,7 +289,6 @@ class Element extends Node
 	public function getElementsByClassName(className:String):Array<HTMLElement>
 	{
 		var elements:Array<HTMLElement> = new Array<HTMLElement>();
-		trace(className);
 		doGetElementsByClassName(this, className, elements);
 		return elements;
 	}
