@@ -50,7 +50,6 @@ class BlockFormattingContext extends FormattingContext
 		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingTop + parentCollapsedMarginTop;
 
 		var childHeight:Int = concatenatedY;
-		
 		for (i in 0...elementRenderer.childNodes.length)
 		{
 
@@ -121,9 +120,6 @@ class BlockFormattingContext extends FormattingContext
 		}
 		
 		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingBottom + parentCollapsedMarginBottom;
-		
-		
-	
 		
 		
 		return concatenatedY;
