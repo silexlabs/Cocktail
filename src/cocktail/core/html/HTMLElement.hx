@@ -1241,6 +1241,27 @@ class HTMLElement extends Element
 						}
 					}
 					
+					var htmlChild:HTMLElement = cast(child);
+					
+					var styleAttributes:NamedNodeMap = htmlChild.style.attributes;
+					
+					var concatenatedStyles:String = "";
+					
+					for (j in 0...styleAttributes.length)
+					{
+						var attribute:Attr = cast(styleAttributes.item(j));
+						
+						if (attribute.specified == true)
+						{
+							concatenatedStyles += attribute.name + ":" + attribute.value +";";
+						}
+					}
+					
+					if (concatenatedStyles != "")
+					{
+						childXml.set("style", concatenatedStyles);
+					}
+					
 					xml.addChild(doGetInnerHTML(child, childXml));
 					
 				case Node.TEXT_NODE:
