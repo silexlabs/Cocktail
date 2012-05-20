@@ -48,6 +48,16 @@ class Text extends CharacterData
 		super();
 	}
 	
+	/**
+	 * TODO : doc
+	 */
+	override private function createElementRenderer():Void
+	{
+		_elementRenderer = new TextRenderer(this);
+		_elementRenderer.coreStyle = _coreStyle;
+	}
+	
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////

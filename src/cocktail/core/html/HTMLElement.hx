@@ -511,12 +511,13 @@ class HTMLElement extends Element
 	 * its children ElementRenderers
 	 */
 	public function attach():Void
-	{
+	{	
 		//if the parent HTMLElement ElementRenderers is null, then
 		//the parent is either not attached to the DOM or not rendered,
 		//and this HTMLElement is not rendered either
 		if (isParentRendered() == true)
 		{
+	
 			//create the ElementRenderer if needed
 			if (_elementRenderer == null && isRendered() == true)
 			{
@@ -534,7 +535,7 @@ class HTMLElement extends Element
 				for (i in 0..._childNodes.length)
 				{
 					//only text and element node can be attached, as other nodes
-					//typed are not visual
+					//types are not visual
 					switch (_childNodes[i].nodeType)
 					{
 						case Node.ELEMENT_NODE:
@@ -544,10 +545,10 @@ class HTMLElement extends Element
 						//when one of the child is a text node, it is the responsability
 						//of the parent HTMLElement node to create a TextRenderer and attach it
 						//to the rendering tree
+						//TODO : obsolete doc
 						case Node.TEXT_NODE:
-							var textRenderer:TextRenderer = new TextRenderer(_childNodes[i]);
-							textRenderer.coreStyle = _coreStyle;
-							_elementRenderer.appendChild(textRenderer);
+							var child:Text = cast(_childNodes[i]);
+							child.attach();
 					}
 				}
 			}
@@ -567,20 +568,28 @@ class HTMLElement extends Element
 		//is not attached
 		if (isParentRendered() == true)
 		{
+		
 			var parent:HTMLElement = cast(_parentNode);
-
+			
 			//if this HTMLElement isn't currently rendered, no need
 			//to detach it
 			if (_elementRenderer != null)
 			{	
-			
 				//detach first all children
 				for (i in 0..._childNodes.length)
 				{
-					var child:HTMLElement = cast(_childNodes[i]);
-					child.detach();
+					switch (_childNodes[i].nodeType)
+					{
+						case Node.ELEMENT_NODE:
+							var child:HTMLElement = cast(_childNodes[i]);
+							child.detach();
+							
+						case Node.TEXT_NODE:
+							var child:Text = cast(_childNodes[i]);
+							child.detach();
+					}
 				}
-				
+											
 				//then detach this ElementRenderer from the parent 
 				//ElementRenderer, then destroy it
 				detachFromParentElementRenderer();
@@ -633,6 +642,7 @@ class HTMLElement extends Element
 	{
 		var parent:HTMLElement = cast(_parentNode);
 		parent.elementRenderer.insertBefore(_elementRenderer, getNextElementRendererSibling());
+	
 	}
 	
 	/**
@@ -641,8 +651,7 @@ class HTMLElement extends Element
 	 */
 	private function detachFromParentElementRenderer():Void
 	{
-		var parent:HTMLElement = cast(_parentNode);
-		parent.elementRenderer.removeChild(_elementRenderer);
+		_elementRenderer.parentNode.removeChild(_elementRenderer);
 	}
 	
 	/**
@@ -786,7 +795,7 @@ class HTMLElement extends Element
 	{
 		return _onMouseUp;
 	}
-	
+	//TODO : update with event listeners
 	private function set_onMouseOver(value:MouseEvent->Void):MouseEvent->Void
 	{
 		return _onMouseOver = value;
@@ -1165,7 +1174,7 @@ class HTMLElement extends Element
 	{
 		for (i in 0..._childNodes.length)
 		{
-			removeChild(_childNodes[0]);
+			removeChild(_childNodes[0]);	
 		}
 		
 		//TODO : only detach all node in this case ?
@@ -1174,22 +1183,20 @@ class HTMLElement extends Element
 			return value;
 		}
 		
-		var bim:String = "<doc>";
+		//TODO : returned elements should be direct child
+		//of this, wrapped should not be direct child of
+		//this
+		var bim:String = "<div>";
 		bim += value;
-		bim += "</doc>";
+		bim += "</div>";
+			
+		var node:Node = HxtmlConverter.getNode(value);
 		
-		var node:Node = HxtmlConverter.getNode(bim);
-	
 		if (node != null)
 		{
 			appendChild(node);
 		}
 		
-		if (_tagName == "ul")
-				{
-					trace(firstChild.nodeName);
-					trace(firstChild.childNodes.length);
-				}
 		
 		return value;
 	}
@@ -1197,8 +1204,6 @@ class HTMLElement extends Element
 	/**
 	 * Serialise the descendant nodes of this HTMLElement
 	 * and return the result as an HTML String
-	 * 
-	 * TODO : implement
 	 */
 	private function get_innerHTML():String
 	{
@@ -1206,6 +1211,7 @@ class HTMLElement extends Element
 		return xml.toString();
 	}
 	
+	//TODO : doc
 	private function doGetInnerHTML(node:Node, xml:Xml):Xml
 	{
 		
