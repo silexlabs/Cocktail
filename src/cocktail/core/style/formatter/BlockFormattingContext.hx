@@ -47,18 +47,13 @@ class BlockFormattingContext extends FormattingContext
 		concatenatedX += elementRenderer.coreStyle.computedStyle.paddingLeft  + elementRenderer.coreStyle.computedStyle.marginLeft;
 
 		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingTop + parentCollapsedMarginTop;
-
+		
 		var childHeight:Int = concatenatedY;
 		for (i in 0...elementRenderer.childNodes.length)
 		{
 
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 
-			if (child.isAnonymousBlockBox())
-			{
-				var fisrtChild:ElementRenderer = cast(child.firstChild);
-			}
-			
 			//only allow static or relative
 
 				var marginTop:Int = getCollapsedMarginTop(child, parentCollapsedMarginTop);

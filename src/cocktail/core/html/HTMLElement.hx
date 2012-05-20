@@ -1189,14 +1189,22 @@ class HTMLElement extends Element
 		var bim:String = "<div>";
 		bim += value;
 		bim += "</div>";
-			
-		var node:Node = HxtmlConverter.getNode(value);
+		
+	trace(bim);
+		
+		var node:Node = HxtmlConverter.getNode(bim);
 		
 		if (node != null)
 		{
-			appendChild(node);
+			for (i in 0...node.childNodes.length)
+			{
+				if (node.childNodes[i] != null)
+				{
+					appendChild(node.childNodes[i]);
+				}
+				
+			}
 		}
-		
 		
 		return value;
 	}
@@ -1207,8 +1215,13 @@ class HTMLElement extends Element
 	 */
 	private function get_innerHTML():String
 	{
-		var xml =  doGetInnerHTML(this, Xml.createElement(nodeName));
-		return xml.toString();
+		var xml:Xml = doGetInnerHTML(this, Xml.createElement(nodeName));
+		
+		var str:String = xml.toString();
+		
+		str = str.substr(str.indexOf(">") + 1 , str.lastIndexOf("<") - str.indexOf(">") - 1);
+		
+		return str;
 	}
 	
 	//TODO : doc
@@ -1241,7 +1254,6 @@ class HTMLElement extends Element
 				case Node.TEXT_NODE:
 					
 					var textXml:Xml = Xml.parse(child.nodeValue);
-					
 					xml.addChild(textXml.firstChild());
 			}
 		}
