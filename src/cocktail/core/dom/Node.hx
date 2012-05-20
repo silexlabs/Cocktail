@@ -248,9 +248,7 @@ class Node extends EventTarget
 			appendChild(newChild);
 		}
 		else
-		{
-			removeFromParentIfNecessary(newChild);
-			
+		{	
 			for (i in 0..._childNodes.length)
 			{
 				if (_childNodes[i] == refChild)

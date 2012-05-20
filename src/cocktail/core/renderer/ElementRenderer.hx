@@ -410,6 +410,11 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
+	public function isAnonymousBlockBox():Bool
+	{
+		return false;
+	}
+	
 	/////////////////////////////////
 	// PRIVATE HELPER METHODS
 	////////////////////////////////
