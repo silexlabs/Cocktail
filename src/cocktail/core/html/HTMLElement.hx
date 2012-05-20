@@ -1183,6 +1183,9 @@ class HTMLElement extends Element
 			return value;
 		}
 		
+
+		
+		
 		//TODO : returned elements should be direct child
 		//of this, wrapped should not be direct child of
 		//this
@@ -1196,7 +1199,6 @@ class HTMLElement extends Element
 		{
 			appendChild(node.childNodes[0]);
 		}
-		
 		
 		return value;
 	}

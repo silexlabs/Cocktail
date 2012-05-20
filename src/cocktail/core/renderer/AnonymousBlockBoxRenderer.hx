@@ -37,8 +37,10 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 		
 		//TODO : check if works
 
-		_parentNode.removeChild(this);
-		
+		if (_parentNode != null)
+		{
+			_parentNode.removeChild(this);
+		}
 		
 		invalidateLayout();
 		return oldChild;

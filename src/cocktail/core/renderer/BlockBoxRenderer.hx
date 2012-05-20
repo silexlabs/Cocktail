@@ -96,7 +96,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 		var shouldMakeChildrenNonInline:Bool = false;
 		var elementRendererChild:ElementRenderer = cast(newChild);
-		
+	
 		if (_childNodes.length > 0)
 		{
 			if (elementRendererChild.isInlineLevel() != childrenInline())
@@ -110,37 +110,59 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			shouldMakeChildrenNonInline = false;
 		}
 		
-		super.appendChild(newChild);
-		
-		elementRendererChild.attachLayer();
-		
-			
 		if (shouldMakeChildrenNonInline == true)
 		{
-			makeChildrenNonInline();
+			var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock();
+			anonymousBlock.appendChild(newChild);
+			
+			super.appendChild(anonymousBlock);
+			
+			anonymousBlock.attachLayer();
 		}
-		
+		else
+		{
+			super.appendChild(newChild);
+			elementRendererChild.attachLayer();
+		}
 		invalidateLayout();
 		return newChild;
 	}
 	
 	private function makeChildrenNonInline():Void
 	{
+		
+		var newChildNodes:Array<Node> = new Array<Node>();
+		
 		for (i in 0..._childNodes.length)
 		{
-			var child:ElementRenderer = cast(_childNodes[i]);
+			newChildNodes.push(_childNodes[i]);
+		
+			
+		}
+		
+		for (i in 0...newChildNodes.length)
+		{
+			var child:ElementRenderer = cast(newChildNodes[i]);
+			trace(newChildNodes.length);
+			trace(child);
 			if (child.isInlineLevel() == true)
 			{
 				var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock();
-	
-				var nextSibling:Node = child.nextSibling;
+				
+			insertBefore(anonymousBlock, child);
 				anonymousBlock.appendChild(child);
-				insertBefore(anonymousBlock, nextSibling);
-				
-				
+					appendChild(anonymousBlock);
 				anonymousBlock.attachLayer();
+				
+				trace("create anonymous block");
 			}
+			
+				appendChild(child);
+			
 		}
+		
+		trace(_childNodes.length);
+		
 	}
 	
 	override public function insertBefore(newChild:Node, refChild:Node):Node
