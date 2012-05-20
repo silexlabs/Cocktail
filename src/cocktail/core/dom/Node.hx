@@ -221,6 +221,7 @@ class Node extends EventTarget
 		//}
 		//
 
+		
 		removeFromParentIfNecessary(newChild);
 		
 		newChild.parentNode = this;

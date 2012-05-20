@@ -133,7 +133,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			if (child.isInlineLevel() == true)
 			{
 				var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock();
-				trace(child.node.nodeValue);
+	
 				var nextSibling:Node = child.nextSibling;
 				anonymousBlock.appendChild(child);
 				insertBefore(anonymousBlock, nextSibling);
@@ -180,8 +180,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	private function createAnonymousBlock():AnonymousBlockBoxRenderer
 	{
-		trace("create anonymouse block");
-		trace(_node.nodeName);
 		var anonymousBlock:AnonymousBlockBoxRenderer = new AnonymousBlockBoxRenderer(_node);
 		
 		anonymousBlock.coreStyle = new CoreStyle(cast(_node));
