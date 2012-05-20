@@ -77,7 +77,6 @@ class BoxRenderer extends ElementRenderer
 	 */
 	private function renderBackground(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		return;
 		var backgroundManager:BackgroundManager = new BackgroundManager();
 		
 		//TODO : should only pass dimensions instead of bounds
