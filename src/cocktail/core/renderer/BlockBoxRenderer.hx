@@ -102,7 +102,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			if (elementRendererChild.isInlineLevel() != childrenInline())
 			{
 				shouldMakeChildrenNonInline = true;
-						
 			}
 		}
 		
