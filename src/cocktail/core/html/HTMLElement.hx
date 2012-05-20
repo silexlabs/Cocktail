@@ -1190,21 +1190,13 @@ class HTMLElement extends Element
 		bim += value;
 		bim += "</div>";
 		
-	trace(bim);
-		
 		var node:Node = HxtmlConverter.getNode(bim);
 		
-		if (node != null)
+		for (i in 0...node.childNodes.length)
 		{
-			for (i in 0...node.childNodes.length)
-			{
-				if (node.childNodes[i] != null)
-				{
-					appendChild(node.childNodes[i]);
-				}
-				
-			}
+			appendChild(node.childNodes[0]);
 		}
+		
 		
 		return value;
 	}
