@@ -23,9 +23,6 @@ import cocktail.core.html.HTMLElement;
  */
 class Event 
 {	
-	public static inline var LOAD:String = "load";
-	
-	public static inline var ERROR:String = "error";
 	
 	public static inline var READY_STATE_CHANGE:String = "readystatechange";
 	

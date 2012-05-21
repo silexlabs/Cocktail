@@ -105,19 +105,6 @@ class EventCallback extends EventTarget
 	private var _onBlur:FocusEvent->Void;
 	public var onblur(get_onBlur, set_onBlur):FocusEvent->Void;
 	
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Scroll callbacks
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Callback called when
-	 * the content of the HTMLElement
-	 * is scrolled
-	 */
-	private var _onScroll:UIEvent->Void;
-	public var onscroll(get_onScroll, set_onScroll):UIEvent->Void;
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// UI callbacks
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -128,6 +115,30 @@ class EventCallback extends EventTarget
 	 */
 	private var _onResize:UIEvent->Void;
 	public var onresize(get_onResize, set_onResize):UIEvent->Void;
+	
+	/**
+	 * Callback called when
+	 * the content of the HTMLElement
+	 * is scrolled
+	 */
+	private var _onScroll:UIEvent->Void;
+	public var onscroll(get_onScroll, set_onScroll):UIEvent->Void;
+	
+	/**
+	 * Callback called when the document or
+	 * an external resource, such as a picture
+	 * is loaded
+	 */
+	private var _onLoad:UIEvent->Void;
+	public var onload(get_onLoad, set_onLoad):UIEvent->Void;
+	
+	/**
+	 * Callback called when there is an
+	 * error while loading an external
+	 * resource such as a picture
+	 */
+	private var _onError:UIEvent->Void;
+	public var onerror(get_onError, set_onError):UIEvent->Void;
 	
 	/**
 	 * class constructor
@@ -293,21 +304,7 @@ class EventCallback extends EventTarget
 	{
 		return _onBlur;
 	}
-	
-		// SCROLL
-	////////////////////////////
-	
-	private function set_onScroll(value:UIEvent->Void):UIEvent->Void
-	{
-		updateCallbackListener(UIEvent.SCROLL, cast(value), cast(_onScroll));
-		return _onScroll = value;
-	}
-	
-	private function get_onScroll():UIEvent->Void
-	{
-		return _onScroll;
-	}
-		
+
 		// UI
 	////////////////////////////
 	
@@ -320,6 +317,39 @@ class EventCallback extends EventTarget
 	private function get_onResize():UIEvent->Void
 	{
 		return _onResize;
+	}
+	
+	private function set_onScroll(value:UIEvent->Void):UIEvent->Void
+	{
+		updateCallbackListener(UIEvent.SCROLL, cast(value), cast(_onScroll));
+		return _onScroll = value;
+	}
+	
+	private function get_onScroll():UIEvent->Void
+	{
+		return _onScroll;
+	}
+	
+	private function set_onLoad(value:UIEvent->Void):UIEvent->Void
+	{
+		updateCallbackListener(UIEvent.LOAD, cast(value), cast(_onLoad));
+		return _onLoad = value;
+	}
+		
+	private function get_onLoad():UIEvent->Void
+	{
+		return _onLoad;
+	}
+	
+	private function set_onError(value:UIEvent->Void):UIEvent->Void
+	{
+		updateCallbackListener(UIEvent.ERROR, cast(value), cast(_onError));
+		return _onError = value;
+	}
+	
+	private function get_onError():UIEvent->Void
+	{
+		return _onError;
 	}
 	
 }
