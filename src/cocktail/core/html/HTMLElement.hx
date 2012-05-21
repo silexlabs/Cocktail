@@ -61,6 +61,11 @@ class HTMLElement extends Element
 	 */
 	private static inline var HTML_TAB_INDEX_ATTRIBUTE:String = "tabIndex";
 	
+	/**
+	 * The name of the attribute storing the style info of the HTMLElement
+	 */
+	private static inline var HTML_STYLE_ATTRIBUTE:String = "style";
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Focus attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -346,6 +351,9 @@ class HTMLElement extends Element
 	/**
 	 * Overriden to run through the necessary check for 
 	 * HTML attribute retrieval
+	 * 
+	 * TODO : should override setAttribute for the 'style' attribute,
+	 * whic should refresh coreStyle ion setting
 	 */
 	override public function getAttribute(name:String):String
 	{
@@ -583,7 +591,6 @@ class HTMLElement extends Element
 	{
 		var parent:HTMLElement = cast(_parentNode);
 		parent.elementRenderer.insertBefore(_elementRenderer, getNextElementRendererSibling());
-	
 	}
 	
 	/**
@@ -899,11 +906,8 @@ class HTMLElement extends Element
 	/**
 	 * Retrieve the id value from the attributes
 	 * map
-	 * @return the id as a String or an empty
-	 * String if it was not set 
-	 * 
-	 * TODO : maybe for getter should return null
-	 * if not defined ?
+	 * @return the id as a String or null
+	 * if it was not set 
 	 */
 	private function get_id():String
 	{
@@ -952,24 +956,27 @@ class HTMLElement extends Element
 			removeChild(_childNodes[0]);	
 		}
 		
-		//TODO : only detach all node in this case ?
+		//do nothing if its an empty string
+		//
+		//TODO : mostly done because hxtml throw
+		//error. Method shouldn't return here but
+		//hxtml should return null Node
 		if (value == "")
 		{
 			return value;
 		}
 		
-
+		//wrap the HTML String in a div element, else
+		//when creating the html node, only the first 
+		//node content is deserialized and not its
+		//siblings
+		var wrappedHTML:String = "<div>";
+		wrappedHTML += value;
+		wrappedHTML += "</div>";
 		
+		var node:Node = HxtmlConverter.getNode(wrappedHTML);
 		
-		//TODO : returned elements should be direct child
-		//of this, wrapped should not be direct child of
-		//this
-		var bim:String = "<div>";
-		bim += value;
-		bim += "</div>";
-		
-		var node:Node = HxtmlConverter.getNode(bim);
-		
+		//append all children of the generated node
 		for (i in 0...node.childNodes.length)
 		{
 			appendChild(node.childNodes[0]);
@@ -988,15 +995,24 @@ class HTMLElement extends Element
 		
 		var str:String = xml.toString();
 		
+		//remove the first and last tag, as they correspond to this HTMLElement
+		//tag which should not be returned as its inner html
 		str = str.substr(str.indexOf(">") + 1 , str.lastIndexOf("<") - str.indexOf(">") - 1);
 		
 		return str;
 	}
 	
-	//TODO : doc
+	/**
+	 * Actually serialise all the chil nodes of this HTMLElement
+	 * by traversing the DOM recursively.
+	 * 
+	 * Returns all the children serialised data as an Xml
+	 * 
+	 * TODO : should serialize other type of nodes, such as comment node,
+	 * doctype...
+	 */
 	private function doGetInnerHTML(node:Node, xml:Xml):Xml
 	{
-		
 		for (i in 0...node.childNodes.length)
 		{
 			var child:Node = node.childNodes[i];
@@ -1004,10 +1020,13 @@ class HTMLElement extends Element
 			switch(child.nodeType)
 			{
 				case Node.ELEMENT_NODE:
+					
+					//create an xml node with the tag name of the HTMLElement,
+					//for instance 'div', 'span', 'img'...
 					var childXml:Xml = Xml.createElement(child.nodeName);
 					
+					//set all the attributes of the child on its Xml node
 					var childAttributes:NamedNodeMap = child.attributes;
-					
 					for (j in 0...childAttributes.length)
 					{
 						var attribute:Attr = cast(childAttributes.item(j));
@@ -1018,10 +1037,10 @@ class HTMLElement extends Element
 						}
 					}
 					
+					//concatenate all the of the specified styles of the HTMLElement
+					//children into a CSS string
 					var htmlChild:HTMLElement = cast(child);
-					
 					var styleAttributes:NamedNodeMap = htmlChild.style.attributes;
-					
 					var concatenatedStyles:String = "";
 					
 					for (j in 0...styleAttributes.length)
@@ -1034,15 +1053,18 @@ class HTMLElement extends Element
 						}
 					}
 					
+					//set the CSS string as the 'style' attribute of the HTMLElement
+					//if at least one style one specified on it
 					if (concatenatedStyles != "")
 					{
-						childXml.set("style", concatenatedStyles);
+						childXml.set(HTML_STYLE_ATTRIBUTE, concatenatedStyles);
 					}
 					
+					//add the children's content to the Xml of the child
 					xml.addChild(doGetInnerHTML(child, childXml));
 					
 				case Node.TEXT_NODE:
-					
+					//serialize a Text node
 					var textXml:Xml = Xml.parse(child.nodeValue);
 					xml.addChild(textXml.firstChild());
 			}

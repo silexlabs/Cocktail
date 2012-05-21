@@ -141,6 +141,10 @@ class Style
 
 	/**
 	 * Helper method to store style key/value pair
+	 * 
+	 * TODO : when style set as null, should remove it form the
+	 * attributes hash
+	 * 
 	 */
 	private function setAttribute(name:String, value:String):Void
 	{
