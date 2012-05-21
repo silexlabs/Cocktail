@@ -216,7 +216,7 @@ class HTMLDocument extends Document
 	{
 		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
 		
-		//TODO : might be a Text node, should it implement an IActivable interface
+		//TODO : might be a Text node, should it implement an IActivable interface ?
 		var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
 		
 		var nearestActivatableElement:HTMLElement = htmlElement.getNearestActivatableElement();
@@ -231,9 +231,7 @@ class HTMLDocument extends Document
 		{
 			nearestActivatableElement.runPostClickActivationStep(mouseEvent);
 		}
-			
 	}
-	
 	
 	private function dispatchMouseMoveEvent(mouseEvent:MouseEvent):Void
 	{
@@ -255,14 +253,9 @@ class HTMLDocument extends Document
 			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, oldHoveredElementRenderer.node);
 			
 			elementRendererAtPoint.dispatchEvent(mouseOverEvent);
-			
-			
 		}
+		
 		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
-
-		
-		
-		
 	}
 	
 	
@@ -273,10 +266,7 @@ class HTMLDocument extends Document
 	 */
 	private function onKeyDown(keyboardEvent:KeyboardEvent):Void
 	{
-		if (activeElement.onkeydown != null)
-		{
-			activeElement.onkeydown(keyboardEvent);
-		}
+		activeElement.dispatchEvent(keyboardEvent);
 		
 		switch (keyboardEvent.key.charCodeAt(0))
 		{
@@ -301,12 +291,9 @@ class HTMLDocument extends Document
 	 * When a key up event happens, redirect to the
 	 * currently active HTMLElement
 	 */
-	private function onKeyUp(keyEventData:KeyboardEvent):Void
+	private function onKeyUp(keyboardEvent:KeyboardEvent):Void
 	{
-		if (activeElement.onkeyup != null)
-		{
-			activeElement.onkeyup(keyEventData);
-		}
+		activeElement.dispatchEvent(keyboardEvent);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
