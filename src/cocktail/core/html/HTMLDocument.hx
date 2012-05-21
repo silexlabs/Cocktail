@@ -484,28 +484,45 @@ class HTMLDocument extends Document
 	 * one and then call the focus in on the 
 	 * new one
 	 */
-	private function set_activeElement(value:HTMLElement):HTMLElement
+	private function set_activeElement(newActiveElement:HTMLElement):HTMLElement
 	{			
 		//if the activeHTMLElement is set to null, do nothing
-		if (value == null)
+		if (newActiveElement == null)
 		{
 			return _activeElement;
 		}
 		
 		//do nothing if the new activeHTMLElement is the same
 		//as the current one
-		if (value != activeElement)
+		if (newActiveElement != activeElement)
 		{
-			//else call the blur callback on the element
-			if (activeElement.onblur != null)
-			{
-				var blurEvent:FocusEvent = new FocusEvent();
-				blurEvent.initFocusEvent(FocusEvent.BLUR, true, false, null, 0.0, null);
-				activeElement.onblur(blurEvent);
-			}
+			//else dispatch a serie of FocusEvent on the element losing
+			//focus and on the one gaining it
 			
-			//then store the new one and call the focus callback on it
-			_activeElement = value;
+			//dispatch pre-focus shift focus event which bubbles in the document
+			
+			var focusOutEvent:FocusEvent = new FocusEvent();
+			focusOutEvent.initFocusEvent(FocusEvent.FOCUS_OUT, true, false, null, 0.0, newActiveElement);
+			activeElement.dispatchEvent(focusOutEvent);
+			
+			var focusInEvent:FocusEvent = new FocusEvent();
+			focusInEvent.initFocusEvent(FocusEvent.FOCUS_IN, true, false, null, 0.0, activeElement);
+			newActiveElement.dispatchEvent(focusInEvent);
+			
+			//store the new active element before dispatching focus and blur event
+			var oldActiveElement:HTMLElement = _activeElement;
+			_activeElement = newActiveElement;
+			
+			//dispatch post-focus event which don't bubbles through the document
+			
+			var blurEvent:FocusEvent = new FocusEvent();
+			blurEvent.initFocusEvent(FocusEvent.BLUR, false, false, null, 0.0, null);
+			oldActiveElement.dispatchEvent(blurEvent);
+			
+			var focusEvent:FocusEvent = new FocusEvent();
+			focusEvent.initFocusEvent(FocusEvent.FOCUS, false, false, null, 0.0, null);
+			newActiveElement.dispatchEvent(focusEvent);
+			
 			if (_activeElement.onfocus != null)
 			{
 				var focusEvent:FocusEvent = new FocusEvent();
