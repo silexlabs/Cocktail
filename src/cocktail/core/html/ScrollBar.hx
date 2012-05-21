@@ -299,8 +299,11 @@ class ScrollBar extends HTMLElement
 		_thumbMoveDelegate = onThumbMove;
 		_thumbUpDelegate = onThumbMouseUp;
 		
-		cocktail.Lib.document.body.addEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
-		cocktail.Lib.document.body.addEventListener(MouseEvent.MOUSE_UP, cast(_thumbUpDelegate));
+		//TODO : originally, listened to those event on the Body but as the ScrollBar is not
+		//attached to the DOM, the event didn't bubled when mouse hovered track. Should scrollbar
+		//events bubble to document and window ?
+		cocktail.Lib.document.addEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
+		cocktail.Lib.document.addEventListener(MouseEvent.MOUSE_UP, cast(_thumbUpDelegate));
 	}
 	
 	/**
@@ -308,8 +311,8 @@ class ScrollBar extends HTMLElement
 	 */
 	private function onThumbMouseUp(event:MouseEvent):Void
 	{
-		cocktail.Lib.document.body.removeEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
-		cocktail.Lib.document.body.removeEventListener(MouseEvent.MOUSE_UP, cast(_thumbUpDelegate));
+		cocktail.Lib.document.removeEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
+		cocktail.Lib.document.removeEventListener(MouseEvent.MOUSE_UP, cast(_thumbUpDelegate));
 	}
 	
 	/**
