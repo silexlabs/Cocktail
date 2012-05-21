@@ -129,7 +129,7 @@ class HTMLDocument extends Document
 		
 		//listen to the Window resizes
 		_window = new Window();
-		_window.onResize = onWindowResize;
+		_window.onresize = onWindowResize;
 		
 		initKeyboardListeners();
 		initMouseListeners();

@@ -12,6 +12,7 @@ import cocktail.core.dom.Element;
 import cocktail.core.dom.NamedNodeMap;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
+import cocktail.core.event.EventTarget;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
@@ -29,6 +30,7 @@ import cocktail.core.renderer.InlineBoxRenderer;
 import cocktail.core.renderer.TextRenderer;
 import cocktail.core.style.adapter.Style;
 import cocktail.core.style.CoreStyle;
+import cocktail.Lib;
 import haxe.Log;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.Keyboard;
@@ -355,6 +357,23 @@ class HTMLElement extends Element
 		{
 			return super.getAttribute(name);
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to also add the html document and the window
+	 * as targets ancestors for the bubbling and capture phase
+	 * of the event
+	 */
+	override private function getTargetAncestors():Array<EventTarget>
+	{
+		var targetAncestors:Array<EventTarget> = super.getTargetAncestors();
+		targetAncestors.push(Lib.document);
+		targetAncestors.push(Lib.window);
+		return targetAncestors;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
