@@ -8,6 +8,7 @@
 package cocktail.port.flash_player;
 
 import cocktail.core.dom.Document;
+import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.window.AbstractWindow;
 import cocktail.core.event.Event;
@@ -92,7 +93,7 @@ class Window extends AbstractWindow
 		if (_onResize != null)
 		{
 			var resizeEvent:Event = new Event();
-			resizeEvent.initEvent(Event.RESIZE, false, false);
+			resizeEvent.initEvent(UIEvent.RESIZE, false, false);
 			_onResize(resizeEvent);
 		}
 	}

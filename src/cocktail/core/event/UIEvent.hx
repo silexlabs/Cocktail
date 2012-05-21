@@ -18,6 +18,8 @@ class UIEvent extends Event
 {
 	public static inline var SCROLL:String = "scroll";
 	
+	public static inline var RESIZE:String = "resize";
+	
 	/**
 	 * The view attribute identifies the 
 	 * AbstractView from which the event was generated.

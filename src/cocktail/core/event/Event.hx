@@ -29,8 +29,6 @@ class Event
 	
 	public static inline var READY_STATE_CHANGE:String = "readystatechange";
 	
-	public static inline var RESIZE:String = "resize";
-	
 	//PhaseType, An integer indicating which phase of the event flow is being processed
 	
 	/**

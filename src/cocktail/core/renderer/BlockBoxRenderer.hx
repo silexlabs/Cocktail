@@ -881,6 +881,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			_verticalScrollBar.onscroll = onVerticalScroll;
 			
 			var htmlElement:HTMLElement = cast(_node);
+			//TODO : should be removed when scrollbar removed and scrollbar should be stored
 			htmlElement.addEventListener(WheelEvent.MOUSE_WHEEL, cast(onMouseWheel));
 		}
 		if (_verticalScrollBar != null)
