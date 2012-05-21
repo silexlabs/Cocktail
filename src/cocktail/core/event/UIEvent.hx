@@ -20,6 +20,10 @@ class UIEvent extends Event
 	
 	public static inline var RESIZE:String = "resize";
 	
+	public static inline var LOAD:String = "load";
+	
+	public static inline var ERROR:String = "error";
+	
 	/**
 	 * The view attribute identifies the 
 	 * AbstractView from which the event was generated.
