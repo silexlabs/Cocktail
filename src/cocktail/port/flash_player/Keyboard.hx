@@ -77,7 +77,6 @@ class Keyboard extends AbstractKeyboard
 				eventType = typedEvent.type;
 		}
 		
-		//TODO : keyboard event is now null
 		//TODO : check if charcode and keycode return right values
 		var keyboardEvent:KeyboardEvent = new KeyboardEvent();
 		keyboardEvent.initKeyboardEvent(eventType, true, true, null, Std.string(typedEvent.charCode), Std.string(typedEvent.keyCode), 0,
