@@ -89,12 +89,12 @@ class Mouse extends AbstractMouse
 				eventType = typedEvent.type;	
 		}
 		
-		//TODO : the target is now null, should be determined by HTMLDocument
-		//TODO : clientX relative to the stage, should it be relative to the clicked component ? shouldn't use flash localX/Y anyway
+		
 		var mouseEvent:MouseEvent = new MouseEvent();
 
+		//TODO : screenX should be relative to sreen top left, but how to get this in flash ? use JavaScript ?
 		mouseEvent.initMouseEvent(eventType, true, true, null, 0.0, typedEvent.stageX, typedEvent.stageY,
-		typedEvent.localX, typedEvent.localY, typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, false, 0, null);
+		typedEvent.stageX, typedEvent.stageY, typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, false, 0, null);
 		
 		return mouseEvent;
 	}
@@ -110,12 +110,10 @@ class Mouse extends AbstractMouse
 		//cast as flash mouse event
 		var typedEvent:flash.events.MouseEvent = cast(event);
 		
-		//TODO : the target is now null, should be determined by HTMLDocument
-		//TODO : clientX relative to the stage, should it be relative to the clicked component ? shouldn't use flash localX/Y anyway
 		var wheelEvent:WheelEvent = new WheelEvent();
 
 		wheelEvent.initWheelEvent(WheelEvent.MOUSE_WHEEL, true, true, null, 0.0, typedEvent.stageX, typedEvent.stageY,
-		typedEvent.localX, typedEvent.localY, 0, null, "", 0, typedEvent.delta, 0, 0 );
+		typedEvent.stageX, typedEvent.stageY, 0, null, "", 0, typedEvent.delta, 0, 0 );
 		
 		return wheelEvent;
 	}
