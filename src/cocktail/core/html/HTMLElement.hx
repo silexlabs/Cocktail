@@ -9,6 +9,7 @@ package cocktail.core.html;
 
 import cocktail.core.dom.Attr;
 import cocktail.core.dom.Element;
+import cocktail.core.dom.NamedNodeMap;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
 import cocktail.core.event.WheelEvent;
@@ -50,6 +51,11 @@ class HTMLElement extends Element
 	 * The name of the class attribute in HTML
 	 */
 	private static inline var HTML_CLASS_ATTRIBUTE:String = "class";
+	
+	/**
+	 * the name of the tab index attribute in HTML
+	 */
+	private static inline var HTML_TAB_INDEX_ATTRIBUTE:String = "tabIndex";
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Mouse attributes and callback
@@ -123,16 +129,12 @@ class HTMLElement extends Element
 	/**
 	 * The tab index order of the HTMLElement. If the index
 	 * is set, it is used to determine focus order when the
-	 * user press the TAB key. If it is not set, the document
+	 * user press the TAB key. If it is not set or set to 0, the document
 	 * order is used to establish focus order and the HTMLElement
 	 * is only focused if it is intrinsically focusable, like for
 	 * instance an HTMLInputElement
-	 * 
-	 * TODO : should be stored in the attributes hash instead,
-	 * no need for class attribute
 	 */
-	private var _tabIndex:Null<Int>;
-	public var tabIndex(get_tabIndex, set_tabIndex):Null<Int>;
+	public var tabIndex(get_tabIndex, set_tabIndex):Int;
 	
 	/**
 	 * callback called when the HTMLElement receives 
@@ -424,6 +426,23 @@ class HTMLElement extends Element
 		return super.getElementsByTagName(tagName.toLowerCase());
 	}
 	
+	/**
+	 * Overriden to run through the necessary check for 
+	 * HTML attribute retrieval
+	 */
+	override public function getAttribute(name:String):String
+	{
+		if (name == HTML_TAB_INDEX_ATTRIBUTE)
+		{
+			return Std.string(get_tabIndex());
+		}
+		else
+		{
+			return super.getAttribute(name);
+		}
+	}
+	
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -492,12 +511,13 @@ class HTMLElement extends Element
 	 * its children ElementRenderers
 	 */
 	public function attach():Void
-	{
+	{	
 		//if the parent HTMLElement ElementRenderers is null, then
 		//the parent is either not attached to the DOM or not rendered,
 		//and this HTMLElement is not rendered either
 		if (isParentRendered() == true)
 		{
+	
 			//create the ElementRenderer if needed
 			if (_elementRenderer == null && isRendered() == true)
 			{
@@ -515,7 +535,7 @@ class HTMLElement extends Element
 				for (i in 0..._childNodes.length)
 				{
 					//only text and element node can be attached, as other nodes
-					//typed are not visual
+					//types are not visual
 					switch (_childNodes[i].nodeType)
 					{
 						case Node.ELEMENT_NODE:
@@ -525,10 +545,10 @@ class HTMLElement extends Element
 						//when one of the child is a text node, it is the responsability
 						//of the parent HTMLElement node to create a TextRenderer and attach it
 						//to the rendering tree
+						//TODO : obsolete doc
 						case Node.TEXT_NODE:
-							var textRenderer:TextRenderer = new TextRenderer(_childNodes[i]);
-							textRenderer.coreStyle = _coreStyle;
-							_elementRenderer.appendChild(textRenderer);
+							var child:Text = cast(_childNodes[i]);
+							child.attach();
 					}
 				}
 			}
@@ -548,19 +568,28 @@ class HTMLElement extends Element
 		//is not attached
 		if (isParentRendered() == true)
 		{
+		
 			var parent:HTMLElement = cast(_parentNode);
 			
-			//if this HTMLElement isn't currently rendered, not need
+			//if this HTMLElement isn't currently rendered, no need
 			//to detach it
 			if (_elementRenderer != null)
-			{
+			{	
 				//detach first all children
 				for (i in 0..._childNodes.length)
 				{
-					var child:HTMLElement = cast(_childNodes[i]);
-					child.detach();
+					switch (_childNodes[i].nodeType)
+					{
+						case Node.ELEMENT_NODE:
+							var child:HTMLElement = cast(_childNodes[i]);
+							child.detach();
+							
+						case Node.TEXT_NODE:
+							var child:Text = cast(_childNodes[i]);
+							child.detach();
+					}
 				}
-				
+											
 				//then detach this ElementRenderer from the parent 
 				//ElementRenderer, then destroy it
 				detachFromParentElementRenderer();
@@ -613,6 +642,7 @@ class HTMLElement extends Element
 	{
 		var parent:HTMLElement = cast(_parentNode);
 		parent.elementRenderer.insertBefore(_elementRenderer, getNextElementRendererSibling());
+	
 	}
 	
 	/**
@@ -621,8 +651,7 @@ class HTMLElement extends Element
 	 */
 	private function detachFromParentElementRenderer():Void
 	{
-		var parent:HTMLElement = cast(_parentNode);
-		parent.elementRenderer.removeChild(_elementRenderer);
+		_elementRenderer.parentNode.removeChild(_elementRenderer);
 	}
 	
 	/**
@@ -638,6 +667,7 @@ class HTMLElement extends Element
 		{
 			case block, inlineBlock:
 				_elementRenderer = new BlockBoxRenderer(this);
+				//TODO : when creating, coreStyle should be reinitialised
 				_elementRenderer.coreStyle = _coreStyle;
 				
 			case cssInline:
@@ -765,7 +795,7 @@ class HTMLElement extends Element
 	{
 		return _onMouseUp;
 	}
-	
+	//TODO : update with event listeners
 	private function set_onMouseOver(value:MouseEvent->Void):MouseEvent->Void
 	{
 		return _onMouseOver = value;
@@ -856,13 +886,11 @@ class HTMLElement extends Element
 		
 		//else, an element with a tab index 
 		//superior to 0 can receive focus
-		else if (tabIndex != null)
+		else if (tabIndex > 0)
 		{
-			if (tabIndex > 0)
-			{
-				return true;
-			}
+			return true;
 		}
+		
 		return false;
 	}
 	
@@ -922,14 +950,36 @@ class HTMLElement extends Element
 		return _onBlur;
 	}
 	
-	private function set_tabIndex(value:Null<Int>):Null<Int>
+	private function set_tabIndex(value:Int):Int
 	{
-		return _tabIndex = value;
+		setAttribute(HTML_TAB_INDEX_ATTRIBUTE, Std.string(value));
+		return value;
 	}
 	
-	private function get_tabIndex():Null<Int>
+	/**
+	 * Return the tab index as an int
+	 * @return
+	 */
+	private function get_tabIndex():Int
 	{
-		return _tabIndex;
+		var tabIndex:String = getAttribute(HTML_TAB_INDEX_ATTRIBUTE);
+		if (tabIndex == "")
+		{
+			//default value for focusable element is 0,
+			//else its -1
+			if (isDefaultFocusable() == true)
+			{
+				return 0;
+			}
+			else
+			{
+				return -1;
+			}
+		}
+		else
+		{
+			return Std.parseInt(tabIndex);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1027,6 +1077,10 @@ class HTMLElement extends Element
 		return 0;
 	}
 	
+	
+	//TODO : shouldn't HTMLElement be the model for all attributes
+	//instead ? Shouldn't ElementRenderer set the value of scrollLeft/scrollTop
+	//on the HTMLElement ?
 	private function set_scrollLeft(value:Int):Int
 	{
 		if (_elementRenderer != null)
@@ -1120,21 +1174,106 @@ class HTMLElement extends Element
 	{
 		for (i in 0..._childNodes.length)
 		{
-			removeChild(_childNodes[i]);
+			removeChild(_childNodes[0]);	
 		}
-		appendChild(HxtmlConverter.getNode(value));
+		
+		//TODO : only detach all node in this case ?
+		if (value == "")
+		{
+			return value;
+		}
+		
+
+		
+		
+		//TODO : returned elements should be direct child
+		//of this, wrapped should not be direct child of
+		//this
+		var bim:String = "<div>";
+		bim += value;
+		bim += "</div>";
+		
+		var node:Node = HxtmlConverter.getNode(bim);
+		
+		for (i in 0...node.childNodes.length)
+		{
+			appendChild(node.childNodes[0]);
+		}
+		
 		return value;
 	}
 	
 	/**
 	 * Serialise the descendant nodes of this HTMLElement
 	 * and return the result as an HTML String
-	 * 
-	 * TODO : implement
 	 */
 	private function get_innerHTML():String
 	{
-		return '';
+		var xml:Xml = doGetInnerHTML(this, Xml.createElement(nodeName));
+		
+		var str:String = xml.toString();
+		
+		str = str.substr(str.indexOf(">") + 1 , str.lastIndexOf("<") - str.indexOf(">") - 1);
+		
+		return str;
+	}
+	
+	//TODO : doc
+	private function doGetInnerHTML(node:Node, xml:Xml):Xml
+	{
+		
+		for (i in 0...node.childNodes.length)
+		{
+			var child:Node = node.childNodes[i];
+			
+			switch(child.nodeType)
+			{
+				case Node.ELEMENT_NODE:
+					var childXml:Xml = Xml.createElement(child.nodeName);
+					
+					var childAttributes:NamedNodeMap = child.attributes;
+					
+					for (j in 0...childAttributes.length)
+					{
+						var attribute:Attr = cast(childAttributes.item(j));
+						
+						if (attribute.specified == true)
+						{
+							childXml.set(attribute.name, attribute.value);
+						}
+					}
+					
+					var htmlChild:HTMLElement = cast(child);
+					
+					var styleAttributes:NamedNodeMap = htmlChild.style.attributes;
+					
+					var concatenatedStyles:String = "";
+					
+					for (j in 0...styleAttributes.length)
+					{
+						var attribute:Attr = cast(styleAttributes.item(j));
+						
+						if (attribute.specified == true)
+						{
+							concatenatedStyles += attribute.name + ":" + attribute.value +";";
+						}
+					}
+					
+					if (concatenatedStyles != "")
+					{
+						childXml.set("style", concatenatedStyles);
+					}
+					
+					xml.addChild(doGetInnerHTML(child, childXml));
+					
+				case Node.TEXT_NODE:
+					
+					var textXml:Xml = Xml.parse(child.nodeValue);
+					xml.addChild(textXml.firstChild());
+			}
+		}
+		
+		return xml;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

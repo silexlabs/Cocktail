@@ -357,7 +357,8 @@ class FlowBoxRenderer extends BoxRenderer
 	 * are all block level or if they are all inline level
 	 * elements
 	 * 
-	 * TODO : throw exception when there is a float in the children
+	 * TODO : floated and positioned element should not be taken
+	 * into account
 	 * 
 	 * @return true if all children are inline level ElementRenderer
 	 */
@@ -374,7 +375,6 @@ class FlowBoxRenderer extends BoxRenderer
 		}
 		return true;
 	}
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
