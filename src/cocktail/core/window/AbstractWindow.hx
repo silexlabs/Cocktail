@@ -9,7 +9,7 @@ package cocktail.core.window;
 
 import cocktail.core.dom.Document;
 import cocktail.core.event.Event;
-import cocktail.core.event.EventTarget;
+import cocktail.core.event.EventCallback;
 import cocktail.core.html.HTMLAnchorElement;
 
 /**
@@ -20,15 +20,8 @@ import cocktail.core.html.HTMLAnchorElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractWindow extends EventTarget
+class AbstractWindow extends EventCallback
 {
-	/**
-	 * callback called when the window is resized, such as
-	 * when in a browser, the browser is resized
-	 */
-	private var _onResize:Event->Void;
-	public var onResize(get_onResize, set_onResize):Event->Void;
-	
 	/**
 	 * return the document viewed through the window
 	 */
@@ -78,16 +71,6 @@ class AbstractWindow extends EventTarget
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function set_onResize(value:Event->Void):Event->Void
-	{
-		return _onResize = value;
-	}
-	
-	private function get_onResize():Event->Void
-	{
-		return _onResize;
-	}
 	
 	private function get_innerHeight():Int
 	{
