@@ -374,7 +374,7 @@ class CoreStyle
 			bottom : 0,
 			clear : Clear.none,
 			cssFloat : CSSFloat.none,
-			display : Display.block,
+			display : Display.cssInline,
 			position: Position.cssStatic,
 			verticalAlign : 0.0,
 			fontSize:16.0,
@@ -430,7 +430,7 @@ class CoreStyle
 	 */
 	private function applyDefaultHTMLStyles(tagName:String):Void
 	{
-		switch (tagName)
+		switch (tagName.toLowerCase())
 		{
 			case "html", "adress",
 			"dd", "div", "dl", "dt", "fieldset",

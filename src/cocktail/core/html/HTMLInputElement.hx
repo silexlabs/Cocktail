@@ -7,6 +7,7 @@
 */
 package cocktail.core.html;
 
+import cocktail.core.renderer.TextInputRenderer;
 import cocktail.core.style.CoreStyle;
 
 /**
@@ -14,7 +15,7 @@ import cocktail.core.style.CoreStyle;
  * 
  * @author Yannick DOMINGUEZ
  */
-class HTMLInputElement extends HTMLElement
+class HTMLInputElement extends EmbeddedElement
 {
 
 	/**
@@ -22,26 +23,10 @@ class HTMLInputElement extends HTMLElement
 	 */
 	private static inline var HTML_INPUT_TAG_NAME:String = "input";
 	
-	
 	/**
-	 * This callback is called when the text input loses
-	 * focus if the value of the text input changed
+	 * the name of the value html attribute
 	 */
-	private var _onChange:Void->Void;
-	public var onchange(get_onChange, set_onChange):Void->Void;
-	
-	/**
-	 * The control is unavailable in this context.
-	 */
-	private var _disabled:Bool;
-	public var disabled(get_disabled, set_disabled):Bool;
-	
-	/**
-	 * Maximum number of characters for text fields, when type 
-	 * has the value "text" or "password".
-	 */
-	private var _maxLength:Int;
-	public var maxLength(get_maxLength, set_maxLength):Int;
+	private static inline var HTML_VALUE_ATTRIBUTE:String = "value";
 	
 	/**
 	 * When the type attribute of the element has the value "text",
@@ -54,7 +39,6 @@ class HTMLInputElement extends HTMLElement
 	 * "reset", "image", "checkbox" or "radio", this represents 
 	 * the HTML value attribute of the element.
 	 */
-	private var _value:String;
 	public var value(get_value, set_value):String;
 	
 	/**
@@ -65,83 +49,32 @@ class HTMLInputElement extends HTMLElement
 		super(HTML_INPUT_TAG_NAME);
 	}
 	
-	/////////////////////////////////
-	// OVERRIDEN INIT METHODS
-	/////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * init text input class attributes
-	 * 
-	 * TODO : init maxLength ? what is the default
-	 * value, null ?
+	 * Instantiate an image specific renderer
 	 */
-	override private function init():Void
-	{	
-		super.init();
-		
-		_disabled = false;
-		_value = "";
-	}
-	
-	/////////////////////////////////
-	// CHANGE SETTER/GETTER
-	/////////////////////////////////
-	
-	private function set_onChange(value:Void->Void):Void->Void
+	override private function createElementRenderer():Void
 	{
-		return _onChange = value;
-	}
-	
-	private function get_onChange():Void->Void
-	{
-		return _onChange;
-	}
-	
-	/**
-	 * called when a native change event is
-	 * emitted, called the user on change
-	 * callback if any
-	 */
-	private function onChangeCallback():Void
-	{
-		if (_onChange != null)
-		{
-			_onChange();
-		}
+		_elementRenderer = new TextInputRenderer(this);
+		_elementRenderer.coreStyle = _coreStyle;
 	}
 	
 	/////////////////////////////////
 	// SETTER/GETTER
 	/////////////////////////////////
-	
-	private function set_disabled(value:Bool):Bool
-	{
-		return _disabled = value;
-	}
-	
-	private function get_disabled():Bool
-	{
-		return _disabled;
-	}
-	
-	private function set_maxLength(value:Int):Int
-	{
-		return _maxLength = value;
-	}
-	
-	private function get_maxLength():Int
-	{
-		return _maxLength;
-	}
-	
+	 
 	private function set_value(value:String):String
 	{
-		return _value = value;
+		setAttribute(HTML_VALUE_ATTRIBUTE, value);
+		return value;
 	}
 	
 	private function get_value():String
 	{
-		return _value;
+		return getAttribute(HTML_VALUE_ATTRIBUTE);
 	}
 	
 }

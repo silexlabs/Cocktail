@@ -84,6 +84,131 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * overriden as when an ElementRenderer is appended, its LayerRenderer
+	 * must be attached so that it can be rendered
+	 */
+	override public function appendChild(newChild:Node):Node
+	{
+	
+		var shouldMakeChildrenNonInline:Bool = false;
+		var elementRendererChild:ElementRenderer = cast(newChild);
+	
+		if (_childNodes.length > 0)
+		{
+			if (elementRendererChild.isInlineLevel() != childrenInline())
+			{
+				shouldMakeChildrenNonInline = true;
+			}
+		}
+		
+		if (elementRendererChild.isAnonymousBlockBox() == true)
+		{
+			shouldMakeChildrenNonInline = false;
+		}
+		
+		if (shouldMakeChildrenNonInline == true)
+		{
+			var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock();
+			anonymousBlock.appendChild(newChild);
+			
+			super.appendChild(anonymousBlock);
+			
+			anonymousBlock.attachLayer();
+		}
+		else
+		{
+			super.appendChild(newChild);
+			elementRendererChild.attachLayer();
+		}
+		invalidateLayout();
+		return newChild;
+	}
+	
+	private function makeChildrenNonInline():Void
+	{
+		
+		var newChildNodes:Array<Node> = new Array<Node>();
+		
+		for (i in 0..._childNodes.length)
+		{
+			newChildNodes.push(_childNodes[i]);
+		
+			
+		}
+		
+		for (i in 0...newChildNodes.length)
+		{
+			var child:ElementRenderer = cast(newChildNodes[i]);
+			trace(newChildNodes.length);
+			trace(child);
+			if (child.isInlineLevel() == true)
+			{
+				var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock();
+				
+			insertBefore(anonymousBlock, child);
+				anonymousBlock.appendChild(child);
+					appendChild(anonymousBlock);
+				anonymousBlock.attachLayer();
+				
+				trace("create anonymous block");
+			}
+			
+				appendChild(child);
+			
+		}
+		
+		trace(_childNodes.length);
+		
+	}
+	
+	override public function insertBefore(newChild:Node, refChild:Node):Node
+	{
+		if (refChild == null)
+		{
+			appendChild(newChild);
+		}
+		else
+		{
+			
+			for (i in 0..._childNodes.length)
+			{
+				var child:ElementRenderer = cast(_childNodes[i]);
+				if (_childNodes[i] == refChild)
+				{
+					appendChild(newChild);
+				}
+				else if (child.isAnonymousBlockBox() == true)
+				{
+					if (child.firstChild != null)
+					{
+						if (child.firstChild == refChild)
+						{
+							appendChild(newChild);
+						}
+					}
+				}
+				
+				appendChild(child);
+			}
+		}
+		
+		return newChild;
+	}
+	
+	private function createAnonymousBlock():AnonymousBlockBoxRenderer
+	{
+		var anonymousBlock:AnonymousBlockBoxRenderer = new AnonymousBlockBoxRenderer(_node);
+		
+		anonymousBlock.coreStyle = new CoreStyle(cast(_node));
+		
+		return anonymousBlock;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -329,6 +454,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			if (childElementRenderer.node != _horizontalScrollBar && childElementRenderer.node != _verticalScrollBar)
 			{
 				childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+				
 			}
 		}
 		
@@ -712,6 +838,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		if (_horizontalScrollBar == null)
 		{
 			_horizontalScrollBar = new ScrollBar(false);
+			//TODO : is it not useless to call this method at this point ?
 			_horizontalScrollBar.attach();
 			appendChild(_horizontalScrollBar.elementRenderer);
 			_horizontalScrollBar.onscroll = onHorizontalScroll;

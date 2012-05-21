@@ -37,7 +37,6 @@ class BlockFormattingContext extends FormattingContext
 	//TODO : should not be 2 methods
 	override private function doFormat(staticPositionedElement:ElementRenderer = null):Void
 	{
-		
 		//remove margin of formatting context, as child must be placed relative to padding box
 		doFormat2(_formattingContextRoot, - _formattingContextRoot.coreStyle.computedStyle.marginLeft, - _formattingContextRoot.coreStyle.computedStyle.marginTop, staticPositionedElement,  _formattingContextRoot.coreStyle.computedStyle.marginTop,  _formattingContextRoot.coreStyle.computedStyle.marginBottom);	
 
@@ -50,12 +49,11 @@ class BlockFormattingContext extends FormattingContext
 		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingTop + parentCollapsedMarginTop;
 
 		var childHeight:Int = concatenatedY;
-		
 		for (i in 0...elementRenderer.childNodes.length)
 		{
 
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
-			
+
 			//only allow static or relative
 
 				var marginTop:Int = getCollapsedMarginTop(child, parentCollapsedMarginTop);
@@ -106,25 +104,17 @@ class BlockFormattingContext extends FormattingContext
 				{
 					_formattingContextData.maxHeight = concatenatedY;
 				}
+				
 			
 		}
-		
 		childHeight = concatenatedY - childHeight;
-		
+	
 		if (elementRenderer.coreStyle.height == Dimension.cssAuto)
 		{
 			elementRenderer.bounds.height = childHeight + elementRenderer.coreStyle.computedStyle.paddingBottom + elementRenderer.coreStyle.computedStyle.paddingTop ;
 		}
-		else
-		{
-			
-		}
 		
 		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingBottom + parentCollapsedMarginBottom;
-		
-		
-	
-		
 		
 		return concatenatedY;
 		
