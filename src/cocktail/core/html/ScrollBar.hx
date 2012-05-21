@@ -275,8 +275,6 @@ class ScrollBar extends HTMLElement
 	// SCROLL THUMB
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : should add event listener to body instead of callback
-	//which erase all other callbacks
 	/**
 	 * on mouse down of the thumb of the scroll, start to listen
 	 * to global mouse move event to update the scroll and to
@@ -423,7 +421,6 @@ class ScrollBar extends HTMLElement
 		{
 			var thumbHeight:Float = _coreStyle.computedStyle.height - _downArrow.coreStyle.computedStyle.height - _upArrow.coreStyle.computedStyle.height - maxScroll;
 
-			//TODO : min size should not be hard-coded
 			if (thumbHeight < THUMB_DEFAULT_DIMENSION)
 			{
 				thumbHeight = THUMB_DEFAULT_DIMENSION;
@@ -453,12 +450,9 @@ class ScrollBar extends HTMLElement
 	
 	private function dispatchScrollEvent():Void
 	{
-		if (_onScroll != null)
-		{
-			var scrollEvent:UIEvent = new UIEvent();
-			scrollEvent.initUIEvent(UIEvent.SCROLL, false, false, null, 0.0);
-			_onScroll(scrollEvent);
-		}
+		var scrollEvent:UIEvent = new UIEvent();
+		scrollEvent.initUIEvent(UIEvent.SCROLL, false, false, null, 0.0);
+		dispatchEvent(scrollEvent);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

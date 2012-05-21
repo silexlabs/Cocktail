@@ -426,6 +426,15 @@ class LayerRenderer extends Node
 		return relativeOffset;
 	}
 	
+	//TODO : for now traverse all tree, but should instead return as soon as an ElementRenderer
+	//is found
+	public function getTopMostElementRendererAtPoint(point:PointData, scrollX:Float, scrollY:Float):ElementRenderer
+	{
+		var elementRenderersAtPoint:Array<ElementRenderer> = getElementRenderersAtPoint(point, scrollX, scrollY);
+		
+		return elementRenderersAtPoint[elementRenderersAtPoint.length - 1];
+	}
+	
 	public function getElementRenderersAtPoint(point:PointData, scrollX:Float, scrollY:Float):Array<ElementRenderer>
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = getElementRenderersAtPointInLayer(_rootRenderer, point, scrollX, scrollY);
@@ -544,7 +553,7 @@ class LayerRenderer extends Node
 	
 	private function isWithinBounds(point:PointData, bounds:RectangleData):Bool
 	{
-		return point.x > bounds.x && (point.x < bounds.x + bounds.width) && point.y > bounds.y && (point.y < bounds.y + bounds.height);	
+		return point.x >= bounds.x && (point.x <= bounds.x + bounds.width) && point.y >= bounds.y && (point.y <= bounds.y + bounds.height);	
 	}
 	
 	/////////////////////////////////

@@ -226,8 +226,6 @@ class FlowBoxRenderer extends BoxRenderer
 	 * layout an absolutely positioned ElementRenderer (with a position style of 'fixed' or 'absolute')
 	 * using either the first positioned ancestor dimensions or the viewport's
 	 * 
-	 * TODO : check if elementRenderer is passed by reference and not value
-	 * 
 	 * @param firstPositionedAncestorData the dimensions of the first positioned ancestor
 	 * @param viewportData the dimensions of the viewport
 	 */
