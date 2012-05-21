@@ -105,11 +105,11 @@ class HTMLDocument extends Document
 	private var _mouse:Mouse;
 	
 	/**
-	 * A reference to the HTMLElement currently hovered by the
+	 * A reference to the ElementRenderer currently hovered by the
 	 * mouse pointer. Used to detect when to dispatch mouse over
 	 * and mouse out events 
 	 */
-	private var _hoveredHTMLElement:HTMLElement;
+	private var _hoveredElementRenderer:ElementRenderer;
 	
 	/**
 	 * class constructor. Init class attributes
@@ -127,7 +127,12 @@ class HTMLDocument extends Document
 		_focusManager = new FocusManager();
 		_activeElement = _body;
 		
+		_hoveredElementRenderer = _body.elementRenderer;
+		
 		//listen to the Window resizes
+		//
+		//TODO shouldn't instantiatze a Window. Resize
+		//event should be listened to by the Window itself
 		_window = new Window();
 		_window.onresize = onWindowResize;
 		
@@ -141,11 +146,11 @@ class HTMLDocument extends Document
 	private function initMouseListeners():Void
 	{
 		_mouse = new Mouse();
-		_mouse.onMouseDown = onMouseDown;
-		_mouse.onMouseUp = onMouseUp;
-		_mouse.onMouseMove = onMouseMove;
-		_mouse.onClick = onClick;
-		_mouse.onMouseWheel = onMouseWheel;
+		_mouse.onMouseDown = dispatchMouseEvent;
+		_mouse.onMouseUp = dispatchMouseEvent;
+		_mouse.onMouseMove = dispatchMouseMoveEvent;
+		_mouse.onClick = dispatchMouseClickEvent;
+		_mouse.onMouseWheel = dispatchMouseEvent;
 	}
 	
 	/**
@@ -201,217 +206,65 @@ class HTMLDocument extends Document
 	// TODO : duplicated code, use reflection to determine callback to call ?
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Called when a mouse down event is dispatched.
-	 * Retrieve the top-most ElementRenderer under the mouse
-	 * pointer and call its mouse down down callback if provided
-	 */
-	private function onMouseDown(mouseEvent:MouseEvent):Void
+	private function dispatchMouseEvent(mouseEvent:MouseEvent):Void
 	{
-		//retrieve all the ElementRenderer under the mouse
-		//pointer
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
+		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
+		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
+	}
+	
+	private function dispatchMouseClickEvent(mouseEvent:MouseEvent):Void
+	{
+		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
+		
+		//TODO : might be a Text node, should it implement an IActivable interface
+		var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
+		
+		var nearestActivatableElement:HTMLElement = htmlElement.getNearestActivatableElement();
+		if (nearestActivatableElement != null)
+		{
+			nearestActivatableElement.runPreClickActivation();
+		}
+		
+		htmlElement.dispatchEvent(mouseEvent);
+		
+		if (nearestActivatableElement != null)
+		{
+			nearestActivatableElement.runPostClickActivationStep(mouseEvent);
+		}
+			
+	}
+	
+	
+	private function dispatchMouseMoveEvent(mouseEvent:MouseEvent):Void
+	{
+		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
 
-		//execute the callback of the first top-most
-		//ElementRenderer with a mouse down callback
-		//
-		
-		//TODO : hack
-		elementRenderersAtPoint.reverse();
-		
-		for (i in 0...elementRenderersAtPoint.length)
+		if (_hoveredElementRenderer != elementRendererAtPoint)
 		{
-			switch( elementRenderersAtPoint[i].node.nodeType)
-			{
-				case Node.ELEMENT_NODE:
-					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-					htmlElement.dispatchEvent(mouseEvent);
-					return;
-					
-			}
+			var mouseOutEvent:MouseEvent = new MouseEvent();
+			mouseOutEvent.initMouseEvent(MouseEvent.MOUSE_OUT, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
+			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey, mouseEvent.metaKey, mouseEvent.button, elementRendererAtPoint.node);
+			
+			_hoveredElementRenderer.node.dispatchEvent(mouseOutEvent);
+			
+			var oldHoveredElementRenderer:ElementRenderer = _hoveredElementRenderer;
+			_hoveredElementRenderer = elementRendererAtPoint;
+			
+			var mouseOverEvent:MouseEvent = new MouseEvent();
+			mouseOverEvent.initMouseEvent(MouseEvent.MOUSE_OVER, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
+			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, oldHoveredElementRenderer.node);
+			
+			elementRendererAtPoint.dispatchEvent(mouseOverEvent);
+			
 			
 		}
-		
-	}
-	
-	/**
-	 * Called when a mouse click is dispatched. Same as 
-	 * for mouse down
-	 * 
-	 * TODO : should click be abstracted as a rapid sequence
-	 * of mouse down/ mouse up ?
-	 */
-	private function onClick(mouseEvent:MouseEvent):Void
-	{
-		//TODO : for mouse event, should only return top most ElementRenderer
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
+		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
 
-		//TODO : hack
-		elementRenderersAtPoint.reverse();
 		
-		for (i in 0...elementRenderersAtPoint.length)
-		{
-			switch( elementRenderersAtPoint[i].node.nodeType)
-			{
-				case Node.ELEMENT_NODE:
-					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-					
-					var nearestActivatableElement:HTMLElement = getNearestActivatableElement(htmlElement);
-					if (nearestActivatableElement != null)
-					{
-						nearestActivatableElement.runPreClickActivation();
-					}
-					
-					htmlElement.dispatchEvent(mouseEvent);
-					
-					if (nearestActivatableElement != null)
-					{
-						nearestActivatableElement.runPostClickActivationStep(mouseEvent);
-					}
-					
-					return;
-			}
-			
-		}
 		
 		
 	}
 	
-	//TODO : activation behaviour should be done by HTMLElement, this way it can be
-	//integrated with click synthesis
-	private function getNearestActivatableElement(htmlElement:HTMLElement):HTMLElement
-	{
-		while (htmlElement.hasActivationBehaviour() == false)
-		{
-			if (htmlElement.parentNode == null)
-			{
-				return null;
-			}
-			htmlElement = cast(htmlElement.parentNode);
-		}
-		
-		return htmlElement;
-	}
-	
-	/**
-	 * Called when a mouse wheel event is dispatched. Same as 
-	 * for mouse down
-	 */
-	private function onMouseWheel(wheelEvent:WheelEvent):Void
-	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: wheelEvent.screenX, y:wheelEvent.screenY }, 0, 0  );
-
-		//TODO : hack
-		elementRenderersAtPoint.reverse();
-
-		for (i in 0...elementRenderersAtPoint.length)
-		{
-			switch( elementRenderersAtPoint[i].node.nodeType)
-			{
-				case Node.ELEMENT_NODE:
-					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-					htmlElement.dispatchEvent(wheelEvent);
-					return;
-			}
-			
-		}
-		
-		
-	}
-	
-	/**
-	 * Called when a mouse up is dispatched. Same as for 
-	 * mouse down
-	 */
-	private function onMouseUp(mouseEvent:MouseEvent):Void
-	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
-		
-		//TODO : hack
-		elementRenderersAtPoint.reverse();
-		
-		for (i in 0...elementRenderersAtPoint.length)
-		{
-			switch( elementRenderersAtPoint[i].node.nodeType)
-			{
-				case Node.ELEMENT_NODE:
-					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-					htmlElement.dispatchEvent(mouseEvent);
-					return;
-			}
-			
-		}
-	}
-	
-	/**
-	 * Called when a mouse move is dispatched. Same as for 
-	 * mouse down
-	 * 
-	 * TODO : re-implement
-	 */
-	private function onMouseMove(mouseEvent:MouseEvent):Void
-	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0 );
-			
-		//TODO : doc for mouse over / out
-		
-		//TODO : hack
-		elementRenderersAtPoint.reverse();
-		
-		if (elementRenderersAtPoint.length > 0)
-		{
-			if (elementRenderersAtPoint[elementRenderersAtPoint.length - 1].node != _hoveredHTMLElement)
-			{
-				if (_hoveredHTMLElement != null)
-				{
-					
-					//TODO :  should create new MouseEvent for this
-					if (_hoveredHTMLElement.onmouseout != null)
-					{
-						_hoveredHTMLElement.onmouseout(mouseEvent);
-					}
-				}
-				//TODO : should switch, might be TextRenderer that was hit, only works because text is HTMLElement because
-				//of Haxe JS
-				_hoveredHTMLElement = cast(elementRenderersAtPoint[elementRenderersAtPoint.length - 1].node);
-				if (_hoveredHTMLElement.onmouseover != null)
-				{
-					_hoveredHTMLElement.onmouseover(mouseEvent);
-				}
-			}
-		}
-		else
-		{
-			if (_hoveredHTMLElement == null)
-			{
-				_hoveredHTMLElement = _body;
-			}
-			
-			if (_hoveredHTMLElement != _body)
-			{
-				if (_hoveredHTMLElement != null)
-				{
-					if (_hoveredHTMLElement.onmouseout != null)
-					{
-						_hoveredHTMLElement.onmouseout(mouseEvent);
-					}
-				}
-				_hoveredHTMLElement = _body;
-				if (_hoveredHTMLElement.onmouseover != null)
-				{
-					_hoveredHTMLElement.onmouseover(mouseEvent);
-				}
-			}
-		}
-			
-		for (i in 0...elementRenderersAtPoint.length)
-		{
-			var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-			htmlElement.dispatchEvent(mouseEvent);
-			return;
-		}
-		
-	}
 	
 	/**
 	 * When a key is pressed, redirect it to

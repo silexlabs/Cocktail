@@ -835,6 +835,26 @@ class HTMLElement extends Element
 		
 	}
 	
+	/**
+	 * Return the first ancestor HTMLElement which has an 
+	 * activation behaviour. HTMLElement return itself if
+	 * it has one
+	 */
+	public function getNearestActivatableElement():HTMLElement
+	{
+		var htmlElement:HTMLElement = this;
+		while (htmlElement.hasActivationBehaviour() == false)
+		{
+			if (htmlElement.parentNode == null)
+			{
+				return null;
+			}
+			htmlElement = cast(htmlElement.parentNode);
+		}
+		
+		return htmlElement;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SCROLLING SETTER/GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
