@@ -281,8 +281,8 @@ class Node extends EventTarget
 			if (_childNodes[i] == oldChild)
 			{
 				removeChild(oldChild);
+				appendChild(newChild);
 			}
-			appendChild(newChild);
 		}
 		
 		return oldChild;

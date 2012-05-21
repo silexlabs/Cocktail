@@ -31,18 +31,12 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 	
 	override public function removeChild(oldChild:Node):Node
 	{
-		var elementRendererChild:ElementRenderer = cast(oldChild);
-		elementRendererChild.detachLayer();
 		super.removeChild(oldChild);
 		
 		//TODO : check if works
-
-		if (_parentNode != null)
-		{
-			_parentNode.removeChild(this);
-		}
+	
+		_parentNode.removeChild(this);
 		
-		invalidateLayout();
 		return oldChild;
 	}
 	
