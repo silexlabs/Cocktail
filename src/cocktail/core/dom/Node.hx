@@ -8,6 +8,7 @@
 package cocktail.core.dom;
 
 import cocktail.core.dom.DOMData;
+import cocktail.core.event.EventCallback;
 import cocktail.core.event.EventTarget;
 import haxe.Log;
 
@@ -28,7 +29,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Node extends EventTarget
+class Node extends EventCallback
 {
 	/**
 	 * The node is an Element.
@@ -281,8 +282,8 @@ class Node extends EventTarget
 			if (_childNodes[i] == oldChild)
 			{
 				removeChild(oldChild);
+				appendChild(newChild);
 			}
-			appendChild(newChild);
 		}
 		
 		return oldChild;

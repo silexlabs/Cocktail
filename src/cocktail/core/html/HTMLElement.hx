@@ -12,6 +12,9 @@ import cocktail.core.dom.Element;
 import cocktail.core.dom.NamedNodeMap;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
+import cocktail.core.event.EventTarget;
+import cocktail.core.event.FocusEvent;
+import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
@@ -27,6 +30,7 @@ import cocktail.core.renderer.InlineBoxRenderer;
 import cocktail.core.renderer.TextRenderer;
 import cocktail.core.style.adapter.Style;
 import cocktail.core.style.CoreStyle;
+import cocktail.Lib;
 import haxe.Log;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.Keyboard;
@@ -57,73 +61,13 @@ class HTMLElement extends Element
 	 */
 	private static inline var HTML_TAB_INDEX_ATTRIBUTE:String = "tabIndex";
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Mouse attributes and callback
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	//TODO : add mouse double click
-	
 	/**
-	 * The callback called on mouse click (rapid mouse down and mouse up)
+	 * The name of the attribute storing the style info of the HTMLElement
 	 */
-	private var _onClick:MouseEvent->Void;
-	public var onclick(get_onClick, set_onClick):MouseEvent->Void;
-	
-	/**
-	 * The callback called on mouse down 
-	 */
-	private var _onMouseDown:MouseEvent->Void;
-	public var onmousedown(get_onMouseDown, set_onMouseDown):MouseEvent->Void;
-	
-	/**
-	 * The callback called on mouse up
-	 */
-	private var _onMouseUp:MouseEvent->Void;
-	public var onmouseup(get_onMouseUp, set_onMouseUp):MouseEvent->Void;
-	
-	/**
-	 * The callback called when the mouse pointer hovers this htmlElement
-	 */
-	private var _onMouseOver:MouseEvent->Void;
-	public var onmouseover(get_onMouseOver, set_onMouseOver):MouseEvent->Void;
-	
-	/**
-	 * The callback called on mouse out of this htmlElement
-	 */
-	private var _onMouseOut:MouseEvent->Void;
-	public var onmouseout(get_onMouseOut, set_onMouseOut):MouseEvent->Void;
-	
-	/**
-	 * The callback called when the mouse pointer moves over this htmlElement
-	 */
-	private var _onMouseMove:MouseEvent->Void;
-	public var onmousemove(get_onMouseMove, set_onMouseMove):MouseEvent->Void;
-	
-	/**
-	 * The callback called when the mouse wheel is rotated while the mouse
-	 * pointer is over this element
-	 */
-	private var _onMouseWheel:WheelEvent->Void;
-	public var onmousewheel(get_onMouseWheel, set_onMouseWheel):WheelEvent->Void;
+	private static inline var HTML_STYLE_ATTRIBUTE:String = "style";
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Keyboard attributes and callback
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * The callback called on key down when this htmlElement has focus
-	 */
-	private var _onKeyDown:KeyboardEvent->Void;
-	public var onkeydown(get_onKeyDown, set_onKeyDown):KeyboardEvent->Void;
-	
-	/**
-	 * The callback called on key up when this htmlElement has focus
-	 */
-	private var _onKeyUp:KeyboardEvent->Void;
-	public var onkeyup(get_onKeyUp, set_onKeyUp):KeyboardEvent->Void;
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Focus attributes and callback
+	// Focus attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -136,30 +80,9 @@ class HTMLElement extends Element
 	 */
 	public var tabIndex(get_tabIndex, set_tabIndex):Int;
 	
-	/**
-	 * callback called when the HTMLElement receives 
-	 * the focus
-	 */
-	private var _onFocus:Event->Void;
-	public var onfocus(get_onFocus, set_onFocus):Event->Void;
-	
-	/**
-	 * callback called when the HTMLElement loses the focus
-	 */
-	private var _onBlur:Event->Void;
-	public var onblur(get_onBlur, set_onBlur):Event->Void;
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Scroll attributes and callback
+	// Scroll attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Callback called when
-	 * the content of the HTMLElement
-	 * is scrolled
-	 */
-	private var _onScroll:Event->Void;
-	public var onscroll(get_onScroll, set_onScroll):Event->Void;
 	
 	/**
 	 * Gets/sets the top scroll offset of an element
@@ -413,7 +336,6 @@ class HTMLElement extends Element
 		
 		super.removeChild(oldChild);
 	
-	
 		return oldChild;
 	}
 	
@@ -429,6 +351,9 @@ class HTMLElement extends Element
 	/**
 	 * Overriden to run through the necessary check for 
 	 * HTML attribute retrieval
+	 * 
+	 * TODO : should override setAttribute for the 'style' attribute,
+	 * whic should refresh coreStyle ion setting
 	 */
 	override public function getAttribute(name:String):String
 	{
@@ -442,24 +367,65 @@ class HTMLElement extends Element
 		}
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to also add the html document and the window
+	 * as targets ancestors for the bubbling and capture phase
+	 * of the event
+	 */
+	override private function getTargetAncestors():Array<EventTarget>
+	{
+		var targetAncestors:Array<EventTarget> = super.getTargetAncestors();
+		targetAncestors.push(Lib.document);
+		targetAncestors.push(Lib.window);
+		
+		return targetAncestors;
+	}
+	
+	/**
+	 * Execute the default actions of the HTMLElement for a given event type,
+	 * if the default was not prevented
+	 */
+	override private function executeDefaultActionIfNeeded(defaultPrevented:Bool, event:Event):Void
+	{
+		if (defaultPrevented == false)
+		{
+			switch (event.type)
+			{
+				//if the element is focusable, by default
+				//on mouse down, it will gain focus
+				case MouseEvent.MOUSE_DOWN:
+					focus();
+			}
+		}
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When the value of a style changes, the ElementRenderer is 
-	 * invalidated if this HTMLElement is being rendered as it 
-	 * might need a re-layout and re-rendering
+	 * Called when the specified value of a style requiring a re-layout
+	 * is changed, for instance when the width is changed. Invalidate
+	 * the layout of the elementRenderer if the HTMLElement is rendered
 	 */
 	public function invalidateLayout(immediate:Bool = false):Void
 	{
+		//TODO : should use helper method like isRenderer instead of
+		//relying on nullness
 		if (_elementRenderer != null)
 		{
 			_elementRenderer.invalidateLayout(immediate);
 		}
 	}
 	
+	/**
+	 * Same as above for styles invalidating the LayerRenderer
+	 * tree when changed, such as z-index
+	 */
 	public function invalidateLayer():Void
 	{
 		if (_elementRenderer != null)
@@ -468,7 +434,10 @@ class HTMLElement extends Element
 		}
 	}
 	
-	
+	/**
+	 * Same as above for style invalidating the layout
+	 * of the text when changed, such as font-size
+	 */
 	public function invalidateText():Void
 	{
 		if (_elementRenderer != null)
@@ -478,15 +447,15 @@ class HTMLElement extends Element
 	}
 	
 	/**
-	 * When the Display style this special case happen, as the 
-	 * ElementRenderer needs to be changed.
+	 * When the Display style changes, this special case happen, as the 
+	 * ElementRenderer might need to be changed.
 	 * 
 	 * For instance if the previous value of Display was
 	 * "block" and it is changed to "none", then the ElementRenderer
 	 * must be removed from the rendering tree and destroyed
 	 * 
-	 * Another example is if the value of Display if "inline" and
-	 * it is swiched to "blick", then the current inline ElementRenderer
+	 * Another example is if the value of Display is "inline" and
+	 * it is swiched to "block", then the current inline ElementRenderer
 	 * must be replaced by a block ElementRenderer
 	 */
 	public function invalidateDisplay():Void
@@ -517,7 +486,6 @@ class HTMLElement extends Element
 		//and this HTMLElement is not rendered either
 		if (isParentRendered() == true)
 		{
-	
 			//create the ElementRenderer if needed
 			if (_elementRenderer == null && isRendered() == true)
 			{
@@ -538,14 +506,12 @@ class HTMLElement extends Element
 					//types are not visual
 					switch (_childNodes[i].nodeType)
 					{
+						//attach element node
 						case Node.ELEMENT_NODE:
 							var child:HTMLElement = cast(_childNodes[i]);
 							child.attach();
-							
-						//when one of the child is a text node, it is the responsability
-						//of the parent HTMLElement node to create a TextRenderer and attach it
-						//to the rendering tree
-						//TODO : obsolete doc
+						
+						//attach text node
 						case Node.TEXT_NODE:
 							var child:Text = cast(_childNodes[i]);
 							child.attach();
@@ -568,7 +534,6 @@ class HTMLElement extends Element
 		//is not attached
 		if (isParentRendered() == true)
 		{
-		
 			var parent:HTMLElement = cast(_parentNode);
 			
 			//if this HTMLElement isn't currently rendered, no need
@@ -593,6 +558,9 @@ class HTMLElement extends Element
 				//then detach this ElementRenderer from the parent 
 				//ElementRenderer, then destroy it
 				detachFromParentElementRenderer();
+				
+				//TODO IMPORTANT : should call a cleanup method as there is a cross
+				//-reference to the HTMLElement
 				_elementRenderer = null;
 			}
 		}
@@ -642,11 +610,10 @@ class HTMLElement extends Element
 	{
 		var parent:HTMLElement = cast(_parentNode);
 		parent.elementRenderer.insertBefore(_elementRenderer, getNextElementRendererSibling());
-	
 	}
 	
 	/**
-	 * When this HTMLElement is detached, it detached its
+	 * When this HTMLElement is detached, it detaches its
 	 * ElementRenderer from its parent ElementRenderer
 	 */
 	private function detachFromParentElementRenderer():Void
@@ -682,7 +649,8 @@ class HTMLElement extends Element
 	 * Return wether this HTMLElement is supposed to be rendered
 	 * 
 	 * TODO : should use computed display style (although it computes
-	 * the same as the specified value ?) and also take into account
+	 * the same as the specified value, will be a problem when adding inherit
+	 * style value) and also take into account
 	 * the HTML "hidden" attribute
 	 */
 	private function isRendered():Bool
@@ -712,7 +680,7 @@ class HTMLElement extends Element
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// MOUSE SETTER/GETTER AND METHOD
+	// CLICK SYNTHESIS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -727,141 +695,14 @@ class HTMLElement extends Element
 	 */
 	public function click():Void
 	{
-		if (_onClick != null)
-		{
-			var mouseEvent:MouseEvent = new MouseEvent();
-			mouseEvent.initMouseEvent(MouseEvent.CLICK, false, false, null, 0, 0, 0, 0, 0, false, false, false, false,
-			0, null);
-			_onClick(mouseEvent);
-		}
-	}
-	
-	private function set_onClick(value:MouseEvent->Void):MouseEvent->Void
-	{
-		if (_onClick != null)
-		{
-			removeEventListener(MouseEvent.CLICK, cast(_onClick));
-		}
-		_onClick = value;
-		if (_onClick != null)
-		{
-			addEventListener(MouseEvent.CLICK, cast(_onClick));
-		}
-		
-		return value;
-	}
-	
-	private function get_onClick():MouseEvent->Void
-	{
-		return _onClick;
-	}
-	
-	private function set_onMouseDown(value:MouseEvent->Void):MouseEvent->Void
-	{
-		if (_onMouseDown != null)
-		{
-			removeEventListener(MouseEvent.MOUSE_DOWN, cast(_onMouseDown));
-		}
-		_onMouseDown = value;
-		if (_onMouseDown != null)
-		{
-			addEventListener(MouseEvent.MOUSE_DOWN, cast(_onMouseDown));
-		}
-		
-		return value;
-	}
-	
-	private function get_onMouseDown():MouseEvent->Void
-	{
-		return _onMouseDown;
-	}
-	
-	private function set_onMouseUp(value:MouseEvent->Void):MouseEvent->Void
-	{
-		if (_onMouseUp != null)
-		{
-			removeEventListener(MouseEvent.MOUSE_UP, cast(_onMouseUp));
-		}
-		_onMouseUp = value;
-		if (_onMouseUp != null)
-		{
-			addEventListener(MouseEvent.MOUSE_UP, cast(_onMouseUp));
-		}
-		
-		return value;
-	}
-	
-	private function get_onMouseUp():MouseEvent->Void
-	{
-		return _onMouseUp;
-	}
-	//TODO : update with event listeners
-	private function set_onMouseOver(value:MouseEvent->Void):MouseEvent->Void
-	{
-		return _onMouseOver = value;
-	}
-	
-	private function get_onMouseOver():MouseEvent->Void
-	{
-		return _onMouseOver;
-	}
-	
-	private function set_onMouseOut(value:MouseEvent->Void):MouseEvent->Void
-	{
-		return _onMouseOut = value;
-	}
-	
-	private function get_onMouseOut():MouseEvent->Void
-	{
-		return _onMouseOut;
-	}
-	
-	private function set_onMouseMove(value:MouseEvent->Void):MouseEvent->Void
-	{
-		return _onMouseMove = value;
-	}
-	
-	private function get_onMouseMove():MouseEvent->Void
-	{
-		return _onMouseMove;
-	}
-	
-	private function set_onMouseWheel(value:WheelEvent->Void):WheelEvent->Void
-	{
-		return _onMouseWheel = value;
-	}
-	
-	private function get_onMouseWheel():WheelEvent->Void
-	{
-		return _onMouseWheel;
+		var mouseEvent:MouseEvent = new MouseEvent();
+		mouseEvent.initMouseEvent(MouseEvent.CLICK, false, false, null, 0, 0, 0, 0, 0, false, false, false, false,
+		0, null); 
+		dispatchEvent(mouseEvent);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// KEYBOARD SETTER/GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function set_onKeyDown(value:KeyboardEvent->Void):KeyboardEvent->Void
-	{
-		return _onKeyDown = value;
-	}
-	
-	private function get_onKeyDown():KeyboardEvent->Void
-	{
-		return _onKeyDown;
-	}
-	
-	private function set_onKeyUp(value:KeyboardEvent->Void):KeyboardEvent->Void
-	{
-		return _onKeyUp = value;
-	}
-	
-	private function get_onKeyUp():KeyboardEvent->Void
-	{
-		return _onKeyUp;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// FOCUS SETTER/GETTER AND METHODS
+	// FOCUS METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -910,44 +751,18 @@ class HTMLElement extends Element
 	 */
 	public function focus():Void
 	{
-		if (isFocusable() == true)
-		{
-			var htmlDocument:HTMLDocument = cast(ownerDocument);
-			htmlDocument.activeElement = cast(this);
-		}
+		var htmlDocument:HTMLDocument = cast(ownerDocument);
+		htmlDocument.activeElement = cast(this);
 	}
 	
 	/**
 	 * Removes keyboard focus from this HTMLElement and 
 	 * the focus on the Document
-	 * 
-	 * TODO : check if focus must be set on Document if
-	 * this element currently doesn't have focus
 	 */
 	public function blur():Void
 	{
 		var htmlDocument:HTMLDocument = cast(ownerDocument);
 		htmlDocument.body.focus();
-	}
-	
-	private function set_onFocus(value:Event->Void):Event->Void
-	{
-		return _onFocus = value;
-	}
-	
-	private function get_onFocus():Event->Void
-	{
-		return _onFocus;
-	}
-	
-	private function set_onBlur(value:Event->Void):Event->Void
-	{
-		return _onBlur = value;
-	}
-	
-	private function get_onBlur():Event->Void
-	{
-		return _onBlur;
 	}
 	
 	private function set_tabIndex(value:Int):Int
@@ -962,7 +777,9 @@ class HTMLElement extends Element
 	 */
 	private function get_tabIndex():Int
 	{
-		var tabIndex:String = getAttribute(HTML_TAB_INDEX_ATTRIBUTE);
+		//TODO : awkward to call super, but else infinite loop
+		var tabIndex:String = super.getAttribute(HTML_TAB_INDEX_ATTRIBUTE);
+		
 		if (tabIndex == "")
 		{
 			//default value for focusable element is 0,
@@ -1030,32 +847,29 @@ class HTMLElement extends Element
 		
 	}
 	
+	/**
+	 * Return the first ancestor HTMLElement which has an 
+	 * activation behaviour. HTMLElement return itself if
+	 * it has one
+	 */
+	public function getNearestActivatableElement():HTMLElement
+	{
+		var htmlElement:HTMLElement = this;
+		while (htmlElement.hasActivationBehaviour() == false)
+		{
+			if (htmlElement.parentNode == null)
+			{
+				return null;
+			}
+			htmlElement = cast(htmlElement.parentNode);
+		}
+		
+		return htmlElement;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SCROLLING SETTER/GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function set_onScroll(value:Event->Void):Event->Void
-	{
-		return _onScroll = value;
-	}
-	
-	private function get_onScroll():Event->Void
-	{
-		return _onScroll;
-	}
-	
-	/**
-	 * called when a native scroll event is
-	 * emitted, calles the user on scroll
-	 * callback if any
-	 */
-	private function onScrollCallback(event:Event):Void
-	{
-		if (_onScroll != null)
-		{
-			_onScroll(event);
-		}
-	}
 	
 	//TODO : should unit test, not very what this getter
 	//is supposed to return
@@ -1124,11 +938,8 @@ class HTMLElement extends Element
 	/**
 	 * Retrieve the id value from the attributes
 	 * map
-	 * @return the id as a String or an empty
-	 * String if it was not set 
-	 * 
-	 * TODO : maybe for getter should return null
-	 * if not defined ?
+	 * @return the id as a String or null
+	 * if it was not set 
 	 */
 	private function get_id():String
 	{
@@ -1177,24 +988,27 @@ class HTMLElement extends Element
 			removeChild(_childNodes[0]);	
 		}
 		
-		//TODO : only detach all node in this case ?
+		//do nothing if its an empty string
+		//
+		//TODO : mostly done because hxtml throw
+		//error. Method shouldn't return here but
+		//hxtml should return null Node
 		if (value == "")
 		{
 			return value;
 		}
 		
+		//wrap the HTML String in a div element, else
+		//when creating the html node, only the first 
+		//node content is deserialized and not its
+		//siblings
+		var wrappedHTML:String = "<div>";
+		wrappedHTML += value;
+		wrappedHTML += "</div>";
+		
+		var node:Node = HxtmlConverter.getNode(wrappedHTML);
 
-		
-		
-		//TODO : returned elements should be direct child
-		//of this, wrapped should not be direct child of
-		//this
-		var bim:String = "<div>";
-		bim += value;
-		bim += "</div>";
-		
-		var node:Node = HxtmlConverter.getNode(bim);
-		
+		//append all children of the generated node
 		for (i in 0...node.childNodes.length)
 		{
 			appendChild(node.childNodes[0]);
@@ -1213,15 +1027,24 @@ class HTMLElement extends Element
 		
 		var str:String = xml.toString();
 		
+		//remove the first and last tag, as they correspond to this HTMLElement
+		//tag which should not be returned as its inner html
 		str = str.substr(str.indexOf(">") + 1 , str.lastIndexOf("<") - str.indexOf(">") - 1);
 		
 		return str;
 	}
 	
-	//TODO : doc
+	/**
+	 * Actually serialise all the chil nodes of this HTMLElement
+	 * by traversing the DOM recursively.
+	 * 
+	 * Returns all the children serialised data as an Xml
+	 * 
+	 * TODO : should serialize other type of nodes, such as comment node,
+	 * doctype...
+	 */
 	private function doGetInnerHTML(node:Node, xml:Xml):Xml
 	{
-		
 		for (i in 0...node.childNodes.length)
 		{
 			var child:Node = node.childNodes[i];
@@ -1229,10 +1052,13 @@ class HTMLElement extends Element
 			switch(child.nodeType)
 			{
 				case Node.ELEMENT_NODE:
+					
+					//create an xml node with the tag name of the HTMLElement,
+					//for instance 'div', 'span', 'img'...
 					var childXml:Xml = Xml.createElement(child.nodeName);
 					
+					//set all the attributes of the child on its Xml node
 					var childAttributes:NamedNodeMap = child.attributes;
-					
 					for (j in 0...childAttributes.length)
 					{
 						var attribute:Attr = cast(childAttributes.item(j));
@@ -1243,10 +1069,10 @@ class HTMLElement extends Element
 						}
 					}
 					
+					//concatenate all the of the specified styles of the HTMLElement
+					//children into a CSS string
 					var htmlChild:HTMLElement = cast(child);
-					
 					var styleAttributes:NamedNodeMap = htmlChild.style.attributes;
-					
 					var concatenatedStyles:String = "";
 					
 					for (j in 0...styleAttributes.length)
@@ -1259,15 +1085,18 @@ class HTMLElement extends Element
 						}
 					}
 					
+					//set the CSS string as the 'style' attribute of the HTMLElement
+					//if at least one style one specified on it
 					if (concatenatedStyles != "")
 					{
-						childXml.set("style", concatenatedStyles);
+						childXml.set(HTML_STYLE_ATTRIBUTE, concatenatedStyles);
 					}
 					
+					//add the children's content to the Xml of the child
 					xml.addChild(doGetInnerHTML(child, childXml));
 					
 				case Node.TEXT_NODE:
-					
+					//serialize a Text node
 					var textXml:Xml = Xml.parse(child.nodeValue);
 					xml.addChild(textXml.firstChild());
 			}

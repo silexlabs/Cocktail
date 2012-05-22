@@ -8,6 +8,7 @@
 package cocktail.port.flash_player;
 
 import cocktail.core.dom.Document;
+import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.window.AbstractWindow;
 import cocktail.core.event.Event;
@@ -50,7 +51,7 @@ class Window extends AbstractWindow
 	 * When a resize callback is set, listen to resize event
 	 * on the flash Stage
 	 */
-	override private function set_onResize(value:Event->Void):Event->Void
+	override private function set_onResize(value:UIEvent->Void):UIEvent->Void
 	{
 		if (value == null)
 		{
@@ -91,8 +92,8 @@ class Window extends AbstractWindow
 	{
 		if (_onResize != null)
 		{
-			var resizeEvent:Event = new Event();
-			resizeEvent.initEvent(Event.RESIZE, false, false);
+			var resizeEvent:UIEvent = new UIEvent();
+			resizeEvent.initUIEvent(UIEvent.RESIZE, false, false, null, 0.0);
 			_onResize(resizeEvent);
 		}
 	}
