@@ -68,6 +68,15 @@ class HTMLInputElement extends EmbeddedElement
 	{
 		_elementRenderer = new TextInputRenderer(this);
 		_elementRenderer.coreStyle = _coreStyle;
+		
+		var textInputElementRenderer:TextInputRenderer = cast(_elementRenderer);
+		
+		var value:String = getAttribute(HTML_VALUE_ATTRIBUTE);
+		if (value != null)
+		{
+			
+			textInputElementRenderer.value = value;
+		}
 	}
 	
 	/**
@@ -93,18 +102,6 @@ class HTMLInputElement extends EmbeddedElement
 		return HTML_INPUT_TEXT_INTRINSIC_RATIO;
 	}
 	
-	override public function hasActivationBehaviour():Bool
-	{
-		return true;
-	}
-	
-	/**
-	 * called before the click event is dipatched
-	 */
-	override public function runPreClickActivation():Void
-	{
-		focus();
-	}
 	
 	/////////////////////////////////
 	// SETTER/GETTER
@@ -113,6 +110,7 @@ class HTMLInputElement extends EmbeddedElement
 	private function set_value(value:String):String
 	{
 		setAttribute(HTML_VALUE_ATTRIBUTE, value);
+	
 		if (_elementRenderer != null)
 		{
 			var textInputElementRenderer:TextInputRenderer = cast(_elementRenderer);

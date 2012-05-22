@@ -206,6 +206,7 @@ class HTMLDocument extends Document
 	// TODO : duplicated code, use reflection to determine callback to call ?
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	//TODO : most mouseEvent can only target Element, must check that it isn't TextRenderer who dispatches
 	private function dispatchMouseEvent(mouseEvent:MouseEvent):Void
 	{
 		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
@@ -277,8 +278,9 @@ class HTMLDocument extends Document
 	private function onKeyDown(keyboardEvent:KeyboardEvent):Void
 	{
 		activeElement.dispatchEvent(keyboardEvent);
-		
-		switch (keyboardEvent.key.charCodeAt(0))
+
+		//TODO : should this logic go into HTMLElement ?
+		switch (Std.parseInt(keyboardEvent.keyChar))
 		{
 			case TAB_KEY_CODE:
 				//only do sequantial navigation if default was not prevented
@@ -361,7 +363,17 @@ class HTMLDocument extends Document
 			
 			//store the new active element before dispatching focus and blur event
 			var oldActiveElement:HTMLElement = _activeElement;
-			_activeElement = newActiveElement;
+			
+			//TODO : doc
+			if (newActiveElement.isFocusable() == true)
+			{
+				_activeElement = newActiveElement;
+			}
+			else
+			{
+				_activeElement = _body;
+			}
+			
 
 			//dispatch post-focus event which don't bubbles through the document
 			

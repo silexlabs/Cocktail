@@ -735,16 +735,16 @@ class HTMLElement extends Element
 	 */
 	public function focus():Void
 	{
-		if (isFocusable() == true)
-		{
-			var htmlDocument:HTMLDocument = cast(ownerDocument);
-			htmlDocument.activeElement = cast(this);
-		}
+		var htmlDocument:HTMLDocument = cast(ownerDocument);
+		htmlDocument.activeElement = cast(this);
 	}
 	
 	/**
 	 * Removes keyboard focus from this HTMLElement and 
 	 * the focus on the Document
+	 * 
+	 * TODO : should call blur on document or set a null
+	 * activeElement
 	 */
 	public function blur():Void
 	{
@@ -764,7 +764,8 @@ class HTMLElement extends Element
 	 */
 	private function get_tabIndex():Int
 	{
-		var tabIndex:String = getAttribute(HTML_TAB_INDEX_ATTRIBUTE);
+		//TODO : awkward to call super, but else infinite loop
+		var tabIndex:String = super.getAttribute(HTML_TAB_INDEX_ATTRIBUTE);
 		if (tabIndex == "")
 		{
 			//default value for focusable element is 0,
@@ -787,6 +788,24 @@ class HTMLElement extends Element
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// ACTIVATION BEHAVIOUR
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * TODO : doc
+	 */
+	override private function executeDefaultActionIfNeeded(defaultPrevented:Bool, event:Event):Void
+	{
+		if (defaultPrevented == false)
+		{
+			switch (event.type)
+			{
+				case MouseEvent.MOUSE_DOWN:
+					focus();
+					
+			}
+			
+			
+		}
+	}
 	
 	/**
 	 * Certain elements in HTML have an activation behavior,
