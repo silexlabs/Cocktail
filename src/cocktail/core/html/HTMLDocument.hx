@@ -203,25 +203,58 @@ class HTMLDocument extends Document
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE INPUT METHODS
-	// TODO : duplicated code, use reflection to determine callback to call ?
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : most mouseEvent can only target Element, must check that it isn't TextRenderer who dispatches
-	private function dispatchMouseEvent(mouseEvent:MouseEvent):Void
+	/**
+	 * Utils method returning the first ElementRenderer whose dom node
+	 * is an Element node. This is used when dispatching MouseEvent, as their target
+	 * can only be Element node.
+	 */
+	private function getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent:MouseEvent):ElementRenderer
 	{
 		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
+		
+		while (elementRendererAtPoint.node.nodeType != Node.ELEMENT_NODE)
+		{
+			elementRendererAtPoint = cast(elementRendererAtPoint.parentNode);
+			if (elementRendererAtPoint == null)
+			{
+				return null;
+			}
+		}
+		
+		return elementRendererAtPoint;
+	}
+	
+	/**
+	 * Dispatch the MouseEvent on the DOM node of the top most 
+	 * ElementRenderer under the mouse pointer
+	 * 
+	 * @param	mouseEvent
+	 */
+	private function dispatchMouseEvent(mouseEvent:MouseEvent):Void
+	{
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
 		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
 	}
 	
+	/**
+	 * Mouse click event are a special case of
+	 * mouse event dispatching, as they may trigger
+	 * activation behaviour, such as following a 
+	 * link for an HTMLAnchorElement
+	 */
 	private function dispatchMouseClickEvent(mouseEvent:MouseEvent):Void
 	{
-		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
-	
-		//TODO : might be a Text node, should it implement an IActivable interface ?
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
+		
 		var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
 		
+		//find the first parent of the HTMLElement which has an activation behaviour, might
+		//return null
 		var nearestActivatableElement:HTMLElement = htmlElement.getNearestActivatableElement();
 
+		//execute pre activation
 		if (nearestActivatableElement != null)
 		{
 			nearestActivatableElement.runPreClickActivation();
@@ -229,6 +262,7 @@ class HTMLDocument extends Document
 		
 		htmlElement.dispatchEvent(mouseEvent);
 		
+		//execute post or canceled activation behaviour
 		if (nearestActivatableElement != null)
 		{
 			if (mouseEvent.defaultPrevented == true)
@@ -239,14 +273,21 @@ class HTMLDocument extends Document
 			{
 				nearestActivatableElement.runPostClickActivationStep(mouseEvent);
 			}
-			
 		}
 	}
 	
+	/**
+	 * MouseMove events are a special case of mouse event
+	 * dispatching as they also must manager the hovered
+	 * htmlElement
+	 * 
+	 * TODO : implement all the mouse event such as mouseleave, and
+	 * check if the implementation is in the right order
+	 */
 	private function dispatchMouseMoveEvent(mouseEvent:MouseEvent):Void
 	{
-		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
-
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
+		
 		if (_hoveredElementRenderer != elementRendererAtPoint)
 		{
 			var mouseOutEvent:MouseEvent = new MouseEvent();
@@ -271,15 +312,15 @@ class HTMLDocument extends Document
 	
 	
 	/**
-	 * When a key is pressed, redirect it to
-	 * the active element and detect if a tab
+	 * When a key is pressed, dispatch the keyboardEvent
+	 * on the active element and detect if a tab
 	 * focus or a simulated click must happen.
 	 */
 	private function onKeyDown(keyboardEvent:KeyboardEvent):Void
 	{
 		activeElement.dispatchEvent(keyboardEvent);
 
-		//TODO : should this logic go into HTMLElement ?
+		//TODO : should this logic go into HTMLElement ? or is it application/embedder level ?
 		switch (Std.parseInt(keyboardEvent.keyChar))
 		{
 			case TAB_KEY_CODE:
@@ -288,10 +329,10 @@ class HTMLDocument extends Document
 				{
 					activeElement = _focusManager.getNextFocusedElement(keyboardEvent.shiftKey == true, _body, activeElement);
 				}
-				
 	
 			case ENTER_KEY_CODE, SPACE_KEY_CODE:
 				//only simulate click if default was not prevented
+				//TODO : should run activation behaviour steps ?
 				if (keyboardEvent.defaultPrevented == false)
 				{
 					activeElement.click();
@@ -300,8 +341,8 @@ class HTMLDocument extends Document
 	}
 	
 	/**
-	 * When a key up event happens, redirect to the
-	 * currently active HTMLElement
+	 * When a key up event happens, dispatches it
+	 * on the activeElement
 	 */
 	private function onKeyUp(keyboardEvent:KeyboardEvent):Void
 	{
@@ -364,7 +405,8 @@ class HTMLDocument extends Document
 			//store the new active element before dispatching focus and blur event
 			var oldActiveElement:HTMLElement = _activeElement;
 			
-			//TODO : doc
+			//if the new activeElement is not focusable, the focus
+			//is instead given to the HTMLBodyElement
 			if (newActiveElement.isFocusable() == true)
 			{
 				_activeElement = newActiveElement;
@@ -374,7 +416,6 @@ class HTMLDocument extends Document
 				_activeElement = _body;
 			}
 			
-
 			//dispatch post-focus event which don't bubbles through the document
 			
 			var blurEvent:FocusEvent = new FocusEvent();

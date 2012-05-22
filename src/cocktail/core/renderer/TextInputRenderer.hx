@@ -1,3 +1,10 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
@@ -15,19 +22,30 @@ import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 
 /**
- * ...
+ * This is an ElementRenderer in charge of
+ * rendering a text input form control
+ * 
+ * TODO IMPORTANT : this is a temporary 
+ * implementation, eventually it will 
+ * need to be implemented without relying
+ * on flash Text Field
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class TextInputRenderer extends EmbeddedBoxRenderer
 {
 	
+	/**
+	 * A reference to a native flash text field
+	 */
 	private var _nativeTextField:TextField;
 	
-	
+	/**
+	 * Get/set the value of the flash text field
+	 */
 	public var value(get_value, set_value):String;
 	
-		/**
+	/**
 	 * used to hold a runtime specific default
 	 * font name for serif font
 	 */
@@ -48,6 +66,10 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	private static inline var MONOSPACE_GENERIC_FONT_NAME:String = "typewriter";
 	private static inline var MONOSPACE_FLASH_FONT_NAME:String = "_typewriter";
 	
+	/**
+	 * class constructor
+	 * @param	node
+	 */
 	public function new(node:Node) 
 	{
 		super(node);
@@ -57,15 +79,13 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		_nativeTextField.tabEnabled = false;
 		#end
 		
+		//listen to cocktail focus events on the HTMLInputElement
 		_node.addEventListener(FocusEvent.FOCUS, onTextInputFocus);
 	}
 	
-	private function onTextInputFocus(e:cocktail.core.event.Event):Void
-	{
-		//TODO : seems to do nothing in NME
-		flash.Lib.current.stage.focus = _nativeTextField;
-	}
-	
+	/**
+	 * Overriden to also render the native flash text field
+	 */
 	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
 	{
 		updateNativeTextField();
@@ -74,6 +94,31 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		graphicContext.addChild(_nativeTextField);
 	}
 	
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When the HTMLInputElement gains focus, 
+	 * set the flash native focus to the 
+	 * native text field
+	 */
+	private function onTextInputFocus(e:cocktail.core.event.Event):Void
+	{
+		//TODO : seems to do nothing in NME
+		flash.Lib.current.stage.focus = _nativeTextField;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// TODO : duplicated code
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	//TODO : duplicated code from FontManager NME implementation, a native
+	//text element should be reconfigurable instead of needing to create a
+	//new one each time ? Won't work for flash text engine, but will work
+	//for texrt fields
 	private function updateNativeTextField():Void
 	{
 		
@@ -113,10 +158,6 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		
 		_nativeTextField.defaultTextFormat = textFormat;
 		_nativeTextField.setTextFormat(textFormat);
-		
-	
-		
-		
 	}
 	
 	private function getNativeFontFamily(value:Array<String>):String
@@ -149,6 +190,10 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		
 		return fontFamily;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function get_value():String 
 	{

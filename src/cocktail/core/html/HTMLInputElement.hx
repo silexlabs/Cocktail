@@ -13,6 +13,17 @@ import cocktail.core.style.CoreStyle;
 /**
  * Form control.
  * 
+ * TODO IMPORTANT : for now only the text input form control
+ * is implemented and its implementation, relying on Flash
+ * TextField is not ideal. It should be entirely abstracted, using
+ * only a Text node.
+ * The following features are missing for this : 
+	 * text selection
+	 * caret management
+	 * text can be scrolled with
+	 * the mouse when the mouse is down
+	 * on an element
+ * 
  * @author Yannick DOMINGUEZ
  */
 class HTMLInputElement extends EmbeddedElement
@@ -71,7 +82,9 @@ class HTMLInputElement extends EmbeddedElement
 		
 		var textInputElementRenderer:TextInputRenderer = cast(_elementRenderer);
 		
+		//initialise value of native text input
 		var value:String = getAttribute(HTML_VALUE_ATTRIBUTE);
+		
 		if (value != null)
 		{
 			
@@ -79,9 +92,13 @@ class HTMLInputElement extends EmbeddedElement
 		}
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDE PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
-	 * An anchor is inherently focusable if its
-	 * href is defined
+	 * An html form control element is inherently
+	 * focusable
 	 */
 	override private function isDefaultFocusable():Bool
 	{
@@ -102,11 +119,14 @@ class HTMLInputElement extends EmbeddedElement
 		return HTML_INPUT_TEXT_INTRINSIC_RATIO;
 	}
 	
-	
 	/////////////////////////////////
 	// SETTER/GETTER
 	/////////////////////////////////
 	 
+	/**
+	 * When value set/get, also set/get it on the native
+	 * text input
+	 */
 	private function set_value(value:String):String
 	{
 		setAttribute(HTML_VALUE_ATTRIBUTE, value);
