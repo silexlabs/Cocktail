@@ -745,9 +745,6 @@ class HTMLElement extends Element
 	/**
 	 * Removes keyboard focus from this HTMLElement and 
 	 * the focus on the Document
-	 * 
-	 * TODO : check if focus must be set on Document if
-	 * this element currently doesn't have focus
 	 */
 	public function blur():Void
 	{

@@ -331,7 +331,7 @@ class BoxRenderer extends ElementRenderer
 				y : addedPositionedY + computedStyle.marginTop
 			}
 			
-			//TODO : messy but works
+			//TODO : messy but works -> not really actually, scrollbar is moved by HTMLBodyElement margins
 			if (child.isScrollBar() == true)
 			{
 				if (elementRenderer.isPositioned() == false)
