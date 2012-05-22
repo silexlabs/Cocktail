@@ -851,6 +851,8 @@ class HTMLElement extends Element
 	 * Return the first ancestor HTMLElement which has an 
 	 * activation behaviour. HTMLElement return itself if
 	 * it has one
+	 * 
+	 * TODO : add default behaviour for mouse wheel events
 	 */
 	public function getNearestActivatableElement():HTMLElement
 	{

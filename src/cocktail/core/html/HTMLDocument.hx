@@ -24,6 +24,7 @@ import cocktail.core.Keyboard;
 import cocktail.core.keyboard.AbstractKeyboard;
 import cocktail.core.Mouse;
 import cocktail.core.NativeElement;
+import cocktail.core.platform.Platform;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.Window;
@@ -73,12 +74,6 @@ class HTMLDocument extends Document
 	public var body(get_body, never):HTMLBodyElement;
 	
 	/**
-	 * A reference to the Window, used to listen for
-	 * resize events
-	 */
-	private var _window:Window;
-	
-	/**
 	 * The activeElement set/get the element
 	 * in the document which is focused.
 	 * If no element in the Document is focused, this returns the body element. 
@@ -93,23 +88,13 @@ class HTMLDocument extends Document
 	private var _focusManager:FocusManager;
 	
 	/**
-	 * An instance of the cross-platform keyboard class, used to listen
-	 * to key down and up event
-	 */
-	private var _keyboard:Keyboard;
-	
-	/**
-	 * An instance of the cross-platform mouse class, used to listen
-	 * to mouse input
-	 */
-	private var _mouse:Mouse;
-	
-	/**
 	 * A reference to the ElementRenderer currently hovered by the
 	 * mouse pointer. Used to detect when to dispatch mouse over
 	 * and mouse out events 
 	 */
 	private var _hoveredElementRenderer:ElementRenderer;
+	
+	private var _platform:Platform;
 	
 	/**
 	 * class constructor. Init class attributes
@@ -129,38 +114,24 @@ class HTMLDocument extends Document
 		
 		_hoveredElementRenderer = _body.elementRenderer;
 		
-		//listen to the Window resizes
-		//
-		//TODO shouldn't instantiatze a Window. Resize
-		//event should be listened to by the Window itself
-		_window = new Window();
-		_window.onresize = onWindowResize;
+		initPlatform();
 		
-		initKeyboardListeners();
-		initMouseListeners();
 	}
 	
-	/**
-	 * init mouse listeners
-	 */
-	private function initMouseListeners():Void
+	private function initPlatform():Void
 	{
-		_mouse = new Mouse();
-		_mouse.onMouseDown = dispatchMouseEvent;
-		_mouse.onMouseUp = dispatchMouseEvent;
-		_mouse.onMouseMove = dispatchMouseMoveEvent;
-		_mouse.onClick = dispatchMouseClickEvent;
-		_mouse.onMouseWheel = dispatchMouseEvent;
-	}
-	
-	/**
-	 * init keyboard listeners
-	 */
-	private function initKeyboardListeners():Void
-	{
-		_keyboard = new Keyboard();
-		_keyboard.onKeyDown = onKeyDown;
-		_keyboard.onKeyUp = onKeyUp;
+		_platform = new Platform();
+		
+		_platform.onmousedown = dispatchMouseEvent;
+		_platform.onmouseup = dispatchMouseEvent;
+		_platform.onmousemove = dispatchMouseMoveEvent;
+		_platform.onclick = dispatchMouseClickEvent;
+		_platform.onmousewheel = dispatchMouseEvent;
+		
+		_platform.onkeydown = onkeydown;
+		_platform.onkeyup = onkeyup;
+		
+		_platform.onresize = onWindowResize;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
