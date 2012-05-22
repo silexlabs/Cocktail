@@ -791,6 +791,9 @@ class HTMLElement extends Element
 	
 	/**
 	 * TODO : doc
+	 * 
+	 * TODO : seems to cause runtime exception when called on a	Text node, Text node shouln't
+	 * dispatch mouse event anyway
 	 */
 	override private function executeDefaultActionIfNeeded(defaultPrevented:Bool, event:Event):Void
 	{
@@ -1011,7 +1014,7 @@ class HTMLElement extends Element
 		wrappedHTML += "</div>";
 		
 		var node:Node = HxtmlConverter.getNode(wrappedHTML);
-		
+
 		//append all children of the generated node
 		for (i in 0...node.childNodes.length)
 		{
