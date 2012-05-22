@@ -48,21 +48,22 @@ class TextRenderer extends ElementRenderer
 		super(node);
 		_text = cast(node);
 		
-		_lineBoxes = null;
+		//_lineBoxes = null;
 	}
 	
 	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{	
-		if (lineBoxes == null)
-		{
+		//if (lineBoxes == null)
+		//{
 			createTextLines();
-		}
+		//}
 	}
 	
-	//TODO : bug text color won't change when redrawn -> due to lack of cascading ?
+	//TODO IMPORTANT : setting lineBoxes to null causes runtime error in inline formatting context,
+	//need to find a better way to refresh text
 	override public function invalidateText():Void
 	{
-		_lineBoxes = null;
+		//_lineBoxes = null;
 		invalidateLayout();
 	}
 	
@@ -263,6 +264,15 @@ class TextRenderer extends ElementRenderer
 		}
 		
 		return getChildrenBounds(textLineBoxesBounds);
+	}
+	
+	override private function getLineBoxes():Array<LineBox>
+	{
+		if (_lineBoxes == null)
+		{
+			return [];
+		}
+		return _lineBoxes;
 	}
 	
 	
