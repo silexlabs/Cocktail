@@ -131,7 +131,6 @@ class FocusManager
 				return i;
 			}
 		}
-		//TODO : throw exception ?
 		return -1;
 	}
 	
