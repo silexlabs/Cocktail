@@ -53,19 +53,24 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		super(node);
 		
 		_nativeTextField = new TextField();
+		#if flash9
 		_nativeTextField.tabEnabled = false;
+		#end
 		
 		_node.addEventListener(FocusEvent.FOCUS, onTextInputFocus);
 	}
 	
 	private function onTextInputFocus(e:cocktail.core.event.Event):Void
 	{
-	flash.Lib.current.stage.focus = _nativeTextField;
+		//TODO : seems to do nothing in NME
+		flash.Lib.current.stage.focus = _nativeTextField;
 	}
 	
 	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
 	{
 		updateNativeTextField();
+		
+		//TODO : in NME, seems to make text field lose focus
 		graphicContext.addChild(_nativeTextField);
 	}
 	
