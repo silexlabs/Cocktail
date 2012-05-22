@@ -355,23 +355,27 @@ class FlowBoxRenderer extends BoxRenderer
 	 * are all block level or if they are all inline level
 	 * elements
 	 * 
-	 * TODO : floated and positioned element should not be taken
-	 * into account
-	 * 
-	 * @return true if all children are inline level ElementRenderer
+	 * @return true if at least one child is inline level
 	 */
 	override public function childrenInline():Bool
-	{		
-		var childrenInline:Bool = true;
+	{	
 		for (i in 0..._childNodes.length)
 		{
 			var child:ElementRenderer = cast(_childNodes[i]);
-			if (child.isInlineLevel() == false)
+			//floated and absolutely positioned element are not taken into
+			//account
+			if (child.isFloat() == false)
 			{
-				return false;
+				if (child.isPositioned() == false || child.isRelativePositioned() == true)
+				{
+					if (child.isInlineLevel() == true)
+					{
+						return true;
+					}
+				}
 			}
 		}
-		return true;
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

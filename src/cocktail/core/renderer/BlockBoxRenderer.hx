@@ -458,6 +458,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	//TODO : more complex thant it should
 	private function layoutScrollBarsIfNecessary(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 			if (_verticalScrollBar != null)
@@ -516,7 +517,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//are positioned relative to the first positioned ancestor
 			layoutPositionedChild(_verticalScrollBar.elementRenderer, verticalScrollBarContainerBlockData, viewportData);
 		}
-		
 	}
 	
 	
@@ -577,8 +577,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SCROLLING GETTERS/SETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	//TODO : add scrollWidth and scrollHeight for the HTMLElement
 	
 	/**
 	 * Overriden as BlockBoxRenderer might actually be scrolled
@@ -701,7 +699,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return getChildrenBounds(doGetScrollableBounds(this));
 	}
 	
-	//TODO : work but shouldn't have to parse all rendering tree, should done during formatting
+	//TODO : work but shouldn't have to parse all rendering tree, should be done during formatting
 	//and then another pass for absolutely positioned children. Maybe this way less expensive in
 	//the  end because only called when useful ?
 	/**
@@ -792,12 +790,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				detachVerticalScrollBar();
 				
 			case cssAuto:
-				attachorDetachVerticalScrollBarIfNecessary();
+				attachOrDetachVerticalScrollBarIfNecessary();
 				
 			case visible:
 				if (treatVisibleOverflowAsAuto() == true)
 				{
-					attachorDetachVerticalScrollBarIfNecessary();
+					attachOrDetachVerticalScrollBarIfNecessary();
 				}	
 				else
 				{
@@ -882,6 +880,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			
 			var htmlElement:HTMLElement = cast(_node);
 			//TODO : should be removed when scrollbar removed and scrollbar should be stored
+			//TODO : also when multiple scrollbar displayed, they all alwyays scroll because of
+			//event bubbling
 			htmlElement.addEventListener(WheelEvent.MOUSE_WHEEL, cast(onMouseWheel));
 		}
 		if (_verticalScrollBar != null)
@@ -924,7 +924,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	/**
 	 * same as for horizontal scrollbar
 	 */
-	private function attachorDetachVerticalScrollBarIfNecessary():Void
+	private function attachOrDetachVerticalScrollBarIfNecessary():Void
 	{
 		if (_scrollableBounds.y < bounds.y || _scrollableBounds.y + _scrollableBounds.height > bounds.y + bounds.height)
 		{

@@ -21,7 +21,7 @@ import cocktail.core.geom.GeomData;
 class TextLineBox extends LineBox
 {
 	/**
-	 * The text renderer by this 
+	 * The string of text rendered by this 
 	 * text line box
 	 */
 	private var _text:String;
@@ -43,8 +43,26 @@ class TextLineBox extends LineBox
 		_bounds.width = getTextWidth();
 		#end
 		_bounds.height = getTextHeight();
-
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Render the text using the graphic context as canvas.
+	 * 
+	 * TODO : should also render text decoration, or should
+	 * be on TextRenderer ?
+	 */
+	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		#if (flash9 || nme)
+		_nativeElement.x = _bounds.x + _elementRenderer.globalBounds.x;
+		_nativeElement.y = _bounds.y + _elementRenderer.globalBounds.y;
+		#end
 		
+		graphicContext.addChild(_nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -56,6 +74,10 @@ class TextLineBox extends LineBox
 		return parentBaselineOffset;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Overriden as TextLineBox might be
 	 * wrapping a space character
@@ -66,25 +88,17 @@ class TextLineBox extends LineBox
 	}
 	
 	/**
-	 * When rendering, return the generated native
-	 * text element, and set the bounds of the
-	 * text line box on it
-	 * 
-	 * TODO : should also render text decoration, or should
-	 * be on TextRenderer ?
+	 * Overriden as this is the text line box
 	 */
-	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	override public function isText():Bool
 	{
-		#if flash9
-		_nativeElement.x = _bounds.x + _elementRenderer.globalBounds.x;
-		_nativeElement.y = _bounds.y + _elementRenderer.globalBounds.y;
-		#elseif nme
-		_nativeElement.x = _bounds.x;
-		_nativeElement.y = _bounds.y + _elementRenderer.globalBounds.y - (leadedAscent + leadedDescent);
-		#end
-		
-		graphicContext.addChild(_nativeElement);
+		return true;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+
 	
 	/**
 	 * Return the leaded ascent of the generated text
@@ -121,11 +135,6 @@ class TextLineBox extends LineBox
 		return leadedDescent;
 	}
 	
-	override public function isText():Bool
-	{
-		return true;
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -147,7 +156,11 @@ class TextLineBox extends LineBox
 		//by the flash text engine
 		else
 		{
+			#if (flash9 || nme)
 			return untyped _nativeElement.textWidth ;
+			#else
+			return 0.0
+			#end
 		}	
 	}
 
