@@ -215,11 +215,12 @@ class HTMLDocument extends Document
 	private function dispatchMouseClickEvent(mouseEvent:MouseEvent):Void
 	{
 		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
-		
+	
 		//TODO : might be a Text node, should it implement an IActivable interface ?
 		var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
 		
 		var nearestActivatableElement:HTMLElement = htmlElement.getNearestActivatableElement();
+
 		if (nearestActivatableElement != null)
 		{
 			nearestActivatableElement.runPreClickActivation();
@@ -229,7 +230,15 @@ class HTMLDocument extends Document
 		
 		if (nearestActivatableElement != null)
 		{
-			nearestActivatableElement.runPostClickActivationStep(mouseEvent);
+			if (mouseEvent.defaultPrevented == true)
+			{
+				nearestActivatableElement.runCanceledActivationStep();
+			}
+			else
+			{
+				nearestActivatableElement.runPostClickActivationStep(mouseEvent);
+			}
+			
 		}
 	}
 	
@@ -254,6 +263,7 @@ class HTMLDocument extends Document
 			
 			elementRendererAtPoint.dispatchEvent(mouseOverEvent);
 		}
+		
 		
 		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
 	}
@@ -352,7 +362,7 @@ class HTMLDocument extends Document
 			//store the new active element before dispatching focus and blur event
 			var oldActiveElement:HTMLElement = _activeElement;
 			_activeElement = newActiveElement;
-			
+
 			//dispatch post-focus event which don't bubbles through the document
 			
 			var blurEvent:FocusEvent = new FocusEvent();
