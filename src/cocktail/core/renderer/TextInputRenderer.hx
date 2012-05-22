@@ -1,7 +1,10 @@
 package cocktail.core.renderer;
+
 import cocktail.core.dom.Node;
+import cocktail.core.event.KeyboardEvent;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
+import flash.events.Event;
 import flash.geom.Rectangle;
 import flash.Lib;
 import flash.text.TextField;
@@ -49,8 +52,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		super(node);
 		
 		_nativeTextField = new TextField();
-		
-		
+		_nativeTextField.tabEnabled = false;
 	}
 	
 	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)

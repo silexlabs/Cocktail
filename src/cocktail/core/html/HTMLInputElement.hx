@@ -70,6 +70,15 @@ class HTMLInputElement extends EmbeddedElement
 		_elementRenderer.coreStyle = _coreStyle;
 	}
 	
+	/**
+	 * An anchor is inherently focusable if its
+	 * href is defined
+	 */
+	override private function isDefaultFocusable():Bool
+	{
+		return true;
+	}
+	
 	/////////////////////////////////
 	// OVERRIDEN SETTER/GETTER
 	/////////////////////////////////
@@ -82,6 +91,19 @@ class HTMLInputElement extends EmbeddedElement
 	override private function get_intrinsicRatio():Null<Float> 
 	{
 		return HTML_INPUT_TEXT_INTRINSIC_RATIO;
+	}
+	
+	override public function hasActivationBehaviour():Bool
+	{
+		return true;
+	}
+	
+	/**
+	 * called before the click event is dipatched
+	 */
+	override public function runPreClickActivation():Void
+	{
+		focus();
 	}
 	
 	/////////////////////////////////
@@ -102,6 +124,12 @@ class HTMLInputElement extends EmbeddedElement
 	
 	private function get_value():String
 	{
+		if (_elementRenderer != null)
+		{
+			var textInputElementRenderer:TextInputRenderer = cast(_elementRenderer);
+			return textInputElementRenderer.value;
+		}
+		
 		return getAttribute(HTML_VALUE_ATTRIBUTE);
 	}
 }
