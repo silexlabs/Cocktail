@@ -29,6 +29,14 @@ class HTMLInputElement extends EmbeddedElement
 	private static inline var HTML_VALUE_ATTRIBUTE:String = "value";
 	
 	/**
+	 * The intrinsic width and ratio of a text input, 
+	 * as they seem to be in Firefox on Windows
+	 */
+	private static inline var HTML_INPUT_TEXT_INTRINSIC_WIDTH:Int = 150;
+	
+	private static inline var HTML_INPUT_TEXT_INTRINSIC_RATIO:Float = 0.15;
+	
+	/**
 	 * When the type attribute of the element has the value "text",
 	 * "file" or "password", this represents the current contents
 	 * of the corresponding form control, in an interactive user
@@ -54,12 +62,26 @@ class HTMLInputElement extends EmbeddedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Instantiate an image specific renderer
+	 * Instantiate an input specific renderer
 	 */
 	override private function createElementRenderer():Void
 	{
 		_elementRenderer = new TextInputRenderer(this);
 		_elementRenderer.coreStyle = _coreStyle;
+	}
+	
+	/////////////////////////////////
+	// OVERRIDEN SETTER/GETTER
+	/////////////////////////////////
+	
+	override private function get_intrinsicWidth():Null<Int> 
+	{
+		return HTML_INPUT_TEXT_INTRINSIC_WIDTH;
+	}
+	
+	override private function get_intrinsicRatio():Null<Float> 
+	{
+		return HTML_INPUT_TEXT_INTRINSIC_RATIO;
 	}
 	
 	/////////////////////////////////
@@ -76,5 +98,7 @@ class HTMLInputElement extends EmbeddedElement
 	{
 		return getAttribute(HTML_VALUE_ATTRIBUTE);
 	}
+	
+	
 	
 }
