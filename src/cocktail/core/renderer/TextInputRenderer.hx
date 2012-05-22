@@ -2,11 +2,13 @@ package cocktail.core.renderer;
 import cocktail.core.dom.Node;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
+import flash.geom.Rectangle;
 import flash.Lib;
 import flash.text.TextField;
 import flash.text.TextFieldType;
 import flash.text.TextFormat;
 import cocktail.core.style.StyleData;
+import cocktail.core.font.FontData;
 
 /**
  * ...
@@ -15,8 +17,11 @@ import cocktail.core.style.StyleData;
 
 class TextInputRenderer extends EmbeddedBoxRenderer
 {
-
+	
 	private var _nativeTextField:TextField;
+	
+	
+	public var value(get_value, set_value):String;
 	
 		/**
 	 * used to hold a runtime specific default
@@ -45,6 +50,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		
 		_nativeTextField = new TextField();
 		
+		
 	}
 	
 	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
@@ -55,9 +61,10 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	
 	private function updateNativeTextField():Void
 	{
+		
 		_nativeTextField.type = TextFieldType.INPUT;
 		_nativeTextField.x = globalBounds.x;
-		_nativeTextField.y = globalBounds.y + globalBounds.height / 2;
+		_nativeTextField.y = globalBounds.y + globalBounds.height / 2 - computedStyle.fontSize + _coreStyle.fontMetrics.ascent / 2;
 		_nativeTextField.width = globalBounds.width;
 		_nativeTextField.height = globalBounds.height;
 		
@@ -66,6 +73,8 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		
 		textFormat.letterSpacing = computedStyle.letterSpacing;
 		textFormat.size = computedStyle.fontSize;
+		
+		
 		
 		var bold:Bool;
 		
@@ -87,7 +96,11 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		
 		textFormat.color = computedStyle.color.color;
 		
+		_nativeTextField.defaultTextFormat = textFormat;
 		_nativeTextField.setTextFormat(textFormat);
+		
+	
+		
 		
 	}
 	
@@ -122,5 +135,14 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		return fontFamily;
 	}
 	
+	private function get_value():String 
+	{
+		return _nativeTextField.text;
+	}
+	
+	private function set_value(value:String):String 
+	{
+		return _nativeTextField.text = value;
+	}
 	
 }
