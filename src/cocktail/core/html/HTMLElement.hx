@@ -381,7 +381,29 @@ class HTMLElement extends Element
 		var targetAncestors:Array<EventTarget> = super.getTargetAncestors();
 		targetAncestors.push(Lib.document);
 		targetAncestors.push(Lib.window);
+		
 		return targetAncestors;
+	}
+	
+	/**
+	 * Execute the default actions of the HTMLElement for a given event type,
+	 * if the default was not prevented
+	 * 
+	 * TODO : seems to cause runtime exception when called on a	Text node, Text node shouln't
+	 * dispatch mouse event anyway
+	 */
+	override private function executeDefaultActionIfNeeded(defaultPrevented:Bool, event:Event):Void
+	{
+		if (defaultPrevented == false)
+		{
+			switch (event.type)
+			{
+				//if the element is focusable, by default
+				//on mouse down, it will gain focus
+				case MouseEvent.MOUSE_DOWN:
+					focus();
+			}
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -742,9 +764,6 @@ class HTMLElement extends Element
 	/**
 	 * Removes keyboard focus from this HTMLElement and 
 	 * the focus on the Document
-	 * 
-	 * TODO : should call blur on document or set a null
-	 * activeElement
 	 */
 	public function blur():Void
 	{
@@ -766,6 +785,7 @@ class HTMLElement extends Element
 	{
 		//TODO : awkward to call super, but else infinite loop
 		var tabIndex:String = super.getAttribute(HTML_TAB_INDEX_ATTRIBUTE);
+		
 		if (tabIndex == "")
 		{
 			//default value for focusable element is 0,
@@ -788,31 +808,6 @@ class HTMLElement extends Element
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// ACTIVATION BEHAVIOUR
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * TODO : doc
-	 * 
-	 * TODO : seems to cause runtime exception when called on a	Text node, Text node shouln't
-	 * dispatch mouse event anyway
-	 * 
-	 * TODO : also cause runtime bug when clicked down on scrollbar, as they try to focus but
-	 * don't have a ref to the document, should the elements of the scrollbar be created
-	 * with Lib.docuement.createElement too ?
-	 */
-	override private function executeDefaultActionIfNeeded(defaultPrevented:Bool, event:Event):Void
-	{
-		if (defaultPrevented == false)
-		{
-			switch (event.type)
-			{
-				case MouseEvent.MOUSE_DOWN:
-					focus();
-					
-			}
-			
-			
-		}
-	}
 	
 	/**
 	 * Certain elements in HTML have an activation behavior,

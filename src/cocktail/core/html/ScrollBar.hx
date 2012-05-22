@@ -7,6 +7,7 @@
 */
 package cocktail.core.html;
 
+import cocktail.core.event.Event;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.renderer.ElementRenderer;
@@ -113,9 +114,11 @@ class ScrollBar extends HTMLElement
 		
 		super("");
 		
-		_scrollThumb = new HTMLElement("");
-		_upArrow = new HTMLElement("");
-		_downArrow = new HTMLElement("");
+		//create through factory method so they can have a reference
+		//to the Document
+		_scrollThumb = Lib.document.createElement("div");
+		_upArrow = Lib.document.createElement("div");
+		_downArrow = Lib.document.createElement("div");
 	
 		_scroll = 0;
 		_maxScroll = 0;
@@ -241,6 +244,19 @@ class ScrollBar extends HTMLElement
 	 * do nothing, as detachement is managed by the owning BlockBoxRenderer
 	 */
 	override private function detachFromParentElementRenderer():Void
+	{
+		
+	}
+	
+	/**
+	 * Overriden as the ScrollBar is not supposed to 
+	 * have a default action
+	 * 
+	 * TODO : at first overriden because, else tries to focus on document without
+	 * having a reference to the document. Should instead be created through
+	 * factory method ? with custom tag ScrollBar ?
+	 */
+	override private function executeDefaultActionIfNeeded(defaultPrevented:Bool, event:Event):Void
 	{
 		
 	}
