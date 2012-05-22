@@ -91,6 +91,12 @@ class HTMLInputElement extends EmbeddedElement
 	private function set_value(value:String):String
 	{
 		setAttribute(HTML_VALUE_ATTRIBUTE, value);
+		if (_elementRenderer != null)
+		{
+			var textInputElementRenderer:TextInputRenderer = cast(_elementRenderer);
+			textInputElementRenderer.value = value;
+		}
+		
 		return value;
 	}
 	
@@ -98,7 +104,4 @@ class HTMLInputElement extends EmbeddedElement
 	{
 		return getAttribute(HTML_VALUE_ATTRIBUTE);
 	}
-	
-	
-	
 }
