@@ -12,12 +12,4 @@ package cocktail.core;
  */
 #if (flash9 || nme)
 typedef Window =  cocktail.port.flash_player.Window;
-
-#elseif doc
-/**
- * This is the class that must be instantiated, it is implemented
- * for each cocktail targets
- */
-class Window extends core.style.abstract.AbstractEmbeddedStyle { }
-
 #end

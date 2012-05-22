@@ -12,12 +12,4 @@ package cocktail.core;
  */
 #if (flash9 || nme)
 typedef Keyboard =  cocktail.port.flash_player.Keyboard;
-
-#elseif doc
-/**
- * This is the class that must be instantiated, it is implemented
- * for each cocktail targets
- */
-class Keyboard extends core.keyboard.AbstractKeyboard{}
-
 #end

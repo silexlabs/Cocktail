@@ -318,8 +318,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						}
 					}
 				}
-				
-
 			}
 		}
 		
