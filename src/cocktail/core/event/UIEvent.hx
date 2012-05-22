@@ -19,10 +19,49 @@ class UIEvent extends Event
 	public static inline var SCROLL:String = "scroll";
 	
 	/**
+	 * A user agent must dispatch this event when a document view has
+	 * been resized. This event type is dispatched after all effects
+	 * for that occurrence of resizing of that particular event target
+	 * have been executed by the user agent.
+	 * 
+	 * User agents which support continuous reflow of the document's 
+	 * layout during user-initiated resizing must dispatch this event
+	 * synchronously after each reflow of the document.
+	 * 
+	 * The defaultView object should always be resizable. A host language
+	 * may define certain elements to be resizable, and under what
+	 * conditions (e.g., specific elements like iframe, or elements
+	 * with particular characteristics like width and height); however,
+	 * this specification does not define the behavior for elements.
+	 */
+	public static inline var RESIZE:String = "resize";
+	
+	/**
+	 * A user agent must dispatch this event when the DOM 
+	 * implementation finishes loading the resource 
+	 * (such as the document) and any dependent resources
+	 * (such as images, style sheets, or scripts). Dependent resources
+	 * that fail to load must not prevent this event from firing if the
+	 * resource that loaded them is still accessible via the DOM.
+	 * If this event type is dispatched, implementations are required
+	 * to dispatch this event at least on the Document node.
+	 */
+	public static inline var LOAD:String = "load";
+	
+	/**
+	 * A user agent must dispatch this event when a resource
+	 * failed to load, or has been loaded but cannot be interpreted
+	 * according to its semantics, such as an invalid image,
+	 * a script execution error, or non-well-formed XML.
+	 */
+	public static inline var ERROR:String = "error";
+	
+	/**
 	 * The view attribute identifies the 
 	 * AbstractView from which the event was generated.
 	 * 
-	 * TODO : what should abstractview be ?
+	 * TODO : what should abstractview be ? -> dhould be Window in most
+	 * cases (called defaultView)
 	 */
 	private var _view:Dynamic;
 	public var view(get_view, never):Dynamic;

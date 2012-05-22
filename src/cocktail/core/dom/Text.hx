@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.dom;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.renderer.LayerRenderer;
 import cocktail.core.renderer.TextRenderer;
 
@@ -48,15 +49,24 @@ class Text extends CharacterData
 		super();
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING TREE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
-	 * TODO : doc
+	 * Create a TextRenderer for the Text node
+	 * 
+	 * TODO IMPORTANT : this class is not supposed to 
+	 * inherit from HTMLElement and have this method.
+	 * Should they share a IRenderable interface instead ?
 	 */
 	override private function createElementRenderer():Void
 	{
 		_elementRenderer = new TextRenderer(this);
-		_elementRenderer.coreStyle = _coreStyle;
+		var parent:HTMLElement = cast(_parentNode);
+		//the TextRenderer inherits its styles from its parent
+		_elementRenderer.coreStyle = parent.coreStyle;
 	}
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTER

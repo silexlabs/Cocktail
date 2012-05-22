@@ -144,10 +144,22 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		//if the 'width' style is also set to 'auto'
 		if (style.width == Dimension.cssAuto)
 		{
-			//try to use the intrinsic height if not null
+			//first try to use the intrinsic height of the embedded
+			//HTMLElement if it exist (it might for instance be a
+			//picture width for an ImageHTMLElement)
+			
 			if (embeddedHTMLElement.intrinsicHeight != null)
 			{
 				ret = embeddedHTMLElement.intrinsicHeight;
+			}
+			//else deduce the intrinsic height from the intrinsic width and ratio
+			else if (embeddedHTMLElement.intrinsicWidth != null && embeddedHTMLElement.intrinsicRatio != null)
+			{
+				ret = Math.round(embeddedHTMLElement.intrinsicWidth * embeddedHTMLElement.intrinsicRatio);
+			}
+			//TODO : check what must happen here
+			else if (embeddedHTMLElement.intrinsicRatio != null)
+			{
 				
 			}
 		}
@@ -163,7 +175,6 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			if (embeddedHTMLElement.intrinsicRatio != null)
 			{
 				ret = Math.round(style.computedStyle.width * embeddedHTMLElement.intrinsicRatio);
-				
 			}
 			else
 			{

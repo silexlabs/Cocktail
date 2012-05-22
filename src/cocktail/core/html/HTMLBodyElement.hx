@@ -60,6 +60,8 @@ class HTMLBodyElement extends HTMLElement
 		//call the attachement method itself as it is 
 		//supposed to be called by parent ElementRenderer
 		//otherwise
+		//
+		//TODO : should be instead call by InitialBlockRenderer itself
 		_elementRenderer.attachLayer();
 	}
 	

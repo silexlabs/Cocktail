@@ -7,6 +7,7 @@
 */
 package cocktail.core.html;
 
+import cocktail.core.event.Event;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.renderer.ElementRenderer;
@@ -113,9 +114,11 @@ class ScrollBar extends HTMLElement
 		
 		super("");
 		
-		_scrollThumb = new HTMLElement("");
-		_upArrow = new HTMLElement("");
-		_downArrow = new HTMLElement("");
+		//create through factory method so they can have a reference
+		//to the Document
+		_scrollThumb = Lib.document.createElement("div");
+		_upArrow = Lib.document.createElement("div");
+		_downArrow = Lib.document.createElement("div");
 	
 		_scroll = 0;
 		_maxScroll = 0;
@@ -245,6 +248,19 @@ class ScrollBar extends HTMLElement
 		
 	}
 	
+	/**
+	 * Overriden as the ScrollBar is not supposed to 
+	 * have a default action
+	 * 
+	 * TODO : at first overriden because, else tries to focus on document without
+	 * having a reference to the document. Should instead be created through
+	 * factory method ? with custom tag ScrollBar ?
+	 */
+	override private function executeDefaultActionIfNeeded(defaultPrevented:Bool, event:Event):Void
+	{
+		
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SCROLL ARROWS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -275,8 +291,6 @@ class ScrollBar extends HTMLElement
 	// SCROLL THUMB
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : should add event listener to body instead of callback
-	//which erase all other callbacks
 	/**
 	 * on mouse down of the thumb of the scroll, start to listen
 	 * to global mouse move event to update the scroll and to
@@ -301,8 +315,11 @@ class ScrollBar extends HTMLElement
 		_thumbMoveDelegate = onThumbMove;
 		_thumbUpDelegate = onThumbMouseUp;
 		
-		cocktail.Lib.document.body.addEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
-		cocktail.Lib.document.body.addEventListener(MouseEvent.MOUSE_UP, cast(_thumbUpDelegate));
+		//TODO : originally, listened to those event on the Body but as the ScrollBar is not
+		//attached to the DOM, the event didn't bubled when mouse hovered track. Should scrollbar
+		//events bubble to document and window ?
+		cocktail.Lib.document.addEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
+		cocktail.Lib.document.addEventListener(MouseEvent.MOUSE_UP, cast(_thumbUpDelegate));
 	}
 	
 	/**
@@ -310,8 +327,8 @@ class ScrollBar extends HTMLElement
 	 */
 	private function onThumbMouseUp(event:MouseEvent):Void
 	{
-		cocktail.Lib.document.body.removeEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
-		cocktail.Lib.document.body.removeEventListener(MouseEvent.MOUSE_UP, cast(_thumbUpDelegate));
+		cocktail.Lib.document.removeEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
+		cocktail.Lib.document.removeEventListener(MouseEvent.MOUSE_UP, cast(_thumbUpDelegate));
 	}
 	
 	/**
@@ -423,7 +440,6 @@ class ScrollBar extends HTMLElement
 		{
 			var thumbHeight:Float = _coreStyle.computedStyle.height - _downArrow.coreStyle.computedStyle.height - _upArrow.coreStyle.computedStyle.height - maxScroll;
 
-			//TODO : min size should not be hard-coded
 			if (thumbHeight < THUMB_DEFAULT_DIMENSION)
 			{
 				thumbHeight = THUMB_DEFAULT_DIMENSION;
@@ -453,12 +469,9 @@ class ScrollBar extends HTMLElement
 	
 	private function dispatchScrollEvent():Void
 	{
-		if (_onScroll != null)
-		{
-			var scrollEvent:UIEvent = new UIEvent();
-			scrollEvent.initUIEvent(UIEvent.SCROLL, false, false, null, 0.0);
-			_onScroll(scrollEvent);
-		}
+		var scrollEvent:UIEvent = new UIEvent();
+		scrollEvent.initUIEvent(UIEvent.SCROLL, false, false, null, 0.0);
+		dispatchEvent(scrollEvent);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

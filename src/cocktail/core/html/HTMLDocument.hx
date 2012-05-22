@@ -105,11 +105,11 @@ class HTMLDocument extends Document
 	private var _mouse:Mouse;
 	
 	/**
-	 * A reference to the HTMLElement currently hovered by the
+	 * A reference to the ElementRenderer currently hovered by the
 	 * mouse pointer. Used to detect when to dispatch mouse over
 	 * and mouse out events 
 	 */
-	private var _hoveredHTMLElement:HTMLElement;
+	private var _hoveredElementRenderer:ElementRenderer;
 	
 	/**
 	 * class constructor. Init class attributes
@@ -127,9 +127,14 @@ class HTMLDocument extends Document
 		_focusManager = new FocusManager();
 		_activeElement = _body;
 		
+		_hoveredElementRenderer = _body.elementRenderer;
+		
 		//listen to the Window resizes
+		//
+		//TODO shouldn't instantiatze a Window. Resize
+		//event should be listened to by the Window itself
 		_window = new Window();
-		_window.onResize = onWindowResize;
+		_window.onresize = onWindowResize;
 		
 		initKeyboardListeners();
 		initMouseListeners();
@@ -141,11 +146,11 @@ class HTMLDocument extends Document
 	private function initMouseListeners():Void
 	{
 		_mouse = new Mouse();
-		_mouse.onMouseDown = onMouseDown;
-		_mouse.onMouseUp = onMouseUp;
-		_mouse.onMouseMove = onMouseMove;
-		_mouse.onClick = onClick;
-		_mouse.onMouseWheel = onMouseWheel;
+		_mouse.onMouseDown = dispatchMouseEvent;
+		_mouse.onMouseUp = dispatchMouseEvent;
+		_mouse.onMouseMove = dispatchMouseMoveEvent;
+		_mouse.onClick = dispatchMouseClickEvent;
+		_mouse.onMouseWheel = dispatchMouseEvent;
 	}
 	
 	/**
@@ -198,234 +203,125 @@ class HTMLDocument extends Document
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE INPUT METHODS
-	// TODO : duplicated code, use reflection to determine callback to call ?
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Called when a mouse down event is dispatched.
-	 * Retrieve the top-most ElementRenderer under the mouse
-	 * pointer and call its mouse down down callback if provided
+	 * Utils method returning the first ElementRenderer whose dom node
+	 * is an Element node. This is used when dispatching MouseEvent, as their target
+	 * can only be Element node.
 	 */
-	private function onMouseDown(mouseEvent:MouseEvent):Void
+	private function getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent:MouseEvent):ElementRenderer
 	{
-		//retrieve all the ElementRenderer under the mouse
-		//pointer
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
-
-		//execute the callback of the first top-most
-		//ElementRenderer with a mouse down callback
-		//
+		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
 		
-		//TODO : hack
-		elementRenderersAtPoint.reverse();
-		
-		for (i in 0...elementRenderersAtPoint.length)
+		while (elementRendererAtPoint.node.nodeType != Node.ELEMENT_NODE)
 		{
-			switch( elementRenderersAtPoint[i].node.nodeType)
-			{
-				case Node.ELEMENT_NODE:
-					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-					htmlElement.dispatchEvent(mouseEvent);
-					return;
-					
-			}
-			
-		}
-		
-	}
-	
-	/**
-	 * Called when a mouse click is dispatched. Same as 
-	 * for mouse down
-	 * 
-	 * TODO : should click be abstracted as a rapid sequence
-	 * of mouse down/ mouse up ?
-	 */
-	private function onClick(mouseEvent:MouseEvent):Void
-	{
-		//TODO : for mouse event, should only return top most ElementRenderer
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
-
-		//TODO : hack
-		elementRenderersAtPoint.reverse();
-		
-		for (i in 0...elementRenderersAtPoint.length)
-		{
-			switch( elementRenderersAtPoint[i].node.nodeType)
-			{
-				case Node.ELEMENT_NODE:
-					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-					
-					var nearestActivatableElement:HTMLElement = getNearestActivatableElement(htmlElement);
-					if (nearestActivatableElement != null)
-					{
-						nearestActivatableElement.runPreClickActivation();
-					}
-					
-					htmlElement.dispatchEvent(mouseEvent);
-					
-					if (nearestActivatableElement != null)
-					{
-						nearestActivatableElement.runPostClickActivationStep(mouseEvent);
-					}
-					
-					return;
-			}
-			
-		}
-		
-		
-	}
-	
-	//TODO : activation behaviour should be done by HTMLElement, this way it can be
-	//integrated with click synthesis
-	private function getNearestActivatableElement(htmlElement:HTMLElement):HTMLElement
-	{
-		while (htmlElement.hasActivationBehaviour() == false)
-		{
-			if (htmlElement.parentNode == null)
+			elementRendererAtPoint = cast(elementRendererAtPoint.parentNode);
+			if (elementRendererAtPoint == null)
 			{
 				return null;
 			}
-			htmlElement = cast(htmlElement.parentNode);
 		}
 		
-		return htmlElement;
+		return elementRendererAtPoint;
 	}
 	
 	/**
-	 * Called when a mouse wheel event is dispatched. Same as 
-	 * for mouse down
-	 */
-	private function onMouseWheel(wheelEvent:WheelEvent):Void
-	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: wheelEvent.screenX, y:wheelEvent.screenY }, 0, 0  );
-
-		//TODO : hack
-		elementRenderersAtPoint.reverse();
-
-		for (i in 0...elementRenderersAtPoint.length)
-		{
-			switch( elementRenderersAtPoint[i].node.nodeType)
-			{
-				case Node.ELEMENT_NODE:
-					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-					htmlElement.dispatchEvent(wheelEvent);
-					return;
-			}
-			
-		}
-		
-		
-	}
-	
-	/**
-	 * Called when a mouse up is dispatched. Same as for 
-	 * mouse down
-	 */
-	private function onMouseUp(mouseEvent:MouseEvent):Void
-	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
-		
-		//TODO : hack
-		elementRenderersAtPoint.reverse();
-		
-		for (i in 0...elementRenderersAtPoint.length)
-		{
-			switch( elementRenderersAtPoint[i].node.nodeType)
-			{
-				case Node.ELEMENT_NODE:
-					var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-					htmlElement.dispatchEvent(mouseEvent);
-					return;
-			}
-			
-		}
-	}
-	
-	/**
-	 * Called when a mouse move is dispatched. Same as for 
-	 * mouse down
+	 * Dispatch the MouseEvent on the DOM node of the top most 
+	 * ElementRenderer under the mouse pointer
 	 * 
-	 * TODO : re-implement
+	 * @param	mouseEvent
 	 */
-	private function onMouseMove(mouseEvent:MouseEvent):Void
+	private function dispatchMouseEvent(mouseEvent:MouseEvent):Void
 	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = _body.elementRenderer.layerRenderer.getElementRenderersAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0 );
-			
-		//TODO : doc for mouse over / out
-		
-		//TODO : hack
-		elementRenderersAtPoint.reverse();
-		
-		if (elementRenderersAtPoint.length > 0)
-		{
-			if (elementRenderersAtPoint[elementRenderersAtPoint.length - 1].node != _hoveredHTMLElement)
-			{
-				if (_hoveredHTMLElement != null)
-				{
-					
-					//TODO :  should create new MouseEvent for this
-					if (_hoveredHTMLElement.onmouseout != null)
-					{
-						_hoveredHTMLElement.onmouseout(mouseEvent);
-					}
-				}
-				//TODO : should switch, might be TextRenderer that was hit, only works because text is HTMLElement because
-				//of Haxe JS
-				_hoveredHTMLElement = cast(elementRenderersAtPoint[elementRenderersAtPoint.length - 1].node);
-				if (_hoveredHTMLElement.onmouseover != null)
-				{
-					_hoveredHTMLElement.onmouseover(mouseEvent);
-				}
-			}
-		}
-		else
-		{
-			if (_hoveredHTMLElement == null)
-			{
-				_hoveredHTMLElement = _body;
-			}
-			
-			if (_hoveredHTMLElement != _body)
-			{
-				if (_hoveredHTMLElement != null)
-				{
-					if (_hoveredHTMLElement.onmouseout != null)
-					{
-						_hoveredHTMLElement.onmouseout(mouseEvent);
-					}
-				}
-				_hoveredHTMLElement = _body;
-				if (_hoveredHTMLElement.onmouseover != null)
-				{
-					_hoveredHTMLElement.onmouseover(mouseEvent);
-				}
-			}
-		}
-			
-		for (i in 0...elementRenderersAtPoint.length)
-		{
-			var htmlElement:HTMLElement = cast(elementRenderersAtPoint[i].node);
-			htmlElement.dispatchEvent(mouseEvent);
-			return;
-		}
-		
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
+		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
 	}
 	
 	/**
-	 * When a key is pressed, redirect it to
-	 * the active element and detect if a tab
+	 * Mouse click event are a special case of
+	 * mouse event dispatching, as they may trigger
+	 * activation behaviour, such as following a 
+	 * link for an HTMLAnchorElement
+	 */
+	private function dispatchMouseClickEvent(mouseEvent:MouseEvent):Void
+	{
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
+		
+		var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
+		
+		//find the first parent of the HTMLElement which has an activation behaviour, might
+		//return null
+		var nearestActivatableElement:HTMLElement = htmlElement.getNearestActivatableElement();
+
+		//execute pre activation
+		if (nearestActivatableElement != null)
+		{
+			nearestActivatableElement.runPreClickActivation();
+		}
+		
+		htmlElement.dispatchEvent(mouseEvent);
+		
+		//execute post or canceled activation behaviour
+		if (nearestActivatableElement != null)
+		{
+			if (mouseEvent.defaultPrevented == true)
+			{
+				nearestActivatableElement.runCanceledActivationStep();
+			}
+			else
+			{
+				nearestActivatableElement.runPostClickActivationStep(mouseEvent);
+			}
+		}
+	}
+	
+	/**
+	 * MouseMove events are a special case of mouse event
+	 * dispatching as they also must manager the hovered
+	 * htmlElement
+	 * 
+	 * TODO : implement all the mouse event such as mouseleave, and
+	 * check if the implementation is in the right order
+	 */
+	private function dispatchMouseMoveEvent(mouseEvent:MouseEvent):Void
+	{
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
+		
+		if (_hoveredElementRenderer != elementRendererAtPoint)
+		{
+			var mouseOutEvent:MouseEvent = new MouseEvent();
+			mouseOutEvent.initMouseEvent(MouseEvent.MOUSE_OUT, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
+			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey, mouseEvent.metaKey, mouseEvent.button, elementRendererAtPoint.node);
+			
+			_hoveredElementRenderer.node.dispatchEvent(mouseOutEvent);
+			
+			var oldHoveredElementRenderer:ElementRenderer = _hoveredElementRenderer;
+			_hoveredElementRenderer = elementRendererAtPoint;
+			
+			var mouseOverEvent:MouseEvent = new MouseEvent();
+			mouseOverEvent.initMouseEvent(MouseEvent.MOUSE_OVER, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
+			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, oldHoveredElementRenderer.node);
+			
+			elementRendererAtPoint.dispatchEvent(mouseOverEvent);
+		}
+		
+		
+		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
+	}
+	
+	
+	/**
+	 * When a key is pressed, dispatch the keyboardEvent
+	 * on the active element and detect if a tab
 	 * focus or a simulated click must happen.
 	 */
 	private function onKeyDown(keyboardEvent:KeyboardEvent):Void
 	{
-		if (activeElement.onkeydown != null)
-		{
-			activeElement.onkeydown(keyboardEvent);
-		}
-		
-		switch (keyboardEvent.key.charCodeAt(0))
+		activeElement.dispatchEvent(keyboardEvent);
+
+		//TODO : should this logic go into HTMLElement ? or is it application/embedder level ?
+		switch (Std.parseInt(keyboardEvent.keyChar))
 		{
 			case TAB_KEY_CODE:
 				//only do sequantial navigation if default was not prevented
@@ -433,10 +329,10 @@ class HTMLDocument extends Document
 				{
 					activeElement = _focusManager.getNextFocusedElement(keyboardEvent.shiftKey == true, _body, activeElement);
 				}
-				
 	
 			case ENTER_KEY_CODE, SPACE_KEY_CODE:
 				//only simulate click if default was not prevented
+				//TODO : should run activation behaviour steps ?
 				if (keyboardEvent.defaultPrevented == false)
 				{
 					activeElement.click();
@@ -445,15 +341,12 @@ class HTMLDocument extends Document
 	}
 	
 	/**
-	 * When a key up event happens, redirect to the
-	 * currently active HTMLElement
+	 * When a key up event happens, dispatches it
+	 * on the activeElement
 	 */
-	private function onKeyUp(keyEventData:KeyboardEvent):Void
+	private function onKeyUp(keyboardEvent:KeyboardEvent):Void
 	{
-		if (activeElement.onkeyup != null)
-		{
-			activeElement.onkeyup(keyEventData);
-		}
+		activeElement.dispatchEvent(keyboardEvent);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -484,28 +377,55 @@ class HTMLDocument extends Document
 	 * one and then call the focus in on the 
 	 * new one
 	 */
-	private function set_activeElement(value:HTMLElement):HTMLElement
+	private function set_activeElement(newActiveElement:HTMLElement):HTMLElement
 	{			
 		//if the activeHTMLElement is set to null, do nothing
-		if (value == null)
+		if (newActiveElement == null)
 		{
 			return _activeElement;
 		}
 		
 		//do nothing if the new activeHTMLElement is the same
 		//as the current one
-		if (value != activeElement)
+		if (newActiveElement != activeElement)
 		{
-			//else call the blur callback on the element
-			if (activeElement.onblur != null)
+			//else dispatch a serie of FocusEvent on the element losing
+			//focus and on the one gaining it
+			
+			//dispatch pre-focus shift focus event which bubbles in the document
+			
+			var focusOutEvent:FocusEvent = new FocusEvent();
+			focusOutEvent.initFocusEvent(FocusEvent.FOCUS_OUT, true, false, null, 0.0, newActiveElement);
+			activeElement.dispatchEvent(focusOutEvent);
+			
+			var focusInEvent:FocusEvent = new FocusEvent();
+			focusInEvent.initFocusEvent(FocusEvent.FOCUS_IN, true, false, null, 0.0, activeElement);
+			newActiveElement.dispatchEvent(focusInEvent);
+			
+			//store the new active element before dispatching focus and blur event
+			var oldActiveElement:HTMLElement = _activeElement;
+			
+			//if the new activeElement is not focusable, the focus
+			//is instead given to the HTMLBodyElement
+			if (newActiveElement.isFocusable() == true)
 			{
-				var blurEvent:FocusEvent = new FocusEvent();
-				blurEvent.initFocusEvent(FocusEvent.BLUR, true, false, null, 0.0, null);
-				activeElement.onblur(blurEvent);
+				_activeElement = newActiveElement;
+			}
+			else
+			{
+				_activeElement = _body;
 			}
 			
-			//then store the new one and call the focus callback on it
-			_activeElement = value;
+			//dispatch post-focus event which don't bubbles through the document
+			
+			var blurEvent:FocusEvent = new FocusEvent();
+			blurEvent.initFocusEvent(FocusEvent.BLUR, false, false, null, 0.0, null);
+			oldActiveElement.dispatchEvent(blurEvent);
+			
+			var focusEvent:FocusEvent = new FocusEvent();
+			focusEvent.initFocusEvent(FocusEvent.FOCUS, false, false, null, 0.0, null);
+			newActiveElement.dispatchEvent(focusEvent);
+			
 			if (_activeElement.onfocus != null)
 			{
 				var focusEvent:FocusEvent = new FocusEvent();
