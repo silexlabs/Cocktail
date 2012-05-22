@@ -109,7 +109,6 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	{
 		//TODO : seems to do nothing in NME
 		flash.Lib.current.stage.focus = _nativeTextField;
-		_nativeTextField.setSelection(0, _nativeTextField.length);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
