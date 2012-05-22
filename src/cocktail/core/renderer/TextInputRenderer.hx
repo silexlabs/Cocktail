@@ -1,6 +1,7 @@
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
+import cocktail.core.event.FocusEvent;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
@@ -53,6 +54,13 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		
 		_nativeTextField = new TextField();
 		_nativeTextField.tabEnabled = false;
+		
+		_node.addEventListener(FocusEvent.FOCUS, onTextInputFocus);
+	}
+	
+	private function onTextInputFocus(e:cocktail.core.event.Event):Void
+	{
+	flash.Lib.current.stage.focus = _nativeTextField;
 	}
 	
 	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
