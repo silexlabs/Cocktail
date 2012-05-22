@@ -794,6 +794,10 @@ class HTMLElement extends Element
 	 * 
 	 * TODO : seems to cause runtime exception when called on a	Text node, Text node shouln't
 	 * dispatch mouse event anyway
+	 * 
+	 * TODO : also cause runtime bug when clicked down on scrollbar, as they try to focus but
+	 * don't have a ref to the document, should the elements of the scrollbar be created
+	 * with Lib.docuement.createElement too ?
 	 */
 	override private function executeDefaultActionIfNeeded(defaultPrevented:Bool, event:Event):Void
 	{

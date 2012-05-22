@@ -80,7 +80,7 @@ class TextLineBox extends LineBox
 		_nativeElement.y = _bounds.y + _elementRenderer.globalBounds.y;
 		#elseif nme
 		_nativeElement.x = _bounds.x;
-		_nativeElement.y = _bounds.y - (leadedAscent + leadedDescent);
+		_nativeElement.y = _bounds.y + _elementRenderer.globalBounds.y - (leadedAscent + leadedDescent);
 		#end
 		
 		graphicContext.addChild(_nativeElement);
