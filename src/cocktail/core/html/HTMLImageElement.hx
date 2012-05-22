@@ -9,6 +9,7 @@ package cocktail.core.html;
 
 import cocktail.core.dom.Attr;
 import cocktail.core.dom.Node;
+import cocktail.core.event.UIEvent;
 import cocktail.core.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.renderer.ImageRenderer;
@@ -37,21 +38,6 @@ class HTMLImageElement extends EmbeddedElement
 	 * The name of the src attribute for the HTMLImageElement
 	 */
 	private static inline var HTML_IMAGE_SRC_ATTRIBUTE:String = "src";
-	
-	//////////////////////
-	// CALLBACKS
-	/////////////////////
-	
-	/**
-	 * The callback called once a picture has been successfully
-	 * loaded
-	 */
-	public var onload:Event->Void;
-	
-	/**
-	 * The callback called when there was an error during loading
-	 */
-	public var onError:Event->Void;
 
 	//////////////////////
 	// PRIVATE ATTRIBUTES
@@ -172,13 +158,9 @@ class HTMLImageElement extends EmbeddedElement
 		
 		invalidateLayout();
 		
-		//if provided, call the onload callback
-		if (onload != null)
-		{
-			var loadEvent:Event = new Event();
-			loadEvent.initEvent(Event.LOAD, true, true);
-			onload(loadEvent);
-		}
+		var loadEvent:UIEvent = new UIEvent();
+		loadEvent.initUIEvent(UIEvent.LOAD, false, false, null, 0.0);
+		dispatchEvent(loadEvent);
 	}
 	
 	/**
@@ -189,12 +171,9 @@ class HTMLImageElement extends EmbeddedElement
 	 */
 	private function onLoadError(message:String):Void
 	{
-		if (onError != null)
-		{
-			var errorEvent:Event = new Event();
-			errorEvent.initEvent(Event.ERROR, true, true);
-			onError(errorEvent);
-		}
+		var errorEvent:UIEvent = new UIEvent();
+		errorEvent.initUIEvent(UIEvent.ERROR, false, false, null, 0.0);
+		dispatchEvent(errorEvent);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

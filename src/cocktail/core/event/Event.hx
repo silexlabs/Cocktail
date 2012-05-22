@@ -23,13 +23,8 @@ import cocktail.core.html.HTMLElement;
  */
 class Event 
 {	
-	public static inline var LOAD:String = "load";
-	
-	public static inline var ERROR:String = "error";
 	
 	public static inline var READY_STATE_CHANGE:String = "readystatechange";
-	
-	public static inline var RESIZE:String = "resize";
 	
 	//PhaseType, An integer indicating which phase of the event flow is being processed
 	

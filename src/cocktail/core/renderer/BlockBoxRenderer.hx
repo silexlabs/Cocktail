@@ -110,58 +110,36 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			shouldMakeChildrenNonInline = false;
 		}
 		
+		super.appendChild(newChild);
+		
 		if (shouldMakeChildrenNonInline == true)
-		{
-			var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock();
-			anonymousBlock.appendChild(newChild);
+		{	
+			//makeChildrenNonInline();
+		
 			
-			super.appendChild(anonymousBlock);
-			
-			anonymousBlock.attachLayer();
 		}
-		else
-		{
-			super.appendChild(newChild);
-			elementRendererChild.attachLayer();
-		}
-		invalidateLayout();
+	
 		return newChild;
 	}
 	
 	private function makeChildrenNonInline():Void
 	{
-		
-		var newChildNodes:Array<Node> = new Array<Node>();
-		
 		for (i in 0..._childNodes.length)
 		{
-			newChildNodes.push(_childNodes[i]);
-		
-			
-		}
-		
-		for (i in 0...newChildNodes.length)
-		{
-			var child:ElementRenderer = cast(newChildNodes[i]);
-			trace(newChildNodes.length);
-			trace(child);
+			var child:ElementRenderer = cast(_childNodes[i]);
+
 			if (child.isInlineLevel() == true)
 			{
+				
+				
 				var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock();
 				
-			insertBefore(anonymousBlock, child);
+				replaceChild(anonymousBlock, child);
 				anonymousBlock.appendChild(child);
-					appendChild(anonymousBlock);
-				anonymousBlock.attachLayer();
 				
-				trace("create anonymous block");
+				
 			}
-			
-				appendChild(child);
-			
 		}
-		
-		trace(_childNodes.length);
 		
 	}
 	
@@ -177,8 +155,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			for (i in 0..._childNodes.length)
 			{
 				var child:ElementRenderer = cast(_childNodes[i]);
+	
 				if (_childNodes[i] == refChild)
 				{
+					
 					appendChild(newChild);
 				}
 				else if (child.isAnonymousBlockBox() == true)
@@ -195,6 +175,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				appendChild(child);
 			}
 		}
+		
+		
 		
 		return newChild;
 	}
@@ -899,6 +881,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			_verticalScrollBar.onscroll = onVerticalScroll;
 			
 			var htmlElement:HTMLElement = cast(_node);
+			//TODO : should be removed when scrollbar removed and scrollbar should be stored
 			htmlElement.addEventListener(WheelEvent.MOUSE_WHEEL, cast(onMouseWheel));
 		}
 		if (_verticalScrollBar != null)

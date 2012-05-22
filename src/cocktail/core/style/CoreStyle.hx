@@ -721,25 +721,39 @@ class CoreStyle
 		return boxComputer;
 	}
 	
-
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
-	 * TODO : doc
+	 * Called when a style necesiting invalidation of the
+	 * layout of the HTMLElement is changed
 	 */
 	private function invalidate():Void
 	{
 		_htmlElement.invalidateLayout();
 	}
 	
+	/**
+	 * Same as above for display
+	 */
 	private function invalidateDisplay():Void
 	{
 		_htmlElement.invalidateDisplay();
 	}
 	
+	/**
+	 * Same as above for LayerRenderer
+	 */
 	private function invalidateLayer():Void
 	{
 		_htmlElement.invalidateLayer();
 	}
 	
+	/**
+	 * Same as above for text
+	 */
 	private function invalidateText():Void
 	{
 		_htmlElement.invalidateText();

@@ -38,10 +38,7 @@ class EventTarget
 	
 	/**
 	 * Dispatches an event into the implementation's event model.
-	 * The event target of the event must be the EventTarget object on which dispatchEvent is called. 
-	 * 
-	 * TODO : when event is dispatched by the HTMLBodyElement, should be dispatched
-	 * on the document and window
+	 * The event target of the event must be the EventTarget object on which dispatchEvent is called.
 	 * 
 	 * @param	evt The event to be dispatched.
 	 * @return Indicates whether any of the listeners which handled the event called Event.preventDefault().
@@ -285,7 +282,7 @@ class EventTarget
 	
 	/**
 	 * Return all the EventTarget ancestors of this EventTarget,
-	 * implemented by Node
+	 * implemented by inheriting classes
 	 */
 	private function getTargetAncestors():Array<EventTarget>
 	{

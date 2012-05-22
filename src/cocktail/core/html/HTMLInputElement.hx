@@ -13,6 +13,17 @@ import cocktail.core.style.CoreStyle;
 /**
  * Form control.
  * 
+ * TODO IMPORTANT : for now only the text input form control
+ * is implemented and its implementation, relying on Flash
+ * TextField is not ideal. It should be entirely abstracted, using
+ * only a Text node.
+ * The following features are missing for this : 
+	 * text selection
+	 * caret management
+	 * text can be scrolled with
+	 * the mouse when the mouse is down
+	 * on an element
+ * 
  * @author Yannick DOMINGUEZ
  */
 class HTMLInputElement extends EmbeddedElement
@@ -27,6 +38,14 @@ class HTMLInputElement extends EmbeddedElement
 	 * the name of the value html attribute
 	 */
 	private static inline var HTML_VALUE_ATTRIBUTE:String = "value";
+	
+	/**
+	 * The intrinsic width and ratio of a text input, 
+	 * as they seem to be in Firefox on Windows
+	 */
+	private static inline var HTML_INPUT_TEXT_INTRINSIC_WIDTH:Int = 150;
+	
+	private static inline var HTML_INPUT_TEXT_INTRINSIC_RATIO:Float = 0.15;
 	
 	/**
 	 * When the type attribute of the element has the value "text",
@@ -54,27 +73,81 @@ class HTMLInputElement extends EmbeddedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Instantiate an image specific renderer
+	 * Instantiate an input specific renderer
 	 */
 	override private function createElementRenderer():Void
 	{
 		_elementRenderer = new TextInputRenderer(this);
 		_elementRenderer.coreStyle = _coreStyle;
+		
+		var textInputElementRenderer:TextInputRenderer = cast(_elementRenderer);
+		
+		//initialise value of native text input
+		var value:String = getAttribute(HTML_VALUE_ATTRIBUTE);
+		
+		if (value != null)
+		{
+			
+			textInputElementRenderer.value = value;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDE PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * An html form control element is inherently
+	 * focusable
+	 */
+	override private function isDefaultFocusable():Bool
+	{
+		return true;
+	}
+	
+	/////////////////////////////////
+	// OVERRIDEN SETTER/GETTER
+	/////////////////////////////////
+	
+	override private function get_intrinsicWidth():Null<Int> 
+	{
+		return HTML_INPUT_TEXT_INTRINSIC_WIDTH;
+	}
+	
+	override private function get_intrinsicRatio():Null<Float> 
+	{
+		return HTML_INPUT_TEXT_INTRINSIC_RATIO;
 	}
 	
 	/////////////////////////////////
 	// SETTER/GETTER
 	/////////////////////////////////
 	 
+	/**
+	 * When value set/get, also set/get it on the native
+	 * text input
+	 */
 	private function set_value(value:String):String
 	{
 		setAttribute(HTML_VALUE_ATTRIBUTE, value);
+	
+		if (_elementRenderer != null)
+		{
+			var textInputElementRenderer:TextInputRenderer = cast(_elementRenderer);
+			textInputElementRenderer.value = value;
+		}
+		
 		return value;
 	}
 	
 	private function get_value():String
 	{
+		if (_elementRenderer != null)
+		{
+			var textInputElementRenderer:TextInputRenderer = cast(_elementRenderer);
+			return textInputElementRenderer.value;
+		}
+		
 		return getAttribute(HTML_VALUE_ATTRIBUTE);
 	}
-	
 }
