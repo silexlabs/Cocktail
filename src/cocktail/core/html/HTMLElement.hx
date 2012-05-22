@@ -388,9 +388,6 @@ class HTMLElement extends Element
 	/**
 	 * Execute the default actions of the HTMLElement for a given event type,
 	 * if the default was not prevented
-	 * 
-	 * TODO : seems to cause runtime exception when called on a	Text node, Text node shouln't
-	 * dispatch mouse event anyway
 	 */
 	override private function executeDefaultActionIfNeeded(defaultPrevented:Bool, event:Event):Void
 	{
@@ -698,13 +695,10 @@ class HTMLElement extends Element
 	 */
 	public function click():Void
 	{
-		if (_onClick != null)
-		{
-			var mouseEvent:MouseEvent = new MouseEvent();
-			mouseEvent.initMouseEvent(MouseEvent.CLICK, false, false, null, 0, 0, 0, 0, 0, false, false, false, false,
-			0, null);
-			_onClick(mouseEvent);
-		}
+		var mouseEvent:MouseEvent = new MouseEvent();
+		mouseEvent.initMouseEvent(MouseEvent.CLICK, false, false, null, 0, 0, 0, 0, 0, false, false, false, false,
+		0, null); 
+		dispatchEvent(mouseEvent);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
