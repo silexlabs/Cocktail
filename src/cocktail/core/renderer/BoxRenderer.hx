@@ -174,14 +174,14 @@ class BoxRenderer extends ElementRenderer
 	 * of the rendering tree
 	 * 
 	 * TODO : for now only called by the InitialBlockRenderer but should be callable
-	 * by any BoxRenderer to prevent form laying out and rendering all of the rendering
+	 * by any BoxRenderer to prevent from laying out and rendering all of the rendering
 	 * tree
 	 */
 	private function startLayout():Void
 	{
 		var windowData:ContainingBlockData = getWindowData();
 		
-		//TODO : should retrieve the date of the first positioned ancestor
+		//TODO : should retrieve the data of the first positioned ancestor
 		var firstPositionedAncestorData:FirstPositionedAncestorData = {
 			elements: new Array<ElementRenderer>(),
 			data:getContainerBlockData()

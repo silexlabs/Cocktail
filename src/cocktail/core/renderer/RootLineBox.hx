@@ -21,18 +21,37 @@ import cocktail.core.geom.GeomData;
  */
 class RootLineBox extends LineBox
 {
-
+	/**
+	 * class constructor
+	 */
 	public function new(elementRenderer:ElementRenderer) 
 	{
 		super(elementRenderer);
 	}
 	
-	//TODO : doc
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The bounds of a root line box is the bounds
+	 * of all of its child line boxes
+	 */
 	override private function get_bounds():RectangleData
 	{
 		return getChildrenBounds(getLineBoxesBounds(this));
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	//TODO : those method are already on ElementRenderer, share a common class ? interface ?
+	//add an helper class ?
+	
+	/**
+	 * Retrieve all the bounds of the child line box
+	 */
 	private function getLineBoxesBounds(lineBox:LineBox):Array<RectangleData>
 	{
 		var lineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
@@ -57,6 +76,9 @@ class RootLineBox extends LineBox
 		return lineBoxesBounds;
 	}
 	
+	/**
+	 * Get the bounds of all of the child line boxes bounds
+	 */
 	private function getChildrenBounds(childrenBounds:Array<RectangleData>):RectangleData
 	{
 
