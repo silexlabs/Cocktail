@@ -222,6 +222,16 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * When dispatched on the HTMLBodyElement,
+	 * the scroll event must bubble to be dispatched
+	 * on the Document and Window objects
+	 */
+	override private function mustBubbleScrollEvent():Bool
+	{
+		return true;
+	}
+	
+	/**
 	 * A computed value of visible for the overflow on the initial
 	 * block renderer is the same as auto, as it is likely that
 	 * scrollbar must be displayed to scroll through the document

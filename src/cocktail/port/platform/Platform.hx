@@ -137,36 +137,36 @@ class Platform extends EventCallback
 		switch(mouseEvent.type)
 		{
 			case MouseEvent.CLICK:
-				if (_onClick != null)
+				if (onclick != null)
 				{
-					_onClick(mouseEvent);
+					onclick(mouseEvent);
 				}
 				
 			case MouseEvent.MOUSE_DOWN:
-				if (_onMouseDown != null)
+				if (onmousedown != null)
 				{
-					_onMouseDown(mouseEvent);
+					onmousedown(mouseEvent);
 				}
 				
 			case MouseEvent.MOUSE_MOVE:
-				if (_onMouseMove != null)
+				if (onmousemove != null)
 				{
-					_onMouseMove(mouseEvent);
+					onmousemove(mouseEvent);
 				}
 				
 			case MouseEvent.MOUSE_UP:
-				if (_onMouseUp != null)
+				if (onmouseup != null)
 				{
-					_onMouseUp(mouseEvent);
+					onmouseup(mouseEvent);
 				}		
 		}
 	}
 	
 	private function dispatchMouseWheelEvent(mouseWheelEvent:WheelEvent):Void
 	{
-		if (_onMouseWheel != null)
+		if (onmousewheel != null)
 		{
-			_onMouseWheel(mouseWheelEvent);
+			onmousewheel(mouseWheelEvent);
 		}
 	}
 	
@@ -175,15 +175,15 @@ class Platform extends EventCallback
 		switch (keyboardEvent.type)
 		{
 			case KeyboardEvent.KEY_DOWN:
-				if (_onKeyDown != null)
+				if (onkeydown != null)
 				{
-					_onKeyDown(keyboardEvent);
+					onkeydown(keyboardEvent);
 				}
 				
 			case KeyboardEvent.KEY_UP:
-				if (_onKeyUp != null)
+				if (onkeyup != null)
 				{
-					_onKeyUp(keyboardEvent);
+					onkeyup(keyboardEvent);
 				}	
 		}
 		
@@ -191,9 +191,9 @@ class Platform extends EventCallback
 	
 	private function dispatchUIEvent(uiEvent:UIEvent):Void
 	{
-		if (_onResize != null)
+		if (onresize != null)
 		{
-			_onResize(uiEvent);
+			onresize(uiEvent);
 		}
 	}
 	
