@@ -65,6 +65,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private var _scrollTop:Float;
 	
 	/**
+	 * flag set when updating the scroll of the BlockBoxRenderer to prevent
+	 * infinite loop caused by Scrollbar updating scroll
+	 */
+	private var _isUpdatingScroll:Bool;
+	
+	/**
 	 * class constructor.
 	 * Init class attributes
 	 */
@@ -72,8 +78,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		super(node);
 		
+		_isUpdatingScroll = false;
+		
 		_scrollLeft = 0;
 		_scrollTop = 0;
+		
+		
 		
 		_scrollableBounds = {
 			x:0.0,
@@ -596,9 +606,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		//if the value if more the available scrollable width, set
 		//the value to the max scrollable width
-		else if (value > _scrollableBounds.width)
+		else if (value > (_scrollableBounds.width - getContainerBlockData().width))
 		{
-			_scrollLeft = Math.round(_scrollableBounds.width);
+			_scrollLeft = Math.round(_scrollableBounds.width - getContainerBlockData().width);
 		}
 		else
 		{
@@ -621,9 +631,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			_scrollTop = 0;
 		}
-		else if (value > _scrollableBounds.height)
+		else if (value > (_scrollableBounds.height - getContainerBlockData().height))
 		{
-			_scrollTop = Math.round(_scrollableBounds.height);
+			_scrollTop = Math.round(_scrollableBounds.height - getContainerBlockData().height);
 		}
 		else
 		{
@@ -668,17 +678,33 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	/**
 	 * When a scroll value changes, update the rendering
-	 * 
-	 * TODO : should also update the display of scrollbars if the scroll
-	 * wasn't triggered by user action, however there is a risk of infinite
-	 * update loop
 	 */
 	private function updateScroll():Void
 	{
-		if (isXAxisClipped() == true || isYAxisClipped() == true)
+		//only called if not already updating scroll, else
+		//infinite loop with scrollbars
+		if (_isUpdatingScroll == false)
 		{
-			_layerRenderer.scroll(_scrollLeft, _scrollTop);
+			_isUpdatingScroll = true;
+			
+			if (isXAxisClipped() == true || isYAxisClipped() == true)
+			{
+				_layerRenderer.scroll(_scrollLeft, _scrollTop);
+			}
+			
+			if (_horizontalScrollBar != null)
+			{
+				_horizontalScrollBar.scroll = scrollLeft;
+			}
+			if (_verticalScrollBar != null)
+			{
+				_verticalScrollBar.scroll = scrollTop;
+			}
+			
+			_isUpdatingScroll = false;
 		}
+		
+		
 	}
 	
 	//TODO : should manage the following case : 
@@ -816,8 +842,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		if (_horizontalScrollBar == null)
 		{
 			_horizontalScrollBar = new ScrollBar(false);
-			//TODO : is it not useless to call this method at this point ?
-			_horizontalScrollBar.attach();
 			appendChild(_horizontalScrollBar.elementRenderer);
 			_horizontalScrollBar.onscroll = onHorizontalScroll;
 		}
@@ -836,7 +860,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		if (_horizontalScrollBar != null)
 		{
-			_horizontalScrollBar.detach();
 			removeChild(_horizontalScrollBar.elementRenderer);
 			_horizontalScrollBar.onscroll = null;
 			_horizontalScrollBar = null;
@@ -877,10 +900,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			_verticalScrollBar.onscroll = onVerticalScroll;
 			
 			var htmlElement:HTMLElement = cast(_node);
-			//TODO : should be removed when scrollbar removed and scrollbar should be stored
-			//TODO : also when multiple scrollbar displayed, they all alwyays scroll because of
-			//event bubbling
-			htmlElement.addEventListener(WheelEvent.MOUSE_WHEEL, cast(onMouseWheel));
 		}
 		if (_verticalScrollBar != null)
 		{
@@ -901,7 +920,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			_verticalScrollBar.onscroll = null;
 			
 			var htmlElement:HTMLElement = cast(_node);
-			htmlElement.onmousewheel = null;
 			
 			_verticalScrollBar = null;
 			
@@ -909,14 +927,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//the vertical scrollbar is attached again
 			scrollTop = 0;
 		}
-	}
-	
-	//TODO : work but very rough, should be implemented at HTMLElement level,
-	//so that it can be canceled
-	private function onMouseWheel(wheelEvent:WheelEvent):Void
-	{
-		scrollTop -= wheelEvent.deltaY * 10;
-		_verticalScrollBar.scroll = scrollTop;
 	}
 	
 	/**
@@ -954,6 +964,24 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Wether a vertical active scrollbar is displayed
+	 * 
+	 * TODO 3 : must return false if scrollbar disabled
+	 */
+	override public function isVerticallyScrollable():Bool
+	{
+		return _verticalScrollBar != null;
+	}
+	
+	/**
+	 * same as above for horizontal scrollbar
+	 */
+	override public function isHorizontallyScrollable():Bool
+	{
+		return _horizontalScrollBar != null;
+	}
 	
 	/**
 	 * Determine wether the ElementRenderer

@@ -868,8 +868,36 @@ class HTMLElement extends Element
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// SCROLLING SETTER/GETTER
+	// SCROLLING SETTER/GETTER AND METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Utils method determining wether
+	 * the HTMLElement displays an active
+	 * vertical scrolbar
+	 * @return true if a vertical scrollbar is displayed
+	 * and isactive
+	 */
+	public function isVerticallyScrollable():Bool
+	{
+		if (_elementRenderer != null)
+		{
+			return _elementRenderer.isVerticallyScrollable();
+		}
+		return false;
+	}
+	
+	/**
+	 * same as absove for the horizontal scrollbar
+	 */
+	public function isHorizontallyScrollable():Bool
+	{
+		if (_elementRenderer != null)
+		{
+			return _elementRenderer.isHorizontallyScrollable();
+		}
+		return false;
+	}
 	
 	//TODO 3 : should unit test, not very what this getter
 	//is supposed to return

@@ -241,7 +241,8 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		//scrollbars dimension are removed from the Window dimension
 		//if displayed to return the actual available space
 		//
-		//TODO : should implement outerHeight and outerWidth ?
+		//TODO 5 : should implement outerHeight and outerWidth ?
+		//TODO 2 : rendering not exact with vertical scrollbar
 		if (_verticalScrollBar != null)
 		{
 			windowData.width -= _verticalScrollBar.coreStyle.computedStyle.width;
