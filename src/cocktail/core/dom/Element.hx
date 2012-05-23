@@ -209,7 +209,7 @@ class Element extends Node
 	 * Attr node. Use the value false for the parameter isId to
 	 * undeclare an attribute for being a user-determined ID attribute. 
 	 * 
-	 * TODO : implement schemaTypeInfo
+	 * TODO 5 : implement schemaTypeInfo
 	 * 
 	 * @param	name The name of the attribute.
 	 * @param	isId Whether the attribute is a of type ID.

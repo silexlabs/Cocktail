@@ -172,7 +172,7 @@ class Event
 		_bubbles = false;
 		_cancelable = false;
 		
-		//TODO : should it be 0 instead ?
+		//TODO 5 : should it be 0 instead ?
 		_eventPhase = Event.CAPTURING_PHASE;
 	}
 	

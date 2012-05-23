@@ -12,7 +12,7 @@ package cocktail.core.renderer;
  * A special case of EmbeddedLineBox which
  * wraps an ElementRenderer displayed as InlineBlock
  * 
- * TODO : is it really useful ? EmbeddedLineBox might
+ * TODO 4 : is it really useful ? EmbeddedLineBox might
  * be able to differientate with establishesNewFormattingContext
  * 
  * @author Yannick DOMINGUEZ
@@ -28,7 +28,7 @@ class InlineBlockLineBox extends EmbeddedLineBox
 		super(elementRenderer);
 	}
 	
-	//TODO : should return ascent to the last line, if the inline block
+	//TODO 2 : should return ascent to the last line, if the inline block
 	//establishes an inline formatting context
 	override private function get_leadedAscent():Float 
 	{

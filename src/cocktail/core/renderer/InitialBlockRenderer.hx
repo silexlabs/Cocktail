@@ -166,8 +166,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		_layerRenderer.render(Lib.current, { x:0.0, y:0.0 } );
 
 		#end
-		
-		
 	}
 	
 	/**

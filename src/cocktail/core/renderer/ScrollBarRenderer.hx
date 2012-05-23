@@ -43,7 +43,7 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * TODO : seems a bit overkill but works to referesh the thumb size
+	 * TODO 1 : seems a bit overkill but works to referesh the thumb size
 	 */
 	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{	
@@ -52,5 +52,50 @@ class ScrollBarRenderer extends BlockBoxRenderer
 		var scrollBar:ScrollBar = cast(_node);
 		scrollBar.updateThumbSize();
 	}
+
 	
+	/**
+	 * Get the right containing block dimensions for an ElementRenderer
+	 * based on its positioning scheme
+	 */
+	override private function getRelevantContainingBlockData(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:ContainingBlockData):ContainingBlockData
+	{
+		var containingBlockDimensions:ContainingBlockData;
+		
+		switch (computedStyle.position)
+		{
+
+			//for 'static' or 'relative' ElementRenderer, takes the containing block dimensions which is the parent	block	
+			case cssStatic, relative, fixed, absolute:
+				containingBlockDimensions = containingBlockData;
+				
+		}
+		
+		return containingBlockDimensions;
+	}
+	
+		/**
+	 * Insert the ElementRenderer in the array of absolutely positioned elements if it
+	 * in fact an absolutely positioned element
+	 */
+	override private function storeAbsolutelyPositionedChild(firstPositionedAncestorData:FirstPositionedAncestorData):Void
+	{
+		//don't do anything for static or relative positioned elements.
+		//Relative positioning is only an offset applied during rendering
+		if (isPositioned() == false || isRelativePositioned() == true || isScrollBar() == true)
+		{
+			return;
+		}
+		
+		//store as a positioned ElementRenderer.
+		//an absolutely positioned ElementRenderer is not laid out right away, it must
+		//wait for its first positioned ancestor to be laid out. The reason is that
+		//if the positioned ancestor height is 'auto', the height of the positioned
+		//ancestor is not yet determined and so this ElementRenderer can't be laid out
+		//using the bottom or right style yet. Once the first ancestor is laid out, it
+		//lays out all the stored positioned children
+		
+		//store the ElementRenderer to be laid out later
+		firstPositionedAncestorData.elements.push(this);
+	}
 }

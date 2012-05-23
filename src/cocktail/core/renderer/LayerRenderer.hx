@@ -119,8 +119,7 @@ class LayerRenderer extends Node
 			
 			//TODO 5 : render non-positioned float
 			
-			//TODO 1 :  doc
-			//TODO 1 : relative offset is no longer applied
+			//render all the replaced (embedded) children displayed as blocks
 			blockBoxRootRenderer.renderBlockReplacedChildren(_graphicsContext, relativeOffset);
 	
 			//render all the line boxes belonging to this layer
@@ -151,13 +150,11 @@ class LayerRenderer extends Node
 				renderChildLayer(_negativeOrderChildLayers, _graphicsContext, relativeOffset);
 			}
 			
-			//TODO 1 : render child layers
 			rootRenderer.render(_graphicsContext, relativeOffset);
 			
 			if (renderChildLayers == true)
 			{
 				renderChildLayer(_treeOrderChildLayers, _graphicsContext, relativeOffset);
-				
 				renderChildLayer(_positiveOrderChildLayers, _graphicsContext, relativeOffset);
 			}
 		}
@@ -180,6 +177,8 @@ class LayerRenderer extends Node
 	{
 		//TODO 1 : this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
 			
+		#if (flash9 || nme)
+		
 			if (blockBoxRootRenderer.isXAxisClipped() == true && blockBoxRootRenderer.isYAxisClipped() == true)
 			{
 				_graphicsContext.x = _rootRenderer.globalBounds.x;
@@ -206,6 +205,8 @@ class LayerRenderer extends Node
 			{
 				_graphicsContext.scrollRect = null;
 			}
+			
+		#end	
 	}
 	
 	public function scroll(x:Float, y:Float, startedScroll:Bool = true):Void
