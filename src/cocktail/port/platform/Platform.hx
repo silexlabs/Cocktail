@@ -5,16 +5,16 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.core.platform;
+package cocktail.port.platform;
 
 import cocktail.core.event.EventCallback;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
-import cocktail.core.Keyboard;
-import cocktail.core.Mouse;
-import cocktail.core.NativeWindow;
+import cocktail.port.Keyboard;
+import cocktail.port.Mouse;
+import cocktail.port.NativeWindow;
 
 /**
  * This class exposes an API to access platform

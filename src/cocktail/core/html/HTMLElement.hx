@@ -33,8 +33,6 @@ import cocktail.core.style.CoreStyle;
 import cocktail.Lib;
 import haxe.Log;
 import cocktail.core.focus.FocusManager;
-import cocktail.core.Keyboard;
-import cocktail.core.Mouse;
 import cocktail.core.style.StyleData;
 
 /**

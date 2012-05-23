@@ -8,12 +8,10 @@
 package cocktail.core.html;
 
 import cocktail.core.event.Event;
-import cocktail.core.mouse.MouseCursorManager;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.dom.DOMData;
 import cocktail.Lib;
 import haxe.Log;
-import cocktail.core.mouse.MouseData;
 
 /**
  * The anchor element, used to link to an external document, or

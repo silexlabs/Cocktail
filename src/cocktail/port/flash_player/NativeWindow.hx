@@ -10,12 +10,10 @@ package cocktail.port.flash_player;
 import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
-import cocktail.core.event.KeyboardEvent;
-import cocktail.core.nativeWindow.AbstractNativeWindow;
+import cocktail.port.platform.nativeWindow.AbstractNativeWindow;
 import flash.Lib;
 import flash.net.URLRequest;
 import haxe.Log;
-import cocktail.core.keyboard.AbstractKeyboard;
 
 /**
  * This is the flash AVM2 implementation of the native window event manager.

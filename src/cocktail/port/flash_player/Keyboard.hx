@@ -10,9 +10,9 @@ package cocktail.port.flash_player;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.event.KeyboardEvent;
+import cocktail.port.platform.keyboard.AbstractKeyboard;
 import flash.Lib;
 import haxe.Log;
-import cocktail.core.keyboard.AbstractKeyboard;
 
 /**
  * This is the flash AVM2 implementation of the keyboard event manager.
