@@ -174,7 +174,7 @@ class LineBox extends Node
 	 * Wether the lineboxe's ElementRenderer is
 	 * aboslutely positioned
 	 * 
-	 * TODO : check of still necessary
+	 * TODO 5 : check of still necessary
 	 */
 	public function isAbsolutelyPositioned():Bool
 	{
@@ -194,7 +194,7 @@ class LineBox extends Node
 	// PUBLIC FORMATTING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : doc + missing values for vertical align
+	//TODO 4 : doc + missing values for vertical align
 	public function getBaselineOffset(parentBaselineOffset:Float, parentXHeight:Float):Float
 	{
 		

@@ -25,7 +25,7 @@ import cocktail.core.font.FontData;
  * This is an ElementRenderer in charge of
  * rendering a text input form control
  * 
- * TODO IMPORTANT : this is a temporary 
+ * TODO 1 IMPORTANT : this is a temporary 
  * implementation, eventually it will 
  * need to be implemented without relying
  * on flash Text Field
@@ -90,7 +90,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	{
 		updateNativeTextField();
 		
-		//TODO : in NME, seems to make text field lose focus
+		//TODO 3 : in NME, seems to make text field lose focus
 		graphicContext.addChild(_nativeTextField);
 	}
 	
@@ -107,15 +107,11 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	 */
 	private function onTextInputFocus(e:cocktail.core.event.Event):Void
 	{
-		//TODO : seems to do nothing in NME
+		//TODO 2 : seems to do nothing in NME
 		flash.Lib.current.stage.focus = _nativeTextField;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// TODO : duplicated code
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	//TODO : duplicated code from FontManager NME implementation, a native
+	//TODO 3 : duplicated code from FontManager NME implementation, a native
 	//text element should be reconfigurable instead of needing to create a
 	//new one each time ? Won't work for flash text engine, but will work
 	//for texrt fields

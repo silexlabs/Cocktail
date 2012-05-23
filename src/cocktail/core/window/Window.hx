@@ -18,6 +18,9 @@ import cocktail.port.platform.Platform;
  * Represents the window through which the Document is
  * viewed
  * 
+ * It holds a reference to the class proxying access
+ * to platform specific event and methods
+ * 
  * TODO : should implement onload callback
  * 
  * @author Yannick DOMINGUEZ
@@ -42,6 +45,10 @@ class Window extends EventCallback
 	 */
 	public var innerWidth(get_innerWidth, never):Int;
 	
+	/**
+	 * A reference to the class through which platform specific
+	 * events and methods are retrieved
+	 */
 	private var _platform:Platform;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -57,6 +64,10 @@ class Window extends EventCallback
 		init();
 	}
 	
+	/**
+	 * Initialise the Document and set platform specific
+	 * listener on it
+	 */
 	private function init():Void
 	{
 		_platform = new Platform();
@@ -75,7 +86,6 @@ class Window extends EventCallback
 		_platform.onresize = htmlDocument.onPlatformResizeEvent;
 		
 		_document = htmlDocument;
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

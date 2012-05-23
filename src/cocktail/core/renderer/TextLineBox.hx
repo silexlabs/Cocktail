@@ -52,7 +52,7 @@ class TextLineBox extends LineBox
 	/**
 	 * Render the text using the graphic context as canvas.
 	 * 
-	 * TODO : should also render text decoration, or should
+	 * TODO 4 : should also render text decoration, or should
 	 * be on TextRenderer ?
 	 */
 	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
@@ -168,7 +168,7 @@ class TextLineBox extends LineBox
 	 * return the generated text height, which is
 	 * the addition of the leaded ascent and descent
 	 * 
-	 * TODO : should be line height in some cases
+	 * TODO 4 : should be line height in some cases
 	 */
 	private function getTextHeight():Float
 	{
