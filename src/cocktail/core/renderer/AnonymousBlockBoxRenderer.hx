@@ -1,6 +1,5 @@
 package cocktail.core.renderer;
 import cocktail.core.dom.Node;
-import cocktail.core.NativeElement;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.StyleData;

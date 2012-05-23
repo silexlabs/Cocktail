@@ -16,7 +16,7 @@ typedef HtmlDom = cocktail.core.html.HTMLElement;
 typedef Anchor = cocktail.core.html.HTMLAnchorElement;
 typedef Body = cocktail.core.html.HTMLBodyElement;
 typedef Style = cocktail.core.style.adapter.Style;
-typedef Window = cocktail.core.window.AbstractWindow;
+typedef Window = cocktail.core.window.Window;
 typedef Document = cocktail.core.html.HTMLDocument;
 typedef FormElement = cocktail.core.html.HTMLInputElement;
 

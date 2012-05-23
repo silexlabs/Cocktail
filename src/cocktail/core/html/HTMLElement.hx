@@ -33,8 +33,6 @@ import cocktail.core.style.CoreStyle;
 import cocktail.Lib;
 import haxe.Log;
 import cocktail.core.focus.FocusManager;
-import cocktail.core.Keyboard;
-import cocktail.core.Mouse;
 import cocktail.core.style.StyleData;
 
 /**
@@ -352,7 +350,7 @@ class HTMLElement extends Element
 	 * Overriden to run through the necessary check for 
 	 * HTML attribute retrieval
 	 * 
-	 * TODO : should override setAttribute for the 'style' attribute,
+	 * TODO 3 : should override setAttribute for the 'style' attribute,
 	 * whic should refresh coreStyle ion setting
 	 */
 	override public function getAttribute(name:String):String
@@ -414,7 +412,7 @@ class HTMLElement extends Element
 	 */
 	public function invalidateLayout(immediate:Bool = false):Void
 	{
-		//TODO : should use helper method like isRenderer instead of
+		//TODO 4 : should use helper method like isRenderer instead of
 		//relying on nullness
 		if (_elementRenderer != null)
 		{
@@ -559,7 +557,7 @@ class HTMLElement extends Element
 				//ElementRenderer, then destroy it
 				detachFromParentElementRenderer();
 				
-				//TODO IMPORTANT : should call a cleanup method as there is a cross
+				//TODO 1 : should call a cleanup method as there is a cross
 				//-reference to the HTMLElement
 				_elementRenderer = null;
 			}
@@ -634,7 +632,7 @@ class HTMLElement extends Element
 		{
 			case block, inlineBlock:
 				_elementRenderer = new BlockBoxRenderer(this);
-				//TODO : when creating, coreStyle should be reinitialised
+				//TODO 2 : when creating, coreStyle should be reinitialised
 				_elementRenderer.coreStyle = _coreStyle;
 				
 			case cssInline:
@@ -648,7 +646,7 @@ class HTMLElement extends Element
 	/**
 	 * Return wether this HTMLElement is supposed to be rendered
 	 * 
-	 * TODO : should use computed display style (although it computes
+	 * TODO 3 : should use computed display style (although it computes
 	 * the same as the specified value, will be a problem when adding inherit
 	 * style value) and also take into account
 	 * the HTML "hidden" attribute
@@ -691,7 +689,7 @@ class HTMLElement extends Element
 	 * key (Shift, control...) correspond
 	 * to the current modifier key state
 	 * 
-	 * TODO : get current modifier key state
+	 * TODO 2 : get current modifier key state
 	 */
 	public function click():Void
 	{
@@ -777,7 +775,7 @@ class HTMLElement extends Element
 	 */
 	private function get_tabIndex():Int
 	{
-		//TODO : awkward to call super, but else infinite loop
+		//TODO 2 : awkward to call super, but else infinite loop
 		var tabIndex:String = super.getAttribute(HTML_TAB_INDEX_ATTRIBUTE);
 		
 		if (tabIndex == "")
@@ -851,6 +849,8 @@ class HTMLElement extends Element
 	 * Return the first ancestor HTMLElement which has an 
 	 * activation behaviour. HTMLElement return itself if
 	 * it has one
+	 * 
+	 * TODO 1 : add default behaviour for mouse wheel events
 	 */
 	public function getNearestActivatableElement():HTMLElement
 	{
@@ -868,10 +868,44 @@ class HTMLElement extends Element
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// SCROLLING SETTER/GETTER
+	// SCROLLING SETTER/GETTER AND METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : should unit test, not very what this getter
+	/**
+	 * Utils method determining wether
+	 * the HTMLElement displays an active
+	 * vertical scrolbar
+	 * @param scrollOffset an optionnal parameter determining
+	 * the scroll offset which tries to be applied to the vertical scrollbar.
+	 * If applying the offset doesn't scroll the HTMLElement, for instance
+	 * if the HTMLElement is completely scrolled and a positive offset
+	 * is applied to it, then the method return false
+	 * 
+	 * @return true if a vertical scrollbar is displayed
+	 * and isactive
+	 */
+	public function isVerticallyScrollable(scrollOffset:Int = 0):Bool
+	{
+		if (_elementRenderer != null)
+		{
+			return _elementRenderer.isVerticallyScrollable(scrollOffset);
+		}
+		return false;
+	}
+	
+	/**
+	 * same as absove for the horizontal scrollbar
+	 */
+	public function isHorizontallyScrollable(scrollOffset:Int = 0):Bool
+	{
+		if (_elementRenderer != null)
+		{
+			return _elementRenderer.isHorizontallyScrollable(scrollOffset);
+		}
+		return false;
+	}
+	
+	//TODO 3 : should unit test, not very what this getter
 	//is supposed to return
 	private function get_scrollHeight():Int
 	{
@@ -990,7 +1024,7 @@ class HTMLElement extends Element
 		
 		//do nothing if its an empty string
 		//
-		//TODO : mostly done because hxtml throw
+		//TODO 2 : mostly done because hxtml throw
 		//error. Method shouldn't return here but
 		//hxtml should return null Node
 		if (value == "")
@@ -1040,7 +1074,7 @@ class HTMLElement extends Element
 	 * 
 	 * Returns all the children serialised data as an Xml
 	 * 
-	 * TODO : should serialize other type of nodes, such as comment node,
+	 * TODO 5 : should serialize other type of nodes, such as comment node,
 	 * doctype...
 	 */
 	private function doGetInnerHTML(node:Node, xml:Xml):Xml
@@ -1163,7 +1197,7 @@ class HTMLElement extends Element
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
 	
-	//TODO : unit test
+	//TODO 3  : unit test
 	private function get_offsetLeft():Int
 	{
 		invalidateLayout(true);
@@ -1192,14 +1226,14 @@ class HTMLElement extends Element
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
 	
-	//TODO : should be top border height
+	//TODO 5 : should be top border height
 	private function get_clientTop():Int
 	{
 		invalidateLayout(true);
 		return 0;
 	}
 	
-	//TODO : should be left border width
+	//TODO 5 : should be left border width
 	private function get_clientLeft():Int
 	{
 		invalidateLayout(true);

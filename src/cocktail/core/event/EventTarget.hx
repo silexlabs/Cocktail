@@ -82,17 +82,14 @@ class EventTarget
 				targetAncestors[i].dispatchEvent(evt);
 				//if the previous target ancestor stopped propagation, stop
 				//the event flow
-				if (evt.propagationStopped == true || evt.immediatePropagationStopped == true)
+				if (shouldStopEventPropagation(evt) == true)
 				{
 					//reset the event internal state, so that it
 					//can be reused
 					//first store the current defaultPrevented state, else
 					//it will be reset a the time of the return, then tries to
 					//execute the default action before stopping event flow
-					var defaultPrevented:Bool = evt.defaultPrevented;
-					executeDefaultActionIfNeeded(defaultPrevented, evt);
-					evt.reset();
-					return defaultPrevented;
+					return endEventDispatching(evt);
 				}
 			}
 			
@@ -101,13 +98,9 @@ class EventTarget
 			dispatchEvent(evt);
 			
 			//return if propagation must be stopped
-			if (evt.propagationStopped == true || evt.immediatePropagationStopped == true)
+			if (shouldStopEventPropagation(evt) == true)
 			{
-				//TODO : duplicated code
-				var defaultPrevented:Bool = evt.defaultPrevented;
-				executeDefaultActionIfNeeded(defaultPrevented, evt);
-				evt.reset();
-				return defaultPrevented;
+				return endEventDispatching(evt);
 			}
 			
 			//check if the event supports the bubbling phase
@@ -126,17 +119,15 @@ class EventTarget
 				{
 					targetAncestors[i].dispatchEvent(evt);
 					
-					if (evt.propagationStopped == true || evt.immediatePropagationStopped == true)
+					if (shouldStopEventPropagation(evt) == true)
 					{
-						var defaultPrevented:Bool = evt.defaultPrevented;
-						executeDefaultActionIfNeeded(defaultPrevented, evt);
-						evt.reset();
-						return defaultPrevented;
+						return endEventDispatching(evt);
 					}
 				}
 				
-				executeDefaultActionIfNeeded(evt.defaultPrevented, evt);
-				
+				//finish event dispatching, call the default actions and reset
+				//the state of the event object
+				return endEventDispatching(evt);
 			}
 		}
 		//this part is executed for target ancestor and for the target
@@ -262,8 +253,6 @@ class EventTarget
 			
 			//at "at target" phase, all the eventListeners are
 			//executed
-			//
-			//TODO :should they always be executed ?
 			else if (evt.eventPhase == Event.AT_TARGET)
 			{
 				eventListener.handleEvent(evt);
@@ -278,6 +267,27 @@ class EventTarget
 				return;
 			}
 		}
+	}
+	
+	/**
+	 * Utils method determining if event propagation
+	 * should be stopped
+	 */
+	private function shouldStopEventPropagation(evt:Event):Bool
+	{
+		return evt.propagationStopped == true || evt.immediatePropagationStopped == true;
+	}
+	
+	/**
+	 * End the dispatching of an event and
+	 * reset it to its initial state
+	 */
+	private function endEventDispatching(evt:Event):Bool
+	{
+		var defaultPrevented:Bool = evt.defaultPrevented;
+		executeDefaultActionIfNeeded(defaultPrevented, evt);
+		evt.reset();
+		return defaultPrevented;
 	}
 	
 	/**

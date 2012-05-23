@@ -10,7 +10,6 @@ package cocktail.core.dom;
 import cocktail.core.event.CustomEvent;
 import cocktail.core.event.Event;
 import cocktail.core.event.FocusEvent;
-import cocktail.core.event.IDocumentEvent;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.UIEvent;
@@ -30,7 +29,7 @@ import cocktail.core.dom.DOMData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Document extends Node, implements IDocumentEvent
+class Document extends Node
 {
 	/**
 	 * event interfaces const
@@ -113,7 +112,7 @@ class Document extends Node, implements IDocumentEvent
 	 * To create an attribute with a qualified name
 	 * and namespace URI, use the createAttributeNS method.
 	 * 
-	 * TODO : implement localName, prefix, namespaceURI
+	 * TODO 5 : implement localName, prefix, namespaceURI
 	 * 
 	 * @param	name The name of the attribute.
 	 * @return A new Attr object with the nodeName attribute 
@@ -128,7 +127,7 @@ class Document extends Node, implements IDocumentEvent
 	}
 	
 	/**
-	 * The DocumentEvent interface provides a mechanism by which the user can create an Event object
+	 * Provides a mechanism by which the user can create an Event object
 	 * of a type supported by the implementation.
 	 * If the feature “Events” is supported by the Document object, 
 	 * the DocumentEvent interface must be implemented on the same object.

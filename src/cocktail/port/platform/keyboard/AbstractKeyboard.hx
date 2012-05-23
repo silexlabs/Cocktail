@@ -5,12 +5,11 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.core.keyboard;
+package cocktail.port.platform.keyboard;
 
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.html.HTMLElement;
 import haxe.Log;
-import cocktail.core.NativeElement;
 
 /**
  * This class listens to native keyboard event
