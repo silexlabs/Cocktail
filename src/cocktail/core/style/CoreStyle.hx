@@ -9,7 +9,6 @@ package cocktail.core.style;
 
 import cocktail.core.FontManager;
 import cocktail.core.geom.Matrix;
-import cocktail.core.NativeElement;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.style.computer.BackgroundStylesComputer;

@@ -103,12 +103,11 @@ class LayerRenderer extends Node
 			
 			var blockBoxRootRenderer:BlockBoxRenderer = cast(rootRenderer);
 		
-			//TODO : block box background should not scroll with the rest of the children
+			//TODO 1 : block box background should not scroll with the rest of the children
 			//render the ElementRenderer which created this layer
 			blockBoxRootRenderer.render(_graphicsContext, relativeOffset);
 		
 			
-			//TODO here : render children with negative z-index
 			
 			if (renderChildLayers == true)
 			{
@@ -118,16 +117,16 @@ class LayerRenderer extends Node
 			//render all the block container children belonging to this layer
 			blockBoxRootRenderer.renderBlockContainerChildren(_graphicsContext, relativeOffset);
 			
-			//TODO here : render non-positioned float
+			//TODO 5 : render non-positioned float
 			
-			//TODO :  doc
-			//TODO : relative offset is no longer applied
+			//TODO 1 :  doc
+			//TODO 1 : relative offset is no longer applied
 			blockBoxRootRenderer.renderBlockReplacedChildren(_graphicsContext, relativeOffset);
 	
 			//render all the line boxes belonging to this layer
 			blockBoxRootRenderer.renderLineBoxes(_graphicsContext, relativeOffset);
 			
-			//TODO : doc, this fix is here to prevent inlineBlock from rendering their
+			//TODO 2 : doc, this fix is here to prevent inlineBlock from rendering their
 			//child layers, maybe add a new "if(inlineblock)" instead but should also
 			//work for float
 			if (renderChildLayers == true)
@@ -136,7 +135,6 @@ class LayerRenderer extends Node
 				renderChildLayer(_treeOrderChildLayers, _graphicsContext, relativeOffset);
 			}
 			
-			//TODO here : render children with positive z-index
 			
 			if (renderChildLayers == true)
 			{
@@ -145,10 +143,6 @@ class LayerRenderer extends Node
 			
 			clip(blockBoxRootRenderer);
 			
-			//_graphicsContext.x = rootRenderer.globalBounds.x;
-			//_graphicsContext.y = rootRenderer.globalBounds.y;
-		//	_graphicsContext.scrollRect = new Rectangle(0, 0, rootRenderer.globalBounds.width, rootRenderer.globalBounds.height);
-		
 			blockBoxRootRenderer.renderScrollBars(_scrollBarsGraphicContext, relativeOffset);
 			
 		}
@@ -156,7 +150,7 @@ class LayerRenderer extends Node
 		//here the root renderer is an inline box renderer which doesn't establish a formatting context
 		else if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == true)
 		{
-			//TODO : render child layers
+			//TODO 1 : render child layers
 			rootRenderer.render(_graphicsContext, relativeOffset);
 		}
 		
@@ -176,7 +170,7 @@ class LayerRenderer extends Node
 	
 	public function clip(blockBoxRootRenderer:BlockBoxRenderer):Void
 	{
-		//TODO : this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
+		//TODO 1 : this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
 			
 			if (blockBoxRootRenderer.isXAxisClipped() == true && blockBoxRootRenderer.isYAxisClipped() == true)
 			{
@@ -189,7 +183,7 @@ class LayerRenderer extends Node
 			{
 				_graphicsContext.x = _rootRenderer.globalBounds.x;
 				_graphicsContext.y = _rootRenderer.globalBounds.y;
-				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
+				//TODO 2 : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
 				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootRenderer.globalBounds.width, 10000);
 		
 			}
@@ -197,7 +191,7 @@ class LayerRenderer extends Node
 			{
 				_graphicsContext.x = _rootRenderer.globalBounds.x;
 				_graphicsContext.y = _rootRenderer.globalBounds.y;
-				//TODO : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
+				//TODO 2 : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
 				_graphicsContext.scrollRect = new Rectangle(0 , 0, 10000, _rootRenderer.globalBounds.height);
 			}
 			else
@@ -208,12 +202,10 @@ class LayerRenderer extends Node
 	
 	public function scroll(x:Float, y:Float, startedScroll:Bool = true):Void
 	{
-		//TODO IMPORTANT: big hack but will do for now
-		//TODO : should be applied to every positioned element whose
+		//TODO 1 IMPORTANT: big hack but will do for now
+		//TODO 2 : should be applied to every positioned element whose
 		//containing block is a parent of the root renderer.
 		//Add a public method on ElementRenderer ?
-		//TODO : might be trouble for hit test -> maybe not as done at ElementRenderer
-		//level, they now if they are subject to scroll or not
 		if (_rootRenderer.computedStyle.position == fixed)
 		{
 			_graphicsContext.y = y;
@@ -262,8 +254,8 @@ class LayerRenderer extends Node
 			var child:LayerRenderer = cast(_childNodes[i]);
 			child.detach();
 		}
-		
-		//TODO : quick fix, should be abstracted
+		#if (flash9 || nme)
+		//TODO 1 : quick fix, should be abstracted
 			for (i in 0..._graphicsContext.numChildren)
 			{
 				_graphicsContext.removeChildAt(0);
@@ -273,6 +265,7 @@ class LayerRenderer extends Node
 			{
 				_scrollBarsGraphicContext.removeChildAt(0);
 			}
+		#end	
 	}
 	
 	override public function appendChild(newChild:Node):Node
@@ -289,7 +282,7 @@ class LayerRenderer extends Node
 			case ZIndex.integer(value):
 				if (value == 0)
 				{
-					//TODO : might not put in the right order after DOM manipulation, use "insertBefore" ?
+					//TODO 1 : might not put in the right order after DOM manipulation, use "insertBefore" ?
 					_treeOrderChildLayers.push(childLayer);
 				}
 				else if (value > 0)
@@ -310,7 +303,7 @@ class LayerRenderer extends Node
 	{
 		var childLayer:LayerRenderer = cast(oldChild);
 
-		//TODO : shouldn't have ot try in each ?
+		//TODO 2 : shouldn't have ot try in each ?
 		_treeOrderChildLayers.remove(childLayer);
 		_positiveOrderChildLayers.remove(childLayer);
 		_negativeOrderChildLayers.remove(childLayer);
@@ -387,7 +380,7 @@ class LayerRenderer extends Node
 		_negativeOrderChildLayers = newNegativeChildLayers;
 	}
 	
-	//TODO : doc
+	//TODO 1 : doc
 	private function getRelativeOffset(rootRenderer:ElementRenderer):PointData
 	{
 		var relativeOffset:PointData = { x:0.0, y:0.0 };
@@ -426,7 +419,7 @@ class LayerRenderer extends Node
 		return relativeOffset;
 	}
 	
-	//TODO : for now traverse all tree, but should instead return as soon as an ElementRenderer
+	//TODO 2 : for now traverse all tree, but should instead return as soon as an ElementRenderer
 	//is found
 	public function getTopMostElementRendererAtPoint(point:PointData, scrollX:Float, scrollY:Float):ElementRenderer
 	{
@@ -442,9 +435,6 @@ class LayerRenderer extends Node
 		if (_rootRenderer.hasChildNodes() == true)
 		{
 			var childLayers:Array<LayerRenderer> = getChildLayers();
-		
-			//scrollX += _rootRenderer.scrollLeft;
-			//scrollY += _rootRenderer.scrollTop;
 			
 			
 			var elementRenderersAtPointInChildLayers:Array<ElementRenderer> = getElementRenderersAtPointInChildLayers(point, childLayers, scrollX, scrollY);
@@ -522,13 +512,13 @@ class LayerRenderer extends Node
 			
 			var elementRenderersAtPointInChildLayer:Array<ElementRenderer> = [];
 
-			//TODO IMPORTANT : works but very very very messy, done that because scrollbars, should not use the scroll
+			//TODO 1 IMPORTANT : works but very very very messy, done that because scrollbars, should not use the scroll
 			//of its parent for the hit test
 			if (untyped Std.is(childLayers[i]._rootRenderer.node, ScrollBar) == true)
 			{
 				elementRenderersAtPointInChildLayer = childLayers[i].getElementRenderersAtPoint(point, scrollX, scrollY);
 			}
-			//TODO : also very messy, ElementRenderer should be aware of their scrollBounds
+			//TODO 1 : also very messy, ElementRenderer should be aware of their scrollBounds
 			else if (untyped childLayers[i]._rootRenderer.coreStyle.position == fixed)
 			{
 				elementRenderersAtPointInChildLayer = childLayers[i].getElementRenderersAtPoint(point, scrollX , scrollY);
@@ -599,7 +589,7 @@ class LayerRenderer extends Node
 	
 	
 	
-	//TODO : implement layer renderer transformation
+	//TODO 4 : implement layer renderer transformation
 	
 	/**
 	 * when the matrix is set, update also

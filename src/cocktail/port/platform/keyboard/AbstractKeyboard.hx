@@ -10,7 +10,6 @@ package cocktail.port.platform.keyboard;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.html.HTMLElement;
 import haxe.Log;
-import cocktail.core.NativeElement;
 
 /**
  * This class listens to native keyboard event

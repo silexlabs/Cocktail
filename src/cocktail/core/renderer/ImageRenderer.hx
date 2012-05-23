@@ -35,7 +35,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : test opacity
+	//TODO 2 : test opacity
 	/**
 	 * When rendered, renders the embedded picture using the
 	 * graphicContext as canvas
