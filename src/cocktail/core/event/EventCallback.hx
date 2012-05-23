@@ -32,45 +32,43 @@ class EventCallback extends EventTarget
 	/**
 	 * The callback called on mouse click (rapid mouse down and mouse up)
 	 */
-	private var _onClick:MouseEvent->Void;
-	public var onclick(get_onClick, set_onClick):MouseEvent->Void;
+	public var onclick(default, set_onClick):MouseEvent->Void;
+	
+	/**
+	 * The callback called on mouse double click
+	 */
+	public var ondblclick(default, set_onDblClick):MouseEvent->Void;
 	
 	/**
 	 * The callback called on mouse down 
 	 */
-	private var _onMouseDown:MouseEvent->Void;
-	public var onmousedown(get_onMouseDown, set_onMouseDown):MouseEvent->Void;
+	public var onmousedown(default, set_onMouseDown):MouseEvent->Void;
 	
 	/**
 	 * The callback called on mouse up
 	 */
-	private var _onMouseUp:MouseEvent->Void;
-	public var onmouseup(get_onMouseUp, set_onMouseUp):MouseEvent->Void;
+	public var onmouseup(default, set_onMouseUp):MouseEvent->Void;
 	
 	/**
 	 * The callback called when the mouse pointer hovers this htmlElement
 	 */
-	private var _onMouseOver:MouseEvent->Void;
-	public var onmouseover(get_onMouseOver, set_onMouseOver):MouseEvent->Void;
+	public var onmouseover(default, set_onMouseOver):MouseEvent->Void;
 	
 	/**
 	 * The callback called on mouse out of this htmlElement
 	 */
-	private var _onMouseOut:MouseEvent->Void;
-	public var onmouseout(get_onMouseOut, set_onMouseOut):MouseEvent->Void;
+	public var onmouseout(default, set_onMouseOut):MouseEvent->Void;
 	
 	/**
 	 * The callback called when the mouse pointer moves over this htmlElement
 	 */
-	private var _onMouseMove:MouseEvent->Void;
-	public var onmousemove(get_onMouseMove, set_onMouseMove):MouseEvent->Void;
+	public var onmousemove(default, set_onMouseMove):MouseEvent->Void;
 	
 	/**
 	 * The callback called when the mouse wheel is rotated while the mouse
 	 * pointer is over this element
 	 */
-	private var _onMouseWheel:WheelEvent->Void;
-	public var onmousewheel(get_onMouseWheel, set_onMouseWheel):WheelEvent->Void;
+	public var onmousewheel(default, set_onMouseWheel):WheelEvent->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Keyboard callbacks
@@ -79,14 +77,12 @@ class EventCallback extends EventTarget
 	/**
 	 * The callback called on key down when this htmlElement has focus
 	 */
-	private var _onKeyDown:KeyboardEvent->Void;
-	public var onkeydown(get_onKeyDown, set_onKeyDown):KeyboardEvent->Void;
+	public var onkeydown(default, set_onKeyDown):KeyboardEvent->Void;
 	
 	/**
 	 * The callback called on key up when this htmlElement has focus
 	 */
-	private var _onKeyUp:KeyboardEvent->Void;
-	public var onkeyup(get_onKeyUp, set_onKeyUp):KeyboardEvent->Void;
+	public var onkeyup(default, set_onKeyUp):KeyboardEvent->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Focus callbacks
@@ -96,14 +92,12 @@ class EventCallback extends EventTarget
 	 * callback called when the HTMLElement receives 
 	 * the focus
 	 */
-	private var _onFocus:FocusEvent->Void;
-	public var onfocus(get_onFocus, set_onFocus):FocusEvent->Void;
+	public var onfocus(default, set_onFocus):FocusEvent->Void;
 	
 	/**
 	 * callback called when the HTMLElement loses the focus
 	 */
-	private var _onBlur:FocusEvent->Void;
-	public var onblur(get_onBlur, set_onBlur):FocusEvent->Void;
+	public var onblur(default, set_onBlur):FocusEvent->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// UI callbacks
@@ -113,8 +107,7 @@ class EventCallback extends EventTarget
 	 * Callback called when the window through which
 	 * the document is viewed is resized
 	 */
-	private var _onResize:UIEvent->Void;
-	public var onresize(get_onResize, set_onResize):UIEvent->Void;
+	public var onresize(default, set_onResize):UIEvent->Void;
 	
 	/**
 	 * Callback called when
@@ -180,79 +173,50 @@ class EventCallback extends EventTarget
 	
 	private function set_onClick(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(MouseEvent.CLICK, cast(value), cast(_onClick));
-		return _onClick = value;
+		updateCallbackListener(MouseEvent.CLICK, cast(value), cast(onclick));
+		return onclick = value;
 	}
 	
-	private function get_onClick():MouseEvent->Void
+	private function set_onDblClick(value:MouseEvent->Void):MouseEvent->Void
 	{
-		return _onClick;
+		updateCallbackListener(MouseEvent.DOUBLE_CLICK, cast(value), cast(ondblclick));
+		return ondblclick = value;
 	}
 	
 	private function set_onMouseDown(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(MouseEvent.MOUSE_DOWN, cast(value), cast(_onMouseDown));
-		return _onMouseDown = value;
-	}
-	
-	private function get_onMouseDown():MouseEvent->Void
-	{
-		return _onMouseDown;
+		updateCallbackListener(MouseEvent.MOUSE_DOWN, cast(value), cast(onmousedown));
+		return onmousedown = value;
 	}
 	
 	private function set_onMouseUp(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(MouseEvent.MOUSE_UP, cast(value), cast(_onMouseUp));
-		return _onMouseUp = value;
-	}
-	
-	private function get_onMouseUp():MouseEvent->Void
-	{
-		return _onMouseUp;
+		updateCallbackListener(MouseEvent.MOUSE_UP, cast(value), cast(onmouseup));
+		return onmouseup = value;
 	}
 	
 	private function set_onMouseOver(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(MouseEvent.MOUSE_OVER, cast(value), cast(_onMouseOver));
-		return _onMouseOver = value;
-	}
-	
-	private function get_onMouseOver():MouseEvent->Void
-	{
-		return _onMouseOver;
+		updateCallbackListener(MouseEvent.MOUSE_OVER, cast(value), cast(onmouseover));
+		return onmouseover = value;
 	}
 	
 	private function set_onMouseOut(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(MouseEvent.MOUSE_OUT, cast(value), cast(_onMouseOut));
-		return _onMouseOut = value;
-	}
-	
-	private function get_onMouseOut():MouseEvent->Void
-	{
-		return _onMouseOut;
+		updateCallbackListener(MouseEvent.MOUSE_OUT, cast(value), cast(onmouseout));
+		return onmouseout = value;
 	}
 	
 	private function set_onMouseMove(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(MouseEvent.MOUSE_MOVE, cast(value), cast(_onMouseMove));
-		return _onMouseMove = value;
-	}
-	
-	private function get_onMouseMove():MouseEvent->Void
-	{
-		return _onMouseMove;
+		updateCallbackListener(MouseEvent.MOUSE_MOVE, cast(value), cast(onmousemove));
+		return onmousemove = value;
 	}
 	
 	private function set_onMouseWheel(value:WheelEvent->Void):WheelEvent->Void
 	{
-		updateCallbackListener(WheelEvent.MOUSE_WHEEL, cast(value), cast(_onMouseWheel));
-		return _onMouseWheel = value;
-	}
-	
-	private function get_onMouseWheel():WheelEvent->Void
-	{
-		return _onMouseWheel;
+		updateCallbackListener(WheelEvent.MOUSE_WHEEL, cast(value), cast(onmousewheel));
+		return onmousewheel = value;
 	}
 	
 		// KEYBOARD
@@ -260,24 +224,14 @@ class EventCallback extends EventTarget
 	
 	private function set_onKeyDown(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
-		updateCallbackListener(KeyboardEvent.KEY_DOWN, cast(value), cast(_onKeyDown));
-		return _onKeyDown = value;
-	}
-	
-	private function get_onKeyDown():KeyboardEvent->Void
-	{
-		return _onKeyDown;
+		updateCallbackListener(KeyboardEvent.KEY_DOWN, cast(value), cast(onkeydown));
+		return onkeydown = value;
 	}
 	
 	private function set_onKeyUp(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
-		updateCallbackListener(KeyboardEvent.KEY_UP, cast(value), cast(_onKeyUp));
-		return _onKeyUp = value;
-	}
-	
-	private function get_onKeyUp():KeyboardEvent->Void
-	{
-		return _onKeyUp;
+		updateCallbackListener(KeyboardEvent.KEY_UP, cast(value), cast(onkeyup));
+		return onkeyup = value;
 	}
 	
 		// FOCUS
@@ -285,24 +239,14 @@ class EventCallback extends EventTarget
 	
 	private function set_onFocus(value:FocusEvent->Void):FocusEvent->Void
 	{
-		updateCallbackListener(FocusEvent.FOCUS, cast(value), cast(_onFocus));
-		return _onFocus = value;
-	}
-	
-	private function get_onFocus():FocusEvent->Void
-	{
-		return _onFocus;
+		updateCallbackListener(FocusEvent.FOCUS, cast(value), cast(onfocus));
+		return onfocus = value;
 	}
 	
 	private function set_onBlur(value:FocusEvent->Void):FocusEvent->Void
 	{
-		updateCallbackListener(FocusEvent.BLUR, cast(value), cast(_onBlur));
-		return _onBlur = value;
-	}
-	
-	private function get_onBlur():FocusEvent->Void
-	{
-		return _onBlur;
+		updateCallbackListener(FocusEvent.BLUR, cast(value), cast(onblur));
+		return onblur = value;
 	}
 
 		// UI
@@ -310,13 +254,8 @@ class EventCallback extends EventTarget
 	
 	private function set_onResize(value:UIEvent->Void):UIEvent->Void
 	{
-		updateCallbackListener(UIEvent.RESIZE, cast(value), cast(_onResize));
-		return _onResize = value;
-	}
-	
-	private function get_onResize():UIEvent->Void
-	{
-		return _onResize;
+		updateCallbackListener(UIEvent.RESIZE, cast(value), cast(onresize));
+		return onresize = value;
 	}
 	
 	private function set_onScroll(value:UIEvent->Void):UIEvent->Void

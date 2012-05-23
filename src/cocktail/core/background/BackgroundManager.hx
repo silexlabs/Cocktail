@@ -182,7 +182,7 @@ class BackgroundManager
 		
 		var backgroundImageNativeElement:NativeElement = backgroundImageDrawingManager.nativeElement;
 		
-		//TODO : should retrieve image if already loaded, else start loading and call an invalidate() method when it is in fact loaded
+		//TODO 4 : should retrieve image if already loaded, else start loading and call an invalidate() method when it is in fact loaded
 		var onBackgroundImageLoadedDelegate:BackgroundDrawingManager->NativeElement->ImageLoader->CoreStyle->RectangleData->BackgroundPosition->
 		BackgroundSize->BackgroundOrigin-> BackgroundClip-> BackgroundRepeat->
 		BackgroundImage->Void = onBackgroundImageLoaded;
@@ -264,7 +264,7 @@ class BackgroundManager
 	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
 	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):Void
 	{
-		//TODO : re-implement
+		//TODO 4 : re-implement
 		/**drawBackgroundColor(style, UnitManager.getColorDataFromCSSColor(backgroundColor), backgroundImageNativeElement, backgroundBox, backgroundPosition,
 				backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);*/
 	}

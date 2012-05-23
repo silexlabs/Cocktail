@@ -168,6 +168,9 @@ class Event
 		_immediatePropagationStopped = false;
 		_target = null;
 		_currentTarget = null;
+		_type = null;
+		_bubbles = false;
+		_cancelable = false;
 		
 		//TODO : should it be 0 instead ?
 		_eventPhase = Event.CAPTURING_PHASE;

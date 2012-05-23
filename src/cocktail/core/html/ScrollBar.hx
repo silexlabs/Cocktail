@@ -25,9 +25,9 @@ import haxe.Log;
  * This allows styling it like any other DOM tree HTMLElement without polluting
  * the public DOM tree
  * 
- * TODO : implement disabled scrollbar when maxScroll is smaller than scroll height / width
+ * TODO 2 : implement disabled scrollbar when maxScroll is smaller than scroll height / width
  * 
- * TODO : reproducing Windows look and feel, is this what we want ?
+ * TODO 3 : reproducing Windows look and feel, is this what we want ?
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -143,7 +143,7 @@ class ScrollBar extends HTMLElement
 		appendChild(_downArrow);
 		
 		//set callbacks on the scrollbar parts
-		//TODO : should be cleaned-up when detached, should keep ref to all the callback
+		//TODO 2 : should be cleaned-up when detached, should keep ref to all the callback
 		addEventListener(MouseEvent.MOUSE_DOWN, cast(onTrackMouseDown));
 		_scrollThumb.addEventListener(MouseEvent.MOUSE_DOWN, cast(onThumbMouseDown));
 		_downArrow.addEventListener(MouseEvent.MOUSE_DOWN, cast(onDownArrowMouseDown));
@@ -252,7 +252,7 @@ class ScrollBar extends HTMLElement
 	 * Overriden as the ScrollBar is not supposed to 
 	 * have a default action
 	 * 
-	 * TODO : at first overriden because, else tries to focus on document without
+	 * TODO 2 : at first overriden because, else tries to focus on document without
 	 * having a reference to the document. Should instead be created through
 	 * factory method ? with custom tag ScrollBar ?
 	 */
@@ -268,7 +268,7 @@ class ScrollBar extends HTMLElement
 	/**
 	 * on mouse down, increment the scroll offset
 	 * 
-	 * TODO : add timer to call the method again while the mouse is down
+	 * TODO 1 : add timer to call the method again while the mouse is down
 	 */
 	private function onDownArrowMouseDown(event:MouseEvent):Void
 	{
@@ -315,7 +315,7 @@ class ScrollBar extends HTMLElement
 		_thumbMoveDelegate = onThumbMove;
 		_thumbUpDelegate = onThumbMouseUp;
 		
-		//TODO : originally, listened to those event on the Body but as the ScrollBar is not
+		//TODO 2 : originally, listened to those event on the Body but as the ScrollBar is not
 		//attached to the DOM, the event didn't bubled when mouse hovered track. Should scrollbar
 		//events bubble to document and window ?
 		cocktail.Lib.document.addEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
@@ -340,7 +340,7 @@ class ScrollBar extends HTMLElement
 	{
 		if (_isVertical == true)
 		{
-			//TODO : not very precise
+			//TODO 1 : not very precise
 			var thumbDelta:Float = event.screenY - _mouseMoveStart;
 			scroll += thumbDelta;
 			
@@ -348,7 +348,7 @@ class ScrollBar extends HTMLElement
 		}
 		else
 		{
-			//TODO : not very precise
+			//TODO 1 : not very precise
 			var thumbDelta:Float = event.screenX - _mouseMoveStart;
 			scroll += thumbDelta;
 			

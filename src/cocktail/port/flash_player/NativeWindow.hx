@@ -7,28 +7,28 @@
 */
 package cocktail.port.flash_player;
 
-import cocktail.core.dom.Document;
 import cocktail.core.event.UIEvent;
-import cocktail.core.html.HTMLAnchorElement;
-import cocktail.core.window.AbstractWindow;
-import cocktail.core.event.Event;
+import cocktail.core.html.HTMLElement;
+import cocktail.core.NativeElement;
+import cocktail.port.platform.nativeWindow.AbstractNativeWindow;
 import flash.Lib;
 import flash.net.URLRequest;
+import haxe.Log;
 
 /**
- * This is the implementation of the 
- * Window object for the flash player
+ * This is the flash AVM2 implementation of the native window event manager.
+ * Listens to flash native resize event on the flash Stage.
  * 
  * @author Yannick DOMINGUEZ
  */
-class Window extends AbstractWindow
+class NativeWindow extends AbstractNativeWindow
 {
 	/**
 	 * class constructor
 	 */
-	public function new(document:Document = null) 
+	public function new() 
 	{
-		super(document);
+		super();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -38,32 +38,51 @@ class Window extends AbstractWindow
 	/**
 	 * Open a new window using flash API
 	 */
-	override public function open(url:String, name:String = HTMLAnchorElement.TARGET_BLANK):Void
+	override public function open(url:String, name:String):Void
 	{
 		flash.Lib.getURL(new URLRequest(url), name);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN SETTERS/GETTERS
+	// Overriden private utils methods
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When a resize callback is set, listen to resize event
-	 * on the flash Stage
+	 * Set resize listeners on the stage
 	 */
-	override private function set_onResize(value:UIEvent->Void):UIEvent->Void
+	override private function setNativeListeners():Void
 	{
-		if (value == null)
-		{
-			Lib.current.stage.removeEventListener(flash.events.Event.RESIZE, onNativeResize);
-		}
-		else
-		{
-			Lib.current.stage.addEventListener(flash.events.Event.RESIZE, onNativeResize);
-		}
-		
-		return _onResize = value;
+		Lib.current.stage.addEventListener(flash.events.Event.RESIZE, onNativeResize);
 	}
+	
+	/**
+	 * Remove resize listeners from the stage
+	 */
+	override private function removeNativeListeners():Void
+	{
+		Lib.current.stage.removeEventListener(flash.events.Event.RESIZE, onNativeResize);
+	}
+	
+	/**
+	 * Create and return a cross-platform resize event
+	 * from the flash event
+	 * 
+	 * @param	event the native event
+	 */
+	override private function getUIEvent(event:Dynamic):UIEvent
+	{
+		//cast the flash event
+		var typedEvent:flash.events.Event = cast(event);
+
+		var resizeEvent:UIEvent = new UIEvent();
+		resizeEvent.initUIEvent(UIEvent.RESIZE, false, false, null, 0.0);
+		
+		return resizeEvent;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Return the flash Stage height
@@ -79,23 +98,6 @@ class Window extends AbstractWindow
 	override private function get_innerWidth():Int
 	{
 		return Lib.current.stage.stageWidth;
-	}
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Called when flash Stage is resized
-	 */
-	private function onNativeResize(event:Dynamic):Void
-	{
-		if (_onResize != null)
-		{
-			var resizeEvent:UIEvent = new UIEvent();
-			resizeEvent.initUIEvent(UIEvent.RESIZE, false, false, null, 0.0);
-			_onResize(resizeEvent);
-		}
 	}
 	
 }

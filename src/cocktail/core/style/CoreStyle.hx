@@ -9,7 +9,6 @@ package cocktail.core.style;
 
 import cocktail.core.FontManager;
 import cocktail.core.geom.Matrix;
-import cocktail.core.NativeElement;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.style.computer.BackgroundStylesComputer;
@@ -425,7 +424,7 @@ class CoreStyle
 	 * Apply the standard default CSS value according to this
 	 * document : http://www.w3.org/TR/CSS21/sample.html
 	 * 
-	 * TODO : This method should eventually be removed when a StyleManager
+	 * TODO 5 : This method should eventually be removed when a StyleManager
 	 * is introduced which will prevent those styles from being hard-coded
 	 */
 	private function applyDefaultHTMLStyles(tagName:String):Void
@@ -438,7 +437,7 @@ class CoreStyle
 			"center", "dir", "hr", "menu" :
 				_display = Display.block;
 				
-			//TODO : should be replaced by list-item once implemented	
+			//TODO 5 : should be replaced by list-item once implemented	
 			case "li" :
 				_display = Display.block;
 				

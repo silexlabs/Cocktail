@@ -13,6 +13,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
+import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.html.HTMLAnchorElement;
@@ -20,13 +21,8 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLHtmlElement;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.html.HTMLInputElement;
-import cocktail.core.Keyboard;
-import cocktail.core.keyboard.AbstractKeyboard;
-import cocktail.core.Mouse;
-import cocktail.core.NativeElement;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
-import cocktail.core.Window;
 import cocktail.core.event.FocusEvent;
 import haxe.Log;
 import haxe.Timer;
@@ -73,12 +69,6 @@ class HTMLDocument extends Document
 	public var body(get_body, never):HTMLBodyElement;
 	
 	/**
-	 * A reference to the Window, used to listen for
-	 * resize events
-	 */
-	private var _window:Window;
-	
-	/**
 	 * The activeElement set/get the element
 	 * in the document which is focused.
 	 * If no element in the Document is focused, this returns the body element. 
@@ -91,18 +81,6 @@ class HTMLDocument extends Document
 	 * for this Document
 	 */
 	private var _focusManager:FocusManager;
-	
-	/**
-	 * An instance of the cross-platform keyboard class, used to listen
-	 * to key down and up event
-	 */
-	private var _keyboard:Keyboard;
-	
-	/**
-	 * An instance of the cross-platform mouse class, used to listen
-	 * to mouse input
-	 */
-	private var _mouse:Mouse;
 	
 	/**
 	 * A reference to the ElementRenderer currently hovered by the
@@ -129,38 +107,6 @@ class HTMLDocument extends Document
 		
 		_hoveredElementRenderer = _body.elementRenderer;
 		
-		//listen to the Window resizes
-		//
-		//TODO shouldn't instantiatze a Window. Resize
-		//event should be listened to by the Window itself
-		_window = new Window();
-		_window.onresize = onWindowResize;
-		
-		initKeyboardListeners();
-		initMouseListeners();
-	}
-	
-	/**
-	 * init mouse listeners
-	 */
-	private function initMouseListeners():Void
-	{
-		_mouse = new Mouse();
-		_mouse.onMouseDown = dispatchMouseEvent;
-		_mouse.onMouseUp = dispatchMouseEvent;
-		_mouse.onMouseMove = dispatchMouseMoveEvent;
-		_mouse.onClick = dispatchMouseClickEvent;
-		_mouse.onMouseWheel = dispatchMouseEvent;
-	}
-	
-	/**
-	 * init keyboard listeners
-	 */
-	private function initKeyboardListeners():Void
-	{
-		_keyboard = new Keyboard();
-		_keyboard.onKeyDown = onKeyDown;
-		_keyboard.onKeyUp = onKeyUp;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -202,29 +148,13 @@ class HTMLDocument extends Document
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE INPUT METHODS
+	// PUBLIC PLATFORM CALLBACKS
+	// Those callbacks are called in reaction to platform level event, such
+	// as a resize of the window of the application
+	//
+	// TODO : for mouse event, only mouse down, up and move should be listened to,
+	// click and double click should be abstracted
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Utils method returning the first ElementRenderer whose dom node
-	 * is an Element node. This is used when dispatching MouseEvent, as their target
-	 * can only be Element node.
-	 */
-	private function getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent:MouseEvent):ElementRenderer
-	{
-		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
-		
-		while (elementRendererAtPoint.node.nodeType != Node.ELEMENT_NODE)
-		{
-			elementRendererAtPoint = cast(elementRendererAtPoint.parentNode);
-			if (elementRendererAtPoint == null)
-			{
-				return null;
-			}
-		}
-		
-		return elementRendererAtPoint;
-	}
 	
 	/**
 	 * Dispatch the MouseEvent on the DOM node of the top most 
@@ -232,10 +162,38 @@ class HTMLDocument extends Document
 	 * 
 	 * @param	mouseEvent
 	 */
-	private function dispatchMouseEvent(mouseEvent:MouseEvent):Void
+	public function onPlatformMouseEvent(mouseEvent:MouseEvent):Void
 	{
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
 		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
+	}
+	
+	/**
+	 * When a mouse wheel event occurs first dispatch it, and
+	 * if the default actin wasn't prevented, vertically scroll
+	 * the first vertically scrollable parent of the event target
+	 */
+	public function onPlatformMouseWheelEvent(wheelEvent:WheelEvent):Void
+	{
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(wheelEvent);
+		elementRendererAtPoint.node.dispatchEvent(wheelEvent);
+		
+		if (wheelEvent.defaultPrevented == false)
+		{
+			var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
+			
+			//get the amount of vertical scrolling to apply in pixel
+			//TODO 4 : for now mulitplier hard coded
+			var scrollOffset:Int = Math.round(wheelEvent.deltaY * 10) ;
+			
+			//get the first ancestor which can be vertically scrolled
+			var scrollableHTMLElement:HTMLElement = getFirstVerticallyScrollableHTMLElement(htmlElement, scrollOffset);
+			if (scrollableHTMLElement != null)
+			{
+				scrollableHTMLElement.scrollTop -= scrollOffset;
+			}
+		
+		}
 	}
 	
 	/**
@@ -244,10 +202,10 @@ class HTMLDocument extends Document
 	 * activation behaviour, such as following a 
 	 * link for an HTMLAnchorElement
 	 */
-	private function dispatchMouseClickEvent(mouseEvent:MouseEvent):Void
+	public function onPlatformMouseClickEvent(mouseEvent:MouseEvent):Void
 	{
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
-		
+
 		var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
 		
 		//find the first parent of the HTMLElement which has an activation behaviour, might
@@ -281,13 +239,13 @@ class HTMLDocument extends Document
 	 * dispatching as they also must manager the hovered
 	 * htmlElement
 	 * 
-	 * TODO : implement all the mouse event such as mouseleave, and
+	 * TODO 4 : implement all the mouse event such as mouseleave, and
 	 * check if the implementation is in the right order
 	 */
-	private function dispatchMouseMoveEvent(mouseEvent:MouseEvent):Void
+	public function onPlatformMouseMoveEvent(mouseEvent:MouseEvent):Void
 	{
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
-		
+
 		if (_hoveredElementRenderer != elementRendererAtPoint)
 		{
 			var mouseOutEvent:MouseEvent = new MouseEvent();
@@ -306,7 +264,6 @@ class HTMLDocument extends Document
 			elementRendererAtPoint.dispatchEvent(mouseOverEvent);
 		}
 		
-		
 		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
 	}
 	
@@ -316,11 +273,11 @@ class HTMLDocument extends Document
 	 * on the active element and detect if a tab
 	 * focus or a simulated click must happen.
 	 */
-	private function onKeyDown(keyboardEvent:KeyboardEvent):Void
+	public function onPlatformKeyDownEvent(keyboardEvent:KeyboardEvent):Void
 	{
 		activeElement.dispatchEvent(keyboardEvent);
 
-		//TODO : should this logic go into HTMLElement ? or is it application/embedder level ?
+		//TODO 4 : should this logic go into HTMLElement ? or is it application/embedder level ?
 		switch (Std.parseInt(keyboardEvent.keyChar))
 		{
 			case TAB_KEY_CODE:
@@ -332,7 +289,7 @@ class HTMLDocument extends Document
 	
 			case ENTER_KEY_CODE, SPACE_KEY_CODE:
 				//only simulate click if default was not prevented
-				//TODO : should run activation behaviour steps ?
+				//TODO 3 : should run activation behaviour steps ?
 				if (keyboardEvent.defaultPrevented == false)
 				{
 					activeElement.click();
@@ -344,9 +301,18 @@ class HTMLDocument extends Document
 	 * When a key up event happens, dispatches it
 	 * on the activeElement
 	 */
-	private function onKeyUp(keyboardEvent:KeyboardEvent):Void
+	public function onPlatformKeyUpEvent(keyboardEvent:KeyboardEvent):Void
 	{
 		activeElement.dispatchEvent(keyboardEvent);
+	}
+	
+	/**
+	 * When the Window is resized, invalidate
+	 * the body
+	 */
+	public function onPlatformResizeEvent(event:UIEvent):Void
+	{
+		_body.invalidateLayout();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -354,12 +320,49 @@ class HTMLDocument extends Document
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When the Window is resized, invalidate
-	 * the body
+	 * Utils method returning the first ElementRenderer whose dom node
+	 * is an Element node. This is used when dispatching MouseEvent, as their target
+	 * can only be Element node.
+	 * 
+	 * TODO 2 : throw runtime exception when right mouse button is clicked
 	 */
-	private function onWindowResize(event:Event):Void
+	private function getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent:MouseEvent):ElementRenderer
 	{
-		_body.invalidateLayout();
+		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
+		
+		while (elementRendererAtPoint.node.nodeType != Node.ELEMENT_NODE)
+		{
+			elementRendererAtPoint = cast(elementRendererAtPoint.parentNode);
+			if (elementRendererAtPoint == null)
+			{
+				return null;
+			}
+		}
+		
+		return elementRendererAtPoint;
+	}
+	
+	/**
+	 * Utils method returning the first HTMLElement parent which
+	 * can be vertically scrolled. The provided htmlElement is returned
+	 * if it can be vertically scrolled
+	 * 
+	 * The scrollOffset is also provided as if a vertically scrollable element
+	 * is completely scrolled and adding this offset won't make a difference,
+	 * then it is not considered scrollable
+	 */
+	private function getFirstVerticallyScrollableHTMLElement(htmlElement:HTMLElement, scrollOffset:Int):HTMLElement
+	{
+		while (htmlElement.isVerticallyScrollable(scrollOffset) == false)
+		{
+			htmlElement = cast(htmlElement.parentNode);
+			if ( htmlElement == null)
+			{
+				return null;
+			}
+		}
+		
+		return htmlElement;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

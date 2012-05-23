@@ -9,7 +9,7 @@ package cocktail.port.flash_player;
 
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
-import cocktail.core.mouse.AbstractMouse;
+import cocktail.port.platform.mouse.AbstractMouse;
 import flash.Lib;
 import haxe.Log;
 
