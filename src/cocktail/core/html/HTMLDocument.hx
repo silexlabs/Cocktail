@@ -24,10 +24,8 @@ import cocktail.core.Keyboard;
 import cocktail.core.keyboard.AbstractKeyboard;
 import cocktail.core.Mouse;
 import cocktail.core.NativeElement;
-import cocktail.core.platform.Platform;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
-import cocktail.core.Window;
 import cocktail.core.event.FocusEvent;
 import haxe.Log;
 import haxe.Timer;
@@ -94,8 +92,6 @@ class HTMLDocument extends Document
 	 */
 	private var _hoveredElementRenderer:ElementRenderer;
 	
-	private var _platform:Platform;
-	
 	/**
 	 * class constructor. Init class attributes
 	 */
@@ -114,24 +110,6 @@ class HTMLDocument extends Document
 		
 		_hoveredElementRenderer = _body.elementRenderer;
 		
-		initPlatform();
-		
-	}
-	
-	private function initPlatform():Void
-	{
-		_platform = new Platform();
-		
-		_platform.onmousedown = dispatchMouseEvent;
-		_platform.onmouseup = dispatchMouseEvent;
-		_platform.onmousemove = dispatchMouseMoveEvent;
-		_platform.onclick = dispatchMouseClickEvent;
-		_platform.onmousewheel = dispatchMouseEvent;
-		
-		_platform.onkeydown = onkeydown;
-		_platform.onkeyup = onkeyup;
-		
-		_platform.onresize = onWindowResize;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -203,10 +181,15 @@ class HTMLDocument extends Document
 	 * 
 	 * @param	mouseEvent
 	 */
-	private function dispatchMouseEvent(mouseEvent:MouseEvent):Void
+	public function onPlatformMouseEvent(mouseEvent:MouseEvent):Void
 	{
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
 		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
+	}
+	
+	public function onPlatformMouseWheelEvent(mouseEvent:MouseEvent):Void
+	{
+		onPlatformMouseEvent(mouseEvent);
 	}
 	
 	/**
@@ -215,10 +198,10 @@ class HTMLDocument extends Document
 	 * activation behaviour, such as following a 
 	 * link for an HTMLAnchorElement
 	 */
-	private function dispatchMouseClickEvent(mouseEvent:MouseEvent):Void
+	public function onPlatformMouseClickEvent(mouseEvent:MouseEvent):Void
 	{
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
-		
+
 		var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
 		
 		//find the first parent of the HTMLElement which has an activation behaviour, might
@@ -255,7 +238,7 @@ class HTMLDocument extends Document
 	 * TODO : implement all the mouse event such as mouseleave, and
 	 * check if the implementation is in the right order
 	 */
-	private function dispatchMouseMoveEvent(mouseEvent:MouseEvent):Void
+	public function onPlatformMouseMoveEvent(mouseEvent:MouseEvent):Void
 	{
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
 		
@@ -277,7 +260,6 @@ class HTMLDocument extends Document
 			elementRendererAtPoint.dispatchEvent(mouseOverEvent);
 		}
 		
-		
 		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
 	}
 	
@@ -287,7 +269,7 @@ class HTMLDocument extends Document
 	 * on the active element and detect if a tab
 	 * focus or a simulated click must happen.
 	 */
-	private function onKeyDown(keyboardEvent:KeyboardEvent):Void
+	public function onPlatformKeyDownEvent(keyboardEvent:KeyboardEvent):Void
 	{
 		activeElement.dispatchEvent(keyboardEvent);
 
@@ -315,20 +297,16 @@ class HTMLDocument extends Document
 	 * When a key up event happens, dispatches it
 	 * on the activeElement
 	 */
-	private function onKeyUp(keyboardEvent:KeyboardEvent):Void
+	public function onPlatformKeyUpEvent(keyboardEvent:KeyboardEvent):Void
 	{
 		activeElement.dispatchEvent(keyboardEvent);
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * When the Window is resized, invalidate
 	 * the body
 	 */
-	private function onWindowResize(event:Event):Void
+	public function onPlatformResizeEvent(event:Event):Void
 	{
 		_body.invalidateLayout();
 	}

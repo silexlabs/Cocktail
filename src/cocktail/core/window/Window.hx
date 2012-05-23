@@ -11,6 +11,8 @@ import cocktail.core.dom.Document;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventCallback;
 import cocktail.core.html.HTMLAnchorElement;
+import cocktail.core.html.HTMLDocument;
+import cocktail.core.platform.Platform;
 
 /**
  * Represents the window through which the Document is
@@ -20,13 +22,13 @@ import cocktail.core.html.HTMLAnchorElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractWindow extends EventCallback
+class Window extends EventCallback
 {
 	/**
 	 * return the document viewed through the window
 	 */
-	private var _document:Document;
-	public var document(get_document, never):Document;
+	private var _document:HTMLDocument;
+	public var document(get_document, never):HTMLDocument;
 	
 	/**
 	 * Height (in pixels) of the browser window viewport including,
@@ -40,17 +42,40 @@ class AbstractWindow extends EventCallback
 	 */
 	public var innerWidth(get_innerWidth, never):Int;
 	
+	private var _platform:Platform;
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// CONSTRUCTOR & INIT
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
-	 * class constructor. Store a ref
-	 * to the provided document
-	 * 
-	 * TODO : Window should instantiate Document but window object
-	 * is instantiated multiple time to listen to resize event
+	 * class constructor. Initialise the Document
 	 */
-	public function new(document:Document = null) 
+	public function new() 
 	{
 		super();
-		_document = document;
+		init();
+	}
+	
+	private function init():Void
+	{
+		_platform = new Platform();
+		
+		var htmlDocument:HTMLDocument = new HTMLDocument();
+		
+		_platform.onmousedown = htmlDocument.onPlatformMouseEvent;
+		_platform.onmouseup = htmlDocument.onPlatformMouseEvent;
+		_platform.onmousemove = htmlDocument.onPlatformMouseMoveEvent;
+		_platform.onclick = htmlDocument.onPlatformMouseClickEvent;
+		_platform.onmousewheel = htmlDocument.onPlatformMouseWheelEvent;
+		
+		_platform.onkeydown = htmlDocument.onPlatformKeyDownEvent;
+		_platform.onkeyup = htmlDocument.onPlatformKeyUpEvent;
+		
+		_platform.onresize = htmlDocument.onPlatformResizeEvent;
+		
+		_document = htmlDocument;
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +90,7 @@ class AbstractWindow extends EventCallback
 	 */
 	public function open(url:String, name:String = HTMLAnchorElement.TARGET_BLANK):Void
 	{
-		//abstract
+		_platform.open(url, name);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -74,15 +99,15 @@ class AbstractWindow extends EventCallback
 	
 	private function get_innerHeight():Int
 	{
-		return -1;
+		return _platform.innerHeight;
 	}
 	
 	private function get_innerWidth():Int
 	{
-		return -1;
+		return _platform.innerWidth;
 	}
 	
-	private function get_document():Document
+	private function get_document():HTMLDocument
 	{
 		return _document;
 	}
