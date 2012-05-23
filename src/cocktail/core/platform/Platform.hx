@@ -3,6 +3,7 @@ import cocktail.core.event.EventCallback;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.UIEvent;
+import cocktail.core.event.WheelEvent;
 import cocktail.core.Keyboard;
 import cocktail.core.Mouse;
 import cocktail.core.NativeWindow;
@@ -75,7 +76,7 @@ class Platform extends EventCallback
 		_mouse.onMouseUp = dispatchMouseEvent;
 		_mouse.onMouseMove = dispatchMouseEvent;
 		_mouse.onClick = dispatchMouseEvent;
-		_mouse.onMouseWheel = dispatchMouseEvent;
+		_mouse.onMouseWheel = dispatchMouseWheelEvent;
 	}
 	
 	/**
@@ -96,17 +97,69 @@ class Platform extends EventCallback
 	
 	private function dispatchMouseEvent(mouseEvent:MouseEvent):Void
 	{
-		dispatchEvent(mouseEvent);
+		switch(mouseEvent.type)
+		{
+			case MouseEvent.CLICK:
+				if (_onClick != null)
+				{
+					_onClick(mouseEvent);
+				}
+				
+			case MouseEvent.MOUSE_DOWN:
+				if (_onMouseDown != null)
+				{
+					_onMouseDown(mouseEvent);
+				}
+				
+			case MouseEvent.MOUSE_MOVE:
+				if (_onMouseMove != null)
+				{
+					_onMouseMove(mouseEvent);
+				}
+				
+			case MouseEvent.MOUSE_UP:
+				if (_onMouseUp != null)
+				{
+					_onMouseUp(mouseEvent);
+				}		
+		}
 	}
+	
+	private function dispatchMouseWheelEvent(mouseWheelEvent:WheelEvent):Void
+	{
+		if (_onMouseWheel != null)
+		{
+			_onMouseWheel(mouseWheelEvent);
+		}
+	}
+	
+	
 	
 	private function dispatchKeyboardEvent(keyboardEvent:KeyboardEvent):Void
 	{
-		dispatchEvent(keyboardEvent);
+		switch (keyboardEvent.type)
+		{
+			case KeyboardEvent.KEY_DOWN:
+				if (_onKeyDown != null)
+				{
+					_onKeyDown(keyboardEvent);
+				}
+				
+			case KeyboardEvent.KEY_UP:
+				if (_onKeyUp != null)
+				{
+					_onKeyUp(keyboardEvent);
+				}	
+		}
+		
 	}
 	
 	private function dispatchUIEvent(uiEvent:UIEvent):Void
 	{
-		dispatchEvent(uiEvent);
+		if (_onResize != null)
+		{
+			_onResize(uiEvent);
+		}
 	}
 	
 	private function get_innerHeight():Int
