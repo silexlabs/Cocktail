@@ -35,7 +35,7 @@ class EmbeddedElement extends HTMLElement
 	 * The intrinsic height of the embedded asset, for instance
 	 * for an image, its height in pixel
 	 * 
-	 * TODO : inheriting classes should instead have a reference
+	 * TODO 4 : inheriting classes should instead have a reference
 	 * to a loaded asset and retrieve the intrisic dimensions from
 	 * it, they are not supposed to be stored here
 	 */

@@ -86,8 +86,8 @@ class BoxRenderer extends ElementRenderer
 		for (i in 0...backgrounds.length)
 		{
 			#if (flash9 || nme)
-			backgrounds[i].x = globalBounds.x;
-			backgrounds[i].y = globalBounds.y;
+			backgrounds[i].x = globalBounds.x + relativeOffset.x;
+			backgrounds[i].y = globalBounds.y + relativeOffset.y;
 			graphicContext.addChild(backgrounds[i]);
 			#end
 		}
@@ -219,7 +219,7 @@ class BoxRenderer extends ElementRenderer
 			//or positioned origin to the global x and y for normal flow. If it
 			//uses its static position, it uses its bounds, else it uses its
 			//positioned origin
-			if (elementRenderer.isPositioned() == true)
+			if (elementRenderer.isPositioned() == true && elementRenderer.isRelativePositioned() == false)
 			{
 				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
 				{
@@ -326,6 +326,7 @@ class BoxRenderer extends ElementRenderer
 				x: addedX + computedStyle.marginLeft,
 				y : addedY + computedStyle.marginTop
 			}
+			
 			
 			child.globalPositionnedAncestorOrigin = {
 				x: addedPositionedX + computedStyle.marginLeft,

@@ -133,11 +133,7 @@ class LayerRenderer extends Node
 			{
 				//render all the child layers with a z-index of 0
 				renderChildLayer(_treeOrderChildLayers, _graphicsContext, relativeOffset);
-			}
-			
-			
-			if (renderChildLayers == true)
-			{
+				
 				renderChildLayer(_positiveOrderChildLayers, _graphicsContext, relativeOffset);
 			}
 			
@@ -150,8 +146,20 @@ class LayerRenderer extends Node
 		//here the root renderer is an inline box renderer which doesn't establish a formatting context
 		else if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == true)
 		{
+			if (renderChildLayers == true)
+			{
+				renderChildLayer(_negativeOrderChildLayers, _graphicsContext, relativeOffset);
+			}
+			
 			//TODO 1 : render child layers
 			rootRenderer.render(_graphicsContext, relativeOffset);
+			
+			if (renderChildLayers == true)
+			{
+				renderChildLayer(_treeOrderChildLayers, _graphicsContext, relativeOffset);
+				
+				renderChildLayer(_positiveOrderChildLayers, _graphicsContext, relativeOffset);
+			}
 		}
 		
 		//here the root renderer is a replaced element
@@ -208,8 +216,10 @@ class LayerRenderer extends Node
 		//Add a public method on ElementRenderer ?
 		if (_rootRenderer.computedStyle.position == fixed)
 		{
+			#if (flash9 || nme)
 			_graphicsContext.y = y;
 			_graphicsContext.x = x;
+			#end
 			return;
 		}
 		
