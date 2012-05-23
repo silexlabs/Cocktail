@@ -9,6 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
+import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
@@ -65,6 +66,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private var _scrollTop:Float;
 	
 	/**
+	 * flag set when updating the scroll of the BlockBoxRenderer to prevent
+	 * infinite loop caused by Scrollbar updating scroll
+	 */
+	private var _isUpdatingScroll:Bool;
+	
+	/**
 	 * class constructor.
 	 * Init class attributes
 	 */
@@ -72,8 +79,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		super(node);
 		
+		_isUpdatingScroll = false;
+		
 		_scrollLeft = 0;
 		_scrollTop = 0;
+		
+		
 		
 		_scrollableBounds = {
 			x:0.0,
@@ -318,8 +329,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						}
 					}
 				}
-				
-
 			}
 		}
 		
@@ -458,6 +467,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	//TODO : more complex thant it should
 	private function layoutScrollBarsIfNecessary(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 			if (_verticalScrollBar != null)
@@ -516,7 +526,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//are positioned relative to the first positioned ancestor
 			layoutPositionedChild(_verticalScrollBar.elementRenderer, verticalScrollBarContainerBlockData, viewportData);
 		}
-		
 	}
 	
 	
@@ -578,8 +587,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// OVERRIDEN SCROLLING GETTERS/SETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : add scrollWidth and scrollHeight for the HTMLElement
-	
 	/**
 	 * Overriden as BlockBoxRenderer might actually be scrolled
 	 */
@@ -600,9 +607,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		//if the value if more the available scrollable width, set
 		//the value to the max scrollable width
-		else if (value > _scrollableBounds.width)
+		else if (value > (_scrollableBounds.width - getContainerBlockData().width))
 		{
-			_scrollLeft = Math.round(_scrollableBounds.width);
+			_scrollLeft = Math.round(_scrollableBounds.width - getContainerBlockData().width);
 		}
 		else
 		{
@@ -625,9 +632,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			_scrollTop = 0;
 		}
-		else if (value > _scrollableBounds.height)
+		else if (value > (_scrollableBounds.height - getContainerBlockData().height))
 		{
-			_scrollTop = Math.round(_scrollableBounds.height);
+			_scrollTop = Math.round(_scrollableBounds.height - getContainerBlockData().height);
 		}
 		else
 		{
@@ -672,17 +679,37 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	/**
 	 * When a scroll value changes, update the rendering
-	 * 
-	 * TODO : should also update the display of scrollbars if the scroll
-	 * wasn't triggered by user action, however there is a risk of infinite
-	 * update loop
 	 */
 	private function updateScroll():Void
 	{
-		if (isXAxisClipped() == true || isYAxisClipped() == true)
+		//only called if not already updating scroll, else
+		//infinite loop with scrollbars
+		if (_isUpdatingScroll == false)
 		{
-			_layerRenderer.scroll(_scrollLeft, _scrollTop);
+			_isUpdatingScroll = true;
+			
+			if (isXAxisClipped() == true || isYAxisClipped() == true)
+			{
+				_layerRenderer.scroll(_scrollLeft, _scrollTop);
+			}
+			
+			if (_horizontalScrollBar != null)
+			{
+				_horizontalScrollBar.scroll = scrollLeft;
+			}
+			if (_verticalScrollBar != null)
+			{
+				_verticalScrollBar.scroll = scrollTop;
+			}
+			
+			//when scrolling is done, dispatched a scroll
+			//event on the dom node
+			dispatchScrollEvent();
+			
+			_isUpdatingScroll = false;
 		}
+		
+		
 	}
 	
 	//TODO : should manage the following case : 
@@ -701,7 +728,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return getChildrenBounds(doGetScrollableBounds(this));
 	}
 	
-	//TODO : work but shouldn't have to parse all rendering tree, should done during formatting
+	//TODO : work but shouldn't have to parse all rendering tree, should be done during formatting
 	//and then another pass for absolutely positioned children. Maybe this way less expensive in
 	//the  end because only called when useful ?
 	/**
@@ -792,12 +819,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				detachVerticalScrollBar();
 				
 			case cssAuto:
-				attachorDetachVerticalScrollBarIfNecessary();
+				attachOrDetachVerticalScrollBarIfNecessary();
 				
 			case visible:
 				if (treatVisibleOverflowAsAuto() == true)
 				{
-					attachorDetachVerticalScrollBarIfNecessary();
+					attachOrDetachVerticalScrollBarIfNecessary();
 				}	
 				else
 				{
@@ -820,8 +847,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		if (_horizontalScrollBar == null)
 		{
 			_horizontalScrollBar = new ScrollBar(false);
-			//TODO : is it not useless to call this method at this point ?
-			_horizontalScrollBar.attach();
 			appendChild(_horizontalScrollBar.elementRenderer);
 			_horizontalScrollBar.onscroll = onHorizontalScroll;
 		}
@@ -840,7 +865,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		if (_horizontalScrollBar != null)
 		{
-			_horizontalScrollBar.detach();
 			removeChild(_horizontalScrollBar.elementRenderer);
 			_horizontalScrollBar.onscroll = null;
 			_horizontalScrollBar = null;
@@ -881,8 +905,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			_verticalScrollBar.onscroll = onVerticalScroll;
 			
 			var htmlElement:HTMLElement = cast(_node);
-			//TODO : should be removed when scrollbar removed and scrollbar should be stored
-			htmlElement.addEventListener(WheelEvent.MOUSE_WHEEL, cast(onMouseWheel));
 		}
 		if (_verticalScrollBar != null)
 		{
@@ -903,7 +925,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			_verticalScrollBar.onscroll = null;
 			
 			var htmlElement:HTMLElement = cast(_node);
-			htmlElement.onmousewheel = null;
 			
 			_verticalScrollBar = null;
 			
@@ -913,18 +934,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	
-	//TODO : work but very rough, should be implemented at HTMLElement level,
-	//so that it can be canceled
-	private function onMouseWheel(wheelEvent:WheelEvent):Void
-	{
-		scrollTop -= wheelEvent.deltaY * 10;
-		_verticalScrollBar.scroll = scrollTop;
-	}
-	
 	/**
 	 * same as for horizontal scrollbar
 	 */
-	private function attachorDetachVerticalScrollBarIfNecessary():Void
+	private function attachOrDetachVerticalScrollBarIfNecessary():Void
 	{
 		if (_scrollableBounds.y < bounds.y || _scrollableBounds.y + _scrollableBounds.height > bounds.y + bounds.height)
 		{
@@ -956,6 +969,67 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Wether a vertical active scrollbar is displayed and
+	 * scrollable. It is not considered scrollable if the
+	 * provided scroll offset wouldn't make it scroll, for
+	 * intance if scrollTop is 0 and the provided offset is -10,
+	 * it won't make it scroll
+	 * 
+	 * TODO 3 : must return false if scrollbar disabled
+	 */
+	override public function isVerticallyScrollable(scrollOffset:Int):Bool
+	{
+		if (_verticalScrollBar == null)
+		{
+			return false;
+		}
+		if (scrollOffset < 0)
+		{
+			if (scrollTop >= _scrollableBounds.height - getContainerBlockData().height)
+			{
+				return false;
+			}
+		}
+		else if (scrollOffset > 0)
+		{
+			if (scrollTop <= 0)
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * same as above for horizontal scrollbar
+	 */
+	override public function isHorizontallyScrollable(scrollOffset:Int):Bool
+	{
+		if (_horizontalScrollBar == null)
+		{
+			return false;
+		}
+		
+		if (scrollOffset < 0)
+		{
+			if (scrollLeft >= _scrollableBounds.width - getContainerBlockData().width)
+			{
+				return false;
+			}
+		}
+		else if (scrollOffset > 0)
+		{
+			if (scrollLeft <= 0)
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
 	
 	/**
 	 * Determine wether the ElementRenderer
@@ -1092,6 +1166,29 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Utils method dispatching a Scroll event
+	 * on the dom node after a scrolling occured
+	 */
+	private function dispatchScrollEvent():Void
+	{
+		var scrollEvent:UIEvent = new UIEvent();
+		scrollEvent.initUIEvent(UIEvent.SCROLL, mustBubbleScrollEvent(), false, null, 0.0);
+		_node.dispatchEvent(scrollEvent);
+	}
+	
+	/**
+	 * Utils method determining wether the dispatched scroll
+	 * event must bubble. Scroll event only bubbles 
+	 * when dispatched on the HTMLBodyElement, as it
+	 * needs to bubble to the Document and Window
+	 * objects
+	 */
+	private function mustBubbleScrollEvent():Bool
+	{
+		return false;
+	}
 	
 	//TODO : should use computed style (for instance for inherit) but not yet computed at this point, when
 	//called from establishesNewStackingContext

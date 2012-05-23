@@ -59,7 +59,8 @@ class BoxRenderer extends ElementRenderer
 	/**
 	 * overriden to render elements spefic to a box (background, border...)
 	 * 
-	 * TODO : apply transformations, opacity and visibility
+	 * TODO 5 : apply transformations, opacity
+	 * TODO 4 : apply visibility
 	 */
 	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
@@ -73,20 +74,20 @@ class BoxRenderer extends ElementRenderer
 	/**
 	 * Render the background of the box using the provided graphic context
 	 * 
-	 * TODO : opacity should be applied to background
+	 * TODO 4 : opacity should be applied to background
 	 */
 	private function renderBackground(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var backgroundManager:BackgroundManager = new BackgroundManager();
 		
-		//TODO : should only pass dimensions instead of bounds
+		//TODO 3 : should only pass dimensions instead of bounds
 		var backgrounds:Array<NativeElement> = backgroundManager.render(bounds, _coreStyle);
 		
 		for (i in 0...backgrounds.length)
 		{
 			#if (flash9 || nme)
-			backgrounds[i].x = globalBounds.x;
-			backgrounds[i].y = globalBounds.y;
+			backgrounds[i].x = globalBounds.x + relativeOffset.x;
+			backgrounds[i].y = globalBounds.y + relativeOffset.y;
 			graphicContext.addChild(backgrounds[i]);
 			#end
 		}
@@ -142,7 +143,7 @@ class BoxRenderer extends ElementRenderer
 		//of the ElementRenderer are known, for instance some values of the VerticalAlign style
 		//might need those dimensions to compute the right values
 		//
-		//TODO : shouldn't be necessary anymore as vertical align is computed during formatting.
+		//TODO 4 : shouldn't be necessary anymore as vertical align is computed during formatting.
 		//Only used for vertical align and text indent
 		_coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
 		
@@ -150,7 +151,7 @@ class BoxRenderer extends ElementRenderer
 		//such as the background color, most of the background styles will be computed
 		//during the rendering
 		//
-		//TODO : check if its still necessary that they are only computed
+		//TODO 4 : check if its still necessary that they are only computed
 		//during rendering
 		_coreStyle.computeBackgroundStyles();
 		
@@ -173,15 +174,15 @@ class BoxRenderer extends ElementRenderer
 	 * Then set the global bounds (relative to the window) for all of the elements
 	 * of the rendering tree
 	 * 
-	 * TODO : for now only called by the InitialBlockRenderer but should be callable
-	 * by any BoxRenderer to prevent form laying out and rendering all of the rendering
+	 * TODO 2 : for now only called by the InitialBlockRenderer but should be callable
+	 * by any BoxRenderer to prevent from laying out and rendering all of the rendering
 	 * tree
 	 */
 	private function startLayout():Void
 	{
 		var windowData:ContainingBlockData = getWindowData();
 		
-		//TODO : should retrieve the date of the first positioned ancestor
+		//TODO 2 : should retrieve the data of the first positioned ancestor
 		var firstPositionedAncestorData:FirstPositionedAncestorData = {
 			elements: new Array<ElementRenderer>(),
 			data:getContainerBlockData()
@@ -218,7 +219,7 @@ class BoxRenderer extends ElementRenderer
 			//or positioned origin to the global x and y for normal flow. If it
 			//uses its static position, it uses its bounds, else it uses its
 			//positioned origin
-			if (elementRenderer.isPositioned() == true)
+			if (elementRenderer.isPositioned() == true && elementRenderer.isRelativePositioned() == false)
 			{
 				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
 				{
@@ -320,18 +321,19 @@ class BoxRenderer extends ElementRenderer
 		{
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			
-			//TODO : doc on added body margin. Shouldn't be always applied
+			//TODO 1 : doc on added body margin. Shouldn't be always applied
 			child.globalContainingBlockOrigin = {
 				x: addedX + computedStyle.marginLeft,
 				y : addedY + computedStyle.marginTop
 			}
+			
 			
 			child.globalPositionnedAncestorOrigin = {
 				x: addedPositionedX + computedStyle.marginLeft,
 				y : addedPositionedY + computedStyle.marginTop
 			}
 			
-			//TODO : messy but works -> not really actually, scrollbar is moved by HTMLBodyElement margins
+			//TODO 1 : messy but works -> not really actually, scrollbar is moved by HTMLBodyElement margins
 			if (child.isScrollBar() == true)
 			{
 				if (elementRenderer.isPositioned() == false)
@@ -511,8 +513,8 @@ class BoxRenderer extends ElementRenderer
 	 * Overriden as BoxRenderer might create new stacking context, for
 	 * instance if they are positioned
 	 * 
-	 * TODO : add the z-index case
-	 * TODO : shouldn't have to compute display style before
+	 * TODO 4 : add the z-index case
+	 * TODO 2 : shouldn't have to compute display style before
 	 * 
 	 */
 	override private function establishesNewStackingContext():Bool

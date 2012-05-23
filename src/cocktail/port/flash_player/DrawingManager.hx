@@ -52,7 +52,7 @@ class DrawingManager extends AbstractDrawingManager
 	 */
 	public function new(width:Int, height:Int) 
 	{
-		//TODO : should be in an overriden method instead ?
+		//TODO 5 : should be in an overriden method instead ?
 		this._nativeElement = new Sprite();
 		
 		
