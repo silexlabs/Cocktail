@@ -19,6 +19,9 @@ import cocktail.core.event.UIEvent;
  * and call the callback corresponding to 
  * the keyboard event type if provided
  * 
+ * It also exposes window level method such as
+ * open
+ * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractNativeWindow
@@ -56,7 +59,7 @@ class AbstractNativeWindow
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Open a new window using flash API
+	 * Open a new window using platform specific API
 	 */
 	public function open(url:String, name:String):Void
 	{
@@ -131,7 +134,7 @@ class AbstractNativeWindow
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	private function get_innerHeight():Int
 	{
 		return -1;

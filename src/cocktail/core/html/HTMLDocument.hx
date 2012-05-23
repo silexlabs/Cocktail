@@ -13,6 +13,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
+import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.html.HTMLAnchorElement;
@@ -151,29 +152,10 @@ class HTMLDocument extends Document
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE INPUT METHODS
+	// PUBLIC PLATFORM CALLBACKS
+	// Those callbacks are called in reaction to platform level event, such
+	// as a resize of the window of the application
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Utils method returning the first ElementRenderer whose dom node
-	 * is an Element node. This is used when dispatching MouseEvent, as their target
-	 * can only be Element node.
-	 */
-	private function getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent:MouseEvent):ElementRenderer
-	{
-		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
-		
-		while (elementRendererAtPoint.node.nodeType != Node.ELEMENT_NODE)
-		{
-			elementRendererAtPoint = cast(elementRendererAtPoint.parentNode);
-			if (elementRendererAtPoint == null)
-			{
-				return null;
-			}
-		}
-		
-		return elementRendererAtPoint;
-	}
 	
 	/**
 	 * Dispatch the MouseEvent on the DOM node of the top most 
@@ -306,9 +288,34 @@ class HTMLDocument extends Document
 	 * When the Window is resized, invalidate
 	 * the body
 	 */
-	public function onPlatformResizeEvent(event:Event):Void
+	public function onPlatformResizeEvent(event:UIEvent):Void
 	{
 		_body.invalidateLayout();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Utils method returning the first ElementRenderer whose dom node
+	 * is an Element node. This is used when dispatching MouseEvent, as their target
+	 * can only be Element node.
+	 */
+	private function getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent:MouseEvent):ElementRenderer
+	{
+		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
+		
+		while (elementRendererAtPoint.node.nodeType != Node.ELEMENT_NODE)
+		{
+			elementRendererAtPoint = cast(elementRendererAtPoint.parentNode);
+			if (elementRendererAtPoint == null)
+			{
+				return null;
+			}
+		}
+		
+		return elementRendererAtPoint;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
