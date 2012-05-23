@@ -1,4 +1,12 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktail.core.platform;
+
 import cocktail.core.event.EventCallback;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
@@ -9,10 +17,19 @@ import cocktail.core.Mouse;
 import cocktail.core.NativeWindow;
 
 /**
- * ...
+ * This class exposes an API to access platform
+ * specific inputs, such as mouse clicks, window
+ * resize...
+ * 
+ * Hides all the platforms interface behind a common API
+ * 
+ * TODO : makes for a lot of boiler-plate and repeated code, extend
+ * this class instead of having lot of classes by composition ?
+ * 
+ * TODO : add method to set/get platform mouse cursor
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class Platform extends EventCallback
 {
 
@@ -40,8 +57,20 @@ class Platform extends EventCallback
 	 */
 	private var _mouse:Mouse;
 	
+	/**
+	 * An instance of the cross-platform class to access the native window,
+	 * allowing for instance to open a new window or to listen to 
+	 * resize event
+	 */
 	private var _nativeWindow:NativeWindow;
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// CONSTRUCTOR & INIT
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * class constructor
+	 */
 	public function new() 
 	{
 		super();
@@ -49,21 +78,6 @@ class Platform extends EventCallback
 		initKeyboardListeners();
 		initMouseListeners();
 		initNativeWindowListners();
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Creates a new secondary browser window and loads the referenced resource.
-	 * 
-	 * TODO : this is a partial implementation for now, should return
-	 * the created window and allow parameters
-	 */
-	public function open(url:String, name:String):Void
-	{
-		_nativeWindow.open(url, name);
 	}
 	
 	/**
@@ -89,11 +103,34 @@ class Platform extends EventCallback
 		_keyboard.onKeyUp = dispatchKeyboardEvent;
 	}
 	
+	/**
+	 * Init listening to platform UI event
+	 */
 	private function initNativeWindowListners():Void
 	{
 		_nativeWindow = new NativeWindow();
 		_nativeWindow.onResize = dispatchUIEvent;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC PLATFORM METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Creates a new secondary browser window and loads the referenced resource.
+	 * 
+	 * TODO : this is a partial implementation for now, should return
+	 * the created window and allow parameters
+	 */
+	public function open(url:String, name:String):Void
+	{
+		_nativeWindow.open(url, name);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PLATFORM CALLBACKS
+	// Send a cross-platform event from a native platform event
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function dispatchMouseEvent(mouseEvent:MouseEvent):Void
 	{
@@ -133,8 +170,6 @@ class Platform extends EventCallback
 		}
 	}
 	
-	
-	
 	private function dispatchKeyboardEvent(keyboardEvent:KeyboardEvent):Void
 	{
 		switch (keyboardEvent.type)
@@ -161,6 +196,10 @@ class Platform extends EventCallback
 			_onResize(uiEvent);
 		}
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PLATFORM GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function get_innerHeight():Int
 	{

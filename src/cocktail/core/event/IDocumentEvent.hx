@@ -15,6 +15,9 @@ package cocktail.core.event;
  * interface must be implemented on the same object.
  * Language-specific type casting may be required.
  * 
+ * TODO : is this interface neccesary ? Might just implement
+ * method in Document
+ * 
  * @author Yannick DOMINGUEZ
  */
 interface IDocumentEvent 
