@@ -45,6 +45,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		//TODO : should go in a Window class or System class specific to flash
 		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
 		#end
+		
+		//call the attachement method itself as it is 
+		//supposed to be called by parent ElementRenderer
+		//otherwise
+		attachLayer();
 	}
 	
 
