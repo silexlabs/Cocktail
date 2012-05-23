@@ -41,6 +41,17 @@ class MouseEvent extends UIEvent
 	public static inline var CLICK:String = "click";
 	
 	/**
+	 * A user agent must dispatch this event when a pointing device button is
+	 * clicked twice over an element. The definition of a double
+	 * click depends on the environment configuration, except that
+	 * the event target must be the same between mousedown, mouseup, 
+	 * and dblclick. This event type must be dispatched after the event
+	 * type click if a click and double click occur simultaneously,
+	 * and after the event type mouseup otherwise.
+	 */
+	public static inline var DOUBLE_CLICK:String = "dblclick";
+	
+	/**
 	 * The mouseup event occurs when the pointing device button is
 	 * released over an element. This event is valid for most elements. 
 	 */

@@ -72,45 +72,6 @@ class HTMLAnchorElement extends HTMLElement
 		super(HTML_ANCHOR_TAG_NAME);
 		_target = TARGET_SELF;
 	}
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN MOUSE SETTER/GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * When the mouse up callback is retrieved, for instance when it needs to be called
-	 * as a mouse up event has been dispatched over this HTMLElement, it returns
-	 * a custom callback which not only executes the user callback if provided
-	 * but also executes the default behaviour ofthe anchor element which is to 
-	 * try to open the link
-	 */
-	override private function get_onMouseUp():MouseEvent->Void
-	{
-		return onMouseUpCallback;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// MOUSE EVENT CALLBACK
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Open the link in addition to calling the user callback
-	 */
-	private function onMouseUpCallback(mouseEvent:MouseEvent):Void
-	{
-		if (_onMouseUp != null)
-		{
-			_onMouseUp(mouseEvent);
-		}
-		
-		//check wether a user callback canceled
-		//the default behaviour
-		if (mouseEvent.defaultPrevented == false)
-		{
-			openDocument();
-		}
-	}
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN ACTIVATION BEHAVIOUR
@@ -134,7 +95,7 @@ class HTMLAnchorElement extends HTMLElement
 		{
 			return;
 		}
-		onMouseUpCallback(cast(event));
+		openDocument();
 		
 	}
 	

@@ -9,6 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
+import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
@@ -701,6 +702,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				_verticalScrollBar.scroll = scrollTop;
 			}
 			
+			//when scrolling is done, dispatched a scroll
+			//event on the dom node
+			dispatchScrollEvent();
+			
 			_isUpdatingScroll = false;
 		}
 		
@@ -1161,6 +1166,29 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Utils method dispatching a Scroll event
+	 * on the dom node after a scrolling occured
+	 */
+	private function dispatchScrollEvent():Void
+	{
+		var scrollEvent:UIEvent = new UIEvent();
+		scrollEvent.initUIEvent(UIEvent.SCROLL, mustBubbleScrollEvent(), false, null, 0.0);
+		_node.dispatchEvent(scrollEvent);
+	}
+	
+	/**
+	 * Utils method determining wether the dispatched scroll
+	 * event must bubble. Scroll event only bubbles 
+	 * when dispatched on the HTMLBodyElement, as it
+	 * needs to bubble to the Document and Window
+	 * objects
+	 */
+	private function mustBubbleScrollEvent():Bool
+	{
+		return false;
+	}
 	
 	//TODO : should use computed style (for instance for inherit) but not yet computed at this point, when
 	//called from establishesNewStackingContext
