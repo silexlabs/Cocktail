@@ -12,7 +12,7 @@ import cocktail.core.event.Event;
 import cocktail.core.event.EventCallback;
 import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLDocument;
-import cocktail.core.platform.Platform;
+import cocktail.port.platform.Platform;
 
 /**
  * Represents the window through which the Document is

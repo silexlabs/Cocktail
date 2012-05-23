@@ -5,12 +5,12 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.core.mouse;
+package cocktail.port.platform.mouse;
 
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
 
-import cocktail.core.mouse.MouseData;
+import cocktail.port.platform.mouse.MouseData;
 
 /**
  * This class listens to native mouse event
