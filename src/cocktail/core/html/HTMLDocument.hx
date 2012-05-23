@@ -213,7 +213,7 @@ class HTMLDocument extends Document
 	 * dispatching as they also must manager the hovered
 	 * htmlElement
 	 * 
-	 * TODO : implement all the mouse event such as mouseleave, and
+	 * TODO 4 : implement all the mouse event such as mouseleave, and
 	 * check if the implementation is in the right order
 	 */
 	public function onPlatformMouseMoveEvent(mouseEvent:MouseEvent):Void
@@ -251,7 +251,7 @@ class HTMLDocument extends Document
 	{
 		activeElement.dispatchEvent(keyboardEvent);
 
-		//TODO : should this logic go into HTMLElement ? or is it application/embedder level ?
+		//TODO 4 : should this logic go into HTMLElement ? or is it application/embedder level ?
 		switch (Std.parseInt(keyboardEvent.keyChar))
 		{
 			case TAB_KEY_CODE:
@@ -263,7 +263,7 @@ class HTMLDocument extends Document
 	
 			case ENTER_KEY_CODE, SPACE_KEY_CODE:
 				//only simulate click if default was not prevented
-				//TODO : should run activation behaviour steps ?
+				//TODO 3 : should run activation behaviour steps ?
 				if (keyboardEvent.defaultPrevented == false)
 				{
 					activeElement.click();
