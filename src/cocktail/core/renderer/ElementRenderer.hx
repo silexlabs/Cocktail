@@ -365,6 +365,16 @@ class ElementRenderer extends Node
 	// PUBLIC HELPER METHODS
 	////////////////////////////////
 	
+	public function isVerticallyScrollable():Bool
+	{
+		return false;
+	}
+	
+	public function isHorizontallyScrollable():Bool
+	{
+		return false;
+	}
+	
 	public function establishesNewFormattingContext():Bool
 	{
 		return false;

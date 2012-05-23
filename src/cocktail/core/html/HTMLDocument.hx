@@ -165,9 +165,22 @@ class HTMLDocument extends Document
 		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
 	}
 	
-	public function onPlatformMouseWheelEvent(mouseEvent:MouseEvent):Void
+	/**
+	 * When a mouse wheel event occurs first dispatch it, and
+	 * if the default actin wasn't prevented, vertically scroll
+	 * the first vertically scrollable parent of the event target
+	 */
+	public function onPlatformMouseWheelEvent(wheelEvent:WheelEvent):Void
 	{
-		onPlatformMouseEvent(mouseEvent);
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(wheelEvent);
+		elementRendererAtPoint.node.dispatchEvent(wheelEvent);
+		
+		if (wheelEvent.defaultPrevented == false)
+		{
+			var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
+			var scrollableHTMLElement:HTMLElement = getFirstVerticallyScrollableHTMLElement(htmlElement);
+			scrollableHTMLElement.scrollTop -= Math.round(wheelEvent.deltaY * 10);
+		}
 	}
 	
 	/**
@@ -219,7 +232,7 @@ class HTMLDocument extends Document
 	public function onPlatformMouseMoveEvent(mouseEvent:MouseEvent):Void
 	{
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
-		
+
 		if (_hoveredElementRenderer != elementRendererAtPoint)
 		{
 			var mouseOutEvent:MouseEvent = new MouseEvent();
@@ -297,6 +310,8 @@ class HTMLDocument extends Document
 	 * Utils method returning the first ElementRenderer whose dom node
 	 * is an Element node. This is used when dispatching MouseEvent, as their target
 	 * can only be Element node.
+	 * 
+	 * TODO 2 : throw runtime exception when right mouse button is clicked
 	 */
 	private function getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent:MouseEvent):ElementRenderer
 	{
@@ -312,6 +327,25 @@ class HTMLDocument extends Document
 		}
 		
 		return elementRendererAtPoint;
+	}
+	
+	/**
+	 * Utils method returning the first HTMLElement parent which
+	 * can be vertically scrolled. The provided htmlElement is returned
+	 * if it can be vertically scrolled
+	 */
+	private function getFirstVerticallyScrollableHTMLElement(htmlElement:HTMLElement):HTMLElement
+	{
+		while (htmlElement.isVerticallyScrollable() == false)
+		{
+			htmlElement = cast(htmlElement.parentNode);
+			if ( htmlElement == null)
+			{
+				return null;
+			}
+		}
+		
+		return htmlElement;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
