@@ -27,8 +27,6 @@ class EventCallback extends EventTarget
 	// Mouse callbacks
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : add mouse double click
-	
 	/**
 	 * The callback called on mouse click (rapid mouse down and mouse up)
 	 */
@@ -114,24 +112,21 @@ class EventCallback extends EventTarget
 	 * the content of the HTMLElement
 	 * is scrolled
 	 */
-	private var _onScroll:UIEvent->Void;
-	public var onscroll(get_onScroll, set_onScroll):UIEvent->Void;
+	public var onscroll(default, set_onScroll):UIEvent->Void;
 	
 	/**
 	 * Callback called when the document or
 	 * an external resource, such as a picture
 	 * is loaded
 	 */
-	private var _onLoad:UIEvent->Void;
-	public var onload(get_onLoad, set_onLoad):UIEvent->Void;
+	public var onload(default, set_onLoad):UIEvent->Void;
 	
 	/**
 	 * Callback called when there is an
 	 * error while loading an external
 	 * resource such as a picture
 	 */
-	private var _onError:UIEvent->Void;
-	public var onerror(get_onError, set_onError):UIEvent->Void;
+	public var onerror(default, set_onError):UIEvent->Void;
 	
 	/**
 	 * class constructor
@@ -260,35 +255,20 @@ class EventCallback extends EventTarget
 	
 	private function set_onScroll(value:UIEvent->Void):UIEvent->Void
 	{
-		updateCallbackListener(UIEvent.SCROLL, cast(value), cast(_onScroll));
-		return _onScroll = value;
-	}
-	
-	private function get_onScroll():UIEvent->Void
-	{
-		return _onScroll;
+		updateCallbackListener(UIEvent.SCROLL, cast(value), cast(onscroll));
+		return onscroll = value;
 	}
 	
 	private function set_onLoad(value:UIEvent->Void):UIEvent->Void
 	{
-		updateCallbackListener(UIEvent.LOAD, cast(value), cast(_onLoad));
-		return _onLoad = value;
+		updateCallbackListener(UIEvent.LOAD, cast(value), cast(onload));
+		return onload = value;
 	}
 		
-	private function get_onLoad():UIEvent->Void
-	{
-		return _onLoad;
-	}
-	
 	private function set_onError(value:UIEvent->Void):UIEvent->Void
 	{
-		updateCallbackListener(UIEvent.ERROR, cast(value), cast(_onError));
-		return _onError = value;
-	}
-	
-	private function get_onError():UIEvent->Void
-	{
-		return _onError;
+		updateCallbackListener(UIEvent.ERROR, cast(value), cast(onerror));
+		return onerror = value;
 	}
 	
 }

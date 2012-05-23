@@ -110,7 +110,7 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setMarginBottomKey (element:Node, value:String):Void{
 		cast(element, HTMLElement).style.marginBottom = value;
 	}
-	//TODO : duplicate for margin left, right and top
+	//TODO 2 : duplicate for margin left, right and top
 	public function setMarginBottomZero (element:Node):Void{
 		cast(element, HTMLElement).style.marginBottom = "0";
 	}
@@ -234,9 +234,9 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 		cast(element, HTMLElement).style.backgroundColor = value;
 	}
 	public function setBgImage (element:Node, value:Array<String>):Void{
-		// TODO : check for space and do not add "
+		// TODO 2 : check for space and do not add "
 		if (value.length == 1) 
-			//TODO : hack to make it work for at least one background image
+			//TODO 2 : hack to make it work for at least one background image
 			cast(element, HTMLElement).style.backgroundImage = "url(" + value[0] + ")";
 			//cast(element, HTMLElement).style.backgroundImage = "\"" + value.join("\"");
 		else

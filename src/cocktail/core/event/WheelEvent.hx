@@ -90,7 +90,7 @@ class WheelEvent extends MouseEvent
 	 * Initializes attributes of a WheelEvent object. 
 	 * This method has the same behavior as MouseEvent.initMouseEvent().
 	 * 
-	 * TODO : modifiersListArg is different form MouseEvent signature
+	 * TODO 4 : modifiersListArg is different form MouseEvent signature
 	 * 
 	 * @param	typeArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.
 	 * @param	canBubbleArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.

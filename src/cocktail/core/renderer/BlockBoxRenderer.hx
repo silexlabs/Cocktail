@@ -442,11 +442,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			var childElementRenderer:ElementRenderer = cast(_childNodes[i]);
 			
-			if (childElementRenderer.node != _horizontalScrollBar && childElementRenderer.node != _verticalScrollBar)
-			{
+			//if (childElementRenderer.node != _horizontalScrollBar && childElementRenderer.node != _verticalScrollBar)
+			//{
 				childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
-				
-			}
+			//}
 		}
 		
 		//prompt the children formatting context, to format all the children
@@ -470,36 +469,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//TODO : more complex thant it should
 	private function layoutScrollBarsIfNecessary(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
-			if (_verticalScrollBar != null)
-		{
-				var scrollbarFirstPositionedAncestorData:FirstPositionedAncestorData = {
-				data:getContainerBlockData(),
-				elements:[]
-			}
-			
-			_verticalScrollBar.elementRenderer.layout(getContainerBlockData(), viewportData, scrollbarFirstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);				
-
-		}
 		
-		if (_horizontalScrollBar != null)
-		{
-			var scrollbarFirstPositionedAncestorData:FirstPositionedAncestorData = {
-			data:getContainerBlockData(),
-			elements:[]
-		}
-			
-			_horizontalScrollBar.elementRenderer.layout(getContainerBlockData(), viewportData, scrollbarFirstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
-		}
-		
-			if (_verticalScrollBar != null)
-		{
-				var scrollbarFirstPositionedAncestorData:FirstPositionedAncestorData = {
-				data:getContainerBlockData(),
-				elements:[]
-			}
-			
-			_verticalScrollBar.elementRenderer.layout(getContainerBlockData(), viewportData, scrollbarFirstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);	
-		}
 		
 		var horizontalScrollBarContainerBlockData = getContainerBlockData();
 		
@@ -679,6 +649,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	/**
 	 * When a scroll value changes, update the rendering
+	 * 
+	 * TODO 1 : when resizing the viewport, the scroll bars
+	 * no longer work unless new scrollbars are displayed
+	 * in the viewport
 	 */
 	private function updateScroll():Void
 	{

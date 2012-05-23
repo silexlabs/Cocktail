@@ -166,7 +166,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		//used by the shrink-to-fit method
 		else
 		{
-			//TODO : setting the containing element width is a hack which will not
+			//TODO 2 : setting the containing element width is a hack which will not
 			//always work. The shrink to fit computation of this class needs to be 
 			//improved
 			setComputedWidth(style, containingBlockData.width);
@@ -464,7 +464,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	private function doShrinkToFit(style:CoreStyle, containingBlockData:ContainingBlockData, minimumWidth:Int):Int
 	{
 		/**
-		 * TODO: the shrink to fit
+		 * TODO 3 : the shrink to fit
 		 * algorithm might need to be improved for
 		 * some border cases
 		 */

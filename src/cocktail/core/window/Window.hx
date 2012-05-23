@@ -21,7 +21,7 @@ import cocktail.port.platform.Platform;
  * It holds a reference to the class proxying access
  * to platform specific event and methods
  * 
- * TODO : should implement onload callback
+ * TODO 3 : should implement onload callback
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -94,9 +94,6 @@ class Window extends EventCallback
 	
 	/**
 	 * Creates a new secondary browser window and loads the referenced resource.
-	 * 
-	 * TODO : this is a partial implementation for now, should return
-	 * the created window and allow parameters
 	 */
 	public function open(url:String, name:String = HTMLAnchorElement.TARGET_BLANK):Void
 	{

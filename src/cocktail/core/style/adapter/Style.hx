@@ -22,7 +22,7 @@ import haxe.Log;
  * style object and set/get those styles using CSS
  * which it converts into typed style object
  * 
- * TODO : style value can't be set to null yet
+ * TODO 2 : style value can't be set to null yet
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -120,7 +120,7 @@ class Style
 	 * specified where the name of the style
 	 * is the key
 	 * 
-	 * TODO : shouldn't store invalid styles
+	 * TODO 3 : shouldn't store invalid styles
 	 */
 	private var _attributes:NamedNodeMap;
 	public var attributes(get_attributes, never):NamedNodeMap;
@@ -142,7 +142,7 @@ class Style
 	/**
 	 * Helper method to store style key/value pair
 	 * 
-	 * TODO : when style set as null, should remove it form the
+	 * TODO 3 : when style set as null, should remove it form the
 	 * attributes hash
 	 * 
 	 */
