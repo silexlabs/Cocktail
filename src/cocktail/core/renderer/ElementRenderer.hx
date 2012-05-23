@@ -365,12 +365,12 @@ class ElementRenderer extends Node
 	// PUBLIC HELPER METHODS
 	////////////////////////////////
 	
-	public function isVerticallyScrollable():Bool
+	public function isVerticallyScrollable(scrollOffset:Int):Bool
 	{
 		return false;
 	}
 	
-	public function isHorizontallyScrollable():Bool
+	public function isHorizontallyScrollable(scrollOffset:Int):Bool
 	{
 		return false;
 	}

@@ -966,21 +966,64 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Wether a vertical active scrollbar is displayed
+	 * Wether a vertical active scrollbar is displayed and
+	 * scrollable. It is not considered scrollable if the
+	 * provided scroll offset wouldn't make it scroll, for
+	 * intance if scrollTop is 0 and the provided offset is -10,
+	 * it won't make it scroll
 	 * 
 	 * TODO 3 : must return false if scrollbar disabled
 	 */
-	override public function isVerticallyScrollable():Bool
+	override public function isVerticallyScrollable(scrollOffset:Int):Bool
 	{
-		return _verticalScrollBar != null;
+		if (_verticalScrollBar == null)
+		{
+			return false;
+		}
+		if (scrollOffset < 0)
+		{
+			if (scrollTop >= _scrollableBounds.height - getContainerBlockData().height)
+			{
+				return false;
+			}
+		}
+		else if (scrollOffset > 0)
+		{
+			if (scrollTop <= 0)
+			{
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	/**
 	 * same as above for horizontal scrollbar
 	 */
-	override public function isHorizontallyScrollable():Bool
+	override public function isHorizontallyScrollable(scrollOffset:Int):Bool
 	{
-		return _horizontalScrollBar != null;
+		if (_horizontalScrollBar == null)
+		{
+			return false;
+		}
+		
+		if (scrollOffset < 0)
+		{
+			if (scrollLeft >= _scrollableBounds.width - getContainerBlockData().width)
+			{
+				return false;
+			}
+		}
+		else if (scrollOffset > 0)
+		{
+			if (scrollLeft <= 0)
+			{
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	/**

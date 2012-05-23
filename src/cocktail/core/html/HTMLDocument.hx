@@ -178,8 +178,18 @@ class HTMLDocument extends Document
 		if (wheelEvent.defaultPrevented == false)
 		{
 			var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
-			var scrollableHTMLElement:HTMLElement = getFirstVerticallyScrollableHTMLElement(htmlElement);
-			scrollableHTMLElement.scrollTop -= Math.round(wheelEvent.deltaY * 10);
+			
+			//get the amount of vertical scrolling to apply in pixel
+			//TODO 4 : for now mulitplier hard coded
+			var scrollOffset:Int = Math.round(wheelEvent.deltaY * 10) ;
+			
+			//get the first ancestor which can be vertically scrolled
+			var scrollableHTMLElement:HTMLElement = getFirstVerticallyScrollableHTMLElement(htmlElement, scrollOffset);
+			if (scrollableHTMLElement != null)
+			{
+				scrollableHTMLElement.scrollTop -= scrollOffset;
+			}
+		
 		}
 	}
 	
@@ -333,10 +343,14 @@ class HTMLDocument extends Document
 	 * Utils method returning the first HTMLElement parent which
 	 * can be vertically scrolled. The provided htmlElement is returned
 	 * if it can be vertically scrolled
+	 * 
+	 * The scrollOffset is also provided as if a vertically scrollable element
+	 * is completely scrolled and adding this offset won't make a difference,
+	 * then it is not considered scrollable
 	 */
-	private function getFirstVerticallyScrollableHTMLElement(htmlElement:HTMLElement):HTMLElement
+	private function getFirstVerticallyScrollableHTMLElement(htmlElement:HTMLElement, scrollOffset:Int):HTMLElement
 	{
-		while (htmlElement.isVerticallyScrollable() == false)
+		while (htmlElement.isVerticallyScrollable(scrollOffset) == false)
 		{
 			htmlElement = cast(htmlElement.parentNode);
 			if ( htmlElement == null)
