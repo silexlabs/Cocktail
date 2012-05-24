@@ -552,26 +552,6 @@ import cocktail.core.renderer.TextRenderer;
 		cssAuto;
 	}
 	
-	/**
-	 * For a positioned box, the 'z-index' property specifies: 
-	 *  - The stack level of the box in the current stacking context.
-	 *	- Whether the box establishes a stacking context. 
-	 */
-	enum ZIndex {
-		
-		/**
-		 * The stack level of the generated box in the current stacking context
-		 * is 0. The box does not establish a new stacking context unless it is the root element. 
-		 */
-		cssAuto;
-		
-		/**
-		 * This integer is the stack level of the generated
-		 * box in the current stacking context. The box also establishes a new stacking context. 
-		 */
-		integer(value:Int);
-	}
-	
 		// VISUAL EFFECTS STYLES
 //////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -1201,7 +1181,6 @@ import cocktail.core.renderer.TextRenderer;
 		var clear:Clear;
 		var position:Position;
 		var lineHeight:Float;
-		var zIndex:ZIndex;
 		
 		/**
 		 * visual effects

@@ -52,10 +52,7 @@ class DisplayStylesComputer
 		var computedStyle:ComputedStyleData = style.computedStyle;
 		
 		//position
-		computedStyle.position = style.position;
-		
-		//zIndex
-		computedStyle.zIndex = style.zIndex;
+		computedStyle.position = getComputedPosition(style);
 		
 		//float
 		computedStyle.cssFloat = getComputedFloat(style, computedStyle.position);
@@ -65,13 +62,20 @@ class DisplayStylesComputer
 		
 		//clear
 		computedStyle.clear = getComputedClear(style, computedStyle.position, computedStyle.display);
-		
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE STATIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Compute the 'position' style. It is the same as the defined style
+	 * as no other style can affect the computed 'position' style value
+	 */
+	private static function getComputedPosition(style:CoreStyle):Position
+	{
+		return style.position;
+	}
 	
 	/**
 	 * Compute the 'float' style which might be affect affected by the 'position'

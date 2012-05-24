@@ -1,0 +1,8 @@
+nme test "WebApp.nmml" flash
+nme test "WebApp.nmml" ios -simulator
+nme test "WebApp.nmml" webos
+nme test "WebApp.nmml" android
+nme test "WebApp.nmml" windows
+nme test "WebApp.nmml" mac
+nme test "WebApp.nmml" linux
+nme test "WebApp.nmml" html5

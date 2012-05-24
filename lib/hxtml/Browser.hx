@@ -132,6 +132,9 @@ class Browser<DisplayObjectType> {
 				setAttribute (d, a, v);
 			case "style":
 				new CssParser<DisplayObjectType>().parse(v, d, styleProxy);
+			case "class":
+				throw ("'class' attribute not implemented yet");
+//				classes = ~/[ \t]+/g.split(StringTools.trim(v));
 			default:
 				
 				setAttribute(d, a, v);

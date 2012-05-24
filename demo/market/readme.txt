@@ -4,7 +4,21 @@
 DESCRIPTION
 -----------
 
-This is an application market done using Cocktail.
+This application gathers together a selection of french technological informations.
+The selected information feeds are: Techcrunch France, Silicon Sentier and FrenchWeb.
+
+It includes touch navigation to swipe between different informations feeds.
+Each detail information can be accessed by clicking on it.
+
+This application works on both portrait and landscape modes.
+
+--------------------------------------------------------------------------------------
+
+Provided for free by Intermedia Paris.
+
+Intermedia Paris provides cross-platform technologies for developing web applications on multiple targets and devices.
+
+If you have such a need, contact us at contact@im-paris.fr
 
 
 RSS FEEDS
