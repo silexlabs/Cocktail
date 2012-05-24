@@ -290,8 +290,8 @@ class CssParser<DisplayObjectType> {
 		case "background-color":
 			switch( v ) {
 			case VHex(v):
-				var val = (v.length == 6) ? Std.parseInt("0x" + v) : ((v.length == 3) ? Std.parseInt("0x"+v.charAt(0)+v.charAt(0)+v.charAt(1)+v.charAt(1)+v.charAt(2)+v.charAt(2)) : null);
-				s.setBgColorNum(d, val);
+				//var val = (v.length == 6) ? Std.parseInt("0x" + v) : ((v.length == 3) ? Std.parseInt("0x"+v.charAt(0)+v.charAt(0)+v.charAt(1)+v.charAt(1)+v.charAt(2)+v.charAt(2)) : null);
+				s.setBgColorNum(d, Std.parseInt(v));
 				return true;
 			case VRGBA(v):
 				s.setBgColorRGBA(d, v);
@@ -409,8 +409,8 @@ class CssParser<DisplayObjectType> {
 		case "color":
 			switch( v ) {
 			case VHex(v):
-				var val = (v.length == 6) ? Std.parseInt("0x" + v) : ((v.length == 3) ? Std.parseInt("0x"+v.charAt(0)+v.charAt(0)+v.charAt(1)+v.charAt(1)+v.charAt(2)+v.charAt(2)) : null);
-				s.setTextColorNum(d, val);
+				//var val = (v.length == 6) ? Std.parseInt("0x" + v) : ((v.length == 3) ? Std.parseInt("0x"+v.charAt(0)+v.charAt(0)+v.charAt(1)+v.charAt(1)+v.charAt(2)+v.charAt(2)) : null);
+				s.setTextColorNum(d, Std.parseInt(v));
 				return true;
 			case VIdent(i):
 				s.setTextColorKey(d, i);
