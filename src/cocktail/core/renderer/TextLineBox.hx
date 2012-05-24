@@ -9,6 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.FontManager;
 import cocktail.core.NativeElement;
+import cocktail.core.geom.GeomData;
 
 /**
  * A special kind of line box used to render text. A
@@ -20,7 +21,7 @@ import cocktail.core.NativeElement;
 class TextLineBox extends LineBox
 {
 	/**
-	 * The text renderer by this 
+	 * The string of text rendered by this 
 	 * text line box
 	 */
 	private var _text:String;
@@ -42,8 +43,26 @@ class TextLineBox extends LineBox
 		_bounds.width = getTextWidth();
 		#end
 		_bounds.height = getTextHeight();
-
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Render the text using the graphic context as canvas.
+	 * 
+	 * TODO 4 : should also render text decoration, or should
+	 * be on TextRenderer ?
+	 */
+	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		#if (flash9 || nme)
+		_nativeElement.x = _bounds.x + _elementRenderer.globalBounds.x + relativeOffset.x;
+		_nativeElement.y = _bounds.y + _elementRenderer.globalBounds.y + relativeOffset.y;
+		#end
 		
+		graphicContext.addChild(_nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -55,6 +74,10 @@ class TextLineBox extends LineBox
 		return parentBaselineOffset;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Overriden as TextLineBox might be
 	 * wrapping a space character
@@ -65,25 +88,17 @@ class TextLineBox extends LineBox
 	}
 	
 	/**
-	 * When rendering, return the generated native
-	 * text element, and set the bounds of the
-	 * text line box on it
-	 * 
-	 * TODO : should also render text decoration, or should
-	 * be on TextRenderer ?
+	 * Overriden as this is the text line box
 	 */
-	override public function render():Array<NativeElement>
+	override public function isText():Bool
 	{
-		#if flash9
-		_nativeElement.x = _bounds.x + _elementRenderer.globalBounds.x;
-		_nativeElement.y = _bounds.y + _elementRenderer.globalBounds.y;
-		#elseif nme
-		_nativeElement.x = _bounds.x;
-		_nativeElement.y = _bounds.y - (_coreStyle.fontMetrics.ascent + _coreStyle.fontMetrics.descent);
-		#end
-		
-		return [_nativeElement];
+		return true;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+
 	
 	/**
 	 * Return the leaded ascent of the generated text
@@ -141,7 +156,11 @@ class TextLineBox extends LineBox
 		//by the flash text engine
 		else
 		{
+			#if (flash9 || nme)
 			return untyped _nativeElement.textWidth ;
+			#else
+			return 0.0
+			#end
 		}	
 	}
 
@@ -149,7 +168,7 @@ class TextLineBox extends LineBox
 	 * return the generated text height, which is
 	 * the addition of the leaded ascent and descent
 	 * 
-	 * TODO : should be line height in some cases
+	 * TODO 4 : should be line height in some cases
 	 */
 	private function getTextHeight():Float
 	{

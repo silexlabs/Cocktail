@@ -7,6 +7,8 @@
 */
 package cocktail.core.style.adapter;
 
+import cocktail.core.dom.Attr;
+import cocktail.core.dom.NamedNodeMap;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.style.StyleData;
@@ -20,6 +22,8 @@ import haxe.Log;
  * style object and set/get those styles using CSS
  * which it converts into typed style object
  * 
+ * TODO 2 : style value can't be set to null yet
+ * 
  * @author Yannick DOMINGUEZ
  */
 class Style 
@@ -31,6 +35,7 @@ class Style
 	public var position(get_position, set_position):String;
 	public var cssFloat(get_CSSFloat, set_CSSFloat):String;
 	public var clear(get_clear, set_clear):String;
+	public var zIndex(get_zIndex, set_zIndex):String;
 	
 	/**
 	 * box model styles
@@ -111,14 +116,52 @@ class Style
 	private var _coreStyle:CoreStyle;
 	
 	/**
+	 * keep a hash of all the style that were
+	 * specified where the name of the style
+	 * is the key
+	 * 
+	 * TODO 3 : shouldn't store invalid styles
+	 */
+	private var _attributes:NamedNodeMap;
+	public var attributes(get_attributes, never):NamedNodeMap;
+	
+	/**
 	 * class constructor. Store the ref to 
 	 * the CoreStyle
 	 */
 	public function new(coreStyle:CoreStyle) 
 	{
 		_coreStyle = coreStyle;
+		_attributes = new NamedNodeMap();
 	}
+	
+	/////////////////////////////////
+	// PRIVATE METHOD
+	////////////////////////////////
 
+	/**
+	 * Helper method to store style key/value pair
+	 * 
+	 * TODO 3 : when style set as null, should remove it form the
+	 * attributes hash
+	 * 
+	 */
+	private function setAttribute(name:String, value:String):Void
+	{
+		var attr:Attr = new Attr(name);
+		attr.value = value;
+		_attributes.setNamedItem(attr);
+	}
+	
+	/////////////////////////////////
+	// SETTERS/GETTERS
+	////////////////////////////////
+	
+	private function get_attributes():NamedNodeMap
+	{
+		return _attributes;
+	}
+	
 	/////////////////////////////////
 	// STYLES SETTERS/GETTERS
 	////////////////////////////////
@@ -130,6 +173,7 @@ class Style
 	
 	private function set_opacity(value:String):String
 	{
+		setAttribute("opacity", value);
 		_coreStyle.opacity = Std.parseFloat(value);
 		return value;
 	}
@@ -141,6 +185,7 @@ class Style
 	
 	private function set_visibility(value:String):String
 	{
+		setAttribute("visibility", value);
 		_coreStyle.visibility = UnitManager.visibilityEnum(value);
 		return value;
 	}
@@ -152,6 +197,7 @@ class Style
 	
 	private function set_marginLeft(value:String):String 
 	{
+		setAttribute("margin-left", value);
 		_coreStyle.marginLeft = UnitManager.boxStyleEnum(Margin, value);
 		return value;
 	}
@@ -163,6 +209,7 @@ class Style
 	
 	private function set_marginRight(value:String):String 
 	{
+		setAttribute("margin-right", value);
 		_coreStyle.marginRight = UnitManager.boxStyleEnum(Margin, value);
 		return value;
 	}
@@ -174,6 +221,7 @@ class Style
 	
 	private function set_marginTop(value:String):String 
 	{
+		setAttribute("margin-top", value);
 		_coreStyle.marginTop = UnitManager.boxStyleEnum(Margin, value);
 		return value;
 	}
@@ -185,6 +233,7 @@ class Style
 	
 	private function set_marginBottom(value:String):String 
 	{
+		setAttribute("margin-bottom", value);
 		_coreStyle.marginBottom = UnitManager.boxStyleEnum(Margin, value);
 		return value;
 	}
@@ -196,6 +245,7 @@ class Style
 	
 	private function set_paddingLeft(value:String):String 
 	{
+		setAttribute("padding-left", value);
 		_coreStyle.paddingLeft = UnitManager.boxStyleEnum(Padding, value);
 		return value;
 	}
@@ -207,17 +257,20 @@ class Style
 	
 	private function set_paddingRight(value:String):String
 	{
+		setAttribute("padding-right", value);
 		_coreStyle.paddingRight = UnitManager.boxStyleEnum(Padding, value);
 		return value;
 	}
 	
 	private function get_paddingTop():String 
 	{
+	
 		return UnitManager.getCSSPadding(_coreStyle.paddingTop);
 	}
 	
 	private function set_paddingTop(value:String):String 
 	{
+		setAttribute("padding-top", value);
 		_coreStyle.paddingTop = UnitManager.boxStyleEnum(Padding, value);
 		return value;
 	}
@@ -229,6 +282,7 @@ class Style
 	
 	private function set_paddingBottom(value:String):String 
 	{
+		setAttribute("padding-bottom", value);
 		_coreStyle.paddingBottom = UnitManager.boxStyleEnum(Padding, value);
 		return value;
 	}
@@ -240,6 +294,7 @@ class Style
 	
 	private function set_display(value:String):String 
 	{
+		setAttribute("display", value);
 		_coreStyle.display = UnitManager.displayEnum(value);
 		return value;
 	}
@@ -251,7 +306,20 @@ class Style
 	
 	private function set_position(value:String):String 
 	{
+		setAttribute("position", value);
 		_coreStyle.position = UnitManager.positionEnum(value);
+		return value;
+	}
+	
+	private function get_zIndex():String
+	{
+		return UnitManager.getCSSZIndex(_coreStyle.zIndex);
+	}
+	
+	private function set_zIndex(value:String):String
+	{
+		setAttribute("zIndex", value);
+		_coreStyle.zIndex = UnitManager.zIndexEnum(value);
 		return value;
 	}
 	
@@ -262,6 +330,7 @@ class Style
 	
 	private function set_width(value:String):String 
 	{
+		setAttribute("width", value);
 		_coreStyle.width = UnitManager.boxStyleEnum(Dimension, value);
 		return value;
 	}
@@ -273,6 +342,7 @@ class Style
 	
 	private function set_height(value:String):String 
 	{
+		setAttribute("height", value);
 		_coreStyle.height = UnitManager.boxStyleEnum(Dimension, value);
 		return value;
 	}
@@ -284,6 +354,7 @@ class Style
 	
 	private function set_minHeight(value:String):String 
 	{
+		setAttribute("min-height", value);
 		_coreStyle.minHeight = UnitManager.constrainedDimensionEnum(value);
 		return value;
 	}
@@ -295,6 +366,7 @@ class Style
 
 	private function set_maxHeight(value:String):String 
 	{
+		setAttribute("max-height", value);
 		_coreStyle.maxHeight = UnitManager.constrainedDimensionEnum(value);
 		return value;
 	}
@@ -306,6 +378,7 @@ class Style
 		
 	private function set_minWidth(value:String):String 
 	{
+		setAttribute("min-width", value);
 		_coreStyle.minWidth = UnitManager.constrainedDimensionEnum(value);
 		return value;
 	}
@@ -317,6 +390,7 @@ class Style
 	
 	private function set_maxWidth(value:String):String 
 	{
+		setAttribute("max-width", value);
 		_coreStyle.maxWidth = UnitManager.constrainedDimensionEnum(value);
 		return value;
 	}
@@ -328,6 +402,7 @@ class Style
 	
 	private function set_top(value:String):String 
 	{
+		setAttribute("top", value);
 		_coreStyle.top = UnitManager.boxStyleEnum(PositionOffset, value);
 		return value;
 	}
@@ -339,6 +414,7 @@ class Style
 		
 	private function set_left(value:String):String 
 	{
+		setAttribute("left", value);
 		_coreStyle.left = UnitManager.boxStyleEnum(PositionOffset, value);
 		return value;
 	}
@@ -350,6 +426,7 @@ class Style
 	
 	private function set_bottom(value:String):String 
 	{
+		setAttribute("bottom", value);
 		_coreStyle.bottom = UnitManager.boxStyleEnum(PositionOffset, value);
 		return value;
 	}
@@ -361,6 +438,7 @@ class Style
 	
 	private function set_right(value:String):String 
 	{
+		setAttribute("right", value);
 		_coreStyle.right = UnitManager.boxStyleEnum(PositionOffset, value);
 		return value;
 	}
@@ -372,6 +450,7 @@ class Style
 	
 	private function set_CSSFloat(value:String):String 
 	{
+		setAttribute("float", value);
 		_coreStyle.cssFloat = UnitManager.cssFloatEnum(value);
 		return value;
 	}
@@ -383,6 +462,7 @@ class Style
 	
 	private function set_clear(value:String):String 
 	{
+		setAttribute("clear", value);
 		_coreStyle.clear = UnitManager.clearEnum(value);
 		return value;
 	}
@@ -394,6 +474,7 @@ class Style
 	
 	private function set_fontSize(value:String):String
 	{
+		setAttribute("font-size", value);
 		_coreStyle.fontSize = UnitManager.fontSizeEnum(value);
 		return value;
 	}
@@ -405,6 +486,7 @@ class Style
 	
 	private function set_fontWeight(value:String):String
 	{
+		setAttribute("font-weight", value);
 		_coreStyle.fontWeight = UnitManager.fontWeightEnum(value);
 		return value;
 	}
@@ -416,6 +498,7 @@ class Style
 	
 	private function set_fontStyle(value:String):String
 	{
+		setAttribute("font-style", value);
 		_coreStyle.fontStyle = UnitManager.fontStyleEnum(value);
 		return value;
 	}
@@ -427,9 +510,11 @@ class Style
 	
 	private function set_fontFamily(value:String):String
 	{
+		setAttribute("font-family", value);
 		_coreStyle.fontFamily = UnitManager.fontFamilyEnum(value);
 		return value;
 	}
+	
 
 	private function get_fontVariant():String
 	{
@@ -438,6 +523,7 @@ class Style
 	
 	private function set_fontVariant(value:String):String
 	{
+		setAttribute("font-variant", value);
 		_coreStyle.fontVariant = UnitManager.fontVariantEnum(value);
 		return value;
 	}
@@ -449,6 +535,7 @@ class Style
 	
 	private function set_textTransform(value:String):String
 	{
+		setAttribute("text-transform", value);
 		_coreStyle.textTransform = UnitManager.textTransformEnum(value);
 		return value;
 	}
@@ -460,6 +547,7 @@ class Style
 	
 	private function set_letterSpacing(value:String):String
 	{
+		setAttribute("letter-spacing", value);
 		_coreStyle.letterSpacing = UnitManager.letterSpacingEnum(value);
 		return value;
 	}
@@ -471,6 +559,7 @@ class Style
 	
 	private function set_color(value:String):String
 	{
+		setAttribute("color", value);
 		_coreStyle.color = UnitManager.colorEnum(value);
 		return value;
 	}
@@ -482,6 +571,7 @@ class Style
 	
 	private function set_wordSpacing(value:String):String
 	{
+		setAttribute("word-spacing", value);
 		_coreStyle.wordSpacing = UnitManager.wordSpacingEnum(value);
 		return value;
 	}
@@ -493,6 +583,7 @@ class Style
 	
 	private function set_lineHeight(value:String):String
 	{
+		setAttribute("line-height", value);
 		_coreStyle.lineHeight = UnitManager.lineHeightEnum(value);
 		return value;
 	}
@@ -504,6 +595,7 @@ class Style
 	
 	private function set_verticalAlign(value:String):String
 	{
+		setAttribute("vertical-align", value);
 		_coreStyle.verticalAlign = UnitManager.verticalAlignEnum(value);
 		return value;
 	}
@@ -515,6 +607,7 @@ class Style
 	
 	private function set_textIndent(value:String):String
 	{
+		setAttribute("text-indent", value);
 		_coreStyle.textIndent = UnitManager.textIndentEnum(value);
 		return value;
 	}
@@ -526,6 +619,7 @@ class Style
 	
 	private function set_whiteSpace(value:String):String
 	{
+		setAttribute("white-space", value);
 		_coreStyle.whiteSpace = UnitManager.whiteSpaceEnum(value);
 		return value;
 	}
@@ -537,12 +631,14 @@ class Style
 	
 	private function set_textAlign(value:String):String
 	{
+		setAttribute("text-align", value);
 		_coreStyle.textAlign = UnitManager.textAlignEnum(value);
 		return value;
 	}
 	
 	private function set_backgroundColor(value:String):String
 	{
+		setAttribute("background-color", value);
 		_coreStyle.backgroundColor = UnitManager.colorEnum(value);
 		return value;
 	}
@@ -554,6 +650,7 @@ class Style
 	
 	private function set_backgroundImage(value:String):String
 	{
+		setAttribute("background-image", value);
 		_coreStyle.backgroundImage = UnitManager.backgroundImageEnum(value);
 		return value;
 	}
@@ -565,6 +662,7 @@ class Style
 	
 	private function set_backgroundRepeat(value:String):String
 	{
+		setAttribute("background-repeat", value);
 		_coreStyle.backgroundRepeat = UnitManager.backgroundRepeatEnum(value);
 		return value;
 	}
@@ -576,6 +674,7 @@ class Style
 	
 	private function set_backgroundSize(value:String):String
 	{
+		setAttribute("background-size", value);
 		_coreStyle.backgroundSize = UnitManager.backgroundSizeEnum(value);
 		return value;
 	}
@@ -587,6 +686,7 @@ class Style
 	
 	private function set_backgroundClip(value:String):String
 	{
+		setAttribute("background-clip", value);
 		_coreStyle.backgroundClip = UnitManager.backgroundClipEnum(value);
 		return value;
 	}
@@ -598,6 +698,7 @@ class Style
 	
 	private function set_backgroundPosition(value:String):String
 	{
+		setAttribute("background-position", value);
 		_coreStyle.backgroundPosition = UnitManager.backgroundPositionEnum(value);
 		return value;
 	}
@@ -609,6 +710,7 @@ class Style
 	
 	private function set_backgroundOrigin(value:String):String
 	{
+		setAttribute("background-origin", value);
 		_coreStyle.backgroundOrigin = UnitManager.backgroundOriginEnum(value);
 		return value;
 	}
@@ -625,6 +727,7 @@ class Style
 	
 	private function set_overflowX(value:String):String
 	{
+		setAttribute("overflow-x", value);
 		_coreStyle.overflowX = UnitManager.overflowEnum(value);
 		return value;
 	}
@@ -636,12 +739,14 @@ class Style
 	
 	private function set_overflowY(value:String):String
 	{
+		setAttribute("overflow-y", value);
 		_coreStyle.overflowY = UnitManager.overflowEnum(value);
 		return UnitManager.getCSSOverflow(_coreStyle.overflowY);
 	}
 	
 	private function set_cursor(value:String):String
 	{
+		setAttribute("cursor", value);
 		_coreStyle.cursor = UnitManager.cursorEnum(value);
 		return value;
 	}

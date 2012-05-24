@@ -8,6 +8,8 @@
 package cocktail.core.html;
 
 import cocktail.core.dom.Node;
+import cocktail.core.renderer.EmbeddedBoxRenderer;
+import cocktail.core.renderer.LayerRenderer;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.NativeElement;
 
@@ -20,8 +22,22 @@ import cocktail.core.NativeElement;
 class EmbeddedElement extends HTMLElement
 {
 	/**
+	 * The name of the html width attribute
+	 */
+	private static inline var HTML_WIDTH_ATTRIBUTE:String = "width";
+	
+	/**
+	 * The name of the html height attribute
+	 */
+	private static inline var HTML_HEIGHT_ATTRIBUTE:String = "height";
+	
+	/**
 	 * The intrinsic height of the embedded asset, for instance
 	 * for an image, its height in pixel
+	 * 
+	 * TODO 4 : inheriting classes should instead have a reference
+	 * to a loaded asset and retrieve the intrisic dimensions from
+	 * it, they are not supposed to be stored here
 	 */
 	private var _intrinsicHeight:Null<Int>;
 	public var intrinsicHeight(get_intrinsicHeight, never):Null<Int>;
@@ -41,17 +57,15 @@ class EmbeddedElement extends HTMLElement
 	public var intrinsicRatio(get_intrinsicRatio, never):Null<Float>;
 
 	/**
-	 * get/set the height of the embedded asset in the document. Return
-	 * 0 if the height is unknown
+	 * get/set the height html attribute of this embedded element. Return
+	 * value depends on the subclass embedded element
 	 */
-	private var _height:Int;
 	public var height(get_height, set_height):Int;
 		
 	/**
-	 * get/set the width of the embedded asset in the document. Return
-	 * 0 if the width is unknown
+	 * get/set the width html attribute of this embedded element. Return
+	 * value depends on the subclass embedded element
 	 */
-	private var _width:Int;
 	public var width(get_width, set_width):Int;
 	
 	/**
@@ -82,15 +96,6 @@ class EmbeddedElement extends HTMLElement
 		//abstract
 	}
 	
-	/**
-	 * Override to instantiate an Style specific 
-	 * to embedded elements
-	 */
-	override private function initCoreStyle():Void
-	{
-		this._coreStyle = new CoreStyle(this);
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -102,7 +107,6 @@ class EmbeddedElement extends HTMLElement
 	{
 		return newChild;
 	}
-	
 		
 	/**
 	 * Embedded elements can't have children
@@ -111,7 +115,39 @@ class EmbeddedElement extends HTMLElement
 	{
 		return oldChild;
 	}
-
+	
+	override public function setAttribute(name:String, value:String):Void
+	{
+		if (name == HTML_HEIGHT_ATTRIBUTE)
+		{
+			height = Std.parseInt(value);
+		}
+		else if (name == HTML_WIDTH_ATTRIBUTE)
+		{
+			width = Std.parseInt(value);
+		}
+		else
+		{
+			super.setAttribute(name, value);
+		}
+	}
+	
+	override public function getAttribute(name:String):String
+	{
+		if (name == HTML_HEIGHT_ATTRIBUTE)
+		{
+			return Std.string(get_height());
+		}
+		else if (name == HTML_WIDTH_ATTRIBUTE)
+		{
+			return Std.string(get_width());
+		}
+		else
+		{
+			return super.getAttribute(name);
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -138,21 +174,39 @@ class EmbeddedElement extends HTMLElement
 	
 	private function set_width(value:Int):Int
 	{
-		return _width = value;
+		setAttribute(HTML_WIDTH_ATTRIBUTE, Std.string(value));
+		return value;
 	}
 	
 	private function get_width():Int
 	{
-		return _width;
+		var width:String = getAttribute(HTML_WIDTH_ATTRIBUTE);
+		if (width == "")
+		{
+			return 0;
+		}
+		else
+		{
+			return Std.parseInt(width);
+		}
 	}
 	
 	private function set_height(value:Int):Int
 	{
-		return _height = value;
+		setAttribute(HTML_HEIGHT_ATTRIBUTE, Std.string(value));
+		return value;
 	}
 	
 	private function get_height():Int
 	{
-		return _height;
+		var height:String = getAttribute(HTML_HEIGHT_ATTRIBUTE);
+		if (height == "")
+		{
+			return 0;
+		}
+		else
+		{
+			return Std.parseInt(height);
+		}
 	}
 }

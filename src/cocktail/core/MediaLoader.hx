@@ -12,5 +12,4 @@ package cocktail.core;
  */
 #if (flash9 || nme)
 typedef MediaLoader = cocktail.port.flash_player.MediaLoader;
-
 #end

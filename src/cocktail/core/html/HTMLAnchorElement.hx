@@ -7,12 +7,11 @@
 */
 package cocktail.core.html;
 
-import cocktail.core.mouse.MouseCursorManager;
+import cocktail.core.event.Event;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.dom.DOMData;
 import cocktail.Lib;
 import haxe.Log;
-import cocktail.core.mouse.MouseData;
 
 /**
  * The anchor element, used to link to an external document, or
@@ -73,47 +72,35 @@ class HTMLAnchorElement extends HTMLElement
 		super(HTML_ANCHOR_TAG_NAME);
 		_target = TARGET_SELF;
 	}
-
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN MOUSE SETTER/GETTER
+	// OVERRIDEN ACTIVATION BEHAVIOUR
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When the mouse up callback is retrieved, for instance when it needs to be called
-	 * as a mouse up event has been dispatched over this HTMLElement, it returns
-	 * a custom callback which not only executes the user callback if provided
-	 * but also executes the default behaviour ofthe anchor element which is to 
-	 * try to open the link
+	 * The anchor HTMLElement has the default behaviour
+	 * of following a link
 	 */
-	override private function get_onMouseUp():MouseEvent->Void
+	override public function hasActivationBehaviour():Bool
 	{
-		return onMouseUpCallback;
+		return true;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// MOUSE EVENT CALLBACK
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
-	 * Open the link in addition to calling the user callback
+	 * Follow the link after the click event was dispatched
 	 */
-	private function onMouseUpCallback(mouseEvent:MouseEvent):Void
+	override public function runPostClickActivationStep(event:MouseEvent):Void
 	{
-		if (_onMouseUp != null)
+		if (event.defaultPrevented == true)
 		{
-			_onMouseUp(mouseEvent);
+			return;
 		}
+		openDocument();
 		
-		//check wether a user callback canceled
-		//the default behaviour
-		if (mouseEvent.defaultPrevented == false)
-		{
-			openDocument();
-		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE METHODS
+	// OVERRIDE PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -131,6 +118,10 @@ class HTMLAnchorElement extends HTMLElement
 			return false;
 		}
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Open the linked document using

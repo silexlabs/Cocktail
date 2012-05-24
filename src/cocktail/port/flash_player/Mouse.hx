@@ -8,8 +8,10 @@
 package cocktail.port.flash_player;
 
 import cocktail.core.event.MouseEvent;
-import cocktail.core.mouse.AbstractMouse;
+import cocktail.core.event.WheelEvent;
+import cocktail.port.platform.mouse.AbstractMouse;
 import flash.Lib;
+import haxe.Log;
 
 /**
  * This is the flash AVM2 implementation of the mouse event manager.
@@ -37,10 +39,11 @@ class Mouse extends AbstractMouse
 	 */
 	override private function setNativeListeners():Void
 	{
-		Lib.current.addEventListener(flash.events.MouseEvent.CLICK, onNativeClick);
-		Lib.current.addEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
-		Lib.current.addEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
-		Lib.current.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		Lib.current.stage.addEventListener(flash.events.MouseEvent.CLICK, onNativeClick);
+		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
+		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
+		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_WHEEL, onNativeMouseWheel);
 	}
 	
 	/**
@@ -48,10 +51,11 @@ class Mouse extends AbstractMouse
 	 */
 	override private function removeNativeListeners():Void
 	{
-		Lib.current.removeEventListener(flash.events.MouseEvent.CLICK, onNativeClick);
-		Lib.current.removeEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
-		Lib.current.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
-		Lib.current.removeEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		Lib.current.stage.removeEventListener(flash.events.MouseEvent.CLICK, onNativeClick);
+		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
+		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
+		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_WHEEL, onNativeMouseWheel);
 	}
 	
 	/**
@@ -85,10 +89,32 @@ class Mouse extends AbstractMouse
 				eventType = typedEvent.type;	
 		}
 		
-		//TODO : the target is now null, should be determined by HTMLDocument
-		var mouseEvent:MouseEvent = new MouseEvent(eventType, null, 0.0, typedEvent.stageX, typedEvent.stageY,
-		typedEvent.localX, typedEvent.localY, typedEvent.ctrlKey, typedEvent.shiftKey, typedEvent.altKey);
+		
+		var mouseEvent:MouseEvent = new MouseEvent();
+
+		//TODO 5 : screenX should be relative to sreen top left, but how to get this in flash ? use JavaScript ?
+		mouseEvent.initMouseEvent(eventType, true, true, null, 0.0, typedEvent.stageX, typedEvent.stageY,
+		typedEvent.stageX, typedEvent.stageY, typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, false, 0, null);
 		
 		return mouseEvent;
+	}
+	
+	/**
+	 * Create and return a cross-platform wheel event
+	 * form the flash mouse wheel event
+	 * 
+	 * @param	event the native mouse wheel event
+	 */
+	override private function getWheelEvent(event:Dynamic):WheelEvent
+	{
+		//cast as flash mouse event
+		var typedEvent:flash.events.MouseEvent = cast(event);
+		
+		var wheelEvent:WheelEvent = new WheelEvent();
+
+		wheelEvent.initWheelEvent(WheelEvent.MOUSE_WHEEL, true, true, null, 0.0, typedEvent.stageX, typedEvent.stageY,
+		typedEvent.stageX, typedEvent.stageY, 0, null, "", 0, typedEvent.delta, 0, 0 );
+		
+		return wheelEvent;
 	}
 }
