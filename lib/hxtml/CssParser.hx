@@ -435,6 +435,13 @@ class CssParser<DisplayObjectType> {
 				s.setTextTransform(d, val);
 				return true;
 			}
+			
+		case "white-space":
+			var val = getIdent(v);
+			if ( val != null ) {
+				s.setWhiteSpace(d, val);
+				return true;
+			}
 		case "line-height":
 			
 			//case 0

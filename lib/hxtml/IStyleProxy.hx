@@ -98,8 +98,8 @@ interface IStyleProxy<DisplayObjectType>
 	public function setTextAlign (element:DisplayObjectType, value:String):Void;
 	public function setVerticalAlignNum (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setVerticalAlignKey (element:DisplayObjectType, value:String):Void;
-/*	public function setWhiteSpace (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setTextIndent (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setWhiteSpace (element:DisplayObjectType, value:String):Void;
+/*	public function setTextIndent (element:DisplayObjectType, value:Int, unit:String):Void;
 	
 	public function setOpacity (element:DisplayObjectType, value:Int, unit:String):Void;
 	}
