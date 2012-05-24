@@ -410,10 +410,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{	
+		
+	
+		
 		super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
 		
 		_isLayingOut = true;
-		
+
 		//only get scrollable bounds for bloc box renderer
 		//which might display scrollbars
 		if (canAlwaysOverflow() == false)
@@ -421,45 +424,20 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			_scrollableBounds = getScrollableBounds();
 		}
 		
-		attachScrollBarsIfnecessary();
-		layoutScrollBarsIfNecessary(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
+		var isVerticalScrollAttached:Bool = _verticalScrollBar != null;
+		var isHorizontalScrollAttached:Bool = _horizontalScrollBar != null;
 		
+		attachScrollBarsIfnecessary();
+		
+		if (isVerticalScrollAttached != (_verticalScrollBar != null) || isHorizontalScrollAttached != (_horizontalScrollBar != null) )
+		{
+			super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
+		}
+		
+		layoutScrollBarsIfNecessary(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
+
 		_isLayingOut = false;
 		
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Overriden to prevent laying out the scrollbars like the other 
-	 * children as they have their own layout method
-	 */
-	override private function doLayoutChildren(childrenContainingBlockData:ContainingBlockData, viewportData:ContainingBlockData, childFirstPositionedAncestorData:FirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):Void
-	{			
-		for (i in 0..._childNodes.length)
-		{
-			var childElementRenderer:ElementRenderer = cast(_childNodes[i]);
-			
-			//if (childElementRenderer.node != _horizontalScrollBar && childElementRenderer.node != _verticalScrollBar)
-			//{
-				childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
-			//}
-		}
-		
-		//prompt the children formatting context, to format all the children
-		//ElementRenderer belonging to it. After this call, all the
-		//ElementRenderer have the right bounds, in the space of the containing
-		//block which established the formatting context
-		//
-		//This method is only called if a new formatting
-		//context was established by this ElementRenderer,
-		//meaning that it also is responsible of formatting it
-		if (establishesNewFormattingContext() == true)
-		{
-			childrenFormattingContext.format();
-		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -473,7 +451,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (_horizontalScrollBar != null)
 		{
-			//horizontalScrollBarContainerBlockData.height += _horizontalScrollBar.coreStyle.computedStyle.height;
+			horizontalScrollBarContainerBlockData.height += _horizontalScrollBar.coreStyle.computedStyle.height;
 		}
 		
 		if (_horizontalScrollBar != null)
@@ -485,7 +463,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (_verticalScrollBar != null)
 		{
-			//verticalScrollBarContainerBlockData.width += _verticalScrollBar.coreStyle.computedStyle.width;
+			verticalScrollBarContainerBlockData.width += _verticalScrollBar.coreStyle.computedStyle.width;
 		}
 		
 		if (_verticalScrollBar != null)
@@ -1072,13 +1050,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var height:Int = this.computedStyle.height;
 		if (_horizontalScrollBar != null)
 		{
-			//height -= _horizontalScrollBar.coreStyle.computedStyle.height;
+			height -= _horizontalScrollBar.coreStyle.computedStyle.height;
 		}
 		
 		var width:Int = this.computedStyle.width;
 		if (_verticalScrollBar != null)
 		{
-			//width -= _verticalScrollBar.coreStyle.computedStyle.width;
+			width -= _verticalScrollBar.coreStyle.computedStyle.width;
 		}
 		
 		return {
