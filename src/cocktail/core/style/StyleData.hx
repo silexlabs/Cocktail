@@ -1071,7 +1071,7 @@ import cocktail.core.renderer.TextRenderer;
 	/**
 	 * This property specifies the type of cursor to be displayed for the pointing device.
 	 * 
-	 * TODO 5 : missing values
+	 * TODO : missing values
 	 */
 	enum Cursor {
 		
@@ -1106,7 +1106,7 @@ import cocktail.core.renderer.TextRenderer;
 	 * Specify for each dimension if it is 'cssAuto', 
 	 * meaning it depends on its content dimension
 	 */
-	typedef ContainingBlockData = {
+	typedef ContainingHTMLElementData = {
 		var width:Int;
 		var isWidthAuto:Bool;
 		var height:Int;
@@ -1122,9 +1122,9 @@ import cocktail.core.renderer.TextRenderer;
 	 * as origin to layout an absolutely
 	 * positioned htmlElement.
 	 */
-	typedef FirstPositionedAncestorData = {
+	typedef LastPositionedHTMLElementData = {
 		var elements:Array<ElementRenderer>;
-		var data:ContainingBlockData;
+		var data:ContainingHTMLElementData;
 	}
 	
 	/**

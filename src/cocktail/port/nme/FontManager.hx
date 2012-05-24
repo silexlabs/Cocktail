@@ -78,27 +78,27 @@ class FontManager extends AbstractFontManager
 		textField.text = "x";
 		
 		var ascent:Float =  textField.textHeight / 2;
-
+		Log.trace(ascent);
 		textField.text = ",";
 		
 		var descent:Float = textField.textHeight / 2;
 		
 		textField.text = "x";
 		
-		var xHeight:Float = textField.textHeight;
+		var xHeight:Int = Math.round(textField.textHeight);
 	
 		textField.text = "M";
-		var spaceWidth:Float = textField.textWidth;
+		var spaceWidth:Int = Math.round(textField.textWidth);
 		
 		var fontMetrics:FontMetricsData = {
 			fontSize:fontSize,
-			ascent:ascent,
-			descent:descent,
+			ascent:Math.round(ascent),
+			descent:Math.round(descent),
 			xHeight:xHeight,
 			spaceWidth:spaceWidth,
-			superscriptOffset:1.0,
-			subscriptOffset:1.0,
-			underlineOffset:1.0
+			superscriptOffset:1,
+			subscriptOffset:1,
+			underlineOffset:1
 		};
 		
 		return fontMetrics;

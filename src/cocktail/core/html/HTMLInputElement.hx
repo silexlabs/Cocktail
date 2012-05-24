@@ -7,26 +7,14 @@
 */
 package cocktail.core.html;
 
-import cocktail.core.renderer.TextInputRenderer;
 import cocktail.core.style.CoreStyle;
 
 /**
  * Form control.
  * 
- * TODO IMPORTANT : for now only the text input form control
- * is implemented and its implementation, relying on Flash
- * TextField is not ideal. It should be entirely abstracted, using
- * only a Text node.
- * The following features are missing for this : 
-	 * text selection
-	 * caret management
-	 * text can be scrolled with
-	 * the mouse when the mouse is down
-	 * on an element
- * 
  * @author Yannick DOMINGUEZ
  */
-class HTMLInputElement extends EmbeddedElement
+class HTMLInputElement extends HTMLElement
 {
 
 	/**
@@ -34,18 +22,26 @@ class HTMLInputElement extends EmbeddedElement
 	 */
 	private static inline var HTML_INPUT_TAG_NAME:String = "input";
 	
-	/**
-	 * the name of the value html attribute
-	 */
-	private static inline var HTML_VALUE_ATTRIBUTE:String = "value";
 	
 	/**
-	 * The intrinsic width and ratio of a text input, 
-	 * as they seem to be in Firefox on Windows
+	 * This callback is called when the text input loses
+	 * focus if the value of the text input changed
 	 */
-	private static inline var HTML_INPUT_TEXT_INTRINSIC_WIDTH:Int = 150;
+	private var _onChange:Void->Void;
+	public var onchange(get_onChange, set_onChange):Void->Void;
 	
-	private static inline var HTML_INPUT_TEXT_INTRINSIC_RATIO:Float = 0.15;
+	/**
+	 * The control is unavailable in this context.
+	 */
+	private var _disabled:Bool;
+	public var disabled(get_disabled, set_disabled):Bool;
+	
+	/**
+	 * Maximum number of characters for text fields, when type 
+	 * has the value "text" or "password".
+	 */
+	private var _maxLength:Int;
+	public var maxLength(get_maxLength, set_maxLength):Int;
 	
 	/**
 	 * When the type attribute of the element has the value "text",
@@ -58,6 +54,7 @@ class HTMLInputElement extends EmbeddedElement
 	 * "reset", "image", "checkbox" or "radio", this represents 
 	 * the HTML value attribute of the element.
 	 */
+	private var _value:String;
 	public var value(get_value, set_value):String;
 	
 	/**
@@ -68,86 +65,95 @@ class HTMLInputElement extends EmbeddedElement
 		super(HTML_INPUT_TAG_NAME);
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////
+	// OVERRIDEN INIT METHODS
+	/////////////////////////////////
 	
 	/**
-	 * Instantiate an input specific renderer
+	 * init text input class attributes
+	 * 
+	 * TODO : init maxLength ? what is the default
+	 * value, null ?
 	 */
-	override private function createElementRenderer():Void
+	override private function init():Void
+	{	
+		super.init();
+		
+		_disabled = false;
+		_value = "";
+	}
+	
+	/**
+	 * init the style of the text input
+	 * 
+	 * TODO : implement a separate style
+	 * for form control ?
+	 */
+	override private function initCoreStyle():Void
 	{
-		_elementRenderer = new TextInputRenderer(this);
-		_elementRenderer.coreStyle = _coreStyle;
-		
-		var textInputElementRenderer:TextInputRenderer = cast(_elementRenderer);
-		
-		//initialise value of native text input
-		var value:String = getAttribute(HTML_VALUE_ATTRIBUTE);
-		
-		if (value != null)
+		_coreStyle = new CoreStyle(this);
+	}
+
+	
+	/////////////////////////////////
+	// CHANGE SETTER/GETTER
+	/////////////////////////////////
+	
+	private function set_onChange(value:Void->Void):Void->Void
+	{
+		return _onChange = value;
+	}
+	
+	private function get_onChange():Void->Void
+	{
+		return _onChange;
+	}
+	
+	/**
+	 * called when a native change event is
+	 * emitted, called the user on change
+	 * callback if any
+	 */
+	private function onChangeCallback():Void
+	{
+		if (_onChange != null)
 		{
-			
-			textInputElementRenderer.value = value;
+			_onChange();
 		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDE PRIVATE METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * An html form control element is inherently
-	 * focusable
-	 */
-	override private function isDefaultFocusable():Bool
-	{
-		return true;
-	}
-	
-	/////////////////////////////////
-	// OVERRIDEN SETTER/GETTER
-	/////////////////////////////////
-	
-	override private function get_intrinsicWidth():Null<Int> 
-	{
-		return HTML_INPUT_TEXT_INTRINSIC_WIDTH;
-	}
-	
-	override private function get_intrinsicRatio():Null<Float> 
-	{
-		return HTML_INPUT_TEXT_INTRINSIC_RATIO;
 	}
 	
 	/////////////////////////////////
 	// SETTER/GETTER
 	/////////////////////////////////
-	 
-	/**
-	 * When value set/get, also set/get it on the native
-	 * text input
-	 */
+	
+	private function set_disabled(value:Bool):Bool
+	{
+		return _disabled = value;
+	}
+	
+	private function get_disabled():Bool
+	{
+		return _disabled;
+	}
+	
+	private function set_maxLength(value:Int):Int
+	{
+		return _maxLength = value;
+	}
+	
+	private function get_maxLength():Int
+	{
+		return _maxLength;
+	}
+	
 	private function set_value(value:String):String
 	{
-		setAttribute(HTML_VALUE_ATTRIBUTE, value);
-	
-		if (_elementRenderer != null)
-		{
-			var textInputElementRenderer:TextInputRenderer = cast(_elementRenderer);
-			textInputElementRenderer.value = value;
-		}
-		
-		return value;
+		return _value = value;
 	}
 	
 	private function get_value():String
 	{
-		if (_elementRenderer != null)
-		{
-			var textInputElementRenderer:TextInputRenderer = cast(_elementRenderer);
-			return textInputElementRenderer.value;
-		}
-		
-		return getAttribute(HTML_VALUE_ATTRIBUTE);
+		return _value;
 	}
+	
 }

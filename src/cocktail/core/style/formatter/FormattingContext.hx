@@ -13,6 +13,7 @@ import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
+import cocktail.core.renderer.FlowBoxRenderer;
 import haxe.Log;
 
 /**
@@ -87,7 +88,7 @@ class FormattingContext
 	private function initFormattingContextData():Void
 	{
 		_formattingContextData = {
-			//TODO 4 : x and y still used by inline formatting context, bu shouldn't be necessary anymore,
+			//TODO : x and y still used by inline formatting context, bu shouldn't be necessary anymore,
 			//use instead local var in recursive method, like for block formatting context
 			x : _formattingContextRoot.coreStyle.computedStyle.paddingLeft,
 			y : _formattingContextRoot.coreStyle.computedStyle.paddingTop,
@@ -106,6 +107,18 @@ class FormattingContext
 	public function format():Void
 	{	
 		doFormat();
+	}
+	
+	/**
+	 * Return the static position of an element renderer, the position it 
+	 * would have had if it were in flow
+	 * 
+	 * TODO : doesn't need a separate method for that ? Might happen
+	 * during regular formatting ?
+	 */
+	public function setStaticPosition(element:ElementRenderer):Void
+	{
+		doFormat(element);
 	}
 	
 	/////////////////////////////////
@@ -128,7 +141,7 @@ class FormattingContext
 	 * When floats are cleared, the flow y attribute is placed
 	 * at the bottom of the last cleared float
 	 * 
-	 * TODO 5 : re-implement float
+	 * TODO : re-implement float
 	 */
 	private function clearFloat(clear:Clear):Void
 	{
@@ -140,7 +153,7 @@ class FormattingContext
 	 * flow anymore. A float don't influence the flow
 	 * anymore once the flow place HTMLElement's below it
 	 * 
-	 * TODO 5 : re-implement floats
+	 * TODO : re-implement floats
 	 */
 	private function removeFloats():Void
 	{

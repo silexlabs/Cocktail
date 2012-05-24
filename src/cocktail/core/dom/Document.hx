@@ -7,13 +7,6 @@
 */
 package cocktail.core.dom;
 
-import cocktail.core.event.CustomEvent;
-import cocktail.core.event.Event;
-import cocktail.core.event.FocusEvent;
-import cocktail.core.event.KeyboardEvent;
-import cocktail.core.event.MouseEvent;
-import cocktail.core.event.UIEvent;
-import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.dom.DOMData;
 
@@ -31,23 +24,6 @@ import cocktail.core.dom.DOMData;
  */
 class Document extends Node
 {
-	/**
-	 * event interfaces const
-	 */
-	public static inline var EVENT_INTERFACE:String = "Event";
-	
-	public static inline var UI_EVENT_INTERFACE:String = "UIEvent";
-	
-	public static inline var MOUSE_EVENT_INTERFACE:String = "MouseEvent";
-	
-	public static inline var FOCUS_EVENT_INTERFACE:String = "FocusEvent";
-	
-	public static inline var KEYBOARD_EVENT_INTERFACE:String = "KeyboardEvent";
-	
-	public static inline var WHEEL_EVENT_INTERFACE:String = "WheelEvent";
-	
-	public static inline var CUSTOM_EVENT_INTERFACE:String = "CustomEvent";
-	
 	/**
 	 * This is a convenience attribute that allows direct access
 	 * to the child node that is the document element of the document.
@@ -67,6 +43,7 @@ class Document extends Node
 	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	
 	/**
 	 * Creates an element of the type specified. 
 	 * Note that the instance returned implements the Element interface,
@@ -80,10 +57,10 @@ class Document extends Node
 	 * @return A new Element object with the nodeName attribute set to tagName,
 	 * and localName, prefix, and namespaceURI set to null
 	 * 
-	 * TODO 4 : for ownerDocument, when should it be set when
+	 * TODO : for ownerDocument, when should it be set when
 	 * instantiating classes instead of using factory method ?
 	 * 
-	 * TODO 4 : should return Element instead of HTMLElement but necessary
+	 * TODO : should return Element instead of HTMLElement but necessary
 	 * to match Haxe JS API
 	 */
 	public function createElement(tagName:String):HTMLElement
@@ -112,7 +89,7 @@ class Document extends Node
 	 * To create an attribute with a qualified name
 	 * and namespace URI, use the createAttributeNS method.
 	 * 
-	 * TODO 5 : implement localName, prefix, namespaceURI
+	 * TODO : implement localName, prefix, namespaceURI
 	 * 
 	 * @param	name The name of the attribute.
 	 * @return A new Attr object with the nodeName attribute 
@@ -124,47 +101,6 @@ class Document extends Node
 	{
 		var attribute:Attr = new Attr(name);
 		return attribute;
-	}
-	
-	/**
-	 * Provides a mechanism by which the user can create an Event object
-	 * of a type supported by the implementation.
-	 * If the feature “Events” is supported by the Document object, 
-	 * the DocumentEvent interface must be implemented on the same object.
-	 * Language-specific type casting may be required.
-	 * @param	eventInterface
-	 * @return
-	 */
-	public function createEvent(eventInterface:String):Event
-	{	
-		switch (eventInterface)
-		{
-			case EVENT_INTERFACE:
-				return new Event();
-				
-			case UI_EVENT_INTERFACE:
-				return new UIEvent();
-				
-			case CUSTOM_EVENT_INTERFACE:
-				return new CustomEvent();
-				
-			case MOUSE_EVENT_INTERFACE:
-				return new MouseEvent();
-				
-			case KEYBOARD_EVENT_INTERFACE:
-				return new KeyboardEvent();
-				
-			case FOCUS_EVENT_INTERFACE:
-				return new FocusEvent();
-				
-			case WHEEL_EVENT_INTERFACE:
-				return new WheelEvent();
-				
-			default:
-				throw DOMException.NOT_SUPPORTED_ERR;
-		}
-		
-		return null;
 	}
 	
 	/**
@@ -245,36 +181,17 @@ class Document extends Node
 	 * document order with a given tag name and
 	 * are contained in the document.
 	 * 
-	 * IMPORTANT : this method is supposed to return an array of Element but to match
-	 * Haxe JS API, we return an array of HTMLElement instead. It might be a problem
-	 * eventually to use the lib with other XML format
-	 * 
 	 * @param	tagName The name of the tag to match on. The special value "*" matches all tags.
 	 * For XML, the tagname parameter is case-sensitive, otherwise
 	 * it depends on the case-sensitivity of the markup language in use. 
 	 * 
 	 * @return A new NodeList object containing all the matched Elements.
 	 */
-	public function getElementsByTagName(tagName:String):Array<HTMLElement>
+	public function getElementsByTagName(tagName:String):Array<Node>
 	{
 		//use the implementation on the document element (for instance,
 		//the HTML element in HTML)
 		return _documentElement.getElementsByTagName(tagName);
-	}
-	
-	/**
-	 * Returns a set of elements which have all the given class names.
-	 * 
-	 * IMPORTANT : return array of HTMLElement because of haxe JS
-	 * 
-	 * @param	className the class name to match. If it is a list of class names
-	 * separated by spaces, it returns only the elements which matches all the class
-	 * names
-	 * @return A list of matching Element nodes.
-	 */
-	public function getElementsByClassName(className:String):Array<HTMLElement>
-	{
-		return _documentElement.getElementsByClassName(className);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

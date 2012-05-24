@@ -10,9 +10,9 @@ package cocktail.port.flash_player;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.event.KeyboardEvent;
-import cocktail.port.platform.keyboard.AbstractKeyboard;
 import flash.Lib;
 import haxe.Log;
+import cocktail.core.keyboard.AbstractKeyboard;
 
 /**
  * This is the flash AVM2 implementation of the keyboard event manager.
@@ -77,6 +77,7 @@ class Keyboard extends AbstractKeyboard
 				eventType = typedEvent.type;
 		}
 		
+		//TODO : keyboard event is now null
 		//TODO : check if charcode and keycode return right values
 		var keyboardEvent:KeyboardEvent = new KeyboardEvent(eventType, null, 0.0, Std.string(typedEvent.charCode), 
 		Std.string(typedEvent.keyCode), typedEvent.ctrlKey, typedEvent.shiftKey, typedEvent.altKey);

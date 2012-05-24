@@ -12,4 +12,12 @@ package cocktail.core;
  */
 #if (flash9 || nme)
 typedef DrawingManager =  cocktail.port.flash_player.DrawingManager;
+
+#elseif doc
+/**
+ * This is the class that must be instantiated, it is implemented
+ * for each cocktail targets
+ */
+class DrawingManager extends core.drawing.AbstractDrawingManager{}
+
 #end

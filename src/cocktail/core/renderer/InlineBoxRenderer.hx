@@ -7,7 +7,6 @@
 */
 package cocktail.core.renderer;
 
-import cocktail.core.dom.Node;
 import cocktail.core.NativeElement;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;
@@ -16,7 +15,8 @@ import cocktail.core.geom.GeomData;
 /**
  * An Inline Box renderer is an element which participates
  * in an inline formatting context and which does not establishes
- * a formatting context
+ * a formatting context.
+ * It can have child nodes
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -25,16 +25,12 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(node:Node) 
+	public function new(style:CoreStyle) 
 	{
-		super(node);
+		super(style);
 	}
 	
-	/**
-	 * Overirden as the bounds of an inline box renderer is formed
-	 * by the bounds of all of the line boxes it creates during
-	 * formatting
-	 */
+	//TODO : doc
 	override private function get_bounds():RectangleData
 	{
 		var lineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
