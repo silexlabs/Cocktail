@@ -61,7 +61,7 @@ class DisplayStylesComputer
 		computedStyle.cssFloat = getComputedFloat(style, computedStyle.position);
 		
 		//display
-		computedStyle.display = getComputedDisplay(style, computedStyle.cssFloat);
+		computedStyle.display = getComputedDisplay(style, computedStyle.cssFloat, computedStyle.position);
 		
 		//clear
 		computedStyle.clear = getComputedClear(style, computedStyle.position, computedStyle.display);
@@ -102,17 +102,38 @@ class DisplayStylesComputer
 	/**
 	 * Compute the 'display' style which might be affected by
 	 * the defined 'float' style
+	 * 
+	 * TODO 3 : maybe the value should compute as specified and the distinction
+	 * should be done in createElementRenderer
+	 * 
 	 * @param	style
 	 * @param	computedFloat the computed value of the float which must be computed before this
 	 * one
+	 * @param computedPosition the computed value of the position which must be computed before
+	 * this one
 	 */
-	private static function getComputedDisplay(style:CoreStyle, computedFloat:CSSFloat):Display
+	private static function getComputedDisplay(style:CoreStyle, computedFloat:CSSFloat, computedPosition:Position):Display
 	{
 		var ret:Display;
 		
 		//if the htmlElement is a float, it can't
 		//be an inline level element
 		if (computedFloat != CSSFloat.none)
+		{
+			switch (style.display)
+			{
+				//for inline level value, default to block
+				case cssInline, inlineBlock:
+					ret = Display.block;
+				
+				//the value remains unchanged for other	
+				default:
+					ret = style.display;
+			}	
+		}
+		//if the htmlElement is positioned, it can't
+		//be inline
+		else if (computedPosition != Position.cssStatic)
 		{
 			switch (style.display)
 			{

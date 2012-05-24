@@ -89,7 +89,7 @@ class LayerRenderer extends Node
 		{
 			rootRenderer = _rootRenderer;
 		}
-
+		
 		var relativeOffset:PointData = getRelativeOffset(rootRenderer);
 		relativeOffset.x += parentRelativeOffset.x;
 		relativeOffset.y += parentRelativeOffset.y;
@@ -132,7 +132,6 @@ class LayerRenderer extends Node
 			{
 				//render all the child layers with a z-index of 0
 				renderChildLayer(_treeOrderChildLayers, _graphicsContext, relativeOffset);
-				
 				renderChildLayer(_positiveOrderChildLayers, _graphicsContext, relativeOffset);
 			}
 			
