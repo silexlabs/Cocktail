@@ -469,8 +469,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//TODO : more complex thant it should
 	private function layoutScrollBarsIfNecessary(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
-		
-		
 		var horizontalScrollBarContainerBlockData = getContainerBlockData();
 		
 		if (_horizontalScrollBar != null)
@@ -1074,13 +1072,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var height:Int = this.computedStyle.height;
 		if (_horizontalScrollBar != null)
 		{
-			height -= _horizontalScrollBar.coreStyle.computedStyle.height;
+			//height -= _horizontalScrollBar.coreStyle.computedStyle.height;
 		}
 		
 		var width:Int = this.computedStyle.width;
 		if (_verticalScrollBar != null)
 		{
-			width -= _verticalScrollBar.coreStyle.computedStyle.width;
+			//width -= _verticalScrollBar.coreStyle.computedStyle.width;
 		}
 		
 		return {
@@ -1140,6 +1138,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function getHorizonalContainerBlockData():ContainingBlockData
+	{
+		var containingBlockData:ContainingBlockData = getContainerBlockData();
+		return containingBlockData;
+	}
+	
 	
 	/**
 	 * Return the maximum amount of scroll in pixels in the
@@ -1260,12 +1265,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (_horizontalScrollBar != null)
 		{
-			globalBounds.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
+			//globalBounds.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
 		}
 		
 		if (_verticalScrollBar != null)
 		{
-			globalBounds.width -= _verticalScrollBar.coreStyle.computedStyle.width;
+			//globalBounds.width -= _verticalScrollBar.coreStyle.computedStyle.width;
 		}
 		
 		return globalBounds;
