@@ -511,16 +511,33 @@ class BoxRenderer extends ElementRenderer
 	
 	/**
 	 * Overriden as BoxRenderer might create new stacking context, for
-	 * instance if they are positioned
+	 * instance if they are positioned.
 	 * 
-	 * TODO 4 : add the z-index case
 	 * TODO 2 : shouldn't have to compute display style before
 	 * 
 	 */
 	override private function establishesNewStackingContext():Bool
 	{
 		_coreStyle.computeDisplayStyles();
-		return isPositioned();
+		
+		if (isPositioned() == true)
+		{
+			//if a box is positioned, it only establishes
+			//a new stacking context if its z-index is not
+			//auto or 0, else it uses the LayerRenderer of its parent
+			switch (computedStyle.zIndex)
+			{
+				case ZIndex.cssAuto:
+					return false;
+					
+				case ZIndex.integer(value):
+					return value != 0;
+			}
+		}
+		
+		//in all other cases, no new stacking context is
+		//created
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
