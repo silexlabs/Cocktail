@@ -137,7 +137,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	{
 		var ret:Int = 0;
 		
-		//TODO : should style have a reference to the HTMLElement ? Should they be
+		//TODO 4 : should style have a reference to the HTMLElement ? Should they be
 		//applied to multiple HTMLElement ?
 		var embeddedHTMLElement:EmbeddedElement = cast(style.htmlElement);
 		
@@ -157,7 +157,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			{
 				ret = Math.round(embeddedHTMLElement.intrinsicWidth * embeddedHTMLElement.intrinsicRatio);
 			}
-			//TODO : check what must happen here
+			//TODO 3 : check what must happen here
 			else if (embeddedHTMLElement.intrinsicRatio != null)
 			{
 				

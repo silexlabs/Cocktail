@@ -152,7 +152,7 @@ class HTMLDocument extends Document
 	// Those callbacks are called in reaction to platform level event, such
 	// as a resize of the window of the application
 	//
-	// TODO : for mouse event, only mouse down, up and move should be listened to,
+	// TODO 4 : for mouse event, only mouse down, up and move should be listened to,
 	// click and double click should be abstracted
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -184,7 +184,7 @@ class HTMLDocument extends Document
 			
 			//get the amount of vertical scrolling to apply in pixel
 			//TODO 4 : for now mulitplier hard coded
-			var scrollOffset:Int = Math.round(wheelEvent.deltaY * 10) ;
+			var scrollOffset:Int = Math.round(wheelEvent.deltaY * 14) ;
 			
 			//get the first ancestor which can be vertically scrolled
 			var scrollableHTMLElement:HTMLElement = getFirstVerticallyScrollableHTMLElement(htmlElement, scrollOffset);

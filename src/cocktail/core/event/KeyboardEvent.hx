@@ -70,7 +70,7 @@ class KeyboardEvent extends UIEvent
 	public static inline var DOM_KEY_LOCATION_JOYSTICK:Int = 0x05;
 	
 	
-	//TODO : add keypress
+	//TODO 3 : add keypress
 	public static inline var KEY_DOWN:String = "keydown";
 	
 	public static inline var KEY_UP:String = "keyup";
@@ -78,7 +78,7 @@ class KeyboardEvent extends UIEvent
 	/**
 	 * char holds the character value of the key pressed.
 	 * 
-	 * TODO : should be named char but prevent cpp
+	 * TODO 5 : should be named char but prevent cpp
 	 * compilation
 	 */
 	private var _keyChar:String;
@@ -169,8 +169,6 @@ class KeyboardEvent extends UIEvent
 	 * 
 	 * To create an instance of the KeyboardEvent interface, use the
 	 * DocumentEvent.createEvent("KeyboardEvent") method call.
-	 * 
-	 * TODO : missing arguments
 	 * 
 	 * @param	eventTypeArg Specifies Event.type, the name of the event type.
 	 * @param	canBubbleArg Specifies Event.bubbles. This parameter overrides the intrinsic bubbling behavior of the event.

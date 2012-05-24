@@ -442,11 +442,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			var childElementRenderer:ElementRenderer = cast(_childNodes[i]);
 			
-			if (childElementRenderer.node != _horizontalScrollBar && childElementRenderer.node != _verticalScrollBar)
-			{
+			//if (childElementRenderer.node != _horizontalScrollBar && childElementRenderer.node != _verticalScrollBar)
+			//{
 				childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
-				
-			}
+			//}
 		}
 		
 		//prompt the children formatting context, to format all the children
@@ -470,42 +469,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//TODO : more complex thant it should
 	private function layoutScrollBarsIfNecessary(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
-			if (_verticalScrollBar != null)
-		{
-				var scrollbarFirstPositionedAncestorData:FirstPositionedAncestorData = {
-				data:getContainerBlockData(),
-				elements:[]
-			}
-			
-			_verticalScrollBar.elementRenderer.layout(getContainerBlockData(), viewportData, scrollbarFirstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);				
-
-		}
-		
-		if (_horizontalScrollBar != null)
-		{
-			var scrollbarFirstPositionedAncestorData:FirstPositionedAncestorData = {
-			data:getContainerBlockData(),
-			elements:[]
-		}
-			
-			_horizontalScrollBar.elementRenderer.layout(getContainerBlockData(), viewportData, scrollbarFirstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
-		}
-		
-			if (_verticalScrollBar != null)
-		{
-				var scrollbarFirstPositionedAncestorData:FirstPositionedAncestorData = {
-				data:getContainerBlockData(),
-				elements:[]
-			}
-			
-			_verticalScrollBar.elementRenderer.layout(getContainerBlockData(), viewportData, scrollbarFirstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);	
-		}
-		
 		var horizontalScrollBarContainerBlockData = getContainerBlockData();
 		
 		if (_horizontalScrollBar != null)
 		{
-			horizontalScrollBarContainerBlockData.height += _horizontalScrollBar.coreStyle.computedStyle.height;
+			//horizontalScrollBarContainerBlockData.height += _horizontalScrollBar.coreStyle.computedStyle.height;
 		}
 		
 		if (_horizontalScrollBar != null)
@@ -517,7 +485,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (_verticalScrollBar != null)
 		{
-			verticalScrollBarContainerBlockData.width += _verticalScrollBar.coreStyle.computedStyle.width;
+			//verticalScrollBarContainerBlockData.width += _verticalScrollBar.coreStyle.computedStyle.width;
 		}
 		
 		if (_verticalScrollBar != null)
@@ -601,15 +569,15 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	override private function set_scrollLeft(value:Float):Float 
 	{
 		//negative values are illegal
-		if (value < 0)
+		if (value <= 0)
 		{
 			_scrollLeft = 0;
 		}
 		//if the value if more the available scrollable width, set
 		//the value to the max scrollable width
-		else if (value > (_scrollableBounds.width - getContainerBlockData().width))
+		else if (value > getHorizontalMaxScroll())
 		{
-			_scrollLeft = Math.round(_scrollableBounds.width - getContainerBlockData().width);
+			_scrollLeft = getHorizontalMaxScroll();
 		}
 		else
 		{
@@ -628,18 +596,19 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	override private function set_scrollTop(value:Float):Float 
 	{
-		if (value < 0)
+		if (value <= 0)
 		{
 			_scrollTop = 0;
 		}
-		else if (value > (_scrollableBounds.height - getContainerBlockData().height))
+		else if (value > getVerticalMaxScroll())
 		{
-			_scrollTop = Math.round(_scrollableBounds.height - getContainerBlockData().height);
+			_scrollTop = getVerticalMaxScroll();
 		}
 		else
 		{
 			_scrollTop = value;
 		}
+		
 		updateScroll();
 		
 		return value;
@@ -679,6 +648,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	/**
 	 * When a scroll value changes, update the rendering
+	 * 
+	 * TODO 1 : when resizing the viewport, the scroll bars
+	 * no longer work unless new scrollbars are displayed
+	 * in the viewport
 	 */
 	private function updateScroll():Void
 	{
@@ -814,7 +787,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			case scroll:
 				attachVerticalScrollBar();
 				
-				
 			case hidden:
 				detachVerticalScrollBar();
 				
@@ -853,7 +825,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//refresh the max scroll when a layout of the BlockBoxRenderer happens
 		if (_horizontalScrollBar != null)
 		{
-			_horizontalScrollBar.maxScroll = _scrollableBounds.width - getContainerBlockData().width;
+			_horizontalScrollBar.maxScroll = getHorizontalMaxScroll();
 		}
 	}
 	
@@ -908,7 +880,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		if (_verticalScrollBar != null)
 		{
-			_verticalScrollBar.maxScroll = _scrollableBounds.height - getContainerBlockData().height;
+			_verticalScrollBar.maxScroll = getVerticalMaxScroll();
 		}
 	}
 	
@@ -1100,13 +1072,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var height:Int = this.computedStyle.height;
 		if (_horizontalScrollBar != null)
 		{
-			height -= _horizontalScrollBar.coreStyle.computedStyle.height;
+			//height -= _horizontalScrollBar.coreStyle.computedStyle.height;
 		}
 		
 		var width:Int = this.computedStyle.width;
 		if (_verticalScrollBar != null)
 		{
-			width -= _verticalScrollBar.coreStyle.computedStyle.width;
+			//width -= _verticalScrollBar.coreStyle.computedStyle.width;
 		}
 		
 		return {
@@ -1166,6 +1138,46 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function getHorizonalContainerBlockData():ContainingBlockData
+	{
+		var containingBlockData:ContainingBlockData = getContainerBlockData();
+		return containingBlockData;
+	}
+	
+	
+	/**
+	 * Return the maximum amount of scroll in pixels in the
+	 * vertical direcion. Maximum scroll can't be negative
+	 */
+	private function getVerticalMaxScroll():Float
+	{
+		var maxScroll:Float = _scrollableBounds.height - getContainerBlockData().height;
+		
+		//if the container is higher than its children, 
+		//then it can't be scrolled
+		if (maxScroll < 0)
+		{
+			return 0;
+		}
+		
+		return maxScroll;
+	}
+	
+	/**
+	 * Same as above for horizontal max scroll
+	 */
+	private function getHorizontalMaxScroll():Float
+	{
+		var maxScroll:Float = _scrollableBounds.width - getContainerBlockData().width;
+		
+		if (maxScroll < 0)
+		{
+			return 0;
+		}
+		
+		return maxScroll;
+	}
 	
 	/**
 	 * Utils method dispatching a Scroll event
@@ -1253,12 +1265,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (_horizontalScrollBar != null)
 		{
-			globalBounds.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
+			//globalBounds.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
 		}
 		
 		if (_verticalScrollBar != null)
 		{
-			globalBounds.width -= _verticalScrollBar.coreStyle.computedStyle.width;
+			//globalBounds.width -= _verticalScrollBar.coreStyle.computedStyle.width;
 		}
 		
 		return globalBounds;

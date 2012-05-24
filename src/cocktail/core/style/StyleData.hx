@@ -1091,7 +1091,7 @@ import cocktail.core.renderer.TextRenderer;
 	/**
 	 * This property specifies the type of cursor to be displayed for the pointing device.
 	 * 
-	 * TODO : missing values
+	 * TODO 5 : missing values
 	 */
 	enum Cursor {
 		
