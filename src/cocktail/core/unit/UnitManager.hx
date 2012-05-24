@@ -2557,7 +2557,6 @@ class UnitManager
 	public static function getCSSColor(value:Color):String
 	{
 		var cssColor:String;
-		
 		switch (value)
 		{
 			case hex(value):
