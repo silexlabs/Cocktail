@@ -442,6 +442,38 @@ class CssParser<DisplayObjectType> {
 				s.setWhiteSpace(d, val);
 				return true;
 			}
+			
+		case "z-index":
+			// case negative int - hack
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VInt(v):
+						s.setZIndex(d, Std.string(v * -1));
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
+			// case int
+			switch(v) {
+			case VInt(i):
+				s.setZIndex (d, Std.string(i));
+				return true;
+			default:
+			}
+			
+			// case label (auto)
+			var val = getIdent(v);
+			if ( val != null) {
+				s.setZIndex(d, val);
+				return true;
+			}
+			
+			
 		case "line-height":
 			
 			//case 0
