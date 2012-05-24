@@ -184,7 +184,7 @@ class HTMLDocument extends Document
 			
 			//get the amount of vertical scrolling to apply in pixel
 			//TODO 4 : for now mulitplier hard coded
-			var scrollOffset:Int = Math.round(wheelEvent.deltaY * 10) ;
+			var scrollOffset:Int = Math.round(wheelEvent.deltaY * 14) ;
 			
 			//get the first ancestor which can be vertically scrolled
 			var scrollableHTMLElement:HTMLElement = getFirstVerticallyScrollableHTMLElement(htmlElement, scrollOffset);

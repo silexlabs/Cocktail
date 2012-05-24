@@ -49,8 +49,8 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	{	
 		super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
 		
-		var scrollBar:ScrollBar = cast(_node);
-		scrollBar.updateThumbSize();
+	//	var scrollBar:ScrollBar = cast(_node);
+	//	scrollBar.updateThumbSize();
 	}
 
 	
@@ -80,22 +80,6 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	 */
 	override private function storeAbsolutelyPositionedChild(firstPositionedAncestorData:FirstPositionedAncestorData):Void
 	{
-		//don't do anything for static or relative positioned elements.
-		//Relative positioning is only an offset applied during rendering
-		if (isPositioned() == false || isRelativePositioned() == true || isScrollBar() == true)
-		{
-			return;
-		}
 		
-		//store as a positioned ElementRenderer.
-		//an absolutely positioned ElementRenderer is not laid out right away, it must
-		//wait for its first positioned ancestor to be laid out. The reason is that
-		//if the positioned ancestor height is 'auto', the height of the positioned
-		//ancestor is not yet determined and so this ElementRenderer can't be laid out
-		//using the bottom or right style yet. Once the first ancestor is laid out, it
-		//lays out all the stored positioned children
-		
-		//store the ElementRenderer to be laid out later
-		firstPositionedAncestorData.elements.push(this);
 	}
 }
