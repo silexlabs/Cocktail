@@ -32,25 +32,45 @@ import haxe.Log;
  */
 class EmbeddedBoxRenderer extends BoxRenderer
 {
-
-	/**
-	 * class constructor. Set the width and height
-	 * of the element, as for embedded element
-	 * they are intrinsic to the embeddded asset
-	 */
 	public function new(node:Node) 
 	{
 		super(node);
-		
-		//TODO : at this point, computed styles are false
-	
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE LAYOUT METHODS
+	// OVERRIDEN PUBLIC RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 
+	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		super.render(graphicContext, relativeOffset);
+		renderEmbeddedAsset(graphicContext, relativeOffset);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
+	{
+		//abstract
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	override public function isReplaced():Bool
+	{
+		return true;
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN SETTER/GETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	//TODO : messy
 	override private function get_bounds():RectangleData
 	{
 		_bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
@@ -58,74 +78,4 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		
 		return _bounds;
 	}
-	
-	override public function isReplaced():Bool
-	{
-		return true;
-	}
-	
-	/**
-	 * Render the embedded asset and return a
-	 * NativeElement from it
-	 */
-	override public function render():Array<NativeElement>
-	{
-		var backgroundManager:BackgroundManager = new BackgroundManager();
-
-		var ret:Array<NativeElement> = backgroundManager.render(_bounds, _coreStyle);
-		#if (flash9 || nme)
-		for (i in 0...ret.length)
-		{
-			
-			ret[i].x = globalBounds.x;
-			ret[i].y = globalBounds.y;
-		
-		}
-		
-		//TODO : check here if it is an Image, Video... or should be instantiated in
-		//EmbeddedStyle ? -> Should be styles inheriting from EmbeddedStyle (ImageStyle, VideoStyle...)
-	
-		var embeddedHTMLElement:EmbeddedElement = cast(_node);
-		
-		ret.push(embeddedHTMLElement.embeddedAsset);
-	
-		embeddedHTMLElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
-		embeddedHTMLElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
-
-		embeddedHTMLElement.embeddedAsset.width = _coreStyle.computedStyle.width;
-		embeddedHTMLElement.embeddedAsset.height = _coreStyle.computedStyle.height;
-		
-		#end
-	
-		//TODO : apply transformations, opacity and visibility
-		
-		//TODO : opacity doesn't work on embedded asset and should also be applied to background
-		
-		return ret;
-	}
-	
-	
-	
-	//TODO : re-implement + add an ImageRenderer
-	//
-	///**
-	 //* apply a bilinear filtering to the loaded picture
-	 //* 
-	 //*/
-	//private function smoothPicture():Void
-	//{
-		//cast the native element as a loader
-		// and retrieve its bitmap content
-		//var typedNativeElement:Loader = cast(this._embeddedAsset);
-		//var bitmap:Bitmap = cast(typedNativeElement.content);
-		//
-		//if (bitmap != null)
-		//{
-			//activate picture smoothing
-			//bitmap.smoothing = true;
-		//}
-	//}
-	
-	
-	
 }

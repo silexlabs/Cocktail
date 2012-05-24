@@ -34,6 +34,12 @@ class Element extends Node
 	private static inline var MATCH_ALL_TAG_NAME:String = "*";
 	
 	/**
+	 * The class attribute searched for
+	 * when using the getElementsByClassName
+	 */
+	private static inline var CLASS_ATTRIBUTE:String = "class";
+	
+	/**
 	 * The name of the element
 	 */
 	private var _tagName:String;
@@ -270,6 +276,23 @@ class Element extends Node
 		return elements;
 	}
 	
+	/**
+	 * Returns a set of elements which have all the given class names.
+	 * 
+	 * IMPORTANT : return array of HTMLElement because of haxe JS
+	 * 
+	 * @param	className the class name to match. If it is a list of class names
+	 * separated by spaces, it returns only the elements which matches all the class
+	 * names
+	 * @return A list of matching Element nodes.
+	 */
+	public function getElementsByClassName(className:String):Array<HTMLElement>
+	{
+		var elements:Array<HTMLElement> = new Array<HTMLElement>();
+		doGetElementsByClassName(this, className, elements);
+		return elements;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -302,6 +325,44 @@ class Element extends Node
 		}
 	}
 	
+	/**
+	 * do get the matching child elements by 
+	 * traversing the DOM tree recursively
+	 */
+	private function doGetElementsByClassName(node:Node, className:String, elements:Array<HTMLElement>):Void
+	{
+		if (node.hasChildNodes() == true)
+		{
+			for (i in 0...node.childNodes.length)
+			{
+				var childNode:Node = node.childNodes[i];
+				switch (childNode.nodeType)
+				{
+					case Node.ELEMENT_NODE:
+						var elementNode:Element = cast(childNode);
+						var elementClassName:String = elementNode.getAttribute(CLASS_ATTRIBUTE);
+						if (elementClassName != null)
+						{
+							var elementClassNames:Array<String> = elementClassName.split(" ");
+							
+							var foundFlag:Bool = false;
+							for (j in 0...elementClassNames.length)
+							{
+								if (elementClassNames[j] == className && foundFlag == false)
+								{
+									elements.push(cast(elementNode));
+									foundFlag = true;
+								}
+							}
+						}
+				}
+				
+				doGetElementsByClassName(childNode, className, elements);
+			}
+		}
+	}
+
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -310,8 +371,6 @@ class Element extends Node
 	{
 		return _attributes.length > 0;
 	}
-	
-
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SETTERS/GETTERS

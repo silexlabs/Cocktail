@@ -182,10 +182,9 @@ class FocusManager
 				//check if the child can be focused
 				if (child.isFocusable() == true)
 				{
-					//if it can and has a 0 tabIndex or no defined tabIndex, push it
+					//if it can and has a 0 tabIndex, push it
 					//the DOM order array
-					//TODO : should tabIndex be null Int ?
-					if (child.tabIndex == 0 || child.tabIndex == null)
+					if (child.tabIndex == 0)
 					{
 						orderedTabList.push(child);
 					}

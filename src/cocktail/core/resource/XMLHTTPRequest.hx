@@ -8,7 +8,7 @@
 package cocktail.core.resource;
 
 import cocktail.core.event.Event;
-import cocktail.core.event.IEventTarget;
+import cocktail.core.event.EventTarget;
 import haxe.Http;
 
 /**
@@ -19,7 +19,7 @@ import haxe.Http;
  * 
  * @author Yannick DOMINGUEZ
  */
-class XMLHTTPRequest implements IEventTarget
+class XMLHTTPRequest extends EventTarget
 {
 	//ready states
 	
@@ -94,6 +94,7 @@ class XMLHTTPRequest implements IEventTarget
 	 */
 	public function new() 
 	{	
+		super();
 		_http = new Http("");
 		
 		_http.onData = onHTTPData;
@@ -188,7 +189,9 @@ class XMLHTTPRequest implements IEventTarget
 		_readyState = value;
 		if (onReadyStateChange != null)
 		{
-			onReadyStateChange(new Event(Event.READY_STATE_CHANGE, this));
+			var readyStateChangeEvent:Event = new Event();
+			readyStateChangeEvent.initEvent(Event.READY_STATE_CHANGE, false, false);
+			onReadyStateChange(readyStateChangeEvent);
 		}
 	}
 	

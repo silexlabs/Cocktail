@@ -55,9 +55,7 @@ class Browser<DisplayObjectType> {
 	}
 
 	public function setHtml( data : String ) {
-		
 		var x = Xml.parse(data).firstElement();
-		
 		ids = new Hash();
 		domRoot = make(x);
 		refresh();
@@ -119,7 +117,6 @@ class Browser<DisplayObjectType> {
 				}
 */			}
 			prev = make(c);
-			
 			appendChild(d, prev);
 		}
 		// init attributes
@@ -132,12 +129,8 @@ class Browser<DisplayObjectType> {
 				setAttribute (d, a, v);
 			case "style":
 				new CssParser<DisplayObjectType>().parse(v, d, styleProxy);
-			case "class":
-				throw ("'class' attribute not implemented yet");
-//				classes = ~/[ \t]+/g.split(StringTools.trim(v));
 			default:
-				
-				setAttribute(d, a, v);
+				setAttribute (d, a, v);
 			}
 		}
 		return d;
