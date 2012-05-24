@@ -470,6 +470,9 @@ class UnitManager
 			case "normal":
 				fontStyle = FontStyle.normal;
 				
+			case "oblique":
+				fontStyle = FontStyle.oblique;
+				
 			default:
 				fontStyle = null;
 		}
@@ -1936,6 +1939,9 @@ class UnitManager
 				
 			case italic:
 				cssFontStyleValue = "italic";
+				
+			case oblique:
+				cssFontStyleValue = "obllique";
 		}
 		
 		return cssFontStyleValue;
