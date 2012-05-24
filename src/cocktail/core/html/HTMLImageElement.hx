@@ -9,8 +9,10 @@ package cocktail.core.html;
 
 import cocktail.core.dom.Attr;
 import cocktail.core.dom.Node;
+import cocktail.core.event.UIEvent;
 import cocktail.core.NativeElement;
 import cocktail.core.event.Event;
+import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.resource.ImageLoader;
 import haxe.Log;
 import cocktail.core.html.EmbeddedElement;
@@ -36,21 +38,6 @@ class HTMLImageElement extends EmbeddedElement
 	 * The name of the src attribute for the HTMLImageElement
 	 */
 	private static inline var HTML_IMAGE_SRC_ATTRIBUTE:String = "src";
-	
-	//////////////////////
-	// CALLBACKS
-	/////////////////////
-	
-	/**
-	 * The callback called once a picture has been successfully
-	 * loaded
-	 */
-	public var onload:Event->Void;
-	
-	/**
-	 * The callback called when there was an error during loading
-	 */
-	public var onError:Event->Void;
 
 	//////////////////////
 	// PRIVATE ATTRIBUTES
@@ -121,6 +108,19 @@ class HTMLImageElement extends EmbeddedElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Instantiate an image specific renderer
+	 */
+	override private function createElementRenderer():Void
+	{
+		_elementRenderer = new ImageRenderer(this);
+		_elementRenderer.coreStyle = _coreStyle;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LOADING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -156,14 +156,11 @@ class HTMLImageElement extends EmbeddedElement
 		this._intrinsicWidth = _imageLoader.intrinsicWidth;
 		this._intrinsicRatio = _intrinsicHeight / _intrinsicWidth;
 		
-		this._coreStyle.invalidate();
+		invalidateLayout();
 		
-		//if provided, call the onload callback
-		if (onload != null)
-		{
-			var loadEvent:Event = new Event(Event.LOAD, this);
-			onload(loadEvent);
-		}
+		var loadEvent:UIEvent = new UIEvent();
+		loadEvent.initUIEvent(UIEvent.LOAD, false, false, null, 0.0);
+		dispatchEvent(loadEvent);
 	}
 	
 	/**
@@ -174,10 +171,9 @@ class HTMLImageElement extends EmbeddedElement
 	 */
 	private function onLoadError(message:String):Void
 	{
-		if (onError != null)
-		{
-			onError(new Event(Event.ERROR, this));
-		}
+		var errorEvent:UIEvent = new UIEvent();
+		errorEvent.initUIEvent(UIEvent.ERROR, false, false, null, 0.0);
+		dispatchEvent(errorEvent);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
