@@ -298,7 +298,7 @@ class FontManager extends AbstractFontManager
 			case normal:
 				nativeFontPosture = FontPosture.NORMAL;
 				
-			case italic:
+			case italic, oblique:
 				nativeFontPosture = FontPosture.ITALIC;
 		}
 		
