@@ -655,19 +655,25 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	remainingSpace the available width in the line box after all HTMLElements
 	 * have been laid out
 	 */
-	private function alignRight(flowX:Int, remainingSpace:Int, lineBox:LineBox):Void
+	private function alignRight(flowX:Int, remainingSpace:Int, lineBox:LineBox):Int
 	{
+		flowX += lineBox.marginLeft + lineBox.paddingLeft;
 		for (i in 0...lineBox.childNodes.length)
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
-			child.bounds.x =  flowX + remainingSpace;
-			flowX += Math.round(child.bounds.width);
 			
 			if (child.hasChildNodes() == true)
 			{
-				alignRight(flowX, remainingSpace, child);
+				flowX = alignRight(flowX, remainingSpace, child);
 			}
+			
+			child.bounds.x = flowX + remainingSpace;
+			flowX += Math.round(child.bounds.width);
 		}
+		
+		flowX += lineBox.marginRight + lineBox.paddingRight;
+		
+		return flowX;
 	}
 	
 	/**
