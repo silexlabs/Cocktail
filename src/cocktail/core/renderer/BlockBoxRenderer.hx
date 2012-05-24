@@ -1117,13 +1117,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function getHorizonalContainerBlockData():ContainingBlockData
-	{
-		var containingBlockData:ContainingBlockData = getContainerBlockData();
-		return containingBlockData;
-	}
-	
-	
 	/**
 	 * Return the maximum amount of scroll in pixels in the
 	 * vertical direcion. Maximum scroll can't be negative
