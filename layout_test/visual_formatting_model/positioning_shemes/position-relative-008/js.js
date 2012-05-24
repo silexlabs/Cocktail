@@ -47,12 +47,10 @@ Std.prototype = {
 	__class__: Std
 }
 var Test = $hxClasses["Test"] = function() {
-	var test = "<div><p>Test passes if the text \"Filler Text1\" is aligned to the left side of the box and \"Filler Text2\" is aligned to the right side of the box.</p>";
-	test += "<div>";
-	test += "<span>";
-	test += "<span style=\"position:relative; left:-6em;\">Filler Text1</span>";
-	test += "Filler Text2";
-	test += "</span>";
+	var test = "<div><p>Test passes if the blue box is to the right of the orange box.</p>";
+	test += "<div style=\"width:1in; height:1in; margin-left:1in;\">";
+	test += "<div style=\"background-color:orange; height:1in; width:1in;\"></div>";
+	test += "<div style=\"background-color:blue; left:1in; height:1in; width:1in; position:relative; right:auto; top:-1in;\"></div>";
 	test += "</div></div>";
 	js.Lib.document.body.innerHTML = test;
 };
