@@ -346,6 +346,9 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setWhiteSpace (element:Node, value:String):Void{
 		cast(element, HtmlDom).style.whiteSpace = value;
 	}
+	public function setZIndex (element:Node, value:String):Void{
+		cast(element, HtmlDom).style.zIndex = value;
+	}
 	
 	
 /*	
