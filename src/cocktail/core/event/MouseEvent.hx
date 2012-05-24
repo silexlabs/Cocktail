@@ -18,7 +18,7 @@ import cocktail.core.html.HTMLElement;
  * between the mousedown and mouseup the value will be set to 0, indicating
  * that no click is occurring.
  * 
- * TODO : implement
+ * TODO 4 : implement
  * 
  * In the case of nested elements mouse events are always targeted at the most deeply
  * nested element. Ancestors of the targeted element may use bubbling to obtain

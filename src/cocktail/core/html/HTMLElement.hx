@@ -849,8 +849,6 @@ class HTMLElement extends Element
 	 * Return the first ancestor HTMLElement which has an 
 	 * activation behaviour. HTMLElement return itself if
 	 * it has one
-	 * 
-	 * TODO 1 : add default behaviour for mouse wheel events
 	 */
 	public function getNearestActivatableElement():HTMLElement
 	{
@@ -926,7 +924,7 @@ class HTMLElement extends Element
 	}
 	
 	
-	//TODO : shouldn't HTMLElement be the model for all attributes
+	//TODO 4 : shouldn't HTMLElement be the model for all attributes
 	//instead ? Shouldn't ElementRenderer set the value of scrollLeft/scrollTop
 	//on the HTMLElement ?
 	private function set_scrollLeft(value:Int):Int

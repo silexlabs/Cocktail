@@ -24,11 +24,7 @@ import cocktail.port.platform.mouse.MouseData;
  * For instance in Flash, it listens to mouse
  * events on the Stage.
  * 
- * TODO : Add an InputManager ?
- * or merge keyboard and mouse into an Input class ?
- * This way the flash port might take care of things
- * not provided by the flash platform natively, such as 
- * key press ?
+ * TODO 3 : add mouse double click
  * 
  * @author Yannick DOMINGUEZ
  */

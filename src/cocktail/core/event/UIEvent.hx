@@ -60,7 +60,7 @@ class UIEvent extends Event
 	 * The view attribute identifies the 
 	 * AbstractView from which the event was generated.
 	 * 
-	 * TODO : what should abstractview be ? -> dhould be Window in most
+	 * TODO 3 : what should abstractview be ? -> dhould be Window in most
 	 * cases (called defaultView)
 	 */
 	private var _view:Dynamic;

@@ -32,7 +32,7 @@ class Attr extends Node
 	 * that an XML processor would recognize as markup
 	 * are instead treated as literal text.
 	 * 
-	 * TODO : create a Text node ?
+	 * TODO 5 : create a Text node ?
 	 */
 	private var _value:String;
 	public var value(get_value, set_value):String;
