@@ -19,6 +19,7 @@ class HxtmlConverter
 	 */
 	static public function getNode(htmlString:String):Node 
 	{
+		
 		// create an instance of our class to manage css styles
 		var s = new StyleProxy();
 
@@ -34,6 +35,7 @@ class HxtmlConverter
 		//}catch(e:String){ 
 			//throw("Error parsing HTML in HXTML");
 		//}
+		
 		return browser.domRoot;
 	}
 	/**

@@ -8,6 +8,7 @@
 package cocktail.port.platform.mouse;
 
 import cocktail.core.event.MouseEvent;
+import cocktail.core.event.WheelEvent;
 
 import cocktail.port.platform.mouse.MouseData;
 
@@ -56,6 +57,13 @@ class AbstractMouse
 	 */
 	private var _onMouseMove:MouseEvent->Void;
 	public var onMouseMove(getOnMouseMove, setOnMouseMove):MouseEvent->Void;
+	
+	/**
+	 * The callback to call when the mouse wheel
+	 * is rotated
+	 */
+	private var _onMouseWheel:WheelEvent->Void;
+	public var onMouseWheel(getOnMouseWheel, setOnMouseWheel):WheelEvent->Void;
 	
 	/**
 	 * class constructor
@@ -119,6 +127,17 @@ class AbstractMouse
 		}
 	}
 	
+	/**
+	 * same as mouse click, for a wheel event
+	 */
+	private function onNativeMouseWheel(event:Dynamic):Void
+	{
+		if (onMouseWheel != null)
+		{
+			onMouseWheel(getWheelEvent(event));
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Private mouse utils methods
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -146,6 +165,17 @@ class AbstractMouse
 	 * @param	event the native mouse event
 	 */
 	private function getMouseEvent(event:Dynamic):MouseEvent
+	{
+		return null;
+	}
+	
+	/**
+	 * Create and return a cross-platform wheel event
+	 * from the dispatched native mouse wheel event
+	 * 
+	 * @param	event the native mouse wheel event
+	 */
+	private function getWheelEvent(event:Dynamic):WheelEvent
 	{
 		return null;
 	}
@@ -193,5 +223,17 @@ class AbstractMouse
 	{
 		return this._onMouseMove;
 	}
+
+	private function setOnMouseWheel(value:WheelEvent->Void):WheelEvent->Void
+	{
+		return this._onMouseWheel = value;
+	}
+	
+	private function getOnMouseWheel():WheelEvent->Void
+	{
+		return this._onMouseWheel;
+	}
+	
+	
 	
 }
