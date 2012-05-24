@@ -366,6 +366,8 @@ class LayerRenderer extends Node
 	private function insertNegativeOrderChildLayer(childLayer:LayerRenderer, childLayerZIndex:Int):Void
 	{
 		var newNegativeChildLayers:Array<LayerRenderer> = new Array<LayerRenderer>();
+
+		var isInserted:Bool = false;
 		
 		for (i in 0..._negativeOrderChildLayers.length)
 		{
@@ -379,15 +381,22 @@ class LayerRenderer extends Node
 				default:	
 			}
 			
-			if (currentLayerZIndex  > childLayerZIndex)
+			if (currentLayerZIndex  > childLayerZIndex && isInserted == false)
 			{
 				newNegativeChildLayers.push(childLayer);
+				isInserted = true;
 			}
 			
 			newNegativeChildLayers.push(_negativeOrderChildLayers[i]);
 		}
 		
+		if (isInserted == false)
+		{
+			newNegativeChildLayers.push(childLayer);
+		}
+		
 		_negativeOrderChildLayers = newNegativeChildLayers;
+		
 	}
 	
 	//TODO 1 : doc
