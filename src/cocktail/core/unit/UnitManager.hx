@@ -162,17 +162,52 @@ class UnitManager
 	
 	/**
 	 * convert a string into a typed enum
-	 * 
-	 * TODO : only supports units for now
 	 */
 	static public function fontSizeEnum(string:String):FontSize
 	{
 		string = trim(string);
 		
+		switch (string)
+		{
+			case "small":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.small);
+				
+			case "xx-small":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.xxSmall);
+				
+			case "x-small":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.xSmall);	
+				
+			case "medium":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.medium);		
+				
+			case "large":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.large);	
+				
+			case "x-large":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.xLarge);			
+				
+			case "xx-large":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.xxLarge);	
+				
+			case "larger":
+				return FontSize.relativeSize(FontSizeRelativeSize.larger);		
+				
+			case "smaller":
+				return FontSize.relativeSize(FontSizeRelativeSize.smaller);			
+		}
+		
 		// split unit and value
 		var parsed:VUnit = string2VUnit(string);
 		
-		return FontSize.length(string2Length(parsed));
+		switch(parsed.unit)
+		{
+			case "%":
+				return FontSize.percentage(Std.parseInt(parsed.value));
+				
+			default:
+				return FontSize.length(string2Length(parsed));
+		}
 	}
 	
 	/**
