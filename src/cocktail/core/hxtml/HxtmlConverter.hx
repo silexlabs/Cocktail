@@ -222,14 +222,13 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setRightKey (element:Node, value:String):Void{
 		cast(element, HTMLElement).style.right = value; 
 	}
-	public function setBgColorNum (element:Node, value:Int):Void{
+	public function setBgColorNum (element:Node, value:Int):Void {
 		cast(element, HTMLElement).style.backgroundColor = "#" + Std.string(value);
 	}
 	public function setBgColorRGBA (element:Node, value:String):Void{
 		cast(element, HTMLElement).style.backgroundColor = "rgba("+value+")";
 	}
 	public function setBgColorRGB (element:Node, value:String):Void {
-		trace(value);
 		cast(element, HTMLElement).style.backgroundColor = "rgb("+value+")";
 	}
 	public function setBgColorKey (element:Node, value:String):Void{
@@ -298,6 +297,12 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	}
 	public function setTextColorNum (element:Node, value:Int):Void{
 		cast(element, HTMLElement).style.color = "#" + Std.string(value);
+	}
+	public function setTextColorRGBA (element:Node, value:String):Void{
+		cast(element, HTMLElement).style.color = "rgba("+value+")";
+	}
+	public function setTextColorRGB (element:Node, value:String):Void {
+		cast(element, HTMLElement).style.color = "rgb("+value+")";
 	}
 	public function setTextDecoration (element:Node, value:String):Void{
 //		cast(element, HtmlDom).style.textDecoration = value;

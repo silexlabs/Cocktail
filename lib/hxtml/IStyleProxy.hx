@@ -83,6 +83,8 @@ interface IStyleProxy<DisplayObjectType>
 	public function setFontVariant (element:DisplayObjectType, value:String):Void;
 	public function setTextColorKey (element:DisplayObjectType, value:String):Void;
 	public function setTextColorNum (element:DisplayObjectType, value:Int):Void;
+	public function setTextColorRGBA (element:DisplayObjectType, value:String):Void;
+	public function setTextColorRGB (element:DisplayObjectType, value:String):Void;
 	public function setTextDecoration (element:DisplayObjectType, value:String):Void;
 	public function setLineHeightNum (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setLineHeightZero (element:DisplayObjectType):Void;
