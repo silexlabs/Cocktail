@@ -14,7 +14,7 @@ package ;
 import js.Lib;
 
 /**
- * TODO : fail because of fixed element trouble
+ * TODO : test is incomplete
  */
 class Test 
 {
@@ -25,9 +25,10 @@ class Test
 	
 	public function new()
 	{
-		var test = '<div><p>Test passes if there is a large orange box that covers the bottom-right corner of the blue box and continues to the right side and the bottom of the page.</p>';
-		test += '<div style="position:relative; background-color:blue; height:2in; width:2in;">';
-		test += '<div style="background-color:orange; position:fixed; bottom:0; right:0; top:1in; left:1in;"></div>';
+		var test = '<div><p>Test passes if below the yellow box is on the left-hand side of the blue box and the orange box is on the right-hand side fo the blue box.</p>';
+		test += '<div>';
+		test += '<span id="span1" style="color: orange; font-size: 16px; font-family: Ahem;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		test += '<span id="span2" style="font-size: 16px; font-family: Ahem;color: yellow;position: relative;left: -6em;"> XXXXXX </span>XXXXXX</span > ';
 		test += '</div></div>';
 		
 		Lib.document.body.innerHTML = test;
