@@ -130,114 +130,23 @@ class MouseEvent extends UIEvent
 	private var _altKey:Bool;
 	public var altKey(get_altKey, null):Bool;
 	
-	/**
-	 * Refer to the KeyboardEvent.metaKey attribute.
-	 */
-	private var _metaKey:Bool;
-	public var metaKey(get_metaKey, never):Bool;
-	
-	/**
-	 * During mouse events caused by the depression or release of a mouse button,
-	 * button must be used to indicate which pointer device button changed state.
-	 * The value of the MouseEvent.button attribute must be as follows:
-		 * 
-		 * 0 must indicate the primary button of the device (in general, the left
-		 * button or the only button on single-button devices,
-		 * used to activate a user interface control or select text).
-		 * 
-		 * 1 must indicate the auxiliary button (in general,
-		 * the middle button, often combined with a mouse wheel).
-		 * 
-		 * 2 must indicate the secondary button (in general, the right button,
-		 * often used to display a context menu).
-		 * 
-	 *Some pointing devices may provide or simulate more buttons, and values 
-	 * higher than 2 may be used to represent such buttons.
-	 */
-	private var _button:Int;
-	public var button(get_button, never):Int;
-	
-	/**
-	 * Used to identify a secondary EventTarget related to a UI
-	 * event, depending on the type of event.
-	 */
-	private var _relatedTarget:EventTarget;
-	public var relatedTarget(get_relatedTarget, never):EventTarget;
-	
-	/**
-	 * class constructor
-	 */
-	public function new() 
+	public function new(type:String, target:HTMLElement, detail:Float, screenX:Float, screenY:Float, clientX:Float, clientY:Float, 
+	ctrlKey:Bool, shiftKey:Bool, altKey:Bool) 
 	{
-		super();
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Initializes attributes of a MouseEvent object. 
-	 * This method has the same behavior as UIEvent.initUIEvent().
-	 * 
-	 * @param	eventTypeArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.
-	 * @param	canBubbleArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.
-	 * @param	cancelableArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.
-	 * @param	viewArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.
-	 * @param	detailArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.
-	 * @param	screenXArg Specifies MouseEvent.screenX.
-	 * @param	screenYArg Specifies MouseEvent.screenY.
-	 * @param	clientXArg Specifies MouseEvent.clientX.
-	 * @param	clientYArg Specifies MouseEvent.clientY.
-	 * @param	ctrlKeyArg Specifies MouseEvent.ctrlKey.
-	 * @param	altKeyArg Specifies MouseEvent.altKey.
-	 * @param	shiftKeyArg Specifies MouseEvent.shiftKey.
-	 * @param	metaKeyArg Specifies MouseEvent.metaKey.
-	 * @param	buttonArg Specifies MouseEvent.button.
-	 * @param	relatedTargetArg Specifies MouseEvent.relatedTarget. This value may be null.
-	 */
-	public function initMouseEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, viewArg:Dynamic, detailArg:Float,
-	screenXArg:Float, screenYArg:Float, clientXArg:Float, clientYArg:Float, ctrlKeyArg:Bool, altKeyArg:Bool,
-	shiftKeyArg:Bool, metaKeyArg:Bool, buttonArg:Int, relatedTargeArg:EventTarget):Void
-	{
-		//can't alter event after it has been dispatched
-		if (_dispatched == true)
-		{
-			return;
-		}
+		super(type, target, detail);
 		
-		initUIEvent(eventTypeArg, canBubbleArg, cancelableArg, viewArg, detailArg);
-		_screenX = screenXArg;
-		_screenY = screenYArg;
-		_clientX = clientXArg;
-		_clientY = clientYArg;
-		_ctrlKey = ctrlKeyArg;
-		_shiftKey = shiftKeyArg;
-		_altKey = altKeyArg;
-		_metaKey = metaKeyArg;
-		_button = buttonArg;
-		_relatedTarget = relatedTargeArg;
+		_screenX = screenX;
+		_screenY = screenY;
+		_clientX = clientX;
+		_clientY = clientY;
+		_ctrlKey = ctrlKey;
+		_shiftKey = shiftKey;
+		_altKey = altKey;
 	}
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_relatedTarget():EventTarget
-	{
-		return _relatedTarget;
-	}
-	
-	private function get_button():Int
-	{
-		return _button;
-	}
-	
-	private function get_metaKey():Bool
-	{
-		return _metaKey;
-	}
 	
 	private function get_altKey():Bool 
 	{

@@ -141,27 +141,6 @@ class UnitManager
 	
 	/**
 	 * convert a string into a typed enum
-	 */
-	static public function zIndexEnum(string:String):ZIndex
-	{
-		var parsed:String = trim(string);
-		
-		var zIndex:ZIndex;
-		
-		switch(parsed)
-		{
-			case "auto":
-				zIndex = ZIndex.cssAuto;
-				
-			default:
-				zIndex = ZIndex.integer(Std.parseInt(parsed));
-		}
-		
-		return  zIndex;
-	}
-	
-	/**
-	 * convert a string into a typed enum
 	 * 
 	 * TODO : only supports units for now
 	 */
@@ -1344,25 +1323,6 @@ class UnitManager
 		}
 		
 		return cssClearValue;
-	}
-	
-	/**
-	 * CSS : clear
-	 */
-	public static function getCSSZIndex(value:ZIndex):String
-	{
-		var cssZIndexValue:String;
-		
-		switch (value)
-		{
-			case ZIndex.cssAuto:
-				cssZIndexValue = "auto";
-				
-			case ZIndex.integer(value):
-				cssZIndexValue = Std.string(value);
-		}
-		
-		return cssZIndexValue;
 	}
 	
 	/**

@@ -104,7 +104,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			//compute the used height
 			var computedHeight:Int = getComputedDimension(style.height, containingBlockData.height, containingBlockData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 			setComputedHeight(style, computedHeight);
-			
+			/**
 			//deduce the width from the intrinsic ratio and the computed height
 			if (embeddedHTMLElement.intrinsicRatio != null)
 			{
@@ -122,7 +122,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 				//value of 'width' becomes 300px.
 				ret = 300;
 			}
-			
+			*/
 		}
 		
 		return ret;
