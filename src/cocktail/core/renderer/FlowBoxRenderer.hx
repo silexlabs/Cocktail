@@ -75,7 +75,7 @@ class FlowBoxRenderer extends BoxRenderer
 		//gets instantiated as the type of FormattingContext mainly
 		//depends on the children computed 'display' style value
 		//
-		//TODO : should not be necessary anymore, this should be done
+		//TODO 3 : should not be necessary anymore, this should be done
 		//in HTMLElement, as when the display style changes, a new ElementRenderer
 		//must be instantiated. Also, the ElementRenderer should not loop into the
 		//HTMLElements
@@ -129,7 +129,7 @@ class FlowBoxRenderer extends BoxRenderer
 		//else it is already computed and is set on the bounds
 		//of tht ElementRenderer
 		//
-		//TODO : shouldn't it be set during formatting instead ?
+		//TODO 2 : shouldn't it be set during formatting instead ?
 		else
 		{
 			_bounds.width = _coreStyle.computedStyle.width;
@@ -142,7 +142,7 @@ class FlowBoxRenderer extends BoxRenderer
 		//of the children is not used and auto height is computed in
 		//another way
 		//
-		//TODO : shouldn't be useful anymore, its taken care of during formatting ? the only 
+		//TODO 2 : shouldn't be useful anymore, its taken care of during formatting ? the only 
 		//needed thing is to update the computed height
 		if (this._coreStyle.height == Dimension.cssAuto)
 		{
@@ -158,7 +158,7 @@ class FlowBoxRenderer extends BoxRenderer
 				childrenFormattingContext.format();
 			}
 			
-			//TODO : check if this intermediate method is actually useful, seems to be only
+			//TODO 2 : check if this intermediate method is actually useful, seems to be only
 			//used for positioned elements
 			this.computedStyle.height = _coreStyle.applyContentHeightIfNeeded(getRelevantContainingBlockData(containingBlockData, viewportData,  firstPositionedAncestorData.data), Math.round(this.bounds.height), isReplaced());
 		}

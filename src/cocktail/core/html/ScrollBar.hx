@@ -109,7 +109,6 @@ class ScrollBar extends HTMLElement
 	 */
 	public function new(isVertical:Bool) 
 	{
-		
 		_isVertical = isVertical;
 		
 		super("");
@@ -454,7 +453,7 @@ class ScrollBar extends HTMLElement
 		else
 		{
 			var thumbWidth:Float = _coreStyle.computedStyle.width - _downArrow.coreStyle.computedStyle.width - _upArrow.coreStyle.computedStyle.width - maxScroll;
-			
+
 			if (thumbWidth < THUMB_DEFAULT_DIMENSION)
 			{
 				thumbWidth = THUMB_DEFAULT_DIMENSION;
@@ -510,6 +509,7 @@ class ScrollBar extends HTMLElement
 	{
 		_scroll = value;
 		updateScroll();
+		
 		return value;
 	}
 }

@@ -39,18 +39,34 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC LAYOUT
+	// OVERRIDEN PRIVATE LAYOUT METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * TODO : seems a bit overkill but works to referesh the thumb size
+	 * The scrollbar DOM element is absolutely positioned but the scrollbar renderer
+	 * isn't added in the absolutely positioned children array, as it will be laid out
+	 * by its block box renderer which is always considered its first positioned 
+	 * ancestor
 	 */
-	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
-	{	
-		super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
+	override private function storeAbsolutelyPositionedChild(firstPositionedAncestorData:FirstPositionedAncestorData):Void
+	{
 		
-		var scrollBar:ScrollBar = cast(_node);
-		scrollBar.updateThumbSize();
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Always return the containing block data, as event though the scroll bar renderer is 
+	 * absolutely positioned, it always considers its block box renderer as its first positioned
+	 * ancestor
+	 */
+	override private function getRelevantContainingBlockData(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:ContainingBlockData):ContainingBlockData
+	{
+		return containingBlockData;
+	}
+	
+	
+
 }

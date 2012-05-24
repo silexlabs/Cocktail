@@ -46,7 +46,7 @@ class RootLineBox extends LineBox
 	// PRIVATE METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : those method are already on ElementRenderer, share a common class ? interface ?
+	//TODO 4 : those method are already on ElementRenderer, share a common class ? interface ?
 	//add an helper class ?
 	
 	/**

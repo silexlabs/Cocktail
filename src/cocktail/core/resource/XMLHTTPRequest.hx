@@ -15,7 +15,7 @@ import haxe.Http;
  * This class is a wrapper around the haxe Http class
  * using the XMLHTTPRequest API to load data as strings
  * 
- * TODO : responseHeaders not implemented in flash and JS
+ * TODO 5 : responseHeaders not implemented in flash and JS
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -110,7 +110,7 @@ class XMLHTTPRequest extends EventTarget
 	/**
 	 * Sets the request method, request URL
 	 * 
-	 * TODO : async in Http not implemented in flash and JS
+	 * TODO 5 : async in Http not implemented in flash and JS
 	 * 
 	 */
 	public function open(method:String, url:String):Void
@@ -124,7 +124,7 @@ class XMLHTTPRequest extends EventTarget
 	 * Initiates the request. The optional argument provides the request entity body.
 	 * The argument is ignored if request method is GET
 	 * 
-	 * TODO : POST params not supported yet
+	 * TODO 5 : POST params not supported yet
 	 */
 	public function send(content:String = null):Void
 	{

@@ -19,7 +19,7 @@ import haxe.Log;
  * interface may have children. For example, Text nodes may not have children, and adding children
  * to such nodes results in a DOMException being raised.
  * 
- * TODO : implement DOMException in all of the DOM package
+ * TODO 5 : implement DOMException in all of the DOM package
  * 
  * The attributes nodeName, nodeValue and attributes are included as a mechanism to get at node
  * information without casting down to the specific derived interface.
@@ -207,13 +207,13 @@ class Node extends EventCallback
 	 * @param	newChild The node to add. If it is a DocumentFragment object, 
 	 * the entire contents of the document fragment are moved into the child list of this node
 	 * 
-	 * TODO : implement DocumentFragment
+	 * TODO 5 : implement DocumentFragment
 	 * 
 	 * @return The node added.
 	 */
 	public function appendChild(newChild:Node):Node
 	{
-		//TODO : don't seem to work, bug with HTMLBodyElement ?
+		//TODO 5 : don't seem to work, bug with HTMLBodyElement ?
 		//if (newChild.ownerDocument != _ownerDocument)
 		//{
 			//Raised if newChild was created from a different
