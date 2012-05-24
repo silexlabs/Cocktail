@@ -11,6 +11,12 @@ import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.html.HTMLBodyElement;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.event.MouseEvent;
+import cocktail.core.Keyboard;
+import cocktail.core.mouse.MouseData;
+import cocktail.core.dom.DOMData;
+import cocktail.core.event.KeyboardEvent;
+import cocktail.core.dom.DOMData;
 
 /**
  * The Focus Manager determine which HTMLElements in 
@@ -125,6 +131,7 @@ class FocusManager
 				return i;
 			}
 		}
+		//TODO : throw exception ?
 		return -1;
 	}
 	

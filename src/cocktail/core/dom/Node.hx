@@ -8,8 +8,6 @@
 package cocktail.core.dom;
 
 import cocktail.core.dom.DOMData;
-import cocktail.core.event.EventCallback;
-import cocktail.core.event.EventTarget;
 import haxe.Log;
 
 /**
@@ -19,7 +17,7 @@ import haxe.Log;
  * interface may have children. For example, Text nodes may not have children, and adding children
  * to such nodes results in a DOMException being raised.
  * 
- * TODO 5 : implement DOMException in all of the DOM package
+ * TODO : implement DOMException in all of the DOM package
  * 
  * The attributes nodeName, nodeValue and attributes are included as a mechanism to get at node
  * information without casting down to the specific derived interface.
@@ -29,7 +27,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Node extends EventCallback
+class Node 
 {
 	/**
 	 * The node is an Element.
@@ -169,7 +167,6 @@ class Node extends EventCallback
 	 */
 	public function new() 
 	{
-		super();
 		_childNodes = new Array<Node>();
 	}
 	
@@ -207,13 +204,13 @@ class Node extends EventCallback
 	 * @param	newChild The node to add. If it is a DocumentFragment object, 
 	 * the entire contents of the document fragment are moved into the child list of this node
 	 * 
-	 * TODO 5 : implement DocumentFragment
+	 * TODO : implement DocumentFragment
 	 * 
 	 * @return The node added.
 	 */
 	public function appendChild(newChild:Node):Node
 	{
-		//TODO 5 : don't seem to work, bug with HTMLBodyElement ?
+		//TODO : don't seem to work, bug with HTMLBodyElement ?
 		//if (newChild.ownerDocument != _ownerDocument)
 		//{
 			//Raised if newChild was created from a different
@@ -221,8 +218,6 @@ class Node extends EventCallback
 			//throw DOMException.WRONG_DOCUMENT_ERR;
 		//}
 		//
-
-		
 		removeFromParentIfNecessary(newChild);
 		
 		newChild.parentNode = this;
@@ -250,15 +245,21 @@ class Node extends EventCallback
 			appendChild(newChild);
 		}
 		else
-		{	
+		{
+			removeFromParentIfNecessary(newChild);
+			
+			var newChildNodes:Array<Node> = new Array<Node>();
+			
 			for (i in 0..._childNodes.length)
 			{
 				if (_childNodes[i] == refChild)
 				{
-					appendChild(newChild);
+					newChildNodes.push(newChild);
 				}
-				appendChild(_childNodes[i]);
+				newChildNodes.push(_childNodes[i]);
 			}
+			
+			_childNodes = newChildNodes;
 		}
 		
 		return newChild;
@@ -277,14 +278,21 @@ class Node extends EventCallback
 	 */
 	public function replaceChild(newChild:Node, oldChild:Node):Node
 	{
+		var newChildNodes:Array<Node> = new Array<Node>();
+		
 		for (i in 0..._childNodes.length)
 		{
 			if (_childNodes[i] == oldChild)
 			{
-				removeChild(oldChild);
-				appendChild(newChild);
+				newChildNodes.push(newChild);
+			}
+			else
+			{
+				newChildNodes.push(_childNodes[i]);
 			}
 		}
+		
+		_childNodes = newChildNodes;
 		
 		return oldChild;
 	}
@@ -322,28 +330,6 @@ class Node extends EventCallback
 	public function hasAttributes():Bool
 	{
 		return false;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Return all the parent of the node until the root
-	 * node is reached
-	 */
-	override private function getTargetAncestors():Array<EventTarget>
-	{
-		var parent:Node = _parentNode;
-		var targetAncestors:Array<EventTarget> = new Array<EventTarget>();
-		
-		while (parent != null)
-		{
-			targetAncestors.push(parent);
-			parent = parent.parentNode;
-		}
-		
-		return targetAncestors;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -402,7 +388,7 @@ class Node extends EventCallback
 		
 		else if (_parentNode.lastChild != this)
 		{
-			//loop in all child to find this node and return
+			//loop in all child to finf this node and return
 			//the next one
 			for (i in 0..._parentNode.childNodes.length)
 			{

@@ -7,26 +7,15 @@
 */
 package cocktail.core.renderer;
 
-import cocktail.core.background.BackgroundManager;
-import cocktail.core.dom.Node;
 import cocktail.core.html.EmbeddedElement;
 import cocktail.core.NativeElement;
-import cocktail.core.style.computer.boxComputers.BoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
 import cocktail.core.style.CoreStyle;
-import cocktail.core.font.FontData;
-import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
-import cocktail.core.geom.GeomData;
 import haxe.Log;
 
 /**
  * Base class for embedded element
- * such as a picture.
+ * such as a picture. Those elements
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -38,30 +27,13 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * of the element, as for embedded element
 	 * they are intrinsic to the embeddded asset
 	 */
-	public function new(node:Node) 
+	public function new(style:CoreStyle) 
 	{
-		super(node);
+		super(style);
+		var computedStyle:ComputedStyleData = style.computedStyle;
 		
-		//TODO : at this point, computed styles are false
-	
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-
-	override private function get_bounds():RectangleData
-	{
 		_bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 		_bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
-		
-		return _bounds;
-	}
-	
-	override public function isReplaced():Bool
-	{
-		return true;
 	}
 	
 	/**
@@ -70,9 +42,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 */
 	override public function render():Array<NativeElement>
 	{
-		var backgroundManager:BackgroundManager = new BackgroundManager();
-
-		var ret:Array<NativeElement> = backgroundManager.render(_bounds, _coreStyle);
+		var ret:Array<NativeElement> = _backgroundManager.render(_bounds, _coreStyle);
 		#if (flash9 || nme)
 		for (i in 0...ret.length)
 		{
@@ -85,7 +55,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		//TODO : check here if it is an Image, Video... or should be instantiated in
 		//EmbeddedStyle ? -> Should be styles inheriting from EmbeddedStyle (ImageStyle, VideoStyle...)
 	
-		var embeddedHTMLElement:EmbeddedElement = cast(_node);
+		var embeddedHTMLElement:EmbeddedElement = cast(_coreStyle.htmlElement);
 		
 		ret.push(embeddedHTMLElement.embeddedAsset);
 	

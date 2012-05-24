@@ -169,7 +169,7 @@ class FloatsManager
 	 * @param	formattingContextData the flow data of the formatting context placing the floated
 	 * HTMLElement
 	 * 
-	 * TODO 5 : shouldn't need a ref to HTMLElement
+	 * TODO : shouldn't need a ref to HTMLElement
 	 */
 	public function computeFloatData(elementRenderer:ElementRenderer, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
 	{
@@ -195,7 +195,7 @@ class FloatsManager
 	/**
 	 * Create a float data structure for a left float
 	 * 
-	 * TODO 5 : shouldn't need ref to html element
+	 * TODO : shouldn't need ref to html element
 	 */
 	private function getLeftFloatData(elementRenderer:ElementRenderer, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
 	{

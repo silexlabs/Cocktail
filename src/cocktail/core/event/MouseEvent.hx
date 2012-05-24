@@ -18,7 +18,7 @@ import cocktail.core.html.HTMLElement;
  * between the mousedown and mouseup the value will be set to 0, indicating
  * that no click is occurring.
  * 
- * TODO 4 : implement
+ * TODO : implement
  * 
  * In the case of nested elements mouse events are always targeted at the most deeply
  * nested element. Ancestors of the targeted element may use bubbling to obtain
@@ -39,17 +39,6 @@ class MouseEvent extends UIEvent
 	 * click
 	 */
 	public static inline var CLICK:String = "click";
-	
-	/**
-	 * A user agent must dispatch this event when a pointing device button is
-	 * clicked twice over an element. The definition of a double
-	 * click depends on the environment configuration, except that
-	 * the event target must be the same between mousedown, mouseup, 
-	 * and dblclick. This event type must be dispatched after the event
-	 * type click if a click and double click occur simultaneously,
-	 * and after the event type mouseup otherwise.
-	 */
-	public static inline var DOUBLE_CLICK:String = "dblclick";
 	
 	/**
 	 * The mouseup event occurs when the pointing device button is

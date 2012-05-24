@@ -173,7 +173,7 @@ class BackgroundDrawingManager extends DrawingManager
 	 * @param	computedBackgroundPosition
 	 * @param	backgroundRepeat
 	 * 
-	 * TODO 5 : flash gradient doesn't use the same rotation
+	 * TODO : flash gradient doesn't use the same rotation
 	 */
 	public function drawBackgroundGradient(gradient:GradientValue, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeat):Void
 	{
@@ -219,7 +219,7 @@ class BackgroundDrawingManager extends DrawingManager
 			switch (value[i].stop)
 			{
 				case GradientStopValue.length(value):
-					//TODO 5
+					//TODO
 					ratio = 0;
 					
 				case GradientStopValue.percent(value):

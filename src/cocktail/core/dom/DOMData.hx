@@ -21,7 +21,7 @@ import cocktail.core.unit.UnitData;
  */
 
 /**
- * TODO 5 : obsolete, should now use the Canvas API
+ * TODO : obsolete, should now use the Canvas API
  */
 //////////////////////////////////////////////////////////////////////////////////////////
 // Graphic HTMLElement structures and enums

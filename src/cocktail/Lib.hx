@@ -7,8 +7,8 @@
 */
 package cocktail;
 
-import cocktail.core.html.HTMLDocument;
-import cocktail.core.window.Window;
+import cocktail.core.HTMLDocument;
+import cocktail.core.Window;
 
 /**
  * Entry point of the Cocktail library
@@ -49,8 +49,8 @@ class Lib
 	 */
 	private static function init():Void
 	{
-		_window = new Window();
-		_document = _window.document;
+		_document = new HTMLDocument();
+		_window = new Window(_document);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

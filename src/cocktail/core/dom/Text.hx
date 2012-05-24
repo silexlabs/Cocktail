@@ -6,9 +6,6 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.dom;
-import cocktail.core.html.HTMLElement;
-import cocktail.core.renderer.LayerRenderer;
-import cocktail.core.renderer.TextRenderer;
 
 /**
  * The Text interface inherits from CharacterData and represents the textual
@@ -28,7 +25,7 @@ import cocktail.core.renderer.TextRenderer;
  * The Node.normalize() method merges any such adjacent Text objects into a
  * single node for each block of text.
  * 
- * TODO 5 : implement normalize()
+ * TODO : implement normalize()
  * 
  * No lexical check is done on the content of a Text node and, depending
  * on its position in the document, some characters must be escaped 
@@ -47,25 +44,6 @@ class Text extends CharacterData
 	public function new() 
 	{
 		super();
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE RENDERING TREE METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Create a TextRenderer for the Text node
-	 * 
-	 * TODO IMPORTANT : this class is not supposed to 
-	 * inherit from HTMLElement and have this method.
-	 * Should they share a IRenderable interface instead ?
-	 */
-	override private function createElementRenderer():Void
-	{
-		_elementRenderer = new TextRenderer(this);
-		var parent:HTMLElement = cast(_parentNode);
-		//the TextRenderer inherits its styles from its parent
-		_elementRenderer.coreStyle = parent.coreStyle;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
