@@ -321,7 +321,6 @@ class ElementRenderer extends Node
 					createLayer(parent.layerRenderer);
 				}
 			}
-		
 		}
 		
 		//the ElementRenderer is attached to the LayerRenderer
@@ -338,6 +337,7 @@ class ElementRenderer extends Node
 	 */
 	public function detachLayer():Void
 	{
+		
 		//first detach the LayerRenderer of all its children
 		for (i in 0..._childNodes.length)
 		{
@@ -357,6 +357,19 @@ class ElementRenderer extends Node
 			_layerRenderer.detach();
 			
 			_hasOwnLayer = false;
+		}
+		//TODO 2 : doc
+		//TODO 2 : will cause bugs if a z-index style change triggered
+		//the detachement of the layer
+		else if (isAutoZIndexPositioned() == true)
+		{
+			//TODO 3 : is LayerRenderer supposed to be null ?, detachLayer seems
+			//to be called before attachLayer in some case, shouldn't arrive here
+			//if it does
+			if (_layerRenderer != null)
+			{
+				_layerRenderer.removeTreeOrderChildElementRenderer(this);
+			}
 		}
 		
 		_layerRenderer = null;
@@ -392,6 +405,11 @@ class ElementRenderer extends Node
 	}
 	
 	public function isPositioned():Bool
+	{
+		return false;
+	}
+	
+	public function isAutoZIndexPositioned():Bool
 	{
 		return false;
 	}
@@ -454,7 +472,14 @@ class ElementRenderer extends Node
 		}
 		else
 		{
+			
 			_layerRenderer = parentLayer;
+			
+			//TODO 2 : doc
+			if (isAutoZIndexPositioned() == true)
+			{
+				_layerRenderer.insertTreeOrderChildElementRenderer(this);
+			}
 		}
 	}
 	
