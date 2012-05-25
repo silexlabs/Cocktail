@@ -468,7 +468,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (_verticalScrollBar != null)
 		{
-			//TODO : x and y position of scrollbar are false when block box is not positioned, as the scrollbar
+			//TODO 3 : x and y position of scrollbar are false when block box is not positioned, as the scrollbar
 			//are positioned relative to the first positioned ancestor
 			layoutPositionedChild(_verticalScrollBar.elementRenderer, verticalScrollBarContainerBlockData, viewportData);
 		}
