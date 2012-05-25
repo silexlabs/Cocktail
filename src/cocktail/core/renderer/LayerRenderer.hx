@@ -100,7 +100,6 @@ class LayerRenderer extends Node
 		if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == false || 
 		rootRenderer.establishesNewFormattingContext() == true)
 		{
-			
 			var blockBoxRootRenderer:BlockBoxRenderer = cast(rootRenderer);
 		
 			//TODO 1 : block box background should not scroll with the rest of the children
