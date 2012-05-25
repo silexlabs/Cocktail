@@ -446,6 +446,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function isPositioned():Bool
 	{
+		_coreStyle.computeDisplayStyles();
 		var ret:Bool = false;
 		
 		switch (this.computedStyle.position) 
@@ -477,6 +478,28 @@ class BoxRenderer extends ElementRenderer
 	override public function isRelativePositioned():Bool
 	{
 		return this.computedStyle.position == relative;
+	}
+	
+	/**
+	 * Determine wether the ElementRenderer is both positioned
+	 * and have an 'auto' z-index value, as if it does, it 
+	 * means it doesn't have to establish a new stacking context
+	 */
+	override public function isAutoZIndexPositioned():Bool
+	{
+		if (isPositioned() == false)
+		{
+			return false;
+		}
+		
+		switch(computedStyle.zIndex)
+		{
+			case ZIndex.cssAuto:
+				return true;
+				
+			case ZIndex.integer(value):
+				return false;
+		}
 	}
 	
 	/**

@@ -279,50 +279,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	
-	//TODO 2 : doc
-	public function renderAutoChildLayers(graphicContext:NativeElement, relativeOffset:PointData):Void
-	{
-		var autoChildLayers:Array<ElementRenderer> = getAutoPositionedChildren(this, _layerRenderer);
-
-		for (i in 0...autoChildLayers.length)
-		{
-			autoChildLayers[i].layerRenderer.render(graphicContext, relativeOffset, autoChildLayers[i], false);
-		}
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO 2 : doc
-	private function getAutoPositionedChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer):Array<ElementRenderer>
-	{
-		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
-		
-		for (i in 0...rootRenderer.childNodes.length)
-		{
-			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
-			
-			if (child.layerRenderer == referenceLayer)
-			{
-				if (child.isPositioned() && child.computedStyle.zIndex == ZIndex.cssAuto)
-				{
-					ret.push(child);
-				}
-				if (child.hasChildNodes() == true)
-				{
-					var childElementRenderer:Array<ElementRenderer> = getAutoPositionedChildren(child, referenceLayer);
-					
-					for (j in 0...childElementRenderer.length)
-					{
-						ret.push(childElementRenderer[j]);
-					}
-				}
-			}
-		}
-		
-		return ret;
-	}
 	
 	/**
 	 * Return all the in line boxes of this BlockBoxRenderer, by traversing
@@ -387,7 +347,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			
 			if (child.layerRenderer == referenceLayer && child.isPositioned() == false)
 			{
-				//TODO : must add more condition, for instance, no float
+				//TODO 2 : must add more condition, for instance, no float
 				if (child.isReplaced() == false && child.coreStyle.display == block )
 				{
 					var childElementRenderer:Array<ElementRenderer> = getBlockReplacedChildren(child, referenceLayer);
