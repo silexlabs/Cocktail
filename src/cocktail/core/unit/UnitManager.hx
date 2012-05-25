@@ -7,6 +7,7 @@
 */
 package cocktail.core.unit;
 
+import cocktail.core.style.CoreStyle;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
 import haxe.Log;
@@ -635,31 +636,31 @@ class UnitManager
 		return arrayBgImg;
 	}
 	
-	//TODO
+	//TODO 4
 	static public function backgroundRepeatEnum(string:String):Array<BackgroundRepeat>
 	{
 		return [];
 	}
 	
-	//TODO
+	//TODO 4
 	static public function backgroundOriginEnum(string:String):Array<BackgroundOrigin>
 	{
 		return [];
 	}
 	
-	//TODO
+	//TODO 4
 	static public function backgroundSizeEnum(string:String):Array<BackgroundSize>
 	{
 		return [];
 	}
 	
-	//TODO
+	//TODO 4
 	static public function backgroundPositionEnum(string:String):Array<BackgroundPosition>
 	{
 		return [];
 	}
 	
-	//TODO
+	//TODO 4
 	static public function backgroundClipEnum(string:String):Array<BackgroundClip>
 	{
 		return [];
@@ -766,6 +767,13 @@ class UnitManager
 	 * @example UnitManager.colorEnum("yellow") returns Color.yellow
 	 */
 	static public function colorEnum(string:String):CSSColor{
+		
+		//TODO 2 : need to implement default styles everywhere
+		if (string == null)
+		{
+			return CoreStyle.getBackgroundColorDefaultValue();
+		}
+		
 		// clean up a bit
 		string = trim(string);
 		
