@@ -125,11 +125,17 @@ class LayerRenderer extends Node
 			//render all the line boxes belonging to this layer
 			blockBoxRootRenderer.renderLineBoxes(_graphicsContext, relativeOffset);
 			
+			
+			
 			//TODO 2 : doc, this fix is here to prevent inlineBlock from rendering their
 			//child layers, maybe add a new "if(inlineblock)" instead but should also
 			//work for float
 			if (renderChildLayers == true)
 			{
+				//TODO 2 :doc
+				//TODO 1 :does it respect right ordering with child with 0 zindex ?
+				blockBoxRootRenderer.renderAutoChildLayers(_graphicsContext, relativeOffset);
+				
 				//render all the child layers with a z-index of 0
 				renderChildLayer(_treeOrderChildLayers, _graphicsContext, relativeOffset);
 				renderChildLayer(_positiveOrderChildLayers, _graphicsContext, relativeOffset);
@@ -153,6 +159,9 @@ class LayerRenderer extends Node
 			
 			if (renderChildLayers == true)
 			{
+				//TODO 1 : should render child with a auto zindex (which will be relative positioned
+				//child)
+				
 				renderChildLayer(_treeOrderChildLayers, _graphicsContext, relativeOffset);
 				renderChildLayer(_positiveOrderChildLayers, _graphicsContext, relativeOffset);
 			}
@@ -373,7 +382,7 @@ class LayerRenderer extends Node
 		{
 			var currentLayerZIndex:Int = 0;
 			
-			switch( _positiveOrderChildLayers[i].zIndex)
+			switch(_negativeOrderChildLayers[i].zIndex)
 			{
 				case ZIndex.integer(value):
 					currentLayerZIndex = value;

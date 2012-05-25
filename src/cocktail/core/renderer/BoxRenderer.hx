@@ -524,14 +524,14 @@ class BoxRenderer extends ElementRenderer
 		{
 			//if a box is positioned, it only establishes
 			//a new stacking context if its z-index is not
-			//auto or 0, else it uses the LayerRenderer of its parent
+			//auto, else it uses the LayerRenderer of its parent
 			switch (computedStyle.zIndex)
 			{
 				case ZIndex.cssAuto:
 					return false;
 					
 				case ZIndex.integer(value):
-					return value != 0;
+					return true;
 			}
 		}
 		
