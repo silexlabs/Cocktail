@@ -252,7 +252,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			if (childBounds.y < top)
 			{
-				top = childBounds.y - child.leadedAscent;
+				top = childBounds.y ;
 			}
 			if (childBounds.x + childBounds.width > right)
 			{
@@ -260,7 +260,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			if (childBounds.y + childBounds.height  > bottom)
 			{
-				bottom = childBounds.y + childBounds.height - child.leadedAscent;
+				bottom = childBounds.y + childBounds.height ;
 			}
 			
 			//add the left and right margin of the child to the bounds
@@ -980,7 +980,9 @@ class InlineFormattingContext extends FormattingContext
 			
 			var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, _formattingContextRoot.coreStyle.fontMetrics.xHeight);
 			child.bounds.y = formattingContextY - baselineOffset + lineBoxAscent;
-		
+			//TODO 2 check if neccessary to remove ascent to all children
+			child.bounds.y -= child.leadedAscent;
+			
 			if (child.hasChildNodes() == true)
 			{
 				alignLineBoxesVertically(child, lineBoxAscent, formattingContextY, baselineOffset);
@@ -993,7 +995,7 @@ class InlineFormattingContext extends FormattingContext
 				//TODO : hack that won't work for absolutely positioned inline-block
 				if (child.isAbsolutelyPositioned() == false)
 				{
-					child.bounds.y -= child.leadedAscent;
+					
 				}
 				
 			}
