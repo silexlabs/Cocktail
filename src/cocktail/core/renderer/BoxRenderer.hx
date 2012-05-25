@@ -536,7 +536,6 @@ class BoxRenderer extends ElementRenderer
 		}
 		
 		//in all other cases, no new stacking context is
-		//created
 		return false;
 	}
 	

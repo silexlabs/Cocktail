@@ -159,10 +159,6 @@ class ScrollBar extends HTMLElement
 		_style.display = "block";
 		_style.position = "absolute";
 		
-		//TODO 1 : this is a hack, should create new stacking context,
-		//no matter what
-		_style.zIndex = "1000";
-		
 		_scrollThumb.style.backgroundColor = "#AAAAAA";
 		_scrollThumb.style.position = "absolute";
 		_scrollThumb.style.display = "block";
