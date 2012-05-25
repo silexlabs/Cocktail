@@ -1,6 +1,5 @@
 -cp ../../../src/
 -cp ../../src/
--cp ../../../lib/
 -main dom.DOMTests
 -lib utest
 -swf ../../bin/dom/DOMTestAs3.swf
