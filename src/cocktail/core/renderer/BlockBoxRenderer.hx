@@ -706,7 +706,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					}
 				}
 				
-				childrenBounds.push(child.bounds);
+				childrenBounds.push(child.scrollableBounds);
 			}
 		}
 		return childrenBounds;
@@ -889,8 +889,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//TODO 1 : shouldn't have to round values, all the formatting should be done with floats
 		if (Math.round(_scrollableBounds.y) < Math.round(bounds.y) || Math.round(_scrollableBounds.y) + Math.round(_scrollableBounds.height) > Math.round(bounds.y) + Math.round(bounds.height))
 		{
-			trace(_scrollableBounds);
-			trace(_bounds);
 			attachVerticalScrollBar();
 		}
 		else
