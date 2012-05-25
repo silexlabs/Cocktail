@@ -213,19 +213,23 @@ class LayerRenderer extends Node
 		#end	
 	}
 	
-	public function scroll(x:Float, y:Float, startedScroll:Bool = true):Void
+	public function scroll(x:Float, y:Float, rootRenderer:ElementRenderer = null, startedScroll:Bool = true):Void
 	{
+		if (rootRenderer == null)
+		{
+			rootRenderer = _rootRenderer;
+		}
+		
 		//TODO 1 IMPORTANT: big hack but will do for now
 		//TODO 2 : should be applied to every positioned element whose
 		//containing block is a parent of the root renderer.
 		//Add a public method on ElementRenderer ?
-		if (_rootRenderer.computedStyle.position == fixed)
+		if (rootRenderer.computedStyle.position == fixed)
 		{
 			#if (flash9 || nme)
 			_graphicsContext.y = y;
 			_graphicsContext.x = x;
 			#end
-			return;
 		}
 		
 		if (startedScroll == false)
@@ -233,13 +237,23 @@ class LayerRenderer extends Node
 			return;
 		}
 		
-		var childLayers:Array<LayerRenderer> = getChildLayers();
 		
-		
-		for (i in 0...childLayers.length)
+		for (i in 0..._treeOrderChildLayers.length)
 		{
-			childLayers[i].scroll(x, y, false);
+			_treeOrderChildLayers[i].layerRenderer.scroll(x, y,_treeOrderChildLayers[i], false);
 		}
+		
+		for (i in 0..._positiveOrderChildLayers.length)
+		{
+			_positiveOrderChildLayers[i].layerRenderer.scroll(x, y,_positiveOrderChildLayers[i], false);
+		}
+		
+		for (i in 0..._negativeOrderChildLayers.length)
+		{
+			_negativeOrderChildLayers[i].layerRenderer.scroll(x, y,_negativeOrderChildLayers[i], false);
+		}
+		
+		#if (flash9 || nme)
 		
 		_graphicsContext.x = _rootRenderer.globalBounds.x;
 		_graphicsContext.y = _rootRenderer.globalBounds.y;
@@ -259,6 +273,7 @@ class LayerRenderer extends Node
 		}
 		
 		_graphicsContext.scrollRect = new Rectangle(x + _rootRenderer.globalBounds.x, y + _rootRenderer.globalBounds.y, width, height);
+		#end
 	}
 	
 
