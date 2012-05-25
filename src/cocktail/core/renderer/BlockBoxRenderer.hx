@@ -317,15 +317,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 
 				if (child.layerRenderer == referenceLayer)
 				{
-					if (child.isPositioned() == false)
+					if (child.isReplaced() == false)
 					{	
-						if (child.isReplaced() == false)
-						{	
-							var childLineBoxes:Array<LineBox> = getChilrenLineBoxes(child, referenceLayer);
-							for (j in 0...childLineBoxes.length)
-							{
-								ret.push(childLineBoxes[j]);
-							}
+						var childLineBoxes:Array<LineBox> = getChilrenLineBoxes(child, referenceLayer);
+						for (j in 0...childLineBoxes.length)
+						{
+							ret.push(childLineBoxes[j]);
 						}
 					}
 				}
