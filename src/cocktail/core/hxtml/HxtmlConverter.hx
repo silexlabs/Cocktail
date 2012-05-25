@@ -357,7 +357,12 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setZIndex (element:Node, value:String):Void{
 		cast(element, HtmlDom).style.zIndex = value;
 	}
-	
+	public function setOverflowX (element:Node, value:String):Void{
+		cast(element, HtmlDom).style.overflowX = value;
+	}
+	public function setOverflowY (element:Node, value:String):Void{
+		cast(element, HtmlDom).style.overflowY = value;
+	}
 	
 /*	
 	public function setOpacity (element:Node, value:Int, unit:String):Void{
@@ -366,12 +371,7 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setVisibility (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.visibility = value+unit;
 	}
-	public function setOverflowX (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.overflowX = value+unit;
-	}
-	public function setOverflowY (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.overflowY = value+unit;
-	}
+
 	public function setCursor (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.cursor = value+unit;
 	}
