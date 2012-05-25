@@ -445,7 +445,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//TODO : more complex thant it should
 	private function layoutScrollBarsIfNecessary(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
-		var horizontalScrollBarContainerBlockData = getContainerBlockData();
+		var horizontalScrollBarContainerBlockData = getContainerBlockDataWithoutScrollbars();
 		
 		if (_horizontalScrollBar != null)
 		{
@@ -457,7 +457,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			layoutPositionedChild(_horizontalScrollBar.elementRenderer, horizontalScrollBarContainerBlockData, viewportData);
 		}
 		
-		var verticalScrollBarContainerBlockData = getContainerBlockData();
+		var verticalScrollBarContainerBlockData = getContainerBlockDataWithoutScrollbars();
 		
 		if (_verticalScrollBar != null)
 		{
@@ -1114,6 +1114,16 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Utils method to return the containing block data
+	 * without any scrollbars. Used when positioning scrollbars
+	 * themselves
+	 */
+	private function getContainerBlockDataWithoutScrollbars():ContainingBlockData
+	{
+		return super.getContainerBlockData();
+	}
 	
 	/**
 	 * Return the maximum amount of scroll in pixels in the
