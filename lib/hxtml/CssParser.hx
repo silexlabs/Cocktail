@@ -745,7 +745,6 @@ class CssParser<DisplayObjectType> {
 						return true;
 						
 				case VIdent(v):
-					trace(v);
 					s.setOverflowX(d, v);
 					s.setOverflowY(d, v);
 				return true;	
