@@ -283,6 +283,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	public function renderAutoChildLayers(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var autoChildLayers:Array<ElementRenderer> = getAutoPositionedChildren(this, _layerRenderer);
+
 		for (i in 0...autoChildLayers.length)
 		{
 			autoChildLayers[i].layerRenderer.render(graphicContext, relativeOffset, autoChildLayers[i], false);
@@ -384,10 +385,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
 			
-			if (child.layerRenderer == referenceLayer)
+			if (child.layerRenderer == referenceLayer && child.isPositioned() == false)
 			{
 				//TODO : must add more condition, for instance, no float
-				if (child.isReplaced() == false && child.coreStyle.display == block)
+				if (child.isReplaced() == false && child.coreStyle.display == block )
 				{
 					var childElementRenderer:Array<ElementRenderer> = getBlockReplacedChildren(child, referenceLayer);
 					
@@ -418,9 +419,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
 
-			if (child.layerRenderer == referenceLayer)
+			//TODO 2 : this check is to prevent positioned child with a zindex of 0 from being returned, should
+			//put in a method
+			if (child.layerRenderer == referenceLayer && child.isPositioned() == false)
 			{
-				//TODO : must add more condition, for instance, no float
+				//TODO 3 : must add more condition, for instance, no float
 				if (child.isReplaced() == false && child.coreStyle.display != inlineBlock)
 				{
 					ret.push(cast(child));

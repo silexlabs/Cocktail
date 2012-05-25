@@ -84,11 +84,12 @@ class LayerRenderer extends Node
 			detach();
 		}
 		
-		
+
 		if (rootRenderer == null)
 		{
 			rootRenderer = _rootRenderer;
 		}
+		
 		
 		var relativeOffset:PointData = getRelativeOffset(rootRenderer);
 		relativeOffset.x += parentRelativeOffset.x;
@@ -106,8 +107,6 @@ class LayerRenderer extends Node
 			//TODO 1 : block box background should not scroll with the rest of the children
 			//render the ElementRenderer which created this layer
 			blockBoxRootRenderer.render(_graphicsContext, relativeOffset);
-		
-			
 			
 			if (renderChildLayers == true)
 			{
