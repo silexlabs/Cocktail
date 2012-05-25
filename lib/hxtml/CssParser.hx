@@ -71,6 +71,17 @@ class CssParser<DisplayObjectType> {
 	function applyStyle( r : String, v : Value, s : IStyleProxy<DisplayObjectType> ) : Bool {
 		switch( r ) {
 		case "margin":
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMarginBottomZero(d);
+				s.setMarginTopZero(d);
+				s.setMarginLeftZero(d);
+				s.setMarginRightZero(d);
+				return true;
+			}
+			
 			// when the value is not in an array, build a 1 element array
 			var vl:Array<Value> = switch( v ) {
 			case VGroup(l): l;

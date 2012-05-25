@@ -58,6 +58,14 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * scrollbars always establishes new stacking context
+	 */
+	override private function establishesNewStackingContext():Bool
+	{
+		return true;
+	}
+	
+	/**
 	 * Always return the containing block data, as event though the scroll bar renderer is 
 	 * absolutely positioned, it always considers its block box renderer as its first positioned
 	 * ancestor
