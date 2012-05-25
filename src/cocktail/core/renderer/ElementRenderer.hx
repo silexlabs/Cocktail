@@ -713,10 +713,13 @@ class ElementRenderer extends Node
 		var relativeOffset:PointData = getRelativeOffset(this);
 		
 		var bounds:RectangleData = get_bounds();
-		bounds.x += relativeOffset.x;
-		bounds.y += relativeOffset.y;
 		
-		return bounds;
+		return {
+			x: bounds.x + relativeOffset.x,
+			y: bounds.y + relativeOffset.y,
+			width: bounds.width,
+			height: bounds.height
+		};
 	}
 	
 	//TODO 1 : this is duplicated from LayerRenderer, should this method
