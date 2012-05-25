@@ -70,9 +70,8 @@ class LayerRenderer extends Node
 	}
 	
 	/////////////////////////////////
-	// PUBLIC METHODS
+	// PUBLIC RENDERING METHODS
 	////////////////////////////////
-
 	
 	/**
 	 * Render all the ElementRenderers belonging to this LayerRenderer
@@ -139,6 +138,8 @@ class LayerRenderer extends Node
 			
 			clip(blockBoxRootRenderer);
 			
+			//TODO 2 : scrollbar shouldn't need their own graphic context, should not be scrolled,
+			//like the fixed elements
 			blockBoxRootRenderer.renderScrollBars(_scrollBarsGraphicContext, relativeOffset);
 			
 		}
@@ -221,6 +222,8 @@ class LayerRenderer extends Node
 		}
 		
 		//TODO 1 IMPORTANT: big hack but will do for now
+		//TODO 1 : doesn't work for zindex auto positioned elements, as they don't
+		//have a graphic context of their own
 		//TODO 2 : should be applied to every positioned element whose
 		//containing block is a parent of the root renderer.
 		//Add a public method on ElementRenderer ?
@@ -276,7 +279,7 @@ class LayerRenderer extends Node
 		#end
 	}
 	
-
+	//TODO 3 : should have an attach method ?
 	public function detach():Void
 	{
 		for (i in 0..._childNodes.length)
@@ -467,6 +470,10 @@ class LayerRenderer extends Node
 		
 		return relativeOffset;
 	}
+
+	/////////////////////////////////
+	// PUBLIC HIT-TESTING METHODS
+	////////////////////////////////
 	
 	//TODO 2 : for now traverse all tree, but should instead return as soon as an ElementRenderer
 	//is found
@@ -497,6 +504,10 @@ class LayerRenderer extends Node
 		
 		return elementRenderersAtPoint;
 	}
+	
+	/////////////////////////////////
+	// PRIVATE HIT-TESTING METHODS
+	////////////////////////////////
 	
 	private function getElementRenderersAtPointInLayer(renderer:ElementRenderer, point:PointData, scrollX:Float, scrollY:Float):Array<ElementRenderer>
 	{

@@ -131,9 +131,9 @@ class DisplayStylesComputer
 					ret = style.display;
 			}	
 		}
-		//if the htmlElement is positioned, it can't
+		//if the htmlElement is absolutely positioned, it can't
 		//be inline
-		else if (computedPosition != Position.cssStatic)
+		else if (computedPosition == Position.absolute || computedPosition == Position.fixed)
 		{
 			switch (style.display)
 			{
