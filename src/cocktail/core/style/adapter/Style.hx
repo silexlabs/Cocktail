@@ -141,13 +141,18 @@ class Style
 
 	/**
 	 * Helper method to store style key/value pair
-	 * 
-	 * TODO 3 : when style set as null, should remove it form the
-	 * attributes hash
-	 * 
 	 */
 	private function setAttribute(name:String, value:String):Void
 	{
+		//if the value is null, than the corresponding
+		//style attribute is removed from the attributes
+		//hash if it exists
+		if (value == null)
+		{
+			_attributes.removeNamedItem(name);
+			return;
+		}
+		
 		var attr:Attr = new Attr(name);
 		attr.value = value;
 		_attributes.setNamedItem(attr);
