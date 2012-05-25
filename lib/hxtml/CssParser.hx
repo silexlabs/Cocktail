@@ -722,7 +722,39 @@ class CssParser<DisplayObjectType> {
 		case "position":
 			s.setPosition(d, getIdent(v));
 			return true;
-
+		case "overflow":
+			switch (v)
+			{
+				
+				case VGroup(a):
+						switch(a[0])
+						{
+							case VIdent(v):
+							s.setOverflowX(d, v);
+			
+							
+							default:
+						}	
+						switch (a[1])
+						{
+							case VIdent(v):
+							s.setOverflowY(d, v);
+							
+							default:
+						}
+						return true;
+						
+				case VIdent(v):
+					trace(v);
+					s.setOverflowX(d, v);
+					s.setOverflowY(d, v);
+				return true;	
+					
+				default:	
+			}			
+						
+			
+			
 		default:
 			throw "Not implemented '"+r+"' = "+Std.string(v);
 		}

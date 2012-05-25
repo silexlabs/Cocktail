@@ -102,15 +102,15 @@ interface IStyleProxy<DisplayObjectType>
 	public function setVerticalAlignNum (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setVerticalAlignKey (element:DisplayObjectType, value:String):Void;
 	public function setWhiteSpace (element:DisplayObjectType, value:String):Void;
-	
+	public function setOverflowX (element:DisplayObjectType, value:String):Void;
+	public function setOverflowY (element:DisplayObjectType, value:String):Void;
 	public function setZIndex(element:DisplayObjectType, value:String):Void;
 /*	public function setTextIndent (element:DisplayObjectType, value:Int, unit:String):Void;
 	
 	public function setOpacity (element:DisplayObjectType, value:Int, unit:String):Void;
 	}
 	public function setVisibility (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setOverflowX (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setOverflowY (element:DisplayObjectType, value:Int, unit:String):Void;
+	
 	public function setCursor (element:DisplayObjectType, value:Int, unit:String):Void;
 */
 }

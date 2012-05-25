@@ -94,7 +94,6 @@ class LayerRenderer extends Node
 		var relativeOffset:PointData = getRelativeOffset(rootRenderer);
 		relativeOffset.x += parentRelativeOffset.x;
 		relativeOffset.y += parentRelativeOffset.y;
-
 		
 		//here the root renderer is a block box renderer. It can be an inline level
 		//which establishes an inline formatting context : an inline-block
@@ -156,8 +155,6 @@ class LayerRenderer extends Node
 			
 			if (renderChildLayers == true)
 			{
-				//TODO 1 : should render child with a auto zindex (which will be relative positioned
-				//child)
 				
 				renderChildLayer(_treeOrderChildLayers, _graphicsContext, relativeOffset);
 				renderChildLayer(_positiveOrderChildLayers, _graphicsContext, relativeOffset);
