@@ -128,6 +128,21 @@ class CssParser<DisplayObjectType> {
 				s.setMarginLeftKey(d, val);
 				return true;
 			}
+			
+			// case negative int
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VUnit(v, u):
+						s.setMarginLeftNum(d, v * -1, u);
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -141,6 +156,22 @@ class CssParser<DisplayObjectType> {
 				s.setMarginRightKey(d, val);
 				return true;
 			}
+			
+			
+			// case negative int
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VUnit(v, u):
+						s.setMarginRightNum(d, v * -1, u);
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
