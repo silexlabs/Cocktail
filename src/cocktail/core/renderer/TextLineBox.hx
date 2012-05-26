@@ -57,9 +57,12 @@ class TextLineBox extends LineBox
 	 */
 	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
+	//	trace(_bounds);
 		#if (flash9 || nme)
 		_nativeElement.x = _bounds.x + _elementRenderer.globalBounds.x + relativeOffset.x;
-		_nativeElement.y = _bounds.y + _elementRenderer.globalBounds.y + relativeOffset.y;
+		//TODO 2 : check if leadedAscent fix is efficient, bounds of textLineBox should be relative to formatting
+		//context and not include leaded ascent
+		_nativeElement.y = _bounds.y + _elementRenderer.globalBounds.y + relativeOffset.y + leadedAscent;
 		#end
 		
 		graphicContext.addChild(_nativeElement);

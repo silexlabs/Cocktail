@@ -342,7 +342,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		
 		//compute the height which is either defined as a length or a percentage
 		setComputedHeight(style, getComputedHeight(style, containingBlockData));
-		
+
 		//if neither top nor bottom are defined as auto
 		if (style.top != PositionOffset.cssAuto && style.bottom != PositionOffset.cssAuto)
 		{
@@ -434,6 +434,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 				style.computedStyle.top = containingBlockData.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.bottom;
 			}
 		}
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

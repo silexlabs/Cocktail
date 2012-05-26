@@ -40,16 +40,17 @@ class LayerRenderer extends Node
 	 * created the LayerRenderer
 	 */
 	private var _rootRenderer:ElementRenderer;
+	public var rootRenderer(get_rootRenderer, never):ElementRenderer;
 	
 	private var _graphicsContext:NativeElement;
 	
 	private var _scrollBarsGraphicContext:NativeElement;
 	
-	private var _treeOrderChildLayers:Array<LayerRenderer>;
+	private var _treeOrderChildLayers:Array<ElementRenderer>;
 	
-	private var _positiveOrderChildLayers:Array<LayerRenderer>;
+	private var _positiveOrderChildLayers:Array<ElementRenderer>;
 	
-	private var _negativeOrderChildLayers:Array<LayerRenderer>;
+	private var _negativeOrderChildLayers:Array<ElementRenderer>;
 	
 	public var zIndex(get_zIndex, never):ZIndex;
 
@@ -63,15 +64,14 @@ class LayerRenderer extends Node
 		_graphicsContext = new Sprite();
 		_scrollBarsGraphicContext = new Sprite();
 		
-		_treeOrderChildLayers = new Array<LayerRenderer>();
-		_positiveOrderChildLayers = new Array<LayerRenderer>();
-		_negativeOrderChildLayers = new Array<LayerRenderer>();
+		_treeOrderChildLayers = new Array<ElementRenderer>();
+		_positiveOrderChildLayers = new Array<ElementRenderer>();
+		_negativeOrderChildLayers = new Array<ElementRenderer>();
 	}
 	
 	/////////////////////////////////
-	// PUBLIC METHODS
+	// PUBLIC RENDERING METHODS
 	////////////////////////////////
-
 	
 	/**
 	 * Render all the ElementRenderers belonging to this LayerRenderer
@@ -84,30 +84,27 @@ class LayerRenderer extends Node
 			detach();
 		}
 		
-		
+
 		if (rootRenderer == null)
 		{
 			rootRenderer = _rootRenderer;
 		}
-
+		
+		
 		var relativeOffset:PointData = getRelativeOffset(rootRenderer);
 		relativeOffset.x += parentRelativeOffset.x;
 		relativeOffset.y += parentRelativeOffset.y;
-
 		
 		//here the root renderer is a block box renderer. It can be an inline level
 		//which establishes an inline formatting context : an inline-block
 		if (rootRenderer.isReplaced() == false && rootRenderer.isInlineLevel() == false || 
 		rootRenderer.establishesNewFormattingContext() == true)
 		{
-			
 			var blockBoxRootRenderer:BlockBoxRenderer = cast(rootRenderer);
 		
 			//TODO 1 : block box background should not scroll with the rest of the children
 			//render the ElementRenderer which created this layer
 			blockBoxRootRenderer.render(_graphicsContext, relativeOffset);
-		
-			
 			
 			if (renderChildLayers == true)
 			{
@@ -125,19 +122,22 @@ class LayerRenderer extends Node
 			//render all the line boxes belonging to this layer
 			blockBoxRootRenderer.renderLineBoxes(_graphicsContext, relativeOffset);
 			
+			
+			
 			//TODO 2 : doc, this fix is here to prevent inlineBlock from rendering their
 			//child layers, maybe add a new "if(inlineblock)" instead but should also
 			//work for float
 			if (renderChildLayers == true)
-			{
+			{	
 				//render all the child layers with a z-index of 0
 				renderChildLayer(_treeOrderChildLayers, _graphicsContext, relativeOffset);
-				
 				renderChildLayer(_positiveOrderChildLayers, _graphicsContext, relativeOffset);
 			}
 			
 			clip(blockBoxRootRenderer);
 			
+			//TODO 2 : scrollbar shouldn't need their own graphic context, should not be scrolled,
+			//like the fixed elements
 			blockBoxRootRenderer.renderScrollBars(_scrollBarsGraphicContext, relativeOffset);
 			
 		}
@@ -154,6 +154,7 @@ class LayerRenderer extends Node
 			
 			if (renderChildLayers == true)
 			{
+				
 				renderChildLayer(_treeOrderChildLayers, _graphicsContext, relativeOffset);
 				renderChildLayer(_positiveOrderChildLayers, _graphicsContext, relativeOffset);
 			}
@@ -209,19 +210,25 @@ class LayerRenderer extends Node
 		#end	
 	}
 	
-	public function scroll(x:Float, y:Float, startedScroll:Bool = true):Void
+	public function scroll(x:Float, y:Float, rootRenderer:ElementRenderer = null, startedScroll:Bool = true):Void
 	{
+		if (rootRenderer == null)
+		{
+			rootRenderer = _rootRenderer;
+		}
+		
 		//TODO 1 IMPORTANT: big hack but will do for now
+		//TODO 1 : doesn't work for zindex auto positioned elements, as they don't
+		//have a graphic context of their own
 		//TODO 2 : should be applied to every positioned element whose
 		//containing block is a parent of the root renderer.
 		//Add a public method on ElementRenderer ?
-		if (_rootRenderer.computedStyle.position == fixed)
+		if (rootRenderer.computedStyle.position == fixed)
 		{
 			#if (flash9 || nme)
 			_graphicsContext.y = y;
 			_graphicsContext.x = x;
 			#end
-			return;
 		}
 		
 		if (startedScroll == false)
@@ -229,13 +236,23 @@ class LayerRenderer extends Node
 			return;
 		}
 		
-		var childLayers:Array<LayerRenderer> = getChildLayers();
 		
-		
-		for (i in 0...childLayers.length)
+		for (i in 0..._treeOrderChildLayers.length)
 		{
-			childLayers[i].scroll(x, y, false);
+			_treeOrderChildLayers[i].layerRenderer.scroll(x, y,_treeOrderChildLayers[i], false);
 		}
+		
+		for (i in 0..._positiveOrderChildLayers.length)
+		{
+			_positiveOrderChildLayers[i].layerRenderer.scroll(x, y,_positiveOrderChildLayers[i], false);
+		}
+		
+		for (i in 0..._negativeOrderChildLayers.length)
+		{
+			_negativeOrderChildLayers[i].layerRenderer.scroll(x, y,_negativeOrderChildLayers[i], false);
+		}
+		
+		#if (flash9 || nme)
 		
 		_graphicsContext.x = _rootRenderer.globalBounds.x;
 		_graphicsContext.y = _rootRenderer.globalBounds.y;
@@ -255,9 +272,10 @@ class LayerRenderer extends Node
 		}
 		
 		_graphicsContext.scrollRect = new Rectangle(x + _rootRenderer.globalBounds.x, y + _rootRenderer.globalBounds.y, width, height);
+		#end
 	}
 	
-
+	//TODO 3 : should have an attach method ?
 	public function detach():Void
 	{
 		for (i in 0..._childNodes.length)
@@ -288,21 +306,21 @@ class LayerRenderer extends Node
 		switch(childLayer.zIndex)
 		{
 			case ZIndex.cssAuto:
-				_treeOrderChildLayers.push(childLayer);
+				_treeOrderChildLayers.push(childLayer.rootRenderer);
 				
 			case ZIndex.integer(value):
 				if (value == 0)
 				{
 					//TODO 1 : might not put in the right order after DOM manipulation, use "insertBefore" ?
-					_treeOrderChildLayers.push(childLayer);
+					_treeOrderChildLayers.push(childLayer.rootRenderer);
 				}
 				else if (value > 0)
 				{
-					insertPositiveOrderChildLayer(childLayer, value);
+					insertPositiveOrderChildLayer(childLayer.rootRenderer, value);
 				}
 				else if (value < 0)
 				{
-					insertNegativeOrderChildLayer(childLayer, value);
+					insertNegativeOrderChildLayer(childLayer.rootRenderer, value);
 				}
 				
 		}
@@ -315,18 +333,28 @@ class LayerRenderer extends Node
 		var childLayer:LayerRenderer = cast(oldChild);
 
 		//TODO 2 : shouldn't have ot try in each ?
-		_treeOrderChildLayers.remove(childLayer);
-		_positiveOrderChildLayers.remove(childLayer);
-		_negativeOrderChildLayers.remove(childLayer);
+		_treeOrderChildLayers.remove(childLayer.rootRenderer);
+		_positiveOrderChildLayers.remove(childLayer.rootRenderer);
+		_negativeOrderChildLayers.remove(childLayer.rootRenderer);
 		
 		super.removeChild(oldChild);
 	
 		return oldChild;
 	}
 	
-	private function insertPositiveOrderChildLayer(childLayer:LayerRenderer, childLayerZIndex:Int):Void
+	public function insertTreeOrderChildElementRenderer(elementRenderer:ElementRenderer):Void
 	{
-		var newPositiveChildLayers:Array<LayerRenderer> = new Array<LayerRenderer>();
+		_treeOrderChildLayers.push(elementRenderer);
+	}
+	
+	public function removeTreeOrderChildElementRenderer(elementRenderer:ElementRenderer):Void
+	{
+		_treeOrderChildLayers.remove(elementRenderer);
+	}
+	
+	private function insertPositiveOrderChildLayer(childLayer:ElementRenderer, childLayerZIndex:Int):Void
+	{
+		var newPositiveChildLayers:Array<ElementRenderer> = new Array<ElementRenderer>();
 
 		
 		var isInserted:Bool = false;
@@ -337,7 +365,7 @@ class LayerRenderer extends Node
 			
 			var currentLayerZIndex:Int = 0;
 			
-			switch( _positiveOrderChildLayers[i].zIndex)
+			switch( _positiveOrderChildLayers[i].computedStyle.zIndex)
 			{
 				case ZIndex.integer(value):
 					currentLayerZIndex = value;
@@ -364,15 +392,17 @@ class LayerRenderer extends Node
 
 	}
 	
-	private function insertNegativeOrderChildLayer(childLayer:LayerRenderer, childLayerZIndex:Int):Void
+	private function insertNegativeOrderChildLayer(childLayer:ElementRenderer, childLayerZIndex:Int):Void
 	{
-		var newNegativeChildLayers:Array<LayerRenderer> = new Array<LayerRenderer>();
+		var newNegativeChildLayers:Array<ElementRenderer> = new Array<ElementRenderer>();
+
+		var isInserted:Bool = false;
 		
 		for (i in 0..._negativeOrderChildLayers.length)
 		{
 			var currentLayerZIndex:Int = 0;
 			
-			switch( _positiveOrderChildLayers[i].zIndex)
+			switch(_negativeOrderChildLayers[i].computedStyle.zIndex)
 			{
 				case ZIndex.integer(value):
 					currentLayerZIndex = value;
@@ -380,15 +410,22 @@ class LayerRenderer extends Node
 				default:	
 			}
 			
-			if (currentLayerZIndex  > childLayerZIndex)
+			if (currentLayerZIndex  > childLayerZIndex && isInserted == false)
 			{
 				newNegativeChildLayers.push(childLayer);
+				isInserted = true;
 			}
 			
 			newNegativeChildLayers.push(_negativeOrderChildLayers[i]);
 		}
 		
+		if (isInserted == false)
+		{
+			newNegativeChildLayers.push(childLayer);
+		}
+		
 		_negativeOrderChildLayers = newNegativeChildLayers;
+		
 	}
 	
 	//TODO 1 : doc
@@ -429,6 +466,10 @@ class LayerRenderer extends Node
 		
 		return relativeOffset;
 	}
+
+	/////////////////////////////////
+	// PUBLIC HIT-TESTING METHODS
+	////////////////////////////////
 	
 	//TODO 2 : for now traverse all tree, but should instead return as soon as an ElementRenderer
 	//is found
@@ -459,6 +500,10 @@ class LayerRenderer extends Node
 		
 		return elementRenderersAtPoint;
 	}
+	
+	/////////////////////////////////
+	// PRIVATE HIT-TESTING METHODS
+	////////////////////////////////
 	
 	private function getElementRenderersAtPointInLayer(renderer:ElementRenderer, point:PointData, scrollX:Float, scrollY:Float):Array<ElementRenderer>
 	{
@@ -566,11 +611,18 @@ class LayerRenderer extends Node
 	 * Render all the children LayerRenderer of this LayerRenderer
 	 * and return an array of NativeElements from it
 	 */
-	private function renderChildLayer(layers:Array<LayerRenderer>, graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderChildLayer(layers:Array<ElementRenderer>, graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		for (i in 0...layers.length)
 		{
-			layers[i].render(graphicContext, relativeOffset);
+			if (layers[i].isAutoZIndexPositioned() == false)
+			{
+				layers[i].layerRenderer.render(graphicContext, relativeOffset);
+			}
+			else
+			{
+				layers[i].layerRenderer.render(graphicContext, relativeOffset, layers[i], false);
+			}
 		}
 	}
 	
@@ -663,5 +715,10 @@ class LayerRenderer extends Node
 		//currentMatrix.concatenate(matrix);
 		//currentMatrix.translate(this._nativeX, this._nativeY);
 		return currentMatrix;
+	}
+	
+	private function get_rootRenderer():ElementRenderer
+	{
+		return _rootRenderer;
 	}
 }

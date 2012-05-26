@@ -102,7 +102,7 @@ class InlineFormattingContext extends FormattingContext
 		//apply formatting height to formatting context root if auto height
 		if (_formattingContextRoot.coreStyle.height == Dimension.cssAuto)
 		{
-			_formattingContextRoot.bounds.height = _formattingContextData.y + _formattingContextRoot.coreStyle.computedStyle.paddingTop + _formattingContextRoot.coreStyle.computedStyle.paddingBottom ;
+			_formattingContextRoot.bounds.height = _formattingContextData.y  + _formattingContextRoot.coreStyle.computedStyle.paddingBottom ;
 		}
 	}
 	
@@ -252,7 +252,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			if (childBounds.y < top)
 			{
-				top = childBounds.y - child.leadedAscent;
+				top = childBounds.y ;
 			}
 			if (childBounds.x + childBounds.width > right)
 			{
@@ -260,7 +260,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			if (childBounds.y + childBounds.height  > bottom)
 			{
-				bottom = childBounds.y + childBounds.height - child.leadedAscent;
+				bottom = childBounds.y + childBounds.height ;
 			}
 			
 			//add the left and right margin of the child to the bounds
@@ -419,7 +419,6 @@ class InlineFormattingContext extends FormattingContext
 		//update the y of the formatting context so that the next line will start
 		//below this one
 		_formattingContextData.y += lineBoxHeight;
-		
 		_firstLineFormatted = true;
 	
 	}
@@ -655,19 +654,25 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	remainingSpace the available width in the line box after all HTMLElements
 	 * have been laid out
 	 */
-	private function alignRight(flowX:Int, remainingSpace:Int, lineBox:LineBox):Void
+	private function alignRight(flowX:Int, remainingSpace:Int, lineBox:LineBox):Int
 	{
+		flowX += lineBox.marginLeft + lineBox.paddingLeft;
 		for (i in 0...lineBox.childNodes.length)
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
-			child.bounds.x =  flowX + remainingSpace;
-			flowX += Math.round(child.bounds.width);
 			
 			if (child.hasChildNodes() == true)
 			{
-				alignRight(flowX, remainingSpace, child);
+				flowX = alignRight(flowX, remainingSpace, child);
 			}
+			
+			child.bounds.x = flowX + remainingSpace;
+			flowX += Math.round(child.bounds.width);
 		}
+		
+		flowX += lineBox.marginRight + lineBox.paddingRight;
+		
+		return flowX;
 	}
 	
 	/**
@@ -974,20 +979,21 @@ class InlineFormattingContext extends FormattingContext
 			
 			var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, _formattingContextRoot.coreStyle.fontMetrics.xHeight);
 			child.bounds.y = formattingContextY - baselineOffset + lineBoxAscent;
-		
+			//TODO 2 check if neccessary to remove ascent to all children
+			child.bounds.y -= child.leadedAscent;
+			
 			if (child.hasChildNodes() == true)
 			{
 				alignLineBoxesVertically(child, lineBoxAscent, formattingContextY, baselineOffset);
 			}
 
 			
-			//TODO : used for embedded or inline block but implement better
 			if (child.establishesNewFormattingContext() == true || (child.elementRenderer.isReplaced() == true && child.elementRenderer.isText() == false))
 			{
-				//TODO : hack that won't work for absolutely positioned inline-block
-				if (child.isAbsolutelyPositioned() == false)
+				//TODO 2 : hack 
+				if (child.isAbsolutelyPositioned() == true)
 				{
-					child.bounds.y -= child.leadedAscent;
+					child.bounds.y += child.leadedAscent;
 				}
 				
 			}

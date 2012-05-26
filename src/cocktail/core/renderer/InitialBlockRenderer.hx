@@ -272,10 +272,20 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	/**
 	 * The dimensions of the initial
 	 * block renderer are always the same as the Window
+	 * 
+	 * TODO 2 : on initial layout, computedStyles for margin are null,
+	 * there should be a special case for the initial block renderer where
+	 * its styles are computed before layout. Should ContainingBlockData height
+	 * return height of body or viewport ?
 	 */
 	override private function getContainerBlockData():ContainingBlockData
 	{
-		return getWindowData();
+		var windowData:ContainingBlockData = getWindowData();
+		
+		windowData.width -= computedStyle.marginLeft + computedStyle.marginRight;
+		windowData.height -= computedStyle.marginTop + computedStyle.marginBottom;
+		
+		return windowData;
 	}
 	
 	/**
