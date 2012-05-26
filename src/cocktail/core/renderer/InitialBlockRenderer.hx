@@ -215,6 +215,16 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		return true;
 	}
 	
+	/**
+	 * Overriden as initial block container alwyas establishes a new
+	 * stacking context and creates the root LayerRenderer of the
+	 * LayerRenderer tree
+	 */
+	override public function establishesNewStackingContext():Bool
+	{
+		return true;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -302,16 +312,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	override private function getFormattingContext(previousformattingContext:FormattingContext):FormattingContext
 	{
 		return new BlockFormattingContext(this);
-	}
-	
-	/**
-	 * Overriden as initial block container alwyas establishes a new
-	 * stacking context and creates the root LayerRenderer of the
-	 * LayerRenderer tree
-	 */
-	override private function establishesNewStackingContext():Bool
-	{
-		return true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

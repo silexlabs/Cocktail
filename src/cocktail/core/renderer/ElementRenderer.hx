@@ -424,11 +424,6 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
-	public function isAutoZIndexPositioned():Bool
-	{
-		return false;
-	}
-	
 	public function isInlineLevel():Bool
 	{
 		return false;
@@ -459,16 +454,21 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
-	/////////////////////////////////
-	// PRIVATE HELPER METHODS
-	////////////////////////////////
-	
 	/**
 	 * Determine wether this ElementRenderer creates a
 	 * new LayerRenderer for itself or use the
 	 * one of its parent
 	 */
-	private function establishesNewStackingContext():Bool
+	public function establishesNewStackingContext():Bool
+	{
+		return false;
+	}
+	
+	/////////////////////////////////
+	// PRIVATE HELPER METHODS
+	////////////////////////////////
+	
+	private function isAutoZIndexPositioned():Bool
 	{
 		return false;
 	}

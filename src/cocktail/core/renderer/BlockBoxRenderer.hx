@@ -919,6 +919,21 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Overriden as BlockBoxRenderer can also starts a new stacking context
+	 * if the overflow x or y style value is different from visible
+	 */
+	override public function establishesNewStackingContext():Bool
+	{
+		var establishesNewStackingContext:Bool = super.establishesNewStackingContext();
+		
+		if (establishesNewStackingContext == true)
+		{
+			return true;
+		}
+		return canAlwaysOverflow() != true;
+	}
+	
+	/**
 	 * Wether a vertical active scrollbar is displayed and
 	 * scrollable. It is not considered scrollable if the
 	 * provided scroll offset wouldn't make it scroll, for
@@ -1063,21 +1078,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			height:height,
 			isHeightAuto:this._coreStyle.height == Dimension.cssAuto
 		};
-	}
-	
-	/**
-	 * Overriden as BlockBoxRenderer can also starts a new stacking context
-	 * if the overflow x or y style value is different from visible
-	 */
-	override private function establishesNewStackingContext():Bool
-	{
-		var establishesNewStackingContext:Bool = super.establishesNewStackingContext();
-		
-		if (establishesNewStackingContext == true)
-		{
-			return true;
-		}
-		return canAlwaysOverflow() != true;
 	}
 	
 	/**

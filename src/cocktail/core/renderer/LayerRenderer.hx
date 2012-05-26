@@ -90,7 +90,6 @@ class LayerRenderer extends Node
 			rootRenderer = _rootRenderer;
 		}
 		
-		
 		var relativeOffset:PointData = getRelativeOffset(rootRenderer);
 		relativeOffset.x += parentRelativeOffset.x;
 		relativeOffset.y += parentRelativeOffset.y;
@@ -126,7 +125,7 @@ class LayerRenderer extends Node
 			
 			//TODO 2 : doc, this fix is here to prevent inlineBlock from rendering their
 			//child layers, maybe add a new "if(inlineblock)" instead but should also
-			//work for float
+			//work for float -> now can use if establishesNewStackingContext
 			if (renderChildLayers == true)
 			{	
 				//render all the child layers with a z-index of 0
@@ -135,7 +134,6 @@ class LayerRenderer extends Node
 			}
 			
 			clip(blockBoxRootRenderer);
-			
 			//TODO 2 : scrollbar shouldn't need their own graphic context, should not be scrolled,
 			//like the fixed elements
 			blockBoxRootRenderer.renderScrollBars(_scrollBarsGraphicContext, relativeOffset);
@@ -615,7 +613,7 @@ class LayerRenderer extends Node
 	{
 		for (i in 0...layers.length)
 		{
-			if (layers[i].isAutoZIndexPositioned() == false)
+			if (layers[i].establishesNewStackingContext() == true)
 			{
 				layers[i].layerRenderer.render(graphicContext, relativeOffset);
 			}
