@@ -38,6 +38,11 @@ class ScrollBarRenderer extends BlockBoxRenderer
 		return true;
 	}
 	
+	override public function isAutoZIndexPositioned():Bool
+	{
+		return false;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE LAYOUT METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -56,6 +61,14 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * scrollbars always establishes new stacking context
+	 */
+	override private function establishesNewStackingContext():Bool
+	{
+		return true;
+	}
 	
 	/**
 	 * Always return the containing block data, as event though the scroll bar renderer is 

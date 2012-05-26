@@ -1,5 +1,0 @@
--cp ../../../src/
--cp ../../src/
--main event.EventTests
--lib utest
--js ../../bin/event/EventTestsJS.js

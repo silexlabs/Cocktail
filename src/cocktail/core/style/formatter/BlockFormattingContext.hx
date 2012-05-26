@@ -42,13 +42,13 @@ class BlockFormattingContext extends FormattingContext
 
 	}
 	
-	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Int, concatenatedY:Int, staticPositionedElement:ElementRenderer, parentCollapsedMarginTop:Int, parentCollapsedMarginBottom:Int):Int
+	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Float, concatenatedY:Float, staticPositionedElement:ElementRenderer, parentCollapsedMarginTop:Int, parentCollapsedMarginBottom:Int):Float
 	{
 		concatenatedX += elementRenderer.coreStyle.computedStyle.paddingLeft  + elementRenderer.coreStyle.computedStyle.marginLeft;
 
 		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingTop + parentCollapsedMarginTop;
 
-		var childHeight:Int = concatenatedY;
+		var childHeight:Float = concatenatedY;
 		for (i in 0...elementRenderer.childNodes.length)
 		{
 
@@ -84,25 +84,26 @@ class BlockFormattingContext extends FormattingContext
 					}
 					else if (child.isPositioned() == false || child.isRelativePositioned() == true)
 					{
-						concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
+						concatenatedY += child.bounds.height + marginTop + marginBottom;
 					}
 				}
 				//for absolutely positioned element, their bounds are set to their static position
 				//but they do not influence the formatting of subsequent children or sibling
 				else if (child.isPositioned() == false || child.isRelativePositioned() == true)
 				{
-					concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
+					concatenatedY += child.bounds.height + marginTop + marginBottom;
 				}
 			
 				//find widest line for shrink-to-fit algorithm
 				if (child.bounds.x + child.bounds.width + child.coreStyle.computedStyle.marginRight > _formattingContextData.maxWidth)
 				{
+					//TODO 2 : all formatting should use float
 					_formattingContextData.maxWidth = Math.round(child.bounds.x + child.bounds.width) + child.coreStyle.computedStyle.marginRight;
 				}
 				
 				if (concatenatedY  > _formattingContextData.maxHeight)
 				{
-					_formattingContextData.maxHeight = concatenatedY;
+					_formattingContextData.maxHeight = Math.round(concatenatedY);
 				}
 				
 				

@@ -21,6 +21,9 @@ interface IStyleProxy<DisplayObjectType>
 	public function setMarginBottomNum (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setMarginBottomKey (element:DisplayObjectType, value:String):Void;
 	public function setMarginBottomZero (element:DisplayObjectType):Void;
+	public function setMarginTopZero (element:DisplayObjectType):Void;
+	public function setMarginLeftZero (element:DisplayObjectType):Void;
+	public function setMarginRightZero (element:DisplayObjectType):Void;
 	public function setPaddingLeft (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setPaddingTop (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setPaddingRight (element:DisplayObjectType, value:Float, unit:String):Void;
@@ -83,6 +86,8 @@ interface IStyleProxy<DisplayObjectType>
 	public function setFontVariant (element:DisplayObjectType, value:String):Void;
 	public function setTextColorKey (element:DisplayObjectType, value:String):Void;
 	public function setTextColorNum (element:DisplayObjectType, value:Int):Void;
+	public function setTextColorRGBA (element:DisplayObjectType, value:String):Void;
+	public function setTextColorRGB (element:DisplayObjectType, value:String):Void;
 	public function setTextDecoration (element:DisplayObjectType, value:String):Void;
 	public function setLineHeightNum (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setLineHeightZero (element:DisplayObjectType):Void;
@@ -96,14 +101,16 @@ interface IStyleProxy<DisplayObjectType>
 	public function setTextAlign (element:DisplayObjectType, value:String):Void;
 	public function setVerticalAlignNum (element:DisplayObjectType, value:Int, unit:String):Void;
 	public function setVerticalAlignKey (element:DisplayObjectType, value:String):Void;
-/*	public function setWhiteSpace (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setTextIndent (element:DisplayObjectType, value:Int, unit:String):Void;
+	public function setWhiteSpace (element:DisplayObjectType, value:String):Void;
+	public function setOverflowX (element:DisplayObjectType, value:String):Void;
+	public function setOverflowY (element:DisplayObjectType, value:String):Void;
+	public function setZIndex(element:DisplayObjectType, value:String):Void;
+/*	public function setTextIndent (element:DisplayObjectType, value:Int, unit:String):Void;
 	
 	public function setOpacity (element:DisplayObjectType, value:Int, unit:String):Void;
 	}
 	public function setVisibility (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setOverflowX (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setOverflowY (element:DisplayObjectType, value:Int, unit:String):Void;
+	
 	public function setCursor (element:DisplayObjectType, value:Int, unit:String):Void;
 */
 }
