@@ -336,10 +336,10 @@ class BoxRenderer extends ElementRenderer
 			//TODO 1 : messy but works -> not really actually, scrollbar is moved by HTMLBodyElement margins
 			if (child.isScrollBar() == true)
 			{
-				if (elementRenderer.isPositioned() == false)
+				if (elementRenderer.isPositioned() == false || elementRenderer.isRelativePositioned() == true)
 				{
-					child.globalPositionnedAncestorOrigin.x += elementRenderer.bounds.x;
-					child.globalPositionnedAncestorOrigin.y += elementRenderer.bounds.y;
+					//child.globalPositionnedAncestorOrigin.x += elementRenderer.bounds.x;
+					//child.globalPositionnedAncestorOrigin.y += elementRenderer.bounds.y;
 					
 					if (child.hasChildNodes() == true)
 					{
@@ -481,28 +481,6 @@ class BoxRenderer extends ElementRenderer
 	}
 	
 	/**
-	 * Determine wether the ElementRenderer is both positioned
-	 * and have an 'auto' z-index value, as if it does, it 
-	 * means it doesn't have to establish a new stacking context
-	 */
-	override public function isAutoZIndexPositioned():Bool
-	{
-		if (isPositioned() == false)
-		{
-			return false;
-		}
-		
-		switch(computedStyle.zIndex)
-		{
-			case ZIndex.cssAuto:
-				return true;
-				
-			case ZIndex.integer(value):
-				return false;
-		}
-	}
-	
-	/**
 	 * An inline-level ElementRenderer is one that is
 	 * laid out on a line. Its line boxes will be placed
 	 * either next to the preceding ElementRenderer's line boxes
@@ -528,10 +506,6 @@ class BoxRenderer extends ElementRenderer
 		return ret;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
 	 * Overriden as BoxRenderer might create new stacking context, for
 	 * instance if they are positioned.
@@ -539,12 +513,20 @@ class BoxRenderer extends ElementRenderer
 	 * TODO 2 : shouldn't have to compute display style before
 	 * 
 	 */
-	override private function establishesNewStackingContext():Bool
+	override public function establishesNewStackingContext():Bool
 	{
 		_coreStyle.computeDisplayStyles();
 		
 		if (isPositioned() == true)
 		{
+			if (isAutoZIndexPositioned() == true)
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
 			//if a box is positioned, it only establishes
 			//a new stacking context if its z-index is not
 			//auto, else it uses the LayerRenderer of its parent
@@ -558,8 +540,34 @@ class BoxRenderer extends ElementRenderer
 			}
 		}
 		
-		//in all other cases, no new stacking context is
+		//in all other cases, no new stacking context is created
 		return false;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+		/**
+	 * Determine wether the ElementRenderer is both positioned
+	 * and have an 'auto' z-index value, as if it does, it 
+	 * means it doesn't have to establish a new stacking context
+	 */
+	override private function isAutoZIndexPositioned():Bool
+	{
+		if (isPositioned() == false)
+		{
+			return false;
+		}
+		
+		switch(computedStyle.zIndex)
+		{
+			case ZIndex.cssAuto:
+				return true;
+				
+			case ZIndex.integer(value):
+				return false;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

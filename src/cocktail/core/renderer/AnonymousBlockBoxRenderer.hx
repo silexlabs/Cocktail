@@ -22,7 +22,7 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 		return true;
 	}
 	
-	override private function establishesNewStackingContext():Bool
+	override public function establishesNewStackingContext():Bool
 	{
 		return false;
 	}
