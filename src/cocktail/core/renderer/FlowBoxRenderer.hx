@@ -160,7 +160,9 @@ class FlowBoxRenderer extends BoxRenderer
 			
 			//TODO 2 : check if this intermediate method is actually useful, seems to be only
 			//used for positioned elements
-			this.computedStyle.height = _coreStyle.applyContentHeightIfNeeded(getRelevantContainingBlockData(containingBlockData, viewportData,  firstPositionedAncestorData.data), Math.round(this.bounds.height), isReplaced());
+			var contentHeight:Float = this.bounds.height - computedStyle.paddingTop - computedStyle.paddingBottom;
+			this.computedStyle.height = _coreStyle.applyContentHeightIfNeeded(getRelevantContainingBlockData(containingBlockData, viewportData,  firstPositionedAncestorData.data), Math.round(contentHeight), isReplaced());
+	
 		}
 		//else it is already computed and is set on the bounds
 		//of tht ElementRenderer

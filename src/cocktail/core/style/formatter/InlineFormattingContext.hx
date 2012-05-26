@@ -102,7 +102,7 @@ class InlineFormattingContext extends FormattingContext
 		//apply formatting height to formatting context root if auto height
 		if (_formattingContextRoot.coreStyle.height == Dimension.cssAuto)
 		{
-			_formattingContextRoot.bounds.height = _formattingContextData.y + _formattingContextRoot.coreStyle.computedStyle.paddingTop + _formattingContextRoot.coreStyle.computedStyle.paddingBottom ;
+			_formattingContextRoot.bounds.height = _formattingContextData.y  + _formattingContextRoot.coreStyle.computedStyle.paddingBottom ;
 		}
 	}
 	
@@ -419,7 +419,6 @@ class InlineFormattingContext extends FormattingContext
 		//update the y of the formatting context so that the next line will start
 		//below this one
 		_formattingContextData.y += lineBoxHeight;
-		
 		_firstLineFormatted = true;
 	
 	}
@@ -989,13 +988,12 @@ class InlineFormattingContext extends FormattingContext
 			}
 
 			
-			//TODO : used for embedded or inline block but implement better
 			if (child.establishesNewFormattingContext() == true || (child.elementRenderer.isReplaced() == true && child.elementRenderer.isText() == false))
 			{
-				//TODO : hack that won't work for absolutely positioned inline-block
-				if (child.isAbsolutelyPositioned() == false)
+				//TODO 2 : hack 
+				if (child.isAbsolutelyPositioned() == true)
 				{
-					
+					child.bounds.y += child.leadedAscent;
 				}
 				
 			}
