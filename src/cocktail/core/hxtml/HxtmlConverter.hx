@@ -112,9 +112,17 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setMarginBottomKey (element:Node, value:String):Void{
 		cast(element, HTMLElement).style.marginBottom = value;
 	}
-	//TODO 2 : duplicate for margin left, right and top
 	public function setMarginBottomZero (element:Node):Void{
 		cast(element, HTMLElement).style.marginBottom = "0";
+	}
+	public function setMarginLeftZero (element:Node):Void{
+		cast(element, HTMLElement).style.marginLeft = "0";
+	}
+	public function setMarginTopZero (element:Node):Void{
+		cast(element, HTMLElement).style.marginTop = "0";
+	}
+	public function setMarginRightZero (element:Node):Void{
+		cast(element, HTMLElement).style.marginRight = "0";
 	}
 
 	public function setPaddingLeft (element:Node, value:Float, unit:String):Void{
@@ -222,14 +230,13 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setRightKey (element:Node, value:String):Void{
 		cast(element, HTMLElement).style.right = value; 
 	}
-	public function setBgColorNum (element:Node, value:Int):Void{
+	public function setBgColorNum (element:Node, value:Int):Void {
 		cast(element, HTMLElement).style.backgroundColor = "#" + Std.string(value);
 	}
 	public function setBgColorRGBA (element:Node, value:String):Void{
 		cast(element, HTMLElement).style.backgroundColor = "rgba("+value+")";
 	}
 	public function setBgColorRGB (element:Node, value:String):Void {
-		trace(value);
 		cast(element, HTMLElement).style.backgroundColor = "rgb("+value+")";
 	}
 	public function setBgColorKey (element:Node, value:String):Void{
@@ -299,6 +306,12 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setTextColorNum (element:Node, value:Int):Void{
 		cast(element, HTMLElement).style.color = "#" + Std.string(value);
 	}
+	public function setTextColorRGBA (element:Node, value:String):Void{
+		cast(element, HTMLElement).style.color = "rgba("+value+")";
+	}
+	public function setTextColorRGB (element:Node, value:String):Void {
+		cast(element, HTMLElement).style.color = "rgb("+value+")";
+	}
 	public function setTextDecoration (element:Node, value:String):Void{
 //		cast(element, HtmlDom).style.textDecoration = value;
 	}
@@ -338,24 +351,27 @@ class StyleProxy implements hxtml.IStyleProxy<Node>
 	public function setVerticalAlignKey (element:Node, value:String):Void{
 		cast(element, HtmlDom).style.verticalAlign = value;
 	}
-/*	public function setWhiteSpace (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.whiteSpace = value+unit;
+	public function setWhiteSpace (element:Node, value:String):Void{
+		cast(element, HtmlDom).style.whiteSpace = value;
+	}
+	public function setZIndex (element:Node, value:String):Void{
+		cast(element, HtmlDom).style.zIndex = value;
+	}
+	public function setOverflowX (element:Node, value:String):Void{
+		cast(element, HtmlDom).style.overflowX = value;
+	}
+	public function setOverflowY (element:Node, value:String):Void{
+		cast(element, HtmlDom).style.overflowY = value;
 	}
 	
-	
-	
+/*	
 	public function setOpacity (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.opacity = value+unit;
 	}
 	public function setVisibility (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.visibility = value+unit;
 	}
-	public function setOverflowX (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.overflowX = value+unit;
-	}
-	public function setOverflowY (element:Node, value:Int, unit:String):Void{
-		cast(element, HtmlDom).style.overflowY = value+unit;
-	}
+
 	public function setCursor (element:Node, value:Int, unit:String):Void{
 		cast(element, HtmlDom).style.cursor = value+unit;
 	}

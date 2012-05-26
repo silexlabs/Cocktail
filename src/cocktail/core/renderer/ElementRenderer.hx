@@ -88,6 +88,21 @@ class ElementRenderer extends Node
 	public var globalBounds(get_globalBounds, never):RectangleData;
 	
 	/**
+	 * The bounds of the ElementRenderer in the space of the containing
+	 * block to determine the scrolling area of the containing block. 
+	 * 
+	 * The difference with the regular bounds is that any offset needed
+	 * in the computation of scroll bounds are added. 
+	 * 
+	 * For instance if the ElementRenderer is relatively positioned, its
+	 * bounds once transformed with the relative offset are returned
+	 * instead of its bounds in the flow like the regular bounds.
+	 * 
+	 * This is a utility read-only method
+	 */
+	public var scrollableBounds(get_scrollableBounds, never):RectangleData;
+	
+	/**
 	 * This is the position of the top left padding box corner of the 
 	 * containing block of this ElementRenderer in the Window space.
 	 * This is used to render elements using the normal flow.
@@ -321,7 +336,6 @@ class ElementRenderer extends Node
 					createLayer(parent.layerRenderer);
 				}
 			}
-		
 		}
 		
 		//the ElementRenderer is attached to the LayerRenderer
@@ -338,6 +352,7 @@ class ElementRenderer extends Node
 	 */
 	public function detachLayer():Void
 	{
+		
 		//first detach the LayerRenderer of all its children
 		for (i in 0..._childNodes.length)
 		{
@@ -357,6 +372,19 @@ class ElementRenderer extends Node
 			_layerRenderer.detach();
 			
 			_hasOwnLayer = false;
+		}
+		//TODO 2 : doc
+		//TODO 2 : will cause bugs if a z-index style change triggered
+		//the detachement of the layer
+		else if (isAutoZIndexPositioned() == true)
+		{
+			//TODO 3 : is LayerRenderer supposed to be null ?, detachLayer seems
+			//to be called before attachLayer in some case, shouldn't arrive here
+			//if it does
+			if (_layerRenderer != null)
+			{
+				_layerRenderer.removeTreeOrderChildElementRenderer(this);
+			}
 		}
 		
 		_layerRenderer = null;
@@ -392,6 +420,11 @@ class ElementRenderer extends Node
 	}
 	
 	public function isPositioned():Bool
+	{
+		return false;
+	}
+	
+	public function isAutoZIndexPositioned():Bool
 	{
 		return false;
 	}
@@ -454,7 +487,14 @@ class ElementRenderer extends Node
 		}
 		else
 		{
+			
 			_layerRenderer = parentLayer;
+			
+			//TODO 2 : doc
+			if (isAutoZIndexPositioned() == true)
+			{
+				_layerRenderer.insertTreeOrderChildElementRenderer(this);
+			}
 		}
 	}
 	
@@ -660,6 +700,66 @@ class ElementRenderer extends Node
 			width:bounds.width,
 			height:bounds.height
 		}
+	}
+	
+	//TODO 1 : doc
+	private function get_scrollableBounds():RectangleData
+	{
+		if (isRelativePositioned() == false)
+		{
+			return bounds;
+		}
+		
+		var relativeOffset:PointData = getRelativeOffset(this);
+		
+		var bounds:RectangleData = get_bounds();
+		
+		return {
+			x: bounds.x + relativeOffset.x,
+			y: bounds.y + relativeOffset.y,
+			width: bounds.width,
+			height: bounds.height
+		};
+	}
+	
+	//TODO 1 : this is duplicated from LayerRenderer, should this method
+	//be here instead ?
+	private function getRelativeOffset(rootRenderer:ElementRenderer):PointData
+	{
+		var relativeOffset:PointData = { x:0.0, y:0.0 };
+		//if the root renderer is relatively positioned,
+		//then its offset must be applied to all of 
+		//its children
+		if (rootRenderer.isRelativePositioned() == true)
+		{
+			//first try to apply the left offset of the root renderer if it is
+			//not auto
+			if (rootRenderer.coreStyle.left != PositionOffset.cssAuto)
+			{
+				relativeOffset.x += rootRenderer.coreStyle.computedStyle.left;
+			}
+			//else the right offset,
+			else if (rootRenderer.coreStyle.right != PositionOffset.cssAuto)
+			{
+				relativeOffset.x -= rootRenderer.coreStyle.computedStyle.right;
+			}
+			
+			//if both left and right offset is auto, then the root renderer uses its static
+			//position (its normal position in the flow) and no offset needs to be applied
+			//to its children
+		
+			//same for vertical offset
+			if (rootRenderer.coreStyle.top != PositionOffset.cssAuto)
+			{
+				relativeOffset.y += rootRenderer.coreStyle.computedStyle.top; 
+			}
+			else if (rootRenderer.coreStyle.bottom != PositionOffset.cssAuto)
+			{
+				relativeOffset.y -= rootRenderer.coreStyle.computedStyle.bottom; 
+			}
+		}
+		
+		return relativeOffset;
 	}
 	
 	private function getComputedStyle():ComputedStyleData

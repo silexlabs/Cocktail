@@ -71,6 +71,17 @@ class CssParser<DisplayObjectType> {
 	function applyStyle( r : String, v : Value, s : IStyleProxy<DisplayObjectType> ) : Bool {
 		switch( r ) {
 		case "margin":
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMarginBottomZero(d);
+				s.setMarginTopZero(d);
+				s.setMarginLeftZero(d);
+				s.setMarginRightZero(d);
+				return true;
+			}
+			
 			// when the value is not in an array, build a 1 element array
 			var vl:Array<Value> = switch( v ) {
 			case VGroup(l): l;
@@ -117,6 +128,21 @@ class CssParser<DisplayObjectType> {
 				s.setMarginLeftKey(d, val);
 				return true;
 			}
+			
+			// case negative int
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VUnit(v, u):
+						s.setMarginLeftNum(d, v * -1, u);
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -130,6 +156,22 @@ class CssParser<DisplayObjectType> {
 				s.setMarginRightKey(d, val);
 				return true;
 			}
+			
+			
+			// case negative int
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VUnit(v, u):
+						s.setMarginRightNum(d, v * -1, u);
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -290,8 +332,8 @@ class CssParser<DisplayObjectType> {
 		case "background-color":
 			switch( v ) {
 			case VHex(v):
-				var val = (v.length == 6) ? Std.parseInt("0x" + v) : ((v.length == 3) ? Std.parseInt("0x"+v.charAt(0)+v.charAt(0)+v.charAt(1)+v.charAt(1)+v.charAt(2)+v.charAt(2)) : null);
-				s.setBgColorNum(d, val);
+				//var val = (v.length == 6) ? Std.parseInt("0x" + v) : ((v.length == 3) ? Std.parseInt("0x"+v.charAt(0)+v.charAt(0)+v.charAt(1)+v.charAt(1)+v.charAt(2)+v.charAt(2)) : null);
+				s.setBgColorNum(d, Std.parseInt(v));
 				return true;
 			case VRGBA(v):
 				s.setBgColorRGBA(d, v);
@@ -409,9 +451,16 @@ class CssParser<DisplayObjectType> {
 		case "color":
 			switch( v ) {
 			case VHex(v):
-				var val = (v.length == 6) ? Std.parseInt("0x" + v) : ((v.length == 3) ? Std.parseInt("0x"+v.charAt(0)+v.charAt(0)+v.charAt(1)+v.charAt(1)+v.charAt(2)+v.charAt(2)) : null);
-				s.setTextColorNum(d, val);
+				//var val = (v.length == 6) ? Std.parseInt("0x" + v) : ((v.length == 3) ? Std.parseInt("0x"+v.charAt(0)+v.charAt(0)+v.charAt(1)+v.charAt(1)+v.charAt(2)+v.charAt(2)) : null);
+				s.setTextColorNum(d, Std.parseInt(v));
 				return true;
+			case VRGB(v):
+				s.setTextColorRGB(d, v);
+				return true;
+			case VRGBA(v):
+				s.setTextColorRGBA(d, v);
+				return true;
+				
 			case VIdent(i):
 				s.setTextColorKey(d, i);
 				return true;
@@ -428,6 +477,45 @@ class CssParser<DisplayObjectType> {
 				s.setTextTransform(d, val);
 				return true;
 			}
+			
+		case "white-space":
+			var val = getIdent(v);
+			if ( val != null ) {
+				s.setWhiteSpace(d, val);
+				return true;
+			}
+			
+		case "z-index":
+			// case negative int - hack
+			switch(v)
+			{
+				case VGroup(a):
+					switch(a[1])
+					{
+						case VInt(v):
+						s.setZIndex(d, Std.string(v * -1));
+						return true;
+						default:
+					}	
+				default:	
+			}
+			
+			// case int
+			switch(v) {
+			case VInt(i):
+				s.setZIndex (d, Std.string(i));
+				return true;
+			default:
+			}
+			
+			// case label (auto)
+			var val = getIdent(v);
+			if ( val != null) {
+				s.setZIndex(d, val);
+				return true;
+			}
+			
+			
 		case "line-height":
 			
 			//case 0
@@ -665,7 +753,38 @@ class CssParser<DisplayObjectType> {
 		case "position":
 			s.setPosition(d, getIdent(v));
 			return true;
-
+		case "overflow":
+			switch (v)
+			{
+				
+				case VGroup(a):
+						switch(a[0])
+						{
+							case VIdent(v):
+							s.setOverflowX(d, v);
+			
+							
+							default:
+						}	
+						switch (a[1])
+						{
+							case VIdent(v):
+							s.setOverflowY(d, v);
+							
+							default:
+						}
+						return true;
+						
+				case VIdent(v):
+					s.setOverflowX(d, v);
+					s.setOverflowY(d, v);
+				return true;	
+					
+				default:	
+			}			
+						
+			
+			
 		default:
 			throw "Not implemented '"+r+"' = "+Std.string(v);
 		}
