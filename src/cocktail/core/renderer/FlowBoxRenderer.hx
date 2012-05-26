@@ -160,6 +160,8 @@ class FlowBoxRenderer extends BoxRenderer
 			
 			//TODO 2 : check if this intermediate method is actually useful, seems to be only
 			//used for positioned elements
+			//TODO 2 : correcting auto width and height should now take place exlusively in the formatting contexts classes
+			//TODO 2 : should implement complicated cases in formatting context here : http://www.w3.org/TR/CSS2/visudet.html#root-height
 			var contentHeight:Float = this.bounds.height - computedStyle.paddingTop - computedStyle.paddingBottom;
 			this.computedStyle.height = _coreStyle.applyContentHeightIfNeeded(getRelevantContainingBlockData(containingBlockData, viewportData,  firstPositionedAncestorData.data), Math.round(contentHeight), isReplaced());
 	
