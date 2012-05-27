@@ -95,6 +95,9 @@ class Element extends Node
 	/**
 	 * Retrieves an attribute value by name.
 	 * 
+	 * TODO 2 : when attribute is not found, should null or empty
+	 * string be returned ?
+	 * 
 	 * @param	name The name of the attribute to retrieve.
 	 * @return The Attr value as a string, or the empty string
 	 * if that attribute does not have a specified or default value.
