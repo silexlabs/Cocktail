@@ -226,7 +226,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//which are rendered as if they started a new layerRenderer themselves
 			else
 			{	
-				lineBoxes[i].layerRenderer.render(graphicContext, relativeOffset, lineBoxes[i].elementRenderer, false);
+				lineBoxes[i].layerRenderer.render(lineBoxes[i].elementRenderer, graphicContext, relativeOffset);
 			}
 		}
 		
@@ -266,15 +266,14 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (_horizontalScrollBar != null)
 		{
-			_horizontalScrollBar.elementRenderer.layerRenderer.render(graphicContext, relativeOffset);
-			
+			_horizontalScrollBar.elementRenderer.layerRenderer.render(_horizontalScrollBar.elementRenderer, graphicContext, relativeOffset);
 			updateScroll();
 
 		}
 		
 		if (_verticalScrollBar != null)
 		{
-			_verticalScrollBar.elementRenderer.layerRenderer.render(graphicContext, relativeOffset);
+			_verticalScrollBar.elementRenderer.layerRenderer.render(_verticalScrollBar.elementRenderer, graphicContext, relativeOffset);
 			updateScroll();
 		}
 	}
