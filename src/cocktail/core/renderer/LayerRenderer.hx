@@ -52,7 +52,6 @@ class LayerRenderer extends Node
 	
 	private var _negativeOrderChildLayers:Array<ElementRenderer>;
 	
-	public var zIndex(get_zIndex, never):ZIndex;
 
 	/**
 	 * class constructor
@@ -74,8 +73,9 @@ class LayerRenderer extends Node
 	////////////////////////////////
 	
 	/**
-	 * Render all the ElementRenderers belonging to this LayerRenderer
-	 * in a defined order
+	 * Main rendering method. Starts from the root renderer which created this
+	 * LayerRenderer and apply the rendering phases defined here : 
+	 * http://www.w3.org/TR/CSS2/zindex.html
 	 */
 	public function render(parentGraphicsContext:NativeElement, parentRelativeOffset:PointData, rootRenderer:ElementRenderer = null, renderChildLayers:Bool = true):Void
 	{
@@ -171,6 +171,10 @@ class LayerRenderer extends Node
 			parentGraphicsContext.addChild(_scrollBarsGraphicContext);
 		}
 	}
+	
+	/////////////////////////////////
+	// PUBLIC VISUAL EFFECT METHODS
+	////////////////////////////////
 	
 	public function clip(blockBoxRootRenderer:BlockBoxRenderer):Void
 	{
@@ -273,27 +277,9 @@ class LayerRenderer extends Node
 		#end
 	}
 	
-	//TODO 3 : should have an attach method ?
-	public function detach():Void
-	{
-		for (i in 0..._childNodes.length)
-		{
-			var child:LayerRenderer = cast(_childNodes[i]);
-			child.detach();
-		}
-		#if (flash9 || nme)
-		//TODO 1 : quick fix, should be abstracted
-			for (i in 0..._graphicsContext.numChildren)
-			{
-				_graphicsContext.removeChildAt(0);
-			}
-			
-			for (i in 0..._scrollBarsGraphicContext.numChildren)
-			{
-				_scrollBarsGraphicContext.removeChildAt(0);
-			}
-		#end	
-	}
+	/////////////////////////////////
+	// OVERRIDEN PUBLIC METHODS
+	////////////////////////////////
 	
 	override public function appendChild(newChild:Node):Node
 	{
@@ -301,7 +287,7 @@ class LayerRenderer extends Node
 		
 		var childLayer:LayerRenderer = cast(newChild);
 
-		switch(childLayer.zIndex)
+		switch(childLayer.rootRenderer.computedStyle.zIndex)
 		{
 			case ZIndex.cssAuto:
 				_treeOrderChildLayers.push(childLayer.rootRenderer);
@@ -340,6 +326,32 @@ class LayerRenderer extends Node
 		return oldChild;
 	}
 	
+	/////////////////////////////////
+	// PUBLIC LAYER TREE METHODS
+	////////////////////////////////
+	
+	//TODO 3 : should have an attach method ?
+	public function detach():Void
+	{
+		for (i in 0..._childNodes.length)
+		{
+			var child:LayerRenderer = cast(_childNodes[i]);
+			child.detach();
+		}
+		#if (flash9 || nme)
+		//TODO 1 : quick fix, should be abstracted
+			for (i in 0..._graphicsContext.numChildren)
+			{
+				_graphicsContext.removeChildAt(0);
+			}
+			
+			for (i in 0..._scrollBarsGraphicContext.numChildren)
+			{
+				_scrollBarsGraphicContext.removeChildAt(0);
+			}
+		#end	
+	}
+	
 	public function insertTreeOrderChildElementRenderer(elementRenderer:ElementRenderer):Void
 	{
 		_treeOrderChildLayers.push(elementRenderer);
@@ -349,6 +361,10 @@ class LayerRenderer extends Node
 	{
 		_treeOrderChildLayers.remove(elementRenderer);
 	}
+	
+	/////////////////////////////////
+	// PRIVATE LAYER TREE METHODS
+	////////////////////////////////
 	
 	private function insertPositiveOrderChildLayer(childLayer:ElementRenderer, childLayerZIndex:Int):Void
 	{
@@ -469,8 +485,6 @@ class LayerRenderer extends Node
 	{
 		var elementRenderersAtPointInLayer:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		
-		
 		var scrolledPoint:PointData = {
 			x:point.x + scrollX,
 			y:point.y + scrollY
@@ -527,15 +541,13 @@ class LayerRenderer extends Node
 		{
 			
 			var elementRenderersAtPointInChildLayer:Array<ElementRenderer> = [];
-
-			//TODO 1 IMPORTANT : works but very very very messy, done that because scrollbars, should not use the scroll
-			//of its parent for the hit test
-			if (untyped Std.is(childLayers[i]._rootRenderer.node, ScrollBar) == true)
+			//TODO 1 : messy, ElementRenderer should be aware of their scrollBounds
+			if (childLayers[i].rootRenderer.isScrollBar() == true)
 			{
 				elementRenderersAtPointInChildLayer = childLayers[i].getElementRenderersAtPoint(point, scrollX, scrollY);
 			}
-			//TODO 1 : also very messy, ElementRenderer should be aware of their scrollBounds
-			else if (untyped childLayers[i]._rootRenderer.coreStyle.position == fixed)
+			//TODO 1 : messy, ElementRenderer should be aware of their scrollBounds
+			else if (childLayers[i].rootRenderer.coreStyle.position == fixed)
 			{
 				elementRenderersAtPointInChildLayer = childLayers[i].getElementRenderersAtPoint(point, scrollX , scrollY);
 		
@@ -603,11 +615,6 @@ class LayerRenderer extends Node
 		return childLayers;
 	}
 	
-	//TODO : should use computed style but not yet computed
-	private function get_zIndex():ZIndex
-	{
-		return _rootRenderer.coreStyle.zIndex;
-	}
 
 	
 	

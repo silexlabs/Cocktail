@@ -373,8 +373,9 @@ class ElementRenderer extends Node
 		//else if the ElementRenderer is both positioned and has an
 		//auto z-index, it means that it was added to the LayerRenderer
 		//as a auto positioned child and must now be removed from it
+		//
 		//TODO 2 : will cause bugs if a z-index style change triggered
-		//the detachement of the layer
+		//the detachement of the layer, should add flag, like for _hasOwnLayer ?
 		else if (isAutoZIndexPositioned() == true)
 		{
 			//TODO 3 : is LayerRenderer supposed to be null ?, detachLayer seems
