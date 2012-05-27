@@ -202,6 +202,63 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * 
+	 * TODO 1 :doc
+	 */
+	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		super.render(graphicContext, relativeOffset);
+		
+		if (establishesNewStackingContext() == true)
+		{
+			_layerRenderer.renderNegativeChildLayer(graphicContext, relativeOffset);
+		
+		
+		//render all the block container children belonging to this layer
+		renderBlockContainerChildren(graphicContext, relativeOffset);
+		
+		//TODO 5 : render non-positioned float
+		
+		//render all the replaced (embedded) children displayed as blocks
+		renderBlockReplacedChildren(graphicContext, relativeOffset);
+
+		//render all the line boxes belonging to this layer
+		renderLineBoxes(graphicContext, relativeOffset);
+		
+		_layerRenderer.clip(this);
+		//TODO 2 : scrollbar shouldn't need their own graphic context, should not be scrolled,
+		//like the fixed elements
+		renderScrollBars(graphicContext, relativeOffset);
+		
+		//TODO 2 : doc, this fix is here to prevent inlineBlock from rendering their
+		//child layers, maybe add a new "if(inlineblock)" instead but should also
+		//work for float -> now can use if establishesNewStackingContext
+	
+			//render all the child layers with a z-index of 0
+			_layerRenderer.renderTreeOrderChildLayer(graphicContext, relativeOffset);
+			_layerRenderer.renderPositiveChildLayer(graphicContext, relativeOffset);
+		}
+		//TODO 1 : should find a common method for child which are rendered as if they started
+		//a new stacking context
+		else if (isAutoZIndexPositioned() == true || computedStyle.display == inlineBlock)
+		{
+			renderBlockContainerChildren(graphicContext, relativeOffset);
+		
+			//TODO 5 : render non-positioned float
+			
+			//render all the replaced (embedded) children displayed as blocks
+			renderBlockReplacedChildren(graphicContext, relativeOffset);
+
+			//render all the line boxes belonging to this layer
+			renderLineBoxes(graphicContext, relativeOffset);
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	

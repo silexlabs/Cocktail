@@ -40,8 +40,28 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	/**
 	 * Overriden as rendering an inline box renderer consist in rendering all of the 
 	 * line boxes it generated
+	 * 
+	 * TODO 1 : doc
 	 */
 	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		if (establishesNewStackingContext() == true)
+		{
+			_layerRenderer.renderNegativeChildLayer(graphicContext, relativeOffset);
+		}
+		
+		renderChildLineBoxes(graphicContext, relativeOffset);
+		
+		if (establishesNewStackingContext() == true)
+		{	
+			_layerRenderer.renderTreeOrderChildLayer(graphicContext, relativeOffset);
+			_layerRenderer.renderPositiveChildLayer(graphicContext, relativeOffset);
+		}
+		
+		
+	}
+	
+	private function renderChildLineBoxes(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		for (i in 0..._lineBoxes.length)
 		{

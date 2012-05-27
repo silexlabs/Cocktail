@@ -99,12 +99,17 @@ class LayerRenderer extends Node
 	////////////////////////////////
 	
 	/**
-	 * Main rendering method. Starts from the root renderer which created this
+	 * Main rendering method. Starts from the root element renderer which created this
 	 * LayerRenderer and apply the rendering phases defined here : 
 	 * http://www.w3.org/TR/CSS2/zindex.html
+	 *
+	 * This method determine the rendering phases to perform based on the
+	 * type of root element renderer. for instance a block box element renderer and an
+	 * embedded element renderer won't require the same rendering steps
 	 */
 	public function render(rootElementRenderer:ElementRenderer, parentGraphicsContext:NativeElement, parentRelativeOffset:PointData):Void
 	{
+		//TODO 1 : should happen in ElementRenderer
 		if (rootElementRenderer.establishesNewStackingContext() == true)
 		{
 			detach();
@@ -114,77 +119,12 @@ class LayerRenderer extends Node
 		relativeOffset.x += parentRelativeOffset.x;
 		relativeOffset.y += parentRelativeOffset.y;
 		
-		//here the root renderer is a block box renderer. It can be an inline level
-		//which establishes an inline formatting context : an inline-block
-		if (rootElementRenderer.isReplaced() == false && rootElementRenderer.isInlineLevel() == false || 
-		rootElementRenderer.establishesNewFormattingContext() == true)
-		{
-			var blockBoxrootElementRenderer:BlockBoxRenderer = cast(rootElementRenderer);
+		//TODO 1 : graphicContext should be owned by ElementRenderer, this method should
+		//pass parentGraphicContext to it
+		rootElementRenderer.render(_graphicsContext, relativeOffset);
 		
-			//TODO 1 : block box background should not scroll with the rest of the children
-			//render the ElementRenderer which created this layer
-			blockBoxrootElementRenderer.render(_graphicsContext, relativeOffset);
-			
-			if (rootElementRenderer.establishesNewStackingContext() == true)
-			{
-				renderChildLayer(_negativeZIndexChildRenderers, _graphicsContext, relativeOffset);
-			}
-			
-			//render all the block container children belonging to this layer
-			blockBoxrootElementRenderer.renderBlockContainerChildren(_graphicsContext, relativeOffset);
-			
-			//TODO 5 : render non-positioned float
-			
-			//render all the replaced (embedded) children displayed as blocks
-			blockBoxrootElementRenderer.renderBlockReplacedChildren(_graphicsContext, relativeOffset);
-	
-			//render all the line boxes belonging to this layer
-			blockBoxrootElementRenderer.renderLineBoxes(_graphicsContext, relativeOffset);
-			
-			
-			
-			//TODO 2 : doc, this fix is here to prevent inlineBlock from rendering their
-			//child layers, maybe add a new "if(inlineblock)" instead but should also
-			//work for float -> now can use if establishesNewStackingContext
-			if (rootElementRenderer.establishesNewStackingContext() == true)
-			{	
-				//render all the child layers with a z-index of 0
-				renderChildLayer(_zeroOrAutoZIndexChildRenderers, _graphicsContext, relativeOffset);
-				renderChildLayer(_positiveZIndexChildRenderers, _graphicsContext, relativeOffset);
-			}
-			
-			clip(blockBoxrootElementRenderer);
-			//TODO 2 : scrollbar shouldn't need their own graphic context, should not be scrolled,
-			//like the fixed elements
-			blockBoxrootElementRenderer.renderScrollBars(_scrollBarsGraphicContext, relativeOffset);
-			
-		}
-		
-		//here the root renderer is an inline box renderer which doesn't establish a formatting context
-		else if (rootElementRenderer.isReplaced() == false && rootElementRenderer.isInlineLevel() == true)
-		{
-			if (rootElementRenderer.establishesNewStackingContext() == true)
-			{
-				renderChildLayer(_negativeZIndexChildRenderers, _graphicsContext, relativeOffset);
-			}
-			
-			rootElementRenderer.render(_graphicsContext, relativeOffset);
-			
-			if (rootElementRenderer.establishesNewStackingContext() == true)
-			{
-				
-				renderChildLayer(_zeroOrAutoZIndexChildRenderers, _graphicsContext, relativeOffset);
-				renderChildLayer(_positiveZIndexChildRenderers, _graphicsContext, relativeOffset);
-			}
-		}
-		
-		//here the root renderer is a replaced element
-		else
-		{
-			//render the replaced element, render its background and asset
-			rootElementRenderer.render(_graphicsContext, relativeOffset);
-		}
-		
+
+		//TODO 1 : should happen in ElementRenderer
 		if (rootElementRenderer.establishesNewStackingContext() == true)
 		{
 			parentGraphicsContext.addChild(_graphicsContext);
@@ -193,31 +133,13 @@ class LayerRenderer extends Node
 	}
 	
 	/////////////////////////////////
-	// PRIVATE RENDERING METHODS
-	////////////////////////////////
-	
-	private function renderBlockBoxRootRenderer(rootRenderer:BlockBoxRenderer, graphicContext:NativeElement, relativeOffset:PointData):Void
-	{
-		
-	}
-	
-	private function renderInlineBoxRootRenderer(rootRenderer:InlineBoxRenderer, graphicContext:NativeElement, relativeOffset:PointData):Void
-	{
-		
-	}
-	
-	private function renderEmbeddedBoxRootRenderer(rootRenderer:EmbeddedBoxRenderer, graphicContext:NativeElement, relativeOffset:PointData):Void
-	{
-		
-	}
-	
-	/////////////////////////////////
 	// PUBLIC VISUAL EFFECT METHODS
 	////////////////////////////////
 	
+	//TODO 1 : this logic should go into BlockBoxRenderer
 	public function clip(blockBoxrootElementRenderer:BlockBoxRenderer):Void
 	{
-		//TODO 1 : this logic should go into BlockBoxRenderer ? should call layerRenderer.clip ?
+		
 			
 		#if (flash9 || nme)
 		
@@ -251,6 +173,7 @@ class LayerRenderer extends Node
 		#end	
 	}
 	
+	//TODO 1 : this logic should go into BlockBoxRenderer
 	public function scroll(x:Float, y:Float, rootElementRenderer:ElementRenderer = null, startedScroll:Bool = true):Void
 	{
 		if (rootElementRenderer == null)
@@ -393,6 +316,8 @@ class LayerRenderer extends Node
 		#end	
 	}
 	
+	//TODO 1 : shouldn't be called for scrollbars children but is it here that it should be checked for
+	//scrollbar or in scrollbar renderer ?
 	public function insertTreeOrderChildElementRenderer(elementRenderer:ElementRenderer):Void
 	{
 		_zeroOrAutoZIndexChildRenderers.push(elementRenderer);
@@ -620,6 +545,21 @@ class LayerRenderer extends Node
 	////////////////////////////////
 	
 	
+	public function renderPositiveChildLayer(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		renderChildLayer(_positiveZIndexChildRenderers, graphicContext, relativeOffset);
+	}
+	
+	public function renderTreeOrderChildLayer(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		renderChildLayer(_zeroOrAutoZIndexChildRenderers, graphicContext, relativeOffset);
+	}
+	
+	public function renderNegativeChildLayer(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		renderChildLayer(_negativeZIndexChildRenderers, graphicContext, relativeOffset);
+	}
+	
 	/**
 	 * Render all the children LayerRenderer of this LayerRenderer
 	 * and return an array of NativeElements from it
@@ -650,7 +590,7 @@ class LayerRenderer extends Node
 	}
 	
 
-	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	
 	//TODO 4 : implement layer renderer transformation
