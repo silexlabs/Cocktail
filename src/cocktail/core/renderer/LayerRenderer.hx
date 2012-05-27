@@ -90,7 +90,7 @@ class LayerRenderer extends Node
 			rootRenderer = _rootRenderer;
 		}
 		
-		var relativeOffset:PointData = getRelativeOffset(rootRenderer);
+		var relativeOffset:PointData = rootRenderer.getRelativeOffset();
 		relativeOffset.x += parentRelativeOffset.x;
 		relativeOffset.y += parentRelativeOffset.y;
 		
@@ -426,44 +426,6 @@ class LayerRenderer extends Node
 		
 	}
 	
-	//TODO 1 : doc
-	private function getRelativeOffset(rootRenderer:ElementRenderer):PointData
-	{
-		var relativeOffset:PointData = { x:0.0, y:0.0 };
-		//if the root renderer is relatively positioned,
-		//then its offset must be applied to all of 
-		//its children
-		if (rootRenderer.isRelativePositioned() == true)
-		{
-			//first try to apply the left offset of the root renderer if it is
-			//not auto
-			if (rootRenderer.coreStyle.left != PositionOffset.cssAuto)
-			{
-				relativeOffset.x += rootRenderer.coreStyle.computedStyle.left;
-			}
-			//else the right offset,
-			else if (rootRenderer.coreStyle.right != PositionOffset.cssAuto)
-			{
-				relativeOffset.x -= rootRenderer.coreStyle.computedStyle.right;
-			}
-			
-			//if both left and right offset is auto, then the root renderer uses its static
-			//position (its normal position in the flow) and no offset needs to be applied
-			//to its children
-		
-			//same for vertical offset
-			if (rootRenderer.coreStyle.top != PositionOffset.cssAuto)
-			{
-				relativeOffset.y += rootRenderer.coreStyle.computedStyle.top; 
-			}
-			else if (rootRenderer.coreStyle.bottom != PositionOffset.cssAuto)
-			{
-				relativeOffset.y -= rootRenderer.coreStyle.computedStyle.bottom; 
-			}
-		}
-		
-		return relativeOffset;
-	}
 
 	/////////////////////////////////
 	// PUBLIC HIT-TESTING METHODS
