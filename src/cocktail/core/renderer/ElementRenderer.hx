@@ -34,6 +34,9 @@ import haxe.Timer;
  * the DOM tree will create a TextRenderer in the 
  * rendering tree.
  * 
+ * DOM tree elemtents which are not visual, for instance 
+ * the 'head' HTML element don't create ElementRenderer
+ * 
  * An ElementRenderer is associated with a CoreStyle object
  * which holds all of the styles used to render the
  * ElementRenderer.
@@ -42,13 +45,9 @@ import haxe.Timer;
  * that once laid out it knows all its necessary bounds
  * to be rendered
  * 
- * It also knows how to render itself. The rendering will
- * be started by the LayerRenderer associated with the
- * ElementRenderer
- * 
- * Once an ElementRenderer has been laid out, it holds
- * a reference to all the bounds needed to be rendered
- * on the screen
+ * It also knows how to render itself and will do it as many
+ * times as necessary, each time is layout or rendering becomes
+ * invalid
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -88,11 +87,11 @@ class ElementRenderer extends Node
 	public var globalBounds(get_globalBounds, never):RectangleData;
 	
 	/**
-	 * The bounds of the ElementRenderer in the space of the containing
-	 * block to determine the scrolling area of the containing block. 
+	 * The scrollable bounds of the ElementRenderer in the space of the scrollable containing
+	 * block used to determine the scrolling area of the containing block. 
 	 * 
 	 * The difference with the regular bounds is that any offset needed
-	 * in the computation of scroll bounds are added. 
+	 * in the computation of scrollable bounds are added. 
 	 * 
 	 * For instance if the ElementRenderer is relatively positioned, its
 	 * bounds once transformed with the relative offset are returned
@@ -121,7 +120,7 @@ class ElementRenderer extends Node
 	 * 
 	 * It is used when this ElementRenderer
 	 * is absolutely positioned. When added to the global
-	 * positioned ancesotr origin, it gives the global
+	 * positioned ancestor origin, it gives the global
 	 * positioned origin of the ElementRenderer
 	 */
 	private var _positionedOrigin:PointData;
@@ -181,8 +180,9 @@ class ElementRenderer extends Node
 	 * Determine wheter this ElementRenderer establishes its own
 	 * stacking context (instantiates a new LayerRenderer)
 	 * 
-	 * TODO : not very clean, should layerRenderer be null instead
-	 * for ElementRenderernot starting a layer ?
+	 * TODO 2 : not very clean, should layerRenderer be null instead
+	 * for ElementRenderer not starting a layer ? -> or should use 
+	 * the establishesNewStackingContextMethod ? + doc is false
 	 */
 	private var _hasOwnLayer:Bool;
 	
@@ -194,7 +194,7 @@ class ElementRenderer extends Node
 	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyleData;
 	
 	/**
-	 * get/set the scrolling in the x axis of this ElementRenderer
+	 * get/set the scrolling in the x axis of this ElementRenderer.
 	 */
 	public var scrollLeft(get_scrollLeft, set_scrollLeft):Float;
 	
@@ -207,7 +207,7 @@ class ElementRenderer extends Node
 	 * get the larger width between the ElementRenderer's and its children
 	 * width
 	 * 
-	 * TODO : does it mean that scrollBounds should also be computed for
+	 * TODO 3 : does it mean that scrollBounds should also be computed for
 	 * this ElementRenderer ? renamed as childrenBounds ?
 	 * check http://dev.w3.org/csswg/cssom-view/#dom-element-scrollwidth
 	 */
@@ -263,7 +263,7 @@ class ElementRenderer extends Node
 	
 	/**
 	 * overriden as when an ElementRenderer is appended, its LayerRenderer
-	 * must be attached so that it can be rendered
+	 * must be attached to the LayerRenderer tree so that it can be rendered
 	 */
 	override public function appendChild(newChild:Node):Node
 	{
@@ -348,11 +348,11 @@ class ElementRenderer extends Node
 	}
 	
 	/**
-	 * Detach the LayerRenderer of this ElementRenderer if necessary
+	 * Detach the LayerRenderer of this ElementRenderer from the LayerRenderer
+	 * tree if necessary
 	 */
 	public function detachLayer():Void
 	{
-		
 		//first detach the LayerRenderer of all its children
 		for (i in 0..._childNodes.length)
 		{
@@ -367,13 +367,12 @@ class ElementRenderer extends Node
 		{
 			var parent:ElementRenderer = cast(_parentNode);
 			parent.layerRenderer.removeChild(_layerRenderer);
-			
-			//TODO : should be called in LayerRenderer.removeChild ?
 			_layerRenderer.detach();
-			
 			_hasOwnLayer = false;
 		}
-		//TODO 2 : doc
+		//else if the ElementRenderer is both positioned and has an
+		//auto z-index, it means that it was added to the LayerRenderer
+		//as a auto positioned child and must now be removed from it
 		//TODO 2 : will cause bugs if a z-index style change triggered
 		//the detachement of the layer
 		else if (isAutoZIndexPositioned() == true)
@@ -390,8 +389,53 @@ class ElementRenderer extends Node
 		_layerRenderer = null;
 	}
 	
+	/**
+	 * Return the relative offset applied by this ElementRenderer
+	 * when rendering. Only relatively positioned ElementRenderer
+	 * have this offset
+	 */
+	public function getRelativeOffset():PointData
+	{
+		var relativeOffset:PointData = { x:0.0, y:0.0 };
+		
+		//only relatively positioned ElementRenderer can have
+		//an offset
+		if (isRelativePositioned() == true)
+		{
+			//first try to apply the left offset of the ElementRenderer if it is
+			//not auto
+			if (coreStyle.left != PositionOffset.cssAuto)
+			{
+				relativeOffset.x += coreStyle.computedStyle.left;
+			}
+			//else the right offset,
+			else if (coreStyle.right != PositionOffset.cssAuto)
+			{
+				relativeOffset.x -= coreStyle.computedStyle.right;
+			}
+			
+			//if both left and right offset are auto, then the ElementRenderer uses its static
+			//position (its normal position in the flow) and no relative offset needs to
+			//be applied
+		
+			//same for vertical offset
+			if (coreStyle.top != PositionOffset.cssAuto)
+			{
+				relativeOffset.y += coreStyle.computedStyle.top; 
+			}
+			else if (coreStyle.bottom != PositionOffset.cssAuto)
+			{
+				relativeOffset.y -= coreStyle.computedStyle.bottom; 
+			}
+		}
+		
+		return relativeOffset;
+	}
+	
 	/////////////////////////////////
 	// PUBLIC HELPER METHODS
+	// Overriden by inheriting classes
+	// TODO 3 : should copy most doc from BoxRenderer
 	////////////////////////////////
 	
 	public function isVerticallyScrollable(scrollOffset:Int):Bool
@@ -468,6 +512,12 @@ class ElementRenderer extends Node
 	// PRIVATE HELPER METHODS
 	////////////////////////////////
 	
+	/**
+	 * Determine wether this ElementRenderer is 
+	 * both positioned and has an 'auto' z-index value,
+	 * which influence the rendering order of its
+	 * LayerRenderer
+	 */
 	private function isAutoZIndexPositioned():Bool
 	{
 		return false;
@@ -487,10 +537,12 @@ class ElementRenderer extends Node
 		}
 		else
 		{
-			
 			_layerRenderer = parentLayer;
 			
-			//TODO 2 : doc
+			//if the ElementRenderer is positioned with
+			//an 'auto' z-index value, then it must be added
+			//in a special array in its LayerRenderer has it will
+			//be rendered during its own rendering phase
 			if (isAutoZIndexPositioned() == true)
 			{
 				_layerRenderer.insertTreeOrderChildElementRenderer(this);
@@ -500,7 +552,7 @@ class ElementRenderer extends Node
 	
 	/**
 	 * Determine the bounds of the children of this ElementRenderer
-	 * from the array of their bounds
+	 * in this ElementRenderer space
 	 */
 	private function getChildrenBounds(childrenBounds:Array<RectangleData>):RectangleData
 	{
@@ -539,7 +591,7 @@ class ElementRenderer extends Node
 					height :  bottom - top,
 				}
 				
-		//TODO : need to implement better fix,
+		//TODO 4 : need to implement better fix,
 		//sould not be negative
 		if (bounds.width < 0)
 		{
@@ -568,7 +620,7 @@ class ElementRenderer extends Node
 	 * The initial ElementRenderer will then layout itself, laying out
 	 * at the same time all its invalidated children.
 	 * 
-	 * TODO : shouldn't need to invalidate all of the rendering tree
+	 * TODO 2 : shouldn't need to invalidate all of the rendering tree
 	 * 
 	 * A layout can be immediate or scheduled asynchronously, which
 	 * increase preformance when many style value are set in a 
@@ -584,7 +636,7 @@ class ElementRenderer extends Node
 			//is not currently added to the DOM and doesn't require
 			//a layout
 			//
-			//TODO : shouldn't be possible anymore, when an HTMLElement is not
+			//TODO 3 : shouldn't be possible anymore, when an HTMLElement is not
 			//attached to the DOM, it doesn't create an ElementRenderer,
 			//only the initial ElementRenderer doesn't have a parent
 			if (this._parentNode != null)
@@ -702,16 +754,26 @@ class ElementRenderer extends Node
 		}
 	}
 	
-	//TODO 1 : doc
+	/**
+	 * Return the bounds of the ElementRenderer as they
+	 * need to be to compute the scrollable bounds of its
+	 * containing block
+	 * 
+	 * TODO 3 : should implement the case of absolutely 
+	 * positioned children
+	 */
 	private function get_scrollableBounds():RectangleData
 	{
+		//if the elementRenderer is not relatively positioned,
+		//the bounds are the same as the regular bounds
 		if (isRelativePositioned() == false)
 		{
 			return bounds;
 		}
 		
-		var relativeOffset:PointData = getRelativeOffset(this);
-		
+		//else the bounds with the relative offset applied to them
+		//are returned
+		var relativeOffset:PointData = getRelativeOffset();
 		var bounds:RectangleData = get_bounds();
 		
 		return {
@@ -720,46 +782,6 @@ class ElementRenderer extends Node
 			width: bounds.width,
 			height: bounds.height
 		};
-	}
-	
-	//TODO 1 : this is duplicated from LayerRenderer, should this method
-	//be here instead ?
-	private function getRelativeOffset(rootRenderer:ElementRenderer):PointData
-	{
-		var relativeOffset:PointData = { x:0.0, y:0.0 };
-		//if the root renderer is relatively positioned,
-		//then its offset must be applied to all of 
-		//its children
-		if (rootRenderer.isRelativePositioned() == true)
-		{
-			//first try to apply the left offset of the root renderer if it is
-			//not auto
-			if (rootRenderer.coreStyle.left != PositionOffset.cssAuto)
-			{
-				relativeOffset.x += rootRenderer.coreStyle.computedStyle.left;
-			}
-			//else the right offset,
-			else if (rootRenderer.coreStyle.right != PositionOffset.cssAuto)
-			{
-				relativeOffset.x -= rootRenderer.coreStyle.computedStyle.right;
-			}
-			
-			//if both left and right offset is auto, then the root renderer uses its static
-			//position (its normal position in the flow) and no offset needs to be applied
-			//to its children
-		
-			//same for vertical offset
-			if (rootRenderer.coreStyle.top != PositionOffset.cssAuto)
-			{
-				relativeOffset.y += rootRenderer.coreStyle.computedStyle.top; 
-			}
-			else if (rootRenderer.coreStyle.bottom != PositionOffset.cssAuto)
-			{
-				relativeOffset.y -= rootRenderer.coreStyle.computedStyle.bottom; 
-			}
-		}
-		
-		return relativeOffset;
 	}
 	
 	private function getComputedStyle():ComputedStyleData
@@ -878,7 +900,4 @@ class ElementRenderer extends Node
 	{
 		return bounds.height;
 	}
-	
-	
-	
 }
