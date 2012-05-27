@@ -71,7 +71,6 @@ class BlockFormattingContext extends FormattingContext
 					width:width,
 					height:height
 				}
-				
 				//for child with children of their own, their padding and margin are added at
 				//the beginning of the recursive method
 				if (child.hasChildNodes() == true)
@@ -157,6 +156,7 @@ class BlockFormattingContext extends FormattingContext
 						if (parentCollapsedMarginTop > marginTop)
 						{
 							marginTop = 0;
+							
 						}
 					}
 				}

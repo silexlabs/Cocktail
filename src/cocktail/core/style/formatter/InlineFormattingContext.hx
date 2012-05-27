@@ -986,7 +986,6 @@ class InlineFormattingContext extends FormattingContext
 			{
 				alignLineBoxesVertically(child, lineBoxAscent, formattingContextY, baselineOffset);
 			}
-
 			
 			if (child.establishesNewFormattingContext() == true || (child.elementRenderer.isReplaced() == true && child.elementRenderer.isText() == false))
 			{

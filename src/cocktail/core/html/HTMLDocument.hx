@@ -245,7 +245,7 @@ class HTMLDocument extends Document
 	public function onPlatformMouseMoveEvent(mouseEvent:MouseEvent):Void
 	{
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
-
+		
 		if (_hoveredElementRenderer != elementRendererAtPoint)
 		{
 			var mouseOutEvent:MouseEvent = new MouseEvent();
@@ -323,12 +323,18 @@ class HTMLDocument extends Document
 	 * Utils method returning the first ElementRenderer whose dom node
 	 * is an Element node. This is used when dispatching MouseEvent, as their target
 	 * can only be Element node.
-	 * 
-	 * TODO 2 : throw runtime exception when right mouse button is clicked
 	 */
 	private function getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent:MouseEvent):ElementRenderer
 	{
 		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
+		
+		
+		//TODO 2 : quick fix, when no element is under mouse, return the body,
+		//but is it supposed to be nul ever ? -> yes, when mouse leave document
+		if (elementRendererAtPoint == null)
+		{
+			return _body.elementRenderer;
+		}
 		
 		while (elementRendererAtPoint.node.nodeType != Node.ELEMENT_NODE)
 		{
