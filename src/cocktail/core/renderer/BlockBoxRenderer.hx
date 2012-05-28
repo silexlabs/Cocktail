@@ -22,6 +22,7 @@ import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 import cocktail.core.geom.GeomData;
 import haxe.Log;
+import flash.geom.Rectangle;
 
 /**
  * A block box renderer is an element which participate
@@ -229,7 +230,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//render all the line boxes belonging to this layer
 		renderLineBoxes(graphicContext, relativeOffset);
 		
-		_layerRenderer.clip(this);
+		clip();
 		//TODO 2 : scrollbar shouldn't need their own graphic context, should not be scrolled,
 		//like the fixed elements
 		renderScrollBars(graphicContext, relativeOffset);
@@ -454,6 +455,109 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			}
 		}
 		return ret;
+	}
+	
+	/////////////////////////////////
+	// PRIVATE VISUAL EFFECT METHODS
+	////////////////////////////////
+	
+	//TODO 1 : this logic should go into BlockBoxRenderer
+	private function clip():Void
+	{
+		
+			
+		#if (flash9 || nme)
+		
+			if (isXAxisClipped() == true && isYAxisClipped() == true)
+			{
+				_graphicsContext.x = globalBounds.x;
+				_graphicsContext.y = globalBounds.y;
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, globalBounds.width, globalBounds.height);
+
+			}
+			else if (isXAxisClipped() == true)
+			{
+				_graphicsContext.x = globalBounds.x;
+				_graphicsContext.y = globalBounds.y;
+				//TODO 2 : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, globalBounds.width, 10000);
+		
+			}
+			else if (isYAxisClipped() == true)
+			{
+				_graphicsContext.x = globalBounds.x;
+				_graphicsContext.y = globalBounds.y;
+				//TODO 2 : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, 10000, globalBounds.height);
+			}
+			else
+			{
+				_graphicsContext.scrollRect = null;
+			}
+			
+		#end	
+	}
+	
+	//TODO 1 : this logic should go into BlockBoxRenderer
+	private function scroll(x:Float, y:Float, rootElementRenderer:ElementRenderer, startedScroll:Bool = true):Void
+	{
+		
+		//TODO 1 IMPORTANT: big hack but will do for now
+		//TODO 1 : doesn't work for zindex auto positioned elements, as they don't
+		//have a graphic context of their own
+		//TODO 2 : should be applied to every positioned element whose
+		//containing block is a parent of the root renderer.
+		//Add a public method on ElementRenderer ?
+		if (rootElementRenderer.computedStyle.position == fixed)
+		{
+			#if (flash9 || nme)
+			_graphicsContext.y = y;
+			_graphicsContext.x = x;
+			#end
+		}
+		
+		if (startedScroll == false)
+		{
+			return;
+		}
+		
+		//TODO 1 : re-implement
+		//for (i in 0..._zeroOrAutoZIndexChildRenderers.length)
+		//{
+			//_zeroOrAutoZIndexChildRenderers[i].layerRenderer.scroll(x, y,_zeroOrAutoZIndexChildRenderers[i], false);
+		//}
+		//
+		//for (i in 0..._positiveZIndexChildRenderers.length)
+		//{
+			//_positiveZIndexChildRenderers[i].layerRenderer.scroll(x, y,_positiveZIndexChildRenderers[i], false);
+		//}
+		//
+		//for (i in 0..._negativeZIndexChildRenderers.length)
+		//{
+			//_negativeZIndexChildRenderers[i].layerRenderer.scroll(x, y,_negativeZIndexChildRenderers[i], false);
+		//}
+		
+		#if (flash9 || nme)
+		
+		_graphicsContext.x = rootElementRenderer.globalBounds.x;
+		_graphicsContext.y = rootElementRenderer.globalBounds.y;
+		
+		var width:Float;
+		var height:Float;
+		
+		if (_graphicsContext.scrollRect != null)
+		{
+			width = _graphicsContext.scrollRect.width;
+			height = _graphicsContext.scrollRect.height;
+		}
+		else
+		{
+			width =  rootElementRenderer.globalBounds.width;
+			height = rootElementRenderer.globalBounds.height;
+		}
+		
+		_graphicsContext.scrollRect = new Rectangle(x + rootElementRenderer.globalBounds.x, y + rootElementRenderer.globalBounds.y, width, height);
+		#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -695,7 +799,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			
 			if (isXAxisClipped() == true || isYAxisClipped() == true)
 			{
-				_layerRenderer.scroll(_scrollLeft, _scrollTop);
+				scroll(_scrollLeft, _scrollTop, this);
 			}
 			
 			if (_horizontalScrollBar != null)
@@ -791,7 +895,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//overflow
 		switch (_coreStyle.overflowX)
 		{
-			case scroll:
+			case Overflow.scroll:
 				attachHorizontalScrollBar();
 				
 			case hidden:
@@ -815,7 +919,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//overflow y
 		switch (_coreStyle.overflowY)
 		{
-			case scroll:
+			case Overflow.scroll:
 				attachVerticalScrollBar();
 				
 			case hidden:
