@@ -309,7 +309,7 @@ class ElementRenderer extends Node
 	 * Render this ElementRenderer using the provided
 	 * graphic context as canvas
 	 */
-	public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	public function render(parentGraphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		detach();
 	}
@@ -340,6 +340,7 @@ class ElementRenderer extends Node
 		//TODO 1 : quick fix, should be abstracted
 			for (i in 0..._graphicsContext.numChildren)
 			{
+				
 				_graphicsContext.removeChildAt(0);
 			}
 			

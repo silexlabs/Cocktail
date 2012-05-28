@@ -210,57 +210,54 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * 
 	 * TODO 1 :doc
 	 */
-	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	override public function render(parentGraphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		super.render(graphicContext, relativeOffset);
+		super.render(parentGraphicContext, relativeOffset);
 		
 		if (establishesNewStackingContext() == true)
 		{
-			_layerRenderer.renderNegativeChildElementRenderers(graphicContext, relativeOffset);
+			_layerRenderer.renderNegativeChildElementRenderers(_graphicsContext, relativeOffset);
 		
 		
 		//render all the block container children belonging to this layer
-		renderBlockContainerChildren(graphicContext, relativeOffset);
+		renderBlockContainerChildren(_graphicsContext, relativeOffset);
 		
 		//TODO 5 : render non-positioned float
 		
 		//render all the replaced (embedded) children displayed as blocks
-		renderBlockReplacedChildren(graphicContext, relativeOffset);
+		renderBlockReplacedChildren(_graphicsContext, relativeOffset);
 
 		//render all the line boxes belonging to this layer
-		renderLineBoxes(graphicContext, relativeOffset);
+		renderLineBoxes(_graphicsContext, relativeOffset);
 		
 		clip();
 		
 		//TODO 2 : scrollbar shouldn't need their own graphic context, should not be scrolled,
 		//like the fixed elements
-		renderScrollBars(graphicContext, relativeOffset);
-		
-		//TODO 2 : doc, this fix is here to prevent inlineBlock from rendering their
-		//child layers, maybe add a new "if(inlineblock)" instead but should also
-		//work for float -> now can use if establishesNewStackingContext
+		renderScrollBars(_graphicsContext, relativeOffset);
+	
 	
 			//render all the child layers with a z-index of 0
-			_layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext, relativeOffset);
-			_layerRenderer.renderPositiveChildElementRenderers(graphicContext, relativeOffset);
+			_layerRenderer.renderZeroAndAutoChildElementRenderers(_graphicsContext, relativeOffset);
+			_layerRenderer.renderPositiveChildElementRenderers(_graphicsContext, relativeOffset);
 		}
 		//TODO 1 : should find a common method for child which are rendered as if they started
 		//a new stacking context
 		else if (isAutoZIndexPositioned() == true || computedStyle.display == inlineBlock)
 		{
-			renderBlockContainerChildren(graphicContext, relativeOffset);
+			renderBlockContainerChildren(_graphicsContext, relativeOffset);
 		
 			//TODO 5 : render non-positioned float
 			
 			//render all the replaced (embedded) children displayed as blocks
-			renderBlockReplacedChildren(graphicContext, relativeOffset);
+			renderBlockReplacedChildren(_graphicsContext, relativeOffset);
 
 			//render all the line boxes belonging to this layer
-			renderLineBoxes(graphicContext, relativeOffset);
+			renderLineBoxes(_graphicsContext, relativeOffset);
 		}
 		
 		#if (flash9 || nme)
-		graphicContext.addChild(_graphicsContext);
+		parentGraphicContext.addChild(_graphicsContext);
 		#end
 	}
 	
