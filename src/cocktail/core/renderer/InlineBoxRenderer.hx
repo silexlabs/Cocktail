@@ -47,15 +47,15 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	{
 		if (establishesNewStackingContext() == true)
 		{
-			_layerRenderer.renderNegativeChildLayer(graphicContext, relativeOffset);
+			_layerRenderer.renderNegativeChildElementRenderers(graphicContext, relativeOffset);
 		}
 		
 		renderChildLineBoxes(graphicContext, relativeOffset);
 		
 		if (establishesNewStackingContext() == true)
 		{	
-			_layerRenderer.renderTreeOrderChildLayer(graphicContext, relativeOffset);
-			_layerRenderer.renderPositiveChildLayer(graphicContext, relativeOffset);
+			_layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext, relativeOffset);
+			_layerRenderer.renderPositiveChildElementRenderers(graphicContext, relativeOffset);
 		}
 		
 		
