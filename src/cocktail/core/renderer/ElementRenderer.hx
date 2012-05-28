@@ -414,7 +414,7 @@ class ElementRenderer extends Node
 			//if it does
 			if (_layerRenderer != null)
 			{
-				_layerRenderer.removeTreeOrderChildElementRenderer(this);
+				_layerRenderer.removeAutoZIndexChildElementRenderer(this);
 			}
 		}
 		
@@ -577,7 +577,7 @@ class ElementRenderer extends Node
 			//be rendered during its own rendering phase
 			if (isAutoZIndexPositioned() == true)
 			{
-				_layerRenderer.insertTreeOrderChildElementRenderer(this);
+				_layerRenderer.insertAutoZIndexChildElementRenderer(this);
 			}
 		}
 	}

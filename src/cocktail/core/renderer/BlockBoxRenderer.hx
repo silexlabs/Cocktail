@@ -216,7 +216,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (establishesNewStackingContext() == true)
 		{
-			_layerRenderer.renderNegativeChildLayer(graphicContext, relativeOffset);
+			_layerRenderer.renderNegativeChildElementRenderers(graphicContext, relativeOffset);
 		
 		
 		//render all the block container children belonging to this layer
@@ -241,8 +241,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//work for float -> now can use if establishesNewStackingContext
 	
 			//render all the child layers with a z-index of 0
-			_layerRenderer.renderTreeOrderChildLayer(graphicContext, relativeOffset);
-			_layerRenderer.renderPositiveChildLayer(graphicContext, relativeOffset);
+			_layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext, relativeOffset);
+			_layerRenderer.renderPositiveChildElementRenderers(graphicContext, relativeOffset);
 		}
 		//TODO 1 : should find a common method for child which are rendered as if they started
 		//a new stacking context
