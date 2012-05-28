@@ -187,6 +187,12 @@ class ElementRenderer extends Node
 	private var _hasOwnLayer:Bool;
 	
 	/**
+	 * A graphic context object onto which this ElementRenderer
+	 * is painted
+	 */
+	private var _graphicsContext:NativeElement;
+	
+	/**
 	 * Stores all of the value of styles once computed.
 	 * For example, if a size is set as a percentage, it will
 	 * be stored once computed to pixels into this structure
@@ -315,6 +321,27 @@ class ElementRenderer extends Node
 		//abstract
 	}
 	
+	//TODO 3 : should have an attach method ?
+	//TODO 2 : this detach method is not coherent with what does the
+	//ElementRenderer detach method
+	public function detach():Void
+	{
+		for (i in 0..._childNodes.length)
+		{
+			var child:LayerRenderer = cast(_childNodes[i]);
+		//	child.detach();
+		}
+		#if (flash9 || nme)
+		//TODO 1 : quick fix, should be abstracted
+			for (i in 0..._graphicsContext.numChildren)
+			{
+				_graphicsContext.removeChildAt(0);
+			}
+			
+		
+		#end	
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -367,7 +394,6 @@ class ElementRenderer extends Node
 		{
 			var parent:ElementRenderer = cast(_parentNode);
 			parent.layerRenderer.removeChild(_layerRenderer);
-			_layerRenderer.detach();
 			_hasOwnLayer = false;
 		}
 		//else if the ElementRenderer is both positioned and has an

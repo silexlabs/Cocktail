@@ -46,7 +46,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	}
 	
 
-	//TODO : shouldn't have to override this, should use other method, like
+	//TODO 2 : shouldn't have to override this, should use other method, like
 	//establishes new stacking context
 	override public function attachLayer():Void
 	{
@@ -59,6 +59,8 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		}
 	}
 	
+		//TODO 2 : shouldn't have to override this, should use other method, like
+	//establishes new stacking context
 	override public function detachLayer():Void
 	{
 		//first detach the LayerRenderer of all its children
@@ -72,10 +74,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		//created it, else it will be detached by the ElementRenderer
 		//which created it when detached
 
-		
-			
-			//TODO : should be called in LayerRenderer.removeChild ?
-			_layerRenderer.detach();
 			
 		
 		

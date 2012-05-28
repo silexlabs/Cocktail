@@ -44,18 +44,6 @@ class LayerRenderer extends Node
 	public var rootElementRenderer(get_rootElementRenderer, never):ElementRenderer;
 	
 	/**
-	 * A graphic context object onto which the rendered ElementRenderers
-	 * are painted
-	 */
-	private var _graphicsContext:NativeElement;
-	
-	/**
-	 * A graphic context only used for the scrollbars as they must always
-	 * be displayed on top of other rendered ElementRenderers
-	 */
-	private var _scrollBarsGraphicContext:NativeElement;
-	
-	/**
 	 * Holds a reference to all of the children of the root ElementRenderer
 	 * which also create a new LayerRenderer, and which have a z-index
 	 * computed value of 0 or auto, which means that they are rendered in tree
@@ -86,9 +74,6 @@ class LayerRenderer extends Node
 		super();
 		
 		_rootElementRenderer = rootElementRenderer;
-		_graphicsContext = new Sprite();
-		_scrollBarsGraphicContext = new Sprite();
-		
 		_zeroOrAutoZIndexChildRenderers = new Array<ElementRenderer>();
 		_positiveZIndexChildRenderers = new Array<ElementRenderer>();
 		_negativeZIndexChildRenderers = new Array<ElementRenderer>();
@@ -109,11 +94,6 @@ class LayerRenderer extends Node
 	 */
 	public function render(rootElementRenderer:ElementRenderer, parentGraphicsContext:NativeElement, parentRelativeOffset:PointData):Void
 	{
-		//TODO 1 : should happen in ElementRenderer
-		if (rootElementRenderer.establishesNewStackingContext() == true)
-		{
-			detach();
-		}
 		
 		var relativeOffset:PointData = rootElementRenderer.getRelativeOffset();
 		relativeOffset.x += parentRelativeOffset.x;
@@ -121,123 +101,18 @@ class LayerRenderer extends Node
 		
 		//TODO 1 : graphicContext should be owned by ElementRenderer, this method should
 		//pass parentGraphicContext to it
-		rootElementRenderer.render(_graphicsContext, relativeOffset);
+		//rootElementRenderer.render(_graphicsContext, relativeOffset);
 		
 
 		//TODO 1 : should happen in ElementRenderer
 		if (rootElementRenderer.establishesNewStackingContext() == true)
 		{
-			parentGraphicsContext.addChild(_graphicsContext);
-			parentGraphicsContext.addChild(_scrollBarsGraphicContext);
+			//parentGraphicsContext.addChild(_graphicsContext);
+			//parentGraphicsContext.addChild(_scrollBarsGraphicContext);
 		}
 	}
 	
-	/////////////////////////////////
-	// PUBLIC VISUAL EFFECT METHODS
-	////////////////////////////////
-	
-	//TODO 1 : this logic should go into BlockBoxRenderer
-	public function clip(blockBoxrootElementRenderer:BlockBoxRenderer):Void
-	{
-		
-			
-		#if (flash9 || nme)
-		
-			if (blockBoxrootElementRenderer.isXAxisClipped() == true && blockBoxrootElementRenderer.isYAxisClipped() == true)
-			{
-				_graphicsContext.x = _rootElementRenderer.globalBounds.x;
-				_graphicsContext.y = _rootElementRenderer.globalBounds.y;
-				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootElementRenderer.globalBounds.width, _rootElementRenderer.globalBounds.height);
 
-			}
-			else if (blockBoxrootElementRenderer.isXAxisClipped() == true)
-			{
-				_graphicsContext.x = _rootElementRenderer.globalBounds.x;
-				_graphicsContext.y = _rootElementRenderer.globalBounds.y;
-				//TODO 2 : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
-				_graphicsContext.scrollRect = new Rectangle(0 , 0, _rootElementRenderer.globalBounds.width, 10000);
-		
-			}
-			else if (blockBoxrootElementRenderer.isYAxisClipped() == true)
-			{
-				_graphicsContext.x = _rootElementRenderer.globalBounds.x;
-				_graphicsContext.y = _rootElementRenderer.globalBounds.y;
-				//TODO 2 : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
-				_graphicsContext.scrollRect = new Rectangle(0 , 0, 10000, _rootElementRenderer.globalBounds.height);
-			}
-			else
-			{
-				_graphicsContext.scrollRect = null;
-			}
-			
-		#end	
-	}
-	
-	//TODO 1 : this logic should go into BlockBoxRenderer
-	public function scroll(x:Float, y:Float, rootElementRenderer:ElementRenderer = null, startedScroll:Bool = true):Void
-	{
-		if (rootElementRenderer == null)
-		{
-			rootElementRenderer = _rootElementRenderer;
-		}
-		
-		//TODO 1 IMPORTANT: big hack but will do for now
-		//TODO 1 : doesn't work for zindex auto positioned elements, as they don't
-		//have a graphic context of their own
-		//TODO 2 : should be applied to every positioned element whose
-		//containing block is a parent of the root renderer.
-		//Add a public method on ElementRenderer ?
-		if (rootElementRenderer.computedStyle.position == fixed)
-		{
-			#if (flash9 || nme)
-			_graphicsContext.y = y;
-			_graphicsContext.x = x;
-			#end
-		}
-		
-		if (startedScroll == false)
-		{
-			return;
-		}
-		
-		
-		for (i in 0..._zeroOrAutoZIndexChildRenderers.length)
-		{
-			_zeroOrAutoZIndexChildRenderers[i].layerRenderer.scroll(x, y,_zeroOrAutoZIndexChildRenderers[i], false);
-		}
-		
-		for (i in 0..._positiveZIndexChildRenderers.length)
-		{
-			_positiveZIndexChildRenderers[i].layerRenderer.scroll(x, y,_positiveZIndexChildRenderers[i], false);
-		}
-		
-		for (i in 0..._negativeZIndexChildRenderers.length)
-		{
-			_negativeZIndexChildRenderers[i].layerRenderer.scroll(x, y,_negativeZIndexChildRenderers[i], false);
-		}
-		
-		#if (flash9 || nme)
-		
-		_graphicsContext.x = _rootElementRenderer.globalBounds.x;
-		_graphicsContext.y = _rootElementRenderer.globalBounds.y;
-		
-		var width:Float;
-		var height:Float;
-		
-		if (_graphicsContext.scrollRect != null)
-		{
-			width = _graphicsContext.scrollRect.width;
-			height = _graphicsContext.scrollRect.height;
-		}
-		else
-		{
-			width =  _rootElementRenderer.globalBounds.width;
-			height = _rootElementRenderer.globalBounds.height;
-		}
-		
-		_graphicsContext.scrollRect = new Rectangle(x + _rootElementRenderer.globalBounds.x, y + _rootElementRenderer.globalBounds.y, width, height);
-		#end
-	}
 	
 	/////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
@@ -292,29 +167,7 @@ class LayerRenderer extends Node
 	// PUBLIC LAYER TREE METHODS
 	////////////////////////////////
 	
-	//TODO 3 : should have an attach method ?
-	//TODO 2 : this detach method is not coherent with what does the
-	//ElementRenderer detach method
-	public function detach():Void
-	{
-		for (i in 0..._childNodes.length)
-		{
-			var child:LayerRenderer = cast(_childNodes[i]);
-			child.detach();
-		}
-		#if (flash9 || nme)
-		//TODO 1 : quick fix, should be abstracted
-			for (i in 0..._graphicsContext.numChildren)
-			{
-				_graphicsContext.removeChildAt(0);
-			}
-			
-			for (i in 0..._scrollBarsGraphicContext.numChildren)
-			{
-				_scrollBarsGraphicContext.removeChildAt(0);
-			}
-		#end	
-	}
+	
 	
 	//TODO 1 : shouldn't be called for scrollbars children but is it here that it should be checked for
 	//scrollbar or in scrollbar renderer ?
@@ -575,6 +428,9 @@ class LayerRenderer extends Node
 	/**
 	 * Retrieve all the children LayerRenderer of this LayerRenderer by traversing
 	 * recursively the rendering tree.
+	 * 
+	 * TODO 1 : should return concatenated child root renderer array
+	 * if kept
 	 */
 	private function getChildLayers():Array<LayerRenderer>
 	{
