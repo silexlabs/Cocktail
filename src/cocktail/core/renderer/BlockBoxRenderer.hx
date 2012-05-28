@@ -231,6 +231,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		renderLineBoxes(graphicContext, relativeOffset);
 		
 		clip();
+		
 		//TODO 2 : scrollbar shouldn't need their own graphic context, should not be scrolled,
 		//like the fixed elements
 		renderScrollBars(graphicContext, relativeOffset);
@@ -257,10 +258,14 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//render all the line boxes belonging to this layer
 			renderLineBoxes(graphicContext, relativeOffset);
 		}
+		
+		#if (flash9 || nme)
+		graphicContext.addChild(_graphicsContext);
+		#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC RENDERING METHODS
+	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -268,7 +273,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * the graphic context as canvas. A BlockBoxRenderer can only have
 	 * LineBoxes if it establishes an inline formatting context
 	 */
-	public function renderLineBoxes(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderLineBoxes(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		//retrieve all the line boxes in all of the lines generated in this BlockBoxRenderer
 		var lineBoxes:Array<LineBox> = getChilrenLineBoxes(this, _layerRenderer);
@@ -276,16 +281,20 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//loop in all of the lineboxes
 		for (i in 0...lineBoxes.length)
 		{
-			if (lineBoxes[i].establishesNewFormattingContext() == false)
-			{
-				lineBoxes[i].render(graphicContext, relativeOffset);
-			}
+			lineBoxes[i].render(graphicContext, relativeOffset);
+			
+			//TODO 1 : re-implement this logic in render()
+			
+			//if (lineBoxes[i].establishesNewFormattingContext() == false)
+			//{
+				//
+			//}
 			//if the line box establishes a new formatting context, it is displayed as an inline-block
 			//which are rendered as if they started a new layerRenderer themselves
-			else
-			{	
-				lineBoxes[i].layerRenderer.render(lineBoxes[i].elementRenderer, graphicContext, relativeOffset);
-			}
+			//else
+			//{	
+				//lineBoxes[i].layerRenderer.render(lineBoxes[i].elementRenderer, graphicContext, relativeOffset);
+			//}
 		}
 		
 	}
@@ -294,7 +303,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Render the replaced children of this BlockBoxRenderer which are displayed as blocks, such
 	 * as an HTMLImageElement with a display style of 'block'
 	 */
-	public function renderBlockReplacedChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderBlockReplacedChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this, _layerRenderer);
 		for (i in 0...childrenBlockReplaced.length)
@@ -306,7 +315,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	/**
 	 * Render all the block children of this BlockBoxRenderer
 	 */
-	public function renderBlockContainerChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderBlockContainerChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(this, _layerRenderer);
 
@@ -319,27 +328,22 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	/**
 	 * Render the scrollbars of this BlockBoxRenderer as needed
 	 */
-	public function renderScrollBars(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderScrollBars(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		
 		if (_horizontalScrollBar != null)
 		{
-			_horizontalScrollBar.elementRenderer.layerRenderer.render(_horizontalScrollBar.elementRenderer, graphicContext, relativeOffset);
+			_horizontalScrollBar.elementRenderer.render(graphicContext, relativeOffset);
 			updateScroll();
 
 		}
 		
 		if (_verticalScrollBar != null)
 		{
-			_verticalScrollBar.elementRenderer.layerRenderer.render(_verticalScrollBar.elementRenderer, graphicContext, relativeOffset);
+			_verticalScrollBar.elementRenderer.render(graphicContext, relativeOffset);
 			updateScroll();
 		}
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	
 	/**
 	 * Return all the in line boxes of this BlockBoxRenderer, by traversing
@@ -632,61 +636,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC SCROLLING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Determine wheter the x axis of this BlockBoxRenderer
-	 * is clipped to its width
-	 */
-	public function isXAxisClipped():Bool
-	{
-		switch (computedStyle.overflowX)
-		{
-			case Overflow.hidden,
-			Overflow.scroll:
-				return true;
-				
-			//when overflow is auto, the x axis is only
-			//clipped if a scrollbar was attached
-			case Overflow.cssAuto:
-				return _horizontalScrollBar != null;
-				
-			case Overflow.visible:
-				if (treatVisibleOverflowAsAuto() == true)
-				{
-					return _horizontalScrollBar != null;
-				}
-				return false;
-		}
-	}
-	
-	/**
-	 * Determine wheter the y axis of this BlockBoxRenderer
-	 * is clipped to its height
-	 */
-	public function isYAxisClipped():Bool
-	{
-		switch (computedStyle.overflowY)
-		{
-			case Overflow.hidden,
-			Overflow.scroll:
-				return true;
-				
-			case Overflow.cssAuto:
-				return _verticalScrollBar != null;
-				
-			case Overflow.visible:
-				if (treatVisibleOverflowAsAuto() == true)
-				{
-					return _verticalScrollBar != null;
-				}
-				return false;
-		}
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SCROLLING GETTERS/SETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -781,6 +730,56 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE SCROLLING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Determine wheter the x axis of this BlockBoxRenderer
+	 * is clipped to its width
+	 */
+	private function isXAxisClipped():Bool
+	{
+		switch (computedStyle.overflowX)
+		{
+			case Overflow.hidden,
+			Overflow.scroll:
+				return true;
+				
+			//when overflow is auto, the x axis is only
+			//clipped if a scrollbar was attached
+			case Overflow.cssAuto:
+				return _horizontalScrollBar != null;
+				
+			case Overflow.visible:
+				if (treatVisibleOverflowAsAuto() == true)
+				{
+					return _horizontalScrollBar != null;
+				}
+				return false;
+		}
+	}
+	
+	/**
+	 * Determine wheter the y axis of this BlockBoxRenderer
+	 * is clipped to its height
+	 */
+	private function isYAxisClipped():Bool
+	{
+		switch (computedStyle.overflowY)
+		{
+			case Overflow.hidden,
+			Overflow.scroll:
+				return true;
+				
+			case Overflow.cssAuto:
+				return _verticalScrollBar != null;
+				
+			case Overflow.visible:
+				if (treatVisibleOverflowAsAuto() == true)
+				{
+					return _verticalScrollBar != null;
+				}
+				return false;
+		}
+	}
 	
 	/**
 	 * When a scroll value changes, update the rendering
