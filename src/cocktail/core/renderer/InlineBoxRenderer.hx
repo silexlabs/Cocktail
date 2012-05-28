@@ -43,20 +43,26 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 * 
 	 * TODO 1 : doc
 	 */
-	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	override public function render(parentGraphicContext:NativeElement, relativeOffset:PointData):Void
 	{
+		super.render(parentGraphicContext, relativeOffset);
+		
 		if (establishesNewStackingContext() == true)
 		{
-			_layerRenderer.renderNegativeChildElementRenderers(graphicContext, relativeOffset);
+			_layerRenderer.renderNegativeChildElementRenderers(_graphicsContext, relativeOffset);
 		}
 		
-		renderChildLineBoxes(graphicContext, relativeOffset);
+		renderChildLineBoxes(_graphicsContext, relativeOffset);
 		
 		if (establishesNewStackingContext() == true)
 		{	
-			_layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext, relativeOffset);
-			_layerRenderer.renderPositiveChildElementRenderers(graphicContext, relativeOffset);
+			_layerRenderer.renderZeroAndAutoChildElementRenderers(_graphicsContext, relativeOffset);
+			_layerRenderer.renderPositiveChildElementRenderers(_graphicsContext, relativeOffset);
 		}
+		
+		#if (flash9 || nme)
+		parentGraphicContext.addChild(_graphicsContext);
+		#end
 		
 		
 	}

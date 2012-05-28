@@ -62,9 +62,10 @@ class BoxRenderer extends ElementRenderer
 	 * TODO 5 : apply transformations, opacity
 	 * TODO 4 : apply visibility
 	 */
-	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	override public function render(parentGraphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		renderBackground(graphicContext, relativeOffset);
+		super.render(parentGraphicContext, relativeOffset);
+		renderBackground(_graphicsContext, relativeOffset);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

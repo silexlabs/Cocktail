@@ -151,7 +151,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */ 
 	private function startRendering():Void
 	{
-		trace("start rendering");
 		#if (flash9 || nme)
 		
 		//start the rendering at the root layer renderer
