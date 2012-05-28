@@ -16,6 +16,7 @@ import cocktail.core.style.CoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
+import flash.display.Sprite;
 import haxe.Timer;
 
 
@@ -234,6 +235,10 @@ class ElementRenderer extends Node
 
 		_node = node;
 		
+		#if (flash9 || nme)
+		_graphicsContext = new Sprite();
+		#end
+		
 		_isLayingOut = false;
 		_hasOwnLayer = false;
 		
@@ -306,7 +311,7 @@ class ElementRenderer extends Node
 	 */
 	public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		//abstract
+		detach();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -328,8 +333,8 @@ class ElementRenderer extends Node
 	{
 		for (i in 0..._childNodes.length)
 		{
-			var child:LayerRenderer = cast(_childNodes[i]);
-		//	child.detach();
+			var child:ElementRenderer = cast(_childNodes[i]);
+			child.detach();
 		}
 		#if (flash9 || nme)
 		//TODO 1 : quick fix, should be abstracted

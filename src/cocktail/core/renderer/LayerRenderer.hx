@@ -13,8 +13,6 @@ import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
-import flash.display.Sprite;
-import flash.geom.Rectangle;
 import haxe.Log;
 
 /**
@@ -78,41 +76,6 @@ class LayerRenderer extends Node
 		_positiveZIndexChildRenderers = new Array<ElementRenderer>();
 		_negativeZIndexChildRenderers = new Array<ElementRenderer>();
 	}
-	
-	/////////////////////////////////
-	// PUBLIC RENDERING METHODS
-	////////////////////////////////
-	
-	/**
-	 * Main rendering method. Starts from the root element renderer which created this
-	 * LayerRenderer and apply the rendering phases defined here : 
-	 * http://www.w3.org/TR/CSS2/zindex.html
-	 *
-	 * This method determine the rendering phases to perform based on the
-	 * type of root element renderer. for instance a block box element renderer and an
-	 * embedded element renderer won't require the same rendering steps
-	 */
-	public function render(rootElementRenderer:ElementRenderer, parentGraphicsContext:NativeElement, parentRelativeOffset:PointData):Void
-	{
-		
-		var relativeOffset:PointData = rootElementRenderer.getRelativeOffset();
-		relativeOffset.x += parentRelativeOffset.x;
-		relativeOffset.y += parentRelativeOffset.y;
-		
-		//TODO 1 : graphicContext should be owned by ElementRenderer, this method should
-		//pass parentGraphicContext to it
-		//rootElementRenderer.render(_graphicsContext, relativeOffset);
-		
-
-		//TODO 1 : should happen in ElementRenderer
-		if (rootElementRenderer.establishesNewStackingContext() == true)
-		{
-			//parentGraphicsContext.addChild(_graphicsContext);
-			//parentGraphicsContext.addChild(_scrollBarsGraphicContext);
-		}
-	}
-	
-
 	
 	/////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
@@ -421,7 +384,7 @@ class LayerRenderer extends Node
 	{
 		for (i in 0...layers.length)
 		{
-			layers[i].layerRenderer.render(layers[i], graphicContext, relativeOffset);
+			layers[i].render(graphicContext, relativeOffset);
 		}
 	}
 	
