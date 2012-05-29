@@ -170,7 +170,7 @@ class HTMLDocument extends Document
 	
 	/**
 	 * When a mouse wheel event occurs first dispatch it, and
-	 * if the default actin wasn't prevented, vertically scroll
+	 * if the default action wasn't prevented, vertically scroll
 	 * the first vertically scrollable parent of the event target
 	 */
 	public function onPlatformMouseWheelEvent(wheelEvent:WheelEvent):Void

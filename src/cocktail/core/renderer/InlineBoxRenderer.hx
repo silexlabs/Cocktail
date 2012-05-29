@@ -40,18 +40,20 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	/**
 	 * Overriden as rendering an inline box renderer consist in rendering all of the 
 	 * line boxes it generated
-	 * 
-	 * TODO 1 : doc
 	 */
 	override public function render(parentGraphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		super.render(parentGraphicContext, relativeOffset);
+		//first detach all previously added children
+		detach();
 		
+		//render negative z-index LayerRenderer
 		if (establishesNewStackingContext() == true)
 		{
 			_layerRenderer.renderNegativeChildElementRenderers(_graphicsContext, relativeOffset);
 		}
 		
+		//render all the child line boxes which belong to the same
+		//stacking context as this InlineBoxRenderer
 		renderChildLineBoxes(_graphicsContext, relativeOffset);
 		
 		if (establishesNewStackingContext() == true)
@@ -67,6 +69,13 @@ class InlineBoxRenderer extends FlowBoxRenderer
 		
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Actually render the child line boxes
+	 */
 	private function renderChildLineBoxes(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		for (i in 0..._lineBoxes.length)
@@ -88,7 +97,7 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overirden as the bounds of an inline box renderer is formed
+	 * Overriden as the bounds of an inline box renderer is formed
 	 * by the bounds of all of the line boxes it creates during
 	 * formatting
 	 */
