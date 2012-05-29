@@ -546,6 +546,20 @@ class ElementRenderer extends Node
 	////////////////////////////////
 	
 	/**
+	 * Determine wether this ElementRenderer is rendered
+	 * as if it started a stacking context itself. 
+	 * 
+	 * For instance, an ElementRenderer which doesn't start
+	 * a stacking context but as a display of inline-block is rendered
+	 * as if it established a new stacking context, but it won't try
+	 * to render the child layers of its LayerRenderer.
+	 */
+	private function rendersAsIfEstablishingStackingContext():Bool
+	{
+		return false;
+	}
+	
+	/**
 	 * Determine wether this ElementRenderer is 
 	 * both positioned and has an 'auto' z-index value,
 	 * which influence the rendering order of its
