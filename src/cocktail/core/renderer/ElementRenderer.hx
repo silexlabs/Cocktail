@@ -332,23 +332,11 @@ class ElementRenderer extends Node
 	 */
 	public function clear():Void
 	{
-		//TODO 2 : not necessary anymore as only 
-		//cleaning method for graphic context ?
-		
-		//for (i in 0..._childNodes.length)
-		//{
-			//var child:ElementRenderer = cast(_childNodes[i]);
-			//child.clear();
-		//}
 		#if (flash9 || nme)
-		//TODO 1 : quick fix, should be abstracted
 			for (i in 0..._graphicsContext.numChildren)
 			{
-				
 				_graphicsContext.removeChildAt(0);
 			}
-			
-		
 		#end	
 	}
 	

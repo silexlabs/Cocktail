@@ -494,6 +494,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		#end	
 	}
 	
+	//TODO 1 : this method should be called in each render() method, if the ElementRenderer
+	//is a BlockBoxRenderer call this, else check if scroll offset must be removed, like for 
+	//fixed elements. Method Render should have additional scrollOffset arg
 	private function scroll(x:Float, y:Float, rootElementRenderer:ElementRenderer, startedScroll:Bool = true):Void
 	{
 		
