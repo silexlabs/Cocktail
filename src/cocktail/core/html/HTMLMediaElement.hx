@@ -212,6 +212,8 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private var _currentPlaybackPosition:Float;
 	
+	private var _autoplaying:Bool;
+	
 	/**
 	 * class constructor
 	 */
@@ -228,19 +230,69 @@ class HTMLMediaElement extends EmbeddedElement
 	 * Sets the paused attribute to false, loading the media resource
 	 * and beginning playback if necessary.
 	 * If the playback had ended, will restart it from the start.
+	 * 
+	 * this method is an implementation of the following algorithm :
+	 * http://www.w3.org/TR/2012/WD-html5-20120329/media-elements.html#dom-media-play
+	 * 
+	 * TODO 2 incomplete implementation
 	 */
 	public function play():Void
 	{
+		if (_networkState == NETWORK_EMPTY)
+		{
+			selectResource();
+		}
 		
+		if (_ended == true)
+		{
+			seek(0);
+		}
+		
+		if (_paused == true)
+		{
+			_paused = false;
+			
+			//TODO 1 : Queue a task to fire a simple event named play at the element.
+			
+			switch (_readyState)
+			{
+				case HAVE_NOTHING, HAVE_METADATA, HAVE_CURRENT_DATA:
+					//TODO 1 :  fire a simple event named waiting at the element.
+					
+				case HAVE_FUTURE_DATA, HAVE_ENOUGH_DATA:
+					//TODO 1 :  fire a simple event named playing at the element.
+			}
+		}
+		
+		_autoplaying = false;
 	}
 	
 	/**
 	 * Sets the paused attribute to true, 
 	 * loading the media resource if necessary.
+	 * 
+	 * this method is an implementation of the following algorithm :
+	 * http://www.w3.org/TR/2012/WD-html5-20120329/media-elements.html#dom-media-pause
 	 */
 	public function pause():Void
 	{
+		if (_networkState == NETWORK_EMPTY)
+		{
+			selectResource();
+		}
 		
+		_autoplaying = false;
+		
+		if (_paused == false)
+		{
+			_paused = true;
+			
+			//TODO 1 : Queue a task to fire a simple event named timeupdate at the element.
+			
+			//TODO 1 : Queue a task to fire a simple event named pause at the element.
+			
+			_officialPlaybackPosition = _currentPlaybackPosition;
+		}
 	}
 	
 	/////////////////////////////////
