@@ -32,7 +32,6 @@ import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.renderer.EmbeddedBoxRenderer;
 import cocktail.core.renderer.LayerRenderer;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.font.FontData;
@@ -262,13 +261,13 @@ class CoreStyle
 	{
 		initComputedStyles();
 		
-		_width = Dimension.cssAuto;
-		_height = Dimension.cssAuto;
+		_width = getWidthDefaultValue();
+		_height = getHeightDefaultValue();
 		
-		_minWidth = ConstrainedDimension.length(px(0));
-		_maxWidth = ConstrainedDimension.none;
-		_minHeight = ConstrainedDimension.length(px(0));
-		_maxHeight = ConstrainedDimension.none;
+		_minWidth = getMinWidthDefaultValue();
+		_maxWidth = getMaxWidthDefaultValue();
+		_minHeight = getMinHeightDefaultValue();
+		_maxHeight = getMaxHeightDefaultValue();
 		
 		_marginTop = Margin.length(px(0));
 		_marginBottom = Margin.length(px(0));
@@ -529,7 +528,74 @@ class CoreStyle
 				_verticalAlign = VerticalAlign.cssSuper;
 		}
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC STATIC DEFAULT STYLES METHODS
+	// Those methods returns the default value for each CSS style
+	//////////////////////////////////////////////////////////////////////////////////////////
 
+	//TODO 2 : need to complete this and complete default styles in UnitManager
+	
+	public static function getBackgroundColorDefaultValue():BackgroundColor
+	{
+		return BackgroundColor.transparent;
+	}
+	
+	public static function getDisplayDefaultValue():Display
+	{
+		return Display.cssInline;
+	}
+	
+	public static function getPositionDefaultValue():Position
+	{
+		return Position.cssStatic;
+	}
+	
+	public static function getWidthDefaultValue():Dimension
+	{
+		return Dimension.cssAuto;
+	}
+	
+	public static function getHeightDefaultValue():Dimension
+	{
+		return Dimension.cssAuto;
+	}
+	
+	public static function getMinHeightDefaultValue():ConstrainedDimension
+	{
+		return ConstrainedDimension.length(px(0));
+	}
+	
+	public static function getMinWidthDefaultValue():ConstrainedDimension
+	{
+		return ConstrainedDimension.length(px(0));
+	}
+	
+	public static function getMaxWidthDefaultValue():ConstrainedDimension
+	{
+		return ConstrainedDimension.none;
+	}
+	
+	public static function getMaxHeightDefaultValue():ConstrainedDimension
+	{
+		return ConstrainedDimension.none;
+	}
+	
+	public static function getMarginDefaultValue():Margin
+	{
+		return Margin.length(px(0));
+	}
+	
+	public static function getPaddingDefaultValue():Padding
+	{
+		return Padding.length(px(0));
+	}
+	
+	public static function getLineHeightDefaultValue():LineHeight
+	{
+		return LineHeight.normal;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC COMPUTING METHODS
 	// compute styles definition into usable values

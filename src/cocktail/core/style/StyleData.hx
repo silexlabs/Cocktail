@@ -80,6 +80,7 @@ import cocktail.core.renderer.TextRenderer;
 	enum FontStyle {
 		normal;
 		italic;
+		oblique;
 	}
 	
 	/**

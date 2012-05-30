@@ -60,17 +60,22 @@ class RootLineBox extends LineBox
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
 			
-			lineBoxesBounds.push(child.bounds);
-
-
-			if (child.hasChildNodes() == true)
+			//absolutely positioned line box are not used to compute the
+			//bounds of the root line box
+			if (child.isAbsolutelyPositioned() == false)
 			{
-				var childrenBounds:Array<RectangleData> = getLineBoxesBounds(child);
-				for (j in 0...childrenBounds.length)
+				lineBoxesBounds.push(child.bounds);
+				
+				if (child.hasChildNodes() == true)
 				{
-					lineBoxesBounds.push(childrenBounds[j]);
+					var childrenBounds:Array<RectangleData> = getLineBoxesBounds(child);
+					for (j in 0...childrenBounds.length)
+					{
+						lineBoxesBounds.push(childrenBounds[j]);
+					}
 				}
 			}
+			
 		}
 		
 		return lineBoxesBounds;

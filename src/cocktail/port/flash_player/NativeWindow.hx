@@ -29,6 +29,10 @@ class NativeWindow extends AbstractNativeWindow
 	public function new() 
 	{
 		super();
+		
+		//in Flash, the Stage is always defined as no scale as the transformations
+		//will be managed by Cocktail
+		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

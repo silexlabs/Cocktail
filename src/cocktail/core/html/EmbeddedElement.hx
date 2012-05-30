@@ -174,13 +174,15 @@ class EmbeddedElement extends HTMLElement
 	
 	private function set_width(value:Int):Int
 	{
-		setAttribute(HTML_WIDTH_ATTRIBUTE, Std.string(value));
+		//TODO 3 : messy to call super here but else infinite loop
+		super.setAttribute(HTML_WIDTH_ATTRIBUTE, Std.string(value));
 		return value;
 	}
 	
 	private function get_width():Int
 	{
-		var width:String = getAttribute(HTML_WIDTH_ATTRIBUTE);
+		//TODO 3 : messy to call super here but else infinite loop
+		var width:String = super.getAttribute(HTML_WIDTH_ATTRIBUTE);
 		if (width == "")
 		{
 			return 0;
@@ -193,14 +195,16 @@ class EmbeddedElement extends HTMLElement
 	
 	private function set_height(value:Int):Int
 	{
-		setAttribute(HTML_HEIGHT_ATTRIBUTE, Std.string(value));
+		//TODO 3 : messy to call super here but else infinite loop
+		super.setAttribute(HTML_HEIGHT_ATTRIBUTE, Std.string(value));
 		return value;
 	}
 	
 	private function get_height():Int
 	{
-		var height:String = getAttribute(HTML_HEIGHT_ATTRIBUTE);
-		if (height == "")
+		//TODO 3 : messy to call super here but else infinite loop
+		var height:String = super.getAttribute(HTML_HEIGHT_ATTRIBUTE);
+		if (height == null)
 		{
 			return 0;
 		}

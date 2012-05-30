@@ -186,7 +186,7 @@ class FontManager extends AbstractFontManager
 		//otherwise, when creating only a space character, no
 		//flash text line would be created
 		//
-		//TODO : this method shouldn't be called for space charachter
+		//TODO 4 : this method shouldn't be called for space charachter
 		var text:TextLine = textBlock.createTextLine(null, 10000, 0.0, true);
 		
 		//help free memory
@@ -298,7 +298,7 @@ class FontManager extends AbstractFontManager
 			case normal:
 				nativeFontPosture = FontPosture.NORMAL;
 				
-			case italic:
+			case italic, oblique:
 				nativeFontPosture = FontPosture.ITALIC;
 		}
 		

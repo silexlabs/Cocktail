@@ -61,6 +61,13 @@ class HTMLDocument extends Document
 	private static inline var SPACE_KEY_CODE:Int = 32;
 	
 	/**
+	 * A coefficient to apply to apply to the mouse
+	 * wheel delta to get the right scroll amount, based
+	 * on Windows implementation
+	 */
+	private static inline var MOUSE_WHEEL_DELTA_MULTIPLIER:Int = 10;
+	
+	/**
 	 * The element that contains the content for the document.
 	 * 
 	 * The body is the root of the visual content in HTML
@@ -170,7 +177,7 @@ class HTMLDocument extends Document
 	
 	/**
 	 * When a mouse wheel event occurs first dispatch it, and
-	 * if the default actin wasn't prevented, vertically scroll
+	 * if the default action wasn't prevented, vertically scroll
 	 * the first vertically scrollable parent of the event target
 	 */
 	public function onPlatformMouseWheelEvent(wheelEvent:WheelEvent):Void
@@ -183,8 +190,7 @@ class HTMLDocument extends Document
 			var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
 			
 			//get the amount of vertical scrolling to apply in pixel
-			//TODO 4 : for now mulitplier hard coded
-			var scrollOffset:Int = Math.round(wheelEvent.deltaY * 14) ;
+			var scrollOffset:Int = Math.round(wheelEvent.deltaY * MOUSE_WHEEL_DELTA_MULTIPLIER) ;
 			
 			//get the first ancestor which can be vertically scrolled
 			var scrollableHTMLElement:HTMLElement = getFirstVerticallyScrollableHTMLElement(htmlElement, scrollOffset);
@@ -245,7 +251,7 @@ class HTMLDocument extends Document
 	public function onPlatformMouseMoveEvent(mouseEvent:MouseEvent):Void
 	{
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
-
+		
 		if (_hoveredElementRenderer != elementRendererAtPoint)
 		{
 			var mouseOutEvent:MouseEvent = new MouseEvent();
@@ -323,12 +329,18 @@ class HTMLDocument extends Document
 	 * Utils method returning the first ElementRenderer whose dom node
 	 * is an Element node. This is used when dispatching MouseEvent, as their target
 	 * can only be Element node.
-	 * 
-	 * TODO 2 : throw runtime exception when right mouse button is clicked
 	 */
 	private function getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent:MouseEvent):ElementRenderer
 	{
 		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
+		
+		
+		//TODO 2 : quick fix, when no element is under mouse, return the body,
+		//but is it supposed to be nul ever ? -> yes, when mouse leave document
+		if (elementRendererAtPoint == null)
+		{
+			return _body.elementRenderer;
+		}
 		
 		while (elementRendererAtPoint.node.nodeType != Node.ELEMENT_NODE)
 		{

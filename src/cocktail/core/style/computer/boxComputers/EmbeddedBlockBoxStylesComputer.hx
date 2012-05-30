@@ -59,8 +59,16 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		
 		var embeddedHTMLElement:EmbeddedElement = cast(style.htmlElement);
 		
+		//first try to use the HTML width attribute if it was specified
+		//for the embedded HTMLElement
+		//TODO 1 : this is not how it is supposed to work, should only try HTML width attribute
+		//if width style is not specified. Must correct once cascading is implemented
+		if (embeddedHTMLElement.getAttributeNode("width") != null)
+		{
+			ret = embeddedHTMLElement.width;
+		}
 		//if the 'height' style also is defined as 'auto'
-		if (style.height == Dimension.cssAuto)
+		else if (style.height == Dimension.cssAuto)
 		{
 			//first try to use the intrinsic width of the embedded
 			//HTMLElement if it exist (it might for instance be a
@@ -141,13 +149,20 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		//applied to multiple HTMLElement ?
 		var embeddedHTMLElement:EmbeddedElement = cast(style.htmlElement);
 		
-		//if the 'width' style is also set to 'auto'
-		if (style.width == Dimension.cssAuto)
+		//first try to use the HTML height attribute if it was specified
+		//for the embedded HTMLElement
+		//TODO 1 : this is not how it is supposed to work, should only try HTML height attribute
+		//if height style is not specified. Must correct once cascading is implemented
+		if (embeddedHTMLElement.getAttributeNode("height") != null)
 		{
-			//first try to use the intrinsic height of the embedded
+			ret = embeddedHTMLElement.height;
+		}
+		//if the 'width' style is also set to 'auto'
+		else if (style.width == Dimension.cssAuto)
+		{
+			//try to use the intrinsic height of the embedded
 			//HTMLElement if it exist (it might for instance be a
 			//picture width for an ImageHTMLElement)
-			
 			if (embeddedHTMLElement.intrinsicHeight != null)
 			{
 				ret = embeddedHTMLElement.intrinsicHeight;
