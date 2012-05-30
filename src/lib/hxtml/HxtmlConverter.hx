@@ -1,10 +1,10 @@
-package cocktail.core.hxtml;
+package lib.hxtml;
 
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 
 //TODO 1 : lib shouldn't be in another classpath
-import hxtml.Browser;
+import lib.hxtml.Browser;
 import cocktail.Lib;
 import cocktail.Dom;
 
@@ -60,7 +60,7 @@ class HxtmlConverter
  * Implementation of a IStyleProxy
  * This is where we apply the CSS Styles to our custom DOM 
  */
-class StyleProxy implements hxtml.IStyleProxy<Node>
+class StyleProxy implements lib.hxtml.IStyleProxy<Node>
 {
 	public function new(){}
 	
