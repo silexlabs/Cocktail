@@ -192,9 +192,6 @@ class LayerRenderer extends Node
 	// PUBLIC LAYER TREE METHODS
 	////////////////////////////////
 	
-	//TODO 1 : shouldn't be called for scrollbars children but is it here that it should be checked for
-	//scrollbar or in scrollbar renderer ? -> most likely in scrollbar renderer
-	
 	/**
 	 * Utils method used by ElementRenderer to register themselves when they have a z-index of
 	 * 'auto'. Stores them in the zero and auto child root ElementRenderer array.

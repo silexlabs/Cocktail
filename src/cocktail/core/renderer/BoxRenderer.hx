@@ -62,9 +62,12 @@ class BoxRenderer extends ElementRenderer
 	 * TODO 5 : apply transformations, opacity
 	 * TODO 4 : apply visibility
 	 */
-	override public function render(parentGraphicContext:NativeElement, relativeOffset:PointData):Void
+	override public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
 	{
-		super.render(parentGraphicContext, relativeOffset);
+		super.render(parentGraphicContext, parentRelativeOffset);
+		//get the relative offset of this ElementRenderer and add it to
+		//its parent
+		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
 		renderBackground(_graphicsContext, relativeOffset);
 	}
 	
@@ -83,7 +86,7 @@ class BoxRenderer extends ElementRenderer
 		
 		//TODO 3 : should only pass dimensions instead of bounds
 		var backgrounds:Array<NativeElement> = backgroundManager.render(bounds, _coreStyle);
-		
+
 		for (i in 0...backgrounds.length)
 		{
 			#if (flash9 || nme)

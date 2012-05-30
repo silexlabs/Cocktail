@@ -34,7 +34,7 @@ class BlockFormattingContext extends FormattingContext
 		super(formattingContextRoot);
 	}
 	
-	//TODO : should not be 2 methods
+	//TODO 3 : should not be 2 methods
 	override private function doFormat(staticPositionedElement:ElementRenderer = null):Void
 	{
 		//remove margin of formatting context, as child must be placed relative to padding box

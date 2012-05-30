@@ -41,10 +41,12 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 * Overriden as rendering an inline box renderer consist in rendering all of the 
 	 * line boxes it generated
 	 */
-	override public function render(parentGraphicContext:NativeElement, relativeOffset:PointData):Void
+	override public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
 	{
-		//first detach all previously added children
-		detach();
+		//first clear the graphics context
+		clear();
+		
+		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
 		
 		//render negative z-index LayerRenderer
 		if (establishesNewStackingContext() == true)

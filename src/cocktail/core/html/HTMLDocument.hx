@@ -61,6 +61,13 @@ class HTMLDocument extends Document
 	private static inline var SPACE_KEY_CODE:Int = 32;
 	
 	/**
+	 * A coefficient to apply to apply to the mouse
+	 * wheel delta to get the right scroll amount, based
+	 * on Windows implementation
+	 */
+	private static inline var MOUSE_WHEEL_DELTA_MULTIPLIER:Int = 10;
+	
+	/**
 	 * The element that contains the content for the document.
 	 * 
 	 * The body is the root of the visual content in HTML
@@ -183,8 +190,7 @@ class HTMLDocument extends Document
 			var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
 			
 			//get the amount of vertical scrolling to apply in pixel
-			//TODO 4 : for now mulitplier hard coded
-			var scrollOffset:Int = Math.round(wheelEvent.deltaY * 14) ;
+			var scrollOffset:Int = Math.round(wheelEvent.deltaY * MOUSE_WHEEL_DELTA_MULTIPLIER) ;
 			
 			//get the first ancestor which can be vertically scrolled
 			var scrollableHTMLElement:HTMLElement = getFirstVerticallyScrollableHTMLElement(htmlElement, scrollOffset);
