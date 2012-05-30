@@ -1,4 +1,4 @@
-package hxtml;
+package lib.hxtml;
 
 //TODO : add mmethod for property who can take a "0" length value, like width or height
 interface IStyleProxy<DisplayObjectType>
