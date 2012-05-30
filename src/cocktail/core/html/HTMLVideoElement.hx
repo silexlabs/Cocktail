@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
+import cocktail.port.NativeVideo;
 
 /**
  * A video element is used for playing videos or movies.
@@ -35,6 +36,8 @@ class HTMLVideoElement extends HTMLMediaElement
 	public function new() 
 	{
 		super(HTML_VIDEO_TAG_NAME);
+		
+		_nativeMedia = new NativeVideo();
 	}
 	
 	/////////////////////////////////

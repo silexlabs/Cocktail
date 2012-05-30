@@ -220,6 +220,13 @@ class HTMLMediaElement extends EmbeddedElement
 	public function new(tagName:String)
 	{
 		super(tagName);
+		
+		_networkState = NETWORK_EMPTY;
+		_ended = false;
+		_duration = 0;
+		_paused = false;
+		_seeking = false;
+		_readyState = HAVE_NOTHING;
 	}
 	
 	/////////////////////////////////

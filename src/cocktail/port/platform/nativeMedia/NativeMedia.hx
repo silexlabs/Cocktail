@@ -8,7 +8,6 @@ import cocktail.core.event.Event;
 
 class NativeMedia
 {
-	public var currentTime(get_currentTime, set_currentTime):Float;
 	
 	public var duration(get_duration, never):Float;
 	
@@ -40,6 +39,11 @@ class NativeMedia
 	}
 	
 	public function pause():Void
+	{
+		
+	}
+	
+	public function seek(time:Float):Void
 	{
 		
 	}
@@ -99,16 +103,6 @@ class NativeMedia
 	private function get_duration():Float
 	{
 		return 0;
-	}
-	
-	private function get_currentTime():Float
-	{
-		return 0;
-	}
-	
-	private function set_currentTime(value:Float):Float
-	{
-		return value;
 	}
 	
 	private function set_src(value:String):String
