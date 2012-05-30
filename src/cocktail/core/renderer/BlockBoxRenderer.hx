@@ -210,10 +210,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Overriden as a BlockBoxRenderer migh also render its children and the child LayerRenderer
 	 * of its LayerRenderer
 	 */
-	override public function render(parentGraphicContext:NativeElement, relativeOffset:PointData):Void
+	override public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
 	{
 		//render the background of the BlockBoxRenderer
-		super.render(parentGraphicContext, relativeOffset);
+		super.render(parentGraphicContext, parentRelativeOffset);
+		
+		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
 		
 		//the BlockBoxRenderer is responsible for rendering its children in the same stacking
 		//context if it establishes a stacking context itself
@@ -1350,7 +1352,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return false;
 	}
 	
-	//TODO : should use computed style (for instance for inherit) but not yet computed at this point, when
+	//TODO 3 : should use computed style (for instance for inherit) but not yet computed at this point, when
 	//called from establishesNewStackingContext
 	/**
 	 * Determine wether this BlockBoxRenderer always overflows

@@ -32,7 +32,7 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 	{
 		super.removeChild(oldChild);
 		
-		//TODO : check if works
+		//TODO 4 : check if works
 	
 		_parentNode.removeChild(this);
 		

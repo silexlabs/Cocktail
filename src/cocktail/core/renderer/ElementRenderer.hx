@@ -309,9 +309,9 @@ class ElementRenderer extends Node
 	 * Render this ElementRenderer using the provided
 	 * graphic context as canvas
 	 */
-	public function render(parentGraphicContext:NativeElement, relativeOffset:PointData):Void
+	public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
 	{
-		detach();
+		clear();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -326,16 +326,20 @@ class ElementRenderer extends Node
 		//abstract
 	}
 	
-	//TODO 3 : should have an attach method ?
-	//TODO 2 : this detach method is not coherent with what does the
-	//ElementRenderer detach method
-	public function detach():Void
+	/**
+	 * Clears the content of the graphic
+	 * context of this ElementRenderer
+	 */
+	public function clear():Void
 	{
-		for (i in 0..._childNodes.length)
-		{
-			var child:ElementRenderer = cast(_childNodes[i]);
-			child.detach();
-		}
+		//TODO 2 : not necessary anymore as only 
+		//cleaning method for graphic context ?
+		
+		//for (i in 0..._childNodes.length)
+		//{
+			//var child:ElementRenderer = cast(_childNodes[i]);
+			//child.clear();
+		//}
 		#if (flash9 || nme)
 		//TODO 1 : quick fix, should be abstracted
 			for (i in 0..._graphicsContext.numChildren)
@@ -422,49 +426,6 @@ class ElementRenderer extends Node
 		_layerRenderer = null;
 	}
 	
-	/**
-	 * Return the relative offset applied by this ElementRenderer
-	 * when rendering. Only relatively positioned ElementRenderer
-	 * have this offset
-	 */
-	public function getRelativeOffset():PointData
-	{
-		var relativeOffset:PointData = { x:0.0, y:0.0 };
-		
-		//only relatively positioned ElementRenderer can have
-		//an offset
-		if (isRelativePositioned() == true)
-		{
-			//first try to apply the left offset of the ElementRenderer if it is
-			//not auto
-			if (coreStyle.left != PositionOffset.cssAuto)
-			{
-				relativeOffset.x += coreStyle.computedStyle.left;
-			}
-			//else the right offset,
-			else if (coreStyle.right != PositionOffset.cssAuto)
-			{
-				relativeOffset.x -= coreStyle.computedStyle.right;
-			}
-			
-			//if both left and right offset are auto, then the ElementRenderer uses its static
-			//position (its normal position in the flow) and no relative offset needs to
-			//be applied
-		
-			//same for vertical offset
-			if (coreStyle.top != PositionOffset.cssAuto)
-			{
-				relativeOffset.y += coreStyle.computedStyle.top; 
-			}
-			else if (coreStyle.bottom != PositionOffset.cssAuto)
-			{
-				relativeOffset.y -= coreStyle.computedStyle.bottom; 
-			}
-		}
-		
-		return relativeOffset;
-	}
-	
 	/////////////////////////////////
 	// PUBLIC HELPER METHODS
 	// Overriden by inheriting classes
@@ -544,6 +505,62 @@ class ElementRenderer extends Node
 	/////////////////////////////////
 	// PRIVATE HELPER METHODS
 	////////////////////////////////
+	
+	/**
+	 * Return the relative offset applied by this ElementRenderer
+	 * when rendering. Only relatively positioned ElementRenderer
+	 * have this offset
+	 */
+	private function getRelativeOffset():PointData
+	{
+		var relativeOffset:PointData = { x:0.0, y:0.0 };
+		
+		//only relatively positioned ElementRenderer can have
+		//an offset
+		if (isRelativePositioned() == true)
+		{
+			//first try to apply the left offset of the ElementRenderer if it is
+			//not auto
+			if (coreStyle.left != PositionOffset.cssAuto)
+			{
+				relativeOffset.x += coreStyle.computedStyle.left;
+			}
+			//else the right offset,
+			else if (coreStyle.right != PositionOffset.cssAuto)
+			{
+				relativeOffset.x -= coreStyle.computedStyle.right;
+			}
+			
+			//if both left and right offset are auto, then the ElementRenderer uses its static
+			//position (its normal position in the flow) and no relative offset needs to
+			//be applied
+		
+			//same for vertical offset
+			if (coreStyle.top != PositionOffset.cssAuto)
+			{
+				relativeOffset.y += coreStyle.computedStyle.top; 
+			}
+			else if (coreStyle.bottom != PositionOffset.cssAuto)
+			{
+				relativeOffset.y -= coreStyle.computedStyle.bottom; 
+			}
+		}
+		
+		return relativeOffset;
+	}
+	
+	/**
+	 * Helper method concatenating the relative offset of the parent
+	 * with the relative offset of this ElementRenderer to apply the right
+	 * translation when rendering
+	 */
+	private function getConcatenatedRelativeOffset(parentRelativeOffset:PointData):PointData
+	{
+		var relativeOffset:PointData = getRelativeOffset();
+		relativeOffset.x += parentRelativeOffset.x;
+		relativeOffset.y += parentRelativeOffset.y;
+		return relativeOffset;
+	}
 	
 	/**
 	 * Determine wether this ElementRenderer is rendered
