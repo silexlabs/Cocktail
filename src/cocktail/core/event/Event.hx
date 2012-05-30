@@ -24,6 +24,60 @@ import cocktail.core.html.HTMLElement;
 class Event 
 {	
 	
+	// video events types
+	
+	/**
+	 * The element is no longer paused. Fired after the play()
+	 * method has returned, or when the autoplay 
+	 * attribute has caused playback to begin.
+	 */
+	public static inline var PLAY:String = "play";
+	
+	/**
+	 * The element has been paused. Fired after
+	 * the pause() method has returned.
+	 */
+	public static inline var PAUSE:String = "pause";
+	
+	/**
+	 * The current playback position changed as part of
+	 * normal playback or in an especially 
+	 * interesting way, for example discontinuously.
+	 */
+	public static inline var TIME_UPDATE:String = "timeupdate";
+	
+	/**
+	 * Playback has stopped because the end of the media 
+	 * resource was reached.
+	 */
+	public static inline var ENDED:String = "ended";
+	
+	/**
+	 * The seeking IDL attribute changed to true.
+	 */
+	public static inline var SEEKING:String = "seeking";
+	
+	/**
+	 * The seeking IDL attribute changed to false.
+	 */
+	public static inline var SEEKED:String = "seeked";
+	
+	/**
+	 * The user agent has just determined the duration
+	 * and dimensions of the media resource
+	 */
+	public static inline var LOADED_METADATA:String = "loadedmetadata";
+	
+	/**
+	 * Either the volume attribute or the muted attribute has
+	 * changed. Fired after the relevant attribute's
+	 * setter has returned.
+	 */
+	public static inline var VOLUME_CHANGE:String = "volumechange";
+	
+	
+	// XMLHTTPRequest event types
+	
 	public static inline var READY_STATE_CHANGE:String = "readystatechange";
 	
 	//PhaseType, An integer indicating which phase of the event flow is being processed
