@@ -18,7 +18,7 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.hxtml.HxtmlConverter;
+import lib.hxtml.HxtmlConverter;
 import cocktail.core.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
@@ -903,7 +903,7 @@ class HTMLElement extends Element
 		return false;
 	}
 	
-	//TODO 3 : should unit test, not very what this getter
+	//TODO 3 : should unit test, not very sure what this getter
 	//is supposed to return
 	private function get_scrollHeight():Int
 	{

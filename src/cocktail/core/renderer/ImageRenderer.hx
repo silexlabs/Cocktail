@@ -43,10 +43,11 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
 	{
 		var htmlImageElement:HTMLImageElement = cast(_node);
-		
-		graphicContext.addChild(htmlImageElement.embeddedAsset);
 	
 		#if (flash9 || nme)
+		
+		graphicContext.addChild(htmlImageElement.embeddedAsset);
+		
 		htmlImageElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + relativeOffset.x;
 		htmlImageElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + relativeOffset.y;
 		htmlImageElement.embeddedAsset.alpha = computedStyle.opacity;

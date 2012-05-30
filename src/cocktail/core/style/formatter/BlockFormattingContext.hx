@@ -34,7 +34,7 @@ class BlockFormattingContext extends FormattingContext
 		super(formattingContextRoot);
 	}
 	
-	//TODO : should not be 2 methods
+	//TODO 3 : should not be 2 methods
 	override private function doFormat(staticPositionedElement:ElementRenderer = null):Void
 	{
 		//remove margin of formatting context, as child must be placed relative to padding box
@@ -42,13 +42,13 @@ class BlockFormattingContext extends FormattingContext
 
 	}
 	
-	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Int, concatenatedY:Int, staticPositionedElement:ElementRenderer, parentCollapsedMarginTop:Int, parentCollapsedMarginBottom:Int):Int
+	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Float, concatenatedY:Float, staticPositionedElement:ElementRenderer, parentCollapsedMarginTop:Int, parentCollapsedMarginBottom:Int):Float
 	{
 		concatenatedX += elementRenderer.coreStyle.computedStyle.paddingLeft  + elementRenderer.coreStyle.computedStyle.marginLeft;
 
 		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingTop + parentCollapsedMarginTop;
 
-		var childHeight:Int = concatenatedY;
+		var childHeight:Float = concatenatedY;
 		for (i in 0...elementRenderer.childNodes.length)
 		{
 
@@ -71,7 +71,6 @@ class BlockFormattingContext extends FormattingContext
 					width:width,
 					height:height
 				}
-				
 				//for child with children of their own, their padding and margin are added at
 				//the beginning of the recursive method
 				if (child.hasChildNodes() == true)
@@ -84,25 +83,26 @@ class BlockFormattingContext extends FormattingContext
 					}
 					else if (child.isPositioned() == false || child.isRelativePositioned() == true)
 					{
-						concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
+						concatenatedY += child.bounds.height + marginTop + marginBottom;
 					}
 				}
 				//for absolutely positioned element, their bounds are set to their static position
 				//but they do not influence the formatting of subsequent children or sibling
 				else if (child.isPositioned() == false || child.isRelativePositioned() == true)
 				{
-					concatenatedY += Math.round(child.bounds.height) + marginTop + marginBottom;
+					concatenatedY += child.bounds.height + marginTop + marginBottom;
 				}
 			
 				//find widest line for shrink-to-fit algorithm
 				if (child.bounds.x + child.bounds.width + child.coreStyle.computedStyle.marginRight > _formattingContextData.maxWidth)
 				{
+					//TODO 2 : all formatting should use float
 					_formattingContextData.maxWidth = Math.round(child.bounds.x + child.bounds.width) + child.coreStyle.computedStyle.marginRight;
 				}
 				
 				if (concatenatedY  > _formattingContextData.maxHeight)
 				{
-					_formattingContextData.maxHeight = concatenatedY;
+					_formattingContextData.maxHeight = Math.round(concatenatedY);
 				}
 				
 				
@@ -156,6 +156,7 @@ class BlockFormattingContext extends FormattingContext
 						if (parentCollapsedMarginTop > marginTop)
 						{
 							marginTop = 0;
+							
 						}
 					}
 				}

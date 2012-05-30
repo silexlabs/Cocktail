@@ -189,10 +189,10 @@ class ApplicationStructure
 		_footer = createFooterMenu();
 		pagesContainer.appendChild(_footer);
 		//pagesContainer.onKeyDown = onKeyDownPages;
-		
+			return;
 		// workaround for browsers not supporting well css "fixed" position
 		#if js
-
+		
 		function resetFooterStyle(event) {
 			// footer is removed and added again as a workaround
 			pagesContainer.removeChild(_footer);

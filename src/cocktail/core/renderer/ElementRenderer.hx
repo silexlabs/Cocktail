@@ -16,6 +16,7 @@ import cocktail.core.style.CoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
+import flash.display.Sprite;
 import haxe.Timer;
 
 
@@ -34,6 +35,9 @@ import haxe.Timer;
  * the DOM tree will create a TextRenderer in the 
  * rendering tree.
  * 
+ * DOM tree elemtents which are not visual, for instance 
+ * the 'head' HTML element don't create ElementRenderer
+ * 
  * An ElementRenderer is associated with a CoreStyle object
  * which holds all of the styles used to render the
  * ElementRenderer.
@@ -42,13 +46,9 @@ import haxe.Timer;
  * that once laid out it knows all its necessary bounds
  * to be rendered
  * 
- * It also knows how to render itself. The rendering will
- * be started by the LayerRenderer associated with the
- * ElementRenderer
- * 
- * Once an ElementRenderer has been laid out, it holds
- * a reference to all the bounds needed to be rendered
- * on the screen
+ * It also knows how to render itself and will do it as many
+ * times as necessary, each time is layout or rendering becomes
+ * invalid
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -88,6 +88,21 @@ class ElementRenderer extends Node
 	public var globalBounds(get_globalBounds, never):RectangleData;
 	
 	/**
+	 * The scrollable bounds of the ElementRenderer in the space of the scrollable containing
+	 * block used to determine the scrolling area of the containing block. 
+	 * 
+	 * The difference with the regular bounds is that any offset needed
+	 * in the computation of scrollable bounds are added. 
+	 * 
+	 * For instance if the ElementRenderer is relatively positioned, its
+	 * bounds once transformed with the relative offset are returned
+	 * instead of its bounds in the flow like the regular bounds.
+	 * 
+	 * This is a utility read-only method
+	 */
+	public var scrollableBounds(get_scrollableBounds, never):RectangleData;
+	
+	/**
 	 * This is the position of the top left padding box corner of the 
 	 * containing block of this ElementRenderer in the Window space.
 	 * This is used to render elements using the normal flow.
@@ -106,7 +121,7 @@ class ElementRenderer extends Node
 	 * 
 	 * It is used when this ElementRenderer
 	 * is absolutely positioned. When added to the global
-	 * positioned ancesotr origin, it gives the global
+	 * positioned ancestor origin, it gives the global
 	 * positioned origin of the ElementRenderer
 	 */
 	private var _positionedOrigin:PointData;
@@ -166,10 +181,17 @@ class ElementRenderer extends Node
 	 * Determine wheter this ElementRenderer establishes its own
 	 * stacking context (instantiates a new LayerRenderer)
 	 * 
-	 * TODO : not very clean, should layerRenderer be null instead
-	 * for ElementRenderernot starting a layer ?
+	 * TODO 2 : not very clean, should layerRenderer be null instead
+	 * for ElementRenderer not starting a layer ? -> or should use 
+	 * the establishesNewStackingContextMethod ? + doc is false
 	 */
 	private var _hasOwnLayer:Bool;
+	
+	/**
+	 * A graphic context object onto which this ElementRenderer
+	 * is painted
+	 */
+	private var _graphicsContext:NativeElement;
 	
 	/**
 	 * Stores all of the value of styles once computed.
@@ -179,7 +201,7 @@ class ElementRenderer extends Node
 	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyleData;
 	
 	/**
-	 * get/set the scrolling in the x axis of this ElementRenderer
+	 * get/set the scrolling in the x axis of this ElementRenderer.
 	 */
 	public var scrollLeft(get_scrollLeft, set_scrollLeft):Float;
 	
@@ -192,7 +214,7 @@ class ElementRenderer extends Node
 	 * get the larger width between the ElementRenderer's and its children
 	 * width
 	 * 
-	 * TODO : does it mean that scrollBounds should also be computed for
+	 * TODO 3 : does it mean that scrollBounds should also be computed for
 	 * this ElementRenderer ? renamed as childrenBounds ?
 	 * check http://dev.w3.org/csswg/cssom-view/#dom-element-scrollwidth
 	 */
@@ -212,6 +234,10 @@ class ElementRenderer extends Node
 		super();
 
 		_node = node;
+		
+		#if (flash9 || nme)
+		_graphicsContext = new Sprite();
+		#end
 		
 		_isLayingOut = false;
 		_hasOwnLayer = false;
@@ -248,7 +274,7 @@ class ElementRenderer extends Node
 	
 	/**
 	 * overriden as when an ElementRenderer is appended, its LayerRenderer
-	 * must be attached so that it can be rendered
+	 * must be attached to the LayerRenderer tree so that it can be rendered
 	 */
 	override public function appendChild(newChild:Node):Node
 	{
@@ -283,9 +309,9 @@ class ElementRenderer extends Node
 	 * Render this ElementRenderer using the provided
 	 * graphic context as canvas
 	 */
-	public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
 	{
-		//abstract
+		clear();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -298,6 +324,32 @@ class ElementRenderer extends Node
 	public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{	
 		//abstract
+	}
+	
+	/**
+	 * Clears the content of the graphic
+	 * context of this ElementRenderer
+	 */
+	public function clear():Void
+	{
+		//TODO 2 : not necessary anymore as only 
+		//cleaning method for graphic context ?
+		
+		//for (i in 0..._childNodes.length)
+		//{
+			//var child:ElementRenderer = cast(_childNodes[i]);
+			//child.clear();
+		//}
+		#if (flash9 || nme)
+		//TODO 1 : quick fix, should be abstracted
+			for (i in 0..._graphicsContext.numChildren)
+			{
+				
+				_graphicsContext.removeChildAt(0);
+			}
+			
+		
+		#end	
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -321,7 +373,6 @@ class ElementRenderer extends Node
 					createLayer(parent.layerRenderer);
 				}
 			}
-		
 		}
 		
 		//the ElementRenderer is attached to the LayerRenderer
@@ -334,7 +385,8 @@ class ElementRenderer extends Node
 	}
 	
 	/**
-	 * Detach the LayerRenderer of this ElementRenderer if necessary
+	 * Detach the LayerRenderer of this ElementRenderer from the LayerRenderer
+	 * tree if necessary
 	 */
 	public function detachLayer():Void
 	{
@@ -352,11 +404,23 @@ class ElementRenderer extends Node
 		{
 			var parent:ElementRenderer = cast(_parentNode);
 			parent.layerRenderer.removeChild(_layerRenderer);
-			
-			//TODO : should be called in LayerRenderer.removeChild ?
-			_layerRenderer.detach();
-			
 			_hasOwnLayer = false;
+		}
+		//else if the ElementRenderer is both positioned and has an
+		//auto z-index, it means that it was added to the LayerRenderer
+		//as a auto positioned child and must now be removed from it
+		//
+		//TODO 2 : will cause bugs if a z-index style change triggered
+		//the detachement of the layer, should add flag, like for _hasOwnLayer ?
+		else if (isAutoZIndexPositioned() == true)
+		{
+			//TODO 3 : is LayerRenderer supposed to be null ?, detachLayer seems
+			//to be called before attachLayer in some case, shouldn't arrive here
+			//if it does
+			if (_layerRenderer != null)
+			{
+				_layerRenderer.removeAutoZIndexChildElementRenderer(this);
+			}
 		}
 		
 		_layerRenderer = null;
@@ -364,6 +428,8 @@ class ElementRenderer extends Node
 	
 	/////////////////////////////////
 	// PUBLIC HELPER METHODS
+	// Overriden by inheriting classes
+	// TODO 3 : should copy most doc from BoxRenderer
 	////////////////////////////////
 	
 	public function isVerticallyScrollable(scrollOffset:Int):Bool
@@ -426,16 +492,97 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
-	/////////////////////////////////
-	// PRIVATE HELPER METHODS
-	////////////////////////////////
-	
 	/**
 	 * Determine wether this ElementRenderer creates a
 	 * new LayerRenderer for itself or use the
 	 * one of its parent
 	 */
-	private function establishesNewStackingContext():Bool
+	public function establishesNewStackingContext():Bool
+	{
+		return false;
+	}
+	
+	/////////////////////////////////
+	// PRIVATE HELPER METHODS
+	////////////////////////////////
+	
+	/**
+	 * Return the relative offset applied by this ElementRenderer
+	 * when rendering. Only relatively positioned ElementRenderer
+	 * have this offset
+	 */
+	private function getRelativeOffset():PointData
+	{
+		var relativeOffset:PointData = { x:0.0, y:0.0 };
+		
+		//only relatively positioned ElementRenderer can have
+		//an offset
+		if (isRelativePositioned() == true)
+		{
+			//first try to apply the left offset of the ElementRenderer if it is
+			//not auto
+			if (coreStyle.left != PositionOffset.cssAuto)
+			{
+				relativeOffset.x += coreStyle.computedStyle.left;
+			}
+			//else the right offset,
+			else if (coreStyle.right != PositionOffset.cssAuto)
+			{
+				relativeOffset.x -= coreStyle.computedStyle.right;
+			}
+			
+			//if both left and right offset are auto, then the ElementRenderer uses its static
+			//position (its normal position in the flow) and no relative offset needs to
+			//be applied
+		
+			//same for vertical offset
+			if (coreStyle.top != PositionOffset.cssAuto)
+			{
+				relativeOffset.y += coreStyle.computedStyle.top; 
+			}
+			else if (coreStyle.bottom != PositionOffset.cssAuto)
+			{
+				relativeOffset.y -= coreStyle.computedStyle.bottom; 
+			}
+		}
+		
+		return relativeOffset;
+	}
+	
+	/**
+	 * Helper method concatenating the relative offset of the parent
+	 * with the relative offset of this ElementRenderer to apply the right
+	 * translation when rendering
+	 */
+	private function getConcatenatedRelativeOffset(parentRelativeOffset:PointData):PointData
+	{
+		var relativeOffset:PointData = getRelativeOffset();
+		relativeOffset.x += parentRelativeOffset.x;
+		relativeOffset.y += parentRelativeOffset.y;
+		return relativeOffset;
+	}
+	
+	/**
+	 * Determine wether this ElementRenderer is rendered
+	 * as if it started a stacking context itself. 
+	 * 
+	 * For instance, an ElementRenderer which doesn't start
+	 * a stacking context but as a display of inline-block is rendered
+	 * as if it established a new stacking context, but it won't try
+	 * to render the child layers of its LayerRenderer.
+	 */
+	private function rendersAsIfEstablishingStackingContext():Bool
+	{
+		return false;
+	}
+	
+	/**
+	 * Determine wether this ElementRenderer is 
+	 * both positioned and has an 'auto' z-index value,
+	 * which influence the rendering order of its
+	 * LayerRenderer
+	 */
+	private function isAutoZIndexPositioned():Bool
 	{
 		return false;
 	}
@@ -455,12 +602,21 @@ class ElementRenderer extends Node
 		else
 		{
 			_layerRenderer = parentLayer;
+			
+			//if the ElementRenderer is positioned with
+			//an 'auto' z-index value, then it must be added
+			//in a special array in its LayerRenderer has it will
+			//be rendered during its own rendering phase
+			if (isAutoZIndexPositioned() == true)
+			{
+				_layerRenderer.insertAutoZIndexChildElementRenderer(this);
+			}
 		}
 	}
 	
 	/**
 	 * Determine the bounds of the children of this ElementRenderer
-	 * from the array of their bounds
+	 * in this ElementRenderer space
 	 */
 	private function getChildrenBounds(childrenBounds:Array<RectangleData>):RectangleData
 	{
@@ -499,7 +655,7 @@ class ElementRenderer extends Node
 					height :  bottom - top,
 				}
 				
-		//TODO : need to implement better fix,
+		//TODO 4 : need to implement better fix,
 		//sould not be negative
 		if (bounds.width < 0)
 		{
@@ -528,7 +684,7 @@ class ElementRenderer extends Node
 	 * The initial ElementRenderer will then layout itself, laying out
 	 * at the same time all its invalidated children.
 	 * 
-	 * TODO : shouldn't need to invalidate all of the rendering tree
+	 * TODO 2 : shouldn't need to invalidate all of the rendering tree
 	 * 
 	 * A layout can be immediate or scheduled asynchronously, which
 	 * increase preformance when many style value are set in a 
@@ -544,7 +700,7 @@ class ElementRenderer extends Node
 			//is not currently added to the DOM and doesn't require
 			//a layout
 			//
-			//TODO : shouldn't be possible anymore, when an HTMLElement is not
+			//TODO 3 : shouldn't be possible anymore, when an HTMLElement is not
 			//attached to the DOM, it doesn't create an ElementRenderer,
 			//only the initial ElementRenderer doesn't have a parent
 			if (this._parentNode != null)
@@ -660,6 +816,36 @@ class ElementRenderer extends Node
 			width:bounds.width,
 			height:bounds.height
 		}
+	}
+	
+	/**
+	 * Return the bounds of the ElementRenderer as they
+	 * need to be to compute the scrollable bounds of its
+	 * containing block
+	 * 
+	 * TODO 3 : should implement the case of absolutely 
+	 * positioned children
+	 */
+	private function get_scrollableBounds():RectangleData
+	{
+		//if the elementRenderer is not relatively positioned,
+		//the bounds are the same as the regular bounds
+		if (isRelativePositioned() == false)
+		{
+			return bounds;
+		}
+		
+		//else the bounds with the relative offset applied to them
+		//are returned
+		var relativeOffset:PointData = getRelativeOffset();
+		var bounds:RectangleData = get_bounds();
+		
+		return {
+			x: bounds.x + relativeOffset.x,
+			y: bounds.y + relativeOffset.y,
+			width: bounds.width,
+			height: bounds.height
+		};
 	}
 	
 	private function getComputedStyle():ComputedStyleData
@@ -778,7 +964,4 @@ class ElementRenderer extends Node
 	{
 		return bounds.height;
 	}
-	
-	
-	
 }

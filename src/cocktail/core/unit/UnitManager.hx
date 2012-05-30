@@ -7,6 +7,7 @@
 */
 package cocktail.core.unit;
 
+import cocktail.core.style.CoreStyle;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
 import haxe.Log;
@@ -162,17 +163,52 @@ class UnitManager
 	
 	/**
 	 * convert a string into a typed enum
-	 * 
-	 * TODO : only supports units for now
 	 */
 	static public function fontSizeEnum(string:String):FontSize
 	{
 		string = trim(string);
 		
+		switch (string)
+		{
+			case "small":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.small);
+				
+			case "xx-small":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.xxSmall);
+				
+			case "x-small":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.xSmall);	
+				
+			case "medium":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.medium);		
+				
+			case "large":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.large);	
+				
+			case "x-large":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.xLarge);			
+				
+			case "xx-large":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.xxLarge);	
+				
+			case "larger":
+				return FontSize.relativeSize(FontSizeRelativeSize.larger);		
+				
+			case "smaller":
+				return FontSize.relativeSize(FontSizeRelativeSize.smaller);			
+		}
+		
 		// split unit and value
 		var parsed:VUnit = string2VUnit(string);
 		
-		return FontSize.length(string2Length(parsed));
+		switch(parsed.unit)
+		{
+			case "%":
+				return FontSize.percentage(Std.parseInt(parsed.value));
+				
+			default:
+				return FontSize.length(string2Length(parsed));
+		}
 	}
 	
 	/**
@@ -435,6 +471,9 @@ class UnitManager
 			case "normal":
 				fontStyle = FontStyle.normal;
 				
+			case "oblique":
+				fontStyle = FontStyle.oblique;
+				
 			default:
 				fontStyle = null;
 		}
@@ -597,31 +636,31 @@ class UnitManager
 		return arrayBgImg;
 	}
 	
-	//TODO
+	//TODO 4
 	static public function backgroundRepeatEnum(string:String):Array<BackgroundRepeat>
 	{
 		return [];
 	}
 	
-	//TODO
+	//TODO 4
 	static public function backgroundOriginEnum(string:String):Array<BackgroundOrigin>
 	{
 		return [];
 	}
 	
-	//TODO
+	//TODO 4
 	static public function backgroundSizeEnum(string:String):Array<BackgroundSize>
 	{
 		return [];
 	}
 	
-	//TODO
+	//TODO 4
 	static public function backgroundPositionEnum(string:String):Array<BackgroundPosition>
 	{
 		return [];
 	}
 	
-	//TODO
+	//TODO 4
 	static public function backgroundClipEnum(string:String):Array<BackgroundClip>
 	{
 		return [];
@@ -728,6 +767,13 @@ class UnitManager
 	 * @example UnitManager.colorEnum("yellow") returns Color.yellow
 	 */
 	static public function colorEnum(string:String):CSSColor{
+		
+		//TODO 2 : need to implement default styles everywhere
+		if (string == null)
+		{
+			return CoreStyle.getBackgroundColorDefaultValue();
+		}
+		
 		// clean up a bit
 		string = trim(string);
 		
@@ -1901,6 +1947,9 @@ class UnitManager
 				
 			case italic:
 				cssFontStyleValue = "italic";
+				
+			case oblique:
+				cssFontStyleValue = "obllique";
 		}
 		
 		return cssFontStyleValue;
@@ -2557,7 +2606,6 @@ class UnitManager
 	public static function getCSSColor(value:Color):String
 	{
 		var cssColor:String;
-		
 		switch (value)
 		{
 			case hex(value):

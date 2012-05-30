@@ -62,9 +62,13 @@ class BoxRenderer extends ElementRenderer
 	 * TODO 5 : apply transformations, opacity
 	 * TODO 4 : apply visibility
 	 */
-	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	override public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
 	{
-		renderBackground(graphicContext, relativeOffset);
+		super.render(parentGraphicContext, parentRelativeOffset);
+		//get the relative offset of this ElementRenderer and add it to
+		//its parent
+		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
+		renderBackground(_graphicsContext, relativeOffset);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +86,7 @@ class BoxRenderer extends ElementRenderer
 		
 		//TODO 3 : should only pass dimensions instead of bounds
 		var backgrounds:Array<NativeElement> = backgroundManager.render(bounds, _coreStyle);
-		
+
 		for (i in 0...backgrounds.length)
 		{
 			#if (flash9 || nme)
@@ -336,10 +340,10 @@ class BoxRenderer extends ElementRenderer
 			//TODO 1 : messy but works -> not really actually, scrollbar is moved by HTMLBodyElement margins
 			if (child.isScrollBar() == true)
 			{
-				if (elementRenderer.isPositioned() == false)
+				if (elementRenderer.isPositioned() == false || elementRenderer.isRelativePositioned() == true)
 				{
-					child.globalPositionnedAncestorOrigin.x += elementRenderer.bounds.x;
-					child.globalPositionnedAncestorOrigin.y += elementRenderer.bounds.y;
+					//child.globalPositionnedAncestorOrigin.x += elementRenderer.bounds.x;
+					//child.globalPositionnedAncestorOrigin.y += elementRenderer.bounds.y;
 					
 					if (child.hasChildNodes() == true)
 					{
@@ -446,6 +450,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function isPositioned():Bool
 	{
+		_coreStyle.computeDisplayStyles();
 		var ret:Bool = false;
 		
 		switch (this.computedStyle.position) 
@@ -505,22 +510,68 @@ class BoxRenderer extends ElementRenderer
 		return ret;
 	}
 	
+	/**
+	 * Overriden as BoxRenderer might create new stacking context, for
+	 * instance if they are positioned.
+	 * 
+	 * TODO 2 : shouldn't have to compute display style before
+	 * 
+	 */
+	override public function establishesNewStackingContext():Bool
+	{
+		_coreStyle.computeDisplayStyles();
+		
+		if (isPositioned() == true)
+		{
+			if (isAutoZIndexPositioned() == true)
+			{
+				return false;
+			}
+			else
+			{
+				return true;
+			}
+			//if a box is positioned, it only establishes
+			//a new stacking context if its z-index is not
+			//auto, else it uses the LayerRenderer of its parent
+			switch (computedStyle.zIndex)
+			{
+				case ZIndex.cssAuto:
+					return false;
+					
+				case ZIndex.integer(value):
+					return true;
+			}
+		}
+		
+		//in all other cases, no new stacking context is created
+		return false;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Overriden as BoxRenderer might create new stacking context, for
-	 * instance if they are positioned
-	 * 
-	 * TODO 4 : add the z-index case
-	 * TODO 2 : shouldn't have to compute display style before
-	 * 
+		/**
+	 * Determine wether the ElementRenderer is both positioned
+	 * and have an 'auto' z-index value, as if it does, it 
+	 * means it doesn't have to establish a new stacking context
 	 */
-	override private function establishesNewStackingContext():Bool
+	override private function isAutoZIndexPositioned():Bool
 	{
-		_coreStyle.computeDisplayStyles();
-		return isPositioned();
+		if (isPositioned() == false)
+		{
+			return false;
+		}
+		
+		switch(computedStyle.zIndex)
+		{
+			case ZIndex.cssAuto:
+				return true;
+				
+			case ZIndex.integer(value):
+				return false;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

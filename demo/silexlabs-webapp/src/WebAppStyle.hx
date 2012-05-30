@@ -205,6 +205,8 @@ class WebAppStyle
 		domElement.style.left = "0";
 		domElement.style.top = "auto";
 		domElement.style.bottom = "0";
+		
+		untyped domElement.style.zIndex = "1";
 	}
 
 	/**
@@ -219,6 +221,8 @@ class WebAppStyle
 		domElement.style.top = "auto";
 		domElement.style.bottom = "auto";
 		domElement.style.width = "auto";
+		
+		untyped domElement.style.zIndex = "1";
 	}
 
 	/**

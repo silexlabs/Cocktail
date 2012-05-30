@@ -102,7 +102,7 @@ class InlineFormattingContext extends FormattingContext
 		//apply formatting height to formatting context root if auto height
 		if (_formattingContextRoot.coreStyle.height == Dimension.cssAuto)
 		{
-			_formattingContextRoot.bounds.height = _formattingContextData.y + _formattingContextRoot.coreStyle.computedStyle.paddingTop + _formattingContextRoot.coreStyle.computedStyle.paddingBottom ;
+			_formattingContextRoot.bounds.height = _formattingContextData.y  + _formattingContextRoot.coreStyle.computedStyle.paddingBottom ;
 		}
 	}
 	
@@ -252,7 +252,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			if (childBounds.y < top)
 			{
-				top = childBounds.y - child.leadedAscent;
+				top = childBounds.y ;
 			}
 			if (childBounds.x + childBounds.width > right)
 			{
@@ -260,7 +260,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			if (childBounds.y + childBounds.height  > bottom)
 			{
-				bottom = childBounds.y + childBounds.height - child.leadedAscent;
+				bottom = childBounds.y + childBounds.height ;
 			}
 			
 			//add the left and right margin of the child to the bounds
@@ -419,7 +419,6 @@ class InlineFormattingContext extends FormattingContext
 		//update the y of the formatting context so that the next line will start
 		//below this one
 		_formattingContextData.y += lineBoxHeight;
-		
 		_firstLineFormatted = true;
 	
 	}
@@ -575,9 +574,9 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * align the HTMLElements starting from the left edge of the containing HTMLElement
 	 * 
-	 * TODO : margins are not used for embedded line boxes
+	 * TODO 4 : margins are not used for embedded line boxes
 	 * 
-	 * TODO : absolutely positioned line box should not add their width to the flowX,
+	 * TODO 4 : absolutely positioned line box should not add their width to the flowX,
 	 * should also do it for align right, center and justify
 	 * 
 	 * @param	flowX the x position of the first HTMLElement
@@ -590,7 +589,7 @@ class InlineFormattingContext extends FormattingContext
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
 			
-			//TODO : doc + should also update alignRight, justify... in the same way
+			//TODO 4 : doc + should also update alignRight, justify... in the same way
 			if (child.hasChildNodes() == true && child.isAbsolutelyPositioned() == false)
 			{
 				flowX = alignLeft(flowX, child);
@@ -599,7 +598,7 @@ class InlineFormattingContext extends FormattingContext
 			{
 				child.bounds.x = flowX + child.marginLeft;
 				
-				//TODO : a bit hackish to require checking if is text
+				//TODO 4 : a bit hackish to require checking if is text
 				if (child.isAbsolutelyPositioned() == false || child.isText() == true )
 				{
 					flowX += Math.round(child.bounds.width) + child.marginLeft + child.marginRight;
@@ -617,7 +616,7 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * Center the HTMLElements in the line by moving each to the right by half the remaining space
 	 * 
-	 * TODO : flowX, remainingSpace should be passed by reference, not value
+	 * TODO 4 : flowX, remainingSpace should be passed by reference, not value
 	 * 
 	 * 
 	 * @param	flowX the first availbable x position for the HTMLElement to the left most of the line box
@@ -649,32 +648,38 @@ class InlineFormattingContext extends FormattingContext
 	 * align the HTMLElements starting from the right edge to the left edge of the
 	 * containing HTMLElement
 	 * 
-	 * TODO : flowX, remainingSpace should be passed by reference, not value
+	 * TODO 4 : flowX, remainingSpace should be passed by reference, not value
 	 * 
 	 * @param	flowX the x position of the HTMLElement to left most of the line box
 	 * @param	remainingSpace the available width in the line box after all HTMLElements
 	 * have been laid out
 	 */
-	private function alignRight(flowX:Int, remainingSpace:Int, lineBox:LineBox):Void
+	private function alignRight(flowX:Int, remainingSpace:Int, lineBox:LineBox):Int
 	{
+		flowX += lineBox.marginLeft + lineBox.paddingLeft;
 		for (i in 0...lineBox.childNodes.length)
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
-			child.bounds.x =  flowX + remainingSpace;
-			flowX += Math.round(child.bounds.width);
 			
 			if (child.hasChildNodes() == true)
 			{
-				alignRight(flowX, remainingSpace, child);
+				flowX = alignRight(flowX, remainingSpace, child);
 			}
+			
+			child.bounds.x = flowX + remainingSpace;
+			flowX += Math.round(child.bounds.width);
 		}
+		
+		flowX += lineBox.marginRight + lineBox.paddingRight;
+		
+		return flowX;
 	}
 	
 	/**
 	 * Justify the HTMLElements in the line box by adjusting
 	 * the width of the space characters
 	 * 
-	 * TODO : flowX, remainingSpace and spacesInLine should be passed by reference, not value
+	 * TODO 4 : flowX, remainingSpace and spacesInLine should be passed by reference, not value
 	 * 
 	 * @param	flowX
 	 * @param	remainingSpace
@@ -923,12 +928,11 @@ class InlineFormattingContext extends FormattingContext
 	private function computeLineBoxHeight(rootLineBox:LineBox):Int
 	{
 		setRootLineBoxMetrics(rootLineBox, rootLineBox, 0.0);
-
+		
 		alignLineBoxesVertically(rootLineBox, rootLineBox.leadedAscent, _formattingContextData.y, 0.0);
 
 		//compute the line box height
 		var lineBoxHeight:Float = rootLineBox.bounds.height;
-
 		
 		return Math.round(lineBoxHeight);
 	}
@@ -974,20 +978,20 @@ class InlineFormattingContext extends FormattingContext
 			
 			var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, _formattingContextRoot.coreStyle.fontMetrics.xHeight);
 			child.bounds.y = formattingContextY - baselineOffset + lineBoxAscent;
-		
+			//TODO 2 check if neccessary to remove ascent to all children
+			child.bounds.y -= child.leadedAscent;
+
 			if (child.hasChildNodes() == true)
 			{
 				alignLineBoxesVertically(child, lineBoxAscent, formattingContextY, baselineOffset);
 			}
-
 			
-			//TODO : used for embedded or inline block but implement better
 			if (child.establishesNewFormattingContext() == true || (child.elementRenderer.isReplaced() == true && child.elementRenderer.isText() == false))
 			{
-				//TODO : hack that won't work for absolutely positioned inline-block
-				if (child.isAbsolutelyPositioned() == false)
+				//TODO 2 : hack 
+				if (child.isAbsolutelyPositioned() == true)
 				{
-					child.bounds.y -= child.leadedAscent;
+					child.bounds.y += child.leadedAscent;
 				}
 				
 			}
