@@ -1,4 +1,4 @@
-package hxtml;
+package lib.hxtml;
 
 class Browser<DisplayObjectType> {
 

@@ -1,4 +1,4 @@
-package hxtml;
+package lib.hxtml;
 
 #if macro
 import haxe.macro.Context;
