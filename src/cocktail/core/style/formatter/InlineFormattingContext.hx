@@ -574,9 +574,9 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * align the HTMLElements starting from the left edge of the containing HTMLElement
 	 * 
-	 * TODO : margins are not used for embedded line boxes
+	 * TODO 4 : margins are not used for embedded line boxes
 	 * 
-	 * TODO : absolutely positioned line box should not add their width to the flowX,
+	 * TODO 4 : absolutely positioned line box should not add their width to the flowX,
 	 * should also do it for align right, center and justify
 	 * 
 	 * @param	flowX the x position of the first HTMLElement
@@ -589,7 +589,7 @@ class InlineFormattingContext extends FormattingContext
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
 			
-			//TODO : doc + should also update alignRight, justify... in the same way
+			//TODO 4 : doc + should also update alignRight, justify... in the same way
 			if (child.hasChildNodes() == true && child.isAbsolutelyPositioned() == false)
 			{
 				flowX = alignLeft(flowX, child);
@@ -598,7 +598,7 @@ class InlineFormattingContext extends FormattingContext
 			{
 				child.bounds.x = flowX + child.marginLeft;
 				
-				//TODO : a bit hackish to require checking if is text
+				//TODO 4 : a bit hackish to require checking if is text
 				if (child.isAbsolutelyPositioned() == false || child.isText() == true )
 				{
 					flowX += Math.round(child.bounds.width) + child.marginLeft + child.marginRight;
@@ -616,7 +616,7 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * Center the HTMLElements in the line by moving each to the right by half the remaining space
 	 * 
-	 * TODO : flowX, remainingSpace should be passed by reference, not value
+	 * TODO 4 : flowX, remainingSpace should be passed by reference, not value
 	 * 
 	 * 
 	 * @param	flowX the first availbable x position for the HTMLElement to the left most of the line box
@@ -648,7 +648,7 @@ class InlineFormattingContext extends FormattingContext
 	 * align the HTMLElements starting from the right edge to the left edge of the
 	 * containing HTMLElement
 	 * 
-	 * TODO : flowX, remainingSpace should be passed by reference, not value
+	 * TODO 4 : flowX, remainingSpace should be passed by reference, not value
 	 * 
 	 * @param	flowX the x position of the HTMLElement to left most of the line box
 	 * @param	remainingSpace the available width in the line box after all HTMLElements
@@ -679,7 +679,7 @@ class InlineFormattingContext extends FormattingContext
 	 * Justify the HTMLElements in the line box by adjusting
 	 * the width of the space characters
 	 * 
-	 * TODO : flowX, remainingSpace and spacesInLine should be passed by reference, not value
+	 * TODO 4 : flowX, remainingSpace and spacesInLine should be passed by reference, not value
 	 * 
 	 * @param	flowX
 	 * @param	remainingSpace
@@ -928,12 +928,11 @@ class InlineFormattingContext extends FormattingContext
 	private function computeLineBoxHeight(rootLineBox:LineBox):Int
 	{
 		setRootLineBoxMetrics(rootLineBox, rootLineBox, 0.0);
-
+		
 		alignLineBoxesVertically(rootLineBox, rootLineBox.leadedAscent, _formattingContextData.y, 0.0);
 
 		//compute the line box height
 		var lineBoxHeight:Float = rootLineBox.bounds.height;
-
 		
 		return Math.round(lineBoxHeight);
 	}
@@ -981,7 +980,7 @@ class InlineFormattingContext extends FormattingContext
 			child.bounds.y = formattingContextY - baselineOffset + lineBoxAscent;
 			//TODO 2 check if neccessary to remove ascent to all children
 			child.bounds.y -= child.leadedAscent;
-			
+
 			if (child.hasChildNodes() == true)
 			{
 				alignLineBoxesVertically(child, lineBoxAscent, formattingContextY, baselineOffset);
