@@ -485,8 +485,6 @@ class HTMLMediaElement extends EmbeddedElement
 		else
 		{
 			_networkState = NETWORK_EMPTY;
-			
-			//TODO 1 : should return ?
 			return;
 		}
 		
@@ -520,10 +518,7 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function fetchResource(url:String):Void
 	{
-		//TODO 1 : should NativeMedia extends EventCallback ?
-		//_nativeMedia.onError = onLoadingError;
 		_nativeMedia.onLoadedMetaData = onLoadedMetaData;
-		
 		_nativeMedia.src = url;
 	}
 	
@@ -579,7 +574,6 @@ class HTMLMediaElement extends EmbeddedElement
 		_currentPlaybackPosition = newPlaybackPosition;
 		
 		_nativeMedia.seek(newPlaybackPosition);
-		//TODO 2 : should listen to seek callbacck on nativeMedia
 		
 		//TODO 2 : Wait until the user agent has established whether or not 
 		//the media data for the new playback position is available, and, if
@@ -753,6 +747,10 @@ class HTMLMediaElement extends EmbeddedElement
 		onProgressTick();
 	}
 	
+	/**
+	 * Called at a regular frequency while
+	 * the media is playing
+	 */
 	private function onTimeUpdateTick():Void
 	{
 		if (_paused == true)
@@ -777,16 +775,13 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function onProgressTick():Void
 	{
-		trace(_nativeMedia.bytesLoaded);
-		trace(_nativeMedia.bytesTotal);
 		if (_nativeMedia.bytesLoaded >= _nativeMedia.bytesTotal)
 		{
-			fireEvent(Event.CAN_PLAY_THROUGH, false, false);
+			setReadyState(HAVE_ENOUGH_DATA);
 			return;
 		}
 		fireEvent(Event.PROGRESS, false, false);
-		trace(_nativeMedia.bytesLoaded);
-		trace(_nativeMedia.bytesTotal);
+		
 		Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
 	}
 	
@@ -819,6 +814,7 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 	}
 	
+	//TODO 1 : retrieve/set attributes
 	private function set_autoplay(value:Bool):Bool
 	{
 		return value;
@@ -865,6 +861,10 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function get_currentTime():Float 
 	{
+		//if default playback position is different from 0,
+		//it means that the media has not loaded yet, as it takes
+		//the default playback start position and reset it as soon
+		//as it is loaded
 		if (_defaultPlaybackStartPosition != 0)
 		{
 			return _defaultPlaybackStartPosition;
@@ -877,6 +877,9 @@ class HTMLMediaElement extends EmbeddedElement
 	{
 		switch(_readyState)
 		{
+			//if current time is set before the media loading,
+			//store in the default playback position which will
+			//be applied as soon as the media is loaded
 			case HAVE_NOTHING:
 				_defaultPlaybackStartPosition = value;
 				

@@ -14,11 +14,7 @@ import cocktail.core.geom.GeomData;
 import flash.display.DisplayObjectContainer;
 
 /**
- * 
  * Renders an embedded video asset
- * 
- * TODO 1 : should override bounds to include controls
- * size if necessary
  * 
  * @author Yannick DOMINGUEZ
  */
