@@ -13,6 +13,13 @@ import cocktail.port.platform.nativeMedia.NativeMedia;
  * This is an abstract base class for media elements,
  * such as video and audio
  * 
+ * TODO 1 : when removed from DOM
+ * When a media element is removed from a Document, the user agent must run the following steps:
+	 * Asynchronously await a stable state, allowing the task that removed the media element from the Document to continue. The synchronous section consists of all the remaining steps of this algorithm. (Steps in the synchronous section are marked with ⌛.)
+	 * If the media element is in a Document, abort these steps.
+	 * If the media element's networkState attribute has the value NETWORK_EMPTY, abort these steps.
+	 * Pause the media element.
+ * 
  * @author Yannick DOMINGUEZ
  */
 class HTMLMediaElement extends EmbeddedElement
@@ -221,6 +228,10 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private var _currentPlaybackPosition:Float;
 	
+	private var _defaultPlaybackStartPosition:Float;
+	
+	private var _loadedDataWasDispatched:Bool;
+	
 	private var _autoplaying:Bool;
 	
 	/**
@@ -237,6 +248,12 @@ class HTMLMediaElement extends EmbeddedElement
 		_seeking = false;
 		_readyState = HAVE_NOTHING;
 		_autoplaying = true;
+		
+		_loadedDataWasDispatched = false;
+		_defaultPlaybackStartPosition = 0;
+		_officialPlaybackPosition = 0;
+		_currentPlaybackPosition = 0;
+		_initialPlaybackPosition = 0;
 	}
 	
 	/**
@@ -402,6 +419,8 @@ class HTMLMediaElement extends EmbeddedElement
 			_duration = 0;
 		}
 		
+		_loadedDataWasDispatched = false;
+		
 		selectResource();
 	}
 	
@@ -426,7 +445,9 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 		//else
 		//{
-			//TODO 1 :  Otherwise, if the media element does not have a src attribute but has a source element child, then let mode be children and let candidate be the first such source element child in tree order.
+			//TODO 1 :  Otherwise, if the media element does not have a src 
+			//attribute but has a source element child, then let mode be children and 
+			//let candidate be the first such source element child in tree order.
 		//}
 		else
 		{
@@ -472,9 +493,173 @@ class HTMLMediaElement extends EmbeddedElement
 		_nativeMedia.src = url;
 	}
 	
-	private function seek(time:Float):Void
+	/**
+	 * Seeks to a given position of the media
+	 * 
+	 * This is an implementation of the following
+	 * algorithm :
+	 * http://www.w3.org/TR/2012/WD-html5-20120329/media-elements.html#dom-media-seeking
+	 * 
+	 * @param	newPlaybackPosition the time to seek to, in seconds
+	 */
+	private function seek(newPlaybackPosition:Float):Void
 	{
+		if (_readyState == HAVE_NOTHING)
+		{
+			return;
+		}
 		
+		if (_seeking == true)
+		{
+			//TODO 1 : If the element's seeking IDL attribute is true, 
+			//then another instance of this algorithm is already running. 
+			//Abort that other instance of the algorithm without waiting for
+			//the step that it is running to complete.
+		}
+		
+		_seeking = true;
+		
+		if (newPlaybackPosition > _duration)
+		{
+			newPlaybackPosition = _duration;
+		}
+		//TODO 2 : If the new playback position is less than the earliest possible position, let it be that position instead.
+		if (newPlaybackPosition < 0)
+		{
+			newPlaybackPosition = 0;
+		}
+		
+		//TODO 2 : If the (possibly now changed) new playback position is 
+		//not in one of the ranges given in the seekable attribute, then let 
+		//it be the position in one of the ranges given in the seekable
+		//attribute that is the nearest to the new playback position. If 
+		//two positions both satisfy that constraint (i.e. the new playback
+		//position is exactly in the middle between two ranges in the seekable
+		//attribute) then use the position that is closest to the current 
+		//playback position. If there are no ranges given in the seekable 
+		//attribute then set the seeking IDL attribute to false and abort these steps.
+		
+		fireEvent(Event.SEEKING, false, false);
+		
+	
+		_currentPlaybackPosition = newPlaybackPosition;
+		
+		_nativeMedia.seek(newPlaybackPosition);
+		//TODO 2 : should listen to seek callbacck on nativeMedia
+		
+		//TODO 2 : Wait until the user agent has established whether or not 
+		//the media data for the new playback position is available, and, if
+		//it is, until it has decoded enough data to play back that position.
+		
+		fireEvent(Event.TIME_UPDATE, false, false);
+		
+		fireEvent(Event.SEEKED, false, false);
+	}
+	
+	/**
+	 * When the ready state of the media element
+	 * changes, fire the right events.
+	 * 
+	 * This is an implementation of the following algorithm:
+	 * http://www.w3.org/TR/2012/WD-html5-20120329/media-elements.html#dom-media-load
+	 */
+	private function setReadyState(newReadyState:Int):Void
+	{
+		if (_readyState == HAVE_NOTHING && newReadyState == HAVE_METADATA)
+		{
+			fireEvent(Event.LOADED_METADATA, false, false);
+		}
+		
+		if (_readyState == HAVE_METADATA && (newReadyState == HAVE_CURRENT_DATA || newReadyState == HAVE_ENOUGH_DATA 
+		|| newReadyState == HAVE_FUTURE_DATA))
+		{
+			if (_loadedDataWasDispatched == false)
+			{
+				fireEvent(Event.LOADED_DATA, false, false);
+				_loadedDataWasDispatched = true;
+			}
+			
+			if (newReadyState == HAVE_ENOUGH_DATA || newReadyState == HAVE_FUTURE_DATA)
+			{
+				if ((_readyState >= HAVE_FUTURE_DATA && newReadyState <= HAVE_CURRENT_DATA))
+				{
+					if (isPotentiallyPlaying() == true)
+					{
+						fireEvent(Event.TIME_UPDATE, false, false);
+						fireEvent(Event.WAITING, false, false);
+					}
+				}
+				
+				if (_readyState <= HAVE_CURRENT_DATA && newReadyState == HAVE_FUTURE_DATA)
+				{
+					fireEvent(Event.CAN_PLAY, false, false);
+					
+					if (_paused == false)
+					{
+						fireEvent(Event.PLAYING, false, false);
+					}
+				}
+				
+				if (newReadyState == HAVE_ENOUGH_DATA)
+				{
+					if (_readyState == HAVE_CURRENT_DATA)
+					{
+						fireEvent(Event.CAN_PLAY, false, false);
+						
+						if (_paused == false)
+						{
+							fireEvent(Event.PLAYING, false, false);
+						}
+					}
+					
+					if (_autoplaying == true)
+					{
+						if (_paused == true)
+						{
+							if (autoplay == true)
+							{
+								_paused = false;
+								fireEvent(Event.PLAY, false, false);
+								fireEvent(Event.PLAYING, false, false);
+							}
+						}
+					}
+					
+					fireEvent(Event.CAN_PLAY_THROUGH, false, false);
+				}
+				
+				
+			}
+		}
+		
+		_readyState = newReadyState;
+	}
+	
+	/**
+	 * A media element is said to be potentially playing when
+	 * its paused attribute is false, the element has not ended
+	 * playback, playback has not stopped due to errors,
+	 * the element either has no current media controller
+	 * or has a current media controller but is not blocked
+	 * on its media controller, and the element is not
+	 * a blocked media element.
+	 * 
+	 * TODO 2 : imcomplete
+	 * 
+	 */
+	private function isPotentiallyPlaying():Bool
+	{
+		if (_paused == true)
+		{
+			return false;
+		}
+		
+		if (_ended == true)
+		{
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/////////////////////////////////
@@ -496,7 +681,8 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		invalidateLayout();
 		
-		fireEvent(Event.LOADED_METADATA, false, false);
+		setReadyState(HAVE_METADATA);
+		
 	}
 	
 	/////////////////////////////////
@@ -552,12 +738,26 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function get_currentTime():Float 
 	{
+		if (_defaultPlaybackStartPosition != 0)
+		{
+			return _defaultPlaybackStartPosition;
+		}
+		
 		return _officialPlaybackPosition;
 	}
 	
 	private function set_currentTime(value:Float):Float 
 	{
-		seek(value);
+		switch(_readyState)
+		{
+			case HAVE_NOTHING:
+				_defaultPlaybackStartPosition = value;
+				
+			default:
+				_officialPlaybackPosition = value;
+				seek(value);
+		}
+		
 		return value;
 	}
 	
