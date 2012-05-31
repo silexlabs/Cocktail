@@ -78,6 +78,12 @@ class Event
 	public static inline var ENDED:String = "ended";
 	
 	/**
+	 * The user agent can render the media data at 
+	 * the current playback position for the first time.
+	 */
+	public static inline var LOADED_DATA:String = "loadeddata";
+	
+	/**
 	 * The seeking IDL attribute changed to true.
 	 */
 	public static inline var SEEKING:String = "seeking";
@@ -86,6 +92,15 @@ class Event
 	 * The seeking IDL attribute changed to false.
 	 */
 	public static inline var SEEKED:String = "seeked";
+	
+	/**
+	 * The user agent can resume playback of the media data,
+	 * but estimates that if playback were to be started now,
+	 * the media resource could not be rendered at
+	 * the current playback rate up to its end without
+	 * having to stop for further buffering of content.
+	 */
+	public static inline var CAN_PLAY:String = "canplay";
 	
 	/**
 	 * A media element whose networkState was previously not 
@@ -109,6 +124,14 @@ class Event
 	 * setter has returned.
 	 */
 	public static inline var VOLUME_CHANGE:String = "volumechange";
+	
+	/**
+	 * The user agent estimates that if playback were to be 
+	 * started now, the media resource could be rendered at
+	 * the current playback rate all the way to its 
+	 * end without having to stop for further buffering.
+	 */
+	public static inline var CAN_PLAY_THROUGH:String = "canplaythrough";
 	
 	
 	// XMLHTTPRequest event types
