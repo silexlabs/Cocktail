@@ -129,6 +129,8 @@ class HTMLImageElement extends EmbeddedElement
 	 */
 	private function set_src(value:String):String
 	{
+		//TODO 2 : this logic is already in Element.setAttribute, should call this instead
+		//then just call the laod method
 		var srcAttr:Node = _attributes.getNamedItem(HTML_IMAGE_SRC_ATTRIBUTE);
 		if (srcAttr == null)
 		{

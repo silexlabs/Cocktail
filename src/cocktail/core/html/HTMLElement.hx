@@ -65,7 +65,7 @@ class HTMLElement extends Element
 	private static inline var HTML_STYLE_ATTRIBUTE:String = "style";
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Focus attributes
+	// IDL attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -77,6 +77,25 @@ class HTMLElement extends Element
 	 * instance an HTMLInputElement
 	 */
 	public var tabIndex(get_tabIndex, set_tabIndex):Int;
+	
+	/**
+	 * This attribute assigns an id to an element. 
+	 * This id must be unique in a document.
+	 * 
+	 * get/set the id attribute from the attributes
+	 * map
+	 */
+	public var id(get_id, set_id):String;
+	
+	/**
+	 * get/set a class on the HTMLElement.
+	 * An array of class can be given by separating each
+	 * class name by a space
+	 * 
+	 * className is used instead of class for conflict with
+	 * language reserved word
+	 */
+	public var className(get_className, set_className):String;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Scroll attributes
@@ -107,27 +126,8 @@ class HTMLElement extends Element
 	public var scrollWidth(get_scrollWidth, never):Int;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// DOM attributes
+	// DOM PARSER attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * This attribute assigns an id to an element. 
-	 * This id must be unique in a document.
-	 * 
-	 * get/set the id attribute from the attributes
-	 * map
-	 */
-	public var id(get_id, set_id):String;
-	
-	/**
-	 * get/set a class on the HTMLElement.
-	 * An array of class can be given by separating each
-	 * class name by a space
-	 * 
-	 * className is used instead of class for conflict with
-	 * language reserved word
-	 */
-	public var className(get_className, set_className):String;
 	
 	/**
 	 * sets or gets the HTML
@@ -778,40 +778,6 @@ class HTMLElement extends Element
 		htmlDocument.body.focus();
 	}
 	
-	private function set_tabIndex(value:Int):Int
-	{
-		setAttribute(HTML_TAB_INDEX_ATTRIBUTE, Std.string(value));
-		return value;
-	}
-	
-	/**
-	 * Return the tab index as an int
-	 * @return
-	 */
-	private function get_tabIndex():Int
-	{
-		//TODO 2 : awkward to call super, but else infinite loop
-		var tabIndex:String = super.getAttribute(HTML_TAB_INDEX_ATTRIBUTE);
-		
-		if (tabIndex == "")
-		{
-			//default value for focusable element is 0,
-			//else its -1
-			if (isDefaultFocusable() == true)
-			{
-				return 0;
-			}
-			else
-			{
-				return -1;
-			}
-		}
-		else
-		{
-			return Std.parseInt(tabIndex);
-		}
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// ACTIVATION BEHAVIOUR
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -979,8 +945,42 @@ class HTMLElement extends Element
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// DOM GETTER/SETTER
+	// IDL GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function set_tabIndex(value:Int):Int
+	{
+		setAttribute(HTML_TAB_INDEX_ATTRIBUTE, Std.string(value));
+		return value;
+	}
+	
+	/**
+	 * Return the tab index as an int
+	 * @return
+	 */
+	private function get_tabIndex():Int
+	{
+		//TODO 2 : awkward to call super, but else infinite loop
+		var tabIndex:String = super.getAttribute(HTML_TAB_INDEX_ATTRIBUTE);
+		
+		if (tabIndex == "")
+		{
+			//default value for focusable element is 0,
+			//else its -1
+			if (isDefaultFocusable() == true)
+			{
+				return 0;
+			}
+			else
+			{
+				return -1;
+			}
+		}
+		else
+		{
+			return Std.parseInt(tabIndex);
+		}
+	}
 	
 	/**
 	 * Retrieve the id value from the attributes
@@ -1020,6 +1020,10 @@ class HTMLElement extends Element
 		setAttribute(HTML_CLASS_ATTRIBUTE, value);
 		return value;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// DOM PARSER GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Remove all the currently added child nodes,
