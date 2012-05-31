@@ -32,6 +32,7 @@ class VideoRenderer extends MediaElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 //TODO 1 : doc
+//TODO 1 : deal with video aspect ratio and letterboxing here ?
 	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
 	{
 		var htmlVideoElement:HTMLVideoElement = cast(_node);
