@@ -88,17 +88,16 @@ class BoxRenderer extends ElementRenderer
 		
 		//TODO 3 : should only pass dimensions instead of bounds
 		var backgrounds:Array<NativeElement> = backgroundManager.render(bounds, _coreStyle);
-	#if (flash9 || nme)
+		
+		#if (flash9 || nme)
 		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext);
 		for (i in 0...backgrounds.length)
 		{
-			
 			backgrounds[i].x = globalBounds.x + relativeOffset.x;
 			backgrounds[i].y = globalBounds.y + relativeOffset.y;
 			containerGraphicContext.addChild(backgrounds[i]);
-		
 		}
-			#end
+		#end
 		
 	}
 

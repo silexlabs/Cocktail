@@ -57,20 +57,21 @@ class VideoRenderer extends EmbeddedBoxRenderer
 		if (_coreStyle.computedStyle.width >= _coreStyle.computedStyle.height)
 		{
 			//get the ratio between the intrinsic video width and the width it must be displayed at
-			var ratio:Float = htmlVideoElement.videoWidth / _coreStyle.computedStyle.width;
-			
+			var ratio:Float = htmlVideoElement.videoHeight / _coreStyle.computedStyle.height;
+
 			//the video width use the computed width while the height apply the ratio
 			//to the video height, so that the ratio is kept while displaying the video
 			//as big as possible
-			width = _coreStyle.computedStyle.width;
-			height = htmlVideoElement.videoHeight / ratio;
+			width =  htmlVideoElement.videoWidth / ratio ;
+			height = _coreStyle.computedStyle.height;
 			
 		}
 		else
 		{
-			var ratio:Float = htmlVideoElement.videoHeight / _coreStyle.computedStyle.height;
-			height = _coreStyle.computedStyle.height;
-			width = htmlVideoElement.videoWidth / ratio;
+			var ratio:Float = htmlVideoElement.videoWidth / _coreStyle.computedStyle.width;
+			
+			height = htmlVideoElement.videoHeight / ratio;
+			width = _coreStyle.computedStyle.width;
 		}
 		
 		//the video must be centered in the ElementRenderer, so deduce the offsets

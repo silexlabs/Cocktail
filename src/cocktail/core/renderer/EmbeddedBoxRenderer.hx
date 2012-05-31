@@ -22,6 +22,7 @@ import cocktail.core.font.FontData;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
+import flash.display.DisplayObjectContainer;
 import haxe.Log;
 
 /**
@@ -45,11 +46,18 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * overriden to also render the embedded asset, for instance a picture for
 	 * an image renderer
 	 */
-	override public function render(graphicContext:NativeElement, parentRelativeOffset:PointData):Void
+	override public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
 	{
-		super.render(graphicContext, parentRelativeOffset);
+		super.render(_graphicsContext, parentRelativeOffset);
 		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
-		renderEmbeddedAsset(graphicContext, relativeOffset);
+		renderEmbeddedAsset(_graphicsContext, relativeOffset);
+		
+		//draws the graphic context of this block box on the one of its
+		//parent
+		#if (flash9 || nme)
+		var containerGraphicContext:DisplayObjectContainer = cast(parentGraphicContext);
+		containerGraphicContext.addChild(_graphicsContext);
+		#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
