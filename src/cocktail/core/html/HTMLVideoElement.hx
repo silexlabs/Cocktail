@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
+import cocktail.core.renderer.VideoRenderer;
 import cocktail.port.NativeVideo;
 
 /**
@@ -37,7 +38,26 @@ class HTMLVideoElement extends HTMLMediaElement
 	{
 		super(HTML_VIDEO_TAG_NAME);
 		
+		
+	}
+	
+	/**
+	 * the embedded assed is held by the image loader
+	 */
+	override private function initEmbeddedAsset():Void
+	{
+		//TODO 1 : should have own init
 		_nativeMedia = new NativeVideo();
+		_embeddedAsset = _nativeMedia.nativeElement;
+	}
+	
+		//TODO 1 : doc
+	override private function createElementRenderer():Void
+	{
+		_elementRenderer = new VideoRenderer(this);
+		
+		_elementRenderer.coreStyle = _coreStyle;
+	
 	}
 	
 	/////////////////////////////////

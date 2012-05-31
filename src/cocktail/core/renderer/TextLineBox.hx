@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.FontManager;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
+import flash.display.DisplayObjectContainer;
 
 /**
  * A special kind of line box used to render text. A
@@ -62,9 +63,10 @@ class TextLineBox extends LineBox
 		//TODO 2 : check if leadedAscent fix is efficient, bounds of textLineBox should be relative to formatting
 		//context and not include leaded ascent
 		_nativeElement.y = _bounds.y + _elementRenderer.globalBounds.y + relativeOffset.y + leadedAscent;
+	
+		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext);
+		containerGraphicContext.addChild(_nativeElement);
 		#end
-		
-		graphicContext.addChild(_nativeElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

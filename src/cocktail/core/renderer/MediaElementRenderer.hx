@@ -40,12 +40,12 @@ class MediaElementRenderer extends EmbeddedBoxRenderer
 	// GETTER/SETTER
 	////////////////////////////////
 	
-	private function get_currentTime():Int 
+	private function get_currentTime():Float 
 	{
 		return 0;
 	}
 	
-	private function set_currentTime(value:Int):Int 
+	private function set_currentTime(value:Float):Float 
 	{
 		return value;
 	}

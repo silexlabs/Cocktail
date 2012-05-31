@@ -7,6 +7,10 @@
 */
 package cocktail.core.renderer;
 import cocktail.core.dom.Node;
+import cocktail.core.html.HTMLVideoElement;
+import cocktail.core.NativeElement;
+import cocktail.core.geom.GeomData;
+import flash.display.DisplayObjectContainer;
 
 /**
  * 
@@ -21,6 +25,29 @@ class VideoRenderer extends MediaElementRenderer
 	public function new(node:Node) 
 	{
 		super(node);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+//TODO 1 : doc
+	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
+	{
+		var htmlVideoElement:HTMLVideoElement = cast(_node);
+		trace(htmlVideoElement.embeddedAsset);
+		#if (flash9 || nme)
+		
+		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext);
+		
+		containerGraphicContext.addChild(htmlVideoElement.embeddedAsset);
+		
+		htmlVideoElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + relativeOffset.x;
+		htmlVideoElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + relativeOffset.y;
+		htmlVideoElement.embeddedAsset.alpha = computedStyle.opacity;
+		htmlVideoElement.embeddedAsset.width = _coreStyle.computedStyle.width;
+		htmlVideoElement.embeddedAsset.height = _coreStyle.computedStyle.height;
+		#end
 	}
 	
 }

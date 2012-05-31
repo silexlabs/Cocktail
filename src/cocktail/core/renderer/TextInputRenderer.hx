@@ -12,6 +12,7 @@ import cocktail.core.event.FocusEvent;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
+import flash.display.DisplayObjectContainer;
 import flash.events.Event;
 import flash.geom.Rectangle;
 import flash.Lib;
@@ -90,8 +91,9 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	{
 		updateNativeTextField();
 		
+		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext);
 		//TODO 3 : in NME, seems to make text field lose focus
-		graphicContext.addChild(_nativeTextField);
+		containerGraphicContext.addChild(_nativeTextField);
 	}
 	
 	

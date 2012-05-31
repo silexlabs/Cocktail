@@ -29,6 +29,11 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	public static inline var RESOURCE_SELECTION_CHILDREN_MODE:Int = 1;
 	
+	/**
+	 * The name of the src attribute
+	 */
+	private static inline var HTML_SRC_ATTRIBUTE:String = "src";
+	
 	/////////////////////////////////
 	// IDL ATTRIBUTES
 	////////////////////////////////
@@ -315,6 +320,8 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function loadResource():Void
 	{
+		
+		trace("load");
 		switch (_networkState)
 		{
 			case NETWORK_LOADING, NETWORK_IDLE:
@@ -421,6 +428,7 @@ class HTMLMediaElement extends EmbeddedElement
 		//TODO 1 : should NativeMedia extends EventCallback ?
 		//_nativeMedia.onError = onLoadingError;
 		_nativeMedia.onLoadedMetaData = onLoadedMetaData;
+		_nativeMedia.src = url;
 	}
 	
 	private function seek(time:Float):Void
@@ -448,11 +456,14 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function get_src():String 
 	{
-		return null;
+		return getAttribute(HTML_SRC_ATTRIBUTE);
 	}
 	
 	private function set_src(value:String):String 
 	{
+		setAttribute(HTML_SRC_ATTRIBUTE, value);
+		trace("set src");
+		loadResource();
 		return value;
 	}
 	

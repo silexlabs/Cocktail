@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.dom.Node;
 import cocktail.core.NativeElement;
 import cocktail.core.style.CoreStyle;
+import flash.display.DisplayObjectContainer;
 import haxe.Log;
 import cocktail.core.geom.GeomData;
 
@@ -65,7 +66,8 @@ class InlineBoxRenderer extends FlowBoxRenderer
 		}
 		
 		#if (flash9 || nme)
-		parentGraphicContext.addChild(_graphicsContext);
+		var containerGraphicContext:DisplayObjectContainer = cast(parentGraphicContext);
+		containerGraphicContext.addChild(_graphicsContext);
 		#end
 		
 		
