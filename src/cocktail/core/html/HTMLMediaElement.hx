@@ -459,7 +459,7 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		_networkState = NETWORK_LOADING;
 		
-		fireEvent(Event.TIME_UPDATE, false, false);
+		fireEvent(Event.LOAD_START, false, false);
 		
 		if (mode == RESOURCE_SELECTION_ATTRIBUTE_MODE)
 		{
@@ -662,6 +662,43 @@ class HTMLMediaElement extends EmbeddedElement
 		return true;
 	}
 	
+	/**
+	 * called after the metadata of the media
+	 * have been loaded
+	 * 
+	 * This is an implementation of the following
+	 * algorithm :
+	 * http://www.w3.org/TR/2012/WD-html5-20120329/media-elements.html#concept-media-load-algorithm
+	 */
+	private function establishMediaTimeline():Void
+	{
+		_currentPlaybackPosition = 0;
+		_initialPlaybackPosition = 0;
+		_officialPlaybackPosition = 0;
+		
+		_duration = _nativeMedia.duration;
+		fireEvent(Event.DURATION_CHANGE, false, false);
+		
+		setReadyState(HAVE_METADATA);
+		
+		var jumped = false;
+		
+		if (_defaultPlaybackStartPosition > 0)
+		{
+			seek(_defaultPlaybackStartPosition);
+			jumped = true;
+		}
+		
+		_defaultPlaybackStartPosition = 0;
+		
+		//TODO 2 : If either the media resource or the address of the
+		//current media resource indicate a particular start time,
+		//then set the initial playback position to that time and,
+		//if jumped is still false, seek to that time and let jumped be true.
+		
+		
+	}
+	
 	/////////////////////////////////
 	// RESOURCE CALLBACKS
 	////////////////////////////////
@@ -677,12 +714,9 @@ class HTMLMediaElement extends EmbeddedElement
 		_intrinsicWidth = _nativeMedia.width;
 		_intrinsicRatio = _intrinsicHeight / _intrinsicWidth;
 		
-		_duration = _nativeMedia.duration;
+		establishMediaTimeline();
 		
 		invalidateLayout();
-		
-		setReadyState(HAVE_METADATA);
-		
 	}
 	
 	/////////////////////////////////

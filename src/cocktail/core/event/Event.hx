@@ -119,6 +119,11 @@ class Event
 	public static inline var LOADED_METADATA:String = "loadedmetadata";
 	
 	/**
+	 * The duration attribute has just been updated.
+	 */
+	public static inline var DURATION_CHANGE:String = "durationchange";
+	
+	/**
 	 * Either the volume attribute or the muted attribute has
 	 * changed. Fired after the relevant attribute's
 	 * setter has returned.
