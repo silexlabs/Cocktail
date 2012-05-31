@@ -94,6 +94,11 @@ class Event
 	public static inline var SEEKED:String = "seeked";
 	
 	/**
+	 * The user agent is fetching media data.
+	 */
+	public static inline var PROGRESS:String = "progress";
+	
+	/**
 	 * The user agent can resume playback of the media data,
 	 * but estimates that if playback were to be started now,
 	 * the media resource could not be rendered at

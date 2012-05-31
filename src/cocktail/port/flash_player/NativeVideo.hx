@@ -61,6 +61,7 @@ class NativeVideo extends NativeMedia
 	private function init():Void
 	{
 		_video = new Video();
+		_video.smoothing = true;
 		
 		var nc = new NetConnection();
 		nc.connect(null);
@@ -133,6 +134,17 @@ class NativeVideo extends NativeMedia
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SETTER/GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function get_bytesTotal():Float
+	{
+		return _netStream.bytesTotal;
+	}
+	
+	override private function get_bytesLoaded():Float
+	{
+		return _netStream.bytesLoaded;
+	}
+	
 	
 	override private function get_duration():Float
 	{

@@ -468,9 +468,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 			if (isXAxisClipped() == true && isYAxisClipped() == true)
 			{
-				_graphicsContext.x = globalBounds.x;
-				_graphicsContext.y = globalBounds.y;
-				_graphicsContext.scrollRect = new Rectangle(0 , 0, globalBounds.width, globalBounds.height);
+				//_graphicsContext.x = globalBounds.x;
+				//_graphicsContext.y = globalBounds.y;
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, globalBounds.width + globalBounds.x, globalBounds.height + globalBounds.y);
 
 			}
 			else if (isXAxisClipped() == true)
@@ -520,23 +520,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			return;
 		}
-		
-		//TODO 1 : re-implement
-		//for (i in 0..._zeroOrAutoZIndexChildRenderers.length)
-		//{
-			//_zeroOrAutoZIndexChildRenderers[i].layerRenderer.scroll(x, y,_zeroOrAutoZIndexChildRenderers[i], false);
-		//}
-		//
-		//for (i in 0..._positiveZIndexChildRenderers.length)
-		//{
-			//_positiveZIndexChildRenderers[i].layerRenderer.scroll(x, y,_positiveZIndexChildRenderers[i], false);
-		//}
-		//
-		//for (i in 0..._negativeZIndexChildRenderers.length)
-		//{
-			//_negativeZIndexChildRenderers[i].layerRenderer.scroll(x, y,_negativeZIndexChildRenderers[i], false);
-		//}
-		
 		#if (flash9 || nme)
 		
 		_graphicsContext.x = rootElementRenderer.globalBounds.x;

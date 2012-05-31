@@ -62,6 +62,19 @@ class NativeMedia
 	public var nativeElement(get_nativeElement, never):NativeElement;
 	
 	/**
+	 * get the currently loaded number of bytes of the 
+	 * media
+	 */
+	public var bytesLoaded(get_bytesLoaded, never):Float;
+	
+	/**
+	 * get the total number of bytes of the media. Used
+	 * with bytesLoaded to estimate the load progress of
+	 * the media
+	 */
+	public var bytesTotal(get_bytesTotal, never):Float;
+	
+	/**
 	 * Listen to the native event dispatched when the metadata
 	 * of the native media are loaded
 	 */
@@ -174,6 +187,16 @@ class NativeMedia
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_bytesTotal():Float
+	{
+		return 0;
+	}
+	
+	private function get_bytesLoaded():Float
+	{
+		return 0;
+	}
 	
 	private function get_currentTime():Float
 	{
