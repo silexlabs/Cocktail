@@ -208,7 +208,11 @@ class HTMLMediaElement extends EmbeddedElement
 	private var _ended:Bool;
 	public var ended(get_ended, never):Bool;
 	
-	//TODO 1 : doc
+	/**
+	 * a reference to the proxy class allowing
+	 * access to runtime specific API for 
+	 * video and audio
+	 */
 	private var _nativeMedia:NativeMedia;
 	
 	private var _initialPlaybackPosition:Float;
@@ -232,6 +236,24 @@ class HTMLMediaElement extends EmbeddedElement
 		_paused = false;
 		_seeking = false;
 		_readyState = HAVE_NOTHING;
+	}
+	
+	/**
+	 * overriden to also init the native media
+	 */
+	override private function init():Void
+	{
+		initNativeMedia();
+		super.init();
+	}
+	
+	/**
+	 * Instantiate the right native media
+	 * manager
+	 */
+	private function initNativeMedia():Void
+	{
+		//abstract
 	}
 	
 	/////////////////////////////////
@@ -264,12 +286,12 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			_paused = false;
 			
-			//TODO 1 : Queue a task to fire a simple event named play at the element.
+			fireEvent(Event.PLAY, false, false);
 			
 			switch (_readyState)
 			{
 				case HAVE_NOTHING, HAVE_METADATA, HAVE_CURRENT_DATA:
-					//TODO 1 :  fire a simple event named waiting at the element.
+					fireEvent(Event.WAITING, false, false);
 					
 				case HAVE_FUTURE_DATA, HAVE_ENOUGH_DATA:
 					//TODO 1 :  fire a simple event named playing at the element.

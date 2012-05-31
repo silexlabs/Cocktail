@@ -40,6 +40,13 @@ class Event
 	public static inline var PAUSE:String = "pause";
 	
 	/**
+	 * Playback has stopped because the next frame is not
+	 * available, but the user agent expects that frame
+	 * to become available in due course.
+	 */
+	public static inline var WAITING:String = "waiting";
+	
+	/**
 	 * The current playback position changed as part of
 	 * normal playback or in an especially 
 	 * interesting way, for example discontinuously.
