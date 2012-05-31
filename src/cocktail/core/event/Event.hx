@@ -34,10 +34,28 @@ class Event
 	public static inline var PLAY:String = "play";
 	
 	/**
+	 * Playback is ready to start after having been paused
+	 * or delayed due to lack of media data.
+	 */
+	public static inline var PLAYING:String = "playing";
+	
+	/**
 	 * The element has been paused. Fired after
 	 * the pause() method has returned.
 	 */
 	public static inline var PAUSE:String = "pause";
+	
+	/**
+	 * The user agent stops fetching the media data before 
+	 * it is completely downloaded, but not due to an error.
+	 */
+	public static inline var ABORT:String = "abort";
+	
+	/**
+	 * The user agent begins looking for media data,
+	 * as part of the resource selection algorithm.
+	 */
+	public static inline var LOAD_START:String = "loadstart";
 	
 	/**
 	 * Playback has stopped because the next frame is not
@@ -68,6 +86,16 @@ class Event
 	 * The seeking IDL attribute changed to false.
 	 */
 	public static inline var SEEKED:String = "seeked";
+	
+	/**
+	 * A media element whose networkState was previously not 
+	 * in the NETWORK_EMPTY state has just switched to 
+	 * that state (either because of a fatal error during
+	 * load that's about to be reported, or because the
+	 * load() method was invoked while the resource
+	 * selection algorithm was already running).
+	 */
+	public static inline var EMPTIED:String = "emptied";
 	
 	/**
 	 * The user agent has just determined the duration

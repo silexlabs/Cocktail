@@ -144,7 +144,7 @@ class NativeVideo extends NativeMedia
 		return _netStream.time;
 	}
 	
-	override private function get_height():Null<Float>
+	override private function get_height():Null<Int>
 	{
 		//return null if metadata not yet loaded
 		if (_metaData == null)
@@ -154,7 +154,7 @@ class NativeVideo extends NativeMedia
 		return _video.videoHeight;
 	}
 	
-	override private function get_width():Null<Float>
+	override private function get_width():Null<Int>
 	{
 		if (_metaData == null)
 		{

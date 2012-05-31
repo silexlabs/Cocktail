@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.renderer;
+
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLVideoElement;
 import cocktail.core.NativeElement;
@@ -14,6 +15,8 @@ import flash.display.DisplayObjectContainer;
 
 /**
  * 
+ * Renders an embedded video asset
+ * 
  * TODO 1 : should override bounds to include controls
  * size if necessary
  * 
@@ -21,7 +24,9 @@ import flash.display.DisplayObjectContainer;
  */
 class VideoRenderer extends EmbeddedBoxRenderer
 {
-
+	/**
+	 * class constructor
+	 */
 	public function new(node:Node) 
 	{
 		super(node);
@@ -31,23 +36,62 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-//TODO 1 : doc
-//TODO 1 : deal with video aspect ratio and letterboxing here ?
+	/**
+	 * Render the embedded video asset.
+	 * 
+	 * Video intrinsic aspect ratio is always preserved, so the
+	 * video might be letterboxed to fit in the available bounds,
+	 * the video always takes the maximum amount of space available
+	 * while keeping its aspect ratio
+	 */
 	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
 	{
 		var htmlVideoElement:HTMLVideoElement = cast(_node);
-		trace(htmlVideoElement.embeddedAsset);
+		
+		//those will hold the actual value used for the video
+		//dimensions, with the kept aspect ratio
+		var width:Float;
+		var height:Float;
+		
+		//here the bounds of the ElementRenderer are larger than the height
+		if (_coreStyle.computedStyle.width >= _coreStyle.computedStyle.height)
+		{
+			//get the ratio between the intrinsic video width and the width it must be displayed at
+			var ratio:Float = htmlVideoElement.videoWidth / _coreStyle.computedStyle.width;
+			
+			//the video width use the computed width while the height apply the ratio
+			//to the video height, so that the ratio is kept while displaying the video
+			//as big as possible
+			width = _coreStyle.computedStyle.width;
+			height = htmlVideoElement.videoHeight / ratio;
+			
+		}
+		else
+		{
+			var ratio:Float = htmlVideoElement.videoHeight / _coreStyle.computedStyle.height;
+			height = _coreStyle.computedStyle.height;
+			width = htmlVideoElement.videoWidth / ratio;
+		}
+		
+		//the video must be centered in the ElementRenderer, so deduce the offsets
+		//to apply to the x and y direction
+		var xOffset:Float = (_coreStyle.computedStyle.width - width) / 2;
+		var yOffset:Float = (_coreStyle.computedStyle.height - height) /2;
+		
 		#if (flash9 || nme)
 		
 		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext);
-		
 		containerGraphicContext.addChild(htmlVideoElement.embeddedAsset);
 		
-		htmlVideoElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + relativeOffset.x;
-		htmlVideoElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + relativeOffset.y;
+		//add the x and y offset for the video
+		htmlVideoElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + relativeOffset.x + xOffset;
+		htmlVideoElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + relativeOffset.y + yOffset;
+		
+		//use the actual video width and height
+		htmlVideoElement.embeddedAsset.width = width;
+		htmlVideoElement.embeddedAsset.height = height;
+		
 		htmlVideoElement.embeddedAsset.alpha = computedStyle.opacity;
-		htmlVideoElement.embeddedAsset.width = _coreStyle.computedStyle.width;
-		htmlVideoElement.embeddedAsset.height = _coreStyle.computedStyle.height;
 		#end
 	}
 	

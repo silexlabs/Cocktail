@@ -191,7 +191,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * assuming that the start of the media resource is
 	 * at time zero
 	 */
-	private var _duration:Int;
+	private var _duration:Float;
 	public var duration(get_duration, never):Float;
 	
 	/**
@@ -236,6 +236,7 @@ class HTMLMediaElement extends EmbeddedElement
 		_paused = false;
 		_seeking = false;
 		_readyState = HAVE_NOTHING;
+		_autoplaying = true;
 	}
 	
 	/**
@@ -254,6 +255,22 @@ class HTMLMediaElement extends EmbeddedElement
 	private function initNativeMedia():Void
 	{
 		//abstract
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN ATTRIBUTES METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override public function setAttribute(name:String, value:String):Void
+	{
+		if (name == HTML_SRC_ATTRIBUTE)
+		{
+			src = value;
+		}
+		else
+		{
+			super.setAttribute(name, value);
+		}
 	}
 	
 	/////////////////////////////////
@@ -294,11 +311,13 @@ class HTMLMediaElement extends EmbeddedElement
 					fireEvent(Event.WAITING, false, false);
 					
 				case HAVE_FUTURE_DATA, HAVE_ENOUGH_DATA:
-					//TODO 1 :  fire a simple event named playing at the element.
+					fireEvent(Event.PLAYING, false, false);
 			}
 		}
 		
 		_autoplaying = false;
+		
+		_nativeMedia.play();
 	}
 	
 	/**
@@ -321,12 +340,14 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			_paused = true;
 			
-			//TODO 1 : Queue a task to fire a simple event named timeupdate at the element.
+			fireEvent(Event.TIME_UPDATE, false, false);
 			
-			//TODO 1 : Queue a task to fire a simple event named pause at the element.
+			fireEvent(Event.PAUSE, false, false);
 			
 			_officialPlaybackPosition = _currentPlaybackPosition;
 		}
+		
+		_nativeMedia.pause();
 	}
 	
 	/////////////////////////////////
@@ -342,17 +363,17 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function loadResource():Void
 	{
-		
-		trace("load");
 		switch (_networkState)
 		{
 			case NETWORK_LOADING, NETWORK_IDLE:
-				//TODO 1 : fire a simple event named abort at the media element
+				fireEvent(Event.ABORT, false, false);
 		}
+		
+		trace(_networkState == NETWORK_EMPTY);
 		
 		if (_networkState != NETWORK_EMPTY)
 		{
-			//TODO 1 : Queue a task to fire a simple event named emptied at the media element.
+			fireEvent(Event.EMPTIED, false, false);
 			
 			//TODO 1 : If a fetching process is in progress for the media element, the user agent should stop it.
 			
@@ -370,7 +391,7 @@ class HTMLMediaElement extends EmbeddedElement
 			if (_officialPlaybackPosition > 0)
 			{
 				_officialPlaybackPosition = 0;
-				//TODO 1 : If this changed the official playback position, then queue a task to fire a simple event named timeupdate at the media element.
+				fireEvent(Event.TIME_UPDATE, false, false);
 			}
 			else
 			{
@@ -381,8 +402,9 @@ class HTMLMediaElement extends EmbeddedElement
 			
 			//TODO 1 : supposed to be NaN but don't exist in Haxe ?
 			_duration = 0;
-			
 		}
+		
+		selectResource();
 	}
 	
 	/**
@@ -402,7 +424,6 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		if (src != null)
 		{
-			//TODO 1 : set constants or enum
 			mode = RESOURCE_SELECTION_ATTRIBUTE_MODE;
 		}
 		//else
@@ -419,7 +440,7 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		_networkState = NETWORK_LOADING;
 		
-		//TODO 1 : Queue a task to fire a simple event named loadstart at the media element.
+		fireEvent(Event.TIME_UPDATE, false, false);
 		
 		if (mode == RESOURCE_SELECTION_ATTRIBUTE_MODE)
 		{
@@ -469,7 +490,16 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function onLoadedMetaData(e:Event):Void
 	{
+		_intrinsicHeight = _nativeMedia.height;
+		_intrinsicWidth = _nativeMedia.width;
+		_intrinsicRatio = _intrinsicHeight / _intrinsicWidth;
 		
+		trace(_nativeMedia.duration);
+		_duration = _nativeMedia.duration;
+		
+		invalidateLayout();
+		
+		fireEvent(Event.LOADED_METADATA, false, false);
 	}
 	
 	/////////////////////////////////
@@ -483,8 +513,8 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function set_src(value:String):String 
 	{
-		setAttribute(HTML_SRC_ATTRIBUTE, value);
-		trace("set src");
+		//TODO 2 : awkward to call super, but else infinite loop
+		super.setAttribute(HTML_SRC_ATTRIBUTE, value);
 		loadResource();
 		return value;
 	}

@@ -41,13 +41,13 @@ class NativeMedia
 	 * return the instrinsic width of
 	 * the native media
 	 */
-	public var width(get_width, never):Null<Float>;
+	public var width(get_width, never):Null<Int>;
 	
 	/**
 	 * return the instrinsic height of
 	 * the native media
 	 */
-	public var height(get_height, never):Null<Float>;
+	public var height(get_height, never):Null<Int>;
 	
 	/**
 	 * Return the current playhead time, in
@@ -180,12 +180,12 @@ class NativeMedia
 		return 0;
 	}
 	
-	private function get_height():Null<Float>
+	private function get_height():Null<Int>
 	{
 		return null;
 	}
 	
-	private function get_width():Null<Float>
+	private function get_width():Null<Int>
 	{
 		return null;
 	}
