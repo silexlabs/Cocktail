@@ -67,7 +67,7 @@ class NativeVideo extends NativeMedia
 		_netStream = new NetStream(nc);
 		
 		initListenerObject(_netStream);
-		
+
 		_video.attachNetStream(_netStream);
 	}
 	
@@ -144,13 +144,23 @@ class NativeVideo extends NativeMedia
 		return _netStream.time;
 	}
 	
-	override private function get_height():Float
+	override private function get_height():Null<Float>
 	{
+		//return null if metadata not yet loaded
+		if (_metaData == null)
+		{
+			return null;
+		}
 		return _video.videoHeight;
 	}
 	
-	override private function get_width():Float
+	override private function get_width():Null<Float>
 	{
+		if (_metaData == null)
+		{
+			return null;
+		}
+		
 		return _video.videoWidth;
 	}
 	
@@ -159,7 +169,14 @@ class NativeVideo extends NativeMedia
 	 */
 	override private function set_src(value:String):String
 	{
+		//reset metadata
+		_metaData = null;
+		
 		_netStream.play(value);
+		//pause video by default, play must be explicitely
+		//called
+		_netStream.pause();
+		
 		return value;
 	}
 	

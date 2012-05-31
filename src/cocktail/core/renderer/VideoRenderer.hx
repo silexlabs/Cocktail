@@ -19,7 +19,7 @@ import flash.display.DisplayObjectContainer;
  * 
  * @author Yannick DOMINGUEZ
  */
-class VideoRenderer extends MediaElementRenderer
+class VideoRenderer extends EmbeddedBoxRenderer
 {
 
 	public function new(node:Node) 

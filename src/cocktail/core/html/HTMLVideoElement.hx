@@ -22,6 +22,16 @@ class HTMLVideoElement extends HTMLMediaElement
 	private static inline var HTML_VIDEO_TAG_NAME:String = "video";
 	
 	/**
+	 * The default width of the video tag, if the video is not yet loaded 
+	 */
+	private static inline var HTML_VIDEO_DEFAULT_WIDTH:Int = 300;
+	
+	/**
+	 * The default height of the video tag, if the video is not yet loaded 
+	 */
+	private static inline var HTML_VIDEO_DEFAULT_HEIGHT:Int = 150;
+	
+	/**
 	 * Returns the intrinsic width of the video in CSS pixels
 	 */
 	public var videoWidth(get_videoWidth, never):Int;
@@ -37,8 +47,14 @@ class HTMLVideoElement extends HTMLMediaElement
 	public function new() 
 	{
 		super(HTML_VIDEO_TAG_NAME);
-		
-		
+	}
+	
+	/**
+	 * Instantiate a video media manager
+	 */
+	override private function initNativeMedia():Void
+	{
+		_nativeMedia = new NativeVideo();
 	}
 	
 	/**
@@ -46,36 +62,55 @@ class HTMLVideoElement extends HTMLMediaElement
 	 */
 	override private function initEmbeddedAsset():Void
 	{
-		//TODO 1 : should have own init
-		_nativeMedia = new NativeVideo();
 		_embeddedAsset = _nativeMedia.nativeElement;
 	}
 	
-		//TODO 1 : doc
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Instantiate a video renderer
+	 */
 	override private function createElementRenderer():Void
 	{
 		_elementRenderer = new VideoRenderer(this);
-		
 		_elementRenderer.coreStyle = _coreStyle;
-	
 	}
 	
 	/////////////////////////////////
 	// GETTER/SETTER
 	////////////////////////////////
 	
-	//TODO 1 : The intrinsic width of a video element's playback area
-	//is the intrinsic width of the video resource, if that is available;
-	//otherwise it is the intrinsic width of the poster frame, if that is
-	//available; otherwise it is 300 CSS pixels.
+	/**
+	 * Return the intrinsic width of the video
+	 * if available, else return CSS default for
+	 * video
+	 */
 	private function get_videoWidth():Int
 	{
-		return 0;
+		if (_nativeMedia.width != null)
+		{
+			return Math.round(_nativeMedia.width);
+		}
+		else
+		{
+			return HTML_VIDEO_DEFAULT_WIDTH;
+		}
 	}
 	
-	//TODO 1 : same as for width
+	/**
+	 * Same as for width
+	 */
 	private function get_videoHeight():Int
 	{
-		return 0;
+		if (_nativeMedia.height != null)
+		{
+			return Math.round(_nativeMedia.height);
+		}
+		else
+		{
+			return HTML_VIDEO_DEFAULT_HEIGHT;
+		}
 	}
 }
