@@ -369,8 +369,6 @@ class HTMLMediaElement extends EmbeddedElement
 				fireEvent(Event.ABORT, false, false);
 		}
 		
-		trace(_networkState == NETWORK_EMPTY);
-		
 		if (_networkState != NETWORK_EMPTY)
 		{
 			fireEvent(Event.EMPTIED, false, false);
@@ -494,7 +492,6 @@ class HTMLMediaElement extends EmbeddedElement
 		_intrinsicWidth = _nativeMedia.width;
 		_intrinsicRatio = _intrinsicHeight / _intrinsicWidth;
 		
-		trace(_nativeMedia.duration);
 		_duration = _nativeMedia.duration;
 		
 		invalidateLayout();
