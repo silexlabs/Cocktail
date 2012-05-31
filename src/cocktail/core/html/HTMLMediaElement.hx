@@ -8,6 +8,8 @@
 package cocktail.core.html;
 import cocktail.core.event.Event;
 import cocktail.port.platform.nativeMedia.NativeMedia;
+import haxe.Timer;
+import cocktail.core.html.HTMLData;
 
 /**
  * This is an abstract base class for media elements,
@@ -19,6 +21,8 @@ import cocktail.port.platform.nativeMedia.NativeMedia;
 	 * If the media element is in a Document, abort these steps.
 	 * If the media element's networkState attribute has the value NETWORK_EMPTY, abort these steps.
 	 * Pause the media element.
+	 * 
+ * TODO 1 : add IDL callbacks in EventCallback
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -40,6 +44,23 @@ class HTMLMediaElement extends EmbeddedElement
 	 * The name of the src attribute
 	 */
 	private static inline var HTML_SRC_ATTRIBUTE:String = "src";
+	
+	/**
+	 * The name of the autoplay attribute
+	 */
+	private static inline var HTML_AUTOPLAY_ATTRIBUTE:String = "autoplay";
+	
+	/**
+	 * the frequence in milliseconds between each dispatch of
+	 * a timeupdate event when the media is playing
+	 */
+	private static inline var TIME_UPDATE_FREQUENCY:Int = 350;
+	
+	/**
+	 * the frequence in milliseconds between each dispatch of
+	 * a progress event when a media is loading
+	 */
+	private static inline var PROGRESS_FREQUENCY:Int = 350;
 	
 	/////////////////////////////////
 	// IDL ATTRIBUTES
@@ -202,6 +223,16 @@ class HTMLMediaElement extends EmbeddedElement
 	public var duration(get_duration, never):Float;
 	
 	/**
+	 * return a new static normalized TimeRanges object that represents
+	 * the ranges of the media resource, if any, that the user agent has buffered,
+	 * at the time the attribute is evaluated.
+	 * 
+	 * TODO 2 : Users agents must accurately determine the ranges available, 
+	 * even for media streams where this can only be determined by tedious inspection.
+	 */
+	public var buffered(get_buffered, never):TimeRanges;
+	
+	/**
 	 * The paused attribute represents whether the media
 	 * element is paused or not. The attribute is initially true.
 	 */
@@ -244,7 +275,7 @@ class HTMLMediaElement extends EmbeddedElement
 		_networkState = NETWORK_EMPTY;
 		_ended = false;
 		_duration = 0;
-		_paused = false;
+		_paused = true;
 		_seeking = false;
 		_readyState = HAVE_NOTHING;
 		_autoplaying = true;
@@ -335,6 +366,8 @@ class HTMLMediaElement extends EmbeddedElement
 		_autoplaying = false;
 		
 		_nativeMedia.play();
+		
+		onTimeUpdateTick();
 	}
 	
 	/**
@@ -490,6 +523,7 @@ class HTMLMediaElement extends EmbeddedElement
 		//TODO 1 : should NativeMedia extends EventCallback ?
 		//_nativeMedia.onError = onLoadingError;
 		_nativeMedia.onLoadedMetaData = onLoadedMetaData;
+		
 		_nativeMedia.src = url;
 	}
 	
@@ -694,9 +728,7 @@ class HTMLMediaElement extends EmbeddedElement
 		//TODO 2 : If either the media resource or the address of the
 		//current media resource indicate a particular start time,
 		//then set the initial playback position to that time and,
-		//if jumped is still false, seek to that time and let jumped be true.
-		
-		
+		//if jumped is still false, seek to that time and let jumped be true.	
 	}
 	
 	/////////////////////////////////
@@ -717,6 +749,45 @@ class HTMLMediaElement extends EmbeddedElement
 		establishMediaTimeline();
 		
 		invalidateLayout();
+		
+		onProgressTick();
+	}
+	
+	private function onTimeUpdateTick():Void
+	{
+		if (_paused == true)
+		{
+			return;
+		}
+		
+		_currentPlaybackPosition = _nativeMedia.currentTime;
+		_officialPlaybackPosition = _currentPlaybackPosition;
+		
+		if (Math.round(_currentPlaybackPosition) >= Math.round(_duration))
+		{
+			_ended = true;
+			fireEvent(Event.ENDED, false, false);
+			return;
+		}
+		
+		fireEvent(Event.TIME_UPDATE, false, false);
+		
+		Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
+	}
+	
+	private function onProgressTick():Void
+	{
+		trace(_nativeMedia.bytesLoaded);
+		trace(_nativeMedia.bytesTotal);
+		if (_nativeMedia.bytesLoaded >= _nativeMedia.bytesTotal)
+		{
+			fireEvent(Event.CAN_PLAY_THROUGH, false, false);
+			return;
+		}
+		fireEvent(Event.PROGRESS, false, false);
+		trace(_nativeMedia.bytesLoaded);
+		trace(_nativeMedia.bytesTotal);
+		Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
 	}
 	
 	/////////////////////////////////
@@ -738,7 +809,14 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function get_autoplay():Bool
 	{
-		return false;
+		if (getAttribute(HTML_AUTOPLAY_ATTRIBUTE) != null)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	private function set_autoplay(value:Bool):Bool
@@ -759,6 +837,21 @@ class HTMLMediaElement extends EmbeddedElement
 	/////////////////////////////////
 	// GETTER/SETTER
 	////////////////////////////////
+	
+	private function get_buffered():TimeRanges
+	{
+		var ranges:Array<Range> = new Array<Range>();
+		
+		//return one range which is the number of seconds
+		//already loaded of the media
+		ranges.push( {
+			start : 0.0,
+			end: _duration * (_nativeMedia.bytesLoaded / _nativeMedia.bytesTotal)
+		});
+		
+		var timeRanges:TimeRanges = new TimeRanges(ranges);
+		return timeRanges;
+	}
 	
 	private function get_currentSrc():String 
 	{
