@@ -13,6 +13,7 @@ import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
+import flash.display.DisplayObjectContainer;
 import flash.display.Loader;
 
 /**
@@ -32,7 +33,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE RENDERING METHODS
+	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	//TODO 2 : test opacity
@@ -46,7 +47,8 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	
 		#if (flash9 || nme)
 		
-		graphicContext.addChild(htmlImageElement.embeddedAsset);
+		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext);
+		containerGraphicContext.addChild(htmlImageElement.embeddedAsset);
 		
 		htmlImageElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + relativeOffset.x;
 		htmlImageElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + relativeOffset.y;

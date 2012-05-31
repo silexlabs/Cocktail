@@ -11,7 +11,7 @@ package cocktail.core;
  * Set the right runtime specific NativeElement at compile-time
  */
 #if flash9
-typedef NativeElement =  flash.display.DisplayObjectContainer;
+typedef NativeElement =  flash.display.DisplayObject;
 
 #elseif nme
 typedef NativeElement =  Dynamic;

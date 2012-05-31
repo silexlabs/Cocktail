@@ -15,6 +15,7 @@ import cocktail.core.resource.ImageLoader;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.computer.BackgroundStylesComputer;
 import cocktail.core.unit.UnitManager;
+import flash.display.Sprite;
 import haxe.Log;
 
 /**
@@ -290,9 +291,8 @@ class BackgroundManager
 		var computedBackgroundStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
 			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,
 			backgroundClip, backgroundRepeat, backgroundImage);
-			
-		var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(
-		backgroundBox);
+
+		var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(backgroundBox);
 		backgroundColorDrawingManager.drawBackgroundColor(backgroundColor, computedBackgroundStyles.backgroundClip);
 
 		_backgroundDrawingManagers.push(backgroundColorDrawingManager);

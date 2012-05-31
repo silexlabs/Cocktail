@@ -31,6 +31,7 @@ import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.geom.GeomData;
+import flash.display.DisplayObjectContainer;
 import haxe.Log;
 
 /**
@@ -82,19 +83,23 @@ class BoxRenderer extends ElementRenderer
 	 */
 	private function renderBackground(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
+
 		var backgroundManager:BackgroundManager = new BackgroundManager();
 		
 		//TODO 3 : should only pass dimensions instead of bounds
 		var backgrounds:Array<NativeElement> = backgroundManager.render(bounds, _coreStyle);
-
+	#if (flash9 || nme)
+		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext);
 		for (i in 0...backgrounds.length)
 		{
-			#if (flash9 || nme)
+			
 			backgrounds[i].x = globalBounds.x + relativeOffset.x;
 			backgrounds[i].y = globalBounds.y + relativeOffset.y;
-			graphicContext.addChild(backgrounds[i]);
-			#end
+			containerGraphicContext.addChild(backgrounds[i]);
+		
 		}
+			#end
+		
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////

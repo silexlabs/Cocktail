@@ -1,5 +1,6 @@
 package cocktail.port.platform.nativeMedia;
 import cocktail.core.event.Event;
+import cocktail.core.NativeElement;
 
 /**
  * ...
@@ -20,6 +21,8 @@ class NativeMedia
 	
 	private var _onTimeUpdate:Event->Void;
 	public var onTimeUpdate(get_onTimeUpdate, set_onTimeUpdate):Event->Void;
+	
+	public var nativeElement(get_nativeElement, never):NativeElement;
 	
 	/**
 	 * class constructor
@@ -97,8 +100,13 @@ class NativeMedia
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// CALLBACKS SETTERS/GETTERS
+	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_nativeElement():NativeElement
+	{
+		return null;
+	}
 	
 	private function get_duration():Float
 	{

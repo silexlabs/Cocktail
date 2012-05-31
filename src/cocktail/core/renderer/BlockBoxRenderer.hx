@@ -21,6 +21,7 @@ import cocktail.core.style.formatter.InlineFormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 import cocktail.core.geom.GeomData;
+import flash.display.DisplayObjectContainer;
 import haxe.Log;
 import flash.geom.Rectangle;
 
@@ -264,7 +265,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//draws the graphic context of this block box on the one of its
 		//parent
 		#if (flash9 || nme)
-		parentGraphicContext.addChild(_graphicsContext);
+		var containerGraphicContext:DisplayObjectContainer = cast(parentGraphicContext);
+		containerGraphicContext.addChild(_graphicsContext);
 		#end
 	}
 	
