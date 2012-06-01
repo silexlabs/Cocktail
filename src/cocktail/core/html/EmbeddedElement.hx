@@ -100,22 +100,6 @@ class EmbeddedElement extends HTMLElement
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Embedded elements can't have children
-	 */
-	override public function appendChild(newChild:Node):Node
-	{
-		return newChild;
-	}
-		
-	/**
-	 * Embedded elements can't have children
-	 */
-	override public function removeChild(oldChild:Node):Node
-	{
-		return oldChild;
-	}
-	
 	override public function setAttribute(name:String, value:String):Void
 	{
 		if (name == HTML_HEIGHT_ATTRIBUTE)
