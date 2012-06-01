@@ -419,7 +419,6 @@ class LayerRenderer extends Node
 				else if (childRenderers[i].coreStyle.position == fixed)
 				{
 					elementRenderersAtPointInChildRenderer = childRenderers[i].layerRenderer.getElementRenderersAtPoint(point, scrollX , scrollY);
-			
 				}
 				else
 				{

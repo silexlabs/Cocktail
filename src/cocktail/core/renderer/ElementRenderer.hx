@@ -417,6 +417,20 @@ class ElementRenderer extends Node
 		_layerRenderer = null;
 	}
 	
+	public function scroll(x:Float, y:Float):Void
+	{
+		if (computedStyle.position == fixed)
+		{
+			
+			#if (flash9 || nme)
+			{
+				_graphicsContext.x -= x;
+				_graphicsContext.y -= y;
+			}
+			#end
+		}
+	}
+	
 	/////////////////////////////////
 	// PUBLIC HELPER METHODS
 	// Overriden by inheriting classes

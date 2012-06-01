@@ -92,7 +92,6 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	{
 		_bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 		_bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
-		
 		return _bounds;
 	}
 }

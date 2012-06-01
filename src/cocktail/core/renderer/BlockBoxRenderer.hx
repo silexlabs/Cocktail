@@ -454,6 +454,52 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	/////////////////////////////////
+	// OVERRIDEN PUBLIC VISUAL EFFECT METHODS
+	////////////////////////////////
+	
+	//TODO 1 : this method should be called in each render() method, if the ElementRenderer
+	//is a BlockBoxRenderer call this, else check if scroll offset must be removed, like for 
+	//fixed elements. Method Render should have additional scrollOffset arg
+	override public function scroll(x:Float, y:Float):Void
+	{
+		super.scroll(x, y);
+		//TODO 1 IMPORTANT: big hack but will do for now
+		//TODO 1 : doesn't work for zindex auto positioned elements, as they don't
+		//have a graphic context of their own
+		//TODO 2 : should be applied to every positioned element whose
+		//containing block is a parent of the root renderer.
+		//Add a public method on ElementRenderer ?
+		if (_horizontalScrollBar != null || _verticalScrollBar != null)
+		{
+			#if (flash9 || nme)
+			
+			//TODO 1 : only initial block box renderer must not be moved ?
+			//_graphicsContext.x = globalBounds.x;
+			//_graphicsContext.y = globalBounds.y;
+			
+			var width:Float;
+			var height:Float;
+			
+			if (_graphicsContext.scrollRect != null)
+			{
+				width = _graphicsContext.scrollRect.width;
+				height = _graphicsContext.scrollRect.height;
+			}
+			else
+			{
+				width =  globalBounds.width;
+				height = globalBounds.height;
+			}
+			
+			_graphicsContext.scrollRect = new Rectangle(x , y, width + globalBounds.x, height + globalBounds.y);
+			#end
+			
+			scrollChildren(x, y);
+		}
+		
+	}
+	
+	/////////////////////////////////
 	// PRIVATE VISUAL EFFECT METHODS
 	////////////////////////////////
 	
@@ -466,27 +512,30 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		#if (flash9 || nme)
 		
+		var scrollableContainerBlock:ContainingBlockData = getScrollbarContainerBlock();
+		
 			if (isXAxisClipped() == true && isYAxisClipped() == true)
 			{
 				//_graphicsContext.x = globalBounds.x;
 				//_graphicsContext.y = globalBounds.y;
-				_graphicsContext.scrollRect = new Rectangle(0 , 0, globalBounds.width + globalBounds.x, globalBounds.height + globalBounds.y);
+				
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, scrollableContainerBlock.width + globalBounds.x, scrollableContainerBlock.height + globalBounds.y);
 
 			}
 			else if (isXAxisClipped() == true)
 			{
-				_graphicsContext.x = globalBounds.x;
-				_graphicsContext.y = globalBounds.y;
+				//_graphicsContext.x = globalBounds.x;
+				//_graphicsContext.y = globalBounds.y;
 				//TODO 2 : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
-				_graphicsContext.scrollRect = new Rectangle(0 , 0, globalBounds.width, 10000);
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, scrollableContainerBlock.width, 10000);
 		
 			}
 			else if (isYAxisClipped() == true)
 			{
-				_graphicsContext.x = globalBounds.x;
-				_graphicsContext.y = globalBounds.y;
+				//_graphicsContext.x = globalBounds.x;
+				//_graphicsContext.y = globalBounds.y;
 				//TODO 2 : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
-				_graphicsContext.scrollRect = new Rectangle(0 , 0, 10000, globalBounds.height);
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, 10000, scrollableContainerBlock.height);
 			}
 			else
 			{
@@ -496,51 +545,15 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		#end	
 	}
 	
-	//TODO 1 : this method should be called in each render() method, if the ElementRenderer
-	//is a BlockBoxRenderer call this, else check if scroll offset must be removed, like for 
-	//fixed elements. Method Render should have additional scrollOffset arg
-	private function scroll(x:Float, y:Float, rootElementRenderer:ElementRenderer, startedScroll:Bool = true):Void
+	
+	
+	private function scrollChildren(scrollX:Float, scrollY:Float):Void
 	{
-		
-		//TODO 1 IMPORTANT: big hack but will do for now
-		//TODO 1 : doesn't work for zindex auto positioned elements, as they don't
-		//have a graphic context of their own
-		//TODO 2 : should be applied to every positioned element whose
-		//containing block is a parent of the root renderer.
-		//Add a public method on ElementRenderer ?
-		if (rootElementRenderer.computedStyle.position == fixed)
+		for ( i in 0..._childNodes.length)
 		{
-			#if (flash9 || nme)
-			_graphicsContext.y = y;
-			_graphicsContext.x = x;
-			#end
+			var child:ElementRenderer = cast(_childNodes[i]);
+			child.scroll(scrollX, scrollY);
 		}
-		
-		if (startedScroll == false)
-		{
-			return;
-		}
-		#if (flash9 || nme)
-		
-		_graphicsContext.x = rootElementRenderer.globalBounds.x;
-		_graphicsContext.y = rootElementRenderer.globalBounds.y;
-		
-		var width:Float;
-		var height:Float;
-		
-		if (_graphicsContext.scrollRect != null)
-		{
-			width = _graphicsContext.scrollRect.width;
-			height = _graphicsContext.scrollRect.height;
-		}
-		else
-		{
-			width =  rootElementRenderer.globalBounds.width;
-			height = rootElementRenderer.globalBounds.height;
-		}
-		
-		_graphicsContext.scrollRect = new Rectangle(x + rootElementRenderer.globalBounds.x, y + rootElementRenderer.globalBounds.y, width, height);
-		#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -588,7 +601,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//TODO 4 : more complex thant it should
 	private function layoutScrollBarsIfNecessary(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
-		var horizontalScrollBarContainerBlockData = getContainerBlockDataWithoutScrollbars();
+		var horizontalScrollBarContainerBlockData = getScrollbarContainerBlock();
 		
 		if (_horizontalScrollBar != null)
 		{
@@ -600,7 +613,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			layoutPositionedChild(_horizontalScrollBar.elementRenderer, horizontalScrollBarContainerBlockData, viewportData);
 		}
 		
-		var verticalScrollBarContainerBlockData = getContainerBlockDataWithoutScrollbars();
+		var verticalScrollBarContainerBlockData = getScrollbarContainerBlock();
 		
 		if (_verticalScrollBar != null)
 		{
@@ -773,7 +786,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			
 			if (isXAxisClipped() == true || isYAxisClipped() == true)
 			{
-				scroll(_scrollLeft, _scrollTop, this);
+				scroll(_scrollLeft, _scrollTop);
 			}
 			
 			if (_horizontalScrollBar != null)
@@ -824,17 +837,16 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			
 			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
-			
+				
 			if (child.node != _horizontalScrollBar && child.node != _verticalScrollBar)
 			{
-				if (child.hasChildNodes() == true && child.establishesNewFormattingContext() == false)
+				if (child.hasChildNodes() == true)
 				{
 					var childChildrenBounds:Array<RectangleData> = doGetScrollableBounds(child);
 					
 					for (j in 0...childChildrenBounds.length)
 					{
 						childrenBounds.push(childChildrenBounds[j]);
-						
 					}
 				}
 				
@@ -961,7 +973,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function attachOrDetachHorizontalScrollBarIfNecessary():Void
 	{
-		if (_scrollableBounds.x < bounds.x || _scrollableBounds.x + _scrollableBounds.width > bounds.x + bounds.width)
+		if (_scrollableBounds.x < 0 || _scrollableBounds.x + _scrollableBounds.width > bounds.width)
 		{
 			attachHorizontalScrollBar();
 		}
@@ -1019,7 +1031,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private function attachOrDetachVerticalScrollBarIfNecessary():Void
 	{
 		//TODO 1 : shouldn't have to round values, all the formatting should be done with floats
-		if (Math.round(_scrollableBounds.y) < Math.round(bounds.y) || Math.round(_scrollableBounds.y) + Math.round(_scrollableBounds.height) > Math.round(bounds.y) + Math.round(bounds.height))
+		if (Math.round(_scrollableBounds.y) < 0 || Math.round(_scrollableBounds.y) + Math.round(_scrollableBounds.height) >  Math.round(bounds.height))
 		{
 			attachVerticalScrollBar();
 		}
@@ -1279,7 +1291,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * without any scrollbars. Used when positioning scrollbars
 	 * themselves
 	 */
-	private function getContainerBlockDataWithoutScrollbars():ContainingBlockData
+	private function getScrollbarContainerBlock():ContainingBlockData
 	{
 		return super.getContainerBlockData();
 	}
