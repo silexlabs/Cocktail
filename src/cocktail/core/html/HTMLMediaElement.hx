@@ -35,36 +35,6 @@ class HTMLMediaElement extends EmbeddedElement
 	public static inline var RESOURCE_SELECTION_CHILDREN_MODE:Int = 1;
 	
 	/**
-	 * The name of the src attribute
-	 */
-	private static inline var HTML_SRC_ATTRIBUTE:String = "src";
-	
-	/**
-	 * The name of the autoplay attribute
-	 */
-	private static inline var HTML_AUTOPLAY_ATTRIBUTE:String = "autoplay";
-	
-	/**
-	 * The name of the loop attribute
-	 */
-	private static inline var HTML_LOOP_ATTRIBUTE:String = "loop";
-	
-	/**
-	 * the html tag name of a source
-	 */
-	private static inline var HTML_SOURCE_TAG_NAME:String = "source";
-	
-	/**
-	 * the type attribute name
-	 */
-	private static inline var HTML_TYPE_ATTRIBUTE:String = "type";
-	
-	/**
-	 * the media attribute name
-	 */
-	private static inline var HTML_MEDIA_ATTRIBUTE:String = "media";
-	
-	/**
 	 * the frequence in milliseconds between each dispatch of
 	 * a timeupdate event when the media is playing
 	 */
@@ -372,7 +342,7 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			//invoke the select resource algorithm if a source
 			//child was just added
-			if (newChild.nodeName == HTML_SOURCE_TAG_NAME)
+			if (newChild.nodeName == HTMLConstants.HTML_SOURCE_TAG_NAME)
 			{
 				selectResource();
 			}
@@ -391,7 +361,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	override public function setAttribute(name:String, value:String):Void
 	{
-		if (name == HTML_SRC_ATTRIBUTE)
+		if (name == HTMLConstants.HTML_SRC_ATTRIBUTE_NAME)
 		{
 			src = value;
 		}
@@ -595,7 +565,7 @@ class HTMLMediaElement extends EmbeddedElement
 			//retrieve the first source child
 			for (i in 0..._childNodes.length)
 			{
-				if (_childNodes[i].nodeName == HTML_SOURCE_TAG_NAME)
+				if (_childNodes[i].nodeName == HTMLConstants.HTML_SOURCE_TAG_NAME)
 				{
 					candidate = cast(_childNodes[i]);
 					break;
@@ -637,7 +607,7 @@ class HTMLMediaElement extends EmbeddedElement
 			//TODO 2 : short cut for now, not implemented like the spec
 			for (i in 0..._childNodes.length)
 			{
-				if (_childNodes[i].nodeName == HTML_SOURCE_TAG_NAME)
+				if (_childNodes[i].nodeName == HTMLConstants.HTML_SOURCE_TAG_NAME)
 				{
 					var sourceChild:HTMLSourceElement = cast(_childNodes[i]);
 					if (sourceChild.type != null)
@@ -884,7 +854,7 @@ class HTMLMediaElement extends EmbeddedElement
 	{
 		for (i in 0..._childNodes.length)
 		{
-			if (_childNodes[i].nodeName == HTML_SOURCE_TAG_NAME)
+			if (_childNodes[i].nodeName == HTMLConstants.HTML_SOURCE_TAG_NAME)
 			{
 				return true;
 			}
@@ -985,20 +955,20 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function get_src():String 
 	{
-		return getAttribute(HTML_SRC_ATTRIBUTE);
+		return getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME);
 	}
 	
 	private function set_src(value:String):String 
 	{
 		//TODO 2 : awkward to call super, but else infinite loop
-		super.setAttribute(HTML_SRC_ATTRIBUTE, value);
+		super.setAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME, value);
 		loadResource();
 		return value;
 	}
 	
 	private function get_autoplay():Bool
 	{
-		if (getAttribute(HTML_AUTOPLAY_ATTRIBUTE) != null)
+		if (getAttribute(HTMLConstants.HTML_AUTOPLAY_ATTRIBUTE_NAME) != null)
 		{
 			return true;
 		}
@@ -1011,13 +981,13 @@ class HTMLMediaElement extends EmbeddedElement
 	private function set_autoplay(value:Bool):Bool
 	{
 		//TODO 2 : awkward to call super, but else infinite loop
-		super.setAttribute(HTML_AUTOPLAY_ATTRIBUTE, Std.string(value));
+		super.setAttribute(HTMLConstants.HTML_AUTOPLAY_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}
 	
 	private function get_loop():Bool
 	{
-		if (getAttribute(HTML_LOOP_ATTRIBUTE) != null)
+		if (getAttribute(HTMLConstants.HTML_LOOP_ATTRIBUTE_NAME) != null)
 		{
 			return true;
 		}
@@ -1030,7 +1000,7 @@ class HTMLMediaElement extends EmbeddedElement
 	private function set_loop(value:Bool):Bool
 	{
 		//TODO 2 : awkward to call super, but else infinite loop
-		super.setAttribute(HTML_LOOP_ATTRIBUTE, Std.string(value));
+		super.setAttribute(HTMLConstants.HTML_LOOP_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}
 	

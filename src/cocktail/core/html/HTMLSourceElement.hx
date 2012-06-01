@@ -15,30 +15,6 @@ package cocktail.core.html;
  */
 class HTMLSourceElement extends HTMLElement
 {
-	/**
-	 * the html tag name of a source
-	 * 
-	 * TODO 1 : all those attribute should be public and in the same
-	 * file
-	 */
-	private static inline var HTML_SOURCE_TAG_NAME:String = "source";
-	
-	/**
-	 * the src attribute name
-	 */
-	private static inline var HTML_SRC_ATTRIBUTE:String = "src";
-	
-	/**
-	 * the type attribute name
-	 */
-	private static inline var HTML_TYPE_ATTRIBUTE:String = "type";
-	
-	/**
-	 * the media attribute name
-	 */
-	private static inline var HTML_MEDIA_ATTRIBUTE:String = "media";
-	
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// IDL attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +52,7 @@ class HTMLSourceElement extends HTMLElement
 	 */
 	public function new() 
 	{
-		super(HTML_SOURCE_TAG_NAME);
+		super(HTMLConstants.HTML_SOURCE_TAG_NAME);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -97,34 +73,34 @@ class HTMLSourceElement extends HTMLElement
 	
 	private function get_src():String
 	{
-		return getAttribute(HTML_SRC_ATTRIBUTE);
+		return getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME);
 	}
 	
 	private function set_src(value:String):String
 	{
-		setAttribute(HTML_SRC_ATTRIBUTE, value);
+		setAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME, value);
 		return value;
 	}
 	
 	private function get_type():String
 	{
-		return getAttribute(HTML_TYPE_ATTRIBUTE);
+		return getAttribute(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME);
 	}
 	
 	private function set_type(value:String):String
 	{
-		setAttribute(HTML_TYPE_ATTRIBUTE, value);
+		setAttribute(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME, value);
 		return value;
 	}
 	
 	private function get_media():String
 	{
-		return getAttribute(HTML_MEDIA_ATTRIBUTE);
+		return getAttribute(HTMLConstants.HTML_MEDIA_ATTRIBUTE_NAME);
 	}
 	
 	private function set_media(value:String):String
 	{
-		setAttribute(HTML_MEDIA_ATTRIBUTE, value);
+		setAttribute(HTMLConstants.HTML_MEDIA_ATTRIBUTE_NAME, value);
 		return value;
 	}
 	

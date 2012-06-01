@@ -37,24 +37,6 @@ import haxe.Timer;
 class HTMLDocument extends Document
 {
 	/**
-	 * special HTML tags
-	 */
-	
-	private static inline var HTML_IMAGE_ELEMENT_TAG_NAME:String = "img";
-	
-	private static inline var HTML_INPUT_ELEMENT_TAG_NAME:String = "input";
-	
-	private static inline var HTML_ANCHOR_ELEMENT_TAG_NAME:String = "a";
-	
-	private static inline var HTML_HTML_TAG_NAME:String = "html";
-	
-	private static inline var HTML_BODY_TAG_NAME:String = "body";
-	
-	private static inline var HTML_VIDEO_TAG_NAME:String = "video";
-	
-	private static inline var HTML_SOURCE_TAG_NAME:String = "source";
-	
-	/**
 	 * key code listened to by the Document
 	 */
 	
@@ -107,10 +89,10 @@ class HTMLDocument extends Document
 	{
 		super();
 		
-		_body = cast(createElement(HTML_BODY_TAG_NAME));
+		_body = cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME));
 		_body.attach();
 		
-		_documentElement = createElement(HTML_HTML_TAG_NAME);
+		_documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
 		_documentElement.appendChild(_body);
 		
 		_focusManager = new FocusManager();
@@ -134,25 +116,25 @@ class HTMLDocument extends Document
 		
 		switch (tagName.toLowerCase())
 		{
-			case HTML_IMAGE_ELEMENT_TAG_NAME:
+			case HTMLConstants.HTML_IMAGE_TAG_NAME:
 				element = new HTMLImageElement();
 				
-			case HTML_INPUT_ELEMENT_TAG_NAME:
+			case HTMLConstants.HTML_INPUT_TAG_NAME:
 				element = new HTMLInputElement();
 				
-			case HTML_ANCHOR_ELEMENT_TAG_NAME:
+			case HTMLConstants.HTML_ANCHOR_TAG_NAME:
 				element = new HTMLAnchorElement();
 				
-			case HTML_HTML_TAG_NAME:
+			case HTMLConstants.HTML_HTML_TAG_NAME:
 				element = new HTMLHtmlElement(); 
 				
-			case HTML_BODY_TAG_NAME:
+			case HTMLConstants.HTML_BODY_TAG_NAME:
 				element = new HTMLBodyElement();
 				
-			case HTML_VIDEO_TAG_NAME:
+			case HTMLConstants.HTML_VIDEO_TAG_NAME:
 				element = new HTMLVideoElement();
 				
-			case HTML_SOURCE_TAG_NAME:
+			case HTMLConstants.HTML_SOURCE_TAG_NAME:
 				element = new HTMLSourceElement();
 				
 			default:
