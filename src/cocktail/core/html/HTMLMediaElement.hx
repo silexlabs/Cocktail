@@ -16,7 +16,7 @@ import cocktail.core.html.HTMLData;
  * This is an abstract base class for media elements,
  * such as video and audio
  * 
- * TODO 1 : add IDL callbacks in EventCallback -> added some
+ * TODO 1 : implement loop
  * 
  * @author Yannick DOMINGUEZ
  */
