@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
+import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.port.platform.nativeMedia.NativeMedia;
 import haxe.Timer;
@@ -15,7 +16,7 @@ import cocktail.core.html.HTMLData;
  * This is an abstract base class for media elements,
  * such as video and audio
  * 
- * TODO 1 : add IDL callbacks in EventCallback
+ * TODO 1 : add IDL callbacks in EventCallback -> added some
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -47,6 +48,21 @@ class HTMLMediaElement extends EmbeddedElement
 	 * The name of the loop attribute
 	 */
 	private static inline var HTML_LOOP_ATTRIBUTE:String = "loop";
+	
+	/**
+	 * the html tag name of a source
+	 */
+	private static inline var HTML_SOURCE_TAG_NAME:String = "source";
+	
+	/**
+	 * the type attribute name
+	 */
+	private static inline var HTML_TYPE_ATTRIBUTE:String = "type";
+	
+	/**
+	 * the media attribute name
+	 */
+	private static inline var HTML_MEDIA_ATTRIBUTE:String = "media";
 	
 	/**
 	 * the frequence in milliseconds between each dispatch of
@@ -321,6 +337,33 @@ class HTMLMediaElement extends EmbeddedElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN NODE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * overriden to invoke the resource selection algorithm
+	 * as needed if a source child is added
+	 */
+	override public function appendChild(newChild:Node):Node
+	{
+		super.appendChild(newChild);
+		
+		//if there is no source and no selected resource for
+		//this media element
+		if (src == null && _networkState == NETWORK_EMPTY)
+		{
+			//invoke the select resource algorithm if a source
+			//child was just added
+			if (newChild.nodeName == HTML_SOURCE_TAG_NAME)
+			{
+				selectResource();
+			}
+		}
+		
+		return newChild;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN ATTRIBUTES METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -521,17 +564,26 @@ class HTMLMediaElement extends EmbeddedElement
 		_networkState = NETWORK_NO_SOURCE;
 		
 		var mode:Int;
+		var candidate:HTMLSourceElement;
 		
 		if (src != null)
 		{
 			mode = RESOURCE_SELECTION_ATTRIBUTE_MODE;
 		}
-		//else
-		//{
-			//TODO 1 :  Otherwise, if the media element does not have a src 
-			//attribute but has a source element child, then let mode be children and 
-			//let candidate be the first such source element child in tree order.
-		//}
+		else if (hasChildSourceElement() == true)
+		{
+			mode = RESOURCE_SELECTION_CHILDREN_MODE;
+			
+			//retrieve the first source child
+			for (i in 0..._childNodes.length)
+			{
+				if (_childNodes[i].nodeName == HTML_SOURCE_TAG_NAME)
+				{
+					candidate = cast(_childNodes[i]);
+					break;
+				}
+			}
+		}
 		else
 		{
 			_networkState = NETWORK_EMPTY;
@@ -561,6 +613,35 @@ class HTMLMediaElement extends EmbeddedElement
 			
 			_currentSrc = src;
 			fetchResource(_currentSrc);	
+		}
+		else if (mode == RESOURCE_SELECTION_CHILDREN_MODE)
+		{
+			//TODO 2 : short cut for now, not implemented like the spec
+			for (i in 0..._childNodes.length)
+			{
+				if (_childNodes[i].nodeName == HTML_SOURCE_TAG_NAME)
+				{
+					var sourceChild:HTMLSourceElement = cast(_childNodes[i]);
+					if (sourceChild.type != null)
+					{
+						if (canPlayType(sourceChild.type) == CAN_PLAY_TYPE_PROBABLY)
+						{
+							_currentSrc = sourceChild.src;
+							fetchResource(_currentSrc);
+							return;
+						}
+					}
+					else if (sourceChild.src != null)
+					{
+						if (canPlayType(sourceChild.src) == CAN_PLAY_TYPE_PROBABLY)
+						{
+							_currentSrc = sourceChild.src;
+							fetchResource(_currentSrc);
+							return;
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -772,6 +853,23 @@ class HTMLMediaElement extends EmbeddedElement
 		//current media resource indicate a particular start time,
 		//then set the initial playback position to that time and,
 		//if jumped is still false, seek to that time and let jumped be true.	
+	}
+	
+	/**
+	 * Utils method determining if the media element
+	 * has at least one source element child
+	 */
+	private function hasChildSourceElement():Bool
+	{
+		for (i in 0..._childNodes.length)
+		{
+			if (_childNodes[i].nodeName == HTML_SOURCE_TAG_NAME)
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	/////////////////////////////////

@@ -52,6 +52,8 @@ class HTMLDocument extends Document
 	
 	private static inline var HTML_VIDEO_TAG_NAME:String = "video";
 	
+	private static inline var HTML_SOURCE_TAG_NAME:String = "source";
+	
 	/**
 	 * key code listened to by the Document
 	 */
@@ -149,6 +151,9 @@ class HTMLDocument extends Document
 				
 			case HTML_VIDEO_TAG_NAME:
 				element = new HTMLVideoElement();
+				
+			case HTML_SOURCE_TAG_NAME:
+				element = new HTMLSourceElement();
 				
 			default:
 				element = new HTMLElement(tagName);

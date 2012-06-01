@@ -146,6 +146,12 @@ class Event
 	public static inline var SUSPEND:String = "suspend";
 	
 	/**
+	 * The user agent is trying to fetch media data, but data
+	 * is unexpectedly not forthcoming.
+	 */
+	public static inline var STALLED:String = "stalled";
+	
+	/**
 	 * The user agent estimates that if playback were to be 
 	 * started now, the media resource could be rendered at
 	 * the current playback rate all the way to its 
