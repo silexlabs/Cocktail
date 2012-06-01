@@ -275,6 +275,22 @@ class HTMLMediaElement extends EmbeddedElement
 	public var ended(get_ended, never):Bool;
 	
 	/**
+	 * Returns true if audio is muted, overriding the volume attribute,
+	 * and false if the volume attribute is being honored. Can be set,
+	 * to change whether the audio is muted or not.
+	 */
+	private var _muted:Bool;
+	public var muted(get_muted, set_muted):Bool;
+	
+	/**
+	 * Returns the current playback volume, as a number in
+	 * the range 0.0 to 1.0, where 0.0 is the quietest and
+	 * 1.0 the loudest. Can be set, to change the volume.
+	 */
+	private var _volume:Float;
+	public var volume(get_volume, set_volume):Float;
+	
+	/**
 	 * a reference to the proxy class allowing
 	 * access to runtime specific API for 
 	 * video and audio
@@ -309,6 +325,8 @@ class HTMLMediaElement extends EmbeddedElement
 		_seeking = false;
 		_readyState = HAVE_NOTHING;
 		_autoplaying = true;
+		_muted = false;
+		_volume = 1.0;
 		
 		_loadedDataWasDispatched = false;
 		_defaultPlaybackStartPosition = 0;
@@ -997,6 +1015,44 @@ class HTMLMediaElement extends EmbeddedElement
 	/////////////////////////////////
 	// GETTER/SETTER
 	////////////////////////////////
+	
+	private function get_muted():Bool
+	{
+		return _muted;
+	}
+	
+	private function set_muted(value:Bool):Bool
+	{
+		//update the volume of the native media
+		//if sound is no longer muted
+		if (value == false)
+		{
+			_nativeMedia.volume = _volume;
+		}
+		//muting consist on setting volume of native
+		//media to 0
+		else
+		{
+			_nativeMedia.volume = 0;
+		}
+		
+		return _muted = value;
+	}
+	
+	private function set_volume(value:Float):Float
+	{
+		if (_muted == false)
+		{
+			_nativeMedia.volume = value;
+		}
+		
+		return _volume = value;
+	}
+	
+	private function get_volume():Float
+	{
+		return _volume;
+	}
 	
 	private function get_buffered():TimeRanges
 	{
