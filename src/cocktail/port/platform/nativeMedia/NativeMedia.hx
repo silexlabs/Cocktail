@@ -127,6 +127,15 @@ class NativeMedia
 		//abstract
 	}
 	
+	/**
+	 * Ask the native media if it can play 
+	 * the requested type
+	 */
+	public function canPlayType(type:String):String
+	{
+		return null;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// EVENTS
 	// Private native video event handler method

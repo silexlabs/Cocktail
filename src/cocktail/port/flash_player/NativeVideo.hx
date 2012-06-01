@@ -7,6 +7,7 @@
 */
 package cocktail.port.flash_player;
 
+import cocktail.core.html.HTMLMediaElement;
 import cocktail.core.NativeElement;
 import cocktail.port.platform.nativeMedia.NativeMedia;
 import flash.events.Event;
@@ -25,6 +26,11 @@ import flash.events.NetStatusEvent;
  */
 class NativeVideo extends NativeMedia
 {
+	//supported flash video types
+
+	private static inline var MP4_EXTENSION:String = "mp4";
+	
+	private static inline var FLV_EXTENSION:String = "flv";
 
 	/**
 	 * a reference to the native flash video
@@ -115,6 +121,26 @@ class NativeVideo extends NativeMedia
 	override public function seek(time:Float):Void 
 	{
 		_netStream.seek(time);
+	}
+	
+	/**
+	 * Determine wether the given type can be played
+	 * by the flash player
+	 */
+	override public function canPlayType(type:String):String
+	{
+		if (type.indexOf(MP4_EXTENSION) != -1)
+		{
+			return HTMLMediaElement.CAN_PLAY_TYPE_PROBABLY;
+		}
+		
+		if (type.indexOf(FLV_EXTENSION) != -1)
+		{
+			return HTMLMediaElement.CAN_PLAY_TYPE_PROBABLY;
+		}
+		
+		//not a supported video format
+		return HTMLMediaElement.CAN_PLAY_TYPE_MAYBE;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
