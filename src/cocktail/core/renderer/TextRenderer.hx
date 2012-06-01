@@ -167,7 +167,7 @@ class TextRenderer extends ElementRenderer
 	 * Separate the source text in an array of text token
 	 * and create a text line box for each one
 	 * 
-	 * TODO : shouldn't have to recreate text token unless
+	 * TODO 2 : shouldn't have to recreate text token unless
 	 * node value changes
 	 */
 	private function createTextLines():Void
@@ -198,7 +198,7 @@ class TextRenderer extends ElementRenderer
 			case space:
 				text = " ";
 				
-			//TODO : implement tab and line feed	
+			//TODO 5 : implement tab and line feed	
 			case tab:
 				text = "";
 				
@@ -243,7 +243,7 @@ class TextRenderer extends ElementRenderer
 	 * Overriden as the bounds of a TextRenderer is formed
 	 * by the bounds of its formatted text line boxes
 	 * 
-	 * TODO : messy to return a new bounds
+	 * TODO 4 : messy to return a new bounds
 	 */
 	override private function get_bounds():RectangleData
 	{

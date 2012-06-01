@@ -22,6 +22,7 @@ import cocktail.core.font.FontData;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
+import flash.display.DisplayObjectContainer;
 import haxe.Log;
 
 /**
@@ -41,20 +42,22 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	// OVERRIDEN PUBLIC RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-
-	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	/**
+	 * overriden to also render the embedded asset, for instance a picture for
+	 * an image renderer
+	 */
+	override public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
 	{
-		super.render(graphicContext, relativeOffset);
-		renderEmbeddedAsset(graphicContext, relativeOffset);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
-	{
-		//abstract
+		super.render(_graphicsContext, parentRelativeOffset);
+		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
+		renderEmbeddedAsset(_graphicsContext, relativeOffset);
+		
+		//draws the graphic context of this block box on the one of its
+		//parent
+		#if (flash9 || nme)
+		var containerGraphicContext:DisplayObjectContainer = cast(parentGraphicContext);
+		containerGraphicContext.addChild(_graphicsContext);
+		#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -66,11 +69,25 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		return true;
 	}
 
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Renders an embedded asset using the graphic context as canvas
+	 */
+	private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
+	{
+		//abstract
+	}
+	
+
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SETTER/GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : messy
+	//TODO 4 : messy
 	override private function get_bounds():RectangleData
 	{
 		_bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
