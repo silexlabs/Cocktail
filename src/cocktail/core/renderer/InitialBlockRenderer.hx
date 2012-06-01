@@ -223,7 +223,14 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	
 	override private function getScrollbarContainerBlock():ContainingBlockData
 	{
-		return getWindowData();
+		var windowData:ContainingBlockData = {
+			isHeightAuto:false,
+			isWidthAuto:false,
+			width:cocktail.Lib.window.innerWidth,
+			height:cocktail.Lib.window.innerHeight
+		}
+		
+		return windowData;
 	}
 	
 	/**
