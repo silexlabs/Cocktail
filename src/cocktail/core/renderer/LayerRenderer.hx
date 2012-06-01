@@ -331,20 +331,16 @@ class LayerRenderer extends Node
 
 		if (_rootElementRenderer.hasChildNodes() == true)
 		{
-			//TODO 2 : should use child element renderer array, starting from positive
-			//to return as soon as a child is found
-			var childLayers:Array<LayerRenderer> = getChildLayers();
+			var childRenderers:Array<ElementRenderer> = getChildRenderers();
 			
+			var elementRenderersAtPointInChildRenderers:Array<ElementRenderer> = getElementRenderersAtPointInChildRenderers(point, childRenderers, scrollX, scrollY);
 			
-			var elementRenderersAtPointInChildLayers:Array<ElementRenderer> = getElementRenderersAtPointInChildLayers(point, childLayers, scrollX, scrollY);
-			
-			for (i in 0...elementRenderersAtPointInChildLayers.length)
+			for (i in 0...elementRenderersAtPointInChildRenderers.length)
 			{
-				elementRenderersAtPoint.push(elementRenderersAtPointInChildLayers[i]);
+				elementRenderersAtPoint.push(elementRenderersAtPointInChildRenderers[i]);
 			}
 		}
-		
-		
+	
 		return elementRenderersAtPoint;
 	}
 	
@@ -404,40 +400,42 @@ class LayerRenderer extends Node
 		return elementRenderersAtPointInLayer;
 	}
 	
-	private function getElementRenderersAtPointInChildLayers(point:PointData, childLayers:Array<LayerRenderer>, scrollX:Float, scrollY:Float):Array<ElementRenderer>
+	private function getElementRenderersAtPointInChildRenderers(point:PointData, childRenderers:Array<ElementRenderer>, scrollX:Float, scrollY:Float):Array<ElementRenderer>
 	{
-		var elementRenderersAtPointInChildLayers:Array<ElementRenderer> = new Array<ElementRenderer>();
+		var elementRenderersAtPointInChildRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		for (i in 0...childLayers.length)
+		for (i in 0...childRenderers.length)
 		{
 			
-			var elementRenderersAtPointInChildLayer:Array<ElementRenderer> = [];
-			//TODO 1 : messy, ElementRenderer should be aware of their scrollBounds
-			if (childLayers[i].rootElementRenderer.isScrollBar() == true)
+			var elementRenderersAtPointInChildRenderer:Array<ElementRenderer> = [];
+			if (childRenderers[i].establishesNewStackingContext() == true)
 			{
-				elementRenderersAtPointInChildLayer = childLayers[i].getElementRenderersAtPoint(point, scrollX, scrollY);
-			}
-			//TODO 1 : messy, ElementRenderer should be aware of their scrollBounds
-			else if (childLayers[i].rootElementRenderer.coreStyle.position == fixed)
-			{
-				elementRenderersAtPointInChildLayer = childLayers[i].getElementRenderersAtPoint(point, scrollX , scrollY);
-		
-			}
-			else
-			{
-				
-				elementRenderersAtPointInChildLayer = childLayers[i].getElementRenderersAtPoint(point, scrollX + _rootElementRenderer.scrollLeft, scrollY + _rootElementRenderer.scrollTop);
+				//TODO 1 : messy, ElementRenderer should be aware of their scrollBounds
+				if (childRenderers[i].isScrollBar() == true)
+				{
+					elementRenderersAtPointInChildRenderer = childRenderers[i].layerRenderer.getElementRenderersAtPoint(point, scrollX, scrollY);
+				}
+				//TODO 1 : messy, ElementRenderer should be aware of their scrollBounds
+				else if (childRenderers[i].coreStyle.position == fixed)
+				{
+					elementRenderersAtPointInChildRenderer = childRenderers[i].layerRenderer.getElementRenderersAtPoint(point, scrollX , scrollY);
 			
+				}
+				else
+				{
+					elementRenderersAtPointInChildRenderer = childRenderers[i].layerRenderer.getElementRenderersAtPoint(point, scrollX + _rootElementRenderer.scrollLeft, scrollY + _rootElementRenderer.scrollTop);
+				}
 			}
+		
 				
-			for (j in 0...elementRenderersAtPointInChildLayer.length)
+			for (j in 0...elementRenderersAtPointInChildRenderer.length)
 			{
-				elementRenderersAtPointInChildLayers.push(elementRenderersAtPointInChildLayer[j]);
+				elementRenderersAtPointInChildRenderers.push(elementRenderersAtPointInChildRenderer[j]);
 			}
 		}
 		
 		
-		return elementRenderersAtPointInChildLayers;
+		return elementRenderersAtPointInChildRenderers;
 	}
 	
 	private function isWithinBounds(point:PointData, bounds:RectangleData):Bool
@@ -446,23 +444,30 @@ class LayerRenderer extends Node
 	}
 	
 	/**
-	 * Retrieve all the children LayerRenderer of this LayerRenderer by traversing
-	 * recursively the rendering tree.
-	 * 
-	 * TODO 1 : should return concatenated child root renderer array
-	 * if kept
+	 * Concatenate all the child element renderers of this
+	 * LayerRenderer
 	 */
-	private function getChildLayers():Array<LayerRenderer>
+	private function getChildRenderers():Array<ElementRenderer>
 	{
-		var childLayers:Array<LayerRenderer> = new Array<LayerRenderer>();
+		var childRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		for (i in 0..._childNodes.length)
+		for (i in 0..._negativeZIndexChildRenderers.length)
 		{
-			var childLayer:LayerRenderer = cast(_childNodes[i]);
-			childLayers.push(childLayer);
+			var childRenderer:ElementRenderer = cast(_negativeZIndexChildRenderers[i]);
+			childRenderers.push(childRenderer);
+		}
+		for (i in 0..._zeroAndAutoZIndexChildRenderers.length)
+		{
+			var childRenderer:ElementRenderer = cast(_zeroAndAutoZIndexChildRenderers[i]);
+			childRenderers.push(childRenderer);
+		}
+		for (i in 0..._positiveZIndexChildRenderers.length)
+		{
+			var childRenderer:ElementRenderer = cast(_positiveZIndexChildRenderers[i]);
+			childRenderers.push(childRenderer);
 		}
 		
-		return childLayers;
+		return childRenderers;
 	}
 	
 
