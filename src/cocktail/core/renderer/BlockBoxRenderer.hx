@@ -601,7 +601,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//TODO 4 : more complex thant it should
 	private function layoutScrollBarsIfNecessary(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
-		var horizontalScrollBarContainerBlockData = getScrollbarContainerBlock();
+		var horizontalScrollBarContainerBlockData = getContainerBlockData();
 		
 		if (_horizontalScrollBar != null)
 		{
@@ -613,10 +613,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			layoutPositionedChild(_horizontalScrollBar.elementRenderer, horizontalScrollBarContainerBlockData, viewportData);
 		}
 		
-		var verticalScrollBarContainerBlockData = getScrollbarContainerBlock();
+		var verticalScrollBarContainerBlockData = getContainerBlockData();
 		
 		if (_verticalScrollBar != null)
 		{
+			
+			
 			verticalScrollBarContainerBlockData.width += _verticalScrollBar.coreStyle.computedStyle.width;
 		}
 		
