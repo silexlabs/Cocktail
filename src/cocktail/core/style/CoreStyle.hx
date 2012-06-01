@@ -32,7 +32,6 @@ import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.renderer.EmbeddedBoxRenderer;
 import cocktail.core.renderer.LayerRenderer;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.font.FontData;

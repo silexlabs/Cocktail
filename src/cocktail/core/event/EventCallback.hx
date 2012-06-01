@@ -125,8 +125,59 @@ class EventCallback extends EventTarget
 	 * Callback called when there is an
 	 * error while loading an external
 	 * resource such as a picture
+	 * 
+	 * TODO 2 : also defined in media element module, should
+	 * it be on Event instead ?
 	 */
 	public var onerror(default, set_onError):UIEvent->Void;
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Media callbacks
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when a media begins loading
+	 */
+	public var onloadstart(default, set_onLoadStart):Event->Void;
+	
+	/**
+	 * Called when a media has loaded some data
+	 */
+	public var onprogress(default, set_onProgress):Event->Void;
+	
+	/**
+	 * Called when the user agent is intentionally not fectching
+	 * media data
+	 */
+	public var onsuspend(default, set_onSuspend):Event->Void;
+	
+	/**
+	 * Called when the loading of a media is canceled
+	 */
+	public var onemptied(default, set_onEmptied):Event->Void;
+	
+	/**
+	 * Called when the user agent can't fetch data
+	 */
+	public var onstalled(default, set_onStalled):Event->Void;
+	
+	/**
+	 * Called when the metadata of the media have been loaded
+	 */
+	public var onloadedmetadata(default, set_onLoadedMetadata):Event->Void;
+	
+	/**
+	 * Called when the user agent can render the media data
+	 * at the current playback position for the first time
+	 */
+	public var onloadeddata(default, set_onLoadedData):Event->Void;
+	
+	/**
+	 * Called when the user agent can resume playback but
+	 * estimates it won't have enough data to play the whole
+	 * media without buffering
+	 */
+	public var oncanplay(default, set_onCanPlay):Event->Void;
 	
 	/**
 	 * class constructor
@@ -269,6 +320,58 @@ class EventCallback extends EventTarget
 	{
 		updateCallbackListener(UIEvent.ERROR, cast(value), cast(onerror));
 		return onerror = value;
+	}
+	
+	
+		// VIDEO
+	////////////////////////////
+	
+	private function set_onLoadStart(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.LOAD_START, value, onloadstart);
+		return onloadstart = value;
+	}
+	
+	private function set_onProgress(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.PROGRESS, value, onprogress);
+		return onprogress = value;
+	}
+	
+	private function set_onSuspend(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.SUSPEND, value, onsuspend);
+		return onsuspend = value;
+	}
+	
+	private function set_onEmptied(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.EMPTIED, value, onemptied);
+		return onemptied = value;
+	}
+	
+	private function set_onStalled(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.STALLED, value, onstalled);
+		return onstalled = value;
+	}
+	
+	private function set_onLoadedMetadata(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.LOADED_METADATA, value, onloadedmetadata);
+		return onloadedmetadata = value;
+	}
+	
+	private function set_onLoadedData(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.LOADED_DATA, value, onloadeddata);
+		return onloadeddata = value;
+	}
+	
+	private function set_onCanPlay(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.CAN_PLAY, value, oncanplay);
+		return oncanplay = value;
 	}
 	
 }

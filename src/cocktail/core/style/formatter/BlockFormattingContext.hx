@@ -34,7 +34,7 @@ class BlockFormattingContext extends FormattingContext
 		super(formattingContextRoot);
 	}
 	
-	//TODO : should not be 2 methods
+	//TODO 3 : should not be 2 methods
 	override private function doFormat(staticPositionedElement:ElementRenderer = null):Void
 	{
 		//remove margin of formatting context, as child must be placed relative to padding box
@@ -71,7 +71,6 @@ class BlockFormattingContext extends FormattingContext
 					width:width,
 					height:height
 				}
-				
 				//for child with children of their own, their padding and margin are added at
 				//the beginning of the recursive method
 				if (child.hasChildNodes() == true)
@@ -157,6 +156,7 @@ class BlockFormattingContext extends FormattingContext
 						if (parentCollapsedMarginTop > marginTop)
 						{
 							marginTop = 0;
+							
 						}
 					}
 				}

@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.dom.Node;
 import cocktail.core.NativeElement;
 import cocktail.core.style.CoreStyle;
+import flash.display.DisplayObjectContainer;
 import haxe.Log;
 import cocktail.core.geom.GeomData;
 
@@ -41,7 +42,45 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 * Overriden as rendering an inline box renderer consist in rendering all of the 
 	 * line boxes it generated
 	 */
-	override public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
+	override public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
+	{
+		//first clear the graphics context
+		clear();
+		
+		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
+		
+		//render negative z-index LayerRenderer
+		if (establishesNewStackingContext() == true)
+		{
+			_layerRenderer.renderNegativeChildElementRenderers(_graphicsContext, relativeOffset);
+		}
+		
+		//render all the child line boxes which belong to the same
+		//stacking context as this InlineBoxRenderer
+		renderChildLineBoxes(_graphicsContext, relativeOffset);
+		
+		if (establishesNewStackingContext() == true)
+		{	
+			_layerRenderer.renderZeroAndAutoChildElementRenderers(_graphicsContext, relativeOffset);
+			_layerRenderer.renderPositiveChildElementRenderers(_graphicsContext, relativeOffset);
+		}
+		
+		#if (flash9 || nme)
+		var containerGraphicContext:DisplayObjectContainer = cast(parentGraphicContext);
+		containerGraphicContext.addChild(_graphicsContext);
+		#end
+		
+		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Actually render the child line boxes
+	 */
+	private function renderChildLineBoxes(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		for (i in 0..._lineBoxes.length)
 		{
@@ -62,7 +101,7 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overirden as the bounds of an inline box renderer is formed
+	 * Overriden as the bounds of an inline box renderer is formed
 	 * by the bounds of all of the line boxes it creates during
 	 * formatting
 	 */
