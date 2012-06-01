@@ -328,6 +328,81 @@ class CssParser<DisplayObjectType> {
 				s.setHeight(d, i.value, i.unit);
 				return true;
 			}
+			
+		case "min-width":
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMinWidthZero(d);
+				return true;
+			}
+			
+			var i:Null<ValueObject> = getValueObject(v);
+			if( i != null ) {
+				s.setMinWidth(d, i.value, i.unit);
+				return true;
+			}
+			
+		case "min-height":
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMinHeightZero(d);
+				return true;
+			}
+			
+			var i:Null<ValueObject> = getValueObject(v);
+			if( i != null ) {
+				s.setMinHeight(d, i.value, i.unit);
+				return true;
+			}
+			
+		case "max-height":
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMaxHeightZero(d);
+				return true;
+			}
+			
+			// case label (normal, lighter, bold, bolder)
+			var val = getIdent(v);
+			if ( val != null ) {
+				s.setMaxHeightKey(d, val);
+				return true;
+			}
+			
+			var i:Null<ValueObject> = getValueObject(v);
+			if( i != null ) {
+				s.setMaxHeight(d, i.value, i.unit);
+				return true;
+			}	
+			
+					
+		case "max-width":
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMaxWidthZero(d);
+				return true;
+			}
+			
+			// case label (normal, lighter, bold, bolder)
+			var val = getIdent(v);
+			if ( val != null ) {
+				s.setMaxWidthKey(d, val);
+				return true;
+			}
+			
+			var i:Null<ValueObject> = getValueObject(v);
+			if( i != null ) {
+				s.setMaxWidth(d, i.value, i.unit);
+				return true;
+			}		
 //---------------------
 		case "background-color":
 			switch( v ) {
