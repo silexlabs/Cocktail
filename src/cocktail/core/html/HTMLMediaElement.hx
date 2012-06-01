@@ -624,6 +624,7 @@ class HTMLMediaElement extends EmbeddedElement
 					var sourceChild:HTMLSourceElement = cast(_childNodes[i]);
 					if (sourceChild.type != null)
 					{
+						
 						if (canPlayType(sourceChild.type) == CAN_PLAY_TYPE_PROBABLY)
 						{
 							_currentSrc = sourceChild.src;
@@ -642,6 +643,8 @@ class HTMLMediaElement extends EmbeddedElement
 					}
 				}
 			}
+			
+			_networkState = NETWORK_EMPTY;
 		}
 	}
 	
