@@ -29,18 +29,21 @@ import cocktail.core.html.EmbeddedElement;
  */
 class HTMLImageElement extends EmbeddedElement
 {
-	/**
-	 * the html tag name of an image
-	 */
-	private static inline var HTML_IMAGE_TAG_NAME:String = "img";
-	
-	/**
-	 * The name of the src attribute for the HTMLImageElement
-	 */
-	private static inline var HTML_IMAGE_SRC_ATTRIBUTE:String = "src";
 
 	//////////////////////
-	// PRIVATE ATTRIBUTES
+	// IDL ATTRIBUTES
+	/////////////////////
+	
+	/**
+	 * set/get the URL of the loaded picture.
+	 * 
+	 * store it and retrieve it from the attributes map,
+	 * and start the loading of the picture when set
+	 */
+	public var src(get_src, set_src):String;
+	
+	//////////////////////
+	// ATTRIBUTES
 	/////////////////////
 	
 	/**
@@ -55,14 +58,7 @@ class HTMLImageElement extends EmbeddedElement
 	 */
 	public var naturalHeight(get_naturalHeight, never):Int;
 	
-	/**
-	 * set/get the URL of the loaded picture.
-	 * 
-	 * store it and retrieve it from the attributes map,
-	 * and start the loading of the picture when set
-	 */
-	public var src(get_src, set_src):String;
-	
+
 	/**
 	 * Reponsible for loading pictures into a NativeElement. 
 	 * Its NativeElement is used by this HTMLImageElement as an
@@ -80,7 +76,7 @@ class HTMLImageElement extends EmbeddedElement
 	public function new() 
 	{
 		_imageLoader = new ImageLoader();
-		super(HTML_IMAGE_TAG_NAME);
+		super(HTMLConstants.HTML_IMAGE_TAG_NAME);
 	}
 	
 	/**
@@ -97,7 +93,7 @@ class HTMLImageElement extends EmbeddedElement
 	
 	override public function setAttribute(name:String, value:String):Void
 	{
-		if (name == HTML_IMAGE_SRC_ATTRIBUTE)
+		if (name == HTMLConstants.HTML_SRC_ATTRIBUTE_NAME)
 		{
 			src = value;
 		}
@@ -131,10 +127,10 @@ class HTMLImageElement extends EmbeddedElement
 	{
 		//TODO 2 : this logic is already in Element.setAttribute, should call this instead
 		//then just call the laod method
-		var srcAttr:Node = _attributes.getNamedItem(HTML_IMAGE_SRC_ATTRIBUTE);
+		var srcAttr:Node = _attributes.getNamedItem(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME);
 		if (srcAttr == null)
 		{
-			srcAttr = new Attr(HTML_IMAGE_SRC_ATTRIBUTE);
+			srcAttr = new Attr(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME);
 			_attributes.setNamedItem(srcAttr);
 		}
 		srcAttr.nodeValue = value;
@@ -184,7 +180,7 @@ class HTMLImageElement extends EmbeddedElement
 	
 	private function get_src():String
 	{
-		return getAttribute(HTML_IMAGE_SRC_ATTRIBUTE);
+		return getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME);
 	}
 	
 	private function get_naturalHeight():Int

@@ -14,18 +14,13 @@ import cocktail.core.renderer.LayerRenderer;
  * @author Yannick DOMINGUEZ
  */
 class HTMLHtmlElement extends HTMLElement
-{
-	/**
-	 * the html tag name for the html root element
-	 */
-	private static inline var HTML_HTML_TAG_NAME:String = "html";
-	
+{	
 	/**
 	 * class constructor
 	 */
 	public function new() 
 	{
-		super(HTML_HTML_TAG_NAME);
+		super(HTMLConstants.HTML_HTML_TAG_NAME);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

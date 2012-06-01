@@ -44,26 +44,6 @@ import cocktail.core.style.StyleData;
  */
 class HTMLElement extends Element
 {
-	/**
-	 * The name of the id attribute in HTML
-	 */
-	private static inline var HTML_ID_ATTRIBUTE:String = "id";
-	
-	/**
-	 * The name of the class attribute in HTML
-	 */
-	private static inline var HTML_CLASS_ATTRIBUTE:String = "class";
-	
-	/**
-	 * the name of the tab index attribute in HTML
-	 */
-	private static inline var HTML_TAB_INDEX_ATTRIBUTE:String = "tabIndex";
-	
-	/**
-	 * The name of the attribute storing the style info of the HTMLElement
-	 */
-	private static inline var HTML_STYLE_ATTRIBUTE:String = "style";
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// IDL attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -280,7 +260,7 @@ class HTMLElement extends Element
 	 */
 	private function initId():Void
 	{
-		var id:Attr = new Attr(HTML_ID_ATTRIBUTE);
+		var id:Attr = new Attr(HTMLConstants.HTML_ID_ATTRIBUTE_NAME);
 		setIdAttributeNode(id, true);
 	}
 	
@@ -355,7 +335,7 @@ class HTMLElement extends Element
 	 */
 	override public function getAttribute(name:String):String
 	{
-		if (name == HTML_TAB_INDEX_ATTRIBUTE)
+		if (name == HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME)
 		{
 			return Std.string(get_tabIndex());
 		}
@@ -950,7 +930,7 @@ class HTMLElement extends Element
 	
 	private function set_tabIndex(value:Int):Int
 	{
-		setAttribute(HTML_TAB_INDEX_ATTRIBUTE, Std.string(value));
+		setAttribute(HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}
 	
@@ -961,7 +941,7 @@ class HTMLElement extends Element
 	private function get_tabIndex():Int
 	{
 		//TODO 2 : awkward to call super, but else infinite loop
-		var tabIndex:String = super.getAttribute(HTML_TAB_INDEX_ATTRIBUTE);
+		var tabIndex:String = super.getAttribute(HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME);
 		
 		if (tabIndex == "")
 		{
@@ -990,7 +970,7 @@ class HTMLElement extends Element
 	 */
 	private function get_id():String
 	{
-		return getAttribute(HTML_ID_ATTRIBUTE);
+		return getAttribute(HTMLConstants.HTML_ID_ATTRIBUTE_NAME);
 	}
 	
 	/**
@@ -998,7 +978,7 @@ class HTMLElement extends Element
 	 */
 	private function set_id(value:String):String
 	{
-		setAttribute(HTML_ID_ATTRIBUTE, value);
+		setAttribute(HTMLConstants.HTML_ID_ATTRIBUTE_NAME, value);
 		return value;
 	}
 	
@@ -1008,7 +988,7 @@ class HTMLElement extends Element
 	 */
 	private function get_className():String
 	{
-		return getAttribute(HTML_CLASS_ATTRIBUTE);
+		return getAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME);
 	}
 	
 	/**
@@ -1017,7 +997,7 @@ class HTMLElement extends Element
 	 */
 	private function set_className(value:String):String
 	{
-		setAttribute(HTML_CLASS_ATTRIBUTE, value);
+		setAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME, value);
 		return value;
 	}
 	
@@ -1140,7 +1120,7 @@ class HTMLElement extends Element
 					//if at least one style one specified on it
 					if (concatenatedStyles != "")
 					{
-						childXml.set(HTML_STYLE_ATTRIBUTE, concatenatedStyles);
+						childXml.set(HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME, concatenatedStyles);
 					}
 					
 					//add the children's content to the Xml of the child

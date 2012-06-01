@@ -15,12 +15,7 @@ import cocktail.port.NativeVideo;
  * @author Yannick DOMINGUEZ
  */
 class HTMLVideoElement extends HTMLMediaElement
-{
-	/**
-	 * the html tag name for the video element
-	 */
-	private static inline var HTML_VIDEO_TAG_NAME:String = "video";
-	
+{	
 	/**
 	 * The default width of the video tag, if the video is not yet loaded 
 	 */
@@ -46,7 +41,7 @@ class HTMLVideoElement extends HTMLMediaElement
 	 */
 	public function new() 
 	{
-		super(HTML_VIDEO_TAG_NAME);
+		super(HTMLConstants.HTML_VIDEO_TAG_NAME);
 	}
 	
 	/**
