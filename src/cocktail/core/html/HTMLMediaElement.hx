@@ -902,16 +902,26 @@ class HTMLMediaElement extends EmbeddedElement
 		selectResource();
 	}
 	
+	/**
+	 * When the metadata of the media have been 
+	 * loaded, update the intrinisc dimensions
+	 * of the html element and all the attributes
+	 * which can retrieved through this metadata
+	 */
 	private function onLoadedMetaData(e:Event):Void
 	{
 		_intrinsicHeight = _nativeMedia.height;
 		_intrinsicWidth = _nativeMedia.width;
 		_intrinsicRatio = _intrinsicHeight / _intrinsicWidth;
 		
+		//update playback times and duration
 		establishMediaTimeline();
 		
+		//refresh the layout
 		invalidateLayout();
 		
+		//start listening to loading event, as it begins
+		//as soon as the metadata are loaded
 		onProgressTick();
 	}
 	
@@ -921,14 +931,18 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function onTimeUpdateTick():Void
 	{
+		//stop dispatching time updates if the
+		//media is paused
 		if (_paused == true)
 		{
 			return;
 		}
 		
+		//update playback position
 		_currentPlaybackPosition = _nativeMedia.currentTime;
 		_officialPlaybackPosition = _currentPlaybackPosition;
 		
+		//check if the end of the media is reached
 		if (Math.round(_currentPlaybackPosition) >= Math.round(_duration))
 		{
 			_ended = true;
@@ -936,13 +950,19 @@ class HTMLMediaElement extends EmbeddedElement
 			return;
 		}
 		
+		//if the media has not ended playing, dispatch a time update
+		//event, then set this method to be called again 
 		fireEvent(Event.TIME_UPDATE, false, false);
-		
 		Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
 	}
 	
+	/**
+	 * Called at a regular frequency whild the media is
+	 * being loaded
+	 */
 	private function onProgressTick():Void
 	{
+		//check if all of the media has been loaded
 		if (_nativeMedia.bytesLoaded >= _nativeMedia.bytesTotal)
 		{
 			setReadyState(HAVE_ENOUGH_DATA);
@@ -952,8 +972,10 @@ class HTMLMediaElement extends EmbeddedElement
 			
 			return;
 		}
-		fireEvent(Event.PROGRESS, false, false);
 		
+		//if not all of the media has been loaded, dispatch
+		//a progress event and set this method to be called again
+		fireEvent(Event.PROGRESS, false, false);
 		Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
 	}
 	
@@ -1036,7 +1058,10 @@ class HTMLMediaElement extends EmbeddedElement
 			_nativeMedia.volume = 0;
 		}
 		
-		return _muted = value;
+		_muted = value;
+		fireEvent(Event.VOLUME_CHANGE, false, false);
+		
+		return _muted;
 	}
 	
 	private function set_volume(value:Float):Float
@@ -1046,7 +1071,10 @@ class HTMLMediaElement extends EmbeddedElement
 			_nativeMedia.volume = value;
 		}
 		
-		return _volume = value;
+		_volume = value;
+		fireEvent(Event.VOLUME_CHANGE, false, false);
+		
+		return _volume;
 	}
 	
 	private function get_volume():Float
