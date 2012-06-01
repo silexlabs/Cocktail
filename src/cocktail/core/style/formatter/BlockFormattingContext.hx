@@ -59,18 +59,20 @@ class BlockFormattingContext extends FormattingContext
 				var marginTop:Int = getCollapsedMarginTop(child, parentCollapsedMarginTop);
 				var marginBottom:Int = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
 				
-				var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft;
-				var y:Float = concatenatedY + marginTop;
-				var computedStyle:ComputedStyleData = child.coreStyle.computedStyle;
-				var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
-				var height:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+				//TODO 1 : doc, when child establishes new formatting context, their bounds are computed
+				//when formatting their formatting context
+					var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft;
+					var y:Float = concatenatedY + marginTop;
+					var computedStyle:ComputedStyleData = child.coreStyle.computedStyle;
+					var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
+					var height:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+				
+					child.bounds.x = x;
+					child.bounds.y = y;
+					child.bounds.width = width;
+					child.bounds.height = height;
+				
 			
-				child.bounds = {
-					x:x, 
-					y:y,
-					width:width,
-					height:height
-				}
 				//for child with children of their own, their padding and margin are added at
 				//the beginning of the recursive method
 				if (child.hasChildNodes() == true)
@@ -104,9 +106,6 @@ class BlockFormattingContext extends FormattingContext
 				{
 					_formattingContextData.maxHeight = Math.round(concatenatedY);
 				}
-				
-				
-				
 			
 		}
 		childHeight = concatenatedY - childHeight;

@@ -219,6 +219,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	private function setGlobalOrigins(elementRenderer:ElementRenderer, addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
 	{
+		
 		//if the element establishes a new formatting context, then its
 		//bounds must be added to the global x and y bounds for the normal flow
 		if (elementRenderer.establishesNewFormattingContext() == true)
@@ -266,7 +267,10 @@ class BoxRenderer extends ElementRenderer
 			}
 			//if the element is not positioned or relatively positioned, it always add
 			//its bounds to the global x and y flow
-			else
+			//TODO 3 : hack, check if elementRenderer is the one which started layout, as if it is
+			//it must not add its bounds again, as they are passed as parameters. Should instead use the
+			//bounds of containing block ?
+			else if (elementRenderer != this)
 			{
 				addedX += elementRenderer.bounds.x;
 				addedY += elementRenderer.bounds.y;
@@ -331,38 +335,24 @@ class BoxRenderer extends ElementRenderer
 			
 			//TODO 1 : doc on added body margin. Shouldn't be always applied
 			child.globalContainingBlockOrigin = {
-				x: addedX + computedStyle.marginLeft,
-				y : addedY + computedStyle.marginTop
+				x: addedX,
+				y : addedY
 			}
 			
 			
 			child.globalPositionnedAncestorOrigin = {
-				x: addedPositionedX + computedStyle.marginLeft,
-				y : addedPositionedY + computedStyle.marginTop
+				x: addedPositionedX,
+				y : addedPositionedY
 			}
 			
-			//TODO 1 : messy but works -> not really actually, scrollbar is moved by HTMLBodyElement margins
-			if (child.isScrollBar() == true)
-			{
-				if (elementRenderer.isPositioned() == false || elementRenderer.isRelativePositioned() == true)
-				{
-					//child.globalPositionnedAncestorOrigin.x += elementRenderer.bounds.x;
-					//child.globalPositionnedAncestorOrigin.y += elementRenderer.bounds.y;
-					
-					if (child.hasChildNodes() == true)
-					{
-						setGlobalOrigins(child, addedX, addedY, addedPositionedX + elementRenderer.bounds.x, addedPositionedY + elementRenderer.bounds.y);
-					}
-				}
-			}
-			else
-			{	
+				
 				//call the method recursively if the child has children itself
 				if (child.hasChildNodes() == true)
 				{
 					setGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
 				}
-			}
+			
+			
 			
 		}
 	}
@@ -556,7 +546,7 @@ class BoxRenderer extends ElementRenderer
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-		/**
+	/**
 	 * Determine wether the ElementRenderer is both positioned
 	 * and have an 'auto' z-index value, as if it does, it 
 	 * means it doesn't have to establish a new stacking context

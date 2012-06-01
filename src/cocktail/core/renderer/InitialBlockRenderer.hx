@@ -190,7 +190,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		{
 			var element:ElementRenderer = childrenFirstPositionedAncestorData.elements[i];
 			//use the viewport dimensions both times
-			layoutPositionedChild(element, childrenFirstPositionedAncestorData.data, viewportData);
+			layoutPositionedChild(element, viewportData, viewportData);
 		}
 	}
 	
@@ -220,6 +220,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function getScrollbarContainerBlock():ContainingBlockData
+	{
+		return getWindowData();
+	}
 	
 	/**
 	 * When dispatched on the HTMLBodyElement,
@@ -325,9 +330,12 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		var width:Float = containerBlockData.width;
 		var height:Float = containerBlockData.height;
 		
+		var x:Float = computedStyle.marginLeft;
+		var y:Float = computedStyle.marginTop;
+		
 		return {
-			x:0.0,
-			y:0.0,
+			x:x,
+			y:y,
 			width:width,
 			height:height
 		};
