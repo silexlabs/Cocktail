@@ -21,7 +21,9 @@ import cocktail.core.style.formatter.InlineFormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 import cocktail.core.geom.GeomData;
+import flash.display.DisplayObjectContainer;
 import haxe.Log;
+import flash.geom.Rectangle;
 
 /**
  * A block box renderer is an element which participate
@@ -202,15 +204,81 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC RENDERING METHODS
+	// OVERRIDEN PUBLIC RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Render all the LineBoxes created by this BlockBoxRenderer, using
-	 * the graphic context as canvas. A BlockBoxRenderer can only have
-	 * LineBoxes if it establishes an inline formatting context
+	 * Overriden as a BlockBoxRenderer migh also render its children and the child LayerRenderer
+	 * of its LayerRenderer
 	 */
-	public function renderLineBoxes(graphicContext:NativeElement, relativeOffset:PointData):Void
+	override public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
+	{
+		//render the background of the BlockBoxRenderer
+		super.render(parentGraphicContext, parentRelativeOffset);
+		
+		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
+		
+		//the BlockBoxRenderer is responsible for rendering its children in the same stacking
+		//context if it establishes a stacking context itself
+		if (establishesNewStackingContext() == true)
+		{
+			//first render all the negative z-index child LayerRenderers
+			_layerRenderer.renderNegativeChildElementRenderers(_graphicsContext, relativeOffset);
+			
+			//render all the block box which belong to the same stacking context
+			renderBlockContainerChildren(_graphicsContext, relativeOffset);
+			
+			//TODO 5 : render non-positioned float
+			
+			//render all the replaced (embedded) box displayed as blocks belonging
+			//to the same stacking context
+			renderBlockReplacedChildren(_graphicsContext, relativeOffset);
+
+			//render all the line boxes belonging to the same stacking context
+			renderLineBoxes(_graphicsContext, relativeOffset);
+			
+			//clip the graphic context of the block box renderer if it doesn't allow
+			//overflows
+			clip();
+			
+			//TODO 2 : scrollbar shouldn't need their own graphic context, should not be scrolled,
+			//like the fixed elements
+			renderScrollBars(_graphicsContext, relativeOffset);
+
+			//render all the child layers with a z-index of 0 or auto
+			_layerRenderer.renderZeroAndAutoChildElementRenderers(_graphicsContext, relativeOffset);
+			//render all the child layer with a positive z-index
+			_layerRenderer.renderPositiveChildElementRenderers(_graphicsContext, relativeOffset);
+		}
+		//same as above but don't render the child LayerRenderer if this 
+		//block box doesn't actually establish a new stacking context
+		else if (rendersAsIfEstablishingStackingContext() == true)
+		{
+			renderBlockContainerChildren(_graphicsContext, relativeOffset);
+		
+			//TODO 5 : render non-positioned float
+			
+			renderBlockReplacedChildren(_graphicsContext, relativeOffset);
+			renderLineBoxes(_graphicsContext, relativeOffset);
+		}
+		
+		//draws the graphic context of this block box on the one of its
+		//parent
+		#if (flash9 || nme)
+		var containerGraphicContext:DisplayObjectContainer = cast(parentGraphicContext);
+		containerGraphicContext.addChild(_graphicsContext);
+		#end
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Render all the LineBoxes of child BlockBoxRenderer which
+	 * belong to the same stacking context as this BlockBoxRenderer
+	 */
+	private function renderLineBoxes(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		//retrieve all the line boxes in all of the lines generated in this BlockBoxRenderer
 		var lineBoxes:Array<LineBox> = getChilrenLineBoxes(this, _layerRenderer);
@@ -218,25 +286,15 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//loop in all of the lineboxes
 		for (i in 0...lineBoxes.length)
 		{
-			if (lineBoxes[i].establishesNewFormattingContext() == false)
-			{
-				lineBoxes[i].render(graphicContext, relativeOffset);
-			}
-			//if the line box establishes a new formatting context, it is displayed as an inline-block
-			//which are rendered as if they started a new layerRenderer themselves
-			else
-			{	
-				lineBoxes[i].layerRenderer.render(graphicContext, relativeOffset, lineBoxes[i].elementRenderer, false);
-			}
+			lineBoxes[i].render(graphicContext, relativeOffset);
 		}
-		
 	}
 	
 	/**
-	 * Render the replaced children of this BlockBoxRenderer which are displayed as blocks, such
-	 * as an HTMLImageElement with a display style of 'block'
+	 * Render all the replaced children displayed as blocks which
+	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	public function renderBlockReplacedChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderBlockReplacedChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this, _layerRenderer);
 		for (i in 0...childrenBlockReplaced.length)
@@ -246,9 +304,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	/**
-	 * Render all the block children of this BlockBoxRenderer
+	 * Render all the BlockBoxRenderer which
+	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	public function renderBlockContainerChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderBlockContainerChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(this, _layerRenderer);
 
@@ -259,36 +318,30 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	/**
-	 * Render the scrollbars of this BlockBoxRenderer as needed
+	 * Render the scrollbars of this BlockBoxRenderer if needed
 	 */
-	public function renderScrollBars(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderScrollBars(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		
 		if (_horizontalScrollBar != null)
 		{
-			_horizontalScrollBar.elementRenderer.layerRenderer.render(graphicContext, relativeOffset);
-			
+			_horizontalScrollBar.elementRenderer.render(graphicContext, relativeOffset);
 			updateScroll();
 
 		}
 		
 		if (_verticalScrollBar != null)
 		{
-			_verticalScrollBar.elementRenderer.layerRenderer.render(graphicContext, relativeOffset);
+			_verticalScrollBar.elementRenderer.render(graphicContext, relativeOffset);
 			updateScroll();
 		}
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	
 	/**
-	 * Return all the in line boxes of this BlockBoxRenderer, by traversing
-	 * the rendering tree
+	 * Return all the line box belonging to the same
+	 * stacking context as this BlockBoxRenderer
 	 * 
-	 * TODO : can probably be simplified
+	 * TODO 4 : can probably be simplified
 	 */
 	private function getChilrenLineBoxes(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer):Array<LineBox>
 	{
@@ -334,8 +387,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	/**
-	 * Return all the replaced block children of the BlockBoxRenderer by traversing the rendering
-	 * tree
+	 * Return all the replaced child displayed as block belonging
+	 * to the same stacking context
 	 */
 	private function getBlockReplacedChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer):Array<ElementRenderer>
 	{
@@ -368,8 +421,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	/**
-	 * Return all the block children of the BlockBoxRenderer by traversing the rendering
-	 * tree
+	 * Return all the BlockBoxRenderer children belonging
+	 * to the same stacking context
 	 */
 	private function getBlockContainerChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer):Array<ElementRenderer>
 	{
@@ -398,6 +451,96 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			}
 		}
 		return ret;
+	}
+	
+	/////////////////////////////////
+	// PRIVATE VISUAL EFFECT METHODS
+	////////////////////////////////
+	
+	/**
+	 * Clip the bounds of the graphic context
+	 * of this BlockBoxRenderer according to the 
+	 * overflow style.
+	 */
+	private function clip():Void
+	{
+		#if (flash9 || nme)
+		
+			if (isXAxisClipped() == true && isYAxisClipped() == true)
+			{
+				//_graphicsContext.x = globalBounds.x;
+				//_graphicsContext.y = globalBounds.y;
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, globalBounds.width + globalBounds.x, globalBounds.height + globalBounds.y);
+
+			}
+			else if (isXAxisClipped() == true)
+			{
+				_graphicsContext.x = globalBounds.x;
+				_graphicsContext.y = globalBounds.y;
+				//TODO 2 : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, globalBounds.width, 10000);
+		
+			}
+			else if (isYAxisClipped() == true)
+			{
+				_graphicsContext.x = globalBounds.x;
+				_graphicsContext.y = globalBounds.y;
+				//TODO 2 : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
+				_graphicsContext.scrollRect = new Rectangle(0 , 0, 10000, globalBounds.height);
+			}
+			else
+			{
+				_graphicsContext.scrollRect = null;
+			}
+			
+		#end	
+	}
+	
+	//TODO 1 : this method should be called in each render() method, if the ElementRenderer
+	//is a BlockBoxRenderer call this, else check if scroll offset must be removed, like for 
+	//fixed elements. Method Render should have additional scrollOffset arg
+	private function scroll(x:Float, y:Float, rootElementRenderer:ElementRenderer, startedScroll:Bool = true):Void
+	{
+		
+		//TODO 1 IMPORTANT: big hack but will do for now
+		//TODO 1 : doesn't work for zindex auto positioned elements, as they don't
+		//have a graphic context of their own
+		//TODO 2 : should be applied to every positioned element whose
+		//containing block is a parent of the root renderer.
+		//Add a public method on ElementRenderer ?
+		if (rootElementRenderer.computedStyle.position == fixed)
+		{
+			#if (flash9 || nme)
+			_graphicsContext.y = y;
+			_graphicsContext.x = x;
+			#end
+		}
+		
+		if (startedScroll == false)
+		{
+			return;
+		}
+		#if (flash9 || nme)
+		
+		_graphicsContext.x = rootElementRenderer.globalBounds.x;
+		_graphicsContext.y = rootElementRenderer.globalBounds.y;
+		
+		var width:Float;
+		var height:Float;
+		
+		if (_graphicsContext.scrollRect != null)
+		{
+			width = _graphicsContext.scrollRect.width;
+			height = _graphicsContext.scrollRect.height;
+		}
+		else
+		{
+			width =  rootElementRenderer.globalBounds.width;
+			height = rootElementRenderer.globalBounds.height;
+		}
+		
+		_graphicsContext.scrollRect = new Rectangle(x + rootElementRenderer.globalBounds.x, y + rootElementRenderer.globalBounds.y, width, height);
+		#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -442,7 +585,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : more complex thant it should
+	//TODO 4 : more complex thant it should
 	private function layoutScrollBarsIfNecessary(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
 	{
 		var horizontalScrollBarContainerBlockData = getContainerBlockDataWithoutScrollbars();
@@ -469,61 +612,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//TODO 3 : x and y position of scrollbar are false when block box is not positioned, as the scrollbar
 			//are positioned relative to the first positioned ancestor
 			layoutPositionedChild(_verticalScrollBar.elementRenderer, verticalScrollBarContainerBlockData, viewportData);
-		}
-	}
-	
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC SCROLLING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Determine wheter the x axis of this BlockBoxRenderer
-	 * is clipped to its width
-	 */
-	public function isXAxisClipped():Bool
-	{
-		switch (computedStyle.overflowX)
-		{
-			case Overflow.hidden,
-			Overflow.scroll:
-				return true;
-				
-			//when overflow is auto, the x axis is only
-			//clipped if a scrollbar was attached
-			case Overflow.cssAuto:
-				return _horizontalScrollBar != null;
-				
-			case Overflow.visible:
-				if (treatVisibleOverflowAsAuto() == true)
-				{
-					return _horizontalScrollBar != null;
-				}
-				return false;
-		}
-	}
-	
-	/**
-	 * Determine wheter the y axis of this BlockBoxRenderer
-	 * is clipped to its height
-	 */
-	public function isYAxisClipped():Bool
-	{
-		switch (computedStyle.overflowY)
-		{
-			case Overflow.hidden,
-			Overflow.scroll:
-				return true;
-				
-			case Overflow.cssAuto:
-				return _verticalScrollBar != null;
-				
-			case Overflow.visible:
-				if (treatVisibleOverflowAsAuto() == true)
-				{
-					return _verticalScrollBar != null;
-				}
-				return false;
 		}
 	}
 	
@@ -594,7 +682,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * overriden as the scroll width for a block
 	 * box might be its scrollable bounds width
 	 * 
-	 * TODO : should it be only when scrollbars are
+	 * TODO 4 : should it be only when scrollbars are
 	 * displayed ?
 	 */
 	override private function get_scrollWidth():Float
@@ -623,11 +711,57 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Determine wheter the x axis of this BlockBoxRenderer
+	 * is clipped to its width
+	 */
+	private function isXAxisClipped():Bool
+	{
+		switch (computedStyle.overflowX)
+		{
+			case Overflow.hidden,
+			Overflow.scroll:
+				return true;
+				
+			//when overflow is auto, the x axis is only
+			//clipped if a scrollbar was attached
+			case Overflow.cssAuto:
+				return _horizontalScrollBar != null;
+				
+			case Overflow.visible:
+				if (treatVisibleOverflowAsAuto() == true)
+				{
+					return _horizontalScrollBar != null;
+				}
+				return false;
+		}
+	}
+	
+	/**
+	 * Determine wheter the y axis of this BlockBoxRenderer
+	 * is clipped to its height
+	 */
+	private function isYAxisClipped():Bool
+	{
+		switch (computedStyle.overflowY)
+		{
+			case Overflow.hidden,
+			Overflow.scroll:
+				return true;
+				
+			case Overflow.cssAuto:
+				return _verticalScrollBar != null;
+				
+			case Overflow.visible:
+				if (treatVisibleOverflowAsAuto() == true)
+				{
+					return _verticalScrollBar != null;
+				}
+				return false;
+		}
+	}
+	
+	/**
 	 * When a scroll value changes, update the rendering
-	 * 
-	 * TODO 1 : when resizing the viewport, the scroll bars
-	 * no longer work unless new scrollbars are displayed
-	 * in the viewport
 	 */
 	private function updateScroll():Void
 	{
@@ -639,7 +773,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			
 			if (isXAxisClipped() == true || isYAxisClipped() == true)
 			{
-				_layerRenderer.scroll(_scrollLeft, _scrollTop);
+				scroll(_scrollLeft, _scrollTop, this);
 			}
 			
 			if (_horizontalScrollBar != null)
@@ -657,11 +791,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			
 			_isUpdatingScroll = false;
 		}
-		
-		
 	}
 	
-	//TODO : should manage the following case : 
+	//TODO 2 : should manage the following case : 
 	// - child is relative positioned,
 	// - child is absolute positioned
 	// - child is fixed positioned or absolute positoned but 
@@ -677,7 +809,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return getChildrenBounds(doGetScrollableBounds(this));
 	}
 	
-	//TODO : work but shouldn't have to parse all rendering tree, should be done during formatting
+	//TODO 2 : work but shouldn't have to parse all rendering tree, should be done during formatting
 	//and then another pass for absolutely positioned children. Maybe this way less expensive in
 	//the  end because only called when useful ?
 	/**
@@ -712,7 +844,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return childrenBounds;
 	}
 	
-	//TODO : implement border case where one has scroll attached, and the 
+	//TODO 3 : implement border case where one has scroll attached, and the 
 	//other is visible but should still display scroll
 	/**
 	 * Attach the horizontal and vertical scrollbar if they are
@@ -730,12 +862,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		
 
-		//TODO : should use computed styles but not computed yet
+		//TODO 3 : should use computed styles but not computed yet
 		//tries to attach or detach horizontal scrollbar based on x
 		//overflow
 		switch (_coreStyle.overflowX)
 		{
-			case scroll:
+			case Overflow.scroll:
 				attachHorizontalScrollBar();
 				
 			case hidden:
@@ -759,7 +891,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//overflow y
 		switch (_coreStyle.overflowY)
 		{
-			case scroll:
+			case Overflow.scroll:
 				attachVerticalScrollBar();
 				
 			case hidden:
@@ -919,6 +1051,21 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Overriden as BlockBoxRenderer can also starts a new stacking context
+	 * if the overflow x or y style value is different from visible
+	 */
+	override public function establishesNewStackingContext():Bool
+	{
+		var establishesNewStackingContext:Bool = super.establishesNewStackingContext();
+		
+		if (establishesNewStackingContext == true)
+		{
+			return true;
+		}
+		return canAlwaysOverflow() != true;
+	}
+	
+	/**
 	 * Wether a vertical active scrollbar is displayed and
 	 * scrollable. It is not considered scrollable if the
 	 * provided scroll offset wouldn't make it scroll, for
@@ -1039,6 +1186,33 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * overriden as a block box renderer might be rendered as if
+	 * establishing stacking context, based on its computed styles
+	 * value
+	 * 
+	 * TODO 2 : should be on BoxRenderer instead ?
+	 */
+	override private function rendersAsIfEstablishingStackingContext():Bool
+	{
+		//if z-index is 0 or auto and the ElementRenderer
+		//is positioned
+		if (isAutoZIndexPositioned() == true)
+		{
+			return true;
+		}
+		else if (computedStyle.display == inlineBlock)
+		{
+			return true;
+		}
+		else if (isFloat() == true)
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * Overriden, as if scrollbars are displayed, their 
 	 * width or height must be substracted from the containing
 	 * block width/height
@@ -1063,21 +1237,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			height:height,
 			isHeightAuto:this._coreStyle.height == Dimension.cssAuto
 		};
-	}
-	
-	/**
-	 * Overriden as BlockBoxRenderer can also starts a new stacking context
-	 * if the overflow x or y style value is different from visible
-	 */
-	override private function establishesNewStackingContext():Bool
-	{
-		var establishesNewStackingContext:Bool = super.establishesNewStackingContext();
-		
-		if (establishesNewStackingContext == true)
-		{
-			return true;
-		}
-		return canAlwaysOverflow() != true;
 	}
 	
 	/**
@@ -1181,7 +1340,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return false;
 	}
 	
-	//TODO : should use computed style (for instance for inherit) but not yet computed at this point, when
+	//TODO 3 : should use computed style (for instance for inherit) but not yet computed at this point, when
 	//called from establishesNewStackingContext
 	/**
 	 * Determine wether this BlockBoxRenderer always overflows
