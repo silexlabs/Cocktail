@@ -15,13 +15,6 @@ import cocktail.core.html.HTMLData;
  * This is an abstract base class for media elements,
  * such as video and audio
  * 
- * TODO 1 : when removed from DOM
- * When a media element is removed from a Document, the user agent must run the following steps:
-	 * Asynchronously await a stable state, allowing the task that removed the media element from the Document to continue. The synchronous section consists of all the remaining steps of this algorithm. (Steps in the synchronous section are marked with ⌛.)
-	 * If the media element is in a Document, abort these steps.
-	 * If the media element's networkState attribute has the value NETWORK_EMPTY, abort these steps.
-	 * Pause the media element.
-	 * 
  * TODO 1 : add IDL callbacks in EventCallback
  * 
  * @author Yannick DOMINGUEZ
@@ -49,6 +42,11 @@ class HTMLMediaElement extends EmbeddedElement
 	 * The name of the autoplay attribute
 	 */
 	private static inline var HTML_AUTOPLAY_ATTRIBUTE:String = "autoplay";
+	
+	/**
+	 * The name of the loop attribute
+	 */
+	private static inline var HTML_LOOP_ATTRIBUTE:String = "loop";
 	
 	/**
 	 * the frequence in milliseconds between each dispatch of
@@ -123,6 +121,20 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private var _networkState:Int;
 	public var networkState(get_networkState, never):Int;
+	
+	//can play constants
+	
+	/**
+	 * return maybe if the user agent might support 
+	 * the format
+	 */
+	public static inline var CAN_PLAY_TYPE_MAYBE:String = "maybe";
+	
+	/**
+	 * return probably if the user agent is confident it 
+	 * can play the format
+	 */
+	public static inline var CAN_PLAY_TYPE_PROBABLY:String = "probably";
 	
 	//ready state
 	
@@ -261,6 +273,8 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private var _defaultPlaybackStartPosition:Float;
 	
+	private var _earliestPossiblePosition:Float;
+	
 	private var _loadedDataWasDispatched:Bool;
 	
 	private var _autoplaying:Bool;
@@ -285,6 +299,7 @@ class HTMLMediaElement extends EmbeddedElement
 		_officialPlaybackPosition = 0;
 		_currentPlaybackPosition = 0;
 		_initialPlaybackPosition = 0;
+		_earliestPossiblePosition = 0;
 	}
 	
 	/**
@@ -309,6 +324,10 @@ class HTMLMediaElement extends EmbeddedElement
 	// OVERRIDEN ATTRIBUTES METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * overriden to call the right setter for 
+	 * html media attributes
+	 */
 	override public function setAttribute(name:String, value:String):Void
 	{
 		if (name == HTML_SRC_ATTRIBUTE)
@@ -318,6 +337,28 @@ class HTMLMediaElement extends EmbeddedElement
 		else
 		{
 			super.setAttribute(name, value);
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING TREE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to pause the media element
+	 * if necessary when detaching from
+	 * rendering tree
+	 * 
+	 * TODO 2 : should be instead when detached 
+	 * from DOM ?
+	 */
+	override private function detachFromParentElementRenderer():Void
+	{
+		super.detachFromParentElementRenderer();
+		
+		if (_networkState != NETWORK_EMPTY)
+		{
+			pause();
 		}
 	}
 	
@@ -400,6 +441,16 @@ class HTMLMediaElement extends EmbeddedElement
 		_nativeMedia.pause();
 	}
 	
+	/**
+	 * Returns the empty string (a negative response), 
+	 * "maybe", or "probably" based on how confident
+	 * the user agent is that it can play media resources of the given type.
+	 */
+	public function canPlayType(type:String):String
+	{
+		return _nativeMedia.canPlayType(type);
+	}
+	
 	/////////////////////////////////
 	// PRIVATE METHODS
 	////////////////////////////////
@@ -423,7 +474,7 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			fireEvent(Event.EMPTIED, false, false);
 			
-			//TODO 1 : If a fetching process is in progress for the media element, the user agent should stop it.
+			_nativeMedia.src = null;
 			
 			_networkState = NETWORK_EMPTY;
 			
@@ -448,8 +499,7 @@ class HTMLMediaElement extends EmbeddedElement
 			
 			_initialPlaybackPosition = 0;
 			
-			//TODO 1 : supposed to be NaN but don't exist in Haxe ?
-			_duration = 0;
+			_duration = Math.NaN;
 		}
 		
 		_loadedDataWasDispatched = false;
@@ -498,11 +548,9 @@ class HTMLMediaElement extends EmbeddedElement
 			{
 				//TODO 1 : Set the error attribute to a new MediaError object whose code attribute is set to MEDIA_ERR_SRC_NOT_SUPPORTED.
 				
-				//TODO 2 : Forget the media element's media-resource-specific text tracks.
-				
 				_networkState = NETWORK_NO_SOURCE;
 				
-				//TODO 2 : Queue a task to fire a simple event named error at the media element.
+				fireEvent(Event.ERROR, false, false);
 				
 				return;
 			}
@@ -552,8 +600,8 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			newPlaybackPosition = _duration;
 		}
-		//TODO 2 : If the new playback position is less than the earliest possible position, let it be that position instead.
-		if (newPlaybackPosition < 0)
+		
+		if (newPlaybackPosition < _earliestPossiblePosition)
 		{
 			newPlaybackPosition = 0;
 		}
@@ -648,6 +696,9 @@ class HTMLMediaElement extends EmbeddedElement
 							{
 								_paused = false;
 								fireEvent(Event.PLAY, false, false);
+								
+								play();
+								
 								fireEvent(Event.PLAYING, false, false);
 							}
 						}
@@ -655,8 +706,6 @@ class HTMLMediaElement extends EmbeddedElement
 					
 					fireEvent(Event.CAN_PLAY_THROUGH, false, false);
 				}
-				
-				
 			}
 		}
 		
@@ -672,7 +721,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * on its media controller, and the element is not
 	 * a blocked media element.
 	 * 
-	 * TODO 2 : imcomplete
+	 * TODO 2 : incomplete
 	 * 
 	 */
 	private function isPotentiallyPlaying():Bool
@@ -778,6 +827,10 @@ class HTMLMediaElement extends EmbeddedElement
 		if (_nativeMedia.bytesLoaded >= _nativeMedia.bytesTotal)
 		{
 			setReadyState(HAVE_ENOUGH_DATA);
+			
+			_networkState == NETWORK_IDLE;
+			fireEvent(Event.SUSPEND, false, false);
+			
 			return;
 		}
 		fireEvent(Event.PROGRESS, false, false);
@@ -814,19 +867,29 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 	}
 	
-	//TODO 1 : retrieve/set attributes
 	private function set_autoplay(value:Bool):Bool
 	{
+		//TODO 2 : awkward to call super, but else infinite loop
+		super.setAttribute(HTML_AUTOPLAY_ATTRIBUTE, Std.string(value));
 		return value;
 	}
 	
 	private function get_loop():Bool
 	{
-		return false;
+		if (getAttribute(HTML_LOOP_ATTRIBUTE) != null)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	private function set_loop(value:Bool):Bool
 	{
+		//TODO 2 : awkward to call super, but else infinite loop
+		super.setAttribute(HTML_LOOP_ATTRIBUTE, Std.string(value));
 		return value;
 	}
 	

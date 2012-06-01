@@ -99,6 +99,11 @@ class Event
 	public static inline var PROGRESS:String = "progress";
 	
 	/**
+	 * An error occurs while fetching the media data.
+	 */ 
+	public static inline var ERROR:String = "error";
+	
+	/**
 	 * The user agent can resume playback of the media data,
 	 * but estimates that if playback were to be started now,
 	 * the media resource could not be rendered at
@@ -134,6 +139,11 @@ class Event
 	 * setter has returned.
 	 */
 	public static inline var VOLUME_CHANGE:String = "volumechange";
+	
+	/**
+	 * The user agent is intentionally not currently fetching media data.
+	 */
+	public static inline var SUSPEND:String = "suspend";
 	
 	/**
 	 * The user agent estimates that if playback were to be 
