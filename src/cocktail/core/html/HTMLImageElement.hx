@@ -125,16 +125,8 @@ class HTMLImageElement extends EmbeddedElement
 	 */
 	private function set_src(value:String):String
 	{
-		//TODO 2 : this logic is already in Element.setAttribute, should call this instead
-		//then just call the laod method
-		var srcAttr:Node = _attributes.getNamedItem(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME);
-		if (srcAttr == null)
-		{
-			srcAttr = new Attr(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME);
-			_attributes.setNamedItem(srcAttr);
-		}
-		srcAttr.nodeValue = value;
-		
+		//TODO 2 : awkward to call super, but else infinite loop
+		super.setAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME, value);
 		_imageLoader.load([value], onLoadComplete, onLoadError);
 		return value;
 	}
