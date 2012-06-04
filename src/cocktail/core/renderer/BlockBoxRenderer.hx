@@ -241,8 +241,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//overflows
 			clip();
 			
-			//TODO 2 : scrollbar shouldn't need their own graphic context, should not be scrolled,
-			//like the fixed elements
+			//render the scrollbar if needed
 			renderScrollBars(_graphicsContext, relativeOffset);
 
 			//render all the child layers with a z-index of 0 or auto
@@ -617,8 +616,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (_verticalScrollBar != null)
 		{
-			
-			
 			verticalScrollBarContainerBlockData.width += _verticalScrollBar.coreStyle.computedStyle.width;
 		}
 		
