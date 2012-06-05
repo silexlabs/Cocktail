@@ -16,8 +16,6 @@ import cocktail.core.style.formatter.BlockFormattingContext;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.style.CoreStyle;
-import flash.display.Sprite;
-import flash.Lib;
 import haxe.Log;
 import haxe.Timer;
 
@@ -155,7 +153,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		
 		//start the rendering at the root layer renderer
 		//TODO 3 : should instead call an invalidateRendering method on LayerRenderer ?
-		render(Lib.current, { x:0.0, y:0.0 } );
+		render(flash.Lib.current, { x:0.0, y:0.0 } );
 
 		#end
 	}
@@ -168,12 +166,13 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	private function scheduleLayoutAndRender():Void
 	{
 		var layoutAndRenderDelegate:Void->Void = layoutAndRender;
-		
+		#if (flash9 || nme)
 		//calling the methods 1 millisecond later is enough to ensure
 		//that first all synchronous code is executed
 		Timer.delay(function () { 
 			layoutAndRenderDelegate();
 		}, 1);
+		#end
 	}
 	
 	

@@ -10,8 +10,6 @@ package cocktail.core.renderer;
 import cocktail.core.FontManager;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
-import flash.display.DisplayObjectContainer;
-
 /**
  * A special kind of line box used to render text. A
  * TextRenderer will create as many text line box
@@ -64,7 +62,7 @@ class TextLineBox extends LineBox
 		//context and not include leaded ascent
 		_nativeElement.y = _bounds.y + _elementRenderer.globalBounds.y + relativeOffset.y + leadedAscent;
 	
-		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext);
+		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		containerGraphicContext.addChild(_nativeElement);
 		#end
 	}
@@ -181,7 +179,7 @@ class TextLineBox extends LineBox
 			#if (flash9 || nme)
 			return untyped _nativeElement.textWidth ;
 			#else
-			return 0.0
+			return 0.0;
 			#end
 		}	
 	}

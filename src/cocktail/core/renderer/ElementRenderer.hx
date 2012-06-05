@@ -17,8 +17,6 @@ import cocktail.core.style.CoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
-import flash.display.DisplayObjectContainer;
-import flash.display.Sprite;
 import haxe.Timer;
 
 
@@ -238,7 +236,7 @@ class ElementRenderer extends Node
 		_node = node;
 		
 		#if (flash9 || nme)
-		_graphicsContext = new Sprite();
+		_graphicsContext = new flash.display.Sprite();
 		#end
 		
 		_isLayingOut = false;
@@ -335,7 +333,7 @@ class ElementRenderer extends Node
 	public function clear():Void
 	{
 		#if (flash9 || nme)
-		var containerGraphicsContext:DisplayObjectContainer = cast(_graphicsContext);
+		var containerGraphicsContext:flash.display.DisplayObjectContainer = cast(_graphicsContext);
 		
 			for (i in 0...containerGraphicsContext.numChildren)
 			{

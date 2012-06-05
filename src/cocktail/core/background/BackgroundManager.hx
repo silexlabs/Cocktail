@@ -15,7 +15,6 @@ import cocktail.core.resource.ImageLoader;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.computer.BackgroundStylesComputer;
 import cocktail.core.unit.UnitManager;
-import flash.display.Sprite;
 import haxe.Log;
 
 /**
@@ -182,7 +181,7 @@ class BackgroundManager
 		backgroundBox);
 		
 		var backgroundImageNativeElement:NativeElement = backgroundImageDrawingManager.nativeElement;
-		
+		#if (flash9 || nme)
 		//TODO 4 : should retrieve image if already loaded, else start loading and call an invalidate() method when it is in fact loaded
 		var onBackgroundImageLoadedDelegate:BackgroundDrawingManager->NativeElement->ImageLoader->CoreStyle->RectangleData->BackgroundPosition->
 		BackgroundSize->BackgroundOrigin-> BackgroundClip-> BackgroundRepeat->
@@ -201,7 +200,7 @@ class BackgroundManager
 			onBackgroundImageLoadErrorDelegate(error, imageDeclaration.fallbackColor, backgroundImageNativeElement, style, backgroundBox, backgroundPosition, backgroundSize, 
 		backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
 		});
-		
+		#end
 		return backgroundImageNativeElement;
 	}
 	
