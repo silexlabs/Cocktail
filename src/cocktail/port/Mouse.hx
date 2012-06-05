@@ -12,4 +12,8 @@ package cocktail.port;
  */
 #if (flash9 || nme)
 typedef Mouse =  cocktail.port.flash_player.Mouse;
+
+#else
+typedef Mouse = cocktail.port.server.Mouse;
+
 #end

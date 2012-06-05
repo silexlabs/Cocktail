@@ -22,7 +22,6 @@ import cocktail.core.font.FontData;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
-import flash.display.DisplayObjectContainer;
 import haxe.Log;
 
 /**
@@ -55,7 +54,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		//draws the graphic context of this block box on the one of its
 		//parent
 		#if (flash9 || nme)
-		var containerGraphicContext:DisplayObjectContainer = cast(parentGraphicContext);
+		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(parentGraphicContext);
 		containerGraphicContext.addChild(_graphicsContext);
 		#end
 	}

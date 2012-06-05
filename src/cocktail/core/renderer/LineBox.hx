@@ -12,7 +12,6 @@ import cocktail.core.dom.Node;
 import cocktail.core.geom.GeomData;
 import cocktail.core.NativeElement;
 import cocktail.core.style.StyleData;
-import flash.display.DisplayObjectContainer;
 
 /**
  * 
@@ -141,7 +140,7 @@ class LineBox extends Node
 		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _elementRenderer.coreStyle);
 		
 		#if (flash9 || nme)
-		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext);
+		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		for (i in 0...backgrounds.length)
 		{
 			backgrounds[i].x = _bounds.x  + _elementRenderer.globalBounds.x + relativeOffset.x;

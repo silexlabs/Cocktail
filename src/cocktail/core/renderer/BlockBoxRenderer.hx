@@ -21,9 +21,7 @@ import cocktail.core.style.formatter.InlineFormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 import cocktail.core.geom.GeomData;
-import flash.display.DisplayObjectContainer;
 import haxe.Log;
-import flash.geom.Rectangle;
 
 /**
  * A block box renderer is an element which participate
@@ -264,7 +262,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//draws the graphic context of this block box on the one of its
 		//parent
 		#if (flash9 || nme)
-		var containerGraphicContext:DisplayObjectContainer = cast(parentGraphicContext);
+		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(parentGraphicContext);
 		containerGraphicContext.addChild(_graphicsContext);
 		#end
 	}
@@ -490,7 +488,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				height = globalBounds.height;
 			}
 			
-			_graphicsContext.scrollRect = new Rectangle(x , y, width + globalBounds.x, height + globalBounds.y);
+			_graphicsContext.scrollRect = new flash.geom.Rectangle(x , y, width + globalBounds.x, height + globalBounds.y);
 			#end
 			
 			scrollChildren(x, y);
@@ -518,7 +516,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				//_graphicsContext.x = globalBounds.x;
 				//_graphicsContext.y = globalBounds.y;
 				
-				_graphicsContext.scrollRect = new Rectangle(0 , 0, scrollableContainerBlock.width + globalBounds.x, scrollableContainerBlock.height + globalBounds.y);
+				_graphicsContext.scrollRect = new flash.geom.Rectangle(0 , 0, scrollableContainerBlock.width + globalBounds.x, scrollableContainerBlock.height + globalBounds.y);
 
 			}
 			else if (isXAxisClipped() == true)
@@ -526,7 +524,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				//_graphicsContext.x = globalBounds.x;
 				//_graphicsContext.y = globalBounds.y;
 				//TODO 2 : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
-				_graphicsContext.scrollRect = new Rectangle(0 , 0, scrollableContainerBlock.width, 10000);
+				_graphicsContext.scrollRect = new flash.geom.Rectangle(0 , 0, scrollableContainerBlock.width, 10000);
 		
 			}
 			else if (isYAxisClipped() == true)
@@ -534,7 +532,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				//_graphicsContext.x = globalBounds.x;
 				//_graphicsContext.y = globalBounds.y;
 				//TODO 2 : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
-				_graphicsContext.scrollRect = new Rectangle(0 , 0, 10000, scrollableContainerBlock.height);
+				_graphicsContext.scrollRect = new flash.geom.Rectangle(0 , 0, 10000, scrollableContainerBlock.height);
 			}
 			else
 			{

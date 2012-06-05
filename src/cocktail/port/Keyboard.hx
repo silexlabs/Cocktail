@@ -12,4 +12,8 @@ package cocktail.port;
  */
 #if (flash9 || nme)
 typedef Keyboard =  cocktail.port.flash_player.Keyboard;
+
+#else
+typedef Keyboard = cocktail.port.server.Keyboard;
+
 #end

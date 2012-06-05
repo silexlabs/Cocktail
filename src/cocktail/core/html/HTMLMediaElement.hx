@@ -923,7 +923,10 @@ class HTMLMediaElement extends EmbeddedElement
 		//if the media has not ended playing, dispatch a time update
 		//event, then set this method to be called again 
 		fireEvent(Event.TIME_UPDATE, false, false);
+		
+		#if (flash9 || nme)
 		Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
+		#end
 	}
 	
 	/**
@@ -946,7 +949,10 @@ class HTMLMediaElement extends EmbeddedElement
 		//if not all of the media has been loaded, dispatch
 		//a progress event and set this method to be called again
 		fireEvent(Event.PROGRESS, false, false);
+		
+		#if (flash9 || nme)
 		Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
+		#end
 	}
 	
 	/////////////////////////////////

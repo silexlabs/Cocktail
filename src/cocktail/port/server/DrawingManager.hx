@@ -5,14 +5,16 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.core;
+package cocktail.port.server;
+import cocktail.core.drawing.AbstractDrawingManager;
 
-/**
- * Set the right runtime specific drawing manager at compile-time
- */
-#if (flash9 || nme)
-typedef DrawingManager =  cocktail.port.flash_player.DrawingManager;
 
-#else
-typedef DrawingManager = cocktail.port.server.DrawingManager;
-#end
+
+class DrawingManager extends AbstractDrawingManager
+{	
+	public function new(width:Int, height:Int) 
+	{
+		super(width, height);
+		
+	}
+}

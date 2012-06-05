@@ -12,4 +12,6 @@ package cocktail.port;
  */
 #if (flash9 || nme)
 typedef NativeVideo =  cocktail.port.flash_player.NativeVideo;
+#else
+typedef NativeVideo =  cocktail.port.server.NativeVideo;
 #end

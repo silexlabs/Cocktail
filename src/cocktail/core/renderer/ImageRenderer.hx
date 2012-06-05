@@ -11,10 +11,6 @@ import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
-import flash.display.Bitmap;
-import flash.display.BitmapData;
-import flash.display.DisplayObjectContainer;
-import flash.display.Loader;
 
 /**
  * An ElementRenderer displaying a bitmap picture
@@ -47,7 +43,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	
 		#if (flash9 || nme)
 		
-		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext);
+		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		containerGraphicContext.addChild(htmlImageElement.embeddedAsset);
 		
 		htmlImageElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + relativeOffset.x;
@@ -58,8 +54,8 @@ class ImageRenderer extends EmbeddedBoxRenderer
 		
 		//have to try/catch because of potential cross-domain security error
 		try {
-			var loader:Loader = cast(htmlImageElement.embeddedAsset);
-			var bitmap:Bitmap = cast(loader.content);
+			var loader:flash.display.Loader = cast(htmlImageElement.embeddedAsset);
+			var bitmap:flash.display.Bitmap = cast(loader.content);
 			if (bitmap != null)
 			{
 				bitmap.smoothing = true;
