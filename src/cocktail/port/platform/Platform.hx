@@ -127,6 +127,22 @@ class Platform extends EventCallback
 		_nativeWindow.open(url, name);
 	}
 	
+	/**
+	 * Enters fullscreen mode
+	 */
+	public function enterFullscreen():Void
+	{
+		_nativeWindow.enterFullscreen();
+	}
+	
+	/**
+	 * Exit fullscreen mode
+	 */
+	public function exitFullscreen():Void
+	{
+		_nativeWindow.exitFullscreen();
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PLATFORM CALLBACKS
 	// Send a cross-platform event from a native platform event

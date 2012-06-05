@@ -66,6 +66,22 @@ class AbstractNativeWindow
 		//abstract
 	}
 	
+	/**
+	 * Enters fullscreen mode
+	 */
+	public function enterFullscreen():Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Exit fullscreen mode
+	 */
+	public function exitFullscreen():Void
+	{
+		//abstract
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// EVENTS
 	// Private native event handler method

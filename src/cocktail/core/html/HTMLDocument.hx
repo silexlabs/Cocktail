@@ -83,6 +83,35 @@ class HTMLDocument extends Document
 	private var _hoveredElementRenderer:ElementRenderer;
 	
 	/**
+	 * Returns true if document has the ability
+	 * to display elements fullscreen, or false otherwise.
+	 */
+	public var fullscreenEnabled(get_fullscreenEnabled, never):Bool;
+	
+	/**
+	 * Returns the element that is displayed fullscreen,
+	 * or null if there is no such element.
+	 */
+	private var _fullscreenElement:HTMLElement;
+	public var fullscreenElement(get_fullscreenElement, set_fullscreenElement):HTMLElement;
+	
+	/**
+	 * Callback listened to by the Window object
+	 * to enter fullscreen mode when needed using
+	 * platform specific API
+	 */
+	private var _onEnterFullscreen:Void->Void;
+	public var onEnterFullscreen(get_onEnterFullscreen, set_onEnterFullscreen):Void->Void;
+	
+	/**
+	 * Callback listened to by the Window object
+	 * to exit fullscreen mode when needed using
+	 * platform specific API
+	 */
+	private var _onExitFullscreen:Void->Void;
+	public var onExitFullscreen(get_onExitFullscreen, set_onExitFullscreen):Void->Void;
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new() 
@@ -311,6 +340,106 @@ class HTMLDocument extends Document
 	public function onPlatformResizeEvent(event:UIEvent):Void
 	{
 		_body.invalidateLayout();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// FULLSCREEN METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Stops any elements within document
+	 * from being displayed fullscreen.
+	 * 
+	 * TODO 5 : implementation doesn't respect
+	 * w3c spec, but spec still in early stages
+	 */
+	public function exitFullscreen():Void
+	{
+		//do nothing if no element is on fullscreen
+		//currently
+		if (_fullscreenElement == null)
+		{
+			return;
+		}
+		
+		_fullscreenElement = null;
+		
+		//call the callback, so that the Window
+		//object can exit fullscreen using platform
+		//specific API
+		if (_onExitFullscreen != null)
+		{
+			_onExitFullscreen();
+		}
+		
+		//fire a fullscreen event
+		var fullscreenEvent:Event = new Event();
+		fullscreenEvent.initEvent(Event.FULL_SCREEN_CHANGE, true, false);
+	}
+	
+	/**
+	 * TODO 5 : always true for now, as it
+	 * is always supported by the flash target
+	 */
+	private function get_fullscreenEnabled():Bool
+	{
+		return true;
+	}
+	
+	private function get_fullscreenElement():HTMLElement
+	{
+		return _fullscreenElement;
+	}
+	
+	/**
+	 * start fullscreen mode
+	 * 
+	 * TODO 5 : implementation doesn't respect
+	 * w3c spec, but spec still in early stages
+	 */
+	private function set_fullscreenElement(value:HTMLElement):HTMLElement
+	{
+		//do nothing if already in fullscreen mode
+		if (_fullscreenElement != null)
+		{
+			return _fullscreenElement;
+		}
+		
+		_fullscreenElement = value;
+		
+		//call enter fullscreen callbakc, so that
+		//Window can enter fullscreen using platform
+		//specific API
+		if (_onEnterFullscreen != null)
+		{
+			_onEnterFullscreen();
+		}
+		
+		//fire fullscreen event
+		var fullscreenEvent:Event = new Event();
+		fullscreenEvent.initEvent(Event.FULL_SCREEN_CHANGE, true, false);
+		
+		return _fullscreenElement = value;
+	}
+	
+	private function set_onEnterFullscreen(value:Void->Void):Void->Void
+	{
+		return _onEnterFullscreen = value;
+	}
+	
+	private function get_onEnterFullscreen():Void->Void
+	{
+		return _onEnterFullscreen;
+	}
+	
+	private function set_onExitFullscreen(value:Void->Void):Void->Void
+	{
+		return _onExitFullscreen = value;
+	}
+	
+	private function get_onExitFullscreen():Void->Void
+	{
+		return _onExitFullscreen;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
