@@ -7,6 +7,7 @@
 */
 package cocktail.core.style.computer;
 
+import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 
@@ -49,7 +50,7 @@ class DisplayStylesComputer
 	{
 		//get a reference to the computed style structure
 		//holding the used style value (the ones actually used)
-		var computedStyle:ComputedStyleData = style.computedStyle;
+		var computedStyle:ComputedStyle = style.computedStyle;
 		
 		//position
 		computedStyle.position = style.position;

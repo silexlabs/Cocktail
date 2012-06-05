@@ -9,6 +9,7 @@ package cocktail.core.style.floats;
 
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import haxe.Log;
@@ -233,7 +234,7 @@ class FloatsManager
 		//a float width and height use the margin box of a
 		//HTMLElement
 		
-		var computedStyle:ComputedStyleData = elementRenderer.coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
 		var floatWidth:Int = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 		var floatHeight:Int = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	

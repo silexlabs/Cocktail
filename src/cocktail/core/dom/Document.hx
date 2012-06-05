@@ -51,9 +51,12 @@ class Document extends Node
 	/**
 	 * This is a convenience attribute that allows direct access
 	 * to the child node that is the document element of the document.
+	 * 
+	 * TODO IMPORTANT : this attribute is supposed to return an
+	 * Element but it has to be an HTMLElement to match the Haxe JS API
 	 */
-	private var _documentElement:Element;
-	public var documentElement(get_documentElement, never):Element;
+	private var _documentElement:HTMLElement;
+	public var documentElement(get_documentElement, never):HTMLElement;
 	
 	/**
 	 * class constructor
@@ -290,7 +293,7 @@ class Document extends Node
 	// GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_documentElement():Element
+	private function get_documentElement():HTMLElement
 	{
 		return _documentElement;
 	}

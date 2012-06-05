@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.style.computer.boxComputers;
+import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import haxe.Log;
@@ -45,7 +46,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	 */
 	private function measureHorizontalPositionOffsets(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
-		var computedStyle:ComputedStyleData = style.computedStyle;
+		var computedStyle:ComputedStyle = style.computedStyle;
 			
 		//if left or right are 'auto'
 		if (style.left == PositionOffset.cssAuto || style.right == PositionOffset.cssAuto)
@@ -126,7 +127,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	 */
 	private function measureVerticalPositionOffsets(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
-		var computedStyle:ComputedStyleData = style.computedStyle;
+		var computedStyle:ComputedStyle = style.computedStyle;
 		
 		if (style.top == PositionOffset.cssAuto || style.bottom == PositionOffset.cssAuto)
 		{
