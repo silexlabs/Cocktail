@@ -7,6 +7,7 @@
 */
 package cocktail.core.style.formatter;
 import cocktail.core.dom.Node;
+import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.renderer.BlockBoxRenderer;
@@ -63,7 +64,7 @@ class BlockFormattingContext extends FormattingContext
 				//when formatting their formatting context
 					var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft;
 					var y:Float = concatenatedY + marginTop;
-					var computedStyle:ComputedStyleData = child.coreStyle.computedStyle;
+					var computedStyle:ComputedStyle = child.coreStyle.computedStyle;
 					var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 					var height:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 				

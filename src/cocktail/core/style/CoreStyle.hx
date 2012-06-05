@@ -37,6 +37,7 @@ import cocktail.core.unit.UnitManager;
 import cocktail.core.font.FontData;
 import haxe.Log;
 import haxe.Timer;
+import cocktail.core.style.ComputedStyle;
 
 /**
  * This is the base class for all Style classes. Style classes
@@ -214,6 +215,21 @@ class CoreStyle
 	private var _cursor:Cursor;
 	public var cursor(getCursor, setCursor):Cursor;
 	
+	/**
+	 * transition styles
+	 */
+	private var _transitionProperty:TransitionProperty;
+	public var transitionProperty(getTransitionProperty, setTransitionProperty):TransitionProperty;
+	
+	private var _transitionDuration:TransitionDuration;
+	public var transitionDuration(getTransitionDuration, setTransitionDuration):TransitionDuration;
+	
+	private var _transitionDelay:TransitionDelay;
+	public var transitionDelay(getTransitionDelay, setTransitionDelay):TransitionDelay;
+	
+	private var _transitionTimingFunction:TransitionTimingFunction;
+	public var transitionTimingFunction(getTransitionTimingFunction, setTransitionTimingFunction):TransitionTimingFunction;
+	
 	////////////////////////////////
 	
 	/**
@@ -221,8 +237,8 @@ class CoreStyle
 	 * For example, if a size is set as a percentage, it will
 	 * be stored once computed to pixels into this structure
 	 */
-	private var _computedStyle:ComputedStyleData;
-	public var computedStyle(get_computedStyle, set_computedStyle):ComputedStyleData;
+	private var _computedStyle:ComputedStyle;
+	public var computedStyle(get_computedStyle, set_computedStyle):ComputedStyle;
 		
 	/**
 	 * Returns metrics info for the currently defined
@@ -259,6 +275,7 @@ class CoreStyle
 	 */
 	private function initDefaultStyleValues(tagName:String):Void
 	{
+		_computedStyle = new ComputedStyle();
 		initComputedStyles();
 		
 		_width = getWidthDefaultValue();
@@ -351,59 +368,7 @@ class CoreStyle
 	 */
 	public function initComputedStyles():Void
 	{
-		 _computedStyle = {
-			width : 0,
-			height : 0,
-			minHeight : 0,
-			maxHeight : 0,
-			minWidth : 0,
-			maxWidth : 0,
-			marginLeft : 0,
-			marginRight : 0,
-			marginTop : 0,
-			marginBottom : 0,
-			paddingLeft : 0,
-			paddingRight : 0,
-			paddingTop : 0,
-			paddingBottom : 0,
-			left: 0,
-			right: 0,
-			top: 0,
-			bottom : 0,
-			clear : Clear.none,
-			cssFloat : CSSFloat.none,
-			display : Display.cssInline,
-			position: Position.cssStatic,
-			verticalAlign : 0.0,
-			fontSize:16.0,
-			lineHeight:14.0,
-			fontWeight:FontWeight.normal,
-			fontStyle:FontStyle.normal,
-			fontFamily:["serif"],
-			fontVariant:FontVariant.normal,
-			textTransform:TextTransform.none,
-			letterSpacing:0,
-			wordSpacing:0,
-			textIndent:0,
-			whiteSpace:WhiteSpace.normal,
-			textAlign:TextAlign.left,
-			color:{color:0, alpha:1.0},
-			visibility:true,
-			zIndex:ZIndex.cssAuto,
-			opacity:1.0,
-			overflowX: Overflow.visible,
-			overflowY: Overflow.visible,
-			transformOrigin: { x:0.0, y:0.0 },
-			transform:new Matrix(),
-			backgroundColor:{color:0, alpha:1.0},
-			backgroundSize:[],
-			backgroundOrigin:[],
-			backgroundImage:[],
-			backgroundClip:[],
-			backgroundPosition:[],
-			backgroundRepeat:[],
-			cursor:Cursor.cssDefault
-		};
+		_computedStyle.init();
 	}
 	
 	/**
@@ -425,6 +390,8 @@ class CoreStyle
 	 * 
 	 * TODO 5 : This method should eventually be removed when a StyleManager
 	 * is introduced which will prevent those styles from being hard-coded
+	 * 
+	 * TODO 4 : use HTMLConstants
 	 */
 	private function applyDefaultHTMLStyles(tagName:String):Void
 	{
@@ -825,15 +792,48 @@ class CoreStyle
 	}
 	
 	/////////////////////////////////
+	// TRANSITION METHODS
+	////////////////////////////////
+	
+	private function startTransitionIfNeeded(propertyName:String):Void
+	{
+		switch (computedStyle.transitionProperty)
+		{
+			case TransitionProperty.none:
+				return;
+				
+			case TransitionProperty.list(value):
+				var foundFlag:Bool = false;
+				
+				for (i in 0...value.length)
+				{
+					if (value[i] == propertyName)
+					{
+						foundFlag = true;
+					}
+				}
+				
+				if (foundFlag == false)
+				{
+					return;
+				}
+				
+			case TransitionProperty.all:	
+		}
+		
+		
+	}
+	
+	/////////////////////////////////
 	// SETTERS/GETTERS
 	////////////////////////////////
 
-	private function get_computedStyle():ComputedStyleData
+	private function get_computedStyle():ComputedStyle
 	{
 		return _computedStyle;
 	}
 	
-	private function set_computedStyle(value:ComputedStyleData):ComputedStyleData
+	private function set_computedStyle(value:ComputedStyle):ComputedStyle
 	{
 		return _computedStyle = value;
 	}
@@ -860,6 +860,7 @@ class CoreStyle
 	private function setWidth(value:Dimension):Dimension 
 	{
 		_width = value;
+		startTransitionIfNeeded("width");
 		invalidate();
 		return value;
 	}
@@ -1156,6 +1157,26 @@ class CoreStyle
 		_overflowY = value;
 		invalidateLayer();
 		return value;
+	}
+	
+	private function setTransitionProperty(value:TransitionProperty):TransitionProperty
+	{
+		return _transitionProperty = value;
+	}
+	
+	private function setTransitionDuration(value:TransitionDuration):TransitionDuration
+	{
+		return _transitionDuration = value;
+	}
+	
+	private function setTransitionDelay(value:TransitionDelay):TransitionDelay
+	{
+		return _transitionDelay = value;
+	}
+	
+	private function setTransitionTimingFunction(value:TransitionTimingFunction):TransitionTimingFunction
+	{
+		return _transitionTimingFunction = value;
 	}
 	
 	
@@ -1469,5 +1490,25 @@ class CoreStyle
 	private function getCursor():Cursor
 	{
 		return _cursor;
+	}
+	
+	private function getTransitionProperty():TransitionProperty
+	{
+		return _transitionProperty;
+	}
+	
+	private function getTransitionDuration():TransitionDuration
+	{
+		return _transitionDuration;
+	}
+	
+	private function getTransitionDelay():TransitionDelay
+	{
+		return _transitionDelay;
+	}
+	
+	private function getTransitionTimingFunction():TransitionTimingFunction
+	{
+		return _transitionTimingFunction;
 	}
 }

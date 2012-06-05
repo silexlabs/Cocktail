@@ -135,6 +135,7 @@ class BoxRenderer extends ElementRenderer
 		_coreStyle.computeDisplayStyles();
 		_coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
 
+		//compute the box styles (width, height, margins, paddings...)
 		_coreStyle.computeBoxModelStyles(getRelevantContainingBlockData(containingBlockData, viewportData,  firstPositionedAncestorData.data), isReplaced());
 		
 		//layout all the children of the ElementRenderer if it has any
@@ -242,7 +243,6 @@ class BoxRenderer extends ElementRenderer
 					{
 						addedX = elementRenderer.positionedOrigin.x;
 					}
-					
 				}
 				else
 				{

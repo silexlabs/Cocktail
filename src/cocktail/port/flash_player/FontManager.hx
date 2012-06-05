@@ -10,6 +10,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.port.flash_player;
 
 import cocktail.core.NativeElement;
+import cocktail.core.style.ComputedStyle;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.FontPosture;
@@ -161,7 +162,7 @@ class FontManager extends AbstractFontManager
 	 * Overriden to create flash text lines. Uses the flash text engine introduced
 	 * in flash player 10
 	 */
-	override public function createNativeTextElement(text:String, computedStyle:ComputedStyleData):NativeElement
+	override public function createNativeTextElement(text:String, computedStyle:ComputedStyle):NativeElement
 	{
 		//a TextBlock is a factory for flash TextLines
 		var textBlock:TextBlock = new TextBlock();
@@ -247,7 +248,7 @@ class FontManager extends AbstractFontManager
 	 * to apply to it when rendered. A computedStyle
 	 * is provided to render the text
 	 */
-	private function getNativeTextElement(text:String, computedStyle:ComputedStyleData):TextElement
+	private function getNativeTextElement(text:String, computedStyle:ComputedStyle):TextElement
 	{
 		//apply transformation to the text (toUppercase, toLowercase...)
 		//before using it as a model

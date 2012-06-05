@@ -12,6 +12,7 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.DrawingManager;
 import cocktail.core.geom.GeomData;
+import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
@@ -199,7 +200,7 @@ class ElementRenderer extends Node
 	 * For example, if a size is set as a percentage, it will
 	 * be stored once computed to pixels into this structure
 	 */
-	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyleData;
+	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyle;
 	
 	/**
 	 * get/set the scrolling in the x axis of this ElementRenderer.
@@ -853,12 +854,12 @@ class ElementRenderer extends Node
 		};
 	}
 	
-	private function getComputedStyle():ComputedStyleData
+	private function getComputedStyle():ComputedStyle
 	{
 		return _coreStyle.computedStyle;
 	}
 	
-	private function setComputedStyle(value:ComputedStyleData):ComputedStyleData
+	private function setComputedStyle(value:ComputedStyle):ComputedStyle
 	{
 		return _coreStyle.computedStyle = value;
 	}

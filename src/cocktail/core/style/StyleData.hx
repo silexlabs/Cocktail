@@ -1117,6 +1117,143 @@ import cocktail.core.renderer.TextRenderer;
 		pointer;
 	}
 	
+		// TRANSITION STYLES
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The 'transition-property' property 
+	 * specifies the name of the CSS property to which
+	 * the transition is applied.
+	 */
+	enum TransitionProperty {
+		
+		/**
+		 * A value of ‘none’ means that no property will transition. 
+		 */
+		none;
+		
+		/**
+		 * indicates that all the properties
+		 * are to be transitioned
+		 */
+		all;
+		
+		/**
+		 * Indicates that a named list of property
+		 * are to be transitioned
+		 */
+		list(value:Array<String>);
+	}
+	
+	/**
+	 * The 'transition-duration' property defines
+	 * the length of time that a transition takes.
+	 */
+	typedef TransitionDuration = Array<TimeValue>;
+	
+	/**
+	 * The 'transition-delay' property defines when the transition
+	 * will start. It allows a transition to begin execution some 
+	 * some period of time from when it is applied. A 'transition-delay'
+	 * value of ‘0s’ means the transition will execute as soon as
+	 * the property is changed. Otherwise, the value specifies an 
+	 * offset from the moment the property is changed, and the transition will 
+	 * delay execution by that offset.
+	 * 
+	 * If the value for 'transition-delay' is a negative time
+	 * offset then the transition will execute the moment the property
+	 * is changed, but will appear to have begun execution at the specified offset.
+	 * That is, the transition will appear to begin part-way through its play cycle.
+	 * In the case where a transition has implied starting values and 
+	 * a negative 'transition-delay', the starting values are taken from the
+	 *  moment the property is changed.
+	 */
+	typedef TransitionDelay = Array<TimeValue>;
+	
+	/**
+	 * The 'transition-timing-function' property describes how
+	 * the intermediate values used during a transition
+	 * will be calculated. It allows for a transition
+	 * to change speed over its duration. These effects
+	 * are commonly called easing functions. In either 
+	 * case, a mathematical function that provides a smooth curve is used.
+	 * 
+	 */
+	enum TransitionTimingFunction {
+		
+		/**
+		 * The ease function is equivalent to 
+		 * cubic-bezier(0.25, 0.1, 0.25, 1.0).
+		 */
+		ease;
+		
+		/**
+		 * The linear function is equivalent 
+		 * to cubic-bezier(0.0, 0.0, 1.0, 1.0).
+		 */
+		linear;
+		
+		/**
+		 * The ease-in function is equivalent 
+		 * to cubic-bezier(0.42, 0, 1.0, 1.0).
+		 */
+		easeIn;
+		
+		/**
+		 * The ease-out function is equivalent 
+		 * to cubic-bezier(0, 0, 0.58, 1.0).
+		 */
+		easeOut;
+		
+		/**
+		 * The ease-in-out function is 
+		 * equivalent to cubic-bezier(0.42, 0, 0.58, 1.0)
+		 */
+		easeInOut;
+		
+		/**
+		 * The step-start function is equivalent
+		 * to steps(1, start).
+		 */
+		stepStart;
+		
+		/**
+		 * The step-end function is equivalent
+		 * to steps(1, end).
+		 */
+		stepEnd;
+		
+		/**
+		 * Specifies a stepping function
+		 * taking two parameters. The first parameter 
+		 * specifies the number of intervals in 
+		 * the function. It must be a positive integer
+		 * (greater than 0). The second parameter, 
+		 * is either the value ‘start’ or ‘end’,
+		 * and specifies the point at which the change
+		 * of values occur within the interval.
+		 */
+		steps(intervalNumbers:Int, intervalChange:IntervalChangeValue);
+		
+		/**
+		 * Specifies a cubic-bezier curve. The four values specify 
+		 * points P1 and P2 of the curve as (x1, y1, x2, y2).
+		 * Both x values must be in the range [0, 1] or the definition
+		 * is invalid. The y values can exceed this range.
+		 */
+		cubicBezier(x1:Float, y1:Float, x2:Float, y2:Float); 
+	}
+	
+	/**
+	 * Used for a transition with a 'steps'
+	 * timing function to know when 
+	 * to change the interval value
+	 */
+	enum IntervalChangeValue {
+		start;
+		end;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Structures
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1148,110 +1285,6 @@ import cocktail.core.renderer.TextRenderer;
 		var data:ContainingBlockData;
 	}
 	
-	/**
-	 * Stores all the computed styles
-	 * of an htmlElement as they are 
-	 * used multiple times when applying
-	 * styles
-	 */
-	typedef ComputedStyleData = {
-		
-		/**
-		 * content dimensions
-		 */
-		var width:Int;
-		var height:Int;
-		
-		/**
-		 * content dimensions constraints
-		 */
-		var minWidth:Int;
-		var maxWidth:Int;
-		var maxHeight:Int;
-		var minHeight:Int;
-		
-		/**
-		 * margins
-		 */
-		var marginLeft:Int;
-		var marginRight:Int;
-		var marginTop:Int;
-		var marginBottom:Int;
-		
-		/**
-		 * paddings
-		 */
-		var paddingLeft:Int;
-		var paddingRight:Int;
-		var paddingTop:Int;
-		var paddingBottom:Int;
-		
-		/**
-		 * position offset
-		 */
-		var left:Int;
-		var right:Int;
-		var top:Int;
-		var bottom:Int;
-		
-		/**
-		 * display
-		 */
-		var display:Display;
-		var cssFloat:CSSFloat;
-		var clear:Clear;
-		var position:Position;
-		var lineHeight:Float;
-		var zIndex:ZIndex;
-		
-		/**
-		 * visual effects
-		 */
-		var opacity:Float;
-		var visibility:Bool;
-		var overflowX:Overflow;
-		var overflowY:Overflow;
-		var transformOrigin:PointData;
-		var transform:Matrix;
-		
-		/**
-		 * background
-		 */
-		var backgroundColor:ColorData;
-		var backgroundImage:Array<BackgroundImage>;
-		var backgroundRepeat:Array<BackgroundRepeat>;
-		var backgroundPosition:Array<BackgroundPosition>;
-		var backgroundClip:Array<BackgroundClip>;
-		var backgroundOrigin:Array<BackgroundOrigin>;
-		var backgroundSize:Array<BackgroundSize>;
-		
-		/**
-		 * font
-		 */
-		var fontSize:Float;
-		var fontWeight:FontWeight;
-		var fontStyle:FontStyle;
-		var fontFamily:Array<String>;
-		var fontVariant:FontVariant;
-		
-		/**
-		 * text
-		 */
-		var textTransform:TextTransform;
-		var letterSpacing:Int;
-		var verticalAlign:Float;
-		var wordSpacing:Int;
-		var textIndent:Int;
-		var whiteSpace:WhiteSpace;
-		var textAlign:TextAlign;
-		var color:ColorData;
-		
-		/**
-		 * user interface
-		 */
-		var cursor:Cursor;
-	}
-
 	/**
 	 * Store the computed background style
 	 * for one background image

@@ -18,6 +18,7 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.style.ComputedStyle;
 import lib.hxtml.HxtmlConverter;
 import cocktail.core.NativeElement;
 import cocktail.core.event.Event;
@@ -1201,14 +1202,14 @@ class HTMLElement extends Element
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
 		invalidateLayout(true);
-		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_offsetHeight():Int
 	{
 		invalidateLayout(true);
-		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
 	
@@ -1230,14 +1231,14 @@ class HTMLElement extends Element
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
 		invalidateLayout(true);
-		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_clientHeight():Int
 	{
 		invalidateLayout(true);
-		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
 	

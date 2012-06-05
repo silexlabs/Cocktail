@@ -7,6 +7,7 @@
 */
 package cocktail.core.style.computer.boxComputers;
 
+import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.unit.UnitData;
@@ -322,7 +323,7 @@ class BoxStylesComputer
 	 */
 	private function constrainWidth(style:CoreStyle, computedWidth:Int):Int
 	{
-		var computedStyle:ComputedStyleData = style.computedStyle;
+		var computedStyle:ComputedStyle = style.computedStyle;
 		
 		//check that the computedWidth is not 
 		//superior to max width. The max width
@@ -350,7 +351,7 @@ class BoxStylesComputer
 	 */
 	private function constrainHeight(style:CoreStyle, computedHeight:Int):Int
 	{
-		var computedStyle:ComputedStyleData = style.computedStyle;
+		var computedStyle:ComputedStyle = style.computedStyle;
 	
 		//check that height is within authorised range
 		if (style.maxHeight != ConstrainedDimension.none)
