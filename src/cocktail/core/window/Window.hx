@@ -85,6 +85,10 @@ class Window extends EventCallback
 		
 		_platform.onresize = htmlDocument.onPlatformResizeEvent;
 		
+		//fullscreen callbacks
+		htmlDocument.onEnterFullscreen = onDocumentEnterFullscreen;
+		htmlDocument.onExitFullscreen = onDocumentExitFullscreen;
+		
 		_document = htmlDocument;
 	}
 	
@@ -98,6 +102,29 @@ class Window extends EventCallback
 	public function open(url:String, name:String = HTMLAnchorElement.TARGET_BLANK):Void
 	{
 		_platform.open(url, name);
+	}
+	
+		
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// FULLSCREEN CALLBACKS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when the document request to enter fullscreen mode.
+	 * Start fullscreen mode using platform specific API
+	 */
+	private function onDocumentEnterFullscreen():Void
+	{
+		_platform.enterFullscreen();
+	}
+		
+	/**
+	 * Called when the document request to exit fullscreen mode.
+	 * Exit fullscreen mode using platform specific API
+	 */
+	private function onDocumentExitFullscreen():Void
+	{
+		_platform.exitFullscreen();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

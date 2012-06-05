@@ -164,6 +164,14 @@ class Event
 	
 	public static inline var READY_STATE_CHANGE:String = "readystatechange";
 	
+	// Fullscreen event types
+	
+	/**
+	 * The user either enter or exit fullscreen mode
+	 */
+	public static inline var FULL_SCREEN_CHANGE:String = "fullscreenchange";
+	
+	
 	//PhaseType, An integer indicating which phase of the event flow is being processed
 	
 	/**
