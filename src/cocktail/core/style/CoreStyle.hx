@@ -797,6 +797,9 @@ class CoreStyle
 	
 	private function startTransitionIfNeeded(propertyName:String):Void
 	{
+		//TODO 1 : implement
+		return;
+		
 		switch (computedStyle.transitionProperty)
 		{
 			case TransitionProperty.none:
