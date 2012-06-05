@@ -24,4 +24,4 @@ typedef FormElement = cocktail.core.html.HTMLInputElement;
 typedef Event = cocktail.core.event.Event;
 
 typedef XMLHTTPRequest = cocktail.core.resource.XMLHTTPRequest;
-typedef HtmlCollection<HtmlDom> = Array<HtmlDom>;
+typedef HtmlCollection<Dynamic> = Array<Dynamic>;
