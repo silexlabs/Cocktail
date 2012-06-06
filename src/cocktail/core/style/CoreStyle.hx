@@ -28,6 +28,8 @@ import cocktail.core.style.computer.DisplayStylesComputer;
 import cocktail.core.style.computer.FontAndTextStylesComputer;
 import cocktail.core.style.computer.VisualEffectStylesComputer;
 import cocktail.core.style.formatter.FormattingContext;
+import cocktail.core.style.transition.Transition;
+import cocktail.core.style.transition.TransitionManager;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
@@ -346,6 +348,11 @@ class CoreStyle
 		_opacity = 1.0;
 		_overflowX = Overflow.visible;
 		_overflowY = Overflow.visible;
+		
+		_transitionDelay = [TimeValue.seconds(0)];
+		_transitionDuration = [TimeValue.seconds(0)];
+		_transitionProperty = TransitionProperty.all;
+		_transitionTimingFunction = [TransitionTimingFunctionValue.ease];
 		
 		_transformOrigin = {
 			x:TransformOriginX.center,
@@ -797,14 +804,9 @@ class CoreStyle
 	
 	private function startTransitionIfNeeded(propertyName:String):Void
 	{
-		//TODO 1 : implement
-
-		//TODO 1 : reference null on updatethumbsize of scrollbar
-		if (computedStyle.transitionProperty == null)
-		{
-			trace(_htmlElement.elementRenderer);
-			return;
-		}
+		//TODO 1 : shouldn't have to call it here
+		computeVisualEffectStyles();
+		
 		
 		var propertyIndex:Int = 0;
 		
@@ -836,8 +838,29 @@ class CoreStyle
 		
 		var combinedDuration:Float = 0.0;
 		
-		//switch(computedStyle.transitionDelay
+		var transitionDelay:Float = computedStyle.transitionDelay[propertyIndex];
+		var transitionDuration:Float = computedStyle.transitionDuration[propertyIndex];
+		var transitionTimingFunction:TransitionTimingFunctionValue = computedStyle.transitionTimingFunction[propertyIndex];
+		combinedDuration = transitionDuration + transitionDelay;
 		
+			
+		if (combinedDuration > 0)
+		{
+			TransitionManager.getInstance().startTransition(computedStyle, propertyName, 0, 100, 1, 0, transitionTimingFunction,
+			onTransitionComplete, onTransitionUpdate);
+		}
+		
+	}
+	
+	private function onTransitionComplete(transition:Transition):Void
+	{
+		trace("complete");
+	}
+	
+	private function onTransitionUpdate(transition:Transition):Void
+	{
+		//invalidate();
+		trace("up");
 	}
 	
 	/////////////////////////////////

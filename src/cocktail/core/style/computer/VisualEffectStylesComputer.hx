@@ -13,6 +13,7 @@ import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.unit.UnitManager;
+import cocktail.core.unit.UnitData;
 
 /**
  * This is a static class in charge of
@@ -65,19 +66,16 @@ class VisualEffectStylesComputer
 		computedStyle.transform = getComputedTransform(style);
 		
 		//transition-delay
-		//computedStyle.transitionDelay = style.transitionDelay;
-		//
+		computedStyle.transitionDelay = getComputedTransitionDelay(style);
+		
 		//transition-property
-		//computedStyle.transitionProperty = style.transitionProperty;
+		computedStyle.transitionProperty = style.transitionProperty;
 		
 		//transition-duration
-		//computedStyle.transitionDuration = getComputedTransitionDuration(style);
+		computedStyle.transitionDuration = getComputedTransitionDuration(style);
 		
 		//transition-timing-function
-	//	computedStyle.transitionTimingFunction = style.transitionTimingFunction;
-		
-		
-		
+		computedStyle.transitionTimingFunction = style.transitionTimingFunction;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -87,14 +85,48 @@ class VisualEffectStylesComputer
 	/**
 	 * Compute the 'transition-duration' style
 	 */
-	private static function getComputedTransitionDuration(style:CoreStyle):Float
+	private static function getComputedTransitionDuration(style:CoreStyle):Array<Float>
 	{
-		var transitionDuration:Float;
-		return 0.0;
-		//switch (style.transitionDuration)
-		//{
-			//case 
-		//}
+		var transitionDurations:Array<Float> = new Array<Float>();
+		
+		for (i in 0...style.transitionDuration.length)
+		{
+			switch (style.transitionDuration[i])
+			{
+				case TimeValue.seconds(value):
+					transitionDurations.push(value);
+					
+				case TimeValue.milliSeconds(value):
+					//convert to seconds
+					transitionDurations.push(value / 1000);
+			}
+		}
+		
+		return transitionDurations;
+		
+	}
+	
+	/**
+	 * Compute the 'transition-delay' style
+	 */
+	private static function getComputedTransitionDelay(style:CoreStyle):Array<Float>
+	{
+		var transitionDelays:Array<Float> = new Array<Float>();
+		
+		for (i in 0...style.transitionDelay.length)
+		{
+			switch (style.transitionDelay[i])
+			{
+				case TimeValue.seconds(value):
+					transitionDelays.push(value);
+					
+				case TimeValue.milliSeconds(value):
+					//convert to seconds
+					transitionDelays.push(value / 1000);
+			}
+		}
+		
+		return transitionDelays;
 	}
 	
 	/**

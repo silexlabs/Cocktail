@@ -120,6 +120,7 @@ class HTMLDocument extends Document
 		
 		_documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
 		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
+		_documentElement.appendChild(_body);
 		_focusManager = new FocusManager();
 	}
 	
@@ -133,7 +134,6 @@ class HTMLDocument extends Document
 	{
 		_body = htmlBodyElement;
 		_body.attach();
-		_documentElement.appendChild(_body);
 		_hoveredElementRenderer = _body.elementRenderer;
 		_activeElement = _body;
 	}
