@@ -1,4 +1,5 @@
 package lib.hxtml;
+import lib.haxe.xml.Parser;
 
 class Browser<DisplayObjectType> {
 
@@ -55,7 +56,7 @@ class Browser<DisplayObjectType> {
 	}
 
 	public function setHtml( data : String ) {
-		var x = Xml.parse(data).firstElement();
+		var x = Parser.parse(data).firstElement();
 		ids = new Hash();
 		domRoot = make(x);
 		refresh();
