@@ -63,11 +63,39 @@ class VisualEffectStylesComputer
 		
 		//transform
 		computedStyle.transform = getComputedTransform(style);
+		
+		//transition-delay
+		//computedStyle.transitionDelay = style.transitionDelay;
+		//
+		//transition-property
+		//computedStyle.transitionProperty = style.transitionProperty;
+		
+		//transition-duration
+		//computedStyle.transitionDuration = getComputedTransitionDuration(style);
+		
+		//transition-timing-function
+		//computedStyle.transitionTimingFunction = style.transitionTimingFunction;
+		
+		
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE STATIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Compute the 'transition-duration' style
+	 */
+	private static function getComputedTransitionDuration(style:CoreStyle):Float
+	{
+		var transitionDuration:Float;
+		return 0;
+		//switch (style.transitionDuration)
+		//{
+			//case 
+		//}
+	}
 	
 	/**
 	 * Compute the 'visibility' style

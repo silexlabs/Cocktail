@@ -13,7 +13,14 @@ import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
 
 /**
- * ...
+ * This class holds the computed values of a style
+ * object which are the value which can actually
+ * be used during layout. 
+ * 
+ * For instance a width
+ * value specified as 'auto' will be computed
+ * into an absolute pixel during layout
+ * 
  * @author Yannick DOMINGUEZ
  */
 class ComputedStyle 
@@ -190,11 +197,11 @@ class ComputedStyle
 	private var _transitionProperty:TransitionProperty;
 	public var transitionProperty(getTransitionProperty, setTransitionProperty):TransitionProperty;
 	
-	private var _transitionDuration:TransitionDuration;
-	public var transitionDuration(getTransitionDuration, setTransitionDuration):TransitionDuration;
+	private var _transitionDuration:Float;
+	public var transitionDuration(getTransitionDuration, setTransitionDuration):Float;
 	
-	private var _transitionDelay:TransitionDelay;
-	public var transitionDelay(getTransitionDelay, setTransitionDelay):TransitionDelay;
+	private var _transitionDelay:Float;
+	public var transitionDelay(getTransitionDelay, setTransitionDelay):Float;
 	
 	private var _transitionTimingFunction:TransitionTimingFunction;
 	public var transitionTimingFunction(getTransitionTimingFunction, setTransitionTimingFunction):TransitionTimingFunction;
@@ -207,6 +214,9 @@ class ComputedStyle
 		
 	}
 	
+	/**
+	 * Set the default value on every styles
+	 */
 	public function init():Void
 	{
 		_width = 0;
@@ -260,6 +270,10 @@ class ComputedStyle
 		_backgroundPosition=[];
 		_backgroundRepeat=[];
 		_cursor = Cursor.cssDefault;
+		_transitionDelay = 0.0;
+		_transitionDuration = 0.0;
+		_transitionProperty = TransitionProperty.all;
+		_transitionTimingFunction = TransitionTimingFunction.ease;
 	}
 	
 	
@@ -526,12 +540,12 @@ class ComputedStyle
 		return _transitionProperty = value;
 	}
 	
-	private function setTransitionDuration(value:TransitionDuration):TransitionDuration
+	private function setTransitionDuration(value:Float):Float
 	{
 		return _transitionDuration = value;
 	}
 	
-	private function setTransitionDelay(value:TransitionDelay):TransitionDelay
+	private function setTransitionDelay(value:Float):Float
 	{
 		return _transitionDelay = value;
 	}
@@ -851,12 +865,12 @@ class ComputedStyle
 		return _transitionProperty;
 	}
 	
-	private function getTransitionDuration():TransitionDuration
+	private function getTransitionDuration():Float
 	{
 		return _transitionDuration;
 	}
 	
-	private function getTransitionDelay():TransitionDelay
+	private function getTransitionDelay():Float
 	{
 		return _transitionDelay;
 	}

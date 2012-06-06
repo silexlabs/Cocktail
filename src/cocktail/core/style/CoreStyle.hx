@@ -588,7 +588,7 @@ class CoreStyle
 	}
 	
 	/**
-	 * Compute the visual effect styles (opacity, visibility, transformations)
+	 * Compute the visual effect styles (opacity, visibility, transformations, transition)
 	 */
 	public function computeVisualEffectStyles():Void
 	{
@@ -798,7 +798,15 @@ class CoreStyle
 	private function startTransitionIfNeeded(propertyName:String):Void
 	{
 		//TODO 1 : implement
-		return;
+
+		//TODO 1 : reference null on updatethumbsize of scrollbar
+		if (computedStyle.transitionProperty == null)
+		{
+			trace(_htmlElement.elementRenderer);
+			return;
+		}
+		
+		var propertyIndex:Int = 0;
 		
 		switch (computedStyle.transitionProperty)
 		{
@@ -812,7 +820,9 @@ class CoreStyle
 				{
 					if (value[i] == propertyName)
 					{
+						propertyIndex = i;
 						foundFlag = true;
+						break;
 					}
 				}
 				
@@ -824,6 +834,9 @@ class CoreStyle
 			case TransitionProperty.all:	
 		}
 		
+		var combinedDuration:Float = 0.0;
+		
+		//switch(computedStyle.transitionDelay
 		
 	}
 	
