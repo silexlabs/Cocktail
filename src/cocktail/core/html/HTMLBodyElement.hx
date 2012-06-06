@@ -68,7 +68,7 @@ class HTMLBodyElement extends HTMLElement
 	 */
 	override private function detachFromParentElementRenderer():Void
 	{
-		trace("detach body");
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

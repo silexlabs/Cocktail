@@ -1179,7 +1179,12 @@ import cocktail.core.renderer.TextRenderer;
 	 * case, a mathematical function that provides a smooth curve is used.
 	 * 
 	 */
-	enum TransitionTimingFunction {
+	typedef TransitionTimingFunction = Array<TransitionTimingFunctionValue>;
+	
+	/**
+	 * Lists the value available for a TransitionTimingFunction
+	 */
+	enum TransitionTimingFunctionValue {
 		
 		/**
 		 * The ease function is equivalent to 

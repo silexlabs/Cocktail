@@ -9,6 +9,7 @@ package cocktail.core.style;
 
 import cocktail.core.geom.GeomData;
 import cocktail.core.geom.Matrix;
+import cocktail.core.style.transition.TransitionManager;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
 
@@ -197,11 +198,11 @@ class ComputedStyle
 	private var _transitionProperty:TransitionProperty;
 	public var transitionProperty(getTransitionProperty, setTransitionProperty):TransitionProperty;
 	
-	private var _transitionDuration:Float;
-	public var transitionDuration(getTransitionDuration, setTransitionDuration):Float;
+	private var _transitionDuration:Array<Float>;
+	public var transitionDuration(getTransitionDuration, setTransitionDuration):Array<Float>;
 	
-	private var _transitionDelay:Float;
-	public var transitionDelay(getTransitionDelay, setTransitionDelay):Float;
+	private var _transitionDelay:Array<Float>;
+	public var transitionDelay(getTransitionDelay, setTransitionDelay):Array<Float>;
 	
 	private var _transitionTimingFunction:TransitionTimingFunction;
 	public var transitionTimingFunction(getTransitionTimingFunction, setTransitionTimingFunction):TransitionTimingFunction;
@@ -270,10 +271,10 @@ class ComputedStyle
 		_backgroundPosition=[];
 		_backgroundRepeat=[];
 		_cursor = Cursor.cssDefault;
-		_transitionDelay = 0.0;
-		_transitionDuration = 0.0;
+		_transitionDelay = [];
+		_transitionDuration = [];
 		_transitionProperty = TransitionProperty.all;
-		_transitionTimingFunction = TransitionTimingFunction.ease;
+		_transitionTimingFunction = [];
 	}
 	
 	
@@ -540,12 +541,12 @@ class ComputedStyle
 		return _transitionProperty = value;
 	}
 	
-	private function setTransitionDuration(value:Float):Float
+	private function setTransitionDuration(value:Array<Float>):Array<Float>
 	{
 		return _transitionDuration = value;
 	}
 	
-	private function setTransitionDelay(value:Float):Float
+	private function setTransitionDelay(value:Array<Float>):Array<Float>
 	{
 		return _transitionDelay = value;
 	}
@@ -621,6 +622,11 @@ class ComputedStyle
 	
 	private function getWidth():Int 
 	{
+		if (TransitionManager.getInstance().isTransitioning("width", this))
+		{
+			return Math.round(TransitionManager.getInstance().getTransition("width", this).currentValue);
+		}
+		
 		return _width;
 	}
 	
@@ -865,12 +871,12 @@ class ComputedStyle
 		return _transitionProperty;
 	}
 	
-	private function getTransitionDuration():Float
+	private function getTransitionDuration():Array<Float>
 	{
 		return _transitionDuration;
 	}
 	
-	private function getTransitionDelay():Float
+	private function getTransitionDelay():Array<Float>
 	{
 		return _transitionDelay;
 	}

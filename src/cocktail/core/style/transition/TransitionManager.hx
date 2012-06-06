@@ -10,6 +10,7 @@ package cocktail.core.style.transition;
 import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
+import haxe.Timer;
 
 /**
  * ...
@@ -23,12 +24,19 @@ class TransitionManager
 	
 	private static var _instance:TransitionManager;
 	
+	private var _currentTransitionsNumber:Int;
+	
+	private var _transitionTimer:Timer;
+	
+	private static inline var TRANSITION_UPDATE_SPEED:Int = 50;
+	
 	/**
 	 * class constructor
 	 */
 	private function new() 
 	{
 		_transitions = new Hash();
+		_currentTransitionsNumber = 0;
 	}
 	
 	public static function getInstance():TransitionManager
@@ -43,17 +51,48 @@ class TransitionManager
 	
 	public function isTransitioning(propertyName:String, style:ComputedStyle):Bool
 	{
+		if (_transitions.exists(propertyName))
+		{
+			var propertyTransitions:Array<Transition> = _transitions.get(propertyName);
+			for (i in 0...propertyTransitions.length)
+			{
+				if (propertyTransitions[i].target == style)
+				{
+					return true;
+				}
+			}
+		}
 		
+		return false;
 	}
 	
 	public function getTransition(propertyName:String, style:ComputedStyle):Transition
 	{
+		if (_transitions.exists(propertyName))
+		{
+			var propertyTransitions:Array<Transition> = _transitions.get(propertyName);
+			for (i in 0...propertyTransitions.length)
+			{
+				if (propertyTransitions[i].target == style)
+				{
+					return propertyTransitions[i];
+				}
+			}
+		}
 		
+		return null;
 	}
 	
 	public function startTransition(target:ComputedStyle, propertyName:String, startValue:Float, endValue:Float, transitionDuration:Float, 
-	transitionDelay:Float, transitionTimingFunction:TransitionTimingFunction, onComplete:Transition->Void, onUpdate:Transition->Void):Transition
+	transitionDelay:Float, transitionTimingFunction:TransitionTimingFunctionValue, onComplete:Transition->Void, onUpdate:Transition->Void):Transition
 	{
+		if (_currentTransitionsNumber == 0)
+		{
+			startTransitionTimer();
+		}
+		_currentTransitionsNumber++;
+		
+		
 		var transition:Transition = new Transition(target, transitionDuration, transitionDelay, transitionTimingFunction,
 		startValue, endValue, onComplete, onUpdate);
 		
@@ -72,5 +111,38 @@ class TransitionManager
 	{
 		
 	}
+	
+	
+	private function startTransitionTimer():Void
+	{
+		//Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
+	}
+	
+	private function onTransitionTick():Void
+	{
+		for (propertyTransitions in _transitions)
+		{
+			for (i in 0...propertyTransitions.length)
+			{
+				var transition:Transition = propertyTransitions[i];
+				if (transition.complete == true)
+				{
+					transition.onComplete(transition);
+					_currentTransitionsNumber--;
+					propertyTransitions.remove(transition);
+				}
+				else
+				{
+					transition.onUpdate(transition);
+				}
+			}
+		}
+		
+		if (_currentTransitionsNumber > 0)
+		{
+			//Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
+		}
+	}
+	
 	
 }
