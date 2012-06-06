@@ -22,7 +22,7 @@ class Transition
 	
 	private var _endValue:Float;
 	
-	private var _startTime:Float;
+	private var _currentTime:Float;
 	
 	public var currentValue(get_currentValue, never):Float;
 	
@@ -50,19 +50,18 @@ class Transition
 		_onComplete = onComplete;
 		_onUpdate = onUpdate;
 		
-		//TODO 1 : implement start time
-		_startTime = Date.now().getTime();
+		_currentTime = 0;
+	}
+	
+	public function updateTime(delta:Float)
+	{
+		_currentTime += delta;
 	}
 	
 	private function get_currentValue():Float
 	{
-		var currentTime:Float = Date.now().getTime();
-		trace(currentTime);
-		trace(_startTime);
-		trace(_startTime - currentTime);
+		var completePercent:Float = (_currentTime) / ((_transitionDelay + _transitionDuration) * 1000);
 		
-		var completePercent:Float = ((_transitionDelay + _transitionDuration)) / (currentTime - _startTime);
-
 		return _endValue * completePercent;
 	}
 	
@@ -83,9 +82,8 @@ class Transition
 	
 	private function get_complete():Bool
 	{
-		var currentTime:Float = Date.now().getTime();
 		
-		if (currentTime -_startTime >= (_transitionDelay + _transitionDuration) * 1000)
+		if (_currentTime >= (_transitionDelay + _transitionDuration) * 1000)
 		{
 			return true;
 		}

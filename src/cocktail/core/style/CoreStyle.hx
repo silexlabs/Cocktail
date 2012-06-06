@@ -846,7 +846,7 @@ class CoreStyle
 			
 		if (combinedDuration > 0)
 		{
-			TransitionManager.getInstance().startTransition(computedStyle, propertyName, 0, 100, 1, 0, transitionTimingFunction,
+			TransitionManager.getInstance().startTransition(computedStyle, propertyName, 100, 200, 2.5, 0, transitionTimingFunction,
 			onTransitionComplete, onTransitionUpdate);
 		}
 		
@@ -854,13 +854,12 @@ class CoreStyle
 	
 	private function onTransitionComplete(transition:Transition):Void
 	{
-		trace("complete");
+		invalidate();
 	}
 	
 	private function onTransitionUpdate(transition:Transition):Void
 	{
-		//invalidate();
-		trace("up");
+		invalidate();
 	}
 	
 	/////////////////////////////////
