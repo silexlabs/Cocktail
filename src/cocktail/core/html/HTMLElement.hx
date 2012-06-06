@@ -19,6 +19,7 @@ import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.style.ComputedStyle;
+import lib.hxtml.CssParser;
 import lib.hxtml.HxtmlConverter;
 import lib.haxe.xml.Parser;
 import cocktail.core.NativeElement;
@@ -36,6 +37,7 @@ import cocktail.Lib;
 import haxe.Log;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.style.StyleData;
+import lib.hxtml.IStyleProxy;
 
 /**
  * All HTML element interfaces derive from this class.
@@ -1096,7 +1098,11 @@ class HTMLElement extends Element
 				var v = xml.get(a);
 				switch( a ) {
 				case "style":
-					//new CssParser<DisplayObjectType>().parse(v, d, styleProxy);
+					
+					//TODO 1 : big hack to make style work, hxtml is no longer 
+					//useful as this point
+					var styleProxy = new StyleProxy();
+					new CssParser<HTMLElement>().parse(v, d, cast(styleProxy));
 				default:
 					d.setAttribute(a, v);
 				}
