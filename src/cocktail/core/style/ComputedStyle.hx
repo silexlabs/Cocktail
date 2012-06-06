@@ -662,6 +662,10 @@ class ComputedStyle
 	
 	private function getTop():Int 
 	{
+		if (TransitionManager.getInstance().isTransitioning("top", this))
+		{
+			return Math.round(TransitionManager.getInstance().getTransition("top", this).currentValue);
+		}
 		return _top;
 	}
 	
