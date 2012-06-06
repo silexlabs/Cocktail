@@ -74,7 +74,7 @@ class VisualEffectStylesComputer
 		//computedStyle.transitionDuration = getComputedTransitionDuration(style);
 		
 		//transition-timing-function
-		//computedStyle.transitionTimingFunction = style.transitionTimingFunction;
+	//	computedStyle.transitionTimingFunction = style.transitionTimingFunction;
 		
 		
 		
@@ -90,7 +90,7 @@ class VisualEffectStylesComputer
 	private static function getComputedTransitionDuration(style:CoreStyle):Float
 	{
 		var transitionDuration:Float;
-		return 0;
+		return 0.0;
 		//switch (style.transitionDuration)
 		//{
 			//case 
