@@ -1056,7 +1056,8 @@ class HTMLElement extends Element
 		var wrappedHTML:String = "<div>";
 		wrappedHTML += value;
 		wrappedHTML += "</div>";
-		var node:Node = HxtmlConverter.getNode(wrappedHTML);
+		
+		var node:HTMLElement = doSetInnerHTML(Parser.parse(wrappedHTML).firstElement());
 		
 		//append all children of the generated node
 		for (i in 0...node.childNodes.length)
@@ -1065,6 +1066,49 @@ class HTMLElement extends Element
 		}
 		
 		return value;
+	}
+	
+	private function doSetInnerHTML(xml : Xml):HTMLElement
+	{
+		switch( xml.nodeType ) {
+		case Xml.PCData:
+			return _ownerDocument.createTextNode(xml.nodeValue);
+			
+		case Xml.Comment:
+			return _ownerDocument.createComment(xml.nodeValue);
+			
+		case Xml.Element:
+			
+			var d : HTMLElement;
+			
+			var name = xml.nodeName.toLowerCase();
+			d = _ownerDocument.createElement(name);
+			
+			for (child in xml)
+			{
+				var htmlChild:HTMLElement = doSetInnerHTML(child);
+				d.appendChild(htmlChild);
+			}
+			
+				// init attributes
+			for( a in xml.attributes() ){
+				a = a.toLowerCase();
+				var v = xml.get(a);
+				switch( a ) {
+				case "style":
+					//new CssParser<DisplayObjectType>().parse(v, d, styleProxy);
+				default:
+					d.setAttribute(a, v);
+				}
+			}
+			
+			
+			return d;
+		}
+		
+		//TODO 2 : will cause bug if node type not supported
+		return null;
+		
 	}
 	
 	/**
@@ -1156,8 +1200,13 @@ class HTMLElement extends Element
 
 				case Node.TEXT_NODE:
 					//serialize a Text node
-					var textXml:Xml = Parser.parse(child.nodeValue);
-					xml.addChild(textXml.firstChild());
+					var text:Xml = Xml.createPCData(child.nodeValue);
+					xml.addChild(text);
+					
+				case Node.COMMENT_NODE:
+					//serialize a Comment node
+					var comment:Xml = Xml.createComment(child.nodeValue);
+					xml.addChild(comment);
 			}
 		}
 		
