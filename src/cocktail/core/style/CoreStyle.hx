@@ -838,9 +838,11 @@ class CoreStyle
 		
 		var combinedDuration:Float = 0.0;
 		
-		var transitionDelay:Float = computedStyle.transitionDelay[propertyIndex];
-		var transitionDuration:Float = computedStyle.transitionDuration[propertyIndex];
-		var transitionTimingFunction:TransitionTimingFunctionValue = computedStyle.transitionTimingFunction[propertyIndex];
+		var transitionDelay:Float = computedStyle.transitionDelay[getRepeatedIndex(propertyIndex, computedStyle.transitionDelay.length)];
+		
+		var transitionDuration:Float = computedStyle.transitionDuration[getRepeatedIndex(propertyIndex, computedStyle.transitionDuration.length)];
+		
+		var transitionTimingFunction:TransitionTimingFunctionValue = computedStyle.transitionTimingFunction[getRepeatedIndex(propertyIndex,computedStyle.transitionTimingFunction.length)];
 		combinedDuration = transitionDuration + transitionDelay;
 		
 			
@@ -865,6 +867,16 @@ class CoreStyle
 			transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate);
 		}
 		
+	}
+	
+	private function getRepeatedIndex(index:Int, length:Int):Int
+	{
+		if (index < length)
+		{
+			return index;
+		}
+		
+		return length % index;
 	}
 	
 	private function onTransitionComplete(transition:Transition):Void
