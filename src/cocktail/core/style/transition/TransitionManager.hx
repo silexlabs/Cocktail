@@ -106,9 +106,17 @@ class TransitionManager
 		return transition;
 	}
 	
-	public function stopTransition(transition:Transition):Void
+	public function stopTransition(propertyName:String, computedStyle:ComputedStyle):Void
 	{
-		
+		var propertyTransitions:Array<Transition> = _transitions.get(propertyName);
+		for (i in 0...propertyTransitions.length)
+		{
+			if (propertyTransitions[i].target == computedStyle)
+			{
+				propertyTransitions.remove(propertyTransitions[i]);
+				break;
+			}
+		}
 	}
 	
 	
@@ -127,10 +135,12 @@ class TransitionManager
 			{
 				var transition:Transition = propertyTransitions[i];
 				transition.updateTime(TRANSITION_UPDATE_SPEED);
+				
 				if (transition.complete == true)
 				{
 					transition.onComplete(transition);
 					_currentTransitionsNumber--;
+					
 					propertyTransitions.remove(transition);
 				}
 				else

@@ -12,6 +12,7 @@ import cocktail.core.event.Event;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
+import cocktail.core.event.TransitionEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLElement;
@@ -47,6 +48,8 @@ class Document extends Node
 	public static inline var WHEEL_EVENT_INTERFACE:String = "WheelEvent";
 	
 	public static inline var CUSTOM_EVENT_INTERFACE:String = "CustomEvent";
+	
+	public static inline var TRANSITION_EVENT_INTERFACE:String = "TransitionEvent";
 	
 	/**
 	 * This is a convenience attribute that allows direct access
@@ -162,6 +165,9 @@ class Document extends Node
 				
 			case WHEEL_EVENT_INTERFACE:
 				return new WheelEvent();
+				
+			case TRANSITION_EVENT_INTERFACE:
+				return new TransitionEvent();
 				
 			default:
 				throw DOMException.NOT_SUPPORTED_ERR;

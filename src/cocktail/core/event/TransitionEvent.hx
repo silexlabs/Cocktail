@@ -55,9 +55,9 @@ class TransitionEvent extends Event
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new()
 	{
-		
+		super();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
