@@ -92,7 +92,6 @@ class TransitionManager
 		}
 		_currentTransitionsNumber++;
 		
-		
 		var transition:Transition = new Transition(target, transitionDuration, transitionDelay, transitionTimingFunction,
 		startValue, endValue, onComplete, onUpdate);
 		
@@ -115,7 +114,9 @@ class TransitionManager
 	
 	private function startTransitionTimer():Void
 	{
-		//Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
+		#if (flash9 || nme)
+		Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
+		#end
 	}
 	
 	private function onTransitionTick():Void
@@ -125,6 +126,7 @@ class TransitionManager
 			for (i in 0...propertyTransitions.length)
 			{
 				var transition:Transition = propertyTransitions[i];
+				transition.updateTime(TRANSITION_UPDATE_SPEED);
 				if (transition.complete == true)
 				{
 					transition.onComplete(transition);
@@ -140,7 +142,9 @@ class TransitionManager
 		
 		if (_currentTransitionsNumber > 0)
 		{
-			//Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
+			#if (flash9 || nme)
+			Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
+			#end
 		}
 	}
 	

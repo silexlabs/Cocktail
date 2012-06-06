@@ -1022,7 +1022,7 @@ class HTMLElement extends Element
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// DOM PARSER GETTER/SETTER
+	// DOM PARSER GETTER/SETTER AND METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -1103,7 +1103,7 @@ class HTMLElement extends Element
 			switch(child.nodeType)
 			{
 				case Node.ELEMENT_NODE:
-					
+				
 					//create an xml node with the tag name of the HTMLElement,
 					//for instance 'div', 'span', 'img'...
 					var childXml:Xml = Xml.createElement(child.nodeName);
@@ -1146,6 +1146,15 @@ class HTMLElement extends Element
 					//add the children's content to the Xml of the child
 					xml.addChild(doGetInnerHTML(child, childXml));
 					
+					//when the child xml doesn't have children itself, check if it
+					//is a void element, as if it isn't, it must not be represented as 
+					//a self-closing tag and so an empty string children is added to it
+					//to be sure that the xml parser also returns a closing tag 
+					if (childXml.firstChild() == null && isVoidElement() == false)
+					{
+						childXml.addChild(Parser.parse(""));
+					}
+
 				case Node.TEXT_NODE:
 					//serialize a Text node
 					var textXml:Xml = Parser.parse(child.nodeValue);
@@ -1154,6 +1163,17 @@ class HTMLElement extends Element
 		}
 		
 		return xml;
+	}
+	
+	/**
+	 * Utils method describing wether the HTMLElement
+	 * is a void element, meaning it can't have any
+	 * context and can be represented by a self-closing
+	 * tag, like for instance the <img/> tag
+	 */
+	public function isVoidElement():Bool
+	{
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
