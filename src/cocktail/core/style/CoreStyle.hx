@@ -1019,6 +1019,7 @@ class CoreStyle
 	private function setTop(value:PositionOffset):PositionOffset 
 	{
 		_top = value;
+		startTransitionIfNeeded("top");
 		invalidate();
 		return value;
 	}
