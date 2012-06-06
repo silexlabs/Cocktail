@@ -112,6 +112,18 @@ class Document extends Node
 	}
 	
 	/**
+	 * Creates a Comment node given the specified string.
+	 * @param	data The data for the node.
+	 * @return The new Comment object.
+	 */
+	public function createComment(data:String):Comment
+	{
+		var comment:Comment = new Comment();
+		comment.nodeValue = data;
+		return comment;
+	}
+	
+	/**
 	 * Creates an Attr of the given name. Note that the 
 	 * Attr instance can then be set on an Element using
 	 * the setAttributeNode method.

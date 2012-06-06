@@ -198,11 +198,12 @@ class Transition
 				
 			//step functions	
 			case TransitionTimingFunctionValue.stepStart:
-				return ((_endValue - _startValue) * completePercent) + _startValue;	
+				return ((_endValue - _startValue) * 1) + _startValue;	
 				
 			case TransitionTimingFunctionValue.stepEnd:
-				return ((_endValue - _startValue) * completePercent) + _startValue;		
+				return ((_endValue - _startValue) * 0) + _startValue;		
 				
+			//TODO 1 : implement
 			case TransitionTimingFunctionValue.steps(intervalNumbers, intervalChange):
 				return ((_endValue - _startValue) * completePercent) + _startValue;			
 			
