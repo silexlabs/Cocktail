@@ -846,12 +846,20 @@ class CoreStyle
 			
 		if (combinedDuration > 0)
 		{
+			
+			if (TransitionManager.getInstance().isTransitioning(propertyName, computedStyle))
+			{
+				var transition:Transition = TransitionManager.getInstance().getTransition(propertyName, computedStyle);
+				TransitionManager.getInstance().stopTransition(propertyName, computedStyle);
+
+			}
+			
 			var startValue:Float = Reflect.getProperty(computedStyle, propertyName);
-			trace(startValue);
 			invalidate(true);
 			var endValue:Float = Reflect.getProperty(computedStyle, propertyName);
-			trace(Reflect.getProperty(this, propertyName));
-			trace(endValue);
+
+			
+			
 			
 			TransitionManager.getInstance().startTransition(computedStyle, propertyName, startValue, endValue, 
 			transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate);
@@ -862,6 +870,7 @@ class CoreStyle
 	private function onTransitionComplete(transition:Transition):Void
 	{
 		invalidate();
+		//TODO 1 : dispatch transition event
 	}
 	
 	private function onTransitionUpdate(transition:Transition):Void
