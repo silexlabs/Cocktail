@@ -79,13 +79,14 @@ class Browser<DisplayObjectType> {
 			throw "assert";
 		case Xml.PCData, Xml.Comment:
 			return createTextNode(x.nodeValue);
+		case Xml.DocType:
+			return null;
 		}
 		var d : DisplayObjectType;
 		var name = x.nodeName.toLowerCase();
 		d = createElement(name);
 
 		// build children
-		var allowSpaces = !(name == "head" || name ==  "link" || name == "meta" || name == "title" || name == "html");
 		var allowComments = (name == "style");
 		
 
@@ -96,8 +97,7 @@ class Browser<DisplayObjectType> {
 			switch( c.nodeType ) {
 			case Xml.PCData:
 				if( ~/^[ \n\r\t]*$/.match(c.nodeValue) ) {
-					if( !allowSpaces || prev == null )
-						continue;
+					
 /*					if( prev.name != null )
 						hasText = true;
 					else
@@ -117,8 +117,14 @@ class Browser<DisplayObjectType> {
 					appendChild(d, createTextNode(" "));
 				}
 */			}
-			prev = make(c);
-			appendChild(d, prev);
+
+			
+		if (name == "ul")
+				{
+					trace(c);
+				}
+					prev = make(c);
+					appendChild(d, prev);
 		}
 		// init attributes
 		for( a in x.attributes() ){
