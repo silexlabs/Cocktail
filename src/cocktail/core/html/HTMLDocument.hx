@@ -118,17 +118,24 @@ class HTMLDocument extends Document
 	{
 		super();
 		
-		_body = cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME));
-		_body.attach();
-		
 		_documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
-		_documentElement.appendChild(_body);
-		
+		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
 		_focusManager = new FocusManager();
-		_activeElement = _body;
-		
+	}
+	
+	/**
+	 * Init the body element of the document and the attributes
+	 * depending on it. Set as public so that the body element
+	 * can be reset if the inner HTML of thr whole document
+	 * changes
+	 */
+	public function initBody(htmlBodyElement:HTMLBodyElement):Void
+	{
+		_body = htmlBodyElement;
+		_body.attach();
+		_documentElement.appendChild(_body);
 		_hoveredElementRenderer = _body.elementRenderer;
-		
+		_activeElement = _body;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
