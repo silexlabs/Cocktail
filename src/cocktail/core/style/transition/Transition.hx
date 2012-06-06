@@ -13,12 +13,16 @@ class Transition
 {
 	
 	private var _transitionDuration:Float;
+	public var transitionDuration(get_transitionDuration, never):Float;
 	
 	private var _transitionDelay:Float;
 	
 	private var _transitionTimingFunction:TransitionTimingFunctionValue;
 	
 	private var _startValue:Float;
+	
+	private var _propertyName:String;
+	public var propertyName(get_propertyName, never):String;
 	
 	private var _endValue:Float;
 	
@@ -37,7 +41,7 @@ class Transition
 	
 	public var complete(get_complete, never):Bool;
 	
-	public function new(target:ComputedStyle, transitionDuration:Float, transitionDelay:Float, transitionTimingFunction:TransitionTimingFunctionValue,
+	public function new(propertyName:String, target:ComputedStyle, transitionDuration:Float, transitionDelay:Float, transitionTimingFunction:TransitionTimingFunctionValue,
 	startValue:Float, endValue:Float, onComplete:Transition->Void, onUpdate:Transition->Void) 
 	{
 		_transitionDelay = transitionDelay;
@@ -46,6 +50,7 @@ class Transition
 		_startValue = startValue;
 		_endValue = endValue;
 		_target = target;
+		_propertyName = propertyName;
 		
 		_onComplete = onComplete;
 		_onUpdate = onUpdate;
@@ -56,6 +61,19 @@ class Transition
 	public function updateTime(delta:Float)
 	{
 		_currentTime += delta;
+	}
+	
+	public function dispose():Void
+	{
+		_onComplete = null;
+		_onUpdate = null;
+		_target = null;
+		_transitionTimingFunction = null;
+	}
+	
+	private function get_transitionDuration():Float
+	{
+		return _transitionDuration;
 	}
 	
 	private function get_currentValue():Float
@@ -73,6 +91,11 @@ class Transition
 	private function get_onComplete():Transition->Void
 	{
 		return _onComplete;
+	}
+	
+	private function get_propertyName():String
+	{
+		return _propertyName;
 	}
 	
 	private function get_onUpdate():Transition->Void

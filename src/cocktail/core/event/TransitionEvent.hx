@@ -85,7 +85,7 @@ class TransitionEvent extends Event
 	 * @param	pseudoElementArg Specifies the pseudo-element on which the
 	 * transition occurred. (See the pseudoElement attribute.)
 	 */
-	public function initTransitonEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, propertyNameArg:String,
+	public function initTransitionEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, propertyNameArg:String,
 	elapsedTimeArg:Float, pseudoElementArg:String):Void
 	{
 		//can't alter event after it has been dispatched
