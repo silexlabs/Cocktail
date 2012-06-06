@@ -30,6 +30,9 @@ class TransitionManager
 	
 	private static inline var TRANSITION_UPDATE_SPEED:Int = 50;
 	
+	private var _lastTick:Float;
+	
+	
 	/**
 	 * class constructor
 	 */
@@ -37,6 +40,7 @@ class TransitionManager
 	{
 		_transitions = new Hash();
 		_currentTransitionsNumber = 0;
+		_lastTick = 0;
 	}
 	
 	public static function getInstance():TransitionManager
@@ -114,6 +118,7 @@ class TransitionManager
 			if (propertyTransitions[i].target == computedStyle)
 			{
 				propertyTransitions.remove(propertyTransitions[i]);
+				_currentTransitionsNumber--;
 				break;
 			}
 		}
@@ -123,18 +128,24 @@ class TransitionManager
 	private function startTransitionTimer():Void
 	{
 		#if (flash9 || nme)
+		_lastTick = Date.now().getTime();
 		Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
 		#end
 	}
 	
 	private function onTransitionTick():Void
 	{
+		var tick:Float = Date.now().getTime();
+		var interval:Float = tick - _lastTick;
+		
+		_lastTick = tick;
+		
 		for (propertyTransitions in _transitions)
 		{
 			for (i in 0...propertyTransitions.length)
 			{
 				var transition:Transition = propertyTransitions[i];
-				transition.updateTime(TRANSITION_UPDATE_SPEED);
+				transition.updateTime(interval);
 				
 				if (transition.complete == true)
 				{

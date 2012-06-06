@@ -82,7 +82,6 @@ class Transition
 	
 	private function get_complete():Bool
 	{
-		
 		if (_currentTime >= (_transitionDelay + _transitionDuration) * 1000)
 		{
 			return true;
