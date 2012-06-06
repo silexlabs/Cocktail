@@ -632,6 +632,11 @@ class ComputedStyle
 	
 	private function getHeight():Int 
 	{
+		if (TransitionManager.getInstance().isTransitioning("height", this))
+		{
+			return Math.round(TransitionManager.getInstance().getTransition("height", this).currentValue);
+		}
+		
 		return _height;
 	}
 	
