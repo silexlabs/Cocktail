@@ -248,6 +248,17 @@ class EventCallback extends EventTarget
 	 */
 	public var onvolumechange(default, set_onVolumeChange):Event->Void;
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Transition callback
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when the transition is complete. In the case where a transition is
+	 * removed before completion, such as if the transition-property 
+	 * is removed, then the event will not fire.
+	 */
+	public var ontransitionend(default, set_onTransitionEnd):TransitionEvent->Void;
+	
 	/**
 	 * class constructor
 	 */
@@ -507,5 +518,14 @@ class EventCallback extends EventTarget
 	{
 		updateCallbackListener(Event.VOLUME_CHANGE, value, onvolumechange);
 		return onvolumechange = value;
+	}
+	
+		// TRANSITION
+	////////////////////////////
+	
+	private function set_onTransitionEnd(value:TransitionEvent->Void):TransitionEvent->Void
+	{
+		updateCallbackListener(TransitionEvent.TRANSITION_END, cast(value), cast(ontransitionend));
+		return ontransitionend = value;
 	}
 }

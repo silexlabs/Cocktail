@@ -13,28 +13,67 @@ import cocktail.core.style.StyleData;
 import haxe.Timer;
 
 /**
- * ...
+ * The transition manager is in charge of starting
+ * and stopping the transition of properties.
+ * 
+ * When at least one transition is in progress, the
+ * TransitionManager sets a timer to update the transition
+ * while in progress
+ * 
+ * The TransitionManager is a singleton and is in charge of
+ * all the transitions in the Document
+ * 
+ * The data flow of a transition is as follow : 
+	 * - the value of a transitionable property is updated
+	 * - in CoreStyle, check if the property should be transitioned
+	 * - if it does, starts a new transition using the TransitionManager
+	 * - the TransitionManager calls at regular interval the onUpdate callback
+	 * of each transition, which triggers invalidation in CoreStyle, thus
+	 * re-painting the document as needed
+	 * - While a transition is in progress, the corresponding ComputedStyle only return its
+	 * transitioned value
+	 * - When the transition is complete, calls its complete callback, triggering invalidation
+	 * in CoreStyle and the dispatch of a transition end event on the transitioned element
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class TransitionManager 
 {
-	
-	private var _transitions:Hash<Array<Transition>>;
-	
+	/**
+	 * The instance for the singleton pattern
+	 */
 	private static var _instance:TransitionManager;
 	
-	private var _currentTransitionsNumber:Int;
-	
-	private var _transitionTimer:Timer;
-	
+	/**
+	 * The time, in milliseconds between each update of the transition
+	 * in progress
+	 */
 	private static inline var TRANSITION_UPDATE_SPEED:Int = 25;
 	
-	private var _lastTick:Float;
-	
+	/**
+	 * Store a ref to each transitions in progress, where
+	 * the key is a CSS property name and the value is the
+	 * array of transition in progress for this property
+	 * name
+	 */
+	private var _transitions:Hash<Array<Transition>>;
 	
 	/**
-	 * class constructor
+	 * The current number of transition in progress. When it
+	 * drops to 0, stop the update timer
+	 */
+	private var _currentTransitionsNumber:Int;
+	
+	/**
+	 * The timestamp of the last tick of the update Timer.
+	 * Stored to compensate the elapsed time when the time between
+	 * two timer tick was longer than intended
+	 */
+	private var _lastTick:Float;
+	
+	/**
+	 * class constructor. private for
+	 * singleton
 	 */
 	private function new() 
 	{
@@ -43,6 +82,9 @@ class TransitionManager
 		_lastTick = 0;
 	}
 	
+	/**
+	 * Singleton method
+	 */
 	public static function getInstance():TransitionManager
 	{
 		if (_instance == null)
@@ -53,11 +95,23 @@ class TransitionManager
 		return _instance;
 	}
 	
+	/////////////////////////////////
+	// PUBLIC METHODS
+	////////////////////////////////
+	
+	/**
+	 * Returns wheter a transition is in progress for 
+	 * a given property name and a given target computed
+	 * style
+	 */
 	public function isTransitioning(propertyName:String, style:ComputedStyle):Bool
 	{
+		//check that a key in the hash matches the property name.
+		//if it does then no property with this name is transitioning
 		if (_transitions.exists(propertyName))
 		{
 			var propertyTransitions:Array<Transition> = _transitions.get(propertyName);
+			//look for a transition object with the right target
 			for (i in 0...propertyTransitions.length)
 			{
 				if (propertyTransitions[i].target == style)
@@ -70,6 +124,12 @@ class TransitionManager
 		return false;
 	}
 	
+	/**
+	 * Return a transition object using the name of a property
+	 * and a given target computed style
+	 * 
+	 * TODO 2 : very similar to isTransitioning, should merge ?
+	 */
 	public function getTransition(propertyName:String, style:ComputedStyle):Transition
 	{
 		if (_transitions.exists(propertyName))
@@ -87,72 +147,128 @@ class TransitionManager
 		return null;
 	}
 	
+	/**
+	 * start a new transition by instantiating a new 
+	 * Transition obejct
+	 */
 	public function startTransition(target:ComputedStyle, propertyName:String, startValue:Float, endValue:Float, transitionDuration:Float, 
-	transitionDelay:Float, transitionTimingFunction:TransitionTimingFunctionValue, onComplete:Transition->Void, onUpdate:Transition->Void):Transition
+	transitionDelay:Float, transitionTimingFunction:TransitionTimingFunctionValue, onComplete:Transition->Void, onUpdate:Transition->Void):Void
 	{
-		if (_currentTransitionsNumber == 0)
-		{
-			startTransitionTimer();
-		}
-		_currentTransitionsNumber++;
-		
+		//create a new transition
 		var transition:Transition = new Transition(propertyName, target, transitionDuration, transitionDelay, transitionTimingFunction,
 		startValue, endValue, onComplete, onUpdate);
 		
+		//create a key in the hash for the property name
+		//of the new transition if necessary
 		if (_transitions.exists(propertyName) == false)
 		{
 			_transitions.set(propertyName, []);
 		}
 		
+		//store the new transition
 		var propertyTransitions:Array<Transition> = _transitions.get(propertyName);
 		propertyTransitions.push(transition);
-		 
-		return transition;
+		
+		//if the number of transition in progress was 0
+		//before this one, thent the update timer must be
+		//started
+		if (_currentTransitionsNumber == 0)
+		{
+			startTransitionTimer();
+		}
+		
+		//increment the number of transition in progress
+		_currentTransitionsNumber++;
 	}
 	
+	/**
+	 * Stop a transition upon completion or if it was
+	 * canceled ansd dispose of it
+	 */
 	public function stopTransition(transition:Transition):Void
 	{
+		//remove the stored reference to the transition
 		var propertyTransitions:Array<Transition> = _transitions.get(transition.propertyName);
 		propertyTransitions.remove(transition);
+		
+		//clean-up
 		transition.dispose();
+		
+		//decrement the number of transition in prgress
+		//to be sure that the update timer stops if there
+		//are no more transition in progress
 		_currentTransitionsNumber--;
 	}
 	
+	/////////////////////////////////
+	// PRIVATE METHODS
+	////////////////////////////////
 	
+	/**
+	 * Start the update timer
+	 */
 	private function startTransitionTimer():Void
 	{
 		#if (flash9 || nme)
+		
+		//store the current date timestamp, so that
+		//on each timer tick, the actual elapsed
+		//time can be calculated
 		_lastTick = Date.now().getTime();
+		
+		//set a delayed method call which will be repeated
+		//as long as needed
 		Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
 		#end
 	}
 	
+	/**
+	 * Called at regular interval while at least one
+	 * transition is in progress to call the right
+	 * callback for the transition
+	 */
 	private function onTransitionTick():Void
 	{
+		//get the current timestamp
 		var tick:Float = Date.now().getTime();
+		//store the actual elapsed time since the last
+		//time this methd was called, in milliseconds
 		var interval:Float = tick - _lastTick;
 		
+		//the last time is updated for the next call
+		//of this method
 		_lastTick = tick;
 		
+		//loop in all Transition in the hash
 		for (propertyTransitions in _transitions)
 		{
 			for (i in 0...propertyTransitions.length)
 			{
 				var transition:Transition = propertyTransitions[i];
+				
+				//update the elapsed time of the transition with
+				//the actual elapsed interval since this method
+				//was last called
 				transition.updateTime(interval);
 				
+				//call the right callback for the transition
 				if (transition.complete == true)
 				{
+					//here the transition is complete
 					transition.onComplete(transition);
+					//if the transition is complete, stop it
 					stopTransition(transition);
 				}
 				else
 				{
+					//here the transition is not yet complete
 					transition.onUpdate(transition);
 				}
 			}
 		}
 		
+		//while the number of transition in progress doesn't
+		//drop to 0, delay a call to this method
 		if (_currentTransitionsNumber > 0)
 		{
 			#if (flash9 || nme)
