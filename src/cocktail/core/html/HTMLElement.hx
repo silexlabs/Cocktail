@@ -1056,9 +1056,8 @@ class HTMLElement extends Element
 		var wrappedHTML:String = "<div>";
 		wrappedHTML += value;
 		wrappedHTML += "</div>";
-		
 		var node:Node = HxtmlConverter.getNode(wrappedHTML);
-
+		
 		//append all children of the generated node
 		for (i in 0...node.childNodes.length)
 		{

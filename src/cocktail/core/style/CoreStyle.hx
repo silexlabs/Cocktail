@@ -769,9 +769,9 @@ class CoreStyle
 	 * Called when a style necesiting invalidation of the
 	 * layout of the HTMLElement is changed
 	 */
-	private function invalidate():Void
+	private function invalidate(immediate:Bool = false):Void
 	{
-		_htmlElement.invalidateLayout();
+		_htmlElement.invalidateLayout(immediate);
 	}
 	
 	/**
@@ -846,8 +846,15 @@ class CoreStyle
 			
 		if (combinedDuration > 0)
 		{
-			TransitionManager.getInstance().startTransition(computedStyle, propertyName, 100, 200, 2.5, 0, transitionTimingFunction,
-			onTransitionComplete, onTransitionUpdate);
+			var startValue:Float = Reflect.getProperty(computedStyle, propertyName);
+			trace(startValue);
+			invalidate(true);
+			var endValue:Float = Reflect.getProperty(computedStyle, propertyName);
+			trace(Reflect.getProperty(this, propertyName));
+			trace(endValue);
+			
+			TransitionManager.getInstance().startTransition(computedStyle, propertyName, startValue, endValue, 
+			transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate);
 		}
 		
 	}
@@ -976,6 +983,7 @@ class CoreStyle
 	private function setHeight(value:Dimension):Dimension 
 	{
 		_height = value;
+		startTransitionIfNeeded("height");
 		invalidate();
 		return value;
 	}

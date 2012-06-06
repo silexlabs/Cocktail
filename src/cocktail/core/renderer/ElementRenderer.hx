@@ -716,7 +716,7 @@ class ElementRenderer extends Node
 				this._isLayingOut = true;
 				
 				var parent:ElementRenderer = cast(_parentNode);
-				parent.invalidateLayout(immediate);	
+				parent.invalidateLayout(immediate);
 			}
 		}
 	}

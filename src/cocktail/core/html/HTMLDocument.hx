@@ -279,7 +279,7 @@ class HTMLDocument extends Document
 	public function onPlatformMouseMoveEvent(mouseEvent:MouseEvent):Void
 	{
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
-		
+
 		if (_hoveredElementRenderer != elementRendererAtPoint)
 		{
 			var mouseOutEvent:MouseEvent = new MouseEvent();
@@ -295,7 +295,7 @@ class HTMLDocument extends Document
 			mouseOverEvent.initMouseEvent(MouseEvent.MOUSE_OVER, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
 			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, oldHoveredElementRenderer.node);
 			
-			elementRendererAtPoint.dispatchEvent(mouseOverEvent);
+			elementRendererAtPoint.node.dispatchEvent(mouseOverEvent);
 		}
 		
 		elementRendererAtPoint.node.dispatchEvent(mouseEvent);

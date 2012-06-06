@@ -62,7 +62,7 @@ class Transition
 	{
 		var completePercent:Float = (_currentTime) / ((_transitionDelay + _transitionDuration) * 1000);
 		
-		return _endValue * completePercent;
+		return ((_endValue - _startValue) * completePercent) + _startValue;
 	}
 	
 	private function get_target():ComputedStyle
