@@ -28,7 +28,7 @@ class TransitionManager
 	
 	private var _transitionTimer:Timer;
 	
-	private static inline var TRANSITION_UPDATE_SPEED:Int = 50;
+	private static inline var TRANSITION_UPDATE_SPEED:Int = 25;
 	
 	private var _lastTick:Float;
 	
@@ -96,7 +96,7 @@ class TransitionManager
 		}
 		_currentTransitionsNumber++;
 		
-		var transition:Transition = new Transition(target, transitionDuration, transitionDelay, transitionTimingFunction,
+		var transition:Transition = new Transition(propertyName, target, transitionDuration, transitionDelay, transitionTimingFunction,
 		startValue, endValue, onComplete, onUpdate);
 		
 		if (_transitions.exists(propertyName) == false)
@@ -110,18 +110,12 @@ class TransitionManager
 		return transition;
 	}
 	
-	public function stopTransition(propertyName:String, computedStyle:ComputedStyle):Void
+	public function stopTransition(transition:Transition):Void
 	{
-		var propertyTransitions:Array<Transition> = _transitions.get(propertyName);
-		for (i in 0...propertyTransitions.length)
-		{
-			if (propertyTransitions[i].target == computedStyle)
-			{
-				propertyTransitions.remove(propertyTransitions[i]);
-				_currentTransitionsNumber--;
-				break;
-			}
-		}
+		var propertyTransitions:Array<Transition> = _transitions.get(transition.propertyName);
+		propertyTransitions.remove(transition);
+		transition.dispose();
+		_currentTransitionsNumber--;
 	}
 	
 	
@@ -150,9 +144,7 @@ class TransitionManager
 				if (transition.complete == true)
 				{
 					transition.onComplete(transition);
-					_currentTransitionsNumber--;
-					
-					propertyTransitions.remove(transition);
+					stopTransition(transition);
 				}
 				else
 				{

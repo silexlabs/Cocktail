@@ -7,6 +7,7 @@
 */
 package cocktail.core.style;
 
+import cocktail.core.event.TransitionEvent;
 import cocktail.core.FontManager;
 import cocktail.core.geom.Matrix;
 import cocktail.core.background.BackgroundManager;
@@ -852,7 +853,7 @@ class CoreStyle
 			if (TransitionManager.getInstance().isTransitioning(propertyName, computedStyle))
 			{
 				var transition:Transition = TransitionManager.getInstance().getTransition(propertyName, computedStyle);
-				TransitionManager.getInstance().stopTransition(propertyName, computedStyle);
+				TransitionManager.getInstance().stopTransition(transition);
 
 			}
 			
@@ -883,6 +884,11 @@ class CoreStyle
 	{
 		invalidate();
 		//TODO 1 : dispatch transition event
+		var transitionEvent:TransitionEvent = new TransitionEvent();
+		transitionEvent.initTransitionEvent(TransitionEvent.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
+		
+		_htmlElement.dispatchEvent(transitionEvent);
+		
 	}
 	
 	private function onTransitionUpdate(transition:Transition):Void
