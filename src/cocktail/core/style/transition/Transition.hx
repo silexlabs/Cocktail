@@ -7,6 +7,7 @@
 */
 package cocktail.core.style.transition;
 
+import cocktail.core.geom.CubicBezier;
 import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
@@ -163,11 +164,52 @@ class Transition
 		return false;
 	}
 	
-	//TODO 1 : implement easing function
+	/**
+	 * Return tthe current value of the transitioned
+	 * property based on the elapsed time and the used easing
+	 * function
+	 */
 	private function get_currentValue():Float
 	{
 		var completePercent:Float = (_elapsedTime) / ((_transitionDelay + _transitionDuration) * 1000);
-		return ((_endValue - _startValue) * completePercent) + _startValue;
+		
+		switch (_transitionTimingFunction)
+		{
+			//cubic bezier functions
+			case TransitionTimingFunctionValue.ease:
+				var cubicBezier:CubicBezier = new CubicBezier(0.25, 0.1, 0.25, 1.0);
+				return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;
+				
+			case TransitionTimingFunctionValue.easeIn:
+				var cubicBezier:CubicBezier = new CubicBezier(0.25, 0.1, 0.25, 1.0);
+				return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;
+				
+			case TransitionTimingFunctionValue.easeOut:
+				var cubicBezier:CubicBezier = new CubicBezier(0.25, 0.1, 0.25, 1.0);
+				return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;	
+				
+			case TransitionTimingFunctionValue.easeInOut:
+				var cubicBezier:CubicBezier = new CubicBezier(0.25, 0.1, 0.25, 1.0);
+				return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;		
+				
+			case TransitionTimingFunctionValue.cubicBezier(x1, y1, x2, y2):
+				var cubicBezier:CubicBezier = new CubicBezier(x1, y1, x2, y2);
+				return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;	
+				
+			//step functions	
+			case TransitionTimingFunctionValue.stepStart:
+				return ((_endValue - _startValue) * completePercent) + _startValue;	
+				
+			case TransitionTimingFunctionValue.stepEnd:
+				return ((_endValue - _startValue) * completePercent) + _startValue;		
+				
+			case TransitionTimingFunctionValue.steps(intervalNumbers, intervalChange):
+				return ((_endValue - _startValue) * completePercent) + _startValue;			
+			
+			//linear function
+			case TransitionTimingFunctionValue.linear:
+				return ((_endValue - _startValue) * completePercent) + _startValue;
+		}
 	}
 	
 	private function get_transitionDuration():Float
