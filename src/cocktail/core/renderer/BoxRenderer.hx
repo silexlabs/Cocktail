@@ -141,7 +141,7 @@ class BoxRenderer extends ElementRenderer
 		layoutChildren(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
 		
 		//when all the dimensions of the ElementRenderer are known, compute the 
-		//visual effects to apply (visibility, opacity, transform)
+		//visual effects to apply (visibility, opacity, transform, transition)
 		//it is necessary to wait for all dimensions to be known because for
 		//instance the transform style use the height and width of the ElementRenderer
 		//to determine the transformation center

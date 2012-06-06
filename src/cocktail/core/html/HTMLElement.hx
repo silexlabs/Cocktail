@@ -20,6 +20,7 @@ import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.style.ComputedStyle;
 import lib.hxtml.HxtmlConverter;
+import lib.haxe.xml.Parser;
 import cocktail.core.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
@@ -1147,7 +1148,7 @@ class HTMLElement extends Element
 					
 				case Node.TEXT_NODE:
 					//serialize a Text node
-					var textXml:Xml = Xml.parse(child.nodeValue);
+					var textXml:Xml = Parser.parse(child.nodeValue);
 					xml.addChild(textXml.firstChild());
 			}
 		}
