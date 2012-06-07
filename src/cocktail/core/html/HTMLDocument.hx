@@ -239,7 +239,7 @@ class HTMLDocument extends Document
 	public function onPlatformMouseClickEvent(mouseEvent:MouseEvent):Void
 	{
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
-
+		
 		var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
 		
 		//find the first parent of the HTMLElement which has an activation behaviour, might

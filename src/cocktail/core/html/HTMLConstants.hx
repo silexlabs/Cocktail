@@ -52,6 +52,19 @@ class HTMLConstants
 
 	public static inline var HTML_MEDIA_ATTRIBUTE_NAME:String = "media";
 	
+	public static inline var HTML_HREF_ATTRIBUTE_NAME:String = "href";
+	
+	public static inline var HTML_TARGET_ATTRIBUTE_NAME:String = "target";
+	
+	//anchor target const
+
+	public static inline var TARGET_BLANK:String = "_blank";
+	
+	public static inline var TARGET_SELF:String = "_self";
+	
+	public static inline var TARGET_PARENT:String = "_parent";
+	
+	public static inline var TARGET_TOP:String = "_top";
 	
 	public function new() 
 	{
