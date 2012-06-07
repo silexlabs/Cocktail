@@ -812,10 +812,7 @@ class CoreStyle
 	 * value changed
 	 */
 	private function startTransitionIfNeeded(propertyName:String):Void
-	{
-		//TODO 1 : shouldn't have to call it here
-		//computeVisualEffectStyles();
-		
+	{	
 		//will store the index of the property in the TransitionPorperty
 		//array, so that its duration, delay, and timing function can be found
 		//at the same index
@@ -858,6 +855,14 @@ class CoreStyle
 			case TransitionProperty.all:	
 		}
 		
+		//return if transition style have not yet been computed
+		//
+		//TODO 2 : not supposed to happen, should be computed by this point
+		if (computedStyle.transitionDelay.length == 0 || computedStyle.transitionDuration.length == 0)
+		{
+			return;
+		}
+		
 		//the combined duration is the combined duration
 		//and delay of the transition, 
 		var combinedDuration:Float = 0.0;
@@ -867,13 +872,6 @@ class CoreStyle
 		var transitionDelay:Float = computedStyle.transitionDelay[getRepeatedIndex(propertyIndex, computedStyle.transitionDelay.length)];
 		var transitionDuration:Float = computedStyle.transitionDuration[getRepeatedIndex(propertyIndex, computedStyle.transitionDuration.length)];
 		combinedDuration = transitionDuration + transitionDelay;
-		
-		//transition delay and duration might be NaN if transition
-		//styles have not been computed yet
-		if (Math.isNaN(transitionDelay) || Math.isNaN(transitionDuration))
-		{
-			return;
-		}
 		
 		//if the combined duration is not superior to
 		//0, then there is no transition
