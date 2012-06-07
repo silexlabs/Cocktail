@@ -202,69 +202,59 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC RENDERING METHODS
+	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden as a BlockBoxRenderer migh also render its children and the child LayerRenderer
+	 * Overriden as a BlockBoxRenderer render its children and the child LayerRenderer
 	 * of its LayerRenderer
 	 */
-	override public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
+	override private function renderChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		//render the background of the BlockBoxRenderer
-		super.render(parentGraphicContext, parentRelativeOffset);
-		
-		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
+		super.renderChildren(graphicContext, relativeOffset);
 		
 		//the BlockBoxRenderer is responsible for rendering its children in the same stacking
 		//context if it establishes a stacking context itself
 		if (establishesNewStackingContext() == true)
 		{
 			//first render all the negative z-index child LayerRenderers
-			_layerRenderer.renderNegativeChildElementRenderers(_graphicsContext, relativeOffset);
+			_layerRenderer.renderNegativeChildElementRenderers(graphicContext, relativeOffset);
 			
 			//render all the block box which belong to the same stacking context
-			renderBlockContainerChildren(_graphicsContext, relativeOffset);
+			renderBlockContainerChildren(graphicContext, relativeOffset);
 			
 			//TODO 5 : render non-positioned float
 			
 			//render all the replaced (embedded) box displayed as blocks belonging
 			//to the same stacking context
-			renderBlockReplacedChildren(_graphicsContext, relativeOffset);
+			renderBlockReplacedChildren(graphicContext, relativeOffset);
 
 			//render all the line boxes belonging to the same stacking context
-			renderLineBoxes(_graphicsContext, relativeOffset);
+			renderLineBoxes(graphicContext, relativeOffset);
 			
 			//clip the graphic context of the block box renderer if it doesn't allow
 			//overflows
 			clip();
 			
 			//render the scrollbar if needed
-			renderScrollBars(_graphicsContext, relativeOffset);
+			renderScrollBars(graphicContext, relativeOffset);
 
 			//render all the child layers with a z-index of 0 or auto
-			_layerRenderer.renderZeroAndAutoChildElementRenderers(_graphicsContext, relativeOffset);
+			_layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext, relativeOffset);
 			//render all the child layer with a positive z-index
-			_layerRenderer.renderPositiveChildElementRenderers(_graphicsContext, relativeOffset);
+			_layerRenderer.renderPositiveChildElementRenderers(graphicContext, relativeOffset);
 		}
 		//same as above but don't render the child LayerRenderer if this 
 		//block box doesn't actually establish a new stacking context
 		else if (rendersAsIfEstablishingStackingContext() == true)
 		{
-			renderBlockContainerChildren(_graphicsContext, relativeOffset);
+			renderBlockContainerChildren(graphicContext, relativeOffset);
 		
 			//TODO 5 : render non-positioned float
 			
-			renderBlockReplacedChildren(_graphicsContext, relativeOffset);
-			renderLineBoxes(_graphicsContext, relativeOffset);
+			renderBlockReplacedChildren(graphicContext, relativeOffset);
+			renderLineBoxes(graphicContext, relativeOffset);
 		}
-		
-		//draws the graphic context of this block box on the one of its
-		//parent
-		#if (flash9 || nme)
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(parentGraphicContext);
-		containerGraphicContext.addChild(_graphicsContext);
-		#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
