@@ -108,12 +108,10 @@ class InlineFormattingContext extends FormattingContext
 	
 	private function doFormat2(elementRenderer:ElementRenderer, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
-		
 		//loop in all the child of the container
 		for (i in 0...elementRenderer.childNodes.length)
 		{
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
-			
 			
 			//here the child is an inline box renderer, which will create one line box for each
 			//line its children are in
@@ -193,7 +191,6 @@ class InlineFormattingContext extends FormattingContext
 			else if (child.isReplaced() == true && child.isText() == false)
 			{
 				var embeddedLineBox:LineBox = new EmbeddedLineBox(child);
-				
 				child.lineBoxes.push(embeddedLineBox);
 				
 				//TODO : should had left and right margin to line box, like for inline-block

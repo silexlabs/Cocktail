@@ -261,7 +261,6 @@ class TextRenderer extends ElementRenderer
 		{
 			textLineBoxesBounds.push(_lineBoxes[i].bounds);
 		}
-		
 		return getChildrenBounds(textLineBoxesBounds);
 	}
 	

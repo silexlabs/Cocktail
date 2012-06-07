@@ -1086,6 +1086,7 @@ class HTMLElement extends Element
 		return value;
 	}
 	
+	//TODO 1 : clean up code
 	private function doSetInnerHTML(xml : Xml):HTMLElement
 	{
 		switch( xml.nodeType ) {
@@ -1100,15 +1101,29 @@ class HTMLElement extends Element
 			var d : HTMLElement;
 			
 			var name = xml.nodeName.toLowerCase();
+	
 			d = _ownerDocument.createElement(name);
 			
 			for (child in xml)
 			{
+				//check if the child is not just an
+				//empty, in which case, no text node
+				//is created
+				switch (child.nodeType)
+				{
+					case Xml.PCData:
+						if (child.nodeValue == "")
+						{
+							continue;
+						}
+				}
+			
 				var htmlChild:HTMLElement = doSetInnerHTML(child);
+
 				d.appendChild(htmlChild);
 			} 
 			
-				// init attributes
+			// init attributes
 			for( a in xml.attributes() ){
 				a = a.toLowerCase();
 				var v = xml.get(a);
@@ -1136,7 +1151,7 @@ class HTMLElement extends Element
 		//remove the first and last tag, as they correspond to this HTMLElement
 		//tag which should not be returned as its inner html
 		str = str.substr(str.indexOf(">") + 1 , str.lastIndexOf("<") - str.indexOf(">") - 1);
-		
+
 		return str;
 	}
 	
@@ -1207,7 +1222,7 @@ class HTMLElement extends Element
 					//to be sure that the xml parser also returns a closing tag 
 					if (childXml.firstChild() == null && isVoidElement() == false)
 					{
-						childXml.addChild(Parser.parse(""));
+						childXml.addChild(Xml.createPCData(""));
 					}
 
 				case Node.TEXT_NODE:
