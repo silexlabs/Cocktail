@@ -469,74 +469,9 @@ class LayerRenderer extends Node
 		return childRenderers;
 	}
 	
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	
-	//TODO 4 : implement layer renderer transformation
-	
-	/**
-	 * when the matrix is set, update also
-	 * the values of the native flash matrix of the
-	 * native DisplayObject
-	 * 
-	 * 
-	 * @param	matrix
-	 */
-	public function setNativeMatrix(matrix:Matrix):Void
-	{
-		/**
-		//concenate the new matrix with the base matrix of the HTMLElement
-		var concatenatedMatrix:Matrix = getConcatenatedMatrix(matrix);
-		
-		//get the data of the abstract matrix
-		var matrixData:MatrixData = concatenatedMatrix.data;
-		
-		//create a native flash matrix with the abstract matrix data
-		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
-	
-		//apply the native flash matrix to the native flash DisplayObject
-		_htmlElement.nativeElement.transform.matrix = nativeTransformMatrix;
-		
-	//	super.setNativeMatrix(concatenatedMatrix);
-		*/
-	}
-	
-	/**
-	 * When concatenating the base Matrix of an embedded element, it must also
-	 * be scaled using the intrinsic width and height of the HTMLElement as reference
-	 * 
-	 */
-	private function getConcatenatedMatrix(matrix:Matrix):Matrix
-	{
-		
-		var currentMatrix:Matrix = new Matrix();
-		//
-		//var embeddedHTMLElement:EmbeddedHTMLElement = cast(this._htmlElement);
-		//
-		//currentMatrix.concatenate(matrix);
-		//currentMatrix.translate(this._nativeX, this._nativeY);
-		//
-		//currentMatrix.scale(this._nativeWidth / embeddedHTMLElement.intrinsicWidth, this._nativeHeight / embeddedHTMLElement.intrinsicHeight, { x:0.0, y:0.0} );
-		//
-		return currentMatrix;
-	}
-	
-	/**
-	 * Concatenate the new matrix with the "base" matrix of the HTMLElement
-	 * where only translations (the x and y of the HTMLElement) and scales
-	 * (the width and height of the HTMLElement) are applied.
-	 * It is neccessary in flash to do so to prevent losing the x, y, width
-	 * and height applied during layout
-	 * 
-	 */
-	private function getConcatenatedMatrix2(matrix:Matrix):Matrix
-	{
-		var currentMatrix:Matrix = new Matrix();
-		//currentMatrix.concatenate(matrix);
-		//currentMatrix.translate(this._nativeX, this._nativeY);
-		return currentMatrix;
-	}
+	/////////////////////////////////
+	// GETTER
+	////////////////////////////////
 	
 	private function get_rootElementRenderer():ElementRenderer
 	{

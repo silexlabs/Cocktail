@@ -267,12 +267,12 @@ class VisualEffectStylesComputer
 				//skew x	
 				case TransformFunction.skewX(angleX):
 					var skewX:Float = UnitManager.getRadFromAngle(angleX);
-					matrix.skew(skewX, 1);
+					matrix.skew(skewX, 0);
 				
 				//skew y	
 				case TransformFunction.skewY(angleY):
 					var skewY:Float = UnitManager.getRadFromAngle(angleY);
-					matrix.skew(1, skewY);
+					matrix.skew(0, skewY);
 				
 				//translate x and y	
 				case TransformFunction.translate(tx, ty):
