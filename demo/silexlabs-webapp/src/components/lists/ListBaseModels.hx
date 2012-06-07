@@ -31,6 +31,7 @@ typedef ListModel =
 	public var content:Array<CellModel>;
 }
 
+
 //typedef ListModel = Array<CellModel>;
 
 /**

@@ -1,0 +1,5 @@
+-cp ../../../src/
+-cp ../../src/
+-main domElement.ImageDOMElementTests
+-lib utest
+-js ../../bin/domElement/imageDOMElementTestJS.js

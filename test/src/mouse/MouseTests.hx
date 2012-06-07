@@ -17,92 +17,142 @@ package mouse;
  * @author Yannick DOMINGUEZ
  */
 
-import cocktail.domElement.ContainerDOMElement;
-import haxe.Log;
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.resource.ResourceLoaderManager;
+import cocktail.core.HTMLElement;
+import cocktail.core.Mouse;
+
 import utest.Assert;
 import utest.Runner;
 import utest.ui.Report;
 import utest.ui.common.HeaderDisplayMode;
-import cocktail.domElement.DOMElementData;
-import cocktail.domElement.GraphicDOMElement;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
-import cocktail.mouse.MouseData;
-
 class MouseTests 
 {
 	
 	public static function main()
 	{
-		new MouseTests();
+		var runner = new Runner();
+		runner.addCase(new MouseTests());
+		Report.create(runner);
+		runner.run();
 	}
 	
 	public function new() 
 	{
 		
-		var stageDOMElement:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.getRoot());
-		
-		var graphicDOMElement:GraphicDOMElement = new GraphicDOMElement(NativeElementManager.createNativeElement(graphic));
-		
-		graphicDOMElement.width = 200;
-		graphicDOMElement.height = 200;
-		graphicDOMElement.x = 50;
-		graphicDOMElement.y = 50;
-		
-		graphicDOMElement.beginFill(monochrome( { color:0x00FF00, alpha:100 } ), LineStyleValue.none);
-		graphicDOMElement.drawRect(0, 0, 200, 200);
-		graphicDOMElement.endFill();
-		
-		stageDOMElement.addChild(graphicDOMElement);
-	
-		graphicDOMElement.onMouseDown = onDOMElementPress;
-		
-		graphicDOMElement.onMouseUp = onDOMElementRelease;
-		
-		graphicDOMElement.onMouseOver = onDOMElementRollOver;
-		
-		graphicDOMElement.onMouseOut = onDOMElementRollOut;
-
-		graphicDOMElement.onMouseMove = onDOMElementMouseMove;
-		
-		graphicDOMElement.onMouseDoubleClick = onDOMElementDoubleClick;
 	}
 	
-	/////////////////////////////////////////////////////////////////////////////////////
-	// DOMElement mouse events callbacks
-	////////////////////////////////////////////////////////////////////////////////////
-	
-	private function onDOMElementPress(mouseEventData:MouseEventData):Void
+	function testMouse()
 	{
-		Log.trace("mouse down");
-	}
-	
-	private function onDOMElementDoubleClick(mouseEventData:MouseEventData):Void
-	{
-		Log.trace("mouse double click");
-	}
-	
-	private function onDOMElementRelease(mouseEventData:MouseEventData):Void
-	{
-		Log.trace("mouse release");
-	}
-	
-	private function onDOMElementRollOver(mouseEventData:MouseEventData):Void
-	{
-		Log.trace("mouse roll over");
-	}
-	
-	private function onDOMElementRollOut(mouseEventData:MouseEventData):Void
-	{
-		Log.trace("mouse roll out");
-	}
-	
-	private function onDOMElementMouseMove(mouseEventData:MouseEventData):Void
-	{
-		Log.trace("mouse move");
+		
+		var html = new HTMLElement("div");
+		var m = new Mouse(html);
+		
+		//click
+		
+		var clicked = false;
+		
+		m.onClick = function(e) {
+			clicked = true;
+		}
+		
+		#if flash9
+		html.nativeElement.dispatchEvent(new flash.events.MouseEvent("click"));
+		#elseif js
+		untyped html.nativeElement.click();
+		#end
+		
+		Assert.isTrue(clicked);
+		
+		//mouse down 
+		
+		var mDown = false;
+		
+		m.onMouseDown = function(e) {
+			mDown = true;
+		}
+		
+		#if flash9
+		html.nativeElement.dispatchEvent(new flash.events.MouseEvent(flash.events.MouseEvent.MOUSE_DOWN));
+		#elseif js
+		var e = untyped js.Lib.document.createEvent("MouseEvent");
+		e.initEvent("mousedown", false, false);
+		untyped html.nativeElement.dispatchEvent(e);
+		#end
+		
+		Assert.isTrue(mDown);
+		
+		//mouse over 
+		
+		var mOver = false;
+		
+		m.onMouseOver = function(e) {
+			mOver = true;
+		}
+		
+		#if flash9
+		html.nativeElement.dispatchEvent(new flash.events.MouseEvent(flash.events.MouseEvent.MOUSE_OVER));
+		#elseif js
+		var e = untyped js.Lib.document.createEvent("MouseEvent");
+		e.initEvent("mouseover", false, false);
+		untyped html.nativeElement.dispatchEvent(e);
+		#end
+		
+		Assert.isTrue(mOver);
+		
+		//mouse up 
+		
+		var mUp = false;
+		
+		m.onMouseUp = function(e) {
+			mUp = true;
+		}
+		
+		#if flash9
+		html.nativeElement.dispatchEvent(new flash.events.MouseEvent(flash.events.MouseEvent.MOUSE_UP));
+		#elseif js
+		var e = untyped js.Lib.document.createEvent("MouseEvent");
+		e.initEvent("mouseup", false, false);
+		untyped html.nativeElement.dispatchEvent(e);
+		#end
+		
+		Assert.isTrue(mUp);
+		
+		//mouse out 
+		
+		var mOut = false;
+		
+		m.onMouseOut = function(e) {
+			mOut = true;
+		}
+		
+		#if flash9
+		html.nativeElement.dispatchEvent(new flash.events.MouseEvent(flash.events.MouseEvent.MOUSE_OUT));
+		#elseif js
+		var e = untyped js.Lib.document.createEvent("MouseEvent");
+		e.initEvent("mouseout", false, false);
+		untyped html.nativeElement.dispatchEvent(e);
+		#end
+		
+		Assert.isTrue(mOut);
+		
+		//mouse move 
+		
+		var mMove = false;
+		
+		m.onMouseMove = function(e) {
+			mMove = true;
+		}
+		
+		#if flash9
+		html.nativeElement.dispatchEvent(new flash.events.MouseEvent(flash.events.MouseEvent.MOUSE_MOVE));
+		#elseif js
+		var e = untyped js.Lib.document.createEvent("MouseEvent");
+		e.initEvent("mousemove", false, false);
+		untyped html.nativeElement.dispatchEvent(e);
+		#end
+		
+		Assert.isTrue(mMove);
+		
+		
 	}
 	
 }

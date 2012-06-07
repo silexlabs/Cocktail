@@ -22,6 +22,7 @@ package style;
 import cocktail.domElement.BodyDOMElement;
 import cocktail.domElement.ImageDOMElement;
 import cocktail.textElement.TextElement;
+import cocktail.domElement.LinkDOMElement;
 import haxe.Log;
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.geom.GeomData;
@@ -72,7 +73,7 @@ class StyleTests
 	
 	public function new() 
 	{
-layout4();		
+	testLayout3();		
 		
 	}
 	
@@ -87,12 +88,19 @@ layout4();
 		//img.style.position = PositionStyleValue.relative;
 		img.style.top = PositionOffsetStyleValue.length(px(50));
 		img.style.left = PositionOffsetStyleValue.length(px(30));
+		
+		var text1:TextElement = new TextElement("Lorem ezfze f ezfze z zefze fze fzefze fze fze fzefzereq sd fsd fdsfzefsdfsd sdgdsgsdf");
+		
+		img.onMouseDown = function(e) {
+			text1.text = "bim";
+		}
+		
 		img.width = 65;
 		img.height = 65;
 		//img.alpha = 0.5;
 		var spanCont = new ContainerDOMElement();
 		spanCont.style.display = DisplayStyleValue.inlineStyle;
-		spanCont.addText(new TextElement("Lorem ezfze f ezfze z zefze fze fzefze fze fze fzefzereq sd fsd fdsfzefsdfsd sdgdsgsdf"));
+		spanCont.addText(text1);
 		spanCont.style.position = PositionStyleValue.relative;
 		spanCont.style.top = PositionOffsetStyleValue.length(px(50));
 		//spanCont.addChild(img);
@@ -143,6 +151,26 @@ layout4();
 		_mainContainer.addChild(cont2);
 		_mainContainer.addChild(cont3);
 		
+	}
+	
+	public function layout5()
+	{
+		_mainContainer = new BodyDOMElement();
+		var cont1 = new ContainerDOMElement();
+		cont1.style.display = DisplayStyleValue.block;
+		var img:ImageDOMElement = new ImageDOMElement();
+		img.load("testPicture.jpg");
+		
+		var cont2 = new ContainerDOMElement();
+		
+		
+		cont2.style.paddingTop = PaddingStyleValue.length(px(20));
+		
+		
+		_mainContainer.addChild(cont1);
+		cont1.addChild(cont2);
+		
+		cont2.addChild(img);
 	}
 	
 	public function testLayout2()
