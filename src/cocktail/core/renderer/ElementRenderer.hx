@@ -767,7 +767,7 @@ class ElementRenderer extends Node
 			//here it uses its static position for x
 			if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
 			{
-				globalX = _globalContainingBlockOrigin.x + _bounds.x;
+				globalX = _globalContainingBlockOrigin.x + bounds.x;
 			}
 			//here it uses its position relative to the Window for x
 			else
@@ -777,7 +777,7 @@ class ElementRenderer extends Node
 			//static position
 			if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
 			{
-				globalY = _globalContainingBlockOrigin.y + _bounds.y;
+				globalY = _globalContainingBlockOrigin.y + bounds.y;
 			}
 			else
 			{
@@ -790,7 +790,7 @@ class ElementRenderer extends Node
 			//static position for x
 			if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
 			{
-				globalX = _globalContainingBlockOrigin.x + _bounds.x;
+				globalX = _globalContainingBlockOrigin.x + bounds.x;
 			}
 			else
 			{
@@ -799,7 +799,7 @@ class ElementRenderer extends Node
 			//static position for y
 			if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
 			{
-				globalY = _globalContainingBlockOrigin.y + _bounds.y;
+				globalY = _globalContainingBlockOrigin.y + bounds.y;
 			}
 			else
 			{
@@ -809,8 +809,8 @@ class ElementRenderer extends Node
 		//here the ElementRenderer uses the normal flow
 		else
 		{
-			globalX = _globalContainingBlockOrigin.x + _bounds.x;
-			globalY = _globalContainingBlockOrigin.y + _bounds.y;
+			globalX = _globalContainingBlockOrigin.x + bounds.x;
+			globalY = _globalContainingBlockOrigin.y + bounds.y;
 		}
 		
 		

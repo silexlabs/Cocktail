@@ -375,6 +375,7 @@ class LayerRenderer extends Node
 			{
 				if (child.hasChildNodes() == true)
 				{
+					
 					var childElementRenderersAtPointInLayer:Array<ElementRenderer> = getElementRenderersAtPointInLayer(child, point, scrollX, scrollY);
 					
 					for (j in 0...childElementRenderersAtPointInLayer.length)
