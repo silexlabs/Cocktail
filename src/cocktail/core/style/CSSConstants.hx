@@ -40,6 +40,74 @@ class CSSConstants
 	
 	public static inline var HEIGHT_STYLE_NAME:String = "height";
 	
+	public static inline var MIN_HEIGHT_STYLE_NAME:String = "min-height";
+	
+	public static inline var MAX_HEIGHT_STYLE_NAME:String = "max-height";
+	
+	public static inline var MIN_WIDTH_STYLE_NAME:String = "min-width";
+	
+	public static inline var MAX_WIDTH_STYLE_NAME:String = "max-width";
+	
+	public static inline var TOP_STYLE_NAME:String = "top";
+	
+	public static inline var LEFT_STYLE_NAME:String = "left";
+	
+	public static inline var RIGHT_STYLE_NAME:String = "right";
+	
+	public static inline var BOTTOM_STYLE_NAME:String = "bottom";
+	
+	public static inline var BACKGROUND_COLOR_STYLE_NAME:String = "background-color";
+	
+	public static inline var BACKGROUND_IMAGE_STYLE_NAME:String = "background-image";
+	
+	public static inline var BACKGROUND_REPEAT_STYLE_NAME:String = "background-repeat";
+	
+	public static inline var BACKGROUND_ORIGIN_STYLE_NAME:String = "background-origin";
+	
+	public static inline var BACKGROUND_SIZE_STYLE_NAME:String = "background-size";
+	
+	public static inline var BACKGROUND_POSITION_STYLE_NAME:String = "background-position";
+	
+	public static inline var BACKGROUND_CLIP_STYLE_NAME:String = "background-clip";
+	
+	public static inline var FONT_SIZE_STYLE_NAME:String = "font-size";
+	
+	public static inline var FONT_WEIGHT_STYLE_NAME:String = "font-weight";
+	
+	public static inline var FONT_STYLE_STYLE_NAME:String = "font-style";
+	
+	public static inline var FONT_FAMILY_STYLE_NAME:String = "font-family";
+	
+	public static inline var FONT_VARIANT_STYLE_NAME:String = "font-variant";
+	
+	public static inline var COLOR_STYLE_NAME:String = "color";
+	
+	public static inline var LINE_HEIGHT_STYLE_NAME:String = "line-height";
+	
+	public static inline var TEXT_TRANSFORM_STYLE_NAME:String = "text-tranform";
+	
+	public static inline var LETTER_SPACING_STYLE_NAME:String = "letter-spacing";
+	
+	public static inline var WORD_SPACING_STYLE_NAME:String = "word-spacing";
+	
+	public static inline var WHITE_SPACE_STYLE_NAME:String = "white-space";
+	
+	public static inline var TEXT_ALIGN_STYLE_NAME:String = "text-align";
+	
+	public static inline var TEXT_INDENT_STYLE_NAME:String = "text-indent";
+	
+	public static inline var VERTICAL_ALIGN_STYLE_NAME:String = "vertical-align";
+	
+	public static inline var VISIBILITY_STYLE_NAME:String = "visibility";
+	
+	public static inline var OVERFLOW_X_STYLE_NAME:String = "overflow-x";
+	
+	public static inline var OVERFLOW_Y_STYLE_NAME:String = "overflow-y";
+	
+	public static inline var OPACITY_STYLE_NAME:String = "opacity";
+	
+	public static inline var CURSOR_STYLE_NAME:String = "cursor";
+	
 	public function new() 
 	{
 		
