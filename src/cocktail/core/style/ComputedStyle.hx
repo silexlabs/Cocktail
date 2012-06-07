@@ -594,7 +594,7 @@ class ComputedStyle
 	
 	private function getOpacity():Float
 	{
-		return _opacity;
+		return getTransitionablePropertyValue(CSSConstants.OPACITY_STYLE_NAME, _opacity);
 	}
 	
 	private function getVisibility():Bool
@@ -604,42 +604,42 @@ class ComputedStyle
 	
 	private function getMarginLeft():Int 
 	{
-		return _marginLeft;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.MARGIN_LEFT_STYLE_NAME, _marginLeft));
 	}
 	
 	private function getMarginRight():Int 
 	{
-		return _marginRight;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.MARGIN_RIGHT_STYLE_NAME, _marginRight));
 	}
 	
 	private function getMarginTop():Int 
 	{
-		return _marginTop;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.MARGIN_TOP_STYLE_NAME, _marginTop));
 	}
 	
 	private function getMarginBottom():Int 
 	{
-		return _marginBottom;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.MARGIN_BOTTOM_STYLE_NAME, _marginBottom));
 	}
 	
 	private function getPaddingLeft():Int 
 	{
-		return _paddingLeft;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.PADDING_LEFT_STYLE_NAME, _paddingLeft));
 	}
 	
 	private function getPaddingRight():Int 
 	{
-		return _paddingRight;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.PADDING_RIGHT_STYLE_NAME, _paddingRight));
 	}
 	
 	private function getPaddingTop():Int 
 	{
-		return _paddingTop;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.PADDING_TOP_STYLE_NAME, _paddingTop));
 	}
 	
 	private function getPaddingBottom():Int 
 	{
-		return _paddingBottom;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.PADDING_BOTTOM_STYLE_NAME, _paddingBottom));
 	}
 	
 	private function getDisplay():Display 
@@ -664,22 +664,22 @@ class ComputedStyle
 	
 	private function getMinHeight():Int 
 	{
-		return _minHeight;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.MIN_HEIGHT_STYLE_NAME, _minHeight));
 	}
 	
 	private function getMaxHeight():Int 
 	{
-		return _maxHeight;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.MAX_HEIGHT_STYLE_NAME, _maxHeight));
 	}
 	
 	private function getMinWidth():Int 
 	{
-		return _minWidth;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.MIN_WIDTH_STYLE_NAME, _minWidth));
 	}
 	
 	private function getMaxWidth():Int 
 	{
-		return _maxWidth;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.MAX_WIDTH_STYLE_NAME, _maxWidth));
 	}
 	
 	private function getTop():Int 
@@ -689,17 +689,17 @@ class ComputedStyle
 	
 	private function getLeft():Int 
 	{
-		return _left;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.LEFT_STYLE_NAME, _left));
 	}
 	
 	private function getBottom():Int 
 	{
-		return _bottom;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.BOTTOM_STYLE_NAME, _bottom));
 	}
 	
 	private function getRight():Int 
 	{
-		return _right;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.RIGHT_STYLE_NAME, _right));
 	}
 	
 	private function getCSSFloat():CSSFloat 
@@ -719,7 +719,7 @@ class ComputedStyle
 	
 	private function getFontSize():Float
 	{
-		return _fontSize;
+		return getTransitionablePropertyValue(CSSConstants.FONT_SIZE_STYLE_NAME, _fontSize);
 	}
 	
 	private function getFontWeight():FontWeight
@@ -749,7 +749,7 @@ class ComputedStyle
 	
 	private function getLetterSpacing():Int
 	{
-		return _letterSpacing;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.LETTER_SPACING_STYLE_NAME, _letterSpacing));
 	}
 	
 	private function getColor():ColorData
@@ -759,12 +759,12 @@ class ComputedStyle
 	
 	private function getWordSpacing():Int
 	{
-		return _wordSpacing;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.WORD_SPACING_STYLE_NAME, _wordSpacing));
 	}
 	
 	private function getLineHeight():Float
 	{
-		return _lineHeight;
+		return getTransitionablePropertyValue(CSSConstants.LINE_HEIGHT_STYLE_NAME, _lineHeight);
 	}
 	
 	private function getVerticalAlign():Float
@@ -774,7 +774,7 @@ class ComputedStyle
 	
 	private function getTextIndent():Int
 	{
-		return _textIndent;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.TEXT_INDENT_STYLE_NAME, _textIndent));
 	}
 	
 	private function getWhiteSpace():WhiteSpace
