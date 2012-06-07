@@ -331,11 +331,28 @@ class HTMLElement extends Element
 	}
 	
 	/**
+	 * Overriden to update the style of the HTMLElement when
+	 * the style attribte is set
+	 */
+	override public function setAttribute(name:String, value:String):Void
+	{
+		if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
+		{
+			//TODO 1 : big hack to make style work, hxtml is no longer 
+			//useful at this point
+			var styleProxy = new StyleProxy();
+			new CssParser<HTMLElement>().parse(value, this, cast(styleProxy));
+			super.setAttribute(name, value);
+		}
+		else
+		{
+			super.setAttribute(name, value);
+		}
+	}
+	
+	/**
 	 * Overriden to run through the necessary check for 
 	 * HTML attribute retrieval
-	 * 
-	 * TODO 3 : should override setAttribute for the 'style' attribute,
-	 * whic should refresh coreStyle ion setting
 	 */
 	override public function getAttribute(name:String):String
 	{
@@ -363,7 +380,6 @@ class HTMLElement extends Element
 		var targetAncestors:Array<EventTarget> = super.getTargetAncestors();
 		targetAncestors.push(Lib.document);
 		targetAncestors.push(Lib.window);
-		
 		return targetAncestors;
 	}
 	
@@ -1090,22 +1106,13 @@ class HTMLElement extends Element
 			{
 				var htmlChild:HTMLElement = doSetInnerHTML(child);
 				d.appendChild(htmlChild);
-			}
+			} 
 			
 				// init attributes
 			for( a in xml.attributes() ){
 				a = a.toLowerCase();
 				var v = xml.get(a);
-				switch( a ) {
-				case "style":
-					
-					//TODO 1 : big hack to make style work, hxtml is no longer 
-					//useful as this point
-					var styleProxy = new StyleProxy();
-					new CssParser<HTMLElement>().parse(v, d, cast(styleProxy));
-				default:
-					d.setAttribute(a, v);
-				}
+				d.setAttribute(a, v);
 			}
 			
 			
@@ -1114,7 +1121,6 @@ class HTMLElement extends Element
 		
 		//TODO 2 : will cause bug if node type not supported
 		return null;
-		
 	}
 	
 	/**

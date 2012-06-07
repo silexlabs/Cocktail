@@ -98,43 +98,21 @@ class TransitionManager
 	/////////////////////////////////
 	// PUBLIC METHODS
 	////////////////////////////////
-	
+
 	/**
-	 * Returns wheter a transition is in progress for 
-	 * a given property name and a given target computed
-	 * style
+	 * Return a transition object using the name of a property
+	 * and a given target computed style.
+	 * 
+	 * Returns null if no transition matches
 	 */
-	public function isTransitioning(propertyName:String, style:ComputedStyle):Bool
+	public function getTransition(propertyName:String, style:ComputedStyle):Transition
 	{
 		//check that a key in the hash matches the property name.
-		//if it does then no property with this name is transitioning
+		//if it does not then no property with this name is transitioning
 		if (_transitions.exists(propertyName))
 		{
 			var propertyTransitions:Array<Transition> = _transitions.get(propertyName);
 			//look for a transition object with the right target
-			for (i in 0...propertyTransitions.length)
-			{
-				if (propertyTransitions[i].target == style)
-				{
-					return true;
-				}
-			}
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * Return a transition object using the name of a property
-	 * and a given target computed style
-	 * 
-	 * TODO 2 : very similar to isTransitioning, should merge ?
-	 */
-	public function getTransition(propertyName:String, style:ComputedStyle):Transition
-	{
-		if (_transitions.exists(propertyName))
-		{
-			var propertyTransitions:Array<Transition> = _transitions.get(propertyName);
 			for (i in 0...propertyTransitions.length)
 			{
 				if (propertyTransitions[i].target == style)

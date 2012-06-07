@@ -9,6 +9,7 @@ package cocktail.core.style;
 
 import cocktail.core.geom.GeomData;
 import cocktail.core.geom.Matrix;
+import cocktail.core.style.transition.Transition;
 import cocktail.core.style.transition.TransitionManager;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
@@ -277,6 +278,37 @@ class ComputedStyle
 		_transitionTimingFunction = [];
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Utils method to return the value of a property which can be transitioned
+	 * If the property is currently being transitioned, return the current value
+	 * of the transition, else return the computed value of the property
+	 * @param	propertyName the name of the property whose value is returned
+	 * @param	propertyValue the computed value of the property, returned if
+	 * the property is not transitioning
+	 */
+	private function getTransitionablePropertyValue(propertyName:String, propertyValue:Float):Float
+	{
+		//try to get a transition for the property
+		var transition:Transition = TransitionManager.getInstance().getTransition(propertyName, this);
+		//if there actually is a transition in progress for this property,
+		//return its current value
+		if (transition != null)
+		{
+			return transition.currentValue;
+		}
+		else
+		{
+			return propertyValue;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function setWidth(value:Int):Int 
 	{
@@ -557,7 +589,7 @@ class ComputedStyle
 	}
 	
 	/////////////////////////////////
-	// STYLES SETTERS/GETTERS
+	// GETTERS
 	////////////////////////////////
 	
 	private function getOpacity():Float
@@ -622,22 +654,12 @@ class ComputedStyle
 	
 	private function getWidth():Int 
 	{
-		if (TransitionManager.getInstance().isTransitioning("width", this))
-		{
-			return Math.round(TransitionManager.getInstance().getTransition("width", this).currentValue);
-		}
-		
-		return _width;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.WIDTH_STYLE_NAME, _width));
 	}
 	
 	private function getHeight():Int 
 	{
-		if (TransitionManager.getInstance().isTransitioning("height", this))
-		{
-			return Math.round(TransitionManager.getInstance().getTransition("height", this).currentValue);
-		}
-		
-		return _height;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.HEIGHT_STYLE_NAME, _height));
 	}
 	
 	private function getMinHeight():Int 
@@ -662,11 +684,7 @@ class ComputedStyle
 	
 	private function getTop():Int 
 	{
-		if (TransitionManager.getInstance().isTransitioning("top", this))
-		{
-			return Math.round(TransitionManager.getInstance().getTransition("top", this).currentValue);
-		}
-		return _top;
+		return Math.round(getTransitionablePropertyValue(CSSConstants.TOP_STYLE_NAME, _top));
 	}
 	
 	private function getLeft():Int 
