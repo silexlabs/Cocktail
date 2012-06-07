@@ -14,18 +14,13 @@ import cocktail.core.renderer.LayerRenderer;
  * @author Yannick DOMINGUEZ
  */
 class HTMLHtmlElement extends HTMLElement
-{
-	/**
-	 * the html tag name for the html root element
-	 */
-	private static inline var HTML_HTML_TAG_NAME:String = "html";
-	
+{	
 	/**
 	 * class constructor
 	 */
 	public function new() 
 	{
-		super(HTML_HTML_TAG_NAME);
+		super(HTMLConstants.HTML_HTML_TAG_NAME);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -40,4 +35,23 @@ class HTMLHtmlElement extends HTMLElement
 	{
 		
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// DOM PARSER GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to reset the HTMLBodyElement when the innerHTML is set,
+	 * as it reset the whole document
+	 */
+	override private function set_innerHTML(value:String):String
+	{
+		super.set_innerHTML(value);
+		
+		var htmlDocument:HTMLDocument = cast(_ownerDocument);
+		htmlDocument.initBody(cast(getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
+		
+		return value;
+	}
+	
 }

@@ -180,6 +180,86 @@ class EventCallback extends EventTarget
 	public var oncanplay(default, set_onCanPlay):Event->Void;
 	
 	/**
+	 * Called when the user agents estimates that the media
+	 * can be played through at the current playback rate without
+	 * being stopped
+	 */
+	public var oncanplaythrough(default, set_onCanPlayThrough):Event->Void;
+	
+	/**
+	 * Called when playback is ready to start after 
+	 * having been paused or delayed due to lack of media data.
+	 */
+	public var onplaying(default, set_onPlaying):Event->Void;
+	
+	/**
+	 * Called when playback has stopped because the next frame
+	 * is not available, but the user agent expects
+	 * that frame to become available in due course.
+	 */
+	public var onwaiting(default, set_onWaiting):Event->Void;
+	
+	/**
+	 * Called when the seeking attribute has been set to true
+	 */
+	public var onseeking(default, set_onSeeking):Event->Void;
+	
+	/**
+	 * Called when the seeking attribute has been set to false
+	 */
+	public var onseeked(default, set_onSeeked):Event->Void;
+	
+	/**
+	 * Called when playback has stopped because the end 
+	 * of the media resource was reached.
+	 */
+	public var onended(default, set_onEnded):Event->Void;
+	
+	/**
+	 * Called when the duration attribute has
+	 * been updated
+	 */
+	public var ondurationchange(default, set_onDurationChanged):Event->Void;
+	
+	/**
+	 * Called when the current playback position changed 
+	 * as part of normal playback or in an especially
+	 * interesting way, for example discontinuously.
+	 */
+	public var ontimeupdate(default, set_onTimeUpdate):Event->Void;
+	
+	/**
+	 * Called when The element is no longer paused.
+	 * Fired after the play() method has returned, 
+	 * or when the autoplay attribute has caused playback to begin.
+	 */ 
+	public var onplay(default, set_onPlay):Event->Void;
+	
+	/**
+	 * Called when the element has been paused. 
+	 * Fired after the pause() method has returned.
+	 */
+	public var onpause(default, set_onPause):Event->Void;
+	
+	/**
+	 * Called when either the volume attribute or the muted 
+	 * attribute has changed. Fired after the relevant 
+	 * attribute's setter has returned.
+	 */
+	public var onvolumechange(default, set_onVolumeChange):Event->Void;
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Transition callback
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when the transition is complete. In the case where a transition is
+	 * removed before completion, such as if the transition-property 
+	 * is removed, then the event will not fire.
+	 */
+	public var ontransitionend(default, set_onTransitionEnd):TransitionEvent->Void;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
@@ -374,4 +454,78 @@ class EventCallback extends EventTarget
 		return oncanplay = value;
 	}
 	
+	private function set_onCanPlayThrough(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.CAN_PLAY_THROUGH, value, oncanplaythrough);
+		return oncanplaythrough = value;
+	}
+	
+	private function set_onPlaying(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.PLAYING, value, onplaying);
+		return onplaying = value;
+	}
+	
+	private function set_onWaiting(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.WAITING, value, onwaiting);
+		return onwaiting = value;
+	}
+	
+	private function set_onSeeking(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.SEEKING, value, onseeking);
+		return onwaiting = value;
+	}
+	
+	private function set_onSeeked(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.SEEKED, value, onseeked);
+		return onseeked = value;
+	}
+	
+	private function set_onEnded(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.ENDED, value, onended);
+		return onended = value;
+	}
+	
+	private function set_onDurationChanged(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.DURATION_CHANGE, value, ondurationchange);
+		return ondurationchange = value;
+	}
+	
+	private function set_onTimeUpdate(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.TIME_UPDATE, value, ontimeupdate);
+		return ontimeupdate = value;
+	}
+	
+	private function set_onPlay(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.PLAY, value, onplay);
+		return onplay = value;
+	}
+	
+	private function set_onPause(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.PAUSE, value, onpause);
+		return onpause = value;
+	}
+	
+	private function set_onVolumeChange(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.VOLUME_CHANGE, value, onvolumechange);
+		return onvolumechange = value;
+	}
+	
+		// TRANSITION
+	////////////////////////////
+	
+	private function set_onTransitionEnd(value:TransitionEvent->Void):TransitionEvent->Void
+	{
+		updateCallbackListener(TransitionEvent.TRANSITION_END, cast(value), cast(ontransitionend));
+		return ontransitionend = value;
+	}
 }

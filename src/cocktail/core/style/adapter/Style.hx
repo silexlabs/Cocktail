@@ -10,6 +10,7 @@ package cocktail.core.style.adapter;
 import cocktail.core.dom.Attr;
 import cocktail.core.dom.NamedNodeMap;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.style.CSSConstants;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.style.StyleData;
 import haxe.Log;
@@ -178,7 +179,7 @@ class Style
 	
 	private function set_opacity(value:String):String
 	{
-		setAttribute("opacity", value);
+		setAttribute(CSSConstants.OPACITY_STYLE_NAME, value);
 		_coreStyle.opacity = Std.parseFloat(value);
 		return value;
 	}
@@ -190,7 +191,7 @@ class Style
 	
 	private function set_visibility(value:String):String
 	{
-		setAttribute("visibility", value);
+		setAttribute(CSSConstants.VISIBILITY_STYLE_NAME, value);
 		_coreStyle.visibility = UnitManager.visibilityEnum(value);
 		return value;
 	}
@@ -202,7 +203,7 @@ class Style
 	
 	private function set_marginLeft(value:String):String 
 	{
-		setAttribute("margin-left", value);
+		setAttribute(CSSConstants.MARGIN_LEFT_STYLE_NAME, value);
 		_coreStyle.marginLeft = UnitManager.boxStyleEnum(Margin, value);
 		return value;
 	}
@@ -214,7 +215,7 @@ class Style
 	
 	private function set_marginRight(value:String):String 
 	{
-		setAttribute("margin-right", value);
+		setAttribute(CSSConstants.MARGIN_RIGHT_STYLE_NAME, value);
 		_coreStyle.marginRight = UnitManager.boxStyleEnum(Margin, value);
 		return value;
 	}
@@ -226,7 +227,7 @@ class Style
 	
 	private function set_marginTop(value:String):String 
 	{
-		setAttribute("margin-top", value);
+		setAttribute(CSSConstants.MARGIN_TOP_STYLE_NAME, value);
 		_coreStyle.marginTop = UnitManager.boxStyleEnum(Margin, value);
 		return value;
 	}
@@ -238,7 +239,7 @@ class Style
 	
 	private function set_marginBottom(value:String):String 
 	{
-		setAttribute("margin-bottom", value);
+		setAttribute(CSSConstants.MARGIN_BOTTOM_STYLE_NAME, value);
 		_coreStyle.marginBottom = UnitManager.boxStyleEnum(Margin, value);
 		return value;
 	}
@@ -250,7 +251,7 @@ class Style
 	
 	private function set_paddingLeft(value:String):String 
 	{
-		setAttribute("padding-left", value);
+		setAttribute(CSSConstants.PADDING_LEFT_STYLE_NAME, value);
 		_coreStyle.paddingLeft = UnitManager.boxStyleEnum(Padding, value);
 		return value;
 	}
@@ -262,7 +263,7 @@ class Style
 	
 	private function set_paddingRight(value:String):String
 	{
-		setAttribute("padding-right", value);
+		setAttribute(CSSConstants.PADDING_RIGHT_STYLE_NAME, value);
 		_coreStyle.paddingRight = UnitManager.boxStyleEnum(Padding, value);
 		return value;
 	}
@@ -275,7 +276,7 @@ class Style
 	
 	private function set_paddingTop(value:String):String 
 	{
-		setAttribute("padding-top", value);
+		setAttribute(CSSConstants.PADDING_TOP_STYLE_NAME, value);
 		_coreStyle.paddingTop = UnitManager.boxStyleEnum(Padding, value);
 		return value;
 	}
@@ -287,7 +288,7 @@ class Style
 	
 	private function set_paddingBottom(value:String):String 
 	{
-		setAttribute("padding-bottom", value);
+		setAttribute(CSSConstants.PADDING_BOTTOM_STYLE_NAME, value);
 		_coreStyle.paddingBottom = UnitManager.boxStyleEnum(Padding, value);
 		return value;
 	}
@@ -299,7 +300,7 @@ class Style
 	
 	private function set_display(value:String):String 
 	{
-		setAttribute("display", value);
+		setAttribute(CSSConstants.DISPLAY_STYLE_NAME, value);
 		_coreStyle.display = UnitManager.displayEnum(value);
 		return value;
 	}
@@ -311,7 +312,7 @@ class Style
 	
 	private function set_position(value:String):String 
 	{
-		setAttribute("position", value);
+		setAttribute(CSSConstants.POSITION_STYLE_NAME, value);
 		_coreStyle.position = UnitManager.positionEnum(value);
 		return value;
 	}
@@ -323,7 +324,7 @@ class Style
 	
 	private function set_zIndex(value:String):String
 	{
-		setAttribute("zIndex", value);
+		setAttribute(CSSConstants.Z_INDEX_STYLE_NAME, value);
 		_coreStyle.zIndex = UnitManager.zIndexEnum(value);
 		return value;
 	}
@@ -335,7 +336,7 @@ class Style
 	
 	private function set_width(value:String):String 
 	{
-		setAttribute("width", value);
+		setAttribute(CSSConstants.WIDTH_STYLE_NAME, value);
 		_coreStyle.width = UnitManager.boxStyleEnum(Dimension, value);
 		return value;
 	}
@@ -347,7 +348,7 @@ class Style
 	
 	private function set_height(value:String):String 
 	{
-		setAttribute("height", value);
+		setAttribute(CSSConstants.HEIGHT_STYLE_NAME, value);
 		_coreStyle.height = UnitManager.boxStyleEnum(Dimension, value);
 		return value;
 	}
@@ -359,7 +360,7 @@ class Style
 	
 	private function set_minHeight(value:String):String 
 	{
-		setAttribute("min-height", value);
+		setAttribute(CSSConstants.MIN_HEIGHT_STYLE_NAME, value);
 		_coreStyle.minHeight = UnitManager.constrainedDimensionEnum(value);
 		return value;
 	}
@@ -371,7 +372,7 @@ class Style
 
 	private function set_maxHeight(value:String):String 
 	{
-		setAttribute("max-height", value);
+		setAttribute(CSSConstants.MAX_HEIGHT_STYLE_NAME, value);
 		_coreStyle.maxHeight = UnitManager.constrainedDimensionEnum(value);
 		return value;
 	}
@@ -383,7 +384,7 @@ class Style
 		
 	private function set_minWidth(value:String):String 
 	{
-		setAttribute("min-width", value);
+		setAttribute(CSSConstants.MIN_WIDTH_STYLE_NAME, value);
 		_coreStyle.minWidth = UnitManager.constrainedDimensionEnum(value);
 		return value;
 	}
@@ -395,7 +396,7 @@ class Style
 	
 	private function set_maxWidth(value:String):String 
 	{
-		setAttribute("max-width", value);
+		setAttribute(CSSConstants.MAX_WIDTH_STYLE_NAME, value);
 		_coreStyle.maxWidth = UnitManager.constrainedDimensionEnum(value);
 		return value;
 	}
@@ -407,7 +408,7 @@ class Style
 	
 	private function set_top(value:String):String 
 	{
-		setAttribute("top", value);
+		setAttribute(CSSConstants.TOP_STYLE_NAME, value);
 		_coreStyle.top = UnitManager.boxStyleEnum(PositionOffset, value);
 		return value;
 	}
@@ -419,7 +420,7 @@ class Style
 		
 	private function set_left(value:String):String 
 	{
-		setAttribute("left", value);
+		setAttribute(CSSConstants.LEFT_STYLE_NAME, value);
 		_coreStyle.left = UnitManager.boxStyleEnum(PositionOffset, value);
 		return value;
 	}
@@ -431,7 +432,7 @@ class Style
 	
 	private function set_bottom(value:String):String 
 	{
-		setAttribute("bottom", value);
+		setAttribute(CSSConstants.BOTTOM_STYLE_NAME, value);
 		_coreStyle.bottom = UnitManager.boxStyleEnum(PositionOffset, value);
 		return value;
 	}
@@ -443,7 +444,7 @@ class Style
 	
 	private function set_right(value:String):String 
 	{
-		setAttribute("right", value);
+		setAttribute(CSSConstants.RIGHT_STYLE_NAME, value);
 		_coreStyle.right = UnitManager.boxStyleEnum(PositionOffset, value);
 		return value;
 	}
@@ -455,7 +456,7 @@ class Style
 	
 	private function set_CSSFloat(value:String):String 
 	{
-		setAttribute("float", value);
+		setAttribute(CSSConstants.FLOAT_STYLE_NAME, value);
 		_coreStyle.cssFloat = UnitManager.cssFloatEnum(value);
 		return value;
 	}
@@ -467,7 +468,7 @@ class Style
 	
 	private function set_clear(value:String):String 
 	{
-		setAttribute("clear", value);
+		setAttribute(CSSConstants.CLEAR_STYLE_NAME, value);
 		_coreStyle.clear = UnitManager.clearEnum(value);
 		return value;
 	}
@@ -479,7 +480,7 @@ class Style
 	
 	private function set_fontSize(value:String):String
 	{
-		setAttribute("font-size", value);
+		setAttribute(CSSConstants.FONT_SIZE_STYLE_NAME, value);
 		_coreStyle.fontSize = UnitManager.fontSizeEnum(value);
 		return value;
 	}
@@ -491,7 +492,7 @@ class Style
 	
 	private function set_fontWeight(value:String):String
 	{
-		setAttribute("font-weight", value);
+		setAttribute(CSSConstants.FONT_WEIGHT_STYLE_NAME, value);
 		_coreStyle.fontWeight = UnitManager.fontWeightEnum(value);
 		return value;
 	}
@@ -503,7 +504,7 @@ class Style
 	
 	private function set_fontStyle(value:String):String
 	{
-		setAttribute("font-style", value);
+		setAttribute(CSSConstants.FONT_STYLE_STYLE_NAME, value);
 		_coreStyle.fontStyle = UnitManager.fontStyleEnum(value);
 		return value;
 	}
@@ -515,7 +516,7 @@ class Style
 	
 	private function set_fontFamily(value:String):String
 	{
-		setAttribute("font-family", value);
+		setAttribute(CSSConstants.FONT_FAMILY_STYLE_NAME, value);
 		_coreStyle.fontFamily = UnitManager.fontFamilyEnum(value);
 		return value;
 	}
@@ -528,7 +529,7 @@ class Style
 	
 	private function set_fontVariant(value:String):String
 	{
-		setAttribute("font-variant", value);
+		setAttribute(CSSConstants.FONT_VARIANT_STYLE_NAME, value);
 		_coreStyle.fontVariant = UnitManager.fontVariantEnum(value);
 		return value;
 	}
@@ -540,7 +541,7 @@ class Style
 	
 	private function set_textTransform(value:String):String
 	{
-		setAttribute("text-transform", value);
+		setAttribute(CSSConstants.TEXT_TRANSFORM_STYLE_NAME, value);
 		_coreStyle.textTransform = UnitManager.textTransformEnum(value);
 		return value;
 	}
@@ -552,7 +553,7 @@ class Style
 	
 	private function set_letterSpacing(value:String):String
 	{
-		setAttribute("letter-spacing", value);
+		setAttribute(CSSConstants.LETTER_SPACING_STYLE_NAME, value);
 		_coreStyle.letterSpacing = UnitManager.letterSpacingEnum(value);
 		return value;
 	}
@@ -564,7 +565,7 @@ class Style
 	
 	private function set_color(value:String):String
 	{
-		setAttribute("color", value);
+		setAttribute(CSSConstants.COLOR_STYLE_NAME, value);
 		_coreStyle.color = UnitManager.colorEnum(value);
 		return value;
 	}
@@ -576,7 +577,7 @@ class Style
 	
 	private function set_wordSpacing(value:String):String
 	{
-		setAttribute("word-spacing", value);
+		setAttribute(CSSConstants.WORD_SPACING_STYLE_NAME, value);
 		_coreStyle.wordSpacing = UnitManager.wordSpacingEnum(value);
 		return value;
 	}
@@ -588,7 +589,7 @@ class Style
 	
 	private function set_lineHeight(value:String):String
 	{
-		setAttribute("line-height", value);
+		setAttribute(CSSConstants.LINE_HEIGHT_STYLE_NAME, value);
 		_coreStyle.lineHeight = UnitManager.lineHeightEnum(value);
 		return value;
 	}
@@ -600,7 +601,7 @@ class Style
 	
 	private function set_verticalAlign(value:String):String
 	{
-		setAttribute("vertical-align", value);
+		setAttribute(CSSConstants.VERTICAL_ALIGN_STYLE_NAME, value);
 		_coreStyle.verticalAlign = UnitManager.verticalAlignEnum(value);
 		return value;
 	}
@@ -612,7 +613,7 @@ class Style
 	
 	private function set_textIndent(value:String):String
 	{
-		setAttribute("text-indent", value);
+		setAttribute(CSSConstants.TEXT_INDENT_STYLE_NAME, value);
 		_coreStyle.textIndent = UnitManager.textIndentEnum(value);
 		return value;
 	}
@@ -624,7 +625,7 @@ class Style
 	
 	private function set_whiteSpace(value:String):String
 	{
-		setAttribute("white-space", value);
+		setAttribute(CSSConstants.WHITE_SPACE_STYLE_NAME, value);
 		_coreStyle.whiteSpace = UnitManager.whiteSpaceEnum(value);
 		return value;
 	}
@@ -636,14 +637,14 @@ class Style
 	
 	private function set_textAlign(value:String):String
 	{
-		setAttribute("text-align", value);
+		setAttribute(CSSConstants.TEXT_ALIGN_STYLE_NAME, value);
 		_coreStyle.textAlign = UnitManager.textAlignEnum(value);
 		return value;
 	}
 	
 	private function set_backgroundColor(value:String):String
 	{
-		setAttribute("background-color", value);
+		setAttribute(CSSConstants.BACKGROUND_COLOR_STYLE_NAME, value);
 		_coreStyle.backgroundColor = UnitManager.colorEnum(value);
 		return value;
 	}
@@ -655,7 +656,7 @@ class Style
 	
 	private function set_backgroundImage(value:String):String
 	{
-		setAttribute("background-image", value);
+		setAttribute(CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, value);
 		_coreStyle.backgroundImage = UnitManager.backgroundImageEnum(value);
 		return value;
 	}
@@ -667,7 +668,7 @@ class Style
 	
 	private function set_backgroundRepeat(value:String):String
 	{
-		setAttribute("background-repeat", value);
+		setAttribute(CSSConstants.BACKGROUND_REPEAT_STYLE_NAME, value);
 		_coreStyle.backgroundRepeat = UnitManager.backgroundRepeatEnum(value);
 		return value;
 	}
@@ -679,7 +680,7 @@ class Style
 	
 	private function set_backgroundSize(value:String):String
 	{
-		setAttribute("background-size", value);
+		setAttribute(CSSConstants.BACKGROUND_SIZE_STYLE_NAME, value);
 		_coreStyle.backgroundSize = UnitManager.backgroundSizeEnum(value);
 		return value;
 	}
@@ -691,7 +692,7 @@ class Style
 	
 	private function set_backgroundClip(value:String):String
 	{
-		setAttribute("background-clip", value);
+		setAttribute(CSSConstants.BACKGROUND_CLIP_STYLE_NAME, value);
 		_coreStyle.backgroundClip = UnitManager.backgroundClipEnum(value);
 		return value;
 	}
@@ -703,7 +704,7 @@ class Style
 	
 	private function set_backgroundPosition(value:String):String
 	{
-		setAttribute("background-position", value);
+		setAttribute(CSSConstants.BACKGROUND_POSITION_STYLE_NAME, value);
 		_coreStyle.backgroundPosition = UnitManager.backgroundPositionEnum(value);
 		return value;
 	}
@@ -715,7 +716,7 @@ class Style
 	
 	private function set_backgroundOrigin(value:String):String
 	{
-		setAttribute("background-origin", value);
+		setAttribute(CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, value);
 		_coreStyle.backgroundOrigin = UnitManager.backgroundOriginEnum(value);
 		return value;
 	}
@@ -732,7 +733,7 @@ class Style
 	
 	private function set_overflowX(value:String):String
 	{
-		setAttribute("overflow-x", value);
+		setAttribute(CSSConstants.OVERFLOW_X_STYLE_NAME, value);
 		_coreStyle.overflowX = UnitManager.overflowEnum(value);
 		return value;
 	}
@@ -744,14 +745,14 @@ class Style
 	
 	private function set_overflowY(value:String):String
 	{
-		setAttribute("overflow-y", value);
+		setAttribute(CSSConstants.OVERFLOW_Y_STYLE_NAME, value);
 		_coreStyle.overflowY = UnitManager.overflowEnum(value);
 		return UnitManager.getCSSOverflow(_coreStyle.overflowY);
 	}
 	
 	private function set_cursor(value:String):String
 	{
-		setAttribute("cursor", value);
+		setAttribute(CSSConstants.CURSOR_STYLE_NAME, value);
 		_coreStyle.cursor = UnitManager.cursorEnum(value);
 		return value;
 	}

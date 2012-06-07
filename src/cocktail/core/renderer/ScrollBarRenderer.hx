@@ -46,6 +46,17 @@ class ScrollBarRenderer extends BlockBoxRenderer
 		return true;
 	}
 	
+	override public function scroll(x:Float, y:Float):Void
+	{
+		#if (flash9 || nme)
+		{
+			_graphicsContext.x = x;
+			_graphicsContext.y = y;
+		}
+		#end
+		
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE LAYOUT METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -12,6 +12,7 @@ import cocktail.core.event.Event;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
+import cocktail.core.event.TransitionEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLElement;
@@ -48,12 +49,17 @@ class Document extends Node
 	
 	public static inline var CUSTOM_EVENT_INTERFACE:String = "CustomEvent";
 	
+	public static inline var TRANSITION_EVENT_INTERFACE:String = "TransitionEvent";
+	
 	/**
 	 * This is a convenience attribute that allows direct access
 	 * to the child node that is the document element of the document.
+	 * 
+	 * TODO IMPORTANT : this attribute is supposed to return an
+	 * Element but it has to be an HTMLElement to match the Haxe JS API
 	 */
-	private var _documentElement:Element;
-	public var documentElement(get_documentElement, never):Element;
+	private var _documentElement:HTMLElement;
+	public var documentElement(get_documentElement, never):HTMLElement;
 	
 	/**
 	 * class constructor
@@ -103,6 +109,18 @@ class Document extends Node
 		var text:Text = new Text();
 		text.nodeValue = data;
 		return text;
+	}
+	
+	/**
+	 * Creates a Comment node given the specified string.
+	 * @param	data The data for the node.
+	 * @return The new Comment object.
+	 */
+	public function createComment(data:String):Comment
+	{
+		var comment:Comment = new Comment();
+		comment.nodeValue = data;
+		return comment;
 	}
 	
 	/**
@@ -159,6 +177,9 @@ class Document extends Node
 				
 			case WHEEL_EVENT_INTERFACE:
 				return new WheelEvent();
+				
+			case TRANSITION_EVENT_INTERFACE:
+				return new TransitionEvent();
 				
 			default:
 				throw DOMException.NOT_SUPPORTED_ERR;
@@ -290,7 +311,7 @@ class Document extends Node
 	// GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_documentElement():Element
+	private function get_documentElement():HTMLElement
 	{
 		return _documentElement;
 	}

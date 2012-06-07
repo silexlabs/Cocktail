@@ -20,16 +20,11 @@ import cocktail.core.renderer.TextRenderer;
 class HTMLBodyElement extends HTMLElement
 {
 	/**
-	 * the html tag name for the body
-	 */
-	private static inline var HTML_BODY_TAG_NAME:String = "body";
-	
-	/**
 	 * class constructor.
 	 */
 	public function new() 
 	{	
-		super(HTML_BODY_TAG_NAME);
+		super(HTMLConstants.HTML_BODY_TAG_NAME);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

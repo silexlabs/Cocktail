@@ -16,9 +16,6 @@ import haxe.Log;
  * pictures are loaded with the same instance, the picture is 
  * replaced
  * 
- * TODO : shouldn't be done this way, each picture should be 
- * stored in a different ResourceLoader which can then be retrieved
- * 
  * @author Yannick DOMINGUEZ
  */
 class ImageLoader extends MediaLoader

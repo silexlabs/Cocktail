@@ -182,19 +182,42 @@ class StyleProxy implements lib.hxtml.IStyleProxy<Node>
 
 		cast(element, HTMLElement).style.height = value; 
 	}
-/*	public function setMinWidth (element:Node, value:Int, unit:String):Void{
+	public function setMinWidth (element:Node, value:Float, unit:String):Void{
 		cast(element, HtmlDom).style.minWidth = value+unit; 
 	}
-	public function setMinHeight (element:Node, value:Int, unit:String):Void{
+	public function setMinHeight (element:Node, value:Float, unit:String):Void{
 		cast(element, HtmlDom).style.minHeight = value+unit; 
 	}
-	public function setMaxWidth (element:Node, value:Int, unit:String):Void{
+	public function setMaxWidth (element:Node, value:Float, unit:String):Void{
 		cast(element, HtmlDom).style.maxWidth = value+unit; 
 	}
-	public function setMaxHeight (element:Node, value:Int, unit:String):Void{
+	public function setMaxHeight (element:Node, value:Float, unit:String):Void{
 		cast(element, HtmlDom).style.maxHeight = value+unit; 
 	}
-*/	public function setTop (element:Node, value:Float, unit:String):Void{
+	
+	public function setMinWidthZero(element:Node):Void {
+		cast(element, HtmlDom).style.minWidth = "0"; 
+	}
+	public function setMaxWidthZero (element:Node):Void {
+		cast(element, HtmlDom).style.maxWidth = "0"; 
+	}
+	public function setMinHeightZero (element:Node):Void {
+		cast(element, HtmlDom).style.minHeight = "0"; 
+	}
+	public function setMaxHeightZero (element:Node):Void {
+		cast(element, HtmlDom).style.maxHeight = "0"; 
+	}
+	
+	public function setMaxWidthKey (element:Node, value:String):Void {
+		cast(element, HtmlDom).style.maxWidth = value; 
+	}
+	
+	public function setMaxHeightKey (element:Node, value:String):Void {
+		cast(element, HtmlDom).style.maxHeight = value; 
+	}
+
+	
+	public function setTop (element:Node, value:Float, unit:String):Void{
 		cast(element, HTMLElement).style.top = value+unit; 
 	}
 	public function setTopZero (element:Node):Void{

@@ -12,12 +12,11 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.DrawingManager;
 import cocktail.core.geom.GeomData;
+import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
-import flash.display.DisplayObjectContainer;
-import flash.display.Sprite;
 import haxe.Timer;
 
 
@@ -199,7 +198,7 @@ class ElementRenderer extends Node
 	 * For example, if a size is set as a percentage, it will
 	 * be stored once computed to pixels into this structure
 	 */
-	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyleData;
+	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyle;
 	
 	/**
 	 * get/set the scrolling in the x axis of this ElementRenderer.
@@ -237,7 +236,7 @@ class ElementRenderer extends Node
 		_node = node;
 		
 		#if (flash9 || nme)
-		_graphicsContext = new Sprite();
+		_graphicsContext = new flash.display.Sprite();
 		#end
 		
 		_isLayingOut = false;
@@ -334,7 +333,7 @@ class ElementRenderer extends Node
 	public function clear():Void
 	{
 		#if (flash9 || nme)
-		var containerGraphicsContext:DisplayObjectContainer = cast(_graphicsContext);
+		var containerGraphicsContext:flash.display.DisplayObjectContainer = cast(_graphicsContext);
 		
 			for (i in 0...containerGraphicsContext.numChildren)
 			{
@@ -415,6 +414,20 @@ class ElementRenderer extends Node
 		}
 		
 		_layerRenderer = null;
+	}
+	
+	public function scroll(x:Float, y:Float):Void
+	{
+		if (computedStyle.position == fixed)
+		{
+			
+			#if (flash9 || nme)
+			{
+				_graphicsContext.x -= x;
+				_graphicsContext.y -= y;
+			}
+			#end
+		}
 	}
 	
 	/////////////////////////////////
@@ -703,7 +716,7 @@ class ElementRenderer extends Node
 				this._isLayingOut = true;
 				
 				var parent:ElementRenderer = cast(_parentNode);
-				parent.invalidateLayout(immediate);	
+				parent.invalidateLayout(immediate);
 			}
 		}
 	}
@@ -839,12 +852,12 @@ class ElementRenderer extends Node
 		};
 	}
 	
-	private function getComputedStyle():ComputedStyleData
+	private function getComputedStyle():ComputedStyle
 	{
 		return _coreStyle.computedStyle;
 	}
 	
-	private function setComputedStyle(value:ComputedStyleData):ComputedStyleData
+	private function setComputedStyle(value:ComputedStyle):ComputedStyle
 	{
 		return _coreStyle.computedStyle = value;
 	}

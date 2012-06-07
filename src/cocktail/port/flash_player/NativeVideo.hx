@@ -12,6 +12,7 @@ import cocktail.core.NativeElement;
 import cocktail.port.platform.nativeMedia.NativeMedia;
 import flash.events.Event;
 import flash.Lib;
+import flash.media.SoundTransform;
 import flash.media.Video;
 import flash.net.NetConnection;
 import flash.net.NetStream;
@@ -161,6 +162,12 @@ class NativeVideo extends NativeMedia
 	// OVERRIDEN SETTER/GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	override private function set_volume(value:Float):Float
+	{
+		_netStream.soundTransform = new SoundTransform(value, 0);
+		return value;
+	}
+	
 	override private function get_bytesTotal():Float
 	{
 		return _netStream.bytesTotal;
@@ -170,7 +177,6 @@ class NativeVideo extends NativeMedia
 	{
 		return _netStream.bytesLoaded;
 	}
-	
 	
 	override private function get_duration():Float
 	{
