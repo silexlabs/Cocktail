@@ -69,6 +69,7 @@ class BoxRenderer extends ElementRenderer
 		//its parent
 		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
 		renderBackground(_graphicsContext, relativeOffset);
+		applyVisualEffects(_graphicsContext);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -98,6 +99,13 @@ class BoxRenderer extends ElementRenderer
 		}
 		#end
 		
+	}
+	
+	private function applyVisualEffects(graphicContext:NativeElement):Void
+	{
+		#if (flash9 || nme)
+		graphicContext.alpha = computedStyle.opacity;
+		#end
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -814,7 +814,7 @@ class CoreStyle
 	private function startTransitionIfNeeded(propertyName:String):Void
 	{
 		//TODO 1 : shouldn't have to call it here
-		computeVisualEffectStyles();
+		//computeVisualEffectStyles();
 		
 		//will store the index of the property in the TransitionPorperty
 		//array, so that its duration, delay, and timing function can be found
@@ -868,6 +868,13 @@ class CoreStyle
 		var transitionDuration:Float = computedStyle.transitionDuration[getRepeatedIndex(propertyIndex, computedStyle.transitionDuration.length)];
 		combinedDuration = transitionDuration + transitionDelay;
 		
+		//transition delay and duration might be NaN if transition
+		//styles have not been computed yet
+		if (Math.isNaN(transitionDelay) || Math.isNaN(transitionDuration))
+		{
+			return;
+		}
+		
 		//if the combined duration is not superior to
 		//0, then there is no transition
 		if (combinedDuration <= 0)
@@ -901,7 +908,7 @@ class CoreStyle
 		//TODO 1 : should not cause a repaint
 		invalidate(true);
 		var endValue:Float = Reflect.getProperty(computedStyle, propertyName);
-
+		
 		//start a transition using the TransitionManager
 		TransitionManager.getInstance().startTransition(computedStyle, propertyName, startValue, endValue, 
 		transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate);
@@ -1328,7 +1335,6 @@ class CoreStyle
 	{
 		return _transitionTimingFunction = value;
 	}
-	
 	
 	/////////////////////////////////
 	// STYLES SETTERS/GETTERS
