@@ -143,8 +143,8 @@ class LineBox extends Node
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		for (i in 0...backgrounds.length)
 		{
-			backgrounds[i].x = _bounds.x  + _elementRenderer.globalBounds.x + relativeOffset.x;
-			backgrounds[i].y = _bounds.y + _elementRenderer.globalBounds.y + relativeOffset.y;
+			backgrounds[i].x = _bounds.x  + _elementRenderer.globalBounds.x - _elementRenderer.bounds.x + relativeOffset.x;
+			backgrounds[i].y = _bounds.y + _elementRenderer.globalBounds.y - _elementRenderer.bounds.y + relativeOffset.y;
 			containerGraphicContext.addChild(backgrounds[i]);
 		}
 		#end
