@@ -7,6 +7,7 @@
 */
 package cocktail.core.style.computer.boxComputers;
 
+import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import haxe.Log;
@@ -44,7 +45,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		//shrink-to-fit only happen if either left or right is auto
 		if (style.left == PositionOffset.cssAuto || style.right == PositionOffset.cssAuto)
 		{
-			var computedStyle:ComputedStyleData = style.computedStyle;
+			var computedStyle:ComputedStyle = style.computedStyle;
 			//compute the shrinked width
 			shrinkedWidth = doShrinkToFit(style, containingBlockData, minimumWidth);
 
@@ -91,7 +92,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		//if neither top and bottom are auto, then height can be computed using all the other vertical dimensions
 		if (style.top != PositionOffset.cssAuto && style.bottom != PositionOffset.cssAuto)
 		{
-			var computedStyle:ComputedStyleData = style.computedStyle;
+			var computedStyle:ComputedStyle = style.computedStyle;
 			height = containingBlockData.height - computedStyle.top - computedStyle.bottom - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.marginTop - computedStyle.marginBottom;
 		}
 		else
@@ -129,7 +130,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 */ 
 	override private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
-		var computedStyle:ComputedStyleData = style.computedStyle;
+		var computedStyle:ComputedStyle = style.computedStyle;
 		
 		//first, any auto value for margins are computed to 0
 		if (style.marginLeft == Margin.cssAuto)
@@ -178,7 +179,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 */
 	override private function measureWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
-		var computedStyle:ComputedStyleData = style.computedStyle;
+		var computedStyle:ComputedStyle = style.computedStyle;
 		
 		//compute the width which is either defined as a length or a percentage
 		setComputedWidth(style, getComputedWidth(style, containingBlockData));
@@ -283,7 +284,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 */ 
 	override private function measureAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
-		var computedStyle:ComputedStyleData = style.computedStyle;
+		var computedStyle:ComputedStyle = style.computedStyle;
 		
 		//first, any auto value for margins are computed to 0
 		if (style.marginTop == Margin.cssAuto)
@@ -338,7 +339,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 */
 	override private function measureHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
-		var computedStyle:ComputedStyleData = style.computedStyle;
+		var computedStyle:ComputedStyle = style.computedStyle;
 		
 		//compute the height which is either defined as a length or a percentage
 		setComputedHeight(style, getComputedHeight(style, containingBlockData));

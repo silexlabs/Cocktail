@@ -12,7 +12,7 @@ package cocktail.core.html;
  * @author Yannick DOMINGUEZ
  */
 
-
+ 
 /**
  * Represent a range (period) of
  * time

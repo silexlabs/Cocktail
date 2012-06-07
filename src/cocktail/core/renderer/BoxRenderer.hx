@@ -31,7 +31,6 @@ import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.geom.GeomData;
-import flash.display.DisplayObjectContainer;
 import haxe.Log;
 
 /**
@@ -90,7 +89,7 @@ class BoxRenderer extends ElementRenderer
 		var backgrounds:Array<NativeElement> = backgroundManager.render(bounds, _coreStyle);
 		
 		#if (flash9 || nme)
-		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext);
+		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		for (i in 0...backgrounds.length)
 		{
 			backgrounds[i].x = globalBounds.x + relativeOffset.x;
@@ -135,13 +134,14 @@ class BoxRenderer extends ElementRenderer
 		_coreStyle.computeDisplayStyles();
 		_coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
 
+		//compute the box styles (width, height, margins, paddings...)
 		_coreStyle.computeBoxModelStyles(getRelevantContainingBlockData(containingBlockData, viewportData,  firstPositionedAncestorData.data), isReplaced());
 		
 		//layout all the children of the ElementRenderer if it has any
 		layoutChildren(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
 		
 		//when all the dimensions of the ElementRenderer are known, compute the 
-		//visual effects to apply (visibility, opacity, transform)
+		//visual effects to apply (visibility, opacity, transform, transition)
 		//it is necessary to wait for all dimensions to be known because for
 		//instance the transform style use the height and width of the ElementRenderer
 		//to determine the transformation center
@@ -219,6 +219,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	private function setGlobalOrigins(elementRenderer:ElementRenderer, addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
 	{
+		
 		//if the element establishes a new formatting context, then its
 		//bounds must be added to the global x and y bounds for the normal flow
 		if (elementRenderer.establishesNewFormattingContext() == true)
@@ -241,7 +242,6 @@ class BoxRenderer extends ElementRenderer
 					{
 						addedX = elementRenderer.positionedOrigin.x;
 					}
-					
 				}
 				else
 				{
@@ -266,7 +266,10 @@ class BoxRenderer extends ElementRenderer
 			}
 			//if the element is not positioned or relatively positioned, it always add
 			//its bounds to the global x and y flow
-			else
+			//TODO 3 : hack, check if elementRenderer is the one which started layout, as if it is
+			//it must not add its bounds again, as they are passed as parameters. Should instead use the
+			//bounds of containing block ?
+			else if (elementRenderer != this)
 			{
 				addedX += elementRenderer.bounds.x;
 				addedY += elementRenderer.bounds.y;
@@ -331,38 +334,24 @@ class BoxRenderer extends ElementRenderer
 			
 			//TODO 1 : doc on added body margin. Shouldn't be always applied
 			child.globalContainingBlockOrigin = {
-				x: addedX + computedStyle.marginLeft,
-				y : addedY + computedStyle.marginTop
+				x: addedX,
+				y : addedY
 			}
 			
 			
 			child.globalPositionnedAncestorOrigin = {
-				x: addedPositionedX + computedStyle.marginLeft,
-				y : addedPositionedY + computedStyle.marginTop
+				x: addedPositionedX,
+				y : addedPositionedY
 			}
 			
-			//TODO 1 : messy but works -> not really actually, scrollbar is moved by HTMLBodyElement margins
-			if (child.isScrollBar() == true)
-			{
-				if (elementRenderer.isPositioned() == false || elementRenderer.isRelativePositioned() == true)
-				{
-					//child.globalPositionnedAncestorOrigin.x += elementRenderer.bounds.x;
-					//child.globalPositionnedAncestorOrigin.y += elementRenderer.bounds.y;
-					
-					if (child.hasChildNodes() == true)
-					{
-						setGlobalOrigins(child, addedX, addedY, addedPositionedX + elementRenderer.bounds.x, addedPositionedY + elementRenderer.bounds.y);
-					}
-				}
-			}
-			else
-			{	
+				
 				//call the method recursively if the child has children itself
 				if (child.hasChildNodes() == true)
 				{
 					setGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
 				}
-			}
+			
+			
 			
 		}
 	}
@@ -556,7 +545,7 @@ class BoxRenderer extends ElementRenderer
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-		/**
+	/**
 	 * Determine wether the ElementRenderer is both positioned
 	 * and have an 'auto' z-index value, as if it does, it 
 	 * means it doesn't have to establish a new stacking context

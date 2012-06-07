@@ -18,7 +18,10 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.style.ComputedStyle;
+import lib.hxtml.CssParser;
 import lib.hxtml.HxtmlConverter;
+import lib.haxe.xml.Parser;
 import cocktail.core.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
@@ -34,6 +37,7 @@ import cocktail.Lib;
 import haxe.Log;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.style.StyleData;
+import lib.hxtml.IStyleProxy;
 
 /**
  * All HTML element interfaces derive from this class.
@@ -44,26 +48,6 @@ import cocktail.core.style.StyleData;
  */
 class HTMLElement extends Element
 {
-	/**
-	 * The name of the id attribute in HTML
-	 */
-	private static inline var HTML_ID_ATTRIBUTE:String = "id";
-	
-	/**
-	 * The name of the class attribute in HTML
-	 */
-	private static inline var HTML_CLASS_ATTRIBUTE:String = "class";
-	
-	/**
-	 * the name of the tab index attribute in HTML
-	 */
-	private static inline var HTML_TAB_INDEX_ATTRIBUTE:String = "tabIndex";
-	
-	/**
-	 * The name of the attribute storing the style info of the HTMLElement
-	 */
-	private static inline var HTML_STYLE_ATTRIBUTE:String = "style";
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// IDL attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -280,7 +264,7 @@ class HTMLElement extends Element
 	 */
 	private function initId():Void
 	{
-		var id:Attr = new Attr(HTML_ID_ATTRIBUTE);
+		var id:Attr = new Attr(HTMLConstants.HTML_ID_ATTRIBUTE_NAME);
 		setIdAttributeNode(id, true);
 	}
 	
@@ -347,15 +331,32 @@ class HTMLElement extends Element
 	}
 	
 	/**
+	 * Overriden to update the style of the HTMLElement when
+	 * the style attribte is set
+	 */
+	override public function setAttribute(name:String, value:String):Void
+	{
+		if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
+		{
+			//TODO 1 : big hack to make style work, hxtml is no longer 
+			//useful at this point
+			var styleProxy = new StyleProxy();
+			new CssParser<HTMLElement>().parse(value, this, cast(styleProxy));
+			super.setAttribute(name, value);
+		}
+		else
+		{
+			super.setAttribute(name, value);
+		}
+	}
+	
+	/**
 	 * Overriden to run through the necessary check for 
 	 * HTML attribute retrieval
-	 * 
-	 * TODO 3 : should override setAttribute for the 'style' attribute,
-	 * whic should refresh coreStyle ion setting
 	 */
 	override public function getAttribute(name:String):String
 	{
-		if (name == HTML_TAB_INDEX_ATTRIBUTE)
+		if (name == HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME)
 		{
 			return Std.string(get_tabIndex());
 		}
@@ -379,7 +380,6 @@ class HTMLElement extends Element
 		var targetAncestors:Array<EventTarget> = super.getTargetAncestors();
 		targetAncestors.push(Lib.document);
 		targetAncestors.push(Lib.window);
-		
 		return targetAncestors;
 	}
 	
@@ -779,6 +779,24 @@ class HTMLElement extends Element
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// FULLSCREEN METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Displays the element fullscreen
+	 * 
+	 * TODO 5 : the implementation is different from
+	 * the spec, simpler. However the spec are only
+	 * at early stage, will be updated once they
+	 * are more widely implemented
+	 */
+	public function requestFullscreen():Void
+	{
+		var htmlDocument:HTMLDocument = cast(_ownerDocument);
+		htmlDocument.fullscreenElement = this;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// ACTIVATION BEHAVIOUR
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -950,7 +968,7 @@ class HTMLElement extends Element
 	
 	private function set_tabIndex(value:Int):Int
 	{
-		setAttribute(HTML_TAB_INDEX_ATTRIBUTE, Std.string(value));
+		setAttribute(HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}
 	
@@ -961,7 +979,7 @@ class HTMLElement extends Element
 	private function get_tabIndex():Int
 	{
 		//TODO 2 : awkward to call super, but else infinite loop
-		var tabIndex:String = super.getAttribute(HTML_TAB_INDEX_ATTRIBUTE);
+		var tabIndex:String = super.getAttribute(HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME);
 		
 		if (tabIndex == "")
 		{
@@ -990,7 +1008,7 @@ class HTMLElement extends Element
 	 */
 	private function get_id():String
 	{
-		return getAttribute(HTML_ID_ATTRIBUTE);
+		return getAttribute(HTMLConstants.HTML_ID_ATTRIBUTE_NAME);
 	}
 	
 	/**
@@ -998,7 +1016,7 @@ class HTMLElement extends Element
 	 */
 	private function set_id(value:String):String
 	{
-		setAttribute(HTML_ID_ATTRIBUTE, value);
+		setAttribute(HTMLConstants.HTML_ID_ATTRIBUTE_NAME, value);
 		return value;
 	}
 	
@@ -1008,7 +1026,7 @@ class HTMLElement extends Element
 	 */
 	private function get_className():String
 	{
-		return getAttribute(HTML_CLASS_ATTRIBUTE);
+		return getAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME);
 	}
 	
 	/**
@@ -1017,12 +1035,12 @@ class HTMLElement extends Element
 	 */
 	private function set_className(value:String):String
 	{
-		setAttribute(HTML_CLASS_ATTRIBUTE, value);
+		setAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME, value);
 		return value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// DOM PARSER GETTER/SETTER
+	// DOM PARSER GETTER/SETTER AND METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -1057,8 +1075,8 @@ class HTMLElement extends Element
 		wrappedHTML += value;
 		wrappedHTML += "</div>";
 		
-		var node:Node = HxtmlConverter.getNode(wrappedHTML);
-
+		var node:HTMLElement = doSetInnerHTML(Parser.parse(wrappedHTML).firstElement());
+		
 		//append all children of the generated node
 		for (i in 0...node.childNodes.length)
 		{
@@ -1066,6 +1084,43 @@ class HTMLElement extends Element
 		}
 		
 		return value;
+	}
+	
+	private function doSetInnerHTML(xml : Xml):HTMLElement
+	{
+		switch( xml.nodeType ) {
+		case Xml.PCData:
+			return _ownerDocument.createTextNode(xml.nodeValue);
+			
+		case Xml.Comment:
+			return _ownerDocument.createComment(xml.nodeValue);
+			
+		case Xml.Element:
+			
+			var d : HTMLElement;
+			
+			var name = xml.nodeName.toLowerCase();
+			d = _ownerDocument.createElement(name);
+			
+			for (child in xml)
+			{
+				var htmlChild:HTMLElement = doSetInnerHTML(child);
+				d.appendChild(htmlChild);
+			} 
+			
+				// init attributes
+			for( a in xml.attributes() ){
+				a = a.toLowerCase();
+				var v = xml.get(a);
+				d.setAttribute(a, v);
+			}
+			
+			
+			return d;
+		}
+		
+		//TODO 2 : will cause bug if node type not supported
+		return null;
 	}
 	
 	/**
@@ -1103,7 +1158,7 @@ class HTMLElement extends Element
 			switch(child.nodeType)
 			{
 				case Node.ELEMENT_NODE:
-					
+				
 					//create an xml node with the tag name of the HTMLElement,
 					//for instance 'div', 'span', 'img'...
 					var childXml:Xml = Xml.createElement(child.nodeName);
@@ -1140,20 +1195,45 @@ class HTMLElement extends Element
 					//if at least one style one specified on it
 					if (concatenatedStyles != "")
 					{
-						childXml.set(HTML_STYLE_ATTRIBUTE, concatenatedStyles);
+						childXml.set(HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME, concatenatedStyles);
 					}
 					
 					//add the children's content to the Xml of the child
 					xml.addChild(doGetInnerHTML(child, childXml));
 					
+					//when the child xml doesn't have children itself, check if it
+					//is a void element, as if it isn't, it must not be represented as 
+					//a self-closing tag and so an empty string children is added to it
+					//to be sure that the xml parser also returns a closing tag 
+					if (childXml.firstChild() == null && isVoidElement() == false)
+					{
+						childXml.addChild(Parser.parse(""));
+					}
+
 				case Node.TEXT_NODE:
 					//serialize a Text node
-					var textXml:Xml = Xml.parse(child.nodeValue);
-					xml.addChild(textXml.firstChild());
+					var text:Xml = Xml.createPCData(child.nodeValue);
+					xml.addChild(text);
+					
+				case Node.COMMENT_NODE:
+					//serialize a Comment node
+					var comment:Xml = Xml.createComment(child.nodeValue);
+					xml.addChild(comment);
 			}
 		}
 		
 		return xml;
+	}
+	
+	/**
+	 * Utils method describing wether the HTMLElement
+	 * is a void element, meaning it can't have any
+	 * context and can be represented by a self-closing
+	 * tag, like for instance the <img/> tag
+	 */
+	public function isVoidElement():Bool
+	{
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1203,14 +1283,14 @@ class HTMLElement extends Element
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
 		invalidateLayout(true);
-		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_offsetHeight():Int
 	{
 		invalidateLayout(true);
-		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
 	
@@ -1232,14 +1312,14 @@ class HTMLElement extends Element
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
 		invalidateLayout(true);
-		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_clientHeight():Int
 	{
 		invalidateLayout(true);
-		var computedStyle:ComputedStyleData = this._coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
 	

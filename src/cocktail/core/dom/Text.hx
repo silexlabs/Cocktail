@@ -29,6 +29,7 @@ import cocktail.core.renderer.TextRenderer;
  * single node for each block of text.
  * 
  * TODO 5 : implement normalize()
+ * TODO 5 : override nodeName which must be #text
  * 
  * No lexical check is done on the content of a Text node and, depending
  * on its position in the document, some characters must be escaped 
@@ -69,16 +70,11 @@ class Text extends CharacterData
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTER
+	// OVERRIDEN SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override private function get_nodeValue():String 
+	override private function get_nodeType():Int
 	{
-		return _data;
-	}
-	
-	override private function set_nodeValue(value:String):String 
-	{
-		return data = value;
+		return Node.TEXT_NODE;
 	}
 }

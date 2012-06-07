@@ -249,11 +249,8 @@ class ScrollBar extends HTMLElement
 	
 	/**
 	 * Overriden as the ScrollBar is not supposed to 
-	 * have a default action
-	 * 
-	 * TODO 2 : at first overriden because, else tries to focus on document without
-	 * having a reference to the document. Should instead be created through
-	 * factory method ? with custom tag ScrollBar ?
+	 * have a default action. Overriden because, else tries to focus on document without
+	 * having a reference to the document.
 	 */
 	override private function executeDefaultActionIfNeeded(defaultPrevented:Bool, event:Event):Void
 	{

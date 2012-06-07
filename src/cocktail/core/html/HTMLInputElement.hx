@@ -28,17 +28,6 @@ import cocktail.core.style.CoreStyle;
  */
 class HTMLInputElement extends EmbeddedElement
 {
-
-	/**
-	 * the html tag name for a form input
-	 */
-	private static inline var HTML_INPUT_TAG_NAME:String = "input";
-	
-	/**
-	 * the name of the value html attribute
-	 */
-	private static inline var HTML_VALUE_ATTRIBUTE:String = "value";
-	
 	/**
 	 * The intrinsic width and ratio of a text input, 
 	 * as they seem to be in Firefox on Windows
@@ -65,7 +54,20 @@ class HTMLInputElement extends EmbeddedElement
 	 */
 	public function new() 
 	{
-		super(HTML_INPUT_TAG_NAME);
+		super(HTMLConstants.HTML_INPUT_TAG_NAME);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN DOM PARSER GETTER/SETTER AND METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as <input /> element are serialised
+	 * as self-closing tags
+	 */
+	override public function isVoidElement():Bool
+	{
+		return true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +85,7 @@ class HTMLInputElement extends EmbeddedElement
 		var textInputElementRenderer:TextInputRenderer = cast(_elementRenderer);
 		
 		//initialise value of native text input
-		var value:String = getAttribute(HTML_VALUE_ATTRIBUTE);
+		var value:String = getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
 		
 		if (value != null)
 		{
@@ -129,7 +131,7 @@ class HTMLInputElement extends EmbeddedElement
 	 */
 	private function set_value(value:String):String
 	{
-		setAttribute(HTML_VALUE_ATTRIBUTE, value);
+		setAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME, value);
 	
 		if (_elementRenderer != null)
 		{
@@ -148,6 +150,6 @@ class HTMLInputElement extends EmbeddedElement
 			return textInputElementRenderer.value;
 		}
 		
-		return getAttribute(HTML_VALUE_ATTRIBUTE);
+		return getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
 	}
 }
