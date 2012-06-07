@@ -127,7 +127,7 @@ class BackgroundDrawingManager extends DrawingManager
 		
 			matrix.translate(totalWidth, totalHeight);
 			
-			matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight, { x:0.0, y:0.0 } );
+			matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight);
 			
 			drawImage(nativeImage, matrix, backgroundPaintingBox);
 			

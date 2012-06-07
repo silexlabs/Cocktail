@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
 import cocktail.core.FontManager;
+import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.background.BackgroundManager;
@@ -69,7 +70,7 @@ class BoxRenderer extends ElementRenderer
 		//its parent
 		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
 		renderBackground(_graphicsContext, relativeOffset);
-		applyVisualEffects(_graphicsContext);
+		applyVisualEffects(_graphicsContext, relativeOffset );
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -101,11 +102,38 @@ class BoxRenderer extends ElementRenderer
 		
 	}
 	
-	private function applyVisualEffects(graphicContext:NativeElement):Void
+	private function applyVisualEffects(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		#if (flash9 || nme)
 		graphicContext.alpha = computedStyle.opacity;
+		var concatenatedMatrix:Matrix = getConcatenatedMatrix(computedStyle.transform, relativeOffset);
+		
+		//get the data of the abstract matrix
+		var matrixData:MatrixData = concatenatedMatrix.data;
+		
+		//create a native flash matrix with the abstract matrix data
+		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
+		//apply the native flash matrix to the native flash DisplayObject
+		graphicContext.transform.matrix = nativeTransformMatrix;
+
 		#end
+	}
+	
+	/**
+	 * Concatenate the new matrix with the "base" matrix of the HTMLElement
+	 * where only translations (the x and y of the HTMLElement) and scales
+	 * (the width and height of the HTMLElement) are applied.
+	 * It is neccessary in flash to do so to prevent losing the x, y, width
+	 * and height applied during layout
+	 * 
+	 */
+	private function getConcatenatedMatrix(matrix:Matrix, relativeOffset:PointData):Matrix
+	{
+		var currentMatrix:Matrix = new Matrix();
+		currentMatrix.translate(globalBounds.x + relativeOffset.x, globalBounds.y + relativeOffset.y);
+		currentMatrix.concatenate(matrix);
+		currentMatrix.translate((globalBounds.x + relativeOffset.x) * -1, (globalBounds.y + relativeOffset.y) * -1);
+		return currentMatrix;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////

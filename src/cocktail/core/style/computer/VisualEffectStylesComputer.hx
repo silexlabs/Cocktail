@@ -226,6 +226,9 @@ class VisualEffectStylesComputer
 				transformFunctions = new Array<TransformFunction>();
 		}
 		
+		//TODO 1 : doc
+		matrix.translate(transformOrigin.x, transformOrigin.y);
+		
 		//apply each transform functions to the matrix in order
 		for (i in 0...transformFunctions.length)
 		{
@@ -239,36 +242,36 @@ class VisualEffectStylesComputer
 				
 				//rotate	
 				case TransformFunction.rotate(value):
-					var angle:Float = Math.round(UnitManager.getRadFromAngle(value));
-					matrix.rotate(angle, transformOrigin);
+					var angle:Float = UnitManager.getRadFromAngle(value);
+					matrix.rotate(angle);
 				
 				//scale x and y	
-				case TransformFunction.scale(sx, sys):
-					matrix.scale(sx, sys, transformOrigin);
+				case TransformFunction.scale(sx, sy):
+					matrix.scale(sx, sy);
 				
 				//scale x	
 				case TransformFunction.scaleX(sx):
-					matrix.scale(sx, 1, transformOrigin);
+					matrix.scale(sx, 1);
 				
 				//scale y	
 				case TransformFunction.scaleY(sy):
-					matrix.scale(1, sy, transformOrigin);
+					matrix.scale(1, sy);
 				
 				//skew x and y	
 				case TransformFunction.skew(angleX, angleY):
 					var skewX:Float = UnitManager.getRadFromAngle(angleX);
 					var skewY:Float = UnitManager.getRadFromAngle(angleY);
-					matrix.skew(skewX, skewY, transformOrigin);
+					matrix.skew(skewX, skewY);
 				
 				//skew x	
 				case TransformFunction.skewX(angleX):
 					var skewX:Float = UnitManager.getRadFromAngle(angleX);
-					matrix.skew(skewX, 1, transformOrigin);
+					matrix.skew(skewX, 1);
 				
 				//skew y	
 				case TransformFunction.skewY(angleY):
 					var skewY:Float = UnitManager.getRadFromAngle(angleY);
-					matrix.skew(1, skewY, transformOrigin);
+					matrix.skew(1, skewY);
 				
 				//translate x and y	
 				case TransformFunction.translate(tx, ty):
@@ -287,6 +290,8 @@ class VisualEffectStylesComputer
 					matrix.translate(0.0, translationY);	
 			}
 		}
+		
+		matrix.translate(transformOrigin.x * -1, transformOrigin.y * -1);
 		
 		return matrix;
 	}
