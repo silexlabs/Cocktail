@@ -13,7 +13,7 @@
 
 package components.dataProvider;
 
-import cocktail.resource.ResourceLoaderManager;
+import haxe.Http;
 
 class XmlLoader
 {
@@ -38,7 +38,10 @@ class XmlLoader
 	 */
 	private function loadXmlFeed(xmlUrl:String):Void
 	{
-		ResourceLoaderManager.loadString( "http://demos.silexlabs.org/cocktail/simple-webapp/XmlProxy.php?url=" + StringTools.urlEncode(xmlUrl), onXmlLoaded, onXmlError);
+		var http:Http = new Http("http://demos.silexlabs.org/cocktail/simple-webapp/XmlProxy.php?url=" + StringTools.urlEncode(xmlUrl));
+		http.onData = onXmlLoaded;
+		http.onError = onXmlError;
+		http.request(false);
 	}
 	
 	/**

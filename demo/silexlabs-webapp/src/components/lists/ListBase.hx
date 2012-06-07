@@ -7,21 +7,8 @@
 
 package components.lists;
 
-// DOM
-import cocktail.classInstance.ClassInstance;
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.GraphicDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.mouse.MouseData;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
-import cocktail.resource.ResourceLoaderManager;
-import cocktail.textElement.TextElement;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
+import js.Dom;
+import js.Lib;
 
 // RichList specific
 import components.lists.ListBaseModels;
@@ -33,10 +20,13 @@ import components.lists.ListBaseUtils;
  * 
  * @author Raphael Harmel
  */
-class ListBase extends ContainerDOMElement
+class ListBase
 {
 	// Defines onChange callback, to be called when a new cell is selected
 	public var onChange : CellModel->Void;
+	
+	// list data
+	private var _listData:Array<CellModel>;
 	
 	// current cell index
 	private var _currentCellIndex:Int;
@@ -45,7 +35,10 @@ class ListBase extends ContainerDOMElement
 	private var _selectedCellData:CellModel;
 	
 	// selected cell DOM
-	private var _selectedCellDOM:ContainerDOMElement;
+	private var _selectedCellDOM:HtmlDom;
+	
+	private var _htmlDom:HtmlDom;
+	public var htmlDom(get_htmlDom, never):HtmlDom;
 	
 	/**
 	 * constructor
@@ -56,17 +49,21 @@ class ListBase extends ContainerDOMElement
 	 */
 	public function new(list:ListModel, listStyle:Dynamic)
 	{
+		// init list data
+		_listData = list.content;
 		// init _currentCellIndex
 		_currentCellIndex = 0;
 		// init _selectedCell
-		_selectedCellData = list.content[0];
+		_selectedCellData = _listData[_currentCellIndex];
 		
 		// create a ul node
-		super(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("ul")));
-		createListDOM(list, listStyle);
-		listStyle.list(this);
+		_htmlDom = Lib.document.createElement("ul");
 		
-		selectCell(_selectedCellDOM, listStyle);
+		createListDOM(list, listStyle);
+		listStyle.list(_htmlDom);
+		
+		//selectCell(_selectedCellDOM, listStyle);
+		selectCell(_selectedCellDOM);
 	}
 	
 	/**
@@ -78,17 +75,17 @@ class ListBase extends ContainerDOMElement
 	private function createListDOM(list:ListModel, listStyle:Dynamic):Void
 	{
 		// set list's cell content
-		var content:ContainerDOMElement = Utils.getContainer();
+		var content = Utils.getContainer();
 		
 		// set list's cells
 		var cellData:CellModel;
 		for (cellData in list.content)
 		{
 			// create cell
-			var cell:ContainerDOMElement = createCellDOM(cellData, listStyle);
+			var cell = createCellDOM(cellData, listStyle);
 			
 			// add cell to instance
-			this.addChild(cell);
+			_htmlDom.appendChild(cell);
 			
 			// init _selectedCellDOM with first cell
 			if (_currentCellIndex == 0)
@@ -97,6 +94,8 @@ class ListBase extends ContainerDOMElement
 			_currentCellIndex++;
 		}
 		_currentCellIndex = 0;
+		
+		//this.onKeyDown = onListKeyDown;
 	}
 	
 	/**
@@ -104,22 +103,54 @@ class ListBase extends ContainerDOMElement
 	 * 
 	 * @param	cellData
 	 */
-	private function createCellDOM(cellData:Dynamic, listStyle:Dynamic):ContainerDOMElement
+	private function createCellDOM(cellData:Dynamic, listStyle:Dynamic):HtmlDom
 	{
 		// create cell with text and image
 
 		// create cell
-		var cell:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(NativeElementTypeValue.custom("li")));
+		var cell = Lib.document.createElement("li");
+		
+		// add link for focus
+		var cellLink:Anchor = cast(Lib.document.createElement("a"));
+		cellLink.style.textAlign = "center";
+		cellLink.style.display = "block";
+		
+		// in case the cellcontent is leading to an url, set le linkdomelement href for it to be focusable
+		if(cellData.action == "openUrl" || cellData.action == "goToUrl" )
+		{
+			cellLink.href = cellData.actionTarget;
+			cellLink.target = "blank";
+		}
+		// if cellcontent is leading to an internal page, set mousecallback
+		else
+		{
+			// TODO: add tabIndex to cell
+			//cellLink.href = "#";
+			// mouse up
+			//var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->Dynamic->CellModel->Void = onCellMouseUp;
+			//cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cell, listStyle, cellData); };
+			//var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->CellModel->Void = onCellMouseUp;
+			//cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cell, cellData); };
+			var onCellMouseUpDelegate:HtmlDom->CellModel->Void = onCellSelected;
+			cell.onmouseup = function(mouseEventData:Event) { onCellMouseUpDelegate(cell, cellData); };
+			
+			//cell.onKeyDown = onKeyboardDown;
+			/*var onCellKeyDownDelegate:KeyEventData->ContainerDOMElement->CellModel->Void = onCellKeyDown;
+			cell.onKeyDown = function(keyEventData:KeyEventData) { onCellKeyDownDelegate(keyEventData, cell, cellData); };*/
+		}
+		
 		// apply style
 		listStyle.cell(cell);
 		
-		var cellContent:Array<DOMElement> = getCellData(cellData.content, listStyle);
+		var cellContent:Array<HtmlDom> = getCellData(cellData.content, listStyle);
 		
 		// push content in cell
 		for (container in cellContent)
 		{
-			cell.addChild(container);
+			//cell.addChild(container);
+			cellLink.appendChild(container);
 		}
+		cell.appendChild(cellLink);
 		
 		// mouse
 		// delegates functions are used to be able to pass an extra parameters to the callback
@@ -132,9 +163,9 @@ class ListBase extends ContainerDOMElement
 		// mouse down
 		var onCellMouseDownDelegate:MouseEventData->ContainerDOMElement->Dynamic->Void = onCellMouseDown;
 		cell.onMouseDown = function(mouseEventData:MouseEventData) { onCellMouseDownDelegate(mouseEventData, cell, listStyle); };*/
-		// mouse up
-		var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->Dynamic->CellModel->Void = onCellMouseUp;
-		cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cell, listStyle, cellData); };
+		 //mouse up
+		//var onCellMouseUpDelegate:MouseEventData->ContainerDOMElement->Dynamic->CellModel->Void = onCellMouseUp;
+		//cell.onMouseUp = function(mouseEventData:MouseEventData) { onCellMouseUpDelegate(mouseEventData, cell, listStyle, cellData); };
 			
 		return cell;
 	}
@@ -145,9 +176,9 @@ class ListBase extends ContainerDOMElement
 	 * 
 	 * @return the array of data DOM to be added into the cell
 	 */
-	private function getCellData(cellData:Dynamic, listStyle:Dynamic):Array<DOMElement>
+	private function getCellData(cellData:Dynamic, listStyle:Dynamic):Array<HtmlDom>
 	{
-		var cellContent:Array<DOMElement> = new Array<DOMElement>();
+		var cellContent:Array<HtmlDom> = new Array<HtmlDom>();
 		
 		return cellContent;
 	}
@@ -196,23 +227,94 @@ class ListBase extends ContainerDOMElement
 	 * @param	listStyle
 	 * @param	cellData
 	 */
-	private function onCellMouseUp(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic, cellData:CellModel):Void
+	//private function onCellMouseUp(mouseEventData:MouseEventData, cell:ContainerDOMElement, listStyle:Dynamic, cellData:CellModel):Void
+	//private function onCellMouseUp(mouseEventData:MouseEventData, cell:ContainerDOMElement, cellData:CellModel):Void
+	//private function onCellMouseUp(cell:ContainerDOMElement, cellData:CellModel):Void
+	private function onCellSelected(cell:HtmlDom, cellData:CellModel):Void
 	{
-		listStyle.cellMouseUp(cell);
+		//trace("onCellMouseUp");
+		//listStyle.cellMouseUp(cell);
 		if (onChange != null)
 		{
 			onChange(cellData);
 		}
 		
-		selectCell(cell, listStyle);
+		//selectCell(cell, listStyle);
+		selectCell(cell);
 	}
 	
 	/**
 	 * Select the cell and add a selected image to it
 	 */
-	private function selectCell(cell:ContainerDOMElement, listStyle:Dynamic):Void
+	//private function selectCell(cell:ContainerDOMElement, listStyle:Dynamic):Void
+	private function selectCell(cell:HtmlDom):Void
 	{
 		_selectedCellDOM = cell;
+		//_selectedCellData = list.content[_currentCellIndex];
+
+	}
+	
+	/**
+	 * Cell keyboard down callback
+	 * 
+	 * @param	key
+	 */
+	//private function onListKeyDown(key:KeyEventData, cell:ContainerDOMElement, cellData:CellModel):Void
+	//public function onListKeyDown(key:KeyEventData):Void
+	public function onListKeyDown(key:Dynamic):Void
+	{
+		//trace(key.value);
+		/*if (key.value == KeyboardKeyValue.right)
+		{
+			trace("right key pressed");
+			/*if (onChange != null)
+			{
+				onChange(cellData);
+			}
+			selectCell(cell);
+		}
+		else if (key.value == KeyboardKeyValue.left)
+		{
+			trace("left key pressed");
+			
+		}*/
+	}
+	
+	/**
+	 * Selects next cell
+	 */
+	private function selectNextCell()
+	{
+		//trace(this._children.length);
+		/**
+		if(_currentCellIndex < _htmlDom.childNodes.length-1)
+		{
+			_currentCellIndex++;
+			selectCell(_htmlDom.childNodes[_currentCellIndex].child);
+			onCellSelected(_selectedCellDOM, _listData[_currentCellIndex]);
+		}
+		*/
+	}
+	
+	/**
+	 * Selects previous cell
+	 */
+	private function selectPreviousCell()
+	{
+		//trace("selectPreviousCell");
+/**
+		if(_currentCellIndex > 0)
+		{
+			_currentCellIndex--;
+			selectCell(_htmlDom.childNodes[_currentCellIndex].child);
+			onCellSelected(_selectedCellDOM, _listData[_currentCellIndex]);
+		}
+		*/
+	}
+	
+	private function get_htmlDom():HtmlDom
+	{
+		return _htmlDom;
 	}
 	
 }

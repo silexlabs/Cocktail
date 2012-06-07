@@ -1,0 +1,6 @@
+-cp ../../../src/
+-cp ../../../lib/
+-cp ../../src/
+-main focus.FocusTests
+-lib utest
+-js ../../bin/focus/focusTestJS.js

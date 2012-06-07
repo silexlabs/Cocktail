@@ -7,22 +7,9 @@
 
 package ;
 
-// DOM
-import cocktail.domElement.DOMElement;
-import cocktail.domElement.ContainerDOMElement;
-import cocktail.domElement.ImageDOMElement;
-import cocktail.domElement.GraphicDOMElement;
-import cocktail.domElement.DOMElementData;
 
-// Native Elements
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.nativeElement.NativeElementData;
-import cocktail.textElement.TextElement;
-
-// Style
-import cocktail.style.StyleData;
-import cocktail.unit.UnitData;
-
+import js.Dom;
+import js.Lib;
 
 /**
  * This contains the utils methods
@@ -38,10 +25,10 @@ class Utils
 	 * 
 	 * @return the initalized ContainerDOMElement
 	 */
-	public static function getContainer():ContainerDOMElement
+	public static function getContainer():HtmlDom
 	{
-		var ret:ContainerDOMElement = new ContainerDOMElement(NativeElementManager.createNativeElement(neutral));
-		ret.style.display = block;
+		var ret = Lib.document.createElement("div");
+		ret.style.display = "block";
 		return ret;
 	}
 	

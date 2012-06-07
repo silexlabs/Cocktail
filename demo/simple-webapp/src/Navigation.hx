@@ -7,7 +7,8 @@
 
 import cocktail.domElement.ContainerDOMElement;
 import cocktail.mouse.MouseData;
-import components.richList.RichListModels;
+//import components.lists.RichListModels;
+import components.lists.ListBaseModels;
 
 /**
  * Handles all applications pages
