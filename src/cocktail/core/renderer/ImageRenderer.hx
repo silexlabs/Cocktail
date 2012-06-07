@@ -40,9 +40,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
 	{
 		var htmlImageElement:HTMLImageElement = cast(_node);
-	
 		#if (flash9 || nme)
-		
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		containerGraphicContext.addChild(htmlImageElement.embeddedAsset);
 		

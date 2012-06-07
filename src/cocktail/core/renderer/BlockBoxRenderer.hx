@@ -249,7 +249,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		else if (rendersAsIfEstablishingStackingContext() == true)
 		{
 			renderBlockContainerChildren(graphicContext, relativeOffset);
-		
+			
 			//TODO 5 : render non-positioned float
 			
 			renderBlockReplacedChildren(graphicContext, relativeOffset);
