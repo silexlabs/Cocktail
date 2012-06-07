@@ -226,7 +226,8 @@ class VisualEffectStylesComputer
 				transformFunctions = new Array<TransformFunction>();
 		}
 		
-		//TODO 1 : doc
+		//translate the matrix to the coordinate system of the 
+		//transformation origin
 		matrix.translate(transformOrigin.x, transformOrigin.y);
 		
 		//apply each transform functions to the matrix in order
@@ -291,6 +292,8 @@ class VisualEffectStylesComputer
 			}
 		}
 		
+		//translate the matrix back from the coordinate system of the 
+		//transformation origin
 		matrix.translate(transformOrigin.x * -1, transformOrigin.y * -1);
 		
 		return matrix;

@@ -34,42 +34,41 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC RENDERING METHODS
+	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as InlineBoxRenderer doesn't render a background of his own, it is its
+	 * generatd line boxes which render their own backgrounds
+	 */
+	override private function renderBackground(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		
+	}
 	
 	/**
 	 * Overriden as rendering an inline box renderer consist in rendering all of the 
 	 * line boxes it generated
 	 */
-	override public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
+	override private function renderChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		//first clear the graphics context
-		clear();
-		
-		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
+		super.renderChildren(graphicContext, relativeOffset);
 		
 		//render negative z-index LayerRenderer
 		if (establishesNewStackingContext() == true)
 		{
-			_layerRenderer.renderNegativeChildElementRenderers(_graphicsContext, relativeOffset);
+			_layerRenderer.renderNegativeChildElementRenderers(graphicContext, relativeOffset);
 		}
 		
 		//render all the child line boxes which belong to the same
 		//stacking context as this InlineBoxRenderer
-		renderChildLineBoxes(_graphicsContext, relativeOffset);
+		renderChildLineBoxes(graphicContext, relativeOffset);
 		
 		if (establishesNewStackingContext() == true)
 		{	
-			_layerRenderer.renderZeroAndAutoChildElementRenderers(_graphicsContext, relativeOffset);
-			_layerRenderer.renderPositiveChildElementRenderers(_graphicsContext, relativeOffset);
+			_layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext, relativeOffset);
+			_layerRenderer.renderPositiveChildElementRenderers(graphicContext, relativeOffset);
 		}
-		
-		#if (flash9 || nme)
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(parentGraphicContext);
-		containerGraphicContext.addChild(_graphicsContext);
-		#end
-		
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

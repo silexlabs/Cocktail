@@ -59,8 +59,6 @@ class BoxRenderer extends ElementRenderer
 	
 	/**
 	 * overriden to render elements spefic to a box (background, border...)
-	 * 
-	 * TODO 5 : apply transformations, opacity
 	 * TODO 4 : apply visibility
 	 */
 	override public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
@@ -70,7 +68,15 @@ class BoxRenderer extends ElementRenderer
 		//its parent
 		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
 		renderBackground(_graphicsContext, relativeOffset);
+		renderChildren(_graphicsContext, relativeOffset);
 		applyVisualEffects(_graphicsContext, relativeOffset );
+		
+		//draws the graphic context of this block box on the one of its
+		//parent
+		#if (flash9 || nme)
+		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(parentGraphicContext);
+		containerGraphicContext.addChild(_graphicsContext);
+		#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -79,8 +85,6 @@ class BoxRenderer extends ElementRenderer
 	
 	/**
 	 * Render the background of the box using the provided graphic context
-	 * 
-	 * TODO 4 : opacity should be applied to background
 	 */
 	private function renderBackground(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
@@ -99,39 +103,72 @@ class BoxRenderer extends ElementRenderer
 			containerGraphicContext.addChild(backgrounds[i]);
 		}
 		#end
-		
 	}
 	
+	/**
+	 * Render the children of the box
+	 */
+	private function renderChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Apply the computed visual effect
+	 * using the graphic context
+	 */
 	private function applyVisualEffects(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		#if (flash9 || nme)
-		graphicContext.alpha = computedStyle.opacity;
+		applyOpacity(graphicContext);
+		applyTransformationMatrix(graphicContext, relativeOffset);
+	}
+	
+	/**
+	 * Apply the transformation matrix computed with the
+	 * transform and transform-origin style on the graphic context
+	 */
+	private function applyTransformationMatrix(graphicContext:NativeElement, relativeOffset:PointData):Void
+	{
 		var concatenatedMatrix:Matrix = getConcatenatedMatrix(computedStyle.transform, relativeOffset);
 		
 		//get the data of the abstract matrix
 		var matrixData:MatrixData = concatenatedMatrix.data;
-		
+		#if (flash9 || nme)
 		//create a native flash matrix with the abstract matrix data
 		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 		//apply the native flash matrix to the native flash DisplayObject
 		graphicContext.transform.matrix = nativeTransformMatrix;
-
 		#end
 	}
 	
 	/**
-	 * Concatenate the new matrix with the "base" matrix of the HTMLElement
-	 * where only translations (the x and y of the HTMLElement) and scales
-	 * (the width and height of the HTMLElement) are applied.
-	 * It is neccessary in flash to do so to prevent losing the x, y, width
-	 * and height applied during layout
+	 * Apply the computed opacity to the graphic context
+	 */ 
+	private function applyOpacity(graphicContext:NativeElement):Void
+	{
+		#if (flash9 || nme)
+		graphicContext.alpha = computedStyle.opacity;
+		#end
+	}
+	
+	/**
+	 * Concatenate the transformation matrix obtained with the
+	 * transform and transform-origin styles with the current
+	 * transformations applied to the box renderer, such as for 
+	 * instance its position in the global space, or the transformation
+	 * applied via a relative offset
 	 * 
 	 */
 	private function getConcatenatedMatrix(matrix:Matrix, relativeOffset:PointData):Matrix
 	{
 		var currentMatrix:Matrix = new Matrix();
+		
+		//translate to the coordiante system of the box renderer
 		currentMatrix.translate(globalBounds.x + relativeOffset.x, globalBounds.y + relativeOffset.y);
+		
 		currentMatrix.concatenate(matrix);
+		
+		//translate backe from the coordiante system of the box renderer
 		currentMatrix.translate((globalBounds.x + relativeOffset.x) * -1, (globalBounds.y + relativeOffset.y) * -1);
 		return currentMatrix;
 	}

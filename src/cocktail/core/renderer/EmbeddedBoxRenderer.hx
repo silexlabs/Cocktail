@@ -38,25 +38,17 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC RENDERING METHODS
+	// OVERRIDEN PRVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * overriden to also render the embedded asset, for instance a picture for
 	 * an image renderer
 	 */
-	override public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
+	override private function renderChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
-		super.render(_graphicsContext, parentRelativeOffset);
-		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
-		renderEmbeddedAsset(_graphicsContext, relativeOffset);
-		
-		//draws the graphic context of this block box on the one of its
-		//parent
-		#if (flash9 || nme)
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(parentGraphicContext);
-		containerGraphicContext.addChild(_graphicsContext);
-		#end
+		super.renderChildren(graphicContext, relativeOffset);
+		renderEmbeddedAsset(graphicContext, relativeOffset);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
