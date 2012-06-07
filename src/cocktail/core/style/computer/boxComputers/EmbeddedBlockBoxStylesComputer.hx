@@ -8,6 +8,7 @@
 package cocktail.core.style.computer.boxComputers;
 
 import cocktail.core.html.EmbeddedElement;
+import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import haxe.Log;
@@ -94,7 +95,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 				//constraint equation used for block-level, non-replaced elements in normal flow. 
 				if (containingBlockData.isWidthAuto == false)
 				{
-					var computedStyle:ComputedStyleData = style.computedStyle;
+					var computedStyle:ComputedStyle = style.computedStyle;
 					
 					ret = containingBlockData.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight;
 				}

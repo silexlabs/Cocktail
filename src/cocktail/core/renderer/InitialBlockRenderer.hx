@@ -16,8 +16,6 @@ import cocktail.core.style.formatter.BlockFormattingContext;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.style.CoreStyle;
-import flash.display.Sprite;
-import flash.Lib;
 import haxe.Log;
 import haxe.Timer;
 
@@ -155,7 +153,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		
 		//start the rendering at the root layer renderer
 		//TODO 3 : should instead call an invalidateRendering method on LayerRenderer ?
-		render(Lib.current, { x:0.0, y:0.0 } );
+		render(flash.Lib.current, { x:0.0, y:0.0 } );
 
 		#end
 	}
@@ -168,12 +166,13 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	private function scheduleLayoutAndRender():Void
 	{
 		var layoutAndRenderDelegate:Void->Void = layoutAndRender;
-		
+		#if (flash9 || nme)
 		//calling the methods 1 millisecond later is enough to ensure
 		//that first all synchronous code is executed
 		Timer.delay(function () { 
 			layoutAndRenderDelegate();
 		}, 1);
+		#end
 	}
 	
 	
@@ -190,7 +189,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		{
 			var element:ElementRenderer = childrenFirstPositionedAncestorData.elements[i];
 			//use the viewport dimensions both times
-			layoutPositionedChild(element, childrenFirstPositionedAncestorData.data, viewportData);
+			layoutPositionedChild(element, viewportData, viewportData);
 		}
 	}
 	
@@ -220,6 +219,18 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function getScrollbarContainerBlock():ContainingBlockData
+	{
+		var windowData:ContainingBlockData = {
+			isHeightAuto:false,
+			isWidthAuto:false,
+			width:cocktail.Lib.window.innerWidth,
+			height:cocktail.Lib.window.innerHeight
+		}
+		
+		return windowData;
+	}
 	
 	/**
 	 * When dispatched on the HTMLBodyElement,
@@ -325,9 +336,12 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		var width:Float = containerBlockData.width;
 		var height:Float = containerBlockData.height;
 		
+		var x:Float = computedStyle.marginLeft;
+		var y:Float = computedStyle.marginTop;
+		
 		return {
-			x:0.0,
-			y:0.0,
+			x:x,
+			y:y,
 			width:width,
 			height:height
 		};

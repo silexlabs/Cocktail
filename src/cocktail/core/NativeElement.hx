@@ -15,4 +15,7 @@ typedef NativeElement =  flash.display.DisplayObject;
 
 #elseif nme
 typedef NativeElement =  Dynamic;
+
+#else
+typedef NativeElement =  Dynamic;
 #end

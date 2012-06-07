@@ -11,6 +11,7 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.port.platform.nativeWindow.AbstractNativeWindow;
+import flash.display.StageDisplayState;
 import flash.Lib;
 import flash.net.URLRequest;
 import haxe.Log;
@@ -45,6 +46,23 @@ class NativeWindow extends AbstractNativeWindow
 	override public function open(url:String, name:String):Void
 	{
 		flash.Lib.getURL(new URLRequest(url), name);
+	}
+	
+		
+	/**
+	 * Uses flash fullscreen API
+	 */
+	override public function enterFullscreen():Void
+	{
+		flash.Lib.current.stage.displayState = StageDisplayState.FULL_SCREEN;
+	}
+	
+	/**
+	 * Uses flash fullscreen API
+	 */
+	override public function exitFullscreen():Void
+	{
+		flash.Lib.current.stage.displayState = StageDisplayState.NORMAL;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

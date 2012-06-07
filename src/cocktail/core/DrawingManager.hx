@@ -12,4 +12,7 @@ package cocktail.core;
  */
 #if (flash9 || nme)
 typedef DrawingManager =  cocktail.port.flash_player.DrawingManager;
+
+#else
+typedef DrawingManager = cocktail.port.server.DrawingManager;
 #end

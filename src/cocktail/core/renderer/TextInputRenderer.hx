@@ -12,13 +12,6 @@ import cocktail.core.event.FocusEvent;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
-import flash.display.DisplayObjectContainer;
-import flash.events.Event;
-import flash.geom.Rectangle;
-import flash.Lib;
-import flash.text.TextField;
-import flash.text.TextFieldType;
-import flash.text.TextFormat;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 
@@ -39,7 +32,9 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	/**
 	 * A reference to a native flash text field
 	 */
-	private var _nativeTextField:TextField;
+	#if (flash9 || nme)
+	private var _nativeTextField:flash.text.TextField;
+	#end
 	
 	/**
 	 * Get/set the value of the flash text field
@@ -75,8 +70,8 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	{
 		super(node);
 		
-		_nativeTextField = new TextField();
-		#if flash9
+		#if (flash9 || nme)
+		_nativeTextField = new flash.text.TextField();
 		_nativeTextField.tabEnabled = false;
 		#end
 		
@@ -90,10 +85,11 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
 	{
 		updateNativeTextField();
-		
-		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext);
+		#if (flash9 || nme)
+		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		//TODO 3 : in NME, seems to make text field lose focus
 		containerGraphicContext.addChild(_nativeTextField);
+		#end
 	}
 	
 	
@@ -109,8 +105,10 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	 */
 	private function onTextInputFocus(e:cocktail.core.event.Event):Void
 	{
+		#if (flash9 || nme)
 		//TODO 2 : seems to do nothing in NME
 		flash.Lib.current.stage.focus = _nativeTextField;
+		#end
 	}
 	
 	//TODO 3 : duplicated code from FontManager NME implementation, a native
@@ -119,14 +117,14 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	//for texrt fields
 	private function updateNativeTextField():Void
 	{
-		
-		_nativeTextField.type = TextFieldType.INPUT;
+		#if (flash9 || nme)
+		_nativeTextField.type = flash.text.TextFieldType.INPUT;
 		_nativeTextField.x = globalBounds.x;
 		_nativeTextField.y = globalBounds.y + globalBounds.height / 2 - computedStyle.fontSize + _coreStyle.fontMetrics.ascent / 2;
 		_nativeTextField.width = globalBounds.width;
 		_nativeTextField.height = globalBounds.height;
 		
-		var textFormat:TextFormat = new TextFormat();
+		var textFormat:flash.text.TextFormat = new flash.text.TextFormat();
 		textFormat.font = getNativeFontFamily(computedStyle.fontFamily);
 		
 		textFormat.letterSpacing = computedStyle.letterSpacing;
@@ -156,6 +154,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		
 		_nativeTextField.defaultTextFormat = textFormat;
 		_nativeTextField.setTextFormat(textFormat);
+		#end
 	}
 	
 	private function getNativeFontFamily(value:Array<String>):String
@@ -195,12 +194,18 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	
 	private function get_value():String 
 	{
+		#if (flash9 || nme)
 		return _nativeTextField.text;
+		#end
+		return null;
 	}
 	
 	private function set_value(value:String):String 
 	{
+		#if (flash9 || nme)
 		return _nativeTextField.text = value;
+		#end
+		return null;
 	}
 	
 }

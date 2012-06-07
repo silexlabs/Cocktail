@@ -16,7 +16,7 @@ import cocktail.core.html.HTMLData;
  * This is an abstract base class for media elements,
  * such as video and audio
  * 
- * TODO 1 : add IDL callbacks in EventCallback -> added some
+ * TODO 1 : implement loop
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -33,36 +33,6 @@ class HTMLMediaElement extends EmbeddedElement
 	 * source element src attribute will be used as the media url
 	 */
 	public static inline var RESOURCE_SELECTION_CHILDREN_MODE:Int = 1;
-	
-	/**
-	 * The name of the src attribute
-	 */
-	private static inline var HTML_SRC_ATTRIBUTE:String = "src";
-	
-	/**
-	 * The name of the autoplay attribute
-	 */
-	private static inline var HTML_AUTOPLAY_ATTRIBUTE:String = "autoplay";
-	
-	/**
-	 * The name of the loop attribute
-	 */
-	private static inline var HTML_LOOP_ATTRIBUTE:String = "loop";
-	
-	/**
-	 * the html tag name of a source
-	 */
-	private static inline var HTML_SOURCE_TAG_NAME:String = "source";
-	
-	/**
-	 * the type attribute name
-	 */
-	private static inline var HTML_TYPE_ATTRIBUTE:String = "type";
-	
-	/**
-	 * the media attribute name
-	 */
-	private static inline var HTML_MEDIA_ATTRIBUTE:String = "media";
 	
 	/**
 	 * the frequence in milliseconds between each dispatch of
@@ -275,6 +245,22 @@ class HTMLMediaElement extends EmbeddedElement
 	public var ended(get_ended, never):Bool;
 	
 	/**
+	 * Returns true if audio is muted, overriding the volume attribute,
+	 * and false if the volume attribute is being honored. Can be set,
+	 * to change whether the audio is muted or not.
+	 */
+	private var _muted:Bool;
+	public var muted(get_muted, set_muted):Bool;
+	
+	/**
+	 * Returns the current playback volume, as a number in
+	 * the range 0.0 to 1.0, where 0.0 is the quietest and
+	 * 1.0 the loudest. Can be set, to change the volume.
+	 */
+	private var _volume:Float;
+	public var volume(get_volume, set_volume):Float;
+	
+	/**
 	 * a reference to the proxy class allowing
 	 * access to runtime specific API for 
 	 * video and audio
@@ -309,6 +295,8 @@ class HTMLMediaElement extends EmbeddedElement
 		_seeking = false;
 		_readyState = HAVE_NOTHING;
 		_autoplaying = true;
+		_muted = false;
+		_volume = 1.0;
 		
 		_loadedDataWasDispatched = false;
 		_defaultPlaybackStartPosition = 0;
@@ -354,7 +342,7 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			//invoke the select resource algorithm if a source
 			//child was just added
-			if (newChild.nodeName == HTML_SOURCE_TAG_NAME)
+			if (newChild.nodeName == HTMLConstants.HTML_SOURCE_TAG_NAME)
 			{
 				selectResource();
 			}
@@ -373,7 +361,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	override public function setAttribute(name:String, value:String):Void
 	{
-		if (name == HTML_SRC_ATTRIBUTE)
+		if (name == HTMLConstants.HTML_SRC_ATTRIBUTE_NAME)
 		{
 			src = value;
 		}
@@ -577,7 +565,7 @@ class HTMLMediaElement extends EmbeddedElement
 			//retrieve the first source child
 			for (i in 0..._childNodes.length)
 			{
-				if (_childNodes[i].nodeName == HTML_SOURCE_TAG_NAME)
+				if (_childNodes[i].nodeName == HTMLConstants.HTML_SOURCE_TAG_NAME)
 				{
 					candidate = cast(_childNodes[i]);
 					break;
@@ -619,7 +607,7 @@ class HTMLMediaElement extends EmbeddedElement
 			//TODO 2 : short cut for now, not implemented like the spec
 			for (i in 0..._childNodes.length)
 			{
-				if (_childNodes[i].nodeName == HTML_SOURCE_TAG_NAME)
+				if (_childNodes[i].nodeName == HTMLConstants.HTML_SOURCE_TAG_NAME)
 				{
 					var sourceChild:HTMLSourceElement = cast(_childNodes[i]);
 					if (sourceChild.type != null)
@@ -866,7 +854,7 @@ class HTMLMediaElement extends EmbeddedElement
 	{
 		for (i in 0..._childNodes.length)
 		{
-			if (_childNodes[i].nodeName == HTML_SOURCE_TAG_NAME)
+			if (_childNodes[i].nodeName == HTMLConstants.HTML_SOURCE_TAG_NAME)
 			{
 				return true;
 			}
@@ -884,16 +872,26 @@ class HTMLMediaElement extends EmbeddedElement
 		selectResource();
 	}
 	
+	/**
+	 * When the metadata of the media have been 
+	 * loaded, update the intrinisc dimensions
+	 * of the html element and all the attributes
+	 * which can retrieved through this metadata
+	 */
 	private function onLoadedMetaData(e:Event):Void
 	{
 		_intrinsicHeight = _nativeMedia.height;
 		_intrinsicWidth = _nativeMedia.width;
 		_intrinsicRatio = _intrinsicHeight / _intrinsicWidth;
 		
+		//update playback times and duration
 		establishMediaTimeline();
 		
+		//refresh the layout
 		invalidateLayout();
 		
+		//start listening to loading event, as it begins
+		//as soon as the metadata are loaded
 		onProgressTick();
 	}
 	
@@ -903,14 +901,18 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function onTimeUpdateTick():Void
 	{
+		//stop dispatching time updates if the
+		//media is paused
 		if (_paused == true)
 		{
 			return;
 		}
 		
+		//update playback position
 		_currentPlaybackPosition = _nativeMedia.currentTime;
 		_officialPlaybackPosition = _currentPlaybackPosition;
 		
+		//check if the end of the media is reached
 		if (Math.round(_currentPlaybackPosition) >= Math.round(_duration))
 		{
 			_ended = true;
@@ -918,13 +920,22 @@ class HTMLMediaElement extends EmbeddedElement
 			return;
 		}
 		
+		//if the media has not ended playing, dispatch a time update
+		//event, then set this method to be called again 
 		fireEvent(Event.TIME_UPDATE, false, false);
 		
+		#if (flash9 || nme)
 		Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
+		#end
 	}
 	
+	/**
+	 * Called at a regular frequency whild the media is
+	 * being loaded
+	 */
 	private function onProgressTick():Void
 	{
+		//check if all of the media has been loaded
 		if (_nativeMedia.bytesLoaded >= _nativeMedia.bytesTotal)
 		{
 			setReadyState(HAVE_ENOUGH_DATA);
@@ -934,9 +945,14 @@ class HTMLMediaElement extends EmbeddedElement
 			
 			return;
 		}
+		
+		//if not all of the media has been loaded, dispatch
+		//a progress event and set this method to be called again
 		fireEvent(Event.PROGRESS, false, false);
 		
+		#if (flash9 || nme)
 		Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
+		#end
 	}
 	
 	/////////////////////////////////
@@ -945,20 +961,20 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function get_src():String 
 	{
-		return getAttribute(HTML_SRC_ATTRIBUTE);
+		return getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME);
 	}
 	
 	private function set_src(value:String):String 
 	{
 		//TODO 2 : awkward to call super, but else infinite loop
-		super.setAttribute(HTML_SRC_ATTRIBUTE, value);
+		super.setAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME, value);
 		loadResource();
 		return value;
 	}
 	
 	private function get_autoplay():Bool
 	{
-		if (getAttribute(HTML_AUTOPLAY_ATTRIBUTE) != null)
+		if (getAttribute(HTMLConstants.HTML_AUTOPLAY_ATTRIBUTE_NAME) != null)
 		{
 			return true;
 		}
@@ -971,13 +987,13 @@ class HTMLMediaElement extends EmbeddedElement
 	private function set_autoplay(value:Bool):Bool
 	{
 		//TODO 2 : awkward to call super, but else infinite loop
-		super.setAttribute(HTML_AUTOPLAY_ATTRIBUTE, Std.string(value));
+		super.setAttribute(HTMLConstants.HTML_AUTOPLAY_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}
 	
 	private function get_loop():Bool
 	{
-		if (getAttribute(HTML_LOOP_ATTRIBUTE) != null)
+		if (getAttribute(HTMLConstants.HTML_LOOP_ATTRIBUTE_NAME) != null)
 		{
 			return true;
 		}
@@ -990,13 +1006,57 @@ class HTMLMediaElement extends EmbeddedElement
 	private function set_loop(value:Bool):Bool
 	{
 		//TODO 2 : awkward to call super, but else infinite loop
-		super.setAttribute(HTML_LOOP_ATTRIBUTE, Std.string(value));
+		super.setAttribute(HTMLConstants.HTML_LOOP_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}
 	
 	/////////////////////////////////
 	// GETTER/SETTER
 	////////////////////////////////
+	
+	private function get_muted():Bool
+	{
+		return _muted;
+	}
+	
+	private function set_muted(value:Bool):Bool
+	{
+		//update the volume of the native media
+		//if sound is no longer muted
+		if (value == false)
+		{
+			_nativeMedia.volume = _volume;
+		}
+		//muting consist on setting volume of native
+		//media to 0
+		else
+		{
+			_nativeMedia.volume = 0;
+		}
+		
+		_muted = value;
+		fireEvent(Event.VOLUME_CHANGE, false, false);
+		
+		return _muted;
+	}
+	
+	private function set_volume(value:Float):Float
+	{
+		if (_muted == false)
+		{
+			_nativeMedia.volume = value;
+		}
+		
+		_volume = value;
+		fireEvent(Event.VOLUME_CHANGE, false, false);
+		
+		return _volume;
+	}
+	
+	private function get_volume():Float
+	{
+		return _volume;
+	}
 	
 	private function get_buffered():TimeRanges
 	{

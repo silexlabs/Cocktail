@@ -10,6 +10,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.port.nme;
 
 import cocktail.core.NativeElement;
+import cocktail.core.style.ComputedStyle;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import haxe.Log;
@@ -107,7 +108,7 @@ class FontManager extends AbstractFontManager
 	/**
 	 * Create and return a flash text field
 	 */
-	override public function createNativeTextElement(text:String, computedStyle:ComputedStyleData):NativeElement
+	override public function createNativeTextElement(text:String, computedStyle:ComputedStyle):NativeElement
 	{
 		text = applyTextTransform(text, computedStyle.textTransform);
 		var textField:flash.text.TextField = new flash.text.TextField();
@@ -169,7 +170,7 @@ class FontManager extends AbstractFontManager
 	 * Return a flash TextFormat object, to be
 	 * used on the created Text Field
 	 */
-	private function getTextFormat(computedStyle:ComputedStyleData):TextFormat
+	private function getTextFormat(computedStyle:ComputedStyle):TextFormat
 	{
 		
 		var textFormat:TextFormat = new TextFormat();

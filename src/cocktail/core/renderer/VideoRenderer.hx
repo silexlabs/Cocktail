@@ -11,7 +11,6 @@ import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLVideoElement;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
-import flash.display.DisplayObjectContainer;
 
 /**
  * Renders an embedded video asset
@@ -77,7 +76,7 @@ class VideoRenderer extends EmbeddedBoxRenderer
 		
 		#if (flash9 || nme)
 		
-		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext);
+		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		containerGraphicContext.addChild(htmlVideoElement.embeddedAsset);
 		
 		//add the x and y offset for the video

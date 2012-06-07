@@ -37,24 +37,6 @@ import haxe.Timer;
 class HTMLDocument extends Document
 {
 	/**
-	 * special HTML tags
-	 */
-	
-	private static inline var HTML_IMAGE_ELEMENT_TAG_NAME:String = "img";
-	
-	private static inline var HTML_INPUT_ELEMENT_TAG_NAME:String = "input";
-	
-	private static inline var HTML_ANCHOR_ELEMENT_TAG_NAME:String = "a";
-	
-	private static inline var HTML_HTML_TAG_NAME:String = "html";
-	
-	private static inline var HTML_BODY_TAG_NAME:String = "body";
-	
-	private static inline var HTML_VIDEO_TAG_NAME:String = "video";
-	
-	private static inline var HTML_SOURCE_TAG_NAME:String = "source";
-	
-	/**
 	 * key code listened to by the Document
 	 */
 	
@@ -101,23 +83,59 @@ class HTMLDocument extends Document
 	private var _hoveredElementRenderer:ElementRenderer;
 	
 	/**
+	 * Returns true if document has the ability
+	 * to display elements fullscreen, or false otherwise.
+	 */
+	public var fullscreenEnabled(get_fullscreenEnabled, never):Bool;
+	
+	/**
+	 * Returns the element that is displayed fullscreen,
+	 * or null if there is no such element.
+	 */
+	private var _fullscreenElement:HTMLElement;
+	public var fullscreenElement(get_fullscreenElement, set_fullscreenElement):HTMLElement;
+	
+	/**
+	 * Callback listened to by the Window object
+	 * to enter fullscreen mode when needed using
+	 * platform specific API
+	 */
+	private var _onEnterFullscreen:Void->Void;
+	public var onEnterFullscreen(get_onEnterFullscreen, set_onEnterFullscreen):Void->Void;
+	
+	/**
+	 * Callback listened to by the Window object
+	 * to exit fullscreen mode when needed using
+	 * platform specific API
+	 */
+	private var _onExitFullscreen:Void->Void;
+	public var onExitFullscreen(get_onExitFullscreen, set_onExitFullscreen):Void->Void;
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new() 
 	{
 		super();
 		
-		_body = cast(createElement(HTML_BODY_TAG_NAME));
-		_body.attach();
-		
-		_documentElement = createElement(HTML_HTML_TAG_NAME);
+		_documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
+		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
 		_documentElement.appendChild(_body);
-		
 		_focusManager = new FocusManager();
-		_activeElement = _body;
-		
+	}
+	
+	/**
+	 * Init the body element of the document and the attributes
+	 * depending on it. Set as public so that the body element
+	 * can be reset if the inner HTML of thr whole document
+	 * changes
+	 */
+	public function initBody(htmlBodyElement:HTMLBodyElement):Void
+	{
+		_body = htmlBodyElement;
+		_body.attach();
 		_hoveredElementRenderer = _body.elementRenderer;
-		
+		_activeElement = _body;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -134,25 +152,25 @@ class HTMLDocument extends Document
 		
 		switch (tagName.toLowerCase())
 		{
-			case HTML_IMAGE_ELEMENT_TAG_NAME:
+			case HTMLConstants.HTML_IMAGE_TAG_NAME:
 				element = new HTMLImageElement();
 				
-			case HTML_INPUT_ELEMENT_TAG_NAME:
+			case HTMLConstants.HTML_INPUT_TAG_NAME:
 				element = new HTMLInputElement();
 				
-			case HTML_ANCHOR_ELEMENT_TAG_NAME:
+			case HTMLConstants.HTML_ANCHOR_TAG_NAME:
 				element = new HTMLAnchorElement();
 				
-			case HTML_HTML_TAG_NAME:
+			case HTMLConstants.HTML_HTML_TAG_NAME:
 				element = new HTMLHtmlElement(); 
 				
-			case HTML_BODY_TAG_NAME:
+			case HTMLConstants.HTML_BODY_TAG_NAME:
 				element = new HTMLBodyElement();
 				
-			case HTML_VIDEO_TAG_NAME:
+			case HTMLConstants.HTML_VIDEO_TAG_NAME:
 				element = new HTMLVideoElement();
 				
-			case HTML_SOURCE_TAG_NAME:
+			case HTMLConstants.HTML_SOURCE_TAG_NAME:
 				element = new HTMLSourceElement();
 				
 			default:
@@ -261,7 +279,7 @@ class HTMLDocument extends Document
 	public function onPlatformMouseMoveEvent(mouseEvent:MouseEvent):Void
 	{
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
-		
+
 		if (_hoveredElementRenderer != elementRendererAtPoint)
 		{
 			var mouseOutEvent:MouseEvent = new MouseEvent();
@@ -277,7 +295,7 @@ class HTMLDocument extends Document
 			mouseOverEvent.initMouseEvent(MouseEvent.MOUSE_OVER, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
 			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, oldHoveredElementRenderer.node);
 			
-			elementRendererAtPoint.dispatchEvent(mouseOverEvent);
+			elementRendererAtPoint.node.dispatchEvent(mouseOverEvent);
 		}
 		
 		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
@@ -329,6 +347,106 @@ class HTMLDocument extends Document
 	public function onPlatformResizeEvent(event:UIEvent):Void
 	{
 		_body.invalidateLayout();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// FULLSCREEN METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Stops any elements within document
+	 * from being displayed fullscreen.
+	 * 
+	 * TODO 5 : implementation doesn't respect
+	 * w3c spec, but spec still in early stages
+	 */
+	public function exitFullscreen():Void
+	{
+		//do nothing if no element is on fullscreen
+		//currently
+		if (_fullscreenElement == null)
+		{
+			return;
+		}
+		
+		_fullscreenElement = null;
+		
+		//call the callback, so that the Window
+		//object can exit fullscreen using platform
+		//specific API
+		if (_onExitFullscreen != null)
+		{
+			_onExitFullscreen();
+		}
+		
+		//fire a fullscreen event
+		var fullscreenEvent:Event = new Event();
+		fullscreenEvent.initEvent(Event.FULL_SCREEN_CHANGE, true, false);
+	}
+	
+	/**
+	 * TODO 5 : always true for now, as it
+	 * is always supported by the flash target
+	 */
+	private function get_fullscreenEnabled():Bool
+	{
+		return true;
+	}
+	
+	private function get_fullscreenElement():HTMLElement
+	{
+		return _fullscreenElement;
+	}
+	
+	/**
+	 * start fullscreen mode
+	 * 
+	 * TODO 5 : implementation doesn't respect
+	 * w3c spec, but spec still in early stages
+	 */
+	private function set_fullscreenElement(value:HTMLElement):HTMLElement
+	{
+		//do nothing if already in fullscreen mode
+		if (_fullscreenElement != null)
+		{
+			return _fullscreenElement;
+		}
+		
+		_fullscreenElement = value;
+		
+		//call enter fullscreen callbakc, so that
+		//Window can enter fullscreen using platform
+		//specific API
+		if (_onEnterFullscreen != null)
+		{
+			_onEnterFullscreen();
+		}
+		
+		//fire fullscreen event
+		var fullscreenEvent:Event = new Event();
+		fullscreenEvent.initEvent(Event.FULL_SCREEN_CHANGE, true, false);
+		
+		return _fullscreenElement = value;
+	}
+	
+	private function set_onEnterFullscreen(value:Void->Void):Void->Void
+	{
+		return _onEnterFullscreen = value;
+	}
+	
+	private function get_onEnterFullscreen():Void->Void
+	{
+		return _onEnterFullscreen;
+	}
+	
+	private function set_onExitFullscreen(value:Void->Void):Void->Void
+	{
+		return _onExitFullscreen = value;
+	}
+	
+	private function get_onExitFullscreen():Void->Void
+	{
+		return _onExitFullscreen;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

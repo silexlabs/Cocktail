@@ -167,7 +167,7 @@ class InlineFormattingContext extends FormattingContext
 			//context
 			else if (child.establishesNewFormattingContext() == true)
 			{
-				//TODO : where should those value be set ?
+				//TODO 2 : where should those value be set ?
 				child.bounds.width = child.coreStyle.computedStyle.width;
 				child.bounds.height = child.coreStyle.computedStyle.height;
 				

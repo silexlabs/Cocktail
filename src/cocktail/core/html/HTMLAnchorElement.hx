@@ -44,11 +44,6 @@ class HTMLAnchorElement extends HTMLElement
 	public static inline var TARGET_TOP:String = "_top";
 	
 	/**
-	 * the html tag name for the anchor
-	 */
-	private static inline var HTML_ANCHOR_TAG_NAME:String = "a";
-	
-	/**
 	 * The absolute URI of the linked resource.
 	 * This attribute specifies the location of a Web resource, thus defining
 	 * a link between the current element (the source anchor)
@@ -69,7 +64,7 @@ class HTMLAnchorElement extends HTMLElement
 	 */
 	public function new() 
 	{
-		super(HTML_ANCHOR_TAG_NAME);
+		super(HTMLConstants.HTML_ANCHOR_TAG_NAME);
 		_target = TARGET_SELF;
 	}
 	

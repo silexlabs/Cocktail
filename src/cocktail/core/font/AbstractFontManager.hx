@@ -12,6 +12,7 @@ package cocktail.core.font;
 import cocktail.core.font.FontData;
 import cocktail.core.FontLoader;
 import cocktail.core.NativeElement;
+import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.StyleData;
 
 /**
@@ -141,7 +142,7 @@ class AbstractFontManager
 	 * and the styles that were computed for
 	 * this text
 	 */
-	public function createNativeTextElement(text:String, computedStyle:ComputedStyleData):NativeElement
+	public function createNativeTextElement(text:String, computedStyle:ComputedStyle):NativeElement
 	{
 		throw ("Virtual method should be implemented in sub class");
 		return null;
