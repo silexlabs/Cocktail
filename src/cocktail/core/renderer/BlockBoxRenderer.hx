@@ -72,6 +72,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private var _isUpdatingScroll:Bool;
 	
 	/**
+	 * flasg set when replacing inline children by anonymous block
+	 * to prevent inifinite loot caused by calls to appendChild
+	 */
+	private var _isMakingChildrenNonInline:Bool;
+	
+	/**
 	 * class constructor.
 	 * Init class attributes
 	 */
@@ -80,11 +86,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		super(node);
 		
 		_isUpdatingScroll = false;
+		_isMakingChildrenNonInline = false;
 		
 		_scrollLeft = 0;
 		_scrollTop = 0;
-		
-		
 		
 		_scrollableBounds = {
 			x:0.0,
@@ -97,87 +102,61 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private var _isMakingChildrenNonInline:Bool;
 
+	/**
+	 * Overriden to replace inline children by anonymous block if
+	 * necessary
+	 */
 	override public function appendChild(newChild:Node):Node
 	{
-		
+		//flag determining wether inline children must be wrapped
+		//in anonymous block
 		var shouldMakeChildrenNonInline:Bool = false;
+		
 		var elementRendererChild:ElementRenderer = cast(newChild);
 	
+		//if this is the first child, no need to wrap inline block
+		//as it not yet known wether this block box starts an inline
+		//formatting context or participates/establishes a block
+		//formatting context
 		if (_childNodes.length > 0)
 		{
+			//if the new child is doesn't match the display of the oter children,
+			///for instance if it is the first inline while all the other
+			//children are block, all the inline children should be wrapped
 			if (elementRendererChild.isInlineLevel() != childrenInline())
 			{
 				shouldMakeChildrenNonInline = true;
 			}
 		}
 		
+		//TODO 3 : is this check useful ?
 		if (elementRendererChild.isAnonymousBlockBox() == true)
 		{
 			shouldMakeChildrenNonInline = false;
 		}
 		
+		//append the new child
 		super.appendChild(newChild);
 		
+		//make all children non inline if necessary
 		if (shouldMakeChildrenNonInline == true)
 		{	
+			//check the flag to prevent infinite loop,
+			//as makeChildrenNonInline itself call the 
+			//appendChild method
 			if (_isMakingChildrenNonInline == false)
 			{
 				_isMakingChildrenNonInline = true;
 				makeChildrenNonInline();
 				_isMakingChildrenNonInline = false;
 			}
-			
-			
 		}
 	
 		return newChild;
 	}
 	
-	private function makeChildrenNonInline():Void
-	{
-		
-		
-		var newChildNodes:Array<ElementRenderer> = new Array<ElementRenderer>();
-		
-		var i:Int = _childNodes.length -1;
-		while( i >= 0)
-		{
-			var child:ElementRenderer = cast(_childNodes[i]);
-			
-			if (child.isInlineLevel() == true)
-			{
-				var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock(child);
-				newChildNodes.push(anonymousBlock);
-			}
-			else
-			{
-				newChildNodes.push(child);
-			}
-			
-			i--;
-			
-		}
-		newChildNodes.reverse();
-		
-		for (i in 0...newChildNodes.length)
-		{
-			appendChild(newChildNodes[i]);
-		}
-		
-	}
-	
-	private function createAnonymousBlock(child:ElementRenderer):AnonymousBlockBoxRenderer
-	{
-		var anonymousBlock:AnonymousBlockBoxRenderer = new AnonymousBlockBoxRenderer(_node);
-		anonymousBlock.appendChild(child);
-		//TODO 1 : should node use _node, as it sets the default styles of the nodename
-		anonymousBlock.coreStyle = new CoreStyle(new HTMLElement("div"));
-		
-		return anonymousBlock;
-	}
+
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING METHODS
@@ -233,6 +212,72 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			renderBlockReplacedChildren(graphicContext, relativeOffset);
 			renderLineBoxes(graphicContext, relativeOffset);
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE ANONYMOUS BLOCK METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * This method is called when all the inline children of this block
+	 * box should be wrapped in anonymous block. It is done to preserve
+	 * the invariant in CSS where all the children of a block box must
+	 * either all be block or must all be inline. Wrapping inline children
+	 * makes all the children blocks
+	 */
+	private function makeChildrenNonInline():Void
+	{
+		//will store all the current block children and the newly created
+		//anonymous block, in order and will replace the current child nodes array
+		var newChildNodes:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		//loop in the child nodes in reverse order, as the child nodes
+		//array will be modified during this loop
+		var i:Int = _childNodes.length -1;
+		while( i >= 0)
+		{
+			var child:ElementRenderer = cast(_childNodes[i]);
+			
+			//for inline children, create an anonymous block, and attach the child to it
+			if (child.isInlineLevel() == true)
+			{
+				//TODO 2 : only 1 anonymous block should be created for contiguous
+				//inline elements
+				
+				var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock(child);
+				newChildNodes.push(anonymousBlock);
+			}
+			else
+			{
+				newChildNodes.push(child);
+			}
+			
+			i--;
+		}
+		
+		//must reverse as the child nodes where
+		//looped in reverse order
+		newChildNodes.reverse();
+		
+		//attach all the block children and the newly
+		//created anonymous block box
+		for (i in 0...newChildNodes.length)
+		{
+			appendChild(newChildNodes[i]);
+		}
+	}
+	
+	/**
+	 * create an anonymous block and append an inline child to it
+	 */ 
+	private function createAnonymousBlock(child:ElementRenderer):AnonymousBlockBoxRenderer
+	{
+		var anonymousBlock:AnonymousBlockBoxRenderer = new AnonymousBlockBoxRenderer(_node);
+		anonymousBlock.appendChild(child);
+		//TODO 1 : should node use _node, as it sets the default styles of the nodename
+		anonymousBlock.coreStyle = new CoreStyle(new HTMLElement("div"));
+		
+		return anonymousBlock;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
