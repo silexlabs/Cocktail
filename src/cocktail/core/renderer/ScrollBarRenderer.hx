@@ -39,6 +39,14 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	}
 	
 	/**
+	 * Scrollbar are always considered block level elements
+	 */
+	override public function isInlineLevel():Bool
+	{
+		return false;
+	}
+	
+	/**
 	 * scrollbars always establishes new stacking context
 	 */
 	override public function establishesNewStackingContext():Bool

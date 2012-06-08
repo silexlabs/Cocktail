@@ -246,6 +246,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				
 				var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock(child);
 				newChildNodes.push(anonymousBlock);
+				trace(child);
 			}
 			else
 			{
