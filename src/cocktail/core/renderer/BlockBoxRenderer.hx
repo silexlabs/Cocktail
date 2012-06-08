@@ -555,7 +555,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		for ( i in 0...root.childNodes.length)
 		{
 			var child:ElementRenderer = cast(root.childNodes[i]);
-			if (child.computedStyle.position == fixed)
+			if (child.computedStyle.position == fixed || child.isScrollBar())
 			{
 				child.scroll(scrollX, scrollY);
 			}
