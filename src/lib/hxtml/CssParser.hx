@@ -143,6 +143,13 @@ class CssParser<DisplayObjectType> {
 				default:	
 			}
 			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMarginLeftZero(d);
+				return true;
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -172,6 +179,13 @@ class CssParser<DisplayObjectType> {
 				default:	
 			}
 			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMarginRightZero(d);
+				return true;
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -192,6 +206,13 @@ class CssParser<DisplayObjectType> {
 						default:
 					}	
 				default:	
+			}
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMarginTopZero(d);
+				return true;
 			}
 			
 			//case label (auto)
@@ -282,6 +303,7 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 		case "padding-left":
+			
 			var i:Null<ValueObject> = getValueObject(v);
 			if( i != null ) { s.setPaddingLeft(d, i.value, i.unit); return true; }
 		case "padding-right":
@@ -420,6 +442,8 @@ class CssParser<DisplayObjectType> {
 				s.setBgColorKey(d, i);
 				return true;
 			default:
+				trace(v);
+				return true;
 			}
 		case "background-repeat":
 			// TODO: multiple URLs

@@ -3,7 +3,6 @@ package lib.hxtml;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 
-//TODO 1 : lib shouldn't be in another classpath
 import lib.hxtml.Browser;
 import cocktail.Lib;
 import cocktail.Dom;
