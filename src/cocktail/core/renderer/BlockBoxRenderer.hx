@@ -133,12 +133,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//TODO 3 : is this check useful ?
 		if (elementRendererChild.isAnonymousBlockBox() == true)
 		{
-			shouldMakeChildrenNonInline = false;
+			//shouldMakeChildrenNonInline = false;
 		}
-		
 		//append the new child
 		super.appendChild(newChild);
-		
 		//make all children non inline if necessary
 		if (shouldMakeChildrenNonInline == true)
 		{	
@@ -235,13 +233,17 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		while( i >= 0)
 		{
 			var child:ElementRenderer = cast(_childNodes[i]);
+
+			if (child.firstChild != null)
+			{
+				var  fs:ElementRenderer = cast(child.firstChild);
+			}
 			
 			//for inline children, create an anonymous block, and attach the child to it
 			if (child.isInlineLevel() == true)
 			{
 				//TODO 2 : only 1 anonymous block should be created for contiguous
 				//inline elements
-				
 				var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock(child);
 				newChildNodes.push(anonymousBlock);
 			}
@@ -270,8 +272,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */ 
 	private function createAnonymousBlock(child:ElementRenderer):AnonymousBlockBoxRenderer
 	{
-		var anonymousBlock:AnonymousBlockBoxRenderer = new AnonymousBlockBoxRenderer(_node);
+		var anonymousBlock:AnonymousBlockBoxRenderer = new AnonymousBlockBoxRenderer(new HTMLElement("div"));
 		anonymousBlock.appendChild(child);
+
 		//TODO 1 : should node use _node, as it sets the default styles of the nodename
 		anonymousBlock.coreStyle = new CoreStyle(new HTMLElement("div"));
 		

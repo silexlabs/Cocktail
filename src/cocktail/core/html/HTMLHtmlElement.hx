@@ -12,6 +12,8 @@ import cocktail.core.renderer.LayerRenderer;
 /**
  * Root of an HTML document
  * 
+ * TODO 1 : should create HEAD htmlElement which doesnt render
+ * 
  * @author Yannick DOMINGUEZ
  */
 class HTMLHtmlElement extends HTMLElement

@@ -577,7 +577,7 @@ class HTMLElement extends Element
 	private function getNextElementRendererSibling():ElementRenderer
 	{
 		var nextSibling:HTMLElement = cast(nextSibling);
-		
+					
 		if (nextSibling == null)
 		{
 			return null;
@@ -588,6 +588,14 @@ class HTMLElement extends Element
 			{
 				if (nextSibling.elementRenderer != null)
 				{
+					var elementRenderParent:ElementRenderer = cast(nextSibling.elementRenderer.parentNode);
+					
+					//in the case where the parent of the next sibling's elementRenderer is an 
+					//anonymous block, the anonymous block should be return as sibling
+					if (elementRenderParent.isAnonymousBlockBox() == true)
+					{
+						return elementRenderParent;
+					}
 					return cast(nextSibling.elementRenderer);
 				}
 				
@@ -616,16 +624,7 @@ class HTMLElement extends Element
 	 */
 	private function detachFromParentElementRenderer():Void
 	{
-		try {
-			_elementRenderer.parentNode.removeChild(_elementRenderer);
-		}
-		catch (e:Dynamic)
-		{
-			trace(this);
-			trace(get_nodeName());
-			trace(_parentNode);
-		}
-		
+		_elementRenderer.parentNode.removeChild(_elementRenderer);
 	}
 	
 	/**
@@ -1157,7 +1156,7 @@ class HTMLElement extends Element
 		//remove the first and last tag, as they correspond to this HTMLElement
 		//tag which should not be returned as its inner html
 		str = str.substr(str.indexOf(">") + 1 , str.lastIndexOf("<") - str.indexOf(">") - 1);
-
+		
 		return str;
 	}
 	

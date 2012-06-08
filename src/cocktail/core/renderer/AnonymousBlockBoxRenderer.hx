@@ -30,10 +30,9 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 	
 	override public function removeChild(oldChild:Node):Node
 	{
-		super.removeChild(oldChild);
 		
+		super.removeChild(oldChild);
 		//TODO 4 : check if works
-	
 		_parentNode.removeChild(this);
 		
 		return oldChild;

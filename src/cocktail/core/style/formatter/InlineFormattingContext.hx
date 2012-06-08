@@ -74,7 +74,6 @@ class InlineFormattingContext extends FormattingContext
 	override private function doFormat(staticPositionedElement:ElementRenderer = null):Void
 	{
 		super.doFormat(staticPositionedElement);
-		
 		_unbreakableLineBoxes = new Array<LineBox>();
 		startFormat(staticPositionedElement);
 		
@@ -98,7 +97,7 @@ class InlineFormattingContext extends FormattingContext
 		formatLine(rootLineBoxes[rootLineBoxes.length - 1], true);
 		
 		_formattingContextRoot.lineBoxes = rootLineBoxes;
-		
+
 		//apply formatting height to formatting context root if auto height
 		if (_formattingContextRoot.coreStyle.height == Dimension.cssAuto)
 		{
@@ -112,7 +111,7 @@ class InlineFormattingContext extends FormattingContext
 		for (i in 0...elementRenderer.childNodes.length)
 		{
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
-			
+
 			//here the child is an inline box renderer, which will create one line box for each
 			//line its children are in
 			if (child.hasChildNodes() == true && child.establishesNewFormattingContext() == false)
