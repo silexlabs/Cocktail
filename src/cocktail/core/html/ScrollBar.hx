@@ -111,13 +111,13 @@ class ScrollBar extends HTMLElement
 	{
 		_isVertical = isVertical;
 		
-		super("");
+		super(HTMLConstants.HTML_DIV_TAG_NAME);
 		
 		//create through factory method so they can have a reference
 		//to the Document
-		_scrollThumb = Lib.document.createElement("div");
-		_upArrow = Lib.document.createElement("div");
-		_downArrow = Lib.document.createElement("div");
+		_scrollThumb = Lib.document.createElement(HTMLConstants.HTML_DIV_TAG_NAME);
+		_upArrow = Lib.document.createElement(HTMLConstants.HTML_DIV_TAG_NAME);
+		_downArrow = Lib.document.createElement(HTMLConstants.HTML_DIV_TAG_NAME);
 	
 		_scroll = 0;
 		_maxScroll = 0;

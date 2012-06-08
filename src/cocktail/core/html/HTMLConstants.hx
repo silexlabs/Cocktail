@@ -30,6 +30,8 @@ class HTMLConstants
 	
 	public static inline var HTML_SOURCE_TAG_NAME:String = "source";
 	
+	public static inline var HTML_DIV_TAG_NAME:String = "div";
+	
 	//attributes names
 	
 	public static inline var HTML_ID_ATTRIBUTE_NAME:String = "id";
