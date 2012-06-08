@@ -221,13 +221,12 @@ class Node extends EventCallback
 			//throw DOMException.WRONG_DOCUMENT_ERR;
 		//}
 		//
-
 		
 		removeFromParentIfNecessary(newChild);
 		
 		newChild.parentNode = this;
 		_childNodes.push(newChild);
-
+	
 		return newChild;
 	}
 	

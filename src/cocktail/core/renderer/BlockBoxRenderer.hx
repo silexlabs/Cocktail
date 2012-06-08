@@ -98,13 +98,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * overriden as when an ElementRenderer is appended, its LayerRenderer
-	 * must be attached so that it can be rendered
-	 */
+	private var _isMakingChildrenNonInline:Bool;
+
 	override public function appendChild(newChild:Node):Node
 	{
-	
+		
 		var shouldMakeChildrenNonInline:Bool = false;
 		var elementRendererChild:ElementRenderer = cast(newChild);
 	
@@ -125,8 +123,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (shouldMakeChildrenNonInline == true)
 		{	
-			//makeChildrenNonInline();
-		
+			if (_isMakingChildrenNonInline == false)
+			{
+				_isMakingChildrenNonInline = true;
+				makeChildrenNonInline();
+				_isMakingChildrenNonInline = false;
+			}
+			
 			
 		}
 	
@@ -135,68 +138,43 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	private function makeChildrenNonInline():Void
 	{
-		for (i in 0..._childNodes.length)
+		
+		
+		var newChildNodes:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		var i:Int = _childNodes.length -1;
+		while( i >= 0)
 		{
 			var child:ElementRenderer = cast(_childNodes[i]);
-
+			
 			if (child.isInlineLevel() == true)
 			{
-				
-				
-				var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock();
-				
-				replaceChild(anonymousBlock, child);
-				anonymousBlock.appendChild(child);
-				
-				
+				var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock(child);
+				newChildNodes.push(anonymousBlock);
 			}
-		}
-		
-	}
-	
-	override public function insertBefore(newChild:Node, refChild:Node):Node
-	{
-		if (refChild == null)
-		{
-			appendChild(newChild);
-		}
-		else
-		{
-			
-			for (i in 0..._childNodes.length)
+			else
 			{
-				var child:ElementRenderer = cast(_childNodes[i]);
-	
-				if (_childNodes[i] == refChild)
-				{
-					
-					appendChild(newChild);
-				}
-				else if (child.isAnonymousBlockBox() == true)
-				{
-					if (child.firstChild != null)
-					{
-						if (child.firstChild == refChild)
-						{
-							appendChild(newChild);
-						}
-					}
-				}
-				
-				appendChild(child);
+				newChildNodes.push(child);
 			}
+			
+			i--;
+			
+		}
+		newChildNodes.reverse();
+		
+		for (i in 0...newChildNodes.length)
+		{
+			appendChild(newChildNodes[i]);
 		}
 		
-		
-		
-		return newChild;
 	}
 	
-	private function createAnonymousBlock():AnonymousBlockBoxRenderer
+	private function createAnonymousBlock(child:ElementRenderer):AnonymousBlockBoxRenderer
 	{
 		var anonymousBlock:AnonymousBlockBoxRenderer = new AnonymousBlockBoxRenderer(_node);
-		
-		anonymousBlock.coreStyle = new CoreStyle(cast(_node));
+		anonymousBlock.appendChild(child);
+		//TODO 1 : should node use _node, as it sets the default styles of the nodename
+		anonymousBlock.coreStyle = new CoreStyle(new HTMLElement("div"));
 		
 		return anonymousBlock;
 	}
@@ -1188,8 +1166,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * overriden as a block box renderer might be rendered as if
 	 * establishing stacking context, based on its computed styles
 	 * value
-	 * 
-	 * TODO 2 : should be on BoxRenderer instead ?
 	 */
 	override private function rendersAsIfEstablishingStackingContext():Bool
 	{

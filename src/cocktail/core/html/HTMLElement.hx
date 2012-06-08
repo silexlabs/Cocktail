@@ -1057,16 +1057,6 @@ class HTMLElement extends Element
 			removeChild(_childNodes[0]);	
 		}
 		
-		//do nothing if its an empty string
-		//
-		//TODO 2 : mostly done because hxtml throw
-		//error. Method shouldn't return here but
-		//hxtml should return null Node
-		if (value == "")
-		{
-			return value;
-		}
-		
 		//wrap the HTML String in a div element, else
 		//when creating the html node, only the first 
 		//node content is deserialized and not its
@@ -1076,6 +1066,13 @@ class HTMLElement extends Element
 		wrappedHTML += "</div>";
 		
 		var node:HTMLElement = doSetInnerHTML(Parser.parse(wrappedHTML).firstElement());
+		
+		//the returned node might be null for instance, if 
+		//only an empty string was provided
+		if (node == null)
+		{
+			return value;
+		}
 		
 		//append all children of the generated node
 		for (i in 0...node.childNodes.length)
@@ -1161,7 +1158,7 @@ class HTMLElement extends Element
 	 * 
 	 * Returns all the children serialised data as an Xml
 	 * 
-	 * TODO 5 : should serialize other type of nodes, such as comment node,
+	 * TODO 5 : should serialize other type of nodes, such as
 	 * doctype...
 	 */
 	private function doGetInnerHTML(node:Node, xml:Xml):Xml
