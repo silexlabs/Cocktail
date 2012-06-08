@@ -317,9 +317,7 @@ class Event
 		_type = null;
 		_bubbles = false;
 		_cancelable = false;
-		
-		//TODO 5 : should it be 0 instead ?
-		_eventPhase = Event.CAPTURING_PHASE;
+		_eventPhase = 0;
 	}
 	
 	/**

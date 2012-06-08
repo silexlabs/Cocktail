@@ -31,8 +31,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	//TODO 2 : test opacity
+
 	/**
 	 * When rendered, renders the embedded picture using the
 	 * graphicContext as canvas
@@ -46,7 +45,6 @@ class ImageRenderer extends EmbeddedBoxRenderer
 		
 		htmlImageElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + relativeOffset.x;
 		htmlImageElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + relativeOffset.y;
-		htmlImageElement.embeddedAsset.alpha = computedStyle.opacity;
 		htmlImageElement.embeddedAsset.width = _coreStyle.computedStyle.width;
 		htmlImageElement.embeddedAsset.height = _coreStyle.computedStyle.height;
 		

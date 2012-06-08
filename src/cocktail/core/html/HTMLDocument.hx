@@ -462,9 +462,8 @@ class HTMLDocument extends Document
 	{
 		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
 		
-		
-		//TODO 2 : quick fix, when no element is under mouse, return the body,
-		//but is it supposed to be nul ever ? -> yes, when mouse leave document
+		//when no element is under mouse like for instance when the mouse leaves
+		//the window, return the body
 		if (elementRendererAtPoint == null)
 		{
 			return _body.elementRenderer;
