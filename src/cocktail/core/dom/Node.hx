@@ -250,14 +250,25 @@ class Node extends EventCallback
 		}
 		else
 		{	
-			for (i in 0..._childNodes.length)
+			//will store the new child nodes with the newly inserted one
+			var newChildNodes:Array<Node> = new Array<Node>();
+			
+			for (i in 0...childNodes.length)
 			{
 				if (_childNodes[i] == refChild)
 				{
-					appendChild(newChild);
+					newChildNodes.push(newChild);
 				}
-				appendChild(_childNodes[i]);
+				newChildNodes.push(_childNodes[i]);
 			}
+			
+			//the child are appended after the first loop to prevent
+			//from modifying the child node array while looping
+			for (i in 0...newChildNodes.length)
+			{
+				appendChild(newChildNodes[i]);
+			}
+			
 		}
 		
 		return newChild;

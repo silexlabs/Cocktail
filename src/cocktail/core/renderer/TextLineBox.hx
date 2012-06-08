@@ -59,7 +59,6 @@ class TextLineBox extends LineBox
 		#if (flash9 || nme)
 		_nativeElement.x = _bounds.x + _elementRenderer.globalContainingBlockOrigin.x + relativeOffset.x;
 		_nativeElement.y = _bounds.y + _elementRenderer.globalContainingBlockOrigin.y + relativeOffset.y + leadedAscent;
-	
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		containerGraphicContext.addChild(_nativeElement);
 		#end
