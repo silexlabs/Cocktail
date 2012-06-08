@@ -17,6 +17,7 @@ import cocktail.core.style.CoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
+import cocktail.core.renderer.RendererData;
 import haxe.Timer;
 
 
@@ -678,6 +679,35 @@ class ElementRenderer extends Node
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	public function invalidate(invalidationReason:InvalidationReason, immediate:Bool):Void
+	{
+		
+	}
+	
+	public function childrenInvalidated(invalidationReason:InvalidationReason, immediate:Bool):Void
+	{
+		
+	}
+	
+	public function positionedChildrenInvalidated(invalidationReason:InvalidationReason, immediate:Bool):Void
+	{
+		
+	}
+	
+	private function getContainingBlock():BlockBoxRenderer
+	{
+		return null;
+		if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			//return getFirstPositionedAncestor();
+		}
+		else
+		{
+			//TODO 1
+			return null;
+		}
+	}
 	
 	/**
 	 * Called when the value of a style that require

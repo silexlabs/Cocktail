@@ -133,7 +133,7 @@ class HTMLDocument extends Document
 	public function initBody(htmlBodyElement:HTMLBodyElement):Void
 	{
 		_body = htmlBodyElement;
-		_body.attach();
+		_documentElement.appendChild(_body);
 		_hoveredElementRenderer = _body.elementRenderer;
 		_activeElement = _body;
 	}

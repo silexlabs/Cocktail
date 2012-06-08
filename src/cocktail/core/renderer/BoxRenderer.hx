@@ -45,12 +45,23 @@ import haxe.Log;
  */
 class BoxRenderer extends ElementRenderer
 {
+	
+	private var _needsLayout:Bool;
+	
+	private var _normalChildrenNeedsLayout:Bool;
+	
+	private var _positionedChildrenNeedsLayout:Bool;
+	
 	/**
 	 * class constructor
 	 */
 	public function new(node:Node) 
 	{
 		super(node);
+		
+		_needsLayout = true;
+		_normalChildrenNeedsLayout = true;
+		_positionedChildrenNeedsLayout = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

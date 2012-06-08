@@ -26,6 +26,10 @@ import haxe.Timer;
  * 
  * TODO 3 : update doc
  * 
+ * TODO 1 IMPORTANT : thisclass actually represents the viewport,
+ * the HTMLBodyElement should be a standard BlockBoxRenderer and
+ * the initialBlockRenderer should be its parent
+ * 
  * @author Yannick DOMINGUEZ
  */
 class InitialBlockRenderer extends BlockBoxRenderer
@@ -292,20 +296,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	override private function getContainerBlockData():ContainingBlockData
 	{
-		var windowData:ContainingBlockData = getWindowData();
-		
-		windowData.width -= computedStyle.marginLeft + computedStyle.marginRight;
-		windowData.height -= computedStyle.marginTop + computedStyle.marginBottom;
-		
-		return windowData;
-	}
-	
-	/**
-	 * The initial ElementRenderer is always a block container
-	 */
-	override public function isInlineLevel():Bool
-	{
-		return false;
+		return getWindowData();
 	}
 	
 	/**
@@ -335,12 +326,9 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		var width:Float = containerBlockData.width;
 		var height:Float = containerBlockData.height;
 		
-		var x:Float = computedStyle.marginLeft;
-		var y:Float = computedStyle.marginTop;
-		
 		return {
-			x:x,
-			y:y,
+			x:0.0,
+			y:0.0,
 			width:width,
 			height:height
 		};
@@ -352,7 +340,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	override private function get_globalBounds():RectangleData
 	{
-		return get_bounds();
+		return bounds;
 	}
 	
 }

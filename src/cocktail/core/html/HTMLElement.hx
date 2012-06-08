@@ -616,7 +616,16 @@ class HTMLElement extends Element
 	 */
 	private function detachFromParentElementRenderer():Void
 	{
-		_elementRenderer.parentNode.removeChild(_elementRenderer);
+		try {
+			_elementRenderer.parentNode.removeChild(_elementRenderer);
+		}
+		catch (e:Dynamic)
+		{
+			trace(this);
+			trace(get_nodeName());
+			trace(_parentNode);
+		}
+		
 	}
 	
 	/**
