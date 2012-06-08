@@ -156,8 +156,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return newChild;
 	}
 	
-
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -246,7 +244,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				
 				var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock(child);
 				newChildNodes.push(anonymousBlock);
-				trace(child);
 			}
 			else
 			{
@@ -468,15 +465,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// OVERRIDEN PUBLIC VISUAL EFFECT METHODS
 	////////////////////////////////
 	
-	//TODO 1 : this method should be called in each render() method, if the ElementRenderer
-	//is a BlockBoxRenderer call this, else check if scroll offset must be removed, like for 
-	//fixed elements. Method Render should have additional scrollOffset arg
+	//TODO 2 : doc
 	override public function scroll(x:Float, y:Float):Void
 	{
 		super.scroll(x, y);
-		//TODO 1 IMPORTANT: big hack but will do for now
-		//TODO 1 : doesn't work for zindex auto positioned elements, as they don't
-		//have a graphic context of their own
 		//TODO 2 : should be applied to every positioned element whose
 		//containing block is a parent of the root renderer.
 		//Add a public method on ElementRenderer ?
@@ -504,8 +496,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			
 			_graphicsContext.scrollRect = new flash.geom.Rectangle(x , y, width + globalBounds.x, height + globalBounds.y);
 			#end
-			
-			scrollChildren(x, y);
+			scrollChildren(this, x, y);
 		}
 		
 	}
@@ -557,13 +548,21 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	
-	
-	private function scrollChildren(scrollX:Float, scrollY:Float):Void
+	//TODO 1 : hack to make fixed positioned element displayed correctly when in a
+	//a scrolled container. For some reason, don't work for auto z-index positioned element
+	private function scrollChildren(root:ElementRenderer, scrollX:Float, scrollY:Float):Void
 	{
-		for ( i in 0..._childNodes.length)
+		for ( i in 0...root.childNodes.length)
 		{
-			var child:ElementRenderer = cast(_childNodes[i]);
-			child.scroll(scrollX, scrollY);
+			var child:ElementRenderer = cast(root.childNodes[i]);
+			if (child.computedStyle.position == fixed)
+			{
+				child.scroll(scrollX, scrollY);
+			}
+			else if (child.hasChildNodes() == true )
+			{
+				scrollChildren(child, scrollX, scrollY);
+			}
 		}
 	}
 	

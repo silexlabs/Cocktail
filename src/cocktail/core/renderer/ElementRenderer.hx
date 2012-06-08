@@ -420,11 +420,10 @@ class ElementRenderer extends Node
 	{
 		if (computedStyle.position == fixed)
 		{
-			
 			#if (flash9 || nme)
 			{
-				_graphicsContext.x -= x;
-				_graphicsContext.y -= y;
+				_graphicsContext.x = x;
+				_graphicsContext.y = y;
 			}
 			#end
 		}
