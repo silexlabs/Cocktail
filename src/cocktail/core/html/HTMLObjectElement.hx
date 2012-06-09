@@ -21,7 +21,8 @@ import cocktail.core.resource.ImageLoader;
  * Eventually, when a ResourceManager is done, this class might be used
  * to display any type of embedded content
  * 
- * TODO 1 : this is pretty much the same code as HTMLImageElement for now
+ * TODO 1 : this is pretty much the same code as HTMLImageElement for now, comments
+ * have not been updated either
  * 
  * @author Yannick DOMINGUEZ
  */

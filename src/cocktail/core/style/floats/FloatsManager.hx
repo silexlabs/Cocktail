@@ -12,13 +12,15 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
+import cocktail.core.geom.GeomData;
 import haxe.Log;
 
 /**
- * This class is in charge of keeping track of the 
- * floats currently affecting layout and exposes
- * method to help the formatting context to apply
- * floats to the layout.
+ * For a given formatting context, keeps
+ * track of the floated elements currently
+ * affecting layout and exposes method for
+ * the formatting context to retrieve those
+ * floated elements
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -38,8 +40,8 @@ class FloatsManager
 	 */
 	public function new() 
 	{
-		var floatsLeft:Array<FloatData> = new Array<FloatData>();
-		var floatsRight:Array<FloatData> = new Array<FloatData>();
+		var floatsLeft:Array<RectangleData> = new Array<RectangleData>();
+		var floatsRight:Array<RectangleData> = new Array<RectangleData>();
 	
 		_floats = {
 			left:floatsLeft,
@@ -59,30 +61,30 @@ class FloatsManager
 	 * Empties the cleared floats array(s)
 	 * 
 	 * @param	clear the type of clearance (left, right or both)
-	 * @param	formattingContextData used to compute the new formattingContextData y position
-	 * @return  the new formattingContextData y position
+	 * @param	currentFormattingContextY used to compute the new formatting context y position
+	 * @return  the new formatting context y position
 	 */
-	public function clearFloat(clear:Clear, formattingContextData:FormattingContextData):Int
+	public function clearFloat(clear:Clear, currentFormattingContextY:Float):Float
 	{
-		var ret:Int;
+		var ret:Float;
 		
 		switch(clear)
 		{
 			case left:
-				ret = clearLeft(formattingContextData);
-				_floats.left = new Array<FloatData>();
+				ret = clearLeft(currentFormattingContextY);
+				_floats.left = new Array<RectangleData>();
 				
 			case right:
-				ret = clearRight(formattingContextData);
-				_floats.right = new Array<FloatData>();
+				ret = clearRight(currentFormattingContextY);
+				_floats.right = new Array<RectangleData>();
 				
 			case both:	
-				ret = clearBoth(formattingContextData);
-				_floats.right = new Array<FloatData>();
-				_floats.left = new Array<FloatData>();
+				ret = clearBoth(currentFormattingContextY);
+				_floats.right = new Array<RectangleData>();
+				_floats.left = new Array<RectangleData>();
 			
 			case none:
-				ret = formattingContextData.y;
+				ret = currentFormattingContextY;
 		}
 		
 		return ret;
@@ -91,26 +93,26 @@ class FloatsManager
 	/**
 	 * Clear left floats
 	 */
-	private function clearLeft(formattingContextData:FormattingContextData):Int
+	private function clearLeft(currentFormattingContextY:Float):Float
 	{
-		return doClearFloat(formattingContextData, _floats.left);
+		return doClearFloat(currentFormattingContextY, _floats.left);
 	}
 	
 	/**
 	 * Clear right floats
 	 */
-	private function clearRight(formattingContextData:FormattingContextData):Int
+	private function clearRight(currentFormattingContextY:Float):Float
 	{
-		return doClearFloat(formattingContextData, _floats.right);
+		return doClearFloat(currentFormattingContextY, _floats.right);
 	}
 	
 	/**
 	 * Clear right and left floats
 	 */
-	private function clearBoth(formattingContextData:FormattingContextData):Int
+	private function clearBoth(currentFormattingContextY:Float):Float
 	{
-		var leftY:Int = doClearFloat(formattingContextData, _floats.left);
-		var rightY:Int = doClearFloat(formattingContextData, _floats.right);
+		var leftY:Float = doClearFloat(currentFormattingContextY, _floats.left);
+		var rightY:Float = doClearFloat(currentFormattingContextY, _floats.right);
 		
 		if (leftY > rightY)
 		{
@@ -125,19 +127,19 @@ class FloatsManager
 	/**
 	 * Actually clears a set of float (right or left). Finds the highest
 	 * float among the cleared float and return its height + y as the new
-	 * formattingContextData y position
+	 * formatting context y position
 	 * 
-	 * @param formattingContextData the current formattingContextData, its y value is returned if there are no 
+	 * @param currentFormattingContextY the current formatting context y position, this value is returned if there are no 
 	 * floats to clear
 	 * @param floats an array of floats to clear (right or left)
 	 */
-	private function doClearFloat(formattingContextData:FormattingContextData, floats:Array<FloatData>):Int
+	private function doClearFloat(currentFormattingContextY:Float, floats:Array<RectangleData>):Float
 	{
 		//if there are floats in the array, finds the highest one
 		//and return its value
 		if (floats.length > 0)
 		{
-			var highestFloat:FloatData = floats[0];
+			var highestFloat:RectangleData = floats[0];
 			
 			for (i in 0...floats.length)
 			{
@@ -154,7 +156,7 @@ class FloatsManager
 		//no floats are cleared
 		else
 		{
-			return formattingContextData.y;
+			return currentFormattingContextY;
 		}
 	}
 	
@@ -167,26 +169,25 @@ class FloatsManager
 	/**
 	 * Create and store a float data structure from a floated HTMLElement
 	 * @param	htmlElement the floated HTMLElement
-	 * @param	formattingContextData the flow data of the formatting context placing the floated
-	 * HTMLElement
+	 * @param	currentFormattingContextY the current y position of the formatting context
 	 * 
 	 * TODO 5 : shouldn't need a ref to HTMLElement
 	 */
-	public function computeFloatData(elementRenderer:ElementRenderer, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
+	public function registerFloat(elementRenderer:ElementRenderer, currentFormattingContextY:Float, currentFormattingContextX:Float, containingBlockWidth:Float):RectangleData
 	{
-		var ret:FloatData;
+		var ret:RectangleData;
 		
 		switch (elementRenderer.coreStyle.computedStyle.cssFloat)
 		{
 			case left:
-				ret = getLeftFloatData(elementRenderer, formattingContextData, containingBlockWidth);
+				ret = getLeftFloatData(elementRenderer, currentFormattingContextY, currentFormattingContextX, containingBlockWidth);
 				_floats.left.push(ret);
 				
 			case right:
-				ret = getRightFloatData(elementRenderer, formattingContextData, containingBlockWidth);
+				ret = getRightFloatData(elementRenderer, currentFormattingContextY, currentFormattingContextX, containingBlockWidth);
 				_floats.right.push(ret);
 				
-			default:
+			case none:
 				ret = null;
 		}
 		
@@ -198,10 +199,10 @@ class FloatsManager
 	 * 
 	 * TODO 5 : shouldn't need ref to html element
 	 */
-	private function getLeftFloatData(elementRenderer:ElementRenderer, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
+	private function getLeftFloatData(elementRenderer:ElementRenderer, currentFormattingContextY:Float, currentFormattingContextX:Float, containingBlockWidth:Float):RectangleData
 	{
 		//get float data except for x position
-		var floatData:FloatData = getFloatData(elementRenderer, formattingContextData, containingBlockWidth);
+		var floatData:RectangleData = getFloatData(elementRenderer, currentFormattingContextY, currentFormattingContextX, containingBlockWidth);
 		
 		//a left float is placed to right of all the preceding left float
 		//which are on the same line as this one
@@ -213,10 +214,10 @@ class FloatsManager
 	/**
 	 * Create a float data structure for a right float
 	 */
-	private function getRightFloatData(elementRenderer:ElementRenderer, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
+	private function getRightFloatData(elementRenderer:ElementRenderer, currentFormattingContextY:Float, currentFormattingContextX:Float, containingBlockWidth:Float):RectangleData
 	{
 		//get float data except for x position
-		var floatData:FloatData = getFloatData(elementRenderer, formattingContextData, containingBlockWidth);
+		var floatData:RectangleData = getFloatData(elementRenderer, currentFormattingContextY, currentFormattingContextX, containingBlockWidth);
 		
 		//a right float is placed to the left of all the preceding right float which
 		//are on the same line
@@ -229,20 +230,20 @@ class FloatsManager
 	 * Create a generic float data structure which can be applied to both
 	 * left and right float
 	 */
-	private function getFloatData(elementRenderer:ElementRenderer, formattingContextData:FormattingContextData, containingBlockWidth:Int):FloatData
+	private function getFloatData(elementRenderer:ElementRenderer, currentFormattingContextY:Float, currentFormattingContextX:Float, containingBlockWidth:Float):RectangleData
 	{
 		//a float width and height use the margin box of a
 		//HTMLElement
 		
 		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
-		var floatWidth:Int = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
-		var floatHeight:Int = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+		var floatWidth:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
+		var floatHeight:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	
 		//get the first y position where the float can be placed
-		var floatY:Int = getFirstAvailableY(formattingContextData, floatWidth, containingBlockWidth);
+		var floatY:Float = getFirstAvailableY(currentFormattingContextY, floatWidth, containingBlockWidth);
 		
 		//the x position of the float vary for left and right float
-		var floatX:Int = 0;
+		var floatX:Float = 0.0;
 	
 		return {
 			x: floatX,
@@ -256,17 +257,17 @@ class FloatsManager
 	 * Get the first y position in the current flow where an element
 	 * (float or HTMLElement) with a width equal to elementWidth can be inserted
 	 * without overlapping floats or other HTMLElements
-	 * @param	formattingContextData the current formattingContextData
+	 * @param	currentFormattingContextY the current formatting context y position
 	 * @param	elementWidth the width of the element that must be inserted
 	 * @param	containingBlockWidth the maximum available width in a line
 	 * @return  the y position where the element can be inserted
 	 */
-	public function getFirstAvailableY(formattingContextData:FormattingContextData, elementWidth:Int, containingBlockWidth:Int):Int
+	public function getFirstAvailableY(currentFormattingContextY:Float, elementWidth:Float, containingBlockWidth:Float):Float
 	{
 		//the y position default to the current y position
 		//in the case where the element can be immediately inserted
 		//in the flow
-		var retY:Int = formattingContextData.y;
+		var retY:Float = currentFormattingContextY;
 		
 		//loop while there isn't enough horizontal space at the current y position to insert the
 		//element
@@ -274,7 +275,7 @@ class FloatsManager
 		{
 			//stores all the floats situated at the same height or after
 			//the current y position
-			var afterFloats:Array<FloatData> = new Array<FloatData>();
+			var afterFloats:Array<RectangleData> = new Array<RectangleData>();
 			
 			//stores the relevant left floats
 			for (i in 0..._floats.left.length)
@@ -310,7 +311,7 @@ class FloatsManager
 				//start with an "infinite" number, that will store
 				//the offset between the bottom of the closest float
 				//and the current y position
-				var nextY:Int = 1000000;
+				var nextY:Float = 1000000;
 				//and loop in all the floats to find the
 				//one closest to the current y position
 				for (i in 0...afterFloats.length)
@@ -344,7 +345,7 @@ class FloatsManager
 	 * Removes the float that are above the current flow
 	 * @param	flowY the y position of the current flow
 	 */
-	public function removeFloats(flowY:Int):Void
+	public function removeFloats(flowY:Float):Void
 	{
 		_floats.left = doRemoveFloat(_floats.left, flowY);
 		_floats.right = doRemoveFloat(_floats.right, flowY);
@@ -354,10 +355,10 @@ class FloatsManager
 	 * Do removes the floats among an array of floats (left or right)
 	 * which are above the current y flow
 	 */
-	private function doRemoveFloat(floats:Array<FloatData>, flowY:Int):Array<FloatData>
+	private function doRemoveFloat(floats:Array<RectangleData>, flowY:Float):Array<RectangleData>
 	{
-		var newFloats:Array<FloatData> = new Array<FloatData>();
-		
+		var newFloats:Array<RectangleData> = new Array<RectangleData>();
+
 		for (i in 0...floats.length)
 		{
 			//if a floats y position + its height is superior to the flow,
@@ -381,9 +382,9 @@ class FloatsManager
 	 * line was drawn at the y position.
 	 * 
 	 */
-	public function getRightFloatOffset(y:Int, containingWidth:Int):Int
+	public function getRightFloatOffset(y:Float, containingWidth:Float):Float
 	{
-		var rightFloatOffset:Int = 0;
+		var rightFloatOffset:Float = 0;
 		
 		//loop in all right floats
 		for (i in 0..._floats.right.length)
@@ -411,9 +412,9 @@ class FloatsManager
 	 * line was drawn at the y position.
 	 * 
 	 */
-	public function getLeftFloatOffset(y:Int):Int
+	public function getLeftFloatOffset(y:Float):Float
 	{
-		var leftFloatOffset:Int = 0;
+		var leftFloatOffset:Float = 0;
 		
 		//loop in all left floats
 		for (i in 0..._floats.left.length)

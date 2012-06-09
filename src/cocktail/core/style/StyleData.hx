@@ -1387,18 +1387,6 @@ import cocktail.core.renderer.TextRenderer;
 	 * formatting context
 	 */
 	typedef FloatsData = {
-		var left:Array<FloatData>;
-		var right:Array<FloatData>;
-	}
-	
-	/**
-	 * Represents the coordinates and
-	 * dimensions of the float in its
-	 * formatting context coordinate space
-	 */
-	typedef FloatData = {
-		var x:Int;
-		var y:Int;
-		var width:Int;
-		var height:Int;
+		var left:Array<RectangleData>;
+		var right:Array<RectangleData>;
 	}
