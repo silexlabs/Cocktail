@@ -291,7 +291,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	/**
 	 * The root of the runtime always starts a block formatting context
 	 */
-	override private function getFormattingContext(previousformattingContext:FormattingContext):FormattingContext
+	override private function getFormattingContext():FormattingContext
 	{
 		return new BlockFormattingContext(this);
 	}

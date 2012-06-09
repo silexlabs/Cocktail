@@ -319,10 +319,16 @@ class ElementRenderer extends Node
 	// PUBLIC LAYOUT METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	//TODO 1 : doc
+	public function format():Void
+	{
+		//abstract
+	}
+	
 	/*
 	 * Layout this ElementRenderer so that it knows its bounds and can be rendered to the screen
 	 */ 
-	public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData):Void
 	{	
 		//abstract
 	}

@@ -67,7 +67,7 @@ class FlowBoxRenderer extends BoxRenderer
 	/**
 	 * Lay out all the children of the ElementRenderer
 	 */
-	override private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	override private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData):Void
 	{
 		//compute all the styles of the children that will affect
 		//their layout (display, position, float, clear)
@@ -92,11 +92,6 @@ class FlowBoxRenderer extends BoxRenderer
 			}
 		}
 		
-		//The children of the ElementRenderer are laid out either
-		//using a new formatting context if this establishes a new one
-		//or it uses the current formatting context
-		var childrenFormattingContext:FormattingContext = getFormattingContext(formattingContext);
-		
 		//get the containing dimensions that will be used to lay out the children
 		//of the ElementRenderer (its width and height)
 		var childrenContainingBlockData:ContainingBlockData = getContainerBlockData();
@@ -117,14 +112,15 @@ class FlowBoxRenderer extends BoxRenderer
 		var childrenFirstPositionedAncestorData:FirstPositionedAncestorData = getChildrenFirstPositionedAncestorData(firstPositionedAncestorData);
 		
 		//actually layout all children
-		doLayoutChildren(childrenContainingBlockData, viewportData, childrenFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+		doLayoutChildren(childrenContainingBlockData, viewportData, childrenFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData);
 		
 		//if the width is defined as 'auto', it might need to 
 		//be computed to 'shrink-to-fit' (takes its content width)
 		//in some cases
 		if (this._coreStyle.width == Dimension.cssAuto)
 		{
-			shrinkToFitIfNeeded(containingBlockData, childrenFormattingContext.maxWidth, formattingContext, firstPositionedAncestorData, viewportData );
+			//TODO 1 : doesn't work anymore without children formatting context
+			//shrinkToFitIfNeeded(containingBlockData, childrenFormattingContext.maxWidth, formattingContext, firstPositionedAncestorData, viewportData );
 		}
 		//else it is already computed and is set on the bounds
 		//of tht ElementRenderer
@@ -155,7 +151,7 @@ class FlowBoxRenderer extends BoxRenderer
 			//at this point
 			if (establishesNewFormattingContext() == false)
 			{
-				childrenFormattingContext.format();
+				format();
 			}
 			
 			//TODO 2 : check if this intermediate method is actually useful, seems to be only
@@ -186,12 +182,12 @@ class FlowBoxRenderer extends BoxRenderer
 	 * Actually layout all the children of the ElementRenderer by calling
 	 * the layout method recursively on all the children
 	 */
-	private function doLayoutChildren(childrenContainingBlockData:ContainingBlockData, viewportData:ContainingBlockData, childFirstPositionedAncestorData:FirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData:FontMetricsData, childrenFormattingContext:FormattingContext):Void
+	private function doLayoutChildren(childrenContainingBlockData:ContainingBlockData, viewportData:ContainingBlockData, childFirstPositionedAncestorData:FirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData:FontMetricsData):Void
 	{			
 		for (i in 0..._childNodes.length)
 		{
 			var childElementRenderer:ElementRenderer = cast(_childNodes[i]);
-			childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData, childrenFormattingContext);
+			childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData);
 		}
 		
 		//prompt the children formatting context, to format all the children
@@ -204,7 +200,7 @@ class FlowBoxRenderer extends BoxRenderer
 		//meaning that it also is responsible of formatting it
 		if (establishesNewFormattingContext() == true)
 		{
-			childrenFormattingContext.format();
+			format();
 		}
 	}
 	
@@ -330,7 +326,7 @@ class FlowBoxRenderer extends BoxRenderer
 	 * by this HTMLElement which will be the minimum width that should
 	 * have this HTMLElement if it is shrinked to fit
 	 */
-	private function shrinkToFitIfNeeded(containingBlockData:ContainingBlockData, minimumWidth:Int, formattingContext:FormattingContext, firstPositionedAncestorData:FirstPositionedAncestorData, viewportData:ContainingBlockData):Void
+	private function shrinkToFitIfNeeded(containingBlockData:ContainingBlockData, minimumWidth:Int, firstPositionedAncestorData:FirstPositionedAncestorData, viewportData:ContainingBlockData):Void
 	{		
 		var shrinkedWidth:Int = _coreStyle.shrinkToFitIfNeeded(containingBlockData, minimumWidth, isReplaced());
 		
@@ -343,10 +339,9 @@ class FlowBoxRenderer extends BoxRenderer
 			this.computedStyle.width = shrinkedWidth;
 			
 			//update the structures used for the layout and starts a new layout
-			var childrenFormattingContext:FormattingContext = getFormattingContext(formattingContext);
 			var childrenContainingBlockData:ContainingBlockData = getContainerBlockData();
 			var childFirstPositionedAncestorData:FirstPositionedAncestorData = getChildrenFirstPositionedAncestorData(firstPositionedAncestorData);
-			doLayoutChildren(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, _coreStyle.fontMetrics, childrenFormattingContext);
+			doLayoutChildren(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, _coreStyle.fontMetrics);
 		}
 	}
 	
@@ -408,16 +403,5 @@ class FlowBoxRenderer extends BoxRenderer
 		}
 		
 		return childFirstPositionedAncestorData;
-	}
-	
-	/**
-	 * Return the right formatting context to layout this ElementRenderer's
-	 * children by either creating a new formatting context
-	 * or participating in the current . By default, it participates in the current
-	 * formatting context. Only block box can establish new formatting context
-	 */
-	private function getFormattingContext(currentFormattingContext:FormattingContext):FormattingContext
-	{
-		return currentFormattingContext;
 	}
 }

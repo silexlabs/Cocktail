@@ -204,9 +204,8 @@ class BoxRenderer extends ElementRenderer
 	 * it is the first positioned ancestor
 	 * @param   containingBlockFontMetricsData the font metrics of the containing block which might be necessary to compute some styles.
 	 * For instance, style defined with a length using the 'em' unit will refer to the computed font size of the containing block
-	 * @param	formattingContext The formatting context used by the containing block. Can be an inline or block formatting context.
 	 */
-	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData):Void
 	{	
 		//reset the computed styles, useful for instance to
 		//reset an auto height to 0 if a layout has already
@@ -222,7 +221,7 @@ class BoxRenderer extends ElementRenderer
 		_coreStyle.computeBoxModelStyles(getRelevantContainingBlockData(containingBlockData, viewportData,  firstPositionedAncestorData.data), isReplaced());
 		
 		//layout all the children of the ElementRenderer if it has any
-		layoutChildren(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
+		layoutChildren(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData);
 		
 		//when all the dimensions of the ElementRenderer are known, compute the 
 		//visual effects to apply (visibility, opacity, transform, transition)
@@ -282,7 +281,7 @@ class BoxRenderer extends ElementRenderer
 		
 		//layout all the HTMLElements. After that they all know their bounds relative to the containing
 		//blocks
-		layout(getContainerBlockData(), windowData, firstPositionedAncestorData, _coreStyle.fontMetrics, null);
+		layout(getContainerBlockData(), windowData, firstPositionedAncestorData, _coreStyle.fontMetrics);
 		//set the global bounds on the rendering tree. After that all the elements know their positions
 		//relative to the window
 		
@@ -443,7 +442,7 @@ class BoxRenderer extends ElementRenderer
 	/**
 	 * Lay out all the children of the ElementRenderer
 	 */
-	private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData):Void
 	{
 		//abstract
 	}

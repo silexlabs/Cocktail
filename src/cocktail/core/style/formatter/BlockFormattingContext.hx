@@ -56,7 +56,7 @@ class BlockFormattingContext extends FormattingContext
 
 			if (child.isFloat() == true)
 			{
-				var floatData = _floatsManager.registerFloat(child, concatenatedY, concatenatedX, _formattingContextRoot.computedStyle.width);
+				var floatData = _floatsManager.registerFloat(child, concatenatedY, concatenatedX, elementRenderer.computedStyle.width);
 				child.bounds = floatData;
 				continue;
 			}
@@ -64,12 +64,17 @@ class BlockFormattingContext extends FormattingContext
 			var marginTop:Int = getCollapsedMarginTop(child, parentCollapsedMarginTop);
 			var marginBottom:Int = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
 			
-			var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft;
-			var y:Float = concatenatedY + marginTop;
+			
 			var computedStyle:ComputedStyle = child.coreStyle.computedStyle;
 			var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 			var height:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 		
+			
+		//	concatenatedY = _floatsManager.getFirstAvailableY(concatenatedY, width, elementRenderer.computedStyle.width);
+
+			var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft;
+			var y:Float = concatenatedY + marginTop;
+			
 			child.bounds.x = x;
 			child.bounds.y = y;
 			child.bounds.width = width;

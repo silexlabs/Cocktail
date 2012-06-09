@@ -573,14 +573,19 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// OVERRIDEN PUBLIC LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	//TODO 1 : doc
+	override public function format():Void
+	{
+		getFormattingContext().format();
+	}
+	
 	/**
 	 * Overriden to deal with the scrollbars once the children of this
 	 * BlockBoxRenderer are laid out
 	 */
-	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData):Void
 	{	
-		
-		super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
+		super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData);
 		
 		_isLayingOut = true;
 
@@ -598,10 +603,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (isVerticalScrollAttached != (_verticalScrollBar != null) || isHorizontalScrollAttached != (_horizontalScrollBar != null) )
 		{
-			super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
+			super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData);
 		}
 		
-		layoutScrollBarsIfNecessary(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
+		layoutScrollBarsIfNecessary(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData);
 
 		_isLayingOut = false;
 		
@@ -612,7 +617,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	//TODO 4 : more complex thant it should
-	private function layoutScrollBarsIfNecessary(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	private function layoutScrollBarsIfNecessary(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData):Void
 	{
 		var horizontalScrollBarContainerBlockData = getContainerBlockData();
 		
@@ -1262,40 +1267,29 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		};
 	}
 	
-	/**
-	 * Return the right formatting context to layout this ElementRenderer's
-	 * children. Overriden as block box are the only sub class of ElementRenderer
-	 * which can establishe a new formatting context
-	 */
-	override private function getFormattingContext(previousformattingContext:FormattingContext):FormattingContext
-	{
-		var formattingContext:FormattingContext;
-		
-		//here, a new formatting context is created
-		if (establishesNewFormattingContext() == true)
-		{	
-			//instantiate the right formatting context
-			//based on the children computed display styles
-			if (childrenInline() == true)
-			{
-				formattingContext = new InlineFormattingContext(this);	
-			}
-			else
-			{
-				formattingContext = new BlockFormattingContext(this);
-			}
-		}
-		else
-		{
-			formattingContext = previousformattingContext;
-		}
-		
-		return formattingContext;
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return the right formatting context to layout this ElementRenderer's
+	 * children. Only BlockBoxRenderer can establish formatting context,
+	 * and they can be either block or inline formatting context baed on the
+	 * display of the children of the element
+	 */
+	private function getFormattingContext():FormattingContext
+	{
+		//instantiate the right formatting context
+		//based on the children computed display styles
+		if (childrenInline() == true)
+		{
+			return new InlineFormattingContext(this);	
+		}
+		else
+		{
+			return new BlockFormattingContext(this);
+		}
+	}
 	
 	/**
 	 * Utils method to return the containing block data
