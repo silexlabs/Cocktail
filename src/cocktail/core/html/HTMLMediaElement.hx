@@ -17,6 +17,7 @@ import cocktail.core.html.HTMLData;
  * such as video and audio
  * 
  * TODO 1 : implement loop
+ * TODO 1 : implement preload
  * 
  * @author Yannick DOMINGUEZ
  */

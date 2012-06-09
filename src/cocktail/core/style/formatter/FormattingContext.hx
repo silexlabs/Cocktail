@@ -105,6 +105,7 @@ class FormattingContext
 	 */
 	public function format():Void
 	{	
+		_floatsManager = new FloatsManager();
 		doFormat();
 	}
 	
@@ -132,7 +133,7 @@ class FormattingContext
 	 */
 	private function clearFloat(clear:Clear):Void
 	{
-		_floatsManager.clearFloat(clear, _formattingContextData);
+		_floatsManager.clearFloat(clear, _formattingContextData.y);
 	}
 	
 	/**

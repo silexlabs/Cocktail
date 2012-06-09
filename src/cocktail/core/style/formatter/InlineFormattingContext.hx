@@ -328,7 +328,7 @@ class InlineFormattingContext extends FormattingContext
 		
 				
 			//get the remaining available space on the current line
-			var remainingLineWidth:Int = getRemainingLineWidth();
+			var remainingLineWidth:Float = getRemainingLineWidth();
 			
 			//TODO : break opportunity is not supposed to always happen
 
@@ -494,7 +494,7 @@ class InlineFormattingContext extends FormattingContext
 	 * Return the width remaining in the current line
 	 * of the formatting context
 	 */
-	private function getRemainingLineWidth():Int
+	private function getRemainingLineWidth():Float
 	{
 		return _formattingContextRoot.coreStyle.computedStyle.width - _formattingContextData.x - 
 		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.coreStyle.computedStyle.width);
@@ -516,8 +516,8 @@ class InlineFormattingContext extends FormattingContext
 		//are substracted from the total available line width, and the x position where to 
 		//insert the first HTMLElement of the line, which might be influenced for instance
 		//by a float
-		var remainingSpace:Int;
-		var flowX:Int;
+		var remainingSpace:Float;
+		var flowX:Float;
 		
 		remainingSpace = _formattingContextRoot.coreStyle.computedStyle.width - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - 
 		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.coreStyle.computedStyle.width);
@@ -577,7 +577,7 @@ class InlineFormattingContext extends FormattingContext
 	 * 
 	 * @param	flowX the x position of the first HTMLElement
 	 */
-	private function alignLeft(flowX:Int, lineBox:LineBox):Int
+	private function alignLeft(flowX:Float, lineBox:LineBox):Float
 	{
 		flowX += lineBox.paddingLeft + lineBox.marginLeft;
 		
@@ -619,7 +619,7 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	remainingSpace the available width in the line box after all HTMLElements
 	 * have been laid out
 	 */
-	private function alignCenter(flowX:Int, remainingSpace:Int, lineBox:LineBox):Int
+	private function alignCenter(flowX:Float, remainingSpace:Float, lineBox:LineBox):Float
 	{
 		flowX += lineBox.marginLeft + lineBox.paddingLeft;
 		for (i in 0...lineBox.childNodes.length)
@@ -650,7 +650,7 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	remainingSpace the available width in the line box after all HTMLElements
 	 * have been laid out
 	 */
-	private function alignRight(flowX:Int, remainingSpace:Int, lineBox:LineBox):Int
+	private function alignRight(flowX:Float, remainingSpace:Float, lineBox:LineBox):Float
 	{
 		flowX += lineBox.marginLeft + lineBox.paddingLeft;
 		for (i in 0...lineBox.childNodes.length)
@@ -680,7 +680,7 @@ class InlineFormattingContext extends FormattingContext
 	 * @param	flowX
 	 * @param	remainingSpace
 	 */
-	private function alignJustify(flowX:Int, remainingSpace:Int, lineBox:LineBox, spacesInLine:Int):Void
+	private function alignJustify(flowX:Float, remainingSpace:Float, lineBox:LineBox, spacesInLine:Int):Void
 	{
 		for (i in 0...lineBox.childNodes.length)
 		{
