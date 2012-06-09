@@ -173,6 +173,9 @@ class HTMLDocument extends Document
 			case HTMLConstants.HTML_SOURCE_TAG_NAME:
 				element = new HTMLSourceElement();
 				
+			case HTMLConstants.HTML_OBJECT_TAG_NAME:
+				element = new HTMLObjectElement();
+				
 			default:
 				element = new HTMLElement(tagName);
 		}
