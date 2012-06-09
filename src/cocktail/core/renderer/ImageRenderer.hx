@@ -43,7 +43,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 		#if (flash9 || nme)
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		containerGraphicContext.addChild(htmlImageElement.embeddedAsset);
-		trace(htmlImageElement);
+		
 		htmlImageElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + relativeOffset.x;
 		htmlImageElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + relativeOffset.y;
 		htmlImageElement.embeddedAsset.width = _coreStyle.computedStyle.width;
