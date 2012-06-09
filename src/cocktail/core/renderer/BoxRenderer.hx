@@ -188,6 +188,8 @@ class BoxRenderer extends ElementRenderer
 	// OVERRIDEN PUBLIC LAYOUT METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	//TODO 1 : instead of containing block data, might instead pass reference to parentBlock, initialBlockRenderer and
+	//firstPositionnedAncesotrBlock ? This way, we can get ride of a lot of struct and complicated concept like firstpositionedancestordata
 	/**
 	 * This method is in charge of laying out an ElementRenderer which consist in computing its styles (box model, font, text...)
 	 * into usable values and determining its bounds in the space of the containing block which started its formatting context.
@@ -207,21 +209,17 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData):Void
 	{	
-		//reset the computed styles, useful for instance to
-		//reset an auto height to 0 if a layout has already
-		//occured which might create bugs in the computation of
-		//font and text styles which use the computed height value
-		_coreStyle.initComputedStyles();
-		
 		//compute all the styles of the ElementRenderer
-		_coreStyle.computeDisplayStyles();
+		//
+		//TODO 1 : styles which can be computed without any external data should be when their specified
+		//value changes instead of now, which is unecessary
 		_coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
 
 		//compute the box styles (width, height, margins, paddings...)
 		_coreStyle.computeBoxModelStyles(getRelevantContainingBlockData(containingBlockData, viewportData,  firstPositionedAncestorData.data), isReplaced());
 		
 		//layout all the children of the ElementRenderer if it has any
-		layoutChildren(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData);
+		layoutChildren(containingBlockData, viewportData, firstPositionedAncestorData);
 		
 		//when all the dimensions of the ElementRenderer are known, compute the 
 		//visual effects to apply (visibility, opacity, transform, transition)
@@ -248,6 +246,10 @@ class BoxRenderer extends ElementRenderer
 		
 		//insert the ElementRenderer in the absolutely positioned array if it is itself absolutely positioned
 		//so that it can be positioned by its first positioned ancestor once it is laid out
+		//
+		//TODO 1 : should instead a ref to the first positioned be passed and call a addPositionedChild method
+		//on it ? also will call a removePositionedChild on it when removed from DOM or position style changes
+		//TODO 1 : should do the same thing for floated element with the parentContainer or FormattingContextRoot
 		storeAbsolutelyPositionedChild(firstPositionedAncestorData);
 		
 		//The ElementRenderer has been laid out and can now be laid out again
@@ -442,7 +444,7 @@ class BoxRenderer extends ElementRenderer
 	/**
 	 * Lay out all the children of the ElementRenderer
 	 */
-	private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData):Void
+	private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData):Void
 	{
 		//abstract
 	}

@@ -102,6 +102,7 @@ class InlineFormattingContext extends FormattingContext
 		if (_formattingContextRoot.coreStyle.height == Dimension.cssAuto)
 		{
 			_formattingContextRoot.bounds.height = _formattingContextData.y  + _formattingContextRoot.coreStyle.computedStyle.paddingBottom ;
+			_formattingContextRoot.coreStyle.computedStyle.height = Math.round(_formattingContextRoot.bounds.height - _formattingContextRoot.coreStyle.computedStyle.paddingBottom  - _formattingContextRoot.coreStyle.computedStyle.paddingTop);
 		}
 	}
 	

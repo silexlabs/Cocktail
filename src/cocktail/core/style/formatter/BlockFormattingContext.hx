@@ -68,7 +68,7 @@ class BlockFormattingContext extends FormattingContext
 			var computedStyle:ComputedStyle = child.coreStyle.computedStyle;
 			var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 			var height:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
-		
+			
 			
 		//	concatenatedY = _floatsManager.getFirstAvailableY(concatenatedY, width, elementRenderer.computedStyle.width);
 
@@ -96,24 +96,24 @@ class BlockFormattingContext extends FormattingContext
 					concatenatedY += child.bounds.height + marginTop + marginBottom;
 				}
 			}
-				//for absolutely positioned element, their bounds are set to their static position
-				//but they do not influence the formatting of subsequent children or sibling
-				else if (child.isPositioned() == false || child.isRelativePositioned() == true)
-				{
-					concatenatedY += child.bounds.height + marginTop + marginBottom;
-				}
+			//for absolutely positioned element, their bounds are set to their static position
+			//but they do not influence the formatting of subsequent children or sibling
+			else if (child.isPositioned() == false || child.isRelativePositioned() == true)
+			{
+				concatenatedY += child.bounds.height + marginTop + marginBottom;
+			}
 			
-				//find widest line for shrink-to-fit algorithm
-				if (child.bounds.x + child.bounds.width + child.coreStyle.computedStyle.marginRight > _formattingContextData.maxWidth)
-				{
-					//TODO 2 : all formatting should use float
-					_formattingContextData.maxWidth = Math.round(child.bounds.x + child.bounds.width) + child.coreStyle.computedStyle.marginRight;
-				}
-				
-				if (concatenatedY  > _formattingContextData.maxHeight)
-				{
-					_formattingContextData.maxHeight = Math.round(concatenatedY);
-				}
+			//find widest line for shrink-to-fit algorithm
+			if (child.bounds.x + child.bounds.width + child.coreStyle.computedStyle.marginRight > _formattingContextData.maxWidth)
+			{
+				//TODO 2 : all formatting should use float
+				_formattingContextData.maxWidth = Math.round(child.bounds.x + child.bounds.width) + child.coreStyle.computedStyle.marginRight;
+			}
+			
+			if (concatenatedY  > _formattingContextData.maxHeight)
+			{
+				_formattingContextData.maxHeight = Math.round(concatenatedY);
+			}
 			
 		}
 		childHeight = concatenatedY - childHeight;
@@ -121,6 +121,7 @@ class BlockFormattingContext extends FormattingContext
 		if (elementRenderer.coreStyle.height == Dimension.cssAuto)
 		{
 			elementRenderer.bounds.height = childHeight + elementRenderer.coreStyle.computedStyle.paddingBottom + elementRenderer.coreStyle.computedStyle.paddingTop ;
+			elementRenderer.coreStyle.computedStyle.height = Math.round(childHeight);
 		}
 		
 		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingBottom + parentCollapsedMarginBottom;
@@ -212,4 +213,82 @@ class BlockFormattingContext extends FormattingContext
 		
 		return marginBottom;
 	}
+	
+	/////////////////////////////////////
+	// METHODS TO USE FOR SHRINK TO FIT AND COMPUTATION of absolutely 
+	// positioned formatting context root
+	///////////////////////////////////
+	
+		/**
+	 * if the width is set to 'auto', then this method is called and might shrink the
+	 * width of the HTMLElement to fit its content
+	 
+	override public function shrinkToFit(style:CoreStyle, containingBlockData:ContainingBlockData, minimumWidth:Int):Int
+	{
+		var shrinkedWidth:Int;
+		
+		//shrink-to-fit only happen if either left or right is auto
+		if (style.left == PositionOffset.cssAuto || style.right == PositionOffset.cssAuto)
+		{
+			var computedStyle:ComputedStyle = style.computedStyle;
+			//compute the shrinked width
+			shrinkedWidth = doShrinkToFit(style, containingBlockData, minimumWidth);
+
+			//if both right and left are auto, use left static position, then deduce right
+			if (style.left == PositionOffset.cssAuto && style.right == PositionOffset.cssAuto)
+			{
+				style.computedStyle.left = getComputedStaticLeft(style, containingBlockData);
+				style.computedStyle.right = containingBlockData.width - computedStyle.marginLeft - computedStyle.marginRight - shrinkedWidth - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left;
+			}
+			//if only right is auto, compute left then deduce right
+			else if (style.right == PositionOffset.cssAuto)
+			{
+				style.computedStyle.left = getComputedPositionOffset(style.left, containingBlockData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+				style.computedStyle.right = containingBlockData.width - computedStyle.marginLeft - computedStyle.marginRight - shrinkedWidth - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left;
+			}
+			//same for left
+			else if (style.left == PositionOffset.cssAuto)
+			{
+				style.computedStyle.right = getComputedPositionOffset(style.right, containingBlockData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+				style.computedStyle.left = containingBlockData.width - computedStyle.marginLeft - computedStyle.marginRight - shrinkedWidth - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.right;
+			}
+		}
+		//here the width is not shrinked
+		else
+		{
+			shrinkedWidth = style.computedStyle.width;
+		}
+		
+		//constrain width before returning it
+		shrinkedWidth = constrainWidth(style, shrinkedWidth);
+		
+		return shrinkedWidth;
+	}
+	
+	/**
+	 * Overriden as in some cases, depending on the specified value of
+	 * top and bottom style, the height used value might not be the children
+	 * height of the HTMLElement
+	
+	override public function applyContentHeight(style:CoreStyle, containingBlockData:ContainingBlockData, childrenHeight:Int):Int
+	{
+		var height:Int;
+		
+		//if neither top and bottom are auto, then height can be computed using all the other vertical dimensions
+		if (style.top != PositionOffset.cssAuto && style.bottom != PositionOffset.cssAuto)
+		{
+			var computedStyle:ComputedStyle = style.computedStyle;
+			height = containingBlockData.height - computedStyle.top - computedStyle.bottom - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.marginTop - computedStyle.marginBottom;
+		}
+		else
+		{
+			height = childrenHeight;
+		}
+		
+		//constrain height before returning it
+		height = constrainHeight(style, height);
+		
+		return height;
+	}
+	 */
 }

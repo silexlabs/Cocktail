@@ -84,34 +84,6 @@ class BoxStylesComputer
 		//Those dimensions are now enough to layout each of the HTMLElement's children.
 		//If the parent's height of this HTMLElement is set to 'auto', it will use the
 		//computed dimensions of this HTMLElement to compute its own height.
-		 
-	}
-	
-	/**
-	 * Shrink the width a HTMLElement to fit its content. Doesn't apply to a
-	 * non-replaced block so return the current width
-	 * @param	style
-	 * @param	containingBlockData
-	 * @param	minimumWidth the minimum width of the HTMLElement if shrinked, corresponding 
-	 * to its content width
-	 * @return
-	 */
-	public function shrinkToFit(style:CoreStyle, containingBlockData:ContainingBlockData, minimumWidth:Int):Int
-	{
-		return style.computedStyle.width;
-	}
-	
-	/**
-	 * Return the height that should be used when the 'height' of a ContainerHTMLElement is specified
-	 * as 'auto'. The default behaviour is to use the total height of its children
-	 * @param	style
-	 * @param	cotainingHTMLElementData
-	 * @param	childrenHeight
-	 * @return
-	 */
-	public function applyContentHeight(style:CoreStyle, cotainingHTMLElementData:ContainingBlockData, childrenHeight:Int):Int
-	{
-		return childrenHeight;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
