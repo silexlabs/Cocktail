@@ -71,10 +71,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		//only detach the LayerRenderer if this ElementRenderer
 		//created it, else it will be detached by the ElementRenderer
 		//which created it when detached
-
-			
-		
-		
 		_layerRenderer = null;
 	}
 	

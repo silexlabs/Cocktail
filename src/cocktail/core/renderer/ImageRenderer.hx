@@ -8,6 +8,7 @@
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
+import cocktail.core.html.EmbeddedElement;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
@@ -38,11 +39,11 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	 */
 	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
 	{
-		var htmlImageElement:HTMLImageElement = cast(_node);
+		var htmlImageElement:EmbeddedElement = cast(_node);
 		#if (flash9 || nme)
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		containerGraphicContext.addChild(htmlImageElement.embeddedAsset);
-		
+		trace(htmlImageElement);
 		htmlImageElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + relativeOffset.x;
 		htmlImageElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + relativeOffset.y;
 		htmlImageElement.embeddedAsset.width = _coreStyle.computedStyle.width;
