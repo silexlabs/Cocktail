@@ -623,40 +623,6 @@ class CoreStyle
 		boxComputer.measure(this, containingBlockDimensions);
 	}
 	
-	/**
-	 * In most cases, when the height of a HTMLElement
-	 * is 'auto', its computed height become the total height
-	 * of its in flow children, computed once all its
-	 * children have been laid out 
-	 * 
-	 * @param	childrenHeight the total height of the children once laid out
-	 */
-	public function applyContentHeightIfNeeded(containingBlockDimensions:ContainingBlockData, childrenHeight:Int, isReplaced:Bool):Int
-	{		
-		var boxComputer:BoxStylesComputer = getBoxStylesComputer(isReplaced);		
-		return boxComputer.applyContentHeight(this, containingBlockDimensions, childrenHeight);
-	}
-	
-	/**
-	 * In certain cases, when the width of the HTMLElement is 'auto',
-	 * its computed value is 'shrink-to-fit' meaning that it will take either
-	 * the width of the widest line formed by its children or the width of its
-	 * container if the children overflows
-	 * 
-	 * If the width of this HTMLElement is indeed shrinked, all
-	 * its children are laid out again
-	 * 
-	 * @param	containingBlockData
-	 * @param	minimumWidth the width of the widest line of children laid out
-	 * by this HTMLElement which will be the minimum width that should
-	 * have this HTMLElement if it is shrinked to fit
-	 */
-	public function shrinkToFitIfNeeded(containingBlockData:ContainingBlockData, minimumWidth:Int, isReplaced:Bool):Int
-	{		
-		var boxComputer:BoxStylesComputer = getBoxStylesComputer(isReplaced);
-		return boxComputer.shrinkToFit(this, containingBlockData, minimumWidth);
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE COMPUTING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////

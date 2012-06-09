@@ -33,28 +33,4 @@ class InlineBlockBoxStylesComputer extends BoxStylesComputer
 	{
 		return 0;
 	}
-	
-	/**
-	 * if the width is set to 'auto', then this method is called once all the children
-	 * of the inlineBlock are laid out
-	 */
-	override public function shrinkToFit(style:CoreStyle, containingBlockData:ContainingBlockData, minimumWidth:Int):Int
-	{
-		var shrinkedWidth:Int;
-		
-		//if the minimum width that must use the inlineBlock
-		//is not superior to the width of the containing
-		//HTMLElement, use the minimum width
-		if (minimumWidth < containingBlockData.width)
-		{
-			shrinkedWidth = minimumWidth;
-		}
-		else
-		{
-			shrinkedWidth = containingBlockData.width;
-		}
-		
-		return shrinkedWidth;
-	}
-	
 }
