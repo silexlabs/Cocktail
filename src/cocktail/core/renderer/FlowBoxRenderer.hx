@@ -120,9 +120,23 @@ class FlowBoxRenderer extends BoxRenderer
 		//This method is only called if a new formatting
 		//context was established by this ElementRenderer,
 		//meaning that it also is responsible of formatting it
-		if (establishesNewFormattingContext() == true)
+		//
+		//TODO 1 : doc
+		if (establishesNewFormattingContext() == true )
 		{
-			format();
+			if (isPositioned() == true && isRelativePositioned() == false)
+			{
+				format();
+			}
+			else if (isFloat() == true)
+			{
+				trace("format float");
+				format();
+			}
+			else if (childrenInline() == false)
+			{
+				format();
+			}
 		}
 	}
 	

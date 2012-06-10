@@ -39,8 +39,7 @@ class BlockFormattingContext extends FormattingContext
 	override private function doFormat(staticPositionedElement:ElementRenderer = null):Void
 	{
 		//remove margin of formatting context, as child must be placed relative to padding box
-		doFormat2(_formattingContextRoot, - _formattingContextRoot.coreStyle.computedStyle.marginLeft, - _formattingContextRoot.coreStyle.computedStyle.marginTop, staticPositionedElement,  _formattingContextRoot.coreStyle.computedStyle.marginTop,  _formattingContextRoot.coreStyle.computedStyle.marginBottom);	
-
+		doFormat2(_formattingContextRoot, - _formattingContextRoot.coreStyle.computedStyle.marginLeft, - _formattingContextRoot.coreStyle.computedStyle.marginTop, staticPositionedElement,  _formattingContextRoot.coreStyle.computedStyle.marginTop,  _formattingContextRoot.coreStyle.computedStyle.marginBottom);
 	}
 	
 	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Float, concatenatedY:Float, staticPositionedElement:ElementRenderer, parentCollapsedMarginTop:Int, parentCollapsedMarginBottom:Int):Float
@@ -57,6 +56,8 @@ class BlockFormattingContext extends FormattingContext
 			if (child.isFloat() == true)
 			{
 				var floatData = _floatsManager.registerFloat(child, concatenatedY, concatenatedX, elementRenderer.computedStyle.width);
+				trace(child.bounds);
+				trace(floatData);
 				child.bounds = floatData;
 				continue;
 			}
@@ -91,9 +92,21 @@ class BlockFormattingContext extends FormattingContext
 				{
 					concatenatedY = doFormat2(child, concatenatedX, concatenatedY, staticPositionedElement, marginTop, marginBottom);
 				}
-				else if (child.isPositioned() == false || child.isRelativePositioned() == true)
+				else 
 				{
-					concatenatedY += child.bounds.height + marginTop + marginBottom;
+					
+				
+					if ((child.isPositioned() == false || child.isRelativePositioned() == true) || child.isFloat() == false)
+					{
+						//TODO 1 : doc, now block formatting context in charge of formatting line
+						//boxes, because of floats
+						if (child.childrenInline() == true)
+						{
+							child.format();
+						}
+						
+						concatenatedY += child.bounds.height + marginTop + marginBottom;
+					}	
 				}
 			}
 			//for absolutely positioned element, their bounds are set to their static position
@@ -122,6 +135,11 @@ class BlockFormattingContext extends FormattingContext
 		{
 			elementRenderer.bounds.height = childHeight + elementRenderer.coreStyle.computedStyle.paddingBottom + elementRenderer.coreStyle.computedStyle.paddingTop ;
 			elementRenderer.coreStyle.computedStyle.height = Math.round(childHeight);
+		}
+		
+		if (elementRenderer.isFloat() == true)
+		{
+			trace(elementRenderer.coreStyle.computedStyle.width);
 		}
 		
 		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingBottom + parentCollapsedMarginBottom;

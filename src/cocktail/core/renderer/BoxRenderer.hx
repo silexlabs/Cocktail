@@ -287,7 +287,6 @@ class BoxRenderer extends ElementRenderer
 		//set the global bounds on the rendering tree. After that all the elements know their positions
 		//relative to the window
 		
-		
 		setGlobalOrigins(this,globalBounds.x,globalBounds.y, positionedOrigin.x,positionedOrigin.y);
 	}
 	
@@ -304,7 +303,6 @@ class BoxRenderer extends ElementRenderer
 	 */
 	private function setGlobalOrigins(elementRenderer:ElementRenderer, addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
 	{
-		
 		//if the element establishes a new formatting context, then its
 		//bounds must be added to the global x and y bounds for the normal flow
 		if (elementRenderer.establishesNewFormattingContext() == true)
@@ -417,7 +415,6 @@ class BoxRenderer extends ElementRenderer
 		{
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			
-			//TODO 1 : doc on added body margin. Shouldn't be always applied
 			child.globalContainingBlockOrigin = {
 				x: addedX,
 				y : addedY
@@ -429,15 +426,11 @@ class BoxRenderer extends ElementRenderer
 				y : addedPositionedY
 			}
 			
-				
-				//call the method recursively if the child has children itself
-				if (child.hasChildNodes() == true)
-				{
-					setGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
-				}
-			
-			
-			
+			//call the method recursively if the child has children itself
+			if (child.hasChildNodes() == true)
+			{
+				setGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
+			}
 		}
 	}
 	
