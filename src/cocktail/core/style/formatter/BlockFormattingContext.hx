@@ -36,15 +36,13 @@ class BlockFormattingContext extends FormattingContext
 		super(formattingContextRoot);
 	}
 	
-	//TODO 3 : should not be 2 methods
-	override private function doFormat(staticPositionedElement:ElementRenderer = null):Void
+	override private function startFormatting():Void
 	{
 		//remove margin of formatting context, as child must be placed relative to padding box
-		doFormat2(_formattingContextRoot, - _formattingContextRoot.coreStyle.computedStyle.marginLeft, - _formattingContextRoot.coreStyle.computedStyle.marginTop, staticPositionedElement,  _formattingContextRoot.coreStyle.computedStyle.marginTop,  _formattingContextRoot.coreStyle.computedStyle.marginBottom);
-	
+		doFormat(_formattingContextRoot, - _formattingContextRoot.coreStyle.computedStyle.marginLeft, - _formattingContextRoot.coreStyle.computedStyle.marginTop, _formattingContextRoot.coreStyle.computedStyle.marginTop,  _formattingContextRoot.coreStyle.computedStyle.marginBottom);
 	}
 	
-	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Float, concatenatedY:Float, staticPositionedElement:ElementRenderer, parentCollapsedMarginTop:Int, parentCollapsedMarginBottom:Int):Float
+	private function doFormat(elementRenderer:ElementRenderer, concatenatedX:Float, concatenatedY:Float, parentCollapsedMarginTop:Int, parentCollapsedMarginBottom:Int):Float
 	{
 		concatenatedX += elementRenderer.coreStyle.computedStyle.paddingLeft  + elementRenderer.coreStyle.computedStyle.marginLeft;
 
@@ -92,12 +90,10 @@ class BlockFormattingContext extends FormattingContext
 				//by this formatting context
 				if (child.establishesNewFormattingContext() == false)
 				{
-					concatenatedY = doFormat2(child, concatenatedX, concatenatedY, staticPositionedElement, marginTop, marginBottom);
+					concatenatedY = doFormat(child, concatenatedX, concatenatedY, marginTop, marginBottom);
 				}
 				else 
 				{
-					
-				
 					if ((child.isPositioned() == false || child.isRelativePositioned() == true) || child.isFloat() == false)
 					{
 						//TODO 1 : doc, now block formatting context in charge of formatting line
@@ -186,7 +182,6 @@ class BlockFormattingContext extends FormattingContext
 						if (parentCollapsedMarginTop > marginTop)
 						{
 							marginTop = 0;
-							
 						}
 					}
 				}

@@ -64,25 +64,13 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableLineBoxes = new Array<LineBox>();
 		_unbreakableWidth = 0;
 		_firstLineFormatted = false;
-		
 		super(formattingContextRoot);
-		
-		//set the textIndent as an offset on the first line of text
-		//insertElement(BoxElementValue.offset(_containingHTMLElement.style.computedStyle.textIndent, _containingHTMLElement));
-	}
-	
-	override private function doFormat(staticPositionedElement:ElementRenderer = null):Void
-	{
-		super.doFormat(staticPositionedElement);
-		_unbreakableLineBoxes = new Array<LineBox>();
-		startFormat(staticPositionedElement);
-		
-		
 	}
 
 	
-	private function startFormat(staticPositionedElement:ElementRenderer):Void
+	override private function startFormatting():Void
 	{
+		_unbreakableLineBoxes = new Array<LineBox>();
 		var rootLineBoxes:Array<LineBox> = new Array<LineBox>();
 		var initialRootLineBox:RootLineBox = new RootLineBox(_formattingContextRoot);
 		rootLineBoxes.push(initialRootLineBox);
@@ -91,7 +79,7 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableWidth = _formattingContextRoot.coreStyle.computedStyle.textIndent;
 		_formattingContextData.x = _formattingContextRoot.coreStyle.computedStyle.textIndent;
 		
-		doFormat2(_formattingContextRoot, initialRootLineBox, rootLineBoxes, []);
+		doFormat(_formattingContextRoot, initialRootLineBox, rootLineBoxes, []);
 
 		//format the last line
 		formatLine(rootLineBoxes[rootLineBoxes.length - 1], true);
@@ -106,7 +94,7 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
-	private function doFormat2(elementRenderer:ElementRenderer, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
+	private function doFormat(elementRenderer:ElementRenderer, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
 		//loop in all the child of the container
 		for (i in 0...elementRenderer.childNodes.length)
@@ -143,7 +131,7 @@ class InlineFormattingContext extends FormattingContext
 				//a reference to the last added line box is returned, so that it can
 				//be used as a starting point when laying out the siblings of the 
 				//inline box renderer
-				lineBox = doFormat2(child, childLineBox, rootLineBoxes, openedElementRenderers);
+				lineBox = doFormat(child, childLineBox, rootLineBoxes, openedElementRenderers);
 				
 				//now that all of the child of the inline box renderer as been laid out,
 				//remove the reference to this inline box renderer so that when a new line
