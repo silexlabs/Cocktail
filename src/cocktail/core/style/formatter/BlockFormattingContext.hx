@@ -8,6 +8,7 @@
 package cocktail.core.style.formatter;
 import cocktail.core.dom.Node;
 import cocktail.core.style.ComputedStyle;
+import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.renderer.BlockBoxRenderer;
@@ -40,6 +41,7 @@ class BlockFormattingContext extends FormattingContext
 	{
 		//remove margin of formatting context, as child must be placed relative to padding box
 		doFormat2(_formattingContextRoot, - _formattingContextRoot.coreStyle.computedStyle.marginLeft, - _formattingContextRoot.coreStyle.computedStyle.marginTop, staticPositionedElement,  _formattingContextRoot.coreStyle.computedStyle.marginTop,  _formattingContextRoot.coreStyle.computedStyle.marginBottom);
+	
 	}
 	
 	private function doFormat2(elementRenderer:ElementRenderer, concatenatedX:Float, concatenatedY:Float, staticPositionedElement:ElementRenderer, parentCollapsedMarginTop:Int, parentCollapsedMarginBottom:Int):Float
@@ -232,81 +234,4 @@ class BlockFormattingContext extends FormattingContext
 		return marginBottom;
 	}
 	
-	/////////////////////////////////////
-	// METHODS TO USE FOR SHRINK TO FIT AND COMPUTATION of absolutely 
-	// positioned formatting context root
-	///////////////////////////////////
-	
-		/**
-	 * if the width is set to 'auto', then this method is called and might shrink the
-	 * width of the HTMLElement to fit its content
-	 
-	override public function shrinkToFit(style:CoreStyle, containingBlockData:ContainingBlockData, minimumWidth:Int):Int
-	{
-		var shrinkedWidth:Int;
-		
-		//shrink-to-fit only happen if either left or right is auto
-		if (style.left == PositionOffset.cssAuto || style.right == PositionOffset.cssAuto)
-		{
-			var computedStyle:ComputedStyle = style.computedStyle;
-			//compute the shrinked width
-			shrinkedWidth = doShrinkToFit(style, containingBlockData, minimumWidth);
-
-			//if both right and left are auto, use left static position, then deduce right
-			if (style.left == PositionOffset.cssAuto && style.right == PositionOffset.cssAuto)
-			{
-				style.computedStyle.left = getComputedStaticLeft(style, containingBlockData);
-				style.computedStyle.right = containingBlockData.width - computedStyle.marginLeft - computedStyle.marginRight - shrinkedWidth - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left;
-			}
-			//if only right is auto, compute left then deduce right
-			else if (style.right == PositionOffset.cssAuto)
-			{
-				style.computedStyle.left = getComputedPositionOffset(style.left, containingBlockData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
-				style.computedStyle.right = containingBlockData.width - computedStyle.marginLeft - computedStyle.marginRight - shrinkedWidth - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left;
-			}
-			//same for left
-			else if (style.left == PositionOffset.cssAuto)
-			{
-				style.computedStyle.right = getComputedPositionOffset(style.right, containingBlockData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
-				style.computedStyle.left = containingBlockData.width - computedStyle.marginLeft - computedStyle.marginRight - shrinkedWidth - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.right;
-			}
-		}
-		//here the width is not shrinked
-		else
-		{
-			shrinkedWidth = style.computedStyle.width;
-		}
-		
-		//constrain width before returning it
-		shrinkedWidth = constrainWidth(style, shrinkedWidth);
-		
-		return shrinkedWidth;
-	}
-	
-	/**
-	 * Overriden as in some cases, depending on the specified value of
-	 * top and bottom style, the height used value might not be the children
-	 * height of the HTMLElement
-	
-	override public function applyContentHeight(style:CoreStyle, containingBlockData:ContainingBlockData, childrenHeight:Int):Int
-	{
-		var height:Int;
-		
-		//if neither top and bottom are auto, then height can be computed using all the other vertical dimensions
-		if (style.top != PositionOffset.cssAuto && style.bottom != PositionOffset.cssAuto)
-		{
-			var computedStyle:ComputedStyle = style.computedStyle;
-			height = containingBlockData.height - computedStyle.top - computedStyle.bottom - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.marginTop - computedStyle.marginBottom;
-		}
-		else
-		{
-			height = childrenHeight;
-		}
-		
-		//constrain height before returning it
-		height = constrainHeight(style, height);
-		
-		return height;
-	}
-	 */
 }

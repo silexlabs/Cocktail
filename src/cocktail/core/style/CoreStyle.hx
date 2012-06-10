@@ -278,7 +278,7 @@ class CoreStyle
 	 */
 	private function initDefaultStyleValues(tagName:String):Void
 	{
-		_computedStyle = new ComputedStyle();
+		_computedStyle = new ComputedStyle(this);
 		initComputedStyles();
 		
 		_width = getWidthDefaultValue();

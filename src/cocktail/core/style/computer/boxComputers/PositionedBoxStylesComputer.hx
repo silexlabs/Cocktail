@@ -84,7 +84,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			
 			//the computed width is deduced from all the other computed horizontal values. It is the remaining space when all the other value
 			//are substracted from the containing HTMLElement width
-			setComputedWidth(style, containingBlockData.width - computedStyle.marginLeft - computedStyle.left - computedStyle.right - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight);
+			style.computedStyle.width = containingBlockData.width - computedStyle.marginLeft - computedStyle.left - computedStyle.right - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight;
 		}
 		//if left, right and width are auto, then the width will be "shrinked-to-fit" once all the children have been laid out,
 		//so the width is first set to an "infinite" width which will allow to find the max line width of the formatted children
@@ -94,7 +94,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			//TODO 2 : setting the containing element width is a hack which will not
 			//always work. The shrink to fit computation of this class needs to be 
 			//improved
-			setComputedWidth(style, containingBlockData.width);
+			style.computedStyle.width = containingBlockData.width;
 		}
 	}
 	
@@ -106,7 +106,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		var computedStyle:ComputedStyle = style.computedStyle;
 		
 		//compute the width which is either defined as a length or a percentage
-		setComputedWidth(style, getComputedWidth(style, containingBlockData));
+		style.computedStyle.width = getComputedWidth(style, containingBlockData);
 		
 		//if neither left nor right are defined as auto
 		if (style.left != PositionOffset.cssAuto && style.right != PositionOffset.cssAuto)
@@ -238,7 +238,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			
 			//the computed height is deduced from all the other computed vertical values. It is the remaining space when all the other value
 			//are substracted from the containing HTMLElement height
-			setComputedHeight(style, containingBlockData.height - computedStyle.marginTop - computedStyle.top - computedStyle.bottom - computedStyle.marginBottom - computedStyle.paddingTop - computedStyle.paddingBottom);
+			style.computedStyle.height = containingBlockData.height - computedStyle.marginTop - computedStyle.top - computedStyle.bottom - computedStyle.marginBottom - computedStyle.paddingTop - computedStyle.paddingBottom;
 		}
 		//if only bottom is auto, compute top then deduce bottom from the remaining vertical space
 		else if (style.bottom == PositionOffset.cssAuto)
@@ -266,7 +266,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		var computedStyle:ComputedStyle = style.computedStyle;
 		
 		//compute the height which is either defined as a length or a percentage
-		setComputedHeight(style, getComputedHeight(style, containingBlockData));
+		style.computedStyle.height = getComputedHeight(style, containingBlockData);
 
 		//if neither top nor bottom are defined as auto
 		if (style.top != PositionOffset.cssAuto && style.bottom != PositionOffset.cssAuto)

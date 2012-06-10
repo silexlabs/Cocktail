@@ -41,7 +41,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	override private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
 		//width
-		setComputedWidth(style, getComputedAutoWidth(style, containingBlockData));
+		style.computedStyle.width = getComputedAutoWidth(style, containingBlockData);
 			
 		//left margin
 		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingBlockData);
@@ -112,7 +112,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		{
 			//compute the used height
 			var computedHeight:Int = getComputedDimension(style.height, containingBlockData.height, containingBlockData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
-			setComputedHeight(style, computedHeight);
+			style.computedStyle.height = computedHeight;
 			
 			//deduce the width from the intrinsic ratio and the computed height
 			if (embeddedHTMLElement.intrinsicRatio != null)
@@ -185,7 +185,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			
 			//compute the used value of 'width'
 			var computedWidth:Int = getComputedDimension(style.width, containingBlockData.width, containingBlockData.isWidthAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
-			setComputedWidth(style, computedWidth);
+			style.computedStyle.width = computedWidth;
 			
 			//deduce the height from the computed width and the intrinsic ratio if it is defined
 			if (embeddedHTMLElement.intrinsicRatio != null)

@@ -209,11 +209,16 @@ class ComputedStyle
 	public var transitionTimingFunction(getTransitionTimingFunction, setTransitionTimingFunction):TransitionTimingFunction;
 	
 	/**
+	 * A reference to the style used to computed those coputedStyles
+	 */
+	private var _coreStyle:CoreStyle;
+	
+	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(coreStyle:CoreStyle) 
 	{
-		
+		_coreStyle = coreStyle;
 	}
 	
 	/**
@@ -307,12 +312,69 @@ class ComputedStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE DIMENSIONS CONSTRAINTS METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Constrain computed width if it is above/below max/min width
+	 */
+	private function constrainWidth(style:CoreStyle, computedWidth:Int):Int
+	{
+		var computedStyle:ComputedStyle = style.computedStyle;
+		
+		//check that the computedWidth is not 
+		//superior to max width. The max width
+		//can be defined as "none" if there are 
+		//no width limit on this HTMLElement
+		if (style.maxWidth != ConstrainedDimension.none)
+		{
+			if (computedWidth > computedStyle.maxWidth)
+			{
+				computedWidth = computedStyle.maxWidth;
+			}
+		}
+		
+		//check that width is superior to min width
+		if (computedWidth < computedStyle.minWidth)
+		{
+			computedWidth = computedStyle.minWidth;
+		}
+		
+		return computedWidth;
+	}
+	
+	/**
+	 * Constrain computed height if it is above/below max/min height
+	 */
+	private function constrainHeight(style:CoreStyle, computedHeight:Int):Int
+	{
+		var computedStyle:ComputedStyle = style.computedStyle;
+	
+		//check that height is within authorised range
+		if (style.maxHeight != ConstrainedDimension.none)
+		{
+			if (computedHeight > computedStyle.maxHeight)
+			{
+				computedHeight = computedStyle.maxHeight;
+			}
+		}
+		
+		//check that height is superior to min height
+		if (computedHeight < computedStyle.minHeight)
+		{
+			computedHeight = computedStyle.minHeight;
+		}
+		
+		return computedHeight;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function setWidth(value:Int):Int 
 	{
-		_width = value;
+		_width = constrainWidth(_coreStyle, value);
 		return value;
 	}
 	
@@ -378,7 +440,7 @@ class ComputedStyle
 	
 	private function setHeight(value:Int):Int 
 	{
-		_height = value;
+		_height = constrainHeight(_coreStyle, value);
 		return value;
 	}
 	
