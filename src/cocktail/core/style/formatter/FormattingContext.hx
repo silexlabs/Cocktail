@@ -71,10 +71,6 @@ class FormattingContext
 	public function new(formattingContextRoot:BlockBoxRenderer) 
 	{
 		_formattingContextRoot = formattingContextRoot;
-		//will store the data of the floated HTMLElement of this
-		//formatting context
-		_floatsManager = new FloatsManager();
-		initFormattingContextData();
 	}
 	
 	/**
@@ -103,7 +99,8 @@ class FormattingContext
 	public function format():Void
 	{	
 		_floatsManager = new FloatsManager();
-		doFormat();
+		initFormattingContextData();
+		startFormatting();
 		applyShrinkToFitIfNeeded(_formattingContextRoot, _formattingContextData.maxWidth);
 	}
 	
@@ -111,11 +108,9 @@ class FormattingContext
 	// PRIVATE METHODS
 	/////////////////////////////////
 	
-	private function doFormat(staticPositionedElement:ElementRenderer = null):Void
+	private function startFormatting():Void
 	{
-		//init/reset the formating context data to insert the first element at the
-		//origin of the containing block
-		initFormattingContextData();
+		
 	}
 
 	private function applyShrinkToFitIfNeeded(elementRenderer:ElementRenderer, minimumWidth:Float):Void
@@ -170,53 +165,5 @@ class FormattingContext
 		elementRenderer.coreStyle.computedStyle.width = Math.round(shrinkedWidth);
 	}
 	
-	/////////////////////////////////
-	// PRIVATE UTILS METHODS
-	/////////////////////////////////
-	
-	/**
-	 * Clear all the current left, or right or both floats.
-	 * When floats are cleared, the flow y attribute is placed
-	 * at the bottom of the last cleared float
-	 * 
-	 * TODO 5 : re-implement float
-	 */
-	private function clearFloat(clear:Clear):Void
-	{
-		_floatsManager.clearFloat(clear, _formattingContextData.y);
-	}
-	
-	/**
-	 * Removed the floats which don't influence the 
-	 * flow anymore. A float don't influence the flow
-	 * anymore once the flow place HTMLElement's below it
-	 * 
-	 * TODO 5 : re-implement floats
-	 */
-	private function removeFloats():Void
-	{
-		_floatsManager.removeFloats(_formattingContextData.y);
-	}
-	
-	/**
-	 * Determine wheter the next element in the formattable elements array is a linefeed
-	 */
-	private function isNextElementALineFeed(elementsInFormattingContext:Array<ElementRenderer>, currentIndex:Int):Bool
-	{
-		var isNextElementALineFeed:Bool = false;
-		//
-		//here the current element is the last in the array
-		//if (currentIndex + 1 >= elementsInFormattingContext.length)
-		//{
-			//isNextElementALineFeed = false;
-		//}
-		//else check if the next element is indeed a line feed
-		//else
-		//{
-			//isNextElementALineFeed = elementsInFormattingContext[currentIndex + 1].isLineFeed();
-		//}
-		
-		return isNextElementALineFeed;
-	}
 	
 }
