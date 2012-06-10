@@ -44,7 +44,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	override private function measureAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
 		//the height is set to null by default
-		setComputedHeight(style, getComputedAutoHeight(style, containingBlockData));
+		style.computedStyle.height = getComputedAutoHeight(style, containingBlockData);
 		
 		//left margin
 		style.computedStyle.marginTop = 0;
@@ -59,7 +59,8 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	override private function measureHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
 		//get the computed height in pixel
-		setComputedHeight(style, getComputedHeight(style, containingBlockData));
+		style.computedStyle.height = getComputedHeight(style, containingBlockData);
+		
 		//left margin
 		style.computedStyle.marginTop = 0;
 		//right margin

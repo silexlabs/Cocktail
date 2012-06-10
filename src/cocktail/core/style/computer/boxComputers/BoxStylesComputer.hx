@@ -194,15 +194,15 @@ class BoxStylesComputer
 	{
 		//the width is first set to 0, 
 		//it will be computed once the margins are computed
-		setComputedWidth(style, 0);
-			
+		style.computedStyle.width = 0;	
+		
 		//left margin
 		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingBlockData);
 		//right margin
 		style.computedStyle.marginRight = getComputedMarginRight(style, containingBlockData);
 		
 		//the width is computed now that the sizes of the margins are computed
-		setComputedWidth(style, getComputedAutoWidth(style, containingBlockData));
+		style.computedStyle.width = getComputedAutoWidth(style, containingBlockData);
 	}
 	
 	/**
@@ -214,8 +214,8 @@ class BoxStylesComputer
 	private function measureWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
 		//get the content width (width without margins and paddings)
-		setComputedWidth(style, getComputedWidth(style, containingBlockData));
-			
+		style.computedStyle.width = getComputedWidth(style, containingBlockData);
+		
 		//left margin
 		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingBlockData);
 		//right margin
@@ -260,7 +260,7 @@ class BoxStylesComputer
 	private function measureAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
 		//the height is set to null by default
-		setComputedHeight(style, getComputedAutoHeight(style, containingBlockData));
+		style.computedStyle.height = getComputedAutoHeight(style, containingBlockData);
 		
 		//left margin
 		style.computedStyle.marginTop = getComputedMarginTop(style, containingBlockData);
@@ -279,86 +279,12 @@ class BoxStylesComputer
 	private function measureHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
 		//get the computed height in pixel
-		setComputedHeight(style, getComputedHeight(style, containingBlockData));
+		style.computedStyle.height = getComputedHeight(style, containingBlockData);
+		
 		//left margin
 		style.computedStyle.marginTop = getComputedMarginTop(style, containingBlockData);
 		//right margin
 		style.computedStyle.marginBottom = getComputedMarginBottom(style, containingBlockData);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE DIMENSIONS CONSTRAINTS METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Constrain computed width if it is above/below max/min width
-	 */
-	private function constrainWidth(style:CoreStyle, computedWidth:Int):Int
-	{
-		var computedStyle:ComputedStyle = style.computedStyle;
-		
-		//check that the computedWidth is not 
-		//superior to max width. The max width
-		//can be defined as "none" if there are 
-		//no width limit on this HTMLElement
-		if (style.maxWidth != ConstrainedDimension.none)
-		{
-			if (computedWidth > computedStyle.maxWidth)
-			{
-				computedWidth = computedStyle.maxWidth;
-			}
-		}
-		
-		//check that width is superior to min width
-		if (computedWidth < computedStyle.minWidth)
-		{
-			computedWidth = computedStyle.minWidth;
-		}
-		
-		return computedWidth;
-	}
-	
-	/**
-	 * Constrain computed height if it is above/below max/min height
-	 */
-	private function constrainHeight(style:CoreStyle, computedHeight:Int):Int
-	{
-		var computedStyle:ComputedStyle = style.computedStyle;
-	
-		//check that height is within authorised range
-		if (style.maxHeight != ConstrainedDimension.none)
-		{
-			if (computedHeight > computedStyle.maxHeight)
-			{
-				computedHeight = computedStyle.maxHeight;
-			}
-		}
-		
-		//check that height is superior to min height
-		if (computedHeight < computedStyle.minHeight)
-		{
-			computedHeight = computedStyle.minHeight;
-		}
-		
-		return computedHeight;
-	}
-	
-	/**
-	 * Utils method to insure that height is constrained each time
-	 * it is set
-	 */
-	private function setComputedHeight(style:CoreStyle, computedHeight:Int):Void
-	{
-		style.computedStyle.height = constrainHeight(style, computedHeight);
-	}
-	
-	/**
-	 * Utils method to insure that width is constrained each time
-	 * it is set
-	 */
-	private function setComputedWidth(style:CoreStyle, computedWidth:Int):Void
-	{
-		style.computedStyle.width = constrainWidth(style, computedWidth);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
