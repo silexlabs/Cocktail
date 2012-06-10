@@ -479,10 +479,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			#if (flash9 || nme)
 			
-			//TODO 1 : only initial block box renderer must not be moved ?
-			//_graphicsContext.x = globalBounds.x;
-			//_graphicsContext.y = globalBounds.y;
-			
 			var width:Float;
 			var height:Float;
 			

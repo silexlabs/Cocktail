@@ -57,11 +57,6 @@ class FormattingContext
 	 */
 	private var _formattingContextData:FormattingContextData;
 	
-	/**
-	 * get the width of the largest line in the formatting context
-	 */
-	public var maxWidth(getMaxWidth, never):Int;
-	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT/DISPOSE
 	/////////////////////////////////
@@ -167,15 +162,6 @@ class FormattingContext
 		//}
 		
 		return isNextElementALineFeed;
-	}
-	
-	/////////////////////////////////
-	// GETTERS/SETTERS
-	/////////////////////////////////
-	
-	private function getMaxWidth():Int
-	{
-		return _formattingContextData.maxWidth;
 	}
 	
 }
