@@ -268,7 +268,7 @@ class FloatsManager
 		//in the case where the element can be immediately inserted
 		//in the flow
 		var retY:Float = currentFormattingContextY;
-		
+		trace(retY);
 		//loop while there isn't enough horizontal space at the current y position to insert the
 		//element
 		while (getLeftFloatOffset(retY) + getRightFloatOffset(retY, containingBlockWidth) + elementWidth > containingBlockWidth)
@@ -330,7 +330,6 @@ class FloatsManager
 				
 			}
 		}
-		
 		//at this point the y position to insert the element is found
 		return retY;
 	}

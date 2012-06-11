@@ -349,10 +349,7 @@ class BoxRenderer extends ElementRenderer
 			}
 			//if the element is not positioned or relatively positioned, it always add
 			//its bounds to the global x and y flow
-			//TODO 3 : hack, check if elementRenderer is the one which started layout, as if it is
-			//it must not add its bounds again, as they are passed as parameters. Should instead use the
-			//bounds of containing block ?
-			else if (elementRenderer != this)
+			else
 			{
 				addedX += elementRenderer.bounds.x;
 				addedY += elementRenderer.bounds.y;
@@ -377,7 +374,6 @@ class BoxRenderer extends ElementRenderer
 					{
 						addedPositionedX = elementRenderer.positionedOrigin.x;
 					}
-					
 				}
 				else
 				{
@@ -419,7 +415,6 @@ class BoxRenderer extends ElementRenderer
 				x: addedX,
 				y : addedY
 			}
-			
 			
 			child.globalPositionnedAncestorOrigin = {
 				x: addedPositionedX,
