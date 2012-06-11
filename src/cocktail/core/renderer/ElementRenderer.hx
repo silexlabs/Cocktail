@@ -269,6 +269,17 @@ class ElementRenderer extends Node
 		_lineBoxes = new Array<LineBox>();
 	}
 	
+	/**
+	 * clean-up method
+	 */
+	public function dispose():Void
+	{
+		_lineBoxes = null;
+		//TODO 2 :should clear the graphic context
+		_graphicsContext = null;
+		_coreStyle = null;
+		_layerRenderer = null;
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS

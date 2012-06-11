@@ -108,7 +108,6 @@ class LayerRenderer extends Node
 			case ZIndex.integer(value):
 				if (value == 0)
 				{
-					//TODO 1 : might not put in the right order after DOM manipulation, use "insertBefore" ?
 					_zeroAndAutoZIndexChildRenderers.push(childLayer.rootElementRenderer);
 				}
 				else if (value > 0)

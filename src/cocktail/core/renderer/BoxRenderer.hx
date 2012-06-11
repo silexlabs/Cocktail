@@ -191,8 +191,6 @@ class BoxRenderer extends ElementRenderer
 	// OVERRIDEN PUBLIC LAYOUT METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO 1 : instead of containing block data, might instead pass reference to parentBlock, initialBlockRenderer and
-	//firstPositionnedAncesotrBlock ? This way, we can get ride of a lot of struct and complicated concept like firstpositionedancestordata
 	/**
 	 * This method is in charge of laying out an ElementRenderer which consist in computing its styles (box model, font, text...)
 	 * into usable values and determining its bounds in the space of the containing block which started its formatting context.
@@ -249,10 +247,6 @@ class BoxRenderer extends ElementRenderer
 		
 		//insert the ElementRenderer in the absolutely positioned array if it is itself absolutely positioned
 		//so that it can be positioned by its first positioned ancestor once it is laid out
-		//
-		//TODO 1 : should instead a ref to the first positioned be passed and call a addPositionedChild method
-		//on it ? also will call a removePositionedChild on it when removed from DOM or position style changes
-		//TODO 1 : should do the same thing for floated element with the parentContainer or FormattingContextRoot
 		storeAbsolutelyPositionedChild(firstPositionedAncestorData);
 		
 		//The ElementRenderer has been laid out and can now be laid out again
