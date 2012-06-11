@@ -193,6 +193,7 @@ class ElementRenderer extends Node
 	 * is painted
 	 */
 	private var _graphicsContext:NativeElement;
+	public var graphicsContext(get_graphicsContext, never):NativeElement;
 	
 	/**
 	 * Stores all of the value of styles once computed.
@@ -508,6 +509,19 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
+	/**
+	 * Helper method concatenating the relative offset of the parent
+	 * with the relative offset of this ElementRenderer to apply the right
+	 * translation when rendering
+	 */
+	public function getConcatenatedRelativeOffset(parentRelativeOffset:PointData):PointData
+	{
+		var relativeOffset:PointData = getRelativeOffset();
+		relativeOffset.x += parentRelativeOffset.x;
+		relativeOffset.y += parentRelativeOffset.y;
+		return relativeOffset;
+	}
+	
 	/////////////////////////////////
 	// PRIVATE HELPER METHODS
 	////////////////////////////////
@@ -517,7 +531,7 @@ class ElementRenderer extends Node
 	 * when rendering. Only relatively positioned ElementRenderer
 	 * have this offset
 	 */
-	private function getRelativeOffset():PointData
+	public function getRelativeOffset():PointData
 	{
 		var relativeOffset:PointData = { x:0.0, y:0.0 };
 		
@@ -552,19 +566,6 @@ class ElementRenderer extends Node
 			}
 		}
 		
-		return relativeOffset;
-	}
-	
-	/**
-	 * Helper method concatenating the relative offset of the parent
-	 * with the relative offset of this ElementRenderer to apply the right
-	 * translation when rendering
-	 */
-	private function getConcatenatedRelativeOffset(parentRelativeOffset:PointData):PointData
-	{
-		var relativeOffset:PointData = getRelativeOffset();
-		relativeOffset.x += parentRelativeOffset.x;
-		relativeOffset.y += parentRelativeOffset.y;
 		return relativeOffset;
 	}
 	
@@ -998,5 +999,10 @@ class ElementRenderer extends Node
 	private function get_scrollHeight():Float
 	{
 		return bounds.height;
+	}
+	
+	private function get_graphicsContext():NativeElement
+	{
+		return _graphicsContext;
 	}
 }

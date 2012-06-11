@@ -109,8 +109,8 @@ class BoxRenderer extends ElementRenderer
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		for (i in 0...backgrounds.length)
 		{
-			backgrounds[i].x = globalBounds.x + relativeOffset.x;
-			backgrounds[i].y = globalBounds.y + relativeOffset.y;
+			backgrounds[i].x = globalBounds.x;
+			backgrounds[i].y = globalBounds.y;
 			containerGraphicContext.addChild(backgrounds[i]);
 		}
 		#end
@@ -141,6 +141,7 @@ class BoxRenderer extends ElementRenderer
 	private function applyTransformationMatrix(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var concatenatedMatrix:Matrix = getConcatenatedMatrix(computedStyle.transform, relativeOffset);
+		concatenatedMatrix.translate(relativeOffset.x, relativeOffset.y);
 		
 		//get the data of the abstract matrix
 		var matrixData:MatrixData = concatenatedMatrix.data;

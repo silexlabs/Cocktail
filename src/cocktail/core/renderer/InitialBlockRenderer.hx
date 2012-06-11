@@ -153,7 +153,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		//start the rendering at the root layer renderer
 		//TODO 3 : should instead call an invalidateRendering method on LayerRenderer ?
 		render(flash.Lib.current, { x:0.0, y:0.0 } );
-
+		
 		#end
 	}
 	
@@ -174,27 +174,19 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		#end
 	}
 	
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Overriden as the initial ElementRenderer always layout its positioned children as it is the root of the rendering tree
-	 */
-	override private function layoutAbsolutelyPositionedChildrenIfNeeded(childrenFirstPositionedAncestorData:FirstPositionedAncestorData, viewportData:ContainingBlockData):Void
-	{
-		for (i in 0...childrenFirstPositionedAncestorData.elements.length)
-		{
-			var element:ElementRenderer = childrenFirstPositionedAncestorData.elements[i];
-			//use the viewport dimensions both times
-			layoutPositionedChild(element, viewportData, viewportData);
-		}
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The initial block renderer is always considered positioned,
+	 * as it always lays out the positioned children for whom it is
+	 * the first positioned ancestor
+	 */
+	override public function isPositioned():Bool
+	{
+		return true;
+	}
 	
 	/**
 	 * The initial block container always establishes a block formatting context

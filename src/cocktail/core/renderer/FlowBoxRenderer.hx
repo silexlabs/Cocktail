@@ -98,16 +98,10 @@ class FlowBoxRenderer extends BoxRenderer
 			childElementRenderer.layout(childrenContainingBlockData, viewportData, childrenFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData);
 		}
 		
-		//prompt the children formatting context, to format all the children
-		//ElementRenderer belonging to it. After this call, all the
-		//ElementRenderer have the right bounds, in the space of the containing
-		//block which established the formatting context
+		//starts the formatting of the children of this FlowBoxRenderer
+		//if it establishes a new formatting context
 		//
-		//This method is only called if a new formatting
-		//context was established by this ElementRenderer,
-		//meaning that it also is responsible of formatting it
-		//
-		//TODO 1 : doc
+		//TODO 3 : should only be called for BlockBoxRenderer
 		format();
 		
 		//if this ElementRenderer is positioned, it means that it is the first positioned ancestor

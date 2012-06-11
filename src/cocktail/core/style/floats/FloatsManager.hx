@@ -207,7 +207,6 @@ class FloatsManager
 		//a left float is placed to right of all the preceding left float
 		//which are on the same line as this one
 		floatData.x = getLeftFloatOffset(floatData.y);
-		trace(getLeftFloatOffset(floatData.y));
 		return floatData;
 	}
 	
