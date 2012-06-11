@@ -72,8 +72,7 @@ class StyleProxy implements lib.hxtml.IStyleProxy<Node>
 	public function setCssFloat(element:Node, value:String):Void{
 		cast(element, HtmlDom).style.cssFloat = value;
 	}
-/*	public function setClear (element:Node, value:String):Void{
-		trace("Clear "+value);
+	public function setClear (element:Node, value:String):Void{
 		cast(element, HtmlDom).style.clear = value;
 	}
 /*	public function setTransformOriginNum (element:Node, valueX:Int, unitX:String, valueY:Int, unitY:String, valueZ:Int, unitZ:String):Void{

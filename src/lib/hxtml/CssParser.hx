@@ -849,6 +849,9 @@ class CssParser<DisplayObjectType> {
 		case "float":
 			s.setCssFloat(d, getIdent(v));
 			return true;
+		case "clear":
+			s.setClear(d, getIdent(v));
+			return true;
 		case "position":
 			s.setPosition(d, getIdent(v));
 			return true;

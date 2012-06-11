@@ -6,8 +6,8 @@ interface IStyleProxy<DisplayObjectType>
 	public function setDisplay(element:DisplayObjectType, value:String):Void;
 	public function setPosition (element:DisplayObjectType, value:String):Void;
 	public function setCssFloat(element:DisplayObjectType, value:String):Void;
-/*	public function setClear (element:DisplayObjectType, value:String):Void;
-	public function setTransformOriginNum (element:DisplayObjectType, valueX:Int, unitX:String, valueY:Int, unitY:String, valueZ:Int, unitZ:String):Void;
+	public function setClear (element:DisplayObjectType, value:String):Void;
+/*	public function setTransformOriginNum (element:DisplayObjectType, valueX:Int, unitX:String, valueY:Int, unitY:String, valueZ:Int, unitZ:String):Void;
 	public function setTransformOriginKey (element:DisplayObjectType, value:String):Void;
 	public function setTransform (element:DisplayObjectType, value:String):Void;
 	
