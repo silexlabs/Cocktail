@@ -332,13 +332,12 @@ class InlineFormattingContext extends FormattingContext
 			{
 				//TODO : should be padding left instead ?
 				//
-				//reset the global formatting context for the next line
-				//_formattingContextData.x = 0;
-				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData.y, _unbreakableWidth,
+				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData.y + _formattingContextRoot.bounds.y, _unbreakableWidth,
 				_formattingContextRoot.coreStyle.computedStyle.width);
 				
+				_formattingContextData.y -= _formattingContextRoot.bounds.y;
 				
-				_formattingContextData.x = _floatsManager.getLeftFloatOffset(_formattingContextData.y);
+				_formattingContextData.x = _floatsManager.getLeftFloatOffset(_formattingContextData.y + _formattingContextRoot.bounds.y);
 				
 				//format the current line which is currently the last in the line array
 				//, now that all the line box in it are known
@@ -522,7 +521,7 @@ class InlineFormattingContext extends FormattingContext
 		remainingSpace = _formattingContextRoot.coreStyle.computedStyle.width - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - 
 		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.coreStyle.computedStyle.width);
 		flowX = _formattingContextRoot.coreStyle.computedStyle.paddingLeft;
-
+		
 		
 		if (_firstLineFormatted == false)
 		{
@@ -531,8 +530,8 @@ class InlineFormattingContext extends FormattingContext
 		}
 		
 		//take the float into accounts and the padding of the containing HTMLElement
-		flowX += _floatsManager.getLeftFloatOffset(_formattingContextData.y);
-
+		flowX += _floatsManager.getLeftFloatOffset(_formattingContextData.y + _formattingContextRoot.bounds.y);
+		
 		//do align the HTMLElements, the text align style of the containing HTMLElement
 		//determining the alignement to apply
 		switch (_formattingContextRoot.coreStyle.computedStyle.textAlign)

@@ -207,7 +207,7 @@ class FloatsManager
 		//a left float is placed to right of all the preceding left float
 		//which are on the same line as this one
 		floatData.x = getLeftFloatOffset(floatData.y);
-		
+		trace(getLeftFloatOffset(floatData.y));
 		return floatData;
 	}
 	
@@ -268,7 +268,7 @@ class FloatsManager
 		//in the case where the element can be immediately inserted
 		//in the flow
 		var retY:Float = currentFormattingContextY;
-		trace(retY);
+		
 		//loop while there isn't enough horizontal space at the current y position to insert the
 		//element
 		while (getLeftFloatOffset(retY) + getRightFloatOffset(retY, containingBlockWidth) + elementWidth > containingBlockWidth)
