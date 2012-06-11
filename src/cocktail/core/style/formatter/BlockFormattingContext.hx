@@ -55,8 +55,15 @@ class BlockFormattingContext extends FormattingContext
 
 			if (child.isFloat() == true)
 			{
-				var floatData = _floatsManager.registerFloat(child, concatenatedY, concatenatedX, elementRenderer.computedStyle.width);
-				child.bounds = floatData;
+				var floatData = _floatsManager.registerFloat(child, concatenatedY, 0, elementRenderer.computedStyle.width);
+				child.bounds.x = floatData.x;
+				child.bounds.y =  floatData.y;
+				child.bounds.width =  floatData.width;
+				child.bounds.height =  floatData.height;
+				
+				
+				child.bounds.x += concatenatedX;
+				
 				
 				continue;
 			}
