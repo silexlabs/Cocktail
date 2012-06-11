@@ -15,6 +15,7 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.NativeElement;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.style.floats.FloatsManager;
 import cocktail.core.style.formatter.BlockFormattingContext;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.formatter.InlineFormattingContext;
@@ -293,7 +294,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		//retrieve all the line boxes in all of the lines generated in this BlockBoxRenderer
 		var lineBoxes:Array<LineBox> = getChilrenLineBoxes(this, _layerRenderer);
-
+		
 		//loop in all of the lineboxes
 		for (i in 0...lineBoxes.length)
 		{
@@ -569,12 +570,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// OVERRIDEN PUBLIC LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO 1 : doc
-	override public function format():Void
-	{
-		getFormattingContext().format();
-	}
-	
 	/**
 	 * Overriden to deal with the scrollbars once the children of this
 	 * BlockBoxRenderer are laid out
@@ -609,8 +604,49 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * starts the formatting of this block box if it
+	 * establishes a new formatting context.
+	 */
+	override private function format():Void
+	{
+		if (establishesNewFormattingContext() == true )
+		{
+			
+			if (isPositioned() == true && isRelativePositioned() == false)
+			{
+				doFormat();
+			}
+			else if (isFloat() == true)
+			{
+				doFormat();
+			}
+			else if (childrenInline() == false)
+			{
+				doFormat();
+			}
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	//TODO 1 : doc
+	private function doFormat():Void
+	{
+		if (childrenInline() == true)
+		{
+			new InlineFormattingContext(this).format(new FloatsManager());
+		}
+		else
+		{
+			new BlockFormattingContext(this).format(new FloatsManager());
+		}
+	}
 	
 	//TODO 4 : more complex thant it should
 	private function layoutScrollBarsIfNecessary(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData):Void
@@ -887,7 +923,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			return;
 		}
 		
-
 		//TODO 3 : should use computed styles but not computed yet
 		//tries to attach or detach horizontal scrollbar based on x
 		//overflow
@@ -1268,26 +1303,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Return the right formatting context to layout this ElementRenderer's
-	 * children. Only BlockBoxRenderer can establish formatting context,
-	 * and they can be either block or inline formatting context baed on the
-	 * display of the children of the element
-	 */
-	private function getFormattingContext():FormattingContext
-	{
-		//instantiate the right formatting context
-		//based on the children computed display styles
-		if (childrenInline() == true)
-		{
-			return new InlineFormattingContext(this);	
-		}
-		else
-		{
-			return new BlockFormattingContext(this);
-		}
-	}
-	
-	/**
 	 * Utils method to return the containing block data
 	 * without any scrollbars. Used when positioning scrollbars
 	 * themselves
@@ -1399,31 +1414,5 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private function treatVisibleOverflowAsAuto():Bool
 	{
 		return false;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * overriden as scrollbar shuold be removed from 
-	 * the width and height of the bounds of this
-	 * ElementRenderer
-	 */
-	override private function get_globalBounds():RectangleData
-	{
-		var globalBounds:RectangleData = super.get_globalBounds();
-		
-		if (_horizontalScrollBar != null)
-		{
-			//globalBounds.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
-		}
-		
-		if (_verticalScrollBar != null)
-		{
-			//globalBounds.width -= _verticalScrollBar.coreStyle.computedStyle.width;
-		}
-		
-		return globalBounds;
 	}
 }

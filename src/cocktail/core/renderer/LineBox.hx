@@ -138,7 +138,6 @@ class LineBox extends Node
 	public function render(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		var backgrounds:Array<NativeElement> = _backgroundManager.render(_bounds, _elementRenderer.coreStyle);
-		
 		#if (flash9 || nme)
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		for (i in 0...backgrounds.length)

@@ -88,28 +88,14 @@ class FlowBoxRenderer extends BoxRenderer
 		//of the ElementRenderer as containing dimensions
 		var childrenFirstPositionedAncestorData:FirstPositionedAncestorData = getChildrenFirstPositionedAncestorData(firstPositionedAncestorData);
 		
-		//actually layout all children
-		doLayoutChildren(childrenContainingBlockData, viewportData, childrenFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData);
-		
-		//if this ElementRenderer is positioned, it means that it is the first positioned ancestor
-		//for its positioned children and it is its responsability to lay them out
-		layoutAbsolutelyPositionedChildrenIfNeeded(childrenFirstPositionedAncestorData, viewportData);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Actually layout all the children of the ElementRenderer by calling
-	 * the layout method recursively on all the children
-	 */
-	private function doLayoutChildren(childrenContainingBlockData:ContainingBlockData, viewportData:ContainingBlockData, childFirstPositionedAncestorData:FirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData:FontMetricsData):Void
-	{			
+		/**
+		 * Actually layout all the children of the ElementRenderer by calling
+		 * the layout method recursively on all the children
+		 */
 		for (i in 0..._childNodes.length)
 		{
 			var childElementRenderer:ElementRenderer = cast(_childNodes[i]);
-			childElementRenderer.layout(childrenContainingBlockData, viewportData, childFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData);
+			childElementRenderer.layout(childrenContainingBlockData, viewportData, childrenFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData);
 		}
 		
 		//prompt the children formatting context, to format all the children
@@ -122,22 +108,23 @@ class FlowBoxRenderer extends BoxRenderer
 		//meaning that it also is responsible of formatting it
 		//
 		//TODO 1 : doc
-		if (establishesNewFormattingContext() == true )
-		{
-			if (isPositioned() == true && isRelativePositioned() == false)
-			{
-				format();
-			}
-			else if (isFloat() == true)
-			{
-				trace("format float");
-				format();
-			}
-			else if (childrenInline() == false)
-			{
-				format();
-			}
-		}
+		format();
+		
+		//if this ElementRenderer is positioned, it means that it is the first positioned ancestor
+		//for its positioned children and it is its responsability to lay them out
+		layoutAbsolutelyPositionedChildrenIfNeeded(childrenFirstPositionedAncestorData, viewportData);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * starts the formatting of the box
+	 */
+	private function format():Void
+	{
+		//abstract
 	}
 	
 	/**

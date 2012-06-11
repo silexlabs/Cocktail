@@ -47,7 +47,7 @@ class TextRenderer extends ElementRenderer
 		super(node);
 		_text = cast(node);
 		
-		//_lineBoxes = null;
+		_lineBoxes = null;
 	}
 	
 	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData):Void
@@ -58,7 +58,7 @@ class TextRenderer extends ElementRenderer
 		//}
 	}
 	
-	//TODO IMPORTANT : setting lineBoxes to null causes runtime error in inline formatting context,
+	//TODO 1 IMPORTANT : setting lineBoxes to null causes runtime error in inline formatting context,
 	//need to find a better way to refresh text
 	override public function invalidateText():Void
 	{
