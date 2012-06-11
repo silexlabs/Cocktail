@@ -163,51 +163,51 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Overriden as a BlockBoxRenderer render its children and the child LayerRenderer
 	 * of its LayerRenderer
 	 */
-	override private function renderChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	override private function renderChildren(graphicContext:NativeElement):Void
 	{
-		super.renderChildren(graphicContext, relativeOffset);
+		super.renderChildren(graphicContext);
 
 		//the BlockBoxRenderer is responsible for rendering its children in the same stacking
 		//context if it establishes a stacking context itself
 		if (establishesNewStackingContext() == true)
 		{
 			//first render all the negative z-index child LayerRenderers
-			_layerRenderer.renderNegativeChildElementRenderers(graphicContext, relativeOffset);
+			_layerRenderer.renderNegativeChildElementRenderers(graphicContext);
 			
 			//render all the block box which belong to the same stacking context
-			renderBlockContainerChildren(graphicContext, relativeOffset);
+			renderBlockContainerChildren(graphicContext);
 			
 			//TODO 5 : render non-positioned float
 			
 			//render all the replaced (embedded) box displayed as blocks belonging
 			//to the same stacking context
-			renderBlockReplacedChildren(graphicContext, relativeOffset);
+			renderBlockReplacedChildren(graphicContext);
 
 			//render all the line boxes belonging to the same stacking context
-			renderLineBoxes(graphicContext, relativeOffset);
+			renderLineBoxes(graphicContext);
 			
 			//clip the graphic context of the block box renderer if it doesn't allow
 			//overflows
 			clip();
 			
 			//render the scrollbar if needed
-			renderScrollBars(graphicContext, relativeOffset);
+			renderScrollBars(graphicContext);
 
 			//render all the child layers with a z-index of 0 or auto
-			_layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext, relativeOffset);
+			_layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext);
 			//render all the child layer with a positive z-index
-			_layerRenderer.renderPositiveChildElementRenderers(graphicContext, relativeOffset);
+			_layerRenderer.renderPositiveChildElementRenderers(graphicContext);
 		}
 		//same as above but don't render the child LayerRenderer if this 
 		//block box doesn't actually establish a new stacking context
 		else if (rendersAsIfEstablishingStackingContext() == true)
 		{
-			renderBlockContainerChildren(graphicContext, relativeOffset);
+			renderBlockContainerChildren(graphicContext);
 			
 			//TODO 5 : render non-positioned float
 			
-			renderBlockReplacedChildren(graphicContext, relativeOffset);
-			renderLineBoxes(graphicContext, relativeOffset);
+			renderBlockReplacedChildren(graphicContext);
+			renderLineBoxes(graphicContext);
 		}
 	}
 	
@@ -290,7 +290,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Render all the LineBoxes of child BlockBoxRenderer which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderLineBoxes(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderLineBoxes(graphicContext:NativeElement):Void
 	{
 		//retrieve all the line boxes in all of the lines generated in this BlockBoxRenderer
 		var lineBoxes:Array<LineBox> = getChilrenLineBoxes(this, _layerRenderer);
@@ -298,7 +298,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//loop in all of the lineboxes
 		for (i in 0...lineBoxes.length)
 		{
-			lineBoxes[i].render(graphicContext, relativeOffset);
+			lineBoxes[i].render(graphicContext);
 		}
 	}
 	
@@ -306,12 +306,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Render all the replaced children displayed as blocks which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderBlockReplacedChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderBlockReplacedChildren(graphicContext:NativeElement):Void
 	{
 		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this, _layerRenderer);
 		for (i in 0...childrenBlockReplaced.length)
 		{
-			childrenBlockReplaced[i].render(graphicContext, relativeOffset);
+			childrenBlockReplaced[i].render(graphicContext);
 		}
 	}
 	
@@ -319,32 +319,32 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Render all the BlockBoxRenderer which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderBlockContainerChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderBlockContainerChildren(graphicContext:NativeElement):Void
 	{
 		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(this, _layerRenderer);
 
 		for (i in 0...childrenBlockContainer.length)
 		{
-			childrenBlockContainer[i].render(graphicContext, relativeOffset);
+			childrenBlockContainer[i].render(graphicContext);
 		}
 	}
 	
 	/**
 	 * Render the scrollbars of this BlockBoxRenderer if needed
 	 */
-	private function renderScrollBars(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderScrollBars(graphicContext:NativeElement):Void
 	{
 		
 		if (_horizontalScrollBar != null)
 		{
-			_horizontalScrollBar.elementRenderer.render(graphicContext, relativeOffset);
+			_horizontalScrollBar.elementRenderer.render(graphicContext);
 			updateScroll();
 
 		}
 		
 		if (_verticalScrollBar != null)
 		{
-			_verticalScrollBar.elementRenderer.render(graphicContext, relativeOffset);
+			_verticalScrollBar.elementRenderer.render(graphicContext);
 			updateScroll();
 		}
 	}

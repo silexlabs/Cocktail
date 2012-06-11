@@ -311,7 +311,7 @@ class ElementRenderer extends Node
 	 * Render this ElementRenderer using the provided
 	 * graphic context as canvas
 	 */
-	public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
+	public function render(parentGraphicContext:NativeElement):Void
 	{
 		clear();
 	}

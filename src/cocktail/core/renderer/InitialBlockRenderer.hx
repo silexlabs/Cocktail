@@ -152,7 +152,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		
 		//start the rendering at the root layer renderer
 		//TODO 3 : should instead call an invalidateRendering method on LayerRenderer ?
-		render(flash.Lib.current, { x:0.0, y:0.0 } );
+		render(flash.Lib.current);
 		
 		#end
 	}

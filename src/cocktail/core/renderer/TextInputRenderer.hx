@@ -82,7 +82,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	/**
 	 * Overriden to also render the native flash text field
 	 */
-	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
+	override private function renderEmbeddedAsset(graphicContext:NativeElement)
 	{
 		updateNativeTextField();
 		#if (flash9 || nme)

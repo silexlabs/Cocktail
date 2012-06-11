@@ -37,15 +37,15 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	 * When rendered, renders the embedded picture using the
 	 * graphicContext as canvas
 	 */
-	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
+	override private function renderEmbeddedAsset(graphicContext:NativeElement)
 	{
 		var htmlImageElement:EmbeddedElement = cast(_node);
 		#if (flash9 || nme)
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		containerGraphicContext.addChild(htmlImageElement.embeddedAsset);
 		
-		htmlImageElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + relativeOffset.x;
-		htmlImageElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + relativeOffset.y;
+		htmlImageElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
+		htmlImageElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
 		htmlImageElement.embeddedAsset.width = _coreStyle.computedStyle.width;
 		htmlImageElement.embeddedAsset.height = _coreStyle.computedStyle.height;
 		

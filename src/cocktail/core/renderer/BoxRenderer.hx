@@ -72,15 +72,14 @@ class BoxRenderer extends ElementRenderer
 	 * overriden to render elements spefic to a box (background, border...)
 	 * TODO 4 : apply visibility
 	 */
-	override public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
+	override public function render(parentGraphicContext:NativeElement):Void
 	{
-		super.render(parentGraphicContext, parentRelativeOffset);
+		super.render(parentGraphicContext);
 		//get the relative offset of this ElementRenderer and add it to
 		//its parent
-		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
-		renderBackground(_graphicsContext, relativeOffset);
-		renderChildren(_graphicsContext, relativeOffset);
-		applyVisualEffects(_graphicsContext, relativeOffset );
+		renderBackground(_graphicsContext);
+		renderChildren(_graphicsContext);
+		applyVisualEffects(_graphicsContext);
 		
 		//draws the graphic context of this block box on the one of its
 		//parent
@@ -97,7 +96,7 @@ class BoxRenderer extends ElementRenderer
 	/**
 	 * Render the background of the box using the provided graphic context
 	 */
-	private function renderBackground(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderBackground(graphicContext:NativeElement):Void
 	{
 
 		var backgroundManager:BackgroundManager = new BackgroundManager();
@@ -119,7 +118,7 @@ class BoxRenderer extends ElementRenderer
 	/**
 	 * Render the children of the box
 	 */
-	private function renderChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderChildren(graphicContext:NativeElement):Void
 	{
 		//abstract
 	}
@@ -128,19 +127,22 @@ class BoxRenderer extends ElementRenderer
 	 * Apply the computed visual effect
 	 * using the graphic context
 	 */
-	private function applyVisualEffects(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function applyVisualEffects(graphicContext:NativeElement):Void
 	{
 		applyOpacity(graphicContext);
-		applyTransformationMatrix(graphicContext, relativeOffset);
+		applyTransformationMatrix(graphicContext);
 	}
 	
 	/**
 	 * Apply the transformation matrix computed with the
 	 * transform and transform-origin style on the graphic context
 	 */
-	private function applyTransformationMatrix(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function applyTransformationMatrix(graphicContext:NativeElement):Void
 	{
+		var relativeOffset:PointData = getRelativeOffset();
 		var concatenatedMatrix:Matrix = getConcatenatedMatrix(computedStyle.transform, relativeOffset);
+		
+		//apply relative positioning as well
 		concatenatedMatrix.translate(relativeOffset.x, relativeOffset.y);
 		
 		//get the data of the abstract matrix

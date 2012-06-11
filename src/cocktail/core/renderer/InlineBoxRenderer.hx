@@ -41,7 +41,7 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 * Overriden as InlineBoxRenderer doesn't render a background of his own, it is its
 	 * generatd line boxes which render their own backgrounds
 	 */
-	override private function renderBackground(graphicContext:NativeElement, relativeOffset:PointData):Void
+	override private function renderBackground(graphicContext:NativeElement):Void
 	{
 		
 	}
@@ -50,24 +50,24 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 * Overriden as rendering an inline box renderer consist in rendering all of the 
 	 * line boxes it generated
 	 */
-	override private function renderChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	override private function renderChildren(graphicContext:NativeElement):Void
 	{
-		super.renderChildren(graphicContext, relativeOffset);
+		super.renderChildren(graphicContext);
 		
 		//render negative z-index LayerRenderer
 		if (establishesNewStackingContext() == true)
 		{
-			_layerRenderer.renderNegativeChildElementRenderers(graphicContext, relativeOffset);
+			_layerRenderer.renderNegativeChildElementRenderers(graphicContext);
 		}
 		
 		//render all the child line boxes which belong to the same
 		//stacking context as this InlineBoxRenderer
-		renderChildLineBoxes(graphicContext, relativeOffset);
+		renderChildLineBoxes(graphicContext);
 		
 		if (establishesNewStackingContext() == true)
 		{	
-			_layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext, relativeOffset);
-			_layerRenderer.renderPositiveChildElementRenderers(graphicContext, relativeOffset);
+			_layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext);
+			_layerRenderer.renderPositiveChildElementRenderers(graphicContext);
 		}
 	}
 	
@@ -78,7 +78,7 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	/**
 	 * Actually render the child line boxes
 	 */
-	private function renderChildLineBoxes(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderChildLineBoxes(graphicContext:NativeElement):Void
 	{
 		for (i in 0..._lineBoxes.length)
 		{
@@ -88,7 +88,7 @@ class InlineBoxRenderer extends FlowBoxRenderer
 			{
 				if (childLineBoxes[j].layerRenderer == _layerRenderer)
 				{
-					childLineBoxes[j].render(graphicContext, relativeOffset);
+					childLineBoxes[j].render(graphicContext);
 				}
 			}
 		}

@@ -151,25 +151,25 @@ class LayerRenderer extends Node
 	/**
 	 * start the rendering of the positive z-index children
 	 */ 
-	public function renderPositiveChildElementRenderers(graphicContext:NativeElement, relativeOffset:PointData):Void
+	public function renderPositiveChildElementRenderers(graphicContext:NativeElement):Void
 	{
-		renderChildElementRenderers(_positiveZIndexChildRenderers, graphicContext, relativeOffset);
+		renderChildElementRenderers(_positiveZIndexChildRenderers, graphicContext);
 	}
 	
 	/**
 	 * start the rendering of the zero and auto z-index children
 	 */ 
-	public function renderZeroAndAutoChildElementRenderers(graphicContext:NativeElement, relativeOffset:PointData):Void
+	public function renderZeroAndAutoChildElementRenderers(graphicContext:NativeElement):Void
 	{
-		renderChildElementRenderers(_zeroAndAutoZIndexChildRenderers, graphicContext, relativeOffset);
+		renderChildElementRenderers(_zeroAndAutoZIndexChildRenderers, graphicContext);
 	}
 	
 	/**
 	 * start the rendering of the negative z-index children
 	 */
-	public function renderNegativeChildElementRenderers(graphicContext:NativeElement, relativeOffset:PointData):Void
+	public function renderNegativeChildElementRenderers(graphicContext:NativeElement):Void
 	{
-		renderChildElementRenderers(_negativeZIndexChildRenderers, graphicContext, relativeOffset);
+		renderChildElementRenderers(_negativeZIndexChildRenderers, graphicContext);
 	}
 	
 	/////////////////////////////////
@@ -180,7 +180,7 @@ class LayerRenderer extends Node
 	 * Utils method to start the rendering of an array of child root
 	 * ElementRenderer
 	 */
-	private function renderChildElementRenderers(rootElementRenderers:Array<ElementRenderer>, graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderChildElementRenderers(rootElementRenderers:Array<ElementRenderer>, graphicContext:NativeElement):Void
 	{
 		for (i in 0...rootElementRenderers.length)
 		{
@@ -189,7 +189,7 @@ class LayerRenderer extends Node
 			//TODO 1 : this cause a z-index bug as if the parent is a child of the formatting
 			//context root, the child element renderer is not displayed on top of the in-flow elements
 			var parentElementRenderer:ElementRenderer = cast(rootElementRenderers[i].parentNode);
-			rootElementRenderers[i].render(parentElementRenderer.graphicsContext, relativeOffset);
+			rootElementRenderers[i].render(parentElementRenderer.graphicsContext);
 		}
 	}
 	
