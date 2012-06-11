@@ -45,10 +45,10 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * overriden to also render the embedded asset, for instance a picture for
 	 * an image renderer
 	 */
-	override private function renderChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	override private function renderChildren(graphicContext:NativeElement):Void
 	{
-		super.renderChildren(graphicContext, relativeOffset);
-		renderEmbeddedAsset(graphicContext, relativeOffset);
+		super.renderChildren(graphicContext);
+		renderEmbeddedAsset(graphicContext);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	/**
 	 * Renders an embedded asset using the graphic context as canvas
 	 */
-	private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
+	private function renderEmbeddedAsset(graphicContext:NativeElement)
 	{
 		//abstract
 	}

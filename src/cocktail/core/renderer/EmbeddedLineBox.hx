@@ -36,9 +36,9 @@ class EmbeddedLineBox extends LineBox
 	/**
 	 * Embeded LineBoxes defer rendering to their ElementRenderer
 	 */
-	override public function render(graphicContext:NativeElement, parentRelativeOffset:PointData):Void
+	override public function render(graphicContext:NativeElement):Void
 	{
-		_elementRenderer.render(graphicContext, parentRelativeOffset);
+		_elementRenderer.render(graphicContext);
 	}
 	
 	/////////////////////////////////
