@@ -166,7 +166,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	override private function renderChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
 	{
 		super.renderChildren(graphicContext, relativeOffset);
-		
+
 		//the BlockBoxRenderer is responsible for rendering its children in the same stacking
 		//context if it establishes a stacking context itself
 		if (establishesNewStackingContext() == true)
@@ -635,7 +635,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO 1 : doc
+	/**
+	 * Actually starts formatting this BlockBoxRenderer
+	 * if it indeed establishes a new formatting context.
+	 * 
+	 * Instantiate the right formatting context, based
+	 * on the display of the children
+	 */
 	private function doFormat():Void
 	{
 		if (childrenInline() == true)

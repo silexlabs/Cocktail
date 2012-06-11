@@ -184,7 +184,12 @@ class LayerRenderer extends Node
 	{
 		for (i in 0...rootElementRenderers.length)
 		{
-			rootElementRenderers[i].render(graphicContext, relativeOffset);
+			//the child element renderer is attached to its parent graphic context
+			//
+			//TODO 1 : this cause a z-index bug as if the parent is a child of the formatting
+			//context root, the child element renderer is not displayed on top of the in-flow elements
+			var parentElementRenderer:ElementRenderer = cast(rootElementRenderers[i].parentNode);
+			rootElementRenderers[i].render(parentElementRenderer.graphicsContext, relativeOffset);
 		}
 	}
 	

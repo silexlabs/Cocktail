@@ -76,6 +76,14 @@ class HTMLConstants
 	
 	public static inline var TARGET_TOP:String = "_top";
 	
+	// html tokens
+	
+	public static inline var HTML_TOKEN_LESS_THAN:String = "<";
+	
+	public static inline var HTML_TOKEN_MORE_THAN:String = ">";
+	
+	public static inline var HTML_TOKEN_SOLIDUS:String = "/";
+	
 	public function new() 
 	{
 		

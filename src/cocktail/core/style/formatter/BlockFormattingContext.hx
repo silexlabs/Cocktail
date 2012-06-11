@@ -61,7 +61,6 @@ class BlockFormattingContext extends FormattingContext
 				child.bounds.width =  floatData.width;
 				child.bounds.height =  floatData.height;
 				
-				
 				child.bounds.x += concatenatedX;
 				
 				
