@@ -235,8 +235,8 @@ class FloatsManager
 		//HTMLElement
 		
 		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
-		var floatWidth:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
-		var floatHeight:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+		var floatWidth:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight + computedStyle.marginLeft + computedStyle.marginRight;
+		var floatHeight:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom + computedStyle.marginTop + computedStyle.marginBottom;
 	
 		//get the first y position where the float can be placed
 		var floatY:Float = getFirstAvailableY(currentFormattingContextY, floatWidth, containingBlockWidth);

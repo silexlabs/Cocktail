@@ -149,11 +149,9 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	private function startRendering():Void
 	{
 		#if (flash9 || nme)
-		
 		//start the rendering at the root layer renderer
 		//TODO 3 : should instead call an invalidateRendering method on LayerRenderer ?
 		render(flash.Lib.current);
-		
 		#end
 	}
 	

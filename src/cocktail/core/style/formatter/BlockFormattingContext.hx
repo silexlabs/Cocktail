@@ -53,19 +53,7 @@ class BlockFormattingContext extends FormattingContext
 		{
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 
-			if (child.isFloat() == true)
-			{
-				var floatData = _floatsManager.registerFloat(child, concatenatedY, 0, elementRenderer.computedStyle.width);
-				child.bounds.x = floatData.x;
-				child.bounds.y =  floatData.y;
-				child.bounds.width =  floatData.width;
-				child.bounds.height =  floatData.height;
-				
-				child.bounds.x += concatenatedX;
-				
-				
-				continue;
-			}
+			
 			
 			
 			var marginTop:Int = getCollapsedMarginTop(child, parentCollapsedMarginTop);
@@ -76,9 +64,6 @@ class BlockFormattingContext extends FormattingContext
 			var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 			var height:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 			
-			
-		//	concatenatedY = _floatsManager.getFirstAvailableY(concatenatedY, width, elementRenderer.computedStyle.width);
-
 			var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft;
 			var y:Float = concatenatedY + marginTop;
 			
@@ -87,9 +72,19 @@ class BlockFormattingContext extends FormattingContext
 			child.bounds.width = width;
 			child.bounds.height = height;
 			
+			
+			if (child.isFloat() == true)
+			{
+				var floatData = _floatsManager.registerFloat(child, concatenatedY, 0, elementRenderer.computedStyle.width);
+				child.bounds.x = floatData.x + child.coreStyle.computedStyle.marginLeft;
+				child.bounds.y =  floatData.y + child.coreStyle.computedStyle.marginTop;
+				
+				child.bounds.x += concatenatedX;
+				
+			}
 			//for child with children of their own, their padding and margin are added at
 			//the beginning of the recursive method
-			if (child.hasChildNodes() == true)
+			else if (child.hasChildNodes() == true)
 			{
 				//children starting their own formatting context are not laid out
 				//by this formatting context
