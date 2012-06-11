@@ -334,7 +334,7 @@ class InlineFormattingContext extends FormattingContext
 				//
 				//reset the global formatting context for the next line
 				//_formattingContextData.x = 0;
-				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData.y + _formattingContextRoot.bounds.y, _unbreakableWidth,
+				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData.y, _unbreakableWidth,
 				_formattingContextRoot.coreStyle.computedStyle.width);
 				
 				
