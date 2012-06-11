@@ -7,6 +7,7 @@
 */
 package cocktail.core.style;
 
+import cocktail.core.dom.Node;
 import cocktail.core.unit.UnitData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.geom.Matrix;
@@ -1390,3 +1391,9 @@ import cocktail.core.renderer.TextRenderer;
 		var left:Array<RectangleData>;
 		var right:Array<RectangleData>;
 	}
+	
+	typedef FloatData = {
+		var node:ElementRenderer;
+		var bounds:RectangleData;
+	}
+	

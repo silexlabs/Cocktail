@@ -28,21 +28,52 @@ import haxe.Log;
  */
 class BlockFormattingContext extends FormattingContext
 {
+	
+	private var _registeredFloats:Array<FloatData>;
+	
 	/**
 	 * class constructor
 	 */
 	public function new(formattingContextRoot:BlockBoxRenderer) 
 	{
 		super(formattingContextRoot);
+		_registeredFloats = new Array<FloatData>();
 	}
 	
 	override private function startFormatting():Void
 	{
 		//remove margin of formatting context, as child must be placed relative to padding box
-		doFormat(_formattingContextRoot, - _formattingContextRoot.coreStyle.computedStyle.marginLeft, - _formattingContextRoot.coreStyle.computedStyle.marginTop, _formattingContextRoot.coreStyle.computedStyle.marginTop,  _formattingContextRoot.coreStyle.computedStyle.marginBottom);
+		doFormat(_formattingContextRoot, - _formattingContextRoot.coreStyle.computedStyle.marginLeft, - _formattingContextRoot.coreStyle.computedStyle.marginTop, 0, _formattingContextRoot.coreStyle.computedStyle.marginTop,  _formattingContextRoot.coreStyle.computedStyle.marginBottom);
 	}
 	
-	private function doFormat(elementRenderer:ElementRenderer, concatenatedX:Float, concatenatedY:Float, parentCollapsedMarginTop:Int, parentCollapsedMarginBottom:Int):Float
+	//TODO 1 : should be on FloatManager
+	private function isFloatRegistered(child:ElementRenderer):Bool
+	{
+		for (i in 0..._registeredFloats.length)
+		{
+			if (_registeredFloats[i].node == child)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	private function getRegisteredFloat(child:ElementRenderer):FloatData
+	{
+		for (i in 0..._registeredFloats.length)
+		{
+			if (_registeredFloats[i].node == child)
+			{
+				return _registeredFloats[i];
+			}
+		}
+		
+		return null;
+	}
+	
+	private function doFormat(elementRenderer:ElementRenderer, concatenatedX:Float, concatenatedY:Float, currentLineY:Float, parentCollapsedMarginTop:Int, parentCollapsedMarginBottom:Int):Float
 	{
 		concatenatedX += elementRenderer.coreStyle.computedStyle.paddingLeft  + elementRenderer.coreStyle.computedStyle.marginLeft;
 
@@ -52,13 +83,9 @@ class BlockFormattingContext extends FormattingContext
 		for (i in 0...elementRenderer.childNodes.length)
 		{
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
-
-			
-			
 			
 			var marginTop:Int = getCollapsedMarginTop(child, parentCollapsedMarginTop);
 			var marginBottom:Int = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
-			
 			
 			var computedStyle:ComputedStyle = child.coreStyle.computedStyle;
 			var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
@@ -72,12 +99,26 @@ class BlockFormattingContext extends FormattingContext
 			child.bounds.width = width;
 			child.bounds.height = height;
 			
-			
 			if (child.isFloat() == true)
 			{
-				var floatData = _floatsManager.registerFloat(child, concatenatedY, 0, elementRenderer.computedStyle.width);
-				child.bounds.x = floatData.x + child.coreStyle.computedStyle.marginLeft;
-				child.bounds.y =  floatData.y + child.coreStyle.computedStyle.marginTop;
+				//TODO 1 : floats should use currentLineY instead, else, if a floated
+				//element is declared after an inline one, it won't be on the right line
+				if (isFloatRegistered(child) == false)
+				{
+					var floatBounds:RectangleData = _floatsManager.registerFloat(child, concatenatedY, 0, elementRenderer.computedStyle.width);
+					_registeredFloats.push( {
+						node:child, 
+						bounds:floatBounds
+					});
+					
+					format(_floatsManager);
+					return 0.0;
+				}
+				
+				var floatBounds:RectangleData = getRegisteredFloat(child).bounds;
+				
+				child.bounds.x = floatBounds.x + child.coreStyle.computedStyle.marginLeft;
+				child.bounds.y = floatBounds.y + child.coreStyle.computedStyle.marginTop;
 				
 				child.bounds.x += concatenatedX;
 				
@@ -90,7 +131,8 @@ class BlockFormattingContext extends FormattingContext
 				//by this formatting context
 				if (child.establishesNewFormattingContext() == false)
 				{
-					concatenatedY = doFormat(child, concatenatedX, concatenatedY, marginTop, marginBottom);
+					currentLineY = child.bounds.y;
+					concatenatedY = doFormat(child, concatenatedX, concatenatedY, currentLineY, marginTop, marginBottom);
 				}
 				else 
 				{
@@ -103,7 +145,7 @@ class BlockFormattingContext extends FormattingContext
 							var inlineFormattingContext:InlineFormattingContext = new InlineFormattingContext(cast(child));
 							inlineFormattingContext.format(_floatsManager);
 						}
-						
+						currentLineY = child.bounds.y;
 						concatenatedY += child.bounds.height + marginTop + marginBottom;
 					}	
 				}
