@@ -496,7 +496,7 @@ class InlineFormattingContext extends FormattingContext
 	private function getRemainingLineWidth():Float
 	{
 		return _formattingContextRoot.coreStyle.computedStyle.width - _formattingContextData.x - 
-		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.coreStyle.computedStyle.width);
+		_floatsManager.getRightFloatOffset(_formattingContextData.y + _formattingContextRoot.bounds.y, _formattingContextRoot.coreStyle.computedStyle.width);
 	}
 	
 	/**
@@ -519,7 +519,7 @@ class InlineFormattingContext extends FormattingContext
 		var flowX:Float;
 		
 		remainingSpace = _formattingContextRoot.coreStyle.computedStyle.width - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - 
-		_floatsManager.getRightFloatOffset(_formattingContextData.y, _formattingContextRoot.coreStyle.computedStyle.width);
+		_floatsManager.getRightFloatOffset(_formattingContextData.y + _formattingContextRoot.bounds.y, _formattingContextRoot.coreStyle.computedStyle.width);
 		flowX = _formattingContextRoot.coreStyle.computedStyle.paddingLeft;
 		
 		
