@@ -7,6 +7,7 @@
 */
 package cocktail.core.html;
 import cocktail.core.dom.Node;
+import cocktail.core.renderer.BodyBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.renderer.TextRenderer;
@@ -25,5 +26,18 @@ class HTMLBodyElement extends HTMLElement
 	public function new() 
 	{	
 		super(HTMLConstants.HTML_BODY_TAG_NAME);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING TREE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The HTMLBodyElement has its own block box subclass
+	 */
+	override private function createElementRenderer():Void
+	{ 
+		_elementRenderer = new BodyBoxRenderer(this);
+		_elementRenderer.coreStyle = _coreStyle;
 	}
 }

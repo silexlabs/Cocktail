@@ -26,9 +26,6 @@ import haxe.Timer;
  * 
  * TODO 3 : update doc
  * 
- * TODO 1 : should have a custom renderer for the HTMLBOdyElement also
- * to make the background span the whole canvas
- * 
  * @author Yannick DOMINGUEZ
  */
 class InitialBlockRenderer extends BlockBoxRenderer

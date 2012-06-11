@@ -557,8 +557,7 @@ class HTMLElement extends Element
 				//ElementRenderer, then destroy it
 				detachFromParentElementRenderer();
 				
-				//TODO 1 : should call a cleanup method as there is a cross
-				//-reference to the HTMLElement
+				_elementRenderer.dispose();
 				_elementRenderer = null;
 			}
 		}
