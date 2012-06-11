@@ -291,14 +291,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		return getWindowData();
 	}
 	
-	/**
-	 * The root of the runtime always starts a block formatting context
-	 */
-	override private function getFormattingContext():FormattingContext
-	{
-		return new BlockFormattingContext(this);
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////

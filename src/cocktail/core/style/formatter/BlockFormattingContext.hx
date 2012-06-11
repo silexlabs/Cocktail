@@ -56,11 +56,11 @@ class BlockFormattingContext extends FormattingContext
 			if (child.isFloat() == true)
 			{
 				var floatData = _floatsManager.registerFloat(child, concatenatedY, concatenatedX, elementRenderer.computedStyle.width);
-				trace(child.bounds);
-				trace(floatData);
 				child.bounds = floatData;
+				
 				continue;
 			}
+			
 			
 			var marginTop:Int = getCollapsedMarginTop(child, parentCollapsedMarginTop);
 			var marginBottom:Int = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
@@ -80,7 +80,6 @@ class BlockFormattingContext extends FormattingContext
 			child.bounds.y = y;
 			child.bounds.width = width;
 			child.bounds.height = height;
-				
 			
 			//for child with children of their own, their padding and margin are added at
 			//the beginning of the recursive method
@@ -100,7 +99,8 @@ class BlockFormattingContext extends FormattingContext
 						//boxes, because of floats
 						if (child.childrenInline() == true)
 						{
-							child.format();
+							var inlineFormattingContext:InlineFormattingContext = new InlineFormattingContext(cast(child));
+							inlineFormattingContext.format(_floatsManager);
 						}
 						
 						concatenatedY += child.bounds.height + marginTop + marginBottom;
@@ -133,11 +133,6 @@ class BlockFormattingContext extends FormattingContext
 		{
 			elementRenderer.bounds.height = childHeight + elementRenderer.coreStyle.computedStyle.paddingBottom + elementRenderer.coreStyle.computedStyle.paddingTop ;
 			elementRenderer.coreStyle.computedStyle.height = Math.round(childHeight);
-		}
-		
-		if (elementRenderer.isFloat() == true)
-		{
-			trace(elementRenderer.coreStyle.computedStyle.width);
 		}
 		
 		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingBottom + parentCollapsedMarginBottom;

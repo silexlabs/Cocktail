@@ -1359,26 +1359,26 @@ import cocktail.core.renderer.TextRenderer;
 		 * the x position where the next in flow htmlElement
 		 * should be placed in the formatting context
 		 */
-		var x:Int;
+		var x:Float;
 		
 		/**
 		 * the y position where the next in flow htmlElement
 		 * should be placed in the formatting context
 		 */
-		var y:Int;
+		var y:Float;
 		
 		/**
 		 * Determine the largest width of a line that was formatted
 		 * in the current formatting context
 		 */
-		var maxWidth:Int;
+		var maxWidth:Float;
 		
 		/**
 		 * The accumulated height of all the in flow htmlElements
 		 * (includes paddings and margins) of the current
 		 * formatting context
 		 */
-		var maxHeight:Int;
+		var maxHeight:Float;
 	}
 	
 	/**

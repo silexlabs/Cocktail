@@ -79,13 +79,16 @@ class FormattingContext
 	 */
 	private function initFormattingContextData():Void
 	{
+		var x:Float = _formattingContextRoot.coreStyle.computedStyle.paddingLeft;
+		var y:Float = _formattingContextRoot.coreStyle.computedStyle.paddingTop;
+		
 		_formattingContextData = {
 			//TODO 4 : x and y still used by inline formatting context, bu shouldn't be necessary anymore,
 			//use instead local var in recursive method, like for block formatting context
-			x : _formattingContextRoot.coreStyle.computedStyle.paddingLeft,
-			y : _formattingContextRoot.coreStyle.computedStyle.paddingTop,
-			maxHeight : 0,
-			maxWidth:0
+			x : x,
+			y : y,
+			maxHeight : 0.0,
+			maxWidth:0.0
 		};
 	}
 	
@@ -96,9 +99,9 @@ class FormattingContext
 	/**
 	 * starts a formatting
 	 */
-	public function format():Void
+	public function format(floatsManager:FloatsManager):Void
 	{	
-		_floatsManager = new FloatsManager();
+		_floatsManager = floatsManager;
 		initFormattingContextData();
 		startFormatting();
 		applyShrinkToFitIfNeeded(_formattingContextRoot, _formattingContextData.maxWidth);
@@ -110,7 +113,7 @@ class FormattingContext
 	
 	private function startFormatting():Void
 	{
-		
+		//abstract
 	}
 
 	private function applyShrinkToFitIfNeeded(elementRenderer:ElementRenderer, minimumWidth:Float):Void

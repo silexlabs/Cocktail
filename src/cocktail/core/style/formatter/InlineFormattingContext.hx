@@ -12,6 +12,7 @@ import cocktail.core.renderer.InlineBlockLineBox;
 import cocktail.core.renderer.LineBox;
 import cocktail.core.renderer.RootLineBox;
 import cocktail.core.renderer.TextLineBox;
+import cocktail.core.style.floats.FloatsManager;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.html.HTMLElement;
@@ -51,7 +52,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private var _unbreakableLineBoxes:Array<LineBox>;
 	
-	private var _unbreakableWidth:Int;
+	private var _unbreakableWidth:Float;
 	
 	//TODO : doc + should find a cleaner way for text indent
 	private var _firstLineFormatted:Bool;
@@ -62,7 +63,7 @@ class InlineFormattingContext extends FormattingContext
 	public function new(formattingContextRoot:BlockBoxRenderer) 
 	{
 		_unbreakableLineBoxes = new Array<LineBox>();
-		_unbreakableWidth = 0;
+		_unbreakableWidth = 0.0;
 		_firstLineFormatted = false;
 		super(formattingContextRoot);
 	}
@@ -70,6 +71,7 @@ class InlineFormattingContext extends FormattingContext
 	
 	override private function startFormatting():Void
 	{
+		
 		_unbreakableLineBoxes = new Array<LineBox>();
 		var rootLineBoxes:Array<LineBox> = new Array<LineBox>();
 		var initialRootLineBox:RootLineBox = new RootLineBox(_formattingContextRoot);
@@ -77,13 +79,16 @@ class InlineFormattingContext extends FormattingContext
 		
 		//TODO : should implement text indent in a cleaner way
 		_unbreakableWidth = _formattingContextRoot.coreStyle.computedStyle.textIndent;
-		_formattingContextData.x = _formattingContextRoot.coreStyle.computedStyle.textIndent;
 		
+		//_formattingContextData.y += _formattingContextRoot.bounds.y;
+		_formattingContextData.x = _formattingContextRoot.coreStyle.computedStyle.textIndent;
+		_formattingContextData.x += _floatsManager.getLeftFloatOffset(_formattingContextRoot.bounds.y);
+
 		doFormat(_formattingContextRoot, initialRootLineBox, rootLineBoxes, []);
 
 		//format the last line
 		formatLine(rootLineBoxes[rootLineBoxes.length - 1], true);
-		
+
 		_formattingContextRoot.lineBoxes = rootLineBoxes;
 
 		//apply formatting height to formatting context root if auto height
@@ -91,6 +96,7 @@ class InlineFormattingContext extends FormattingContext
 		{
 			_formattingContextRoot.bounds.height = _formattingContextData.y  + _formattingContextRoot.coreStyle.computedStyle.paddingBottom ;
 			_formattingContextRoot.coreStyle.computedStyle.height = Math.round(_formattingContextRoot.bounds.height - _formattingContextRoot.coreStyle.computedStyle.paddingBottom  - _formattingContextRoot.coreStyle.computedStyle.paddingTop);
+			
 		}
 	}
 	
@@ -149,8 +155,7 @@ class InlineFormattingContext extends FormattingContext
 				_unbreakableWidth += child.coreStyle.computedStyle.marginRight + child.coreStyle.computedStyle.paddingRight;
 			}
 			//here the child is displayed as an inline-block as it starts a new formatting context
-			//it generates only one line box from the perspective of this inline formatting
-			//context
+			//it generates only one line box 
 			else if (child.establishesNewFormattingContext() == true)
 			{
 				//TODO 2 : where should those value be set ?
@@ -174,7 +179,7 @@ class InlineFormattingContext extends FormattingContext
 				
 				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
 			}
-			//TODO : messy, inline block and embedded should not share classes
+			
 			//TODO : Text should not be considered embed, isEmbedded should be removed
 			else if (child.isReplaced() == true && child.isText() == false)
 			{
@@ -318,6 +323,7 @@ class InlineFormattingContext extends FormattingContext
 				
 			//get the remaining available space on the current line
 			var remainingLineWidth:Float = getRemainingLineWidth();
+
 			
 			//TODO : break opportunity is not supposed to always happen
 
@@ -327,7 +333,12 @@ class InlineFormattingContext extends FormattingContext
 				//TODO : should be padding left instead ?
 				//
 				//reset the global formatting context for the next line
-				_formattingContextData.x = 0;
+				//_formattingContextData.x = 0;
+				_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData.y + _formattingContextRoot.bounds.y, _unbreakableWidth,
+				_formattingContextRoot.coreStyle.computedStyle.width);
+				
+				
+				_formattingContextData.x = _floatsManager.getLeftFloatOffset(_formattingContextData.y);
 				
 				//format the current line which is currently the last in the line array
 				//, now that all the line box in it are known
@@ -521,7 +532,7 @@ class InlineFormattingContext extends FormattingContext
 		
 		//take the float into accounts and the padding of the containing HTMLElement
 		flowX += _floatsManager.getLeftFloatOffset(_formattingContextData.y);
-		
+
 		//do align the HTMLElements, the text align style of the containing HTMLElement
 		//determining the alignement to apply
 		switch (_formattingContextRoot.coreStyle.computedStyle.textAlign)
@@ -955,7 +966,7 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
-	private function alignLineBoxesVertically(lineBox:LineBox, lineBoxAscent:Float, formattingContextY:Int, parentBaseLineOffset:Float):Void
+	private function alignLineBoxesVertically(lineBox:LineBox, lineBoxAscent:Float, formattingContextY:Float, parentBaseLineOffset:Float):Void
 	{
 		for (i in 0...lineBox.childNodes.length)
 		{

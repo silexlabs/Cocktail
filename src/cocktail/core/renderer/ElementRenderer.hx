@@ -319,12 +319,6 @@ class ElementRenderer extends Node
 	// PUBLIC LAYOUT METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO 1 : doc
-	public function format():Void
-	{
-		//abstract
-	}
-	
 	/*
 	 * Layout this ElementRenderer so that it knows its bounds and can be rendered to the screen
 	 */ 

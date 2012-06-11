@@ -5,7 +5,7 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 /**
- * ...
+ * TODO 1 : doc
  * @author Yannick DOMINGUEZ
  */
 
