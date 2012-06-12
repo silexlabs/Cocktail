@@ -166,7 +166,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	override private function renderChildren(graphicContext:NativeElement):Void
 	{
 		super.renderChildren(graphicContext);
-
+		
 		//the BlockBoxRenderer is responsible for rendering its children in the same stacking
 		//context if it establishes a stacking context itself
 		if (establishesNewStackingContext() == true)
@@ -182,7 +182,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//render all the replaced (embedded) box displayed as blocks belonging
 			//to the same stacking context
 			renderBlockReplacedChildren(graphicContext);
-
+			
 			//render all the line boxes belonging to the same stacking context
 			renderLineBoxes(graphicContext);
 			
@@ -443,7 +443,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		for (i in 0...rootRenderer.childNodes.length)
 		{
 			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
-
 			//TODO 2 : this check is to prevent positioned child with a zindex of 0 from being returned, should
 			//put in a method
 			if (child.layerRenderer == referenceLayer && child.isPositioned() == false)
@@ -992,9 +991,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		if (_horizontalScrollBar == null)
 		{
-			_horizontalScrollBar = new ScrollBar(false);
-			appendChild(_horizontalScrollBar.elementRenderer);
-			_horizontalScrollBar.onscroll = onHorizontalScroll;
+			//_horizontalScrollBar = new ScrollBar(false);
+			//appendChild(_horizontalScrollBar.elementRenderer);
+			//_horizontalScrollBar.onscroll = onHorizontalScroll;
 		}
 		//refresh the max scroll when a layout of the BlockBoxRenderer happens
 		if (_horizontalScrollBar != null)
@@ -1046,11 +1045,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		if (_verticalScrollBar == null)
 		{
 			_verticalScrollBar = new ScrollBar(true);
-			_verticalScrollBar.attach();
 			appendChild(_verticalScrollBar.elementRenderer);
 			_verticalScrollBar.onscroll = onVerticalScroll;
-			
-			var htmlElement:HTMLElement = cast(_node);
 		}
 		if (_verticalScrollBar != null)
 		{
@@ -1067,7 +1063,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			
 			removeChild(_verticalScrollBar.elementRenderer);
-			_verticalScrollBar.detach();
 			_verticalScrollBar.onscroll = null;
 			
 			var htmlElement:HTMLElement = cast(_node);
@@ -1246,6 +1241,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//formatting context
 		
 		return establishesNewFormattingContext;
+	}
+	
+	override public function isBlockContainer():Bool
+	{
+		return true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

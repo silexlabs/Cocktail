@@ -50,5 +50,6 @@ enum InvalidationReason {
 	styleChanged(styleName:String);
 	childStyleChanged(styleName:String);
 	positionedChildStyleChanged(styleName:String);
+	needsImmediateLayout;
 	other;
 }

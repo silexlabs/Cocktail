@@ -38,6 +38,7 @@ import haxe.Log;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.style.StyleData;
 import lib.hxtml.IStyleProxy;
+import cocktail.core.renderer.RendererData;
 
 /**
  * All HTML element interfaces derive from this class.
@@ -410,37 +411,13 @@ class HTMLElement extends Element
 	 * is changed, for instance when the width is changed. Invalidate
 	 * the layout of the elementRenderer if the HTMLElement is rendered
 	 */
-	public function invalidateLayout(immediate:Bool = false):Void
+	public function invalidate(invalidationReason:InvalidationReason):Void
 	{
 		//TODO 4 : should use helper method like isRenderer instead of
 		//relying on nullness
 		if (_elementRenderer != null)
 		{
-			_elementRenderer.invalidateLayout(immediate);
-		}
-	}
-	
-	/**
-	 * Same as above for styles invalidating the LayerRenderer
-	 * tree when changed, such as z-index
-	 */
-	public function invalidateLayer():Void
-	{
-		if (_elementRenderer != null)
-		{
-			_elementRenderer.invalidateLayer();
-		}
-	}
-	
-	/**
-	 * Same as above for style invalidating the layout
-	 * of the text when changed, such as font-size
-	 */
-	public function invalidateText():Void
-	{
-		if (_elementRenderer != null)
-		{
-			_elementRenderer.invalidateText();
+			_elementRenderer.invalidate(invalidationReason);
 		}
 	}
 	
@@ -639,7 +616,6 @@ class HTMLElement extends Element
 		{
 			case block, inlineBlock:
 				_elementRenderer = new BlockBoxRenderer(this);
-				//TODO 2 : when creating, coreStyle should be reinitialised
 				_elementRenderer.coreStyle = _coreStyle;
 				
 			case cssInline:
@@ -985,7 +961,6 @@ class HTMLElement extends Element
 	 */
 	private function get_tabIndex():Int
 	{
-		//TODO 2 : awkward to call super, but else infinite loop
 		var tabIndex:String = super.getAttribute(HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME);
 		
 		if (tabIndex == "")
@@ -1317,14 +1292,14 @@ class HTMLElement extends Element
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		invalidateLayout(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_offsetHeight():Int
 	{
-		invalidateLayout(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
@@ -1332,13 +1307,13 @@ class HTMLElement extends Element
 	//TODO 3  : unit test
 	private function get_offsetLeft():Int
 	{
-		invalidateLayout(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		return Math.round(_elementRenderer.positionedOrigin.x);
 	}
 	
 	private function get_offsetTop():Int
 	{
-		invalidateLayout(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		return Math.round(_elementRenderer.positionedOrigin.y);
 	}
 	
@@ -1346,14 +1321,14 @@ class HTMLElement extends Element
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		invalidateLayout(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
 		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 	}
 	
 	private function get_clientHeight():Int
 	{
-		invalidateLayout(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
 		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
 	}
@@ -1361,14 +1336,14 @@ class HTMLElement extends Element
 	//TODO 5 : should be top border height
 	private function get_clientTop():Int
 	{
-		invalidateLayout(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		return 0;
 	}
 	
 	//TODO 5 : should be left border width
 	private function get_clientLeft():Int
 	{
-		invalidateLayout(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		return 0;
 	}
 	

@@ -158,7 +158,6 @@ class InlineFormattingContext extends FormattingContext
 			//it generates only one line box 
 			else if (child.establishesNewFormattingContext() == true)
 			{
-				//TODO 2 : where should those value be set ?
 				child.bounds.width = child.coreStyle.computedStyle.width;
 				child.bounds.height = child.coreStyle.computedStyle.height;
 				
@@ -169,13 +168,6 @@ class InlineFormattingContext extends FormattingContext
 				inlineBlockLineBox.marginRight = child.coreStyle.computedStyle.marginRight;
 
 				var childLineBoxes:Array<LineBox> = [inlineBlockLineBox];
-				
-				//TODO : hack to make absolutely position element take the bounds of the line box,
-				//shouldn't be necessary
-				if (child.isPositioned() == true && child.coreStyle.computedStyle.position != relative)
-				{
-					child.bounds = child.lineBoxes[0].bounds;
-				}
 				
 				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
 			}
@@ -206,81 +198,6 @@ class InlineFormattingContext extends FormattingContext
 		}
 	
 		return lineBox;
-	}
-	
-	
-	/**
-	 * Compute the bounds of a line box in the space
-	 * of the containing block establishing this formatting context
-	 * 
-	 * This method is only called for the line box which can have child
-	 * line boxes.
-	 * 
-	 * TODO : should be on LineBox class instead ?
-	 * 
-	 * @param	lineBox the line box whose bounds must be found
-	 */
-	private function getLineBoxBounds(lineBox:LineBox):RectangleData
-	{
-		var left:Float = 50000;
-		var top:Float = 50000;
-		var right:Float = -50000;
-		var bottom:Float = -50000;
-		
-		//loop in all the children of the line box
-		for (i in 0...lineBox.childNodes.length)
-		{
-			var child:LineBox = cast(lineBox.childNodes[i]);
-			
-			//get the bounds of the child. If the child itself can have
-			//children, its bounds would have beenalready computed
-			var childBounds:RectangleData = child.bounds;
-			
-			if (childBounds.x < left)
-			{
-				left = childBounds.x;
-			}
-			if (childBounds.y < top)
-			{
-				top = childBounds.y ;
-			}
-			if (childBounds.x + childBounds.width > right)
-			{
-				right = childBounds.x + childBounds.width;
-			}
-			if (childBounds.y + childBounds.height  > bottom)
-			{
-				bottom = childBounds.y + childBounds.height ;
-			}
-			
-			//add the left and right margin of the child to the bounds
-			left -= child.marginLeft;
-			right += child.marginRight;
-		}
-		
-		//add the left and right paddings of the line box to it's bounds
-		left -= lineBox.paddingLeft;
-		right += lineBox.paddingRight;
-			
-		var bounds:RectangleData = {
-			x:left,
-			y:top,
-			width : right - left,
-			height :  bottom - top,
-		};
-		
-		//need to implement better fix,
-		//sould not be negative
-		if (bounds.width < 0)
-		{
-			bounds.width = 0;
-		}
-		if (bounds.height < 0)
-		{
-			bounds.height = 0;
-		}
-		
-		return bounds;
 	}
 	
 	/**
@@ -406,34 +323,12 @@ class InlineFormattingContext extends FormattingContext
 		
 		//format line boxes vertically
 		var lineBoxHeight:Int = computeLineBoxHeight(rootLineBox);
-
-		//set the bounds of all the container line boxes in the line, now
-		//that all line boxes are laid out
-		setLineBoxesBounds(rootLineBox);
 		
 		//update the y of the formatting context so that the next line will start
 		//below this one
 		_formattingContextData.y += lineBoxHeight;
 		_firstLineFormatted = true;
 	
-	}
-	
-	/**
-	 * Set the bounds of the container line boxes using the position
-	 * and dimension of thei child line boxes
-	 */
-	private function setLineBoxesBounds(lineBox:LineBox):Void
-	{
-		for (i in 0...lineBox.childNodes.length)
-		{
-			var child:LineBox = cast(lineBox.childNodes[i]);
-			
-			if (child.hasChildNodes() == true)
-			{
-				setLineBoxesBounds(child);
-				child.bounds = getLineBoxBounds(child);
-			}
-		}
 	}
 	
 	/**

@@ -23,6 +23,7 @@ import cocktail.core.html.HTMLImageElement;
 import cocktail.core.html.HTMLInputElement;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
+import cocktail.core.renderer.RendererData;
 import cocktail.core.event.FocusEvent;
 import haxe.Log;
 import haxe.Timer;
@@ -349,7 +350,7 @@ class HTMLDocument extends Document
 	 */
 	public function onPlatformResizeEvent(event:UIEvent):Void
 	{
-		_body.invalidateLayout();
+		_documentElement.invalidate(InvalidationReason.other);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

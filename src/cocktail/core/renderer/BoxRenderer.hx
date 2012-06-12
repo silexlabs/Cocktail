@@ -46,11 +46,6 @@ import haxe.Log;
 class BoxRenderer extends ElementRenderer
 {
 	
-	private var _needsLayout:Bool;
-	
-	private var _normalChildrenNeedsLayout:Bool;
-	
-	private var _positionedChildrenNeedsLayout:Bool;
 	
 	/**
 	 * class constructor
@@ -58,10 +53,6 @@ class BoxRenderer extends ElementRenderer
 	public function new(node:Node) 
 	{
 		super(node);
-		
-		_needsLayout = true;
-		_normalChildrenNeedsLayout = true;
-		_positionedChildrenNeedsLayout = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -74,12 +65,24 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function render(parentGraphicContext:NativeElement):Void
 	{
+		
+		if (_needsRendering == false)
+		{
+		//	return;
+		}
+		
 		super.render(parentGraphicContext);
 		//get the relative offset of this ElementRenderer and add it to
 		//its parent
 		renderBackground(_graphicsContext);
 		renderChildren(_graphicsContext);
-		applyVisualEffects(_graphicsContext);
+		
+		//if (_needsVisualEffectsRendering == true)
+		//{
+			applyVisualEffects(_graphicsContext);
+		//}
+		_needsVisualEffectsRendering = false;
+		
 		
 		//draws the graphic context of this block box on the one of its
 		//parent
@@ -87,6 +90,8 @@ class BoxRenderer extends ElementRenderer
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(parentGraphicContext);
 		containerGraphicContext.addChild(_graphicsContext);
 		#end
+		
+		_needsRendering = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -210,6 +215,11 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData):Void
 	{	
+		if (_needsLayout == false)
+		{
+			//return;
+		}
+		
 		//compute all the styles of the ElementRenderer
 		//
 		//TODO 1 : styles which can be computed without any external data should be when their specified
@@ -219,8 +229,12 @@ class BoxRenderer extends ElementRenderer
 		//compute the box styles (width, height, margins, paddings...)
 		_coreStyle.computeBoxModelStyles(getRelevantContainingBlockData(containingBlockData, viewportData,  firstPositionedAncestorData.data), isReplaced());
 		
-		//layout all the children of the ElementRenderer if it has any
-		layoutChildren(containingBlockData, viewportData, firstPositionedAncestorData);
+		//if (_childrenNeedLayout == true)
+		//{
+			//layout all the children of the ElementRenderer if it has any
+			layoutChildren(containingBlockData, viewportData, firstPositionedAncestorData);
+		//}
+		_childrenNeedLayout = false;
 		
 		//when all the dimensions of the ElementRenderer are known, compute the 
 		//visual effects to apply (visibility, opacity, transform, transition)
@@ -252,179 +266,13 @@ class BoxRenderer extends ElementRenderer
 		//The ElementRenderer has been laid out and can now be laid out again
 		//if it changes
 		this._isLayingOut = false;
+		
+		_needsLayout = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Start the layout of all of the HTMLElements tree which set the bounds
-	 * of the all of the rendring tree elements relative to their containing block.
-	 * Then set the global bounds (relative to the window) for all of the elements
-	 * of the rendering tree
-	 * 
-	 * TODO 2 : for now only called by the InitialBlockRenderer but should be callable
-	 * by any BoxRenderer to prevent from laying out and rendering all of the rendering
-	 * tree
-	 */
-	private function startLayout():Void
-	{
-		var windowData:ContainingBlockData = getWindowData();
-		
-		//TODO 2 : should retrieve the data of the first positioned ancestor
-		var firstPositionedAncestorData:FirstPositionedAncestorData = {
-			elements: new Array<ElementRenderer>(),
-			data:getContainerBlockData()
-		}
-		
-		//layout all the HTMLElements. After that they all know their bounds relative to the containing
-		//blocks
-		layout(getContainerBlockData(), windowData, firstPositionedAncestorData, _coreStyle.fontMetrics);
-		//set the global bounds on the rendering tree. After that all the elements know their positions
-		//relative to the window
-		
-		setGlobalOrigins(this,globalBounds.x,globalBounds.y, positionedOrigin.x,positionedOrigin.y);
-	}
-	
-	/**
-	 * Set the global bounds (relative to the window) of all the elements of the rendering tree, by
-	 * traversing it recursively
-	 * 
-	 * 
-	 * @param	elementRenderer the current node in the render tree onto which the global bounds are set
-	 * @param	addedX the added x position for the normal flow
-	 * @param	addedY the added y position for the normal flow
-	 * @param	addedPositionedX the added X position for positioned elements
-	 * @param	addedPositionedY the added Y position for positioned elements
-	 */
-	private function setGlobalOrigins(elementRenderer:ElementRenderer, addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
-	{
-		//if the element establishes a new formatting context, then its
-		//bounds must be added to the global x and y bounds for the normal flow
-		if (elementRenderer.establishesNewFormattingContext() == true)
-		{
-			//if the element is positioned, it can either add its bounds
-			//or positioned origin to the global x and y for normal flow. If it
-			//uses its static position, it uses its bounds, else it uses its
-			//positioned origin
-			if (elementRenderer.isPositioned() == true && elementRenderer.isRelativePositioned() == false)
-			{
-				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
-				{
-					if (elementRenderer.coreStyle.computedStyle.position == absolute)
-					{
-						addedX += elementRenderer.positionedOrigin.x;
-					}
-					//here the positioned ElementRenderer is fixed and is placed
-					//relative to the window. In this case, its x is not added
-					else
-					{
-						addedX = elementRenderer.positionedOrigin.x;
-					}
-				}
-				else
-				{
-					addedX += elementRenderer.bounds.x;
-				}
-				
-				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
-				{
-					if (elementRenderer.coreStyle.computedStyle.position == absolute)
-					{
-						addedY += elementRenderer.positionedOrigin.y;
-					}
-					else
-					{
-						addedY = elementRenderer.positionedOrigin.y;
-					}
-				}
-				else
-				{
-					addedY += elementRenderer.bounds.y;
-				}
-			}
-			//if the element is not positioned or relatively positioned, it always add
-			//its bounds to the global x and y flow
-			else
-			{
-				addedX += elementRenderer.bounds.x;
-				addedY += elementRenderer.bounds.y;
-			}
-		}
-		
-		//if the element is positioned, it must also add
-		//its bounds to the global positioned origin
-		if (elementRenderer.isPositioned() == true)
-		{
-			//absolutely positioned elements either add their static position
-			//or their positioned origin
-			if (elementRenderer.coreStyle.computedStyle.position != relative)
-			{
-				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
-				{
-					if (elementRenderer.coreStyle.computedStyle.position == absolute)
-					{
-						addedPositionedX += elementRenderer.positionedOrigin.x;
-					}
-					else
-					{
-						addedPositionedX = elementRenderer.positionedOrigin.x;
-					}
-				}
-				else
-				{
-					addedPositionedX += elementRenderer.bounds.x;
-				}
-				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
-				{
-					if (elementRenderer.coreStyle.computedStyle.position == absolute)
-					{
-						addedPositionedY += elementRenderer.positionedOrigin.y;
-					}
-					else
-					{
-						addedPositionedY = elementRenderer.positionedOrigin.y;
-					}
-					
-				}
-				else
-				{
-					addedPositionedY += elementRenderer.bounds.y;
-				}
-			}
-			//relative positioned elements always use their bounds, as the relative
-			//offset is only applied at render time and isn't used in the bounds
-			//computation
-			else
-			{
-				addedPositionedX += elementRenderer.bounds.x;
-				addedPositionedY += elementRenderer.bounds.y;
-			}
-		}
-		
-		//for its child of the element
-		for (i in 0...elementRenderer.childNodes.length)
-		{
-			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
-			
-			child.globalContainingBlockOrigin = {
-				x: addedX,
-				y : addedY
-			}
-			
-			child.globalPositionnedAncestorOrigin = {
-				x: addedPositionedX,
-				y : addedPositionedY
-			}
-			
-			//call the method recursively if the child has children itself
-			if (child.hasChildNodes() == true)
-			{
-				setGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
-			}
-		}
-	}
 	
 	/**
 	 * Lay out all the children of the ElementRenderer
