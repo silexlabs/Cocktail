@@ -498,7 +498,7 @@ class HTMLDocument extends Document
 	{
 		while (htmlElement.isVerticallyScrollable(scrollOffset) == false)
 		{
-			htmlElement = cast(htmlElement.parentNode);
+			htmlElement = htmlElement.parentNode;
 			if ( htmlElement == null)
 			{
 				return null;
