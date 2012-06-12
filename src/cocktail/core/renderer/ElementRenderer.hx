@@ -717,7 +717,7 @@ class ElementRenderer extends Node
 	
 	public function invalidate(invalidationReason:InvalidationReason):Void
 	{
-				//TODO 1 : not supposed to happen but bug with scrollbars for now
+		//TODO 1 : not supposed to happen but bug with scrollbars for now
 		if (_parentNode == null)
 		{
 			return;
@@ -785,13 +785,13 @@ class ElementRenderer extends Node
 				
 		}
 		
-		var containingBlock:BlockBoxRenderer = getContainingBlock();
+		var containingBlock:ElementRenderer = getContainingBlock();
 		if (isPositioned() == true)
 		{
-			
+			containingBlock.positionedChildInvalidated(containingBlockInvalidationReason);
 		}
 		containingBlock.childInvalidated(containingBlockInvalidationReason);
-		containingBlock.positionedChildInvalidated(containingBlockInvalidationReason);
+		
 		
 	}
 	
@@ -842,8 +842,9 @@ class ElementRenderer extends Node
 		}
 	}
 	
-	private function getContainingBlock():BlockBoxRenderer
+	private function getContainingBlock():ElementRenderer
 	{
+		return cast(_parentNode);
 		if (isPositioned() == true && isRelativePositioned() == false)
 		{
 			if (computedStyle.position == fixed)
@@ -857,39 +858,21 @@ class ElementRenderer extends Node
 		}
 		else
 		{
-			return getFirstBlockBoxAncestor();
+			return cast(_parentNode);
 		}
 	}
 	
-	private function getFirstBlockBoxAncestor():BlockBoxRenderer
+	private function getFirstPositionedAncestor():ElementRenderer
 	{
 		var parent:ElementRenderer = cast(_parentNode);
-		while(parent.isBlockContainer() == false)
-		{
-			parent = cast(parent.parentNode);
-		}
-		return cast(parent);
-	}
-	
-	private function getFirstPositionedAncestor():BlockBoxRenderer
-	{
-		var parent:ElementRenderer = cast(_parentNode);
-			if (parent == null)
-			{
-				trace(this);
-			}
 		while (parent.isPositioned() == false)
 		{
-			if (parent == null)
-			{
-				trace(this);
-			}
 			parent = cast(parent.parentNode);
 		}
-		return cast(parent);
+		return parent;
 	}
 	
-	private function getInitialContainingBlock():BlockBoxRenderer
+	private function getInitialContainingBlock():ElementRenderer
 	{
 		var parent:Node = _parentNode;
 		while (true)
