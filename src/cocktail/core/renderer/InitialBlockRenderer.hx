@@ -34,7 +34,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	/**
 	 * class constructor.
 	 */
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 		
@@ -53,7 +53,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		
 		for (i in 0..._childNodes.length)
 		{
-			var child:ElementRenderer = cast(_childNodes[i]);
+			var child:ElementRenderer = _childNodes[i];
 			child.attachLayer();
 		}
 	}
@@ -65,7 +65,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		//first detach the LayerRenderer of all its children
 		for (i in 0..._childNodes.length)
 		{
-			var child:ElementRenderer = cast(_childNodes[i]);
+			var child:ElementRenderer = _childNodes[i];
 			child.detachLayer();
 		}
 		
@@ -313,7 +313,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		var length:Int = elementRenderer.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
+			var child:ElementRenderer = elementRenderer.childNodes[i];
 			
 			child.globalContainingBlockOrigin = {
 				x: addedX,

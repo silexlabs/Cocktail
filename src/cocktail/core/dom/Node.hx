@@ -29,7 +29,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Node extends EventCallback
+class Node<T:Node<T>> extends EventCallback
 {
 	/**
 	 * The node is an Element.
@@ -114,46 +114,46 @@ class Node extends EventCallback
 	 * if a node has just been created and not yet added
 	 * to the tree, or if it has been removed from the tree, this is null.
 	 */
-	private var _parentNode:Node;
-	public var parentNode(get_parentNode, set_parentNode):Node;
+	private var _parentNode:T;
+	public var parentNode(get_parentNode, set_parentNode):T;
 	
 	/**
 	 * A NodeList that contains all children of this node. 
 	 * If there are no children, this is a NodeList containing no nodes.
 	 */
-	private var _childNodes:Array<Node>;
-	public var childNodes(get_childNodes, never):Array<Node>;
+	private var _childNodes:Array<T>;
+	public var childNodes(get_childNodes, never):Array<T>;
 	
 	/**
 	 * The first child of this node. If there is no such node,
 	 * this returns null.
 	 */
-	public var firstChild(get_firstChild, never):Node;
+	public var firstChild(get_firstChild, never):T;
 	
 	/**
 	 * The last child of this node. If there is no such node,
 	 * this returns null.
 	 */
-	public var lastChild(get_lastChild, never):Node;
+	public var lastChild(get_lastChild, never):T;
 	
 	/**
 	 * The node immediately following this node. 
 	 * If there is no such node, this returns null.
 	 */
-	public var nextSibling(get_nextSibling, never):Node;
+	public var nextSibling(get_nextSibling, never):T;
 	
 	/**
 	 * The node immediately preceding this node. 
 	 * If there is no such node, this returns null.
 	 */
-	public var previousSibling(get_previousSibling, never):Node;
+	public var previousSibling(get_previousSibling, never):T;
 	
 	/**
 	 * A NamedNodeMap containing the attributes of this node 
 	 * (if it is an Element) or null otherwise.
 	 */
-	private var _attributes:NamedNodeMap;
-	public var attributes(get_attributes, never):NamedNodeMap;
+	private var _attributes:NamedNodeMap<Attr>;
+	public var attributes(get_attributes, never):NamedNodeMap<Attr>;
 	
 	/**
 	 * The Document object associated with this node. 
@@ -170,7 +170,7 @@ class Node extends EventCallback
 	public function new() 
 	{
 		super();
-		_childNodes = new Array<Node>();
+		_childNodes = new Array<T>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -184,11 +184,11 @@ class Node extends EventCallback
 	 * @param The node being removed.
 	 * @return The node removed.
 	 */
-	public function removeChild(oldChild:Node):Node
+	public function removeChild(oldChild:T):T
 	{
 		oldChild.parentNode = null;
 		
-		var newChildNodes:Array<Node> = new Array<Node>();
+		var newChildNodes:Array<T> = new Array<T>();
 		
 		var length:Int = _childNodes.length;
 		for (i in 0...length)
@@ -198,7 +198,7 @@ class Node extends EventCallback
 				newChildNodes.push(_childNodes[i]);
 			}
 		}
-		this._childNodes = newChildNodes;
+		_childNodes = newChildNodes;
 		
 		return oldChild;
 	}
@@ -213,20 +213,11 @@ class Node extends EventCallback
 	 * 
 	 * @return The node added.
 	 */
-	public function appendChild(newChild:Node):Node
+	public function appendChild(newChild:T):T
 	{
-		//TODO 5 : don't seem to work, bug with HTMLBodyElement ?
-		//if (newChild.ownerDocument != _ownerDocument)
-		//{
-			//Raised if newChild was created from a different
-			//document than the one that created this node.
-			//throw DOMException.WRONG_DOCUMENT_ERR;
-		//}
-		//
-		
 		removeFromParentIfNecessary(newChild);
 		
-		newChild.parentNode = this;
+		newChild.parentNode = cast(this);
 		_childNodes.push(newChild);
 	
 		return newChild;
@@ -244,7 +235,7 @@ class Node extends EventCallback
 	 * which the new node must be inserted.
 	 * @return	The node being inserted
 	 */
-	public function insertBefore(newChild:Node, refChild:Node):Node
+	public function insertBefore(newChild:T, refChild:T):T
 	{
 		if (refChild == null)
 		{
@@ -253,7 +244,7 @@ class Node extends EventCallback
 		else
 		{	
 			//will store the new child nodes with the newly inserted one
-			var newChildNodes:Array<Node> = new Array<Node>();
+			var newChildNodes:Array<T> = new Array<T>();
 			
 			var length:Int = _childNodes.length;
 			for (i in 0...length)
@@ -288,7 +279,7 @@ class Node extends EventCallback
 	 * @param	oldChild The node being replaced in the list.
 	 * @return	The node replaced.
 	 */
-	public function replaceChild(newChild:Node, oldChild:Node):Node
+	public function replaceChild(newChild:T, oldChild:T):T
 	{
 		var length:Int = _childNodes.length;
 		for (i in 0...length)
@@ -316,7 +307,7 @@ class Node extends EventCallback
 	 * @param	other The node to test against.
 	 * @return Returns true if the nodes are the same, false otherwise.
 	 */
-	public function isSameNode(other:Node):Bool
+	public function isSameNode(other:T):Bool
 	{
 		return other == this;
 	}
@@ -348,7 +339,7 @@ class Node extends EventCallback
 	 */
 	override private function getTargetAncestors():Array<EventTarget>
 	{
-		var parent:Node = _parentNode;
+		var parent:T = _parentNode;
 		var targetAncestors:Array<EventTarget> = new Array<EventTarget>();
 		
 		while (parent != null)
@@ -368,11 +359,11 @@ class Node extends EventCallback
 	 * When a node is about to be added to another, 
 	 * first detach it if it was already attached to the tree
 	 */
-	private function removeFromParentIfNecessary(newChild:Node):Void
+	private function removeFromParentIfNecessary(newChild:T):Void
 	{
 		if (newChild.parentNode != null)
 		{
-			var parentNode:Node = newChild.parentNode;
+			var parentNode:T = newChild.parentNode;
 			parentNode.removeChild(newChild);
 		}
 	}
@@ -381,7 +372,7 @@ class Node extends EventCallback
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_firstChild():Node
+	private function get_firstChild():T
 	{
 		if (hasChildNodes() == true)
 		{
@@ -393,7 +384,7 @@ class Node extends EventCallback
 		}
 	}
 	
-	private function get_lastChild():Node
+	private function get_lastChild():T
 	{
 		if (hasChildNodes() == true)
 		{
@@ -405,7 +396,7 @@ class Node extends EventCallback
 		}
 	}
 	
-	private function get_nextSibling():Node
+	private function get_nextSibling():T
 	{
 		//if the node is not attached, it
 		//has no siblings
@@ -436,7 +427,7 @@ class Node extends EventCallback
 	/**
 	 * same as get_nextSibling
 	 */
-	private function get_previousSibling():Node
+	private function get_previousSibling():T
 	{
 		if (_parentNode == null)
 		{
@@ -462,17 +453,17 @@ class Node extends EventCallback
 		return -1;
 	}
 	
-	private function get_parentNode():Node 
+	private function get_parentNode():T 
 	{
 		return _parentNode;
 	}
 	
-	private function set_parentNode(value:Node):Node 
+	private function set_parentNode(value:T):T 
 	{
 		return _parentNode = value;
 	}
 	
-	private function get_childNodes():Array<Node> 
+	private function get_childNodes():Array<T> 
 	{
 		return _childNodes;
 	}
@@ -498,7 +489,7 @@ class Node extends EventCallback
 		return null;
 	}
 	
-	private function get_attributes():NamedNodeMap 
+	private function get_attributes():NamedNodeMap<Attr>
 	{
 		return null;
 	}

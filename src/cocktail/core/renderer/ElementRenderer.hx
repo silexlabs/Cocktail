@@ -54,7 +54,7 @@ import haxe.Timer;
  * 
  * @author Yannick DOMINGUEZ
  */
-class ElementRenderer extends Node
+class ElementRenderer extends Node<ElementRenderer>
 {
 	/**
 	 * The bounds of the ElementRenderer.
@@ -145,8 +145,8 @@ class ElementRenderer extends Node
 	 * which created this ElementRenderer. It might
 	 * be an HTMLElement or a Text node
 	 */
-	private var _node:Node;
-	public var node(get_node, never):Node;
+	private var _node:HTMLElement;
+	public var node(get_node, never):HTMLElement;
 	
 	/**
 	 * A reference to the coreStyle from which
@@ -242,7 +242,7 @@ class ElementRenderer extends Node
 	/**
 	 * class constructor. init class attribute
 	 */
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super();
 
@@ -306,10 +306,10 @@ class ElementRenderer extends Node
 	 * overriden as when an ElementRenderer is appended, its LayerRenderer
 	 * must be attached to the LayerRenderer tree so that it can be rendered
 	 */
-	override public function appendChild(newChild:Node):Node
+	override public function appendChild(newChild:ElementRenderer):ElementRenderer
 	{
 		super.appendChild(newChild);
-		var elementRendererChild:ElementRenderer = cast(newChild);
+		var elementRendererChild:ElementRenderer = newChild;
 		elementRendererChild.attachLayer();
 		invalidate(InvalidationReason.other);
 		return newChild;
@@ -320,11 +320,11 @@ class ElementRenderer extends Node
 	 * overriden as when an ElementRenderer is removed, its LayerRenderer
 	 * might be removed form the LayerRenderer tree if it created it
 	 */
-	override public function removeChild(oldChild:Node):Node
+	override public function removeChild(oldChild:ElementRenderer):ElementRenderer
 	{
 		//must happen before calling super, else the ElementRenderer
 		//won't have a parent anymore
-		var elementRendererChild:ElementRenderer = cast(oldChild);
+		var elementRendererChild:ElementRenderer = oldChild;
 		elementRendererChild.detachLayer();
 		super.removeChild(oldChild);
 		invalidate(InvalidationReason.other);
@@ -387,7 +387,7 @@ class ElementRenderer extends Node
 		{
 			if (_parentNode != null)
 			{
-				var parent:ElementRenderer = cast(_parentNode);
+				var parent:ElementRenderer = _parentNode;
 				if (parent.layerRenderer != null)
 				{
 					createLayer(parent.layerRenderer);
@@ -400,7 +400,7 @@ class ElementRenderer extends Node
 		var length:Int = _childNodes.length;
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = cast(_childNodes[i]);
+			var child:ElementRenderer = _childNodes[i];
 			child.attachLayer();
 		}
 	}
@@ -415,7 +415,7 @@ class ElementRenderer extends Node
 		var length:Int = _childNodes.length;
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = cast(_childNodes[i]);
+			var child:ElementRenderer = _childNodes[i];
 			child.detachLayer();
 		}
 		
@@ -424,7 +424,7 @@ class ElementRenderer extends Node
 		//which created it when detached
 		if (_hasOwnLayer == true)
 		{
-			var parent:ElementRenderer = cast(_parentNode);
+			var parent:ElementRenderer = _parentNode;
 			parent.layerRenderer.removeChild(_layerRenderer);
 			_hasOwnLayer = false;
 		}
@@ -847,7 +847,7 @@ class ElementRenderer extends Node
 	
 	private function getContainingBlock():ElementRenderer
 	{
-		return cast(_parentNode);
+		return _parentNode;
 		if (isPositioned() == true && isRelativePositioned() == false)
 		{
 			if (computedStyle.position == fixed)
@@ -861,28 +861,28 @@ class ElementRenderer extends Node
 		}
 		else
 		{
-			return cast(_parentNode);
+			return _parentNode;
 		}
 	}
 	
 	private function getFirstPositionedAncestor():ElementRenderer
 	{
-		var parent:ElementRenderer = cast(_parentNode);
+		var parent:ElementRenderer = _parentNode;
 		while (parent.isPositioned() == false)
 		{
-			parent = cast(parent.parentNode);
+			parent = parent.parentNode;
 		}
 		return parent;
 	}
 	
 	private function getInitialContainingBlock():ElementRenderer
 	{
-		var parent:Node = _parentNode;
+		var parent:ElementRenderer = _parentNode;
 		while (true)
 		{
 			if (parent.parentNode == null)
 			{
-				return cast(parent);
+				return parent;
 			}
 			parent = parent.parentNode;
 		}
@@ -927,7 +927,7 @@ class ElementRenderer extends Node
 				//again once it has been laid out
 				this._isLayingOut = true;
 				
-				var parent:ElementRenderer = cast(_parentNode);
+				var parent:ElementRenderer = _parentNode;
 				parent.invalidateLayout(immediate);
 			}
 		}
@@ -942,7 +942,7 @@ class ElementRenderer extends Node
 	{
 		for (i in 0..._childNodes.length)
 		{
-			var child:ElementRenderer = cast(_childNodes[i]);
+			var child:ElementRenderer = _childNodes[i];
 			child.invalidateText();
 		}
 		invalidateLayout();
@@ -1151,7 +1151,7 @@ class ElementRenderer extends Node
 		return _globalPositionnedAncestorOrigin = value;
 	}
 	
-	private function get_node():Node
+	private function get_node():HTMLElement
 	{
 		return _node;
 	}

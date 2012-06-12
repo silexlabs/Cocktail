@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.dom.Node;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.event.KeyboardEvent;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.StyleData;
@@ -66,7 +67,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	 * class constructor
 	 * @param	node
 	 */
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 		

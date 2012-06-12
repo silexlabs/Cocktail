@@ -14,7 +14,7 @@ import cocktail.core.dom.DOMData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Attr extends Node
+class Attr extends Node<Attr>
 {
 	/**
 	 * Returns the name of this attribute.

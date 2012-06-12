@@ -82,7 +82,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * class constructor.
 	 * Init class attributes
 	 */
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 		
@@ -108,13 +108,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Overriden to replace inline children by anonymous block if
 	 * necessary
 	 */
-	override public function appendChild(newChild:Node):Node
+	override public function appendChild(newChild:ElementRenderer):ElementRenderer
 	{
 		//flag determining wether inline children must be wrapped
 		//in anonymous block
 		var shouldMakeChildrenNonInline:Bool = false;
 		
-		var elementRendererChild:ElementRenderer = cast(newChild);
+		var elementRendererChild:ElementRenderer = newChild;
 	
 		//if this is the first child, no need to wrap inline block
 		//as it not yet known wether this block box starts an inline
@@ -228,11 +228,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var i:Int = _childNodes.length -1;
 		while( i >= 0)
 		{
-			var child:ElementRenderer = cast(_childNodes[i]);
+			var child:ElementRenderer = _childNodes[i];
 
 			if (child.firstChild != null)
 			{
-				var  fs:ElementRenderer = cast(child.firstChild);
+				var  fs:ElementRenderer = child.firstChild;
 			}
 			
 			//for inline children, create an anonymous block, and attach the child to it
@@ -359,7 +359,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.childrenInline() == true)
 		{
-			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
+			var blockBoxRenderer:ElementRenderer = rootRenderer;
 			
 			var length:Int = blockBoxRenderer.lineBoxes.length;
 			for (i in 0...length)
@@ -380,7 +380,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			var length:Int = rootRenderer.childNodes.length;
 			for (i in 0...length)
 			{
-				var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
+				var child:ElementRenderer = rootRenderer.childNodes[i];
 
 				if (child.layerRenderer == referenceLayer)
 				{
@@ -414,7 +414,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var length:Int = rootRenderer.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
+			var child:ElementRenderer = rootRenderer.childNodes[i];
 			
 			if (child.layerRenderer == referenceLayer && child.isPositioned() == false)
 			{
@@ -449,7 +449,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var length:Int = rootRenderer.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
+			var child:ElementRenderer = rootRenderer.childNodes[i];
 			//TODO 2 : this check is to prevent positioned child with a zindex of 0 from being returned, should
 			//put in a method
 			if (child.layerRenderer == referenceLayer && child.isPositioned() == false)
@@ -457,7 +457,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				//TODO 3 : must add more condition, for instance, no float
 				if (child.isReplaced() == false && child.coreStyle.display != inlineBlock)
 				{
-					ret.push(cast(child));
+					ret.push(child);
 					
 					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(child, referenceLayer);
 					var childLength:Int = childElementRenderer.length;
@@ -561,7 +561,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var length:Int = root.childNodes.length;
 		for ( i in 0...length)
 		{
-			var child:ElementRenderer = cast(root.childNodes[i]);
+			var child:ElementRenderer = root.childNodes[i];
 			if (child.computedStyle.position == fixed || child.isScrollBar())
 			{
 				child.scroll(scrollX, scrollY);
@@ -899,7 +899,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		for (i in 0...length)
 		{
 			
-			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
+			var child:ElementRenderer = rootRenderer.childNodes[i];
 				
 			if (child.node != _horizontalScrollBar && child.node != _verticalScrollBar)
 			{
@@ -1074,7 +1074,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			removeChild(_verticalScrollBar.elementRenderer);
 			_verticalScrollBar.onscroll = null;
 			
-			var htmlElement:HTMLElement = cast(_node);
+			var htmlElement:HTMLElement = _node;
 			
 			_verticalScrollBar = null;
 			

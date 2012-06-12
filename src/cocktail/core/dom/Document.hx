@@ -30,7 +30,7 @@ import cocktail.core.dom.DOMData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Document extends Node
+class Document extends Node<Document>
 {
 	/**
 	 * event interfaces const
@@ -215,7 +215,7 @@ class Document extends Node
 	 * elementId, by traversing recursively the 
 	 * DOM tree
 	 */
-	private function doGetElementById(node:Node, elementId:String):HTMLElement
+	private function doGetElementById(node:Element, elementId:String):HTMLElement
 	{
 		//call method recursively if node has child and is itself an element
 		if (node.hasChildNodes() == true && node.nodeType == Node.ELEMENT_NODE)
@@ -236,7 +236,7 @@ class Document extends Node
 		//an Id with no attributes
 		if (node.hasAttributes() == true)
 		{
-			var attributes:NamedNodeMap = node.attributes;
+			var attributes:NamedNodeMap<Attr> = node.attributes;
 			var element:HTMLElement = cast(node);
 			
 			//loop in all the element's attributes to find the

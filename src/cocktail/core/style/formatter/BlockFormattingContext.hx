@@ -86,7 +86,7 @@ class BlockFormattingContext extends FormattingContext
 		var length:Int = elementRenderer.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
+			var child:ElementRenderer = elementRenderer.childNodes[i];
 			
 			var marginTop:Int = getCollapsedMarginTop(child, parentCollapsedMarginTop);
 			var marginBottom:Int = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
@@ -197,7 +197,7 @@ class BlockFormattingContext extends FormattingContext
 		{
 			if (child.previousSibling != null)
 			{
-				var previousSibling:ElementRenderer = cast(child.previousSibling);
+				var previousSibling:ElementRenderer = child.previousSibling;
 				
 				if (previousSibling.coreStyle.computedStyle.paddingBottom == 0)
 				{
@@ -214,7 +214,7 @@ class BlockFormattingContext extends FormattingContext
 			}
 			else if (child.parentNode != null)
 			{
-				var parent:ElementRenderer = cast(child.parentNode);
+				var parent:ElementRenderer = child.parentNode;
 				
 				if (parent.establishesNewFormattingContext() == false)
 				{
@@ -240,7 +240,7 @@ class BlockFormattingContext extends FormattingContext
 		{
 			if (child.nextSibling != null)
 			{
-				var nextSibling:ElementRenderer = cast(child.nextSibling);
+				var nextSibling:ElementRenderer = child.nextSibling;
 				
 				if (nextSibling.coreStyle.computedStyle.paddingTop == 0)
 				{
@@ -252,7 +252,7 @@ class BlockFormattingContext extends FormattingContext
 			}
 			else if (child.parentNode != null)
 			{
-				var parent:ElementRenderer = cast(child.parentNode);
+				var parent:ElementRenderer = child.parentNode;
 				
 				if (parent.establishesNewFormattingContext() == false)
 				{

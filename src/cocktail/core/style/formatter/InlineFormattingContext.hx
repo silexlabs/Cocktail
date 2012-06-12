@@ -106,7 +106,7 @@ class InlineFormattingContext extends FormattingContext
 		var length:Int = elementRenderer.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
+			var child:ElementRenderer = elementRenderer.childNodes[i];
 
 			//here the child is an inline box renderer, which will create one line box for each
 			//line its children are in
@@ -147,7 +147,7 @@ class InlineFormattingContext extends FormattingContext
 				
 				//The current line box must also be set to the parent line box so that no more
 				//line boxes are added to this line box as it is done formatting its child line boxes
-				lineBox = cast(lineBox.parentNode);
+				lineBox = lineBox.parentNode;
 				
 				//The right margin and padding is added to the last generated line box of the current inline
 				//box renderer
@@ -344,7 +344,7 @@ class InlineFormattingContext extends FormattingContext
 		var length:Int = lineBox.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:LineBox = cast(lineBox.childNodes[i]);
+			var child:LineBox = lineBox.childNodes[i];
 			
 			if (child.hasChildNodes() == true && (child.isAbsolutelyPositioned() == false || child.isText() == true))
 			{
@@ -371,7 +371,7 @@ class InlineFormattingContext extends FormattingContext
 		
 		for (i in 0...lineBox.childNodes.length)
 		{
-			var child:LineBox = cast(lineBox.childNodes[i]);
+			var child:LineBox = lineBox.childNodes[i];
 			
 			if (child.hasChildNodes() == true)
 			{
@@ -482,7 +482,7 @@ class InlineFormattingContext extends FormattingContext
 		var length:Int = lineBox.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:LineBox = cast(lineBox.childNodes[i]);
+			var child:LineBox = lineBox.childNodes[i];
 			
 			//TODO 4 : doc + should also update alignRight, justify... in the same way
 			if (child.hasChildNodes() == true && child.isAbsolutelyPositioned() == false)
@@ -525,7 +525,7 @@ class InlineFormattingContext extends FormattingContext
 		var length:Int = lineBox.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:LineBox = cast(lineBox.childNodes[i]);
+			var child:LineBox = lineBox.childNodes[i];
 			
 			if (child.hasChildNodes() == true)
 			{
@@ -558,7 +558,7 @@ class InlineFormattingContext extends FormattingContext
 		var length:Int = lineBox.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:LineBox = cast(lineBox.childNodes[i]);
+			var child:LineBox = lineBox.childNodes[i];
 			
 			if (child.hasChildNodes() == true)
 			{
@@ -588,7 +588,7 @@ class InlineFormattingContext extends FormattingContext
 		var length:Int = lineBox.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:LineBox = cast(lineBox.childNodes[i]);
+			var child:LineBox = lineBox.childNodes[i];
 			
 			if (child.isSpace() == true)
 			{
@@ -842,7 +842,7 @@ class InlineFormattingContext extends FormattingContext
 		var length:Int = lineBox.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:LineBox = cast(lineBox.childNodes[i]);
+			var child:LineBox = lineBox.childNodes[i];
 			
 			if (child.isAbsolutelyPositioned() == false || child.isText() == true)
 			{
@@ -875,7 +875,7 @@ class InlineFormattingContext extends FormattingContext
 		var length:Int = lineBox.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:LineBox = cast(lineBox.childNodes[i]);
+			var child:LineBox = lineBox.childNodes[i];
 			
 			var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, _formattingContextRoot.coreStyle.fontMetrics.xHeight);
 			child.bounds.y = formattingContextY - baselineOffset + lineBoxAscent;

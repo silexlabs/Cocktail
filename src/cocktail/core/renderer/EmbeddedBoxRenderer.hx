@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.EmbeddedElement;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.style.computer.boxComputers.BoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
@@ -32,7 +33,7 @@ import haxe.Log;
  */
 class EmbeddedBoxRenderer extends BoxRenderer
 {
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 	}

@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
+import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.port.platform.nativeMedia.NativeMedia;
@@ -334,7 +335,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * overriden to invoke the resource selection algorithm
 	 * as needed if a source child is added
 	 */
-	override public function appendChild(newChild:Node):Node
+	override public function appendChild(newChild:Element):Element
 	{
 		super.appendChild(newChild);
 		

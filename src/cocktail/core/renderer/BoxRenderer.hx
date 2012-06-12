@@ -45,12 +45,10 @@ import haxe.Log;
  */
 class BoxRenderer extends ElementRenderer
 {
-	
-	
 	/**
 	 * class constructor
 	 */
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 	}

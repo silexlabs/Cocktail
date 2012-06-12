@@ -24,7 +24,7 @@ import cocktail.core.html.HTMLElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Element extends Node
+class Element extends Node<Element>
 {
 
 	/**
@@ -84,7 +84,7 @@ class Element extends Node
 	public function new(tagName:String) 
 	{
 		_tagName = tagName;
-		_attributes = new NamedNodeMap();
+		_attributes = new NamedNodeMap<Attr>();
 		super();
 	}
 	
@@ -132,7 +132,7 @@ class Element extends Node
 	 */
 	public function setAttribute(name:String, value:String):Void
 	{
-		var attribute:Attr = cast(_attributes.getNamedItem(name));
+		var attribute:Attr = _attributes.getNamedItem(name);
 		if (attribute == null)
 		{
 			attribute = new Attr(name);
@@ -153,11 +153,11 @@ class Element extends Node
 	 */
 	public function getAttributeNode(name:String):Attr
 	{
-		var attribute:Node = _attributes.getNamedItem(name);
+		var attribute:Attr = _attributes.getNamedItem(name);
 		
 		if (attribute != null)
 		{
-			return cast(attribute);
+			return attribute;
 		}
 		
 		return null;
@@ -176,7 +176,7 @@ class Element extends Node
 	public function setAttributeNode(newAttr:Attr):Attr
 	{
 		newAttr.ownerElement = this;
-		return cast(_attributes.setNamedItem(newAttr));
+		return _attributes.setNamedItem(newAttr);
 	}
 	
 	/**
@@ -191,7 +191,7 @@ class Element extends Node
 	 */
 	public function removeAttribute(name:String):Void
 	{
-		var removedAttribute:Attr = cast(_attributes.removeNamedItem(name));
+		var removedAttribute:Attr = _attributes.removeNamedItem(name);
 		
 		if (removedAttribute != null)
 		{
@@ -216,7 +216,7 @@ class Element extends Node
 	 */
 	public function setIdAttribute(name:String, isId:Bool):Void
 	{
-		var idAttribute:Attr = cast(_attributes.getNamedItem(name));
+		var idAttribute:Attr = _attributes.getNamedItem(name);
 		if (idAttribute == null)
 		{
 			idAttribute = new Attr(name);
@@ -301,14 +301,14 @@ class Element extends Node
 	 * do get the matching child elements by 
 	 * traversing the DOM tree recursively
 	 */
-	private function doGetElementsByTagName(node:Node, tagName:String, elements:Array<HTMLElement>):Void
+	private function doGetElementsByTagName(node:Element, tagName:String, elements:Array<HTMLElement>):Void
 	{
 		if (node.hasChildNodes() == true)
 		{
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:Node = node.childNodes[i];
+				var childNode:Element = node.childNodes[i];
 				
 				//if matching tagName, push child node
 				if (childNode.nodeName == tagName)
@@ -330,18 +330,18 @@ class Element extends Node
 	 * do get the matching child elements by 
 	 * traversing the DOM tree recursively
 	 */
-	private function doGetElementsByClassName(node:Node, className:String, elements:Array<HTMLElement>):Void
+	private function doGetElementsByClassName(node:Element, className:String, elements:Array<HTMLElement>):Void
 	{
 		if (node.hasChildNodes() == true)
 		{
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:Node = node.childNodes[i];
+				var childNode:Element = node.childNodes[i];
 				switch (childNode.nodeType)
 				{
 					case Node.ELEMENT_NODE:
-						var elementNode:Element = cast(childNode);
+						var elementNode:Element = childNode;
 						var elementClassName:String = elementNode.getAttribute(CLASS_ATTRIBUTE);
 						if (elementClassName != null)
 						{
@@ -388,7 +388,7 @@ class Element extends Node
 		return Node.ELEMENT_NODE;
 	}
 	
-	override private function get_attributes():NamedNodeMap 
+	override private function get_attributes():NamedNodeMap<Attr>
 	{
 		return _attributes;
 	}
@@ -406,7 +406,7 @@ class Element extends Node
 		
 		if (firstChild.nodeType == Node.ELEMENT_NODE)
 		{
-			return cast(firstChild);
+			return firstChild;
 		}
 		else
 		{
@@ -415,7 +415,7 @@ class Element extends Node
 			{
 				if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
 				{
-					return cast(_childNodes[i]);
+					return _childNodes[i];
 				}
 			}
 		}
@@ -432,7 +432,7 @@ class Element extends Node
 		
 		if (lastChild.nodeType == Node.ELEMENT_NODE)
 		{
-			return cast(lastChild);
+			return lastChild;
 		}
 		else
 		{
@@ -441,7 +441,7 @@ class Element extends Node
 			{
 				if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
 				{
-					return cast(_childNodes[i]);
+					return _childNodes[i];
 				}
 			}
 		}
@@ -456,7 +456,7 @@ class Element extends Node
 			return null;
 		}
 		
-		var nextElementSibling:Node = nextSibling;
+		var nextElementSibling:Element = nextSibling;
 		
 		while (nextElementSibling.nodeType != Node.ELEMENT_NODE)
 		{
@@ -468,7 +468,7 @@ class Element extends Node
 			}
 		}
 		
-		return cast(nextElementSibling);
+		return nextElementSibling;
 	}
 	
 	private function get_previousElementSibling():Element
@@ -478,7 +478,7 @@ class Element extends Node
 			return null;
 		}
 		
-		var previousElementSibling:Node = previousSibling;
+		var previousElementSibling:Element = previousSibling;
 		
 		while (previousElementSibling.nodeType != Node.ELEMENT_NODE)
 		{
@@ -490,7 +490,7 @@ class Element extends Node
 			}
 		}
 		
-		return cast(previousElementSibling);
+		return previousElementSibling;
 	}
 	
 	private function get_childElementCount():Int

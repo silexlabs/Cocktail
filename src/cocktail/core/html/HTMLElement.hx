@@ -277,7 +277,7 @@ class HTMLElement extends Element
 	 * try to attach the new child to the
 	 * rendering tree
 	 */
-	override public function appendChild(newChild:Node):Node
+	override public function appendChild(newChild:Element):Element
 	{
 		super.appendChild(newChild);
 		
@@ -301,7 +301,7 @@ class HTMLElement extends Element
 	 * try to detach the old child from the
 	 * rendering tree
 	 */
-	override public function removeChild(oldChild:Node):Node
+	override public function removeChild(oldChild:Element):Element
 	{
 		//must happen before calling super, else
 		//the HTMLElement won't have a parent to be detached
@@ -566,7 +566,7 @@ class HTMLElement extends Element
 			{
 				if (nextSibling.elementRenderer != null)
 				{
-					var elementRenderParent:ElementRenderer = cast(nextSibling.elementRenderer.parentNode);
+					var elementRenderParent:ElementRenderer = nextSibling.elementRenderer.parentNode;
 					
 					//in the case where the parent of the next sibling's elementRenderer is an 
 					//anonymous block, the anonymous block should be return as sibling
@@ -574,7 +574,7 @@ class HTMLElement extends Element
 					{
 						return elementRenderParent;
 					}
-					return cast(nextSibling.elementRenderer);
+					return nextSibling.elementRenderer;
 				}
 				
 				nextSibling = cast(nextSibling.nextSibling);
@@ -1050,7 +1050,7 @@ class HTMLElement extends Element
 		wrappedHTML += value;
 		wrappedHTML += HTMLConstants.HTML_TOKEN_LESS_THAN + HTMLConstants.HTML_TOKEN_SOLIDUS + HTMLConstants.HTML_DIV_TAG_NAME + HTMLConstants.HTML_TOKEN_MORE_THAN;
 		
-		var node:Node = doSetInnerHTML(Parser.parse(wrappedHTML).firstElement());
+		var node:HTMLElement = doSetInnerHTML(Parser.parse(wrappedHTML).firstElement());
 		
 		//the returned node might be null for instance, if 
 		//only an empty string was provided
@@ -1076,7 +1076,7 @@ class HTMLElement extends Element
 	 * @param xml the HTML string, deserialized as an
 	 * Haxe xml object
 	 */
-	private function doSetInnerHTML(xml : Xml):Node
+	private function doSetInnerHTML(xml : Xml):HTMLElement
 	{
 		switch( xml.nodeType ) {
 		
@@ -1117,7 +1117,7 @@ class HTMLElement extends Element
 			
 				//desrialize the child, thus deserializing
 				//the whole DOM tree recursively
-				var childNode:Node = doSetInnerHTML(child);
+				var childNode:HTMLElement = doSetInnerHTML(child);
 
 				htmlElement.appendChild(childNode);
 			} 
@@ -1163,12 +1163,12 @@ class HTMLElement extends Element
 	 * TODO 5 : should serialize other type of nodes, such as
 	 * doctype...
 	 */
-	private function doGetInnerHTML(node:Node, xml:Xml):Xml
+	private function doGetInnerHTML(node:Element, xml:Xml):Xml
 	{
 		var length:Int = node.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:Node = node.childNodes[i];
+			var child:Element = node.childNodes[i];
 			
 			switch(child.nodeType)
 			{
@@ -1179,11 +1179,11 @@ class HTMLElement extends Element
 					var childXml:Xml = Xml.createElement(child.nodeName);
 					
 					//set all the attributes of the child on its Xml node
-					var childAttributes:NamedNodeMap = child.attributes;
+					var childAttributes:NamedNodeMap<Attr> = child.attributes;
 					var childAttributesLength:Int = childAttributes.length;
 					for (j in 0...childAttributesLength)
 					{
-						var attribute:Attr = cast(childAttributes.item(j));
+						var attribute:Attr = childAttributes.item(j);
 						
 						if (attribute.specified == true)
 						{
@@ -1194,13 +1194,13 @@ class HTMLElement extends Element
 					//concatenate all the of the specified styles of the HTMLElement
 					//children into a CSS string
 					var htmlChild:HTMLElement = cast(child);
-					var styleAttributes:NamedNodeMap = htmlChild.style.attributes;
+					var styleAttributes:NamedNodeMap<Attr> = htmlChild.style.attributes;
 					var concatenatedStyles:String = "";
 					
 					var attributesLength:Int = styleAttributes.length;
 					for (j in 0...attributesLength)
 					{
-						var attribute:Attr = cast(styleAttributes.item(j));
+						var attribute:Attr = styleAttributes.item(j);
 						
 						if (attribute.specified == true)
 						{

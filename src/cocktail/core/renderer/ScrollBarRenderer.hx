@@ -7,6 +7,7 @@
 */
 package cocktail.core.renderer;
 import cocktail.core.dom.Node;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
@@ -24,7 +25,7 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	/**
 	 * class cosntructor
 	 */
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 	}
