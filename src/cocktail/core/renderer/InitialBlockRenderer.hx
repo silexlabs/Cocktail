@@ -310,7 +310,8 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		}
 		
 		//for its child of the element
-		for (i in 0...elementRenderer.childNodes.length)
+		var length:Int = elementRenderer.childNodes.length;
+		for (i in 0...length)
 		{
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			

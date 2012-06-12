@@ -131,11 +131,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			}
 		}
 		
-		//TODO 3 : is this check useful ?
-		if (elementRendererChild.isAnonymousBlockBox() == true)
-		{
-			//shouldMakeChildrenNonInline = false;
-		}
 		//append the new child
 		super.appendChild(newChild);
 		//make all children non inline if necessary
@@ -262,7 +257,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		//attach all the block children and the newly
 		//created anonymous block box
-		for (i in 0...newChildNodes.length)
+		var length:Int = newChildNodes.length;
+		for (i in 0...length)
 		{
 			appendChild(newChildNodes[i]);
 		}
@@ -296,7 +292,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var lineBoxes:Array<LineBox> = getChilrenLineBoxes(this, _layerRenderer);
 		
 		//loop in all of the lineboxes
-		for (i in 0...lineBoxes.length)
+		var length:Int = lineBoxes.length;
+		for (i in 0...length)
 		{
 			lineBoxes[i].render(graphicContext);
 		}
@@ -309,7 +306,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private function renderBlockReplacedChildren(graphicContext:NativeElement):Void
 	{
 		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this, _layerRenderer);
-		for (i in 0...childrenBlockReplaced.length)
+		var length:Int = childrenBlockReplaced.length;
+		for (i in 0...length)
 		{
 			childrenBlockReplaced[i].render(graphicContext);
 		}
@@ -322,8 +320,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private function renderBlockContainerChildren(graphicContext:NativeElement):Void
 	{
 		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(this, _layerRenderer);
-
-		for (i in 0...childrenBlockContainer.length)
+		var length:Int = childrenBlockContainer.length;
+		for (i in 0...length)
 		{
 			childrenBlockContainer[i].render(graphicContext);
 		}
@@ -363,10 +361,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
 			
-			for (i in 0...blockBoxRenderer.lineBoxes.length)
+			var length:Int = blockBoxRenderer.lineBoxes.length;
+			for (i in 0...length)
 			{
 				var lineBoxes:Array<LineBox> = getLineBoxesInLine(blockBoxRenderer.lineBoxes[i]);
-				for (j in 0...lineBoxes.length)
+				var childLength:Int = lineBoxes.length;
+				for (j in 0...childLength)
 				{
 					if (lineBoxes[j].layerRenderer == referenceLayer)
 					{
@@ -377,7 +377,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		else
 		{
-			for (i in 0...rootRenderer.childNodes.length)
+			var length:Int = rootRenderer.childNodes.length;
+			for (i in 0...length)
 			{
 				var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
 
@@ -386,7 +387,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					if (child.isReplaced() == false)
 					{	
 						var childLineBoxes:Array<LineBox> = getChilrenLineBoxes(child, referenceLayer);
-						for (j in 0...childLineBoxes.length)
+						var childLength:Int = childLineBoxes.length;
+						for (j in 0...childLength)
 						{
 							ret.push(childLineBoxes[j]);
 						}
@@ -401,12 +403,16 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	/**
 	 * Return all the replaced child displayed as block belonging
 	 * to the same stacking context
+	 * 
+	 * TODO 1 : all those methods should only be 1 method pushing into different arrays, and
+	 * only called once when dom changes
 	 */
 	private function getBlockReplacedChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer):Array<ElementRenderer>
 	{
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		for (i in 0...rootRenderer.childNodes.length)
+		var length:Int = rootRenderer.childNodes.length;
+		for (i in 0...length)
 		{
 			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
 			
@@ -416,8 +422,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				if (child.isReplaced() == false && child.coreStyle.display == block )
 				{
 					var childElementRenderer:Array<ElementRenderer> = getBlockReplacedChildren(child, referenceLayer);
-					
-					for (j in 0...childElementRenderer.length)
+					var childLength:Int = childElementRenderer.length;
+					for (j in 0...childLength)
 					{
 						ret.push(childElementRenderer[j]);
 					}
@@ -440,7 +446,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		for (i in 0...rootRenderer.childNodes.length)
+		var length:Int = rootRenderer.childNodes.length;
+		for (i in 0...length)
 		{
 			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
 			//TODO 2 : this check is to prevent positioned child with a zindex of 0 from being returned, should
@@ -453,8 +460,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					ret.push(cast(child));
 					
 					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(child, referenceLayer);
-					
-					for (j in 0...childElementRenderer.length)
+					var childLength:Int = childElementRenderer.length;
+					for (j in 0...childLength)
 					{
 						ret.push(childElementRenderer[j]);
 					}
@@ -551,7 +558,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//a scrolled container. For some reason, don't work for auto z-index positioned element
 	private function scrollChildren(root:ElementRenderer, scrollX:Float, scrollY:Float):Void
 	{
-		for ( i in 0...root.childNodes.length)
+		var length:Int = root.childNodes.length;
+		for ( i in 0...length)
 		{
 			var child:ElementRenderer = cast(root.childNodes[i]);
 			if (child.computedStyle.position == fixed || child.isScrollBar())
@@ -614,7 +622,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		if (establishesNewFormattingContext() == true )
 		{
-			
 			if (isPositioned() == true && isRelativePositioned() == false)
 			{
 				doFormat();
@@ -888,7 +895,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		var childrenBounds:Array<RectangleData> = new Array<RectangleData>();
 
-		for (i in 0...rootRenderer.childNodes.length)
+		var length:Int = rootRenderer.childNodes.length;
+		for (i in 0...length)
 		{
 			
 			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
@@ -899,7 +907,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				{
 					var childChildrenBounds:Array<RectangleData> = doGetScrollableBounds(child);
 					
-					for (j in 0...childChildrenBounds.length)
+					var childLength:Int = childChildrenBounds.length;
+					for (j in 0...length)
 					{
 						childrenBounds.push(childChildrenBounds[j]);
 					}

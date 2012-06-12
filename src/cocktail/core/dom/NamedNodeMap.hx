@@ -47,7 +47,8 @@ class NamedNodeMap
 	 */
 	public function getNamedItem(name:String):Node
 	{
-		for (i in 0..._nodes.length)
+		var nodesLength:Int = _nodes.length;
+		for (i in 0...nodesLength)
 		{
 			if (_nodes[i].nodeName == name)
 			{

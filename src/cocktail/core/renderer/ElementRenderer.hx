@@ -291,11 +291,11 @@ class ElementRenderer extends Node
 	 */
 	public function dispose():Void
 	{
-		//_lineBoxes = null;
+		_lineBoxes = null;
 		//TODO 2 :should clear the graphic context
-		//_graphicsContext = null;
-		//_coreStyle = null;
-		//_layerRenderer = null;
+		_graphicsContext = null;
+		_coreStyle = null;
+		_layerRenderer = null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -364,8 +364,8 @@ class ElementRenderer extends Node
 	{
 		#if (flash9 || nme)
 		var containerGraphicsContext:flash.display.DisplayObjectContainer = cast(_graphicsContext);
-		
-			for (i in 0...containerGraphicsContext.numChildren)
+			var length:Int = containerGraphicsContext.numChildren;
+			for (i in 0...length)
 			{
 				containerGraphicsContext.removeChildAt(0);
 			}
@@ -397,7 +397,8 @@ class ElementRenderer extends Node
 		
 		//the ElementRenderer is attached to the LayerRenderer
 		//tree and must now also attach its children
-		for (i in 0..._childNodes.length)
+		var length:Int = _childNodes.length;
+		for (i in 0...length)
 		{
 			var child:ElementRenderer = cast(_childNodes[i]);
 			child.attachLayer();
@@ -411,7 +412,8 @@ class ElementRenderer extends Node
 	public function detachLayer():Void
 	{
 		//first detach the LayerRenderer of all its children
-		for (i in 0..._childNodes.length)
+		var length:Int = _childNodes.length;
+		for (i in 0...length)
 		{
 			var child:ElementRenderer = cast(_childNodes[i]);
 			child.detachLayer();
@@ -668,24 +670,25 @@ class ElementRenderer extends Node
 		var right:Float = -50000;
 		var bottom:Float = -50000;
 		
-		
-		for (i in 0...childrenBounds.length)
+		var length:Int = childrenBounds.length;
+		for (i in 0...length)
 		{
-			if (childrenBounds[i].x < left)
+			var childBounds:RectangleData = childrenBounds[i];
+			if (childBounds.x < left)
 			{
-				left = childrenBounds[i].x;
+				left = childBounds.x;
 			}
-			if (childrenBounds[i].y < top)
+			if (childBounds.y < top)
 			{
-				top = childrenBounds[i].y;
+				top = childBounds.y;
 			}
-			if (childrenBounds[i].x + childrenBounds[i].width > right)
+			if (childBounds.x + childBounds.width > right)
 			{
-				right = childrenBounds[i].x + childrenBounds[i].width;
+				right = childBounds.x + childBounds.width;
 			}
-			if (childrenBounds[i].y + childrenBounds[i].height  > bottom)
+			if (childBounds.y + childBounds.height  > bottom)
 			{
-				bottom = childrenBounds[i].y + childrenBounds[i].height;
+				bottom = childBounds.y + childBounds.height;
 			}
 		}
 			

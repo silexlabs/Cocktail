@@ -132,11 +132,20 @@ class LayerRenderer extends Node
 	{
 		var childLayer:LayerRenderer = cast(oldChild);
 
-		//TODO 2 : shouldn't have ot try in each ? might switch the z-index, but it might
-		//have changed which have caused the removal in the first place
-		_zeroAndAutoZIndexChildRenderers.remove(childLayer.rootElementRenderer);
-		_positiveZIndexChildRenderers.remove(childLayer.rootElementRenderer);
-		_negativeZIndexChildRenderers.remove(childLayer.rootElementRenderer);
+		var removed:Bool = false;
+		
+		//try each of the array, stop if an element was actually removed from them
+		removed = _zeroAndAutoZIndexChildRenderers.remove(childLayer.rootElementRenderer);
+		
+		if (removed == false)
+		{
+			removed = _positiveZIndexChildRenderers.remove(childLayer.rootElementRenderer);
+			
+			if (removed == false)
+			{
+				 _negativeZIndexChildRenderers.remove(childLayer.rootElementRenderer);
+			}
+		}
 		
 		super.removeChild(oldChild);
 	
@@ -181,7 +190,8 @@ class LayerRenderer extends Node
 	 */
 	private function renderChildElementRenderers(rootElementRenderers:Array<ElementRenderer>, graphicContext:NativeElement):Void
 	{
-		for (i in 0...rootElementRenderers.length)
+		var length:Int = rootElementRenderers.length;
+		for (i in 0...length)
 		{
 			//the child element renderer is attached to its parent graphic context
 			//
@@ -234,7 +244,8 @@ class LayerRenderer extends Node
 		var isInserted:Bool = false;
 		
 		//loop in all the positive z-index array
-		for (i in 0..._positiveZIndexChildRenderers.length)
+		var length:Int = _positiveZIndexChildRenderers.length;
+		for (i in 0...length)
 		{
 			//get the z-index of the child at the current index
 			var currentRendererZIndex:Int = 0;
@@ -285,7 +296,8 @@ class LayerRenderer extends Node
 
 		var isInserted:Bool = false;
 		
-		for (i in 0..._negativeZIndexChildRenderers.length)
+		var length:Int = _negativeZIndexChildRenderers.length;
+		for (i in 0...length)
 		{
 			var currentRendererZIndex:Int = 0;
 			
@@ -338,8 +350,8 @@ class LayerRenderer extends Node
 			var childRenderers:Array<ElementRenderer> = getChildRenderers();
 			
 			var elementRenderersAtPointInChildRenderers:Array<ElementRenderer> = getElementRenderersAtPointInChildRenderers(point, childRenderers, scrollX, scrollY);
-			
-			for (i in 0...elementRenderersAtPointInChildRenderers.length)
+			var length:Int = elementRenderersAtPointInChildRenderers.length;
+			for (i in 0...length)
 			{
 				elementRenderersAtPoint.push(elementRenderersAtPointInChildRenderers[i]);
 			}
@@ -370,8 +382,8 @@ class LayerRenderer extends Node
 		scrollY += renderer.scrollTop;
 		
 		
-		
-		for (i in 0...renderer.childNodes.length)
+		var length:Int = renderer.childNodes.length;
+		for (i in 0...length)
 		{
 			var child:ElementRenderer = cast(renderer.childNodes[i]);
 			
@@ -381,8 +393,8 @@ class LayerRenderer extends Node
 				{
 					
 					var childElementRenderersAtPointInLayer:Array<ElementRenderer> = getElementRenderersAtPointInLayer(child, point, scrollX, scrollY);
-					
-					for (j in 0...childElementRenderersAtPointInLayer.length)
+					var childLength:Int = childElementRenderersAtPointInLayer.length;
+					for (j in 0...childLength)
 					{
 						elementRenderersAtPointInLayer.push(childElementRenderersAtPointInLayer[j]);
 					}
@@ -409,7 +421,8 @@ class LayerRenderer extends Node
 	{
 		var elementRenderersAtPointInChildRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		for (i in 0...childRenderers.length)
+		var length:Int = childRenderers.length;
+		for (i in 0...length)
 		{
 			
 			var elementRenderersAtPointInChildRenderer:Array<ElementRenderer> = [];
@@ -431,8 +444,8 @@ class LayerRenderer extends Node
 				}
 			}
 		
-				
-			for (j in 0...elementRenderersAtPointInChildRenderer.length)
+			var childLength:Int = elementRenderersAtPointInChildRenderer.length;
+			for (j in 0...childLength)
 			{
 				elementRenderersAtPointInChildRenderers.push(elementRenderersAtPointInChildRenderer[j]);
 			}

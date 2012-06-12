@@ -111,7 +111,8 @@ class BoxRenderer extends ElementRenderer
 		
 		#if (flash9 || nme)
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
-		for (i in 0...backgrounds.length)
+		var length:Int = backgrounds.length;
+		for (i in 0...length)
 		{
 			backgrounds[i].x = globalBounds.x;
 			backgrounds[i].y = globalBounds.y;
@@ -361,7 +362,6 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function isPositioned():Bool
 	{
-		_coreStyle.computeDisplayStyles();
 		var ret:Bool = false;
 		
 		switch (this.computedStyle.position) 
@@ -425,7 +425,7 @@ class BoxRenderer extends ElementRenderer
 	 * Overriden as BoxRenderer might create new stacking context, for
 	 * instance if they are positioned.
 	 * 
-	 * TODO 2 : shouldn't have to compute display style before
+	 * TODO 2 : hack, shouldn't have to compute display style before
 	 * 
 	 */
 	override public function establishesNewStackingContext():Bool
