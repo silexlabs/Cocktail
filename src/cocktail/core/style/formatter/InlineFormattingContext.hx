@@ -103,7 +103,8 @@ class InlineFormattingContext extends FormattingContext
 	private function doFormat(elementRenderer:ElementRenderer, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
 		//loop in all the child of the container
-		for (i in 0...elementRenderer.childNodes.length)
+		var length:Int = elementRenderer.childNodes.length;
+		for (i in 0...length)
 		{
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 
@@ -222,7 +223,8 @@ class InlineFormattingContext extends FormattingContext
 	{
 		
 		//loop in all the line boxes which must be added to the current line
-		for ( i in 0...lineBoxes.length)
+		var length:Int = lineBoxes.length;
+		for ( i in 0...length)
 		{
 			//store the line box in the unbreakable line box array, which is
 			//a buffer preventing break between elements which are not supposed to
@@ -284,7 +286,8 @@ class InlineFormattingContext extends FormattingContext
 			//now that a break opportunity can occur in the line, 
 			//push all the elements in the unbreakable line box
 			//in the current line
-			for (j in 0..._unbreakableLineBoxes.length)
+			var unbreakableLength:Int = _unbreakableLineBoxes.length;
+			for (j in 0...unbreakableLength)
 			{
 				lineBox.appendChild(_unbreakableLineBoxes[j]);
 			}
@@ -338,7 +341,8 @@ class InlineFormattingContext extends FormattingContext
 	{
 		var concatenatedWidth:Int = 0;
 		
-		for (i in 0...lineBox.childNodes.length)
+		var length:Int = lineBox.childNodes.length;
+		for (i in 0...length)
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
 			
@@ -475,7 +479,8 @@ class InlineFormattingContext extends FormattingContext
 	{
 		flowX += lineBox.paddingLeft + lineBox.marginLeft;
 		
-		for (i in 0...lineBox.childNodes.length)
+		var length:Int = lineBox.childNodes.length;
+		for (i in 0...length)
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
 			
@@ -516,7 +521,9 @@ class InlineFormattingContext extends FormattingContext
 	private function alignCenter(flowX:Float, remainingSpace:Float, lineBox:LineBox):Float
 	{
 		flowX += lineBox.marginLeft + lineBox.paddingLeft;
-		for (i in 0...lineBox.childNodes.length)
+		
+		var length:Int = lineBox.childNodes.length;
+		for (i in 0...length)
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
 			
@@ -547,7 +554,9 @@ class InlineFormattingContext extends FormattingContext
 	private function alignRight(flowX:Float, remainingSpace:Float, lineBox:LineBox):Float
 	{
 		flowX += lineBox.marginLeft + lineBox.paddingLeft;
-		for (i in 0...lineBox.childNodes.length)
+		
+		var length:Int = lineBox.childNodes.length;
+		for (i in 0...length)
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
 			
@@ -576,7 +585,8 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function alignJustify(flowX:Float, remainingSpace:Float, lineBox:LineBox, spacesInLine:Int):Void
 	{
-		for (i in 0...lineBox.childNodes.length)
+		var length:Int = lineBox.childNodes.length;
+		for (i in 0...length)
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
 			
@@ -829,8 +839,8 @@ class InlineFormattingContext extends FormattingContext
 	
 	private function setRootLineBoxMetrics(lineBox:LineBox, rootLineBox:LineBox, parentBaseLineOffset:Float):Void
 	{
-		
-		for (i in 0...lineBox.childNodes.length)
+		var length:Int = lineBox.childNodes.length;
+		for (i in 0...length)
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
 			
@@ -862,7 +872,8 @@ class InlineFormattingContext extends FormattingContext
 	
 	private function alignLineBoxesVertically(lineBox:LineBox, lineBoxAscent:Float, formattingContextY:Float, parentBaseLineOffset:Float):Void
 	{
-		for (i in 0...lineBox.childNodes.length)
+		var length:Int = lineBox.childNodes.length;
+		for (i in 0...length)
 		{
 			var child:LineBox = cast(lineBox.childNodes[i]);
 			

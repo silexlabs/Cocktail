@@ -175,7 +175,8 @@ class TextRenderer extends ElementRenderer
 		_textTokens = doGetTextTokens(_text.nodeValue);
 		lineBoxes = [];
 		
-		for (i in 0..._textTokens.length)
+		var length:Int = _textTokens.length;
+		for (i in 0...length)
 		{
 			//create and store the line boxes
 			lineBoxes.push(createTextLineBoxFromTextToken(_textTokens[i]));
@@ -257,7 +258,8 @@ class TextRenderer extends ElementRenderer
 			}
 		}
 		var textLineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
-		for (i in 0..._lineBoxes.length)
+		var length:Int = _lineBoxes.length;
+		for (i in 0...length)
 		{
 			textLineBoxesBounds.push(_lineBoxes[i].bounds);
 		}

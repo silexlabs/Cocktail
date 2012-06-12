@@ -49,7 +49,8 @@ class BlockFormattingContext extends FormattingContext
 	//TODO 1 : should be on FloatManager
 	private function isFloatRegistered(child:ElementRenderer):Bool
 	{
-		for (i in 0..._registeredFloats.length)
+		var length:Int = _registeredFloats.length;
+		for (i in 0...length)
 		{
 			if (_registeredFloats[i].node == child)
 			{
@@ -62,7 +63,8 @@ class BlockFormattingContext extends FormattingContext
 	
 	private function getRegisteredFloat(child:ElementRenderer):FloatData
 	{
-		for (i in 0..._registeredFloats.length)
+		var length:Int = _registeredFloats.length;
+		for (i in 0...length)
 		{
 			if (_registeredFloats[i].node == child)
 			{
@@ -80,7 +82,9 @@ class BlockFormattingContext extends FormattingContext
 		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingTop + parentCollapsedMarginTop;
 
 		var childHeight:Float = concatenatedY;
-		for (i in 0...elementRenderer.childNodes.length)
+		
+		var length:Int = elementRenderer.childNodes.length;
+		for (i in 0...length)
 		{
 			var child:ElementRenderer = cast(elementRenderer.childNodes[i]);
 			

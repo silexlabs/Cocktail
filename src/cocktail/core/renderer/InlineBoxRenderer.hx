@@ -80,11 +80,13 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 */
 	private function renderChildLineBoxes(graphicContext:NativeElement):Void
 	{
-		for (i in 0..._lineBoxes.length)
+		var length:Int = _lineBoxes.length;
+		for (i in 0...length)
 		{
 			var childLineBoxes:Array<LineBox> = getLineBoxesInLine(_lineBoxes[i]);
 			
-			for (j in 0...childLineBoxes.length)
+			var childLength:Int = childLineBoxes.length;
+			for (j in 0...childLength)
 			{
 				if (childLineBoxes[j].layerRenderer == _layerRenderer)
 				{
@@ -106,7 +108,8 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	override private function get_bounds():RectangleData
 	{
 		var lineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
-		for (i in 0..._lineBoxes.length)
+		var length:Int = _lineBoxes.length;
+		for (i in 0...length)
 		{
 			lineBoxesBounds.push(_lineBoxes[i].bounds);
 		}
