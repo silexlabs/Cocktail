@@ -104,9 +104,13 @@ class FlowBoxRenderer extends BoxRenderer
 		//TODO 3 : should only be called for BlockBoxRenderer
 		format();
 		
-		//if this ElementRenderer is positioned, it means that it is the first positioned ancestor
-		//for its positioned children and it is its responsability to lay them out
-		layoutAbsolutelyPositionedChildrenIfNeeded(childrenFirstPositionedAncestorData, viewportData);
+		if (_positionedChildrenNeedLayout == true)
+		{
+			//if this ElementRenderer is positioned, it means that it is the first positioned ancestor
+			//for its positioned children and it is its responsability to lay them out
+			layoutAbsolutelyPositionedChildrenIfNeeded(childrenFirstPositionedAncestorData, viewportData);
+		}
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

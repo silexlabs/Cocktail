@@ -60,7 +60,7 @@ class TextRenderer extends ElementRenderer
 	
 	//TODO 1 IMPORTANT : setting lineBoxes to null causes runtime error in inline formatting context,
 	//need to find a better way to refresh text
-	override public function invalidateText():Void
+	override private function invalidateText():Void
 	{
 		//_lineBoxes = null;
 		invalidateLayout();

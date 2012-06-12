@@ -41,6 +41,7 @@ import cocktail.core.font.FontData;
 import haxe.Log;
 import haxe.Timer;
 import cocktail.core.style.ComputedStyle;
+import cocktail.core.renderer.RendererData;
 
 /**
  * This is the base class for all Style classes. Style classes
@@ -736,9 +737,9 @@ class CoreStyle
 	 * Called when a style necesiting invalidation of the
 	 * layout of the HTMLElement is changed
 	 */
-	private function invalidate(immediate:Bool = false):Void
+	private function invalidate(invalidationReason:InvalidationReason):Void
 	{
-		_htmlElement.invalidateLayout(immediate);
+		_htmlElement.invalidate(invalidationReason);
 	}
 	
 	/**
@@ -747,22 +748,6 @@ class CoreStyle
 	private function invalidateDisplay():Void
 	{
 		_htmlElement.invalidateDisplay();
-	}
-	
-	/**
-	 * Same as above for LayerRenderer
-	 */
-	private function invalidateLayer():Void
-	{
-		_htmlElement.invalidateLayer();
-	}
-	
-	/**
-	 * Same as above for text
-	 */
-	private function invalidateText():Void
-	{
-		_htmlElement.invalidateText();
 	}
 	
 	/////////////////////////////////
@@ -868,9 +853,7 @@ class CoreStyle
 		//start an immediate invalidation, so that the the new specified value
 		//of the style gets immediately computed, this value will be the end value
 		//for the transition
-		//
-		//TODO 1 : should not cause a repaint
-		invalidate(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		var endValue:Float = Reflect.getProperty(computedStyle, propertyName);
 		
 		//start a transition using the TransitionManager
@@ -904,7 +887,7 @@ class CoreStyle
 	 */
 	private function onTransitionComplete(transition:Transition):Void
 	{
-		invalidate();
+		invalidate(InvalidationReason.other);
 		var transitionEvent:TransitionEvent = new TransitionEvent();
 		transitionEvent.initTransitionEvent(TransitionEvent.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
 		_htmlElement.dispatchEvent(transitionEvent);
@@ -917,7 +900,7 @@ class CoreStyle
 	 */
 	private function onTransitionUpdate(transition:Transition):Void
 	{
-		invalidate();
+		invalidate(InvalidationReason.other);
 	}
 	
 	/////////////////////////////////
@@ -958,7 +941,7 @@ class CoreStyle
 		_width = value;
 		//TODO 1 : if transition is successful, should invalidate still be called ?
 		startTransitionIfNeeded(CSSConstants.WIDTH_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -966,7 +949,7 @@ class CoreStyle
 	{
 		_marginLeft = value;
 		startTransitionIfNeeded(CSSConstants.MARGIN_LEFT_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -974,7 +957,7 @@ class CoreStyle
 	{
 		_marginRight = value;
 		startTransitionIfNeeded(CSSConstants.MARGIN_RIGHT_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -982,7 +965,7 @@ class CoreStyle
 	{
 		_marginTop = value;
 		startTransitionIfNeeded(CSSConstants.MARGIN_TOP_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -990,7 +973,7 @@ class CoreStyle
 	{
 		_marginBottom = value;
 		startTransitionIfNeeded(CSSConstants.MARGIN_BOTTOM_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -998,7 +981,7 @@ class CoreStyle
 	{
 		_paddingLeft = value;
 		startTransitionIfNeeded(CSSConstants.PADDING_LEFT_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1006,7 +989,7 @@ class CoreStyle
 	{
 		_paddingRight = value;
 		startTransitionIfNeeded(CSSConstants.PADDING_RIGHT_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1014,7 +997,7 @@ class CoreStyle
 	{
 		_paddingTop = value;
 		startTransitionIfNeeded(CSSConstants.PADDING_TOP_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1022,7 +1005,7 @@ class CoreStyle
 	{
 		_paddingBottom = value;
 		startTransitionIfNeeded(CSSConstants.PADDING_BOTTOM_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1036,7 +1019,7 @@ class CoreStyle
 	private function setPosition(value:Position):Position 
 	{
 		_position = value;
-		invalidateLayer();
+		invalidate(InvalidationReason.styleChanged(CSSConstants.POSITION_STYLE_NAME));
 		return value;
 	}
 	
@@ -1044,7 +1027,7 @@ class CoreStyle
 	{
 		_height = value;
 		startTransitionIfNeeded(CSSConstants.HEIGHT_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1052,7 +1035,7 @@ class CoreStyle
 	{
 		_minHeight = value;
 		startTransitionIfNeeded(CSSConstants.MIN_HEIGHT_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1060,7 +1043,7 @@ class CoreStyle
 	{
 		_maxHeight = value;
 		startTransitionIfNeeded(CSSConstants.MAX_HEIGHT_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1068,7 +1051,7 @@ class CoreStyle
 	{
 		_minWidth = value;
 		startTransitionIfNeeded(CSSConstants.MIN_WIDTH_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1076,7 +1059,7 @@ class CoreStyle
 	{
 		_maxWidth = value;
 		startTransitionIfNeeded(CSSConstants.MAX_WIDTH_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1084,7 +1067,7 @@ class CoreStyle
 	{
 		_top = value;
 		startTransitionIfNeeded(CSSConstants.TOP_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1092,7 +1075,7 @@ class CoreStyle
 	{
 		_left = value;
 		startTransitionIfNeeded(CSSConstants.LEFT_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.styleChanged(CSSConstants.LEFT_STYLE_NAME));
 		return value;
 	}
 	
@@ -1100,7 +1083,7 @@ class CoreStyle
 	{
 		_bottom = value;
 		startTransitionIfNeeded(CSSConstants.BOTTOM_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1108,28 +1091,28 @@ class CoreStyle
 	{
 		_right = value;
 		startTransitionIfNeeded(CSSConstants.RIGHT_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setCSSFloat(value:CSSFloat):CSSFloat 
 	{
 		_cssFloat = value;
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setClear(value:Clear):Clear 
 	{
 		_clear = value;
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setZIndex(value:ZIndex):ZIndex 
 	{
 		_zIndex = value;
-		invalidateLayer();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1137,42 +1120,42 @@ class CoreStyle
 	{
 		_fontSize = value;
 		startTransitionIfNeeded(CSSConstants.FONT_SIZE_STYLE_NAME);
-		invalidateText();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setFontWeight(value:FontWeight):FontWeight
 	{
 		_fontWeight = value;
-		invalidateText();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setFontStyle(value:FontStyle):FontStyle
 	{
 		_fontStyle = value;
-		invalidateText();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setFontFamily(value:Array<String>):Array<String>
 	{
 		_fontFamily = value;
-		invalidateText();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setFontVariant(value:FontVariant):FontVariant
 	{
 		_fontVariant = value;
-		invalidateText();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setTextTransform(value:TextTransform):TextTransform
 	{
 		_textTransform = value;
-		invalidateText();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1180,7 +1163,7 @@ class CoreStyle
 	{
 		_letterSpacing = value;
 		startTransitionIfNeeded(CSSConstants.LETTER_SPACING_STYLE_NAME);
-		invalidateText();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1188,7 +1171,7 @@ class CoreStyle
 	{
 		_wordSpacing = value;
 		startTransitionIfNeeded(CSSConstants.WORD_SPACING_STYLE_NAME);
-		invalidateText();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1196,14 +1179,14 @@ class CoreStyle
 	{
 		_lineHeight = value;
 		startTransitionIfNeeded(CSSConstants.LINE_HEIGHT_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setColor(value:Color):Color
 	{
 		_color = value;
-		invalidateText();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1211,7 +1194,7 @@ class CoreStyle
 	{
 		_verticalAlign = value;
 		startTransitionIfNeeded(CSSConstants.VERTICAL_ALIGN_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1219,21 +1202,21 @@ class CoreStyle
 	{
 		_textIndent = value;
 		startTransitionIfNeeded(CSSConstants.TEXT_INDENT_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setWhiteSpace(value:WhiteSpace):WhiteSpace
 	{
 		_whiteSpace = value;
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setTextAlign(value:TextAlign):TextAlign
 	{
 		 _textAlign = value;
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1241,42 +1224,42 @@ class CoreStyle
 	{
 		_opacity = value;
 		startTransitionIfNeeded(CSSConstants.OPACITY_STYLE_NAME);
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return _opacity;
 	}
 	
 	private function setVisibility(value:Visibility):Visibility
 	{
 		_visibility = value;
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return _visibility;
 	}
 	
 	private function setTransformOrigin(value:TransformOrigin):TransformOrigin
 	{
 		_transformOrigin = value;
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setTransform(value:Transform):Transform
 	{
 		_transform = value;
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setOverflowX(value:Overflow):Overflow
 	{
 		_overflowX = value;
-		invalidateLayer();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setOverflowY(value:Overflow):Overflow
 	{
 		_overflowY = value;
-		invalidateLayer();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
@@ -1298,6 +1281,60 @@ class CoreStyle
 	private function setTransitionTimingFunction(value:TransitionTimingFunction):TransitionTimingFunction
 	{
 		return _transitionTimingFunction = value;
+	}
+	
+	private function setBackgroundColor(value:BackgroundColor):BackgroundColor
+	{
+		_backgroundColor = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundImage(value:Array<BackgroundImage>):Array<BackgroundImage>
+	{
+		_backgroundImage = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundSize(value:Array<BackgroundSize>):Array<BackgroundSize>
+	{
+		_backgroundSize = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundClip(value:Array<BackgroundClip>):Array<BackgroundClip>
+	{
+		_backgroundClip = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundPosition(value:Array<BackgroundPosition>):Array<BackgroundPosition>
+	{
+		_backgroundPosition = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundRepeat(value:Array<BackgroundRepeat>):Array<BackgroundRepeat>
+	{
+		_backgroundRepeat = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundOrigin(value:Array<BackgroundOrigin>):Array<BackgroundOrigin>
+	{
+		_backgroundOrigin = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setCursor(value:Cursor):Cursor
+	{
+		return _cursor = value;
 	}
 	
 	/////////////////////////////////
@@ -1509,23 +1546,9 @@ class CoreStyle
 		return _transformOrigin;
 	}
 	
-	private function setBackgroundColor(value:BackgroundColor):BackgroundColor
-	{
-		_backgroundColor = value;
-		invalidate();
-		return value;
-	}
-	
 	private function getBackgroundColor():BackgroundColor
 	{
 		return _backgroundColor;
-	}
-	
-	private function setBackgroundImage(value:Array<BackgroundImage>):Array<BackgroundImage>
-	{
-		_backgroundImage = value;
-		invalidate();
-		return value;
 	}
 	
 	private function getBackgroundImage():Array<BackgroundImage>
@@ -1533,22 +1556,9 @@ class CoreStyle
 		return _backgroundImage;
 	}
 	
-	private function setBackgroundRepeat(value:Array<BackgroundRepeat>):Array<BackgroundRepeat>
-	{
-		invalidate();
-		return _backgroundRepeat = value;
-	}
-	
 	private function getBackgroundRepeat():Array<BackgroundRepeat>
 	{
 		return _backgroundRepeat;
-	}
-	
-	private function setBackgroundSize(value:Array<BackgroundSize>):Array<BackgroundSize>
-	{
-		_backgroundSize = value;
-		invalidate();
-		return value;
 	}
 	
 	private function getBackgroundSize():Array<BackgroundSize>
@@ -1556,35 +1566,14 @@ class CoreStyle
 		return _backgroundSize;
 	}
 	
-	private function setBackgroundClip(value:Array<BackgroundClip>):Array<BackgroundClip>
-	{
-		_backgroundClip = value;
-		invalidate();
-		return value;
-	}
-	
 	private function getBackgroundClip():Array<BackgroundClip>
 	{
 		return _backgroundClip;
 	}
 	
-	private function setBackgroundPosition(value:Array<BackgroundPosition>):Array<BackgroundPosition>
-	{
-		_backgroundPosition = value;
-		invalidate();
-		return value;
-	}
-	
 	private function getBackgroundPosition():Array<BackgroundPosition>
 	{
 		return _backgroundPosition;
-	}
-	
-	private function setBackgroundOrigin(value:Array<BackgroundOrigin>):Array<BackgroundOrigin>
-	{
-		_backgroundOrigin = value;
-		invalidate();
-		return value;
 	}
 	
 	private function getBackgroundOrigin():Array<BackgroundOrigin>
@@ -1600,11 +1589,6 @@ class CoreStyle
 	private function getOverflowY():Overflow
 	{
 		return _overflowY;
-	}
-	
-	private function setCursor(value:Cursor):Cursor
-	{
-		return _cursor = value;
 	}
 	
 	private function getCursor():Cursor

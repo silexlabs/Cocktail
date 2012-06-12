@@ -11,6 +11,7 @@ import cocktail.core.event.Event;
 import cocktail.port.platform.nativeMedia.NativeMedia;
 import haxe.Timer;
 import cocktail.core.html.HTMLData;
+import cocktail.core.renderer.RendererData;
 
 /**
  * This is an abstract base class for media elements,
@@ -889,7 +890,7 @@ class HTMLMediaElement extends EmbeddedElement
 		establishMediaTimeline();
 		
 		//refresh the layout
-		invalidateLayout();
+		invalidate(InvalidationReason.other);
 		
 		//start listening to loading event, as it begins
 		//as soon as the metadata are loaded
@@ -967,7 +968,6 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function set_src(value:String):String 
 	{
-		//TODO 2 : awkward to call super, but else infinite loop
 		super.setAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME, value);
 		loadResource();
 		return value;
@@ -987,7 +987,6 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function set_autoplay(value:Bool):Bool
 	{
-		//TODO 2 : awkward to call super, but else infinite loop
 		super.setAttribute(HTMLConstants.HTML_AUTOPLAY_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}
@@ -1006,7 +1005,6 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function set_loop(value:Bool):Bool
 	{
-		//TODO 2 : awkward to call super, but else infinite loop
 		super.setAttribute(HTMLConstants.HTML_LOOP_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}

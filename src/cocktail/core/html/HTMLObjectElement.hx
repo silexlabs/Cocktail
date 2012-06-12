@@ -10,6 +10,7 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.NativeElement;
 import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.resource.ImageLoader;
+import cocktail.core.renderer.RendererData;
 
 /**
  * The object element can represent an external resource,
@@ -114,7 +115,7 @@ class HTMLObjectElement extends EmbeddedElement
 		this._intrinsicWidth = _imageLoader.intrinsicWidth;
 		this._intrinsicRatio = _intrinsicHeight / _intrinsicWidth;
 		
-		invalidateLayout();
+		invalidate(InvalidationReason.other);
 		
 		var loadEvent:UIEvent = new UIEvent();
 		loadEvent.initUIEvent(UIEvent.LOAD, false, false, null, 0.0);
@@ -143,7 +144,6 @@ class HTMLObjectElement extends EmbeddedElement
 	 */
 	private function set_data(value:String):String
 	{
-		//TODO 2 : awkward to call super, but else infinite loop
 		super.setAttribute(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME, value);
 		_imageLoader.load([value], onLoadComplete, onLoadError);
 		return value;

@@ -160,7 +160,6 @@ class BlockFormattingContext extends FormattingContext
 			//find widest line for shrink-to-fit algorithm
 			if (child.bounds.x + child.bounds.width + child.coreStyle.computedStyle.marginRight > _formattingContextData.maxWidth)
 			{
-				//TODO 2 : all formatting should use float
 				_formattingContextData.maxWidth = Math.round(child.bounds.x + child.bounds.width) + child.coreStyle.computedStyle.marginRight;
 			}
 			

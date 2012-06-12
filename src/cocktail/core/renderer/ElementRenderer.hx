@@ -14,6 +14,7 @@ import cocktail.core.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.style.CSSConstants;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
@@ -228,6 +229,16 @@ class ElementRenderer extends Node
 	 */
 	public var scrollHeight(get_scrollHeight, never):Float;
 	
+	private var _needsLayout:Bool;
+	
+	private var _childrenNeedLayout:Bool;
+	
+	private var _positionedChildrenNeedLayout:Bool;
+	
+	private var _needsRendering:Bool;
+	
+	private var _needsVisualEffectsRendering:Bool;
+	
 	/**
 	 * class constructor. init class attribute
 	 */
@@ -266,6 +277,12 @@ class ElementRenderer extends Node
 			y:0.0
 		}
 		
+		_needsRendering = true;
+		_needsLayout = true;
+		_childrenNeedLayout = true;
+		_positionedChildrenNeedLayout = true;
+		_needsVisualEffectsRendering = true;
+		
 		_lineBoxes = new Array<LineBox>();
 	}
 	
@@ -274,11 +291,11 @@ class ElementRenderer extends Node
 	 */
 	public function dispose():Void
 	{
-		_lineBoxes = null;
+		//_lineBoxes = null;
 		//TODO 2 :should clear the graphic context
-		_graphicsContext = null;
-		_coreStyle = null;
-		_layerRenderer = null;
+		//_graphicsContext = null;
+		//_coreStyle = null;
+		//_layerRenderer = null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -294,7 +311,7 @@ class ElementRenderer extends Node
 		super.appendChild(newChild);
 		var elementRendererChild:ElementRenderer = cast(newChild);
 		elementRendererChild.attachLayer();
-		invalidateLayout();
+		invalidate(InvalidationReason.other);
 		return newChild;
 	}
 	
@@ -310,7 +327,7 @@ class ElementRenderer extends Node
 		var elementRendererChild:ElementRenderer = cast(oldChild);
 		elementRendererChild.detachLayer();
 		super.removeChild(oldChild);
-		invalidateLayout();
+		invalidate(InvalidationReason.other);
 		return oldChild;
 	}
 	
@@ -500,6 +517,11 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
+	public function isBlockContainer():Bool
+	{
+		return false;
+	}
+	
 	public function childrenInline():Bool
 	{
 		return false;
@@ -621,6 +643,7 @@ class ElementRenderer extends Node
 		{
 			_layerRenderer = parentLayer;
 			
+				
 			//if the ElementRenderer is positioned with
 			//an 'auto' z-index value, then it must be added
 			//in a special array in its LayerRenderer has it will
@@ -692,33 +715,193 @@ class ElementRenderer extends Node
 	// PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function invalidate(invalidationReason:InvalidationReason, immediate:Bool):Void
+	public function invalidate(invalidationReason:InvalidationReason):Void
 	{
+				//TODO 1 : not supposed to happen but bug with scrollbars for now
+		if (_parentNode == null)
+		{
+			return;
+		}
+		
+		switch(invalidationReason)
+		{
+			case InvalidationReason.styleChanged(styleName):
+				invalidatedStyle(styleName);
+			
+			case InvalidationReason.childStyleChanged(styleName):
+				invalidatedChildStyle(styleName);
+				
+			case InvalidationReason.positionedChildStyleChanged(styleName):
+				invalidatedPositionedChildStyle(styleName);
+				
+			case InvalidationReason.needsImmediateLayout:
+				_needsLayout = true;
+				_childrenNeedLayout = true;
+				invalidateLayout(true);
+				
+			default:
+				_needsLayout = true;
+				_childrenNeedLayout = true;
+				_needsVisualEffectsRendering = true;
+				_needsRendering = true;
+				_positionedChildrenNeedLayout = true;
+		}
+		
+		invalidateContainingBlock(invalidationReason);
+		invalidateLayout(false);
+	}
+	
+	public function childInvalidated(invalidationReason:InvalidationReason):Void
+	{
+		_childrenNeedLayout = true;
+		invalidate(invalidationReason);
+	}
+	
+	public function positionedChildInvalidated(invalidationReason:InvalidationReason):Void
+	{
+		_positionedChildrenNeedLayout = true;
+		invalidate(invalidationReason);
+	}
+	
+	private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
+	{
+		
+		var containingBlockInvalidationReason:InvalidationReason;
+		
+		switch (invalidationReason)
+		{
+			case InvalidationReason.styleChanged(styleName):
+				if (isPositioned() == true)
+				{
+					containingBlockInvalidationReason = InvalidationReason.positionedChildStyleChanged(styleName);
+				}
+				else
+				{
+					containingBlockInvalidationReason = InvalidationReason.childStyleChanged(styleName);
+				}
+				
+			default:
+				containingBlockInvalidationReason = invalidationReason;
+				
+		}
+		
+		var containingBlock:BlockBoxRenderer = getContainingBlock();
+		if (isPositioned() == true)
+		{
+			
+		}
+		containingBlock.childInvalidated(containingBlockInvalidationReason);
+		containingBlock.positionedChildInvalidated(containingBlockInvalidationReason);
 		
 	}
 	
-	public function childrenInvalidated(invalidationReason:InvalidationReason, immediate:Bool):Void
+	private function invalidatedStyle(styleName:String):Void
 	{
-		
+		switch (styleName)
+		{
+			case CSSConstants.LEFT_STYLE_NAME, CSSConstants.RIGHT_STYLE_NAME,
+			CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
+				if (isPositioned() == true)
+				{
+					_needsVisualEffectsRendering = true;
+				}
+				
+			case CSSConstants.POSITION_STYLE_NAME, CSSConstants.Z_INDEX_STYLE_NAME:
+				invalidateLayer();
+		}
 	}
 	
-	public function positionedChildrenInvalidated(invalidationReason:InvalidationReason, immediate:Bool):Void
+	private function invalidatedChildStyle(styleName:String):Void
 	{
-		
+		switch (styleName)
+		{
+			default:
+				_needsLayout = true;
+				_childrenNeedLayout = true;
+				_needsVisualEffectsRendering = true;
+				_needsRendering = true;
+				_positionedChildrenNeedLayout = true;
+				
+		}
+	}
+	
+	private function invalidatedPositionedChildStyle(styleName:String):Void
+	{
+		switch (styleName)
+		{
+			case CSSConstants.LEFT_STYLE_NAME, CSSConstants.RIGHT_STYLE_NAME,
+			CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
+				
+				
+			default:
+				_needsLayout = true;
+				_childrenNeedLayout = true;
+				_needsVisualEffectsRendering = true;
+				_needsRendering = true;
+				_positionedChildrenNeedLayout = true;
+		}
 	}
 	
 	private function getContainingBlock():BlockBoxRenderer
 	{
-		return null;
 		if (isPositioned() == true && isRelativePositioned() == false)
 		{
-			//return getFirstPositionedAncestor();
+			if (computedStyle.position == fixed)
+			{
+				return getInitialContainingBlock();
+			}
+			else
+			{
+				return getFirstPositionedAncestor();
+			}
 		}
 		else
 		{
-			//TODO 1
-			return null;
+			return getFirstBlockBoxAncestor();
 		}
+	}
+	
+	private function getFirstBlockBoxAncestor():BlockBoxRenderer
+	{
+		var parent:ElementRenderer = cast(_parentNode);
+		while(parent.isBlockContainer() == false)
+		{
+			parent = cast(parent.parentNode);
+		}
+		return cast(parent);
+	}
+	
+	private function getFirstPositionedAncestor():BlockBoxRenderer
+	{
+		var parent:ElementRenderer = cast(_parentNode);
+			if (parent == null)
+			{
+				trace(this);
+			}
+		while (parent.isPositioned() == false)
+		{
+			if (parent == null)
+			{
+				trace(this);
+			}
+			parent = cast(parent.parentNode);
+		}
+		return cast(parent);
+	}
+	
+	private function getInitialContainingBlock():BlockBoxRenderer
+	{
+		var parent:Node = _parentNode;
+		while (true)
+		{
+			if (parent.parentNode == null)
+			{
+				return cast(parent);
+			}
+			parent = parent.parentNode;
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -769,7 +952,7 @@ class ElementRenderer extends Node
 	 * of the text (such as font-size, fon-family...)
 	 * is changed
 	 */
-	public function invalidateText():Void
+	private function invalidateText():Void
 	{
 		for (i in 0..._childNodes.length)
 		{
@@ -784,11 +967,16 @@ class ElementRenderer extends Node
 	 * the LayerRenderer tree (such as position or
 	 * overflow) is changed
 	 */
-	public function invalidateLayer():Void
+	private function invalidateLayer():Void
 	{
 		detachLayer();
 		attachLayer();
 		invalidateLayout();
+	}
+	
+	private function invalidateRendering():Void
+	{
+		_needsRendering = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
