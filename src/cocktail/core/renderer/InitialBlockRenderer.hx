@@ -125,11 +125,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	
 	override private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
 	{
-		_needsLayout = true;
-		_childrenNeedLayout = true;
-		_needsVisualEffectsRendering = true;
-		_needsRendering = true;
-		_positionedChildrenNeedLayout = true;
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -142,6 +138,12 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	private function layoutAndRender():Void
 	{
+		_needsLayout = true;
+		_childrenNeedLayout = true;
+		_needsVisualEffectsRendering = true;
+		_needsRendering = true;
+		_positionedChildrenNeedLayout = true;
+		
 		startLayout();
 		startRendering();
 	}

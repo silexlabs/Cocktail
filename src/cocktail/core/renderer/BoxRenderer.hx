@@ -217,7 +217,7 @@ class BoxRenderer extends ElementRenderer
 	{	
 		if (_needsLayout == false)
 		{
-			//return;
+			return;
 		}
 		
 		//compute all the styles of the ElementRenderer
