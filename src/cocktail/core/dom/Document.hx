@@ -214,8 +214,11 @@ class Document extends Node<Document>
 	 * Actually return the Element matching the
 	 * elementId, by traversing recursively the 
 	 * DOM tree
+	 * 
+	 * TODO 2 : shouldn't be HTMLElement but Element<T>
+	 * but complicated for now with type parameters
 	 */
-	private function doGetElementById(node:Element, elementId:String):HTMLElement
+	private function doGetElementById(node:HTMLElement, elementId:String):HTMLElement
 	{
 		//call method recursively if node has child and is itself an element
 		if (node.hasChildNodes() == true && node.nodeType == Node.ELEMENT_NODE)

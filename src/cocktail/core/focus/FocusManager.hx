@@ -170,7 +170,7 @@ class FocusManager
 			//only element node can be focused
 			if (htmlElement.childNodes[i].nodeType == Node.ELEMENT_NODE)
 			{
-				var child:HTMLElement = cast(htmlElement.childNodes[i]);
+				var child:HTMLElement = htmlElement.childNodes[i];
 				
 				//if the child also has children, call the doBuildTabList
 				//recursively
