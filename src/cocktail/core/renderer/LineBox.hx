@@ -8,7 +8,9 @@
 package cocktail.core.renderer;
 
 import cocktail.core.background.BackgroundManager;
+import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
+import cocktail.core.dom.NodeBase;
 import cocktail.core.geom.GeomData;
 import cocktail.core.NativeElement;
 import cocktail.core.style.StyleData;
@@ -33,7 +35,7 @@ import cocktail.core.style.StyleData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class LineBox extends Node<LineBox>
+class LineBox extends NodeBase<LineBox>
 {
 	/**
 	 * A reference to the element renderer which created this

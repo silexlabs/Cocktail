@@ -47,7 +47,7 @@ import cocktail.core.renderer.RendererData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class HTMLElement extends Element<HTMLElement>
+class HTMLElement extends Element
 {
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// IDL attributes
@@ -277,7 +277,7 @@ class HTMLElement extends Element<HTMLElement>
 	 * try to attach the new child to the
 	 * rendering tree
 	 */
-	override public function appendChild(newChild:HTMLElement):HTMLElement
+	override public function appendChild(newChild:Node):Node
 	{
 		super.appendChild(newChild);
 		
@@ -286,7 +286,7 @@ class HTMLElement extends Element<HTMLElement>
 		switch (newChild.nodeType)
 		{
 			case Node.ELEMENT_NODE:
-				var htmlChild:HTMLElement = newChild;
+				var htmlChild:HTMLElement = cast(newChild);
 				htmlChild.attach();
 				
 			case Node.TEXT_NODE:
@@ -301,7 +301,7 @@ class HTMLElement extends Element<HTMLElement>
 	 * try to detach the old child from the
 	 * rendering tree
 	 */
-	override public function removeChild(oldChild:HTMLElement):HTMLElement
+	override public function removeChild(oldChild:Node):Node
 	{
 		//must happen before calling super, else
 		//the HTMLElement won't have a parent to be detached
@@ -309,7 +309,7 @@ class HTMLElement extends Element<HTMLElement>
 		switch (oldChild.nodeType)
 		{
 			case Node.ELEMENT_NODE:
-				var htmlChild:HTMLElement = oldChild;
+				var htmlChild:HTMLElement = cast(oldChild);
 				htmlChild.detach();
 				
 			case Node.TEXT_NODE:
@@ -484,7 +484,7 @@ class HTMLElement extends Element<HTMLElement>
 					{
 						//attach element node
 						case Node.ELEMENT_NODE:
-							var child:HTMLElement = _childNodes[i];
+							var child:HTMLElement = cast(_childNodes[i]);
 							child.attach();
 						
 						//attach text node
@@ -510,7 +510,7 @@ class HTMLElement extends Element<HTMLElement>
 		//is not attached
 		if (isParentRendered() == true)
 		{
-			var parent:HTMLElement = _parentNode;
+			var parent:HTMLElement = cast(_parentNode);
 			
 			//if this HTMLElement isn't currently rendered, no need
 			//to detach it
@@ -523,7 +523,7 @@ class HTMLElement extends Element<HTMLElement>
 					switch (_childNodes[i].nodeType)
 					{
 						case Node.ELEMENT_NODE:
-							var child:HTMLElement = _childNodes[i];
+							var child:HTMLElement = cast(_childNodes[i]);
 							child.detach();
 							
 						case Node.TEXT_NODE:
@@ -554,7 +554,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function getNextElementRendererSibling():ElementRenderer
 	{
-		var nextSibling:HTMLElement = nextSibling;
+		var nextSibling:HTMLElement = cast(nextSibling);
 					
 		if (nextSibling == null)
 		{
@@ -577,7 +577,7 @@ class HTMLElement extends Element<HTMLElement>
 					return nextSibling.elementRenderer;
 				}
 				
-				nextSibling = nextSibling.nextSibling;
+				nextSibling = cast(nextSibling.nextSibling);
 			}
 		}
 		
@@ -592,7 +592,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function attachToParentElementRenderer():Void
 	{
-		var parent:HTMLElement = _parentNode;
+		var parent:HTMLElement = cast(_parentNode);
 		parent.elementRenderer.insertBefore(_elementRenderer, getNextElementRendererSibling());
 	}
 	
@@ -651,7 +651,7 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			return false;
 		}
-		var htmlParent:HTMLElement = _parentNode;
+		var htmlParent:HTMLElement = cast(_parentNode);
 		if (htmlParent.elementRenderer != null)
 		{
 			return true;
@@ -843,7 +843,7 @@ class HTMLElement extends Element<HTMLElement>
 			{
 				return null;
 			}
-			htmlElement = htmlElement.parentNode;
+			htmlElement = cast(htmlElement.parentNode);
 		}
 		
 		return htmlElement;
@@ -1168,7 +1168,7 @@ class HTMLElement extends Element<HTMLElement>
 		var length:Int = node.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:HTMLElement = node.childNodes[i];
+			var child:HTMLElement = cast(node.childNodes[i]);
 			
 			switch(child.nodeType)
 			{
@@ -1179,11 +1179,11 @@ class HTMLElement extends Element<HTMLElement>
 					var childXml:Xml = Xml.createElement(child.nodeName);
 					
 					//set all the attributes of the child on its Xml node
-					var childAttributes:NamedNodeMap<Attr> = child.attributes;
+					var childAttributes:NamedNodeMap = child.attributes;
 					var childAttributesLength:Int = childAttributes.length;
 					for (j in 0...childAttributesLength)
 					{
-						var attribute:Attr = childAttributes.item(j);
+						var attribute:Attr = cast(childAttributes.item(j));
 						
 						if (attribute.specified == true)
 						{
@@ -1194,13 +1194,13 @@ class HTMLElement extends Element<HTMLElement>
 					//concatenate all the of the specified styles of the HTMLElement
 					//children into a CSS string
 					var htmlChild:HTMLElement = child;
-					var styleAttributes:NamedNodeMap<Attr> = htmlChild.style.attributes;
+					var styleAttributes:NamedNodeMap = htmlChild.style.attributes;
 					var concatenatedStyles:String = "";
 					
 					var attributesLength:Int = styleAttributes.length;
 					for (j in 0...attributesLength)
 					{
-						var attribute:Attr = styleAttributes.item(j);
+						var attribute:Attr = cast(styleAttributes.item(j));
 						
 						if (attribute.specified == true)
 						{
@@ -1273,7 +1273,7 @@ class HTMLElement extends Element<HTMLElement>
 			return null;
 		}
 		
-		var parent:HTMLElement = _parentNode;
+		var parent:HTMLElement = cast(_parentNode);
 		
 		//loop in all the parents until a positioned or a null parent is found
 		var isOffsetParent:Bool = parent.elementRenderer.isPositioned();
@@ -1282,7 +1282,7 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			if (parent.parentNode != null)
 			{
-				parent = parent.parentNode;
+				parent = cast(parent.parentNode);
 				isOffsetParent = parent.elementRenderer.isPositioned();
 			}
 			//break the loop if the current parent has no parent

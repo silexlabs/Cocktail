@@ -7,7 +7,10 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
+import cocktail.core.dom.NodeBase;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
@@ -36,7 +39,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class LayerRenderer extends Node<LayerRenderer>
+class LayerRenderer extends NodeBase<LayerRenderer>
 {
 	/**
 	 * A reference to the ElementRenderer which

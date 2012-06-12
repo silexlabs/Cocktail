@@ -11,11 +11,11 @@ import cocktail.core.dom.DOMData;
 import cocktail.core.html.HTMLElement;
 
 /**
- * he Attr interface represents an attribute in an Element object
+ * the Attr interface represents an attribute in an Element object
  * 
  * @author Yannick DOMINGUEZ
  */
-class Attr extends Node<Attr>
+class Attr extends Node
 {
 	/**
 	 * Returns the name of this attribute.
@@ -60,12 +60,9 @@ class Attr extends Node<Attr>
 	/**
 	 * The Element node this attribute is attached 
 	 * to or null if this attribute is not in use.
-	 * 
-	 * TODO 2 : owner should be of type Element, but complicated for
-	 * now because of types parameters
 	 */
-	private var _ownerElement:HTMLElement;
-	public var ownerElement(get_ownerElement, set_ownerElement):HTMLElement;
+	private var _ownerElement:Element;
+	public var ownerElement(get_ownerElement, set_ownerElement):Element;
 	
 	/**
 	 * class constructor
@@ -105,12 +102,12 @@ class Attr extends Node<Attr>
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_ownerElement():HTMLElement 
+	private function get_ownerElement():Element 
 	{
 		return _ownerElement;
 	}
 	
-	private function set_ownerElement(value:HTMLElement):HTMLElement 
+	private function set_ownerElement(value:Element):Element
 	{
 		return _ownerElement = value;
 	}
