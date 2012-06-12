@@ -44,14 +44,17 @@ class FlowBoxRenderer extends BoxRenderer
 	{
 		var ret:Array<LineBox> = new Array<LineBox>();
 		
-		for (i in 0...rootLineBox.childNodes.length)
+		var length:Int = rootLineBox.childNodes.length;
+		for (i in 0...length)
 		{
 			ret.push(cast(rootLineBox.childNodes[i]));
 			
 			if (rootLineBox.childNodes[i].hasChildNodes() == true)
 			{
 				var childLineBoxes:Array<LineBox> = getLineBoxesInLine(cast(rootLineBox.childNodes[i]));
-				for (j in 0...childLineBoxes.length)
+				
+				var childLength:Int = childLineBoxes.length;
+				for (j in 0...childLength)
 				{
 					ret.push(childLineBoxes[j]);
 				}
@@ -92,7 +95,8 @@ class FlowBoxRenderer extends BoxRenderer
 		 * Actually layout all the children of the ElementRenderer by calling
 		 * the layout method recursively on all the children
 		 */
-		for (i in 0..._childNodes.length)
+		var length:Int = _childNodes.length;
+		for (i in 0...length)
 		{
 			var childElementRenderer:ElementRenderer = cast(_childNodes[i]);
 			childElementRenderer.layout(childrenContainingBlockData, viewportData, childrenFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData);
@@ -133,7 +137,8 @@ class FlowBoxRenderer extends BoxRenderer
 		if (isPositioned() == true)
 		{
 			//lay out each stored children
-			for (i in 0...childrenFirstPositionedAncestorData.elements.length)
+			var length:Int = childrenFirstPositionedAncestorData.elements.length;
+			for (i in 0...length)
 			{
 				var element:ElementRenderer = childrenFirstPositionedAncestorData.elements[i];
 				//layout the child ElementRenderer which set its x and y positioned origin in the space of this ElementRenderer's
@@ -246,7 +251,8 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	override public function childrenInline():Bool
 	{	
-		for (i in 0..._childNodes.length)
+		var length:Int = _childNodes.length;
+		for (i in 0...length)
 		{
 			var child:ElementRenderer = cast(_childNodes[i]);
 			//floated and absolutely positioned element are not taken into

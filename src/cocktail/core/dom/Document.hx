@@ -220,7 +220,8 @@ class Document extends Node
 		//call method recursively if node has child and is itself an element
 		if (node.hasChildNodes() == true && node.nodeType == Node.ELEMENT_NODE)
 		{
-			for (i in 0...node.childNodes.length)
+			var length:Int = node.childNodes.length;
+			for (i in 0...length)
 			{
 				var matchingElement:HTMLElement = doGetElementById(node.childNodes[i], elementId);
 				//if a matching element is found, return it
@@ -240,9 +241,9 @@ class Document extends Node
 			
 			//loop in all the element's attributes to find the
 			//Id attribute if defined
-			for (i in 0...attributes.length)
+			var attributesLength:Int = attributes.length;
+			for (i in 0...attributesLength)
 			{
-				
 				var attribute:Attr = element.getAttributeNode(attributes.item(i).nodeName);
 				
 				//if an Id attribute is found and specified

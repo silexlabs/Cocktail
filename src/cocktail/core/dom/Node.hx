@@ -189,7 +189,9 @@ class Node extends EventCallback
 		oldChild.parentNode = null;
 		
 		var newChildNodes:Array<Node> = new Array<Node>();
-		for (i in 0..._childNodes.length)
+		
+		var length:Int = _childNodes.length;
+		for (i in 0...length)
 		{
 			if (_childNodes[i] != oldChild)
 			{
@@ -253,7 +255,8 @@ class Node extends EventCallback
 			//will store the new child nodes with the newly inserted one
 			var newChildNodes:Array<Node> = new Array<Node>();
 			
-			for (i in 0...childNodes.length)
+			var length:Int = _childNodes.length;
+			for (i in 0...length)
 			{
 				if (_childNodes[i] == refChild)
 				{
@@ -287,7 +290,8 @@ class Node extends EventCallback
 	 */
 	public function replaceChild(newChild:Node, oldChild:Node):Node
 	{
-		for (i in 0..._childNodes.length)
+		var length:Int = _childNodes.length;
+		for (i in 0...length)
 		{
 			if (_childNodes[i] == oldChild)
 			{
@@ -414,7 +418,8 @@ class Node extends EventCallback
 		{
 			//loop in all child to find this node and return
 			//the next one
-			for (i in 0..._parentNode.childNodes.length)
+			var length:Int = _parentNode.childNodes.length;
+			for (i in 0...length)
 			{
 				if (isSameNode(_parentNode.childNodes[i]) == true)
 				{
@@ -439,7 +444,8 @@ class Node extends EventCallback
 		}
 		else if (_parentNode.firstChild != this)
 		{
-			for (i in 0..._parentNode.childNodes.length)
+			var length:Int = _parentNode.childNodes.length;
+			for (i in 0...length)
 			{
 				if (isSameNode(_parentNode.childNodes[i]) == true)
 				{

@@ -305,7 +305,8 @@ class Element extends Node
 	{
 		if (node.hasChildNodes() == true)
 		{
-			for (i in 0...node.childNodes.length)
+			var length:Int = node.childNodes.length;
+			for (i in 0...length)
 			{
 				var childNode:Node = node.childNodes[i];
 				
@@ -333,7 +334,8 @@ class Element extends Node
 	{
 		if (node.hasChildNodes() == true)
 		{
-			for (i in 0...node.childNodes.length)
+			var length:Int = node.childNodes.length;
+			for (i in 0...length)
 			{
 				var childNode:Node = node.childNodes[i];
 				switch (childNode.nodeType)
@@ -408,7 +410,8 @@ class Element extends Node
 		}
 		else
 		{
-			for (i in 0..._childNodes.length)
+			var length:Int = _childNodes.length;
+			for (i in 0...length)
 			{
 				if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
 				{
@@ -433,7 +436,8 @@ class Element extends Node
 		}
 		else
 		{
-			for (i in _childNodes.length...0)
+			var length:Int = _childNodes.length;
+			for (i in length...0)
 			{
 				if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
 				{
@@ -493,7 +497,8 @@ class Element extends Node
 	{
 		var childElementCount:Int = 0;
 		
-		for (i in 0..._childNodes.length)
+		var length:Int = _childNodes.length;
+		for (i in 0...length)
 		{
 			if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
 			{

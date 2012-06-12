@@ -475,7 +475,8 @@ class HTMLElement extends Element
 				attachToParentElementRenderer();
 				
 				//the HTMLElement is now attached and can attach its children
-				for (i in 0..._childNodes.length)
+				var length:Int = _childNodes.length;
+				for (i in 0...length)
 				{
 					//only text and element node can be attached, as other nodes
 					//types are not visual
@@ -516,7 +517,8 @@ class HTMLElement extends Element
 			if (_elementRenderer != null)
 			{	
 				//detach first all children
-				for (i in 0..._childNodes.length)
+				var length:Int = _childNodes.length;
+				for (i in 0...length)
 				{
 					switch (_childNodes[i].nodeType)
 					{
@@ -1034,7 +1036,8 @@ class HTMLElement extends Element
 	 */
 	private function set_innerHTML(value:String):String
 	{
-		for (i in 0..._childNodes.length)
+		var childLength:Int = _childNodes.length;
+		for (i in 0...childLength)
 		{
 			removeChild(_childNodes[0]);	
 		}
@@ -1057,7 +1060,8 @@ class HTMLElement extends Element
 		}
 		
 		//append all children of the generated node
-		for (i in 0...node.childNodes.length)
+		var length:Int = node.childNodes.length;
+		for (i in 0...length)
 		{
 			appendChild(node.childNodes[0]);
 		}
@@ -1161,7 +1165,8 @@ class HTMLElement extends Element
 	 */
 	private function doGetInnerHTML(node:Node, xml:Xml):Xml
 	{
-		for (i in 0...node.childNodes.length)
+		var length:Int = node.childNodes.length;
+		for (i in 0...length)
 		{
 			var child:Node = node.childNodes[i];
 			
@@ -1175,7 +1180,8 @@ class HTMLElement extends Element
 					
 					//set all the attributes of the child on its Xml node
 					var childAttributes:NamedNodeMap = child.attributes;
-					for (j in 0...childAttributes.length)
+					var childAttributesLength:Int = childAttributes.length;
+					for (j in 0...childAttributesLength)
 					{
 						var attribute:Attr = cast(childAttributes.item(j));
 						
@@ -1191,7 +1197,8 @@ class HTMLElement extends Element
 					var styleAttributes:NamedNodeMap = htmlChild.style.attributes;
 					var concatenatedStyles:String = "";
 					
-					for (j in 0...styleAttributes.length)
+					var attributesLength:Int = styleAttributes.length;
+					for (j in 0...attributesLength)
 					{
 						var attribute:Attr = cast(styleAttributes.item(j));
 						
