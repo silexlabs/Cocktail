@@ -219,7 +219,7 @@ class HTMLDocument extends Document
 		
 		if (wheelEvent.defaultPrevented == false)
 		{
-			var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
+			var htmlElement:HTMLElement = elementRendererAtPoint.node;
 			
 			//get the amount of vertical scrolling to apply in pixel
 			var scrollOffset:Int = Math.round(wheelEvent.deltaY * MOUSE_WHEEL_DELTA_MULTIPLIER) ;
@@ -244,7 +244,7 @@ class HTMLDocument extends Document
 	{
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
 		
-		var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
+		var htmlElement:HTMLElement = elementRendererAtPoint.node;
 		
 		//find the first parent of the HTMLElement which has an activation behaviour, might
 		//return null
@@ -475,7 +475,7 @@ class HTMLDocument extends Document
 		
 		while (elementRendererAtPoint.node.nodeType != Node.ELEMENT_NODE)
 		{
-			elementRendererAtPoint = cast(elementRendererAtPoint.parentNode);
+			elementRendererAtPoint = elementRendererAtPoint.parentNode;
 			if (elementRendererAtPoint == null)
 			{
 				return null;

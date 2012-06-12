@@ -36,7 +36,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class LayerRenderer extends Node
+class LayerRenderer extends Node<LayerRenderer>
 {
 	/**
 	 * A reference to the ElementRenderer which
@@ -91,11 +91,11 @@ class LayerRenderer extends Node
 	 * root ElementRenderer in one of its chile element
 	 * renderer array based on its z-index style
 	 */ 
-	override public function appendChild(newChild:Node):Node
+	override public function appendChild(newChild:LayerRenderer):LayerRenderer
 	{
 		super.appendChild(newChild);
 		
-		var childLayer:LayerRenderer = cast(newChild);
+		var childLayer:LayerRenderer = newChild;
 		
 		//check the computed z-index of the ElementRenderer which
 		//instantiated the child LayerRenderer
@@ -128,9 +128,9 @@ class LayerRenderer extends Node
 	 * tree, th reference of its root ElementRenderer must also
 	 * be removed from the right child root ElementRenderer array
 	 */
-	override public function removeChild(oldChild:Node):Node
+	override public function removeChild(oldChild:LayerRenderer):LayerRenderer
 	{
-		var childLayer:LayerRenderer = cast(oldChild);
+		var childLayer:LayerRenderer = oldChild;
 
 		var removed:Bool = false;
 		
@@ -197,7 +197,7 @@ class LayerRenderer extends Node
 			//
 			//TODO 1 : this cause a z-index bug as if the parent is a child of the formatting
 			//context root, the child element renderer is not displayed on top of the in-flow elements
-			var parentElementRenderer:ElementRenderer = cast(rootElementRenderers[i].parentNode);
+			var parentElementRenderer:ElementRenderer = rootElementRenderers[i].parentNode;
 			rootElementRenderers[i].render(parentElementRenderer.graphicsContext);
 		}
 	}
@@ -385,7 +385,7 @@ class LayerRenderer extends Node
 		var length:Int = renderer.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = cast(renderer.childNodes[i]);
+			var child:ElementRenderer = renderer.childNodes[i];
 			
 			if (child.layerRenderer == this)
 			{
@@ -470,17 +470,17 @@ class LayerRenderer extends Node
 		
 		for (i in 0..._negativeZIndexChildRenderers.length)
 		{
-			var childRenderer:ElementRenderer = cast(_negativeZIndexChildRenderers[i]);
+			var childRenderer:ElementRenderer = _negativeZIndexChildRenderers[i];
 			childRenderers.push(childRenderer);
 		}
 		for (i in 0..._zeroAndAutoZIndexChildRenderers.length)
 		{
-			var childRenderer:ElementRenderer = cast(_zeroAndAutoZIndexChildRenderers[i]);
+			var childRenderer:ElementRenderer = _zeroAndAutoZIndexChildRenderers[i];
 			childRenderers.push(childRenderer);
 		}
 		for (i in 0..._positiveZIndexChildRenderers.length)
 		{
-			var childRenderer:ElementRenderer = cast(_positiveZIndexChildRenderers[i]);
+			var childRenderer:ElementRenderer = _positiveZIndexChildRenderers[i];
 			childRenderers.push(childRenderer);
 		}
 		

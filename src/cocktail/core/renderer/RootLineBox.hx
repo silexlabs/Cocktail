@@ -59,7 +59,7 @@ class RootLineBox extends LineBox
 		var length:Int = lineBox.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:LineBox = cast(lineBox.childNodes[i]);
+			var child:LineBox = lineBox.childNodes[i];
 			
 			//absolutely positioned line box are not used to compute the
 			//bounds of the root line box

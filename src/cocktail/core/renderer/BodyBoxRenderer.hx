@@ -8,6 +8,7 @@
 package cocktail.core.renderer;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
@@ -22,7 +23,7 @@ import cocktail.core.geom.GeomData;
 class BodyBoxRenderer extends BlockBoxRenderer
 {
 
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 	}

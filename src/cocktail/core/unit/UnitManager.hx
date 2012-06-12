@@ -929,7 +929,7 @@ class UnitManager
 			string = string.substr(1);
 		if (StringTools.endsWith(string, "\""))
 			string = string.substr(0, string.length - 1);
-		return cast(string);
+		return string;
 	}
 	/**
 	 * function used internally to convert a value/unit strings pair to an enum  

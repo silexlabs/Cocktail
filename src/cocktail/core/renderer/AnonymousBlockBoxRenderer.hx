@@ -7,6 +7,7 @@
 */
 package cocktail.core.renderer;
 import cocktail.core.dom.Node;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.StyleData;
@@ -28,7 +29,7 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 	}
@@ -43,7 +44,7 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 	 * is removed form the DOM, the anonymous block must
 	 * also be removed
 	 */
-	override public function removeChild(oldChild:Node):Node
+	override public function removeChild(oldChild:ElementRenderer):ElementRenderer
 	{
 		super.removeChild(oldChild);
 		//removes itself

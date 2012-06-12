@@ -33,7 +33,7 @@ import cocktail.core.style.StyleData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class LineBox extends Node
+class LineBox extends Node<LineBox>
 {
 	/**
 	 * A reference to the element renderer which created this
