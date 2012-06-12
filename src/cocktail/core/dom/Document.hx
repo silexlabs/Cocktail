@@ -30,7 +30,7 @@ import cocktail.core.dom.DOMData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Document extends Node<Document>
+class Document extends Node
 {
 	/**
 	 * event interfaces const
@@ -78,6 +78,8 @@ class Document extends Node<Document>
 	 * Note that the instance returned implements the Element interface,
 	 * so attributes can be specified directly on the returned object.
 	 * 
+	 * Implemented by sub classes
+	 * 
 	 * @param	tagName The name of the element type to instantiate. For XML,
 	 * this is case-sensitive, otherwise it depends on the case-sensitivity 
 	 * of the markup language in use. In that case, the name is mapped
@@ -94,9 +96,9 @@ class Document extends Node<Document>
 	 */
 	public function createElement(tagName:String):HTMLElement
 	{
-		var element:HTMLElement = new HTMLElement(tagName);
+		var element:Element = new Element(tagName);
 		element.ownerDocument = this;
-		return element;
+		return cast(element);
 	}
 	
 	/**
@@ -226,7 +228,7 @@ class Document extends Node<Document>
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var matchingElement:HTMLElement = doGetElementById(node.childNodes[i], elementId);
+				var matchingElement:HTMLElement = doGetElementById(cast(node.childNodes[i]), elementId);
 				//if a matching element is found, return it
 				if (matchingElement != null)
 				{
@@ -239,8 +241,8 @@ class Document extends Node<Document>
 		//an Id with no attributes
 		if (node.hasAttributes() == true)
 		{
-			var attributes:NamedNodeMap<Attr> = node.attributes;
-			var element:HTMLElement = cast(node);
+			var attributes:NamedNodeMap = node.attributes;
+			var element:HTMLElement = node;
 			
 			//loop in all the element's attributes to find the
 			//Id attribute if defined

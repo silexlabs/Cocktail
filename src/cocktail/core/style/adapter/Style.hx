@@ -9,6 +9,8 @@ package cocktail.core.style.adapter;
 
 import cocktail.core.dom.Attr;
 import cocktail.core.dom.NamedNodeMap;
+import cocktail.core.html.HTMLDocument;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.CSSConstants;
 import cocktail.core.unit.UnitManager;
@@ -123,8 +125,8 @@ class Style
 	 * 
 	 * TODO 3 : shouldn't store invalid styles
 	 */
-	private var _attributes:NamedNodeMap<Attr>;
-	public var attributes(get_attributes, never):NamedNodeMap<Attr>;
+	private var _attributes:NamedNodeMap;
+	public var attributes(get_attributes, never):NamedNodeMap;
 	
 	/**
 	 * class constructor. Store the ref to 
@@ -133,7 +135,7 @@ class Style
 	public function new(coreStyle:CoreStyle) 
 	{
 		_coreStyle = coreStyle;
-		_attributes = new NamedNodeMap<Attr>();
+		_attributes = new NamedNodeMap();
 	}
 	
 	/////////////////////////////////
@@ -163,7 +165,7 @@ class Style
 	// SETTERS/GETTERS
 	////////////////////////////////
 	
-	private function get_attributes():NamedNodeMap<Attr>
+	private function get_attributes():NamedNodeMap
 	{
 		return _attributes;
 	}

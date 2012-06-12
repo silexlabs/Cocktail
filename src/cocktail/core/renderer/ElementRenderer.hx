@@ -7,7 +7,9 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
+import cocktail.core.dom.NodeBase;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.DrawingManager;
@@ -54,7 +56,7 @@ import haxe.Timer;
  * 
  * @author Yannick DOMINGUEZ
  */
-class ElementRenderer extends Node<ElementRenderer>
+class ElementRenderer extends NodeBase<ElementRenderer>
 {
 	/**
 	 * The bounds of the ElementRenderer.

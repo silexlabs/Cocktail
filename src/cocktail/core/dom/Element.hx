@@ -24,7 +24,7 @@ import cocktail.core.html.HTMLElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Element<T:Element<T>> extends Node<T>
+class Element extends Node
 {
 
 	/**
@@ -49,25 +49,25 @@ class Element<T:Element<T>> extends Node<T>
 	 * returns a reference to the first child node of that element which is of nodeType Element.
 	 * returns, null if this Element has no child nodes or no Element child nodes
 	 */
-	public var firstElementChild(get_firstElementChild, never):T;
+	public var firstElementChild(get_firstElementChild, never):Element;
 	
 	/**
 	 * returns a reference to the first last child node of that element which is of nodeType Element.
 	 * returns, null if this Element has no child nodes or no Element child nodes
 	 */
-	public var lastElementChild(get_lastElementChild, never):T;
+	public var lastElementChild(get_lastElementChild, never):Element;
 	
 	/**
 	 * returns a reference to the first previous sibling element which is of nodeType Element.
 	 * returns, null if this Element has no previous siblings or none of them are Element
 	 */
-	public var previousElementSibling(get_previousElementSibling, never):T;
+	public var previousElementSibling(get_previousElementSibling, never):Element;
 	
 	/**
 	 * returns a reference to the first next sibling element which is of nodeType Element.
 	 * returns, null if this Element has no next siblings or none of them are Element
 	 */
-	public var nextElementSibling(get_nextElementSibling, never):T;
+	public var nextElementSibling(get_nextElementSibling, never):Element;
 	
 	/**
 	 * Returns the number of children of this Element which are 
@@ -84,7 +84,7 @@ class Element<T:Element<T>> extends Node<T>
 	public function new(tagName:String) 
 	{
 		_tagName = tagName;
-		_attributes = new NamedNodeMap<Attr>();
+		_attributes = new NamedNodeMap();
 		super();
 	}
 	
@@ -132,7 +132,7 @@ class Element<T:Element<T>> extends Node<T>
 	 */
 	public function setAttribute(name:String, value:String):Void
 	{
-		var attribute:Attr = _attributes.getNamedItem(name);
+		var attribute:Attr = cast(_attributes.getNamedItem(name));
 		if (attribute == null)
 		{
 			attribute = new Attr(name);
@@ -153,7 +153,7 @@ class Element<T:Element<T>> extends Node<T>
 	 */
 	public function getAttributeNode(name:String):Attr
 	{
-		var attribute:Attr = _attributes.getNamedItem(name);
+		var attribute:Attr = cast(_attributes.getNamedItem(name));
 		
 		if (attribute != null)
 		{
@@ -176,7 +176,7 @@ class Element<T:Element<T>> extends Node<T>
 	public function setAttributeNode(newAttr:Attr):Attr
 	{
 		newAttr.ownerElement = cast(this);
-		return _attributes.setNamedItem(newAttr);
+		return cast(_attributes.setNamedItem(newAttr));
 	}
 	
 	/**
@@ -191,7 +191,7 @@ class Element<T:Element<T>> extends Node<T>
 	 */
 	public function removeAttribute(name:String):Void
 	{
-		var removedAttribute:Attr = _attributes.removeNamedItem(name);
+		var removedAttribute:Attr = cast(_attributes.removeNamedItem(name));
 		
 		if (removedAttribute != null)
 		{
@@ -216,7 +216,7 @@ class Element<T:Element<T>> extends Node<T>
 	 */
 	public function setIdAttribute(name:String, isId:Bool):Void
 	{
-		var idAttribute:Attr = _attributes.getNamedItem(name);
+		var idAttribute:Attr = cast(_attributes.getNamedItem(name));
 		if (idAttribute == null)
 		{
 			idAttribute = new Attr(name);
@@ -301,24 +301,24 @@ class Element<T:Element<T>> extends Node<T>
 	 * do get the matching child elements by 
 	 * traversing the DOM tree recursively
 	 */
-	private function doGetElementsByTagName(node:T, tagName:String, elements:Array<HTMLElement>):Void
+	private function doGetElementsByTagName(node:HTMLElement, tagName:String, elements:Array<HTMLElement>):Void
 	{
 		if (node.hasChildNodes() == true)
 		{
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:T = node.childNodes[i];
+				var childNode:HTMLElement = cast(node.childNodes[i]);
 				
 				//if matching tagName, push child node
 				if (childNode.nodeName == tagName)
 				{
-					elements.push(cast(childNode));
+					elements.push(childNode);
 				}
 				//else if any tagName is accepted and the child node is an element node, push child node
 				else if (tagName == MATCH_ALL_TAG_NAME && childNode.nodeType == Node.ELEMENT_NODE)
 				{
-					elements.push(cast(childNode));
+					elements.push(childNode);
 				}
 				
 				doGetElementsByTagName(childNode, tagName, elements);
@@ -330,18 +330,18 @@ class Element<T:Element<T>> extends Node<T>
 	 * do get the matching child elements by 
 	 * traversing the DOM tree recursively
 	 */
-	private function doGetElementsByClassName(node:T, className:String, elements:Array<HTMLElement>):Void
+	private function doGetElementsByClassName(node:HTMLElement, className:String, elements:Array<HTMLElement>):Void
 	{
 		if (node.hasChildNodes() == true)
 		{
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:T = node.childNodes[i];
+				var childNode:HTMLElement = cast(node.childNodes[i]);
 				switch (childNode.nodeType)
 				{
 					case Node.ELEMENT_NODE:
-						var elementNode:T = childNode;
+						var elementNode:HTMLElement = childNode;
 						var elementClassName:String = elementNode.getAttribute(CLASS_ATTRIBUTE);
 						if (elementClassName != null)
 						{
@@ -352,7 +352,7 @@ class Element<T:Element<T>> extends Node<T>
 							{
 								if (elementClassNames[j] == className && foundFlag == false)
 								{
-									elements.push(cast(elementNode));
+									elements.push(elementNode);
 									foundFlag = true;
 								}
 							}
@@ -388,7 +388,7 @@ class Element<T:Element<T>> extends Node<T>
 		return Node.ELEMENT_NODE;
 	}
 	
-	override private function get_attributes():NamedNodeMap<Attr>
+	override private function get_attributes():NamedNodeMap
 	{
 		return _attributes;
 	}
@@ -397,7 +397,7 @@ class Element<T:Element<T>> extends Node<T>
 	// ELEMENT TRAVERSAL GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_firstElementChild():T
+	private function get_firstElementChild():Element
 	{
 		if (hasChildNodes() == false)
 		{
@@ -406,7 +406,7 @@ class Element<T:Element<T>> extends Node<T>
 		
 		if (firstChild.nodeType == Node.ELEMENT_NODE)
 		{
-			return firstChild;
+			return cast(firstChild);
 		}
 		else
 		{
@@ -415,7 +415,7 @@ class Element<T:Element<T>> extends Node<T>
 			{
 				if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
 				{
-					return _childNodes[i];
+					return cast(_childNodes[i]);
 				}
 			}
 		}
@@ -423,7 +423,7 @@ class Element<T:Element<T>> extends Node<T>
 		return null;
 	}
 	
-	private function get_lastElementChild():T
+	private function get_lastElementChild():Element
 	{
 		if (hasChildNodes() == false)
 		{
@@ -432,7 +432,7 @@ class Element<T:Element<T>> extends Node<T>
 		
 		if (lastChild.nodeType == Node.ELEMENT_NODE)
 		{
-			return lastChild;
+			return cast(lastChild);
 		}
 		else
 		{
@@ -441,7 +441,7 @@ class Element<T:Element<T>> extends Node<T>
 			{
 				if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
 				{
-					return _childNodes[i];
+					return cast(_childNodes[i]);
 				}
 			}
 		}
@@ -449,14 +449,14 @@ class Element<T:Element<T>> extends Node<T>
 		return null;
 	}
 	
-	private function get_nextElementSibling():T
+	private function get_nextElementSibling():Element
 	{
 		if (nextSibling == null)
 		{
 			return null;
 		}
 		
-		var nextElementSibling:T = nextSibling;
+		var nextElementSibling:Node = nextSibling;
 		
 		while (nextElementSibling.nodeType != Node.ELEMENT_NODE)
 		{
@@ -468,17 +468,17 @@ class Element<T:Element<T>> extends Node<T>
 			}
 		}
 		
-		return nextElementSibling;
+		return cast(nextElementSibling);
 	}
 	
-	private function get_previousElementSibling():T
+	private function get_previousElementSibling():Element
 	{
 		if (previousSibling == null)
 		{
 			return null;
 		}
 		
-		var previousElementSibling:T = previousSibling;
+		var previousElementSibling:Node = previousSibling;
 		
 		while (previousElementSibling.nodeType != Node.ELEMENT_NODE)
 		{
@@ -490,7 +490,7 @@ class Element<T:Element<T>> extends Node<T>
 			}
 		}
 		
-		return previousElementSibling;
+		return cast(previousElementSibling);
 	}
 	
 	private function get_childElementCount():Int

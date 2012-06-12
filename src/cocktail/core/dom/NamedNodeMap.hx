@@ -19,14 +19,14 @@ package cocktail.core.dom;
  *  
  * @author Yannick DOMINGUEZ
  */
-class NamedNodeMap<T:Node<T>>
+class NamedNodeMap
 {
 	/**
 	 * The stored nodes. Kept as an Array
 	 * instead of an Hash to allow retrieval
 	 * by ordinal index
 	 */
-	private var _nodes:Array<T>;
+	private var _nodes:Array<Node>;
 	
 	/**
 	 * The number of nodes in this map.
@@ -38,7 +38,7 @@ class NamedNodeMap<T:Node<T>>
 	 */
 	public function new() 
 	{
-		_nodes = new Array<T>();
+		_nodes = new Array<Node>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +52,7 @@ class NamedNodeMap<T:Node<T>>
 	 * @return A Node (of any type) with the specified nodeName,
 	 * or null if it does not identify any node in this map.
 	 */
-	public function getNamedItem(name:String):T
+	public function getNamedItem(name:String):Node
 	{
 		var nodesLength:Int = _nodes.length;
 		for (i in 0...nodesLength)
@@ -81,9 +81,9 @@ class NamedNodeMap<T:Node<T>>
 	 * @return If the new Node replaces an existing node the
 	 * replaced Node is returned, otherwise null is returned.
 	 */
-	public function setNamedItem(arg:T):T
+	public function setNamedItem(arg:Node):Node
 	{
-		var replacedNode:T = getNamedItem(arg.nodeName);
+		var replacedNode:Node = getNamedItem(arg.nodeName);
 		
 		if (replacedNode != null)
 		{
@@ -117,16 +117,16 @@ class NamedNodeMap<T:Node<T>>
 	 * @return The node removed from this map if a node
 	 * with such a name exists.
 	 */
-	public function removeNamedItem(name:String):T
+	public function removeNamedItem(name:String):Node
 	{
-		var removedNode:T = getNamedItem(name);
+		var removedNode:Node = getNamedItem(name);
 		
 		if (removedNode == null)
 		{
 			return null;
 		}
 		
-		var newNodes:Array<T> = new Array<T>();
+		var newNodes:Array<Node> = new Array<Node>();
 		
 		for (i in 0...length)
 		{
@@ -150,7 +150,7 @@ class NamedNodeMap<T:Node<T>>
 	 * @return The node at the indexth position in the map,
 	 * or null if that is not a valid index.
 	 */
-	public function item(index:Int):T
+	public function item(index:Int):Node
 	{
 		if (index > length - 1)
 		{
