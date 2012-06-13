@@ -6,9 +6,11 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
-
-import cocktail.core.event.Event;
-import cocktail.core.style.BodyCoreStyle;
+import cocktail.core.dom.Node;
+import cocktail.core.renderer.BodyBoxRenderer;
+import cocktail.core.renderer.ElementRenderer;
+import cocktail.core.renderer.InitialBlockRenderer;
+import cocktail.core.renderer.TextRenderer;
 
 /**
  * The HTML document body. This element is always present
@@ -19,24 +21,23 @@ import cocktail.core.style.BodyCoreStyle;
 class HTMLBodyElement extends HTMLElement
 {
 	/**
-	 * the html tag name for the body
-	 */
-	private static inline var HTML_BODY_TAG_NAME:String = "body";
-	
-	/**
 	 * class constructor.
 	 */
 	public function new() 
 	{	
-		super(HTML_BODY_TAG_NAME);
+		super(HTMLConstants.HTML_BODY_TAG_NAME);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING TREE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
-	 * Instantiate a Style specific to this
-	 * HTMLElement
+	 * The HTMLBodyElement has its own block box subclass
 	 */
-	override private function initCoreStyle():Void
-	{
-		_coreStyle = new BodyCoreStyle(this);
+	override private function createElementRenderer():Void
+	{ 
+		_elementRenderer = new BodyBoxRenderer(this);
+		_elementRenderer.coreStyle = _coreStyle;
 	}
 }

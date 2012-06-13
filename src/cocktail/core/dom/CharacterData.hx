@@ -18,7 +18,7 @@ import cocktail.core.html.HTMLElement;
  * IMPORTANT : this class isn't supposed to inherit from HTMLElement but from Node. However in Haxe/JS, 
  * text nodes also inherit from the HTMLDom classes when they shouldn't. This should be corrected when
  * the Haxe JS standard lib is updated.
- * TODO : some fields like initStyle should be overriden to do nothing
+ * TODO 2 : some fields like initStyle should be overriden to do nothing
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -43,15 +43,6 @@ class CharacterData extends HTMLElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN SETTERS/GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override private function get_nodeType():Int
-	{
-		return Node.TEXT_NODE;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -63,5 +54,19 @@ class CharacterData extends HTMLElement
 	private function set_data(value:String):String 
 	{
 		return _data = value;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN SETTERS/GETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function get_nodeValue():String 
+	{
+		return _data;
+	}
+	
+	override private function set_nodeValue(value:String):String 
+	{
+		return data = value;
 	}
 }

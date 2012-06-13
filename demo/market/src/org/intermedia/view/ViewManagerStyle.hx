@@ -37,10 +37,10 @@ class ViewManagerStyle
 		node.style.paddingBottom = "0px";
 		
 		node.style.width = "100%";
-		node.style.height = "130%";
+		node.style.height = "100%";
 		
 		node.style.overflowX = "hidden";
-		node.style.overflowY = "hidden";
+		node.style.overflowY = "auto";
 	}
 	
 }

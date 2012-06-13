@@ -13,12 +13,6 @@ package org.intermedia.model;
  * @author Raphael Harmel
  */
 
-////import cocktail.Cocktail;
-//import cocktail.node.HtmlDom;
-//import cocktail.node.HtmlDom;
-//import cocktail.NativeElementManager;
-//import cocktail.NativeElementData;
-
 import org.intermedia.model.ApplicationModel;
 
 class ThumbTextListRss 
@@ -46,7 +40,6 @@ class ThumbTextListRss
 			if (channelChild.nodeName == "item")
 			{
 				var cell:CellData = { id:0, title:"", author:"", thumbUrl:"", category:""};
-				//var cell:Dynamic = { imagePath:"", title:"", comment:"Posted ", description:"", commentCount:"0" };
 				
 				// for each node
 				for (itemParam in channelChild.elements())
@@ -108,6 +101,7 @@ class ThumbTextListRss
 				cells.push(cell);
 			}
 		}
+		
 		// return cell array
 		return cells;
 	}

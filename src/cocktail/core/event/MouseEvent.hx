@@ -18,7 +18,7 @@ import cocktail.core.html.HTMLElement;
  * between the mousedown and mouseup the value will be set to 0, indicating
  * that no click is occurring.
  * 
- * TODO : implement
+ * TODO 4 : implement
  * 
  * In the case of nested elements mouse events are always targeted at the most deeply
  * nested element. Ancestors of the targeted element may use bubbling to obtain
@@ -39,6 +39,17 @@ class MouseEvent extends UIEvent
 	 * click
 	 */
 	public static inline var CLICK:String = "click";
+	
+	/**
+	 * A user agent must dispatch this event when a pointing device button is
+	 * clicked twice over an element. The definition of a double
+	 * click depends on the environment configuration, except that
+	 * the event target must be the same between mousedown, mouseup, 
+	 * and dblclick. This event type must be dispatched after the event
+	 * type click if a click and double click occur simultaneously,
+	 * and after the event type mouseup otherwise.
+	 */
+	public static inline var DOUBLE_CLICK:String = "dblclick";
 	
 	/**
 	 * The mouseup event occurs when the pointing device button is
@@ -74,29 +85,29 @@ class MouseEvent extends UIEvent
 	 * The horizontal coordinate at which the event occurred relative
 	 * to the origin of the screen coordinate system.
 	 */
-	private var _screenX:Float;
-	public var screenX(get_screenX, never):Float;
+	private var _screenX:Int;
+	public var screenX(get_screenX, never):Int;
 	
 	/**
 	 * The vertical coordinate at which the event occurred relative
 	 * to the origin of the screen coordinate system.
 	 */
-	private var _screenY:Float;
-	public var screenY(get_screenY, never):Float;
+	private var _screenY:Int;
+	public var screenY(get_screenY, never):Int;
 	
 	/**
 	 * The horizontal coordinate at which the event occurred relative
 	 * to the DOM implementation's client area.
 	 */
-	private var _clientX:Float;
-	public var clientX(get_clientX, never):Float;
+	private var _clientX:Int;
+	public var clientX(get_clientX, never):Int;
 	
 	/**
 	 * The vertical coordinate at which the event occurred 
 	 * relative to the DOM implementation's client area.
 	 */
-	private var _clientY:Float;
-	public var clientY(get_clientY, never):Float;
+	private var _clientY:Int;
+	public var clientY(get_clientY, never):Int;
 	
 	/**
 	 * Used to indicate whether the 'ctrl' key was depressed
@@ -119,23 +130,114 @@ class MouseEvent extends UIEvent
 	private var _altKey:Bool;
 	public var altKey(get_altKey, null):Bool;
 	
-	public function new(type:String, target:HTMLElement, detail:Float, screenX:Float, screenY:Float, clientX:Float, clientY:Float, 
-	ctrlKey:Bool, shiftKey:Bool, altKey:Bool) 
+	/**
+	 * Refer to the KeyboardEvent.metaKey attribute.
+	 */
+	private var _metaKey:Bool;
+	public var metaKey(get_metaKey, never):Bool;
+	
+	/**
+	 * During mouse events caused by the depression or release of a mouse button,
+	 * button must be used to indicate which pointer device button changed state.
+	 * The value of the MouseEvent.button attribute must be as follows:
+		 * 
+		 * 0 must indicate the primary button of the device (in general, the left
+		 * button or the only button on single-button devices,
+		 * used to activate a user interface control or select text).
+		 * 
+		 * 1 must indicate the auxiliary button (in general,
+		 * the middle button, often combined with a mouse wheel).
+		 * 
+		 * 2 must indicate the secondary button (in general, the right button,
+		 * often used to display a context menu).
+		 * 
+	 *Some pointing devices may provide or simulate more buttons, and values 
+	 * higher than 2 may be used to represent such buttons.
+	 */
+	private var _button:Int;
+	public var button(get_button, never):Int;
+	
+	/**
+	 * Used to identify a secondary EventTarget related to a UI
+	 * event, depending on the type of event.
+	 */
+	private var _relatedTarget:EventTarget;
+	public var relatedTarget(get_relatedTarget, never):EventTarget;
+	
+	/**
+	 * class constructor
+	 */
+	public function new() 
 	{
-		super(type, target, detail);
-		
-		_screenX = screenX;
-		_screenY = screenY;
-		_clientX = clientX;
-		_clientY = clientY;
-		_ctrlKey = ctrlKey;
-		_shiftKey = shiftKey;
-		_altKey = altKey;
+		super();
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Initializes attributes of a MouseEvent object. 
+	 * This method has the same behavior as UIEvent.initUIEvent().
+	 * 
+	 * @param	eventTypeArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.
+	 * @param	canBubbleArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.
+	 * @param	cancelableArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.
+	 * @param	viewArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.
+	 * @param	detailArg Refer to the UIEvent.initUIEvent() method for a description of this parameter.
+	 * @param	screenXArg Specifies MouseEvent.screenX.
+	 * @param	screenYArg Specifies MouseEvent.screenY.
+	 * @param	clientXArg Specifies MouseEvent.clientX.
+	 * @param	clientYArg Specifies MouseEvent.clientY.
+	 * @param	ctrlKeyArg Specifies MouseEvent.ctrlKey.
+	 * @param	altKeyArg Specifies MouseEvent.altKey.
+	 * @param	shiftKeyArg Specifies MouseEvent.shiftKey.
+	 * @param	metaKeyArg Specifies MouseEvent.metaKey.
+	 * @param	buttonArg Specifies MouseEvent.button.
+	 * @param	relatedTargetArg Specifies MouseEvent.relatedTarget. This value may be null.
+	 */
+	public function initMouseEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, viewArg:Dynamic, detailArg:Float,
+	screenXArg:Int, screenYArg:Int, clientXArg:Int, clientYArg:Int, ctrlKeyArg:Bool, altKeyArg:Bool,
+	shiftKeyArg:Bool, metaKeyArg:Bool, buttonArg:Int, relatedTargeArg:EventTarget):Void
+	{
+		//can't alter event after it has been dispatched
+		if (_dispatched == true)
+		{
+			return;
+		}
+		
+		initUIEvent(eventTypeArg, canBubbleArg, cancelableArg, viewArg, detailArg);
+		_screenX = screenXArg;
+		_screenY = screenYArg;
+		_clientX = clientXArg;
+		_clientY = clientYArg;
+		_ctrlKey = ctrlKeyArg;
+		_shiftKey = shiftKeyArg;
+		_altKey = altKeyArg;
+		_metaKey = metaKeyArg;
+		_button = buttonArg;
+		_relatedTarget = relatedTargeArg;
+	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_relatedTarget():EventTarget
+	{
+		return _relatedTarget;
+	}
+	
+	private function get_button():Int
+	{
+		return _button;
+	}
+	
+	private function get_metaKey():Bool
+	{
+		return _metaKey;
+	}
 	
 	private function get_altKey():Bool 
 	{
@@ -152,22 +254,22 @@ class MouseEvent extends UIEvent
 		return _ctrlKey;
 	}
 	
-	private function get_clientY():Float 
+	private function get_clientY():Int 
 	{
 		return _clientY;
 	}
 	
-	private function get_clientX():Float 
+	private function get_clientX():Int 
 	{
 		return _clientX;
 	}
 	
-	private function get_screenX():Float 
+	private function get_screenX():Int 
 	{
 		return _screenX;
 	}
 	
-	private function get_screenY():Float 
+	private function get_screenY():Int 
 	{
 		return _screenY;
 	}

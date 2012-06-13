@@ -181,8 +181,8 @@ class BackgroundManager
 		backgroundBox);
 		
 		var backgroundImageNativeElement:NativeElement = backgroundImageDrawingManager.nativeElement;
-		
-		//TODO : should retrieve image if already loaded, else start loading and call an invalidate() method when it is in fact loaded
+		#if (flash9 || nme)
+		//TODO 4 : should retrieve image if already loaded, else start loading and call an invalidate() method when it is in fact loaded
 		var onBackgroundImageLoadedDelegate:BackgroundDrawingManager->NativeElement->ImageLoader->CoreStyle->RectangleData->BackgroundPosition->
 		BackgroundSize->BackgroundOrigin-> BackgroundClip-> BackgroundRepeat->
 		BackgroundImage->Void = onBackgroundImageLoaded;
@@ -200,7 +200,7 @@ class BackgroundManager
 			onBackgroundImageLoadErrorDelegate(error, imageDeclaration.fallbackColor, backgroundImageNativeElement, style, backgroundBox, backgroundPosition, backgroundSize, 
 		backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
 		});
-		
+		#end
 		return backgroundImageNativeElement;
 	}
 	
@@ -232,8 +232,8 @@ class BackgroundManager
 			
 			backgroundImageDrawingManager.drawBackgroundImage(
 			loadedBackgroundImage, 
-			getBackgroundPositioningBox(computedGradientStyles.backgroundOrigin),
-			getBackgroundPaintingBox(computedGradientStyles.backgroundClip),
+			computedGradientStyles.backgroundOrigin,
+			computedGradientStyles.backgroundClip,
 			imageLoader.intrinsicWidth,
 			imageLoader.intrinsicHeight,
 			imageLoader.intrinsicRatio,
@@ -264,7 +264,7 @@ class BackgroundManager
 	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
 	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):Void
 	{
-		//TODO : re-implement
+		//TODO 4 : re-implement
 		/**drawBackgroundColor(style, UnitManager.getColorDataFromCSSColor(backgroundColor), backgroundImageNativeElement, backgroundBox, backgroundPosition,
 				backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);*/
 	}
@@ -290,10 +290,9 @@ class BackgroundManager
 		var computedBackgroundStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
 			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,
 			backgroundClip, backgroundRepeat, backgroundImage);
-			
-		var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(
-		backgroundBox);
-		backgroundColorDrawingManager.drawBackgroundColor(backgroundColor, getBackgroundPaintingBox(computedBackgroundStyles.backgroundClip));
+
+		var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(backgroundBox);
+		backgroundColorDrawingManager.drawBackgroundColor(backgroundColor, computedBackgroundStyles.backgroundClip);
 
 		_backgroundDrawingManagers.push(backgroundColorDrawingManager);
 		
@@ -326,35 +325,13 @@ class BackgroundManager
 			backgroundBox );
 			backgroundGradientDrawingManager.drawBackgroundGradient(
 			gradientValue,
-			getBackgroundPositioningBox(computedGradientStyles.backgroundOrigin),
-			getBackgroundPaintingBox(computedGradientStyles.backgroundClip),
+			computedGradientStyles.backgroundOrigin,
+			computedGradientStyles.backgroundClip,
 			computedGradientStyles.backgroundSize,
 			computedGradientStyles.backgroundPosition, 
 			computedGradientStyles.backgroundRepeat);
 			
 		return backgroundGradientDrawingManager.nativeElement;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE UTILS METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * return the right painting box. Used as a hook
-	 * to be overriden
-	 */
-	private function getBackgroundPaintingBox(computedBackgroundBox:RectangleData):RectangleData
-	{
-		return computedBackgroundBox;
-	}
-	
-	/**
-	 * return the right positioning box. Used as a hook
-	 * to be overriden
-	 */
-	private function getBackgroundPositioningBox(computedPositioningBox:RectangleData):RectangleData
-	{
-		return computedPositioningBox;
 	}
 	
 }

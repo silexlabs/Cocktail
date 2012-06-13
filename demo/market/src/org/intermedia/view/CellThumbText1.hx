@@ -1,50 +1,48 @@
 package org.intermedia.view;
 
 import haxe.Firebug;
-import haxe.Timer;
 import js.Lib;
 import js.Dom;
-import org.intermedia.view.StyleModel;
 import org.intermedia.model.ApplicationModel;
 
 /**
- * Base class for thumb text list cell. Each ListView has its own cell class inherited from this one.
+ * Base class for thumb text list cell
  * 
  * @author Raphael Harmel
  */
+
+import org.intermedia.view.CellBase;
+import org.intermedia.view.StyleModel;
 
 class CellThumbText1 extends CellBase
 {
 	// cropping mask containing the image
 	private var _croppedImage:CroppedImage;
 
-	// blockThumb containing cropped image
-	//private var _blockThumb:BlockThumb;
-
 	/**
 	 * constructor
 	 * 
 	 * @param	?cellPerLine	number of cells per line
-	 * @param	?cellStyle		cell style
+	 * @param	?style		cell style
 	 */
-	public function new(?cellPerLine:Int = 1, ?cellStyle:CellStyleModel) 
+	public function new(?cellPerLine:Int = 1, ?style:CellStyleModel) 
 	{
-		super(cellPerLine,cellStyle);
+		super(cellPerLine,style);
 	}
 
 	/**
 	 * cell style init
 	 */
-	override private function initCellStyle():Void
+	override private function initStyle():Void
 	{
 		// init style model
-		_cellStyle = {
+		_style = {
 			cell:CellThumbText1Style.setCellStyle,
 			thumbnailMask:CellThumbText1Style.setThumbnailMaskStyle,
+			thumbnail:null,
 			textBlock:CellThumbText1Style.setTextBlockStyle,
 			title:CellThumbText1Style.setTitleStyle,
-			author:CellThumbText1Style.setAuthorStyle,
-			line:CellThumbText1Style.setLineStyle
+			author:null
 		}
 		
 	}
@@ -61,20 +59,10 @@ class CellThumbText1 extends CellBase
 		// load cropped thumb image
 		if (_data.thumbUrl != "" && _data.thumbUrl != null)
 		{
-			// create cropped image
-			/*_croppedImage = new CroppedImage();
-			_croppedImage.onImageLoadSuccess = refreshStyles;
-			_croppedImage.loadThumb(_data.thumbUrl);
-			// apply style
-			_cellStyle.thumbnailMask(_croppedImage.node);
-			// attach it to hierarchy
-			node.appendChild(_croppedImage.node);*/
-
-			// create blockThumb containing cropped thumb image
-			_croppedImage = new CroppedImage(_cellStyle);
+			// create cropped thumb image
+			_croppedImage = new CroppedImage(_style);
 			_croppedImage.data = _data;
-			node.appendChild(_croppedImage.node);
-			
+			node.appendChild(_croppedImage.node);	
 		}
 
 		
@@ -82,7 +70,7 @@ class CellThumbText1 extends CellBase
 		
 		// add text block
 		var cellTextBlockContainer:HtmlDom = Lib.document.createElement("div");
-		_cellStyle.textBlock(cellTextBlockContainer);
+		_style.textBlock(cellTextBlockContainer);
 		node.appendChild(cellTextBlockContainer);
 		
 		// add title
@@ -100,38 +88,16 @@ class CellThumbText1 extends CellBase
 			var textElement:HtmlDom = Lib.document.createTextNode(text);
 			var cellTitleContainer:HtmlDom = Lib.document.createElement("div");
 			cellTitleContainer.appendChild(textElement);
-			_cellStyle.title(cellTitleContainer);
+			_style.title(cellTitleContainer);
 			cellTextBlockContainer.appendChild(cellTitleContainer);
 		}
 		
-		// add author
-		/*if (_data.author != "" && _data.author != null)
-		{
-			var cellAuthorContainer:HtmlDom = Lib.document.createElement("div");
-			var textElement:HtmlDom = Lib.document.createTextNode(_data.author);
-			cellAuthorContainer.appendChild(textElement);
-			_cellStyle.author(cellAuthorContainer);
-			//listStyle.cellComment(cellAuthorContainer, screenResolutionSize);
-			cellTextBlockContainer.appendChild(cellAuthorContainer);
-		}*/
-		
-		
-		// LINE
-		
-		// add separation line
-		/*var line:HtmlDom = Lib.document.createElement("div");
-		// set image style
-		_cellStyle.line(line);
-		node.appendChild(line);
-		line.src("assets/greyPixel.png");*/
-
-		//Timer.delay(refreshStyles, Constants.CELL_STYLE_REFRESH_DELAY);
 	}
 	
 	override public function refreshStyles():Void 
 	{
+		super.refreshStyles();
 		// reset cropped image style
-		//_croppedImage.refreshStyles();
 		_croppedImage.refreshStyles();
 	}
 

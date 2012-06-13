@@ -21,42 +21,71 @@ import cocktail.core.geom.GeomData;
  */
 class RootLineBox extends LineBox
 {
-
+	/**
+	 * class constructor
+	 */
 	public function new(elementRenderer:ElementRenderer) 
 	{
 		super(elementRenderer);
 	}
 	
-	//TODO : doc
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The bounds of a root line box is the bounds
+	 * of all of its child line boxes
+	 */
 	override private function get_bounds():RectangleData
 	{
 		return getChildrenBounds(getLineBoxesBounds(this));
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	//TODO 4 : those method are already on ElementRenderer, share a common class ? interface ?
+	//add an helper class ?
+	
+	/**
+	 * Retrieve all the bounds of the child line box
+	 */
 	private function getLineBoxesBounds(lineBox:LineBox):Array<RectangleData>
 	{
 		var lineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
 		
-		for (i in 0...lineBox.childNodes.length)
+		var length:Int = lineBox.childNodes.length;
+		for (i in 0...length)
 		{
-			var child:LineBox = cast(lineBox.childNodes[i]);
+			var child:LineBox = lineBox.childNodes[i];
 			
-			lineBoxesBounds.push(child.bounds);
-
-
-			if (child.hasChildNodes() == true)
+			//absolutely positioned line box are not used to compute the
+			//bounds of the root line box
+			if (child.isAbsolutelyPositioned() == false)
 			{
-				var childrenBounds:Array<RectangleData> = getLineBoxesBounds(child);
-				for (j in 0...childrenBounds.length)
+				lineBoxesBounds.push(child.bounds);
+				
+				if (child.hasChildNodes() == true)
 				{
-					lineBoxesBounds.push(childrenBounds[j]);
+					var childrenBounds:Array<RectangleData> = getLineBoxesBounds(child);
+					var childLength:Int = childrenBounds.length;
+					for (j in 0...childLength)
+					{
+						lineBoxesBounds.push(childrenBounds[j]);
+					}
 				}
 			}
+			
 		}
 		
 		return lineBoxesBounds;
 	}
 	
+	/**
+	 * Get the bounds of all of the child line boxes bounds
+	 */
 	private function getChildrenBounds(childrenBounds:Array<RectangleData>):RectangleData
 	{
 
@@ -67,24 +96,25 @@ class RootLineBox extends LineBox
 		var right:Float = -50000;
 		var bottom:Float = -50000;
 		
-		
-		for (i in 0...childrenBounds.length)
+		var length:Int = childrenBounds.length;
+		for (i in 0...length)
 		{
-			if (childrenBounds[i].x < left)
+			var childBounds:RectangleData = childrenBounds[i];
+			if (childBounds.x < left)
 			{
-				left = childrenBounds[i].x;
+				left = childBounds.x;
 			}
-			if (childrenBounds[i].y < top)
+			if (childBounds.y < top)
 			{
-				top = childrenBounds[i].y;
+				top = childBounds.y;
 			}
-			if (childrenBounds[i].x + childrenBounds[i].width > right)
+			if (childBounds.x + childBounds.width > right)
 			{
-				right = childrenBounds[i].x + childrenBounds[i].width;
+				right = childBounds.x + childBounds.width;
 			}
-			if (childrenBounds[i].y + childrenBounds[i].height  > bottom)
+			if (childBounds.y + childBounds.height  > bottom)
 			{
-				bottom = childrenBounds[i].y + childrenBounds[i].height;
+				bottom = childBounds.y + childBounds.height;
 			}
 		}
 			

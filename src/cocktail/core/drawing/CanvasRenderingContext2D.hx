@@ -1,5 +1,6 @@
 package cocktail.core.drawing;
 import cocktail.core.html.HTMLCanvasElement;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLImageElement;
 
 /**
@@ -164,12 +165,9 @@ class CanvasRenderingContext2D
 	// PUBLIC IMAGE DRAWING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function drawImageFromImage(image:HTMLImageElement, sx:Float, sy:Float, sw:Float, sh:Float, dx:Float, dy:Float, dw:Float, dh:Float):Void
-	{
-		
-	}
 	
-	public function drawImageFromCanvas(image:HTMLCanvasElement, sx:Float, sy:Float, sw:Float, sh:Float, dx:Float, dy:Float, dw:Float, dh:Float):Void
+	@:overload(function(i:Bool):Void { trace("over"); } )
+	public function drawImage(image:HTMLElement, sx:Float, sy:Float, sw:Float, sh:Float, dx:Float, dy:Float, dw:Float, dh:Float):Void
 	{
 		
 	}

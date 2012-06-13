@@ -10,6 +10,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.port.nme;
 
 import cocktail.core.NativeElement;
+import cocktail.core.style.ComputedStyle;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import haxe.Log;
@@ -78,27 +79,27 @@ class FontManager extends AbstractFontManager
 		textField.text = "x";
 		
 		var ascent:Float =  textField.textHeight / 2;
-		Log.trace(ascent);
+
 		textField.text = ",";
 		
 		var descent:Float = textField.textHeight / 2;
 		
 		textField.text = "x";
 		
-		var xHeight:Int = Math.round(textField.textHeight);
+		var xHeight:Float = textField.textHeight;
 	
 		textField.text = "M";
-		var spaceWidth:Int = Math.round(textField.textWidth);
+		var spaceWidth:Float = textField.textWidth;
 		
 		var fontMetrics:FontMetricsData = {
 			fontSize:fontSize,
-			ascent:Math.round(ascent),
-			descent:Math.round(descent),
+			ascent:ascent,
+			descent:descent,
 			xHeight:xHeight,
 			spaceWidth:spaceWidth,
-			superscriptOffset:1,
-			subscriptOffset:1,
-			underlineOffset:1
+			superscriptOffset:1.0,
+			subscriptOffset:1.0,
+			underlineOffset:1.0
 		};
 		
 		return fontMetrics;
@@ -107,7 +108,7 @@ class FontManager extends AbstractFontManager
 	/**
 	 * Create and return a flash text field
 	 */
-	override public function createNativeTextElement(text:String, computedStyle:ComputedStyleData):NativeElement
+	override public function createNativeTextElement(text:String, computedStyle:ComputedStyle):NativeElement
 	{
 		text = applyTextTransform(text, computedStyle.textTransform);
 		var textField:flash.text.TextField = new flash.text.TextField();
@@ -169,7 +170,7 @@ class FontManager extends AbstractFontManager
 	 * Return a flash TextFormat object, to be
 	 * used on the created Text Field
 	 */
-	private function getTextFormat(computedStyle:ComputedStyleData):TextFormat
+	private function getTextFormat(computedStyle:ComputedStyle):TextFormat
 	{
 		
 		var textFormat:TextFormat = new TextFormat();

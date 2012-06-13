@@ -26,8 +26,8 @@ class SwippableListViewStyle
 	 */
 	public static function setSwippableListStyle(node:HtmlDom):Void
 	{
-		node.style.display = "inline-block";
-		node.style.position = "absolute";
+		node.style.display = "block";
+		node.style.position = "static";
 		
 		node.style.marginLeft = "0px";
 		node.style.marginRight = "0px";
@@ -39,8 +39,8 @@ class SwippableListViewStyle
 		node.style.paddingTop = "0px";
 
 		node.style.width = "100%";
-		node.style.height = "100%";
-
+		node.style.height = Std.string(Lib.window.innerHeight - Constants.LIST_TOP) + "px";
+		
 		node.style.overflowX = "hidden";
 		node.style.overflowY = "hidden";
 
@@ -54,7 +54,6 @@ class SwippableListViewStyle
 	public static function setListsContainerStyle(node:HtmlDom):Void
 	{
 		node.style.display = "inline-block";
-		//node.style.position = "absolute";
 		node.style.position = "static";
 		
 		node.style.marginLeft = "0px";
@@ -69,6 +68,5 @@ class SwippableListViewStyle
 		node.style.width = "300%";
 		node.style.height = "100%";
 	}
-	
-	
+
 }

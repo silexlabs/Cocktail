@@ -1,8 +1,11 @@
 package org.intermedia.view;
 
+import haxe.Firebug;
 import js.Lib;
 import js.Dom;
 import org.intermedia.model.ApplicationModel;
+import haxe.Timer;
+import org.intermedia.Settings;
 
 /**
  * Base class for list views. Inherithed by the 3 ListViews.
@@ -13,12 +16,11 @@ import org.intermedia.model.ApplicationModel;
 class ListViewBase extends ViewBase
 {
 
+	// style
+	private var _style:ListStyleModel;
+	
 	//Called when an item is selected.
 	public var onListItemSelected:CellData->Void;
-	
-	//Called when the user has scrolled to the bottom of the list, and
-	//more cell data might need to be fetched
-	//public var onListScrolled:String->Void;
 	
 	// called when the list is requesting more data to be loaded
 	public var onDataRequest:String->Void;
@@ -32,24 +34,40 @@ class ListViewBase extends ViewBase
 	// the list id feed, used to store the feedUrl
 	public var id:String;
 	
-	// list bottom loader
-	//private var _listBottomLoader:Image;
+	// list bottom loader image container
 	private var _listBottomLoader:HtmlDom;
+
+	// list bottom loader image
+	var _bottomLoaderImage:Image;
 
 	public function new()
 	{
 		super();
 		
-		ListViewStyle.setListStyle(node);
+		// init style
+		initStyle();
 		
+		// apply style
+		_style.list(node);
+
 		displayListBottomLoader = true;
 		_cells = new Array<CellBase>();
 		
 		buildBottomLoader();
 		
-		//node.onScroll = onScrollCallback;
 		node.onscroll = onScrollCallback;
 		
+	}
+	
+	/**
+	 * initialize the default style
+	 */
+	private function initStyle():Void
+	{
+		// init style model
+		_style = {
+			list:ListViewStyle.setListStyle
+		}
 	}
 	
 	/**
@@ -57,11 +75,11 @@ class ListViewBase extends ViewBase
 	 */
 	private function buildBottomLoader():Void
 	{
-		var bottomLoaderImage:Image = cast Lib.document.createElement("img");
-		ListViewStyle.loaderImage(bottomLoaderImage);
-		bottomLoaderImage.src = "assets/loading.gif";
+		_bottomLoaderImage = cast Lib.document.createElement("img");
+		ListViewStyle.loaderImage(_bottomLoaderImage);
+		_bottomLoaderImage.src = "assets/loading.gif";
 		_listBottomLoader = Lib.document.createElement("div");
-		_listBottomLoader.appendChild(bottomLoaderImage);
+		_listBottomLoader.appendChild(_bottomLoaderImage);
 		CellStyle.setCellStyle(_listBottomLoader);
 	}
 	
@@ -80,7 +98,6 @@ class ListViewBase extends ViewBase
 			cell.data = Reflect.field(_data, index);
 			
 			// set mouseUp callback
-			//cell.onMouseUp = function(mouseEventData:MouseEventData) { onListItemSelectedCallback(cell.data); };
 			cell.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell.data); };
 			
 			// push created cell to _cells
@@ -101,18 +118,18 @@ class ListViewBase extends ViewBase
 			node.appendChild(_listBottomLoader);
 		}
 		
-		
-		// if list is not attached to body
-		//if(this.parentNode.parentNode != null)
-		//{
+		// if list is attached to body
+		if(node.parentNode.parentNode != null)
+		{
 			// if list content height is not filling the totality of the screen's height
-			//if (node.scrollHeight < Lib.window.innerHeight && node.scrollHeight != 0)
-			/*if (node.scrollHeight < Lib.window.innerHeight)
+			// removed as now list update is done without beeing attached, and as a result scrollHeight equals 0
+			/*Firebug.trace("node.scrollHeight: " + node.scrollHeight);
+			if (node.scrollHeight <= (Lib.window.innerHeight - Constants.LIST_TOP) + Constants.LIST_BOTTOM_LOADER_VERTICAL_MARGIN)
 			{
 				// request more data
 				onDataRequestCallback(id);
 			}*/
-		//}
+		}
 	}
 	
 	/**
@@ -143,15 +160,23 @@ class ListViewBase extends ViewBase
 	 * list scroll callback
 	 * @param	event
 	 */
-	//override private function onScrollCallback(event:ScrollEventData):Void
 	private function onScrollCallback(event:Event):Void
 	{
-		// if the bottom of the list is reached via scrolling
-		//if (event.scrollTop >= event.scrollHeight - Lib.window.innerHeight)
-		if (node.scrollTop >= node.scrollHeight - Lib.window.innerHeight)
+		// if the bottom of the loading screen is reached via scrolling
+		if (node.scrollTop >= node.scrollHeight - (Lib.window.innerHeight - Constants.LIST_TOP) - Constants.LIST_BOTTOM_LOADER_VERTICAL_MARGIN)
 		{
-			// call callback
-			onDataRequestCallback(id);
+			// if using online data
+			if(Settings.ONLINE)
+			{
+				// call callback
+				onDataRequestCallback(id);
+			}
+			// if using local data
+			else
+			{
+				// instead of calling onDataRequestCallback(id), we reload the same data again (way faster !)
+				data = _data;
+			}
 		}
 	}
 	
@@ -164,20 +189,29 @@ class ListViewBase extends ViewBase
 		// call callback
 		if (onDataRequest != null)
 		{
+			// if list has not already requested new data, request new data
 			onDataRequest(id);
 		}
 	}
 	
-	/**
+	/** 
 	 * Refresh list styles
 	 */
 	public function refreshStyles():Void
 	{
+		// apply style
+		_style.list(node);
+		
+		// refresh cells
 		for (cell in _cells)
 		{
 			cell.refreshStyles();
 		}
 	}
 
+}
 
+typedef ListStyleModel =
+{
+	var list:HtmlDom->Void;
 }

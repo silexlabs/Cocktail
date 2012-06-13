@@ -7,6 +7,7 @@
 */
 package cocktail.core.style;
 
+import cocktail.core.dom.Node;
 import cocktail.core.unit.UnitData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.geom.Matrix;
@@ -80,6 +81,7 @@ import cocktail.core.renderer.TextRenderer;
 	enum FontStyle {
 		normal;
 		italic;
+		oblique;
 	}
 	
 	/**
@@ -550,6 +552,26 @@ import cocktail.core.renderer.TextRenderer;
 		 * no offset
 		 */
 		cssAuto;
+	}
+	
+	/**
+	 * For a positioned box, the 'z-index' property specifies: 
+	 *  - The stack level of the box in the current stacking context.
+	 *	- Whether the box establishes a stacking context. 
+	 */
+	enum ZIndex {
+		
+		/**
+		 * The stack level of the generated box in the current stacking context
+		 * is 0. The box does not establish a new stacking context unless it is the root element. 
+		 */
+		cssAuto;
+		
+		/**
+		 * This integer is the stack level of the generated
+		 * box in the current stacking context. The box also establishes a new stacking context. 
+		 */
+		integer(value:Int);
 	}
 	
 		// VISUAL EFFECTS STYLES
@@ -1071,7 +1093,7 @@ import cocktail.core.renderer.TextRenderer;
 	/**
 	 * This property specifies the type of cursor to be displayed for the pointing device.
 	 * 
-	 * TODO : missing values
+	 * TODO 5 : missing values
 	 */
 	enum Cursor {
 		
@@ -1096,6 +1118,148 @@ import cocktail.core.renderer.TextRenderer;
 		pointer;
 	}
 	
+		// TRANSITION STYLES
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The 'transition-property' property 
+	 * specifies the name of the CSS property to which
+	 * the transition is applied.
+	 */
+	enum TransitionProperty {
+		
+		/**
+		 * A value of ‘none’ means that no property will transition. 
+		 */
+		none;
+		
+		/**
+		 * indicates that all the properties
+		 * are to be transitioned
+		 */
+		all;
+		
+		/**
+		 * Indicates that a named list of property
+		 * are to be transitioned
+		 */
+		list(value:Array<String>);
+	}
+	
+	/**
+	 * The 'transition-duration' property defines
+	 * the length of time that a transition takes.
+	 */
+	typedef TransitionDuration = Array<TimeValue>;
+	
+	/**
+	 * The 'transition-delay' property defines when the transition
+	 * will start. It allows a transition to begin execution some 
+	 * some period of time from when it is applied. A 'transition-delay'
+	 * value of ‘0s’ means the transition will execute as soon as
+	 * the property is changed. Otherwise, the value specifies an 
+	 * offset from the moment the property is changed, and the transition will 
+	 * delay execution by that offset.
+	 * 
+	 * If the value for 'transition-delay' is a negative time
+	 * offset then the transition will execute the moment the property
+	 * is changed, but will appear to have begun execution at the specified offset.
+	 * That is, the transition will appear to begin part-way through its play cycle.
+	 * In the case where a transition has implied starting values and 
+	 * a negative 'transition-delay', the starting values are taken from the
+	 *  moment the property is changed.
+	 */
+	typedef TransitionDelay = Array<TimeValue>;
+	
+	/**
+	 * The 'transition-timing-function' property describes how
+	 * the intermediate values used during a transition
+	 * will be calculated. It allows for a transition
+	 * to change speed over its duration. These effects
+	 * are commonly called easing functions. In either 
+	 * case, a mathematical function that provides a smooth curve is used.
+	 * 
+	 */
+	typedef TransitionTimingFunction = Array<TransitionTimingFunctionValue>;
+	
+	/**
+	 * Lists the value available for a TransitionTimingFunction
+	 */
+	enum TransitionTimingFunctionValue {
+		
+		/**
+		 * The ease function is equivalent to 
+		 * cubic-bezier(0.25, 0.1, 0.25, 1.0).
+		 */
+		ease;
+		
+		/**
+		 * The linear function is equivalent 
+		 * to cubic-bezier(0.0, 0.0, 1.0, 1.0).
+		 */
+		linear;
+		
+		/**
+		 * The ease-in function is equivalent 
+		 * to cubic-bezier(0.42, 0, 1.0, 1.0).
+		 */
+		easeIn;
+		
+		/**
+		 * The ease-out function is equivalent 
+		 * to cubic-bezier(0, 0, 0.58, 1.0).
+		 */
+		easeOut;
+		
+		/**
+		 * The ease-in-out function is 
+		 * equivalent to cubic-bezier(0.42, 0, 0.58, 1.0)
+		 */
+		easeInOut;
+		
+		/**
+		 * The step-start function is equivalent
+		 * to steps(1, start).
+		 */
+		stepStart;
+		
+		/**
+		 * The step-end function is equivalent
+		 * to steps(1, end).
+		 */
+		stepEnd;
+		
+		/**
+		 * Specifies a stepping function
+		 * taking two parameters. The first parameter 
+		 * specifies the number of intervals in 
+		 * the function. It must be a positive integer
+		 * (greater than 0). The second parameter, 
+		 * is either the value ‘start’ or ‘end’,
+		 * and specifies the point at which the change
+		 * of values occur within the interval.
+		 */
+		steps(intervalNumbers:Int, intervalChange:IntervalChangeValue);
+		
+		/**
+		 * Specifies a cubic-bezier curve. The four values specify 
+		 * points P1 and P2 of the curve as (x1, y1, x2, y2).
+		 * Both x values must be in the range [0, 1] or the definition
+		 * is invalid. The y values can exceed this range.
+		 */
+		cubicBezier(x1:Float, y1:Float, x2:Float, y2:Float); 
+	}
+	
+	/**
+	 * Used for a transition with a 'steps'
+	 * timing function to know when 
+	 * to change the interval value
+	 */
+	enum IntervalChangeValue {
+		start;
+		end;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Structures
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1106,130 +1270,13 @@ import cocktail.core.renderer.TextRenderer;
 	 * Specify for each dimension if it is 'cssAuto', 
 	 * meaning it depends on its content dimension
 	 */
-	typedef ContainingHTMLElementData = {
-		var width:Int;
+	typedef ContainingBlockData = {
+		var width:Float;
 		var isWidthAuto:Bool;
-		var height:Int;
+		var height:Float;
 		var isHeightAuto:Bool;
 	}
 	
-	/**
-	 * Contains the data of the first 
-	 * positioned ancestor (an htmlElement with
-	 * a position style of relative, absolute,
-	 * or fixed) dimensions and a reference to each of
-	 * the style objects using those dimensions
-	 * as origin to layout an absolutely
-	 * positioned htmlElement.
-	 */
-	typedef LastPositionedHTMLElementData = {
-		var elements:Array<ElementRenderer>;
-		var data:ContainingHTMLElementData;
-	}
-	
-	/**
-	 * Stores all the computed styles
-	 * of an htmlElement as they are 
-	 * used multiple times when applying
-	 * styles
-	 */
-	typedef ComputedStyleData = {
-		
-		/**
-		 * content dimensions
-		 */
-		var width:Int;
-		var height:Int;
-		
-		/**
-		 * content dimensions constraints
-		 */
-		var minWidth:Int;
-		var maxWidth:Int;
-		var maxHeight:Int;
-		var minHeight:Int;
-		
-		/**
-		 * margins
-		 */
-		var marginLeft:Int;
-		var marginRight:Int;
-		var marginTop:Int;
-		var marginBottom:Int;
-		
-		/**
-		 * paddings
-		 */
-		var paddingLeft:Int;
-		var paddingRight:Int;
-		var paddingTop:Int;
-		var paddingBottom:Int;
-		
-		/**
-		 * position offset
-		 */
-		var left:Int;
-		var right:Int;
-		var top:Int;
-		var bottom:Int;
-		
-		/**
-		 * display
-		 */
-		var display:Display;
-		var cssFloat:CSSFloat;
-		var clear:Clear;
-		var position:Position;
-		var lineHeight:Float;
-		
-		/**
-		 * visual effects
-		 */
-		var opacity:Float;
-		var visibility:Bool;
-		var overflowX:Overflow;
-		var overflowY:Overflow;
-		var transformOrigin:PointData;
-		var transform:Matrix;
-		
-		/**
-		 * background
-		 */
-		var backgroundColor:ColorData;
-		var backgroundImage:Array<BackgroundImage>;
-		var backgroundRepeat:Array<BackgroundRepeat>;
-		var backgroundPosition:Array<BackgroundPosition>;
-		var backgroundClip:Array<BackgroundClip>;
-		var backgroundOrigin:Array<BackgroundOrigin>;
-		var backgroundSize:Array<BackgroundSize>;
-		
-		/**
-		 * font
-		 */
-		var fontSize:Float;
-		var fontWeight:FontWeight;
-		var fontStyle:FontStyle;
-		var fontFamily:Array<String>;
-		var fontVariant:FontVariant;
-		
-		/**
-		 * text
-		 */
-		var textTransform:TextTransform;
-		var letterSpacing:Int;
-		var verticalAlign:Float;
-		var wordSpacing:Int;
-		var textIndent:Int;
-		var whiteSpace:WhiteSpace;
-		var textAlign:TextAlign;
-		var color:ColorData;
-		
-		/**
-		 * user interface
-		 */
-		var cursor:Cursor;
-	}
-
 	/**
 	 * Store the computed background style
 	 * for one background image
@@ -1299,26 +1346,26 @@ import cocktail.core.renderer.TextRenderer;
 		 * the x position where the next in flow htmlElement
 		 * should be placed in the formatting context
 		 */
-		var x:Int;
+		var x:Float;
 		
 		/**
 		 * the y position where the next in flow htmlElement
 		 * should be placed in the formatting context
 		 */
-		var y:Int;
+		var y:Float;
 		
 		/**
 		 * Determine the largest width of a line that was formatted
 		 * in the current formatting context
 		 */
-		var maxWidth:Int;
+		var maxWidth:Float;
 		
 		/**
 		 * The accumulated height of all the in flow htmlElements
 		 * (includes paddings and margins) of the current
 		 * formatting context
 		 */
-		var maxHeight:Int;
+		var maxHeight:Float;
 	}
 	
 	/**
@@ -1327,18 +1374,12 @@ import cocktail.core.renderer.TextRenderer;
 	 * formatting context
 	 */
 	typedef FloatsData = {
-		var left:Array<FloatData>;
-		var right:Array<FloatData>;
+		var left:Array<RectangleData>;
+		var right:Array<RectangleData>;
 	}
 	
-	/**
-	 * Represents the coordinates and
-	 * dimensions of the float in its
-	 * formatting context coordinate space
-	 */
 	typedef FloatData = {
-		var x:Int;
-		var y:Int;
-		var width:Int;
-		var height:Int;
+		var node:ElementRenderer;
+		var bounds:RectangleData;
 	}
+	

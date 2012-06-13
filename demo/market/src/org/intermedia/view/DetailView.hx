@@ -41,7 +41,7 @@ class DetailView extends ViewBase
 	private var _contentElement:HtmlDom;
 	
 	// touch & mouse handler
-	private var _moveHandler:Scroll2D;
+	private var _scrollHandler:Scroll2D;
 	
 	// initial scroll position
 	//private var _initialScrollPosition:Coordinate;
@@ -55,13 +55,14 @@ class DetailView extends ViewBase
 		
 		super();
 		
-		//addTouchEvents();
 		//_initialScrollPosition = { x:0, y:0 };
 		
 		// initialise move handler
-		_moveHandler = new Scroll2D(ScrollType.vertical);
-		_moveHandler.onVerticalScroll = onVerticalScroll;
-		
+		//_scrollHandler = new Scroll2D(ScrollType.vertical);
+		//_scrollHandler.onVerticalScroll = onVerticalScroll;
+
+		// js touch events handling
+		//addTouchEvents();	
 	}
 	
 	/**
@@ -85,20 +86,20 @@ class DetailView extends ViewBase
 		node.appendChild(_authorContainer);
 		
 		// add thumbnail
-		/*_thumbnail = cast Lib.document.createElement("img");
-		DetailStyle.setThumbnail(_thumbnail);
-		node.appendChild(_thumbnail);*/
+		//_thumbnail = cast Lib.document.createElement("img");
+		//DetailStyle.setThumbnail(_thumbnail);
+		//node.appendChild(_thumbnail);
 		
 		// add description
-		_descriptionContainer = Lib.document.createElement("div");
-		DetailStyle.setDescription(_descriptionContainer);
-		_descriptionContainer.appendChild(_descriptionElement);
-		node.appendChild(_descriptionContainer);
+		//_descriptionContainer = Lib.document.createElement("div");
+		//DetailStyle.setDescription(_descriptionContainer);
+		//_descriptionContainer.appendChild(_descriptionElement);
+		//node.appendChild(_descriptionContainer);
 		
 		// add content
 		_contentContainer = Lib.document.createElement("div");
 		DetailStyle.setDescription(_contentContainer);
-		_contentContainer.appendChild(_contentElement);
+		//_contentContainer.appendChild(_contentElement);
 		node.appendChild(_contentContainer);
 		
 	}
@@ -137,16 +138,18 @@ class DetailView extends ViewBase
 		// update description
 		/*_descriptionContainer.removeChild(_descriptionElement);
 		_descriptionElement.text = _data.description + "\n";
-		_descriptionContainer.appendChild(_descriptionElement);
+		_descriptionContainer.appendChild(_descriptionElement);*/
 		
 		// update content
-		_contentContainer.removeChild(_contentElement);
-		_contentElement.text = _data.content;
-		_contentContainer.appendChild(_contentElement);*/
+		// remove node
+		node.removeChild(_contentContainer);
+		_contentContainer.innerHTML = _data.content;
+		// resize children iframe & img
+		resizeNodeChildrenTag(_contentContainer,"iframe");
+		resizeNodeChildrenTag(_contentContainer, "img");
+		// attach node
+		node.appendChild(_contentContainer);
 		
-		//html2DOM(_data.description);
-		//html2Node(_data.content);
-		node.innerHTML += _data.content;
 	}
 
 
@@ -157,22 +160,39 @@ class DetailView extends ViewBase
 	 */
 	private function touchStart(event:Dynamic):Void
 	{
-		_moveHandler.initialScrollPosition = { x:node.scrollLeft, y:node.scrollTop };
-		_moveHandler.touchHandler(event);
+		_scrollHandler.initialScrollPosition = { x:node.scrollLeft, y:node.scrollTop };
+		_scrollHandler.touchHandler(event);
 	}
 
 	/**
 	 * Adds touch events
 	 */
-	public function addTouchEvents():Void
+	/*public function addTouchEvents():Void
 	{
 		#if js
 		untyped
 		{
-		node.addEventListener("touchstart",touchStart, false);
-		node.addEventListener("touchmove", _moveHandler.touchHandler, false);
-		node.addEventListener("touchend", _moveHandler.touchHandler, false);
-		node.addEventListener("touchcancel", _moveHandler.touchHandler, false);
+			node.addEventListener("touchstart", touchStart, false);
+			node.addEventListener("touchmove", _scrollHandler.touchHandler, false);
+			node.addEventListener("touchend", _scrollHandler.touchHandler, false);
+			node.addEventListener("touchcancel", _scrollHandler.touchHandler, false);
+		}
+		#end
+	}
+	
+
+	/**
+	 * Removes touch events
+	 */
+	/*public function unsetTouchEvents():Void
+	{
+		#if js
+		untyped
+		{
+			node.removeEventListener("touchstart", touchStart, false);
+			node.removeEventListener("touchmove", _scrollHandler.touchHandler, false);
+			node.removeEventListener("touchend", _scrollHandler.touchHandler, false);
+			node.removeEventListener("touchcancel", _scrollHandler.touchHandler, false);
 		}
 		#end
 	}
@@ -182,10 +202,77 @@ class DetailView extends ViewBase
 	 * 
 	 * @param	e
 	 */
-    private function onVerticalScroll( y : Int )
+    /*private function onVerticalScroll( y : Int )
     {
-		node.scrollTop = _moveHandler.initialScrollPosition.y - y;
+		node.scrollTop = _scrollHandler.initialScrollPosition.y - y;
     }
 	
+	/**
+	 * Refresh styles
+	 */
+	public function refreshStyles():Void
+	{
+		// reset style
+		DetailStyle.setDetailStyle(node);
+		// resize children iframe & img
+		resizeNodeChildrenTag(_contentContainer,"iframe");
+		resizeNodeChildrenTag(_contentContainer,"img");
+	}
+	
+	/**
+	 * Resizes the node's selected children tag
+	 * Used for better user experience.
+	 * Resolves also a bug of Android browser where window.screen.width & window.innerWidth take the width of the the most large iframe in the DOM
+	 * => to resolve this issue, get all iframes and resize them to match the window.innerWidth
+	 * => already tried using maxWidth & maxHeight, but creates bugs on Alex' Android Phone
+	 * 
+	 * @param	node
+	 */
+	private function resizeNodeChildrenTag(nodeToResize:HtmlDom, tagName:String):Void
+	{
+		var tagNodes:HtmlCollection<HtmlDom> = nodeToResize.getElementsByTagName(tagName);
+		
+		// for all nodes with the given tag name
+		for (i in 0...tagNodes.length)
+		{
+			resizeNode(tagNodes[i]);
+		}
+	}
+
+	/**
+	 * Resizes the node
+	 * Used for better user experience.
+	 * Resolves also a bug of Android browser where window.screen.width & window.innerWidth take the width of the the most large iframe in the DOM
+	 * => to resolve this issue, get all iframes and resize them to match the window.innerWidth
+	 * => already tried using maxWidth & maxHeight, but creates bugs on Alex' Android Phone
+	 * 
+	 * @param	node
+	 */
+	private function resizeNode(nodeToResize:HtmlDom):Void
+	{
+		var originalWidth:Int = Std.parseInt(nodeToResize.getAttribute("width"));
+		var originalHeight:Int = Std.parseInt(nodeToResize.getAttribute("height"));
+		
+		// set width & heigth
+		if ( Std.parseInt(nodeToResize.getAttribute("width")) > Lib.window.innerWidth )
+		{
+			var newWidth:Int = Std.int(Constants.DETAIL_HORIZONTAL_PERCENT * Lib.window.innerWidth / 100);
+			nodeToResize.style.width = Std.string(Constants.DETAIL_HORIZONTAL_PERCENT) + "%";
+			
+			// compute & set height
+			var newHeight:Int = Std.int(originalHeight * newWidth / originalWidth);
+			nodeToResize.style.height = Std.string(newHeight) + "px";
+		}
+		else
+		{
+			nodeToResize.style.width = Std.parseInt(nodeToResize.getAttribute("width")) + "px";
+			nodeToResize.style.height = Std.parseInt(nodeToResize.getAttribute("height")) + "px";
+		}
+	
+		// remove width & height attributes to avoid browsers incorrect behaviours
+		//untyped { tagNodes[i].removeAttribute("width"); };
+		//untyped { tagNodes[i].removeAttribute("height"); };
+		
+	}
 
 }

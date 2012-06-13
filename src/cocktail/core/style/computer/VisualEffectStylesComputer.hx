@@ -8,10 +8,12 @@
 package cocktail.core.style.computer;
 
 import cocktail.core.geom.Matrix;
+import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.unit.UnitManager;
+import cocktail.core.unit.UnitData;
 
 /**
  * This is a static class in charge of
@@ -45,23 +47,25 @@ class VisualEffectStylesComputer
 	{
 		//get a reference to the computed style structure
 		//holding the used style value (the ones actually used)
-		var computedStyle:ComputedStyleData = style.computedStyle;
-		
-		//opacity
-		computedStyle.opacity = style.opacity;
-		
-		//visibility
-		computedStyle.visibility = getComputedVisibility(style);
-		
-		//overflow
-		computedStyle.overflowX = style.overflowX;
-		computedStyle.overflowY = style.overflowY;
+		var computedStyle:ComputedStyle = style.computedStyle;
 		
 		//transformOrigin
 		computedStyle.transformOrigin = getComputedTransformOrigin(style);
 		
 		//transform
 		computedStyle.transform = getComputedTransform(style);
+		
+		//transition-delay
+		computedStyle.transitionDelay = getComputedTransitionDelay(style);
+		
+		//transition-property
+		computedStyle.transitionProperty = style.transitionProperty;
+		
+		//transition-duration
+		computedStyle.transitionDuration = getComputedTransitionDuration(style);
+		
+		//transition-timing-function
+		computedStyle.transitionTimingFunction = style.transitionTimingFunction;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -69,22 +73,50 @@ class VisualEffectStylesComputer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Compute the 'visibility' style
+	 * Compute the 'transition-duration' style
 	 */
-	private static function getComputedVisibility(style:CoreStyle):Bool
+	private static function getComputedTransitionDuration(style:CoreStyle):Array<Float>
 	{
-		var visibility:Bool;
+		var transitionDurations:Array<Float> = new Array<Float>();
 		
-		switch(style.visibility)
+		for (i in 0...style.transitionDuration.length)
 		{
-			case visible:
-				visibility = true;
-				
-			case hidden:
-				visibility = false;
+			switch (style.transitionDuration[i])
+			{
+				case TimeValue.seconds(value):
+					transitionDurations.push(value);
+					
+				case TimeValue.milliSeconds(value):
+					//convert to seconds
+					transitionDurations.push(value / 1000);
+			}
 		}
 		
-		return visibility;
+		return transitionDurations;
+		
+	}
+	
+	/**
+	 * Compute the 'transition-delay' style
+	 */
+	private static function getComputedTransitionDelay(style:CoreStyle):Array<Float>
+	{
+		var transitionDelays:Array<Float> = new Array<Float>();
+		
+		for (i in 0...style.transitionDelay.length)
+		{
+			switch (style.transitionDelay[i])
+			{
+				case TimeValue.seconds(value):
+					transitionDelays.push(value);
+					
+				case TimeValue.milliSeconds(value):
+					//convert to seconds
+					transitionDelays.push(value / 1000);
+			}
+		}
+		
+		return transitionDelays;
 	}
 	
 	/**
@@ -165,6 +197,10 @@ class VisualEffectStylesComputer
 				transformFunctions = new Array<TransformFunction>();
 		}
 		
+		//translate the matrix to the coordinate system of the 
+		//transformation origin
+		matrix.translate(transformOrigin.x, transformOrigin.y);
+		
 		//apply each transform functions to the matrix in order
 		for (i in 0...transformFunctions.length)
 		{
@@ -178,36 +214,36 @@ class VisualEffectStylesComputer
 				
 				//rotate	
 				case TransformFunction.rotate(value):
-					var angle:Float = Math.round(UnitManager.getRadFromAngle(value));
-					matrix.rotate(angle, transformOrigin);
+					var angle:Float = UnitManager.getRadFromAngle(value);
+					matrix.rotate(angle);
 				
 				//scale x and y	
-				case TransformFunction.scale(sx, sys):
-					matrix.scale(sx, sys, transformOrigin);
+				case TransformFunction.scale(sx, sy):
+					matrix.scale(sx, sy);
 				
 				//scale x	
 				case TransformFunction.scaleX(sx):
-					matrix.scale(sx, 1, transformOrigin);
+					matrix.scale(sx, 1);
 				
 				//scale y	
 				case TransformFunction.scaleY(sy):
-					matrix.scale(1, sy, transformOrigin);
+					matrix.scale(1, sy);
 				
 				//skew x and y	
 				case TransformFunction.skew(angleX, angleY):
 					var skewX:Float = UnitManager.getRadFromAngle(angleX);
 					var skewY:Float = UnitManager.getRadFromAngle(angleY);
-					matrix.skew(skewX, skewY, transformOrigin);
+					matrix.skew(skewX, skewY);
 				
 				//skew x	
 				case TransformFunction.skewX(angleX):
 					var skewX:Float = UnitManager.getRadFromAngle(angleX);
-					matrix.skew(skewX, 1, transformOrigin);
+					matrix.skew(skewX, 0);
 				
 				//skew y	
 				case TransformFunction.skewY(angleY):
 					var skewY:Float = UnitManager.getRadFromAngle(angleY);
-					matrix.skew(1, skewY, transformOrigin);
+					matrix.skew(0, skewY);
 				
 				//translate x and y	
 				case TransformFunction.translate(tx, ty):
@@ -227,13 +263,17 @@ class VisualEffectStylesComputer
 			}
 		}
 		
+		//translate the matrix back from the coordinate system of the 
+		//transformation origin
+		matrix.translate(transformOrigin.x * -1, transformOrigin.y * -1);
+		
 		return matrix;
 	}
 	
 	/**
 	 * Utils method to compute a TransformValue into a float
 	 */
-	private static function getComputedTranslation(style:CoreStyle, translation:Translation, percentReference:Int):Float
+	private static function getComputedTranslation(style:CoreStyle, translation:Translation, percentReference:Float):Float
 	{
 		var computedTranslation:Float;
 		

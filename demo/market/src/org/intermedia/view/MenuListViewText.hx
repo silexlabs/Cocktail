@@ -16,13 +16,16 @@ import org.intermedia.view.Scroll2D;
 import feffects.easing.Quint;
 
 /**
- * Text list view
+ * Menu Text list view
  * 
  * @author Raphael Harmel
  */
 
 class MenuListViewText extends ListViewBase
 {
+	// bold font offset
+	static inline var BOLD_FONT_OFFSET:Int = 5;
+	
 	// menu index
 	private var _index:Int;
 	public var index(getIndex,setIndex):Int;
@@ -56,14 +59,81 @@ class MenuListViewText extends ListViewBase
 	{
 		_index = 0;
 		
+		//init left target values
+		_menuItem0LeftTarget = 0;
+		_menuItem1LeftTarget = 0;
+		_menuItem2LeftTarget = 0;
+
 		super();
-		//MenuListViewStyle.setListStyle(node);
-		MenuListViewStyle.setMenuStyle(node);
 		
 		displayListBottomLoader = false;
+	}
+	
+	/**
+	 * initialize the default style
+	 */
+	override function initStyle():Void
+	{
+		// init style model
+		_style = {
+			list:MenuListViewStyle.setMenuStyle
+		}
+	}
+	
+	/**
+	 * update view
+	 */
+	override private function updateView():Void
+	{
+		//_index = 0;
+		for (field in Reflect.fields(_data))
+		{
+			// build cell
+			var cell:CellBase = createCell();
+			
+			// set cell data
+			cell.data = Reflect.field(_data, field);
+			
+			// set mouseUp callback
+			cell.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell.data); };
+			
+			// push created cell to _cells
+			_cells.push(cell);
+
+			// add cell to list
+			node.appendChild(cell.node);
+			
+		}
 		
-		// onresize callback
-		//Lib.window.onresize = onResizeCallback;
+		// if loader is attached to to list container, detach it
+		if (_listBottomLoader.parentNode != null)
+		{
+			node.removeChild(_listBottomLoader);
+		}
+		// add loader at the bottom of the screen if there is still data to load
+		if(displayListBottomLoader == true)
+		{
+			node.appendChild(_listBottomLoader);
+		}
+		
+		// reset width attributes
+		computeMenuItemsWidth();
+		
+		// set index to its initial value 
+		index = 1;
+		refreshStyles();
+	}	
+
+	/**
+	 * Creates a cell of the correct type
+	 * To be overriden in child classes
+	 * 
+	 * @return
+	 */
+	override private function createCell():CellBase
+	{
+		var cell:MenuCellText = new MenuCellText();
+		return cell;
 	}
 	
 	/**
@@ -85,71 +155,13 @@ class MenuListViewText extends ListViewBase
 	 */
 	private function setIndex(v:Int):Int
 	{
+		// set previous menu item's font to normal, and current one to bold
+		_cells[_index].node.style.fontWeight = "normal";
+		_cells[v].node.style.fontWeight = "bold";
+
 		_index = v;
 		
-		// Compute menu items left target
-		computeMenuItemLeftTarget();
-		
-		// menu item 0 tween
-		var tween0:Tween = new Tween( _cells[0].node.offsetLeft, _menuItem0LeftTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
-		tween0.setTweenHandlers( menuItem0Move, menuItemMoveEnd );
-		// launch the tween
-		tween0.start();
-
-		// menu item 1 tween
-		var tween1:Tween = new Tween( _cells[1].node.offsetLeft, _menuItem1LeftTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
-		tween1.setTweenHandlers( menuItem1Move, menuItemMoveEnd );
-		// launch the tween
-		tween1.start();
-
-		// menu item 0 tween
-		var tween2:Tween = new Tween( _cells[2].node.offsetLeft, _menuItem2LeftTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quint.easeOut );
-		tween2.setTweenHandlers( menuItem2Move, menuItemMoveEnd );
-		// launch the tween
-		tween2.start();
-
 		return v;
-	}
-	
-	/**
-	 * Compute menu items left target
-	 */
-	private function computeMenuItemLeftTarget():Void
-	{
-		// depending on the index value, set each menu item left end position
-		switch(_index)
-		{
-			case 0:
-				_menuItem0LeftTarget = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2);
-				_menuItem1LeftTarget = Lib.window.innerWidth - _menuItem1Width;
-				_menuItem2LeftTarget = Lib.window.innerWidth;
-			case 1:
-				_menuItem0LeftTarget = 0;
-				_menuItem1LeftTarget = Std.int((Lib.window.innerWidth - _menuItem1Width) / 2);
-				_menuItem2LeftTarget = Lib.window.innerWidth - _menuItem2Width;
-			case 2:
-				_menuItem0LeftTarget = -_menuItem0Width;
-				_menuItem1LeftTarget = 0;
-				_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2);
-			// android market style
-			//case 0:
-				//_menuItem0LeftTarget = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2);
-				//_menuItem1LeftTarget = Std.int(Lib.window.innerWidth - _menuItem1Width/2);
-				//_menuItem2LeftTarget = Lib.window.innerWidth;
-			//case 1:
-				//_menuItem0LeftTarget = Std.int(-_menuItem2Width/2);
-				//_menuItem1LeftTarget = Std.int((Lib.window.innerWidth - _menuItem1Width) / 2);
-				//_menuItem2LeftTarget = Std.int(Lib.window.innerWidth - _menuItem2Width/2);
-			//case 2:
-				//_menuItem0LeftTarget = -_menuItem0Width;
-				//_menuItem1LeftTarget = Std.int(-_menuItem1Width/2);
-				//_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2);
-			default:
-				_menuItem0LeftTarget = 0;
-				_menuItem1LeftTarget = 0;
-				_menuItem2LeftTarget = 0;
-		}
-
 	}
 	
 	/**
@@ -184,17 +196,6 @@ class MenuListViewText extends ListViewBase
 	}
 	
 	/**
-	 * Menu item tween move end callback 
-	 * 
-	 * @param	e
-	 */
-	private function menuItemMoveEnd(e:Float):Void
-	{
-		// reset position attributes
-		computeMenuItemsLeftPos();
-	}
-	
-	/**
 	 * Compute menu items width. It needs to be done at the beginning,
 	 * as if an item is not visible in the viewport, its width is 0
 	 */
@@ -215,115 +216,34 @@ class MenuListViewText extends ListViewBase
 		_menuItem2LeftPos = _cells[2].node.offsetLeft;
 	}
 	
-	
 	/**
-	 * update view
-	 */
-	override private function updateView():Void
-	{
-		_index = 0;
-		for (field in Reflect.fields(_data))
-		{
-			// build cell
-			var cell:CellBase = createCell();
-			
-			// set cell data
-			cell.data = Reflect.field(_data, field);
-			
-			// set mouseUp callback
-			cell.node.onmouseup = function(mouseEventData:Event) { onListItemSelectedCallback(cell.data); };
-			
-			// push created cell to _cells
-			_cells.push(cell);
-
-			// add cell to list
-			node.appendChild(cell.node);
-			
-			var style:HtmlDom->Void = setCellsStyle();
-			style(cell.node);
-			
-			// re-apply cell styles, as we need to apply some styles which need to be computed by the layout
-			//var style:HtmlDom->Void = setCellsStyle();
-			//style(cell.node);
-			
-			// depending on the index value, set a specific id
-			switch(_index)
-			{
-				case 0:
-					cell.node.id = "menu_item0";
-				case 1:
-					cell.node.id = "menu_item1";
-				case 2:
-					cell.node.id = "menu_item2";
-				default:
-			}
-			
-			_index++;
-			
-		}
-		// set index to its initial value 
-		_index = 1;
-
-		
-		// if loader is attached to to list container, detach it
-		if (_listBottomLoader.parentNode != null)
-		{
-			node.removeChild(_listBottomLoader);
-		}
-		// add loader at the bottom of the screen if there is still data to load
-		if(displayListBottomLoader == true)
-		{
-			node.appendChild(_listBottomLoader);
-		}
-		
-		// reset width attributes
-		computeMenuItemsWidth();
-		// reset position attributes
-		computeMenuItemsLeftPos();
-	}	
-
-	/**
-	 * Creates a cell of the correct type
-	 * To be overriden in child classes
+	 * Compute menu items left target
 	 * 
-	 * @return
+	 * @param	targetIndex	the menu item which "should" be the new target. we don not know yet as scroll is not complete
 	 */
-	override private function createCell():CellBase
+	private function computeMenuItemsLeftTarget(targetIndex:Int):Void
 	{
-		//var style:HtmlDom->Void = setCellsStyle();
-		var cell:MenuCellText = new MenuCellText();
-		return cell;
-	}
-	
-	
-	private function setCellsStyle():HtmlDom->Void
-	{
-		// set default cell style
-		var style:HtmlDom->Void = MenuCellTextStyle.setCellStyle;
-		// depending on the index value, apply corresponding style
-		switch(_index)
+		// depending on the index value, set each menu item left end position
+		switch(targetIndex)
 		{
 			case 0:
-				style = MenuCellTextStyle.setLeftCellStyle;
+				_menuItem0LeftTarget = Std.int((Lib.window.innerWidth - _menuItem0Width) / 2 - BOLD_FONT_OFFSET/2);
+				_menuItem1LeftTarget = Std.int(Lib.window.innerWidth - Constants.MENU_LATERAL_OFFSET);
+				_menuItem2LeftTarget = Std.int(3 * Lib.window.innerWidth / 2);
 			case 1:
-				style = MenuCellTextStyle.setMiddleCellStyle;
+				_menuItem0LeftTarget = Std.int(-(_menuItem0Width - Constants.MENU_LATERAL_OFFSET));
+				_menuItem1LeftTarget = Std.int((Lib.window.innerWidth - _menuItem1Width - BOLD_FONT_OFFSET) / 2);
+				_menuItem2LeftTarget = Std.int(Lib.window.innerWidth - Constants.MENU_LATERAL_OFFSET);
 			case 2:
-				style = MenuCellTextStyle.setRightCellStyle;
+				_menuItem0LeftTarget = Std.int( -Lib.window.innerWidth / 2);
+				_menuItem1LeftTarget = Std.int(-(_menuItem1Width - Constants.MENU_LATERAL_OFFSET));
+				_menuItem2LeftTarget = Std.int((Lib.window.innerWidth - _menuItem2Width) / 2 - BOLD_FONT_OFFSET/2);
+			// keep the same values
 			default:
 		}
-		return style;
+		
 	}
-
-	/**
-	 * onListItemSelected callback
-	 * @param	cellData
-	 */
-	override public function onListItemSelectedCallback(cellData:CellData)
-	{
-		index = cellData.id;
-		super.onListItemSelectedCallback(cellData);
-	}
-
+	
 	/**
 	 * move horizontally menu items
 	 * 
@@ -331,44 +251,50 @@ class MenuListViewText extends ListViewBase
 	 */
 	public function moveHorizontally(ratio:Float):Void
 	{
-		menuItem0Move(_menuItem0LeftPos + ((Lib.window.innerWidth - _menuItem0Width) * ratio / 2));
-		menuItem1Move(_menuItem1LeftPos + ((Lib.window.innerWidth - _menuItem1Width) * ratio / 2));
-		menuItem2Move(_menuItem2LeftPos + ((Lib.window.innerWidth - _menuItem2Width) * ratio / 2));
-	}
-	
-	/**
-	 * swippable view horizontal up callback
-	 * 
-	 * @param	Xoffset
-	 */
-	public function horizontalUp(listIndex:Int):Void
-	{
-		// set index value to launch setter
-		index = listIndex;
+		// depending on ratio sign, increment or decrement _index
+		// check is done so that index is always between 0 an 2
+		if (ratio > 0)
+		{
+			computeMenuItemsLeftTarget(Std.int(Math.max(_index-1, 0)));
+		}
+		else if (ratio < 0)
+		{
+			computeMenuItemsLeftTarget(Std.int(Math.min(_index+1, 2)));
+		}
+		
+		// move menu items depending on the ratio
+		menuItem0Move(_menuItem0LeftPos + (Math.abs(_menuItem0LeftTarget - _menuItem0LeftPos) * ratio));
+		menuItem1Move(_menuItem1LeftPos + (Math.abs(_menuItem1LeftTarget - _menuItem1LeftPos) * ratio));
+		menuItem2Move(_menuItem2LeftPos + (Math.abs(_menuItem2LeftTarget - _menuItem2LeftPos) * ratio));
 	}
 	
 	/**
 	 * swippable view horizontal tween end callback
 	 * 
-	 * @param	e
+	 * @param	newIndex	the new index value
 	 */
-    public function horizontalTweenEnd(ratio:Float):Void
+    public function horizontalTweenEnd(newIndex:Int):Void
 	{
-		//moveHorizontally(ratio);
-		computeMenuItemsLeftPos();
+		index = newIndex;
+		// styles are refreshed here to resolve bugs where menu items are not correctly positioned when a data loading is occuring
+		refreshStyles();
 	}
 	
 	/**
-	 * on rezize callback
+	 * refresh styles
 	 */
-	public function onResizeCallback(event:Event):Void
+	override public function refreshStyles():Void
 	{
+		// compute lists positions
+		computeMenuItemsLeftTarget(_index);
+		
 		// reset lists position
-		computeMenuItemLeftTarget();
 		menuItem0Move(_menuItem0LeftTarget);
 		menuItem1Move(_menuItem1LeftTarget);
 		menuItem2Move(_menuItem2LeftTarget);
-	}
-	
+		
+		// reset left positions
+		computeMenuItemsLeftPos();
+	}	
 
 }

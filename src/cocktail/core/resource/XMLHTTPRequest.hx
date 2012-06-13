@@ -8,18 +8,18 @@
 package cocktail.core.resource;
 
 import cocktail.core.event.Event;
-import cocktail.core.event.IEventTarget;
+import cocktail.core.event.EventTarget;
 import haxe.Http;
 
 /**
  * This class is a wrapper around the haxe Http class
  * using the XMLHTTPRequest API to load data as strings
  * 
- * TODO : responseHeaders not implemented in flash and JS
+ * TODO 5 : responseHeaders not implemented in flash and JS
  * 
  * @author Yannick DOMINGUEZ
  */
-class XMLHTTPRequest implements IEventTarget
+class XMLHTTPRequest extends EventTarget
 {
 	//ready states
 	
@@ -94,6 +94,7 @@ class XMLHTTPRequest implements IEventTarget
 	 */
 	public function new() 
 	{	
+		super();
 		_http = new Http("");
 		
 		_http.onData = onHTTPData;
@@ -109,7 +110,7 @@ class XMLHTTPRequest implements IEventTarget
 	/**
 	 * Sets the request method, request URL
 	 * 
-	 * TODO : async in Http not implemented in flash and JS
+	 * TODO 5 : async in Http not implemented in flash and JS
 	 * 
 	 */
 	public function open(method:String, url:String):Void
@@ -123,7 +124,7 @@ class XMLHTTPRequest implements IEventTarget
 	 * Initiates the request. The optional argument provides the request entity body.
 	 * The argument is ignored if request method is GET
 	 * 
-	 * TODO : POST params not supported yet
+	 * TODO 5 : POST params not supported yet
 	 */
 	public function send(content:String = null):Void
 	{
@@ -188,7 +189,9 @@ class XMLHTTPRequest implements IEventTarget
 		_readyState = value;
 		if (onReadyStateChange != null)
 		{
-			onReadyStateChange(new Event(Event.READY_STATE_CHANGE, this));
+			var readyStateChangeEvent:Event = new Event();
+			readyStateChangeEvent.initEvent(Event.READY_STATE_CHANGE, false, false);
+			onReadyStateChange(readyStateChangeEvent);
 		}
 	}
 	

@@ -11,12 +11,6 @@ import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.html.HTMLBodyElement;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.event.MouseEvent;
-import cocktail.core.Keyboard;
-import cocktail.core.mouse.MouseData;
-import cocktail.core.dom.DOMData;
-import cocktail.core.event.KeyboardEvent;
-import cocktail.core.dom.DOMData;
 
 /**
  * The Focus Manager determine which HTMLElements in 
@@ -131,7 +125,6 @@ class FocusManager
 				return i;
 			}
 		}
-		//TODO : throw exception ?
 		return -1;
 	}
 	
@@ -189,10 +182,9 @@ class FocusManager
 				//check if the child can be focused
 				if (child.isFocusable() == true)
 				{
-					//if it can and has a 0 tabIndex or no defined tabIndex, push it
+					//if it can and has a 0 tabIndex, push it
 					//the DOM order array
-					//TODO : should tabIndex be null Int ?
-					if (child.tabIndex == 0 || child.tabIndex == null)
+					if (child.tabIndex == 0)
 					{
 						orderedTabList.push(child);
 					}

@@ -7,6 +7,7 @@
 */
 package cocktail.core.unit;
 
+import cocktail.core.style.CoreStyle;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
 import haxe.Log;
@@ -141,17 +142,73 @@ class UnitManager
 	
 	/**
 	 * convert a string into a typed enum
-	 * 
-	 * TODO : only supports units for now
+	 */
+	static public function zIndexEnum(string:String):ZIndex
+	{
+		var parsed:String = trim(string);
+		
+		var zIndex:ZIndex;
+		
+		switch(parsed)
+		{
+			case "auto":
+				zIndex = ZIndex.cssAuto;
+				
+			default:
+				zIndex = ZIndex.integer(Std.parseInt(parsed));
+		}
+		
+		return  zIndex;
+	}
+	
+	/**
+	 * convert a string into a typed enum
 	 */
 	static public function fontSizeEnum(string:String):FontSize
 	{
 		string = trim(string);
 		
+		switch (string)
+		{
+			case "small":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.small);
+				
+			case "xx-small":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.xxSmall);
+				
+			case "x-small":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.xSmall);	
+				
+			case "medium":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.medium);		
+				
+			case "large":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.large);	
+				
+			case "x-large":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.xLarge);			
+				
+			case "xx-large":
+				return FontSize.absoluteSize(FontSizeAbsoluteSize.xxLarge);	
+				
+			case "larger":
+				return FontSize.relativeSize(FontSizeRelativeSize.larger);		
+				
+			case "smaller":
+				return FontSize.relativeSize(FontSizeRelativeSize.smaller);			
+		}
+		
 		// split unit and value
 		var parsed:VUnit = string2VUnit(string);
 		
-		return FontSize.length(string2Length(parsed));
+		switch(parsed.unit)
+		{
+			case "%":
+				return FontSize.percentage(Std.parseInt(parsed.value));
+				
+			default:
+				return FontSize.length(string2Length(parsed));
+		}
 	}
 	
 	/**
@@ -414,6 +471,9 @@ class UnitManager
 			case "normal":
 				fontStyle = FontStyle.normal;
 				
+			case "oblique":
+				fontStyle = FontStyle.oblique;
+				
 			default:
 				fontStyle = null;
 		}
@@ -576,31 +636,31 @@ class UnitManager
 		return arrayBgImg;
 	}
 	
-	//TODO
+	//TODO 4
 	static public function backgroundRepeatEnum(string:String):Array<BackgroundRepeat>
 	{
 		return [];
 	}
 	
-	//TODO
+	//TODO 4
 	static public function backgroundOriginEnum(string:String):Array<BackgroundOrigin>
 	{
 		return [];
 	}
 	
-	//TODO
+	//TODO 4
 	static public function backgroundSizeEnum(string:String):Array<BackgroundSize>
 	{
 		return [];
 	}
 	
-	//TODO
+	//TODO 4
 	static public function backgroundPositionEnum(string:String):Array<BackgroundPosition>
 	{
 		return [];
 	}
 	
-	//TODO
+	//TODO 4
 	static public function backgroundClipEnum(string:String):Array<BackgroundClip>
 	{
 		return [];
@@ -707,6 +767,13 @@ class UnitManager
 	 * @example UnitManager.colorEnum("yellow") returns Color.yellow
 	 */
 	static public function colorEnum(string:String):CSSColor{
+		
+		//TODO 2 : need to implement default styles everywhere
+		if (string == null)
+		{
+			return CoreStyle.getBackgroundColorDefaultValue();
+		}
+		
 		// clean up a bit
 		string = trim(string);
 		
@@ -862,7 +929,7 @@ class UnitManager
 			string = string.substr(1);
 		if (StringTools.endsWith(string, "\""))
 			string = string.substr(0, string.length - 1);
-		return cast(string);
+		return string;
 	}
 	/**
 	 * function used internally to convert a value/unit strings pair to an enum  
@@ -921,7 +988,7 @@ class UnitManager
 	 * @return returns the computed value as pixel with rounded
 	 * values
 	 */ 
-	public static function getPixelFromLength(length:Length, emReference:Float, exReference:Float):Int
+	public static function getPixelFromLength(length:Length, emReference:Float, exReference:Float):Float
 	{
 		var lengthValue:Float;
 		
@@ -952,7 +1019,7 @@ class UnitManager
 				lengthValue = exReference * value;
 		}
 		
-		return Math.round(lengthValue);
+		return lengthValue;
 	}
 	
 	/**
@@ -1018,7 +1085,7 @@ class UnitManager
 	 * @param	reference the reference value
 	 * @return a percentage of the reference value
 	 */
-	public static function getPixelFromPercent(percent:Int, reference:Int):Float
+	public static function getPixelFromPercent(percent:Int, reference:Float):Float
 	{
 		return reference * (percent * 0.01);
 	}
@@ -1029,7 +1096,7 @@ class UnitManager
 	 * @param	reference
 	 * @return
 	 */
-	public static function getPercentFromPixel(pixel:Int, reference:Int):Float
+	public static function getPercentFromPixel(pixel:Float, reference:Float):Float
 	{
 		return (reference / pixel) * 100;
 	}
@@ -1323,6 +1390,25 @@ class UnitManager
 		}
 		
 		return cssClearValue;
+	}
+	
+	/**
+	 * CSS : clear
+	 */
+	public static function getCSSZIndex(value:ZIndex):String
+	{
+		var cssZIndexValue:String;
+		
+		switch (value)
+		{
+			case ZIndex.cssAuto:
+				cssZIndexValue = "auto";
+				
+			case ZIndex.integer(value):
+				cssZIndexValue = Std.string(value);
+		}
+		
+		return cssZIndexValue;
 	}
 	
 	/**
@@ -1861,6 +1947,9 @@ class UnitManager
 				
 			case italic:
 				cssFontStyleValue = "italic";
+				
+			case oblique:
+				cssFontStyleValue = "obllique";
 		}
 		
 		return cssFontStyleValue;
@@ -2517,7 +2606,6 @@ class UnitManager
 	public static function getCSSColor(value:Color):String
 	{
 		var cssColor:String;
-		
 		switch (value)
 		{
 			case hex(value):
