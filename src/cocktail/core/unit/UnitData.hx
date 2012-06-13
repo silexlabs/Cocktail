@@ -132,6 +132,22 @@ enum FontSizeRelativeSize {
 }
 
 /**
+ * Lists of supported time dimensions
+ */
+enum TimeValue {
+	
+	/**
+	 * seconds
+	 */
+	seconds(value:Float);
+	
+	/**
+	 * Milliseconds. There are 1000 milliseconds in a second.
+	 */
+	milliSeconds(value:Float);
+}
+
+/**
  * Lists the different color format supported.
  * Each value describes one color
  */

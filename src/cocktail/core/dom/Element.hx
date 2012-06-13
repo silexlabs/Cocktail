@@ -8,6 +8,7 @@
 package cocktail.core.dom;
 
 import cocktail.core.dom.DOMData;
+import cocktail.core.html.HTMLElement;
 
 /**
  * The Element interface represents an element in an HTML or XML document.
@@ -31,6 +32,12 @@ class Element extends Node
 	 * used as tagName returns all the child elements
 	 */
 	private static inline var MATCH_ALL_TAG_NAME:String = "*";
+	
+	/**
+	 * The class attribute searched for
+	 * when using the getElementsByClassName
+	 */
+	private static inline var CLASS_ATTRIBUTE:String = "class";
 	
 	/**
 	 * The name of the element
@@ -130,7 +137,7 @@ class Element extends Node
 		{
 			attribute = new Attr(name);
 			_attributes.setNamedItem(attribute);
-			attribute.ownerElement = this;
+			attribute.ownerElement = cast(this);
 		}
 		
 		attribute.value = value;
@@ -146,11 +153,11 @@ class Element extends Node
 	 */
 	public function getAttributeNode(name:String):Attr
 	{
-		var attribute:Node = _attributes.getNamedItem(name);
+		var attribute:Attr = cast(_attributes.getNamedItem(name));
 		
 		if (attribute != null)
 		{
-			return cast(attribute);
+			return attribute;
 		}
 		
 		return null;
@@ -168,7 +175,7 @@ class Element extends Node
 	 */
 	public function setAttributeNode(newAttr:Attr):Attr
 	{
-		newAttr.ownerElement = this;
+		newAttr.ownerElement = cast(this);
 		return cast(_attributes.setNamedItem(newAttr));
 	}
 	
@@ -202,7 +209,7 @@ class Element extends Node
 	 * Attr node. Use the value false for the parameter isId to
 	 * undeclare an attribute for being a user-determined ID attribute. 
 	 * 
-	 * TODO : implement schemaTypeInfo
+	 * TODO 5 : implement schemaTypeInfo
 	 * 
 	 * @param	name The name of the attribute.
 	 * @param	isId Whether the attribute is a of type ID.
@@ -214,7 +221,7 @@ class Element extends Node
 		{
 			idAttribute = new Attr(name);
 			_attributes.setNamedItem(idAttribute);
-			idAttribute.ownerElement = this;
+			idAttribute.ownerElement = cast(this);
 		}
 		
 		idAttribute.isId = isId;
@@ -257,13 +264,32 @@ class Element extends Node
 	 * Returns a NodeList of all descendant
 	 * Elements with a given tag name, in document order.
 	 * 
+	 * IMPORTANT : return array of HTMLElement because of haxe JS
+	 * 
 	 * @param	tagName The name of the tag to match on. The special value "*" matches all tags.
 	 * @return	A list of matching Element nodes.
 	 */
-	public function getElementsByTagName(tagName:String):Array<Node>
+	public function getElementsByTagName(tagName:String):Array<HTMLElement>
 	{
-		var elements:Array<Node> = new Array<Node>();
-		doGetElementsByTagName(this, tagName, elements);
+		var elements:Array<HTMLElement> = new Array<HTMLElement>();
+		doGetElementsByTagName(cast(this), tagName, elements);
+		return elements;
+	}
+	
+	/**
+	 * Returns a set of elements which have all the given class names.
+	 * 
+	 * IMPORTANT : return array of HTMLElement because of haxe JS
+	 * 
+	 * @param	className the class name to match. If it is a list of class names
+	 * separated by spaces, it returns only the elements which matches all the class
+	 * names
+	 * @return A list of matching Element nodes.
+	 */
+	public function getElementsByClassName(className:String):Array<HTMLElement>
+	{
+		var elements:Array<HTMLElement> = new Array<HTMLElement>();
+		doGetElementsByClassName(cast(this), className, elements);
 		return elements;
 	}
 	
@@ -275,13 +301,14 @@ class Element extends Node
 	 * do get the matching child elements by 
 	 * traversing the DOM tree recursively
 	 */
-	private function doGetElementsByTagName(node:Node, tagName:String, elements:Array<Node>):Void
+	private function doGetElementsByTagName(node:HTMLElement, tagName:String, elements:Array<HTMLElement>):Void
 	{
 		if (node.hasChildNodes() == true)
 		{
-			for (i in 0...node.childNodes.length)
+			var length:Int = node.childNodes.length;
+			for (i in 0...length)
 			{
-				var childNode:Node = node.childNodes[i];
+				var childNode:HTMLElement = cast(node.childNodes[i]);
 				
 				//if matching tagName, push child node
 				if (childNode.nodeName == tagName)
@@ -299,6 +326,45 @@ class Element extends Node
 		}
 	}
 	
+	/**
+	 * do get the matching child elements by 
+	 * traversing the DOM tree recursively
+	 */
+	private function doGetElementsByClassName(node:HTMLElement, className:String, elements:Array<HTMLElement>):Void
+	{
+		if (node.hasChildNodes() == true)
+		{
+			var length:Int = node.childNodes.length;
+			for (i in 0...length)
+			{
+				var childNode:HTMLElement = cast(node.childNodes[i]);
+				switch (childNode.nodeType)
+				{
+					case Node.ELEMENT_NODE:
+						var elementNode:HTMLElement = childNode;
+						var elementClassName:String = elementNode.getAttribute(CLASS_ATTRIBUTE);
+						if (elementClassName != null)
+						{
+							var elementClassNames:Array<String> = elementClassName.split(" ");
+							
+							var foundFlag:Bool = false;
+							for (j in 0...elementClassNames.length)
+							{
+								if (elementClassNames[j] == className && foundFlag == false)
+								{
+									elements.push(elementNode);
+									foundFlag = true;
+								}
+							}
+						}
+				}
+				
+				doGetElementsByClassName(childNode, className, elements);
+			}
+		}
+	}
+
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -307,8 +373,6 @@ class Element extends Node
 	{
 		return _attributes.length > 0;
 	}
-	
-
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SETTERS/GETTERS
@@ -324,7 +388,7 @@ class Element extends Node
 		return Node.ELEMENT_NODE;
 	}
 	
-	override private function get_attributes():NamedNodeMap 
+	override private function get_attributes():NamedNodeMap
 	{
 		return _attributes;
 	}
@@ -346,7 +410,8 @@ class Element extends Node
 		}
 		else
 		{
-			for (i in 0..._childNodes.length)
+			var length:Int = _childNodes.length;
+			for (i in 0...length)
 			{
 				if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
 				{
@@ -371,7 +436,8 @@ class Element extends Node
 		}
 		else
 		{
-			for (i in _childNodes.length...0)
+			var length:Int = _childNodes.length;
+			for (i in length...0)
 			{
 				if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
 				{
@@ -431,7 +497,8 @@ class Element extends Node
 	{
 		var childElementCount:Int = 0;
 		
-		for (i in 0..._childNodes.length)
+		var length:Int = _childNodes.length;
+		for (i in 0...length)
 		{
 			if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
 			{

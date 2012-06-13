@@ -13,8 +13,6 @@
 
 package org.intermedia.model;
 
-////import cocktail.Cocktail;
-//import cocktail.resource.ResourceLoaderManager;
 import haxe.Http;
 import org.intermedia.model.ApplicationModel;
 
@@ -58,14 +56,12 @@ class XmlLoader
 	{
 		var fullUrl:String = "";
 		
-		// if application is offline, access local url feed
-		if (!_online) fullUrl = xmlUrl;
-		// otherwise access online feed using silexlabs proxy
-		else fullUrl = "http://demos.silexlabs.org/cocktail/simple-webapp/XmlProxy.php?url=" + StringTools.urlEncode(xmlUrl);
-		
+		// build feed's full url
+		fullUrl = "http://demos.silexlabs.org/cocktail/simple-webapp/XmlProxy.php?url=" + StringTools.urlEncode(xmlUrl);
+
 		// try to load the xml feed using a Silex labs proxy
-		try {
-			//ResourceLoaderManager.loadString( fullUrl, function (xml:String) { onXmlLoaded(listId, xml); }, onXmlError);
+		try
+		{
 			var httpRequest:Http = new Http(fullUrl);
 			httpRequest.onData = function (xml:String) { onXmlLoaded(listId, xml); };
 			httpRequest.onError = onXmlError;

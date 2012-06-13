@@ -12,15 +12,19 @@ package cocktail;
  */
 
 typedef Image = cocktail.core.html.HTMLImageElement;
+typedef Video = cocktail.core.html.HTMLVideoElement;
 typedef HtmlDom = cocktail.core.html.HTMLElement;
 typedef Anchor = cocktail.core.html.HTMLAnchorElement;
 typedef Body = cocktail.core.html.HTMLBodyElement;
 typedef Style = cocktail.core.style.adapter.Style;
-typedef Window = cocktail.core.window.AbstractWindow;
-typedef Document = cocktail.core.html.AbstractHTMLDocument;
+typedef Window = cocktail.core.window.Window;
+typedef Document = cocktail.core.html.HTMLDocument;
+typedef FormElement = cocktail.core.html.HTMLInputElement;
 
-//TODO : how to match also keyboard event ? In Haxe JS, mouse
-//and keyboard info are mixed
-typedef Event = cocktail.core.event.MouseEvent;
+//TODO : problem as for mouse event, have to use untyped
+typedef Event = cocktail.core.event.Event;
+typedef CustomEvent = cocktail.core.event.CustomEvent;
+typedef MouseEvent = cocktail.core.event.MouseEvent;
 
 typedef XMLHTTPRequest = cocktail.core.resource.XMLHTTPRequest;
+typedef HtmlCollection<Dynamic> = Array<Dynamic>;

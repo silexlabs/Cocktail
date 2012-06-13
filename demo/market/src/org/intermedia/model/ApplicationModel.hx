@@ -1,4 +1,5 @@
 package org.intermedia.model;
+import org.intermedia.Settings;
 
 /**
  * Load and hold the RSS data. Notifies the view when a change occurs
@@ -20,11 +21,6 @@ class ApplicationModel
 	// Called when there was a loading error
 	public var onModelDataLoadError:Dynamic->Void;
 	
-	/*public function onModelDataLoadError(error:Dynamic):Void
-	{
-		trace("Error while loading model: " + Std.string(error));
-	}*/
-	
 	// Called when the loading starts
 	public var onModelStartsLoading:Void->Void;
 	
@@ -37,27 +33,22 @@ class ApplicationModel
 	// Store a reference to each loaded DetailData
 	private var _loadedDetailData : Array<DetailData>;
 	
-	// online/offline switch
-	private var _online:Bool;
-
-	static inline var CELL_QTY:Int = 10;
+	static inline var CELL_QTY:Int = 15;
 
 	public function new() 
 	{
-		// init online switch
-		_online = false;
-		
 		// initialise private attributes
 		_loadedCellsData = new Array<CellData>();
 		_loadedDetailData = new Array<DetailData>();
-		_dataLoader = new DataLoader(_online);
+		
+		// init _dataLoader with online switch
+		_dataLoader = new DataLoader(Settings.ONLINE);
 	}
 	
 	/**
 	 * Calls onModelStartsLoading, then calls load() on the DataLoader with the right number of cell to load
 	 * @param	numberOfCellsToLoad
 	 */
-	//public function loadCellData():Void
 	public function loadCellData(feed:String):Void
 	{
 		// if first data loading is occuring
@@ -71,8 +62,6 @@ class ApplicationModel
 		}
 		
 		// Calls load() on the DataLoader with the right number of cell to load
-		//_dataLoader.srcCellData(numberOfCellsToLoad,onCellsDataLoadComplete, onModelDataLoadError);
-		//_dataLoader.srcCellData(CELL_QTY,onCellsDataLoadComplete, onModelDataLoadError);
 		_dataLoader.loadCellData(feed, CELL_QTY,onCellsDataLoadComplete, onModelDataLoadError);
 	}
 	
@@ -96,7 +85,6 @@ class ApplicationModel
 	 * Call onModelCellDataLoaded with the cellData array
 	 * @param	cellsData
 	 */
-	//private function onCellsDataLoadComplete(cellsData:Array<CellData>):Void
 	private function onCellsDataLoadComplete(listData:ListData):Void
 	{
 		// reset _loadedCellsData
@@ -111,7 +99,6 @@ class ApplicationModel
 		// call onModelCellDataLoaded (if initialised) with _loadedCellsData as parameters
 		if (onModelCellDataLoaded != null)
 		{
-			//onModelCellDataLoaded(_loadedCellsData);
 			onModelCellDataLoaded(listData);
 		}
 
@@ -139,14 +126,6 @@ class ApplicationModel
  * Holds Title, author, thumbUrl...
  * Could also use a Hash with the id a key for faster search
  */
-//typedef	CellData =
-//{
-	//var id:Int;
-	//var title:String;
-	//var author:String;
-	//var thumbUrl:String;
-	//var category:String;
-//}
 typedef	CellData =
 {
 	var id:Int;
@@ -181,8 +160,6 @@ typedef ListData =
 	var cells:Array<CellData>;
 }
 
-//typedef ListData = Hash<Array<CellData>>;
-
 /**
  * Size defines the size of a dom
  */
@@ -191,4 +168,3 @@ typedef Size =
 	var width:Int;
 	var height:Int;
 }
-

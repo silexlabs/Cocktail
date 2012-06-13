@@ -7,9 +7,9 @@
 */
 package cocktail.core.style;
 
+import cocktail.core.event.TransitionEvent;
 import cocktail.core.FontManager;
 import cocktail.core.geom.Matrix;
-import cocktail.core.NativeElement;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.style.computer.BackgroundStylesComputer;
@@ -29,50 +29,25 @@ import cocktail.core.style.computer.DisplayStylesComputer;
 import cocktail.core.style.computer.FontAndTextStylesComputer;
 import cocktail.core.style.computer.VisualEffectStylesComputer;
 import cocktail.core.style.formatter.FormattingContext;
+import cocktail.core.style.transition.Transition;
+import cocktail.core.style.transition.TransitionManager;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.renderer.EmbeddedBoxRenderer;
-import cocktail.core.renderer.FlowBoxRenderer;
 import cocktail.core.renderer.LayerRenderer;
 import cocktail.core.unit.UnitManager;
-import cocktail.core.Window;
 import cocktail.core.font.FontData;
 import haxe.Log;
 import haxe.Timer;
+import cocktail.core.style.ComputedStyle;
+import cocktail.core.renderer.RendererData;
 
 /**
  * This is the base class for all Style classes. Style classes
- * are in charge of storing the style value for a HTMLElement
- * and applying them.
- * 
- * This class holds a reference to the styled HTMLElement.
- * 
- * During the layout, a rendering tree, paralleling the DOM tree
- * is built. The rendering tree contains objects of type
- * ElementRenderer. For instance, a ContainerCoreStyle with Text node
- * children will build a tree containing TextRenderer and BlockBoxRenderer
- * or InlineBoxRenderer.
- * Those objects know how to render themselves.
- * 
- * Styling is done in 2 phases : 
- * - first the styles of the HTMLElement are computed into
- * usable values, for instance values defined as percentage
- * are converted to absolute values. During this phase, an
- * abstract rendering tree of the element is built
- * - once all the styles are computed and the rendering tree is ready, it
- * renders itself
- * 
- * This class implements the default behaviour of an embedded HTMLElement
- * 
- * TODO IMPORTANT : eventually, this class and its subclasses should be merged
- * with the classes of the renderer package as there is a lot of common code
- * between the 2. This way, we can follow the same pattern as webkit with :
-	 * A DOM tree with the HTMLElement who ows the rendering tree
-	 * A rendering tree with the ElementRender classes merged with the CoreStyle classes, in
-	 * charge of the layout and of rendering themselves
-	 * A layer tree, in charge of rendering each layer of the rendering tree in the right order
+ * are in charge of storing the style value for an HTMLElement
+ * and computing them into usable values. For instance values
+ * defined as percentage are converted to absolute pixel values.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -97,6 +72,9 @@ class CoreStyle
 	
 	private var _clear:Clear;
 	public var clear(getClear, setClear):Clear;
+	
+	private var _zIndex:ZIndex;
+	public var zIndex(getZIndex, setZIndex):ZIndex;
 	
 	private var _transformOrigin:TransformOrigin;
 	public var transformOrigin(getTransformOrigin, setTransformOrigin):TransformOrigin;
@@ -241,6 +219,21 @@ class CoreStyle
 	private var _cursor:Cursor;
 	public var cursor(getCursor, setCursor):Cursor;
 	
+	/**
+	 * transition styles
+	 */
+	private var _transitionProperty:TransitionProperty;
+	public var transitionProperty(getTransitionProperty, setTransitionProperty):TransitionProperty;
+	
+	private var _transitionDuration:TransitionDuration;
+	public var transitionDuration(getTransitionDuration, setTransitionDuration):TransitionDuration;
+	
+	private var _transitionDelay:TransitionDelay;
+	public var transitionDelay(getTransitionDelay, setTransitionDelay):TransitionDelay;
+	
+	private var _transitionTimingFunction:TransitionTimingFunction;
+	public var transitionTimingFunction(getTransitionTimingFunction, setTransitionTimingFunction):TransitionTimingFunction;
+	
 	////////////////////////////////
 	
 	/**
@@ -248,16 +241,9 @@ class CoreStyle
 	 * For example, if a size is set as a percentage, it will
 	 * be stored once computed to pixels into this structure
 	 */
-	private var _computedStyle:ComputedStyleData;
-	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyleData;
-	
-	/**
-	 * A reference to the HTMLElement to which these styles
-	 * apply
-	 */
-	private var _htmlElement:HTMLElement;
-	public var htmlElement(get_htmlElement, never):HTMLElement;
-	
+	private var _computedStyle:ComputedStyle;
+	public var computedStyle(get_computedStyle, set_computedStyle):ComputedStyle;
+		
 	/**
 	 * Returns metrics info for the currently defined
 	 * font and font size. Used in inline formatting context
@@ -265,55 +251,44 @@ class CoreStyle
 	 * position
 	 */
 	private var _fontMetrics:FontMetricsData;
-	public var fontMetrics(getFontMetricsData, never):FontMetricsData;
+	public var fontMetrics(get_fontMetricsData, never):FontMetricsData;
 	
 	/**
-	 * determine wether the HTMLElement is currently being
-	 * laid out, in which case it won't take any subsequent
-	 * layout request into account
+	 * Store a reference to the styled HTMLElement
 	 */
-	private var _isLayingOut:Bool;
-	
-	/**
-	 * A reference to the rendering tree node created by this
-	 * DOM tree node
-	 */
-	private var _elementRenderer:ElementRenderer;
-	public var elementRenderer(getElementRenderer, never):ElementRenderer;
+	private var _htmlElement:HTMLElement;
+	public var htmlElement(get_htmlElement, never):HTMLElement;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Class constructor. Stores the target HTMLElement.
-	 * Init the class attributes
-	 * 
-	 * The style is invalid by default and will be updated
-	 * when the HTMLElement is added to the DOM.
+	 * Class constructor. Set default values
+	 * for styles
 	 */
 	public function new(htmlElement:HTMLElement) 
 	{
-		this._htmlElement = htmlElement;
-		this._isLayingOut = false;
-		
-		initDefaultStyleValues();
+		_htmlElement = htmlElement;
+		initDefaultStyleValues(htmlElement.tagName);
 	}
 	
 	/**
-	 * Init the standard default value for styles
+	 * Init the standard default value for styles,
+	 * using the tag name of the styled HTMLElement
 	 */
-	private function initDefaultStyleValues():Void
+	private function initDefaultStyleValues(tagName:String):Void
 	{
+		_computedStyle = new ComputedStyle(this);
 		initComputedStyles();
 		
-		_width = Dimension.cssAuto;
-		_height = Dimension.cssAuto;
+		_width = getWidthDefaultValue();
+		_height = getHeightDefaultValue();
 		
-		_minWidth = ConstrainedDimension.length(px(0));
-		_maxWidth = ConstrainedDimension.none;
-		_minHeight = ConstrainedDimension.length(px(0));
-		_maxHeight = ConstrainedDimension.none;
+		_minWidth = getMinWidthDefaultValue();
+		_maxWidth = getMaxWidthDefaultValue();
+		_minHeight = getMinHeightDefaultValue();
+		_maxHeight = getMaxHeightDefaultValue();
 		
 		_marginTop = Margin.length(px(0));
 		_marginBottom = Margin.length(px(0));
@@ -330,6 +305,8 @@ class CoreStyle
 		
 		_display = Display.cssInline;
 		_position = Position.cssStatic;
+		
+		_zIndex = ZIndex.cssAuto;
 		
 		_top = PositionOffset.cssAuto;
 		_bottom = PositionOffset.cssAuto;
@@ -374,6 +351,11 @@ class CoreStyle
 		_overflowX = Overflow.visible;
 		_overflowY = Overflow.visible;
 		
+		_transitionDelay = [TimeValue.seconds(0)];
+		_transitionDuration = [TimeValue.seconds(0)];
+		_transitionProperty = TransitionProperty.all;
+		_transitionTimingFunction = [TransitionTimingFunctionValue.ease];
+		
 		_transformOrigin = {
 			x:TransformOriginX.center,
 			y:TransformOriginY.center
@@ -387,66 +369,15 @@ class CoreStyle
 		_fontFamily = defaultStyles.fontFamily;
 		_color = defaultStyles.color;
 		
-		applyDefaultHTMLStyles();
+		applyDefaultHTMLStyles(tagName);
 	}
 	
 	/**
 	 * reset/init the computed style structures
 	 */
-	private function initComputedStyles():Void
+	public function initComputedStyles():Void
 	{
-		 _computedStyle = {
-			width : 0,
-			height : 0,
-			minHeight : 0,
-			maxHeight : 0,
-			minWidth : 0,
-			maxWidth : 0,
-			marginLeft : 0,
-			marginRight : 0,
-			marginTop : 0,
-			marginBottom : 0,
-			paddingLeft : 0,
-			paddingRight : 0,
-			paddingTop : 0,
-			paddingBottom : 0,
-			left: 0,
-			right: 0,
-			top: 0,
-			bottom : 0,
-			clear : Clear.none,
-			cssFloat : CSSFloat.none,
-			display : Display.block,
-			position: Position.cssStatic,
-			verticalAlign : 0.0,
-			fontSize:16.0,
-			lineHeight:14.0,
-			fontWeight:FontWeight.normal,
-			fontStyle:FontStyle.normal,
-			fontFamily:["serif"],
-			fontVariant:FontVariant.normal,
-			textTransform:TextTransform.none,
-			letterSpacing:0,
-			wordSpacing:0,
-			textIndent:0,
-			whiteSpace:WhiteSpace.normal,
-			textAlign:TextAlign.left,
-			color:{color:0, alpha:1.0},
-			visibility:true,
-			opacity:1.0,
-			overflowX: Overflow.visible,
-			overflowY: Overflow.visible,
-			transformOrigin: { x:0.0, y:0.0 },
-			transform:new Matrix(),
-			backgroundColor:{color:0, alpha:1.0},
-			backgroundSize:[],
-			backgroundOrigin:[],
-			backgroundImage:[],
-			backgroundClip:[],
-			backgroundPosition:[],
-			backgroundRepeat:[],
-			cursor:Cursor.cssDefault
-		};
+		_computedStyle.init();
 	}
 	
 	/**
@@ -466,18 +397,29 @@ class CoreStyle
 	 * Apply the standard default CSS value according to this
 	 * document : http://www.w3.org/TR/CSS21/sample.html
 	 * 
-	 * TODO : This method should eventually be removed when a StyleManager
+	 * TODO 5 : This method should eventually be removed when a StyleManager
 	 * is introduced which will prevent those styles from being hard-coded
+	 * 
+	 * TODO 4 : use HTMLConstants
 	 */
-	private function applyDefaultHTMLStyles():Void
+	private function applyDefaultHTMLStyles(tagName:String):Void
 	{
-		switch (_htmlElement.tagName)
+		switch (tagName.toLowerCase())
 		{
 			case "html", "adress",
 			"dd", "div", "dl", "dt", "fieldset",
-			"form", "frame", "frameset", "noframes", "ol", "ul",
+			"form", "frame", "frameset", "noframes", "ol",
 			"center", "dir", "hr", "menu" :
 				_display = Display.block;
+				
+			//TODO 5 : should be replaced by list-item once implemented	
+			case "li" :
+				_display = Display.block;
+				
+			case "ul":
+				_display = Display.block;
+				_marginTop = _marginBottom = Margin.length(em(1.12));
+				_marginLeft = Margin.length(px(40));
 				
 			case "head" :	
 				_display = Display.none;
@@ -564,330 +506,72 @@ class CoreStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE RENDERING METHODS
+	// PUBLIC STATIC DEFAULT STYLES METHODS
+	// Those methods returns the default value for each CSS style
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Create and return the right ElementRenderer for this HTMLElement
-	 */
-	private function createElementRenderer(parentElementRenderer:FlowBoxRenderer):ElementRenderer
-	{
-		var elementRenderer:ElementRenderer = new EmbeddedBoxRenderer(cast(this));
-		elementRenderer.layerRenderer = getLayerRenderer(elementRenderer, parentElementRenderer);
-		
-		parentElementRenderer.appendChild(elementRenderer);
-		
-		return elementRenderer;
-	}
-	
-	/**
-	 * An ElementRenderer can either create a new layer to render its children or
-	 * use the one of its parent. 
-	 */
-	private function getLayerRenderer(elementRenderer:ElementRenderer, parentElementRenderer:ElementRenderer):LayerRenderer
-	{
-		var layerRenderer:LayerRenderer;
-		
-		//positioned elements always create a new layer
-		if (isPositioned() == true)
-		{
-			layerRenderer = new LayerRenderer(elementRenderer);
-		}
-		else
-		{
-			layerRenderer = parentElementRenderer.layerRenderer;
-		}
-		
-		return layerRenderer;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * This method is in charge of laying out an HTMLElement which consist in computing its styles (box model, font, text...)
-	 * into usable values and determining the bounds of its corresponding ElementRenderer in its containing block space.
-	 * 
-	 * This method is called recursively on every children of the HTMLElement if it has any to layout all of the rendering tree.
-	 * 
-	 * After this method was called, each ElementRenderer in the rendering tree is aware of its bounds relative to
-	 * its containing block which is the HTMLElement which started the formatting context used to layout the ElementRenderer
-	 * 
-	 * @param	containingHTMLElementData the dimensions of the parent HTMLElement used to layout this
-	 * HTMLElement. for instance if this HTMLElement has a width style of 'auto', it will use the width
-	 * of its containing HTMLElement
-	 * @param	viewportData a reference to the dimensions of the viewport of the document. When laying out a fixed positioned HTMLElement
-	 * (a HTMLElement with a 'position' style of 'fixed'), its dimensions are used as containing dimensions
-	 * @param	lastPositionedHTMLElementData the dimensions of the first ancestor HTMLElement in the hierararchy which is 'positioned', meaning that
-	 * it has a 'position' other than 'static'. When laying out an absolutelty positioned HTMLElement ( a HTMLElement with a 'position' style
-	 * of 'absolute'), it it used as containing dimensions. It also contains a reference to each absolutely positioned ElementRenderer for whom
-	 * it is the first positioned ancestor
-	 * @param   containingHTMLElementFontMetricsData the font metrics of the containing block parent which might be necessary to compute some styles.
-	 * For instance, style defined with a length using the 'em' value will refer to the computed font size of the containing parent
-	 * @param	formattingContext The formatting context used by the parent HTMLElement. Can be an inline or block formatting context.
-	 * @param parentElementRenderer the parent node in the rendering tree
-	 */
-	public function layout(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext, parentElementRenderer:FlowBoxRenderer):Void
-	{		
-		//the ElementRenderer removes itself from the parent if necessary as the new layout
-		//will create a new rendering tree
-		//
-		//TODO : shouldn't be necessary to remove and recreate ElementRenderer anymore
-		if (_elementRenderer != null && parentElementRenderer != null)
-		{
-			parentElementRenderer.removeChild(_elementRenderer);
-		}
-		
-		//do nothing if the HTMLElement must not be displayed, i.e, added
-		//to the DOM
-		if (isDisplayed() == false)
-		{
-			return;
-		}
 
-		//reset the computed styles, useful for instance to
-		//reset an auto height to 0 if a layout has already
-		//occured which might create bugs in the computation of
-		//font and text styles which use the computed height value
-		initComputedStyles();
-		
-		//compute all the styles of a HTMLElement
-		computeHTMLElementStyles(containingHTMLElementData, viewportData, lastPositionedHTMLElementData.data, containingHTMLElementFontMetricsData);
-		
-		//the HTMLElement creates its own ElementRenderer
-		//
-		//TODO : should only be created/re-created when necessary, for instance
-		//after it is added to the DOM
-		_elementRenderer = createElementRenderer(parentElementRenderer);
-		
-		//layout all the children of the HTMLElement if it has any
-		layoutChildren(containingHTMLElementData, viewportData, lastPositionedHTMLElementData, containingHTMLElementFontMetricsData, formattingContext);
-		
-		//when all the dimensions of the htmlElement are known, compute the 
-		//visual effects to apply (visibility, opacity, transform)
-		//it is necessary to wait for all dimensions to be known because for
-		//instance the transform style use the height and width of the HTMLElement
-		//to determine the transformation center
-		computeVisualEffectStyles();
-		
-		//some text and font styles needs to be re-computed now that all the dimension
-		//of the HTMLElement are known, for instance some values of the VerticalAlign style
-		//might need those dimensions to compute the right values
-		//
-		//TODO : shouldn't have to re-compute all of the font and text styles
-		computeTextAndFontStyles(containingHTMLElementData, containingHTMLElementFontMetricsData);
-		
-		//compute the background styles which can be computed at this time,
-		//such as the background color, most of the background styles will be computed
-		//during the rendering
-		//
-		//TODO : check if its still necessary that they are only computed
-		//during rendering
-		computeBackgroundStyles();
-		
-		//insert the HTMLElement in the absolutely positioned array if it is itself absolutely positioned
-		//so that it can be positioned by its first positioned ancestor once it is laid out
-		//
-		//TODO : should happen instead in doFlowChildren of ContainerCoreStyle ?
-		insertAbsolutelyPositionedHTMLElementIfNecessary(formattingContext, lastPositionedHTMLElementData);
-		
-		
-		//The HTMLElement has been laid out and can now be laid out again
-		//if it changes
-		this._isLayingOut = false;
-	}
+	//TODO 2 : need to complete this and complete default styles in UnitManager
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Layout all the children of a HTMLElement if it has any
-	 */
-	private function layoutChildren(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:LastPositionedHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	public static function getBackgroundColorDefaultValue():BackgroundColor
 	{
-		
+		return BackgroundColor.transparent;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC ABSOLUTE POSITIONING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Position an absolutely positioned ElementRenderer (with a position style of 'fixed' or 'absolute')
-	 * using either the first positioned ancestor as reference or the viewport
-	 * 
-	 * TODO : tried to move it to ContainerCoreStyle but had problem has ElementRenderer
-	 * was passed by value instead of reference
-	 * 
-	 * @param lastPositionedHTMLElementData the dimensions of the first positioned ancestor
-	 * @param viewportData the dimensions of the viewport
-	 */
-	public function positionElement(lastPositionedHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData):Void
+	public static function getDisplayDefaultValue():Display
 	{
-		switch (_elementRenderer.coreStyle.computedStyle.position)
-		{	
-			//positioned 'fixed' HTMLElement, use the viewport
-			case fixed:
-				doPositionElement(_elementRenderer, viewportData);
-				
-			//positioned 'absolute' HTMLElement	
-			case absolute:
-				doPositionElement(_elementRenderer, lastPositionedHTMLElementData);
-			default:
-		}
+		return Display.cssInline;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE ABSOLUTE POSITIONING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Actually position the positioned ElementRenderer
-	 */
-	private function doPositionElement(elementRenderer:ElementRenderer, containingHTMLElementData:ContainingHTMLElementData):Void
+	public static function getPositionDefaultValue():Position
 	{
-		//for horizonal offset, if both left and right are not auto,
-		//left takes precedance so we try to apply left offset first
-		if (elementRenderer.coreStyle.left != PositionOffset.cssAuto)
-		{
-			elementRenderer.positionedOrigin.x = getLeftOffset(elementRenderer);
-		}
-		//if no left offset is defined, then try to apply a right offset.
-		//Right offset takes the containing HTMLElement width minus the
-		//width of the positioned children as value for a 0 right offset
-		else if (elementRenderer.coreStyle.right != PositionOffset.cssAuto)
-		{
-			elementRenderer.positionedOrigin.x = getRightOffset(elementRenderer, containingHTMLElementData.width);
-		}
-		//if both right and left are 'auto', then the HTMLElement is positioned to its
-		//static position, the position it would have had in the flow if it were positioned as 'static'.
-		//At this point the bounds of the ElementRenderer already matches its static position
-		
-		//for vertical offset, the same rule as horizontal offsets apply
-		if (elementRenderer.coreStyle.top != PositionOffset.cssAuto)
-		{
-			elementRenderer.positionedOrigin.y = getTopOffset(elementRenderer);
-		}
-		else if (htmlElement.coreStyle.bottom != PositionOffset.cssAuto)
-		{
-			elementRenderer.positionedOrigin.y = getBottomOffset(elementRenderer, containingHTMLElementData.height);
-		}
+		return Position.cssStatic;
 	}
 	
-	/**
-	 * get the left offset to apply the ElementRenderer
-	 */
-	private function getLeftOffset(elementRenderer:ElementRenderer):Int
+	public static function getWidthDefaultValue():Dimension
 	{
-		return elementRenderer.coreStyle.computedStyle.left + elementRenderer.coreStyle.computedStyle.marginLeft;
+		return Dimension.cssAuto;
 	}
 	
-	/**
-	 * get the right offset to apply the ElementRenderer
-	 */
-	private function getRightOffset(elementRenderer:ElementRenderer, containingHTMLElementWidth:Int):Int
+	public static function getHeightDefaultValue():Dimension
 	{
-		return containingHTMLElementWidth - elementRenderer.coreStyle.computedStyle.width + elementRenderer.coreStyle.computedStyle.paddingLeft
-		+ elementRenderer.coreStyle.computedStyle.paddingRight + elementRenderer.coreStyle.computedStyle.right - elementRenderer.coreStyle.computedStyle.marginRight;
+		return Dimension.cssAuto;
 	}
 	
-	/**
-	 * get the top offset to apply the ElementRenderer
-	 */
-	private function getTopOffset(elementRenderer:ElementRenderer):Int
+	public static function getMinHeightDefaultValue():ConstrainedDimension
 	{
-		return elementRenderer.coreStyle.computedStyle.top + elementRenderer.coreStyle.computedStyle.marginTop;
+		return ConstrainedDimension.length(px(0));
 	}
 	
-	/**
-	 * get the bottom offset to apply the ElementRenderer
-	 */
-	private function getBottomOffset(elementRenderer:ElementRenderer, containingHTMLElementHeight:Int):Int
+	public static function getMinWidthDefaultValue():ConstrainedDimension
 	{
-		return containingHTMLElementHeight - elementRenderer.coreStyle.computedStyle.height + elementRenderer.coreStyle.computedStyle.paddingTop +
-		elementRenderer.coreStyle.computedStyle.paddingBottom - elementRenderer.coreStyle.computedStyle.bottom;
+		return ConstrainedDimension.length(px(0));
 	}
 	
-	/**
-	 * Insert the HTMLElement's ElementRenderer in the array of absolutely positioned elements if it
-	 * in fact an absolutely positioned element
-	 */
-	private function insertAbsolutelyPositionedHTMLElementIfNecessary(formattingContext:FormattingContext, lastPositionedHTMLElementData:LastPositionedHTMLElementData):Void
+	public static function getMaxWidthDefaultValue():ConstrainedDimension
 	{
-		//don't do anything for static or relative positioned elements.
-		//Relative positioning is only an offset applied during rendering
-		if (isPositioned() == false || isRelativePositioned() == true)
-		{
-			return;
-		}
-		
-		//TODO : setting static position might not be always necessary, let formatting context decide ?
-		
-		//set the static position (the position of the HTMLElement
-		//if its position style were 'static' relative to its containing block).
-		//This static position is stored in the bounds of the ElementRenderer
-		//and use if left and right or top and bottom both are auto
-		//
-		//TODO : maybe instead of having a separate method, formatting context takes care of the static position
-		//and don't account for absolute positioned elements ?
-		formattingContext.setStaticPosition(_elementRenderer);
-		
-		//store as a positioned ElementRenderer.
-		//an absolutely positioned ElementRenderer is not positioned right away, it must
-		//wait for its first positioned ancestor to be laid out. The reason is that
-		//if the positioned ancestor height is 'auto', the height of the positioned
-		//ancestor is not yet determined and so this ElementRenderer can't be positioned
-		//using the bottom or right style yet. Once the first ancestor is laid out, it
-		//position all the stored positioned children
-		
-		//store the ElementRenderer to be positioned later
-		lastPositionedHTMLElementData.elements.push(_elementRenderer);
-		
+		return ConstrainedDimension.none;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC INVALIDATION METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Called when the value of a style that require
-	 * a re-layout (such as width, height, display...) is
-	 * changed.
-	 * 
-	 * An invalidated HTMLElement will in turn invalidate its
-	 * parent and so on until the root HTMLBodyElement is invalidated.
-	 * The root HTMLBodyElement will then layout itself, laying out
-	 * at the same time all its invalidated children.
-	 * 
-	 * A layout can be immediate or scheduled asynchronously, which
-	 * increase preformance when many style value are set in a 
-	 * row as the layout only happen once
-	 */
-	public function invalidate(immediate:Bool = false):Void
+	public static function getMaxHeightDefaultValue():ConstrainedDimension
 	{
-		//only invalidate the parent if it isn't
-		//already being laid out or if an immediate layout is required
-		if (this._isLayingOut == false || immediate == true)
-		{
-			//set the layout flag to prevent multiple
-			//layout of the HTMLElement in a row
-			//The HTMLElement will be able to be invalidated
-			//again once it has been laid out
-			this._isLayingOut = true;
-			
-			//if the HTMLElement doesn't have a parent, then it
-			//is not currently added to the DOM and doesn't require
-			//a layout
-			if (this._htmlElement.parentNode != null)
-			{
-				var parent:HTMLElement = cast(_htmlElement.parentNode);
-				parent.coreStyle.invalidate(immediate);	
-			}
-		}
+		return ConstrainedDimension.none;
 	}
-
+	
+	public static function getMarginDefaultValue():Margin
+	{
+		return Margin.length(px(0));
+	}
+	
+	public static function getPaddingDefaultValue():Padding
+	{
+		return Padding.length(px(0));
+	}
+	
+	public static function getLineHeightDefaultValue():LineHeight
+	{
+		return LineHeight.normal;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC COMPUTING METHODS
 	// compute styles definition into usable values
@@ -897,52 +581,25 @@ class CoreStyle
 	 * This method computes the styles determing
 	 * the HTMLElement's layout scheme :
 	 * position, display, float and clear.
-	 * 
-	 * It is public as it may be called by the
-	 * ContainerCoreStyle of the parent HTMLElement
-	 * which may need to known the display style of its
-	 * children to determine which type of formatting context
-	 * to establish for its children
 	 */
 	public function computeDisplayStyles():Void
 	{
 		DisplayStylesComputer.compute(this);
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE COMPUTING METHODS
-	// compute styles definition into usable values
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
 	 * Computes the styles determining the background
-	 * color, images... of a HTMLElement
+	 * color, images... of an HTMLElement
 	 */
-	private function computeBackgroundStyles():Void
+	public function computeBackgroundStyles():Void
 	{
 		BackgroundStylesComputer.compute(this);
 	}
 	
 	/**
-	 * Compute first the styles determining the HTMLElement's
-	 * positioning scheme (position, float, clear...),
-	 * the style detemining font and text display,
-	 * then the styles determining its box model (width, height, margins
-	 * paddings...) which are computed last because they may use
-	 * some font metrics to compute the box model, for instance
-	 * when a dimension is defined with an 'em' unit
+	 * Compute the visual effect styles (opacity, visibility, transformations, transition)
 	 */
-	private function computeHTMLElementStyles(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
-	{
-		computeDisplayStyles();
-		computeTextAndFontStyles(containingHTMLElementData, containingHTMLElementFontMetricsData);
-		computeBoxModelStyles(containingHTMLElementData, viewportData, lastPositionedHTMLElementData);
-	}
-	
-	/**
-	 * Compute the visual effect styles (opacity, visibility, transformations)
-	 */
-	private function computeVisualEffectStyles():Void
+	public function computeVisualEffectStyles():Void
 	{
 		VisualEffectStylesComputer.compute(this);
 	}
@@ -950,52 +607,108 @@ class CoreStyle
 	/**
 	 * Computes the HTMLElement font and text styles (font size, font name, text color...)
 	 */
-	private function computeTextAndFontStyles(containingHTMLElementData:ContainingHTMLElementData, containingHTMLElementFontMetricsData:FontMetricsData):Void
+	public function computeTextAndFontStyles(containingBlockData:ContainingBlockData, containingBlockFontMetricsData:FontMetricsData):Void
 	{
-		FontAndTextStylesComputer.compute(this, containingHTMLElementData, containingHTMLElementFontMetricsData);
+		FontAndTextStylesComputer.compute(this, containingBlockData, containingBlockFontMetricsData);
 	}
 	
 	/**
 	 * Compute the box model styles (width, height, paddings, margins...) of the HTMLElement, based on
 	 * its positioning scheme
 	 */ 
-	private function computeBoxModelStyles(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:ContainingHTMLElementData):Void
+	public function computeBoxModelStyles(containingBlockDimensions:ContainingBlockData, isReplaced:Bool):Void
 	{
-		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
-		
-		//get the right containing dimensions. For example,
-		//for a HTMLElement with a 'position' style of 'absolute',
-		//it is the last positioned HTMLElement
-		var containingBlockDimensions:ContainingHTMLElementData = getContainingHTMLElementData(containingHTMLElementData, viewportData, lastPositionedHTMLElementData );
+		var boxComputer:BoxStylesComputer = getBoxStylesComputer(isReplaced);
 		
 		//do compute the box model styles
 		boxComputer.measure(this, containingBlockDimensions);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE COMPUTING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
-	 * instantiate the right box computer class
-	 * based on the HTMLElement's positioning
-	 * scheme
-	 * 
-	 * TODO : should the default be embedded box ?
+	 * Return the right class used to compute the box model
+	 * styles
+	 * @param	isReplaced wether the HTMLElement whose styles are computed
+	 * is replaced
 	 */
-	private function getBoxStylesComputer():BoxStylesComputer
+	private function getBoxStylesComputer(isReplaced:Bool):BoxStylesComputer
+	{
+		if (isReplaced == true)
+		{
+			return getReplacedBoxStylesComputer();
+		}
+		else
+		{
+			return getFlowBoxStylesComputer();
+		}
+	}
+		
+	/**
+	 * Return box style computer for container box
+	 */
+	private function getFlowBoxStylesComputer():BoxStylesComputer
+	{
+		var boxComputer:BoxStylesComputer;
+				
+		//get the box computer for float
+		if (_computedStyle.cssFloat == CSSFloat.left || _computedStyle.cssFloat == CSSFloat.right)
+		{
+			boxComputer = new FloatBoxStylesComputer();
+		}
+		
+		//get it for HTMLElement with 'position' value of 'absolute' or 'fixed'
+		else if (_computedStyle.position == fixed || _computedStyle.position == absolute)
+		{
+			boxComputer = new PositionedBoxStylesComputer();
+		}
+		
+		//else get the box computer based on the display style
+		else
+		{
+			switch(this.computedStyle.display)
+			{
+				case block:
+					boxComputer = new BlockBoxStylesComputer();
+					
+				case inlineBlock:
+					boxComputer = new InlineBlockBoxStylesComputer();
+				
+				//not supposed to happen
+				case none:
+					
+					boxComputer = null;
+				
+				case cssInline:
+					boxComputer = new InLineBoxStylesComputer();
+			}
+		}
+		
+		return boxComputer;
+	}
+	
+	/**
+	 * Return box style computer for replaced box
+	 */
+	private function getReplacedBoxStylesComputer():BoxStylesComputer
 	{
 		var boxComputer:BoxStylesComputer;
 		
 		//get the embedded box computers based on
 		//the positioning scheme
-		if (isFloat() == true)
+		if (_computedStyle.cssFloat == CSSFloat.left || _computedStyle.cssFloat == CSSFloat.right)
 		{
 			boxComputer = new EmbeddedFloatBoxStylesComputer();
 		}
-		else if (isPositioned() == true && isRelativePositioned() == false)
+		else if (_computedStyle.position == fixed || _computedStyle.position == absolute)
 		{
 			boxComputer = new EmbeddedPositionedBoxStylesComputer();
 		}
 		else
 		{
-			switch(this._computedStyle.display)
+			switch(this.computedStyle.display)
 			{
 				case block:
 					boxComputer = new EmbeddedBlockBoxStylesComputer();
@@ -1015,330 +728,201 @@ class CoreStyle
 		return boxComputer;
 	}
 	
-	/**
-	 * Get the right containing parent dimensions for an HTMLElement
-	 * based on its position style value
-	 */
-	private function getContainingHTMLElementData(containingHTMLElementData:ContainingHTMLElementData, viewportData:ContainingHTMLElementData, lastPositionedHTMLElementData:ContainingHTMLElementData):ContainingHTMLElementData
-	{
-		var containingBlockDimensions:ContainingHTMLElementData;
-		
-		switch (_computedStyle.position)
-		{
-			//for 'fixed' HTMLElement, takes the viewport (the 'window' through which the document is viewed)
-			case fixed:
-				containingBlockDimensions = {
-					width:viewportData.width,
-					height:viewportData.height,
-					isHeightAuto:viewportData.isHeightAuto,
-					isWidthAuto:viewportData.isWidthAuto };
-					
-			//for 'absolute' takes the first positioned ancestor
-			case absolute:
-				containingBlockDimensions = {
-					width:lastPositionedHTMLElementData.width,
-					height:lastPositionedHTMLElementData.height,
-					isHeightAuto:lastPositionedHTMLElementData.isHeightAuto,
-					isWidthAuto:lastPositionedHTMLElementData.isWidthAuto};
-				
-			//for 'static' or 'relative' HTMLElement, takes the containing HTMLElement dimensions which is the parent		
-			case cssStatic, relative:
-				containingBlockDimensions = containingHTMLElementData;
-				
-		}
-		
-		return containingBlockDimensions;
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC HELPER METHODS
+	// PRIVATE INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Determine if the HTMLElement is a floated
-	 * HTMLElement. A floated HTMLElement is first
-	 * placed in the flow then moved to the
-	 * left-most or right-most of its container.
-	 * Any subsequent HTMLElement flows
-	 * around the float until a new line 
-	 * starts below the float or if it is cleared
-	 * by another HTMLElement.
+	 * Called when a style necesiting invalidation of the
+	 * layout of the HTMLElement is changed
+	 */
+	private function invalidate(invalidationReason:InvalidationReason):Void
+	{
+		_htmlElement.invalidate(invalidationReason);
+	}
+	
+	/**
+	 * Same as above for display
+	 */
+	private function invalidateDisplay():Void
+	{
+		_htmlElement.invalidateDisplay();
+	}
+	
+	/////////////////////////////////
+	// TRANSITION METHODS
+	////////////////////////////////
+	
+	/**
+	 * When the specified value of a style changes, starts
+	 * a transition for the proeprty if needed using the
+	 * TransitionManager
 	 * 
-	 * An HTMLElement is float if he declares either
-	 * a left or right float
+	 * @param	propertyName the name of the property whose
+	 * value changed
 	 */
-	public function isFloat():Bool
-	{
-		var ret:Bool = false;
-		
-		switch (this._computedStyle.cssFloat) 
-		{
-			case CSSFloat.left, CSSFloat.right:
-				ret = true;
-			
-			case CSSFloat.none:
-				ret = false;
-		}
-		
-		return ret;
-	}
-	
-	/**
-	 * A positioned element is one that 
-	 * is positioned outside of the normal
-	 * flow.
-	 * 
-	 * The 'relative', 'absolute' and'fixed'
-	 * values of the 'position' style makes
-	 * a HTMLElement 'positioned'. 
-	 * 
-	 * The 'absolute' and 'fixed' value make
-	 * a HTMLElement an 'absolutely positioned'
-	 * HTMLElement. This kind of HTMLElement
-	 * doesn't affect the normal flow (it is
-	 * treated as if it doesn't exist). It
-	 * uses as origin its first ancestor
-	 * which is also positioned
-	 * 
-	 * See below for the 'relative' value
-	 */
-	public function isPositioned():Bool
-	{
-		var ret:Bool = false;
-		
-		switch (this._computedStyle.position) 
-		{
-			case relative, absolute, fixed:
-				ret = true;
-			
-			case cssStatic:
-				ret = false;
-		}
-		
-		return ret;
-	}
-	
-	/**
-	 * Determine wether a HTMLElement has
-	 * the 'position' value 'relative'.
-	 * 
-	 * A 'relative' HTMLElement is first placed
-	 * normally in the flow then an offset is 
-	 * applied to it with the top, left, right
-	 * and bottom computed styles.
-	 * 
-	 * It is used as origin for any 'absolute'
-	 * or 'fixed' positioned children and 
-	 * grand-children until another positioned
-	 * HTMLElement is found
-	 */
-	public function isRelativePositioned():Bool
-	{
-		return this._computedStyle.position == relative;
-	}
-	
-	/**
-	 * Determine if all the children of the 
-	 * HTMLElement are inline-level. 
-	 * Default is false when the HTMLElement
-	 * can't have children
-	 * 
-	 * TODO : should replaced elements be default ?
-	 */
-	public function childrenInline():Bool
-	{
-		return false;
-	}
-	
-	/**
-	 * An inline-level HTMLElement is one that is
-	 * laid out on a line. It will be placed
-	 * either next to the preceding HTMLElement
-	 * or on a new line if the current line
-	 * is too short to host it.
-	 * 
-	 * Wheter an element is inline-level is determined
-	 * by its display style
-	 */
-	public function isInlineLevel():Bool
-	{
-		var ret:Bool = false;
-		
-		switch (this._computedStyle.display) 
-		{
-			case cssInline, inlineBlock:
-				ret = true;
-			
-			default:
-				ret = false;
-		}
-		
-		return ret;
-	}
-	
-	/**
-	 * Wheter this HTMLElement starts a new
-	 * formatting context for its children.
-	 * Default is false as only ContainerHTMLElements
-	 * can start new formatting context
-	 * 
-	 * TODO : should replaced elements be default ?
-	 */
-	public function establishesNewFormattingContext():Bool
-	{
-		return false;
-	}
-	
-	/**
-	 * Get the first parent HTMLElement which is positioned
-	 * or null if the HTMLElement has no parent (it is
-	 * not attached to the DOM or is the HTMLBodyElement)
-	 */
-	public function getFirstPositionedAncestor():HTMLElement
-	{
-		//here it is either the HTMLBodyElement
-		//or not attached to the DOM
-		if (_htmlElement.parentNode == null)
-		{
-			return null;
-		}
-		
-		var parent:HTMLElement = cast(_htmlElement.parentNode);
-		
-		//loop in all the parents until a positioned or a null parent is found
-		var isOffsetParent:Bool = parent.coreStyle.isOffsetParent();
-		
-		while (isOffsetParent == false)
-		{
-			if (parent.parentNode != null)
-			{
-				parent = cast(parent.parentNode);
-				isOffsetParent = parent.coreStyle.isOffsetParent();
-			}
-			//break the loop if the current parent has no parent
-			else
-			{
-				isOffsetParent = true;
-			}
-		}
-		
-		return parent;
-	}
-	
-	/**
-	 * Return wether this Style is the 
-	 * offset parent for its children.
-	 * Meant to be overriden
-	 */
-	public function isOffsetParent():Bool
-	{
-		return isPositioned();
-	}
-	
-	/**
-	 * Determine wether the HTMLElement is added
-	 * to the document
-	 */
-	public function isDisplayed():Bool
-	{
-		return this._computedStyle.display != Display.none;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Determine wether the HTMLElement introduces
-	 * 'clearance', which as the effect of placing
-	 * the HTMLElement below any preceding floated
-	 * HTMLElement. A HTMLElement introduces clearance
-	 * if he clears either left floats, right floats
-	 * or both
-	 */
-	private function isClear():Bool
-	{
-		var ret:Bool = false;
-		
-		switch (this._computedStyle.clear) 
-		{
-			case Clear.left, Clear.right, Clear.both:
-				ret = true;
-			
-			case Clear.none:
-				ret = false;
-		}
-		
-		return ret;
-	}
-	
-	/**
-	 * Get the dimensions of the first ancestor
-	 * of the styled HTMLElement which is positioned
-	 * or of the HTMLBodyElement
-	 */
-	private function getFirstPositionedAncestorData():ContainingHTMLElementData
-	{
-		var firstPositionedAncestorData:ContainingHTMLElementData;
-		var firstPositionedAncestor:HTMLElement = getFirstPositionedAncestor();
-		
-		//if the htmlElement has a parent
-		if (firstPositionedAncestor != null)
-		{
-			var firstPositionedAncestorStyle:ContainerCoreStyle = cast(firstPositionedAncestor.coreStyle);
-			firstPositionedAncestorData = firstPositionedAncestorStyle.getContainerHTMLElementData();
-		}
-		//if the HTMLElement has no parent, return the Window data
-		else
-		{
-			firstPositionedAncestorData = getWindowData();
-		}
-		
-		return firstPositionedAncestorData;
-	}
-	
-	/**
-	 * Retrieve the data of the viewport. The viewport
-	 * origin is always to the top left of the window
-	 * displaying the document
-	 */
-	private function getWindowData():ContainingHTMLElementData
+	private function startTransitionIfNeeded(propertyName:String):Void
 	{	
-		var windowData:ContainingHTMLElementData = {
-			isHeightAuto:false,
-			isWidthAuto:false,
-			width:cocktail.Lib.window.innerWidth,
-			height:cocktail.Lib.window.innerHeight
+		//will store the index of the property in the TransitionPorperty
+		//array, so that its duration, delay, and timing function can be found
+		//at the same index
+		var propertyIndex:Int = 0;
+		
+		//check if the changed property is supposed to be transitioned
+		switch (computedStyle.transitionProperty)
+		{
+			//if none, the method returns here as no property
+			//of this style should be transitioned
+			case TransitionProperty.none:
+				return;
+			
+			//here, check in the list of transitionable property
+			//for a match
+			case TransitionProperty.list(value):
+				var foundFlag:Bool = false;
+				
+				for (i in 0...value.length)
+				{
+					//if there is a match, store the index
+					//of the match
+					if (value[i] == propertyName)
+					{
+						propertyIndex = i;
+						foundFlag = true;
+						break;
+					}
+				}
+				
+				//if there is no match, the method stops
+				//here
+				if (foundFlag == false)
+				{
+					return;
+				}
+				
+			//here all property can transition. The index
+			//will stay at 0
+			case TransitionProperty.all:	
 		}
 		
-		return windowData;
+		//return if transition style have not yet been computed
+		//
+		//TODO 2 : not supposed to happen, should be computed by this point
+		if (computedStyle.transitionDelay.length == 0 || computedStyle.transitionDuration.length == 0)
+		{
+			return;
+		}
+		
+		//the combined duration is the combined duration
+		//and delay of the transition, 
+		var combinedDuration:Float = 0.0;
+		
+		//get  the delay and duration of the transition in their respective array
+		//using the same index as the one in the transitionproperty array
+		var transitionDelay:Float = computedStyle.transitionDelay[getRepeatedIndex(propertyIndex, computedStyle.transitionDelay.length)];
+		var transitionDuration:Float = computedStyle.transitionDuration[getRepeatedIndex(propertyIndex, computedStyle.transitionDuration.length)];
+		combinedDuration = transitionDuration + transitionDelay;
+		
+		//if the combined duration is not superior to
+		//0, then there is no transition
+		if (combinedDuration <= 0)
+		{
+			return;
+		}
+		
+		//get the transition timing function
+		var transitionTimingFunction:TransitionTimingFunctionValue = computedStyle.transitionTimingFunction[getRepeatedIndex(propertyIndex,computedStyle.transitionTimingFunction.length)];
+		
+		//check if a transition is already in progress for the same property
+		var transition:Transition = TransitionManager.getInstance().getTransition(propertyName, computedStyle);
+		
+		//if the transition is not null, then a transition is already
+		//in progress, so it must first be stopped
+		if (transition != null)
+		{
+			//TODO 1 : add the reverse transition case
+			
+			TransitionManager.getInstance().stopTransition(transition);
+		}
+		
+		//get the starting value for the transition which is he current computed value of the 
+		//style
+		var startValue:Float = Reflect.getProperty(computedStyle, propertyName);
+		
+		//start an immediate invalidation, so that the the new specified value
+		//of the style gets immediately computed, this value will be the end value
+		//for the transition
+		invalidate(InvalidationReason.needsImmediateLayout);
+		var endValue:Float = Reflect.getProperty(computedStyle, propertyName);
+		
+		//start a transition using the TransitionManager
+		TransitionManager.getInstance().startTransition(computedStyle, propertyName, startValue, endValue, 
+		transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate);
+	}
+	
+	/**
+	 * Utils method, which return, given
+	 * an index and the length of an array, the 
+	 * actual index to use by looping in the length
+	 * if the length is inferior to the index
+	 * 
+	 * @example if the length is 2 and the index is 3,
+	 * the returned index will be 0, as by looping in the length,
+	 * the index will be 0,1,0
+	 */
+	private function getRepeatedIndex(index:Int, length:Int):Int
+	{
+		if (index < length)
+		{
+			return index;
+		}
+		
+		return length % index;
+	}
+	
+	/**
+	 * When a transition is complete, invalidate the HTMLElement,
+	 * then dispatch a transition end event
+	 */
+	private function onTransitionComplete(transition:Transition):Void
+	{
+		invalidate(InvalidationReason.other);
+		var transitionEvent:TransitionEvent = new TransitionEvent();
+		transitionEvent.initTransitionEvent(TransitionEvent.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
+		_htmlElement.dispatchEvent(transitionEvent);
+		
+	}
+	
+	/**
+	 * When a transition is updated, invalidate the HTMLElement
+	 * to repaint the rendering tree
+	 */
+	private function onTransitionUpdate(transition:Transition):Void
+	{
+		invalidate(InvalidationReason.other);
 	}
 	
 	/////////////////////////////////
 	// SETTERS/GETTERS
 	////////////////////////////////
-	
-	private function getElementRenderer():ElementRenderer
-	{
-		return _elementRenderer;
-	}
-	
-	private function getFontMetricsData():FontMetricsData
-	{
-		var fontManager:FontManager = new FontManager();
-		_fontMetrics = fontManager.getFontMetrics(UnitManager.getCSSFontFamily(_computedStyle.fontFamily), _computedStyle.fontSize);
-	
-		return _fontMetrics;
-	}
-	
-	private function getComputedStyle():ComputedStyleData
+
+	private function get_computedStyle():ComputedStyle
 	{
 		return _computedStyle;
 	}
 	
-	private function setComputedStyle(value:ComputedStyleData):ComputedStyleData
+	private function set_computedStyle(value:ComputedStyle):ComputedStyle
 	{
 		return _computedStyle = value;
+	}
+
+	private function get_fontMetricsData():FontMetricsData
+	{
+		var fontManager:FontManager = new FontManager();
+		_fontMetrics = fontManager.getFontMetrics(UnitManager.getCSSFontFamily(computedStyle.fontFamily), computedStyle.fontSize);
+	
+		return _fontMetrics;
 	}
 	
 	private function get_htmlElement():HTMLElement
@@ -1354,258 +938,422 @@ class CoreStyle
 	
 	private function setWidth(value:Dimension):Dimension 
 	{
-		invalidate();
-		return _width = value;
+		_width = value;
+		//TODO 1 : if transition is successful, should invalidate still be called ?
+		startTransitionIfNeeded(CSSConstants.WIDTH_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.WIDTH_STYLE_NAME));
+		return value;
 	}
 	
 	private function setMarginLeft(value:Margin):Margin 
 	{
-		invalidate();
-		return _marginLeft = value;
+		_marginLeft = value;
+		startTransitionIfNeeded(CSSConstants.MARGIN_LEFT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.MARGIN_LEFT_STYLE_NAME));
+		return value;
 	}
 	
 	private function setMarginRight(value:Margin):Margin 
 	{
-		invalidate();
-		return _marginRight = value;
+		_marginRight = value;
+		startTransitionIfNeeded(CSSConstants.MARGIN_RIGHT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.MARGIN_RIGHT_STYLE_NAME));
+		return value;
 	}
 	
 	private function setMarginTop(value:Margin):Margin 
 	{
-		invalidate();
-		return _marginTop = value;
+		_marginTop = value;
+		startTransitionIfNeeded(CSSConstants.MARGIN_TOP_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.MARGIN_TOP_STYLE_NAME));
+		return value;
 	}
 	
 	private function setMarginBottom(value:Margin):Margin 
 	{
-		invalidate();
-		return _marginBottom = value;
+		_marginBottom = value;
+		startTransitionIfNeeded(CSSConstants.MARGIN_BOTTOM_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.MARGIN_BOTTOM_STYLE_NAME));
+		return value;
 	}
 	
 	private function setPaddingLeft(value:Padding):Padding 
 	{
-		invalidate();
-		return _paddingLeft = value;
+		_paddingLeft = value;
+		startTransitionIfNeeded(CSSConstants.PADDING_LEFT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.PADDING_LEFT_STYLE_NAME));
+		return value;
 	}
 	
 	private function setPaddingRight(value:Padding):Padding 
 	{
-		invalidate();
-		return _paddingRight = value;
+		_paddingRight = value;
+		startTransitionIfNeeded(CSSConstants.PADDING_RIGHT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.PADDING_RIGHT_STYLE_NAME));
+		return value;
 	}
 	
 	private function setPaddingTop(value:Padding):Padding 
 	{
-		invalidate();
-		return _paddingTop = value;
+		_paddingTop = value;
+		startTransitionIfNeeded(CSSConstants.PADDING_TOP_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.PADDING_TOP_STYLE_NAME));
+		return value;
 	}
 	
 	private function setPaddingBottom(value:Padding):Padding 
 	{
-		invalidate();
-		return _paddingBottom = value;
+		_paddingBottom = value;
+		startTransitionIfNeeded(CSSConstants.PADDING_BOTTOM_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.PADDING_BOTTOM_STYLE_NAME));
+		return value;
 	}
 	
 	private function setDisplay(value:Display):Display 
 	{
-		invalidate();
-		return _display = value;
+		_display = value;
+		invalidateDisplay();
+		return value;
 	}
 	
 	private function setPosition(value:Position):Position 
 	{
-		invalidate();
-		return _position = value;
+		_position = value;
+		_computedStyle.position = value;
+		invalidateDisplay();
+		return value;
 	}
 	
 	private function setHeight(value:Dimension):Dimension 
 	{
-		invalidate();
-		return _height = value;
+		_height = value;
+		startTransitionIfNeeded(CSSConstants.HEIGHT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.HEIGHT_STYLE_NAME));
+		return value;
 	}
 	
 	private function setMinHeight(value:ConstrainedDimension):ConstrainedDimension 
 	{
-		invalidate();
-		return _minHeight = value;
+		_minHeight = value;
+		startTransitionIfNeeded(CSSConstants.MIN_HEIGHT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.MIN_HEIGHT_STYLE_NAME));
+		return value;
 	}
 	
 	private function setMaxHeight(value:ConstrainedDimension):ConstrainedDimension 
 	{
-		invalidate();
-		return _maxHeight = value;
+		_maxHeight = value;
+		startTransitionIfNeeded(CSSConstants.MAX_HEIGHT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.MAX_HEIGHT_STYLE_NAME));
+		return value;
 	}
 	
 	private function setMinWidth(value:ConstrainedDimension):ConstrainedDimension 
 	{
-		invalidate();
-		return _minWidth = value;
+		_minWidth = value;
+		startTransitionIfNeeded(CSSConstants.MIN_WIDTH_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.MIN_WIDTH_STYLE_NAME));
+		return value;
 	}
 	
 	private function setMaxWidth(value:ConstrainedDimension):ConstrainedDimension 
 	{
-		invalidate();
-		return _maxWidth = value;
+		_maxWidth = value;
+		startTransitionIfNeeded(CSSConstants.MAX_WIDTH_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.MAX_WIDTH_STYLE_NAME));
+		return value;
 	}
 	
 	private function setTop(value:PositionOffset):PositionOffset 
 	{
-		invalidate();
-		return _top = value;
+		_top = value;
+		startTransitionIfNeeded(CSSConstants.TOP_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.TOP_STYLE_NAME));
+		return value;
 	}
 	
 	private function setLeft(value:PositionOffset):PositionOffset 
 	{
-		invalidate();
-		return _left = value;
+		_left = value;
+		startTransitionIfNeeded(CSSConstants.LEFT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.LEFT_STYLE_NAME));
+		return value;
 	}
 	
 	private function setBottom(value:PositionOffset):PositionOffset 
 	{
-		invalidate();
-		return _bottom = value;
+		_bottom = value;
+		startTransitionIfNeeded(CSSConstants.BOTTOM_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.BOTTOM_STYLE_NAME));
+		return value;
 	}
 	
 	private function setRight(value:PositionOffset):PositionOffset 
 	{
-		invalidate();
-		return _right = value;
+		_right = value;
+		startTransitionIfNeeded(CSSConstants.RIGHT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.RIGHT_STYLE_NAME));
+		return value;
 	}
 	
 	private function setCSSFloat(value:CSSFloat):CSSFloat 
 	{
-		invalidate();
-		return _cssFloat = value;
+		_cssFloat = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.FLOAT_STYLE_NAME));
+		return value;
 	}
 	
 	private function setClear(value:Clear):Clear 
 	{
-		invalidate();
-		return _clear = value;
+		_clear = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.CLEAR_STYLE_NAME));
+		return value;
+	}
+	
+	private function setZIndex(value:ZIndex):ZIndex 
+	{
+		_zIndex = value;
+		_computedStyle.zIndex = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.Z_INDEX_STYLE_NAME));
+		return value;
 	}
 	
 	private function setFontSize(value:FontSize):FontSize
 	{
-		invalidate();
-		return _fontSize = value;
+		_fontSize = value;
+		startTransitionIfNeeded(CSSConstants.FONT_SIZE_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_SIZE_STYLE_NAME));
+		return value;
 	}
 	
 	private function setFontWeight(value:FontWeight):FontWeight
 	{
-		invalidate();
-		return _fontWeight = value;
+		_fontWeight = value;
+		_computedStyle.fontWeight = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_WEIGHT_STYLE_NAME));
+		return value;
 	}
 	
 	private function setFontStyle(value:FontStyle):FontStyle
 	{
-		invalidate();
-		return _fontStyle = value;
+		_fontStyle = value;
+		_computedStyle.fontStyle = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_STYLE_STYLE_NAME));
+		return value;
 	}
 	
 	private function setFontFamily(value:Array<String>):Array<String>
 	{
-		invalidate();
-		return _fontFamily = value;
+		_fontFamily = value;
+		_computedStyle.fontFamily = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_FAMILY_STYLE_NAME));
+		return value;
 	}
 	
 	private function setFontVariant(value:FontVariant):FontVariant
 	{
-		invalidate();
-		return _fontVariant = value;
+		_fontVariant = value;
+		_computedStyle.fontVariant = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_VARIANT_STYLE_NAME));
+		return value;
 	}
 	
 	private function setTextTransform(value:TextTransform):TextTransform
 	{
-		invalidate();
-		return _textTransform = value;
+		_textTransform = value;
+		_computedStyle.textTransform = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.TEXT_TRANSFORM_STYLE_NAME));
+		return value;
 	}
 	
 	private function setLetterSpacing(value:LetterSpacing):LetterSpacing
 	{
-		invalidate();
-		return _letterSpacing = value;
+		_letterSpacing = value;
+		startTransitionIfNeeded(CSSConstants.LETTER_SPACING_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.LETTER_SPACING_STYLE_NAME));
+		return value;
 	}
 	
 	private function setWordSpacing(value:WordSpacing):WordSpacing
 	{
-		invalidate();
-		return _wordSpacing = value;
+		_wordSpacing = value;
+		startTransitionIfNeeded(CSSConstants.WORD_SPACING_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.WORD_SPACING_STYLE_NAME));
+		return value;
 	}
 	
 	private function setLineHeight(value:LineHeight):LineHeight
 	{
-		invalidate();
-		return _lineHeight = value;
+		_lineHeight = value;
+		startTransitionIfNeeded(CSSConstants.LINE_HEIGHT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.LINE_HEIGHT_STYLE_NAME));
+		return value;
 	}
 	
 	private function setColor(value:Color):Color
 	{
-		invalidate();
-		return _color = value;
+		_color = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.COLOR_STYLE_NAME));
+		return value;
 	}
 	
 	private function setVerticalAlign(value:VerticalAlign):VerticalAlign
 	{
-		invalidate();
-		return _verticalAlign = value;
+		_verticalAlign = value;
+		startTransitionIfNeeded(CSSConstants.VERTICAL_ALIGN_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.VERTICAL_ALIGN_STYLE_NAME));
+		return value;
 	}
 	
 	private function setTextIndent(value:TextIndent):TextIndent
 	{
-		invalidate();
-		return _textIndent = value;
+		_textIndent = value;
+		startTransitionIfNeeded(CSSConstants.TEXT_INDENT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.TEXT_INDENT_STYLE_NAME));
+		return value;
 	}
 	
 	private function setWhiteSpace(value:WhiteSpace):WhiteSpace
 	{
-		invalidate();
-		return _whiteSpace = value;
+		_whiteSpace = value;
+		_computedStyle.whiteSpace = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.WHITE_SPACE_STYLE_NAME));
+		return value;
 	}
 	
 	private function setTextAlign(value:TextAlign):TextAlign
 	{
-		invalidate();
-		return _textAlign = value;
+		_textAlign = value;
+		_computedStyle.textAlign = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.TEXT_ALIGN_STYLE_NAME));
+		return value;
 	}
 	
 	private function setOpacity(value:Opacity):Opacity
 	{
 		_opacity = value;
-		invalidate();
+		_computedStyle.opacity = value;
+		startTransitionIfNeeded(CSSConstants.OPACITY_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.OPACITY_STYLE_NAME));
 		return _opacity;
 	}
 	
 	private function setVisibility(value:Visibility):Visibility
 	{
 		_visibility = value;
-		invalidate();
+		_computedStyle.visibility = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.VISIBILITY_STYLE_NAME));
 		return _visibility;
 	}
 	
 	private function setTransformOrigin(value:TransformOrigin):TransformOrigin
 	{
-		invalidate();
-		return _transformOrigin = value;
+		_transformOrigin = value;
+		invalidate(InvalidationReason.other);
+		return value;
 	}
 	
 	private function setTransform(value:Transform):Transform
 	{
-		invalidate();
-		return _transform = value;
+		_transform = value;
+		invalidate(InvalidationReason.other);
+		return value;
 	}
 	
 	private function setOverflowX(value:Overflow):Overflow
 	{
-		invalidate();
-		return _overflowX = value;
+		_overflowX = value;
+		_computedStyle.overflowX = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.OVERFLOW_X_STYLE_NAME));
+		return value;
 	}
 	
 	private function setOverflowY(value:Overflow):Overflow
 	{
-		invalidate();
-		return _overflowY = value;
+		_overflowY = value;
+		_computedStyle.overflowY = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.OVERFLOW_Y_STYLE_NAME));
+		return value;
 	}
 	
+	private function setTransitionProperty(value:TransitionProperty):TransitionProperty
+	{
+		return _transitionProperty = value;
+	}
+	
+	private function setTransitionDuration(value:TransitionDuration):TransitionDuration
+	{
+		return _transitionDuration = value;
+	}
+	
+	private function setTransitionDelay(value:TransitionDelay):TransitionDelay
+	{
+		return _transitionDelay = value;
+	}
+	
+	private function setTransitionTimingFunction(value:TransitionTimingFunction):TransitionTimingFunction
+	{
+		return _transitionTimingFunction = value;
+	}
+	
+	private function setBackgroundColor(value:BackgroundColor):BackgroundColor
+	{
+		_backgroundColor = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundImage(value:Array<BackgroundImage>):Array<BackgroundImage>
+	{
+		_backgroundImage = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundSize(value:Array<BackgroundSize>):Array<BackgroundSize>
+	{
+		_backgroundSize = value;
+		_computedStyle.backgroundSize = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundClip(value:Array<BackgroundClip>):Array<BackgroundClip>
+	{
+		_backgroundClip = value;
+		_computedStyle.backgroundClip = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundPosition(value:Array<BackgroundPosition>):Array<BackgroundPosition>
+	{
+		_backgroundPosition = value;
+		_computedStyle.backgroundPosition = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundRepeat(value:Array<BackgroundRepeat>):Array<BackgroundRepeat>
+	{
+		_backgroundRepeat = value;
+		_computedStyle.backgroundRepeat = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundOrigin(value:Array<BackgroundOrigin>):Array<BackgroundOrigin>
+	{
+		_backgroundOrigin = value;
+		_computedStyle.backgroundOrigin = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setCursor(value:Cursor):Cursor
+	{
+		return _cursor = value;
+	}
 	
 	/////////////////////////////////
 	// STYLES SETTERS/GETTERS
@@ -1731,6 +1479,11 @@ class CoreStyle
 		return _clear;
 	}
 	
+	private function getZIndex():ZIndex 
+	{
+		return _zIndex;
+	}
+	
 	private function getFontSize():FontSize
 	{
 		return _fontSize;
@@ -1811,21 +1564,9 @@ class CoreStyle
 		return _transformOrigin;
 	}
 	
-	private function setBackgroundColor(value:BackgroundColor):BackgroundColor
-	{
-		invalidate();
-		return _backgroundColor = value;
-	}
-	
 	private function getBackgroundColor():BackgroundColor
 	{
 		return _backgroundColor;
-	}
-	
-	private function setBackgroundImage(value:Array<BackgroundImage>):Array<BackgroundImage>
-	{
-		invalidate();
-		return _backgroundImage = value;
 	}
 	
 	private function getBackgroundImage():Array<BackgroundImage>
@@ -1833,21 +1574,9 @@ class CoreStyle
 		return _backgroundImage;
 	}
 	
-	private function setBackgroundRepeat(value:Array<BackgroundRepeat>):Array<BackgroundRepeat>
-	{
-		invalidate();
-		return _backgroundRepeat = value;
-	}
-	
 	private function getBackgroundRepeat():Array<BackgroundRepeat>
 	{
 		return _backgroundRepeat;
-	}
-	
-	private function setBackgroundSize(value:Array<BackgroundSize>):Array<BackgroundSize>
-	{
-		invalidate();
-		return _backgroundSize = value;
 	}
 	
 	private function getBackgroundSize():Array<BackgroundSize>
@@ -1855,32 +1584,14 @@ class CoreStyle
 		return _backgroundSize;
 	}
 	
-	private function setBackgroundClip(value:Array<BackgroundClip>):Array<BackgroundClip>
-	{
-		invalidate();
-		return _backgroundClip = value;
-	}
-	
 	private function getBackgroundClip():Array<BackgroundClip>
 	{
 		return _backgroundClip;
 	}
 	
-	private function setBackgroundPosition(value:Array<BackgroundPosition>):Array<BackgroundPosition>
-	{
-		invalidate();
-		return _backgroundPosition = value;
-	}
-	
 	private function getBackgroundPosition():Array<BackgroundPosition>
 	{
 		return _backgroundPosition;
-	}
-	
-	private function setBackgroundOrigin(value:Array<BackgroundOrigin>):Array<BackgroundOrigin>
-	{
-		invalidate();
-		return _backgroundOrigin = value;
 	}
 	
 	private function getBackgroundOrigin():Array<BackgroundOrigin>
@@ -1898,13 +1609,28 @@ class CoreStyle
 		return _overflowY;
 	}
 	
-	private function setCursor(value:Cursor):Cursor
-	{
-		return _cursor = value;
-	}
-	
 	private function getCursor():Cursor
 	{
 		return _cursor;
+	}
+	
+	private function getTransitionProperty():TransitionProperty
+	{
+		return _transitionProperty;
+	}
+	
+	private function getTransitionDuration():TransitionDuration
+	{
+		return _transitionDuration;
+	}
+	
+	private function getTransitionDelay():TransitionDelay
+	{
+		return _transitionDelay;
+	}
+	
+	private function getTransitionTimingFunction():TransitionTimingFunction
+	{
+		return _transitionTimingFunction;
 	}
 }

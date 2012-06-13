@@ -13,12 +13,6 @@ package org.intermedia.model;
  * @author Raphael Harmel
  */
 
-//import cocktail.Cocktail;
-//import cocktail.node.HtmlDom;
-//import cocktail.node.HtmlDom;
-//import cocktail.NativeElementManager;
-//import cocktail.NativeElementData;
-
 import org.intermedia.model.ApplicationModel;
 
 class CellDetailsRss 
@@ -51,32 +45,29 @@ class CellDetailsRss
 		
 		// get the rss data
 		for ( channelChild in channelNode.elements() )
-		//for ( channelChild in channelNode.firstElement() )
 		{
 			if (channelChild.nodeName == "item")
 			{
-				//var cell:Dynamic = { imagePath:"", title:"", comment:"Posted ", description:"", commentCount:"0" };
-				
 				// for each node
 				for (itemParam in channelChild.elements())
-				//for (itemParam in channelChild.firstElement())
 				{
 					// if node is a post content (without html)
-					//if (itemParam.nodeName == "description")
 					if (itemParam.nodeName == "post_excerpt")
 					{
 						// create text
 						var text:String = itemParam.firstChild().nodeValue;
+						
 						// remove "Online demo" and description texts
 						var toRemove:Array<String> = ["Online Demo", "Online demo", "Description :"];
 						for (string in toRemove)
 						{
 							text = StringTools.replace(text, string, "");
 						}
+						
 						// remove ending white characters (done to avoid display issues in samsung TVs)
 						text = StringTools.ltrim(text);
-						// shorten description
-						//text = text.substr(0, 95) + "...";
+						
+						// set cell.description
 						cell.description = text;
 						
 						// take only the first item into account, as there can be multiple results for the search query

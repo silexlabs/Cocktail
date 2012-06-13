@@ -9,8 +9,6 @@ package org.intermedia.view;
 
 import js.Lib;
 import js.Dom;
-import org.intermedia.view.ScreenResolution;
-
 
 /**
  * This class defines the styles used by the CellThumb
@@ -20,8 +18,6 @@ import org.intermedia.view.ScreenResolution;
 
 class LoadingViewStyle
 {
-	static inline var CELL_VERTICAL_SPACE:Int = 5;
-	
 	/**
 	 * Defines cell Style
 	 * 
@@ -32,9 +28,7 @@ class LoadingViewStyle
 		node.style.display = "block";
 		node.style.position = "absolute";
 		
-		//node.style.width = "100%";
 		node.style.width = Std.string(Lib.window.innerWidth) + "px";
-		//node.style.height = "100%";
 		node.style.height = Std.string(Lib.window.innerHeight) + "px";
 		
 		node.style.textAlign = "center";
@@ -42,8 +36,6 @@ class LoadingViewStyle
 		node.style.top = "0px";
 		node.style.bottom = "0px";
 		
-		//node.style.backgroundImage = [BackgroundImageStyleValue.image(ImageValue.url("assets/headerGrey.jpg"))];
-		//node.style.backgroundColor = BackgroundColorStyleValue.colorValue(ColorValue.rgba(255, 255, 255, 1));
 		node.style.color = '#FFFFFF';
 		
 		//node.style.zIndex = 1000;
@@ -64,7 +56,6 @@ class LoadingViewStyle
 		node.style.marginRight = "auto";
 		
 		node.style.top = "45%";
-		
 	}
 	
 }

@@ -10,16 +10,16 @@ ECHO copying splashScreens directory to splashScreens_PhoneGap...
 xcopy splashScreens splashScreens_PhoneGap /Q /I
 ECHO.
 
+ECHO renaming files creating issues...
+move splashScreens_PhoneGap\Default@2x.png splashScreens_PhoneGap\Default2x.png
+ECHO.
+
 ECHO preparing %config_file% file...
 copy config_Dev.xml %config_file%
 ECHO.
 
 ECHO copying index file...
 copy ..\..\bin\WebApp_js.html index.html
-ECHO.
-
-ECHO renaming files creating issues...
-move splashScreens_PhoneGap\Default@2x.png splashScreens_PhoneGap\Default2x.png
 ECHO.
 
 ECHO Removing %output_file_path%...

@@ -8,6 +8,8 @@
 package cocktail.core.html;
 
 import cocktail.core.dom.Node;
+import cocktail.core.renderer.EmbeddedBoxRenderer;
+import cocktail.core.renderer.LayerRenderer;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.NativeElement;
 
@@ -19,9 +21,33 @@ import cocktail.core.NativeElement;
  */
 class EmbeddedElement extends HTMLElement
 {
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// IDL attributes
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * get/set the height html attribute of this embedded element. Return
+	 * value depends on the subclass embedded element
+	 */
+	public var height(get_height, set_height):Int;
+		
+	/**
+	 * get/set the width html attribute of this embedded element. Return
+	 * value depends on the subclass embedded element
+	 */
+	public var width(get_width, set_width):Int;
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// attributes
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * The intrinsic height of the embedded asset, for instance
 	 * for an image, its height in pixel
+	 * 
+	 * TODO 4 : inheriting classes should instead have a reference
+	 * to a loaded asset and retrieve the intrisic dimensions from
+	 * it, they are not supposed to be stored here
 	 */
 	private var _intrinsicHeight:Null<Int>;
 	public var intrinsicHeight(get_intrinsicHeight, never):Null<Int>;
@@ -40,22 +66,22 @@ class EmbeddedElement extends HTMLElement
 	private var _intrinsicRatio:Null<Float>;
 	public var intrinsicRatio(get_intrinsicRatio, never):Null<Float>;
 
-	/**
-	 * get/set the height of the embedded asset in the document. Return
-	 * 0 if the height is unknown
-	 */
-	private var _height:Int;
-	public var height(get_height, set_height):Int;
-		
-	/**
-	 * get/set the width of the embedded asset in the document. Return
-	 * 0 if the width is unknown
-	 */
-	private var _width:Int;
-	public var width(get_width, set_width):Int;
+	
 	
 	/**
 	 * A reference to the embedded asset
+	 * 
+	 * TODO 1 :the embeddedasset attribute seems obsolete and shouldn't exist.
+	 * There should be a ResourceManager where a resource can be queried through
+	 * an URL. The HTMLElement should query it only to set listener for loading
+	 * events and to get intrinsic dimensions, and ElementRenderer should query it
+	 * when rendering and may set callbacks for a new rendering if the asset is
+	 * not loaded yet. 
+	 * Trouble with this : for bitamp asset, when rendering, only have to copy the pixels,
+	 * so the resource can be unique but what should happen if multiple video with
+	 * the same URLs are displayed ? -> video/audio should be a subclass of asset with
+	 * a flag determining wether the video is in use, if it does, should create a new video
+	 * stream
 	 */
 	private var _embeddedAsset:NativeElement;
 	public var embeddedAsset(get_embeddedAsset, never):NativeElement;
@@ -82,36 +108,42 @@ class EmbeddedElement extends HTMLElement
 		//abstract
 	}
 	
-	/**
-	 * Override to instantiate an Style specific 
-	 * to embedded elements
-	 */
-	override private function initCoreStyle():Void
-	{
-		this._coreStyle = new CoreStyle(this);
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Embedded elements can't have children
-	 */
-	override public function appendChild(newChild:Node):Node
+	override public function setAttribute(name:String, value:String):Void
 	{
-		return newChild;
+		if (name == HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME)
+		{
+			height = Std.parseInt(value);
+		}
+		else if (name == HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME)
+		{
+			width = Std.parseInt(value);
+		}
+		else
+		{
+			super.setAttribute(name, value);
+		}
 	}
 	
-		
-	/**
-	 * Embedded elements can't have children
-	 */
-	override public function removeChild(oldChild:Node):Node
+	override public function getAttribute(name:String):String
 	{
-		return oldChild;
+		if (name == HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME)
+		{
+			return Std.string(get_height());
+		}
+		else if (name == HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME)
+		{
+			return Std.string(get_width());
+		}
+		else
+		{
+			return super.getAttribute(name);
+		}
 	}
-
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -136,23 +168,49 @@ class EmbeddedElement extends HTMLElement
 		return _intrinsicRatio;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// IDL SETTERS/GETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	private function set_width(value:Int):Int
 	{
-		return _width = value;
+		//TODO 3 : messy to call super here but else infinite loop
+		super.setAttribute(HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME, Std.string(value));
+		return value;
 	}
 	
 	private function get_width():Int
 	{
-		return _width;
+		//TODO 3 : messy to call super here but else infinite loop
+		var width:String = super.getAttribute(HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME);
+		if (width == "")
+		{
+			return 0;
+		}
+		else
+		{
+			return Std.parseInt(width);
+		}
 	}
 	
 	private function set_height(value:Int):Int
 	{
-		return _height = value;
+		//TODO 3 : messy to call super here but else infinite loop
+		super.setAttribute(HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME, Std.string(value));
+		return value;
 	}
 	
 	private function get_height():Int
 	{
-		return _height;
+		//TODO 3 : messy to call super here but else infinite loop
+		var height:String = super.getAttribute(HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME);
+		if (height == null)
+		{
+			return 0;
+		}
+		else
+		{
+			return Std.parseInt(height);
+		}
 	}
 }

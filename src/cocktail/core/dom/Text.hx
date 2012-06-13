@@ -6,6 +6,9 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.dom;
+import cocktail.core.html.HTMLElement;
+import cocktail.core.renderer.LayerRenderer;
+import cocktail.core.renderer.TextRenderer;
 
 /**
  * The Text interface inherits from CharacterData and represents the textual
@@ -25,7 +28,8 @@ package cocktail.core.dom;
  * The Node.normalize() method merges any such adjacent Text objects into a
  * single node for each block of text.
  * 
- * TODO : implement normalize()
+ * TODO 5 : implement normalize()
+ * TODO 5 : override nodeName which must be #text
  * 
  * No lexical check is done on the content of a Text node and, depending
  * on its position in the document, some characters must be escaped 
@@ -47,16 +51,30 @@ class Text extends CharacterData
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTER
+	// PRIVATE RENDERING TREE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override private function get_nodeValue():String 
+	/**
+	 * Create a TextRenderer for the Text node
+	 * 
+	 * TODO IMPORTANT : this class is not supposed to 
+	 * inherit from HTMLElement and have this method.
+	 * Should they share a IRenderable interface instead ?
+	 */
+	override private function createElementRenderer():Void
 	{
-		return _data;
+		_elementRenderer = new TextRenderer(this);
+		var parent:HTMLElement = cast(_parentNode);
+		//the TextRenderer inherits its styles from its parent
+		_elementRenderer.coreStyle = parent.coreStyle;
 	}
 	
-	override private function set_nodeValue(value:String):String 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN SETTERS/GETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function get_nodeType():Int
 	{
-		return data = value;
+		return Node.TEXT_NODE;
 	}
 }

@@ -10,8 +10,10 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.port.flash_player;
 
 import cocktail.core.NativeElement;
+import cocktail.core.style.ComputedStyle;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
+import flash.text.engine.FontMetrics;
 import flash.text.engine.FontPosture;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
@@ -111,7 +113,7 @@ class FontManager extends AbstractFontManager
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden public virtual methods, font rendering and measure
+	// Overriden virtual methods, font rendering and measure
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -119,7 +121,7 @@ class FontManager extends AbstractFontManager
 	 * provided by the flash text engine. The
 	 * font metrics are provided for a given font at a given size
 	 */
-	override public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
+	override private function doGetFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
 	{
 		//the flash object used to access flash font metrics
 		var elementFormat:ElementFormat = new ElementFormat();
@@ -143,15 +145,17 @@ class FontManager extends AbstractFontManager
 		//get the width of a space character
 		var spaceWidth:Float = getSpaceWidth(elementFormat.clone());
 		
+		var elementFormatFontMetrics:FontMetrics = elementFormat.getFontMetrics();
+		
 		var fontMetrics:FontMetricsData = {
 			fontSize:fontSize,
 			ascent:ascent,
 			descent:descent,
 			xHeight:xHeight,
 			spaceWidth:spaceWidth,
-			superscriptOffset:elementFormat.getFontMetrics().superscriptOffset,
-			subscriptOffset:elementFormat.getFontMetrics().subscriptOffset,
-			underlineOffset:elementFormat.getFontMetrics().underlineOffset
+			superscriptOffset:elementFormatFontMetrics.superscriptOffset,
+			subscriptOffset:elementFormatFontMetrics.subscriptOffset,
+			underlineOffset:elementFormatFontMetrics.underlineOffset
 		};
 		
 		return fontMetrics;
@@ -161,7 +165,7 @@ class FontManager extends AbstractFontManager
 	 * Overriden to create flash text lines. Uses the flash text engine introduced
 	 * in flash player 10
 	 */
-	override public function createNativeTextElement(text:String, computedStyle:ComputedStyleData):NativeElement
+	override public function createNativeTextElement(text:String, computedStyle:ComputedStyle):NativeElement
 	{
 		//a TextBlock is a factory for flash TextLines
 		var textBlock:TextBlock = new TextBlock();
@@ -186,7 +190,7 @@ class FontManager extends AbstractFontManager
 		//otherwise, when creating only a space character, no
 		//flash text line would be created
 		//
-		//TODO : this method shouldn't be called for space charachter
+		//TODO 4 : this method shouldn't be called for space charachter
 		var text:TextLine = textBlock.createTextLine(null, 10000, 0.0, true);
 		
 		//help free memory
@@ -247,7 +251,7 @@ class FontManager extends AbstractFontManager
 	 * to apply to it when rendered. A computedStyle
 	 * is provided to render the text
 	 */
-	private function getNativeTextElement(text:String, computedStyle:ComputedStyleData):TextElement
+	private function getNativeTextElement(text:String, computedStyle:ComputedStyle):TextElement
 	{
 		//apply transformation to the text (toUppercase, toLowercase...)
 		//before using it as a model
@@ -271,7 +275,7 @@ class FontManager extends AbstractFontManager
 		
 		//color of the text
 		elementFormat.color = computedStyle.color.color;
-	
+
 		//normal or small caps
 		elementFormat.typographicCase = getNativeFontVariant(computedStyle.fontVariant);
 		
@@ -298,7 +302,7 @@ class FontManager extends AbstractFontManager
 			case normal:
 				nativeFontPosture = FontPosture.NORMAL;
 				
-			case italic:
+			case italic, oblique:
 				nativeFontPosture = FontPosture.ITALIC;
 		}
 		

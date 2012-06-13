@@ -32,6 +32,10 @@ class CellThumbStyle
 		// use default style
 		CellStyle.setCellStyle(node, cellPerLine);
 		
+		// compute cell width in percentage depending on cellPerLine value
+		var cellWidthPercent:Float = CellStyle.computeWidthPercentage(cellPerLine,Constants.CELL_BORDER_WIDTH_LARGE);
+		node.style.width = Std.string(cellWidthPercent) + "%";
+
 		node.style.height = Std.string(Constants.CELL_HEIGHT) + "px";
 		node.style.maxHeight = Std.string(Constants.CELL_MAX_HEIGHT) + "px";
 
@@ -39,7 +43,7 @@ class CellThumbStyle
 		node.style.overflowY = "hidden";
 		
 		// apply border
-		CellStyle.addBorder(node);
+		CellStyle.addBorder(node,Constants.CELL_BORDER_WIDTH);
 	}
 	
 	
@@ -57,70 +61,6 @@ class CellThumbStyle
 		node.style.overflowX = "hidden";
 		node.style.overflowY = "hidden";
 		node.style.display = "inline-block";
-		//untyped { node.style.borderRadius = "10px"; };
 	}
-	
-	/**
-	 * Defines cell image Style
-	 * 
-	 * @param	image
-	 */
-	/*public static function setThumbnailStyle(image:Image,maskSize:Size):Void
-	{
-		//var imageMaxWidth:Int = 200;
-		
-		image.style.display = "inline";
-		
-		image.style.verticalAlign = "middle";
-		untyped { image.style.opacity = 0; };
-		
-		//zoomImage(node, maskSize);
-		ImageUtils.cropImage(image, maskSize);
-		
-	}*/
-	
-	/**
-	 * Automatically resizes and offsets the image so it adapts to the cell size
-	 * 
-	 * @param	node
-	 * @param	maskSize
-	 */
-	/*public static function zoomImage(node:HtmlDom, maskSize:Size):Void
-	{
-		
-		var imageRatio:Float = 0;
-		if (node.intrinsicHeight != 0)
-			imageRatio = node.intrinsicWidth / node.intrinsicHeight;
-			
-		var resizedImageSize:Size = { width:0, height:0 };
-
-		// if imageRatio is bigger than cell ratio, set image height to cell height
-		if(imageRatio > CELL_RATIO)
-		{
-			// compute new image size
-			resizedImageSize.height = maskSize.height;
-			resizedImageSize.width = Std.int(resizedImageSize.height * imageRatio);
-	
-			// resize image
-			node.style.height = Std.string(resizedImageSize.height));
-			
-			// offsets image
-			node.style.marginLeft = Std.string(-Math.abs((maskSize.width-resizedImageSize.width))/2));
-		}
-		// else, set image width to cell width
-		else
-		{
-			// compute new image size
-			resizedImageSize.width = maskSize.width;
-			resizedImageSize.height = Std.int(resizedImageSize.width / imageRatio);
-			
-			// resize image
-			node.style.width = Std.string(resizedImageSize.width));
-			
-			// offsets image
-			node.style.marginTop = Std.string(-Math.abs((maskSize.height-resizedImageSize.height))/2));
-		}
-				
-	}*/
 	
 }

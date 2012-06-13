@@ -9,11 +9,14 @@ package cocktail.core.html;
 
 import cocktail.core.dom.Attr;
 import cocktail.core.dom.Node;
+import cocktail.core.event.UIEvent;
 import cocktail.core.NativeElement;
 import cocktail.core.event.Event;
+import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.resource.ImageLoader;
 import haxe.Log;
 import cocktail.core.html.EmbeddedElement;
+import cocktail.core.renderer.RendererData;
 
 
 /**
@@ -27,33 +30,21 @@ import cocktail.core.html.EmbeddedElement;
  */
 class HTMLImageElement extends EmbeddedElement
 {
-	/**
-	 * the html tag name of an image
-	 */
-	private static inline var HTML_IMAGE_TAG_NAME:String = "img";
-	
-	/**
-	 * The name of the src attribute for the HTMLImageElement
-	 */
-	private static inline var HTML_IMAGE_SRC_ATTRIBUTE:String = "src";
-	
+
 	//////////////////////
-	// CALLBACKS
+	// IDL ATTRIBUTES
 	/////////////////////
 	
 	/**
-	 * The callback called once a picture has been successfully
-	 * loaded
+	 * set/get the URL of the loaded picture.
+	 * 
+	 * store it and retrieve it from the attributes map,
+	 * and start the loading of the picture when set
 	 */
-	public var onload:Event->Void;
+	public var src(get_src, set_src):String;
 	
-	/**
-	 * The callback called when there was an error during loading
-	 */
-	public var onError:Event->Void;
-
 	//////////////////////
-	// PRIVATE ATTRIBUTES
+	// ATTRIBUTES
 	/////////////////////
 	
 	/**
@@ -68,14 +59,7 @@ class HTMLImageElement extends EmbeddedElement
 	 */
 	public var naturalHeight(get_naturalHeight, never):Int;
 	
-	/**
-	 * set/get the URL of the loaded picture.
-	 * 
-	 * store it and retrieve it from the attributes map,
-	 * and start the loading of the picture when set
-	 */
-	public var src(get_src, set_src):String;
-	
+
 	/**
 	 * Reponsible for loading pictures into a NativeElement. 
 	 * Its NativeElement is used by this HTMLImageElement as an
@@ -93,7 +77,7 @@ class HTMLImageElement extends EmbeddedElement
 	public function new() 
 	{
 		_imageLoader = new ImageLoader();
-		super(HTML_IMAGE_TAG_NAME);
+		super(HTMLConstants.HTML_IMAGE_TAG_NAME);
 	}
 	
 	/**
@@ -110,7 +94,7 @@ class HTMLImageElement extends EmbeddedElement
 	
 	override public function setAttribute(name:String, value:String):Void
 	{
-		if (name == HTML_IMAGE_SRC_ATTRIBUTE)
+		if (name == HTMLConstants.HTML_SRC_ATTRIBUTE_NAME)
 		{
 			src = value;
 		}
@@ -118,6 +102,32 @@ class HTMLImageElement extends EmbeddedElement
 		{
 			super.setAttribute(name, value);
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Instantiate an image specific renderer
+	 */
+	override private function createElementRenderer():Void
+	{
+		_elementRenderer = new ImageRenderer(this);
+		_elementRenderer.coreStyle = _coreStyle;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN DOM PARSER GETTER/SETTER AND METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as <img> element are serialised
+	 * as self-closing tags
+	 */
+	override public function isVoidElement():Bool
+	{
+		return true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -129,14 +139,7 @@ class HTMLImageElement extends EmbeddedElement
 	 */
 	private function set_src(value:String):String
 	{
-		var srcAttr:Node = _attributes.getNamedItem(HTML_IMAGE_SRC_ATTRIBUTE);
-		if (srcAttr == null)
-		{
-			srcAttr = new Attr(HTML_IMAGE_SRC_ATTRIBUTE);
-			_attributes.setNamedItem(srcAttr);
-		}
-		srcAttr.nodeValue = value;
-		
+		super.setAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME, value);
 		_imageLoader.load([value], onLoadComplete, onLoadError);
 		return value;
 	}
@@ -156,14 +159,11 @@ class HTMLImageElement extends EmbeddedElement
 		this._intrinsicWidth = _imageLoader.intrinsicWidth;
 		this._intrinsicRatio = _intrinsicHeight / _intrinsicWidth;
 		
-		this._coreStyle.invalidate();
+		invalidate(InvalidationReason.other);
 		
-		//if provided, call the onload callback
-		if (onload != null)
-		{
-			var loadEvent:Event = new Event(Event.LOAD, this);
-			onload(loadEvent);
-		}
+		var loadEvent:UIEvent = new UIEvent();
+		loadEvent.initUIEvent(UIEvent.LOAD, false, false, null, 0.0);
+		dispatchEvent(loadEvent);
 	}
 	
 	/**
@@ -174,10 +174,9 @@ class HTMLImageElement extends EmbeddedElement
 	 */
 	private function onLoadError(message:String):Void
 	{
-		if (onError != null)
-		{
-			onError(new Event(Event.ERROR, this));
-		}
+		var errorEvent:UIEvent = new UIEvent();
+		errorEvent.initUIEvent(UIEvent.ERROR, false, false, null, 0.0);
+		dispatchEvent(errorEvent);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -186,7 +185,7 @@ class HTMLImageElement extends EmbeddedElement
 	
 	private function get_src():String
 	{
-		return getAttribute(HTML_IMAGE_SRC_ATTRIBUTE);
+		return getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME);
 	}
 	
 	private function get_naturalHeight():Int

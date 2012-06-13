@@ -32,23 +32,17 @@ class ListViewStyle
 		node.style.marginLeft = "0px";
 		node.style.marginRight = "0px";
 		node.style.marginTop = "0px";
-		//node.style.marginTop = Std.string(Constants.LIST_TOP) + "px";
 		node.style.marginBottom = "0px";
 		node.style.paddingLeft = "0px";
 		node.style.paddingRight = "0px";
 		node.style.paddingTop = "0px";
 		node.style.paddingBottom = "0px";
 		
-		//node.style.width = Std.string(Lib.window.innerWidth) + "px";
-		//node.style.width = Std.string(node.clientWidth) + "px";
 		//node.style.width = "auto";
 		// set list width to 1/3 of the swippable list view
-		node.style.width = Std.string(100/3) + "%";
-		node.style.height = Std.string(Lib.window.innerHeight) + "px";
-		//node.style.height = Std.string(Lib.window.innerHeight - Constants.LIST_TOP) + "px";
-		//node.style.height = Std.string( Lib.window.innerHeight - Constants.LIST_TOP ));
-		//node.style.height = "auto";
-		//node.style.height = "100%";
+		//node.style.width = Std.string(100/3) + "%";
+		node.style.width = Std.string(Lib.window.innerWidth) + "px";
+		node.style.height = "100%";
 		
 		node.style.top = "0px";
 		node.style.bottom = "0px";
@@ -58,7 +52,7 @@ class ListViewStyle
 		//node.style.overflowY = "scroll";
 		node.style.overflowY = "auto";
 		
-		node.style.backgroundColor = Constants.LIST_BG_COLOR;
+		node.style.backgroundColor = Constants.LIST_BG_GREY_COLOR;
 	}
 	
 	/**
@@ -68,14 +62,12 @@ class ListViewStyle
 	 */
 	public static function loaderImage(node:HtmlDom)
 	{
-		var VERTICAL_MARGIN:Int = 20;
-		
 		node.style.display = "block";
 		
 		node.style.marginLeft = "auto";
 		node.style.marginRight = "auto";
-		node.style.marginTop = Std.string(VERTICAL_MARGIN) + "px";
-		node.style.marginBottom = Std.string(VERTICAL_MARGIN) + "px";
+		node.style.marginTop = "10px";
+		node.style.marginBottom = Std.string(Constants.LIST_BOTTOM_LOADER_VERTICAL_MARGIN) + "px";
 		
 		node.style.top = Std.string(Lib.window.innerHeight) + "px";
 		//node.style.zIndex = 1000;

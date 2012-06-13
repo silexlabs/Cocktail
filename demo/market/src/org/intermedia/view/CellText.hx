@@ -5,7 +5,7 @@ import js.Dom;
 import org.intermedia.model.ApplicationModel;
 
 /**
- * Base class for list cell. Each ListView has its own cell class inherited from this one.
+ * Base class for text cell
  * 
  * @author Raphael Harmel
  */
@@ -16,9 +16,24 @@ class CellText extends CellBase
 	public function new() 
 	{
 		super();
-		CellTextStyle.setCellStyle(node);
 	}
 	
+	/**
+	 * initialize the default style
+	 */
+	override private function initStyle():Void
+	{
+		// init style model
+		_style = {
+			cell:CellTextStyle.setCellStyle,
+			thumbnailMask:null,
+			thumbnail:null,
+			textBlock:null,
+			title:CellTextStyle.setCellTextStyle,
+			author:null
+		}
+	}
+
 	/**
 	 * update view
 	 */
@@ -32,17 +47,9 @@ class CellText extends CellBase
 		{
 			var textElement:HtmlDom = Lib.document.createTextNode(cellData.title);
 			cellTextContainer.appendChild(textElement);
-			CellTextStyle.setCellTextStyle(cellTextContainer);
+			_style.title(cellTextContainer);
 			node.appendChild(cellTextContainer);
 		}
-			
-		// add separation line
-		/*var line:HtmlDom = Lib.document.createElement("div");
-		// set image style
-		CellTextStyle.setCellLineStyle(line);
-		node.appendChild(line);
-		line.src("assets/greyPixel.png");*/
-
 	}
-
+	
 }

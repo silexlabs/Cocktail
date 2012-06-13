@@ -9,7 +9,6 @@ package org.intermedia.view;
 
 import js.Lib;
 import js.Dom;
-import org.intermedia.view.ScreenResolution;
 import org.intermedia.model.ApplicationModel;
 
 
@@ -22,7 +21,8 @@ import org.intermedia.model.ApplicationModel;
 class CellThumbText1Style
 {
 	static inline var CELL_TEXT_WIDTH_PERCENT:Int = 60;
-	public static inline var CELL_THUMB_WIDTH_PERCENT:Int = 100 - CELL_TEXT_WIDTH_PERCENT - 5;
+	public static inline var CELL_THUMB_WIDTH_PERCENT:Int = 100 - CELL_TEXT_WIDTH_PERCENT - 6;
+	public static inline var CELL_TOP_MARGIN_PERCENT:Int = 8;
 	
 	/**
 	 * Defines cell Style
@@ -35,6 +35,12 @@ class CellThumbText1Style
 	{
 		CellStyle.setCellStyle(node,cellPerLine);
 		
+		node.style.verticalAlign = "middle";
+		
+		// compute cell width in percentage depending on cellPerLine value
+		var cellWidthPercent:Float = CellStyle.computeWidthPercentage(cellPerLine,Constants.CELL_BORDER_WIDTH);
+		node.style.width = Std.string(cellWidthPercent) + "%";
+
 		node.style.height = Std.string(Constants.CELL_HEIGHT) + "px";
 		node.style.maxHeight = Std.string(Constants.CELL_MAX_HEIGHT) + "px";
 
@@ -42,7 +48,7 @@ class CellThumbText1Style
 		node.style.overflowY = "hidden";
 		
 		// apply border
-		CellStyle.addBorder(node);
+		CellStyle.addBorder(node,Constants.CELL_BORDER_WIDTH);
 		
 	}
 	
@@ -53,26 +59,18 @@ class CellThumbText1Style
 	 */
 	public static function setThumbnailMaskStyle(node:HtmlDom):Void
 	{
+		node.style.marginTop = Std.string(CELL_TOP_MARGIN_PERCENT) + "%";
+		node.style.marginLeft = "3%";
+
 		node.style.width = Std.string(CELL_THUMB_WIDTH_PERCENT) + "%";
-		node.style.height = Std.string(100) + "%";
+		node.style.height = Std.string(70) + "%";
 		
 		// apply mask style so it can crop the image
 		node.style.overflowX = "hidden";
 		node.style.overflowY = "hidden";
 		node.style.display = "inline-block";
-		//untyped { node.style.borderRadius = "10px"; };
 	}
 	
-	/**
-	 * Defines cell image Style
-	 * 
-	 * @param	image
-	 */
-	/*public static function setThumbnailStyle(image:Image,maskSize:Size):Void
-	{
-		CellThumbStyle.setThumbnailStyle(image,maskSize);
-	}*/
-		
 	/**
 	 * Defines cell text block Style
 	 * 
@@ -81,9 +79,11 @@ class CellThumbText1Style
 	public static function setTextBlockStyle(node:HtmlDom):Void
 	{
 		//setCellStyle(node);
-		
 		node.style.display = "inline-block";
-		node.style.marginLeft = "2%";
+		
+		node.style.marginTop = Std.string(Std.int(CELL_TOP_MARGIN_PERCENT/2)) + "%";
+		node.style.marginLeft = "3%";
+		
 		node.style.verticalAlign = "top";
 		node.style.width = Std.string(CELL_TEXT_WIDTH_PERCENT) + "%";
 		
@@ -97,7 +97,7 @@ class CellThumbText1Style
 	private static function setTextStyle(node:HtmlDom):Void
 	{
 		node.style.display = "block";
-		node.style.color = '#202020';
+		node.style.color = Constants.CELL_FONT_COLOR;
 		node.style.fontFamily = 'Arial, sans-serif';
 	}
 
@@ -106,53 +106,11 @@ class CellThumbText1Style
 	 * 
 	 * @param	node
 	 */
-	public static function setTitleStyle(node:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
+	public static function setTitleStyle(node:HtmlDom):Void
 	{
 		setTextStyle(node);
 		
-		if (screenResolutionSize == null)
-			screenResolutionSize = ScreenResolutionSize.small;
-		
-		var fontSize:Int = 14;
-		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 14;
-		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 16;
-		else  fontSize = 18;
-		
-		node.style.fontSize = Std.string(fontSize) + "px";
-		//node.style.fontWeight = "bold";
+		node.style.fontSize = "14px";
 	}
 
-	/**
-	 * Defines cell comment Style
-	 * 
-	 * @param	node
-	 */
-	public static function setAuthorStyle(node:HtmlDom,?screenResolutionSize:ScreenResolutionSize):Void
-	{
-		setTextStyle(node);
-
-		var fontSize:Int = 10;
-		if (screenResolutionSize == ScreenResolutionSize.small) fontSize = 10;
-		else if (screenResolutionSize == ScreenResolutionSize.normal) fontSize = 11;
-		else  fontSize = 12;
-		
-		node.style.fontSize = Std.string(fontSize) + "px";
-		node.style.fontWeight = "normal";
-	}
-	
-	/**
-	 * Defines cell line Style
-	 * 
-	 * @param	node
-	 */
-	public static function setLineStyle(node:HtmlDom):Void
-	{
-		node.style.display = "block";
-		node.style.position = "relative";
-
-		node.style.width = "100%";
-		node.style.height = "1px";
-		node.style.marginTop = Std.string(Constants.CELL_VERTICAL_SPACE) + "px";	
-	}
-	
 }

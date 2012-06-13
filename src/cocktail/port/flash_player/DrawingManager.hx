@@ -52,17 +52,19 @@ class DrawingManager extends AbstractDrawingManager
 	 */
 	public function new(width:Int, height:Int) 
 	{
-		//TODO : should be in an overriden method instead ?
 		this._nativeElement = new Sprite();
 		
 		
 		super(width, height);
 		
 		_typedNativeElement = cast(this._nativeElement);
+
 		
 		//init the bitmap display object and attach it to the display list
 		_bitmapDrawing = new Bitmap(new BitmapData(_width, _height, true, 0x00000000));
-		this._nativeElement.addChild(_bitmapDrawing);
+		
+		_typedNativeElement.addChild(_bitmapDrawing);
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -475,7 +477,7 @@ class DrawingManager extends AbstractDrawingManager
 	{
 		super.setWidth(value);
 		_bitmapDrawing = new Bitmap(new BitmapData(value, height, true, 0x00000000));
-		this._nativeElement.addChild(_bitmapDrawing);
+		_typedNativeElement.addChild(_bitmapDrawing);
 		return _width = value;
 	}
 	
@@ -484,7 +486,7 @@ class DrawingManager extends AbstractDrawingManager
 	{
 		super.setHeight(value);
 		_bitmapDrawing = new Bitmap(new BitmapData(width, value, true, 0x00000000));
-		this._nativeElement.addChild(_bitmapDrawing);
+		_typedNativeElement.addChild(_bitmapDrawing);
 		return _height = value;
 	}
 	

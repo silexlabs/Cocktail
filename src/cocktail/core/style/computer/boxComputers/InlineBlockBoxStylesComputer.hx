@@ -29,32 +29,8 @@ class InlineBlockBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * for inlineBlock non-embedded HTMLElements, auto margin compute to 0
 	 */
-	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
+	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Float
 	{
-		return 0;
+		return 0.0;
 	}
-	
-	/**
-	 * if the width is set to 'auto', then this method is called once all the children
-	 * of the inlineBlock are laid out
-	 */
-	override public function shrinkToFit(style:CoreStyle, containingHTMLElementData:ContainingHTMLElementData, minimumWidth:Int):Int
-	{
-		var shrinkedWidth:Int;
-		
-		//if the minimum width that must use the inlineBlock
-		//is not superior to the width of the containing
-		//HTMLElement, use the minimum width
-		if (minimumWidth < containingHTMLElementData.width)
-		{
-			shrinkedWidth = minimumWidth;
-		}
-		else
-		{
-			shrinkedWidth = containingHTMLElementData.width;
-		}
-		
-		return shrinkedWidth;
-	}
-	
 }

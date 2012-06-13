@@ -127,7 +127,7 @@ class BackgroundDrawingManager extends DrawingManager
 		
 			matrix.translate(totalWidth, totalHeight);
 			
-			matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight, { x:0.0, y:0.0 } );
+			matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight);
 			
 			drawImage(nativeImage, matrix, backgroundPaintingBox);
 			
@@ -173,11 +173,11 @@ class BackgroundDrawingManager extends DrawingManager
 	 * @param	computedBackgroundPosition
 	 * @param	backgroundRepeat
 	 * 
-	 * TODO : flash gradient doesn't use the same rotation
+	 * TODO 5 : flash gradient doesn't use the same rotation
 	 */
 	public function drawBackgroundGradient(gradient:GradientValue, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeat):Void
 	{
-		var gradientSurface:DrawingManager = new DrawingManager(computedBackgroundSize.width, computedBackgroundSize.height);
+		var gradientSurface:DrawingManager = new DrawingManager(Math.round(computedBackgroundSize.width), Math.round(computedBackgroundSize.height));
 		
 		var fillStyle:FillStyleValue;
 		var lineStyle = LineStyleValue.none;
@@ -196,10 +196,10 @@ class BackgroundDrawingManager extends DrawingManager
 		}
 		
 		gradientSurface.beginFill(fillStyle, lineStyle);
-		gradientSurface.drawRect(0, 0, computedBackgroundSize.width, computedBackgroundSize.height);
+		gradientSurface.drawRect(0, 0, Math.round(computedBackgroundSize.width), Math.round(computedBackgroundSize.height));
 		gradientSurface.endFill();
 		
-		drawBackgroundImage(gradientSurface.nativeElement, backgroundPositioningBox, backgroundPaintingBox, computedBackgroundSize.width, computedBackgroundSize.height, computedBackgroundSize.width / computedBackgroundSize.height, computedBackgroundSize, computedBackgroundPosition, backgroundRepeat);
+		drawBackgroundImage(gradientSurface.nativeElement, backgroundPositioningBox, backgroundPaintingBox, Math.round(computedBackgroundSize.width), Math.round(computedBackgroundSize.height), computedBackgroundSize.width / computedBackgroundSize.height, computedBackgroundSize, computedBackgroundPosition, backgroundRepeat);
 		
 		
 	}
@@ -219,7 +219,7 @@ class BackgroundDrawingManager extends DrawingManager
 			switch (value[i].stop)
 			{
 				case GradientStopValue.length(value):
-					//TODO
+					//TODO 5
 					ratio = 0;
 					
 				case GradientStopValue.percent(value):

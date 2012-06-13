@@ -1,6 +1,6 @@
 * {
 
-width: auto;
+/*width: auto;
 height: auto;
 
 min-width: 0;
@@ -28,10 +28,19 @@ clear: none;
 
 font-family:serif;
 color:black;
-text-decoration:none;
+text-decoration:none;*/
 
 /*box-sizing:border-box;
 -moz-box-sizing:border-box; /* Firefox */
 /*-webkit-box-sizing:border-box; /* Safari */
+
+/* Done to avoid default mobile Safari tap color */
+-webkit-tap-highlight-color: rgba(0,0,0,0);
+/* This will disable user selection (orange border on click) in Firefox and WebKit */
+-webkit-user-select:none;
+-moz-user-select:none;
+
+/* used to have native scroll in iOS5 */
+/*-webkit-overflow-scrolling: touch;*/
 
 }
