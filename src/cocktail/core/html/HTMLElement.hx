@@ -1301,14 +1301,14 @@ class HTMLElement extends Element
 		//that the computed styles are up to date
 		invalidate(InvalidationReason.needsImmediateLayout);
 		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
-		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
+		return Math.round(computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight);
 	}
 	
 	private function get_offsetHeight():Int
 	{
 		invalidate(InvalidationReason.needsImmediateLayout);
 		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
-		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+		return Math.round(computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom);
 	}
 	
 	//TODO 3  : unit test
@@ -1330,14 +1330,14 @@ class HTMLElement extends Element
 		//that the computed styles are up to date
 		invalidate(InvalidationReason.needsImmediateLayout);
 		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
-		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
+		return Math.round(computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight);
 	}
 	
 	private function get_clientHeight():Int
 	{
 		invalidate(InvalidationReason.needsImmediateLayout);
 		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
-		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+		return Math.round(computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom);
 	}
 	
 	//TODO 5 : should be top border height

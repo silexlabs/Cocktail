@@ -526,7 +526,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{
 				//_graphicsContext.x = globalBounds.x;
 				//_graphicsContext.y = globalBounds.y;
-				
+				var globalBounds:RectangleData = globalBounds;
 				_graphicsContext.scrollRect = new flash.geom.Rectangle(0 , 0, scrollableContainerBlock.width + globalBounds.x, scrollableContainerBlock.height + globalBounds.y);
 
 			}
@@ -602,7 +602,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData);
 		}
 		
-		layoutScrollBarsIfNecessary(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData);
+		layoutScrollBarsIfNecessary(viewportData);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -656,7 +656,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	//TODO 4 : more complex thant it should
-	private function layoutScrollBarsIfNecessary(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData):Void
+	private function layoutScrollBarsIfNecessary(viewportData:ContainingBlockData):Void
 	{
 		var horizontalScrollBarContainerBlockData = getContainerBlockData();
 		
@@ -1288,13 +1288,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	override private function getContainerBlockData():ContainingBlockData
 	{
-		var height:Int = this.computedStyle.height;
+		var height:Float = this.computedStyle.height;
 		if (_horizontalScrollBar != null)
 		{
 			height -= _horizontalScrollBar.coreStyle.computedStyle.height;
 		}
 		
-		var width:Int = this.computedStyle.width;
+		var width:Float = this.computedStyle.width;
 		if (_verticalScrollBar != null)
 		{
 			width -= _verticalScrollBar.coreStyle.computedStyle.width;

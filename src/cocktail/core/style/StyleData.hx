@@ -1271,9 +1271,9 @@ import cocktail.core.renderer.TextRenderer;
 	 * meaning it depends on its content dimension
 	 */
 	typedef ContainingBlockData = {
-		var width:Int;
+		var width:Float;
 		var isWidthAuto:Bool;
-		var height:Int;
+		var height:Float;
 		var isHeightAuto:Bool;
 	}
 	

@@ -988,7 +988,7 @@ class UnitManager
 	 * @return returns the computed value as pixel with rounded
 	 * values
 	 */ 
-	public static function getPixelFromLength(length:Length, emReference:Float, exReference:Float):Int
+	public static function getPixelFromLength(length:Length, emReference:Float, exReference:Float):Float
 	{
 		var lengthValue:Float;
 		
@@ -1019,7 +1019,7 @@ class UnitManager
 				lengthValue = exReference * value;
 		}
 		
-		return Math.round(lengthValue);
+		return lengthValue;
 	}
 	
 	/**
@@ -1085,7 +1085,7 @@ class UnitManager
 	 * @param	reference the reference value
 	 * @return a percentage of the reference value
 	 */
-	public static function getPixelFromPercent(percent:Int, reference:Int):Float
+	public static function getPixelFromPercent(percent:Int, reference:Float):Float
 	{
 		return reference * (percent * 0.01);
 	}
@@ -1096,7 +1096,7 @@ class UnitManager
 	 * @param	reference
 	 * @return
 	 */
-	public static function getPercentFromPixel(pixel:Int, reference:Int):Float
+	public static function getPercentFromPixel(pixel:Float, reference:Float):Float
 	{
 		return (reference / pixel) * 100;
 	}

@@ -47,9 +47,9 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 		style.computedStyle.height = getComputedAutoHeight(style, containingBlockData);
 		
 		//left margin
-		style.computedStyle.marginTop = 0;
+		style.computedStyle.marginTop = 0.0;
 		//right margin
-		style.computedStyle.marginBottom = 0;
+		style.computedStyle.marginBottom = 0.0;
 	
 	}
 	
@@ -62,33 +62,33 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 		style.computedStyle.height = getComputedHeight(style, containingBlockData);
 		
 		//left margin
-		style.computedStyle.marginTop = 0;
+		style.computedStyle.marginTop = 0.0;
 		//right margin
-		style.computedStyle.marginBottom = 0;
+		style.computedStyle.marginBottom = 0.0;
 	}
 	
 	/**
 	 * auto margin compute to 0 for inline non-embedded HTMLElement
 	 */
-	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
+	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Float
 	{	
-		return 0;
+		return 0.0;
 	}
 	
 	/**
 	 * for inline, non embedded HTMLElement, the width doesn't apply
 	 */
-	override private function getComputedWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	override private function getComputedWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
-		return 0;
+		return 0.0;
 	}
 	
 	/**
 	 * for inline, non embedded HTMLElement, the height doesn't apply
 	 */
-	override private function getComputedHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	override private function getComputedHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
-		return 0;
+		return 0.0;
 	}
 
 	

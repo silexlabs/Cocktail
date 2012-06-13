@@ -299,7 +299,7 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the width when not 'auto' and return it as pixels
 	 */
-	private function getComputedWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	private function getComputedWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		return getComputedDimension(style.width, containingBlockData.width, containingBlockData.isWidthAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 	}
@@ -309,7 +309,7 @@ class BoxStylesComputer
 	 * the remaining width of the containing HTMLElement once the margins and paddings width have been
 	 * removed
 	 */
-	private function getComputedAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	private function getComputedAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		return containingBlockData.width - style.computedStyle.paddingLeft - style.computedStyle.paddingRight - style.computedStyle.marginLeft - style.computedStyle.marginRight;
 	}
@@ -321,7 +321,7 @@ class BoxStylesComputer
 	/**
 	 * Get the computed height of the HTMLElement when not 'auto' and returns it as pixels
 	 */ 
-	private function getComputedHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	private function getComputedHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{		
 		return getComputedDimension(style.height, containingBlockData.height, containingBlockData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 	}
@@ -331,7 +331,7 @@ class BoxStylesComputer
 	 * as its children total height is not known yet, it will be set once all its children have been
 	 * laid out
 	 */ 
-	private function getComputedAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	private function getComputedAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		return 0;
 	}
@@ -342,7 +342,7 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the left margin and return it as pixels
 	 */
-	private function getComputedMarginLeft(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	private function getComputedMarginLeft(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		return getComputedMargin(style.marginLeft, style.marginRight, containingBlockData.width, style.computedStyle.width, style.width == Dimension.cssAuto, style.computedStyle.paddingRight + style.computedStyle.paddingLeft, style.fontMetrics.fontSize, style.fontMetrics.xHeight, true  );
 	}
@@ -350,7 +350,7 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the right margin and return it as pixels
 	 */
-	private function getComputedMarginRight(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	private function getComputedMarginRight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		return getComputedMargin(style.marginRight, style.marginLeft, containingBlockData.width, style.computedStyle.width, style.width == Dimension.cssAuto, style.computedStyle.paddingRight + style.computedStyle.paddingLeft, style.fontMetrics.fontSize, style.fontMetrics.xHeight, true  );
 	}
@@ -358,7 +358,7 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the top margin and return it as pixels
 	 */
-	private function getComputedMarginTop(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	private function getComputedMarginTop(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		return getComputedMargin(style.marginTop, style.marginBottom, containingBlockData.height, style.computedStyle.height, style.height == Dimension.cssAuto, style.computedStyle.paddingTop + style.computedStyle.paddingBottom, style.fontMetrics.fontSize, style.fontMetrics.xHeight, false  );
 	}
@@ -366,7 +366,7 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the bottom margin and return it as pixels
 	 */
-	private function getComputedMarginBottom(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	private function getComputedMarginBottom(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		return getComputedMargin(style.marginBottom, style.marginTop, containingBlockData.height, style.computedStyle.height, style.height == Dimension.cssAuto, style.computedStyle.paddingTop + style.computedStyle.paddingBottom, style.fontMetrics.fontSize, style.fontMetrics.xHeight, false  );
 	}
@@ -390,10 +390,10 @@ class BoxStylesComputer
 	 * @param	isHorizontalMargin true if the margin is horizontal (left or right)
 	 * @return the computed thickness of the margin
 	 */
-	private function getComputedMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
+	private function getComputedMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Float
 	{
 		//the return value
-		var computedMargin:Int;
+		var computedMargin:Float;
 		
 		//check which type of value is defined
 		switch (marginStyleValue)
@@ -409,7 +409,7 @@ class BoxStylesComputer
 				//margin default to 0 if containing dimension is undefined
 				if (isDimensionAuto == true)
 				{
-					computedMargin = 0;
+					computedMargin = 0.0;
 				}
 				else
 				{
@@ -428,16 +428,16 @@ class BoxStylesComputer
 	/**
 	 * Return the width of an auto margin
 	 */
-	private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Int, computedDimension:Int, isDimensionAuto:Bool, computedPaddingsDimension:Int, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Int
+	private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Float
 	{
-		var computedMargin:Int;
+		var computedMargin:Float;
 		
 		//if the containing dimension is set to auto,
 		//margin default to 0. Top and bottom margin also default to 0 with
 		//an auto value
 		if (isHorizontalMargin == false || isDimensionAuto == true)
 		{
-			computedMargin = 0;
+			computedMargin = 0.0;
 		}
 		//if the margin is either left or right the containing width is defined
 		else
@@ -447,12 +447,11 @@ class BoxStylesComputer
 			{
 				//if it is, then both margin have the same thickness and share the place left by the content and paddings
 				case cssAuto:
-					computedMargin = Math.round((containingHTMLElementDimension - computedDimension - computedPaddingsDimension) / 2);
+					computedMargin = (containingHTMLElementDimension - computedDimension - computedPaddingsDimension) / 2;
 				
 				//else the oposite margin thickness is computed and the computed margin is deduced from the remaining space	
 				default:
-					var opositeComputedMargin = getComputedMargin(opositeMargin, marginStyleValue, containingHTMLElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin);
-					
+					var opositeComputedMargin:Float = getComputedMargin(opositeMargin, marginStyleValue, containingHTMLElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin);
 					computedMargin = containingHTMLElementDimension - computedDimension - computedPaddingsDimension - opositeComputedMargin; 
 			}
 		}
@@ -475,9 +474,9 @@ class BoxStylesComputer
 	 * @param	isMinConstraint true if min-width or min-height is computed
 	 * @return a computed contraint dimensions in pixels
 	 */
-	private function getComputedConstrainedDimension(constrainedDimension:ConstrainedDimension, containingHTMLElementDimension:Int, isContainingDimensionAuto:Bool, fontSize:Float, xHeight:Float, isMinConstraint:Bool = false):Int
+	private function getComputedConstrainedDimension(constrainedDimension:ConstrainedDimension, containingHTMLElementDimension:Float, isContainingDimensionAuto:Bool, fontSize:Float, xHeight:Float, isMinConstraint:Bool = false):Float
 	{
-		var computedConstraintDimension:Int;
+		var computedConstraintDimension:Float;
 		
 		//check which type of value is defined
 		switch (constrainedDimension)
@@ -500,12 +499,12 @@ class BoxStylesComputer
 					}
 					else
 					{
-						computedConstraintDimension = Math.round(Math.POSITIVE_INFINITY);
+						computedConstraintDimension = Math.POSITIVE_INFINITY;
 					}
 				}
 				else
 				{
-					computedConstraintDimension = Math.round(UnitManager.getPixelFromPercent(value, containingHTMLElementDimension));
+					computedConstraintDimension = UnitManager.getPixelFromPercent(value, containingHTMLElementDimension);
 				}
 				
 			//here no constraint are applied,
@@ -513,11 +512,11 @@ class BoxStylesComputer
 			case none:
 				if (isMinConstraint == true)
 				{
-					computedConstraintDimension = 0;
+					computedConstraintDimension = 0.0;
 				}
 				else 
 				{
-					computedConstraintDimension = Math.round(Math.POSITIVE_INFINITY);
+					computedConstraintDimension = Math.POSITIVE_INFINITY;
 				}
 		}
 		
@@ -537,9 +536,9 @@ class BoxStylesComputer
 	 * @param  xHeight the computed x height of the containing HTMLElement, used to compute the PositionOffset if it is a length value
 	 * defined in 'ex'
 	 */
-	private function getComputedPositionOffset(positionOffsetStyleValue:PositionOffset, containingHTMLElementDimension:Int, fontSize:Float, xHeight:Float):Int
+	private function getComputedPositionOffset(positionOffsetStyleValue:PositionOffset, containingHTMLElementDimension:Float, fontSize:Float, xHeight:Float):Float
 	{
-		var computedPositionOffset:Int;
+		var computedPositionOffset:Float;
 		
 		switch(positionOffsetStyleValue)
 		{
@@ -547,10 +546,10 @@ class BoxStylesComputer
 				computedPositionOffset = UnitManager.getPixelFromLength(value, fontSize, xHeight);
 				
 			case percent(value):
-				computedPositionOffset = Math.round(UnitManager.getPixelFromPercent(value, containingHTMLElementDimension));
+				computedPositionOffset = UnitManager.getPixelFromPercent(value, containingHTMLElementDimension);
 				
 			case cssAuto:
-				computedPositionOffset = 0;
+				computedPositionOffset = 0.0;
 		}
 		
 		return computedPositionOffset;
@@ -568,9 +567,9 @@ class BoxStylesComputer
 	 * defined in 'ex'
 	 * @return a computed dimension in pixel
 	 */
-	private function getComputedDimension(dimensionStyleValue:Dimension, containingHTMLElementDimension:Int, isContainingDimensionAuto:Bool, fontSize:Float, xHeight:Float):Int
+	private function getComputedDimension(dimensionStyleValue:Dimension, containingHTMLElementDimension:Float, isContainingDimensionAuto:Bool, fontSize:Float, xHeight:Float):Float
 	{
-		var computedDimensions:Int;
+		var computedDimensions:Float;
 		
 		//check which type of value is defined
 		switch (dimensionStyleValue)
@@ -583,7 +582,7 @@ class BoxStylesComputer
 			//It's a percentage, compute it from the containing dimension	
 			case percent(value):
 			
-				computedDimensions = Math.round(UnitManager.getPixelFromPercent(value, containingHTMLElementDimension));
+				computedDimensions = UnitManager.getPixelFromPercent(value, containingHTMLElementDimension);
 
 			case cssAuto:
 				//Dealt with in the measureAutoHeight and measureAutoWidth
@@ -605,9 +604,9 @@ class BoxStylesComputer
 	 * defined in 'ex'
 	 * @return a computed padding in pixel
 	 */
-	private function getComputedPadding(paddingStyleValue:Padding, containingHTMLElementDimension:Int, fontSize:Float, xHeight:Float):Int
+	private function getComputedPadding(paddingStyleValue:Padding, containingHTMLElementDimension:Float, fontSize:Float, xHeight:Float):Float
 	{
-		var computedPaddingValue:Int;
+		var computedPaddingValue:Float;
 		
 		//check which type of value is defined
 		switch (paddingStyleValue)
@@ -619,7 +618,7 @@ class BoxStylesComputer
 			
 			//It's a percentage, compute it from the containing dimension		
 			case percent(value):
-				computedPaddingValue = Math.round(UnitManager.getPixelFromPercent(value, containingHTMLElementDimension));
+				computedPaddingValue = UnitManager.getPixelFromPercent(value, containingHTMLElementDimension);
 				
 		}
 		

@@ -200,7 +200,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	 * compute the static value for left which is the value that will place the left margin edge
 	 * of the HTMLElement to the left edge of its containing HTMLElement
 	 */
-	private function getComputedStaticLeft(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	private function getComputedStaticLeft(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		return style.computedStyle.marginLeft;
 	}
@@ -209,7 +209,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	 * compute the static value for top which is the value that will place the top margin edge
 	 * of the HTMLElement to the top edge of its containing HTMLElement
 	 */
-	private function getComputedStaticTop(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	private function getComputedStaticTop(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		return style.computedStyle.marginTop;
 	}

@@ -242,14 +242,6 @@ class BoxRenderer extends ElementRenderer
 		//to determine the transformation center
 		_coreStyle.computeVisualEffectStyles();
 		
-		//some text and font styles needs to be re-computed now that all the dimension
-		//of the ElementRenderer are known, for instance some values of the VerticalAlign style
-		//might need those dimensions to compute the right values
-		//
-		//TODO 4 : shouldn't be necessary anymore as vertical align is computed during formatting.
-		//Only used for vertical align and text indent
-		_coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
-		
 		//compute the background styles which can be computed at this time,
 		//such as the background color, most of the background styles will be computed
 		//during the rendering
@@ -528,11 +520,14 @@ class BoxRenderer extends ElementRenderer
 	 */
 	private function getWindowData():ContainingBlockData
 	{	
+		var width:Float = cocktail.Lib.window.innerWidth;
+		var height:Float = cocktail.Lib.window.innerHeight;
+		
 		var windowData:ContainingBlockData = {
 			isHeightAuto:false,
 			isWidthAuto:false,
-			width:cocktail.Lib.window.innerWidth,
-			height:cocktail.Lib.window.innerHeight
+			width:width,
+			height:height
 		}
 		
 		return windowData;

@@ -59,46 +59,46 @@ class ComputedStyle
 	/**
 	 * box model styles
 	 */
-	private var _marginLeft:Int;
-	public var marginLeft(getMarginLeft, setMarginLeft):Int;
-	private var _marginRight:Int;
-	public var marginRight(getMarginRight, setMarginRight):Int;
-	private var _marginTop:Int;
-	public var marginTop(getMarginTop, setMarginTop):Int;
-	private var _marginBottom:Int;
-	public var marginBottom(getMarginBottom, setMarginBottom):Int;
+	private var _marginLeft:Float;
+	public var marginLeft(getMarginLeft, setMarginLeft):Float;
+	private var _marginRight:Float;
+	public var marginRight(getMarginRight, setMarginRight):Float;
+	private var _marginTop:Float;
+	public var marginTop(getMarginTop, setMarginTop):Float;
+	private var _marginBottom:Float;
+	public var marginBottom(getMarginBottom, setMarginBottom):Float;
 	
-	private var _paddingLeft:Int;
-	public var paddingLeft(getPaddingLeft, setPaddingLeft):Int;
-	private var _paddingRight:Int;
-	public var paddingRight(getPaddingRight, setPaddingRight):Int;
-	private var _paddingTop:Int;
-	public var paddingTop(getPaddingTop, setPaddingTop):Int;
-	private var _paddingBottom:Int;
-	public var paddingBottom(getPaddingBottom, setPaddingBottom):Int;
+	private var _paddingLeft:Float;
+	public var paddingLeft(getPaddingLeft, setPaddingLeft):Float;
+	private var _paddingRight:Float;
+	public var paddingRight(getPaddingRight, setPaddingRight):Float;
+	private var _paddingTop:Float;
+	public var paddingTop(getPaddingTop, setPaddingTop):Float;
+	private var _paddingBottom:Float;
+	public var paddingBottom(getPaddingBottom, setPaddingBottom):Float;
 
-	private var _width:Int;
-	public var width(getWidth, setWidth):Int;
-	private var _height:Int;
-	public var height(getHeight, setHeight):Int;
+	private var _width:Float;
+	public var width(getWidth, setWidth):Float;
+	private var _height:Float;
+	public var height(getHeight, setHeight):Float;
 	
-	private var _minHeight:Int;
-	public var minHeight(getMinHeight, setMinHeight):Int;
-	private var _maxHeight:Int;
-	public var maxHeight(getMaxHeight, setMaxHeight):Int;
-	private var _minWidth:Int;
-	public var minWidth(getMinWidth, setMinWidth):Int;
-	private var _maxWidth:Int;
-	public var maxWidth(getMaxWidth, setMaxWidth):Int;
+	private var _minHeight:Float;
+	public var minHeight(getMinHeight, setMinHeight):Float;
+	private var _maxHeight:Float;
+	public var maxHeight(getMaxHeight, setMaxHeight):Float;
+	private var _minWidth:Float;
+	public var minWidth(getMinWidth, setMinWidth):Float;
+	private var _maxWidth:Float;
+	public var maxWidth(getMaxWidth, setMaxWidth):Float;
 
-	private var _top:Int;
-	public var top(getTop, setTop):Int;
-	private var _left:Int;
-	public var left(getLeft, setLeft):Int;
-	private var _bottom:Int;
-	public var bottom(getBottom, setBottom):Int;
-	private var _right:Int;
-	public var right(getRight, setRight):Int;
+	private var _top:Float;
+	public var top(getTop, setTop):Float;
+	private var _left:Float;
+	public var left(getLeft, setLeft):Float;
+	private var _bottom:Float;
+	public var bottom(getBottom, setBottom):Float;
+	private var _right:Float;
+	public var right(getRight, setRight):Float;
 	
 	/**
 	 * background styles
@@ -154,11 +154,11 @@ class ComputedStyle
 	private var _textTransform:TextTransform;
 	public var textTransform(getTextTransform, setTextTransform):TextTransform;
 	
-	private var _letterSpacing:Int;
-	public var letterSpacing(getLetterSpacing, setLetterSpacing):Int;
+	private var _letterSpacing:Float;
+	public var letterSpacing(getLetterSpacing, setLetterSpacing):Float;
 	
-	private var _wordSpacing:Int;
-	public var wordSpacing(getWordSpacing, setWordSpacing):Int;
+	private var _wordSpacing:Float;
+	public var wordSpacing(getWordSpacing, setWordSpacing):Float;
 	
 	private var _whiteSpace:WhiteSpace;
 	public var whiteSpace(getWhiteSpace, setWhiteSpace):WhiteSpace;
@@ -166,8 +166,8 @@ class ComputedStyle
 	private var _textAlign:TextAlign;
 	public var textAlign(getTextAlign, setTextAlign):TextAlign;
 	
-	private var _textIndent:Int;
-	public var textIndent(getTextIndent, setTextIndent):Int;
+	private var _textIndent:Float;
+	public var textIndent(getTextIndent, setTextIndent):Float;
 		
 	private var _verticalAlign:Float;
 	public var verticalAlign(getVerticalAlign, setVerticalAlign):Float;
@@ -318,7 +318,7 @@ class ComputedStyle
 	/**
 	 * Constrain computed width if it is above/below max/min width
 	 */
-	private function constrainWidth(style:CoreStyle, computedWidth:Int):Int
+	private function constrainWidth(style:CoreStyle, computedWidth:Float):Float
 	{
 		var computedStyle:ComputedStyle = style.computedStyle;
 		
@@ -346,7 +346,7 @@ class ComputedStyle
 	/**
 	 * Constrain computed height if it is above/below max/min height
 	 */
-	private function constrainHeight(style:CoreStyle, computedHeight:Int):Int
+	private function constrainHeight(style:CoreStyle, computedHeight:Float):Float
 	{
 		var computedStyle:ComputedStyle = style.computedStyle;
 	
@@ -372,55 +372,55 @@ class ComputedStyle
 	// SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function setWidth(value:Int):Int 
+	private function setWidth(value:Float):Float 
 	{
 		_width = constrainWidth(_coreStyle, value);
 		return value;
 	}
 	
-	private function setMarginLeft(value:Int):Int 
+	private function setMarginLeft(value:Float):Float 
 	{
 		_marginLeft = value;
 		return value;
 	}
 	
-	private function setMarginRight(value:Int):Int 
+	private function setMarginRight(value:Float):Float 
 	{
 		_marginRight = value;
 		return value;
 	}
 	
-	private function setMarginTop(value:Int):Int 
+	private function setMarginTop(value:Float):Float 
 	{
 		_marginTop = value;
 		return value;
 	}
 	
-	private function setMarginBottom(value:Int):Int 
+	private function setMarginBottom(value:Float):Float 
 	{
 		_marginBottom = value;
 		return value;
 	}
 	
-	private function setPaddingLeft(value:Int):Int 
+	private function setPaddingLeft(value:Float):Float 
 	{
 		_paddingLeft = value;
 		return value;
 	}
 	
-	private function setPaddingRight(value:Int):Int 
+	private function setPaddingRight(value:Float):Float 
 	{
 		_paddingRight = value;
 		return value;
 	}
 	
-	private function setPaddingTop(value:Int):Int 
+	private function setPaddingTop(value:Float):Float 
 	{
 		_paddingTop = value;
 		return value;
 	}
 	
-	private function setPaddingBottom(value:Int):Int 
+	private function setPaddingBottom(value:Float):Float 
 	{
 		_paddingBottom = value;
 		return value;
@@ -438,55 +438,55 @@ class ComputedStyle
 		return value;
 	}
 	
-	private function setHeight(value:Int):Int 
+	private function setHeight(value:Float):Float 
 	{
 		_height = constrainHeight(_coreStyle, value);
 		return value;
 	}
 	
-	private function setMinHeight(value:Int):Int 
+	private function setMinHeight(value:Float):Float 
 	{
 		_minHeight = value;
 		return value;
 	}
 	
-	private function setMaxHeight(value:Int):Int 
+	private function setMaxHeight(value:Float):Float 
 	{
 		_maxHeight = value;
 		return value;
 	}
 	
-	private function setMinWidth(value:Int):Int 
+	private function setMinWidth(value:Float):Float 
 	{
 		_minWidth = value;
 		return value;
 	}
 	
-	private function setMaxWidth(value:Int):Int 
+	private function setMaxWidth(value:Float):Float 
 	{
 		_maxWidth = value;
 		return value;
 	}
 	
-	private function setTop(value:Int):Int 
+	private function setTop(value:Float):Float 
 	{
 		_top = value;
 		return value;
 	}
 	
-	private function setLeft(value:Int):Int 
+	private function setLeft(value:Float):Float 
 	{
 		_left = value;
 		return value;
 	}
 	
-	private function setBottom(value:Int):Int 
+	private function setBottom(value:Float):Float 
 	{
 		_bottom = value;
 		return value;
 	}
 	
-	private function setRight(value:Int):Int 
+	private function setRight(value:Float):Float 
 	{
 		_right = value;
 		return value;
@@ -546,13 +546,13 @@ class ComputedStyle
 		return value;
 	}
 	
-	private function setLetterSpacing(value:Int):Int
+	private function setLetterSpacing(value:Float):Float
 	{
 		_letterSpacing = value;
 		return value;
 	}
 	
-	private function setWordSpacing(value:Int):Int
+	private function setWordSpacing(value:Float):Float
 	{
 		_wordSpacing = value;
 		return value;
@@ -576,7 +576,7 @@ class ComputedStyle
 		return value;
 	}
 	
-	private function setTextIndent(value:Int):Int
+	private function setTextIndent(value:Float):Float
 	{
 		_textIndent = value;
 		return value;
@@ -664,44 +664,44 @@ class ComputedStyle
 		return _visibility;
 	}
 	
-	private function getMarginLeft():Int 
+	private function getMarginLeft():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.MARGIN_LEFT_STYLE_NAME, _marginLeft));
+		return getTransitionablePropertyValue(CSSConstants.MARGIN_LEFT_STYLE_NAME, _marginLeft);
 	}
 	
-	private function getMarginRight():Int 
+	private function getMarginRight():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.MARGIN_RIGHT_STYLE_NAME, _marginRight));
+		return getTransitionablePropertyValue(CSSConstants.MARGIN_RIGHT_STYLE_NAME, _marginRight);
 	}
 	
-	private function getMarginTop():Int 
+	private function getMarginTop():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.MARGIN_TOP_STYLE_NAME, _marginTop));
+		return getTransitionablePropertyValue(CSSConstants.MARGIN_TOP_STYLE_NAME, _marginTop);
 	}
 	
-	private function getMarginBottom():Int 
+	private function getMarginBottom():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.MARGIN_BOTTOM_STYLE_NAME, _marginBottom));
+		return getTransitionablePropertyValue(CSSConstants.MARGIN_BOTTOM_STYLE_NAME, _marginBottom);
 	}
 	
-	private function getPaddingLeft():Int 
+	private function getPaddingLeft():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.PADDING_LEFT_STYLE_NAME, _paddingLeft));
+		return getTransitionablePropertyValue(CSSConstants.PADDING_LEFT_STYLE_NAME, _paddingLeft);
 	}
 	
-	private function getPaddingRight():Int 
+	private function getPaddingRight():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.PADDING_RIGHT_STYLE_NAME, _paddingRight));
+		return getTransitionablePropertyValue(CSSConstants.PADDING_RIGHT_STYLE_NAME, _paddingRight);
 	}
 	
-	private function getPaddingTop():Int 
+	private function getPaddingTop():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.PADDING_TOP_STYLE_NAME, _paddingTop));
+		return getTransitionablePropertyValue(CSSConstants.PADDING_TOP_STYLE_NAME, _paddingTop);
 	}
 	
-	private function getPaddingBottom():Int 
+	private function getPaddingBottom():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.PADDING_BOTTOM_STYLE_NAME, _paddingBottom));
+		return getTransitionablePropertyValue(CSSConstants.PADDING_BOTTOM_STYLE_NAME, _paddingBottom);
 	}
 	
 	private function getDisplay():Display 
@@ -714,54 +714,54 @@ class ComputedStyle
 		return _position;
 	}
 	
-	private function getWidth():Int 
+	private function getWidth():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.WIDTH_STYLE_NAME, _width));
+		return getTransitionablePropertyValue(CSSConstants.WIDTH_STYLE_NAME, _width);
 	}
 	
-	private function getHeight():Int 
+	private function getHeight():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.HEIGHT_STYLE_NAME, _height));
+		return getTransitionablePropertyValue(CSSConstants.HEIGHT_STYLE_NAME, _height);
 	}
 	
-	private function getMinHeight():Int 
+	private function getMinHeight():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.MIN_HEIGHT_STYLE_NAME, _minHeight));
+		return getTransitionablePropertyValue(CSSConstants.MIN_HEIGHT_STYLE_NAME, _minHeight);
 	}
 	
-	private function getMaxHeight():Int 
+	private function getMaxHeight():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.MAX_HEIGHT_STYLE_NAME, _maxHeight));
+		return getTransitionablePropertyValue(CSSConstants.MAX_HEIGHT_STYLE_NAME, _maxHeight);
 	}
 	
-	private function getMinWidth():Int 
+	private function getMinWidth():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.MIN_WIDTH_STYLE_NAME, _minWidth));
+		return getTransitionablePropertyValue(CSSConstants.MIN_WIDTH_STYLE_NAME, _minWidth);
 	}
 	
-	private function getMaxWidth():Int 
+	private function getMaxWidth():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.MAX_WIDTH_STYLE_NAME, _maxWidth));
+		return getTransitionablePropertyValue(CSSConstants.MAX_WIDTH_STYLE_NAME, _maxWidth);
 	}
 	
-	private function getTop():Int 
+	private function getTop():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.TOP_STYLE_NAME, _top));
+		return getTransitionablePropertyValue(CSSConstants.TOP_STYLE_NAME, _top);
 	}
 	
-	private function getLeft():Int 
+	private function getLeft():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.LEFT_STYLE_NAME, _left));
+		return getTransitionablePropertyValue(CSSConstants.LEFT_STYLE_NAME, _left);
 	}
 	
-	private function getBottom():Int 
+	private function getBottom():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.BOTTOM_STYLE_NAME, _bottom));
+		return getTransitionablePropertyValue(CSSConstants.BOTTOM_STYLE_NAME, _bottom);
 	}
 	
-	private function getRight():Int 
+	private function getRight():Float 
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.RIGHT_STYLE_NAME, _right));
+		return getTransitionablePropertyValue(CSSConstants.RIGHT_STYLE_NAME, _right);
 	}
 	
 	private function getCSSFloat():CSSFloat 
@@ -809,9 +809,9 @@ class ComputedStyle
 		return _textTransform;
 	}
 	
-	private function getLetterSpacing():Int
+	private function getLetterSpacing():Float
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.LETTER_SPACING_STYLE_NAME, _letterSpacing));
+		return getTransitionablePropertyValue(CSSConstants.LETTER_SPACING_STYLE_NAME, _letterSpacing);
 	}
 	
 	private function getColor():ColorData
@@ -819,9 +819,9 @@ class ComputedStyle
 		return _color;
 	}
 	
-	private function getWordSpacing():Int
+	private function getWordSpacing():Float
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.WORD_SPACING_STYLE_NAME, _wordSpacing));
+		return getTransitionablePropertyValue(CSSConstants.WORD_SPACING_STYLE_NAME, _wordSpacing);
 	}
 	
 	private function getLineHeight():Float
@@ -834,9 +834,9 @@ class ComputedStyle
 		return _verticalAlign;
 	}
 	
-	private function getTextIndent():Int
+	private function getTextIndent():Float
 	{
-		return Math.round(getTransitionablePropertyValue(CSSConstants.TEXT_INDENT_STYLE_NAME, _textIndent));
+		return getTransitionablePropertyValue(CSSConstants.TEXT_INDENT_STYLE_NAME, _textIndent);
 	}
 	
 	private function getWhiteSpace():WhiteSpace
