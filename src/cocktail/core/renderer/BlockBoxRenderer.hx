@@ -584,8 +584,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData):Void
 	{	
 		super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData);
-		
-		_isLayingOut = true;
 
 		//only get scrollable bounds for bloc box renderer
 		//which might display scrollbars
@@ -605,9 +603,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		
 		layoutScrollBarsIfNecessary(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData);
-
-		_isLayingOut = false;
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

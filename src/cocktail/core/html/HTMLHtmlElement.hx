@@ -96,6 +96,7 @@ class HTMLHtmlElement extends HTMLElement
 	 */
 	override private function set_innerHTML(value:String):String
 	{
+		trace(value);
 		super.set_innerHTML(value);
 		
 		var htmlDocument:HTMLDocument = cast(_ownerDocument);

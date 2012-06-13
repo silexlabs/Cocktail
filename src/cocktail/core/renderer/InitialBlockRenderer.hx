@@ -31,12 +31,20 @@ import haxe.Timer;
  */
 class InitialBlockRenderer extends BlockBoxRenderer
 {
+	
+	
+	private static inline var INVALIDATION_INTERVAL:Int = 25;
+	
+	private var _invalidationScheduled:Bool;
+	
 	/**
 	 * class constructor.
 	 */
 	public function new(node:HTMLElement) 
 	{
 		super(node);
+		
+		_invalidationScheduled = false;
 		
 		//call the attachement method itself as it is 
 		//supposed to be called by parent ElementRenderer
@@ -84,13 +92,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * The initial block renderer doesn't have a parent, so when invalidated,
 	 * it always starts a layout
 	 */
-	override public function invalidateLayout(immediate:Bool = false):Void
+	private function invalidateLayout(immediate:Bool = false):Void
 	{
-		//don't call if the body has already scheduled a layout, unless
-		//an immediate layout is required
-		if (this._isLayingOut == false || immediate == true)
+		if (_invalidationScheduled == false || immediate == true)
 		{
-			this._isLayingOut = true;
+			_invalidationScheduled = true;
 			doInvalidate(immediate);
 		}
 	}
@@ -125,6 +131,15 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	
 	override private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
 	{
+		_needsLayout = true;
+		_childrenNeedLayout = true;
+		_needsVisualEffectsRendering = true;
+		_needsRendering = true;
+		_positionedChildrenNeedLayout = true;
+		
+		
+		invalidateLayout(false);
+		
 		
 	}
 	
@@ -138,14 +153,9 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	private function layoutAndRender():Void
 	{
-		_needsLayout = true;
-		_childrenNeedLayout = true;
-		_needsVisualEffectsRendering = true;
-		_needsRendering = true;
-		_positionedChildrenNeedLayout = true;
-		
 		startLayout();
 		startRendering();
+		_invalidationScheduled = false;
 	}
 	
 	/**
@@ -346,7 +356,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		//that first all synchronous code is executed
 		Timer.delay(function () { 
 			layoutAndRenderDelegate();
-		}, 1);
+		}, INVALIDATION_INTERVAL);
 		#end
 	}
 	

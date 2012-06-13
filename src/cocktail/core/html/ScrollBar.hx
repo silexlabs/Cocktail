@@ -491,7 +491,6 @@ class ScrollBar extends HTMLElement
 		_maxScroll = value;
 		scroll = _maxScroll * scrollPercent; 
 		
-		
 		updateThumbSize();
 		
 		return value;
