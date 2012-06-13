@@ -102,7 +102,7 @@ class BoxRenderer extends ElementRenderer
 	private function renderBackground(graphicContext:NativeElement):Void
 	{
 
-				//compute the background styles which can be computed at this time,
+		//compute the background styles which can be computed at this time,
 		//such as the background color, most of the background styles will be computed
 		//during the rendering
 		//
@@ -230,28 +230,13 @@ class BoxRenderer extends ElementRenderer
 	 * @param   containingBlockFontMetricsData the font metrics of the containing block which might be necessary to compute some styles.
 	 * For instance, style defined with a length using the 'em' unit will refer to the computed font size of the containing block
 	 */
-	override public function layout(firstPositionedAncestorData:FirstPositionedAncestorData):Void
+	override public function layout():Void
 	{	
 		if (_needsLayout == true)
 		{
 			layoutSelf();
 			_needsLayout = false;
 		}
-		
-		
-		
-		//if (_childrenNeedLayout == true)
-		//{
-			//layout all the children of the ElementRenderer if it has any
-			layoutChildren(firstPositionedAncestorData);
-		//}
-		_childrenNeedLayout = false;
-		
-
-		
-		//insert the ElementRenderer in the absolutely positioned array if it is itself absolutely positioned
-		//so that it can be positioned by its first positioned ancestor once it is laid out
-		storeAbsolutelyPositionedChild(firstPositionedAncestorData);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -260,10 +245,9 @@ class BoxRenderer extends ElementRenderer
 	
 	private function layoutSelf():Void
 	{
-		var containiningBlock:BlockBoxRenderer = getContainingBlock();
-			
-		var containingBlockData:ContainingBlockData = containiningBlock.getContainerBlockData();
-		var containingBlockFontMetricsData:FontMetricsData = containiningBlock.coreStyle.fontMetrics;
+		var containingBlock:FlowBoxRenderer = getContainingBlock();
+		var containingBlockData:ContainingBlockData = containingBlock.getContainerBlockData();
+		var containingBlockFontMetricsData:FontMetricsData = containingBlock.coreStyle.fontMetrics;
 		//compute all the styles of the ElementRenderer
 		//
 		//TODO 1 : styles which can be computed without any external data should be when their specified
@@ -272,39 +256,6 @@ class BoxRenderer extends ElementRenderer
 
 		//compute the box styles (width, height, margins, paddings...)
 		_coreStyle.computeBoxModelStyles(containingBlockData, isReplaced());
-	}
-	
-	/**
-	 * Lay out all the children of the ElementRenderer
-	 */
-	private function layoutChildren(firstPositionedAncestorData:FirstPositionedAncestorData):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Insert the ElementRenderer in the array of absolutely positioned elements if it
-	 * in fact an absolutely positioned element
-	 */
-	private function storeAbsolutelyPositionedChild(firstPositionedAncestorData:FirstPositionedAncestorData):Void
-	{
-		//don't do anything for static or relative positioned elements.
-		//Relative positioning is only an offset applied during rendering
-		if (isPositioned() == false || isRelativePositioned() == true)
-		{
-			return;
-		}
-		
-		//store as a positioned ElementRenderer.
-		//an absolutely positioned ElementRenderer is not laid out right away, it must
-		//wait for its first positioned ancestor to be laid out. The reason is that
-		//if the positioned ancestor height is 'auto', the height of the positioned
-		//ancestor is not yet determined and so this ElementRenderer can't be laid out
-		//using the bottom or right style yet. Once the first ancestor is laid out, it
-		//lays out all the stored positioned children
-		
-		//store the ElementRenderer to be laid out later
-		firstPositionedAncestorData.elements.push(this);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

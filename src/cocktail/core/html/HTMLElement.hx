@@ -778,7 +778,7 @@ class HTMLElement extends Element
 	 * at early stage, will be updated once they
 	 * are more widely implemented
 	 */
-	public function requestFullscreen():Void
+	public function requestFullScreen():Void
 	{
 		var htmlDocument:HTMLDocument = cast(_ownerDocument);
 		htmlDocument.fullscreenElement = this;

@@ -581,9 +581,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Overriden to deal with the scrollbars once the children of this
 	 * BlockBoxRenderer are laid out
 	 */
-	override public function layout(firstPositionedAncestorData:FirstPositionedAncestorData):Void
+	override public function layout():Void
 	{	
-		super.layout(firstPositionedAncestorData);
+		super.layout();
 
 		//only get scrollable bounds for bloc box renderer
 		//which might display scrollbars
@@ -599,7 +599,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (isVerticalScrollAttached != (_verticalScrollBar != null) || isHorizontalScrollAttached != (_horizontalScrollBar != null) )
 		{
-			super.layout(firstPositionedAncestorData);
+			super.layout();
 		}
 		
 		layoutScrollBarsIfNecessary(getWindowData());

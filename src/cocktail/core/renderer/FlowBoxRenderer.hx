@@ -9,6 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
@@ -24,12 +25,18 @@ import cocktail.core.font.FontData;
  */
 class FlowBoxRenderer extends BoxRenderer 
 {
+	
+	private var _positionedChildren:Array<ElementRenderer>;
+	
 	/**
 	 * class constructor
 	 */
 	public function new(node:HTMLElement) 
 	{
 		super(node);
+		
+		
+		_positionedChildren = new Array<ElementRenderer>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -63,35 +70,29 @@ class FlowBoxRenderer extends BoxRenderer
 		return ret;
 	}
 	
+	public function addPositionedChildren(element:ElementRenderer):Void
+	{
+		_positionedChildren.push(element);
+	}
+	
+	public function removePositionedChild(element:ElementRenderer):Void
+	{
+		_positionedChildren.remove(element);
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Lay out all the children of the ElementRenderer
-	 */
-	override private function layoutChildren(firstPositionedAncestorData:FirstPositionedAncestorData):Void
+	override public function layout():Void
 	{
-		//Holds a reference to the dimensions of the first positioned ancestor of the 
-		//laid out children and to each of the children using it as first positioned ancestor
-		//
-		//if the ElementRenderer is positioned, it becomes the first positioned ancestor for the children it
-		//lays out, and will be used as origin for absolutely positioned children. Each absolutely positioned
-		//children will be stored and once this ElementRenderer is laid out, it will lay out all those children.
-		//The layout of absolutely positioned children must happen once the dimensions of this ElementRenderer are 
-		//known so that children can be positioned using the 'bottom' and 'right' styles which use the dimensions
-		//of the ElementRenderer as containing dimensions
-		var childrenFirstPositionedAncestorData:FirstPositionedAncestorData = getChildrenFirstPositionedAncestorData(firstPositionedAncestorData);
+		super.layout();
 		
-		/**
-		 * Actually layout all the children of the ElementRenderer by calling
-		 * the layout method recursively on all the children
-		 */
-		var length:Int = _childNodes.length;
-		for (i in 0...length)
+		if (_childrenNeedLayout == true)
 		{
-			var childElementRenderer:ElementRenderer = _childNodes[i];
-			childElementRenderer.layout(childrenFirstPositionedAncestorData);
+			//layout all the children of the ElementRenderer if it has any
+			layoutChildren();
+			_childrenNeedLayout = false;
 		}
 		
 		//starts the formatting of the children of this FlowBoxRenderer
@@ -104,14 +105,45 @@ class FlowBoxRenderer extends BoxRenderer
 		{
 			//if this ElementRenderer is positioned, it means that it is the first positioned ancestor
 			//for its positioned children and it is its responsability to lay them out
-			layoutAbsolutelyPositionedChildrenIfNeeded(childrenFirstPositionedAncestorData, getWindowData());
+			if (isPositioned() == true)
+			{
+				layoutPositionedChildren();
+			}
+			_positionedChildrenNeedLayout = false;
 		}
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function layoutPositionedChildren():Void
+	{
+		var containerBlockData:ContainingBlockData = getContainerBlockData();
+		var windowData:ContainingBlockData = getWindowData();
+		
+		//lay out each stored children
+		var length:Int = _positionedChildren.length;
+		for (i in 0...length)
+		{
+			//layout the child ElementRenderer which set its x and y positioned origin in the space of this ElementRenderer's
+			//positioned origin
+			layoutPositionedChild(_positionedChildren[i], containerBlockData, windowData);
+		}
+	}
+	
+	private function layoutChildren():Void
+	{
+		/**
+		 * Actually layout all the children of the ElementRenderer by calling
+		 * the layout method recursively on all the children
+		 */
+		var length:Int = _childNodes.length;
+		for (i in 0...length)
+		{
+			_childNodes[i].layout();
+		}
+	}
 	
 	/**
 	 * starts the formatting of the box
@@ -119,25 +151,6 @@ class FlowBoxRenderer extends BoxRenderer
 	private function format():Void
 	{
 		//abstract
-	}
-	
-	/**
-	 * layout absolutely positioned descendant if this ElementRenderer is positioned
-	 */
-	private function layoutAbsolutelyPositionedChildrenIfNeeded(childrenFirstPositionedAncestorData:FirstPositionedAncestorData, viewportData:ContainingBlockData):Void
-	{
-		if (isPositioned() == true)
-		{
-			//lay out each stored children
-			var length:Int = childrenFirstPositionedAncestorData.elements.length;
-			for (i in 0...length)
-			{
-				var element:ElementRenderer = childrenFirstPositionedAncestorData.elements[i];
-				//layout the child ElementRenderer which set its x and y positioned origin in the space of this ElementRenderer's
-				//positioned origin
-				layoutPositionedChild(element, getContainerBlockData(), viewportData);
-			}
-		}
 	}
 	
 	/**
@@ -201,7 +214,8 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function getLeftOffset(elementRenderer:ElementRenderer):Float
 	{
-		return elementRenderer.coreStyle.computedStyle.left + elementRenderer.coreStyle.computedStyle.marginLeft;
+		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
+		return computedStyle.left + computedStyle.marginLeft;
 	}
 	
 	/**
@@ -209,8 +223,9 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function getRightOffset(elementRenderer:ElementRenderer, containingHTMLElementWidth:Float):Float
 	{
-		return containingHTMLElementWidth - elementRenderer.coreStyle.computedStyle.width + elementRenderer.coreStyle.computedStyle.paddingLeft
-		+ elementRenderer.coreStyle.computedStyle.paddingRight + elementRenderer.coreStyle.computedStyle.right - elementRenderer.coreStyle.computedStyle.marginRight;
+		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
+		return containingHTMLElementWidth - computedStyle.width + computedStyle.paddingLeft
+		+ computedStyle.paddingRight + computedStyle.right - computedStyle.marginRight;
 	}
 	
 	/**
@@ -218,7 +233,8 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function getTopOffset(elementRenderer:ElementRenderer):Float
 	{
-		return elementRenderer.coreStyle.computedStyle.top + elementRenderer.coreStyle.computedStyle.marginTop;
+		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
+		return computedStyle.top + computedStyle.marginTop;
 	}
 	
 	/**
@@ -226,8 +242,9 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function getBottomOffset(elementRenderer:ElementRenderer, containingHTMLElementHeight:Float):Float
 	{
-		return containingHTMLElementHeight - elementRenderer.coreStyle.computedStyle.height + elementRenderer.coreStyle.computedStyle.paddingTop +
-		elementRenderer.coreStyle.computedStyle.paddingBottom - elementRenderer.coreStyle.computedStyle.bottom;
+		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
+		return containingHTMLElementHeight - computedStyle.height + computedStyle.paddingTop +
+		computedStyle.paddingBottom - computedStyle.bottom;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -261,33 +278,5 @@ class FlowBoxRenderer extends BoxRenderer
 			}
 		}
 		return false;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Return the structure used to layout absolutely positioned
-	 * children. If this ElementRenderer is positioned, a new
-	 * structure is created, else the current one is used
-	 */
-	private function getChildrenFirstPositionedAncestorData(firstPositionedAncestorData:FirstPositionedAncestorData):FirstPositionedAncestorData
-	{
-		var childFirstPositionedAncestorData:FirstPositionedAncestorData;
-		
-		if (isPositioned() == true)
-		{
-			childFirstPositionedAncestorData = {
-				data: getContainerBlockData(),
-				elements: new Array<ElementRenderer>()
-			}
-		}
-		else
-		{
-			childFirstPositionedAncestorData = firstPositionedAncestorData;
-		}
-		
-		return childFirstPositionedAncestorData;
 	}
 }

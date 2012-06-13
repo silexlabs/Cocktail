@@ -233,6 +233,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	private var _needsRendering:Bool;
 	
 	private var _needsVisualEffectsRendering:Bool;
+
 	
 	/**
 	 * class constructor. init class attribute
@@ -246,6 +247,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		#if (flash9 || nme)
 		_graphicsContext = new flash.display.Sprite();
 		#end
+		
 		
 		_hasOwnLayer = false;
 		
@@ -303,8 +305,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	override public function appendChild(newChild:ElementRenderer):ElementRenderer
 	{
 		super.appendChild(newChild);
+		
 		var elementRendererChild:ElementRenderer = newChild;
-		elementRendererChild.attachLayer();
+		elementRendererChild.attach();
+		
 		invalidate(InvalidationReason.other);
 		return newChild;
 	}
@@ -319,7 +323,8 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		//must happen before calling super, else the ElementRenderer
 		//won't have a parent anymore
 		var elementRendererChild:ElementRenderer = oldChild;
-		elementRendererChild.detachLayer();
+		elementRendererChild.detach();
+		
 		super.removeChild(oldChild);
 		invalidate(InvalidationReason.other);
 		return oldChild;
@@ -342,10 +347,12 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	// PUBLIC LAYOUT METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+
+	
 	/*
 	 * Layout this ElementRenderer so that it knows its bounds and can be rendered to the screen
 	 */ 
-	public function layout(firstPositionedAncestorData:FirstPositionedAncestorData):Void
+	public function layout():Void
 	{	
 		//abstract
 	}
@@ -374,7 +381,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * Attach the LayerRenderer of this ElementRenderer
 	 * to the LayerRenderer tree so that it can be rendered
 	 */
-	public function attachLayer():Void
+	public function attach():Void
 	{
 		//create the LayerRenderer if needed
 		if (_layerRenderer == null)
@@ -395,22 +402,34 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		for (i in 0...length)
 		{
 			var child:ElementRenderer = _childNodes[i];
-			child.attachLayer();
+			child.attach();
 		}
+		
+		
+		
+		//TODO 2 : shouldn't be applied to Scrollbar, or scrollbar ContainingBlock
+		//should always be the parent block box
+		if (isPositioned() == true)
+		{
+			getContainingBlock().addPositionedChildren(this);
+		}
+		
 	}
 	
 	/**
 	 * Detach the LayerRenderer of this ElementRenderer from the LayerRenderer
 	 * tree if necessary
 	 */
-	public function detachLayer():Void
+	public function detach():Void
 	{
+		getContainingBlock().removePositionedChild(this);
+		
 		//first detach the LayerRenderer of all its children
 		var length:Int = _childNodes.length;
 		for (i in 0...length)
 		{
 			var child:ElementRenderer = _childNodes[i];
-			child.detachLayer();
+			child.detach();
 		}
 		
 		//only detach the LayerRenderer if this ElementRenderer
@@ -874,7 +893,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		}
 	}
 	
-	private function getContainingBlock():BlockBoxRenderer
+	private function getContainingBlock():FlowBoxRenderer
 	{	
 		if (isPositioned() == true && isRelativePositioned() == false)
 		{
@@ -889,11 +908,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		}
 		else
 		{
-			return getFirstBlockContainer();
+			return cast(_parentNode);
 		}
 	}
 	
-	private function getFirstPositionedAncestor():BlockBoxRenderer
+	private function getFirstPositionedAncestor():FlowBoxRenderer
 	{
 		var parent:ElementRenderer = _parentNode;
 		while (parent.isPositioned() == false)
@@ -903,22 +922,12 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		return cast(parent);
 	}
 	
-	private function getInitialContainingBlock():BlockBoxRenderer
+	private function getInitialContainingBlock():FlowBoxRenderer
 	{
-		var parent:ElementRenderer = _parentNode;
-		while (true)
-		{
-			if (parent.parentNode == null)
-			{
-				return cast(parent);
-			}
-			parent = parent.parentNode;
-		}
-		
-		return null;
+		return cast(_node.ownerDocument.documentElement.elementRenderer);
 	}
 	
-	private function getFirstBlockContainer():BlockBoxRenderer
+	private function getFirstBlockContainer():FlowBoxRenderer
 	{
 		var parent:ElementRenderer = _parentNode;
 		while (parent.isBlockContainer() == false)
@@ -950,8 +959,8 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function invalidateLayer():Void
 	{
-		detachLayer();
-		attachLayer();
+		detach();
+		attach();
 		//invalidateLayout();
 	}
 	

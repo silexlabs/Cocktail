@@ -78,22 +78,7 @@ class ScrollBarRenderer extends BlockBoxRenderer
 		#end
 		
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE LAYOUT METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * The scrollbar DOM element is absolutely positioned but the scrollbar renderer
-	 * isn't added in the absolutely positioned children array, as it will be laid out
-	 * by its block box renderer which is always considered its first positioned 
-	 * ancestor
-	 */
-	override private function storeAbsolutelyPositionedChild(firstPositionedAncestorData:FirstPositionedAncestorData):Void
-	{
-		
-	}
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -110,7 +95,7 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	 * 
 	 * TODO 2 : update doc
 	 */
-	override private function getContainingBlock():BlockBoxRenderer
+	override private function getContainingBlock():FlowBoxRenderer
 	{	
 		return getFirstBlockContainer();
 	}

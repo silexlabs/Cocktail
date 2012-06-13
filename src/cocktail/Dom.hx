@@ -12,6 +12,7 @@ package cocktail;
  */
 
 typedef Image = cocktail.core.html.HTMLImageElement;
+typedef Video = cocktail.core.html.HTMLVideoElement;
 typedef HtmlDom = cocktail.core.html.HTMLElement;
 typedef Anchor = cocktail.core.html.HTMLAnchorElement;
 typedef Body = cocktail.core.html.HTMLBodyElement;
@@ -22,6 +23,8 @@ typedef FormElement = cocktail.core.html.HTMLInputElement;
 
 //TODO : problem as for mouse event, have to use untyped
 typedef Event = cocktail.core.event.Event;
+typedef CustomEvent = cocktail.core.event.CustomEvent;
+typedef MouseEvent = cocktail.core.event.MouseEvent;
 
 typedef XMLHTTPRequest = cocktail.core.resource.XMLHTTPRequest;
 typedef HtmlCollection<Dynamic> = Array<Dynamic>;

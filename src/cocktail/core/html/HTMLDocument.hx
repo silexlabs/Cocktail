@@ -464,7 +464,9 @@ class HTMLDocument extends Document
 	 */
 	private function getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent:MouseEvent):ElementRenderer
 	{
-		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
+		var screenX:Float = mouseEvent.screenX;
+		var screenY:Float = mouseEvent.screenY;
+		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: screenX, y: screenY }, 0, 0  );
 		
 		//when no element is under mouse like for instance when the mouse leaves
 		//the window, return the body
