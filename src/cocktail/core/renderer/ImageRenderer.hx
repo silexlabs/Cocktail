@@ -45,6 +45,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		containerGraphicContext.addChild(htmlImageElement.embeddedAsset);
 		
+		var globalBounds:RectangleData = globalBounds;
 		htmlImageElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
 		htmlImageElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
 		htmlImageElement.embeddedAsset.width = _coreStyle.computedStyle.width;

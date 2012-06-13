@@ -747,7 +747,12 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	
 	public function childInvalidated(invalidationReason:InvalidationReason):Void
 	{
-		//_childrenNeedLayout = true;
+		_needsLayout = true;
+		_childrenNeedLayout = true;
+		_needsVisualEffectsRendering = true;
+		_needsRendering = true;
+		_positionedChildrenNeedLayout = true;
+		
 		invalidate(invalidationReason);
 	}
 	

@@ -33,7 +33,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 {
 	
 	
-	private static inline var INVALIDATION_INTERVAL:Int = 25;
+	private static inline var INVALIDATION_INTERVAL:Int = 20;
 	
 	private var _invalidationScheduled:Bool;
 	
@@ -137,8 +137,15 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		_needsRendering = true;
 		_positionedChildrenNeedLayout = true;
 		
+		switch (invalidationReason)
+		{
+			case InvalidationReason.needsImmediateLayout:
+				invalidateLayout(true);
+				
+			default:
+				invalidateLayout(false);
+		}
 		
-		invalidateLayout(false);
 		
 		
 	}

@@ -178,8 +178,8 @@ class ComputedStyle
 	private var _opacity:Float;
 	public var opacity(getOpacity, setOpacity):Float;
 	
-	private var _visibility:Bool;
-	public var visibility(getVisibility, setVisibility):Bool;
+	private var _visibility:Visibility;
+	public var visibility(getVisibility, setVisibility):Visibility;
 	
 	private var _overflowX:Overflow;
 	public var overflowX(getOverflowX,  setOverflowX):Overflow;
@@ -262,7 +262,7 @@ class ComputedStyle
 		_whiteSpace=WhiteSpace.normal;
 		_textAlign=TextAlign.left;
 		_color={color:0, alpha:1.0};
-		_visibility=true;
+		_visibility=Visibility.visible;
 		_zIndex=ZIndex.cssAuto;
 		_opacity=1.0;
 		_overflowX= Overflow.visible;
@@ -600,7 +600,7 @@ class ComputedStyle
 		return _opacity;
 	}
 	
-	private function setVisibility(value:Bool):Bool
+	private function setVisibility(value:Visibility):Visibility
 	{
 		_visibility = value;
 		return _visibility;
@@ -659,7 +659,7 @@ class ComputedStyle
 		return getTransitionablePropertyValue(CSSConstants.OPACITY_STYLE_NAME, _opacity);
 	}
 	
-	private function getVisibility():Bool
+	private function getVisibility():Visibility
 	{
 		return _visibility;
 	}

@@ -110,6 +110,8 @@ class BoxRenderer extends ElementRenderer
 		#if (flash9 || nme)
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		var length:Int = backgrounds.length;
+		var globalBounds:RectangleData = globalBounds;
+
 		for (i in 0...length)
 		{
 			backgrounds[i].x = globalBounds.x;
@@ -180,6 +182,7 @@ class BoxRenderer extends ElementRenderer
 	private function getConcatenatedMatrix(matrix:Matrix, relativeOffset:PointData):Matrix
 	{
 		var currentMatrix:Matrix = new Matrix();
+		var globalBounds:RectangleData = globalBounds;
 		
 		//translate to the coordiante system of the box renderer
 		currentMatrix.translate(globalBounds.x + relativeOffset.x, globalBounds.y + relativeOffset.y);

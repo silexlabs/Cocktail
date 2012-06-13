@@ -49,16 +49,6 @@ class VisualEffectStylesComputer
 		//holding the used style value (the ones actually used)
 		var computedStyle:ComputedStyle = style.computedStyle;
 		
-		//opacity
-		computedStyle.opacity = style.opacity;
-		
-		//visibility
-		computedStyle.visibility = getComputedVisibility(style);
-		
-		//overflow
-		computedStyle.overflowX = style.overflowX;
-		computedStyle.overflowY = style.overflowY;
-		
 		//transformOrigin
 		computedStyle.transformOrigin = getComputedTransformOrigin(style);
 		
@@ -127,25 +117,6 @@ class VisualEffectStylesComputer
 		}
 		
 		return transitionDelays;
-	}
-	
-	/**
-	 * Compute the 'visibility' style
-	 */
-	private static function getComputedVisibility(style:CoreStyle):Bool
-	{
-		var visibility:Bool;
-		
-		switch(style.visibility)
-		{
-			case visible:
-				visibility = true;
-				
-			case hidden:
-				visibility = false;
-		}
-		
-		return visibility;
 	}
 	
 	/**

@@ -61,19 +61,6 @@ class BackgroundStylesComputer
 	{
 		//actually compute the background color
 		style.computedStyle.backgroundColor = getComputedBackgroundColor(style);
-		
-		style.computedStyle.backgroundRepeat = style.backgroundRepeat;
-		
-		style.computedStyle.backgroundClip = style.backgroundClip;
-		
-		style.computedStyle.backgroundSize = style.backgroundSize;
-		
-		style.computedStyle.backgroundPosition = style.backgroundPosition;
-
-		style.computedStyle.backgroundOrigin = style.backgroundOrigin;
-		
-		style.computedStyle.backgroundImage = style.backgroundImage;
-
 	}
 	
 	/**

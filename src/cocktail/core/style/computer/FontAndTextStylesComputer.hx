@@ -56,21 +56,6 @@ class FontAndTextStylesComputer
 		//vertival align
 		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingBlockFontMetricsData);
 		
-		//font weight
-		computedStyle.fontWeight = style.fontWeight;
-		
-		//font style
-		computedStyle.fontStyle = style.fontStyle;
-		
-		//font family
-		computedStyle.fontFamily = style.fontFamily;
-		
-		//font variant
-		computedStyle.fontVariant = style.fontVariant;
-		
-		//text transform
-		computedStyle.textTransform = style.textTransform;
-		
 		//letter spacing
 		computedStyle.letterSpacing = getComputedLetterSpacing(style);
 		
@@ -79,12 +64,6 @@ class FontAndTextStylesComputer
 		
 		//text indent
 		computedStyle.textIndent = getComputedTextIndent(style, containingBlockData);
-		
-		//white space
-		computedStyle.whiteSpace = style.whiteSpace;
-		
-		//text align
-		computedStyle.textAlign = getComputedTextAlign(style, computedStyle.whiteSpace);
 		
 		//text color
 		computedStyle.color = getComputedColor(style);
@@ -155,30 +134,6 @@ class FontAndTextStylesComputer
 		}
 		
 		return verticalAlign;
-	}
-	
-	/**
-	 * The text alignement might be influenced by the
-	 * white space style. when there are no line-break,
-	 * the text can't be justified
-	 */
-	private static function getComputedTextAlign(style:CoreStyle, computedWhiteSpace:WhiteSpace):TextAlign
-	{
-		var textAlign:TextAlign = style.textAlign;
-		
-		switch (computedWhiteSpace)
-		{
-			case pre:
-				if (style.textAlign == TextAlign.justify)
-				{
-					
-					textAlign = TextAlign.left;
-				}
-				
-			default:
-		}
-		
-		return textAlign;
 	}
 	
 	/**
