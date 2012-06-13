@@ -165,7 +165,7 @@ class FormattingContext
 			shrinkedWidth = elementRenderer.coreStyle.computedStyle.width;
 		}
 		
-		elementRenderer.coreStyle.computedStyle.width = Math.round(shrinkedWidth);
+		elementRenderer.coreStyle.computedStyle.width = shrinkedWidth;
 	}
 	
 	

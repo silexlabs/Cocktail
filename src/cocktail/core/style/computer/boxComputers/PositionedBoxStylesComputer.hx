@@ -120,7 +120,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			{
 				//compute the size of one of the margin, which is half the remaining horizontal space
 				//once all other values (padding, width, offset) are remove
-				var computedMargin:Int = Math.round((containingBlockData.width - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left - computedStyle.right) / 2);
+				var computedMargin:Float = (containingBlockData.width - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left - computedStyle.right) / 2;
 				
 				if (computedMargin >= 0)
 				{
@@ -280,7 +280,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			{
 				//compute the size of one of the margin, which is half the remaining vertical space
 				//once all other values (padding, width, offset) are removed
-				var computedMargin:Int = Math.round((containingBlockData.height - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top - computedStyle.bottom) / 2);
+				var computedMargin:Float = (containingBlockData.height - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top - computedStyle.bottom) / 2;
 				
 				if (computedMargin >= 0)
 				{

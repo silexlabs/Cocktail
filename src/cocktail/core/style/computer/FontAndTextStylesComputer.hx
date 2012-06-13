@@ -143,7 +143,7 @@ class FontAndTextStylesComputer
 				verticalAlign = 0;
 				
 			case percent(value):
-				verticalAlign = UnitManager.getPixelFromPercent(value, Math.round(style.computedStyle.lineHeight));
+				verticalAlign = UnitManager.getPixelFromPercent(value, style.computedStyle.lineHeight);
 				
 			case length(value):
 				verticalAlign = UnitManager.getPixelFromLength(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
@@ -226,7 +226,7 @@ class FontAndTextStylesComputer
 				lineHeight = style.computedStyle.fontSize * 1.2;
 				
 			case percentage(value):
-				lineHeight = UnitManager.getPixelFromPercent(value, Math.round(style.computedStyle.fontSize));
+				lineHeight = UnitManager.getPixelFromPercent(value, style.computedStyle.fontSize);
 				
 			case number(value):
 				lineHeight = style.computedStyle.fontSize * value;
@@ -269,7 +269,7 @@ class FontAndTextStylesComputer
 				fontSize = UnitManager.getPixelFromLength(unit, parentFontSize, parentXHeight);
 				
 			case percentage(percent):
-				fontSize = UnitManager.getPixelFromPercent(percent, Math.round(parentFontSize));
+				fontSize = UnitManager.getPixelFromPercent(percent, parentFontSize);
 				
 			case absoluteSize(value):
 				fontSize = UnitManager.getFontSizeFromAbsoluteSizeValue(value);

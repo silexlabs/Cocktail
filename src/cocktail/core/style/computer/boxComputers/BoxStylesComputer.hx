@@ -413,7 +413,7 @@ class BoxStylesComputer
 				}
 				else
 				{
-					computedMargin = Math.round(UnitManager.getPixelFromPercent(value, containingHTMLElementDimension));
+					computedMargin = UnitManager.getPixelFromPercent(value, containingHTMLElementDimension);
 				}
 			
 			//auto margins take the remaining place left after

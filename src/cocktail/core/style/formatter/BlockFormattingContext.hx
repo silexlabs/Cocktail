@@ -178,7 +178,7 @@ class BlockFormattingContext extends FormattingContext
 		if (elementRenderer.coreStyle.height == Dimension.cssAuto)
 		{
 			elementRenderer.bounds.height = childHeight + elementRenderer.coreStyle.computedStyle.paddingBottom + elementRenderer.coreStyle.computedStyle.paddingTop ;
-			elementRenderer.coreStyle.computedStyle.height = Math.round(childHeight);
+			elementRenderer.coreStyle.computedStyle.height = childHeight;
 		}
 		
 		concatenatedY += elementRenderer.coreStyle.computedStyle.paddingBottom + parentCollapsedMarginBottom;
