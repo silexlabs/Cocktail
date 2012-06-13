@@ -79,26 +79,26 @@ class LineBox extends NodeBase<LineBox>
 	/**
 	 * the left margin of the line box
 	 */
-	private var _marginLeft:Int;
-	public var marginLeft(get_marginLeft, set_marginLeft):Int;
+	private var _marginLeft:Float;
+	public var marginLeft(get_marginLeft, set_marginLeft):Float;
 	
 	/**
 	 * the right margin of the line box
 	 */
-	private var _marginRight:Int;
-	public var marginRight(get_marginRight, set_marginRight):Int;
+	private var _marginRight:Float;
+	public var marginRight(get_marginRight, set_marginRight):Float;
 	
 	/**
 	 * the left padding of the line box
 	 */
-	private var _paddingLeft:Int;
-	public var paddingLeft(get_paddingLeft, set_paddingLeft):Int;
+	private var _paddingLeft:Float;
+	public var paddingLeft(get_paddingLeft, set_paddingLeft):Float;
 	
 	/**
 	 * the right margin of the line box
 	 */
-	private var _paddingRight:Int;
-	public var paddingRight(get_paddingRight, set_paddingRight):Int;
+	private var _paddingRight:Float;
+	public var paddingRight(get_paddingRight, set_paddingRight):Float;
 	
 	/**
 	 * an instance of a background manager used to draw the backgrounds
@@ -119,6 +119,11 @@ class LineBox extends NodeBase<LineBox>
 			height:0.0
 		}
 		_elementRenderer = elementRenderer;
+		
+		_marginLeft = 0;
+		_marginRight = 0;
+		_paddingLeft = 0;
+		_paddingRight = 0;
 		
 		_leadedAscent = 0;
 		_leadedDescent = 0;
@@ -227,42 +232,42 @@ class LineBox extends NodeBase<LineBox>
 		return _elementRenderer.layerRenderer;
 	}
 	
-	private function get_paddingRight():Int 
+	private function get_paddingRight():Float 
 	{
 		return _paddingRight;
 	}
 	
-	private function set_paddingRight(value:Int):Int 
+	private function set_paddingRight(value:Float):Float 
 	{
 		return _paddingRight = value;
 	}
 	
-	private function get_paddingLeft():Int 
+	private function get_paddingLeft():Float 
 	{
 		return _paddingLeft;
 	}
 	
-	private function set_paddingLeft(value:Int):Int 
+	private function set_paddingLeft(value:Float):Float 
 	{
 		return _paddingLeft = value;
 	}
 	
-	public function get_marginRight():Int
+	public function get_marginRight():Float
 	{
 		return _marginRight;
 	}
 	
-	public function get_marginLeft():Int
+	public function get_marginLeft():Float
 	{
 		return _marginLeft;
 	}
 	
-	public function set_marginLeft(value:Int):Int
+	public function set_marginLeft(value:Float):Float
 	{
 		return _marginLeft = value;
 	}
 	
-	public function set_marginRight(value:Int):Int
+	public function set_marginRight(value:Float):Float
 	{
 		return _marginRight = value;
 	}

@@ -316,8 +316,7 @@ class InlineFormattingContext extends FormattingContext
 		removeSpaces();
 		
 		//format line boxes horizontally
-		var lineBoxWidth:Int = alignLineBox(rootLineBox, isLastLine, getConcatenatedWidth(rootLineBox), getSpacesNumber(rootLineBox));
-		
+		var lineBoxWidth:Float = alignLineBox(rootLineBox, isLastLine, getConcatenatedWidth(rootLineBox), getSpacesNumber(rootLineBox));
 		
 		if (lineBoxWidth > _formattingContextData.maxWidth)
 		{
@@ -325,7 +324,7 @@ class InlineFormattingContext extends FormattingContext
 		}
 		
 		//format line boxes vertically
-		var lineBoxHeight:Int = computeLineBoxHeight(rootLineBox);
+		var lineBoxHeight:Float = computeLineBoxHeight(rootLineBox);
 		
 		//update the y of the formatting context so that the next line will start
 		//below this one
@@ -337,9 +336,9 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * Compute the added width of all the line box in the line
 	 */
-	private function getConcatenatedWidth(lineBox:LineBox):Int
+	private function getConcatenatedWidth(lineBox:LineBox):Float
 	{
-		var concatenatedWidth:Int = 0;
+		var concatenatedWidth:Float = 0.0;
 		
 		var length:Int = lineBox.childNodes.length;
 		for (i in 0...length)
@@ -353,7 +352,7 @@ class InlineFormattingContext extends FormattingContext
 			
 			if (child.isAbsolutelyPositioned() == false || child.isText() == true)
 			{
-				concatenatedWidth += Math.round(child.bounds.width);
+				concatenatedWidth += child.bounds.width;
 			}
 			
 		}
@@ -408,7 +407,7 @@ class InlineFormattingContext extends FormattingContext
 	 * 
 	 * TODO : update doc
 	 */
-	private function alignLineBox(rootLineBox:LineBox, isLastLine:Bool, concatenatedLength:Int, spaceInLine:Int):Int
+	private function alignLineBox(rootLineBox:LineBox, isLastLine:Bool, concatenatedLength:Float, spaceInLine:Int):Float
 	{	
 		//determine the remaining space in the line once all the width of the HTMLElements
 		//are substracted from the total available line width, and the x position where to 
@@ -477,6 +476,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function alignLeft(flowX:Float, lineBox:LineBox):Float
 	{
+
 		flowX += lineBox.paddingLeft + lineBox.marginLeft;
 		
 		var length:Int = lineBox.childNodes.length;
@@ -496,7 +496,7 @@ class InlineFormattingContext extends FormattingContext
 				//TODO 4 : a bit hackish to require checking if is text
 				if (child.isAbsolutelyPositioned() == false || child.isText() == true )
 				{
-					flowX += Math.round(child.bounds.width) + child.marginLeft + child.marginRight;
+					flowX += child.bounds.width + child.marginLeft + child.marginRight;
 				}
 			
 			}
@@ -825,7 +825,7 @@ class InlineFormattingContext extends FormattingContext
 	 * as if each line box starts with a zero-width inline box with t
 	 * he element's font and line height properties. We call that imaginary box a "strut." (The name is inspired by TeX.). 
 	 */
-	private function computeLineBoxHeight(rootLineBox:LineBox):Int
+	private function computeLineBoxHeight(rootLineBox:LineBox):Float
 	{
 		setRootLineBoxMetrics(rootLineBox, rootLineBox, 0.0);
 		
@@ -834,7 +834,7 @@ class InlineFormattingContext extends FormattingContext
 		//compute the line box height
 		var lineBoxHeight:Float = rootLineBox.bounds.height;
 		
-		return Math.round(lineBoxHeight);
+		return lineBoxHeight;
 	}
 	
 	private function setRootLineBoxMetrics(lineBox:LineBox, rootLineBox:LineBox, parentBaseLineOffset:Float):Void

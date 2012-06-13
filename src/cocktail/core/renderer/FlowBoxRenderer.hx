@@ -207,7 +207,7 @@ class FlowBoxRenderer extends BoxRenderer
 	/**
 	 * get the left offset to apply the ElementRenderer
 	 */
-	private function getLeftOffset(elementRenderer:ElementRenderer):Int
+	private function getLeftOffset(elementRenderer:ElementRenderer):Float
 	{
 		return elementRenderer.coreStyle.computedStyle.left + elementRenderer.coreStyle.computedStyle.marginLeft;
 	}
@@ -215,7 +215,7 @@ class FlowBoxRenderer extends BoxRenderer
 	/**
 	 * get the right offset to apply the ElementRenderer
 	 */
-	private function getRightOffset(elementRenderer:ElementRenderer, containingHTMLElementWidth:Int):Int
+	private function getRightOffset(elementRenderer:ElementRenderer, containingHTMLElementWidth:Float):Float
 	{
 		return containingHTMLElementWidth - elementRenderer.coreStyle.computedStyle.width + elementRenderer.coreStyle.computedStyle.paddingLeft
 		+ elementRenderer.coreStyle.computedStyle.paddingRight + elementRenderer.coreStyle.computedStyle.right - elementRenderer.coreStyle.computedStyle.marginRight;
@@ -224,7 +224,7 @@ class FlowBoxRenderer extends BoxRenderer
 	/**
 	 * get the top offset to apply the ElementRenderer
 	 */
-	private function getTopOffset(elementRenderer:ElementRenderer):Int
+	private function getTopOffset(elementRenderer:ElementRenderer):Float
 	{
 		return elementRenderer.coreStyle.computedStyle.top + elementRenderer.coreStyle.computedStyle.marginTop;
 	}
@@ -232,7 +232,7 @@ class FlowBoxRenderer extends BoxRenderer
 	/**
 	 * get the bottom offset to apply the ElementRenderer
 	 */
-	private function getBottomOffset(elementRenderer:ElementRenderer, containingHTMLElementHeight:Int):Int
+	private function getBottomOffset(elementRenderer:ElementRenderer, containingHTMLElementHeight:Float):Float
 	{
 		return containingHTMLElementHeight - elementRenderer.coreStyle.computedStyle.height + elementRenderer.coreStyle.computedStyle.paddingTop +
 		elementRenderer.coreStyle.computedStyle.paddingBottom - elementRenderer.coreStyle.computedStyle.bottom;

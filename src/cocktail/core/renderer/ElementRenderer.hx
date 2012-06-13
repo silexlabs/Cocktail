@@ -778,29 +778,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 	}
 	
-	public function invalidateChildren(root:ElementRenderer):Void
-	{
-		for (i in 0...root.childNodes.length)
-		{
-			var child:ElementRenderer = root.childNodes[i];
-			child.invalidateAll();
-			
-			if (child.hasChildNodes() == true)
-			{
-				invalidateChildren(child);
-			}
-		}
-	}
-	
-	public function invalidateAll():Void
-	{
-			_needsLayout = true;
-				_childrenNeedLayout = true;
-				_needsVisualEffectsRendering = true;
-				_needsRendering = true;
-				_positionedChildrenNeedLayout = true;
-	}
-	
 	private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
 	{
 		

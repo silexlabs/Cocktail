@@ -75,7 +75,7 @@ class BlockFormattingContext extends FormattingContext
 		return null;
 	}
 	
-	private function doFormat(elementRenderer:ElementRenderer, concatenatedX:Float, concatenatedY:Float, currentLineY:Float, parentCollapsedMarginTop:Int, parentCollapsedMarginBottom:Int):Float
+	private function doFormat(elementRenderer:ElementRenderer, concatenatedX:Float, concatenatedY:Float, currentLineY:Float, parentCollapsedMarginTop:Float, parentCollapsedMarginBottom:Float):Float
 	{
 		concatenatedX += elementRenderer.coreStyle.computedStyle.paddingLeft  + elementRenderer.coreStyle.computedStyle.marginLeft;
 
@@ -88,8 +88,8 @@ class BlockFormattingContext extends FormattingContext
 		{
 			var child:ElementRenderer = elementRenderer.childNodes[i];
 			
-			var marginTop:Int = getCollapsedMarginTop(child, parentCollapsedMarginTop);
-			var marginBottom:Int = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
+			var marginTop:Float = getCollapsedMarginTop(child, parentCollapsedMarginTop);
+			var marginBottom:Float = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
 			
 			var computedStyle:ComputedStyle = child.coreStyle.computedStyle;
 			var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
@@ -164,12 +164,12 @@ class BlockFormattingContext extends FormattingContext
 			//find widest line for shrink-to-fit algorithm
 			if (child.bounds.x + child.bounds.width + child.coreStyle.computedStyle.marginRight > _formattingContextData.maxWidth)
 			{
-				_formattingContextData.maxWidth = Math.round(child.bounds.x + child.bounds.width) + child.coreStyle.computedStyle.marginRight;
+				_formattingContextData.maxWidth = child.bounds.x + child.bounds.width + child.coreStyle.computedStyle.marginRight;
 			}
 			
 			if (concatenatedY  > _formattingContextData.maxHeight)
 			{
-				_formattingContextData.maxHeight = Math.round(concatenatedY);
+				_formattingContextData.maxHeight = concatenatedY;
 			}
 			
 		}
@@ -189,9 +189,9 @@ class BlockFormattingContext extends FormattingContext
 		
 	}
 	
-	private function getCollapsedMarginTop(child:ElementRenderer, parentCollapsedMarginTop:Int):Int
+	private function getCollapsedMarginTop(child:ElementRenderer, parentCollapsedMarginTop:Float):Float
 	{
-		var marginTop:Int = child.coreStyle.computedStyle.marginTop;
+		var marginTop:Float = child.coreStyle.computedStyle.marginTop;
 
 		if (child.coreStyle.computedStyle.paddingTop == 0)
 		{
@@ -232,9 +232,9 @@ class BlockFormattingContext extends FormattingContext
 		return marginTop;
 	}
 	
-	private function getCollapsedMarginBottom(child:ElementRenderer, parentCollapsedMarginBottom:Int):Int
+	private function getCollapsedMarginBottom(child:ElementRenderer, parentCollapsedMarginBottom:Float):Float
 	{
-		var marginBottom:Int = child.coreStyle.computedStyle.marginBottom;
+		var marginBottom:Float = child.coreStyle.computedStyle.marginBottom;
 		
 		if (child.coreStyle.computedStyle.paddingBottom == 0)
 		{

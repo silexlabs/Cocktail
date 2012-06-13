@@ -399,11 +399,14 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	
 	override private function getScrollbarContainerBlock():ContainingBlockData
 	{
+		var width:Float = cocktail.Lib.window.innerWidth;
+		var height:Float = cocktail.Lib.window.innerHeight;
+		
 		var windowData:ContainingBlockData = {
 			isHeightAuto:false,
 			isWidthAuto:false,
-			width:cocktail.Lib.window.innerWidth,
-			height:cocktail.Lib.window.innerHeight
+			width:width,
+			height:height
 		}
 		
 		return windowData;
@@ -437,11 +440,14 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	override private function getWindowData():ContainingBlockData
 	{	
+		var width:Float = cocktail.Lib.window.innerWidth;
+		var height:Float = cocktail.Lib.window.innerHeight;
+		
 		var windowData:ContainingBlockData = {
 			isHeightAuto:false,
 			isWidthAuto:false,
-			width:cocktail.Lib.window.innerWidth,
-			height:cocktail.Lib.window.innerHeight
+			width:width,
+			height:height
 		}
 		
 		//scrollbars dimension are removed from the Window dimension

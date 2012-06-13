@@ -177,7 +177,7 @@ class BackgroundDrawingManager extends DrawingManager
 	 */
 	public function drawBackgroundGradient(gradient:GradientValue, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeat):Void
 	{
-		var gradientSurface:DrawingManager = new DrawingManager(computedBackgroundSize.width, computedBackgroundSize.height);
+		var gradientSurface:DrawingManager = new DrawingManager(Math.round(computedBackgroundSize.width), Math.round(computedBackgroundSize.height));
 		
 		var fillStyle:FillStyleValue;
 		var lineStyle = LineStyleValue.none;
@@ -196,10 +196,10 @@ class BackgroundDrawingManager extends DrawingManager
 		}
 		
 		gradientSurface.beginFill(fillStyle, lineStyle);
-		gradientSurface.drawRect(0, 0, computedBackgroundSize.width, computedBackgroundSize.height);
+		gradientSurface.drawRect(0, 0, Math.round(computedBackgroundSize.width), Math.round(computedBackgroundSize.height));
 		gradientSurface.endFill();
 		
-		drawBackgroundImage(gradientSurface.nativeElement, backgroundPositioningBox, backgroundPaintingBox, computedBackgroundSize.width, computedBackgroundSize.height, computedBackgroundSize.width / computedBackgroundSize.height, computedBackgroundSize, computedBackgroundPosition, backgroundRepeat);
+		drawBackgroundImage(gradientSurface.nativeElement, backgroundPositioningBox, backgroundPaintingBox, Math.round(computedBackgroundSize.width), Math.round(computedBackgroundSize.height), computedBackgroundSize.width / computedBackgroundSize.height, computedBackgroundSize, computedBackgroundPosition, backgroundRepeat);
 		
 		
 	}

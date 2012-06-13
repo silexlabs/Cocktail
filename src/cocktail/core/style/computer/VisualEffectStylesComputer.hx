@@ -302,7 +302,7 @@ class VisualEffectStylesComputer
 	/**
 	 * Utils method to compute a TransformValue into a float
 	 */
-	private static function getComputedTranslation(style:CoreStyle, translation:Translation, percentReference:Int):Float
+	private static function getComputedTranslation(style:CoreStyle, translation:Translation, percentReference:Float):Float
 	{
 		var computedTranslation:Float;
 		
