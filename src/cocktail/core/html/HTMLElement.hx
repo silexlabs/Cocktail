@@ -432,6 +432,9 @@ class HTMLElement extends Element
 	 * Another example is if the value of Display is "inline" and
 	 * it is swiched to "block", then the current inline ElementRenderer
 	 * must be replaced by a block ElementRenderer
+	 * 
+	 * TODO 2 : update doc, now also called for position style changes, should
+	 * be for all positioning scheme styles
 	 */
 	public function invalidateDisplay():Void
 	{

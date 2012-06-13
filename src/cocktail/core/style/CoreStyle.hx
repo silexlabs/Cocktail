@@ -1020,7 +1020,7 @@ class CoreStyle
 	{
 		_position = value;
 		_computedStyle.position = value;
-		invalidate(InvalidationReason.styleChanged(CSSConstants.POSITION_STYLE_NAME));
+		invalidateDisplay();
 		return value;
 	}
 	

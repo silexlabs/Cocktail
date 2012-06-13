@@ -103,17 +103,15 @@ class ScrollBarRenderer extends BlockBoxRenderer
 		return false;
 	}
 	
-	
 	/**
 	 * Always return the containing block data, as event though the scroll bar renderer is 
 	 * absolutely positioned, it always considers its block box renderer as its first positioned
 	 * ancestor
+	 * 
+	 * TODO 2 : update doc
 	 */
-	override private function getRelevantContainingBlockData(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:ContainingBlockData):ContainingBlockData
-	{
-		return containingBlockData;
+	override private function getContainingBlock():BlockBoxRenderer
+	{	
+		return getFirstBlockContainer();
 	}
-	
-	
-
 }

@@ -102,6 +102,14 @@ class BoxRenderer extends ElementRenderer
 	private function renderBackground(graphicContext:NativeElement):Void
 	{
 
+				//compute the background styles which can be computed at this time,
+		//such as the background color, most of the background styles will be computed
+		//during the rendering
+		//
+		//TODO 4 : check if its still necessary that they are only computed
+		//during rendering
+		_coreStyle.computeBackgroundStyles();
+		
 		var backgroundManager:BackgroundManager = new BackgroundManager();
 		
 		//TODO 3 : should only pass dimensions instead of bounds
@@ -135,6 +143,13 @@ class BoxRenderer extends ElementRenderer
 	 */
 	private function applyVisualEffects(graphicContext:NativeElement):Void
 	{
+		//when all the dimensions of the ElementRenderer are known, compute the 
+		//visual effects to apply (visibility, opacity, transform, transition)
+		//it is necessary to wait for all dimensions to be known because for
+		//instance the transform style use the height and width of the ElementRenderer
+		//to determine the transformation center
+		_coreStyle.computeVisualEffectStyles();
+		
 		applyOpacity(graphicContext);
 		applyTransformationMatrix(graphicContext);
 	}
@@ -215,13 +230,40 @@ class BoxRenderer extends ElementRenderer
 	 * @param   containingBlockFontMetricsData the font metrics of the containing block which might be necessary to compute some styles.
 	 * For instance, style defined with a length using the 'em' unit will refer to the computed font size of the containing block
 	 */
-	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData):Void
+	override public function layout(firstPositionedAncestorData:FirstPositionedAncestorData):Void
 	{	
-		if (_needsLayout == false)
+		if (_needsLayout == true)
 		{
-			return;
+			layoutSelf();
+			_needsLayout = false;
 		}
 		
+		
+		
+		//if (_childrenNeedLayout == true)
+		//{
+			//layout all the children of the ElementRenderer if it has any
+			layoutChildren(firstPositionedAncestorData);
+		//}
+		_childrenNeedLayout = false;
+		
+
+		
+		//insert the ElementRenderer in the absolutely positioned array if it is itself absolutely positioned
+		//so that it can be positioned by its first positioned ancestor once it is laid out
+		storeAbsolutelyPositionedChild(firstPositionedAncestorData);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function layoutSelf():Void
+	{
+		var containiningBlock:BlockBoxRenderer = getContainingBlock();
+			
+		var containingBlockData:ContainingBlockData = containiningBlock.getContainerBlockData();
+		var containingBlockFontMetricsData:FontMetricsData = containiningBlock.coreStyle.fontMetrics;
 		//compute all the styles of the ElementRenderer
 		//
 		//TODO 1 : styles which can be computed without any external data should be when their specified
@@ -229,45 +271,13 @@ class BoxRenderer extends ElementRenderer
 		_coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
 
 		//compute the box styles (width, height, margins, paddings...)
-		_coreStyle.computeBoxModelStyles(getRelevantContainingBlockData(containingBlockData, viewportData,  firstPositionedAncestorData.data), isReplaced());
-		
-		//if (_childrenNeedLayout == true)
-		//{
-			//layout all the children of the ElementRenderer if it has any
-			layoutChildren(containingBlockData, viewportData, firstPositionedAncestorData);
-		//}
-		_childrenNeedLayout = false;
-		
-		//when all the dimensions of the ElementRenderer are known, compute the 
-		//visual effects to apply (visibility, opacity, transform, transition)
-		//it is necessary to wait for all dimensions to be known because for
-		//instance the transform style use the height and width of the ElementRenderer
-		//to determine the transformation center
-		_coreStyle.computeVisualEffectStyles();
-		
-		//compute the background styles which can be computed at this time,
-		//such as the background color, most of the background styles will be computed
-		//during the rendering
-		//
-		//TODO 4 : check if its still necessary that they are only computed
-		//during rendering
-		_coreStyle.computeBackgroundStyles();
-		
-		//insert the ElementRenderer in the absolutely positioned array if it is itself absolutely positioned
-		//so that it can be positioned by its first positioned ancestor once it is laid out
-		storeAbsolutelyPositionedChild(firstPositionedAncestorData);
-		
-		_needsLayout = false;
+		_coreStyle.computeBoxModelStyles(containingBlockData, isReplaced());
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Lay out all the children of the ElementRenderer
 	 */
-	private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData):Void
+	private function layoutChildren(firstPositionedAncestorData:FirstPositionedAncestorData):Void
 	{
 		//abstract
 	}
@@ -506,7 +516,7 @@ class BoxRenderer extends ElementRenderer
 	 * Return the dimensions data
 	 * of the ElementRenderer
 	 */
-	private function getContainerBlockData():ContainingBlockData
+	public function getContainerBlockData():ContainingBlockData
 	{
 		return {
 			width:this.computedStyle.width,
@@ -534,40 +544,5 @@ class BoxRenderer extends ElementRenderer
 		}
 		
 		return windowData;
-	}
-	
-	/**
-	 * Get the right containing block dimensions for an ElementRenderer
-	 * based on its positioning scheme
-	 */
-	private function getRelevantContainingBlockData(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:ContainingBlockData):ContainingBlockData
-	{
-		var containingBlockDimensions:ContainingBlockData;
-		
-		switch (computedStyle.position)
-		{
-			//for 'fixed' ElementRenderer, takes the viewport (the 'window' through which the document is viewed)
-			case fixed:
-				containingBlockDimensions = {
-					width:viewportData.width,
-					height:viewportData.height,
-					isHeightAuto:viewportData.isHeightAuto,
-					isWidthAuto:viewportData.isWidthAuto };
-					
-			//for 'absolute' takes the first positioned ancestor
-			case absolute:
-				containingBlockDimensions = {
-					width:firstPositionedAncestorData.width,
-					height:firstPositionedAncestorData.height,
-					isHeightAuto:firstPositionedAncestorData.isHeightAuto,
-					isWidthAuto:firstPositionedAncestorData.isWidthAuto};
-				
-			//for 'static' or 'relative' ElementRenderer, takes the containing block dimensions which is the parent	block	
-			case cssStatic, relative:
-				containingBlockDimensions = containingBlockData;
-				
-		}
-		
-		return containingBlockDimensions;
 	}
 }

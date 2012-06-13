@@ -18,6 +18,7 @@ import cocktail.core.style.StyleData;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;
 import cocktail.core.renderer.RendererData;
+import cocktail.core.font.FontData;
 import haxe.Timer;
 
 /**
@@ -203,7 +204,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		
 		//layout all the HTMLElements. After that they all know their bounds relative to the containing
 		//blocks
-		layout(getContainerBlockData(), windowData, firstPositionedAncestorData, _coreStyle.fontMetrics);
+		layout(firstPositionedAncestorData);
 		//set the global bounds on the rendering tree. After that all the elements know their positions
 		//relative to the window
 		
@@ -477,9 +478,14 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * The dimensions of the initial
 	 * block renderer are always the same as the Window
 	 */
-	override private function getContainerBlockData():ContainingBlockData
+	override public function getContainerBlockData():ContainingBlockData
 	{
 		return getWindowData();
+	}
+	
+	override private function getContainingBlock():BlockBoxRenderer
+	{	
+		return this;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -581,9 +581,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Overriden to deal with the scrollbars once the children of this
 	 * BlockBoxRenderer are laid out
 	 */
-	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData):Void
+	override public function layout(firstPositionedAncestorData:FirstPositionedAncestorData):Void
 	{	
-		super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData);
+		super.layout(firstPositionedAncestorData);
 
 		//only get scrollable bounds for bloc box renderer
 		//which might display scrollbars
@@ -599,10 +599,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (isVerticalScrollAttached != (_verticalScrollBar != null) || isHorizontalScrollAttached != (_horizontalScrollBar != null) )
 		{
-			super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData);
+			super.layout(firstPositionedAncestorData);
 		}
 		
-		layoutScrollBarsIfNecessary(viewportData);
+		layoutScrollBarsIfNecessary(getWindowData());
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1285,7 +1285,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * width or height must be substracted from the containing
 	 * block width/height
 	 */
-	override private function getContainerBlockData():ContainingBlockData
+	override public function getContainerBlockData():ContainingBlockData
 	{
 		var height:Float = this.computedStyle.height;
 		if (_horizontalScrollBar != null)
