@@ -38,6 +38,14 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	 */
 	override private function renderBackground(graphicContext:NativeElement):Void
 	{
+				//compute the background styles which can be computed at this time,
+		//such as the background color, most of the background styles will be computed
+		//during the rendering
+		//
+		//TODO 4 : check if its still necessary that they are only computed
+		//during rendering
+		_coreStyle.computeBackgroundStyles();
+		
 		var backgroundManager:BackgroundManager = new BackgroundManager();
 		
 		var windowData:ContainingBlockData = getWindowData();

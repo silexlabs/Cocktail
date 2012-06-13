@@ -345,7 +345,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	/*
 	 * Layout this ElementRenderer so that it knows its bounds and can be rendered to the screen
 	 */ 
-	public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData):Void
+	public function layout(firstPositionedAncestorData:FirstPositionedAncestorData):Void
 	{	
 		//abstract
 	}
@@ -874,7 +874,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		}
 	}
 	
-	private function getContainingBlock():ElementRenderer
+	private function getContainingBlock():BlockBoxRenderer
 	{	
 		if (isPositioned() == true && isRelativePositioned() == false)
 		{
@@ -893,24 +893,24 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		}
 	}
 	
-	private function getFirstPositionedAncestor():ElementRenderer
+	private function getFirstPositionedAncestor():BlockBoxRenderer
 	{
 		var parent:ElementRenderer = _parentNode;
 		while (parent.isPositioned() == false)
 		{
 			parent = parent.parentNode;
 		}
-		return parent;
+		return cast(parent);
 	}
 	
-	private function getInitialContainingBlock():ElementRenderer
+	private function getInitialContainingBlock():BlockBoxRenderer
 	{
 		var parent:ElementRenderer = _parentNode;
 		while (true)
 		{
 			if (parent.parentNode == null)
 			{
-				return parent;
+				return cast(parent);
 			}
 			parent = parent.parentNode;
 		}
@@ -918,15 +918,15 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		return null;
 	}
 	
-	private function getFirstBlockContainer():ElementRenderer
+	private function getFirstBlockContainer():BlockBoxRenderer
 	{
 		var parent:ElementRenderer = _parentNode;
-		while (parent.isBlockContainer() == false || parent.establishesNewFormattingContext() == false)
+		while (parent.isBlockContainer() == false)
 		{
 			parent = parent.parentNode;
 		}
 		
-		return parent;
+		return cast(parent);
 	}
 	
 	/**

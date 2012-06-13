@@ -70,16 +70,8 @@ class FlowBoxRenderer extends BoxRenderer
 	/**
 	 * Lay out all the children of the ElementRenderer
 	 */
-	override private function layoutChildren(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData):Void
+	override private function layoutChildren(firstPositionedAncestorData:FirstPositionedAncestorData):Void
 	{
-		//get the containing dimensions that will be used to lay out the children
-		//of the ElementRenderer (its width and height)
-		var childrenContainingBlockData:ContainingBlockData = getContainerBlockData();
-		
-		//get the computed font metrics of the this ElementRenderer. Those metrics
-		//are based on the font family and the font size used
-		var childrenContainingHTMLElementFontMetricsData:FontMetricsData = _coreStyle.fontMetrics;
-		
 		//Holds a reference to the dimensions of the first positioned ancestor of the 
 		//laid out children and to each of the children using it as first positioned ancestor
 		//
@@ -99,7 +91,7 @@ class FlowBoxRenderer extends BoxRenderer
 		for (i in 0...length)
 		{
 			var childElementRenderer:ElementRenderer = _childNodes[i];
-			childElementRenderer.layout(childrenContainingBlockData, viewportData, childrenFirstPositionedAncestorData, childrenContainingHTMLElementFontMetricsData);
+			childElementRenderer.layout(childrenFirstPositionedAncestorData);
 		}
 		
 		//starts the formatting of the children of this FlowBoxRenderer
@@ -112,7 +104,7 @@ class FlowBoxRenderer extends BoxRenderer
 		{
 			//if this ElementRenderer is positioned, it means that it is the first positioned ancestor
 			//for its positioned children and it is its responsability to lay them out
-			layoutAbsolutelyPositionedChildrenIfNeeded(childrenFirstPositionedAncestorData, viewportData);
+			layoutAbsolutelyPositionedChildrenIfNeeded(childrenFirstPositionedAncestorData, getWindowData());
 		}
 		
 	}
