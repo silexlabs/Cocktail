@@ -47,7 +47,6 @@ class TextRenderer extends ElementRenderer
 	{
 		super(node);
 		_text = cast(node);
-		
 		_lineBoxes = null;
 	}
 	

@@ -1019,6 +1019,7 @@ class CoreStyle
 	private function setPosition(value:Position):Position 
 	{
 		_position = value;
+		_computedStyle.position = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.POSITION_STYLE_NAME));
 		return value;
 	}
@@ -1112,6 +1113,7 @@ class CoreStyle
 	private function setZIndex(value:ZIndex):ZIndex 
 	{
 		_zIndex = value;
+		_computedStyle.zIndex = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.Z_INDEX_STYLE_NAME));
 		return value;
 	}
@@ -1127,6 +1129,7 @@ class CoreStyle
 	private function setFontWeight(value:FontWeight):FontWeight
 	{
 		_fontWeight = value;
+		_computedStyle.fontWeight = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_WEIGHT_STYLE_NAME));
 		return value;
 	}
@@ -1134,6 +1137,7 @@ class CoreStyle
 	private function setFontStyle(value:FontStyle):FontStyle
 	{
 		_fontStyle = value;
+		_computedStyle.fontStyle = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_STYLE_STYLE_NAME));
 		return value;
 	}
@@ -1141,6 +1145,7 @@ class CoreStyle
 	private function setFontFamily(value:Array<String>):Array<String>
 	{
 		_fontFamily = value;
+		_computedStyle.fontFamily = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_FAMILY_STYLE_NAME));
 		return value;
 	}
@@ -1148,6 +1153,7 @@ class CoreStyle
 	private function setFontVariant(value:FontVariant):FontVariant
 	{
 		_fontVariant = value;
+		_computedStyle.fontVariant = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_VARIANT_STYLE_NAME));
 		return value;
 	}
@@ -1155,6 +1161,7 @@ class CoreStyle
 	private function setTextTransform(value:TextTransform):TextTransform
 	{
 		_textTransform = value;
+		_computedStyle.textTransform = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.TEXT_TRANSFORM_STYLE_NAME));
 		return value;
 	}
@@ -1209,6 +1216,7 @@ class CoreStyle
 	private function setWhiteSpace(value:WhiteSpace):WhiteSpace
 	{
 		_whiteSpace = value;
+		_computedStyle.whiteSpace = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.WHITE_SPACE_STYLE_NAME));
 		return value;
 	}
@@ -1216,6 +1224,7 @@ class CoreStyle
 	private function setTextAlign(value:TextAlign):TextAlign
 	{
 		_textAlign = value;
+		_computedStyle.textAlign = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.TEXT_ALIGN_STYLE_NAME));
 		return value;
 	}
@@ -1223,6 +1232,7 @@ class CoreStyle
 	private function setOpacity(value:Opacity):Opacity
 	{
 		_opacity = value;
+		_computedStyle.opacity = value;
 		startTransitionIfNeeded(CSSConstants.OPACITY_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.OPACITY_STYLE_NAME));
 		return _opacity;
@@ -1231,6 +1241,7 @@ class CoreStyle
 	private function setVisibility(value:Visibility):Visibility
 	{
 		_visibility = value;
+		_computedStyle.visibility = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.VISIBILITY_STYLE_NAME));
 		return _visibility;
 	}
@@ -1252,6 +1263,7 @@ class CoreStyle
 	private function setOverflowX(value:Overflow):Overflow
 	{
 		_overflowX = value;
+		_computedStyle.overflowX = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.OVERFLOW_X_STYLE_NAME));
 		return value;
 	}
@@ -1259,6 +1271,7 @@ class CoreStyle
 	private function setOverflowY(value:Overflow):Overflow
 	{
 		_overflowY = value;
+		_computedStyle.overflowY = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.OVERFLOW_Y_STYLE_NAME));
 		return value;
 	}
@@ -1300,6 +1313,7 @@ class CoreStyle
 	private function setBackgroundSize(value:Array<BackgroundSize>):Array<BackgroundSize>
 	{
 		_backgroundSize = value;
+		_computedStyle.backgroundSize = value;
 		invalidate(InvalidationReason.other);
 		return value;
 	}
@@ -1307,6 +1321,7 @@ class CoreStyle
 	private function setBackgroundClip(value:Array<BackgroundClip>):Array<BackgroundClip>
 	{
 		_backgroundClip = value;
+		_computedStyle.backgroundClip = value;
 		invalidate(InvalidationReason.other);
 		return value;
 	}
@@ -1314,6 +1329,7 @@ class CoreStyle
 	private function setBackgroundPosition(value:Array<BackgroundPosition>):Array<BackgroundPosition>
 	{
 		_backgroundPosition = value;
+		_computedStyle.backgroundPosition = value;
 		invalidate(InvalidationReason.other);
 		return value;
 	}
@@ -1321,6 +1337,7 @@ class CoreStyle
 	private function setBackgroundRepeat(value:Array<BackgroundRepeat>):Array<BackgroundRepeat>
 	{
 		_backgroundRepeat = value;
+		_computedStyle.backgroundRepeat = value;
 		invalidate(InvalidationReason.other);
 		return value;
 	}
@@ -1328,6 +1345,7 @@ class CoreStyle
 	private function setBackgroundOrigin(value:Array<BackgroundOrigin>):Array<BackgroundOrigin>
 	{
 		_backgroundOrigin = value;
+		_computedStyle.backgroundOrigin = value;
 		invalidate(InvalidationReason.other);
 		return value;
 	}

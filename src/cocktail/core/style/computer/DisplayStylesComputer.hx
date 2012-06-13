@@ -52,12 +52,6 @@ class DisplayStylesComputer
 		//holding the used style value (the ones actually used)
 		var computedStyle:ComputedStyle = style.computedStyle;
 		
-		//position
-		computedStyle.position = style.position;
-		
-		//zIndex
-		computedStyle.zIndex = style.zIndex;
-		
 		//float
 		computedStyle.cssFloat = getComputedFloat(style, computedStyle.position);
 		
