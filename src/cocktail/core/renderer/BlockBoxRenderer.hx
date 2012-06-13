@@ -1084,8 +1084,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function attachOrDetachVerticalScrollBarIfNecessary():Void
 	{
-		//TODO 1 : shouldn't have to round values, all the formatting should be done with floats
-		if (Math.round(_scrollableBounds.y) < 0 || Math.round(_scrollableBounds.y) + Math.round(_scrollableBounds.height) >  Math.round(bounds.height))
+		if (_scrollableBounds.y < 0 || _scrollableBounds.y + _scrollableBounds.height >  bounds.height)
 		{
 			attachVerticalScrollBar();
 		}

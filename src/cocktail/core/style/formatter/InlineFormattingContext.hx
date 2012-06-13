@@ -95,7 +95,7 @@ class InlineFormattingContext extends FormattingContext
 		if (_formattingContextRoot.coreStyle.height == Dimension.cssAuto)
 		{
 			_formattingContextRoot.bounds.height = _formattingContextData.y  + _formattingContextRoot.coreStyle.computedStyle.paddingBottom ;
-			_formattingContextRoot.coreStyle.computedStyle.height = Math.round(_formattingContextRoot.bounds.height - _formattingContextRoot.coreStyle.computedStyle.paddingBottom  - _formattingContextRoot.coreStyle.computedStyle.paddingTop);
+			_formattingContextRoot.coreStyle.computedStyle.height = _formattingContextRoot.bounds.height - _formattingContextRoot.coreStyle.computedStyle.paddingBottom  - _formattingContextRoot.coreStyle.computedStyle.paddingTop;
 			
 		}
 	}
@@ -236,7 +236,7 @@ class InlineFormattingContext extends FormattingContext
 			if (lineBoxes[i].isAbsolutelyPositioned() == false || lineBoxes[i].isText() == true)
 			{
 				//the width of the line box is added to the total width which can't be broken
-				_unbreakableWidth += Math.round(lineBoxes[i].bounds.width) + lineBox.marginLeft + lineBox.marginRight;
+				_unbreakableWidth += lineBoxes[i].bounds.width + lineBox.marginLeft + lineBox.marginRight;
 			}
 		
 				
@@ -532,8 +532,8 @@ class InlineFormattingContext extends FormattingContext
 				flowX =  alignCenter(flowX, remainingSpace, child);
 			}
 			
-			child.bounds.x = Math.round(remainingSpace / 2) + flowX;
-			flowX += Math.round(child.bounds.width);
+			child.bounds.x = (remainingSpace / 2) + flowX;
+			flowX += child.bounds.width;
 		}
 		
 		flowX += lineBox.marginRight + lineBox.paddingRight;
@@ -566,7 +566,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			
 			child.bounds.x = flowX + remainingSpace;
-			flowX += Math.round(child.bounds.width);
+			flowX += child.bounds.width;
 		}
 		
 		flowX += lineBox.marginRight + lineBox.paddingRight;
@@ -592,7 +592,7 @@ class InlineFormattingContext extends FormattingContext
 			
 			if (child.isSpace() == true)
 			{
-				var spaceWidth:Int = Math.round( (remainingSpace / spacesInLine));
+				var spaceWidth:Float = (remainingSpace / spacesInLine);
 				//TODO : should return nb of spaces as this is passed by value ?
 				spacesInLine--;
 				remainingSpace -= spaceWidth;
@@ -600,7 +600,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			
 			child.bounds.x =  flowX;
-			flowX += Math.round(child.bounds.width);
+			flowX += child.bounds.width;
 			
 			if (child.hasChildNodes() == true)
 			{
