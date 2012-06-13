@@ -216,19 +216,6 @@ class BoxRenderer extends ElementRenderer
 	/**
 	 * This method is in charge of laying out an ElementRenderer which consist in computing its styles (box model, font, text...)
 	 * into usable values and determining its bounds in the space of the containing block which started its formatting context.
-	 * 
-	 * This method is called recursively on every children of the ElementRenderer if it has any to layout all of the rendering tree.
-	 * 
-	 * @param	containingBlockData the computed dimensions of the parent block of this
-	 * ElementRenderer.
-	 * @param	viewportData a reference to the dimensions of the viewport of the document. When laying out a fixed positioned ElementRenderer
-	 * (an ElementRenderer with a 'position' style of 'fixed'), its dimensions are used as containing dimensions
-	 * @param	firstPositionedAncestorData the dimensions of the first positioned ancestor in the hierarchy, meaning that
-	 * it has a 'position' other than 'static'. When laying out an absolutelty positioned ElementRenderer ( an ElementRenderer with a 'position' style
-	 * of 'absolute'), it it used as containing block dimensions. It also contains a reference to each absolutely positioned ElementRenderer for whom
-	 * it is the first positioned ancestor
-	 * @param   containingBlockFontMetricsData the font metrics of the containing block which might be necessary to compute some styles.
-	 * For instance, style defined with a length using the 'em' unit will refer to the computed font size of the containing block
 	 */
 	override public function layout():Void
 	{	
@@ -243,13 +230,21 @@ class BoxRenderer extends ElementRenderer
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Called when the ElementRenderer needs to lays itself out,
+	 * meanng its must compute its dimensions
+	 */
 	private function layoutSelf():Void
 	{
+		//get the dimensions and first metrics of the containing block of this 
+		//element which arenecesseray to compute the styles of this ElementRenderer
+		//into usable value. For instance, a with defined as a percentage will compute
+		//to a percentage of the containing block width
 		var containingBlock:FlowBoxRenderer = getContainingBlock();
 		var containingBlockData:ContainingBlockData = containingBlock.getContainerBlockData();
 		var containingBlockFontMetricsData:FontMetricsData = containingBlock.coreStyle.fontMetrics;
-		//compute all the styles of the ElementRenderer
-		//
+
+		//compute the font style (font-size, line-height...)
 		//TODO 1 : styles which can be computed without any external data should be when their specified
 		//value changes instead of now, which is unecessary
 		_coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
@@ -374,14 +369,9 @@ class BoxRenderer extends ElementRenderer
 	/**
 	 * Overriden as BoxRenderer might create new stacking context, for
 	 * instance if they are positioned.
-	 * 
-	 * TODO 2 : hack, shouldn't have to compute display style before
-	 * 
 	 */
 	override public function establishesNewStackingContext():Bool
 	{
-		_coreStyle.computeDisplayStyles();
-		
 		if (isPositioned() == true)
 		{
 			if (isAutoZIndexPositioned() == true)

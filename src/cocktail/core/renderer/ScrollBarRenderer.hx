@@ -55,19 +55,6 @@ class ScrollBarRenderer extends BlockBoxRenderer
 		return true;
 	}
 	
-		
-	/**
-	 * TODO 2 : hack, not supposed to have to override, but
-	 * when first called scrollbar has not yet its display
-	 * styles computed, probably because of its
-	 * initialisation outside of the DOM
-	 */
-	override public function isPositioned():Bool
-	{
-		_coreStyle.computeDisplayStyles();
-		return super.isPositioned();
-	}
-	
 	override public function scroll(x:Float, y:Float):Void
 	{
 		#if (flash9 || nme)

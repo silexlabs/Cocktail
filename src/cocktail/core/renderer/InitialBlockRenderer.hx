@@ -161,8 +161,17 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	private function layoutAndRender():Void
 	{
+		var now = Date.now().getTime();
+		
 		startLayout();
+		trace("layout");
+		trace(Date.now().getTime() - now);
+		
+		now = Date.now().getTime();
+		
 		startRendering();
+		trace("rendering");
+		trace(Date.now().getTime() - now);
 		_invalidationScheduled = false;
 	}
 	

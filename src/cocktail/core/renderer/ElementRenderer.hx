@@ -294,13 +294,29 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		_layerRenderer = null;
 	}
 	
+	/**
+	 * Clears the content of the graphic
+	 * context of this ElementRenderer
+	 */
+	public function clear():Void
+	{
+		#if (flash9 || nme)
+		var containerGraphicsContext:flash.display.DisplayObjectContainer = cast(_graphicsContext);
+			var length:Int = containerGraphicsContext.numChildren;
+			for (i in 0...length)
+			{
+				containerGraphicsContext.removeChildAt(0);
+			}
+		#end	
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * overriden as when an ElementRenderer is appended, its LayerRenderer
-	 * must be attached to the LayerRenderer tree so that it can be rendered
+	 * overriden as when an ElementRenderer is appended, it must be attached
+	 * to the LayerRenderer tree
 	 */
 	override public function appendChild(newChild:ElementRenderer):ElementRenderer
 	{
@@ -315,8 +331,8 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	
 	
 	/**
-	 * overriden as when an ElementRenderer is removed, its LayerRenderer
-	 * might be removed form the LayerRenderer tree if it created it
+	 * overriden as when an ElementRenderer is removed, it must be
+	 * removed from the LayerRenderer tree
 	 */
 	override public function removeChild(oldChild:ElementRenderer):ElementRenderer
 	{
@@ -343,38 +359,37 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		//abstract
 	}
 	
+		
+	public function scroll(x:Float, y:Float):Void
+	{
+		if (computedStyle.position == fixed)
+		{
+			#if (flash9 || nme)
+		{
+			_graphicsContext.x = x;
+			_graphicsContext.y = y;
+		}
+		#end
+		
+		}
+		
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC LAYOUT METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-
-	
 	/*
-	 * Layout this ElementRenderer so that it knows its bounds and can be rendered to the screen
+	 * Layout this ElementRenderer so that it knows its
+	 * bounds and can be rendered to the screen
 	 */ 
 	public function layout():Void
 	{	
 		//abstract
 	}
 	
-	/**
-	 * Clears the content of the graphic
-	 * context of this ElementRenderer
-	 */
-	public function clear():Void
-	{
-		#if (flash9 || nme)
-		var containerGraphicsContext:flash.display.DisplayObjectContainer = cast(_graphicsContext);
-			var length:Int = containerGraphicsContext.numChildren;
-			for (i in 0...length)
-			{
-				containerGraphicsContext.removeChildAt(0);
-			}
-		#end	
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC METHODS
+	// PUBLIC ATTACHEMENT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -405,10 +420,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			child.attach();
 		}
 		
-		
-		
 		//TODO 2 : shouldn't be applied to Scrollbar, or scrollbar ContainingBlock
 		//should always be the parent block box
+		//if the ElementRenderer is positioned, it registers itself
+		//with its first positioned ancestor
 		if (isPositioned() == true)
 		{
 			getContainingBlock().addPositionedChildren(this);
@@ -422,6 +437,12 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	public function detach():Void
 	{
+		//the ElementRenderer tries to unregister itself
+		//form its containing block, won't have any effect
+		//if the ElementRenderer is not positionned
+		//
+		//TODO 2 : shouldn't always call it but won't work if the detachement
+		//was caused by the change of the position style
 		getContainingBlock().removePositionedChild(this);
 		
 		//first detach the LayerRenderer of all its children
@@ -458,22 +479,8 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			}
 		}
 		
+		//TODO 1 : should call a dispose method on the layerRenderer
 		_layerRenderer = null;
-	}
-	
-	public function scroll(x:Float, y:Float):Void
-	{
-		if (computedStyle.position == fixed)
-		{
-			#if (flash9 || nme)
-		{
-			_graphicsContext.x = x;
-			_graphicsContext.y = y;
-		}
-		#end
-		
-		}
-		
 	}
 	
 	/////////////////////////////////
@@ -658,7 +665,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{
 			_layerRenderer = parentLayer;
 			
-				
 			//if the ElementRenderer is positioned with
 			//an 'auto' z-index value, then it must be added
 			//in a special array in its LayerRenderer has it will
@@ -668,6 +674,73 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				_layerRenderer.insertAutoZIndexChildElementRenderer(this);
 			}
 		}
+	}
+	
+	/**
+	 * Get the containing block of the ElementRenderer, based
+	 * on its positioning scheme
+	 */
+	private function getContainingBlock():FlowBoxRenderer
+	{	
+		if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			//for absolutely positioned fixed elements, the containing block
+			//is the viewport
+			if (computedStyle.position == fixed)
+			{
+				return getInitialContainingBlock();
+			}
+			//for absolutely positioned it is the first positoned
+			//ancestor
+			else
+			{
+				return getFirstPositionedAncestor();
+			}
+		}
+		//for normal flow children, it is the first block
+		//parent. 
+		//
+		//TODO 1 : what about inline box renderer ? should
+		//return first block or first parent?
+		else
+		{
+			return getFirstBlockContainer();
+		}
+	}
+	
+	/**
+	 * Get the first parent which is positioned
+	 */
+	private function getFirstPositionedAncestor():FlowBoxRenderer
+	{
+		var parent:ElementRenderer = _parentNode;
+		while (parent.isPositioned() == false)
+		{
+			parent = parent.parentNode;
+		}
+		return cast(parent);
+	}
+	
+	/**
+	 * Get the viewport ElementRenderer
+	 */
+	private function getInitialContainingBlock():FlowBoxRenderer
+	{
+		return cast(_node.ownerDocument.documentElement.elementRenderer);
+	}
+	
+	/**
+	 * Get the first block ancestor
+	 */
+	private function getFirstBlockContainer():FlowBoxRenderer
+	{
+		var parent:ElementRenderer = _parentNode;
+		while (parent.isBlockContainer() == false)
+		{
+			parent = parent.parentNode;
+		}
+		
+		return cast(parent);
 	}
 	
 	/**
@@ -871,8 +944,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				_childrenNeedLayout = true;
 				_needsVisualEffectsRendering = true;
 				_needsRendering = true;
-				_positionedChildrenNeedLayout = true;
-				
+				_positionedChildrenNeedLayout = true;	
 		}
 	}
 	
@@ -893,50 +965,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		}
 	}
 	
-	private function getContainingBlock():FlowBoxRenderer
-	{	
-		if (isPositioned() == true && isRelativePositioned() == false)
-		{
-			if (computedStyle.position == fixed)
-			{
-				return getInitialContainingBlock();
-			}
-			else
-			{
-				return getFirstPositionedAncestor();
-			}
-		}
-		else
-		{
-			return cast(_parentNode);
-		}
-	}
 	
-	private function getFirstPositionedAncestor():FlowBoxRenderer
-	{
-		var parent:ElementRenderer = _parentNode;
-		while (parent.isPositioned() == false)
-		{
-			parent = parent.parentNode;
-		}
-		return cast(parent);
-	}
-	
-	private function getInitialContainingBlock():FlowBoxRenderer
-	{
-		return cast(_node.ownerDocument.documentElement.elementRenderer);
-	}
-	
-	private function getFirstBlockContainer():FlowBoxRenderer
-	{
-		var parent:ElementRenderer = _parentNode;
-		while (parent.isBlockContainer() == false)
-		{
-			parent = parent.parentNode;
-		}
-		
-		return cast(parent);
-	}
 	
 	/**
 	 * Call when a style which require a re-layout
