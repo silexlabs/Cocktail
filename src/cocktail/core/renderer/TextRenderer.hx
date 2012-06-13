@@ -64,7 +64,7 @@ class TextRenderer extends ElementRenderer
 	override private function invalidateText():Void
 	{
 		//_lineBoxes = null;
-		invalidateLayout();
+		//invalidateLayout();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

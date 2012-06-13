@@ -175,13 +175,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	public var lineBoxes(getLineBoxes, setLineBoxes):Array<LineBox>;
 	
 	/**
-	 * determine wether the HTMLElement is currently being
-	 * laid out, in which case it won't take any subsequent
-	 * layout request into account
-	 */
-	private var _isLayingOut:Bool;
-	
-	/**
 	 * Determine wheter this ElementRenderer establishes its own
 	 * stacking context (instantiates a new LayerRenderer)
 	 * 
@@ -254,7 +247,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		_graphicsContext = new flash.display.Sprite();
 		#end
 		
-		_isLayingOut = false;
 		_hasOwnLayer = false;
 		
 		_bounds = {
@@ -343,7 +335,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	public function render(parentGraphicContext:NativeElement):Void
 	{
-		clear();
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -722,54 +714,102 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	
 	public function invalidate(invalidationReason:InvalidationReason):Void
 	{
+		//setNeedLayout(true);
+		
+		//invalidateChildren(this);
+		
+		//switch(invalidationReason)
+		//{
+			//case InvalidationReason.styleChanged(styleName):
+				//invalidatedStyle(styleName);
+			//
+			//case InvalidationReason.childStyleChanged(styleName):
+				//invalidatedChildStyle(styleName);
+				//
+			//case InvalidationReason.positionedChildStyleChanged(styleName):
+				//invalidatedPositionedChildStyle(styleName);
+				//
+			//case InvalidationReason.needsImmediateLayout:
+				//_needsLayout = true;
+				//_childrenNeedLayout = true;
+				//invalidateLayout(true);
+				//
+			//default:
+				//_needsLayout = true;
+				//_childrenNeedLayout = true;
+				//_needsVisualEffectsRendering = true;
+				//_needsRendering = true;
+				//_positionedChildrenNeedLayout = true;
+		//}
+		invalidateContainingBlock(invalidationReason);
+		//invalidateLayout(false);
+	}
+	
+	public function childInvalidated(invalidationReason:InvalidationReason):Void
+	{
+		//_childrenNeedLayout = true;
+		invalidate(invalidationReason);
+	}
+	
+	public function positionedChildInvalidated(invalidationReason:InvalidationReason):Void
+	{
+		//_positionedChildrenNeedLayout = true;
+		invalidate(invalidationReason);
+	}
+	
+	public function setNeedLayout(needLayout:Bool):Void
+	{
+		if (_needsLayout == false)
+		{
+			if (needLayout == true)
+			{
+				for (i in 0..._childNodes.length)
+				{
+					_childNodes[i].setNeedLayout(needLayout);
+				}
+			}
+		}
+		
+		_needsLayout = needLayout;
+		_childrenNeedLayout = needLayout;
+		_needsVisualEffectsRendering = needLayout;
+		_needsRendering = needLayout;
+		_positionedChildrenNeedLayout = needLayout;
+		
+	}
+	
+	public function invalidateChildren(root:ElementRenderer):Void
+	{
+		for (i in 0...root.childNodes.length)
+		{
+			var child:ElementRenderer = root.childNodes[i];
+			child.invalidateAll();
+			
+			if (child.hasChildNodes() == true)
+			{
+				invalidateChildren(child);
+			}
+		}
+	}
+	
+	public function invalidateAll():Void
+	{
+			_needsLayout = true;
+				_childrenNeedLayout = true;
+				_needsVisualEffectsRendering = true;
+				_needsRendering = true;
+				_positionedChildrenNeedLayout = true;
+	}
+	
+	private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
+	{
+		
 		//TODO 1 : not supposed to happen but bug with scrollbars for now
 		if (_parentNode == null)
 		{
 			return;
 		}
 		
-		switch(invalidationReason)
-		{
-			case InvalidationReason.styleChanged(styleName):
-				invalidatedStyle(styleName);
-			
-			case InvalidationReason.childStyleChanged(styleName):
-				invalidatedChildStyle(styleName);
-				
-			case InvalidationReason.positionedChildStyleChanged(styleName):
-				invalidatedPositionedChildStyle(styleName);
-				
-			case InvalidationReason.needsImmediateLayout:
-				_needsLayout = true;
-				_childrenNeedLayout = true;
-				invalidateLayout(true);
-				
-			default:
-				_needsLayout = true;
-				_childrenNeedLayout = true;
-				_needsVisualEffectsRendering = true;
-				_needsRendering = true;
-				_positionedChildrenNeedLayout = true;
-		}
-		
-		invalidateContainingBlock(invalidationReason);
-		invalidateLayout(false);
-	}
-	
-	public function childInvalidated(invalidationReason:InvalidationReason):Void
-	{
-		_childrenNeedLayout = true;
-		invalidate(invalidationReason);
-	}
-	
-	public function positionedChildInvalidated(invalidationReason:InvalidationReason):Void
-	{
-		_positionedChildrenNeedLayout = true;
-		invalidate(invalidationReason);
-	}
-	
-	private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
-	{
 		
 		var containingBlockInvalidationReason:InvalidationReason;
 		
@@ -791,11 +831,16 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		}
 		
 		var containingBlock:ElementRenderer = getContainingBlock();
+		containingBlock.setNeedLayout(true);
+		
+		containingBlock.invalidate(invalidationReason);
+		
+		
 		if (isPositioned() == true)
 		{
-			containingBlock.positionedChildInvalidated(containingBlockInvalidationReason);
+			//containingBlock.positionedChildInvalidated(containingBlockInvalidationReason);
 		}
-		containingBlock.childInvalidated(containingBlockInvalidationReason);
+		//containingBlock.childInvalidated(containingBlockInvalidationReason);
 		
 		
 	}
@@ -848,8 +893,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	}
 	
 	private function getContainingBlock():ElementRenderer
-	{
-		return _parentNode;
+	{	
 		if (isPositioned() == true && isRelativePositioned() == false)
 		{
 			if (computedStyle.position == fixed)
@@ -863,7 +907,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		}
 		else
 		{
-			return _parentNode;
+			return getFirstBlockContainer();
 		}
 	}
 	
@@ -892,47 +936,15 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		return null;
 	}
 	
-	/**
-	 * Called when the value of a style that require
-	 * a re-layout (such as width, height, display...) is
-	 * changed.
-	 * 
-	 * An invalidated ElementRenderer will in turn invalidate its
-	 * parent and so on until the initial ElementRenderer is invalidated.
-	 * The initial ElementRenderer will then layout itself, laying out
-	 * at the same time all its invalidated children.
-	 * 
-	 * TODO 2 : shouldn't need to invalidate all of the rendering tree
-	 * 
-	 * A layout can be immediate or scheduled asynchronously, which
-	 * increase preformance when many style value are set in a 
-	 * row as the layout only happen once
-	 */
-	public function invalidateLayout(immediate:Bool = false):Void
+	private function getFirstBlockContainer():ElementRenderer
 	{
-		//only invalidate the parent if it isn't
-		//already being laid out or if an immediate layout is required
-		if (this._isLayingOut == false || immediate == true)
+		var parent:ElementRenderer = _parentNode;
+		while (parent.isBlockContainer() == false || parent.establishesNewFormattingContext() == false)
 		{
-			//if the ElementRenderer doesn't have a parent, then it
-			//is not currently added to the DOM and doesn't require
-			//a layout
-			//
-			//TODO 3 : shouldn't be possible anymore, when an HTMLElement is not
-			//attached to the DOM, it doesn't create an ElementRenderer,
-			//only the initial ElementRenderer doesn't have a parent
-			if (this._parentNode != null)
-			{
-				//set the layout flag to prevent multiple
-				//layout of the ElementRenderer in a row
-				//The ElementRenderer will be able to be invalidated
-				//again once it has been laid out
-				this._isLayingOut = true;
-				
-				var parent:ElementRenderer = _parentNode;
-				parent.invalidateLayout(immediate);
-			}
+			parent = parent.parentNode;
 		}
+		
+		return parent;
 	}
 	
 	/**
@@ -947,7 +959,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			var child:ElementRenderer = _childNodes[i];
 			child.invalidateText();
 		}
-		invalidateLayout();
 	}
 	
 	/**
@@ -959,7 +970,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		detachLayer();
 		attachLayer();
-		invalidateLayout();
+		//invalidateLayout();
 	}
 	
 	private function invalidateRendering():Void
@@ -1109,7 +1120,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	private function set_coreStyle(value:CoreStyle):CoreStyle
 	{
 		_coreStyle = value;
-		invalidateLayout();
 		return value;
 	}
 	

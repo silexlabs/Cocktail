@@ -66,10 +66,10 @@ class BoxRenderer extends ElementRenderer
 		
 		if (_needsRendering == false)
 		{
-		//	return;
+			//return;
 		}
 		
-		super.render(parentGraphicContext);
+		clear();
 		//get the relative offset of this ElementRenderer and add it to
 		//its parent
 		renderBackground(_graphicsContext);
@@ -261,10 +261,6 @@ class BoxRenderer extends ElementRenderer
 		//insert the ElementRenderer in the absolutely positioned array if it is itself absolutely positioned
 		//so that it can be positioned by its first positioned ancestor once it is laid out
 		storeAbsolutelyPositionedChild(firstPositionedAncestorData);
-		
-		//The ElementRenderer has been laid out and can now be laid out again
-		//if it changes
-		this._isLayingOut = false;
 		
 		_needsLayout = false;
 	}
