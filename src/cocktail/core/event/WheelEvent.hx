@@ -110,7 +110,7 @@ class WheelEvent extends MouseEvent
 	 * @param	deltaModeArg Specifies WheelEvent.deltaMode.
 	 */
 	public function initWheelEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, viewArg:Dynamic, detailArg:Float,
-	screenXArg:Float, screenYArg:Float, clientXArg:Float, clientYArg:Float, buttonArg:Int, relatedTargetArg:EventTarget,
+	screenXArg:Int, screenYArg:Int, clientXArg:Int, clientYArg:Int, buttonArg:Int, relatedTargetArg:EventTarget,
 	modifiersListArg:String, deltaXArg:Float, deltaYArg:Float, deltaZArg:Float, deltaModeArg:Int ):Void
 	{
 		//can't alter event after it has been dispatched

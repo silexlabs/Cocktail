@@ -50,32 +50,32 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		//call the attachement method itself as it is 
 		//supposed to be called by parent ElementRenderer
 		//otherwise
-		attachLayer();
+		attach();
 	}
 	
 
 	//TODO 2 : shouldn't have to override this, should use other method, like
 	//establishes new stacking context
-	override public function attachLayer():Void
+	override public function attach():Void
 	{
 		_layerRenderer = new LayerRenderer(this);
 		
 		for (i in 0..._childNodes.length)
 		{
 			var child:ElementRenderer = _childNodes[i];
-			child.attachLayer();
+			child.attach();
 		}
 	}
 	
 		//TODO 2 : shouldn't have to override this, should use other method, like
 	//establishes new stacking context
-	override public function detachLayer():Void
+	override public function detach():Void
 	{
 		//first detach the LayerRenderer of all its children
 		for (i in 0..._childNodes.length)
 		{
 			var child:ElementRenderer = _childNodes[i];
-			child.detachLayer();
+			child.detach();
 		}
 		
 		//only detach the LayerRenderer if this ElementRenderer
@@ -194,17 +194,9 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	private function startLayout():Void
 	{
-		var windowData:ContainingBlockData = getWindowData();
-		
-		//TODO 2 : should retrieve the data of the first positioned ancestor
-		var firstPositionedAncestorData:FirstPositionedAncestorData = {
-			elements: new Array<ElementRenderer>(),
-			data:getContainerBlockData()
-		}
-		
 		//layout all the HTMLElements. After that they all know their bounds relative to the containing
 		//blocks
-		layout(firstPositionedAncestorData);
+		layout();
 		//set the global bounds on the rendering tree. After that all the elements know their positions
 		//relative to the window
 		
@@ -483,7 +475,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		return getWindowData();
 	}
 	
-	override private function getContainingBlock():BlockBoxRenderer
+	override private function getContainingBlock():FlowBoxRenderer
 	{	
 		return this;
 	}

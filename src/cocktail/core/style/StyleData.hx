@@ -1278,20 +1278,6 @@ import cocktail.core.renderer.TextRenderer;
 	}
 	
 	/**
-	 * Contains the data of the first 
-	 * positioned ancestor (an htmlElement with
-	 * a position style of relative, absolute,
-	 * or fixed) dimensions and a reference to each of
-	 * the style objects using those dimensions
-	 * as origin to layout an absolutely
-	 * positioned htmlElement.
-	 */
-	typedef FirstPositionedAncestorData = {
-		var elements:Array<ElementRenderer>;
-		var data:ContainingBlockData;
-	}
-	
-	/**
 	 * Store the computed background style
 	 * for one background image
 	 */
