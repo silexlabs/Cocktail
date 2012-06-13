@@ -935,7 +935,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//TODO 3 : should use computed styles but not computed yet
 		//tries to attach or detach horizontal scrollbar based on x
 		//overflow
-		switch (_coreStyle.overflowX)
+		switch (computedStyle.overflowX)
 		{
 			case Overflow.scroll:
 				attachHorizontalScrollBar();
@@ -959,7 +959,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 
 		//tries to attach or detach vertical scrolbar based on 
 		//overflow y
-		switch (_coreStyle.overflowY)
+		switch (computedStyle.overflowY)
 		{
 			case Overflow.scroll:
 				attachVerticalScrollBar();
@@ -1392,7 +1392,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			return false;
 		}
 		
-		switch (_coreStyle.overflowX)
+		switch (computedStyle.overflowX)
 		{
 			case Overflow.visible:
 				
@@ -1401,7 +1401,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				return false;
 		}
 		
-		switch (_coreStyle.overflowY)
+		switch (computedStyle.overflowY)
 		{
 			case Overflow.visible:
 				

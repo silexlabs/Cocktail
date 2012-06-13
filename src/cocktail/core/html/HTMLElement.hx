@@ -467,6 +467,7 @@ class HTMLElement extends Element
 			//create the ElementRenderer if needed
 			if (_elementRenderer == null && isRendered() == true)
 			{
+				_coreStyle.computeDisplayStyles();
 				createElementRenderer();
 			}
 			
@@ -615,8 +616,6 @@ class HTMLElement extends Element
 	 */
 	private function createElementRenderer():Void
 	{
-		_coreStyle.computeDisplayStyles();
-		
 		switch (_coreStyle.computedStyle.display)
 		{
 			case block, inlineBlock:

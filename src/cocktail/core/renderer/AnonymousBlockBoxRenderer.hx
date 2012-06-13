@@ -56,6 +56,12 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 	// OVERRIDEN PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	
+	override public function isPositioned():Bool
+	{
+		return false;
+	}
+	
 	override public function isAnonymousBlockBox():Bool
 	{
 		return true;
