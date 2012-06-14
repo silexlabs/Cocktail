@@ -1051,7 +1051,7 @@ class HTMLElement extends Element
 		var wrappedHTML:String = HTMLConstants.HTML_TOKEN_LESS_THAN + HTMLConstants.HTML_DIV_TAG_NAME + HTMLConstants.HTML_TOKEN_MORE_THAN;
 		wrappedHTML += value;
 		wrappedHTML += HTMLConstants.HTML_TOKEN_LESS_THAN + HTMLConstants.HTML_TOKEN_SOLIDUS + HTMLConstants.HTML_DIV_TAG_NAME + HTMLConstants.HTML_TOKEN_MORE_THAN;
-		
+
 		var node:HTMLElement = doSetInnerHTML(Parser.parse(wrappedHTML).firstElement());
 
 		//the returned node might be null for instance, if 

@@ -584,7 +584,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	override public function layout():Void
 	{	
 		super.layout();
-
+		return;
 		//only get scrollable bounds for bloc box renderer
 		//which might display scrollbars
 		if (canAlwaysOverflow() == false)
