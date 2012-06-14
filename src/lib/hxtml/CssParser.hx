@@ -430,7 +430,7 @@ class CssParser<DisplayObjectType> {
 			switch( v ) {
 			case VHex(v):
 				//var val = (v.length == 6) ? Std.parseInt("0x" + v) : ((v.length == 3) ? Std.parseInt("0x"+v.charAt(0)+v.charAt(0)+v.charAt(1)+v.charAt(1)+v.charAt(2)+v.charAt(2)) : null);
-				s.setBgColorNum(d, Std.parseInt(v));
+				s.setBgColorHex(d, v);
 				return true;
 			case VRGBA(v):
 				s.setBgColorRGBA(d, v);

@@ -211,7 +211,7 @@ class StyleProxy implements lib.hxtml.IStyleProxy<HTMLElement>
 	public function setRightKey (element:HTMLElement, value:String):Void{
 		element.style.right = value; 
 	}
-	public function setBgColorNum (element:HTMLElement, value:Int):Void {
+	public function setBgColorHex (element:HTMLElement, value:String):Void {
 		element.style.backgroundColor = "#" + Std.string(value);
 	}
 	public function setBgColorRGBA (element:HTMLElement, value:String):Void{

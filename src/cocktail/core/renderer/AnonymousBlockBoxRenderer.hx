@@ -7,6 +7,7 @@
 */
 package cocktail.core.renderer;
 import cocktail.core.dom.Node;
+import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.geom.GeomData;
@@ -29,9 +30,9 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(node:HTMLElement) 
+	public function new() 
 	{
-		super(node);
+		super(new HTMLElement(HTMLConstants.HTML_DIV_TAG_NAME));
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -55,6 +56,12 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	override public function isPositioned():Bool
+	{
+		return false;
+	}
 	
 	override public function isAnonymousBlockBox():Bool
 	{

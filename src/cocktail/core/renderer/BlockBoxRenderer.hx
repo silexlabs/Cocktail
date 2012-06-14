@@ -269,11 +269,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */ 
 	private function createAnonymousBlock(child:ElementRenderer):AnonymousBlockBoxRenderer
 	{
-		var anonymousBlock:AnonymousBlockBoxRenderer = new AnonymousBlockBoxRenderer(new HTMLElement("div"));
+		var anonymousBlock:AnonymousBlockBoxRenderer = new AnonymousBlockBoxRenderer();
 		anonymousBlock.appendChild(child);
 
 		//TODO 1 : should node use _node, as it sets the default styles of the nodename
-		anonymousBlock.coreStyle = new CoreStyle(new HTMLElement("div"));
+		anonymousBlock.coreStyle = anonymousBlock.node.coreStyle;
 		
 		return anonymousBlock;
 	}
@@ -381,7 +381,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			for (i in 0...length)
 			{
 				var child:ElementRenderer = rootRenderer.childNodes[i];
-
+			
 				if (child.layerRenderer == referenceLayer)
 				{
 					if (child.isReplaced() == false)
@@ -584,7 +584,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	override public function layout():Void
 	{	
 		super.layout();
-
+		
 		//only get scrollable bounds for bloc box renderer
 		//which might display scrollbars
 		if (canAlwaysOverflow() == false)
@@ -903,7 +903,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					var childChildrenBounds:Array<RectangleData> = doGetScrollableBounds(child);
 					
 					var childLength:Int = childChildrenBounds.length;
-					for (j in 0...length)
+					for (j in 0...childLength)
 					{
 						childrenBounds.push(childChildrenBounds[j]);
 					}
@@ -935,7 +935,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//TODO 3 : should use computed styles but not computed yet
 		//tries to attach or detach horizontal scrollbar based on x
 		//overflow
-		switch (_coreStyle.overflowX)
+		switch (computedStyle.overflowX)
 		{
 			case Overflow.scroll:
 				attachHorizontalScrollBar();
@@ -959,7 +959,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 
 		//tries to attach or detach vertical scrolbar based on 
 		//overflow y
-		switch (_coreStyle.overflowY)
+		switch (computedStyle.overflowY)
 		{
 			case Overflow.scroll:
 				attachVerticalScrollBar();
@@ -1217,6 +1217,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			establishesNewFormattingContext = true;
 		}
+		//anonymous block always establish new inline formatting as they are used 
+		//to wrap inline elements in block formatting
+		else if (isAnonymousBlockBox() == true)
+		{
+			establishesNewFormattingContext = true;
+		}
 		else
 		{
 			switch (this.computedStyle.display)
@@ -1392,7 +1398,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			return false;
 		}
 		
-		switch (_coreStyle.overflowX)
+		switch (computedStyle.overflowX)
 		{
 			case Overflow.visible:
 				
@@ -1401,7 +1407,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				return false;
 		}
 		
-		switch (_coreStyle.overflowY)
+		switch (computedStyle.overflowY)
 		{
 			case Overflow.visible:
 				

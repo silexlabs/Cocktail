@@ -125,8 +125,8 @@ class Style
 	 * 
 	 * TODO 3 : shouldn't store invalid styles
 	 */
-	private var _attributes:NamedNodeMap;
-	public var attributes(get_attributes, never):NamedNodeMap;
+	private var _attributes:NamedNodeMap<HTMLElement>;
+	public var attributes(get_attributes, never):NamedNodeMap<HTMLElement>;
 	
 	/**
 	 * class constructor. Store the ref to 
@@ -135,7 +135,7 @@ class Style
 	public function new(coreStyle:CoreStyle) 
 	{
 		_coreStyle = coreStyle;
-		_attributes = new NamedNodeMap();
+		_attributes = new NamedNodeMap<HTMLElement>();
 	}
 	
 	/////////////////////////////////
@@ -156,7 +156,7 @@ class Style
 			return;
 		}
 		
-		var attr:Attr = new Attr(name);
+		var attr:Attr<HTMLElement> = new Attr<HTMLElement>(name);
 		attr.value = value;
 		_attributes.setNamedItem(attr);
 	}
@@ -165,7 +165,7 @@ class Style
 	// SETTERS/GETTERS
 	////////////////////////////////
 	
-	private function get_attributes():NamedNodeMap
+	private function get_attributes():NamedNodeMap<HTMLElement>
 	{
 		return _attributes;
 	}
