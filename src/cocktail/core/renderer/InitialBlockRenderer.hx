@@ -53,38 +53,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		attach();
 	}
 	
-
-	//TODO 2 : shouldn't have to override this, should use other method, like
-	//establishes new stacking context
-	override public function attach():Void
-	{
-		_layerRenderer = new LayerRenderer(this);
-		
-		for (i in 0..._childNodes.length)
-		{
-			var child:ElementRenderer = _childNodes[i];
-			child.attach();
-		}
-	}
-	
-		//TODO 2 : shouldn't have to override this, should use other method, like
-	//establishes new stacking context
-	override public function detach():Void
-	{
-		//first detach the LayerRenderer of all its children
-		for (i in 0..._childNodes.length)
-		{
-			var child:ElementRenderer = _childNodes[i];
-			child.detach();
-		}
-		
-		//only detach the LayerRenderer if this ElementRenderer
-		//created it, else it will be detached by the ElementRenderer
-		//which created it when detached
-		_layerRenderer = null;
-	}
-	
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -100,6 +68,31 @@ class InitialBlockRenderer extends BlockBoxRenderer
 			_invalidationScheduled = true;
 			doInvalidate(immediate);
 		}
+	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE ATTACHEMENT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function attachLayer():Void
+	{
+		_layerRenderer = new LayerRenderer(this);
+	}
+	
+	override private function detachLayer():Void
+	{
+		_layerRenderer = null;
+	}
+	
+	override private function attachContaininingBlock():Void
+	{
+		
+	}
+	
+	override private function detachContainingBlock():Void
+	{
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -146,9 +139,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 			default:
 				invalidateLayout(false);
 		}
-		
-		
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -164,14 +154,14 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		var now = Date.now().getTime();
 		
 		startLayout();
-		trace("layout");
-		trace(Date.now().getTime() - now);
+		//trace("layout");
+		//trace(Date.now().getTime() - now);
 		
 		now = Date.now().getTime();
 		
 		startRendering();
-		trace("rendering");
-		trace(Date.now().getTime() - now);
+		//trace("rendering");
+		//trace(Date.now().getTime() - now);
 		_invalidationScheduled = false;
 	}
 	

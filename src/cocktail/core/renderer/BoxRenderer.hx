@@ -106,8 +106,7 @@ class BoxRenderer extends ElementRenderer
 		//such as the background color, most of the background styles will be computed
 		//during the rendering
 		//
-		//TODO 4 : check if its still necessary that they are only computed
-		//during rendering
+		//TODO 4 : update doc for this
 		_coreStyle.computeBackgroundStyles();
 		
 		var backgroundManager:BackgroundManager = new BackgroundManager();
@@ -148,15 +147,29 @@ class BoxRenderer extends ElementRenderer
 		//it is necessary to wait for all dimensions to be known because for
 		//instance the transform style use the height and width of the ElementRenderer
 		//to determine the transformation center
-		_coreStyle.computeVisualEffectStyles();
+		//
+		//TODO 2 : update doc
+		
 		
 		applyOpacity(graphicContext);
-		applyTransformationMatrix(graphicContext);
+		
+		//apply only if the element is either relative positioned or has
+		//transformations functions
+		if (isRelativePositioned() == true || _coreStyle.transform != Transform.none)
+		{
+			//TODO 2 : should ony compute transform and transform-origin, anything
+			//else can be done before layout
+			_coreStyle.computeVisualEffectStyles();
+			
+			applyTransformationMatrix(graphicContext);
+		}
+		
 	}
 	
 	/**
-	 * Apply the transformation matrix computed with the
-	 * transform and transform-origin style on the graphic context
+	 * Apply both the transformation matrix computed with the
+	 * transform and transform-origin style and the relative
+	 * offset if the element is relative positioned
 	 */
 	private function applyTransformationMatrix(graphicContext:NativeElement):Void
 	{
@@ -214,8 +227,9 @@ class BoxRenderer extends ElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * This method is in charge of laying out an ElementRenderer which consist in computing its styles (box model, font, text...)
-	 * into usable values and determining its bounds in the space of the containing block which started its formatting context.
+	 * This method is in charge of laying out an ElementRenderer which consist 
+	 * in computing its styles (box model, font, text...) into usable values and determining its 
+	 * bounds in the space of the containing block which started its formatting context.
 	 */
 	override public function layout():Void
 	{	
@@ -236,13 +250,12 @@ class BoxRenderer extends ElementRenderer
 	 */
 	private function layoutSelf():Void
 	{
-		//get the dimensions and first metrics of the containing block of this 
-		//element which arenecesseray to compute the styles of this ElementRenderer
+		//get the dimensions and font metrics of the containing block of this 
+		//element which are necesseray to compute the styles of this ElementRenderer
 		//into usable value. For instance, a with defined as a percentage will compute
 		//to a percentage of the containing block width
-		var containingBlock:FlowBoxRenderer = getContainingBlock();
-		var containingBlockData:ContainingBlockData = containingBlock.getContainerBlockData();
-		var containingBlockFontMetricsData:FontMetricsData = containingBlock.coreStyle.fontMetrics;
+		var containingBlockData:ContainingBlockData = _containingBlock.getContainerBlockData();
+		var containingBlockFontMetricsData:FontMetricsData = _containingBlock.coreStyle.fontMetrics;
 
 		//compute the font style (font-size, line-height...)
 		//TODO 1 : styles which can be computed without any external data should be when their specified

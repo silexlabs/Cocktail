@@ -234,6 +234,8 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	
 	private var _needsVisualEffectsRendering:Bool;
 
+	private var _containingBlock:FlowBoxRenderer;
+	
 	
 	/**
 	 * class constructor. init class attribute
@@ -398,6 +400,48 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	public function attach():Void
 	{
+		attachLayer();
+		
+		//the ElementRenderer is attached to the LayerRenderer
+		//tree and must now also attach its children
+		var length:Int = _childNodes.length;
+		for (i in 0...length)
+		{
+			var child:ElementRenderer = _childNodes[i];
+			child.attach();
+		}
+		
+		_containingBlock = getContainingBlock();
+		
+		attachContaininingBlock();
+	}
+	
+	/**
+	 * Detach the LayerRenderer of this ElementRenderer from the LayerRenderer
+	 * tree if necessary
+	 */
+	public function detach():Void
+	{
+		detachContainingBlock();
+		_containingBlock = null;
+		
+		//first detach the LayerRenderer of all its children
+		var length:Int = _childNodes.length;
+		for (i in 0...length)
+		{
+			var child:ElementRenderer = _childNodes[i];
+			child.detach();
+		}
+		
+		detachLayer();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRVIATE ATTACHEMENT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function attachLayer():Void
+	{
 		//create the LayerRenderer if needed
 		if (_layerRenderer == null)
 		{
@@ -410,49 +454,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				}
 			}
 		}
-		
-		//the ElementRenderer is attached to the LayerRenderer
-		//tree and must now also attach its children
-		var length:Int = _childNodes.length;
-		for (i in 0...length)
-		{
-			var child:ElementRenderer = _childNodes[i];
-			child.attach();
-		}
-		
-		//TODO 2 : shouldn't be applied to Scrollbar, or scrollbar ContainingBlock
-		//should always be the parent block box
-		//if the ElementRenderer is positioned, it registers itself
-		//with its first positioned ancestor
-		if (isPositioned() == true)
-		{
-			getContainingBlock().addPositionedChildren(this);
-		}
-		
 	}
 	
-	/**
-	 * Detach the LayerRenderer of this ElementRenderer from the LayerRenderer
-	 * tree if necessary
-	 */
-	public function detach():Void
+	private function detachLayer():Void
 	{
-		//the ElementRenderer tries to unregister itself
-		//form its containing block, won't have any effect
-		//if the ElementRenderer is not positionned
-		//
-		//TODO 2 : shouldn't always call it but won't work if the detachement
-		//was caused by the change of the position style
-		getContainingBlock().removePositionedChild(this);
-		
-		//first detach the LayerRenderer of all its children
-		var length:Int = _childNodes.length;
-		for (i in 0...length)
-		{
-			var child:ElementRenderer = _childNodes[i];
-			child.detach();
-		}
-		
 		//only detach the LayerRenderer if this ElementRenderer
 		//created it, else it will be detached by the ElementRenderer
 		//which created it when detached
@@ -481,6 +486,29 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		//TODO 1 : should call a dispose method on the layerRenderer
 		_layerRenderer = null;
+	}
+	
+	private function attachContaininingBlock():Void
+	{
+		//TODO 2 : shouldn't be applied to Scrollbar, or scrollbar ContainingBlock
+		//should always be the parent block box
+		//if the ElementRenderer is positioned, it registers itself
+		//with its first positioned ancestor
+		if (isPositioned() == true)
+		{
+			_containingBlock.addPositionedChildren(this);
+		}
+	}
+	
+	private function detachContainingBlock():Void
+	{
+		//the ElementRenderer tries to unregister itself
+		//form its containing block, won't have any effect
+		//if the ElementRenderer is not positionned
+		//
+		//TODO 2 : shouldn't always call it but won't work if the detachement
+		//was caused by the change of the position style
+		_containingBlock.removePositionedChild(this);
 	}
 	
 	/////////////////////////////////
@@ -562,19 +590,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	public function establishesNewStackingContext():Bool
 	{
 		return false;
-	}
-	
-	/**
-	 * Helper method concatenating the relative offset of the parent
-	 * with the relative offset of this ElementRenderer to apply the right
-	 * translation when rendering
-	 */
-	public function getConcatenatedRelativeOffset(parentRelativeOffset:PointData):PointData
-	{
-		var relativeOffset:PointData = getRelativeOffset();
-		relativeOffset.x += parentRelativeOffset.x;
-		relativeOffset.y += parentRelativeOffset.y;
-		return relativeOffset;
 	}
 	
 	/////////////////////////////////
@@ -860,7 +875,8 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{
 			if (needLayout == true)
 			{
-				for (i in 0..._childNodes.length)
+				var length:Int = _childNodes.length;
+				for (i in 0...length)
 				{
 					_childNodes[i].setNeedLayout(needLayout);
 				}
@@ -904,10 +920,9 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				
 		}
 		
-		var containingBlock:ElementRenderer = getContainingBlock();
-		containingBlock.setNeedLayout(true);
+		_containingBlock.setNeedLayout(true);
 		
-		containingBlock.invalidate(invalidationReason);
+		_containingBlock.invalidate(invalidationReason);
 		
 		
 		if (isPositioned() == true)
