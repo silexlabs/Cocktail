@@ -96,11 +96,12 @@ class HTMLHtmlElement extends HTMLElement
 	 */
 	override private function set_innerHTML(value:String):String
 	{
+		
 		super.set_innerHTML(value);
 		
 		var htmlDocument:HTMLDocument = cast(_ownerDocument);
 		htmlDocument.initBody(cast(getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
-		
+		trace(get_innerHTML());
 		return value;
 	}
 	

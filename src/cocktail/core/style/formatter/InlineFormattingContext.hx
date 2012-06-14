@@ -96,7 +96,7 @@ class InlineFormattingContext extends FormattingContext
 		{
 			_formattingContextRoot.bounds.height = _formattingContextData.y  + _formattingContextRoot.coreStyle.computedStyle.paddingBottom ;
 			_formattingContextRoot.coreStyle.computedStyle.height = _formattingContextRoot.bounds.height - _formattingContextRoot.coreStyle.computedStyle.paddingBottom  - _formattingContextRoot.coreStyle.computedStyle.paddingTop;
-			
+		
 		}
 	}
 	
@@ -107,7 +107,7 @@ class InlineFormattingContext extends FormattingContext
 		for (i in 0...length)
 		{
 			var child:ElementRenderer = elementRenderer.childNodes[i];
-
+			
 			//here the child is an inline box renderer, which will create one line box for each
 			//line its children are in
 			if (child.hasChildNodes() == true && child.establishesNewFormattingContext() == false)
@@ -243,10 +243,8 @@ class InlineFormattingContext extends FormattingContext
 			//get the remaining available space on the current line
 			var remainingLineWidth:Float = getRemainingLineWidth();
 
-			
-			//TODO : break opportunity is not supposed to always happen
-
 			//if there isn't enough space to fit all the line box which can't be broken
+			//TODO 1 : should apply white space processing model for line break here
 			if (remainingLineWidth - _unbreakableWidth < 0)
 			{
 				//TODO : should be padding left instead ?
@@ -312,8 +310,9 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function formatLine(rootLineBox:LineBox, isLastLine:Bool):Void
 	{
-		//TODO : should be done when computing child in the line
-		removeSpaces();
+		//TODO 1 : should apply white space processing to remove space at the end and beginning
+		//of line here
+		removeSpaces(rootLineBox);
 		
 		//format line boxes horizontally
 		var lineBoxWidth:Float = alignLineBox(rootLineBox, isLastLine, getConcatenatedWidth(rootLineBox), getSpacesNumber(rootLineBox));
@@ -756,49 +755,137 @@ class InlineFormattingContext extends FormattingContext
 	
 
 	
-	//TODO : re-implement
-	private function removeSpaces():Void
+	//TODO 2 : add doc, remove start and end spaces in a line
+	private function removeSpaces(rootLineBox:LineBox):Void
 	{
-		/**
-		switch (_elementsInLineBox[0].htmlElement.style.computedStyle.whiteSpace)
+		
+		var lineBoxes:Array<LineBox> = getLineBoxTreeAsArray(rootLineBox);
+		
+		if (lineBoxes.length == 0)
 		{
-			case WhiteSpace.normal,
-			WhiteSpace.nowrap,
-			WhiteSpace.preLine:
-				
-				
-				switch(_elementsInLineBox[0].htmlElementType)
-				{
-					case InlineBoxValue.space:
-						_elementsInLineBox.shift();
-						
-					default:	
-				}
-				
-								
-			default:
+			return;
 		}
 		
-		if (_elementsInLineBox.length > 0)
+		var i:Int = 0;
+		while (i < lineBoxes.length)
 		{
-			switch (_elementsInLineBox[_elementsInLineBox.length - 1].htmlElement.style.computedStyle.whiteSpace)
+			var lineBox:LineBox = lineBoxes[i];
+			
+			if (lineBox.isSpace() == true)
 			{
-				case WhiteSpace.normal,
-				WhiteSpace.nowrap,
-				WhiteSpace.preLine:
-					
-				switch(	_elementsInLineBox[_elementsInLineBox.length - 1].htmlElementType)
+				switch(lineBox.elementRenderer.coreStyle.computedStyle.whiteSpace)
 				{
-					case InlineBoxValue.space:
-						_elementsInLineBox.pop();
-						
-					default:	
+					case WhiteSpace.normal, WhiteSpace.nowrap, WhiteSpace.preLine:
+						lineBox.parentNode.removeChild(lineBox);
+					default:
+						break;
 				}
 				
-				default:
 			}
-		}	
-		*/
+			else
+			{
+				break;
+			}
+			
+			i++;
+		}
+		
+		
+		lineBoxes = getLineBoxTreeAsArray(rootLineBox);
+		
+		if (lineBoxes.length == 0)
+		{
+			return;
+		}
+		
+		
+		var i:Int = lineBoxes.length - 1;
+		while (i >= 0)
+		{
+			var lineBox:LineBox = lineBoxes[i];
+			
+		
+			if (lineBox.isSpace() == true)
+			{
+				
+				switch(lineBox.elementRenderer.coreStyle.computedStyle.whiteSpace)
+				{
+					case WhiteSpace.normal, WhiteSpace.nowrap, WhiteSpace.preLine:
+						lineBox.parentNode.removeChild(lineBox);
+						
+					default:
+						break;
+				}
+				
+			}
+			else
+			{
+				break;
+			}
+			
+			i--;
+		}
+		
+		//switch (rootLineBox[0].htmlElement.style.computedStyle.whiteSpace)
+		//{
+			//case WhiteSpace.normal,
+			//WhiteSpace.nowrap,
+			//WhiteSpace.preLine:
+				//
+				//
+				//switch(_elementsInLineBox[0].htmlElementType)
+				//{
+					//case InlineBoxValue.space:
+						//_elementsInLineBox.shift();
+						//
+					//default:	
+				//}
+				//
+								//
+			//default:
+		//}
+		//
+		//if (_elementsInLineBox.length > 0)
+		//{
+			//switch (_elementsInLineBox[_elementsInLineBox.length - 1].htmlElement.style.computedStyle.whiteSpace)
+			//{
+				//case WhiteSpace.normal,
+				//WhiteSpace.nowrap,
+				//WhiteSpace.preLine:
+					//
+				//switch(	_elementsInLineBox[_elementsInLineBox.length - 1].htmlElementType)
+				//{
+					//case InlineBoxValue.space:
+						//_elementsInLineBox.pop();
+						//
+					//default:	
+				//}
+				//
+				//default:
+			//}
+		//}	
+		
+	}
+	
+	private function getLineBoxTreeAsArray(rootLineBox:LineBox):Array<LineBox>
+	{
+		var ret:Array<LineBox> = new Array<LineBox>();
+		
+		for (i in 0...rootLineBox.childNodes.length)
+		{
+			var child:LineBox = rootLineBox.childNodes[i];
+			
+			if (child.hasChildNodes() == true && child.isAbsolutelyPositioned() == false)
+			{
+				var children:Array<LineBox> = getLineBoxTreeAsArray(child);
+			}
+			else
+			{
+				ret.push(child);
+			}
+		}
+		
+		return ret;
 	}
 	
 	/////////////////////////////////
