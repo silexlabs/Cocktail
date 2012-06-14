@@ -691,7 +691,66 @@ class UnitManager
 	//TODO 4
 	static public function backgroundPositionEnum(string:String):Array<BackgroundPosition>
 	{
-		return [];
+		var backgroundPositions:Array<String> = string.split(" ");
+		
+		var backgroundPositionX:BackgroundPositionX;
+		
+		switch(backgroundPositions[0])
+		{
+			case "left":
+				backgroundPositionX = BackgroundPositionX.left;
+				
+			case "center":
+				backgroundPositionX = BackgroundPositionX.center;
+				
+			case "right":
+				backgroundPositionX = BackgroundPositionX.right;
+				
+			default:	
+				var parsedBgPosX:VUnit = string2VUnit(backgroundPositions[0]);
+				
+				switch (parsedBgPosX.unit)
+				{
+					case "%":
+						backgroundPositionX = BackgroundPositionX.percent(Std.parseInt(parsedBgPosX.value));
+						
+					default:
+						backgroundPositionX = BackgroundPositionX.length(string2Length(parsedBgPosX));
+				}
+				
+		}
+		
+		var backgroundPositionY:BackgroundPositionY;
+		
+		switch(backgroundPositions[1])
+		{
+			case "top":
+				backgroundPositionY = BackgroundPositionY.top;
+				
+			case "center":
+				backgroundPositionY = BackgroundPositionY.center;
+				
+			case "bottom":
+				backgroundPositionY = BackgroundPositionY.bottom;
+				
+			default:	
+				var parsedBgPosY:VUnit = string2VUnit(backgroundPositions[1]);
+				
+				switch (parsedBgPosY.unit)
+				{
+					case "%":
+						backgroundPositionY = BackgroundPositionY.percent(Std.parseInt(parsedBgPosY.value));
+						
+					default:
+						backgroundPositionY = BackgroundPositionY.length(string2Length(parsedBgPosY));
+				}
+				
+		}
+		
+		
+		
+		
+		return [{x:backgroundPositionX, y:backgroundPositionY}];
 	}
 	
 	//TODO 4

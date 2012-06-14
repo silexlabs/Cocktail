@@ -464,30 +464,37 @@ class CssParser<DisplayObjectType> {
 			return true;
 		case "background-position":
 			// default values
-			s.setBgPosXNum(d, 50, "%");
-			s.setBgPosYNum(d, 50, "%");
-			// apply X and Y
-			return applyComposite(["-inner-bgpos-left","-inner-bgpos-top"], v, s) ;
-		case "-inner-bgpos-top":
-			// percent or pixels
-			var l = getValueObject(v);
-			if( l != null ) {
-				s.setBgPosYNum(d, l.value, l.unit);
-				return true;
+		
+			var vl = switch( v ) {
+				case VGroup(l):l;
+				default:[v];
 			}
-			// keyword (top, center, bottom)
-			s.setBgPosYKey (d, getIdent(v));
-			return true;
-		case "-inner-bgpos-left":
-			// percent or pixels
-			var l = getValueObject(v);
-			if( l != null ) {
-				s.setBgPosXNum(d, l.value, l.unit);
-				return true;
+			
+			var str = "";
+			for (i in 0...vl.length)
+			{
+				
+				switch(vl[i]) {
+					case VIdent(v):
+						if (i == 0)
+							str += v + " ";
+						else
+							str += v;
+						
+					case VUnit(v, u):
+						if (i == 0)
+							str += Std.string(v) + u + " ";
+						else
+							str += Std.string(v) + u;
+									
+					default:		
+				}
 			}
-			// keyword (left, center, right)
-			s.setBgPosXKey (d, getIdent(v));
-			return true;
+			s.setBgPos(d, str);
+			return true;	
+			
+			
+
 		case "background":
 			return applyComposite(["background-color", "background-image", "background-repeat", "background-attachment", "background-position"], v, s);
 //---------------------
