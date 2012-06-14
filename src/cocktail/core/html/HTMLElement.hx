@@ -47,7 +47,7 @@ import cocktail.core.renderer.RendererData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class HTMLElement extends Element
+class HTMLElement extends Element<HTMLElement>
 {
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// IDL attributes
@@ -265,7 +265,7 @@ class HTMLElement extends Element
 	 */
 	private function initId():Void
 	{
-		var id:Attr = new Attr(HTMLConstants.HTML_ID_ATTRIBUTE_NAME);
+		var id:Attr<HTMLElement> = new Attr<HTMLElement>(HTMLConstants.HTML_ID_ATTRIBUTE_NAME);
 		setIdAttributeNode(id, true);
 	}
 	
@@ -277,7 +277,7 @@ class HTMLElement extends Element
 	 * try to attach the new child to the
 	 * rendering tree
 	 */
-	override public function appendChild(newChild:Node):Node
+	override public function appendChild(newChild:HTMLElement):HTMLElement
 	{
 		super.appendChild(newChild);
 		
@@ -286,7 +286,7 @@ class HTMLElement extends Element
 		switch (newChild.nodeType)
 		{
 			case Node.ELEMENT_NODE:
-				var htmlChild:HTMLElement = cast(newChild);
+				var htmlChild:HTMLElement = newChild;
 				htmlChild.attach();
 				
 			case Node.TEXT_NODE:
@@ -301,7 +301,7 @@ class HTMLElement extends Element
 	 * try to detach the old child from the
 	 * rendering tree
 	 */
-	override public function removeChild(oldChild:Node):Node
+	override public function removeChild(oldChild:HTMLElement):HTMLElement
 	{
 		//must happen before calling super, else
 		//the HTMLElement won't have a parent to be detached
@@ -309,7 +309,7 @@ class HTMLElement extends Element
 		switch (oldChild.nodeType)
 		{
 			case Node.ELEMENT_NODE:
-				var htmlChild:HTMLElement = cast(oldChild);
+				var htmlChild:HTMLElement = oldChild;
 				htmlChild.detach();
 				
 			case Node.TEXT_NODE:
@@ -467,6 +467,7 @@ class HTMLElement extends Element
 			//create the ElementRenderer if needed
 			if (_elementRenderer == null && isRendered() == true)
 			{
+				_coreStyle.computeDisplayStyles();
 				createElementRenderer();
 			}
 			
@@ -615,8 +616,6 @@ class HTMLElement extends Element
 	 */
 	private function createElementRenderer():Void
 	{
-		_coreStyle.computeDisplayStyles();
-		
 		switch (_coreStyle.computedStyle.display)
 		{
 			case block, inlineBlock:
@@ -752,7 +751,7 @@ class HTMLElement extends Element
 	 */
 	public function focus():Void
 	{
-		var htmlDocument:HTMLDocument = cast(ownerDocument);
+		var htmlDocument:HTMLDocument = cast(_ownerDocument);
 		htmlDocument.activeElement = this;
 	}
 	
@@ -762,7 +761,7 @@ class HTMLElement extends Element
 	 */
 	public function blur():Void
 	{
-		var htmlDocument:HTMLDocument = cast(ownerDocument);
+		var htmlDocument:HTMLDocument = cast(_ownerDocument);
 		htmlDocument.body.focus();
 	}
 	
@@ -1052,7 +1051,7 @@ class HTMLElement extends Element
 		var wrappedHTML:String = HTMLConstants.HTML_TOKEN_LESS_THAN + HTMLConstants.HTML_DIV_TAG_NAME + HTMLConstants.HTML_TOKEN_MORE_THAN;
 		wrappedHTML += value;
 		wrappedHTML += HTMLConstants.HTML_TOKEN_LESS_THAN + HTMLConstants.HTML_TOKEN_SOLIDUS + HTMLConstants.HTML_DIV_TAG_NAME + HTMLConstants.HTML_TOKEN_MORE_THAN;
-		
+
 		var node:HTMLElement = doSetInnerHTML(Parser.parse(wrappedHTML).firstElement());
 
 		//the returned node might be null for instance, if 
@@ -1182,11 +1181,11 @@ class HTMLElement extends Element
 					var childXml:Xml = Xml.createElement(child.nodeName);
 					
 					//set all the attributes of the child on its Xml node
-					var childAttributes:NamedNodeMap = child.attributes;
+					var childAttributes:NamedNodeMap<HTMLElement> = child.attributes;
 					var childAttributesLength:Int = childAttributes.length;
 					for (j in 0...childAttributesLength)
 					{
-						var attribute:Attr = cast(childAttributes.item(j));
+						var attribute:Attr<HTMLElement> = cast(childAttributes.item(j));
 						
 						if (attribute.specified == true)
 						{
@@ -1197,13 +1196,13 @@ class HTMLElement extends Element
 					//concatenate all the of the specified styles of the HTMLElement
 					//children into a CSS string
 					var htmlChild:HTMLElement = child;
-					var styleAttributes:NamedNodeMap = htmlChild.style.attributes;
+					var styleAttributes:NamedNodeMap<HTMLElement> = htmlChild.style.attributes;
 					var concatenatedStyles:String = "";
 					
 					var attributesLength:Int = styleAttributes.length;
 					for (j in 0...attributesLength)
 					{
-						var attribute:Attr = cast(styleAttributes.item(j));
+						var attribute:Attr<HTMLElement> = cast(styleAttributes.item(j));
 						
 						if (attribute.specified == true)
 						{

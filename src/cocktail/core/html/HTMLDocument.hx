@@ -475,7 +475,7 @@ class HTMLDocument extends Document
 			return _body.elementRenderer;
 		}
 		
-		while (elementRendererAtPoint.node.nodeType != Node.ELEMENT_NODE)
+		while (elementRendererAtPoint.node.nodeType != Node.ELEMENT_NODE || elementRendererAtPoint.isAnonymousBlockBox() == true)
 		{
 			elementRendererAtPoint = elementRendererAtPoint.parentNode;
 			if (elementRendererAtPoint == null)

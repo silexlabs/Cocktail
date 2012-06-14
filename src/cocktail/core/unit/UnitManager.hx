@@ -636,10 +636,44 @@ class UnitManager
 		return arrayBgImg;
 	}
 	
-	//TODO 4
+	//TODO 4 : for now only one value is allowed for background repeat
 	static public function backgroundRepeatEnum(string:String):Array<BackgroundRepeat>
 	{
-		return [];
+		var parsed:String = trim(string);
+		
+		var backgroundRepeat:BackgroundRepeat;
+		
+		switch(parsed)
+		{
+			case "repeat":
+				backgroundRepeat = {
+					x:BackgroundRepeatValue.repeat,
+					y:BackgroundRepeatValue.repeat
+				}
+				
+			case "repeat-x":
+				backgroundRepeat = {
+					x:BackgroundRepeatValue.repeat,
+					y:BackgroundRepeatValue.noRepeat
+				}
+				
+			case "repeat-y":
+				backgroundRepeat = {
+					x:BackgroundRepeatValue.noRepeat,
+					y:BackgroundRepeatValue.repeat
+				}
+				
+			case "no-repeat":
+				backgroundRepeat = {
+					x:BackgroundRepeatValue.noRepeat,
+					y:BackgroundRepeatValue.noRepeat
+				}
+				
+			default:
+				backgroundRepeat = null;
+		}
+		
+		return [backgroundRepeat];
 	}
 	
 	//TODO 4

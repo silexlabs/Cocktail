@@ -21,6 +21,7 @@ typedef Window = cocktail.core.window.Window;
 typedef Document = cocktail.core.html.HTMLDocument;
 typedef FormElement = cocktail.core.html.HTMLInputElement;
 
+
 //TODO : problem as for mouse event, have to use untyped
 typedef Event = cocktail.core.event.Event;
 typedef CustomEvent = cocktail.core.event.CustomEvent;

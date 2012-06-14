@@ -335,7 +335,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * overriden to invoke the resource selection algorithm
 	 * as needed if a source child is added
 	 */
-	override public function appendChild(newChild:Node):Node
+	override public function appendChild(newChild:HTMLElement):HTMLElement
 	{
 		super.appendChild(newChild);
 		

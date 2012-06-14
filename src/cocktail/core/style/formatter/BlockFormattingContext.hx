@@ -87,7 +87,7 @@ class BlockFormattingContext extends FormattingContext
 		for (i in 0...length)
 		{
 			var child:ElementRenderer = elementRenderer.childNodes[i];
-			
+		
 			var marginTop:Float = getCollapsedMarginTop(child, parentCollapsedMarginTop);
 			var marginBottom:Float = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
 			
