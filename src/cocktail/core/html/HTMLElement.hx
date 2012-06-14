@@ -751,7 +751,7 @@ class HTMLElement extends Element
 	 */
 	public function focus():Void
 	{
-		var htmlDocument:HTMLDocument = cast(ownerDocument);
+		var htmlDocument:HTMLDocument = cast(_ownerDocument);
 		htmlDocument.activeElement = this;
 	}
 	
@@ -761,7 +761,7 @@ class HTMLElement extends Element
 	 */
 	public function blur():Void
 	{
-		var htmlDocument:HTMLDocument = cast(ownerDocument);
+		var htmlDocument:HTMLDocument = cast(_ownerDocument);
 		htmlDocument.body.focus();
 	}
 	

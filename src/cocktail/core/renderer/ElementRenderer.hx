@@ -771,6 +771,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		var right:Float = -50000;
 		var bottom:Float = -50000;
 
+		
 		var length:Int = childrenBounds.length;
 		for (i in 0...length)
 		{
