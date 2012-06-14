@@ -30,7 +30,7 @@ import cocktail.core.dom.DOMData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Document extends Node
+class Document extends Node<Document>
 {
 	/**
 	 * event interfaces const
@@ -96,9 +96,7 @@ class Document extends Node
 	 */
 	public function createElement(tagName:String):HTMLElement
 	{
-		var element:Element = new Element(tagName);
-		element.ownerDocument = this;
-		return cast(element);
+		return null;
 	}
 	
 	/**
@@ -140,9 +138,9 @@ class Document extends Node
 	 * and namespaceURI set to null. The value 
 	 * of the attribute is the empty string.
 	 */
-	public function createAttribute(name:String):Attr
+	public function createAttribute(name:String):Attr<HTMLElement>
 	{
-		var attribute:Attr = new Attr(name);
+		var attribute:Attr<HTMLElement> = new Attr<HTMLElement>(name);
 		return attribute;
 	}
 	
@@ -241,7 +239,7 @@ class Document extends Node
 		//an Id with no attributes
 		if (node.hasAttributes() == true)
 		{
-			var attributes:NamedNodeMap = node.attributes;
+			var attributes:NamedNodeMap<HTMLElement> = node.attributes;
 			var element:HTMLElement = node;
 			
 			//loop in all the element's attributes to find the
@@ -249,7 +247,7 @@ class Document extends Node
 			var attributesLength:Int = attributes.length;
 			for (i in 0...attributesLength)
 			{
-				var attribute:Attr = element.getAttributeNode(attributes.item(i).nodeName);
+				var attribute:Attr<HTMLElement> = element.getAttributeNode(attributes.item(i).nodeName);
 				
 				//if an Id attribute is found and specified
 				if (attribute.isId == true && attribute.specified == true)

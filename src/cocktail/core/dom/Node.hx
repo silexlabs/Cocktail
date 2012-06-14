@@ -29,7 +29,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Node extends NodeBase<Node>
+class Node<NodeClass:Node<NodeClass>> extends NodeBase<NodeClass>
 {
 	/**
 	 * The node is an Element.
@@ -112,8 +112,8 @@ class Node extends NodeBase<Node>
 	 * A NamedNodeMap containing the attributes of this node 
 	 * (if it is an Element) or null otherwise.
 	 */
-	private var _attributes:NamedNodeMap;
-	public var attributes(get_attributes, never):NamedNodeMap;
+	private var _attributes:NamedNodeMap<NodeClass>;
+	public var attributes(get_attributes, never):NamedNodeMap<NodeClass>;
 	
 	/**
 	 * The Document object associated with this node. 
@@ -175,7 +175,7 @@ class Node extends NodeBase<Node>
 		return null;
 	}
 	
-	private function get_attributes():NamedNodeMap
+	private function get_attributes():NamedNodeMap<NodeClass>
 	{
 		return null;
 	}

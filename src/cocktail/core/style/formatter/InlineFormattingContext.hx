@@ -825,46 +825,6 @@ class InlineFormattingContext extends FormattingContext
 			
 			i--;
 		}
-		
-		//switch (rootLineBox[0].htmlElement.style.computedStyle.whiteSpace)
-		//{
-			//case WhiteSpace.normal,
-			//WhiteSpace.nowrap,
-			//WhiteSpace.preLine:
-				//
-				//
-				//switch(_elementsInLineBox[0].htmlElementType)
-				//{
-					//case InlineBoxValue.space:
-						//_elementsInLineBox.shift();
-						//
-					//default:	
-				//}
-				//
-								//
-			//default:
-		//}
-		//
-		//if (_elementsInLineBox.length > 0)
-		//{
-			//switch (_elementsInLineBox[_elementsInLineBox.length - 1].htmlElement.style.computedStyle.whiteSpace)
-			//{
-				//case WhiteSpace.normal,
-				//WhiteSpace.nowrap,
-				//WhiteSpace.preLine:
-					//
-				//switch(	_elementsInLineBox[_elementsInLineBox.length - 1].htmlElementType)
-				//{
-					//case InlineBoxValue.space:
-						//_elementsInLineBox.pop();
-						//
-					//default:	
-				//}
-				//
-				//default:
-			//}
-		//}	
-		
 	}
 	
 	private function getLineBoxTreeAsArray(rootLineBox:LineBox):Array<LineBox>
