@@ -8,6 +8,7 @@
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLVideoElement;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
@@ -22,7 +23,7 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 	}
@@ -39,7 +40,7 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	 * the video always takes the maximum amount of space available
 	 * while keeping its aspect ratio
 	 */
-	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
+	override private function renderEmbeddedAsset(graphicContext:NativeElement)
 	{
 		var htmlVideoElement:HTMLVideoElement = cast(_node);
 		
@@ -80,8 +81,8 @@ class VideoRenderer extends EmbeddedBoxRenderer
 		containerGraphicContext.addChild(htmlVideoElement.embeddedAsset);
 		
 		//add the x and y offset for the video
-		htmlVideoElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + relativeOffset.x + xOffset;
-		htmlVideoElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + relativeOffset.y + yOffset;
+		htmlVideoElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + xOffset;
+		htmlVideoElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + yOffset;
 		
 		//use the actual video width and height
 		htmlVideoElement.embeddedAsset.width = width;

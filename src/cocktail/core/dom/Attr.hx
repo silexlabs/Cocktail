@@ -8,13 +8,14 @@
 package cocktail.core.dom;
 
 import cocktail.core.dom.DOMData;
+import cocktail.core.html.HTMLElement;
 
 /**
- * he Attr interface represents an attribute in an Element object
+ * the Attr interface represents an attribute in an Element object
  * 
  * @author Yannick DOMINGUEZ
  */
-class Attr extends Node
+class Attr<ElementClass:Node<ElementClass>> extends Node<Attr<ElementClass>>
 {
 	/**
 	 * Returns the name of this attribute.
@@ -60,8 +61,8 @@ class Attr extends Node
 	 * The Element node this attribute is attached 
 	 * to or null if this attribute is not in use.
 	 */
-	private var _ownerElement:Element;
-	public var ownerElement(get_ownerElement, set_ownerElement):Element;
+	private var _ownerElement:ElementClass;
+	public var ownerElement(get_ownerElement, set_ownerElement):ElementClass;
 	
 	/**
 	 * class constructor
@@ -101,12 +102,12 @@ class Attr extends Node
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_ownerElement():Element 
+	private function get_ownerElement():ElementClass 
 	{
 		return _ownerElement;
 	}
 	
-	private function set_ownerElement(value:Element):Element 
+	private function set_ownerElement(value:ElementClass):ElementClass
 	{
 		return _ownerElement = value;
 	}

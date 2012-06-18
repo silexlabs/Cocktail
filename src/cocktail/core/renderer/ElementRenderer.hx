@@ -7,16 +7,20 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
+import cocktail.core.dom.NodeBase;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.style.CSSConstants;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
+import cocktail.core.renderer.RendererData;
 import haxe.Timer;
 
 
@@ -52,7 +56,7 @@ import haxe.Timer;
  * 
  * @author Yannick DOMINGUEZ
  */
-class ElementRenderer extends Node
+class ElementRenderer extends NodeBase<ElementRenderer>
 {
 	/**
 	 * The bounds of the ElementRenderer.
@@ -143,8 +147,8 @@ class ElementRenderer extends Node
 	 * which created this ElementRenderer. It might
 	 * be an HTMLElement or a Text node
 	 */
-	private var _node:Node;
-	public var node(get_node, never):Node;
+	private var _node:HTMLElement;
+	public var node(get_node, never):HTMLElement;
 	
 	/**
 	 * A reference to the coreStyle from which
@@ -171,13 +175,6 @@ class ElementRenderer extends Node
 	public var lineBoxes(getLineBoxes, setLineBoxes):Array<LineBox>;
 	
 	/**
-	 * determine wether the HTMLElement is currently being
-	 * laid out, in which case it won't take any subsequent
-	 * layout request into account
-	 */
-	private var _isLayingOut:Bool;
-	
-	/**
 	 * Determine wheter this ElementRenderer establishes its own
 	 * stacking context (instantiates a new LayerRenderer)
 	 * 
@@ -192,6 +189,7 @@ class ElementRenderer extends Node
 	 * is painted
 	 */
 	private var _graphicsContext:NativeElement;
+	public var graphicsContext(get_graphicsContext, never):NativeElement;
 	
 	/**
 	 * Stores all of the value of styles once computed.
@@ -226,10 +224,23 @@ class ElementRenderer extends Node
 	 */
 	public var scrollHeight(get_scrollHeight, never):Float;
 	
+	private var _needsLayout:Bool;
+	
+	private var _childrenNeedLayout:Bool;
+	
+	private var _positionedChildrenNeedLayout:Bool;
+	
+	private var _needsRendering:Bool;
+	
+	private var _needsVisualEffectsRendering:Bool;
+
+	private var _containingBlock:FlowBoxRenderer;
+	
+	
 	/**
 	 * class constructor. init class attribute
 	 */
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super();
 
@@ -239,7 +250,7 @@ class ElementRenderer extends Node
 		_graphicsContext = new flash.display.Sprite();
 		#end
 		
-		_isLayingOut = false;
+		
 		_hasOwnLayer = false;
 		
 		_bounds = {
@@ -264,40 +275,76 @@ class ElementRenderer extends Node
 			y:0.0
 		}
 		
+		_needsRendering = true;
+		_needsLayout = true;
+		_childrenNeedLayout = true;
+		_positionedChildrenNeedLayout = true;
+		_needsVisualEffectsRendering = true;
+		
 		_lineBoxes = new Array<LineBox>();
 	}
 	
+	/**
+	 * clean-up method
+	 */
+	public function dispose():Void
+	{
+		_lineBoxes = null;
+		//TODO 2 :should clear the graphic context
+		_graphicsContext = null;
+		_coreStyle = null;
+		_layerRenderer = null;
+	}
+	
+	/**
+	 * Clears the content of the graphic
+	 * context of this ElementRenderer
+	 */
+	public function clear():Void
+	{
+		#if (flash9 || nme)
+		var containerGraphicsContext:flash.display.DisplayObjectContainer = cast(_graphicsContext);
+			var length:Int = containerGraphicsContext.numChildren;
+			for (i in 0...length)
+			{
+				containerGraphicsContext.removeChildAt(0);
+			}
+		#end	
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * overriden as when an ElementRenderer is appended, its LayerRenderer
-	 * must be attached to the LayerRenderer tree so that it can be rendered
+	 * overriden as when an ElementRenderer is appended, it must be attached
+	 * to the LayerRenderer tree
 	 */
-	override public function appendChild(newChild:Node):Node
+	override public function appendChild(newChild:ElementRenderer):ElementRenderer
 	{
 		super.appendChild(newChild);
-		var elementRendererChild:ElementRenderer = cast(newChild);
-		elementRendererChild.attachLayer();
-		invalidateLayout();
+		
+		var elementRendererChild:ElementRenderer = newChild;
+		elementRendererChild.attach();
+		
+		invalidate(InvalidationReason.other);
 		return newChild;
 	}
 	
 	
 	/**
-	 * overriden as when an ElementRenderer is removed, its LayerRenderer
-	 * might be removed form the LayerRenderer tree if it created it
+	 * overriden as when an ElementRenderer is removed, it must be
+	 * removed from the LayerRenderer tree
 	 */
-	override public function removeChild(oldChild:Node):Node
+	override public function removeChild(oldChild:ElementRenderer):ElementRenderer
 	{
 		//must happen before calling super, else the ElementRenderer
 		//won't have a parent anymore
-		var elementRendererChild:ElementRenderer = cast(oldChild);
-		elementRendererChild.detachLayer();
+		var elementRendererChild:ElementRenderer = oldChild;
+		elementRendererChild.detach();
+		
 		super.removeChild(oldChild);
-		invalidateLayout();
+		invalidate(InvalidationReason.other);
 		return oldChild;
 	}
 	
@@ -309,9 +356,25 @@ class ElementRenderer extends Node
 	 * Render this ElementRenderer using the provided
 	 * graphic context as canvas
 	 */
-	public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
+	public function render(parentGraphicContext:NativeElement):Void
 	{
-		clear();
+		//abstract
+	}
+	
+		
+	public function scroll(x:Float, y:Float):Void
+	{
+		if (computedStyle.position == fixed)
+		{
+			#if (flash9 || nme)
+		{
+			_graphicsContext.x = x;
+			_graphicsContext.y = y;
+		}
+		#end
+		
+		}
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -319,80 +382,88 @@ class ElementRenderer extends Node
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/*
-	 * Layout this ElementRenderer so that it knows its bounds and can be rendered to the screen
+	 * Layout this ElementRenderer so that it knows its
+	 * bounds and can be rendered to the screen
 	 */ 
-	public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	public function layout():Void
 	{	
 		//abstract
 	}
 	
-	/**
-	 * Clears the content of the graphic
-	 * context of this ElementRenderer
-	 */
-	public function clear():Void
-	{
-		#if (flash9 || nme)
-		var containerGraphicsContext:flash.display.DisplayObjectContainer = cast(_graphicsContext);
-		
-			for (i in 0...containerGraphicsContext.numChildren)
-			{
-				containerGraphicsContext.removeChildAt(0);
-			}
-		#end	
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC METHODS
+	// PUBLIC ATTACHEMENT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Attach the LayerRenderer of this ElementRenderer
 	 * to the LayerRenderer tree so that it can be rendered
 	 */
-	public function attachLayer():Void
+	public function attach():Void
 	{
-		//create the LayerRenderer if needed
-		if (_layerRenderer == null)
-		{
-			if (_parentNode != null)
-			{
-				var parent:ElementRenderer = cast(_parentNode);
-				if (parent.layerRenderer != null)
-				{
-					createLayer(parent.layerRenderer);
-				}
-			}
-		}
+		attachLayer();
 		
 		//the ElementRenderer is attached to the LayerRenderer
 		//tree and must now also attach its children
-		for (i in 0..._childNodes.length)
+		var length:Int = _childNodes.length;
+		for (i in 0...length)
 		{
-			var child:ElementRenderer = cast(_childNodes[i]);
-			child.attachLayer();
+			var child:ElementRenderer = _childNodes[i];
+			child.attach();
 		}
+		
+		_containingBlock = getContainingBlock();
+		
+		attachContaininingBlock();
 	}
 	
 	/**
 	 * Detach the LayerRenderer of this ElementRenderer from the LayerRenderer
 	 * tree if necessary
 	 */
-	public function detachLayer():Void
+	public function detach():Void
 	{
+		detachContainingBlock();
+		_containingBlock = null;
+		
 		//first detach the LayerRenderer of all its children
-		for (i in 0..._childNodes.length)
+		var length:Int = _childNodes.length;
+		for (i in 0...length)
 		{
-			var child:ElementRenderer = cast(_childNodes[i]);
-			child.detachLayer();
+			var child:ElementRenderer = _childNodes[i];
+			child.detach();
 		}
 		
+		detachLayer();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRVIATE ATTACHEMENT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function attachLayer():Void
+	{
+		//create the LayerRenderer if needed
+		if (_layerRenderer == null)
+		{
+			if (_parentNode != null)
+			{
+				var parent:ElementRenderer = _parentNode;
+				if (parent.layerRenderer != null)
+				{
+					createLayer(parent.layerRenderer);
+				}
+			}
+		}
+	}
+	
+	private function detachLayer():Void
+	{
 		//only detach the LayerRenderer if this ElementRenderer
 		//created it, else it will be detached by the ElementRenderer
 		//which created it when detached
 		if (_hasOwnLayer == true)
 		{
-			var parent:ElementRenderer = cast(_parentNode);
+			var parent:ElementRenderer = _parentNode;
 			parent.layerRenderer.removeChild(_layerRenderer);
 			_hasOwnLayer = false;
 		}
@@ -413,21 +484,31 @@ class ElementRenderer extends Node
 			}
 		}
 		
+		//TODO 1 : should call a dispose method on the layerRenderer
 		_layerRenderer = null;
 	}
 	
-	public function scroll(x:Float, y:Float):Void
+	private function attachContaininingBlock():Void
 	{
-		if (computedStyle.position == fixed)
+		//TODO 2 : shouldn't be applied to Scrollbar, or scrollbar ContainingBlock
+		//should always be the parent block box
+		//if the ElementRenderer is positioned, it registers itself
+		//with its first positioned ancestor
+		if (isPositioned() == true)
 		{
-			
-			#if (flash9 || nme)
-			{
-				_graphicsContext.x -= x;
-				_graphicsContext.y -= y;
-			}
-			#end
+			_containingBlock.addPositionedChildren(this);
 		}
+	}
+	
+	private function detachContainingBlock():Void
+	{
+		//the ElementRenderer tries to unregister itself
+		//form its containing block, won't have any effect
+		//if the ElementRenderer is not positionned
+		//
+		//TODO 2 : shouldn't always call it but won't work if the detachement
+		//was caused by the change of the position style
+		_containingBlock.removePositionedChild(this);
 	}
 	
 	/////////////////////////////////
@@ -486,6 +567,11 @@ class ElementRenderer extends Node
 		return false;
 	}
 	
+	public function isBlockContainer():Bool
+	{
+		return false;
+	}
+	
 	public function childrenInline():Bool
 	{
 		return false;
@@ -515,7 +601,7 @@ class ElementRenderer extends Node
 	 * when rendering. Only relatively positioned ElementRenderer
 	 * have this offset
 	 */
-	private function getRelativeOffset():PointData
+	public function getRelativeOffset():PointData
 	{
 		var relativeOffset:PointData = { x:0.0, y:0.0 };
 		
@@ -550,19 +636,6 @@ class ElementRenderer extends Node
 			}
 		}
 		
-		return relativeOffset;
-	}
-	
-	/**
-	 * Helper method concatenating the relative offset of the parent
-	 * with the relative offset of this ElementRenderer to apply the right
-	 * translation when rendering
-	 */
-	private function getConcatenatedRelativeOffset(parentRelativeOffset:PointData):PointData
-	{
-		var relativeOffset:PointData = getRelativeOffset();
-		relativeOffset.x += parentRelativeOffset.x;
-		relativeOffset.y += parentRelativeOffset.y;
 		return relativeOffset;
 	}
 	
@@ -619,6 +692,73 @@ class ElementRenderer extends Node
 	}
 	
 	/**
+	 * Get the containing block of the ElementRenderer, based
+	 * on its positioning scheme
+	 */
+	private function getContainingBlock():FlowBoxRenderer
+	{	
+		if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			//for absolutely positioned fixed elements, the containing block
+			//is the viewport
+			if (computedStyle.position == fixed)
+			{
+				return getInitialContainingBlock();
+			}
+			//for absolutely positioned it is the first positoned
+			//ancestor
+			else
+			{
+				return getFirstPositionedAncestor();
+			}
+		}
+		//for normal flow children, it is the first block
+		//parent. 
+		//
+		//TODO 1 : what about inline box renderer ? should
+		//return first block or first parent?
+		else
+		{
+			return getFirstBlockContainer();
+		}
+	}
+	
+	/**
+	 * Get the first parent which is positioned
+	 */
+	private function getFirstPositionedAncestor():FlowBoxRenderer
+	{
+		var parent:ElementRenderer = _parentNode;
+		while (parent.isPositioned() == false)
+		{
+			parent = parent.parentNode;
+		}
+		return cast(parent);
+	}
+	
+	/**
+	 * Get the viewport ElementRenderer
+	 */
+	private function getInitialContainingBlock():FlowBoxRenderer
+	{
+		return cast(_node.ownerDocument.documentElement.elementRenderer);
+	}
+	
+	/**
+	 * Get the first block ancestor
+	 */
+	private function getFirstBlockContainer():FlowBoxRenderer
+	{
+		var parent:ElementRenderer = _parentNode;
+		while (parent.isBlockContainer() == false)
+		{
+			parent = parent.parentNode;
+		}
+		
+		return cast(parent);
+	}
+	
+	/**
 	 * Determine the bounds of the children of this ElementRenderer
 	 * in this ElementRenderer space
 	 */
@@ -630,28 +770,32 @@ class ElementRenderer extends Node
 		var top:Float = 50000;
 		var right:Float = -50000;
 		var bottom:Float = -50000;
+
 		
-		
-		for (i in 0...childrenBounds.length)
+		var length:Int = childrenBounds.length;
+		for (i in 0...length)
 		{
-			if (childrenBounds[i].x < left)
+			var childBounds:RectangleData = childrenBounds[i];
+			if (childBounds.x < left)
 			{
-				left = childrenBounds[i].x;
+				left = childBounds.x;
 			}
-			if (childrenBounds[i].y < top)
+			if (childBounds.y < top)
 			{
-				top = childrenBounds[i].y;
+				top = childBounds.y;
 			}
-			if (childrenBounds[i].x + childrenBounds[i].width > right)
+			if (childBounds.x + childBounds.width > right)
 			{
-				right = childrenBounds[i].x + childrenBounds[i].width;
+				right = childBounds.x + childBounds.width;
 			}
-			if (childrenBounds[i].y + childrenBounds[i].height  > bottom)
+			if (childBounds.y + childBounds.height  > bottom)
 			{
-				bottom = childrenBounds[i].y + childrenBounds[i].height;
+				bottom = childBounds.y + childBounds.height;
 			}
 		}
 			
+		
+		
 		bounds = {
 					x:left,
 					y:top,
@@ -678,62 +822,181 @@ class ElementRenderer extends Node
 	// PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Called when the value of a style that require
-	 * a re-layout (such as width, height, display...) is
-	 * changed.
-	 * 
-	 * An invalidated ElementRenderer will in turn invalidate its
-	 * parent and so on until the initial ElementRenderer is invalidated.
-	 * The initial ElementRenderer will then layout itself, laying out
-	 * at the same time all its invalidated children.
-	 * 
-	 * TODO 2 : shouldn't need to invalidate all of the rendering tree
-	 * 
-	 * A layout can be immediate or scheduled asynchronously, which
-	 * increase preformance when many style value are set in a 
-	 * row as the layout only happen once
-	 */
-	public function invalidateLayout(immediate:Bool = false):Void
+	public function invalidate(invalidationReason:InvalidationReason):Void
 	{
-		//only invalidate the parent if it isn't
-		//already being laid out or if an immediate layout is required
-		if (this._isLayingOut == false || immediate == true)
-		{
-			//if the ElementRenderer doesn't have a parent, then it
-			//is not currently added to the DOM and doesn't require
-			//a layout
+		//setNeedLayout(true);
+		
+		//invalidateChildren(this);
+		
+		//switch(invalidationReason)
+		//{
+			//case InvalidationReason.styleChanged(styleName):
+				//invalidatedStyle(styleName);
 			//
-			//TODO 3 : shouldn't be possible anymore, when an HTMLElement is not
-			//attached to the DOM, it doesn't create an ElementRenderer,
-			//only the initial ElementRenderer doesn't have a parent
-			if (this._parentNode != null)
+			//case InvalidationReason.childStyleChanged(styleName):
+				//invalidatedChildStyle(styleName);
+				//
+			//case InvalidationReason.positionedChildStyleChanged(styleName):
+				//invalidatedPositionedChildStyle(styleName);
+				//
+			//case InvalidationReason.needsImmediateLayout:
+				//_needsLayout = true;
+				//_childrenNeedLayout = true;
+				//invalidateLayout(true);
+				//
+			//default:
+				//_needsLayout = true;
+				//_childrenNeedLayout = true;
+				//_needsVisualEffectsRendering = true;
+				//_needsRendering = true;
+				//_positionedChildrenNeedLayout = true;
+		//}
+		invalidateContainingBlock(invalidationReason);
+		//invalidateLayout(false);
+	}
+	
+	public function childInvalidated(invalidationReason:InvalidationReason):Void
+	{
+		_needsLayout = true;
+		_childrenNeedLayout = true;
+		_needsVisualEffectsRendering = true;
+		_needsRendering = true;
+		_positionedChildrenNeedLayout = true;
+		
+		invalidate(invalidationReason);
+	}
+	
+	public function positionedChildInvalidated(invalidationReason:InvalidationReason):Void
+	{
+		//_positionedChildrenNeedLayout = true;
+		invalidate(invalidationReason);
+	}
+	
+	public function setNeedLayout(needLayout:Bool):Void
+	{
+		if (_needsLayout == false)
+		{
+			if (needLayout == true)
 			{
-				//set the layout flag to prevent multiple
-				//layout of the ElementRenderer in a row
-				//The ElementRenderer will be able to be invalidated
-				//again once it has been laid out
-				this._isLayingOut = true;
-				
-				var parent:ElementRenderer = cast(_parentNode);
-				parent.invalidateLayout(immediate);
+				var length:Int = _childNodes.length;
+				for (i in 0...length)
+				{
+					_childNodes[i].setNeedLayout(needLayout);
+				}
 			}
 		}
+		
+		_needsLayout = needLayout;
+		_childrenNeedLayout = needLayout;
+		_needsVisualEffectsRendering = needLayout;
+		_needsRendering = needLayout;
+		_positionedChildrenNeedLayout = needLayout;
+		
 	}
+	
+	private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
+	{
+		
+		//TODO 1 : not supposed to happen but bug with scrollbars for now
+		if (_parentNode == null)
+		{
+			return;
+		}
+		
+		
+		var containingBlockInvalidationReason:InvalidationReason;
+		
+		switch (invalidationReason)
+		{
+			case InvalidationReason.styleChanged(styleName):
+				if (isPositioned() == true)
+				{
+					containingBlockInvalidationReason = InvalidationReason.positionedChildStyleChanged(styleName);
+				}
+				else
+				{
+					containingBlockInvalidationReason = InvalidationReason.childStyleChanged(styleName);
+				}
+				
+			default:
+				containingBlockInvalidationReason = invalidationReason;
+				
+		}
+		
+		_containingBlock.setNeedLayout(true);
+		
+		_containingBlock.invalidate(invalidationReason);
+		
+		
+		if (isPositioned() == true)
+		{
+			//containingBlock.positionedChildInvalidated(containingBlockInvalidationReason);
+		}
+		//containingBlock.childInvalidated(containingBlockInvalidationReason);
+		
+		
+	}
+	
+	private function invalidatedStyle(styleName:String):Void
+	{
+		switch (styleName)
+		{
+			case CSSConstants.LEFT_STYLE_NAME, CSSConstants.RIGHT_STYLE_NAME,
+			CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
+				if (isPositioned() == true)
+				{
+					_needsVisualEffectsRendering = true;
+				}
+				
+			case CSSConstants.POSITION_STYLE_NAME, CSSConstants.Z_INDEX_STYLE_NAME:
+				invalidateLayer();
+		}
+	}
+	
+	private function invalidatedChildStyle(styleName:String):Void
+	{
+		switch (styleName)
+		{
+			default:
+				_needsLayout = true;
+				_childrenNeedLayout = true;
+				_needsVisualEffectsRendering = true;
+				_needsRendering = true;
+				_positionedChildrenNeedLayout = true;	
+		}
+	}
+	
+	private function invalidatedPositionedChildStyle(styleName:String):Void
+	{
+		switch (styleName)
+		{
+			case CSSConstants.LEFT_STYLE_NAME, CSSConstants.RIGHT_STYLE_NAME,
+			CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
+				
+				
+			default:
+				_needsLayout = true;
+				_childrenNeedLayout = true;
+				_needsVisualEffectsRendering = true;
+				_needsRendering = true;
+				_positionedChildrenNeedLayout = true;
+		}
+	}
+	
+	
 	
 	/**
 	 * Call when a style which require a re-layout
 	 * of the text (such as font-size, fon-family...)
 	 * is changed
 	 */
-	public function invalidateText():Void
+	private function invalidateText():Void
 	{
 		for (i in 0..._childNodes.length)
 		{
-			var child:ElementRenderer = cast(_childNodes[i]);
+			var child:ElementRenderer = _childNodes[i];
 			child.invalidateText();
 		}
-		invalidateLayout();
 	}
 	
 	/**
@@ -741,11 +1004,16 @@ class ElementRenderer extends Node
 	 * the LayerRenderer tree (such as position or
 	 * overflow) is changed
 	 */
-	public function invalidateLayer():Void
+	private function invalidateLayer():Void
 	{
-		detachLayer();
-		attachLayer();
-		invalidateLayout();
+		detach();
+		attach();
+		//invalidateLayout();
+	}
+	
+	private function invalidateRendering():Void
+	{
+		_needsRendering = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -767,7 +1035,7 @@ class ElementRenderer extends Node
 			//here it uses its static position for x
 			if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
 			{
-				globalX = _globalContainingBlockOrigin.x + _bounds.x;
+				globalX = _globalContainingBlockOrigin.x + bounds.x;
 			}
 			//here it uses its position relative to the Window for x
 			else
@@ -777,7 +1045,7 @@ class ElementRenderer extends Node
 			//static position
 			if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
 			{
-				globalY = _globalContainingBlockOrigin.y + _bounds.y;
+				globalY = _globalContainingBlockOrigin.y + bounds.y;
 			}
 			else
 			{
@@ -790,7 +1058,7 @@ class ElementRenderer extends Node
 			//static position for x
 			if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
 			{
-				globalX = _globalContainingBlockOrigin.x + _bounds.x;
+				globalX = _globalContainingBlockOrigin.x + bounds.x;
 			}
 			else
 			{
@@ -799,7 +1067,7 @@ class ElementRenderer extends Node
 			//static position for y
 			if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
 			{
-				globalY = _globalContainingBlockOrigin.y + _bounds.y;
+				globalY = _globalContainingBlockOrigin.y + bounds.y;
 			}
 			else
 			{
@@ -809,8 +1077,8 @@ class ElementRenderer extends Node
 		//here the ElementRenderer uses the normal flow
 		else
 		{
-			globalX = _globalContainingBlockOrigin.x + _bounds.x;
-			globalY = _globalContainingBlockOrigin.y + _bounds.y;
+			globalX = _globalContainingBlockOrigin.x + bounds.x;
+			globalY = _globalContainingBlockOrigin.y + bounds.y;
 		}
 		
 		
@@ -890,7 +1158,6 @@ class ElementRenderer extends Node
 	private function set_coreStyle(value:CoreStyle):CoreStyle
 	{
 		_coreStyle = value;
-		invalidateLayout();
 		return value;
 	}
 	
@@ -934,7 +1201,7 @@ class ElementRenderer extends Node
 		return _globalPositionnedAncestorOrigin = value;
 	}
 	
-	private function get_node():Node
+	private function get_node():HTMLElement
 	{
 		return _node;
 	}
@@ -967,5 +1234,10 @@ class ElementRenderer extends Node
 	private function get_scrollHeight():Float
 	{
 		return bounds.height;
+	}
+	
+	private function get_graphicsContext():NativeElement
+	{
+		return _graphicsContext;
 	}
 }

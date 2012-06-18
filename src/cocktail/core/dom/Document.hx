@@ -30,7 +30,7 @@ import cocktail.core.dom.DOMData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Document extends Node
+class Document extends Node<Document>
 {
 	/**
 	 * event interfaces const
@@ -78,6 +78,8 @@ class Document extends Node
 	 * Note that the instance returned implements the Element interface,
 	 * so attributes can be specified directly on the returned object.
 	 * 
+	 * Implemented by sub classes
+	 * 
 	 * @param	tagName The name of the element type to instantiate. For XML,
 	 * this is case-sensitive, otherwise it depends on the case-sensitivity 
 	 * of the markup language in use. In that case, the name is mapped
@@ -94,9 +96,7 @@ class Document extends Node
 	 */
 	public function createElement(tagName:String):HTMLElement
 	{
-		var element:HTMLElement = new HTMLElement(tagName);
-		element.ownerDocument = this;
-		return element;
+		return null;
 	}
 	
 	/**
@@ -138,9 +138,9 @@ class Document extends Node
 	 * and namespaceURI set to null. The value 
 	 * of the attribute is the empty string.
 	 */
-	public function createAttribute(name:String):Attr
+	public function createAttribute(name:String):Attr<HTMLElement>
 	{
-		var attribute:Attr = new Attr(name);
+		var attribute:Attr<HTMLElement> = new Attr<HTMLElement>(name);
 		return attribute;
 	}
 	
@@ -214,15 +214,19 @@ class Document extends Node
 	 * Actually return the Element matching the
 	 * elementId, by traversing recursively the 
 	 * DOM tree
+	 * 
+	 * TODO 2 : shouldn't be HTMLElement but Element<T>
+	 * but complicated for now with type parameters
 	 */
-	private function doGetElementById(node:Node, elementId:String):HTMLElement
+	private function doGetElementById(node:HTMLElement, elementId:String):HTMLElement
 	{
 		//call method recursively if node has child and is itself an element
 		if (node.hasChildNodes() == true && node.nodeType == Node.ELEMENT_NODE)
 		{
-			for (i in 0...node.childNodes.length)
+			var length:Int = node.childNodes.length;
+			for (i in 0...length)
 			{
-				var matchingElement:HTMLElement = doGetElementById(node.childNodes[i], elementId);
+				var matchingElement:HTMLElement = doGetElementById(cast(node.childNodes[i]), elementId);
 				//if a matching element is found, return it
 				if (matchingElement != null)
 				{
@@ -235,15 +239,15 @@ class Document extends Node
 		//an Id with no attributes
 		if (node.hasAttributes() == true)
 		{
-			var attributes:NamedNodeMap = node.attributes;
-			var element:HTMLElement = cast(node);
+			var attributes:NamedNodeMap<HTMLElement> = node.attributes;
+			var element:HTMLElement = node;
 			
 			//loop in all the element's attributes to find the
 			//Id attribute if defined
-			for (i in 0...attributes.length)
+			var attributesLength:Int = attributes.length;
+			for (i in 0...attributesLength)
 			{
-				
-				var attribute:Attr = element.getAttributeNode(attributes.item(i).nodeName);
+				var attribute:Attr<HTMLElement> = element.getAttributeNode(attributes.item(i).nodeName);
 				
 				//if an Id attribute is found and specified
 				if (attribute.isId == true && attribute.specified == true)

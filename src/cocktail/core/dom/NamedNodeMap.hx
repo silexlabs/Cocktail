@@ -1,3 +1,10 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktail.core.dom;
 
 /**
@@ -12,14 +19,14 @@ package cocktail.core.dom;
  *  
  * @author Yannick DOMINGUEZ
  */
-class NamedNodeMap 
+class NamedNodeMap<ElementClass:Node<ElementClass>>
 {
 	/**
 	 * The stored nodes. Kept as an Array
 	 * instead of an Hash to allow retrieval
 	 * by ordinal index
 	 */
-	private var _nodes:Array<Node>;
+	private var _nodes:Array<Attr<ElementClass>>;
 	
 	/**
 	 * The number of nodes in this map.
@@ -31,7 +38,7 @@ class NamedNodeMap
 	 */
 	public function new() 
 	{
-		_nodes = new Array<Node>();
+		_nodes = new Array<Attr<ElementClass>>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -45,9 +52,10 @@ class NamedNodeMap
 	 * @return A Node (of any type) with the specified nodeName,
 	 * or null if it does not identify any node in this map.
 	 */
-	public function getNamedItem(name:String):Node
+	public function getNamedItem(name:String):Attr<ElementClass>
 	{
-		for (i in 0..._nodes.length)
+		var nodesLength:Int = _nodes.length;
+		for (i in 0...nodesLength)
 		{
 			if (_nodes[i].nodeName == name)
 			{
@@ -73,15 +81,15 @@ class NamedNodeMap
 	 * @return If the new Node replaces an existing node the
 	 * replaced Node is returned, otherwise null is returned.
 	 */
-	public function setNamedItem(arg:Node):Node
+	public function setNamedItem(arg:Attr<ElementClass>):Attr<ElementClass>
 	{
-		var replacedNode:Node = getNamedItem(arg.nodeName);
+		var replacedNode:Attr<ElementClass> = getNamedItem(arg.nodeName);
 		
 		if (replacedNode != null)
 		{
 			for (i in 0...length)
 			{
-				if (_nodes[i].isSameNode(replacedNode) == true)
+				if (_nodes[i].isSameNode(cast(replacedNode)) == true)
 				{
 					_nodes[i] = arg;
 					return replacedNode;
@@ -109,20 +117,20 @@ class NamedNodeMap
 	 * @return The node removed from this map if a node
 	 * with such a name exists.
 	 */
-	public function removeNamedItem(name:String):Node
+	public function removeNamedItem(name:String):Attr<ElementClass>
 	{
-		var removedNode:Node = getNamedItem(name);
+		var removedNode:Attr<ElementClass> = getNamedItem(name);
 		
 		if (removedNode == null)
 		{
 			return null;
 		}
 		
-		var newNodes:Array<Node> = new Array<Node>();
+		var newNodes:Array<Attr<ElementClass>> = new Array<Attr<ElementClass>>();
 		
 		for (i in 0...length)
 		{
-			if (_nodes[i].isSameNode(removedNode) == false)
+			if (_nodes[i].isSameNode(cast(removedNode)) == false)
 			{
 				newNodes.push(_nodes[i]);
 			}
@@ -142,7 +150,7 @@ class NamedNodeMap
 	 * @return The node at the indexth position in the map,
 	 * or null if that is not a valid index.
 	 */
-	public function item(index:Int):Node
+	public function item(index:Int):Attr<ElementClass>
 	{
 		if (index > length - 1)
 		{

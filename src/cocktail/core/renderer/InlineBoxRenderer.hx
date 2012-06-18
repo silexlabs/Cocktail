@@ -8,6 +8,7 @@
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;
@@ -28,48 +29,47 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC RENDERING METHODS
+	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as InlineBoxRenderer doesn't render a background of his own, it is its
+	 * generatd line boxes which render their own backgrounds
+	 */
+	override private function renderBackground(graphicContext:NativeElement):Void
+	{
+		
+	}
 	
 	/**
 	 * Overriden as rendering an inline box renderer consist in rendering all of the 
 	 * line boxes it generated
 	 */
-	override public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
+	override private function renderChildren(graphicContext:NativeElement):Void
 	{
-		//first clear the graphics context
-		clear();
-		
-		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
+		super.renderChildren(graphicContext);
 		
 		//render negative z-index LayerRenderer
 		if (establishesNewStackingContext() == true)
 		{
-			_layerRenderer.renderNegativeChildElementRenderers(_graphicsContext, relativeOffset);
+			_layerRenderer.renderNegativeChildElementRenderers(graphicContext);
 		}
 		
 		//render all the child line boxes which belong to the same
 		//stacking context as this InlineBoxRenderer
-		renderChildLineBoxes(_graphicsContext, relativeOffset);
+		renderChildLineBoxes(graphicContext);
 		
 		if (establishesNewStackingContext() == true)
 		{	
-			_layerRenderer.renderZeroAndAutoChildElementRenderers(_graphicsContext, relativeOffset);
-			_layerRenderer.renderPositiveChildElementRenderers(_graphicsContext, relativeOffset);
+			_layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext);
+			_layerRenderer.renderPositiveChildElementRenderers(graphicContext);
 		}
-		
-		#if (flash9 || nme)
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(parentGraphicContext);
-		containerGraphicContext.addChild(_graphicsContext);
-		#end
-		
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -79,17 +79,19 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	/**
 	 * Actually render the child line boxes
 	 */
-	private function renderChildLineBoxes(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderChildLineBoxes(graphicContext:NativeElement):Void
 	{
-		for (i in 0..._lineBoxes.length)
+		var length:Int = _lineBoxes.length;
+		for (i in 0...length)
 		{
 			var childLineBoxes:Array<LineBox> = getLineBoxesInLine(_lineBoxes[i]);
 			
-			for (j in 0...childLineBoxes.length)
+			var childLength:Int = childLineBoxes.length;
+			for (j in 0...childLength)
 			{
 				if (childLineBoxes[j].layerRenderer == _layerRenderer)
 				{
-					childLineBoxes[j].render(graphicContext, relativeOffset);
+					childLineBoxes[j].render(graphicContext);
 				}
 			}
 		}
@@ -107,7 +109,8 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	override private function get_bounds():RectangleData
 	{
 		var lineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
-		for (i in 0..._lineBoxes.length)
+		var length:Int = _lineBoxes.length;
+		for (i in 0...length)
 		{
 			lineBoxesBounds.push(_lineBoxes[i].bounds);
 		}

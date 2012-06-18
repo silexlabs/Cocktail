@@ -10,6 +10,7 @@ package cocktail.core.style.transition;
 import cocktail.core.geom.CubicBezier;
 import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.style.CSSConstants;
 import cocktail.core.style.StyleData;
 
 /**
@@ -168,6 +169,8 @@ class Transition
 	 * Return tthe current value of the transitioned
 	 * property based on the elapsed time and the used easing
 	 * function
+	 * 
+	 * TODO 1 : manage delay
 	 */
 	private function get_currentValue():Float
 	{

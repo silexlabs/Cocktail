@@ -56,9 +56,10 @@ class RootLineBox extends LineBox
 	{
 		var lineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
 		
-		for (i in 0...lineBox.childNodes.length)
+		var length:Int = lineBox.childNodes.length;
+		for (i in 0...length)
 		{
-			var child:LineBox = cast(lineBox.childNodes[i]);
+			var child:LineBox = lineBox.childNodes[i];
 			
 			//absolutely positioned line box are not used to compute the
 			//bounds of the root line box
@@ -69,7 +70,8 @@ class RootLineBox extends LineBox
 				if (child.hasChildNodes() == true)
 				{
 					var childrenBounds:Array<RectangleData> = getLineBoxesBounds(child);
-					for (j in 0...childrenBounds.length)
+					var childLength:Int = childrenBounds.length;
+					for (j in 0...childLength)
 					{
 						lineBoxesBounds.push(childrenBounds[j]);
 					}
@@ -94,24 +96,25 @@ class RootLineBox extends LineBox
 		var right:Float = -50000;
 		var bottom:Float = -50000;
 		
-		
-		for (i in 0...childrenBounds.length)
+		var length:Int = childrenBounds.length;
+		for (i in 0...length)
 		{
-			if (childrenBounds[i].x < left)
+			var childBounds:RectangleData = childrenBounds[i];
+			if (childBounds.x < left)
 			{
-				left = childrenBounds[i].x;
+				left = childBounds.x;
 			}
-			if (childrenBounds[i].y < top)
+			if (childBounds.y < top)
 			{
-				top = childrenBounds[i].y;
+				top = childBounds.y;
 			}
-			if (childrenBounds[i].x + childrenBounds[i].width > right)
+			if (childBounds.x + childBounds.width > right)
 			{
-				right = childrenBounds[i].x + childrenBounds[i].width;
+				right = childBounds.x + childBounds.width;
 			}
-			if (childrenBounds[i].y + childrenBounds[i].height  > bottom)
+			if (childBounds.y + childBounds.height  > bottom)
 			{
-				bottom = childrenBounds[i].y + childrenBounds[i].height;
+				bottom = childBounds.y + childBounds.height;
 			}
 		}
 			
