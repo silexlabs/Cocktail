@@ -38,6 +38,7 @@ import haxe.Log;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.style.StyleData;
 import lib.hxtml.IStyleProxy;
+import cocktail.core.renderer.RendererData;
 
 /**
  * All HTML element interfaces derive from this class.
@@ -46,7 +47,7 @@ import lib.hxtml.IStyleProxy;
  * 
  * @author Yannick DOMINGUEZ
  */
-class HTMLElement extends Element
+class HTMLElement extends Element<HTMLElement>
 {
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// IDL attributes
@@ -264,7 +265,7 @@ class HTMLElement extends Element
 	 */
 	private function initId():Void
 	{
-		var id:Attr = new Attr(HTMLConstants.HTML_ID_ATTRIBUTE_NAME);
+		var id:Attr<HTMLElement> = new Attr<HTMLElement>(HTMLConstants.HTML_ID_ATTRIBUTE_NAME);
 		setIdAttributeNode(id, true);
 	}
 	
@@ -276,7 +277,7 @@ class HTMLElement extends Element
 	 * try to attach the new child to the
 	 * rendering tree
 	 */
-	override public function appendChild(newChild:Node):Node
+	override public function appendChild(newChild:HTMLElement):HTMLElement
 	{
 		super.appendChild(newChild);
 		
@@ -285,7 +286,7 @@ class HTMLElement extends Element
 		switch (newChild.nodeType)
 		{
 			case Node.ELEMENT_NODE:
-				var htmlChild:HTMLElement = cast(newChild);
+				var htmlChild:HTMLElement = newChild;
 				htmlChild.attach();
 				
 			case Node.TEXT_NODE:
@@ -300,7 +301,7 @@ class HTMLElement extends Element
 	 * try to detach the old child from the
 	 * rendering tree
 	 */
-	override public function removeChild(oldChild:Node):Node
+	override public function removeChild(oldChild:HTMLElement):HTMLElement
 	{
 		//must happen before calling super, else
 		//the HTMLElement won't have a parent to be detached
@@ -308,7 +309,7 @@ class HTMLElement extends Element
 		switch (oldChild.nodeType)
 		{
 			case Node.ELEMENT_NODE:
-				var htmlChild:HTMLElement = cast(oldChild);
+				var htmlChild:HTMLElement = oldChild;
 				htmlChild.detach();
 				
 			case Node.TEXT_NODE:
@@ -410,37 +411,13 @@ class HTMLElement extends Element
 	 * is changed, for instance when the width is changed. Invalidate
 	 * the layout of the elementRenderer if the HTMLElement is rendered
 	 */
-	public function invalidateLayout(immediate:Bool = false):Void
+	public function invalidate(invalidationReason:InvalidationReason):Void
 	{
 		//TODO 4 : should use helper method like isRenderer instead of
 		//relying on nullness
 		if (_elementRenderer != null)
 		{
-			_elementRenderer.invalidateLayout(immediate);
-		}
-	}
-	
-	/**
-	 * Same as above for styles invalidating the LayerRenderer
-	 * tree when changed, such as z-index
-	 */
-	public function invalidateLayer():Void
-	{
-		if (_elementRenderer != null)
-		{
-			_elementRenderer.invalidateLayer();
-		}
-	}
-	
-	/**
-	 * Same as above for style invalidating the layout
-	 * of the text when changed, such as font-size
-	 */
-	public function invalidateText():Void
-	{
-		if (_elementRenderer != null)
-		{
-			_elementRenderer.invalidateText();
+			_elementRenderer.invalidate(invalidationReason);
 		}
 	}
 	
@@ -455,6 +432,9 @@ class HTMLElement extends Element
 	 * Another example is if the value of Display is "inline" and
 	 * it is swiched to "block", then the current inline ElementRenderer
 	 * must be replaced by a block ElementRenderer
+	 * 
+	 * TODO 2 : update doc, now also called for position style changes, should
+	 * be for all positioning scheme styles
 	 */
 	public function invalidateDisplay():Void
 	{
@@ -487,6 +467,7 @@ class HTMLElement extends Element
 			//create the ElementRenderer if needed
 			if (_elementRenderer == null && isRendered() == true)
 			{
+				_coreStyle.computeDisplayStyles();
 				createElementRenderer();
 			}
 			
@@ -498,7 +479,8 @@ class HTMLElement extends Element
 				attachToParentElementRenderer();
 				
 				//the HTMLElement is now attached and can attach its children
-				for (i in 0..._childNodes.length)
+				var length:Int = _childNodes.length;
+				for (i in 0...length)
 				{
 					//only text and element node can be attached, as other nodes
 					//types are not visual
@@ -539,7 +521,8 @@ class HTMLElement extends Element
 			if (_elementRenderer != null)
 			{	
 				//detach first all children
-				for (i in 0..._childNodes.length)
+				var length:Int = _childNodes.length;
+				for (i in 0...length)
 				{
 					switch (_childNodes[i].nodeType)
 					{
@@ -557,8 +540,7 @@ class HTMLElement extends Element
 				//ElementRenderer, then destroy it
 				detachFromParentElementRenderer();
 				
-				//TODO 1 : should call a cleanup method as there is a cross
-				//-reference to the HTMLElement
+				_elementRenderer.dispose();
 				_elementRenderer = null;
 			}
 		}
@@ -577,7 +559,7 @@ class HTMLElement extends Element
 	private function getNextElementRendererSibling():ElementRenderer
 	{
 		var nextSibling:HTMLElement = cast(nextSibling);
-		
+					
 		if (nextSibling == null)
 		{
 			return null;
@@ -588,7 +570,15 @@ class HTMLElement extends Element
 			{
 				if (nextSibling.elementRenderer != null)
 				{
-					return cast(nextSibling.elementRenderer);
+					var elementRenderParent:ElementRenderer = nextSibling.elementRenderer.parentNode;
+					
+					//in the case where the parent of the next sibling's elementRenderer is an 
+					//anonymous block, the anonymous block should be return as sibling
+					if (elementRenderParent.isAnonymousBlockBox() == true)
+					{
+						return elementRenderParent;
+					}
+					return nextSibling.elementRenderer;
 				}
 				
 				nextSibling = cast(nextSibling.nextSibling);
@@ -626,13 +616,10 @@ class HTMLElement extends Element
 	 */
 	private function createElementRenderer():Void
 	{
-		_coreStyle.computeDisplayStyles();
-		
 		switch (_coreStyle.computedStyle.display)
 		{
 			case block, inlineBlock:
 				_elementRenderer = new BlockBoxRenderer(this);
-				//TODO 2 : when creating, coreStyle should be reinitialised
 				_elementRenderer.coreStyle = _coreStyle;
 				
 			case cssInline:
@@ -764,8 +751,8 @@ class HTMLElement extends Element
 	 */
 	public function focus():Void
 	{
-		var htmlDocument:HTMLDocument = cast(ownerDocument);
-		htmlDocument.activeElement = cast(this);
+		var htmlDocument:HTMLDocument = cast(_ownerDocument);
+		htmlDocument.activeElement = this;
 	}
 	
 	/**
@@ -774,7 +761,7 @@ class HTMLElement extends Element
 	 */
 	public function blur():Void
 	{
-		var htmlDocument:HTMLDocument = cast(ownerDocument);
+		var htmlDocument:HTMLDocument = cast(_ownerDocument);
 		htmlDocument.body.focus();
 	}
 	
@@ -790,7 +777,7 @@ class HTMLElement extends Element
 	 * at early stage, will be updated once they
 	 * are more widely implemented
 	 */
-	public function requestFullscreen():Void
+	public function requestFullScreen():Void
 	{
 		var htmlDocument:HTMLDocument = cast(_ownerDocument);
 		htmlDocument.fullscreenElement = this;
@@ -978,7 +965,6 @@ class HTMLElement extends Element
 	 */
 	private function get_tabIndex():Int
 	{
-		//TODO 2 : awkward to call super, but else infinite loop
 		var tabIndex:String = super.getAttribute(HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME);
 		
 		if (tabIndex == "")
@@ -1052,33 +1038,32 @@ class HTMLElement extends Element
 	 */
 	private function set_innerHTML(value:String):String
 	{
-		for (i in 0..._childNodes.length)
+		var childLength:Int = _childNodes.length;
+		for (i in 0...childLength)
 		{
 			removeChild(_childNodes[0]);	
-		}
-		
-		//do nothing if its an empty string
-		//
-		//TODO 2 : mostly done because hxtml throw
-		//error. Method shouldn't return here but
-		//hxtml should return null Node
-		if (value == "")
-		{
-			return value;
 		}
 		
 		//wrap the HTML String in a div element, else
 		//when creating the html node, only the first 
 		//node content is deserialized and not its
 		//siblings
-		var wrappedHTML:String = "<div>";
+		var wrappedHTML:String = HTMLConstants.HTML_TOKEN_LESS_THAN + HTMLConstants.HTML_DIV_TAG_NAME + HTMLConstants.HTML_TOKEN_MORE_THAN;
 		wrappedHTML += value;
-		wrappedHTML += "</div>";
-		
+		wrappedHTML += HTMLConstants.HTML_TOKEN_LESS_THAN + HTMLConstants.HTML_TOKEN_SOLIDUS + HTMLConstants.HTML_DIV_TAG_NAME + HTMLConstants.HTML_TOKEN_MORE_THAN;
+
 		var node:HTMLElement = doSetInnerHTML(Parser.parse(wrappedHTML).firstElement());
+
+		//the returned node might be null for instance, if 
+		//only an empty string was provided
+		if (node == null)
+		{
+			return value;
+		}
 		
 		//append all children of the generated node
-		for (i in 0...node.childNodes.length)
+		var length:Int = node.childNodes.length;
+		for (i in 0...length)
 		{
 			appendChild(node.childNodes[0]);
 		}
@@ -1086,37 +1071,68 @@ class HTMLElement extends Element
 		return value;
 	}
 	
+	/**
+	 * Actually desirialize the HTML string
+	 * and return the root Node created
+	 * 
+	 * @param xml the HTML string, deserialized as an
+	 * Haxe xml object
+	 */
 	private function doSetInnerHTML(xml : Xml):HTMLElement
 	{
 		switch( xml.nodeType ) {
+		
+		//node type for text node
 		case Xml.PCData:
 			return _ownerDocument.createTextNode(xml.nodeValue);
-			
+		
+		//node type for comment node	
 		case Xml.Comment:
 			return _ownerDocument.createComment(xml.nodeValue);
-			
+		
+		//node type for element node
 		case Xml.Element:
 			
-			var d : HTMLElement;
+			var htmlElement : HTMLElement;
+			var name:String = xml.nodeName.toLowerCase();
+	
+			//create an HTMLElement with the name of the xml element
+			//node
+			htmlElement = _ownerDocument.createElement(name);
 			
-			var name = xml.nodeName.toLowerCase();
-			d = _ownerDocument.createElement(name);
-			
+			//loop in all of the xml child node
 			for (child in xml)
 			{
-				var htmlChild:HTMLElement = doSetInnerHTML(child);
-				d.appendChild(htmlChild);
+				//switch the type of the child node
+				switch (child.nodeType)
+				{
+					//if it is a text node,
+					//check if the child is not just an
+					//empty string, in which case, no text node
+					//is created
+					case Xml.PCData:
+						if (child.nodeValue == "")
+						{
+							continue;
+						}
+				}
+			
+				//desrialize the child, thus deserializing
+				//the whole DOM tree recursively
+				var childNode:HTMLElement = doSetInnerHTML(child);
+
+				htmlElement.appendChild(childNode);
 			} 
 			
-				// init attributes
-			for( a in xml.attributes() ){
-				a = a.toLowerCase();
-				var v = xml.get(a);
-				d.setAttribute(a, v);
+			//set all the attributes of the xml node on the 
+			//new HTMLElement node
+			for( attribute in xml.attributes() ){
+				attribute = attribute.toLowerCase();
+				var value:String = xml.get(attribute);
+				htmlElement.setAttribute(attribute, value);
 			}
 			
-			
-			return d;
+			return htmlElement;
 		}
 		
 		//TODO 2 : will cause bug if node type not supported
@@ -1135,7 +1151,7 @@ class HTMLElement extends Element
 		
 		//remove the first and last tag, as they correspond to this HTMLElement
 		//tag which should not be returned as its inner html
-		str = str.substr(str.indexOf(">") + 1 , str.lastIndexOf("<") - str.indexOf(">") - 1);
+		str = str.substr(str.indexOf(HTMLConstants.HTML_TOKEN_MORE_THAN) + 1 , str.lastIndexOf(HTMLConstants.HTML_TOKEN_LESS_THAN) - str.indexOf(HTMLConstants.HTML_TOKEN_MORE_THAN) - 1);
 		
 		return str;
 	}
@@ -1146,14 +1162,15 @@ class HTMLElement extends Element
 	 * 
 	 * Returns all the children serialised data as an Xml
 	 * 
-	 * TODO 5 : should serialize other type of nodes, such as comment node,
+	 * TODO 5 : should serialize other type of nodes, such as
 	 * doctype...
 	 */
-	private function doGetInnerHTML(node:Node, xml:Xml):Xml
+	private function doGetInnerHTML(node:HTMLElement, xml:Xml):Xml
 	{
-		for (i in 0...node.childNodes.length)
+		var length:Int = node.childNodes.length;
+		for (i in 0...length)
 		{
-			var child:Node = node.childNodes[i];
+			var child:HTMLElement = cast(node.childNodes[i]);
 			
 			switch(child.nodeType)
 			{
@@ -1164,10 +1181,11 @@ class HTMLElement extends Element
 					var childXml:Xml = Xml.createElement(child.nodeName);
 					
 					//set all the attributes of the child on its Xml node
-					var childAttributes:NamedNodeMap = child.attributes;
-					for (j in 0...childAttributes.length)
+					var childAttributes:NamedNodeMap<HTMLElement> = child.attributes;
+					var childAttributesLength:Int = childAttributes.length;
+					for (j in 0...childAttributesLength)
 					{
-						var attribute:Attr = cast(childAttributes.item(j));
+						var attribute:Attr<HTMLElement> = cast(childAttributes.item(j));
 						
 						if (attribute.specified == true)
 						{
@@ -1177,13 +1195,14 @@ class HTMLElement extends Element
 					
 					//concatenate all the of the specified styles of the HTMLElement
 					//children into a CSS string
-					var htmlChild:HTMLElement = cast(child);
-					var styleAttributes:NamedNodeMap = htmlChild.style.attributes;
+					var htmlChild:HTMLElement = child;
+					var styleAttributes:NamedNodeMap<HTMLElement> = htmlChild.style.attributes;
 					var concatenatedStyles:String = "";
 					
-					for (j in 0...styleAttributes.length)
+					var attributesLength:Int = styleAttributes.length;
+					for (j in 0...attributesLength)
 					{
-						var attribute:Attr = cast(styleAttributes.item(j));
+						var attribute:Attr<HTMLElement> = cast(styleAttributes.item(j));
 						
 						if (attribute.specified == true)
 						{
@@ -1207,7 +1226,7 @@ class HTMLElement extends Element
 					//to be sure that the xml parser also returns a closing tag 
 					if (childXml.firstChild() == null && isVoidElement() == false)
 					{
-						childXml.addChild(Parser.parse(""));
+						childXml.addChild(Xml.createPCData(""));
 					}
 
 				case Node.TEXT_NODE:
@@ -1282,28 +1301,28 @@ class HTMLElement extends Element
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		invalidateLayout(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
-		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
+		return Math.round(computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight);
 	}
 	
 	private function get_offsetHeight():Int
 	{
-		invalidateLayout(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
-		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+		return Math.round(computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom);
 	}
 	
 	//TODO 3  : unit test
 	private function get_offsetLeft():Int
 	{
-		invalidateLayout(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		return Math.round(_elementRenderer.positionedOrigin.x);
 	}
 	
 	private function get_offsetTop():Int
 	{
-		invalidateLayout(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		return Math.round(_elementRenderer.positionedOrigin.y);
 	}
 	
@@ -1311,29 +1330,29 @@ class HTMLElement extends Element
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		invalidateLayout(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
-		return computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
+		return Math.round(computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight);
 	}
 	
 	private function get_clientHeight():Int
 	{
-		invalidateLayout(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
-		return computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+		return Math.round(computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom);
 	}
 	
 	//TODO 5 : should be top border height
 	private function get_clientTop():Int
 	{
-		invalidateLayout(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		return 0;
 	}
 	
 	//TODO 5 : should be left border width
 	private function get_clientLeft():Int
 	{
-		invalidateLayout(true);
+		invalidate(InvalidationReason.needsImmediateLayout);
 		return 0;
 	}
 	

@@ -85,29 +85,29 @@ class MouseEvent extends UIEvent
 	 * The horizontal coordinate at which the event occurred relative
 	 * to the origin of the screen coordinate system.
 	 */
-	private var _screenX:Float;
-	public var screenX(get_screenX, never):Float;
+	private var _screenX:Int;
+	public var screenX(get_screenX, never):Int;
 	
 	/**
 	 * The vertical coordinate at which the event occurred relative
 	 * to the origin of the screen coordinate system.
 	 */
-	private var _screenY:Float;
-	public var screenY(get_screenY, never):Float;
+	private var _screenY:Int;
+	public var screenY(get_screenY, never):Int;
 	
 	/**
 	 * The horizontal coordinate at which the event occurred relative
 	 * to the DOM implementation's client area.
 	 */
-	private var _clientX:Float;
-	public var clientX(get_clientX, never):Float;
+	private var _clientX:Int;
+	public var clientX(get_clientX, never):Int;
 	
 	/**
 	 * The vertical coordinate at which the event occurred 
 	 * relative to the DOM implementation's client area.
 	 */
-	private var _clientY:Float;
-	public var clientY(get_clientY, never):Float;
+	private var _clientY:Int;
+	public var clientY(get_clientY, never):Int;
 	
 	/**
 	 * Used to indicate whether the 'ctrl' key was depressed
@@ -197,7 +197,7 @@ class MouseEvent extends UIEvent
 	 * @param	relatedTargetArg Specifies MouseEvent.relatedTarget. This value may be null.
 	 */
 	public function initMouseEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, viewArg:Dynamic, detailArg:Float,
-	screenXArg:Float, screenYArg:Float, clientXArg:Float, clientYArg:Float, ctrlKeyArg:Bool, altKeyArg:Bool,
+	screenXArg:Int, screenYArg:Int, clientXArg:Int, clientYArg:Int, ctrlKeyArg:Bool, altKeyArg:Bool,
 	shiftKeyArg:Bool, metaKeyArg:Bool, buttonArg:Int, relatedTargeArg:EventTarget):Void
 	{
 		//can't alter event after it has been dispatched
@@ -254,22 +254,22 @@ class MouseEvent extends UIEvent
 		return _ctrlKey;
 	}
 	
-	private function get_clientY():Float 
+	private function get_clientY():Int 
 	{
 		return _clientY;
 	}
 	
-	private function get_clientX():Float 
+	private function get_clientX():Int 
 	{
 		return _clientX;
 	}
 	
-	private function get_screenX():Float 
+	private function get_screenX():Int 
 	{
 		return _screenX;
 	}
 	
-	private function get_screenY():Float 
+	private function get_screenY():Int 
 	{
 		return _screenY;
 	}

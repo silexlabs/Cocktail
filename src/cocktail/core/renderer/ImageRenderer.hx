@@ -8,6 +8,8 @@
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
+import cocktail.core.html.EmbeddedElement;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
@@ -23,7 +25,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 	}
@@ -31,24 +33,21 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	//TODO 2 : test opacity
+
 	/**
 	 * When rendered, renders the embedded picture using the
 	 * graphicContext as canvas
 	 */
-	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
+	override private function renderEmbeddedAsset(graphicContext:NativeElement)
 	{
-		var htmlImageElement:HTMLImageElement = cast(_node);
-	
+		var htmlImageElement:EmbeddedElement = cast(_node);
 		#if (flash9 || nme)
-		
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		containerGraphicContext.addChild(htmlImageElement.embeddedAsset);
 		
-		htmlImageElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + relativeOffset.x;
-		htmlImageElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + relativeOffset.y;
-		htmlImageElement.embeddedAsset.alpha = computedStyle.opacity;
+		var globalBounds:RectangleData = globalBounds;
+		htmlImageElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
+		htmlImageElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
 		htmlImageElement.embeddedAsset.width = _coreStyle.computedStyle.width;
 		htmlImageElement.embeddedAsset.height = _coreStyle.computedStyle.height;
 		

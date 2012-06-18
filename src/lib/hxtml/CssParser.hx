@@ -143,6 +143,13 @@ class CssParser<DisplayObjectType> {
 				default:	
 			}
 			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMarginLeftZero(d);
+				return true;
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -172,6 +179,13 @@ class CssParser<DisplayObjectType> {
 				default:	
 			}
 			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMarginRightZero(d);
+				return true;
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -192,6 +206,13 @@ class CssParser<DisplayObjectType> {
 						default:
 					}	
 				default:	
+			}
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMarginTopZero(d);
+				return true;
 			}
 			
 			//case label (auto)
@@ -282,6 +303,7 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 		case "padding-left":
+			
 			var i:Null<ValueObject> = getValueObject(v);
 			if( i != null ) { s.setPaddingLeft(d, i.value, i.unit); return true; }
 		case "padding-right":
@@ -408,7 +430,7 @@ class CssParser<DisplayObjectType> {
 			switch( v ) {
 			case VHex(v):
 				//var val = (v.length == 6) ? Std.parseInt("0x" + v) : ((v.length == 3) ? Std.parseInt("0x"+v.charAt(0)+v.charAt(0)+v.charAt(1)+v.charAt(1)+v.charAt(2)+v.charAt(2)) : null);
-				s.setBgColorNum(d, Std.parseInt(v));
+				s.setBgColorHex(d, v);
 				return true;
 			case VRGBA(v):
 				s.setBgColorRGBA(d, v);
@@ -420,6 +442,8 @@ class CssParser<DisplayObjectType> {
 				s.setBgColorKey(d, i);
 				return true;
 			default:
+				trace(v);
+				return true;
 			}
 		case "background-repeat":
 			// TODO: multiple URLs
@@ -824,6 +848,9 @@ class CssParser<DisplayObjectType> {
 			return true;
 		case "float":
 			s.setCssFloat(d, getIdent(v));
+			return true;
+		case "clear":
+			s.setClear(d, getIdent(v));
 			return true;
 		case "position":
 			s.setPosition(d, getIdent(v));

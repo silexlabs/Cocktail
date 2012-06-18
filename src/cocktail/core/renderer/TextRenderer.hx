@@ -9,6 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
@@ -42,15 +43,14 @@ class TextRenderer extends ElementRenderer
 	/**
 	 * Class constructor.
 	 */
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 		_text = cast(node);
-		
-		//_lineBoxes = null;
+		_lineBoxes = null;
 	}
 	
-	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	override public function layout():Void
 	{	
 		//if (lineBoxes == null)
 		//{
@@ -58,12 +58,12 @@ class TextRenderer extends ElementRenderer
 		//}
 	}
 	
-	//TODO IMPORTANT : setting lineBoxes to null causes runtime error in inline formatting context,
+	//TODO 1 IMPORTANT : setting lineBoxes to null causes runtime error in inline formatting context,
 	//need to find a better way to refresh text
-	override public function invalidateText():Void
+	override private function invalidateText():Void
 	{
 		//_lineBoxes = null;
-		invalidateLayout();
+		//invalidateLayout();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -73,6 +73,8 @@ class TextRenderer extends ElementRenderer
 	/**
 	 * Actually convert a text into an array
 	 * of text token.
+	 * 
+	 * TODO 1 : should take whit space processing into account
 	 */
 	private static function doGetTextTokens(text:String):Array<TextToken>
 	{
@@ -175,7 +177,8 @@ class TextRenderer extends ElementRenderer
 		_textTokens = doGetTextTokens(_text.nodeValue);
 		lineBoxes = [];
 		
-		for (i in 0..._textTokens.length)
+		var length:Int = _textTokens.length;
+		for (i in 0...length)
 		{
 			//create and store the line boxes
 			lineBoxes.push(createTextLineBoxFromTextToken(_textTokens[i]));
@@ -257,11 +260,11 @@ class TextRenderer extends ElementRenderer
 			}
 		}
 		var textLineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
-		for (i in 0..._lineBoxes.length)
+		var length:Int = _lineBoxes.length;
+		for (i in 0...length)
 		{
 			textLineBoxesBounds.push(_lineBoxes[i].bounds);
 		}
-		
 		return getChildrenBounds(textLineBoxesBounds);
 	}
 	

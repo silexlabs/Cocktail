@@ -93,8 +93,8 @@ class Mouse extends AbstractMouse
 		var mouseEvent:MouseEvent = new MouseEvent();
 
 		//TODO 5 : screenX should be relative to sreen top left, but how to get this in flash ? use JavaScript ?
-		mouseEvent.initMouseEvent(eventType, true, true, null, 0.0, typedEvent.stageX, typedEvent.stageY,
-		typedEvent.stageX, typedEvent.stageY, typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, false, 0, null);
+		mouseEvent.initMouseEvent(eventType, true, true, null, 0.0, Math.round(typedEvent.stageX), Math.round(typedEvent.stageY),
+		Math.round(typedEvent.stageX), Math.round(typedEvent.stageY), typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, false, 0, null);
 		
 		return mouseEvent;
 	}
@@ -112,8 +112,8 @@ class Mouse extends AbstractMouse
 		
 		var wheelEvent:WheelEvent = new WheelEvent();
 
-		wheelEvent.initWheelEvent(WheelEvent.MOUSE_WHEEL, true, true, null, 0.0, typedEvent.stageX, typedEvent.stageY,
-		typedEvent.stageX, typedEvent.stageY, 0, null, "", 0, typedEvent.delta, 0, 0 );
+		wheelEvent.initWheelEvent(WheelEvent.MOUSE_WHEEL, true, true, null, 0.0, Math.round(typedEvent.stageX), Math.round(typedEvent.stageY),
+		Math.round(typedEvent.stageX), Math.round(typedEvent.stageY), 0, null, "", 0, typedEvent.delta, 0, 0 );
 		
 		return wheelEvent;
 	}

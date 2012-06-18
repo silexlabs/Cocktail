@@ -636,10 +636,44 @@ class UnitManager
 		return arrayBgImg;
 	}
 	
-	//TODO 4
+	//TODO 4 : for now only one value is allowed for background repeat
 	static public function backgroundRepeatEnum(string:String):Array<BackgroundRepeat>
 	{
-		return [];
+		var parsed:String = trim(string);
+		
+		var backgroundRepeat:BackgroundRepeat;
+		
+		switch(parsed)
+		{
+			case "repeat":
+				backgroundRepeat = {
+					x:BackgroundRepeatValue.repeat,
+					y:BackgroundRepeatValue.repeat
+				}
+				
+			case "repeat-x":
+				backgroundRepeat = {
+					x:BackgroundRepeatValue.repeat,
+					y:BackgroundRepeatValue.noRepeat
+				}
+				
+			case "repeat-y":
+				backgroundRepeat = {
+					x:BackgroundRepeatValue.noRepeat,
+					y:BackgroundRepeatValue.repeat
+				}
+				
+			case "no-repeat":
+				backgroundRepeat = {
+					x:BackgroundRepeatValue.noRepeat,
+					y:BackgroundRepeatValue.noRepeat
+				}
+				
+			default:
+				backgroundRepeat = null;
+		}
+		
+		return [backgroundRepeat];
 	}
 	
 	//TODO 4
@@ -929,7 +963,7 @@ class UnitManager
 			string = string.substr(1);
 		if (StringTools.endsWith(string, "\""))
 			string = string.substr(0, string.length - 1);
-		return cast(string);
+		return string;
 	}
 	/**
 	 * function used internally to convert a value/unit strings pair to an enum  
@@ -988,7 +1022,7 @@ class UnitManager
 	 * @return returns the computed value as pixel with rounded
 	 * values
 	 */ 
-	public static function getPixelFromLength(length:Length, emReference:Float, exReference:Float):Int
+	public static function getPixelFromLength(length:Length, emReference:Float, exReference:Float):Float
 	{
 		var lengthValue:Float;
 		
@@ -1019,7 +1053,7 @@ class UnitManager
 				lengthValue = exReference * value;
 		}
 		
-		return Math.round(lengthValue);
+		return lengthValue;
 	}
 	
 	/**
@@ -1085,7 +1119,7 @@ class UnitManager
 	 * @param	reference the reference value
 	 * @return a percentage of the reference value
 	 */
-	public static function getPixelFromPercent(percent:Int, reference:Int):Float
+	public static function getPixelFromPercent(percent:Int, reference:Float):Float
 	{
 		return reference * (percent * 0.01);
 	}
@@ -1096,7 +1130,7 @@ class UnitManager
 	 * @param	reference
 	 * @return
 	 */
-	public static function getPercentFromPixel(pixel:Int, reference:Int):Float
+	public static function getPercentFromPixel(pixel:Float, reference:Float):Float
 	{
 		return (reference / pixel) * 100;
 	}

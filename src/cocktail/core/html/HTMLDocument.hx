@@ -23,6 +23,7 @@ import cocktail.core.html.HTMLImageElement;
 import cocktail.core.html.HTMLInputElement;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
+import cocktail.core.renderer.RendererData;
 import cocktail.core.event.FocusEvent;
 import haxe.Log;
 import haxe.Timer;
@@ -133,7 +134,7 @@ class HTMLDocument extends Document
 	public function initBody(htmlBodyElement:HTMLBodyElement):Void
 	{
 		_body = htmlBodyElement;
-		_body.attach();
+		_documentElement.appendChild(_body);
 		_hoveredElementRenderer = _body.elementRenderer;
 		_activeElement = _body;
 	}
@@ -172,6 +173,9 @@ class HTMLDocument extends Document
 				
 			case HTMLConstants.HTML_SOURCE_TAG_NAME:
 				element = new HTMLSourceElement();
+				
+			case HTMLConstants.HTML_OBJECT_TAG_NAME:
+				element = new HTMLObjectElement();
 				
 			default:
 				element = new HTMLElement(tagName);
@@ -215,7 +219,7 @@ class HTMLDocument extends Document
 		
 		if (wheelEvent.defaultPrevented == false)
 		{
-			var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
+			var htmlElement:HTMLElement = elementRendererAtPoint.node;
 			
 			//get the amount of vertical scrolling to apply in pixel
 			var scrollOffset:Int = Math.round(wheelEvent.deltaY * MOUSE_WHEEL_DELTA_MULTIPLIER) ;
@@ -239,8 +243,8 @@ class HTMLDocument extends Document
 	public function onPlatformMouseClickEvent(mouseEvent:MouseEvent):Void
 	{
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
-
-		var htmlElement:HTMLElement = cast(elementRendererAtPoint.node);
+		
+		var htmlElement:HTMLElement = elementRendererAtPoint.node;
 		
 		//find the first parent of the HTMLElement which has an activation behaviour, might
 		//return null
@@ -346,7 +350,7 @@ class HTMLDocument extends Document
 	 */
 	public function onPlatformResizeEvent(event:UIEvent):Void
 	{
-		_body.invalidateLayout();
+		_documentElement.invalidate(InvalidationReason.other);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -460,19 +464,20 @@ class HTMLDocument extends Document
 	 */
 	private function getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent:MouseEvent):ElementRenderer
 	{
-		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: mouseEvent.screenX, y:mouseEvent.screenY }, 0, 0  );
+		var screenX:Float = mouseEvent.screenX;
+		var screenY:Float = mouseEvent.screenY;
+		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: screenX, y: screenY }, 0, 0  );
 		
-		
-		//TODO 2 : quick fix, when no element is under mouse, return the body,
-		//but is it supposed to be nul ever ? -> yes, when mouse leave document
+		//when no element is under mouse like for instance when the mouse leaves
+		//the window, return the body
 		if (elementRendererAtPoint == null)
 		{
 			return _body.elementRenderer;
 		}
 		
-		while (elementRendererAtPoint.node.nodeType != Node.ELEMENT_NODE)
+		while (elementRendererAtPoint.node.nodeType != Node.ELEMENT_NODE || elementRendererAtPoint.isAnonymousBlockBox() == true)
 		{
-			elementRendererAtPoint = cast(elementRendererAtPoint.parentNode);
+			elementRendererAtPoint = elementRendererAtPoint.parentNode;
 			if (elementRendererAtPoint == null)
 			{
 				return null;

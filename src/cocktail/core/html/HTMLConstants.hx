@@ -30,6 +30,10 @@ class HTMLConstants
 	
 	public static inline var HTML_SOURCE_TAG_NAME:String = "source";
 	
+	public static inline var HTML_DIV_TAG_NAME:String = "div";
+	
+	public static inline var HTML_OBJECT_TAG_NAME:String = "object";
+	
 	//attributes names
 	
 	public static inline var HTML_ID_ATTRIBUTE_NAME:String = "id";
@@ -52,6 +56,33 @@ class HTMLConstants
 
 	public static inline var HTML_MEDIA_ATTRIBUTE_NAME:String = "media";
 	
+	public static inline var HTML_HREF_ATTRIBUTE_NAME:String = "href";
+	
+	public static inline var HTML_TARGET_ATTRIBUTE_NAME:String = "target";
+	
+	public static inline var HTML_DATA_ATTRIBUTE_NAME:String = "data";
+	
+	public static inline var HTML_HEIGHT_ATTRIBUTE_NAME:String = "height";
+	
+	public static inline var HTML_WIDTH_ATTRIBUTE_NAME:String = "width";
+	
+	//anchor target const
+
+	public static inline var TARGET_BLANK:String = "_blank";
+	
+	public static inline var TARGET_SELF:String = "_self";
+	
+	public static inline var TARGET_PARENT:String = "_parent";
+	
+	public static inline var TARGET_TOP:String = "_top";
+	
+	// html tokens
+	
+	public static inline var HTML_TOKEN_LESS_THAN:String = "<";
+	
+	public static inline var HTML_TOKEN_MORE_THAN:String = ">";
+	
+	public static inline var HTML_TOKEN_SOLIDUS:String = "/";
 	
 	public function new() 
 	{

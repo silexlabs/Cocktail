@@ -11,6 +11,7 @@ import cocktail.core.dom.Document;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventCallback;
 import cocktail.core.html.HTMLAnchorElement;
+import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.port.platform.Platform;
 
@@ -99,7 +100,7 @@ class Window extends EventCallback
 	/**
 	 * Creates a new secondary browser window and loads the referenced resource.
 	 */
-	public function open(url:String, name:String = HTMLAnchorElement.TARGET_BLANK):Void
+	public function open(url:String, name:String = HTMLConstants.TARGET_BLANK):Void
 	{
 		_platform.open(url, name);
 	}
