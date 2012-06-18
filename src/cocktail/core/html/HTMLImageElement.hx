@@ -16,6 +16,7 @@ import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.resource.ImageLoader;
 import haxe.Log;
 import cocktail.core.html.EmbeddedElement;
+import cocktail.core.renderer.RendererData;
 
 
 /**
@@ -138,7 +139,6 @@ class HTMLImageElement extends EmbeddedElement
 	 */
 	private function set_src(value:String):String
 	{
-		//TODO 2 : awkward to call super, but else infinite loop
 		super.setAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME, value);
 		_imageLoader.load([value], onLoadComplete, onLoadError);
 		return value;
@@ -159,7 +159,7 @@ class HTMLImageElement extends EmbeddedElement
 		this._intrinsicWidth = _imageLoader.intrinsicWidth;
 		this._intrinsicRatio = _intrinsicHeight / _intrinsicWidth;
 		
-		invalidateLayout();
+		invalidate(InvalidationReason.other);
 		
 		var loadEvent:UIEvent = new UIEvent();
 		loadEvent.initUIEvent(UIEvent.LOAD, false, false, null, 0.0);

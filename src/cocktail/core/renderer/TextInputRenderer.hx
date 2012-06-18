@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.dom.Node;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.event.KeyboardEvent;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.StyleData;
@@ -66,7 +67,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	 * class constructor
 	 * @param	node
 	 */
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 		
@@ -82,7 +83,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	/**
 	 * Overriden to also render the native flash text field
 	 */
-	override private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
+	override private function renderEmbeddedAsset(graphicContext:NativeElement)
 	{
 		updateNativeTextField();
 		#if (flash9 || nme)

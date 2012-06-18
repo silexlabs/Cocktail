@@ -41,6 +41,7 @@ import cocktail.core.font.FontData;
 import haxe.Log;
 import haxe.Timer;
 import cocktail.core.style.ComputedStyle;
+import cocktail.core.renderer.RendererData;
 
 /**
  * This is the base class for all Style classes. Style classes
@@ -278,7 +279,7 @@ class CoreStyle
 	 */
 	private function initDefaultStyleValues(tagName:String):Void
 	{
-		_computedStyle = new ComputedStyle();
+		_computedStyle = new ComputedStyle(this);
 		initComputedStyles();
 		
 		_width = getWidthDefaultValue();
@@ -623,40 +624,6 @@ class CoreStyle
 		boxComputer.measure(this, containingBlockDimensions);
 	}
 	
-	/**
-	 * In most cases, when the height of a HTMLElement
-	 * is 'auto', its computed height become the total height
-	 * of its in flow children, computed once all its
-	 * children have been laid out 
-	 * 
-	 * @param	childrenHeight the total height of the children once laid out
-	 */
-	public function applyContentHeightIfNeeded(containingBlockDimensions:ContainingBlockData, childrenHeight:Int, isReplaced:Bool):Int
-	{		
-		var boxComputer:BoxStylesComputer = getBoxStylesComputer(isReplaced);		
-		return boxComputer.applyContentHeight(this, containingBlockDimensions, childrenHeight);
-	}
-	
-	/**
-	 * In certain cases, when the width of the HTMLElement is 'auto',
-	 * its computed value is 'shrink-to-fit' meaning that it will take either
-	 * the width of the widest line formed by its children or the width of its
-	 * container if the children overflows
-	 * 
-	 * If the width of this HTMLElement is indeed shrinked, all
-	 * its children are laid out again
-	 * 
-	 * @param	containingBlockData
-	 * @param	minimumWidth the width of the widest line of children laid out
-	 * by this HTMLElement which will be the minimum width that should
-	 * have this HTMLElement if it is shrinked to fit
-	 */
-	public function shrinkToFitIfNeeded(containingBlockData:ContainingBlockData, minimumWidth:Int, isReplaced:Bool):Int
-	{		
-		var boxComputer:BoxStylesComputer = getBoxStylesComputer(isReplaced);
-		return boxComputer.shrinkToFit(this, containingBlockData, minimumWidth);
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE COMPUTING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -770,9 +737,9 @@ class CoreStyle
 	 * Called when a style necesiting invalidation of the
 	 * layout of the HTMLElement is changed
 	 */
-	private function invalidate(immediate:Bool = false):Void
+	private function invalidate(invalidationReason:InvalidationReason):Void
 	{
-		_htmlElement.invalidateLayout(immediate);
+		_htmlElement.invalidate(invalidationReason);
 	}
 	
 	/**
@@ -783,44 +750,42 @@ class CoreStyle
 		_htmlElement.invalidateDisplay();
 	}
 	
-	/**
-	 * Same as above for LayerRenderer
-	 */
-	private function invalidateLayer():Void
-	{
-		_htmlElement.invalidateLayer();
-	}
-	
-	/**
-	 * Same as above for text
-	 */
-	private function invalidateText():Void
-	{
-		_htmlElement.invalidateText();
-	}
-	
 	/////////////////////////////////
 	// TRANSITION METHODS
 	////////////////////////////////
 	
+	/**
+	 * When the specified value of a style changes, starts
+	 * a transition for the proeprty if needed using the
+	 * TransitionManager
+	 * 
+	 * @param	propertyName the name of the property whose
+	 * value changed
+	 */
 	private function startTransitionIfNeeded(propertyName:String):Void
-	{
-		//TODO 1 : shouldn't have to call it here
-		computeVisualEffectStyles();
-		
-		
+	{	
+		//will store the index of the property in the TransitionPorperty
+		//array, so that its duration, delay, and timing function can be found
+		//at the same index
 		var propertyIndex:Int = 0;
 		
+		//check if the changed property is supposed to be transitioned
 		switch (computedStyle.transitionProperty)
 		{
+			//if none, the method returns here as no property
+			//of this style should be transitioned
 			case TransitionProperty.none:
 				return;
-				
+			
+			//here, check in the list of transitionable property
+			//for a match
 			case TransitionProperty.list(value):
 				var foundFlag:Bool = false;
 				
 				for (i in 0...value.length)
 				{
+					//if there is a match, store the index
+					//of the match
 					if (value[i] == propertyName)
 					{
 						propertyIndex = i;
@@ -829,46 +794,83 @@ class CoreStyle
 					}
 				}
 				
+				//if there is no match, the method stops
+				//here
 				if (foundFlag == false)
 				{
 					return;
 				}
 				
+			//here all property can transition. The index
+			//will stay at 0
 			case TransitionProperty.all:	
 		}
 		
-		var combinedDuration:Float = 0.0;
-		
-		var transitionDelay:Float = computedStyle.transitionDelay[getRepeatedIndex(propertyIndex, computedStyle.transitionDelay.length)];
-		
-		var transitionDuration:Float = computedStyle.transitionDuration[getRepeatedIndex(propertyIndex, computedStyle.transitionDuration.length)];
-		
-		var transitionTimingFunction:TransitionTimingFunctionValue = computedStyle.transitionTimingFunction[getRepeatedIndex(propertyIndex,computedStyle.transitionTimingFunction.length)];
-		combinedDuration = transitionDuration + transitionDelay;
-		
-			
-		if (combinedDuration > 0)
+		//return if transition style have not yet been computed
+		//
+		//TODO 2 : not supposed to happen, should be computed by this point
+		if (computedStyle.transitionDelay.length == 0 || computedStyle.transitionDuration.length == 0)
 		{
-			var transition:Transition = TransitionManager.getInstance().getTransition(propertyName, computedStyle);
-			if (transition != null)
-			{
-				TransitionManager.getInstance().stopTransition(transition);
-			}
-			
-			
-			var startValue:Float = Reflect.getProperty(computedStyle, propertyName);
-			invalidate(true);
-			var endValue:Float = Reflect.getProperty(computedStyle, propertyName);
-
-			
-			
-			
-			TransitionManager.getInstance().startTransition(computedStyle, propertyName, startValue, endValue, 
-			transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate);
+			return;
 		}
 		
+		//the combined duration is the combined duration
+		//and delay of the transition, 
+		var combinedDuration:Float = 0.0;
+		
+		//get  the delay and duration of the transition in their respective array
+		//using the same index as the one in the transitionproperty array
+		var transitionDelay:Float = computedStyle.transitionDelay[getRepeatedIndex(propertyIndex, computedStyle.transitionDelay.length)];
+		var transitionDuration:Float = computedStyle.transitionDuration[getRepeatedIndex(propertyIndex, computedStyle.transitionDuration.length)];
+		combinedDuration = transitionDuration + transitionDelay;
+		
+		//if the combined duration is not superior to
+		//0, then there is no transition
+		if (combinedDuration <= 0)
+		{
+			return;
+		}
+		
+		//get the transition timing function
+		var transitionTimingFunction:TransitionTimingFunctionValue = computedStyle.transitionTimingFunction[getRepeatedIndex(propertyIndex,computedStyle.transitionTimingFunction.length)];
+		
+		//check if a transition is already in progress for the same property
+		var transition:Transition = TransitionManager.getInstance().getTransition(propertyName, computedStyle);
+		
+		//if the transition is not null, then a transition is already
+		//in progress, so it must first be stopped
+		if (transition != null)
+		{
+			//TODO 1 : add the reverse transition case
+			
+			TransitionManager.getInstance().stopTransition(transition);
+		}
+		
+		//get the starting value for the transition which is he current computed value of the 
+		//style
+		var startValue:Float = Reflect.getProperty(computedStyle, propertyName);
+		
+		//start an immediate invalidation, so that the the new specified value
+		//of the style gets immediately computed, this value will be the end value
+		//for the transition
+		invalidate(InvalidationReason.needsImmediateLayout);
+		var endValue:Float = Reflect.getProperty(computedStyle, propertyName);
+		
+		//start a transition using the TransitionManager
+		TransitionManager.getInstance().startTransition(computedStyle, propertyName, startValue, endValue, 
+		transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate);
 	}
 	
+	/**
+	 * Utils method, which return, given
+	 * an index and the length of an array, the 
+	 * actual index to use by looping in the length
+	 * if the length is inferior to the index
+	 * 
+	 * @example if the length is 2 and the index is 3,
+	 * the returned index will be 0, as by looping in the length,
+	 * the index will be 0,1,0
+	 */
 	private function getRepeatedIndex(index:Int, length:Int):Int
 	{
 		if (index < length)
@@ -879,20 +881,26 @@ class CoreStyle
 		return length % index;
 	}
 	
+	/**
+	 * When a transition is complete, invalidate the HTMLElement,
+	 * then dispatch a transition end event
+	 */
 	private function onTransitionComplete(transition:Transition):Void
 	{
-		invalidate();
-		
+		invalidate(InvalidationReason.other);
 		var transitionEvent:TransitionEvent = new TransitionEvent();
 		transitionEvent.initTransitionEvent(TransitionEvent.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
-		
 		_htmlElement.dispatchEvent(transitionEvent);
 		
 	}
 	
+	/**
+	 * When a transition is updated, invalidate the HTMLElement
+	 * to repaint the rendering tree
+	 */
 	private function onTransitionUpdate(transition:Transition):Void
 	{
-		invalidate();
+		invalidate(InvalidationReason.other);
 	}
 	
 	/////////////////////////////////
@@ -931,64 +939,73 @@ class CoreStyle
 	private function setWidth(value:Dimension):Dimension 
 	{
 		_width = value;
-		startTransitionIfNeeded("width");
-		invalidate();
+		//TODO 1 : if transition is successful, should invalidate still be called ?
+		startTransitionIfNeeded(CSSConstants.WIDTH_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.WIDTH_STYLE_NAME));
 		return value;
 	}
 	
 	private function setMarginLeft(value:Margin):Margin 
 	{
 		_marginLeft = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.MARGIN_LEFT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.MARGIN_LEFT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setMarginRight(value:Margin):Margin 
 	{
 		_marginRight = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.MARGIN_RIGHT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.MARGIN_RIGHT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setMarginTop(value:Margin):Margin 
 	{
 		_marginTop = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.MARGIN_TOP_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.MARGIN_TOP_STYLE_NAME));
 		return value;
 	}
 	
 	private function setMarginBottom(value:Margin):Margin 
 	{
 		_marginBottom = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.MARGIN_BOTTOM_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.MARGIN_BOTTOM_STYLE_NAME));
 		return value;
 	}
 	
 	private function setPaddingLeft(value:Padding):Padding 
 	{
 		_paddingLeft = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.PADDING_LEFT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.PADDING_LEFT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setPaddingRight(value:Padding):Padding 
 	{
 		_paddingRight = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.PADDING_RIGHT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.PADDING_RIGHT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setPaddingTop(value:Padding):Padding 
 	{
 		_paddingTop = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.PADDING_TOP_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.PADDING_TOP_STYLE_NAME));
 		return value;
 	}
 	
 	private function setPaddingBottom(value:Padding):Padding 
 	{
 		_paddingBottom = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.PADDING_BOTTOM_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.PADDING_BOTTOM_STYLE_NAME));
 		return value;
 	}
 	
@@ -1002,233 +1019,260 @@ class CoreStyle
 	private function setPosition(value:Position):Position 
 	{
 		_position = value;
-		invalidateLayer();
+		_computedStyle.position = value;
+		invalidateDisplay();
 		return value;
 	}
 	
 	private function setHeight(value:Dimension):Dimension 
 	{
 		_height = value;
-		startTransitionIfNeeded("height");
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.HEIGHT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.HEIGHT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setMinHeight(value:ConstrainedDimension):ConstrainedDimension 
 	{
 		_minHeight = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.MIN_HEIGHT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.MIN_HEIGHT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setMaxHeight(value:ConstrainedDimension):ConstrainedDimension 
 	{
 		_maxHeight = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.MAX_HEIGHT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.MAX_HEIGHT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setMinWidth(value:ConstrainedDimension):ConstrainedDimension 
 	{
 		_minWidth = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.MIN_WIDTH_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.MIN_WIDTH_STYLE_NAME));
 		return value;
 	}
 	
 	private function setMaxWidth(value:ConstrainedDimension):ConstrainedDimension 
 	{
 		_maxWidth = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.MAX_WIDTH_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.MAX_WIDTH_STYLE_NAME));
 		return value;
 	}
 	
 	private function setTop(value:PositionOffset):PositionOffset 
 	{
 		_top = value;
-		startTransitionIfNeeded("top");
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.TOP_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.TOP_STYLE_NAME));
 		return value;
 	}
 	
 	private function setLeft(value:PositionOffset):PositionOffset 
 	{
 		_left = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.LEFT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.LEFT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setBottom(value:PositionOffset):PositionOffset 
 	{
 		_bottom = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.BOTTOM_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.BOTTOM_STYLE_NAME));
 		return value;
 	}
 	
 	private function setRight(value:PositionOffset):PositionOffset 
 	{
 		_right = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.RIGHT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.RIGHT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setCSSFloat(value:CSSFloat):CSSFloat 
 	{
 		_cssFloat = value;
-		invalidate();
+		invalidate(InvalidationReason.styleChanged(CSSConstants.FLOAT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setClear(value:Clear):Clear 
 	{
 		_clear = value;
-		invalidate();
+		invalidate(InvalidationReason.styleChanged(CSSConstants.CLEAR_STYLE_NAME));
 		return value;
 	}
 	
 	private function setZIndex(value:ZIndex):ZIndex 
 	{
 		_zIndex = value;
-		invalidateLayer();
+		_computedStyle.zIndex = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.Z_INDEX_STYLE_NAME));
 		return value;
 	}
 	
 	private function setFontSize(value:FontSize):FontSize
 	{
 		_fontSize = value;
-		invalidateText();
+		startTransitionIfNeeded(CSSConstants.FONT_SIZE_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_SIZE_STYLE_NAME));
 		return value;
 	}
 	
 	private function setFontWeight(value:FontWeight):FontWeight
 	{
 		_fontWeight = value;
-		invalidateText();
+		_computedStyle.fontWeight = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_WEIGHT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setFontStyle(value:FontStyle):FontStyle
 	{
 		_fontStyle = value;
-		invalidateText();
+		_computedStyle.fontStyle = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_STYLE_STYLE_NAME));
 		return value;
 	}
 	
 	private function setFontFamily(value:Array<String>):Array<String>
 	{
 		_fontFamily = value;
-		invalidateText();
+		_computedStyle.fontFamily = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_FAMILY_STYLE_NAME));
 		return value;
 	}
 	
 	private function setFontVariant(value:FontVariant):FontVariant
 	{
 		_fontVariant = value;
-		invalidateText();
+		_computedStyle.fontVariant = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_VARIANT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setTextTransform(value:TextTransform):TextTransform
 	{
 		_textTransform = value;
-		invalidateText();
+		_computedStyle.textTransform = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.TEXT_TRANSFORM_STYLE_NAME));
 		return value;
 	}
 	
 	private function setLetterSpacing(value:LetterSpacing):LetterSpacing
 	{
 		_letterSpacing = value;
-		invalidateText();
+		startTransitionIfNeeded(CSSConstants.LETTER_SPACING_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.LETTER_SPACING_STYLE_NAME));
 		return value;
 	}
 	
 	private function setWordSpacing(value:WordSpacing):WordSpacing
 	{
 		_wordSpacing = value;
-		invalidateText();
+		startTransitionIfNeeded(CSSConstants.WORD_SPACING_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.WORD_SPACING_STYLE_NAME));
 		return value;
 	}
 	
 	private function setLineHeight(value:LineHeight):LineHeight
 	{
 		_lineHeight = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.LINE_HEIGHT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.LINE_HEIGHT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setColor(value:Color):Color
 	{
 		_color = value;
-		invalidateText();
+		invalidate(InvalidationReason.styleChanged(CSSConstants.COLOR_STYLE_NAME));
 		return value;
 	}
 	
 	private function setVerticalAlign(value:VerticalAlign):VerticalAlign
 	{
 		_verticalAlign = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.VERTICAL_ALIGN_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.VERTICAL_ALIGN_STYLE_NAME));
 		return value;
 	}
 	
 	private function setTextIndent(value:TextIndent):TextIndent
 	{
 		_textIndent = value;
-		invalidate();
+		startTransitionIfNeeded(CSSConstants.TEXT_INDENT_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.TEXT_INDENT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setWhiteSpace(value:WhiteSpace):WhiteSpace
 	{
 		_whiteSpace = value;
-		invalidate();
+		_computedStyle.whiteSpace = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.WHITE_SPACE_STYLE_NAME));
 		return value;
 	}
 	
 	private function setTextAlign(value:TextAlign):TextAlign
 	{
-		 _textAlign = value;
-		invalidate();
+		_textAlign = value;
+		_computedStyle.textAlign = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.TEXT_ALIGN_STYLE_NAME));
 		return value;
 	}
 	
 	private function setOpacity(value:Opacity):Opacity
 	{
 		_opacity = value;
-		invalidate();
+		_computedStyle.opacity = value;
+		startTransitionIfNeeded(CSSConstants.OPACITY_STYLE_NAME);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.OPACITY_STYLE_NAME));
 		return _opacity;
 	}
 	
 	private function setVisibility(value:Visibility):Visibility
 	{
 		_visibility = value;
-		invalidate();
+		_computedStyle.visibility = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.VISIBILITY_STYLE_NAME));
 		return _visibility;
 	}
 	
 	private function setTransformOrigin(value:TransformOrigin):TransformOrigin
 	{
 		_transformOrigin = value;
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setTransform(value:Transform):Transform
 	{
 		_transform = value;
-		invalidate();
+		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setOverflowX(value:Overflow):Overflow
 	{
 		_overflowX = value;
-		invalidateLayer();
+		_computedStyle.overflowX = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.OVERFLOW_X_STYLE_NAME));
 		return value;
 	}
 	
 	private function setOverflowY(value:Overflow):Overflow
 	{
 		_overflowY = value;
-		invalidateLayer();
+		_computedStyle.overflowY = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.OVERFLOW_Y_STYLE_NAME));
 		return value;
 	}
 	
@@ -1252,6 +1296,64 @@ class CoreStyle
 		return _transitionTimingFunction = value;
 	}
 	
+	private function setBackgroundColor(value:BackgroundColor):BackgroundColor
+	{
+		_backgroundColor = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundImage(value:Array<BackgroundImage>):Array<BackgroundImage>
+	{
+		_backgroundImage = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundSize(value:Array<BackgroundSize>):Array<BackgroundSize>
+	{
+		_backgroundSize = value;
+		_computedStyle.backgroundSize = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundClip(value:Array<BackgroundClip>):Array<BackgroundClip>
+	{
+		_backgroundClip = value;
+		_computedStyle.backgroundClip = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundPosition(value:Array<BackgroundPosition>):Array<BackgroundPosition>
+	{
+		_backgroundPosition = value;
+		_computedStyle.backgroundPosition = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundRepeat(value:Array<BackgroundRepeat>):Array<BackgroundRepeat>
+	{
+		_backgroundRepeat = value;
+		_computedStyle.backgroundRepeat = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setBackgroundOrigin(value:Array<BackgroundOrigin>):Array<BackgroundOrigin>
+	{
+		_backgroundOrigin = value;
+		_computedStyle.backgroundOrigin = value;
+		invalidate(InvalidationReason.other);
+		return value;
+	}
+	
+	private function setCursor(value:Cursor):Cursor
+	{
+		return _cursor = value;
+	}
 	
 	/////////////////////////////////
 	// STYLES SETTERS/GETTERS
@@ -1462,23 +1564,9 @@ class CoreStyle
 		return _transformOrigin;
 	}
 	
-	private function setBackgroundColor(value:BackgroundColor):BackgroundColor
-	{
-		_backgroundColor = value;
-		invalidate();
-		return value;
-	}
-	
 	private function getBackgroundColor():BackgroundColor
 	{
 		return _backgroundColor;
-	}
-	
-	private function setBackgroundImage(value:Array<BackgroundImage>):Array<BackgroundImage>
-	{
-		_backgroundImage = value;
-		invalidate();
-		return value;
 	}
 	
 	private function getBackgroundImage():Array<BackgroundImage>
@@ -1486,22 +1574,9 @@ class CoreStyle
 		return _backgroundImage;
 	}
 	
-	private function setBackgroundRepeat(value:Array<BackgroundRepeat>):Array<BackgroundRepeat>
-	{
-		invalidate();
-		return _backgroundRepeat = value;
-	}
-	
 	private function getBackgroundRepeat():Array<BackgroundRepeat>
 	{
 		return _backgroundRepeat;
-	}
-	
-	private function setBackgroundSize(value:Array<BackgroundSize>):Array<BackgroundSize>
-	{
-		_backgroundSize = value;
-		invalidate();
-		return value;
 	}
 	
 	private function getBackgroundSize():Array<BackgroundSize>
@@ -1509,35 +1584,14 @@ class CoreStyle
 		return _backgroundSize;
 	}
 	
-	private function setBackgroundClip(value:Array<BackgroundClip>):Array<BackgroundClip>
-	{
-		_backgroundClip = value;
-		invalidate();
-		return value;
-	}
-	
 	private function getBackgroundClip():Array<BackgroundClip>
 	{
 		return _backgroundClip;
 	}
 	
-	private function setBackgroundPosition(value:Array<BackgroundPosition>):Array<BackgroundPosition>
-	{
-		_backgroundPosition = value;
-		invalidate();
-		return value;
-	}
-	
 	private function getBackgroundPosition():Array<BackgroundPosition>
 	{
 		return _backgroundPosition;
-	}
-	
-	private function setBackgroundOrigin(value:Array<BackgroundOrigin>):Array<BackgroundOrigin>
-	{
-		_backgroundOrigin = value;
-		invalidate();
-		return value;
 	}
 	
 	private function getBackgroundOrigin():Array<BackgroundOrigin>
@@ -1553,11 +1607,6 @@ class CoreStyle
 	private function getOverflowY():Overflow
 	{
 		return _overflowY;
-	}
-	
-	private function setCursor(value:Cursor):Cursor
-	{
-		return _cursor = value;
 	}
 	
 	private function getCursor():Cursor

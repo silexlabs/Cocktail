@@ -42,8 +42,8 @@ package cocktail.core.geom;
 	 * height dimension
 	 */
 	typedef DimensionData = {
-		var width:Int;
-		var height:Int;
+		var width:Float;
+		var height:Float;
 	}
 
 //////////////////////////////////////////////////////////////////////////////////////////

@@ -6,17 +6,20 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
+import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.port.platform.nativeMedia.NativeMedia;
 import haxe.Timer;
 import cocktail.core.html.HTMLData;
+import cocktail.core.renderer.RendererData;
 
 /**
  * This is an abstract base class for media elements,
  * such as video and audio
  * 
  * TODO 1 : implement loop
+ * TODO 1 : implement preload
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -332,7 +335,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * overriden to invoke the resource selection algorithm
 	 * as needed if a source child is added
 	 */
-	override public function appendChild(newChild:Node):Node
+	override public function appendChild(newChild:HTMLElement):HTMLElement
 	{
 		super.appendChild(newChild);
 		
@@ -888,7 +891,7 @@ class HTMLMediaElement extends EmbeddedElement
 		establishMediaTimeline();
 		
 		//refresh the layout
-		invalidateLayout();
+		invalidate(InvalidationReason.other);
 		
 		//start listening to loading event, as it begins
 		//as soon as the metadata are loaded
@@ -966,7 +969,6 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function set_src(value:String):String 
 	{
-		//TODO 2 : awkward to call super, but else infinite loop
 		super.setAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME, value);
 		loadResource();
 		return value;
@@ -986,7 +988,6 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function set_autoplay(value:Bool):Bool
 	{
-		//TODO 2 : awkward to call super, but else infinite loop
 		super.setAttribute(HTMLConstants.HTML_AUTOPLAY_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}
@@ -1005,7 +1006,6 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function set_loop(value:Bool):Bool
 	{
-		//TODO 2 : awkward to call super, but else infinite loop
 		super.setAttribute(HTMLConstants.HTML_LOOP_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}

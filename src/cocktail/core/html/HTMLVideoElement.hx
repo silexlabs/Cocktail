@@ -12,6 +12,8 @@ import cocktail.port.NativeVideo;
 /**
  * A video element is used for playing videos or movies.
  * 
+ * TODO 1 : implement poster attribute
+ * 
  * @author Yannick DOMINGUEZ
  */
 class HTMLVideoElement extends HTMLMediaElement
