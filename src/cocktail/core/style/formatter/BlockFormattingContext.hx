@@ -165,7 +165,14 @@ class BlockFormattingContext extends FormattingContext
 			//find widest line for shrink-to-fit algorithm
 			if (child.bounds.x + child.bounds.width + child.coreStyle.computedStyle.marginRight > _formattingContextData.maxWidth)
 			{
-				_formattingContextData.maxWidth = child.bounds.x + child.bounds.width + child.coreStyle.computedStyle.marginRight;
+				//anonymous block box are not taken into account, as they always
+				//have an auto width, they might cause error in the shrink-to-fit
+				//computation, for instance if they take the width of the formatting
+				//context root, it won't have the right max width
+				if (child.isAnonymousBlockBox() == false)
+				{
+					_formattingContextData.maxWidth = child.bounds.x + child.bounds.width + child.coreStyle.computedStyle.marginRight;
+				}
 			}
 			
 			if (concatenatedY  > _formattingContextData.maxHeight)

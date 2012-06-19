@@ -225,7 +225,7 @@ class FlowBoxRenderer extends BoxRenderer
 	{
 		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
 		return containingHTMLElementWidth - computedStyle.width + computedStyle.paddingLeft
-		+ computedStyle.paddingRight + computedStyle.right - computedStyle.marginRight;
+		+ computedStyle.paddingRight - computedStyle.right - computedStyle.marginRight;
 	}
 	
 	/**

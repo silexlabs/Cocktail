@@ -581,7 +581,6 @@ class BoxStylesComputer
 			
 			//It's a percentage, compute it from the containing dimension	
 			case percent(value):
-			
 				computedDimensions = UnitManager.getPixelFromPercent(value, containingHTMLElementDimension);
 
 			case cssAuto:
