@@ -621,6 +621,7 @@ class UnitManager
 	 */
 	static public function backgroundImageEnum(string:String):Array<BackgroundImage>
 	{
+		trace(string);
 		if (string == "none") 
 			return [BackgroundImage.none];
 
@@ -634,6 +635,7 @@ class UnitManager
 			else
 				arrayBgImg.push(BackgroundImage.image(ImageValue.url(string2URLData(val))));
 		}
+		
 		return arrayBgImg;
 	}
 	
@@ -745,7 +747,7 @@ class UnitManager
 	{
 		if (string == null)
 		{
-			return CoreStyle.getBackroundPositionDefaultValue();
+			return CoreStyle.getBackgroundPositionDefaultValue();
 		}
 		
 		var backgroundPositions:Array<String> = string.split(" ");
@@ -921,7 +923,7 @@ class UnitManager
 		//TODO 2 : need to implement default styles everywhere
 		if (string == null)
 		{
-			return CoreStyle.getBackgroundColorDefaultValue();
+			return CoreStyle.getColorDefaultValue();
 		}
 		
 		// clean up a bit
@@ -1078,6 +1080,10 @@ class UnitManager
 		if (StringTools.startsWith(string, "\""))
 			string = string.substr(1);
 		if (StringTools.endsWith(string, "\""))
+			string = string.substr(0, string.length - 1);
+		if (StringTools.startsWith(string, "'"))
+			string = string.substr(1);
+		if (StringTools.endsWith(string, "'"))
 			string = string.substr(0, string.length - 1);
 		return string;
 	}
