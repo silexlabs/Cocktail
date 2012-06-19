@@ -162,6 +162,7 @@ class BackgroundStylesComputer
 			x:computedBackgroundXPosition,
 			y:computedBackgroundYPosition
 		};
+		
 		return computedBackgroundPosition;
 	}
 	
@@ -401,15 +402,15 @@ class BackgroundStylesComputer
 			case BackgroundOrigin.paddingBox:
 				height = backgroundBox.height;
 				width = backgroundBox.width;
-				x = style.computedStyle.marginLeft;
-				y = style.computedStyle.marginTop;
+				x = 0.0;
+				y = 0.0;
 				
 				
 			case BackgroundOrigin.contentBox:
 				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.marginBottom - style.computedStyle.paddingTop - style.computedStyle.paddingBottom;
 				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight - style.computedStyle.paddingLeft - style.computedStyle.paddingRight;
-				x = style.computedStyle.marginLeft + style.computedStyle.paddingLeft;
-				y = style.computedStyle.marginTop + style.computedStyle.paddingTop;
+				x = 0.0;
+				y = 0.0 ;
 				
 		}
 		

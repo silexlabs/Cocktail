@@ -517,6 +517,14 @@ class CoreStyle
 		return BackgroundColor.transparent;
 	}
 	
+	public static function getBackroundPositionDefaultValue():Array<BackgroundPosition>
+	{
+		return [{
+			x:BackgroundPositionX.percent(0),
+			y:BackgroundPositionY.percent(0)
+		}];
+	}
+	
 	public static function getDisplayDefaultValue():Display
 	{
 		return Display.cssInline;

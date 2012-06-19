@@ -743,6 +743,11 @@ class UnitManager
 	//TODO 4
 	static public function backgroundPositionEnum(string:String):Array<BackgroundPosition>
 	{
+		if (string == null)
+		{
+			return CoreStyle.getBackroundPositionDefaultValue();
+		}
+		
 		var backgroundPositions:Array<String> = string.split(" ");
 		
 		var backgroundPositionX:BackgroundPositionX;
