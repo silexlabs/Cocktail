@@ -59,7 +59,7 @@ class BackgroundDrawingManager extends DrawingManager
 	 * @param	backgroundRepeat
 	 */
 	public function drawBackgroundImage(nativeImage:NativeElement, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, intrinsicWidth:Int, intrinsicHeight:Int, intrinsicRatio:Float, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeat):Void
-	{
+	{	
 		var totalWidth:Int = Math.round(computedBackgroundPosition.x) + Math.round(backgroundPositioningBox.x);
 		var maxWidth:Int =  Math.round(backgroundPaintingBox.x + backgroundPaintingBox.width);
 		var imageWidth:Int = Math.round(computedBackgroundSize.width);
