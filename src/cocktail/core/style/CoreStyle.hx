@@ -322,10 +322,7 @@ class CoreStyle
 			x:BackgroundRepeatValue.repeat,
 			y:BackgroundRepeatValue.repeat
 		}];
-		_backgroundPosition = [{
-			x:BackgroundPositionX.percent(0),
-			y:BackgroundPositionY.percent(0)
-		}];
+		_backgroundPosition = getBackgroundPositionDefaultValue();
 		_backgroundOrigin = [BackgroundOrigin.paddingBox];
 		_backgroundSize = [
 			BackgroundSize.dimensions({
@@ -389,7 +386,7 @@ class CoreStyle
 	{
 		return {
 			fontFamily:["serif"],
-			color:Color.keyword(ColorKeyword.black)
+			color:getColorDefaultValue()
 		}
 	}
 	
@@ -517,12 +514,17 @@ class CoreStyle
 		return BackgroundColor.transparent;
 	}
 	
-	public static function getBackroundPositionDefaultValue():Array<BackgroundPosition>
+	public static function getBackgroundPositionDefaultValue():Array<BackgroundPosition>
 	{
 		return [{
 			x:BackgroundPositionX.percent(0),
 			y:BackgroundPositionY.percent(0)
 		}];
+	}
+	
+	public static function getColorDefaultValue():CSSColor
+	{
+		return Color.keyword(ColorKeyword.black);
 	}
 	
 	public static function getDisplayDefaultValue():Display
