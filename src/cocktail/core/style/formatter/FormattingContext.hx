@@ -119,7 +119,7 @@ class FormattingContext
 	private function applyShrinkToFitIfNeeded(elementRenderer:ElementRenderer, minimumWidth:Float):Void
 	{
 		var shrinkedWidth:Float = elementRenderer.coreStyle.computedStyle.width;
-		
+
 		if (elementRenderer.coreStyle.width == Dimension.cssAuto)
 		{
 			if (elementRenderer.isFloat() == true || elementRenderer.coreStyle.computedStyle.display == inlineBlock)
@@ -136,6 +136,7 @@ class FormattingContext
 					var computedStyle:ComputedStyle = style.computedStyle;
 					//compute the shrinked width
 					shrinkedWidth = minimumWidth;
+					
 					/**
 					//if both right and left are auto, use left static position, then deduce right
 					if (style.left == PositionOffset.cssAuto && style.right == PositionOffset.cssAuto)

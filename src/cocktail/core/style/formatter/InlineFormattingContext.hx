@@ -127,6 +127,12 @@ class InlineFormattingContext extends FormattingContext
 			}
 			
 			//TODO : Text should not be considered embed, isEmbedded should be removed
+			//
+			//note : this placed before checking for child with children, as for instance the VideoRenderer
+			//is considered replaced but it can also have source children, bt when formatting, it should always
+			//be considered replaced
+			//TODO 5 : actually, source HTMLElement never create ElementRenderer, but because of lack of
+			//white space processing, spaces inside the video tag might create TextRenderer children
 			else if (child.isReplaced() == true && child.isText() == false)
 			{
 				var embeddedLineBox:LineBox = new EmbeddedLineBox(child);
