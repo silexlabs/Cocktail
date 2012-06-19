@@ -142,6 +142,7 @@ class BlockFormattingContext extends FormattingContext
 				{
 					if ((child.isPositioned() == false || child.isRelativePositioned() == true) || child.isFloat() == false)
 					{
+						
 						//TODO 1 : doc, now block formatting context in charge of formatting line
 						//boxes, because of floats
 						if (child.childrenInline() == true)

@@ -625,6 +625,7 @@ class UnitManager
 			return [BackgroundImage.none];
 
 		var array:Array<String> = string2VList(string, ",");
+
 		var arrayBgImg:Array<BackgroundImage> = [];
 		for (val in array)
 		{
@@ -685,7 +686,58 @@ class UnitManager
 	//TODO 4
 	static public function backgroundSizeEnum(string:String):Array<BackgroundSize>
 	{
-		return [];
+		string = trim(string);
+		
+		if (string == "contain")
+			return [BackgroundSize.contain];
+			
+		if (string == "cover")
+			return [BackgroundSize.cover];
+			
+		var backgroundSizes:Array<String> = string.split(" ");
+		
+		var backgroundsizeX:BackgroundSizeDimension;
+		
+		switch(backgroundSizes[0])
+		{
+			case "auto":
+				backgroundsizeX = BackgroundSizeDimension.cssAuto;
+				
+			default:
+				var parsedBackgroundsizeX:VUnit = string2VUnit(backgroundSizes[0]);
+				
+				switch( parsedBackgroundsizeX.unit)
+				{
+					case "%":
+						backgroundsizeX = BackgroundSizeDimension.percent(Std.parseInt(parsedBackgroundsizeX.value));
+						
+					default:
+						backgroundsizeX = BackgroundSizeDimension.length(string2Length(parsedBackgroundsizeX));
+				}
+		}
+		
+		var backgroundsizeY:BackgroundSizeDimension;
+		
+		switch(backgroundSizes[1])
+		{
+			case "auto":
+				backgroundsizeY = BackgroundSizeDimension.cssAuto;
+				
+			default:
+				var parsedBackgroundsizeY:VUnit = string2VUnit(backgroundSizes[0]);
+				
+				switch( parsedBackgroundsizeY.unit)
+				{
+					case "%":
+						backgroundsizeY = BackgroundSizeDimension.percent(Std.parseInt(parsedBackgroundsizeY.value));
+						
+					default:
+						backgroundsizeY = BackgroundSizeDimension.length(string2Length(parsedBackgroundsizeY));
+				}
+		}
+		
+		
+		return [BackgroundSize.dimensions({x:backgroundsizeX, y:backgroundsizeY})];
 	}
 	
 	//TODO 4

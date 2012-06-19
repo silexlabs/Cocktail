@@ -26,6 +26,7 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	public function new(node:HTMLElement) 
 	{
 		super(node);
+		trace("create vieo renderer");
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -89,6 +90,7 @@ class VideoRenderer extends EmbeddedBoxRenderer
 		htmlVideoElement.embeddedAsset.height = height;
 		
 		htmlVideoElement.embeddedAsset.alpha = computedStyle.opacity;
+		
 		#end
 	}
 	

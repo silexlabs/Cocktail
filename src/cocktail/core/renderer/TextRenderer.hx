@@ -83,10 +83,10 @@ class TextRenderer extends ElementRenderer
 		var textToken:String = null;
 		
 		var i:Int = 0;
-		
 		//Loop in all the text charachters
 		while (i < text.length)
 		{
+			
 			if (text.charAt(i) == "\\")
 			{
 				if (i <text.length - 1)
@@ -157,7 +157,7 @@ class TextRenderer extends ElementRenderer
 		{
 			textTokens.push(word(textToken));
 		}
-
+		
 		return textTokens;
 	}
 	
@@ -265,6 +265,7 @@ class TextRenderer extends ElementRenderer
 		{
 			textLineBoxesBounds.push(_lineBoxes[i].bounds);
 		}
+		
 		return getChildrenBounds(textLineBoxesBounds);
 	}
 	

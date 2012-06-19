@@ -200,7 +200,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			renderBlockContainerChildren(graphicContext);
 			
 			//TODO 5 : render non-positioned float
-			
 			renderBlockReplacedChildren(graphicContext);
 			renderLineBoxes(graphicContext);
 		}
@@ -290,7 +289,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		//retrieve all the line boxes in all of the lines generated in this BlockBoxRenderer
 		var lineBoxes:Array<LineBox> = getChilrenLineBoxes(this, _layerRenderer);
-		
+
 		//loop in all of the lineboxes
 		var length:Int = lineBoxes.length;
 		for (i in 0...length)
@@ -622,6 +621,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				doFormat();
 			}
 			else if (isFloat() == true)
+			{
+				doFormat();
+			}
+			else if (computedStyle.display == inlineBlock)
 			{
 				doFormat();
 			}
