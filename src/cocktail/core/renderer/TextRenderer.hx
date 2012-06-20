@@ -76,8 +76,11 @@ class TextRenderer extends ElementRenderer
 	 * 
 	 * TODO 1 : should take whit space processing into account
 	 */
-	private static function doGetTextTokens(text:String):Array<TextToken>
+	private static function doGetTextTokens(text:String, whiteSpace:WhiteSpace):Array<TextToken>
 	{
+		//apply white space processing, for instance to collapse
+		//sequences of white spaces if needed
+		text = applyWhiteSpace(text, whiteSpace);
 		
 		var textTokens:Array<TextToken> = new Array<TextToken>();
 
@@ -171,6 +174,37 @@ class TextRenderer extends ElementRenderer
 	////////////////////////////////
 	
 	/**
+	 * Apply white space pre-processing tothe string
+	 * of rendered text
+	 * 
+	 * TODO 2 : this is only a partial implementation 
+	 */
+	private static function applyWhiteSpace(text:String, whiteSpace:WhiteSpace):String
+	{
+		switch (whiteSpace)
+		{
+			case normal, nowrap: // remove new lines, spaces and tab
+
+			var er1 : EReg = ~/[ \t]+/;
+			var er2 : EReg = ~/ +/g;
+			var er3 : EReg = ~/\n+/g;
+			
+			text = er3.replace(er2.replace( er1.replace( text , " " ) , " " ), " ");
+			
+			case preLine: // remove spaces
+
+			var er1 : EReg = ~/ *$^ */m;
+			var er2 : EReg = ~/[ \t]+/;
+
+			text = er2.replace( er1.replace( text , "\n" ) , " " );
+
+			default:
+		}
+		
+		return text;
+	}
+	
+	/**
 	 * Separate the source text in an array of text token
 	 * and create a text line box for each one
 	 * 
@@ -179,7 +213,7 @@ class TextRenderer extends ElementRenderer
 	 */
 	private function createTextLines():Void
 	{
-		_textTokens = doGetTextTokens(_text.nodeValue);
+		_textTokens = doGetTextTokens(_text.nodeValue, computedStyle.whiteSpace);
 		lineBoxes = [];
 		
 		var length:Int = _textTokens.length;

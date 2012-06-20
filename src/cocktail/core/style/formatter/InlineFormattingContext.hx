@@ -71,6 +71,9 @@ class InlineFormattingContext extends FormattingContext
 	
 	override private function startFormatting():Void
 	{
+		trace(_formattingContextRoot.computedStyle.width);
+		trace(_formattingContextRoot.computedStyle.position);
+		trace(_formattingContextRoot);
 		
 		_unbreakableLineBoxes = new Array<LineBox>();
 		var rootLineBoxes:Array<LineBox> = new Array<LineBox>();
