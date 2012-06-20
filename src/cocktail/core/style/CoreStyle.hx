@@ -1124,7 +1124,7 @@ class CoreStyle
 	{
 		_zIndex = value;
 		_computedStyle.zIndex = value;
-		invalidate(InvalidationReason.styleChanged(CSSConstants.Z_INDEX_STYLE_NAME));
+		invalidateDisplay();
 		return value;
 	}
 	
@@ -1274,7 +1274,7 @@ class CoreStyle
 	{
 		_overflowX = value;
 		_computedStyle.overflowX = value;
-		invalidate(InvalidationReason.styleChanged(CSSConstants.OVERFLOW_X_STYLE_NAME));
+		invalidateDisplay();
 		return value;
 	}
 	
@@ -1282,7 +1282,7 @@ class CoreStyle
 	{
 		_overflowY = value;
 		_computedStyle.overflowY = value;
-		invalidate(InvalidationReason.styleChanged(CSSConstants.OVERFLOW_Y_STYLE_NAME));
+		invalidateDisplay();
 		return value;
 	}
 	

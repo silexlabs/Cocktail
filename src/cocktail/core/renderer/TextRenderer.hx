@@ -82,11 +82,13 @@ class TextRenderer extends ElementRenderer
 
 		var textToken:String = null;
 		
+		//wether the last inserted token was a space
+		var lastCharacterIsSpace:Bool = false;
+		
 		var i:Int = 0;
 		//Loop in all the text charachters
 		while (i < text.length)
 		{
-			
 			if (text.charAt(i) == "\\")
 			{
 				if (i <text.length - 1)
@@ -119,9 +121,8 @@ class TextRenderer extends ElementRenderer
 					}
 				}
 			}
-			
 			//If the character is a space
-			if (StringTools.isSpace(text, i) == true)
+			else if (StringTools.isSpace(text, i) == true)
 			{
 				
 				//If a word was being formed by concatenating
@@ -135,12 +136,15 @@ class TextRenderer extends ElementRenderer
 				
 				//push the space in the returned array
 				textTokens.push(TextToken.space);
+				lastCharacterIsSpace = true;
 			}
 			//else the charachter belongs to a word
 			//and is added to the word which is being
 			//concatenated
 			else
 			{
+				lastCharacterIsSpace = false;
+				
 				if (textToken == null)
 				{
 					textToken = "";

@@ -187,7 +187,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			
 			//render the scrollbar if needed
 			renderScrollBars(graphicContext);
-
+			
 			//render all the child layers with a z-index of 0 or auto
 			_layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext);
 			//render all the child layer with a positive z-index
@@ -1130,6 +1130,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			return true;
 		}
+		
 		return canAlwaysOverflow() != true;
 	}
 	
@@ -1279,7 +1280,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		else if (computedStyle.display == inlineBlock)
 		{
-			return true;
+			return false;
 		}
 		else if (isFloat() == true)
 		{
