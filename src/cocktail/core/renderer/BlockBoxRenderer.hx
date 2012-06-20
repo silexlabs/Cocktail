@@ -122,12 +122,17 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//formatting context
 		if (_childNodes.length > 0)
 		{
-			//if the new child is doesn't match the display of the oter children,
-			///for instance if it is the first inline while all the other
-			//children are block, all the inline children should be wrapped
-			if (elementRendererChild.isInlineLevel() != childrenInline())
+			//absolutely positioned children are not taken into account when determining wether this
+			//BlockBoxRenderer establishes/participate in a block or inline formatting context
+			if (elementRendererChild.isPositioned() == false || elementRendererChild.isRelativePositioned() ==  true)
 			{
-				shouldMakeChildrenNonInline = true;
+				//if the new child is doesn't match the display of the other children,
+				///for instance if it is the first inline while all the other
+				//children are block, all the inline children should be wrapped
+				if (elementRendererChild.isInlineLevel() != childrenInline())
+				{
+					shouldMakeChildrenNonInline = true;
+				}
 			}
 		}
 		
@@ -141,6 +146,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//appendChild method
 			if (_isMakingChildrenNonInline == false)
 			{
+				
+		trace(computedStyle.display);
+		trace(newChild);
+		trace(newChild.computedStyle.display);
+		trace(newChild.computedStyle.position);
+		trace(childrenInline());
+				
 				_isMakingChildrenNonInline = true;
 				makeChildrenNonInline();
 				_isMakingChildrenNonInline = false;
