@@ -107,7 +107,6 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			//always work. The shrink to fit computation of this class needs to be 
 			//improved
 			style.computedStyle.width = containingBlockData.width;
-			trace(containingBlockData);
 		}
 	}
 	
