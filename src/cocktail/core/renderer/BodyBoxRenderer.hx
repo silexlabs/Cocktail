@@ -86,7 +86,7 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	override private function layoutSelf():Void
 	{
 		super.layoutSelf();
-		if (_coreStyle.height == Dimension.cssAuto && isPositioned() == false || isRelativePositioned() == true)
+		if (_coreStyle.height == Dimension.cssAuto && (isPositioned() == false || isRelativePositioned() == true))
 		{
 			this.computedStyle.height = _containingBlock.getContainerBlockData().height - computedStyle.marginTop - computedStyle.marginBottom
 			-computedStyle.paddingTop - computedStyle.paddingBottom;

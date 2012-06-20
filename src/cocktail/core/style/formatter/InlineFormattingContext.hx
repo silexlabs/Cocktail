@@ -71,10 +71,6 @@ class InlineFormattingContext extends FormattingContext
 	
 	override private function startFormatting():Void
 	{
-		trace(_formattingContextRoot.computedStyle.width);
-		trace(_formattingContextRoot.computedStyle.position);
-		trace(_formattingContextRoot);
-		
 		_unbreakableLineBoxes = new Array<LineBox>();
 		var rootLineBoxes:Array<LineBox> = new Array<LineBox>();
 		var initialRootLineBox:RootLineBox = new RootLineBox(_formattingContextRoot);
@@ -109,7 +105,7 @@ class InlineFormattingContext extends FormattingContext
 		for (i in 0...length)
 		{
 			var child:ElementRenderer = elementRenderer.childNodes[i];
-
+			
 			//here the child is displayed as an inline-block as it starts a new formatting context
 			//it generates only one line box 
 			if (child.establishesNewFormattingContext() == true)
