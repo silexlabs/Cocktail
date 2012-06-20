@@ -96,7 +96,6 @@ class InlineFormattingContext extends FormattingContext
 		{
 			_formattingContextRoot.bounds.height = _formattingContextData.y  + _formattingContextRoot.coreStyle.computedStyle.paddingBottom ;
 			_formattingContextRoot.coreStyle.computedStyle.height = _formattingContextRoot.bounds.height - _formattingContextRoot.coreStyle.computedStyle.paddingBottom  - _formattingContextRoot.coreStyle.computedStyle.paddingTop;
-		
 		}
 	}
 	
@@ -112,6 +111,7 @@ class InlineFormattingContext extends FormattingContext
 			//it generates only one line box 
 			if (child.establishesNewFormattingContext() == true)
 			{
+				
 				child.bounds.width = child.coreStyle.computedStyle.width;
 				child.bounds.height = child.coreStyle.computedStyle.height;
 				
