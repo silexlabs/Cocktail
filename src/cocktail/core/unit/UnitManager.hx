@@ -621,7 +621,6 @@ class UnitManager
 	 */
 	static public function backgroundImageEnum(string:String):Array<BackgroundImage>
 	{
-		trace(string);
 		if (string == "none") 
 			return [BackgroundImage.none];
 

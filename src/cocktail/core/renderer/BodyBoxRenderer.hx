@@ -72,4 +72,26 @@ class BodyBoxRenderer extends BlockBoxRenderer
 		#end
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overiden as the body's element renderer computed height is a special
+	 * case where the height should be the height of the initial containing block
+	 * if it specified as 'auto'
+	 * 
+	 * TODO 3 : shouldn't it be in boxComputers instead ?
+	 */
+	override private function layoutSelf():Void
+	{
+		super.layoutSelf();
+		if (_coreStyle.height == Dimension.cssAuto && isPositioned() == false || isRelativePositioned() == true)
+		{
+			this.computedStyle.height = _containingBlock.getContainerBlockData().height - computedStyle.marginTop - computedStyle.marginBottom
+			-computedStyle.paddingTop - computedStyle.paddingBottom;
+		}
+	}
+	
+	
 }

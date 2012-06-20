@@ -670,8 +670,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function createLayer(parentLayer:LayerRenderer):Void
 	{
+			//		trace(this);
+			//trace(computedStyle.overflowX);
 		if (establishesNewStackingContext() == true)
 		{
+
 			_layerRenderer = new LayerRenderer(this);
 			parentLayer.appendChild(_layerRenderer);
 			_hasOwnLayer = true;

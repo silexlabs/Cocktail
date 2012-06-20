@@ -76,7 +76,7 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	}
 	
 	/**
-	 * Always return the containing block data, as event though the scroll bar renderer is 
+	 * Always return the containing block data, as even though the scroll bar renderer is 
 	 * absolutely positioned, it always considers its block box renderer as its first positioned
 	 * ancestor
 	 * 
