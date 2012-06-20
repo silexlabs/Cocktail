@@ -197,6 +197,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//block box doesn't actually establish a new stacking context
 		else if (rendersAsIfEstablishingStackingContext() == true)
 		{
+			
 			renderBlockContainerChildren(graphicContext);
 			
 			//TODO 5 : render non-positioned float
@@ -364,6 +365,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			for (i in 0...length)
 			{
 				var lineBoxes:Array<LineBox> = getLineBoxesInLine(blockBoxRenderer.lineBoxes[i]);
+
 				var childLength:Int = lineBoxes.length;
 				for (j in 0...childLength)
 				{
@@ -1280,7 +1282,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		else if (computedStyle.display == inlineBlock)
 		{
-			return false;
+			return true;
 		}
 		else if (isFloat() == true)
 		{

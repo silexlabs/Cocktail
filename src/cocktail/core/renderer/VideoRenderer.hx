@@ -61,11 +61,6 @@ class VideoRenderer extends EmbeddedBoxRenderer
 			//as big as possible
 			width =  htmlVideoElement.videoWidth / ratio ;
 			height = _coreStyle.computedStyle.height;
-				trace("render video");
-		trace(width);
-		trace(height);
-		trace(ratio);
-		trace(htmlVideoElement.videoHeight);
 			
 		}
 		else

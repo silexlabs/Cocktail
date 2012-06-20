@@ -78,6 +78,7 @@ class TextRenderer extends ElementRenderer
 	 */
 	private static function doGetTextTokens(text:String):Array<TextToken>
 	{
+		
 		var textTokens:Array<TextToken> = new Array<TextToken>();
 
 		var textToken:String = null;
