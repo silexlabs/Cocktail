@@ -1111,7 +1111,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		if (_verticalScrollBar != null)
 		{
-			
 			removeChild(_verticalScrollBar.elementRenderer);
 			_verticalScrollBar.onscroll = null;
 			
