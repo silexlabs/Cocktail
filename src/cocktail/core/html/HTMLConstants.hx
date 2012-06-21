@@ -66,6 +66,8 @@ class HTMLConstants
 	
 	public static inline var HTML_WIDTH_ATTRIBUTE_NAME:String = "width";
 	
+	public static inline var HTML_POSTER_ATTRIBUTE_NAME:String = "poster";
+	
 	//anchor target const
 
 	public static inline var TARGET_BLANK:String = "_blank";

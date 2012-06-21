@@ -949,6 +949,13 @@ class HTMLMediaElement extends EmbeddedElement
 			return;
 		}
 		
+		//TODO 3 : passing from one ready state to 
+		//another should be improved
+		if (_readyState == HAVE_METADATA)
+		{
+			setReadyState(HAVE_FUTURE_DATA);
+		}
+		
 		
 		//if not all of the media has been loaded, dispatch
 		//a progress event and set this method to be called again
