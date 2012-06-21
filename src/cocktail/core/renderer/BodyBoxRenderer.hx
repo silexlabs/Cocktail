@@ -89,7 +89,7 @@ class BodyBoxRenderer extends BlockBoxRenderer
 		if (_coreStyle.height == Dimension.cssAuto && (isPositioned() == false || isRelativePositioned() == true))
 		{
 			this.computedStyle.height = _containingBlock.getContainerBlockData().height - computedStyle.marginTop - computedStyle.marginBottom
-			-computedStyle.paddingTop - computedStyle.paddingBottom;
+			- computedStyle.paddingTop - computedStyle.paddingBottom;
 		}
 	}
 	
