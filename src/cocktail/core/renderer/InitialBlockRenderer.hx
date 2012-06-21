@@ -189,8 +189,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		layout();
 		//set the global bounds on the rendering tree. After that all the elements know their positions
 		//relative to the window
-		
-		setGlobalOrigins(this,globalBounds.x,globalBounds.y, positionedOrigin.x,positionedOrigin.y);
+		setGlobalOrigins(this,0,0, 0,0);
 	}
 	
 	/**
@@ -218,9 +217,12 @@ class InitialBlockRenderer extends BlockBoxRenderer
 			{
 				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
 				{
+					//when the element id absolutely positioned and not static, it uses
+					//its own global bounds as the new origin for its children
+					//TODO 1 : should check for regression, pretty big change
 					if (elementRenderer.coreStyle.computedStyle.position == absolute)
 					{
-						addedX += elementRenderer.positionedOrigin.x;
+						addedX = elementRenderer.globalBounds.x;
 					}
 					//here the positioned ElementRenderer is fixed and is placed
 					//relative to the window. In this case, its x is not added
@@ -238,7 +240,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 				{
 					if (elementRenderer.coreStyle.computedStyle.position == absolute)
 					{
-						addedY += elementRenderer.positionedOrigin.y;
+						addedY = elementRenderer.globalBounds.y;
 					}
 					else
 					{
@@ -257,6 +259,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 				addedX += elementRenderer.bounds.x;
 				addedY += elementRenderer.bounds.y;
 			}
+			
 		}
 		
 		//if the element is positioned, it must also add

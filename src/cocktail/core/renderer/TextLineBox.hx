@@ -58,12 +58,12 @@ class TextLineBox extends LineBox
 	 */
 	override public function render(graphicContext:NativeElement):Void
 	{
+		
 		#if (flash9 || nme)
 		_nativeElement.x = _bounds.x + _elementRenderer.globalContainingBlockOrigin.x;
 		_nativeElement.y = _bounds.y + _elementRenderer.globalContainingBlockOrigin.y  + leadedAscent;
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		containerGraphicContext.addChild(_nativeElement);
-	
 		#end
 	}
 	

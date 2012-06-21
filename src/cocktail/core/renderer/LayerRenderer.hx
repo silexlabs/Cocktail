@@ -198,10 +198,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		{
 			//the child element renderer is attached to its parent graphic context
 			//
-			//TODO 1 : this cause a z-index bug as if the parent is a child of the formatting
+			//TODO 1 : using the parent graphic context causes a z-index bug as if the parent is a child of the formatting
 			//context root, the child element renderer is not displayed on top of the in-flow elements
 			var parentElementRenderer:ElementRenderer = rootElementRenderers[i].parentNode;
-			rootElementRenderers[i].render(parentElementRenderer.graphicsContext);
+			rootElementRenderers[i].render(graphicContext);
 		}
 	}
 	
