@@ -115,19 +115,30 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var shouldMakeChildrenNonInline:Bool = false;
 		
 		var elementRendererChild:ElementRenderer = newChild;
-	
+
 		//if this is the first child, no need to wrap inline block
 		//as it not yet known wether this block box starts an inline
 		//formatting context or participates/establishes a block
 		//formatting context
 		if (_childNodes.length > 0)
 		{
-			//if the new child is doesn't match the display of the oter children,
-			///for instance if it is the first inline while all the other
-			//children are block, all the inline children should be wrapped
-			if (elementRendererChild.isInlineLevel() != childrenInline())
-			{
-				shouldMakeChildrenNonInline = true;
+			//absolutely positioned children are not taken into account when determining wether this
+			//BlockBoxRenderer establishes/participate in a block or inline formatting context
+			if (elementRendererChild.isPositioned() == false || elementRendererChild.isRelativePositioned() ==  true)
+			{	
+				//the BlockBoxRenderer should have at least one significant child to determine wether to 
+				//establish/participate in a block or inline formatting context, and thus if inline children
+				//shoud be wrapped in anonymous block
+				if (hasSignificantChild() == true)
+				{
+					//if the new child is doesn't match the display of the other children,
+					///for instance if it is the first inline while all the other
+					//children are block, all the inline children should be wrapped
+					if (elementRendererChild.isInlineLevel() != childrenInline())
+					{
+						shouldMakeChildrenNonInline = true;
+					}
+				}
 			}
 		}
 		
@@ -187,7 +198,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			
 			//render the scrollbar if needed
 			renderScrollBars(graphicContext);
-
+			
 			//render all the child layers with a z-index of 0 or auto
 			_layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext);
 			//render all the child layer with a positive z-index
@@ -197,10 +208,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//block box doesn't actually establish a new stacking context
 		else if (rendersAsIfEstablishingStackingContext() == true)
 		{
+			
 			renderBlockContainerChildren(graphicContext);
 			
 			//TODO 5 : render non-positioned float
-			
 			renderBlockReplacedChildren(graphicContext);
 			renderLineBoxes(graphicContext);
 		}
@@ -278,6 +289,34 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return anonymousBlock;
 	}
 	
+	/**
+	 * returns wether the FlowBoxRenderer has at least one significant child
+	 * which can define wether he establish/participate in a block or inline
+	 * formatting context.
+	 * 
+	 * For instance if the FlowBoxRenderer has only absolutely positioned
+	 * or floated children, it can't yet know from its children wether
+	 * to establish/participate in a bock or inline formatting context
+	 */
+	private function hasSignificantChild():Bool
+	{
+		var length:Int = _childNodes.length;
+		for (i in 0...length)
+		{
+			var child:ElementRenderer = _childNodes[i];
+			if (child.isFloat() == false)
+			{
+				if (child.isPositioned() == false || child.isRelativePositioned() == true)
+				{
+					//if at least one child child is not absolutely positioned
+					//or floated, formatting context to used can be determined
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -290,7 +329,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		//retrieve all the line boxes in all of the lines generated in this BlockBoxRenderer
 		var lineBoxes:Array<LineBox> = getChilrenLineBoxes(this, _layerRenderer);
-		
+
 		//loop in all of the lineboxes
 		var length:Int = lineBoxes.length;
 		for (i in 0...length)
@@ -365,6 +404,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			for (i in 0...length)
 			{
 				var lineBoxes:Array<LineBox> = getLineBoxesInLine(blockBoxRenderer.lineBoxes[i]);
+
 				var childLength:Int = lineBoxes.length;
 				for (j in 0...childLength)
 				{
@@ -622,6 +662,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				doFormat();
 			}
 			else if (isFloat() == true)
+			{
+				doFormat();
+			}
+			else if (computedStyle.display == inlineBlock)
 			{
 				doFormat();
 			}
@@ -995,9 +1039,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		if (_horizontalScrollBar == null)
 		{
-			//_horizontalScrollBar = new ScrollBar(false);
-			//appendChild(_horizontalScrollBar.elementRenderer);
-			//_horizontalScrollBar.onscroll = onHorizontalScroll;
+			_horizontalScrollBar = new ScrollBar(false);
+			_horizontalScrollBar.attach();
+			appendChild(_horizontalScrollBar.elementRenderer);
+			_horizontalScrollBar.onscroll = onHorizontalScroll;
 		}
 		//refresh the max scroll when a layout of the BlockBoxRenderer happens
 		if (_horizontalScrollBar != null)
@@ -1049,6 +1094,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		if (_verticalScrollBar == null)
 		{
 			_verticalScrollBar = new ScrollBar(true);
+			_verticalScrollBar.attach();
 			appendChild(_verticalScrollBar.elementRenderer);
 			_verticalScrollBar.onscroll = onVerticalScroll;
 		}
@@ -1127,6 +1173,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			return true;
 		}
+		
 		return canAlwaysOverflow() != true;
 	}
 	

@@ -244,14 +244,10 @@ class StyleProxy implements lib.hxtml.IStyleProxy<HTMLElement>
 	public function setBgSize (element:Node, value:Array<String>):Void{
 		element.style.backgroundSize = value;
 	}
-*/	public function setBgPosXKey (element:HTMLElement, value:String):Void{
+*/	public function setBgPos (element:HTMLElement, value:String):Void {
+		element.style.backgroundPosition = value;
 	}
-	public function setBgPosYKey (element:HTMLElement, value:String):Void{
-	}
-	public function setBgPosYNum (element:HTMLElement, value:Int, unit:String):Void{
-	}
-	public function setBgPosXNum (element:HTMLElement, value:Int, unit:String):Void{
-	}
+	
 
 /*	public function setBgClip (element:Node, value:Array<String>):Void{
 		element.style.backgroundClip = value;

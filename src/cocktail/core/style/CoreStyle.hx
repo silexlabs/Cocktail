@@ -322,10 +322,7 @@ class CoreStyle
 			x:BackgroundRepeatValue.repeat,
 			y:BackgroundRepeatValue.repeat
 		}];
-		_backgroundPosition = [{
-			x:BackgroundPositionX.percent(0),
-			y:BackgroundPositionY.percent(0)
-		}];
+		_backgroundPosition = getBackgroundPositionDefaultValue();
 		_backgroundOrigin = [BackgroundOrigin.paddingBox];
 		_backgroundSize = [
 			BackgroundSize.dimensions({
@@ -389,7 +386,7 @@ class CoreStyle
 	{
 		return {
 			fontFamily:["serif"],
-			color:Color.keyword(ColorKeyword.black)
+			color:getColorDefaultValue()
 		}
 	}
 	
@@ -515,6 +512,19 @@ class CoreStyle
 	public static function getBackgroundColorDefaultValue():BackgroundColor
 	{
 		return BackgroundColor.transparent;
+	}
+	
+	public static function getBackgroundPositionDefaultValue():Array<BackgroundPosition>
+	{
+		return [{
+			x:BackgroundPositionX.percent(0),
+			y:BackgroundPositionY.percent(0)
+		}];
+	}
+	
+	public static function getColorDefaultValue():CSSColor
+	{
+		return Color.keyword(ColorKeyword.black);
 	}
 	
 	public static function getDisplayDefaultValue():Display
@@ -743,11 +753,11 @@ class CoreStyle
 	}
 	
 	/**
-	 * Same as above for display
+	 * Same as above for positionining scheme styles (display, position...)
 	 */
-	private function invalidateDisplay():Void
+	private function invalidatePositioningScheme():Void
 	{
-		_htmlElement.invalidateDisplay();
+		_htmlElement.invalidatePositioningScheme();
 	}
 	
 	/////////////////////////////////
@@ -1012,7 +1022,7 @@ class CoreStyle
 	private function setDisplay(value:Display):Display 
 	{
 		_display = value;
-		invalidateDisplay();
+		invalidatePositioningScheme();
 		return value;
 	}
 	
@@ -1020,7 +1030,7 @@ class CoreStyle
 	{
 		_position = value;
 		_computedStyle.position = value;
-		invalidateDisplay();
+		invalidatePositioningScheme();
 		return value;
 	}
 	
@@ -1114,7 +1124,7 @@ class CoreStyle
 	{
 		_zIndex = value;
 		_computedStyle.zIndex = value;
-		invalidate(InvalidationReason.styleChanged(CSSConstants.Z_INDEX_STYLE_NAME));
+		invalidatePositioningScheme();
 		return value;
 	}
 	
@@ -1264,7 +1274,7 @@ class CoreStyle
 	{
 		_overflowX = value;
 		_computedStyle.overflowX = value;
-		invalidate(InvalidationReason.styleChanged(CSSConstants.OVERFLOW_X_STYLE_NAME));
+		invalidatePositioningScheme();
 		return value;
 	}
 	
@@ -1272,7 +1282,7 @@ class CoreStyle
 	{
 		_overflowY = value;
 		_computedStyle.overflowY = value;
-		invalidate(InvalidationReason.styleChanged(CSSConstants.OVERFLOW_Y_STYLE_NAME));
+		invalidatePositioningScheme();
 		return value;
 	}
 	

@@ -86,11 +86,23 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			//are substracted from the containing HTMLElement width
 			style.computedStyle.width = containingBlockData.width - computedStyle.marginLeft - computedStyle.left - computedStyle.right - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight;
 		}
-		//if left, right and width are auto, then the width will be "shrinked-to-fit" once all the children have been laid out,
-		//so the width is first set to an "infinite" width which will allow to find the max line width of the formatted children
-		//used by the shrink-to-fit method
+		//if width is auto and left, right or both are auto, then the width will be "shrinked-to-fit" once all the children have been laid out,
+		//so the width is first set to the containing block width width which will allow to find the max line width of the formatted children
+		//used by the shrink-to-fit method during formatting
 		else
 		{
+			//if only left is auto, compute right then deduce left from the remaining horizontal space
+			//TODO 4 : left is not actually computed yet, it must be computed during shrink-to-fit
+			if (style.left == PositionOffset.cssAuto)
+			{
+				style.computedStyle.right = getComputedPositionOffset(style.right, containingBlockData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+			}
+			//same for right
+			else if(style.right == PositionOffset.cssAuto)
+			{
+				style.computedStyle.left = getComputedPositionOffset(style.left, containingBlockData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+			}
+			
 			//TODO 2 : setting the containing element width is a hack which will not
 			//always work. The shrink to fit computation of this class needs to be 
 			//improved
