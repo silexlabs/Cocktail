@@ -37,6 +37,11 @@ import haxe.Log;
  * the inline formatting context and the y position using
  * the vertical align property
  * 
+ * TODO 1 : should simplify static position for positioned box. Should
+ * not create linebox for absolute elements. When layyng out absolutely
+ * positioned child, they may retrieve the bounds of their previous sibling
+ * or parent to determine their static position
+ * 
  * @author Yannick DOMINGUEZ
  */
 class InlineFormattingContext extends FormattingContext
@@ -703,48 +708,6 @@ class InlineFormattingContext extends FormattingContext
 		return shouldInsertSpace;
 	}
 	
-	/**
-	 * Determine wheter a space should be collapsed
-	 * when it belong to a sequence of spaces
-	 */
-	private function isCollapsed(lastInsertedElement:ElementRenderer, whiteSpace:WhiteSpace):Bool
-	{
-		/**
-		var isCollapsed:Bool;
-		
-		if (lastInsertedElement == null)
-		{
-			isCollapsed = false;
-		}
-		else
-		{
-			switch (lastInsertedElement)
-			{
-				case BoxElementValue.space(whiteSpace, spaceWidth, parentHTMLElement):
-				
-				switch (whiteSpace)
-				{
-					case WhiteSpace.normal,
-					WhiteSpace.nowrap:
-						isCollapsed = true;
-						
-					case WhiteSpace.preWrap,
-					WhiteSpace.pre,
-					WhiteSpace.preLine:
-						isCollapsed = false;
-				}
-				
-				default:
-					isCollapsed = false;
-			}
-		}
-		
-		return isCollapsed;
-		*/
-		return false;
-	}
-
-	
 	
 	
 	// LINE LAYOUT METHODS
@@ -774,13 +737,13 @@ class InlineFormattingContext extends FormattingContext
 		while (i < lineBoxes.length)
 		{
 			var lineBox:LineBox = lineBoxes[i];
-			
 			if (lineBox.isSpace() == true)
 			{
 				switch(lineBox.elementRenderer.coreStyle.computedStyle.whiteSpace)
 				{
 					case WhiteSpace.normal, WhiteSpace.nowrap, WhiteSpace.preLine:
 						lineBox.parentNode.removeChild(lineBox);
+						
 					default:
 						break;
 				}
@@ -788,7 +751,13 @@ class InlineFormattingContext extends FormattingContext
 			}
 			else
 			{
-				break;
+				//absolute line box do not influence this
+				if (lineBox.isAbsolutelyPositioned() == false)
+				{
+					break;
+				}
+				
+				
 			}
 			
 			i++;
@@ -824,7 +793,10 @@ class InlineFormattingContext extends FormattingContext
 			}
 			else
 			{
-				break;
+				if (lineBox.isAbsolutelyPositioned() == false)
+				{
+						break;
+				}
 			}
 			
 			i--;
