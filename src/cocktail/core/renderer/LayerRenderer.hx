@@ -99,7 +99,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		super.appendChild(newChild);
 		
 		var childLayer:LayerRenderer = newChild;
-		
+
 		//check the computed z-index of the ElementRenderer which
 		//instantiated the child LayerRenderer
 		switch(childLayer.rootElementRenderer.computedStyle.zIndex)

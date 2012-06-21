@@ -33,6 +33,8 @@ class TextLineBox extends LineBox
 		super(elementRenderer);
 		
 		_text = text;
+		
+		
 		//create and store a native text element, using the styles of the 
 		//TextRenderer which created this TextLineBox
 		_nativeElement = new FontManager().createNativeTextElement(text, elementRenderer.coreStyle.computedStyle);
@@ -61,6 +63,7 @@ class TextLineBox extends LineBox
 		_nativeElement.y = _bounds.y + _elementRenderer.globalContainingBlockOrigin.y  + leadedAscent;
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		containerGraphicContext.addChild(_nativeElement);
+	
 		#end
 	}
 	

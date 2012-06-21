@@ -76,14 +76,20 @@ class TextRenderer extends ElementRenderer
 	 * 
 	 * TODO 1 : should take whit space processing into account
 	 */
-	private static function doGetTextTokens(text:String):Array<TextToken>
+	private static function doGetTextTokens(text:String, whiteSpace:WhiteSpace):Array<TextToken>
 	{
+		//apply white space processing, for instance to collapse
+		//sequences of white spaces if needed
+		text = applyWhiteSpace(text, whiteSpace);
+		
 		var textTokens:Array<TextToken> = new Array<TextToken>();
 
 		var textToken:String = null;
 		
-		var i:Int = 0;
+		//wether the last inserted token was a space
+		var lastCharacterIsSpace:Bool = false;
 		
+		var i:Int = 0;
 		//Loop in all the text charachters
 		while (i < text.length)
 		{
@@ -119,9 +125,8 @@ class TextRenderer extends ElementRenderer
 					}
 				}
 			}
-			
 			//If the character is a space
-			if (StringTools.isSpace(text, i) == true)
+			else if (StringTools.isSpace(text, i) == true)
 			{
 				
 				//If a word was being formed by concatenating
@@ -135,12 +140,15 @@ class TextRenderer extends ElementRenderer
 				
 				//push the space in the returned array
 				textTokens.push(TextToken.space);
+				lastCharacterIsSpace = true;
 			}
 			//else the charachter belongs to a word
 			//and is added to the word which is being
 			//concatenated
 			else
 			{
+				lastCharacterIsSpace = false;
+				
 				if (textToken == null)
 				{
 					textToken = "";
@@ -157,13 +165,44 @@ class TextRenderer extends ElementRenderer
 		{
 			textTokens.push(word(textToken));
 		}
-
+		
 		return textTokens;
 	}
 	
 	/////////////////////////////////
 	// PRIVATE METHODS
 	////////////////////////////////
+	
+	/**
+	 * Apply white space pre-processing tothe string
+	 * of rendered text
+	 * 
+	 * TODO 2 : this is only a partial implementation 
+	 */
+	private static function applyWhiteSpace(text:String, whiteSpace:WhiteSpace):String
+	{
+		switch (whiteSpace)
+		{
+			case normal, nowrap: // remove new lines, spaces and tab
+
+			var er1 : EReg = ~/[ \t]+/;
+			var er2 : EReg = ~/ +/g;
+			var er3 : EReg = ~/\n+/g;
+			
+			text = er3.replace(er2.replace( er1.replace( text , " " ) , " " ), " ");
+			
+			case preLine: // remove spaces
+
+			var er1 : EReg = ~/ *$^ */m;
+			var er2 : EReg = ~/[ \t]+/;
+
+			text = er2.replace( er1.replace( text , "\n" ) , " " );
+
+			default:
+		}
+		
+		return text;
+	}
 	
 	/**
 	 * Separate the source text in an array of text token
@@ -174,7 +213,7 @@ class TextRenderer extends ElementRenderer
 	 */
 	private function createTextLines():Void
 	{
-		_textTokens = doGetTextTokens(_text.nodeValue);
+		_textTokens = doGetTextTokens(_text.nodeValue, computedStyle.whiteSpace);
 		lineBoxes = [];
 		
 		var length:Int = _textTokens.length;
@@ -265,6 +304,7 @@ class TextRenderer extends ElementRenderer
 		{
 			textLineBoxesBounds.push(_lineBoxes[i].bounds);
 		}
+		
 		return getChildrenBounds(textLineBoxesBounds);
 	}
 	
