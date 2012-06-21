@@ -116,8 +116,8 @@ class InlineFormattingContext extends FormattingContext
 			if (child.establishesNewFormattingContext() == true)
 			{
 				
-				child.bounds.width = child.coreStyle.computedStyle.width;
-				child.bounds.height = child.coreStyle.computedStyle.height;
+				child.bounds.width = child.coreStyle.computedStyle.width + child.coreStyle.computedStyle.paddingLeft + child.coreStyle.computedStyle.paddingRight;
+				child.bounds.height = child.coreStyle.computedStyle.height + child.coreStyle.computedStyle.paddingTop + child.coreStyle.computedStyle.paddingBottom;
 				
 				var inlineBlockLineBox:LineBox = new InlineBlockLineBox(child);
 				child.lineBoxes.push(inlineBlockLineBox);
