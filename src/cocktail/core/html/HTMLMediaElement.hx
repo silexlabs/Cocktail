@@ -949,12 +949,13 @@ class HTMLMediaElement extends EmbeddedElement
 			return;
 		}
 		
+		
 		//if not all of the media has been loaded, dispatch
 		//a progress event and set this method to be called again
 		fireEvent(Event.PROGRESS, false, false);
 		
 		#if (flash9 || nme)
-		Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
+		Timer.delay(onProgressTick, PROGRESS_FREQUENCY);
 		#end
 	}
 	
