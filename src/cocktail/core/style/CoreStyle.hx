@@ -753,11 +753,11 @@ class CoreStyle
 	}
 	
 	/**
-	 * Same as above for display
+	 * Same as above for positionining scheme styles (display, position...)
 	 */
-	private function invalidateDisplay():Void
+	private function invalidatePositioningScheme():Void
 	{
-		_htmlElement.invalidateDisplay();
+		_htmlElement.invalidatePositioningScheme();
 	}
 	
 	/////////////////////////////////
@@ -1022,7 +1022,7 @@ class CoreStyle
 	private function setDisplay(value:Display):Display 
 	{
 		_display = value;
-		invalidateDisplay();
+		invalidatePositioningScheme();
 		return value;
 	}
 	
@@ -1030,7 +1030,7 @@ class CoreStyle
 	{
 		_position = value;
 		_computedStyle.position = value;
-		invalidateDisplay();
+		invalidatePositioningScheme();
 		return value;
 	}
 	
@@ -1124,7 +1124,7 @@ class CoreStyle
 	{
 		_zIndex = value;
 		_computedStyle.zIndex = value;
-		invalidateDisplay();
+		invalidatePositioningScheme();
 		return value;
 	}
 	
@@ -1274,7 +1274,7 @@ class CoreStyle
 	{
 		_overflowX = value;
 		_computedStyle.overflowX = value;
-		invalidateDisplay();
+		invalidatePositioningScheme();
 		return value;
 	}
 	
@@ -1282,7 +1282,7 @@ class CoreStyle
 	{
 		_overflowY = value;
 		_computedStyle.overflowY = value;
-		invalidateDisplay();
+		invalidatePositioningScheme();
 		return value;
 	}
 	

@@ -261,6 +261,7 @@ class FlowBoxRenderer extends BoxRenderer
 	override public function childrenInline():Bool
 	{	
 		var length:Int = _childNodes.length;
+		
 		for (i in 0...length)
 		{
 			var child:ElementRenderer = _childNodes[i];
