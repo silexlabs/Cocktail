@@ -81,10 +81,7 @@ interface IStyleProxy<DisplayObjectType>
 	public function setBgRepeat (element:DisplayObjectType, value:Array<String>):Void;
 /*	public function setBgOrigin (element:DisplayObjectType, value:Array<String>):Void;
 	public function setBgSize (element:DisplayObjectType, value:Array<String>):Void;
-*/	public function setBgPosXKey (element:DisplayObjectType, value:String):Void;
-	public function setBgPosXNum (element:DisplayObjectType, value:Int, unit:String):Void;
-	public function setBgPosYKey (element:DisplayObjectType, value:String):Void;
-	public function setBgPosYNum (element:DisplayObjectType, value:Int, unit:String):Void;
+*/	public function setBgPos (element:DisplayObjectType, value:String):Void;
 
 /*	public function setBgClip (element:DisplayObjectType, value:Array<String>):Void;
 */

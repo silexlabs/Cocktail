@@ -101,7 +101,7 @@ class HTMLHtmlElement extends HTMLElement
 		
 		var htmlDocument:HTMLDocument = cast(_ownerDocument);
 		htmlDocument.initBody(cast(getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
-		trace(get_innerHTML());
+		
 		return value;
 	}
 	

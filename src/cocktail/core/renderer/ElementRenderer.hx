@@ -286,14 +286,17 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	
 	/**
 	 * clean-up method
+	 * 
+	 * TODO 1 : when setting to null, in flash, don't
+	 *	dereference but instead set the actual object to null
 	 */
 	public function dispose():Void
 	{
-		_lineBoxes = null;
+		//_lineBoxes = null;
 		//TODO 2 :should clear the graphic context
-		_graphicsContext = null;
-		_coreStyle = null;
-		_layerRenderer = null;
+		//_graphicsContext = null;
+		//_coreStyle = null;
+		//_layerRenderer = null;
 	}
 	
 	/**
@@ -672,6 +675,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		if (establishesNewStackingContext() == true)
 		{
+
 			_layerRenderer = new LayerRenderer(this);
 			parentLayer.appendChild(_layerRenderer);
 			_hasOwnLayer = true;

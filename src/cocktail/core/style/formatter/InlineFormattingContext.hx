@@ -71,7 +71,6 @@ class InlineFormattingContext extends FormattingContext
 	
 	override private function startFormatting():Void
 	{
-		
 		_unbreakableLineBoxes = new Array<LineBox>();
 		var rootLineBoxes:Array<LineBox> = new Array<LineBox>();
 		var initialRootLineBox:RootLineBox = new RootLineBox(_formattingContextRoot);
@@ -96,7 +95,6 @@ class InlineFormattingContext extends FormattingContext
 		{
 			_formattingContextRoot.bounds.height = _formattingContextData.y  + _formattingContextRoot.coreStyle.computedStyle.paddingBottom ;
 			_formattingContextRoot.coreStyle.computedStyle.height = _formattingContextRoot.bounds.height - _formattingContextRoot.coreStyle.computedStyle.paddingBottom  - _formattingContextRoot.coreStyle.computedStyle.paddingTop;
-		
 		}
 	}
 	
@@ -108,9 +106,45 @@ class InlineFormattingContext extends FormattingContext
 		{
 			var child:ElementRenderer = elementRenderer.childNodes[i];
 			
+			//here the child is displayed as an inline-block as it starts a new formatting context
+			//it generates only one line box 
+			if (child.establishesNewFormattingContext() == true)
+			{
+				
+				child.bounds.width = child.coreStyle.computedStyle.width;
+				child.bounds.height = child.coreStyle.computedStyle.height;
+				
+				var inlineBlockLineBox:LineBox = new InlineBlockLineBox(child);
+				child.lineBoxes.push(inlineBlockLineBox);
+				
+				inlineBlockLineBox.marginLeft = child.coreStyle.computedStyle.marginLeft;
+				inlineBlockLineBox.marginRight = child.coreStyle.computedStyle.marginRight;
+
+				var childLineBoxes:Array<LineBox> = [inlineBlockLineBox];
+				
+				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
+			}
+			
+			//TODO : Text should not be considered embed, isEmbedded should be removed
+			//
+			//note : this placed before checking for child with children, as for instance the VideoRenderer
+			//is considered replaced but it can also have source children, bt when formatting, it should always
+			//be considered replaced
+			//TODO 5 : actually, source HTMLElement never create ElementRenderer, but because of lack of
+			//white space processing, spaces inside the video tag might create TextRenderer children
+			else if (child.isReplaced() == true && child.isText() == false)
+			{
+				var embeddedLineBox:LineBox = new EmbeddedLineBox(child);
+				child.lineBoxes.push(embeddedLineBox);
+				
+				//TODO : should had left and right margin to line box, like for inline-block
+				
+				var childLineBoxes:Array<LineBox> = [embeddedLineBox];
+				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
+			}
 			//here the child is an inline box renderer, which will create one line box for each
 			//line its children are in
-			if (child.hasChildNodes() == true && child.establishesNewFormattingContext() == false)
+			else if (child.hasChildNodes() == true && child.establishesNewFormattingContext() == false)
 			{
 				//remove all the previous line boxes before creating new ones
 				child.lineBoxes = new Array<LineBox>();
@@ -154,35 +188,6 @@ class InlineFormattingContext extends FormattingContext
 				child.lineBoxes[child.lineBoxes.length - 1].marginRight = child.coreStyle.computedStyle.marginRight;
 				child.lineBoxes[child.lineBoxes.length - 1].paddingRight = child.coreStyle.computedStyle.paddingRight;
 				_unbreakableWidth += child.coreStyle.computedStyle.marginRight + child.coreStyle.computedStyle.paddingRight;
-			}
-			//here the child is displayed as an inline-block as it starts a new formatting context
-			//it generates only one line box 
-			else if (child.establishesNewFormattingContext() == true)
-			{
-				child.bounds.width = child.coreStyle.computedStyle.width;
-				child.bounds.height = child.coreStyle.computedStyle.height;
-				
-				var inlineBlockLineBox:LineBox = new InlineBlockLineBox(child);
-				child.lineBoxes.push(inlineBlockLineBox);
-				
-				inlineBlockLineBox.marginLeft = child.coreStyle.computedStyle.marginLeft;
-				inlineBlockLineBox.marginRight = child.coreStyle.computedStyle.marginRight;
-
-				var childLineBoxes:Array<LineBox> = [inlineBlockLineBox];
-				
-				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
-			}
-			
-			//TODO : Text should not be considered embed, isEmbedded should be removed
-			else if (child.isReplaced() == true && child.isText() == false)
-			{
-				var embeddedLineBox:LineBox = new EmbeddedLineBox(child);
-				child.lineBoxes.push(embeddedLineBox);
-				
-				//TODO : should had left and right margin to line box, like for inline-block
-				
-				var childLineBoxes:Array<LineBox> = [embeddedLineBox];
-				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
 			}
 			//here the child can be either a text renderer, an embedded asset, like a picture
 			//or an element displayed as an inline-block
@@ -491,7 +496,6 @@ class InlineFormattingContext extends FormattingContext
 			else
 			{
 				child.bounds.x = flowX + child.marginLeft;
-				
 				//TODO 4 : a bit hackish to require checking if is text
 				if (child.isAbsolutelyPositioned() == false || child.isText() == true )
 				{
