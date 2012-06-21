@@ -225,7 +225,7 @@ class FlowBoxRenderer extends BoxRenderer
 	{
 		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
 		return containingHTMLElementWidth - computedStyle.width + computedStyle.paddingLeft
-		+ computedStyle.paddingRight + computedStyle.right - computedStyle.marginRight;
+		+ computedStyle.paddingRight - computedStyle.right - computedStyle.marginRight;
 	}
 	
 	/**
@@ -261,6 +261,7 @@ class FlowBoxRenderer extends BoxRenderer
 	override public function childrenInline():Bool
 	{	
 		var length:Int = _childNodes.length;
+		
 		for (i in 0...length)
 		{
 			var child:ElementRenderer = _childNodes[i];

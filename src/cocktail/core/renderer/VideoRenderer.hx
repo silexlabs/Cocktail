@@ -54,7 +54,7 @@ class VideoRenderer extends EmbeddedBoxRenderer
 		{
 			//get the ratio between the intrinsic video width and the width it must be displayed at
 			var ratio:Float = htmlVideoElement.videoHeight / _coreStyle.computedStyle.height;
-
+	
 			//the video width use the computed width while the height apply the ratio
 			//to the video height, so that the ratio is kept while displaying the video
 			//as big as possible
@@ -89,6 +89,7 @@ class VideoRenderer extends EmbeddedBoxRenderer
 		htmlVideoElement.embeddedAsset.height = height;
 		
 		htmlVideoElement.embeddedAsset.alpha = computedStyle.opacity;
+		
 		#end
 	}
 	
