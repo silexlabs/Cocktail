@@ -26,7 +26,6 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	public function new(node:HTMLElement) 
 	{
 		super(node);
-		trace("create vieo renderer");
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
