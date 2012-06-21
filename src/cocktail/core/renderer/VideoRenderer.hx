@@ -33,17 +33,33 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Render the embedded video asset.
+	 * Render the embedded video asset or the video poster frame.
+	 */
+	override private function renderEmbeddedAsset(graphicContext:NativeElement)
+	{
+		var htmlVideoElement:HTMLVideoElement = cast(_node);
+		
+		//determine wether to render video or poster frame
+		if (htmlVideoElement.shouldRenderPosterFrame() == true)
+		{
+			renderPosterFrame(htmlVideoElement, graphicContext);
+		}
+		else
+		{
+			renderVideo(htmlVideoElement, graphicContext);
+		}
+	}
+	
+	/**
+	 * Actually render the video
 	 * 
 	 * Video intrinsic aspect ratio is always preserved, so the
 	 * video might be letterboxed to fit in the available bounds,
 	 * the video always takes the maximum amount of space available
 	 * while keeping its aspect ratio
 	 */
-	override private function renderEmbeddedAsset(graphicContext:NativeElement)
+	private function renderVideo(htmlVideoElement:HTMLVideoElement, graphicContext:NativeElement):Void
 	{
-		var htmlVideoElement:HTMLVideoElement = cast(_node);
-		
 		//those will hold the actual value used for the video
 		//dimensions, with the kept aspect ratio
 		var width:Float;
@@ -93,4 +109,35 @@ class VideoRenderer extends EmbeddedBoxRenderer
 		#end
 	}
 	
+	/**
+	 * Render the poster frame of the video if the video is not
+	 * yet loaded or has not started playing yet
+	 */
+	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext):Void
+	{
+		#if (flash9 || nme)
+		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
+		containerGraphicContext.addChild(htmlVideoElement.posterFrameEmbeddedAsset);
+		
+		var globalBounds:RectangleData = globalBounds;
+		htmlVideoElement.posterFrameEmbeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
+		htmlVideoElement.posterFrameEmbeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
+		htmlVideoElement.posterFrameEmbeddedAsset.width = _coreStyle.computedStyle.width;
+		htmlVideoElement.posterFrameEmbeddedAsset.height = _coreStyle.computedStyle.height;
+		
+		//have to try/catch because of potential cross-domain security error
+		try {
+			var loader:flash.display.Loader = cast(htmlVideoElement.posterFrameEmbeddedAsset);
+			var bitmap:flash.display.Bitmap = cast(loader.content);
+			if (bitmap != null)
+			{
+				bitmap.smoothing = true;
+			}
+		}
+		catch(e:Dynamic) {
+				
+			}
+		
+		#end
+	}
 }
