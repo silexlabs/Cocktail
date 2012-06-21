@@ -224,8 +224,8 @@ class FlowBoxRenderer extends BoxRenderer
 	private function getRightOffset(elementRenderer:ElementRenderer, containingHTMLElementWidth:Float):Float
 	{
 		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
-		return containingHTMLElementWidth - computedStyle.width + computedStyle.paddingLeft
-		+ computedStyle.paddingRight - computedStyle.right - computedStyle.marginRight;
+		return containingHTMLElementWidth - computedStyle.width - computedStyle.paddingLeft
+		- computedStyle.paddingRight - computedStyle.right - computedStyle.marginRight;
 	}
 	
 	/**
@@ -243,7 +243,7 @@ class FlowBoxRenderer extends BoxRenderer
 	private function getBottomOffset(elementRenderer:ElementRenderer, containingHTMLElementHeight:Float):Float
 	{
 		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
-		return containingHTMLElementHeight - computedStyle.height + computedStyle.paddingTop +
+		return containingHTMLElementHeight - computedStyle.height - computedStyle.paddingTop -
 		computedStyle.paddingBottom - computedStyle.bottom;
 	}
 	
