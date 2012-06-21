@@ -422,7 +422,8 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
-	 * When the Display style changes, this special case happen, as the 
+	 * When a style defining the positioning scheme of this HTMLElement
+	 * changes, such as display or position, this special case happen, as the 
 	 * ElementRenderer might need to be changed.
 	 * 
 	 * For instance if the previous value of Display was
@@ -433,13 +434,21 @@ class HTMLElement extends Element<HTMLElement>
 	 * it is swiched to "block", then the current inline ElementRenderer
 	 * must be replaced by a block ElementRenderer
 	 * 
-	 * TODO 2 : update doc, now also called for position style changes, should
-	 * be for all positioning scheme styles
+	 * The detach and attach method are called on the parent HTMLElement. They
+	 * should be called on the parent as for instance if an HTMLElement was displayed
+	 * as block and is now displayed as inline, the formatting context of the parent
+	 * ElementRenderer might be affected. Calling detach and attach on the parent also
+	 * refresh all th siblings of the element whose positioning scheme changed
+	 * 
+	 * TODO 3 : might find cleaner way than just check for parent nullness
 	 */
-	public function invalidateDisplay():Void
+	public function invalidatePositioningScheme():Void
 	{
-		detach();
-		attach();
+		if (_parentNode != null)
+		{
+			_parentNode.detach();
+			_parentNode.attach();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
