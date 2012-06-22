@@ -34,7 +34,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 {
 	
 	
-	private static inline var INVALIDATION_INTERVAL:Int = 200;
+	private static inline var INVALIDATION_INTERVAL:Int = 2000;
 	
 	private var _invalidationScheduled:Bool;
 	
@@ -153,7 +153,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	{
 		startLayout();
 		startRendering();
-		
 	}
 	
 	private function onLayoutSchedule():Void

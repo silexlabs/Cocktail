@@ -212,6 +212,8 @@ class LineBox extends NodeBase<LineBox>
 			case VerticalAlign.middle:
 				baselineOffset -=  (bounds.height / 2) - (parentXHeight / 2);
 				
+			case VerticalAlign.top:
+				
 			default:	
 		}
 		

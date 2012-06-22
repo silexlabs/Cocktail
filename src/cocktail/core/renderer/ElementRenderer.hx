@@ -487,7 +487,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			}
 		}
 		
-		//TODO 1 : should call a dispose method on the layerRenderer
 		_layerRenderer = null;
 	}
 	

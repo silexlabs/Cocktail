@@ -282,8 +282,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		var anonymousBlock:AnonymousBlockBoxRenderer = new AnonymousBlockBoxRenderer();
 		anonymousBlock.appendChild(child);
-
-		//TODO 1 : should node use _node, as it sets the default styles of the nodename
+		
 		anonymousBlock.coreStyle = anonymousBlock.node.coreStyle;
 		
 		return anonymousBlock;

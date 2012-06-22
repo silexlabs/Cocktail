@@ -19,6 +19,7 @@ import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.style.ComputedStyle;
+import haxe.Stack;
 import lib.hxtml.CssParser;
 import lib.hxtml.HxtmlConverter;
 import lib.haxe.xml.Parser;

@@ -872,7 +872,6 @@ class InlineFormattingContext extends FormattingContext
 				var leadedAscent:Float = child.leadedAscent;
 				var leadedDescent:Float = child.leadedDescent;
 				var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, _formattingContextRoot.coreStyle.fontMetrics.xHeight);
-				
 				//TODO : should vertical align be added recursively ?
 				if (leadedAscent + baselineOffset > rootLineBox.leadedAscent)
 				{
@@ -901,9 +900,20 @@ class InlineFormattingContext extends FormattingContext
 			var child:LineBox = lineBox.childNodes[i];
 			
 			var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, _formattingContextRoot.coreStyle.fontMetrics.xHeight);
-			child.bounds.y = formattingContextY - baselineOffset + lineBoxAscent;
-			//TODO 2 check if neccessary to remove ascent to all children
-			child.bounds.y -= child.leadedAscent;
+
+			switch(child.elementRenderer.coreStyle.verticalAlign)
+			{
+				case VerticalAlign.top:
+					child.bounds.y = formattingContextY;
+					
+				default:	
+					child.bounds.y = formattingContextY - baselineOffset + lineBoxAscent;
+					//TODO 2 check if neccessary to remove ascent to all children
+					child.bounds.y -= child.leadedAscent;
+					
+				
+			}
+			
 
 			if (child.hasChildNodes() == true)
 			{
