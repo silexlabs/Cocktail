@@ -15,6 +15,7 @@ import cocktail.core.event.WheelEvent;
 import cocktail.port.Keyboard;
 import cocktail.port.Mouse;
 import cocktail.port.NativeWindow;
+import cocktail.core.style.StyleData;
 
 /**
  * This class exposes an API to access platform
@@ -141,6 +142,11 @@ class Platform extends EventCallback
 	public function exitFullscreen():Void
 	{
 		_nativeWindow.exitFullscreen();
+	}
+	
+	public function setMouseCursor(cursor:Cursor):Void
+	{
+		_mouse.setMouseCursor(cursor);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

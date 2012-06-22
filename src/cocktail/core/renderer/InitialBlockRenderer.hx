@@ -34,7 +34,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 {
 	
 	
-	private static inline var INVALIDATION_INTERVAL:Int = 2000;
+	private static inline var INVALIDATION_INTERVAL:Int = 200;
 	
 	private var _invalidationScheduled:Bool;
 	
@@ -153,6 +153,12 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	{
 		startLayout();
 		startRendering();
+		
+	}
+	
+	private function onLayoutSchedule():Void
+	{
+		layoutAndRender();
 		_invalidationScheduled = false;
 	}
 	
@@ -343,12 +349,12 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	private function scheduleLayoutAndRender():Void
 	{
-		var layoutAndRenderDelegate:Void->Void = layoutAndRender;
+		var onLayoutScheduleDelegate:Void->Void = onLayoutSchedule;
 		#if (flash9 || nme)
 		//calling the methods 1 millisecond later is enough to ensure
 		//that first all synchronous code is executed
 		Timer.delay(function () { 
-			layoutAndRenderDelegate();
+			onLayoutScheduleDelegate();
 		}, INVALIDATION_INTERVAL);
 		#end
 	}

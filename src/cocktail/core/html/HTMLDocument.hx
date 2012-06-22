@@ -27,6 +27,7 @@ import cocktail.core.renderer.RendererData;
 import cocktail.core.event.FocusEvent;
 import haxe.Log;
 import haxe.Timer;
+import cocktail.core.style.StyleData;
 
 /**
  * An HTMLDocument is the root of the HTML hierarchy and holds the entire content.
@@ -111,6 +112,14 @@ class HTMLDocument extends Document
 	 */
 	private var _onExitFullscreen:Void->Void;
 	public var onExitFullscreen(get_onExitFullscreen, set_onExitFullscreen):Void->Void;
+	
+	/**
+	 * Callback listened to by the Window object
+	 * to chnge the mouse cursor when needed using
+	 * platform specific APIs
+	 */
+	private var _onSetMouseCursor:Cursor->Void;
+	public var onSetMouseCursor(get_onSetMouseCursor, set_onSetMouseCursor):Cursor->Void;
 	
 	/**
 	 * class constructor. Init class attributes
@@ -303,6 +312,10 @@ class HTMLDocument extends Document
 			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, oldHoveredElementRenderer.node);
 			
 			elementRendererAtPoint.node.dispatchEvent(mouseOverEvent);
+			
+			//update the mouse cursor with the cursor style of the newly hovered 
+			//element
+			setMouseCursor(elementRendererAtPoint.node.coreStyle.computedStyle.cursor);
 		}
 		
 		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
@@ -354,6 +367,32 @@ class HTMLDocument extends Document
 	public function onPlatformResizeEvent(event:UIEvent):Void
 	{
 		_documentElement.invalidate(InvalidationReason.other);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// MOUSE CURSOR METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Change the current mouse cursor, using platform
+	 * specific APIs
+	 */
+	private function setMouseCursor(cursor:Cursor):Void
+	{
+		if (_onSetMouseCursor != null)
+		{
+			_onSetMouseCursor(cursor);
+		}
+	}
+	
+	private function get_onSetMouseCursor():Cursor->Void
+	{
+		return _onSetMouseCursor;
+	}
+	
+	private function set_onSetMouseCursor(value:Cursor->Void):Cursor->Void
+	{
+		return _onSetMouseCursor = value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

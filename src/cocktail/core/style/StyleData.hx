@@ -1116,6 +1116,11 @@ import cocktail.core.renderer.TextRenderer;
 		 * The cursor is a pointer that indicates a link. 
 		 */
 		pointer;
+		
+		/**
+		 * Indicates text that may be selected. Often rendered as an I-beam. 
+		 */
+		text;
 	}
 	
 		// TRANSITION STYLES
