@@ -9,8 +9,7 @@ package cocktail.port.platform.mouse;
 
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
-
-import cocktail.port.platform.mouse.MouseData;
+import cocktail.core.style.StyleData;
 
 /**
  * This class listens to native mouse event
@@ -72,6 +71,18 @@ class AbstractMouse
 	{
 		//starts to listen to native mouse events
 		setNativeListeners();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// MOUSE CURSOR METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Set the mouse cursor using platform API
+	 */
+	public function setMouseCursor(cursor:Cursor):Void
+	{
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

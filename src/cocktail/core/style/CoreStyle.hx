@@ -282,89 +282,89 @@ class CoreStyle
 		_computedStyle = new ComputedStyle(this);
 		initComputedStyles();
 		
-		_width = getWidthDefaultValue();
-		_height = getHeightDefaultValue();
+		width = getWidthDefaultValue();
+		height = getHeightDefaultValue();
 		
-		_minWidth = getMinWidthDefaultValue();
-		_maxWidth = getMaxWidthDefaultValue();
-		_minHeight = getMinHeightDefaultValue();
-		_maxHeight = getMaxHeightDefaultValue();
+		minWidth = getMinWidthDefaultValue();
+		maxWidth = getMaxWidthDefaultValue();
+		minHeight = getMinHeightDefaultValue();
+		maxHeight = getMaxHeightDefaultValue();
 		
-		_marginTop = Margin.length(px(0));
-		_marginBottom = Margin.length(px(0));
-		_marginLeft = Margin.length(px(0));
-		_marginRight = Margin.length(px(0));
+		marginTop = Margin.length(px(0));
+		marginBottom = Margin.length(px(0));
+		marginLeft = Margin.length(px(0));
+		marginRight = Margin.length(px(0));
 		
-		_paddingTop = Padding.length(px(0));
-		_paddingBottom = Padding.length(px(0));
-		_paddingLeft = Padding.length(px(0));
-		_paddingRight = Padding.length(px(0));
+		paddingTop = Padding.length(px(0));
+		paddingBottom = Padding.length(px(0));
+		paddingLeft = Padding.length(px(0));
+		paddingRight = Padding.length(px(0));
 		
-		_lineHeight = LineHeight.normal;
-		_verticalAlign = VerticalAlign.baseline;
+		lineHeight = LineHeight.normal;
+		verticalAlign = VerticalAlign.baseline;
 		
-		_display = Display.cssInline;
-		_position = Position.cssStatic;
+		display = Display.cssInline;
+		position = Position.cssStatic;
 		
-		_zIndex = ZIndex.cssAuto;
+		zIndex = ZIndex.cssAuto;
 		
-		_top = PositionOffset.cssAuto;
-		_bottom = PositionOffset.cssAuto;
-		_left = PositionOffset.cssAuto;
-		_right = PositionOffset.cssAuto;
+		top = PositionOffset.cssAuto;
+		bottom = PositionOffset.cssAuto;
+		left = PositionOffset.cssAuto;
+		right = PositionOffset.cssAuto;
 		
-		_cssFloat = CSSFloat.none;
-		_clear = Clear.none;
+		cssFloat = CSSFloat.none;
+		clear = Clear.none;
 		
-		_backgroundColor = Color.transparent;
-		_backgroundImage = [BackgroundImage.none];
-		_backgroundRepeat = [{
+		backgroundColor = Color.transparent;
+		backgroundImage = [BackgroundImage.none];
+		backgroundRepeat = [{
 			x:BackgroundRepeatValue.repeat,
 			y:BackgroundRepeatValue.repeat
 		}];
-		_backgroundPosition = getBackgroundPositionDefaultValue();
-		_backgroundOrigin = [BackgroundOrigin.paddingBox];
-		_backgroundSize = [
+		backgroundPosition = getBackgroundPositionDefaultValue();
+		backgroundOrigin = [BackgroundOrigin.paddingBox];
+		backgroundSize = [
 			BackgroundSize.dimensions({
 				x:BackgroundSizeDimension.cssAuto,
 				y:BackgroundSizeDimension.cssAuto
 			})];
-		_backgroundClip = [BackgroundClip.borderBox];	
+		backgroundClip = [BackgroundClip.borderBox];	
 		
-		_fontStyle = FontStyle.normal;
-		_fontVariant = FontVariant.normal;
-		_fontWeight = FontWeight.normal;
-		_fontSize = FontSize.absoluteSize(FontSizeAbsoluteSize.medium);
+		fontStyle = FontStyle.normal;
+		fontVariant = FontVariant.normal;
+		fontWeight = FontWeight.normal;
+		fontSize = FontSize.absoluteSize(FontSizeAbsoluteSize.medium);
 		
-		_textIndent = TextIndent.length(px(0));
-		_textAlign = TextAlign.left;
-		_letterSpacing = LetterSpacing.normal;
-		_wordSpacing = WordSpacing.normal;
-		_textTransform = TextTransform.none;
-		_whiteSpace = WhiteSpace.normal;
+		textIndent = TextIndent.length(px(0));
+		textAlign = TextAlign.left;
+		letterSpacing = LetterSpacing.normal;
+		wordSpacing = WordSpacing.normal;
+		textTransform = TextTransform.none;
+		whiteSpace = WhiteSpace.normal;
 		
-		_visibility = Visibility.visible;
-		_opacity = 1.0;
-		_overflowX = Overflow.visible;
-		_overflowY = Overflow.visible;
+		visibility = Visibility.visible;
+		opacity = 1.0;
+		overflowX = Overflow.visible;
+		overflowY = Overflow.visible;
 		
-		_transitionDelay = [TimeValue.seconds(0)];
-		_transitionDuration = [TimeValue.seconds(0)];
-		_transitionProperty = TransitionProperty.all;
-		_transitionTimingFunction = [TransitionTimingFunctionValue.ease];
+		transitionDelay = [TimeValue.seconds(0)];
+		transitionDuration = [TimeValue.seconds(0)];
+		transitionProperty = TransitionProperty.all;
+		transitionTimingFunction = [TransitionTimingFunctionValue.ease];
 		
-		_transformOrigin = {
+		transformOrigin = {
 			x:TransformOriginX.center,
 			y:TransformOriginY.center
 		}
 		
-		_transform = Transform.none;
+		transform = Transform.none;
 		
-		_cursor = Cursor.cssDefault;
+		cursor = Cursor.cssAuto;
 		
 		var defaultStyles:DefaultStylesData = getDefaultStyle();
-		_fontFamily = defaultStyles.fontFamily;
-		_color = defaultStyles.color;
+		fontFamily = defaultStyles.fontFamily;
+		color = defaultStyles.color;
 		
 		applyDefaultHTMLStyles(tagName);
 	}
@@ -407,98 +407,103 @@ class CoreStyle
 			"dd", "div", "dl", "dt", "fieldset",
 			"form", "frame", "frameset", "noframes", "ol",
 			"center", "dir", "hr", "menu" :
-				_display = Display.block;
+				display = Display.block;
 				
 			//TODO 5 : should be replaced by list-item once implemented	
 			case "li" :
-				_display = Display.block;
+				display = Display.block;
+			
+			//TODO 5 : should be instead for :link pseudo style once
+			//implmented
+			case "a":
+				cursor = Cursor.pointer;
 				
 			case "ul":
-				_display = Display.block;
-				_marginTop = _marginBottom = Margin.length(em(1.12));
-				_marginLeft = Margin.length(px(40));
+				display = Display.block;
+				marginTop = marginBottom = Margin.length(em(1.12));
+				marginLeft = Margin.length(px(40));
 				
 			case "head" :	
-				_display = Display.none;
+				display = Display.none;
 				
 			case "body" : 
-				_display = Display.block;
-				_marginLeft = _marginRight = _marginTop = _marginBottom = Margin.length(px(8));
+				display = Display.block;
+				marginLeft = marginRight = marginTop = marginBottom = Margin.length(px(8));
 				
 			case "h1" : 
-				_display = Display.block;
-				_fontSize = FontSize.length(em(2));
-				_fontWeight = FontWeight.bolder;
-				_marginTop = _marginBottom = Margin.length(em(0.67));
+				display = Display.block;
+				fontSize = FontSize.length(em(2));
+				fontWeight = FontWeight.bolder;
+				marginTop = marginBottom = Margin.length(em(0.67));
 				
 			case "h2" : 
-				_display = Display.block;
-				_fontSize = FontSize.length(em(1.5));
-				_fontWeight = FontWeight.bolder;
-				_marginTop = _marginBottom = Margin.length(em(0.75));	
+				display = Display.block;
+				fontSize = FontSize.length(em(1.5));
+				fontWeight = FontWeight.bolder;
+				marginTop = marginBottom = Margin.length(em(0.75));	
 			
 			case "h3" : 
-				_display = Display.block;
-				_fontSize = FontSize.length(em(1.17));
-				_fontWeight = FontWeight.bolder;
-				_marginTop = _marginBottom = Margin.length(em(0.83));
+				display = Display.block;
+				fontSize = FontSize.length(em(1.17));
+				fontWeight = FontWeight.bolder;
+				marginTop = marginBottom = Margin.length(em(0.83));
 			
 			case "h4" :	
-				_display = Display.block;
-				_fontWeight = FontWeight.bolder;
-				_marginTop = _marginBottom = Margin.length(em(1.12));
+				display = Display.block;
+				fontWeight = FontWeight.bolder;
+				marginTop = marginBottom = Margin.length(em(1.12));
 			
 			case "h5" : 
-				_display = Display.block;
-				_fontSize = FontSize.length(em(0.83));
-				_fontWeight = FontWeight.bolder;
-				_marginTop = _marginBottom = Margin.length(em(1.5));	
+				display = Display.block;
+				fontSize = FontSize.length(em(0.83));
+				fontWeight = FontWeight.bolder;
+				marginTop = marginBottom = Margin.length(em(1.5));	
 				
 			case "h6" : 
-				_display = Display.block;
-				_fontSize = FontSize.length(em(0.75));
-				_fontWeight = FontWeight.bolder;
-				_marginTop = _marginBottom = Margin.length(em(1.67));		
+				display = Display.block;
+				fontSize = FontSize.length(em(0.75));
+				fontWeight = FontWeight.bolder;
+				marginTop = marginBottom = Margin.length(em(1.67));		
 				
 			case "p" :
-				_display = Display.block;
-				_marginTop = _marginBottom = Margin.length(em(1));	
+				display = Display.block;
+				marginTop = marginBottom = Margin.length(em(1));	
 				
 			case "pre" : 
-				_display = Display.block;
-				_whiteSpace = WhiteSpace.pre;
-				_fontFamily = ["monospace"];
+				display = Display.block;
+				whiteSpace = WhiteSpace.pre;
+				fontFamily = ["monospace"];
 				
 			case "code" :
-				_fontFamily = ["monospace"];
+				fontFamily = ["monospace"];
 				
 			case "i", "cite", "em", "var" :
-				_fontStyle = FontStyle.italic;
+				fontStyle = FontStyle.italic;
 				
 			case "input" : 
-				_display = inlineBlock;
+				display = inlineBlock;
 				
 			case "blockquote" : 
-				_display = block;
-				_marginTop = _marginBottom = Margin.length(em(1.12));
-				_marginLeft = _marginRight = Margin.length(px(40));
+				display = block;
+				marginTop = marginBottom = Margin.length(em(1.12));
+				marginLeft = marginRight = Margin.length(px(40));
 				
 			case "strong" : 
-				_fontWeight = FontWeight.bolder;
+				fontWeight = FontWeight.bolder;
 				
 			case "big" : 
-				_fontSize = FontSize.length(em(1.17));
+				fontSize = FontSize.length(em(1.17));
 				
 			case "small" :
-				_fontSize = FontSize.length(em(0.83));
+				fontSize = FontSize.length(em(0.83));
 				
 			case "sub" : 
-				_fontSize = FontSize.length(em(0.83));
-				_verticalAlign = VerticalAlign.sub;
+				fontSize = FontSize.length(em(0.83));
+				verticalAlign = VerticalAlign.sub;
 				
 			case "sup" :
-				_fontSize = FontSize.length(em(0.83));
-				_verticalAlign = VerticalAlign.cssSuper;
+				fontSize = FontSize.length(em(0.83));
+				verticalAlign = VerticalAlign.cssSuper;
 		}
 	}
 	
@@ -1362,7 +1367,9 @@ class CoreStyle
 	
 	private function setCursor(value:Cursor):Cursor
 	{
-		return _cursor = value;
+		_cursor = value;
+		_computedStyle.cursor = value;
+		return value;
 	}
 	
 	/////////////////////////////////

@@ -9,7 +9,9 @@ package cocktail.port.flash_player;
 
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
+import cocktail.core.NativeElement;
 import cocktail.port.platform.mouse.AbstractMouse;
+import cocktail.core.style.StyleData;
 import flash.Lib;
 import haxe.Log;
 
@@ -21,7 +23,6 @@ import haxe.Log;
  */
 class Mouse extends AbstractMouse
 {
-	
 	/**
 	 * class constructor.
 	 */
@@ -29,6 +30,70 @@ class Mouse extends AbstractMouse
 	{
 		super();
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN MOUSE CURSOR METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Set the mouse cursor using flash mouse API
+	 */
+	override public function setMouseCursor(cursor:Cursor):Void
+	{
+		switch(cursor)
+		{
+			case Cursor.cssAuto:
+				flash.ui.Mouse.cursor = flash.ui.MouseCursor.AUTO;
+				
+			case Cursor.cssDefault:
+				flash.ui.Mouse.cursor = flash.ui.MouseCursor.ARROW;
+			
+			case Cursor.pointer:
+				flash.ui.Mouse.cursor = flash.ui.MouseCursor.BUTTON;	
+				
+			case Cursor.text:
+				flash.ui.Mouse.cursor = flash.ui.MouseCursor.IBEAM;		
+			
+			//cross-hair don't exist in flash	
+			case Cursor.crosshair:
+				flash.ui.Mouse.cursor = flash.ui.MouseCursor.AUTO;		
+		}
+	}
+	
+	/**
+	 * TODO 3 : re-implement once asset manager is developed
+	 * 
+	 * Set a bitmap as mouse cursor using flash mouse API
+	private function setBitmapCursor(nativeElement:NativeElement, hotSpot:PointData):Void
+	{
+		//init the hotSpot if null
+		//to the top left of the cursor
+		if (hotSpot == null)
+		{
+			hotSpot = { x:0.0, y:0.0 };
+		}
+		
+		//draw the image dom element onto a 32x32 transparent bitmap data
+		var mouseCursorBitmapData:BitmapData = new BitmapData(32, 32, true, 0x00FFFFFF);
+		mouseCursorBitmapData.draw(nativeElement);
+		
+		//set the flash mouse cursor data with the drawn bitmap data
+		//and the cursor hot spot
+		var mouseCursorData:MouseCursorData = new MouseCursorData();
+		mouseCursorData.data = new Vector<BitmapData>(1, true);
+		mouseCursorData.data[0] = mouseCursorBitmapData;
+		mouseCursorData.hotSpot = new flash.geom.Point(hotSpot.x, hotSpot.y);
+		
+		//generate a random ID for the new cursor
+		var randomID:String = Std.string(Math.round(Math.random() * 1000));
+		
+		//register the cursor and set it
+		Mouse.registerCursor(randomID, mouseCursorData);
+		Mouse.cursor = randomID;
+		
+		//show the cursor if it was previously hidden
+		Mouse.show();
+	}*/
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden private mouse utils methods

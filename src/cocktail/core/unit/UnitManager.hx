@@ -2592,6 +2592,9 @@ class UnitManager
 				
 			case Cursor.pointer:
 				cssCursorValue = "pointer";
+				
+			case Cursor.text:
+				cssCursorValue = "text";
 		}
 		
 		return cssCursorValue;

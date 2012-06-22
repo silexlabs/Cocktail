@@ -14,6 +14,7 @@ import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.port.platform.Platform;
+import cocktail.core.style.StyleData;
 
 /**
  * Represents the window through which the Document is
@@ -90,6 +91,9 @@ class Window extends EventCallback
 		htmlDocument.onEnterFullscreen = onDocumentEnterFullscreen;
 		htmlDocument.onExitFullscreen = onDocumentExitFullscreen;
 		
+		//mouse cursor callback
+		htmlDocument.onSetMouseCursor = onDocumentSetMouseCursor;
+		
 		_document = htmlDocument;
 	}
 	
@@ -126,6 +130,18 @@ class Window extends EventCallback
 	private function onDocumentExitFullscreen():Void
 	{
 		_platform.exitFullscreen();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// MOUSE CURSOR CALLBACKS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Change the current mouse cursor if needed
+	 */
+	private function onDocumentSetMouseCursor(cursor:Cursor):Void
+	{
+		_platform.setMouseCursor(cursor);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
