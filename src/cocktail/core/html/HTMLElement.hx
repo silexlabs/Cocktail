@@ -328,7 +328,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	override public function getElementsByTagName(tagName:String):Array<HTMLElement>
 	{
-		return super.getElementsByTagName(tagName.toLowerCase());
+		return super.getElementsByTagName(tagName.toUpperCase());
 	}
 	
 	/**

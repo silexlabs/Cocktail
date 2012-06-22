@@ -76,7 +76,6 @@ class NativeVideo extends NativeMedia
 		
 		initListenerObject(_netStream);
 
-		_video.attachNetStream(_netStream);
 	}
 	
 	/**
@@ -112,7 +111,12 @@ class NativeVideo extends NativeMedia
 	 */
 	override public function pause():Void
 	{
-		_netStream.pause();
+		//don't pause till metadata are loaded,
+		//else it might stop video loading
+		if (_metaData != null)
+		{
+			_netStream.pause();
+		}
 	}
 	
 	/**
@@ -154,7 +158,14 @@ class NativeVideo extends NativeMedia
 	 */
 	private function onNetStreamMetaData(data:Dynamic):Void
 	{
+		
 		_metaData = data;
+		
+		//pause video by default, play must be explicitely
+		//called
+		_netStream.pause();
+		_video.attachNetStream(_netStream);
+		
 		onNativeLoadedMetaData();
 	}
 	
@@ -215,11 +226,7 @@ class NativeVideo extends NativeMedia
 	{
 		//reset metadata
 		_metaData = null;
-		
 		_netStream.play(value);
-		//pause video by default, play must be explicitely
-		//called
-		_netStream.pause();
 		
 		return value;
 	}

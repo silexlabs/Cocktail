@@ -397,7 +397,7 @@ class CoreStyle
 	 * TODO 5 : This method should eventually be removed when a StyleManager
 	 * is introduced which will prevent those styles from being hard-coded
 	 * 
-	 * TODO 4 : use HTMLConstants
+	 * TODO 4 : use HTMLConstants and uppercase 
 	 */
 	private function applyDefaultHTMLStyles(tagName:String):Void
 	{

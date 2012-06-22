@@ -151,7 +151,10 @@ class HTMLDocument extends Document
 	{
 		var element:HTMLElement;
 		
-		switch (tagName.toLowerCase())
+		//tag names are always uppercase in HTML
+		tagName = tagName.toUpperCase();
+		
+		switch (tagName)
 		{
 			case HTMLConstants.HTML_IMAGE_TAG_NAME:
 				element = new HTMLImageElement();
