@@ -37,8 +37,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	/**
 	 * The name of the element
 	 */
-	private var _tagName:String;
-	public var tagName(get_tagName, never):String;
+	public var tagName(default, null):String;
 	
 	/**
 	 * returns a reference to the first child node of that element which is of nodeType Element.
@@ -78,8 +77,8 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	 */
 	public function new(tagName:String) 
 	{
-		_tagName = tagName;
-		_attributes = new NamedNodeMap<ElementClass>();
+		this.tagName = tagName;
+		attributes = new NamedNodeMap<ElementClass>();
 		super();
 	}
 	
@@ -127,11 +126,11 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	 */
 	public function setAttribute(name:String, value:String):Void
 	{
-		var attribute:Attr<ElementClass> = cast(_attributes.getNamedItem(name));
+		var attribute:Attr<ElementClass> = attributes.getNamedItem(name);
 		if (attribute == null)
 		{
 			attribute = new Attr<ElementClass>(name);
-			_attributes.setNamedItem(attribute);
+			attributes.setNamedItem(attribute);
 			attribute.ownerElement = cast(this);
 		}
 		
@@ -148,7 +147,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	 */
 	public function getAttributeNode(name:String):Attr<ElementClass>
 	{
-		var attribute:Attr<ElementClass> = _attributes.getNamedItem(name);
+		var attribute:Attr<ElementClass> = attributes.getNamedItem(name);
 		
 		if (attribute != null)
 		{
@@ -171,7 +170,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	public function setAttributeNode(newAttr:Attr<ElementClass>):Attr<ElementClass>
 	{
 		newAttr.ownerElement = cast(this);
-		return _attributes.setNamedItem(newAttr);
+		return attributes.setNamedItem(newAttr);
 	}
 	
 	/**
@@ -186,7 +185,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	 */
 	public function removeAttribute(name:String):Void
 	{
-		var removedAttribute:Attr<ElementClass> = cast(_attributes.removeNamedItem(name));
+		var removedAttribute:Attr<ElementClass> = attributes.removeNamedItem(name);
 		
 		if (removedAttribute != null)
 		{
@@ -211,11 +210,11 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	 */
 	public function setIdAttribute(name:String, isId:Bool):Void
 	{
-		var idAttribute:Attr<ElementClass> = cast(_attributes.getNamedItem(name));
+		var idAttribute:Attr<ElementClass> = attributes.getNamedItem(name);
 		if (idAttribute == null)
 		{
 			idAttribute = new Attr<ElementClass>(name);
-			_attributes.setNamedItem(idAttribute);
+			attributes.setNamedItem(idAttribute);
 			idAttribute.ownerElement = cast(this);
 		}
 		
@@ -239,7 +238,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	public function setIdAttributeNode(idAttr:Attr<ElementClass>, isId:Bool):Void
 	{
 		idAttr.isId = isId;
-		_attributes.setNamedItem(idAttr);
+		attributes.setNamedItem(idAttr);
 	}
 	
 	/**
@@ -252,7 +251,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	 */
 	public function hasAttribute(name:String):Bool
 	{
-		return _attributes.getNamedItem(name) != null;
+		return attributes.getNamedItem(name) != null;
 	}
 	
 	/**
@@ -366,7 +365,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	
 	override public function hasAttributes():Bool
 	{
-		return _attributes.length > 0;
+		return attributes.length > 0;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -375,17 +374,12 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	
 	override private function get_nodeName():String
 	{
-		return _tagName;
+		return tagName;
 	}
 	
 	override private function get_nodeType():Int
 	{
 		return Node.ELEMENT_NODE;
-	}
-	
-	override private function get_attributes():NamedNodeMap<ElementClass>
-	{
-		return _attributes;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -405,12 +399,12 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 		}
 		else
 		{
-			var length:Int = _childNodes.length;
+			var length:Int = childNodes.length;
 			for (i in 0...length)
 			{
-				if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
+				if (childNodes[i].nodeType == Node.ELEMENT_NODE)
 				{
-					return _childNodes[i];
+					return childNodes[i];
 				}
 			}
 		}
@@ -431,12 +425,12 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 		}
 		else
 		{
-			var length:Int = _childNodes.length;
+			var length:Int = childNodes.length;
 			for (i in length...0)
 			{
-				if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
+				if (childNodes[i].nodeType == Node.ELEMENT_NODE)
 				{
-					return _childNodes[i];
+					return childNodes[i];
 				}
 			}
 		}
@@ -492,24 +486,15 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	{
 		var childElementCount:Int = 0;
 		
-		var length:Int = _childNodes.length;
+		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
+			if (childNodes[i].nodeType == Node.ELEMENT_NODE)
 			{
 				childElementCount++;
 			}
 		}
 		
 		return childElementCount;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// SETTERS/GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_tagName():String 
-	{
-		return _tagName;
 	}
 }

@@ -138,10 +138,10 @@ class FlowBoxRenderer extends BoxRenderer
 		 * Actually layout all the children of the ElementRenderer by calling
 		 * the layout method recursively on all the children
 		 */
-		var length:Int = _childNodes.length;
+		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			_childNodes[i].layout();
+			childNodes[i].layout();
 		}
 	}
 	
@@ -260,11 +260,11 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	override public function childrenInline():Bool
 	{	
-		var length:Int = _childNodes.length;
+		var length:Int = childNodes.length;
 		
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = _childNodes[i];
+			var child:ElementRenderer = childNodes[i];
 			//floated and absolutely positioned element are not taken into
 			//account
 			if (child.isFloat() == false)

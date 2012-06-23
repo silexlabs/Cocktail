@@ -32,8 +32,7 @@ class Window extends EventCallback
 	/**
 	 * return the document viewed through the window
 	 */
-	private var _document:HTMLDocument;
-	public var document(get_document, never):HTMLDocument;
+	public var document(default, null):HTMLDocument;
 	
 	/**
 	 * Height (in pixels) of the browser window viewport including,
@@ -94,7 +93,7 @@ class Window extends EventCallback
 		//mouse cursor callback
 		htmlDocument.onSetMouseCursor = onDocumentSetMouseCursor;
 		
-		_document = htmlDocument;
+		document = htmlDocument;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -156,10 +155,5 @@ class Window extends EventCallback
 	private function get_innerWidth():Int
 	{
 		return _platform.innerWidth;
-	}
-	
-	private function get_document():HTMLDocument
-	{
-		return _document;
 	}
 }

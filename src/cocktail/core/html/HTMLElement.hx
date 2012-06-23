@@ -455,10 +455,10 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function invalidatePositioningScheme():Void
 	{
-		if (_parentNode != null)
+		if (parentNode != null)
 		{
-			_parentNode.detach();
-			_parentNode.attach();
+			parentNode.detach();
+			parentNode.attach();
 		}
 	}
 	
@@ -503,21 +503,21 @@ class HTMLElement extends Element<HTMLElement>
 				attachToParentElementRenderer();
 				
 				//the HTMLElement is now attached and can attach its children
-				var length:Int = _childNodes.length;
+				var length:Int = childNodes.length;
 				for (i in 0...length)
 				{
 					//only text and element node can be attached, as other nodes
 					//types are not visual
-					switch (_childNodes[i].nodeType)
+					switch (childNodes[i].nodeType)
 					{
 						//attach element node
 						case Node.ELEMENT_NODE:
-							var child:HTMLElement = cast(_childNodes[i]);
+							var child:HTMLElement = cast(childNodes[i]);
 							child.attach();
 						
 						//attach text node
 						case Node.TEXT_NODE:
-							var child:Text = cast(_childNodes[i]);
+							var child:Text = cast(childNodes[i]);
 							child.attach();
 					}
 				}
@@ -538,24 +538,24 @@ class HTMLElement extends Element<HTMLElement>
 		//is not attached
 		if (isParentRendered() == true)
 		{
-			var parent:HTMLElement = cast(_parentNode);
+			var parent:HTMLElement = parentNode;
 			
 			//if this HTMLElement isn't currently rendered, no need
 			//to detach it
 			if (_elementRenderer != null)
 			{	
 				//detach first all children
-				var length:Int = _childNodes.length;
+				var length:Int = childNodes.length;
 				for (i in 0...length)
 				{
-					switch (_childNodes[i].nodeType)
+					switch (childNodes[i].nodeType)
 					{
 						case Node.ELEMENT_NODE:
-							var child:HTMLElement = cast(_childNodes[i]);
+							var child:HTMLElement = cast(childNodes[i]);
 							child.detach();
 							
 						case Node.TEXT_NODE:
-							var child:Text = cast(_childNodes[i]);
+							var child:Text = cast(childNodes[i]);
 							child.detach();
 					}
 				}
@@ -620,7 +620,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function attachToParentElementRenderer():Void
 	{
-		var parent:HTMLElement = cast(_parentNode);
+		var parent:HTMLElement = parentNode;
 		parent.elementRenderer.insertBefore(_elementRenderer, getNextElementRendererSibling());
 	}
 	
@@ -682,11 +682,11 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function isParentRendered():Bool
 	{
-		if (_parentNode == null)
+		if (parentNode == null)
 		{
 			return false;
 		}
-		var htmlParent:HTMLElement = cast(_parentNode);
+		var htmlParent:HTMLElement = parentNode;
 		if (htmlParent.elementRenderer != null)
 		{
 			return true;
@@ -784,7 +784,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function focus():Void
 	{
-		var htmlDocument:HTMLDocument = cast(_ownerDocument);
+		var htmlDocument:HTMLDocument = cast(ownerDocument);
 		htmlDocument.activeElement = this;
 	}
 	
@@ -794,7 +794,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function blur():Void
 	{
-		var htmlDocument:HTMLDocument = cast(_ownerDocument);
+		var htmlDocument:HTMLDocument = cast(ownerDocument);
 		htmlDocument.body.focus();
 	}
 	
@@ -812,7 +812,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function requestFullScreen():Void
 	{
-		var htmlDocument:HTMLDocument = cast(_ownerDocument);
+		var htmlDocument:HTMLDocument = cast(ownerDocument);
 		htmlDocument.fullscreenElement = this;
 	}
 	
@@ -1089,10 +1089,10 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function set_innerHTML(value:String):String
 	{
-		var childLength:Int = _childNodes.length;
+		var childLength:Int = childNodes.length;
 		for (i in 0...childLength)
 		{
-			removeChild(_childNodes[0]);	
+			removeChild(childNodes[0]);	
 		}
 		
 		//wrap the HTML String in a div element, else
@@ -1135,11 +1135,11 @@ class HTMLElement extends Element<HTMLElement>
 		
 		//node type for text node
 		case Xml.PCData:
-			return _ownerDocument.createTextNode(xml.nodeValue);
+			return ownerDocument.createTextNode(xml.nodeValue);
 		
 		//node type for comment node	
 		case Xml.Comment:
-			return _ownerDocument.createComment(xml.nodeValue);
+			return ownerDocument.createComment(xml.nodeValue);
 		
 		//node type for element node
 		case Xml.Element:
@@ -1149,7 +1149,7 @@ class HTMLElement extends Element<HTMLElement>
 	
 			//create an HTMLElement with the name of the xml element
 			//node
-			htmlElement = _ownerDocument.createElement(name);
+			htmlElement = ownerDocument.createElement(name);
 			
 			//loop in all of the xml child node
 			for (child in xml)
@@ -1321,12 +1321,12 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		//here the HTMLElement is not
 		//attached to the DOM
-		if (_parentNode == null)
+		if (parentNode == null)
 		{
 			return null;
 		}
 		
-		var parent:HTMLElement = cast(_parentNode);
+		var parent:HTMLElement = parentNode;
 		
 		//loop in all the parents until a positioned or a null parent is found
 		var isOffsetParent:Bool = parent.elementRenderer.isPositioned();

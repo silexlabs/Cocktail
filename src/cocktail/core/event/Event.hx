@@ -194,8 +194,7 @@ class Event
 	 * Used to indicate which phase of event flow
 	 * is currently being accomplished.
 	 */
-	private var _eventPhase:Int;
-	public var eventPhase(get_eventPhase, set_eventPhase):Int;
+	public var eventPhase:Int;
 	
 	/**
 	 * The name of the event
@@ -317,7 +316,7 @@ class Event
 		_type = null;
 		_bubbles = false;
 		_cancelable = false;
-		_eventPhase = 0;
+		eventPhase = 0;
 	}
 	
 	/**
@@ -379,16 +378,6 @@ class Event
 	private function set_currentTarget(value:EventTarget):EventTarget
 	{
 		return _currentTarget = value;
-	}
-	
-	private function get_eventPhase():Int
-	{
-		return _eventPhase;
-	}
-	
-	private function set_eventPhase(value:Int):Int
-	{
-		return _eventPhase = value;
 	}
 	
 	private function get_bubbles():Bool

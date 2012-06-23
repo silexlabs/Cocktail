@@ -120,7 +120,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//as it not yet known wether this block box starts an inline
 		//formatting context or participates/establishes a block
 		//formatting context
-		if (_childNodes.length > 0)
+		if (childNodes.length > 0)
 		{
 			//absolutely positioned children are not taken into account when determining wether this
 			//BlockBoxRenderer establishes/participate in a block or inline formatting context
@@ -236,10 +236,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		//loop in the child nodes in reverse order, as the child nodes
 		//array will be modified during this loop
-		var i:Int = _childNodes.length -1;
+		var i:Int = childNodes.length -1;
 		while( i >= 0)
 		{
-			var child:ElementRenderer = _childNodes[i];
+			var child:ElementRenderer = childNodes[i];
 
 			if (child.firstChild != null)
 			{
@@ -299,10 +299,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function hasSignificantChild():Bool
 	{
-		var length:Int = _childNodes.length;
+		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = _childNodes[i];
+			var child:ElementRenderer = childNodes[i];
 			if (child.isFloat() == false)
 			{
 				if (child.isPositioned() == false || child.isRelativePositioned() == true)

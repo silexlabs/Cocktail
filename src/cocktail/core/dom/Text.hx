@@ -57,14 +57,17 @@ class Text extends CharacterData
 	/**
 	 * Create a TextRenderer for the Text node
 	 * 
-	 * TODO IMPORTANT : this class is not supposed to 
+	 * TODO 1 IMPORTANT : this class is not supposed to 
 	 * inherit from HTMLElement and have this method.
 	 * Should they share a IRenderable interface instead ?
+	 * 
+	 * TODO 1 : when node value changes, should invalidate
+	 * rendering
 	 */
 	override private function createElementRenderer():Void
 	{
 		_elementRenderer = new TextRenderer(this);
-		var parent:HTMLElement = cast(_parentNode);
+		var parent:HTMLElement = parentNode;
 		//the TextRenderer inherits its styles from its parent
 		_elementRenderer.coreStyle = parent.coreStyle;
 	}
