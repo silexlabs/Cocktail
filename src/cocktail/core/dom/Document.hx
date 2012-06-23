@@ -87,10 +87,7 @@ class Document extends Node<Document>
 	 * @return A new Element object with the nodeName attribute set to tagName,
 	 * and localName, prefix, and namespaceURI set to null
 	 * 
-	 * TODO 4 : for ownerDocument, when should it be set when
-	 * instantiating classes instead of using factory method ?
-	 * 
-	 * TODO 4 : should return Element instead of HTMLElement but necessary
+	 * IMPORTANT should return Element instead of HTMLElement but necessary
 	 * to match Haxe JS API
 	 */
 	public function createElement(tagName:String):HTMLElement
