@@ -8,6 +8,7 @@
 package cocktail.core.dom;
 
 import cocktail.core.dom.DOMData;
+import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 
 /**
@@ -32,12 +33,6 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	 * used as tagName returns all the child elements
 	 */
 	private static inline var MATCH_ALL_TAG_NAME:String = "*";
-	
-	/**
-	 * The class attribute searched for
-	 * when using the getElementsByClassName
-	 */
-	private static inline var CLASS_ATTRIBUTE:String = "class";
 	
 	/**
 	 * The name of the element
@@ -342,7 +337,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 				{
 					case Node.ELEMENT_NODE:
 						var elementNode:HTMLElement = childNode;
-						var elementClassName:String = elementNode.getAttribute(CLASS_ATTRIBUTE);
+						var elementClassName:String = elementNode.getAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME);
 						if (elementClassName != null)
 						{
 							var elementClassNames:Array<String> = elementClassName.split(" ");

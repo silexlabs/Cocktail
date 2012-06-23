@@ -40,6 +40,8 @@ class HTMLConstants
 	
 	public static inline var HTML_CLASS_ATTRIBUTE_NAME:String = "class";
 	
+	public static inline var HTML_HIDDEN_ATTRIBUTE_NAME:String = "hidden";
+	
 	public static inline var HTML_TAB_INDEX_ATTRIBUTE_NAME:String = "tabIndex";
 	
 	public static inline var HTML_STYLE_ATTRIBUTE_NAME:String = "style";

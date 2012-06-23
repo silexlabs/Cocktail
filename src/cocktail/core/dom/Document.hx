@@ -214,9 +214,6 @@ class Document extends Node<Document>
 	 * Actually return the Element matching the
 	 * elementId, by traversing recursively the 
 	 * DOM tree
-	 * 
-	 * TODO 2 : shouldn't be HTMLElement but Element<T>
-	 * but complicated for now with type parameters
 	 */
 	private function doGetElementById(node:HTMLElement, elementId:String):HTMLElement
 	{

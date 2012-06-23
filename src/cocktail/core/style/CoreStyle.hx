@@ -823,7 +823,7 @@ class CoreStyle
 		
 		//return if transition style have not yet been computed
 		//
-		//TODO 2 : not supposed to happen, should be computed by this point
+		//TODO 2 : not supposed to happen, should be computed at this point
 		if (computedStyle.transitionDelay.length == 0 || computedStyle.transitionDuration.length == 0)
 		{
 			return;

@@ -76,11 +76,8 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	}
 	
 	/**
-	 * Always return the containing block data, as even though the scroll bar renderer is 
-	 * absolutely positioned, it always considers its block box renderer as its first positioned
-	 * ancestor
-	 * 
-	 * TODO 2 : update doc
+	 * The containing block of a scrollbar is always the block box
+	 * renderer which instantiated it
 	 */
 	override private function getContainingBlock():FlowBoxRenderer
 	{	
