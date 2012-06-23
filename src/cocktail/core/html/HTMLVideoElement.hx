@@ -53,8 +53,7 @@ class HTMLVideoElement extends HTMLMediaElement
 	/**
 	 * The loaded poster frame asset
 	 */
-	private var _posterFrameEmbeddedAsset:NativeElement;
-	public var posterFrameEmbeddedAsset(get_posterFrameEmbeddedAsset, never):NativeElement;
+	public var posterFrameEmbeddedAsset(default, null):NativeElement;
 	
 	/**
 	 * Returns the intrinsic width of the video in CSS pixels
@@ -102,7 +101,7 @@ class HTMLVideoElement extends HTMLMediaElement
 	private function initPosterFrame():Void
 	{
 		_posterImageLoader = new ImageLoader();
-		_posterFrameEmbeddedAsset = _posterImageLoader.nativeElement;
+		posterFrameEmbeddedAsset = _posterImageLoader.nativeElement;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -249,10 +248,5 @@ class HTMLVideoElement extends HTMLMediaElement
 		{
 			return HTML_VIDEO_DEFAULT_HEIGHT;
 		}
-	}
-	
-	private function get_posterFrameEmbeddedAsset():NativeElement
-	{
-		return _posterFrameEmbeddedAsset;
 	}
 }

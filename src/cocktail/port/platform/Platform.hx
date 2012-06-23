@@ -24,11 +24,6 @@ import cocktail.core.style.StyleData;
  * 
  * Hides all the platforms interface behind a common API
  * 
- * TODO 4 : makes for a lot of boiler-plate and repeated code, extend
- * this class instead of having lot of classes by composition ?
- * 
- * TODO 5 : add method to set/get platform mouse cursor
- * 
  * @author Yannick DOMINGUEZ
  */
 class Platform extends EventCallback
