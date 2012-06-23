@@ -130,8 +130,8 @@ class HTMLVideoElement extends HTMLMediaElement
 	 */
 	override private function createElementRenderer():Void
 	{
-		_elementRenderer = new VideoRenderer(this);
-		_elementRenderer.coreStyle = _coreStyle;
+		elementRenderer = new VideoRenderer(this);
+		elementRenderer.coreStyle = coreStyle;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

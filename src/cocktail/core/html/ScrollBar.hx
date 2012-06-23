@@ -155,9 +155,9 @@ class ScrollBar extends HTMLElement
 	 */
 	private function initScrollBar():Void
 	{
-		_style.backgroundColor = "#DDDDDD";
-		_style.display = "block";
-		_style.position = "absolute";
+		style.backgroundColor = "#DDDDDD";
+		style.display = "block";
+		style.position = "absolute";
 		
 		_scrollThumb.style.backgroundColor = "#AAAAAA";
 		_scrollThumb.style.position = "absolute";
@@ -184,10 +184,10 @@ class ScrollBar extends HTMLElement
 	 */
 	private function initVerticalScrollBar():Void
 	{
-		_style.height = "100%";
-		_style.width = TRACK_DEFAULT_DIMENSION + "px";
-		_style.right = "0";
-		_style.top = "0";
+		style.height = "100%";
+		style.width = TRACK_DEFAULT_DIMENSION + "px";
+		style.right = "0";
+		style.top = "0";
 		
 		_downArrow.style.bottom = "0";
 		
@@ -200,10 +200,10 @@ class ScrollBar extends HTMLElement
 	 */
 	private function initHorizontalScrollBar():Void
 	{
-		_style.width = "100%";
-		_style.height = TRACK_DEFAULT_DIMENSION + "px";
-		_style.bottom = "0";
-		_style.left = "0";
+		style.width = "100%";
+		style.height = TRACK_DEFAULT_DIMENSION + "px";
+		style.bottom = "0";
+		style.left = "0";
 		
 		_downArrow.style.right = "0";
 		
@@ -216,8 +216,8 @@ class ScrollBar extends HTMLElement
 	
 	override private function createElementRenderer():Void
 	{
-		_elementRenderer = new ScrollBarRenderer(this);
-		_elementRenderer.coreStyle = _coreStyle;
+		elementRenderer = new ScrollBarRenderer(this);
+		elementRenderer.coreStyle = coreStyle;
 	}
 	
 	
@@ -407,14 +407,14 @@ class ScrollBar extends HTMLElement
 		
 		if (_isVertical == true)
 		{
-			var thumbY:Int = Math.round(progress * (_coreStyle.computedStyle.height -
+			var thumbY:Int = Math.round(progress * (coreStyle.computedStyle.height -
 			_upArrow.coreStyle.computedStyle.height - _downArrow.coreStyle.computedStyle.height - _scrollThumb.coreStyle.computedStyle.height)
 			+  _upArrow.coreStyle.computedStyle.height);
 			_scrollThumb.style.top = thumbY + "px";
 		}
 		else
 		{
-			var thumbX:Int = Math.round(progress * (_coreStyle.computedStyle.width -
+			var thumbX:Int = Math.round(progress * (coreStyle.computedStyle.width -
 			_upArrow.coreStyle.computedStyle.width - _downArrow.coreStyle.computedStyle.width - _scrollThumb.coreStyle.computedStyle.width)
 			+  _upArrow.coreStyle.computedStyle.width);
 			
@@ -434,7 +434,7 @@ class ScrollBar extends HTMLElement
 		
 		if (_isVertical == true)
 		{
-			var thumbHeight:Float = _coreStyle.computedStyle.height - _downArrow.coreStyle.computedStyle.height - _upArrow.coreStyle.computedStyle.height - maxScroll;
+			var thumbHeight:Float = coreStyle.computedStyle.height - _downArrow.coreStyle.computedStyle.height - _upArrow.coreStyle.computedStyle.height - maxScroll;
 
 			if (thumbHeight < THUMB_DEFAULT_DIMENSION)
 			{
@@ -449,7 +449,7 @@ class ScrollBar extends HTMLElement
 		}
 		else
 		{
-			var thumbWidth:Float = _coreStyle.computedStyle.width - _downArrow.coreStyle.computedStyle.width - _upArrow.coreStyle.computedStyle.width - maxScroll;
+			var thumbWidth:Float = coreStyle.computedStyle.width - _downArrow.coreStyle.computedStyle.width - _upArrow.coreStyle.computedStyle.width - maxScroll;
 
 			if (thumbWidth < THUMB_DEFAULT_DIMENSION)
 			{

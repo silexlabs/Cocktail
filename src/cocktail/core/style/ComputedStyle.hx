@@ -35,178 +35,96 @@ class ComputedStyle
 	/**
 	 * display styles
 	 */
-	private var _display:Display;
-	public var display(getDisplay, setDisplay):Display;
-	
-	private var _position:Position;
-	public var position(getPosition, setPosition):Position;
-	
-	private var _cssFloat:CSSFloat;
-	public var cssFloat(getCSSFloat, setCSSFloat):CSSFloat;
-	
-	private var _clear:Clear;
-	public var clear(getClear, setClear):Clear;
-	
-	private var _zIndex:ZIndex;
-	public var zIndex(getZIndex, setZIndex):ZIndex;
-	
-	private var _transformOrigin:PointData;
-	public var transformOrigin(getTransformOrigin, setTransformOrigin):PointData;
-	
-	private var _transform:Matrix;
-	public var transform(getTransform, setTransform):Matrix;
+	public var display:Display;
+	public var position:Position;
+	public var cssFloat:CSSFloat;
+	public var clear:Clear;
+	public var zIndex:ZIndex;
+	public var transformOrigin:PointData;
+	public var transform:Matrix;
 	
 	/**
 	 * box model styles
 	 */
-	private var _marginLeft:Float;
-	public var marginLeft(getMarginLeft, setMarginLeft):Float;
-	private var _marginRight:Float;
-	public var marginRight(getMarginRight, setMarginRight):Float;
-	private var _marginTop:Float;
-	public var marginTop(getMarginTop, setMarginTop):Float;
-	private var _marginBottom:Float;
-	public var marginBottom(getMarginBottom, setMarginBottom):Float;
+	public var marginLeft(getMarginLeft, set_marginLeft):Float;
+	public var marginRight(getMarginRight, set_marginRight):Float;
+	public var marginTop(getMarginTop, set_marginTop):Float;
+	public var marginBottom(getMarginBottom, set_marginBottom):Float;
 	
-	private var _paddingLeft:Float;
-	public var paddingLeft(getPaddingLeft, setPaddingLeft):Float;
-	private var _paddingRight:Float;
-	public var paddingRight(getPaddingRight, setPaddingRight):Float;
-	private var _paddingTop:Float;
-	public var paddingTop(getPaddingTop, setPaddingTop):Float;
-	private var _paddingBottom:Float;
-	public var paddingBottom(getPaddingBottom, setPaddingBottom):Float;
-
-	private var _width:Float;
-	public var width(getWidth, setWidth):Float;
-	private var _height:Float;
-	public var height(getHeight, setHeight):Float;
 	
-	private var _minHeight:Float;
-	public var minHeight(getMinHeight, setMinHeight):Float;
-	private var _maxHeight:Float;
-	public var maxHeight(getMaxHeight, setMaxHeight):Float;
-	private var _minWidth:Float;
-	public var minWidth(getMinWidth, setMinWidth):Float;
-	private var _maxWidth:Float;
-	public var maxWidth(getMaxWidth, setMaxWidth):Float;
+	public var paddingLeft(getPaddingLeft, set_paddingLeft):Float;
+	public var paddingRight(getPaddingRight, set_paddingRight):Float;
+	public var paddingTop(getPaddingTop, set_paddingTop):Float;
+	public var paddingBottom(getPaddingBottom, set_paddingBottom):Float;
 
-	private var _top:Float;
-	public var top(getTop, setTop):Float;
-	private var _left:Float;
-	public var left(getLeft, setLeft):Float;
-	private var _bottom:Float;
-	public var bottom(getBottom, setBottom):Float;
-	private var _right:Float;
-	public var right(getRight, setRight):Float;
+	public var width(getWidth, set_width):Float;
+	public var height(getHeight, set_height):Float;
+	
+	//TODO 2 : when setting one of those values, should constrain
+	//width/height
+	public var minHeight(getMinHeight, set_minHeight):Float;
+	public var maxHeight(getMaxHeight, set_maxHeight):Float;
+	public var minWidth(getMinWidth, set_minWidth):Float;
+	public var maxWidth(getMaxWidth, set_maxWidth):Float;
+
+	public var top(getTop, set_top):Float;
+	public var left(getLeft, set_left):Float;
+	public var bottom(getBottom, set_bottom):Float;
+	public var right(getRight, set_right):Float;
 	
 	/**
 	 * background styles
 	 */
-	private var _backgroundColor:ColorData;
-	public var backgroundColor(getBackgroundColor, setBackgroundColor):ColorData;
-	
-	private var _backgroundImage:Array<BackgroundImage>;
-	public var backgroundImage(getBackgroundImage, setBackgroundImage):Array<BackgroundImage>;
-	
-	private var _backgroundRepeat:Array<BackgroundRepeat>;
-	public var backgroundRepeat(getBackgroundRepeat, setBackgroundRepeat):Array<BackgroundRepeat>;
-	
-	private var _backgroundOrigin:Array<BackgroundOrigin>;
-	public var backgroundOrigin(getBackgroundOrigin, setBackgroundOrigin):Array<BackgroundOrigin>;
-	
-	private var _backgroundSize:Array<BackgroundSize>;
-	public var backgroundSize(getBackgroundSize, setBackgroundSize):Array<BackgroundSize>;
-	
-	private var _backgroundPosition:Array<BackgroundPosition>;
-	public var backgroundPosition(getBackgroundPosition, setBackgroundPosition):Array<BackgroundPosition>;
-	
-	private var _backgroundClip:Array<BackgroundClip>;
-	public var backgroundClip(getBackgroundClip, setBackgroundClip):Array<BackgroundClip>;
+	public var backgroundColor:ColorData;
+	public var backgroundImage:Array<BackgroundImage>;
+	public var backgroundRepeat:Array<BackgroundRepeat>;
+	public var backgroundOrigin:Array<BackgroundOrigin>;
+	public var backgroundSize:Array<BackgroundSize>;
+	public var backgroundPosition:Array<BackgroundPosition>;
+	public var backgroundClip:Array<BackgroundClip>;
 	
 	/**
 	 * font styles
 	 */
-	private var _fontSize:Float;
-	public var fontSize(getFontSize, setFontSize):Float;
-	
-	private var _fontWeight:FontWeight;
-	public var fontWeight(getFontWeight, setFontWeight):FontWeight;
-	
-	private var _fontStyle:FontStyle;
-	public var fontStyle(getFontStyle, setFontStyle):FontStyle;
-	
-	private var _fontFamily:Array<String>;
-	public var fontFamily(getFontFamily, setFontFamily ):Array<String>;
-	
-	private var _fontVariant:FontVariant;
-	public var fontVariant(getFontVariant, setFontVariant):FontVariant;
-	
-	private var _color:ColorData;
-	public var color(getColor, setColor):ColorData;
+	public var fontSize(getFontSize, set_fontSize):Float;
+	public var fontWeight:FontWeight;
+	public var fontStyle:FontStyle;
+	public var fontFamily:Array<String>;
+	public var fontVariant:FontVariant;
+	public var color:ColorData;
 	
 	/**
 	 * text styles
 	 */
-	private var _lineHeight:Float;
-	public var lineHeight(getLineHeight, setLineHeight):Float;
-	
-	private var _textTransform:TextTransform;
-	public var textTransform(getTextTransform, setTextTransform):TextTransform;
-	
-	private var _letterSpacing:Float;
-	public var letterSpacing(getLetterSpacing, setLetterSpacing):Float;
-	
-	private var _wordSpacing:Float;
-	public var wordSpacing(getWordSpacing, setWordSpacing):Float;
-	
-	private var _whiteSpace:WhiteSpace;
-	public var whiteSpace(getWhiteSpace, setWhiteSpace):WhiteSpace;
-	
-	private var _textAlign:TextAlign;
-	public var textAlign(getTextAlign, setTextAlign):TextAlign;
-	
-	private var _textIndent:Float;
-	public var textIndent(getTextIndent, setTextIndent):Float;
-		
-	private var _verticalAlign:Float;
-	public var verticalAlign(getVerticalAlign, setVerticalAlign):Float;
+	public var lineHeight(getLineHeight, set_lineHeight):Float;
+	public var textTransform:TextTransform;
+	public var letterSpacing(getLetterSpacing, set_letterSpacing):Float;
+	public var wordSpacing(getWordSpacing, set_wordSpacing):Float;
+	public var whiteSpace:WhiteSpace;
+	public var textAlign:TextAlign;
+	public var textIndent(getTextIndent, set_textIndent):Float;
+	public var verticalAlign:Float;
 	
 	/**
 	 * visual effect styles
 	 */
-	private var _opacity:Float;
-	public var opacity(getOpacity, setOpacity):Float;
-	
-	private var _visibility:Visibility;
-	public var visibility(getVisibility, setVisibility):Visibility;
-	
-	private var _overflowX:Overflow;
-	public var overflowX(getOverflowX,  setOverflowX):Overflow;
-	
-	private var _overflowY:Overflow;
-	public var overflowY(getOverflowY,  setOverflowY):Overflow;
+	public var opacity(getOpacity, set_opacity):Float;
+	public var visibility:Visibility;
+	public var overflowX:Overflow;
+	public var overflowY:Overflow;
 	
 	/**
 	 * user interface styles
 	 */
-	private var _cursor:Cursor;
-	public var cursor(getCursor, setCursor):Cursor;
+	public var cursor:Cursor;
 	
 	/**
 	 * transition styles
 	 */
-	private var _transitionProperty:TransitionProperty;
-	public var transitionProperty(getTransitionProperty, setTransitionProperty):TransitionProperty;
-	
-	private var _transitionDuration:Array<Float>;
-	public var transitionDuration(getTransitionDuration, setTransitionDuration):Array<Float>;
-	
-	private var _transitionDelay:Array<Float>;
-	public var transitionDelay(getTransitionDelay, setTransitionDelay):Array<Float>;
-	
-	private var _transitionTimingFunction:TransitionTimingFunction;
-	public var transitionTimingFunction(getTransitionTimingFunction, setTransitionTimingFunction):TransitionTimingFunction;
+	public var transitionProperty:TransitionProperty;
+	public var transitionDuration:Array<Float>;
+	public var transitionDelay:Array<Float>;
+	public var transitionTimingFunction:TransitionTimingFunction;
 	
 	/**
 	 * A reference to the style used to computed those coputedStyles
@@ -226,61 +144,61 @@ class ComputedStyle
 	 */
 	public function init():Void
 	{
-		_width = 0;
-		_height = 0;
-		_minHeight = 0;
-		_maxHeight = 0;
-		_minWidth = 0;
-		_maxWidth = 0;
-		_marginLeft = 0;
-		_marginRight = 0;
-		_marginTop = 0;
-		_marginBottom = 0;
-		_paddingLeft = 0;
-		_paddingRight = 0;
-		_paddingTop = 0;
-		_paddingBottom = 0;
-		_left= 0;
-		_right= 0;
-		_top= 0;
-		_bottom = 0;
-		_clear = Clear.none;
-		_cssFloat = CSSFloat.none;
-		_display = Display.cssInline;
-		_position= Position.cssStatic;
-		_verticalAlign = 0.0;
-		_fontSize=16.0;
-		_lineHeight=14.0;
-		_fontWeight=FontWeight.normal;
-		_fontStyle=FontStyle.normal;
-		_fontFamily=["serif"];
-		_fontVariant=FontVariant.normal;
-		_textTransform=TextTransform.none;
-		_letterSpacing=0;
-		_wordSpacing=0;
-		_textIndent=0;
-		_whiteSpace=WhiteSpace.normal;
-		_textAlign=TextAlign.left;
-		_color={color:0, alpha:1.0};
-		_visibility=Visibility.visible;
-		_zIndex=ZIndex.cssAuto;
-		_opacity=1.0;
-		_overflowX= Overflow.visible;
-		_overflowY= Overflow.visible;
-		_transformOrigin= { x:0.0, y:0.0 };
-		_transform=new Matrix();
-		_backgroundColor={color:0, alpha:1.0};
-		_backgroundSize=[];
-		_backgroundOrigin=[];
-		_backgroundImage=[];
-		_backgroundClip=[];
-		_backgroundPosition=[];
-		_backgroundRepeat=[];
-		_cursor = Cursor.cssDefault;
-		_transitionDelay = [];
-		_transitionDuration = [];
-		_transitionProperty = TransitionProperty.all;
-		_transitionTimingFunction = [];
+		minHeight = 0.0;
+		maxHeight = 0.0;
+		minWidth = 0.0;
+		maxWidth = 0.0;
+		width = 0.0;
+		height = 0.0;
+		marginLeft = 0.0;
+		marginRight = 0.0;
+		marginTop = 0.0;
+		marginBottom = 0.0;
+		paddingLeft = 0.0;
+		paddingRight = 0.0;
+		paddingTop = 0.0;
+		paddingBottom = 0.0;
+		left= 0.0;
+		right= 0.0;
+		top= 0.0;
+		bottom = 0.0;
+		clear = Clear.none;
+		cssFloat = CSSFloat.none;
+		display = Display.cssInline;
+		position= Position.cssStatic;
+		verticalAlign = 0.0;
+		fontSize=16.0;
+		lineHeight=14.0;
+		fontWeight=FontWeight.normal;
+		fontStyle=FontStyle.normal;
+		fontFamily=["serif"];
+		fontVariant=FontVariant.normal;
+		textTransform=TextTransform.none;
+		letterSpacing=0;
+		wordSpacing=0;
+		textIndent=0;
+		whiteSpace=WhiteSpace.normal;
+		textAlign=TextAlign.left;
+		color={color:0, alpha:1.0};
+		visibility=Visibility.visible;
+		zIndex=ZIndex.cssAuto;
+		opacity=1.0;
+		overflowX= Overflow.visible;
+		overflowY= Overflow.visible;
+		transformOrigin= { x:0.0, y:0.0 };
+		transform=new Matrix();
+		backgroundColor={color:0, alpha:1.0};
+		backgroundSize=[];
+		backgroundOrigin=[];
+		backgroundImage=[];
+		backgroundClip=[];
+		backgroundPosition=[];
+		backgroundRepeat=[];
+		cursor = Cursor.cssDefault;
+		transitionDelay = [];
+		transitionDuration = [];
+		transitionProperty = TransitionProperty.all;
+		transitionTimingFunction = [];
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -371,283 +289,127 @@ class ComputedStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function setWidth(value:Float):Float 
+
+	private function set_width(value:Float):Float 
 	{
-		_width = constrainWidth(_coreStyle, value);
+		width = constrainWidth(_coreStyle, value);
 		return value;
 	}
 	
-	private function setMarginLeft(value:Float):Float 
+	private function set_height(value:Float):Float 
 	{
-		_marginLeft = value;
+		height = constrainHeight(_coreStyle, value);
 		return value;
 	}
 	
-	private function setMarginRight(value:Float):Float 
+	private function set_marginLeft(value:Float):Float
 	{
-		_marginRight = value;
-		return value;
+		return marginLeft = value;
 	}
 	
-	private function setMarginTop(value:Float):Float 
+	private function set_marginTop(value:Float):Float
 	{
-		_marginTop = value;
-		return value;
+		return marginTop = value;
 	}
 	
-	private function setMarginBottom(value:Float):Float 
+	private function set_marginBottom(value:Float):Float
 	{
-		_marginBottom = value;
-		return value;
+		return marginBottom = value;
 	}
 	
-	private function setPaddingLeft(value:Float):Float 
+	private function set_marginRight(value:Float):Float
 	{
-		_paddingLeft = value;
-		return value;
+		return marginRight = value;
 	}
 	
-	private function setPaddingRight(value:Float):Float 
+	private function set_paddingTop(value:Float):Float
 	{
-		_paddingRight = value;
-		return value;
+		return paddingTop = value;
 	}
 	
-	private function setPaddingTop(value:Float):Float 
+	private function set_paddingBottom(value:Float):Float
 	{
-		_paddingTop = value;
-		return value;
+		return paddingBottom = value;
 	}
 	
-	private function setPaddingBottom(value:Float):Float 
+	private function set_paddingLeft(value:Float):Float
 	{
-		_paddingBottom = value;
-		return value;
+		return paddingLeft = value;
 	}
 	
-	private function setDisplay(value:Display):Display 
+	private function set_paddingRight(value:Float):Float
 	{
-		_display = value;
-		return value;
+		return paddingRight = value;
 	}
 	
-	private function setPosition(value:Position):Position 
+	private function set_minHeight(value:Float):Float
 	{
-		_position = value;
-		return value;
+		return minHeight = value;
 	}
 	
-	private function setHeight(value:Float):Float 
+	private function set_minWidth(value:Float):Float
 	{
-		_height = constrainHeight(_coreStyle, value);
-		return value;
+		return minWidth = value;
 	}
 	
-	private function setMinHeight(value:Float):Float 
+	private function set_maxHeight(value:Float):Float
 	{
-		_minHeight = value;
-		return value;
+		return maxHeight = value;
 	}
 	
-	private function setMaxHeight(value:Float):Float 
+	private function set_maxWidth(value:Float):Float
 	{
-		_maxHeight = value;
-		return value;
+		return maxWidth = value;
 	}
 	
-	private function setMinWidth(value:Float):Float 
+	private function set_top(value:Float):Float
 	{
-		_minWidth = value;
-		return value;
+		return top = value;
 	}
 	
-	private function setMaxWidth(value:Float):Float 
+	private function set_bottom(value:Float):Float
 	{
-		_maxWidth = value;
-		return value;
+		return bottom = value;
 	}
 	
-	private function setTop(value:Float):Float 
+	private function set_left(value:Float):Float
 	{
-		_top = value;
-		return value;
+		return left = value;
 	}
 	
-	private function setLeft(value:Float):Float 
+	private function set_right(value:Float):Float
 	{
-		_left = value;
-		return value;
+		return right = value;
 	}
 	
-	private function setBottom(value:Float):Float 
+	private function set_fontSize(value:Float):Float
 	{
-		_bottom = value;
-		return value;
+		return fontSize = value;
 	}
 	
-	private function setRight(value:Float):Float 
+	private function set_lineHeight(value:Float):Float
 	{
-		_right = value;
-		return value;
+		return lineHeight = value;
 	}
 	
-	private function setCSSFloat(value:CSSFloat):CSSFloat 
+	private function set_letterSpacing(value:Float):Float
 	{
-		_cssFloat = value;
-		return value;
+		return letterSpacing = value;
 	}
 	
-	private function setClear(value:Clear):Clear 
+	private function set_wordSpacing(value:Float):Float
 	{
-		_clear = value;
-		return value;
+		return wordSpacing = value;
 	}
 	
-	private function setZIndex(value:ZIndex):ZIndex 
+	private function set_textIndent(value:Float):Float
 	{
-		_zIndex = value;
-		return value;
+		return textIndent = value;
 	}
 	
-	private function setFontSize(value:Float):Float
+	private function set_opacity(value:Float):Float
 	{
-		_fontSize = value;
-		return value;
-	}
-	
-	private function setFontWeight(value:FontWeight):FontWeight
-	{
-		_fontWeight = value;
-		return value;
-	}
-	
-	private function setFontStyle(value:FontStyle):FontStyle
-	{
-		_fontStyle = value;
-		return value;
-	}
-	
-	private function setFontFamily(value:Array<String>):Array<String>
-	{
-		_fontFamily = value;
-		return value;
-	}
-	
-	private function setFontVariant(value:FontVariant):FontVariant
-	{
-		_fontVariant = value;
-		return value;
-	}
-	
-	private function setTextTransform(value:TextTransform):TextTransform
-	{
-		_textTransform = value;
-		return value;
-	}
-	
-	private function setLetterSpacing(value:Float):Float
-	{
-		_letterSpacing = value;
-		return value;
-	}
-	
-	private function setWordSpacing(value:Float):Float
-	{
-		_wordSpacing = value;
-		return value;
-	}
-	
-	private function setLineHeight(value:Float):Float
-	{
-		_lineHeight = value;
-		return value;
-	}
-	
-	private function setColor(value:ColorData):ColorData
-	{
-		_color = value;
-		return value;
-	}
-	
-	private function setVerticalAlign(value:Float):Float
-	{
-		_verticalAlign = value;
-		return value;
-	}
-	
-	private function setTextIndent(value:Float):Float
-	{
-		_textIndent = value;
-		return value;
-	}
-	
-	private function setWhiteSpace(value:WhiteSpace):WhiteSpace
-	{
-		_whiteSpace = value;
-		return value;
-	}
-	
-	private function setTextAlign(value:TextAlign):TextAlign
-	{
-		 _textAlign = value;
-		return value;
-	}
-	
-	private function setOpacity(value:Float):Float
-	{
-		_opacity = value;
-		return _opacity;
-	}
-	
-	private function setVisibility(value:Visibility):Visibility
-	{
-		_visibility = value;
-		return _visibility;
-	}
-	
-	private function setTransformOrigin(value:PointData):PointData
-	{
-		_transformOrigin = value;
-		return value;
-	}
-	
-	private function setTransform(value:Matrix):Matrix
-	{
-		_transform = value;
-		return value;
-	}
-	
-	private function setOverflowX(value:Overflow):Overflow
-	{
-		_overflowX = value;
-		return value;
-	}
-	
-	private function setOverflowY(value:Overflow):Overflow
-	{
-		_overflowY = value;
-		return value;
-	}
-	
-	private function setTransitionProperty(value:TransitionProperty):TransitionProperty
-	{
-		return _transitionProperty = value;
-	}
-	
-	private function setTransitionDuration(value:Array<Float>):Array<Float>
-	{
-		return _transitionDuration = value;
-	}
-	
-	private function setTransitionDelay(value:Array<Float>):Array<Float>
-	{
-		return _transitionDelay = value;
-	}
-	
-	private function setTransitionTimingFunction(value:TransitionTimingFunction):TransitionTimingFunction
-	{
-		return _transitionTimingFunction = value;
+		return opacity = value;
 	}
 	
 	/////////////////////////////////
@@ -656,323 +418,121 @@ class ComputedStyle
 	
 	private function getOpacity():Float
 	{
-		return getTransitionablePropertyValue(CSSConstants.OPACITY_STYLE_NAME, _opacity);
-	}
-	
-	private function getVisibility():Visibility
-	{
-		return _visibility;
+		return getTransitionablePropertyValue(CSSConstants.OPACITY_STYLE_NAME, opacity);
 	}
 	
 	private function getMarginLeft():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.MARGIN_LEFT_STYLE_NAME, _marginLeft);
+		return getTransitionablePropertyValue(CSSConstants.MARGIN_LEFT_STYLE_NAME, marginLeft);
 	}
 	
 	private function getMarginRight():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.MARGIN_RIGHT_STYLE_NAME, _marginRight);
+		return getTransitionablePropertyValue(CSSConstants.MARGIN_RIGHT_STYLE_NAME, marginRight);
 	}
 	
 	private function getMarginTop():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.MARGIN_TOP_STYLE_NAME, _marginTop);
+		return getTransitionablePropertyValue(CSSConstants.MARGIN_TOP_STYLE_NAME, marginTop);
 	}
 	
 	private function getMarginBottom():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.MARGIN_BOTTOM_STYLE_NAME, _marginBottom);
+		return getTransitionablePropertyValue(CSSConstants.MARGIN_BOTTOM_STYLE_NAME, marginBottom);
 	}
 	
 	private function getPaddingLeft():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.PADDING_LEFT_STYLE_NAME, _paddingLeft);
+		return getTransitionablePropertyValue(CSSConstants.PADDING_LEFT_STYLE_NAME, paddingLeft);
 	}
 	
 	private function getPaddingRight():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.PADDING_RIGHT_STYLE_NAME, _paddingRight);
+		return getTransitionablePropertyValue(CSSConstants.PADDING_RIGHT_STYLE_NAME, paddingRight);
 	}
 	
 	private function getPaddingTop():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.PADDING_TOP_STYLE_NAME, _paddingTop);
+		return getTransitionablePropertyValue(CSSConstants.PADDING_TOP_STYLE_NAME, paddingTop);
 	}
 	
 	private function getPaddingBottom():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.PADDING_BOTTOM_STYLE_NAME, _paddingBottom);
-	}
-	
-	private function getDisplay():Display 
-	{
-		return _display;
-	}
-	
-	private function getPosition():Position 
-	{
-		return _position;
+		return getTransitionablePropertyValue(CSSConstants.PADDING_BOTTOM_STYLE_NAME, paddingBottom);
 	}
 	
 	private function getWidth():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.WIDTH_STYLE_NAME, _width);
+		return getTransitionablePropertyValue(CSSConstants.WIDTH_STYLE_NAME, width);
 	}
 	
 	private function getHeight():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.HEIGHT_STYLE_NAME, _height);
+		return getTransitionablePropertyValue(CSSConstants.HEIGHT_STYLE_NAME, height);
 	}
 	
 	private function getMinHeight():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.MIN_HEIGHT_STYLE_NAME, _minHeight);
+		return getTransitionablePropertyValue(CSSConstants.MIN_HEIGHT_STYLE_NAME, minHeight);
 	}
 	
 	private function getMaxHeight():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.MAX_HEIGHT_STYLE_NAME, _maxHeight);
+		return getTransitionablePropertyValue(CSSConstants.MAX_HEIGHT_STYLE_NAME, maxHeight);
 	}
 	
 	private function getMinWidth():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.MIN_WIDTH_STYLE_NAME, _minWidth);
+		return getTransitionablePropertyValue(CSSConstants.MIN_WIDTH_STYLE_NAME, minWidth);
 	}
 	
 	private function getMaxWidth():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.MAX_WIDTH_STYLE_NAME, _maxWidth);
+		return getTransitionablePropertyValue(CSSConstants.MAX_WIDTH_STYLE_NAME, maxWidth);
 	}
 	
 	private function getTop():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.TOP_STYLE_NAME, _top);
+		return getTransitionablePropertyValue(CSSConstants.TOP_STYLE_NAME, top);
 	}
 	
 	private function getLeft():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.LEFT_STYLE_NAME, _left);
+		return getTransitionablePropertyValue(CSSConstants.LEFT_STYLE_NAME, left);
 	}
 	
 	private function getBottom():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.BOTTOM_STYLE_NAME, _bottom);
+		return getTransitionablePropertyValue(CSSConstants.BOTTOM_STYLE_NAME, bottom);
 	}
 	
 	private function getRight():Float 
 	{
-		return getTransitionablePropertyValue(CSSConstants.RIGHT_STYLE_NAME, _right);
-	}
-	
-	private function getCSSFloat():CSSFloat 
-	{
-		return _cssFloat;
-	}
-	
-	private function getClear():Clear 
-	{
-		return _clear;
-	}
-	
-	private function getZIndex():ZIndex 
-	{
-		return _zIndex;
+		return getTransitionablePropertyValue(CSSConstants.RIGHT_STYLE_NAME, right);
 	}
 	
 	private function getFontSize():Float
 	{
-		return getTransitionablePropertyValue(CSSConstants.FONT_SIZE_STYLE_NAME, _fontSize);
-	}
-	
-	private function getFontWeight():FontWeight
-	{
-		return _fontWeight;
-	}
-	
-	private function getFontStyle():FontStyle
-	{
-		return _fontStyle;
-	}
-	
-	private function getFontFamily():Array<String>
-	{
-		return _fontFamily;
-	}
-	
-	private function getFontVariant():FontVariant
-	{
-		return _fontVariant;
-	}
-	
-	private function getTextTransform():TextTransform
-	{
-		return _textTransform;
+		return getTransitionablePropertyValue(CSSConstants.FONT_SIZE_STYLE_NAME, fontSize);
 	}
 	
 	private function getLetterSpacing():Float
 	{
-		return getTransitionablePropertyValue(CSSConstants.LETTER_SPACING_STYLE_NAME, _letterSpacing);
-	}
-	
-	private function getColor():ColorData
-	{
-		return _color;
+		return getTransitionablePropertyValue(CSSConstants.LETTER_SPACING_STYLE_NAME, letterSpacing);
 	}
 	
 	private function getWordSpacing():Float
 	{
-		return getTransitionablePropertyValue(CSSConstants.WORD_SPACING_STYLE_NAME, _wordSpacing);
+		return getTransitionablePropertyValue(CSSConstants.WORD_SPACING_STYLE_NAME, wordSpacing);
 	}
 	
 	private function getLineHeight():Float
 	{
-		return getTransitionablePropertyValue(CSSConstants.LINE_HEIGHT_STYLE_NAME, _lineHeight);
-	}
-	
-	private function getVerticalAlign():Float
-	{
-		return _verticalAlign;
+		return getTransitionablePropertyValue(CSSConstants.LINE_HEIGHT_STYLE_NAME, lineHeight);
 	}
 	
 	private function getTextIndent():Float
 	{
-		return getTransitionablePropertyValue(CSSConstants.TEXT_INDENT_STYLE_NAME, _textIndent);
+		return getTransitionablePropertyValue(CSSConstants.TEXT_INDENT_STYLE_NAME, textIndent);
 	}
-	
-	private function getWhiteSpace():WhiteSpace
-	{
-		return _whiteSpace;
-	}
-	
-	private function getTextAlign():TextAlign
-	{
-		return _textAlign;
-	}
-	
-	private function getTransform():Matrix
-	{
-		return _transform;
-	}
-	
-	private function getTransformOrigin():PointData
-	{
-		return _transformOrigin;
-	}
-	
-	private function setBackgroundColor(value:ColorData):ColorData
-	{
-		_backgroundColor = value;
-		return value;
-	}
-	
-	private function getBackgroundColor():ColorData
-	{
-		return _backgroundColor;
-	}
-	
-	private function setBackgroundImage(value:Array<BackgroundImage>):Array<BackgroundImage>
-	{
-		_backgroundImage = value;
-		return value;
-	}
-	
-	private function getBackgroundImage():Array<BackgroundImage>
-	{
-		return _backgroundImage;
-	}
-	
-	private function setBackgroundRepeat(value:Array<BackgroundRepeat>):Array<BackgroundRepeat>
-	{
-		return _backgroundRepeat = value;
-	}
-	
-	private function getBackgroundRepeat():Array<BackgroundRepeat>
-	{
-		return _backgroundRepeat;
-	}
-	
-	private function setBackgroundSize(value:Array<BackgroundSize>):Array<BackgroundSize>
-	{
-		_backgroundSize = value;
-		return value;
-	}
-	
-	private function getBackgroundSize():Array<BackgroundSize>
-	{
-		return _backgroundSize;
-	}
-	
-	private function setBackgroundClip(value:Array<BackgroundClip>):Array<BackgroundClip>
-	{
-		_backgroundClip = value;
-		return value;
-	}
-	
-	private function getBackgroundClip():Array<BackgroundClip>
-	{
-		return _backgroundClip;
-	}
-	
-	private function setBackgroundPosition(value:Array<BackgroundPosition>):Array<BackgroundPosition>
-	{
-		_backgroundPosition = value;
-		return value;
-	}
-	
-	private function getBackgroundPosition():Array<BackgroundPosition>
-	{
-		return _backgroundPosition;
-	}
-	
-	private function setBackgroundOrigin(value:Array<BackgroundOrigin>):Array<BackgroundOrigin>
-	{
-		_backgroundOrigin = value;
-		return value;
-	}
-	
-	private function getBackgroundOrigin():Array<BackgroundOrigin>
-	{
-		return _backgroundOrigin;
-	}
-	
-	private function getOverflowX():Overflow
-	{
-		return _overflowX;
-	}
-	
-	private function getOverflowY():Overflow
-	{
-		return _overflowY;
-	}
-	
-	private function setCursor(value:Cursor):Cursor
-	{
-		return _cursor = value;
-	}
-	
-	private function getCursor():Cursor
-	{
-		return _cursor;
-	}
-	
-	private function getTransitionProperty():TransitionProperty
-	{
-		return _transitionProperty;
-	}
-	
-	private function getTransitionDuration():Array<Float>
-	{
-		return _transitionDuration;
-	}
-	
-	private function getTransitionDelay():Array<Float>
-	{
-		return _transitionDelay;
-	}
-	
-	private function getTransitionTimingFunction():TransitionTimingFunction
-	{
-		return _transitionTimingFunction;
-	}
-	
 }

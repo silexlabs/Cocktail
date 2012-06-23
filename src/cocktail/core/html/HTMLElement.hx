@@ -141,8 +141,7 @@ class HTMLElement extends Element<HTMLElement>
 	 * its computed styles. It is only instantiated
 	 * if the HTMLElement must be displayed.
 	 */
-	private var _elementRenderer:ElementRenderer;
-	public var elementRenderer(get_elementRenderer, never):ElementRenderer;
+	public var elementRenderer(default, null):ElementRenderer;
 	
 	/////////////////////////////////
 	// COORDS attributes
@@ -209,8 +208,7 @@ class HTMLElement extends Element<HTMLElement>
 	 * It can be used by end-user when they want to
 	 * define styles using typed object instead of string
 	 */
-	private var _coreStyle:CoreStyle;
-	public var coreStyle(get_coreStyle, never):CoreStyle;
+	public var coreStyle(default, null):CoreStyle;
 	
 	/**
 	 * This is the style object exposed by the public API.
@@ -219,8 +217,7 @@ class HTMLElement extends Element<HTMLElement>
 	 * and is in charge of converting them to typed object
 	 * which it sets on coreStyle
 	 */
-	private var _style:Style;
-	public var style(get_style, never):Style;
+	public var style(default, null):Style;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
@@ -257,7 +254,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function initCoreStyle():Void
 	{
-		this._coreStyle = new CoreStyle(this);
+		coreStyle = new CoreStyle(this);
 	}
 	
 	/**
@@ -266,7 +263,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function initStyle():Void
 	{
-		_style = new Style(_coreStyle);
+		style = new Style(coreStyle);
 	}
 	
 	/**
@@ -426,9 +423,9 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		//TODO 4 : should use helper method like isRenderer instead of
 		//relying on nullness
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			_elementRenderer.invalidate(invalidationReason);
+			elementRenderer.invalidate(invalidationReason);
 		}
 	}
 	
@@ -487,17 +484,17 @@ class HTMLElement extends Element<HTMLElement>
 			//compute the display styles now to know if the 
 			//HTMLElement should be rendered as a block, inline,
 			//or at all
-			_coreStyle.computeDisplayStyles();
+			coreStyle.computeDisplayStyles();
 			
 			//create the ElementRenderer if needed
-			if (_elementRenderer == null && isRendered() == true)
+			if (elementRenderer == null && isRendered() == true)
 			{
 				createElementRenderer();
 			}
 			
 			//if the ElementRenderer wasn't instantiated, then this
 			//HTMLElement is not supposed to be rendered
-			if (_elementRenderer != null)
+			if (elementRenderer != null)
 			{
 				//do attach to parent ElementRenderer
 				attachToParentElementRenderer();
@@ -542,7 +539,7 @@ class HTMLElement extends Element<HTMLElement>
 			
 			//if this HTMLElement isn't currently rendered, no need
 			//to detach it
-			if (_elementRenderer != null)
+			if (elementRenderer != null)
 			{	
 				//detach first all children
 				var length:Int = childNodes.length;
@@ -564,8 +561,8 @@ class HTMLElement extends Element<HTMLElement>
 				//ElementRenderer, then destroy it
 				detachFromParentElementRenderer();
 				
-				_elementRenderer.dispose();
-				_elementRenderer = null;
+				elementRenderer.dispose();
+				elementRenderer = null;
 			}
 		}
 	}
@@ -621,7 +618,7 @@ class HTMLElement extends Element<HTMLElement>
 	private function attachToParentElementRenderer():Void
 	{
 		var parent:HTMLElement = parentNode;
-		parent.elementRenderer.insertBefore(_elementRenderer, getNextElementRendererSibling());
+		parent.elementRenderer.insertBefore(elementRenderer, getNextElementRendererSibling());
 	}
 	
 	/**
@@ -630,7 +627,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function detachFromParentElementRenderer():Void
 	{
-		_elementRenderer.parentNode.removeChild(_elementRenderer);
+		elementRenderer.parentNode.removeChild(elementRenderer);
 	}
 	
 	/**
@@ -640,15 +637,15 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function createElementRenderer():Void
 	{
-		switch (_coreStyle.computedStyle.display)
+		switch (coreStyle.computedStyle.display)
 		{
 			case block, inlineBlock:
-				_elementRenderer = new BlockBoxRenderer(this);
-				_elementRenderer.coreStyle = _coreStyle;
+				elementRenderer = new BlockBoxRenderer(this);
+				elementRenderer.coreStyle = coreStyle;
 				
 			case cssInline:
-				_elementRenderer = new InlineBoxRenderer(this);
-				_elementRenderer.coreStyle = _coreStyle;
+				elementRenderer = new InlineBoxRenderer(this);
+				elementRenderer.coreStyle = coreStyle;
 				
 			case none:
 		}
@@ -668,7 +665,7 @@ class HTMLElement extends Element<HTMLElement>
 		}
 		
 		//use "display" CSS style
-		if (_coreStyle.computedStyle.display == Display.none)
+		if (coreStyle.computedStyle.display == Display.none)
 		{
 			return false;
 		}
@@ -903,9 +900,9 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function isVerticallyScrollable(scrollOffset:Int = 0):Bool
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			return _elementRenderer.isVerticallyScrollable(scrollOffset);
+			return elementRenderer.isVerticallyScrollable(scrollOffset);
 		}
 		return false;
 	}
@@ -915,9 +912,9 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function isHorizontallyScrollable(scrollOffset:Int = 0):Bool
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			return _elementRenderer.isHorizontallyScrollable(scrollOffset);
+			return elementRenderer.isHorizontallyScrollable(scrollOffset);
 		}
 		return false;
 	}
@@ -926,18 +923,18 @@ class HTMLElement extends Element<HTMLElement>
 	//is supposed to return
 	private function get_scrollHeight():Int
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			return Math.round(_elementRenderer.scrollHeight);
+			return Math.round(elementRenderer.scrollHeight);
 		}
 		return 0;
 	}
 	
 	private function get_scrollWidth():Int
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			return Math.round(_elementRenderer.scrollWidth);
+			return Math.round(elementRenderer.scrollWidth);
 		}
 		return 0;
 	}
@@ -948,36 +945,36 @@ class HTMLElement extends Element<HTMLElement>
 	//on the HTMLElement ?
 	private function set_scrollLeft(value:Int):Int
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			_elementRenderer.scrollLeft = value;
+			elementRenderer.scrollLeft = value;
 		}
 		return 0;
 	}
 	
 	private function get_scrollLeft():Int
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			return Math.round(_elementRenderer.scrollLeft);
+			return Math.round(elementRenderer.scrollLeft);
 		}
 		return 0;
 	}
 	
 	private function set_scrollTop(value:Int):Int
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			_elementRenderer.scrollTop = value;
+			elementRenderer.scrollTop = value;
 		}
 		return 0;
 	}
 	
 	private function get_scrollTop():Int
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			return Math.round(_elementRenderer.scrollTop);
+			return Math.round(elementRenderer.scrollTop);
 		}
 		return 0;
 	}
@@ -1353,14 +1350,14 @@ class HTMLElement extends Element<HTMLElement>
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
 		invalidate(InvalidationReason.needsImmediateLayout);
-		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = this.coreStyle.computedStyle;
 		return Math.round(computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight);
 	}
 	
 	private function get_offsetHeight():Int
 	{
 		invalidate(InvalidationReason.needsImmediateLayout);
-		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = this.coreStyle.computedStyle;
 		return Math.round(computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom);
 	}
 	
@@ -1368,13 +1365,13 @@ class HTMLElement extends Element<HTMLElement>
 	private function get_offsetLeft():Int
 	{
 		invalidate(InvalidationReason.needsImmediateLayout);
-		return Math.round(_elementRenderer.positionedOrigin.x);
+		return Math.round(elementRenderer.positionedOrigin.x);
 	}
 	
 	private function get_offsetTop():Int
 	{
 		invalidate(InvalidationReason.needsImmediateLayout);
-		return Math.round(_elementRenderer.positionedOrigin.y);
+		return Math.round(elementRenderer.positionedOrigin.y);
 	}
 	
 	private function get_clientWidth():Int
@@ -1382,14 +1379,14 @@ class HTMLElement extends Element<HTMLElement>
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
 		invalidate(InvalidationReason.needsImmediateLayout);
-		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = this.coreStyle.computedStyle;
 		return Math.round(computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight);
 	}
 	
 	private function get_clientHeight():Int
 	{
 		invalidate(InvalidationReason.needsImmediateLayout);
-		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = this.coreStyle.computedStyle;
 		return Math.round(computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom);
 	}
 	
@@ -1406,28 +1403,4 @@ class HTMLElement extends Element<HTMLElement>
 		invalidate(InvalidationReason.needsImmediateLayout);
 		return 0;
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// RENDERING GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_elementRenderer():ElementRenderer
-	{
-		return _elementRenderer;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// STYLE GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_coreStyle():CoreStyle
-	{
-		return this._coreStyle;
-	}
-	
-	private function get_style():Style
-	{
-		return _style;
-	}
-	
 }

@@ -23,8 +23,7 @@ class CustomEvent extends Event
 	/**
 	 * Specifies some detail information about the Event.
 	 */
-	private var _detail:Dynamic;
-	public var detail(get_detail, never):Dynamic;
+	public var detail(default, null):Dynamic;
 	
 	/**
 	 * class constructor
@@ -49,22 +48,12 @@ class CustomEvent extends Event
 	public function initCustomEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, detailArg:Dynamic):Void
 	{
 		//can't alter event after it has been dispatched
-		if (_dispatched == true)
+		if (dispatched == true)
 		{
 			return;
 		}
 		
 		initEvent(eventTypeArg, canBubbleArg, cancelableArg);
-		_detail = detailArg;
+		detail = detailArg;
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// SETTERS/GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_detail():Dynamic
-	{
-		return _detail;
-	}
-	
 }
