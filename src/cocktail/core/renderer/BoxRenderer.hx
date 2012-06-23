@@ -9,10 +9,9 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
-import cocktail.core.FontManager;
 import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.style.computer.BackgroundStylesComputer;
 import cocktail.core.style.computer.boxComputers.BlockBoxStylesComputer;

@@ -9,7 +9,7 @@ package cocktail.core.dom;
 
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLImageElement;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.renderer.TextLineBox;
 import cocktail.core.renderer.TextRenderer;
 import cocktail.core.unit.UnitData;

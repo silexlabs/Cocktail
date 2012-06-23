@@ -9,7 +9,7 @@ package cocktail.port.flash_player;
 
 import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.port.platform.nativeWindow.AbstractNativeWindow;
 import flash.display.StageDisplayState;
 import flash.Lib;

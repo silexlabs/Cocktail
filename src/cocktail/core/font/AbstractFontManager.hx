@@ -10,8 +10,8 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 package cocktail.core.font;
 
 import cocktail.core.font.FontData;
-import cocktail.core.FontLoader;
-import cocktail.core.NativeElement;
+import cocktail.port.FontLoader;
+import cocktail.port.NativeElement;
 import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.StyleData;
 
@@ -162,6 +162,8 @@ class AbstractFontManager
 	 * Transform a text letters into uppercase, lowercase
 	 * or capitalise them (only the first letter of each word
 	 * is transformed to uppercase)
+	 * 
+	 * TODO 3 : should be on TextRenderer instead
 	 */
 	private function applyTextTransform(text:String, textTransform:TextTransform):String
 	{
@@ -185,6 +187,8 @@ class AbstractFontManager
 	/**
 	 * Capitalise a text (turn each word's first letter
 	 * to uppercase)
+	 * 
+	 * TODO 3 : should be on TextRenderer instead
 	 */
 	public function capitalizeText(text:String):String
 	{

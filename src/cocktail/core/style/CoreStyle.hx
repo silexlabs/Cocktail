@@ -8,7 +8,7 @@
 package cocktail.core.style;
 
 import cocktail.core.event.TransitionEvent;
-import cocktail.core.FontManager;
+import cocktail.port.FontManager;
 import cocktail.core.geom.Matrix;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.html.HTMLElement;

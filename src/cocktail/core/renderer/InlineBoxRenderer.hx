@@ -9,7 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;
 import cocktail.core.geom.GeomData;

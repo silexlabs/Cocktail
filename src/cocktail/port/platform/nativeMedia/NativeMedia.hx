@@ -8,7 +8,7 @@
 package cocktail.port.platform.nativeMedia;
 
 import cocktail.core.event.Event;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 
 /**
  * This is a base class proxying access to 
