@@ -10,7 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.formatter.BlockFormattingContext;
 import cocktail.core.style.formatter.FormattingContext;

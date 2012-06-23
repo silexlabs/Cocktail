@@ -13,7 +13,7 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.floats.FloatsManager;
 import cocktail.core.style.formatter.BlockFormattingContext;

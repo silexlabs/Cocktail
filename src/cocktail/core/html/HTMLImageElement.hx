@@ -10,7 +10,7 @@ package cocktail.core.html;
 import cocktail.core.dom.Attr;
 import cocktail.core.dom.Node;
 import cocktail.core.event.UIEvent;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.resource.ImageLoader;

@@ -12,7 +12,7 @@ import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.NodeBase;
 import cocktail.core.geom.GeomData;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.style.StyleData;
 
 /**

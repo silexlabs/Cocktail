@@ -7,8 +7,8 @@
 */
 package cocktail.core.renderer;
 
-import cocktail.core.FontManager;
-import cocktail.core.NativeElement;
+import cocktail.port.FontManager;
+import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 /**
  * A special kind of line box used to render text. A

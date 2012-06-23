@@ -14,7 +14,7 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import haxe.Log;
 
