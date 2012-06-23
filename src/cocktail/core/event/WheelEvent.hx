@@ -50,20 +50,17 @@ class WheelEvent extends MouseEvent
 	/**
 	 * The distance the wheel has rotated around the x-axis.
 	 */
-	private var _deltaX:Float;
-	public var deltaX(get_deltaX, never):Float;
+	public var deltaX(default, null):Float;
 	
 	/**
 	 * The distance the wheel has rotated around the y-axis.
 	 */
-	private var _deltaY:Float;
-	public var deltaY(get_deltaY, never):Float;
+	public var deltaY(default, null):Float;
 	
 	/**
 	 * The distance the wheel has rotated around the z-axis.
 	 */
-	private var _deltaZ:Float;
-	public var deltaZ(get_deltaZ, never):Float;
+	public var deltaZ(default, null):Float;
 	
 	/**
 	 * he deltaMode attribute contains an indication of to indicate the units of measurement for the delta values.
@@ -71,8 +68,7 @@ class WheelEvent extends MouseEvent
 	 * The value of deltaMode may be different for each
 	 * of deltaX, deltaY, and deltaZ, based on system configuration.
 	 */
-	private var _deltaMode:Int;
-	public var deltaMode(get_deltaMode, never):Int;
+	public var deltaMode(default, null):Int;
 	
 	/**
 	 * class constructor
@@ -114,7 +110,7 @@ class WheelEvent extends MouseEvent
 	modifiersListArg:String, deltaXArg:Float, deltaYArg:Float, deltaZArg:Float, deltaModeArg:Int ):Void
 	{
 		//can't alter event after it has been dispatched
-		if (_dispatched == true)
+		if (dispatched == true)
 		{
 			return;
 		}
@@ -122,34 +118,9 @@ class WheelEvent extends MouseEvent
 		initMouseEvent(eventTypeArg, canBubbleArg, cancelableArg, viewArg, detailArg, screenXArg, screenYArg, clientXArg, clientYArg,
 		false, false, false, false, buttonArg, relatedTargetArg);
 		
-		_deltaY = deltaYArg;
-		_deltaX = deltaXArg;
-		_deltaMode = deltaModeArg;
-		_deltaZ = deltaZArg;
+		deltaY = deltaYArg;
+		deltaX = deltaXArg;
+		deltaMode = deltaModeArg;
+		deltaZ = deltaZArg;
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// SETTERS/GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_deltaY():Float
-	{
-		return _deltaY;
-	}
-	
-	private function get_deltaX():Float
-	{
-		return _deltaX;
-	}
-	
-	private function get_deltaZ():Float
-	{
-		return _deltaZ;
-	}
-	
-	private function get_deltaMode():Int
-	{
-		return _deltaMode;
-	}
-	
 }

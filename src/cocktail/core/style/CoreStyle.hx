@@ -61,178 +61,93 @@ class CoreStyle
 	/**
 	 * display styles
 	 */
-	private var _display:Display;
-	public var display(getDisplay, setDisplay):Display;
-	
-	private var _position:Position;
-	public var position(getPosition, setPosition):Position;
-	
-	private var _cssFloat:CSSFloat;
-	public var cssFloat(getCSSFloat, setCSSFloat):CSSFloat;
-	
-	private var _clear:Clear;
-	public var clear(getClear, setClear):Clear;
-	
-	private var _zIndex:ZIndex;
-	public var zIndex(getZIndex, setZIndex):ZIndex;
-	
-	private var _transformOrigin:TransformOrigin;
-	public var transformOrigin(getTransformOrigin, setTransformOrigin):TransformOrigin;
-	
-	private var _transform:Transform;
-	public var transform(getTransform, setTransform):Transform;
+	public var display(default, setDisplay):Display;
+	public var position(default, setPosition):Position;
+	public var cssFloat(default, setCSSFloat):CSSFloat;
+	public var clear(default, setClear):Clear;
+	public var zIndex(default, setZIndex):ZIndex;
 	
 	/**
 	 * box model styles
 	 */
-	private var _marginLeft:Margin;
-	public var marginLeft(getMarginLeft, setMarginLeft):Margin;
-	private var _marginRight:Margin;
-	public var marginRight(getMarginRight, setMarginRight):Margin;
-	private var _marginTop:Margin;
-	public var marginTop(getMarginTop, setMarginTop):Margin;
-	private var _marginBottom:Margin;
-	public var marginBottom(getMarginBottom, setMarginBottom):Margin;
+	public var marginLeft(default, setMarginLeft):Margin;
+	public var marginRight(default, setMarginRight):Margin;
+	public var marginTop(default, setMarginTop):Margin;
+	public var marginBottom(default, setMarginBottom):Margin;
 	
-	private var _paddingLeft:Padding;
-	public var paddingLeft(getPaddingLeft, setPaddingLeft):Padding;
-	private var _paddingRight:Padding;
-	public var paddingRight(getPaddingRight, setPaddingRight):Padding;
-	private var _paddingTop:Padding;
-	public var paddingTop(getPaddingTop, setPaddingTop):Padding;
-	private var _paddingBottom:Padding;
-	public var paddingBottom(getPaddingBottom, setPaddingBottom):Padding;
+	public var paddingLeft(default, setPaddingLeft):Padding;
+	public var paddingRight(default, setPaddingRight):Padding;
+	public var paddingTop(default, setPaddingTop):Padding;
+	public var paddingBottom(default, setPaddingBottom):Padding;
 
-	private var _width:Dimension;
-	public var width(getWidth, setWidth):Dimension;
-	private var _height:Dimension;
-	public var height(getHeight, setHeight):Dimension;
+	public var width(default, setWidth):Dimension;
+	public var height(default, setHeight):Dimension;
 	
-	private var _minHeight:ConstrainedDimension;
-	public var minHeight(getMinHeight, setMinHeight):ConstrainedDimension;
-	private var _maxHeight:ConstrainedDimension;
-	public var maxHeight(getMaxHeight, setMaxHeight):ConstrainedDimension;
-	private var _minWidth:ConstrainedDimension;
-	public var minWidth(getMinWidth, setMinWidth):ConstrainedDimension;
-	private var _maxWidth:ConstrainedDimension;
-	public var maxWidth(getMaxWidth, setMaxWidth):ConstrainedDimension;
+	public var minHeight(default, setMinHeight):ConstrainedDimension;
+	public var maxHeight(default, setMaxHeight):ConstrainedDimension;
+	public var minWidth(default, setMinWidth):ConstrainedDimension;
+	public var maxWidth(default, setMaxWidth):ConstrainedDimension;
 
-	private var _top:PositionOffset;
-	public var top(getTop, setTop):PositionOffset;
-	private var _left:PositionOffset;
-	public var left(getLeft, setLeft):PositionOffset;
-	private var _bottom:PositionOffset;
-	public var bottom(getBottom, setBottom):PositionOffset;
-	private var _right:PositionOffset;
-	public var right(getRight, setRight):PositionOffset;
+	public var top(default, setTop):PositionOffset;
+	public var left(default, setLeft):PositionOffset;
+	public var bottom(default, setBottom):PositionOffset;
+	public var right(default, setRight):PositionOffset;
 	
 	/**
 	 * background styles
 	 */
-	private var _backgroundColor:BackgroundColor;
-	public var backgroundColor(getBackgroundColor, setBackgroundColor):BackgroundColor;
-	
-	private var _backgroundImage:Array<BackgroundImage>;
-	public var backgroundImage(getBackgroundImage, setBackgroundImage):Array<BackgroundImage>;
-	
-	private var _backgroundRepeat:Array<BackgroundRepeat>;
-	public var backgroundRepeat(getBackgroundRepeat, setBackgroundRepeat):Array<BackgroundRepeat>;
-	
-	private var _backgroundOrigin:Array<BackgroundOrigin>;
-	public var backgroundOrigin(getBackgroundOrigin, setBackgroundOrigin):Array<BackgroundOrigin>;
-	
-	private var _backgroundSize:Array<BackgroundSize>;
-	public var backgroundSize(getBackgroundSize, setBackgroundSize):Array<BackgroundSize>;
-	
-	private var _backgroundPosition:Array<BackgroundPosition>;
-	public var backgroundPosition(getBackgroundPosition, setBackgroundPosition):Array<BackgroundPosition>;
-	
-	private var _backgroundClip:Array<BackgroundClip>;
-	public var backgroundClip(getBackgroundClip, setBackgroundClip):Array<BackgroundClip>;
+	public var backgroundColor(default, setBackgroundColor):BackgroundColor;
+	public var backgroundImage(default, setBackgroundImage):Array<BackgroundImage>;
+	public var backgroundRepeat(default, setBackgroundRepeat):Array<BackgroundRepeat>;
+	public var backgroundOrigin(default, setBackgroundOrigin):Array<BackgroundOrigin>;
+	public var backgroundSize(default, setBackgroundSize):Array<BackgroundSize>;
+	public var backgroundPosition(default, setBackgroundPosition):Array<BackgroundPosition>;
+	public var backgroundClip(default, setBackgroundClip):Array<BackgroundClip>;
 	
 	/**
 	 * font styles
 	 */
-	private var _fontSize:FontSize;
-	public var fontSize(getFontSize, setFontSize):FontSize;
-	
-	private var _fontWeight:FontWeight;
-	public var fontWeight(getFontWeight, setFontWeight):FontWeight;
-	
-	private var _fontStyle:FontStyle;
-	public var fontStyle(getFontStyle, setFontStyle):FontStyle;
-	
-	private var _fontFamily:Array<String>;
-	public var fontFamily(getFontFamily, setFontFamily ):Array<String>;
-	
-	private var _fontVariant:FontVariant;
-	public var fontVariant(getFontVariant, setFontVariant):FontVariant;
-	
-	private var _color:Color;
-	public var color(getColor, setColor):Color;
+	public var fontSize(default, setFontSize):FontSize;
+	public var fontWeight(default, setFontWeight):FontWeight;
+	public var fontStyle(default, setFontStyle):FontStyle;
+	public var fontFamily(default, setFontFamily ):Array<String>;
+	public var fontVariant(default, setFontVariant):FontVariant;
+	public var color(default, setColor):Color;
 	
 	/**
 	 * text styles
 	 */
-	private var _lineHeight:LineHeight;
-	public var lineHeight(getLineHeight, setLineHeight):LineHeight;
-	
-	private var _textTransform:TextTransform;
-	public var textTransform(getTextTransform, setTextTransform):TextTransform;
-	
-	private var _letterSpacing:LetterSpacing;
-	public var letterSpacing(getLetterSpacing, setLetterSpacing):LetterSpacing;
-	
-	private var _wordSpacing:WordSpacing;
-	public var wordSpacing(getWordSpacing, setWordSpacing):WordSpacing;
-	
-	private var _whiteSpace:WhiteSpace;
-	public var whiteSpace(getWhiteSpace, setWhiteSpace):WhiteSpace;
-	
-	private var _textAlign:TextAlign;
-	public var textAlign(getTextAlign, setTextAlign):TextAlign;
-	
-	private var _textIndent:TextIndent;
-	public var textIndent(getTextIndent, setTextIndent):TextIndent;
-		
-	private var _verticalAlign:VerticalAlign;
-	public var verticalAlign(getVerticalAlign, setVerticalAlign):VerticalAlign;
+	public var lineHeight(default, setLineHeight):LineHeight;
+	public var textTransform(default, setTextTransform):TextTransform;
+	public var letterSpacing(default, setLetterSpacing):LetterSpacing;
+	public var wordSpacing(default, setWordSpacing):WordSpacing;
+	public var whiteSpace(default, setWhiteSpace):WhiteSpace;
+	public var textAlign(default, setTextAlign):TextAlign;
+	public var textIndent(default, setTextIndent):TextIndent;
+	public var verticalAlign(default, setVerticalAlign):VerticalAlign;
 	
 	/**
 	 * visual effect styles
 	 */
-	private var _opacity:Opacity;
-	public var opacity(getOpacity, setOpacity):Opacity;
-	
-	private var _visibility:Visibility;
-	public var visibility(getVisibility, setVisibility):Visibility;
-	
-	private var _overflowX:Overflow;
-	public var overflowX(getOverflowX,  setOverflowX):Overflow;
-	
-	private var _overflowY:Overflow;
-	public var overflowY(getOverflowY,  setOverflowY):Overflow;
+	public var opacity(default, setOpacity):Opacity;
+	public var visibility(default, setVisibility):Visibility;
+	public var overflowX(default,  setOverflowX):Overflow;
+	public var overflowY(default,  setOverflowY):Overflow;
+	public var transformOrigin(default, setTransformOrigin):TransformOrigin;
+	public var transform(default, setTransform):Transform;
 	
 	/**
 	 * user interface styles
 	 */
-	private var _cursor:Cursor;
-	public var cursor(getCursor, setCursor):Cursor;
+	public var cursor(default, setCursor):Cursor;
 	
 	/**
 	 * transition styles
 	 */
-	private var _transitionProperty:TransitionProperty;
-	public var transitionProperty(getTransitionProperty, setTransitionProperty):TransitionProperty;
-	
-	private var _transitionDuration:TransitionDuration;
-	public var transitionDuration(getTransitionDuration, setTransitionDuration):TransitionDuration;
-	
-	private var _transitionDelay:TransitionDelay;
-	public var transitionDelay(getTransitionDelay, setTransitionDelay):TransitionDelay;
-	
-	private var _transitionTimingFunction:TransitionTimingFunction;
-	public var transitionTimingFunction(getTransitionTimingFunction, setTransitionTimingFunction):TransitionTimingFunction;
+	public var transitionProperty(default, setTransitionProperty):TransitionProperty;
+	public var transitionDuration(default, setTransitionDuration):TransitionDuration;
+	public var transitionDelay(default, setTransitionDelay):TransitionDelay;
+	public var transitionTimingFunction(default, setTransitionTimingFunction):TransitionTimingFunction;
 	
 	////////////////////////////////
 	
@@ -241,8 +156,7 @@ class CoreStyle
 	 * For example, if a size is set as a percentage, it will
 	 * be stored once computed to pixels into this structure
 	 */
-	private var _computedStyle:ComputedStyle;
-	public var computedStyle(get_computedStyle, set_computedStyle):ComputedStyle;
+	public var computedStyle:ComputedStyle;
 		
 	/**
 	 * Returns metrics info for the currently defined
@@ -250,14 +164,12 @@ class CoreStyle
 	 * to determine lineBoxes sizes and text vertical and horizontal
 	 * position
 	 */
-	private var _fontMetrics:FontMetricsData;
-	public var fontMetrics(get_fontMetricsData, never):FontMetricsData;
+	public var fontMetrics(get_fontMetricsData, null):FontMetricsData;
 	
 	/**
 	 * Store a reference to the styled HTMLElement
 	 */
-	private var _htmlElement:HTMLElement;
-	public var htmlElement(get_htmlElement, never):HTMLElement;
+	public var htmlElement(default, null):HTMLElement;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT METHODS
@@ -269,7 +181,7 @@ class CoreStyle
 	 */
 	public function new(htmlElement:HTMLElement) 
 	{
-		_htmlElement = htmlElement;
+		this.htmlElement = htmlElement;
 		initDefaultStyleValues(htmlElement.tagName);
 	}
 	
@@ -279,7 +191,7 @@ class CoreStyle
 	 */
 	private function initDefaultStyleValues(tagName:String):Void
 	{
-		_computedStyle = new ComputedStyle(this);
+		computedStyle = new ComputedStyle(this);
 		initComputedStyles();
 		
 		width = getWidthDefaultValue();
@@ -374,7 +286,7 @@ class CoreStyle
 	 */
 	public function initComputedStyles():Void
 	{
-		_computedStyle.init();
+		computedStyle.init();
 	}
 	
 	/**
@@ -669,13 +581,13 @@ class CoreStyle
 		var boxComputer:BoxStylesComputer;
 				
 		//get the box computer for float
-		if (_computedStyle.cssFloat == CSSFloat.left || _computedStyle.cssFloat == CSSFloat.right)
+		if (computedStyle.cssFloat == CSSFloat.left || computedStyle.cssFloat == CSSFloat.right)
 		{
 			boxComputer = new FloatBoxStylesComputer();
 		}
 		
 		//get it for HTMLElement with 'position' value of 'absolute' or 'fixed'
-		else if (_computedStyle.position == fixed || _computedStyle.position == absolute)
+		else if (computedStyle.position == fixed || computedStyle.position == absolute)
 		{
 			boxComputer = new PositionedBoxStylesComputer();
 		}
@@ -713,11 +625,11 @@ class CoreStyle
 		
 		//get the embedded box computers based on
 		//the positioning scheme
-		if (_computedStyle.cssFloat == CSSFloat.left || _computedStyle.cssFloat == CSSFloat.right)
+		if (computedStyle.cssFloat == CSSFloat.left || computedStyle.cssFloat == CSSFloat.right)
 		{
 			boxComputer = new EmbeddedFloatBoxStylesComputer();
 		}
-		else if (_computedStyle.position == fixed || _computedStyle.position == absolute)
+		else if (computedStyle.position == fixed || computedStyle.position == absolute)
 		{
 			boxComputer = new EmbeddedPositionedBoxStylesComputer();
 		}
@@ -754,7 +666,7 @@ class CoreStyle
 	 */
 	private function invalidate(invalidationReason:InvalidationReason):Void
 	{
-		_htmlElement.invalidate(invalidationReason);
+		htmlElement.invalidate(invalidationReason);
 	}
 	
 	/**
@@ -762,7 +674,7 @@ class CoreStyle
 	 */
 	private function invalidatePositioningScheme():Void
 	{
-		_htmlElement.invalidatePositioningScheme();
+		htmlElement.invalidatePositioningScheme();
 	}
 	
 	/////////////////////////////////
@@ -905,7 +817,7 @@ class CoreStyle
 		invalidate(InvalidationReason.other);
 		var transitionEvent:TransitionEvent = new TransitionEvent();
 		transitionEvent.initTransitionEvent(TransitionEvent.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
-		_htmlElement.dispatchEvent(transitionEvent);
+		htmlElement.dispatchEvent(transitionEvent);
 		
 	}
 	
@@ -922,27 +834,12 @@ class CoreStyle
 	// SETTERS/GETTERS
 	////////////////////////////////
 
-	private function get_computedStyle():ComputedStyle
-	{
-		return _computedStyle;
-	}
-	
-	private function set_computedStyle(value:ComputedStyle):ComputedStyle
-	{
-		return _computedStyle = value;
-	}
-
 	private function get_fontMetricsData():FontMetricsData
 	{
 		var fontManager:FontManager = new FontManager();
-		_fontMetrics = fontManager.getFontMetrics(UnitManager.getCSSFontFamily(computedStyle.fontFamily), computedStyle.fontSize);
+		fontMetrics = fontManager.getFontMetrics(UnitManager.getCSSFontFamily(computedStyle.fontFamily), computedStyle.fontSize);
 	
-		return _fontMetrics;
-	}
-	
-	private function get_htmlElement():HTMLElement
-	{
-		return _htmlElement;
+		return fontMetrics;
 	}
 	
 	/////////////////////////////////
@@ -953,7 +850,7 @@ class CoreStyle
 	
 	private function setWidth(value:Dimension):Dimension 
 	{
-		_width = value;
+		width = value;
 		//TODO 1 : if transition is successful, should invalidate still be called ?
 		startTransitionIfNeeded(CSSConstants.WIDTH_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.WIDTH_STYLE_NAME));
@@ -962,7 +859,7 @@ class CoreStyle
 	
 	private function setMarginLeft(value:Margin):Margin 
 	{
-		_marginLeft = value;
+		marginLeft = value;
 		startTransitionIfNeeded(CSSConstants.MARGIN_LEFT_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.MARGIN_LEFT_STYLE_NAME));
 		return value;
@@ -970,7 +867,7 @@ class CoreStyle
 	
 	private function setMarginRight(value:Margin):Margin 
 	{
-		_marginRight = value;
+		marginRight = value;
 		startTransitionIfNeeded(CSSConstants.MARGIN_RIGHT_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.MARGIN_RIGHT_STYLE_NAME));
 		return value;
@@ -978,7 +875,7 @@ class CoreStyle
 	
 	private function setMarginTop(value:Margin):Margin 
 	{
-		_marginTop = value;
+		marginTop = value;
 		startTransitionIfNeeded(CSSConstants.MARGIN_TOP_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.MARGIN_TOP_STYLE_NAME));
 		return value;
@@ -986,7 +883,7 @@ class CoreStyle
 	
 	private function setMarginBottom(value:Margin):Margin 
 	{
-		_marginBottom = value;
+		marginBottom = value;
 		startTransitionIfNeeded(CSSConstants.MARGIN_BOTTOM_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.MARGIN_BOTTOM_STYLE_NAME));
 		return value;
@@ -994,7 +891,7 @@ class CoreStyle
 	
 	private function setPaddingLeft(value:Padding):Padding 
 	{
-		_paddingLeft = value;
+		paddingLeft = value;
 		startTransitionIfNeeded(CSSConstants.PADDING_LEFT_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.PADDING_LEFT_STYLE_NAME));
 		return value;
@@ -1002,7 +899,7 @@ class CoreStyle
 	
 	private function setPaddingRight(value:Padding):Padding 
 	{
-		_paddingRight = value;
+		paddingRight = value;
 		startTransitionIfNeeded(CSSConstants.PADDING_RIGHT_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.PADDING_RIGHT_STYLE_NAME));
 		return value;
@@ -1010,7 +907,7 @@ class CoreStyle
 	
 	private function setPaddingTop(value:Padding):Padding 
 	{
-		_paddingTop = value;
+		paddingTop = value;
 		startTransitionIfNeeded(CSSConstants.PADDING_TOP_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.PADDING_TOP_STYLE_NAME));
 		return value;
@@ -1018,7 +915,7 @@ class CoreStyle
 	
 	private function setPaddingBottom(value:Padding):Padding 
 	{
-		_paddingBottom = value;
+		paddingBottom = value;
 		startTransitionIfNeeded(CSSConstants.PADDING_BOTTOM_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.PADDING_BOTTOM_STYLE_NAME));
 		return value;
@@ -1026,22 +923,22 @@ class CoreStyle
 	
 	private function setDisplay(value:Display):Display 
 	{
-		_display = value;
+		display = value;
 		invalidatePositioningScheme();
 		return value;
 	}
 	
 	private function setPosition(value:Position):Position 
 	{
-		_position = value;
-		_computedStyle.position = value;
+		position = value;
+		computedStyle.position = value;
 		invalidatePositioningScheme();
 		return value;
 	}
 	
 	private function setHeight(value:Dimension):Dimension 
 	{
-		_height = value;
+		height = value;
 		startTransitionIfNeeded(CSSConstants.HEIGHT_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.HEIGHT_STYLE_NAME));
 		return value;
@@ -1049,7 +946,7 @@ class CoreStyle
 	
 	private function setMinHeight(value:ConstrainedDimension):ConstrainedDimension 
 	{
-		_minHeight = value;
+		minHeight = value;
 		startTransitionIfNeeded(CSSConstants.MIN_HEIGHT_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.MIN_HEIGHT_STYLE_NAME));
 		return value;
@@ -1057,7 +954,7 @@ class CoreStyle
 	
 	private function setMaxHeight(value:ConstrainedDimension):ConstrainedDimension 
 	{
-		_maxHeight = value;
+		maxHeight = value;
 		startTransitionIfNeeded(CSSConstants.MAX_HEIGHT_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.MAX_HEIGHT_STYLE_NAME));
 		return value;
@@ -1065,7 +962,7 @@ class CoreStyle
 	
 	private function setMinWidth(value:ConstrainedDimension):ConstrainedDimension 
 	{
-		_minWidth = value;
+		minWidth = value;
 		startTransitionIfNeeded(CSSConstants.MIN_WIDTH_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.MIN_WIDTH_STYLE_NAME));
 		return value;
@@ -1073,7 +970,7 @@ class CoreStyle
 	
 	private function setMaxWidth(value:ConstrainedDimension):ConstrainedDimension 
 	{
-		_maxWidth = value;
+		maxWidth = value;
 		startTransitionIfNeeded(CSSConstants.MAX_WIDTH_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.MAX_WIDTH_STYLE_NAME));
 		return value;
@@ -1081,7 +978,7 @@ class CoreStyle
 	
 	private function setTop(value:PositionOffset):PositionOffset 
 	{
-		_top = value;
+		top = value;
 		startTransitionIfNeeded(CSSConstants.TOP_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.TOP_STYLE_NAME));
 		return value;
@@ -1089,7 +986,7 @@ class CoreStyle
 	
 	private function setLeft(value:PositionOffset):PositionOffset 
 	{
-		_left = value;
+		left = value;
 		startTransitionIfNeeded(CSSConstants.LEFT_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.LEFT_STYLE_NAME));
 		return value;
@@ -1097,7 +994,7 @@ class CoreStyle
 	
 	private function setBottom(value:PositionOffset):PositionOffset 
 	{
-		_bottom = value;
+		bottom = value;
 		startTransitionIfNeeded(CSSConstants.BOTTOM_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.BOTTOM_STYLE_NAME));
 		return value;
@@ -1105,7 +1002,7 @@ class CoreStyle
 	
 	private function setRight(value:PositionOffset):PositionOffset 
 	{
-		_right = value;
+		right = value;
 		startTransitionIfNeeded(CSSConstants.RIGHT_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.RIGHT_STYLE_NAME));
 		return value;
@@ -1113,29 +1010,29 @@ class CoreStyle
 	
 	private function setCSSFloat(value:CSSFloat):CSSFloat 
 	{
-		_cssFloat = value;
+		cssFloat = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.FLOAT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setClear(value:Clear):Clear 
 	{
-		_clear = value;
+		clear = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.CLEAR_STYLE_NAME));
 		return value;
 	}
 	
 	private function setZIndex(value:ZIndex):ZIndex 
 	{
-		_zIndex = value;
-		_computedStyle.zIndex = value;
+		zIndex = value;
+		computedStyle.zIndex = value;
 		invalidatePositioningScheme();
 		return value;
 	}
 	
 	private function setFontSize(value:FontSize):FontSize
 	{
-		_fontSize = value;
+		fontSize = value;
 		startTransitionIfNeeded(CSSConstants.FONT_SIZE_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_SIZE_STYLE_NAME));
 		return value;
@@ -1143,47 +1040,47 @@ class CoreStyle
 	
 	private function setFontWeight(value:FontWeight):FontWeight
 	{
-		_fontWeight = value;
-		_computedStyle.fontWeight = value;
+		fontWeight = value;
+		computedStyle.fontWeight = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_WEIGHT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setFontStyle(value:FontStyle):FontStyle
 	{
-		_fontStyle = value;
-		_computedStyle.fontStyle = value;
+		fontStyle = value;
+		computedStyle.fontStyle = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_STYLE_STYLE_NAME));
 		return value;
 	}
 	
 	private function setFontFamily(value:Array<String>):Array<String>
 	{
-		_fontFamily = value;
-		_computedStyle.fontFamily = value;
+		fontFamily = value;
+		computedStyle.fontFamily = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_FAMILY_STYLE_NAME));
 		return value;
 	}
 	
 	private function setFontVariant(value:FontVariant):FontVariant
 	{
-		_fontVariant = value;
-		_computedStyle.fontVariant = value;
+		fontVariant = value;
+		computedStyle.fontVariant = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_VARIANT_STYLE_NAME));
 		return value;
 	}
 	
 	private function setTextTransform(value:TextTransform):TextTransform
 	{
-		_textTransform = value;
-		_computedStyle.textTransform = value;
+		textTransform = value;
+		computedStyle.textTransform = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.TEXT_TRANSFORM_STYLE_NAME));
 		return value;
 	}
 	
 	private function setLetterSpacing(value:LetterSpacing):LetterSpacing
 	{
-		_letterSpacing = value;
+		letterSpacing = value;
 		startTransitionIfNeeded(CSSConstants.LETTER_SPACING_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.LETTER_SPACING_STYLE_NAME));
 		return value;
@@ -1191,7 +1088,7 @@ class CoreStyle
 	
 	private function setWordSpacing(value:WordSpacing):WordSpacing
 	{
-		_wordSpacing = value;
+		wordSpacing = value;
 		startTransitionIfNeeded(CSSConstants.WORD_SPACING_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.WORD_SPACING_STYLE_NAME));
 		return value;
@@ -1199,7 +1096,7 @@ class CoreStyle
 	
 	private function setLineHeight(value:LineHeight):LineHeight
 	{
-		_lineHeight = value;
+		lineHeight = value;
 		startTransitionIfNeeded(CSSConstants.LINE_HEIGHT_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.LINE_HEIGHT_STYLE_NAME));
 		return value;
@@ -1207,14 +1104,14 @@ class CoreStyle
 	
 	private function setColor(value:Color):Color
 	{
-		_color = value;
+		color = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.COLOR_STYLE_NAME));
 		return value;
 	}
 	
 	private function setVerticalAlign(value:VerticalAlign):VerticalAlign
 	{
-		_verticalAlign = value;
+		verticalAlign = value;
 		startTransitionIfNeeded(CSSConstants.VERTICAL_ALIGN_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.VERTICAL_ALIGN_STYLE_NAME));
 		return value;
@@ -1222,7 +1119,7 @@ class CoreStyle
 	
 	private function setTextIndent(value:TextIndent):TextIndent
 	{
-		_textIndent = value;
+		textIndent = value;
 		startTransitionIfNeeded(CSSConstants.TEXT_INDENT_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.TEXT_INDENT_STYLE_NAME));
 		return value;
@@ -1230,424 +1127,145 @@ class CoreStyle
 	
 	private function setWhiteSpace(value:WhiteSpace):WhiteSpace
 	{
-		_whiteSpace = value;
-		_computedStyle.whiteSpace = value;
+		whiteSpace = value;
+		computedStyle.whiteSpace = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.WHITE_SPACE_STYLE_NAME));
 		return value;
 	}
 	
 	private function setTextAlign(value:TextAlign):TextAlign
 	{
-		_textAlign = value;
-		_computedStyle.textAlign = value;
+		textAlign = value;
+		computedStyle.textAlign = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.TEXT_ALIGN_STYLE_NAME));
 		return value;
 	}
 	
 	private function setOpacity(value:Opacity):Opacity
 	{
-		_opacity = value;
-		_computedStyle.opacity = value;
+		opacity = value;
+		computedStyle.opacity = value;
 		startTransitionIfNeeded(CSSConstants.OPACITY_STYLE_NAME);
 		invalidate(InvalidationReason.styleChanged(CSSConstants.OPACITY_STYLE_NAME));
-		return _opacity;
+		return value;
 	}
 	
 	private function setVisibility(value:Visibility):Visibility
 	{
-		_visibility = value;
-		_computedStyle.visibility = value;
+		visibility = value;
+		computedStyle.visibility = value;
 		invalidate(InvalidationReason.styleChanged(CSSConstants.VISIBILITY_STYLE_NAME));
-		return _visibility;
+		return value;
 	}
 	
 	private function setTransformOrigin(value:TransformOrigin):TransformOrigin
 	{
-		_transformOrigin = value;
+		transformOrigin = value;
 		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setTransform(value:Transform):Transform
 	{
-		_transform = value;
+		transform = value;
 		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setOverflowX(value:Overflow):Overflow
 	{
-		_overflowX = value;
-		_computedStyle.overflowX = value;
+		overflowX = value;
+		computedStyle.overflowX = value;
 		invalidatePositioningScheme();
 		return value;
 	}
 	
 	private function setOverflowY(value:Overflow):Overflow
 	{
-		_overflowY = value;
-		_computedStyle.overflowY = value;
+		overflowY = value;
+		computedStyle.overflowY = value;
 		invalidatePositioningScheme();
 		return value;
 	}
 	
 	private function setTransitionProperty(value:TransitionProperty):TransitionProperty
 	{
-		return _transitionProperty = value;
+		return transitionProperty = value;
 	}
 	
 	private function setTransitionDuration(value:TransitionDuration):TransitionDuration
 	{
-		return _transitionDuration = value;
+		return transitionDuration = value;
 	}
 	
 	private function setTransitionDelay(value:TransitionDelay):TransitionDelay
 	{
-		return _transitionDelay = value;
+		return transitionDelay = value;
 	}
 	
 	private function setTransitionTimingFunction(value:TransitionTimingFunction):TransitionTimingFunction
 	{
-		return _transitionTimingFunction = value;
+		return transitionTimingFunction = value;
 	}
 	
 	private function setBackgroundColor(value:BackgroundColor):BackgroundColor
 	{
-		_backgroundColor = value;
+		backgroundColor = value;
 		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setBackgroundImage(value:Array<BackgroundImage>):Array<BackgroundImage>
 	{
-		_backgroundImage = value;
+		backgroundImage = value;
 		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setBackgroundSize(value:Array<BackgroundSize>):Array<BackgroundSize>
 	{
-		_backgroundSize = value;
-		_computedStyle.backgroundSize = value;
+		backgroundSize = value;
+		computedStyle.backgroundSize = value;
 		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setBackgroundClip(value:Array<BackgroundClip>):Array<BackgroundClip>
 	{
-		_backgroundClip = value;
-		_computedStyle.backgroundClip = value;
+		backgroundClip = value;
+		computedStyle.backgroundClip = value;
 		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setBackgroundPosition(value:Array<BackgroundPosition>):Array<BackgroundPosition>
 	{
-		_backgroundPosition = value;
-		_computedStyle.backgroundPosition = value;
+		backgroundPosition = value;
+		computedStyle.backgroundPosition = value;
 		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setBackgroundRepeat(value:Array<BackgroundRepeat>):Array<BackgroundRepeat>
 	{
-		_backgroundRepeat = value;
-		_computedStyle.backgroundRepeat = value;
+		backgroundRepeat = value;
+		computedStyle.backgroundRepeat = value;
 		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setBackgroundOrigin(value:Array<BackgroundOrigin>):Array<BackgroundOrigin>
 	{
-		_backgroundOrigin = value;
-		_computedStyle.backgroundOrigin = value;
+		backgroundOrigin = value;
+		computedStyle.backgroundOrigin = value;
 		invalidate(InvalidationReason.other);
 		return value;
 	}
 	
 	private function setCursor(value:Cursor):Cursor
 	{
-		_cursor = value;
-		_computedStyle.cursor = value;
+		cursor = value;
+		computedStyle.cursor = value;
 		return value;
-	}
-	
-	/////////////////////////////////
-	// STYLES SETTERS/GETTERS
-	////////////////////////////////
-	
-	private function getOpacity():Opacity
-	{
-		return _opacity;
-	}
-	
-	private function getVisibility():Visibility
-	{
-		return _visibility;
-	}
-	
-	private function getMarginLeft():Margin 
-	{
-		return _marginLeft;
-	}
-	
-	private function getMarginRight():Margin 
-	{
-		return _marginRight;
-	}
-	
-	private function getMarginTop():Margin 
-	{
-		return _marginTop;
-	}
-	
-	private function getMarginBottom():Margin 
-	{
-		return _marginBottom;
-	}
-	
-	private function getPaddingLeft():Padding 
-	{
-		return _paddingLeft;
-	}
-	
-	private function getPaddingRight():Padding 
-	{
-		return _paddingRight;
-	}
-	
-	private function getPaddingTop():Padding 
-	{
-		return _paddingTop;
-	}
-	
-	private function getPaddingBottom():Padding 
-	{
-		return _paddingBottom;
-	}
-	
-	private function getDisplay():Display 
-	{
-		return _display;
-	}
-	
-	private function getPosition():Position 
-	{
-		return _position;
-	}
-	
-	private function getWidth():Dimension 
-	{
-		return _width;
-	}
-	
-	private function getHeight():Dimension 
-	{
-		return _height;
-	}
-	
-	private function getMinHeight():ConstrainedDimension 
-	{
-		return _minHeight;
-	}
-	
-	private function getMaxHeight():ConstrainedDimension 
-	{
-		return _maxHeight;
-	}
-	
-	private function getMinWidth():ConstrainedDimension 
-	{
-		return _minWidth;
-	}
-	
-	private function getMaxWidth():ConstrainedDimension 
-	{
-		return _maxWidth;
-	}
-	
-	private function getTop():PositionOffset 
-	{
-		return _top;
-	}
-	
-	private function getLeft():PositionOffset 
-	{
-		return _left;
-	}
-	
-	private function getBottom():PositionOffset 
-	{
-		return _bottom;
-	}
-	
-	private function getRight():PositionOffset 
-	{
-		return _right;
-	}
-	
-	private function getCSSFloat():CSSFloat 
-	{
-		return _cssFloat;
-	}
-	
-	private function getClear():Clear 
-	{
-		return _clear;
-	}
-	
-	private function getZIndex():ZIndex 
-	{
-		return _zIndex;
-	}
-	
-	private function getFontSize():FontSize
-	{
-		return _fontSize;
-	}
-	
-	private function getFontWeight():FontWeight
-	{
-		return _fontWeight;
-	}
-	
-	private function getFontStyle():FontStyle
-	{
-		return _fontStyle;
-	}
-	
-	private function getFontFamily():Array<String>
-	{
-		return _fontFamily;
-	}
-	
-	private function getFontVariant():FontVariant
-	{
-		return _fontVariant;
-	}
-	
-	private function getTextTransform():TextTransform
-	{
-		return _textTransform;
-	}
-	
-	private function getLetterSpacing():LetterSpacing
-	{
-		return _letterSpacing;
-	}
-	
-	private function getColor():Color
-	{
-		return _color;
-	}
-	
-	private function getWordSpacing():WordSpacing
-	{
-		return _wordSpacing;
-	}
-	
-	private function getLineHeight():LineHeight
-	{
-		return _lineHeight;
-	}
-	
-	private function getVerticalAlign():VerticalAlign
-	{
-		return _verticalAlign;
-	}
-	
-	private function getTextIndent():TextIndent
-	{
-		return _textIndent;
-	}
-	
-	private function getWhiteSpace():WhiteSpace
-	{
-		return _whiteSpace;
-	}
-	
-	private function getTextAlign():TextAlign
-	{
-		return _textAlign;
-	}
-	
-	private function getTransform():Transform
-	{
-		return _transform;
-	}
-	
-	private function getTransformOrigin():TransformOrigin
-	{
-		return _transformOrigin;
-	}
-	
-	private function getBackgroundColor():BackgroundColor
-	{
-		return _backgroundColor;
-	}
-	
-	private function getBackgroundImage():Array<BackgroundImage>
-	{
-		return _backgroundImage;
-	}
-	
-	private function getBackgroundRepeat():Array<BackgroundRepeat>
-	{
-		return _backgroundRepeat;
-	}
-	
-	private function getBackgroundSize():Array<BackgroundSize>
-	{
-		return _backgroundSize;
-	}
-	
-	private function getBackgroundClip():Array<BackgroundClip>
-	{
-		return _backgroundClip;
-	}
-	
-	private function getBackgroundPosition():Array<BackgroundPosition>
-	{
-		return _backgroundPosition;
-	}
-	
-	private function getBackgroundOrigin():Array<BackgroundOrigin>
-	{
-		return _backgroundOrigin;
-	}
-	
-	private function getOverflowX():Overflow
-	{
-		return _overflowX;
-	}
-	
-	private function getOverflowY():Overflow
-	{
-		return _overflowY;
-	}
-	
-	private function getCursor():Cursor
-	{
-		return _cursor;
-	}
-	
-	private function getTransitionProperty():TransitionProperty
-	{
-		return _transitionProperty;
-	}
-	
-	private function getTransitionDuration():TransitionDuration
-	{
-		return _transitionDuration;
-	}
-	
-	private function getTransitionDelay():TransitionDelay
-	{
-		return _transitionDelay;
-	}
-	
-	private function getTransitionTimingFunction():TransitionTimingFunction
-	{
-		return _transitionTimingFunction;
 	}
 }
