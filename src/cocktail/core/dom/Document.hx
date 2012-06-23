@@ -58,8 +58,7 @@ class Document extends Node<Document>
 	 * TODO IMPORTANT : this attribute is supposed to return an
 	 * Element but it has to be an HTMLElement to match the Haxe JS API
 	 */
-	private var _documentElement:HTMLElement;
-	public var documentElement(get_documentElement, never):HTMLElement;
+	public var documentElement(default, null):HTMLElement;
 	
 	/**
 	 * class constructor
@@ -203,7 +202,7 @@ class Document extends Node<Document>
 	 */
 	public function getElementById(elementId:String):HTMLElement
 	{
-		return doGetElementById(_documentElement, elementId);
+		return doGetElementById(documentElement, elementId);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -281,7 +280,7 @@ class Document extends Node<Document>
 	{
 		//use the implementation on the document element (for instance,
 		//the HTML element in HTML)
-		return _documentElement.getElementsByTagName(tagName);
+		return documentElement.getElementsByTagName(tagName);
 	}
 	
 	/**
@@ -296,7 +295,7 @@ class Document extends Node<Document>
 	 */
 	public function getElementsByClassName(className:String):Array<HTMLElement>
 	{
-		return _documentElement.getElementsByClassName(className);
+		return documentElement.getElementsByClassName(className);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -306,14 +305,5 @@ class Document extends Node<Document>
 	override private function get_nodeType():Int
 	{
 		return Node.DOCUMENT_NODE;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_documentElement():HTMLElement
-	{
-		return _documentElement;
 	}
 }

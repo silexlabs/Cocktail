@@ -128,9 +128,9 @@ class HTMLDocument extends Document
 	{
 		super();
 		
-		_documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
+		documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
 		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
-		_documentElement.appendChild(_body);
+		documentElement.appendChild(_body);
 		_focusManager = new FocusManager();
 	}
 	
@@ -143,7 +143,7 @@ class HTMLDocument extends Document
 	public function initBody(htmlBodyElement:HTMLBodyElement):Void
 	{
 		_body = htmlBodyElement;
-		_documentElement.appendChild(_body);
+		documentElement.appendChild(_body);
 		_hoveredElementRenderer = _body.elementRenderer;
 		_activeElement = _body;
 	}
@@ -366,7 +366,7 @@ class HTMLDocument extends Document
 	 */
 	public function onPlatformResizeEvent(event:UIEvent):Void
 	{
-		_documentElement.invalidate(InvalidationReason.other);
+		documentElement.invalidate(InvalidationReason.other);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

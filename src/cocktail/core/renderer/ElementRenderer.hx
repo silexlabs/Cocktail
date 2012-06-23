@@ -407,10 +407,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		//the ElementRenderer is attached to the LayerRenderer
 		//tree and must now also attach its children
-		var length:Int = _childNodes.length;
+		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = _childNodes[i];
+			var child:ElementRenderer = childNodes[i];
 			child.attach();
 		}
 		
@@ -429,10 +429,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		_containingBlock = null;
 		
 		//first detach the LayerRenderer of all its children
-		var length:Int = _childNodes.length;
+		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = _childNodes[i];
+			var child:ElementRenderer = childNodes[i];
 			child.detach();
 		}
 		
@@ -448,9 +448,9 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		//create the LayerRenderer if needed
 		if (_layerRenderer == null)
 		{
-			if (_parentNode != null)
+			if (parentNode != null)
 			{
-				var parent:ElementRenderer = _parentNode;
+				var parent:ElementRenderer = parentNode;
 				if (parent.layerRenderer != null)
 				{
 					createLayer(parent.layerRenderer);
@@ -466,7 +466,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		//which created it when detached
 		if (_hasOwnLayer == true)
 		{
-			var parent:ElementRenderer = _parentNode;
+			var parent:ElementRenderer = parentNode;
 			parent.layerRenderer.removeChild(_layerRenderer);
 			_hasOwnLayer = false;
 		}
@@ -731,7 +731,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function getFirstPositionedAncestor():FlowBoxRenderer
 	{
-		var parent:ElementRenderer = _parentNode;
+		var parent:ElementRenderer = parentNode;
 		while (parent.isPositioned() == false)
 		{
 			parent = parent.parentNode;
@@ -752,7 +752,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function getFirstBlockContainer():FlowBoxRenderer
 	{
-		var parent:ElementRenderer = _parentNode;
+		var parent:ElementRenderer = parentNode;
 		while (parent.isBlockContainer() == false)
 		{
 			parent = parent.parentNode;
@@ -881,10 +881,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{
 			if (needLayout == true)
 			{
-				var length:Int = _childNodes.length;
+				var length:Int = childNodes.length;
 				for (i in 0...length)
 				{
-					_childNodes[i].setNeedLayout(needLayout);
+					childNodes[i].setNeedLayout(needLayout);
 				}
 			}
 		}
@@ -901,7 +901,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		
 		//TODO 1 : not supposed to happen but bug with scrollbars for now
-		if (_parentNode == null)
+		if (parentNode == null)
 		{
 			return;
 		}
@@ -995,9 +995,9 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function invalidateText():Void
 	{
-		for (i in 0..._childNodes.length)
+		for (i in 0...childNodes.length)
 		{
-			var child:ElementRenderer = _childNodes[i];
+			var child:ElementRenderer = childNodes[i];
 			child.invalidateText();
 		}
 	}

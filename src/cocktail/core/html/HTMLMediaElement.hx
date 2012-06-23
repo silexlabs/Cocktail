@@ -566,11 +566,11 @@ class HTMLMediaElement extends EmbeddedElement
 			mode = RESOURCE_SELECTION_CHILDREN_MODE;
 			
 			//retrieve the first source child
-			for (i in 0..._childNodes.length)
+			for (i in 0...childNodes.length)
 			{
-				if (_childNodes[i].nodeName == HTMLConstants.HTML_SOURCE_TAG_NAME)
+				if (childNodes[i].nodeName == HTMLConstants.HTML_SOURCE_TAG_NAME)
 				{
-					candidate = cast(_childNodes[i]);
+					candidate = cast(childNodes[i]);
 					break;
 				}
 			}
@@ -608,11 +608,11 @@ class HTMLMediaElement extends EmbeddedElement
 		else if (mode == RESOURCE_SELECTION_CHILDREN_MODE)
 		{
 			//TODO 2 : short cut for now, not implemented like the spec
-			for (i in 0..._childNodes.length)
+			for (i in 0...childNodes.length)
 			{
-				if (_childNodes[i].nodeName == HTMLConstants.HTML_SOURCE_TAG_NAME)
+				if (childNodes[i].nodeName == HTMLConstants.HTML_SOURCE_TAG_NAME)
 				{
-					var sourceChild:HTMLSourceElement = cast(_childNodes[i]);
+					var sourceChild:HTMLSourceElement = cast(childNodes[i]);
 					if (sourceChild.type != null)
 					{
 						
@@ -855,9 +855,9 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function hasChildSourceElement():Bool
 	{
-		for (i in 0..._childNodes.length)
+		for (i in 0...childNodes.length)
 		{
-			if (_childNodes[i].nodeName == HTMLConstants.HTML_SOURCE_TAG_NAME)
+			if (childNodes[i].nodeName == HTMLConstants.HTML_SOURCE_TAG_NAME)
 			{
 				return true;
 			}

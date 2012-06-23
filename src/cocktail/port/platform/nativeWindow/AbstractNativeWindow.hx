@@ -30,8 +30,7 @@ class AbstractNativeWindow
 	 * The callback to call when
 	 * a native resize event is disptached
 	 */
-	private var _onResize:UIEvent->Void;
-	public var onResize(getOnResize, setOnResize):UIEvent->Void;
+	public var onResize:UIEvent->Void;
 	
 	/**
 	 * Height (in pixels) of the browser window viewport including,
@@ -100,20 +99,6 @@ class AbstractNativeWindow
 		{
 			onResize(getUIEvent(event));
 		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// CALLBACKS SETTERS/GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function setOnResize(value:UIEvent->Void):UIEvent->Void
-	{
-		return _onResize = value;
-	}
-	
-	private function getOnResize():UIEvent->Void
-	{
-		return _onResize;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
