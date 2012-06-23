@@ -83,6 +83,16 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public var className(get_className, set_className):String;
 	
+	/**
+	 * When specified on an element, it indicates that the element 
+	 * is not yet, or is no longer, directly relevant to the page's
+	 * current state, or that it is being used to
+	 * declare content to be reused by other parts of the page 
+	 * as opposed to being directly accessed by the user.
+	 * HTMLElement with hiden attribute set are not rendered.
+	 */
+	public var hidden(get_hidden, set_hidden):Bool;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Scroll attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -474,10 +484,14 @@ class HTMLElement extends Element<HTMLElement>
 		//and this HTMLElement is not rendered either
 		if (isParentRendered() == true)
 		{
+			//compute the display styles now to know if the 
+			//HTMLElement should be rendered as a block, inline,
+			//or at all
+			_coreStyle.computeDisplayStyles();
+			
 			//create the ElementRenderer if needed
 			if (_elementRenderer == null && isRendered() == true)
 			{
-				_coreStyle.computeDisplayStyles();
 				createElementRenderer();
 			}
 			
@@ -643,14 +657,23 @@ class HTMLElement extends Element<HTMLElement>
 	/**
 	 * Return wether this HTMLElement is supposed to be rendered
 	 * 
-	 * TODO 3 : should use computed display style (although it computes
-	 * the same as the specified value, will be a problem when adding inherit
-	 * style value) and also take into account
-	 * the HTML "hidden" attribute
+	 * TODO 3 : unit tests for "hidden" attribute
 	 */
 	private function isRendered():Bool
 	{
-		return _coreStyle.display != Display.none;
+		//use "hidden" HTML attribute
+		if (hidden == true)
+		{
+			return false;
+		}
+		
+		//use "display" CSS style
+		if (_coreStyle.computedStyle.display == Display.none)
+		{
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -1032,6 +1055,24 @@ class HTMLElement extends Element<HTMLElement>
 	private function set_className(value:String):String
 	{
 		setAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME, value);
+		return value;
+	}
+	
+	private function get_hidden():Bool
+	{
+		if (getAttribute(HTMLConstants.HTML_HIDDEN_ATTRIBUTE_NAME) != null)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	private function set_hidden(value:Bool):Bool
+	{
+		super.setAttribute(HTMLConstants.HTML_HIDDEN_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}
 	

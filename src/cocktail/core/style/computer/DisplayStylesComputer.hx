@@ -98,9 +98,6 @@ class DisplayStylesComputer
 	 * Compute the 'display' style which might be affected by
 	 * the defined 'float' style
 	 * 
-	 * TODO 3 : maybe the value should compute as specified and the distinction
-	 * should be done in createElementRenderer
-	 * 
 	 * @param	style
 	 * @param	computedFloat the computed value of the float which must be computed before this
 	 * one

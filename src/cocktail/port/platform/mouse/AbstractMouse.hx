@@ -33,36 +33,31 @@ class AbstractMouse
 	 * The callback to call when
 	 * a native click event is dispatched
 	 */
-	private var _onClick:MouseEvent->Void;
-	public var onClick(get_onClick, set_onClick):MouseEvent->Void;
+	public var onClick:MouseEvent->Void;
 	
 	/** 
 	 * The callback to call when
 	 * a native mouse down evednt is dispatched
 	 */
-	private var _onMouseDown:MouseEvent->Void;
-	public var onMouseDown(getOnMouseDown, setOnMouseDown):MouseEvent->Void;
+	public var onMouseDown:MouseEvent->Void;
 	
 	/**
 	 * The callback to call when 
 	 * a native mouse up event is dispatched
 	 */
-	private var _onMouseUp:MouseEvent->Void;
-	public var onMouseUp(getOnMouseUp, setOnMouseUp):MouseEvent->Void;
+	public var onMouseUp:MouseEvent->Void;
 	
 	/**
 	 * The callback to call when a native
 	 * mouse move event is dispatched
 	 */
-	private var _onMouseMove:MouseEvent->Void;
-	public var onMouseMove(getOnMouseMove, setOnMouseMove):MouseEvent->Void;
+	public var onMouseMove:MouseEvent->Void;
 	
 	/**
 	 * The callback to call when the mouse wheel
 	 * is rotated
 	 */
-	private var _onMouseWheel:WheelEvent->Void;
-	public var onMouseWheel(getOnMouseWheel, setOnMouseWheel):WheelEvent->Void;
+	public var onMouseWheel:WheelEvent->Void;
 	
 	/**
 	 * class constructor
@@ -190,61 +185,4 @@ class AbstractMouse
 	{
 		return null;
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// CALLBACK SETTERS/GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function set_onClick(value:MouseEvent->Void):MouseEvent->Void
-	{
-		return this._onClick = value;
-	}
-	
-	private function get_onClick():MouseEvent->Void
-	{
-		return this._onClick;
-	}
-	
-	private function setOnMouseDown(value:MouseEvent->Void):MouseEvent->Void
-	{
-		return this._onMouseDown = value;
-	}
-	
-	private function getOnMouseDown():MouseEvent->Void
-	{
-		return this._onMouseDown;
-	}
-	
-	private function setOnMouseUp(value:MouseEvent->Void):MouseEvent->Void
-	{
-		return this._onMouseUp = value;
-	}
-	
-	private function getOnMouseUp():MouseEvent->Void
-	{
-		return this._onMouseUp;
-	}
-	
-	private function setOnMouseMove(value:MouseEvent->Void):MouseEvent->Void
-	{
-		return this._onMouseMove = value;
-	}
-	
-	private function getOnMouseMove():MouseEvent->Void
-	{
-		return this._onMouseMove;
-	}
-
-	private function setOnMouseWheel(value:WheelEvent->Void):WheelEvent->Void
-	{
-		return this._onMouseWheel = value;
-	}
-	
-	private function getOnMouseWheel():WheelEvent->Void
-	{
-		return this._onMouseWheel;
-	}
-	
-	
-	
 }

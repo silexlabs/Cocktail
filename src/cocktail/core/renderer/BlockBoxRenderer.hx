@@ -638,6 +638,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (isVerticalScrollAttached != (_verticalScrollBar != null) || isHorizontalScrollAttached != (_horizontalScrollBar != null) )
 		{
+			_needsLayout = true;
+			_childrenNeedLayout = true;
 			super.layout();
 		}
 		
