@@ -21,20 +21,17 @@ class EventListener
 	 * Wheter this event listener is triggered during the
 	 * capture phase (if true) or the bubling phase (if false)
 	 */
-	private var _useCapture:Bool;
-	public var useCapture(get_useCapture, never):Bool;
+	public var useCapture(default, null):Bool;
 	
 	/**
 	 * The callback to call when this event listener is triggered
 	 */
-	private var _listener:Event->Void;
-	public var listener(get_listener, never):Event->Void;
+	public var listener(default, null):Event->Void;
 	
 	/**
 	 * The type of event this listener listens for
 	 */
-	private var _eventType:String;
-	public var eventType(get_eventType, never):String;
+	public var eventType(default, null):String;
 	
 	/**
 	 * class constructor. Init
@@ -42,9 +39,9 @@ class EventListener
 	 */
 	public function new(eventType:String, listener:Event->Void, useCapture:Bool)
 	{
-		_listener = listener;
-		_useCapture = useCapture;
-		_eventType = eventType;
+		this.listener = listener;
+		this.useCapture = useCapture;
+		this.eventType = eventType;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -60,7 +57,7 @@ class EventListener
 	 */
 	public function handleEvent(evt:Event):Void
 	{
-		_listener(evt);
+		listener(evt);
 	}
 	
 	/**
@@ -70,25 +67,6 @@ class EventListener
 	 */
 	public function dispose():Void
 	{
-		_listener = null;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_eventType():String
-	{
-		return _eventType;
-	}
-	
-	private function get_listener():Event->Void
-	{
-		return _listener;
-	}
-	
-	private function get_useCapture():Bool
-	{
-		return _useCapture;
+		listener = null;
 	}
 }

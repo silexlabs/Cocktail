@@ -34,7 +34,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 {
 	
 	
-	private static inline var INVALIDATION_INTERVAL:Int = 2000;
+	private static inline var INVALIDATION_INTERVAL:Int = 20;
 	
 	private var _invalidationScheduled:Bool;
 	
@@ -172,7 +172,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	{
 		#if (flash9 || nme)
 		//start the rendering at the root layer renderer
-		//TODO 3 : should instead call an invalidateRendering method on LayerRenderer ?
 		render(flash.Lib.current);
 		#end
 	}
@@ -182,10 +181,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * of the all of the rendring tree elements relative to their containing block.
 	 * Then set the global bounds (relative to the window) for all of the elements
 	 * of the rendering tree
-	 * 
-	 * TODO 2 : for now only called by the InitialBlockRenderer but should be callable
-	 * by any BoxRenderer to prevent from laying out and rendering all of the rendering
-	 * tree
 	 */
 	private function startLayout():Void
 	{

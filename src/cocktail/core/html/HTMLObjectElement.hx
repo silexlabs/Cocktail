@@ -64,7 +64,7 @@ class HTMLObjectElement extends EmbeddedElement
 	 */
 	override private function initEmbeddedAsset():Void
 	{
-		_embeddedAsset = _imageLoader.nativeElement;
+		embeddedAsset = _imageLoader.nativeElement;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -111,9 +111,9 @@ class HTMLObjectElement extends EmbeddedElement
 	 */
 	private function onLoadComplete(image:NativeElement):Void
 	{
-		this._intrinsicHeight = _imageLoader.intrinsicHeight;
-		this._intrinsicWidth = _imageLoader.intrinsicWidth;
-		this._intrinsicRatio = _intrinsicHeight / _intrinsicWidth;
+		intrinsicHeight = _imageLoader.intrinsicHeight;
+		intrinsicWidth = _imageLoader.intrinsicWidth;
+		intrinsicRatio = intrinsicHeight / intrinsicWidth;
 		
 		invalidate(InvalidationReason.other);
 		

@@ -8,10 +8,13 @@
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
+import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLVideoElement;
+import cocktail.core.resource.ResourceManager;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
+import cocktail.port.Resource;
 
 /**
  * Renders an embedded video asset
@@ -113,31 +116,25 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	 * Render the poster frame of the video if the video is not
 	 * yet loaded or has not started playing yet
 	 */
-	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext):Void
+	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:NativeElement):Void
 	{
+		var resource:Resource = ResourceManager.getResource(_node.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
+
+		if (resource.loaded == false || resource.loadedWithError == true)
+		{
+			return;
+		}
+		
 		#if (flash9 || nme)
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
-		containerGraphicContext.addChild(htmlVideoElement.posterFrameEmbeddedAsset);
+		var bitmap:flash.display.Bitmap = new flash.display.Bitmap(resource.nativeResource, flash.display.PixelSnapping.AUTO, true);
+		containerGraphicContext.addChild(bitmap);
 		
 		var globalBounds:RectangleData = globalBounds;
-		htmlVideoElement.posterFrameEmbeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
-		htmlVideoElement.posterFrameEmbeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
-		htmlVideoElement.posterFrameEmbeddedAsset.width = _coreStyle.computedStyle.width;
-		htmlVideoElement.posterFrameEmbeddedAsset.height = _coreStyle.computedStyle.height;
-		
-		//have to try/catch because of potential cross-domain security error
-		try {
-			var loader:flash.display.Loader = cast(htmlVideoElement.posterFrameEmbeddedAsset);
-			var bitmap:flash.display.Bitmap = cast(loader.content);
-			if (bitmap != null)
-			{
-				bitmap.smoothing = true;
-			}
-		}
-		catch(e:Dynamic) {
-				
-			}
-		
+		bitmap.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
+		bitmap.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
+		bitmap.width = _coreStyle.computedStyle.width;
+		bitmap.height = _coreStyle.computedStyle.height;
 		#end
 	}
 }

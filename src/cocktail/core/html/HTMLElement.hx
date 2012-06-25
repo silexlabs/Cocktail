@@ -634,6 +634,9 @@ class HTMLElement extends Element<HTMLElement>
 	 * Instantiate the right ElementRenderer
 	 * based on the Display style and/or the 
 	 * type of HTMLElement
+	 * 
+	 * TODO 4 : affecting coreStyle should be done in other
+	 * method as it is duplicated in each overriding classes
 	 */
 	private function createElementRenderer():Void
 	{

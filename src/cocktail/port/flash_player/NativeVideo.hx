@@ -73,7 +73,6 @@ class NativeVideo extends NativeMedia
 		var nc = new NetConnection();
 		nc.connect(null);
 		_netStream = new NetStream(nc);
-		
 		initListenerObject(_netStream);
 
 	}

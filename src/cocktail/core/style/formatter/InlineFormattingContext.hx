@@ -226,8 +226,6 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * Insert an array of line boxes into the current line. If the line boxes
 	 * can't all fit in the line, as many new line as necessary are created
-	 * 
-	 * TODO : should take marginLeft and marginRight into account
 	 */
 	private function insertIntoLine(lineBoxes:Array<LineBox>, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{

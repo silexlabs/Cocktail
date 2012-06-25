@@ -80,8 +80,6 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	 * Overiden as the body's element renderer computed height is a special
 	 * case where the height should be the height of the initial containing block
 	 * if it specified as 'auto'
-	 * 
-	 * TODO 3 : shouldn't it be in boxComputers instead ?
 	 */
 	override private function layoutSelf():Void
 	{
