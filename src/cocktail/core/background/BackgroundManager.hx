@@ -7,6 +7,11 @@
 */
 package cocktail.core.background;
 
+import cocktail.core.event.Event;
+import cocktail.core.event.UIEvent;
+import cocktail.core.renderer.ElementRenderer;
+import cocktail.core.resource.ResourceManager;
+import cocktail.port.Resource;
 import cocktail.port.NativeElement;
 import cocktail.core.style.StyleData;
 import cocktail.core.unit.UnitData;
@@ -15,6 +20,7 @@ import cocktail.core.resource.ImageLoader;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.computer.BackgroundStylesComputer;
 import cocktail.core.unit.UnitManager;
+import cocktail.core.renderer.RendererData;
 import haxe.Log;
 
 /**
@@ -26,24 +32,20 @@ import haxe.Log;
  * 
  * This class renders and return all those backgrounds elements
  * 
+ * TODO 1 : way too complicated
+ * 
  * @author Yannick DOMINGUEZ
  */
 class BackgroundManager 
 {
-	/**
-	 * an array of each of the background managers instantiated by this class.
-	 * One background drawing manager must be instantiated for each layer of background.
-	 * for instance, for a HTMLElement with a background color and one background image,
-	 * 2 background drawing manager will be instantiated and stored
-	 */
-	private var _backgroundDrawingManagers:Array<BackgroundDrawingManager>;
+	private var _elementRenderer:ElementRenderer;
 	
 	/**
-	 * class constructor. init class atribute
+	 * class constructor.
 	 */
-	public function new()
+	public function new(elementRenderer:ElementRenderer)
 	{
-		_backgroundDrawingManagers = new Array<BackgroundDrawingManager>();
+		_elementRenderer = elementRenderer;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -174,99 +176,86 @@ class BackgroundManager
 	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
 	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):NativeElement
 	{
-		
-		var imageLoader:ImageLoader = new ImageLoader();
-		
 		var backgroundImageDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(
 		backgroundBox);
 		
 		var backgroundImageNativeElement:NativeElement = backgroundImageDrawingManager.nativeElement;
-		#if (flash9 || nme)
-		//TODO 4 : should retrieve image if already loaded, else start loading and call an invalidate() method when it is in fact loaded
-		var onBackgroundImageLoadedDelegate:BackgroundDrawingManager->NativeElement->ImageLoader->CoreStyle->RectangleData->BackgroundPosition->
-		BackgroundSize->BackgroundOrigin-> BackgroundClip-> BackgroundRepeat->
-		BackgroundImage->Void = onBackgroundImageLoaded;
 		
-		var onBackgroundImageLoadErrorDelegate:String->Color->NativeElement->CoreStyle->RectangleData->BackgroundPosition->
-		BackgroundSize->BackgroundOrigin-> BackgroundClip-> BackgroundRepeat->
-		BackgroundImage->Void = onBackgroundImageLoadError;
+		var foundResource:Bool = false;
 		
-		//try to load the picture, and set the callbacks
-		imageLoader.load(imageDeclaration.urls,
-		function(loadedImage:NativeElement) {
-			onBackgroundImageLoadedDelegate(backgroundImageDrawingManager, loadedImage, imageLoader, style, backgroundBox, backgroundPosition, backgroundSize, 
-			backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
-		}, function(error:String) {
-			onBackgroundImageLoadErrorDelegate(error, imageDeclaration.fallbackColor, backgroundImageNativeElement, style, backgroundBox, backgroundPosition, backgroundSize, 
-		backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
-		});
-		#end
+		for (i in 0...imageDeclaration.urls.length)
+		{
+			var resource:Resource = ResourceManager.getResource(imageDeclaration.urls[i]);
+			
+			if (resource.loaded == true)
+			{
+					var computedGradientStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
+					style, backgroundBox, resource.intrinsicWidth, resource.intrinsicHeight, resource.intrinsicRatio, backgroundPosition,
+					backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
+					
+					#if (flash9 || nme)
+					var bitmap:flash.display.Bitmap = new flash.display.Bitmap(resource.nativeResource,  flash.display.PixelSnapping.AUTO, true);
+					
+					backgroundImageDrawingManager.drawBackgroundImage(
+					bitmap, 
+					computedGradientStyles.backgroundOrigin,
+					computedGradientStyles.backgroundClip,
+					resource.intrinsicWidth,
+					resource.intrinsicHeight,
+					resource.intrinsicRatio,
+					computedGradientStyles.backgroundSize,
+					computedGradientStyles.backgroundPosition,
+					computedGradientStyles.backgroundRepeat);
+					#end
+					
+				foundResource = true;	
+				break;
+			}
+			else if (resource.loadedWithError == false)
+			{
+				resource.addEventListener(UIEvent.LOAD, onBackgroundImageLoaded);
+				resource.addEventListener(UIEvent.ERROR, onBackgroundImageLoadError);
+				
+				foundResource = true;
+				break;
+			}
+		}
+		
+		
+		if (foundResource == false)
+		{
+			var computedBackgroundStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
+			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,
+			backgroundClip, backgroundRepeat, backgroundImage);
+
+			
+			var backgroundColor:ColorData = UnitManager.getColorDataFromCSSColor(imageDeclaration.fallbackColor);
+			
+			var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(backgroundBox);
+			backgroundColorDrawingManager.drawBackgroundColor(backgroundColor, computedBackgroundStyles.backgroundClip);
+			
+			backgroundImageNativeElement = backgroundColorDrawingManager.nativeElement;
+		}
+		
 		return backgroundImageNativeElement;
 	}
 	
 	/**
 	 * Called when the bitmap was successfully loaded. Draw
 	 * the loaded bitmap onto a nativeElement
-	 * 
-	 * @param	backgroundImageNativeElement
-	 * @param	loadedBackgroundImage
-	 * @param	imageLoader
-	 * @param	style
-	 * @param	backgroundBox
-	 * @param	backgroundPosition
-	 * @param	backgroundSize
-	 * @param	backgroundOrigin
-	 * @param	backgroundClip
-	 * @param	backgroundRepeat
-	 * @param	backgroundImage
 	 */
-	private function onBackgroundImageLoaded(backgroundImageDrawingManager:BackgroundDrawingManager, loadedBackgroundImage:NativeElement, imageLoader:ImageLoader, style:CoreStyle, backgroundBox:RectangleData,
-	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
-	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):Void
+	private function onBackgroundImageLoaded(e:Event):Void
 	{
-			var computedGradientStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
-			style, backgroundBox, imageLoader.intrinsicWidth, imageLoader.intrinsicHeight, imageLoader.intrinsicRatio, backgroundPosition,
-			backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
-			
-			
-			
-			backgroundImageDrawingManager.drawBackgroundImage(
-			loadedBackgroundImage, 
-			computedGradientStyles.backgroundOrigin,
-			computedGradientStyles.backgroundClip,
-			imageLoader.intrinsicWidth,
-			imageLoader.intrinsicHeight,
-			imageLoader.intrinsicRatio,
-			computedGradientStyles.backgroundSize,
-			computedGradientStyles.backgroundPosition,
-			computedGradientStyles.backgroundRepeat);
-			
-			_backgroundDrawingManagers.push(backgroundImageDrawingManager);
+		_elementRenderer.invalidate(InvalidationReason.other);
 	}
 	
 	/**
 	 * When the external bitmap can't be loaded, draw a fallback background color
 	 * layer
-	 * 
-	 * @param	error
-	 * @param	backgroundColor
-	 * @param	backgroundImageNativeElement
-	 * @param	style
-	 * @param	backgroundBox
-	 * @param	backgroundPosition
-	 * @param	backgroundSize
-	 * @param	backgroundOrigin
-	 * @param	backgroundClip
-	 * @param	backgroundRepeat
-	 * @param	backgroundImage
 	 */
-	private function onBackgroundImageLoadError(error:String, backgroundColor:CSSColor, backgroundImageNativeElement:NativeElement, style:CoreStyle, backgroundBox:RectangleData,
-	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
-	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):Void
+	private function onBackgroundImageLoadError(e:Event):Void
 	{
-		//TODO 4 : re-implement
-		/**drawBackgroundColor(style, UnitManager.getColorDataFromCSSColor(backgroundColor), backgroundImageNativeElement, backgroundBox, backgroundPosition,
-				backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);*/
+		_elementRenderer.invalidate(InvalidationReason.other);
 	}
 	
 	/**
@@ -293,8 +282,6 @@ class BackgroundManager
 
 		var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(backgroundBox);
 		backgroundColorDrawingManager.drawBackgroundColor(backgroundColor, computedBackgroundStyles.backgroundClip);
-
-		_backgroundDrawingManagers.push(backgroundColorDrawingManager);
 		
 		return backgroundColorDrawingManager.nativeElement;
 	}

@@ -108,7 +108,7 @@ class BoxRenderer extends ElementRenderer
 		//TODO 4 : update doc for this
 		_coreStyle.computeBackgroundStyles();
 		
-		var backgroundManager:BackgroundManager = new BackgroundManager();
+		var backgroundManager:BackgroundManager = new BackgroundManager(this);
 		
 		//TODO 3 : should only pass dimensions instead of bounds
 		var backgrounds:Array<NativeElement> = backgroundManager.render(bounds, _coreStyle);

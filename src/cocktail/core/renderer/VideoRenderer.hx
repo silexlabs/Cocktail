@@ -115,6 +115,8 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	/**
 	 * Render the poster frame of the video if the video is not
 	 * yet loaded or has not started playing yet
+	 * 
+	 * TODO 4 : duplicated code from ImageRenderer. Should be base class ?
 	 */
 	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:NativeElement):Void
 	{
