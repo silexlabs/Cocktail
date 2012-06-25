@@ -84,9 +84,9 @@ class NativeVideo extends NativeMedia
 	 */
 	private function initListenerObject(netStream:NetStream):Void
 	{
-		var listener:Dynamic = {
-			onMetaData:onNetStreamMetaData
-		}
+		var listener:Dynamic = { };
+		listener.onMetaData = onNetStreamMetaData;
+		
 		
 		netStream.client = listener;
 	}

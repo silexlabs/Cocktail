@@ -46,7 +46,7 @@ class BodyBoxRenderer extends BlockBoxRenderer
 		//during rendering
 		_coreStyle.computeBackgroundStyles();
 		
-		var backgroundManager:BackgroundManager = new BackgroundManager();
+		var backgroundManager:BackgroundManager = new BackgroundManager(this);
 		
 		var windowData:ContainingBlockData = getWindowData();
 		

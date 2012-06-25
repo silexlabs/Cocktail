@@ -128,7 +128,7 @@ class LineBox extends NodeBase<LineBox>
 		_leadedAscent = 0;
 		_leadedDescent = 0;
 		
-		_backgroundManager = new BackgroundManager();
+		_backgroundManager = new BackgroundManager(_elementRenderer);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

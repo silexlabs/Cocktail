@@ -23,16 +23,18 @@ import flash.system.ApplicationDomain;
 #end
 
 /**
- * This is the Flash As3 implementation of the ResourceLoader.
- * Load a resource into a native flash Loader, the Loader
- * can then be used as a NativeElement to attach it to the
- * DOM
+ * This is the Flash As3 implementation of the Resource.
+ * Load a resource into a native flash Loader, then
+ * store the bitmap data retrieved from the loader
  * 
  * @author Yannick DOMINGUEZ
  */
 class Resource extends AbstractResource
 {
-	
+	/**
+	 * The native flash loader used to
+	 * load the resource
+	 */
 	private var _loader:Loader;
 	
 	/**
@@ -83,7 +85,7 @@ class Resource extends AbstractResource
 	
 	/**
 	 * When the resource has been loaded, remove the listener on it, 
-	 * then call the load complete method passing the loaded resource as a NativeElement
+	 * then call the load complete method
 	 * @param	event the Complete event, contains the native Loader
 	 */
 	private function onNativeLoadComplete(event:Event):Void
@@ -95,9 +97,8 @@ class Resource extends AbstractResource
 	}
 	
 	/**
-	 * When there was an error during loading, call the error callback with the
-	 * the message error, remove the event listeners
-	 * @param	event the IO_ERROR event, containd info on the error
+	 * When there was an error during loading, call the error callback 
+	 * @param	event the IO_ERROR event, contains info on the error
 	 */
 	private function onNativeLoadIOError(event:IOErrorEvent):Void
 	{
