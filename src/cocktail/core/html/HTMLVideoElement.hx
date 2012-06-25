@@ -233,6 +233,7 @@ class HTMLVideoElement extends HTMLMediaElement
 		_onPosterLoadError = onPosterLoadError;
 		_posterImage.addEventListener(UIEvent.LOAD, _onPosterLoadComplete);
 		_posterImage.addEventListener(UIEvent.ERROR, _onPosterLoadError);
+		_posterImage.src = value;
 		return value;
 	}
 	
