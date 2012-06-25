@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
+import cocktail.core.event.Event;
 import cocktail.core.event.UIEvent;
 import cocktail.port.NativeElement;
 import cocktail.core.renderer.VideoRenderer;
@@ -46,14 +47,27 @@ class HTMLVideoElement extends HTMLMediaElement
 	
 	/**
 	 * Used to load the poster frame of the video
-	 * if a poster url is provided
+	 * if a poster url is provided.
+	 * 
+	 * Use an HTMLImageElement to prevent duplicating
+	 * resource loading code from HTMLImageElement
 	 */
-	private var _posterImageLoader:ImageLoader;
+	private var _posterImage:HTMLImageElement;
 	
 	/**
 	 * The loaded poster frame asset
 	 */
 	public var posterFrameEmbeddedAsset(default, null):NativeElement;
+	
+	/**
+	 * Callback called when the poster image was successfuly loaded
+	 */
+	private var _onPosterLoadComplete:Event->Void;
+	
+	/**
+	 * Called when there was an error while loading the poster
+	 */
+	private var _onPosterLoadError:Event->Void;
 	
 	/**
 	 * Returns the intrinsic width of the video in CSS pixels
@@ -91,17 +105,15 @@ class HTMLVideoElement extends HTMLMediaElement
 	 */
 	override private function initEmbeddedAsset():Void
 	{
-		_embeddedAsset = _nativeMedia.nativeElement;
+		embeddedAsset = _nativeMedia.nativeElement;
 	}
 	
 	/*
-	 * Init the loader for the poster frame
-	 * and the poster embedded asset
+	 * Init the image HTMLElement for the poster image
 	 */ 
 	private function initPosterFrame():Void
 	{
-		_posterImageLoader = new ImageLoader();
-		posterFrameEmbeddedAsset = _posterImageLoader.nativeElement;
+		_posterImage = new HTMLImageElement();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -174,25 +186,36 @@ class HTMLVideoElement extends HTMLMediaElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Called when the poster was successfuly loaded.
+	 * Called when the poster image was successfuly loaded.
 	 * Invalidate the rendering of the video element
 	 */
-	private function onLoadComplete(image:NativeElement):Void
+	private function onPosterLoadComplete(e:Event):Void
 	{
+		removeListeners();
 		invalidate(InvalidationReason.other);
 	}
 	
 	/**
 	 * Called when there was an error while loading
-	 * the poster. Dispatch an eror event
+	 * the poster image. Dispatch an error event
 	 * 
-	 * TODO 4 : check when poster fail should actually do
+	 * TODO 4 : check when poster fail hat should actually be done
 	 */
-	private function onLoadError(message:String):Void
+	private function onPosterLoadError(e:Event):Void
 	{
+		removeListeners();
 		var errorEvent:UIEvent = new UIEvent();
 		errorEvent.initUIEvent(UIEvent.ERROR, false, false, null, 0.0);
 		dispatchEvent(errorEvent);
+	}
+	
+	/**
+	 * Remove the poster image listeners
+	 */
+	private function removeListeners():Void
+	{
+		_posterImage.removeEventListener(UIEvent.LOAD, _onPosterLoadComplete);
+		_posterImage.removeEventListener(UIEvent.ERROR, _onPosterLoadError);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -205,7 +228,11 @@ class HTMLVideoElement extends HTMLMediaElement
 	private function set_poster(value:String):String
 	{
 		super.setAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME, value);
-		_posterImageLoader.load([value], onLoadComplete, onLoadError);
+		
+		_onPosterLoadComplete = onPosterLoadComplete;
+		_onPosterLoadError = onPosterLoadError;
+		_posterImage.addEventListener(UIEvent.LOAD, _onPosterLoadComplete);
+		_posterImage.addEventListener(UIEvent.ERROR, _onPosterLoadError);
 		return value;
 	}
 	

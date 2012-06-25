@@ -883,9 +883,9 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function onLoadedMetaData(e:Event):Void
 	{
-		_intrinsicHeight = _nativeMedia.height;
-		_intrinsicWidth = _nativeMedia.width;
-		_intrinsicRatio = _intrinsicHeight / _intrinsicWidth;
+		intrinsicHeight = _nativeMedia.height;
+		intrinsicWidth = _nativeMedia.width;
+		intrinsicRatio = intrinsicHeight / intrinsicWidth;
 		
 		//update playback times and duration
 		establishMediaTimeline();
