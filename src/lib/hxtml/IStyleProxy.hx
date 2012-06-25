@@ -7,12 +7,20 @@ interface IStyleProxy<DisplayObjectType>
 	public function setPosition (element:DisplayObjectType, value:String):Void;
 	public function setCssFloat(element:DisplayObjectType, value:String):Void;
 	public function setClear (element:DisplayObjectType, value:String):Void;
-/*	public function setTransformOriginNum (element:DisplayObjectType, valueX:Int, unitX:String, valueY:Int, unitY:String, valueZ:Int, unitZ:String):Void;
+	/*
+	public function setTransformOriginNum (element:DisplayObjectType, valueX:Int, unitX:String, valueY:Int, unitY:String, valueZ:Int, unitZ:String):Void;
 	public function setTransformOriginKey (element:DisplayObjectType, value:String):Void;
 	public function setTransform (element:DisplayObjectType, value:String):Void;
-	
+	*/
+	// transition
+	public function setTransitionProperty(element:DisplayObjectType, value:String):Void;
+	public function setTransitionDuration(element:DisplayObjectType, value:String):Void;
+	public function setTransitionTimingFunction(element:DisplayObjectType, value:String):Void;
+	public function setTransitionDelay(element:DisplayObjectType, value:String):Void;
+
+
 	//TODO : rename setMarginLeftLength ? Add setMarginLeftPercent ?
-*/	public function setMarginLeftNum (element:DisplayObjectType, value:Float, unit:String):Void;
+	public function setMarginLeftNum (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setMarginLeftKey (element:DisplayObjectType, value:String):Void;
 	public function setMarginTopNum (element:DisplayObjectType, value:Float, unit:String):Void;
 	public function setMarginTopKey (element:DisplayObjectType, value:String):Void;

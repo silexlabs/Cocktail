@@ -340,7 +340,18 @@ class StyleProxy implements lib.hxtml.IStyleProxy<HTMLElement>
 	public function setOverflowY (element:HTMLElement, value:String):Void{
 		element.style.overflowY = value;
 	}
-	
+	public function setTransitionDuration(element:HTMLElement, value:String):Void{
+		element.style.transitionDuration = value; 
+	}
+	public function setTransitionDelay(element:HTMLElement, value:String):Void{
+		element.style.transitionDelay = value; 
+	}
+	public function setTransitionProperty(element:HTMLElement, value:String):Void{
+		element.style.transitionProperty = value; 
+	}
+	public function setTransitionTimingFunction(element:HTMLElement, value:String):Void{
+		element.style.transitionTimingFunction = value; 
+	}	
 /*	
 	public function setOpacity (element:Node, value:Int, unit:String):Void{
 		element.style.opacity = value+unit;

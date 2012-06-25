@@ -593,6 +593,7 @@ class UnitManager
 		return  cursor;
 	}
 	
+
 	static public function wordSpacingEnum(string:String):WordSpacing
 	{
 		if (string == "normal")
@@ -1031,6 +1032,28 @@ class UnitManager
 			unit : trim(r.matched(2))
 		};
 	}
+	/**
+	 * function used internally to split a string to a time value enum   
+	 */
+	static private function string2TimeValue(string:String):TimeValue
+	{
+		string = trim(string);
+		var ts  = 0;
+		var tms = 0;
+		var tv:TimeValue;
+		var r : EReg = ~/^([0-9]+)(ms|s)$/;
+		r.match(string);
+		
+		if (r.matched(2) == "s")
+		{
+			tv = TimeValue.seconds(Std.parseFloat(r.matched(1)));
+		}
+		else 
+		{
+			tv = TimeValue.milliSeconds(Std.parseFloat(r.matched(1)));
+		}
+		return tv;
+	}	
 	/**
 	 * function used internally to convert a value/unit strings pair to an enum  
 	 */
@@ -1671,12 +1694,13 @@ class UnitManager
 					{
 						cssTransformValue += " ";
 					}
-				}		
+				}
 		}
 		
 		return cssTransformValue;
 	}
 	
+
 	/**
 	 * Returns the CSS representation of one transform
 	 * function
@@ -2903,8 +2927,202 @@ class UnitManager
 			case yellow:
 				cssColor = "yellow";	
 		}
-		
 		return cssColor;
 	}
+
+
+	private static function getTimeValueArray(value:String):Array<TimeValue>
+	{
+		var tResult:Array<TimeValue> = new Array<TimeValue>();
+		var tValues:Array<String>=value.split(',');
+
+		for (i in 0...tValues.length)
+		{		
+			tResult.push(string2TimeValue(tValues[i]));
+		}
+		return tResult;
+	}
+
+	private static function getCSSTimeValueArray(value:Array<TimeValue>):String
+	{
+		var tResult:Array<String> = new Array<String>();
+		for (val in value)
+		{
+			switch(val)
+			{
+				case TimeValue.seconds(timeval):
+					tResult.push(Std.string(timeval) + "s");
+				case TimeValue.milliSeconds(timeval):
+					tResult.push(Std.string(timeval) + "ms");
+			}
+		}
+		return tResult.join(',');
+	}
+
+	public static function getTransitionDuration(value:String):TransitionDuration
+	{
+		return UnitManager.getTimeValueArray(value);
+	}
+
+	public static function getCSSTransitionDuration(value:TransitionDuration):String
+	{
+		return UnitManager.getCSSTimeValueArray(value);
+	}
+
+	public static function getTransitionDelay(value:String):TransitionDuration
+	{
+		return UnitManager.getTimeValueArray(value);
+	}
+
+	public static function getCSSTransitionDelay(value:TransitionDuration):String
+	{
+		return UnitManager.getCSSTimeValueArray(value);
+	}
+
+	public static function getTransitionProperty(value:String):TransitionProperty
+	{
+		value = trim(value);
+		var tr:TransitionProperty;
+		var array:Array<String> = string2VList(value, ",");
+		var arrayProperties:Array<String> = [];
+
+		if (value == "none") 
+			tr =TransitionProperty.none;
+		else if (value == "all")
+			tr = TransitionProperty.all;
+		else
+		{
+			for (val in array)
+			{
+				arrayProperties.push(val);
+			}
+			tr = TransitionProperty.list(arrayProperties);
+		}
+		return tr;
+	}
+
+	public static function getCSSTransitionProperty(value:TransitionProperty):String
+	{
+		var result:String;
+		switch(value)
+		{
+			case TransitionProperty.list(value):
+				result = value.join(",");
+			case TransitionProperty.none:
+				result = "none";
+			case TransitionProperty.all:
+				result = "all";
+			default:
+				result = "none";
+		}
+		return result;
+	}
+
+
+	public static function getTransitionTimingFunction(string:String):TransitionTimingFunction
+	{
+		var rSplit: EReg = ~/[^\(][^0-9]*)],/g;
+
+		var tSplit:Array<String> = rSplit.split(string);
+		var tFunctions:Array<String> = [];
+
+		var tResult:Array<TransitionTimingFunctionValue> = new Array<TransitionTimingFunctionValue>();
+		var rgB : EReg = ~/cubic-bezier[ ]*\([ ]*([0-9]+)[ ]*,[ ]*([0-9]+)[ ]*,[ ]*([0-9]+)[ ]*,[ ]*([0-9]+)[ ]*\)$/;
+		var rgS : EReg = ~/steps[ ]*\([ ]*([0-9]+)[ ]*,[ ]*(start|end)[ ]*\)/;
+		var tr:TransitionTimingFunctionValue = TransitionTimingFunctionValue.ease;
+		
+		/* refactoring needed
+		* the rSplit regexp need to be improved in order to handle 
+		* a multi function composed string
+		*/
+		for (func in tSplit)
+		{
+			if (!rgB.match(func) && !rgS.match(func))
+				tFunctions = tFunctions.concat(func.split(','));
+			else
+				tFunctions.push(func);
+		}
+
+		for (func in tFunctions)
+		{		
+			func=trim(func);
+			if (rgS.match(func))
+			{
+				if (rgS.matched(2) ==  "start")
+					tr = TransitionTimingFunctionValue.steps(Std.parseInt(rgS.matched(1)), IntervalChangeValue.start);
+				else
+					tr = TransitionTimingFunctionValue.steps(Std.parseInt(rgS.matched(1)), IntervalChangeValue.end);
+			}
+			else if (rgB.match(func))
+			{
+				tr = TransitionTimingFunctionValue.cubicBezier(Std.parseFloat(rgB.matched(1)),Std.parseFloat(rgB.matched(2)),Std.parseFloat(rgB.matched(3)),Std.parseFloat(rgB.matched(4)));
+			}
+			else
+			{
+				switch (func)
+				{
+					case "ease":
+						tr = TransitionTimingFunctionValue.ease;
+					case "linear":
+						tr = TransitionTimingFunctionValue.linear;
+					case "ease-in":
+						tr = TransitionTimingFunctionValue.easeIn;
+					case "ease-out":
+						tr = TransitionTimingFunctionValue.easeOut;
+					case "ease-in-out":
+						tr = TransitionTimingFunctionValue.easeInOut;
+					case "step-start":
+						tr = TransitionTimingFunctionValue.stepStart;
+					case "step-end":
+						tr = TransitionTimingFunctionValue.stepEnd;
+				}
+			}
+
+			tResult.push(tr);
+		}
+		return tResult;
+	}	
+
+	public static function getCSSTransitionTimingFunction(functions:TransitionTimingFunction):String
+	{
+		var tResult:Array<String> = new Array<String>();
+		var r:String;
+		var func:TransitionTimingFunctionValue;
+		for (i in 0...functions.length)
+		{
+			func = functions[i];
+			switch(func)
+			{
+				case TransitionTimingFunctionValue.steps(intervalNumbers,intervalChange):
+					var interval = switch (intervalChange)
+					{
+						case IntervalChangeValue.start:
+							return "start";
+						case IntervalChangeValue.end:
+							return "end";
+					}
+					r = "steps("+Std.string(intervalNumbers)+","+interval;
+				case TransitionTimingFunctionValue.cubicBezier(x1, y1, x2, y2):
+					r = "cubic-bezier("+Std.string(x1)+","+Std.string(y1)+","+Std.string(x2)+","+Std.string(y2)+")";
+				case TransitionTimingFunctionValue.ease:
+					r = "ease";
+				case TransitionTimingFunctionValue.linear:
+					r = "linear";
+				case TransitionTimingFunctionValue.easeIn:
+					r = "easeIn";
+				case TransitionTimingFunctionValue.easeOut:
+					r = "easeOut";
+				case TransitionTimingFunctionValue.easeInOut:
+					r = "easeInOut";
+				case TransitionTimingFunctionValue.stepStart:
+					r = "stepStart";
+				case TransitionTimingFunctionValue.stepEnd:
+					r = "stepEnd";
+			}	
+			tResult.push(r);
+		}
+		return tResult.join(',');
+	}		
+
 	
-}
+}     
