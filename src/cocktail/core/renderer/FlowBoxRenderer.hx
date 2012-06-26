@@ -88,11 +88,14 @@ class FlowBoxRenderer extends BoxRenderer
 	{
 		super.layout(forceLayout);
 		
-		if (_childrenNeedLayout == true || forceLayout == true)
+		/**
+		 * Actually layout all the children of the ElementRenderer by calling
+		 * the layout method recursively on all the children
+		 */
+		var length:Int = childNodes.length;
+		for (i in 0...length)
 		{
-			//layout all the children of the ElementRenderer if it has any
-			layoutChildren();
-			_childrenNeedLayout = false;
+			childNodes[i].layout(_childrenNeedLayout == true);
 		}
 		
 		//starts the formatting of the children of this FlowBoxRenderer
@@ -132,19 +135,6 @@ class FlowBoxRenderer extends BoxRenderer
 			//TODO 2 : should instead call the layout() method of its children, the children should
 			//know how to layout itself as a positioned child
 			layoutPositionedChild(_positionedChildren[i], containerBlockData, windowData);
-		}
-	}
-	
-	private function layoutChildren():Void
-	{
-		/**
-		 * Actually layout all the children of the ElementRenderer by calling
-		 * the layout method recursively on all the children
-		 */
-		var length:Int = childNodes.length;
-		for (i in 0...length)
-		{
-			childNodes[i].layout(true);
 		}
 	}
 	

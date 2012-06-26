@@ -56,7 +56,7 @@ class TextLineBox extends LineBox
 	 * TODO 4 : should also render text decoration, or should
 	 * be on TextRenderer ?
 	 */
-	override public function render(graphicContext:NativeElement):Void
+	override public function render(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
 		
 		#if (flash9 || nme)

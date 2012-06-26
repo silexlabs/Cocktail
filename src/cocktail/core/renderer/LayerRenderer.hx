@@ -162,25 +162,25 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	/**
 	 * start the rendering of the positive z-index children
 	 */ 
-	public function renderPositiveChildElementRenderers(graphicContext:NativeElement):Void
+	public function renderPositiveChildElementRenderers(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
-		renderChildElementRenderers(_positiveZIndexChildRenderers, graphicContext);
+		renderChildElementRenderers(_positiveZIndexChildRenderers, graphicContext, forceRendering);
 	}
 	
 	/**
 	 * start the rendering of the zero and auto z-index children
 	 */ 
-	public function renderZeroAndAutoChildElementRenderers(graphicContext:NativeElement):Void
+	public function renderZeroAndAutoChildElementRenderers(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
-		renderChildElementRenderers(_zeroAndAutoZIndexChildRenderers, graphicContext);
+		renderChildElementRenderers(_zeroAndAutoZIndexChildRenderers, graphicContext, forceRendering);
 	}
 	
 	/**
 	 * start the rendering of the negative z-index children
 	 */
-	public function renderNegativeChildElementRenderers(graphicContext:NativeElement):Void
+	public function renderNegativeChildElementRenderers(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
-		renderChildElementRenderers(_negativeZIndexChildRenderers, graphicContext);
+		renderChildElementRenderers(_negativeZIndexChildRenderers, graphicContext, forceRendering);
 	}
 	
 	/////////////////////////////////
@@ -191,7 +191,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 * Utils method to start the rendering of an array of child root
 	 * ElementRenderer
 	 */
-	private function renderChildElementRenderers(rootElementRenderers:Array<ElementRenderer>, graphicContext:NativeElement):Void
+	private function renderChildElementRenderers(rootElementRenderers:Array<ElementRenderer>, graphicContext:NativeElement, forceRendering:Bool):Void
 	{
 		var length:Int = rootElementRenderers.length;
 		for (i in 0...length)
@@ -201,7 +201,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			//TODO 1 : using the parent graphic context causes a z-index bug as if the parent is a child of the formatting
 			//context root, the child element renderer is not displayed on top of the in-flow elements
 			var parentElementRenderer:ElementRenderer = rootElementRenderers[i].parentNode;
-			rootElementRenderers[i].render(graphicContext);
+			rootElementRenderers[i].render(graphicContext, forceRendering);
 		}
 	}
 	

@@ -1211,22 +1211,23 @@ class CoreStyle
 	private function setBackgroundColor(value:BackgroundColor):BackgroundColor
 	{
 		backgroundColor = value;
-		invalidate(InvalidationReason.other);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.BACKGROUND_COLOR_STYLE_NAME));
 		return value;
 	}
 	
 	private function setBackgroundImage(value:Array<BackgroundImage>):Array<BackgroundImage>
 	{
 		backgroundImage = value;
-		invalidate(InvalidationReason.other);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.BACKGROUND_IMAGE_STYLE_NAME));
 		return value;
 	}
 	
 	private function setBackgroundSize(value:Array<BackgroundSize>):Array<BackgroundSize>
 	{
 		backgroundSize = value;
+		//TODO 2 : should computed style be set here for this style ?
 		computedStyle.backgroundSize = value;
-		invalidate(InvalidationReason.other);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.BACKGROUND_SIZE_STYLE_NAME));
 		return value;
 	}
 	
@@ -1234,7 +1235,7 @@ class CoreStyle
 	{
 		backgroundClip = value;
 		computedStyle.backgroundClip = value;
-		invalidate(InvalidationReason.other);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.BACKGROUND_CLIP_STYLE_NAME));
 		return value;
 	}
 	
@@ -1242,7 +1243,7 @@ class CoreStyle
 	{
 		backgroundPosition = value;
 		computedStyle.backgroundPosition = value;
-		invalidate(InvalidationReason.other);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.BACKGROUND_POSITION_STYLE_NAME));
 		return value;
 	}
 	
@@ -1250,7 +1251,7 @@ class CoreStyle
 	{
 		backgroundRepeat = value;
 		computedStyle.backgroundRepeat = value;
-		invalidate(InvalidationReason.other);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.BACKGROUND_REPEAT_STYLE_NAME));
 		return value;
 	}
 	
@@ -1258,7 +1259,7 @@ class CoreStyle
 	{
 		backgroundOrigin = value;
 		computedStyle.backgroundOrigin = value;
-		invalidate(InvalidationReason.other);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME));
 		return value;
 	}
 	
