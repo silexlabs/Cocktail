@@ -1011,7 +1011,7 @@ class CoreStyle
 	private function setCSSFloat(value:CSSFloat):CSSFloat 
 	{
 		cssFloat = value;
-		invalidate(InvalidationReason.styleChanged(CSSConstants.FLOAT_STYLE_NAME));
+		invalidatePositioningScheme();
 		return value;
 	}
 	
