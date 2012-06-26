@@ -61,7 +61,7 @@ class Mouse extends AbstractMouse
 	}
 	
 	/**
-	 * TODO 3 : re-implement once asset manager is developed
+	 * TODO 2 : re-implement once asset manager is developed
 	 * 
 	 * Set a bitmap as mouse cursor using flash mouse API
 	private function setBitmapCursor(nativeElement:NativeElement, hotSpot:PointData):Void

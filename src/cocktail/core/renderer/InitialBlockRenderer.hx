@@ -34,7 +34,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 {
 	
 	
-	private static inline var INVALIDATION_INTERVAL:Int = 2000;
+	private static inline var INVALIDATION_INTERVAL:Int = 20;
 	
 	private var _invalidationScheduled:Bool;
 	
@@ -186,7 +186,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	{
 		//layout all the HTMLElements. After that they all know their bounds relative to the containing
 		//blocks
-		layout();
+		layout(false);
 		//set the global bounds on the rendering tree. After that all the elements know their positions
 		//relative to the window
 		setGlobalOrigins(this,0,0, 0,0);

@@ -230,9 +230,9 @@ class BoxRenderer extends ElementRenderer
 	 * in computing its styles (box model, font, text...) into usable values and determining its 
 	 * bounds in the space of the containing block which started its formatting context.
 	 */
-	override public function layout():Void
+	override public function layout(forceLayout:Bool):Void
 	{	
-		if (_needsLayout == true)
+		if (_needsLayout == true || forceLayout == true)
 		{
 			layoutSelf();
 			_needsLayout = false;
@@ -257,8 +257,6 @@ class BoxRenderer extends ElementRenderer
 		var containingBlockFontMetricsData:FontMetricsData = _containingBlock.coreStyle.fontMetrics;
 
 		//compute the font style (font-size, line-height...)
-		//TODO 1 : styles which can be computed without any external data should be when their specified
-		//value changes instead of now, which is unecessary
 		_coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
 
 		//compute the box styles (width, height, margins, paddings...)
