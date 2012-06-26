@@ -84,11 +84,11 @@ class FlowBoxRenderer extends BoxRenderer
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function layout():Void
+	override public function layout(forceLayout:Bool):Void
 	{
-		super.layout();
+		super.layout(forceLayout);
 		
-		if (_childrenNeedLayout == true)
+		if (_childrenNeedLayout == true || forceLayout == true)
 		{
 			//layout all the children of the ElementRenderer if it has any
 			layoutChildren();
@@ -101,7 +101,7 @@ class FlowBoxRenderer extends BoxRenderer
 		//TODO 3 : should only be called for BlockBoxRenderer
 		format();
 		
-		if (_positionedChildrenNeedLayout == true)
+		if (_positionedChildrenNeedLayout == true || forceLayout == true)
 		{
 			//if this ElementRenderer is positioned, it means that it is the first positioned ancestor
 			//for its positioned children and it is its responsability to lay them out
@@ -128,6 +128,9 @@ class FlowBoxRenderer extends BoxRenderer
 		{
 			//layout the child ElementRenderer which set its x and y positioned origin in the space of this ElementRenderer's
 			//positioned origin
+			
+			//TODO 2 : should instead call the layout() method of its children, the children should
+			//know how to layout itself as a positioned child
 			layoutPositionedChild(_positionedChildren[i], containerBlockData, windowData);
 		}
 	}
@@ -141,7 +144,7 @@ class FlowBoxRenderer extends BoxRenderer
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			childNodes[i].layout();
+			childNodes[i].layout(true);
 		}
 	}
 	

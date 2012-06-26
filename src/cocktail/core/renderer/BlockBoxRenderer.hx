@@ -620,9 +620,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Overriden to deal with the scrollbars once the children of this
 	 * BlockBoxRenderer are laid out
 	 */
-	override public function layout():Void
+	override public function layout(forceLayout:Bool):Void
 	{	
-		super.layout();
+		super.layout(forceLayout);
 		
 		//only get scrollable bounds for bloc box renderer
 		//which might display scrollbars
@@ -640,7 +640,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			_needsLayout = true;
 			_childrenNeedLayout = true;
-			super.layout();
+			super.layout(forceLayout);
 		}
 		
 		layoutScrollBarsIfNecessary(getWindowData());

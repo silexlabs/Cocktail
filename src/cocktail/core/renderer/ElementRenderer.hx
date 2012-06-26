@@ -293,7 +293,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	public function dispose():Void
 	{
 		//_lineBoxes = null;
-		//TODO 2 :should clear the graphic context
 		//_graphicsContext = null;
 		//_coreStyle = null;
 		//_layerRenderer = null;
@@ -387,8 +386,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	/*
 	 * Layout this ElementRenderer so that it knows its
 	 * bounds and can be rendered to the screen
+	 * 
+	 * @param forceLayout force the layout of this
+	 * ElementRenderer and of its children
 	 */ 
-	public function layout():Void
+	public function layout(forceLayout:Bool):Void
 	{	
 		//abstract
 	}
@@ -827,74 +829,43 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	
 	public function invalidate(invalidationReason:InvalidationReason):Void
 	{
-		//setNeedLayout(true);
+		switch(invalidationReason)
+		{
+			case InvalidationReason.styleChanged(styleName):
+				invalidatedStyle(styleName);
+			
+			case InvalidationReason.childStyleChanged(styleName):
+				invalidatedChildStyle(styleName);
+				
+			case InvalidationReason.positionedChildStyleChanged(styleName):
+				invalidatedPositionedChildStyle(styleName);
+				
+			case InvalidationReason.needsImmediateLayout:
+				_needsLayout = true;
+				_childrenNeedLayout = true;
+				
+			default:
+				_needsLayout = true;
+				_childrenNeedLayout = true;
+				_needsVisualEffectsRendering = true;
+				_needsRendering = true;
+				_positionedChildrenNeedLayout = true;
+		}
 		
-		//invalidateChildren(this);
-		
-		//switch(invalidationReason)
-		//{
-			//case InvalidationReason.styleChanged(styleName):
-				//invalidatedStyle(styleName);
-			//
-			//case InvalidationReason.childStyleChanged(styleName):
-				//invalidatedChildStyle(styleName);
-				//
-			//case InvalidationReason.positionedChildStyleChanged(styleName):
-				//invalidatedPositionedChildStyle(styleName);
-				//
-			//case InvalidationReason.needsImmediateLayout:
-				//_needsLayout = true;
-				//_childrenNeedLayout = true;
-				//invalidateLayout(true);
-				//
-			//default:
-				//_needsLayout = true;
-				//_childrenNeedLayout = true;
-				//_needsVisualEffectsRendering = true;
-				//_needsRendering = true;
-				//_positionedChildrenNeedLayout = true;
-		//}
 		invalidateContainingBlock(invalidationReason);
-		//invalidateLayout(false);
+		
 	}
 	
 	public function childInvalidated(invalidationReason:InvalidationReason):Void
 	{
-		_needsLayout = true;
 		_childrenNeedLayout = true;
-		_needsVisualEffectsRendering = true;
-		_needsRendering = true;
-		_positionedChildrenNeedLayout = true;
-		
 		invalidate(invalidationReason);
 	}
 	
 	public function positionedChildInvalidated(invalidationReason:InvalidationReason):Void
 	{
-		//_positionedChildrenNeedLayout = true;
+		_positionedChildrenNeedLayout = true;
 		invalidate(invalidationReason);
-	}
-	
-	public function setNeedLayout(needLayout:Bool):Void
-	{
-		if (_needsLayout == false)
-		{
-			if (needLayout == true)
-			{
-				var length:Int = childNodes.length;
-				for (i in 0...length)
-				{
-					childNodes[i].setNeedLayout(needLayout);
-				}
-			}
-		}
-		
-		_needsLayout = needLayout;
-		_childrenNeedLayout = needLayout;
-		_needsVisualEffectsRendering = needLayout;
-		_needsRendering = needLayout;
-		_positionedChildrenNeedLayout = needLayout;
-		
 	}
 	
 	private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
@@ -905,7 +876,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{
 			return;
 		}
-		
 		
 		var containingBlockInvalidationReason:InvalidationReason;
 		
@@ -926,18 +896,14 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				
 		}
 		
-		_containingBlock.setNeedLayout(true);
-		
-		_containingBlock.invalidate(invalidationReason);
-		
-		
-		if (isPositioned() == true)
+		if (isPositioned() == true && isRelativePositioned() == false)
 		{
-			//containingBlock.positionedChildInvalidated(containingBlockInvalidationReason);
+			_containingBlock.positionedChildInvalidated(containingBlockInvalidationReason);
 		}
-		//containingBlock.childInvalidated(containingBlockInvalidationReason);
-		
-		
+		else
+		{
+			_containingBlock.childInvalidated(containingBlockInvalidationReason);
+		}
 	}
 	
 	private function invalidatedStyle(styleName:String):Void
@@ -948,11 +914,14 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
 				if (isPositioned() == true)
 				{
-					_needsVisualEffectsRendering = true;
+					if (isRelativePositioned() == false)
+					{
+						_needsLayout = true;
+					}
 				}
-				
-			case CSSConstants.POSITION_STYLE_NAME, CSSConstants.Z_INDEX_STYLE_NAME:
-				invalidateLayer();
+			
+			default:
+				_needsLayout = true;
 		}
 	}
 	
@@ -986,8 +955,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		}
 	}
 	
-	
-	
 	/**
 	 * Call when a style which require a re-layout
 	 * of the text (such as font-size, fon-family...)
@@ -1000,23 +967,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			var child:ElementRenderer = childNodes[i];
 			child.invalidateText();
 		}
-	}
-	
-	/**
-	 * Call when a style which might require altering
-	 * the LayerRenderer tree (such as position or
-	 * overflow) is changed
-	 */
-	private function invalidateLayer():Void
-	{
-		detach();
-		attach();
-		//invalidateLayout();
-	}
-	
-	private function invalidateRendering():Void
-	{
-		_needsRendering = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

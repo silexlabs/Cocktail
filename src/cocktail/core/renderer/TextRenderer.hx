@@ -50,7 +50,7 @@ class TextRenderer extends ElementRenderer
 		_lineBoxes = null;
 	}
 	
-	override public function layout():Void
+	override public function layout(forceLayout:Bool):Void
 	{	
 		//if (lineBoxes == null)
 		//{
