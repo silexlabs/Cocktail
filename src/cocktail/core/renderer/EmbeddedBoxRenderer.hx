@@ -46,9 +46,9 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * overriden to also render the embedded asset, for instance a picture for
 	 * an image renderer
 	 */
-	override private function renderChildren(graphicContext:NativeElement):Void
+	override private function renderSelf(graphicContext:NativeElement):Void
 	{
-		super.renderChildren(graphicContext);
+		super.renderSelf(graphicContext);
 		renderEmbeddedAsset(graphicContext);
 	}
 	

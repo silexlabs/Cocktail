@@ -13,6 +13,7 @@ import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
+import cocktail.Lib;
 
 /**
  * Anonmymous block are used to wrap inlineBoxRenderer
@@ -32,7 +33,7 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 	 */
 	public function new() 
 	{
-		super(new HTMLElement(HTMLConstants.HTML_DIV_TAG_NAME));
+		super(Lib.document.createElement(HTMLConstants.HTML_DIV_TAG_NAME));
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

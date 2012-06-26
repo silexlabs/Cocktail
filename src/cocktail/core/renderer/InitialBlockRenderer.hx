@@ -123,13 +123,29 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		}
 	}
 	
-	override private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
+	
+	
+	override public function invalidate(invalidationReason:InvalidationReason):Void
 	{
-		_needsLayout = true;
-		_childrenNeedLayout = true;
-		_needsVisualEffectsRendering = true;
-		_needsRendering = true;
-		_positionedChildrenNeedLayout = true;
+		switch(invalidationReason)
+		{
+			case InvalidationReason.styleChanged(styleName):
+				_needsLayout = true;
+				//_needsRendering = true;
+			
+			case InvalidationReason.childStyleChanged(styleName):
+				_childrenNeedLayout = true;
+				//_childrenNeedRendering = true;
+				
+			case InvalidationReason.positionedChildStyleChanged(styleName):
+				_positionedChildrenNeedLayout = true;
+				//_childrenNeedRendering = true;
+				
+			default:
+				_needsLayout = true;
+				//_needsRendering = true;
+				//_childrenNeedRendering = true;
+		}
 		
 		switch (invalidationReason)
 		{
@@ -139,6 +155,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 			default:
 				invalidateLayout(false);
 		}
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -172,7 +189,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	{
 		#if (flash9 || nme)
 		//start the rendering at the root layer renderer
-		render(flash.Lib.current);
+		render(flash.Lib.current, false);
 		#end
 	}
 	

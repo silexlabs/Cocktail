@@ -59,8 +59,8 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	{
 		#if (flash9 || nme)
 		{
-			_graphicsContext.x = x;
-			_graphicsContext.y = y;
+			graphicsContext.x = x;
+			graphicsContext.y = y;
 		}
 		#end
 		
