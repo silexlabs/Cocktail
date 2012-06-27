@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.port.platform.nativeWindow;
+import cocktail.core.event.Event;
 import cocktail.core.event.UIEvent;
 
 
@@ -31,6 +32,11 @@ class AbstractNativeWindow
 	 * a native resize event is disptached
 	 */
 	public var onResize:UIEvent->Void;
+	
+	/**
+	 * The callback called when entering/exiting fullscreen mode
+	 */
+	public var onFullScreenChange:Event->Void;
 	
 	/**
 	 * Height (in pixels) of the browser window viewport including,
@@ -81,6 +87,14 @@ class AbstractNativeWindow
 		//abstract
 	}
 	
+	/**
+	 * Wether fullscreen mode is activated
+	 */
+	public function fullscreen():Bool
+	{
+		return false;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// EVENTS
 	// Private native event handler method
@@ -98,6 +112,21 @@ class AbstractNativeWindow
 		if (onResize != null)
 		{
 			onResize(getUIEvent(event));
+		}
+	}
+	
+	/**
+	 * Create a cross-platform full screen change event from
+	 * the native full screen change event, and call
+	 * the full screen change callback if provided
+	 * 
+	 * @param	event the native full sreen change event
+	 */
+	private function onNativeFullScreenChange(event:Dynamic):Void
+	{
+		if (onFullScreenChange != null)
+		{
+			onFullScreenChange(getEvent(event));
 		}
 	}
 	
@@ -128,6 +157,17 @@ class AbstractNativeWindow
 	 * @param	event the native event
 	 */
 	private function getUIEvent(event:Dynamic):UIEvent
+	{
+		return null;
+	}
+	
+	/**
+	 * Create and return a cross-platform event
+	 * from the dispatched native event
+	 * 
+	 * @param	event the native event
+	 */
+	private function getEvent(event:Dynamic):Event
 	{
 		return null;
 	}

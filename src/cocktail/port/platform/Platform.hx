@@ -7,6 +7,7 @@
 */
 package cocktail.port.platform;
 
+import cocktail.core.event.Event;
 import cocktail.core.event.EventCallback;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
@@ -23,6 +24,9 @@ import cocktail.core.style.StyleData;
  * resize...
  * 
  * Hides all the platforms interface behind a common API
+ * 
+ * TODO 3 : should instead allow access to nativeWindow, mouse...
+ * instead of adding boilerplate
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -106,6 +110,7 @@ class Platform extends EventCallback
 	{
 		_nativeWindow = new NativeWindow();
 		_nativeWindow.onResize = dispatchUIEvent;
+		_nativeWindow.onFullScreenChange = dispatchFullScreenEvent;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -137,6 +142,16 @@ class Platform extends EventCallback
 	public function exitFullscreen():Void
 	{
 		_nativeWindow.exitFullscreen();
+	}
+	
+	/**
+	 * Return wether the document is currently
+	 * displayed in fullscreen mode
+	 * @return true if fullscreen mode
+	 */
+	public function fullscreen():Bool
+	{
+		return _nativeWindow.fullscreen();
 	}
 	
 	public function setMouseCursor(cursor:Cursor):Void
@@ -211,6 +226,14 @@ class Platform extends EventCallback
 		if (onresize != null)
 		{
 			onresize(uiEvent);
+		}
+	}
+	
+	private function dispatchFullScreenEvent(event:Event):Void
+	{
+		if (onfullscreenchange != null)
+		{
+			onfullscreenchange(event);
 		}
 	}
 	

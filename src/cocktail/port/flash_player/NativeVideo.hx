@@ -59,11 +59,6 @@ class NativeVideo extends NativeMedia
 	private var _metaData:Dynamic;
 	
 	/**
-	 * The source of the video to load
-	 */
-	private var _src:String;
-	
-	/**
 	 * class constructor. Init video
 	 */
 	public function new() 
@@ -72,6 +67,15 @@ class NativeVideo extends NativeMedia
 		
 		_video = new Video();
 		_video.smoothing = true;
+		
+		_nc = new NetConnection();
+		_nc.connect(null); 
+		
+		_netStream = new NetStream(_nc);
+		_netStream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
+		initListenerObject(_netStream);
+		
+		_video.attachNetStream(_netStream);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -135,33 +139,6 @@ class NativeVideo extends NativeMedia
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * init video to a state where it can 
-	 * be played by setting an url
-	 */
-	private function loadStream():Void
-	{
-		_nc = new NetConnection();
-		_nc.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-		_nc.connect(null);
-	}
-	
-	/**
-	 * Callback for net status event
-	 */
-	private function onNetStatus(event:NetStatusEvent):Void
-	{
-		switch (event.info.code) {
-                case "NetConnection.Connect.Success":
-					//at this point, the net stream can be connected
-                    connectStream();
-					
-                case "NetStream.Play.StreamNotFound":
-                    trace("Stream not found");
-					
-            }
-	}
-	
-	/**
 	 * Callback for async error. Retry to connect the stream
 	 * when happens
 	 * 
@@ -170,22 +147,7 @@ class NativeVideo extends NativeMedia
 	 */
 	private function onAsyncError(event:AsyncErrorEvent):Void
 	{
-		connectStream();
-	}
-	
-	/**
-	 * Connect the flash net stream
-	 */
-	private function connectStream():Void
-	{
-		_netStream = new NetStream(_nc);
-		_netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-		_netStream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
-		initListenerObject(_netStream);
-		
-		//start plying the stream
-		_netStream.play(_src);
-		_video.attachNetStream(_netStream);
+
 	}
 	
 	/**
@@ -205,7 +167,6 @@ class NativeVideo extends NativeMedia
 	 */
 	private function onNetStreamMetaData(data:Dynamic):Void
 	{
-		
 		_metaData = data;
 		
 		//pause video by default, play must be explicitely
@@ -272,8 +233,7 @@ class NativeVideo extends NativeMedia
 		//reset metadata
 		_metaData = null;
 		
-		_src = value;
-		loadStream();
+		_netStream.play(value);
 		
 		return value;
 	}

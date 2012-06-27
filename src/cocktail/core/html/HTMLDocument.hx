@@ -432,9 +432,12 @@ class HTMLDocument extends Document
 	 */
 	private function set_fullscreenElement(value:HTMLElement):HTMLElement
 	{
-		//do nothing if element is null
+		//do nothing if element is null. Might also
+		//be called when exiting fullscreen to set 
+		//fullsrcreen element to null
 		if (value == null)
 		{
+			fullscreenElement = null;
 			return value;
 		}
 		

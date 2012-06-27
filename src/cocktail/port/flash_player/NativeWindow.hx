@@ -7,6 +7,7 @@
 */
 package cocktail.port.flash_player;
 
+import cocktail.core.event.Event;
 import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.port.NativeElement;
@@ -47,7 +48,6 @@ class NativeWindow extends AbstractNativeWindow
 	{
 		flash.Lib.getURL(new URLRequest(url), name);
 	}
-	
 		
 	/**
 	 * Uses flash fullscreen API
@@ -65,6 +65,14 @@ class NativeWindow extends AbstractNativeWindow
 		flash.Lib.current.stage.displayState = StageDisplayState.NORMAL;
 	}
 	
+	/**
+	 * uses flash fullscreen API
+	 */
+	override public function fullscreen():Bool
+	{
+		return flash.Lib.current.stage.displayState == StageDisplayState.FULL_SCREEN;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden private utils methods
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -75,6 +83,7 @@ class NativeWindow extends AbstractNativeWindow
 	override private function setNativeListeners():Void
 	{
 		Lib.current.stage.addEventListener(flash.events.Event.RESIZE, onNativeResize);
+		Lib.current.stage.addEventListener(flash.events.FullScreenEvent.FULL_SCREEN, onNativeFullScreenChange);
 	}
 	
 	/**
@@ -83,6 +92,7 @@ class NativeWindow extends AbstractNativeWindow
 	override private function removeNativeListeners():Void
 	{
 		Lib.current.stage.removeEventListener(flash.events.Event.RESIZE, onNativeResize);
+		Lib.current.stage.removeEventListener(flash.events.FullScreenEvent.FULL_SCREEN, onNativeFullScreenChange);
 	}
 	
 	/**
@@ -93,13 +103,24 @@ class NativeWindow extends AbstractNativeWindow
 	 */
 	override private function getUIEvent(event:Dynamic):UIEvent
 	{
-		//cast the flash event
-		var typedEvent:flash.events.Event = cast(event);
-
 		var resizeEvent:UIEvent = new UIEvent();
 		resizeEvent.initUIEvent(UIEvent.RESIZE, false, false, null, 0.0);
 		
 		return resizeEvent;
+	}
+	
+	/**
+	 * Create and return a cross-platform event
+	 * from the dispatched native event
+	 * 
+	 * @param	event the native event
+	 */
+	override private function getEvent(event:Dynamic):Event
+	{
+		var fullScreenChangeEvent:Event = new Event();
+		fullScreenChangeEvent.initEvent(Event.FULL_SCREEN_CHANGE, false, false);
+		
+		return fullScreenChangeEvent;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
