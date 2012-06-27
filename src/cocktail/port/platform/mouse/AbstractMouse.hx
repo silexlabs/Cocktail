@@ -23,8 +23,6 @@ import cocktail.core.style.StyleData;
  * For instance in Flash, it listens to mouse
  * events on the Stage.
  * 
- * TODO 3 : add mouse double click
- * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractMouse 
