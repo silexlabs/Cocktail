@@ -104,7 +104,6 @@ class Mouse extends AbstractMouse
 	 */
 	override private function setNativeListeners():Void
 	{
-		Lib.current.stage.addEventListener(flash.events.MouseEvent.CLICK, onNativeClick);
 		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
 		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
 		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
@@ -116,7 +115,6 @@ class Mouse extends AbstractMouse
 	 */
 	override private function removeNativeListeners():Void
 	{
-		Lib.current.stage.removeEventListener(flash.events.MouseEvent.CLICK, onNativeClick);
 		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
 		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
 		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
@@ -138,9 +136,6 @@ class Mouse extends AbstractMouse
 		
 		switch (typedEvent.type)
 		{
-			case flash.events.MouseEvent.CLICK:
-				eventType = MouseEvent.CLICK;
-			
 			case flash.events.MouseEvent.MOUSE_DOWN:
 				eventType = MouseEvent.MOUSE_DOWN;
 				
@@ -160,7 +155,7 @@ class Mouse extends AbstractMouse
 		//TODO 5 : screenX should be relative to sreen top left, but how to get this in flash ? use JavaScript ?
 		mouseEvent.initMouseEvent(eventType, true, true, null, 0.0, Math.round(typedEvent.stageX), Math.round(typedEvent.stageY),
 		Math.round(typedEvent.stageX), Math.round(typedEvent.stageY), typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, false, 0, null);
-		
+
 		return mouseEvent;
 	}
 	

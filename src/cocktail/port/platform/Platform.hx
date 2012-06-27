@@ -89,7 +89,6 @@ class Platform extends EventCallback
 		_mouse.onMouseDown = dispatchMouseEvent;
 		_mouse.onMouseUp = dispatchMouseEvent;
 		_mouse.onMouseMove = dispatchMouseEvent;
-		_mouse.onClick = dispatchMouseEvent;
 		_mouse.onMouseWheel = dispatchMouseWheelEvent;
 	}
 	
@@ -168,12 +167,6 @@ class Platform extends EventCallback
 	{
 		switch(mouseEvent.type)
 		{
-			case MouseEvent.CLICK:
-				if (onclick != null)
-				{
-					onclick(mouseEvent);
-				}
-				
 			case MouseEvent.MOUSE_DOWN:
 				if (onmousedown != null)
 				{
