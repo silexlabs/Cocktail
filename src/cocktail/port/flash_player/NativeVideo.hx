@@ -160,8 +160,6 @@ class NativeVideo extends NativeMedia
 		{
 			case NET_CONNECTION_CONNECT_SUCCESS:
 				connectStream();
-				
-			case "NetStream.Seek.Notify":
 		}
 	}
 	

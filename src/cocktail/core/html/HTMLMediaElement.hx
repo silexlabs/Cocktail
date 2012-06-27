@@ -49,6 +49,14 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private static inline var PROGRESS_FREQUENCY:Int = 350;
 	
+	/**
+	 * The delta, in seconds, tht should exist between the current 
+	 * playack position and the total duration of the media for the
+	 * media to be considered ended. It is approximated as else, current
+	 * playback position will never be exactly equal to duration
+	 */
+	private static inline var  PLAYBACK_END_DELTA:Float = 0.2;
+	
 	/////////////////////////////////
 	// IDL ATTRIBUTES
 	////////////////////////////////
@@ -914,18 +922,29 @@ class HTMLMediaElement extends EmbeddedElement
 		_currentPlaybackPosition = _nativeMedia.currentTime;
 		_officialPlaybackPosition = _currentPlaybackPosition;
 		
+		
 		//check if the end of the media is reached
-		if (Math.round(_currentPlaybackPosition) >= Math.round(_duration))
+		if (_duration - _currentPlaybackPosition < PLAYBACK_END_DELTA)
 		{
 			_ended = true;
+			
+			//set current time to the total duration to reflect
+			//the fact that the video reached ending
+			_currentPlaybackPosition = _duration;
+			_officialPlaybackPosition = _currentPlaybackPosition;
+			
+			//should fire a last time update event
+			fireEvent(Event.TIME_UPDATE, false, false);
+			
 			fireEvent(Event.ENDED, false, false);
 			return;
 		}
 		
-		//if the media has not ended playing, dispatch a time update
-		//event, then set this method to be called again 
+		
 		fireEvent(Event.TIME_UPDATE, false, false);
 		
+		//if the media has not ended playing,
+		//set this method to be called again 
 		#if (flash9 || nme)
 		Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
 		#end
