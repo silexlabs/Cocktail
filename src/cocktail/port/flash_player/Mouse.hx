@@ -12,7 +12,11 @@ import cocktail.core.event.WheelEvent;
 import cocktail.port.NativeElement;
 import cocktail.port.platform.mouse.AbstractMouse;
 import cocktail.core.style.StyleData;
+import flash.display.BitmapData;
 import flash.Lib;
+import flash.ui.MouseCursorData;
+import cocktail.core.geom.GeomData;
+import flash.Vector;
 import haxe.Log;
 
 /**
@@ -64,6 +68,7 @@ class Mouse extends AbstractMouse
 	 * TODO 2 : re-implement once asset manager is developed
 	 * 
 	 * Set a bitmap as mouse cursor using flash mouse API
+	 */
 	private function setBitmapCursor(nativeElement:NativeElement, hotSpot:PointData):Void
 	{
 		//init the hotSpot if null
@@ -88,12 +93,12 @@ class Mouse extends AbstractMouse
 		var randomID:String = Std.string(Math.round(Math.random() * 1000));
 		
 		//register the cursor and set it
-		Mouse.registerCursor(randomID, mouseCursorData);
-		Mouse.cursor = randomID;
+		flash.ui.Mouse.registerCursor(randomID, mouseCursorData);
+		flash.ui.Mouse.cursor = randomID;
 		
 		//show the cursor if it was previously hidden
-		Mouse.show();
-	}*/
+		flash.ui.Mouse.show();
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden private mouse utils methods

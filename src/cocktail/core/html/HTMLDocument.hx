@@ -34,6 +34,9 @@ import cocktail.core.style.StyleData;
  * Besides providing access to the hierarchy, it also provides some convenience methods
  * for accessing certain sets of information from the document.
  * 
+ * TODO 3 : should manage current click count
+ * TODO 3 : should manage double click events
+ * 
  * @author Yannick DOMINGUEZ
  */
 class HTMLDocument extends Document
