@@ -615,7 +615,6 @@ class HTMLMediaElement extends EmbeddedElement
 					var sourceChild:HTMLSourceElement = cast(childNodes[i]);
 					if (sourceChild.type != null)
 					{
-						
 						if (canPlayType(sourceChild.type) == CAN_PLAY_TYPE_PROBABLY)
 						{
 							_currentSrc = sourceChild.src;
@@ -938,6 +937,10 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function onProgressTick():Void
 	{
+		//dispatch a load progress event
+		//TODO 4 : should it be dispatched before suspend ?
+		fireEvent(Event.PROGRESS, false, false);
+		
 		//check if all of the media has been loaded
 		if (_nativeMedia.bytesLoaded >= _nativeMedia.bytesTotal)
 		{
@@ -956,11 +959,8 @@ class HTMLMediaElement extends EmbeddedElement
 			setReadyState(HAVE_FUTURE_DATA);
 		}
 		
-		
 		//if not all of the media has been loaded, dispatch
 		//a progress event and set this method to be called again
-		fireEvent(Event.PROGRESS, false, false);
-		
 		#if (flash9 || nme)
 		Timer.delay(onProgressTick, PROGRESS_FREQUENCY);
 		#end

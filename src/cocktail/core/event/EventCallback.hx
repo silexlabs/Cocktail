@@ -108,6 +108,12 @@ class EventCallback extends EventTarget
 	public var onresize(default, set_onResize):UIEvent->Void;
 	
 	/**
+	 * Callback called when the document enters or exit fullscreen
+	 * mode
+	 */
+	public var onfullscreenchange(default, set_onFullScreenChange):Event->Void;
+	
+	/**
 	 * Callback called when
 	 * the content of the HTMLElement
 	 * is scrolled
@@ -382,6 +388,12 @@ class EventCallback extends EventTarget
 	{
 		updateCallbackListener(UIEvent.RESIZE, cast(value), cast(onresize));
 		return onresize = value;
+	}
+	
+	private function set_onFullScreenChange(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(Event.FULL_SCREEN_CHANGE, value, onfullscreenchange);
+		return onfullscreenchange = value;
 	}
 	
 	private function set_onScroll(value:UIEvent->Void):UIEvent->Void
