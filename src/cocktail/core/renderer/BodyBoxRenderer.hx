@@ -9,7 +9,7 @@ package cocktail.core.renderer;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 
@@ -46,7 +46,7 @@ class BodyBoxRenderer extends BlockBoxRenderer
 		//during rendering
 		_coreStyle.computeBackgroundStyles();
 		
-		var backgroundManager:BackgroundManager = new BackgroundManager();
+		var backgroundManager:BackgroundManager = new BackgroundManager(this);
 		
 		var windowData:ContainingBlockData = getWindowData();
 		
@@ -80,8 +80,6 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	 * Overiden as the body's element renderer computed height is a special
 	 * case where the height should be the height of the initial containing block
 	 * if it specified as 'auto'
-	 * 
-	 * TODO 3 : shouldn't it be in boxComputers instead ?
 	 */
 	override private function layoutSelf():Void
 	{

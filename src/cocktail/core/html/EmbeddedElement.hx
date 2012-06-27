@@ -11,7 +11,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.renderer.EmbeddedBoxRenderer;
 import cocktail.core.renderer.LayerRenderer;
 import cocktail.core.style.CoreStyle;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 
 /**
  * This is a ase class for element which are repaced by an external
@@ -49,24 +49,19 @@ class EmbeddedElement extends HTMLElement
 	 * to a loaded asset and retrieve the intrisic dimensions from
 	 * it, they are not supposed to be stored here
 	 */
-	private var _intrinsicHeight:Null<Int>;
-	public var intrinsicHeight(get_intrinsicHeight, never):Null<Int>;
+	public var intrinsicHeight(get_intrinsicHeight, null):Null<Int>;
 	
 	/**
 	 * The intrinsic width of the embedded asset, for instance
 	 * for an image, its width in pixel
 	 */
-	private var _intrinsicWidth:Null<Int>;
-	public var intrinsicWidth(get_intrinsicWidth, never):Null<Int>;
+	public var intrinsicWidth(get_intrinsicWidth, null):Null<Int>;
 	
 	/**
 	 * The intrinsic ratio of the embedded asset, for instance
 	 * for a video, its pixel ratio
 	 */
-	private var _intrinsicRatio:Null<Float>;
-	public var intrinsicRatio(get_intrinsicRatio, never):Null<Float>;
-
-	
+	public var intrinsicRatio(get_intrinsicRatio, null):Null<Float>;
 	
 	/**
 	 * A reference to the embedded asset
@@ -83,8 +78,7 @@ class EmbeddedElement extends HTMLElement
 	 * a flag determining wether the video is in use, if it does, should create a new video
 	 * stream
 	 */
-	private var _embeddedAsset:NativeElement;
-	public var embeddedAsset(get_embeddedAsset, never):NativeElement;
+	public var embeddedAsset(default, null):NativeElement;
 	
 	/**
 	 * class constructor
@@ -148,24 +142,19 @@ class EmbeddedElement extends HTMLElement
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_embeddedAsset():NativeElement
-	{
-		return _embeddedAsset;
-	}
-	
 	private function get_intrinsicHeight():Null<Int> 
 	{
-		return _intrinsicHeight;
+		return intrinsicHeight;
 	}
 	
 	private function get_intrinsicWidth():Null<Int> 
 	{
-		return _intrinsicWidth;
+		return intrinsicWidth;
 	}
 	
 	private function get_intrinsicRatio():Null<Float> 
 	{
-		return _intrinsicRatio;
+		return intrinsicRatio;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -174,14 +163,12 @@ class EmbeddedElement extends HTMLElement
 	
 	private function set_width(value:Int):Int
 	{
-		//TODO 3 : messy to call super here but else infinite loop
 		super.setAttribute(HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}
 	
 	private function get_width():Int
 	{
-		//TODO 3 : messy to call super here but else infinite loop
 		var width:String = super.getAttribute(HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME);
 		if (width == "")
 		{
@@ -195,14 +182,12 @@ class EmbeddedElement extends HTMLElement
 	
 	private function set_height(value:Int):Int
 	{
-		//TODO 3 : messy to call super here but else infinite loop
 		super.setAttribute(HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}
 	
 	private function get_height():Int
 	{
-		//TODO 3 : messy to call super here but else infinite loop
 		var height:String = super.getAttribute(HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME);
 		if (height == null)
 		{

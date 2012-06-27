@@ -31,8 +31,7 @@ class CharacterData extends HTMLElement
 	 * a single DOMString. In such cases, the user may call substringData
 	 * to retrieve the data in appropriately sized pieces
 	 */
-	private var _data:String;
-	public var data(get_data, set_data):String;
+	public var data:String;
 	
 	/**
 	 * class constructor
@@ -43,26 +42,12 @@ class CharacterData extends HTMLElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// SETTERS/GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_data():String 
-	{
-		return _data;
-	}
-	
-	private function set_data(value:String):String 
-	{
-		return _data = value;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	override private function get_nodeValue():String 
 	{
-		return _data;
+		return data;
 	}
 	
 	override private function set_nodeValue(value:String):String 

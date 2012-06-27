@@ -27,11 +27,15 @@ import cocktail.core.renderer.RendererData;
 import cocktail.core.event.FocusEvent;
 import haxe.Log;
 import haxe.Timer;
+import cocktail.core.style.StyleData;
 
 /**
  * An HTMLDocument is the root of the HTML hierarchy and holds the entire content.
  * Besides providing access to the hierarchy, it also provides some convenience methods
  * for accessing certain sets of information from the document.
+ * 
+ * TODO 3 : should manage current click count
+ * TODO 3 : should manage double click events
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -59,16 +63,14 @@ class HTMLDocument extends Document
 	 * 
 	 * The body is the root of the visual content in HTML
 	 */
-	private var _body:HTMLBodyElement;
-	public var body(get_body, never):HTMLBodyElement;
+	public var body(default, null):HTMLBodyElement;
 	
 	/**
 	 * The activeElement set/get the element
 	 * in the document which is focused.
 	 * If no element in the Document is focused, this returns the body element. 
 	 */
-	private var _activeElement:HTMLElement;
-	public var activeElement(get_activeElement, set_activeElement):HTMLElement;
+	public var activeElement(default, set_activeElement):HTMLElement;
 	
 	/**
 	 * An instance of the FocusManager, managing the focus
@@ -93,24 +95,38 @@ class HTMLDocument extends Document
 	 * Returns the element that is displayed fullscreen,
 	 * or null if there is no such element.
 	 */
-	private var _fullscreenElement:HTMLElement;
-	public var fullscreenElement(get_fullscreenElement, set_fullscreenElement):HTMLElement;
+	public var fullscreenElement(default, set_fullscreenElement):HTMLElement;
 	
 	/**
 	 * Callback listened to by the Window object
 	 * to enter fullscreen mode when needed using
 	 * platform specific API
 	 */
-	private var _onEnterFullscreen:Void->Void;
-	public var onEnterFullscreen(get_onEnterFullscreen, set_onEnterFullscreen):Void->Void;
+	public var onEnterFullscreen:Void->Void;
 	
 	/**
 	 * Callback listened to by the Window object
 	 * to exit fullscreen mode when needed using
 	 * platform specific API
 	 */
-	private var _onExitFullscreen:Void->Void;
-	public var onExitFullscreen(get_onExitFullscreen, set_onExitFullscreen):Void->Void;
+	public var onExitFullscreen:Void->Void;
+	
+	/**
+	 * Callback listened to by the Window object
+	 * to chnge the mouse cursor when needed using
+	 * platform specific APIs
+	 */
+	public var onSetMouseCursor:Cursor->Void;
+	
+	/**
+	 * a flag determining if a click event must be dispatched
+	 * on the hovered element on the next mouse up event.
+	 * 
+	 * A click event is dispatched if there was a mouse down
+	 * event then a mouse up event dispatched on the same hovered
+	 * element
+	 */
+	private var _shouldDispatchClickOnNextMouseUp:Bool;
 	
 	/**
 	 * class constructor. Init class attributes
@@ -119,10 +135,11 @@ class HTMLDocument extends Document
 	{
 		super();
 		
-		_documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
+		documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
 		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
-		_documentElement.appendChild(_body);
+		documentElement.appendChild(body);
 		_focusManager = new FocusManager();
+		_shouldDispatchClickOnNextMouseUp = false;
 	}
 	
 	/**
@@ -133,10 +150,10 @@ class HTMLDocument extends Document
 	 */
 	public function initBody(htmlBodyElement:HTMLBodyElement):Void
 	{
-		_body = htmlBodyElement;
-		_documentElement.appendChild(_body);
-		_hoveredElementRenderer = _body.elementRenderer;
-		_activeElement = _body;
+		body = htmlBodyElement;
+		documentElement.appendChild(body);
+		_hoveredElementRenderer = body.elementRenderer;
+		activeElement = body;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -151,7 +168,10 @@ class HTMLDocument extends Document
 	{
 		var element:HTMLElement;
 		
-		switch (tagName.toLowerCase())
+		//tag names are always uppercase in HTML
+		tagName = tagName.toUpperCase();
+		
+		switch (tagName)
 		{
 			case HTMLConstants.HTML_IMAGE_TAG_NAME:
 				element = new HTMLImageElement();
@@ -203,8 +223,28 @@ class HTMLDocument extends Document
 	 */
 	public function onPlatformMouseEvent(mouseEvent:MouseEvent):Void
 	{
+		//store the even type before dispatching it, as the event object is
+		//reseted after dispatch
+		var eventType:String = mouseEvent.type;
+		
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
 		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
+	
+		switch(eventType)
+		{
+			case MouseEvent.MOUSE_DOWN:
+				//reset the click sequence when a mouse down is dispatched
+				_shouldDispatchClickOnNextMouseUp = true;
+			
+				
+			case MouseEvent.MOUSE_UP:
+				//on mouse up, if nothing canceled the click sequence, dispatch
+				//a click event after the mouse up event
+				if (_shouldDispatchClickOnNextMouseUp == true)
+				{
+					dispatchClickEvent(mouseEvent);
+				}
+		}
 	}
 	
 	/**
@@ -231,44 +271,6 @@ class HTMLDocument extends Document
 				scrollableHTMLElement.scrollTop -= scrollOffset;
 			}
 		
-		}
-	}
-	
-	/**
-	 * Mouse click event are a special case of
-	 * mouse event dispatching, as they may trigger
-	 * activation behaviour, such as following a 
-	 * link for an HTMLAnchorElement
-	 */
-	public function onPlatformMouseClickEvent(mouseEvent:MouseEvent):Void
-	{
-		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
-		
-		var htmlElement:HTMLElement = elementRendererAtPoint.node;
-		
-		//find the first parent of the HTMLElement which has an activation behaviour, might
-		//return null
-		var nearestActivatableElement:HTMLElement = htmlElement.getNearestActivatableElement();
-
-		//execute pre activation
-		if (nearestActivatableElement != null)
-		{
-			nearestActivatableElement.runPreClickActivation();
-		}
-		
-		htmlElement.dispatchEvent(mouseEvent);
-		
-		//execute post or canceled activation behaviour
-		if (nearestActivatableElement != null)
-		{
-			if (mouseEvent.defaultPrevented == true)
-			{
-				nearestActivatableElement.runCanceledActivationStep();
-			}
-			else
-			{
-				nearestActivatableElement.runPostClickActivationStep(mouseEvent);
-			}
 		}
 	}
 	
@@ -300,6 +302,15 @@ class HTMLDocument extends Document
 			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, oldHoveredElementRenderer.node);
 			
 			elementRendererAtPoint.node.dispatchEvent(mouseOverEvent);
+			
+			//when the hovered element changes, if a mouse up event is dispatched
+			//on the new hovered element, no click should be dispatched on it, as 
+			//no mouse down was dispatched on it
+			_shouldDispatchClickOnNextMouseUp = false;
+			
+			//update the mouse cursor with the cursor style of the newly hovered 
+			//element
+			setMouseCursor(elementRendererAtPoint.node.coreStyle.computedStyle.cursor);
 		}
 		
 		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
@@ -322,7 +333,7 @@ class HTMLDocument extends Document
 				//only do sequantial navigation if default was not prevented
 				if (keyboardEvent.defaultPrevented == false)
 				{
-					activeElement = _focusManager.getNextFocusedElement(keyboardEvent.shiftKey == true, _body, activeElement);
+					activeElement = _focusManager.getNextFocusedElement(keyboardEvent.shiftKey == true, body, activeElement);
 				}
 	
 			case ENTER_KEY_CODE, SPACE_KEY_CODE:
@@ -350,7 +361,76 @@ class HTMLDocument extends Document
 	 */
 	public function onPlatformResizeEvent(event:UIEvent):Void
 	{
-		_documentElement.invalidate(InvalidationReason.other);
+		documentElement.invalidate(InvalidationReason.windowResize);
+	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE CLICK METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * dispatch a click event on the currently hovered element if a mouse down and mouse up
+	 * was called on it without the mouse hovering another element in between
+	 * 
+	 * Mouse click event are a special case of
+	 * mouse event dispatching, as they may trigger
+	 * activation behaviour, such as following a 
+	 * link for an HTMLAnchorElement
+	 * 
+	 * @param mouseEvent, the mouse up event which triggered the click
+	 */
+	private function dispatchClickEvent(mouseEvent:MouseEvent):Void
+	{
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
+		
+		var htmlElement:HTMLElement = elementRendererAtPoint.node;
+		
+		//find the first parent of the HTMLElement which has an activation behaviour, might
+		//return null
+		var nearestActivatableElement:HTMLElement = htmlElement.getNearestActivatableElement();
+
+		//execute pre activation
+		if (nearestActivatableElement != null)
+		{
+			nearestActivatableElement.runPreClickActivation();
+		}
+		
+		//create a mouse click event from the mouse up event
+		var clickEvent:MouseEvent = new MouseEvent();
+		clickEvent.initMouseEvent(MouseEvent.CLICK, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY,
+		mouseEvent.clientX, mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey,
+		mouseEvent.metaKey, mouseEvent.button, null);
+		
+		htmlElement.dispatchEvent(clickEvent);
+		
+		//execute post or canceled activation behaviour
+		if (nearestActivatableElement != null)
+		{
+			if (mouseEvent.defaultPrevented == true)
+			{
+				nearestActivatableElement.runCanceledActivationStep();
+			}
+			else
+			{
+				nearestActivatableElement.runPostClickActivationStep(mouseEvent);
+			}
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// MOUSE CURSOR METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Change the current mouse cursor, using platform
+	 * specific APIs
+	 */
+	private function setMouseCursor(cursor:Cursor):Void
+	{
+		if (onSetMouseCursor != null)
+		{
+			onSetMouseCursor(cursor);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -368,19 +448,19 @@ class HTMLDocument extends Document
 	{
 		//do nothing if no element is on fullscreen
 		//currently
-		if (_fullscreenElement == null)
+		if (fullscreenElement == null)
 		{
 			return;
 		}
 		
-		_fullscreenElement = null;
+		fullscreenElement = null;
 		
 		//call the callback, so that the Window
 		//object can exit fullscreen using platform
 		//specific API
-		if (_onExitFullscreen != null)
+		if (onExitFullscreen != null)
 		{
-			_onExitFullscreen();
+			onExitFullscreen();
 		}
 		
 		//fire a fullscreen event
@@ -397,11 +477,6 @@ class HTMLDocument extends Document
 		return true;
 	}
 	
-	private function get_fullscreenElement():HTMLElement
-	{
-		return _fullscreenElement;
-	}
-	
 	/**
 	 * start fullscreen mode
 	 * 
@@ -410,47 +485,36 @@ class HTMLDocument extends Document
 	 */
 	private function set_fullscreenElement(value:HTMLElement):HTMLElement
 	{
-		//do nothing if already in fullscreen mode
-		if (_fullscreenElement != null)
+		//do nothing if element is null. Might also
+		//be called when exiting fullscreen to set 
+		//fullsrcreen element to null
+		if (value == null)
 		{
-			return _fullscreenElement;
+			fullscreenElement = null;
+			return value;
 		}
 		
-		_fullscreenElement = value;
+		//do nothing if already in fullscreen mode
+		if (fullscreenElement != null)
+		{
+			return fullscreenElement;
+		}
+		
+		fullscreenElement = value;
 		
 		//call enter fullscreen callbakc, so that
 		//Window can enter fullscreen using platform
 		//specific API
-		if (_onEnterFullscreen != null)
+		if (onEnterFullscreen != null)
 		{
-			_onEnterFullscreen();
+			onEnterFullscreen();
 		}
 		
 		//fire fullscreen event
 		var fullscreenEvent:Event = new Event();
 		fullscreenEvent.initEvent(Event.FULL_SCREEN_CHANGE, true, false);
 		
-		return _fullscreenElement = value;
-	}
-	
-	private function set_onEnterFullscreen(value:Void->Void):Void->Void
-	{
-		return _onEnterFullscreen = value;
-	}
-	
-	private function get_onEnterFullscreen():Void->Void
-	{
-		return _onEnterFullscreen;
-	}
-	
-	private function set_onExitFullscreen(value:Void->Void):Void->Void
-	{
-		return _onExitFullscreen = value;
-	}
-	
-	private function get_onExitFullscreen():Void->Void
-	{
-		return _onExitFullscreen;
+		return value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -466,13 +530,13 @@ class HTMLDocument extends Document
 	{
 		var screenX:Float = mouseEvent.screenX;
 		var screenY:Float = mouseEvent.screenY;
-		var elementRendererAtPoint:ElementRenderer = _body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: screenX, y: screenY }, 0, 0  );
+		var elementRendererAtPoint:ElementRenderer = body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: screenX, y: screenY }, 0, 0  );
 		
 		//when no element is under mouse like for instance when the mouse leaves
 		//the window, return the body
 		if (elementRendererAtPoint == null)
 		{
-			return _body.elementRenderer;
+			return body.elementRenderer;
 		}
 		
 		while (elementRendererAtPoint.node.nodeType != Node.ELEMENT_NODE || elementRendererAtPoint.isAnonymousBlockBox() == true)
@@ -514,11 +578,6 @@ class HTMLDocument extends Document
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_body():HTMLBodyElement 
-	{
-		return _body;
-	}
-	
 	/**
 	 * When a new activeElement is set, call 
 	 * the focus out (blur) method on the previous
@@ -530,7 +589,14 @@ class HTMLDocument extends Document
 		//if the activeHTMLElement is set to null, do nothing
 		if (newActiveElement == null)
 		{
-			return _activeElement;
+			return activeElement;
+		}
+		
+		//the first time this setter is called, the activeElement
+		//is null and it is set to the body element
+		if (activeElement == null)
+		{
+			return activeElement = newActiveElement;
 		}
 		
 		//do nothing if the new activeHTMLElement is the same
@@ -551,17 +617,17 @@ class HTMLDocument extends Document
 			newActiveElement.dispatchEvent(focusInEvent);
 			
 			//store the new active element before dispatching focus and blur event
-			var oldActiveElement:HTMLElement = _activeElement;
+			var oldActiveElement:HTMLElement = activeElement;
 			
 			//if the new activeElement is not focusable, the focus
 			//is instead given to the HTMLBodyElement
 			if (newActiveElement.isFocusable() == true)
 			{
-				_activeElement = newActiveElement;
+				activeElement = newActiveElement;
 			}
 			else
 			{
-				_activeElement = _body;
+				activeElement = body;
 			}
 			
 			//dispatch post-focus event which don't bubbles through the document
@@ -574,21 +640,15 @@ class HTMLDocument extends Document
 			focusEvent.initFocusEvent(FocusEvent.FOCUS, false, false, null, 0.0, null);
 			newActiveElement.dispatchEvent(focusEvent);
 			
-			if (_activeElement.onfocus != null)
+			if (activeElement.onfocus != null)
 			{
 				var focusEvent:FocusEvent = new FocusEvent();
 				focusEvent.initFocusEvent(FocusEvent.FOCUS, true, false, null, 0.0, null);
 				
-				_activeElement.onfocus(focusEvent);
+				activeElement.onfocus(focusEvent);
 			}
 		}
 		
-		return _activeElement;
-	}
-	
-
-	private function get_activeElement():HTMLElement
-	{
-		return _activeElement;
+		return activeElement;
 	}
 }

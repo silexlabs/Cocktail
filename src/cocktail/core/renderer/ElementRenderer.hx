@@ -11,8 +11,8 @@ import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.NodeBase;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.NativeElement;
-import cocktail.core.DrawingManager;
+import cocktail.port.NativeElement;
+import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
@@ -185,13 +185,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	private var _hasOwnLayer:Bool;
 	
 	/**
-	 * A graphic context object onto which this ElementRenderer
-	 * is painted
-	 */
-	private var _graphicsContext:NativeElement;
-	public var graphicsContext(get_graphicsContext, never):NativeElement;
-	
-	/**
 	 * Stores all of the value of styles once computed.
 	 * For example, if a size is set as a percentage, it will
 	 * be stored once computed to pixels into this structure
@@ -232,6 +225,8 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	
 	private var _needsRendering:Bool;
 	
+	private var _childrenNeedRendering:Bool;
+	
 	private var _needsVisualEffectsRendering:Bool;
 
 	private var _containingBlock:FlowBoxRenderer;
@@ -245,10 +240,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		super();
 
 		_node = node;
-		
-		#if (flash9 || nme)
-		_graphicsContext = new flash.display.Sprite();
-		#end
 		
 		
 		_hasOwnLayer = false;
@@ -276,6 +267,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		}
 		
 		_needsRendering = true;
+		_childrenNeedRendering = true;
 		_needsLayout = true;
 		_childrenNeedLayout = true;
 		_positionedChildrenNeedLayout = true;
@@ -293,26 +285,9 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	public function dispose():Void
 	{
 		//_lineBoxes = null;
-		//TODO 2 :should clear the graphic context
 		//_graphicsContext = null;
 		//_coreStyle = null;
 		//_layerRenderer = null;
-	}
-	
-	/**
-	 * Clears the content of the graphic
-	 * context of this ElementRenderer
-	 */
-	public function clear():Void
-	{
-		#if (flash9 || nme)
-		var containerGraphicsContext:flash.display.DisplayObjectContainer = cast(_graphicsContext);
-			var length:Int = containerGraphicsContext.numChildren;
-			for (i in 0...length)
-			{
-				containerGraphicsContext.removeChildAt(0);
-			}
-		#end	
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -359,25 +334,9 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * Render this ElementRenderer using the provided
 	 * graphic context as canvas
 	 */
-	public function render(parentGraphicContext:NativeElement):Void
+	public function render(parentGraphicContext:NativeElement, forceRendering:Bool):Void
 	{
 		//abstract
-	}
-	
-		
-	public function scroll(x:Float, y:Float):Void
-	{
-		if (computedStyle.position == fixed)
-		{
-			#if (flash9 || nme)
-		{
-			_graphicsContext.x = x;
-			_graphicsContext.y = y;
-		}
-		#end
-		
-		}
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -387,8 +346,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	/*
 	 * Layout this ElementRenderer so that it knows its
 	 * bounds and can be rendered to the screen
+	 * 
+	 * @param forceLayout force the layout of this
+	 * ElementRenderer and of its children
 	 */ 
-	public function layout():Void
+	public function layout(forceLayout:Bool):Void
 	{	
 		//abstract
 	}
@@ -407,10 +369,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		//the ElementRenderer is attached to the LayerRenderer
 		//tree and must now also attach its children
-		var length:Int = _childNodes.length;
+		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = _childNodes[i];
+			var child:ElementRenderer = childNodes[i];
 			child.attach();
 		}
 		
@@ -429,10 +391,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		_containingBlock = null;
 		
 		//first detach the LayerRenderer of all its children
-		var length:Int = _childNodes.length;
+		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = _childNodes[i];
+			var child:ElementRenderer = childNodes[i];
 			child.detach();
 		}
 		
@@ -448,9 +410,9 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		//create the LayerRenderer if needed
 		if (_layerRenderer == null)
 		{
-			if (_parentNode != null)
+			if (parentNode != null)
 			{
-				var parent:ElementRenderer = _parentNode;
+				var parent:ElementRenderer = parentNode;
 				if (parent.layerRenderer != null)
 				{
 					createLayer(parent.layerRenderer);
@@ -466,7 +428,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		//which created it when detached
 		if (_hasOwnLayer == true)
 		{
-			var parent:ElementRenderer = _parentNode;
+			var parent:ElementRenderer = parentNode;
 			parent.layerRenderer.removeChild(_layerRenderer);
 			_hasOwnLayer = false;
 		}
@@ -487,7 +449,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			}
 		}
 		
-		//TODO 1 : should call a dispose method on the layerRenderer
 		_layerRenderer = null;
 	}
 	
@@ -732,7 +693,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function getFirstPositionedAncestor():FlowBoxRenderer
 	{
-		var parent:ElementRenderer = _parentNode;
+		var parent:ElementRenderer = parentNode;
 		while (parent.isPositioned() == false)
 		{
 			parent = parent.parentNode;
@@ -743,7 +704,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	/**
 	 * Get the viewport ElementRenderer
 	 */
-	private function getInitialContainingBlock():FlowBoxRenderer
+	private function getInitialContainingBlock():InitialBlockRenderer
 	{
 		return cast(_node.ownerDocument.documentElement.elementRenderer);
 	}
@@ -753,7 +714,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function getFirstBlockContainer():FlowBoxRenderer
 	{
-		var parent:ElementRenderer = _parentNode;
+		var parent:ElementRenderer = parentNode;
 		while (parent.isBlockContainer() == false)
 		{
 			parent = parent.parentNode;
@@ -828,85 +789,44 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	
 	public function invalidate(invalidationReason:InvalidationReason):Void
 	{
-		//setNeedLayout(true);
-		
-		//invalidateChildren(this);
-		
-		//switch(invalidationReason)
-		//{
-			//case InvalidationReason.styleChanged(styleName):
-				//invalidatedStyle(styleName);
-			//
-			//case InvalidationReason.childStyleChanged(styleName):
-				//invalidatedChildStyle(styleName);
-				//
-			//case InvalidationReason.positionedChildStyleChanged(styleName):
-				//invalidatedPositionedChildStyle(styleName);
-				//
-			//case InvalidationReason.needsImmediateLayout:
-				//_needsLayout = true;
-				//_childrenNeedLayout = true;
-				//invalidateLayout(true);
-				//
-			//default:
-				//_needsLayout = true;
-				//_childrenNeedLayout = true;
-				//_needsVisualEffectsRendering = true;
-				//_needsRendering = true;
-				//_positionedChildrenNeedLayout = true;
-		//}
-		invalidateContainingBlock(invalidationReason);
-		//invalidateLayout(false);
+		switch(invalidationReason)
+		{
+			case InvalidationReason.styleChanged(styleName):
+				invalidatedStyle(styleName, invalidationReason);
+			
+			case InvalidationReason.childStyleChanged(styleName):
+				invalidatedChildStyle(styleName, invalidationReason);
+				
+			case InvalidationReason.positionedChildStyleChanged(styleName):
+				invalidatedPositionedChildStyle(styleName, invalidationReason);
+				
+			case InvalidationReason.needsImmediateLayout:
+				invalidateInitialContainingBlock(invalidationReason);
+				
+			default:
+				_needsLayout = true;
+				_needsRendering = true;
+				invalidateContainingBlock(invalidationReason);
+		}
 	}
 	
 	public function childInvalidated(invalidationReason:InvalidationReason):Void
 	{
-		_needsLayout = true;
-		_childrenNeedLayout = true;
-		_needsVisualEffectsRendering = true;
-		_needsRendering = true;
-		_positionedChildrenNeedLayout = true;
-		
 		invalidate(invalidationReason);
 	}
 	
 	public function positionedChildInvalidated(invalidationReason:InvalidationReason):Void
 	{
-		//_positionedChildrenNeedLayout = true;
 		invalidate(invalidationReason);
-	}
-	
-	public function setNeedLayout(needLayout:Bool):Void
-	{
-		if (_needsLayout == false)
-		{
-			if (needLayout == true)
-			{
-				var length:Int = _childNodes.length;
-				for (i in 0...length)
-				{
-					_childNodes[i].setNeedLayout(needLayout);
-				}
-			}
-		}
-		
-		_needsLayout = needLayout;
-		_childrenNeedLayout = needLayout;
-		_needsVisualEffectsRendering = needLayout;
-		_needsRendering = needLayout;
-		_positionedChildrenNeedLayout = needLayout;
-		
 	}
 	
 	private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
 	{
-		
 		//TODO 1 : not supposed to happen but bug with scrollbars for now
-		if (_parentNode == null)
+		if (parentNode == null)
 		{
 			return;
 		}
-		
 		
 		var containingBlockInvalidationReason:InvalidationReason;
 		
@@ -927,67 +847,84 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				
 		}
 		
-		_containingBlock.setNeedLayout(true);
-		
-		_containingBlock.invalidate(invalidationReason);
-		
-		
-		if (isPositioned() == true)
+		if (isPositioned() == true && isRelativePositioned() == false)
 		{
-			//containingBlock.positionedChildInvalidated(containingBlockInvalidationReason);
+			_containingBlock.positionedChildInvalidated(containingBlockInvalidationReason);
 		}
-		//containingBlock.childInvalidated(containingBlockInvalidationReason);
-		
-		
-	}
-	
-	private function invalidatedStyle(styleName:String):Void
-	{
-		switch (styleName)
+		else
 		{
-			case CSSConstants.LEFT_STYLE_NAME, CSSConstants.RIGHT_STYLE_NAME,
-			CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
-				if (isPositioned() == true)
-				{
-					_needsVisualEffectsRendering = true;
-				}
-				
-			case CSSConstants.POSITION_STYLE_NAME, CSSConstants.Z_INDEX_STYLE_NAME:
-				invalidateLayer();
+			_containingBlock.childInvalidated(containingBlockInvalidationReason);
 		}
 	}
 	
-	private function invalidatedChildStyle(styleName:String):Void
+	private function invalidateInitialContainingBlock(invalidationReason:InvalidationReason):Void
 	{
-		switch (styleName)
-		{
-			default:
-				_needsLayout = true;
-				_childrenNeedLayout = true;
-				_needsVisualEffectsRendering = true;
-				_needsRendering = true;
-				_positionedChildrenNeedLayout = true;	
-		}
+		var initialBlockRenderer:InitialBlockRenderer = getInitialContainingBlock();
+		initialBlockRenderer.invalidate(invalidationReason);
 	}
 	
-	private function invalidatedPositionedChildStyle(styleName:String):Void
+	private function invalidatedStyle(styleName:String, invalidationReason:InvalidationReason):Void
 	{
 		switch (styleName)
 		{
-			case CSSConstants.LEFT_STYLE_NAME, CSSConstants.RIGHT_STYLE_NAME,
-			CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
-				
+			//case CSSConstants.LEFT_STYLE_NAME, CSSConstants.RIGHT_STYLE_NAME,
+			//CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
+				//_needsLayout = true;
+				//if (isPositioned() == true && isRelativePositioned() == false)
+				//{
+					//invalidateContainingBlock(invalidationReason);
+				//}
+				//_needsRendering = true;
+			//
+			//case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
+			//CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
+			//CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
+			//CSSConstants.BACKGROUND_SIZE_STYLE_NAME:
+				//_needsRendering = true;
+				//invalidateInitialContainingBlock(invalidationReason);
 				
 			default:
 				_needsLayout = true;
-				_childrenNeedLayout = true;
-				_needsVisualEffectsRendering = true;
 				_needsRendering = true;
+				invalidateContainingBlock(invalidationReason);
+		}
+	}
+	
+	private function invalidatedChildStyle(styleName:String, invalidationReason:InvalidationReason):Void
+	{
+		switch (styleName)
+		{
+			//case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
+			//CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
+			//CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
+			//CSSConstants.BACKGROUND_SIZE_STYLE_NAME:	
+			
+			default:
+				_needsLayout = true;
+				//_needsRendering = true;
+				_childrenNeedRendering = true;
+				_childrenNeedLayout = true;
+				invalidateInitialContainingBlock(invalidationReason);
+		}
+	}
+	
+	private function invalidatedPositionedChildStyle(styleName:String, invalidationReason:InvalidationReason):Void
+	{
+		switch (styleName)
+		{
+			//case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
+			//CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
+			//CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
+			//CSSConstants.BACKGROUND_SIZE_STYLE_NAME:	
+			
+			default:
+				_needsLayout = true;
+				//_needsRendering = true;
+				_childrenNeedRendering = true;
 				_positionedChildrenNeedLayout = true;
+				invalidateInitialContainingBlock(invalidationReason);
 		}
 	}
-	
-	
 	
 	/**
 	 * Call when a style which require a re-layout
@@ -996,28 +933,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function invalidateText():Void
 	{
-		for (i in 0..._childNodes.length)
+		for (i in 0...childNodes.length)
 		{
-			var child:ElementRenderer = _childNodes[i];
+			var child:ElementRenderer = childNodes[i];
 			child.invalidateText();
 		}
-	}
-	
-	/**
-	 * Call when a style which might require altering
-	 * the LayerRenderer tree (such as position or
-	 * overflow) is changed
-	 */
-	private function invalidateLayer():Void
-	{
-		detach();
-		attach();
-		//invalidateLayout();
-	}
-	
-	private function invalidateRendering():Void
-	{
-		_needsRendering = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1238,10 +1158,5 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	private function get_scrollHeight():Float
 	{
 		return bounds.height;
-	}
-	
-	private function get_graphicsContext():NativeElement
-	{
-		return _graphicsContext;
 	}
 }

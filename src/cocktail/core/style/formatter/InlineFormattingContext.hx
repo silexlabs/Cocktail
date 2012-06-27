@@ -37,6 +37,11 @@ import haxe.Log;
  * the inline formatting context and the y position using
  * the vertical align property
  * 
+ * TODO 1 : should simplify static position for positioned box. Should
+ * not create linebox for absolute elements. When layyng out absolutely
+ * positioned child, they may retrieve the bounds of their previous sibling
+ * or parent to determine their static position
+ * 
  * @author Yannick DOMINGUEZ
  */
 class InlineFormattingContext extends FormattingContext
@@ -71,6 +76,7 @@ class InlineFormattingContext extends FormattingContext
 	
 	override private function startFormatting():Void
 	{
+		
 		_unbreakableLineBoxes = new Array<LineBox>();
 		var rootLineBoxes:Array<LineBox> = new Array<LineBox>();
 		var initialRootLineBox:RootLineBox = new RootLineBox(_formattingContextRoot);
@@ -111,8 +117,8 @@ class InlineFormattingContext extends FormattingContext
 			if (child.establishesNewFormattingContext() == true)
 			{
 				
-				child.bounds.width = child.coreStyle.computedStyle.width;
-				child.bounds.height = child.coreStyle.computedStyle.height;
+				child.bounds.width = child.coreStyle.computedStyle.width + child.coreStyle.computedStyle.paddingLeft + child.coreStyle.computedStyle.paddingRight;
+				child.bounds.height = child.coreStyle.computedStyle.height + child.coreStyle.computedStyle.paddingTop + child.coreStyle.computedStyle.paddingBottom;
 				
 				var inlineBlockLineBox:LineBox = new InlineBlockLineBox(child);
 				child.lineBoxes.push(inlineBlockLineBox);
@@ -221,8 +227,6 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * Insert an array of line boxes into the current line. If the line boxes
 	 * can't all fit in the line, as many new line as necessary are created
-	 * 
-	 * TODO : should take marginLeft and marginRight into account
 	 */
 	private function insertIntoLine(lineBoxes:Array<LineBox>, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
@@ -315,6 +319,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function formatLine(rootLineBox:LineBox, isLastLine:Bool):Void
 	{
+		
 		//TODO 1 : should apply white space processing to remove space at the end and beginning
 		//of line here
 		removeSpaces(rootLineBox);
@@ -703,48 +708,6 @@ class InlineFormattingContext extends FormattingContext
 		return shouldInsertSpace;
 	}
 	
-	/**
-	 * Determine wheter a space should be collapsed
-	 * when it belong to a sequence of spaces
-	 */
-	private function isCollapsed(lastInsertedElement:ElementRenderer, whiteSpace:WhiteSpace):Bool
-	{
-		/**
-		var isCollapsed:Bool;
-		
-		if (lastInsertedElement == null)
-		{
-			isCollapsed = false;
-		}
-		else
-		{
-			switch (lastInsertedElement)
-			{
-				case BoxElementValue.space(whiteSpace, spaceWidth, parentHTMLElement):
-				
-				switch (whiteSpace)
-				{
-					case WhiteSpace.normal,
-					WhiteSpace.nowrap:
-						isCollapsed = true;
-						
-					case WhiteSpace.preWrap,
-					WhiteSpace.pre,
-					WhiteSpace.preLine:
-						isCollapsed = false;
-				}
-				
-				default:
-					isCollapsed = false;
-			}
-		}
-		
-		return isCollapsed;
-		*/
-		return false;
-	}
-
-	
 	
 	
 	// LINE LAYOUT METHODS
@@ -762,7 +725,6 @@ class InlineFormattingContext extends FormattingContext
 	//TODO 2 : add doc, remove start and end spaces in a line
 	private function removeSpaces(rootLineBox:LineBox):Void
 	{
-		
 		var lineBoxes:Array<LineBox> = getLineBoxTreeAsArray(rootLineBox);
 		
 		if (lineBoxes.length == 0)
@@ -774,13 +736,13 @@ class InlineFormattingContext extends FormattingContext
 		while (i < lineBoxes.length)
 		{
 			var lineBox:LineBox = lineBoxes[i];
-			
 			if (lineBox.isSpace() == true)
 			{
 				switch(lineBox.elementRenderer.coreStyle.computedStyle.whiteSpace)
 				{
 					case WhiteSpace.normal, WhiteSpace.nowrap, WhiteSpace.preLine:
 						lineBox.parentNode.removeChild(lineBox);
+						
 					default:
 						break;
 				}
@@ -788,7 +750,13 @@ class InlineFormattingContext extends FormattingContext
 			}
 			else
 			{
-				break;
+				//absolute line box do not influence this
+				if (lineBox.isAbsolutelyPositioned() == false)
+				{
+					break;
+				}
+				
+				
 			}
 			
 			i++;
@@ -824,7 +792,10 @@ class InlineFormattingContext extends FormattingContext
 			}
 			else
 			{
-				break;
+				if (lineBox.isAbsolutelyPositioned() == false)
+				{
+						break;
+				}
 			}
 			
 			i--;
@@ -842,6 +813,10 @@ class InlineFormattingContext extends FormattingContext
 			if (child.hasChildNodes() == true && child.isAbsolutelyPositioned() == false)
 			{
 				var children:Array<LineBox> = getLineBoxTreeAsArray(child);
+				for (j in 0...children.length)
+				{
+					ret.push(children[j]);
+				}
 			}
 			else
 			{
@@ -900,7 +875,6 @@ class InlineFormattingContext extends FormattingContext
 				var leadedAscent:Float = child.leadedAscent;
 				var leadedDescent:Float = child.leadedDescent;
 				var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, _formattingContextRoot.coreStyle.fontMetrics.xHeight);
-				
 				//TODO : should vertical align be added recursively ?
 				if (leadedAscent + baselineOffset > rootLineBox.leadedAscent)
 				{
@@ -929,9 +903,20 @@ class InlineFormattingContext extends FormattingContext
 			var child:LineBox = lineBox.childNodes[i];
 			
 			var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, _formattingContextRoot.coreStyle.fontMetrics.xHeight);
-			child.bounds.y = formattingContextY - baselineOffset + lineBoxAscent;
-			//TODO 2 check if neccessary to remove ascent to all children
-			child.bounds.y -= child.leadedAscent;
+
+			switch(child.elementRenderer.coreStyle.verticalAlign)
+			{
+				case VerticalAlign.top:
+					child.bounds.y = formattingContextY;
+					
+				default:	
+					child.bounds.y = formattingContextY - baselineOffset + lineBoxAscent;
+					//TODO 2 check if neccessary to remove ascent to all children
+					child.bounds.y -= child.leadedAscent;
+					
+				
+			}
+			
 
 			if (child.hasChildNodes() == true)
 			{

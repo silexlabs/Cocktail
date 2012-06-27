@@ -28,15 +28,13 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 	 * if a node has just been created and not yet added
 	 * to the tree, or if it has been removed from the tree, this is null.
 	 */
-	private var _parentNode:NodeClass;
-	public var parentNode(get_parentNode, set_parentNode):NodeClass;
+	public var parentNode:NodeClass;
 	
 	/**
 	 * A NodeList that contains all children of this node. 
 	 * If there are no children, this is a NodeList containing no nodes.
 	 */
-	private var _childNodes:Array<NodeClass>;
-	public var childNodes(get_childNodes, never):Array<NodeClass>;
+	public var childNodes(default, null):Array<NodeClass>;
 	
 	/**
 	 * The first child of this node. If there is no such node,
@@ -68,7 +66,7 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 	public function new() 
 	{
 		super();
-		_childNodes = new Array<NodeClass>();
+		childNodes = new Array<NodeClass>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -88,15 +86,15 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 		
 		var newChildNodes:Array<NodeClass> = new Array<NodeClass>();
 		
-		var length:Int = _childNodes.length;
+		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			if (_childNodes[i] != oldChild)
+			if (childNodes[i] != oldChild)
 			{
-				newChildNodes.push(_childNodes[i]);
+				newChildNodes.push(childNodes[i]);
 			}
 		}
-		_childNodes = newChildNodes;
+		childNodes = newChildNodes;
 		
 		return oldChild;
 	}
@@ -116,7 +114,7 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 		removeFromParentIfNecessary(newChild);
 		
 		newChild.parentNode = cast(this);
-		_childNodes.push(newChild);
+		childNodes.push(newChild);
 	
 		return newChild;
 	}
@@ -144,14 +142,14 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 			//will store the new child nodes with the newly inserted one
 			var newChildNodes:Array<NodeClass> = new Array<NodeClass>();
 			
-			var length:Int = _childNodes.length;
+			var length:Int = childNodes.length;
 			for (i in 0...length)
 			{
-				if (_childNodes[i] == refChild)
+				if (childNodes[i] == refChild)
 				{
 					newChildNodes.push(newChild);
 				}
-				newChildNodes.push(_childNodes[i]);
+				newChildNodes.push(childNodes[i]);
 			}
 			
 			//the child are appended after the first loop to prevent
@@ -197,10 +195,10 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 	 */
 	public function replaceChild(newChild:NodeClass, oldChild:NodeClass):NodeClass
 	{
-		var length:Int = _childNodes.length;
+		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			if (_childNodes[i] == oldChild)
+			if (childNodes[i] == oldChild)
 			{
 				removeChild(oldChild);
 				appendChild(newChild);
@@ -215,7 +213,7 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 	 */
 	public function hasChildNodes():Bool
 	{
-		return _childNodes.length > 0;
+		return childNodes.length > 0;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -228,7 +226,7 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 	 */
 	override private function getTargetAncestors():Array<EventTarget>
 	{
-		var parent:NodeClass = _parentNode;
+		var parent:NodeClass = parentNode;
 		var targetAncestors:Array<EventTarget> = new Array<EventTarget>();
 		
 		while (parent != null)
@@ -265,7 +263,7 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 	{
 		if (hasChildNodes() == true)
 		{
-			return _childNodes[0];
+			return childNodes[0];
 		}
 		else
 		{
@@ -277,7 +275,7 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 	{
 		if (hasChildNodes() == true)
 		{
-			return _childNodes[_childNodes.length - 1];
+			return childNodes[childNodes.length - 1];
 		}
 		else
 		{
@@ -289,21 +287,21 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 	{
 		//if the node is not attached, it
 		//has no siblings
-		if (_parentNode == null)
+		if (parentNode == null)
 		{
 			return null;
 		}
 		
-		else if (_parentNode.lastChild != this)
+		else if (parentNode.lastChild != this)
 		{
 			//loop in all child to find this node and return
 			//the next one
-			var length:Int = _parentNode.childNodes.length;
+			var length:Int = parentNode.childNodes.length;
 			for (i in 0...length)
 			{
-				if (isSameNode(_parentNode.childNodes[i]) == true)
+				if (isSameNode(parentNode.childNodes[i]) == true)
 				{
-					return _parentNode.childNodes[i + 1];
+					return parentNode.childNodes[i + 1];
 				}
 			}
 		}
@@ -318,37 +316,22 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 	 */
 	private function get_previousSibling():NodeClass
 	{
-		if (_parentNode == null)
+		if (parentNode == null)
 		{
 			return null;
 		}
-		else if (_parentNode.firstChild != this)
+		else if (parentNode.firstChild != this)
 		{
-			var length:Int = _parentNode.childNodes.length;
+			var length:Int = parentNode.childNodes.length;
 			for (i in 0...length)
 			{
-				if (isSameNode(_parentNode.childNodes[i]) == true)
+				if (isSameNode(parentNode.childNodes[i]) == true)
 				{
-					return _parentNode.childNodes[i - 1];
+					return parentNode.childNodes[i - 1];
 				}
 			}
 		}
 		
 		return null;
-	}
-	
-	private function get_parentNode():NodeClass 
-	{
-		return _parentNode;
-	}
-	
-	private function set_parentNode(value:NodeClass):NodeClass 
-	{
-		return _parentNode = value;
-	}
-	
-	private function get_childNodes():Array<NodeClass> 
-	{
-		return _childNodes;
 	}
 }

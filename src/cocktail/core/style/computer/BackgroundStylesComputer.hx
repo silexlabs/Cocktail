@@ -391,7 +391,6 @@ class BackgroundStylesComputer
 		
 		switch (backgroundOrigin)
 		{
-			//TODO 3 : doc + test, should x and y alwyas be 0 ?
 			case BackgroundOrigin.borderBox:
 				height = backgroundBox.height;
 				width = backgroundBox.width;

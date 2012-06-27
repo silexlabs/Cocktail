@@ -7,8 +7,8 @@
 */
 package cocktail.core.resource;
 
-import cocktail.core.MediaLoader;
-import cocktail.core.NativeElement;
+import cocktail.port.MediaLoader;
+import cocktail.port.NativeElement;
 import haxe.Http;
 import haxe.Log;
 

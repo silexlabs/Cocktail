@@ -9,10 +9,9 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
-import cocktail.core.FontManager;
 import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.style.computer.BackgroundStylesComputer;
 import cocktail.core.style.computer.boxComputers.BlockBoxStylesComputer;
@@ -45,12 +44,26 @@ import haxe.Log;
  */
 class BoxRenderer extends ElementRenderer
 {
+	
+	/**
+	 * A graphic context object onto which this ElementRenderer
+	 * is painted
+	 */
+	public var graphicsContext(default, null):NativeElement;
+	
+	public var childrenGraphicsContext(default, null):NativeElement;
+	
 	/**
 	 * class constructor
 	 */
 	public function new(node:HTMLElement) 
 	{
 		super(node);
+		
+		#if (flash9 || nme)
+		graphicsContext = new flash.display.Sprite();
+		childrenGraphicsContext = new flash.display.Sprite();
+		#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -61,23 +74,35 @@ class BoxRenderer extends ElementRenderer
 	 * overriden to render elements spefic to a box (background, border...)
 	 * TODO 4 : apply visibility
 	 */
-	override public function render(parentGraphicContext:NativeElement):Void
+	override public function render(parentGraphicContext:NativeElement, forceRendering:Bool):Void
 	{
 		
-		if (_needsRendering == false)
-		{
-			//return;
-		}
-		
-		clear();
 		//get the relative offset of this ElementRenderer and add it to
 		//its parent
-		renderBackground(_graphicsContext);
-		renderChildren(_graphicsContext);
+		
+		if (_needsRendering == true || forceRendering == true)
+		{
+			clear(graphicsContext);
+			renderSelf(graphicsContext);
+			_needsRendering = false;
+		}
+		
+		//if (_childrenNeedRendering == true || forceRendering == true)
+		//{
+			clear(childrenGraphicsContext);
+			renderChildren(childrenGraphicsContext, forceRendering == true || _childrenNeedRendering == true);
+			_childrenNeedRendering = false;
+		//}
+		
+		#if (flash9 || nme)
+		var selfGraphicContext:flash.display.DisplayObjectContainer = cast(graphicsContext);
+		selfGraphicContext.addChild(childrenGraphicsContext);
+		#end
+	
 		
 		//if (_needsVisualEffectsRendering == true)
 		//{
-			applyVisualEffects(_graphicsContext);
+			applyVisualEffects(graphicsContext);
 		//}
 		_needsVisualEffectsRendering = false;
 		
@@ -85,16 +110,51 @@ class BoxRenderer extends ElementRenderer
 		//draws the graphic context of this block box on the one of its
 		//parent
 		#if (flash9 || nme)
+		
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(parentGraphicContext);
-		containerGraphicContext.addChild(_graphicsContext);
+		containerGraphicContext.addChild(graphicsContext);
+		#end
+	}
+	
+	public function scroll(x:Float, y:Float):Void
+	{
+		if (computedStyle.position == fixed)
+		{
+			#if (flash9 || nme)
+		{
+			graphicsContext.x = x;
+			graphicsContext.y = y;
+		}
 		#end
 		
-		_needsRendering = false;
+		}
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function renderSelf(graphicContext:NativeElement):Void
+	{
+		renderBackground(graphicContext);
+	}
+	
+	/**
+	 * Clears the content of the graphic
+	 * context of this ElementRenderer
+	 */
+	private function clear(graphicsContext:NativeElement):Void
+	{
+		#if (flash9 || nme)
+		var containerGraphicsContext:flash.display.DisplayObjectContainer = cast(graphicsContext);
+			var length:Int = containerGraphicsContext.numChildren;
+			for (i in 0...length)
+			{
+				containerGraphicsContext.removeChildAt(0);
+			}
+		#end	
+	}
 	
 	/**
 	 * Render the background of the box using the provided graphic context
@@ -109,7 +169,7 @@ class BoxRenderer extends ElementRenderer
 		//TODO 4 : update doc for this
 		_coreStyle.computeBackgroundStyles();
 		
-		var backgroundManager:BackgroundManager = new BackgroundManager();
+		var backgroundManager:BackgroundManager = new BackgroundManager(this);
 		
 		//TODO 3 : should only pass dimensions instead of bounds
 		var backgrounds:Array<NativeElement> = backgroundManager.render(bounds, _coreStyle);
@@ -131,7 +191,7 @@ class BoxRenderer extends ElementRenderer
 	/**
 	 * Render the children of the box
 	 */
-	private function renderChildren(graphicContext:NativeElement):Void
+	private function renderChildren(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
 		//abstract
 	}
@@ -231,9 +291,9 @@ class BoxRenderer extends ElementRenderer
 	 * in computing its styles (box model, font, text...) into usable values and determining its 
 	 * bounds in the space of the containing block which started its formatting context.
 	 */
-	override public function layout():Void
+	override public function layout(forceLayout:Bool):Void
 	{	
-		if (_needsLayout == true)
+		if (_needsLayout == true || forceLayout == true)
 		{
 			layoutSelf();
 			_needsLayout = false;
@@ -258,8 +318,6 @@ class BoxRenderer extends ElementRenderer
 		var containingBlockFontMetricsData:FontMetricsData = _containingBlock.coreStyle.fontMetrics;
 
 		//compute the font style (font-size, line-height...)
-		//TODO 1 : styles which can be computed without any external data should be when their specified
-		//value changes instead of now, which is unecessary
 		_coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
 
 		//compute the box styles (width, height, margins, paddings...)

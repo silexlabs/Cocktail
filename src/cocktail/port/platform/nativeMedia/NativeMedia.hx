@@ -8,7 +8,7 @@
 package cocktail.port.platform.nativeMedia;
 
 import cocktail.core.event.Event;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 
 /**
  * This is a base class proxying access to 
@@ -78,15 +78,7 @@ class NativeMedia
 	 * Listen to the native event dispatched when the metadata
 	 * of the native media are loaded
 	 */
-	private var _onLoadedMetaData:Event->Void;
-	public var onLoadedMetaData(get_onLoadedMetaData, set_onLoadedMetaData):Event->Void;
-	
-	/**
-	 * Listen to tick native event dispatched by the native media
-	 * while playing
-	 */
-	private var _onTimeUpdate:Event->Void;
-	public var onTimeUpdate(get_onTimeUpdate, set_onTimeUpdate):Event->Void;
+	public var onLoadedMetaData:Event->Void;
 	
 	/**
 	 * class constructor
@@ -148,49 +140,12 @@ class NativeMedia
 	 */
 	private function onNativeLoadedMetaData():Void
 	{
-		if (_onLoadedMetaData != null)
+		if (onLoadedMetaData != null)
 		{
 			var loaddedMetadataEvent:Event = new Event();
 			loaddedMetadataEvent.initEvent(Event.LOADED_METADATA, false, false);
-			_onLoadedMetaData(loaddedMetadataEvent);
+			onLoadedMetaData(loaddedMetadataEvent);
 		}
-	}
-	
-	/**
-	 * When a native tick event is dispatched by the native
-	 * media, dispatch a cross-platform tick event
-	 */
-	private function onNativeTimeUpdate(event:Dynamic):Void
-	{
-		if (_onTimeUpdate != null)
-		{
-			var timeUpdateEvent:Event = new Event();
-			timeUpdateEvent.initEvent(Event.TIME_UPDATE, false, false);
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// CALLBACKS SETTERS/GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_onLoadedMetaData():Event->Void
-	{
-		return _onLoadedMetaData;
-	}
-	
-	private function set_onLoadedMetaData(value:Event->Void):Event->Void
-	{
-		return _onLoadedMetaData = value;
-	}
-	
-	private function get_onTimeUpdate():Event->Void
-	{
-		return _onTimeUpdate;
-	}
-	
-	private function set_onTimeUpdate(value:Event->Void):Event->Void
-	{
-		return _onTimeUpdate = value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

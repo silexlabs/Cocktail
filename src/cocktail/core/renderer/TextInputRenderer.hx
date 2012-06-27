@@ -11,7 +11,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
