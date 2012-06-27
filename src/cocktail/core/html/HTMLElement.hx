@@ -19,10 +19,11 @@ import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.style.ComputedStyle;
+import haxe.Stack;
 import lib.hxtml.CssParser;
 import lib.hxtml.HxtmlConverter;
 import lib.haxe.xml.Parser;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
@@ -82,6 +83,16 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public var className(get_className, set_className):String;
 	
+	/**
+	 * When specified on an element, it indicates that the element 
+	 * is not yet, or is no longer, directly relevant to the page's
+	 * current state, or that it is being used to
+	 * declare content to be reused by other parts of the page 
+	 * as opposed to being directly accessed by the user.
+	 * HTMLElement with hiden attribute set are not rendered.
+	 */
+	public var hidden(get_hidden, set_hidden):Bool;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Scroll attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -130,8 +141,7 @@ class HTMLElement extends Element<HTMLElement>
 	 * its computed styles. It is only instantiated
 	 * if the HTMLElement must be displayed.
 	 */
-	private var _elementRenderer:ElementRenderer;
-	public var elementRenderer(get_elementRenderer, never):ElementRenderer;
+	public var elementRenderer(default, null):ElementRenderer;
 	
 	/////////////////////////////////
 	// COORDS attributes
@@ -198,8 +208,7 @@ class HTMLElement extends Element<HTMLElement>
 	 * It can be used by end-user when they want to
 	 * define styles using typed object instead of string
 	 */
-	private var _coreStyle:CoreStyle;
-	public var coreStyle(get_coreStyle, never):CoreStyle;
+	public var coreStyle(default, null):CoreStyle;
 	
 	/**
 	 * This is the style object exposed by the public API.
@@ -208,8 +217,7 @@ class HTMLElement extends Element<HTMLElement>
 	 * and is in charge of converting them to typed object
 	 * which it sets on coreStyle
 	 */
-	private var _style:Style;
-	public var style(get_style, never):Style;
+	public var style(default, null):Style;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
@@ -246,7 +254,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function initCoreStyle():Void
 	{
-		this._coreStyle = new CoreStyle(this);
+		coreStyle = new CoreStyle(this);
 	}
 	
 	/**
@@ -255,7 +263,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function initStyle():Void
 	{
-		_style = new Style(_coreStyle);
+		style = new Style(coreStyle);
 	}
 	
 	/**
@@ -328,7 +336,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	override public function getElementsByTagName(tagName:String):Array<HTMLElement>
 	{
-		return super.getElementsByTagName(tagName.toLowerCase());
+		return super.getElementsByTagName(tagName.toUpperCase());
 	}
 	
 	/**
@@ -415,9 +423,9 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		//TODO 4 : should use helper method like isRenderer instead of
 		//relying on nullness
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			_elementRenderer.invalidate(invalidationReason);
+			elementRenderer.invalidate(invalidationReason);
 		}
 	}
 	
@@ -444,10 +452,10 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function invalidatePositioningScheme():Void
 	{
-		if (_parentNode != null)
+		if (parentNode != null)
 		{
-			_parentNode.detach();
-			_parentNode.attach();
+			parentNode.detach();
+			parentNode.attach();
 		}
 	}
 	
@@ -473,36 +481,40 @@ class HTMLElement extends Element<HTMLElement>
 		//and this HTMLElement is not rendered either
 		if (isParentRendered() == true)
 		{
+			//compute the display styles now to know if the 
+			//HTMLElement should be rendered as a block, inline,
+			//or at all
+			coreStyle.computeDisplayStyles();
+			
 			//create the ElementRenderer if needed
-			if (_elementRenderer == null && isRendered() == true)
+			if (elementRenderer == null && isRendered() == true)
 			{
-				_coreStyle.computeDisplayStyles();
 				createElementRenderer();
 			}
 			
 			//if the ElementRenderer wasn't instantiated, then this
 			//HTMLElement is not supposed to be rendered
-			if (_elementRenderer != null)
+			if (elementRenderer != null)
 			{
 				//do attach to parent ElementRenderer
 				attachToParentElementRenderer();
 				
 				//the HTMLElement is now attached and can attach its children
-				var length:Int = _childNodes.length;
+				var length:Int = childNodes.length;
 				for (i in 0...length)
 				{
 					//only text and element node can be attached, as other nodes
 					//types are not visual
-					switch (_childNodes[i].nodeType)
+					switch (childNodes[i].nodeType)
 					{
 						//attach element node
 						case Node.ELEMENT_NODE:
-							var child:HTMLElement = cast(_childNodes[i]);
+							var child:HTMLElement = cast(childNodes[i]);
 							child.attach();
 						
 						//attach text node
 						case Node.TEXT_NODE:
-							var child:Text = cast(_childNodes[i]);
+							var child:Text = cast(childNodes[i]);
 							child.attach();
 					}
 				}
@@ -523,24 +535,24 @@ class HTMLElement extends Element<HTMLElement>
 		//is not attached
 		if (isParentRendered() == true)
 		{
-			var parent:HTMLElement = cast(_parentNode);
+			var parent:HTMLElement = parentNode;
 			
 			//if this HTMLElement isn't currently rendered, no need
 			//to detach it
-			if (_elementRenderer != null)
+			if (elementRenderer != null)
 			{	
 				//detach first all children
-				var length:Int = _childNodes.length;
+				var length:Int = childNodes.length;
 				for (i in 0...length)
 				{
-					switch (_childNodes[i].nodeType)
+					switch (childNodes[i].nodeType)
 					{
 						case Node.ELEMENT_NODE:
-							var child:HTMLElement = cast(_childNodes[i]);
+							var child:HTMLElement = cast(childNodes[i]);
 							child.detach();
 							
 						case Node.TEXT_NODE:
-							var child:Text = cast(_childNodes[i]);
+							var child:Text = cast(childNodes[i]);
 							child.detach();
 					}
 				}
@@ -549,8 +561,8 @@ class HTMLElement extends Element<HTMLElement>
 				//ElementRenderer, then destroy it
 				detachFromParentElementRenderer();
 				
-				_elementRenderer.dispose();
-				_elementRenderer = null;
+				elementRenderer.dispose();
+				elementRenderer = null;
 			}
 		}
 	}
@@ -605,8 +617,8 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function attachToParentElementRenderer():Void
 	{
-		var parent:HTMLElement = cast(_parentNode);
-		parent.elementRenderer.insertBefore(_elementRenderer, getNextElementRendererSibling());
+		var parent:HTMLElement = parentNode;
+		parent.elementRenderer.insertBefore(elementRenderer, getNextElementRendererSibling());
 	}
 	
 	/**
@@ -615,25 +627,28 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function detachFromParentElementRenderer():Void
 	{
-		_elementRenderer.parentNode.removeChild(_elementRenderer);
+		elementRenderer.parentNode.removeChild(elementRenderer);
 	}
 	
 	/**
 	 * Instantiate the right ElementRenderer
 	 * based on the Display style and/or the 
 	 * type of HTMLElement
+	 * 
+	 * TODO 4 : affecting coreStyle should be done in other
+	 * method as it is duplicated in each overriding classes
 	 */
 	private function createElementRenderer():Void
 	{
-		switch (_coreStyle.computedStyle.display)
+		switch (coreStyle.computedStyle.display)
 		{
 			case block, inlineBlock:
-				_elementRenderer = new BlockBoxRenderer(this);
-				_elementRenderer.coreStyle = _coreStyle;
+				elementRenderer = new BlockBoxRenderer(this);
+				elementRenderer.coreStyle = coreStyle;
 				
 			case cssInline:
-				_elementRenderer = new InlineBoxRenderer(this);
-				_elementRenderer.coreStyle = _coreStyle;
+				elementRenderer = new InlineBoxRenderer(this);
+				elementRenderer.coreStyle = coreStyle;
 				
 			case none:
 		}
@@ -642,14 +657,23 @@ class HTMLElement extends Element<HTMLElement>
 	/**
 	 * Return wether this HTMLElement is supposed to be rendered
 	 * 
-	 * TODO 3 : should use computed display style (although it computes
-	 * the same as the specified value, will be a problem when adding inherit
-	 * style value) and also take into account
-	 * the HTML "hidden" attribute
+	 * TODO 3 : unit tests for "hidden" attribute
 	 */
 	private function isRendered():Bool
 	{
-		return _coreStyle.display != Display.none;
+		//use "hidden" HTML attribute
+		if (hidden == true)
+		{
+			return false;
+		}
+		
+		//use "display" CSS style
+		if (coreStyle.computedStyle.display == Display.none)
+		{
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -658,11 +682,11 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function isParentRendered():Bool
 	{
-		if (_parentNode == null)
+		if (parentNode == null)
 		{
 			return false;
 		}
-		var htmlParent:HTMLElement = cast(_parentNode);
+		var htmlParent:HTMLElement = parentNode;
 		if (htmlParent.elementRenderer != null)
 		{
 			return true;
@@ -760,7 +784,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function focus():Void
 	{
-		var htmlDocument:HTMLDocument = cast(_ownerDocument);
+		var htmlDocument:HTMLDocument = cast(ownerDocument);
 		htmlDocument.activeElement = this;
 	}
 	
@@ -770,7 +794,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function blur():Void
 	{
-		var htmlDocument:HTMLDocument = cast(_ownerDocument);
+		var htmlDocument:HTMLDocument = cast(ownerDocument);
 		htmlDocument.body.focus();
 	}
 	
@@ -788,7 +812,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function requestFullScreen():Void
 	{
-		var htmlDocument:HTMLDocument = cast(_ownerDocument);
+		var htmlDocument:HTMLDocument = cast(ownerDocument);
 		htmlDocument.fullscreenElement = this;
 	}
 	
@@ -879,9 +903,9 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function isVerticallyScrollable(scrollOffset:Int = 0):Bool
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			return _elementRenderer.isVerticallyScrollable(scrollOffset);
+			return elementRenderer.isVerticallyScrollable(scrollOffset);
 		}
 		return false;
 	}
@@ -891,9 +915,9 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function isHorizontallyScrollable(scrollOffset:Int = 0):Bool
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			return _elementRenderer.isHorizontallyScrollable(scrollOffset);
+			return elementRenderer.isHorizontallyScrollable(scrollOffset);
 		}
 		return false;
 	}
@@ -902,18 +926,18 @@ class HTMLElement extends Element<HTMLElement>
 	//is supposed to return
 	private function get_scrollHeight():Int
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			return Math.round(_elementRenderer.scrollHeight);
+			return Math.round(elementRenderer.scrollHeight);
 		}
 		return 0;
 	}
 	
 	private function get_scrollWidth():Int
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			return Math.round(_elementRenderer.scrollWidth);
+			return Math.round(elementRenderer.scrollWidth);
 		}
 		return 0;
 	}
@@ -924,36 +948,36 @@ class HTMLElement extends Element<HTMLElement>
 	//on the HTMLElement ?
 	private function set_scrollLeft(value:Int):Int
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			_elementRenderer.scrollLeft = value;
+			elementRenderer.scrollLeft = value;
 		}
 		return 0;
 	}
 	
 	private function get_scrollLeft():Int
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			return Math.round(_elementRenderer.scrollLeft);
+			return Math.round(elementRenderer.scrollLeft);
 		}
 		return 0;
 	}
 	
 	private function set_scrollTop(value:Int):Int
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			_elementRenderer.scrollTop = value;
+			elementRenderer.scrollTop = value;
 		}
 		return 0;
 	}
 	
 	private function get_scrollTop():Int
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			return Math.round(_elementRenderer.scrollTop);
+			return Math.round(elementRenderer.scrollTop);
 		}
 		return 0;
 	}
@@ -1034,6 +1058,24 @@ class HTMLElement extends Element<HTMLElement>
 		return value;
 	}
 	
+	private function get_hidden():Bool
+	{
+		if (getAttribute(HTMLConstants.HTML_HIDDEN_ATTRIBUTE_NAME) != null)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	private function set_hidden(value:Bool):Bool
+	{
+		super.setAttribute(HTMLConstants.HTML_HIDDEN_ATTRIBUTE_NAME, Std.string(value));
+		return value;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// DOM PARSER GETTER/SETTER AND METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1047,10 +1089,10 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function set_innerHTML(value:String):String
 	{
-		var childLength:Int = _childNodes.length;
+		var childLength:Int = childNodes.length;
 		for (i in 0...childLength)
 		{
-			removeChild(_childNodes[0]);	
+			removeChild(childNodes[0]);	
 		}
 		
 		//wrap the HTML String in a div element, else
@@ -1093,11 +1135,11 @@ class HTMLElement extends Element<HTMLElement>
 		
 		//node type for text node
 		case Xml.PCData:
-			return _ownerDocument.createTextNode(xml.nodeValue);
+			return ownerDocument.createTextNode(xml.nodeValue);
 		
 		//node type for comment node	
 		case Xml.Comment:
-			return _ownerDocument.createComment(xml.nodeValue);
+			return ownerDocument.createComment(xml.nodeValue);
 		
 		//node type for element node
 		case Xml.Element:
@@ -1107,7 +1149,7 @@ class HTMLElement extends Element<HTMLElement>
 	
 			//create an HTMLElement with the name of the xml element
 			//node
-			htmlElement = _ownerDocument.createElement(name);
+			htmlElement = ownerDocument.createElement(name);
 			
 			//loop in all of the xml child node
 			for (child in xml)
@@ -1279,12 +1321,12 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		//here the HTMLElement is not
 		//attached to the DOM
-		if (_parentNode == null)
+		if (parentNode == null)
 		{
 			return null;
 		}
 		
-		var parent:HTMLElement = cast(_parentNode);
+		var parent:HTMLElement = parentNode;
 		
 		//loop in all the parents until a positioned or a null parent is found
 		var isOffsetParent:Bool = parent.elementRenderer.isPositioned();
@@ -1311,14 +1353,14 @@ class HTMLElement extends Element<HTMLElement>
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
 		invalidate(InvalidationReason.needsImmediateLayout);
-		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = this.coreStyle.computedStyle;
 		return Math.round(computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight);
 	}
 	
 	private function get_offsetHeight():Int
 	{
 		invalidate(InvalidationReason.needsImmediateLayout);
-		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = this.coreStyle.computedStyle;
 		return Math.round(computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom);
 	}
 	
@@ -1326,13 +1368,13 @@ class HTMLElement extends Element<HTMLElement>
 	private function get_offsetLeft():Int
 	{
 		invalidate(InvalidationReason.needsImmediateLayout);
-		return Math.round(_elementRenderer.positionedOrigin.x);
+		return Math.round(elementRenderer.positionedOrigin.x);
 	}
 	
 	private function get_offsetTop():Int
 	{
 		invalidate(InvalidationReason.needsImmediateLayout);
-		return Math.round(_elementRenderer.positionedOrigin.y);
+		return Math.round(elementRenderer.positionedOrigin.y);
 	}
 	
 	private function get_clientWidth():Int
@@ -1340,14 +1382,14 @@ class HTMLElement extends Element<HTMLElement>
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
 		invalidate(InvalidationReason.needsImmediateLayout);
-		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = this.coreStyle.computedStyle;
 		return Math.round(computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight);
 	}
 	
 	private function get_clientHeight():Int
 	{
 		invalidate(InvalidationReason.needsImmediateLayout);
-		var computedStyle:ComputedStyle = this._coreStyle.computedStyle;
+		var computedStyle:ComputedStyle = this.coreStyle.computedStyle;
 		return Math.round(computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom);
 	}
 	
@@ -1364,28 +1406,4 @@ class HTMLElement extends Element<HTMLElement>
 		invalidate(InvalidationReason.needsImmediateLayout);
 		return 0;
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// RENDERING GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_elementRenderer():ElementRenderer
-	{
-		return _elementRenderer;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// STYLE GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_coreStyle():CoreStyle
-	{
-		return this._coreStyle;
-	}
-	
-	private function get_style():Style
-	{
-		return _style;
-	}
-	
 }

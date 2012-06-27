@@ -79,10 +79,10 @@ class HTMLInputElement extends EmbeddedElement
 	 */
 	override private function createElementRenderer():Void
 	{
-		_elementRenderer = new TextInputRenderer(this);
-		_elementRenderer.coreStyle = _coreStyle;
+		elementRenderer = new TextInputRenderer(this);
+		elementRenderer.coreStyle = coreStyle;
 		
-		var textInputElementRenderer:TextInputRenderer = cast(_elementRenderer);
+		var textInputElementRenderer:TextInputRenderer = cast(elementRenderer);
 		
 		//initialise value of native text input
 		var value:String = getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
@@ -133,9 +133,9 @@ class HTMLInputElement extends EmbeddedElement
 	{
 		setAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME, value);
 	
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			var textInputElementRenderer:TextInputRenderer = cast(_elementRenderer);
+			var textInputElementRenderer:TextInputRenderer = cast(elementRenderer);
 			textInputElementRenderer.value = value;
 		}
 		
@@ -144,9 +144,9 @@ class HTMLInputElement extends EmbeddedElement
 	
 	private function get_value():String
 	{
-		if (_elementRenderer != null)
+		if (elementRenderer != null)
 		{
-			var textInputElementRenderer:TextInputRenderer = cast(_elementRenderer);
+			var textInputElementRenderer:TextInputRenderer = cast(elementRenderer);
 			return textInputElementRenderer.value;
 		}
 		

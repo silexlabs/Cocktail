@@ -8,7 +8,7 @@
 package cocktail.core.drawing;
 
 import cocktail.core.geom.Matrix;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.dom.DOMData;
 import cocktail.core.geom.GeomData;
 

@@ -125,8 +125,7 @@ class Style
 	 * 
 	 * TODO 3 : shouldn't store invalid styles
 	 */
-	private var _attributes:NamedNodeMap<HTMLElement>;
-	public var attributes(get_attributes, never):NamedNodeMap<HTMLElement>;
+	public var attributes(default, null):NamedNodeMap<HTMLElement>;
 	
 	/**
 	 * class constructor. Store the ref to 
@@ -135,7 +134,7 @@ class Style
 	public function new(coreStyle:CoreStyle) 
 	{
 		_coreStyle = coreStyle;
-		_attributes = new NamedNodeMap<HTMLElement>();
+		attributes = new NamedNodeMap<HTMLElement>();
 	}
 	
 	/////////////////////////////////
@@ -152,22 +151,13 @@ class Style
 		//hash if it exists
 		if (value == null)
 		{
-			_attributes.removeNamedItem(name);
+			attributes.removeNamedItem(name);
 			return;
 		}
 		
 		var attr:Attr<HTMLElement> = new Attr<HTMLElement>(name);
 		attr.value = value;
-		_attributes.setNamedItem(attr);
-	}
-	
-	/////////////////////////////////
-	// SETTERS/GETTERS
-	////////////////////////////////
-	
-	private function get_attributes():NamedNodeMap<HTMLElement>
-	{
-		return _attributes;
+		attributes.setNamedItem(attr);
 	}
 	
 	/////////////////////////////////

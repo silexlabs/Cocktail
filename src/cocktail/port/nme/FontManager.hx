@@ -9,7 +9,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.port.nme;
 
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.style.ComputedStyle;
 import flash.text.TextField;
 import flash.text.TextFormat;

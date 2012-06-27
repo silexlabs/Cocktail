@@ -7,8 +7,10 @@
 */
 package cocktail.port.flash_player;
 
+import cocktail.core.resource.AbstractResource;
 import cocktail.port.NativeElement;
 import cocktail.core.resource.AbstractMediaLoader;
+import flash.display.Bitmap;
 import flash.display.Loader;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
@@ -21,22 +23,27 @@ import flash.system.ApplicationDomain;
 #end
 
 /**
- * This is the Flash As3 implementation of the ResourceLoader.
- * Load a resource into a native flash Loader, the Loader
- * can then be used as a NativeElement to attach it to the
- * DOM
+ * This is the Flash As3 implementation of the Resource.
+ * Load a resource into a native flash Loader, then
+ * store the bitmap data retrieved from the loader
  * 
  * @author Yannick DOMINGUEZ
  */
-class MediaLoader extends AbstractMediaLoader
+class Resource extends AbstractResource
 {
+	/**
+	 * The native flash loader used to
+	 * load the resource
+	 */
+	private var _loader:Loader;
+	
 	/**
 	 * class constructor.
 	 */
-	public function new() 
+	public function new(url:String) 
 	{
-		_nativeElement = new Loader();
-		super();
+		_loader = new Loader();
+		super(url);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -47,15 +54,13 @@ class MediaLoader extends AbstractMediaLoader
 	 * Load a resource using a native ActionScript3 Loader object
 	 * @param	url the url of the AS3 resource to load
 	 */
-	override private function doLoad(url:String):Void
+	override private function load(url:String):Void
 	{
-		var loader:Loader = cast(_nativeElement);
-		
-		loader.unload();
+		_loader.unload();
 		
 		//listen for complete/error event on the loader
-		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onNativeLoadComplete);
-		loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onNativeLoadIOError);
+		_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onNativeLoadComplete);
+		_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onNativeLoadIOError);
 		
 		//instantiate a native request object
 		var request:URLRequest = new URLRequest(url);
@@ -67,10 +72,10 @@ class MediaLoader extends AbstractMediaLoader
 		loadingContext.checkPolicyFile = true;
 
 		//start the loading
-		loader.load(request, loadingContext);
+		_loader.load(request, loadingContext);
 		#else
 		//start the loading
-		loader.load(request);
+		_loader.load(request);
 		#end
 	}
 	
@@ -80,27 +85,25 @@ class MediaLoader extends AbstractMediaLoader
 	
 	/**
 	 * When the resource has been loaded, remove the listener on it, 
-	 * then call the load complete method passing the loaded resource as a NativeElement
+	 * then call the load complete method
 	 * @param	event the Complete event, contains the native Loader
 	 */
 	private function onNativeLoadComplete(event:Event):Void
 	{	
-		var loader:Loader = cast(_nativeElement);
-		removeLoaderListeners(loader);
-		setIntrinsicDimensions(loader);
-		onLoadComplete(loader);
+		removeLoaderListeners(_loader);
+		setIntrinsicDimensions(_loader);
+		setNativeResource(_loader);
+		onLoadComplete();
 	}
 	
 	/**
-	 * When there was an error during loading, call the error callback with the
-	 * the message error, remove the event listeners
-	 * @param	event the IO_ERROR event, containd info on the error
+	 * When there was an error during loading, call the error callback 
+	 * @param	event the IO_ERROR event, contains info on the error
 	 */
 	private function onNativeLoadIOError(event:IOErrorEvent):Void
 	{
-		var loader:Loader = cast(_nativeElement);
-		removeLoaderListeners(loader);
-		onLoadError(event.toString());
+		removeLoaderListeners(_loader);
+		onLoadError();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -122,9 +125,24 @@ class MediaLoader extends AbstractMediaLoader
 	 */
 	private function setIntrinsicDimensions(loader:Loader):Void
 	{
-		this._intrinsicHeight = Math.round(loader.contentLoaderInfo.height);
-		this._intrinsicWidth = Math.round(loader.contentLoaderInfo.width);
-		this._intrinsicRatio = this._intrinsicWidth / this._intrinsicHeight;
+		intrinsicHeight = Math.round(loader.contentLoaderInfo.height);
+		intrinsicWidth = Math.round(loader.contentLoaderInfo.width);
+		intrinsicRatio = intrinsicWidth / intrinsicHeight;
+	}
+	
+	/**
+	 * Store the bitmap data loaded by the flash loader
+	 * 
+	 * TODO 1 : will cause security error with cross-domain picture, should try those fixes
+	 * http://blog.martinlegris.com/2008/02/19/getting-around-the-crossdomainxml-file-when-loading-images-in-as3/
+	 * http://www.inklink.co.at/blog/?p=14
+		 * 
+		 * maybe should use loadBytes instead of load
+	 */
+	private function setNativeResource(loader:Loader):Void
+	{
+		var bitmap:Bitmap = cast(loader.content);
+		nativeResource = bitmap.bitmapData;
 	}
 	
 }

@@ -135,7 +135,7 @@ class TransitionManager
 		//create a new transition
 		var transition:Transition = new Transition(propertyName, target, transitionDuration, transitionDelay, transitionTimingFunction,
 		startValue, endValue, onComplete, onUpdate);
-		
+
 		//create a key in the hash for the property name
 		//of the new transition if necessary
 		if (_transitions.exists(propertyName) == false)

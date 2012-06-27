@@ -31,15 +31,13 @@ class AbstractKeyboard
 	 * The callback to call when
 	 * a native key down event is dispatched
 	 */
-	private var _onKeyDown:KeyboardEvent->Void;
-	public var onKeyDown(getOnKeyDown, setOnKeyDown):KeyboardEvent->Void;
+	public var onKeyDown:KeyboardEvent->Void;
 	
 	/**
 	 * The callback to call when
 	 * a native key up event is dispatched
 	 */
-	private var _onKeyUp:KeyboardEvent->Void;
-	public var onKeyUp(getOnKeyUp, setOnKeyUp):KeyboardEvent->Void;
+	public var onKeyUp:KeyboardEvent->Void;
 	
 	/**
 	 * class constructor
@@ -79,30 +77,6 @@ class AbstractKeyboard
 		{
 			onKeyUp(getKeyData(event));
 		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// CALLBACKS SETTERS/GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function setOnKeyDown(value:KeyboardEvent->Void):KeyboardEvent->Void
-	{
-		return _onKeyDown = value;
-	}
-	
-	private function getOnKeyDown():KeyboardEvent->Void
-	{
-		return _onKeyDown;
-	}
-	
-	private function setOnKeyUp(value:KeyboardEvent->Void):KeyboardEvent->Void
-	{
-		return _onKeyUp = value;
-	}
-	
-	private function getOnKeyUp():KeyboardEvent->Void
-	{
-		return _onKeyUp;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

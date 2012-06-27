@@ -10,7 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.formatter.BlockFormattingContext;
 import cocktail.core.style.formatter.FormattingContext;
@@ -123,22 +123,44 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		}
 	}
 	
-	override private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
+	
+	
+	override public function invalidate(invalidationReason:InvalidationReason):Void
 	{
-		_needsLayout = true;
-		_childrenNeedLayout = true;
-		_needsVisualEffectsRendering = true;
-		_needsRendering = true;
-		_positionedChildrenNeedLayout = true;
+		var needsImmediateLayout:Bool = false;
 		
-		switch (invalidationReason)
+		switch(invalidationReason)
 		{
-			case InvalidationReason.needsImmediateLayout:
-				invalidateLayout(true);
+			case InvalidationReason.styleChanged(styleName):
+				_needsLayout = true;
+				//_needsRendering = true;
+			
+			case InvalidationReason.childStyleChanged(styleName):
+				_childrenNeedLayout = true;
+				//_childrenNeedRendering = true;
 				
-			default:
-				invalidateLayout(false);
+			case InvalidationReason.positionedChildStyleChanged(styleName):
+				_positionedChildrenNeedLayout = true;
+				//_childrenNeedRendering = true;
+				
+			case InvalidationReason.windowResize:
+				_needsLayout = true;
+				_positionedChildrenNeedLayout = true;
+				_childrenNeedLayout = true;
+				_needsRendering = true;
+				_childrenNeedRendering = true;
+				
+			case InvalidationReason.needsImmediateLayout:
+				needsImmediateLayout = true;
+				
+			case InvalidationReason.other:
+				_needsLayout = true;
+				//_needsRendering = true;
+				//_childrenNeedRendering = true;
 		}
+		
+		invalidateLayout(false);
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -153,6 +175,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	{
 		startLayout();
 		startRendering();
+	}
+	
+	private function onLayoutSchedule():Void
+	{
+		layoutAndRender();
 		_invalidationScheduled = false;
 	}
 	
@@ -167,8 +194,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	{
 		#if (flash9 || nme)
 		//start the rendering at the root layer renderer
-		//TODO 3 : should instead call an invalidateRendering method on LayerRenderer ?
-		render(flash.Lib.current);
+		render(flash.Lib.current, false);
 		#end
 	}
 	
@@ -177,20 +203,15 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * of the all of the rendring tree elements relative to their containing block.
 	 * Then set the global bounds (relative to the window) for all of the elements
 	 * of the rendering tree
-	 * 
-	 * TODO 2 : for now only called by the InitialBlockRenderer but should be callable
-	 * by any BoxRenderer to prevent from laying out and rendering all of the rendering
-	 * tree
 	 */
 	private function startLayout():Void
 	{
 		//layout all the HTMLElements. After that they all know their bounds relative to the containing
 		//blocks
-		layout();
+		layout(false);
 		//set the global bounds on the rendering tree. After that all the elements know their positions
 		//relative to the window
-		
-		setGlobalOrigins(this,globalBounds.x,globalBounds.y, positionedOrigin.x,positionedOrigin.y);
+		setGlobalOrigins(this,0,0, 0,0);
 	}
 	
 	/**
@@ -218,9 +239,12 @@ class InitialBlockRenderer extends BlockBoxRenderer
 			{
 				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
 				{
+					//when the element id absolutely positioned and not static, it uses
+					//its own global bounds as the new origin for its children
+					//TODO 1 : should check for regression, pretty big change
 					if (elementRenderer.coreStyle.computedStyle.position == absolute)
 					{
-						addedX += elementRenderer.positionedOrigin.x;
+						addedX = elementRenderer.globalBounds.x;
 					}
 					//here the positioned ElementRenderer is fixed and is placed
 					//relative to the window. In this case, its x is not added
@@ -238,7 +262,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 				{
 					if (elementRenderer.coreStyle.computedStyle.position == absolute)
 					{
-						addedY += elementRenderer.positionedOrigin.y;
+						addedY = elementRenderer.globalBounds.y;
 					}
 					else
 					{
@@ -257,6 +281,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 				addedX += elementRenderer.bounds.x;
 				addedY += elementRenderer.bounds.y;
 			}
+			
 		}
 		
 		//if the element is positioned, it must also add
@@ -340,12 +365,12 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	private function scheduleLayoutAndRender():Void
 	{
-		var layoutAndRenderDelegate:Void->Void = layoutAndRender;
+		var onLayoutScheduleDelegate:Void->Void = onLayoutSchedule;
 		#if (flash9 || nme)
 		//calling the methods 1 millisecond later is enough to ensure
 		//that first all synchronous code is executed
 		Timer.delay(function () { 
-			layoutAndRenderDelegate();
+			onLayoutScheduleDelegate();
 		}, INVALIDATION_INTERVAL);
 		#end
 	}
