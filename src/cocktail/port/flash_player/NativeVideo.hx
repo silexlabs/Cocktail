@@ -33,6 +33,10 @@ class NativeVideo extends NativeMedia
 	private static inline var MP4_EXTENSION:String = "mp4";
 	
 	private static inline var FLV_EXTENSION:String = "flv";
+	
+	// net status info code
+	
+	private static inline var NET_CONNECTION_CONNECT_SUCCESS:String = "NetConnection.Connect.Success";
 
 	/**
 	 * a reference to the native flash video
@@ -59,6 +63,11 @@ class NativeVideo extends NativeMedia
 	private var _metaData:Dynamic;
 	
 	/**
+	 * The url of the played video
+	 */
+	private var _src:String;
+	
+	/**
 	 * class constructor. Init video
 	 */
 	public function new() 
@@ -69,13 +78,9 @@ class NativeVideo extends NativeMedia
 		_video.smoothing = true;
 		
 		_nc = new NetConnection();
+		_nc.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 		_nc.connect(null); 
 		
-		_netStream = new NetStream(_nc);
-		_netStream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
-		initListenerObject(_netStream);
-		
-		_video.attachNetStream(_netStream);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -139,7 +144,7 @@ class NativeVideo extends NativeMedia
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Callback for async error. Retry to connect the stream
+	 * Callback for async error. Retry to play the stream
 	 * when happens
 	 * 
 	 * TODO 3 : really hackish but sometimes video doesn't start.
@@ -147,18 +152,37 @@ class NativeVideo extends NativeMedia
 	 */
 	private function onAsyncError(event:AsyncErrorEvent):Void
 	{
-
+		_netStream.play(_src);
 	}
 	
 	/**
-	 * listens to native event on net stream object.
-	 * For some reason, it uses old style listener object
-	 * instead of event listener
+	 * Wait for the NetConnection object to connect before initialising
+	 * the net stream
 	 */
-	private function initListenerObject(netStream:NetStream):Void
+	private function onNetStatus(event:NetStatusEvent):Void
 	{
-		var listener:Dynamic = { onMetaData:onNetStreamMetaData };
-		netStream.client = listener;
+		switch (event.info.code)
+		{
+			case NET_CONNECTION_CONNECT_SUCCESS:
+				connectStream();
+		}
+	}
+	
+	/**
+	 * init the net stream and attach
+	 * it to the video object
+	 */
+	private function connectStream():Void
+	{
+		_netStream = new NetStream(_nc);
+		_netStream.client = {
+			onMetaData:onNetStreamMetaData
+		}
+		
+		_netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+		_netStream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
+		
+		_video.attachNetStream(_netStream);
 	}
 	
 	/**
@@ -233,6 +257,7 @@ class NativeVideo extends NativeMedia
 		//reset metadata
 		_metaData = null;
 		
+		_src = value;
 		_netStream.play(value);
 		
 		return value;
