@@ -67,9 +67,8 @@ class VideoRenderer extends EmbeddedBoxRenderer
 		//dimensions, with the kept aspect ratio
 		var width:Float;
 		var height:Float;
-		
-		//here the bounds of the ElementRenderer are larger than the height
-		if (_coreStyle.computedStyle.width >= _coreStyle.computedStyle.height)
+
+		if (_coreStyle.computedStyle.width < _coreStyle.computedStyle.height)
 		{
 			//get the ratio between the intrinsic video width and the width it must be displayed at
 			var ratio:Float = htmlVideoElement.videoHeight / _coreStyle.computedStyle.height;

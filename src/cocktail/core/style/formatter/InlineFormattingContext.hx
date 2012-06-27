@@ -320,8 +320,6 @@ class InlineFormattingContext extends FormattingContext
 	private function formatLine(rootLineBox:LineBox, isLastLine:Bool):Void
 	{
 		
-		//TODO 1 : should apply white space processing to remove space at the end and beginning
-		//of line here
 		removeSpaces(rootLineBox);
 		
 		//format line boxes horizontally
