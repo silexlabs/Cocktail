@@ -102,12 +102,7 @@ class NativeVideo extends NativeMedia
 	 */
 	override public function pause():Void
 	{
-		//don't pause till metadata are loaded,
-		//else it might stop video loading
-		if (_metaData != null)
-		{
-			_netStream.pause();
-		}
+		_netStream.pause();
 	}
 	
 	/**
@@ -152,7 +147,7 @@ class NativeVideo extends NativeMedia
 	 */
 	private function onAsyncError(event:AsyncErrorEvent):Void
 	{
-		_netStream.play(_src);
+		src = _src;
 	}
 	
 	/**
@@ -165,6 +160,8 @@ class NativeVideo extends NativeMedia
 		{
 			case NET_CONNECTION_CONNECT_SUCCESS:
 				connectStream();
+				
+			case "NetStream.Seek.Notify":
 		}
 	}
 	
@@ -175,6 +172,7 @@ class NativeVideo extends NativeMedia
 	private function connectStream():Void
 	{
 		_netStream = new NetStream(_nc);
+		
 		_netStream.client = {
 			onMetaData:onNetStreamMetaData
 		}
@@ -191,12 +189,22 @@ class NativeVideo extends NativeMedia
 	 */
 	private function onNetStreamMetaData(data:Dynamic):Void
 	{
-		_metaData = data;
+		//this flag is used to ensure that the metadata event
+		//is only dispatched the first time metadata are received
+		//for the video, as with NetStream, for instance seeking
+		//will dispatch a metadata event
+		var metaWasNull:Bool = _metaData == null;
 		
-		//pause video by default, play must be explicitely
-		//called
-		_netStream.pause();
-		onNativeLoadedMetaData();
+		if (metaWasNull == true)
+		{
+			_metaData = data;
+					
+			//pause video by default, play must be explicitely
+			//called
+			_netStream.pause();
+			
+			onNativeLoadedMetaData();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -250,7 +258,7 @@ class NativeVideo extends NativeMedia
 	}
 	
 	/**
-	 * start net stream connection
+	 * start net stream play
 	 */
 	override private function set_src(value:String):String
 	{
