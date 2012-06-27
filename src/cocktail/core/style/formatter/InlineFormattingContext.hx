@@ -76,6 +76,7 @@ class InlineFormattingContext extends FormattingContext
 	
 	override private function startFormatting():Void
 	{
+		
 		_unbreakableLineBoxes = new Array<LineBox>();
 		var rootLineBoxes:Array<LineBox> = new Array<LineBox>();
 		var initialRootLineBox:RootLineBox = new RootLineBox(_formattingContextRoot);
@@ -318,6 +319,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function formatLine(rootLineBox:LineBox, isLastLine:Bool):Void
 	{
+		
 		//TODO 1 : should apply white space processing to remove space at the end and beginning
 		//of line here
 		removeSpaces(rootLineBox);
@@ -723,7 +725,6 @@ class InlineFormattingContext extends FormattingContext
 	//TODO 2 : add doc, remove start and end spaces in a line
 	private function removeSpaces(rootLineBox:LineBox):Void
 	{
-		
 		var lineBoxes:Array<LineBox> = getLineBoxTreeAsArray(rootLineBox);
 		
 		if (lineBoxes.length == 0)
@@ -812,6 +813,10 @@ class InlineFormattingContext extends FormattingContext
 			if (child.hasChildNodes() == true && child.isAbsolutelyPositioned() == false)
 			{
 				var children:Array<LineBox> = getLineBoxTreeAsArray(child);
+				for (j in 0...children.length)
+				{
+					ret.push(children[j]);
+				}
 			}
 			else
 			{
