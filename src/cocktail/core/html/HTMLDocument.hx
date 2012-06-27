@@ -116,6 +116,16 @@ class HTMLDocument extends Document
 	public var onSetMouseCursor:Cursor->Void;
 	
 	/**
+	 * a flag determining if a click event must be dispatched
+	 * on the hovered element on the next mouse up event.
+	 * 
+	 * A click event is dispatched if there was a mouse down
+	 * event then a mouse up event dispatched on the same hovered
+	 * element
+	 */
+	private var _shouldDispatchClickOnNextMouseUp:Bool;
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new() 
@@ -126,6 +136,7 @@ class HTMLDocument extends Document
 		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
 		documentElement.appendChild(body);
 		_focusManager = new FocusManager();
+		_shouldDispatchClickOnNextMouseUp = false;
 	}
 	
 	/**
@@ -209,8 +220,28 @@ class HTMLDocument extends Document
 	 */
 	public function onPlatformMouseEvent(mouseEvent:MouseEvent):Void
 	{
+		//store the even type before dispatching it, as the event object is
+		//reseted after dispatch
+		var eventType:String = mouseEvent.type;
+		
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
 		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
+	
+		switch(eventType)
+		{
+			case MouseEvent.MOUSE_DOWN:
+				//reset the click sequence when a mouse down is dispatched
+				_shouldDispatchClickOnNextMouseUp = true;
+			
+				
+			case MouseEvent.MOUSE_UP:
+				//on mouse up, if nothing canceled the click sequence, dispatch
+				//a click event after the mouse up event
+				if (_shouldDispatchClickOnNextMouseUp == true)
+				{
+					dispatchClickEvent(mouseEvent);
+				}
+		}
 	}
 	
 	/**
@@ -237,44 +268,6 @@ class HTMLDocument extends Document
 				scrollableHTMLElement.scrollTop -= scrollOffset;
 			}
 		
-		}
-	}
-	
-	/**
-	 * Mouse click event are a special case of
-	 * mouse event dispatching, as they may trigger
-	 * activation behaviour, such as following a 
-	 * link for an HTMLAnchorElement
-	 */
-	public function onPlatformMouseClickEvent(mouseEvent:MouseEvent):Void
-	{
-		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
-		
-		var htmlElement:HTMLElement = elementRendererAtPoint.node;
-		
-		//find the first parent of the HTMLElement which has an activation behaviour, might
-		//return null
-		var nearestActivatableElement:HTMLElement = htmlElement.getNearestActivatableElement();
-
-		//execute pre activation
-		if (nearestActivatableElement != null)
-		{
-			nearestActivatableElement.runPreClickActivation();
-		}
-		
-		htmlElement.dispatchEvent(mouseEvent);
-		
-		//execute post or canceled activation behaviour
-		if (nearestActivatableElement != null)
-		{
-			if (mouseEvent.defaultPrevented == true)
-			{
-				nearestActivatableElement.runCanceledActivationStep();
-			}
-			else
-			{
-				nearestActivatableElement.runPostClickActivationStep(mouseEvent);
-			}
 		}
 	}
 	
@@ -306,6 +299,11 @@ class HTMLDocument extends Document
 			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, oldHoveredElementRenderer.node);
 			
 			elementRendererAtPoint.node.dispatchEvent(mouseOverEvent);
+			
+			//when the hovered element changes, if a mouse up event is dispatched
+			//on the new hovered element, no click should be dispatched on it, as 
+			//no mouse down was dispatched on it
+			_shouldDispatchClickOnNextMouseUp = false;
 			
 			//update the mouse cursor with the cursor style of the newly hovered 
 			//element
@@ -361,6 +359,59 @@ class HTMLDocument extends Document
 	public function onPlatformResizeEvent(event:UIEvent):Void
 	{
 		documentElement.invalidate(InvalidationReason.windowResize);
+	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE CLICK METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * dispatch a click event on the currently hovered element if a mouse down and mouse up
+	 * was called on it without the mouse hovering another element in between
+	 * 
+	 * Mouse click event are a special case of
+	 * mouse event dispatching, as they may trigger
+	 * activation behaviour, such as following a 
+	 * link for an HTMLAnchorElement
+	 * 
+	 * @param mouseEvent, the mouse up event which triggered the click
+	 */
+	private function dispatchClickEvent(mouseEvent:MouseEvent):Void
+	{
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
+		
+		var htmlElement:HTMLElement = elementRendererAtPoint.node;
+		
+		//find the first parent of the HTMLElement which has an activation behaviour, might
+		//return null
+		var nearestActivatableElement:HTMLElement = htmlElement.getNearestActivatableElement();
+
+		//execute pre activation
+		if (nearestActivatableElement != null)
+		{
+			nearestActivatableElement.runPreClickActivation();
+		}
+		
+		//create a mouse click event from the mouse up event
+		var clickEvent:MouseEvent = new MouseEvent();
+		clickEvent.initMouseEvent(MouseEvent.CLICK, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY,
+		mouseEvent.clientX, mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey,
+		mouseEvent.metaKey, mouseEvent.button, null);
+		
+		htmlElement.dispatchEvent(clickEvent);
+		
+		//execute post or canceled activation behaviour
+		if (nearestActivatableElement != null)
+		{
+			if (mouseEvent.defaultPrevented == true)
+			{
+				nearestActivatableElement.runCanceledActivationStep();
+			}
+			else
+			{
+				nearestActivatableElement.runPostClickActivationStep(mouseEvent);
+			}
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -29,12 +29,6 @@ import cocktail.core.style.StyleData;
  */
 class AbstractMouse 
 {
-	/**
-	 * The callback to call when
-	 * a native click event is dispatched
-	 */
-	public var onClick:MouseEvent->Void;
-	
 	/** 
 	 * The callback to call when
 	 * a native mouse down evednt is dispatched
@@ -86,22 +80,11 @@ class AbstractMouse
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Create a cross-platform mouse click event form
-	 * the native mouse click event, and call
-	 * the click callback if provided
+	 * Create a cross-platform mouse down event from
+	 * the native mouse down event, and call
+	 * the mouse down callback if provided
 	 * 
-	 * @param	event the native mouse click event
-	 */
-	private function onNativeClick(event:Dynamic):Void
-	{
-		if (onClick != null)
-		{
-			onClick(getMouseEvent(event));
-		}
-	}
-	
-	/**
-	 * same as mouse click
+	 * @param	event the native mouse down event
 	 */
 	private function onNativeMouseDown(event:Dynamic):Void
 	{
@@ -112,7 +95,7 @@ class AbstractMouse
 	}
 	
 	/**
-	 * same as mouse click
+	 * same as mouse down
 	 */
 	private function onNativeMouseUp(event:Dynamic):Void
 	{
@@ -123,7 +106,7 @@ class AbstractMouse
 	}
 	
 	/**
-	 * same as mouse click
+	 * same as mouse down
 	 */
 	private function onNativeMouseMove(event:Dynamic):Void
 	{
@@ -134,7 +117,7 @@ class AbstractMouse
 	}
 	
 	/**
-	 * same as mouse click, for a wheel event
+	 * same as mouse down, for a wheel event
 	 */
 	private function onNativeMouseWheel(event:Dynamic):Void
 	{
