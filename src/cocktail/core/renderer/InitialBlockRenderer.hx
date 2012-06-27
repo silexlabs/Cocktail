@@ -127,6 +127,8 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	
 	override public function invalidate(invalidationReason:InvalidationReason):Void
 	{
+		var needsImmediateLayout:Bool = false;
+		
 		switch(invalidationReason)
 		{
 			case InvalidationReason.styleChanged(styleName):
@@ -141,20 +143,23 @@ class InitialBlockRenderer extends BlockBoxRenderer
 				_positionedChildrenNeedLayout = true;
 				//_childrenNeedRendering = true;
 				
-			default:
+			case InvalidationReason.windowResize:
+				_needsLayout = true;
+				_positionedChildrenNeedLayout = true;
+				_childrenNeedLayout = true;
+				_needsRendering = true;
+				_childrenNeedRendering = true;
+				
+			case InvalidationReason.needsImmediateLayout:
+				needsImmediateLayout = true;
+				
+			case InvalidationReason.other:
 				_needsLayout = true;
 				//_needsRendering = true;
 				//_childrenNeedRendering = true;
 		}
 		
-		switch (invalidationReason)
-		{
-			case InvalidationReason.needsImmediateLayout:
-				invalidateLayout(true);
-				
-			default:
-				invalidateLayout(false);
-		}
+		invalidateLayout(false);
 		
 	}
 	

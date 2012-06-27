@@ -360,7 +360,7 @@ class HTMLDocument extends Document
 	 */
 	public function onPlatformResizeEvent(event:UIEvent):Void
 	{
-		documentElement.invalidate(InvalidationReason.other);
+		documentElement.invalidate(InvalidationReason.windowResize);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -422,7 +422,6 @@ class HTMLDocument extends Document
 	{
 		return true;
 	}
-	
 	
 	/**
 	 * start fullscreen mode
