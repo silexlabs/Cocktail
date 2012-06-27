@@ -73,8 +73,6 @@ class TextRenderer extends ElementRenderer
 	/**
 	 * Actually convert a text into an array
 	 * of text token.
-	 * 
-	 * TODO 1 : should take whit space processing into account
 	 */
 	private static function doGetTextTokens(text:String, whiteSpace:WhiteSpace):Array<TextToken>
 	{
