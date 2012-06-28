@@ -77,12 +77,12 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	
 	override private function attachLayer():Void
 	{
-		_layerRenderer = new LayerRenderer(this);
+		layerRenderer = new LayerRenderer(this);
 	}
 	
 	override private function detachLayer():Void
 	{
-		_layerRenderer = null;
+		layerRenderer = null;
 	}
 	
 	override private function attachContaininingBlock():Void

@@ -178,7 +178,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		if (establishesNewStackingContext() == true)
 		{
 			//first render all the negative z-index child LayerRenderers
-			_layerRenderer.renderNegativeChildElementRenderers(graphicContext, forceRendering);
+			layerRenderer.renderNegativeChildElementRenderers(graphicContext, forceRendering);
 			
 			//render all the block box which belong to the same stacking context
 			renderBlockContainerChildren(graphicContext, forceRendering);
@@ -200,9 +200,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			renderScrollBars(graphicContext, forceRendering);
 			
 			//render all the child layers with a z-index of 0 or auto
-			_layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext, forceRendering);
+			layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext, forceRendering);
 			//render all the child layer with a positive z-index
-			_layerRenderer.renderPositiveChildElementRenderers(graphicContext, forceRendering);
+			layerRenderer.renderPositiveChildElementRenderers(graphicContext, forceRendering);
 		}
 		//same as above but don't render the child LayerRenderer if this 
 		//block box doesn't actually establish a new stacking context
@@ -327,7 +327,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private function renderLineBoxes(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
 		//retrieve all the line boxes in all of the lines generated in this BlockBoxRenderer
-		var lineBoxes:Array<LineBox> = getChilrenLineBoxes(this, _layerRenderer);
+		var lineBoxes:Array<LineBox> = getChilrenLineBoxes(this, layerRenderer);
 
 		//loop in all of the lineboxes
 		var length:Int = lineBoxes.length;
@@ -343,7 +343,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function renderBlockReplacedChildren(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
-		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this, _layerRenderer);
+		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this, layerRenderer);
 		var length:Int = childrenBlockReplaced.length;
 		for (i in 0...length)
 		{
@@ -357,7 +357,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function renderBlockContainerChildren(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
-		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(this, _layerRenderer);
+		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(this, layerRenderer);
 		var length:Int = childrenBlockContainer.length;
 		for (i in 0...length)
 		{
@@ -1033,7 +1033,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		if (_horizontalScrollBar == null)
 		{
 			_horizontalScrollBar = new ScrollBar(false);
-			_horizontalScrollBar.ownerDocument = _node.ownerDocument;
+			_horizontalScrollBar.ownerDocument = node.ownerDocument;
 			_horizontalScrollBar.attach();
 			appendChild(_horizontalScrollBar.elementRenderer);
 			_horizontalScrollBar.onscroll = onHorizontalScroll;
@@ -1088,7 +1088,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		if (_verticalScrollBar == null)
 		{
 			_verticalScrollBar = new ScrollBar(true);
-			_verticalScrollBar.ownerDocument = _node.ownerDocument;
+			_verticalScrollBar.ownerDocument = node.ownerDocument;
 			_verticalScrollBar.attach();
 			appendChild(_verticalScrollBar.elementRenderer);
 			_verticalScrollBar.onscroll = onVerticalScroll;
@@ -1108,9 +1108,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			removeChild(_verticalScrollBar.elementRenderer);
 			_verticalScrollBar.onscroll = null;
-			
-			var htmlElement:HTMLElement = _node;
-			
 			_verticalScrollBar = null;
 			
 			//reset scroll so that the display don't "jump" if
@@ -1409,7 +1406,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		var scrollEvent:UIEvent = new UIEvent();
 		scrollEvent.initUIEvent(UIEvent.SCROLL, mustBubbleScrollEvent(), false, null, 0.0);
-		_node.dispatchEvent(scrollEvent);
+		node.dispatchEvent(scrollEvent);
 	}
 	
 	/**
