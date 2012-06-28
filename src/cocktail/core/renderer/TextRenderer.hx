@@ -179,10 +179,12 @@ class TextRenderer extends ElementRenderer
 			case normal, nowrap: // remove new lines, spaces and tab
 
 			var er1 : EReg = ~/[ \t]+/;
-			var er2 : EReg = ~/ +/g;
+			//TODO 3 : at this point, CR should have been normalised as LF
+			var er2 : EReg = ~/\r+/g;
 			var er3 : EReg = ~/\n+/g;
+			var er4 : EReg = ~/\s+/g;
 			
-			text = er3.replace(er2.replace( er1.replace( text , " " ) , " " ), " ");
+			text = er4.replace(er3.replace(er2.replace( er1.replace( text , " " ) , " " ), " "), " ");
 			
 			case preLine: // remove spaces
 
