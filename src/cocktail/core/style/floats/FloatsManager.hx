@@ -170,8 +170,6 @@ class FloatsManager
 	 * Create and store a float data structure from a floated HTMLElement
 	 * @param	htmlElement the floated HTMLElement
 	 * @param	currentFormattingContextY the current y position of the formatting context
-	 * 
-	 * TODO 5 : shouldn't need a ref to HTMLElement
 	 */
 	public function registerFloat(elementRenderer:ElementRenderer, currentFormattingContextY:Float, currentFormattingContextX:Float, containingBlockWidth:Float):RectangleData
 	{
@@ -196,8 +194,6 @@ class FloatsManager
 	
 	/**
 	 * Create a float data structure for a left float
-	 * 
-	 * TODO 5 : shouldn't need ref to html element
 	 */
 	private function getLeftFloatData(elementRenderer:ElementRenderer, currentFormattingContextY:Float, currentFormattingContextX:Float, containingBlockWidth:Float):RectangleData
 	{

@@ -965,7 +965,7 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			setReadyState(HAVE_ENOUGH_DATA);
 			
-			_networkState == NETWORK_IDLE;
+			_networkState = NETWORK_IDLE;
 			fireEvent(Event.SUSPEND, false, false);
 			
 			return;

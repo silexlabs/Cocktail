@@ -58,14 +58,8 @@ class VisualEffectStylesComputer
 		//transition-delay
 		computedStyle.transitionDelay = getComputedTransitionDelay(style);
 		
-		//transition-property
-		computedStyle.transitionProperty = style.transitionProperty;
-		
 		//transition-duration
 		computedStyle.transitionDuration = getComputedTransitionDuration(style);
-		
-		//transition-timing-function
-		computedStyle.transitionTimingFunction = style.transitionTimingFunction;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

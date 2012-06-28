@@ -97,7 +97,6 @@ class Attr<ElementClass:Node<ElementClass>> extends Node<Attr<ElementClass>>
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO 3 : shouldn't return null instead of empty string ?
 	private function get_value():String 
 	{
 		if (value == null)

@@ -35,6 +35,8 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	/**
 	 * Overriden as the background of the HTMLBodyElement must be painted over
 	 * the whole viewport
+	 * 
+	 * TODO 2 : shouldn't have to repeat the method just to change the bounds
 	 */
 	override private function renderBackground(graphicContext:NativeElement):Void
 	{
@@ -42,8 +44,6 @@ class BodyBoxRenderer extends BlockBoxRenderer
 		//such as the background color, most of the background styles will be computed
 		//during the rendering
 		//
-		//TODO 4 : check if its still necessary that they are only computed
-		//during rendering
 		_coreStyle.computeBackgroundStyles();
 		
 		var backgroundManager:BackgroundManager = new BackgroundManager(this);
@@ -60,7 +60,6 @@ class BodyBoxRenderer extends BlockBoxRenderer
 			height:height
 		}
 		
-		//TODO 3 : should only pass dimensions instead of bounds
 		var backgrounds:Array<NativeElement> = backgroundManager.render(bodyBounds, _coreStyle);
 		
 		#if (flash9 || nme)
