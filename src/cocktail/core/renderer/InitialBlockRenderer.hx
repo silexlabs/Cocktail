@@ -199,6 +199,27 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	}
 	
 	/**
+	 * Set a timer to trigger a layout and rendering of the HTML Document asynchronously.
+	 * Setting a timer to execute the layout and rendering ensure that the layout only happen once when a series of style
+	 * values are set or when many elements are attached/removed from the DOM, instead of happening for every change.
+	 */
+	private function scheduleLayoutAndRender():Void
+	{
+		var onLayoutScheduleDelegate:Void->Void = onLayoutSchedule;
+		#if (flash9 || nme)
+		//calling the methods 1 millisecond later is enough to ensure
+		//that first all synchronous code is executed
+		Timer.delay(function () { 
+			onLayoutScheduleDelegate();
+		}, INVALIDATION_INTERVAL);
+		#end
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
 	 * Start the layout of all of the HTMLElements tree which set the bounds
 	 * of the all of the rendring tree elements relative to their containing block.
 	 * Then set the global bounds (relative to the window) for all of the elements
@@ -231,107 +252,16 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		//bounds must be added to the global x and y bounds for the normal flow
 		if (elementRenderer.establishesNewFormattingContext() == true)
 		{
-			//if the element is positioned, it can either add its bounds
-			//or positioned origin to the global x and y for normal flow. If it
-			//uses its static position, it uses its bounds, else it uses its
-			//positioned origin
-			if (elementRenderer.isPositioned() == true && elementRenderer.isRelativePositioned() == false)
-			{
-				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
-				{
-					//when the element id absolutely positioned and not static, it uses
-					//its own global bounds as the new origin for its children
-					//TODO 1 : should check for regression, pretty big change
-					if (elementRenderer.coreStyle.computedStyle.position == absolute)
-					{
-						addedX = elementRenderer.globalBounds.x;
-					}
-					//here the positioned ElementRenderer is fixed and is placed
-					//relative to the window. In this case, its x is not added
-					else
-					{
-						addedX = elementRenderer.positionedOrigin.x;
-					}
-				}
-				else
-				{
-					addedX += elementRenderer.bounds.x;
-				}
-				
-				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
-				{
-					if (elementRenderer.coreStyle.computedStyle.position == absolute)
-					{
-						addedY = elementRenderer.globalBounds.y;
-					}
-					else
-					{
-						addedY = elementRenderer.positionedOrigin.y;
-					}
-				}
-				else
-				{
-					addedY += elementRenderer.bounds.y;
-				}
-			}
-			//if the element is not positioned or relatively positioned, it always add
-			//its bounds to the global x and y flow
-			else
-			{
-				addedX += elementRenderer.bounds.x;
-				addedY += elementRenderer.bounds.y;
-			}
-			
+			addedX = elementRenderer.globalBounds.x;
+			addedY = elementRenderer.globalBounds.y;
 		}
 		
 		//if the element is positioned, it must also add
 		//its bounds to the global positioned origin
 		if (elementRenderer.isPositioned() == true)
 		{
-			//absolutely positioned elements either add their static position
-			//or their positioned origin
-			if (elementRenderer.coreStyle.computedStyle.position != relative)
-			{
-				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
-				{
-					if (elementRenderer.coreStyle.computedStyle.position == absolute)
-					{
-						addedPositionedX += elementRenderer.positionedOrigin.x;
-					}
-					else
-					{
-						addedPositionedX = elementRenderer.positionedOrigin.x;
-					}
-				}
-				else
-				{
-					addedPositionedX += elementRenderer.bounds.x;
-				}
-				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
-				{
-					if (elementRenderer.coreStyle.computedStyle.position == absolute)
-					{
-						addedPositionedY += elementRenderer.positionedOrigin.y;
-					}
-					else
-					{
-						addedPositionedY = elementRenderer.positionedOrigin.y;
-					}
-					
-				}
-				else
-				{
-					addedPositionedY += elementRenderer.bounds.y;
-				}
-			}
-			//relative positioned elements always use their bounds, as the relative
-			//offset is only applied at render time and isn't used in the bounds
-			//computation
-			else
-			{
-				addedPositionedX += elementRenderer.bounds.x;
-				addedPositionedY += elementRenderer.bounds.y;
-			}
+			addedPositionedX = elementRenderer.globalBounds.x;
+			addedPositionedY = elementRenderer.globalBounds.y;
 		}
 		
 		//for its child of the element
@@ -356,23 +286,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 				setGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
 			}
 		}
-	}
-	
-	/**
-	 * Set a timer to trigger a layout and rendering of the HTML Document asynchronously.
-	 * Setting a timer to execute the layout and rendering ensure that the layout only happen once when a series of style
-	 * values are set or when many elements are attached/removed from the DOM, instead of happening for every change.
-	 */
-	private function scheduleLayoutAndRender():Void
-	{
-		var onLayoutScheduleDelegate:Void->Void = onLayoutSchedule;
-		#if (flash9 || nme)
-		//calling the methods 1 millisecond later is enough to ensure
-		//that first all synchronous code is executed
-		Timer.delay(function () { 
-			onLayoutScheduleDelegate();
-		}, INVALIDATION_INTERVAL);
-		#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
