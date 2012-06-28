@@ -197,16 +197,11 @@ class HTMLVideoElement extends HTMLMediaElement
 	
 	/**
 	 * Called when there was an error while loading
-	 * the poster image. Dispatch an error event
-	 * 
-	 * TODO 4 : check when poster fail hat should actually be done
+	 * the poster image
 	 */
 	private function onPosterLoadError(e:Event):Void
 	{
 		removeListeners();
-		var errorEvent:UIEvent = new UIEvent();
-		errorEvent.initUIEvent(UIEvent.ERROR, false, false, null, 0.0);
-		dispatchEvent(errorEvent);
 	}
 	
 	/**

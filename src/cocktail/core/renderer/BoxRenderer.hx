@@ -171,18 +171,19 @@ class BoxRenderer extends ElementRenderer
 		
 		var backgroundManager:BackgroundManager = new BackgroundManager(this);
 		
+		var backgroundBounds:RectangleData = getBackgroundBounds();
+		
 		//TODO 3 : should only pass dimensions instead of bounds
-		var backgrounds:Array<NativeElement> = backgroundManager.render(bounds, _coreStyle);
+		var backgrounds:Array<NativeElement> = backgroundManager.render(backgroundBounds, _coreStyle);
 		
 		#if (flash9 || nme)
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		var length:Int = backgrounds.length;
-		var globalBounds:RectangleData = globalBounds;
 
 		for (i in 0...length)
 		{
-			backgrounds[i].x = globalBounds.x;
-			backgrounds[i].y = globalBounds.y;
+			backgrounds[i].x = backgroundBounds.x;
+			backgrounds[i].y = backgroundBounds.y;
 			containerGraphicContext.addChild(backgrounds[i]);
 		}
 		#end
@@ -522,6 +523,18 @@ class BoxRenderer extends ElementRenderer
 		}
 		
 		return ret;
+	}
+	
+	/**
+	 * Helper method returning the bounds to 
+	 * be used to draw the background. Meant
+	 * to be overriden as for instance the HTMLBodyElement's
+	 * ElementRenderer uses the viewport bounds for its background
+	 * instead of its own
+	 */
+	private function getBackgroundBounds():RectangleData
+	{
+		return globalBounds;
 	}
 	
 	/**

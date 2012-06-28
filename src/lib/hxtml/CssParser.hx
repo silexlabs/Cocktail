@@ -921,7 +921,7 @@ class CssParser<DisplayObjectType> {
 			return true;
 
 		default:
-			//throw "Not implemented '"+r+"' = "+Std.string(v);
+			throw "Not implemented '"+r+"' = "+Std.string(v);
 		}
 		return false;
 	}

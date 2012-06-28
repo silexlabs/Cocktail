@@ -40,7 +40,7 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	 */
 	override private function renderEmbeddedAsset(graphicContext:NativeElement)
 	{
-		var htmlVideoElement:HTMLVideoElement = cast(_node);
+		var htmlVideoElement:HTMLVideoElement = cast(node);
 		
 		//determine wether to render video or poster frame
 		if (htmlVideoElement.shouldRenderPosterFrame() == true)
@@ -67,9 +67,8 @@ class VideoRenderer extends EmbeddedBoxRenderer
 		//dimensions, with the kept aspect ratio
 		var width:Float;
 		var height:Float;
-		
-		//here the bounds of the ElementRenderer are larger than the height
-		if (_coreStyle.computedStyle.width >= _coreStyle.computedStyle.height)
+
+		if (_coreStyle.computedStyle.width < _coreStyle.computedStyle.height)
 		{
 			//get the ratio between the intrinsic video width and the width it must be displayed at
 			var ratio:Float = htmlVideoElement.videoHeight / _coreStyle.computedStyle.height;
@@ -120,7 +119,7 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	 */
 	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:NativeElement):Void
 	{
-		var resource:Resource = ResourceManager.getResource(_node.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
+		var resource:Resource = ResourceManager.getResource(node.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
 
 		if (resource.loaded == false || resource.loadedWithError == true)
 		{

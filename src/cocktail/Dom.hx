@@ -21,11 +21,10 @@ typedef Window = cocktail.core.window.Window;
 typedef Document = cocktail.core.html.HTMLDocument;
 typedef FormElement = cocktail.core.html.HTMLInputElement;
 
-
-//TODO : problem as for mouse event, have to use untyped
 typedef Event = cocktail.core.event.Event;
-typedef CustomEvent = cocktail.core.event.CustomEvent;
 typedef MouseEvent = cocktail.core.event.MouseEvent;
+typedef UIEvent = cocktail.core.event.UIEvent;
+typedef CustomEvent = cocktail.core.event.CustomEvent;
 
 typedef XMLHTTPRequest = cocktail.core.resource.XMLHTTPRequest;
 typedef HtmlCollection<Dynamic> = Array<Dynamic>;

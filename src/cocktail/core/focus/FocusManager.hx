@@ -9,6 +9,7 @@ package cocktail.core.focus;
 
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
+import cocktail.core.event.FocusEvent;
 import cocktail.core.html.HTMLBodyElement;
 import cocktail.core.html.HTMLElement;
 
@@ -22,6 +23,13 @@ import cocktail.core.html.HTMLElement;
  */
 class FocusManager
 {	
+	/**
+	 * The activeElement set/get the element
+	 * in the document which is focused.
+	 * If no element in the Document is focused, this returns the body element. 
+	 */
+	public var activeElement(default, null):HTMLElement;
+	
 	/**
 	 * class constructor.
 	 */
@@ -223,5 +231,83 @@ class FocusManager
 				}
 			}
 		}
+	}
+
+	/////////////////////////////////
+	// ACTIVE ELEMENT METHOD
+	/////////////////////////////////
+	
+	/**
+	 * When a new activeElement is set, call 
+	 * the focus out (blur) method on the previous
+	 * one and then call the focus in on the 
+	 * new one
+	 */
+	public function setActiveElement(newActiveElement:HTMLElement, body:HTMLBodyElement):HTMLElement
+	{			
+		//if the activeHTMLElement is set to null, do nothing
+		if (newActiveElement == null)
+		{
+			return activeElement;
+		}
+		
+		//the first time this setter is called, the activeElement
+		//is null and it is set to the body element
+		if (activeElement == null)
+		{
+			return activeElement = newActiveElement;
+		}
+		
+		//do nothing if the new activeHTMLElement is the same
+		//as the current one
+		if (newActiveElement != activeElement)
+		{
+			//else dispatch a serie of FocusEvent on the element losing
+			//focus and on the one gaining it
+			
+			//dispatch pre-focus shift focus event which bubbles in the document
+			
+			var focusOutEvent:FocusEvent = new FocusEvent();
+			focusOutEvent.initFocusEvent(FocusEvent.FOCUS_OUT, true, false, null, 0.0, newActiveElement);
+			activeElement.dispatchEvent(focusOutEvent);
+			
+			var focusInEvent:FocusEvent = new FocusEvent();
+			focusInEvent.initFocusEvent(FocusEvent.FOCUS_IN, true, false, null, 0.0, activeElement);
+			newActiveElement.dispatchEvent(focusInEvent);
+			
+			//store the new active element before dispatching focus and blur event
+			var oldActiveElement:HTMLElement = activeElement;
+			
+			//if the new activeElement is not focusable, the focus
+			//is instead given to the HTMLBodyElement
+			if (newActiveElement.isFocusable() == true)
+			{
+				activeElement = newActiveElement;
+			}
+			else
+			{
+				activeElement = body;
+			}
+			
+			//dispatch post-focus event which don't bubbles through the document
+			
+			var blurEvent:FocusEvent = new FocusEvent();
+			blurEvent.initFocusEvent(FocusEvent.BLUR, false, false, null, 0.0, null);
+			oldActiveElement.dispatchEvent(blurEvent);
+			
+			var focusEvent:FocusEvent = new FocusEvent();
+			focusEvent.initFocusEvent(FocusEvent.FOCUS, false, false, null, 0.0, null);
+			newActiveElement.dispatchEvent(focusEvent);
+			
+			if (activeElement.onfocus != null)
+			{
+				var focusEvent:FocusEvent = new FocusEvent();
+				focusEvent.initFocusEvent(FocusEvent.FOCUS, true, false, null, 0.0, null);
+				
+				activeElement.onfocus(focusEvent);
+			}
+		}
+		
+		return activeElement;
 	}
 }

@@ -70,7 +70,7 @@ class HTMLDocument extends Document
 	 * in the document which is focused.
 	 * If no element in the Document is focused, this returns the body element. 
 	 */
-	public var activeElement(default, set_activeElement):HTMLElement;
+	public var activeElement(get_activeElement, set_activeElement):HTMLElement;
 	
 	/**
 	 * An instance of the FocusManager, managing the focus
@@ -128,6 +128,14 @@ class HTMLDocument extends Document
 	 */
 	private var _shouldDispatchClickOnNextMouseUp:Bool;
 	
+	private static inline var INVALIDATION_INTERVAL:Int = 20;
+	
+	private var _invalidationScheduled:Bool;
+	
+	private var _documentNeedsLayout:Bool;
+	
+	private var _documentNeedsRendering:Bool;
+	
 	/**
 	 * class constructor. Init class attributes
 	 */
@@ -135,11 +143,16 @@ class HTMLDocument extends Document
 	{
 		super();
 		
+		_focusManager = new FocusManager();
 		documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
 		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
 		documentElement.appendChild(body);
-		_focusManager = new FocusManager();
+		
 		_shouldDispatchClickOnNextMouseUp = false;
+				
+		_invalidationScheduled = false;
+		_documentNeedsLayout = true;
+		_documentNeedsRendering = true;
 	}
 	
 	/**
@@ -210,9 +223,6 @@ class HTMLDocument extends Document
 	// PUBLIC PLATFORM CALLBACKS
 	// Those callbacks are called in reaction to platform level event, such
 	// as a resize of the window of the application
-	//
-	// TODO 4 : for mouse event, only mouse down, up and move should be listened to,
-	// click and double click should be abstracted
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -517,6 +527,139 @@ class HTMLDocument extends Document
 		return value;
 	}
 	
+	/////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	public function invalidateLayout(immediate:Bool):Void
+	{
+		_documentNeedsLayout = true;
+		_documentNeedsRendering = true;
+		
+		//TODO 1 : immediate layout deactivated
+		invalidate(false);
+	}
+	
+	public function invalidateRendering():Void
+	{
+		_documentNeedsRendering = true;
+		invalidate(false);
+	}
+	
+	/////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	
+	private function invalidate(immediate:Bool = false):Void
+	{
+		if (_invalidationScheduled == false || immediate == true)
+		{
+			_invalidationScheduled = true;
+			doInvalidate(immediate);
+		}
+	}
+	
+	/**
+	 * The Document is invalidated for instance when the
+	 * DOM changes after adding/removing a child or when
+	 * a style changes.
+	 * When this happen, the Document needs to be laid out
+	 * and rendered again
+	 * 
+	 * @param immediate define wether the layout must be synchronous
+	 * or asynchronous
+	 */
+	private function doInvalidate(immediate:Bool = false):Void
+	{
+		//either schedule an asynchronous layout and rendering, or layout
+		//and render immediately
+		if (immediate == false)
+		{
+			scheduleLayoutAndRender();
+		}
+		else
+		{
+			layoutAndRender();
+		}
+	}
+	
+	/**
+	 * As the name implies,
+	 * layout the DOM, then render it
+	 */
+	private function layoutAndRender():Void
+	{
+		var now = Date.now().getTime();
+		if (_documentNeedsLayout == true)
+		{
+			startLayout();
+		}
+		_documentNeedsLayout = false;
+		//trace(Date.now().getTime() - now);
+		now = Date.now().getTime();
+		if (_documentNeedsRendering == true)
+		{
+			startRendering();
+		}
+		_documentNeedsRendering = false;
+		//trace(Date.now().getTime() - now);
+	}
+	
+	private function onLayoutSchedule():Void
+	{
+		layoutAndRender();
+		_invalidationScheduled = false;
+	}
+	
+	/**
+	 * Start the rendering of the rendering tree
+	 * built during layout
+	 * and attach the resulting nativeElements (background,
+	 * border, embedded asset...) to the display root
+	 * of the runtime (for instance the Stage in Flash)
+	 */ 
+	private function startRendering():Void
+	{
+		#if (flash9 || nme)
+		//start the rendering at the root layer renderer
+		documentElement.elementRenderer.render(flash.Lib.current, false);
+		#end
+	}
+	
+	/**
+	 * Start the layout of all of the HTMLElements tree which set the bounds
+	 * of the all of the rendring tree elements relative to their containing block.
+	 * Then set the global bounds (relative to the window) for all of the elements
+	 * of the rendering tree
+	 */
+	private function startLayout():Void
+	{
+		//layout all the HTMLElements. After that they all know their bounds relative to the containing
+		//blocks
+		documentElement.elementRenderer.layout(false);
+		//set the global bounds on the rendering tree. After that all the elements know their positions
+		//relative to the window
+		documentElement.elementRenderer.setGlobalOrigins(0, 0, 0, 0);
+	}
+	
+	/**
+	 * Set a timer to trigger a layout and rendering of the HTML Document asynchronously.
+	 * Setting a timer to execute the layout and rendering ensure that the layout only happen once when a series of style
+	 * values are set or when many elements are attached/removed from the DOM, instead of happening for every change.
+	 */
+	private function scheduleLayoutAndRender():Void
+	{
+		var onLayoutScheduleDelegate:Void->Void = onLayoutSchedule;
+		#if (flash9 || nme)
+		//calling the methods 1 millisecond later is enough to ensure
+		//that first all synchronous code is executed
+		Timer.delay(function () { 
+			onLayoutScheduleDelegate();
+		}, INVALIDATION_INTERVAL);
+		#end
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -579,76 +722,19 @@ class HTMLDocument extends Document
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When a new activeElement is set, call 
-	 * the focus out (blur) method on the previous
-	 * one and then call the focus in on the 
-	 * new one
+	 * Set the activeElement on the focusManager
 	 */
 	private function set_activeElement(newActiveElement:HTMLElement):HTMLElement
-	{			
-		//if the activeHTMLElement is set to null, do nothing
-		if (newActiveElement == null)
-		{
-			return activeElement;
-		}
-		
-		//the first time this setter is called, the activeElement
-		//is null and it is set to the body element
-		if (activeElement == null)
-		{
-			return activeElement = newActiveElement;
-		}
-		
-		//do nothing if the new activeHTMLElement is the same
-		//as the current one
-		if (newActiveElement != activeElement)
-		{
-			//else dispatch a serie of FocusEvent on the element losing
-			//focus and on the one gaining it
-			
-			//dispatch pre-focus shift focus event which bubbles in the document
-			
-			var focusOutEvent:FocusEvent = new FocusEvent();
-			focusOutEvent.initFocusEvent(FocusEvent.FOCUS_OUT, true, false, null, 0.0, newActiveElement);
-			activeElement.dispatchEvent(focusOutEvent);
-			
-			var focusInEvent:FocusEvent = new FocusEvent();
-			focusInEvent.initFocusEvent(FocusEvent.FOCUS_IN, true, false, null, 0.0, activeElement);
-			newActiveElement.dispatchEvent(focusInEvent);
-			
-			//store the new active element before dispatching focus and blur event
-			var oldActiveElement:HTMLElement = activeElement;
-			
-			//if the new activeElement is not focusable, the focus
-			//is instead given to the HTMLBodyElement
-			if (newActiveElement.isFocusable() == true)
-			{
-				activeElement = newActiveElement;
-			}
-			else
-			{
-				activeElement = body;
-			}
-			
-			//dispatch post-focus event which don't bubbles through the document
-			
-			var blurEvent:FocusEvent = new FocusEvent();
-			blurEvent.initFocusEvent(FocusEvent.BLUR, false, false, null, 0.0, null);
-			oldActiveElement.dispatchEvent(blurEvent);
-			
-			var focusEvent:FocusEvent = new FocusEvent();
-			focusEvent.initFocusEvent(FocusEvent.FOCUS, false, false, null, 0.0, null);
-			newActiveElement.dispatchEvent(focusEvent);
-			
-			if (activeElement.onfocus != null)
-			{
-				var focusEvent:FocusEvent = new FocusEvent();
-				focusEvent.initFocusEvent(FocusEvent.FOCUS, true, false, null, 0.0, null);
-				
-				activeElement.onfocus(focusEvent);
-			}
-		}
-		
+	{	
+		_focusManager.setActiveElement(newActiveElement, body);
 		return activeElement;
+	}
+	
+	/**
+	 * get the active element from the focus manager,
+	 */
+	private function get_activeElement():HTMLElement
+	{
+		return _focusManager.activeElement;
 	}
 }

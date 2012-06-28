@@ -43,7 +43,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	 */
 	override private function renderEmbeddedAsset(graphicContext:NativeElement):Void
 	{
-		var resource:Resource = ResourceManager.getResource(_node.getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME));
+		var resource:Resource = ResourceManager.getResource(node.getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME));
 
 		if (resource.loaded == false || resource.loadedWithError == true)
 		{
