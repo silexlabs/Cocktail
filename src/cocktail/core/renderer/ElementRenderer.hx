@@ -855,11 +855,16 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				_childrenNeedLayout = true;
 				_childrenNeedRendering = true;
 				_needsRendering = true;
+				_positionedChildrenNeedLayout = true;
 				invalidateDocumentLayout(false);
 				
 			default:
 				_needsLayout = true;
+				_childrenNeedLayout = true;
+				_childrenNeedRendering = true;
 				_needsRendering = true;
+				_positionedChildrenNeedLayout = true;
+
 				invalidateContainingBlock(invalidationReason);
 		}
 	}
@@ -927,14 +932,19 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		switch (styleName)
 		{
-			case CSSConstants.LEFT_STYLE_NAME, CSSConstants.RIGHT_STYLE_NAME,
-			CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
-				_needsLayout = true;
-				_needsRendering = true;
-				if (isPositioned() == true && isRelativePositioned() == false)
-				{
-					invalidateContainingBlock(invalidationReason);
-				}
+			//case CSSConstants.LEFT_STYLE_NAME, CSSConstants.RIGHT_STYLE_NAME,
+			//CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
+				//
+				//_needsRendering = true;
+				//if (isPositioned() == true && isRelativePositioned() == false)
+				//{
+					//_needsLayout = true;
+					//invalidateContainingBlock(invalidationReason);
+				//}
+				//else
+				//{
+					//invalidateDocumentRendering();
+				//}
 			
 			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
 			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
@@ -954,15 +964,14 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		switch (styleName)
 		{
-			//case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
-			//CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
-			//CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
-			//CSSConstants.BACKGROUND_SIZE_STYLE_NAME:
+			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
+			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
+			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
+			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:
 			
 			default:
 				_needsLayout = true;
 				_childrenNeedRendering = true;
-				_childrenNeedLayout = true;
 				invalidateDocumentLayout(false);
 		}
 	}
@@ -971,15 +980,14 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		switch (styleName)
 		{
-			//case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
-			//CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
-			//CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
-			//CSSConstants.BACKGROUND_SIZE_STYLE_NAME:	
+			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
+			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
+			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
+			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:	
 			
 			default:
-				_needsLayout = true;
-				_childrenNeedRendering = true;
 				_positionedChildrenNeedLayout = true;
+				_childrenNeedRendering = true;
 				invalidateDocumentLayout(false);
 		}
 	}

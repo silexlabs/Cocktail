@@ -640,7 +640,7 @@ class HTMLDocument extends Document
 		documentElement.elementRenderer.layout(false);
 		//set the global bounds on the rendering tree. After that all the elements know their positions
 		//relative to the window
-		documentElement.elementRenderer.setGlobalOrigins(0,0, 0,0);
+		documentElement.elementRenderer.setGlobalOrigins(0, 0, 0, 0);
 	}
 	
 	/**
