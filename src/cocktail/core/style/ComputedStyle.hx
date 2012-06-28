@@ -195,10 +195,10 @@ class ComputedStyle
 		backgroundPosition=[];
 		backgroundRepeat=[];
 		cursor = Cursor.cssDefault;
-		transitionDelay = [];
-		transitionDuration = [];
+		transitionDelay = [0.0];
+		transitionDuration = [0.0];
 		transitionProperty = TransitionProperty.all;
-		transitionTimingFunction = [];
+		transitionTimingFunction = [TransitionTimingFunctionValue.ease];
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

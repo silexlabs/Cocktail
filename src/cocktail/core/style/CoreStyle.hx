@@ -689,7 +689,7 @@ class CoreStyle
 	 * @param	propertyName the name of the property whose
 	 * value changed
 	 */
-	private function startTransitionIfNeeded(propertyName:String):Void
+	private function startTransitionIfNeeded(propertyName:String, invalidationReason:InvalidationReason):Void
 	{	
 		//will store the index of the property in the TransitionPorperty
 		//array, so that its duration, delay, and timing function can be found
@@ -732,6 +732,7 @@ class CoreStyle
 			//will stay at 0
 			case TransitionProperty.all:	
 		}
+
 		
 		//return if transition style have not yet been computed
 		//
@@ -741,6 +742,7 @@ class CoreStyle
 			return;
 		}
 		
+
 		//the combined duration is the combined duration
 		//and delay of the transition, 
 		var combinedDuration:Float = 0.0;
@@ -750,7 +752,7 @@ class CoreStyle
 		var transitionDelay:Float = computedStyle.transitionDelay[getRepeatedIndex(propertyIndex, computedStyle.transitionDelay.length)];
 		var transitionDuration:Float = computedStyle.transitionDuration[getRepeatedIndex(propertyIndex, computedStyle.transitionDuration.length)];
 		combinedDuration = transitionDuration + transitionDelay;
-		
+			
 		//if the combined duration is not superior to
 		//0, then there is no transition
 		if (combinedDuration <= 0)
@@ -785,7 +787,7 @@ class CoreStyle
 		
 		//start a transition using the TransitionManager
 		TransitionManager.getInstance().startTransition(computedStyle, propertyName, startValue, endValue, 
-		transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate);
+		transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate, invalidationReason);
 	}
 	
 	/**
@@ -814,7 +816,7 @@ class CoreStyle
 	 */
 	private function onTransitionComplete(transition:Transition):Void
 	{
-		invalidate(InvalidationReason.other);
+		invalidate(transition.invalidationReason);
 		var transitionEvent:TransitionEvent = new TransitionEvent();
 		transitionEvent.initTransitionEvent(TransitionEvent.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
 		htmlElement.dispatchEvent(transitionEvent);
@@ -827,7 +829,7 @@ class CoreStyle
 	 */
 	private function onTransitionUpdate(transition:Transition):Void
 	{
-		invalidate(InvalidationReason.other);
+		invalidate(transition.invalidationReason);
 	}
 	
 	/////////////////////////////////
@@ -852,72 +854,81 @@ class CoreStyle
 	{
 		width = value;
 		//TODO 1 : if transition is successful, should invalidate still be called ?
-		startTransitionIfNeeded(CSSConstants.WIDTH_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.WIDTH_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.WIDTH_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.WIDTH_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setMarginLeft(value:Margin):Margin 
 	{
 		marginLeft = value;
-		startTransitionIfNeeded(CSSConstants.MARGIN_LEFT_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.MARGIN_LEFT_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.MARGIN_LEFT_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.MARGIN_LEFT_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setMarginRight(value:Margin):Margin 
 	{
 		marginRight = value;
-		startTransitionIfNeeded(CSSConstants.MARGIN_RIGHT_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.MARGIN_RIGHT_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.MARGIN_RIGHT_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.MARGIN_RIGHT_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setMarginTop(value:Margin):Margin 
 	{
 		marginTop = value;
-		startTransitionIfNeeded(CSSConstants.MARGIN_TOP_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.MARGIN_TOP_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.MARGIN_TOP_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.MARGIN_TOP_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setMarginBottom(value:Margin):Margin 
 	{
 		marginBottom = value;
-		startTransitionIfNeeded(CSSConstants.MARGIN_BOTTOM_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.MARGIN_BOTTOM_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.MARGIN_BOTTOM_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.MARGIN_BOTTOM_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setPaddingLeft(value:Padding):Padding 
 	{
 		paddingLeft = value;
-		startTransitionIfNeeded(CSSConstants.PADDING_LEFT_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.PADDING_LEFT_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.PADDING_LEFT_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.PADDING_LEFT_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setPaddingRight(value:Padding):Padding 
 	{
 		paddingRight = value;
-		startTransitionIfNeeded(CSSConstants.PADDING_RIGHT_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.PADDING_RIGHT_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.PADDING_RIGHT_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.PADDING_RIGHT_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setPaddingTop(value:Padding):Padding 
 	{
 		paddingTop = value;
-		startTransitionIfNeeded(CSSConstants.PADDING_TOP_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.PADDING_TOP_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.PADDING_TOP_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.PADDING_TOP_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setPaddingBottom(value:Padding):Padding 
 	{
 		paddingBottom = value;
-		startTransitionIfNeeded(CSSConstants.PADDING_BOTTOM_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.PADDING_BOTTOM_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.PADDING_BOTTOM_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.PADDING_BOTTOM_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
@@ -939,72 +950,81 @@ class CoreStyle
 	private function setHeight(value:Dimension):Dimension 
 	{
 		height = value;
-		startTransitionIfNeeded(CSSConstants.HEIGHT_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.HEIGHT_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.HEIGHT_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.HEIGHT_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setMinHeight(value:ConstrainedDimension):ConstrainedDimension 
 	{
 		minHeight = value;
-		startTransitionIfNeeded(CSSConstants.MIN_HEIGHT_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.MIN_HEIGHT_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.MIN_HEIGHT_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.MIN_HEIGHT_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setMaxHeight(value:ConstrainedDimension):ConstrainedDimension 
 	{
 		maxHeight = value;
-		startTransitionIfNeeded(CSSConstants.MAX_HEIGHT_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.MAX_HEIGHT_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.MAX_HEIGHT_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.MAX_HEIGHT_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setMinWidth(value:ConstrainedDimension):ConstrainedDimension 
 	{
 		minWidth = value;
-		startTransitionIfNeeded(CSSConstants.MIN_WIDTH_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.MIN_WIDTH_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.MIN_WIDTH_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.MIN_WIDTH_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setMaxWidth(value:ConstrainedDimension):ConstrainedDimension 
 	{
 		maxWidth = value;
-		startTransitionIfNeeded(CSSConstants.MAX_WIDTH_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.MAX_WIDTH_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.MAX_WIDTH_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.MAX_WIDTH_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setTop(value:PositionOffset):PositionOffset 
 	{
 		top = value;
-		startTransitionIfNeeded(CSSConstants.TOP_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.TOP_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.TOP_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.TOP_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setLeft(value:PositionOffset):PositionOffset 
 	{
 		left = value;
-		startTransitionIfNeeded(CSSConstants.LEFT_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.LEFT_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.LEFT_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.LEFT_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setBottom(value:PositionOffset):PositionOffset 
 	{
 		bottom = value;
-		startTransitionIfNeeded(CSSConstants.BOTTOM_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.BOTTOM_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.BOTTOM_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.BOTTOM_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setRight(value:PositionOffset):PositionOffset 
 	{
 		right = value;
-		startTransitionIfNeeded(CSSConstants.RIGHT_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.RIGHT_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.RIGHT_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.RIGHT_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
@@ -1033,8 +1053,9 @@ class CoreStyle
 	private function setFontSize(value:FontSize):FontSize
 	{
 		fontSize = value;
-		startTransitionIfNeeded(CSSConstants.FONT_SIZE_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.FONT_SIZE_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.FONT_SIZE_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.FONT_SIZE_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
@@ -1081,24 +1102,27 @@ class CoreStyle
 	private function setLetterSpacing(value:LetterSpacing):LetterSpacing
 	{
 		letterSpacing = value;
-		startTransitionIfNeeded(CSSConstants.LETTER_SPACING_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.LETTER_SPACING_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.LETTER_SPACING_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.LETTER_SPACING_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setWordSpacing(value:WordSpacing):WordSpacing
 	{
 		wordSpacing = value;
-		startTransitionIfNeeded(CSSConstants.WORD_SPACING_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.WORD_SPACING_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.WORD_SPACING_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.WORD_SPACING_STYLE_NAME, invalidationReason );
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setLineHeight(value:LineHeight):LineHeight
 	{
 		lineHeight = value;
-		startTransitionIfNeeded(CSSConstants.LINE_HEIGHT_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.LINE_HEIGHT_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.LINE_HEIGHT_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.LINE_HEIGHT_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
@@ -1112,16 +1136,18 @@ class CoreStyle
 	private function setVerticalAlign(value:VerticalAlign):VerticalAlign
 	{
 		verticalAlign = value;
-		startTransitionIfNeeded(CSSConstants.VERTICAL_ALIGN_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.VERTICAL_ALIGN_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.VERTICAL_ALIGN_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.VERTICAL_ALIGN_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
 	private function setTextIndent(value:TextIndent):TextIndent
 	{
 		textIndent = value;
-		startTransitionIfNeeded(CSSConstants.TEXT_INDENT_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.TEXT_INDENT_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.TEXT_INDENT_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.TEXT_INDENT_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
@@ -1145,8 +1171,9 @@ class CoreStyle
 	{
 		opacity = value;
 		computedStyle.opacity = value;
-		startTransitionIfNeeded(CSSConstants.OPACITY_STYLE_NAME);
-		invalidate(InvalidationReason.styleChanged(CSSConstants.OPACITY_STYLE_NAME));
+		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.OPACITY_STYLE_NAME);
+		startTransitionIfNeeded(CSSConstants.OPACITY_STYLE_NAME, invalidationReason);
+		invalidate(invalidationReason);
 		return value;
 	}
 	
@@ -1197,12 +1224,14 @@ class CoreStyle
 	
 	private function setTransitionDuration(value:TransitionDuration):TransitionDuration
 	{
-		return transitionDuration = value;
+		transitionDuration = value;
+		return value;
 	}
 	
 	private function setTransitionDelay(value:TransitionDelay):TransitionDelay
 	{
-		return transitionDelay = value;
+		transitionDelay = value;
+		return value;
 	}
 	
 	private function setTransitionTimingFunction(value:TransitionTimingFunction):TransitionTimingFunction

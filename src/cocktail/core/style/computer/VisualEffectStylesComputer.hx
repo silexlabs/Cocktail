@@ -45,6 +45,8 @@ class VisualEffectStylesComputer
 	 */
 	public static function compute(style:CoreStyle):Void
 	{
+		
+		
 		//get a reference to the computed style structure
 		//holding the used style value (the ones actually used)
 		var computedStyle:ComputedStyle = style.computedStyle;
