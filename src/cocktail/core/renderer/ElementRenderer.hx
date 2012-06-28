@@ -827,7 +827,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		}
 				
 		return bounds;
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -856,7 +855,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				_childrenNeedRendering = true;
 				_needsRendering = true;
 				_positionedChildrenNeedLayout = true;
-				invalidateDocumentLayout(false);
+				invalidateDocumentLayoutAndRendering();
 				
 			default:
 				_needsLayout = true;
@@ -864,7 +863,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				_childrenNeedRendering = true;
 				_needsRendering = true;
 				_positionedChildrenNeedLayout = true;
-
 				invalidateContainingBlock(invalidationReason);
 		}
 	}
@@ -928,6 +926,12 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		htmlDocument.invalidateRendering();
 	}
 	
+	private function invalidateDocumentLayoutAndRendering():Void
+	{
+		var htmlDocument:HTMLDocument = cast(node.ownerDocument);
+		htmlDocument.invalidateLayoutAndRendering();
+	}
+	
 	private function invalidatedStyle(styleName:String, invalidationReason:InvalidationReason):Void
 	{
 		switch (styleName)
@@ -972,7 +976,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			default:
 				_needsLayout = true;
 				_childrenNeedRendering = true;
-				invalidateDocumentLayout(false);
+				invalidateDocumentLayoutAndRendering();
 		}
 	}
 	
@@ -988,7 +992,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			default:
 				_positionedChildrenNeedLayout = true;
 				_childrenNeedRendering = true;
-				invalidateDocumentLayout(false);
+				invalidateDocumentLayoutAndRendering();
 		}
 	}
 	
