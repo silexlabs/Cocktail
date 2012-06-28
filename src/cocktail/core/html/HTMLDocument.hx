@@ -128,6 +128,14 @@ class HTMLDocument extends Document
 	 */
 	private var _shouldDispatchClickOnNextMouseUp:Bool;
 	
+	private static inline var INVALIDATION_INTERVAL:Int = 20;
+	
+	private var _invalidationScheduled:Bool;
+	
+	private var _documentNeedsLayout:Bool;
+	
+	private var _documentNeedsRendering:Bool;
+	
 	/**
 	 * class constructor. Init class attributes
 	 */
@@ -141,6 +149,10 @@ class HTMLDocument extends Document
 		documentElement.appendChild(body);
 		
 		_shouldDispatchClickOnNextMouseUp = false;
+				
+		_invalidationScheduled = false;
+		_documentNeedsLayout = true;
+		_documentNeedsRendering = true;
 	}
 	
 	/**
@@ -521,17 +533,32 @@ class HTMLDocument extends Document
 	
 	public function invalidateLayout(immediate:Bool):Void
 	{
+		_documentNeedsLayout = true;
+		_documentNeedsRendering = true;
 		
+		//TODO 1 : immediate layout deactivated
+		invalidate(false);
 	}
 	
 	public function invalidateRendering():Void
 	{
-		
+		_documentNeedsRendering = true;
+		invalidate(false);
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+
+	
+	private function invalidate(immediate:Bool = false):Void
+	{
+		if (_invalidationScheduled == false || immediate == true)
+		{
+			_invalidationScheduled = true;
+			doInvalidate(immediate);
+		}
+	}
 	
 	/**
 	 * The Document is invalidated for instance when the
@@ -564,25 +591,25 @@ class HTMLDocument extends Document
 	private function layoutAndRender():Void
 	{
 		var now = Date.now().getTime();
-		//if (_documentNeedsLayout == true)
-		//{
+		if (_documentNeedsLayout == true)
+		{
 			startLayout();
-		//}
-		//_documentNeedsLayout = false;
-		trace(Date.now().getTime() - now);
+		}
+		_documentNeedsLayout = false;
+		//trace(Date.now().getTime() - now);
 		now = Date.now().getTime();
-		//if (_documentNeedsRendering == true)
-		//{
+		if (_documentNeedsRendering == true)
+		{
 			startRendering();
-		//}
-		//_documentNeedsRendering = false;
-		trace(Date.now().getTime() - now);
+		}
+		_documentNeedsRendering = false;
+		//trace(Date.now().getTime() - now);
 	}
 	
 	private function onLayoutSchedule():Void
 	{
 		layoutAndRender();
-		//_invalidationScheduled = false;
+		_invalidationScheduled = false;
 	}
 	
 	/**
@@ -613,7 +640,7 @@ class HTMLDocument extends Document
 		documentElement.elementRenderer.layout(false);
 		//set the global bounds on the rendering tree. After that all the elements know their positions
 		//relative to the window
-		//setGlobalOrigins(this,0,0, 0,0);
+		documentElement.elementRenderer.setGlobalOrigins(0,0, 0,0);
 	}
 	
 	/**
@@ -627,9 +654,9 @@ class HTMLDocument extends Document
 		#if (flash9 || nme)
 		//calling the methods 1 millisecond later is enough to ensure
 		//that first all synchronous code is executed
-		//Timer.delay(function () { 
-			//onLayoutScheduleDelegate();
-		//}, INVALIDATION_INTERVAL);
+		Timer.delay(function () { 
+			onLayoutScheduleDelegate();
+		}, INVALIDATION_INTERVAL);
 		#end
 	}
 	
