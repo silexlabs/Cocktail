@@ -10,6 +10,7 @@ package cocktail.core.style.transition;
 import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
+import cocktail.core.renderer.RendererData;
 import haxe.Timer;
 
 /**
@@ -48,7 +49,7 @@ class TransitionManager
 	 * The time, in milliseconds between each update of the transition
 	 * in progress
 	 */
-	private static inline var TRANSITION_UPDATE_SPEED:Int = 25;
+	private static inline var TRANSITION_UPDATE_SPEED:Int = 10;
 	
 	/**
 	 * Store a ref to each transitions in progress, where
@@ -130,11 +131,11 @@ class TransitionManager
 	 * Transition obejct
 	 */
 	public function startTransition(target:ComputedStyle, propertyName:String, startValue:Float, endValue:Float, transitionDuration:Float, 
-	transitionDelay:Float, transitionTimingFunction:TransitionTimingFunctionValue, onComplete:Transition->Void, onUpdate:Transition->Void):Void
+	transitionDelay:Float, transitionTimingFunction:TransitionTimingFunctionValue, onComplete:Transition->Void, onUpdate:Transition->Void, invalidationReason:InvalidationReason):Void
 	{
 		//create a new transition
 		var transition:Transition = new Transition(propertyName, target, transitionDuration, transitionDelay, transitionTimingFunction,
-		startValue, endValue, onComplete, onUpdate);
+		startValue, endValue, onComplete, onUpdate, invalidationReason);
 
 		//create a key in the hash for the property name
 		//of the new transition if necessary

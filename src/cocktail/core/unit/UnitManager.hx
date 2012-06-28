@@ -1052,6 +1052,7 @@ class UnitManager
 		{
 			tv = TimeValue.milliSeconds(Std.parseFloat(r.matched(1)));
 		}
+		
 		return tv;
 	}	
 	/**
@@ -2934,11 +2935,12 @@ class UnitManager
 	private static function getTimeValueArray(value:String):Array<TimeValue>
 	{
 		var tResult:Array<TimeValue> = new Array<TimeValue>();
-		var tValues:Array<String>=value.split(',');
-
+		var tValues:Array<String> = value.split(',');
+		
 		for (i in 0...tValues.length)
-		{		
+		{	
 			tResult.push(string2TimeValue(tValues[i]));
+			
 		}
 		return tResult;
 	}

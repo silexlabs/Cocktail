@@ -537,7 +537,7 @@ class HTMLDocument extends Document
 		_documentNeedsRendering = true;
 		
 		//TODO 1 : immediate layout deactivated
-		invalidate(false);
+		invalidate(immediate);
 	}
 	
 	public function invalidateRendering():Void
@@ -555,7 +555,6 @@ class HTMLDocument extends Document
 	{
 		if (_invalidationScheduled == false || immediate == true)
 		{
-			_invalidationScheduled = true;
 			doInvalidate(immediate);
 		}
 	}
@@ -576,6 +575,7 @@ class HTMLDocument extends Document
 		//and render immediately
 		if (immediate == false)
 		{
+			_invalidationScheduled = true;
 			scheduleLayoutAndRender();
 		}
 		else
