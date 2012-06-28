@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.NodeBase;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.port.NativeElement;
 import cocktail.port.DrawingManager;
@@ -346,6 +347,59 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	public function layout(forceLayout:Bool):Void
 	{	
 		//abstract
+	}
+
+	/**
+	 * Set the global bounds (relative to the window) of all the elements of the rendering tree, by
+	 * traversing it recursively
+	 * 
+	 * @param	addedX the added x position for the normal flow
+	 * @param	addedY the added y position for the normal flow
+	 * @param	addedPositionedX the added X position for positioned elements
+	 * @param	addedPositionedY the added Y position for positioned elements
+	 */
+	public function setGlobalOrigins(addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
+	{
+		//if the element establishes a new formatting context, then its
+		//bounds must be added to the global x and y bounds for the normal flow
+		if (establishesNewFormattingContext() == true)
+		{
+			var globalBounds:RectangleData = globalBounds;
+			addedX = globalBounds.x;
+			addedY = globalBounds.y;
+		}
+		
+		//if the element is positioned, it must also add
+		//its bounds to the global positioned origin
+		if (isPositioned() == true)
+		{
+			var globalBounds:RectangleData = globalBounds;
+			addedPositionedX = globalBounds.x;
+			addedPositionedY = globalBounds.y;
+		}
+		
+		//for its child of the element
+		var length:Int = childNodes.length;
+		for (i in 0...length)
+		{
+			var child:ElementRenderer = childNodes[i];
+			
+			child.globalContainingBlockOrigin = {
+				x: addedX,
+				y : addedY
+			}
+			
+			child.globalPositionnedAncestorOrigin = {
+				x: addedPositionedX,
+				y : addedPositionedY
+			}
+			
+			//call the method recursively if the child has children itself
+			if (child.hasChildNodes() == true)
+			{
+				child.setGlobalOrigins(addedX, addedY, addedPositionedX, addedPositionedY);
+			}
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -794,7 +848,14 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				invalidatedPositionedChildStyle(styleName, invalidationReason);
 				
 			case InvalidationReason.needsImmediateLayout:
-				invalidateInitialContainingBlock(invalidationReason);
+				invalidateDocumentLayout(true);
+				
+			case InvalidationReason.windowResize:
+				_needsLayout = true;
+				_childrenNeedLayout = true;
+				_childrenNeedRendering = true;
+				_needsRendering = true;
+				invalidateDocumentLayout(false);
 				
 			default:
 				_needsLayout = true;
@@ -850,10 +911,16 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		}
 	}
 	
-	private function invalidateInitialContainingBlock(invalidationReason:InvalidationReason):Void
+	private function invalidateDocumentLayout(immediate:Bool):Void
 	{
-		var initialBlockRenderer:InitialBlockRenderer = getInitialContainingBlock();
-		initialBlockRenderer.invalidate(invalidationReason);
+		var htmlDocument:HTMLDocument = cast(node.ownerDocument);
+		htmlDocument.invalidateLayout(immediate);
+	}
+	
+	private function invalidateDocumentRendering():Void
+	{
+		var htmlDocument:HTMLDocument = cast(node.ownerDocument);
+		htmlDocument.invalidateRendering();
 	}
 	
 	private function invalidatedStyle(styleName:String, invalidationReason:InvalidationReason):Void
@@ -874,7 +941,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
 			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:
 				_needsRendering = true;
-				invalidateInitialContainingBlock(invalidationReason);
+				invalidateDocumentRendering();
 				
 			default:
 				_needsLayout = true;
@@ -887,16 +954,16 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		switch (styleName)
 		{
-			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
-			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
-			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
-			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:
+			//case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
+			//CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
+			//CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
+			//CSSConstants.BACKGROUND_SIZE_STYLE_NAME:
 			
 			default:
 				_needsLayout = true;
 				_childrenNeedRendering = true;
 				_childrenNeedLayout = true;
-				invalidateInitialContainingBlock(invalidationReason);
+				invalidateDocumentLayout(false);
 		}
 	}
 	
@@ -904,16 +971,16 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		switch (styleName)
 		{
-			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
-			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
-			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
-			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:	
+			//case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
+			//CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
+			//CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
+			//CSSConstants.BACKGROUND_SIZE_STYLE_NAME:	
 			
 			default:
 				_needsLayout = true;
 				_childrenNeedRendering = true;
 				_positionedChildrenNeedLayout = true;
-				invalidateInitialContainingBlock(invalidationReason);
+				invalidateDocumentLayout(false);
 		}
 	}
 	
