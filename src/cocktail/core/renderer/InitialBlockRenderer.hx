@@ -38,6 +38,10 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	
 	private var _invalidationScheduled:Bool;
 	
+	private var _documentNeedsLayout:Bool;
+	
+	private var _documentNeedsRendering:Bool;
+	
 	/**
 	 * class constructor.
 	 */
@@ -46,6 +50,8 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		super(node);
 		
 		_invalidationScheduled = false;
+		_documentNeedsLayout = true;
+		_documentNeedsRendering = true;
 		
 		//call the attachement method itself as it is 
 		//supposed to be called by parent ElementRenderer
@@ -123,8 +129,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		}
 	}
 	
-	
-	
 	override public function invalidate(invalidationReason:InvalidationReason):Void
 	{
 		var needsImmediateLayout:Bool = false;
@@ -133,15 +137,18 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		{
 			case InvalidationReason.styleChanged(styleName):
 				_needsLayout = true;
-				//_needsRendering = true;
+				_documentNeedsLayout = true;
+				_documentNeedsRendering = true;
 			
 			case InvalidationReason.childStyleChanged(styleName):
 				_childrenNeedLayout = true;
-				//_childrenNeedRendering = true;
+				_documentNeedsLayout = true;
+				_documentNeedsRendering = true;
 				
 			case InvalidationReason.positionedChildStyleChanged(styleName):
 				_positionedChildrenNeedLayout = true;
-				//_childrenNeedRendering = true;
+				_documentNeedsLayout = true;
+				_documentNeedsRendering = true;
 				
 			case InvalidationReason.windowResize:
 				_needsLayout = true;
@@ -149,14 +156,17 @@ class InitialBlockRenderer extends BlockBoxRenderer
 				_childrenNeedLayout = true;
 				_needsRendering = true;
 				_childrenNeedRendering = true;
+				_documentNeedsLayout = true;
+				_documentNeedsRendering = true;
 				
 			case InvalidationReason.needsImmediateLayout:
 				needsImmediateLayout = true;
+				_documentNeedsLayout = true;
 				
 			case InvalidationReason.other:
 				_needsLayout = true;
-				//_needsRendering = true;
-				//_childrenNeedRendering = true;
+				_documentNeedsLayout = true;
+				_documentNeedsRendering = true;
 		}
 		
 		invalidateLayout(false);
@@ -173,8 +183,20 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	private function layoutAndRender():Void
 	{
-		startLayout();
-		startRendering();
+		var now = Date.now().getTime();
+		if (_documentNeedsLayout == true)
+		{
+			startLayout();
+		}
+		_documentNeedsLayout = false;
+		trace(Date.now().getTime() - now);
+		now = Date.now().getTime();
+		if (_documentNeedsRendering == true)
+		{
+			startRendering();
+		}
+		_documentNeedsRendering = false;
+		trace(Date.now().getTime() - now);
 	}
 	
 	private function onLayoutSchedule():Void
@@ -252,16 +274,18 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		//bounds must be added to the global x and y bounds for the normal flow
 		if (elementRenderer.establishesNewFormattingContext() == true)
 		{
-			addedX = elementRenderer.globalBounds.x;
-			addedY = elementRenderer.globalBounds.y;
+			var globalBounds:RectangleData = elementRenderer.globalBounds;
+			addedX = globalBounds.x;
+			addedY = globalBounds.y;
 		}
 		
 		//if the element is positioned, it must also add
 		//its bounds to the global positioned origin
 		if (elementRenderer.isPositioned() == true)
 		{
-			addedPositionedX = elementRenderer.globalBounds.x;
-			addedPositionedY = elementRenderer.globalBounds.y;
+			var globalBounds:RectangleData = elementRenderer.globalBounds;
+			addedPositionedX = globalBounds.x;
+			addedPositionedY = globalBounds.y;
 		}
 		
 		//for its child of the element

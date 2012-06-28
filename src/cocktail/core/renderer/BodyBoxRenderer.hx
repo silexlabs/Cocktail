@@ -29,49 +29,6 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Overriden as the background of the HTMLBodyElement must be painted over
-	 * the whole viewport
-	 * 
-	 * TODO 2 : shouldn't have to repeat the method just to change the bounds
-	 */
-	override private function renderBackground(graphicContext:NativeElement):Void
-	{
-				//compute the background styles which can be computed at this time,
-		//such as the background color, most of the background styles will be computed
-		//during the rendering
-		//
-		_coreStyle.computeBackgroundStyles();
-		
-		var backgroundManager:BackgroundManager = new BackgroundManager(this);
-		
-		var windowData:ContainingBlockData = getWindowData();
-		
-		var width:Float = windowData.width;
-		var height:Float = windowData.height;
-		
-		var bodyBounds:RectangleData = {
-			x:0.0,
-			y:0.0,
-			width:width,
-			height:height
-		}
-		
-		var backgrounds:Array<NativeElement> = backgroundManager.render(bodyBounds, _coreStyle);
-		
-		#if (flash9 || nme)
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
-		for (i in 0...backgrounds.length)
-		{
-			containerGraphicContext.addChild(backgrounds[i]);
-		}
-		#end
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -88,6 +45,31 @@ class BodyBoxRenderer extends BlockBoxRenderer
 			this.computedStyle.height = _containingBlock.getContainerBlockData().height - computedStyle.marginTop - computedStyle.marginBottom
 			- computedStyle.paddingTop - computedStyle.paddingBottom;
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The HTMLBodyElement uses the bounds of the viewport
+	 * for its background
+	 */
+	override private function getBackgroundBounds():RectangleData
+	{
+		var windowData:ContainingBlockData = getWindowData();
+		
+		var width:Float = windowData.width;
+		var height:Float = windowData.height;
+		
+		var bodyBounds:RectangleData = {
+			x:0.0,
+			y:0.0,
+			width:width,
+			height:height
+		}
+		
+		return bodyBounds;
 	}
 	
 	
