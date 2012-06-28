@@ -40,7 +40,7 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	 */
 	override private function renderEmbeddedAsset(graphicContext:NativeElement)
 	{
-		var htmlVideoElement:HTMLVideoElement = cast(_node);
+		var htmlVideoElement:HTMLVideoElement = cast(node);
 		
 		//determine wether to render video or poster frame
 		if (htmlVideoElement.shouldRenderPosterFrame() == true)
@@ -119,7 +119,7 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	 */
 	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:NativeElement):Void
 	{
-		var resource:Resource = ResourceManager.getResource(_node.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
+		var resource:Resource = ResourceManager.getResource(node.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
 
 		if (resource.loaded == false || resource.loadedWithError == true)
 		{

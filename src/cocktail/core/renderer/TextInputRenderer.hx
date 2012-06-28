@@ -77,7 +77,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		#end
 		
 		//listen to cocktail focus events on the HTMLInputElement
-		_node.addEventListener(FocusEvent.FOCUS, onTextInputFocus);
+		node.addEventListener(FocusEvent.FOCUS, onTextInputFocus);
 	}
 	
 	/**
