@@ -534,7 +534,6 @@ class HTMLDocument extends Document
 	public function invalidateLayout(immediate:Bool):Void
 	{
 		_documentNeedsLayout = true;
-		_documentNeedsRendering = true;
 		
 		//TODO 1 : immediate layout deactivated
 		invalidate(immediate);
@@ -542,6 +541,13 @@ class HTMLDocument extends Document
 	
 	public function invalidateRendering():Void
 	{
+		_documentNeedsRendering = true;
+		invalidate(false);
+	}
+	
+	public function invalidateLayoutAndRendering():Void
+	{
+		_documentNeedsLayout = true;
 		_documentNeedsRendering = true;
 		invalidate(false);
 	}
