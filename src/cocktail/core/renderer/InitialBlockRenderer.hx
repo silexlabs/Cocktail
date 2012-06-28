@@ -32,20 +32,12 @@ import haxe.Timer;
  */
 class InitialBlockRenderer extends BlockBoxRenderer
 {
-	
-	
-	private static inline var INVALIDATION_INTERVAL:Int = 20;
-	
-	private var _invalidationScheduled:Bool;
-	
 	/**
 	 * class constructor.
 	 */
 	public function new(node:HTMLElement) 
 	{
 		super(node);
-		
-		_invalidationScheduled = false;
 		
 		//call the attachement method itself as it is 
 		//supposed to be called by parent ElementRenderer
@@ -54,35 +46,17 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC INVALIDATION METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * The initial block renderer doesn't have a parent, so when invalidated,
-	 * it always starts a layout
-	 */
-	private function invalidateLayout(immediate:Bool = false):Void
-	{
-		if (_invalidationScheduled == false || immediate == true)
-		{
-			_invalidationScheduled = true;
-			doInvalidate(immediate);
-		}
-	}
-	
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE ATTACHEMENT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	override private function attachLayer():Void
 	{
-		_layerRenderer = new LayerRenderer(this);
+		layerRenderer = new LayerRenderer(this);
 	}
 	
 	override private function detachLayer():Void
 	{
-		_layerRenderer = null;
+		layerRenderer = null;
 	}
 	
 	override private function attachContaininingBlock():Void
@@ -94,285 +68,10 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	{
 		
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * The Document is invalidated for instance when the
-	 * DOM changes after adding/removing a child or when
-	 * a style changes.
-	 * When this happen, the Document needs to be laid out
-	 * and rendered again
-	 * 
-	 * @param immediate define wether the layout must be synchronous
-	 * or asynchronous
-	 */
-	private function doInvalidate(immediate:Bool = false):Void
+
+	override private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
 	{
-		//either schedule an asynchronous layout and rendering, or layout
-		//and render immediately
-		if (immediate == false)
-		{
-			scheduleLayoutAndRender();
-		}
-		else
-		{
-			layoutAndRender();
-		}
-	}
-	
-	
-	
-	override public function invalidate(invalidationReason:InvalidationReason):Void
-	{
-		var needsImmediateLayout:Bool = false;
-		
-		switch(invalidationReason)
-		{
-			case InvalidationReason.styleChanged(styleName):
-				_needsLayout = true;
-				//_needsRendering = true;
-			
-			case InvalidationReason.childStyleChanged(styleName):
-				_childrenNeedLayout = true;
-				//_childrenNeedRendering = true;
-				
-			case InvalidationReason.positionedChildStyleChanged(styleName):
-				_positionedChildrenNeedLayout = true;
-				//_childrenNeedRendering = true;
-				
-			case InvalidationReason.windowResize:
-				_needsLayout = true;
-				_positionedChildrenNeedLayout = true;
-				_childrenNeedLayout = true;
-				_needsRendering = true;
-				_childrenNeedRendering = true;
-				
-			case InvalidationReason.needsImmediateLayout:
-				needsImmediateLayout = true;
-				
-			case InvalidationReason.other:
-				_needsLayout = true;
-				//_needsRendering = true;
-				//_childrenNeedRendering = true;
-		}
-		
-		invalidateLayout(false);
-		
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * As the name implies,
-	 * layout the DOM, then render it
-	 */
-	private function layoutAndRender():Void
-	{
-		startLayout();
-		startRendering();
-	}
-	
-	private function onLayoutSchedule():Void
-	{
-		layoutAndRender();
-		_invalidationScheduled = false;
-	}
-	
-	/**
-	 * Start the rendering of the rendering tree
-	 * built during layout
-	 * and attach the resulting nativeElements (background,
-	 * border, embedded asset...) to the display root
-	 * of the runtime (for instance the Stage in Flash)
-	 */ 
-	private function startRendering():Void
-	{
-		#if (flash9 || nme)
-		//start the rendering at the root layer renderer
-		render(flash.Lib.current, false);
-		#end
-	}
-	
-	/**
-	 * Start the layout of all of the HTMLElements tree which set the bounds
-	 * of the all of the rendring tree elements relative to their containing block.
-	 * Then set the global bounds (relative to the window) for all of the elements
-	 * of the rendering tree
-	 */
-	private function startLayout():Void
-	{
-		//layout all the HTMLElements. After that they all know their bounds relative to the containing
-		//blocks
-		layout(false);
-		//set the global bounds on the rendering tree. After that all the elements know their positions
-		//relative to the window
-		setGlobalOrigins(this,0,0, 0,0);
-	}
-	
-	/**
-	 * Set the global bounds (relative to the window) of all the elements of the rendering tree, by
-	 * traversing it recursively
-	 * 
-	 * 
-	 * @param	elementRenderer the current node in the render tree onto which the global bounds are set
-	 * @param	addedX the added x position for the normal flow
-	 * @param	addedY the added y position for the normal flow
-	 * @param	addedPositionedX the added X position for positioned elements
-	 * @param	addedPositionedY the added Y position for positioned elements
-	 */
-	private function setGlobalOrigins(elementRenderer:ElementRenderer, addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
-	{
-		//if the element establishes a new formatting context, then its
-		//bounds must be added to the global x and y bounds for the normal flow
-		if (elementRenderer.establishesNewFormattingContext() == true)
-		{
-			//if the element is positioned, it can either add its bounds
-			//or positioned origin to the global x and y for normal flow. If it
-			//uses its static position, it uses its bounds, else it uses its
-			//positioned origin
-			if (elementRenderer.isPositioned() == true && elementRenderer.isRelativePositioned() == false)
-			{
-				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
-				{
-					//when the element id absolutely positioned and not static, it uses
-					//its own global bounds as the new origin for its children
-					//TODO 1 : should check for regression, pretty big change
-					if (elementRenderer.coreStyle.computedStyle.position == absolute)
-					{
-						addedX = elementRenderer.globalBounds.x;
-					}
-					//here the positioned ElementRenderer is fixed and is placed
-					//relative to the window. In this case, its x is not added
-					else
-					{
-						addedX = elementRenderer.positionedOrigin.x;
-					}
-				}
-				else
-				{
-					addedX += elementRenderer.bounds.x;
-				}
-				
-				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
-				{
-					if (elementRenderer.coreStyle.computedStyle.position == absolute)
-					{
-						addedY = elementRenderer.globalBounds.y;
-					}
-					else
-					{
-						addedY = elementRenderer.positionedOrigin.y;
-					}
-				}
-				else
-				{
-					addedY += elementRenderer.bounds.y;
-				}
-			}
-			//if the element is not positioned or relatively positioned, it always add
-			//its bounds to the global x and y flow
-			else
-			{
-				addedX += elementRenderer.bounds.x;
-				addedY += elementRenderer.bounds.y;
-			}
-			
-		}
-		
-		//if the element is positioned, it must also add
-		//its bounds to the global positioned origin
-		if (elementRenderer.isPositioned() == true)
-		{
-			//absolutely positioned elements either add their static position
-			//or their positioned origin
-			if (elementRenderer.coreStyle.computedStyle.position != relative)
-			{
-				if (elementRenderer.coreStyle.left != PositionOffset.cssAuto || elementRenderer.coreStyle.right != PositionOffset.cssAuto)
-				{
-					if (elementRenderer.coreStyle.computedStyle.position == absolute)
-					{
-						addedPositionedX += elementRenderer.positionedOrigin.x;
-					}
-					else
-					{
-						addedPositionedX = elementRenderer.positionedOrigin.x;
-					}
-				}
-				else
-				{
-					addedPositionedX += elementRenderer.bounds.x;
-				}
-				if (elementRenderer.coreStyle.top != PositionOffset.cssAuto || elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
-				{
-					if (elementRenderer.coreStyle.computedStyle.position == absolute)
-					{
-						addedPositionedY += elementRenderer.positionedOrigin.y;
-					}
-					else
-					{
-						addedPositionedY = elementRenderer.positionedOrigin.y;
-					}
-					
-				}
-				else
-				{
-					addedPositionedY += elementRenderer.bounds.y;
-				}
-			}
-			//relative positioned elements always use their bounds, as the relative
-			//offset is only applied at render time and isn't used in the bounds
-			//computation
-			else
-			{
-				addedPositionedX += elementRenderer.bounds.x;
-				addedPositionedY += elementRenderer.bounds.y;
-			}
-		}
-		
-		//for its child of the element
-		var length:Int = elementRenderer.childNodes.length;
-		for (i in 0...length)
-		{
-			var child:ElementRenderer = elementRenderer.childNodes[i];
-			
-			child.globalContainingBlockOrigin = {
-				x: addedX,
-				y : addedY
-			}
-			
-			child.globalPositionnedAncestorOrigin = {
-				x: addedPositionedX,
-				y : addedPositionedY
-			}
-			
-			//call the method recursively if the child has children itself
-			if (child.hasChildNodes() == true)
-			{
-				setGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
-			}
-		}
-	}
-	
-	/**
-	 * Set a timer to trigger a layout and rendering of the HTML Document asynchronously.
-	 * Setting a timer to execute the layout and rendering ensure that the layout only happen once when a series of style
-	 * values are set or when many elements are attached/removed from the DOM, instead of happening for every change.
-	 */
-	private function scheduleLayoutAndRender():Void
-	{
-		var onLayoutScheduleDelegate:Void->Void = onLayoutSchedule;
-		#if (flash9 || nme)
-		//calling the methods 1 millisecond later is enough to ensure
-		//that first all synchronous code is executed
-		Timer.delay(function () { 
-			onLayoutScheduleDelegate();
-		}, INVALIDATION_INTERVAL);
-		#end
+		invalidateDocumentLayout(false);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -131,9 +131,6 @@ class EventCallback extends EventTarget
 	 * Callback called when there is an
 	 * error while loading an external
 	 * resource such as a picture
-	 * 
-	 * TODO 2 : also defined in media element module, should
-	 * it be on Event instead ?
 	 */
 	public var onerror(default, set_onError):UIEvent->Void;
 	

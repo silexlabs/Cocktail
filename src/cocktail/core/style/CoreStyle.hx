@@ -1190,7 +1190,9 @@ class CoreStyle
 	
 	private function setTransitionProperty(value:TransitionProperty):TransitionProperty
 	{
-		return transitionProperty = value;
+		transitionProperty = value;
+		computedStyle.transitionProperty = value;
+		return value;
 	}
 	
 	private function setTransitionDuration(value:TransitionDuration):TransitionDuration
@@ -1205,7 +1207,9 @@ class CoreStyle
 	
 	private function setTransitionTimingFunction(value:TransitionTimingFunction):TransitionTimingFunction
 	{
-		return transitionTimingFunction = value;
+		transitionTimingFunction = value;
+		computedStyle.transitionTimingFunction = value;
+		return value;
 	}
 	
 	private function setBackgroundColor(value:BackgroundColor):BackgroundColor
