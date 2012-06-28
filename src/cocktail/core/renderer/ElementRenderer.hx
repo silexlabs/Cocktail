@@ -77,7 +77,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * which established the formatting context this ElementRenderer 
 	 * participates in.
 	 */
-	private var _bounds:RectangleData;
 	public var bounds(get_bounds, set_bounds):RectangleData;
 	
 	/**
@@ -238,7 +237,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		_hasOwnLayer = false;
 		
-		_bounds = {
+		bounds = {
 			x:0.0,
 			y:0.0,
 			width : 0.0,
@@ -861,21 +860,21 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		switch (styleName)
 		{
-			//case CSSConstants.LEFT_STYLE_NAME, CSSConstants.RIGHT_STYLE_NAME,
-			//CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
-				//_needsLayout = true;
-				//if (isPositioned() == true && isRelativePositioned() == false)
-				//{
-					//invalidateContainingBlock(invalidationReason);
-				//}
-				//_needsRendering = true;
-			//
-			//case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
-			//CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
-			//CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
-			//CSSConstants.BACKGROUND_SIZE_STYLE_NAME:
-				//_needsRendering = true;
-				//invalidateInitialContainingBlock(invalidationReason);
+			case CSSConstants.LEFT_STYLE_NAME, CSSConstants.RIGHT_STYLE_NAME,
+			CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
+				_needsLayout = true;
+				_needsRendering = true;
+				if (isPositioned() == true && isRelativePositioned() == false)
+				{
+					invalidateContainingBlock(invalidationReason);
+				}
+			
+			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
+			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
+			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
+			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:
+				_needsRendering = true;
+				invalidateInitialContainingBlock(invalidationReason);
 				
 			default:
 				_needsLayout = true;
@@ -888,14 +887,13 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		switch (styleName)
 		{
-			//case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
-			//CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
-			//CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
-			//CSSConstants.BACKGROUND_SIZE_STYLE_NAME:	
+			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
+			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
+			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
+			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:
 			
 			default:
 				_needsLayout = true;
-				//_needsRendering = true;
 				_childrenNeedRendering = true;
 				_childrenNeedLayout = true;
 				invalidateInitialContainingBlock(invalidationReason);
@@ -906,14 +904,13 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		switch (styleName)
 		{
-			//case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
-			//CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
-			//CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
-			//CSSConstants.BACKGROUND_SIZE_STYLE_NAME:	
+			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
+			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
+			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
+			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:	
 			
 			default:
 				_needsLayout = true;
-				//_needsRendering = true;
 				_childrenNeedRendering = true;
 				_positionedChildrenNeedLayout = true;
 				invalidateInitialContainingBlock(invalidationReason);
@@ -1061,12 +1058,12 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	
 	private function get_bounds():RectangleData
 	{
-		return _bounds;
+		return bounds;
 	}
 	
 	private function set_bounds(value:RectangleData):RectangleData
 	{
-		return _bounds = value;
+		return bounds = value;
 	}
 	
 	private function get_scrollLeft():Float 

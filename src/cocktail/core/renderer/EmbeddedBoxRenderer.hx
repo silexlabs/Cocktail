@@ -82,8 +82,8 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	//TODO 4 : messy
 	override private function get_bounds():RectangleData
 	{
-		_bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
-		_bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
-		return _bounds;
+		bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
+		bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+		return bounds;
 	}
 }

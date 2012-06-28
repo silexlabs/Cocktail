@@ -12,6 +12,7 @@ import cocktail.port.NativeElement;
 import cocktail.core.resource.AbstractMediaLoader;
 import flash.display.Bitmap;
 import flash.display.Loader;
+import flash.errors.SecurityError;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
@@ -136,13 +137,19 @@ class Resource extends AbstractResource
 	 * TODO 1 : will cause security error with cross-domain picture, should try those fixes
 	 * http://blog.martinlegris.com/2008/02/19/getting-around-the-crossdomainxml-file-when-loading-images-in-as3/
 	 * http://www.inklink.co.at/blog/?p=14
-		 * 
-		 * maybe should use loadBytes instead of load
 	 */
 	private function setNativeResource(loader:Loader):Void
 	{
-		var bitmap:Bitmap = cast(loader.content);
-		nativeResource = bitmap.bitmapData;
+		//have to try catch for cross-domain security restrictions
+		try {
+			var bitmap:Bitmap = cast(loader.content);
+			nativeResource = bitmap.bitmapData;
+		}
+		catch (e:SecurityError)
+		{
+			trace(e.toString());
+		}
+		
 	}
 	
 }
