@@ -586,7 +586,11 @@ class HTMLDocument extends Document
 		}
 		else
 		{
-			layoutAndRender();
+			if (_documentNeedsLayout == true)
+			{
+				startLayout();
+			}
+			_documentNeedsLayout = false;
 		}
 	}
 	
@@ -596,14 +600,14 @@ class HTMLDocument extends Document
 	 */
 	private function layoutAndRender():Void
 	{
-		var now = Date.now().getTime();
+		//var now = Date.now().getTime();
 		if (_documentNeedsLayout == true)
 		{
 			startLayout();
 		}
 		_documentNeedsLayout = false;
 		//trace(Date.now().getTime() - now);
-		now = Date.now().getTime();
+		//now = Date.now().getTime();
 		if (_documentNeedsRendering == true)
 		{
 			startRendering();
