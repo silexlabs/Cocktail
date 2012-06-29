@@ -211,10 +211,6 @@ class BoxRenderer extends ElementRenderer
 		//
 		//TODO 2 : update doc
 		
-		
-		//TODO 1 : where to compute this ?
-		_coreStyle.computeTransitionStyles();
-		
 		applyOpacity(graphicContext);
 		//apply only if the element is either relative positioned or has
 		//transformations functions
@@ -296,6 +292,13 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function layout(forceLayout:Bool):Void
 	{	
+		//TODO 1 : messy to compute here, but if immediately computed
+		//when set, won't work for transitions
+		_coreStyle.computedStyle.opacity = _coreStyle.opacity;
+		
+		//TODO 1 : same as above, where to compute this ?
+		_coreStyle.computeTransitionStyles();
+		
 		if (_needsLayout == true || forceLayout == true)
 		{
 			layoutSelf();
