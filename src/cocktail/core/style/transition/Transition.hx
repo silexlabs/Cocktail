@@ -146,10 +146,10 @@ class Transition
 	 */
 	public function dispose():Void
 	{
-		//_onComplete = null;
-		//_onUpdate = null;
+		onComplete = null;
+		onUpdate = null;
 		//_target = null;
-		//_transitionTimingFunction = null;
+		_transitionTimingFunction = null;
 	}
 	
 	/////////////////////////////////

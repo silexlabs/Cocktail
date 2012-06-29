@@ -781,7 +781,6 @@ class CoreStyle
 		if (transition != null)
 		{
 			//TODO 1 : add the reverse transition case
-			
 			TransitionManager.getInstance().stopTransition(transition);
 		}
 		
@@ -850,7 +849,6 @@ class CoreStyle
 	{
 		var fontManager:FontManager = new FontManager();
 		fontMetrics = fontManager.getFontMetrics(UnitManager.getCSSFontFamily(computedStyle.fontFamily), computedStyle.fontSize);
-	
 		return fontMetrics;
 	}
 	
@@ -1180,7 +1178,6 @@ class CoreStyle
 	private function setOpacity(value:Opacity):Opacity
 	{
 		opacity = value;
-		computedStyle.opacity = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.OPACITY_STYLE_NAME);
 		startTransitionIfNeeded(CSSConstants.OPACITY_STYLE_NAME, invalidationReason);
 		invalidate(invalidationReason);

@@ -49,7 +49,7 @@ class TransitionManager
 	 * The time, in milliseconds between each update of the transition
 	 * in progress
 	 */
-	private static inline var TRANSITION_UPDATE_SPEED:Int = 10;
+	private static inline var TRANSITION_UPDATE_SPEED:Int = 20;
 	
 	/**
 	 * Store a ref to each transitions in progress, where
@@ -114,7 +114,8 @@ class TransitionManager
 		{
 			var propertyTransitions:Array<Transition> = _transitions.get(propertyName);
 			//look for a transition object with the right target
-			for (i in 0...propertyTransitions.length)
+			var length:Int = propertyTransitions.length;
+			for (i in 0...length)
 			{
 				if (propertyTransitions[i].target == style)
 				{
@@ -149,7 +150,7 @@ class TransitionManager
 		propertyTransitions.push(transition);
 		
 		//if the number of transition in progress was 0
-		//before this one, thent the update timer must be
+		//before this one, then the update timer must be
 		//started
 		if (_currentTransitionsNumber == 0)
 		{
@@ -169,7 +170,6 @@ class TransitionManager
 		//remove the stored reference to the transition
 		var propertyTransitions:Array<Transition> = _transitions.get(transition.propertyName);
 		propertyTransitions.remove(transition);
-		
 		//clean-up
 		transition.dispose();
 		
@@ -188,13 +188,12 @@ class TransitionManager
 	 */
 	private function startTransitionTimer():Void
 	{
-		#if (flash9 || nme)
-		
 		//store the current date timestamp, so that
 		//on each timer tick, the actual elapsed
 		//time can be calculated
 		_lastTick = Date.now().getTime();
 		
+		#if (flash9 || nme)
 		//set a delayed method call which will be repeated
 		//as long as needed
 		Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
@@ -221,7 +220,13 @@ class TransitionManager
 		//loop in all Transition in the hash
 		for (propertyTransitions in _transitions)
 		{
-			for (i in 0...propertyTransitions.length)
+			//store each completed transition, which will be stopped after this loop
+			//(stopped after loop to prevent from modifying the transition array while
+			//looping in it)
+			var completedTransitions:Array<Transition> = new Array<Transition>();
+			
+			var length:Int = propertyTransitions.length;
+			for (i in 0...length)
 			{
 				var transition:Transition = propertyTransitions[i];
 				
@@ -235,14 +240,22 @@ class TransitionManager
 				{
 					//here the transition is complete
 					transition.onComplete(transition);
-					//if the transition is complete, stop it
-					stopTransition(transition);
+					//if the transition is complete, store it to stop it
+					//afterwards
+					completedTransitions.push(transition);
 				}
 				else
 				{
 					//here the transition is not yet complete
 					transition.onUpdate(transition);
 				}
+			}
+			
+			//remove completed transitions
+			var completedTransitionsLength:Int = completedTransitions.length;
+			for (i in 0...completedTransitionsLength)
+			{
+				stopTransition(completedTransitions[i]);
 			}
 		}
 		
