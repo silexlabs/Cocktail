@@ -112,8 +112,7 @@ class Node<NodeClass:Node<NodeClass>> extends NodeBase<NodeClass>
 	 * A NamedNodeMap containing the attributes of this node 
 	 * (if it is an Element) or null otherwise.
 	 */
-	private var _attributes:NamedNodeMap<NodeClass>;
-	public var attributes(get_attributes, never):NamedNodeMap<NodeClass>;
+	public var attributes(default, null):NamedNodeMap<NodeClass>;
 	
 	/**
 	 * The Document object associated with this node. 
@@ -121,8 +120,7 @@ class Node<NodeClass:Node<NodeClass>> extends NodeBase<NodeClass>
 	 * When this node is a Document or a DocumentType
 	 * which is not used with any Document yet, this is null.
 	 */
-	private var _ownerDocument:Document;
-	public var ownerDocument(get_ownerDocument, set_ownerDocument):Document;
+	public var ownerDocument:Document;
 	
 	/**
 	 * class constructor
@@ -173,20 +171,5 @@ class Node<NodeClass:Node<NodeClass>> extends NodeBase<NodeClass>
 	private function get_nodeName():String
 	{
 		return null;
-	}
-	
-	private function get_attributes():NamedNodeMap<NodeClass>
-	{
-		return null;
-	}
-	
-	private function get_ownerDocument():Document
-	{
-		return _ownerDocument;
-	}
-	
-	private function set_ownerDocument(value:Document):Document
-	{
-		return _ownerDocument = value;
 	}
 }

@@ -7,7 +7,7 @@
 */
 package cocktail.core.html;
 import cocktail.core.event.UIEvent;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.resource.ImageLoader;
 import cocktail.core.renderer.RendererData;
@@ -64,7 +64,7 @@ class HTMLObjectElement extends EmbeddedElement
 	 */
 	override private function initEmbeddedAsset():Void
 	{
-		_embeddedAsset = _imageLoader.nativeElement;
+		embeddedAsset = _imageLoader.nativeElement;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -92,8 +92,8 @@ class HTMLObjectElement extends EmbeddedElement
 	 */
 	override private function createElementRenderer():Void
 	{
-		_elementRenderer = new ImageRenderer(this);
-		_elementRenderer.coreStyle = _coreStyle;
+		elementRenderer = new ImageRenderer(this);
+		elementRenderer.coreStyle = coreStyle;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -111,9 +111,9 @@ class HTMLObjectElement extends EmbeddedElement
 	 */
 	private function onLoadComplete(image:NativeElement):Void
 	{
-		this._intrinsicHeight = _imageLoader.intrinsicHeight;
-		this._intrinsicWidth = _imageLoader.intrinsicWidth;
-		this._intrinsicRatio = _intrinsicHeight / _intrinsicWidth;
+		intrinsicHeight = _imageLoader.intrinsicHeight;
+		intrinsicWidth = _imageLoader.intrinsicWidth;
+		intrinsicRatio = intrinsicHeight / intrinsicWidth;
 		
 		invalidate(InvalidationReason.other);
 		

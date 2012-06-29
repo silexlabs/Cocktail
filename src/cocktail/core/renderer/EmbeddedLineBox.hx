@@ -7,7 +7,7 @@
 */
 package cocktail.core.renderer;
 
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 
 /**
@@ -36,9 +36,9 @@ class EmbeddedLineBox extends LineBox
 	/**
 	 * Embeded LineBoxes defer rendering to their ElementRenderer
 	 */
-	override public function render(graphicContext:NativeElement):Void
+	override public function render(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
-		_elementRenderer.render(graphicContext);
+		_elementRenderer.render(graphicContext, forceRendering);
 	}
 	
 	/////////////////////////////////

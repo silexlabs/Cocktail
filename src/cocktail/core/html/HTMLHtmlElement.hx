@@ -52,8 +52,8 @@ class HTMLHtmlElement extends HTMLElement
 	 */
 	override private function createElementRenderer():Void
 	{ 
-		_elementRenderer = new InitialBlockRenderer(this);
-		_elementRenderer.coreStyle = _coreStyle;
+		elementRenderer = new InitialBlockRenderer(this);
+		elementRenderer.coreStyle = coreStyle;
 	}
 	
 	/**
@@ -99,7 +99,7 @@ class HTMLHtmlElement extends HTMLElement
 		
 		super.set_innerHTML(value);
 		
-		var htmlDocument:HTMLDocument = cast(_ownerDocument);
+		var htmlDocument:HTMLDocument = cast(ownerDocument);
 		htmlDocument.initBody(cast(getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
 		
 		return value;

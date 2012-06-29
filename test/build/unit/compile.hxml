@@ -1,4 +1,6 @@
--js test/bin/unit/App.js
--main UnitManagerTests
--cp src
--cp test/src/unit
+-cp ../../../src/
+-cp ../../src/
+-main unit.UnitManagerTests
+-swf9 ../../bin/unit/unitTestAs3.swf
+-swf-version 10.2
+-lib utest

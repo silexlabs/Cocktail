@@ -63,15 +63,13 @@ class UIEvent extends Event
 	 * TODO 3 : what should abstractview be ? -> dhould be Window in most
 	 * cases (called defaultView)
 	 */
-	private var _view:Dynamic;
-	public var view(get_view, never):Dynamic;
+	public var view(default, null):Dynamic;
 	
 	/**
 	 * Specifies some detail information about the Event,
 	 * depending on the type of event.
 	 */ 
-	private var _detail:Float;
-	public var detail(get_detail, set_detail):Float;
+	public var detail(default, null):Float;
 	
 	public function new() 
 	{
@@ -95,32 +93,13 @@ class UIEvent extends Event
 	public function initUIEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, viewArg:Dynamic, detailArg:Float):Void
 	{
 		//can't alter event after it has been dispatched
-		if (_dispatched == true)
+		if (dispatched == true)
 		{
 			return;
 		}
 		
 		initEvent(eventTypeArg, canBubbleArg, cancelableArg);
-		_view = viewArg;
-		_detail = detailArg;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// SETTERS/GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_detail():Float 
-	{
-		return _detail;
-	}
-	
-	private function set_detail(value:Float):Float 
-	{
-		return _detail = value;
-	}
-	
-	private function get_view():Dynamic
-	{
-		return view;
+		view = viewArg;
+		detail = detailArg;
 	}
 }

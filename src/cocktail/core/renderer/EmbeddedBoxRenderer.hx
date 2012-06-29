@@ -11,7 +11,7 @@ import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.EmbeddedElement;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.style.computer.boxComputers.BoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
@@ -46,9 +46,9 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * overriden to also render the embedded asset, for instance a picture for
 	 * an image renderer
 	 */
-	override private function renderChildren(graphicContext:NativeElement):Void
+	override private function renderSelf(graphicContext:NativeElement):Void
 	{
-		super.renderChildren(graphicContext);
+		super.renderSelf(graphicContext);
 		renderEmbeddedAsset(graphicContext);
 	}
 	
@@ -82,8 +82,8 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	//TODO 4 : messy
 	override private function get_bounds():RectangleData
 	{
-		_bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
-		_bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
-		return _bounds;
+		bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
+		bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+		return bounds;
 	}
 }

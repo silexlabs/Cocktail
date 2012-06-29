@@ -22,7 +22,34 @@ import cocktail.core.html.HTMLElement;
  * @author Yannick DOMINGUEZ
  */
 class KeyboardEvent extends UIEvent
-{
+{	
+	/**
+	 * A user agent must dispatch this event when a key is
+	 * pressed down. The keydown event type is device dependent
+	 * and relies on the capabilities of the input devices 
+	 * and how they are mapped in the operating system. 
+	 * This event type must be generated after the key
+	 * mapping. This event type must be dispatched before
+	 * the keypress and keyup events event associated
+	 * with the same key.
+	 */
+	public static inline var KEY_DOWN:String = "keydown";
+	
+	/**
+	 * A user agent must dispatch this event when a key
+	 * is pressed down, if and only if that key normally 
+	 * produces a character value. The keypress event type 
+	 * is device dependent and relies on the capabilities 
+	 * of the input devices and how they are mapped in 
+	 * the operating system. This event type must be 
+	 * generated after the key mapping. It must not
+	 * be fired when using an input method editor.
+	 * This event type must be dispatched after the 
+	 * keydown event and before the keyup event 
+	 * associated with the same key.
+	 */
+	public static inline var KEY_UP:String = "keyup";
+	
 	/**
 	 * This set of constants must be used to indicate the location 
 	 * of a key on the device. In case a DOM implementation wishes
@@ -69,34 +96,25 @@ class KeyboardEvent extends UIEvent
 	 */
 	public static inline var DOM_KEY_LOCATION_JOYSTICK:Int = 0x05;
 	
-	
-	//TODO 3 : add keypress
-	public static inline var KEY_DOWN:String = "keydown";
-	
-	public static inline var KEY_UP:String = "keyup";
-	
 	/**
 	 * char holds the character value of the key pressed.
 	 * 
 	 * TODO 5 : should be named char but prevent cpp
 	 * compilation
 	 */
-	private var _keyChar:String;
-	public var keyChar(get_keyChar, never):String;
+	public var keyChar(default, null):String;
 	
 	/**
 	 * key holds the key value of the key pressed.
 	 */
-	private var _key:String;
-	public var key(get_key, never):String;
+	public var key(default, null):String;
 	
 	/**
 	 * The location attribute contains an indication of the 
 	 * location of the key on the device, as described in
 	 * Keyboard event types.
 	 */
-	private var _location:Int;
-	public var location(get_location, never):Int;
+	public var location(default, null):Int;
 	
 	/**
 	 * The locale attribute contains a 
@@ -105,32 +123,27 @@ class KeyboardEvent extends UIEvent
 	 * May be the empty string when inapplicable or unknown,
 	 * e.g. when this information is not exposed by the underlying platform.
 	 */
-	private var _locale:String;
-	public var locale(get_locale, never):String;
+	public var locale(default, null):String;
 	
 	/**
 	 * true if the 'Ctrl' (control) key modifier was active.
 	 */
-	private var _ctrlKey:Bool;
-	public var ctrlKey(get_ctrlKey, never):Bool;
+	public var ctrlKey(default, null):Bool;
 	
 	/**
 	 * true if the shift (Shift) key modifier was active.
 	 */
-	private var _shiftKey:Bool;
-	public var shiftKey(get_shiftKey, never):Bool;
+	public var shiftKey(default, null):Bool;
 	
 	/**
 	 * true if the 'Alt' (alternative) or 'Option' key modifier was active.
 	 */
-	private var _altKey:Bool;
-	public var altKey(get_altKey, never):Bool;
+	public var altKey(default, null):Bool;
 	
 	/**
 	 * true if the meta (Meta) key modifier was active. 
 	 */ 
-	private var _metaKey:Bool;
-	public var metaKey(get_metaKey, never):Bool;
+	public var metaKey(default, null):Bool;
 	
 	/**
 	 * true if the key has been pressed in a sustained manner.
@@ -145,8 +158,7 @@ class KeyboardEvent extends UIEvent
 	 * time that the key must be pressed in order to begin repeating
 	 * is configuration-dependent.
 	 */
-	private var _repeat:Bool;
-	public var repeat(get_repeat, never):Bool;
+	public var repeat(default, null):Bool;
 	
 	public function new() 
 	{
@@ -176,70 +188,19 @@ class KeyboardEvent extends UIEvent
 	 * @param	detailArg Specifies UIEvent.detail
 	 */
 	public function initKeyboardEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, viewArg:Dynamic, charArg:String,
-	keyArg:String, locationArg:Int, modifiersListArg:String, repeat:Bool, localeArg:String):Void
+	keyArg:String, locationArg:Int, modifiersListArg:String, repeatArg:Bool, localeArg:String):Void
 	{
 		//can't alter event after it has been dispatched
-		if (_dispatched == true)
+		if (dispatched == true)
 		{
 			return;
 		}
 		
 		initUIEvent(eventTypeArg, canBubbleArg, cancelableArg, viewArg, 0);
-		_keyChar = charArg;
-		_key = keyArg;
-		_repeat = repeat;
-		_location = locationArg;
-		_locale = localeArg;
+		keyChar = charArg;
+		key = keyArg;
+		repeat = repeatArg;
+		location = locationArg;
+		locale = localeArg;
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_altKey():Bool 
-	{
-		return _altKey;
-	}
-	
-	private function get_shiftKey():Bool 
-	{
-		return _shiftKey;
-	}
-	
-	private function get_ctrlKey():Bool 
-	{
-		return _ctrlKey;
-	}
-	
-	private function get_keyChar():String 
-	{
-		return _keyChar;
-	}
-	
-	private function get_key():String 
-	{
-		return _key;
-	}
-	
-	private function get_repeat():Bool
-	{
-		return _repeat;
-	}
-	
-	private function get_location():Int
-	{
-		return _location;
-	}
-	
-	private function get_metaKey():Bool
-	{
-		return _metaKey;
-	}
-	
-	private function get_locale():String
-	{
-		return _locale;
-	}
-	
-	
 }

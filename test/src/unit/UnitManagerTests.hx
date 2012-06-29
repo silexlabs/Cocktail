@@ -9,6 +9,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
+package unit;
 
 import utest.Assert;
 import utest.Runner;
@@ -18,6 +19,8 @@ import cocktail.core.unit.UnitManager;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
 import cocktail.Dom;
+import cocktail.core.html.HTMLElement;
+import cocktail.core.dom.Text;
 
 /**
  * Units tests for UnitManager
@@ -247,10 +250,43 @@ class UnitManagerTests
 		Assert.same(Color.hex("89AB"), UnitManager.colorEnum("#89AB"));
 		Assert.same(Color.hex("AB"), UnitManager.colorEnum("#AB"));
 	}
+   public function testTransition() 
+   {
+ 		/* transition-property */
+ 		Assert.same(TransitionProperty.none, UnitManager.getTransitionProperty("none"));
+ 		Assert.same(TransitionProperty.all, UnitManager.getTransitionProperty("all"));
+ 		
+ 		var tProp:Array<String> = new Array<String>();
+ 		tProp.push("div1");
+ 		tProp.push("div2");
+ 		tProp.push("div3");
+ 		Assert.same(TransitionProperty.list(tProp), UnitManager.getTransitionProperty("div1, div2, div3"));
+
+		/* transition-duration */
+ 		Assert.same([TimeValue.seconds(2),TimeValue.seconds(5),TimeValue.milliSeconds(400)], UnitManager.getTransitionDuration("2s, 5s, 400ms"));
+ 
+		/* transition-delay */
+ 		Assert.same([TimeValue.seconds(2),TimeValue.milliSeconds(200)], UnitManager.getTransitionDelay("2s,200ms")); 		
+
+		/* transition-timing-function */
+ 		Assert.same([TransitionTimingFunctionValue.ease], UnitManager.getTransitionTimingFunction("ease"));
+ 		Assert.same([TransitionTimingFunctionValue.linear], UnitManager.getTransitionTimingFunction("linear"));
+ 		Assert.same([TransitionTimingFunctionValue.easeIn], UnitManager.getTransitionTimingFunction("ease-in"));
+ 		Assert.same([TransitionTimingFunctionValue.easeOut], UnitManager.getTransitionTimingFunction("ease-out"));
+ 		Assert.same([TransitionTimingFunctionValue.easeInOut], UnitManager.getTransitionTimingFunction("ease-in-out"));
+ 		Assert.same([TransitionTimingFunctionValue.stepStart], UnitManager.getTransitionTimingFunction("step-start"));
+ 		Assert.same([TransitionTimingFunctionValue.stepEnd], UnitManager.getTransitionTimingFunction("step-end"));
+ 		Assert.same([TransitionTimingFunctionValue.steps(1,IntervalChangeValue.start)], UnitManager.getTransitionTimingFunction("steps (1,start)"));
+ 		Assert.same([TransitionTimingFunctionValue.steps(2,IntervalChangeValue.end)], UnitManager.getTransitionTimingFunction("steps (2,end)"));
+ 		Assert.same([TransitionTimingFunctionValue.steps(2,IntervalChangeValue.end)], UnitManager.getTransitionTimingFunction("steps ( 2  , end  )"));
+ 		Assert.same([TransitionTimingFunctionValue.cubicBezier(1,2,3,4)], UnitManager.getTransitionTimingFunction("cubic-bezier (1,2,3,4)"));
+ 		Assert.same([TransitionTimingFunctionValue.cubicBezier(1,2,3,4)], UnitManager.getTransitionTimingFunction("cubic-bezier ( 1 , 2  ,  3 , 4 )"));
+
+   }	
     public function testSetterGetter() 
 	{
 		Lib.document.body.style.backgroundColor = "#ABCDEF";
-		
+	
 		container.style.marginLeft = "100px";
 		Assert.same(Margin.length(Length.px(100)), container.coreStyle.marginLeft);
 		container.style.marginLeft = "100%";
@@ -319,5 +355,39 @@ class UnitManagerTests
 		
 		container.style.fontFamily = '"Times New Roman",Georgia, Serif';
 		Assert.same(["Times New Roman","Georgia","Serif"], container.coreStyle.fontFamily);
+
+		container.style.transitionDelay = "2s, 3s";
+		Assert.same([TimeValue.seconds(2), TimeValue.seconds(3)], container.coreStyle.transitionDelay);
+		container.style.transitionDelay = "2ms";
+		Assert.same([TimeValue.milliSeconds(2)], container.coreStyle.transitionDelay);
+
+		container.style.transitionDuration = "2s";
+		Assert.same([TimeValue.seconds(2)], container.coreStyle.transitionDuration);
+		container.style.transitionDuration = "20ms";
+		Assert.same([TimeValue.milliSeconds(20)], container.coreStyle.transitionDuration);
+
+		container.style.transitionProperty = "all";
+		Assert.same(TransitionProperty.all, container.coreStyle.transitionProperty);
+		container.style.transitionProperty = "none";
+		Assert.same(TransitionProperty.none, container.coreStyle.transitionProperty);
+		container.style.transitionProperty = "width, height";
+		Assert.same(TransitionProperty.list(["width","height"]), container.coreStyle.transitionProperty);
+
+		container.style.transitionTimingFunction = "ease";
+		Assert.same([TransitionTimingFunctionValue.ease], container.coreStyle.transitionTimingFunction);
+		container.style.transitionTimingFunction = "linear";
+		Assert.same([TransitionTimingFunctionValue.linear], container.coreStyle.transitionTimingFunction);
+		container.style.transitionTimingFunction = "ease-in";
+		Assert.same([TransitionTimingFunctionValue.easeIn], container.coreStyle.transitionTimingFunction);
+		container.style.transitionTimingFunction = "ease-out";
+		Assert.same([TransitionTimingFunctionValue.easeOut], container.coreStyle.transitionTimingFunction);
+		container.style.transitionTimingFunction = "ease-in-out";
+		Assert.same([TransitionTimingFunctionValue.easeInOut], container.coreStyle.transitionTimingFunction);
+		container.style.transitionTimingFunction = "ease-in, ease-out";
+		Assert.same([TransitionTimingFunctionValue.easeIn, TransitionTimingFunctionValue.easeOut], container.coreStyle.transitionTimingFunction);
+		container.style.transitionTimingFunction = "steps (1, end)";
+		Assert.same([TransitionTimingFunctionValue.steps(1, IntervalChangeValue.end)], container.coreStyle.transitionTimingFunction);		
+		container.style.transitionTimingFunction = "cubic-bezier (1,1 ,3,2  )";
+		Assert.same([TransitionTimingFunctionValue.cubicBezier(1,1,3,2)], container.coreStyle.transitionTimingFunction);
 	}
 }

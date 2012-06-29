@@ -8,10 +8,13 @@
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
+import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLVideoElement;
-import cocktail.core.NativeElement;
+import cocktail.core.resource.ResourceManager;
+import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
+import cocktail.port.Resource;
 
 /**
  * Renders an embedded video asset
@@ -33,24 +36,39 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Render the embedded video asset.
+	 * Render the embedded video asset or the video poster frame.
+	 */
+	override private function renderEmbeddedAsset(graphicContext:NativeElement)
+	{
+		var htmlVideoElement:HTMLVideoElement = cast(node);
+		
+		//determine wether to render video or poster frame
+		if (htmlVideoElement.shouldRenderPosterFrame() == true)
+		{
+			renderPosterFrame(htmlVideoElement, graphicContext);
+		}
+		else
+		{
+			renderVideo(htmlVideoElement, graphicContext);
+		}
+	}
+	
+	/**
+	 * Actually render the video
 	 * 
 	 * Video intrinsic aspect ratio is always preserved, so the
 	 * video might be letterboxed to fit in the available bounds,
 	 * the video always takes the maximum amount of space available
 	 * while keeping its aspect ratio
 	 */
-	override private function renderEmbeddedAsset(graphicContext:NativeElement)
+	private function renderVideo(htmlVideoElement:HTMLVideoElement, graphicContext:NativeElement):Void
 	{
-		var htmlVideoElement:HTMLVideoElement = cast(_node);
-		
 		//those will hold the actual value used for the video
 		//dimensions, with the kept aspect ratio
 		var width:Float;
 		var height:Float;
-		
-		//here the bounds of the ElementRenderer are larger than the height
-		if (_coreStyle.computedStyle.width >= _coreStyle.computedStyle.height)
+
+		if (_coreStyle.computedStyle.width < _coreStyle.computedStyle.height)
 		{
 			//get the ratio between the intrinsic video width and the width it must be displayed at
 			var ratio:Float = htmlVideoElement.videoHeight / _coreStyle.computedStyle.height;
@@ -93,4 +111,31 @@ class VideoRenderer extends EmbeddedBoxRenderer
 		#end
 	}
 	
+	/**
+	 * Render the poster frame of the video if the video is not
+	 * yet loaded or has not started playing yet
+	 * 
+	 * TODO 4 : duplicated code from ImageRenderer. Should be base class ?
+	 */
+	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:NativeElement):Void
+	{
+		var resource:Resource = ResourceManager.getResource(node.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
+
+		if (resource.loaded == false || resource.loadedWithError == true)
+		{
+			return;
+		}
+		
+		#if (flash9 || nme)
+		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
+		var bitmap:flash.display.Bitmap = new flash.display.Bitmap(resource.nativeResource, flash.display.PixelSnapping.AUTO, true);
+		containerGraphicContext.addChild(bitmap);
+		
+		var globalBounds:RectangleData = globalBounds;
+		bitmap.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
+		bitmap.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
+		bitmap.width = _coreStyle.computedStyle.width;
+		bitmap.height = _coreStyle.computedStyle.height;
+		#end
+	}
 }

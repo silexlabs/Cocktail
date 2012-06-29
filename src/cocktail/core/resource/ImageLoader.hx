@@ -7,7 +7,7 @@
 */
 package cocktail.core.resource;
 
-import cocktail.core.MediaLoader;
+import cocktail.port.MediaLoader;
 import haxe.Http;
 import haxe.Log;
 

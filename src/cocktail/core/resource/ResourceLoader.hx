@@ -6,7 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.resource;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import haxe.Http;
 import haxe.Log;
 

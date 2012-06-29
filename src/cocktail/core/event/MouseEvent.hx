@@ -18,8 +18,6 @@ import cocktail.core.html.HTMLElement;
  * between the mousedown and mouseup the value will be set to 0, indicating
  * that no click is occurring.
  * 
- * TODO 4 : implement
- * 
  * In the case of nested elements mouse events are always targeted at the most deeply
  * nested element. Ancestors of the targeted element may use bubbling to obtain
  * notification of mouse events which occur within its descendent elements.
@@ -85,56 +83,48 @@ class MouseEvent extends UIEvent
 	 * The horizontal coordinate at which the event occurred relative
 	 * to the origin of the screen coordinate system.
 	 */
-	private var _screenX:Int;
-	public var screenX(get_screenX, never):Int;
+	public var screenX(default, null):Int;
 	
 	/**
 	 * The vertical coordinate at which the event occurred relative
 	 * to the origin of the screen coordinate system.
 	 */
-	private var _screenY:Int;
-	public var screenY(get_screenY, never):Int;
+	public var screenY(default, null):Int;
 	
 	/**
 	 * The horizontal coordinate at which the event occurred relative
 	 * to the DOM implementation's client area.
 	 */
-	private var _clientX:Int;
-	public var clientX(get_clientX, never):Int;
+	public var clientX(default, null):Int;
 	
 	/**
 	 * The vertical coordinate at which the event occurred 
 	 * relative to the DOM implementation's client area.
 	 */
-	private var _clientY:Int;
-	public var clientY(get_clientY, never):Int;
+	public var clientY(default, null):Int;
 	
 	/**
 	 * Used to indicate whether the 'ctrl' key was depressed
 	 * during the firing of the event.
 	 */
-	private var _ctrlKey:Bool;
-	public var ctrlKey(get_ctrlKey, never):Bool;
+	public var ctrlKey(default, null):Bool;
 	
 	/**
 	 * Used to indicate whether the 'shift' key was depressed
 	 * during the firing of the event.
 	 */
-	private var _shiftKey:Bool;
-	public var shiftKey(get_shiftKey, never):Bool;
+	public var shiftKey(default, null):Bool;
 	
 	/**
 	 * Used to indicate whether the 'alt' key was depressed during
 	 * the firing of the event. On some platforms this key may map to an alternative key name.
 	 */
-	private var _altKey:Bool;
-	public var altKey(get_altKey, null):Bool;
+	public var altKey(default, null):Bool;
 	
 	/**
 	 * Refer to the KeyboardEvent.metaKey attribute.
 	 */
-	private var _metaKey:Bool;
-	public var metaKey(get_metaKey, never):Bool;
+	public var metaKey(default, null):Bool;
 	
 	/**
 	 * During mouse events caused by the depression or release of a mouse button,
@@ -154,15 +144,13 @@ class MouseEvent extends UIEvent
 	 *Some pointing devices may provide or simulate more buttons, and values 
 	 * higher than 2 may be used to represent such buttons.
 	 */
-	private var _button:Int;
-	public var button(get_button, never):Int;
+	public var button(default, null):Int;
 	
 	/**
 	 * Used to identify a secondary EventTarget related to a UI
 	 * event, depending on the type of event.
 	 */
-	private var _relatedTarget:EventTarget;
-	public var relatedTarget(get_relatedTarget, never):EventTarget;
+	public var relatedTarget(default, null):EventTarget;
 	
 	/**
 	 * class constructor
@@ -201,77 +189,21 @@ class MouseEvent extends UIEvent
 	shiftKeyArg:Bool, metaKeyArg:Bool, buttonArg:Int, relatedTargeArg:EventTarget):Void
 	{
 		//can't alter event after it has been dispatched
-		if (_dispatched == true)
+		if (dispatched == true)
 		{
 			return;
 		}
 		
 		initUIEvent(eventTypeArg, canBubbleArg, cancelableArg, viewArg, detailArg);
-		_screenX = screenXArg;
-		_screenY = screenYArg;
-		_clientX = clientXArg;
-		_clientY = clientYArg;
-		_ctrlKey = ctrlKeyArg;
-		_shiftKey = shiftKeyArg;
-		_altKey = altKeyArg;
-		_metaKey = metaKeyArg;
-		_button = buttonArg;
-		_relatedTarget = relatedTargeArg;
+		screenX = screenXArg;
+		screenY = screenYArg;
+		clientX = clientXArg;
+		clientY = clientYArg;
+		ctrlKey = ctrlKeyArg;
+		shiftKey = shiftKeyArg;
+		altKey = altKeyArg;
+		metaKey = metaKeyArg;
+		button = buttonArg;
+		relatedTarget = relatedTargeArg;
 	}
-	
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_relatedTarget():EventTarget
-	{
-		return _relatedTarget;
-	}
-	
-	private function get_button():Int
-	{
-		return _button;
-	}
-	
-	private function get_metaKey():Bool
-	{
-		return _metaKey;
-	}
-	
-	private function get_altKey():Bool 
-	{
-		return _altKey;
-	}
-	
-	private function get_shiftKey():Bool 
-	{
-		return _shiftKey;
-	}
-	
-	private function get_ctrlKey():Bool 
-	{
-		return _ctrlKey;
-	}
-	
-	private function get_clientY():Int 
-	{
-		return _clientY;
-	}
-	
-	private function get_clientX():Int 
-	{
-		return _clientX;
-	}
-	
-	private function get_screenX():Int 
-	{
-		return _screenX;
-	}
-	
-	private function get_screenY():Int 
-	{
-		return _screenY;
-	}
-	
 }

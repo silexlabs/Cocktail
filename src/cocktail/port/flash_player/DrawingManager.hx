@@ -7,7 +7,7 @@
 */
 package cocktail.port.flash_player;
 
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.drawing.AbstractDrawingManager;
 import flash.display.Bitmap;
 import flash.display.BitmapData;

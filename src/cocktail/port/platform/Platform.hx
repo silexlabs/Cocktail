@@ -7,6 +7,7 @@
 */
 package cocktail.port.platform;
 
+import cocktail.core.event.Event;
 import cocktail.core.event.EventCallback;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
@@ -15,6 +16,7 @@ import cocktail.core.event.WheelEvent;
 import cocktail.port.Keyboard;
 import cocktail.port.Mouse;
 import cocktail.port.NativeWindow;
+import cocktail.core.style.StyleData;
 
 /**
  * This class exposes an API to access platform
@@ -23,10 +25,8 @@ import cocktail.port.NativeWindow;
  * 
  * Hides all the platforms interface behind a common API
  * 
- * TODO 4 : makes for a lot of boiler-plate and repeated code, extend
- * this class instead of having lot of classes by composition ?
- * 
- * TODO 5 : add method to set/get platform mouse cursor
+ * TODO 3 : should instead allow access to nativeWindow, mouse...
+ * instead of adding boilerplate
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -89,7 +89,6 @@ class Platform extends EventCallback
 		_mouse.onMouseDown = dispatchMouseEvent;
 		_mouse.onMouseUp = dispatchMouseEvent;
 		_mouse.onMouseMove = dispatchMouseEvent;
-		_mouse.onClick = dispatchMouseEvent;
 		_mouse.onMouseWheel = dispatchMouseWheelEvent;
 	}
 	
@@ -110,6 +109,7 @@ class Platform extends EventCallback
 	{
 		_nativeWindow = new NativeWindow();
 		_nativeWindow.onResize = dispatchUIEvent;
+		_nativeWindow.onFullScreenChange = dispatchFullScreenEvent;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -143,6 +143,21 @@ class Platform extends EventCallback
 		_nativeWindow.exitFullscreen();
 	}
 	
+	/**
+	 * Return wether the document is currently
+	 * displayed in fullscreen mode
+	 * @return true if fullscreen mode
+	 */
+	public function fullscreen():Bool
+	{
+		return _nativeWindow.fullscreen();
+	}
+	
+	public function setMouseCursor(cursor:Cursor):Void
+	{
+		_mouse.setMouseCursor(cursor);
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PLATFORM CALLBACKS
 	// Send a cross-platform event from a native platform event
@@ -152,12 +167,6 @@ class Platform extends EventCallback
 	{
 		switch(mouseEvent.type)
 		{
-			case MouseEvent.CLICK:
-				if (onclick != null)
-				{
-					onclick(mouseEvent);
-				}
-				
 			case MouseEvent.MOUSE_DOWN:
 				if (onmousedown != null)
 				{
@@ -210,6 +219,14 @@ class Platform extends EventCallback
 		if (onresize != null)
 		{
 			onresize(uiEvent);
+		}
+	}
+	
+	private function dispatchFullScreenEvent(event:Event):Void
+	{
+		if (onfullscreenchange != null)
+		{
+			onfullscreenchange(event);
 		}
 	}
 	

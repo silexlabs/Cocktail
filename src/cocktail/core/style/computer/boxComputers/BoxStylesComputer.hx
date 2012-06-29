@@ -194,13 +194,13 @@ class BoxStylesComputer
 	{
 		//the width is first set to 0, 
 		//it will be computed once the margins are computed
-		style.computedStyle.width = 0;	
+		style.computedStyle.width = 0.0;	
 		
 		//left margin
 		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingBlockData);
 		//right margin
 		style.computedStyle.marginRight = getComputedMarginRight(style, containingBlockData);
-		
+
 		//the width is computed now that the sizes of the margins are computed
 		style.computedStyle.width = getComputedAutoWidth(style, containingBlockData);
 	}

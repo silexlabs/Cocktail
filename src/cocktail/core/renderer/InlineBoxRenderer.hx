@@ -9,7 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;
 import cocktail.core.geom.GeomData;
@@ -51,24 +51,24 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 * Overriden as rendering an inline box renderer consist in rendering all of the 
 	 * line boxes it generated
 	 */
-	override private function renderChildren(graphicContext:NativeElement):Void
+	override private function renderChildren(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
-		super.renderChildren(graphicContext);
+		super.renderChildren(graphicContext, forceRendering);
 		
 		//render negative z-index LayerRenderer
 		if (establishesNewStackingContext() == true)
 		{
-			_layerRenderer.renderNegativeChildElementRenderers(graphicContext);
+			layerRenderer.renderNegativeChildElementRenderers(graphicContext, forceRendering);
 		}
 		
 		//render all the child line boxes which belong to the same
 		//stacking context as this InlineBoxRenderer
-		renderChildLineBoxes(graphicContext);
+		renderChildLineBoxes(graphicContext, forceRendering);
 		
 		if (establishesNewStackingContext() == true)
 		{	
-			_layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext);
-			_layerRenderer.renderPositiveChildElementRenderers(graphicContext);
+			layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext, forceRendering);
+			layerRenderer.renderPositiveChildElementRenderers(graphicContext, forceRendering);
 		}
 	}
 	
@@ -79,20 +79,20 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	/**
 	 * Actually render the child line boxes
 	 */
-	private function renderChildLineBoxes(graphicContext:NativeElement):Void
+	private function renderChildLineBoxes(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
-		var length:Int = _lineBoxes.length;
+		var length:Int = lineBoxes.length;
 		
 		for (i in 0...length)
 		{
-			var childLineBoxes:Array<LineBox> = getLineBoxesInLine(_lineBoxes[i]);
+			var childLineBoxes:Array<LineBox> = getLineBoxesInLine(lineBoxes[i]);
 			
 			var childLength:Int = childLineBoxes.length;
 			for (j in 0...childLength)
 			{
-				if (childLineBoxes[j].layerRenderer == _layerRenderer)
+				if (childLineBoxes[j].layerRenderer == layerRenderer)
 				{
-					childLineBoxes[j].render(graphicContext);
+					childLineBoxes[j].render(graphicContext, forceRendering);
 				}
 			}
 		}
@@ -110,10 +110,10 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	override private function get_bounds():RectangleData
 	{
 		var lineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
-		var length:Int = _lineBoxes.length;
+		var length:Int = lineBoxes.length;
 		for (i in 0...length)
 		{
-			lineBoxesBounds.push(_lineBoxes[i].bounds);
+			lineBoxesBounds.push(lineBoxes[i].bounds);
 		}
 		
 		return getChildrenBounds(lineBoxesBounds);

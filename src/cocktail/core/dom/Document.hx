@@ -58,8 +58,7 @@ class Document extends Node<Document>
 	 * TODO IMPORTANT : this attribute is supposed to return an
 	 * Element but it has to be an HTMLElement to match the Haxe JS API
 	 */
-	private var _documentElement:HTMLElement;
-	public var documentElement(get_documentElement, never):HTMLElement;
+	public var documentElement(default, null):HTMLElement;
 	
 	/**
 	 * class constructor
@@ -88,10 +87,7 @@ class Document extends Node<Document>
 	 * @return A new Element object with the nodeName attribute set to tagName,
 	 * and localName, prefix, and namespaceURI set to null
 	 * 
-	 * TODO 4 : for ownerDocument, when should it be set when
-	 * instantiating classes instead of using factory method ?
-	 * 
-	 * TODO 4 : should return Element instead of HTMLElement but necessary
+	 * IMPORTANT should return Element instead of HTMLElement but necessary
 	 * to match Haxe JS API
 	 */
 	public function createElement(tagName:String):HTMLElement
@@ -203,7 +199,7 @@ class Document extends Node<Document>
 	 */
 	public function getElementById(elementId:String):HTMLElement
 	{
-		return doGetElementById(_documentElement, elementId);
+		return doGetElementById(documentElement, elementId);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -214,9 +210,6 @@ class Document extends Node<Document>
 	 * Actually return the Element matching the
 	 * elementId, by traversing recursively the 
 	 * DOM tree
-	 * 
-	 * TODO 2 : shouldn't be HTMLElement but Element<T>
-	 * but complicated for now with type parameters
 	 */
 	private function doGetElementById(node:HTMLElement, elementId:String):HTMLElement
 	{
@@ -284,7 +277,7 @@ class Document extends Node<Document>
 	{
 		//use the implementation on the document element (for instance,
 		//the HTML element in HTML)
-		return _documentElement.getElementsByTagName(tagName);
+		return documentElement.getElementsByTagName(tagName);
 	}
 	
 	/**
@@ -299,7 +292,7 @@ class Document extends Node<Document>
 	 */
 	public function getElementsByClassName(className:String):Array<HTMLElement>
 	{
-		return _documentElement.getElementsByClassName(className);
+		return documentElement.getElementsByClassName(className);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -309,14 +302,5 @@ class Document extends Node<Document>
 	override private function get_nodeType():Int
 	{
 		return Node.DOCUMENT_NODE;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_documentElement():HTMLElement
-	{
-		return _documentElement;
 	}
 }
