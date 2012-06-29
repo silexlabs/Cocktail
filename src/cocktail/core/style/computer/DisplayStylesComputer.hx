@@ -52,12 +52,6 @@ class DisplayStylesComputer
 		//holding the used style value (the ones actually used)
 		var computedStyle:ComputedStyle = style.computedStyle;
 		
-		//position
-		computedStyle.position = style.position;
-		
-		//zIndex
-		computedStyle.zIndex = style.zIndex;
-		
 		//float
 		computedStyle.cssFloat = getComputedFloat(style, computedStyle.position);
 		
@@ -103,9 +97,6 @@ class DisplayStylesComputer
 	/**
 	 * Compute the 'display' style which might be affected by
 	 * the defined 'float' style
-	 * 
-	 * TODO 3 : maybe the value should compute as specified and the distinction
-	 * should be done in createElementRenderer
 	 * 
 	 * @param	style
 	 * @param	computedFloat the computed value of the float which must be computed before this

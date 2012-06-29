@@ -7,7 +7,7 @@
 */
 package cocktail.core.resource;
 
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 
 /**
  * This is the base class for loading class

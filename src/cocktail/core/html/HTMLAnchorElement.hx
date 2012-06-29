@@ -21,27 +21,9 @@ import haxe.Log;
  */
 class HTMLAnchorElement extends HTMLElement
 {
-	//target const
-	
-	/**
-	 * Opens the linked document in a new window or tab
-	 */ 
-	public static inline var TARGET_BLANK:String = "_blank";
-	
-	/**
-	 * Opens the linked document in the same frame as it was clicked (this is default)
-	 */
-	public static inline var TARGET_SELF:String = "_self";
-	
-	/**
-	 * Opens the linked document in the parent frame
-	 */
-	public static inline var TARGET_PARENT:String = "_parent";
-	
-	/**
-	 * Opens the linked document in the full body of the window
-	 */
-	public static inline var TARGET_TOP:String = "_top";
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// IDL attributes
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * The absolute URI of the linked resource.
@@ -49,14 +31,12 @@ class HTMLAnchorElement extends HTMLElement
 	 * a link between the current element (the source anchor)
 	 * and the destination anchor defined by this attribute.
 	 */
-	private var _href:String;
 	public var href(get_href, set_href):String;
 	
 	/**
 	 * Frame to render the resource in.
 	 * This attribute specifies the name of a frame where a document is to be opened.
 	 */
-	private var _target:String;
 	public var target(get_target, set_target):String;
 	
 	/**
@@ -65,7 +45,6 @@ class HTMLAnchorElement extends HTMLElement
 	public function new() 
 	{
 		super(HTMLConstants.HTML_ANCHOR_TAG_NAME);
-		_target = TARGET_SELF;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -92,6 +71,26 @@ class HTMLAnchorElement extends HTMLElement
 		}
 		openDocument();
 		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Overriden as getting the target attribute require 
+	 * extra logic
+	 */
+	override public function getAttribute(name:String):String
+	{
+		if (name == HTMLConstants.HTML_TARGET_ATTRIBUTE_NAME)
+		{
+			return target;
+		}
+		else
+		{
+			return super.getAttribute(name);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -124,34 +123,43 @@ class HTMLAnchorElement extends HTMLElement
 	 */
 	private function openDocument():Void
 	{
-		if (_href != null)
+		if (href != null)
 		{
-			Lib.window.open(_href, _target);
+			Lib.window.open(href, target);
 		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// DOCUMENT LINK SETTER/GETTER
+	// IDL GETTER_SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function set_href(value:String):String
 	{
-		return 	_href = value;
+		setAttribute(HTMLConstants.HTML_HREF_ATTRIBUTE_NAME, value);
+		return value;
 	}
 	
 	private function get_href():String
 	{
-		return _href;
+		return getAttribute(HTMLConstants.HTML_HREF_ATTRIBUTE_NAME);
 	}
 		
 	private function set_target(value:String):String
 	{
-		return _target = value;
+		setAttribute(HTMLConstants.HTML_TARGET_ATTRIBUTE_NAME, value);
+		return value;
 	}
 	
 	private function get_target():String
 	{
-		return _target;
+		var target:String = super.getAttribute(HTMLConstants.HTML_TARGET_ATTRIBUTE_NAME);
+		
+		if (target == null)
+		{
+			return HTMLConstants.TARGET_SELF;
+		}
+		
+		return target;
 	}
 	
 	

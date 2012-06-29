@@ -26,8 +26,7 @@ class TransitionEvent extends Event
 	/**
 	 * The name of the CSS property associated with the transition.
 	 */
-	private var _propertyName:String;
-	public var propertyName(get_propertyName, never):String;
+	public var propertyName(default, null):String;
 	
 	/**
 	 * The amount of time the transition has been running,
@@ -35,8 +34,7 @@ class TransitionEvent extends Event
 	 * Note that this value is not affected by the value
 	 * of transition-delay.
 	 */
-	private var _elapsedTime:Float;
-	public var elapsedTime(get_elapsedTime, never):Float;
+	public var elapsedTime(default, null):Float;
 	
 	/**
 	 * The name (beginning with two colons) of the CSS
@@ -49,8 +47,7 @@ class TransitionEvent extends Event
 	 * 
 	 * TODO 5 : complete once pseudo elements are implemented
 	 */
-	private var _pseudoElement:String;
-	public var pseudoElement(get_pseudoElement, never):String;
+	public var pseudoElement(default, null):String;
 	
 	/**
 	 * class constructor
@@ -89,34 +86,15 @@ class TransitionEvent extends Event
 	elapsedTimeArg:Float, pseudoElementArg:String):Void
 	{
 		//can't alter event after it has been dispatched
-		if (_dispatched == true)
+		if (dispatched == true)
 		{
 			return;
 		}
 		
 		initEvent(eventTypeArg, canBubbleArg, cancelableArg);
 		
-		_propertyName = propertyNameArg;
-		_elapsedTime = elapsedTimeArg;
-		_pseudoElement = pseudoElementArg;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_propertyName():String
-	{
-		return _propertyName;
-	}
-	
-	private function get_elapsedTime():Float
-	{
-		return _elapsedTime;
-	}
-	
-	private function get_pseudoElement():String
-	{
-		return _pseudoElement;
+		propertyName = propertyNameArg;
+		elapsedTime = elapsedTimeArg;
+		pseudoElement = pseudoElementArg;
 	}
 }

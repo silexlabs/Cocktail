@@ -7,8 +7,8 @@
 */
 package cocktail.core.resource;
 
-import cocktail.core.MediaLoader;
-import cocktail.core.NativeElement;
+import cocktail.port.MediaLoader;
+import cocktail.port.NativeElement;
 import haxe.Http;
 import haxe.Log;
 
@@ -16,9 +16,6 @@ import haxe.Log;
  * This class is in charge of loading a picture. When multiple
  * pictures are loaded with the same instance, the picture is 
  * replaced
- * 
- * TODO 5 : shouldn't be done this way, each picture should be 
- * stored in a different ResourceLoader which can then be retrieved
  * 
  * @author Yannick DOMINGUEZ
  */

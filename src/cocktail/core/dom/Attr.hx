@@ -8,21 +8,21 @@
 package cocktail.core.dom;
 
 import cocktail.core.dom.DOMData;
+import cocktail.core.html.HTMLElement;
 
 /**
- * he Attr interface represents an attribute in an Element object
+ * the Attr interface represents an attribute in an Element object
  * 
  * @author Yannick DOMINGUEZ
  */
-class Attr extends Node
+class Attr<ElementClass:Node<ElementClass>> extends Node<Attr<ElementClass>>
 {
 	/**
 	 * Returns the name of this attribute.
 	 * If Node.localName is different from null,
 	 * this attribute is a qualified name.
 	 */
-	private var _name:String;
-	public var name(get_name, null):String;
+	public var name(default, null):String;
 	
 	/**
 	 * On retrieval, the value of the attribute is returned as a string.
@@ -34,7 +34,6 @@ class Attr extends Node
 	 * 
 	 * TODO 5 : create a Text node ?
 	 */
-	private var _value:String;
 	public var value(get_value, set_value):String;
 	
 	/**
@@ -43,8 +42,7 @@ class Attr extends Node
 	 * node (even if it ends up having the same value as the default value)
 	 * then it is set to true.
 	 */
-	private var _specified:Bool;
-	public var specified(get_specified, never):Bool;
+	public var specified(default, null):Bool;
 	
 	/**
 	 * Returns whether this attribute is known to be of type ID
@@ -53,23 +51,21 @@ class Attr extends Node
 	 * the ownerElement of this attribute
 	 * can be retrieved using the method Document.getElementById
 	 */
-	private var _isId:Bool;
-	public var isId(get_isId, set_isId):Bool;
+	public var isId:Bool;
 	
 	/**
 	 * The Element node this attribute is attached 
 	 * to or null if this attribute is not in use.
 	 */
-	private var _ownerElement:Element;
-	public var ownerElement(get_ownerElement, set_ownerElement):Element;
+	public var ownerElement:ElementClass;
 	
 	/**
 	 * class constructor
 	 */
 	public function new(name:String) 
 	{
-		_name = name;
-		_specified = false;
+		this.name = name;
+		specified = false;
 		super();
 	}
 	
@@ -79,7 +75,7 @@ class Attr extends Node
 	
 	override private function get_nodeName():String
 	{
-		return _name;
+		return name;
 	}
 	
 	override private function get_nodeType():Int
@@ -101,49 +97,18 @@ class Attr extends Node
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_ownerElement():Element 
-	{
-		return _ownerElement;
-	}
-	
-	private function set_ownerElement(value:Element):Element 
-	{
-		return _ownerElement = value;
-	}
-	
-	private function get_isId():Bool
-	{
-		return _isId;
-	}
-	
-	private function set_isId(value:Bool):Bool
-	{
-		return _isId = value;
-	}
-	
-	private function get_name():String 
-	{
-		return _name;
-	}
-	
 	private function get_value():String 
 	{
-		if (_value == null)
+		if (value == null)
 		{
 			return "";
 		}
-		return _value;
+		return value;
 	}
 	
 	private function set_value(value:String):String 
 	{
-		_specified = true;
-		return _value = value;
+		specified = true;
+		return this.value = value;
 	}
-	
-	private function get_specified():Bool 
-	{
-		return _specified;
-	}
-	
 }

@@ -8,8 +8,8 @@
 package cocktail.core.background;
 
 import cocktail.core.geom.Matrix;
-import cocktail.core.NativeElement;
-import cocktail.core.DrawingManager;
+import cocktail.port.NativeElement;
+import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
@@ -59,7 +59,7 @@ class BackgroundDrawingManager extends DrawingManager
 	 * @param	backgroundRepeat
 	 */
 	public function drawBackgroundImage(nativeImage:NativeElement, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, intrinsicWidth:Int, intrinsicHeight:Int, intrinsicRatio:Float, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeat):Void
-	{
+	{	
 		var totalWidth:Int = Math.round(computedBackgroundPosition.x) + Math.round(backgroundPositioningBox.x);
 		var maxWidth:Int =  Math.round(backgroundPaintingBox.x + backgroundPaintingBox.width);
 		var imageWidth:Int = Math.round(computedBackgroundSize.width);
@@ -127,7 +127,7 @@ class BackgroundDrawingManager extends DrawingManager
 		
 			matrix.translate(totalWidth, totalHeight);
 			
-			matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight, { x:0.0, y:0.0 } );
+			matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight);
 			
 			drawImage(nativeImage, matrix, backgroundPaintingBox);
 			
@@ -177,7 +177,7 @@ class BackgroundDrawingManager extends DrawingManager
 	 */
 	public function drawBackgroundGradient(gradient:GradientValue, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeat):Void
 	{
-		var gradientSurface:DrawingManager = new DrawingManager(computedBackgroundSize.width, computedBackgroundSize.height);
+		var gradientSurface:DrawingManager = new DrawingManager(Math.round(computedBackgroundSize.width), Math.round(computedBackgroundSize.height));
 		
 		var fillStyle:FillStyleValue;
 		var lineStyle = LineStyleValue.none;
@@ -196,10 +196,10 @@ class BackgroundDrawingManager extends DrawingManager
 		}
 		
 		gradientSurface.beginFill(fillStyle, lineStyle);
-		gradientSurface.drawRect(0, 0, computedBackgroundSize.width, computedBackgroundSize.height);
+		gradientSurface.drawRect(0, 0, Math.round(computedBackgroundSize.width), Math.round(computedBackgroundSize.height));
 		gradientSurface.endFill();
 		
-		drawBackgroundImage(gradientSurface.nativeElement, backgroundPositioningBox, backgroundPaintingBox, computedBackgroundSize.width, computedBackgroundSize.height, computedBackgroundSize.width / computedBackgroundSize.height, computedBackgroundSize, computedBackgroundPosition, backgroundRepeat);
+		drawBackgroundImage(gradientSurface.nativeElement, backgroundPositioningBox, backgroundPaintingBox, Math.round(computedBackgroundSize.width), Math.round(computedBackgroundSize.height), computedBackgroundSize.width / computedBackgroundSize.height, computedBackgroundSize, computedBackgroundPosition, backgroundRepeat);
 		
 		
 	}

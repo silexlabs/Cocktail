@@ -31,82 +31,6 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * if the width is set to 'auto', then this method is called and might shrink the
-	 * width of the HTMLElement to fit its content
-	 */
-	override public function shrinkToFit(style:CoreStyle, containingBlockData:ContainingBlockData, minimumWidth:Int):Int
-	{
-		var shrinkedWidth:Int;
-		
-		//shrink-to-fit only happen if either left or right is auto
-		if (style.left == PositionOffset.cssAuto || style.right == PositionOffset.cssAuto)
-		{
-			var computedStyle:ComputedStyle = style.computedStyle;
-			//compute the shrinked width
-			shrinkedWidth = doShrinkToFit(style, containingBlockData, minimumWidth);
-
-			//if both right and left are auto, use left static position, then deduce right
-			if (style.left == PositionOffset.cssAuto && style.right == PositionOffset.cssAuto)
-			{
-				style.computedStyle.left = getComputedStaticLeft(style, containingBlockData);
-				style.computedStyle.right = containingBlockData.width - computedStyle.marginLeft - computedStyle.marginRight - shrinkedWidth - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left;
-			}
-			//if only right is auto, compute left then deduce right
-			else if (style.right == PositionOffset.cssAuto)
-			{
-				style.computedStyle.left = getComputedPositionOffset(style.left, containingBlockData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
-				style.computedStyle.right = containingBlockData.width - computedStyle.marginLeft - computedStyle.marginRight - shrinkedWidth - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left;
-			}
-			//same for left
-			else if (style.left == PositionOffset.cssAuto)
-			{
-				style.computedStyle.right = getComputedPositionOffset(style.right, containingBlockData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
-				style.computedStyle.left = containingBlockData.width - computedStyle.marginLeft - computedStyle.marginRight - shrinkedWidth - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.right;
-			}
-		}
-		//here the width is not shrinked
-		else
-		{
-			shrinkedWidth = style.computedStyle.width;
-		}
-		
-		//constrain width before returning it
-		shrinkedWidth = constrainWidth(style, shrinkedWidth);
-		
-		return shrinkedWidth;
-	}
-	
-	/**
-	 * Overriden as in some cases, depending on the specified value of
-	 * top and bottom style, the height used value might not be the children
-	 * height of the HTMLElement
-	 */
-	override public function applyContentHeight(style:CoreStyle, containingBlockData:ContainingBlockData, childrenHeight:Int):Int
-	{
-		var height:Int;
-		
-		//if neither top and bottom are auto, then height can be computed using all the other vertical dimensions
-		if (style.top != PositionOffset.cssAuto && style.bottom != PositionOffset.cssAuto)
-		{
-			var computedStyle:ComputedStyle = style.computedStyle;
-			height = containingBlockData.height - computedStyle.top - computedStyle.bottom - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.marginTop - computedStyle.marginBottom;
-		}
-		else
-		{
-			height = childrenHeight;
-		}
-		
-		//constrain height before returning it
-		height = constrainHeight(style, height);
-		
-		return height;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE MEASURE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -160,17 +84,29 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			
 			//the computed width is deduced from all the other computed horizontal values. It is the remaining space when all the other value
 			//are substracted from the containing HTMLElement width
-			setComputedWidth(style, containingBlockData.width - computedStyle.marginLeft - computedStyle.left - computedStyle.right - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight);
+			style.computedStyle.width = containingBlockData.width - computedStyle.marginLeft - computedStyle.left - computedStyle.right - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight;
 		}
-		//if left, right and width are auto, then the width will be "shrinked-to-fit" once all the children have been laid out,
-		//so the width is first set to an "infinite" width which will allow to find the max line width of the formatted children
-		//used by the shrink-to-fit method
+		//if width is auto and left, right or both are auto, then the width will be "shrinked-to-fit" once all the children have been laid out,
+		//so the width is first set to the containing block width width which will allow to find the max line width of the formatted children
+		//used by the shrink-to-fit method during formatting
 		else
 		{
+			//if only left is auto, compute right then deduce left from the remaining horizontal space
+			//TODO 4 : left is not actually computed yet, it must be computed during shrink-to-fit
+			if (style.left == PositionOffset.cssAuto)
+			{
+				style.computedStyle.right = getComputedPositionOffset(style.right, containingBlockData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+			}
+			//same for right
+			else if(style.right == PositionOffset.cssAuto)
+			{
+				style.computedStyle.left = getComputedPositionOffset(style.left, containingBlockData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+			}
+			
 			//TODO 2 : setting the containing element width is a hack which will not
 			//always work. The shrink to fit computation of this class needs to be 
 			//improved
-			setComputedWidth(style, containingBlockData.width);
+			style.computedStyle.width = containingBlockData.width;
 		}
 	}
 	
@@ -182,7 +118,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		var computedStyle:ComputedStyle = style.computedStyle;
 		
 		//compute the width which is either defined as a length or a percentage
-		setComputedWidth(style, getComputedWidth(style, containingBlockData));
+		style.computedStyle.width = getComputedWidth(style, containingBlockData);
 		
 		//if neither left nor right are defined as auto
 		if (style.left != PositionOffset.cssAuto && style.right != PositionOffset.cssAuto)
@@ -196,7 +132,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			{
 				//compute the size of one of the margin, which is half the remaining horizontal space
 				//once all other values (padding, width, offset) are remove
-				var computedMargin:Int = Math.round((containingBlockData.width - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left - computedStyle.right) / 2);
+				var computedMargin:Float = (containingBlockData.width - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left - computedStyle.right) / 2;
 				
 				if (computedMargin >= 0)
 				{
@@ -314,7 +250,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			
 			//the computed height is deduced from all the other computed vertical values. It is the remaining space when all the other value
 			//are substracted from the containing HTMLElement height
-			setComputedHeight(style, containingBlockData.height - computedStyle.marginTop - computedStyle.top - computedStyle.bottom - computedStyle.marginBottom - computedStyle.paddingTop - computedStyle.paddingBottom);
+			style.computedStyle.height = containingBlockData.height - computedStyle.marginTop - computedStyle.top - computedStyle.bottom - computedStyle.marginBottom - computedStyle.paddingTop - computedStyle.paddingBottom;
 		}
 		//if only bottom is auto, compute top then deduce bottom from the remaining vertical space
 		else if (style.bottom == PositionOffset.cssAuto)
@@ -342,7 +278,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		var computedStyle:ComputedStyle = style.computedStyle;
 		
 		//compute the height which is either defined as a length or a percentage
-		setComputedHeight(style, getComputedHeight(style, containingBlockData));
+		style.computedStyle.height = getComputedHeight(style, containingBlockData);
 
 		//if neither top nor bottom are defined as auto
 		if (style.top != PositionOffset.cssAuto && style.bottom != PositionOffset.cssAuto)
@@ -356,7 +292,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			{
 				//compute the size of one of the margin, which is half the remaining vertical space
 				//once all other values (padding, width, offset) are removed
-				var computedMargin:Int = Math.round((containingBlockData.height - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top - computedStyle.bottom) / 2);
+				var computedMargin:Float = (containingBlockData.height - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top - computedStyle.bottom) / 2;
 				
 				if (computedMargin >= 0)
 				{
@@ -446,7 +382,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 * compute the static value for left which is the value that will place the left margin edge
 	 * of the HTMLElement to the left edge of its containing HTMLElement
 	 */
-	private function getComputedStaticLeft(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	private function getComputedStaticLeft(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		return style.computedStyle.marginLeft;
 	}
@@ -455,22 +391,8 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 * compute the static value for top which is the value that will place the top margin edge
 	 * of the HTMLElement to the top edge of its containing HTMLElement
 	 */
-	private function getComputedStaticTop(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	private function getComputedStaticTop(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		return style.computedStyle.marginTop;
 	}
-	
-	/**
-	 * Actually shrink the width
-	 */
-	private function doShrinkToFit(style:CoreStyle, containingBlockData:ContainingBlockData, minimumWidth:Int):Int
-	{
-		/**
-		 * TODO 3 : the shrink to fit
-		 * algorithm might need to be improved for
-		 * some border cases
-		 */
-		return minimumWidth;
-	}
-	
 }

@@ -143,6 +143,13 @@ class CssParser<DisplayObjectType> {
 				default:	
 			}
 			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMarginLeftZero(d);
+				return true;
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -172,6 +179,13 @@ class CssParser<DisplayObjectType> {
 				default:	
 			}
 			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMarginRightZero(d);
+				return true;
+			}
+			
 			// case int
 			var l = getValueObject(v);
 			if( l != null ) {
@@ -192,6 +206,13 @@ class CssParser<DisplayObjectType> {
 						default:
 					}	
 				default:	
+			}
+			
+			//case 0
+			var i = isNullInt(v);
+			if (i){
+				s.setMarginTopZero(d);
+				return true;
 			}
 			
 			//case label (auto)
@@ -282,6 +303,7 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 		case "padding-left":
+			
 			var i:Null<ValueObject> = getValueObject(v);
 			if( i != null ) { s.setPaddingLeft(d, i.value, i.unit); return true; }
 		case "padding-right":
@@ -408,7 +430,7 @@ class CssParser<DisplayObjectType> {
 			switch( v ) {
 			case VHex(v):
 				//var val = (v.length == 6) ? Std.parseInt("0x" + v) : ((v.length == 3) ? Std.parseInt("0x"+v.charAt(0)+v.charAt(0)+v.charAt(1)+v.charAt(1)+v.charAt(2)+v.charAt(2)) : null);
-				s.setBgColorNum(d, Std.parseInt(v));
+				s.setBgColorHex(d, v);
 				return true;
 			case VRGBA(v):
 				s.setBgColorRGBA(d, v);
@@ -420,6 +442,8 @@ class CssParser<DisplayObjectType> {
 				s.setBgColorKey(d, i);
 				return true;
 			default:
+				trace(v);
+				return true;
 			}
 		case "background-repeat":
 			// TODO: multiple URLs
@@ -440,30 +464,37 @@ class CssParser<DisplayObjectType> {
 			return true;
 		case "background-position":
 			// default values
-			s.setBgPosXNum(d, 50, "%");
-			s.setBgPosYNum(d, 50, "%");
-			// apply X and Y
-			return applyComposite(["-inner-bgpos-left","-inner-bgpos-top"], v, s) ;
-		case "-inner-bgpos-top":
-			// percent or pixels
-			var l = getValueObject(v);
-			if( l != null ) {
-				s.setBgPosYNum(d, l.value, l.unit);
-				return true;
+		
+			var vl = switch( v ) {
+				case VGroup(l):l;
+				default:[v];
 			}
-			// keyword (top, center, bottom)
-			s.setBgPosYKey (d, getIdent(v));
-			return true;
-		case "-inner-bgpos-left":
-			// percent or pixels
-			var l = getValueObject(v);
-			if( l != null ) {
-				s.setBgPosXNum(d, l.value, l.unit);
-				return true;
+			
+			var str = "";
+			for (i in 0...vl.length)
+			{
+				
+				switch(vl[i]) {
+					case VIdent(v):
+						if (i == 0)
+							str += v + " ";
+						else
+							str += v;
+						
+					case VUnit(v, u):
+						if (i == 0)
+							str += Std.string(v) + u + " ";
+						else
+							str += Std.string(v) + u;
+									
+					default:		
+				}
 			}
-			// keyword (left, center, right)
-			s.setBgPosXKey (d, getIdent(v));
-			return true;
+			s.setBgPos(d, str);
+			return true;	
+			
+			
+
 		case "background":
 			return applyComposite(["background-color", "background-image", "background-repeat", "background-attachment", "background-position"], v, s);
 //---------------------
@@ -825,6 +856,9 @@ class CssParser<DisplayObjectType> {
 		case "float":
 			s.setCssFloat(d, getIdent(v));
 			return true;
+		case "clear":
+			s.setClear(d, getIdent(v));
+			return true;
 		case "position":
 			s.setPosition(d, getIdent(v));
 			return true;
@@ -857,9 +891,35 @@ class CssParser<DisplayObjectType> {
 					
 				default:	
 			}			
-						
-			
-			
+		
+		case "transition-property":
+			var val = getIdent(v);
+			if ( val != null) {		
+				s.setTransitionProperty(d, val);
+			}
+			return true;
+
+		case "transition-duration":
+			var val = getIdent(v);
+			if ( val != null) {			
+				s.setTransitionDuration(d, val);
+			}
+			return true;
+
+		case "transition-timing-function":
+			var val = getIdent(v);
+			if ( val != null) {			
+				s.setTransitionTimingFunction(d,val);
+			}
+			return true;
+
+		case "transition-delay":
+			var val = getIdent(v);
+			if ( val != null) {			
+				s.setTransitionDelay(d, val);
+			}
+			return true;
+
 		default:
 			throw "Not implemented '"+r+"' = "+Std.string(v);
 		}

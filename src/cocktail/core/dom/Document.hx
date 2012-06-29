@@ -30,7 +30,7 @@ import cocktail.core.dom.DOMData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Document extends Node
+class Document extends Node<Document>
 {
 	/**
 	 * event interfaces const
@@ -58,8 +58,7 @@ class Document extends Node
 	 * TODO IMPORTANT : this attribute is supposed to return an
 	 * Element but it has to be an HTMLElement to match the Haxe JS API
 	 */
-	private var _documentElement:HTMLElement;
-	public var documentElement(get_documentElement, never):HTMLElement;
+	public var documentElement(default, null):HTMLElement;
 	
 	/**
 	 * class constructor
@@ -78,6 +77,8 @@ class Document extends Node
 	 * Note that the instance returned implements the Element interface,
 	 * so attributes can be specified directly on the returned object.
 	 * 
+	 * Implemented by sub classes
+	 * 
 	 * @param	tagName The name of the element type to instantiate. For XML,
 	 * this is case-sensitive, otherwise it depends on the case-sensitivity 
 	 * of the markup language in use. In that case, the name is mapped
@@ -86,17 +87,12 @@ class Document extends Node
 	 * @return A new Element object with the nodeName attribute set to tagName,
 	 * and localName, prefix, and namespaceURI set to null
 	 * 
-	 * TODO 4 : for ownerDocument, when should it be set when
-	 * instantiating classes instead of using factory method ?
-	 * 
-	 * TODO 4 : should return Element instead of HTMLElement but necessary
+	 * IMPORTANT should return Element instead of HTMLElement but necessary
 	 * to match Haxe JS API
 	 */
 	public function createElement(tagName:String):HTMLElement
 	{
-		var element:HTMLElement = new HTMLElement(tagName);
-		element.ownerDocument = this;
-		return element;
+		return null;
 	}
 	
 	/**
@@ -138,9 +134,9 @@ class Document extends Node
 	 * and namespaceURI set to null. The value 
 	 * of the attribute is the empty string.
 	 */
-	public function createAttribute(name:String):Attr
+	public function createAttribute(name:String):Attr<HTMLElement>
 	{
-		var attribute:Attr = new Attr(name);
+		var attribute:Attr<HTMLElement> = new Attr<HTMLElement>(name);
 		return attribute;
 	}
 	
@@ -203,7 +199,7 @@ class Document extends Node
 	 */
 	public function getElementById(elementId:String):HTMLElement
 	{
-		return doGetElementById(_documentElement, elementId);
+		return doGetElementById(documentElement, elementId);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -215,14 +211,15 @@ class Document extends Node
 	 * elementId, by traversing recursively the 
 	 * DOM tree
 	 */
-	private function doGetElementById(node:Node, elementId:String):HTMLElement
+	private function doGetElementById(node:HTMLElement, elementId:String):HTMLElement
 	{
 		//call method recursively if node has child and is itself an element
 		if (node.hasChildNodes() == true && node.nodeType == Node.ELEMENT_NODE)
 		{
-			for (i in 0...node.childNodes.length)
+			var length:Int = node.childNodes.length;
+			for (i in 0...length)
 			{
-				var matchingElement:HTMLElement = doGetElementById(node.childNodes[i], elementId);
+				var matchingElement:HTMLElement = doGetElementById(cast(node.childNodes[i]), elementId);
 				//if a matching element is found, return it
 				if (matchingElement != null)
 				{
@@ -235,15 +232,15 @@ class Document extends Node
 		//an Id with no attributes
 		if (node.hasAttributes() == true)
 		{
-			var attributes:NamedNodeMap = node.attributes;
-			var element:HTMLElement = cast(node);
+			var attributes:NamedNodeMap<HTMLElement> = node.attributes;
+			var element:HTMLElement = node;
 			
 			//loop in all the element's attributes to find the
 			//Id attribute if defined
-			for (i in 0...attributes.length)
+			var attributesLength:Int = attributes.length;
+			for (i in 0...attributesLength)
 			{
-				
-				var attribute:Attr = element.getAttributeNode(attributes.item(i).nodeName);
+				var attribute:Attr<HTMLElement> = element.getAttributeNode(attributes.item(i).nodeName);
 				
 				//if an Id attribute is found and specified
 				if (attribute.isId == true && attribute.specified == true)
@@ -280,7 +277,7 @@ class Document extends Node
 	{
 		//use the implementation on the document element (for instance,
 		//the HTML element in HTML)
-		return _documentElement.getElementsByTagName(tagName);
+		return documentElement.getElementsByTagName(tagName);
 	}
 	
 	/**
@@ -295,7 +292,7 @@ class Document extends Node
 	 */
 	public function getElementsByClassName(className:String):Array<HTMLElement>
 	{
-		return _documentElement.getElementsByClassName(className);
+		return documentElement.getElementsByClassName(className);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -305,14 +302,5 @@ class Document extends Node
 	override private function get_nodeType():Int
 	{
 		return Node.DOCUMENT_NODE;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_documentElement():HTMLElement
-	{
-		return _documentElement;
 	}
 }

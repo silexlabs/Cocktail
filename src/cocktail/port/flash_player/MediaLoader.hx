@@ -7,7 +7,7 @@
 */
 package cocktail.port.flash_player;
 
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.resource.AbstractMediaLoader;
 import flash.display.Loader;
 import flash.events.Event;
@@ -61,17 +61,17 @@ class MediaLoader extends AbstractMediaLoader
 		var request:URLRequest = new URLRequest(url);
 		
 		//add a loading context so that the resource will be loaded in the current context
-#if flash9
+		#if flash9
 		var loadingContext:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain);
 		//always check policy file (crossdomain.xml) for cross-domain loading
 		loadingContext.checkPolicyFile = true;
 
 		//start the loading
 		loader.load(request, loadingContext);
-#else
+		#else
 		//start the loading
 		loader.load(request);
-#end
+		#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

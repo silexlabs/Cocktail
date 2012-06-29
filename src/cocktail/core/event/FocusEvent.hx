@@ -59,8 +59,7 @@ class FocusEvent extends UIEvent
 	 * browsing contexts, when tabbing into or out of a nested context,
 	 * the relevant EventTarget should be null.
 	 */
-	private var _relatedTarget:EventTarget;
-	public var relatedTarget(get_relatedTarget, never):EventTarget;
+	public var relatedTarget(default, null):EventTarget;
 	
 	public function new() 
 	{
@@ -85,22 +84,13 @@ class FocusEvent extends UIEvent
 	public function initFocusEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool, viewArg:Dynamic, detailArg:Float,relatedTargetArg:EventTarget):Void
 	{
 		//can't alter event after it has been dispatched
-		if (_dispatched == true)
+		if (dispatched == true)
 		{
 			return;
 		}
 		
 		initUIEvent(eventTypeArg, canBubbleArg, cancelableArg, viewArg, detailArg);
-		_relatedTarget = relatedTargetArg;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_relatedTarget():EventTarget
-	{
-		return _relatedTarget;
+		relatedTarget = relatedTargetArg;
 	}
 	
 }

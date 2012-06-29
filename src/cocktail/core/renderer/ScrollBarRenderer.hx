@@ -7,6 +7,7 @@
 */
 package cocktail.core.renderer;
 import cocktail.core.dom.Node;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
@@ -24,7 +25,7 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	/**
 	 * class cosntructor
 	 */
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 	}
@@ -39,6 +40,14 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	}
 	
 	/**
+	 * Scrollbar are always considered block level elements
+	 */
+	override public function isInlineLevel():Bool
+	{
+		return false;
+	}
+	
+	/**
 	 * scrollbars always establishes new stacking context
 	 */
 	override public function establishesNewStackingContext():Bool
@@ -50,28 +59,13 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	{
 		#if (flash9 || nme)
 		{
-			_graphicsContext.x = x;
-			_graphicsContext.y = y;
+			graphicsContext.x = x;
+			graphicsContext.y = y;
 		}
 		#end
 		
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE LAYOUT METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * The scrollbar DOM element is absolutely positioned but the scrollbar renderer
-	 * isn't added in the absolutely positioned children array, as it will be laid out
-	 * by its block box renderer which is always considered its first positioned 
-	 * ancestor
-	 */
-	override private function storeAbsolutelyPositionedChild(firstPositionedAncestorData:FirstPositionedAncestorData):Void
-	{
-		
-	}
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -81,17 +75,12 @@ class ScrollBarRenderer extends BlockBoxRenderer
 		return false;
 	}
 	
-	
 	/**
-	 * Always return the containing block data, as event though the scroll bar renderer is 
-	 * absolutely positioned, it always considers its block box renderer as its first positioned
-	 * ancestor
+	 * The containing block of a scrollbar is always the block box
+	 * renderer which instantiated it
 	 */
-	override private function getRelevantContainingBlockData(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:ContainingBlockData):ContainingBlockData
-	{
-		return containingBlockData;
+	override private function getContainingBlock():FlowBoxRenderer
+	{	
+		return getFirstBlockContainer();
 	}
-	
-	
-
 }

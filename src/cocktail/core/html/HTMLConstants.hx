@@ -16,25 +16,31 @@ class HTMLConstants
 {
 	//tag names
 	
-	public static inline var HTML_BODY_TAG_NAME:String = "body";
+	public static inline var HTML_BODY_TAG_NAME:String = "BODY";
 
-	public static inline var HTML_ANCHOR_TAG_NAME:String = "a";
+	public static inline var HTML_ANCHOR_TAG_NAME:String = "A";
 	
-	public static inline var HTML_IMAGE_TAG_NAME:String = "img";
+	public static inline var HTML_IMAGE_TAG_NAME:String = "IMG";
 	
-	public static inline var HTML_INPUT_TAG_NAME:String = "input";
+	public static inline var HTML_INPUT_TAG_NAME:String = "INPUT";
 	
-	public static inline var HTML_HTML_TAG_NAME:String = "html";
+	public static inline var HTML_HTML_TAG_NAME:String = "HTML";
 	
-	public static inline var HTML_VIDEO_TAG_NAME:String = "video";
+	public static inline var HTML_VIDEO_TAG_NAME:String = "VIDEO";
 	
-	public static inline var HTML_SOURCE_TAG_NAME:String = "source";
+	public static inline var HTML_SOURCE_TAG_NAME:String = "SOURCE";
+	
+	public static inline var HTML_DIV_TAG_NAME:String = "DIV";
+	
+	public static inline var HTML_OBJECT_TAG_NAME:String = "OBJECT";
 	
 	//attributes names
 	
 	public static inline var HTML_ID_ATTRIBUTE_NAME:String = "id";
 	
 	public static inline var HTML_CLASS_ATTRIBUTE_NAME:String = "class";
+	
+	public static inline var HTML_HIDDEN_ATTRIBUTE_NAME:String = "hidden";
 	
 	public static inline var HTML_TAB_INDEX_ATTRIBUTE_NAME:String = "tabIndex";
 	
@@ -52,6 +58,35 @@ class HTMLConstants
 
 	public static inline var HTML_MEDIA_ATTRIBUTE_NAME:String = "media";
 	
+	public static inline var HTML_HREF_ATTRIBUTE_NAME:String = "href";
+	
+	public static inline var HTML_TARGET_ATTRIBUTE_NAME:String = "target";
+	
+	public static inline var HTML_DATA_ATTRIBUTE_NAME:String = "data";
+	
+	public static inline var HTML_HEIGHT_ATTRIBUTE_NAME:String = "height";
+	
+	public static inline var HTML_WIDTH_ATTRIBUTE_NAME:String = "width";
+	
+	public static inline var HTML_POSTER_ATTRIBUTE_NAME:String = "poster";
+	
+	//anchor target const
+
+	public static inline var TARGET_BLANK:String = "_blank";
+	
+	public static inline var TARGET_SELF:String = "_self";
+	
+	public static inline var TARGET_PARENT:String = "_parent";
+	
+	public static inline var TARGET_TOP:String = "_top";
+	
+	// html tokens
+	
+	public static inline var HTML_TOKEN_LESS_THAN:String = "<";
+	
+	public static inline var HTML_TOKEN_MORE_THAN:String = ">";
+	
+	public static inline var HTML_TOKEN_SOLIDUS:String = "/";
 	
 	public function new() 
 	{

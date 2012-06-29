@@ -108,6 +108,14 @@ class CSSConstants
 	
 	public static inline var CURSOR_STYLE_NAME:String = "cursor";
 	
+	public static inline var TRANSITION_DURATION_STYLE_NAME:String = "transition-duration";
+
+	public static inline var TRANSITION_DELAY_STYLE_NAME:String = "transition-delay";
+
+	public static inline var TRANSITION_PROPERTY_STYLE_NAME:String = "transition-property";
+
+	public static inline var TRANSITION_TIMING_FUNCTION_STYLE_NAME:String = "transition-timing-function";
+
 	public function new() 
 	{
 		

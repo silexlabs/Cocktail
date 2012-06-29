@@ -54,22 +54,7 @@ class FontAndTextStylesComputer
 		computedStyle.lineHeight = getComputedLineHeight(style);
 		
 		//vertival align
-		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingBlockData, containingBlockFontMetricsData);
-		
-		//font weight
-		computedStyle.fontWeight = style.fontWeight;
-		
-		//font style
-		computedStyle.fontStyle = style.fontStyle;
-		
-		//font family
-		computedStyle.fontFamily = style.fontFamily;
-		
-		//font variant
-		computedStyle.fontVariant = style.fontVariant;
-		
-		//text transform
-		computedStyle.textTransform = style.textTransform;
+		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingBlockFontMetricsData);
 		
 		//letter spacing
 		computedStyle.letterSpacing = getComputedLetterSpacing(style);
@@ -79,12 +64,6 @@ class FontAndTextStylesComputer
 		
 		//text indent
 		computedStyle.textIndent = getComputedTextIndent(style, containingBlockData);
-		
-		//white space
-		computedStyle.whiteSpace = style.whiteSpace;
-		
-		//text align
-		computedStyle.textAlign = getComputedTextAlign(style, computedStyle.whiteSpace);
 		
 		//text color
 		computedStyle.color = getComputedColor(style);
@@ -98,7 +77,7 @@ class FontAndTextStylesComputer
 	/**
 	 * Compute the text indent to apply to the first line of an inline formatting context
 	 */
-	private static function getComputedTextIndent(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	private static function getComputedTextIndent(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		var textIndent:Float;
 		
@@ -111,14 +90,14 @@ class FontAndTextStylesComputer
 				textIndent = UnitManager.getPixelFromPercent(value, containingBlockData.width);
 		}
 		
-		return Math.round(textIndent);
+		return textIndent;
 	}
 	
 	/**
 	 * Compute the vertical offset to apply to a HTMLElement in an inline
 	 * formatting context.
 	 */
-	private static function getComputedVerticalAlign(style:CoreStyle, containingBlockData:ContainingBlockData, containingBlockFontMetricsData:FontMetricsData):Float
+	private static function getComputedVerticalAlign(style:CoreStyle, containingBlockFontMetricsData:FontMetricsData):Float
 	{
 		var verticalAlign:Float;
 		
@@ -143,7 +122,7 @@ class FontAndTextStylesComputer
 				verticalAlign = 0;
 				
 			case percent(value):
-				verticalAlign = UnitManager.getPixelFromPercent(value, Math.round(style.computedStyle.lineHeight));
+				verticalAlign = UnitManager.getPixelFromPercent(value, style.computedStyle.lineHeight);
 				
 			case length(value):
 				verticalAlign = UnitManager.getPixelFromLength(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
@@ -158,30 +137,6 @@ class FontAndTextStylesComputer
 	}
 	
 	/**
-	 * The text alignement might be influenced by the
-	 * white space style. when there are no line-break,
-	 * the text can't be justified
-	 */
-	private static function getComputedTextAlign(style:CoreStyle, computedWhiteSpace:WhiteSpace):TextAlign
-	{
-		var textAlign:TextAlign = style.textAlign;
-		
-		switch (computedWhiteSpace)
-		{
-			case pre:
-				if (style.textAlign == TextAlign.justify)
-				{
-					
-					textAlign = TextAlign.left;
-				}
-				
-			default:
-		}
-		
-		return textAlign;
-	}
-	
-	/**
 	 * Computed the color of a text of the HTMLElement
 	 */
 	private static function getComputedColor(style:CoreStyle):ColorData
@@ -193,9 +148,9 @@ class FontAndTextStylesComputer
 	 * Compute the space to add between each word in a text in
 	 * addition of the regular font space
 	 */
-	private static function getComputedWordSpacing(style:CoreStyle):Int
+	private static function getComputedWordSpacing(style:CoreStyle):Float
 	{
-		var wordSpacing:Int;
+		var wordSpacing:Float;
 		
 		switch (style.wordSpacing)
 		{
@@ -203,7 +158,7 @@ class FontAndTextStylesComputer
 				wordSpacing = 0;
 				
 			case length(unit):
-				wordSpacing = Math.round(UnitManager.getPixelFromLength(unit, style.computedStyle.fontSize, style.fontMetrics.xHeight));
+				wordSpacing = UnitManager.getPixelFromLength(unit, style.computedStyle.fontSize, style.fontMetrics.xHeight);
 		}
 		
 		return wordSpacing;
@@ -226,7 +181,7 @@ class FontAndTextStylesComputer
 				lineHeight = style.computedStyle.fontSize * 1.2;
 				
 			case percentage(value):
-				lineHeight = UnitManager.getPixelFromPercent(value, Math.round(style.computedStyle.fontSize));
+				lineHeight = UnitManager.getPixelFromPercent(value, style.computedStyle.fontSize);
 				
 			case number(value):
 				lineHeight = style.computedStyle.fontSize * value;
@@ -240,17 +195,17 @@ class FontAndTextStylesComputer
 	 * letter in a text, in addition to the regular
 	 * font letter spacing
 	 */
-	private static function getComputedLetterSpacing(style:CoreStyle):Int
+	private static function getComputedLetterSpacing(style:CoreStyle):Float
 	{
-		var letterSpacing:Int;
+		var letterSpacing:Float;
 		
 		switch (style.letterSpacing)
 		{
 			case normal:
-				letterSpacing = 0;
+				letterSpacing = 0.0;
 				
 			case length(unit):
-				letterSpacing = Math.round(UnitManager.getPixelFromLength(unit, style.fontMetrics.fontSize, style.fontMetrics.xHeight));
+				letterSpacing = UnitManager.getPixelFromLength(unit, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
 		}
 		
 		return letterSpacing;
@@ -269,7 +224,7 @@ class FontAndTextStylesComputer
 				fontSize = UnitManager.getPixelFromLength(unit, parentFontSize, parentXHeight);
 				
 			case percentage(percent):
-				fontSize = UnitManager.getPixelFromPercent(percent, Math.round(parentFontSize));
+				fontSize = UnitManager.getPixelFromPercent(percent, parentFontSize);
 				
 			case absoluteSize(value):
 				fontSize = UnitManager.getFontSizeFromAbsoluteSizeValue(value);

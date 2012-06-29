@@ -10,7 +10,8 @@ package cocktail.core.renderer;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.EmbeddedElement;
-import cocktail.core.NativeElement;
+import cocktail.core.html.HTMLElement;
+import cocktail.port.NativeElement;
 import cocktail.core.style.computer.boxComputers.BoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
@@ -32,31 +33,23 @@ import haxe.Log;
  */
 class EmbeddedBoxRenderer extends BoxRenderer
 {
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC RENDERING METHODS
+	// OVERRIDEN PRVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * overriden to also render the embedded asset, for instance a picture for
 	 * an image renderer
 	 */
-	override public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
+	override private function renderSelf(graphicContext:NativeElement):Void
 	{
-		super.render(_graphicsContext, parentRelativeOffset);
-		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
-		renderEmbeddedAsset(_graphicsContext, relativeOffset);
-		
-		//draws the graphic context of this block box on the one of its
-		//parent
-		#if (flash9 || nme)
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(parentGraphicContext);
-		containerGraphicContext.addChild(_graphicsContext);
-		#end
+		super.renderSelf(graphicContext);
+		renderEmbeddedAsset(graphicContext);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +69,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	/**
 	 * Renders an embedded asset using the graphic context as canvas
 	 */
-	private function renderEmbeddedAsset(graphicContext:NativeElement, relativeOffset:PointData)
+	private function renderEmbeddedAsset(graphicContext:NativeElement)
 	{
 		//abstract
 	}
@@ -89,8 +82,8 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	//TODO 4 : messy
 	override private function get_bounds():RectangleData
 	{
-		_bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
-		_bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
-		return _bounds;
+		bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
+		bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
+		return bounds;
 	}
 }

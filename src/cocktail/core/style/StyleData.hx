@@ -7,6 +7,7 @@
 */
 package cocktail.core.style;
 
+import cocktail.core.dom.Node;
 import cocktail.core.unit.UnitData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.geom.Matrix;
@@ -1115,6 +1116,11 @@ import cocktail.core.renderer.TextRenderer;
 		 * The cursor is a pointer that indicates a link. 
 		 */
 		pointer;
+		
+		/**
+		 * Indicates text that may be selected. Often rendered as an I-beam. 
+		 */
+		text;
 	}
 	
 		// TRANSITION STYLES
@@ -1270,24 +1276,10 @@ import cocktail.core.renderer.TextRenderer;
 	 * meaning it depends on its content dimension
 	 */
 	typedef ContainingBlockData = {
-		var width:Int;
+		var width:Float;
 		var isWidthAuto:Bool;
-		var height:Int;
+		var height:Float;
 		var isHeightAuto:Bool;
-	}
-	
-	/**
-	 * Contains the data of the first 
-	 * positioned ancestor (an htmlElement with
-	 * a position style of relative, absolute,
-	 * or fixed) dimensions and a reference to each of
-	 * the style objects using those dimensions
-	 * as origin to layout an absolutely
-	 * positioned htmlElement.
-	 */
-	typedef FirstPositionedAncestorData = {
-		var elements:Array<ElementRenderer>;
-		var data:ContainingBlockData;
 	}
 	
 	/**
@@ -1359,26 +1351,26 @@ import cocktail.core.renderer.TextRenderer;
 		 * the x position where the next in flow htmlElement
 		 * should be placed in the formatting context
 		 */
-		var x:Int;
+		var x:Float;
 		
 		/**
 		 * the y position where the next in flow htmlElement
 		 * should be placed in the formatting context
 		 */
-		var y:Int;
+		var y:Float;
 		
 		/**
 		 * Determine the largest width of a line that was formatted
 		 * in the current formatting context
 		 */
-		var maxWidth:Int;
+		var maxWidth:Float;
 		
 		/**
 		 * The accumulated height of all the in flow htmlElements
 		 * (includes paddings and margins) of the current
 		 * formatting context
 		 */
-		var maxHeight:Int;
+		var maxHeight:Float;
 	}
 	
 	/**
@@ -1387,18 +1379,12 @@ import cocktail.core.renderer.TextRenderer;
 	 * formatting context
 	 */
 	typedef FloatsData = {
-		var left:Array<FloatData>;
-		var right:Array<FloatData>;
+		var left:Array<RectangleData>;
+		var right:Array<RectangleData>;
 	}
 	
-	/**
-	 * Represents the coordinates and
-	 * dimensions of the float in its
-	 * formatting context coordinate space
-	 */
 	typedef FloatData = {
-		var x:Int;
-		var y:Int;
-		var width:Int;
-		var height:Int;
+		var node:ElementRenderer;
+		var bounds:RectangleData;
 	}
+	

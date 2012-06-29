@@ -9,10 +9,11 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.port.flash_player;
 
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.style.ComputedStyle;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
+import flash.text.engine.FontMetrics;
 import flash.text.engine.FontPosture;
 import flash.text.engine.TextBlock;
 import flash.text.engine.TextElement;
@@ -144,15 +145,17 @@ class FontManager extends AbstractFontManager
 		//get the width of a space character
 		var spaceWidth:Float = getSpaceWidth(elementFormat.clone());
 		
+		var elementFormatFontMetrics:FontMetrics = elementFormat.getFontMetrics();
+		
 		var fontMetrics:FontMetricsData = {
 			fontSize:fontSize,
 			ascent:ascent,
 			descent:descent,
 			xHeight:xHeight,
 			spaceWidth:spaceWidth,
-			superscriptOffset:elementFormat.getFontMetrics().superscriptOffset,
-			subscriptOffset:elementFormat.getFontMetrics().subscriptOffset,
-			underlineOffset:elementFormat.getFontMetrics().underlineOffset
+			superscriptOffset:elementFormatFontMetrics.superscriptOffset,
+			subscriptOffset:elementFormatFontMetrics.subscriptOffset,
+			underlineOffset:elementFormatFontMetrics.underlineOffset
 		};
 		
 		return fontMetrics;

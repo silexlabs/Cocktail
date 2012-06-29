@@ -593,6 +593,7 @@ class UnitManager
 		return  cursor;
 	}
 	
+
 	static public function wordSpacingEnum(string:String):WordSpacing
 	{
 		if (string == "normal")
@@ -625,6 +626,7 @@ class UnitManager
 			return [BackgroundImage.none];
 
 		var array:Array<String> = string2VList(string, ",");
+
 		var arrayBgImg:Array<BackgroundImage> = [];
 		for (val in array)
 		{
@@ -633,13 +635,48 @@ class UnitManager
 			else
 				arrayBgImg.push(BackgroundImage.image(ImageValue.url(string2URLData(val))));
 		}
+		
 		return arrayBgImg;
 	}
 	
-	//TODO 4
+	//TODO 4 : for now only one value is allowed for background repeat
 	static public function backgroundRepeatEnum(string:String):Array<BackgroundRepeat>
 	{
-		return [];
+		var parsed:String = trim(string);
+		
+		var backgroundRepeat:BackgroundRepeat;
+		
+		switch(parsed)
+		{
+			case "repeat":
+				backgroundRepeat = {
+					x:BackgroundRepeatValue.repeat,
+					y:BackgroundRepeatValue.repeat
+				}
+				
+			case "repeat-x":
+				backgroundRepeat = {
+					x:BackgroundRepeatValue.repeat,
+					y:BackgroundRepeatValue.noRepeat
+				}
+				
+			case "repeat-y":
+				backgroundRepeat = {
+					x:BackgroundRepeatValue.noRepeat,
+					y:BackgroundRepeatValue.repeat
+				}
+				
+			case "no-repeat":
+				backgroundRepeat = {
+					x:BackgroundRepeatValue.noRepeat,
+					y:BackgroundRepeatValue.noRepeat
+				}
+				
+			default:
+				backgroundRepeat = null;
+		}
+		
+		return [backgroundRepeat];
 	}
 	
 	//TODO 4
@@ -651,13 +688,128 @@ class UnitManager
 	//TODO 4
 	static public function backgroundSizeEnum(string:String):Array<BackgroundSize>
 	{
-		return [];
+		string = trim(string);
+		
+		if (string == "contain")
+			return [BackgroundSize.contain];
+			
+		if (string == "cover")
+			return [BackgroundSize.cover];
+			
+		var backgroundSizes:Array<String> = string.split(" ");
+		
+		var backgroundsizeX:BackgroundSizeDimension;
+		
+		switch(backgroundSizes[0])
+		{
+			case "auto":
+				backgroundsizeX = BackgroundSizeDimension.cssAuto;
+				
+			default:
+				var parsedBackgroundsizeX:VUnit = string2VUnit(backgroundSizes[0]);
+				
+				switch( parsedBackgroundsizeX.unit)
+				{
+					case "%":
+						backgroundsizeX = BackgroundSizeDimension.percent(Std.parseInt(parsedBackgroundsizeX.value));
+						
+					default:
+						backgroundsizeX = BackgroundSizeDimension.length(string2Length(parsedBackgroundsizeX));
+				}
+		}
+		
+		var backgroundsizeY:BackgroundSizeDimension;
+		
+		switch(backgroundSizes[1])
+		{
+			case "auto":
+				backgroundsizeY = BackgroundSizeDimension.cssAuto;
+				
+			default:
+				var parsedBackgroundsizeY:VUnit = string2VUnit(backgroundSizes[0]);
+				
+				switch( parsedBackgroundsizeY.unit)
+				{
+					case "%":
+						backgroundsizeY = BackgroundSizeDimension.percent(Std.parseInt(parsedBackgroundsizeY.value));
+						
+					default:
+						backgroundsizeY = BackgroundSizeDimension.length(string2Length(parsedBackgroundsizeY));
+				}
+		}
+		
+		
+		return [BackgroundSize.dimensions({x:backgroundsizeX, y:backgroundsizeY})];
 	}
 	
 	//TODO 4
 	static public function backgroundPositionEnum(string:String):Array<BackgroundPosition>
 	{
-		return [];
+		if (string == null)
+		{
+			return CoreStyle.getBackgroundPositionDefaultValue();
+		}
+		
+		var backgroundPositions:Array<String> = string.split(" ");
+		
+		var backgroundPositionX:BackgroundPositionX;
+		
+		switch(backgroundPositions[0])
+		{
+			case "left":
+				backgroundPositionX = BackgroundPositionX.left;
+				
+			case "center":
+				backgroundPositionX = BackgroundPositionX.center;
+				
+			case "right":
+				backgroundPositionX = BackgroundPositionX.right;
+				
+			default:	
+				var parsedBgPosX:VUnit = string2VUnit(backgroundPositions[0]);
+				
+				switch (parsedBgPosX.unit)
+				{
+					case "%":
+						backgroundPositionX = BackgroundPositionX.percent(Std.parseInt(parsedBgPosX.value));
+						
+					default:
+						backgroundPositionX = BackgroundPositionX.length(string2Length(parsedBgPosX));
+				}
+				
+		}
+		
+		var backgroundPositionY:BackgroundPositionY;
+		
+		switch(backgroundPositions[1])
+		{
+			case "top":
+				backgroundPositionY = BackgroundPositionY.top;
+				
+			case "center":
+				backgroundPositionY = BackgroundPositionY.center;
+				
+			case "bottom":
+				backgroundPositionY = BackgroundPositionY.bottom;
+				
+			default:	
+				var parsedBgPosY:VUnit = string2VUnit(backgroundPositions[1]);
+				
+				switch (parsedBgPosY.unit)
+				{
+					case "%":
+						backgroundPositionY = BackgroundPositionY.percent(Std.parseInt(parsedBgPosY.value));
+						
+					default:
+						backgroundPositionY = BackgroundPositionY.length(string2Length(parsedBgPosY));
+				}
+				
+		}
+		
+		
+		
+		
+		return [{x:backgroundPositionX, y:backgroundPositionY}];
 	}
 	
 	//TODO 4
@@ -771,7 +923,7 @@ class UnitManager
 		//TODO 2 : need to implement default styles everywhere
 		if (string == null)
 		{
-			return CoreStyle.getBackgroundColorDefaultValue();
+			return CoreStyle.getColorDefaultValue();
 		}
 		
 		// clean up a bit
@@ -881,6 +1033,29 @@ class UnitManager
 		};
 	}
 	/**
+	 * function used internally to split a string to a time value enum   
+	 */
+	static private function string2TimeValue(string:String):TimeValue
+	{
+		string = trim(string);
+		var ts  = 0;
+		var tms = 0;
+		var tv:TimeValue;
+		var r : EReg = ~/^([0-9]+)(ms|s)$/;
+		r.match(string);
+		
+		if (r.matched(2) == "s")
+		{
+			tv = TimeValue.seconds(Std.parseFloat(r.matched(1)));
+		}
+		else 
+		{
+			tv = TimeValue.milliSeconds(Std.parseFloat(r.matched(1)));
+		}
+		
+		return tv;
+	}	
+	/**
 	 * function used internally to convert a value/unit strings pair to an enum  
 	 */
 	static private function string2Length(parsed):Length
@@ -929,7 +1104,11 @@ class UnitManager
 			string = string.substr(1);
 		if (StringTools.endsWith(string, "\""))
 			string = string.substr(0, string.length - 1);
-		return cast(string);
+		if (StringTools.startsWith(string, "'"))
+			string = string.substr(1);
+		if (StringTools.endsWith(string, "'"))
+			string = string.substr(0, string.length - 1);
+		return string;
 	}
 	/**
 	 * function used internally to convert a value/unit strings pair to an enum  
@@ -988,7 +1167,7 @@ class UnitManager
 	 * @return returns the computed value as pixel with rounded
 	 * values
 	 */ 
-	public static function getPixelFromLength(length:Length, emReference:Float, exReference:Float):Int
+	public static function getPixelFromLength(length:Length, emReference:Float, exReference:Float):Float
 	{
 		var lengthValue:Float;
 		
@@ -1019,7 +1198,7 @@ class UnitManager
 				lengthValue = exReference * value;
 		}
 		
-		return Math.round(lengthValue);
+		return lengthValue;
 	}
 	
 	/**
@@ -1085,7 +1264,7 @@ class UnitManager
 	 * @param	reference the reference value
 	 * @return a percentage of the reference value
 	 */
-	public static function getPixelFromPercent(percent:Int, reference:Int):Float
+	public static function getPixelFromPercent(percent:Int, reference:Float):Float
 	{
 		return reference * (percent * 0.01);
 	}
@@ -1096,7 +1275,7 @@ class UnitManager
 	 * @param	reference
 	 * @return
 	 */
-	public static function getPercentFromPixel(pixel:Int, reference:Int):Float
+	public static function getPercentFromPixel(pixel:Float, reference:Float):Float
 	{
 		return (reference / pixel) * 100;
 	}
@@ -1516,12 +1695,13 @@ class UnitManager
 					{
 						cssTransformValue += " ";
 					}
-				}		
+				}
 		}
 		
 		return cssTransformValue;
 	}
 	
+
 	/**
 	 * Returns the CSS representation of one transform
 	 * function
@@ -2437,6 +2617,9 @@ class UnitManager
 				
 			case Cursor.pointer:
 				cssCursorValue = "pointer";
+				
+			case Cursor.text:
+				cssCursorValue = "text";
 		}
 		
 		return cssCursorValue;
@@ -2745,8 +2928,204 @@ class UnitManager
 			case yellow:
 				cssColor = "yellow";	
 		}
-		
 		return cssColor;
 	}
+
+
+	private static function getTimeValueArray(value:String):Array<TimeValue>
+	{
+		var tResult:Array<TimeValue> = new Array<TimeValue>();
+		var tValues:Array<String> = value.split(',');
+		
+		for (i in 0...tValues.length)
+		{	
+			tResult.push(string2TimeValue(tValues[i]));
+			
+		}
+		return tResult;
+	}
+
+	private static function getCSSTimeValueArray(value:Array<TimeValue>):String
+	{
+		var tResult:Array<String> = new Array<String>();
+		for (val in value)
+		{
+			switch(val)
+			{
+				case TimeValue.seconds(timeval):
+					tResult.push(Std.string(timeval) + "s");
+				case TimeValue.milliSeconds(timeval):
+					tResult.push(Std.string(timeval) + "ms");
+			}
+		}
+		return tResult.join(',');
+	}
+
+	public static function getTransitionDuration(value:String):TransitionDuration
+	{
+		return UnitManager.getTimeValueArray(value);
+	}
+
+	public static function getCSSTransitionDuration(value:TransitionDuration):String
+	{
+		return UnitManager.getCSSTimeValueArray(value);
+	}
+
+	public static function getTransitionDelay(value:String):TransitionDuration
+	{
+		return UnitManager.getTimeValueArray(value);
+	}
+
+	public static function getCSSTransitionDelay(value:TransitionDuration):String
+	{
+		return UnitManager.getCSSTimeValueArray(value);
+	}
+
+	public static function getTransitionProperty(value:String):TransitionProperty
+	{
+		value = trim(value);
+		var tr:TransitionProperty;
+		var array:Array<String> = string2VList(value, ",");
+		var arrayProperties:Array<String> = [];
+
+		if (value == "none") 
+			tr =TransitionProperty.none;
+		else if (value == "all")
+			tr = TransitionProperty.all;
+		else
+		{
+			for (val in array)
+			{
+				arrayProperties.push(val);
+			}
+			tr = TransitionProperty.list(arrayProperties);
+		}
+		return tr;
+	}
+
+	public static function getCSSTransitionProperty(value:TransitionProperty):String
+	{
+		var result:String;
+		switch(value)
+		{
+			case TransitionProperty.list(value):
+				result = value.join(",");
+			case TransitionProperty.none:
+				result = "none";
+			case TransitionProperty.all:
+				result = "all";
+			default:
+				result = "none";
+		}
+		return result;
+	}
+
+
+	public static function getTransitionTimingFunction(string:String):TransitionTimingFunction
+	{
+		var rSplit: EReg = ~/[^\(][^0-9]*)],/g;
+
+		var tSplit:Array<String> = rSplit.split(string);
+		var tFunctions:Array<String> = [];
+
+		var tResult:Array<TransitionTimingFunctionValue> = new Array<TransitionTimingFunctionValue>();
+		var rgB : EReg = ~/cubic-bezier[ ]*\([ ]*([0-9]+)[ ]*,[ ]*([0-9]+)[ ]*,[ ]*([0-9]+)[ ]*,[ ]*([0-9]+)[ ]*\)$/;
+		var rgS : EReg = ~/steps[ ]*\([ ]*([0-9]+)[ ]*,[ ]*(start|end)[ ]*\)/;
+		var tr:TransitionTimingFunctionValue = TransitionTimingFunctionValue.ease;
+		
+		/* refactoring needed
+		* the rSplit regexp need to be improved in order to handle 
+		* a multi function composed string
+		*/
+		for (func in tSplit)
+		{
+			if (!rgB.match(func) && !rgS.match(func))
+				tFunctions = tFunctions.concat(func.split(','));
+			else
+				tFunctions.push(func);
+		}
+
+		for (func in tFunctions)
+		{		
+			func=trim(func);
+			if (rgS.match(func))
+			{
+				if (rgS.matched(2) ==  "start")
+					tr = TransitionTimingFunctionValue.steps(Std.parseInt(rgS.matched(1)), IntervalChangeValue.start);
+				else
+					tr = TransitionTimingFunctionValue.steps(Std.parseInt(rgS.matched(1)), IntervalChangeValue.end);
+			}
+			else if (rgB.match(func))
+			{
+				tr = TransitionTimingFunctionValue.cubicBezier(Std.parseFloat(rgB.matched(1)),Std.parseFloat(rgB.matched(2)),Std.parseFloat(rgB.matched(3)),Std.parseFloat(rgB.matched(4)));
+			}
+			else
+			{
+				switch (func)
+				{
+					case "ease":
+						tr = TransitionTimingFunctionValue.ease;
+					case "linear":
+						tr = TransitionTimingFunctionValue.linear;
+					case "ease-in":
+						tr = TransitionTimingFunctionValue.easeIn;
+					case "ease-out":
+						tr = TransitionTimingFunctionValue.easeOut;
+					case "ease-in-out":
+						tr = TransitionTimingFunctionValue.easeInOut;
+					case "step-start":
+						tr = TransitionTimingFunctionValue.stepStart;
+					case "step-end":
+						tr = TransitionTimingFunctionValue.stepEnd;
+				}
+			}
+
+			tResult.push(tr);
+		}
+		return tResult;
+	}	
+
+	public static function getCSSTransitionTimingFunction(functions:TransitionTimingFunction):String
+	{
+		var tResult:Array<String> = new Array<String>();
+		var r:String;
+		var func:TransitionTimingFunctionValue;
+		for (i in 0...functions.length)
+		{
+			func = functions[i];
+			switch(func)
+			{
+				case TransitionTimingFunctionValue.steps(intervalNumbers, intervalChange):
+					var interval = "start";
+					switch (intervalChange)
+					{
+						case IntervalChangeValue.start:
+							interval =  "start";
+						case IntervalChangeValue.end:
+							interval = "end";
+					}
+					r = "steps("+Std.string(intervalNumbers)+","+interval;
+				case TransitionTimingFunctionValue.cubicBezier(x1, y1, x2, y2):
+					r = "cubic-bezier("+Std.string(x1)+","+Std.string(y1)+","+Std.string(x2)+","+Std.string(y2)+")";
+				case TransitionTimingFunctionValue.ease:
+					r = "ease";
+				case TransitionTimingFunctionValue.linear:
+					r = "linear";
+				case TransitionTimingFunctionValue.easeIn:
+					r = "easeIn";
+				case TransitionTimingFunctionValue.easeOut:
+					r = "easeOut";
+				case TransitionTimingFunctionValue.easeInOut:
+					r = "easeInOut";
+				case TransitionTimingFunctionValue.stepStart:
+					r = "stepStart";
+				case TransitionTimingFunctionValue.stepEnd:
+					r = "stepEnd";
+			}	
+			tResult.push(r);
+		}
+		return tResult.join(',');
+	}		
+
 	
-}
+}     

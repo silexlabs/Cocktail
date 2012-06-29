@@ -90,11 +90,11 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 			//then deduce the margins
 			if (style.marginLeft == Margin.cssAuto && style.marginRight == Margin.cssAuto)
 			{
-				var margin:Int = Math.round((containingBlockData.width - computedStyle.left - computedStyle.right - computedStyle.paddingLeft - computedStyle.paddingRight) / 2);
+				var margin:Float = (containingBlockData.width - computedStyle.left - computedStyle.right - computedStyle.paddingLeft - computedStyle.paddingRight) / 2;
 				
 				//compute the size of one of the margin, which is half the remaining horizontal space
 				//once all other values (padding, width, offset) are remove
-				var computedMargin:Int = Math.round((containingBlockData.width - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left - computedStyle.right) / 2);
+				var computedMargin:Float = (containingBlockData.width - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left - computedStyle.right) / 2;
 				
 				if (computedMargin >= 0)
 				{
@@ -170,9 +170,9 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 			
 			if (style.marginTop == Margin.cssAuto && style.marginBottom == Margin.cssAuto)
 			{
-				var margin:Int = Math.round((containingBlockData.height - computedStyle.top - computedStyle.bottom - computedStyle.paddingTop - computedStyle.paddingBottom) / 2);
+				var margin:Float = (containingBlockData.height - computedStyle.top - computedStyle.bottom - computedStyle.paddingTop - computedStyle.paddingBottom) / 2;
 				
-				var computedMargin:Int = Math.round((containingBlockData.height - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top - computedStyle.bottom) / 2);
+				var computedMargin:Float = (containingBlockData.height - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top - computedStyle.bottom) / 2;
 				
 				if (computedMargin >= 0)
 				{
@@ -200,7 +200,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	 * compute the static value for left which is the value that will place the left margin edge
 	 * of the HTMLElement to the left edge of its containing HTMLElement
 	 */
-	private function getComputedStaticLeft(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	private function getComputedStaticLeft(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		return style.computedStyle.marginLeft;
 	}
@@ -209,7 +209,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	 * compute the static value for top which is the value that will place the top margin edge
 	 * of the HTMLElement to the top edge of its containing HTMLElement
 	 */
-	private function getComputedStaticTop(style:CoreStyle, containingBlockData:ContainingBlockData):Int
+	private function getComputedStaticTop(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		return style.computedStyle.marginTop;
 	}

@@ -13,8 +13,9 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.style.CoreStyle;
+import cocktail.core.style.floats.FloatsManager;
 import cocktail.core.style.formatter.BlockFormattingContext;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.formatter.InlineFormattingContext;
@@ -72,19 +73,24 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private var _isUpdatingScroll:Bool;
 	
 	/**
+	 * flasg set when replacing inline children by anonymous block
+	 * to prevent inifinite loot caused by calls to appendChild
+	 */
+	private var _isMakingChildrenNonInline:Bool;
+	
+	/**
 	 * class constructor.
 	 * Init class attributes
 	 */
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 		
 		_isUpdatingScroll = false;
+		_isMakingChildrenNonInline = false;
 		
 		_scrollLeft = 0;
 		_scrollTop = 0;
-		
-		
 		
 		_scrollableBounds = {
 			x:0.0,
@@ -97,174 +103,216 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * overriden as when an ElementRenderer is appended, its LayerRenderer
-	 * must be attached so that it can be rendered
-	 */
-	override public function appendChild(newChild:Node):Node
-	{
-	
-		var shouldMakeChildrenNonInline:Bool = false;
-		var elementRendererChild:ElementRenderer = cast(newChild);
-	
-		if (_childNodes.length > 0)
-		{
-			if (elementRendererChild.isInlineLevel() != childrenInline())
-			{
-				shouldMakeChildrenNonInline = true;
-			}
-		}
-		
-		if (elementRendererChild.isAnonymousBlockBox() == true)
-		{
-			shouldMakeChildrenNonInline = false;
-		}
-		
-		super.appendChild(newChild);
-		
-		if (shouldMakeChildrenNonInline == true)
-		{	
-			//makeChildrenNonInline();
-		
-			
-		}
-	
-		return newChild;
-	}
-	
-	private function makeChildrenNonInline():Void
-	{
-		for (i in 0..._childNodes.length)
-		{
-			var child:ElementRenderer = cast(_childNodes[i]);
 
-			if (child.isInlineLevel() == true)
-			{
-				
-				
-				var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock();
-				
-				replaceChild(anonymousBlock, child);
-				anonymousBlock.appendChild(child);
-				
-				
-			}
-		}
-		
-	}
-	
-	override public function insertBefore(newChild:Node, refChild:Node):Node
+	/**
+	 * Overriden to replace inline children by anonymous block if
+	 * necessary
+	 */
+	override public function appendChild(newChild:ElementRenderer):ElementRenderer
 	{
-		if (refChild == null)
+		//flag determining wether inline children must be wrapped
+		//in anonymous block
+		var shouldMakeChildrenNonInline:Bool = false;
+		
+		var elementRendererChild:ElementRenderer = newChild;
+
+		//if this is the first child, no need to wrap inline block
+		//as it not yet known wether this block box starts an inline
+		//formatting context or participates/establishes a block
+		//formatting context
+		if (childNodes.length > 0)
 		{
-			appendChild(newChild);
-		}
-		else
-		{
-			
-			for (i in 0..._childNodes.length)
-			{
-				var child:ElementRenderer = cast(_childNodes[i]);
-	
-				if (_childNodes[i] == refChild)
+			//absolutely positioned children are not taken into account when determining wether this
+			//BlockBoxRenderer establishes/participate in a block or inline formatting context
+			if (elementRendererChild.isPositioned() == false || elementRendererChild.isRelativePositioned() ==  true)
+			{	
+				//the BlockBoxRenderer should have at least one significant child to determine wether to 
+				//establish/participate in a block or inline formatting context, and thus if inline children
+				//shoud be wrapped in anonymous block
+				if (hasSignificantChild() == true)
 				{
-					
-					appendChild(newChild);
-				}
-				else if (child.isAnonymousBlockBox() == true)
-				{
-					if (child.firstChild != null)
+					//if the new child is doesn't match the display of the other children,
+					///for instance if it is the first inline while all the other
+					//children are block, all the inline children should be wrapped
+					if (elementRendererChild.isInlineLevel() != childrenInline())
 					{
-						if (child.firstChild == refChild)
-						{
-							appendChild(newChild);
-						}
+						shouldMakeChildrenNonInline = true;
 					}
 				}
-				
-				appendChild(child);
 			}
 		}
 		
-		
-		
+		//append the new child
+		super.appendChild(newChild);
+		//make all children non inline if necessary
+		if (shouldMakeChildrenNonInline == true)
+		{	
+			//check the flag to prevent infinite loop,
+			//as makeChildrenNonInline itself call the 
+			//appendChild method
+			if (_isMakingChildrenNonInline == false)
+			{
+				_isMakingChildrenNonInline = true;
+				makeChildrenNonInline();
+				_isMakingChildrenNonInline = false;
+			}
+		}
+	
 		return newChild;
 	}
 	
-	private function createAnonymousBlock():AnonymousBlockBoxRenderer
-	{
-		var anonymousBlock:AnonymousBlockBoxRenderer = new AnonymousBlockBoxRenderer(_node);
-		
-		anonymousBlock.coreStyle = new CoreStyle(cast(_node));
-		
-		return anonymousBlock;
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC RENDERING METHODS
+	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden as a BlockBoxRenderer migh also render its children and the child LayerRenderer
+	 * Overriden as a BlockBoxRenderer render its children and the child LayerRenderer
 	 * of its LayerRenderer
 	 */
-	override public function render(parentGraphicContext:NativeElement, parentRelativeOffset:PointData):Void
+	override private function renderChildren(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
-		//render the background of the BlockBoxRenderer
-		super.render(parentGraphicContext, parentRelativeOffset);
-		
-		var relativeOffset:PointData = getConcatenatedRelativeOffset(parentRelativeOffset);
+		super.renderChildren(graphicContext, forceRendering);
 		
 		//the BlockBoxRenderer is responsible for rendering its children in the same stacking
 		//context if it establishes a stacking context itself
 		if (establishesNewStackingContext() == true)
 		{
 			//first render all the negative z-index child LayerRenderers
-			_layerRenderer.renderNegativeChildElementRenderers(_graphicsContext, relativeOffset);
+			layerRenderer.renderNegativeChildElementRenderers(graphicContext, forceRendering);
 			
 			//render all the block box which belong to the same stacking context
-			renderBlockContainerChildren(_graphicsContext, relativeOffset);
+			renderBlockContainerChildren(graphicContext, forceRendering);
 			
 			//TODO 5 : render non-positioned float
 			
 			//render all the replaced (embedded) box displayed as blocks belonging
 			//to the same stacking context
-			renderBlockReplacedChildren(_graphicsContext, relativeOffset);
-
+			renderBlockReplacedChildren(graphicContext, forceRendering);
+			
 			//render all the line boxes belonging to the same stacking context
-			renderLineBoxes(_graphicsContext, relativeOffset);
+			renderLineBoxes(graphicContext, forceRendering);
 			
 			//clip the graphic context of the block box renderer if it doesn't allow
 			//overflows
 			clip();
 			
 			//render the scrollbar if needed
-			renderScrollBars(_graphicsContext, relativeOffset);
-
+			renderScrollBars(graphicContext, forceRendering);
+			
 			//render all the child layers with a z-index of 0 or auto
-			_layerRenderer.renderZeroAndAutoChildElementRenderers(_graphicsContext, relativeOffset);
+			layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext, forceRendering);
 			//render all the child layer with a positive z-index
-			_layerRenderer.renderPositiveChildElementRenderers(_graphicsContext, relativeOffset);
+			layerRenderer.renderPositiveChildElementRenderers(graphicContext, forceRendering);
 		}
 		//same as above but don't render the child LayerRenderer if this 
 		//block box doesn't actually establish a new stacking context
 		else if (rendersAsIfEstablishingStackingContext() == true)
 		{
-			renderBlockContainerChildren(_graphicsContext, relativeOffset);
-		
-			//TODO 5 : render non-positioned float
+			renderBlockContainerChildren(graphicContext, forceRendering);
 			
-			renderBlockReplacedChildren(_graphicsContext, relativeOffset);
-			renderLineBoxes(_graphicsContext, relativeOffset);
+			//TODO 5 : render non-positioned float
+			renderBlockReplacedChildren(graphicContext, forceRendering);
+			renderLineBoxes(graphicContext, forceRendering);
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE ANONYMOUS BLOCK METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * This method is called when all the inline children of this block
+	 * box should be wrapped in anonymous block. It is done to preserve
+	 * the invariant in CSS where all the children of a block box must
+	 * either all be block or must all be inline. Wrapping inline children
+	 * makes all the children blocks
+	 */
+	private function makeChildrenNonInline():Void
+	{
+		//will store all the current block children and the newly created
+		//anonymous block, in order and will replace the current child nodes array
+		var newChildNodes:Array<ElementRenderer> = new Array<ElementRenderer>();
+		
+		//loop in the child nodes in reverse order, as the child nodes
+		//array will be modified during this loop
+		var i:Int = childNodes.length -1;
+		while( i >= 0)
+		{
+			var child:ElementRenderer = childNodes[i];
+
+			if (child.firstChild != null)
+			{
+				var  fs:ElementRenderer = child.firstChild;
+			}
+			
+			//for inline children, create an anonymous block, and attach the child to it
+			if (child.isInlineLevel() == true)
+			{
+				//TODO 2 : only 1 anonymous block should be created for contiguous
+				//inline elements
+				var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock(child);
+				newChildNodes.push(anonymousBlock);
+			}
+			else
+			{
+				newChildNodes.push(child);
+			}
+			
+			i--;
 		}
 		
-		//draws the graphic context of this block box on the one of its
-		//parent
-		#if (flash9 || nme)
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(parentGraphicContext);
-		containerGraphicContext.addChild(_graphicsContext);
-		#end
+		//must reverse as the child nodes where
+		//looped in reverse order
+		newChildNodes.reverse();
+		
+		//attach all the block children and the newly
+		//created anonymous block box
+		var length:Int = newChildNodes.length;
+		for (i in 0...length)
+		{
+			appendChild(newChildNodes[i]);
+		}
+	}
+	
+	/**
+	 * create an anonymous block and append an inline child to it
+	 */ 
+	private function createAnonymousBlock(child:ElementRenderer):AnonymousBlockBoxRenderer
+	{
+		var anonymousBlock:AnonymousBlockBoxRenderer = new AnonymousBlockBoxRenderer();
+		anonymousBlock.appendChild(child);
+		
+		anonymousBlock.coreStyle = anonymousBlock.node.coreStyle;
+		
+		return anonymousBlock;
+	}
+	
+	/**
+	 * returns wether the FlowBoxRenderer has at least one significant child
+	 * which can define wether he establish/participate in a block or inline
+	 * formatting context.
+	 * 
+	 * For instance if the FlowBoxRenderer has only absolutely positioned
+	 * or floated children, it can't yet know from its children wether
+	 * to establish/participate in a bock or inline formatting context
+	 */
+	private function hasSignificantChild():Bool
+	{
+		var length:Int = childNodes.length;
+		for (i in 0...length)
+		{
+			var child:ElementRenderer = childNodes[i];
+			if (child.isFloat() == false)
+			{
+				if (child.isPositioned() == false || child.isRelativePositioned() == true)
+				{
+					//if at least one child child is not absolutely positioned
+					//or floated, formatting context to used can be determined
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -275,15 +323,16 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Render all the LineBoxes of child BlockBoxRenderer which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderLineBoxes(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderLineBoxes(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
 		//retrieve all the line boxes in all of the lines generated in this BlockBoxRenderer
-		var lineBoxes:Array<LineBox> = getChilrenLineBoxes(this, _layerRenderer);
+		var lineBoxes:Array<LineBox> = getChilrenLineBoxes(this, layerRenderer);
 
 		//loop in all of the lineboxes
-		for (i in 0...lineBoxes.length)
+		var length:Int = lineBoxes.length;
+		for (i in 0...length)
 		{
-			lineBoxes[i].render(graphicContext, relativeOffset);
+			lineBoxes[i].render(graphicContext, forceRendering);
 		}
 	}
 	
@@ -291,12 +340,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Render all the replaced children displayed as blocks which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderBlockReplacedChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderBlockReplacedChildren(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
-		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this, _layerRenderer);
-		for (i in 0...childrenBlockReplaced.length)
+		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this, layerRenderer);
+		var length:Int = childrenBlockReplaced.length;
+		for (i in 0...length)
 		{
-			childrenBlockReplaced[i].render(graphicContext, relativeOffset);
+			childrenBlockReplaced[i].render(graphicContext, forceRendering);
 		}
 	}
 	
@@ -304,32 +354,32 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Render all the BlockBoxRenderer which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderBlockContainerChildren(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderBlockContainerChildren(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
-		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(this, _layerRenderer);
-
-		for (i in 0...childrenBlockContainer.length)
+		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(this, layerRenderer);
+		var length:Int = childrenBlockContainer.length;
+		for (i in 0...length)
 		{
-			childrenBlockContainer[i].render(graphicContext, relativeOffset);
+			childrenBlockContainer[i].render(graphicContext, forceRendering);
 		}
 	}
 	
 	/**
 	 * Render the scrollbars of this BlockBoxRenderer if needed
 	 */
-	private function renderScrollBars(graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderScrollBars(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
 		
 		if (_horizontalScrollBar != null)
 		{
-			_horizontalScrollBar.elementRenderer.render(graphicContext, relativeOffset);
+			_horizontalScrollBar.elementRenderer.render(graphicContext, forceRendering);
 			updateScroll();
 
 		}
 		
 		if (_verticalScrollBar != null)
 		{
-			_verticalScrollBar.elementRenderer.render(graphicContext, relativeOffset);
+			_verticalScrollBar.elementRenderer.render(graphicContext, forceRendering);
 			updateScroll();
 		}
 	}
@@ -346,12 +396,15 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.childrenInline() == true)
 		{
-			var blockBoxRenderer:BlockBoxRenderer = cast(rootRenderer);
+			var blockBoxRenderer:ElementRenderer = rootRenderer;
 			
-			for (i in 0...blockBoxRenderer.lineBoxes.length)
+			var length:Int = blockBoxRenderer.lineBoxes.length;
+			for (i in 0...length)
 			{
 				var lineBoxes:Array<LineBox> = getLineBoxesInLine(blockBoxRenderer.lineBoxes[i]);
-				for (j in 0...lineBoxes.length)
+
+				var childLength:Int = lineBoxes.length;
+				for (j in 0...childLength)
 				{
 					if (lineBoxes[j].layerRenderer == referenceLayer)
 					{
@@ -362,16 +415,18 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		else
 		{
-			for (i in 0...rootRenderer.childNodes.length)
+			var length:Int = rootRenderer.childNodes.length;
+			for (i in 0...length)
 			{
-				var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
-
+				var child:ElementRenderer = rootRenderer.childNodes[i];
+			
 				if (child.layerRenderer == referenceLayer)
 				{
 					if (child.isReplaced() == false)
 					{	
 						var childLineBoxes:Array<LineBox> = getChilrenLineBoxes(child, referenceLayer);
-						for (j in 0...childLineBoxes.length)
+						var childLength:Int = childLineBoxes.length;
+						for (j in 0...childLength)
 						{
 							ret.push(childLineBoxes[j]);
 						}
@@ -386,14 +441,18 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	/**
 	 * Return all the replaced child displayed as block belonging
 	 * to the same stacking context
+	 * 
+	 * TODO 1 : all those methods should only be 1 method pushing into different arrays, and
+	 * only called once when dom changes
 	 */
 	private function getBlockReplacedChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer):Array<ElementRenderer>
 	{
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		for (i in 0...rootRenderer.childNodes.length)
+		var length:Int = rootRenderer.childNodes.length;
+		for (i in 0...length)
 		{
-			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
+			var child:ElementRenderer = rootRenderer.childNodes[i];
 			
 			if (child.layerRenderer == referenceLayer && child.isPositioned() == false)
 			{
@@ -401,8 +460,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				if (child.isReplaced() == false && child.coreStyle.display == block )
 				{
 					var childElementRenderer:Array<ElementRenderer> = getBlockReplacedChildren(child, referenceLayer);
-					
-					for (j in 0...childElementRenderer.length)
+					var childLength:Int = childElementRenderer.length;
+					for (j in 0...childLength)
 					{
 						ret.push(childElementRenderer[j]);
 					}
@@ -425,10 +484,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		for (i in 0...rootRenderer.childNodes.length)
+		var length:Int = rootRenderer.childNodes.length;
+		for (i in 0...length)
 		{
-			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
-
+			var child:ElementRenderer = rootRenderer.childNodes[i];
 			//TODO 2 : this check is to prevent positioned child with a zindex of 0 from being returned, should
 			//put in a method
 			if (child.layerRenderer == referenceLayer && child.isPositioned() == false)
@@ -436,11 +495,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				//TODO 3 : must add more condition, for instance, no float
 				if (child.isReplaced() == false && child.coreStyle.display != inlineBlock)
 				{
-					ret.push(cast(child));
+					ret.push(child);
 					
 					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(child, referenceLayer);
-					
-					for (j in 0...childElementRenderer.length)
+					var childLength:Int = childElementRenderer.length;
+					for (j in 0...childLength)
 					{
 						ret.push(childElementRenderer[j]);
 					}
@@ -454,15 +513,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// OVERRIDEN PUBLIC VISUAL EFFECT METHODS
 	////////////////////////////////
 	
-	//TODO 1 : this method should be called in each render() method, if the ElementRenderer
-	//is a BlockBoxRenderer call this, else check if scroll offset must be removed, like for 
-	//fixed elements. Method Render should have additional scrollOffset arg
+	//TODO 2 : doc
 	override public function scroll(x:Float, y:Float):Void
 	{
 		super.scroll(x, y);
-		//TODO 1 IMPORTANT: big hack but will do for now
-		//TODO 1 : doesn't work for zindex auto positioned elements, as they don't
-		//have a graphic context of their own
 		//TODO 2 : should be applied to every positioned element whose
 		//containing block is a parent of the root renderer.
 		//Add a public method on ElementRenderer ?
@@ -470,17 +524,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			#if (flash9 || nme)
 			
-			//TODO 1 : only initial block box renderer must not be moved ?
-			//_graphicsContext.x = globalBounds.x;
-			//_graphicsContext.y = globalBounds.y;
-			
 			var width:Float;
 			var height:Float;
 			
-			if (_graphicsContext.scrollRect != null)
+			if (graphicsContext.scrollRect != null)
 			{
-				width = _graphicsContext.scrollRect.width;
-				height = _graphicsContext.scrollRect.height;
+				width = graphicsContext.scrollRect.width;
+				height = graphicsContext.scrollRect.height;
 			}
 			else
 			{
@@ -488,10 +538,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				height = globalBounds.height;
 			}
 			
-			_graphicsContext.scrollRect = new flash.geom.Rectangle(x , y, width + globalBounds.x, height + globalBounds.y);
+			graphicsContext.scrollRect = new flash.geom.Rectangle(x , y, width + globalBounds.x, height + globalBounds.y);
 			#end
-			
-			scrollChildren(x, y);
+			scrollChildren(this, x, y);
 		}
 		
 	}
@@ -513,43 +562,46 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 			if (isXAxisClipped() == true && isYAxisClipped() == true)
 			{
-				//_graphicsContext.x = globalBounds.x;
-				//_graphicsContext.y = globalBounds.y;
-				
-				_graphicsContext.scrollRect = new flash.geom.Rectangle(0 , 0, scrollableContainerBlock.width + globalBounds.x, scrollableContainerBlock.height + globalBounds.y);
+				var globalBounds:RectangleData = globalBounds;
+				graphicsContext.scrollRect = new flash.geom.Rectangle(0 , 0, scrollableContainerBlock.width + globalBounds.x, scrollableContainerBlock.height + globalBounds.y);
 
 			}
 			else if (isXAxisClipped() == true)
 			{
-				//_graphicsContext.x = globalBounds.x;
-				//_graphicsContext.y = globalBounds.y;
 				//TODO 2 : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
-				_graphicsContext.scrollRect = new flash.geom.Rectangle(0 , 0, scrollableContainerBlock.width, 10000);
+				graphicsContext.scrollRect = new flash.geom.Rectangle(0 , 0, scrollableContainerBlock.width, 10000);
 		
 			}
 			else if (isYAxisClipped() == true)
 			{
-				//_graphicsContext.x = globalBounds.x;
-				//_graphicsContext.y = globalBounds.y;
 				//TODO 2 : how to prevent clipping in one direction ? 10000 might not be enougn for scrollable content
-				_graphicsContext.scrollRect = new flash.geom.Rectangle(0 , 0, 10000, scrollableContainerBlock.height);
+				graphicsContext.scrollRect = new flash.geom.Rectangle(0 , 0, 10000, scrollableContainerBlock.height);
 			}
 			else
 			{
-				_graphicsContext.scrollRect = null;
+				graphicsContext.scrollRect = null;
 			}
 			
 		#end	
 	}
 	
 	
-	
-	private function scrollChildren(scrollX:Float, scrollY:Float):Void
+	//TODO 1 : hack to make fixed positioned element displayed correctly when in a
+	//a scrolled container. For some reason, don't work for auto z-index positioned element
+	private function scrollChildren(root:ElementRenderer, scrollX:Float, scrollY:Float):Void
 	{
-		for ( i in 0..._childNodes.length)
+		var length:Int = root.childNodes.length;
+		for ( i in 0...length)
 		{
-			var child:ElementRenderer = cast(_childNodes[i]);
-			child.scroll(scrollX, scrollY);
+			//var child:ElementRenderer = root.childNodes[i];
+			//if (child.computedStyle.position == fixed || child.isScrollBar())
+			//{
+				//child.scroll(scrollX, scrollY);
+			//}
+			//else if (child.hasChildNodes() == true )
+			//{
+				//scrollChildren(child, scrollX, scrollY);
+			//}
 		}
 	}
 	
@@ -561,13 +613,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Overriden to deal with the scrollbars once the children of this
 	 * BlockBoxRenderer are laid out
 	 */
-	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	override public function layout(forceLayout:Bool):Void
 	{	
+		super.layout(forceLayout);
 		
-		super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
-		
-		_isLayingOut = true;
-
 		//only get scrollable bounds for bloc box renderer
 		//which might display scrollbars
 		if (canAlwaysOverflow() == false)
@@ -582,21 +631,70 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (isVerticalScrollAttached != (_verticalScrollBar != null) || isHorizontalScrollAttached != (_horizontalScrollBar != null) )
 		{
-			super.layout(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
+			_needsLayout = true;
+			_childrenNeedLayout = true;
+			super.layout(forceLayout);
 		}
 		
-		layoutScrollBarsIfNecessary(containingBlockData, viewportData, firstPositionedAncestorData, containingBlockFontMetricsData, formattingContext);
-
-		_isLayingOut = false;
-		
+		layoutScrollBarsIfNecessary(getWindowData());
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * starts the formatting of this block box if it
+	 * establishes a new formatting context.
+	 */
+	override private function format():Void
+	{
+		if (establishesNewFormattingContext() == true )
+		{
+			if (isPositioned() == true && isRelativePositioned() == false)
+			{
+				doFormat();
+			}
+			else if (isFloat() == true)
+			{
+				doFormat();
+			}
+			else if (computedStyle.display == inlineBlock)
+			{
+				doFormat();
+			}
+			else if (childrenInline() == false)
+			{
+				doFormat();
+			}
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Actually starts formatting this BlockBoxRenderer
+	 * if it indeed establishes a new formatting context.
+	 * 
+	 * Instantiate the right formatting context, based
+	 * on the display of the children
+	 */
+	private function doFormat():Void
+	{
+		if (childrenInline() == true)
+		{
+			new InlineFormattingContext(this).format(new FloatsManager());
+		}
+		else
+		{
+			new BlockFormattingContext(this).format(new FloatsManager());
+		}
+	}
+	
 	//TODO 4 : more complex thant it should
-	private function layoutScrollBarsIfNecessary(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	private function layoutScrollBarsIfNecessary(viewportData:ContainingBlockData):Void
 	{
 		var horizontalScrollBarContainerBlockData = getContainerBlockData();
 		
@@ -619,8 +717,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		if (_verticalScrollBar != null)
 		{
-			//TODO 3 : x and y position of scrollbar are false when block box is not positioned, as the scrollbar
-			//are positioned relative to the first positioned ancestor
 			layoutPositionedChild(_verticalScrollBar.elementRenderer, verticalScrollBarContainerBlockData, viewportData);
 		}
 	}
@@ -830,10 +926,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		var childrenBounds:Array<RectangleData> = new Array<RectangleData>();
 
-		for (i in 0...rootRenderer.childNodes.length)
+		var length:Int = rootRenderer.childNodes.length;
+		for (i in 0...length)
 		{
 			
-			var child:ElementRenderer = cast(rootRenderer.childNodes[i]);
+			var child:ElementRenderer = rootRenderer.childNodes[i];
 				
 			if (child.node != _horizontalScrollBar && child.node != _verticalScrollBar)
 			{
@@ -841,7 +938,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				{
 					var childChildrenBounds:Array<RectangleData> = doGetScrollableBounds(child);
 					
-					for (j in 0...childChildrenBounds.length)
+					var childLength:Int = childChildrenBounds.length;
+					for (j in 0...childLength)
 					{
 						childrenBounds.push(childChildrenBounds[j]);
 					}
@@ -870,11 +968,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			return;
 		}
 		
-
 		//TODO 3 : should use computed styles but not computed yet
 		//tries to attach or detach horizontal scrollbar based on x
 		//overflow
-		switch (_coreStyle.overflowX)
+		switch (computedStyle.overflowX)
 		{
 			case Overflow.scroll:
 				attachHorizontalScrollBar();
@@ -898,7 +995,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 
 		//tries to attach or detach vertical scrolbar based on 
 		//overflow y
-		switch (_coreStyle.overflowY)
+		switch (computedStyle.overflowY)
 		{
 			case Overflow.scroll:
 				attachVerticalScrollBar();
@@ -935,6 +1032,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		if (_horizontalScrollBar == null)
 		{
 			_horizontalScrollBar = new ScrollBar(false);
+			_horizontalScrollBar.ownerDocument = node.ownerDocument;
+			_horizontalScrollBar.attach();
 			appendChild(_horizontalScrollBar.elementRenderer);
 			_horizontalScrollBar.onscroll = onHorizontalScroll;
 		}
@@ -988,11 +1087,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		if (_verticalScrollBar == null)
 		{
 			_verticalScrollBar = new ScrollBar(true);
+			_verticalScrollBar.ownerDocument = node.ownerDocument;
 			_verticalScrollBar.attach();
 			appendChild(_verticalScrollBar.elementRenderer);
 			_verticalScrollBar.onscroll = onVerticalScroll;
-			
-			var htmlElement:HTMLElement = cast(_node);
 		}
 		if (_verticalScrollBar != null)
 		{
@@ -1007,13 +1105,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		if (_verticalScrollBar != null)
 		{
-			
 			removeChild(_verticalScrollBar.elementRenderer);
-			_verticalScrollBar.detach();
 			_verticalScrollBar.onscroll = null;
-			
-			var htmlElement:HTMLElement = cast(_node);
-			
 			_verticalScrollBar = null;
 			
 			//reset scroll so that the display don't "jump" if
@@ -1027,8 +1120,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function attachOrDetachVerticalScrollBarIfNecessary():Void
 	{
-		//TODO 1 : shouldn't have to round values, all the formatting should be done with floats
-		if (Math.round(_scrollableBounds.y) < 0 || Math.round(_scrollableBounds.y) + Math.round(_scrollableBounds.height) >  Math.round(bounds.height))
+		if (_scrollableBounds.y < 0 || _scrollableBounds.y + _scrollableBounds.height >  bounds.height)
 		{
 			attachVerticalScrollBar();
 		}
@@ -1071,6 +1163,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			return true;
 		}
+		
 		return canAlwaysOverflow() != true;
 	}
 	
@@ -1161,6 +1254,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			establishesNewFormattingContext = true;
 		}
+		//anonymous block always establish new inline formatting as they are used 
+		//to wrap inline elements in block formatting
+		else if (isAnonymousBlockBox() == true)
+		{
+			establishesNewFormattingContext = true;
+		}
 		else
 		{
 			switch (this.computedStyle.display)
@@ -1190,6 +1289,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return establishesNewFormattingContext;
 	}
 	
+	override public function isBlockContainer():Bool
+	{
+		return true;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1198,8 +1302,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * overriden as a block box renderer might be rendered as if
 	 * establishing stacking context, based on its computed styles
 	 * value
-	 * 
-	 * TODO 2 : should be on BoxRenderer instead ?
 	 */
 	override private function rendersAsIfEstablishingStackingContext():Bool
 	{
@@ -1226,15 +1328,15 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * width or height must be substracted from the containing
 	 * block width/height
 	 */
-	override private function getContainerBlockData():ContainingBlockData
+	override public function getContainerBlockData():ContainingBlockData
 	{
-		var height:Int = this.computedStyle.height;
+		var height:Float = this.computedStyle.height;
 		if (_horizontalScrollBar != null)
 		{
 			height -= _horizontalScrollBar.coreStyle.computedStyle.height;
 		}
 		
-		var width:Int = this.computedStyle.width;
+		var width:Float = this.computedStyle.width;
 		if (_verticalScrollBar != null)
 		{
 			width -= _verticalScrollBar.coreStyle.computedStyle.width;
@@ -1246,37 +1348,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			height:height,
 			isHeightAuto:this._coreStyle.height == Dimension.cssAuto
 		};
-	}
-	
-	/**
-	 * Return the right formatting context to layout this ElementRenderer's
-	 * children. Overriden as block box are the only sub class of ElementRenderer
-	 * which can establishe a new formatting context
-	 */
-	override private function getFormattingContext(previousformattingContext:FormattingContext):FormattingContext
-	{
-		var formattingContext:FormattingContext;
-		
-		//here, a new formatting context is created
-		if (establishesNewFormattingContext() == true)
-		{	
-			//instantiate the right formatting context
-			//based on the children computed display styles
-			if (childrenInline() == true)
-			{
-				formattingContext = new InlineFormattingContext(this);	
-			}
-			else
-			{
-				formattingContext = new BlockFormattingContext(this);
-			}
-		}
-		else
-		{
-			formattingContext = previousformattingContext;
-		}
-		
-		return formattingContext;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1334,7 +1405,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		var scrollEvent:UIEvent = new UIEvent();
 		scrollEvent.initUIEvent(UIEvent.SCROLL, mustBubbleScrollEvent(), false, null, 0.0);
-		_node.dispatchEvent(scrollEvent);
+		node.dispatchEvent(scrollEvent);
 	}
 	
 	/**
@@ -1364,7 +1435,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			return false;
 		}
 		
-		switch (_coreStyle.overflowX)
+		switch (computedStyle.overflowX)
 		{
 			case Overflow.visible:
 				
@@ -1373,7 +1444,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				return false;
 		}
 		
-		switch (_coreStyle.overflowY)
+		switch (computedStyle.overflowY)
 		{
 			case Overflow.visible:
 				
@@ -1395,31 +1466,5 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private function treatVisibleOverflowAsAuto():Bool
 	{
 		return false;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * overriden as scrollbar shuold be removed from 
-	 * the width and height of the bounds of this
-	 * ElementRenderer
-	 */
-	override private function get_globalBounds():RectangleData
-	{
-		var globalBounds:RectangleData = super.get_globalBounds();
-		
-		if (_horizontalScrollBar != null)
-		{
-			//globalBounds.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
-		}
-		
-		if (_verticalScrollBar != null)
-		{
-			//globalBounds.width -= _verticalScrollBar.coreStyle.computedStyle.width;
-		}
-		
-		return globalBounds;
 	}
 }

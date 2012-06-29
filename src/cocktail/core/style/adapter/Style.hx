@@ -9,6 +9,8 @@ package cocktail.core.style.adapter;
 
 import cocktail.core.dom.Attr;
 import cocktail.core.dom.NamedNodeMap;
+import cocktail.core.html.HTMLDocument;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.CSSConstants;
 import cocktail.core.unit.UnitManager;
@@ -106,6 +108,20 @@ class Style
 	public var overflowY(get_overflowY,  set_overflowY):String;
 	
 	/**
+	 * transition styles
+	 */
+	public var transitionProperty(get_transitionProperty, set_transitionProperty):String;
+	public var transitionDuration(get_transitionDuration, set_transitionDuration):String;
+	public var transitionTimingFunction(get_transitionTimingFunction, set_transitionTimingFunction):String;
+	public var transitionDelay(get_transitionDelay, set_transitionDelay):String;
+	
+	/*
+	public var marginRight(get_marginRight, set_marginRight):String;
+	public var marginTop(get_marginTop, set_marginTop):String;
+	public var marginBottom(get_marginBottom, set_marginBottom):String;
+	*/
+
+	/**
 	 * user interface styles
 	 */
 	public var cursor(get_cursor, set_cursor):String;
@@ -123,8 +139,7 @@ class Style
 	 * 
 	 * TODO 3 : shouldn't store invalid styles
 	 */
-	private var _attributes:NamedNodeMap;
-	public var attributes(get_attributes, never):NamedNodeMap;
+	public var attributes(default, null):NamedNodeMap<HTMLElement>;
 	
 	/**
 	 * class constructor. Store the ref to 
@@ -133,7 +148,7 @@ class Style
 	public function new(coreStyle:CoreStyle) 
 	{
 		_coreStyle = coreStyle;
-		_attributes = new NamedNodeMap();
+		attributes = new NamedNodeMap<HTMLElement>();
 	}
 	
 	/////////////////////////////////
@@ -150,22 +165,13 @@ class Style
 		//hash if it exists
 		if (value == null)
 		{
-			_attributes.removeNamedItem(name);
+			attributes.removeNamedItem(name);
 			return;
 		}
 		
-		var attr:Attr = new Attr(name);
+		var attr:Attr<HTMLElement> = new Attr<HTMLElement>(name);
 		attr.value = value;
-		_attributes.setNamedItem(attr);
-	}
-	
-	/////////////////////////////////
-	// SETTERS/GETTERS
-	////////////////////////////////
-	
-	private function get_attributes():NamedNodeMap
-	{
-		return _attributes;
+		attributes.setNamedItem(attr);
 	}
 	
 	/////////////////////////////////
@@ -761,5 +767,54 @@ class Style
 	{
 		return UnitManager.getCSSCursor(_coreStyle.cursor);
 	}
+
+	/* transitions */
+	private function get_transitionProperty():String 
+	{
+		return UnitManager.getCSSTransitionProperty(_coreStyle.transitionProperty);
+	}
 	
+	private function set_transitionProperty(value:String):String 
+	{
+		setAttribute(CSSConstants.TRANSITION_PROPERTY_STYLE_NAME, value);
+		_coreStyle.transitionProperty = UnitManager.getTransitionProperty(value);
+		return value;
+	}
+
+	private function get_transitionDuration():String 
+	{
+		return UnitManager.getCSSTransitionDuration(_coreStyle.transitionDuration);
+	}
+	
+	private function set_transitionDuration(value:String):String 
+	{
+		setAttribute(CSSConstants.TRANSITION_DURATION_STYLE_NAME, value);
+		_coreStyle.transitionDuration = UnitManager.getTransitionDuration(value);
+		return value;
+	}
+
+	private function get_transitionDelay():String 
+	{
+		return UnitManager.getCSSTransitionDelay(_coreStyle.transitionDelay);
+	}
+	
+	private function set_transitionDelay(value:String):String 
+	{
+		setAttribute(CSSConstants.TRANSITION_DELAY_STYLE_NAME, value);
+		_coreStyle.transitionDelay = UnitManager.getTransitionDelay(value);
+		return value;
+	}	
+
+	private function get_transitionTimingFunction():String 
+	{
+		return UnitManager.getCSSTransitionTimingFunction(_coreStyle.transitionTimingFunction);
+	}
+	
+	private function set_transitionTimingFunction(value:String):String 
+	{
+		setAttribute(CSSConstants.TRANSITION_TIMING_FUNCTION_STYLE_NAME, value);
+		_coreStyle.transitionTimingFunction = UnitManager.getTransitionTimingFunction(value);
+		return value;
+	}
+
 }

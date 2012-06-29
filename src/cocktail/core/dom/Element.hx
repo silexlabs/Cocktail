@@ -8,6 +8,7 @@
 package cocktail.core.dom;
 
 import cocktail.core.dom.DOMData;
+import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 
 /**
@@ -24,7 +25,7 @@ import cocktail.core.html.HTMLElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class Element extends Node
+class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 {
 
 	/**
@@ -34,40 +35,33 @@ class Element extends Node
 	private static inline var MATCH_ALL_TAG_NAME:String = "*";
 	
 	/**
-	 * The class attribute searched for
-	 * when using the getElementsByClassName
-	 */
-	private static inline var CLASS_ATTRIBUTE:String = "class";
-	
-	/**
 	 * The name of the element
 	 */
-	private var _tagName:String;
-	public var tagName(get_tagName, never):String;
+	public var tagName(default, null):String;
 	
 	/**
 	 * returns a reference to the first child node of that element which is of nodeType Element.
 	 * returns, null if this Element has no child nodes or no Element child nodes
 	 */
-	public var firstElementChild(get_firstElementChild, never):Element;
+	public var firstElementChild(get_firstElementChild, never):ElementClass;
 	
 	/**
 	 * returns a reference to the first last child node of that element which is of nodeType Element.
 	 * returns, null if this Element has no child nodes or no Element child nodes
 	 */
-	public var lastElementChild(get_lastElementChild, never):Element;
+	public var lastElementChild(get_lastElementChild, never):ElementClass;
 	
 	/**
 	 * returns a reference to the first previous sibling element which is of nodeType Element.
 	 * returns, null if this Element has no previous siblings or none of them are Element
 	 */
-	public var previousElementSibling(get_previousElementSibling, never):Element;
+	public var previousElementSibling(get_previousElementSibling, never):ElementClass;
 	
 	/**
 	 * returns a reference to the first next sibling element which is of nodeType Element.
 	 * returns, null if this Element has no next siblings or none of them are Element
 	 */
-	public var nextElementSibling(get_nextElementSibling, never):Element;
+	public var nextElementSibling(get_nextElementSibling, never):ElementClass;
 	
 	/**
 	 * Returns the number of children of this Element which are 
@@ -83,8 +77,8 @@ class Element extends Node
 	 */
 	public function new(tagName:String) 
 	{
-		_tagName = tagName;
-		_attributes = new NamedNodeMap();
+		this.tagName = tagName;
+		attributes = new NamedNodeMap<ElementClass>();
 		super();
 	}
 	
@@ -95,16 +89,13 @@ class Element extends Node
 	/**
 	 * Retrieves an attribute value by name.
 	 * 
-	 * TODO 2 : when attribute is not found, should null or empty
-	 * string be returned ?
-	 * 
 	 * @param	name The name of the attribute to retrieve.
 	 * @return The Attr value as a string, or the empty string
 	 * if that attribute does not have a specified or default value.
 	 */
 	public function getAttribute(name:String):String
 	{
-		var attribute:Attr = getAttributeNode(name);
+		var attribute:Attr<ElementClass> = getAttributeNode(name);
 		if (attribute != null)
 		{
 			return attribute.value;
@@ -135,12 +126,12 @@ class Element extends Node
 	 */
 	public function setAttribute(name:String, value:String):Void
 	{
-		var attribute:Attr = cast(_attributes.getNamedItem(name));
+		var attribute:Attr<ElementClass> = attributes.getNamedItem(name);
 		if (attribute == null)
 		{
-			attribute = new Attr(name);
-			_attributes.setNamedItem(attribute);
-			attribute.ownerElement = this;
+			attribute = new Attr<ElementClass>(name);
+			attributes.setNamedItem(attribute);
+			attribute.ownerElement = cast(this);
 		}
 		
 		attribute.value = value;
@@ -154,13 +145,13 @@ class Element extends Node
 	 * @return The Attr node with the specified name 
 	 * (nodeName) or null if there is no such attribute.
 	 */
-	public function getAttributeNode(name:String):Attr
+	public function getAttributeNode(name:String):Attr<ElementClass>
 	{
-		var attribute:Node = _attributes.getNamedItem(name);
+		var attribute:Attr<ElementClass> = attributes.getNamedItem(name);
 		
 		if (attribute != null)
 		{
-			return cast(attribute);
+			return attribute;
 		}
 		
 		return null;
@@ -176,10 +167,10 @@ class Element extends Node
 	 * @return If the newAttr attribute replaces an existing attribute,
 	 * the replaced Attr node is returned, otherwise null is returned.
 	 */
-	public function setAttributeNode(newAttr:Attr):Attr
+	public function setAttributeNode(newAttr:Attr<ElementClass>):Attr<ElementClass>
 	{
-		newAttr.ownerElement = this;
-		return cast(_attributes.setNamedItem(newAttr));
+		newAttr.ownerElement = cast(this);
+		return attributes.setNamedItem(newAttr);
 	}
 	
 	/**
@@ -194,7 +185,7 @@ class Element extends Node
 	 */
 	public function removeAttribute(name:String):Void
 	{
-		var removedAttribute:Attr = cast(_attributes.removeNamedItem(name));
+		var removedAttribute:Attr<ElementClass> = attributes.removeNamedItem(name);
 		
 		if (removedAttribute != null)
 		{
@@ -219,12 +210,12 @@ class Element extends Node
 	 */
 	public function setIdAttribute(name:String, isId:Bool):Void
 	{
-		var idAttribute:Attr = cast(_attributes.getNamedItem(name));
+		var idAttribute:Attr<ElementClass> = attributes.getNamedItem(name);
 		if (idAttribute == null)
 		{
-			idAttribute = new Attr(name);
-			_attributes.setNamedItem(idAttribute);
-			idAttribute.ownerElement = this;
+			idAttribute = new Attr<ElementClass>(name);
+			attributes.setNamedItem(idAttribute);
+			idAttribute.ownerElement = cast(this);
 		}
 		
 		idAttribute.isId = isId;
@@ -244,10 +235,10 @@ class Element extends Node
 	 * @param	idAttr The attribute node.
 	 * @param	isId Whether the attribute is a of type ID.
 	 */
-	public function setIdAttributeNode(idAttr:Attr, isId:Bool):Void
+	public function setIdAttributeNode(idAttr:Attr<ElementClass>, isId:Bool):Void
 	{
 		idAttr.isId = isId;
-		_attributes.setNamedItem(idAttr);
+		attributes.setNamedItem(idAttr);
 	}
 	
 	/**
@@ -260,7 +251,7 @@ class Element extends Node
 	 */
 	public function hasAttribute(name:String):Bool
 	{
-		return _attributes.getNamedItem(name) != null;
+		return attributes.getNamedItem(name) != null;
 	}
 	
 	/**
@@ -275,7 +266,7 @@ class Element extends Node
 	public function getElementsByTagName(tagName:String):Array<HTMLElement>
 	{
 		var elements:Array<HTMLElement> = new Array<HTMLElement>();
-		doGetElementsByTagName(this, tagName, elements);
+		doGetElementsByTagName(cast(this), tagName, elements);
 		return elements;
 	}
 	
@@ -292,7 +283,7 @@ class Element extends Node
 	public function getElementsByClassName(className:String):Array<HTMLElement>
 	{
 		var elements:Array<HTMLElement> = new Array<HTMLElement>();
-		doGetElementsByClassName(this, className, elements);
+		doGetElementsByClassName(cast(this), className, elements);
 		return elements;
 	}
 	
@@ -304,23 +295,24 @@ class Element extends Node
 	 * do get the matching child elements by 
 	 * traversing the DOM tree recursively
 	 */
-	private function doGetElementsByTagName(node:Node, tagName:String, elements:Array<HTMLElement>):Void
+	private function doGetElementsByTagName(node:HTMLElement, tagName:String, elements:Array<HTMLElement>):Void
 	{
 		if (node.hasChildNodes() == true)
 		{
-			for (i in 0...node.childNodes.length)
+			var length:Int = node.childNodes.length;
+			for (i in 0...length)
 			{
-				var childNode:Node = node.childNodes[i];
+				var childNode:HTMLElement = cast(node.childNodes[i]);
 				
 				//if matching tagName, push child node
 				if (childNode.nodeName == tagName)
 				{
-					elements.push(cast(childNode));
+					elements.push(childNode);
 				}
 				//else if any tagName is accepted and the child node is an element node, push child node
 				else if (tagName == MATCH_ALL_TAG_NAME && childNode.nodeType == Node.ELEMENT_NODE)
 				{
-					elements.push(cast(childNode));
+					elements.push(childNode);
 				}
 				
 				doGetElementsByTagName(childNode, tagName, elements);
@@ -332,18 +324,19 @@ class Element extends Node
 	 * do get the matching child elements by 
 	 * traversing the DOM tree recursively
 	 */
-	private function doGetElementsByClassName(node:Node, className:String, elements:Array<HTMLElement>):Void
+	private function doGetElementsByClassName(node:HTMLElement, className:String, elements:Array<HTMLElement>):Void
 	{
 		if (node.hasChildNodes() == true)
 		{
-			for (i in 0...node.childNodes.length)
+			var length:Int = node.childNodes.length;
+			for (i in 0...length)
 			{
-				var childNode:Node = node.childNodes[i];
+				var childNode:HTMLElement = cast(node.childNodes[i]);
 				switch (childNode.nodeType)
 				{
 					case Node.ELEMENT_NODE:
-						var elementNode:Element = cast(childNode);
-						var elementClassName:String = elementNode.getAttribute(CLASS_ATTRIBUTE);
+						var elementNode:HTMLElement = childNode;
+						var elementClassName:String = elementNode.getAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME);
 						if (elementClassName != null)
 						{
 							var elementClassNames:Array<String> = elementClassName.split(" ");
@@ -353,7 +346,7 @@ class Element extends Node
 							{
 								if (elementClassNames[j] == className && foundFlag == false)
 								{
-									elements.push(cast(elementNode));
+									elements.push(elementNode);
 									foundFlag = true;
 								}
 							}
@@ -372,7 +365,7 @@ class Element extends Node
 	
 	override public function hasAttributes():Bool
 	{
-		return _attributes.length > 0;
+		return attributes.length > 0;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -381,7 +374,7 @@ class Element extends Node
 	
 	override private function get_nodeName():String
 	{
-		return _tagName;
+		return tagName;
 	}
 	
 	override private function get_nodeType():Int
@@ -389,16 +382,11 @@ class Element extends Node
 		return Node.ELEMENT_NODE;
 	}
 	
-	override private function get_attributes():NamedNodeMap 
-	{
-		return _attributes;
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// ELEMENT TRAVERSAL GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_firstElementChild():Element
+	private function get_firstElementChild():ElementClass
 	{
 		if (hasChildNodes() == false)
 		{
@@ -407,15 +395,16 @@ class Element extends Node
 		
 		if (firstChild.nodeType == Node.ELEMENT_NODE)
 		{
-			return cast(firstChild);
+			return firstChild;
 		}
 		else
 		{
-			for (i in 0..._childNodes.length)
+			var length:Int = childNodes.length;
+			for (i in 0...length)
 			{
-				if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
+				if (childNodes[i].nodeType == Node.ELEMENT_NODE)
 				{
-					return cast(_childNodes[i]);
+					return childNodes[i];
 				}
 			}
 		}
@@ -423,7 +412,7 @@ class Element extends Node
 		return null;
 	}
 	
-	private function get_lastElementChild():Element
+	private function get_lastElementChild():ElementClass
 	{
 		if (hasChildNodes() == false)
 		{
@@ -432,15 +421,16 @@ class Element extends Node
 		
 		if (lastChild.nodeType == Node.ELEMENT_NODE)
 		{
-			return cast(lastChild);
+			return lastChild;
 		}
 		else
 		{
-			for (i in _childNodes.length...0)
+			var length:Int = childNodes.length;
+			for (i in length...0)
 			{
-				if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
+				if (childNodes[i].nodeType == Node.ELEMENT_NODE)
 				{
-					return cast(_childNodes[i]);
+					return childNodes[i];
 				}
 			}
 		}
@@ -448,14 +438,14 @@ class Element extends Node
 		return null;
 	}
 	
-	private function get_nextElementSibling():Element
+	private function get_nextElementSibling():ElementClass
 	{
 		if (nextSibling == null)
 		{
 			return null;
 		}
 		
-		var nextElementSibling:Node = nextSibling;
+		var nextElementSibling:ElementClass = nextSibling;
 		
 		while (nextElementSibling.nodeType != Node.ELEMENT_NODE)
 		{
@@ -467,17 +457,17 @@ class Element extends Node
 			}
 		}
 		
-		return cast(nextElementSibling);
+		return nextElementSibling;
 	}
 	
-	private function get_previousElementSibling():Element
+	private function get_previousElementSibling():ElementClass
 	{
 		if (previousSibling == null)
 		{
 			return null;
 		}
 		
-		var previousElementSibling:Node = previousSibling;
+		var previousElementSibling:ElementClass = previousSibling;
 		
 		while (previousElementSibling.nodeType != Node.ELEMENT_NODE)
 		{
@@ -496,23 +486,15 @@ class Element extends Node
 	{
 		var childElementCount:Int = 0;
 		
-		for (i in 0..._childNodes.length)
+		var length:Int = childNodes.length;
+		for (i in 0...length)
 		{
-			if (_childNodes[i].nodeType == Node.ELEMENT_NODE)
+			if (childNodes[i].nodeType == Node.ELEMENT_NODE)
 			{
 				childElementCount++;
 			}
 		}
 		
 		return childElementCount;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// SETTERS/GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_tagName():String 
-	{
-		return _tagName;
 	}
 }

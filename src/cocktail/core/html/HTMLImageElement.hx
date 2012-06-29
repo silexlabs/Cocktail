@@ -9,13 +9,17 @@ package cocktail.core.html;
 
 import cocktail.core.dom.Attr;
 import cocktail.core.dom.Node;
+import cocktail.core.event.EventTarget;
 import cocktail.core.event.UIEvent;
-import cocktail.core.NativeElement;
+import cocktail.core.resource.ResourceManager;
+import cocktail.port.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.resource.ImageLoader;
+import cocktail.port.Resource;
 import haxe.Log;
 import cocktail.core.html.EmbeddedElement;
+import cocktail.core.renderer.RendererData;
 
 
 /**
@@ -58,13 +62,16 @@ class HTMLImageElement extends EmbeddedElement
 	 */
 	public var naturalHeight(get_naturalHeight, never):Int;
 	
-
 	/**
-	 * Reponsible for loading pictures into a NativeElement. 
-	 * Its NativeElement is used by this HTMLImageElement as an
-	 * embedded asset
+	 * Callback called when resource sucessfully loaded
 	 */
-	private var _imageLoader:ImageLoader;
+	private var _resourceLoadedCallback:Event->Void;
+	
+	/**
+	 * Callback called when there is an error when loading
+	 * a resource
+	 */
+	private var _resourceLoadError:Event->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT
@@ -75,20 +82,11 @@ class HTMLImageElement extends EmbeddedElement
 	 */
 	public function new() 
 	{
-		_imageLoader = new ImageLoader();
 		super(HTMLConstants.HTML_IMAGE_TAG_NAME);
 	}
 	
-	/**
-	 * the embedded assed is held by the image loader
-	 */
-	override private function initEmbeddedAsset():Void
-	{
-		_embeddedAsset = _imageLoader.nativeElement;
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC METHODS
+	// OVERRIDEN ATTRIBUTE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	override public function setAttribute(name:String, value:String):Void
@@ -112,8 +110,8 @@ class HTMLImageElement extends EmbeddedElement
 	 */
 	override private function createElementRenderer():Void
 	{
-		_elementRenderer = new ImageRenderer(this);
-		_elementRenderer.coreStyle = _coreStyle;
+		elementRenderer = new ImageRenderer(this);
+		elementRenderer.coreStyle = coreStyle;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -138,41 +136,64 @@ class HTMLImageElement extends EmbeddedElement
 	 */
 	private function set_src(value:String):String
 	{
-		//TODO 2 : awkward to call super, but else infinite loop
 		super.setAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME, value);
-		_imageLoader.load([value], onLoadComplete, onLoadError);
+		
+		var resource:Resource = ResourceManager.getResource(value);
+		
+		if (resource.loaded == false)
+		{
+			_resourceLoadedCallback = onResourceLoaded;
+			_resourceLoadError = onResourceLoadError;
+			resource.addEventListener(UIEvent.LOAD, _resourceLoadedCallback);
+			resource.addEventListener(UIEvent.ERROR, _resourceLoadError);
+		}
+		else
+		{
+			if (resource.loadedWithError == true)
+			{
+				onLoadError();
+			}
+			else
+			{
+				onLoadComplete(resource);
+			}
+		}
+		
 		return value;
 	}
 	
-	/**
-	 * Called when the picture was successfuly loaded.
-	 * Invalidate the Style and call the
-	 * onLoad callback if provided.
-	 * 
-	 * Store the instrinsic dimensions of the loaded asset
-	 * 
-	 * @param	image the loaded picture stored as a nativeElement
-	 */
-	private function onLoadComplete(image:NativeElement):Void
+	private function onResourceLoaded(e:Event):Void
 	{
-		this._intrinsicHeight = _imageLoader.intrinsicHeight;
-		this._intrinsicWidth = _imageLoader.intrinsicWidth;
-		this._intrinsicRatio = _intrinsicHeight / _intrinsicWidth;
+		removeListeners(e.target);
+		onLoadComplete(cast(e.target));
+	}
+	
+	private function onResourceLoadError(e:Event):Void
+	{
+		removeListeners(e.target);
+		onLoadError();
+	}
+	
+	private function removeListeners(resource:EventTarget):Void
+	{
+		resource.removeEventListener(UIEvent.LOAD, _resourceLoadedCallback);
+		resource.removeEventListener(UIEvent.ERROR, _resourceLoadError);
+	}
+	
+	private function onLoadComplete(resource:Resource):Void
+	{	
+		intrinsicHeight = resource.intrinsicHeight;
+		intrinsicWidth = resource.intrinsicWidth;
+		intrinsicRatio = intrinsicHeight / intrinsicWidth;
 		
-		invalidateLayout();
+		invalidate(InvalidationReason.other);
 		
 		var loadEvent:UIEvent = new UIEvent();
 		loadEvent.initUIEvent(UIEvent.LOAD, false, false, null, 0.0);
 		dispatchEvent(loadEvent);
 	}
 	
-	/**
-	 * Called when there was an error during loading.
-	 * Call the error callback if provided
-	 * 
-	 * @param	message the error message
-	 */
-	private function onLoadError(message:String):Void
+	private function onLoadError():Void
 	{
 		var errorEvent:UIEvent = new UIEvent();
 		errorEvent.initUIEvent(UIEvent.ERROR, false, false, null, 0.0);
@@ -190,20 +211,20 @@ class HTMLImageElement extends EmbeddedElement
 	
 	private function get_naturalHeight():Int
 	{
-		if (_intrinsicHeight == null)
+		if (intrinsicHeight == null)
 		{
 			return 0;
 		}
-		return _intrinsicHeight;
+		return intrinsicHeight;
 	}
 	
 	private function get_naturalWidth():Int
 	{
-		if (_intrinsicWidth == null)
+		if (intrinsicWidth == null)
 		{
 			return 0;
 		}
-		return _intrinsicWidth;
+		return intrinsicWidth;
 	}
 	
 }

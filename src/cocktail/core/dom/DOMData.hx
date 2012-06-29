@@ -9,7 +9,7 @@ package cocktail.core.dom;
 
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLImageElement;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.renderer.TextLineBox;
 import cocktail.core.renderer.TextRenderer;
 import cocktail.core.unit.UnitData;
@@ -22,6 +22,7 @@ import cocktail.core.unit.UnitData;
 
 /**
  * TODO 5 : obsolete, should now use the Canvas API
+ * TODO 2 : is in the wrong package
  */
 //////////////////////////////////////////////////////////////////////////////////////////
 // Graphic HTMLElement structures and enums

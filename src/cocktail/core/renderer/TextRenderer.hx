@@ -9,6 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
@@ -42,28 +43,22 @@ class TextRenderer extends ElementRenderer
 	/**
 	 * Class constructor.
 	 */
-	public function new(node:Node) 
+	public function new(node:HTMLElement) 
 	{
 		super(node);
 		_text = cast(node);
-		
-		//_lineBoxes = null;
 	}
 	
-	override public function layout(containingBlockData:ContainingBlockData, viewportData:ContainingBlockData, firstPositionedAncestorData:FirstPositionedAncestorData, containingBlockFontMetricsData:FontMetricsData, formattingContext:FormattingContext):Void
+	override public function layout(forceLayout:Bool):Void
 	{	
-		//if (lineBoxes == null)
-		//{
-			createTextLines();
-		//}
+		createTextLines();
 	}
 	
-	//TODO IMPORTANT : setting lineBoxes to null causes runtime error in inline formatting context,
+	//TODO 1 IMPORTANT : setting lineBoxes to null causes runtime error in inline formatting context,
 	//need to find a better way to refresh text
-	override public function invalidateText():Void
+	override private function invalidateText():Void
 	{
-		//_lineBoxes = null;
-		invalidateLayout();
+		//invalidateLayout();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -74,14 +69,20 @@ class TextRenderer extends ElementRenderer
 	 * Actually convert a text into an array
 	 * of text token.
 	 */
-	private static function doGetTextTokens(text:String):Array<TextToken>
+	private static function doGetTextTokens(text:String, whiteSpace:WhiteSpace):Array<TextToken>
 	{
+		//apply white space processing, for instance to collapse
+		//sequences of white spaces if needed
+		text = applyWhiteSpace(text, whiteSpace);
+		
 		var textTokens:Array<TextToken> = new Array<TextToken>();
 
 		var textToken:String = null;
 		
-		var i:Int = 0;
+		//wether the last inserted token was a space
+		var lastCharacterIsSpace:Bool = false;
 		
+		var i:Int = 0;
 		//Loop in all the text charachters
 		while (i < text.length)
 		{
@@ -117,9 +118,8 @@ class TextRenderer extends ElementRenderer
 					}
 				}
 			}
-			
 			//If the character is a space
-			if (StringTools.isSpace(text, i) == true)
+			else if (StringTools.isSpace(text, i) == true)
 			{
 				
 				//If a word was being formed by concatenating
@@ -133,12 +133,15 @@ class TextRenderer extends ElementRenderer
 				
 				//push the space in the returned array
 				textTokens.push(TextToken.space);
+				lastCharacterIsSpace = true;
 			}
 			//else the charachter belongs to a word
 			//and is added to the word which is being
 			//concatenated
 			else
 			{
+				lastCharacterIsSpace = false;
+				
 				if (textToken == null)
 				{
 					textToken = "";
@@ -155,13 +158,46 @@ class TextRenderer extends ElementRenderer
 		{
 			textTokens.push(word(textToken));
 		}
-
+		
 		return textTokens;
 	}
 	
 	/////////////////////////////////
 	// PRIVATE METHODS
 	////////////////////////////////
+	
+	/**
+	 * Apply white space pre-processing tothe string
+	 * of rendered text
+	 * 
+	 * TODO 2 : this is only a partial implementation 
+	 */
+	private static function applyWhiteSpace(text:String, whiteSpace:WhiteSpace):String
+	{
+		switch (whiteSpace)
+		{
+			case normal, nowrap: // remove new lines, spaces and tab
+
+			var er1 : EReg = ~/[ \t]+/;
+			//TODO 3 : at this point, CR should have been normalised as LF
+			var er2 : EReg = ~/\r+/g;
+			var er3 : EReg = ~/\n+/g;
+			var er4 : EReg = ~/\s+/g;
+			
+			text = er4.replace(er3.replace(er2.replace( er1.replace( text , " " ) , " " ), " "), " ");
+			
+			case preLine: // remove spaces
+
+			var er1 : EReg = ~/ *$^ */m;
+			var er2 : EReg = ~/[ \t]+/;
+
+			text = er2.replace( er1.replace( text , "\n" ) , " " );
+
+			default:
+		}
+		
+		return text;
+	}
 	
 	/**
 	 * Separate the source text in an array of text token
@@ -172,10 +208,11 @@ class TextRenderer extends ElementRenderer
 	 */
 	private function createTextLines():Void
 	{
-		_textTokens = doGetTextTokens(_text.nodeValue);
+		_textTokens = doGetTextTokens(_text.nodeValue, computedStyle.whiteSpace);
 		lineBoxes = [];
 		
-		for (i in 0..._textTokens.length)
+		var length:Int = _textTokens.length;
+		for (i in 0...length)
 		{
 			//create and store the line boxes
 			lineBoxes.push(createTextLineBoxFromTextToken(_textTokens[i]));
@@ -247,32 +284,13 @@ class TextRenderer extends ElementRenderer
 	 */
 	override private function get_bounds():RectangleData
 	{
-		if (_lineBoxes == null)
-		{
-			return {
-				x:0.0,
-				y:0.0,
-				width:0.0,
-				height:0.0
-			}
-		}
 		var textLineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
-		for (i in 0..._lineBoxes.length)
+		var length:Int = lineBoxes.length;
+		for (i in 0...length)
 		{
-			textLineBoxesBounds.push(_lineBoxes[i].bounds);
+			textLineBoxesBounds.push(lineBoxes[i].bounds);
 		}
 		
 		return getChildrenBounds(textLineBoxesBounds);
 	}
-	
-	override private function getLineBoxes():Array<LineBox>
-	{
-		if (_lineBoxes == null)
-		{
-			return [];
-		}
-		return _lineBoxes;
-	}
-	
-	
 }

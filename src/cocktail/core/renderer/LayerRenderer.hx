@@ -7,11 +7,14 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
+import cocktail.core.dom.NodeBase;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import haxe.Log;
 
@@ -36,7 +39,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class LayerRenderer extends Node
+class LayerRenderer extends NodeBase<LayerRenderer>
 {
 	/**
 	 * A reference to the ElementRenderer which
@@ -91,12 +94,12 @@ class LayerRenderer extends Node
 	 * root ElementRenderer in one of its chile element
 	 * renderer array based on its z-index style
 	 */ 
-	override public function appendChild(newChild:Node):Node
+	override public function appendChild(newChild:LayerRenderer):LayerRenderer
 	{
 		super.appendChild(newChild);
 		
-		var childLayer:LayerRenderer = cast(newChild);
-		
+		var childLayer:LayerRenderer = newChild;
+
 		//check the computed z-index of the ElementRenderer which
 		//instantiated the child LayerRenderer
 		switch(childLayer.rootElementRenderer.computedStyle.zIndex)
@@ -108,7 +111,6 @@ class LayerRenderer extends Node
 			case ZIndex.integer(value):
 				if (value == 0)
 				{
-					//TODO 1 : might not put in the right order after DOM manipulation, use "insertBefore" ?
 					_zeroAndAutoZIndexChildRenderers.push(childLayer.rootElementRenderer);
 				}
 				else if (value > 0)
@@ -129,15 +131,24 @@ class LayerRenderer extends Node
 	 * tree, th reference of its root ElementRenderer must also
 	 * be removed from the right child root ElementRenderer array
 	 */
-	override public function removeChild(oldChild:Node):Node
+	override public function removeChild(oldChild:LayerRenderer):LayerRenderer
 	{
-		var childLayer:LayerRenderer = cast(oldChild);
+		var childLayer:LayerRenderer = oldChild;
 
-		//TODO 2 : shouldn't have ot try in each ? might switch the z-index, but it might
-		//have changed which have caused the removal in the first place
-		_zeroAndAutoZIndexChildRenderers.remove(childLayer.rootElementRenderer);
-		_positiveZIndexChildRenderers.remove(childLayer.rootElementRenderer);
-		_negativeZIndexChildRenderers.remove(childLayer.rootElementRenderer);
+		var removed:Bool = false;
+		
+		//try each of the array, stop if an element was actually removed from them
+		removed = _zeroAndAutoZIndexChildRenderers.remove(childLayer.rootElementRenderer);
+		
+		if (removed == false)
+		{
+			removed = _positiveZIndexChildRenderers.remove(childLayer.rootElementRenderer);
+			
+			if (removed == false)
+			{
+				 _negativeZIndexChildRenderers.remove(childLayer.rootElementRenderer);
+			}
+		}
 		
 		super.removeChild(oldChild);
 	
@@ -151,25 +162,25 @@ class LayerRenderer extends Node
 	/**
 	 * start the rendering of the positive z-index children
 	 */ 
-	public function renderPositiveChildElementRenderers(graphicContext:NativeElement, relativeOffset:PointData):Void
+	public function renderPositiveChildElementRenderers(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
-		renderChildElementRenderers(_positiveZIndexChildRenderers, graphicContext, relativeOffset);
+		renderChildElementRenderers(_positiveZIndexChildRenderers, graphicContext, forceRendering);
 	}
 	
 	/**
 	 * start the rendering of the zero and auto z-index children
 	 */ 
-	public function renderZeroAndAutoChildElementRenderers(graphicContext:NativeElement, relativeOffset:PointData):Void
+	public function renderZeroAndAutoChildElementRenderers(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
-		renderChildElementRenderers(_zeroAndAutoZIndexChildRenderers, graphicContext, relativeOffset);
+		renderChildElementRenderers(_zeroAndAutoZIndexChildRenderers, graphicContext, forceRendering);
 	}
 	
 	/**
 	 * start the rendering of the negative z-index children
 	 */
-	public function renderNegativeChildElementRenderers(graphicContext:NativeElement, relativeOffset:PointData):Void
+	public function renderNegativeChildElementRenderers(graphicContext:NativeElement, forceRendering:Bool):Void
 	{
-		renderChildElementRenderers(_negativeZIndexChildRenderers, graphicContext, relativeOffset);
+		renderChildElementRenderers(_negativeZIndexChildRenderers, graphicContext, forceRendering);
 	}
 	
 	/////////////////////////////////
@@ -180,11 +191,17 @@ class LayerRenderer extends Node
 	 * Utils method to start the rendering of an array of child root
 	 * ElementRenderer
 	 */
-	private function renderChildElementRenderers(rootElementRenderers:Array<ElementRenderer>, graphicContext:NativeElement, relativeOffset:PointData):Void
+	private function renderChildElementRenderers(rootElementRenderers:Array<ElementRenderer>, graphicContext:NativeElement, forceRendering:Bool):Void
 	{
-		for (i in 0...rootElementRenderers.length)
+		var length:Int = rootElementRenderers.length;
+		for (i in 0...length)
 		{
-			rootElementRenderers[i].render(graphicContext, relativeOffset);
+			//the child element renderer is attached to its parent graphic context
+			//
+			//TODO 1 : using the parent graphic context causes a z-index bug as if the parent is a child of the formatting
+			//context root, the child element renderer is not displayed on top of the in-flow elements
+			var parentElementRenderer:ElementRenderer = rootElementRenderers[i].parentNode;
+			rootElementRenderers[i].render(graphicContext, forceRendering);
 		}
 	}
 	
@@ -230,7 +247,8 @@ class LayerRenderer extends Node
 		var isInserted:Bool = false;
 		
 		//loop in all the positive z-index array
-		for (i in 0..._positiveZIndexChildRenderers.length)
+		var length:Int = _positiveZIndexChildRenderers.length;
+		for (i in 0...length)
 		{
 			//get the z-index of the child at the current index
 			var currentRendererZIndex:Int = 0;
@@ -281,7 +299,8 @@ class LayerRenderer extends Node
 
 		var isInserted:Bool = false;
 		
-		for (i in 0..._negativeZIndexChildRenderers.length)
+		var length:Int = _negativeZIndexChildRenderers.length;
+		for (i in 0...length)
 		{
 			var currentRendererZIndex:Int = 0;
 			
@@ -322,10 +341,12 @@ class LayerRenderer extends Node
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = getElementRenderersAtPoint(point, scrollX, scrollY);
 		
-		return elementRenderersAtPoint[elementRenderersAtPoint.length - 1];
+		var topMostElementRenderer:ElementRenderer = elementRenderersAtPoint[elementRenderersAtPoint.length - 1];
+		
+		return topMostElementRenderer;
 	}
 	
-	public function getElementRenderersAtPoint(point:PointData, scrollX:Float, scrollY:Float):Array<ElementRenderer>
+	private function getElementRenderersAtPoint(point:PointData, scrollX:Float, scrollY:Float):Array<ElementRenderer>
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = getElementRenderersAtPointInLayer(_rootElementRenderer, point, scrollX, scrollY);
 
@@ -334,8 +355,8 @@ class LayerRenderer extends Node
 			var childRenderers:Array<ElementRenderer> = getChildRenderers();
 			
 			var elementRenderersAtPointInChildRenderers:Array<ElementRenderer> = getElementRenderersAtPointInChildRenderers(point, childRenderers, scrollX, scrollY);
-			
-			for (i in 0...elementRenderersAtPointInChildRenderers.length)
+			var length:Int = elementRenderersAtPointInChildRenderers.length;
+			for (i in 0...length)
 			{
 				elementRenderersAtPoint.push(elementRenderersAtPointInChildRenderers[i]);
 			}
@@ -366,18 +387,19 @@ class LayerRenderer extends Node
 		scrollY += renderer.scrollTop;
 		
 		
-		
-		for (i in 0...renderer.childNodes.length)
+		var length:Int = renderer.childNodes.length;
+		for (i in 0...length)
 		{
-			var child:ElementRenderer = cast(renderer.childNodes[i]);
+			var child:ElementRenderer = renderer.childNodes[i];
 			
 			if (child.layerRenderer == this)
 			{
 				if (child.hasChildNodes() == true)
 				{
-					var childElementRenderersAtPointInLayer:Array<ElementRenderer> = getElementRenderersAtPointInLayer(child, point, scrollX, scrollY);
 					
-					for (j in 0...childElementRenderersAtPointInLayer.length)
+					var childElementRenderersAtPointInLayer:Array<ElementRenderer> = getElementRenderersAtPointInLayer(child, point, scrollX, scrollY);
+					var childLength:Int = childElementRenderersAtPointInLayer.length;
+					for (j in 0...childLength)
 					{
 						elementRenderersAtPointInLayer.push(childElementRenderersAtPointInLayer[j]);
 					}
@@ -404,7 +426,8 @@ class LayerRenderer extends Node
 	{
 		var elementRenderersAtPointInChildRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		for (i in 0...childRenderers.length)
+		var length:Int = childRenderers.length;
+		for (i in 0...length)
 		{
 			
 			var elementRenderersAtPointInChildRenderer:Array<ElementRenderer> = [];
@@ -426,8 +449,8 @@ class LayerRenderer extends Node
 				}
 			}
 		
-				
-			for (j in 0...elementRenderersAtPointInChildRenderer.length)
+			var childLength:Int = elementRenderersAtPointInChildRenderer.length;
+			for (j in 0...childLength)
 			{
 				elementRenderersAtPointInChildRenderers.push(elementRenderersAtPointInChildRenderer[j]);
 			}
@@ -452,91 +475,26 @@ class LayerRenderer extends Node
 		
 		for (i in 0..._negativeZIndexChildRenderers.length)
 		{
-			var childRenderer:ElementRenderer = cast(_negativeZIndexChildRenderers[i]);
+			var childRenderer:ElementRenderer = _negativeZIndexChildRenderers[i];
 			childRenderers.push(childRenderer);
 		}
 		for (i in 0..._zeroAndAutoZIndexChildRenderers.length)
 		{
-			var childRenderer:ElementRenderer = cast(_zeroAndAutoZIndexChildRenderers[i]);
+			var childRenderer:ElementRenderer = _zeroAndAutoZIndexChildRenderers[i];
 			childRenderers.push(childRenderer);
 		}
 		for (i in 0..._positiveZIndexChildRenderers.length)
 		{
-			var childRenderer:ElementRenderer = cast(_positiveZIndexChildRenderers[i]);
+			var childRenderer:ElementRenderer = _positiveZIndexChildRenderers[i];
 			childRenderers.push(childRenderer);
 		}
 		
 		return childRenderers;
 	}
 	
-
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	
-	//TODO 4 : implement layer renderer transformation
-	
-	/**
-	 * when the matrix is set, update also
-	 * the values of the native flash matrix of the
-	 * native DisplayObject
-	 * 
-	 * 
-	 * @param	matrix
-	 */
-	public function setNativeMatrix(matrix:Matrix):Void
-	{
-		/**
-		//concenate the new matrix with the base matrix of the HTMLElement
-		var concatenatedMatrix:Matrix = getConcatenatedMatrix(matrix);
-		
-		//get the data of the abstract matrix
-		var matrixData:MatrixData = concatenatedMatrix.data;
-		
-		//create a native flash matrix with the abstract matrix data
-		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
-	
-		//apply the native flash matrix to the native flash DisplayObject
-		_htmlElement.nativeElement.transform.matrix = nativeTransformMatrix;
-		
-	//	super.setNativeMatrix(concatenatedMatrix);
-		*/
-	}
-	
-	/**
-	 * When concatenating the base Matrix of an embedded element, it must also
-	 * be scaled using the intrinsic width and height of the HTMLElement as reference
-	 * 
-	 */
-	private function getConcatenatedMatrix(matrix:Matrix):Matrix
-	{
-		
-		var currentMatrix:Matrix = new Matrix();
-		//
-		//var embeddedHTMLElement:EmbeddedHTMLElement = cast(this._htmlElement);
-		//
-		//currentMatrix.concatenate(matrix);
-		//currentMatrix.translate(this._nativeX, this._nativeY);
-		//
-		//currentMatrix.scale(this._nativeWidth / embeddedHTMLElement.intrinsicWidth, this._nativeHeight / embeddedHTMLElement.intrinsicHeight, { x:0.0, y:0.0} );
-		//
-		return currentMatrix;
-	}
-	
-	/**
-	 * Concatenate the new matrix with the "base" matrix of the HTMLElement
-	 * where only translations (the x and y of the HTMLElement) and scales
-	 * (the width and height of the HTMLElement) are applied.
-	 * It is neccessary in flash to do so to prevent losing the x, y, width
-	 * and height applied during layout
-	 * 
-	 */
-	private function getConcatenatedMatrix2(matrix:Matrix):Matrix
-	{
-		var currentMatrix:Matrix = new Matrix();
-		//currentMatrix.concatenate(matrix);
-		//currentMatrix.translate(this._nativeX, this._nativeY);
-		return currentMatrix;
-	}
+	/////////////////////////////////
+	// GETTER
+	////////////////////////////////
 	
 	private function get_rootElementRenderer():ElementRenderer
 	{
