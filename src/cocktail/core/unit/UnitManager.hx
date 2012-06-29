@@ -3095,13 +3095,14 @@ class UnitManager
 			func = functions[i];
 			switch(func)
 			{
-				case TransitionTimingFunctionValue.steps(intervalNumbers,intervalChange):
-					var interval = switch (intervalChange)
+				case TransitionTimingFunctionValue.steps(intervalNumbers, intervalChange):
+					var interval = "start";
+					switch (intervalChange)
 					{
 						case IntervalChangeValue.start:
-							return "start";
+							interval =  "start";
 						case IntervalChangeValue.end:
-							return "end";
+							interval = "end";
 					}
 					r = "steps("+Std.string(intervalNumbers)+","+interval;
 				case TransitionTimingFunctionValue.cubicBezier(x1, y1, x2, y2):

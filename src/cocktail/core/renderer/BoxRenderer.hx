@@ -212,15 +212,17 @@ class BoxRenderer extends ElementRenderer
 		//TODO 2 : update doc
 		
 		
+		//TODO 1 : where to compute this ?
+		_coreStyle.computeTransitionStyles();
+		
 		applyOpacity(graphicContext);
-					//TODO 2 : should ony compute transform and transform-origin, anything
-			//else can be done before layout
-			_coreStyle.computeVisualEffectStyles();
 		//apply only if the element is either relative positioned or has
 		//transformations functions
 		if (isRelativePositioned() == true || _coreStyle.transform != Transform.none)
 		{
-
+			//TODO 2 : should ony compute transform and transform-origin, anything
+			//else can be done before layout
+			_coreStyle.computeVisualEffectStyles();
 			
 			applyTransformationMatrix(graphicContext);
 		}

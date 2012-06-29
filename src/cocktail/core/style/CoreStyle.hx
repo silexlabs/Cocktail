@@ -8,6 +8,7 @@
 package cocktail.core.style;
 
 import cocktail.core.event.TransitionEvent;
+import cocktail.core.style.computer.TransitionStylesComputer;
 import cocktail.port.FontManager;
 import cocktail.core.geom.Matrix;
 import cocktail.core.background.BackgroundManager;
@@ -554,6 +555,15 @@ class CoreStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE COMPUTING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Compute the transition styles needing it,
+	 * like transition duration
+	 */
+	public function computeTransitionStyles():Void
+	{
+		TransitionStylesComputer.compute(this);
+	}
 	
 	/**
 	 * Return the right class used to compute the box model
@@ -1219,18 +1229,21 @@ class CoreStyle
 	{
 		transitionProperty = value;
 		computedStyle.transitionProperty = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.TRANSITION_PROPERTY_STYLE_NAME));
 		return value;
 	}
 	
 	private function setTransitionDuration(value:TransitionDuration):TransitionDuration
 	{
 		transitionDuration = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.TRANSITION_DURATION_STYLE_NAME));
 		return value;
 	}
 	
 	private function setTransitionDelay(value:TransitionDelay):TransitionDelay
 	{
 		transitionDelay = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.TRANSITION_DELAY_STYLE_NAME));
 		return value;
 	}
 	
@@ -1238,6 +1251,7 @@ class CoreStyle
 	{
 		transitionTimingFunction = value;
 		computedStyle.transitionTimingFunction = value;
+		invalidate(InvalidationReason.styleChanged(CSSConstants.TRANSITION_TIMING_FUNCTION_STYLE_NAME));
 		return value;
 	}
 	
