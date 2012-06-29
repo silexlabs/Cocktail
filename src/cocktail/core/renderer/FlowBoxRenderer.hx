@@ -84,15 +84,21 @@ class FlowBoxRenderer extends BoxRenderer
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function layout():Void
+	override public function layout(forceLayout:Bool):Void
 	{
-		super.layout();
 		
-		if (_childrenNeedLayout == true)
+	
+		
+		super.layout(forceLayout);
+		
+		/**
+		 * Actually layout all the children of the ElementRenderer by calling
+		 * the layout method recursively on all the children
+		 */
+		var length:Int = childNodes.length;
+		for (i in 0...length)
 		{
-			//layout all the children of the ElementRenderer if it has any
-			layoutChildren();
-			_childrenNeedLayout = false;
+			childNodes[i].layout(_childrenNeedLayout == true);
 		}
 		
 		//starts the formatting of the children of this FlowBoxRenderer
@@ -101,7 +107,7 @@ class FlowBoxRenderer extends BoxRenderer
 		//TODO 3 : should only be called for BlockBoxRenderer
 		format();
 		
-		if (_positionedChildrenNeedLayout == true)
+		if (_positionedChildrenNeedLayout == true || forceLayout == true)
 		{
 			//if this ElementRenderer is positioned, it means that it is the first positioned ancestor
 			//for its positioned children and it is its responsability to lay them out
@@ -128,20 +134,10 @@ class FlowBoxRenderer extends BoxRenderer
 		{
 			//layout the child ElementRenderer which set its x and y positioned origin in the space of this ElementRenderer's
 			//positioned origin
+			
+			//TODO 2 : should instead call the layout() method of its children, the children should
+			//know how to layout itself as a positioned child
 			layoutPositionedChild(_positionedChildren[i], containerBlockData, windowData);
-		}
-	}
-	
-	private function layoutChildren():Void
-	{
-		/**
-		 * Actually layout all the children of the ElementRenderer by calling
-		 * the layout method recursively on all the children
-		 */
-		var length:Int = _childNodes.length;
-		for (i in 0...length)
-		{
-			_childNodes[i].layout();
 		}
 	}
 	
@@ -224,8 +220,8 @@ class FlowBoxRenderer extends BoxRenderer
 	private function getRightOffset(elementRenderer:ElementRenderer, containingHTMLElementWidth:Float):Float
 	{
 		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
-		return containingHTMLElementWidth - computedStyle.width + computedStyle.paddingLeft
-		+ computedStyle.paddingRight - computedStyle.right - computedStyle.marginRight;
+		return containingHTMLElementWidth - computedStyle.width - computedStyle.paddingLeft
+		- computedStyle.paddingRight - computedStyle.right - computedStyle.marginRight;
 	}
 	
 	/**
@@ -243,7 +239,7 @@ class FlowBoxRenderer extends BoxRenderer
 	private function getBottomOffset(elementRenderer:ElementRenderer, containingHTMLElementHeight:Float):Float
 	{
 		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
-		return containingHTMLElementHeight - computedStyle.height + computedStyle.paddingTop +
+		return containingHTMLElementHeight - computedStyle.height - computedStyle.paddingTop -
 		computedStyle.paddingBottom - computedStyle.bottom;
 	}
 	
@@ -260,11 +256,11 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	override public function childrenInline():Bool
 	{	
-		var length:Int = _childNodes.length;
+		var length:Int = childNodes.length;
 		
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = _childNodes[i];
+			var child:ElementRenderer = childNodes[i];
 			//floated and absolutely positioned element are not taken into
 			//account
 			if (child.isFloat() == false)

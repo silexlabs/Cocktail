@@ -21,14 +21,12 @@ class Lib
 	/**
 	 * Return the html document
 	 */
-	private static var _document:HTMLDocument;
-	public static var document(get_document, never):HTMLDocument;
+	public static var document(get_document, null):HTMLDocument;
 	
 	/**
 	 * return the window
 	 */
-	private static var _window:Window;
-	public static var window(get_window, never):Window;
+	public static var window(get_window, null):Window;
 	
 	/**
 	 * class constructor. private as this
@@ -49,8 +47,8 @@ class Lib
 	 */
 	private static function init():Void
 	{
-		_window = new Window();
-		_document = _window.document;
+		window = new Window();
+		document = window.document;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -59,21 +57,21 @@ class Lib
 	
 	private static function get_document():HTMLDocument 
 	{
-		if (_document == null)
+		if (document == null)
 		{
 			init();
 		}
 		
-		return _document;
+		return document;
 	}
 	
 	private static function get_window():Window
 	{
-		if (_window == null)
+		if (window == null)
 		{
 			init();
 		}
-		return _window;
+		return window;
 	}
 	
 	

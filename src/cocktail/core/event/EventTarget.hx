@@ -204,15 +204,23 @@ class EventTarget
 		if (_registeredEventListeners.exists(type) == true)
 		{
 			var registeredListeners:Array<EventListener> = _registeredEventListeners.get(type);
+			
+			var newEventListeners:Array<EventListener> = new Array<EventListener>();
+			
 			for (i in 0...registeredListeners.length)
 			{
 				var eventListener:EventListener = registeredListeners[i];
+				
 				if (eventListener.eventType == type && eventListener.useCapture == useCapture && eventListener.listener == listener) {
 					eventListener.dispose();
-					registeredListeners.splice(i, 1);
-					return;
+				}
+				else
+				{
+					newEventListeners.push(eventListener);
 				}
 			}
+			
+			_registeredEventListeners.set(type, newEventListeners);
 		}
 	}
 	
@@ -226,13 +234,14 @@ class EventTarget
 	 */
 	private function doDispatchEvent(eventListeners:Array<EventListener>, evt:Event):Void
 	{
-		for (i in 0...eventListeners.length)
+		var length:Int = eventListeners.length;
+		for (i in 0...length)
 		{
 			var eventListener:EventListener = eventListeners[i];
-
+			
 			//check if the current phase matches the eventListener
 			//registered for phase
-			
+	
 			//for capturing phase
 			if (evt.eventPhase == Event.CAPTURING_PHASE)
 			{
@@ -241,7 +250,6 @@ class EventTarget
 					eventListener.handleEvent(evt);
 				}
 			}
-			
 			//for bubbling phase
 			else if (evt.eventPhase == Event.BUBBLING_PHASE)
 			{
@@ -250,7 +258,6 @@ class EventTarget
 					eventListener.handleEvent(evt);
 				}
 			}
-			
 			//at "at target" phase, all the eventListeners are
 			//executed
 			else if (evt.eventPhase == Event.AT_TARGET)

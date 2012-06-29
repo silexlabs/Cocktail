@@ -14,6 +14,7 @@ import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.port.platform.Platform;
+import cocktail.core.style.StyleData;
 
 /**
  * Represents the window through which the Document is
@@ -31,8 +32,7 @@ class Window extends EventCallback
 	/**
 	 * return the document viewed through the window
 	 */
-	private var _document:HTMLDocument;
-	public var document(get_document, never):HTMLDocument;
+	public var document(default, null):HTMLDocument;
 	
 	/**
 	 * Height (in pixels) of the browser window viewport including,
@@ -78,7 +78,6 @@ class Window extends EventCallback
 		_platform.onmousedown = htmlDocument.onPlatformMouseEvent;
 		_platform.onmouseup = htmlDocument.onPlatformMouseEvent;
 		_platform.onmousemove = htmlDocument.onPlatformMouseMoveEvent;
-		_platform.onclick = htmlDocument.onPlatformMouseClickEvent;
 		_platform.onmousewheel = htmlDocument.onPlatformMouseWheelEvent;
 		
 		_platform.onkeydown = htmlDocument.onPlatformKeyDownEvent;
@@ -89,8 +88,12 @@ class Window extends EventCallback
 		//fullscreen callbacks
 		htmlDocument.onEnterFullscreen = onDocumentEnterFullscreen;
 		htmlDocument.onExitFullscreen = onDocumentExitFullscreen;
+		_platform.onfullscreenchange = onPlatformFullScreenChange;
 		
-		_document = htmlDocument;
+		//mouse cursor callback
+		htmlDocument.onSetMouseCursor = onDocumentSetMouseCursor;
+		
+		document = htmlDocument;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -111,6 +114,24 @@ class Window extends EventCallback
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Called when the user exits or enter fullscreen mode without using
+	 * the DOM api. For instance, in most browser, pressing the escape key
+	 * will exit fullscreen mode.
+	 * 
+	 * Listening to those platform event allows to keep the DOM model
+	 * in sync
+	 */
+	private function onPlatformFullScreenChange(event:Event):Void
+	{
+		//if the platform just exited the fullscreen mode,
+		//then the document must also exit it
+		if (_platform.fullscreen() == false)
+		{
+			document.exitFullscreen();
+		}
+	}
+	
+	/**
 	 * Called when the document request to enter fullscreen mode.
 	 * Start fullscreen mode using platform specific API
 	 */
@@ -129,6 +150,18 @@ class Window extends EventCallback
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// MOUSE CURSOR CALLBACKS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Change the current mouse cursor if needed
+	 */
+	private function onDocumentSetMouseCursor(cursor:Cursor):Void
+	{
+		_platform.setMouseCursor(cursor);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -140,10 +173,5 @@ class Window extends EventCallback
 	private function get_innerWidth():Int
 	{
 		return _platform.innerWidth;
-	}
-	
-	private function get_document():HTMLDocument
-	{
-		return _document;
 	}
 }

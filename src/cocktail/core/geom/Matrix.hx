@@ -24,8 +24,7 @@ class Matrix
 	/**
 	 * Stores each value of this 3x3 matrix
 	 */
-	private var _data:MatrixData;
-	public var data(getData, setData):MatrixData;
+	public var data(default, set_data):MatrixData;
 	
 	/**
 	 * Class constructor. Creates a 3x3 matrix with the given parameters.
@@ -46,7 +45,7 @@ class Matrix
 	 */
 	public function identity():Void
 	{
-		_data = {
+		data = {
 			a : 1.0,
 			b : 0.0, 
 			c : 0.0,
@@ -62,26 +61,17 @@ class Matrix
 	 * 
 	 * @param contains 6 values
 	 */
-	private function setData(data:MatrixData):MatrixData
+	private function set_data(data:MatrixData):MatrixData
 	{
-		_data = data;
+		this.data = data;
 		
 		//init the null matrix as an identity matrix
-		if (_data == null)
+		if (data == null)
 		{
 			identity();
 		}
 		
-		return _data;
-	}
-	
-	/**
-	 * Return this matrix data
-	 * @return the 6 values of this 3x3 matrix
-	 */
-	private function getData():MatrixData
-	{
-		return _data;
+		return data;
 	}
 	
 	/**
@@ -98,7 +88,7 @@ class Matrix
 	public function concatenate(matrix:Matrix):Void
 	{
 		//get a ref to current and target matrix data
-		var currentMatrixData:MatrixData = _data;
+		var currentMatrixData:MatrixData = data;
 		var targetMatrixData:MatrixData = matrix.data;
 		
 		//multiply the two matrix data values

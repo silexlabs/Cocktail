@@ -194,21 +194,18 @@ class Event
 	 * Used to indicate which phase of event flow
 	 * is currently being accomplished.
 	 */
-	private var _eventPhase:Int;
-	public var eventPhase(get_eventPhase, set_eventPhase):Int;
+	public var eventPhase:Int;
 	
 	/**
 	 * The name of the event
 	 */
-	private var _type:String;
-	public var type(get_type, never):String;
+	public var type(default, null):String;
 	
 	/**
 	 * Used to indicate the event target. This attribute
 	 * contains the proximal event target when used with the Event dispatch and DOM event flow.
 	 */ 
-	private var _target:EventTarget;
-	public var target(get_target, set_target):EventTarget;
+	public var target:EventTarget;
 	
 	/**
 	 * Used to indicate the EventTarget whose EventListeners
@@ -218,49 +215,42 @@ class Event
 	 * When used with the Event dispatch and DOM event flow,
 	 * this attribute contains the proximal event target or a target ancestor.
 	 */
-	private var _currentTarget:EventTarget;
-	public var currentTarget(get_currentTarget, set_currentTarget):EventTarget;
+	public var currentTarget:EventTarget;
 	
 	/**
 	 * Used to indicate whether or not an event is a bubbling event.
 	 * If the event can bubble the value is true
 	 */
-	private var _bubbles:Bool;
-	public var bubbles(get_bubbles, never):Bool;
+	public var bubbles(default, null):Bool;
 	
 	/**
 	 * Used to indicate whether or not an event can have its default
 	 * action prevented. If the default action can be prevented it is true
 	 */
-	private var _cancelable:Bool;
-	public var cancelable(get_cancelable, never):Bool;
+	public var cancelable(default, null):Bool;
 	
 	/**
 	 * Used to indicate whether Event.preventDefault()
 	 * has been called for this event.
 	 */
-	private var _defaultPrevented:Bool;
-	public var defaultPrevented(get_defaultPrevented, never):Bool;
+	public var defaultPrevented(default, null):Bool;
 	
 	/**
 	 * Used to indicate wether Event.stopPropagation()
 	 * has been called for this event
 	 */
-	private var _propagationStopped:Bool;
-	public var propagationStopped(get_propagationStopped, never):Bool;
+	public var propagationStopped(default, null):Bool;
 	
 	/**
 	 * Used to indicate wether Event.stopImmediatePropagation()
 	 * has been called for this event
 	 */
-	private var _immediatePropagationStopped:Bool;
-	public var immediatePropagationStopped(get_immediatePropagationStopped, never):Bool;
+	public var immediatePropagationStopped(default, null):Bool;
 	
 	/**
 	 * Wheter this event has already been dispatched
 	 */
-	private var _dispatched:Bool;
-	public var dispatched(get_dispatched, set_dispatched):Bool;
+	public var dispatched:Bool;
 	
 	/**
 	 * class constructor
@@ -292,14 +282,14 @@ class Event
 	public function initEvent(eventTypeArg:String, canBubbleArg:Bool, cancelableArg:Bool):Void
 	{
 		//can't alter event after it has been dispatched
-		if (_dispatched == true)
+		if (dispatched == true)
 		{
 			return;
 		}
 		
-		_type = eventTypeArg;
-		_bubbles = canBubbleArg;
-		_cancelable = cancelableArg;
+		type = eventTypeArg;
+		bubbles = canBubbleArg;
+		cancelable = cancelableArg;
 	}
 	
 	/**
@@ -308,16 +298,16 @@ class Event
 	 */
 	public function reset():Void
 	{
-		_dispatched = false;
-		_defaultPrevented = false;
-		_propagationStopped = false;
-		_immediatePropagationStopped = false;
-		_target = null;
-		_currentTarget = null;
-		_type = null;
-		_bubbles = false;
-		_cancelable = false;
-		_eventPhase = 0;
+		dispatched = false;
+		defaultPrevented = false;
+		propagationStopped = false;
+		immediatePropagationStopped = false;
+		target = null;
+		currentTarget = null;
+		type = null;
+		bubbles = false;
+		cancelable = false;
+		eventPhase = 0;
 	}
 	
 	/**
@@ -332,7 +322,7 @@ class Event
 	 */
 	public function preventDefault():Void
 	{
-		_defaultPrevented = true;
+		defaultPrevented = true;
 	}
 	
 	/**
@@ -344,7 +334,7 @@ class Event
 	 */
 	public function stopPropagation():Void
 	{
-		_propagationStopped = true;
+		propagationStopped = true;
 	}
 	
 	/**
@@ -354,80 +344,6 @@ class Event
 	 */
 	public function stopImmediatePropagation():Void
 	{
-		_immediatePropagationStopped = true;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// SETTERS/GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_dispatched():Bool
-	{
-		return _dispatched;
-	}
-
-	private function set_dispatched(value:Bool):Bool
-	{
-		return _dispatched = value;
-	}
-	
-	private function get_currentTarget():EventTarget
-	{
-		return _currentTarget;
-	}
-	
-	private function set_currentTarget(value:EventTarget):EventTarget
-	{
-		return _currentTarget = value;
-	}
-	
-	private function get_eventPhase():Int
-	{
-		return _eventPhase;
-	}
-	
-	private function set_eventPhase(value:Int):Int
-	{
-		return _eventPhase = value;
-	}
-	
-	private function get_bubbles():Bool
-	{
-		return _bubbles;
-	}
-	
-	private function get_cancelable():Bool
-	{
-		return _cancelable;
-	}
-	
-	private function get_defaultPrevented():Bool 
-	{
-		return _defaultPrevented;
-	}
-	
-	private function get_propagationStopped():Bool
-	{
-		return _propagationStopped;
-	}
-	
-	private function get_immediatePropagationStopped():Bool
-	{
-		return _immediatePropagationStopped;
-	}
-	
-	private function get_type():String 
-	{
-		return _type;
-	}
-	
-	private function get_target():EventTarget
-	{
-		return _target;
-	}
-	
-	private function set_target(value:EventTarget):EventTarget
-	{
-		return _target = value;
+		immediatePropagationStopped = true;
 	}
 }

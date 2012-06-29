@@ -12,6 +12,7 @@ import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.CSSConstants;
 import cocktail.core.style.StyleData;
+import cocktail.core.renderer.RendererData;
 
 /**
  * Represents a property transition form a start
@@ -59,8 +60,7 @@ class Transition
 	 * The name of the transitioned property. This is
 	 * a CSS property name
 	 */
-	private var _propertyName:String;
-	public var propertyName(get_propertyName, never):String;
+	public var propertyName(default, null):String;
 	
 	/**
 	 * Returns the current value of the transitioned property,
@@ -71,29 +71,25 @@ class Transition
 	/**
 	 * Called on the target computed style once the transition is complete
 	 */
-	private var _onComplete:Transition->Void;
-	public var onComplete(get_onComplete, never):Transition->Void;
+	public var onComplete(default, null):Transition->Void;
 	
 	/**
 	 * Callback called while the transition is in progress. The interval
 	 * between two calls of this method is controlled by the
 	 * TransitionManager
 	 */
-	private var _onUpdate:Transition->Void;
-	public var onUpdate(get_onUpdate, never):Transition->Void;
+	public var onUpdate(default, null):Transition->Void;
 	
 	/**
 	 * the duration of the transition, in seconds
 	 */
-	private var _transitionDuration:Float;
-	public var transitionDuration(get_transitionDuration, never):Float;
+	public var transitionDuration(default, null):Float;
 	
 	/**
 	 * The target ComputedStyle of the transition onto which
 	 * update and complete method are called
 	 */
-	private var _target:ComputedStyle;
-	public var target(get_target, never):ComputedStyle;
+	public var target(default, null):ComputedStyle;
 	
 	/**
 	 * Returns wether the transition is complete based on the
@@ -102,21 +98,29 @@ class Transition
 	public var complete(get_complete, never):Bool;
 	
 	/**
+	 * A reference to the invalidation which started this transition,
+	 * most liekly a property value change. Will be used for invalidation
+	 * on each update tick
+	 */
+	public var invalidationReason(default, null):InvalidationReason;
+	
+	/**
 	 * class constructor. Set
 	 * the transition attribute
 	 */
 	public function new(propertyName:String, target:ComputedStyle, transitionDuration:Float, transitionDelay:Float, transitionTimingFunction:TransitionTimingFunctionValue,
-	startValue:Float, endValue:Float, onComplete:Transition->Void, onUpdate:Transition->Void) 
+	startValue:Float, endValue:Float, onComplete:Transition->Void, onUpdate:Transition->Void, invalidationReason:InvalidationReason) 
 	{
+		this.invalidationReason = invalidationReason;
 		_transitionDelay = transitionDelay;
-		_transitionDuration = transitionDuration;
+		this.transitionDuration = transitionDuration;
 		_transitionTimingFunction = transitionTimingFunction;
 		_startValue = startValue;
 		_endValue = endValue;
-		_target = target;
-		_propertyName = propertyName;
-		_onComplete = onComplete;
-		_onUpdate = onUpdate;
+		this.target = target;
+		this.propertyName = propertyName;
+		this.onComplete = onComplete;
+		this.onUpdate = onUpdate;
 		_elapsedTime = 0;
 	}
 	
@@ -136,12 +140,15 @@ class Transition
 	/**
 	 * clean-up method called once a 
 	 * transition is complete
+	 * 
+	 * TODO 2 : risks of destroying objets instead of
+	 * de-referencing, like for ElementRenderer.dispose
 	 */
 	public function dispose():Void
 	{
-		_onComplete = null;
-		_onUpdate = null;
-		_target = null;
+		onComplete = null;
+		onUpdate = null;
+		//_target = null;
 		_transitionTimingFunction = null;
 	}
 	
@@ -157,7 +164,7 @@ class Transition
 	 */
 	private function get_complete():Bool
 	{
-		if (_elapsedTime >= (_transitionDelay + _transitionDuration) * 1000)
+		if (_elapsedTime >= (_transitionDelay + transitionDuration) * 1000)
 		{
 			return true;
 		}
@@ -174,7 +181,7 @@ class Transition
 	 */
 	private function get_currentValue():Float
 	{
-		var completePercent:Float = (_elapsedTime) / ((_transitionDelay + _transitionDuration) * 1000);
+		var completePercent:Float = (_elapsedTime) / ((_transitionDelay + transitionDuration) * 1000);
 		
 		switch (_transitionTimingFunction)
 		{
@@ -215,32 +222,4 @@ class Transition
 				return ((_endValue - _startValue) * completePercent) + _startValue;
 		}
 	}
-	
-	private function get_transitionDuration():Float
-	{
-		return _transitionDuration;
-	}
-	
-	private function get_target():ComputedStyle
-	{
-		return _target;
-	}
-	
-	private function get_onComplete():Transition->Void
-	{
-		return _onComplete;
-	}
-	
-	private function get_propertyName():String
-	{
-		return _propertyName;
-	}
-	
-	private function get_onUpdate():Transition->Void
-	{
-		return _onUpdate;
-	}
-	
-	
-	
 }

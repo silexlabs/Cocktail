@@ -54,70 +54,11 @@ class VisualEffectStylesComputer
 		
 		//transform
 		computedStyle.transform = getComputedTransform(style);
-		
-		//transition-delay
-		computedStyle.transitionDelay = getComputedTransitionDelay(style);
-		
-		//transition-property
-		computedStyle.transitionProperty = style.transitionProperty;
-		
-		//transition-duration
-		computedStyle.transitionDuration = getComputedTransitionDuration(style);
-		
-		//transition-timing-function
-		computedStyle.transitionTimingFunction = style.transitionTimingFunction;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE STATIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Compute the 'transition-duration' style
-	 */
-	private static function getComputedTransitionDuration(style:CoreStyle):Array<Float>
-	{
-		var transitionDurations:Array<Float> = new Array<Float>();
-		
-		for (i in 0...style.transitionDuration.length)
-		{
-			switch (style.transitionDuration[i])
-			{
-				case TimeValue.seconds(value):
-					transitionDurations.push(value);
-					
-				case TimeValue.milliSeconds(value):
-					//convert to seconds
-					transitionDurations.push(value / 1000);
-			}
-		}
-		
-		return transitionDurations;
-		
-	}
-	
-	/**
-	 * Compute the 'transition-delay' style
-	 */
-	private static function getComputedTransitionDelay(style:CoreStyle):Array<Float>
-	{
-		var transitionDelays:Array<Float> = new Array<Float>();
-		
-		for (i in 0...style.transitionDelay.length)
-		{
-			switch (style.transitionDelay[i])
-			{
-				case TimeValue.seconds(value):
-					transitionDelays.push(value);
-					
-				case TimeValue.milliSeconds(value):
-					//convert to seconds
-					transitionDelays.push(value / 1000);
-			}
-		}
-		
-		return transitionDelays;
-	}
 	
 	/**
 	 * Compute the transformation origin and returns it as a 2d point

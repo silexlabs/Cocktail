@@ -9,7 +9,7 @@ package cocktail.core.renderer;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 
@@ -29,25 +29,34 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE RENDERING METHODS
+	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden as the background of the HTMLBodyElement must be painted over
-	 * the whole viewport
+	 * Overiden as the body's element renderer computed height is a special
+	 * case where the height should be the height of the initial containing block
+	 * if it specified as 'auto'
 	 */
-	override private function renderBackground(graphicContext:NativeElement):Void
+	override private function layoutSelf():Void
 	{
-				//compute the background styles which can be computed at this time,
-		//such as the background color, most of the background styles will be computed
-		//during the rendering
-		//
-		//TODO 4 : check if its still necessary that they are only computed
-		//during rendering
-		_coreStyle.computeBackgroundStyles();
-		
-		var backgroundManager:BackgroundManager = new BackgroundManager();
-		
+		super.layoutSelf();
+		if (_coreStyle.height == Dimension.cssAuto && (isPositioned() == false || isRelativePositioned() == true))
+		{
+			this.computedStyle.height = _containingBlock.getContainerBlockData().height - computedStyle.marginTop - computedStyle.marginBottom
+			- computedStyle.paddingTop - computedStyle.paddingBottom;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The HTMLBodyElement uses the bounds of the viewport
+	 * for its background
+	 */
+	override private function getBackgroundBounds():RectangleData
+	{
 		var windowData:ContainingBlockData = getWindowData();
 		
 		var width:Float = windowData.width;
@@ -60,37 +69,7 @@ class BodyBoxRenderer extends BlockBoxRenderer
 			height:height
 		}
 		
-		//TODO 3 : should only pass dimensions instead of bounds
-		var backgrounds:Array<NativeElement> = backgroundManager.render(bodyBounds, _coreStyle);
-		
-		#if (flash9 || nme)
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
-		for (i in 0...backgrounds.length)
-		{
-			containerGraphicContext.addChild(backgrounds[i]);
-		}
-		#end
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Overiden as the body's element renderer computed height is a special
-	 * case where the height should be the height of the initial containing block
-	 * if it specified as 'auto'
-	 * 
-	 * TODO 3 : shouldn't it be in boxComputers instead ?
-	 */
-	override private function layoutSelf():Void
-	{
-		super.layoutSelf();
-		if (_coreStyle.height == Dimension.cssAuto && (isPositioned() == false || isRelativePositioned() == true))
-		{
-			this.computedStyle.height = _containingBlock.getContainerBlockData().height - computedStyle.marginTop - computedStyle.marginBottom
-			- computedStyle.paddingTop - computedStyle.paddingBottom;
-		}
+		return bodyBounds;
 	}
 	
 	

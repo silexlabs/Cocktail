@@ -9,7 +9,7 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.port.flash_player;
 
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.style.ComputedStyle;
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;

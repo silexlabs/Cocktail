@@ -891,9 +891,35 @@ class CssParser<DisplayObjectType> {
 					
 				default:	
 			}			
-						
-			
-			
+		
+		case "transition-property":
+			var val = getIdent(v);
+			if ( val != null) {		
+				s.setTransitionProperty(d, val);
+			}
+			return true;
+
+		case "transition-duration":
+			var val = getIdent(v);
+			if ( val != null) {			
+				s.setTransitionDuration(d, val);
+			}
+			return true;
+
+		case "transition-timing-function":
+			var val = getIdent(v);
+			if ( val != null) {			
+				s.setTransitionTimingFunction(d,val);
+			}
+			return true;
+
+		case "transition-delay":
+			var val = getIdent(v);
+			if ( val != null) {			
+				s.setTransitionDelay(d, val);
+			}
+			return true;
+
 		default:
 			throw "Not implemented '"+r+"' = "+Std.string(v);
 		}

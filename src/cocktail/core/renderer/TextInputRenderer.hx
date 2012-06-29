@@ -11,7 +11,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.NativeElement;
+import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
@@ -77,7 +77,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		#end
 		
 		//listen to cocktail focus events on the HTMLInputElement
-		_node.addEventListener(FocusEvent.FOCUS, onTextInputFocus);
+		node.addEventListener(FocusEvent.FOCUS, onTextInputFocus);
 	}
 	
 	/**
