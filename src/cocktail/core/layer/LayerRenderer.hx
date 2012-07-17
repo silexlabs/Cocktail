@@ -15,6 +15,7 @@ import cocktail.core.html.ScrollBar;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
+import cocktail.port.DrawingManager;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import haxe.Log;
@@ -31,12 +32,11 @@ import haxe.Log;
  * their parent. Wether an ElementRenderer creates a new LayerRenderer
  * is determined by its createNewStackingContext() method.
  * 
- * The LayerRenderer keeps a reference to each of its ElementRenderer
- * creating themselves stacking context, as they need to be retrieved
- * efficiently
+ * For instance, positioned elements create new layers in most cases as
+ * they are likely to be displayed on top of other elements
  * 
  * LayerRenderer are also responsible of hit testing and can return 
- * the ElementRenderer at a given coordinate
+ * the top ElementRenderer at a given coordinate
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -50,26 +50,34 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	
 	/**
 	 * Holds a reference to all of the children of the root ElementRenderer
-	 * which also create a new LayerRenderer, and which have a z-index
-	 * computed value of 0 or auto, which means that they are rendered in tree
+	 * which also create which have a z-index computed value of 0 or auto,
+	 * which means that they are rendered in tree
 	 * order of the DOM tree. Also, children with a z-index of 'auto' don't actually
-	 * create new LayerRenderer, although they are rendered as if they did
+	 * create new LayerRenderer, although they are rendered as if they did.
+	 * 
+	 * That's why this array stores ElementRenderer instead of LayerRenderer, as some
+	 * of the ElementRenderer don't actually have their own LayerRenderer
 	 */
-	private var _zeroAndAutoZIndexChildRenderers:Array<ElementRenderer>;
+	private var _zeroAndAutoZIndexChildElementRenderers:Array<ElementRenderer>;
 	
 	/**
-	 * Holds a reference to all of the children of the root ElementRenderer
-	 * which also create a new LayerRenderer, and which have a computed z-index
+	 * Holds a reference to all of the child LayerRenderer which have a computed z-index
 	 * superior to 0. They are ordered in this array from least positive to most positive,
 	 * which is the order which they must use to be renderered
 	 */
-	private var _positiveZIndexChildRenderers:Array<ElementRenderer>;
+	private var _positiveZIndexChildLayerRenderers:Array<LayerRenderer>;
 	
 	/**
-	 * same as above for children with a negative computed z-index. The array is
+	 * same as above for child LayerRenderer with a negative computed z-index. The array is
 	 * ordered form most negative to least negative
 	 */
-	private var _negativeZIndexChildRenderers:Array<ElementRenderer>;
+	private var _negativeZIndexChildLayerRenderers:Array<LayerRenderer>;
+	
+	/**
+	 * The graphics context onto which all the ElementRenderers
+	 * belonging to this LayerRenderer are painted onto
+	 */
+	private var _graphicsContext:DrawingManager;
 	
 	/**
 	 * class constructor. init class attributes
@@ -79,9 +87,12 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		super();
 		
 		this.rootElementRenderer = rootElementRenderer;
-		_zeroAndAutoZIndexChildRenderers = new Array<ElementRenderer>();
-		_positiveZIndexChildRenderers = new Array<ElementRenderer>();
-		_negativeZIndexChildRenderers = new Array<ElementRenderer>();
+		
+		_zeroAndAutoZIndexChildElementRenderers = new Array<ElementRenderer>();
+		_positiveZIndexChildLayerRenderers = new Array<LayerRenderer>();
+		_negativeZIndexChildLayerRenderers = new Array<LayerRenderer>();
+		
+		_graphicsContext = new DrawingManager(2000, 1500);
 	}
 	
 	/////////////////////////////////
@@ -91,35 +102,33 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	/**
 	 * Overriden as when a child LayerRenderer is added
 	 * to this LayerRenderer, this LayerRenderer stores its
-	 * root ElementRenderer in one of its chile element
+	 * child LayerRenderer or its root ElementRenderer in one of its child element
 	 * renderer array based on its z-index style
 	 */ 
 	override public function appendChild(newChild:LayerRenderer):LayerRenderer
 	{
 		super.appendChild(newChild);
-		
-		var childLayer:LayerRenderer = newChild;
 
 		//check the computed z-index of the ElementRenderer which
 		//instantiated the child LayerRenderer
-		switch(childLayer.rootElementRenderer.computedStyle.zIndex)
+		switch(newChild.rootElementRenderer.coreStyle.computedStyle.zIndex)
 		{
 			case ZIndex.cssAuto:
 				//the z-index is 'auto'
-				_zeroAndAutoZIndexChildRenderers.push(childLayer.rootElementRenderer);
+				_zeroAndAutoZIndexChildElementRenderers.push(newChild.rootElementRenderer);
 				
 			case ZIndex.integer(value):
 				if (value == 0)
 				{
-					_zeroAndAutoZIndexChildRenderers.push(childLayer.rootElementRenderer);
+					_zeroAndAutoZIndexChildElementRenderers.push(newChild.rootElementRenderer);
 				}
 				else if (value > 0)
 				{
-					insertPositiveZIndexChildRenderer(childLayer.rootElementRenderer, value);
+					insertPositiveZIndexChildRenderer(newChild, value);
 				}
 				else if (value < 0)
 				{
-					insertNegativeZIndexChildRenderer(childLayer.rootElementRenderer, value);
+					insertNegativeZIndexChildRenderer(newChild, value);
 				}
 		}
 		
@@ -128,25 +137,23 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	
 	/**
 	 * When removing a child LayerRenderer from the LayerRenderer
-	 * tree, th reference of its root ElementRenderer must also
-	 * be removed from the right child root ElementRenderer array
+	 * tree, its reference must also be removed from the right
+	 * child LayerRenderer array
 	 */
 	override public function removeChild(oldChild:LayerRenderer):LayerRenderer
 	{
-		var childLayer:LayerRenderer = oldChild;
-
 		var removed:Bool = false;
 		
 		//try each of the array, stop if an element was actually removed from them
-		removed = _zeroAndAutoZIndexChildRenderers.remove(childLayer.rootElementRenderer);
+		removed = _zeroAndAutoZIndexChildElementRenderers.remove(oldChild.rootElementRenderer);
 		
 		if (removed == false)
 		{
-			removed = _positiveZIndexChildRenderers.remove(childLayer.rootElementRenderer);
+			removed = _positiveZIndexChildLayerRenderers.remove(oldChild);
 			
 			if (removed == false)
 			{
-				 _negativeZIndexChildRenderers.remove(childLayer.rootElementRenderer);
+				 _negativeZIndexChildLayerRenderers.remove(oldChild);
 			}
 		}
 		
@@ -160,49 +167,55 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	////////////////////////////////
 	
 	/**
-	 * start the rendering of the positive z-index children
-	 */ 
-	public function renderPositiveChildElementRenderers(graphicContext:NativeElement, forceRendering:Bool):Void
-	{
-		renderChildElementRenderers(_positiveZIndexChildRenderers, graphicContext, forceRendering);
-	}
-	
-	/**
-	 * start the rendering of the zero and auto z-index children
-	 */ 
-	public function renderZeroAndAutoChildElementRenderers(graphicContext:NativeElement, forceRendering:Bool):Void
-	{
-		renderChildElementRenderers(_zeroAndAutoZIndexChildRenderers, graphicContext, forceRendering);
-	}
-	
-	/**
-	 * start the rendering of the negative z-index children
+	 * Starts the rendering of this LayerRenderer.
+	 * Render all its child layers and its root ElementRenderer
+	 * 
+	 * @param	parentGraphicsContext the graphics context of the parent
+	 * LayerRenderer onto which the graphics context of this LayerRenderer
+	 * is painted
 	 */
-	public function renderNegativeChildElementRenderers(graphicContext:NativeElement, forceRendering:Bool):Void
+	public function render(parentGraphicsContext:DrawingManager):Void
 	{
-		renderChildElementRenderers(_negativeZIndexChildRenderers, graphicContext, forceRendering);
-	}
-	
-	/////////////////////////////////
-	// PRIVATE RENDERING METHODS
-	////////////////////////////////
-	
-	/**
-	 * Utils method to start the rendering of an array of child root
-	 * ElementRenderer
-	 */
-	private function renderChildElementRenderers(rootElementRenderers:Array<ElementRenderer>, graphicContext:NativeElement, forceRendering:Bool):Void
-	{
-		var length:Int = rootElementRenderers.length;
-		for (i in 0...length)
+		_graphicsContext.clear();
+		
+		//render first negative z-index child LayerRenderer from most
+		//negative to least negative
+		for (i in 0..._negativeZIndexChildLayerRenderers.length)
 		{
-			//the child element renderer is attached to its parent graphic context
-			//
-			//TODO 1 : using the parent graphic context causes a z-index bug as if the parent is a child of the formatting
-			//context root, the child element renderer is not displayed on top of the in-flow elements
-			var parentElementRenderer:ElementRenderer = rootElementRenderers[i].parentNode;
-			rootElementRenderers[i].render(graphicContext, forceRendering);
+			_negativeZIndexChildLayerRenderers[i].render(_graphicsContext);
 		}
+		
+		//render the rootElementRenderer itself which will also
+		//render all ElementRenderer belonging to this LayerRenderer
+		rootElementRenderer.render(_graphicsContext);
+		
+		//render zero and auto z-index ElementRenderer
+		for (i in 0..._zeroAndAutoZIndexChildElementRenderers.length)
+		{
+			//must check if the ElementRenderer establish a new stacking context (create a new layer)
+			//as if it does not, it is the ElementRenderer which must be rendered, not its LayerRenderer
+			//which was already renderered
+			//
+			//this applies for instance to ElementRenderer with a z-index of auto
+			if (_zeroAndAutoZIndexChildElementRenderers[i].establishesNewStackingContext() == true)
+			{
+				_zeroAndAutoZIndexChildElementRenderers[i].layerRenderer.render(_graphicsContext);
+			}
+			else
+			{
+				_zeroAndAutoZIndexChildElementRenderers[i].render(_graphicsContext);
+			}
+		}
+		
+		//render all the positive LayerRenderer from least positive to 
+		//most positive
+		for (i in 0..._positiveZIndexChildLayerRenderers.length)
+		{
+			_positiveZIndexChildLayerRenderers[i].render(_graphicsContext);
+		}
+		
+		//paint the LayerRenderer's graphics context onto its parent's
+		parentGraphicsContext.copyPixels(_graphicsContext.nativeBitmapData, { x:0.0, y:0.0, width:2000.0, height:1500.0 }, { x:0.0, y:0.0 } );
 	}
 	
 	/////////////////////////////////
@@ -217,7 +230,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	public function insertAutoZIndexChildElementRenderer(elementRenderer:ElementRenderer):Void
 	{
-		_zeroAndAutoZIndexChildRenderers.push(elementRenderer);
+		_zeroAndAutoZIndexChildElementRenderers.push(elementRenderer);
 	}
 	
 	/**
@@ -225,7 +238,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */ 
 	public function removeAutoZIndexChildElementRenderer(elementRenderer:ElementRenderer):Void
 	{
-		_zeroAndAutoZIndexChildRenderers.remove(elementRenderer);
+		_zeroAndAutoZIndexChildElementRenderers.remove(elementRenderer);
 	}
 	
 	/////////////////////////////////
@@ -233,26 +246,26 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	////////////////////////////////
 	
 	/**
-	 * When inserting a new root ElementRenderer in the positive z-index
-	 * child renderer array, it must be inserted at the right index so that
+	 * When inserting a new child LayerRenderer in the positive z-index
+	 * child LayerRenderer array, it must be inserted at the right index so that
 	 * the array is ordered from least positive to most positive
 	 */
-	private function insertPositiveZIndexChildRenderer(rootElementRenderer:ElementRenderer, rootElementRendererZIndex:Int):Void
+	private function insertPositiveZIndexChildRenderer(childLayerRenderer:LayerRenderer, rootElementRendererZIndex:Int):Void
 	{
-		//the array of positive child renderer will be reconstructed
-		var newPositiveZIndexChildRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
+		//the array of positive child LayerRenderer will be reconstructed
+		var newPositiveZIndexChildRenderers:Array<LayerRenderer> = new Array<LayerRenderer>();
 		
-		//flag checking if the root ElementRenderer was already inserted
+		//flag checking if the LayerRenderer was already inserted
 		//in the array
 		var isInserted:Bool = false;
 		
 		//loop in all the positive z-index array
-		var length:Int = _positiveZIndexChildRenderers.length;
+		var length:Int = _positiveZIndexChildLayerRenderers.length;
 		for (i in 0...length)
 		{
-			//get the z-index of the child at the current index
+			//get the z-index of the child LayerRenderer at the current index
 			var currentRendererZIndex:Int = 0;
-			switch( _positiveZIndexChildRenderers[i].computedStyle.zIndex)
+			switch( _positiveZIndexChildLayerRenderers[i].rootElementRenderer.coreStyle.computedStyle.zIndex)
 			{
 				case ZIndex.integer(value):
 					currentRendererZIndex = value;
@@ -260,32 +273,32 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				default:	
 			}
 			
-			//if the new root ElementRenderer has a least positive z-index than the current
+			//if the new LayerRenderer has a least positive z-index than the current
 			//child it is inserted at this index
 			//also check that it is only inserted the first time this happens, else it will be
 			//inserted at each subsequent index
 			if (rootElementRendererZIndex < currentRendererZIndex && isInserted == false)
 			{
-				newPositiveZIndexChildRenderers.push(rootElementRenderer);
+				newPositiveZIndexChildRenderers.push(childLayerRenderer);
 				isInserted = true;
 
 			}
 			
 			//push the current child in the new array
-			newPositiveZIndexChildRenderers.push(_positiveZIndexChildRenderers[i]);
+			newPositiveZIndexChildRenderers.push(_positiveZIndexChildLayerRenderers[i]);
 			
 		}
 		
-		//if the new root ElementRenderer wasn't inserted, either
+		//if the new LayerRenderer wasn't inserted, either
 		//it is the first item in the array or it has the most positive
 		//z-index
 		if (isInserted == false)
 		{
-			newPositiveZIndexChildRenderers.push(rootElementRenderer);
+			newPositiveZIndexChildRenderers.push(childLayerRenderer);
 		}
 		
 		//replace the current array with the new one
-		_positiveZIndexChildRenderers = newPositiveZIndexChildRenderers;
+		_positiveZIndexChildLayerRenderers = newPositiveZIndexChildRenderers;
 
 	}
 	
@@ -293,18 +306,18 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 * Follows the same logic as the method above for the negative z-index child
 	 * array. The array must be ordered from most negative to least negative
 	 */ 
-	private function insertNegativeZIndexChildRenderer(rootElementRenderer:ElementRenderer, rootElementRendererZIndex:Int):Void
+	private function insertNegativeZIndexChildRenderer(childLayerRenderer:LayerRenderer, rootElementRendererZIndex:Int):Void
 	{
-		var newNegativeZIndexChildRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
+		var newNegativeZIndexChildRenderers:Array<LayerRenderer> = new Array<LayerRenderer>();
 
 		var isInserted:Bool = false;
 		
-		var length:Int = _negativeZIndexChildRenderers.length;
+		var length:Int = _negativeZIndexChildLayerRenderers.length;
 		for (i in 0...length)
 		{
 			var currentRendererZIndex:Int = 0;
 			
-			switch(_negativeZIndexChildRenderers[i].computedStyle.zIndex)
+			switch(_negativeZIndexChildLayerRenderers[i].rootElementRenderer.coreStyle.computedStyle.zIndex)
 			{
 				case ZIndex.integer(value):
 					currentRendererZIndex = value;
@@ -314,19 +327,19 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			
 			if (currentRendererZIndex  > rootElementRendererZIndex && isInserted == false)
 			{
-				newNegativeZIndexChildRenderers.push(rootElementRenderer);
+				newNegativeZIndexChildRenderers.push(childLayerRenderer);
 				isInserted = true;
 			}
 			
-			newNegativeZIndexChildRenderers.push(_negativeZIndexChildRenderers[i]);
+			newNegativeZIndexChildRenderers.push(_negativeZIndexChildLayerRenderers[i]);
 		}
 		
 		if (isInserted == false)
 		{
-			newNegativeZIndexChildRenderers.push(rootElementRenderer);
+			newNegativeZIndexChildRenderers.push(childLayerRenderer);
 		}
 		
-		_negativeZIndexChildRenderers = newNegativeZIndexChildRenderers;
+		_negativeZIndexChildLayerRenderers = newNegativeZIndexChildRenderers;
 		
 	}
 	
@@ -460,6 +473,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		return elementRenderersAtPointInChildRenderers;
 	}
 	
+	/**
+	 * Utils method determining if a given point is within
+	 * a given recrtangle
+	 */
 	private function isWithinBounds(point:PointData, bounds:RectangleData):Bool
 	{
 		return point.x >= bounds.x && (point.x <= bounds.x + bounds.width) && point.y >= bounds.y && (point.y <= bounds.y + bounds.height);	
@@ -473,20 +490,20 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	{
 		var childRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		for (i in 0..._negativeZIndexChildRenderers.length)
+		for (i in 0..._negativeZIndexChildLayerRenderers.length)
 		{
-			var childRenderer:ElementRenderer = _negativeZIndexChildRenderers[i];
+			var childRenderer:LayerRenderer = _negativeZIndexChildLayerRenderers[i];
+			childRenderers.push(childRenderer.rootElementRenderer);
+		}
+		for (i in 0..._zeroAndAutoZIndexChildElementRenderers.length)
+		{
+			var childRenderer:ElementRenderer = _zeroAndAutoZIndexChildElementRenderers[i];
 			childRenderers.push(childRenderer);
 		}
-		for (i in 0..._zeroAndAutoZIndexChildRenderers.length)
+		for (i in 0..._positiveZIndexChildLayerRenderers.length)
 		{
-			var childRenderer:ElementRenderer = _zeroAndAutoZIndexChildRenderers[i];
-			childRenderers.push(childRenderer);
-		}
-		for (i in 0..._positiveZIndexChildRenderers.length)
-		{
-			var childRenderer:ElementRenderer = _positiveZIndexChildRenderers[i];
-			childRenderers.push(childRenderer);
+			var childRenderer:LayerRenderer = _positiveZIndexChildLayerRenderers[i];
+			childRenderers.push(childRenderer.rootElementRenderer);
 		}
 		
 		return childRenderers;

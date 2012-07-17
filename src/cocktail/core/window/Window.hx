@@ -13,6 +13,7 @@ import cocktail.core.event.EventCallback;
 import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
+import cocktail.port.NativeBitmapData;
 import cocktail.port.platform.Platform;
 import cocktail.core.style.StyleData;
 
@@ -24,6 +25,9 @@ import cocktail.core.style.StyleData;
  * to platform specific event and methods
  * 
  * TODO 3 : should implement onload callback
+ * 
+ * TODO 2 : should Platform be owned by Window ? Document ?
+ * or by another DOMImplementation class ?
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -72,7 +76,7 @@ class Window extends EventCallback
 	private function init():Void
 	{
 		platform = new Platform();
-		var htmlDocument:HTMLDocument = new HTMLDocument();
+		var htmlDocument:HTMLDocument = new HTMLDocument(this);
 		
 		platform.mouse.onMouseDown = htmlDocument.onPlatformMouseEvent;
 		platform.mouse.onMouseUp = htmlDocument.onPlatformMouseEvent;
@@ -83,6 +87,10 @@ class Window extends EventCallback
 		platform.keyboard.onKeyUp = htmlDocument.onPlatformKeyUpEvent;
 		
 		platform.nativeWindow.onResize = htmlDocument.onPlatformResizeEvent;
+		
+		platform.touchListener.onTouchStart = htmlDocument.onPlatformTouchEvent;
+		platform.touchListener.onTouchMove = htmlDocument.onPlatformTouchEvent;
+		platform.touchListener.onTouchEnd = htmlDocument.onPlatformTouchEvent;
 		
 		//fullscreen callbacks
 		htmlDocument.onEnterFullscreen = onDocumentEnterFullscreen;
@@ -105,6 +113,15 @@ class Window extends EventCallback
 	public function open(url:String, name:String = HTMLConstants.TARGET_BLANK):Void
 	{
 		platform.nativeWindow.open(url, name);
+	}
+	
+	/**
+	 * Make the platform display the document's bitmap data to the screen
+	 * using platform specific API
+	 */
+	public function displayOnScreen(nativeBitmapData:NativeBitmapData):Void
+	{
+		platform.nativeWindow.displayOnScreen(nativeBitmapData);
 	}
 	
 		

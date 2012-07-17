@@ -8,22 +8,26 @@
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
+import cocktail.core.event.Event;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.html.HTMLElement;
-import cocktail.port.NativeElement;
+import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
+import cocktail.port.NativeTextInput;
 
 /**
  * This is an ElementRenderer in charge of
  * rendering a text input form control
  * 
- * TODO 1 IMPORTANT : this is a temporary 
- * implementation, eventually it will 
- * need to be implemented without relying
- * on flash Text Field
+ * TODO 1 IMPORTANT : this might be a temporary 
+ * implementation. Another approach, instead of 
+ * using a NativeTextInput wrapper would be to
+ * implement the text input entirely cross-platform.
+ * It will allow more fidelity of rendering but less OS
+ * integration
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -31,37 +35,15 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 {
 	
 	/**
-	 * A reference to a native flash text field
+	 * A reference to a class wrapping a native, 
+	 * runtime specific text input
 	 */
-	#if (flash9 || nme)
-	private var _nativeTextField:flash.text.TextField;
-	#end
+	private var _nativeTextInput:NativeTextInput;
 	
 	/**
-	 * Get/set the value of the flash text field
+	 * Get/set the value of the text input
 	 */
 	public var value(get_value, set_value):String;
-	
-	/**
-	 * used to hold a runtime specific default
-	 * font name for serif font
-	 */
-	private static inline var SERIF_GENERIC_FONT_NAME:String = "serif";
-	private static inline var SERIF_FLASH_FONT_NAME:String = "_serif";
-	
-	/**
-	 * used to hold a runtime specific default
-	 * font name for sans-serif font
-	 */
-	private static inline var SANS_SERIF_GENERIC_FONT_NAME:String = "sans";
-	private static inline var SANS_SERIF_FLASH_FONT_NAME:String = "_sans";
-	
-	/**
-	 * used to hold a runtime specific default
-	 * font name for monospace font (like courier)
-	 */
-	private static inline var MONOSPACE_GENERIC_FONT_NAME:String = "typewriter";
-	private static inline var MONOSPACE_FLASH_FONT_NAME:String = "_typewriter";
 	
 	/**
 	 * class constructor
@@ -70,30 +52,26 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	public function new(node:HTMLElement) 
 	{
 		super(node);
-		
-		#if (flash9 || nme)
-		_nativeTextField = new flash.text.TextField();
-		_nativeTextField.tabEnabled = false;
-		#end
+
+		_nativeTextInput = new NativeTextInput();
 		
 		//listen to cocktail focus events on the HTMLInputElement
 		node.addEventListener(FocusEvent.FOCUS, onTextInputFocus);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
-	 * Overriden to also render the native flash text field
+	 * Overriden to also render the native text input
 	 */
-	override private function renderEmbeddedAsset(graphicContext:NativeElement)
+	override private function renderEmbeddedAsset(graphicContext:DrawingManager)
 	{
-		updateNativeTextField();
-		#if (flash9 || nme)
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
-		//TODO 3 : in NME, seems to make text field lose focus
-		containerGraphicContext.addChild(_nativeTextField);
-		#end
+		updateNativeTextInput();
+		//TODO 2 : should create detach() method too ?
+		_nativeTextInput.attach(graphicContext);
 	}
-	
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
@@ -101,41 +79,39 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	
 	/**
 	 * When the HTMLInputElement gains focus, 
-	 * set the flash native focus to the 
-	 * native text field
+	 * set the native focus on the native text
+	 * input
 	 */
-	private function onTextInputFocus(e:cocktail.core.event.Event):Void
+	private function onTextInputFocus(e:Event):Void
 	{
-		#if (flash9 || nme)
-		//TODO 2 : seems to do nothing in NME
-		flash.Lib.current.stage.focus = _nativeTextField;
-		#end
+		_nativeTextInput.focus();
 	}
 	
-	//TODO 3 : duplicated code from FontManager NME implementation, a native
-	//text element should be reconfigurable instead of needing to create a
-	//new one each time ? Won't work for flash text engine, but will work
-	//for texrt fields
-	private function updateNativeTextField():Void
+	/**
+	 * Update the display of the native text input
+	 */
+	private function updateNativeTextInput():Void
 	{
-		#if (flash9 || nme)
-		_nativeTextField.type = flash.text.TextFieldType.INPUT;
-		_nativeTextField.x = globalBounds.x;
-		_nativeTextField.y = globalBounds.y + globalBounds.height / 2 - computedStyle.fontSize + _coreStyle.fontMetrics.ascent / 2;
-		_nativeTextField.width = globalBounds.width;
-		_nativeTextField.height = globalBounds.height;
+		var globalBounds:RectangleData = this.globalBounds;
 		
-		var textFormat:flash.text.TextFormat = new flash.text.TextFormat();
-		textFormat.font = getNativeFontFamily(computedStyle.fontFamily);
+		//set the position and size of the native text input, relative
+		//to the Window
+		_nativeTextInput.viewport = {
+			x: globalBounds.x,
+			y: globalBounds.y + globalBounds.height / 2 - coreStyle.computedStyle.fontSize + coreStyle.fontMetrics.ascent / 2,
+			width: globalBounds.width,
+			height: globalBounds.height
+		}
+	
+		//set the style of the text input text using the CSS applying to it
+		//Based on the platform not all of those style might be taken into account
 		
-		textFormat.letterSpacing = computedStyle.letterSpacing;
-		textFormat.size = computedStyle.fontSize;
-		
-		
-		
+		_nativeTextInput.fontFamily = coreStyle.computedStyle.fontFamily[0];
+		_nativeTextInput.letterSpacing = coreStyle.computedStyle.letterSpacing;
+		_nativeTextInput.fontSize = coreStyle.computedStyle.fontSize;
+	
 		var bold:Bool;
-		
-		switch (computedStyle.fontWeight)
+		switch (coreStyle.computedStyle.fontWeight)
 		{
 			case lighter, FontWeight.normal,
 			css100, css200, css300, css400:
@@ -146,47 +122,10 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 				bold = true;
 		}
 		
-		textFormat.bold = bold;
-		textFormat.italic = computedStyle.fontStyle == FontStyle.italic;
-		
-		textFormat.letterSpacing = computedStyle.letterSpacing;
-		
-		textFormat.color = computedStyle.color.color;
-		
-		_nativeTextField.defaultTextFormat = textFormat;
-		_nativeTextField.setTextFormat(textFormat);
-		#end
-	}
-	
-	private function getNativeFontFamily(value:Array<String>):String
-	{
-		var fontFamily:String = "";
-		
-		for (i in 0...value.length)
-		{
-			var fontName:String = value[i];
-			
-			switch (fontName)
-			{
-				case SERIF_GENERIC_FONT_NAME:
-					fontName = SERIF_FLASH_FONT_NAME;
-					
-				case SANS_SERIF_GENERIC_FONT_NAME:
-					fontName = SANS_SERIF_FLASH_FONT_NAME;
-					
-				case MONOSPACE_GENERIC_FONT_NAME:
-					fontName = MONOSPACE_FLASH_FONT_NAME;
-			}
-			
-			fontFamily += fontName;
-			
-			if (i < value.length - 1)
-			{
-				fontFamily += ",";
-			}
-		}
-		
-		return fontFamily;
+		_nativeTextInput.bold = bold;
+		_nativeTextInput.italic = coreStyle.computedStyle.fontStyle == FontStyle.italic;
+		_nativeTextInput.letterSpacing = coreStyle.computedStyle.letterSpacing;
+		_nativeTextInput.color = coreStyle.computedStyle.color.color;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -195,18 +134,11 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	
 	private function get_value():String 
 	{
-		#if (flash9 || nme)
-		return _nativeTextField.text;
-		#end
-		return null;
+		return _nativeTextInput.value;
 	}
 	
 	private function set_value(value:String):String 
 	{
-		#if (flash9 || nme)
-		return _nativeTextField.text = value;
-		#end
-		return null;
+		return _nativeTextInput.value = value;
 	}
-	
 }

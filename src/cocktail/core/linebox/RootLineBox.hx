@@ -64,7 +64,7 @@ class RootLineBox extends LineBox
 			
 			//absolutely positioned line box are not used to compute the
 			//bounds of the root line box
-			if (child.isAbsolutelyPositioned() == false)
+			if (child.isStaticPosition() == false)
 			{
 				lineBoxesBounds.push(child.bounds);
 				

@@ -11,6 +11,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.linebox.LineBox;
 import cocktail.core.style.ComputedStyle;
+import cocktail.core.style.CoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
@@ -26,7 +27,14 @@ import cocktail.core.font.FontData;
  */
 class FlowBoxRenderer extends BoxRenderer 
 {
-	
+	/**
+	 * holds a reference to each positioned child
+	 * for which this FlowBoxRenderer is the first
+	 * positioned ancestor.
+	 * 
+	 * Positioned children register and unregister
+	 * themselves when attached and detached
+	 */
 	private var _positionedChildren:Array<ElementRenderer>;
 	
 	/**
@@ -53,11 +61,12 @@ class FlowBoxRenderer extends BoxRenderer
 		var length:Int = rootLineBox.childNodes.length;
 		for (i in 0...length)
 		{
-			ret.push(rootLineBox.childNodes[i]);
+			var child:LineBox = rootLineBox.childNodes[i];
+			ret.push(child);
 			
-			if (rootLineBox.childNodes[i].hasChildNodes() == true)
+			if (child.hasChildNodes() == true)
 			{
-				var childLineBoxes:Array<LineBox> = getLineBoxesInLine(rootLineBox.childNodes[i]);
+				var childLineBoxes:Array<LineBox> = getLineBoxesInLine(child);
 				
 				var childLength:Int = childLineBoxes.length;
 				for (j in 0...childLength)
@@ -69,11 +78,24 @@ class FlowBoxRenderer extends BoxRenderer
 		return ret;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Used by positioned children to register themselves to their
+	 * first positioned ancestor so that they can be laid out by it.
+	 * Called when the children are attached
+	 */
 	public function addPositionedChildren(element:ElementRenderer):Void
 	{
 		_positionedChildren.push(element);
 	}
 	
+	/**
+	 * The positioned children unregister themselves when they 
+	 * are detached
+	 */
 	public function removePositionedChild(element:ElementRenderer):Void
 	{
 		_positionedChildren.remove(element);
@@ -83,25 +105,16 @@ class FlowBoxRenderer extends BoxRenderer
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Overridenas FlowBoxRenderer are also responsible
+	 * for laying out their children
+	 */
 	override public function layout(forceLayout:Bool):Void
 	{
 		super.layout(forceLayout);
 		
-		/**
-		 * Actually layout all the children of the ElementRenderer by calling
-		 * the layout method recursively on all the children
-		 */
-		var length:Int = childNodes.length;
-		for (i in 0...length)
-		{
-			childNodes[i].layout(_childrenNeedLayout);
-		}
-		
-		//starts the formatting of the children of this FlowBoxRenderer
-		//if it establishes a new formatting context
-		//
-		//TODO 3 : should only be called for BlockBoxRenderer
-		format();
+		//layout all the in flow children (non positioned or floated)
+		layoutChildren();
 		
 		if (_positionedChildrenNeedLayout == true || forceLayout == true)
 		{
@@ -119,6 +132,19 @@ class FlowBoxRenderer extends BoxRenderer
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Actually layout all the children of the ElementRenderer by calling
+	 * the layout on all the children
+	 */
+	private function layoutChildren():Void
+	{
+		var length:Int = childNodes.length;
+		for (i in 0...length)
+		{
+			childNodes[i].layout(_childrenNeedLayout);
+		}
+	}
+	
 	private function layoutPositionedChildren():Void
 	{
 		var containerBlockData:ContainingBlockData = getContainerBlockData();
@@ -135,14 +161,6 @@ class FlowBoxRenderer extends BoxRenderer
 	}
 	
 	/**
-	 * starts the formatting of the box
-	 */
-	private function format():Void
-	{
-		//abstract
-	}
-	
-	/**
 	 * layout an absolutely positioned ElementRenderer (with a position style of 'fixed' or 'absolute')
 	 * using either the first positioned ancestor dimensions or the viewport's
 	 * 
@@ -151,7 +169,7 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function layoutPositionedChild(elementRenderer:ElementRenderer, firstPositionedAncestorData:ContainingBlockData, viewportData:ContainingBlockData):Void
 	{
-		switch (elementRenderer.computedStyle.position)
+		switch (elementRenderer.coreStyle.computedStyle.position)
 		{	
 			//positioned 'fixed' ElementRenderer, use the viewport
 			case fixed:
@@ -170,16 +188,18 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function doLayoutPositionedChild(elementRenderer:ElementRenderer, containingBlockData:ContainingBlockData):Void
 	{
+		var elementCoreStyle:CoreStyle = elementRenderer.coreStyle;
+		
 		//for horizonal offset, if both left and right are not auto,
 		//left takes precedance so we try to apply left offset first
-		if (elementRenderer.coreStyle.left != PositionOffset.cssAuto)
+		if (elementCoreStyle.left != PositionOffset.cssAuto)
 		{
 			elementRenderer.positionedOrigin.x = getLeftOffset(elementRenderer);
 		}
 		//if no left offset is defined, then try to apply a right offset.
 		//Right offset takes the containing block width minus the
 		//width of the positioned children as value for a 0 right offset
-		else if (elementRenderer.coreStyle.right != PositionOffset.cssAuto)
+		else if (elementCoreStyle.right != PositionOffset.cssAuto)
 		{
 			elementRenderer.positionedOrigin.x = getRightOffset(elementRenderer, containingBlockData.width);
 		}
@@ -188,11 +208,11 @@ class FlowBoxRenderer extends BoxRenderer
 		//At this point the bounds of the ElementRenderer already matches its static position
 		
 		//for vertical offset, the same rule as horizontal offsets apply
-		if (elementRenderer.coreStyle.top != PositionOffset.cssAuto)
+		if (elementCoreStyle.top != PositionOffset.cssAuto)
 		{
 			elementRenderer.positionedOrigin.y = getTopOffset(elementRenderer);
 		}
-		else if (elementRenderer.coreStyle.bottom != PositionOffset.cssAuto)
+		else if (elementCoreStyle.bottom != PositionOffset.cssAuto)
 		{
 			elementRenderer.positionedOrigin.y = getBottomOffset(elementRenderer, containingBlockData.height);
 		}
@@ -250,17 +270,17 @@ class FlowBoxRenderer extends BoxRenderer
 	override public function childrenInline():Bool
 	{	
 		var length:Int = childNodes.length;
-		
 		for (i in 0...length)
 		{
 			var child:ElementRenderer = childNodes[i];
-			//floated and absolutely positioned element are not taken into
-			//account
-			if (child.isFloat() == false)
+			
+			if (child.isInlineLevel() == true)
 			{
-				if (child.isPositioned() == false || child.isRelativePositioned() == true)
+				//floated and absolutely positioned element are not taken into
+				//account
+				if (child.isFloat() == false)
 				{
-					if (child.isInlineLevel() == true)
+					if (child.isPositioned() == false || child.isRelativePositioned() == true)
 					{
 						return true;
 					}

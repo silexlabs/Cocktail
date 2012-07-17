@@ -10,8 +10,10 @@ package cocktail.port.flash_player;
 import cocktail.core.event.Event;
 import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLElement;
+import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
 import cocktail.port.platform.nativeWindow.AbstractNativeWindow;
+import flash.display.Bitmap;
 import flash.display.StageDisplayState;
 import flash.Lib;
 import flash.net.URLRequest;
@@ -32,6 +34,12 @@ class NativeWindow extends AbstractNativeWindow
 	private static inline var ALLOW_FULLSCREEN_ATTRIBUTE:String = "allowsFullScreen";
 	
 	/**
+	 * The bitmap onto which the document's
+	 * bitmap data will be drawn
+	 */
+	private var _documentBitmap:Bitmap;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
@@ -41,6 +49,11 @@ class NativeWindow extends AbstractNativeWindow
 		//in Flash, the Stage is always defined as no scale as the transformations
 		//will be managed by Cocktail
 		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
+		
+		//attachthe document's bitmap data to the stage
+		//so that they are displyed on screen
+		_documentBitmap = new Bitmap();
+		Lib.current.addChild(_documentBitmap);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -87,6 +100,15 @@ class NativeWindow extends AbstractNativeWindow
 	override public function fullscreen():Bool
 	{
 		return flash.Lib.current.stage.displayState == StageDisplayState.FULL_SCREEN;
+	}
+	
+	/**
+	 * Set the given bitmap data as the document's bitmap data so that the document
+	 * is displayed on the screen
+	 */
+	override public function displayOnScreen(nativeBitmapData:NativeBitmapData):Void
+	{
+		_documentBitmap.bitmapData = nativeBitmapData;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

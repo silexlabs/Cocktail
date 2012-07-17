@@ -214,7 +214,7 @@ class HTMLImageElement extends EmbeddedElement
 		{
 			return 0;
 		}
-		return intrinsicHeight;
+		return Math.round(intrinsicHeight);
 	}
 	
 	private function get_naturalWidth():Int
@@ -223,7 +223,7 @@ class HTMLImageElement extends EmbeddedElement
 		{
 			return 0;
 		}
-		return intrinsicWidth;
+		return Math.round(intrinsicWidth);
 	}
 	
 }

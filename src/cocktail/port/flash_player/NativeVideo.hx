@@ -55,7 +55,7 @@ class NativeVideo extends NativeMedia
 	
 	/**
 	 * The native flash net connection object
-	 */
+	 */  
 	private var _nc:NetConnection;
 	
 	/**

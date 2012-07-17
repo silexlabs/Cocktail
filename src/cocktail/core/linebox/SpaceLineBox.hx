@@ -11,13 +11,14 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.style.ComputedStyle;
 import cocktail.Lib;
 import cocktail.core.font.FontManager;
+import cocktail.port.DrawingManager;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.font.FontData;
 /**
  * A subclass of TextLineBox, a space is lighter as 
  * it doesn't need to instantiate a native text display object,
- * its font metrics are sufficient for layout
+ * its font metrics thanks to the spaceWidth attribute are sufficient for layout
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -46,7 +47,7 @@ class SpaceLineBox extends TextLineBox
 	/**
 	 * Spaces don't need to be rendered
 	 */
-	override public function render(graphicContext:NativeElement, forceRendering:Bool):Void
+	override public function render(graphicContext:DrawingManager):Void
 	{
 		
 	}
@@ -69,6 +70,9 @@ class SpaceLineBox extends TextLineBox
 	 */
 	override private function getTextWidth():Float
 	{
-		return _fontMetrics.spaceWidth;
+		//the width of a space is retrieved from the font metrics, plus the letter spacing
+		//which also apply to space and the word spacing which applies only to space
+		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
+		return _fontMetrics.spaceWidth + computedStyle.letterSpacing + computedStyle.wordSpacing;
 	}
 }

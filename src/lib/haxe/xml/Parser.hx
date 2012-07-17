@@ -1,11 +1,5 @@
 package lib.haxe.xml;
 
-
-/**
- * TODO 1 : should not need this class anymore when compiling
- * with haxe 2.10, inclueded in standard lib
- */
-
 using StringTools;
 
 /* poor'man enum : reduce code size + a bit faster since inlined */

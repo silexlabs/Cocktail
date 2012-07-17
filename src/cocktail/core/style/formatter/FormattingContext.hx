@@ -57,7 +57,7 @@ class FormattingContext
 	 * Contains the data necessary to place the ElementRenderer in flow, 
 	 * such as the coordinates where to insert the next ElementRenderer
 	 */
-	private var _formattingContextData:FormattingContextData;
+	private var _formattingContextData:RectangleData;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT/DISPOSE
@@ -87,8 +87,8 @@ class FormattingContext
 			//use instead local var in recursive method, like for block formatting context
 			x : x,
 			y : y,
-			maxHeight : 0.0,
-			maxWidth:0.0
+			height : 0.0,
+			width:0.0
 		};
 	}
 	
@@ -104,7 +104,7 @@ class FormattingContext
 		_floatsManager = floatsManager;
 		initFormattingContextData();
 		startFormatting();
-		applyShrinkToFitIfNeeded(_formattingContextRoot, _formattingContextData.maxWidth);
+		applyShrinkToFitIfNeeded(_formattingContextRoot, _formattingContextData.width);
 	}
 	
 	/////////////////////////////////

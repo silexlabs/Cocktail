@@ -421,8 +421,6 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function invalidate(invalidationReason:InvalidationReason):Void
 	{
-		//TODO 4 : should use helper method like isRenderer instead of
-		//relying on nullness
 		if (elementRenderer != null)
 		{
 			elementRenderer.invalidate(invalidationReason);
@@ -563,7 +561,6 @@ class HTMLElement extends Element<HTMLElement>
 				//ElementRenderer, then destroy it
 				detachFromParentElementRenderer();
 				
-				elementRenderer.dispose();
 				elementRenderer = null;
 			}
 		}
@@ -636,9 +633,6 @@ class HTMLElement extends Element<HTMLElement>
 	 * Instantiate the right ElementRenderer
 	 * based on the Display style and/or the 
 	 * type of HTMLElement
-	 * 
-	 * TODO 4 : affecting coreStyle should be done in other
-	 * method as it is duplicated in each overriding classes
 	 */
 	private function createElementRenderer():Void
 	{
@@ -950,17 +944,13 @@ class HTMLElement extends Element<HTMLElement>
 		return 0;
 	}
 	
-	
-	//TODO 4 : shouldn't HTMLElement be the model for all attributes
-	//instead ? Shouldn't ElementRenderer set the value of scrollLeft/scrollTop
-	//on the HTMLElement ?
 	private function set_scrollLeft(value:Int):Int
 	{
 		if (elementRenderer != null)
 		{
 			elementRenderer.scrollLeft = value;
 		}
-		return 0;
+		return value;
 	}
 	
 	private function get_scrollLeft():Int
@@ -978,7 +968,7 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			elementRenderer.scrollTop = value;
 		}
-		return 0;
+		return value;
 	}
 	
 	private function get_scrollTop():Int

@@ -6,24 +6,8 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.renderer;
-
-import cocktail.core.background.BackgroundManager;
-import cocktail.core.dom.Node;
-import cocktail.core.html.EmbeddedElement;
 import cocktail.core.html.HTMLElement;
-import cocktail.port.NativeElement;
-import cocktail.core.style.computer.boxComputers.BoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
-import cocktail.core.style.CoreStyle;
-import cocktail.core.font.FontData;
-import cocktail.core.style.formatter.FormattingContext;
-import cocktail.core.style.StyleData;
-import cocktail.core.geom.GeomData;
-import haxe.Log;
+import cocktail.port.DrawingManager;
 
 /**
  * Base class for embedded element
@@ -46,7 +30,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * overriden to also render the embedded asset, for instance a picture for
 	 * an image renderer
 	 */
-	override private function renderSelf(graphicContext:NativeElement):Void
+	override private function renderSelf(graphicContext:DrawingManager):Void
 	{
 		super.renderSelf(graphicContext);
 		renderEmbeddedAsset(graphicContext);
@@ -60,7 +44,6 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	{
 		return true;
 	}
-
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
@@ -69,21 +52,8 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	/**
 	 * Renders an embedded asset using the graphic context as canvas
 	 */
-	private function renderEmbeddedAsset(graphicContext:NativeElement)
+	private function renderEmbeddedAsset(graphicContext:DrawingManager)
 	{
 		//abstract
-	}
-	
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN SETTER/GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	//TODO 4 : messy
-	override private function get_bounds():RectangleData
-	{
-		bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
-		bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
-		return bounds;
 	}
 }

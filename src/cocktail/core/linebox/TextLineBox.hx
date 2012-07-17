@@ -7,13 +7,16 @@
 */
 package cocktail.core.linebox;
 
+import cocktail.core.geom.Matrix;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.style.ComputedStyle;
 import cocktail.Lib;
 import cocktail.core.font.FontManager;
+import cocktail.port.DrawingManager;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.font.FontData;
+
 /**
  * A special kind of line box used to render text. 
  * Wrap a native text element which is platform
@@ -24,7 +27,7 @@ import cocktail.core.font.FontData;
 class TextLineBox extends LineBox
 {
 	/**
-	 * A ref to the font metrics of the TextElementRenderer
+	 * A ref to the font metrics of the TextRenderer
 	 */
 	private var _fontMetrics:FontMetricsData;
 	
@@ -34,26 +37,40 @@ class TextLineBox extends LineBox
 	 */
 	private var _nativeElement:NativeElement;
 	
+	
+	private var _bitmap:Dynamic;
+	
 	/**
 	 * class constructor
 	 */
 	public function new(elementRenderer:ElementRenderer, text:String, fontMetrics:FontMetricsData, fontManager:FontManager) 
 	{
-		super(elementRenderer);
-		
 		_fontMetrics = fontMetrics;
 		
-		initNativeTextElement(text, fontManager, elementRenderer.coreStyle.computedStyle);
+		super(elementRenderer);
 		
-		//init the leaded ascent and desecent of the text
-		//only need to be computed once, the text of this 
-		//TextLineBox can't change after instanciation
-		leadedAscent = getLeadedAscent();
-		leadedDescent = getLeadedDescent();
+		
+		initNativeTextElement(text, fontManager, elementRenderer.coreStyle.computedStyle);
 		
 		//get the dimensions of the text
 		bounds.width = getTextWidth();
 		bounds.height = getTextHeight();
+		
+		//TODO 1 : null if space 
+		if (_nativeElement != null)
+		{
+			//TODO 1 : all this should be abstracted in FontManager
+			#if (flash9 || nme)
+			_bitmap = new flash.display.BitmapData(Math.round(bounds.width), Math.round(bounds.height), true, 0x00000000);
+			var matr = new flash.geom.Matrix();
+			matr.translate(0.0, leadedAscent);
+			
+			_bitmap.draw(_nativeElement, matr);
+			#end
+			_nativeElement = null;
+		}
+		
+		
 	}
 	
 	/**
@@ -75,15 +92,25 @@ class TextLineBox extends LineBox
 	 * 
 	 * TODO 4 : should also render text decoration, or should
 	 * be on TextRenderer ?
+	 * 
+	 * TODO 2 : should use globalBounds instead, but global bounds is
+	 * used itself to determine the bounds of the text
 	 */
-	override public function render(graphicContext:NativeElement, forceRendering:Bool):Void
+	override public function render(graphicContext:DrawingManager):Void
 	{
-		#if (flash9 || nme)
-		_nativeElement.x = bounds.x + elementRenderer.globalContainingBlockOrigin.x;
-		_nativeElement.y = bounds.y + elementRenderer.globalContainingBlockOrigin.y  + leadedAscent;
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
-		containerGraphicContext.addChild(_nativeElement);
-		#end
+		var rect:RectangleData = {
+			x:0.0,
+			y:0.0,
+			width:bounds.width,
+			height:bounds.height
+		}
+		
+		var destPoint:PointData = {
+			x:bounds.x + elementRenderer.globalContainingBlockOrigin.x,
+			y:bounds.y + elementRenderer.globalContainingBlockOrigin.y - elementRenderer.scrollOffset.y
+		}
+		
+		graphicContext.copyPixels(_bitmap, rect, destPoint);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -107,32 +134,14 @@ class TextLineBox extends LineBox
 		return true;
 	}
 	
-	/**
-	 * Overriden as a text line box is never
-	 * considered absolutely positioned
-	 */
-	override public function isAbsolutelyPositioned():Bool
-	{
-		return false;
-	}
-	
-	/**
-	 * Overriden as a text line box never establishes
-	 * a new formatting context
-	 */
-	override public function establishesNewFormattingContext():Bool
-	{
-		return false;
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE METHODS
+	// OVERRIDEN PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Return the leaded ascent of the generated text
 	 */
-	private function getLeadedAscent():Float 
+	override private function getLeadedAscent():Float 
 	{
 		var ascent:Float = _fontMetrics.ascent;
 		var descent:Float = _fontMetrics.descent;	
@@ -151,7 +160,7 @@ class TextLineBox extends LineBox
 	/**
 	 * Return the leaded descent of the generated text
 	 */
-	private function getLeadedDescent():Float 
+	override private function getLeadedDescent():Float 
 	{
 		var ascent:Float = _fontMetrics.ascent;
 		var descent:Float = _fontMetrics.descent;	
@@ -164,37 +173,29 @@ class TextLineBox extends LineBox
 		return leadedDescent;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	//  PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * return the generated text width
+	 * 
+	 * TODO 2 : should either create abstract native element
+	 * for text to access text width, or use fontManager to
+	 * get text width
 	 */
 	private function getTextWidth():Float
 	{
-		//here the text is a space character
-		if (isSpace() == true)
-		{
-			//for a space, the width of a space is retrieved from the font metrics, plus the letter spacing
-			//which also apply to space and the word spacing which aplies only to text
-			var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
-			return _fontMetrics.spaceWidth + computedStyle.letterSpacing + computedStyle.wordSpacing;
-		}
-		//in this case the text is a word, the text width is returned, it already
-		//contains the letter spacing which was applied when the text was rendered
-		//by the flash text engine
-		else
-		{
-			#if (flash9 || nme)
-			return untyped _nativeElement.textWidth ;
-			#else
-			return 0.0;
-			#end
-		}	
+		#if (flash9 || nme)
+		return untyped _nativeElement.textWidth ;
+		#else
+		return 0.0;
+		#end
 	}
 
 	/**
 	 * return the generated text height, which is
 	 * the addition of the leaded ascent and descent
-	 * 
-	 * TODO 4 : should be line height in some cases
 	 */
 	private function getTextHeight():Float
 	{

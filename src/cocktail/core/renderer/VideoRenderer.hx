@@ -12,6 +12,7 @@ import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLVideoElement;
 import cocktail.core.resource.ResourceManager;
+import cocktail.port.DrawingManager;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.port.Resource;
@@ -26,9 +27,9 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(node:HTMLElement) 
+	public function new(domNode:HTMLElement) 
 	{
-		super(node);
+		super(domNode);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -38,9 +39,9 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	/**
 	 * Render the embedded video asset or the video poster frame.
 	 */
-	override private function renderEmbeddedAsset(graphicContext:NativeElement)
+	override private function renderEmbeddedAsset(graphicContext:DrawingManager)
 	{
-		var htmlVideoElement:HTMLVideoElement = cast(node);
+		var htmlVideoElement:HTMLVideoElement = cast(domNode);
 		
 		//determine wether to render video or poster frame
 		if (htmlVideoElement.shouldRenderPosterFrame() == true)
@@ -65,11 +66,11 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	 * the video always takes the maximum amount of space available
 	 * while keeping its aspect ratio
 	 */
-	private function renderVideo(htmlVideoElement:HTMLVideoElement, graphicContext:NativeElement):Void
+	private function renderVideo(htmlVideoElement:HTMLVideoElement, graphicContext:DrawingManager):Void
 	{
 		//get the bounds for the video so that it takes the maximum space and is centered
-		var videoBounds:RectangleData = getAssetBounds(_coreStyle.computedStyle.width,
-		_coreStyle.computedStyle.height, htmlVideoElement.videoWidth, htmlVideoElement.videoHeight);
+		var videoBounds:RectangleData = getAssetBounds(coreStyle.computedStyle.width,
+		coreStyle.computedStyle.height, htmlVideoElement.videoWidth, htmlVideoElement.videoHeight);
 		
 		#if (flash9 || nme)
 		
@@ -77,14 +78,14 @@ class VideoRenderer extends EmbeddedBoxRenderer
 		containerGraphicContext.addChild(htmlVideoElement.embeddedAsset);
 
 		//add the x and y offset for the video
-		htmlVideoElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + videoBounds.x;
-		htmlVideoElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + videoBounds.y;
+		htmlVideoElement.embeddedAsset.x = globalBounds.x + coreStyle.computedStyle.paddingLeft + videoBounds.x;
+		htmlVideoElement.embeddedAsset.y = globalBounds.y + coreStyle.computedStyle.paddingTop + videoBounds.y;
 
 		//use the actual video width and height
 		htmlVideoElement.embeddedAsset.width = videoBounds.width;
 		htmlVideoElement.embeddedAsset.height = videoBounds.height;
 		
-		htmlVideoElement.embeddedAsset.alpha = computedStyle.opacity;
+		htmlVideoElement.embeddedAsset.alpha = coreStyle.computedStyle.opacity;
 		
 		#end
 	}
@@ -93,9 +94,9 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	 * Render the poster frame of the video if the video is not
 	 * yet loaded or has not started playing yet
 	 */
-	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:NativeElement):Void
+	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:DrawingManager):Void
 	{
-		var resource:Resource = ResourceManager.getResource(node.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
+		var resource:Resource = ResourceManager.getResource(domNode.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
 
 		//the poster frame is not loaded or there was an erro while loading it
 		if (resource.loaded == false || resource.loadedWithError == true)
@@ -103,8 +104,8 @@ class VideoRenderer extends EmbeddedBoxRenderer
 			return;
 		}
 		
-		var posterBounds:RectangleData = getAssetBounds(_coreStyle.computedStyle.width,
-		_coreStyle.computedStyle.height, resource.intrinsicWidth, resource.intrinsicHeight);
+		var posterBounds:RectangleData = getAssetBounds(coreStyle.computedStyle.width,
+		coreStyle.computedStyle.height, resource.intrinsicWidth, resource.intrinsicHeight);
 		
 		#if (flash9 || nme)
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
@@ -112,8 +113,8 @@ class VideoRenderer extends EmbeddedBoxRenderer
 		containerGraphicContext.addChild(bitmap);
 		
 		var globalBounds:RectangleData = globalBounds;
-		bitmap.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + posterBounds.x;
-		bitmap.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + posterBounds.y;
+		bitmap.x = globalBounds.x + coreStyle.computedStyle.paddingLeft + posterBounds.x;
+		bitmap.y = globalBounds.y + coreStyle.computedStyle.paddingTop + posterBounds.y;
 		bitmap.width = posterBounds.width;
 		bitmap.height = posterBounds.height;
 		#end

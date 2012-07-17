@@ -67,10 +67,10 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	}
 	
 	/**
-	 * never attach to containing block as it has
+	 * never register with containing block as it has
 	 * none
 	 */
-	override private function attachContaininingBlock():Void
+	override private function registerWithContaininingBlock():Void
 	{
 		
 	}
@@ -78,7 +78,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	/**
 	 * same as above for detach
 	 */
-	override private function detachContainingBlock():Void
+	override private function unregisterWithContainingBlock():Void
 	{
 		
 	}

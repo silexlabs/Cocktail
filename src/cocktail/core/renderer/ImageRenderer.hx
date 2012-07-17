@@ -8,11 +8,14 @@
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
+import cocktail.core.geom.Matrix;
 import cocktail.core.html.EmbeddedElement;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.resource.ResourceManager;
+import cocktail.core.style.ComputedStyle;
+import cocktail.port.DrawingManager;
 import cocktail.port.Resource;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
@@ -28,9 +31,9 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	/**
 	 * class constructor
 	 */
-	public function new(node:HTMLElement) 
+	public function new(domNode:HTMLElement) 
 	{
-		super(node);
+		super(domNode);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -41,26 +44,53 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	 * When rendered, renders the embedded picture using the
 	 * graphicContext as canvas
 	 */
-	override private function renderEmbeddedAsset(graphicContext:NativeElement):Void
+	override private function renderEmbeddedAsset(graphicContext:DrawingManager):Void
 	{
-		var resource:Resource = ResourceManager.getResource(node.getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME));
+		var resource:Resource = ResourceManager.getResource(domNode.getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME));
 
 		if (resource.loaded == false || resource.loadedWithError == true)
 		{
 			return;
 		}
+		var computedStyle:ComputedStyle = coreStyle.computedStyle;
 		
-		#if (flash9 || nme)
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
-		var bitmap:flash.display.Bitmap = new flash.display.Bitmap(resource.nativeResource, flash.display.PixelSnapping.AUTO, true);
-		containerGraphicContext.addChild(bitmap);
+		var width:Float = resource.intrinsicWidth;
+		var height:Float = resource.intrinsicHeight;
 		
-		var globalBounds:RectangleData = globalBounds;
-		bitmap.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
-		bitmap.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
-		bitmap.width = _coreStyle.computedStyle.width;
-		bitmap.height = _coreStyle.computedStyle.height;
-		#end
+		var sourceRect:RectangleData = {
+			x:0.0,
+			y:0.0,
+			width:width,
+			height:height
+		}
+		//TODO 2 : doc
+		//TODO 2 : also use scrollOffset.x
+	
+		var destPoint:PointData = {
+			x:globalBounds.x + computedStyle.paddingLeft,
+			y:globalBounds.y + computedStyle.paddingTop
+		}
+		
+		if (resource.intrinsicWidth != computedStyle.width || resource.intrinsicHeight != computedStyle.height)
+		{
+			var matrix:Matrix = new Matrix();
+		
+			matrix.translate(globalBounds.x + computedStyle.paddingLeft, globalBounds.y + computedStyle.paddingTop - scrollOffset.y);
+			matrix.scale(computedStyle.width / resource.intrinsicWidth , computedStyle.height / resource.intrinsicHeight );
+		
+				
+			sourceRect.x = globalBounds.x + computedStyle.paddingLeft;
+			sourceRect.y = globalBounds.y + computedStyle.paddingTop - scrollOffset.y;
+			sourceRect.width = computedStyle.width;
+			sourceRect.height = computedStyle.height;
+			
+			graphicContext.drawImage(resource.nativeResource, matrix, sourceRect);
+		}
+		else
+		{
+			destPoint.y = globalBounds.y + computedStyle.paddingTop - scrollOffset.y;
+			graphicContext.copyPixels(resource.nativeResource, sourceRect, destPoint);
+		}
 	}
 	
 }

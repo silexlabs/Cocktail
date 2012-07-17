@@ -8,6 +8,7 @@
 package cocktail.port.platform.nativeWindow;
 import cocktail.core.event.Event;
 import cocktail.core.event.UIEvent;
+import cocktail.port.NativeBitmapData;
 
 
 /**
@@ -102,6 +103,16 @@ class AbstractNativeWindow
 	public function fullscreen():Bool
 	{
 		return false;
+	}
+	
+	/**
+	 * Display the given bitmap data on the screen using
+	 * runtime specifc API's
+	 * @param	nativeBitmapData
+	 */
+	public function displayOnScreen(nativeBitmapData:NativeBitmapData):Void
+	{
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

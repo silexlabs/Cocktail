@@ -49,13 +49,13 @@ class EmbeddedElement extends HTMLElement
 	 * to a loaded asset and retrieve the intrisic dimensions from
 	 * it, they are not supposed to be stored here
 	 */
-	public var intrinsicHeight(get_intrinsicHeight, null):Null<Int>;
+	public var intrinsicHeight(get_intrinsicHeight, null):Null<Float>;
 	
 	/**
 	 * The intrinsic width of the embedded asset, for instance
 	 * for an image, its width in pixel
 	 */
-	public var intrinsicWidth(get_intrinsicWidth, null):Null<Int>;
+	public var intrinsicWidth(get_intrinsicWidth, null):Null<Float>;
 	
 	/**
 	 * The intrinsic ratio of the embedded asset, for instance
@@ -133,12 +133,12 @@ class EmbeddedElement extends HTMLElement
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_intrinsicHeight():Null<Int> 
+	private function get_intrinsicHeight():Null<Float> 
 	{
 		return intrinsicHeight;
 	}
 	
-	private function get_intrinsicWidth():Null<Int> 
+	private function get_intrinsicWidth():Null<Float> 
 	{
 		return intrinsicWidth;
 	}

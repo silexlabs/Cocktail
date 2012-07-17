@@ -6,14 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.renderer;
-import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLConstants;
-import cocktail.core.html.HTMLElement;
-import cocktail.core.style.formatter.FormattingContext;
-import cocktail.core.geom.GeomData;
-import cocktail.core.style.StyleData;
-import cocktail.core.font.FontData;
-import cocktail.Lib;
 
 /**
  * Anonmymous block are used to wrap inlineBoxRenderer

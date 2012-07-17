@@ -65,6 +65,16 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	private static inline var MONOSPACE_FLASH_FONT_NAME:String = "_typewriter";
 	
 	/**
+	 * The character used to compute the x height of a font metrics
+	 */
+	private static inline var X_HEIGHT_CHARACTER:String =  "x";
+	
+	/**
+	 * The character used to compute the space width of a font metrics
+	 */
+	private static inline var SPACE_WIDTH_CHARACTER:String = " ";
+	
+	/**
 	 * An instance of the flash TextBlock which
 	 * is a factory to create flash text line
 	 * object.
@@ -140,8 +150,8 @@ class FontManagerImpl extends AbstractFontManagerImpl
 		_textBlock.content = getNativeTextElement(text, computedStyle);
 		
 		//create a native flash text line
-		//set the width of the line to create to an 
-		//'infinite' value (10000) because in Cocktail
+		//by default, the width of the line to create is an 
+		//'infinite' value (100000). It is used because in Cocktail
 		//text is rendered word by word whereas the
 		//standard way of using the flash text engine
 		//is to create line by line. Creating text content
@@ -151,13 +161,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 		//Setting an infinite value for the line width assures that
 		//all the text content, which is only 1 word as the text is parsed
 		//beforehand, will be created.
-		//
-		//The 'fitSomething' parameters is also set to true,
-		//otherwise, when creating only a space character, no
-		//flash text line would be created
-		//
-		//TODO 4 : this method shouldn't be called for space charachter
-		var text:TextLine = _textBlock.createTextLine(null, 10000, 0.0, true);
+		var text:TextLine = _textBlock.createTextLine();
 		
 		cleanTextBlock(_textBlock);
 		
@@ -174,8 +178,8 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 */
 	private function getXHeight(elementFormat:ElementFormat):Float
 	{
-		_textBlock.content = new TextElement("x", elementFormat);
-		var textLine:TextLine = _textBlock.createTextLine(null, 10000);
+		_textBlock.content = new TextElement(X_HEIGHT_CHARACTER, elementFormat);
+		var textLine:TextLine = _textBlock.createTextLine();
 		var descent:Float = textLine.descent;
 		var top:Float = Math.abs(textLine.getAtomBounds(0).top);
 		
@@ -190,8 +194,10 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 */
 	private function getSpaceWidth(elementFormat:ElementFormat):Float
 	{
-		_textBlock.content = new TextElement(" ", elementFormat);
+		_textBlock.content = new TextElement(SPACE_WIDTH_CHARACTER, elementFormat);
 		
+		//note : when creating just a space, the 'fitSomethind' attribute must
+		//be set to true, else no text is rendered
 		var spaceWidth:Float = _textBlock.createTextLine(null, 10000, 0.0, true).getAtomBounds(0).width;
 		
 		cleanTextBlock(_textBlock);

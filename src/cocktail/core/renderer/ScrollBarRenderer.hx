@@ -21,7 +21,6 @@ import cocktail.core.font.FontData;
  */
 class ScrollBarRenderer extends BlockBoxRenderer
 {
-
 	/**
 	 * class cosntructor
 	 */
@@ -53,17 +52,6 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	override public function establishesNewStackingContext():Bool
 	{
 		return true;
-	}
-	
-	override public function scroll(x:Float, y:Float):Void
-	{
-		#if (flash9 || nme)
-		{
-			graphicsContext.x = x;
-			graphicsContext.y = y;
-		}
-		#end
-		
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////

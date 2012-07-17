@@ -9,8 +9,10 @@ package cocktail.core.background;
 
 import cocktail.core.event.Event;
 import cocktail.core.event.UIEvent;
+import cocktail.core.geom.Matrix;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.resource.ResourceManager;
+import cocktail.port.DrawingManager;
 import cocktail.port.Resource;
 import cocktail.port.NativeElement;
 import cocktail.core.style.StyleData;
@@ -61,14 +63,17 @@ class BackgroundManager
 	 * @param	style
 	 * @return
 	 */
-	public static function render(backgroundBox:RectangleData, style:CoreStyle, elementRenderer:ElementRenderer):Array<NativeElement>
+	public static function render(graphicContext:DrawingManager, backgroundBox:RectangleData, style:CoreStyle, elementRenderer:ElementRenderer):Void
 	{
-		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
-		
 		//no need to draw the background if it has no width or height
 		if (Math.round(backgroundBox.width) <= 0 || Math.round(backgroundBox.height) <= 0 )
 		{
-			return nativeElements;
+			return ;
+		}
+		
+		if (style.backgroundColor != BackgroundColor.transparent)
+		{
+			graphicContext.fillRect(backgroundBox, style.computedStyle.backgroundColor);
 		}
 		
 		//loop in all the background images style of the HTMLElement. It is expected
@@ -97,54 +102,26 @@ class BackgroundManager
 							}
 							
 							//draw the background image and store the resulting nativeElement
-							var imageNativeElement:NativeElement = drawBackgroundImage(imageDeclaration, style, backgroundBox,
+							drawBackgroundImage(graphicContext, imageDeclaration, style, backgroundBox,
 							style.backgroundPosition[i], style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i],
 							style.backgroundRepeat[i], style.backgroundImage[i], elementRenderer);
-							
-							nativeElements.push(imageNativeElement);
 						
 						//same as url but multiple urls are defined, to be used as fallback, with a defined
 						//fallback color if all urls are invalid
 						case ImageValue.imageList(value):
 							
-							var imageNativeElement:NativeElement = drawBackgroundImage(value, style, backgroundBox,
+							drawBackgroundImage(graphicContext, value, style, backgroundBox,
 							style.backgroundPosition[i], style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i],
 							style.backgroundRepeat[i], style.backgroundImage[i], elementRenderer);
-							
-							nativeElements.push(imageNativeElement);
 						
 						//draw a gradient and store it	
 						case ImageValue.gradient(value):
 							
-							var gradientNativeElement:NativeElement = drawBackgroundGradient(style, value, backgroundBox, style.backgroundPosition[i],
+							drawBackgroundGradient(graphicContext, style, value, backgroundBox, style.backgroundPosition[i],
 							style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i], style.backgroundRepeat[i], style.backgroundImage[i]);
-
-							nativeElements.push(gradientNativeElement);
 					}
 			}
-			
-			//when the last of the background image property is rendered, render
-			//the background color which use the same property as the last background image
-			if (i == length - 1)
-			{
-				if (style.backgroundColor != BackgroundColor.transparent)
-				{
-					var backgroundColorNativeElement:NativeElement = drawBackgroundColor(style, style.computedStyle.backgroundColor, backgroundBox, style.backgroundPosition[i],
-					style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i], style.backgroundRepeat[i], style.backgroundImage[i]);
-
-					//at this point the array contain only background image, reverse the array
-					//so that the background image declared first is on top of all the other
-					//background image
-					nativeElements.reverse();
-					
-					//then insert the background color so that it is under all the 
-					//background image
-					nativeElements.unshift(backgroundColorNativeElement);
-				}
-			}
 		}
-		
-		return nativeElements;
 	}
 		
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -170,15 +147,10 @@ class BackgroundManager
 	 * @param	backgroundImage
 	 * @return
 	 */
-	private static function drawBackgroundImage(imageDeclaration:ImageDeclarationData, style:CoreStyle, backgroundBox:RectangleData,
+	private static function drawBackgroundImage(graphicContext:DrawingManager, imageDeclaration:ImageDeclarationData, style:CoreStyle, backgroundBox:RectangleData,
 	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
-	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage, elementRenderer:ElementRenderer):NativeElement
+	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage, elementRenderer:ElementRenderer):Void
 	{
-		var backgroundImageDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(
-		backgroundBox);
-		
-		var backgroundImageNativeElement:NativeElement = backgroundImageDrawingManager.nativeElement;
-		
 		var foundResource:Bool = false;
 		
 		for (i in 0...imageDeclaration.urls.length)
@@ -191,11 +163,9 @@ class BackgroundManager
 					style, backgroundBox, resource.intrinsicWidth, resource.intrinsicHeight, resource.intrinsicRatio, backgroundPosition,
 					backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
 					
-					#if (flash9 || nme)
-					var bitmap:flash.display.Bitmap = new flash.display.Bitmap(resource.nativeResource,  flash.display.PixelSnapping.AUTO, true);
-					
-					backgroundImageDrawingManager.drawBackgroundImage(
-					bitmap, resource,
+				
+					doDrawBackgroundImage(graphicContext,
+					resource,
 					computedGradientStyles.backgroundOrigin,
 					computedGradientStyles.backgroundClip,
 					resource.intrinsicWidth,
@@ -204,7 +174,6 @@ class BackgroundManager
 					computedGradientStyles.backgroundSize,
 					computedGradientStyles.backgroundPosition,
 					computedGradientStyles.backgroundRepeat);
-					#end
 					
 				foundResource = true;	
 				break;
@@ -227,47 +196,150 @@ class BackgroundManager
 		
 		if (foundResource == false)
 		{
-			var computedBackgroundStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
-			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,
-			backgroundClip, backgroundRepeat, backgroundImage);
 			
 			var backgroundColor:ColorData = UnitManager.getColorDataFromCSSColor(imageDeclaration.fallbackColor);
-			
-			var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(backgroundBox);
-			backgroundColorDrawingManager.drawBackgroundColor(backgroundColor, computedBackgroundStyles.backgroundClip);
-			
-			backgroundImageNativeElement = backgroundColorDrawingManager.nativeElement;
+			graphicContext.fillRect(backgroundBox, backgroundColor);
 		}
-		
-		return backgroundImageNativeElement;
+
 	}
 	
-	/**
-	 * Draw a background color layer on the provided nativeElement
+		/**
+	 * Draw a background image form a nativeImage source.
+	 * The nativeImage source is repeated and transformed
+	 * as necessary to match the computed background
+	 * styles
 	 * 
-	 * @param	style
-	 * @param	backgroundColor
-	 * @param	backgroundColorNativeElement
-	 * @param	backgroundBox
-	 * @param	backgroundPosition
-	 * @param	backgroundSize
-	 * @param	backgroundOrigin
-	 * @param	backgroundClip
+	 * @param	nativeImage
+	 * @param	backgroundPositioningBox
+	 * @param	backgroundPaintingBox
+	 * @param	intrinsicWidth
+	 * @param	intrinsicHeight
+	 * @param	intrinsicRatio
+	 * @param	computedBackgroundSize
+	 * @param	computedBackgroundPosition
 	 * @param	backgroundRepeat
-	 * @param	backgroundImage
 	 */
-	private static function drawBackgroundColor(style:CoreStyle, backgroundColor:ColorData, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
-	backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin, backgroundClip:BackgroundClip, 
-	backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):NativeElement
-	{
-		var computedBackgroundStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
-			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,
-			backgroundClip, backgroundRepeat, backgroundImage);
-
-		var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(backgroundBox);
-		backgroundColorDrawingManager.drawBackgroundColor(backgroundColor, computedBackgroundStyles.backgroundClip);
+		public static function doDrawBackgroundImage(graphicContext:DrawingManager, resource:Resource,
+		backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, intrinsicWidth:Float,
+		intrinsicHeight:Float, intrinsicRatio:Float, computedBackgroundSize:DimensionData,
+		computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeat):Void
+	{	
+		var totalWidth:Float = computedBackgroundPosition.x + backgroundPositioningBox.x;
+		var maxWidth:Float =  backgroundPaintingBox.x + backgroundPaintingBox.width;
+		var imageWidth:Float = computedBackgroundSize.width;
 		
-		return backgroundColorDrawingManager.nativeElement;
+		switch (backgroundRepeat.x)
+		{
+			case BackgroundRepeatValue.noRepeat:
+				maxWidth = totalWidth + imageWidth;
+				
+			case BackgroundRepeatValue.repeat:
+				while (totalWidth > backgroundPaintingBox.x)
+				{
+					totalWidth -= imageWidth;
+				}
+				
+			case BackgroundRepeatValue.space:
+				imageWidth = Math.round(backgroundPositioningBox.width / computedBackgroundSize.width);
+				while (totalWidth > backgroundPaintingBox.x)
+				{
+					totalWidth -= imageWidth;
+				}
+				
+			case BackgroundRepeatValue.round:
+				while (totalWidth > backgroundPaintingBox.x)
+				{
+					totalWidth -= imageWidth;
+				}
+		}
+		var initialWidth:Float = totalWidth;
+		
+		var totalHeight:Float = computedBackgroundPosition.y + Math.round(backgroundPositioningBox.y);
+		var maxHeight:Float = backgroundPaintingBox.y + backgroundPaintingBox.height;
+		var imageHeight:Float = computedBackgroundSize.height;
+		
+		switch (backgroundRepeat.y)
+		{
+			case BackgroundRepeatValue.noRepeat:
+				maxHeight = totalHeight + imageHeight;
+				
+			case BackgroundRepeatValue.repeat:
+				while (totalHeight > backgroundPaintingBox.y)
+				{
+					totalHeight -= imageHeight;
+				}
+				
+			case BackgroundRepeatValue.space:
+				imageHeight = backgroundPositioningBox.height / computedBackgroundSize.height;
+				while (totalHeight > backgroundPaintingBox.y)
+				{
+					totalHeight -= imageHeight;
+				}
+				
+			case BackgroundRepeatValue.round:
+				while (totalHeight > backgroundPaintingBox.y)
+				{
+					totalHeight -= imageHeight;
+				}
+		}
+		
+		var initialHeight:Float = totalHeight;
+		//TODO 3 : doc + separate in 2 methods
+		if ((imageWidth / intrinsicWidth == 1) && (imageHeight / intrinsicHeight == 1))
+		{
+			var destinationPoint:PointData = {
+				x:totalWidth,
+				y:totalHeight
+			}
+			
+			var intWidth:Float = intrinsicWidth;
+			var intHeight:Float = intrinsicHeight;
+			var box:RectangleData = {
+				x:0.0,
+				y:0.0,
+				width:intWidth,
+				height:intHeight
+			}
+			while (totalHeight < maxHeight)
+			{
+				graphicContext.copyPixels(resource.nativeResource, box, destinationPoint );
+				
+				totalWidth += imageWidth;
+				
+				if (totalWidth >= maxWidth)
+				{
+					totalWidth = initialWidth;
+					totalHeight += imageHeight;
+				}
+				
+				destinationPoint.x = totalWidth;
+				destinationPoint.y = totalHeight;
+			}
+		}
+		else
+		{
+			var matrix:Matrix = new Matrix();
+			
+			while (totalHeight < maxHeight)
+			{
+				
+				matrix.identity();
+				
+				matrix.translate(totalWidth, totalHeight);
+				
+				matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight);
+				
+				graphicContext.drawImage(resource.nativeResource, matrix, backgroundPaintingBox);
+				
+				totalWidth += imageWidth;
+				
+				if (totalWidth >= maxWidth)
+				{
+					totalWidth = initialWidth;
+					totalHeight += imageHeight;
+				}
+			}
+		}
 	}
 	
 	/**
@@ -284,25 +356,16 @@ class BackgroundManager
 	 * @param	backgroundImage
 	 * @return
 	 */
-	private static function drawBackgroundGradient(style:CoreStyle, gradientValue:GradientValue, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
+	private static function drawBackgroundGradient(graphicContext:DrawingManager, style:CoreStyle, gradientValue:GradientValue, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
 	backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin, backgroundClip:BackgroundClip,
-	backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):NativeElement
+	backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):Void
 	{
 		var computedGradientStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
 			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,
 			backgroundClip, backgroundRepeat, backgroundImage);
 		
-			var backgroundGradientDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(
-			backgroundBox );
-			backgroundGradientDrawingManager.drawBackgroundGradient(
-			gradientValue,
-			computedGradientStyles.backgroundOrigin,
-			computedGradientStyles.backgroundClip,
-			computedGradientStyles.backgroundSize,
-			computedGradientStyles.backgroundPosition, 
-			computedGradientStyles.backgroundRepeat);
+		
 			
-		return backgroundGradientDrawingManager.nativeElement;
 	}
 	
 }

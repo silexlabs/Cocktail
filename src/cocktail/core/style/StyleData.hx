@@ -1342,40 +1342,6 @@ import cocktail.core.renderer.TextRenderer;
 	}
 	
 	/**
-	 * Contains the data necessary to place
-	 * an htmlElement in flow into the current
-	 * formatting context
-	 * 
-	 * TODO 2: should be repaced by RectangleData
-	 */
-	typedef FormattingContextData = {
-		/**
-		 * the x position where the next in flow htmlElement
-		 * should be placed in the formatting context
-		 */
-		var x:Float;
-		
-		/**
-		 * the y position where the next in flow htmlElement
-		 * should be placed in the formatting context
-		 */
-		var y:Float;
-		
-		/**
-		 * Determine the largest width of a line that was formatted
-		 * in the current formatting context
-		 */
-		var maxWidth:Float;
-		
-		/**
-		 * The accumulated height of all the in flow htmlElements
-		 * (includes paddings and margins) of the current
-		 * formatting context
-		 */
-		var maxHeight:Float;
-	}
-	
-	/**
 	 * Represents the left and right
 	 * floats registered for a 
 	 * formatting context

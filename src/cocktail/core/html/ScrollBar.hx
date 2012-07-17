@@ -59,16 +59,14 @@ class ScrollBar extends HTMLElement
 	/**
 	 * The current scroll offset of the scroll bar
 	 */
-	private var _scroll:Float;
-	public var scroll(get_scroll, set_scroll):Float;
+	public var scroll(default, set_scroll):Float;
 	
 	/**
 	 * The maximum scroll offset of the scrollbar, corresponding
 	 * to the height or width bounds of the children of the
 	 * BlockBoxRenderer owning the ScrollBar
 	 */
-	private var _maxScroll:Float;
-	public var maxScroll(get_maxScroll, set_maxScroll):Float;
+	public var maxScroll(default, set_maxScroll):Float;
 	
 	/**
 	 * A reference to the thumb of the scroll
@@ -119,8 +117,8 @@ class ScrollBar extends HTMLElement
 		_upArrow = Lib.document.createElement(HTMLConstants.HTML_DIV_TAG_NAME);
 		_downArrow = Lib.document.createElement(HTMLConstants.HTML_DIV_TAG_NAME);
 	
-		_scroll = 0;
-		_maxScroll = 0;
+		scroll = 0;
+		maxScroll = 0;
 		_mouseMoveStart = 0;
 		
 		//style the scrollbar parts for vertical
@@ -392,13 +390,13 @@ class ScrollBar extends HTMLElement
 	
 	private function updateScroll():Void
 	{
-		if (_scroll > _maxScroll)
+		if (scroll > maxScroll)
 		{
-			_scroll = maxScroll;
+			scroll = maxScroll;
 		}
-		else if (_scroll < 0)
+		else if (scroll < 0)
 		{
-			_scroll = 0;
+			scroll = 0;
 		}
 		
 		var progress:Float = scroll / maxScroll;
@@ -472,38 +470,27 @@ class ScrollBar extends HTMLElement
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_maxScroll():Float 
-	{
-		return _maxScroll;
-	}
-	
 	private function set_maxScroll(value:Float):Float 
 	{
-		var scrollPercent:Float = _scroll / _maxScroll;
+		var scrollPercent:Float = scroll / maxScroll;
 		
-		if (_maxScroll == 0)
+		if (maxScroll == 0)
 		{
 			scrollPercent = 0;
 		}
 		
-		_maxScroll = value;
-		scroll = _maxScroll * scrollPercent; 
+		maxScroll = value;
+		scroll = maxScroll * scrollPercent; 
 		
 		updateThumbSize();
 		
 		return value;
 	}
-
-	private function get_scroll():Float
-	{
-		return _scroll ;
-	}
 	
 	private function set_scroll(value:Float):Float 
 	{
-		_scroll = value;
+		scroll = value;
 		updateScroll();
-		
 		return value;
 	}
 }

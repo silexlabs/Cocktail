@@ -8,9 +8,9 @@
 package cocktail.core.style.formatter;
 
 import cocktail.core.linebox.EmbeddedLineBox;
-import cocktail.core.linebox.InlineBlockLineBox;
 import cocktail.core.linebox.LineBox;
 import cocktail.core.linebox.RootLineBox;
+import cocktail.core.linebox.StaticPositionLineBox;
 import cocktail.core.linebox.TextLineBox;
 import cocktail.core.linebox.SpaceLineBox;
 import cocktail.core.style.ComputedStyle;
@@ -39,11 +39,6 @@ import haxe.Log;
  * the textAlign property of the HTMLElement which started
  * the inline formatting context and the y position using
  * the vertical align property
- * 
- * TODO 1 : should simplify static position for positioned box. Should
- * not create linebox for absolute elements. When layyng out absolutely
- * positioned child, they may retrieve the bounds of their previous sibling
- * or parent to determine their static position
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -85,6 +80,8 @@ class InlineFormattingContext extends FormattingContext
 		var initialRootLineBox:RootLineBox = new RootLineBox(_formattingContextRoot);
 		rootLineBoxes.push(initialRootLineBox);
 		
+		_firstLineFormatted = false;
+		
 		//TODO : should implement text indent in a cleaner way
 		_unbreakableWidth = _formattingContextRoot.coreStyle.computedStyle.textIndent;
 		
@@ -104,7 +101,6 @@ class InlineFormattingContext extends FormattingContext
 		{
 			var formattingContextComputedStyle:ComputedStyle =  _formattingContextRoot.coreStyle.computedStyle;
 			_formattingContextRoot.bounds.height = _formattingContextData.y  + formattingContextComputedStyle.paddingBottom ;
-			_formattingContextRoot.coreStyle.computedStyle.height = _formattingContextRoot.bounds.height - formattingContextComputedStyle.paddingBottom  - formattingContextComputedStyle.paddingTop;
 		}
 	}
 	
@@ -116,46 +112,37 @@ class InlineFormattingContext extends FormattingContext
 		{
 			var child:ElementRenderer = elementRenderer.childNodes[i];
 			
-			//here the child is displayed as an inline-block as it starts a new formatting context
-			//it generates only one line box 
-			if (child.establishesNewFormattingContext() == true)
+			if (child.isPositioned() == true && child.isRelativePositioned() == false)
+			{
+				var lineBox:LineBox = new StaticPositionLineBox(child);
+				lineBox = insertIntoLine([lineBox], lineBox, rootLineBoxes, openedElementRenderers);
+			}
+			//here the child either starts a new formatting context, meaning it is displayed
+			//has an inline-block and it has children, or it is replaced/embedded, such as
+			//an ImageRenderer. For all thoses cases, only one line box is created for each child
+			//as it is atomic from the point of view of the inline formatting context
+			//(it doesn't what's inside those child when formatting)
+			else if (child.establishesNewFormattingContext() == true || child.isReplaced() == true)
 			{
 				var childComputedStyle:ComputedStyle = child.coreStyle.computedStyle;
 				
-				child.bounds.width = childComputedStyle.width + childComputedStyle.paddingLeft + childComputedStyle.paddingRight;
-				child.bounds.height = childComputedStyle.height + childComputedStyle.paddingTop + childComputedStyle.paddingBottom;
+				//set the bounds of the corresponding InlineBoxRenderer
+				var childBounds:RectangleData = child.bounds;
+				childBounds.width = childComputedStyle.width + childComputedStyle.paddingLeft + childComputedStyle.paddingRight;
+				childBounds.height = childComputedStyle.height + childComputedStyle.paddingTop + childComputedStyle.paddingBottom;
 				
-				var inlineBlockLineBox:LineBox = new InlineBlockLineBox(child);
-				child.lineBoxes.push(inlineBlockLineBox);
-				
-				inlineBlockLineBox.marginLeft = childComputedStyle.marginLeft;
-				inlineBlockLineBox.marginRight = childComputedStyle.marginRight;
-
-				var childLineBoxes:Array<LineBox> = [inlineBlockLineBox];
-				
-				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
-			}
-			
-			//TODO : Text should not be considered embed, isEmbedded should be removed
-			//
-			//note : this placed before checking for child with children, as for instance the VideoRenderer
-			//is considered replaced but it can also have source children, bt when formatting, it should always
-			//be considered replaced
-			//TODO 5 : actually, source HTMLElement never create ElementRenderer, but because of lack of
-			//white space processing, spaces inside the video tag might create TextRenderer children
-			else if (child.isReplaced() == true && child.isText() == false)
-			{
+				//create the embedded line box representing the InlineBoxRenderer in
+				//the inline formatting context
 				var embeddedLineBox:LineBox = new EmbeddedLineBox(child);
-				child.lineBoxes.push(embeddedLineBox);
 				
-				//TODO : should had left and right margin to line box, like for inline-block
+				embeddedLineBox.marginLeft = childComputedStyle.marginLeft;
+				embeddedLineBox.marginRight = childComputedStyle.marginRight;
 				
-				var childLineBoxes:Array<LineBox> = [embeddedLineBox];
-				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
+				lineBox = insertIntoLine([embeddedLineBox], lineBox, rootLineBoxes, openedElementRenderers);
 			}
 			//here the child is an inline box renderer, which will create one line box for each
 			//line its children are in
-			else if (child.hasChildNodes() == true && child.establishesNewFormattingContext() == false)
+			else if (child.hasChildNodes() == true)
 			{
 				//remove all the previous line boxes before creating new ones
 				child.lineBoxes = new Array<LineBox>();
@@ -203,17 +190,14 @@ class InlineFormattingContext extends FormattingContext
 				lastLineBox.paddingRight = childComputedStyle.paddingRight;
 				_unbreakableWidth += childComputedStyle.marginRight + childComputedStyle.paddingRight;
 			}
-			//here the child can be either a text renderer, an embedded asset, like a picture
-			//or an element displayed as an inline-block
+			//here the child is a TextRenderer, which has as many text line box
+			//as needed to reperesent all the content of the TextRenderer
 			else
 			{
-				//get all the line boxes of the element, for instance, for a TextRenderer it will be an array
-				//of TextLineBox
-				var childLineBoxes:Array<LineBox> = child.lineBoxes;
 				//insert the array of created line boxes into the current line. It might create as many
 				//new lines as necessary. Returns a reference to the last inserted line box, used as starting
 				//point to lay out subsequent siblings and children
-				lineBox = insertIntoLine(childLineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
+				lineBox = insertIntoLine(child.lineBoxes, lineBox, rootLineBoxes, openedElementRenderers);
 			}
 		}
 	
@@ -238,7 +222,6 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function insertIntoLine(lineBoxes:Array<LineBox>, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
-		
 		//loop in all the line boxes which must be added to the current line
 		var length:Int = lineBoxes.length;
 		for ( i in 0...length)
@@ -250,7 +233,7 @@ class InlineFormattingContext extends FormattingContext
 			
 			//line boxes generated by absolutely positioned elements do not enter
 			//into account when calculating line breaks
-			if (lineBoxes[i].isAbsolutelyPositioned() == false || lineBoxes[i].isText() == true)
+			if (lineBoxes[i].isStaticPosition() == false)
 			{
 				//the width of the line box is added to the total width which can't be broken
 				_unbreakableWidth += lineBoxes[i].bounds.width + lineBox.marginLeft + lineBox.marginRight;
@@ -319,7 +302,7 @@ class InlineFormattingContext extends FormattingContext
 	}
 	
 	/**
-	 * Srtart the formatting of a line, starting from the root line box of
+	 * Start the formatting of a line, starting from the root line box of
 	 * the line
 	 * @param	rootLineBox the top of the tree of line box of this line
 	 * @param	isLastLine wheter this line is the last one of this
@@ -331,11 +314,11 @@ class InlineFormattingContext extends FormattingContext
 		removeSpaces(rootLineBox);
 		
 		//format line boxes horizontally
-		var lineBoxWidth:Float = alignLineBox(rootLineBox, isLastLine, getConcatenatedWidth(rootLineBox), getSpacesNumber(rootLineBox));
+		var lineBoxWidth:Float = alignLineBox(rootLineBox, isLastLine, getConcatenatedWidth(rootLineBox));
 		
-		if (lineBoxWidth > _formattingContextData.maxWidth)
+		if (lineBoxWidth > _formattingContextData.width)
 		{
-			_formattingContextData.maxWidth = lineBoxWidth;
+			_formattingContextData.width = lineBoxWidth;
 		}
 		
 		//format line boxes vertically
@@ -350,6 +333,8 @@ class InlineFormattingContext extends FormattingContext
 	
 	/**
 	 * Compute the added width of all the line box in the line
+	 * 
+	 * TODO 2 : should be added in insertIntoLine
 	 */
 	private function getConcatenatedWidth(lineBox:LineBox):Float
 	{
@@ -360,13 +345,13 @@ class InlineFormattingContext extends FormattingContext
 		{
 			var child:LineBox = lineBox.childNodes[i];
 			
-			if (child.hasChildNodes() == true && (child.isAbsolutelyPositioned() == false || child.isText() == true))
+			if (child.isStaticPosition() == false)
 			{
-				concatenatedWidth += getConcatenatedWidth(child);
-			}
+				if (child.hasChildNodes() == true)
+				{
+					concatenatedWidth += getConcatenatedWidth(child);
+				}
 			
-			if (child.isAbsolutelyPositioned() == false || child.isText() == true)
-			{
 				concatenatedWidth += child.bounds.width;
 			}
 			
@@ -378,6 +363,8 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * Compute the number of space character found in the current
 	 * line. This is used when the text is justified
+	 * 
+	 * TODO 2 : should be added in insertIntoLine
 	 */
 	private function getSpacesNumber(lineBox:LineBox):Int
 	{
@@ -422,7 +409,7 @@ class InlineFormattingContext extends FormattingContext
 	 * 
 	 * TODO : update doc
 	 */
-	private function alignLineBox(rootLineBox:LineBox, isLastLine:Bool, concatenatedLength:Float, spaceInLine:Int):Float
+	private function alignLineBox(rootLineBox:LineBox, isLastLine:Bool, concatenatedLength:Float):Float
 	{	
 		//determine the remaining space in the line once all the width of the HTMLElements
 		//are substracted from the total available line width, and the x position where to 
@@ -473,8 +460,7 @@ class InlineFormattingContext extends FormattingContext
 					//when justified, the concatenated width of the HTMLElements
 					//must take all the containing HTMLElement width
 					concatenatedLength = formattingContextRootComputedStyle.width;
-					 
-					alignJustify(flowX, remainingSpace, rootLineBox, spaceInLine);
+					alignJustify(flowX, remainingSpace, rootLineBox, getSpacesNumber(rootLineBox));
 				}
 		}
 		
@@ -483,11 +469,6 @@ class InlineFormattingContext extends FormattingContext
 	
 	/**
 	 * align the HTMLElements starting from the left edge of the containing HTMLElement
-	 * 
-	 * TODO 4 : margins are not used for embedded line boxes
-	 * 
-	 * TODO 4 : absolutely positioned line box should not add their width to the flowX,
-	 * should also do it for align right, center and justify
 	 * 
 	 * @param	flowX the x position of the first HTMLElement
 	 */
@@ -500,16 +481,15 @@ class InlineFormattingContext extends FormattingContext
 		{
 			var child:LineBox = lineBox.childNodes[i];
 			
-			//TODO 4 : doc + should also update alignRight, justify... in the same way
-			if (child.hasChildNodes() == true && child.isAbsolutelyPositioned() == false)
+			if (child.hasChildNodes() == true && child.isStaticPosition() == false)
 			{
 				flowX = alignLeft(flowX, child);
 			}
 			else
 			{
 				child.bounds.x = flowX + child.marginLeft;
-				//TODO 4 : a bit hackish to require checking if is text
-				if (child.isAbsolutelyPositioned() == false || child.isText() == true )
+				
+				if (child.isStaticPosition() == false)
 				{
 					flowX += child.bounds.width + child.marginLeft + child.marginRight;
 				}
@@ -625,98 +605,6 @@ class InlineFormattingContext extends FormattingContext
 	}
 	
 	
-	// LINE MEASUREMENT METHODS
-	// Those methods are used to determine what element to render
-	// in a line and when to start a new line
-//////////////////////////////////////////////////////////////////
-	
-	
-	//////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE LINE MEASUREMENT METHODS
-	//////////////////////////////////////////////////////////////////
-	
-	//////////////////////////////////////////////////////////////////
-	// PRIVATE LINE MEASUREMENT METHODS
-	//////////////////////////////////////////////////////////////////
-	
-	
-	
-	/**
-	 * Determine wether a tab should be converted to
-	 * a space based on the whiteSpace property
-	 */
-	private function shouldTabBeConvertedToSpace(whiteSpace:WhiteSpace):Bool
-	{
-		var shouldTabBeConvertedToSpace:Bool;
-		
-		switch (whiteSpace)
-		{
-			case WhiteSpace.normal,
-			WhiteSpace.nowrap,
-			WhiteSpace.preLine:
-				shouldTabBeConvertedToSpace = true;
-				
-			case WhiteSpace.pre,
-			WhiteSpace.preWrap:
-				shouldTabBeConvertedToSpace = false;
-		}
-		
-		return shouldTabBeConvertedToSpace;
-	}
-	
-	/**
-	 * Determine wether line feed is allowed
-	 * based on the whiteSpace property
-	 */
-	private function isLineFeedAllowed(whiteSpace:WhiteSpace):Bool
-	{
-		var lineFeedAllowed:Bool;
-		
-		switch (whiteSpace)
-		{
-			case WhiteSpace.normal,
-			WhiteSpace.nowrap:
-				lineFeedAllowed = false;
-				
-			case WhiteSpace.pre,
-			WhiteSpace.preWrap,
-			WhiteSpace.preLine:
-				lineFeedAllowed = true;
-		}
-		
-		return lineFeedAllowed;
-	}
-	
-	/**
-	 * Determine wheter a space should actually be inserted
-	 */
-	private function shouldInsertSpace(whiteSpace:WhiteSpace, isNexElementALineFeed:Bool):Bool
-	{
-		var shouldInsertSpace:Bool;
-		
-		switch (whiteSpace)
-		{
-			case WhiteSpace.normal,
-			WhiteSpace.nowrap,
-			WhiteSpace.preLine:
-				shouldInsertSpace = isNexElementALineFeed == false;
-				
-			case WhiteSpace.preWrap,
-			WhiteSpace.pre:
-				shouldInsertSpace = true;
-		}
-			
-		if (shouldInsertSpace == true)
-		{
-			//shouldInsertSpace != isCollapsed(_lastInsertedElement, whiteSpace);
-		}
-		
-		
-		return shouldInsertSpace;
-	}
-	
-	
-	
 	// LINE LAYOUT METHODS
 	// Those methods are used to determine the x and y position
 	// of each element in the line
@@ -758,7 +646,7 @@ class InlineFormattingContext extends FormattingContext
 			else
 			{
 				//absolute line box do not influence this
-				if (lineBox.isAbsolutelyPositioned() == false)
+				if (lineBox.isStaticPosition() == false)
 				{
 					break;
 				}
@@ -799,7 +687,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			else
 			{
-				if (lineBox.isAbsolutelyPositioned() == false)
+				if (lineBox.isStaticPosition() == false)
 				{
 						break;
 				}
@@ -817,7 +705,7 @@ class InlineFormattingContext extends FormattingContext
 		{
 			var child:LineBox = rootLineBox.childNodes[i];
 			
-			if (child.hasChildNodes() == true && child.isAbsolutelyPositioned() == false)
+			if (child.hasChildNodes() == true && child.isStaticPosition() == false)
 			{
 				var children:Array<LineBox> = getLineBoxTreeAsArray(child);
 				for (j in 0...children.length)
@@ -879,7 +767,7 @@ class InlineFormattingContext extends FormattingContext
 		{
 			var child:LineBox = lineBox.childNodes[i];
 			
-			if (child.isAbsolutelyPositioned() == false || child.isText() == true)
+			if (child.isStaticPosition() == false)
 			{
 				var leadedAscent:Float = child.leadedAscent;
 				var leadedDescent:Float = child.leadedDescent;
@@ -928,16 +816,6 @@ class InlineFormattingContext extends FormattingContext
 			if (child.hasChildNodes() == true)
 			{
 				alignLineBoxesVertically(child, lineBoxAscent, formattingContextY, baselineOffset, formattingContextFontMetrics);
-			}
-			
-			if (child.establishesNewFormattingContext() == true || (child.elementRenderer.isReplaced() == true && child.elementRenderer.isText() == false))
-			{
-				//TODO 2 : hack 
-				if (child.isAbsolutelyPositioned() == true)
-				{
-					child.bounds.y += child.leadedAscent;
-				}
-				
 			}
 		}
 	}

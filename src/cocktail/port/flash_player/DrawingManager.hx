@@ -7,6 +7,7 @@
 */
 package cocktail.port.flash_player;
 
+import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
 import cocktail.core.drawing.AbstractDrawingManager;
 import flash.display.Bitmap;
@@ -65,6 +66,8 @@ class DrawingManager extends AbstractDrawingManager
 		_bitmapDrawing = new Bitmap(new BitmapData(_width, _height, true, 0x00000000) );
 		
 		_typedNativeElement.addChild(_bitmapDrawing);
+		
+		
 		
 	}
 	
@@ -232,11 +235,13 @@ class DrawingManager extends AbstractDrawingManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Draw a bitmap extracted from a NativeElement into the bitmap display object.
+	 * Draw bitmap data into the bitmap display object.
 	 */
-	override public function drawImage(source:NativeElement, matrix:Matrix = null, sourceRect:RectangleData = null):Void
+	override public function drawImage(bitmapData:Dynamic, matrix:Matrix = null, sourceRect:RectangleData = null):Void
 	{	
 		//init destination point and sourceRect if null
+		
+		var typedBitmapData:BitmapData = cast(bitmapData);
 		
 		if (matrix == null)
 		{
@@ -245,8 +250,8 @@ class DrawingManager extends AbstractDrawingManager
 		
 		if (sourceRect == null)
 		{
-			var width:Float = source.width;
-			var height:Float = source.height;
+			var width:Float = typedBitmapData.width;
+			var height:Float = typedBitmapData.height;
 			sourceRect = {
 				x:0.0,
 				y:0.0,
@@ -255,18 +260,14 @@ class DrawingManager extends AbstractDrawingManager
 			};
 		}
 		
-		//get the ImageHTMLElement bitmap data and current bitmap data
-		var sourceBitmapData:BitmapData = getBitmapData(source);
-		var currentBitmapData:BitmapData = _bitmapDrawing.bitmapData;
-		
-		//convert the abstract rectangle and point into flash natives one
+		//convert the cross-platform rectangle and point into flash natives one
 		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
 		
 		var matrixData:MatrixData = matrix.data;
 		var nativeMatrix:flash.geom.Matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 		
-		//draw the ImageHTMLElement bitmap data onto the current bitmap data
-		currentBitmapData.draw(sourceBitmapData, nativeMatrix, null, null, nativeSourceRect, true);
+		//draw the bitmap data onto the current bitmap data with the right transformations
+		_bitmapDrawing.bitmapData.draw(typedBitmapData, nativeMatrix, null, null, nativeSourceRect, true);
 	}
 	
 	/**
@@ -278,7 +279,8 @@ class DrawingManager extends AbstractDrawingManager
 		var typedBitmapData:BitmapData = cast(bitmapData);
 		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
 		var nativeDestPoint:flash.geom.Point = new flash.geom.Point(destPoint.x, destPoint.y);
-		_bitmapDrawing.bitmapData.copyPixels(typedBitmapData, nativeSourceRect, nativeDestPoint);
+		_bitmapDrawing.bitmapData.copyPixels(typedBitmapData, nativeSourceRect, nativeDestPoint, null, null, true);
+		
 	}
 	
 	/**
@@ -288,12 +290,13 @@ class DrawingManager extends AbstractDrawingManager
 	override public function fillRect(rect:RectangleData, color:ColorData):Void
 	{
 		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(rect.x, rect.y, rect.width, rect.height);
-		
+
 		var argbColor:Int = color.color;
 		var alpha:Int = Math.round(255 * color.alpha);
 		argbColor += alpha << 24;
 		
-		_bitmapDrawing.bitmapData.fillRect(nativeSourceRect, argbColor);
+		var fillRectBitmapData:BitmapData = new BitmapData(Math.round(rect.width), Math.round(rect.height), true, argbColor);
+		copyPixels(fillRectBitmapData, { x:0.0, y:0.0, width:rect.width, height:rect.height }, { x:rect.x, y:rect.y } );
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -495,4 +498,18 @@ class DrawingManager extends AbstractDrawingManager
 		gradientBox.createGradientBox(_width, _height, (gradientStyle.rotation) / 180 * Math.PI);
 		return gradientBox;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN GETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return the flash BitmapData object
+	 */
+	override private function get_nativeBitmapData():NativeBitmapData
+	{
+		return _bitmapDrawing.bitmapData;
+	}
+	
+	
 }

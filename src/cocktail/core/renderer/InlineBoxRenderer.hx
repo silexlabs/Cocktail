@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.linebox.LineBox;
+import cocktail.port.DrawingManager;
 import cocktail.port.NativeElement;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;
@@ -21,7 +22,7 @@ import cocktail.core.geom.GeomData;
  * a formatting context.
  * 
  * It generates a line box for each line into which one of its children
- * participates
+ * participates in.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -43,7 +44,7 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 * Overriden as InlineBoxRenderer doesn't render a background of his own, it is its
 	 * generatd line boxes which render their own backgrounds
 	 */
-	override private function renderBackground(graphicContext:NativeElement):Void
+	override private function renderBackground(graphicContext:DrawingManager):Void
 	{
 		
 	}
@@ -52,24 +53,24 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 * Overriden as rendering an inline box renderer consist in rendering all of the 
 	 * line boxes it generated
 	 */
-	override private function renderChildren(graphicContext:NativeElement, forceRendering:Bool):Void
+	override private function renderChildren(graphicContext:DrawingManager):Void
 	{
-		super.renderChildren(graphicContext, forceRendering);
+		super.renderChildren(graphicContext);
 		
 		//render negative z-index LayerRenderer
 		if (establishesNewStackingContext() == true)
 		{
-			layerRenderer.renderNegativeChildElementRenderers(graphicContext, forceRendering);
+			//layerRenderer.renderNegativeChildElementRenderers(graphicContext);
 		}
 		
 		//render all the child line boxes which belong to the same
 		//stacking context as this InlineBoxRenderer
-		renderChildLineBoxes(graphicContext, forceRendering);
+		renderChildLineBoxes(graphicContext);
 		
 		if (establishesNewStackingContext() == true)
-		{	
-			layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext, forceRendering);
-			layerRenderer.renderPositiveChildElementRenderers(graphicContext, forceRendering);
+		{
+			//layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext);
+			//layerRenderer.renderPositiveChildElementRenderers(graphicContext);
 		}
 	}
 	
@@ -80,7 +81,7 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	/**
 	 * Actually render the child line boxes
 	 */
-	private function renderChildLineBoxes(graphicContext:NativeElement, forceRendering:Bool):Void
+	private function renderChildLineBoxes(graphicContext:DrawingManager):Void
 	{
 		var length:Int = lineBoxes.length;
 		
@@ -91,9 +92,10 @@ class InlineBoxRenderer extends FlowBoxRenderer
 			var childLength:Int = childLineBoxes.length;
 			for (j in 0...childLength)
 			{
-				if (childLineBoxes[j].layerRenderer == layerRenderer)
+				var childLineBox:LineBox = childLineBoxes[j];
+				if (childLineBox.elementRenderer.layerRenderer == layerRenderer)
 				{
-					childLineBoxes[j].render(graphicContext, forceRendering);
+					childLineBox.render(graphicContext);
 				}
 			}
 		}
