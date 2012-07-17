@@ -9,6 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.linebox.LineBox;
 import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
@@ -34,8 +35,6 @@ class FlowBoxRenderer extends BoxRenderer
 	public function new(node:HTMLElement) 
 	{
 		super(node);
-		
-		
 		_positionedChildren = new Array<ElementRenderer>();
 	}
 	
@@ -86,9 +85,6 @@ class FlowBoxRenderer extends BoxRenderer
 	
 	override public function layout(forceLayout:Bool):Void
 	{
-		
-	
-		
 		super.layout(forceLayout);
 		
 		/**
@@ -98,7 +94,7 @@ class FlowBoxRenderer extends BoxRenderer
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			childNodes[i].layout(_childrenNeedLayout == true);
+			childNodes[i].layout(_childrenNeedLayout);
 		}
 		
 		//starts the formatting of the children of this FlowBoxRenderer
@@ -134,9 +130,6 @@ class FlowBoxRenderer extends BoxRenderer
 		{
 			//layout the child ElementRenderer which set its x and y positioned origin in the space of this ElementRenderer's
 			//positioned origin
-			
-			//TODO 2 : should instead call the layout() method of its children, the children should
-			//know how to layout itself as a positioned child
 			layoutPositionedChild(_positionedChildren[i], containerBlockData, windowData);
 		}
 	}

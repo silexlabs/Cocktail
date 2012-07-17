@@ -7,7 +7,6 @@
 */
 package cocktail.core.dom;
 
-import cocktail.core.dom.DOMData;
 import cocktail.core.html.HTMLElement;
 
 /**
@@ -80,7 +79,7 @@ class Attr<ElementClass:Node<ElementClass>> extends Node<Attr<ElementClass>>
 	
 	override private function get_nodeType():Int
 	{
-		return Node.ATTRIBUTE_NODE;
+		return DOMConstants.ATTRIBUTE_NODE;
 	}
 	
 	override private function get_nodeValue():String 

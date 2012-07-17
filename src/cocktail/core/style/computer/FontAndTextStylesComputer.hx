@@ -7,6 +7,7 @@
 */
 package cocktail.core.style.computer;
 
+import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
@@ -45,25 +46,26 @@ class FontAndTextStylesComputer
 	 */
 	public static function compute(style:CoreStyle, containingBlockData:ContainingBlockData, containingBlockFontMetricsData:FontMetricsData):Void
 	{
-		var computedStyle = style.computedStyle;
-
+		var computedStyle:ComputedStyle = style.computedStyle;
+		var fontMetrics:FontMetricsData = style.fontMetrics;
+		
 		//font size
 		computedStyle.fontSize = getComputedFontSize(style, containingBlockFontMetricsData.fontSize, containingBlockFontMetricsData.xHeight);
 		
 		//line height
-		computedStyle.lineHeight = getComputedLineHeight(style);
+		computedStyle.lineHeight = getComputedLineHeight(style, fontMetrics);
 		
 		//vertival align
-		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingBlockFontMetricsData);
+		computedStyle.verticalAlign = getComputedVerticalAlign(style, containingBlockFontMetricsData, fontMetrics);
 		
 		//letter spacing
-		computedStyle.letterSpacing = getComputedLetterSpacing(style);
+		computedStyle.letterSpacing = getComputedLetterSpacing(style, fontMetrics);
 		
 		//word spacing
-		computedStyle.wordSpacing = getComputedWordSpacing(style);
+		computedStyle.wordSpacing = getComputedWordSpacing(style, fontMetrics);
 		
 		//text indent
-		computedStyle.textIndent = getComputedTextIndent(style, containingBlockData);
+		computedStyle.textIndent = getComputedTextIndent(style, containingBlockData, fontMetrics);
 		
 		//text color
 		computedStyle.color = getComputedColor(style);
@@ -77,14 +79,14 @@ class FontAndTextStylesComputer
 	/**
 	 * Compute the text indent to apply to the first line of an inline formatting context
 	 */
-	private static function getComputedTextIndent(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	private static function getComputedTextIndent(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
 		var textIndent:Float;
 		
 		switch(style.textIndent)
 		{
 			case length(value):
-				textIndent = UnitManager.getPixelFromLength(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+				textIndent = UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight);
 				
 			case percentage(value):
 				textIndent = UnitManager.getPixelFromPercent(value, containingBlockData.width);
@@ -97,7 +99,7 @@ class FontAndTextStylesComputer
 	 * Compute the vertical offset to apply to a HTMLElement in an inline
 	 * formatting context.
 	 */
-	private static function getComputedVerticalAlign(style:CoreStyle, containingBlockFontMetricsData:FontMetricsData):Float
+	private static function getComputedVerticalAlign(style:CoreStyle, containingBlockFontMetricsData:FontMetricsData, fontMetrics:FontMetricsData):Float
 	{
 		var verticalAlign:Float;
 		
@@ -125,7 +127,7 @@ class FontAndTextStylesComputer
 				verticalAlign = UnitManager.getPixelFromPercent(value, style.computedStyle.lineHeight);
 				
 			case length(value):
-				verticalAlign = UnitManager.getPixelFromLength(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+				verticalAlign = UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight);
 				
 			case top:
 				verticalAlign = 0;
@@ -148,7 +150,7 @@ class FontAndTextStylesComputer
 	 * Compute the space to add between each word in a text in
 	 * addition of the regular font space
 	 */
-	private static function getComputedWordSpacing(style:CoreStyle):Float
+	private static function getComputedWordSpacing(style:CoreStyle, fontMetrics:FontMetricsData):Float
 	{
 		var wordSpacing:Float;
 		
@@ -158,7 +160,7 @@ class FontAndTextStylesComputer
 				wordSpacing = 0;
 				
 			case length(unit):
-				wordSpacing = UnitManager.getPixelFromLength(unit, style.computedStyle.fontSize, style.fontMetrics.xHeight);
+				wordSpacing = UnitManager.getPixelFromLength(unit, style.computedStyle.fontSize, fontMetrics.xHeight);
 		}
 		
 		return wordSpacing;
@@ -168,14 +170,14 @@ class FontAndTextStylesComputer
 	 * Compute the line height of a HTMLElement in an inline
 	 * formatting context
 	 */
-	private static function getComputedLineHeight(style:CoreStyle):Float
+	private static function getComputedLineHeight(style:CoreStyle, fontMetrics:FontMetricsData):Float
 	{
 		var lineHeight:Float;
 		
 		switch (style.lineHeight)
 		{
 			case length(unit):
-				lineHeight = UnitManager.getPixelFromLength(unit, style.computedStyle.fontSize, style.fontMetrics.xHeight);
+				lineHeight = UnitManager.getPixelFromLength(unit, style.computedStyle.fontSize, fontMetrics.xHeight);
 				
 			case normal:
 				lineHeight = style.computedStyle.fontSize * 1.2;
@@ -195,7 +197,7 @@ class FontAndTextStylesComputer
 	 * letter in a text, in addition to the regular
 	 * font letter spacing
 	 */
-	private static function getComputedLetterSpacing(style:CoreStyle):Float
+	private static function getComputedLetterSpacing(style:CoreStyle, fontMetrics:FontMetricsData):Float
 	{
 		var letterSpacing:Float;
 		
@@ -205,7 +207,7 @@ class FontAndTextStylesComputer
 				letterSpacing = 0.0;
 				
 			case length(unit):
-				letterSpacing = UnitManager.getPixelFromLength(unit, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+				letterSpacing = UnitManager.getPixelFromLength(unit, fontMetrics.fontSize, fontMetrics.xHeight);
 		}
 		
 		return letterSpacing;

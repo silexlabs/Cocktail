@@ -13,6 +13,7 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
+import cocktail.core.linebox.LineBox;
 import cocktail.port.NativeElement;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.floats.FloatsManager;
@@ -23,6 +24,7 @@ import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 import cocktail.core.geom.GeomData;
 import haxe.Log;
+import cocktail.core.layer.LayerRenderer;
 
 /**
  * A block box renderer is an element which participate
@@ -968,7 +970,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			return;
 		}
 		
-		//TODO 3 : should use computed styles but not computed yet
 		//tries to attach or detach horizontal scrollbar based on x
 		//overflow
 		switch (computedStyle.overflowX)
@@ -1016,7 +1017,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					detachVerticalScrollBar();
 				}
 		}
-
 	}
 	
 	/**
@@ -1411,7 +1411,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	/**
 	 * Utils method determining wether the dispatched scroll
 	 * event must bubble. Scroll event only bubbles 
-	 * when dispatched on the HTMLBodyElement, as it
+	 * when dispatched on the HTMLHTMLElement, as it
 	 * needs to bubble to the Document and Window
 	 * objects
 	 */
@@ -1420,8 +1420,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return false;
 	}
 	
-	//TODO 3 : should use computed style (for instance for inherit) but not yet computed at this point, when
-	//called from establishesNewStackingContext
 	/**
 	 * Determine wether this BlockBoxRenderer always overflows
 	 * in both x and y axis. If either overflow x or y

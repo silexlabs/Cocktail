@@ -9,7 +9,8 @@ package cocktail.core.unit;
 
 import cocktail.core.style.CoreStyle;
 import cocktail.core.unit.UnitData;
-import cocktail.core.style.StyleData;
+import cocktail.core.style.StyleData;	
+import cocktail.core.geom.GeomData;
 import haxe.Log;
 
 /**
@@ -1041,7 +1042,7 @@ class UnitManager
 		var ts  = 0;
 		var tms = 0;
 		var tv:TimeValue;
-		var r : EReg = ~/^([0-9]+)(ms|s)$/;
+		var r : EReg = ~/^([0-9\.]+)(ms|s)$/;
 		r.match(string);
 		
 		if (r.matched(2) == "s")
@@ -3127,5 +3128,194 @@ class UnitManager
 		return tResult.join(',');
 	}		
 
+	public static function getTransform(value:String):Transform
+	{
+		var tFunctions:Array<String>;
+		var tFresult:Array<TransformFunction> = [];
+		var res:Transform;
+		var func:String;
+
+		// transformations regexp
+		var rMatrix : EReg = ~/matrix[ ]*\([ ]*([0-9\.\-]+)[ ]*,[ ]*([0-9\.\-]+)[ ]*,[ ]*([0-9\.\-]+)[ ]*,[ ]*([0-9\.\-]+)[ ]*,[ ]*([0-9\.\-]+)[ ]*,[ ]*([0-9\.\-]+)[ ]*\)/i;
+		var rTranslate : EReg = ~/translate[ ]*\([ ]*([0-9]+(%|px))[ ]*,[ ]*([0-9]+(%|px))[ ]*\)/i;
+		var rTranslateX : EReg = ~/translatex[ ]*\([ ]*([0-9]+(%|px))[ ]*\)/i;
+		var rTranslateY : EReg = ~/translatey[ ]*\([ ]*([0-9]+(%|px))[ ]*\)/i;
+		var rScale : EReg = ~/scale[ ]*\([ ]*([0-9].+)[ ]*,[ ]*([0-9].+)[ ]*\)/i;
+		var rScaleX : EReg = ~/scaleX[ ]*\([ ]*([0-9].+)[ ]*\)/i;
+		var rScaleY : EReg = ~/scaleY[ ]*\([ ]*([0-9].+)[ ]*\)/i;
+		var rRotate : EReg = ~/rotate[ ]*\([ ]*([0-9].+)deg[ ]*\)/i;
+		var rSkewX : EReg = ~/skewX[ ]*\([ ]*([0-9].+)deg[ ]*\)/i;
+		var rSkewY : EReg = ~/skewY[ ]*\([ ]*([0-9].+)deg[ ]*\)/i;
+		var rSkew : EReg = ~/skew[ ]*\([ ]*([0-9].+)deg[ ]*,[ ]*([0-9].+)deg[ ]*\)/i;
+
+		tFunctions = value.split(' ');
+		func = trim(value);
+
+		if (func == 'none')
+		{
+			res = Transform.none;
+			return res;
+		}		
+
+		if (rMatrix.match(func))
+		{
+			var tMatrixData:MatrixData = {
+				a:Std.parseFloat(rMatrix.matched(1)),
+				b:Std.parseFloat(rMatrix.matched(2)),
+				c:Std.parseFloat(rMatrix.matched(3)),
+				d:Std.parseFloat(rMatrix.matched(4)),
+				e:Std.parseFloat(rMatrix.matched(5)),
+				f:Std.parseFloat(rMatrix.matched(6))
+			};
+		
+			tFresult.push(TransformFunction.matrix(tMatrixData));
+		}
+
+		if (rTranslate.match(func))
+		{
+			var parsed:VUnit = string2VUnit(rTranslate.matched(1));
+			var tx:Translation;
+			var ty:Translation;
+			
+			switch (parsed.unit){
+				case "%":
+					tx = Translation.percent(Std.parseInt(parsed.value));	
+				default:
+					tx = Translation.length(string2Length(parsed));			
+			}
+
+			parsed = string2VUnit(rTranslate.matched(3));
+
+			switch (parsed.unit){
+				case "%":
+					ty = Translation.percent(Std.parseInt(parsed.value));	
+				default:
+					ty = Translation.length(string2Length(parsed));			
+			}			
+			tFresult.push(TransformFunction.translate(tx, ty));
+
+		}
+
+		if (rTranslateX.match(func))
+		{
+			var parsed:VUnit = string2VUnit(rTranslateX.matched(1));
+			var tx:Translation;
+
+			switch (parsed.unit){
+				case "%":
+					tx = Translation.percent(Std.parseInt(parsed.value));	
+				default:
+					tx = Translation.length(string2Length(parsed));			
+			}	
+			tFresult.push(TransformFunction.translateX(tx));
+
+		}
+
+		if (rTranslateY.match(func))
+		{
+			var parsed:VUnit = string2VUnit(rTranslateY.matched(1));
+			var ty:Translation;
+
+			switch (parsed.unit){
+				case "%":
+					ty = Translation.percent(Std.parseInt(parsed.value));	
+				default:
+					ty = Translation.length(string2Length(parsed));			
+			}	
+			tFresult.push(TransformFunction.translateY(ty));
+
+		}
+
+		if (rScale.match(func))
+		{
+			tFresult.push(TransformFunction.scale(Std.parseFloat(rScale.matched(1)),Std.parseFloat(rScale.matched(2)) ));
+		}
+		
+		if (rScaleX.match(func))
+		{
+			tFresult.push(TransformFunction.scaleX(Std.parseFloat(rScaleX.matched(1))));
+		}
+		
+		if (rScaleY.match(func))
+		{
+			tFresult.push(TransformFunction.scaleY(Std.parseFloat(rScaleY.matched(1))));
+		}
+
+		if (rRotate.match(func))
+		{
+			tFresult.push( TransformFunction.rotate( Angle.deg(Std.parseFloat(rRotate.matched(1))) ) );
+		}
 	
+		if (rSkewX.match(func))
+		{
+			tFresult.push(TransformFunction.skewX(Angle.deg(Std.parseFloat(rSkewX.matched(1)))));
+		}
+
+		if (rSkewY.match(func))
+		{
+			tFresult.push(TransformFunction.skewY(Angle.deg(Std.parseFloat(rSkewY.matched(1)))));
+		}
+
+		if (rSkew.match(func))
+		{
+			tFresult.push(TransformFunction.skew(Angle.deg(Std.parseFloat(rSkew.matched(1))), Angle.deg(Std.parseFloat(rSkew.matched(2)))));
+		}
+
+		res = Transform.transformFunctions(tFresult);
+		return res;
+	}
+
+
+	public static function getTransformOrigin(string:String):TransformOrigin
+	{
+		var tAxis:Array<String> = [];
+		string = trim(string);
+		tAxis = string.split(' ');
+		var result:TransformOrigin;
+		result = {
+			x:TransformOriginX.percent(50),
+			y:TransformOriginY.percent(50)	
+		}		
+	
+		// x-axis
+		switch (tAxis[0])
+		{
+			case "left":
+				result.x = TransformOriginX.left;
+			case "center":
+				result.x = TransformOriginX.center;
+			case "right":
+				result.x = TransformOriginX.right;	
+			default:
+				var parsed:VUnit = string2VUnit(tAxis[0]);
+				switch (parsed.unit)
+				{
+					case "%":
+						result.x = TransformOriginX.percent(Std.parseInt(parsed.value));
+					default:
+						result.x = TransformOriginX.length(string2Length(parsed));											
+				}
+		}
+		// y-axis
+		switch (tAxis[1])
+		{
+			case "top":
+				result.y = TransformOriginY.top;
+			case "center":
+				result.y = TransformOriginY.center;
+			case "bottom":
+				result.y = TransformOriginY.bottom;	
+			default:
+				var parsed:VUnit = string2VUnit(tAxis[1]);
+				switch (parsed.unit)
+				{
+					case "%":
+						result.y = TransformOriginY.percent(Std.parseInt(parsed.value));
+					default:
+						result.y = TransformOriginY.length(string2Length(parsed));										
+				}
+		}
+		return result;
+	}
+
 }     

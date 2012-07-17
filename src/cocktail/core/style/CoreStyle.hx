@@ -8,8 +8,10 @@
 package cocktail.core.style;
 
 import cocktail.core.event.TransitionEvent;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.style.computer.TransitionStylesComputer;
-import cocktail.port.FontManager;
+import cocktail.Lib;
+import cocktail.core.font.FontManager;
 import cocktail.core.geom.Matrix;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.html.HTMLElement;
@@ -36,10 +38,11 @@ import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.renderer.LayerRenderer;
+import cocktail.core.layer.LayerRenderer;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.font.FontData;
 import haxe.Log;
+import haxe.Stack;
 import haxe.Timer;
 import cocktail.core.style.ComputedStyle;
 import cocktail.core.renderer.RendererData;
@@ -172,6 +175,11 @@ class CoreStyle
 	 */
 	public var htmlElement(default, null):HTMLElement;
 	
+	/**
+	 * An instance of fontmanager used to get the font metrics
+	 */
+	private var _fontManager:FontManager;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -183,6 +191,7 @@ class CoreStyle
 	public function new(htmlElement:HTMLElement) 
 	{
 		this.htmlElement = htmlElement;
+		_fontManager = FontManager.getInstance();
 		initDefaultStyleValues(htmlElement.tagName);
 	}
 	
@@ -743,16 +752,6 @@ class CoreStyle
 			case TransitionProperty.all:	
 		}
 
-		
-		//return if transition style have not yet been computed
-		//
-		//TODO 2 : not supposed to happen, should be computed at this point
-		if (computedStyle.transitionDelay.length == 0 || computedStyle.transitionDuration.length == 0)
-		{
-			return;
-		}
-		
-
 		//the combined duration is the combined duration
 		//and delay of the transition, 
 		var combinedDuration:Float = 0.0;
@@ -773,15 +772,20 @@ class CoreStyle
 		//get the transition timing function
 		var transitionTimingFunction:TransitionTimingFunctionValue = computedStyle.transitionTimingFunction[getRepeatedIndex(propertyIndex,computedStyle.transitionTimingFunction.length)];
 		
-		//check if a transition is already in progress for the same property
-		var transition:Transition = TransitionManager.getInstance().getTransition(propertyName, computedStyle);
+		var transitionManager:TransitionManager = TransitionManager.getInstance();
 		
-		//if the transition is not null, then a transition is already
-		//in progress, so it must first be stopped
+		//check if a transition is already in progress for the same property
+		var transition:Transition = transitionManager.getTransition(propertyName, computedStyle);
+		
+		//if the transition is not null, then a transition for the property is already
+		//in progress and no new transition must start
 		if (transition != null)
 		{
+			//TODO 1 : in the spec, transition are not supposed to be interrupted
+			//unless transitionProperty change or transition should reverse
+			transitionManager.stopTransition(transition);
 			//TODO 1 : add the reverse transition case
-			TransitionManager.getInstance().stopTransition(transition);
+			//return;
 		}
 		
 		//get the starting value for the transition which is he current computed value of the 
@@ -795,7 +799,7 @@ class CoreStyle
 		var endValue:Float = Reflect.getProperty(computedStyle, propertyName);
 		
 		//start a transition using the TransitionManager
-		TransitionManager.getInstance().startTransition(computedStyle, propertyName, startValue, endValue, 
+		transitionManager.startTransition(computedStyle, propertyName, startValue, endValue, 
 		transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate, invalidationReason);
 	}
 	
@@ -847,9 +851,7 @@ class CoreStyle
 
 	private function get_fontMetricsData():FontMetricsData
 	{
-		var fontManager:FontManager = new FontManager();
-		fontMetrics = fontManager.getFontMetrics(UnitManager.getCSSFontFamily(computedStyle.fontFamily), computedStyle.fontSize);
-		return fontMetrics;
+		return _fontManager.getFontMetrics(UnitManager.getCSSFontFamily(computedStyle.fontFamily), computedStyle.fontSize);
 	}
 	
 	/////////////////////////////////
@@ -861,7 +863,6 @@ class CoreStyle
 	private function setWidth(value:Dimension):Dimension 
 	{
 		width = value;
-		//TODO 1 : if transition is successful, should invalidate still be called ?
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.WIDTH_STYLE_NAME);
 		startTransitionIfNeeded(CSSConstants.WIDTH_STYLE_NAME, invalidationReason);
 		invalidate(invalidationReason);

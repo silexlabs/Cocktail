@@ -43,10 +43,14 @@ class StyleProxy implements lib.hxtml.IStyleProxy<HTMLElement>
 		trace("TransformOrigin "+value);
 		element.style.transformOrigin = value;
 	}
-	public function setTransform (element:Node, value:String):Void{
+*/
+	public function setTransform (element:HTMLElement, value:String):Void{
 		element.style.transform = value;
 	}
-*/	public function setMarginLeftNum (element:HTMLElement, value:Float, unit:String):Void{
+	public function setTransformOrigin(element:HTMLElement, value:String):Void{
+		element.style.transformOrigin = value;
+	}
+	public function setMarginLeftNum (element:HTMLElement, value:Float, unit:String):Void{
 		element.style.marginLeft = value + unit;
 	}
 	public function setMarginLeftKey (element:HTMLElement, value:String):Void{

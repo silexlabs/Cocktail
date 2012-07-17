@@ -7,7 +7,7 @@
 */
 package cocktail.core.dom;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.renderer.LayerRenderer;
+import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.TextRenderer;
 
 /**
@@ -29,7 +29,6 @@ import cocktail.core.renderer.TextRenderer;
  * single node for each block of text.
  * 
  * TODO 5 : implement normalize()
- * TODO 5 : override nodeName which must be #text
  * 
  * No lexical check is done on the content of a Text node and, depending
  * on its position in the document, some characters must be escaped 
@@ -41,7 +40,7 @@ import cocktail.core.renderer.TextRenderer;
  * @author Yannick DOMINGUEZ
  */
 class Text extends CharacterData
-{	
+{		
 	/**
 	 * class constructor
 	 */
@@ -67,6 +66,13 @@ class Text extends CharacterData
 	override private function createElementRenderer():Void
 	{
 		elementRenderer = new TextRenderer(this);
+	}
+	
+	/**
+	 * Text node use their parent's CoreStyle
+	 */
+	override private function attachCoreStyle():Void
+	{
 		var parent:HTMLElement = parentNode;
 		//the TextRenderer inherits its styles from its parent
 		elementRenderer.coreStyle = parent.coreStyle;
@@ -76,8 +82,13 @@ class Text extends CharacterData
 	// OVERRIDEN SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	override private function get_nodeName():String
+	{
+		return DOMConstants.TEXT_NODE_NAME;
+	}
+	
 	override private function get_nodeType():Int
 	{
-		return Node.TEXT_NODE;
+		return DOMConstants.TEXT_NODE;
 	}
 }

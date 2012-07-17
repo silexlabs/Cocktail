@@ -9,7 +9,6 @@ package cocktail.core.html;
 
 import cocktail.core.event.Event;
 import cocktail.core.event.MouseEvent;
-import cocktail.core.dom.DOMData;
 import cocktail.Lib;
 import haxe.Log;
 

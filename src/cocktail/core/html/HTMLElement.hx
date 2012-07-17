@@ -8,6 +8,7 @@
 package cocktail.core.html;
 
 import cocktail.core.dom.Attr;
+import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.NamedNodeMap;
 import cocktail.core.dom.Node;
@@ -29,7 +30,6 @@ import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.renderer.InlineBlockLineBox;
 import cocktail.core.renderer.InlineBoxRenderer;
 import cocktail.core.renderer.TextRenderer;
 import cocktail.core.style.adapter.Style;
@@ -293,11 +293,11 @@ class HTMLElement extends Element<HTMLElement>
 		//attached to the rendering tree
 		switch (newChild.nodeType)
 		{
-			case Node.ELEMENT_NODE:
+			case DOMConstants.ELEMENT_NODE:
 				var htmlChild:HTMLElement = newChild;
 				htmlChild.attach();
 				
-			case Node.TEXT_NODE:
+			case DOMConstants.TEXT_NODE:
 				var textChild:Text = cast(newChild);
 				textChild.attach();
 		}
@@ -316,11 +316,11 @@ class HTMLElement extends Element<HTMLElement>
 		//from anymore
 		switch (oldChild.nodeType)
 		{
-			case Node.ELEMENT_NODE:
+			case DOMConstants.ELEMENT_NODE:
 				var htmlChild:HTMLElement = oldChild;
 				htmlChild.detach();
 				
-			case Node.TEXT_NODE:
+			case DOMConstants.TEXT_NODE:
 				var textChild:Text = cast(oldChild);
 				textChild.detach();
 		}
@@ -447,8 +447,6 @@ class HTMLElement extends Element<HTMLElement>
 	 * as block and is now displayed as inline, the formatting context of the parent
 	 * ElementRenderer might be affected. Calling detach and attach on the parent also
 	 * refresh all th siblings of the element whose positioning scheme changed
-	 * 
-	 * TODO 3 : might find cleaner way than just check for parent nullness
 	 */
 	public function invalidatePositioningScheme():Void
 	{
@@ -490,6 +488,10 @@ class HTMLElement extends Element<HTMLElement>
 			if (elementRenderer == null && isRendered() == true)
 			{
 				createElementRenderer();
+				if (elementRenderer != null)
+				{
+					attachCoreStyle();
+				}
 			}
 			
 			//if the ElementRenderer wasn't instantiated, then this
@@ -508,12 +510,12 @@ class HTMLElement extends Element<HTMLElement>
 					switch (childNodes[i].nodeType)
 					{
 						//attach element node
-						case Node.ELEMENT_NODE:
-							var child:HTMLElement = cast(childNodes[i]);
+						case DOMConstants.ELEMENT_NODE:
+							var child:HTMLElement = childNodes[i];
 							child.attach();
 						
 						//attach text node
-						case Node.TEXT_NODE:
+						case DOMConstants.TEXT_NODE:
 							var child:Text = cast(childNodes[i]);
 							child.attach();
 					}
@@ -547,11 +549,11 @@ class HTMLElement extends Element<HTMLElement>
 				{
 					switch (childNodes[i].nodeType)
 					{
-						case Node.ELEMENT_NODE:
-							var child:HTMLElement = cast(childNodes[i]);
+						case DOMConstants.ELEMENT_NODE:
+							var child:HTMLElement = childNodes[i];
 							child.detach();
 							
-						case Node.TEXT_NODE:
+						case DOMConstants.TEXT_NODE:
 							var child:Text = cast(childNodes[i]);
 							child.detach();
 					}
@@ -579,7 +581,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function getNextElementRendererSibling():ElementRenderer
 	{
-		var nextSibling:HTMLElement = cast(nextSibling);
+		var nextSibling:HTMLElement = nextSibling;
 					
 		if (nextSibling == null)
 		{
@@ -602,7 +604,7 @@ class HTMLElement extends Element<HTMLElement>
 					return nextSibling.elementRenderer;
 				}
 				
-				nextSibling = cast(nextSibling.nextSibling);
+				nextSibling = nextSibling.nextSibling;
 			}
 		}
 		
@@ -644,14 +646,20 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			case block, inlineBlock:
 				elementRenderer = new BlockBoxRenderer(this);
-				elementRenderer.coreStyle = coreStyle;
 				
 			case cssInline:
 				elementRenderer = new InlineBoxRenderer(this);
-				elementRenderer.coreStyle = coreStyle;
 				
 			case none:
 		}
+	}
+	
+	/**
+	 * Set the ElementRenderer's style
+	 */
+	private function attachCoreStyle():Void
+	{
+		elementRenderer.coreStyle = coreStyle;
 	}
 	
 	/**
@@ -878,7 +886,7 @@ class HTMLElement extends Element<HTMLElement>
 			{
 				return null;
 			}
-			htmlElement = cast(htmlElement.parentNode);
+			htmlElement = htmlElement.parentNode;
 		}
 		
 		return htmlElement;
@@ -1221,11 +1229,11 @@ class HTMLElement extends Element<HTMLElement>
 		var length:Int = node.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:HTMLElement = cast(node.childNodes[i]);
+			var child:HTMLElement = node.childNodes[i];
 			
 			switch(child.nodeType)
 			{
-				case Node.ELEMENT_NODE:
+				case DOMConstants.ELEMENT_NODE:
 				
 					//create an xml node with the tag name of the HTMLElement,
 					//for instance 'div', 'span', 'img'...
@@ -1280,12 +1288,12 @@ class HTMLElement extends Element<HTMLElement>
 						childXml.addChild(Xml.createPCData(""));
 					}
 
-				case Node.TEXT_NODE:
+				case DOMConstants.TEXT_NODE:
 					//serialize a Text node
 					var text:Xml = Xml.createPCData(child.nodeValue);
 					xml.addChild(text);
 					
-				case Node.COMMENT_NODE:
+				case DOMConstants.COMMENT_NODE:
 					//serialize a Comment node
 					var comment:Xml = Xml.createComment(child.nodeValue);
 					xml.addChild(comment);
@@ -1335,7 +1343,7 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			if (parent.parentNode != null)
 			{
-				parent = cast(parent.parentNode);
+				parent = parent.parentNode;
 				isOffsetParent = parent.elementRenderer.isPositioned();
 			}
 			//break the loop if the current parent has no parent

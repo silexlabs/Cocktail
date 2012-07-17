@@ -51,6 +51,7 @@ enum InvalidationReason {
 	childStyleChanged(styleName:String);
 	positionedChildStyleChanged(styleName:String);
 	needsImmediateLayout;
+	backgroundImageLoaded;
 	windowResize;
 	other;
 }

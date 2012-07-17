@@ -12,6 +12,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.dom.NodeBase;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.linebox.LineBox;
 import cocktail.port.NativeElement;
 import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
@@ -22,6 +23,7 @@ import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 import cocktail.core.renderer.RendererData;
+import cocktail.core.layer.LayerRenderer;
 import haxe.Timer;
 
 
@@ -179,6 +181,16 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	private var _hasOwnLayer:Bool;
 	
 	/**
+	 * flag similar to hasOwnLayer. When an ElementRenderer is auto z-index
+	 * positioned, it must remove itself from its layerRenderer when detached.
+	 * This flag ensures that it does, as if for instance the detachement was
+	 * caused by the change of this ElementRenderer z-index from auto to an integer,
+	 * without this flags, it won't know that it was auto z-index positioned 
+	 * at the time of detachement
+	 */
+	private var _wasAutoZIndexPositioned:Bool;
+	
+	/**
 	 * Stores all of the value of styles once computed.
 	 * For example, if a size is set as a percentage, it will
 	 * be stored once computed to pixels into this structure
@@ -237,6 +249,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		
 		_hasOwnLayer = false;
+		_wasAutoZIndexPositioned = false;
 		
 		bounds = {
 			x:0.0,
@@ -479,13 +492,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			parent.layerRenderer.removeChild(layerRenderer);
 			_hasOwnLayer = false;
 		}
-		//else if the ElementRenderer is both positioned and has an
-		//auto z-index, it means that it was added to the LayerRenderer
+		//else if the ElementRenderer was auto z-index positioned when attached,
+		//it means that it was added to the LayerRenderer
 		//as a auto positioned child and must now be removed from it
-		//
-		//TODO 2 : will cause bugs if a z-index style change triggered
-		//the detachement of the layer, should add flag, like for _hasOwnLayer ?
-		else if (isAutoZIndexPositioned() == true)
+		else if (_wasAutoZIndexPositioned == true)
 		{
 			//TODO 3 : is LayerRenderer supposed to be null ?, detachLayer seems
 			//to be called before attachLayer in some case, shouldn't arrive here
@@ -494,6 +504,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			{
 				layerRenderer.removeAutoZIndexChildElementRenderer(this);
 			}
+			_wasAutoZIndexPositioned = false;
 		}
 		
 		layerRenderer = null;
@@ -612,7 +623,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * when rendering. Only relatively positioned ElementRenderer
 	 * have this offset
 	 */
-	public function getRelativeOffset():PointData
+	private function getRelativeOffset():PointData
 	{
 		var relativeOffset:PointData = { x:0.0, y:0.0 };
 		
@@ -683,7 +694,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		if (establishesNewStackingContext() == true)
 		{
-
 			layerRenderer = new LayerRenderer(this);
 			parentLayer.appendChild(layerRenderer);
 			_hasOwnLayer = true;
@@ -699,6 +709,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			if (isAutoZIndexPositioned() == true)
 			{
 				layerRenderer.insertAutoZIndexChildElementRenderer(this);
+				
+				//flag that this ElementRenderer was added as auto zindex child,
+				//to be sure that it is removed when detach is called
+				_wasAutoZIndexPositioned = true;
 			}
 		}
 	}
@@ -847,7 +861,8 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				invalidatedPositionedChildStyle(styleName, invalidationReason);
 				
 			case InvalidationReason.needsImmediateLayout:
-				invalidateDocumentLayout(true);
+				//TODO 1 : should probably also set global origin
+				layout(true);
 				
 			case InvalidationReason.windowResize:
 				_needsLayout = true;
@@ -857,7 +872,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				_positionedChildrenNeedLayout = true;
 				invalidateDocumentLayoutAndRendering();
 				
-			default:
+			case InvalidationReason.backgroundImageLoaded:
+				_needsRendering = true;
+				invalidateDocumentRendering();
+				
+			case InvalidationReason.other:
 				_needsLayout = true;
 				_childrenNeedLayout = true;
 				_childrenNeedRendering = true;
@@ -914,10 +933,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		}
 	}
 	
-	private function invalidateDocumentLayout(immediate:Bool):Void
+	private function invalidateDocumentLayout():Void
 	{
 		var htmlDocument:HTMLDocument = cast(node.ownerDocument);
-		htmlDocument.invalidateLayout(immediate);
+		htmlDocument.invalidateLayout();
 	}
 	
 	private function invalidateDocumentRendering():Void
@@ -929,26 +948,35 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	private function invalidateDocumentLayoutAndRendering():Void
 	{
 		var htmlDocument:HTMLDocument = cast(node.ownerDocument);
-		htmlDocument.invalidateLayoutAndRendering();
+		htmlDocument.invalidateLayout();
+		htmlDocument.invalidateRendering();
 	}
 	
 	private function invalidatedStyle(styleName:String, invalidationReason:InvalidationReason):Void
 	{
 		switch (styleName)
 		{
-			//case CSSConstants.LEFT_STYLE_NAME, CSSConstants.RIGHT_STYLE_NAME,
-			//CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
-				//
-				//_needsRendering = true;
-				//if (isPositioned() == true && isRelativePositioned() == false)
-				//{
-					//_needsLayout = true;
-					//invalidateContainingBlock(invalidationReason);
-				//}
-				//else
-				//{
-					//invalidateDocumentRendering();
-				//}
+			case CSSConstants.LEFT_STYLE_NAME, CSSConstants.RIGHT_STYLE_NAME,
+			CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
+				
+				_needsRendering = true;
+				if (isPositioned() == true && isRelativePositioned() == false)
+				{
+					_needsLayout = true;
+					invalidateContainingBlock(invalidationReason);
+				}
+				else
+				{
+					invalidateDocumentRendering();
+				}
+				
+			case CSSConstants.COLOR_STYLE_NAME, CSSConstants.FONT_FAMILY_STYLE_NAME, CSSConstants.FONT_SIZE_STYLE_NAME,
+			CSSConstants.FONT_VARIANT_STYLE_NAME, CSSConstants.FONT_STYLE_STYLE_NAME, CSSConstants.FONT_WEIGHT_STYLE_NAME,
+			CSSConstants.LETTER_SPACING_STYLE_NAME, CSSConstants.TEXT_TRANSFORM_STYLE_NAME, CSSConstants.WHITE_SPACE_STYLE_NAME:
+				invalidateText();
+				_needsLayout = true;
+				_needsRendering = true;
+				invalidateContainingBlock(invalidationReason);
 			
 			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
 			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
@@ -1003,10 +1031,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function invalidateText():Void
 	{
-		for (i in 0...childNodes.length)
+		var length:Int = childNodes.length;
+		for (i in 0...length)
 		{
-			var child:ElementRenderer = childNodes[i];
-			child.invalidateText();
+			childNodes[i].invalidateText();
 		}
 	}
 	
@@ -1074,7 +1102,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			globalX = globalContainingBlockOrigin.x + bounds.x;
 			globalY = globalContainingBlockOrigin.y + bounds.y;
 		}
-		
 		
 		return {
 			x:globalX,

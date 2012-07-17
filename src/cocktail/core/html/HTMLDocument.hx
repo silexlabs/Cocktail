@@ -8,6 +8,7 @@
 package cocktail.core.html;
 
 import cocktail.core.dom.Document;
+import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
@@ -25,6 +26,7 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.event.FocusEvent;
+import cocktail.Lib;
 import haxe.Log;
 import haxe.Timer;
 import cocktail.core.style.StyleData;
@@ -57,6 +59,13 @@ class HTMLDocument extends Document
 	 * on Windows implementation
 	 */
 	private static inline var MOUSE_WHEEL_DELTA_MULTIPLIER:Int = 10;
+	
+	/**
+	 * The minimum amount of time between two layout and rendering. Can
+	 * be used to set the framerate of the application. Dividing 1000
+	 * by this value gives the framerate of the application
+	 */
+	private static inline var INVALIDATION_INTERVAL:Int = 20;
 	
 	/**
 	 * The element that contains the content for the document.
@@ -128,12 +137,24 @@ class HTMLDocument extends Document
 	 */
 	private var _shouldDispatchClickOnNextMouseUp:Bool;
 	
-	private static inline var INVALIDATION_INTERVAL:Int = 20;
-	
+	/**
+	 * Wether a call to the invalidation method is already
+	 * scheduled, only one call to this method
+	 * method can be scheduled at a time to prevent too many
+	 * re-layout and re-rendering
+	 */
 	private var _invalidationScheduled:Bool;
 	
+	/*
+	 * Wheter the document needs a re-layout on next
+	 * ivnvalidation method call
+	 */ 
 	private var _documentNeedsLayout:Bool;
 	
+	/*
+	 * Wheter the document needs a re-rendering on next
+	 * ivnvalidation method call
+	 */ 
 	private var _documentNeedsRendering:Bool;
 	
 	/**
@@ -144,9 +165,13 @@ class HTMLDocument extends Document
 		super();
 		
 		_focusManager = new FocusManager();
+			
 		documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
 		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
 		documentElement.appendChild(body);
+		
+		
+	
 		
 		_shouldDispatchClickOnNextMouseUp = false;
 				
@@ -479,12 +504,14 @@ class HTMLDocument extends Document
 	}
 	
 	/**
-	 * TODO 5 : always true for now, as it
-	 * is always supported by the flash target
+	 * Return wether fullscreen mode is allowed
+	 * 
+	 * TODO 3 : a bit messy to have cross-reference
+	 * to Platform 
 	 */
 	private function get_fullscreenEnabled():Bool
 	{
-		return true;
+		return Lib.window.platform.nativeWindow.fullScreenEnabled();
 	}
 	
 	/**
@@ -531,91 +558,75 @@ class HTMLDocument extends Document
 	// PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function invalidateLayout(immediate:Bool):Void
+	/**
+	 * schedule a layout of the document
+	 */
+	public function invalidateLayout():Void
 	{
 		_documentNeedsLayout = true;
-		
-		//TODO 1 : immediate layout deactivated
-		invalidate(immediate);
+		invalidate();
 	}
 	
+	/**
+	 * schedule a rendering of the document
+	 */
 	public function invalidateRendering():Void
 	{
 		_documentNeedsRendering = true;
-		invalidate(false);
-	}
-	
-	public function invalidateLayoutAndRendering():Void
-	{
-		_documentNeedsLayout = true;
-		_documentNeedsRendering = true;
-		invalidate(false);
+		invalidate();
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 
-	
-	private function invalidate(immediate:Bool = false):Void
-	{
-		if (_invalidationScheduled == false || immediate == true)
-		{
-			doInvalidate(immediate);
-		}
-	}
-	
 	/**
-	 * The Document is invalidated for instance when the
-	 * DOM changes after adding/removing a child or when
-	 * a style changes.
-	 * When this happen, the Document needs to be laid out
-	 * and rendered again
-	 * 
-	 * @param immediate define wether the layout must be synchronous
-	 * or asynchronous
+	 * schedule an invalidation
 	 */
-	private function doInvalidate(immediate:Bool = false):Void
+	private function invalidate():Void
 	{
-		//either schedule an asynchronous layout and rendering, or layout
-		//and render immediately
-		if (immediate == false)
+		if (_invalidationScheduled == false)
 		{
-			_invalidationScheduled = true;
-			scheduleLayoutAndRender();
-		}
-		else
-		{
-			if (_documentNeedsLayout == true)
-			{
-				startLayout();
-			}
-			_documentNeedsLayout = false;
+			doInvalidate();
 		}
 	}
 	
 	/**
-	 * As the name implies,
-	 * layout the DOM, then render it
+	 * Actually schedule an invalidation if one
+	 * is not yet scheduled
+	 */
+	private function doInvalidate():Void
+	{
+		_invalidationScheduled = true;
+		scheduleLayoutAndRender();
+	}
+	
+	/**
+	 * layout and render the document
+	 * as needed
 	 */
 	private function layoutAndRender():Void
 	{
-		//var now = Date.now().getTime();
+		//only layout if the invalidate layout
+		//method was called
 		if (_documentNeedsLayout == true)
 		{
 			startLayout();
+			_documentNeedsLayout = false;
 		}
-		_documentNeedsLayout = false;
-		//trace(Date.now().getTime() - now);
-		//now = Date.now().getTime();
+		
+		//same as for layout
 		if (_documentNeedsRendering == true)
 		{
 			startRendering();
+			_documentNeedsRendering = false;
 		}
-		_documentNeedsRendering = false;
-		//trace(Date.now().getTime() - now);
 	}
 	
+	/**
+	 * Callback called after an invalidation is
+	 * scheduled, starts the layout and rendering
+	 */
 	private function onLayoutSchedule():Void
 	{
 		layoutAndRender();
@@ -623,11 +634,8 @@ class HTMLDocument extends Document
 	}
 	
 	/**
-	 * Start the rendering of the rendering tree
-	 * built during layout
-	 * and attach the resulting nativeElements (background,
-	 * border, embedded asset...) to the display root
-	 * of the runtime (for instance the Stage in Flash)
+	 * Start rendering the rendering
+	 * tree, starting with the root ElementRenderer
 	 */ 
 	private function startRendering():Void
 	{
@@ -638,25 +646,25 @@ class HTMLDocument extends Document
 	}
 	
 	/**
-	 * Start the layout of all of the HTMLElements tree which set the bounds
-	 * of the all of the rendring tree elements relative to their containing block.
-	 * Then set the global bounds (relative to the window) for all of the elements
-	 * of the rendering tree
+	 * Start the layout of the rendering tree,
+	 * starting with the root ElementRenderer
 	 */
 	private function startLayout():Void
 	{
-		//layout all the HTMLElements. After that they all know their bounds relative to the containing
-		//blocks
+		//layout all ElementRenderer, after this, ElementRenderer are 
+		//aware of their bounds relative to their containing block
 		documentElement.elementRenderer.layout(false);
-		//set the global bounds on the rendering tree. After that all the elements know their positions
-		//relative to the window
+		
+		//set the global bounds on the rendering tree. After this, ElementRenderer
+		//are aware of their bounds relative ot the viewport
 		documentElement.elementRenderer.setGlobalOrigins(0, 0, 0, 0);
 	}
 	
 	/**
-	 * Set a timer to trigger a layout and rendering of the HTML Document asynchronously.
-	 * Setting a timer to execute the layout and rendering ensure that the layout only happen once when a series of style
-	 * values are set or when many elements are attached/removed from the DOM, instead of happening for every change.
+	 * Set a timer to trigger a layout and rendering of the document asynchronously.
+	 * Setting a timer to execute the layout and rendering ensure that it only
+	 * happen once when a series of style values are set or when many elements
+	 * are attached/removed from the DOM, instead of happening for every change.
 	 */
 	private function scheduleLayoutAndRender():Void
 	{
@@ -692,7 +700,7 @@ class HTMLDocument extends Document
 			return body.elementRenderer;
 		}
 		
-		while (elementRendererAtPoint.node.nodeType != Node.ELEMENT_NODE || elementRendererAtPoint.isAnonymousBlockBox() == true)
+		while (elementRendererAtPoint.node.nodeType != DOMConstants.ELEMENT_NODE || elementRendererAtPoint.isAnonymousBlockBox() == true)
 		{
 			elementRendererAtPoint = elementRendererAtPoint.parentNode;
 			if (elementRendererAtPoint == null)
@@ -717,7 +725,7 @@ class HTMLDocument extends Document
 	{
 		while (htmlElement.isVerticallyScrollable(scrollOffset) == false)
 		{
-			htmlElement = cast(htmlElement.parentNode);
+			htmlElement = htmlElement.parentNode;
 			if ( htmlElement == null)
 			{
 				return null;

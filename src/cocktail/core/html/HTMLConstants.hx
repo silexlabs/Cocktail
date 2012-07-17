@@ -88,7 +88,7 @@ class HTMLConstants
 	
 	public static inline var HTML_TOKEN_SOLIDUS:String = "/";
 	
-	public function new() 
+	private function new() 
 	{
 		
 	}

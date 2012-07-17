@@ -18,7 +18,6 @@ import cocktail.core.renderer.RendererData;
  * This is an abstract base class for media elements,
  * such as video and audio
  * 
- * TODO 1 : implement loop
  * TODO 1 : implement preload
  * 
  * @author Yannick DOMINGUEZ
@@ -116,8 +115,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * returns the current network state of the
 	 * element
 	 */
-	private var _networkState:Int;
-	public var networkState(get_networkState, never):Int;
+	public var networkState(default, null):Int;
 	
 	//can play constants
 	
@@ -202,14 +200,12 @@ class HTMLMediaElement extends EmbeddedElement
 	 * element with respect to rendering the 
 	 * current playback position, from the codes in the list below.
 	 */
-	private var _readyState:Int;
-	public var readyState(get_readyState, never):Int;
+	public var readyState(default, null):Int;
 	
 	/**
 	 * Returns true if the user agent is currently seeking.
 	 */
-	private var _seeking:Bool;
-	public var seeking(get_seeking, never):Bool;
+	public var seeking(default, null):Bool;
 	
 	//playback state
 	
@@ -220,16 +216,14 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	public var currentTime(get_currentTime, set_currentTime):Float;
 	
-	private var _currentSrc:String;
-	public var currentSrc(get_currentSrc, null):String;
+	public var currentSrc(default, null):String;
 	
 	/**
 	 * Return the length of the media resource, in seconds,
 	 * assuming that the start of the media resource is
 	 * at time zero
 	 */
-	private var _duration:Float;
-	public var duration(get_duration, never):Float;
+	public var duration(default, null):Float;
 	
 	/**
 	 * return a new static normalized TimeRanges object that represents
@@ -245,31 +239,27 @@ class HTMLMediaElement extends EmbeddedElement
 	 * The paused attribute represents whether the media
 	 * element is paused or not. The attribute is initially true.
 	 */
-	private var _paused:Bool;
-	public var paused(get_paused,  never):Bool;
+	public var paused(default,  null):Bool;
 	
 	/**
 	 * Returns true if playback has reached the
 	 * end of the media resource.
 	 */
-	private var _ended:Bool;
-	public var ended(get_ended, never):Bool;
+	public var ended(default, null):Bool;
 	
 	/**
 	 * Returns true if audio is muted, overriding the volume attribute,
 	 * and false if the volume attribute is being honored. Can be set,
 	 * to change whether the audio is muted or not.
 	 */
-	private var _muted:Bool;
-	public var muted(get_muted, set_muted):Bool;
+	public var muted(default, set_muted):Bool;
 	
 	/**
 	 * Returns the current playback volume, as a number in
 	 * the range 0.0 to 1.0, where 0.0 is the quietest and
 	 * 1.0 the loudest. Can be set, to change the volume.
 	 */
-	private var _volume:Float;
-	public var volume(get_volume, set_volume):Float;
+	public var volume(default, set_volume):Float;
 	
 	/**
 	 * a reference to the proxy class allowing
@@ -299,15 +289,15 @@ class HTMLMediaElement extends EmbeddedElement
 	{
 		super(tagName);
 		
-		_networkState = NETWORK_EMPTY;
-		_ended = false;
-		_duration = 0;
-		_paused = true;
-		_seeking = false;
-		_readyState = HAVE_NOTHING;
+		networkState = NETWORK_EMPTY;
+		ended = false;
+		duration = 0;
+		paused = true;
+		seeking = false;
+		readyState = HAVE_NOTHING;
 		_autoplaying = true;
-		_muted = false;
-		_volume = 1.0;
+		muted = false;
+		volume = 1.0;
 		
 		_loadedDataWasDispatched = false;
 		_defaultPlaybackStartPosition = 0;
@@ -349,7 +339,7 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		//if there is no source and no selected resource for
 		//this media element
-		if (src == null && _networkState == NETWORK_EMPTY)
+		if (src == null && networkState == NETWORK_EMPTY)
 		{
 			//invoke the select resource algorithm if a source
 			//child was just added
@@ -398,9 +388,9 @@ class HTMLMediaElement extends EmbeddedElement
 	{
 		super.detachFromParentElementRenderer();
 		
-		if (_networkState != NETWORK_EMPTY)
+		if (networkState != NETWORK_EMPTY)
 		{
-			pause();
+			//pause();
 		}
 	}
 	
@@ -419,24 +409,25 @@ class HTMLMediaElement extends EmbeddedElement
 	 * TODO 2 incomplete implementation
 	 */
 	public function play():Void
-	{
-		if (_networkState == NETWORK_EMPTY)
+	{	
+		if (networkState == NETWORK_EMPTY)
 		{
 			selectResource();
 		}
 		
-		if (_ended == true)
+		if (ended == true)
 		{
+			ended = false;
 			seek(0);
 		}
 		
-		if (_paused == true)
+		if (paused == true)
 		{
-			_paused = false;
+			paused = false;
 			
 			fireEvent(Event.PLAY, false, false);
 			
-			switch (_readyState)
+			switch (readyState)
 			{
 				case HAVE_NOTHING, HAVE_METADATA, HAVE_CURRENT_DATA:
 					fireEvent(Event.WAITING, false, false);
@@ -444,12 +435,13 @@ class HTMLMediaElement extends EmbeddedElement
 				case HAVE_FUTURE_DATA, HAVE_ENOUGH_DATA:
 					fireEvent(Event.PLAYING, false, false);
 			}
+			
 		}
 		
 		_autoplaying = false;
 		
 		_nativeMedia.play();
-		
+	
 		onTimeUpdateTick();
 	}
 	
@@ -461,17 +453,17 @@ class HTMLMediaElement extends EmbeddedElement
 	 * http://www.w3.org/TR/2012/WD-html5-20120329/media-elements.html#dom-media-pause
 	 */
 	public function pause():Void
-	{
-		if (_networkState == NETWORK_EMPTY)
+	{	
+		if (networkState == NETWORK_EMPTY)
 		{
 			selectResource();
 		}
 		
 		_autoplaying = false;
 		
-		if (_paused == false)
+		if (paused == false)
 		{
-			_paused = true;
+			paused = true;
 			
 			fireEvent(Event.TIME_UPDATE, false, false);
 			
@@ -506,26 +498,26 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function loadResource():Void
 	{
-		switch (_networkState)
+		switch (networkState)
 		{
 			case NETWORK_LOADING, NETWORK_IDLE:
 				fireEvent(Event.ABORT, false, false);
 		}
 		
-		if (_networkState != NETWORK_EMPTY)
+		if (networkState != NETWORK_EMPTY)
 		{
 			fireEvent(Event.EMPTIED, false, false);
 			
 			_nativeMedia.src = null;
 			
-			_networkState = NETWORK_EMPTY;
+			networkState = NETWORK_EMPTY;
 			
 			
-			_readyState = HAVE_NOTHING;
+			readyState = HAVE_NOTHING;
 			
-			_paused = true;
+			paused = true;
 			
-			_seeking = false;
+			seeking = false;
 			
 			_currentPlaybackPosition = 0;
 			
@@ -541,7 +533,7 @@ class HTMLMediaElement extends EmbeddedElement
 			
 			_initialPlaybackPosition = 0;
 			
-			_duration = Math.NaN;
+			duration = Math.NaN;
 		}
 		
 		_loadedDataWasDispatched = false;
@@ -560,7 +552,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function selectResource():Void
 	{
-		_networkState = NETWORK_NO_SOURCE;
+		networkState = NETWORK_NO_SOURCE;
 		
 		var mode:Int;
 		var candidate:HTMLSourceElement;
@@ -585,11 +577,11 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 		else
 		{
-			_networkState = NETWORK_EMPTY;
+			networkState = NETWORK_EMPTY;
 			return;
 		}
 		
-		_networkState = NETWORK_LOADING;
+		networkState = NETWORK_LOADING;
 		
 		fireEvent(Event.LOAD_START, false, false);
 		
@@ -599,7 +591,7 @@ class HTMLMediaElement extends EmbeddedElement
 			{
 				//TODO 1 : Set the error attribute to a new MediaError object whose code attribute is set to MEDIA_ERR_SRC_NOT_SUPPORTED.
 				
-				_networkState = NETWORK_NO_SOURCE;
+				networkState = NETWORK_NO_SOURCE;
 				
 				fireEvent(Event.ERROR, false, false);
 				
@@ -610,8 +602,8 @@ class HTMLMediaElement extends EmbeddedElement
 			//from resolving the URL specified by the src attribute's value relative
 			//to the media element when the src attribute was last changed.
 			
-			_currentSrc = src;
-			fetchResource(_currentSrc);	
+			currentSrc = src;
+			fetchResource(currentSrc);	
 		}
 		else if (mode == RESOURCE_SELECTION_CHILDREN_MODE)
 		{
@@ -625,8 +617,8 @@ class HTMLMediaElement extends EmbeddedElement
 					{
 						if (canPlayType(sourceChild.type) == CAN_PLAY_TYPE_PROBABLY)
 						{
-							_currentSrc = sourceChild.src;
-							fetchResource(_currentSrc);
+							currentSrc = sourceChild.src;
+							fetchResource(currentSrc);
 							return;
 						}
 					}
@@ -634,15 +626,15 @@ class HTMLMediaElement extends EmbeddedElement
 					{
 						if (canPlayType(sourceChild.src) == CAN_PLAY_TYPE_PROBABLY)
 						{
-							_currentSrc = sourceChild.src;
-							fetchResource(_currentSrc);
+							currentSrc = sourceChild.src;
+							fetchResource(currentSrc);
 							return;
 						}
 					}
 				}
 			}
 			
-			_networkState = NETWORK_EMPTY;
+			networkState = NETWORK_EMPTY;
 		}
 	}
 	
@@ -663,12 +655,12 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function seek(newPlaybackPosition:Float):Void
 	{
-		if (_readyState == HAVE_NOTHING)
+		if (readyState == HAVE_NOTHING)
 		{
 			return;
 		}
 		
-		if (_seeking == true)
+		if (seeking == true)
 		{
 			//TODO 1 : If the element's seeking IDL attribute is true, 
 			//then another instance of this algorithm is already running. 
@@ -676,11 +668,11 @@ class HTMLMediaElement extends EmbeddedElement
 			//the step that it is running to complete.
 		}
 		
-		_seeking = true;
+		seeking = true;
 		
-		if (newPlaybackPosition > _duration)
+		if (newPlaybackPosition > duration)
 		{
-			newPlaybackPosition = _duration;
+			newPlaybackPosition = duration;
 		}
 		
 		if (newPlaybackPosition < _earliestPossiblePosition)
@@ -702,7 +694,6 @@ class HTMLMediaElement extends EmbeddedElement
 		
 	
 		_currentPlaybackPosition = newPlaybackPosition;
-		
 		_nativeMedia.seek(newPlaybackPosition);
 		
 		//TODO 2 : Wait until the user agent has established whether or not 
@@ -723,12 +714,12 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function setReadyState(newReadyState:Int):Void
 	{
-		if (_readyState == HAVE_NOTHING && newReadyState == HAVE_METADATA)
+		if (readyState == HAVE_NOTHING && newReadyState == HAVE_METADATA)
 		{
 			fireEvent(Event.LOADED_METADATA, false, false);
 		}
 		
-		if (_readyState == HAVE_METADATA && (newReadyState == HAVE_CURRENT_DATA || newReadyState == HAVE_ENOUGH_DATA 
+		if (readyState == HAVE_METADATA && (newReadyState == HAVE_CURRENT_DATA || newReadyState == HAVE_ENOUGH_DATA 
 		|| newReadyState == HAVE_FUTURE_DATA))
 		{
 			if (_loadedDataWasDispatched == false)
@@ -739,7 +730,7 @@ class HTMLMediaElement extends EmbeddedElement
 			
 			if (newReadyState == HAVE_ENOUGH_DATA || newReadyState == HAVE_FUTURE_DATA)
 			{
-				if ((_readyState >= HAVE_FUTURE_DATA && newReadyState <= HAVE_CURRENT_DATA))
+				if ((readyState >= HAVE_FUTURE_DATA && newReadyState <= HAVE_CURRENT_DATA))
 				{
 					if (isPotentiallyPlaying() == true)
 					{
@@ -748,11 +739,11 @@ class HTMLMediaElement extends EmbeddedElement
 					}
 				}
 				
-				if (_readyState <= HAVE_CURRENT_DATA && newReadyState == HAVE_FUTURE_DATA)
+				if (readyState <= HAVE_CURRENT_DATA && newReadyState == HAVE_FUTURE_DATA)
 				{
 					fireEvent(Event.CAN_PLAY, false, false);
 					
-					if (_paused == false)
+					if (paused == false)
 					{
 						fireEvent(Event.PLAYING, false, false);
 					}
@@ -760,11 +751,11 @@ class HTMLMediaElement extends EmbeddedElement
 				
 				if (newReadyState == HAVE_ENOUGH_DATA)
 				{
-					if (_readyState == HAVE_CURRENT_DATA)
+					if (readyState == HAVE_CURRENT_DATA)
 					{
 						fireEvent(Event.CAN_PLAY, false, false);
 						
-						if (_paused == false)
+						if (paused == false)
 						{
 							fireEvent(Event.PLAYING, false, false);
 						}
@@ -772,11 +763,11 @@ class HTMLMediaElement extends EmbeddedElement
 					
 					if (_autoplaying == true)
 					{
-						if (_paused == true)
+						if (paused == true)
 						{
 							if (autoplay == true)
 							{
-								_paused = false;
+								paused = false;
 								fireEvent(Event.PLAY, false, false);
 								
 								play();
@@ -791,7 +782,7 @@ class HTMLMediaElement extends EmbeddedElement
 			}
 		}
 		
-		_readyState = newReadyState;
+		readyState = newReadyState;
 	}
 	
 	/**
@@ -808,12 +799,12 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function isPotentiallyPlaying():Bool
 	{
-		if (_paused == true)
+		if (paused == true)
 		{
 			return false;
 		}
 		
-		if (_ended == true)
+		if (ended == true)
 		{
 			return false;
 		}
@@ -835,7 +826,7 @@ class HTMLMediaElement extends EmbeddedElement
 		_initialPlaybackPosition = 0;
 		_officialPlaybackPosition = 0;
 		
-		_duration = _nativeMedia.duration;
+		duration = _nativeMedia.duration;
 		fireEvent(Event.DURATION_CHANGE, false, false);
 		
 		setReadyState(HAVE_METADATA);
@@ -913,7 +904,7 @@ class HTMLMediaElement extends EmbeddedElement
 	{
 		//stop dispatching time updates if the
 		//media is paused
-		if (_paused == true)
+		if (paused == true)
 		{
 			return;
 		}
@@ -922,24 +913,37 @@ class HTMLMediaElement extends EmbeddedElement
 		_currentPlaybackPosition = _nativeMedia.currentTime;
 		_officialPlaybackPosition = _currentPlaybackPosition;
 		
-		
 		//check if the end of the media is reached
-		if (_duration - _currentPlaybackPosition < PLAYBACK_END_DELTA)
+		if (duration - _currentPlaybackPosition < PLAYBACK_END_DELTA)
 		{
-			_ended = true;
+			//if looping is enabled, seek to the start
+			//of the media
+			if (loop == true)
+			{
+				seek(0);
+				return;
+			}
+			
+			ended = true;
 			
 			//set current time to the total duration to reflect
 			//the fact that the video reached ending
-			_currentPlaybackPosition = _duration;
+			_currentPlaybackPosition = duration;
 			_officialPlaybackPosition = _currentPlaybackPosition;
 			
 			//should fire a last time update event
 			fireEvent(Event.TIME_UPDATE, false, false);
 			
+			//pause the media on reaching the ends
+			if (paused == false)
+			{
+				paused = true;
+				fireEvent(Event.PAUSE, false, false);
+			}
+			
 			fireEvent(Event.ENDED, false, false);
 			return;
 		}
-		
 		
 		fireEvent(Event.TIME_UPDATE, false, false);
 		
@@ -965,7 +969,7 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			setReadyState(HAVE_ENOUGH_DATA);
 			
-			_networkState = NETWORK_IDLE;
+			networkState = NETWORK_IDLE;
 			fireEvent(Event.SUSPEND, false, false);
 			
 			return;
@@ -973,7 +977,7 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		//TODO 3 : passing from one ready state to 
 		//another should be improved
-		if (_readyState == HAVE_METADATA)
+		if (readyState == HAVE_METADATA)
 		{
 			setReadyState(HAVE_FUTURE_DATA);
 		}
@@ -1041,18 +1045,13 @@ class HTMLMediaElement extends EmbeddedElement
 	// GETTER/SETTER
 	////////////////////////////////
 	
-	private function get_muted():Bool
-	{
-		return _muted;
-	}
-	
 	private function set_muted(value:Bool):Bool
 	{
 		//update the volume of the native media
 		//if sound is no longer muted
 		if (value == false)
 		{
-			_nativeMedia.volume = _volume;
+			_nativeMedia.volume = volume;
 		}
 		//muting consist on setting volume of native
 		//media to 0
@@ -1061,28 +1060,23 @@ class HTMLMediaElement extends EmbeddedElement
 			_nativeMedia.volume = 0;
 		}
 		
-		_muted = value;
+		muted = value;
 		fireEvent(Event.VOLUME_CHANGE, false, false);
 		
-		return _muted;
+		return value;
 	}
 	
 	private function set_volume(value:Float):Float
 	{
-		if (_muted == false)
+		if (muted == false)
 		{
 			_nativeMedia.volume = value;
 		}
 		
-		_volume = value;
+		volume = value;
 		fireEvent(Event.VOLUME_CHANGE, false, false);
 		
-		return _volume;
-	}
-	
-	private function get_volume():Float
-	{
-		return _volume;
+		return value;
 	}
 	
 	private function get_buffered():TimeRanges
@@ -1093,21 +1087,11 @@ class HTMLMediaElement extends EmbeddedElement
 		//already loaded of the media
 		ranges.push( {
 			start : 0.0,
-			end: _duration * (_nativeMedia.bytesLoaded / _nativeMedia.bytesTotal)
+			end: duration * (_nativeMedia.bytesLoaded / _nativeMedia.bytesTotal)
 		});
 		
 		var timeRanges:TimeRanges = new TimeRanges(ranges);
 		return timeRanges;
-	}
-	
-	private function get_currentSrc():String 
-	{
-		return _currentSrc;
-	}
-	
-	private function get_networkState():Int 
-	{
-		return _networkState;
 	}
 	
 	private function get_currentTime():Float 
@@ -1126,7 +1110,7 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function set_currentTime(value:Float):Float 
 	{
-		switch(_readyState)
+		switch(readyState)
 		{
 			//if current time is set before the media loading,
 			//store in the default playback position which will
@@ -1140,30 +1124,5 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 		
 		return value;
-	}
-	
-	private function get_duration():Float
-	{
-		return _duration;
-	}
-	
-	private function get_paused():Bool
-	{
-		return _paused;
-	}
-	
-	private function get_ended():Bool 
-	{
-		return _ended;
-	}
-	
-	private function get_readyState():Int
-	{
-		return _readyState;
-	}
-	
-	private function get_seeking():Bool
-	{
-		return _seeking;
 	}
 }

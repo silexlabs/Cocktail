@@ -16,7 +16,6 @@ import cocktail.core.event.TransitionEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.dom.DOMData;
 
 /**
  * The Document interface represents the entire HTML or XML document.
@@ -31,26 +30,7 @@ import cocktail.core.dom.DOMData;
  * @author Yannick DOMINGUEZ
  */
 class Document extends Node<Document>
-{
-	/**
-	 * event interfaces const
-	 */
-	public static inline var EVENT_INTERFACE:String = "Event";
-	
-	public static inline var UI_EVENT_INTERFACE:String = "UIEvent";
-	
-	public static inline var MOUSE_EVENT_INTERFACE:String = "MouseEvent";
-	
-	public static inline var FOCUS_EVENT_INTERFACE:String = "FocusEvent";
-	
-	public static inline var KEYBOARD_EVENT_INTERFACE:String = "KeyboardEvent";
-	
-	public static inline var WHEEL_EVENT_INTERFACE:String = "WheelEvent";
-	
-	public static inline var CUSTOM_EVENT_INTERFACE:String = "CustomEvent";
-	
-	public static inline var TRANSITION_EVENT_INTERFACE:String = "TransitionEvent";
-	
+{	
 	/**
 	 * This is a convenience attribute that allows direct access
 	 * to the child node that is the document element of the document.
@@ -153,28 +133,28 @@ class Document extends Node<Document>
 	{	
 		switch (eventInterface)
 		{
-			case EVENT_INTERFACE:
+			case DOMConstants.EVENT_INTERFACE:
 				return new Event();
 				
-			case UI_EVENT_INTERFACE:
+			case DOMConstants.UI_EVENT_INTERFACE:
 				return new UIEvent();
 				
-			case CUSTOM_EVENT_INTERFACE:
+			case DOMConstants.CUSTOM_EVENT_INTERFACE:
 				return new CustomEvent();
 				
-			case MOUSE_EVENT_INTERFACE:
+			case DOMConstants.MOUSE_EVENT_INTERFACE:
 				return new MouseEvent();
 				
-			case KEYBOARD_EVENT_INTERFACE:
+			case DOMConstants.KEYBOARD_EVENT_INTERFACE:
 				return new KeyboardEvent();
 				
-			case FOCUS_EVENT_INTERFACE:
+			case DOMConstants.FOCUS_EVENT_INTERFACE:
 				return new FocusEvent();
 				
-			case WHEEL_EVENT_INTERFACE:
+			case DOMConstants.WHEEL_EVENT_INTERFACE:
 				return new WheelEvent();
 				
-			case TRANSITION_EVENT_INTERFACE:
+			case DOMConstants.TRANSITION_EVENT_INTERFACE:
 				return new TransitionEvent();
 				
 			default:
@@ -214,7 +194,7 @@ class Document extends Node<Document>
 	private function doGetElementById(node:HTMLElement, elementId:String):HTMLElement
 	{
 		//call method recursively if node has child and is itself an element
-		if (node.hasChildNodes() == true && node.nodeType == Node.ELEMENT_NODE)
+		if (node.hasChildNodes() == true && node.nodeType == DOMConstants.ELEMENT_NODE)
 		{
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
@@ -301,6 +281,6 @@ class Document extends Node<Document>
 	
 	override private function get_nodeType():Int
 	{
-		return Node.DOCUMENT_NODE;
+		return DOMConstants.DOCUMENT_NODE;
 	}
 }

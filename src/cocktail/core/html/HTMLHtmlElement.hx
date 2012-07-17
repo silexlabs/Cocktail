@@ -7,7 +7,7 @@
 */
 package cocktail.core.html;
 import cocktail.core.renderer.InitialBlockRenderer;
-import cocktail.core.renderer.LayerRenderer;
+import cocktail.core.layer.LayerRenderer;
 
 /**
  * Root of an HTML document
@@ -53,7 +53,6 @@ class HTMLHtmlElement extends HTMLElement
 	override private function createElementRenderer():Void
 	{ 
 		elementRenderer = new InitialBlockRenderer(this);
-		elementRenderer.coreStyle = coreStyle;
 	}
 	
 	/**

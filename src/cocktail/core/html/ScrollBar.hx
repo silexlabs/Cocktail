@@ -217,9 +217,7 @@ class ScrollBar extends HTMLElement
 	override private function createElementRenderer():Void
 	{
 		elementRenderer = new ScrollBarRenderer(this);
-		elementRenderer.coreStyle = coreStyle;
 	}
-	
 	
 	/**
 	 * The Scrollbar has no DOM parent node as it is part of the Shadow DOM

@@ -25,223 +25,42 @@ import cocktail.core.style.StyleData;
  * 
  * Hides all the platforms interface behind a common API
  * 
- * TODO 3 : should instead allow access to nativeWindow, mouse...
- * instead of adding boilerplate
- * 
  * @author Yannick DOMINGUEZ
  */
-class Platform extends EventCallback
+class Platform
 {
-
-	/**
-	 * Height (in pixels) of the browser window viewport including,
-	 * if rendered, the horizontal scrollbar.
-	 */
-	public var innerHeight(get_innerHeight, never):Int;
-	
-	/**
-	 * Width (in pixels) of the browser window viewport including,
-	 * if rendered, the vertical scrollbar.
-	 */
-	public var innerWidth(get_innerWidth, never):Int;
-	
 	/**
 	 * An instance of the cross-platform keyboard class, used to listen
 	 * to key down and up event
 	 */
-	private var _keyboard:Keyboard;
+	public var keyboard(default, null):Keyboard;
 	
 	/**
 	 * An instance of the cross-platform mouse class, used to listen
 	 * to mouse input
 	 */
-	private var _mouse:Mouse;
+	public var mouse(default, null):Mouse;
 	
 	/**
 	 * An instance of the cross-platform class to access the native window,
 	 * allowing for instance to open a new window or to listen to 
 	 * resize event
 	 */
-	private var _nativeWindow:NativeWindow;
+	public var nativeWindow(default, null):NativeWindow;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR & INIT
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * class constructor
+	 * class constructor.
+	 * 
+	 * Init cross platform classes
 	 */
 	public function new() 
 	{
-		super();
-		
-		initKeyboardListeners();
-		initMouseListeners();
-		initNativeWindowListners();
+		mouse = new Mouse();
+		keyboard = new Keyboard();
+		nativeWindow = new NativeWindow();
 	}
-	
-	/**
-	 * init mouse listeners
-	 */
-	private function initMouseListeners():Void
-	{
-		_mouse = new Mouse();
-		_mouse.onMouseDown = dispatchMouseEvent;
-		_mouse.onMouseUp = dispatchMouseEvent;
-		_mouse.onMouseMove = dispatchMouseEvent;
-		_mouse.onMouseWheel = dispatchMouseWheelEvent;
-	}
-	
-	/**
-	 * init keyboard listeners
-	 */
-	private function initKeyboardListeners():Void
-	{
-		_keyboard = new Keyboard();
-		_keyboard.onKeyDown = dispatchKeyboardEvent;
-		_keyboard.onKeyUp = dispatchKeyboardEvent;
-	}
-	
-	/**
-	 * Init listening to platform UI event
-	 */
-	private function initNativeWindowListners():Void
-	{
-		_nativeWindow = new NativeWindow();
-		_nativeWindow.onResize = dispatchUIEvent;
-		_nativeWindow.onFullScreenChange = dispatchFullScreenEvent;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC PLATFORM METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Creates a new secondary browser window and loads the referenced resource.
-	 * 
-	 * TODO 5 : this is a partial implementation for now, should return
-	 * the created window and allow parameters
-	 */
-	public function open(url:String, name:String):Void
-	{
-		_nativeWindow.open(url, name);
-	}
-	
-	/**
-	 * Enters fullscreen mode
-	 */
-	public function enterFullscreen():Void
-	{
-		_nativeWindow.enterFullscreen();
-	}
-	
-	/**
-	 * Exit fullscreen mode
-	 */
-	public function exitFullscreen():Void
-	{
-		_nativeWindow.exitFullscreen();
-	}
-	
-	/**
-	 * Return wether the document is currently
-	 * displayed in fullscreen mode
-	 * @return true if fullscreen mode
-	 */
-	public function fullscreen():Bool
-	{
-		return _nativeWindow.fullscreen();
-	}
-	
-	public function setMouseCursor(cursor:Cursor):Void
-	{
-		_mouse.setMouseCursor(cursor);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PLATFORM CALLBACKS
-	// Send a cross-platform event from a native platform event
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function dispatchMouseEvent(mouseEvent:MouseEvent):Void
-	{
-		switch(mouseEvent.type)
-		{
-			case MouseEvent.MOUSE_DOWN:
-				if (onmousedown != null)
-				{
-					onmousedown(mouseEvent);
-				}
-				
-			case MouseEvent.MOUSE_MOVE:
-				if (onmousemove != null)
-				{
-					onmousemove(mouseEvent);
-				}
-				
-			case MouseEvent.MOUSE_UP:
-				if (onmouseup != null)
-				{
-					onmouseup(mouseEvent);
-				}		
-		}
-	}
-	
-	private function dispatchMouseWheelEvent(mouseWheelEvent:WheelEvent):Void
-	{
-		if (onmousewheel != null)
-		{
-			onmousewheel(mouseWheelEvent);
-		}
-	}
-	
-	private function dispatchKeyboardEvent(keyboardEvent:KeyboardEvent):Void
-	{
-		switch (keyboardEvent.type)
-		{
-			case KeyboardEvent.KEY_DOWN:
-				if (onkeydown != null)
-				{
-					onkeydown(keyboardEvent);
-				}
-				
-			case KeyboardEvent.KEY_UP:
-				if (onkeyup != null)
-				{
-					onkeyup(keyboardEvent);
-				}	
-		}
-		
-	}
-	
-	private function dispatchUIEvent(uiEvent:UIEvent):Void
-	{
-		if (onresize != null)
-		{
-			onresize(uiEvent);
-		}
-	}
-	
-	private function dispatchFullScreenEvent(event:Event):Void
-	{
-		if (onfullscreenchange != null)
-		{
-			onfullscreenchange(event);
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PLATFORM GETTER/SETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_innerHeight():Int
-	{
-		return _nativeWindow.innerHeight;
-	}
-	
-	private function get_innerWidth():Int
-	{
-		return _nativeWindow.innerWidth;
-	}
-	
 }

@@ -17,7 +17,7 @@ import cocktail.core.geom.GeomData;
 import cocktail.port.Resource;
 
 /**
- * Renders an embedded video asset
+ * Renders an embedded video asset or its poster frame
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -52,6 +52,10 @@ class VideoRenderer extends EmbeddedBoxRenderer
 			renderVideo(htmlVideoElement, graphicContext);
 		}
 	}
+		
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Actually render the video
@@ -63,48 +67,22 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	 */
 	private function renderVideo(htmlVideoElement:HTMLVideoElement, graphicContext:NativeElement):Void
 	{
-		//those will hold the actual value used for the video
-		//dimensions, with the kept aspect ratio
-		var width:Float;
-		var height:Float;
-
-		if (_coreStyle.computedStyle.width < _coreStyle.computedStyle.height)
-		{
-			//get the ratio between the intrinsic video width and the width it must be displayed at
-			var ratio:Float = htmlVideoElement.videoHeight / _coreStyle.computedStyle.height;
-	
-			//the video width use the computed width while the height apply the ratio
-			//to the video height, so that the ratio is kept while displaying the video
-			//as big as possible
-			width =  htmlVideoElement.videoWidth / ratio ;
-			height = _coreStyle.computedStyle.height;
-			
-		}
-		else
-		{
-			var ratio:Float = htmlVideoElement.videoWidth / _coreStyle.computedStyle.width;
-			
-			height = htmlVideoElement.videoHeight / ratio;
-			width = _coreStyle.computedStyle.width;
-		}
-		
-		//the video must be centered in the ElementRenderer, so deduce the offsets
-		//to apply to the x and y direction
-		var xOffset:Float = (_coreStyle.computedStyle.width - width) / 2;
-		var yOffset:Float = (_coreStyle.computedStyle.height - height) /2;
+		//get the bounds for the video so that it takes the maximum space and is centered
+		var videoBounds:RectangleData = getAssetBounds(_coreStyle.computedStyle.width,
+		_coreStyle.computedStyle.height, htmlVideoElement.videoWidth, htmlVideoElement.videoHeight);
 		
 		#if (flash9 || nme)
 		
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		containerGraphicContext.addChild(htmlVideoElement.embeddedAsset);
-		
+
 		//add the x and y offset for the video
-		htmlVideoElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + xOffset;
-		htmlVideoElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + yOffset;
-		
+		htmlVideoElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + videoBounds.x;
+		htmlVideoElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + videoBounds.y;
+
 		//use the actual video width and height
-		htmlVideoElement.embeddedAsset.width = width;
-		htmlVideoElement.embeddedAsset.height = height;
+		htmlVideoElement.embeddedAsset.width = videoBounds.width;
+		htmlVideoElement.embeddedAsset.height = videoBounds.height;
 		
 		htmlVideoElement.embeddedAsset.alpha = computedStyle.opacity;
 		
@@ -114,17 +92,19 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	/**
 	 * Render the poster frame of the video if the video is not
 	 * yet loaded or has not started playing yet
-	 * 
-	 * TODO 4 : duplicated code from ImageRenderer. Should be base class ?
 	 */
 	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:NativeElement):Void
 	{
 		var resource:Resource = ResourceManager.getResource(node.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
 
+		//the poster frame is not loaded or there was an erro while loading it
 		if (resource.loaded == false || resource.loadedWithError == true)
 		{
 			return;
 		}
+		
+		var posterBounds:RectangleData = getAssetBounds(_coreStyle.computedStyle.width,
+		_coreStyle.computedStyle.height, resource.intrinsicWidth, resource.intrinsicHeight);
 		
 		#if (flash9 || nme)
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
@@ -132,10 +112,87 @@ class VideoRenderer extends EmbeddedBoxRenderer
 		containerGraphicContext.addChild(bitmap);
 		
 		var globalBounds:RectangleData = globalBounds;
-		bitmap.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
-		bitmap.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
-		bitmap.width = _coreStyle.computedStyle.width;
-		bitmap.height = _coreStyle.computedStyle.height;
+		bitmap.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + posterBounds.x;
+		bitmap.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + posterBounds.y;
+		bitmap.width = posterBounds.width;
+		bitmap.height = posterBounds.height;
 		#end
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE UTILS METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Utils method returning the right rectangle so that
+	 * the video or poster frame can take the maximum available width
+	 * and height while preserving their aspect ratio and also be 
+	 * centered in the available space
+	 * 
+	 * @param	availableWidth the maximum width available for the poster frame or video
+	 * @param	availableHeight the maximum height available for the poster frame or video
+	 * @param	assetWidth the intrinsic width of the video or poster frame
+	 * @param	assetHeight the intrinsic height of the video or poster frame
+	 * @return	the bounds of the asset
+	 */
+	private function getAssetBounds(availableWidth:Float, availableHeight:Float, assetWidth:Float, assetHeight:Float):RectangleData
+	{
+		//those will hold the actual value used for the video or poster 
+		//dimensions, with the kept aspect ratio
+		var width:Float;
+		var height:Float;
+
+		if (availableWidth > availableHeight)
+		{
+			//get the ratio between the intrinsic asset width and the width it must be displayed at
+			var ratio:Float = assetHeight / availableHeight;
+			
+			//check that the asset isn't wider than the available width
+			if ((assetWidth / ratio) < availableWidth)
+			{
+				//the asset width use the computed width while the height apply the ratio
+				//to the asset height, so that the ratio is kept while displaying the asset
+				//as big as possible
+				width =  assetWidth / ratio ;
+				height = availableHeight;
+			}
+			//else reduce the height instead of the width
+			else
+			{
+				ratio = assetWidth / availableWidth;
+				
+				width = availableWidth;
+				height = assetHeight / ratio;
+			}
+		}
+		//same as above but inverted
+		else
+		{
+			var ratio:Float = assetWidth / availableWidth;
+			
+			if ((assetHeight / ratio) < availableHeight)
+			{
+				height = assetHeight / ratio;
+				width = availableWidth;
+			}
+			else
+			{
+				ratio = assetHeight / availableHeight;
+				width =  assetWidth / ratio ;
+				height = availableHeight;
+			}
+		}
+		
+		//the asset must be centered in the ElementRenderer, so deduce the offsets
+		//to apply to the x and y direction
+		var xOffset:Float = (availableWidth - width) / 2;
+		var yOffset:Float = (availableHeight - height) /2;
+		
+		return {
+			width:width,
+			height:height,
+			x:xOffset,
+			y:yOffset
+		}
 	}
 }

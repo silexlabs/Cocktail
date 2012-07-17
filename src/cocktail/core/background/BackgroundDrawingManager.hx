@@ -13,8 +13,9 @@ import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.unit.UnitData;
 import cocktail.core.style.StyleData;
-import cocktail.core.dom.DOMData;
+import cocktail.core.drawing.DrawingData;
 import cocktail.core.unit.UnitManager;
+import cocktail.port.Resource;
 import haxe.Log;
 
 /**
@@ -58,11 +59,11 @@ class BackgroundDrawingManager extends DrawingManager
 	 * @param	computedBackgroundPosition
 	 * @param	backgroundRepeat
 	 */
-	public function drawBackgroundImage(nativeImage:NativeElement, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, intrinsicWidth:Int, intrinsicHeight:Int, intrinsicRatio:Float, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeat):Void
+	public function drawBackgroundImage(nativeImage:NativeElement, resource:Resource, backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, intrinsicWidth:Int, intrinsicHeight:Int, intrinsicRatio:Float, computedBackgroundSize:DimensionData, computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeat):Void
 	{	
-		var totalWidth:Int = Math.round(computedBackgroundPosition.x) + Math.round(backgroundPositioningBox.x);
-		var maxWidth:Int =  Math.round(backgroundPaintingBox.x + backgroundPaintingBox.width);
-		var imageWidth:Int = Math.round(computedBackgroundSize.width);
+		var totalWidth:Float = computedBackgroundPosition.x + backgroundPositioningBox.x;
+		var maxWidth:Float =  backgroundPaintingBox.x + backgroundPaintingBox.width;
+		var imageWidth:Float = computedBackgroundSize.width;
 		
 		switch (backgroundRepeat.x)
 		{
@@ -88,7 +89,7 @@ class BackgroundDrawingManager extends DrawingManager
 					totalWidth -= imageWidth;
 				}
 		}
-		var initialWidth:Int = totalWidth;
+		var initialWidth:Float = totalWidth;
 		
 		var totalHeight:Float = computedBackgroundPosition.y + Math.round(backgroundPositioningBox.y);
 		var maxHeight:Float = backgroundPaintingBox.y + backgroundPaintingBox.height;
@@ -120,25 +121,65 @@ class BackgroundDrawingManager extends DrawingManager
 		}
 		
 		var initialHeight:Float = totalHeight;
-		
-		while (totalHeight < maxHeight)
+		//TODO 3 : doc + separate in 2 methods
+		if ((imageWidth / intrinsicWidth == 1) && (imageHeight / intrinsicHeight == 1))
 		{
-			var matrix:Matrix = new Matrix();
-		
-			matrix.translate(totalWidth, totalHeight);
+			var destinationPoint:PointData = {
+				x:totalWidth,
+				y:totalHeight
+			}
 			
-			matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight);
-			
-			drawImage(nativeImage, matrix, backgroundPaintingBox);
-			
-			totalWidth += imageWidth;
-			
-			if (totalWidth >= maxWidth)
+			var intWidth:Float = intrinsicWidth;
+			var intHeight:Float = intrinsicHeight;
+			var box:RectangleData = {
+				x:0.0,
+				y:0.0,
+				width:intWidth,
+				height:intHeight
+			}
+			while (totalHeight < maxHeight)
 			{
-				totalWidth = initialWidth;
-				totalHeight += imageHeight;
+				copyPixels(resource.nativeResource, box, destinationPoint );
+				
+				totalWidth += imageWidth;
+				
+				if (totalWidth >= maxWidth)
+				{
+					totalWidth = initialWidth;
+					totalHeight += imageHeight;
+				}
+				
+				destinationPoint.x = totalWidth;
+				destinationPoint.y = totalHeight;
 			}
 		}
+		else
+		{
+			var matrix:Matrix = new Matrix();
+			
+			while (totalHeight < maxHeight)
+			{
+				
+				matrix.identity();
+				
+				matrix.translate(totalWidth, totalHeight);
+				
+				matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight);
+				
+				drawImage(nativeImage, matrix, backgroundPaintingBox);
+				
+				totalWidth += imageWidth;
+				
+				if (totalWidth >= maxWidth)
+				{
+					totalWidth = initialWidth;
+					totalHeight += imageHeight;
+				}
+			}
+		}
+		
+		
+		
 	}
 	
 	/**
@@ -150,13 +191,7 @@ class BackgroundDrawingManager extends DrawingManager
 	 */
 	public function drawBackgroundColor(color:ColorData, backgroundPaintingBox:RectangleData):Void
 	{	
-		var fillStyle:FillStyleValue = FillStyleValue.monochrome( color );
-		var lineStyle:LineStyleValue = LineStyleValue.none;
-		
-		beginFill(fillStyle, lineStyle);
-		drawRect(Math.round(backgroundPaintingBox.x), Math.round(backgroundPaintingBox.y), Math.round(backgroundPaintingBox.width), Math.round(backgroundPaintingBox.height));
-		
-		endFill();
+		fillRect(backgroundPaintingBox, color);
 	}
 	
 	/**
@@ -199,7 +234,7 @@ class BackgroundDrawingManager extends DrawingManager
 		gradientSurface.drawRect(0, 0, Math.round(computedBackgroundSize.width), Math.round(computedBackgroundSize.height));
 		gradientSurface.endFill();
 		
-		drawBackgroundImage(gradientSurface.nativeElement, backgroundPositioningBox, backgroundPaintingBox, Math.round(computedBackgroundSize.width), Math.round(computedBackgroundSize.height), computedBackgroundSize.width / computedBackgroundSize.height, computedBackgroundSize, computedBackgroundPosition, backgroundRepeat);
+		drawBackgroundImage(gradientSurface.nativeElement, null, backgroundPositioningBox, backgroundPaintingBox, Math.round(computedBackgroundSize.width), Math.round(computedBackgroundSize.height), computedBackgroundSize.width / computedBackgroundSize.height, computedBackgroundSize, computedBackgroundPosition, backgroundRepeat);
 		
 		
 	}

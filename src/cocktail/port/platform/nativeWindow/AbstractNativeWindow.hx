@@ -88,6 +88,15 @@ class AbstractNativeWindow
 	}
 	
 	/**
+	 * Wether fullscreen is allowed
+	 * @return
+	 */
+	public function fullScreenEnabled():Bool
+	{
+		return false;
+	}
+	
+	/**
 	 * Wether fullscreen mode is activated
 	 */
 	public function fullscreen():Bool

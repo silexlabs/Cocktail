@@ -33,6 +33,6 @@ class Comment extends CharacterData
 	
 	override private function get_nodeType():Int
 	{
-		return Node.COMMENT_NODE;
+		return DOMConstants.COMMENT_NODE;
 	}
 }

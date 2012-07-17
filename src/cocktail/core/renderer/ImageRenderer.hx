@@ -50,7 +50,6 @@ class ImageRenderer extends EmbeddedBoxRenderer
 			return;
 		}
 		
-		
 		#if (flash9 || nme)
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
 		var bitmap:flash.display.Bitmap = new flash.display.Bitmap(resource.nativeResource, flash.display.PixelSnapping.AUTO, true);

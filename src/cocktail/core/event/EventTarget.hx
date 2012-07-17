@@ -29,7 +29,7 @@ class EventTarget
 	 */
 	public function new() 
 	{
-		_registeredEventListeners = new Hash();
+		_registeredEventListeners = new Hash<Array<EventListener>>();
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////

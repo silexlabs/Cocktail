@@ -9,6 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.linebox.LineBox;
 import cocktail.port.NativeElement;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;

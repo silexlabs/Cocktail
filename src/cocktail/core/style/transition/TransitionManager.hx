@@ -101,13 +101,20 @@ class TransitionManager
 	////////////////////////////////
 
 	/**
-	 * Return a transition object using the name of a property
+	 * Return a transition currently in progress using the name of a property
 	 * and a given target computed style.
 	 * 
 	 * Returns null if no transition matches
 	 */
 	public function getTransition(propertyName:String, style:ComputedStyle):Transition
 	{
+		//shortcut, return null if no transition
+		//are currently in progress
+		if (_currentTransitionsNumber == 0)
+		{
+			return null;
+		}
+		
 		//check that a key in the hash matches the property name.
 		//if it does not then no property with this name is transitioning
 		if (_transitions.exists(propertyName))

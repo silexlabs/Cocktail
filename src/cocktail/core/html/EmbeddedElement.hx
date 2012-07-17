@@ -9,7 +9,7 @@ package cocktail.core.html;
 
 import cocktail.core.dom.Node;
 import cocktail.core.renderer.EmbeddedBoxRenderer;
-import cocktail.core.renderer.LayerRenderer;
+import cocktail.core.layer.LayerRenderer;
 import cocktail.core.style.CoreStyle;
 import cocktail.port.NativeElement;
 
@@ -66,17 +66,8 @@ class EmbeddedElement extends HTMLElement
 	/**
 	 * A reference to the embedded asset
 	 * 
-	 * TODO 1 :the embeddedasset attribute seems obsolete and shouldn't exist.
-	 * There should be a ResourceManager where a resource can be queried through
-	 * an URL. The HTMLElement should query it only to set listener for loading
-	 * events and to get intrinsic dimensions, and ElementRenderer should query it
-	 * when rendering and may set callbacks for a new rendering if the asset is
-	 * not loaded yet. 
-	 * Trouble with this : for bitamp asset, when rendering, only have to copy the pixels,
-	 * so the resource can be unique but what should happen if multiple video with
-	 * the same URLs are displayed ? -> video/audio should be a subclass of asset with
-	 * a flag determining wether the video is in use, if it does, should create a new video
-	 * stream
+	 * TODO 1 :the embeddedasset attribute seems obsolete and shouldn't exist anymore
+	 * with the ResourceManager
 	 */
 	public var embeddedAsset(default, null):NativeElement;
 	
@@ -170,7 +161,7 @@ class EmbeddedElement extends HTMLElement
 	private function get_width():Int
 	{
 		var width:String = super.getAttribute(HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME);
-		if (width == "")
+		if (width == null)
 		{
 			return 0;
 		}

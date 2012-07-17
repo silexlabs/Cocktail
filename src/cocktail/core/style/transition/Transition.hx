@@ -173,15 +173,24 @@ class Transition
 	}
 	
 	/**
-	 * Return tthe current value of the transitioned
+	 * Return the current value of the transitioned
 	 * property based on the elapsed time and the used easing
 	 * function
-	 * 
-	 * TODO 1 : manage delay
 	 */
 	private function get_currentValue():Float
 	{
-		var completePercent:Float = (_elapsedTime) / ((_transitionDelay + transitionDuration) * 1000);
+		//offet between the elapsed time since the transition started 
+		//and the delay to apply to the transition before actually
+		//tweening value
+		var transitionTime:Float = _elapsedTime - (_transitionDelay * 1000);
+		//if the offset is negative, it means that the transition delay time
+		//is not yet complete, and so the start value must be returned
+		if (transitionTime < 0)
+		{
+			return _startValue;
+		}
+		
+		var completePercent:Float = (transitionTime) / (transitionDuration * 1000);
 		
 		switch (_transitionTimingFunction)
 		{
@@ -213,7 +222,7 @@ class Transition
 			case TransitionTimingFunctionValue.stepEnd:
 				return ((_endValue - _startValue) * 0) + _startValue;		
 				
-			//TODO 1 : implement
+			//TODO 1 : implement stepping function
 			case TransitionTimingFunctionValue.steps(intervalNumbers, intervalChange):
 				return ((_endValue - _startValue) * completePercent) + _startValue;			
 			

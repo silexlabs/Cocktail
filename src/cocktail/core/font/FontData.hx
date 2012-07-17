@@ -7,40 +7,6 @@
 */
 package cocktail.core.font;
 
- /**
-  * Stores the data relative to a resource.
-  */
-typedef FontData = 
-{
-	/**
-	 * The url of the font
-	 */
-	var url : String;
-	
-	/**
-	 * The name of the font
-	 */
-	var name : String;
-
-	/**
-	 * The type of the font
-	 */
-	var type : FontType;
-}
-
-/**
- * Enumerates the font type which can be eot or ttf
- */
-enum FontType
-{
-	ttf;
-	otf;
-	eot;
-	swf;
-	system;
-	unknown;
-}
-
 /**
  * Given a font family and a font size
  * provided by the htmlElement's styles, 

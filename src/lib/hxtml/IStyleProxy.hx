@@ -10,8 +10,10 @@ interface IStyleProxy<DisplayObjectType>
 	/*
 	public function setTransformOriginNum (element:DisplayObjectType, valueX:Int, unitX:String, valueY:Int, unitY:String, valueZ:Int, unitZ:String):Void;
 	public function setTransformOriginKey (element:DisplayObjectType, value:String):Void;
-	public function setTransform (element:DisplayObjectType, value:String):Void;
 	*/
+	public function setTransformOrigin (element:DisplayObjectType, value:String):Void;
+	public function setTransform (element:DisplayObjectType, value:String):Void;
+	
 	// transition
 	public function setTransitionProperty(element:DisplayObjectType, value:String):Void;
 	public function setTransitionDuration(element:DisplayObjectType, value:String):Void;

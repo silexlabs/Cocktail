@@ -11,6 +11,7 @@ import cocktail.core.html.EmbeddedElement;
 import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
+import cocktail.core.font.FontData;
 import haxe.Log;
 
 /**
@@ -38,15 +39,15 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * Overriden to process width before margins. For an embedded element a
 	 * computed width can always be computed event when width is auto
 	 */
-	override private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Void
+	override private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
 	{
 		//width
-		style.computedStyle.width = getComputedAutoWidth(style, containingBlockData);
+		style.computedStyle.width = getComputedAutoWidth(style, containingBlockData, fontMetrics);
 			
 		//left margin
-		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingBlockData);
+		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingBlockData, fontMetrics);
 		//right margin
-		style.computedStyle.marginRight = getComputedMarginRight(style, containingBlockData);
+		style.computedStyle.marginRight = getComputedMarginRight(style, containingBlockData, fontMetrics);
 	}
 	
 	/**
@@ -54,7 +55,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * is computed, as an embedded HTMLElement may have an intrinsic width
 	 * and/or intrinsic ratio
 	 */ 
-	override private function getComputedAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	override private function getComputedAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
 		var ret:Float = 0.0;
 		
@@ -111,7 +112,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		else
 		{
 			//compute the used height
-			var computedHeight:Float = getComputedDimension(style.height, containingBlockData.height, containingBlockData.isHeightAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+			var computedHeight:Float = getComputedDimension(style.height, containingBlockData.height, containingBlockData.isHeightAuto, fontMetrics.fontSize, fontMetrics.xHeight);
 			style.computedStyle.height = computedHeight;
 			
 			//deduce the width from the intrinsic ratio and the computed height
@@ -142,7 +143,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * is computed, as an embedded HTMLElement may have an intrinsic height
 	 * and/or intrinsic ratio
 	 */ 
-	override private function getComputedAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	override private function getComputedAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
 		var ret:Float = 0.0;
 		
@@ -184,7 +185,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		{
 			
 			//compute the used value of 'width'
-			var computedWidth:Float = getComputedDimension(style.width, containingBlockData.width, containingBlockData.isWidthAuto, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+			var computedWidth:Float = getComputedDimension(style.width, containingBlockData.width, containingBlockData.isWidthAuto, fontMetrics.fontSize, fontMetrics.xHeight);
 			style.computedStyle.width = computedWidth;
 			
 			//deduce the height from the computed width and the intrinsic ratio if it is defined

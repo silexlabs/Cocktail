@@ -13,6 +13,7 @@ import cocktail.core.unit.UnitManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.unit.UnitData;
 import haxe.Log;
+import cocktail.core.font.FontData;
 
 /**
  * This class computes all the background styles.
@@ -95,16 +96,18 @@ class BackgroundStylesComputer
 	backgroundRepeat:BackgroundRepeat,
 	backgroundImage:BackgroundImage):ComputedBackgroundStyleData
 	{
+		var fontMetrics:FontMetricsData = style.fontMetrics;
+		
 		//get the area onto which the background image is positioned
 		var backgroundPositioningArea:RectangleData = getBackgroundPositioningArea(style, backgroundOrigin, backgroundBox);
 		
 		//get the absolute dimensions of the background image
 		var computedBackgroundSize:DimensionData = getComputedBackgroundSize(backgroundSize, backgroundPositioningArea,
-		intrinsicWidth, intrinsicHeight, intrinsicRatio, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+		intrinsicWidth, intrinsicHeight, intrinsicRatio, fontMetrics.fontSize, fontMetrics.xHeight);
 		
 		//get the offset of the background image relative to the background box top left corner
 		var computedBackgroundPosition:PointData = getComputedBackgroundPosition(backgroundPosition,
-		backgroundPositioningArea, computedBackgroundSize, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+		backgroundPositioningArea, computedBackgroundSize, fontMetrics.fontSize, fontMetrics.xHeight);
 		
 		//get the clipping area (the area where the background image is actually displayed)
 		var computedBackgroundClip:RectangleData = getBackgroundPaintingArea(style, backgroundClip, backgroundBox);

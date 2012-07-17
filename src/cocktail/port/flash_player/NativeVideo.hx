@@ -18,6 +18,7 @@ import flash.media.Video;
 import flash.net.NetConnection;
 import flash.net.NetStream;
 import flash.events.NetStatusEvent;
+import haxe.Timer;
 
 /**
  * This is the flash as3 port of the native video,
@@ -37,6 +38,8 @@ class NativeVideo extends NativeMedia
 	// net status info code
 	
 	private static inline var NET_CONNECTION_CONNECT_SUCCESS:String = "NetConnection.Connect.Success";
+	
+	private static inline var NET_STREAM_SEEK_NOTIFY:String = "NetStream.Seek.Notify";
 
 	/**
 	 * a reference to the native flash video
@@ -68,6 +71,21 @@ class NativeVideo extends NativeMedia
 	private var _src:String;
 	
 	/**
+	 * When seek method is called, store the seek time.
+	 * This fix is here to circumvent a bug in NetStream
+	 * where the time attribute is not immediately updated
+	 * when seeking
+	 */
+	private var _currentTime:Float;
+	
+	/**
+	 * Wether a seek is currently in progress, seeking NetStrem
+	 * is an asynchronous process, and a NetStatusEvent is dispatched
+	 * when seeking is complete
+	 */
+	private var _seeking:Bool;
+	
+	/**
 	 * class constructor. Init video
 	 */
 	public function new() 
@@ -76,7 +94,8 @@ class NativeVideo extends NativeMedia
 		
 		_video = new Video();
 		_video.smoothing = true;
-		
+		_currentTime = 0.0;
+		_seeking = false;
 		_nc = new NetConnection();
 		_nc.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 		_nc.connect(null); 
@@ -111,6 +130,10 @@ class NativeVideo extends NativeMedia
 	 */
 	override public function seek(time:Float):Void 
 	{
+		//store seek time so that it can be immediatley
+		//return if current time is requested
+		_seeking = true;
+		_currentTime = time;
 		_netStream.seek(time);
 	}
 	
@@ -139,18 +162,6 @@ class NativeVideo extends NativeMedia
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Callback for async error. Retry to play the stream
-	 * when happens
-	 * 
-	 * TODO 3 : really hackish but sometimes video doesn't start.
-	 * Might have missed something in flash video API
-	 */
-	private function onAsyncError(event:AsyncErrorEvent):Void
-	{
-		src = _src;
-	}
-	
-	/**
 	 * Wait for the NetConnection object to connect before initialising
 	 * the net stream
 	 */
@@ -160,6 +171,9 @@ class NativeVideo extends NativeMedia
 		{
 			case NET_CONNECTION_CONNECT_SUCCESS:
 				connectStream();
+				
+			case NET_STREAM_SEEK_NOTIFY:
+				_seeking = false;
 		}
 	}
 	
@@ -176,8 +190,6 @@ class NativeVideo extends NativeMedia
 		}
 		
 		_netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-		_netStream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
-		
 		_video.attachNetStream(_netStream);
 	}
 	
@@ -196,7 +208,7 @@ class NativeVideo extends NativeMedia
 		if (metaWasNull == true)
 		{
 			_metaData = data;
-					
+			
 			//pause video by default, play must be explicitely
 			//called
 			_netStream.pause();
@@ -232,6 +244,13 @@ class NativeVideo extends NativeMedia
 	
 	override private function get_currentTime():Float
 	{
+		//if a seek is currently in progress, returns
+		//the seek time
+		if (_seeking == true)
+		{
+			return _currentTime;
+		}
+		
 		return _netStream.time;
 	}
 	

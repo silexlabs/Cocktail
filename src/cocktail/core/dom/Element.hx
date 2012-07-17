@@ -7,7 +7,6 @@
 */
 package cocktail.core.dom;
 
-import cocktail.core.dom.DOMData;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 
@@ -26,14 +25,7 @@ import cocktail.core.html.HTMLElement;
  * @author Yannick DOMINGUEZ
  */
 class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
-{
-
-	/**
-	 * When using getElementsByTagName, this value
-	 * used as tagName returns all the child elements
-	 */
-	private static inline var MATCH_ALL_TAG_NAME:String = "*";
-	
+{	
 	/**
 	 * The name of the element
 	 */
@@ -310,7 +302,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 					elements.push(childNode);
 				}
 				//else if any tagName is accepted and the child node is an element node, push child node
-				else if (tagName == MATCH_ALL_TAG_NAME && childNode.nodeType == Node.ELEMENT_NODE)
+				else if (tagName == DOMConstants.MATCH_ALL_TAG_NAME && childNode.nodeType == DOMConstants.ELEMENT_NODE)
 				{
 					elements.push(childNode);
 				}
@@ -334,7 +326,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 				var childNode:HTMLElement = cast(node.childNodes[i]);
 				switch (childNode.nodeType)
 				{
-					case Node.ELEMENT_NODE:
+					case DOMConstants.ELEMENT_NODE:
 						var elementNode:HTMLElement = childNode;
 						var elementClassName:String = elementNode.getAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME);
 						if (elementClassName != null)
@@ -379,7 +371,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	
 	override private function get_nodeType():Int
 	{
-		return Node.ELEMENT_NODE;
+		return DOMConstants.ELEMENT_NODE;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -393,7 +385,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 			return null;
 		}
 		
-		if (firstChild.nodeType == Node.ELEMENT_NODE)
+		if (firstChild.nodeType == DOMConstants.ELEMENT_NODE)
 		{
 			return firstChild;
 		}
@@ -402,7 +394,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 			var length:Int = childNodes.length;
 			for (i in 0...length)
 			{
-				if (childNodes[i].nodeType == Node.ELEMENT_NODE)
+				if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
 				{
 					return childNodes[i];
 				}
@@ -419,7 +411,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 			return null;
 		}
 		
-		if (lastChild.nodeType == Node.ELEMENT_NODE)
+		if (lastChild.nodeType == DOMConstants.ELEMENT_NODE)
 		{
 			return lastChild;
 		}
@@ -428,7 +420,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 			var length:Int = childNodes.length;
 			for (i in length...0)
 			{
-				if (childNodes[i].nodeType == Node.ELEMENT_NODE)
+				if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
 				{
 					return childNodes[i];
 				}
@@ -447,7 +439,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 		
 		var nextElementSibling:ElementClass = nextSibling;
 		
-		while (nextElementSibling.nodeType != Node.ELEMENT_NODE)
+		while (nextElementSibling.nodeType != DOMConstants.ELEMENT_NODE)
 		{
 			nextElementSibling = nextElementSibling.nextSibling;
 			
@@ -469,7 +461,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 		
 		var previousElementSibling:ElementClass = previousSibling;
 		
-		while (previousElementSibling.nodeType != Node.ELEMENT_NODE)
+		while (previousElementSibling.nodeType != DOMConstants.ELEMENT_NODE)
 		{
 			previousElementSibling = previousElementSibling.previousSibling;
 			
@@ -479,7 +471,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 			}
 		}
 		
-		return cast(previousElementSibling);
+		return previousElementSibling;
 	}
 	
 	private function get_childElementCount():Int
@@ -489,7 +481,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			if (childNodes[i].nodeType == Node.ELEMENT_NODE)
+			if (childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
 			{
 				childElementCount++;
 			}

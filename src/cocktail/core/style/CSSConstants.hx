@@ -116,6 +116,10 @@ class CSSConstants
 
 	public static inline var TRANSITION_TIMING_FUNCTION_STYLE_NAME:String = "transition-timing-function";
 
+	public static inline var TRANSFORM_ORIGIN_STYLE_NAME:String = "transform-origin";
+
+	public static inline var TRANSFORM_STYLE_NAME:String = "transform";
+
 	public function new() 
 	{
 		

@@ -7,7 +7,6 @@
 */
 package cocktail.core.dom;
 
-import cocktail.core.dom.DOMData;
 import cocktail.core.event.EventCallback;
 import cocktail.core.event.EventTarget;
 import haxe.Log;
@@ -30,67 +29,7 @@ import haxe.Log;
  * @author Yannick DOMINGUEZ
  */
 class Node<NodeClass:Node<NodeClass>> extends NodeBase<NodeClass>
-{
-	/**
-	 * The node is an Element.
-	 */
-	public static inline var ELEMENT_NODE:Int = 1;
-	
-	/**
-	 * The node is an Attr.
-	 */
-	public static inline var ATTRIBUTE_NODE:Int = 2;
-	
-	/**
-	 * The node is a Text node.
-	 */ 
-	public static inline var TEXT_NODE:Int = 3;
-	
-	/**
-	 * The node is a CDATASection.
-	 */
-	public static inline var CDATA_SECTION_NODE:Int = 4;
-	
-	/**
-	 * The node is an EntityReference.
-	 */
-	public static inline var ENTITY_REFERENCE_NODE:Int = 5;
-	
-	/**
-	 * The node is an Entity.
-	 */
-	public static inline var ENTITY_NODE:Int = 6;
-	
-	/**
-	 * The node is a ProcessingInstruction.
-	 */
-	public static inline var PROCESSING_INSTRUCTION_NODE:Int = 7;
-	
-	/**
-	 * The node is a Comment.
-	 */
-	public static inline var COMMENT_NODE:Int = 8;
-	
-	/**
-	 * The node is a Document.
-	 */
-	public static inline var DOCUMENT_NODE:Int = 9;
-	
-	/**
-	 * The node is a DocumentType.
-	 */
-	public static inline var DOCUMENT_TYPE_NODE:Int = 10;
-	
-	/**
-	 * The node is a DocumentFragment.
-	 */
-	public static inline var DOCUMENT_FRAGMENT_NODE:Int = 11;
-	
-	/**
-	 * The node is a Notation.
-	 */
-	public static inline var NOTATION_NODE:Int = 11;
-	
+{	
 	/**
 	 * A value representing the underlying object
 	 */

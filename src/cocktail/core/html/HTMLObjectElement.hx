@@ -93,7 +93,6 @@ class HTMLObjectElement extends EmbeddedElement
 	override private function createElementRenderer():Void
 	{
 		elementRenderer = new ImageRenderer(this);
-		elementRenderer.coreStyle = coreStyle;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

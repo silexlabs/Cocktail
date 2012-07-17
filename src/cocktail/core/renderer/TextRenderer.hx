@@ -9,10 +9,15 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.linebox.LineBox;
+import cocktail.core.linebox.SpaceLineBox;
+import cocktail.core.linebox.TextLineBox;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
+import cocktail.core.font.FontManager;
 import haxe.Log;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.StyleData;
@@ -40,6 +45,8 @@ class TextRenderer extends ElementRenderer
 	 */
 	private var _text:Text;
 	
+	private var _textNeedsRendering:Bool;
+	
 	/**
 	 * Class constructor.
 	 */
@@ -47,18 +54,23 @@ class TextRenderer extends ElementRenderer
 	{
 		super(node);
 		_text = cast(node);
+		_textNeedsRendering = true;
 	}
 	
 	override public function layout(forceLayout:Bool):Void
 	{	
-		createTextLines();
+		if (_textNeedsRendering == true)
+		{
+			createTextLines();
+			_textNeedsRendering = false;
+		}
 	}
 	
 	//TODO 1 IMPORTANT : setting lineBoxes to null causes runtime error in inline formatting context,
 	//need to find a better way to refresh text
 	override private function invalidateText():Void
 	{
-		//invalidateLayout();
+		_textNeedsRendering = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -69,12 +81,8 @@ class TextRenderer extends ElementRenderer
 	 * Actually convert a text into an array
 	 * of text token.
 	 */
-	private static function doGetTextTokens(text:String, whiteSpace:WhiteSpace):Array<TextToken>
+	private function doGetTextTokens(text:String):Array<TextToken>
 	{
-		//apply white space processing, for instance to collapse
-		//sequences of white spaces if needed
-		text = applyWhiteSpace(text, whiteSpace);
-		
 		var textTokens:Array<TextToken> = new Array<TextToken>();
 
 		var textToken:String = null;
@@ -172,7 +180,7 @@ class TextRenderer extends ElementRenderer
 	 * 
 	 * TODO 2 : this is only a partial implementation 
 	 */
-	private static function applyWhiteSpace(text:String, whiteSpace:WhiteSpace):String
+	private function applyWhiteSpace(text:String, whiteSpace:WhiteSpace):String
 	{
 		switch (whiteSpace)
 		{
@@ -198,6 +206,57 @@ class TextRenderer extends ElementRenderer
 		
 		return text;
 	}
+		
+	/**
+	 * Transform a text letters into uppercase, lowercase
+	 * or capitalise them (only the first letter of each word
+	 * is transformed to uppercase)
+	 */
+	private function applyTextTransform(text:String, textTransform:TextTransform):String
+	{
+		switch (textTransform)
+		{
+			case uppercase:
+				text = text.toUpperCase();
+				
+			case lowercase:
+				text = text.toLowerCase();
+				
+			case capitalize:
+				text = capitalizeText(text);
+				
+			case none:
+		}
+		
+		return text;
+	}
+	
+	/**
+	 * Capitalise a text (turn each word's first letter
+	 * to uppercase)
+	 */
+	private function capitalizeText(text:String):String
+	{
+		var capitalizedText:String = "";
+		
+		/**
+		 * concatenate each character and transform
+		 * the first to upper case
+		 */
+		for (i in 0...text.length)
+		{	
+			if (i == 0)
+			{
+				capitalizedText += text.charAt(i).toUpperCase();
+			}
+			else
+			{
+				capitalizedText += text.charAt(i);
+			}
+			
+		}
+		return capitalizedText;
+	}
 	
 	/**
 	 * Separate the source text in an array of text token
@@ -208,42 +267,54 @@ class TextRenderer extends ElementRenderer
 	 */
 	private function createTextLines():Void
 	{
-		_textTokens = doGetTextTokens(_text.nodeValue, computedStyle.whiteSpace);
+		var processedText:String = _text.nodeValue;
+		
+		//apply white space processing, for instance to collapse
+		//sequences of white spaces if needed
+		processedText = applyWhiteSpace(processedText, computedStyle.whiteSpace);
+		
+		processedText = applyTextTransform(processedText, computedStyle.textTransform);
+		
+		_textTokens = doGetTextTokens(processedText);
 		lineBoxes = [];
+		
+		var fontMetrics:FontMetricsData = _coreStyle.fontMetrics;
+		var fontManager:FontManager = FontManager.getInstance();
 		
 		var length:Int = _textTokens.length;
 		for (i in 0...length)
 		{
 			//create and store the line boxes
-			lineBoxes.push(createTextLineBoxFromTextToken(_textTokens[i]));
+			lineBoxes.push(createTextLineBoxFromTextToken(_textTokens[i], fontMetrics, fontManager));
 		}
 	}
 	
 	/**
 	 * Create and return a Text line box from a text token
 	 */
-	private function createTextLineBoxFromTextToken(textToken:TextToken):TextLineBox
+	private function createTextLineBoxFromTextToken(textToken:TextToken, fontMetrics:FontMetricsData, fontManager:FontManager):LineBox
 	{
 		//the text of the created text line box
 		var text:String;
+		
+		var textLineBox:TextLineBox;
 		
 		switch(textToken)
 		{
 			case word(value):
 				text = value;
+				textLineBox = new TextLineBox(this, text, fontMetrics, fontManager);
 		
 			case space:
-				text = " ";
+				textLineBox = new SpaceLineBox(this, fontMetrics, fontManager);
 				
 			//TODO 5 : implement tab and line feed	
 			case tab:
-				text = "";
+				textLineBox = new TextLineBox(this, "", fontMetrics, fontManager);
 				
 			case lineFeed:
-				text = "";
+				textLineBox = new TextLineBox(this, "", fontMetrics, fontManager);
 		}
-		
-		var textLineBox:TextLineBox = new TextLineBox(this, text);
 		
 		return textLineBox;
 	}
@@ -279,8 +350,6 @@ class TextRenderer extends ElementRenderer
 	/**
 	 * Overriden as the bounds of a TextRenderer is formed
 	 * by the bounds of its formatted text line boxes
-	 * 
-	 * TODO 4 : messy to return a new bounds
 	 */
 	override private function get_bounds():RectangleData
 	{

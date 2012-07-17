@@ -50,7 +50,7 @@ class Window extends EventCallback
 	 * A reference to the class through which platform specific
 	 * events and methods are retrieved
 	 */
-	private var _platform:Platform;
+	public var platform(default, null):Platform;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR & INIT
@@ -71,24 +71,23 @@ class Window extends EventCallback
 	 */
 	private function init():Void
 	{
-		_platform = new Platform();
-		
+		platform = new Platform();
 		var htmlDocument:HTMLDocument = new HTMLDocument();
 		
-		_platform.onmousedown = htmlDocument.onPlatformMouseEvent;
-		_platform.onmouseup = htmlDocument.onPlatformMouseEvent;
-		_platform.onmousemove = htmlDocument.onPlatformMouseMoveEvent;
-		_platform.onmousewheel = htmlDocument.onPlatformMouseWheelEvent;
+		platform.mouse.onMouseDown = htmlDocument.onPlatformMouseEvent;
+		platform.mouse.onMouseUp = htmlDocument.onPlatformMouseEvent;
+		platform.mouse.onMouseMove = htmlDocument.onPlatformMouseMoveEvent;
+		platform.mouse.onMouseWheel = htmlDocument.onPlatformMouseWheelEvent;
 		
-		_platform.onkeydown = htmlDocument.onPlatformKeyDownEvent;
-		_platform.onkeyup = htmlDocument.onPlatformKeyUpEvent;
+		platform.keyboard.onKeyDown = htmlDocument.onPlatformKeyDownEvent;
+		platform.keyboard.onKeyUp = htmlDocument.onPlatformKeyUpEvent;
 		
-		_platform.onresize = htmlDocument.onPlatformResizeEvent;
+		platform.nativeWindow.onResize = htmlDocument.onPlatformResizeEvent;
 		
 		//fullscreen callbacks
 		htmlDocument.onEnterFullscreen = onDocumentEnterFullscreen;
 		htmlDocument.onExitFullscreen = onDocumentExitFullscreen;
-		_platform.onfullscreenchange = onPlatformFullScreenChange;
+		platform.nativeWindow.onFullScreenChange = onPlatformFullScreenChange;
 		
 		//mouse cursor callback
 		htmlDocument.onSetMouseCursor = onDocumentSetMouseCursor;
@@ -105,7 +104,7 @@ class Window extends EventCallback
 	 */
 	public function open(url:String, name:String = HTMLConstants.TARGET_BLANK):Void
 	{
-		_platform.open(url, name);
+		platform.nativeWindow.open(url, name);
 	}
 	
 		
@@ -125,7 +124,7 @@ class Window extends EventCallback
 	{
 		//if the platform just exited the fullscreen mode,
 		//then the document must also exit it
-		if (_platform.fullscreen() == false)
+		if (platform.nativeWindow.fullscreen() == false)
 		{
 			document.exitFullscreen();
 		}
@@ -137,7 +136,7 @@ class Window extends EventCallback
 	 */
 	private function onDocumentEnterFullscreen():Void
 	{
-		_platform.enterFullscreen();
+		platform.nativeWindow.enterFullscreen();
 	}
 		
 	/**
@@ -146,7 +145,7 @@ class Window extends EventCallback
 	 */
 	private function onDocumentExitFullscreen():Void
 	{
-		_platform.exitFullscreen();
+		platform.nativeWindow.exitFullscreen();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -158,7 +157,7 @@ class Window extends EventCallback
 	 */
 	private function onDocumentSetMouseCursor(cursor:Cursor):Void
 	{
-		_platform.setMouseCursor(cursor);
+		platform.mouse.setMouseCursor(cursor);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -167,11 +166,11 @@ class Window extends EventCallback
 	
 	private function get_innerHeight():Int
 	{
-		return _platform.innerHeight;
+		return platform.nativeWindow.innerHeight;
 	}
 	
 	private function get_innerWidth():Int
 	{
-		return _platform.innerWidth;
+		return platform.nativeWindow.innerWidth;
 	}
 }

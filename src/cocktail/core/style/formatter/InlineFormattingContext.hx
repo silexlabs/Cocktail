@@ -7,17 +7,20 @@
 */
 package cocktail.core.style.formatter;
 
-import cocktail.core.renderer.EmbeddedLineBox;
-import cocktail.core.renderer.InlineBlockLineBox;
-import cocktail.core.renderer.LineBox;
-import cocktail.core.renderer.RootLineBox;
-import cocktail.core.renderer.TextLineBox;
+import cocktail.core.linebox.EmbeddedLineBox;
+import cocktail.core.linebox.InlineBlockLineBox;
+import cocktail.core.linebox.LineBox;
+import cocktail.core.linebox.RootLineBox;
+import cocktail.core.linebox.TextLineBox;
+import cocktail.core.linebox.SpaceLineBox;
+import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.floats.FloatsManager;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
+import cocktail.core.font.FontData;
 import cocktail.core.renderer.InlineBoxRenderer;
 import haxe.Log;
 
@@ -99,8 +102,9 @@ class InlineFormattingContext extends FormattingContext
 		//apply formatting height to formatting context root if auto height
 		if (_formattingContextRoot.coreStyle.height == Dimension.cssAuto)
 		{
-			_formattingContextRoot.bounds.height = _formattingContextData.y  + _formattingContextRoot.coreStyle.computedStyle.paddingBottom ;
-			_formattingContextRoot.coreStyle.computedStyle.height = _formattingContextRoot.bounds.height - _formattingContextRoot.coreStyle.computedStyle.paddingBottom  - _formattingContextRoot.coreStyle.computedStyle.paddingTop;
+			var formattingContextComputedStyle:ComputedStyle =  _formattingContextRoot.coreStyle.computedStyle;
+			_formattingContextRoot.bounds.height = _formattingContextData.y  + formattingContextComputedStyle.paddingBottom ;
+			_formattingContextRoot.coreStyle.computedStyle.height = _formattingContextRoot.bounds.height - formattingContextComputedStyle.paddingBottom  - formattingContextComputedStyle.paddingTop;
 		}
 	}
 	
@@ -116,15 +120,16 @@ class InlineFormattingContext extends FormattingContext
 			//it generates only one line box 
 			if (child.establishesNewFormattingContext() == true)
 			{
+				var childComputedStyle:ComputedStyle = child.coreStyle.computedStyle;
 				
-				child.bounds.width = child.coreStyle.computedStyle.width + child.coreStyle.computedStyle.paddingLeft + child.coreStyle.computedStyle.paddingRight;
-				child.bounds.height = child.coreStyle.computedStyle.height + child.coreStyle.computedStyle.paddingTop + child.coreStyle.computedStyle.paddingBottom;
+				child.bounds.width = childComputedStyle.width + childComputedStyle.paddingLeft + childComputedStyle.paddingRight;
+				child.bounds.height = childComputedStyle.height + childComputedStyle.paddingTop + childComputedStyle.paddingBottom;
 				
 				var inlineBlockLineBox:LineBox = new InlineBlockLineBox(child);
 				child.lineBoxes.push(inlineBlockLineBox);
 				
-				inlineBlockLineBox.marginLeft = child.coreStyle.computedStyle.marginLeft;
-				inlineBlockLineBox.marginRight = child.coreStyle.computedStyle.marginRight;
+				inlineBlockLineBox.marginLeft = childComputedStyle.marginLeft;
+				inlineBlockLineBox.marginRight = childComputedStyle.marginRight;
 
 				var childLineBoxes:Array<LineBox> = [inlineBlockLineBox];
 				
@@ -158,12 +163,14 @@ class InlineFormattingContext extends FormattingContext
 				//create the first line box for this inline box renderer
 				var childLineBox:LineBox = createContainerLineBox(child);
 				
+				var childComputedStyle:ComputedStyle = child.coreStyle.computedStyle;
+				
 				//the first line box created by an inline box renderer has a left margin and padding
-				childLineBox.marginLeft = child.coreStyle.computedStyle.marginLeft;
-				childLineBox.paddingLeft = child.coreStyle.computedStyle.paddingLeft;
+				childLineBox.marginLeft = childComputedStyle.marginLeft;
+				childLineBox.paddingLeft = childComputedStyle.paddingLeft;
 				//the left margin and padding is added to the unbreakable width as the next line box in the line 
 				//can't be separated from this margin and padding
-				_unbreakableWidth += child.coreStyle.computedStyle.marginLeft + child.coreStyle.computedStyle.paddingLeft;
+				_unbreakableWidth += childComputedStyle.marginLeft + childComputedStyle.paddingLeft;
 				
 				//attach the line box to its parent line box
 				lineBox.appendChild(childLineBox);
@@ -191,9 +198,10 @@ class InlineFormattingContext extends FormattingContext
 				
 				//The right margin and padding is added to the last generated line box of the current inline
 				//box renderer
-				child.lineBoxes[child.lineBoxes.length - 1].marginRight = child.coreStyle.computedStyle.marginRight;
-				child.lineBoxes[child.lineBoxes.length - 1].paddingRight = child.coreStyle.computedStyle.paddingRight;
-				_unbreakableWidth += child.coreStyle.computedStyle.marginRight + child.coreStyle.computedStyle.paddingRight;
+				var lastLineBox:LineBox = child.lineBoxes[child.lineBoxes.length - 1];
+				lastLineBox.marginRight = childComputedStyle.marginRight;
+				lastLineBox.paddingRight = childComputedStyle.paddingRight;
+				_unbreakableWidth += childComputedStyle.marginRight + childComputedStyle.paddingRight;
 			}
 			//here the child can be either a text renderer, an embedded asset, like a picture
 			//or an element displayed as an inline-block
@@ -423,15 +431,17 @@ class InlineFormattingContext extends FormattingContext
 		var remainingSpace:Float;
 		var flowX:Float;
 		
-		remainingSpace = _formattingContextRoot.coreStyle.computedStyle.width - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - 
-		_floatsManager.getRightFloatOffset(_formattingContextData.y + _formattingContextRoot.bounds.y, _formattingContextRoot.coreStyle.computedStyle.width);
-		flowX = _formattingContextRoot.coreStyle.computedStyle.paddingLeft;
+		var formattingContextRootComputedStyle:ComputedStyle = _formattingContextRoot.coreStyle.computedStyle;
+		
+		remainingSpace = formattingContextRootComputedStyle.width - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - 
+		_floatsManager.getRightFloatOffset(_formattingContextData.y + _formattingContextRoot.bounds.y, formattingContextRootComputedStyle.width);
+		flowX = formattingContextRootComputedStyle.paddingLeft;
 		
 		
 		if (_firstLineFormatted == false)
 		{
-			flowX += _formattingContextRoot.coreStyle.computedStyle.textIndent;
-			remainingSpace -= _formattingContextRoot.coreStyle.computedStyle.textIndent;
+			flowX += formattingContextRootComputedStyle.textIndent;
+			remainingSpace -= formattingContextRootComputedStyle.textIndent;
 		}
 		
 		//take the float into accounts and the padding of the containing HTMLElement
@@ -439,7 +449,7 @@ class InlineFormattingContext extends FormattingContext
 		
 		//do align the HTMLElements, the text align style of the containing HTMLElement
 		//determining the alignement to apply
-		switch (_formattingContextRoot.coreStyle.computedStyle.textAlign)
+		switch (formattingContextRootComputedStyle.textAlign)
 		{
 			case left:
 				alignLeft(flowX, rootLineBox);
@@ -462,7 +472,7 @@ class InlineFormattingContext extends FormattingContext
 				{
 					//when justified, the concatenated width of the HTMLElements
 					//must take all the containing HTMLElement width
-					concatenatedLength = _formattingContextRoot.coreStyle.computedStyle.width;
+					concatenatedLength = formattingContextRootComputedStyle.width;
 					 
 					alignJustify(flowX, remainingSpace, rootLineBox, spaceInLine);
 				}
@@ -483,7 +493,6 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function alignLeft(flowX:Float, lineBox:LineBox):Float
 	{
-
 		flowX += lineBox.paddingLeft + lineBox.marginLeft;
 		
 		var length:Int = lineBox.childNodes.length;
@@ -851,9 +860,10 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function computeLineBoxHeight(rootLineBox:LineBox):Float
 	{
-		setRootLineBoxMetrics(rootLineBox, rootLineBox, 0.0);
+		var formattingContextFontMetrics:FontMetricsData = _formattingContextRoot.coreStyle.fontMetrics;
+		setRootLineBoxMetrics(rootLineBox, rootLineBox, 0.0, formattingContextFontMetrics);
 		
-		alignLineBoxesVertically(rootLineBox, rootLineBox.leadedAscent, _formattingContextData.y, 0.0);
+		alignLineBoxesVertically(rootLineBox, rootLineBox.leadedAscent, _formattingContextData.y, 0.0, formattingContextFontMetrics);
 
 		//compute the line box height
 		var lineBoxHeight:Float = rootLineBox.bounds.height;
@@ -861,9 +871,10 @@ class InlineFormattingContext extends FormattingContext
 		return lineBoxHeight;
 	}
 	
-	private function setRootLineBoxMetrics(lineBox:LineBox, rootLineBox:LineBox, parentBaseLineOffset:Float):Void
+	private function setRootLineBoxMetrics(lineBox:LineBox, rootLineBox:LineBox, parentBaseLineOffset:Float, formattingContextFontMetrics:FontMetricsData):Void
 	{
 		var length:Int = lineBox.childNodes.length;
+		
 		for (i in 0...length)
 		{
 			var child:LineBox = lineBox.childNodes[i];
@@ -872,7 +883,7 @@ class InlineFormattingContext extends FormattingContext
 			{
 				var leadedAscent:Float = child.leadedAscent;
 				var leadedDescent:Float = child.leadedDescent;
-				var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, _formattingContextRoot.coreStyle.fontMetrics.xHeight);
+				var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, formattingContextFontMetrics.xHeight);
 				//TODO : should vertical align be added recursively ?
 				if (leadedAscent + baselineOffset > rootLineBox.leadedAscent)
 				{
@@ -886,21 +897,21 @@ class InlineFormattingContext extends FormattingContext
 				
 				if (child.hasChildNodes() == true)
 				{
-					setRootLineBoxMetrics(child, rootLineBox, baselineOffset);
+					setRootLineBoxMetrics(child, rootLineBox, baselineOffset, formattingContextFontMetrics);
 				}
 			}
 			
 		}
 	}
 	
-	private function alignLineBoxesVertically(lineBox:LineBox, lineBoxAscent:Float, formattingContextY:Float, parentBaseLineOffset:Float):Void
+	private function alignLineBoxesVertically(lineBox:LineBox, lineBoxAscent:Float, formattingContextY:Float, parentBaseLineOffset:Float, formattingContextFontMetrics:FontMetricsData):Void
 	{
 		var length:Int = lineBox.childNodes.length;
 		for (i in 0...length)
 		{
 			var child:LineBox = lineBox.childNodes[i];
 			
-			var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, _formattingContextRoot.coreStyle.fontMetrics.xHeight);
+			var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, formattingContextFontMetrics.xHeight);
 
 			switch(child.elementRenderer.coreStyle.verticalAlign)
 			{
@@ -911,14 +922,12 @@ class InlineFormattingContext extends FormattingContext
 					child.bounds.y = formattingContextY - baselineOffset + lineBoxAscent;
 					//TODO 2 check if neccessary to remove ascent to all children
 					child.bounds.y -= child.leadedAscent;
-					
-				
 			}
 			
 
 			if (child.hasChildNodes() == true)
 			{
-				alignLineBoxesVertically(child, lineBoxAscent, formattingContextY, baselineOffset);
+				alignLineBoxesVertically(child, lineBoxAscent, formattingContextY, baselineOffset, formattingContextFontMetrics);
 			}
 			
 			if (child.establishesNewFormattingContext() == true || (child.elementRenderer.isReplaced() == true && child.elementRenderer.isText() == false))

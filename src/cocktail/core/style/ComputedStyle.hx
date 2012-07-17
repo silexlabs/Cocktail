@@ -60,8 +60,6 @@ class ComputedStyle
 	public var width(getWidth, set_width):Float;
 	public var height(getHeight, set_height):Float;
 	
-	//TODO 2 : when setting one of those values, should constrain
-	//width/height
 	public var minHeight(getMinHeight, set_minHeight):Float;
 	public var maxHeight(getMaxHeight, set_maxHeight):Float;
 	public var minWidth(getMinWidth, set_minWidth):Float;

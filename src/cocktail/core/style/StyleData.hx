@@ -1345,6 +1345,8 @@ import cocktail.core.renderer.TextRenderer;
 	 * Contains the data necessary to place
 	 * an htmlElement in flow into the current
 	 * formatting context
+	 * 
+	 * TODO 2: should be repaced by RectangleData
 	 */
 	typedef FormattingContextData = {
 		/**

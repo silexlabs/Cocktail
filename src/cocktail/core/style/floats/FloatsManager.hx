@@ -273,7 +273,8 @@ class FloatsManager
 			var afterFloats:Array<RectangleData> = new Array<RectangleData>();
 			
 			//stores the relevant left floats
-			for (i in 0..._floats.left.length)
+			var leftFloatLength:Int = _floats.left.length;
+			for (i in 0...leftFloatLength)
 			{
 				if (_floats.left[i].y <= retY && _floats.left[i].height + _floats.left[i].y > retY)
 				{

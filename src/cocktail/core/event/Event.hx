@@ -19,6 +19,9 @@ import cocktail.core.html.HTMLElement;
  * derived interfaces are also implemented by the object passed
  * to the event listener.
  * 
+ * TODO 2 : init methods such as initEvent have just been deprecated (2/07/2012),
+ * should now refer to DOM4 spec for event construction
+ * 
  * @author Yannick DOMINGUEZ
  */
 class Event 

@@ -17,9 +17,10 @@ import flash.display.JointStyle;
 import flash.display.LineScaleMode;
 import flash.display.Sprite;
 import cocktail.core.geom.Matrix;
-import cocktail.core.dom.DOMData;
+import cocktail.core.drawing.DrawingData;
 import cocktail.core.geom.GeomData;
 import flash.geom.ColorTransform;
+import cocktail.core.unit.UnitData;
 import haxe.Log;
 
 /**
@@ -52,16 +53,16 @@ class DrawingManager extends AbstractDrawingManager
 	 */
 	public function new(width:Int, height:Int) 
 	{
-		this._nativeElement = new Sprite();
+		this.nativeElement = new Sprite();
 		
 		
 		super(width, height);
 		
-		_typedNativeElement = cast(this._nativeElement);
+		_typedNativeElement = cast(this.nativeElement);
 
 		
 		//init the bitmap display object and attach it to the display list
-		_bitmapDrawing = new Bitmap(new BitmapData(_width, _height, true, 0x00000000));
+		_bitmapDrawing = new Bitmap(new BitmapData(_width, _height, true, 0x00000000) );
 		
 		_typedNativeElement.addChild(_bitmapDrawing);
 		
@@ -88,7 +89,7 @@ class DrawingManager extends AbstractDrawingManager
 	override public function clear():Void
 	{
 		_typedNativeElement.graphics.clear();
-		_bitmapDrawing.bitmapData.fillRect(new flash.geom.Rectangle(0, 0, width, height), 0x00000000);
+		_bitmapDrawing.bitmapData.fillRect(new flash.geom.Rectangle(0, 0, _width, _height), 0x00000000);
 	}
 		
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -114,7 +115,7 @@ class DrawingManager extends AbstractDrawingManager
 		
 		//copy each pixel from the new vector drawing into the current bitmapData,
 		//preserving the alpha values
-		bitmapData.copyPixels(currentGraphicBitmapData, new flash.geom.Rectangle(0, 0, width, height), new flash.geom.Point(0, 0));
+		bitmapData.copyPixels(currentGraphicBitmapData, new flash.geom.Rectangle(0, 0, _width, _height), new flash.geom.Point(0, 0));
 		
 		//set the bitmapData on the bitmap display object
 		_bitmapDrawing.bitmapData = bitmapData;
@@ -265,7 +266,34 @@ class DrawingManager extends AbstractDrawingManager
 		var nativeMatrix:flash.geom.Matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 		
 		//draw the ImageHTMLElement bitmap data onto the current bitmap data
-		currentBitmapData.draw(sourceBitmapData, nativeMatrix, null, null, nativeSourceRect);
+		currentBitmapData.draw(sourceBitmapData, nativeMatrix, null, null, nativeSourceRect, true);
+	}
+	
+	/**
+	 * Uses flash native copyPixels method for fast pixel 
+	 * manipulation
+	 */
+	override public function copyPixels(bitmapData:Dynamic, sourceRect:RectangleData, destPoint:PointData):Void
+	{
+		var typedBitmapData:BitmapData = cast(bitmapData);
+		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+		var nativeDestPoint:flash.geom.Point = new flash.geom.Point(destPoint.x, destPoint.y);
+		_bitmapDrawing.bitmapData.copyPixels(typedBitmapData, nativeSourceRect, nativeDestPoint);
+	}
+	
+	/**
+	 * Uses flash native fillRect method for fast
+	 * rectangle drawing
+	 */
+	override public function fillRect(rect:RectangleData, color:ColorData):Void
+	{
+		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(rect.x, rect.y, rect.width, rect.height);
+		
+		var argbColor:Int = color.color;
+		var alpha:Int = Math.round(255 * color.alpha);
+		argbColor += alpha << 24;
+		
+		_bitmapDrawing.bitmapData.fillRect(nativeSourceRect, argbColor);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -464,30 +492,7 @@ class DrawingManager extends AbstractDrawingManager
 	private function getGradientBox(gradientStyle:GradientStyleData):flash.geom.Matrix
 	{
 		var gradientBox:flash.geom.Matrix = new flash.geom.Matrix();
-		gradientBox.createGradientBox(this.width, this.height, (gradientStyle.rotation) / 180 * Math.PI);
+		gradientBox.createGradientBox(_width, _height, (gradientStyle.rotation) / 180 * Math.PI);
 		return gradientBox;
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN SETTERS/GETTERS
-	// update the bitmap surface when the width or height changes
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override private function setWidth(value:Int):Int
-	{
-		super.setWidth(value);
-		_bitmapDrawing = new Bitmap(new BitmapData(value, height, true, 0x00000000));
-		_typedNativeElement.addChild(_bitmapDrawing);
-		return _width = value;
-	}
-	
-
-	override private function setHeight(value:Int):Int
-	{
-		super.setHeight(value);
-		_bitmapDrawing = new Bitmap(new BitmapData(width, value, true, 0x00000000));
-		_typedNativeElement.addChild(_bitmapDrawing);
-		return _height = value;
-	}
-	
 }

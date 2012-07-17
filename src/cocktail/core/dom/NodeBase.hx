@@ -15,7 +15,7 @@ import cocktail.core.event.EventTarget;
  * DOM tree, the rendering tree and the line box tree.
  * 
  * The standard w3c interface is implemented on the 
- * Node object, this base class only exspoes
+ * Node object, this base class only exsposes
  * method used to traverse a tree of data
  * 
  * @author Yannick DOMINGUEZ
@@ -83,19 +83,7 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 	public function removeChild(oldChild:NodeClass):NodeClass
 	{
 		oldChild.parentNode = null;
-		
-		var newChildNodes:Array<NodeClass> = new Array<NodeClass>();
-		
-		var length:Int = childNodes.length;
-		for (i in 0...length)
-		{
-			if (childNodes[i] != oldChild)
-			{
-				newChildNodes.push(childNodes[i]);
-			}
-		}
-		childNodes = newChildNodes;
-		
+		childNodes.remove(oldChild);
 		return oldChild;
 	}
 	
@@ -158,7 +146,6 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 			{
 				appendChild(newChildNodes[i]);
 			}
-			
 		}
 		
 		return newChild;

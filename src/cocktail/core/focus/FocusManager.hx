@@ -7,6 +7,7 @@
 */
 package cocktail.core.focus;
 
+import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.event.FocusEvent;
@@ -176,9 +177,9 @@ class FocusManager
 		for (i in 0...htmlElement.childNodes.length)
 		{
 			//only element node can be focused
-			if (htmlElement.childNodes[i].nodeType == Node.ELEMENT_NODE)
+			if (htmlElement.childNodes[i].nodeType == DOMConstants.ELEMENT_NODE)
 			{
-				var child:HTMLElement = cast(htmlElement.childNodes[i]);
+				var child:HTMLElement = htmlElement.childNodes[i];
 				
 				//if the child also has children, call the doBuildTabList
 				//recursively

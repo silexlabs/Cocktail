@@ -920,6 +920,20 @@ class CssParser<DisplayObjectType> {
 			}
 			return true;
 
+		case "transform-origin":
+			var val = getIdent(v);
+			if ( val != null) {			
+				s.setTransformOrigin(d, val);
+			}
+			return true;			
+
+		case "transform":
+			var val = getIdent(v);
+			if ( val != null) {			
+				s.setTransform(d, val);
+			}
+			return true;			
+
 		default:
 			throw "Not implemented '"+r+"' = "+Std.string(v);
 		}

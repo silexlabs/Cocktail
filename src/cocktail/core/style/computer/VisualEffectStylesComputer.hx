@@ -14,6 +14,7 @@ import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.unit.UnitData;
+import cocktail.core.font.FontData;
 
 /**
  * This is a static class in charge of
@@ -48,12 +49,13 @@ class VisualEffectStylesComputer
 		//get a reference to the computed style structure
 		//holding the used style value (the ones actually used)
 		var computedStyle:ComputedStyle = style.computedStyle;
+		var fontMetrics:FontMetricsData = style.fontMetrics;
 		
 		//transformOrigin
-		computedStyle.transformOrigin = getComputedTransformOrigin(style);
+		computedStyle.transformOrigin = getComputedTransformOrigin(style, fontMetrics);
 		
 		//transform
-		computedStyle.transform = getComputedTransform(style);
+		computedStyle.transform = getComputedTransform(style, fontMetrics);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +66,7 @@ class VisualEffectStylesComputer
 	 * Compute the transformation origin and returns it as a 2d point
 	 * in pixel
 	 */
-	private static function getComputedTransformOrigin(style:CoreStyle):PointData
+	private static function getComputedTransformOrigin(style:CoreStyle, fontMetrics:FontMetricsData):PointData
 	{
 		var x:Float;
 		var y:Float;
@@ -73,7 +75,7 @@ class VisualEffectStylesComputer
 		switch (style.transformOrigin.x)
 		{
 			case TransformOriginX.length(value):
-				x = UnitManager.getPixelFromLength(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+				x = UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight);
 			
 			case TransformOriginX.percent(value):
 				x = UnitManager.getPixelFromPercent(value, style.computedStyle.width);
@@ -92,7 +94,7 @@ class VisualEffectStylesComputer
 		switch (style.transformOrigin.y)
 		{
 			case TransformOriginY.length(value):
-				y = UnitManager.getPixelFromLength(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+				y = UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight);
 			
 			case TransformOriginY.percent(value):
 				y = UnitManager.getPixelFromPercent(value, style.computedStyle.width);
@@ -120,7 +122,7 @@ class VisualEffectStylesComputer
 	 * Compute a transformation matrix to apply to the htmlElement
 	 * from the array of transform functions concatenated in order
 	 */
-	private static function getComputedTransform(style:CoreStyle):Matrix
+	private static function getComputedTransform(style:CoreStyle, fontMetrics:FontMetricsData):Matrix
 	{
 		var transformFunctions:Array<TransformFunction>;
 		var transformOrigin:PointData = style.computedStyle.transformOrigin;
@@ -188,18 +190,18 @@ class VisualEffectStylesComputer
 				
 				//translate x and y	
 				case TransformFunction.translate(tx, ty):
-					var translationX:Float = getComputedTranslation(style, tx, style.computedStyle.width);
-					var translationY:Float = getComputedTranslation(style, ty, style.computedStyle.height);
+					var translationX:Float = getComputedTranslation(style, tx, style.computedStyle.width, fontMetrics);
+					var translationY:Float = getComputedTranslation(style, ty, style.computedStyle.height, fontMetrics);
 					matrix.translate(translationX, translationY);
 				
 				//translate x	
 				case TransformFunction.translateX(tx):
-					var translationX:Float = getComputedTranslation(style, tx, style.computedStyle.width);
+					var translationX:Float = getComputedTranslation(style, tx, style.computedStyle.width, fontMetrics);
 					matrix.translate(translationX, 0.0);
 				
 				//translate y	
 				case TransformFunction.translateY(ty):
-					var translationY:Float = getComputedTranslation(style, ty, style.computedStyle.height);
+					var translationY:Float = getComputedTranslation(style, ty, style.computedStyle.height, fontMetrics);
 					matrix.translate(0.0, translationY);	
 			}
 		}
@@ -214,14 +216,14 @@ class VisualEffectStylesComputer
 	/**
 	 * Utils method to compute a TransformValue into a float
 	 */
-	private static function getComputedTranslation(style:CoreStyle, translation:Translation, percentReference:Float):Float
+	private static function getComputedTranslation(style:CoreStyle, translation:Translation, percentReference:Float, fontMetrics:FontMetricsData):Float
 	{
 		var computedTranslation:Float;
 		
 		switch (translation)
 		{
 			case Translation.length(value):
-				computedTranslation = UnitManager.getPixelFromLength(value, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
+				computedTranslation = UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight);
 				
 			case Translation.percent(value):
 				computedTranslation = UnitManager.getPixelFromPercent(value, percentReference);

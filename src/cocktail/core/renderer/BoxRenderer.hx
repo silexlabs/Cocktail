@@ -87,12 +87,10 @@ class BoxRenderer extends ElementRenderer
 			_needsRendering = false;
 		}
 		
-		//if (_childrenNeedRendering == true || forceRendering == true)
-		//{
-			clear(childrenGraphicsContext);
-			renderChildren(childrenGraphicsContext, forceRendering == true || _childrenNeedRendering == true);
-			_childrenNeedRendering = false;
-		//}
+		clear(childrenGraphicsContext);
+		renderChildren(childrenGraphicsContext, forceRendering == true || _childrenNeedRendering == true);
+		_childrenNeedRendering = false;
+			
 		
 		#if (flash9 || nme)
 		var selfGraphicContext:flash.display.DisplayObjectContainer = cast(graphicsContext);
@@ -169,12 +167,11 @@ class BoxRenderer extends ElementRenderer
 		//TODO 4 : update doc for this
 		_coreStyle.computeBackgroundStyles();
 		
-		var backgroundManager:BackgroundManager = new BackgroundManager(this);
-		
+	
 		var backgroundBounds:RectangleData = getBackgroundBounds();
 		
 		//TODO 3 : should only pass dimensions instead of bounds
-		var backgrounds:Array<NativeElement> = backgroundManager.render(backgroundBounds, _coreStyle);
+		var backgrounds:Array<NativeElement> = BackgroundManager.render(backgroundBounds, _coreStyle, this);
 		
 		#if (flash9 || nme)
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
@@ -216,10 +213,7 @@ class BoxRenderer extends ElementRenderer
 		//transformations functions
 		if (isRelativePositioned() == true || _coreStyle.transform != Transform.none)
 		{
-			//TODO 2 : should ony compute transform and transform-origin, anything
-			//else can be done before layout
-			_coreStyle.computeVisualEffectStyles();
-			
+			_coreStyle.computeVisualEffectStyles();	
 			applyTransformationMatrix(graphicContext);
 		}
 		
@@ -349,18 +343,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function isFloat():Bool
 	{
-		var ret:Bool = false;
-		
-		switch (this.computedStyle.cssFloat) 
-		{
-			case CSSFloat.left, CSSFloat.right:
-				ret = true;
-			
-			case CSSFloat.none:
-				ret = false;
-		}
-		
-		return ret;
+		return computedStyle.cssFloat != CSSFloat.none;
 	}
 	
 	/**
@@ -384,18 +367,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function isPositioned():Bool
 	{
-		var ret:Bool = false;
-		
-		switch (this.computedStyle.position) 
-		{
-			case relative, absolute, fixed:
-				ret = true;
-			
-			case cssStatic:
-				ret = false;
-		}
-		
-		return ret;
+		return this.computedStyle.position != Position.cssStatic;
 	}
 	
 	/**
@@ -451,6 +423,9 @@ class BoxRenderer extends ElementRenderer
 	{
 		if (isPositioned() == true)
 		{
+			//if a box is positioned, it only establishes
+			//a new stacking context if its z-index is not
+			//auto, else it uses the LayerRenderer of its parent
 			if (isAutoZIndexPositioned() == true)
 			{
 				return false;
@@ -458,17 +433,6 @@ class BoxRenderer extends ElementRenderer
 			else
 			{
 				return true;
-			}
-			//if a box is positioned, it only establishes
-			//a new stacking context if its z-index is not
-			//auto, else it uses the LayerRenderer of its parent
-			switch (computedStyle.zIndex)
-			{
-				case ZIndex.cssAuto:
-					return false;
-					
-				case ZIndex.integer(value):
-					return true;
 			}
 		}
 		
@@ -492,14 +456,7 @@ class BoxRenderer extends ElementRenderer
 			return false;
 		}
 		
-		switch(computedStyle.zIndex)
-		{
-			case ZIndex.cssAuto:
-				return true;
-				
-			case ZIndex.integer(value):
-				return false;
-		}
+		return computedStyle.zIndex == ZIndex.cssAuto;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -516,18 +473,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	private function isClear():Bool
 	{
-		var ret:Bool = false;
-		
-		switch (this.computedStyle.clear) 
-		{
-			case Clear.left, Clear.right, Clear.both:
-				ret = true;
-			
-			case Clear.none:
-				ret = false;
-		}
-		
-		return ret;
+		return this.computedStyle.clear != Clear.none;
 	}
 	
 	/**

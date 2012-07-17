@@ -9,8 +9,9 @@ package cocktail.core.drawing;
 
 import cocktail.core.geom.Matrix;
 import cocktail.port.NativeElement;
-import cocktail.core.dom.DOMData;
+import cocktail.core.drawing.DrawingData;
 import cocktail.core.geom.GeomData;
+import cocktail.core.unit.UnitData;
 
 /**
  * The drawing manager exposes a cross-platform
@@ -25,20 +26,17 @@ class AbstractDrawingManager
 	 * A reference to the nativeElement used
 	 * as drawing surface
 	 */
-	private var _nativeElement:NativeElement;
-	public var nativeElement(getNativeElement, never):NativeElement;
+	public var nativeElement(default, null):NativeElement;
 	
 	/**
 	 * The width of the drawing surface
 	 */
 	private var _width:Int;
-	public var width(getWidth, setWidth):Int;
 	
 	/**
 	 * The height of the drawing surface
 	 */
 	private var _height:Int;
-	public var height(getHeight, setHeight):Int;
 	
 	/**
 	 * class constructor.
@@ -224,6 +222,28 @@ class AbstractDrawingManager
 		//abstract
 	}
 	
+	/**
+	 * fast pixel manipulation method used when no transformation is applied to the image
+	 * @param	bitmapData the pixels to copy
+	 * @param	sourceRect the area of the source bitmap data to use
+	 * @param	destPoint the upper left corner of the rectangular aeaa where the new
+	 * pixels are placed
+	 */
+	public function copyPixels(bitmapData:Dynamic, sourceRect:RectangleData, destPoint:PointData):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Fill a rect with the specified color
+	 * @param rect the rectangle to fill
+	 * @param color the rectangle's color
+	 */
+	public function fillRect(rect:RectangleData, color:ColorData):Void
+	{
+		//abstract
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Low level drawing methods
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -317,34 +337,5 @@ class AbstractDrawingManager
 	private function toNativeJointStyle(genericJointStyle:JointStyleValue):Dynamic
 	{
 		return null;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// SETTERS/GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function getNativeElement():NativeElement
-	{
-		return _nativeElement;
-	}
-	
-	private function setWidth(value:Int):Int
-	{
-		return _width = value;
-	}
-	
-	private function getWidth():Int
-	{
-		return _width;
-	}
-	
-	private function setHeight(value:Int):Int
-	{
-		return _height = value;
-	}
-	
-	private function getHeight():Int
-	{
-		return _height;
 	}
 }

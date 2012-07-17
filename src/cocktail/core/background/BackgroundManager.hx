@@ -32,20 +32,18 @@ import haxe.Log;
  * 
  * This class renders and return all those backgrounds elements
  * 
- * TODO 1 : way too complicated
+ * TODO 1 : way too complicated, too many parameters in functions
  * 
  * @author Yannick DOMINGUEZ
  */
 class BackgroundManager 
 {
-	private var _elementRenderer:ElementRenderer;
-	
 	/**
 	 * class constructor.
 	 */
-	public function new(elementRenderer:ElementRenderer)
+	private function new()
 	{
-		_elementRenderer = elementRenderer;
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -63,12 +61,12 @@ class BackgroundManager
 	 * @param	style
 	 * @return
 	 */
-	public function render(backgroundBox:RectangleData, style:CoreStyle):Array<NativeElement>
+	public static function render(backgroundBox:RectangleData, style:CoreStyle, elementRenderer:ElementRenderer):Array<NativeElement>
 	{
 		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
 		
 		//no need to draw the background if it has no width or height
-		if (backgroundBox.width <= 0 || backgroundBox.height <= 0)
+		if (Math.round(backgroundBox.width) <= 0 || Math.round(backgroundBox.height) <= 0 )
 		{
 			return nativeElements;
 		}
@@ -76,7 +74,8 @@ class BackgroundManager
 		//loop in all the background images style of the HTMLElement. It is expected
 		//that each array of background styles (such as background origin, background size...)
 		//has the same length
-		for (i in 0...style.backgroundImage.length)
+		var length:Int = style.backgroundImage.length;
+		for (i in 0...length)
 		{
 			switch (style.backgroundImage[i])
 			{
@@ -100,7 +99,7 @@ class BackgroundManager
 							//draw the background image and store the resulting nativeElement
 							var imageNativeElement:NativeElement = drawBackgroundImage(imageDeclaration, style, backgroundBox,
 							style.backgroundPosition[i], style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i],
-							style.backgroundRepeat[i], style.backgroundImage[i]);
+							style.backgroundRepeat[i], style.backgroundImage[i], elementRenderer);
 							
 							nativeElements.push(imageNativeElement);
 						
@@ -110,7 +109,7 @@ class BackgroundManager
 							
 							var imageNativeElement:NativeElement = drawBackgroundImage(value, style, backgroundBox,
 							style.backgroundPosition[i], style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i],
-							style.backgroundRepeat[i], style.backgroundImage[i]);
+							style.backgroundRepeat[i], style.backgroundImage[i], elementRenderer);
 							
 							nativeElements.push(imageNativeElement);
 						
@@ -126,25 +125,24 @@ class BackgroundManager
 			
 			//when the last of the background image property is rendered, render
 			//the background color which use the same property as the last background image
-			if (i == style.backgroundImage.length - 1)
+			if (i == length - 1)
 			{
-				var backgroundColorNativeElement:NativeElement = drawBackgroundColor(style, style.computedStyle.backgroundColor, backgroundBox, style.backgroundPosition[i],
-				style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i], style.backgroundRepeat[i], style.backgroundImage[i]);
+				if (style.backgroundColor != BackgroundColor.transparent)
+				{
+					var backgroundColorNativeElement:NativeElement = drawBackgroundColor(style, style.computedStyle.backgroundColor, backgroundBox, style.backgroundPosition[i],
+					style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i], style.backgroundRepeat[i], style.backgroundImage[i]);
 
-				//at this point the array contain only background image, reverse the array
-				//so that the background image declared first is on top of all the other
-				//background image
-				nativeElements.reverse();
-				
-				//then insert the background color so that it is under all the 
-				//background image
-				nativeElements.unshift(backgroundColorNativeElement);
+					//at this point the array contain only background image, reverse the array
+					//so that the background image declared first is on top of all the other
+					//background image
+					nativeElements.reverse();
+					
+					//then insert the background color so that it is under all the 
+					//background image
+					nativeElements.unshift(backgroundColorNativeElement);
+				}
 			}
 		}
-		
-		
-		
-		
 		
 		return nativeElements;
 	}
@@ -172,9 +170,9 @@ class BackgroundManager
 	 * @param	backgroundImage
 	 * @return
 	 */
-	private function drawBackgroundImage(imageDeclaration:ImageDeclarationData, style:CoreStyle, backgroundBox:RectangleData,
+	private static function drawBackgroundImage(imageDeclaration:ImageDeclarationData, style:CoreStyle, backgroundBox:RectangleData,
 	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
-	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):NativeElement
+	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage, elementRenderer:ElementRenderer):NativeElement
 	{
 		var backgroundImageDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(
 		backgroundBox);
@@ -197,7 +195,7 @@ class BackgroundManager
 					var bitmap:flash.display.Bitmap = new flash.display.Bitmap(resource.nativeResource,  flash.display.PixelSnapping.AUTO, true);
 					
 					backgroundImageDrawingManager.drawBackgroundImage(
-					bitmap, 
+					bitmap, resource,
 					computedGradientStyles.backgroundOrigin,
 					computedGradientStyles.backgroundClip,
 					resource.intrinsicWidth,
@@ -213,8 +211,13 @@ class BackgroundManager
 			}
 			else if (resource.loadedWithError == false)
 			{
-				resource.addEventListener(UIEvent.LOAD, onBackgroundImageLoaded);
-				resource.addEventListener(UIEvent.ERROR, onBackgroundImageLoadError);
+				resource.addEventListener(UIEvent.LOAD, function(e) {
+					elementRenderer.invalidate(InvalidationReason.backgroundImageLoaded);
+				});
+				
+				resource.addEventListener(UIEvent.ERROR, function(e) {
+					elementRenderer.invalidate(InvalidationReason.backgroundImageLoaded);
+				});
 				
 				foundResource = true;
 				break;
@@ -227,7 +230,6 @@ class BackgroundManager
 			var computedBackgroundStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
 			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,
 			backgroundClip, backgroundRepeat, backgroundImage);
-
 			
 			var backgroundColor:ColorData = UnitManager.getColorDataFromCSSColor(imageDeclaration.fallbackColor);
 			
@@ -238,24 +240,6 @@ class BackgroundManager
 		}
 		
 		return backgroundImageNativeElement;
-	}
-	
-	/**
-	 * Called when the bitmap was successfully loaded. Draw
-	 * the loaded bitmap onto a nativeElement
-	 */
-	private function onBackgroundImageLoaded(e:Event):Void
-	{
-		_elementRenderer.invalidate(InvalidationReason.other);
-	}
-	
-	/**
-	 * When the external bitmap can't be loaded, draw a fallback background color
-	 * layer
-	 */
-	private function onBackgroundImageLoadError(e:Event):Void
-	{
-		_elementRenderer.invalidate(InvalidationReason.other);
 	}
 	
 	/**
@@ -272,7 +256,7 @@ class BackgroundManager
 	 * @param	backgroundRepeat
 	 * @param	backgroundImage
 	 */
-	private function drawBackgroundColor(style:CoreStyle, backgroundColor:ColorData, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
+	private static function drawBackgroundColor(style:CoreStyle, backgroundColor:ColorData, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
 	backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin, backgroundClip:BackgroundClip, 
 	backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):NativeElement
 	{
@@ -300,7 +284,7 @@ class BackgroundManager
 	 * @param	backgroundImage
 	 * @return
 	 */
-	private function drawBackgroundGradient(style:CoreStyle, gradientValue:GradientValue, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
+	private static function drawBackgroundGradient(style:CoreStyle, gradientValue:GradientValue, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
 	backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin, backgroundClip:BackgroundClip,
 	backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):NativeElement
 	{

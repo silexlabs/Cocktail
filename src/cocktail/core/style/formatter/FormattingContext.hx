@@ -136,27 +136,6 @@ class FormattingContext
 					var computedStyle:ComputedStyle = style.computedStyle;
 					//compute the shrinked width
 					shrinkedWidth = minimumWidth;
-					
-					/**
-					//if both right and left are auto, use left static position, then deduce right
-					if (style.left == PositionOffset.cssAuto && style.right == PositionOffset.cssAuto)
-					{
-						style.computedStyle.left = getComputedStaticLeft(style, containingBlockData);
-						style.computedStyle.right = containingBlockData.width - computedStyle.marginLeft - computedStyle.marginRight - shrinkedWidth - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left;
-					}
-					//if only right is auto, compute left then deduce right
-					else if (style.right == PositionOffset.cssAuto)
-					{
-						style.computedStyle.left = getComputedPositionOffset(style.left, containingBlockData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
-						style.computedStyle.right = containingBlockData.width - computedStyle.marginLeft - computedStyle.marginRight - shrinkedWidth - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left;
-					}
-					//same for left
-					else if (style.left == PositionOffset.cssAuto)
-					{
-						style.computedStyle.right = getComputedPositionOffset(style.right, containingBlockData.width, style.fontMetrics.fontSize, style.fontMetrics.xHeight);
-						style.computedStyle.left = containingBlockData.width - computedStyle.marginLeft - computedStyle.marginRight - shrinkedWidth - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.right;
-					}
-					*/
 				}
 			}
 		}

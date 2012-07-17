@@ -80,7 +80,6 @@ class HTMLInputElement extends EmbeddedElement
 	override private function createElementRenderer():Void
 	{
 		elementRenderer = new TextInputRenderer(this);
-		elementRenderer.coreStyle = coreStyle;
 		
 		var textInputElementRenderer:TextInputRenderer = cast(elementRenderer);
 		

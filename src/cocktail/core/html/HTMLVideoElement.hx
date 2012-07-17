@@ -142,7 +142,6 @@ class HTMLVideoElement extends HTMLMediaElement
 	override private function createElementRenderer():Void
 	{
 		elementRenderer = new VideoRenderer(this);
-		elementRenderer.coreStyle = coreStyle;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -163,7 +162,7 @@ class HTMLVideoElement extends HTMLMediaElement
 			return false;
 		}
 		
-		switch (_readyState)
+		switch (readyState)
 		{
 			//if no video data is yet loaded, render the poster frame
 			case HTMLMediaElement.HAVE_NOTHING, HTMLMediaElement.HAVE_METADATA:
@@ -173,7 +172,7 @@ class HTMLVideoElement extends HTMLMediaElement
 		//if the video is not playing and the current playback position
 		//is the beggining of the video, then the poster frame should be
 		//rendered instead of the video's first frame
-		if (_paused == true && _currentPlaybackPosition == 0.0)
+		if (paused == true && _currentPlaybackPosition == 0.0)
 		{
 			return true;
 		}

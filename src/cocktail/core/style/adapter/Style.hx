@@ -115,6 +115,11 @@ class Style
 	public var transitionTimingFunction(get_transitionTimingFunction, set_transitionTimingFunction):String;
 	public var transitionDelay(get_transitionDelay, set_transitionDelay):String;
 	
+	/**
+	* transformation styles
+	*/
+	public var transform(get_transform, set_transform):String; 	
+	public var transformOrigin(get_transformOrigin, set_transformOrigin):String; 
 	/*
 	public var marginRight(get_marginRight, set_marginRight):String;
 	public var marginTop(get_marginTop, set_marginTop):String;
@@ -815,6 +820,30 @@ class Style
 		setAttribute(CSSConstants.TRANSITION_TIMING_FUNCTION_STYLE_NAME, value);
 		_coreStyle.transitionTimingFunction = UnitManager.getTransitionTimingFunction(value);
 		return value;
+	}
+
+	private function get_transform():String
+	{
+		return UnitManager.getCSSTransform(_coreStyle.transform);
+	}
+
+	private function set_transform(value:String):String
+	{
+		setAttribute(CSSConstants.TRANSFORM_STYLE_NAME, value);
+		_coreStyle.transform = UnitManager.getTransform(value);
+		return value;		
+	}
+
+	private function get_transformOrigin():String
+	{
+		return UnitManager.getCSSTransformOrigin(_coreStyle.transformOrigin);
+	}
+
+	private function set_transformOrigin(value:String):String
+	{
+		setAttribute(CSSConstants.TRANSFORM_ORIGIN_STYLE_NAME, value);
+		_coreStyle.transformOrigin = UnitManager.getTransformOrigin(value);
+		return value;		
 	}
 
 }

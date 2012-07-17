@@ -26,6 +26,12 @@ import haxe.Log;
 class NativeWindow extends AbstractNativeWindow
 {
 	/**
+	 * The name of the attribute whose value to lookup on the flash Stage
+	 * to determine wether fullscreen mode is allowed
+	 */
+	private static inline var ALLOW_FULLSCREEN_ATTRIBUTE:String = "allowsFullScreen";
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
@@ -63,6 +69,16 @@ class NativeWindow extends AbstractNativeWindow
 	override public function exitFullscreen():Void
 	{
 		flash.Lib.current.stage.displayState = StageDisplayState.NORMAL;
+	}
+	
+	/**
+	 * Look for the allowFullScreen attribute on the Stage
+	 * to determine wether fullscreen is allowed.
+	 * A bit hackish but no other way in flash
+	 */
+	override public function fullScreenEnabled():Bool
+	{
+		return Reflect.hasField(Lib.current.stage, ALLOW_FULLSCREEN_ATTRIBUTE);
 	}
 	
 	/**
