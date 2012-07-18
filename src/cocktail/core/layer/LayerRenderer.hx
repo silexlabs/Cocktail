@@ -200,7 +200,11 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			//this applies for instance to ElementRenderer with a z-index of auto
 			if (_zeroAndAutoZIndexChildElementRenderers[i].establishesNewStackingContext() == true)
 			{
-				_zeroAndAutoZIndexChildElementRenderers[i].layerRenderer.render(_graphicsContext);
+				//check if element is not a scrollbar as they are supposed to be rendered last
+				if (_zeroAndAutoZIndexChildElementRenderers[i].isScrollBar() == false)
+				{
+					_zeroAndAutoZIndexChildElementRenderers[i].layerRenderer.render(_graphicsContext);
+				}
 			}
 			else
 			{
@@ -214,6 +218,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		{
 			_positiveZIndexChildLayerRenderers[i].render(_graphicsContext);
 		}
+		
+		//scrollbars are always rendered last as they should always the top
+		//element of their layer
+		rootElementRenderer.renderScrollBars(_graphicsContext);
 		
 		//paint the LayerRenderer's graphics context onto its parent's
 		parentGraphicsContext.copyPixels(_graphicsContext.nativeBitmapData, { x:0.0, y:0.0, width:2000.0, height:1500.0 }, { x:0.0, y:0.0 } );

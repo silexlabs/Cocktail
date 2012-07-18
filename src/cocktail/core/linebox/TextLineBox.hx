@@ -113,7 +113,7 @@ class TextLineBox extends LineBox
 		}
 		
 		var destPoint:PointData = {
-			x:bounds.x + elementRenderer.globalContainingBlockOrigin.x,
+			x:bounds.x + elementRenderer.globalContainingBlockOrigin.x - elementRenderer.scrollOffset.x,
 			y:bounds.y + elementRenderer.globalContainingBlockOrigin.y - elementRenderer.scrollOffset.y
 		}
 		

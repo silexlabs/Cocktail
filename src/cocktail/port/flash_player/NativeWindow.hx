@@ -53,6 +53,7 @@ class NativeWindow extends AbstractNativeWindow
 		//attachthe document's bitmap data to the stage
 		//so that they are displyed on screen
 		_documentBitmap = new Bitmap();
+		
 		Lib.current.addChild(_documentBitmap);
 	}
 	

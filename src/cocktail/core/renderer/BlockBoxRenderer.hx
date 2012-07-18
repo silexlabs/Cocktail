@@ -235,14 +235,6 @@ class BlockBoxRenderer extends ScrollableRenderer
 			
 			//render all the line boxes belonging to the same stacking context
 			renderLineBoxes(graphicContext);
-			
-			//TODO 2 : shouldn't scrollbars be rendered by LayerRenderer ?
-			//might render scrollbar if started a new layer
-			if (establishesNewStackingContext() == true)
-			{
-				//render the scrollbar if needed
-				renderScrollBars(graphicContext);
-			}
 		}
 	}
 	
@@ -298,19 +290,16 @@ class BlockBoxRenderer extends ScrollableRenderer
 	/**
 	 * Render the scrollbars of this BlockBoxRenderer if needed
 	 */
-	private function renderScrollBars(graphicContext:DrawingManager):Void
+	override public function renderScrollBars(graphicContext:DrawingManager):Void
 	{
 		if (_horizontalScrollBar != null)
 		{
-			_horizontalScrollBar.elementRenderer.render(graphicContext);
-			updateScroll();
-
+			_horizontalScrollBar.elementRenderer.layerRenderer.render(graphicContext);
 		}
 		
 		if (_verticalScrollBar != null)
 		{
-			_verticalScrollBar.elementRenderer.render(graphicContext);
-			updateScroll();
+			_verticalScrollBar.elementRenderer.layerRenderer.render(graphicContext);
 		}
 	}
 	

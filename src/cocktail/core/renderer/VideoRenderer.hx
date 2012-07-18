@@ -86,8 +86,8 @@ class VideoRenderer extends ImageRenderer
 		//set the position and size of the native video, relative
 		//to the Window
 		nativeVideo.viewport = {
-			x: globalBounds.x + coreStyle.computedStyle.paddingLeft + videoBounds.x,
-			y: globalBounds.y + coreStyle.computedStyle.paddingTop + videoBounds.y,
+			x: globalBounds.x + coreStyle.computedStyle.paddingLeft + videoBounds.x - scrollOffset.x,
+			y: globalBounds.y + coreStyle.computedStyle.paddingTop + videoBounds.y - scrollOffset.y,
 			width: videoBounds.width,
 			height: videoBounds.height
 		}
@@ -113,8 +113,8 @@ class VideoRenderer extends ImageRenderer
 		coreStyle.computedStyle.height, resource.intrinsicWidth, resource.intrinsicHeight);
 		
 		var paintBounds:RectangleData = {
-			x:globalBounds.x + coreStyle.computedStyle.paddingLeft + posterBounds.x,
-			y:globalBounds.y + coreStyle.computedStyle.paddingTop + posterBounds.y,
+			x:globalBounds.x + coreStyle.computedStyle.paddingLeft + posterBounds.x - scrollOffset.x,
+			y:globalBounds.y + coreStyle.computedStyle.paddingTop + posterBounds.y - scrollOffset.y,
 			width:posterBounds.width,
 			height:posterBounds.height
 		}

@@ -62,7 +62,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 		var computedStyle:ComputedStyle = coreStyle.computedStyle;
 		
 		var paintBounds:RectangleData = {
-			x:globalBounds.x + computedStyle.paddingLeft,
+			x:globalBounds.x + computedStyle.paddingLeft - scrollOffset.x,
 			y:globalBounds.y + computedStyle.paddingTop - scrollOffset.y,
 			width:computedStyle.width,
 			height:computedStyle.height
