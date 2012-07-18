@@ -14,5 +14,5 @@ package cocktail.port;
 typedef NativeText =  cocktail.port.flash_player.NativeText;
 
 #else
-typedef NativeText =  cocktail.port.server.NativeText;
+typedef NativeText =  cocktail.port.platform.nativeText.AbstractNativeText;
 #end

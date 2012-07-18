@@ -14,5 +14,5 @@ package cocktail.port;
 typedef MediaLoader = cocktail.port.flash_player.MediaLoader;
 
 #else 
-typedef MediaLoader = cocktail.port.server.MediaLoader;
+typedef MediaLoader = cocktail.core.resource.AbstractMediaLoader;
 #end

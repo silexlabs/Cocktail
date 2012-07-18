@@ -13,5 +13,5 @@ package cocktail.port;
 #if (flash9 || nme)
 typedef NativeWindow =  cocktail.port.flash_player.NativeWindow;
 #else
-typedef NativeWindow =  cocktail.port.server.NativeWindow;
+typedef NativeWindow =  cocktail.port.platform.nativeWindow.AbstractNativeWindow;
 #end

@@ -14,6 +14,6 @@ package cocktail.port;
 typedef Mouse =  cocktail.port.flash_player.Mouse;
 
 #else
-typedef Mouse = cocktail.port.server.Mouse;
+typedef Mouse = cocktail.port.platform.mouse.AbstractMouse;
 
 #end

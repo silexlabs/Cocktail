@@ -14,5 +14,5 @@ package cocktail.port;
 typedef TouchListener =  cocktail.port.flash_player.TouchListener;
 
 #else
-typedef TouchListener = cocktail.port.server.TouchListener;
+typedef TouchListener = cocktail.port.platform.touch.AbstractTouchListener;
 #end

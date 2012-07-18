@@ -14,5 +14,5 @@ package cocktail.port;
 typedef DrawingManager =  cocktail.port.flash_player.DrawingManager;
 
 #else
-typedef DrawingManager = cocktail.port.server.DrawingManager;
+typedef DrawingManager = cocktail.core.drawing.AbstractDrawingManager;
 #end

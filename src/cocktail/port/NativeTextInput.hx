@@ -17,5 +17,5 @@ typedef NativeTextInput =  cocktail.port.air.NativeTextInput;
 typedef NativeTextInput =  cocktail.port.flash_player.NativeTextInput;
 
 #else
-typedef NativeTextInput = cocktail.port.server.NativeTextInput;
+typedef NativeTextInput = cocktail.port.platform.input.AbstractNativeTextInput;
 #end

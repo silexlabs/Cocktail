@@ -14,5 +14,5 @@ package cocktail.port;
 typedef Resource = cocktail.port.flash_player.Resource;
 
 #else 
-typedef Resource = cocktail.port.server.Resource;
+typedef Resource = cocktail.core.resource.AbstractResource;
 #end

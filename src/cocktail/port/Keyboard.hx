@@ -14,6 +14,6 @@ package cocktail.port;
 typedef Keyboard =  cocktail.port.flash_player.Keyboard;
 
 #else
-typedef Keyboard = cocktail.port.server.Keyboard;
+typedef Keyboard = cocktail.port.platform.keyboard.AbstractKeyboard;
 
 #end
