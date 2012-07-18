@@ -214,20 +214,16 @@ class BlockBoxRenderer extends ScrollableRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden as a BlockBoxRenderer render its children and the child LayerRenderer
-	 * of its LayerRenderer
+	 * Overriden as a BlockBoxRenderer render its children too
 	 */
 	override private function renderChildren(graphicContext:DrawingManager):Void
 	{
 		super.renderChildren(graphicContext);
 		
 		//the BlockBoxRenderer is responsible for rendering its children in the same stacking
-		//context if it establishes a stacking context itself
-		if (establishesNewStackingContext() == true)
+		//context if it establishes a stacking context itself or is rendered as if it did
+		if (establishesNewStackingContext() == true || rendersAsIfEstablishingStackingContext() == true)
 		{
-			//first render all the negative z-index child LayerRenderers
-		//	layerRenderer.renderNegativeChildElementRenderers(graphicContext);
-			
 			//render all the block box which belong to the same stacking context
 			renderBlockContainerChildren(graphicContext);
 			
@@ -240,23 +236,13 @@ class BlockBoxRenderer extends ScrollableRenderer
 			//render all the line boxes belonging to the same stacking context
 			renderLineBoxes(graphicContext);
 			
-			//render the scrollbar if needed
-			renderScrollBars(graphicContext);
-			
-			//render all the child layers with a z-index of 0 or auto
-			//layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext);
-			//render all the child layer with a positive z-index
-			//layerRenderer.renderPositiveChildElementRenderers(graphicContext);
-		}
-		//same as above but don't render the child LayerRenderer if this 
-		//block box doesn't actually establish a new stacking context
-		else if (rendersAsIfEstablishingStackingContext() == true)
-		{
-			renderBlockContainerChildren(graphicContext);
-			
-			//TODO 5 : render non-positioned float
-			renderBlockReplacedChildren(graphicContext);
-			renderLineBoxes(graphicContext);
+			//TODO 2 : shouldn't scrollbars be rendered by LayerRenderer ?
+			//might render scrollbar if started a new layer
+			if (establishesNewStackingContext() == true)
+			{
+				//render the scrollbar if needed
+				renderScrollBars(graphicContext);
+			}
 		}
 	}
 	

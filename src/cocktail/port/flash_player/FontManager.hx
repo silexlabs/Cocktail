@@ -24,7 +24,6 @@ import haxe.Log;
 import cocktail.core.font.AbstractFontManager;
 import cocktail.core.font.FontData;
 import cocktail.core.style.StyleData;
-import haxe.remoting.FlashJsConnection;
 
 
 /**

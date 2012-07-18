@@ -16,6 +16,7 @@ import cocktail.port.DrawingManager;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.font.FontData;
+import cocktail.port.NativeText;
 
 /**
  * A special kind of line box used to render text. 
@@ -35,10 +36,7 @@ class TextLineBox extends LineBox
 	 * The native text element wrapped by this
 	 * text line box
 	 */
-	private var _nativeElement:NativeElement;
-	
-	
-	private var _bitmap:Dynamic;
+	private var _nativeText:NativeText;
 	
 	/**
 	 * class constructor
@@ -48,7 +46,6 @@ class TextLineBox extends LineBox
 		_fontMetrics = fontMetrics;
 		
 		super(elementRenderer);
-		
 		
 		initNativeTextElement(text, fontManager, elementRenderer.coreStyle.computedStyle);
 		
@@ -80,7 +77,8 @@ class TextLineBox extends LineBox
 	{
 		//create and store a native text element, using the styles of the 
 		//TextRenderer which created this TextLineBox
-		_nativeElement = fontManager.createNativeTextElement(text, computedStyle);
+		var nativeElement:NativeElement = fontManager.createNativeTextElement(text, computedStyle);
+		_nativeText = new NativeText(nativeElement, leadedAscent);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -186,6 +184,7 @@ class TextLineBox extends LineBox
 	 */
 	private function getTextWidth():Float
 	{
+		return _nativeText.width;
 		#if (flash9 || nme)
 		return untyped _nativeElement.textWidth ;
 		#else

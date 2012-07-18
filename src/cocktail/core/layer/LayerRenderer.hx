@@ -176,6 +176,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	public function render(parentGraphicsContext:DrawingManager):Void
 	{
+		//reset the bitmap
 		_graphicsContext.clear();
 		
 		//render first negative z-index child LayerRenderer from most

@@ -57,21 +57,9 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	{
 		super.renderChildren(graphicContext);
 		
-		//render negative z-index LayerRenderer
-		if (establishesNewStackingContext() == true)
-		{
-			//layerRenderer.renderNegativeChildElementRenderers(graphicContext);
-		}
-		
 		//render all the child line boxes which belong to the same
 		//stacking context as this InlineBoxRenderer
 		renderChildLineBoxes(graphicContext);
-		
-		if (establishesNewStackingContext() == true)
-		{
-			//layerRenderer.renderZeroAndAutoChildElementRenderers(graphicContext);
-			//layerRenderer.renderPositiveChildElementRenderers(graphicContext);
-		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

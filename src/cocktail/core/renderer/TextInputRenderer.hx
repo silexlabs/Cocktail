@@ -70,6 +70,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	{
 		updateNativeTextInput();
 		//TODO 2 : should create detach() method too ?
+		//-> yes and this method should only be called when ElementRenderer is detached
 		_nativeTextInput.attach(graphicContext);
 	}
 	
