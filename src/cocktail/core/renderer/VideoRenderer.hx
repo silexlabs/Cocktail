@@ -15,14 +15,19 @@ import cocktail.core.resource.ResourceManager;
 import cocktail.port.DrawingManager;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
+import cocktail.port.NativeVideo;
+import cocktail.port.platform.nativeMedia.NativeMedia;
 import cocktail.port.Resource;
 
 /**
  * Renders an embedded video asset or its poster frame
  * 
+ * Inherits from ImageRenderer as if a poster frame its
+ * displayed, the behaviour is similar
+ * 
  * @author Yannick DOMINGUEZ
  */
-class VideoRenderer extends EmbeddedBoxRenderer
+class VideoRenderer extends ImageRenderer
 {
 	/**
 	 * class constructor
@@ -65,6 +70,8 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	 * video might be letterboxed to fit in the available bounds,
 	 * the video always takes the maximum amount of space available
 	 * while keeping its aspect ratio
+	 * 
+	 * TODO 3 : alpha of video no longer managed
 	 */
 	private function renderVideo(htmlVideoElement:HTMLVideoElement, graphicContext:DrawingManager):Void
 	{
@@ -72,22 +79,20 @@ class VideoRenderer extends EmbeddedBoxRenderer
 		var videoBounds:RectangleData = getAssetBounds(coreStyle.computedStyle.width,
 		coreStyle.computedStyle.height, htmlVideoElement.videoWidth, htmlVideoElement.videoHeight);
 		
-		#if (flash9 || nme)
+		var globalBounds:RectangleData = this.globalBounds;
 		
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
-		containerGraphicContext.addChild(htmlVideoElement.embeddedAsset);
-
-		//add the x and y offset for the video
-		htmlVideoElement.embeddedAsset.x = globalBounds.x + coreStyle.computedStyle.paddingLeft + videoBounds.x;
-		htmlVideoElement.embeddedAsset.y = globalBounds.y + coreStyle.computedStyle.paddingTop + videoBounds.y;
-
-		//use the actual video width and height
-		htmlVideoElement.embeddedAsset.width = videoBounds.width;
-		htmlVideoElement.embeddedAsset.height = videoBounds.height;
+		var nativeVideo:NativeMedia = htmlVideoElement.nativeMedia;
 		
-		htmlVideoElement.embeddedAsset.alpha = coreStyle.computedStyle.opacity;
+		//set the position and size of the native video, relative
+		//to the Window
+		nativeVideo.viewport = {
+			x: globalBounds.x + coreStyle.computedStyle.paddingLeft + videoBounds.x,
+			y: globalBounds.y + coreStyle.computedStyle.paddingTop + videoBounds.y,
+			width: videoBounds.width,
+			height: videoBounds.height
+		}
 		
-		#end
+		nativeVideo.attach(graphicContext);
 	}
 	
 	/**
@@ -98,7 +103,7 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	{
 		var resource:Resource = ResourceManager.getResource(domNode.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
 
-		//the poster frame is not loaded or there was an erro while loading it
+		//the poster frame is not loaded or there was an error while loading it
 		if (resource.loaded == false || resource.loadedWithError == true)
 		{
 			return;
@@ -107,17 +112,14 @@ class VideoRenderer extends EmbeddedBoxRenderer
 		var posterBounds:RectangleData = getAssetBounds(coreStyle.computedStyle.width,
 		coreStyle.computedStyle.height, resource.intrinsicWidth, resource.intrinsicHeight);
 		
-		#if (flash9 || nme)
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
-		var bitmap:flash.display.Bitmap = new flash.display.Bitmap(resource.nativeResource, flash.display.PixelSnapping.AUTO, true);
-		containerGraphicContext.addChild(bitmap);
+		var paintBounds:RectangleData = {
+			x:globalBounds.x + coreStyle.computedStyle.paddingLeft + posterBounds.x,
+			y:globalBounds.y + coreStyle.computedStyle.paddingTop + posterBounds.y,
+			width:posterBounds.width,
+			height:posterBounds.height
+		}
 		
-		var globalBounds:RectangleData = globalBounds;
-		bitmap.x = globalBounds.x + coreStyle.computedStyle.paddingLeft + posterBounds.x;
-		bitmap.y = globalBounds.y + coreStyle.computedStyle.paddingTop + posterBounds.y;
-		bitmap.width = posterBounds.width;
-		bitmap.height = posterBounds.height;
-		#end
+		paintResource(graphicContext, resource.nativeResource, paintBounds, resource.intrinsicWidth, resource.intrinsicHeight);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

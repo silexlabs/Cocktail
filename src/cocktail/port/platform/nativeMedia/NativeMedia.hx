@@ -8,7 +8,9 @@
 package cocktail.port.platform.nativeMedia;
 
 import cocktail.core.event.Event;
+import cocktail.port.DrawingManager;
 import cocktail.port.NativeElement;
+import cocktail.core.geom.GeomData;
 
 /**
  * This is a base class proxying access to 
@@ -81,6 +83,12 @@ class NativeMedia
 	public var onLoadedMetaData:Event->Void;
 	
 	/**
+	 * The viewport represents the position and size of the
+	 * displayed native video relative to the window
+	 */
+	public var viewport(get_viewport, set_viewport):RectangleData;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
@@ -126,6 +134,16 @@ class NativeMedia
 	public function canPlayType(type:String):String
 	{
 		return null;
+	}
+	
+	/**
+	 * Attach the native video using native APIs so
+	 * that it is displayed at the dimension and position
+	 * defined by its viewport
+	 */
+	public function attach(graphicsContext:DrawingManager):Void
+	{
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -195,4 +213,16 @@ class NativeMedia
 	{
 		return value;
 	}
+	
+	private function get_viewport():RectangleData
+	{
+		return viewport;
+	}
+	
+	private function set_viewport(value:RectangleData):RectangleData
+	{
+		return viewport = value;
+	}
+	
+	
 }

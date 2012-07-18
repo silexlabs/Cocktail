@@ -16,6 +16,7 @@ import cocktail.core.html.HTMLImageElement;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.style.ComputedStyle;
 import cocktail.port.DrawingManager;
+import cocktail.port.NativeBitmapData;
 import cocktail.port.Resource;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
@@ -43,53 +44,85 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	/**
 	 * When rendered, renders the embedded picture using the
 	 * graphicContext as canvas
+	 * 
+	 * 
+		//TODO 2 : also use scrollOffset.x
 	 */
 	override private function renderEmbeddedAsset(graphicContext:DrawingManager):Void
 	{
 		var resource:Resource = ResourceManager.getResource(domNode.getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME));
 
+		//don't paint anything is the image is not loaded or there was an error
+		//while loading
 		if (resource.loaded == false || resource.loadedWithError == true)
 		{
 			return;
 		}
+		
 		var computedStyle:ComputedStyle = coreStyle.computedStyle;
 		
-		var width:Float = resource.intrinsicWidth;
-		var height:Float = resource.intrinsicHeight;
-		
-		var sourceRect:RectangleData = {
-			x:0.0,
-			y:0.0,
-			width:width,
-			height:height
-		}
-		//TODO 2 : doc
-		//TODO 2 : also use scrollOffset.x
-	
-		var destPoint:PointData = {
+		var paintBounds:RectangleData = {
 			x:globalBounds.x + computedStyle.paddingLeft,
-			y:globalBounds.y + computedStyle.paddingTop
+			y:globalBounds.y + computedStyle.paddingTop - scrollOffset.y,
+			width:computedStyle.width,
+			height:computedStyle.height
 		}
 		
-		if (resource.intrinsicWidth != computedStyle.width || resource.intrinsicHeight != computedStyle.height)
+		paintResource(graphicContext, resource.nativeResource, paintBounds, resource.intrinsicWidth, resource.intrinsicHeight);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE UTILS METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Actually paint the resource's bitmap data on the graphic context.
+	 */
+	private function paintResource(graphicContext:DrawingManager, nativeBitmapData:NativeBitmapData, bounds:RectangleData, intrinsicWidth:Float, intrinsicHeight:Float):Void
+	{
+		//check if a tranformaton should be applied to the picture, for instance if the picture
+		//should be rescaled when painted, as if it does not, it can use a faster drawing
+		//routine
+		if (intrinsicWidth != bounds.width || intrinsicHeight != bounds.height)
 		{
 			var matrix:Matrix = new Matrix();
 		
-			matrix.translate(globalBounds.x + computedStyle.paddingLeft, globalBounds.y + computedStyle.paddingTop - scrollOffset.y);
-			matrix.scale(computedStyle.width / resource.intrinsicWidth , computedStyle.height / resource.intrinsicHeight );
+			matrix.translate(bounds.x, bounds.y);
+			matrix.scale(bounds.width / intrinsicWidth , bounds.height / intrinsicHeight );
 		
-				
-			sourceRect.x = globalBounds.x + computedStyle.paddingLeft;
-			sourceRect.y = globalBounds.y + computedStyle.paddingTop - scrollOffset.y;
-			sourceRect.width = computedStyle.width;
-			sourceRect.height = computedStyle.height;
+			var sourceRect:RectangleData = {
+				x:bounds.x,
+				y:bounds.y,
+				width:bounds.width,
+				height:bounds.height
+			}
 			
-			graphicContext.drawImage(resource.nativeResource, matrix, sourceRect);
+			graphicContext.drawImage(nativeBitmapData, matrix, sourceRect);
 		}
+		//here a faster drawing routine is used, the picture is drawn 
+		//untransformed at a certain point
 		else
 		{
-			destPoint.y = globalBounds.y + computedStyle.paddingTop - scrollOffset.y;
-			graphicContext.copyPixels(resource.nativeResource, sourceRect, destPoint);
+			var width:Float = intrinsicWidth;
+			var height:Float = intrinsicHeight;
+			
+			//the rectangle from the source image that will be painted
+			//it is always the full picture
+			var sourceRect:RectangleData = {
+				x:0.0,
+				y:0.0,
+				width:width,
+				height:height
+			}
+			
+			//the coordinates of the top left corner where the picture
+			//will be painted
+			var destPoint:PointData = {
+				x:bounds.x,
+				y:bounds.y
+			}
+			
+			graphicContext.copyPixels(nativeBitmapData, sourceRect, destPoint);
 		}
 	}
 	

@@ -72,6 +72,8 @@ class NativeTextInput extends AbstractNativeTextInput
 	
 	/**
 	 * The flash text field attach itself to the flash display list
+	 * 
+	 * TODO 1 : graphicsContext no longer a DisplayObjectContainer
 	 */
 	override public function attach(graphicContext:DrawingManager):Void
 	{

@@ -266,7 +266,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * access to runtime specific API for 
 	 * video and audio
 	 */
-	private var _nativeMedia:NativeMedia;
+	public var nativeMedia(default, null):NativeMedia;
 	
 	private var _initialPlaybackPosition:Float;
 	
@@ -440,7 +440,7 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		_autoplaying = false;
 		
-		_nativeMedia.play();
+		nativeMedia.play();
 	
 		onTimeUpdateTick();
 	}
@@ -472,7 +472,7 @@ class HTMLMediaElement extends EmbeddedElement
 			_officialPlaybackPosition = _currentPlaybackPosition;
 		}
 		
-		_nativeMedia.pause();
+		nativeMedia.pause();
 	}
 	
 	/**
@@ -482,7 +482,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	public function canPlayType(type:String):String
 	{
-		return _nativeMedia.canPlayType(type);
+		return nativeMedia.canPlayType(type);
 	}
 	
 	/////////////////////////////////
@@ -508,7 +508,7 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			fireEvent(Event.EMPTIED, false, false);
 			
-			_nativeMedia.src = null;
+			nativeMedia.src = null;
 			
 			networkState = NETWORK_EMPTY;
 			
@@ -640,8 +640,8 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	private function fetchResource(url:String):Void
 	{
-		_nativeMedia.onLoadedMetaData = onLoadedMetaData;
-		_nativeMedia.src = url;
+		nativeMedia.onLoadedMetaData = onLoadedMetaData;
+		nativeMedia.src = url;
 	}
 	
 	/**
@@ -694,7 +694,7 @@ class HTMLMediaElement extends EmbeddedElement
 		
 	
 		_currentPlaybackPosition = newPlaybackPosition;
-		_nativeMedia.seek(newPlaybackPosition);
+		nativeMedia.seek(newPlaybackPosition);
 		
 		//TODO 2 : Wait until the user agent has established whether or not 
 		//the media data for the new playback position is available, and, if
@@ -826,7 +826,7 @@ class HTMLMediaElement extends EmbeddedElement
 		_initialPlaybackPosition = 0;
 		_officialPlaybackPosition = 0;
 		
-		duration = _nativeMedia.duration;
+		duration = nativeMedia.duration;
 		fireEvent(Event.DURATION_CHANGE, false, false);
 		
 		setReadyState(HAVE_METADATA);
@@ -881,8 +881,8 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function onLoadedMetaData(e:Event):Void
 	{
-		intrinsicHeight = _nativeMedia.height;
-		intrinsicWidth = _nativeMedia.width;
+		intrinsicHeight = nativeMedia.height;
+		intrinsicWidth = nativeMedia.width;
 		intrinsicRatio = intrinsicHeight / intrinsicWidth;
 		
 		//update playback times and duration
@@ -910,7 +910,7 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 		
 		//update playback position
-		_currentPlaybackPosition = _nativeMedia.currentTime;
+		_currentPlaybackPosition = nativeMedia.currentTime;
 		_officialPlaybackPosition = _currentPlaybackPosition;
 		
 		//check if the end of the media is reached
@@ -965,7 +965,7 @@ class HTMLMediaElement extends EmbeddedElement
 		fireEvent(Event.PROGRESS, false, false);
 		
 		//check if all of the media has been loaded
-		if (_nativeMedia.bytesLoaded >= _nativeMedia.bytesTotal)
+		if (nativeMedia.bytesLoaded >= nativeMedia.bytesTotal)
 		{
 			setReadyState(HAVE_ENOUGH_DATA);
 			
@@ -1051,13 +1051,13 @@ class HTMLMediaElement extends EmbeddedElement
 		//if sound is no longer muted
 		if (value == false)
 		{
-			_nativeMedia.volume = volume;
+			nativeMedia.volume = volume;
 		}
 		//muting consist on setting volume of native
 		//media to 0
 		else
 		{
-			_nativeMedia.volume = 0;
+			nativeMedia.volume = 0;
 		}
 		
 		muted = value;
@@ -1070,7 +1070,7 @@ class HTMLMediaElement extends EmbeddedElement
 	{
 		if (muted == false)
 		{
-			_nativeMedia.volume = value;
+			nativeMedia.volume = value;
 		}
 		
 		volume = value;
@@ -1087,7 +1087,7 @@ class HTMLMediaElement extends EmbeddedElement
 		//already loaded of the media
 		ranges.push( {
 			start : 0.0,
-			end: duration * (_nativeMedia.bytesLoaded / _nativeMedia.bytesTotal)
+			end: duration * (nativeMedia.bytesLoaded / nativeMedia.bytesTotal)
 		});
 		
 		var timeRanges:TimeRanges = new TimeRanges(ranges);
