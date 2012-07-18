@@ -31,6 +31,13 @@ import cocktail.core.renderer.RendererData;
 class HTMLObjectElement extends EmbeddedElement
 {
 
+	//the intrinsic dimensions of an object tag, they are always the same and do not
+	//depend on the displayed content
+	
+	private static inline var HTML_OBJECT_INTRISIC_WIDTH:Float = 300;
+	
+	private static inline var HTML_OBJECT_INTRINSIC_HEIGHT:Float = 150;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// IDL attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -58,6 +65,9 @@ class HTMLObjectElement extends EmbeddedElement
 	{
 		_imageLoader = new ImageLoader();
 		super(HTMLConstants.HTML_OBJECT_TAG_NAME);
+		intrinsicHeight = HTML_OBJECT_INTRINSIC_HEIGHT;
+		intrinsicWidth = HTML_OBJECT_INTRISIC_WIDTH;
+		intrinsicRatio = intrinsicWidth / intrinsicHeight;
 	}
 	
 	/**
@@ -105,16 +115,10 @@ class HTMLObjectElement extends EmbeddedElement
 	 * Invalidate the Style and call the
 	 * onLoad callback if provided.
 	 * 
-	 * Store the instrinsic dimensions of the loaded asset
-	 * 
 	 * @param	image the loaded picture stored as a nativeElement
 	 */
 	private function onLoadComplete(image:NativeElement):Void
 	{
-		intrinsicHeight = _imageLoader.intrinsicHeight;
-		intrinsicWidth = _imageLoader.intrinsicWidth;
-		intrinsicRatio = intrinsicHeight / intrinsicWidth;
-		
 		invalidate(InvalidationReason.other);
 		
 		var loadEvent:UIEvent = new UIEvent();
