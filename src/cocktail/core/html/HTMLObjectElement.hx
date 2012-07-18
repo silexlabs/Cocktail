@@ -89,6 +89,9 @@ class HTMLObjectElement extends EmbeddedElement
 	
 	/**
 	 * Instantiate an image specific renderer
+	 * 
+	 * TODO 1 : should have its own renderer, as ImageRenderer
+	 * only works for fixed picture
 	 */
 	override private function createElementRenderer():Void
 	{

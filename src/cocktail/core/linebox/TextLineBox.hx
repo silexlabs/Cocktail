@@ -13,6 +13,7 @@ import cocktail.core.style.ComputedStyle;
 import cocktail.Lib;
 import cocktail.core.font.FontManager;
 import cocktail.port.DrawingManager;
+import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.font.FontData;
@@ -33,10 +34,16 @@ class TextLineBox extends LineBox
 	private var _fontMetrics:FontMetricsData;
 	
 	/**
-	 * The native text element wrapped by this
+	 * Proxies access to the native text element wrapped by this
 	 * text line box
 	 */
 	private var _nativeText:NativeText;
+	
+	/**
+	 * The bitmap data extracted from the native text to 
+	 * be displayed on screen
+	 */
+	private var _nativeTextBitmap:NativeBitmapData;
 	
 	/**
 	 * class constructor
@@ -53,32 +60,34 @@ class TextLineBox extends LineBox
 		bounds.width = getTextWidth();
 		bounds.height = getTextHeight();
 		
-		//TODO 1 : null if space 
-		if (_nativeElement != null)
-		{
-			//TODO 1 : all this should be abstracted in FontManager
-			#if (flash9 || nme)
-			_bitmap = new flash.display.BitmapData(Math.round(bounds.width), Math.round(bounds.height), true, 0x00000000);
-			var matr = new flash.geom.Matrix();
-			matr.translate(0.0, leadedAscent);
-			
-			_bitmap.draw(_nativeElement, matr);
-			#end
-			_nativeElement = null;
-		}
-		
-		
+		initTextBitmap();
 	}
 	
 	/**
-	 * Instantiate a platfor specific text rendering element
+	 * Instantiate a platform specific text rendering element
 	 */
 	private function initNativeTextElement(text:String, fontManager:FontManager, computedStyle:ComputedStyle):Void
 	{
 		//create and store a native text element, using the styles of the 
 		//TextRenderer which created this TextLineBox
 		var nativeElement:NativeElement = fontManager.createNativeTextElement(text, computedStyle);
-		_nativeText = new NativeText(nativeElement, leadedAscent);
+		//wrap the native text element
+		_nativeText = new NativeText(nativeElement);
+	}
+	
+	/**
+	 * get the bitmap data from the native text
+	 */
+	private function initTextBitmap():Void
+	{
+		var bitmapBounds:RectangleData = {
+			x:0.0,
+			y:leadedAscent,
+			height:bounds.height,
+			width:bounds.width
+		}
+		
+		_nativeTextBitmap = _nativeText.getBitmap(bitmapBounds);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +117,7 @@ class TextLineBox extends LineBox
 			y:bounds.y + elementRenderer.globalContainingBlockOrigin.y - elementRenderer.scrollOffset.y
 		}
 		
-		graphicContext.copyPixels(_bitmap, rect, destPoint);
+		graphicContext.copyPixels(_nativeTextBitmap, rect, destPoint);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -177,19 +186,10 @@ class TextLineBox extends LineBox
 	
 	/**
 	 * return the generated text width
-	 * 
-	 * TODO 2 : should either create abstract native element
-	 * for text to access text width, or use fontManager to
-	 * get text width
 	 */
 	private function getTextWidth():Float
 	{
 		return _nativeText.width;
-		#if (flash9 || nme)
-		return untyped _nativeElement.textWidth ;
-		#else
-		return 0.0;
-		#end
 	}
 
 	/**
