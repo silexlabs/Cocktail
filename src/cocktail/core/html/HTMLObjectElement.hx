@@ -7,6 +7,7 @@
 */
 package cocktail.core.html;
 import cocktail.core.event.UIEvent;
+import cocktail.core.renderer.ObjectRenderer;
 import cocktail.port.NativeElement;
 import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.resource.ImageLoader;
@@ -92,7 +93,7 @@ class HTMLObjectElement extends EmbeddedElement
 	 */
 	override private function createElementRenderer():Void
 	{
-		elementRenderer = new ImageRenderer(this);
+		elementRenderer = new ObjectRenderer(this);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
