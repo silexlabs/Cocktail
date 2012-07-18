@@ -23,7 +23,7 @@ import cocktail.core.style.ComputedStyle;
 import haxe.Stack;
 import lib.hxtml.CssParser;
 import lib.hxtml.HxtmlConverter;
-import lib.haxe.xml.Parser;
+import haxe.xml.Parser;
 import cocktail.port.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
