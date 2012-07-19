@@ -1,0 +1,8 @@
+-swf htmlApp.swf
+-cp .
+-cp ../../src/
+-cp ../../src/lib/
+-main cocktail.HTMLBuilder
+--macro cocktail.HTMLBuilder.create('source.html')
+--remap js:cocktail
+-swf-version 10.2
