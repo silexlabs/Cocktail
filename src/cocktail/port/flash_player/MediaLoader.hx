@@ -54,7 +54,7 @@ class MediaLoader extends AbstractMediaLoader
 		loader.unload();
 		
 		//listen for complete/error event on the loader
-		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onNativeLoadComplete);
+		loader.contentLoaderInfo.addEventListener(Event.INIT, onNativeLoadComplete);
 		loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onNativeLoadIOError);
 		
 		//instantiate a native request object
@@ -112,7 +112,7 @@ class MediaLoader extends AbstractMediaLoader
 	 */
 	private function removeLoaderListeners(loader:Loader):Void
 	{
-		loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onNativeLoadComplete);
+		loader.contentLoaderInfo.removeEventListener(Event.INIT, onNativeLoadComplete);
 		loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onNativeLoadIOError);
 	}
 	
