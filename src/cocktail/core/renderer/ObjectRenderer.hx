@@ -28,6 +28,10 @@ import cocktail.core.geom.GeomData;
  */
 class ObjectRenderer extends EmbeddedBoxRenderer
 {
+	private static inline var NO_SCALE:String = "noscale";
+	
+	private static inline var SHOW_ALL:String = "showall";
+	
 	/**
 	 * class constructor
 	 */
@@ -42,8 +46,6 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 
 	/**
 	 * When rendered, attach the plugin object to the native display list
-	 * 
-	 * TODO 1 : obsolete implementation, should work like video
 	 */
 	override private function renderEmbeddedAsset(graphicContext:DrawingManager):Void
 	{
@@ -72,10 +74,19 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 		var assetBounds:RectangleData = getAssetBounds(coreStyle.computedStyle.width, coreStyle.computedStyle.height,
 		width, height);
 		
-		asset.x = globalBounds.x + coreStyle.computedStyle.paddingLeft + assetBounds.x;
-		asset.y = globalBounds.y + coreStyle.computedStyle.paddingTop + assetBounds.y;
-		asset.scaleX = assetBounds.width / width;
-		asset.scaleY = assetBounds.height / height;
+		var scaleMode:String = getScaleMode();
+		switch (scaleMode)
+		{
+			case NO_SCALE:
+				asset.x = globalBounds.x + coreStyle.computedStyle.paddingLeft;
+				asset.y = globalBounds.y + coreStyle.computedStyle.paddingTop;
+				
+			default:
+				asset.x = globalBounds.x + coreStyle.computedStyle.paddingLeft + assetBounds.x;
+				asset.y = globalBounds.y + coreStyle.computedStyle.paddingTop + assetBounds.y;
+				asset.scaleX = assetBounds.width / width;
+				asset.scaleY = assetBounds.height / height;
+		}
 		
 		//mask the sprite so that it doesn't overflow
 		var mask = new flash.display.Sprite();
@@ -90,4 +101,34 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 		
 		#end
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE UTILS METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function getScaleMode():String
+	{
+		var scaleMode:String = SHOW_ALL;
+		for (i in 0...domNode.childNodes.length)
+		{
+			var child:HTMLElement = domNode.childNodes[i];
+			
+			if (child.tagName == HTMLConstants.HTML_PARAM_TAG_NAME)
+			{
+				if (child.getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME) != null)
+				{
+					if (child.getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME) == "scale")
+					{
+						if (child.getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME) != null)
+						{
+							scaleMode = child.getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
+						}
+					}
+				}
+			}
+		}
+		
+		return scaleMode;
+	}
+	
 }

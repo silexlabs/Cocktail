@@ -372,28 +372,6 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE RENDERING TREE METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Overriden to pause the media element
-	 * if necessary when detaching from
-	 * rendering tree
-	 * 
-	 * TODO 2 : should be instead when detached 
-	 * from DOM ?
-	 */
-	override private function detachFromParentElementRenderer():Void
-	{
-		super.detachFromParentElementRenderer();
-		
-		if (networkState != NETWORK_EMPTY)
-		{
-			//pause();
-		}
-	}
-	
 	/////////////////////////////////
 	// PUBLIC METHODS
 	////////////////////////////////
