@@ -34,6 +34,8 @@ class HTMLConstants
 	
 	public static inline var HTML_OBJECT_TAG_NAME:String = "OBJECT";
 	
+	public static inline var HTML_PARAM_TAG_NAME:String = "PARAM";
+	
 	//attributes names
 	
 	public static inline var HTML_ID_ATTRIBUTE_NAME:String = "id";
@@ -69,6 +71,8 @@ class HTMLConstants
 	public static inline var HTML_WIDTH_ATTRIBUTE_NAME:String = "width";
 	
 	public static inline var HTML_POSTER_ATTRIBUTE_NAME:String = "poster";
+	
+	public static inline var HTML_NAME_ATTRIBUTE_NAME:String = "name";
 	
 	//anchor target const
 

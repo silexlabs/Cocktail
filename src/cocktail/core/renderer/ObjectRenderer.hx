@@ -27,6 +27,10 @@ import cocktail.core.geom.GeomData;
  */
 class ObjectRenderer extends EmbeddedBoxRenderer
 {
+	private static inline var NO_SCALE:String = "noscale";
+	
+	private static inline var SHOW_ALL:String = "showall";
+	
 	/**
 	 * class constructor
 	 */
@@ -69,10 +73,19 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 		var assetBounds:RectangleData = getAssetBounds(_coreStyle.computedStyle.width, _coreStyle.computedStyle.height,
 		width, height);
 		
-		asset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + assetBounds.x;
-		asset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + assetBounds.y;
-		asset.scaleX = assetBounds.width / width;
-		asset.scaleY = assetBounds.height / height;
+		var scaleMode:String = getScaleMode();
+		switch (scaleMode)
+		{
+			case NO_SCALE:
+				asset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
+				asset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
+				
+			default:
+				asset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + assetBounds.x;
+				asset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + assetBounds.y;
+				asset.scaleX = assetBounds.width / width;
+				asset.scaleY = assetBounds.height / height;
+		}
 		
 		//mask the sprite so that it doesn't overflow
 		var mask = new flash.display.Sprite();
@@ -91,6 +104,31 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE UTILS METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function getScaleMode():String
+	{
+		var scaleMode:String = SHOW_ALL;
+		for (i in 0...node.childNodes.length)
+		{
+			var child:HTMLElement = node.childNodes[i];
+			
+			if (child.tagName == HTMLConstants.HTML_PARAM_TAG_NAME)
+			{
+				if (child.getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME) != null)
+				{
+					if (child.getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME) == "scale")
+					{
+						if (child.getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME) != null)
+						{
+							scaleMode = child.getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
+						}
+					}
+				}
+			}
+		}
+		
+		return scaleMode;
+	}
 	
 	/**
 	 * Utils method returning the right rectangle so that
