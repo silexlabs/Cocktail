@@ -78,18 +78,18 @@ class FontManagerImpl extends AbstractFontManagerImpl
 		
 		textField.text = "x";
 		
-		var ascent:Float =  textField.textHeight / 2;
+		var ascent:Float =  textField.height / 2;
 
 		textField.text = ",";
 		
-		var descent:Float = textField.textHeight / 2;
+		var descent:Float = textField.height / 2;
 		
 		textField.text = "x";
 		
-		var xHeight:Float = textField.textHeight;
+		var xHeight:Float = textField.height;
 	
-		textField.text = "M";
-		var spaceWidth:Float = textField.textWidth;
+		textField.text = " ";
+		var spaceWidth:Float = textField.width;
 		
 		var fontMetrics:FontMetricsData = {
 			fontSize:fontSize,

@@ -64,7 +64,7 @@ class NativeText extends AbstractNativeText
 	 */
 	override private function get_width():Float
 	{
-		return _textField.textWidth;
+		return _textField.width;
 	}
 	
 	

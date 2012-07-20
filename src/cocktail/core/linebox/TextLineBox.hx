@@ -151,8 +151,8 @@ class TextLineBox extends LineBox
 	override private function getLeadedAscent():Float 
 	{
 		var ascent:Float = _fontMetrics.ascent;
-		var descent:Float = _fontMetrics.descent;	
-	
+		var descent:Float = _fontMetrics.descent;
+		
 		//the leading is an extra height to apply equally to the ascent
 		//and the descent when laying out lines of text
 		var leading:Float = elementRenderer.coreStyle.computedStyle.lineHeight - (ascent + descent);
