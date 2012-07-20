@@ -151,7 +151,7 @@ class CssParser<DisplayObjectType> {
 			}
 			
 			// case int
-			var l = getValueObject(v);
+			var l:Null<ValueObject> = getValueObject(v);
 			if( l != null ) {
 				s.setMarginLeftNum(d, l.value, l.unit);
 				return true;
@@ -187,7 +187,7 @@ class CssParser<DisplayObjectType> {
 			}
 			
 			// case int
-			var l = getValueObject(v);
+			var l:Null<ValueObject> = getValueObject(v);
 			if( l != null ) {
 				s.setMarginRightNum(d, l.value, l.unit);
 				return true;
@@ -222,7 +222,7 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 			// case int
-			var l = getValueObject(v);
+			var l:Null<ValueObject> = getValueObject(v);
 			if( l != null ) {
 				s.setMarginTopNum(d, l.value, l.unit);
 				return true;
@@ -257,7 +257,7 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 			// case int
-			var l = getValueObject(v);
+			var l:Null<ValueObject> = getValueObject(v);
 			if( l != null ) {
 				s.setMarginBottomNum(d, l.value, l.unit);
 				return true;
@@ -532,7 +532,7 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 			// case int
-			var l = getValueObject(v);
+			var l:Null<ValueObject> = getValueObject(v);
 			if( l != null ) {
 				s.setFontSizeNum(d, l.value, l.unit);
 				return true;
@@ -638,7 +638,7 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 			// case int
-			var l = getValueObject(v);
+			var l:Null<ValueObject> = getValueObject(v);
 			if( l != null ) {
 				s.setLineHeightNum(d, l.value, l.unit);
 				return true;
@@ -652,7 +652,7 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 			// case int
-			var l = getValueObject(v);
+			var l:Null<ValueObject> = getValueObject(v);
 			if( l != null ) {
 				s.setVerticalAlignNum(d, l.value, l.unit);
 				return true;
@@ -667,7 +667,7 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 			// case int
-			var l = getValueObject(v);
+			var l:Null<ValueObject> = getValueObject(v);
 			if( l != null ) {
 				s.setWordSpacingNum(d, l.value, l.unit);
 				return true;
@@ -681,14 +681,14 @@ class CssParser<DisplayObjectType> {
 				return true;
 			}
 			// case int
-			var l = getValueObject(v);
+			var l:Null<ValueObject> = getValueObject(v);
 			if( l != null ) {
 				s.setLetterSpacingNum(d, l.value, l.unit);
 				return true;
 			}	
 			
 		case "text-indent":
-			var l = getValueObject(v);
+			var l:Null<ValueObject> = getValueObject(v);
 			if( l != null ) {
 				s.setTextIndent(d, l.value, l.unit);
 				return true;
@@ -732,7 +732,7 @@ class CssParser<DisplayObjectType> {
 			}
 			
 			// case int
-			var l = getValueObject(v);
+			var l:Null<ValueObject> = getValueObject(v);
 			if( l != null ) {
 				s.setTop(d, l.value, l.unit);
 				return true;
@@ -769,7 +769,7 @@ class CssParser<DisplayObjectType> {
 			}
 			
 			// case int
-			var l = getValueObject(v);
+			var l:Null<ValueObject> = getValueObject(v);
 			if( l != null ) {
 				s.setLeft(d, l.value, l.unit);
 				return true;
@@ -805,7 +805,7 @@ class CssParser<DisplayObjectType> {
 			}
 			
 			// case int
-			var l = getValueObject(v);
+			var l:Null<ValueObject> = getValueObject(v);
 			if( l != null ) {
 				s.setRight(d, l.value, l.unit);
 				return true;
@@ -843,7 +843,7 @@ class CssParser<DisplayObjectType> {
 			}
 			
 			// case int
-			var l = getValueObject(v);
+			var l:Null<ValueObject> = getValueObject(v);
 			if( l != null ) {
 				s.setBottom(d, l.value, l.unit);
 				return true;
@@ -974,7 +974,7 @@ class CssParser<DisplayObjectType> {
 	// convert a Value (enum) to a ValueObject (typedef)
 	function getValueObject(i):Null<ValueObject>{
 		return switch( i ) {
-		case VUnit(v, u): { value:v, unit:u };
+		case VUnit(v, u): { value:cast(v), unit:u };
 		default: null;
 		};
 	}
