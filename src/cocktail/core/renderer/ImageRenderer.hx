@@ -44,9 +44,6 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	/**
 	 * When rendered, renders the embedded picture using the
 	 * graphicContext as canvas
-	 * 
-	 * 
-		//TODO 2 : also use scrollOffset.x
 	 */
 	override private function renderEmbeddedAsset(graphicContext:DrawingManager):Void
 	{
@@ -61,7 +58,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 		
 		var computedStyle:ComputedStyle = coreStyle.computedStyle;
 		
-		var paintBounds:RectangleData = {
+		var paintBounds:RectangleData = { 
 			x:globalBounds.x + computedStyle.paddingLeft - scrollOffset.x,
 			y:globalBounds.y + computedStyle.paddingTop - scrollOffset.y,
 			width:computedStyle.width,

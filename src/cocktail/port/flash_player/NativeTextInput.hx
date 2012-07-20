@@ -56,7 +56,11 @@ class NativeTextInput extends AbstractNativeTextInput
 		super();
 		
 		_textField = new TextField();
+		
+		//not supported in nme
+		#if flash9
 		_textField.tabEnabled = false;
+		#end
 		
 		//make the text field editable
 		_textField.type = TextFieldType.INPUT;

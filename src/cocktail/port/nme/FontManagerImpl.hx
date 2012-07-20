@@ -110,7 +110,6 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 */
 	override public function createNativeTextElement(text:String, computedStyle:ComputedStyle):NativeElement
 	{
-		text = applyTextTransform(text, computedStyle.textTransform);
 		var textField:flash.text.TextField = new flash.text.TextField();
 		textField.text = text;
 		textField.selectable = false;
@@ -118,8 +117,6 @@ class FontManagerImpl extends AbstractFontManagerImpl
 		textField.setTextFormat(getTextFormat(computedStyle));
 
 		return textField;
-		
-
 	}	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -122,7 +122,11 @@ class NativeWindow extends AbstractNativeWindow
 	override private function setNativeListeners():Void
 	{
 		Lib.current.stage.addEventListener(flash.events.Event.RESIZE, onNativeResize);
+		
+		//not supported by nme
+		#if flash9
 		Lib.current.stage.addEventListener(flash.events.FullScreenEvent.FULL_SCREEN, onNativeFullScreenChange);
+		#end
 	}
 	
 	/**
@@ -131,7 +135,11 @@ class NativeWindow extends AbstractNativeWindow
 	override private function removeNativeListeners():Void
 	{
 		Lib.current.stage.removeEventListener(flash.events.Event.RESIZE, onNativeResize);
+		
+		//not supported by nme
+		#if flash9
 		Lib.current.stage.removeEventListener(flash.events.FullScreenEvent.FULL_SCREEN, onNativeFullScreenChange);
+		#end
 	}
 	
 	/**

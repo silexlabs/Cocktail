@@ -61,7 +61,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * overriden to render elements spefic to a box (background, border...)
+	 * overriden to render elements specific to a box (background, border...)
 	 * TODO 4 : apply visibility
 	 * 
 	 * TODO 2 : code clean up

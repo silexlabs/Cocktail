@@ -24,6 +24,9 @@ import cocktail.core.geom.GeomData;
  * An ElementRenderer displaying an object (plugin)
  * to the screen
  * 
+ * TODO 1 : whole class is messy, should be implemented as a plugin, 
+ * not here as "object" can render other plugins than flash  
+ * 
  * @author Yannick DOMINGUEZ
  */
 class ObjectRenderer extends EmbeddedBoxRenderer
