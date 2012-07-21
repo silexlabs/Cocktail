@@ -6,8 +6,6 @@ import js.Dom;
  */
 class Sample
 {
-	private var title:HtmlDom;
-	
 	public function new()
 	{
 		var paragraph = addParagraph("Font family");

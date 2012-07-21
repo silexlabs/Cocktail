@@ -192,8 +192,6 @@ class FontManagerImpl extends AbstractFontManagerImpl
 		textFormat.bold = bold;
 		textFormat.italic = computedStyle.fontStyle == FontStyle.italic;
 		
-		textFormat.letterSpacing = computedStyle.letterSpacing;
-		
 		textFormat.color = computedStyle.color.color;
 		return textFormat;
 	}
