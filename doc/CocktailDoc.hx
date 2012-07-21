@@ -12,20 +12,13 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 
 package ;
 
-import cocktail.domElement.DOMElement;
-import cocktail.classInstance.ClassInstance;
-import cocktail.mouse.Mouse;
-import cocktail.mouse.MouseCursorManager;
-import cocktail.keyboard.Keyboard;
-import cocktail.nativeElement.NativeElementManager;
-import cocktail.resource.ResourceLoaderManager;
-import cocktail.nativeInstance.NativeInstanceManager;
+import cocktail.core.html.HTMLElement;
 
 /**
 * This class is used to import all of the classes that must
-* appear in thr doc
+* appear in the doc
 */
-class Cocktail 
+class CocktailDoc 
 {
 	
 	public static function main()
