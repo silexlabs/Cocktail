@@ -48,10 +48,7 @@ class NativeText extends AbstractNativeText
 	override public function getBitmap(bounds:RectangleData):NativeBitmapData
 	{
 		var bitmap:BitmapData = new BitmapData(Math.round(bounds.width), Math.round(bounds.height), true, 0x00000000);
-		var matrix:Matrix = new Matrix();
-		matrix.translate(bounds.x, 0.0);
-		bitmap.draw(_nativeElement, matrix);
-		
+		bitmap.draw(_nativeElement);
 		return bitmap;
 	}
 	
