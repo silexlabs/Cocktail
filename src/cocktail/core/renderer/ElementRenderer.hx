@@ -569,7 +569,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	/////////////////////////////////
 	// PUBLIC HELPER METHODS
 	// Overriden by inheriting classes
-	// TODO 3 : should copy most doc from BoxRenderer
 	////////////////////////////////
 	
 	public function isVerticallyScrollable(scrollOffset:Int):Bool

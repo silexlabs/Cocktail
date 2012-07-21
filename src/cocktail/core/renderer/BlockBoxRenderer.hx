@@ -407,8 +407,10 @@ class BlockBoxRenderer extends ScrollableRenderer
 		for (i in 0...length)
 		{
 			var child:ElementRenderer = rootRenderer.childNodes[i];
-			//TODO 2 : this check is to prevent positioned child with a zindex of 0 from being returned, should
-			//put in a method
+			
+			//check that the child is not positioned, as if it is an auto z-index positioned
+			//element, it will be on the same layerRenderer but should not be rendered as 
+			//a block container children
 			if (child.layerRenderer == referenceLayer && child.isPositioned() == false)
 			{
 				//TODO 3 : must add more condition, for instance, no float

@@ -8,6 +8,7 @@
 package cocktail.core.style;
 
 import cocktail.core.event.TransitionEvent;
+import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.style.computer.TransitionStylesComputer;
 import cocktail.Lib;
@@ -318,112 +319,125 @@ class CoreStyle
 	 * 
 	 * TODO 5 : This method should eventually be removed when a StyleManager
 	 * is introduced which will prevent those styles from being hard-coded
-	 * 
-	 * TODO 4 : use HTMLConstants and uppercase 
 	 */
 	private function applyDefaultHTMLStyles(tagName:String):Void
 	{
-		switch (tagName.toLowerCase())
+		switch (tagName.toUpperCase())
 		{
-			case "html", "adress",
-			"dd", "div", "dl", "dt", "fieldset",
-			"form", "frame", "frameset", "noframes", "ol",
-			"center", "dir", "hr", "menu" :
+			case HTMLConstants.HTML_HTML_TAG_NAME,
+			HTMLConstants.HTML_ADRESS_TAG_NAME,
+			HTMLConstants.HTML_DD_TAG_NAME,
+			HTMLConstants.HTML_DIV_TAG_NAME,
+			HTMLConstants.HTML_DL_TAG_NAME,
+			HTMLConstants.HTML_DT_TAG_NAME,
+			HTMLConstants.HTML_FIELDSET_TAG_NAME,
+			HTMLConstants.HTML_FORM_TAG_NAME,
+			HTMLConstants.HTML_FRAME_TAG_NAME,
+			HTMLConstants.HTML_FRAMESET_TAG_NAME,
+			HTMLConstants.HTML_NOFRAMES_TAG_NAME,
+			HTMLConstants.HTML_OL_TAG_NAME,
+			HTMLConstants.HTML_CENTER_TAG_NAME,
+			HTMLConstants.HTML_DIR_TAG_NAME,
+			HTMLConstants.HTML_HR_TAG_NAME,
+			HTMLConstants.HTML_MENU_TAG_NAME :
 				display = Display.block;
 				
 			//TODO 5 : should be replaced by list-item once implemented	
-			case "li" :
+			case HTMLConstants.HTML_LI_TAG_NAME :
 				display = Display.block;
 			
 			//TODO 5 : should be instead for :link pseudo style once
 			//implmented
-			case "a":
+			case HTMLConstants.HTML_ANCHOR_TAG_NAME :
 				cursor = Cursor.pointer;
 				
-			case "ul":
+			case HTMLConstants.HTML_UL_TAG_NAME :
 				display = Display.block;
 				marginTop = marginBottom = Margin.length(em(1.12));
 				marginLeft = Margin.length(px(40));
 				
-			case "head" :	
+			case HTMLConstants.HTML_HEAD_TAG_NAME :	
 				display = Display.none;
 				
-			case "body" : 
+			case HTMLConstants.HTML_BODY_TAG_NAME : 
 				display = Display.block;
 				marginLeft = marginRight = marginTop = marginBottom = Margin.length(px(8));
 				
-			case "h1" : 
+			case HTMLConstants.HTML_H1_TAG_NAME : 
 				display = Display.block;
 				fontSize = FontSize.length(em(2));
 				fontWeight = FontWeight.bolder;
 				marginTop = marginBottom = Margin.length(em(0.67));
 				
-			case "h2" : 
+			case HTMLConstants.HTML_H2_TAG_NAME : 
 				display = Display.block;
 				fontSize = FontSize.length(em(1.5));
 				fontWeight = FontWeight.bolder;
 				marginTop = marginBottom = Margin.length(em(0.75));	
 			
-			case "h3" : 
+			case HTMLConstants.HTML_H3_TAG_NAME : 
 				display = Display.block;
 				fontSize = FontSize.length(em(1.17));
 				fontWeight = FontWeight.bolder;
 				marginTop = marginBottom = Margin.length(em(0.83));
 			
-			case "h4" :	
+			case HTMLConstants.HTML_H4_TAG_NAME :	
 				display = Display.block;
 				fontWeight = FontWeight.bolder;
 				marginTop = marginBottom = Margin.length(em(1.12));
 			
-			case "h5" : 
+			case HTMLConstants.HTML_H5_TAG_NAME : 
 				display = Display.block;
 				fontSize = FontSize.length(em(0.83));
 				fontWeight = FontWeight.bolder;
 				marginTop = marginBottom = Margin.length(em(1.5));	
 				
-			case "h6" : 
+			case HTMLConstants.HTML_H6_TAG_NAME : 
 				display = Display.block;
 				fontSize = FontSize.length(em(0.75));
 				fontWeight = FontWeight.bolder;
 				marginTop = marginBottom = Margin.length(em(1.67));		
 				
-			case "p" :
+			case HTMLConstants.HTML_P_TAG_NAME :
 				display = Display.block;
 				marginTop = marginBottom = Margin.length(em(1));	
 				
-			case "pre" : 
+			case HTMLConstants.HTML_PRE_TAG_NAME : 
 				display = Display.block;
 				whiteSpace = WhiteSpace.pre;
 				fontFamily = ["monospace"];
 				
-			case "code" :
+			case HTMLConstants.HTML_CODE_TAG_NAME :
 				fontFamily = ["monospace"];
 				
-			case "i", "cite", "em", "var" :
+			case HTMLConstants.HTML_I_TAG_NAME,
+			HTMLConstants.HTML_CITE_TAG_NAME,
+			HTMLConstants.HTML_EM_TAG_NAME,
+			HTMLConstants.HTML_VAR_TAG_NAME :
 				fontStyle = FontStyle.italic;
 				
-			case "input" : 
+			case HTMLConstants.HTML_INPUT_TAG_NAME : 
 				display = inlineBlock;
 				
-			case "blockquote" : 
+			case HTMLConstants.HTML_BLOCKQUOTE_TAG_NAME : 
 				display = block;
 				marginTop = marginBottom = Margin.length(em(1.12));
 				marginLeft = marginRight = Margin.length(px(40));
 				
-			case "strong" : 
+			case HTMLConstants.HTML_STRONG_TAG_NAME : 
 				fontWeight = FontWeight.bolder;
 				
-			case "big" : 
+			case HTMLConstants.HTML_BIG_TAG_NAME : 
 				fontSize = FontSize.length(em(1.17));
 				
-			case "small" :
+			case HTMLConstants.HTML_SMALL_TAG_NAME :
 				fontSize = FontSize.length(em(0.83));
 				
-			case "sub" : 
+			case HTMLConstants.HTML_SUB_TAG_NAME : 
 				fontSize = FontSize.length(em(0.83));
 				verticalAlign = VerticalAlign.sub;
 				
-			case "sup" :
+			case HTMLConstants.HTML_SUP_TAG_NAME :
 				fontSize = FontSize.length(em(0.83));
 				verticalAlign = VerticalAlign.cssSuper;
 		}
