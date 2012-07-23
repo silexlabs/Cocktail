@@ -11,44 +11,69 @@ import flash.display.BitmapData;
 import flash.display.Sprite;
 
 /**
- * ...
+ * The flash implementation of the graphics context. Use native
+ * flash Sprite and Bitmap
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class GraphicsContext extends AbstractGraphicsContext
 {
+	/**
+	 * The native flash BitmapData
+	 */
 	private var _nativeBitmap:Bitmap;
 	
+	/**
+	 * The native flash Sprite, used a native
+	 * layer
+	 */
 	private var _nativeLayer:Sprite;
 	
+	/**
+	 * A container for the children layer of
+	 * this GraphicContext. A container is necessary
+	 * so that tha native Bitmap is always below the children
+	 * layer
+	 */
 	private var _childrenNativeLayer:Sprite;
 	
+	/**
+	 * the current width of the BitmapData
+	 */
 	private var _width:Int;
 	
+	/**
+	 * the current height of the BitmapData
+	 */
 	private var _height:Int;
 	
+	/**
+	 * class constructor
+	 */
 	public function new(nativeLayer:NativeElement = null) 
 	{
 		super();
 		
+		//create a new Sprite if no sprite is provided
 		if (nativeLayer == null)
 		{
 			nativeLayer = new Sprite();
 		}
-		trace(nativeLayer);
+		
 		_nativeLayer = cast(nativeLayer);
-		
 		_childrenNativeLayer = new Sprite();
-		
 		_nativeBitmap = new Bitmap(new BitmapData(1,1, true, 0x00000000));
-		
 		_width = 0;
 		_height = 0;
 		
+		//build native disply list
 		_nativeLayer.addChild(_nativeBitmap);
 		_nativeLayer.addChild(_childrenNativeLayer);
 	}
 	
+	/**
+	 * Create new BitmapData when the size of the window changes
+	 */
 	override public function initBitmapData(width:Int, height:Int):Void
 	{
 		_width = width;
@@ -58,6 +83,10 @@ class GraphicsContext extends AbstractGraphicsContext
 		_nativeBitmap.bitmapData = new BitmapData(width, height, true, 0x00000000);
 	}
 	
+	/**
+	 * clear the BitmapData by filling it with
+	 * transparent black
+	 */
 	override public function clear():Void
 	{
 		_nativeBitmap.bitmapData.fillRect(new flash.geom.Rectangle(0, 0, _width, _height), 0x00000000);
@@ -67,21 +96,23 @@ class GraphicsContext extends AbstractGraphicsContext
 	// OVERRIDEN PUBLIC METHODS
 	////////////////////////////////
 	
+	/**
+	 * When a child GraphicContext is added, also add the children native flash Sprite
+	 */
 	override public function appendChild(newChild:AbstractGraphicsContext):AbstractGraphicsContext
 	{
 		super.appendChild(newChild);
-		
 		_childrenNativeLayer.addChild(newChild.nativeLayer);
-		
 		return newChild;
 	}
 	
+	/**
+	 * Also remove the children native flash Sprite
+	 */
 	override public function removeChild(oldChild:AbstractGraphicsContext):AbstractGraphicsContext
 	{
 		super.removeChild(oldChild);
-	
 		_childrenNativeLayer.removeChild(oldChild.nativeLayer);
-		
 		return oldChild;
 	}
 	
@@ -140,8 +171,6 @@ class GraphicsContext extends AbstractGraphicsContext
 	 */
 	override public function fillRect(rect:RectangleData, color:ColorData):Void
 	{
-		trace("fillRect : " + rect);
-		trace(color);
 		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(rect.x, rect.y, rect.width, rect.height);
 
 		var argbColor:Int = color.color;

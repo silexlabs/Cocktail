@@ -339,7 +339,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * Render the scrollbars of this ElementRenderer if needed, only
 	 * apply to BlockBoxElementRenderer
 	 */
-	public function renderScrollBars(graphicContext:GraphicsContext):Void
+	public function renderScrollBars(graphicContext:GraphicsContext, windowWidth:Int, windowHeight:Int):Void
 	{
 		//abstract
 	}

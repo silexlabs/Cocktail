@@ -291,16 +291,16 @@ class BlockBoxRenderer extends ScrollableRenderer
 	/**
 	 * Render the scrollbars of this BlockBoxRenderer if needed
 	 */
-	override public function renderScrollBars(graphicContext:GraphicsContext):Void
+	override public function renderScrollBars(graphicContext:GraphicsContext, windowWidth:Int, windowHeight:Int):Void
 	{
 		if (_horizontalScrollBar != null)
 		{
-			_horizontalScrollBar.elementRenderer.layerRenderer.render(graphicContext);
+			_horizontalScrollBar.elementRenderer.layerRenderer.render(graphicContext, windowWidth, windowHeight );
 		}
 		
 		if (_verticalScrollBar != null)
 		{
-			_verticalScrollBar.elementRenderer.layerRenderer.render(graphicContext);
+			_verticalScrollBar.elementRenderer.layerRenderer.render(graphicContext, windowWidth, windowHeight);
 		}
 	}
 	

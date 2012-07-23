@@ -81,6 +81,17 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	public var graphicsContext(default, null):GraphicsContext;
 	
 	/**
+	 * Store the current width of the window. Used to check if the window
+	 * changed size in between renderings
+	 */
+	private var _windowWidth:Int;
+	
+	/**
+	 * Same as windowWidth for height
+	 */
+	private var _windowHeight:Int;
+	
+	/**
 	 * class constructor. init class attributes
 	 */
 	public function new(rootElementRenderer:ElementRenderer) 
@@ -93,10 +104,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		_positiveZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		_negativeZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		
-		trace("new layer");
-		
 		graphicsContext = new GraphicsContext();
-		graphicsContext.initBitmapData(2000, 1500);
+		
+		_windowWidth = 0;
+		_windowHeight = 0;
 	}
 	
 	/////////////////////////////////
@@ -182,9 +193,20 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 * @param	parentGraphicsContext the graphics context of the parent
 	 * LayerRenderer onto which the graphics context of this LayerRenderer
 	 * is painted
+	 * @param windowWidth the current width of the window
+	 * @param windowHeight the current height of the window
 	 */
-	public function render(parentGraphicsContext:GraphicsContext):Void
+	public function render(parentGraphicsContext:GraphicsContext, windowWidth:Int, windowHeight:Int ):Void
 	{
+		//update the dimension of the bitmap data if the window size changed
+		//since last rendering
+		if (windowWidth != _windowWidth || windowHeight != _windowHeight)
+		{
+			graphicsContext.initBitmapData(windowWidth, windowHeight);
+			_windowWidth = windowWidth;
+			_windowHeight = windowHeight;
+		}
+		
 		//reset the bitmap
 		graphicsContext.clear();
 		
@@ -192,7 +214,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//negative to least negative
 		for (i in 0..._negativeZIndexChildLayerRenderers.length)
 		{
-			_negativeZIndexChildLayerRenderers[i].render(graphicsContext);
+			_negativeZIndexChildLayerRenderers[i].render(graphicsContext, windowWidth, windowHeight);
 		}
 		
 		//render the rootElementRenderer itself which will also
@@ -212,7 +234,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				//check if element is not a scrollbar as they are supposed to be rendered last
 				if (_zeroAndAutoZIndexChildElementRenderers[i].isScrollBar() == false)
 				{
-					_zeroAndAutoZIndexChildElementRenderers[i].layerRenderer.render(graphicsContext);
+					_zeroAndAutoZIndexChildElementRenderers[i].layerRenderer.render(graphicsContext, windowWidth, windowHeight);
 				}
 			}
 			else
@@ -225,13 +247,12 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//most positive
 		for (i in 0..._positiveZIndexChildLayerRenderers.length)
 		{
-			trace("render pos child");
-			_positiveZIndexChildLayerRenderers[i].render(graphicsContext);
+			_positiveZIndexChildLayerRenderers[i].render(graphicsContext, windowWidth, windowHeight);
 		}
 		
 		//scrollbars are always rendered last as they should always the top
 		//element of their layer
-		rootElementRenderer.renderScrollBars(graphicsContext);
+		rootElementRenderer.renderScrollBars(graphicsContext, windowWidth, windowHeight);
 		
 		//paint the LayerRenderer's graphics context onto its parent's
 		parentGraphicsContext.copyPixels(graphicsContext.nativeBitmapData, { x:0.0, y:0.0, width:2000.0, height:1500.0 }, { x:0.0, y:0.0 } );

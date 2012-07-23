@@ -167,10 +167,10 @@ class HTMLDocument extends Document
 	private var _documentNeedsRendering:Bool;
 	
 	/**
-	 * Wheter the drawing manager needs to be re-instantiated
+	 * Wheter the drawing surface size needs to be updated
 	 * after the viewport changed size
 	 */
-	private var _drawingManagerInvalidated:Bool;
+	private var _graphicsContextInvalidated:Bool;
 	
 	/**
 	 * This class is in charge of keeping track of the
@@ -212,7 +212,6 @@ class HTMLDocument extends Document
 		//init the document graphics context and attach the graphics context of the 
 		//root LayerRenderer to it, so that it can be painted
 		_documentGraphicsContext = new GraphicsContext(_window.platform.nativeWindow.getInitialNativeLayer());
-		_documentGraphicsContext.initBitmapData(_window.innerWidth, _window.innerHeight);
 		_documentGraphicsContext.appendChild(documentElement.elementRenderer.layerRenderer.graphicsContext);
 		
 		_shouldDispatchClickOnNextMouseUp = false;
@@ -220,7 +219,7 @@ class HTMLDocument extends Document
 		_invalidationScheduled = false;
 		_documentNeedsLayout = true;
 		_documentNeedsRendering = true;
-		_drawingManagerInvalidated = false;
+		_graphicsContextInvalidated = true;
 	}
 	
 	/**
@@ -447,7 +446,7 @@ class HTMLDocument extends Document
 	public function onPlatformResizeEvent(event:UIEvent):Void
 	{
 		documentElement.invalidate(InvalidationReason.windowResize);
-		_drawingManagerInvalidated = true;
+		_graphicsContextInvalidated = true;
 	}
 	
 	/**
@@ -710,15 +709,15 @@ class HTMLDocument extends Document
 	private function startRendering():Void
 	{
 		//update the size of the document bitmap if necessary
-		if (_drawingManagerInvalidated == true)
+		if (_graphicsContextInvalidated == true)
 		{
 			_documentGraphicsContext.initBitmapData(_window.innerWidth, _window.innerHeight);
-			_drawingManagerInvalidated = false;
+			_graphicsContextInvalidated = false;
 		}
 		
 		//start the rendering at the root layer renderer
 		_documentGraphicsContext.clear();
-		documentElement.elementRenderer.layerRenderer.render(_documentGraphicsContext);
+		documentElement.elementRenderer.layerRenderer.render(_documentGraphicsContext, _window.innerWidth, _window.innerHeight);
 	}
 	
 	/**

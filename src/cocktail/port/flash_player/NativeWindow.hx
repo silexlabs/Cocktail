@@ -34,12 +34,6 @@ class NativeWindow extends AbstractNativeWindow
 	private static inline var ALLOW_FULLSCREEN_ATTRIBUTE:String = "allowsFullScreen";
 	
 	/**
-	 * The bitmap onto which the document's
-	 * bitmap data will be drawn
-	 */
-	private var _documentBitmap:Bitmap;
-	
-	/**
 	 * class constructor
 	 */
 	public function new() 
@@ -49,12 +43,6 @@ class NativeWindow extends AbstractNativeWindow
 		//in Flash, the Stage is always defined as no scale as the transformations
 		//will be managed by Cocktail
 		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
-		
-		//attachthe document's bitmap data to the stage
-		//so that they are displyed on screen
-		_documentBitmap = new Bitmap();
-		
-		Lib.current.addChild(_documentBitmap);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

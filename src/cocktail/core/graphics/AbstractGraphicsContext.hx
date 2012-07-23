@@ -1,3 +1,10 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktail.core.graphics;
 
 import cocktail.core.geom.Matrix;
@@ -8,46 +15,73 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.unit.UnitData;
 
 /**
- * ...
+ * Each LayerRenderer has a reference to a graphics context.
+ * Graphics context are stored as a tree of GraphicContext object.
+ * 
+ * Each GraphicContext has a bitmap surface which can be painted
+ * onto. They also have a reference to a native object representing
+ * the concept of a layer in the target platform. For instance, for
+ * the Flash platform, a layer can be assimilated to a Sprite.
+ * 
+ * They are the closest abstraction in Cocktail from the native
+ * display list of the underlying platform. The tree of GraphicContext
+ * builds a tree of native layer from the target platform.
+ * 
+ * We could have had just one GraphicContext for the whole document and
+ * paint onto it, but it seems like a better approach for platform integration
+ * to instead leverage the native display list of the platform.
+ * 
+ * For instance, for a video it allows the underlying platform to take care of the rendering,
+ * the video being given in its own layer. With just one GraphicContext, the video would have need
+ * to be painted onto it for each frame.
+ * 
+ * It also facilitates integration with native platform UI widget which can live on its own native
+ * layer, being composited by the platform, instead of being painted onto a single bitmap.
+ * 
  * @author Yannick DOMINGUEZ
  */
 class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 {
 	/**
-	 * A reference to the nativeElement used
-	 * as drawing surface
-	 * 
-	 * TODO 1 : rename NativeElement into NativeLayer
+	 * A reference to a native layer
 	 */
 	public var nativeLayer(get_nativeLayer, null):NativeElement;
 	
 	/**
-	 * A reference to the bitmap data of the drawing manager, wrapped
-	 * in an implementation specific class
+	 * A reference to a native bitmap data object of the 
+	 * underlying platform
 	 */
 	public var nativeBitmapData(get_nativeBitmapData, null):NativeBitmapData;
 
+	/**
+	 * class constructor
+	 * @param	nativeLayer the reference to the nativeLayer can be passed
+	 * as parameter, else it is instantiated in the constructor
+	 */
 	public function new(nativeLayer:NativeElement = null)
 	{
 		super();
 	}
 	
-	public function initBitmapData(width:Int, height:Int):Void
-	{
-		
-	}
-	
 	/**
-	 * Clears the current shape and line of the graphic HTMLElement.
+	 * Init the bitmap data with a given size
 	 */
-	public function clear():Void
+	public function initBitmapData(width:Int, height:Int):Void
 	{
 		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// High level pixel manipulation method
+	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Clears the bitmap data
+	 */
+	public function clear():Void
+	{
+		//abstract
+	}
 	
 	/**
 	 * Draw bitmap data onto the bitmap surface. Alpha is preserved 
