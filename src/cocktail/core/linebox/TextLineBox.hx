@@ -13,6 +13,7 @@ import cocktail.core.style.ComputedStyle;
 import cocktail.Lib;
 import cocktail.core.font.FontManager;
 import cocktail.port.DrawingManager;
+import cocktail.port.GraphicsContext;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
@@ -103,7 +104,7 @@ class TextLineBox extends LineBox
 	 * TODO 2 : should use globalBounds instead, but global bounds is
 	 * used itself to determine the bounds of the text
 	 */
-	override public function render(graphicContext:DrawingManager):Void
+	override public function render(graphicContext:GraphicsContext):Void
 	{
 		var rect:RectangleData = {
 			x:0.0,

@@ -8,6 +8,7 @@
 package cocktail.port.air;
 
 import cocktail.port.DrawingManager;
+import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.port.platform.input.AbstractNativeTextInput;
 import flash.display.DisplayObjectContainer;
@@ -70,7 +71,7 @@ class NativeTextInput extends AbstractNativeTextInput
 	 * It is not part of the display list and is always rendered on top
 	 * of it
 	 */
-	override public function attach(graphicContext:DrawingManager):Void
+	override public function attach(graphicContext:GraphicsContext):Void
 	{
 		_stageText.stage = Lib.current.stage;
 	}

@@ -15,6 +15,7 @@ import cocktail.core.style.ComputedStyle;
 import cocktail.core.window.Window;
 import cocktail.Lib;
 import cocktail.port.DrawingManager;
+import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.style.computer.BackgroundStylesComputer;
@@ -66,7 +67,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 * 
 	 * TODO 2 : code clean up
 	 */
-	override public function render(parentGraphicContext:DrawingManager):Void
+	override public function render(parentGraphicContext:GraphicsContext):Void
 	{
 
 		renderSelf(parentGraphicContext);
@@ -83,7 +84,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function renderSelf(graphicContext:DrawingManager):Void
+	private function renderSelf(graphicContext:GraphicsContext):Void
 	{
 		renderBackground(graphicContext);
 	}
@@ -91,7 +92,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	/**
 	 * Render the background of the box using the provided graphic context
 	 */
-	private function renderBackground(graphicContext:DrawingManager):Void
+	private function renderBackground(graphicContext:GraphicsContext):Void
 	{
 
 		//compute the background styles which can be computed at this time,
@@ -110,7 +111,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	/**
 	 * Render the children of the box
 	 */
-	private function renderChildren(graphicContext:DrawingManager):Void
+	private function renderChildren(graphicContext:GraphicsContext):Void
 	{
 		//abstract
 	}
@@ -119,7 +120,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 * Apply the computed visual effect
 	 * using the graphic context
 	 */
-	private function applyVisualEffects(graphicContext:DrawingManager):Void
+	private function applyVisualEffects(graphicContext:GraphicsContext):Void
 	{
 		//when all the dimensions of the ElementRenderer are known, compute the 
 		//visual effects to apply (visibility, opacity, transform, transition)
@@ -145,7 +146,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 * transform and transform-origin style and the relative
 	 * offset if the element is relative positioned
 	 */
-	private function applyTransformationMatrix(graphicContext:DrawingManager):Void
+	private function applyTransformationMatrix(graphicContext:GraphicsContext):Void
 	{
 		var relativeOffset:PointData = getRelativeOffset();
 		var concatenatedMatrix:Matrix = getConcatenatedMatrix(coreStyle.computedStyle.transform, relativeOffset);
@@ -159,17 +160,17 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//create a native flash matrix with the abstract matrix data
 		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 		//apply the native flash matrix to the native flash DisplayObject
-		graphicContext.nativeElement.transform.matrix = nativeTransformMatrix;
+		graphicContext.nativeLayer.transform.matrix = nativeTransformMatrix;
 		#end
 	}
 	
 	/**
 	 * Apply the computed opacity to the graphic context
 	 */ 
-	private function applyOpacity(graphicContext:DrawingManager):Void
+	private function applyOpacity(graphicContext:GraphicsContext):Void
 	{
 		#if (flash9 || nme)
-		graphicContext.nativeElement.alpha = coreStyle.computedStyle.opacity;
+		graphicContext.nativeLayer.alpha = coreStyle.computedStyle.opacity;
 		#end
 	}
 	
@@ -406,6 +407,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	private function getBackgroundBounds():RectangleData
 	{
+		var globalBounds:RectangleData = get_globalBounds();
+		globalBounds.x -= scrollOffset.x;
+		globalBounds.y -= scrollOffset.y;
 		return globalBounds;
 	}
 	

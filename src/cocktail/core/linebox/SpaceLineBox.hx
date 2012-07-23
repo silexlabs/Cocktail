@@ -12,6 +12,7 @@ import cocktail.core.style.ComputedStyle;
 import cocktail.Lib;
 import cocktail.core.font.FontManager;
 import cocktail.port.DrawingManager;
+import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.font.FontData;
@@ -55,7 +56,7 @@ class SpaceLineBox extends TextLineBox
 	/**
 	 * Spaces don't need to be rendered
 	 */
-	override public function render(graphicContext:DrawingManager):Void
+	override public function render(graphicContext:GraphicsContext):Void
 	{
 		
 	}

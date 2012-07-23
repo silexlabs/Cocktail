@@ -23,6 +23,7 @@ import cocktail.core.style.formatter.InlineFormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 import cocktail.core.geom.GeomData;
+import cocktail.port.GraphicsContext;
 import haxe.Log;
 import cocktail.core.layer.LayerRenderer;
 
@@ -216,7 +217,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 	/**
 	 * Overriden as a BlockBoxRenderer render its children too
 	 */
-	override private function renderChildren(graphicContext:DrawingManager):Void
+	override private function renderChildren(graphicContext:GraphicsContext):Void
 	{
 		super.renderChildren(graphicContext);
 		
@@ -246,7 +247,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 * Render all the LineBoxes of child BlockBoxRenderer which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderLineBoxes(graphicContext:DrawingManager):Void
+	private function renderLineBoxes(graphicContext:GraphicsContext):Void
 	{
 		//retrieve all the line boxes in all of the lines generated in this BlockBoxRenderer
 		var lineBoxes:Array<LineBox> = getChilrenLineBoxes(this, layerRenderer);
@@ -263,7 +264,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 * Render all the replaced children displayed as blocks which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderBlockReplacedChildren(graphicContext:DrawingManager):Void
+	private function renderBlockReplacedChildren(graphicContext:GraphicsContext):Void
 	{
 		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this, layerRenderer);
 		var length:Int = childrenBlockReplaced.length;
@@ -277,7 +278,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 * Render all the BlockBoxRenderer which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderBlockContainerChildren(graphicContext:DrawingManager):Void
+	private function renderBlockContainerChildren(graphicContext:GraphicsContext):Void
 	{
 		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(this, layerRenderer);
 		var length:Int = childrenBlockContainer.length;
@@ -290,7 +291,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 	/**
 	 * Render the scrollbars of this BlockBoxRenderer if needed
 	 */
-	override public function renderScrollBars(graphicContext:DrawingManager):Void
+	override public function renderScrollBars(graphicContext:GraphicsContext):Void
 	{
 		if (_horizontalScrollBar != null)
 		{

@@ -9,6 +9,7 @@ package cocktail.port.platform.input;
 
 import cocktail.core.geom.GeomData;
 import cocktail.port.DrawingManager;
+import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 
 /**
@@ -61,7 +62,7 @@ class AbstractNativeTextInput
 	 * to the rendering tree. How the text input
 	 * is attach varies based on the platform
 	 */
-	public function attach(graphicContext:DrawingManager):Void
+	public function attach(graphicContext:GraphicsContext):Void
 	{
 		//abstract
 	}

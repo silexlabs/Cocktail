@@ -23,6 +23,7 @@ import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.layer.LayerRenderer;
+import cocktail.port.GraphicsContext;
 import haxe.Timer;
 
 
@@ -329,7 +330,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * Render this ElementRenderer using the provided
 	 * graphic context as canvas
 	 */
-	public function render(parentGraphicContext:DrawingManager):Void
+	public function render(parentGraphicContext:GraphicsContext):Void
 	{
 		//abstract
 	}
@@ -338,7 +339,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * Render the scrollbars of this ElementRenderer if needed, only
 	 * apply to BlockBoxElementRenderer
 	 */
-	public function renderScrollBars(graphicContext:DrawingManager):Void
+	public function renderScrollBars(graphicContext:GraphicsContext):Void
 	{
 		//abstract
 	}
@@ -771,10 +772,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			}
 		}
 		//for normal flow children, it is the first block
-		//parent. 
-		//
-		//TODO 1 : what about inline box renderer ? should
-		//return first block or first parent?
+		//parent.
 		else
 		{
 			return getFirstBlockContainer();

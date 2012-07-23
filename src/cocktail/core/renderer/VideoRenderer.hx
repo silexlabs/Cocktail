@@ -13,6 +13,7 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLVideoElement;
 import cocktail.core.resource.ResourceManager;
 import cocktail.port.DrawingManager;
+import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.port.NativeVideo;
@@ -38,13 +39,26 @@ class VideoRenderer extends ImageRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * video always establishes a new stacking context as video rendering
+	 * is typically done outside of classic display lists
+	 */
+	override public function establishesNewStackingContext():Bool
+	{
+		return true;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Render the embedded video asset or the video poster frame.
 	 */
-	override private function renderEmbeddedAsset(graphicContext:DrawingManager)
+	override private function renderEmbeddedAsset(graphicContext:GraphicsContext)
 	{
 		var htmlVideoElement:HTMLVideoElement = cast(domNode);
 		
@@ -58,7 +72,7 @@ class VideoRenderer extends ImageRenderer
 			renderVideo(htmlVideoElement, graphicContext);
 		}
 	}
-		
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -73,7 +87,7 @@ class VideoRenderer extends ImageRenderer
 	 * 
 	 * TODO 3 : alpha of video no longer managed
 	 */
-	private function renderVideo(htmlVideoElement:HTMLVideoElement, graphicContext:DrawingManager):Void
+	private function renderVideo(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext):Void
 	{
 		//get the bounds for the video so that it takes the maximum space and is centered
 		var videoBounds:RectangleData = getAssetBounds(coreStyle.computedStyle.width,
@@ -99,7 +113,7 @@ class VideoRenderer extends ImageRenderer
 	 * Render the poster frame of the video if the video is not
 	 * yet loaded or has not started playing yet
 	 */
-	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:DrawingManager):Void
+	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext):Void
 	{
 		var resource:Resource = ResourceManager.getResource(domNode.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
 

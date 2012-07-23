@@ -9,6 +9,7 @@ package cocktail.core.renderer;
 import cocktail.core.html.HTMLElement;
 import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
+import cocktail.port.GraphicsContext;
 
 /**
  * Base class for embedded element
@@ -31,7 +32,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * overriden to also render the embedded asset, for instance a picture for
 	 * an image renderer
 	 */
-	override private function renderSelf(graphicContext:DrawingManager):Void
+	override private function renderSelf(graphicContext:GraphicsContext):Void
 	{
 		super.renderSelf(graphicContext);
 		renderEmbeddedAsset(graphicContext);
@@ -53,7 +54,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	/**
 	 * Renders an embedded asset using the graphic context as canvas
 	 */
-	private function renderEmbeddedAsset(graphicContext:DrawingManager)
+	private function renderEmbeddedAsset(graphicContext:GraphicsContext)
 	{
 		//abstract
 	}

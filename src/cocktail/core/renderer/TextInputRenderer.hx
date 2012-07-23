@@ -16,6 +16,7 @@ import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
+import cocktail.port.GraphicsContext;
 import cocktail.port.NativeTextInput;
 
 /**
@@ -66,7 +67,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	/**
 	 * Overriden to also render the native text input
 	 */
-	override private function renderEmbeddedAsset(graphicContext:DrawingManager)
+	override private function renderEmbeddedAsset(graphicContext:GraphicsContext)
 	{
 		updateNativeTextInput();
 		//TODO 2 : should create detach() method too ?
@@ -98,8 +99,8 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		//set the position and size of the native text input, relative
 		//to the Window
 		_nativeTextInput.viewport = {
-			x: globalBounds.x,
-			y: globalBounds.y + globalBounds.height / 2 - coreStyle.computedStyle.fontSize + coreStyle.fontMetrics.ascent / 2,
+			x: globalBounds.x - scrollOffset.x,
+			y: globalBounds.y + globalBounds.height / 2 - coreStyle.computedStyle.fontSize + coreStyle.fontMetrics.ascent / 2 - scrollOffset.y,
 			width: globalBounds.width,
 			height: globalBounds.height
 		}

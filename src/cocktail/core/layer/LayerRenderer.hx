@@ -16,6 +16,7 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
 import cocktail.port.DrawingManager;
+import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import haxe.Log;
@@ -77,7 +78,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 * The graphics context onto which all the ElementRenderers
 	 * belonging to this LayerRenderer are painted onto
 	 */
-	private var _graphicsContext:DrawingManager;
+	public var graphicsContext(default, null):GraphicsContext;
 	
 	/**
 	 * class constructor. init class attributes
@@ -87,12 +88,15 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		super();
 		
 		this.rootElementRenderer = rootElementRenderer;
-		
+	
 		_zeroAndAutoZIndexChildElementRenderers = new Array<ElementRenderer>();
 		_positiveZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		_negativeZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		
-		_graphicsContext = new DrawingManager(2000, 1500);
+		trace("new layer");
+		
+		graphicsContext = new GraphicsContext();
+		graphicsContext.initBitmapData(2000, 1500);
 	}
 	
 	/////////////////////////////////
@@ -109,6 +113,8 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	{
 		super.appendChild(newChild);
 
+		graphicsContext.appendChild(newChild.graphicsContext);
+		
 		//check the computed z-index of the ElementRenderer which
 		//instantiated the child LayerRenderer
 		switch(newChild.rootElementRenderer.coreStyle.computedStyle.zIndex)
@@ -157,6 +163,9 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			}
 		}
 		
+		
+		graphicsContext.removeChild(oldChild.graphicsContext);
+		
 		super.removeChild(oldChild);
 	
 		return oldChild;
@@ -174,21 +183,21 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 * LayerRenderer onto which the graphics context of this LayerRenderer
 	 * is painted
 	 */
-	public function render(parentGraphicsContext:DrawingManager):Void
+	public function render(parentGraphicsContext:GraphicsContext):Void
 	{
 		//reset the bitmap
-		_graphicsContext.clear();
+		graphicsContext.clear();
 		
 		//render first negative z-index child LayerRenderer from most
 		//negative to least negative
 		for (i in 0..._negativeZIndexChildLayerRenderers.length)
 		{
-			_negativeZIndexChildLayerRenderers[i].render(_graphicsContext);
+			_negativeZIndexChildLayerRenderers[i].render(graphicsContext);
 		}
 		
 		//render the rootElementRenderer itself which will also
 		//render all ElementRenderer belonging to this LayerRenderer
-		rootElementRenderer.render(_graphicsContext);
+		rootElementRenderer.render(graphicsContext);
 		
 		//render zero and auto z-index ElementRenderer
 		for (i in 0..._zeroAndAutoZIndexChildElementRenderers.length)
@@ -203,12 +212,12 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				//check if element is not a scrollbar as they are supposed to be rendered last
 				if (_zeroAndAutoZIndexChildElementRenderers[i].isScrollBar() == false)
 				{
-					_zeroAndAutoZIndexChildElementRenderers[i].layerRenderer.render(_graphicsContext);
+					_zeroAndAutoZIndexChildElementRenderers[i].layerRenderer.render(graphicsContext);
 				}
 			}
 			else
 			{
-				_zeroAndAutoZIndexChildElementRenderers[i].render(_graphicsContext);
+				_zeroAndAutoZIndexChildElementRenderers[i].render(graphicsContext);
 			}
 		}
 		
@@ -216,15 +225,16 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//most positive
 		for (i in 0..._positiveZIndexChildLayerRenderers.length)
 		{
-			_positiveZIndexChildLayerRenderers[i].render(_graphicsContext);
+			trace("render pos child");
+			_positiveZIndexChildLayerRenderers[i].render(graphicsContext);
 		}
 		
 		//scrollbars are always rendered last as they should always the top
 		//element of their layer
-		rootElementRenderer.renderScrollBars(_graphicsContext);
+		rootElementRenderer.renderScrollBars(graphicsContext);
 		
 		//paint the LayerRenderer's graphics context onto its parent's
-		parentGraphicsContext.copyPixels(_graphicsContext.nativeBitmapData, { x:0.0, y:0.0, width:2000.0, height:1500.0 }, { x:0.0, y:0.0 } );
+		parentGraphicsContext.copyPixels(graphicsContext.nativeBitmapData, { x:0.0, y:0.0, width:2000.0, height:1500.0 }, { x:0.0, y:0.0 } );
 	}
 	
 	/////////////////////////////////

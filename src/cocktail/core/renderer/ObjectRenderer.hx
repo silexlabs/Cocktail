@@ -16,6 +16,7 @@ import cocktail.core.html.HTMLObjectElement;
 import cocktail.core.resource.ImageLoader;
 import cocktail.core.resource.ResourceManager;
 import cocktail.port.DrawingManager;
+import cocktail.port.GraphicsContext;
 import cocktail.port.Resource;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
@@ -50,10 +51,10 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	/**
 	 * When rendered, attach the plugin object to the native display list
 	 */
-	override private function renderEmbeddedAsset(graphicContext:DrawingManager):Void
+	override private function renderEmbeddedAsset(graphicContext:GraphicsContext):Void
 	{
 		#if (flash9 || nme)
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext.nativeElement);
+		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext.nativeLayer);
 	
 		var htmlObjectElement:HTMLObjectElement = cast(domNode);
 		var asset:flash.display.Loader = cast(htmlObjectElement.embeddedAsset);

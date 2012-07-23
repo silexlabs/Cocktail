@@ -27,8 +27,6 @@ import haxe.Log;
  * 
  * TODO 2 : implement disabled scrollbar when maxScroll is smaller than scroll height / width
  * 
- * TODO 3 : reproducing Windows look and feel, is this what we want ?
- * 
  * @author Yannick DOMINGUEZ
  */
 class ScrollBar extends HTMLElement

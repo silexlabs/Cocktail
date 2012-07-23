@@ -9,6 +9,7 @@ package cocktail.port.platform.nativeMedia;
 
 import cocktail.core.event.Event;
 import cocktail.port.DrawingManager;
+import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 
@@ -141,7 +142,7 @@ class NativeMedia
 	 * that it is displayed at the dimension and position
 	 * defined by its viewport
 	 */
-	public function attach(graphicsContext:DrawingManager):Void
+	public function attach(graphicsContext:GraphicsContext):Void
 	{
 		//abstract
 	}

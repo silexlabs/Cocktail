@@ -79,9 +79,9 @@ class NativeTextInput extends AbstractNativeTextInput
 	 * 
 	 * TODO 1 : graphicsContext no longer a DisplayObjectContainer
 	 */
-	override public function attach(graphicContext:DrawingManager):Void
+	override public function attach(graphicContext:GraphicsContext):Void
 	{
-		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext);
+		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext.nativeLayer);
 		//TODO 3 : in NME, seems to make text field lose focus
 		containerGraphicContext.addChild(_textField);
 	}

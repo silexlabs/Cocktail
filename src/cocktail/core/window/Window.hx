@@ -115,16 +115,6 @@ class Window extends EventCallback
 		platform.nativeWindow.open(url, name);
 	}
 	
-	/**
-	 * Make the platform display the document's bitmap data to the screen
-	 * using platform specific API
-	 */
-	public function displayOnScreen(nativeBitmapData:NativeBitmapData):Void
-	{
-		platform.nativeWindow.displayOnScreen(nativeBitmapData);
-	}
-	
-		
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// FULLSCREEN CALLBACKS
 	//////////////////////////////////////////////////////////////////////////////////////////

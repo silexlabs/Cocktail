@@ -104,12 +104,11 @@ class NativeWindow extends AbstractNativeWindow
 	}
 	
 	/**
-	 * Set the given bitmap data as the document's bitmap data so that the document
-	 * is displayed on the screen
+	 * Return the flash Stage
 	 */
-	override public function displayOnScreen(nativeBitmapData:NativeBitmapData):Void
+	override public function getInitialNativeLayer():NativeElement
 	{
-		_documentBitmap.bitmapData = nativeBitmapData;
+		return flash.Lib.current;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -13,6 +13,7 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.resource.ResourceManager;
 import cocktail.port.DrawingManager;
+import cocktail.port.GraphicsContext;
 import cocktail.port.Resource;
 import cocktail.port.NativeElement;
 import cocktail.core.style.StyleData;
@@ -63,7 +64,7 @@ class BackgroundManager
 	 * @param	style
 	 * @return
 	 */
-	public static function render(graphicContext:DrawingManager, backgroundBox:RectangleData, style:CoreStyle, elementRenderer:ElementRenderer):Void
+	public static function render(graphicContext:GraphicsContext, backgroundBox:RectangleData, style:CoreStyle, elementRenderer:ElementRenderer):Void
 	{
 		//no need to draw the background if it has no width or height
 		if (Math.round(backgroundBox.width) <= 0 || Math.round(backgroundBox.height) <= 0 )
@@ -147,7 +148,7 @@ class BackgroundManager
 	 * @param	backgroundImage
 	 * @return
 	 */
-	private static function drawBackgroundImage(graphicContext:DrawingManager, imageDeclaration:ImageDeclarationData, style:CoreStyle, backgroundBox:RectangleData,
+	private static function drawBackgroundImage(graphicContext:GraphicsContext, imageDeclaration:ImageDeclarationData, style:CoreStyle, backgroundBox:RectangleData,
 	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
 	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage, elementRenderer:ElementRenderer):Void
 	{
@@ -219,7 +220,7 @@ class BackgroundManager
 	 * @param	computedBackgroundPosition
 	 * @param	backgroundRepeat
 	 */
-		public static function doDrawBackgroundImage(graphicContext:DrawingManager, resource:Resource,
+		public static function doDrawBackgroundImage(graphicContext:GraphicsContext, resource:Resource,
 		backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, intrinsicWidth:Float,
 		intrinsicHeight:Float, intrinsicRatio:Float, computedBackgroundSize:DimensionData,
 		computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeat):Void
@@ -356,7 +357,7 @@ class BackgroundManager
 	 * @param	backgroundImage
 	 * @return
 	 */
-	private static function drawBackgroundGradient(graphicContext:DrawingManager, style:CoreStyle, gradientValue:GradientValue, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
+	private static function drawBackgroundGradient(graphicContext:GraphicsContext, style:CoreStyle, gradientValue:GradientValue, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
 	backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin, backgroundClip:BackgroundClip,
 	backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):Void
 	{

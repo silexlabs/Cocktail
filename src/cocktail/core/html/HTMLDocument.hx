@@ -32,6 +32,7 @@ import cocktail.core.event.FocusEvent;
 import cocktail.core.window.Window;
 import cocktail.Lib;
 import cocktail.port.DrawingManager;
+import cocktail.port.flash_player.GraphicsContext;
 import haxe.Log;
 import haxe.Timer;
 import cocktail.core.style.StyleData;
@@ -184,7 +185,7 @@ class HTMLDocument extends Document
 	 * before being displayed to 
 	 * the screen
 	 */
-	private var _mainDrawingManager:DrawingManager;
+	private var _documentGraphicsContext:GraphicsContext;
 	
 	/**
 	 * A ref to the global Window object
@@ -200,13 +201,19 @@ class HTMLDocument extends Document
 		_window = window;
 		_focusManager = new FocusManager();
 		
-		resetDrawingManager();
+		
 		
 		_multiTouchManager = new MultiTouchManager();
 		
 		documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
 		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
 		documentElement.appendChild(body);
+		
+		//init the document graphics context and attach the graphics context of the 
+		//root LayerRenderer to it, so that it can be painted
+		_documentGraphicsContext = new GraphicsContext(_window.platform.nativeWindow.getInitialNativeLayer());
+		_documentGraphicsContext.initBitmapData(_window.innerWidth, _window.innerHeight);
+		_documentGraphicsContext.appendChild(documentElement.elementRenderer.layerRenderer.graphicsContext);
 		
 		_shouldDispatchClickOnNextMouseUp = false;
 				
@@ -400,7 +407,7 @@ class HTMLDocument extends Document
 	{
 		activeElement.dispatchEvent(keyboardEvent);
 
-		//TODO 4 : should this logic go into HTMLElement ? or is it application/embedder level ?
+		//TODO 4 : should this logic go into HTMLElement ? or is it application/embedder level ? 
 		switch (Std.parseInt(keyboardEvent.keyChar))
 		{
 			case TAB_KEY_CODE:
@@ -702,17 +709,16 @@ class HTMLDocument extends Document
 	 */ 
 	private function startRendering():Void
 	{
-		//re-instantiate the drawing manager if needed
+		//update the size of the document bitmap if necessary
 		if (_drawingManagerInvalidated == true)
 		{
-			resetDrawingManager();
+			_documentGraphicsContext.initBitmapData(_window.innerWidth, _window.innerHeight);
 			_drawingManagerInvalidated = false;
 		}
 		
 		//start the rendering at the root layer renderer
-		_mainDrawingManager.clear();
-		documentElement.elementRenderer.layerRenderer.render(_mainDrawingManager);
-		_window.displayOnScreen(_mainDrawingManager.nativeBitmapData);
+		_documentGraphicsContext.clear();
+		documentElement.elementRenderer.layerRenderer.render(_documentGraphicsContext);
 	}
 	
 	/**
@@ -805,15 +811,6 @@ class HTMLDocument extends Document
 		}
 		
 		return htmlElement;
-	}
-	
-	/**
-	 * Init/reset the main drawing manager on startup
-	 * or after the size of the viewport changes
-	 */
-	private function resetDrawingManager():Void
-	{
-		_mainDrawingManager = new DrawingManager(_window.innerWidth, _window.innerHeight);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -16,6 +16,7 @@ import cocktail.core.html.HTMLImageElement;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.style.ComputedStyle;
 import cocktail.port.DrawingManager;
+import cocktail.port.flash_player.GraphicsContext;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.Resource;
 import cocktail.port.NativeElement;
@@ -45,7 +46,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	 * When rendered, renders the embedded picture using the
 	 * graphicContext as canvas
 	 */
-	override private function renderEmbeddedAsset(graphicContext:DrawingManager):Void
+	override private function renderEmbeddedAsset(graphicContext:GraphicsContext):Void
 	{
 		var resource:Resource = ResourceManager.getResource(domNode.getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME));
 
@@ -75,7 +76,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	/**
 	 * Actually paint the resource's bitmap data on the graphic context.
 	 */
-	private function paintResource(graphicContext:DrawingManager, nativeBitmapData:NativeBitmapData, bounds:RectangleData, intrinsicWidth:Float, intrinsicHeight:Float):Void
+	private function paintResource(graphicContext:GraphicsContext, nativeBitmapData:NativeBitmapData, bounds:RectangleData, intrinsicWidth:Float, intrinsicHeight:Float):Void
 	{
 		//check if a tranformaton should be applied to the picture, for instance if the picture
 		//should be rescaled when painted, as if it does not, it can use a faster drawing

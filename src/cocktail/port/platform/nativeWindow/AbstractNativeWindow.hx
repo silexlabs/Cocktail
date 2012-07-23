@@ -9,6 +9,7 @@ package cocktail.port.platform.nativeWindow;
 import cocktail.core.event.Event;
 import cocktail.core.event.UIEvent;
 import cocktail.port.NativeBitmapData;
+import cocktail.port.NativeElement;
 
 
 /**
@@ -106,13 +107,12 @@ class AbstractNativeWindow
 	}
 	
 	/**
-	 * Display the given bitmap data on the screen using
-	 * runtime specifc API's
-	 * @param	nativeBitmapData
+	 * Return the root native element of the target native
+	 * display list
 	 */
-	public function displayOnScreen(nativeBitmapData:NativeBitmapData):Void
+	public function getInitialNativeLayer():NativeElement
 	{
-		//abstract
+		return null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

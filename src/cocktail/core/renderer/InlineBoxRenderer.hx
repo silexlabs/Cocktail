@@ -11,6 +11,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.linebox.LineBox;
 import cocktail.port.DrawingManager;
+import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.style.CoreStyle;
 import haxe.Log;
@@ -44,7 +45,7 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 * Overriden as InlineBoxRenderer doesn't render a background of his own, it is its
 	 * generatd line boxes which render their own backgrounds
 	 */
-	override private function renderBackground(graphicContext:DrawingManager):Void
+	override private function renderBackground(graphicContext:GraphicsContext):Void
 	{
 		
 	}
@@ -53,7 +54,7 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 * Overriden as rendering an inline box renderer consist in rendering all of the 
 	 * line boxes it generated
 	 */
-	override private function renderChildren(graphicContext:DrawingManager):Void
+	override private function renderChildren(graphicContext:GraphicsContext):Void
 	{
 		super.renderChildren(graphicContext);
 		
@@ -69,7 +70,7 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	/**
 	 * Actually render the child line boxes
 	 */
-	private function renderChildLineBoxes(graphicContext:DrawingManager):Void
+	private function renderChildLineBoxes(graphicContext:GraphicsContext):Void
 	{
 		var length:Int = lineBoxes.length;
 		

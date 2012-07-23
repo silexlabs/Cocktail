@@ -83,8 +83,6 @@ class FormattingContext
 		var y:Float = _formattingContextRoot.coreStyle.computedStyle.paddingTop;
 		
 		_formattingContextData = {
-			//TODO 4 : x and y still used by inline formatting context, bu shouldn't be necessary anymore,
-			//use instead local var in recursive method, like for block formatting context
 			x : x,
 			y : y,
 			height : 0.0,
