@@ -8,6 +8,7 @@ import flash.display.Bitmap;
 import cocktail.core.geom.GeomData;
 import cocktail.core.unit.UnitData;
 import flash.display.BitmapData;
+import flash.display.PixelSnapping;
 import flash.display.Sprite;
 
 /**
@@ -62,7 +63,7 @@ class GraphicsContext extends AbstractGraphicsContext
 		
 		_nativeLayer = cast(nativeLayer);
 		_childrenNativeLayer = new Sprite();
-		_nativeBitmap = new Bitmap(new BitmapData(1,1, true, 0x00000000));
+		_nativeBitmap = new Bitmap(new BitmapData(1,1, true, 0x00000000), PixelSnapping.AUTO, true);
 		_width = 0;
 		_height = 0;
 		
@@ -95,6 +96,16 @@ class GraphicsContext extends AbstractGraphicsContext
 	/////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	////////////////////////////////
+	
+	/**
+	 * Apply a native flash trnasformation matrix to the 
+	 * native layer Sprite
+	 */
+	override public function transform(matrix:Matrix):Void
+	{
+		var matrixData:MatrixData = matrix.data;
+		_nativeLayer.transform.matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
+	}
 	
 	/**
 	 * When a child GraphicContext is added, also add the children native flash Sprite

@@ -69,14 +69,8 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function render(parentGraphicContext:GraphicsContext):Void
 	{
-
 		renderSelf(parentGraphicContext);
-		
 		renderChildren(parentGraphicContext);
-			
-		//TODO 1 : re-implement, this should go in LayerRenderer
-		//applyVisualEffects(graphicsContext);
-		
 	}
 	
 	
@@ -116,87 +110,6 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//abstract
 	}
 	
-	/**
-	 * Apply the computed visual effect
-	 * using the graphic context
-	 */
-	private function applyVisualEffects(graphicContext:GraphicsContext):Void
-	{
-		//when all the dimensions of the ElementRenderer are known, compute the 
-		//visual effects to apply (visibility, opacity, transform, transition)
-		//it is necessary to wait for all dimensions to be known because for
-		//instance the transform style use the height and width of the ElementRenderer
-		//to determine the transformation center
-		//
-		//TODO 2 : update doc
-		
-		applyOpacity(graphicContext);
-		//apply only if the element is either relative positioned or has
-		//transformations functions
-		if (isRelativePositioned() == true || coreStyle.transform != Transform.none)
-		{
-			coreStyle.computeVisualEffectStyles();	
-			applyTransformationMatrix(graphicContext);
-		}
-		
-	}
-	
-	/**
-	 * Apply both the transformation matrix computed with the
-	 * transform and transform-origin style and the relative
-	 * offset if the element is relative positioned
-	 */
-	private function applyTransformationMatrix(graphicContext:GraphicsContext):Void
-	{
-		var relativeOffset:PointData = getRelativeOffset();
-		var concatenatedMatrix:Matrix = getConcatenatedMatrix(coreStyle.computedStyle.transform, relativeOffset);
-		
-		//apply relative positioning as well
-		concatenatedMatrix.translate(relativeOffset.x, relativeOffset.y);
-		
-		//get the data of the abstract matrix
-		var matrixData:MatrixData = concatenatedMatrix.data;
-		#if (flash9 || nme)
-		//create a native flash matrix with the abstract matrix data
-		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
-		//apply the native flash matrix to the native flash DisplayObject
-		graphicContext.nativeLayer.transform.matrix = nativeTransformMatrix;
-		#end
-	}
-	
-	/**
-	 * Apply the computed opacity to the graphic context
-	 */ 
-	private function applyOpacity(graphicContext:GraphicsContext):Void
-	{
-		#if (flash9 || nme)
-		graphicContext.nativeLayer.alpha = coreStyle.computedStyle.opacity;
-		#end
-	}
-	
-	/**
-	 * Concatenate the transformation matrix obtained with the
-	 * transform and transform-origin styles with the current
-	 * transformations applied to the box renderer, such as for 
-	 * instance its position in the global space, or the transformation
-	 * applied via a relative offset
-	 * 
-	 */
-	private function getConcatenatedMatrix(matrix:Matrix, relativeOffset:PointData):Matrix
-	{
-		var currentMatrix:Matrix = new Matrix();
-		var globalBounds:RectangleData = globalBounds;
-		
-		//translate to the coordiante system of the box renderer
-		currentMatrix.translate(globalBounds.x + relativeOffset.x, globalBounds.y + relativeOffset.y);
-		
-		currentMatrix.concatenate(matrix);
-		
-		//translate backe from the coordiante system of the box renderer
-		currentMatrix.translate((globalBounds.x + relativeOffset.x) * -1, (globalBounds.y + relativeOffset.y) * -1);
-		return currentMatrix;
-	}
-
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC LAYOUT METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -343,7 +256,12 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function establishesNewStackingContext():Bool
 	{
-		if (isPositioned() == true)
+		//transformed box always create new stacking context
+		if (isTransformed() == true)
+		{
+			return true;
+		}
+		else if (isPositioned() == true)
 		{
 			//if a box is positioned, it only establishes
 			//a new stacking context if its z-index is not
@@ -359,6 +277,37 @@ class BoxRenderer extends InvalidatingElementRenderer
 		}
 		
 		//in all other cases, no new stacking context is created
+		return false;
+	}
+	
+	/**
+	 * Determine wheter the ElementRenderer has transformations (translation,
+	 * scaling, rotation or skewing) that should be applied to it when rendered.
+	 * 
+	 * If it does, it needs to have its own LayerRenderer, as each LayerRenderer
+	 * must represents a single space coordinate
+	 */
+	override public function isTransformed():Bool
+	{
+		//if the elementRenderer is relative positioned and at least one
+		//offset is applied to it, it it considered transformed
+		if (isRelativePositioned() == true)
+		{
+			if (coreStyle.left != PositionOffset.cssAuto
+			|| coreStyle.right != PositionOffset.cssAuto 
+			|| coreStyle.top != PositionOffset.cssAuto
+			|| coreStyle.bottom != PositionOffset.cssAuto)
+			{
+				return true;
+			}
+		}
+		//else it is transformaed if at least one transform
+		//function is applied to it
+		else if (coreStyle.transform != Transform.none)
+		{
+			return true;
+		}
+		
 		return false;
 	}
 	

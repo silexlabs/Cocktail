@@ -1210,14 +1210,14 @@ class CoreStyle
 	private function setTransformOrigin(value:TransformOrigin):TransformOrigin
 	{
 		transformOrigin = value;
-		invalidate(InvalidationReason.other);
+		invalidate(InvalidationReason.styleChanged(CSSConstants.TRANSFORM_ORIGIN_STYLE_NAME));
 		return value;
 	}
 	
 	private function setTransform(value:Transform):Transform
 	{
 		transform = value;
-		invalidate(InvalidationReason.other);
+		invalidatePositioningScheme();
 		return value;
 	}
 	

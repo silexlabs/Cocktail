@@ -76,6 +76,14 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Apply a transformation matrix to the layer
+	 */
+	public function transform(matrix:Matrix):Void
+	{
+		//abstract
+	}
+	
+	/**
 	 * Clears the bitmap data
 	 */
 	public function clear():Void

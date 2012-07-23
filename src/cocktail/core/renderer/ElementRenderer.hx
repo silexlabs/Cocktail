@@ -637,6 +637,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		return false;
 	}
 	
+	public function isTransformed():Bool
+	{
+		return false;
+	}
+	
 	/**
 	 * Determine wether this ElementRenderer creates a
 	 * new LayerRenderer for itself or use the

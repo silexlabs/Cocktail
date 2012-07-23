@@ -13,6 +13,7 @@ import cocktail.core.dom.NodeBase;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.renderer.ElementRenderer;
+import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
 import cocktail.port.DrawingManager;
@@ -254,9 +255,103 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//element of their layer
 		rootElementRenderer.renderScrollBars(graphicsContext, windowWidth, windowHeight);
 		
-		//paint the LayerRenderer's graphics context onto its parent's
-		parentGraphicsContext.copyPixels(graphicsContext.nativeBitmapData, { x:0.0, y:0.0, width:2000.0, height:1500.0 }, { x:0.0, y:0.0 } );
+		//apply transformations to the layer if needed
+		if (rootElementRenderer.isTransformed() == true)
+		{
+			//TODO 2 : should already be computed at this point
+			rootElementRenderer.coreStyle.computeVisualEffectStyles();	
+			
+			graphicsContext.transform(getTransformationMatrix(graphicsContext));
+		}
+		
+		//TODO 1 : apply opacity to graphic context + opacity should create layer
 	}
+	
+	/////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	////////////////////////////////
+	
+	/**
+	 * Compute all the transformation that should be applied to this LayerRenderer
+	 * and return it as a transformation matrix
+	 */
+	private function getTransformationMatrix(graphicContext:GraphicsContext):Matrix
+	{
+		var relativeOffset:PointData = getRelativeOffset();
+		var concatenatedMatrix:Matrix = getConcatenatedMatrix(rootElementRenderer.coreStyle.computedStyle.transform, relativeOffset);
+		
+		//apply relative positioning as well
+		concatenatedMatrix.translate(relativeOffset.x, relativeOffset.y);
+		
+		return concatenatedMatrix;
+	}
+	
+	/**
+	 * Concatenate the transformation matrix obtained with the
+	 * transform and transform-origin styles with the current
+	 * transformations applied to the root element renderer, such as for 
+	 * instance its position in the global space
+	 */
+	private function getConcatenatedMatrix(matrix:Matrix, relativeOffset:PointData):Matrix
+	{
+		var currentMatrix:Matrix = new Matrix();
+		var globalBounds:RectangleData = rootElementRenderer.globalBounds;
+		
+		//translate to the coordinate system of the root element renderer
+		currentMatrix.translate(globalBounds.x + relativeOffset.x, globalBounds.y + relativeOffset.y);
+		
+		currentMatrix.concatenate(matrix);
+		
+		//translate back from the coordinate system of the root element renderer
+		currentMatrix.translate((globalBounds.x + relativeOffset.x) * -1, (globalBounds.y + relativeOffset.y) * -1);
+		return currentMatrix;
+	}
+	
+	/**
+	 * Return the relative offset applied to the root element renderer
+	 * when rendering. Only relatively positioned root element renderer
+	 * have this offset
+	 */
+	private function getRelativeOffset():PointData
+	{
+		var relativeOffset:PointData = { x:0.0, y:0.0 };
+		
+		//only relatively positioned ElementRenderer can have
+		//an offset
+		if (rootElementRenderer.isRelativePositioned() == true)
+		{
+			var coreStyle:CoreStyle = rootElementRenderer.coreStyle;
+			
+			//first try to apply the left offset of the ElementRenderer if it is
+			//not auto
+			if (coreStyle.left != PositionOffset.cssAuto)
+			{
+				relativeOffset.x += coreStyle.computedStyle.left;
+			}
+			//else the right offset,
+			else if (coreStyle.right != PositionOffset.cssAuto)
+			{
+				relativeOffset.x -= coreStyle.computedStyle.right;
+			}
+			
+			//if both left and right offset are auto, then the ElementRenderer uses its static
+			//position (its normal position in the flow) and no relative offset needs to
+			//be applied
+		
+			//same for vertical offset
+			if (coreStyle.top != PositionOffset.cssAuto)
+			{
+				relativeOffset.y += coreStyle.computedStyle.top; 
+			}
+			else if (coreStyle.bottom != PositionOffset.cssAuto)
+			{
+				relativeOffset.y -= coreStyle.computedStyle.bottom; 
+			}
+		}
+		
+		return relativeOffset;
+	}	
+		
 	
 	/////////////////////////////////
 	// PUBLIC LAYER TREE METHODS
