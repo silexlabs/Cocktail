@@ -16,7 +16,7 @@ import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.style.ComputedStyle;
 import cocktail.port.DrawingManager;
-import cocktail.port.flash_player.GraphicsContext;
+import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.style.StyleData;
 

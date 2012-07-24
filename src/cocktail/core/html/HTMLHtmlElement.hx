@@ -22,12 +22,6 @@ class HTMLHtmlElement extends HTMLElement
 	public function new() 
 	{
 		super(HTMLConstants.HTML_HTML_TAG_NAME);
-		
-		//as the HTML htmlElement is the root
-		//of the runtime, it attaches iself to the
-		//rendering tree instead of waiting for
-		//its parent to attach it
-		attach();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -53,6 +47,12 @@ class HTMLHtmlElement extends HTMLElement
 	override private function createElementRenderer():Void
 	{ 
 		elementRenderer = new InitialBlockRenderer(this);
+		
+		//the htmlDocument has a reference to the graphic context of the 
+		//LayerRenderer created by the InitialBlockRenderer, so when it is
+		//instantiated, the htmlDocument must update its reference
+		var htmlDocument:HTMLDocument = cast(ownerDocument);
+		htmlDocument.initGraphicContext();
 	}
 	
 	/**

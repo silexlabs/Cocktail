@@ -16,7 +16,7 @@ import cocktail.core.html.HTMLImageElement;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.style.ComputedStyle;
 import cocktail.port.DrawingManager;
-import cocktail.port.flash_player.GraphicsContext;
+import cocktail.port.GraphicsContext;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.Resource;
 import cocktail.port.NativeElement;

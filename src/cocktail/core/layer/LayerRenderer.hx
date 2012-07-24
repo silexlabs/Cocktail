@@ -100,7 +100,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		super();
 		
 		this.rootElementRenderer = rootElementRenderer;
-	
+		
 		_zeroAndAutoZIndexChildElementRenderers = new Array<ElementRenderer>();
 		_positiveZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		_negativeZIndexChildLayerRenderers = new Array<LayerRenderer>();
@@ -175,7 +175,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			}
 		}
 		
-		
 		graphicsContext.removeChild(oldChild.graphicsContext);
 		
 		super.removeChild(oldChild);
@@ -235,12 +234,12 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				//check if element is not a scrollbar as they are supposed to be rendered last
 				if (_zeroAndAutoZIndexChildElementRenderers[i].isScrollBar() == false)
 				{
-					_zeroAndAutoZIndexChildElementRenderers[i].layerRenderer.render(graphicsContext, windowWidth, windowHeight);
+					//_zeroAndAutoZIndexChildElementRenderers[i].layerRenderer.render(graphicsContext, windowWidth, windowHeight);
 				}
 			}
 			else
 			{
-				_zeroAndAutoZIndexChildElementRenderers[i].render(graphicsContext);
+				//_zeroAndAutoZIndexChildElementRenderers[i].render(graphicsContext);
 			}
 		}
 		
@@ -263,6 +262,11 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			
 			graphicsContext.transform(getTransformationMatrix(graphicsContext));
 		}
+		
+		//TODO 1 : should not need this but for now bug when this initial LayerRenderer is detached, HtmlDocuement's graphicContext
+		//don't have a reference to it anymore and display nothing, there should be an InitialLayerRenderer which never gets removed
+		
+		//parentGraphicsContext.copyPixels(graphicsContext.nativeBitmapData, { x:0.0, y:0.0, width:_windowWidth, height:_windowHeight }, { x:0.0, y:0.0 } );
 		
 		//TODO 1 : apply opacity to graphic context + opacity should create layer
 	}

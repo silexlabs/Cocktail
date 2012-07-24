@@ -32,7 +32,7 @@ import cocktail.core.event.FocusEvent;
 import cocktail.core.window.Window;
 import cocktail.Lib;
 import cocktail.port.DrawingManager;
-import cocktail.port.flash_player.GraphicsContext;
+import cocktail.port.GraphicsContext;
 import haxe.Log;
 import haxe.Timer;
 import cocktail.core.style.StyleData;
@@ -201,18 +201,20 @@ class HTMLDocument extends Document
 		_window = window;
 		_focusManager = new FocusManager();
 		
-		
-		
 		_multiTouchManager = new MultiTouchManager();
 		
+		//init the document graphics context onto which all the document is painted
+		_documentGraphicsContext = new GraphicsContext(_window.platform.nativeWindow.getInitialNativeLayer());
+		
 		documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
+		
+		//as the HTML htmlElement is the root
+		//of the runtime, the document is 
+		//responsible for attching it
+		documentElement.attach();
+		
 		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
 		documentElement.appendChild(body);
-		
-		//init the document graphics context and attach the graphics context of the 
-		//root LayerRenderer to it, so that it can be painted
-		_documentGraphicsContext = new GraphicsContext(_window.platform.nativeWindow.getInitialNativeLayer());
-		_documentGraphicsContext.appendChild(documentElement.elementRenderer.layerRenderer.graphicsContext);
 		
 		_shouldDispatchClickOnNextMouseUp = false;
 				
@@ -234,6 +236,20 @@ class HTMLDocument extends Document
 		documentElement.appendChild(body);
 		_hoveredElementRenderer = body.elementRenderer;
 		activeElement = body;
+	}
+	
+	/**
+	 * Get a reference to the initial LayerRenderer's
+	 * graphicContext
+	 */
+	public function initGraphicContext():Void
+	{
+		for (i in 0..._documentGraphicsContext.childNodes.length)
+		{
+			_documentGraphicsContext.removeChild(_documentGraphicsContext.childNodes[i]);
+		}
+		
+		_documentGraphicsContext.appendChild(documentElement.elementRenderer.layerRenderer.graphicsContext);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -714,7 +730,7 @@ class HTMLDocument extends Document
 			_documentGraphicsContext.initBitmapData(_window.innerWidth, _window.innerHeight);
 			_graphicsContextInvalidated = false;
 		}
-		
+			
 		//start the rendering at the root layer renderer
 		_documentGraphicsContext.clear();
 		documentElement.elementRenderer.layerRenderer.render(_documentGraphicsContext, _window.innerWidth, _window.innerHeight);
