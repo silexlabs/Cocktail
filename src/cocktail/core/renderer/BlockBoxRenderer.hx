@@ -375,14 +375,14 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		if (_horizontalScrollBar != null)
 		{
 			_horizontalScrollBar.elementRenderer.render(graphicContext, forceRendering);
-			updateScroll();
+			//updateScroll();
 
 		}
 		
 		if (_verticalScrollBar != null)
 		{
 			_verticalScrollBar.elementRenderer.render(graphicContext, forceRendering);
-			updateScroll();
+			//updateScroll();
 		}
 	}
 	
