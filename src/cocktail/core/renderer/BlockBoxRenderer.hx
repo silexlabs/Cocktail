@@ -340,7 +340,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 			{
 				var child:ElementRenderer = rootRenderer.childNodes[i];
 			
-				if (child.layerRenderer == referenceLayer)
+				if (child.layerRenderer == referenceLayer && child.isPositioned() == false)
 				{
 					if (child.isReplaced() == false)
 					{	

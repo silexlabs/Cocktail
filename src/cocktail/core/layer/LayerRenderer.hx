@@ -234,12 +234,12 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				//check if element is not a scrollbar as they are supposed to be rendered last
 				if (_zeroAndAutoZIndexChildElementRenderers[i].isScrollBar() == false)
 				{
-					//_zeroAndAutoZIndexChildElementRenderers[i].layerRenderer.render(graphicsContext, windowWidth, windowHeight);
+					_zeroAndAutoZIndexChildElementRenderers[i].layerRenderer.render(graphicsContext, windowWidth, windowHeight);
 				}
 			}
 			else
 			{
-				//_zeroAndAutoZIndexChildElementRenderers[i].render(graphicsContext);
+				_zeroAndAutoZIndexChildElementRenderers[i].render(graphicsContext);
 			}
 		}
 		
