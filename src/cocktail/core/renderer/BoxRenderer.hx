@@ -261,19 +261,10 @@ class BoxRenderer extends InvalidatingElementRenderer
 		{
 			return true;
 		}
+		//positioned box also always create a new stacking context
 		else if (isPositioned() == true)
 		{
-			//if a box is positioned, it only establishes
-			//a new stacking context if its z-index is not
-			//auto, else it uses the LayerRenderer of its parent
-			if (isAutoZIndexPositioned() == true)
-			{
-				return false;
-			}
-			else
-			{
-				return true;
-			}
+			return true;
 		}
 		
 		//in all other cases, no new stacking context is created
@@ -289,21 +280,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function isTransformed():Bool
 	{
-		//if the elementRenderer is relative positioned and at least one
-		//offset is applied to it, it it considered transformed
-		if (isRelativePositioned() == true)
-		{
-			if (coreStyle.left != PositionOffset.cssAuto
-			|| coreStyle.right != PositionOffset.cssAuto 
-			|| coreStyle.top != PositionOffset.cssAuto
-			|| coreStyle.bottom != PositionOffset.cssAuto)
-			{
-				return true;
-			}
-		}
-		//else it is transformaed if at least one transform
+		//it is transformaed if at least one transform
 		//function is applied to it
-		else if (coreStyle.transform != Transform.none)
+		if (coreStyle.transform != Transform.none)
 		{
 			return true;
 		}

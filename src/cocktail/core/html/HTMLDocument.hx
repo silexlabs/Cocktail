@@ -204,7 +204,7 @@ class HTMLDocument extends Document
 		_multiTouchManager = new MultiTouchManager();
 		
 		//init the document graphics context onto which all the document is painted
-		_documentGraphicsContext = new GraphicsContext(_window.platform.nativeWindow.getInitialNativeLayer());
+		_documentGraphicsContext = new GraphicsContext(null, _window.platform.nativeWindow.getInitialNativeLayer());
 		
 		documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
 		

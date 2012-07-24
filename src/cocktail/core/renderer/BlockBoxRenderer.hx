@@ -340,7 +340,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 			{
 				var child:ElementRenderer = rootRenderer.childNodes[i];
 			
-				if (child.layerRenderer == referenceLayer && child.isPositioned() == false)
+				if (child.layerRenderer == referenceLayer)
 				{
 					if (child.isReplaced() == false)
 					{	
@@ -374,7 +374,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 		{
 			var child:ElementRenderer = rootRenderer.childNodes[i];
 			
-			if (child.layerRenderer == referenceLayer && child.isPositioned() == false)
+			if (child.layerRenderer == referenceLayer)
 			{
 				//TODO 2 : must add more condition, for instance, no float
 				if (child.isReplaced() == false && child.coreStyle.display == block )
@@ -412,7 +412,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 			//check that the child is not positioned, as if it is an auto z-index positioned
 			//element, it will be on the same layerRenderer but should not be rendered as 
 			//a block container children
-			if (child.layerRenderer == referenceLayer && child.isPositioned() == false)
+			if (child.layerRenderer == referenceLayer)
 			{
 				//TODO 3 : must add more condition, for instance, no float
 				if (child.isReplaced() == false && child.coreStyle.display != inlineBlock)
@@ -593,13 +593,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 */
 	override private function rendersAsIfEstablishingStackingContext():Bool
 	{
-		//if z-index is 0 or auto and the ElementRenderer
-		//is positioned
-		if (isAutoZIndexPositioned() == true)
-		{
-			return true;
-		}
-		else if (coreStyle.computedStyle.display == inlineBlock)
+		if (coreStyle.computedStyle.display == inlineBlock)
 		{
 			return true;
 		}

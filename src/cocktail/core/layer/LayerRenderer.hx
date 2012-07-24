@@ -51,16 +51,11 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	public var rootElementRenderer(default, null):ElementRenderer;
 	
 	/**
-	 * Holds a reference to all of the children of the root ElementRenderer
-	 * which also create which have a z-index computed value of 0 or auto,
-	 * which means that they are rendered in tree
-	 * order of the DOM tree. Also, children with a z-index of 'auto' don't actually
-	 * create new LayerRenderer, although they are rendered as if they did.
-	 * 
-	 * That's why this array stores ElementRenderer instead of LayerRenderer, as some
-	 * of the ElementRenderer don't actually have their own LayerRenderer
+	 * Holds a reference to all of the child LayerRender which have a z-index computed 
+	 * value of 0 or auto, which means that they are rendered in tree
+	 * order of the DOM tree.
 	 */
-	private var _zeroAndAutoZIndexChildElementRenderers:Array<ElementRenderer>;
+	private var _zeroAndAutoZIndexChildLayerRenderers:Array<LayerRenderer>;
 	
 	/**
 	 * Holds a reference to all of the child LayerRenderer which have a computed z-index
@@ -101,11 +96,11 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		
 		this.rootElementRenderer = rootElementRenderer;
 		
-		_zeroAndAutoZIndexChildElementRenderers = new Array<ElementRenderer>();
+		_zeroAndAutoZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		_positiveZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		_negativeZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		
-		graphicsContext = new GraphicsContext();
+		graphicsContext = new GraphicsContext(this);
 		
 		_windowWidth = 0;
 		_windowHeight = 0;
@@ -133,12 +128,12 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		{
 			case ZIndex.cssAuto:
 				//the z-index is 'auto'
-				_zeroAndAutoZIndexChildElementRenderers.push(newChild.rootElementRenderer);
+				_zeroAndAutoZIndexChildLayerRenderers.push(newChild);
 				
 			case ZIndex.integer(value):
 				if (value == 0)
 				{
-					_zeroAndAutoZIndexChildElementRenderers.push(newChild.rootElementRenderer);
+					_zeroAndAutoZIndexChildLayerRenderers.push(newChild);
 				}
 				else if (value > 0)
 				{
@@ -163,7 +158,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		var removed:Bool = false;
 		
 		//try each of the array, stop if an element was actually removed from them
-		removed = _zeroAndAutoZIndexChildElementRenderers.remove(oldChild.rootElementRenderer);
+		removed = _zeroAndAutoZIndexChildLayerRenderers.remove(oldChild);
 		
 		if (removed == false)
 		{
@@ -221,26 +216,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//render all ElementRenderer belonging to this LayerRenderer
 		rootElementRenderer.render(graphicsContext);
 		
-		//render zero and auto z-index ElementRenderer
-		for (i in 0..._zeroAndAutoZIndexChildElementRenderers.length)
+		//render zero and auto z-index child LayerRenderer, in tree order
+		for (i in 0..._zeroAndAutoZIndexChildLayerRenderers.length)
 		{
-			//must check if the ElementRenderer establish a new stacking context (create a new layer)
-			//as if it does not, it is the ElementRenderer which must be rendered, not its LayerRenderer
-			//which was already renderered
-			//
-			//this applies for instance to ElementRenderer with a z-index of auto
-			if (_zeroAndAutoZIndexChildElementRenderers[i].establishesNewStackingContext() == true)
-			{
-				//check if element is not a scrollbar as they are supposed to be rendered last
-				if (_zeroAndAutoZIndexChildElementRenderers[i].isScrollBar() == false)
-				{
-					_zeroAndAutoZIndexChildElementRenderers[i].layerRenderer.render(graphicsContext, windowWidth, windowHeight);
-				}
-			}
-			else
-			{
-				_zeroAndAutoZIndexChildElementRenderers[i].render(graphicsContext);
-			}
+			_zeroAndAutoZIndexChildLayerRenderers[i].render(graphicsContext, windowWidth, windowHeight);
 		}
 		
 		//render all the positive LayerRenderer from least positive to 
@@ -250,7 +229,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			_positiveZIndexChildLayerRenderers[i].render(graphicsContext, windowWidth, windowHeight);
 		}
 		
-		//scrollbars are always rendered last as they should always the top
+		//scrollbars are always rendered last as they should always be the top
 		//element of their layer
 		rootElementRenderer.renderScrollBars(graphicsContext, windowWidth, windowHeight);
 		
@@ -355,7 +334,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		
 		return relativeOffset;
 	}	
-		
 	
 	/////////////////////////////////
 	// PUBLIC LAYER TREE METHODS
@@ -369,7 +347,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	public function insertAutoZIndexChildElementRenderer(elementRenderer:ElementRenderer):Void
 	{
-		_zeroAndAutoZIndexChildElementRenderers.push(elementRenderer);
+		//_zeroAndAutoZIndexChildElementRenderers.push(elementRenderer);
 	}
 	
 	/**
@@ -377,7 +355,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */ 
 	public function removeAutoZIndexChildElementRenderer(elementRenderer:ElementRenderer):Void
 	{
-		_zeroAndAutoZIndexChildElementRenderers.remove(elementRenderer);
+		//_zeroAndAutoZIndexChildElementRenderers.remove(elementRenderer);
 	}
 	
 	/////////////////////////////////
@@ -634,10 +612,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			var childRenderer:LayerRenderer = _negativeZIndexChildLayerRenderers[i];
 			childRenderers.push(childRenderer.rootElementRenderer);
 		}
-		for (i in 0..._zeroAndAutoZIndexChildElementRenderers.length)
+		for (i in 0..._zeroAndAutoZIndexChildLayerRenderers.length)
 		{
-			var childRenderer:ElementRenderer = _zeroAndAutoZIndexChildElementRenderers[i];
-			childRenderers.push(childRenderer);
+			var childRenderer:LayerRenderer = _zeroAndAutoZIndexChildLayerRenderers[i];
+			childRenderers.push(childRenderer.rootElementRenderer);
 		}
 		for (i in 0..._positiveZIndexChildLayerRenderers.length)
 		{

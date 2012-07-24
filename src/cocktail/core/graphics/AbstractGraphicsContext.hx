@@ -8,10 +8,13 @@
 package cocktail.core.graphics;
 
 import cocktail.core.geom.Matrix;
+import cocktail.core.layer.LayerRenderer;
+import cocktail.core.renderer.ElementRenderer;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
 import cocktail.core.dom.NodeBase;
 import cocktail.core.geom.GeomData;
+import cocktail.core.style.StyleData;
 import cocktail.core.unit.UnitData;
 
 /**
@@ -52,15 +55,28 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	 * underlying platform
 	 */
 	public var nativeBitmapData(get_nativeBitmapData, null):NativeBitmapData;
+	
+	/**
+	 * A reference to the LayerRenderer which created this GraphicsContext
+	 */
+	public var layerRenderer(default, null):LayerRenderer;
+	
+	private var _orderedChildList:Array<AbstractGraphicsContext>;
 
 	/**
 	 * class constructor
+	 * @param layerRenderer the LayerRenderer which instantiated this 
+	 * GraphicsContext
+	 * 
 	 * @param	nativeLayer the reference to the nativeLayer can be passed
 	 * as parameter, else it is instantiated in the constructor
 	 */
-	public function new(nativeLayer:NativeElement = null)
+	public function new(layerRenderer:LayerRenderer = null, nativeLayer:NativeElement = null)
 	{
 		super();
+		this.layerRenderer = layerRenderer;
+		
+		_orderedChildList = new Array<AbstractGraphicsContext>();
 	}
 	
 	/**
@@ -69,6 +85,80 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	public function initBitmapData(width:Int, height:Int):Void
 	{
 		//abstract
+	}
+	
+	/////////////////////////////////
+	// OVERRIDEN PUBLIC METHODS
+	////////////////////////////////
+	
+	override public function appendChild(newChild:AbstractGraphicsContext):AbstractGraphicsContext
+	{
+		super.appendChild(newChild);
+		
+		
+		var rootElement:ElementRenderer = newChild.layerRenderer.rootElementRenderer;
+		var index:Int = getIndex(rootElement);
+		
+		var isInserted:Bool = false;
+		
+		var newOrderedChildList:Array<AbstractGraphicsContext> = new Array<AbstractGraphicsContext>();
+		
+		for (i in 0..._orderedChildList.length)
+		{
+		
+			
+			var childIndex:Int = getIndex(_orderedChildList[i].layerRenderer.rootElementRenderer);
+			if (index < childIndex && isInserted == false)
+			{
+				newOrderedChildList.push(newChild);
+				isInserted = true;
+			}
+			
+			newOrderedChildList.push(_orderedChildList[i]);
+		}
+		
+		if (isInserted == false)
+		{
+			newOrderedChildList.push(newChild);
+		}
+		
+		_orderedChildList = newOrderedChildList;
+		
+		
+		
+		return newChild;
+	}
+	
+	override public function removeChild(oldChild:AbstractGraphicsContext):AbstractGraphicsContext
+	{
+		super.removeChild(oldChild);
+		
+		_orderedChildList.remove(oldChild);
+		
+		
+		return oldChild;
+	}
+	
+	private function getIndex(elementRenderer:ElementRenderer):Int
+	{
+		var index:Int = 0;
+		
+		if (elementRenderer.isPositioned() == true)
+		{
+			//TODO 1 : for some reason CoreStyle is null on InitialBlockRenderer at this point
+			if (elementRenderer.coreStyle != null)
+			{
+				switch (elementRenderer.coreStyle.computedStyle.zIndex)
+				{
+					case ZIndex.integer(value):
+						index = value;
+						
+					default:	
+				}
+			}
+		}
+		
+		return index;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

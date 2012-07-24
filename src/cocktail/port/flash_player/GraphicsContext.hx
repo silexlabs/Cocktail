@@ -2,6 +2,7 @@ package cocktail.port.flash_player;
 
 import cocktail.core.geom.Matrix;
 import cocktail.core.graphics.AbstractGraphicsContext;
+import cocktail.core.layer.LayerRenderer;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
 import flash.display.Bitmap;
@@ -51,9 +52,9 @@ class GraphicsContext extends AbstractGraphicsContext
 	/**
 	 * class constructor
 	 */
-	public function new(nativeLayer:NativeElement = null) 
+	public function new(layerRenderer:LayerRenderer = null, nativeLayer:NativeElement = null) 
 	{
-		super();
+		super(layerRenderer);
 		
 		//create a new Sprite if no sprite is provided
 		if (nativeLayer == null)
@@ -113,7 +114,12 @@ class GraphicsContext extends AbstractGraphicsContext
 	override public function appendChild(newChild:AbstractGraphicsContext):AbstractGraphicsContext
 	{
 		super.appendChild(newChild);
-		_childrenNativeLayer.addChild(newChild.nativeLayer);
+		
+		for (i in 0..._orderedChildList.length)
+		{
+			_childrenNativeLayer.addChild(_orderedChildList[i].nativeLayer);
+		}
+		
 		return newChild;
 	}
 	
