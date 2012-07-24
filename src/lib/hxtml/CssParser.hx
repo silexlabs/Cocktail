@@ -929,6 +929,7 @@ class CssParser<DisplayObjectType> {
 
 		case "transform":
 			var val = getIdent(v);
+			trace(val);
 			if ( val != null) {			
 				s.setTransform(d, val);
 			}
