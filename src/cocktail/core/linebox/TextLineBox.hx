@@ -88,6 +88,8 @@ class TextLineBox extends LineBox
 			width:bounds.width
 		}
 		
+		//TODO 1 : there is  memory leak, when text is disposed, its bitmap
+		//data is not
 		_nativeTextBitmap = _nativeText.getBitmap(bitmapBounds);
 	}
 	

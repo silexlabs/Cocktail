@@ -87,6 +87,12 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	private var _windowHeight:Int;
 	
+	/**
+	 * A flag determining wether this LayerRenderer has its own
+	 * GraphicsContext or use the one of its parent. It helps
+	 * to determine if this LayerRenderer is responsible to perform
+	 * oparation such as clearing its graphics context when rendering
+	 */
 	private var _hasOwnGraphicsContext:Bool;
 	
 	/**
@@ -183,10 +189,16 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	// PUBLIC ATTACHEMENT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * For a LayerRenderer, attach is used to 
+	 * get a reference to a GraphicsContext to
+	 * paint onto
+	 */
 	public function attach():Void
 	{
 		attachGraphicsContext();
 		
+		//attach all its children recursively
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
@@ -195,6 +207,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		}
 	}
 	
+	/**
+	 * For a LayerRenderer, detach is used
+	 * to dereference the GraphicsContext
+	 */
 	public function detach():Void
 	{
 		var length:Int = childNodes.length;
@@ -207,9 +223,15 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		detachGraphicsContext();
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE ATTACHEMENT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Attach a graphics context if necessary
+	 */
 	private function attachGraphicsContext():Void
 	{
-		//create the LayerRenderer if needed
 		if (graphicsContext == null)
 		{
 			if (parentNode != null)
@@ -222,8 +244,13 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		}
 	}
 	
+	/**
+	 * Detach the GraphicContext
+	 */
 	private function detachGraphicsContext():Void 
 	{
+		//if this LayerRenderer instantiated its own
+		//GraphicContext, it is responsible for disposing of it
 		if (_hasOwnGraphicsContext == true)
 		{
 			parentNode.graphicsContext.removeChild(graphicsContext);
@@ -234,6 +261,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		graphicsContext = null;
 	}
 	
+	/**
+	 * Create a new GraphicsContext for this LayerRenderer
+	 * or use the one of its parent
+	 */
 	private function createGraphicsContext(parentGraphicsContext:GraphicsContext):Void
 	{
 		if (establishesNewGraphicsContext() == true)
@@ -248,6 +279,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		}
 	}
 	
+	/**
+	 * Wether this LayerRenderer should create its
+	 * own GraphicsContext
+	 */
 	private function establishesNewGraphicsContext():Bool
 	{
 		return false;
@@ -266,16 +301,22 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	public function render(windowWidth:Int, windowHeight:Int ):Void
 	{
-		
 		//update the dimension of the bitmap data if the window size changed
 		//since last rendering
 		if (windowWidth != _windowWidth || windowHeight != _windowHeight)
 		{
-			graphicsContext.initBitmapData(windowWidth, windowHeight);
+			//only update the GraphicContext if it was created
+			//by this LayerRenderer
+			if (_hasOwnGraphicsContext == true)
+			{
+				graphicsContext.initBitmapData(windowWidth, windowHeight);
+			}
 			_windowWidth = windowWidth;
 			_windowHeight = windowHeight;
 		}
 	
+		//only clear the bitmaps if the GraphicsContext
+		//was created by this LayerRenderer
 		if (_hasOwnGraphicsContext == true)
 		{
 			//reset the bitmap
