@@ -166,7 +166,7 @@ class NativeVideo extends NativeMedia
 	override public function attach(graphicContext:GraphicsContext):Void
 	{
 		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext.nativeLayer);
-		//containerGraphicContext.addChild(_video);
+		containerGraphicContext.addChild(_video);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

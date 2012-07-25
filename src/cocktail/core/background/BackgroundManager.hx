@@ -291,18 +291,18 @@ class BackgroundManager
 		if ((imageWidth / intrinsicWidth == 1) && (imageHeight / intrinsicHeight == 1))
 		{
 			var destinationPoint:PointData = {
-				x:totalWidth + backgroundBox.x,
-				y:totalHeight + backgroundBox.y
+				x:totalWidth + backgroundBox.x - computedBackgroundPosition.x,
+				y:totalHeight + backgroundBox.y - computedBackgroundPosition.y
 			}
 			
 			var intWidth:Float = intrinsicWidth;
 			var intHeight:Float = intrinsicHeight;
 			
 			var box:RectangleData = {
-				x:0.0,
-				y:0.0,
-				width:intWidth,
-				height:intHeight
+				x:backgroundPaintingBox.x - computedBackgroundPosition.x,
+				y:backgroundPaintingBox.y - computedBackgroundPosition.y,
+				width:backgroundPaintingBox.width,
+				height:backgroundPaintingBox.height
 			}
 			
 			while (totalHeight < maxHeight)
@@ -317,8 +317,8 @@ class BackgroundManager
 					totalHeight += imageHeight;
 				}
 				
-				destinationPoint.x = totalWidth + backgroundBox.x;
-				destinationPoint.y = totalHeight + backgroundBox.y;
+				destinationPoint.x = totalWidth + backgroundBox.x - computedBackgroundPosition.x;
+				destinationPoint.y = totalHeight + backgroundBox.y - computedBackgroundPosition.y;
 			}
 		}
 		else
