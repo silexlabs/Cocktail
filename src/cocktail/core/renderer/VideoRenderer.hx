@@ -11,6 +11,8 @@ import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLVideoElement;
+import cocktail.core.layer.CompositingLayerRenderer;
+import cocktail.core.layer.LayerRenderer;
 import cocktail.core.resource.ResourceManager;
 import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
@@ -49,6 +51,14 @@ class VideoRenderer extends ImageRenderer
 	override public function establishesNewStackingContext():Bool
 	{
 		return true;
+	}
+	
+	//TODO 1 : doc
+	override private function createLayer(parentLayer:LayerRenderer):Void
+	{
+		layerRenderer = new CompositingLayerRenderer(this);
+		parentLayer.appendChild(layerRenderer);
+		_hasOwnLayer = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

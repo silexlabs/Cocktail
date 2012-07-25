@@ -41,7 +41,7 @@ class Resource extends AbstractResource
 	/**
 	 * class constructor.
 	 */
-	public function new(url:String) 
+	public function new(url:String)
 	{
 		_loader = new Loader();
 		super(url);

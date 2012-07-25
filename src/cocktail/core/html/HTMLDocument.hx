@@ -181,9 +181,17 @@ class HTMLDocument extends Document
 	/**
 	 * class constructor. Init class attributes
 	 */
-	public function new(window:Window) 
+	public function new(window:Window = null) 
 	{
 		super();
+		
+		//TODO 2 : hack, Document probably shouldn't have
+		//ref to Window
+		if (window == null)
+		{
+			window = new Window();
+		}
+		
 		_window = window;
 		_focusManager = new FocusManager();
 		

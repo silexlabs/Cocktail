@@ -13,6 +13,8 @@ import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.html.HTMLObjectElement;
+import cocktail.core.layer.CompositingLayerRenderer;
+import cocktail.core.layer.LayerRenderer;
 import cocktail.core.resource.ImageLoader;
 import cocktail.core.resource.ResourceManager;
 import cocktail.port.DrawingManager;
@@ -42,6 +44,27 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	public function new(node:HTMLElement) 
 	{
 		super(node);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Object always establishes a new stacking context as plugin rendering
+	 * is typically done outside of classic display lists
+	 */
+	override public function establishesNewStackingContext():Bool
+	{
+		return true;
+	}
+	
+	//TODO 1 : doc
+	override private function createLayer(parentLayer:LayerRenderer):Void
+	{
+		layerRenderer = new CompositingLayerRenderer(this);
+		parentLayer.appendChild(layerRenderer);
+		_hasOwnLayer = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

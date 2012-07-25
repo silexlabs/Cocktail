@@ -93,7 +93,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 * to determine if this LayerRenderer is responsible to perform
 	 * oparation such as clearing its graphics context when rendering
 	 */
-	private var _hasOwnGraphicsContext:Bool;
+	public var hasOwnGraphicsContext(default, null):Bool;
 	
 	/**
 	 * class constructor. init class attributes
@@ -108,7 +108,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		_positiveZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		_negativeZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		
-		_hasOwnGraphicsContext = false;
+		hasOwnGraphicsContext = false;
 		
 		_windowWidth = 0;
 		_windowHeight = 0;
@@ -251,11 +251,11 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	{
 		//if this LayerRenderer instantiated its own
 		//GraphicContext, it is responsible for disposing of it
-		if (_hasOwnGraphicsContext == true)
+		if (hasOwnGraphicsContext == true)
 		{
 			parentNode.graphicsContext.removeChild(graphicsContext);
 			graphicsContext.dispose();
-			_hasOwnGraphicsContext = false;
+			hasOwnGraphicsContext = false;
 		}
 		
 		graphicsContext = null;
@@ -271,7 +271,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		{
 			graphicsContext = new GraphicsContext(this);
 			parentGraphicsContext.appendChild(graphicsContext);
-			_hasOwnGraphicsContext = true;
+			hasOwnGraphicsContext = true;
 		}
 		else
 		{
@@ -307,7 +307,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		{
 			//only update the GraphicContext if it was created
 			//by this LayerRenderer
-			if (_hasOwnGraphicsContext == true)
+			if (hasOwnGraphicsContext == true)
 			{
 				graphicsContext.initBitmapData(windowWidth, windowHeight);
 			}
@@ -317,7 +317,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	
 		//only clear the bitmaps if the GraphicsContext
 		//was created by this LayerRenderer
-		if (_hasOwnGraphicsContext == true)
+		if (hasOwnGraphicsContext == true)
 		{
 			//reset the bitmap
 			graphicsContext.clear();

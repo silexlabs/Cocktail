@@ -165,7 +165,9 @@ class BackgroundManager
 					backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
 				
 					
-					doDrawBackgroundImage(graphicContext,
+					doDrawBackgroundImage(
+					backgroundBox,
+					graphicContext,
 					resource,
 					computedGradientStyles.backgroundOrigin,
 					computedGradientStyles.backgroundClip,
@@ -220,7 +222,7 @@ class BackgroundManager
 	 * @param	computedBackgroundPosition
 	 * @param	backgroundRepeat
 	 */
-	public static function doDrawBackgroundImage(graphicContext:GraphicsContext, resource:Resource,
+	public static function doDrawBackgroundImage(backgroundBox:RectangleData, graphicContext:GraphicsContext, resource:Resource,
 	backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, intrinsicWidth:Float,
 	intrinsicHeight:Float, intrinsicRatio:Float, computedBackgroundSize:DimensionData,
 	computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeat):Void
@@ -289,12 +291,13 @@ class BackgroundManager
 		if ((imageWidth / intrinsicWidth == 1) && (imageHeight / intrinsicHeight == 1))
 		{
 			var destinationPoint:PointData = {
-				x:totalWidth,
-				y:totalHeight
+				x:totalWidth + backgroundBox.x,
+				y:totalHeight + backgroundBox.y
 			}
 			
 			var intWidth:Float = intrinsicWidth;
 			var intHeight:Float = intrinsicHeight;
+			
 			var box:RectangleData = {
 				x:0.0,
 				y:0.0,
@@ -314,8 +317,8 @@ class BackgroundManager
 					totalHeight += imageHeight;
 				}
 				
-				destinationPoint.x = totalWidth;
-				destinationPoint.y = totalHeight;
+				destinationPoint.x = totalWidth + backgroundBox.x;
+				destinationPoint.y = totalHeight + backgroundBox.y;
 			}
 		}
 		else

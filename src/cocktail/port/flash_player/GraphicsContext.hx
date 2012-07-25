@@ -68,9 +68,9 @@ class GraphicsContext extends AbstractGraphicsContext
 		_width = 0;
 		_height = 0;
 		
-		//build native disply list
-		_nativeLayer.addChild(_nativeBitmap);
+		//build native display list
 		_nativeLayer.addChild(_childrenNativeLayer);
+		_nativeLayer.addChild(_nativeBitmap);
 	}
 	
 	/**
