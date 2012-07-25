@@ -10,7 +10,10 @@ package cocktail.port;
 /**
  * Set the right runtime specific native text input at compile-time
  */
-#if air
+#if macro
+typedef NativeTextInput = cocktail.port.platform.input.AbstractNativeTextInput;
+
+#elseif air
 typedef NativeTextInput =  cocktail.port.air.NativeTextInput;
 
 #elseif (flash9 || nme)

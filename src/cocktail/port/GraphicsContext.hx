@@ -7,7 +7,10 @@
 */
 package cocktail.port;
 
-#if (flash9 || nme)
+#if macro
+typedef GraphicsContext = cocktail.core.graphics.AbstractGraphicsContext;
+
+#elseif (flash9 || nme)
 typedef GraphicsContext =  cocktail.port.flash_player.GraphicsContext;
 
 #else

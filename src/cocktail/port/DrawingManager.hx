@@ -10,7 +10,10 @@ package cocktail.port;
 /**
  * Set the right runtime specific drawing manager at compile-time
  */
-#if (flash9 || nme)
+#if macro
+typedef DrawingManager = cocktail.core.drawing.AbstractDrawingManager;
+ 
+#elseif (flash9 || nme)
 typedef DrawingManager =  cocktail.port.flash_player.DrawingManager;
 
 #else

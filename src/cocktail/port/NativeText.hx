@@ -10,7 +10,10 @@ package cocktail.port;
 /**
  * Set the right runtime specific NativeText at compile-time
  */
-#if flash9
+#if macro
+typedef NativeText =  cocktail.port.platform.nativeText.AbstractNativeText;
+
+#elseif flash9
 typedef NativeText =  cocktail.port.flash_player.NativeText;
 
 #elseif nme
