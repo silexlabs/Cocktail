@@ -200,7 +200,8 @@ class TransitionManager
 		//time can be calculated
 		_lastTick = Date.now().getTime();
 		
-		#if (flash9 || nme)
+		#if macro
+		#elseif (flash9 || nme)
 		//set a delayed method call which will be repeated
 		//as long as needed
 		Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
@@ -270,7 +271,8 @@ class TransitionManager
 		//drop to 0, delay a call to this method
 		if (_currentTransitionsNumber > 0)
 		{
-			#if (flash9 || nme)
+			#if macro
+			#elseif (flash9 || nme)
 			Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
 			#end
 		}

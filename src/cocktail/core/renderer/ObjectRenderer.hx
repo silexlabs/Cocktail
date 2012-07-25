@@ -76,7 +76,10 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	 */
 	override private function renderEmbeddedAsset(graphicContext:GraphicsContext):Void
 	{
-		#if (flash9 || nme)
+		//TODO 1 : should be removed
+		#if macro
+		
+		#elseif (flash9 || nme)
 		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext.nativeLayer);
 	
 		var htmlObjectElement:HTMLObjectElement = cast(domNode);

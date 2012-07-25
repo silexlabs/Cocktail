@@ -726,7 +726,8 @@ class HTMLDocument extends Document
 	private function scheduleLayoutAndRender():Void
 	{
 		var onLayoutScheduleDelegate:Void->Void = onLayoutSchedule;
-		#if (flash9 || nme)
+		#if macro
+		#elseif (flash9 || nme)
 		//calling the methods 1 millisecond later is enough to ensure
 		//that first all synchronous code is executed
 		Timer.delay(function () { 
