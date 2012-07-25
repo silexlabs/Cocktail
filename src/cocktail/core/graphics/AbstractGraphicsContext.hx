@@ -61,6 +61,11 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	 */
 	public var layerRenderer(default, null):LayerRenderer;
 	
+	/**
+	 * Holds a list of all the child GraphicsContext ordered by z-index,
+	 * from most negative to most positive. Ultimately, this is this array which
+	 * is use to order the native layer of the target platform
+	 */
 	private var _orderedChildList:Array<AbstractGraphicsContext>;
 
 	/**
@@ -91,40 +96,14 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	// OVERRIDEN PUBLIC METHODS
 	////////////////////////////////
 	
+	/**
+	 * Override to also update the ordered child list array
+	 */ 
 	override public function appendChild(newChild:AbstractGraphicsContext):AbstractGraphicsContext
 	{
 		super.appendChild(newChild);
-		
-		
-		var rootElement:ElementRenderer = newChild.layerRenderer.rootElementRenderer;
-		var index:Int = getIndex(rootElement);
-		
-		var isInserted:Bool = false;
-		
-		var newOrderedChildList:Array<AbstractGraphicsContext> = new Array<AbstractGraphicsContext>();
-		
-		for (i in 0..._orderedChildList.length)
-		{
-		
-			
-			var childIndex:Int = getIndex(_orderedChildList[i].layerRenderer.rootElementRenderer);
-			if (index < childIndex && isInserted == false)
-			{
-				newOrderedChildList.push(newChild);
-				isInserted = true;
-			}
-			
-			newOrderedChildList.push(_orderedChildList[i]);
-		}
-		
-		if (isInserted == false)
-		{
-			newOrderedChildList.push(newChild);
-		}
-		
-		_orderedChildList = newOrderedChildList;
-		
-		
+	
+		instertIntoOrderedChildList(newChild);
 		
 		return newChild;
 	}
@@ -139,31 +118,19 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 		return oldChild;
 	}
 	
-	private function getIndex(elementRenderer:ElementRenderer):Int
-	{
-		var index:Int = 0;
-		
-		if (elementRenderer.isPositioned() == true)
-		{
-			//TODO 1 : for some reason CoreStyle is null on InitialBlockRenderer at this point
-			if (elementRenderer.coreStyle != null)
-			{
-				switch (elementRenderer.coreStyle.computedStyle.zIndex)
-				{
-					case ZIndex.integer(value):
-						index = value;
-						
-					default:	
-				}
-			}
-		}
-		
-		return index;
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * clean-up method, free memory used
+	 * by graphics context
+	 */
+	public function dispose():Void
+	{
+		//abstract
+	}
 	
 	/**
 	 * Apply a transformation matrix to the layer
@@ -215,6 +182,83 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	public function fillRect(rect:RectangleData, color:ColorData):Void
 	{
 		//abstract
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Insert the new GraphicsContext based on its z-index (the z-index of the
+	 * ElementRenderer creating the LayerRenderer which created the GraphicsContext)
+	 */
+	private function instertIntoOrderedChildList(newChild:AbstractGraphicsContext):Void
+	{
+		//get the index of the new child to insert
+		var index:Int = getIndex(newChild.layerRenderer.rootElementRenderer);
+		
+		//flasg set to true once the child has found its index in the array
+		var isInserted:Bool = false;
+		
+		//a new list will replace the current one
+		var newOrderedChildList:Array<AbstractGraphicsContext> = new Array<AbstractGraphicsContext>();
+		
+		/**
+		 * Loop in all the list to find the right
+		 * index for the new child
+		 */
+		for (i in 0..._orderedChildList.length)
+		{
+			//the index of the current child
+			var childIndex:Int = getIndex(_orderedChildList[i].layerRenderer.rootElementRenderer);
+			
+			//the new child is inserted before the first child with a 
+			//z-index superior to its own
+			if (index < childIndex && isInserted == false)
+			{
+				newOrderedChildList.push(newChild);
+				isInserted = true;
+			}
+			
+			newOrderedChildList.push(_orderedChildList[i]);
+		}
+		
+		//here, the new child was not inserted yet, it might
+		//either be the first element in the array or should be placed last
+		if (isInserted == false)
+		{
+			newOrderedChildList.push(newChild);
+		}
+		
+		_orderedChildList = newOrderedChildList;
+	}
+	
+	/**
+	 * Utils mehod returning the z-index of an ElementRenderer.
+	 * If the ElementRenderer is not positioned, it always has
+	 * a z-index of 0 and is inserted visually following document
+	 * order
+	 */
+	private function getIndex(elementRenderer:ElementRenderer):Int
+	{
+		var index:Int = 0;
+		
+		if (elementRenderer.isPositioned() == true)
+		{
+			//TODO 1 : for some reason CoreStyle is null on InitialBlockRenderer at this point
+			if (elementRenderer.coreStyle != null)
+			{
+				switch (elementRenderer.coreStyle.computedStyle.zIndex)
+				{
+					case ZIndex.integer(value):
+						index = value;
+						
+					default:	
+				}
+			}
+		}
+		
+		return index;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -87,6 +87,8 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	private var _windowHeight:Int;
 	
+	private var _hasOwnGraphicsContext:Bool;
+	
 	/**
 	 * class constructor. init class attributes
 	 */
@@ -100,7 +102,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		_positiveZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		_negativeZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		
-		graphicsContext = new GraphicsContext(this);
+		_hasOwnGraphicsContext = false;
 		
 		_windowWidth = 0;
 		_windowHeight = 0;
@@ -119,8 +121,8 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	override public function appendChild(newChild:LayerRenderer):LayerRenderer
 	{
 		super.appendChild(newChild);
-
-		graphicsContext.appendChild(newChild.graphicsContext);
+		
+		newChild.attach();
 		
 		//check the computed z-index of the ElementRenderer which
 		//instantiated the child LayerRenderer
@@ -170,11 +172,85 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			}
 		}
 		
-		graphicsContext.removeChild(oldChild.graphicsContext);
+		oldChild.detach();
 		
 		super.removeChild(oldChild);
 	
 		return oldChild;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC ATTACHEMENT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	public function attach():Void
+	{
+		attachGraphicsContext();
+		
+		var length:Int = childNodes.length;
+		for (i in 0...length)
+		{
+			var child:LayerRenderer = childNodes[i];
+			child.attach();
+		}
+	}
+	
+	public function detach():Void
+	{
+		var length:Int = childNodes.length;
+		for (i in 0...length)
+		{
+			var child:LayerRenderer = childNodes[i];
+			child.detach();
+		}
+		
+		detachGraphicsContext();
+	}
+	
+	private function attachGraphicsContext():Void
+	{
+		//create the LayerRenderer if needed
+		if (graphicsContext == null)
+		{
+			if (parentNode != null)
+			{
+				if (parentNode.graphicsContext != null)
+				{
+					createGraphicsContext(parentNode.graphicsContext);
+				}
+			}
+		}
+	}
+	
+	private function detachGraphicsContext():Void 
+	{
+		if (_hasOwnGraphicsContext == true)
+		{
+			parentNode.graphicsContext.removeChild(graphicsContext);
+			graphicsContext.dispose();
+			_hasOwnGraphicsContext = false;
+		}
+		
+		graphicsContext = null;
+	}
+	
+	private function createGraphicsContext(parentGraphicsContext:GraphicsContext):Void
+	{
+		if (establishesNewGraphicsContext() == true)
+		{
+			graphicsContext = new GraphicsContext(this);
+			parentGraphicsContext.appendChild(graphicsContext);
+			_hasOwnGraphicsContext = true;
+		}
+		else
+		{
+			graphicsContext = parentGraphicsContext;
+		}
+	}
+	
+	private function establishesNewGraphicsContext():Bool
+	{
+		return false;
 	}
 	
 	/////////////////////////////////
@@ -185,14 +261,12 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 * Starts the rendering of this LayerRenderer.
 	 * Render all its child layers and its root ElementRenderer
 	 * 
-	 * @param	parentGraphicsContext the graphics context of the parent
-	 * LayerRenderer onto which the graphics context of this LayerRenderer
-	 * is painted
 	 * @param windowWidth the current width of the window
 	 * @param windowHeight the current height of the window
 	 */
-	public function render(parentGraphicsContext:GraphicsContext, windowWidth:Int, windowHeight:Int ):Void
+	public function render(windowWidth:Int, windowHeight:Int ):Void
 	{
+		
 		//update the dimension of the bitmap data if the window size changed
 		//since last rendering
 		if (windowWidth != _windowWidth || windowHeight != _windowHeight)
@@ -201,15 +275,18 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			_windowWidth = windowWidth;
 			_windowHeight = windowHeight;
 		}
-		
-		//reset the bitmap
-		graphicsContext.clear();
+	
+		if (_hasOwnGraphicsContext == true)
+		{
+			//reset the bitmap
+			graphicsContext.clear();
+		}
 		
 		//render first negative z-index child LayerRenderer from most
 		//negative to least negative
 		for (i in 0..._negativeZIndexChildLayerRenderers.length)
 		{
-			_negativeZIndexChildLayerRenderers[i].render(graphicsContext, windowWidth, windowHeight);
+			_negativeZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
 		}
 		
 		//render the rootElementRenderer itself which will also
@@ -219,14 +296,14 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//render zero and auto z-index child LayerRenderer, in tree order
 		for (i in 0..._zeroAndAutoZIndexChildLayerRenderers.length)
 		{
-			_zeroAndAutoZIndexChildLayerRenderers[i].render(graphicsContext, windowWidth, windowHeight);
+			_zeroAndAutoZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
 		}
 		
 		//render all the positive LayerRenderer from least positive to 
 		//most positive
 		for (i in 0..._positiveZIndexChildLayerRenderers.length)
 		{
-			_positiveZIndexChildLayerRenderers[i].render(graphicsContext, windowWidth, windowHeight);
+			_positiveZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
 		}
 		
 		//scrollbars are always rendered last as they should always be the top
@@ -241,11 +318,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			
 			graphicsContext.transform(getTransformationMatrix(graphicsContext));
 		}
-		
-		//TODO 1 : should not need this but for now bug when this initial LayerRenderer is detached, HtmlDocuement's graphicContext
-		//don't have a reference to it anymore and display nothing, there should be an InitialLayerRenderer which never gets removed
-		
-		//parentGraphicsContext.copyPixels(graphicsContext.nativeBitmapData, { x:0.0, y:0.0, width:_windowWidth, height:_windowHeight }, { x:0.0, y:0.0 } );
 		
 		//TODO 1 : apply opacity to graphic context + opacity should create layer
 	}
@@ -334,29 +406,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		
 		return relativeOffset;
 	}	
-	
-	/////////////////////////////////
-	// PUBLIC LAYER TREE METHODS
-	////////////////////////////////
-	
-	/**
-	 * Utils method used by ElementRenderer to register themselves when they have a z-index of
-	 * 'auto'. Stores them in the zero and auto child root ElementRenderer array.
-	 * As those ElementRenderer don't create LayerRenderer for themselves, they are not registered
-	 * when their LayerRenderer is appended to is parent
-	 */
-	public function insertAutoZIndexChildElementRenderer(elementRenderer:ElementRenderer):Void
-	{
-		//_zeroAndAutoZIndexChildElementRenderers.push(elementRenderer);
-	}
-	
-	/**
-	 * Utils method to unregister ElementRenderer with a z-index of 'auto'
-	 */ 
-	public function removeAutoZIndexChildElementRenderer(elementRenderer:ElementRenderer):Void
-	{
-		//_zeroAndAutoZIndexChildElementRenderers.remove(elementRenderer);
-	}
 	
 	/////////////////////////////////
 	// PRIVATE LAYER TREE METHODS

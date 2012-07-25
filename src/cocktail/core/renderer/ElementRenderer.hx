@@ -190,16 +190,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	private var _hasOwnLayer:Bool;
 	
 	/**
-	 * flag similar to hasOwnLayer. When an ElementRenderer is auto z-index
-	 * positioned, it must remove itself from its layerRenderer when detached.
-	 * This flag ensures that it does, as if for instance the detachement was
-	 * caused by the change of this ElementRenderer z-index from auto to an integer,
-	 * without this flags, it won't know that it was auto z-index positioned 
-	 * at the time of detachement
-	 */
-	private var _wasAutoZIndexPositioned:Bool;
-	
-	/**
 	 * flag similar to the above. When an ElementRenderer is attached, if it
 	 * is positioned, it registers itself with its first positioned ancestor.
 	 * This flasg is there to ensure that, when detached, the ElementRenderer
@@ -253,7 +243,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		this.domNode = domNode;
 		
 		_hasOwnLayer = false;
-		_wasAutoZIndexPositioned = false;
 		_wasPositioned = false;
 		
 		bounds = {
@@ -299,8 +288,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		super.appendChild(newChild);
 		
-		var elementRendererChild:ElementRenderer = newChild;
-		elementRendererChild.attach();
+		newChild.attach();
 		
 		invalidate(InvalidationReason.other);
 		return newChild;
@@ -314,8 +302,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		//must happen before calling super, else the ElementRenderer
 		//won't have a parent anymore
-		var elementRendererChild:ElementRenderer = oldChild;
-		elementRendererChild.detach();
+		oldChild.detach();
 		
 		super.removeChild(oldChild);
 		invalidate(InvalidationReason.other);
@@ -482,7 +469,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRVIATE ATTACHEMENT METHODS
+	// PRIVATE ATTACHEMENT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -518,20 +505,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			var parent:ElementRenderer = parentNode;
 			parent.layerRenderer.removeChild(layerRenderer);
 			_hasOwnLayer = false;
-		}
-		//else if the ElementRenderer was auto z-index positioned when attached,
-		//it means that it was added to the LayerRenderer
-		//as a auto positioned child and must now be removed from it
-		else if (_wasAutoZIndexPositioned == true)
-		{
-			//TODO 3 : is LayerRenderer supposed to be null ?, detachLayer seems
-			//to be called before attachLayer in some case, shouldn't arrive here
-			//if it does
-			if (layerRenderer != null)
-			{
-				layerRenderer.removeAutoZIndexChildElementRenderer(this);
-			}
-			_wasAutoZIndexPositioned = false;
 		}
 		
 		layerRenderer = null;
@@ -714,17 +687,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	}
 	
 	/**
-	 * Determine wether this ElementRenderer is 
-	 * both positioned and has an 'auto' z-index value,
-	 * which influence the rendering order of its
-	 * LayerRenderer
-	 */
-	private function isAutoZIndexPositioned():Bool
-	{
-		return false;
-	}
-	
-	/**
 	 * Create a new LayerRenderer for this ElementRenderer or
 	 * use the one from its parent
 	 */
@@ -739,19 +701,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		else
 		{
 			layerRenderer = parentLayer;
-			
-			//if the ElementRenderer is positioned with
-			//an 'auto' z-index value, then it must be added
-			//in a special array in its LayerRenderer has it will
-			//be rendered during its own rendering phase
-			if (isAutoZIndexPositioned() == true)
-			{
-				layerRenderer.insertAutoZIndexChildElementRenderer(this);
-				
-				//flag that this ElementRenderer was added as auto zindex child,
-				//to be sure that it is removed when detach is called
-				_wasAutoZIndexPositioned = true;
-			}
 		}
 	}
 	

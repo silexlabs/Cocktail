@@ -99,6 +99,16 @@ class GraphicsContext extends AbstractGraphicsContext
 	////////////////////////////////
 	
 	/**
+	 * clean-up flash native objects
+	 */
+	override public function dispose():Void
+	{
+		_nativeBitmap.bitmapData.dispose();
+		_nativeBitmap = null;
+		_nativeLayer = null;
+	}
+	
+	/**
 	 * Apply a native flash trnasformation matrix to the 
 	 * native layer Sprite
 	 */
@@ -115,6 +125,8 @@ class GraphicsContext extends AbstractGraphicsContext
 	{
 		super.appendChild(newChild);
 		
+		//refresh all the native flash display list
+		//TODO 3 : shouldn't have to re-attach all, should only attach new item at right index
 		for (i in 0..._orderedChildList.length)
 		{
 			_childrenNativeLayer.addChild(_orderedChildList[i].nativeLayer);

@@ -167,25 +167,11 @@ class HTMLDocument extends Document
 	private var _documentNeedsRendering:Bool;
 	
 	/**
-	 * Wheter the drawing surface size needs to be updated
-	 * after the viewport changed size
-	 */
-	private var _graphicsContextInvalidated:Bool;
-	
-	/**
 	 * This class is in charge of keeping track of the
 	 * current touch points and of creating cross-platform
 	 * TouchEvent
 	 */
 	private var _multiTouchManager:MultiTouchManager;
-	
-	/**
-	 * the drawing surface onto which the whole
-	 * document will be painted onto
-	 * before being displayed to 
-	 * the screen
-	 */
-	private var _documentGraphicsContext:GraphicsContext;
 	
 	/**
 	 * A ref to the global Window object
@@ -203,9 +189,6 @@ class HTMLDocument extends Document
 		
 		_multiTouchManager = new MultiTouchManager();
 		
-		//init the document graphics context onto which all the document is painted
-		_documentGraphicsContext = new GraphicsContext(null, _window.platform.nativeWindow.getInitialNativeLayer());
-		
 		documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
 		
 		//as the HTML htmlElement is the root
@@ -221,7 +204,6 @@ class HTMLDocument extends Document
 		_invalidationScheduled = false;
 		_documentNeedsLayout = true;
 		_documentNeedsRendering = true;
-		_graphicsContextInvalidated = true;
 	}
 	
 	/**
@@ -236,20 +218,6 @@ class HTMLDocument extends Document
 		documentElement.appendChild(body);
 		_hoveredElementRenderer = body.elementRenderer;
 		activeElement = body;
-	}
-	
-	/**
-	 * Get a reference to the initial LayerRenderer's
-	 * graphicContext
-	 */
-	public function initGraphicContext():Void
-	{
-		for (i in 0..._documentGraphicsContext.childNodes.length)
-		{
-			_documentGraphicsContext.removeChild(_documentGraphicsContext.childNodes[i]);
-		}
-		
-		_documentGraphicsContext.appendChild(documentElement.elementRenderer.layerRenderer.graphicsContext);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -462,7 +430,6 @@ class HTMLDocument extends Document
 	public function onPlatformResizeEvent(event:UIEvent):Void
 	{
 		documentElement.invalidate(InvalidationReason.windowResize);
-		_graphicsContextInvalidated = true;
 	}
 	
 	/**
@@ -720,20 +687,11 @@ class HTMLDocument extends Document
 	
 	/**
 	 * Start rendering the rendering
-	 * tree, starting with the root ElementRenderer
+	 * tree, starting with the root LayerRenderer
 	 */ 
 	private function startRendering():Void
 	{
-		//update the size of the document bitmap if necessary
-		if (_graphicsContextInvalidated == true)
-		{
-			_documentGraphicsContext.initBitmapData(_window.innerWidth, _window.innerHeight);
-			_graphicsContextInvalidated = false;
-		}
-			
-		//start the rendering at the root layer renderer
-		_documentGraphicsContext.clear();
-		documentElement.elementRenderer.layerRenderer.render(_documentGraphicsContext, _window.innerWidth, _window.innerHeight);
+		documentElement.elementRenderer.layerRenderer.render(_window.innerWidth, _window.innerHeight);
 	}
 	
 	/**

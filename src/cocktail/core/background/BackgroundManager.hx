@@ -163,8 +163,8 @@ class BackgroundManager
 					var computedGradientStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
 					style, backgroundBox, resource.intrinsicWidth, resource.intrinsicHeight, resource.intrinsicRatio, backgroundPosition,
 					backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
-					
 				
+					
 					doDrawBackgroundImage(graphicContext,
 					resource,
 					computedGradientStyles.backgroundOrigin,
@@ -220,10 +220,10 @@ class BackgroundManager
 	 * @param	computedBackgroundPosition
 	 * @param	backgroundRepeat
 	 */
-		public static function doDrawBackgroundImage(graphicContext:GraphicsContext, resource:Resource,
-		backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, intrinsicWidth:Float,
-		intrinsicHeight:Float, intrinsicRatio:Float, computedBackgroundSize:DimensionData,
-		computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeat):Void
+	public static function doDrawBackgroundImage(graphicContext:GraphicsContext, resource:Resource,
+	backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, intrinsicWidth:Float,
+	intrinsicHeight:Float, intrinsicRatio:Float, computedBackgroundSize:DimensionData,
+	computedBackgroundPosition:PointData, backgroundRepeat:BackgroundRepeat):Void
 	{	
 		var totalWidth:Float = computedBackgroundPosition.x + backgroundPositioningBox.x;
 		var maxWidth:Float =  backgroundPaintingBox.x + backgroundPaintingBox.width;
@@ -301,6 +301,7 @@ class BackgroundManager
 				width:intWidth,
 				height:intHeight
 			}
+			
 			while (totalHeight < maxHeight)
 			{
 				graphicContext.copyPixels(resource.nativeResource, box, destinationPoint );

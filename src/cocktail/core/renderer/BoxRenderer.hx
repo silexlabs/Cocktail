@@ -291,25 +291,6 @@ class BoxRenderer extends InvalidatingElementRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Determine wether the ElementRenderer is both positioned
-	 * and have an 'auto' z-index value, as if it does, it 
-	 * means it doesn't have to establish a new stacking context
-	 */
-	override private function isAutoZIndexPositioned():Bool
-	{
-		if (isPositioned() == false)
-		{
-			return false;
-		}
-		
-		return coreStyle.computedStyle.zIndex == ZIndex.cssAuto;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	

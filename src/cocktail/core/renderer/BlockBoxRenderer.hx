@@ -295,12 +295,12 @@ class BlockBoxRenderer extends ScrollableRenderer
 	{
 		if (_horizontalScrollBar != null)
 		{
-			_horizontalScrollBar.elementRenderer.layerRenderer.render(graphicContext, windowWidth, windowHeight );
+			_horizontalScrollBar.elementRenderer.layerRenderer.render(windowWidth, windowHeight );
 		}
 		
 		if (_verticalScrollBar != null)
 		{
-			_verticalScrollBar.elementRenderer.layerRenderer.render(graphicContext, windowWidth, windowHeight);
+			_verticalScrollBar.elementRenderer.layerRenderer.render(windowWidth, windowHeight);
 		}
 	}
 	

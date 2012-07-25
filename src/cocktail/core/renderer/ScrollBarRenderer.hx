@@ -58,11 +58,6 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override private function isAutoZIndexPositioned():Bool
-	{
-		return false;
-	}
-	
 	/**
 	 * The containing block of a scrollbar is always the block box
 	 * renderer which instantiated it

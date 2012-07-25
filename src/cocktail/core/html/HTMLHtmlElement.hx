@@ -47,12 +47,6 @@ class HTMLHtmlElement extends HTMLElement
 	override private function createElementRenderer():Void
 	{ 
 		elementRenderer = new InitialBlockRenderer(this);
-		
-		//the htmlDocument has a reference to the graphic context of the 
-		//LayerRenderer created by the InitialBlockRenderer, so when it is
-		//instantiated, the htmlDocument must update its reference
-		var htmlDocument:HTMLDocument = cast(ownerDocument);
-		htmlDocument.initGraphicContext();
 	}
 	
 	/**
