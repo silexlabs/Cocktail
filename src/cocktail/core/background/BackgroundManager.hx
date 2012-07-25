@@ -325,12 +325,15 @@ class BackgroundManager
 		{
 			var matrix:Matrix = new Matrix();
 			
+			backgroundPaintingBox.x += backgroundBox.x;
+			backgroundPaintingBox.y += backgroundBox.y;
+
 			while (totalHeight < maxHeight)
 			{
 				
 				matrix.identity();
 				
-				matrix.translate(totalWidth, totalHeight);
+				matrix.translate(totalWidth+backgroundBox.x, totalHeight+backgroundBox.y);
 				
 				matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight);
 				
