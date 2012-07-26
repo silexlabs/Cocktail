@@ -39,15 +39,17 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * Overriden to process width before margins. For an embedded element a
 	 * computed width can always be computed event when width is auto
 	 */
-	override private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	override private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
 		//width
-		style.computedStyle.width = getComputedAutoWidth(style, containingBlockData, fontMetrics);
+		var computedWidth:Float = getComputedAutoWidth(style, containingBlockData, fontMetrics);
 			
 		//left margin
-		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingBlockData, fontMetrics);
+		style.computedStyle.marginLeft = getComputedMarginLeft(style, computedWidth, containingBlockData, fontMetrics);
 		//right margin
-		style.computedStyle.marginRight = getComputedMarginRight(style, containingBlockData, fontMetrics);
+		style.computedStyle.marginRight = getComputedMarginRight(style, computedWidth, containingBlockData, fontMetrics);
+		
+		return computedWidth;
 	}
 	
 	/**
