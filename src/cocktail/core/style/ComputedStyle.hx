@@ -228,76 +228,17 @@ class ComputedStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE DIMENSIONS CONSTRAINTS METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Constrain computed width if it is above/below max/min width
-	 */
-	private function constrainWidth(style:CoreStyle, computedWidth:Float):Float
-	{
-		var computedStyle:ComputedStyle = style.computedStyle;
-		
-		//check that the computedWidth is not 
-		//superior to max width. The max width
-		//can be defined as "none" if there are 
-		//no width limit on this HTMLElement
-		if (style.maxWidth != ConstrainedDimension.none)
-		{
-			if (computedWidth > computedStyle.maxWidth)
-			{
-				computedWidth = computedStyle.maxWidth;
-			}
-		}
-		
-		//check that width is superior to min width
-		if (computedWidth < computedStyle.minWidth)
-		{
-			computedWidth = computedStyle.minWidth;
-		}
-		
-		return computedWidth;
-	}
-	
-	/**
-	 * Constrain computed height if it is above/below max/min height
-	 */
-	private function constrainHeight(style:CoreStyle, computedHeight:Float):Float
-	{
-		var computedStyle:ComputedStyle = style.computedStyle;
-	
-		//check that height is within authorised range
-		if (style.maxHeight != ConstrainedDimension.none)
-		{
-			if (computedHeight > computedStyle.maxHeight)
-			{
-				computedHeight = computedStyle.maxHeight;
-			}
-		}
-		
-		//check that height is superior to min height
-		if (computedHeight < computedStyle.minHeight)
-		{
-			computedHeight = computedStyle.minHeight;
-		}
-		
-		return computedHeight;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	private function set_width(value:Float):Float 
 	{
-		width = constrainWidth(_coreStyle, value);
-		return value;
+		return width = value;
 	}
 	
 	private function set_height(value:Float):Float 
 	{
-		height = constrainHeight(_coreStyle, value);
-		return value;
+		return height = value;
 	}
 	
 	private function set_marginLeft(value:Float):Float

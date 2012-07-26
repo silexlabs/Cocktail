@@ -36,18 +36,188 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	}
 	
 	/**
+	 * Overriden, as dimensions constraints are applied differently
+	 * for embedded block
+	 */
+	override private function measureDimensionsAndMargins(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	{
+		var computedWidth:Float = measureWidthAndHorizontalMargins(style, containingBlockData, fontMetrics);
+		var computedHeight:Float = measureHeightAndVerticalMargins(style, containingBlockData, fontMetrics);
+		
+		if (style.width == Dimension.cssAuto && style.height == Dimension.cssAuto)
+		{
+			//apply a constrain algorithm specific to embedded elements
+			constrainDimensions(style, computedWidth, computedHeight);
+		}
+		else
+		{
+			//apply regular constrain algorithm
+			style.computedStyle.width = constrainWidth(style, computedWidth);
+			style.computedStyle.height = constrainHeight(style, computedHeight);
+		}
+	}
+	
+	/**
+	 * Constrain the width and height of the embedded HTMLElement,
+	 * this method is an implementation of the following table :
+	 * http://www.w3.org/TR/CSS2/visudet.html#min-max-widths
+	 * 
+	 * For embedded elements, min/max width/height might be linked, for instance,
+	 * applying a max height can also constrain the width to keep aspect ratio
+	 */
+	private function constrainDimensions(style:CoreStyle, computedWidth:Float, computedHeight:Float):Void
+	{
+		var maxHeight:Float = style.computedStyle.maxHeight;
+		var minHeight:Float = style.computedStyle.minHeight;
+		var maxWidth:Float = style.computedStyle.maxWidth;
+		var minWidth:Float = style.computedStyle.minWidth;
+		
+		//set flag for each contrain type
+		var widthSuperiorToMaxWidth:Bool = false;
+		if (style.maxWidth != ConstrainedDimension.none)
+		{
+			widthSuperiorToMaxWidth = computedWidth > maxWidth;
+		}
+		
+		var heightSuperiorToMaxHeight:Bool = false;
+		if (style.maxHeight != ConstrainedDimension.none)
+		{
+			heightSuperiorToMaxHeight = computedHeight > maxHeight;
+		}
+		
+		var widthInferiorToMinWidth:Bool = computedWidth < minWidth;
+		var heightInferiorToMinHeight:Bool = computedHeight < minHeight;
+		
+		//apply the dimensions constrained
+		//this alghorithm is not very elegant, but this is a straight
+		//adaption from the min/max table of constraints of CSS
+		if (widthSuperiorToMaxWidth == true)
+		{
+			if (heightSuperiorToMaxHeight == true)
+			{
+				if ((maxWidth / computedWidth) <= (maxHeight / computedHeight))
+				{
+					if (minHeight > maxWidth * (computedHeight / computedWidth))
+					{
+						computedHeight = minHeight;
+					}
+					else
+					{
+						computedHeight = maxWidth * (computedHeight / computedWidth);
+					}
+					computedWidth = maxWidth;
+				}
+			}
+			else if (heightInferiorToMinHeight == true)
+			{
+				computedWidth = maxWidth;
+				computedHeight = minHeight;
+			}
+			else
+			{
+				if (maxWidth * (computedHeight / computedWidth) > minHeight)
+				{
+					computedHeight = maxWidth * (computedHeight / computedWidth);
+				}
+				else
+				{
+					computedHeight = minHeight;
+				}
+				computedWidth = maxWidth;
+			}
+		}
+		else if (widthInferiorToMinWidth == true)
+		{
+			if (heightInferiorToMinHeight == true)
+			{
+				if (minWidth / computedWidth <= minHeight / computedHeight)
+				{
+					if (maxWidth < minHeight * (computedWidth / computedHeight))
+					{
+						computedWidth = maxWidth;
+					}
+					else
+					{
+						computedWidth = minHeight * (computedWidth / computedHeight);
+					}
+					computedHeight = minHeight;
+				}
+				else
+				{
+					if (maxHeight < minWidth * (computedHeight / computedWidth))
+					{
+						computedHeight = maxHeight;
+					}
+					else
+					{
+						computedHeight = minWidth * (computedHeight / computedWidth);
+					}
+					computedWidth = minWidth;
+				}
+			}
+			else if (heightSuperiorToMaxHeight == true)
+			{
+				computedWidth = minWidth;
+				computedHeight = maxHeight;
+			}
+			else
+			{
+				if (minWidth * (computedHeight / computedWidth) < maxHeight)
+				{
+					computedHeight = minWidth * (computedHeight / computedWidth);
+				}
+				else
+				{
+					computedHeight = maxHeight;
+				}
+				computedWidth = minWidth;
+			}
+		}
+		else if (heightSuperiorToMaxHeight == true)
+		{
+			if (maxHeight * (computedWidth / computedHeight) > minWidth)
+			{
+				computedWidth = maxHeight * (computedWidth / computedHeight);
+			}
+			else
+			{
+				computedWidth = minWidth;
+			}
+			computedHeight = maxHeight;
+		}
+		else if (heightInferiorToMinHeight == true)
+		{
+			if (minHeight * (computedWidth / computedHeight) < minHeight)
+			{
+				computedWidth = minHeight * (computedWidth / computedHeight);
+			}
+			else
+			{
+				computedWidth = minHeight;
+			}
+			computedHeight = minHeight;
+		}
+		
+		style.computedStyle.width = computedWidth;
+		style.computedStyle.height = computedHeight;
+	}
+	
+	
+	/**
 	 * Overriden to process width before margins. For an embedded element a
 	 * computed width can always be computed event when width is auto
 	 */
-	override private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	override private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
 		//width
-		style.computedStyle.width = getComputedAutoWidth(style, containingBlockData, fontMetrics);
+		var computedWidth:Float = getComputedAutoWidth(style, containingBlockData, fontMetrics);
 			
 		//left margin
-		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingBlockData, fontMetrics);
+		style.computedStyle.marginLeft = getComputedMarginLeft(style, computedWidth, containingBlockData, fontMetrics);
 		//right margin
-		style.computedStyle.marginRight = getComputedMarginRight(style, containingBlockData, fontMetrics);
+		style.computedStyle.marginRight = getComputedMarginRight(style, computedWidth, containingBlockData, fontMetrics);
+		
+		return computedWidth;
 	}
 	
 	/**
@@ -113,7 +283,6 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		{
 			//compute the used height
 			var computedHeight:Float = getComputedDimension(style.height, containingBlockData.height, containingBlockData.isHeightAuto, fontMetrics.fontSize, fontMetrics.xHeight);
-			style.computedStyle.height = computedHeight;
 			
 			//deduce the width from the intrinsic ratio and the computed height
 			if (embeddedHTMLElement.intrinsicRatio != null)
@@ -186,7 +355,6 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			
 			//compute the used value of 'width'
 			var computedWidth:Float = getComputedDimension(style.width, containingBlockData.width, containingBlockData.isWidthAuto, fontMetrics.fontSize, fontMetrics.xHeight);
-			style.computedStyle.width = computedWidth;
 			
 			//deduce the height from the computed width and the intrinsic ratio if it is defined
 			if (embeddedHTMLElement.intrinsicRatio != null)
