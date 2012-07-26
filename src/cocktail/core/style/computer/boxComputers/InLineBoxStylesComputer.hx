@@ -42,30 +42,33 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * vertical margins don't apply to non-embedded inline HTMLElements
 	 */
-	override private function measureAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	override private function measureAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
 		//the height is set to null by default
-		style.computedStyle.height = getComputedAutoHeight(style, containingBlockData, fontMetrics);
+		var computedHeight:Float = getComputedAutoHeight(style, containingBlockData, fontMetrics);
 		
 		//left margin
 		style.computedStyle.marginTop = 0.0;
 		//right margin
 		style.computedStyle.marginBottom = 0.0;
 	
+		return computedHeight;
 	}
 	
 	/**
 	 * vertical margins don't apply to non-embedded inline HTMLElements
 	 */
-	override private function measureHeight(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	override private function measureHeight(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
 		//get the computed height in pixel
-		style.computedStyle.height = getComputedHeight(style, containingBlockData, fontMetrics);
+		var computedHeight:Float = getComputedHeight(style, containingBlockData, fontMetrics);
 		
 		//left margin
 		style.computedStyle.marginTop = 0.0;
 		//right margin
 		style.computedStyle.marginBottom = 0.0;
+		
+		return computedHeight;
 	}
 	
 	/**

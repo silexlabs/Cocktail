@@ -73,8 +73,7 @@ class BoxStylesComputer
 		
 		//measure width, height and margins at the same time, as margins can influence or be
 		//influenced by the width and height of the HTMLElement
-		measureWidthAndHorizontalMargins(style, containingBlockData, fontMetrics);
-		measureHeightAndVerticalMargins(style, containingBlockData, fontMetrics);
+		measureDimensionsAndMargins(style, containingBlockData, fontMetrics);
 		
 		//measure the top, left, right and bottom offsets
 		//used when the HTMLElement is 'positioned' (any position style
@@ -134,6 +133,17 @@ class BoxStylesComputer
 		style.computedStyle.bottom = getComputedPositionOffset(style.bottom, containingBlockData.height, fontMetrics.fontSize, fontMetrics.xHeight);
 	}
 	
+	/**
+	 * Compute dimensions (width and height) and margins
+	 * styles
+	 */
+	private function measureDimensionsAndMargins(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	{
+		//compute the margins and the constrained width and height
+		style.computedStyle.width = constrainWidth(style, measureWidthAndHorizontalMargins(style, containingBlockData, fontMetrics));
+		style.computedStyle.height = constrainHeight(style, measureHeightAndVerticalMargins(style, containingBlockData, fontMetrics));
+	}
+	
 
 	// PADDINGS
 	/////////////////////////////////
@@ -171,15 +181,15 @@ class BoxStylesComputer
 	 * Measure the width and the horizontal margins
 	 * of the HTMLElement
 	 */
-	private function measureWidthAndHorizontalMargins(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	private function measureWidthAndHorizontalMargins(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
 		if (style.width == Dimension.cssAuto)
 		{
-			measureAutoWidth(style, containingBlockData, fontMetrics);
+			return measureAutoWidth(style, containingBlockData, fontMetrics);
 		}
 		else
 		{
-			measureWidth(style, containingBlockData, fontMetrics);
+			return measureWidth(style, containingBlockData, fontMetrics);
 		}
 	}
 	
@@ -192,19 +202,19 @@ class BoxStylesComputer
 	 * An auto width is equal to the containing HTMLElement width minus
 	 * horizontal paddings and margins.
 	 */
-	private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
 		//the width is first set to 0, 
 		//it will be computed once the margins are computed
-		style.computedStyle.width = 0.0;	
+		var computedWidth:Float = 0.0;	
 		
 		//left margin
-		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingBlockData, fontMetrics);
+		style.computedStyle.marginLeft = getComputedMarginLeft(style, computedWidth, containingBlockData, fontMetrics);
 		//right margin
-		style.computedStyle.marginRight = getComputedMarginRight(style, containingBlockData, fontMetrics);
+		style.computedStyle.marginRight = getComputedMarginRight(style, computedWidth, containingBlockData, fontMetrics);
 
 		//the width is computed now that the sizes of the margins are computed
-		style.computedStyle.width = getComputedAutoWidth(style, containingBlockData, fontMetrics);
+		return getComputedAutoWidth(style, containingBlockData, fontMetrics);
 	}
 	
 	/**
@@ -213,15 +223,17 @@ class BoxStylesComputer
 	 * HTMLElement width or a length value defined
 	 * in pixels or any other length unit
 	 */
-	private function measureWidth(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	private function measureWidth(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
 		//get the content width (width without margins and paddings)
-		style.computedStyle.width = getComputedWidth(style, containingBlockData, fontMetrics);
+		var computedWidth:Float = getComputedWidth(style, containingBlockData, fontMetrics);
 		
 		//left margin
-		style.computedStyle.marginLeft = getComputedMarginLeft(style, containingBlockData, fontMetrics);
+		style.computedStyle.marginLeft = getComputedMarginLeft(style, computedWidth, containingBlockData, fontMetrics);
 		//right margin
-		style.computedStyle.marginRight = getComputedMarginRight(style, containingBlockData, fontMetrics);
+		style.computedStyle.marginRight = getComputedMarginRight(style, computedWidth, containingBlockData, fontMetrics);
+		
+		return computedWidth;
 	}
 	
 	// VERTICAL DIMENSIONS
@@ -232,7 +244,7 @@ class BoxStylesComputer
 	 * vertical margins of the 
 	 * HTMLElement
 	 */
-	private function measureHeightAndVerticalMargins(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	private function measureHeightAndVerticalMargins(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
 		//get the content height (height without margins and paddings)
 		//the height might be null at this point if it must take the content size
@@ -240,11 +252,11 @@ class BoxStylesComputer
 		
 		if (style.height == Dimension.cssAuto)
 		{
-			measureAutoHeight(style, containingBlockData, fontMetrics);
+			return measureAutoHeight(style, containingBlockData, fontMetrics);
 		}
 		else
 		{
-			measureHeight(style, containingBlockData, fontMetrics);
+			return measureHeight(style, containingBlockData, fontMetrics);
 		}
 	}
 	
@@ -259,16 +271,17 @@ class BoxStylesComputer
 	 * is the addition of all of the offset heights (margin + padding + content height)
 	 * of its children.
 	 */
-	private function measureAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	private function measureAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
-		//the height is set to null by default
-		style.computedStyle.height = getComputedAutoHeight(style, containingBlockData, fontMetrics);
+		//the auto height is set to 0 by default
+		var computedHeight:Float = getComputedAutoHeight(style, containingBlockData, fontMetrics);
 		
 		//left margin
-		style.computedStyle.marginTop = getComputedMarginTop(style, containingBlockData, fontMetrics);
+		style.computedStyle.marginTop = getComputedMarginTop(style, computedHeight, containingBlockData, fontMetrics);
 		//right margin
-		style.computedStyle.marginBottom = getComputedMarginBottom(style, containingBlockData, fontMetrics);
-	
+		style.computedStyle.marginBottom = getComputedMarginBottom(style, computedHeight, containingBlockData, fontMetrics);
+		
+		return computedHeight;
 	}
 	
 	/**
@@ -278,15 +291,17 @@ class BoxStylesComputer
 	 * or a length value exprimend in a supported unit, such
 	 * as pixel
 	 */
-	private function measureHeight(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	private function measureHeight(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
 		//get the computed height in pixel
-		style.computedStyle.height = getComputedHeight(style, containingBlockData, fontMetrics);
+		var computedHeight:Float = getComputedHeight(style, containingBlockData, fontMetrics);
 		
 		//left margin
-		style.computedStyle.marginTop = getComputedMarginTop(style, containingBlockData, fontMetrics);
+		style.computedStyle.marginTop = getComputedMarginTop(style, computedHeight, containingBlockData, fontMetrics);
 		//right margin
-		style.computedStyle.marginBottom = getComputedMarginBottom(style, containingBlockData, fontMetrics);
+		style.computedStyle.marginBottom = getComputedMarginBottom(style, computedHeight, containingBlockData, fontMetrics);
+		
+		return computedHeight;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -344,33 +359,33 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the left margin and return it as pixels
 	 */
-	private function getComputedMarginLeft(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
+	private function getComputedMarginLeft(style:CoreStyle, computedWidth:Float, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
-		return getComputedMargin(style.marginLeft, style.marginRight, containingBlockData.width, style.computedStyle.width, style.width == Dimension.cssAuto, style.computedStyle.paddingRight + style.computedStyle.paddingLeft, fontMetrics.fontSize, fontMetrics.xHeight, true  );
+		return getComputedMargin(style.marginLeft, style.marginRight, containingBlockData.width, computedWidth, style.width == Dimension.cssAuto, style.computedStyle.paddingRight + style.computedStyle.paddingLeft, fontMetrics.fontSize, fontMetrics.xHeight, true  );
 	}
 	
 	/**
 	 * Compute the size of the right margin and return it as pixels
 	 */
-	private function getComputedMarginRight(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
+	private function getComputedMarginRight(style:CoreStyle, computedWidth:Float, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
-		return getComputedMargin(style.marginRight, style.marginLeft, containingBlockData.width, style.computedStyle.width, style.width == Dimension.cssAuto, style.computedStyle.paddingRight + style.computedStyle.paddingLeft, fontMetrics.fontSize, fontMetrics.xHeight, true  );
+		return getComputedMargin(style.marginRight, style.marginLeft, containingBlockData.width, computedWidth, style.width == Dimension.cssAuto, style.computedStyle.paddingRight + style.computedStyle.paddingLeft, fontMetrics.fontSize, fontMetrics.xHeight, true  );
 	}
 	
 	/**
 	 * Compute the size of the top margin and return it as pixels
 	 */
-	private function getComputedMarginTop(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
+	private function getComputedMarginTop(style:CoreStyle, computedHeight:Float, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
-		return getComputedMargin(style.marginTop, style.marginBottom, containingBlockData.height, style.computedStyle.height, style.height == Dimension.cssAuto, style.computedStyle.paddingTop + style.computedStyle.paddingBottom, fontMetrics.fontSize, fontMetrics.xHeight, false  );
+		return getComputedMargin(style.marginTop, style.marginBottom, containingBlockData.height, computedHeight, style.height == Dimension.cssAuto, style.computedStyle.paddingTop + style.computedStyle.paddingBottom, fontMetrics.fontSize, fontMetrics.xHeight, false  );
 	}
 	
 	/**
 	 * Compute the size of the bottom margin and return it as pixels
 	 */
-	private function getComputedMarginBottom(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
+	private function getComputedMarginBottom(style:CoreStyle, computedHeight:Float, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
 	{
-		return getComputedMargin(style.marginBottom, style.marginTop, containingBlockData.height, style.computedStyle.height, style.height == Dimension.cssAuto, style.computedStyle.paddingTop + style.computedStyle.paddingBottom, fontMetrics.fontSize, fontMetrics.xHeight, false  );
+		return getComputedMargin(style.marginBottom, style.marginTop, containingBlockData.height, computedHeight, style.height == Dimension.cssAuto, style.computedStyle.paddingTop + style.computedStyle.paddingBottom, fontMetrics.fontSize, fontMetrics.xHeight, false  );
 	}
 	
 	/**
@@ -624,6 +639,63 @@ class BoxStylesComputer
 		}
 		
 		return computedPaddingValue;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE DIMENSIONS CONSTRAINTS METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Constrain computed width if it is above/below max/min width
+	 */
+	private function constrainWidth(style:CoreStyle, computedWidth:Float):Float
+	{
+		var computedStyle:ComputedStyle = style.computedStyle;
+		
+		//check that the computedWidth is not 
+		//superior to max width. The max width
+		//can be defined as "none" if there are 
+		//no width limit on this HTMLElement
+		if (style.maxWidth != ConstrainedDimension.none)
+		{
+			if (computedWidth > computedStyle.maxWidth)
+			{
+				computedWidth = computedStyle.maxWidth;
+			}
+		}
+		
+		//check that width is superior to min width
+		if (computedWidth < computedStyle.minWidth)
+		{
+			computedWidth = computedStyle.minWidth;
+		}
+		
+		return computedWidth;
+	}
+	
+	/**
+	 * Constrain computed height if it is above/below max/min height
+	 */
+	private function constrainHeight(style:CoreStyle, computedHeight:Float):Float
+	{
+		var computedStyle:ComputedStyle = style.computedStyle;
+	
+		//check that height is within authorised range
+		if (style.maxHeight != ConstrainedDimension.none)
+		{
+			if (computedHeight > computedStyle.maxHeight)
+			{
+				computedHeight = computedStyle.maxHeight;
+			}
+		}
+		
+		//check that height is superior to min height
+		if (computedHeight < computedStyle.minHeight)
+		{
+			computedHeight = computedStyle.minHeight;
+		}
+		
+		return computedHeight;
 	}
 	
 	
