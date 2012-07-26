@@ -140,6 +140,7 @@ class BoxStylesComputer
 	 */
 	private function measureDimensionsAndMargins(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
 	{
+		//compute the margins and the constrained width and height
 		style.computedStyle.width = constrainWidth(style, measureWidthAndHorizontalMargins(style, containingBlockData, fontMetrics));
 		style.computedStyle.height = constrainHeight(style, measureHeightAndVerticalMargins(style, containingBlockData, fontMetrics));
 	}
