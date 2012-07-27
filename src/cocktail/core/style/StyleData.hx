@@ -16,6 +16,7 @@ import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InlineBoxRenderer;
 import cocktail.core.renderer.TextRenderer;
+import cocktail.core.renderer.RendererData;
 	
 		// FONT STYLES
 	//////////////////////////////////////////////////////////////////////////////////////////
