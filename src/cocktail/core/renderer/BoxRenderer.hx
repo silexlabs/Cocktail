@@ -266,6 +266,12 @@ class BoxRenderer extends InvalidatingElementRenderer
 		{
 			return true;
 		}
+		//transparent ElementRenderer always have their own
+		//LayerRenderer for rendering purpose
+		else if (isTransparent() == true)
+		{
+			return true;
+		}
 		
 		//in all other cases, no new stacking context is created
 		return false;
@@ -287,6 +293,20 @@ class BoxRenderer extends InvalidatingElementRenderer
 			return true;
 		}
 		
+		return false;
+	}
+	
+	/**
+	 * Determine wheter the ElementRenderer is transparent
+	 * when rendered, as defined by its opacity style
+	 */
+	override public function isTransparent():Bool
+	{
+		if (coreStyle.opacity != 1.0)
+		{
+			return true;
+		}
+			
 		return false;
 	}
 	

@@ -330,9 +330,24 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			_negativeZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
 		}
 		
+		//init transparency on the graphicContext if the element is transparent. Everything
+		//painted with the element will have an alpha equal to the opacity style
+		if (rootElementRenderer.isTransparent() == true)
+		{
+			graphicsContext.beginTransparency(rootElementRenderer.coreStyle.computedStyle.opacity);
+		}
+		
 		//render the rootElementRenderer itself which will also
 		//render all ElementRenderer belonging to this LayerRenderer
 		rootElementRenderer.render(graphicsContext);
+		
+		//stop transparency so that subsequent painted element won't be transparent
+		//if they don't themselves have an opacity
+		if (rootElementRenderer.isTransparent() == true)
+		{
+			graphicsContext.endTransparency();
+		}
+		
 		
 		//render zero and auto z-index child LayerRenderer, in tree order
 		for (i in 0..._zeroAndAutoZIndexChildLayerRenderers.length)
@@ -356,11 +371,8 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		{
 			//TODO 2 : should already be computed at this point
 			rootElementRenderer.coreStyle.computeVisualEffectStyles();	
-			
 			graphicsContext.transform(getTransformationMatrix(graphicsContext));
 		}
-		
-		//TODO 1 : apply opacity to graphic context + opacity should create layer
 	}
 	
 	/////////////////////////////////

@@ -595,6 +595,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		return false;
 	}
 	
+	public function isTransparent():Bool
+	{
+		return false;
+	}
+	
 	public function isBlockContainer():Bool
 	{
 		return false;

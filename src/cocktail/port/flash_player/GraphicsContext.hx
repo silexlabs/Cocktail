@@ -11,6 +11,8 @@ import cocktail.core.unit.UnitData;
 import flash.display.BitmapData;
 import flash.display.PixelSnapping;
 import flash.display.Sprite;
+import flash.geom.ColorTransform;
+import flash.geom.Point;
 
 /**
  * The flash implementation of the graphics context. Use native
@@ -179,8 +181,17 @@ class GraphicsContext extends AbstractGraphicsContext
 		var matrixData:MatrixData = matrix.data;
 		var nativeMatrix:flash.geom.Matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 		
+		var colorTransform:ColorTransform = null;
+		
+		//use a colorTransform to apply the alphe if 
+		//transparency is used
+		if (_useTransparency == true)
+		{
+			colorTransform = new ColorTransform(1.0, 1.0, 1.0, _alpha);
+		}
+		
 		//draw the bitmap data onto the current bitmap data with the right transformations
-		_nativeBitmap.bitmapData.draw(bitmapData, nativeMatrix, null, null, nativeSourceRect, true);
+		_nativeBitmap.bitmapData.draw(bitmapData, nativeMatrix, colorTransform, null, nativeSourceRect, true);
 	}
 	
 	/**
@@ -191,7 +202,28 @@ class GraphicsContext extends AbstractGraphicsContext
 	{
 		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
 		var nativeDestPoint:flash.geom.Point = new flash.geom.Point(destPoint.x, destPoint.y);
-		_nativeBitmap.bitmapData.copyPixels(bitmapData, nativeSourceRect, nativeDestPoint, null, null, true);
+		
+		var alphaBitmapData:BitmapData = null;
+		var alphaPoint:Point = null;
+		
+		//create a transparency bitmap data if transparency is
+		//used
+		if (_useTransparency == true)
+		{
+			var color:Int = 0x000000;
+			var alpha:Int = Math.round(255 * _alpha);
+			color += alpha << 24;
+			
+			alphaBitmapData = new BitmapData(Math.round(sourceRect.width), Math.round(sourceRect.height), true, color);
+			alphaPoint = new Point(0,0);
+		}
+		
+		_nativeBitmap.bitmapData.copyPixels(bitmapData, nativeSourceRect, nativeDestPoint, alphaBitmapData, alphaPoint, true);
+		
+		if (alphaBitmapData != null)
+		{
+			alphaBitmapData.dispose();
+		}
 	}
 	
 	/**

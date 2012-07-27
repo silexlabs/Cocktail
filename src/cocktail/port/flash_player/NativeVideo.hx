@@ -160,8 +160,6 @@ class NativeVideo extends NativeMedia
 	
 	/**
 	 * Attach the flash video object to the flash display list
-	 * 
-	 * TODO 1 : graphicsContext no longer DisplayObjectContainer
 	 */
 	override public function attach(graphicContext:GraphicsContext):Void
 	{
