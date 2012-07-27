@@ -114,8 +114,11 @@ class InlineFormattingContext extends FormattingContext
 			
 			if (child.isPositioned() == true && child.isRelativePositioned() == false)
 			{
-				var lineBox:LineBox = new StaticPositionLineBox(child);
-				lineBox = insertIntoLine([lineBox], lineBox, rootLineBoxes, openedElementRenderers);
+				var staticLineBox:LineBox = new StaticPositionLineBox(child);
+				
+				child.bounds.width = child.coreStyle.computedStyle.width+ child.coreStyle.computedStyle.paddingLeft + child.coreStyle.computedStyle.paddingRight ;
+				child.bounds.height = child.coreStyle.computedStyle.height+ child.coreStyle.computedStyle.paddingTop + child.coreStyle.computedStyle.paddingBottom;
+				lineBox = insertIntoLine([staticLineBox], lineBox, rootLineBoxes, openedElementRenderers);
 			}
 			//here the child either starts a new formatting context, meaning it is displayed
 			//has an inline-block and it has children, or it is replaced/embedded, such as
