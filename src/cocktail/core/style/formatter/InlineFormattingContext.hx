@@ -101,6 +101,7 @@ class InlineFormattingContext extends FormattingContext
 		{
 			var formattingContextComputedStyle:ComputedStyle =  _formattingContextRoot.coreStyle.computedStyle;
 			_formattingContextRoot.bounds.height = _formattingContextData.y  + formattingContextComputedStyle.paddingBottom ;
+			formattingContextComputedStyle.height = _formattingContextData.y - formattingContextComputedStyle.paddingTop;
 		}
 	}
 	
