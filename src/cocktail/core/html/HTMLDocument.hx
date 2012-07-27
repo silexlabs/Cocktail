@@ -671,8 +671,20 @@ class HTMLDocument extends Document
 		//method was called
 		if (_documentNeedsLayout == true)
 		{
-			startLayout();
+			startLayout(false);
 			_documentNeedsLayout = false;
+			
+			//start all pending animations
+			var atLeastOneAnimationStarted:Bool = startPendingAnimation();
+			
+			//if at least one pending animation started, an immediate layout
+			//must be performed before rendering, else the rendering will be
+			//done with the end value of the animations instead of the beggining
+			//value, resulting in a visual glitch
+			if (atLeastOneAnimationStarted == true)
+			{
+				startLayout(true);
+			}
 		}
 		
 		//same as for layout
@@ -703,14 +715,25 @@ class HTMLDocument extends Document
 	}
 	
 	/**
+	 * Start all the pending animation by calling
+	 * the start animation method on all elements of the
+	 * rendering tree
+	 */
+	private function startPendingAnimation():Bool
+	{
+		return documentElement.elementRenderer.startPendingAnimation();
+	}
+	
+	
+	/**
 	 * Start the layout of the rendering tree,
 	 * starting with the root ElementRenderer
 	 */
-	private function startLayout():Void
+	private function startLayout(forceLayout:Bool):Void
 	{
 		//layout all ElementRenderer, after this, ElementRenderer are 
 		//aware of their bounds relative to their containing block
-		documentElement.elementRenderer.layout(false);
+		documentElement.elementRenderer.layout(forceLayout);
 		
 		//set the global bounds on the rendering tree. After this, ElementRenderer
 		//are aware of their bounds relative ot the viewport

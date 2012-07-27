@@ -1356,3 +1356,17 @@ import cocktail.core.renderer.TextRenderer;
 		var bounds:RectangleData;
 	}
 	
+
+	/**
+	 * Holds all the data necessary to start a transition.
+	 * It it said to be a pending animation, as it stored
+	 * when the value of a CSS property changes, but the animation
+	 * is actually started on next layout
+	 */
+	typedef PendingAnimationData = {
+			var propertyName:String;
+			var invalidationReason:InvalidationReason;
+			var startValue:Float;
+	}
+	
+	

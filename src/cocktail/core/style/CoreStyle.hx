@@ -181,6 +181,12 @@ class CoreStyle
 	 */
 	private var _fontManager:FontManager;
 	
+	/**
+	 * An array holding the data necessary to start all pending
+	 * animations on next layout
+	 */
+	private var _pendingAnimations:Array<PendingAnimationData>;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR AND INIT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -193,6 +199,7 @@ class CoreStyle
 	{
 		this.htmlElement = htmlElement;
 		_fontManager = FontManager.getInstance();
+		_pendingAnimations = new Array<PendingAnimationData>();
 		initDefaultStyleValues(htmlElement.tagName);
 	}
 	
@@ -711,18 +718,67 @@ class CoreStyle
 	}
 	
 	/////////////////////////////////
-	// TRANSITION METHODS
+	// PUBLIC TRANSITION METHODS
 	////////////////////////////////
+	
+	/**
+	 * Tries to start each of the stored pending animations
+	 * 
+	 * @return wether at least one animation did start
+	 */
+	public function startPendingAnimations():Bool
+	{
+		var atLeastOneAnimationStarted:Bool = false;
+		
+		for (i in 0..._pendingAnimations.length)
+		{
+			var animationStarted:Bool = startTransitionIfNeeded(_pendingAnimations[i]);
+			if (animationStarted == true)
+			{
+				atLeastOneAnimationStarted = true;
+			}
+		}
+		
+		//clear the pending animation to prevent from being started
+		//for each layout
+		_pendingAnimations = new Array<PendingAnimationData>();
+		
+		return atLeastOneAnimationStarted;
+	}
+	
+	/////////////////////////////////
+	// PRIVATE TRANSITION METHODS
+	////////////////////////////////
+	
+	/**
+	 * Register a pending animation that will tries to start on next layout.
+	 * A pending animation is registered when the specified value of an
+	 * animatable property is changed
+	 * 
+	 * @param	propertyName the name of the property to animate
+	 * @param	invalidationReason the invalidation reason caused by the property change
+	 * @param	startValue the current computed value of the animatable property, used as
+	 * starting value if the animation actually starts
+	 */
+	private function registerPendingAnimation(propertyName:String, invalidationReason:InvalidationReason, startValue:Float):Void
+	{
+		_pendingAnimations.push( {
+			propertyName:propertyName,
+			invalidationReason:invalidationReason,
+			startValue:startValue
+		});
+	}
 	
 	/**
 	 * When the specified value of a style changes, starts
 	 * a transition for the proeprty if needed using the
 	 * TransitionManager
 	 * 
-	 * @param	propertyName the name of the property whose
-	 * value changed
+	 * @param pendingAnimation the data of the animation which might
+	 * start
+	 * @return wheter the animation did start
 	 */
-	private function startTransitionIfNeeded(propertyName:String, invalidationReason:InvalidationReason):Void
+	private function startTransitionIfNeeded(pendingAnimation:PendingAnimationData):Bool
 	{	
 		//will store the index of the property in the TransitionPorperty
 		//array, so that its duration, delay, and timing function can be found
@@ -735,7 +791,7 @@ class CoreStyle
 			//if none, the method returns here as no property
 			//of this style should be transitioned
 			case TransitionProperty.none:
-				return;
+				return false;
 			
 			//here, check in the list of transitionable property
 			//for a match
@@ -746,7 +802,7 @@ class CoreStyle
 				{
 					//if there is a match, store the index
 					//of the match
-					if (value[i] == propertyName)
+					if (value[i] == pendingAnimation.propertyName)
 					{
 						propertyIndex = i;
 						foundFlag = true;
@@ -758,7 +814,7 @@ class CoreStyle
 				//here
 				if (foundFlag == false)
 				{
-					return;
+					return false;
 				}
 				
 			//here all property can transition. The index
@@ -780,7 +836,7 @@ class CoreStyle
 		//0, then there is no transition
 		if (combinedDuration <= 0)
 		{
-			return;
+			return false;
 		}
 		
 		//get the transition timing function
@@ -789,7 +845,7 @@ class CoreStyle
 		var transitionManager:TransitionManager = TransitionManager.getInstance();
 		
 		//check if a transition is already in progress for the same property
-		var transition:Transition = transitionManager.getTransition(propertyName, computedStyle);
+		var transition:Transition = transitionManager.getTransition(pendingAnimation.propertyName, computedStyle);
 		
 		//if the transition is not null, then a transition for the property is already
 		//in progress and no new transition must start
@@ -797,24 +853,22 @@ class CoreStyle
 		{
 			//TODO 1 : in the spec, transition are not supposed to be interrupted
 			//unless transitionProperty change or transition should reverse
-			transitionManager.stopTransition(transition);
+			//transitionManager.stopTransition(transition);
 			//TODO 1 : add the reverse transition case
-			//return;
+			return false;
 		}
 		
-		//get the starting value for the transition which is he current computed value of the 
-		//style
-		var startValue:Float = Reflect.getProperty(computedStyle, propertyName);
-		
-		//start an immediate invalidation, so that the the new specified value
-		//of the style gets immediately computed, this value will be the end value
-		//for the transition
-		invalidate(InvalidationReason.needsImmediateLayout);
-		var endValue:Float = Reflect.getProperty(computedStyle, propertyName);
+		//get the current value of the property to animate. Since the ElementRenderer was laid out
+		//after the pending animation was registered, the current computed value of the property
+		//is now the end value of the transition
+		var endValue:Float = Reflect.getProperty(computedStyle, pendingAnimation.propertyName);
 		
 		//start a transition using the TransitionManager
-		transitionManager.startTransition(computedStyle, propertyName, startValue, endValue, 
-		transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate, invalidationReason);
+		transitionManager.startTransition(computedStyle, pendingAnimation.propertyName, pendingAnimation.startValue, endValue, 
+		transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate, pendingAnimation.invalidationReason);
+	
+		//the transition did in fact start
+		return true;
 	}
 	
 	/**
@@ -878,16 +932,18 @@ class CoreStyle
 	{
 		width = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.WIDTH_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.WIDTH_STYLE_NAME, invalidationReason);
+		registerPendingAnimation(CSSConstants.WIDTH_STYLE_NAME, invalidationReason, computedStyle.width);
 		invalidate(invalidationReason);
 		return value;
 	}
 	
+	//TODO 1 : should use the "JavaScript" name instead of CSS to register.
+	//i.e : marginLeft instead of margin-left
 	private function setMarginLeft(value:Margin):Margin 
 	{
 		marginLeft = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.MARGIN_LEFT_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.MARGIN_LEFT_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.MARGIN_LEFT_STYLE_NAME, invalidationReason, computedStyle.marginLeft);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -896,7 +952,7 @@ class CoreStyle
 	{
 		marginRight = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.MARGIN_RIGHT_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.MARGIN_RIGHT_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.MARGIN_RIGHT_STYLE_NAME, invalidationReason, computedStyle.marginRight);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -905,7 +961,7 @@ class CoreStyle
 	{
 		marginTop = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.MARGIN_TOP_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.MARGIN_TOP_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.MARGIN_TOP_STYLE_NAME, invalidationReason, computedStyle.marginTop);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -914,7 +970,7 @@ class CoreStyle
 	{
 		marginBottom = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.MARGIN_BOTTOM_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.MARGIN_BOTTOM_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.MARGIN_BOTTOM_STYLE_NAME, invalidationReason, computedStyle.marginBottom);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -923,7 +979,7 @@ class CoreStyle
 	{
 		paddingLeft = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.PADDING_LEFT_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.PADDING_LEFT_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.PADDING_LEFT_STYLE_NAME, invalidationReason, computedStyle.paddingLeft);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -932,7 +988,7 @@ class CoreStyle
 	{
 		paddingRight = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.PADDING_RIGHT_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.PADDING_RIGHT_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.PADDING_RIGHT_STYLE_NAME, invalidationReason, computedStyle.paddingRight);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -941,7 +997,7 @@ class CoreStyle
 	{
 		paddingTop = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.PADDING_TOP_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.PADDING_TOP_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.PADDING_TOP_STYLE_NAME, invalidationReason, computedStyle.paddingTop);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -950,7 +1006,7 @@ class CoreStyle
 	{
 		paddingBottom = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.PADDING_BOTTOM_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.PADDING_BOTTOM_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.PADDING_BOTTOM_STYLE_NAME, invalidationReason, computedStyle.paddingBottom);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -974,7 +1030,7 @@ class CoreStyle
 	{
 		height = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.HEIGHT_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.HEIGHT_STYLE_NAME, invalidationReason);
+		registerPendingAnimation(CSSConstants.HEIGHT_STYLE_NAME, invalidationReason, computedStyle.height);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -983,7 +1039,7 @@ class CoreStyle
 	{
 		minHeight = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.MIN_HEIGHT_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.MIN_HEIGHT_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.MIN_HEIGHT_STYLE_NAME, invalidationReason, computedStyle.minHeight);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -992,7 +1048,7 @@ class CoreStyle
 	{
 		maxHeight = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.MAX_HEIGHT_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.MAX_HEIGHT_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.MAX_HEIGHT_STYLE_NAME, invalidationReason, computedStyle.maxHeight);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -1001,7 +1057,7 @@ class CoreStyle
 	{
 		minWidth = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.MIN_WIDTH_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.MIN_WIDTH_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.MIN_WIDTH_STYLE_NAME, invalidationReason, computedStyle.minWidth);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -1010,7 +1066,7 @@ class CoreStyle
 	{
 		maxWidth = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.MAX_WIDTH_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.MAX_WIDTH_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.MAX_WIDTH_STYLE_NAME, invalidationReason, computedStyle.maxWidth);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -1019,7 +1075,7 @@ class CoreStyle
 	{
 		top = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.TOP_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.TOP_STYLE_NAME, invalidationReason);
+		registerPendingAnimation(CSSConstants.TOP_STYLE_NAME, invalidationReason, computedStyle.top);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -1028,7 +1084,7 @@ class CoreStyle
 	{
 		left = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.LEFT_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.LEFT_STYLE_NAME, invalidationReason);
+		registerPendingAnimation(CSSConstants.LEFT_STYLE_NAME, invalidationReason, computedStyle.left);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -1037,7 +1093,7 @@ class CoreStyle
 	{
 		bottom = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.BOTTOM_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.BOTTOM_STYLE_NAME, invalidationReason);
+		registerPendingAnimation(CSSConstants.BOTTOM_STYLE_NAME, invalidationReason, computedStyle.bottom);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -1046,7 +1102,7 @@ class CoreStyle
 	{
 		right = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.RIGHT_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.RIGHT_STYLE_NAME, invalidationReason);
+		registerPendingAnimation(CSSConstants.RIGHT_STYLE_NAME, invalidationReason, computedStyle.right);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -1077,7 +1133,7 @@ class CoreStyle
 	{
 		fontSize = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.FONT_SIZE_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.FONT_SIZE_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.FONT_SIZE_STYLE_NAME, invalidationReason, computedStyle.fontSize);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -1126,7 +1182,7 @@ class CoreStyle
 	{
 		letterSpacing = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.LETTER_SPACING_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.LETTER_SPACING_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.LETTER_SPACING_STYLE_NAME, invalidationReason, computedStyle.letterSpacing);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -1135,7 +1191,7 @@ class CoreStyle
 	{
 		wordSpacing = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.WORD_SPACING_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.WORD_SPACING_STYLE_NAME, invalidationReason );
+		//registerPendingAnimation(CSSConstants.WORD_SPACING_STYLE_NAME, invalidationReason, computedStyle.wordSpacing );
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -1144,7 +1200,7 @@ class CoreStyle
 	{
 		lineHeight = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.LINE_HEIGHT_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.LINE_HEIGHT_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.LINE_HEIGHT_STYLE_NAME, invalidationReason, computedStyle.lineHeight);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -1160,7 +1216,7 @@ class CoreStyle
 	{
 		verticalAlign = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.VERTICAL_ALIGN_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.VERTICAL_ALIGN_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.VERTICAL_ALIGN_STYLE_NAME, invalidationReason, computedStyle.verticalAlign);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -1169,7 +1225,7 @@ class CoreStyle
 	{
 		textIndent = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.TEXT_INDENT_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.TEXT_INDENT_STYLE_NAME, invalidationReason);
+		//registerPendingAnimation(CSSConstants.TEXT_INDENT_STYLE_NAME, invalidationReason, computedStyle.textIndent);
 		invalidate(invalidationReason);
 		return value;
 	}
@@ -1190,11 +1246,12 @@ class CoreStyle
 		return value;
 	}
 	
+	//TODO 1 : opacity change might need to create a new LayerRenderer
 	private function setOpacity(value:Opacity):Opacity
 	{
 		opacity = value;
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(CSSConstants.OPACITY_STYLE_NAME);
-		startTransitionIfNeeded(CSSConstants.OPACITY_STYLE_NAME, invalidationReason);
+		registerPendingAnimation(CSSConstants.OPACITY_STYLE_NAME, invalidationReason, computedStyle.opacity);
 		invalidate(invalidationReason);
 		return value;
 	}
