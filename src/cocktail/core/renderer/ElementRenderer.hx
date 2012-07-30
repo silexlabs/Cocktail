@@ -334,6 +334,49 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC ANIMATION METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Recursively start pending animation
+	 */
+	public function startPendingAnimation():Bool
+	{
+		return doStartPendingAnimation(this);
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE ANIMATION METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * start pending animations of self and of all children 
+	 */
+	private function doStartPendingAnimation(elementRenderer:ElementRenderer):Bool
+	{
+		var atLeastOneAnimationStarted:Bool = false;
+
+		var animationStarted:Bool = elementRenderer.coreStyle.startPendingAnimations();
+
+		if (animationStarted == true)
+		{
+			atLeastOneAnimationStarted = true;
+		}
+
+		for (i in 0...childNodes.length)
+		{
+			var animationStarted:Bool = childNodes[i].startPendingAnimation();
+
+			if (animationStarted == true)
+			{
+				atLeastOneAnimationStarted = true;
+			}
+		}
+
+		return atLeastOneAnimationStarted;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC RENDERING METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 
