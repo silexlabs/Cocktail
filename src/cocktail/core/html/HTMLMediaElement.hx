@@ -40,7 +40,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * the frequence in milliseconds between each dispatch of
 	 * a timeupdate event when the media is playing
 	 */
-	private static inline var TIME_UPDATE_FREQUENCY:Int = 350;
+	private static inline var TIME_UPDATE_FREQUENCY:Int = 15;
 	
 	/**
 	 * the frequence in milliseconds between each dispatch of

@@ -26,7 +26,11 @@ import haxe.Timer;
  * 
  * The data flow of a transition is as follow : 
 	 * - the value of a transitionable property is updated
-	 * - in CoreStyle, check if the property should be transitioned
+	 * - a pending animation is registered storing all the data needed to start
+	 * a transition
+	 * - when the next scheduled layout starts, CoreStyle tries to start all registered
+	 * pending animations
+	 * - CoreStyle checks if the property should be transitioned
 	 * - if it does, starts a new transition using the TransitionManager
 	 * - the TransitionManager calls at regular interval the onUpdate callback
 	 * of each transition, which triggers invalidation in CoreStyle, thus
