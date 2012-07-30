@@ -28,9 +28,9 @@ import haxe.Log;
  */
 class BlockFormattingContext extends FormattingContext
 {
-	
+
 	private var _registeredFloats:Array<FloatData>;
-	
+
 	/**
 	 * class constructor
 	 */
@@ -39,13 +39,13 @@ class BlockFormattingContext extends FormattingContext
 		super(formattingContextRoot);
 		_registeredFloats = new Array<FloatData>();
 	}
-	
+
 	override private function startFormatting():Void
 	{
 		//remove margin of formatting context, as child must be placed relative to padding box
 		doFormat(_formattingContextRoot, - _formattingContextRoot.coreStyle.computedStyle.marginLeft, - _formattingContextRoot.coreStyle.computedStyle.marginTop, 0, _formattingContextRoot.coreStyle.computedStyle.marginTop,  _formattingContextRoot.coreStyle.computedStyle.marginBottom);
 	}
-	
+
 	//TODO 1 : should be on FloatManager
 	private function isFloatRegistered(child:ElementRenderer):Bool
 	{
@@ -57,10 +57,10 @@ class BlockFormattingContext extends FormattingContext
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	private function getRegisteredFloat(child:ElementRenderer):FloatData
 	{
 		var length:Int = _registeredFloats.length;
@@ -71,40 +71,41 @@ class BlockFormattingContext extends FormattingContext
 				return _registeredFloats[i];
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	private function doFormat(elementRenderer:ElementRenderer, concatenatedX:Float, concatenatedY:Float, currentLineY:Float, parentCollapsedMarginTop:Float, parentCollapsedMarginBottom:Float):Float
 	{
 		var elementRendererComputedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
-		
+
 		concatenatedX += elementRendererComputedStyle.paddingLeft  + elementRendererComputedStyle.marginLeft;
 
 		concatenatedY += elementRendererComputedStyle.paddingTop + parentCollapsedMarginTop;
 
 		var childHeight:Float = concatenatedY;
-		
+
 		var length:Int = elementRenderer.childNodes.length;
 		for (i in 0...length)
 		{
 			var child:ElementRenderer = elementRenderer.childNodes[i];
-		
+
 			var marginTop:Float = getCollapsedMarginTop(child, parentCollapsedMarginTop);
 			var marginBottom:Float = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
-			
+
 			var computedStyle:ComputedStyle = child.coreStyle.computedStyle;
 			var width:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
 			var height:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
-			
+
 			var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft;
 			var y:Float = concatenatedY + marginTop;
-			
-			child.bounds.x = x;
-			child.bounds.y = y;
-			child.bounds.width = width;
-			child.bounds.height = height;
-			
+
+			var childBounds:RectangleData = child.bounds;
+			childBounds.x = x;
+			childBounds.y = y;
+			childBounds.width = width;
+			childBounds.height = height;
+
 			if (child.isFloat() == true)
 			{
 				//TODO 1 : floats should use currentLineY instead, else, if a floated
@@ -116,18 +117,17 @@ class BlockFormattingContext extends FormattingContext
 						node:child, 
 						bounds:floatBounds
 					});
-					
+
 					format(_floatsManager);
 					return 0.0;
 				}
-				
+
 				var floatBounds:RectangleData = getRegisteredFloat(child).bounds;
-				
-				child.bounds.x = floatBounds.x + computedStyle.marginLeft;
-				child.bounds.y = floatBounds.y + computedStyle.marginTop;
-				
-				child.bounds.x += concatenatedX;
-				
+
+				childBounds.x = floatBounds.x + computedStyle.marginLeft;
+				childBounds.y = floatBounds.y + computedStyle.marginTop;
+				childBounds.x += concatenatedX;
+
 			}
 			//for child with children of their own, their padding and margin are added at
 			//the beginning of the recursive method
@@ -144,17 +144,17 @@ class BlockFormattingContext extends FormattingContext
 				{
 					if ((child.isPositioned() == false || child.isRelativePositioned() == true) && child.isFloat() == false)
 					{
-						
 						//TODO 1 : doc, now block formatting context in charge of formatting line
 						//boxes, because of floats
 						if (child.childrenInline() == true)
 						{
 							var inlineFormattingContext:InlineFormattingContext = new InlineFormattingContext(cast(child));
 							inlineFormattingContext.format(_floatsManager);
-						}
+						}				
+
 						currentLineY = child.bounds.y;
 						concatenatedY += child.bounds.height + marginTop + marginBottom;
-					}	
+					}
 				}
 			}
 			//for absolutely positioned element, their bounds are set to their static position
@@ -163,9 +163,9 @@ class BlockFormattingContext extends FormattingContext
 			{
 				concatenatedY += child.bounds.height + marginTop + marginBottom;
 			}
-			
+
 			//find widest line for shrink-to-fit algorithm
-			if (child.bounds.x + child.bounds.width + computedStyle.marginRight > _formattingContextData.maxWidth)
+			if (childBounds.x + childBounds.width + computedStyle.marginRight > _formattingContextData.width)
 			{
 				//anonymous block box are not taken into account, as they always
 				//have an auto width, they might cause error in the shrink-to-fit
@@ -173,47 +173,46 @@ class BlockFormattingContext extends FormattingContext
 				//context root, it won't have the right max width
 				if (child.isAnonymousBlockBox() == false)
 				{
-					_formattingContextData.maxWidth = child.bounds.x + child.bounds.width + computedStyle.marginRight;
+					_formattingContextData.width = childBounds.x + childBounds.width + computedStyle.marginRight;
 				}
 			}
-			
-			if (concatenatedY  > _formattingContextData.maxHeight)
+
+			if (concatenatedY  > _formattingContextData.height)
 			{
-				_formattingContextData.maxHeight = concatenatedY;
+				_formattingContextData.height = concatenatedY;
 			}
-			
 		}
-		
-	//the current ElementRenderer can either have an auto height
-    //or have an explicit height
-     if (elementRenderer.coreStyle.height == Dimension.cssAuto)
-     {	
-       //when it has an auto height, it uses the height of its children
-	   childHeight = concatenatedY - childHeight;	
-       elementRenderer.bounds.height = childHeight + elementRendererComputedStyle.paddingBottom + elementRendererComputedStyle.paddingTop ;	
-       elementRenderer.computedStyle.height = childHeight;
-     }
-    else
-    {	
-      //here it has an explicit height, so it adds its own height
-      //instead of the hieght of its children, if it children are
-      //taller, they will overflow
-      concatenatedY = childHeight;
-      concatenatedY += elementRenderer.bounds.height;
-    }
-		
+
+		//the current ElementRenderer can either have an auto height
+		//or have an explicit height
+		if (elementRenderer.coreStyle.height == Dimension.cssAuto)
+		{
+			//when it has an auto height, it uses the height of its children
+			childHeight = concatenatedY - childHeight;
+			elementRenderer.bounds.height = childHeight + elementRendererComputedStyle.paddingBottom + elementRendererComputedStyle.paddingTop ;
+			elementRendererComputedStyle.height = childHeight;
+		}
+		else
+		{
+			//here it has an explicit height, so it adds its own height
+			//instead of the hieght of its children, if it children are
+			//taller, they will overflow
+			concatenatedY = childHeight;
+			concatenatedY += elementRenderer.bounds.height;
+		}
+
 		concatenatedY += elementRendererComputedStyle.paddingBottom + parentCollapsedMarginBottom;
-		
+
 		_floatsManager.removeFloats(concatenatedY);
-		
+
 		return concatenatedY;
-		
+
 	}
-	
+
 	private function getCollapsedMarginTop(child:ElementRenderer, parentCollapsedMarginTop:Float):Float
 	{
 		var childComputedStyle:ComputedStyle = child.coreStyle.computedStyle;
-		
+
 		var marginTop:Float =childComputedStyle.marginTop;
 
 		if (childComputedStyle.paddingTop == 0)
@@ -238,7 +237,7 @@ class BlockFormattingContext extends FormattingContext
 			else if (child.parentNode != null)
 			{
 				var parent:ElementRenderer = child.parentNode;
-				
+
 				if (parent.establishesNewFormattingContext() == false)
 				{
 					if (parent.coreStyle.computedStyle.paddingTop == 0)
@@ -251,15 +250,15 @@ class BlockFormattingContext extends FormattingContext
 				}
 			}
 		}
-		
+
 		return marginTop;
 	}
-	
+
 	private function getCollapsedMarginBottom(child:ElementRenderer, parentCollapsedMarginBottom:Float):Float
 	{
 		var childComputedStyle:ComputedStyle = child.coreStyle.computedStyle;
 		var marginBottom:Float = childComputedStyle.marginBottom;
-		
+
 		if (childComputedStyle.paddingBottom == 0)
 		{
 			if (child.nextSibling != null)
@@ -277,7 +276,7 @@ class BlockFormattingContext extends FormattingContext
 			else if (child.parentNode != null)
 			{
 				var parent:ElementRenderer = child.parentNode;
-				
+
 				if (parent.establishesNewFormattingContext() == false)
 				{
 					if (parent.coreStyle.computedStyle.paddingBottom == 0)
@@ -290,8 +289,8 @@ class BlockFormattingContext extends FormattingContext
 				}
 			}
 		}
-		
+
 		return marginBottom;
 	}
-	
+
 }

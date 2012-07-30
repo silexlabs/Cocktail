@@ -46,23 +46,23 @@ class FormattingContext
 	 * formatting context
 	 */ 
 	private var _formattingContextRoot:BlockBoxRenderer;
-	
+
 	/**
 	 * An instance of the class managing the floated HTMLElements.
 	 * During formatting, determine the position of the floats.
 	 */
 	private var _floatsManager:FloatsManager;
-	
+
 	/**
 	 * Contains the data necessary to place the ElementRenderer in flow, 
 	 * such as the coordinates where to insert the next ElementRenderer
 	 */
-	private var _formattingContextData:FormattingContextData;
-	
+	private var _formattingContextData:RectangleData;
+
 	/////////////////////////////////
 	// CONSTRUTOR & INIT/DISPOSE
 	/////////////////////////////////
-	
+
 	/**
 	 * Class constructor
 	 * @param	formattingContextRoot the block box which establishes
@@ -72,7 +72,7 @@ class FormattingContext
 	{
 		_formattingContextRoot = formattingContextRoot;
 	}
-	
+
 	/**
 	 * Init/reset the flow data using the containing block box
 	 * properties
@@ -81,21 +81,19 @@ class FormattingContext
 	{
 		var x:Float = _formattingContextRoot.coreStyle.computedStyle.paddingLeft;
 		var y:Float = _formattingContextRoot.coreStyle.computedStyle.paddingTop;
-		
+
 		_formattingContextData = {
-			//TODO 4 : x and y still used by inline formatting context, bu shouldn't be necessary anymore,
-			//use instead local var in recursive method, like for block formatting context
 			x : x,
 			y : y,
-			maxHeight : 0.0,
-			maxWidth:0.0
+			height : 0.0,
+			width:0.0
 		};
 	}
-	
+
 	/////////////////////////////////
 	// PUBLIC METHODS
 	/////////////////////////////////
-	
+
 	/**
 	 * starts a formatting
 	 */
@@ -104,13 +102,13 @@ class FormattingContext
 		_floatsManager = floatsManager;
 		initFormattingContextData();
 		startFormatting();
-		applyShrinkToFitIfNeeded(_formattingContextRoot, _formattingContextData.maxWidth);
+		applyShrinkToFitIfNeeded(_formattingContextRoot, _formattingContextData.width);
 	}
-	
+
 	/////////////////////////////////
 	// PRIVATE METHODS
 	/////////////////////////////////
-	
+
 	private function startFormatting():Void
 	{
 		//abstract
@@ -129,7 +127,7 @@ class FormattingContext
 			else if (elementRenderer.isPositioned() == true && elementRenderer.isRelativePositioned() == false)
 			{
 				var style:CoreStyle = elementRenderer.coreStyle;
-				
+
 				//shrink-to-fit only happen if either left or right is auto
 				if (style.left == PositionOffset.cssAuto || style.right == PositionOffset.cssAuto)
 				{
@@ -144,11 +142,11 @@ class FormattingContext
 		{
 			shrinkedWidth = elementRenderer.coreStyle.computedStyle.width;
 		}
-		
-		
-		
+
+
+
 		elementRenderer.coreStyle.computedStyle.width = shrinkedWidth;
 	}
-	
-	
+
+
 }
