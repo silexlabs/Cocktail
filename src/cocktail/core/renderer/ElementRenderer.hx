@@ -1031,6 +1031,8 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			default:
 				_needsLayout = true;
 				_needsRendering = true;
+				_childrenNeedRendering = true;
+				invalidateDocumentRendering();
 				invalidateContainingBlock(invalidationReason);
 		}
 	}
@@ -1048,6 +1050,8 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				_needsLayout = true;
 				_childrenNeedRendering = true;
 				invalidateDocumentLayoutAndRendering();
+			
+				
 		}
 	}
 	
