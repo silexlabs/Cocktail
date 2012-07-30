@@ -866,7 +866,7 @@ class CoreStyle
 		//start a transition using the TransitionManager
 		transitionManager.startTransition(computedStyle, pendingAnimation.propertyName, pendingAnimation.startValue, endValue, 
 		transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate, pendingAnimation.invalidationReason);
-
+		
 		//the transition did in fact start
 		return true;
 	}

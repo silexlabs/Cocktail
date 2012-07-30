@@ -160,6 +160,18 @@ class LineBox extends NodeBase<LineBox>
 	}
 	
 	/**
+	 * Wheter the line box is a 
+	 * place holder for an absolutely
+	 * positioned element to determine
+	 * its static position
+	 */
+	public function isStaticPosition():Bool
+	{
+		return false;
+	}
+
+	
+	/**
 	 * Wether the lineboxe's ElementRenderer is
 	 * aboslutely positioned
 	 * 
