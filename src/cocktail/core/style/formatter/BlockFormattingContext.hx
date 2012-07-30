@@ -183,13 +183,24 @@ class BlockFormattingContext extends FormattingContext
 			}
 			
 		}
-		childHeight = concatenatedY - childHeight;
-	
-		if (elementRenderer.coreStyle.height == Dimension.cssAuto)
-		{
-			elementRenderer.bounds.height = childHeight + elementRendererComputedStyle.paddingBottom + elementRendererComputedStyle.paddingTop ;
-			elementRenderer.coreStyle.computedStyle.height = childHeight;
-		}
+		
+	//the current ElementRenderer can either have an auto height
+    //or have an explicit height
+     if (elementRenderer.coreStyle.height == Dimension.cssAuto)
+     {	
+       //when it has an auto height, it uses the height of its children
+	   childHeight = concatenatedY - childHeight;	
+       elementRenderer.bounds.height = childHeight + elementRendererComputedStyle.paddingBottom + elementRendererComputedStyle.paddingTop ;	
+       elementRenderer.computedStyle.height = childHeight;
+     }
+    else
+    {	
+      //here it has an explicit height, so it adds its own height
+      //instead of the hieght of its children, if it children are
+      //taller, they will overflow
+      concatenatedY = childHeight;
+      concatenatedY += elementRenderer.bounds.height;
+    }
 		
 		concatenatedY += elementRendererComputedStyle.paddingBottom + parentCollapsedMarginBottom;
 		
