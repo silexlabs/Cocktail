@@ -183,7 +183,29 @@ class NativeVideo extends NativeMedia
 				connectStream();
 				
 			case NET_STREAM_SEEK_NOTIFY:
-				_seeking = false;
+				checkSeeking();
+		}
+	}
+	
+	/**
+	 * This method is a hack to circumvent a notorious 
+	 * flash NetStream bug : the NetStream.Seek.Notify
+	 * event is dispatched before the NetStream time is
+	 * actually set to the new seek time.
+	 * 
+	 * This method check that before the seeking flag
+	 * is set to false, the current time on the NetStream
+	 * was actually changed to the seek value
+	 */
+	private function checkSeeking():Void
+	{
+		if (_netStream.time - _currentTime > 0.2)
+		{
+			Timer.delay(checkSeeking, 5);
+		}
+		else
+		{
+			_seeking = false;
 		}
 	}
 	
