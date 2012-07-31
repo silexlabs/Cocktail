@@ -272,6 +272,9 @@ class HTMLDocument extends Document
 			case HTMLConstants.HTML_PARAM_TAG_NAME:
 				element = new HTMLParamElement();
 				
+			case HTMLConstants.HTML_LINK_TAG_NAME:
+				element = new HTMLLinkElement();
+				
 			default:
 				element = new HTMLElement(tagName);
 		}

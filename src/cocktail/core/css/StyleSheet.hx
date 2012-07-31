@@ -17,7 +17,7 @@ class StyleSheet
 	
 	public var parentStyleSheet(default, null):StyleSheet;
 	
-	//public var media(default, null):MediaList;
+	public var media(default, null):MediaList;
 	
 	public var disabled:Bool;
 	
