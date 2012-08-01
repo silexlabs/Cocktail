@@ -22,17 +22,17 @@ class CSSStyleDeclaration
 	
 	public function item(index:Int):String
 	{
-		
+		return null;
 	}
 	
 	public function getPropertyValue(property:String):String
 	{
-		
+		return null;
 	}
 	
 	public function getPropertyPriority(property:String):String
 	{
-		
+		return null;
 	}
 	
 	public function setProperty(property:String, value:String, priority:String = null):Void
@@ -42,6 +42,6 @@ class CSSStyleDeclaration
 	
 	public function removeProperty(property:String):String
 	{
-		
+		return null;
 	}
 }

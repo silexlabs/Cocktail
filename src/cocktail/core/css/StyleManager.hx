@@ -1,5 +1,6 @@
 package cocktail.core.css;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.css.CSSData;
 
@@ -10,39 +11,40 @@ import cocktail.core.css.CSSData;
 
 class StyleManager 
 {
-
-	private var _defaultStyleSheet:CSSStyleSheet;
-	
 	private var _styleSheets:Array<CSSStyleSheet>;
+	
+	private var _selectorManager:SelectorManager;
 	
 	public function new() 
 	{
 		_styleSheets = new Array<CSSStyleSheet>();
+		_selectorManager = new SelectorManager();
 	}
 	
 	public function addStyleSheet(styleSheet:CSSStyleSheet):Void
 	{
-		
+		_styleSheets.push(styleSheet);
 	}
 	
 	public function removeStyleSheet(styleSheet:CSSStyleSheet):Void
 	{
-		
+		_styleSheets.remove(styleSheet);
 	}
 	
-	public function getCoreStyle(node:HTMLElement):CSSStyleDeclaration
+	public function getStyleDeclaration(node:HTMLElement):CSSStyleDeclaration
 	{
 		var styleDeclaration:CSSStyleDeclaration = new CSSStyleDeclaration();
 		
 		applyDefaultStylesValues(styleDeclaration);
 		
-		applyDefaultStyleSheet(styleDeclaration, _defaultStyleSheet);
-		
 		if (node.parentNode != null)
 		{
-			applyInheritableStyles(node.parentNode, coreStyle);
+			applyInheritableStyles(node.parentNode, styleDeclaration);
 		}
 		
+		applyStyleSheets(node, styleDeclaration, _styleSheets);
+		
+		return styleDeclaration;
 	}
 	
 	private function applyStyleSheets(node:HTMLElement, nodeStyleDeclaration:CSSStyleDeclaration, styleSheets:Array<CSSStyleSheet>):Void
@@ -55,13 +57,13 @@ class StyleManager
 			
 			for (j in 0...styleSheet.cssRules.length)
 			{
-				var cssRule:CSSRule = defaultSyleSheet.cssRules[j];
+				var cssRule:CSSRule = styleSheet.cssRules[j];
 				
 				switch (cssRule.type)
 				{
 					case CSSRule.STYLE_RULE:
 						var styleRule:CSSStyleRule = cast(cssRule);
-						if (matchSelector(node, styleRule.selectorText) == true)
+						if (_selectorManager.matchSelector(node, styleRule.selector) == true)
 						{
 							matchingStyleDeclarations.push(styleRule.style);
 						}
@@ -95,19 +97,34 @@ class StyleManager
 	{
 		var matchingProperties:Array<PropertyData> = new Array<PropertyData>();
 		
-		for (i in 0....matchingStyleDeclarations.length)
+		for (i in 0...matchingStyleDeclarations.length)
 		{
 			var styleDeclaration:CSSStyleDeclaration = matchingStyleDeclarations[i];
+			
+			var cssRule:CSSRule = styleDeclaration.parentRule;
+			
+			var selector:SelectorData = null;
+			
+			switch(cssRule.type)
+			{
+				case CSSRule.STYLE_RULE:
+					var styleRule:CSSStyleRule = cast(cssRule);
+					selector = styleRule.selector;
+			}
 			
 			for (j in 0...styleDeclaration.length)
 			{
 				if (styleDeclaration.item(j) == property)
 				{
-					var matchingPropertyData:PropertyData = {
+					var matchingProperty:PropertyData = {
 						value:styleDeclaration.getPropertyValue(property),
-						important:styleDeclaration.getPropertyPriority(property) == "important",
-						origin:MatchingPropertyOrigin.AUTHOR;
+						important:styleDeclaration.getPropertyPriority(property),
+						//TODO : origin should be retrieved via stylesheet
+						origin:PropertyOriginValue.AUTHOR,
+						selector:selector
 					}
+					
+					matchingProperties.push(matchingProperty);
 				}
 			}
 		}
@@ -129,6 +146,16 @@ class StyleManager
 		}
 		
 		matchingProperties = getSortedMatchingPropertiesBySpecificity(matchingProperties);
+		
+		if (matchingProperties.length == 1)
+		{
+			var matchingProperty:PropertyData = matchingProperties[0];
+			nodeStyleDeclaration.setProperty(property, matchingProperty.value, matchingProperty.important);
+			return;
+		}
+		
+		var matchingProperty:PropertyData = matchingProperties[matchingProperties.length - 1];
+		nodeStyleDeclaration.setProperty(property, matchingProperty.value, matchingProperty.important);
 	}
 	
 	private function getSortedMatchingPropertiesByPriority(matchingProperties:Array<PropertyData>):Array<PropertyData>
@@ -142,11 +169,11 @@ class StyleManager
 			var matchingProperty:PropertyData = matchingProperties[i];
 			switch(matchingProperty.origin)
 			{
-				case MatchingPropertyOrigin.USER_AGENT:
+				case PropertyOriginValue.USER_AGENT:
 					userAgentDeclarations.push(matchingProperty);
 					
-				case MatchingPropertyOrigin.AUTHOR:
-					if (matchingProperty.important == true)
+				case PropertyOriginValue.AUTHOR:
+					if (matchingProperty.important == "important")
 					{
 						authorImportantDeclarations.push(matchingProperty);
 					}
@@ -179,7 +206,7 @@ class StyleManager
 		for (i in 0...matchingProperties.length)
 		{
 			var property:PropertyData = matchingProperties[i];
-			var propertySpecificity:Int = getPropertySpecifity(property.selectors);
+			var propertySpecificity:Int = _selectorManager.getSelectorSpecifity(property.selector);
 			
 			if (propertySpecificity > currentSpecificity)
 			{
@@ -189,64 +216,9 @@ class StyleManager
 			matchingProperties.push(property);
 		
 		}
+		
+		return matchingProperties;
 	}
-	
-	private function getPropertySpecifity(selectors:Array<SelectorValue>):Int
-	{
-		var propertySpecificity:Int = 0;
-		
-		var idSelectorsNumber:Int = 0;
-		var classAttributesAndPseudoClassesNumber:Int = 0;
-		var typeAndPseudoElementsNumber:Int = 0;
-		
-		for (i in 0...selectors.length)
-		{
-			var selector:SelectorValue = selectors[i];
-			
-			switch (selector)
-			{
-				case UNIVERSAL:
-					
-				case TYPE(value):
-					typeAndPseudoElementsNumber++;
-					
-				case ATTRIBUTE(value):
-					classAttributesAndPseudoClassesNumber++;
-					
-				case PSEUDO_CLASS(value):
-					classAttributesAndPseudoClassesNumber++;
-					
-				case PSEUDO_ELEMENT(value):
-					typeAndPseudoElementsNumber++;
-					
-				case LINK_PSEUDO_CLASS(value):
-					classAttributesAndPseudoClassesNumber++;
-					
-				case USER_ACTION_PSEUDO_CLASS(value):
-					classAttributesAndPseudoClassesNumber++;
-					
-				case CLASS(value):
-					classAttributesAndPseudoClassesNumber++;
-					
-				case ID(value):
-					idSelectorsNumber++;
-					
-				case DESCENDANT_COMBINATOR(parent, child):
-					
-				case CHILD_COMBINATOR(parent, child):
-					
-				case ADJACENT_SIBLING_COMBINATOR(sibling, child):
-					
-				case GENERAL_SIBLING_COMBINATOR(sibling, child):
-			}
-		}
-		
-		var concatenated:String = Std.string(idSelectorsNumber) + Std.string(classAttributesAndPseudoClassesNumber) + Std.string(typeAndPseudoElementsNumber);
-		propertySpecificity = Std.int(concatenated);
-		
-		return propertySpecificity;
-	}
-	
 	
 	private function alreadyMatched(property:String, matchedProperties:Array<String>):Bool
 	{
@@ -261,10 +233,6 @@ class StyleManager
 		return false;
 	}
 	
-	private function matchSelector(node:HTMLElement, selector:String):Bool
-	{
-		return true;
-	}
 	
 	private function applyDefaultStylesValues(styleDeclaration:CSSStyleDeclaration):Void
 	{
@@ -272,7 +240,7 @@ class StyleManager
 		styleDeclaration.setProperty("height", "auto");
 	}
 	
-	private function applyInheritableStyles(node:HTMLElement, coreStyle:CoreStyle):Void
+	private function applyInheritableStyles(node:HTMLElement, styleDeclaration:CSSStyleDeclaration):Void
 	{
 		
 	}

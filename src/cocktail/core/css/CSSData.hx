@@ -9,9 +9,15 @@ typedef CSSRuleList = Array<CSSRule>;
 
 typedef PropertyData = {
 	var value:String;
-	var important:Bool;
-	var origin:MatchingPropertyOrigin;
-	var selectors:Array<SelectorValue>;
+	var important:String;
+	var origin:PropertyOriginValue;
+	var selector:SelectorData;
+}
+
+typedef SelectorSpecificityData = {
+	var idSelectorsNumber:Int;
+	var classAttributesAndPseudoClassesNumber:Int;
+	var typeAndPseudoElementsNumber:Int;
 }
 
 enum PropertyOriginValue {
@@ -19,20 +25,46 @@ enum PropertyOriginValue {
 	USER_AGENT;
 }
 
-enum SelectorValue {
-	UNIVERSAL;
-	TYPE(value:String);
+typedef SelectorData = {
+	var combinators:Array<CombinatorValue>;
+	var pseudoElement:PseudoElementSelectorValue;
+}
+
+enum SelectorComponentValue {
+	SIMPLE_SELECTOR_SEQUENCE(value:SimpleSelectorSequenceData);
+	SIMPLE_SELECTOR(value:SimpleSelectorValue);
+} 
+
+enum CombinatorValue {
+	NONE(value:SelectorComponentValue);
+	DESCENDANT(parent:SelectorComponentValue, child:SelectorComponentValue);
+	CHILD(parent:SelectorComponentValue, child:SelectorComponentValue);
+	ADJACENT_SIBLING(sibling:SelectorComponentValue, child:SelectorComponentValue);
+	GENERAL_SIBLING(sibling:SelectorComponentValue, child:SelectorComponentValue);
+}
+
+typedef SimpleSelectorSequenceData = {
+	var startValue:SimpleSelectorSequenceStartValue;
+	var simpleSelectors:Array<SimpleSelectorSequenceItemValue>;
+}
+
+enum SimpleSelectorValue {
+	SEQUENCE_START(value:SimpleSelectorSequenceStartValue);
+	SEQUENCE_ITEM(value:SimpleSelectorSequenceItemValue);
+}
+
+enum SimpleSelectorSequenceItemValue {
 	ATTRIBUTE(value:AttributeSelectorValue);
 	PSEUDO_CLASS(value:PseudoClassSelectorValue);
-	PSEUDO_ELEMENT(value:PseudoElementSelectorValue);
 	LINK_PSEUDO_CLASS(value:LinkPseudoClassValue);
 	USER_ACTION_PSEUDO_CLASS(value:UserActionPseudoClassValue);
 	CLASS(value:String);
 	ID(value:String);
-	DESCENDANT_COMBINATOR(parent:String, child:String);
-	CHILD_COMBINATOR(parent:String, child:String);
-	ADJACENT_SIBLING_COMBINATOR(sibling:String, child:String);
-	GENERAL_SIBLING_COMBINATOR(sibling:String, child:String);
+}
+
+enum SimpleSelectorSequenceStartValue {
+	UNIVERSAL;
+	TYPE(value:String);
 }
 
 enum AttributeSelectorValue {
@@ -66,6 +98,7 @@ enum UserActionPseudoClassValue {
 }
 
 enum PseudoElementSelectorValue {
+	NONE;
 	FIRST_LINE;
 	FIRST_LETTER;
 }
