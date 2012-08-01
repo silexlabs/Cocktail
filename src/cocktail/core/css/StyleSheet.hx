@@ -1,6 +1,6 @@
 package cocktail.core.css;
 
-import cocktail.core.dom.Node;
+import cocktail.core.html.HTMLElement;
 /**
  * ...
  * @author Yannick DOMINGUEZ
@@ -13,11 +13,11 @@ class StyleSheet
 	
 	public var href(default, null):String;
 	
-	public var ownerNode(default, null):Node;
+	public var ownerNode(default, null):HTMLElement;
 	
 	public var parentStyleSheet(default, null):StyleSheet;
 	
-	public var media(default, null):MediaList;
+	//public var media(default, null):MediaList;
 	
 	public var disabled:Bool;
 	

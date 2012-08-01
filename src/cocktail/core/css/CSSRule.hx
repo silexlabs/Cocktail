@@ -18,7 +18,7 @@ class CSSRule
 	
 	public static inline var NAMESPACE_RULE:Int = 10;
 	
-	public var type(default, null):Int;
+	public var type(get_type, null):Int;
 	
 	public var cssText:String;
 	
@@ -29,6 +29,11 @@ class CSSRule
 	public function new() 
 	{
 		
+	}
+	
+	private function get_type():Int
+	{
+		return -1;
 	}
 	
 }

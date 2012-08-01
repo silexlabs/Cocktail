@@ -6,7 +6,7 @@ import cocktail.core.css.CSSData;
  * @author Yannick DOMINGUEZ
  */
 
-class CSSStyleRule 
+class CSSStyleRule extends CSSRule
 {
 
 	public var selectorText:String;
@@ -17,7 +17,17 @@ class CSSStyleRule
 	
 	public function new() 
 	{
-		
+		super();
+		style = new CSSStyleDeclaration(this);
+		selector = {
+			combinators:[],
+			pseudoElement:PseudoElementSelectorValue.NONE
+		}
+	}
+	
+	override private function get_type():Int
+	{
+		return CSSRule.STYLE_RULE;
 	}
 	
 }

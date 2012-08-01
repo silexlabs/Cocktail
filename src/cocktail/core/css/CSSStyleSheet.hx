@@ -7,7 +7,7 @@ import cocktail.core.css.CSSData;
  * @author Yannick DOMINGUEZ
  */
 
-class CSSStyleSheet 
+class CSSStyleSheet extends StyleSheet
 {
 
 	public var ownerRule(default, null):CSSRule;
@@ -16,7 +16,8 @@ class CSSStyleSheet
 	
 	public function new() 
 	{
-		
+		super();
+		cssRules = new CSSRuleList();
 	}
 	
 	public function insertRule(rule:String, index:Int):Int

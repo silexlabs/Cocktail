@@ -14,6 +14,12 @@ typedef PropertyData = {
 	var selector:SelectorData;
 }
 
+typedef PropertyDeclarationData = {
+	var name:String;
+	var value:String;
+	var priority:String;
+}
+
 typedef SelectorSpecificityData = {
 	var idSelectorsNumber:Int;
 	var classAttributesAndPseudoClassesNumber:Int;

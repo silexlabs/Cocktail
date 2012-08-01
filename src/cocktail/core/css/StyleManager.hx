@@ -80,10 +80,10 @@ class StyleManager
 		for (i in 0...matchingStyleDeclarations.length)
 		{
 			var cssStyleDeclaration:CSSStyleDeclaration = matchingStyleDeclarations[i];
-			
 			for (j in 0...cssStyleDeclaration.length)
 			{
 				var property:String = cssStyleDeclaration.item(j);
+		
 				if (alreadyMatched(property, matchedProperties) == false)
 				{
 					applyMatchingProperty(property, matchingStyleDeclarations, nodeStyleDeclaration);

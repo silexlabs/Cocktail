@@ -26,21 +26,28 @@ class SelectorManager
 		{
 			var combinator:CombinatorValue = selector.combinators[i];
 			
+			var matched:Bool = false;
+			
 			switch(combinator)
 			{
 				case CombinatorValue.NONE(value):
-					matchSelectorComponent(node, value);
-					
+					matched = matchSelectorComponent(node, value);
+			
 				case CombinatorValue.CHILD(parent, child):
-					matchChildCombinator(node, parent, child);
+					matched = matchChildCombinator(node, parent, child);
 					
 				case CombinatorValue.DESCENDANT(parent, child):
-					matchDescendantCombinator(node, parent, child);
+					matched = matchDescendantCombinator(node, parent, child);
 					
 				case CombinatorValue.GENERAL_SIBLING(sibling, child):
 					//TODO
 				case CombinatorValue.ADJACENT_SIBLING(sibling, CHILD):	
 					//TODO
+			}
+			
+			if (matched == false)
+			{
+				return false;
 			}
 		}
 		
@@ -122,7 +129,7 @@ class SelectorManager
 		switch(simpleSelectorSequenceStart)
 		{
 			case SimpleSelectorSequenceStartValue.TYPE(value):
-				return node.tagName == value;
+				return node.tagName == value.toUpperCase();
 				
 			case SimpleSelectorSequenceStartValue.UNIVERSAL:
 				return true;
@@ -214,7 +221,6 @@ class SelectorManager
 			
 			case PseudoElementSelectorValue.NONE:	
 		}
-		
 		
 		for (i in 0...selector.combinators.length)
 		{
@@ -315,5 +321,4 @@ class SelectorManager
 				selectorSpecificity.idSelectorsNumber++;
 		}
 	}
-	
 }
