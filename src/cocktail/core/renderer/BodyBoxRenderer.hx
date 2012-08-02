@@ -9,6 +9,7 @@ package cocktail.core.renderer;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.style.ComputedStyle;
 import cocktail.port.NativeElement;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
@@ -40,9 +41,10 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	override private function layoutSelf():Void
 	{
 		super.layoutSelf();
-		if (_coreStyle.height == Dimension.cssAuto && (isPositioned() == false || isRelativePositioned() == true))
+		if (coreStyle.height == Dimension.cssAuto && (isPositioned() == false || isRelativePositioned() == true))
 		{
-			this.computedStyle.height = _containingBlock.getContainerBlockData().height - computedStyle.marginTop - computedStyle.marginBottom
+			var computedStyle:ComputedStyle = coreStyle.computedStyle;
+			computedStyle.height = _containingBlock.getContainerBlockData().height - computedStyle.marginTop - computedStyle.marginBottom
 			- computedStyle.paddingTop - computedStyle.paddingBottom;
 		}
 	}

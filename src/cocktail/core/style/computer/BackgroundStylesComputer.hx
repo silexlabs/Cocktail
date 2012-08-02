@@ -88,7 +88,7 @@ class BackgroundStylesComputer
 	 * current background-image
 	 */
 	public static function computeIndividualBackground(style:CoreStyle, backgroundBox:RectangleData,
-	intrinsicWidth:Null<Int>, intrinsicHeight:Null<Int>, intrinsicRatio:Null<Float>, 
+	intrinsicWidth:Null<Float>, intrinsicHeight:Null<Float>, intrinsicRatio:Null<Float>, 
 	backgroundPosition:BackgroundPosition,
 	backgroundSize:BackgroundSize,
 	backgroundOrigin:BackgroundOrigin,
@@ -248,7 +248,7 @@ class BackgroundStylesComputer
 	 * @param	exReference
 	 * @return
 	 */
-	private static function getComputedBackgroundSize(backgroundSize:BackgroundSize, backgroundPositioningArea:RectangleData, intrinsicWidth:Null<Int>, intrinsicHeight:Null<Int>, intrinsicRatio:Null<Float>, emReference:Float, exReference:Float):DimensionData
+	private static function getComputedBackgroundSize(backgroundSize:BackgroundSize, backgroundPositioningArea:RectangleData, intrinsicWidth:Null<Float>, intrinsicHeight:Null<Float>, intrinsicRatio:Null<Float>, emReference:Float, exReference:Float):DimensionData
 	{
 		var computedBackgroundSize:DimensionData;
 		
@@ -324,7 +324,7 @@ class BackgroundStylesComputer
 	 * @return
 	 */
 	private static function getBackgroundSizeStyleDimensionData(value:BackgroundSizeDimension, opositeBackgroundSizeValue:BackgroundSizeDimension,
-	backgroundPositioningAreaDimension:Float, opositeBackgroundAreaDimension:Float, intrinsicDimension:Null<Int>, opositeIntrinsicDimension:Null<Int>, intrinsicRatio:Null<Float>,
+	backgroundPositioningAreaDimension:Float, opositeBackgroundAreaDimension:Float, intrinsicDimension:Null<Float>, opositeIntrinsicDimension:Null<Float>, intrinsicRatio:Null<Float>,
 	emReference:Float, exReference:Float):Float
 	{
 		var backgroundSizeStyleDimension:Float;

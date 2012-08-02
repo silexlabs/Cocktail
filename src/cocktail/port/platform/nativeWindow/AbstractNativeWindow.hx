@@ -8,6 +8,8 @@
 package cocktail.port.platform.nativeWindow;
 import cocktail.core.event.Event;
 import cocktail.core.event.UIEvent;
+import cocktail.port.NativeBitmapData;
+import cocktail.port.NativeElement;
 
 
 /**
@@ -102,6 +104,15 @@ class AbstractNativeWindow
 	public function fullscreen():Bool
 	{
 		return false;
+	}
+	
+	/**
+	 * Return the root native element of the target native
+	 * display list
+	 */
+	public function getInitialNativeLayer():NativeElement
+	{
+		return null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

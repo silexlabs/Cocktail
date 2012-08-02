@@ -11,8 +11,10 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.port;
 
+#if macro
+typedef FontLoader = cocktail.port.server.FontLoader;
 
-#if (flash9 || nme)
+#elseif (flash9 || nme)
 typedef FontLoader = cocktail.port.flash_player.FontLoader;
 #else
 typedef FontLoader = cocktail.port.server.FontLoader;

@@ -110,7 +110,7 @@ class HTMLInputElement extends EmbeddedElement
 	// OVERRIDEN SETTER/GETTER
 	/////////////////////////////////
 	
-	override private function get_intrinsicWidth():Null<Int> 
+	override private function get_intrinsicWidth():Null<Float> 
 	{
 		return HTML_INPUT_TEXT_INTRINSIC_WIDTH;
 	}

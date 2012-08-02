@@ -13,8 +13,11 @@ import cocktail.core.dom.NodeBase;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.renderer.ElementRenderer;
+import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
+import cocktail.port.DrawingManager;
+import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import haxe.Log;
@@ -31,12 +34,11 @@ import haxe.Log;
  * their parent. Wether an ElementRenderer creates a new LayerRenderer
  * is determined by its createNewStackingContext() method.
  * 
- * The LayerRenderer keeps a reference to each of its ElementRenderer
- * creating themselves stacking context, as they need to be retrieved
- * efficiently
+ * For instance, positioned elements create new layers in most cases as
+ * they are likely to be displayed on top of other elements
  * 
  * LayerRenderer are also responsible of hit testing and can return 
- * the ElementRenderer at a given coordinate
+ * the top ElementRenderer at a given coordinate
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -49,27 +51,49 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	public var rootElementRenderer(default, null):ElementRenderer;
 	
 	/**
-	 * Holds a reference to all of the children of the root ElementRenderer
-	 * which also create a new LayerRenderer, and which have a z-index
-	 * computed value of 0 or auto, which means that they are rendered in tree
-	 * order of the DOM tree. Also, children with a z-index of 'auto' don't actually
-	 * create new LayerRenderer, although they are rendered as if they did
+	 * Holds a reference to all of the child LayerRender which have a z-index computed 
+	 * value of 0 or auto, which means that they are rendered in tree
+	 * order of the DOM tree.
 	 */
-	private var _zeroAndAutoZIndexChildRenderers:Array<ElementRenderer>;
+	private var _zeroAndAutoZIndexChildLayerRenderers:Array<LayerRenderer>;
 	
 	/**
-	 * Holds a reference to all of the children of the root ElementRenderer
-	 * which also create a new LayerRenderer, and which have a computed z-index
+	 * Holds a reference to all of the child LayerRenderer which have a computed z-index
 	 * superior to 0. They are ordered in this array from least positive to most positive,
 	 * which is the order which they must use to be renderered
 	 */
-	private var _positiveZIndexChildRenderers:Array<ElementRenderer>;
+	private var _positiveZIndexChildLayerRenderers:Array<LayerRenderer>;
 	
 	/**
-	 * same as above for children with a negative computed z-index. The array is
+	 * same as above for child LayerRenderer with a negative computed z-index. The array is
 	 * ordered form most negative to least negative
 	 */
-	private var _negativeZIndexChildRenderers:Array<ElementRenderer>;
+	private var _negativeZIndexChildLayerRenderers:Array<LayerRenderer>;
+	
+	/**
+	 * The graphics context onto which all the ElementRenderers
+	 * belonging to this LayerRenderer are painted onto
+	 */
+	public var graphicsContext(default, null):GraphicsContext;
+	
+	/**
+	 * Store the current width of the window. Used to check if the window
+	 * changed size in between renderings
+	 */
+	private var _windowWidth:Int;
+	
+	/**
+	 * Same as windowWidth for height
+	 */
+	private var _windowHeight:Int;
+	
+	/**
+	 * A flag determining wether this LayerRenderer has its own
+	 * GraphicsContext or use the one of its parent. It helps
+	 * to determine if this LayerRenderer is responsible to perform
+	 * oparation such as clearing its graphics context when rendering
+	 */
+	public var hasOwnGraphicsContext(default, null):Bool;
 	
 	/**
 	 * class constructor. init class attributes
@@ -79,9 +103,15 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		super();
 		
 		this.rootElementRenderer = rootElementRenderer;
-		_zeroAndAutoZIndexChildRenderers = new Array<ElementRenderer>();
-		_positiveZIndexChildRenderers = new Array<ElementRenderer>();
-		_negativeZIndexChildRenderers = new Array<ElementRenderer>();
+		
+		_zeroAndAutoZIndexChildLayerRenderers = new Array<LayerRenderer>();
+		_positiveZIndexChildLayerRenderers = new Array<LayerRenderer>();
+		_negativeZIndexChildLayerRenderers = new Array<LayerRenderer>();
+		
+		hasOwnGraphicsContext = false;
+		
+		_windowWidth = 0;
+		_windowHeight = 0;
 	}
 	
 	/////////////////////////////////
@@ -91,35 +121,35 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	/**
 	 * Overriden as when a child LayerRenderer is added
 	 * to this LayerRenderer, this LayerRenderer stores its
-	 * root ElementRenderer in one of its chile element
+	 * child LayerRenderer or its root ElementRenderer in one of its child element
 	 * renderer array based on its z-index style
 	 */ 
 	override public function appendChild(newChild:LayerRenderer):LayerRenderer
 	{
 		super.appendChild(newChild);
 		
-		var childLayer:LayerRenderer = newChild;
-
+		newChild.attach();
+		
 		//check the computed z-index of the ElementRenderer which
 		//instantiated the child LayerRenderer
-		switch(childLayer.rootElementRenderer.computedStyle.zIndex)
+		switch(newChild.rootElementRenderer.coreStyle.computedStyle.zIndex)
 		{
 			case ZIndex.cssAuto:
 				//the z-index is 'auto'
-				_zeroAndAutoZIndexChildRenderers.push(childLayer.rootElementRenderer);
+				_zeroAndAutoZIndexChildLayerRenderers.push(newChild);
 				
 			case ZIndex.integer(value):
 				if (value == 0)
 				{
-					_zeroAndAutoZIndexChildRenderers.push(childLayer.rootElementRenderer);
+					_zeroAndAutoZIndexChildLayerRenderers.push(newChild);
 				}
 				else if (value > 0)
 				{
-					insertPositiveZIndexChildRenderer(childLayer.rootElementRenderer, value);
+					insertPositiveZIndexChildRenderer(newChild, value);
 				}
 				else if (value < 0)
 				{
-					insertNegativeZIndexChildRenderer(childLayer.rootElementRenderer, value);
+					insertNegativeZIndexChildRenderer(newChild, value);
 				}
 		}
 		
@@ -128,31 +158,134 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	
 	/**
 	 * When removing a child LayerRenderer from the LayerRenderer
-	 * tree, th reference of its root ElementRenderer must also
-	 * be removed from the right child root ElementRenderer array
+	 * tree, its reference must also be removed from the right
+	 * child LayerRenderer array
 	 */
 	override public function removeChild(oldChild:LayerRenderer):LayerRenderer
 	{
-		var childLayer:LayerRenderer = oldChild;
-
 		var removed:Bool = false;
 		
 		//try each of the array, stop if an element was actually removed from them
-		removed = _zeroAndAutoZIndexChildRenderers.remove(childLayer.rootElementRenderer);
+		removed = _zeroAndAutoZIndexChildLayerRenderers.remove(oldChild);
 		
 		if (removed == false)
 		{
-			removed = _positiveZIndexChildRenderers.remove(childLayer.rootElementRenderer);
+			removed = _positiveZIndexChildLayerRenderers.remove(oldChild);
 			
 			if (removed == false)
 			{
-				 _negativeZIndexChildRenderers.remove(childLayer.rootElementRenderer);
+				 _negativeZIndexChildLayerRenderers.remove(oldChild);
 			}
 		}
+		
+		oldChild.detach();
 		
 		super.removeChild(oldChild);
 	
 		return oldChild;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC ATTACHEMENT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * For a LayerRenderer, attach is used to 
+	 * get a reference to a GraphicsContext to
+	 * paint onto
+	 */
+	public function attach():Void
+	{
+		attachGraphicsContext();
+		
+		//attach all its children recursively
+		var length:Int = childNodes.length;
+		for (i in 0...length)
+		{
+			var child:LayerRenderer = childNodes[i];
+			child.attach();
+		}
+	}
+	
+	/**
+	 * For a LayerRenderer, detach is used
+	 * to dereference the GraphicsContext
+	 */
+	public function detach():Void
+	{
+		var length:Int = childNodes.length;
+		for (i in 0...length)
+		{
+			var child:LayerRenderer = childNodes[i];
+			child.detach();
+		}
+		
+		detachGraphicsContext();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE ATTACHEMENT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Attach a graphics context if necessary
+	 */
+	private function attachGraphicsContext():Void
+	{
+		if (graphicsContext == null)
+		{
+			if (parentNode != null)
+			{
+				if (parentNode.graphicsContext != null)
+				{
+					createGraphicsContext(parentNode.graphicsContext);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Detach the GraphicContext
+	 */
+	private function detachGraphicsContext():Void 
+	{
+		//if this LayerRenderer instantiated its own
+		//GraphicContext, it is responsible for disposing of it
+		if (hasOwnGraphicsContext == true)
+		{
+			parentNode.graphicsContext.removeChild(graphicsContext);
+			graphicsContext.dispose();
+			hasOwnGraphicsContext = false;
+		}
+		
+		graphicsContext = null;
+	}
+	
+	/**
+	 * Create a new GraphicsContext for this LayerRenderer
+	 * or use the one of its parent
+	 */
+	private function createGraphicsContext(parentGraphicsContext:GraphicsContext):Void
+	{
+		if (establishesNewGraphicsContext() == true)
+		{
+			graphicsContext = new GraphicsContext(this);
+			parentGraphicsContext.appendChild(graphicsContext);
+			hasOwnGraphicsContext = true;
+		}
+		else
+		{
+			graphicsContext = parentGraphicsContext;
+		}
+	}
+	
+	/**
+	 * Wether this LayerRenderer should create its
+	 * own GraphicsContext
+	 */
+	private function establishesNewGraphicsContext():Bool
+	{
+		return false;
 	}
 	
 	/////////////////////////////////
@@ -160,27 +293,74 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	////////////////////////////////
 	
 	/**
-	 * start the rendering of the positive z-index children
-	 */ 
-	public function renderPositiveChildElementRenderers(graphicContext:NativeElement, forceRendering:Bool):Void
-	{
-		renderChildElementRenderers(_positiveZIndexChildRenderers, graphicContext, forceRendering);
-	}
-	
-	/**
-	 * start the rendering of the zero and auto z-index children
-	 */ 
-	public function renderZeroAndAutoChildElementRenderers(graphicContext:NativeElement, forceRendering:Bool):Void
-	{
-		renderChildElementRenderers(_zeroAndAutoZIndexChildRenderers, graphicContext, forceRendering);
-	}
-	
-	/**
-	 * start the rendering of the negative z-index children
+	 * Starts the rendering of this LayerRenderer.
+	 * Render all its child layers and its root ElementRenderer
+	 * 
+	 * @param windowWidth the current width of the window
+	 * @param windowHeight the current height of the window
 	 */
-	public function renderNegativeChildElementRenderers(graphicContext:NativeElement, forceRendering:Bool):Void
+	public function render(windowWidth:Int, windowHeight:Int ):Void
 	{
-		renderChildElementRenderers(_negativeZIndexChildRenderers, graphicContext, forceRendering);
+		//update the dimension of the bitmap data if the window size changed
+		//since last rendering
+		if (windowWidth != _windowWidth || windowHeight != _windowHeight)
+		{
+			//only update the GraphicContext if it was created
+			//by this LayerRenderer
+			if (hasOwnGraphicsContext == true)
+			{
+				graphicsContext.initBitmapData(windowWidth, windowHeight);
+			}
+			_windowWidth = windowWidth;
+			_windowHeight = windowHeight;
+		}
+	
+		//only clear the bitmaps if the GraphicsContext
+		//was created by this LayerRenderer
+		if (hasOwnGraphicsContext == true)
+		{
+			//reset the bitmap
+			graphicsContext.clear();
+		}
+		
+		//render first negative z-index child LayerRenderer from most
+		//negative to least negative
+		for (i in 0..._negativeZIndexChildLayerRenderers.length)
+		{
+			_negativeZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
+		}
+		
+		//render the rootElementRenderer itself which will also
+		//render all ElementRenderer belonging to this LayerRenderer
+		rootElementRenderer.render(graphicsContext);
+		
+		//render zero and auto z-index child LayerRenderer, in tree order
+		for (i in 0..._zeroAndAutoZIndexChildLayerRenderers.length)
+		{
+			_zeroAndAutoZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
+		}
+		
+		//render all the positive LayerRenderer from least positive to 
+		//most positive
+		for (i in 0..._positiveZIndexChildLayerRenderers.length)
+		{
+			_positiveZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
+		}
+		
+		//scrollbars are always rendered last as they should always be the top
+		//element of their layer
+		rootElementRenderer.renderScrollBars(graphicsContext, windowWidth, windowHeight);
+		
+		//apply transformations to the layer if needed
+		if (rootElementRenderer.isTransformed() == true)
+		{
+			//TODO 2 : should already be computed at this point
+			rootElementRenderer.coreStyle.computeVisualEffectStyles();	
+			
+			graphicsContext.transform(getTransformationMatrix(graphicsContext));
+		}
+		
+		//TODO 1 : apply opacity to graphic context + opacity should create layer
 	}
 	
 	/////////////////////////////////
@@ -188,71 +368,111 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	////////////////////////////////
 	
 	/**
-	 * Utils method to start the rendering of an array of child root
-	 * ElementRenderer
+	 * Compute all the transformation that should be applied to this LayerRenderer
+	 * and return it as a transformation matrix
 	 */
-	private function renderChildElementRenderers(rootElementRenderers:Array<ElementRenderer>, graphicContext:NativeElement, forceRendering:Bool):Void
+	private function getTransformationMatrix(graphicContext:GraphicsContext):Matrix
 	{
-		var length:Int = rootElementRenderers.length;
-		for (i in 0...length)
+		var relativeOffset:PointData = getRelativeOffset();
+		var concatenatedMatrix:Matrix = getConcatenatedMatrix(rootElementRenderer.coreStyle.computedStyle.transform, relativeOffset);
+		
+		//apply relative positioning as well
+		concatenatedMatrix.translate(relativeOffset.x, relativeOffset.y);
+		
+		return concatenatedMatrix;
+	}
+	
+	/**
+	 * Concatenate the transformation matrix obtained with the
+	 * transform and transform-origin styles with the current
+	 * transformations applied to the root element renderer, such as for 
+	 * instance its position in the global space
+	 */
+	private function getConcatenatedMatrix(matrix:Matrix, relativeOffset:PointData):Matrix
+	{
+		var currentMatrix:Matrix = new Matrix();
+		var globalBounds:RectangleData = rootElementRenderer.globalBounds;
+		
+		//translate to the coordinate system of the root element renderer
+		currentMatrix.translate(globalBounds.x + relativeOffset.x, globalBounds.y + relativeOffset.y);
+		
+		currentMatrix.concatenate(matrix);
+		
+		//translate back from the coordinate system of the root element renderer
+		currentMatrix.translate((globalBounds.x + relativeOffset.x) * -1, (globalBounds.y + relativeOffset.y) * -1);
+		return currentMatrix;
+	}
+	
+	/**
+	 * Return the relative offset applied to the root element renderer
+	 * when rendering. Only relatively positioned root element renderer
+	 * have this offset
+	 */
+	private function getRelativeOffset():PointData
+	{
+		var relativeOffset:PointData = { x:0.0, y:0.0 };
+		
+		//only relatively positioned ElementRenderer can have
+		//an offset
+		if (rootElementRenderer.isRelativePositioned() == true)
 		{
-			//the child element renderer is attached to its parent graphic context
-			//
-			//TODO 1 : using the parent graphic context causes a z-index bug as if the parent is a child of the formatting
-			//context root, the child element renderer is not displayed on top of the in-flow elements
-			var parentElementRenderer:ElementRenderer = rootElementRenderers[i].parentNode;
-			rootElementRenderers[i].render(graphicContext, forceRendering);
+			var coreStyle:CoreStyle = rootElementRenderer.coreStyle;
+			
+			//first try to apply the left offset of the ElementRenderer if it is
+			//not auto
+			if (coreStyle.left != PositionOffset.cssAuto)
+			{
+				relativeOffset.x += coreStyle.computedStyle.left;
+			}
+			//else the right offset,
+			else if (coreStyle.right != PositionOffset.cssAuto)
+			{
+				relativeOffset.x -= coreStyle.computedStyle.right;
+			}
+			
+			//if both left and right offset are auto, then the ElementRenderer uses its static
+			//position (its normal position in the flow) and no relative offset needs to
+			//be applied
+		
+			//same for vertical offset
+			if (coreStyle.top != PositionOffset.cssAuto)
+			{
+				relativeOffset.y += coreStyle.computedStyle.top; 
+			}
+			else if (coreStyle.bottom != PositionOffset.cssAuto)
+			{
+				relativeOffset.y -= coreStyle.computedStyle.bottom; 
+			}
 		}
-	}
-	
-	/////////////////////////////////
-	// PUBLIC LAYER TREE METHODS
-	////////////////////////////////
-	
-	/**
-	 * Utils method used by ElementRenderer to register themselves when they have a z-index of
-	 * 'auto'. Stores them in the zero and auto child root ElementRenderer array.
-	 * As those ElementRenderer don't create LayerRenderer for themselves, they are not registered
-	 * when their LayerRenderer is appended to is parent
-	 */
-	public function insertAutoZIndexChildElementRenderer(elementRenderer:ElementRenderer):Void
-	{
-		_zeroAndAutoZIndexChildRenderers.push(elementRenderer);
-	}
-	
-	/**
-	 * Utils method to unregister ElementRenderer with a z-index of 'auto'
-	 */ 
-	public function removeAutoZIndexChildElementRenderer(elementRenderer:ElementRenderer):Void
-	{
-		_zeroAndAutoZIndexChildRenderers.remove(elementRenderer);
-	}
+		
+		return relativeOffset;
+	}	
 	
 	/////////////////////////////////
 	// PRIVATE LAYER TREE METHODS
 	////////////////////////////////
 	
 	/**
-	 * When inserting a new root ElementRenderer in the positive z-index
-	 * child renderer array, it must be inserted at the right index so that
+	 * When inserting a new child LayerRenderer in the positive z-index
+	 * child LayerRenderer array, it must be inserted at the right index so that
 	 * the array is ordered from least positive to most positive
 	 */
-	private function insertPositiveZIndexChildRenderer(rootElementRenderer:ElementRenderer, rootElementRendererZIndex:Int):Void
+	private function insertPositiveZIndexChildRenderer(childLayerRenderer:LayerRenderer, rootElementRendererZIndex:Int):Void
 	{
-		//the array of positive child renderer will be reconstructed
-		var newPositiveZIndexChildRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
+		//the array of positive child LayerRenderer will be reconstructed
+		var newPositiveZIndexChildRenderers:Array<LayerRenderer> = new Array<LayerRenderer>();
 		
-		//flag checking if the root ElementRenderer was already inserted
+		//flag checking if the LayerRenderer was already inserted
 		//in the array
 		var isInserted:Bool = false;
 		
 		//loop in all the positive z-index array
-		var length:Int = _positiveZIndexChildRenderers.length;
+		var length:Int = _positiveZIndexChildLayerRenderers.length;
 		for (i in 0...length)
 		{
-			//get the z-index of the child at the current index
+			//get the z-index of the child LayerRenderer at the current index
 			var currentRendererZIndex:Int = 0;
-			switch( _positiveZIndexChildRenderers[i].computedStyle.zIndex)
+			switch( _positiveZIndexChildLayerRenderers[i].rootElementRenderer.coreStyle.computedStyle.zIndex)
 			{
 				case ZIndex.integer(value):
 					currentRendererZIndex = value;
@@ -260,32 +480,32 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				default:	
 			}
 			
-			//if the new root ElementRenderer has a least positive z-index than the current
+			//if the new LayerRenderer has a least positive z-index than the current
 			//child it is inserted at this index
 			//also check that it is only inserted the first time this happens, else it will be
 			//inserted at each subsequent index
 			if (rootElementRendererZIndex < currentRendererZIndex && isInserted == false)
 			{
-				newPositiveZIndexChildRenderers.push(rootElementRenderer);
+				newPositiveZIndexChildRenderers.push(childLayerRenderer);
 				isInserted = true;
 
 			}
 			
 			//push the current child in the new array
-			newPositiveZIndexChildRenderers.push(_positiveZIndexChildRenderers[i]);
+			newPositiveZIndexChildRenderers.push(_positiveZIndexChildLayerRenderers[i]);
 			
 		}
 		
-		//if the new root ElementRenderer wasn't inserted, either
+		//if the new LayerRenderer wasn't inserted, either
 		//it is the first item in the array or it has the most positive
 		//z-index
 		if (isInserted == false)
 		{
-			newPositiveZIndexChildRenderers.push(rootElementRenderer);
+			newPositiveZIndexChildRenderers.push(childLayerRenderer);
 		}
 		
 		//replace the current array with the new one
-		_positiveZIndexChildRenderers = newPositiveZIndexChildRenderers;
+		_positiveZIndexChildLayerRenderers = newPositiveZIndexChildRenderers;
 
 	}
 	
@@ -293,18 +513,18 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 * Follows the same logic as the method above for the negative z-index child
 	 * array. The array must be ordered from most negative to least negative
 	 */ 
-	private function insertNegativeZIndexChildRenderer(rootElementRenderer:ElementRenderer, rootElementRendererZIndex:Int):Void
+	private function insertNegativeZIndexChildRenderer(childLayerRenderer:LayerRenderer, rootElementRendererZIndex:Int):Void
 	{
-		var newNegativeZIndexChildRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
+		var newNegativeZIndexChildRenderers:Array<LayerRenderer> = new Array<LayerRenderer>();
 
 		var isInserted:Bool = false;
 		
-		var length:Int = _negativeZIndexChildRenderers.length;
+		var length:Int = _negativeZIndexChildLayerRenderers.length;
 		for (i in 0...length)
 		{
 			var currentRendererZIndex:Int = 0;
 			
-			switch(_negativeZIndexChildRenderers[i].computedStyle.zIndex)
+			switch(_negativeZIndexChildLayerRenderers[i].rootElementRenderer.coreStyle.computedStyle.zIndex)
 			{
 				case ZIndex.integer(value):
 					currentRendererZIndex = value;
@@ -314,19 +534,19 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			
 			if (currentRendererZIndex  > rootElementRendererZIndex && isInserted == false)
 			{
-				newNegativeZIndexChildRenderers.push(rootElementRenderer);
+				newNegativeZIndexChildRenderers.push(childLayerRenderer);
 				isInserted = true;
 			}
 			
-			newNegativeZIndexChildRenderers.push(_negativeZIndexChildRenderers[i]);
+			newNegativeZIndexChildRenderers.push(_negativeZIndexChildLayerRenderers[i]);
 		}
 		
 		if (isInserted == false)
 		{
-			newNegativeZIndexChildRenderers.push(rootElementRenderer);
+			newNegativeZIndexChildRenderers.push(childLayerRenderer);
 		}
 		
-		_negativeZIndexChildRenderers = newNegativeZIndexChildRenderers;
+		_negativeZIndexChildLayerRenderers = newNegativeZIndexChildRenderers;
 		
 	}
 	
@@ -460,6 +680,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		return elementRenderersAtPointInChildRenderers;
 	}
 	
+	/**
+	 * Utils method determining if a given point is within
+	 * a given recrtangle
+	 */
 	private function isWithinBounds(point:PointData, bounds:RectangleData):Bool
 	{
 		return point.x >= bounds.x && (point.x <= bounds.x + bounds.width) && point.y >= bounds.y && (point.y <= bounds.y + bounds.height);	
@@ -473,20 +697,20 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	{
 		var childRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		for (i in 0..._negativeZIndexChildRenderers.length)
+		for (i in 0..._negativeZIndexChildLayerRenderers.length)
 		{
-			var childRenderer:ElementRenderer = _negativeZIndexChildRenderers[i];
-			childRenderers.push(childRenderer);
+			var childRenderer:LayerRenderer = _negativeZIndexChildLayerRenderers[i];
+			childRenderers.push(childRenderer.rootElementRenderer);
 		}
-		for (i in 0..._zeroAndAutoZIndexChildRenderers.length)
+		for (i in 0..._zeroAndAutoZIndexChildLayerRenderers.length)
 		{
-			var childRenderer:ElementRenderer = _zeroAndAutoZIndexChildRenderers[i];
-			childRenderers.push(childRenderer);
+			var childRenderer:LayerRenderer = _zeroAndAutoZIndexChildLayerRenderers[i];
+			childRenderers.push(childRenderer.rootElementRenderer);
 		}
-		for (i in 0..._positiveZIndexChildRenderers.length)
+		for (i in 0..._positiveZIndexChildLayerRenderers.length)
 		{
-			var childRenderer:ElementRenderer = _positiveZIndexChildRenderers[i];
-			childRenderers.push(childRenderer);
+			var childRenderer:LayerRenderer = _positiveZIndexChildLayerRenderers[i];
+			childRenderers.push(childRenderer.rootElementRenderer);
 		}
 		
 		return childRenderers;

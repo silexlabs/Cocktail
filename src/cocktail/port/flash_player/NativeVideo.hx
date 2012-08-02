@@ -10,6 +10,7 @@ package cocktail.port.flash_player;
 import cocktail.core.html.HTMLMediaElement;
 import cocktail.port.NativeElement;
 import cocktail.port.platform.nativeMedia.NativeMedia;
+import flash.display.DisplayObjectContainer;
 import flash.events.AsyncErrorEvent;
 import flash.events.Event;
 import flash.Lib;
@@ -19,6 +20,7 @@ import flash.net.NetConnection;
 import flash.net.NetStream;
 import flash.events.NetStatusEvent;
 import haxe.Timer;
+import cocktail.core.geom.GeomData;
 
 /**
  * This is the flash as3 port of the native video,
@@ -40,7 +42,7 @@ class NativeVideo extends NativeMedia
 	private static inline var NET_CONNECTION_CONNECT_SUCCESS:String = "NetConnection.Connect.Success";
 	
 	private static inline var NET_STREAM_SEEK_NOTIFY:String = "NetStream.Seek.Notify";
-
+	
 	/**
 	 * a reference to the native flash video
 	 * player
@@ -55,7 +57,7 @@ class NativeVideo extends NativeMedia
 	
 	/**
 	 * The native flash net connection object
-	 */
+	 */  
 	private var _nc:NetConnection;
 	
 	/**
@@ -99,7 +101,6 @@ class NativeVideo extends NativeMedia
 		_nc = new NetConnection();
 		_nc.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 		_nc.connect(null); 
-		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -155,6 +156,17 @@ class NativeVideo extends NativeMedia
 		
 		//not a supported video format
 		return HTMLMediaElement.CAN_PLAY_TYPE_MAYBE;
+	}
+	
+	/**
+	 * Attach the flash video object to the flash display list
+	 * 
+	 * TODO 1 : graphicsContext no longer DisplayObjectContainer
+	 */
+	override public function attach(graphicContext:GraphicsContext):Void
+	{
+		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext.nativeLayer);
+		containerGraphicContext.addChild(_video);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -291,6 +303,30 @@ class NativeVideo extends NativeMedia
 	override private function get_nativeElement():NativeElement
 	{
 		return _video;
+	}
+	
+	/**
+	 * Set/get the position of the native flash video object
+	 * to match those of its viewport
+	 */
+	override private function get_viewport():RectangleData
+	{
+		return {
+			x:_video.x,
+			y:_video.y,
+			width:_video.width,
+			height:_video.height
+		};
+	}
+	
+	override private function set_viewport(value:RectangleData):RectangleData
+	{
+		_video.x = value.x;
+		_video.y = value.y;
+		_video.width = value.width;
+		_video.height = value.height;
+		
+		return value;
 	}
 	
 }

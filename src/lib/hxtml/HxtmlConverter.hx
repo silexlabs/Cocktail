@@ -3,7 +3,6 @@ package lib.hxtml;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 
-import lib.hxtml.Browser;
 import cocktail.Lib;
 import cocktail.Dom;
 

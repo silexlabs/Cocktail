@@ -11,6 +11,11 @@ import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
 import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.style.ComputedStyle;
+import cocktail.core.window.Window;
+import cocktail.Lib;
+import cocktail.port.DrawingManager;
+import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.style.computer.BackgroundStylesComputer;
@@ -42,28 +47,14 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class BoxRenderer extends ElementRenderer
+class BoxRenderer extends InvalidatingElementRenderer
 {
-	
-	/**
-	 * A graphic context object onto which this ElementRenderer
-	 * is painted
-	 */
-	public var graphicsContext(default, null):NativeElement;
-	
-	public var childrenGraphicsContext(default, null):NativeElement;
-	
 	/**
 	 * class constructor
 	 */
-	public function new(node:HTMLElement) 
+	public function new(domNode:HTMLElement) 
 	{
-		super(node);
-		
-		#if (flash9 || nme)
-		graphicsContext = new flash.display.Sprite();
-		childrenGraphicsContext = new flash.display.Sprite();
-		#end
+		super(domNode);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -71,93 +62,31 @@ class BoxRenderer extends ElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * overriden to render elements spefic to a box (background, border...)
+	 * overriden to render elements specific to a box (background, border...)
 	 * TODO 4 : apply visibility
+	 * 
+	 * TODO 2 : code clean up
 	 */
-	override public function render(parentGraphicContext:NativeElement, forceRendering:Bool):Void
+	override public function render(parentGraphicContext:GraphicsContext):Void
 	{
-		
-		//get the relative offset of this ElementRenderer and add it to
-		//its parent
-		
-		if (_needsRendering == true || forceRendering == true)
-		{
-			clear(graphicsContext);
-			renderSelf(graphicsContext);
-			_needsRendering = false;
-		}
-		
-		clear(childrenGraphicsContext);
-		renderChildren(childrenGraphicsContext, forceRendering == true || _childrenNeedRendering == true);
-		_childrenNeedRendering = false;
-			
-		
-		#if (flash9 || nme)
-		var selfGraphicContext:flash.display.DisplayObjectContainer = cast(graphicsContext);
-		selfGraphicContext.addChild(childrenGraphicsContext);
-		#end
-	
-		
-		//if (_needsVisualEffectsRendering == true)
-		//{
-			applyVisualEffects(graphicsContext);
-		//}
-		_needsVisualEffectsRendering = false;
-		
-		
-		//draws the graphic context of this block box on the one of its
-		//parent
-		#if (flash9 || nme)
-		
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(parentGraphicContext);
-		containerGraphicContext.addChild(graphicsContext);
-		#end
+		renderSelf(parentGraphicContext);
+		renderChildren(parentGraphicContext);
 	}
 	
-	public function scroll(x:Float, y:Float):Void
-	{
-		if (computedStyle.position == fixed)
-		{
-			#if (flash9 || nme)
-		{
-			graphicsContext.x = x;
-			graphicsContext.y = y;
-		}
-		#end
-		
-		}
-		
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function renderSelf(graphicContext:NativeElement):Void
+	private function renderSelf(graphicContext:GraphicsContext):Void
 	{
 		renderBackground(graphicContext);
 	}
 	
 	/**
-	 * Clears the content of the graphic
-	 * context of this ElementRenderer
-	 */
-	private function clear(graphicsContext:NativeElement):Void
-	{
-		#if (flash9 || nme)
-		var containerGraphicsContext:flash.display.DisplayObjectContainer = cast(graphicsContext);
-			var length:Int = containerGraphicsContext.numChildren;
-			for (i in 0...length)
-			{
-				containerGraphicsContext.removeChildAt(0);
-			}
-		#end	
-	}
-	
-	/**
 	 * Render the background of the box using the provided graphic context
 	 */
-	private function renderBackground(graphicContext:NativeElement):Void
+	private function renderBackground(graphicContext:GraphicsContext):Void
 	{
 
 		//compute the background styles which can be computed at this time,
@@ -165,116 +94,22 @@ class BoxRenderer extends ElementRenderer
 		//during the rendering
 		//
 		//TODO 4 : update doc for this
-		_coreStyle.computeBackgroundStyles();
+		coreStyle.computeBackgroundStyles();
 		
-	
 		var backgroundBounds:RectangleData = getBackgroundBounds();
 		
 		//TODO 3 : should only pass dimensions instead of bounds
-		var backgrounds:Array<NativeElement> = BackgroundManager.render(backgroundBounds, _coreStyle, this);
-		
-		#if (flash9 || nme)
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
-		var length:Int = backgrounds.length;
-
-		for (i in 0...length)
-		{
-			backgrounds[i].x = backgroundBounds.x;
-			backgrounds[i].y = backgroundBounds.y;
-			containerGraphicContext.addChild(backgrounds[i]);
-		}
-		#end
+		BackgroundManager.render(graphicContext, backgroundBounds, coreStyle, this);
 	}
 	
 	/**
 	 * Render the children of the box
 	 */
-	private function renderChildren(graphicContext:NativeElement, forceRendering:Bool):Void
+	private function renderChildren(graphicContext:GraphicsContext):Void
 	{
 		//abstract
 	}
 	
-	/**
-	 * Apply the computed visual effect
-	 * using the graphic context
-	 */
-	private function applyVisualEffects(graphicContext:NativeElement):Void
-	{
-		//when all the dimensions of the ElementRenderer are known, compute the 
-		//visual effects to apply (visibility, opacity, transform, transition)
-		//it is necessary to wait for all dimensions to be known because for
-		//instance the transform style use the height and width of the ElementRenderer
-		//to determine the transformation center
-		//
-		//TODO 2 : update doc
-		
-		applyOpacity(graphicContext);
-		//apply only if the element is either relative positioned or has
-		//transformations functions
-		if (isRelativePositioned() == true || _coreStyle.transform != Transform.none)
-		{
-			_coreStyle.computeVisualEffectStyles();	
-			applyTransformationMatrix(graphicContext);
-		}
-		
-	}
-	
-	/**
-	 * Apply both the transformation matrix computed with the
-	 * transform and transform-origin style and the relative
-	 * offset if the element is relative positioned
-	 */
-	private function applyTransformationMatrix(graphicContext:NativeElement):Void
-	{
-		var relativeOffset:PointData = getRelativeOffset();
-		var concatenatedMatrix:Matrix = getConcatenatedMatrix(computedStyle.transform, relativeOffset);
-		
-		//apply relative positioning as well
-		concatenatedMatrix.translate(relativeOffset.x, relativeOffset.y);
-		
-		//get the data of the abstract matrix
-		var matrixData:MatrixData = concatenatedMatrix.data;
-		#if (flash9 || nme)
-		//create a native flash matrix with the abstract matrix data
-		var nativeTransformMatrix:flash.geom.Matrix  = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
-		//apply the native flash matrix to the native flash DisplayObject
-		graphicContext.transform.matrix = nativeTransformMatrix;
-		#end
-	}
-	
-	/**
-	 * Apply the computed opacity to the graphic context
-	 */ 
-	private function applyOpacity(graphicContext:NativeElement):Void
-	{
-		#if (flash9 || nme)
-		graphicContext.alpha = computedStyle.opacity;
-		#end
-	}
-	
-	/**
-	 * Concatenate the transformation matrix obtained with the
-	 * transform and transform-origin styles with the current
-	 * transformations applied to the box renderer, such as for 
-	 * instance its position in the global space, or the transformation
-	 * applied via a relative offset
-	 * 
-	 */
-	private function getConcatenatedMatrix(matrix:Matrix, relativeOffset:PointData):Matrix
-	{
-		var currentMatrix:Matrix = new Matrix();
-		var globalBounds:RectangleData = globalBounds;
-		
-		//translate to the coordiante system of the box renderer
-		currentMatrix.translate(globalBounds.x + relativeOffset.x, globalBounds.y + relativeOffset.y);
-		
-		currentMatrix.concatenate(matrix);
-		
-		//translate backe from the coordiante system of the box renderer
-		currentMatrix.translate((globalBounds.x + relativeOffset.x) * -1, (globalBounds.y + relativeOffset.y) * -1);
-		return currentMatrix;
-	}
-
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC LAYOUT METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -288,10 +123,10 @@ class BoxRenderer extends ElementRenderer
 	{	
 		//TODO 1 : messy to compute here, but if immediately computed
 		//when set, won't work for transitions
-		_coreStyle.computedStyle.opacity = _coreStyle.opacity;
+		coreStyle.computedStyle.opacity = coreStyle.opacity;
 		
 		//TODO 1 : same as above, where to compute this ?
-		_coreStyle.computeTransitionStyles();
+		coreStyle.computeTransitionStyles();
 		
 		if (_needsLayout == true || forceLayout == true)
 		{
@@ -318,10 +153,10 @@ class BoxRenderer extends ElementRenderer
 		var containingBlockFontMetricsData:FontMetricsData = _containingBlock.coreStyle.fontMetrics;
 
 		//compute the font style (font-size, line-height...)
-		_coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
+		coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
 
 		//compute the box styles (width, height, margins, paddings...)
-		_coreStyle.computeBoxModelStyles(containingBlockData, isReplaced());
+		coreStyle.computeBoxModelStyles(containingBlockData, isReplaced());
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -343,7 +178,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function isFloat():Bool
 	{
-		return computedStyle.cssFloat != CSSFloat.none;
+		return coreStyle.computedStyle.cssFloat != CSSFloat.none;
 	}
 	
 	/**
@@ -367,7 +202,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function isPositioned():Bool
 	{
-		return this.computedStyle.position != Position.cssStatic;
+		return this.coreStyle.computedStyle.position != Position.cssStatic;
 	}
 	
 	/**
@@ -386,7 +221,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function isRelativePositioned():Bool
 	{
-		return this.computedStyle.position == relative;
+		return this.coreStyle.computedStyle.position == relative;
 	}
 	
 	/**
@@ -403,7 +238,7 @@ class BoxRenderer extends ElementRenderer
 	{
 		var ret:Bool = false;
 		
-		switch (this.computedStyle.display) 
+		switch (this.coreStyle.computedStyle.display) 
 		{
 			case cssInline, inlineBlock:
 				ret = true;
@@ -421,42 +256,38 @@ class BoxRenderer extends ElementRenderer
 	 */
 	override public function establishesNewStackingContext():Bool
 	{
-		if (isPositioned() == true)
+		//transformed box always create new stacking context
+		if (isTransformed() == true)
 		{
-			//if a box is positioned, it only establishes
-			//a new stacking context if its z-index is not
-			//auto, else it uses the LayerRenderer of its parent
-			if (isAutoZIndexPositioned() == true)
-			{
-				return false;
-			}
-			else
-			{
-				return true;
-			}
+			return true;
+		}
+		//positioned box also always create a new stacking context
+		else if (isPositioned() == true)
+		{
+			return true;
 		}
 		
 		//in all other cases, no new stacking context is created
 		return false;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
-	 * Determine wether the ElementRenderer is both positioned
-	 * and have an 'auto' z-index value, as if it does, it 
-	 * means it doesn't have to establish a new stacking context
+	 * Determine wheter the ElementRenderer has transformations (translation,
+	 * scaling, rotation or skewing) that should be applied to it when rendered.
+	 * 
+	 * If it does, it needs to have its own LayerRenderer, as each LayerRenderer
+	 * must represents a single space coordinate
 	 */
-	override private function isAutoZIndexPositioned():Bool
+	override public function isTransformed():Bool
 	{
-		if (isPositioned() == false)
+		//it is transformaed if at least one transform
+		//function is applied to it
+		if (coreStyle.transform != Transform.none)
 		{
-			return false;
+			return true;
 		}
 		
-		return computedStyle.zIndex == ZIndex.cssAuto;
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -473,7 +304,7 @@ class BoxRenderer extends ElementRenderer
 	 */
 	private function isClear():Bool
 	{
-		return this.computedStyle.clear != Clear.none;
+		return coreStyle.computedStyle.clear != Clear.none;
 	}
 	
 	/**
@@ -485,6 +316,9 @@ class BoxRenderer extends ElementRenderer
 	 */
 	private function getBackgroundBounds():RectangleData
 	{
+		var globalBounds:RectangleData = get_globalBounds();
+		globalBounds.x -= scrollOffset.x;
+		globalBounds.y -= scrollOffset.y;
 		return globalBounds;
 	}
 	
@@ -495,10 +329,10 @@ class BoxRenderer extends ElementRenderer
 	public function getContainerBlockData():ContainingBlockData
 	{
 		return {
-			width:this.computedStyle.width,
-			isWidthAuto:this._coreStyle.width == Dimension.cssAuto,
-			height:this.computedStyle.height,
-			isHeightAuto:this._coreStyle.height == Dimension.cssAuto
+			width:this.coreStyle.computedStyle.width,
+			isWidthAuto:this.coreStyle.width == Dimension.cssAuto,
+			height:this.coreStyle.computedStyle.height,
+			isHeightAuto:this.coreStyle.height == Dimension.cssAuto
 		};
 	}
 	
@@ -509,8 +343,9 @@ class BoxRenderer extends ElementRenderer
 	 */
 	private function getWindowData():ContainingBlockData
 	{	
-		var width:Float = cocktail.Lib.window.innerWidth;
-		var height:Float = cocktail.Lib.window.innerHeight;
+		var window:Window = Lib.window;
+		var width:Float = window.innerWidth;
+		var height:Float = window.innerHeight;
 		
 		var windowData:ContainingBlockData = {
 			isHeightAuto:false,

@@ -59,6 +59,8 @@ class Text extends CharacterData
 	 * TODO 1 IMPORTANT : this class is not supposed to 
 	 * inherit from HTMLElement and have this method.
 	 * Should they share a IRenderable interface instead ?
+	 * Maybe there should be an HTMLText class in the HTML package
+	 * compositing this one ?
 	 * 
 	 * TODO 1 : when node value changes, should invalidate
 	 * rendering

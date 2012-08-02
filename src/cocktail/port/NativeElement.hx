@@ -10,7 +10,10 @@ package cocktail.port;
 /**
  * Set the right runtime specific NativeElement at compile-time
  */
-#if flash9
+#if macro
+typedef NativeElement =  Dynamic;
+
+#elseif flash9
 typedef NativeElement =  flash.display.DisplayObject;
 
 #elseif nme

@@ -14,6 +14,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
+import cocktail.core.event.TouchEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.focus.FocusManager;
@@ -22,11 +23,16 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLHtmlElement;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.html.HTMLInputElement;
+import cocktail.core.multitouch.MultiTouchManager;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
+import cocktail.core.event.EventData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.event.FocusEvent;
+import cocktail.core.window.Window;
 import cocktail.Lib;
+import cocktail.port.DrawingManager;
+import cocktail.port.GraphicsContext;
 import haxe.Log;
 import haxe.Timer;
 import cocktail.core.style.StyleData;
@@ -38,6 +44,9 @@ import cocktail.core.style.StyleData;
  * 
  * TODO 3 : should manage current click count
  * TODO 3 : should manage double click events
+ * 
+ * TODO 3 : class is too big with too many different
+ * functionality
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -158,20 +167,45 @@ class HTMLDocument extends Document
 	private var _documentNeedsRendering:Bool;
 	
 	/**
+	 * This class is in charge of keeping track of the
+	 * current touch points and of creating cross-platform
+	 * TouchEvent
+	 */
+	private var _multiTouchManager:MultiTouchManager;
+	
+	/**
+	 * A ref to the global Window object
+	 */
+	private var _window:Window;
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
-	public function new() 
+	public function new(window:Window = null) 
 	{
 		super();
 		
+		//TODO 2 : hack, Document probably shouldn't have
+		//ref to Window
+		if (window == null)
+		{
+			window = new Window();
+		}
+		
+		_window = window;
 		_focusManager = new FocusManager();
-			
+		
+		_multiTouchManager = new MultiTouchManager();
+		
 		documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
+		
+		//as the HTML htmlElement is the root
+		//of the runtime, the document is 
+		//responsible for attching it
+		documentElement.attach();
+		
 		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
 		documentElement.appendChild(body);
-		
-		
-	
 		
 		_shouldDispatchClickOnNextMouseUp = false;
 				
@@ -265,8 +299,8 @@ class HTMLDocument extends Document
 		//reseted after dispatch
 		var eventType:String = mouseEvent.type;
 		
-		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
-		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
+		elementRendererAtPoint.domNode.dispatchEvent(mouseEvent);
 	
 		switch(eventType)
 		{
@@ -292,12 +326,12 @@ class HTMLDocument extends Document
 	 */
 	public function onPlatformMouseWheelEvent(wheelEvent:WheelEvent):Void
 	{
-		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(wheelEvent);
-		elementRendererAtPoint.node.dispatchEvent(wheelEvent);
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(wheelEvent.screenX, wheelEvent.screenY);
+		elementRendererAtPoint.domNode.dispatchEvent(wheelEvent);
 		
 		if (wheelEvent.defaultPrevented == false)
 		{
-			var htmlElement:HTMLElement = elementRendererAtPoint.node;
+			var htmlElement:HTMLElement = elementRendererAtPoint.domNode;
 			
 			//get the amount of vertical scrolling to apply in pixel
 			var scrollOffset:Int = Math.round(wheelEvent.deltaY * MOUSE_WHEEL_DELTA_MULTIPLIER) ;
@@ -322,24 +356,24 @@ class HTMLDocument extends Document
 	 */
 	public function onPlatformMouseMoveEvent(mouseEvent:MouseEvent):Void
 	{
-		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
 
 		if (_hoveredElementRenderer != elementRendererAtPoint)
 		{
 			var mouseOutEvent:MouseEvent = new MouseEvent();
 			mouseOutEvent.initMouseEvent(MouseEvent.MOUSE_OUT, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
-			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey, mouseEvent.metaKey, mouseEvent.button, elementRendererAtPoint.node);
+			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey, mouseEvent.metaKey, mouseEvent.button, elementRendererAtPoint.domNode);
 			
-			_hoveredElementRenderer.node.dispatchEvent(mouseOutEvent);
+			_hoveredElementRenderer.domNode.dispatchEvent(mouseOutEvent);
 			
 			var oldHoveredElementRenderer:ElementRenderer = _hoveredElementRenderer;
 			_hoveredElementRenderer = elementRendererAtPoint;
 			
 			var mouseOverEvent:MouseEvent = new MouseEvent();
 			mouseOverEvent.initMouseEvent(MouseEvent.MOUSE_OVER, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
-			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, oldHoveredElementRenderer.node);
+			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, oldHoveredElementRenderer.domNode);
 			
-			elementRendererAtPoint.node.dispatchEvent(mouseOverEvent);
+			elementRendererAtPoint.domNode.dispatchEvent(mouseOverEvent);
 			
 			//when the hovered element changes, if a mouse up event is dispatched
 			//on the new hovered element, no click should be dispatched on it, as 
@@ -348,10 +382,10 @@ class HTMLDocument extends Document
 			
 			//update the mouse cursor with the cursor style of the newly hovered 
 			//element
-			setMouseCursor(elementRendererAtPoint.node.coreStyle.computedStyle.cursor);
+			setMouseCursor(elementRendererAtPoint.domNode.coreStyle.computedStyle.cursor);
 		}
 		
-		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
+		elementRendererAtPoint.domNode.dispatchEvent(mouseEvent);
 	}
 	
 	
@@ -364,7 +398,7 @@ class HTMLDocument extends Document
 	{
 		activeElement.dispatchEvent(keyboardEvent);
 
-		//TODO 4 : should this logic go into HTMLElement ? or is it application/embedder level ?
+		//TODO 4 : should this logic go into HTMLElement ? or is it application/embedder level ? 
 		switch (Std.parseInt(keyboardEvent.keyChar))
 		{
 			case TAB_KEY_CODE:
@@ -395,11 +429,37 @@ class HTMLDocument extends Document
 	
 	/**
 	 * When the Window is resized, invalidate
-	 * the body
+	 * the body, redraw.
+	 * 
+	 * Set the DrawingManager to be re-instantiated
+	 * on next rendering because its bitmap data size no longer
+	 * is the same as the viewport size
 	 */
 	public function onPlatformResizeEvent(event:UIEvent):Void
 	{
 		documentElement.invalidate(InvalidationReason.windowResize);
+	}
+	
+	/**
+	 * When a native touch event occurs, the state of the current
+	 * active touch must be updated, then a new 
+	 * 
+	 * TODO 2 : should add default scrolling behaviour for touch
+	 */
+	public function onPlatformTouchEvent(touchEvent:TouchEvent):Void
+	{	
+		//at this point the TouchEvent contain only the one
+		//Touch which triggered the event
+		var touch:Touch = touchEvent.touches.item(0);
+		var elementAtTouchPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(touch.screenX, touch.screenY);
+		
+		//send the event to the multitouch manager so that it can set up
+		//all of its properties properly
+		_multiTouchManager.setUpTouchEvent(touchEvent, elementAtTouchPoint.domNode);
+		
+		//dispatch the TouchEvent on the node onto which it was triggered
+		elementAtTouchPoint.domNode.dispatchEvent(touchEvent);
+		
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -419,9 +479,9 @@ class HTMLDocument extends Document
 	 */
 	private function dispatchClickEvent(mouseEvent:MouseEvent):Void
 	{
-		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
 		
-		var htmlElement:HTMLElement = elementRendererAtPoint.node;
+		var htmlElement:HTMLElement = elementRendererAtPoint.domNode;
 		
 		//find the first parent of the HTMLElement which has an activation behaviour, might
 		//return null
@@ -508,13 +568,10 @@ class HTMLDocument extends Document
 	
 	/**
 	 * Return wether fullscreen mode is allowed
-	 * 
-	 * TODO 3 : a bit messy to have cross-reference
-	 * to Platform 
 	 */
 	private function get_fullscreenEnabled():Bool
 	{
-		return Lib.window.platform.nativeWindow.fullScreenEnabled();
+		return _window.platform.nativeWindow.fullScreenEnabled();
 	}
 	
 	/**
@@ -638,14 +695,11 @@ class HTMLDocument extends Document
 	
 	/**
 	 * Start rendering the rendering
-	 * tree, starting with the root ElementRenderer
+	 * tree, starting with the root LayerRenderer
 	 */ 
 	private function startRendering():Void
 	{
-		#if (flash9 || nme)
-		//start the rendering at the root layer renderer
-		documentElement.elementRenderer.render(flash.Lib.current, false);
-		#end
+		documentElement.elementRenderer.layerRenderer.render(_window.innerWidth, _window.innerHeight);
 	}
 	
 	/**
@@ -660,7 +714,7 @@ class HTMLDocument extends Document
 		
 		//set the global bounds on the rendering tree. After this, ElementRenderer
 		//are aware of their bounds relative ot the viewport
-		documentElement.elementRenderer.setGlobalOrigins(0, 0, 0, 0);
+		documentElement.elementRenderer.setGlobalOrigins(0, 0, 0, 0, 0 ,0);
 	}
 	
 	/**
@@ -672,7 +726,8 @@ class HTMLDocument extends Document
 	private function scheduleLayoutAndRender():Void
 	{
 		var onLayoutScheduleDelegate:Void->Void = onLayoutSchedule;
-		#if (flash9 || nme)
+		#if macro
+		#elseif (flash9 || nme)
 		//calling the methods 1 millisecond later is enough to ensure
 		//that first all synchronous code is executed
 		Timer.delay(function () { 
@@ -689,12 +744,14 @@ class HTMLDocument extends Document
 	 * Utils method returning the first ElementRenderer whose dom node
 	 * is an Element node. This is used when dispatching MouseEvent, as their target
 	 * can only be Element node.
+	 * 
+	 * TODO 1 : should never return initial container block, should return body instead
 	 */
-	private function getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent:MouseEvent):ElementRenderer
+	private function getFirstElementRendererWhichCanDispatchMouseEvent(x:Int, y:Int):ElementRenderer
 	{
-		var screenX:Float = mouseEvent.screenX;
-		var screenY:Float = mouseEvent.screenY;
-		var elementRendererAtPoint:ElementRenderer = body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: screenX, y: screenY }, 0, 0  );
+		var x:Float = x;
+		var y:Float = y;
+		var elementRendererAtPoint:ElementRenderer = body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: x, y: y }, 0, 0  );
 		
 		//when no element is under mouse like for instance when the mouse leaves
 		//the window, return the body
@@ -703,7 +760,7 @@ class HTMLDocument extends Document
 			return body.elementRenderer;
 		}
 		
-		while (elementRendererAtPoint.node.nodeType != DOMConstants.ELEMENT_NODE || elementRendererAtPoint.isAnonymousBlockBox() == true)
+		while (elementRendererAtPoint.domNode.nodeType != DOMConstants.ELEMENT_NODE || elementRendererAtPoint.isAnonymousBlockBox() == true)
 		{
 			elementRendererAtPoint = elementRendererAtPoint.parentNode;
 			if (elementRendererAtPoint == null)

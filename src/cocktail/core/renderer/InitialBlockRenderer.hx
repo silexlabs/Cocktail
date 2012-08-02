@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.layer.InitialLayerRenderer;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.formatter.BlockFormattingContext;
@@ -50,11 +51,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	
 	/**
 	 * Overriden as initial block renderer always create
-	 * a new layer
+	 * a new intitial layer renderer
 	 */
 	override private function attachLayer():Void
 	{
-		layerRenderer = new LayerRenderer(this);
+		layerRenderer = new InitialLayerRenderer(this);
 	}
 	
 	/**
@@ -67,10 +68,10 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	}
 	
 	/**
-	 * never attach to containing block as it has
+	 * never register with containing block as it has
 	 * none
 	 */
-	override private function attachContaininingBlock():Void
+	override private function registerWithContaininingBlock():Void
 	{
 		
 	}
@@ -78,7 +79,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	/**
 	 * same as above for detach
 	 */
-	override private function detachContainingBlock():Void
+	override private function unregisterWithContainingBlock():Void
 	{
 		
 	}

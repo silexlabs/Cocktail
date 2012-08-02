@@ -97,7 +97,7 @@ class HTMLVideoElement extends HTMLMediaElement
 	 */
 	override private function initNativeMedia():Void
 	{
-		_nativeMedia = new NativeVideo();
+		nativeMedia = new NativeVideo();
 	}
 	
 	/**
@@ -105,7 +105,7 @@ class HTMLVideoElement extends HTMLMediaElement
 	 */
 	override private function initEmbeddedAsset():Void
 	{
-		embeddedAsset = _nativeMedia.nativeElement;
+		embeddedAsset = nativeMedia.nativeElement;
 	}
 	
 	/*
@@ -247,9 +247,9 @@ class HTMLVideoElement extends HTMLMediaElement
 	 */
 	private function get_videoWidth():Int
 	{
-		if (_nativeMedia.width != null)
+		if (nativeMedia.width != null)
 		{
-			return Math.round(_nativeMedia.width);
+			return Math.round(nativeMedia.width);
 		}
 		else
 		{
@@ -262,9 +262,9 @@ class HTMLVideoElement extends HTMLMediaElement
 	 */
 	private function get_videoHeight():Int
 	{
-		if (_nativeMedia.height != null)
+		if (nativeMedia.height != null)
 		{
-			return Math.round(_nativeMedia.height);
+			return Math.round(nativeMedia.height);
 		}
 		else
 		{

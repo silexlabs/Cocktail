@@ -38,12 +38,12 @@ class AbstractResource extends EventTarget
 	/**
 	 * The intrinsic width of the loaded resource
 	 */
-	public var intrinsicWidth(default, null):Int;
+	public var intrinsicWidth(default, null):Float;
 	
 	/**
 	 * The intrinsic height of the loaded resource
 	 */
-	public var intrinsicHeight(default, null):Int;
+	public var intrinsicHeight(default, null):Float;
 	
 	/**
 	 * The intrinsic ratio of the loaded resource

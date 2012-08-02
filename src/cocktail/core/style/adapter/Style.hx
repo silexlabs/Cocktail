@@ -120,11 +120,7 @@ class Style
 	*/
 	public var transform(get_transform, set_transform):String; 	
 	public var transformOrigin(get_transformOrigin, set_transformOrigin):String; 
-	/*
-	public var marginRight(get_marginRight, set_marginRight):String;
-	public var marginTop(get_marginTop, set_marginTop):String;
-	public var marginBottom(get_marginBottom, set_marginBottom):String;
-	*/
+	
 
 	/**
 	 * user interface styles

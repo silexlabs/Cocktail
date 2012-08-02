@@ -15,7 +15,6 @@ import cocktail.core.unit.UnitManager;
 import cocktail.core.font.FontData;
 import haxe.Log;
 
-
 /**
  * This is the base class for all classes computing a HTMLElement's box model. 
  * The box model is determined by a combination of styles such as the display of

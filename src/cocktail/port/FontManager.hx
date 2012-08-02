@@ -11,8 +11,9 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.port;
 
-
-#if flash9
+#if macro
+typedef FontManager = cocktail.port.server.FontManager;
+#elseif flash9
 typedef FontManager = cocktail.port.flash_player.FontManager;
 #elseif nme
 typedef FontManager = cocktail.port.nme.FontManager;

@@ -30,7 +30,7 @@ import cocktail.core.font.FontData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class TextRenderer extends ElementRenderer
+class TextRenderer extends InvalidatingElementRenderer
 {
 	/**
 	 * An array where each item contains a text token,
@@ -45,7 +45,20 @@ class TextRenderer extends ElementRenderer
 	 */
 	private var _text:Text;
 	
+	/**
+	 * The current text line box rendering
+	 * is invalid and text needs to be re rendered
+	 */
 	private var _textNeedsRendering:Bool;
+	
+	/**
+	 * flag determining if the text token must
+	 * be recreated, for instance after the value
+	 * of the Text dom node changed
+	 * 
+	 * TODO 2 : should add invalidation reason for this
+	 */
+	private var _textTokensNeedParsing:Bool;
 	
 	/**
 	 * Class constructor.
@@ -55,8 +68,17 @@ class TextRenderer extends ElementRenderer
 		super(node);
 		_text = cast(node);
 		_textNeedsRendering = true;
+		_textTokensNeedParsing = true;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC LAYOUT METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When laid out, text might recreate its text line
+	 * box if they are now invalid
+	 */
 	override public function layout(forceLayout:Bool):Void
 	{	
 		if (_textNeedsRendering == true)
@@ -66,15 +88,22 @@ class TextRenderer extends ElementRenderer
 		}
 	}
 	
-	//TODO 1 IMPORTANT : setting lineBoxes to null causes runtime error in inline formatting context,
-	//need to find a better way to refresh text
-	override private function invalidateText():Void
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC INVALIDATION METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When invalidated, a TextRenderer set its text flag so that
+	 * the text is re-rendered for next layout.
+	 * Text rendering is invalidated for instance when its color changes
+	 */
+	override public function invalidate(invalidationReason:InvalidationReason):Void
 	{
 		_textNeedsRendering = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE STATIC METHODS
+	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -170,10 +199,6 @@ class TextRenderer extends ElementRenderer
 		return textTokens;
 	}
 	
-	/////////////////////////////////
-	// PRIVATE METHODS
-	////////////////////////////////
-	
 	/**
 	 * Apply white space pre-processing tothe string
 	 * of rendered text
@@ -267,18 +292,22 @@ class TextRenderer extends ElementRenderer
 	 */
 	private function createTextLines():Void
 	{
-		var processedText:String = _text.nodeValue;
+		if (_textTokensNeedParsing == true)
+		{
+			var processedText:String = _text.nodeValue;
+			
+			//apply white space processing, for instance to collapse
+			//sequences of white spaces if needed
+			processedText = applyWhiteSpace(processedText, coreStyle.computedStyle.whiteSpace);
+			
+			processedText = applyTextTransform(processedText, coreStyle.computedStyle.textTransform);
+			
+			_textTokens = doGetTextTokens(processedText);
+		}
 		
-		//apply white space processing, for instance to collapse
-		//sequences of white spaces if needed
-		processedText = applyWhiteSpace(processedText, computedStyle.whiteSpace);
-		
-		processedText = applyTextTransform(processedText, computedStyle.textTransform);
-		
-		_textTokens = doGetTextTokens(processedText);
 		lineBoxes = [];
 		
-		var fontMetrics:FontMetricsData = _coreStyle.fontMetrics;
+		var fontMetrics:FontMetricsData = coreStyle.fontMetrics;
 		var fontManager:FontManager = FontManager.getInstance();
 		
 		var length:Int = _textTokens.length;

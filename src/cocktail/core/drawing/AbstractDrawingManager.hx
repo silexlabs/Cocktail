@@ -8,6 +8,7 @@
 package cocktail.core.drawing;
 
 import cocktail.core.geom.Matrix;
+import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
 import cocktail.core.drawing.DrawingData;
 import cocktail.core.geom.GeomData;
@@ -27,6 +28,12 @@ class AbstractDrawingManager
 	 * as drawing surface
 	 */
 	public var nativeElement(default, null):NativeElement;
+	
+	/**
+	 * A reference to the bitmap data of the drawing manager, wrapped
+	 * in an implementation specific class
+	 */
+	public var nativeBitmapData(get_nativeBitmapData, null):NativeBitmapData;
 	
 	/**
 	 * The width of the drawing surface
@@ -209,15 +216,15 @@ class AbstractDrawingManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Draw a bitmap extracted from a NativeElement onto the bitmap surface. Alpha is preserved 
+	 * Draw bitmap data onto the bitmap surface. Alpha is preserved 
 	 * for transparent bitmap
-	 * @param	source the source native element containing the bitmap data
-	 * @param	matrix a transformation matrix to apply yo the native element when drawing to 
+	 * @param	bitmapData the source  bitmap data
+	 * @param	matrix a transformation matrix to apply yo the bitmap data when drawing to 
 	 * to the bitmap. Defaults to an identity matrix
-	 * @param	sourceRect defines the zone from the source nativeElement that must be copied onto the 
-	 * native graphic dom element. Takes the whole nativeElement by default
+	 * @param	sourceRect defines the zone from the source bitmap data that must be copied onto the 
+	 * native graphic dom element. Takes the whole bitmap data by default
 	 */
-	public function drawImage(source:NativeElement, matrix:Matrix = null, sourceRect:RectangleData = null):Void
+	public function drawImage(bitmapData:Dynamic, matrix:Matrix = null, sourceRect:RectangleData = null):Void
 	{
 		//abstract
 	}
@@ -282,6 +289,15 @@ class AbstractDrawingManager
 	public function curveTo(controlX:Float, controlY:Float, x:Float, y:Float):Void
 	{
 		//abstract
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// GETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_nativeBitmapData():NativeBitmapData
+	{
+		return null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -10,8 +10,10 @@ package cocktail.port.flash_player;
 import cocktail.core.event.Event;
 import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLElement;
+import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
 import cocktail.port.platform.nativeWindow.AbstractNativeWindow;
+import flash.display.Bitmap;
 import flash.display.StageDisplayState;
 import flash.Lib;
 import flash.net.URLRequest;
@@ -89,6 +91,14 @@ class NativeWindow extends AbstractNativeWindow
 		return flash.Lib.current.stage.displayState == StageDisplayState.FULL_SCREEN;
 	}
 	
+	/**
+	 * Return the flash Stage
+	 */
+	override public function getInitialNativeLayer():NativeElement
+	{
+		return flash.Lib.current;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden private utils methods
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +109,11 @@ class NativeWindow extends AbstractNativeWindow
 	override private function setNativeListeners():Void
 	{
 		Lib.current.stage.addEventListener(flash.events.Event.RESIZE, onNativeResize);
+		
+		//not supported by nme
+		#if flash9
 		Lib.current.stage.addEventListener(flash.events.FullScreenEvent.FULL_SCREEN, onNativeFullScreenChange);
+		#end
 	}
 	
 	/**
@@ -108,7 +122,11 @@ class NativeWindow extends AbstractNativeWindow
 	override private function removeNativeListeners():Void
 	{
 		Lib.current.stage.removeEventListener(flash.events.Event.RESIZE, onNativeResize);
+		
+		//not supported by nme
+		#if flash9
 		Lib.current.stage.removeEventListener(flash.events.FullScreenEvent.FULL_SCREEN, onNativeFullScreenChange);
+		#end
 	}
 	
 	/**

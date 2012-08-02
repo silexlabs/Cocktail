@@ -100,10 +100,11 @@ class BlockFormattingContext extends FormattingContext
 			var x:Float = concatenatedX + child.coreStyle.computedStyle.marginLeft;
 			var y:Float = concatenatedY + marginTop;
 			
-			child.bounds.x = x;
-			child.bounds.y = y;
-			child.bounds.width = width;
-			child.bounds.height = height;
+			var childBounds:RectangleData = child.bounds;
+			childBounds.x = x;
+			childBounds.y = y;
+			childBounds.width = width;
+			childBounds.height = height;
 			
 			if (child.isFloat() == true)
 			{
@@ -123,10 +124,9 @@ class BlockFormattingContext extends FormattingContext
 				
 				var floatBounds:RectangleData = getRegisteredFloat(child).bounds;
 				
-				child.bounds.x = floatBounds.x + computedStyle.marginLeft;
-				child.bounds.y = floatBounds.y + computedStyle.marginTop;
-				
-				child.bounds.x += concatenatedX;
+				childBounds.x = floatBounds.x + computedStyle.marginLeft;
+				childBounds.y = floatBounds.y + computedStyle.marginTop;
+				childBounds.x += concatenatedX;
 				
 			}
 			//for child with children of their own, their padding and margin are added at
@@ -165,7 +165,7 @@ class BlockFormattingContext extends FormattingContext
 			}
 			
 			//find widest line for shrink-to-fit algorithm
-			if (child.bounds.x + child.bounds.width + computedStyle.marginRight > _formattingContextData.maxWidth)
+			if (childBounds.x + childBounds.width + computedStyle.marginRight > _formattingContextData.width)
 			{
 				//anonymous block box are not taken into account, as they always
 				//have an auto width, they might cause error in the shrink-to-fit
@@ -173,13 +173,13 @@ class BlockFormattingContext extends FormattingContext
 				//context root, it won't have the right max width
 				if (child.isAnonymousBlockBox() == false)
 				{
-					_formattingContextData.maxWidth = child.bounds.x + child.bounds.width + computedStyle.marginRight;
+					_formattingContextData.width = childBounds.x + childBounds.width + computedStyle.marginRight;
 				}
 			}
 			
-			if (concatenatedY  > _formattingContextData.maxHeight)
+			if (concatenatedY  > _formattingContextData.height)
 			{
-				_formattingContextData.maxHeight = concatenatedY;
+				_formattingContextData.height = concatenatedY;
 			}
 			
 		}
@@ -188,7 +188,7 @@ class BlockFormattingContext extends FormattingContext
 		if (elementRenderer.coreStyle.height == Dimension.cssAuto)
 		{
 			elementRenderer.bounds.height = childHeight + elementRendererComputedStyle.paddingBottom + elementRendererComputedStyle.paddingTop ;
-			elementRenderer.coreStyle.computedStyle.height = childHeight;
+			elementRendererComputedStyle.height = childHeight;
 		}
 		
 		concatenatedY += elementRendererComputedStyle.paddingBottom + parentCollapsedMarginBottom;

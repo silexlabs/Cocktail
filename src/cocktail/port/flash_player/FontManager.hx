@@ -24,7 +24,6 @@ import haxe.Log;
 import cocktail.core.font.AbstractFontManager;
 import cocktail.core.font.FontData;
 import cocktail.core.style.StyleData;
-import haxe.remoting.FlashJsConnection;
 
 
 /**
@@ -138,7 +137,7 @@ class FontManager extends AbstractFontManager
 		//below the baseline) from the flash font metrics
 		var ascent:Float = Math.abs(elementFormat.getFontMetrics().emBox.top);
 		var descent:Float = Math.abs(elementFormat.getFontMetrics().emBox.bottom);
-
+		
 		//get the x height (roughly the height of a lower-case "x")
 		var xHeight:Float = getXHeight(elementFormat.clone());
 	
