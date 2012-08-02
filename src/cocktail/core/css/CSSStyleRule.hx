@@ -143,12 +143,13 @@ class CSSStyleRule extends CSSRule
 		
 		var simpleSelectorSequenceStartValue:SimpleSelectorSequenceStartValue = null;
 		var simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue> = [];
+		var selectorComponent:SelectorComponentValue = null;
 		
 		while (!c.isEOF())
 		{
 			switch (state)
 			{
-				case S2.IGNORE_SPACES:
+				case IGNORE_SPACES:
 					switch(c)
 					{
 						case
@@ -161,21 +162,21 @@ class CSSStyleRule extends CSSRule
 							continue;
 					}
 					
-				case BEGIN_SELECTOR:
+				case BEGIN_SIMPLE_SELECTOR:
 					switch(c)
 					{
 						case isAsciiChar(c):
-							state = BEGIN_TYPE_SELECTOR;
+							state = SIMPLE_SELECTOR;
 							next = END_TYPE_SELECTOR;
 							start = position;
 						
 						case '.'.code:
-							state = BEGIN_CLASS_SELECTOR;
+							state = SIMPLE_SELECTOR;
 							next = END_CLASS_SELECTOR;
 							start = position;
 							
 						case '#'.code:
-							state = BEGIN_ID_SELECTOR;
+							state = SIMPLE_SELECTOR;
 							next = END_ID_SELECTOR;
 							start = position;
 							
@@ -194,41 +195,24 @@ class CSSStyleRule extends CSSRule
 							next = END_ATTRIBUTE_SELECTOR;
 							
 						default:
-							state = S.INVALID_SELECTOR;
+							state = INVALID_SELECTOR;
 					}
 					
-				case BEGIN_TYPE_SELECTOR:
-					if (!isAsciiChar(c))
-					{
-						switch(c)
-						{
-							case ' '.code, '>'.code, ':'.code, '#'.code, '.'.code, '['.code:
-								state = next;
-								continue;
-								
-							default:	
-								state = S.INVALID_SELECTOR;
-						}
-					}
-				case END_TYPE_SELECTOR:
-					var type = selector.substr(start, position - start);
-					simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.TYPE(type);
+				case END_SIMPLE_SELECTOR:
 					switch(c)
 					{
 						case ' '.code, '>'.code:
-								state = S.BEGIN_COMBINATOR;
-								next = S.END_COMBINATOR;
+								state = BEGIN_COMBINATOR;
 								continue;
 								
 						case ':'.code, '#'.code, '.'.code, '['.code:
-							state = BEGIN_SELECTOR_SEQUENCE;
+							state = BEGIN_SIMPLE_SELECTOR;
 							
 						default:
 							state = INVALID_SELECTOR;
 					}
 					
-				
-				case BEGIN_CLASS_SELECTOR:
+				case SIMPLE_SELECTOR:	
 					if (!isAsciiChar(c))
 					{
 						switch(c)
@@ -238,22 +222,64 @@ class CSSStyleRule extends CSSRule
 								continue;
 								
 							default:	
-								state = S.INVALID_SELECTOR;
+								state = INVALID_SELECTOR;
 						}
 					}
+					
+				
+				case END_TYPE_SELECTOR:
+					var type = selector.substr(start, position - start);
+					simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.TYPE(type);
+					state = END_SIMPLE_SELECTOR;
 					
 				case END_CLASS_SELECTOR:
 					var className = selector.substr(start, position - start);
 					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className);
-					switch(c)
+					state = END_SIMPLE_SELECTOR;
+					
+				case END_ID_SELECTOR:
+					var id = selector.substr(start, position - start);
+					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.ID(id);
+					state = END_SIMPLE_SELECTOR;	
+					
+				case BEGIN_COMBINATOR:
+					if (simpleSelectorSequenceStartValue != null)
 					{
-						
+						if (simpleSelectorSequenceItemValues.length > 0)
+						{
+							var simpleSelectorSequence = {
+								startValue:simpleSelectorSequenceStartValue,
+								simpleSelectors:simpleSelectorSequenceItemValues
+							}
+							
+							firstSelectorComponent = SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(simpleSelectorSequence);
+						}
+						else
+						{
+							firstSelectorComponent = SelectorComponentValue.SIMPLE_SELECTOR(SimpleSelectorValue.SEQUENCE_START(simpleSelectorSequenceStartValue));
+						}
+					}
+					else
+					{
+						if (simpleSelectorSequenceItemValues.length == 1)
+						{
+							firstSelectorComponent = SelectorComponentValue.SIMPLE_SELECTOR(SimpleSelectorValue.SEQUENCE_ITEM(simpleSelectorSequenceItemValues[0]));
+						}
 					}
 					
-				case END_SELECTOR:
+					state = IGNORE_SPACE;
+					next = COMBINATOR;
 					
+				case COMBINATOR:
+					switch(c)
+					{
+						case isAsciiChar(c):
+							state = DESCENDANT_COMBINATOR;
+							
+						case '>'.code:
+							state = CHILD_COMBINATOR;
+					}
 					
-					 
 			}
 			c = css.fastCodeAt(++position);
 		}
