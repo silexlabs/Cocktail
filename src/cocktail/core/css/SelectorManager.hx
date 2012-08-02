@@ -22,27 +22,24 @@ class SelectorManager
 	
 	public function matchSelector(node:HTMLElement, selector:SelectorData):Bool
 	{
-		for (i in 0...selector.combinators.length)
+		var components:Array<SelectorComponentValue> = selector.components;
+		
+		var previousSelectorItem:SelectorItemValue = null;
+		
+		for (i in 0...components.length)
 		{
-			var combinator:CombinatorValue = selector.combinators[i];
+			var component:SelectorComponentValue = components[i];
 			
 			var matched:Bool = false;
 			
-			switch(combinator)
+			switch(component)
 			{
-				case CombinatorValue.NONE(value):
-					matched = matchSelectorComponent(node, value);
-			
-				case CombinatorValue.CHILD(parent, child):
-					matched = matchChildCombinator(node, parent, child);
+				case SelectorComponentValue.COMBINATOR(value):
+					matched = matchCombinator(node, value, previousSelectorItem, cast(components[i+1]));
 					
-				case CombinatorValue.DESCENDANT(parent, child):
-					matched = matchDescendantCombinator(node, parent, child);
-					
-				case CombinatorValue.GENERAL_SIBLING(sibling, child):
-					//TODO
-				case CombinatorValue.ADJACENT_SIBLING(sibling, CHILD):	
-					//TODO
+				case SelectorComponentValue.SELECTOR_ITEM(value):
+					previousSelectorItem = value;
+					matched = matchSelectorItem(node, value);
 			}
 			
 			if (matched == false)
@@ -54,9 +51,30 @@ class SelectorManager
 		return true;
 	}
 	
-	private function matchDescendantCombinator(node:HTMLElement, parentSelectorComponent:SelectorComponentValue, childSelectorComponent:SelectorComponentValue):Bool
+	private function matchCombinator(node:HTMLElement, combinator:CombinatorValue, previousSelectorItem:SelectorItemValue, nextSelectorItem:SelectorItemValue):Bool
 	{
-		if (matchSelectorComponent(node, childSelectorComponent) == false)
+		switch(combinator)
+		{
+			case CombinatorValue.ADJACENT_SIBLING:
+				//TODO
+				return false;
+				
+			case CombinatorValue.GENERAL_SIBLING:
+				//TODO
+				return false;
+				
+			case CombinatorValue.CHILD:
+				return matchChildCombinator(node, previousSelectorItem, nextSelectorItem);
+				
+			case CombinatorValue.DESCENDANT:
+				return matchDescendantCombinator(node, previousSelectorItem, nextSelectorItem);
+		}
+	}
+	
+		
+	private function matchDescendantCombinator(node:HTMLElement, parentSelectorItem:SelectorItemValue, childSelectorItem:SelectorItemValue):Bool
+	{
+		if (matchSelectorItem(node, childSelectorItem) == false)
 		{
 			return false;
 		}
@@ -72,7 +90,7 @@ class SelectorManager
 		
 		while (parent != null)
 		{
-			if (matchSelectorComponent(parent, parentSelectorComponent) == true)
+			if (matchSelectorItem(parent, parentSelectorItem) == true)
 			{
 				return true;
 			}
@@ -84,9 +102,9 @@ class SelectorManager
 		
 	}
 	
-	private function matchChildCombinator(node:HTMLElement, parentSelectorComponent:SelectorComponentValue, childSelectorComponent:SelectorComponentValue):Bool
+	private function matchChildCombinator(node:HTMLElement, parentSelectorItem:SelectorItemValue, childSelectorItem:SelectorItemValue):Bool
 	{
-		if (matchSelectorComponent(node, childSelectorComponent) == false)
+		if (matchSelectorItem(node, childSelectorItem) == false)
 		{
 			return false;
 		}
@@ -96,17 +114,17 @@ class SelectorManager
 			return false;
 		}
 		
-		return matchSelectorComponent(node.parentNode, parentSelectorComponent);
+		return matchSelectorItem(node.parentNode, parentSelectorItem);
 	}
 	
-	private function matchSelectorComponent(node:HTMLElement, selectorComponent:SelectorComponentValue):Bool
+	private function matchSelectorItem(node:HTMLElement, selectorItem:SelectorItemValue):Bool
 	{
-		switch (selectorComponent)
+		switch (selectorItem)
 		{
-			case SelectorComponentValue.SIMPLE_SELECTOR(value):
+			case SelectorItemValue.SIMPLE_SELECTOR(value):
 				return matchSimpleSelector(node, value);
 				
-			case SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(value):
+			case SelectorItemValue.SIMPLE_SELECTOR_SEQUENCE(value):
 				return matchSimpleSelectorSequence(node, value);
 		}
 	}
@@ -222,26 +240,18 @@ class SelectorManager
 			case PseudoElementSelectorValue.NONE:	
 		}
 		
-		for (i in 0...selector.combinators.length)
+		var components:Array<SelectorComponentValue> = selector.components;
+		
+		for (i in 0...components.length)
 		{
-			var combinator:CombinatorValue = selector.combinators[i];
+			var component:SelectorComponentValue = components[i];
 			
-			switch(combinator)
+			switch(component)
 			{
-				case CombinatorValue.NONE(value):
-					getSelectorComponentSpecificity(value, selectorSpecificity);
+				case SelectorComponentValue.COMBINATOR(value):
 					
-				case CombinatorValue.CHILD(parent, child):
-					getSelectorComponentSpecificity(child, selectorSpecificity);
-					
-				case CombinatorValue.DESCENDANT(parent, child):
-					getSelectorComponentSpecificity(child, selectorSpecificity);	
-					
-				case CombinatorValue.ADJACENT_SIBLING(sibling, child):
-					getSelectorComponentSpecificity(child, selectorSpecificity);	
-					
-				case CombinatorValue.GENERAL_SIBLING(sibling, child):
-					getSelectorComponentSpecificity(child, selectorSpecificity);		
+				case SelectorComponentValue.SELECTOR_ITEM(value):
+					getSelectorItemSpecifity(value, selectorSpecificity);
 			}
 		}
 		
@@ -250,14 +260,14 @@ class SelectorManager
 		return Std.parseInt(concatenatedSpecificity);
 	}
 	
-	private function getSelectorComponentSpecificity(selectorComponent:SelectorComponentValue, selectorSpecificity:SelectorSpecificityData):Void
+	private function getSelectorItemSpecifity(selector:SelectorItemValue, selectorSpecificity:SelectorSpecificityData):Void
 	{
-		switch (selectorComponent)
+		switch (selector)
 		{
-			case SelectorComponentValue.SIMPLE_SELECTOR(value):
+			case SelectorItemValue.SIMPLE_SELECTOR(value):
 				getSimpleSelectorSpecificity(value, selectorSpecificity); 
 				
-			case SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(value):
+			case SelectorItemValue.SIMPLE_SELECTOR_SEQUENCE(value):
 				getSimpleSelectorSequenceSpecificity(value, selectorSpecificity);
 		}
 	}

@@ -109,13 +109,11 @@ class CSSStyleSheet extends StyleSheet
 					
 				case S.END_MEDIA_RULE:
 					var rule = css.substr(start, position - start);
-					trace(rule);
 					state = S.IGNORE_SPACES;
 					next = S.BEGIN_RULE;
 						
 				case S.END_STYLE_RULE:
 					var rule = css.substr(start, position - start);
-					trace(rule);
 					state = S.IGNORE_SPACES;
 					next = S.BEGIN_RULE;
 					

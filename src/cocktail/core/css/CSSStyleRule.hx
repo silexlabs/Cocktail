@@ -42,7 +42,7 @@ class CSSStyleRule extends CSSRule
 		super();
 		style = new CSSStyleDeclaration(this);
 		selector = {
-			combinators:[],
+			components:[],
 			pseudoElement:PseudoElementSelectorValue.NONE
 		}
 	}
@@ -97,7 +97,6 @@ class CSSStyleRule extends CSSRule
 					
 				case S.END_SELECTOR:	
 					var selector = css.substr(start, position - start);
-					trace(selector);
 					state = S.IGNORE_SPACES;
 					next = S.BEGIN_STYLE;
 					
@@ -120,7 +119,6 @@ class CSSStyleRule extends CSSRule
 				
 				case S.END_STYLE:
 					var style = css.substr(start, position - start);
-					trace(style);
 					state = S.IGNORE_SPACES;
 					next = S.IGNORE_SPACES;
 					
@@ -133,17 +131,18 @@ class CSSStyleRule extends CSSRule
 		return (c >= 'a'.code && c <= 'z'.code) || (c >= 'A'.code && c <= 'Z'.code) || (c >= '0'.code && c <= '9'.code) || c == ':'.code || c == '.'.code || c == '_'.code || c == '-'.code;
 	}
 	
-	private function parseSelector(selector:String):Void
+	public function parseSelector(selector:String):Void
 	{
-		var state = S2.IGNORE_SPACES;
-		var next = S2.BEGIN_SIMPLE_SELECTOR;
-		var start = 0;
-		var position = 0;
-		var c = selector.fastCodeAt(position);
+		var state:SelectorParserState = IGNORE_SPACES;
+		var next:SelectorParserState = BEGIN_SIMPLE_SELECTOR;
+		var start:Int = 0;
+		var position:Int = 0;
+		var c:Int = selector.fastCodeAt(position);
 		
 		var simpleSelectorSequenceStartValue:SimpleSelectorSequenceStartValue = null;
 		var simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue> = [];
-		var selectorComponent:SelectorComponentValue = null;
+		
+		var components:Array<SelectorComponentValue> = [];
 		
 		while (!c.isEOF())
 		{
@@ -163,40 +162,38 @@ class CSSStyleRule extends CSSRule
 					}
 					
 				case BEGIN_SIMPLE_SELECTOR:
-					switch(c)
+					if (isAsciiChar(c))
 					{
-						case isAsciiChar(c):
-							state = SIMPLE_SELECTOR;
-							next = END_TYPE_SELECTOR;
-							start = position;
-						
-						case '.'.code:
-							state = SIMPLE_SELECTOR;
-							next = END_CLASS_SELECTOR;
-							start = position;
-							
-						case '#'.code:
-							state = SIMPLE_SELECTOR;
-							next = END_ID_SELECTOR;
-							start = position;
-							
-						case '*'.code:
-							state = BEGIN_UNIVERSAL_SELECTOR;
-							next = END_UNIVERSAL_SELECTOR;
-							start = position;
-							
-						case ':'.code:
-							state = BEGIN_PSEUDO_SELECTOR;
-							next = END_PSEUDO_SELECTOR;
-							start = position;
-							
-						case '['.code:
-							state = BEGIN_ATTRIBUTE_SELECTOR;
-							next = END_ATTRIBUTE_SELECTOR;
-							
-						default:
-							state = INVALID_SELECTOR;
+						state = SIMPLE_SELECTOR;
+						next = END_TYPE_SELECTOR;
+						start = position;
 					}
+					else
+					{
+						switch(c)
+						{
+							
+							case '.'.code:
+								state = SIMPLE_SELECTOR;
+								next = END_CLASS_SELECTOR;
+								start = position;
+								
+							case '#'.code:
+								state = SIMPLE_SELECTOR;
+								next = END_ID_SELECTOR;
+								start = position;
+								
+							case '*'.code:
+								state = SIMPLE_SELECTOR;
+								next = END_UNIVERSAL_SELECTOR;
+								start = position;
+								
+							default:
+								state = INVALID_SELECTOR;
+								continue;
+						}
+					}
+					
 					
 				case END_SIMPLE_SELECTOR:
 					switch(c)
@@ -207,9 +204,11 @@ class CSSStyleRule extends CSSRule
 								
 						case ':'.code, '#'.code, '.'.code, '['.code:
 							state = BEGIN_SIMPLE_SELECTOR;
+							continue;
 							
 						default:
 							state = INVALID_SELECTOR;
+							continue;
 					}
 					
 				case SIMPLE_SELECTOR:	
@@ -223,6 +222,7 @@ class CSSStyleRule extends CSSRule
 								
 							default:	
 								state = INVALID_SELECTOR;
+								continue;
 						}
 					}
 					
@@ -231,58 +231,120 @@ class CSSStyleRule extends CSSRule
 					var type = selector.substr(start, position - start);
 					simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.TYPE(type);
 					state = END_SIMPLE_SELECTOR;
+					continue;
 					
 				case END_CLASS_SELECTOR:
 					var className = selector.substr(start, position - start);
-					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className);
+					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className));
+					state = END_SIMPLE_SELECTOR;
+					continue;
+					
+				case END_ID_SELECTOR:
+					var id = selector.substr(start, position - start);
+					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.ID(id));
+					state = END_SIMPLE_SELECTOR;	
+					continue;
+					
+					
+				case END_UNIVERSAL_SELECTOR:
+					simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.UNIVERSAL;
+					state = END_SIMPLE_SELECTOR;
+					
+				case BEGIN_COMBINATOR:
+					
+					flushSelectors(simpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues, components);
+					
+					state = IGNORE_SPACES;
+					next = COMBINATOR;
+					
+				case COMBINATOR:
+					if (isAsciiChar(c))
+					{
+						state = BEGIN_SIMPLE_SELECTOR;
+						components.push(SelectorComponentValue.COMBINATOR(CombinatorValue.DESCENDANT));
+						continue;
+					}
+					else
+					{
+						switch(c)
+						{
+							case '>'.code:
+								state = IGNORE_SPACES;
+								next = BEGIN_SIMPLE_SELECTOR;
+								components.push(SelectorComponentValue.COMBINATOR(CombinatorValue.CHILD));
+						}
+					}
+					
+				case INVALID_SELECTOR:
+					trace("invalid");
+					return;
+			}
+			c = selector.fastCodeAt(++position);
+		}
+		
+		switch(next)
+		{
+			case END_TYPE_SELECTOR:
+					var type = selector.substr(start, position - start);
+					simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.TYPE(type);
+					
+				case END_CLASS_SELECTOR:
+					var className = selector.substr(start, position - start);
+					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className));
 					state = END_SIMPLE_SELECTOR;
 					
 				case END_ID_SELECTOR:
 					var id = selector.substr(start, position - start);
-					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.ID(id);
-					state = END_SIMPLE_SELECTOR;	
+					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.ID(id));
 					
-				case BEGIN_COMBINATOR:
-					if (simpleSelectorSequenceStartValue != null)
-					{
-						if (simpleSelectorSequenceItemValues.length > 0)
-						{
-							var simpleSelectorSequence = {
-								startValue:simpleSelectorSequenceStartValue,
-								simpleSelectors:simpleSelectorSequenceItemValues
-							}
-							
-							firstSelectorComponent = SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(simpleSelectorSequence);
-						}
-						else
-						{
-							firstSelectorComponent = SelectorComponentValue.SIMPLE_SELECTOR(SimpleSelectorValue.SEQUENCE_START(simpleSelectorSequenceStartValue));
-						}
-					}
-					else
-					{
-						if (simpleSelectorSequenceItemValues.length == 1)
-						{
-							firstSelectorComponent = SelectorComponentValue.SIMPLE_SELECTOR(SimpleSelectorValue.SEQUENCE_ITEM(simpleSelectorSequenceItemValues[0]));
-						}
-					}
-					
-					state = IGNORE_SPACE;
-					next = COMBINATOR;
-					
-				case COMBINATOR:
-					switch(c)
-					{
-						case isAsciiChar(c):
-							state = DESCENDANT_COMBINATOR;
-							
-						case '>'.code:
-							state = CHILD_COMBINATOR;
-					}
-					
-			}
-			c = css.fastCodeAt(++position);
+				default:	
 		}
+		
+		flushSelectors(simpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues, components);
+		
+		
+		
+		trace(components);
+	}
+	
+	private function flushSelectors(simpleSelectorSequenceStartValue:SimpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue>, components:Array<SelectorComponentValue>):Void
+	{
+		if (simpleSelectorSequenceStartValue == null)
+		{
+			simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.UNIVERSAL;
+		}
+		
+		if (simpleSelectorSequenceStartValue != null)
+		{
+			
+			if (simpleSelectorSequenceItemValues.length > 0)
+			{
+				var simpleSelectorSequence:SimpleSelectorSequenceData = {
+					startValue:simpleSelectorSequenceStartValue,
+					simpleSelectors:simpleSelectorSequenceItemValues
+				}
+				
+				components.push(SelectorComponentValue.SELECTOR_ITEM(SelectorItemValue.SIMPLE_SELECTOR_SEQUENCE(simpleSelectorSequence)));
+			}
+			else
+			{
+				components.push(SelectorComponentValue.SELECTOR_ITEM(
+				SelectorItemValue.SIMPLE_SELECTOR(
+				SimpleSelectorValue.SEQUENCE_START(simpleSelectorSequenceStartValue))));			
+			}
+		}
+		else
+		{
+			if (simpleSelectorSequenceItemValues.length == 1)
+			{
+				components.push(SelectorComponentValue.SELECTOR_ITEM(
+				SelectorItemValue.SIMPLE_SELECTOR(
+				SimpleSelectorValue.SEQUENCE_ITEM(simpleSelectorSequenceItemValues[0]))));			
+			}
+		}
+		
+		simpleSelectorSequenceStartValue = null;
+		simpleSelectorSequenceItemValues = [];
 	}
 	
 	static inline function isAsciiChar(c) {

@@ -233,7 +233,6 @@ class StyleManager
 		return false;
 	}
 	
-	
 	private function applyDefaultStylesValues(styleDeclaration:CSSStyleDeclaration):Void
 	{
 		styleDeclaration.setProperty("width", "auto");

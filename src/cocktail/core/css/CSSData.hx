@@ -32,21 +32,25 @@ enum PropertyOriginValue {
 }
 
 typedef SelectorData = {
-	var combinators:Array<CombinatorValue>;
+	var components:Array<SelectorComponentValue>;
 	var pseudoElement:PseudoElementSelectorValue;
 }
 
 enum SelectorComponentValue {
-	SIMPLE_SELECTOR_SEQUENCE(value:SimpleSelectorSequenceData);
-	SIMPLE_SELECTOR(value:SimpleSelectorValue);
+	SELECTOR_ITEM(value:SelectorItemValue);
+	COMBINATOR(value:CombinatorValue);
 } 
 
+enum SelectorItemValue {
+	SIMPLE_SELECTOR_SEQUENCE(value:SimpleSelectorSequenceData);
+	SIMPLE_SELECTOR(value:SimpleSelectorValue);
+}
+
 enum CombinatorValue {
-	NONE(value:SelectorComponentValue);
-	DESCENDANT(parent:SelectorComponentValue, child:SelectorComponentValue);
-	CHILD(parent:SelectorComponentValue, child:SelectorComponentValue);
-	ADJACENT_SIBLING(sibling:SelectorComponentValue, child:SelectorComponentValue);
-	GENERAL_SIBLING(sibling:SelectorComponentValue, child:SelectorComponentValue);
+	DESCENDANT;
+	CHILD;
+	ADJACENT_SIBLING;
+	GENERAL_SIBLING;
 }
 
 typedef SimpleSelectorSequenceData = {
@@ -107,4 +111,18 @@ enum PseudoElementSelectorValue {
 	NONE;
 	FIRST_LINE;
 	FIRST_LETTER;
+}
+
+enum SelectorParserState {
+	IGNORE_SPACES;
+	BEGIN_SIMPLE_SELECTOR;
+	END_SIMPLE_SELECTOR;
+	SIMPLE_SELECTOR;
+	END_TYPE_SELECTOR;
+	END_CLASS_SELECTOR;
+	END_ID_SELECTOR;
+	BEGIN_COMBINATOR;
+	COMBINATOR;
+	END_UNIVERSAL_SELECTOR;
+	INVALID_SELECTOR;
 }
