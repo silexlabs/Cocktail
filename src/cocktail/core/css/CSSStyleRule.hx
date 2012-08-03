@@ -7,26 +7,6 @@ import cocktail.core.css.CSSData;
  * ...
  * @author Yannick DOMINGUEZ
  */
-
-extern private class S {
-	public static inline var IGNORE_SPACES 	= 0;
-	public static inline var BEGIN_SELECTOR	= 1;
-	public static inline var SELECTOR = 2;
-	public static inline var END_SELECTOR	= 3;
-	public static inline var BEGIN_STYLE = 4;
-	public static inline var STYLE = 5;
-	public static inline var END_STYLE = 6;
-}
-
-extern private class S2 {
-	public static inline var IGNORE_SPACES 	= 0;
-	public static inline var BEGIN_SELECTOR	= 1;
-	public static inline var SELECTOR = 2;
-	public static inline var END_SELECTOR	= 3;
-	public static inline var BEGIN_STYLE = 4;
-	public static inline var STYLE = 5;
-	public static inline var END_STYLE = 6;
-}
  
 class CSSStyleRule extends CSSRule
 {
@@ -52,20 +32,19 @@ class CSSStyleRule extends CSSRule
 		return CSSRule.STYLE_RULE;
 	}
 	
-	
 	public function parse(css:String):Void
 	{
-		var state = S.IGNORE_SPACES;
-		var next = S.BEGIN_SELECTOR;
-		var start = 0;
-		var position = 0;
-		var c = css.fastCodeAt(position);
+		var state:StyleRuleParserState = IGNORE_SPACES;
+		var next:StyleRuleParserState = BEGIN_SELECTOR;
+		var start:Int = 0;
+		var position:Int = 0;
+		var c:Int = css.fastCodeAt(position);
 		
 		while (!c.isEOF())
 		{
 			switch (state)
 			{
-				case S.IGNORE_SPACES:
+				case IGNORE_SPACES:
 					switch(c)
 					{
 						case
@@ -78,36 +57,42 @@ class CSSStyleRule extends CSSRule
 							continue;
 					}
 					
-				case S.BEGIN_SELECTOR:
-					state = S.SELECTOR;
-					next = S.END_SELECTOR;
+				case BEGIN_SELECTOR:
+					state = SELECTOR;
+					next = END_SELECTOR;
 					start = position;
 					continue;
 					
-				case S.SELECTOR:	
-					if (!isValidChar(c))
+				case SELECTOR:	
+					if (!isSelectorChar(c))
 					{
 						switch(c)
 						{
 							case '{'.code:
-								state = next;
+								state = END_SELECTOR;
+								next = BEGIN_STYLES;
+								continue;
+								
+							case ','.code:
+								state = END_SELECTOR;
+								next = BEGIN_SELECTOR;
 								continue;
 						}
 					}
 					
-				case S.END_SELECTOR:	
+				case END_SELECTOR:	
 					var selector = css.substr(start, position - start);
-					state = S.IGNORE_SPACES;
-					next = S.BEGIN_STYLE;
+					trace(selector);
+					state = next;
 					
-				case S.BEGIN_STYLE:
-					state = S.STYLE;
-					next = S.END_STYLE;
+				case BEGIN_STYLES:
+					state = STYLES;
+					next = END_STYLES;
 					start = position;
 					continue;
 					
-				case S.STYLE:
-					if (!isValidChar(c))
+				case STYLES:
+					if (!isStyleChar(c))
 					{
 						switch(c)
 						{
@@ -117,18 +102,23 @@ class CSSStyleRule extends CSSRule
 						}
 					}
 				
-				case S.END_STYLE:
+				case END_STYLES:
 					var style = css.substr(start, position - start);
-					state = S.IGNORE_SPACES;
-					next = S.IGNORE_SPACES;
+					trace(style);
+					state = IGNORE_SPACES;
+					next = IGNORE_SPACES;
 					
 			}
 			c = css.fastCodeAt(++position);
 		}
 	}
 	
-	static inline function isValidChar(c) {
-		return (c >= 'a'.code && c <= 'z'.code) || (c >= 'A'.code && c <= 'Z'.code) || (c >= '0'.code && c <= '9'.code) || c == ':'.code || c == '.'.code || c == '_'.code || c == '-'.code;
+	static inline function isSelectorChar(c:Int):Bool {
+		return isAsciiChar(c) || c == ':'.code || c == '.'.code || c == '*'.code;
+	}
+	
+	static inline function isStyleChar(c:Int):Bool {
+		return isAsciiChar(c) || c == ":".code || c == "(".code || c == ")".code;
 	}
 	
 	public function parseSelector(selector:String):Void
@@ -141,7 +131,6 @@ class CSSStyleRule extends CSSRule
 		
 		var simpleSelectorSequenceStartValue:SimpleSelectorSequenceStartValue = null;
 		var simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue> = [];
-		
 		var components:Array<SelectorComponentValue> = [];
 		
 		while (!c.isEOF())
@@ -199,8 +188,8 @@ class CSSStyleRule extends CSSRule
 					switch(c)
 					{
 						case ' '.code, '>'.code:
-								state = BEGIN_COMBINATOR;
-								continue;
+							state = BEGIN_COMBINATOR;
+							continue;
 								
 						case ':'.code, '#'.code, '.'.code, '['.code:
 							state = BEGIN_SIMPLE_SELECTOR;
@@ -226,7 +215,6 @@ class CSSStyleRule extends CSSRule
 						}
 					}
 					
-				
 				case END_TYPE_SELECTOR:
 					var type = selector.substr(start, position - start);
 					simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.TYPE(type);
@@ -245,19 +233,24 @@ class CSSStyleRule extends CSSRule
 					state = END_SIMPLE_SELECTOR;	
 					continue;
 					
-					
 				case END_UNIVERSAL_SELECTOR:
 					simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.UNIVERSAL;
 					state = END_SIMPLE_SELECTOR;
+					continue;
 					
 				case BEGIN_COMBINATOR:
 					
 					flushSelectors(simpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues, components);
 					
+					simpleSelectorSequenceStartValue = null;
+					simpleSelectorSequenceItemValues = [];
+					
 					state = IGNORE_SPACES;
 					next = COMBINATOR;
+					continue;
 					
 				case COMBINATOR:
+					
 					if (isAsciiChar(c))
 					{
 						state = BEGIN_SIMPLE_SELECTOR;
@@ -272,11 +265,15 @@ class CSSStyleRule extends CSSRule
 								state = IGNORE_SPACES;
 								next = BEGIN_SIMPLE_SELECTOR;
 								components.push(SelectorComponentValue.COMBINATOR(CombinatorValue.CHILD));
+								
+							case ':'.code, '#'.code, '.'.code, '['.code, '*'.code:
+							state = BEGIN_SIMPLE_SELECTOR;
+							components.push(SelectorComponentValue.COMBINATOR(CombinatorValue.DESCENDANT));
+							continue;
 						}
 					}
 					
 				case INVALID_SELECTOR:
-					trace("invalid");
 					return;
 			}
 			c = selector.fastCodeAt(++position);
@@ -285,26 +282,27 @@ class CSSStyleRule extends CSSRule
 		switch(next)
 		{
 			case END_TYPE_SELECTOR:
-					var type = selector.substr(start, position - start);
-					simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.TYPE(type);
-					
-				case END_CLASS_SELECTOR:
-					var className = selector.substr(start, position - start);
-					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className));
-					state = END_SIMPLE_SELECTOR;
-					
-				case END_ID_SELECTOR:
-					var id = selector.substr(start, position - start);
-					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.ID(id));
-					
-				default:	
+				var type = selector.substr(start, position - start);
+				simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.TYPE(type);
+				
+			case END_UNIVERSAL_SELECTOR:	
+				simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.UNIVERSAL;
+				
+			case END_CLASS_SELECTOR:
+				var className = selector.substr(start, position - start);
+				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className));
+				state = END_SIMPLE_SELECTOR;
+				
+			case END_ID_SELECTOR:
+				var id = selector.substr(start, position - start);
+				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.ID(id));
+				
+			default:	
 		}
 		
 		flushSelectors(simpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues, components);
 		
-		
-		
-		trace(components);
+		//trace(components);
 	}
 	
 	private function flushSelectors(simpleSelectorSequenceStartValue:SimpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue>, components:Array<SelectorComponentValue>):Void
@@ -342,9 +340,6 @@ class CSSStyleRule extends CSSRule
 				SimpleSelectorValue.SEQUENCE_ITEM(simpleSelectorSequenceItemValues[0]))));			
 			}
 		}
-		
-		simpleSelectorSequenceStartValue = null;
-		simpleSelectorSequenceItemValues = [];
 	}
 	
 	static inline function isAsciiChar(c) {
