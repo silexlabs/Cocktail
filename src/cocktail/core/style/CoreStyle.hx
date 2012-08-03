@@ -570,18 +570,6 @@ class CoreStyle
 		FontAndTextStylesComputer.compute(this, containingBlockData, containingBlockFontMetricsData);
 	}
 	
-	/**
-	 * Compute the box model styles (width, height, paddings, margins...) of the HTMLElement, based on
-	 * its positioning scheme
-	 */ 
-	public function computeBoxModelStyles(containingBlockDimensions:ContainingBlockData, isReplaced:Bool):Void
-	{
-		var boxComputer:BoxStylesComputer = getBoxStylesComputer(isReplaced);
-		
-		//do compute the box model styles
-		boxComputer.measure(this, containingBlockDimensions);
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE COMPUTING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -594,107 +582,6 @@ class CoreStyle
 	{
 		TransitionStylesComputer.compute(this);
 	}
-	
-	/**
-	 * Return the right class used to compute the box model
-	 * styles
-	 * @param	isReplaced wether the HTMLElement whose styles are computed
-	 * is replaced
-	 */
-	private function getBoxStylesComputer(isReplaced:Bool):BoxStylesComputer
-	{
-		if (isReplaced == true)
-		{
-			return getReplacedBoxStylesComputer();
-		}
-		else
-		{
-			return getFlowBoxStylesComputer();
-		}
-	}
-		
-	/**
-	 * Return box style computer for container box
-	 */
-	private function getFlowBoxStylesComputer():BoxStylesComputer
-	{
-		var boxComputer:BoxStylesComputer;
-				
-		//get the box computer for float
-		if (computedStyle.cssFloat == CSSFloat.left || computedStyle.cssFloat == CSSFloat.right)
-		{
-			boxComputer = new FloatBoxStylesComputer();
-		}
-		
-		//get it for HTMLElement with 'position' value of 'absolute' or 'fixed'
-		else if (computedStyle.position == fixed || computedStyle.position == absolute)
-		{
-			boxComputer = new PositionedBoxStylesComputer();
-		}
-		
-		//else get the box computer based on the display style
-		else
-		{
-			switch(this.computedStyle.display)
-			{
-				case block:
-					boxComputer = new BlockBoxStylesComputer();
-					
-				case inlineBlock:
-					boxComputer = new InlineBlockBoxStylesComputer();
-				
-				//not supposed to happen
-				case none:
-					
-					boxComputer = null;
-				
-				case cssInline:
-					boxComputer = new InLineBoxStylesComputer();
-			}
-		}
-		
-		return boxComputer;
-	}
-	
-	/**
-	 * Return box style computer for replaced box
-	 */
-	private function getReplacedBoxStylesComputer():BoxStylesComputer
-	{
-		var boxComputer:BoxStylesComputer;
-		
-		//get the embedded box computers based on
-		//the positioning scheme
-		if (computedStyle.cssFloat == CSSFloat.left || computedStyle.cssFloat == CSSFloat.right)
-		{
-			boxComputer = new EmbeddedFloatBoxStylesComputer();
-		}
-		else if (computedStyle.position == fixed || computedStyle.position == absolute)
-		{
-			boxComputer = new EmbeddedPositionedBoxStylesComputer();
-		}
-		else
-		{
-			switch(this.computedStyle.display)
-			{
-				case block:
-					boxComputer = new EmbeddedBlockBoxStylesComputer();
-					
-				case inlineBlock:
-					boxComputer = new EmbeddedInlineBlockBoxStylesComputer();	
-				
-				//not supposed to happen
-				case none:
-					boxComputer = null;
-				
-				case cssInline:
-					boxComputer = new EmbeddedInlineBoxStylesComputer();
-			}
-		}
-		
-		return boxComputer;
-	}
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE INVALIDATION METHODS

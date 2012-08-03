@@ -1,11 +1,23 @@
 package cocktail.core.css;
 
+import cocktail.core.style.StyleData;
+
 /**
  * ...
  * @author Yannick DOMINGUEZ
  */
 
 typedef CSSRuleList = Array<CSSRule>;
+
+typedef TypedPropertyData = {
+	var name:String;
+	var value:String;
+	var typedValue:PropertyValue;
+}
+
+enum PropertyValue {
+	FONT_SIZE(value:FontSize);
+}
 
 typedef PropertyData = {
 	var value:String;

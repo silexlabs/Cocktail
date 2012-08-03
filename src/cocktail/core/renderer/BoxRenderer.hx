@@ -12,6 +12,11 @@ import cocktail.core.dom.Text;
 import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.style.ComputedStyle;
+import cocktail.core.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
 import cocktail.core.window.Window;
 import cocktail.Lib;
 import cocktail.port.DrawingManager;
@@ -156,7 +161,30 @@ class BoxRenderer extends InvalidatingElementRenderer
 		coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
 
 		//compute the box styles (width, height, margins, paddings...)
-		coreStyle.computeBoxModelStyles(containingBlockData, isReplaced());
+		computeBoxModelStyles(containingBlockData);
+	}
+	
+		
+	/**
+	 * Compute the box model styles (width, height, paddings, margins...) of the ElementRenderer, based on
+	 * its positioning scheme
+	 */ 
+	private function computeBoxModelStyles(containingBlockDimensions:ContainingBlockData):Void
+	{
+		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
+		
+		//do compute the box model styles
+		boxComputer.measure(coreStyle, containingBlockDimensions);
+	}
+	
+	/**
+	 * Return the right class used to compute the box model
+	 * styles
+	 */
+	private function getBoxStylesComputer():BoxStylesComputer
+	{
+		//abstract
+		return null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

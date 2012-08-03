@@ -112,4 +112,13 @@ class CSSStyleDeclaration
 	{
 		return _properties.length;
 	}
+	
+	private function parseStyle(name:String, value:String):Void
+	{
+		switch(name)
+		{
+			case "font-weight":
+				
+		}
+	}
 }

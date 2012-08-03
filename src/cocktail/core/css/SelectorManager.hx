@@ -161,6 +161,12 @@ class SelectorManager
 		return matchSelectorItem(node.parentNode, parentSelectorItem);
 	}
 	
+		// SIMPLE SELECTORS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return wether a node return a simple selector item
+	 */
 	private function matchSelectorItem(node:HTMLElement, selectorItem:SelectorItemValue):Bool
 	{
 		switch (selectorItem)
@@ -172,9 +178,6 @@ class SelectorManager
 				return matchSimpleSelectorSequence(node, value);
 		}
 	}
-	
-		// SIMPLE SEELCTORS
-	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Return wether a node matches a simple selector
