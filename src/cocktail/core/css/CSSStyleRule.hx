@@ -132,8 +132,6 @@ class CSSStyleRule extends CSSRule
 		var simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue> = [];
 		var components:Array<SelectorComponentValue> = [];
 		
-		var pseudoClass:String = null;
-		
 		while (!c.isEOF())
 		{
 			switch (state)
@@ -375,7 +373,6 @@ class CSSStyleRule extends CSSRule
 		{
 			if (!isPseudoClassChar(c))
 			{
-				trace(String.fromCharCode(c));
 				break;
 			}
 			c = selector.fastCodeAt(++position);
@@ -383,17 +380,54 @@ class CSSStyleRule extends CSSRule
 		
 		var pseudoClass:String = selector.substr(start, position - start);
 		
+		var typedPseudoClass:PseudoClassSelectorValue = null;
+		
 		switch(pseudoClass)
 		{
 			case 'first-child':
-				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.PSEUDO_CLASS(PseudoClassSelectorValue.FIRST_CHILD));
+				typedPseudoClass = PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.FIRST_CHILD);
 				
 			case 'last-child':
-				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.PSEUDO_CLASS(PseudoClassSelectorValue.LAST_CHILD));
+				typedPseudoClass = PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.LAST_CHILD);
 		
 			case 'empty':
-				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.PSEUDO_CLASS(PseudoClassSelectorValue.EMPTY));
+				typedPseudoClass = PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.EMPTY);
+				
+			case 'root':
+				typedPseudoClass = PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.ROOT);
+				
+			case 'first-of-type':
+				typedPseudoClass = PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.FIRST_OF_TYPE);	
+				
+			case 'last-of-type':
+				typedPseudoClass = PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.LAST_OF_TYPE);	
+				
+			case 'only-of-type':
+				typedPseudoClass = PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.ONLY_OF_TYPE);	
+				
+			case 'only-child':
+				typedPseudoClass = PseudoClassSelectorValue.STRUCTURAL(StructuralPseudoClassSelectorValue.ONLY_CHILD);
+				
+			case 'link':
+				typedPseudoClass = PseudoClassSelectorValue.LINK(LinkPseudoClassValue.LINK);	
+				
+			case 'visited':
+				typedPseudoClass = PseudoClassSelectorValue.LINK(LinkPseudoClassValue.VISITED);
+				
+			case 'active':
+				typedPseudoClass = PseudoClassSelectorValue.USER_ACTION(UserActionPseudoClassValue.ACTIVE);
+				
+			case 'hover':
+				typedPseudoClass = PseudoClassSelectorValue.USER_ACTION(UserActionPseudoClassValue.HOVER);
+				
+			case 'focus':
+				typedPseudoClass = PseudoClassSelectorValue.USER_ACTION(UserActionPseudoClassValue.FOCUS);
+				
+			case 'target':
+				typedPseudoClass = PseudoClassSelectorValue.TARGET;
 		}
+		
+		simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.PSEUDO_CLASS(typedPseudoClass));
 		
 		return --position;
 		

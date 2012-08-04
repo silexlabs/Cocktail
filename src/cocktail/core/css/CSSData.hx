@@ -132,9 +132,6 @@ enum SelectorComponentValue {
 enum SimpleSelectorSequenceItemValue {
 	ATTRIBUTE(value:AttributeSelectorValue);
 	PSEUDO_CLASS(value:PseudoClassSelectorValue);
-	LINK_PSEUDO_CLASS(value:LinkPseudoClassValue);
-	USER_ACTION_PSEUDO_CLASS(value:UserActionPseudoClassValue);
-	TARGET_PSEUDO_CLASS(value:TargetPseudoClassValue);
 	CLASS(value:String);
 	ID(value:String);
 }
@@ -207,8 +204,17 @@ enum AttributeSelectorValue {
 	ATTRIBUTE_VALUE_BEGINS_HYPHEN_LIST(name:String, value:String);
 }
 
-//TODO 2 : add pseudo class with argument (nth-child)
 enum PseudoClassSelectorValue {
+	STRUCTURAL(value:StructuralPseudoClassSelectorValue);
+	LINK(value:LinkPseudoClassValue);
+	TARGET;
+	LANG(value:Array<String>);
+	USER_ACTION(value:UserActionPseudoClassValue);
+	NOT(value:SimpleSelectorSequenceData);
+}
+
+//TODO 2 : add pseudo class with argument (nth-child)
+enum StructuralPseudoClassSelectorValue {
 	ROOT;
 	FIRST_CHILD;
 	LAST_CHILD;
@@ -222,14 +228,6 @@ enum PseudoClassSelectorValue {
 enum LinkPseudoClassValue {
 	LINK;
 	VISITED;
-}
-
-enum TargetPseudoClassValue {
-	TARGET;
-}
-
-enum NegationPseudoClassValue {
-	NOT(value:SimpleSelectorSequenceData);
 }
 
 enum UserActionPseudoClassValue {

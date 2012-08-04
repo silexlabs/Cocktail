@@ -264,15 +264,6 @@ class SelectorManager
 				
 			case PSEUDO_CLASS(value):
 				return matchPseudoClassSelector(node, value);
-				
-			case LINK_PSEUDO_CLASS(value):
-				return matchLinkPseudoClassSelector(node, value);
-				
-			case USER_ACTION_PSEUDO_CLASS(value):
-				return matchUserActionPseudoClassSelector(node, value);
-				
-			case TARGET_PSEUDO_CLASS(value):
-				return matchTargetPseudoClassSelector(node, value);
 		}		
 	}
 	
@@ -423,35 +414,81 @@ class SelectorManager
 	}
 	
 	/**
-	 * Return wether an pseudo-class selector
-	 * matches the node
+	 * Return wether a pseudo class matches
+	 * the node
 	 */
 	private function matchPseudoClassSelector(node:HTMLElement, pseudoClassSelector:PseudoClassSelectorValue):Bool
 	{
-		switch(pseudoClassSelector)
+		switch (pseudoClassSelector)
 		{
-			case PseudoClassSelectorValue.EMPTY:
+			case PseudoClassSelectorValue.STRUCTURAL(value):
+				return matchStructuralPseudoClassSelector(node, value);
+				
+			case PseudoClassSelectorValue.LINK(value):
+				return matchLinkPseudoClassSelector(node, value);
+				
+			case PseudoClassSelectorValue.USER_ACTION(value):
+				return matchUserActionPseudoClassSelector(node, value);	
+				
+			case PseudoClassSelectorValue.TARGET:
+				return matchTargetPseudoClassSelector(node);
+				
+			case PseudoClassSelectorValue.NOT(value):
+				return matchNegationPseudoClassSelector(node, value);
+				
+			case PseudoClassSelectorValue.LANG(value):
+				return matchLangPseudoClassSelector(node, value);
+		}
+	}
+	
+	/**
+	 * Return wether a negation pseudo-class selector
+	 * matches the node
+	 */
+	private function matchNegationPseudoClassSelector(node:HTMLElement, negationSimpleSelectorSequence:SimpleSelectorSequenceData):Bool
+	{
+		return false;
+	}
+
+	/**
+	 * Return wether a lang pseudo-class selector
+	 * matches the node
+	 */
+	private function matchLangPseudoClassSelector(node:HTMLElement, lang:Array<String>):Bool
+	{
+		return false;
+	}
+	
+	/**
+	 * Return wether a structural pseudo-class selector
+	 * matches the node
+	 */
+	private function matchStructuralPseudoClassSelector(node:HTMLElement, structuralPseudoClassSelector:StructuralPseudoClassSelectorValue):Bool
+	{
+		switch(structuralPseudoClassSelector)
+		{
+			case StructuralPseudoClassSelectorValue.EMPTY:
 				return node.hasChildNodes();
 				
-			case PseudoClassSelectorValue.FIRST_CHILD:
+			case StructuralPseudoClassSelectorValue.FIRST_CHILD:
 				return node.previousSibling == null;
 				
-			case PseudoClassSelectorValue.LAST_CHILD:
+			case StructuralPseudoClassSelectorValue.LAST_CHILD:
 				return node.nextSibling == null;
 				
-			case PseudoClassSelectorValue.ONLY_CHILD:
+			case StructuralPseudoClassSelectorValue.ONLY_CHILD:
 				return node.parentNode.childNodes.length == 1;
 				
-			case PseudoClassSelectorValue.ROOT:
+			case StructuralPseudoClassSelectorValue.ROOT:
 				return node.tagName == HTMLConstants.HTML_HTML_TAG_NAME && node.parentNode == null;
 				
-			case PseudoClassSelectorValue.ONLY_OF_TYPE:
+			case StructuralPseudoClassSelectorValue.ONLY_OF_TYPE:
 				return matchOnlyOfType(node);
 				
-			case PseudoClassSelectorValue.FIRST_OF_TYPE:
+			case StructuralPseudoClassSelectorValue.FIRST_OF_TYPE:
 				return matchFirstOfType(node);
 				
-			case PseudoClassSelectorValue.LAST_OF_TYPE:
+			case StructuralPseudoClassSelectorValue.LAST_OF_TYPE:
 				return matchLastOfType(node);	
 		}
 		
@@ -537,9 +574,9 @@ class SelectorManager
 	 * Return wether the target pseudo-class 
 	 * matches the node.
 	 */
-	private function matchTargetPseudoClassSelector(node:HTMLElement, value:TargetPseudoClassValue):Bool
+	private function matchTargetPseudoClassSelector(node:HTMLElement):Bool
 	{
-		return true;
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -636,20 +673,11 @@ class SelectorManager
 			case PSEUDO_CLASS(value):
 				selectorSpecificity.classAttributesAndPseudoClassesNumber++;
 				
-			case LINK_PSEUDO_CLASS(value):
-				selectorSpecificity.classAttributesAndPseudoClassesNumber++;
-				
-			case USER_ACTION_PSEUDO_CLASS(value):
-				selectorSpecificity.classAttributesAndPseudoClassesNumber++;
-				
 			case CLASS(value):
 				selectorSpecificity.classAttributesAndPseudoClassesNumber++;
 				
 			case ID(value):
 				selectorSpecificity.idSelectorsNumber++;
-				
-			case TARGET_PSEUDO_CLASS(value):
-				selectorSpecificity.classAttributesAndPseudoClassesNumber++;
 		}
 	}
 }
