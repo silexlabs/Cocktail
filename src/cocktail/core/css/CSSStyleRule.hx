@@ -343,35 +343,14 @@ class CSSStyleRule extends CSSRule
 		{
 			simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.UNIVERSAL;
 		}
+
+		var simpleSelectorSequence:SimpleSelectorSequenceData = {
+			startValue:simpleSelectorSequenceStartValue,
+			simpleSelectors:simpleSelectorSequenceItemValues
+		}
 		
-		if (simpleSelectorSequenceStartValue != null)
-		{
-			
-			if (simpleSelectorSequenceItemValues.length > 0)
-			{
-				var simpleSelectorSequence:SimpleSelectorSequenceData = {
-					startValue:simpleSelectorSequenceStartValue,
-					simpleSelectors:simpleSelectorSequenceItemValues
-				}
-				
-				components.push(SelectorComponentValue.SELECTOR_ITEM(SelectorItemValue.SIMPLE_SELECTOR_SEQUENCE(simpleSelectorSequence)));
-			}
-			else
-			{
-				components.push(SelectorComponentValue.SELECTOR_ITEM(
-				SelectorItemValue.SIMPLE_SELECTOR(
-				SimpleSelectorValue.SEQUENCE_START(simpleSelectorSequenceStartValue))));			
-			}
-		}
-		else
-		{
-			if (simpleSelectorSequenceItemValues.length == 1)
-			{
-				components.push(SelectorComponentValue.SELECTOR_ITEM(
-				SelectorItemValue.SIMPLE_SELECTOR(
-				SimpleSelectorValue.SEQUENCE_ITEM(simpleSelectorSequenceItemValues[0]))));			
-			}
-		}
+		components.push(SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(simpleSelectorSequence));
+		
 	}
 	
 	static inline function isAsciiChar(c) {

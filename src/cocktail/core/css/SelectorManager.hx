@@ -54,8 +54,8 @@ class SelectorManager
 				case SelectorComponentValue.COMBINATOR(value):
 					matched = matchCombinator(node, value, cast(components[i-1]), cast(components[i+1]));
 					
-				case SelectorComponentValue.SELECTOR_ITEM(value):
-					matched = matchSelectorItem(node, value);
+				case SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(value):
+					matched = matchSimpleSelectorSequence(node, value);
 			}
 			
 			//if the component is not
@@ -79,7 +79,7 @@ class SelectorManager
 	/**
 	 * return wether a combinator is matched
 	 */
-	private function matchCombinator(node:HTMLElement, combinator:CombinatorValue, previousSelectorItem:SelectorItemValue, nextSelectorItem:SelectorItemValue):Bool
+	private function matchCombinator(node:HTMLElement, combinator:CombinatorValue, previousSelectorSequence:SimpleSelectorSequenceData, nextSelectorSequence:SimpleSelectorSequenceData):Bool
 	{
 		switch(combinator)
 		{
@@ -92,10 +92,10 @@ class SelectorManager
 				return false;
 				
 			case CombinatorValue.CHILD:
-				return matchChildCombinator(node, previousSelectorItem, nextSelectorItem);
+				return matchChildCombinator(node, previousSelectorSequence, nextSelectorSequence);
 				
 			case CombinatorValue.DESCENDANT:
-				return matchDescendantCombinator(node, previousSelectorItem, nextSelectorItem);
+				return matchDescendantCombinator(node, previousSelectorSequence, nextSelectorSequence);
 		}
 	}
 	
@@ -105,7 +105,7 @@ class SelectorManager
 	 * childSelectorItem and an acestor of the node
 	 * matches the parentSelectorItem
 	 */
-	private function matchDescendantCombinator(node:HTMLElement, parentSelectorItem:SelectorItemValue, childSelectorItem:SelectorItemValue):Bool
+	private function matchDescendantCombinator(node:HTMLElement, parentSelectorSequence:SimpleSelectorSequenceData, childSelectorSequence:SimpleSelectorSequenceData):Bool
 	{
 		//if the node has no parent, it can't match
 		//this combinator
@@ -115,7 +115,7 @@ class SelectorManager
 		}
 		
 		//wether the node matches its selector
-		if (matchSelectorItem(node, childSelectorItem) == false)
+		if (matchSimpleSelectorSequence(node, childSelectorSequence) == false)
 		{
 			return false;
 		}
@@ -128,7 +128,7 @@ class SelectorManager
 		//the parent selector
 		while (parent != null)
 		{
-			if (matchSelectorItem(parent, parentSelectorItem) == true)
+			if (matchSimpleSelectorSequence(parent, parentSelectorSequence) == true)
 			{
 				return true;
 			}
@@ -147,54 +147,23 @@ class SelectorManager
 	 * parentSelectorItem must be matched by the 
 	 * direct parent of the node and not any ancestor
 	 */
-	private function matchChildCombinator(node:HTMLElement, parentSelectorItem:SelectorItemValue, childSelectorItem:SelectorItemValue):Bool
+	private function matchChildCombinator(node:HTMLElement, parentSelectorSequence:SimpleSelectorSequenceData, childSelectorSequence:SimpleSelectorSequenceData):Bool
 	{
 		if (node.parentNode == null)
 		{
 			return false;
 		}
 		
-		if (matchSelectorItem(node, childSelectorItem) == false)
+		if (matchSimpleSelectorSequence(node, childSelectorSequence) == false)
 		{
 			return false;
 		}
 		
-		return matchSelectorItem(node.parentNode, parentSelectorItem);
+		return matchSimpleSelectorSequence(node.parentNode, parentSelectorSequence);
 	}
 	
 		// SIMPLE SELECTORS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Return wether a node return a simple selector item
-	 */
-	private function matchSelectorItem(node:HTMLElement, selectorItem:SelectorItemValue):Bool
-	{
-		switch (selectorItem)
-		{
-			case SelectorItemValue.SIMPLE_SELECTOR(value):
-				return matchSimpleSelector(node, value);
-				
-			case SelectorItemValue.SIMPLE_SELECTOR_SEQUENCE(value):
-				return matchSimpleSelectorSequence(node, value);
-		}
-	}
-	
-	/**
-	 * Return wether a node matches a simple selector
-	 * (like for instance a class selector or an ID selector)
-	 */
-	private function matchSimpleSelector(node:HTMLElement, simpleSelector:SimpleSelectorValue):Bool
-	{
-		switch (simpleSelector)
-		{
-			case SimpleSelectorValue.SEQUENCE_START(value):
-				return matchSimpleSelectorSequenceStart(node, value);
-				
-			case SimpleSelectorValue.SEQUENCE_ITEM(value):
-				return matchSimpleSelectorSequenceItem(node, value);
-		}
-	}
 	
 	/**
 	 * Return wether a node match a simple selector sequence starter.
@@ -447,8 +416,8 @@ class SelectorManager
 			{
 				case SelectorComponentValue.COMBINATOR(value):
 					
-				case SelectorComponentValue.SELECTOR_ITEM(value):
-					getSelectorItemSpecifity(value, selectorSpecificity);
+				case SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(value):
+					getSimpleSelectorSequenceSpecificity(value, selectorSpecificity);
 			}
 		}
 		
@@ -462,21 +431,6 @@ class SelectorManager
 	}
 	
 	/**
-	 * Increment the specificity of simple selector item
-	 */
-	private function getSelectorItemSpecifity(selector:SelectorItemValue, selectorSpecificity:SelectorSpecificityData):Void
-	{
-		switch (selector)
-		{
-			case SelectorItemValue.SIMPLE_SELECTOR(value):
-				getSimpleSelectorSpecificity(value, selectorSpecificity); 
-				
-			case SelectorItemValue.SIMPLE_SELECTOR_SEQUENCE(value):
-				getSimpleSelectorSequenceSpecificity(value, selectorSpecificity);
-		}
-	}
-	
-	/**
 	 * Increment the specificity of simple selector sequence
 	 */
 	private function getSimpleSelectorSequenceSpecificity(simpleSelectorSequence:SimpleSelectorSequenceData, selectorSpecificity:SelectorSpecificityData):Void
@@ -487,21 +441,6 @@ class SelectorManager
 		{
 			var simpleSelectorSequenceItem:SimpleSelectorSequenceItemValue = simpleSelectorSequence.simpleSelectors[i];
 			getSimpleSelectorSequenceItemSpecificity(simpleSelectorSequenceItem, selectorSpecificity);
-		}
-	}
-	
-	/**
-	 * Increment specificity according to a simple selector
-	 */
-	private function getSimpleSelectorSpecificity(simpleSelector:SimpleSelectorValue, selectorSpecificity:SelectorSpecificityData):Void
-	{
-		switch(simpleSelector)
-		{
-			case SimpleSelectorValue.SEQUENCE_START(value):
-				getSimpleSelectorSequenceStartSpecificity(value, selectorSpecificity);
-				
-			case SimpleSelectorValue.SEQUENCE_ITEM(value):
-				getSimpleSelectorSequenceItemSpecificity(value, selectorSpecificity);
 		}
 	}
 	

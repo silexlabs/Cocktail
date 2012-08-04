@@ -32,48 +32,82 @@ typedef PropertyDeclarationData = {
 	var priority:String;
 }
 
+enum PropertyOriginValue {
+	AUTHOR;
+	USER_AGENT;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// SELECTOR STRUCTURES
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Holds the data used to determine a selector specificity (priority).
+ * Selector specificity is used to determine which styles to use when
+ * a particular style is defined in more than one CSS rule. The 
+ * style with the more specific selector is used.
+ * 
+ * Specificity is defined by 3 categories whose value are
+ * then concatenated into an integer value
+ */
 typedef SelectorSpecificityData = {
 	var idSelectorsNumber:Int;
 	var classAttributesAndPseudoClassesNumber:Int;
 	var typeAndPseudoElementsNumber:Int;
 }
 
-enum PropertyOriginValue {
-	AUTHOR;
-	USER_AGENT;
-}
-
+/**
+ * Contains all the data of one selector
+ */
 typedef SelectorData = {
+	
+	/**
+	 * an array of any combination of selector
+	 * components
+	 */
 	var components:Array<SelectorComponentValue>;
+	
+	/**
+	 * a selector can only have one pseudo element,
+	 * always specified at the end of the selector
+	 */
 	var pseudoElement:PseudoElementSelectorValue;
 }
 
-enum SelectorComponentValue {
-	SELECTOR_ITEM(value:SelectorItemValue);
-	COMBINATOR(value:CombinatorValue);
-} 
-
-enum SelectorItemValue {
-	SIMPLE_SELECTOR_SEQUENCE(value:SimpleSelectorSequenceData);
-	SIMPLE_SELECTOR(value:SimpleSelectorValue);
-}
-
-enum CombinatorValue {
-	DESCENDANT;
-	CHILD;
-	ADJACENT_SIBLING;
-	GENERAL_SIBLING;
-}
-
+/**
+ * Represent a simple selector sequence.
+ * A sequence always begin with a type or 
+ * universal selector and only has one of
+ * those two in the whole sequence. Then it can
+ * have any combination of the remaining simple
+ * selectors
+ */
 typedef SimpleSelectorSequenceData = {
+	
+	/**
+	 * Only one sequence start selector for a selector
+	 * sequence
+	 */
 	var startValue:SimpleSelectorSequenceStartValue;
+	
+	/**
+	 * any number of the remaining simple selectors
+	 */
 	var simpleSelectors:Array<SimpleSelectorSequenceItemValue>;
 }
 
-enum SimpleSelectorValue {
-	SEQUENCE_START(value:SimpleSelectorSequenceStartValue);
-	SEQUENCE_ITEM(value:SimpleSelectorSequenceItemValue);
-}
+//////////////////////////////////////////////////////////////////////////////////////////
+// SELECTOR ENUMS
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * A selector contains either simple selector
+ * or combinator between 2 simple selector
+ */
+enum SelectorComponentValue {
+	SIMPLE_SELECTOR_SEQUENCE(value:SimpleSelectorSequenceData);
+	COMBINATOR(value:CombinatorValue);
+} 
 
 enum SimpleSelectorSequenceItemValue {
 	ATTRIBUTE(value:AttributeSelectorValue);
@@ -85,18 +119,75 @@ enum SimpleSelectorSequenceItemValue {
 	ID(value:String);
 }
 
+/**
+ * Matches an element's type (tag name) or any element (universal, symbolised by "*").
+ * A simple selector sequence always begin with
+ * one of those 2 values. Universal may be implied.
+ * For instance ".myclass" is the same as "*.myClass"
+ */
 enum SimpleSelectorSequenceStartValue {
+	
+	/**
+	 * any element
+	 */
 	UNIVERSAL;
+	
+	/**
+	 * an element of type value
+	 */
 	TYPE(value:String);
 }
 
+/**
+ * Matches an element's attribute
+ * presence and value
+ */
 enum AttributeSelectorValue {
+	
+	/**
+	 * an element with a "value" attribute
+	 */
 	ATTRIBUTE(value:String);
+	
+	/**
+	 * an element with a "name" attribute
+	 * whose value is exactly "value"
+	 */
 	ATTRIBUTE_VALUE(name:String, value:String);
+	
+	/**
+	 * an element whose "name" attribute
+	 * value is a list of whitespace-separated values,
+	 * one of which is exactly equal to "value"
+	 */
 	ATTRIBUTE_LIST(name:String, value:String);
+	
+	/**
+	 * an element whose "name" attribute value begins
+	 * exactly with the string "value"
+	 */
+	ATTRIBUTE_VALUE_BEGINS(name:String, value:String);
+	
+	/**
+	 * an element whose "name" attribute
+	 * value ends exactly with the string "value"
+	 */
+	ATTRIBUTE_VALUE_ENDS(name:String, value:String);
+	
+	/**
+	 * an element whose "name" attribute value
+	 * contains the substring "value"
+	 */
+	ATTRIBUTE_VALUE_CONTAINS(name:String, value:String);
+	
+	/**
+	 * an element whose "name" attribute has a hyphen-separated
+	 * list of values beginning (from the left) with "value"
+	 */
+	ATTRIBUTE_VALUE_BEGINS_HYPHEN_LIST(name:String, value:String);
 }
 
-//TODO : pseudo class with argument (nth-child)
+//TODO 2 : add pseudo class with argument (nth-child)
 enum PseudoClassSelectorValue {
 	ROOT;
 	FIRST_CHILD;
@@ -118,7 +209,7 @@ enum TargetPseudoClassValue {
 }
 
 enum NegationPseudoClassValue {
-	NOT(value:SelectorItemValue);
+	NOT(value:SimpleSelectorSequenceData);
 }
 
 enum UserActionPseudoClassValue {
@@ -127,11 +218,23 @@ enum UserActionPseudoClassValue {
 	FOCUS;
 }
 
+//TODO 2 : add before and adter for generated content
 enum PseudoElementSelectorValue {
 	NONE;
 	FIRST_LINE;
 	FIRST_LETTER;
 }
+
+enum CombinatorValue {
+	DESCENDANT;
+	CHILD;
+	ADJACENT_SIBLING;
+	GENERAL_SIBLING;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// PARSERS STATES ENUMS
+//////////////////////////////////////////////////////////////////////////////////////////
 
 enum SelectorParserState {
 	IGNORE_SPACES;
