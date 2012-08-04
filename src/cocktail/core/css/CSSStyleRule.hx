@@ -17,9 +17,9 @@ class CSSStyleRule extends CSSRule
 	
 	public var style(default, null):CSSStyleDeclaration;
 	
-	public function new() 
+	public function new(parentStyleSheet:CSSStyleSheet = null, parentRule:CSSRule = null) 
 	{
-		super();
+		super(parentStyleSheet, parentRule);
 		style = new CSSStyleDeclaration(this);
 		selector = {
 			components:[],
@@ -107,7 +107,6 @@ class CSSStyleRule extends CSSRule
 					trace(style);
 					state = IGNORE_SPACES;
 					next = IGNORE_SPACES;
-					
 			}
 			c = css.fastCodeAt(++position);
 		}
@@ -132,6 +131,8 @@ class CSSStyleRule extends CSSRule
 		var simpleSelectorSequenceStartValue:SimpleSelectorSequenceStartValue = null;
 		var simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue> = [];
 		var components:Array<SelectorComponentValue> = [];
+		
+		var pseudoClass:String = null;
 		
 		while (!c.isEOF())
 		{
@@ -177,6 +178,10 @@ class CSSStyleRule extends CSSRule
 								next = END_UNIVERSAL_SELECTOR;
 								start = position;
 								
+							case ':'.code:
+								state = BEGIN_PSEUDO_SELECTOR;
+								start = position;
+								
 							default:
 								state = INVALID_SELECTOR;
 								continue;
@@ -184,11 +189,35 @@ class CSSStyleRule extends CSSRule
 					}
 					
 					
+				case BEGIN_PSEUDO_SELECTOR:
+					if (isAsciiChar(c))
+					{
+						position = parsePseudoClass(selector, position, simpleSelectorSequenceItemValues);
+						trace(position);
+						state = END_SIMPLE_SELECTOR;
+					}
+					else
+					{
+						//switch(c)
+						//{
+							//case ':'.code:
+								//state = PSEUDO_ELEMENT_SELECTOR;
+								//start = position;
+								//
+							//default:
+								//state = INVALID_SELECTOR;
+						//}
+					}
+					
+				case PSEUDO_ELEMENT_SELECTOR:	
+					
 				case END_SIMPLE_SELECTOR:
+					trace(String.fromCharCode(c));
 					switch(c)
 					{
 						case ' '.code, '>'.code:
 							state = BEGIN_COMBINATOR;
+							trace("biiii");
 							continue;
 								
 						case ':'.code, '#'.code, '.'.code, '['.code:
@@ -196,6 +225,7 @@ class CSSStyleRule extends CSSRule
 							continue;
 							
 						default:
+							trace("INVALID_SELECTOR");
 							state = INVALID_SELECTOR;
 							continue;
 					}
@@ -222,13 +252,13 @@ class CSSStyleRule extends CSSRule
 					continue;
 					
 				case END_CLASS_SELECTOR:
-					var className = selector.substr(start, position - start);
+					var className:String = selector.substr(start, position - start);
 					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className));
 					state = END_SIMPLE_SELECTOR;
 					continue;
 					
 				case END_ID_SELECTOR:
-					var id = selector.substr(start, position - start);
+					var id:String = selector.substr(start, position - start);
 					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.ID(id));
 					state = END_SIMPLE_SELECTOR;	
 					continue;
@@ -297,12 +327,14 @@ class CSSStyleRule extends CSSRule
 				var id = selector.substr(start, position - start);
 				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.ID(id));
 				
+			
+				
 			default:	
 		}
 		
 		flushSelectors(simpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues, components);
 		
-		//trace(components);
+		trace(components);
 	}
 	
 	private function flushSelectors(simpleSelectorSequenceStartValue:SimpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue>, components:Array<SelectorComponentValue>):Void
@@ -345,6 +377,49 @@ class CSSStyleRule extends CSSRule
 	static inline function isAsciiChar(c) {
 		return (c >= 'a'.code && c <= 'z'.code) || (c >= 'A'.code && c <= 'Z'.code) || (c >= '0'.code && c <= '9'.code);
 	}
+	
+	static inline function isPseudoClassChar(c) {
+		return isAsciiChar(c) || c == '-'.code;
+	}
+	
+	static inline function isPseudoClassArgChar(c) {
+		return isAsciiChar(c) || c == '-'.code;
+	}
+	
+	//TODO : parse pseudo class with arguments
+	private function parsePseudoClass(selector:String, position:Int, simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue>):Int
+	{
+		var c:Int = selector.fastCodeAt(position);
+		var start:Int = position;
+		
+		while (true)
+		{
+			if (!isPseudoClassChar(c))
+			{
+				trace(String.fromCharCode(c));
+				break;
+			}
+			c = selector.fastCodeAt(++position);
+		}
+		
+		var pseudoClass:String = selector.substr(start, position - start);
+		
+		switch(pseudoClass)
+		{
+			case 'first-child':
+				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.PSEUDO_CLASS(PseudoClassSelectorValue.FIRST_CHILD));
+				
+			case 'last-child':
+				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.PSEUDO_CLASS(PseudoClassSelectorValue.LAST_CHILD));
+		
+			case 'empty':
+				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.PSEUDO_CLASS(PseudoClassSelectorValue.EMPTY));
+		}
+		
+		return --position;
+		
+	}
+	
 	
 	
 }

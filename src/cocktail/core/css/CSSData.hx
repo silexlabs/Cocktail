@@ -80,6 +80,7 @@ enum SimpleSelectorSequenceItemValue {
 	PSEUDO_CLASS(value:PseudoClassSelectorValue);
 	LINK_PSEUDO_CLASS(value:LinkPseudoClassValue);
 	USER_ACTION_PSEUDO_CLASS(value:UserActionPseudoClassValue);
+	TARGET_PSEUDO_CLASS(value:TargetPseudoClassValue);
 	CLASS(value:String);
 	ID(value:String);
 }
@@ -95,10 +96,9 @@ enum AttributeSelectorValue {
 	ATTRIBUTE_LIST(name:String, value:String);
 }
 
+//TODO : pseudo class with argument (nth-child)
 enum PseudoClassSelectorValue {
 	ROOT;
-	NTH_CHILD(index:Int);
-	NTH_LAST_CHILD(index:Int);
 	FIRST_CHILD;
 	LAST_CHILD;
 	FIRST_OF_TYPE;
@@ -111,6 +111,14 @@ enum PseudoClassSelectorValue {
 enum LinkPseudoClassValue {
 	LINK;
 	VISITED;
+}
+
+enum TargetPseudoClassValue {
+	TARGET;
+}
+
+enum NegationPseudoClassValue {
+	NOT(value:SelectorItemValue);
 }
 
 enum UserActionPseudoClassValue {
@@ -135,7 +143,9 @@ enum SelectorParserState {
 	END_ID_SELECTOR;
 	BEGIN_COMBINATOR;
 	COMBINATOR;
+	BEGIN_PSEUDO_SELECTOR;
 	END_UNIVERSAL_SELECTOR;
+	PSEUDO_ELEMENT_SELECTOR;
 	INVALID_SELECTOR;
 }
 
@@ -147,4 +157,20 @@ enum StyleRuleParserState {
 	BEGIN_STYLES;
 	STYLES;
 	END_STYLES;
+}
+
+enum StyleSheetRulesParserState {
+	IGNORE_SPACES;
+	BEGIN_RULE;
+	RULE;
+	END_RULE;
+}
+
+enum StyleSheetRuleParserState {
+	IGNORE_SPACES;
+	BEGIN_RULE;
+	BEGIN_AT_RULE;
+	END_MEDIA_RULE;
+	RULE;
+	END_STYLE_RULE;
 }

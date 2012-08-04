@@ -1,129 +1,77 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktail.core.css;
 
-using StringTools;
-
 import cocktail.core.css.CSSData;
-
-/**
- * ...
- * @author Yannick DOMINGUEZ
- */
-
- extern private class S {
-	public static inline var IGNORE_SPACES 	= 0;
-	public static inline var BEGIN_RULE	= 1;
-	public static inline var END_RULE	= 2;
-	public static inline var BEGIN_AT_RULE	= 3;
-	public static inline var RULE = 5;
-	public static inline var END_MEDIA_RULE = 6;
-	public static inline var END_STYLE_RULE = 7;
-}
+import cocktail.core.html.HTMLElement;
  
+/**
+ * The CSSStyleSheet interface represents
+ * a CSS style sheet rule.
+ */
 class CSSStyleSheet extends StyleSheet
 {
-
+	/**
+	 * A ref to The CSS rule in the style sheet parent
+	 * that caused the inclusion of the style 
+	 * sheet or null if there is no such CSS rule.
+	 */
 	public var ownerRule(default, null):CSSRule;
 	
+	/**
+	 * The cssRules attribute return a CSSRuleList object 
+	 * representing the style sheet CSS rules.
+	 */
 	public var cssRules(default, null):CSSRuleList;
 	
-	public function new() 
+	private var _cssRulesParser:CSSRulesParser;
+	
+	/**
+	 * class constructor
+	 */
+	public function new(stylesheet:String, ownerNode:HTMLElement = null, href:String = null, parentStyleSheet:StyleSheet = null, ownerRule:CSSRule = null) 
 	{
-		super();
+		super(stylesheet, ownerNode, href, parentStyleSheet);
 		cssRules = new CSSRuleList();
-	}
-	
-	public function insertRule(rule:String, index:Int):Int
-	{
-		return -1;
-	}
-	
-	public function deleteRule(index:Int):Void
-	{
+		this.ownerRule = ownerRule;
+		_cssRulesParser = new CSSRulesParser();
 		
-	}
-	
-	public function parse(css:String):Void
-	{
-		var state = S.IGNORE_SPACES;
-		var next = S.BEGIN_RULE;
-		var start = 0;
-		var position = 0;
-		var c = css.fastCodeAt(position);
+		var rules:Array<String> = _cssRulesParser.parseRules(stylesheet);
 		
-		while (!c.isEOF())
+		for (i in 0...rules.length)
 		{
-			switch (state)
-			{
-				case S.IGNORE_SPACES:
-					switch(c)
-					{
-						case
-							'\n'.code,
-							'\r'.code,
-							'\t'.code,
-							' '.code:
-						default:
-							state = next;
-							continue;
-					}
-					
-				case S.BEGIN_RULE:
-					switch(c)
-					{
-						case '@'.code:
-							state = S.BEGIN_AT_RULE;
-							next = S.END_RULE;
-							start = position;
-							
-						default:
-							state = S.RULE;
-							next = S.END_STYLE_RULE;
-							start = position;
-					}
-					
-				case S.BEGIN_AT_RULE:
-					if (!isValidChar(c))
-					{
-						var atRule = css.substr(start, position - start);
-						
-						switch (atRule)
-						{
-							case '@media':
-								state = S.RULE;
-								next = S.END_MEDIA_RULE;
-								continue;
-								
-							default:
-								state = S.IGNORE_SPACES;
-								next = S.BEGIN_RULE;
-						}
-					}
-				case S.RULE:
-					switch(c)
-					{
-						case '}'.code:
-							state = next;
-					}
-					
-					
-					
-				case S.END_MEDIA_RULE:
-					var rule = css.substr(start, position - start);
-					state = S.IGNORE_SPACES;
-					next = S.BEGIN_RULE;
-						
-				case S.END_STYLE_RULE:
-					var rule = css.substr(start, position - start);
-					state = S.IGNORE_SPACES;
-					next = S.BEGIN_RULE;
-					
-			}
-			c = css.fastCodeAt(++position);
+			insertRule(rules[i], cssRules.length - 1);
 		}
 	}
 	
-	static inline function isValidChar(c) {
-		return (c >= 'a'.code && c <= 'z'.code) || (c >= 'A'.code && c <= 'Z'.code) || (c >= '0'.code && c <= '9'.code) || c == ':'.code || c == '.'.code || c == '_'.code || c == '-'.code;
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	/**
+	 * Insert a CSS rule at the given index in the cssRules 
+	 * list. If parsig he rule fails, it is not inserted
+	 */
+	public function insertRule(rule:String, index:Int):Int
+	{
+		var cssRule:CSSRule = _cssRulesParser.parseRule(rule, this);
+		trace(cssRule.cssText);
+		return -1;
+	}
+	
+	/**
+	 * Remove the rule at the given index from
+	 * the cssRule array
+	 */
+	public function deleteRule(index:Int):Void
+	{
+		
 	}
 	
 }

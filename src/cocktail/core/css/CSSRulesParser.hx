@@ -1,0 +1,175 @@
+package cocktail.core.css;
+
+using StringTools;
+import cocktail.core.css.CSSData;
+
+/**
+ * ...
+ * @author Yannick DOMINGUEZ
+ */
+
+class CSSRulesParser 
+{
+
+	public function new() 
+	{
+		
+	}
+	
+	public function parseRules(css:String):Array<String>
+	{
+		var state:StyleSheetRulesParserState = IGNORE_SPACES;
+		var next:StyleSheetRulesParserState = BEGIN_RULE;
+		var start:Int = 0;
+		var position:Int = 0;
+		var c:Int = css.fastCodeAt(position);
+		
+		var ruleStarted:Bool = false;
+		var rules:Array<String> = new Array<String>();
+		
+		while (!c.isEOF())
+		{
+			switch (state)
+			{
+				case IGNORE_SPACES:
+					switch(c)
+					{
+						case
+							'\n'.code,
+							'\r'.code,
+							'\t'.code,
+							' '.code:
+						default:
+							state = next;
+							continue;
+					}
+					
+				case BEGIN_RULE:
+					start = position;
+					state = RULE;
+					ruleStarted = true;
+					continue;
+					
+				case RULE:
+					switch(c)
+					{
+						case '}'.code:
+						state = END_RULE;
+					}
+					
+				case END_RULE:
+					var rule:String = css.substr(start, position - start);
+					rules.push(rule);
+					state = IGNORE_SPACES;
+					next = BEGIN_RULE;
+					ruleStarted = false;
+			}
+			
+			c = css.fastCodeAt(++position);
+		}
+		
+		if (ruleStarted == true)
+		{
+			var rule:String = css.substr(start, position - start);
+			rules.push(rule);
+		}
+		
+		return rules;
+	}
+	
+	public function parseRule(rule:String, parentSyleSheet:CSSStyleSheet):CSSRule
+	{
+		var state:StyleSheetRuleParserState = IGNORE_SPACES;
+		var next:StyleSheetRuleParserState = BEGIN_RULE;
+		var start:Int = 0;
+		var position:Int = 0;
+		var c:Int = rule.fastCodeAt(position);
+		
+		var cssRule:CSSRule = null;
+		
+		while (!c.isEOF())
+		{
+			switch (state)
+			{
+				case IGNORE_SPACES:
+					switch(c)
+					{
+						case
+							'\n'.code,
+							'\r'.code,
+							'\t'.code,
+							' '.code:
+						default:
+							state = next;
+							continue;
+					}
+					
+				case BEGIN_RULE:
+					
+					switch(c)
+					{
+						case '@'.code:
+							state = BEGIN_AT_RULE;
+							start = position;
+							
+						default:
+							state = RULE;
+							next = END_STYLE_RULE;
+							start = position;
+							continue;
+					}
+					
+				case BEGIN_AT_RULE:
+					if (!isValidChar(c))
+					{
+						var atRule = rule.substr(start, position - start);
+						
+						switch (atRule)
+						{
+							case '@media':
+								state = RULE;
+								next = END_MEDIA_RULE;
+								continue;
+								
+							default:
+								state = IGNORE_SPACES;
+								next = BEGIN_RULE;
+								
+						}
+					}
+				case RULE:
+					switch(c)
+					{
+						case '}'.code:
+							state = next;
+							continue;
+					}
+					
+					
+				case END_MEDIA_RULE:
+					var rule = rule.substr(start, position - start + 1);
+					
+					var cssMediaRule:CSSMediaRule = new CSSMediaRule(parentSyleSheet);
+					cssMediaRule.cssText = rule;
+					
+					return cssMediaRule;
+						
+				case END_STYLE_RULE:
+					var rule = rule.substr(start, position - start + 1);
+					
+					var cssStyleRule:CSSStyleRule = new CSSStyleRule(parentSyleSheet);
+					cssStyleRule.cssText = rule;
+					
+					return cssStyleRule;
+					
+			}
+			c = rule.fastCodeAt(++position);
+		}
+		
+		return cssRule;
+	}
+	
+	static inline function isValidChar(c) {
+		return (c >= 'a'.code && c <= 'z'.code) || (c >= 'A'.code && c <= 'Z'.code) || (c >= '0'.code && c <= '9'.code) || c == ':'.code || c == '.'.code || c == '_'.code || c == '-'.code;
+	}
+}

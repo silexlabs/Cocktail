@@ -7,6 +7,7 @@
 */
 package cocktail.core.css;
 
+import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.css.CSSData;
 
@@ -247,6 +248,9 @@ class SelectorManager
 				
 			case USER_ACTION_PSEUDO_CLASS(value):
 				return matchUserActionPseudoClassSelector(node, value);
+				
+			case TARGET_PSEUDO_CLASS(value):
+				return matchTargetPseudoClassSelector(node, value);
 		}		
 	}
 	
@@ -290,7 +294,91 @@ class SelectorManager
 	 */
 	private function matchPseudoClassSelector(node:HTMLElement, pseudoClassSelector:PseudoClassSelectorValue):Bool
 	{
+		switch(pseudoClassSelector)
+		{
+			case PseudoClassSelectorValue.EMPTY:
+				return node.hasChildNodes();
+				
+			case PseudoClassSelectorValue.FIRST_CHILD:
+				return node.previousSibling == null;
+				
+			case PseudoClassSelectorValue.LAST_CHILD:
+				return node.nextSibling == null;
+				
+			case PseudoClassSelectorValue.ONLY_CHILD:
+				return node.parentNode.childNodes.length == 1;
+				
+			case PseudoClassSelectorValue.ROOT:
+				return node.tagName == HTMLConstants.HTML_HTML_TAG_NAME && node.parentNode == null;
+				
+			case PseudoClassSelectorValue.ONLY_OF_TYPE:
+				return matchOnlyOfType(node);
+				
+			case PseudoClassSelectorValue.FIRST_OF_TYPE:
+				return matchFirstOfType(node);
+				
+			case PseudoClassSelectorValue.LAST_OF_TYPE:
+				return matchLastOfType(node);	
+		}
+		
 		return true;
+	}
+	
+	/**
+	 * Return wether the node is the first 
+	 * element among its element siblings of
+	 * its type (tag name)
+	 */
+	private function matchFirstOfType(node:HTMLElement):Bool
+	{
+		var type:String = node.tagName;
+		
+		var previousElementSibling:HTMLElement = node.previousElementSibling;
+		
+		while (previousElementSibling != null)
+		{
+			if (previousElementSibling.tagName == type)
+			{
+				return false;
+			}
+			
+			previousElementSibling = previousElementSibling.previousElementSibling;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Same as above but for last element
+	 */
+	private function matchLastOfType(node:HTMLElement):Bool
+	{
+		var type:String = node.tagName;
+		
+		var nextElementSibling:HTMLElement = node.nextElementSibling;
+		
+		while (nextElementSibling != null)
+		{
+			if (nextElementSibling.tagName == type)
+			{
+				return false;
+			}
+			
+			nextElementSibling = nextElementSibling.nextElementSibling;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Return wether this node is the only among
+	 * its element sibling of its type (tag name)
+	 */
+	private function matchOnlyOfType(node:HTMLElement):Bool
+	{
+		//to be the only of its type is the same as
+		//being the first and last of its type
+		return matchLastOfType(node) == true && matchFirstOfType(node) == true;
 	}
 	
 	/**
@@ -307,6 +395,15 @@ class SelectorManager
 	 * matches the node
 	 */
 	private function matchUserActionPseudoClassSelector(node:HTMLElement, value:UserActionPseudoClassValue):Bool
+	{
+		return true;
+	}
+	
+	/**
+	 * Return wether the target pseudo-class 
+	 * matches the node.
+	 */
+	private function matchTargetPseudoClassSelector(node:HTMLElement, value:TargetPseudoClassValue):Bool
 	{
 		return true;
 	}
@@ -447,6 +544,9 @@ class SelectorManager
 				
 			case ID(value):
 				selectorSpecificity.idSelectorsNumber++;
+				
+			case TARGET_PSEUDO_CLASS(value):
+				selectorSpecificity.classAttributesAndPseudoClassesNumber++;
 		}
 	}
 }
