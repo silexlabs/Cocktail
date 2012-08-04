@@ -51,8 +51,23 @@ enum PropertyOriginValue {
  * then concatenated into an integer value
  */
 typedef SelectorSpecificityData = {
+	
+	/**
+	 * Incremented for each ID simple selector
+	 * in the selector
+	 */
 	var idSelectorsNumber:Int;
+	
+	/**
+	 * Incremented for each class and pseudo class
+	 * simple selector in the selector
+	 */
 	var classAttributesAndPseudoClassesNumber:Int;
+	
+	/**
+	 * Incremented for each type and pseudo element
+	 * simple selector in the selector
+	 */
 	var typeAndPseudoElementsNumber:Int;
 }
 
@@ -109,6 +124,11 @@ enum SelectorComponentValue {
 	COMBINATOR(value:CombinatorValue);
 } 
 
+/**
+ * Lists all the simple selectors besides the type and
+ * universal selector, reserved for the start of a
+ * simple selector sequence
+ */
 enum SimpleSelectorSequenceItemValue {
 	ATTRIBUTE(value:AttributeSelectorValue);
 	PSEUDO_CLASS(value:PseudoClassSelectorValue);

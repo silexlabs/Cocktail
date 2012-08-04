@@ -36,10 +36,23 @@ class SelectorManager
 	/**
 	 * For a given node and selector, return wether
 	 * the node matches all of the components of the selector
+	 * 
+	 * TODO 1 : array should be traversed in reverse order ?
 	 */
 	public function matchSelector(node:HTMLElement, selector:SelectorData):Bool
 	{
 		var components:Array<SelectorComponentValue> = selector.components;
+		
+		//simple selectors and combinators are parsed from left to 
+		//right but are matched from right to left to match
+		//combinators logic
+		components.reverse();
+		
+		//a flag set to true when the last item in the components array
+		//was a combinator.
+		//This flag is a shortcut to prevent matching again selector
+		//sequence that were matched by the combinator
+		var lastWasCombinator:Bool = false;
 		
 		//loop in all the components of the selector
 		for (i in 0...components.length)
@@ -52,19 +65,38 @@ class SelectorManager
 			switch(component)
 			{
 				case SelectorComponentValue.COMBINATOR(value):
-					matched = matchCombinator(node, value, cast(components[i-1]), cast(components[i+1]));
+					matched = matchCombinator(node, value, cast(components[i + 1]));
+					lastWasCombinator = true;
 					
 				case SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(value):
-					matched = matchSimpleSelectorSequence(node, value);
+					//if the previous item was a combinator, then 
+					//this simple selector sequence was already
+					//successfuly matched, else the method would have
+					//returned
+					if (lastWasCombinator == true) 
+					{
+						matched = true;
+						lastWasCombinator = false;
+					}
+					else
+					{
+						matched = matchSimpleSelectorSequence(node, value);
+					}
 			}
 			
 			//if the component is not
 			//matched, then the selector is not matched
 			if (matched == false)
 			{
+				//back to initial order
+				components.reverse();
+				
 				return false;
 			}
 		}
+		
+		//back to initial order
+		components.reverse();
 		
 		return true;
 	}
@@ -79,87 +111,108 @@ class SelectorManager
 	/**
 	 * return wether a combinator is matched
 	 */
-	private function matchCombinator(node:HTMLElement, combinator:CombinatorValue, previousSelectorSequence:SimpleSelectorSequenceData, nextSelectorSequence:SimpleSelectorSequenceData):Bool
-	{
-		switch(combinator)
-		{
-			case CombinatorValue.ADJACENT_SIBLING:
-				//TODO
-				return false;
-				
-			case CombinatorValue.GENERAL_SIBLING:
-				//TODO
-				return false;
-				
-			case CombinatorValue.CHILD:
-				return matchChildCombinator(node, previousSelectorSequence, nextSelectorSequence);
-				
-			case CombinatorValue.DESCENDANT:
-				return matchDescendantCombinator(node, previousSelectorSequence, nextSelectorSequence);
-		}
-	}
-	
-	/**
-	 * Return wether a descendant combinator is matched.
-	 * It is matched when the node matches the 
-	 * childSelectorItem and an acestor of the node
-	 * matches the parentSelectorItem
-	 */
-	private function matchDescendantCombinator(node:HTMLElement, parentSelectorSequence:SimpleSelectorSequenceData, childSelectorSequence:SimpleSelectorSequenceData):Bool
+	private function matchCombinator(node:HTMLElement, combinator:CombinatorValue, nextSelectorSequence:SimpleSelectorSequenceData):Bool
 	{
 		//if the node has no parent, it can't match
-		//this combinator
+		//any combinator
 		if (node.parentNode == null)
 		{
 			return false;
 		}
 		
-		//wether the node matches its selector
-		if (matchSimpleSelectorSequence(node, childSelectorSequence) == false)
+		switch(combinator)
 		{
-			return false;
+			case CombinatorValue.ADJACENT_SIBLING:
+				return matchAdjacentSiblingCombinator(node, nextSelectorSequence);
+				
+			case CombinatorValue.GENERAL_SIBLING:
+				return matchGeneralSiblingCombinator(node, nextSelectorSequence);
+				
+			case CombinatorValue.CHILD:
+				return matchChildCombinator(node, nextSelectorSequence);
+				
+			case CombinatorValue.DESCENDANT:
+				return matchDescendantCombinator(node, nextSelectorSequence);
 		}
+	}
+	
+	/**
+	 * Return wether a general sibling combinator is
+	 * matched.
+	 * 
+	 * It is matched if the node has a sibling matching
+	 * the preious selector sequence which precedes in 
+	 * the DOM tree
+	 */
+	private function  matchGeneralSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData):Bool
+	{
+		var previousElementSibling:HTMLElement = node.previousElementSibling;
 		
-		var parent:HTMLElement = node.parentNode;
-		
-		var matched:Bool = false;
-		
-		//check that at least one ancestor matches
-		//the parent selector
-		while (parent != null)
+		while (previousElementSibling != null)
 		{
-			if (matchSimpleSelectorSequence(parent, parentSelectorSequence) == true)
+			if (matchSimpleSelectorSequence(previousElementSibling, nextSelectorSequence) == true)
 			{
 				return true;
 			}
 			
-			parent = parent.parentNode;
+			previousElementSibling = previousElementSibling.previousElementSibling;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Same as general sibling combinator, but 
+	 * only matched if the first previous
+	 * element sibling of the node matches
+	 * the previous selector
+	 */
+	private function  matchAdjacentSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData):Bool
+	{
+		var previousElementSibling:HTMLElement = node.previousElementSibling;
+		
+		if (previousElementSibling == null)
+		{
+			return false;
+		}
+		
+		return matchSimpleSelectorSequence(previousElementSibling, nextSelectorSequence);
+	}
+	
+	/**
+	 * Return wether a descendant combinator is matched.
+	 * It is matched when an ancestor of the node
+	 * matches the next selector sequence
+	 */
+	private function matchDescendantCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData):Bool
+	{
+		var parentNode:HTMLElement = node.parentNode;
+		
+		//check that at least one ancestor matches
+		//the parent selector
+		while (parentNode != null)
+		{
+			if (matchSimpleSelectorSequence(parentNode, nextSelectorSequence) == true)
+			{
+				return true;
+			}
+			
+			parentNode = parentNode.parentNode;
 		}
 		
 		//here no parent matched, so the
 		//combinator is not matched
 		return false;
-		
 	}
 	
 	/**
 	 * Same as matchDescendantCombinator, but the 
-	 * parentSelectorItem must be matched by the 
-	 * direct parent of the node and not any ancestor
+	 * next selector sequence must be matched by the 
+	 * direct parent of the node and not just any ancestor
 	 */
-	private function matchChildCombinator(node:HTMLElement, parentSelectorSequence:SimpleSelectorSequenceData, childSelectorSequence:SimpleSelectorSequenceData):Bool
+	private function matchChildCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData):Bool
 	{
-		if (node.parentNode == null)
-		{
-			return false;
-		}
-		
-		if (matchSimpleSelectorSequence(node, childSelectorSequence) == false)
-		{
-			return false;
-		}
-		
-		return matchSimpleSelectorSequence(node.parentNode, parentSelectorSequence);
+		return matchSimpleSelectorSequence(node.parentNode, nextSelectorSequence);
 	}
 	
 		// SIMPLE SELECTORS
@@ -254,7 +307,119 @@ class SelectorManager
 	 */
 	private function matchAttributeSelector(node:HTMLElement, attributeSelector:AttributeSelectorValue):Bool
 	{
+		switch(attributeSelector)
+		{
+			case AttributeSelectorValue.ATTRIBUTE(value):
+				return node.getAttribute(value) != null;
+				
+			case AttributeSelectorValue.ATTRIBUTE_VALUE(name, value):
+				return node.getAttribute(name) == value;
+				
+			case AttributeSelectorValue.ATTRIBUTE_LIST(name, value):
+				return matchAttributeList(node, name, value);
+				
+			case AttributeSelectorValue.ATTRIBUTE_VALUE_BEGINS(name, value):
+				return matchAttributeBeginValue(node, name, value);
+				
+			case AttributeSelectorValue.ATTRIBUTE_VALUE_CONTAINS(name, value):
+				return matchAttributeContainsValue(node, name, value);
+				
+			case AttributeSelectorValue.ATTRIBUTE_VALUE_ENDS(name, value):
+				return matchAttributeEndValue(node, name, value);
+				
+			case AttributeSelectorValue.ATTRIBUTE_VALUE_BEGINS_HYPHEN_LIST(name, value):
+				return matchAttributeBeginsHyphenList(node, name, value);
+		}
+		
 		return true;
+	}
+	
+	/**
+	 * return wether the valu of the "name" attribute is a hyphen
+	 * separated lsit whose first item is "value"
+	 */
+	private function matchAttributeBeginsHyphenList(node:HTMLElement, name:String, value:String):Bool
+	{
+		var attributeValue:String = node.getAttribute(name);
+		//early exit if the attribute doesn't exist on the node
+		if (attributeValue == null)
+		{
+			return false;
+		}
+		
+		var attributeValueAsList:Array<String> = attributeValue.split("-");
+		return attributeValueAsList[0] == value;
+	}
+	
+	/**
+	 * Return wether the value of the "name" attribute ends with "value"
+	 */
+	private function matchAttributeEndValue(node:HTMLElement, name:String, value:String):Bool
+	{
+		var attributeValue:String = node.getAttribute(name);
+		//early exit if the attribute doesn't exist on the node
+		if (attributeValue == null)
+		{
+			return false;
+		}
+		
+		return attributeValue.lastIndexOf(value) == attributeValue.length - value.length;
+	}
+	
+	/**
+	 * Return wether the value of the "name" attribute contains "value"
+	 */
+	private function matchAttributeContainsValue(node:HTMLElement, name:String, value:String):Bool
+	{
+		var attributeValue:String = node.getAttribute(name);
+		//early exit if the attribute doesn't exist on the node
+		if (attributeValue == null)
+		{
+			return false;
+		}
+		
+		return attributeValue.indexOf(value) != -1;
+	}
+	
+	/**
+	 * Return wether the value of the "name" attribute
+	 * on the node begins with "value"
+	 */
+	private function matchAttributeBeginValue(node:HTMLElement, name:String, value:String):Bool
+	{
+		var attributeValue:String = node.getAttribute(name);
+		//early exit if the attribute doesn't exist on the node
+		if (attributeValue == null)
+		{
+			return false;
+		}
+		
+		return attributeValue.indexOf(value) == 0;
+	}
+	
+	/**
+	 * Return wether "value" is a part of the "name" attribute
+	 * which is a white-space separated list of values
+	 */
+	private function matchAttributeList(node:HTMLElement, name:String, value:String):Bool
+	{
+		var attributeValue:String = node.getAttribute(name);
+		//early exit if the attribute doesn't exist on the node
+		if (attributeValue == null)
+		{
+			return false;
+		}
+		
+		var attributeValueAsList:Array<String> = attributeValue.split(" ");
+		for (i in 0...attributeValueAsList.length)
+		{
+			if (attributeValueAsList[i] == value)
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -455,7 +620,6 @@ class SelectorManager
 				selectorSpecificity.typeAndPseudoElementsNumber++;
 				
 			case SimpleSelectorSequenceStartValue.UNIVERSAL:
-				
 		}
 	}
 	
