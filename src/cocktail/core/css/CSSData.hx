@@ -1,6 +1,7 @@
 package cocktail.core.css;
 
 import cocktail.core.style.StyleData;
+import cocktail.core.unit.UnitData;
 
 /**
  * ...
@@ -210,10 +211,10 @@ enum PseudoClassSelectorValue {
 	TARGET;
 	LANG(value:Array<String>);
 	USER_ACTION(value:UserActionPseudoClassValue);
+	UI_ELEMENT_STATES(value:UIElementStatesValue);
 	NOT(value:SimpleSelectorSequenceData);
 }
 
-//TODO 2 : add pseudo class with argument (nth-child)
 enum StructuralPseudoClassSelectorValue {
 	ROOT;
 	FIRST_CHILD;
@@ -223,6 +224,16 @@ enum StructuralPseudoClassSelectorValue {
 	ONLY_CHILD;
 	ONLY_OF_TYPE;
 	EMPTY;
+	NTH_CHILD(value:StructuralPseudoClassArgumentValue);
+	NTH_LAST_CHILD(value:StructuralPseudoClassArgumentValue);
+	NTH_OF_TYPE(value:StructuralPseudoClassArgumentValue);
+	NTH_LAST_OF_TYPE(value:StructuralPseudoClassArgumentValue);
+}
+
+//TODO 2 : missing values
+enum StructuralPseudoClassArgumentValue {
+	ODD;
+	EVEN;
 }
 
 enum LinkPseudoClassValue {
@@ -236,11 +247,19 @@ enum UserActionPseudoClassValue {
 	FOCUS;
 }
 
+enum UIElementStatesValue {
+	ENABLED;
+	DISABLED;
+	CHECKED;
+}
+
 //TODO 2 : add before and adter for generated content
 enum PseudoElementSelectorValue {
 	NONE;
 	FIRST_LINE;
 	FIRST_LETTER;
+	BEFORE;
+	AFTER;
 }
 
 enum CombinatorValue {
@@ -248,6 +267,24 @@ enum CombinatorValue {
 	CHILD;
 	ADJACENT_SIBLING;
 	GENERAL_SIBLING;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// STYLE VALUES
+//////////////////////////////////////////////////////////////////////////////////////////
+
+enum StyleValue {
+	INTEGER(value:Int);
+	NUMBER(value:Float);
+	PERCENTAGE(value:Float);
+	IDENTIFIER(value:String);
+	URL(value:String);
+	STRING(value:String);
+	LENGTH(value:Length);
+	ANGLE(value:Angle);
+	TIME(value:TimeValue);
+	COLOR(VALUE:CSSColor);
+	INHERIT;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -267,6 +304,30 @@ enum SelectorParserState {
 	BEGIN_PSEUDO_SELECTOR;
 	END_UNIVERSAL_SELECTOR;
 	PSEUDO_ELEMENT_SELECTOR;
+	BEGIN_ATTRIBUTE_SELECTOR;
+	INVALID_SELECTOR;
+}
+
+enum StyleDeclarationParserState {
+	STYLE_NAME;
+	STYLE_VALUE;
+	IGNORE_SPACES;
+	INVALID_STYLE;
+}
+
+enum StyleValueParserState {
+	IGNORE_SPACES;
+	BEGIN_VALUE;
+	IDENT;
+	NUMBER_OR_INTEGER;
+}
+
+enum AttributeSelectorParserState {
+	ATTRIBUTE;
+	OPERATOR;
+	BEGIN_VALUE;
+	VALUE;
+	END_SELECTOR;
 	INVALID_SELECTOR;
 }
 

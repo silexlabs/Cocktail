@@ -24,7 +24,6 @@ import cocktail.core.font.FontData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.port.GraphicsContext;
-import haxe.Timer;
 
 
 /**

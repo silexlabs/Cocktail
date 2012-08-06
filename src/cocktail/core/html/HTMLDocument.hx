@@ -34,7 +34,6 @@ import cocktail.Lib;
 import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import haxe.Log;
-import haxe.Timer;
 import cocktail.core.style.StyleData;
 
 /**
@@ -756,7 +755,7 @@ class HTMLDocument extends Document
 		#elseif (flash9 || nme)
 		//calling the methods 1 millisecond later is enough to ensure
 		//that first all synchronous code is executed
-		Timer.delay(function () { 
+		haxe.Timer.delay(function () { 
 			onLayoutScheduleDelegate();
 		}, INVALIDATION_INTERVAL);
 		#end

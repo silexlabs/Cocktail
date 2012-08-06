@@ -11,7 +11,6 @@ import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.renderer.RendererData;
-import haxe.Timer;
 
 /**
  * The transition manager is in charge of starting
@@ -208,7 +207,7 @@ class TransitionManager
 		#elseif (flash9 || nme)
 		//set a delayed method call which will be repeated
 		//as long as needed
-		Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
+		haxe.Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
 		#end
 	}
 	

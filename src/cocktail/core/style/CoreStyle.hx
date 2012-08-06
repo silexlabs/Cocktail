@@ -44,7 +44,6 @@ import cocktail.core.unit.UnitManager;
 import cocktail.core.font.FontData;
 import haxe.Log;
 import haxe.Stack;
-import haxe.Timer;
 import cocktail.core.style.ComputedStyle;
 import cocktail.core.renderer.RendererData;
 

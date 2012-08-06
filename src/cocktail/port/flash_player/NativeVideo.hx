@@ -19,7 +19,6 @@ import flash.media.Video;
 import flash.net.NetConnection;
 import flash.net.NetStream;
 import flash.events.NetStatusEvent;
-import haxe.Timer;
 import cocktail.core.geom.GeomData;
 
 /**
@@ -201,7 +200,7 @@ class NativeVideo extends NativeMedia
 	{
 		if (_netStream.time - _currentTime > 0.2)
 		{
-			Timer.delay(checkSeeking, 5);
+			haxe.Timer.delay(checkSeeking, 5);
 		}
 		else
 		{

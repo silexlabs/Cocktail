@@ -10,7 +10,6 @@ import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.port.platform.nativeMedia.NativeMedia;
-import haxe.Timer;
 import cocktail.core.html.HTMLData;
 import cocktail.core.renderer.RendererData;
 
@@ -929,7 +928,7 @@ class HTMLMediaElement extends EmbeddedElement
 		//set this method to be called again 
 		#if macro
 		#elseif (flash9 || nme)
-		Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
+		haxe.Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
 		#end
 	}
 	
@@ -965,7 +964,7 @@ class HTMLMediaElement extends EmbeddedElement
 		//a progress event and set this method to be called again
 		#if macro
 		#elseif (flash9 || nme)
-		Timer.delay(onProgressTick, PROGRESS_FREQUENCY);
+		haxe.Timer.delay(onProgressTick, PROGRESS_FREQUENCY);
 		#end
 	}
 	

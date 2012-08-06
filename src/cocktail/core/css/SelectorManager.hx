@@ -438,7 +438,19 @@ class SelectorManager
 				
 			case PseudoClassSelectorValue.LANG(value):
 				return matchLangPseudoClassSelector(node, value);
+				
+			case PseudoClassSelectorValue.UI_ELEMENT_STATES(value):
+				return matchUIElementStatesSelector(node, value);
 		}
+	}
+	
+	/**
+	 * Return wether a UI state selector
+	 * matches the node
+	 */
+	private function matchUIElementStatesSelector(node:HTMLElement, uiElementState:UIElementStatesValue):Bool
+	{
+		return false;
 	}
 	
 	/**
@@ -490,9 +502,41 @@ class SelectorManager
 				
 			case StructuralPseudoClassSelectorValue.LAST_OF_TYPE:
 				return matchLastOfType(node);	
+				
+			case StructuralPseudoClassSelectorValue.NTH_CHILD(value):
+				return matchNthChild(node, value);
+				
+			case StructuralPseudoClassSelectorValue.NTH_LAST_CHILD(value):
+				return matchNthLastChild(node, value);
+				
+			case StructuralPseudoClassSelectorValue.NTH_LAST_OF_TYPE(value):
+				return matchNthLastOfType(node, value);
+				
+			case StructuralPseudoClassSelectorValue.NTH_OF_TYPE(value):
+				return matchNthOfType(node, value);
 		}
 		
 		return true;
+	}
+	
+	private function matchNthChild(node:HTMLElement, value:StructuralPseudoClassArgumentValue):Bool
+	{
+		return false;
+	}
+	
+	private function matchNthLastChild(node:HTMLElement, value:StructuralPseudoClassArgumentValue):Bool
+	{
+		return false;
+	}
+	
+	private function matchNthLastOfType(node:HTMLElement, value:StructuralPseudoClassArgumentValue):Bool
+	{
+		return false;
+	}
+	
+	private function matchNthOfType(node:HTMLElement, value:StructuralPseudoClassArgumentValue):Bool
+	{
+		return false;
 	}
 	
 	/**
@@ -602,7 +646,9 @@ class SelectorManager
 		switch (selector.pseudoElement)
 		{
 			case PseudoElementSelectorValue.FIRST_LETTER,
-			PseudoElementSelectorValue.FIRST_LINE:
+			PseudoElementSelectorValue.FIRST_LINE,
+			PseudoElementSelectorValue.AFTER,
+			PseudoElementSelectorValue.BEFORE:
 				selectorSpecificity.typeAndPseudoElementsNumber++;
 			
 			case PseudoElementSelectorValue.NONE:	
