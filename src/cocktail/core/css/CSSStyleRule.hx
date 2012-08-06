@@ -82,7 +82,7 @@ class CSSStyleRule extends CSSRule
 					
 				case END_SELECTOR:	
 					var selector = css.substr(start, position - start);
-					trace(selector);
+					parseSelector(selector);
 					state = next;
 					
 				case BEGIN_STYLES:
@@ -103,8 +103,8 @@ class CSSStyleRule extends CSSRule
 					}
 				
 				case END_STYLES:
-					var style = css.substr(start, position - start);
-					trace(style);
+					var styleDeclaration = css.substr(start, position - start);
+					style.parseStyle(styleDeclaration, 0);
 					state = IGNORE_SPACES;
 					next = IGNORE_SPACES;
 			}

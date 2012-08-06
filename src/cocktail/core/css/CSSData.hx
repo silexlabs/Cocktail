@@ -313,6 +313,8 @@ enum StyleDeclarationParserState {
 	STYLE_VALUE;
 	IGNORE_SPACES;
 	INVALID_STYLE;
+	STYLE_SEPARATOR;
+	BEGIN_STYLE_NAME;
 }
 
 enum StyleValueParserState {
@@ -320,6 +322,10 @@ enum StyleValueParserState {
 	BEGIN_VALUE;
 	IDENT;
 	NUMBER_OR_INTEGER;
+	SPACE_OR_END;
+	INVALID_STYLE_VALUE;
+	IMPORTANT;
+	END;
 }
 
 enum AttributeSelectorParserState {

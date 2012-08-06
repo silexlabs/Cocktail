@@ -116,17 +116,17 @@ class CSSStyleDeclaration
 		return _properties.length;
 	}
 	
-	private function parseStyle(styles:String, position:Int):Void
+	public function parseStyle(styles:String, position:Int):Void
 	{
 		var state:StyleDeclarationParserState = IGNORE_SPACES;
-		var next:StyleDeclarationParserState = STYLE_NAME;
+		var next:StyleDeclarationParserState = BEGIN_STYLE_NAME;
 		
 		var start:Int = position;
 		var c:Int = styles.fastCodeAt(position);
 		
 		var styleName:String = null;
 		
-		while (true)
+		while (!c.isEOF())
 		{	
 			switch (state)
 			{
@@ -143,6 +143,11 @@ class CSSStyleDeclaration
 							continue;
 					}
 				
+				case BEGIN_STYLE_NAME:
+					start = position;
+					state = STYLE_NAME;
+					continue;
+					
 				case STYLE_NAME:
 					if (!isStyleNameChar(c))
 					{
@@ -151,34 +156,53 @@ class CSSStyleDeclaration
 							case ':'.code:
 								styleName = styles.substr(start, position - start);
 								state = IGNORE_SPACES;
-								state = STYLE_VALUE;
+								next = STYLE_VALUE;
+								continue;
 								
 							case ' '.code:
+								styleName = styles.substr(start, position - start);
 								state = IGNORE_SPACES;
-								next = STYLE_NAME;
+								next = STYLE_SEPARATOR;
+								continue;
 								
 							default:
 								state = INVALID_STYLE;
 								continue;
 						}
-						
+					}
+					
+				case STYLE_SEPARATOR:
+					
+					if (c == ':'.code)
+					{
+						state = STYLE_VALUE;
+					}
+					else
+					{
+						state = INVALID_STYLE;
+						continue;
 					}
 					
 				case STYLE_VALUE:
-					position = parseStyleValue(styles, position);
+					position = parseStyleValue(styleName, styles, position);
+					state = IGNORE_SPACES;
+					next = BEGIN_STYLE_NAME;
 					
 				case INVALID_STYLE:	
 			}
+			c = styles.fastCodeAt(++position);
 		}
 	}
 	
-	public function parseStyleValue(styles:String, position:Int):Int
+	public function parseStyleValue(propertyName:String, styles:String, position:Int):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		
 		var state:StyleValueParserState = IGNORE_SPACES;
 		var next:StyleValueParserState = BEGIN_VALUE;
 		var start:Int = position;
+		
+		var important:Bool = false;
 		
 		var previousStart:Int = 0;
 		
@@ -201,17 +225,39 @@ class CSSStyleDeclaration
 							continue;
 					}
 				
+					
+				case SPACE_OR_END:
+					switch(c)
+					{
+						case ' '.code:
+							state = IGNORE_SPACES;
+							next = BEGIN_VALUE;
+							
+						case ';'.code:
+							state = END;
+							continue;
+							
+						default:
+							state = INVALID_STYLE_VALUE;
+							continue;
+					}
+				
 				case BEGIN_VALUE:
 					
 					switch(c)
 					{
 						case ';'.code:
-							break;
+							state = END;
+							continue;
 							
 						case '-'.code:
 							state = NUMBER_OR_INTEGER;
 							start = position;
 							continue;
+							
+						case '!'.code:
+							state = IMPORTANT;
+							start = position;
 					}
 					
 					if (isIdentChar(c))
@@ -227,23 +273,188 @@ class CSSStyleDeclaration
 						continue;
 					}
 					
+				case END:	
+					if (c != ";".code)
+					{
+						state = INVALID_STYLE_VALUE;
+						continue;
+					}
+					else
+					{
+						break;
+					}
+					
+				case IMPORTANT:
+					position = parseImportant(styles, position);
+					important = true;
+					state = IGNORE_SPACES;
+					next = END;
+					
 				case IDENT:
 					position = parseIdent(styles, position, styleValues);
-					state = IGNORE_SPACES;
-					next = BEGIN_VALUE;
+					state = SPACE_OR_END;
 					
 				case NUMBER_OR_INTEGER:
 					position = parseIntegerOrNumber(styles, position, styleValues);
-					state = IGNORE_SPACES;
-					next = BEGIN_VALUE;
+					state = SPACE_OR_END;
+					
+				case INVALID_STYLE_VALUE:
+					trace("invalid");
 	
 			}
 			c = styles.fastCodeAt(++position);
 		}
 		
-		trace(styleValues);
+		applyProperty(propertyName, styleValues);
 		
 		return position;
+	}
+	
+	private function applyProperty(propertyName:String, styleValues:Array<StyleValue>):Void
+	{
+		switch(propertyName)
+		{
+			case 'width':
+				if (styleValues.length == 1)
+				{
+					switch(styleValues[0])
+					{
+						case StyleValue.LENGTH(value):
+							trace(value);
+							
+						case StyleValue.INTEGER(value):
+							if (value == 0)
+							{
+								trace(value);
+							}
+							
+						default:	
+					}
+				}
+				
+			case 'display':
+				if (styleValues.length == 1)
+				{
+					switch(styleValues[0])
+					{
+						case StyleValue.IDENTIFIER(value):
+							trace(value);
+							switch(value)
+							{
+								case 'inline':
+									
+								case 'block':
+									
+								case 'none':
+									
+								case 'inline-block':	
+							}
+							
+						default:	
+					}
+				}
+				
+			case 'position':
+				if (styleValues.length == 1)
+				{
+					switch(styleValues[0])
+					{
+						case StyleValue.IDENTIFIER(value):
+							trace(value);
+						
+							switch(value)
+							{
+								case 'static':
+									
+								case 'relative':
+									
+								case 'absolute':
+									
+								case 'fixed':	
+							}
+							
+						default:	
+					}
+				}
+				
+			case 'font-size':
+				if (styleValues.length == 1)
+				{
+					switch(styleValues[0])
+					{
+						case StyleValue.LENGTH(value):
+							
+						case StyleValue.PERCENTAGE(value):
+							
+						case StyleValue.IDENTIFIER(value):	
+							
+						default:	
+							
+					}
+				}
+				
+				
+			case 'margin-left':
+				if (styleValues.length == 1)
+				{
+					switch(styleValues[0])
+					{
+						case StyleValue.LENGTH(value):
+							
+						case StyleValue.PERCENTAGE(value):
+							
+						case StyleValue.IDENTIFIER(value):	
+							
+						default:	
+					}
+				}
+				
+			case 'margin':
+				switch (styleValues.length)
+				{
+					case 1:
+						applyProperty('margin-left', [styleValues[0]]);
+						applyProperty('margin-right', [styleValues[0]]);
+						applyProperty('margin-top', [styleValues[0]]);
+						applyProperty('margin-bottom', [styleValues[0]]);
+						
+					case 2:	
+						applyProperty('margin-left', [styleValues[1]]);
+						applyProperty('margin-right', [styleValues[1]]);
+						applyProperty('margin-top', [styleValues[0]]);
+						applyProperty('margin-bottom', [styleValues[0]]);
+						
+					case 3:	
+						applyProperty('margin-left', [styleValues[1]]);
+						applyProperty('margin-right', [styleValues[1]]);
+						applyProperty('margin-top', [styleValues[0]]);
+						applyProperty('margin-bottom', [styleValues[2]]);	
+						
+					case 4:	
+						applyProperty('margin-left', [styleValues[3]]);
+						applyProperty('margin-right', [styleValues[1]]);
+						applyProperty('margin-top', [styleValues[0]]);
+						applyProperty('margin-bottom', [styleValues[2]]);		
+				}
+		}
+	}
+	
+	private function parseImportant(styles:String, position:Int):Int
+	{
+		var c:Int = styles.fastCodeAt(position);
+		var start = position;
+		
+		while (isIdentChar(c))
+		{
+			c = styles.fastCodeAt(++position);
+		}
+		
+		var ident:String = styles.substr(start, position - start);
+		if (ident == "important")
+		{
+			return position;
+		}
+		return -1;
 	}
 	
 	private function parseIntegerOrNumber(styles:String, position:Int, styleValues:Array<StyleValue>):Int
@@ -291,9 +502,10 @@ class CSSStyleDeclaration
 			case '%'.code:	
 				var numberOrInteger:Float = Std.parseFloat(styles.substr(start, position - start));
 				styleValues.push(StyleValue.PERCENTAGE(numberOrInteger));
+				position++;
 		}
 		
-		return position;
+		return --position;
 	}
 	
 	private function parseUnit(numberOrInteger:Float, styles:String, position:Int, styleValues:Array<StyleValue>):Int
@@ -357,11 +569,6 @@ class CSSStyleDeclaration
 		return position;
 	}
 	
-	private function parsePercentage(numberOrInteger, styles, position, styleValues):Int
-	{
-		return position;
-	}
-	
 	private function parseIdent(styles:String, position:Int, styleValues:Array<StyleValue>):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
@@ -385,7 +592,7 @@ class CSSStyleDeclaration
 				styleValues.push(StyleValue.IDENTIFIER(ident));
 		}
 		
-		return position;
+		return --position;
 	}
 	
 	private function parseURL(styles:String, position:Int, styleValues:Array<StyleValue>):Int
