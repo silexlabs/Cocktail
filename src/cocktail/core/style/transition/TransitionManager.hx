@@ -276,7 +276,7 @@ class TransitionManager
 		{
 			#if macro
 			#elseif (flash9 || nme)
-			Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
+			haxe.Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
 			#end
 		}
 	}

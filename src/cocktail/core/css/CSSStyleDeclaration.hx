@@ -290,7 +290,7 @@ class CSSStyleDeclaration
 				
 			case '%'.code:	
 				var numberOrInteger:Float = Std.parseFloat(styles.substr(start, position - start));
-				position = parsePercentage(numberOrInteger, styles, position, styleValues);
+				styleValues.push(StyleValue.PERCENTAGE(numberOrInteger));
 		}
 		
 		return position;
