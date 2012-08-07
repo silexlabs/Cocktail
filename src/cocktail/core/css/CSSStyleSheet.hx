@@ -29,6 +29,10 @@ class CSSStyleSheet extends StyleSheet
 	 */
 	public var cssRules(default, null):CSSRuleList;
 	
+	/**
+	 * An instance of the parser parsing style sheet
+	 * into CSS rules
+	 */
 	private var _cssRulesParser:CSSRulesParser;
 	
 	/**
@@ -53,7 +57,6 @@ class CSSStyleSheet extends StyleSheet
 	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	
 	/**
 	 * Insert a CSS rule at the given index in the cssRules 
 	 * list. If parsig he rule fails, it is not inserted
@@ -61,8 +64,8 @@ class CSSStyleSheet extends StyleSheet
 	public function insertRule(rule:String, index:Int):Int
 	{
 		var cssRule:CSSRule = _cssRulesParser.parseRule(rule, this);
-		trace(cssRule.cssText);
-		return -1;
+		cssRules.insert(index, cssRule);
+		return index;
 	}
 	
 	/**
@@ -71,7 +74,7 @@ class CSSStyleSheet extends StyleSheet
 	 */
 	public function deleteRule(index:Int):Void
 	{
-		
+		cssRules.remove(cssRules[index]);
 	}
 	
 }

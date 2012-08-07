@@ -273,18 +273,227 @@ enum CombinatorValue {
 // STYLE VALUES
 //////////////////////////////////////////////////////////////////////////////////////////
 
-enum StyleValue {
+enum CSSPropertyValue {
 	INTEGER(value:Int);
 	NUMBER(value:Float);
 	PERCENTAGE(value:Float);
 	IDENTIFIER(value:String);
+	KEYWORD(value:CSSKeywordValue);
 	URL(value:String);
 	STRING(value:String);
-	LENGTH(value:Length);
-	ANGLE(value:Angle);
-	TIME(value:TimeValue);
-	COLOR(VALUE:CSSColor);
+	LENGTH(value:CSSLengthValue);
+	ANGLE(value:CSSAngleValue);
+	TIME(value:CSSTimeValue);
+	COLOR(value:CSSColor);
+	FREQUENCY(value:CSSFrequencyValue);
+	REPEAT_STYLE(value:CSSRepeatStyleValue);
+//	POSITION(value1:PositionValue, ?value2:PositionValue, ?value3:PositionValue, ?value4:PositionValue);
+}
+
+enum CSSFrequencyValue {
+	HERTZ(value:Float);
+	KILO_HERTZ(value:Float);
+}
+
+/**
+ * Lists the different available
+ * units to specify an angle
+ */
+enum CSSAngleValue {
+	
+	/**
+	 * Degress. There are
+	 * 360 degrees in a full 
+	 * circle
+	 */
+	DEG(value:Float);
+	
+	/**
+	 * Gradians. There
+	 * are 400 gradians in
+	 * a full circle
+	 */
+	GRAD(value:Float);
+	
+	/**
+	 * Radians. There are 2π
+	 * radians in a full circle.
+	 */
+	RAD(value:Float);
+	
+	/**
+	 * Turns. There is 1 
+	 * turn in a full circle. 
+	 */
+	TURN(value:Float);
+}
+
+/**
+ * Lists the different types of 
+ * unit supported with an explicitly
+ * set length such as px, cm, em...
+ * 
+ * There are two kinds of length units :
+ * - absolute (px, cm, mm, pt, pc, in).
+ * absolute length are all computed to pixel
+ * values.
+ * 
+ * - relative (em and ex). Relative length units 
+ * specify a length relative to another length property.
+ */
+enum CSSLengthValue {
+	
+	/**
+	 * pixel, 1px is equal to 0.75pt.
+	 */
+	PX(value:Float);
+	
+	/**
+	 * centimeters
+	 */
+	CM(value:Float);
+	
+	/**
+	 * millimeters
+	 */
+	MM(value:Float);
+	
+	/**
+	 * points, the points
+	 * are equal to 1/72nd of 1in. 
+	 */
+	PT(value:Float);
+	
+	/**
+	 * picas, 1pc is equal to 12pt.
+	 */
+	PC(value:Float);
+	
+	/**
+	 * inches, 1in is equal to 2.54cm.
+	 */
+	IN(value:Float);
+	
+	/**
+	 * The 'em' unit is equal to the
+	 * computed value of the 'font-size'
+	 * property of the element on which it is used.
+	 * The exception is when 'em'
+	 * occurs in the value of the 'font-size' 
+	 * property itself, in which case it
+	 * refers to the font size of the parent
+	 * element. It may be used for vertical or
+	 * horizontal measurement.
+	 */
+	EM(value:Float);
+	
+	/**
+	 * The 'ex' unit is defined by the element's first available font.
+	 * The exception is when 'ex' occurs in
+	 * the value of the 'font-size' property,
+	 * in which case it refers to the 'ex' of the
+	 * parent element.The 'x-height' 
+	 * is so called because it is often equal to the height
+	 * of the lowercase "x". However, an 'ex' is
+	 * defined even for fonts that do not contain an "x".
+	 */
+	EX(value:Float);
+}
+
+/**
+ * Lists of supported time dimensions
+ */
+enum CSSTimeValue {
+	
+	/**
+	 * seconds
+	 */
+	SECONDS(value:Float);
+	
+	/**
+	 * Milliseconds. There are 1000 milliseconds in a second.
+	 */
+	MILLISECONDS(value:Float);
+}
+
+enum CSSRepeatStyleValue {
+	REPEAT_X;
+	REPEAT_Y;
+	SINGLE(value:RepeatKeywordValue);
+	DOUBLE(horizontalValue:RepeatKeywordValue, verticalValue:RepeatKeywordValue);
+}
+
+enum RepeatKeywordValue {
+	REPEAT;
+	SPACE;
+	ROUND;
+	NO_REPEAT;
+}
+
+enum PositionItemValue {
+	
+}
+
+enum CSSKeywordValue {
+	NORMAL;
+	BOLD;
+	BOLDER;
+	LIGHTER;
+	ITALIC;
+	OBLIQUE;
+	SMALL_CAPS;
+	PRE;
+	NO_WRAP;
+	PRE_WRAP;
+	PRE_LINE;
+	LEFT;
+	RIGHT;
+	CENTER;
+	JUSTIFY;
+	CAPUTALIZE;
+	UPPERCASE;
+	LOWERCASE;
+	NONE;
+	BASELINE;
+	SUB;
+	SUPER;
+	TOP;
+	TEXT_TOP;
+	MIDDLE;
+	BOTTOM;
+	TEXT_BOTTOM;
+	AUTO;
+	BLOCK;
+	INLINE_BLOCK;
+	INLINE;
+	BOTH;
+	STATIC;
+	RELATIVE;
+	ABSOLUTE;
+	FIXED;
+	VISIBLE;
+	HIDDEN;
+	SCROLL;
+	BORDER_BOX;
+	PADDING_BOX;
+	CONTENT_BOX;
+	CONTAIN;
+	COVER;
+	CROSSHAIR;
+	DEFAULT;
+	POINTER;
+	TEXT;
+	ALL;
+	EASE;
+	LINEAR;
+	EASE_IN;
+	EASE_OUT;
+	EASE_IN_OUT;
+	STEP_START;
+	STEP_END;
 	INHERIT;
+	START;
+	END;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

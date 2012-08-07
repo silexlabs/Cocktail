@@ -1,38 +1,69 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktail.core.css;
 
+import cocktail.core.css.CSSData;
 using StringTools;
 
-import cocktail.core.css.CSSData;
 /**
- * ...
+ * The CSSStyleRule object represents a rule set.
+ * 
  * @author Yannick DOMINGUEZ
  */
- 
 class CSSStyleRule extends CSSRule
 {
-
+	/**
+	 * get/set the selector text. When
+	 * set, parse it
+	 */
 	public var selectorText:String;
 	
+	/**
+	 * The selector of this style rule, as
+	 * typed objects
+	 * 
+	 * 	TODO : should be array to represent comma
+	 *	separated selectors
+	 */
 	public var selector:SelectorData;
 	
+	/**
+	 * Stores all the style definition (the style name / 
+	 * style value pairs) of this style rule
+	 */
 	public var style(default, null):CSSStyleDeclaration;
 	
+	/**
+	 * Class constructor
+	 */
 	public function new(parentStyleSheet:CSSStyleSheet = null, parentRule:CSSRule = null) 
 	{
 		super(parentStyleSheet, parentRule);
 		style = new CSSStyleDeclaration(this);
+		
 		selector = {
 			components:[],
 			pseudoElement:PseudoElementSelectorValue.NONE
 		}
 	}
 	
-	override private function get_type():Int
-	{
-		return CSSRule.STYLE_RULE;
-	}
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE PARSER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function parse(css:String):Void
+	/**
+	 * Called when the cssText is set. Split the
+	 * css rule style into a selector and
+	 * a style declaration which would in turn
+	 * be parsed into object in their
+	 * own methods
+	 */
+	private function parse(css:String):Void
 	{
 		var state:StyleRuleParserState = IGNORE_SPACES;
 		var next:StyleRuleParserState = BEGIN_SELECTOR;
@@ -104,7 +135,7 @@ class CSSStyleRule extends CSSRule
 				
 				case END_STYLES:
 					var styleDeclaration = css.substr(start, position - start);
-					style.parseStyle(styleDeclaration, 0);
+					style.cssText = styleDeclaration;
 					state = IGNORE_SPACES;
 					next = IGNORE_SPACES;
 			}
@@ -112,15 +143,16 @@ class CSSStyleRule extends CSSRule
 		}
 	}
 	
-	static inline function isSelectorChar(c:Int):Bool {
-		return isAsciiChar(c) || c == ':'.code || c == '.'.code || c == '*'.code;
-	}
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE SELECTOR PARSER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	static inline function isStyleChar(c:Int):Bool {
-		return isAsciiChar(c) || c == ":".code || c == "(".code || c == ")".code;
-	}
-	
-	public function parseSelector(selector:String):Void
+	/**
+	 * Parse the selector string into typed selector
+	 * object and store them in the typed selector
+	 * attribute if the selector is valid
+	 */
+	private function parseSelector(selector:String):Void
 	{
 		var state:SelectorParserState = IGNORE_SPACES;
 		var next:SelectorParserState = BEGIN_SIMPLE_SELECTOR;
@@ -198,8 +230,6 @@ class CSSStyleRule extends CSSRule
 					
 				case BEGIN_ATTRIBUTE_SELECTOR:
 					position = parseAttributeSelector(selector, position, simpleSelectorSequenceItemValues);
-					trace(simpleSelectorSequenceStartValue);
-					trace(simpleSelectorSequenceItemValues);
 					state = END_SIMPLE_SELECTOR;
 					next = IGNORE_SPACES;
 					
@@ -358,7 +388,7 @@ class CSSStyleRule extends CSSRule
 		
 		flushSelectors(simpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues, components);
 		
-		trace(selectorData);
+		this.selector = selectorData;
 	}
 	
 	private function flushSelectors(simpleSelectorSequenceStartValue:SimpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue>, components:Array<SelectorComponentValue>):Void
@@ -375,14 +405,6 @@ class CSSStyleRule extends CSSRule
 		
 		components.push(SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(simpleSelectorSequence));
 		
-	}
-	
-	static inline function isAsciiChar(c) {
-		return (c >= 'a'.code && c <= 'z'.code) || (c >= 'A'.code && c <= 'Z'.code) || (c >= '0'.code && c <= '9'.code);
-	}
-	
-	static inline function isPseudoClassChar(c) {
-		return isAsciiChar(c) || c == '-'.code;
 	}
 	
 	//TODO : parse pseudo class with arguments
@@ -628,8 +650,43 @@ class CSSStyleRule extends CSSRule
 		return position;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	static inline function isSelectorChar(c:Int):Bool {
+		return isAsciiChar(c) || c == ':'.code || c == '.'.code || c == '*'.code;
+	}
+	
+	static inline function isStyleChar(c:Int):Bool {
+		return isAsciiChar(c) || c == ":".code || c == "(".code || c == ")".code;
+	}
+	
 	static inline function isOperatorChar(c:Int):Bool
 	{
 		return c == '='.code || c == '~'.code || c == '^'.code || c == '$'.code || c == '*'.code || c == '|'.code;
+	}
+	
+	static inline function isAsciiChar(c) {
+		return (c >= 'a'.code && c <= 'z'.code) || (c >= 'A'.code && c <= 'Z'.code) || (c >= '0'.code && c <= '9'.code);
+	}
+	
+	static inline function isPseudoClassChar(c) {
+		return isAsciiChar(c) || c == '-'.code;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function set_cssText(value:String):String
+	{
+		parse(value);
+		return value;
+	}
+	
+	override private function get_type():Int
+	{
+		return CSSRule.STYLE_RULE;
 	}
 }

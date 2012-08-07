@@ -4,18 +4,37 @@ using StringTools;
 import cocktail.core.css.CSSData;
 
 /**
- * ...
+ * This class is a parser whose role
+ * is to parse a style sheet into 
+ * an array of CSS rules
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class CSSRulesParser 
 {
 
+	/**
+	 * class constructor
+	 */
 	public function new() 
 	{
 		
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC PARSING METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Separate each CSS rule in a style sheet
+	 * and return them as an array of string
+	 * 
+	 * TODO : parse comments
+	 * 
+	 * @param	css the whole css style sheet to parse
+	 * @return	an array where each item is a string representing
+	 * a CSS rule
+	 */
 	public function parseRules(css:String):Array<String>
 	{
 		var state:StyleSheetRulesParserState = IGNORE_SPACES;
@@ -77,6 +96,14 @@ class CSSRulesParser
 		return rules;
 	}
 	
+	/**
+	 * Parse the string representing a CSS Rule into
+	 * a CSS Rule object
+	 * 
+	 * @param	rule the CSS rule string
+	 * @param	parentSyleSheet a ref to the style sheet owning the CSS rule
+	 * @return	a typed CSS Rule object
+	 */
 	public function parseRule(rule:String, parentSyleSheet:CSSStyleSheet):CSSRule
 	{
 		var state:StyleSheetRuleParserState = IGNORE_SPACES;
@@ -168,6 +195,10 @@ class CSSRulesParser
 		
 		return cssRule;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE UTILS METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	static inline function isValidChar(c) {
 		return (c >= 'a'.code && c <= 'z'.code) || (c >= 'A'.code && c <= 'Z'.code) || (c >= '0'.code && c <= '9'.code) || c == ':'.code || c == '.'.code || c == '_'.code || c == '-'.code;

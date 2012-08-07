@@ -113,7 +113,7 @@ class XMLHTTPRequest extends EventTarget
 	 * TODO 5 : async in Http not implemented in flash and JS
 	 * 
 	 */
-	public function open(method:String, url:String):Void
+	public function open(method:String, url:String, async:Bool):Void
 	{
 		_http.url = url;
 		_method = method;
@@ -130,7 +130,7 @@ class XMLHTTPRequest extends EventTarget
 	{
 		var post:Bool = false;
 		
-		//determine wrther request method is POST
+		//determine wether request method is POST
 		switch (_method.toUpperCase())
 		{
 			case "POST":

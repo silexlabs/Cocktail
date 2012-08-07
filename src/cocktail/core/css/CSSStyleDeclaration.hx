@@ -1,8 +1,14 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktail.core.css;
 
 import cocktail.core.css.CSSData;
 import cocktail.core.unit.UnitData;
-
 using StringTools;
 
 /**
@@ -14,7 +20,7 @@ using StringTools;
 class CSSStyleDeclaration 
 {
 
-	public var cssText:String;
+	public var cssText(get_cssText, set_cssText):String;
 	
 	public var length(get_length, null):Int;
 	
@@ -27,6 +33,10 @@ class CSSStyleDeclaration
 		_properties = new Array<PropertyDeclarationData>();
 		this.parentRule = parentRule;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	public function item(index:Int):String
 	{
@@ -116,7 +126,11 @@ class CSSStyleDeclaration
 		return _properties.length;
 	}
 	
-	public function parseStyle(styles:String, position:Int):Void
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE PARSING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function parseStyle(styles:String, position:Int):Void
 	{
 		var state:StyleDeclarationParserState = IGNORE_SPACES;
 		var next:StyleDeclarationParserState = BEGIN_STYLE_NAME;
@@ -194,7 +208,7 @@ class CSSStyleDeclaration
 		}
 	}
 	
-	public function parseStyleValue(propertyName:String, styles:String, position:Int):Int
+	private function parseStyleValue(propertyName:String, styles:String, position:Int):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		
@@ -206,7 +220,7 @@ class CSSStyleDeclaration
 		
 		var previousStart:Int = 0;
 		
-		var styleValues:Array<StyleValue> = [];
+		var styleValues:Array<CSSPropertyValue> = [];
 		
 		while (!c.isEOF())
 		{
@@ -310,7 +324,7 @@ class CSSStyleDeclaration
 		return position;
 	}
 	
-	private function applyProperty(propertyName:String, styleValues:Array<StyleValue>):Void
+	private function applyProperty(propertyName:String, styleValues:Array<CSSPropertyValue>):Void
 	{
 		switch(propertyName)
 		{
@@ -319,10 +333,9 @@ class CSSStyleDeclaration
 				{
 					switch(styleValues[0])
 					{
-						case StyleValue.LENGTH(value):
-							trace(value);
+						case CSSPropertyValue.LENGTH(value):
 							
-						case StyleValue.INTEGER(value):
+						case CSSPropertyValue.INTEGER(value):
 							if (value == 0)
 							{
 								trace(value);
@@ -337,7 +350,7 @@ class CSSStyleDeclaration
 				{
 					switch(styleValues[0])
 					{
-						case StyleValue.IDENTIFIER(value):
+						case CSSPropertyValue.IDENTIFIER(value):
 							trace(value);
 							switch(value)
 							{
@@ -359,7 +372,7 @@ class CSSStyleDeclaration
 				{
 					switch(styleValues[0])
 					{
-						case StyleValue.IDENTIFIER(value):
+						case CSSPropertyValue.IDENTIFIER(value):
 							trace(value);
 						
 							switch(value)
@@ -382,11 +395,11 @@ class CSSStyleDeclaration
 				{
 					switch(styleValues[0])
 					{
-						case StyleValue.LENGTH(value):
+						case CSSPropertyValue.LENGTH(value):
 							
-						case StyleValue.PERCENTAGE(value):
+						case CSSPropertyValue.PERCENTAGE(value):
 							
-						case StyleValue.IDENTIFIER(value):	
+						case CSSPropertyValue.IDENTIFIER(value):	
 							
 						default:	
 							
@@ -399,11 +412,11 @@ class CSSStyleDeclaration
 				{
 					switch(styleValues[0])
 					{
-						case StyleValue.LENGTH(value):
+						case CSSPropertyValue.LENGTH(value):
 							
-						case StyleValue.PERCENTAGE(value):
+						case CSSPropertyValue.PERCENTAGE(value):
 							
-						case StyleValue.IDENTIFIER(value):	
+						case CSSPropertyValue.IDENTIFIER(value):	
 							
 						default:	
 					}
@@ -457,7 +470,7 @@ class CSSStyleDeclaration
 		return -1;
 	}
 	
-	private function parseIntegerOrNumber(styles:String, position:Int, styleValues:Array<StyleValue>):Int
+	private function parseIntegerOrNumber(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		var start = position;
@@ -491,24 +504,24 @@ class CSSStyleDeclaration
 				if (isNumber)
 				{
 					var number:Float = Std.parseFloat(styles.substr(start, position - start));
-					styleValues.push(StyleValue.NUMBER(number));
+					styleValues.push(CSSPropertyValue.NUMBER(number));
 				}
 				else
 				{
 					var integer:Int = Std.parseInt(styles.substr(start, position - start));
-					styleValues.push(StyleValue.INTEGER(integer));
+					styleValues.push(CSSPropertyValue.INTEGER(integer));
 				}
 				
 			case '%'.code:	
 				var numberOrInteger:Float = Std.parseFloat(styles.substr(start, position - start));
-				styleValues.push(StyleValue.PERCENTAGE(numberOrInteger));
+				styleValues.push(CSSPropertyValue.PERCENTAGE(numberOrInteger));
 				position++;
 		}
 		
 		return --position;
 	}
 	
-	private function parseUnit(numberOrInteger:Float, styles:String, position:Int, styleValues:Array<StyleValue>):Int
+	private function parseUnit(numberOrInteger:Float, styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		var start = position;
@@ -523,53 +536,53 @@ class CSSStyleDeclaration
 		switch(ident)
 		{
 			case "px":
-				styleValues.push(StyleValue.LENGTH(Length.px(numberOrInteger)));
+				styleValues.push(CSSPropertyValue.LENGTH(CSSLengthValue.PX(numberOrInteger)));
 				
 			case "em":
-				styleValues.push(StyleValue.LENGTH(Length.em(numberOrInteger)));
+				styleValues.push(CSSPropertyValue.LENGTH(CSSLengthValue.EM(numberOrInteger)));
 				
 			case "ex":
-				styleValues.push(StyleValue.LENGTH(Length.ex(numberOrInteger)));	
+				styleValues.push(CSSPropertyValue.LENGTH(CSSLengthValue.EX(numberOrInteger)));	
 				
 			case "mm":
-				styleValues.push(StyleValue.LENGTH(Length.mm(numberOrInteger)));		
+				styleValues.push(CSSPropertyValue.LENGTH(CSSLengthValue.MM(numberOrInteger)));		
 				
 			case "in":
-				styleValues.push(StyleValue.LENGTH(Length.cssIn(numberOrInteger)));	
+				styleValues.push(CSSPropertyValue.LENGTH(CSSLengthValue.IN(numberOrInteger)));	
 				
 			case "cm":
-				styleValues.push(StyleValue.LENGTH(Length.cm(numberOrInteger)));		
+				styleValues.push(CSSPropertyValue.LENGTH(CSSLengthValue.CM(numberOrInteger)));		
 				
 			case "pc":
-				styleValues.push(StyleValue.LENGTH(Length.pc(numberOrInteger)));			
+				styleValues.push(CSSPropertyValue.LENGTH(CSSLengthValue.PC(numberOrInteger)));			
 				
 			case "pt":
-				styleValues.push(StyleValue.LENGTH(Length.pt(numberOrInteger)));
+				styleValues.push(CSSPropertyValue.LENGTH(CSSLengthValue.PT(numberOrInteger)));
 				
 			case "deg":
-				styleValues.push(StyleValue.ANGLE(Angle.deg(numberOrInteger)));
+				styleValues.push(CSSPropertyValue.ANGLE(CSSAngleValue.DEG(numberOrInteger)));
 				
 			case "rad":
-				styleValues.push(StyleValue.ANGLE(Angle.rad(numberOrInteger)));	
+				styleValues.push(CSSPropertyValue.ANGLE(CSSAngleValue.RAD(numberOrInteger)));	
 				
 			case "grad":
-				styleValues.push(StyleValue.ANGLE(Angle.grad(numberOrInteger)));		
+				styleValues.push(CSSPropertyValue.ANGLE(CSSAngleValue.GRAD(numberOrInteger)));		
 				
 			case "turn":
-				styleValues.push(StyleValue.ANGLE(Angle.turn(numberOrInteger)));	
+				styleValues.push(CSSPropertyValue.ANGLE(CSSAngleValue.TURN(numberOrInteger)));	
 				
 			case "s":
-				styleValues.push(StyleValue.TIME(TimeValue.seconds(numberOrInteger)));	
+				styleValues.push(CSSPropertyValue.TIME(CSSTimeValue.SECONDS(numberOrInteger)));	
 				
 			case "ms":
-				styleValues.push(StyleValue.TIME(TimeValue.milliSeconds(numberOrInteger)));		
+				styleValues.push(CSSPropertyValue.TIME(CSSTimeValue.MILLISECONDS(numberOrInteger)));		
 				
 		}
 		
 		return position;
 	}
 	
-	private function parseIdent(styles:String, position:Int, styleValues:Array<StyleValue>):Int
+	private function parseIdent(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		var start = position;
@@ -589,21 +602,25 @@ class CSSStyleDeclaration
 				position = parseRGB(styles, position, styleValues);
 				
 			default:
-				styleValues.push(StyleValue.IDENTIFIER(ident));
+				styleValues.push(CSSPropertyValue.IDENTIFIER(ident));
 		}
 		
 		return --position;
 	}
 	
-	private function parseURL(styles:String, position:Int, styleValues:Array<StyleValue>):Int
+	private function parseURL(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		return position;
 	}
 	
-	private function parseRGB(styles:String, position:Int, styleValues:Array<StyleValue>):Int
+	private function parseRGB(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		return position;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE UTILS METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	static inline function isStyleNameChar(c) {
 		return (c >= 'a'.code && c <= 'z'.code) || (c >= 'A'.code && c <= 'Z'.code) || (c >= '0'.code && c <= '9'.code) || c == '-'.code;
@@ -616,4 +633,20 @@ class CSSStyleDeclaration
 	static inline function isNumChar(c) {
 		return (c >= '0'.code && c <= '9'.code);
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_cssText():String
+	{
+		return cssText;
+	}
+	
+	private function set_cssText(value:String):String
+	{
+		parseStyle(value, 0);
+		return value;
+	}
+	
 }

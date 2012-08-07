@@ -11,20 +11,4 @@ package cocktail;
  * Define type aliases to match Haxe JS API
  */
 
-typedef Image = cocktail.core.html.HTMLImageElement;
-typedef Video = cocktail.core.html.HTMLVideoElement;
-typedef HtmlDom = cocktail.core.html.HTMLElement;
-typedef Anchor = cocktail.core.html.HTMLAnchorElement;
-typedef Body = cocktail.core.html.HTMLBodyElement;
-typedef Style = cocktail.core.style.adapter.Style;
-typedef Window = cocktail.core.window.Window;
-typedef Document = cocktail.core.html.HTMLDocument;
-typedef FormElement = cocktail.core.html.HTMLInputElement;
-
-typedef Event = cocktail.core.event.Event;
-typedef MouseEvent = cocktail.core.event.MouseEvent;
-typedef UIEvent = cocktail.core.event.UIEvent;
-typedef CustomEvent = cocktail.core.event.CustomEvent;
-typedef TouchEvent = cocktail.core.event.TouchEvent;
-
-typedef HtmlCollection<Dynamic> = Array<Dynamic>;
+typedef XMLHttpRequest = cocktail.core.resource.XMLHTTPRequest;
