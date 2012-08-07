@@ -284,15 +284,157 @@ enum CSSPropertyValue {
 	LENGTH(value:CSSLengthValue);
 	ANGLE(value:CSSAngleValue);
 	TIME(value:CSSTimeValue);
-	COLOR(value:CSSColor);
+	COLOR(value:CSSColorValue);
 	FREQUENCY(value:CSSFrequencyValue);
 	REPEAT_STYLE(value:CSSRepeatStyleValue);
+	RESOLUTION(value:CSSResolutionValue);
+	GROUP(value:Array<CSSPropertyValue>);
+	INHERIT;
+	INITIAL;
 //	POSITION(value1:PositionValue, ?value2:PositionValue, ?value3:PositionValue, ?value4:PositionValue);
 }
 
+/**
+ * Lists the different color format supported.
+ * Each value describes one color
+ */
+enum CSSColorValue {
+	
+	/**
+	 * each value (red, green and blue)
+	 * must be an integer from 0 to 255
+	 */
+	RGB(red:Int, green:Int, blue:Int);
+	
+	/**
+	 * Same as above but individual colors are reprented
+	 * as percentage of the max value (e.g, 100% is
+	 * equal to 255)
+	 */
+	RGB_PERCENTAGE(red:Float, green:Float, blue:Float);
+	
+	/**
+	 * same as rgb + alpha is a float from 
+	 * 0 (transparent) to 1 (opaque)
+	 */
+	RGBA(red:Int, green:Int, blue:Int, alpha:Float);
+	
+	/**
+	 * Same as RGB_PERCENTAGE for RGBA
+	 */
+	RGBA_PERCENTAGE(red:Float, green:Float, blue:Float, alpha:Float);
+	
+	/**
+	 * The color value must be represented
+	 * as 6 hexadecimal number string started
+	 * with a "#" charachter.
+	 * e.g : for red, #FF0000
+	 */
+	HEX(value:String);
+	
+	/**
+	 * HSL colors are encoding as a triple (hue, saturation, lightness). Hue is represented 
+	 * as an angle of the color circle (i.e. the rainbow represented in a circle). 
+	 * This angle is so typically measured in degrees that the unit is implicit in CSS;
+	 * syntactically, only a <number> is given
+	 * 
+	 * Saturation and lightness are represented as percentages. 100% is
+	 * full saturation, and 0% is a shade of gray. 0% lightness is black,
+	 * 100% lightness is white, and 50% lightness is “normal”.
+	 */
+	HSL(hue:Float, saturation:Float, lightness:Float);
+	
+	/**
+	 * Same as HSL with an extra alpha value
+	 */
+	HSLA(hue:Float, saturation:Float, lightness:Float, alpha:Float);
+	
+	/**
+	 * the color is chosen among a
+	 * set of predefined colors
+	 */ 
+	KEYWORD(value:CSSColorKeyword);
+	
+	/**
+	 * a fully transparent color, equivalent
+	 * to rgba(0,0,0,0)
+	 */
+	TRANSPARENT;
+	
+	/**
+	 * Correspond to the value of the "color"
+	 * CSS property, its computed value
+	 * is the computed value of "color".
+	 * If this value is set on color itself,
+	 * it is treated as "inherit"
+	 */
+	CURRENT_COLOR;
+}
+
+/**
+ * Lists the default available colors
+ */
+enum CSSColorKeyword {
+	AQUA;
+	BLOCK;
+	BLUE;
+	FUSHIA;
+	GRAY;
+	GREEN;
+	LIME;
+	MAROON;
+	NAVY;
+	OLIVE;
+	ORANGE;
+	PURPLE;
+	RED;
+	SILVER;
+	TEAL;
+	WHITE;
+	YELLOW;
+}
+
+
+/**
+ * Represent a frequency. 
+ * For example, when representing sound pitches, 
+ * 200Hz (or 200hz) is a bass sound, 
+ * and 6kHz (or 6khz) is a treble sound.
+ */
 enum CSSFrequencyValue {
+	
+	/**
+	 *  It represents the number of occurrences per second.
+	 */
 	HERTZ(value:Float);
+	
+	/**
+	 * A kiloHertz is 1000 Hertz.
+	 */
 	KILO_HERTZ(value:Float);
+}
+
+/**
+ * The resolution unit represents the size of a single "dot"
+ * in a graphical representation by indicating 
+ * how many of these dots fit in a CSS ‘in’, ‘cm’, or ‘px’.
+ */
+enum CSSResolutionValue {
+	
+	/**
+	 * dots per inch
+	 */
+	DPI(value:Float);
+	
+	/**
+	 * dots per centimeter
+	 */
+	DPCM(value:Float);
+	
+	/**
+	 * dots per 'px' unit
+	 */
+	DPPX(value:Float);
 }
 
 /**
@@ -340,6 +482,8 @@ enum CSSAngleValue {
  * 
  * - relative (em and ex). Relative length units 
  * specify a length relative to another length property.
+ * 
+ * TODO : missing values rem, vw, vh, vmin
  */
 enum CSSLengthValue {
 	
@@ -430,10 +574,6 @@ enum RepeatKeywordValue {
 	NO_REPEAT;
 }
 
-enum PositionItemValue {
-	
-}
-
 enum CSSKeywordValue {
 	NORMAL;
 	BOLD;
@@ -450,7 +590,7 @@ enum CSSKeywordValue {
 	RIGHT;
 	CENTER;
 	JUSTIFY;
-	CAPUTALIZE;
+	CAPITALIZE;
 	UPPERCASE;
 	LOWERCASE;
 	NONE;
@@ -491,7 +631,6 @@ enum CSSKeywordValue {
 	EASE_IN_OUT;
 	STEP_START;
 	STEP_END;
-	INHERIT;
 	START;
 	END;
 }

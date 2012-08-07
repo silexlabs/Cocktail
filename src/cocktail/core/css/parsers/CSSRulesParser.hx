@@ -1,4 +1,4 @@
-package cocktail.core.css;
+package cocktail.core.css.parsers;
 
 using StringTools;
 import cocktail.core.css.CSSData;

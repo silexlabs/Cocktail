@@ -8,6 +8,7 @@
 package cocktail.core.css;
 
 import cocktail.core.css.CSSData;
+import cocktail.core.css.parsers.CSSRulesParser;
 import cocktail.core.html.HTMLElement;
  
 /**
