@@ -13,11 +13,7 @@ typedef CSSRuleList = Array<CSSRule>;
 typedef TypedPropertyData = {
 	var name:String;
 	var value:String;
-	var typedValue:PropertyValue;
-}
-
-enum PropertyValue {
-	FONT_SIZE(value:FontSize);
+	var typedValue:Array<CSSPropertyValue>;
 }
 
 typedef PropertyData = {
@@ -253,7 +249,6 @@ enum UIElementStatesValue {
 	CHECKED;
 }
 
-//TODO 2 : add before and adter for generated content
 enum PseudoElementSelectorValue {
 	NONE;
 	FIRST_LINE;
@@ -289,6 +284,7 @@ enum CSSPropertyValue {
 	REPEAT_STYLE(value:CSSRepeatStyleValue);
 	RESOLUTION(value:CSSResolutionValue);
 	GROUP(value:Array<CSSPropertyValue>);
+	LIST(value:Array<CSSPropertyValue>);
 	INHERIT;
 	INITIAL;
 //	POSITION(value1:PositionValue, ?value2:PositionValue, ?value3:PositionValue, ?value4:PositionValue);
@@ -633,80 +629,4 @@ enum CSSKeywordValue {
 	STEP_END;
 	START;
 	END;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// PARSERS STATES ENUMS
-//////////////////////////////////////////////////////////////////////////////////////////
-
-enum SelectorParserState {
-	IGNORE_SPACES;
-	BEGIN_SIMPLE_SELECTOR;
-	END_SIMPLE_SELECTOR;
-	SIMPLE_SELECTOR;
-	END_TYPE_SELECTOR;
-	END_CLASS_SELECTOR;
-	END_ID_SELECTOR;
-	BEGIN_COMBINATOR;
-	COMBINATOR;
-	BEGIN_PSEUDO_SELECTOR;
-	END_UNIVERSAL_SELECTOR;
-	PSEUDO_ELEMENT_SELECTOR;
-	BEGIN_ATTRIBUTE_SELECTOR;
-	INVALID_SELECTOR;
-}
-
-enum StyleDeclarationParserState {
-	STYLE_NAME;
-	STYLE_VALUE;
-	IGNORE_SPACES;
-	INVALID_STYLE;
-	STYLE_SEPARATOR;
-	BEGIN_STYLE_NAME;
-}
-
-enum StyleValueParserState {
-	IGNORE_SPACES;
-	BEGIN_VALUE;
-	IDENT;
-	NUMBER_OR_INTEGER;
-	SPACE_OR_END;
-	INVALID_STYLE_VALUE;
-	IMPORTANT;
-	END;
-}
-
-enum AttributeSelectorParserState {
-	ATTRIBUTE;
-	OPERATOR;
-	BEGIN_VALUE;
-	VALUE;
-	END_SELECTOR;
-	INVALID_SELECTOR;
-}
-
-enum StyleRuleParserState {
-	IGNORE_SPACES;
-	BEGIN_SELECTOR;
-	END_SELECTOR;
-	SELECTOR;
-	BEGIN_STYLES;
-	STYLES;
-	END_STYLES;
-}
-
-enum StyleSheetRulesParserState {
-	IGNORE_SPACES;
-	BEGIN_RULE;
-	RULE;
-	END_RULE;
-}
-
-enum StyleSheetRuleParserState {
-	IGNORE_SPACES;
-	BEGIN_RULE;
-	BEGIN_AT_RULE;
-	END_MEDIA_RULE;
-	RULE;
-	END_STYLE_RULE;
 }

@@ -2,6 +2,7 @@ package cocktail.core.css.parsers;
 
 using StringTools;
 import cocktail.core.css.CSSData;
+import cocktail.core.css.parsers.CSSParsersData;
 
 /**
  * This class is a parser whose role

@@ -530,59 +530,6 @@ class CoreStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC COMPUTING METHODS
-	// compute styles definition into usable values
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * This method computes the styles determing
-	 * the HTMLElement's layout scheme :
-	 * position, display, float and clear.
-	 */
-	public function computeDisplayStyles():Void
-	{
-		DisplayStylesComputer.compute(this);
-	}
-	
-	/**
-	 * Computes the styles determining the background
-	 * color, images... of an HTMLElement
-	 */
-	public function computeBackgroundStyles():Void
-	{
-		BackgroundStylesComputer.compute(this);
-	}
-	
-	/**
-	 * Compute the visual effect styles (opacity, visibility, transformations, transition)
-	 */
-	public function computeVisualEffectStyles():Void
-	{
-		VisualEffectStylesComputer.compute(this);
-	}
-	
-	/**
-	 * Computes the HTMLElement font and text styles (font size, font name, text color...)
-	 */
-	public function computeTextAndFontStyles(containingBlockData:ContainingBlockData, containingBlockFontMetricsData:FontMetricsData):Void
-	{
-		FontAndTextStylesComputer.compute(this, containingBlockData, containingBlockFontMetricsData);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE COMPUTING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Compute the transition styles needing it,
-	 * like transition duration
-	 */
-	public function computeTransitionStyles():Void
-	{
-		TransitionStylesComputer.compute(this);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	

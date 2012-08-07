@@ -1,6 +1,7 @@
 package cocktail.core.css.parsers;
 
 import cocktail.core.css.CSSData;
+import cocktail.core.css.parsers.CSSParsersData;
 using StringTools;
 
 /**

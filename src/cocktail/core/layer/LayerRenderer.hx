@@ -13,6 +13,7 @@ import cocktail.core.dom.NodeBase;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.renderer.ElementRenderer;
+import cocktail.core.style.computer.VisualEffectStylesComputer;
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
@@ -370,7 +371,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		if (rootElementRenderer.isTransformed() == true)
 		{
 			//TODO 2 : should already be computed at this point
-			rootElementRenderer.coreStyle.computeVisualEffectStyles();	
+			VisualEffectStylesComputer.compute(rootElementRenderer.coreStyle);
 			graphicsContext.transform(getTransformationMatrix(graphicsContext));
 		}
 	}

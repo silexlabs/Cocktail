@@ -17,6 +17,7 @@ import cocktail.core.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
+import cocktail.core.style.computer.TransitionStylesComputer;
 import cocktail.core.window.Window;
 import cocktail.Lib;
 import cocktail.port.DrawingManager;
@@ -99,7 +100,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//during the rendering
 		//
 		//TODO 4 : update doc for this
-		coreStyle.computeBackgroundStyles();
+		BackgroundStylesComputer.compute(coreStyle);
 		
 		var backgroundBounds:RectangleData = getBackgroundBounds();
 		
@@ -131,7 +132,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		coreStyle.computedStyle.opacity = coreStyle.opacity;
 		
 		//TODO 1 : same as above, where to compute this ?
-		coreStyle.computeTransitionStyles();
+		TransitionStylesComputer.compute(coreStyle);
 		
 		if (_needsLayout == true || forceLayout == true)
 		{
@@ -158,8 +159,8 @@ class BoxRenderer extends InvalidatingElementRenderer
 		var containingBlockFontMetricsData:FontMetricsData = _containingBlock.coreStyle.fontMetrics;
 
 		//compute the font style (font-size, line-height...)
-		coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
-
+		FontAndTextStylesComputer.compute(coreStyle, containingBlockData, containingBlockFontMetricsData);
+		
 		//compute the box styles (width, height, margins, paddings...)
 		computeBoxModelStyles(containingBlockData);
 	}
