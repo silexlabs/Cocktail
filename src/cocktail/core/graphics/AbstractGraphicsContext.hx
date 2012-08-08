@@ -67,6 +67,21 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	 * is use to order the native layer of the target platform
 	 */
 	private var _orderedChildList:Array<AbstractGraphicsContext>;
+<<<<<<< HEAD
+=======
+	
+	/**
+	 * A flag determining wether to use the specified alpha when drawing
+	 * bitmap
+	 */
+	private var _useTransparency:Bool;
+	
+	/**
+	 * The current used alpha when transparency is activated,
+	 * as defined by the _useTransparency flag
+	 */
+	private var _alpha:Float;
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 
 	/**
 	 * class constructor
@@ -81,6 +96,11 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 		super();
 		this.layerRenderer = layerRenderer;
 		
+<<<<<<< HEAD
+=======
+		_useTransparency = false;
+		_alpha = 0.0;
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 		_orderedChildList = new Array<AbstractGraphicsContext>();
 	}
 	
@@ -149,6 +169,29 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	}
 	
 	/**
+<<<<<<< HEAD
+=======
+	 * When called, all subsequent calls to bitmap
+	 * drawing methods draw transparent bitmap with
+	 * the provided alpha, until endTransparency is called
+	 */
+	public function beginTransparency(alpha:Float):Void
+	{
+		_useTransparency = true;
+		_alpha = alpha;
+	}
+	
+	/**
+	 * End the use of transparency when drawing 
+	 * bitmaps
+	 */
+	public function endTransparency():Void
+	{
+		_useTransparency = false;
+	}
+	
+	/**
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 	 * Draw bitmap data onto the bitmap surface. Alpha is preserved 
 	 * for transparent bitmap
 	 * @param	bitmapData the source  bitmap data

@@ -101,6 +101,10 @@ class InlineFormattingContext extends FormattingContext
 		{
 			var formattingContextComputedStyle:ComputedStyle =  _formattingContextRoot.coreStyle.computedStyle;
 			_formattingContextRoot.bounds.height = _formattingContextData.y  + formattingContextComputedStyle.paddingBottom ;
+<<<<<<< HEAD
+=======
+			formattingContextComputedStyle.height = _formattingContextData.y - formattingContextComputedStyle.paddingTop;
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 		}
 	}
 	
@@ -113,6 +117,7 @@ class InlineFormattingContext extends FormattingContext
 			var child:ElementRenderer = elementRenderer.childNodes[i];
 			
 			if (child.isPositioned() == true && child.isRelativePositioned() == false)
+<<<<<<< HEAD
 			{
 				var lineBox:LineBox = new StaticPositionLineBox(child);
 				lineBox = insertIntoLine([lineBox], lineBox, rootLineBoxes, openedElementRenderers);
@@ -131,6 +136,29 @@ class InlineFormattingContext extends FormattingContext
 				childBounds.width = childComputedStyle.width + childComputedStyle.paddingLeft + childComputedStyle.paddingRight;
 				childBounds.height = childComputedStyle.height + childComputedStyle.paddingTop + childComputedStyle.paddingBottom;
 				
+=======
+			{
+				var staticLineBox:LineBox = new StaticPositionLineBox(child);
+				
+				child.bounds.width = child.coreStyle.computedStyle.width+ child.coreStyle.computedStyle.paddingLeft + child.coreStyle.computedStyle.paddingRight ;
+				child.bounds.height = child.coreStyle.computedStyle.height+ child.coreStyle.computedStyle.paddingTop + child.coreStyle.computedStyle.paddingBottom;
+				lineBox = insertIntoLine([staticLineBox], lineBox, rootLineBoxes, openedElementRenderers);
+			}
+			//here the child either starts a new formatting context, meaning it is displayed
+			//has an inline-block and it has children, or it is replaced/embedded, such as
+			//an ImageRenderer. For all thoses cases, only one line box is created for each child
+			//as it is atomic from the point of view of the inline formatting context
+			//(it doesn't what's inside those child when formatting)
+			else if (child.establishesNewFormattingContext() == true || child.isReplaced() == true)
+			{
+				var childComputedStyle:ComputedStyle = child.coreStyle.computedStyle;
+				
+				//set the bounds of the corresponding InlineBoxRenderer
+				var childBounds:RectangleData = child.bounds;
+				childBounds.width = childComputedStyle.width + childComputedStyle.paddingLeft + childComputedStyle.paddingRight;
+				childBounds.height = childComputedStyle.height + childComputedStyle.paddingTop + childComputedStyle.paddingBottom;
+				
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 				//create the embedded line box representing the InlineBoxRenderer in
 				//the inline formatting context
 				var embeddedLineBox:LineBox = new EmbeddedLineBox(child);

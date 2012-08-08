@@ -566,7 +566,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 					{
 						establishesNewFormattingContext = true;
 					}
-					
+		
 				default:
 			}
 		}

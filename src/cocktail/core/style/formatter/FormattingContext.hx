@@ -143,6 +143,8 @@ class FormattingContext
 			shrinkedWidth = elementRenderer.coreStyle.computedStyle.width;
 		}
 		
+		
+		
 		elementRenderer.coreStyle.computedStyle.width = shrinkedWidth;
 	}
 	

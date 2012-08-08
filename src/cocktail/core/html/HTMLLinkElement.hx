@@ -1,0 +1,163 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
+package cocktail.core.html;
+
+/**
+ * The link element allows authors to link their document to other resources.
+ * 
+ * @author Yannick DOMINGUEZ
+ */
+class HTMLLinkElement extends HTMLElement
+{
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// IDL attributes
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The IDL attribute disabled only applies to style sheet links. 
+	 * When the link element defines a style sheet link, then the
+	 * disabled attribute behaves as defined for the alternative style
+	 * sheets DOM. For all other link elements it always return
+	 * false and does nothing on setting.
+	 */
+	public var disabled(get_disabled, set_disabled):Bool;
+	
+	/**
+	 * The destination of the link(s) is given by the href attribute,
+	 * which must be present and must contain a valid non-empty URL
+	 * potentially surrounded by spaces. If the href attribute
+	 * is absent, then the element does not define a link.
+	 * 
+	 */
+	public var href(get_href, set_href):String;
+	
+	/**
+	 * The types of link indicated (the relationships) are given by
+	 * the value of the rel attribute, which, if present, must have
+	 * a value that is a set of space-separated tokens.
+	 * If the rel attribute is absent, has no keywords,
+	 * or if none of the keywords used are allowed then the 
+	 * element does not create any links.
+	 */
+	public var rel(get_rel, set_rel):String;
+	
+	/**
+	 * A list of the space separated rel attributes
+	 */
+	public var relList(get_relList, null):Array<String>;
+	
+	/**
+	 * The media attribute says which media the resource
+	 * applies to. The value must be a valid media query.
+	 */
+	public var media(get_media, set_media):String;
+	
+	/**
+	 * The hreflang attribute on the link element has the same semantics
+	 * as the hreflang attribute on a and area elements.
+	 */
+	public var hreflang(get_hreflang, set_hreflang):String;
+	
+	/**
+	 * The type attribute gives the MIME type of the linked resource. 
+	 * It is purely advisory. The value must be a valid MIME type.
+	 * 
+	 * For external resource links, the type attribute is used as a
+	 * hint to user agents so that they can avoid fetching resources
+	 * they do not support.
+	 */
+	public var type(get_type, set_type):String;
+	
+	public function new() 
+	{
+		super(HTMLConstants.HTML_LINK_TAG_NAME);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// IDL GETTERS/SETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_disabled():Bool
+	{
+		if (getAttribute(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME) != null)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	private function set_disabled(value:Bool):Bool
+	{
+		super.setAttribute(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME, Std.string(value));
+		return value;
+	}
+	
+	private function get_href():String
+	{
+		return getAttribute(HTMLConstants.HTML_HREF_ATTRIBUTE_NAME);
+	}
+	
+	private function set_href(value:String):String
+	{
+		setAttribute(HTMLConstants.HTML_HREF_ATTRIBUTE_NAME, value);
+		return value;
+	}
+	
+	private function get_rel():String
+	{
+		return getAttribute(HTMLConstants.HTML_REL_ATTRIBUTE_NAME);
+	}
+	
+	private function set_rel(value:String):String
+	{
+		setAttribute(HTMLConstants.HTML_REL_ATTRIBUTE_NAME, value);
+		return value;
+	}
+	
+	private function get_relList():Array<String>
+	{
+		return [];
+	}
+	
+	private function get_media():String
+	{
+		return getAttribute(HTMLConstants.HTML_MEDIA_ATTRIBUTE_NAME);
+	}
+	
+	private function set_media(value:String):String
+	{
+		setAttribute(HTMLConstants.HTML_MEDIA_ATTRIBUTE_NAME, value);
+		return value;
+	}
+	
+	private function get_hreflang():String
+	{
+		return getAttribute(HTMLConstants.HTML_HREFLANG_ATTRIBUTE_NAME);
+	}
+	
+	private function set_hreflang(value:String):String
+	{
+		setAttribute(HTMLConstants.HTML_HREFLANG_ATTRIBUTE_NAME, value);
+		return value;
+	}
+	
+	private function get_type():String
+	{
+		return getAttribute(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME);
+	}
+	
+	private function set_type(value:String):String
+	{
+		setAttribute(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME, value);
+		return value;
+	}
+	
+}

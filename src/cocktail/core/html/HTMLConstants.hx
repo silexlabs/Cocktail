@@ -108,6 +108,13 @@ class HTMLConstants
 	
 	public static inline var HTML_SUP_TAG_NAME:String = "SUP";
 	
+<<<<<<< HEAD
+=======
+	public static inline var HTML_LINK_TAG_NAME:String = "LINK";
+	
+	public static inline var HTML_STYLE_TAG_NAME:String = "STYLE";
+	
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 	//attributes names
 	
 	public static inline var HTML_ID_ATTRIBUTE_NAME:String = "id";
@@ -146,6 +153,15 @@ class HTMLConstants
 	
 	public static inline var HTML_NAME_ATTRIBUTE_NAME:String = "name";
 	
+<<<<<<< HEAD
+=======
+	public static inline var HTML_REL_ATTRIBUTE_NAME:String = "rel";
+	
+	public static inline var HTML_HREFLANG_ATTRIBUTE_NAME:String = "hreflang";
+	
+	public static inline var HTML_DISABLED_ATTRIBUTE_NAME:String = "disabled";
+	
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 	//anchor target const
 
 	public static inline var TARGET_BLANK:String = "_blank";

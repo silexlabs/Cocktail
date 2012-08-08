@@ -12,6 +12,15 @@ import cocktail.core.dom.Text;
 import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.style.ComputedStyle;
+<<<<<<< HEAD
+=======
+import cocktail.core.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
+import cocktail.core.style.computer.TransitionStylesComputer;
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 import cocktail.core.window.Window;
 import cocktail.Lib;
 import cocktail.port.DrawingManager;
@@ -94,7 +103,11 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//during the rendering
 		//
 		//TODO 4 : update doc for this
+<<<<<<< HEAD
 		coreStyle.computeBackgroundStyles();
+=======
+		BackgroundStylesComputer.compute(coreStyle);
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 		
 		var backgroundBounds:RectangleData = getBackgroundBounds();
 		
@@ -126,7 +139,11 @@ class BoxRenderer extends InvalidatingElementRenderer
 		coreStyle.computedStyle.opacity = coreStyle.opacity;
 		
 		//TODO 1 : same as above, where to compute this ?
+<<<<<<< HEAD
 		coreStyle.computeTransitionStyles();
+=======
+		TransitionStylesComputer.compute(coreStyle);
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 		
 		if (_needsLayout == true || forceLayout == true)
 		{
@@ -153,10 +170,40 @@ class BoxRenderer extends InvalidatingElementRenderer
 		var containingBlockFontMetricsData:FontMetricsData = _containingBlock.coreStyle.fontMetrics;
 
 		//compute the font style (font-size, line-height...)
+<<<<<<< HEAD
 		coreStyle.computeTextAndFontStyles(containingBlockData, containingBlockFontMetricsData);
 
 		//compute the box styles (width, height, margins, paddings...)
 		coreStyle.computeBoxModelStyles(containingBlockData, isReplaced());
+=======
+		FontAndTextStylesComputer.compute(coreStyle, containingBlockData, containingBlockFontMetricsData);
+		
+		//compute the box styles (width, height, margins, paddings...)
+		computeBoxModelStyles(containingBlockData);
+	}
+	
+		
+	/**
+	 * Compute the box model styles (width, height, paddings, margins...) of the ElementRenderer, based on
+	 * its positioning scheme
+	 */ 
+	private function computeBoxModelStyles(containingBlockDimensions:ContainingBlockData):Void
+	{
+		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
+		
+		//do compute the box model styles
+		boxComputer.measure(coreStyle, containingBlockDimensions);
+	}
+	
+	/**
+	 * Return the right class used to compute the box model
+	 * styles
+	 */
+	private function getBoxStylesComputer():BoxStylesComputer
+	{
+		//abstract
+		return null;
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -265,6 +312,15 @@ class BoxRenderer extends InvalidatingElementRenderer
 		else if (isPositioned() == true)
 		{
 			return true;
+<<<<<<< HEAD
+=======
+		}
+		//transparent ElementRenderer always have their own
+		//LayerRenderer for rendering purpose
+		else if (isTransparent() == true)
+		{
+			return true;
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 		}
 		
 		//in all other cases, no new stacking context is created
@@ -288,6 +344,23 @@ class BoxRenderer extends InvalidatingElementRenderer
 		}
 		
 		return false;
+<<<<<<< HEAD
+=======
+	}
+	
+	/**
+	 * Determine wheter the ElementRenderer is transparent
+	 * when rendered, as defined by its opacity style
+	 */
+	override public function isTransparent():Bool
+	{
+		if (coreStyle.opacity != 1.0)
+		{
+			return true;
+		}
+			
+		return false;
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

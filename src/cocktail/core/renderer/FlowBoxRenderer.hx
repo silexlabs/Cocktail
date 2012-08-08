@@ -11,6 +11,15 @@ import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.linebox.LineBox;
 import cocktail.core.style.ComputedStyle;
+<<<<<<< HEAD
+=======
+import cocktail.core.style.computer.boxComputers.BlockBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.BoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.FloatBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.InlineBlockBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.InLineBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.PositionedBoxStylesComputer;
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
@@ -126,6 +135,49 @@ class FlowBoxRenderer extends BoxRenderer
 			}
 			_positionedChildrenNeedLayout = false;
 		}
+	}
+	
+	/**
+	 * Return box style computer for container box
+	 */
+	override private function getBoxStylesComputer():BoxStylesComputer
+	{
+		var boxComputer:BoxStylesComputer;
+				
+		//get the box computer for float
+		if (coreStyle.computedStyle.cssFloat == CSSFloat.left || coreStyle.computedStyle.cssFloat == CSSFloat.right)
+		{
+			boxComputer = new FloatBoxStylesComputer();
+		}
+		
+		//get it for HTMLElement with 'position' value of 'absolute' or 'fixed'
+		else if (coreStyle.computedStyle.position == fixed || coreStyle.computedStyle.position == absolute)
+		{
+			boxComputer = new PositionedBoxStylesComputer();
+		}
+		
+		//else get the box computer based on the display style
+		else
+		{
+			switch(coreStyle.computedStyle.display)
+			{
+				case block:
+					boxComputer = new BlockBoxStylesComputer();
+					
+				case inlineBlock:
+					boxComputer = new InlineBlockBoxStylesComputer();
+				
+				//not supposed to happen
+				case none:
+					
+					boxComputer = null;
+				
+				case cssInline:
+					boxComputer = new InLineBoxStylesComputer();
+			}
+		}
+		
+		return boxComputer;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

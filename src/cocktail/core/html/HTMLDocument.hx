@@ -34,7 +34,6 @@ import cocktail.Lib;
 import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import haxe.Log;
-import haxe.Timer;
 import cocktail.core.style.StyleData;
 
 /**
@@ -272,6 +271,12 @@ class HTMLDocument extends Document
 			case HTMLConstants.HTML_PARAM_TAG_NAME:
 				element = new HTMLParamElement();
 				
+<<<<<<< HEAD
+=======
+			case HTMLConstants.HTML_LINK_TAG_NAME:
+				element = new HTMLLinkElement();
+				
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 			default:
 				element = new HTMLElement(tagName);
 		}
@@ -671,8 +676,20 @@ class HTMLDocument extends Document
 		//method was called
 		if (_documentNeedsLayout == true)
 		{
-			startLayout();
+			startLayout(false);
 			_documentNeedsLayout = false;
+			
+			//start all pending animations
+			var atLeastOneAnimationStarted:Bool = startPendingAnimation();
+			
+			//if at least one pending animation started, an immediate layout
+			//must be performed before rendering, else the rendering will be
+			//done with the end value of the animations instead of the beggining
+			//value, resulting in a visual glitch
+			if (atLeastOneAnimationStarted == true)
+			{
+				startLayout(true);
+			}
 		}
 		
 		//same as for layout
@@ -700,17 +717,31 @@ class HTMLDocument extends Document
 	private function startRendering():Void
 	{
 		documentElement.elementRenderer.layerRenderer.render(_window.innerWidth, _window.innerHeight);
+<<<<<<< HEAD
+=======
 	}
+	
+	/**
+	 * Start all the pending animation by calling
+	 * the start animation method on all elements of the
+	 * rendering tree
+	 */
+	private function startPendingAnimation():Bool
+	{
+		return documentElement.elementRenderer.startPendingAnimation();
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
+	}
+	
 	
 	/**
 	 * Start the layout of the rendering tree,
 	 * starting with the root ElementRenderer
 	 */
-	private function startLayout():Void
+	private function startLayout(forceLayout:Bool):Void
 	{
 		//layout all ElementRenderer, after this, ElementRenderer are 
 		//aware of their bounds relative to their containing block
-		documentElement.elementRenderer.layout(false);
+		documentElement.elementRenderer.layout(forceLayout);
 		
 		//set the global bounds on the rendering tree. After this, ElementRenderer
 		//are aware of their bounds relative ot the viewport
@@ -730,7 +761,7 @@ class HTMLDocument extends Document
 		#elseif (flash9 || nme)
 		//calling the methods 1 millisecond later is enough to ensure
 		//that first all synchronous code is executed
-		Timer.delay(function () { 
+		haxe.Timer.delay(function () { 
 			onLayoutScheduleDelegate();
 		}, INVALIDATION_INTERVAL);
 		#end

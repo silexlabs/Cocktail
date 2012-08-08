@@ -89,7 +89,7 @@ class BlockFormattingContext extends FormattingContext
 		for (i in 0...length)
 		{
 			var child:ElementRenderer = elementRenderer.childNodes[i];
-		
+			
 			var marginTop:Float = getCollapsedMarginTop(child, parentCollapsedMarginTop);
 			var marginBottom:Float = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
 			
@@ -144,17 +144,17 @@ class BlockFormattingContext extends FormattingContext
 				{
 					if ((child.isPositioned() == false || child.isRelativePositioned() == true) && child.isFloat() == false)
 					{
-						
 						//TODO 1 : doc, now block formatting context in charge of formatting line
 						//boxes, because of floats
 						if (child.childrenInline() == true)
 						{
 							var inlineFormattingContext:InlineFormattingContext = new InlineFormattingContext(cast(child));
 							inlineFormattingContext.format(_floatsManager);
-						}
+						}				
+		
 						currentLineY = child.bounds.y;
 						concatenatedY += child.bounds.height + marginTop + marginBottom;
-					}	
+					}
 				}
 			}
 			//for absolutely positioned element, their bounds are set to their static position
@@ -181,14 +181,27 @@ class BlockFormattingContext extends FormattingContext
 			{
 				_formattingContextData.height = concatenatedY;
 			}
-			
 		}
-		childHeight = concatenatedY - childHeight;
-	
+		
+		//the current ElementRenderer can either have an auto height
+		//or have an explicit height
 		if (elementRenderer.coreStyle.height == Dimension.cssAuto)
 		{
+			//when it has an auto height, it uses the height of its children
+			childHeight = concatenatedY - childHeight;
 			elementRenderer.bounds.height = childHeight + elementRendererComputedStyle.paddingBottom + elementRendererComputedStyle.paddingTop ;
 			elementRendererComputedStyle.height = childHeight;
+<<<<<<< HEAD
+=======
+		}
+		else
+		{
+			//here it has an explicit height, so it adds its own height
+			//instead of the hieght of its children, if it children are
+			//taller, they will overflow
+			concatenatedY = childHeight;
+			concatenatedY += elementRenderer.bounds.height;
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 		}
 		
 		concatenatedY += elementRendererComputedStyle.paddingBottom + parentCollapsedMarginBottom;

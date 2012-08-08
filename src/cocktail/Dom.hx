@@ -27,5 +27,4 @@ typedef UIEvent = cocktail.core.event.UIEvent;
 typedef CustomEvent = cocktail.core.event.CustomEvent;
 typedef TouchEvent = cocktail.core.event.TouchEvent;
 
-typedef XMLHTTPRequest = cocktail.core.resource.XMLHTTPRequest;
 typedef HtmlCollection<Dynamic> = Array<Dynamic>;

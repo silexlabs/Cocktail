@@ -24,7 +24,10 @@ import cocktail.core.font.FontData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.port.GraphicsContext;
+<<<<<<< HEAD
 import haxe.Timer;
+=======
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 
 
 /**
@@ -310,6 +313,49 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC ANIMATION METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Recursively start pending animation
+	 */
+	public function startPendingAnimation():Bool
+	{
+		return doStartPendingAnimation(this);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE ANIMATION METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * start pending animations of self and of all children 
+	 */
+	private function doStartPendingAnimation(elementRenderer:ElementRenderer):Bool
+	{
+		var atLeastOneAnimationStarted:Bool = false;
+		
+		var animationStarted:Bool = elementRenderer.coreStyle.startPendingAnimations();
+		
+		if (animationStarted == true)
+		{
+			atLeastOneAnimationStarted = true;
+		}
+		
+		for (i in 0...childNodes.length)
+		{
+			var animationStarted:Bool = childNodes[i].startPendingAnimation();
+			
+			if (animationStarted == true)
+			{
+				atLeastOneAnimationStarted = true;
+			}
+		}
+		
+		return atLeastOneAnimationStarted;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC RENDERING METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 
@@ -591,6 +637,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	}
 	
 	public function isRelativePositioned():Bool
+	{
+		return false;
+	}
+	
+	public function isTransparent():Bool
 	{
 		return false;
 	}

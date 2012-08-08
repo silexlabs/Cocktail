@@ -20,6 +20,7 @@ import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.style.ComputedStyle;
+import cocktail.core.style.computer.DisplayStylesComputer;
 import haxe.Stack;
 import lib.hxtml.CssParser;
 import lib.hxtml.HxtmlConverter;
@@ -480,7 +481,7 @@ class HTMLElement extends Element<HTMLElement>
 			//compute the display styles now to know if the 
 			//HTMLElement should be rendered as a block, inline,
 			//or at all
-			coreStyle.computeDisplayStyles();
+			DisplayStylesComputer.compute(coreStyle);
 			
 			//create the ElementRenderer if needed
 			if (elementRenderer == null && isRendered() == true)

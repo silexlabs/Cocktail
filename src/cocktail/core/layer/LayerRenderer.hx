@@ -13,6 +13,10 @@ import cocktail.core.dom.NodeBase;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.renderer.ElementRenderer;
+<<<<<<< HEAD
+=======
+import cocktail.core.style.computer.VisualEffectStylesComputer;
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 import cocktail.core.style.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
@@ -212,6 +216,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 * to dereference the GraphicsContext
 	 */
 	public function detach():Void
+<<<<<<< HEAD
 	{
 		var length:Int = childNodes.length;
 		for (i in 0...length)
@@ -276,6 +281,79 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		else
 		{
 			graphicsContext = parentGraphicsContext;
+=======
+	{
+		var length:Int = childNodes.length;
+		for (i in 0...length)
+		{
+			var child:LayerRenderer = childNodes[i];
+			child.detach();
+		}
+		
+		detachGraphicsContext();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE ATTACHEMENT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Attach a graphics context if necessary
+	 */
+	private function attachGraphicsContext():Void
+	{
+		if (graphicsContext == null)
+		{
+			if (parentNode != null)
+			{
+				if (parentNode.graphicsContext != null)
+				{
+					createGraphicsContext(parentNode.graphicsContext);
+				}
+			}
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
+		}
+	}
+	
+	/**
+<<<<<<< HEAD
+	 * Wether this LayerRenderer should create its
+	 * own GraphicsContext
+	 */
+	private function establishesNewGraphicsContext():Bool
+	{
+=======
+	 * Detach the GraphicContext
+	 */
+	private function detachGraphicsContext():Void 
+	{
+		//if this LayerRenderer instantiated its own
+		//GraphicContext, it is responsible for disposing of it
+		if (hasOwnGraphicsContext == true)
+		{
+			parentNode.graphicsContext.removeChild(graphicsContext);
+			graphicsContext.dispose();
+			hasOwnGraphicsContext = false;
+		}
+		
+		graphicsContext = null;
+	}
+	
+	/**
+	 * Create a new GraphicsContext for this LayerRenderer
+	 * or use the one of its parent
+	 */
+	private function createGraphicsContext(parentGraphicsContext:GraphicsContext):Void
+	{
+		if (establishesNewGraphicsContext() == true)
+		{
+			graphicsContext = new GraphicsContext(this);
+			parentGraphicsContext.appendChild(graphicsContext);
+			hasOwnGraphicsContext = true;
+		}
+		else
+		{
+			graphicsContext = parentGraphicsContext;
 		}
 	}
 	
@@ -285,6 +363,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	private function establishesNewGraphicsContext():Bool
 	{
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 		return false;
 	}
 	
@@ -304,6 +383,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//update the dimension of the bitmap data if the window size changed
 		//since last rendering
 		if (windowWidth != _windowWidth || windowHeight != _windowHeight)
+<<<<<<< HEAD
 		{
 			//only update the GraphicContext if it was created
 			//by this LayerRenderer
@@ -313,6 +393,76 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			}
 			_windowWidth = windowWidth;
 			_windowHeight = windowHeight;
+=======
+		{
+			//only update the GraphicContext if it was created
+			//by this LayerRenderer
+			if (hasOwnGraphicsContext == true)
+			{
+				graphicsContext.initBitmapData(windowWidth, windowHeight);
+			}
+			_windowWidth = windowWidth;
+			_windowHeight = windowHeight;
+		}
+	
+		//only clear the bitmaps if the GraphicsContext
+		//was created by this LayerRenderer
+		if (hasOwnGraphicsContext == true)
+		{
+			//reset the bitmap
+			graphicsContext.clear();
+		}
+		
+		//render first negative z-index child LayerRenderer from most
+		//negative to least negative
+		for (i in 0..._negativeZIndexChildLayerRenderers.length)
+		{
+			_negativeZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
+		}
+		
+		//init transparency on the graphicContext if the element is transparent. Everything
+		//painted with the element will have an alpha equal to the opacity style
+		if (rootElementRenderer.isTransparent() == true)
+		{
+			graphicsContext.beginTransparency(rootElementRenderer.coreStyle.computedStyle.opacity);
+		}
+		
+		//render the rootElementRenderer itself which will also
+		//render all ElementRenderer belonging to this LayerRenderer
+		rootElementRenderer.render(graphicsContext);
+		
+		//stop transparency so that subsequent painted element won't be transparent
+		//if they don't themselves have an opacity
+		if (rootElementRenderer.isTransparent() == true)
+		{
+			graphicsContext.endTransparency();
+		}
+		
+		
+		//render zero and auto z-index child LayerRenderer, in tree order
+		for (i in 0..._zeroAndAutoZIndexChildLayerRenderers.length)
+		{
+			_zeroAndAutoZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
+		}
+		
+		//render all the positive LayerRenderer from least positive to 
+		//most positive
+		for (i in 0..._positiveZIndexChildLayerRenderers.length)
+		{
+			_positiveZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
+		}
+		
+		//scrollbars are always rendered last as they should always be the top
+		//element of their layer
+		rootElementRenderer.renderScrollBars(graphicsContext, windowWidth, windowHeight);
+		
+		//apply transformations to the layer if needed
+		if (rootElementRenderer.isTransformed() == true)
+		{
+			//TODO 2 : should already be computed at this point
+			VisualEffectStylesComputer.compute(rootElementRenderer.coreStyle);
+			graphicsContext.transform(getTransformationMatrix(graphicsContext));
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 		}
 	
 		//only clear the bitmaps if the GraphicsContext

@@ -21,7 +21,6 @@ import haxe.Log;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.font.FontData;
-import haxe.Timer;
 
 /**
  * This is the root ElementRenderer of the rendering

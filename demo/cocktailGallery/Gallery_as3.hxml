@@ -1,7 +1,0 @@
--swf-version 10.2
--swf Gallery.swf
--swf-header 640:480:120
--main Gallery
--D network-sandbox
-#-cp ../Cocktail/branches/develop/src
--cp ../../src/

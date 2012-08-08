@@ -10,7 +10,6 @@ import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.port.platform.nativeMedia.NativeMedia;
-import haxe.Timer;
 import cocktail.core.html.HTMLData;
 import cocktail.core.renderer.RendererData;
 
@@ -40,7 +39,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * the frequence in milliseconds between each dispatch of
 	 * a timeupdate event when the media is playing
 	 */
-	private static inline var TIME_UPDATE_FREQUENCY:Int = 350;
+	private static inline var TIME_UPDATE_FREQUENCY:Int = 15;
 	
 	/**
 	 * the frequence in milliseconds between each dispatch of
@@ -929,7 +928,11 @@ class HTMLMediaElement extends EmbeddedElement
 		//set this method to be called again 
 		#if macro
 		#elseif (flash9 || nme)
+<<<<<<< HEAD
 		Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
+=======
+		haxe.Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 		#end
 	}
 	
@@ -965,7 +968,11 @@ class HTMLMediaElement extends EmbeddedElement
 		//a progress event and set this method to be called again
 		#if macro
 		#elseif (flash9 || nme)
+<<<<<<< HEAD
 		Timer.delay(onProgressTick, PROGRESS_FREQUENCY);
+=======
+		haxe.Timer.delay(onProgressTick, PROGRESS_FREQUENCY);
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 		#end
 	}
 	

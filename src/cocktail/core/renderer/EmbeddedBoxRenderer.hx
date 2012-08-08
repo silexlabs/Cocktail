@@ -7,9 +7,22 @@
 */
 package cocktail.core.renderer;
 import cocktail.core.html.HTMLElement;
+<<<<<<< HEAD
 import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.port.GraphicsContext;
+=======
+import cocktail.core.style.computer.boxComputers.BoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
+import cocktail.core.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
+import cocktail.port.DrawingManager;
+import cocktail.core.geom.GeomData;
+import cocktail.port.GraphicsContext;
+import cocktail.core.style.StyleData;
+>>>>>>> 4ce2bea0cbaf80b3d98316de17fdf2c2b273bf49
 
 /**
  * Base class for embedded element
@@ -36,6 +49,49 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	{
 		super.renderSelf(graphicContext);
 		renderEmbeddedAsset(graphicContext);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return box style computer for replaced box
+	 */
+	override private function getBoxStylesComputer():BoxStylesComputer
+	{
+		var boxComputer:BoxStylesComputer;
+		
+		//get the embedded box computers based on
+		//the positioning scheme
+		if (coreStyle.computedStyle.cssFloat == CSSFloat.left || coreStyle.computedStyle.cssFloat == CSSFloat.right)
+		{
+			boxComputer = new EmbeddedFloatBoxStylesComputer();
+		}
+		else if (coreStyle.computedStyle.position == fixed || coreStyle.computedStyle.position == absolute)
+		{
+			boxComputer = new EmbeddedPositionedBoxStylesComputer();
+		}
+		else
+		{
+			switch(coreStyle.computedStyle.display)
+			{
+				case block:
+					boxComputer = new EmbeddedBlockBoxStylesComputer();
+					
+				case inlineBlock:
+					boxComputer = new EmbeddedInlineBlockBoxStylesComputer();	
+				
+				//not supposed to happen
+				case none:
+					boxComputer = null;
+				
+				case cssInline:
+					boxComputer = new EmbeddedInlineBoxStylesComputer();
+			}
+		}
+		
+		return boxComputer;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
