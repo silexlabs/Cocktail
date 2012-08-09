@@ -136,39 +136,61 @@ class Resource extends AbstractResource
 	/**
 	 * Store the bitmap data loaded by the flash loader
 	 * 
-	 * TODO 1 : will cause security error with cross-domain picture, should try those fixes
-	 * http://blog.martinlegris.com/2008/02/19/getting-around-the-crossdomainxml-file-when-loading-images-in-as3/
-	 * http://www.inklink.co.at/blog/?p=14
+	 * The security check necessary to load cross-domain picture
+	 * are described here : 
+	 * http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/system/LoaderContext.html#checkPolicyFile
 	 */
 	private function setNativeResource(loader:Loader):Void
 	{
-		trace(loader.contentLoaderInfo.childAllowsParent);
-		
-		//have to try catch for cross-domain security restrictions
-		try {
-			var bitmap:Bitmap = cast(loader.content);
-			nativeResource = bitmap.bitmapData;
-			trace("loaded");
+		//if child allows parent is true, it means that the child
+		//was either loaded from the same domain or has a valid cross-domain,
+		//it can be used right now
+		if (loader.contentLoaderInfo.childAllowsParent == true)
+		{
+			getBitmapDataFromLoader(loader);
 			onLoadComplete();
 		}
-		catch (e:SecurityError)
+		//else the child comes from a domain whose crossdomain was not loaded yet
+		//or does not exist. It can happen when the picture is request on a domain
+		//after an http 30X re-direction, only the crossdomain from the original
+		//domain is loaded not the redirected one,
+		//so we load the crossdomain of the redirection url explicitely
+		else 
 		{
 			Security.loadPolicyFile(loader.contentLoaderInfo.url + "crossdomain.xml");
-			onChildAllowsParent();
+			//poll at regular interval to see if the 
+			//cross domain was loaded. This is the only way,
+			//as flash doesn't have an event for it
+			onChildAllowsParentTick();
 		}
 	}
 	
-	private function onChildAllowsParent():Void
+	/**
+	 * Store the loader's bitmapData
+	 */
+	private function getBitmapDataFromLoader(loader:Loader):Void
 	{
+		var bitmap:Bitmap = cast(loader.content);
+		nativeResource = bitmap.bitmapData;
+	}
+	
+	/**
+	 * Poll at regular interval to check that the cross-domain
+	 * policy file was loaded
+	 * 
+	 * TODO 4 : add a max retry count
+	 */
+	private function onChildAllowsParentTick():Void
+	{
+		//while the loaded content can't be manipulated, reschedule
+		//a poll
 		if (_loader.contentLoaderInfo.childAllowsParent == false)
 		{
-			haxe.Timer.delay(function() { onChildAllowsParent(); } , 50);
+			haxe.Timer.delay(function() { onChildAllowsParentTick(); } , 50);
 		}
 		else
 		{
-			var bitmap:Bitmap = cast(_loader.content);
-			nativeResource = bitmap.bitmapData;
-			trace("loaded child allows parent");
+			getBitmapDataFromLoader(_loader);
 			onLoadComplete();
 		}
 	}
