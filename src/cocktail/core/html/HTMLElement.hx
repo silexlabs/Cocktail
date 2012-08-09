@@ -579,7 +579,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function getNextElementRendererSibling():ElementRenderer
 	{
-		var nextSibling:HTMLElement = nextSibling;
+		var nextSibling:HTMLElement = this.nextSibling;
 					
 		if (nextSibling == null)
 		{
