@@ -2999,7 +2999,7 @@ class UnitManager
 			{
 				arrayProperties.push(val);
 			}
-			tr = TransitionProperty.list(arrayProperties);
+			tr = TransitionProperty.cssList(arrayProperties);
 		}
 		return tr;
 	}
@@ -3009,7 +3009,7 @@ class UnitManager
 		var result:String;
 		switch(value)
 		{
-			case TransitionProperty.list(value):
+			case TransitionProperty.cssList(value):
 				result = value.join(",");
 			case TransitionProperty.none:
 				result = "none";

@@ -628,7 +628,7 @@ class CoreStyle
 			
 			//here, check in the list of transitionable property
 			//for a match
-			case TransitionProperty.list(value):
+			case TransitionProperty.cssList(value):
 				var foundFlag:Bool = false;
 				
 				for (i in 0...value.length)

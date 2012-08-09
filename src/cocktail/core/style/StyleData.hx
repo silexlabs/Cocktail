@@ -1149,7 +1149,7 @@ import cocktail.core.renderer.RendererData;
 		 * Indicates that a named list of property
 		 * are to be transitioned
 		 */
-		list(value:Array<String>);
+		cssList(value:Array<String>);
 	}
 	
 	/**
