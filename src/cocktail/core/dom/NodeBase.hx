@@ -286,7 +286,7 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 			var length:Int = parentNode.childNodes.length;
 			for (i in 0...length)
 			{
-				if (isSameNode(parentNode.childNodes[i]) == true)
+				if (parentNode.childNodes[i] == this)
 				{
 					return parentNode.childNodes[i + 1];
 				}
@@ -312,7 +312,7 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 			var length:Int = parentNode.childNodes.length;
 			for (i in 0...length)
 			{
-				if (isSameNode(parentNode.childNodes[i]) == true)
+				if (parentNode.childNodes[i] == this)
 				{
 					return parentNode.childNodes[i - 1];
 				}

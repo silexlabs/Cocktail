@@ -89,7 +89,7 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 		{
 			for (i in 0...length)
 			{
-				if (_nodes[i].isSameNode(replacedNode) == true)
+				if (_nodes[i] == replacedNode)
 				{
 					_nodes[i] = arg;
 					return replacedNode;
@@ -130,7 +130,7 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 		
 		for (i in 0...length)
 		{
-			if (_nodes[i].isSameNode(removedNode) == false)
+			if (_nodes[i] != removedNode)
 			{
 				newNodes.push(_nodes[i]);
 			}
