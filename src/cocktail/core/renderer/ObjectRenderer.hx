@@ -108,21 +108,24 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 		var assetBounds:RectangleData = getAssetBounds(coreStyle.computedStyle.width, coreStyle.computedStyle.height,
 		width, height);
 
-		asset.x = globalBounds.x + coreStyle.computedStyle.paddingLeft;
-		asset.y = globalBounds.y + coreStyle.computedStyle.paddingTop;
-
+		
 		switch (scaleMode)
 		{
 			case NO_SCALE:
-
-
+				asset.x = globalBounds.x + coreStyle.computedStyle.paddingLeft;
+				asset.y = globalBounds.y + coreStyle.computedStyle.paddingTop;
+				
 			case EXACT_FIT:
-			asset.scaleX = coreStyle.computedStyle.width / width;
-			asset.scaleY = coreStyle.computedStyle.height / height;
+				asset.x = globalBounds.x + coreStyle.computedStyle.paddingLeft;
+				asset.y = globalBounds.y + coreStyle.computedStyle.paddingTop;
+				asset.scaleX = coreStyle.computedStyle.width / width;
+				asset.scaleY = coreStyle.computedStyle.height / height;
 
 			default:
-			asset.scaleX = assetBounds.width / width;
-			asset.scaleY = assetBounds.height / height;
+				asset.x = globalBounds.x + coreStyle.computedStyle.paddingLeft + assetBounds.x;
+				asset.y = globalBounds.y + coreStyle.computedStyle.paddingTop + assetBounds.y;
+				asset.scaleX = assetBounds.width / width;
+				asset.scaleY = assetBounds.height / height;
 		}
 		
 		//mask the sprite so that it doesn't overflow
