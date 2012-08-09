@@ -11,11 +11,14 @@ import cocktail.core.resource.AbstractResource;
 import cocktail.port.NativeElement;
 import cocktail.core.resource.AbstractMediaLoader;
 import flash.display.Bitmap;
+import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
 import flash.display.Loader;
 import flash.errors.SecurityError;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
+import flash.system.Security;
 import haxe.Log;
 
 #if flash9
@@ -68,9 +71,8 @@ class Resource extends AbstractResource
 		
 		//add a loading context so that the resource will be loaded in the current context
 		#if flash9
-		var loadingContext:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain);
 		//always check policy file (crossdomain.xml) for cross-domain loading
-		loadingContext.checkPolicyFile = true;
+		var loadingContext:LoaderContext = new LoaderContext(true, ApplicationDomain.currentDomain);
 
 		//start the loading
 		_loader.load(request, loadingContext);
@@ -94,7 +96,6 @@ class Resource extends AbstractResource
 		removeLoaderListeners(_loader);
 		setIntrinsicDimensions(_loader);
 		setNativeResource(_loader);
-		onLoadComplete();
 	}
 	
 	/**
@@ -103,6 +104,7 @@ class Resource extends AbstractResource
 	 */
 	private function onNativeLoadIOError(event:IOErrorEvent):Void
 	{
+		trace(event.toString());
 		removeLoaderListeners(_loader);
 		onLoadError();
 	}
@@ -142,22 +144,63 @@ class Resource extends AbstractResource
 	/**
 	 * Store the bitmap data loaded by the flash loader
 	 * 
-	 * TODO 1 : will cause security error with cross-domain picture, should try those fixes
-	 * http://blog.martinlegris.com/2008/02/19/getting-around-the-crossdomainxml-file-when-loading-images-in-as3/
-	 * http://www.inklink.co.at/blog/?p=14
+	 * The security check necessary to load cross-domain picture
+	 * are described here : 
+	 * http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/system/LoaderContext.html#checkPolicyFile
 	 */
 	private function setNativeResource(loader:Loader):Void
 	{
-		//have to try catch for cross-domain security restrictions
-		try {
-			var bitmap:Bitmap = cast(loader.content);
-			nativeResource = bitmap.bitmapData;
-		}
-		catch (e:SecurityError)
+		//if child allows parent is true, it means that the child
+		//was either loaded from the same domain or has a valid cross-domain,
+		//it can be used right now
+		if (loader.contentLoaderInfo.childAllowsParent == true)
 		{
-			trace(e.toString());
+			getBitmapDataFromLoader(loader);
+			onLoadComplete();
 		}
-		
+		//else the child comes from a domain whose crossdomain was not loaded yet
+		//or does not exist. It can happen when the picture is request on a domain
+		//after an http 30X re-direction, only the crossdomain from the original
+		//domain is loaded not the redirected one,
+		//so we load the crossdomain of the redirection url explicitely
+		else 
+		{
+			Security.loadPolicyFile(loader.contentLoaderInfo.url + "crossdomain.xml");
+			//poll at regular interval to see if the 
+			//cross domain was loaded. This is the only way,
+			//as flash doesn't have an event for it
+			onChildAllowsParentTick();
+		}
+	}
+	
+	/**
+	 * Store the loader's bitmapData
+	 */
+	private function getBitmapDataFromLoader(loader:Loader):Void
+	{
+		var bitmap:Bitmap = cast(loader.content);
+		nativeResource = bitmap.bitmapData;
+	}
+	
+	/**
+	 * Poll at regular interval to check that the cross-domain
+	 * policy file was loaded
+	 * 
+	 * TODO 4 : add a max retry count
+	 */
+	private function onChildAllowsParentTick():Void
+	{
+		//while the loaded content can't be manipulated, reschedule
+		//a poll
+		if (_loader.contentLoaderInfo.childAllowsParent == false)
+		{
+			haxe.Timer.delay(function() { onChildAllowsParentTick(); } , 50);
+		}
+		else
+		{
+			getBitmapDataFromLoader(_loader);
+			onLoadComplete();
+		}
 	}
 	
 }
