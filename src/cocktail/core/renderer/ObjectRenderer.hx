@@ -38,6 +38,8 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	
 	private static inline var SHOW_ALL:String = "showall";
 	
+	private static inline var EXACT_FIT:String = "exactfit";
+	
 	/**
 	 * class constructor
 	 */
@@ -101,21 +103,26 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 			
 		}
 		
+		var scaleMode:String = getScaleMode();
+		
 		var assetBounds:RectangleData = getAssetBounds(coreStyle.computedStyle.width, coreStyle.computedStyle.height,
 		width, height);
-		
-		var scaleMode:String = getScaleMode();
+
+		asset.x = globalBounds.x + coreStyle.computedStyle.paddingLeft;
+		asset.y = globalBounds.y + coreStyle.computedStyle.paddingTop;
+
 		switch (scaleMode)
 		{
 			case NO_SCALE:
-				asset.x = globalBounds.x + coreStyle.computedStyle.paddingLeft;
-				asset.y = globalBounds.y + coreStyle.computedStyle.paddingTop;
-				
+
+
+			case EXACT_FIT:
+			asset.scaleX = coreStyle.computedStyle.width / width;
+			asset.scaleY = coreStyle.computedStyle.height / height;
+
 			default:
-				asset.x = globalBounds.x + coreStyle.computedStyle.paddingLeft + assetBounds.x;
-				asset.y = globalBounds.y + coreStyle.computedStyle.paddingTop + assetBounds.y;
-				asset.scaleX = assetBounds.width / width;
-				asset.scaleY = assetBounds.height / height;
+			asset.scaleX = assetBounds.width / width;
+			asset.scaleY = assetBounds.height / height;
 		}
 		
 		//mask the sprite so that it doesn't overflow
