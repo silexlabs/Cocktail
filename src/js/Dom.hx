@@ -452,6 +452,12 @@ function remove( o : Int ) : Void;
 }
 
 typedef Style = {
+var opacity : Dynamic;
+var transitionProperty : Dynamic;
+var transitionDuration : Dynamic;
+var transitionTimingFunction : Dynamic;
+var transitionDelay : Dynamic;
+
 // Position
 var left : String;
 var bottom : String;
