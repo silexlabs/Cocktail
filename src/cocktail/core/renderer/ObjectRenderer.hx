@@ -72,24 +72,27 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 			
 		}
 		
-		var assetBounds:RectangleData = getAssetBounds(_coreStyle.computedStyle.width, _coreStyle.computedStyle.height,
-		width, height);
-		
 		var scaleMode:String = getScaleMode();
 		
-		asset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
-		asset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
+		var assetBounds:RectangleData = getAssetBounds(_coreStyle.computedStyle.width, _coreStyle.computedStyle.height,
+		width, height);
+
 		
 		switch (scaleMode)
 		{
 			case NO_SCALE:
-				
+				asset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
+				asset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
 				
 			case EXACT_FIT:
+				asset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
+				asset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
 				asset.scaleX = _coreStyle.computedStyle.width / width;
 				asset.scaleY = _coreStyle.computedStyle.height / height;
-				
+
 			default:
+				asset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + assetBounds.x;
+				asset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + assetBounds.y;
 				asset.scaleX = assetBounds.width / width;
 				asset.scaleY = assetBounds.height / height;
 		}
