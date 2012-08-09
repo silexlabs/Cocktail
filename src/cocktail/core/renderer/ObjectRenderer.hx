@@ -31,6 +31,8 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	
 	private static inline var SHOW_ALL:String = "showall";
 	
+	private static inline var EXACT_FIT:String = "exactfit";
+	
 	/**
 	 * class constructor
 	 */
@@ -74,15 +76,20 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 		width, height);
 		
 		var scaleMode:String = getScaleMode();
+		
+		asset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
+		asset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
+		
 		switch (scaleMode)
 		{
 			case NO_SCALE:
-				asset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft;
-				asset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop;
+				
+				
+			case EXACT_FIT:
+				asset.scaleX = _coreStyle.computedStyle.width / width;
+				asset.scaleY = _coreStyle.computedStyle.height / height;
 				
 			default:
-				asset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + assetBounds.x;
-				asset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + assetBounds.y;
 				asset.scaleX = assetBounds.width / width;
 				asset.scaleY = assetBounds.height / height;
 		}
