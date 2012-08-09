@@ -11,11 +11,14 @@ import cocktail.core.resource.AbstractResource;
 import cocktail.port.NativeElement;
 import cocktail.core.resource.AbstractMediaLoader;
 import flash.display.Bitmap;
+import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
 import flash.display.Loader;
 import flash.errors.SecurityError;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
+import flash.system.Security;
 import haxe.Log;
 
 #if flash9
@@ -93,7 +96,6 @@ class Resource extends AbstractResource
 		removeLoaderListeners(_loader);
 		setIntrinsicDimensions(_loader);
 		setNativeResource(_loader);
-		onLoadComplete();
 	}
 	
 	/**
@@ -140,16 +142,35 @@ class Resource extends AbstractResource
 	 */
 	private function setNativeResource(loader:Loader):Void
 	{
+		trace(loader.contentLoaderInfo.childAllowsParent);
+		
 		//have to try catch for cross-domain security restrictions
 		try {
 			var bitmap:Bitmap = cast(loader.content);
 			nativeResource = bitmap.bitmapData;
+			trace("loaded");
+			onLoadComplete();
 		}
 		catch (e:SecurityError)
 		{
-			trace(e.toString());
+			Security.loadPolicyFile(loader.contentLoaderInfo.url + "crossdomain.xml");
+			onChildAllowsParent();
 		}
-		
+	}
+	
+	private function onChildAllowsParent():Void
+	{
+		if (_loader.contentLoaderInfo.childAllowsParent == false)
+		{
+			haxe.Timer.delay(function() { onChildAllowsParent(); } , 50);
+		}
+		else
+		{
+			var bitmap:Bitmap = cast(_loader.content);
+			nativeResource = bitmap.bitmapData;
+			trace("loaded child allows parent");
+			onLoadComplete();
+		}
 	}
 	
 }
