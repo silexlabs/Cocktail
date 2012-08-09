@@ -68,9 +68,8 @@ class Resource extends AbstractResource
 		
 		//add a loading context so that the resource will be loaded in the current context
 		#if flash9
-		var loadingContext:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain);
 		//always check policy file (crossdomain.xml) for cross-domain loading
-		loadingContext.checkPolicyFile = true;
+		var loadingContext:LoaderContext = new LoaderContext(true, ApplicationDomain.currentDomain);
 
 		//start the loading
 		_loader.load(request, loadingContext);
@@ -103,6 +102,7 @@ class Resource extends AbstractResource
 	 */
 	private function onNativeLoadIOError(event:IOErrorEvent):Void
 	{
+		trace(event.toString());
 		removeLoaderListeners(_loader);
 		onLoadError();
 	}
