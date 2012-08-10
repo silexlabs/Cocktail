@@ -284,8 +284,8 @@ class StyleProxy implements lib.hxtml.IStyleProxy<HTMLElement>
 	public function setTextColorKey (element:HTMLElement, value:String):Void{
 		element.style.color = value;
 	}
-	public function setTextColorNum (element:HTMLElement, value:Int):Void{
-		element.style.color = "#" + Std.string(value);
+	public function setTextColorNum (element:HTMLElement, value:String):Void {
+		element.style.color = value;
 	}
 	public function setTextColorRGBA (element:HTMLElement, value:String):Void{
 		element.style.color = "rgba("+value+")";

@@ -557,8 +557,12 @@ class CssParser<DisplayObjectType> {
 		case "color":
 			switch( v ) {
 			case VHex(v):
+				if (v.length == 6)
+				{
+					v = "#" + v;
+				}
 				//var val = (v.length == 6) ? Std.parseInt("0x" + v) : ((v.length == 3) ? Std.parseInt("0x"+v.charAt(0)+v.charAt(0)+v.charAt(1)+v.charAt(1)+v.charAt(2)+v.charAt(2)) : null);
-				s.setTextColorNum(d, Std.parseInt(v));
+				s.setTextColorNum(d, v);
 				return true;
 			case VRGB(v):
 				s.setTextColorRGB(d, v);
