@@ -11,4 +11,4 @@ package cocktail;
  * Define type aliases to match Haxe JS API
  */
 
-typedef XMLHttpRequest = cocktail.core.resource.XMLHTTPRequest;
+typedef XMLHTTPRequest = cocktail.core.resource.XMLHTTPRequest;

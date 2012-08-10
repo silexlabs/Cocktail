@@ -18,7 +18,6 @@ import flash.errors.SecurityError;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
-import flash.system.Security;
 import haxe.Log;
 
 #if flash9
@@ -165,11 +164,13 @@ class Resource extends AbstractResource
 		//so we load the crossdomain of the redirection url explicitely
 		else 
 		{
-			Security.loadPolicyFile(loader.contentLoaderInfo.url + "crossdomain.xml");
+			#if flash
+			flash.system.Security.loadPolicyFile(loader.contentLoaderInfo.url + "crossdomain.xml");
 			//poll at regular interval to see if the 
 			//cross domain was loaded. This is the only way,
 			//as flash doesn't have an event for it
 			onChildAllowsParentTick();
+			#end
 		}
 	}
 	
