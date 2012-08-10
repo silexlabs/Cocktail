@@ -452,6 +452,12 @@ function remove( o : Int ) : Void;
 }
 
 typedef Style = {
+var opacity : Dynamic;
+var transitionProperty : Dynamic;
+var transitionDuration : Dynamic;
+var transitionTimingFunction : Dynamic;
+var transitionDelay : Dynamic;
+
 // Position
 var left : String;
 var bottom : String;
@@ -591,7 +597,16 @@ var type : String;
 var disabled : Bool;
 var href : String;
 var title : String;
+var cssRules : HtmlCollection<CssRule>;
 // ??? more ???
+}
+
+typedef CssRule = {
+var cssText : String;
+var parentRule : Null<CssRule>;
+var parentStyleSheet : StyleSheet;
+var type : String; // values: CSSStyleRule, CSSMediaRule, CSSFontFaceRule, CSSPageRule, CSSImportRule, CSSCharsetRule, CSSUnknownRule, CSSKeyframesRule, CSSKeyframeRule
+var style : Style;
 }
 
 typedef Submit = {> FormElement,
