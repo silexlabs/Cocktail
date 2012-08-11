@@ -24,6 +24,7 @@ import cocktail.core.html.HTMLHtmlElement;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.html.HTMLInputElement;
 import cocktail.core.multitouch.MultiTouchManager;
+import cocktail.core.parser.DOMParser;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.event.EventData;
@@ -115,6 +116,13 @@ class HTMLDocument extends Document
 	public var fullscreenElement(default, set_fullscreenElement):HTMLElement;
 	
 	/**
+	 * getter/setter to set the whole document content with an 
+	 * html string or to serialise the whole document into
+	 * an html string
+	 */
+	public var innerHTML(get_innerHTML, set_innerHTML):String;
+	
+	/**
 	 * Callback listened to by the Window object
 	 * to enter fullscreen mode when needed using
 	 * platform specific API
@@ -198,13 +206,7 @@ class HTMLDocument extends Document
 		
 		documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
 		
-		//as the HTML htmlElement is the root
-		//of the runtime, the document is 
-		//responsible for attching it
-		documentElement.attach();
-		
 		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
-		documentElement.appendChild(body);
 		
 		_shouldDispatchClickOnNextMouseUp = false;
 				
@@ -282,6 +284,36 @@ class HTMLDocument extends Document
 		
 		return element;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// DOM PARSER GETTER/SETTER AND METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * parse the string representing the
+	 * whole document. The returned node
+	 * is the root of the html document
+	 */
+	private function set_innerHTML(value:String):String
+	{
+		//parse the html string into a node object
+		var node:HTMLElement = DOMParser.parse(value, this);
+		
+		documentElement = node.childNodes[0];
+		initBody(cast(documentElement.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
+		
+		return value;
+	}
+	
+	/**
+	 * Return the serialized documentElement
+	 * (the <HTML> element)
+	 */
+	private function get_innerHTML():String
+	{
+		return DOMParser.serialize(documentElement);
+	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC PLATFORM CALLBACKS

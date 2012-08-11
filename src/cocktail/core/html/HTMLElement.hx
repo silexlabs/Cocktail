@@ -1094,6 +1094,7 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			removeChild(childNodes[0]);	
 		}
+
 		
 		//parse the html string into a node object
 		var node:HTMLElement = DOMParser.parse(value, ownerDocument);
