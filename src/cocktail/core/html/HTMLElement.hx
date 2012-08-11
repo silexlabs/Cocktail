@@ -19,6 +19,7 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.parser.DOMParser;
 import cocktail.core.style.ComputedStyle;
 import cocktail.core.style.computer.DisplayStylesComputer;
 import haxe.Stack;
@@ -1094,15 +1095,8 @@ class HTMLElement extends Element<HTMLElement>
 			removeChild(childNodes[0]);	
 		}
 		
-		//wrap the HTML String in a div element, else
-		//when creating the html node, only the first 
-		//node content is deserialized and not its
-		//siblings
-		var wrappedHTML:String = HTMLConstants.HTML_TOKEN_LESS_THAN + HTMLConstants.HTML_DIV_TAG_NAME + HTMLConstants.HTML_TOKEN_MORE_THAN;
-		wrappedHTML += value;
-		wrappedHTML += HTMLConstants.HTML_TOKEN_LESS_THAN + HTMLConstants.HTML_TOKEN_SOLIDUS + HTMLConstants.HTML_DIV_TAG_NAME + HTMLConstants.HTML_TOKEN_MORE_THAN;
-
-		var node:HTMLElement = doSetInnerHTML(Parser.parse(wrappedHTML).firstElement());
+		//parse the html string into a node object
+		var node:HTMLElement = DOMParser.parse(value, ownerDocument);
 
 		//the returned node might be null for instance, if 
 		//only an empty string was provided
@@ -1122,176 +1116,19 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
-	 * Actually desirialize the HTML string
-	 * and return the root Node created
-	 * 
-	 * @param xml the HTML string, deserialized as an
-	 * Haxe xml object
-	 */
-	private function doSetInnerHTML(xml : Xml):HTMLElement
-	{
-		switch( xml.nodeType ) {
-		
-		//node type for text node
-		case Xml.PCData:
-			return ownerDocument.createTextNode(xml.nodeValue);
-		
-		//node type for comment node	
-		case Xml.Comment:
-			return ownerDocument.createComment(xml.nodeValue);
-		
-		//node type for element node
-		case Xml.Element:
-			
-			var htmlElement : HTMLElement;
-			var name:String = xml.nodeName.toLowerCase();
-	
-			//create an HTMLElement with the name of the xml element
-			//node
-			htmlElement = ownerDocument.createElement(name);
-			
-			//loop in all of the xml child node
-			for (child in xml)
-			{
-				//switch the type of the child node
-				switch (child.nodeType)
-				{
-					//if it is a text node,
-					//check if the child is not just an
-					//empty string, in which case, no text node
-					//is created
-					case Xml.PCData:
-						if (child.nodeValue == "")
-						{
-							continue;
-						}
-				}
-			
-				//desrialize the child, thus deserializing
-				//the whole DOM tree recursively
-				var childNode:HTMLElement = doSetInnerHTML(child);
-
-				htmlElement.appendChild(childNode);
-			} 
-			
-			//set all the attributes of the xml node on the 
-			//new HTMLElement node
-			for( attribute in xml.attributes() ){
-				attribute = attribute.toLowerCase();
-				var value:String = xml.get(attribute);
-				htmlElement.setAttribute(attribute, value);
-			}
-			
-			return htmlElement;
-		}
-		
-		//TODO 2 : will cause bug if node type not supported
-		return null;
-	}
-	
-	/**
 	 * Serialise the descendant nodes of this HTMLElement
 	 * and return the result as an HTML String
 	 */
 	private function get_innerHTML():String
 	{
-		var xml:Xml = doGetInnerHTML(this, Xml.createElement(nodeName));
-		
-		var str:String = xml.toString();
+		//serialise this node into an HTML string
+		var str:String = DOMParser.serialize(this);
 		
 		//remove the first and last tag, as they correspond to this HTMLElement
 		//tag which should not be returned as its inner html
 		str = str.substr(str.indexOf(HTMLConstants.HTML_TOKEN_MORE_THAN) + 1 , str.lastIndexOf(HTMLConstants.HTML_TOKEN_LESS_THAN) - str.indexOf(HTMLConstants.HTML_TOKEN_MORE_THAN) - 1);
 		
 		return str;
-	}
-	
-	/**
-	 * Actually serialise all the chil nodes of this HTMLElement
-	 * by traversing the DOM recursively.
-	 * 
-	 * Returns all the children serialised data as an Xml
-	 * 
-	 * TODO 5 : should serialize other type of nodes, such as
-	 * doctype...
-	 */
-	private function doGetInnerHTML(node:HTMLElement, xml:Xml):Xml
-	{
-		var length:Int = node.childNodes.length;
-		for (i in 0...length)
-		{
-			var child:HTMLElement = node.childNodes[i];
-			
-			switch(child.nodeType)
-			{
-				case DOMConstants.ELEMENT_NODE:
-				
-					//create an xml node with the tag name of the HTMLElement,
-					//for instance 'div', 'span', 'img'...
-					var childXml:Xml = Xml.createElement(child.nodeName);
-					
-					//set all the attributes of the child on its Xml node
-					var childAttributes:NamedNodeMap<HTMLElement> = child.attributes;
-					var childAttributesLength:Int = childAttributes.length;
-					for (j in 0...childAttributesLength)
-					{
-						var attribute:Attr<HTMLElement> = cast(childAttributes.item(j));
-						
-						if (attribute.specified == true)
-						{
-							childXml.set(attribute.name, attribute.value);
-						}
-					}
-					
-					//concatenate all the of the specified styles of the HTMLElement
-					//children into a CSS string
-					var htmlChild:HTMLElement = child;
-					var styleAttributes:NamedNodeMap<HTMLElement> = htmlChild.style.attributes;
-					var concatenatedStyles:String = "";
-					
-					var attributesLength:Int = styleAttributes.length;
-					for (j in 0...attributesLength)
-					{
-						var attribute:Attr<HTMLElement> = cast(styleAttributes.item(j));
-						
-						if (attribute.specified == true)
-						{
-							concatenatedStyles += attribute.name + ":" + attribute.value +";";
-						}
-					}
-					
-					//set the CSS string as the 'style' attribute of the HTMLElement
-					//if at least one style one specified on it
-					if (concatenatedStyles != "")
-					{
-						childXml.set(HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME, concatenatedStyles);
-					}
-					
-					//add the children's content to the Xml of the child
-					xml.addChild(doGetInnerHTML(child, childXml));
-					
-					//when the child xml doesn't have children itself, check if it
-					//is a void element, as if it isn't, it must not be represented as 
-					//a self-closing tag and so an empty string children is added to it
-					//to be sure that the xml parser also returns a closing tag 
-					if (childXml.firstChild() == null && isVoidElement() == false)
-					{
-						childXml.addChild(Xml.createPCData(""));
-					}
-
-				case DOMConstants.TEXT_NODE:
-					//serialize a Text node
-					var text:Xml = Xml.createPCData(child.nodeValue);
-					xml.addChild(text);
-					
-				case DOMConstants.COMMENT_NODE:
-					//serialize a Comment node
-					var comment:Xml = Xml.createComment(child.nodeValue);
-					xml.addChild(comment);
-			}
-		}
-		
-		return xml;
 	}
 	
 	/**
