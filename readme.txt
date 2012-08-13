@@ -28,7 +28,8 @@ Articles and demos
 		=> http://www.silexlabs.org/?p=130892
 	* Cocktail, for an open bar community !
 		=> http://www.silexlabs.org/the-blog
-			=> http://www.blog.elimak.com/2012/07/combining-cocktail-haxe-with-phonegap/
+	* Combining Cocktail Haxe with PhoneGap
+		=> http://www.blog.elimak.com/2012/07/combining-cocktail-haxe-with-phonegap/
 
 Developer resources
 
