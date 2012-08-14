@@ -1,0 +1,8 @@
+-main Sample
+-cpp nme
+-D nme
+-cp ../../src/
+-lib nme
+-debug
+--remap flash:nme
+--remap js:cocktail
