@@ -132,8 +132,12 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 			
 			var length:Int = childNodes.length;
 			for (i in 0...length)
-			{
+			{		
+				#if php
+				if (untyped __physeq__(childNodes[i], refChild))
+				#else
 				if (childNodes[i] == refChild)
+				#end
 				{
 					newChildNodes.push(newChild);
 				}
