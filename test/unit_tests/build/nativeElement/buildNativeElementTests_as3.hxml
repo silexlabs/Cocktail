@@ -1,0 +1,5 @@
+-cp ../../../../../src/
+-cp ../../../src/
+-main nativeElement.NativeElementTests
+-lib utest
+-swf9 ../../bin/nativeElement/nativeElementAs3.swf

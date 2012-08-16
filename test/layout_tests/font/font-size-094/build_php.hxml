@@ -1,0 +1,4 @@
+-cp ../../../../../src/
+-main Test
+--remap js:cocktail
+-php bin
