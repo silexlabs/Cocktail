@@ -73,6 +73,8 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		
 		#if (flash9 || nme)
 		_nativeTextField = new flash.text.TextField();
+		#end
+		#if flash9
 		_nativeTextField.tabEnabled = false;
 		#end
 		
