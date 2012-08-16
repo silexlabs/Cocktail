@@ -1,5 +1,0 @@
--cp ../../../src/
--cp ../../src/
--main mouse.MouseTests
--js ../../bin/mouse/mouseTestJS.js
--lib utest

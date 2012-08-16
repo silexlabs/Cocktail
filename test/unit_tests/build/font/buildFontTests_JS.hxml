@@ -1,0 +1,5 @@
+-cp ../../../../../src/
+-cp ../../../src/
+-main font.FontTests
+-lib utest
+-js ../../bin/font/fontTestJS.js 

@@ -1,0 +1,6 @@
+-cp ../../../../../src/
+-cp ../../../src/
+-main domElement.ImageDOMElementTests
+-lib utest
+-swf9 ../../bin/domElement/imageDOMElementTestAs3.swf
+-swf-version 10.1

@@ -1,5 +1,0 @@
--cp ../../../src/
--main Test
--swf as3.swf
--swf-version 10.2
---remap js:cocktail

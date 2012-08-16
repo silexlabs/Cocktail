@@ -1,6 +1,0 @@
--cp ../../../src/
--cp ../../src/
--main style.StyleTests
--lib utest
--swf ../../bin/style/styleTestAs3.swf
--swf-version 10.1
