@@ -1,0 +1,6 @@
+-main Sample
+-swf swf/Sample.swf
+-cp ../../src/
+-swf-header 500:500:60:ffffff
+-swf-version 10.2
+--remap js:cocktail
