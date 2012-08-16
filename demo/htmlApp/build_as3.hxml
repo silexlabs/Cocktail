@@ -1,6 +1,0 @@
--swf htmlApp.swf
--cp .
--cp ../../src/
--main Cocktail
---remap js:cocktail
--swf-version 10.2
