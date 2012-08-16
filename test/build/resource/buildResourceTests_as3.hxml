@@ -1,6 +1,0 @@
--cp ../../../src/
--cp ../../src/
--main resource.ResourceTests
--lib utest
--swf-version 10.1
--swf9 ../../bin/resource/resourceTestAs3.swf 

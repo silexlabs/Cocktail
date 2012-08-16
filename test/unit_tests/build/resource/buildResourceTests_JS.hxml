@@ -1,0 +1,5 @@
+-cp ../../../../../src/
+-cp ../../../src/
+-main resource.ResourceTests
+-lib utest
+-js ../../bin/resource/resourceTestJS.js 

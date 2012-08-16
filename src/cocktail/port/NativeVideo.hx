@@ -10,7 +10,7 @@ package cocktail.port;
 /**
  * Set the right runtime specific video at compile-time
  */
-#if (flash9 || nme)
+#if flash9
 typedef NativeVideo =  cocktail.port.flash_player.NativeVideo;
 #else
 typedef NativeVideo =  cocktail.port.server.NativeVideo;
