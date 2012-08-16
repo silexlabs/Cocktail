@@ -127,7 +127,10 @@ class CellStyle
 	public static function removeBorder(node:HtmlDom):Void
 	{
 		// remove border using margin as not supported by cocktail yet
-		node.style.margin = "0px";
+		node.style.marginBottom = "0px";
+		node.style.marginTop = "0px";
+		node.style.marginLeft = "0px";
+		node.style.marginRight = "0px";
 	}
 	
 	/**

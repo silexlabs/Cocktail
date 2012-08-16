@@ -1,6 +1,5 @@
 package org.intermedia.model;
 
-import js.Lib;
 import haxe.Firebug;
 import org.intermedia.Debug;
 import org.intermedia.model.ApplicationModel;
