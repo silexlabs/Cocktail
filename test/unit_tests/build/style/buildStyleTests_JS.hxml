@@ -1,0 +1,5 @@
+-cp ../../../../../src/
+-cp ../../../src/
+-main style.StyleTests
+-lib utest
+-js ../../bin/style/styleTestJS.js

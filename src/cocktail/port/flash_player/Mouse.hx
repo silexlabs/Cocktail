@@ -14,7 +14,6 @@ import cocktail.port.platform.mouse.AbstractMouse;
 import cocktail.core.style.StyleData;
 import flash.display.BitmapData;
 import flash.Lib;
-import flash.ui.MouseCursorData;
 import cocktail.core.geom.GeomData;
 import flash.Vector;
 import haxe.Log;
@@ -44,6 +43,7 @@ class Mouse extends AbstractMouse
 	 */
 	override public function setMouseCursor(cursor:Cursor):Void
 	{
+		#if flash9
 		switch(cursor)
 		{
 			case Cursor.cssAuto:
@@ -62,6 +62,7 @@ class Mouse extends AbstractMouse
 			case Cursor.crosshair:
 				flash.ui.Mouse.cursor = flash.ui.MouseCursor.AUTO;		
 		}
+		#end
 	}
 	
 	/**
@@ -71,6 +72,7 @@ class Mouse extends AbstractMouse
 	 */
 	private function setBitmapCursor(nativeElement:NativeElement, hotSpot:PointData):Void
 	{
+		#if flash9
 		//init the hotSpot if null
 		//to the top left of the cursor
 		if (hotSpot == null)
@@ -84,7 +86,7 @@ class Mouse extends AbstractMouse
 		
 		//set the flash mouse cursor data with the drawn bitmap data
 		//and the cursor hot spot
-		var mouseCursorData:MouseCursorData = new MouseCursorData();
+		var mouseCursorData:flash.ui.MouseCursorData = new flash.ui.MouseCursorData();
 		mouseCursorData.data = new Vector<BitmapData>(1, true);
 		mouseCursorData.data[0] = mouseCursorBitmapData;
 		mouseCursorData.hotSpot = new flash.geom.Point(hotSpot.x, hotSpot.y);
@@ -98,6 +100,8 @@ class Mouse extends AbstractMouse
 		
 		//show the cursor if it was previously hidden
 		flash.ui.Mouse.show();
+		
+		#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

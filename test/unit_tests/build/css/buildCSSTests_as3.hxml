@@ -1,0 +1,7 @@
+-cp ../../../../../src/
+-cp ../../../src/
+-main css.CSSTests
+-lib utest
+-swf ../../bin/css/CSSTestAs3.swf
+-swf-version 10.2
+--remap js:cocktail

@@ -12,7 +12,7 @@ Cocktail is compatible with NME, Adobe AIR or PhoneGap.
 
 Native
 Cocktail do not require any virtual machine, it is not interpreted.
-This has a positive impact on the performances and allows access to native functionnalities and ibraries in native language such as objective C, C++, php, ActionScript…
+This has a positive impact on the performances and allows access to native functionnalities and libraries in native language such as objective C, C++, php, ActionScript…
 
 Silex Labs Cocktail library is released under GPL.
 
