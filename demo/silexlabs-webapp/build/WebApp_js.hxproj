@@ -8,7 +8,7 @@
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
-    <movie version="0" />
+    <movie version="1" />
     <movie minorVersion="0" />
     <movie platform="JavaScript" />
     <movie background="#FFFFFF" />
@@ -24,7 +24,7 @@
     <option flashStrict="False" />
     <option mainClass="WebApp" />
     <option enabledebug="False" />
-    <option additional="-swf-version 10.2&#xA;--remap js:cocktail" />
+    <option additional="" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>

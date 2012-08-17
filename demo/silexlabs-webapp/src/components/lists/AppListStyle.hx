@@ -88,10 +88,6 @@ class AppListStyle
 		domElement.style.position = "absolute";
 		domElement.style.display = "block";
 		
-		//domElement.style.marginLeft = MarginStyleValue.autoValue;
-		//domElement.style.marginRight = MarginStyleValue.autoValue;
-		//domElement.style.marginTop = MarginStyleValue.autoValue;
-		//domElement.style.marginBottom = MarginStyleValue.autoValue;
 		domElement.style.marginLeft = "0";
 		domElement.style.marginRight = "0";
 		domElement.style.marginTop = "0";
