@@ -300,7 +300,7 @@ class HTMLDocument extends Document
 		//defaultStyleSheet += "br:before { content: '\A'; white-space: pre-line }center          { text-align: center } ";
 		defaultStyleSheet += " :link,:visited { text-decoration: underline } :focus{ outline: thin dotted invert }";
 		
-		var styleSheet:CSSStyleSheet = new CSSStyleSheet(defaultStyleSheet);
+		var styleSheet:CSSStyleSheet = new CSSStyleSheet(defaultStyleSheet, PropertyOriginValue.USER_AGENT);
 		
 		for (i in 0...styleSheet.cssRules.length)
 		{

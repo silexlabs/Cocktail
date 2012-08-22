@@ -37,13 +37,20 @@ class CSSStyleSheet extends StyleSheet
 	private var _cssRulesParser:CSSRulesParser;
 	
 	/**
+	 * Return the origin of the stylesheet (user agent
+	 * or author)
+	 */
+	public var origin(default, null):PropertyOriginValue;
+	
+	/**
 	 * class constructor
 	 */
-	public function new(stylesheet:String, ownerNode:HTMLElement = null, href:String = null, parentStyleSheet:StyleSheet = null, ownerRule:CSSRule = null) 
+	public function new(stylesheet:String, origin:PropertyOriginValue, ownerNode:HTMLElement = null, href:String = null, parentStyleSheet:StyleSheet = null, ownerRule:CSSRule = null) 
 	{
 		super(stylesheet, ownerNode, href, parentStyleSheet);
 		cssRules = new CSSRuleList();
 		this.ownerRule = ownerRule;
+		this.origin = origin;
 		_cssRulesParser = new CSSRulesParser();
 		
 		var rules:Array<String> = _cssRulesParser.parseRules(stylesheet);

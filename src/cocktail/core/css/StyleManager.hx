@@ -207,8 +207,7 @@ class StyleManager
 					var matchingProperty:PropertyData = {
 						typedValue:styleDeclaration.getTypedProperty(property).typedValue,
 						important:styleDeclaration.getPropertyPriority(property) == "important",
-						//TODO : origin should be retrieved via stylesheet
-						origin:PropertyOriginValue.AUTHOR,
+						origin:styleDeclaration.parentRule.parentStyleSheet.origin,
 						selector:selector
 					}
 					

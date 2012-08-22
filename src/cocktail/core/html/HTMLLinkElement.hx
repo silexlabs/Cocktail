@@ -12,6 +12,7 @@ import cocktail.core.event.Event;
 import cocktail.core.event.UIEvent;
 import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
+import cocktail.core.css.CSSData;
 
 /**
  * The link element allows authors to link their document to other resources.
@@ -125,6 +126,8 @@ class HTMLLinkElement extends HTMLElement
 	 * document, the style node must both be
 	 * attached to the DOM and have a text
 	 * child node
+	 * 
+	 * TODO 1 : clean-up class
 	 */
 	private function addStyleSheet():Void
 	{
@@ -164,7 +167,7 @@ class HTMLLinkElement extends HTMLElement
 	
 	private function createStyleSheet(css:String):Void
 	{
-		sheet = new CSSStyleSheet(css);
+		sheet = new CSSStyleSheet(css, PropertyOriginValue.AUTHOR);
 		var htmlDocument:HTMLDocument = cast(ownerDocument);
 		htmlDocument.addStyleSheet(sheet);
 	}

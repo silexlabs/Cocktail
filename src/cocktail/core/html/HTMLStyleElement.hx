@@ -10,6 +10,7 @@ package cocktail.core.html;
 import cocktail.core.css.CSSStyleSheet;
 import cocktail.core.css.StyleSheet;
 import cocktail.core.dom.DOMConstants;
+import cocktail.core.css.CSSData;
 
 /**
  * The style element allows authors to embed style information in their documents.
@@ -117,7 +118,7 @@ class HTMLStyleElement extends HTMLElement
 				if (sheet == null)
 				{
 					//create a style sheet from the content of the child text node
-					sheet = new CSSStyleSheet(childNodes[0].nodeValue, this);
+					sheet = new CSSStyleSheet(childNodes[0].nodeValue, PropertyOriginValue.AUTHOR, this);
 					var htmlDocument:HTMLDocument = cast(ownerDocument);
 					htmlDocument.addStyleSheet(sheet);
 				}
