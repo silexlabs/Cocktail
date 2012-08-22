@@ -1,0 +1,5 @@
+-cp ../../../../../src/
+-cp ../../../src/
+-main geom.MatrixTests
+-lib utest
+-js ../../bin/geom/matrixTestJS.js

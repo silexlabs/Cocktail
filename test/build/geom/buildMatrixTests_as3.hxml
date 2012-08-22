@@ -1,6 +1,0 @@
--cp ../../../src/
--cp ../../src/
--main geom.MatrixTests
--lib utest
--swf9 ../../bin/geom/matrixTestAs3.swf
--swf-version 10.1
