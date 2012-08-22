@@ -10,17 +10,18 @@ package cocktail.core.renderer;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.linebox.LineBox;
-import cocktail.core.style.ComputedStyle;
+
 import cocktail.core.style.computer.boxComputers.BlockBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.BoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.FloatBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.InlineBlockBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.InLineBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.PositionedBoxStylesComputer;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
+import cocktail.core.css.CSSData;
 import cocktail.core.font.FontData;
 
 /**
@@ -142,13 +143,13 @@ class FlowBoxRenderer extends BoxRenderer
 		var boxComputer:BoxStylesComputer;
 				
 		//get the box computer for float
-		if (coreStyle.computedStyle.cssFloat == CSSFloat.left || coreStyle.computedStyle.cssFloat == CSSFloat.right)
+		if (isFloat() == true)
 		{
 			boxComputer = new FloatBoxStylesComputer();
 		}
 		
 		//get it for HTMLElement with 'position' value of 'absolute' or 'fixed'
-		else if (coreStyle.computedStyle.position == fixed || coreStyle.computedStyle.position == absolute)
+		else if (isPositioned() == true && isRelativePositioned() == false)
 		{
 			boxComputer = new PositionedBoxStylesComputer();
 		}
@@ -156,21 +157,27 @@ class FlowBoxRenderer extends BoxRenderer
 		//else get the box computer based on the display style
 		else
 		{
-			switch(coreStyle.computedStyle.display)
+			switch(coreStyle.display)
 			{
-				case block:
-					boxComputer = new BlockBoxStylesComputer();
+				case KEYWORD(value):
+					switch (value)
+					{
+						case BLOCK:
+							boxComputer = new BlockBoxStylesComputer();
+							
+						case INLINE_BLOCK:
+							boxComputer = new InlineBlockBoxStylesComputer();
+							
+						case INLINE:
+							boxComputer = new InLineBoxStylesComputer();
+							
+						//not supposed to happen	
+						default:
+							boxComputer = null;
+					}
 					
-				case inlineBlock:
-					boxComputer = new InlineBlockBoxStylesComputer();
-				
-				//not supposed to happen
-				case none:
-					
-					boxComputer = null;
-				
-				case cssInline:
-					boxComputer = new InLineBoxStylesComputer();
+					default:
+						boxComputer = null;
 			}
 		}
 		
@@ -218,14 +225,15 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function layoutPositionedChild(elementRenderer:ElementRenderer, firstPositionedAncestorData:ContainingBlockData, viewportData:ContainingBlockData):Void
 	{
-		switch (elementRenderer.coreStyle.computedStyle.position)
+		var coreStyle:CoreStyle = elementRenderer.coreStyle;
+		switch (coreStyle.getKeyword(elementRenderer.coreStyle.position))
 		{	
 			//positioned 'fixed' ElementRenderer, use the viewport
-			case fixed:
+			case FIXED:
 				doLayoutPositionedChild(elementRenderer, viewportData);
 				
 			//positioned 'absolute' ElementRenderer use the first positioned ancestor data	
-			case absolute:
+			case ABSOLUTE:
 				doLayoutPositionedChild(elementRenderer, firstPositionedAncestorData);
 				
 			default:
@@ -241,14 +249,14 @@ class FlowBoxRenderer extends BoxRenderer
 		
 		//for horizonal offset, if both left and right are not auto,
 		//left takes precedance so we try to apply left offset first
-		if (elementCoreStyle.left != PositionOffset.cssAuto)
+		if (elementCoreStyle.isAuto(elementCoreStyle.left) == false)
 		{
 			elementRenderer.positionedOrigin.x = getLeftOffset(elementRenderer);
 		}
 		//if no left offset is defined, then try to apply a right offset.
 		//Right offset takes the containing block width minus the
 		//width of the positioned children as value for a 0 right offset
-		else if (elementCoreStyle.right != PositionOffset.cssAuto)
+		else if (elementCoreStyle.isAuto(elementCoreStyle.right) == false)
 		{
 			elementRenderer.positionedOrigin.x = getRightOffset(elementRenderer, containingBlockData.width);
 		}
@@ -257,11 +265,11 @@ class FlowBoxRenderer extends BoxRenderer
 		//At this point the bounds of the ElementRenderer already matches its static position
 		
 		//for vertical offset, the same rule as horizontal offsets apply
-		if (elementCoreStyle.top != PositionOffset.cssAuto)
+		if (elementCoreStyle.isAuto(elementCoreStyle.top) == false)
 		{
 			elementRenderer.positionedOrigin.y = getTopOffset(elementRenderer);
 		}
-		else if (elementCoreStyle.bottom != PositionOffset.cssAuto)
+		else if (elementCoreStyle.isAuto(elementCoreStyle.bottom) == false)
 		{
 			elementRenderer.positionedOrigin.y = getBottomOffset(elementRenderer, containingBlockData.height);
 		}
@@ -272,8 +280,8 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function getLeftOffset(elementRenderer:ElementRenderer):Float
 	{
-		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
-		return computedStyle.left + computedStyle.marginLeft;
+		var usedValues:UsedValuesData = elementRenderer.coreStyle.usedValues;
+		return usedValues.left + usedValues.marginLeft;
 	}
 	
 	/**
@@ -281,9 +289,9 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function getRightOffset(elementRenderer:ElementRenderer, containingHTMLElementWidth:Float):Float
 	{
-		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
-		return containingHTMLElementWidth - computedStyle.width - computedStyle.paddingLeft
-		- computedStyle.paddingRight - computedStyle.right - computedStyle.marginRight;
+		var usedValues:UsedValuesData = elementRenderer.coreStyle.usedValues;
+		return containingHTMLElementWidth - usedValues.width - usedValues.paddingLeft
+		- usedValues.paddingRight - usedValues.right - usedValues.marginRight;
 	}
 	
 	/**
@@ -291,8 +299,8 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function getTopOffset(elementRenderer:ElementRenderer):Float
 	{
-		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
-		return computedStyle.top + computedStyle.marginTop;
+		var usedValues:UsedValuesData = elementRenderer.coreStyle.usedValues;
+		return usedValues.top + usedValues.marginTop;
 	}
 	
 	/**
@@ -300,9 +308,9 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function getBottomOffset(elementRenderer:ElementRenderer, containingHTMLElementHeight:Float):Float
 	{
-		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
-		return containingHTMLElementHeight - computedStyle.height - computedStyle.paddingTop -
-		computedStyle.paddingBottom - computedStyle.bottom;
+		var usedValues:UsedValuesData = elementRenderer.coreStyle.usedValues;
+		return containingHTMLElementHeight - usedValues.height - usedValues.paddingTop -
+		usedValues.paddingBottom - usedValues.bottom;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -7,10 +7,12 @@
 */
 package cocktail.core.style.transition;
 
-import cocktail.core.style.ComputedStyle;
-import cocktail.core.style.CoreStyle;
+
+import cocktail.core.css.CoreStyle;
+import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.style.StyleData;
 import cocktail.core.renderer.RendererData;
+import cocktail.core.css.CSSData;
 
 /**
  * The transition manager is in charge of starting
@@ -109,7 +111,7 @@ class TransitionManager
 	 * 
 	 * Returns null if no transition matches
 	 */
-	public function getTransition(propertyName:String, style:ComputedStyle):Transition
+	public function getTransition(propertyName:String, style:CoreStyle):Transition
 	{
 		//shortcut, return null if no transition
 		//are currently in progress
@@ -141,8 +143,8 @@ class TransitionManager
 	 * start a new transition by instantiating a new 
 	 * Transition obejct
 	 */
-	public function startTransition(target:ComputedStyle, propertyName:String, startValue:Float, endValue:Float, transitionDuration:Float, 
-	transitionDelay:Float, transitionTimingFunction:TransitionTimingFunctionValue, onComplete:Transition->Void, onUpdate:Transition->Void, invalidationReason:InvalidationReason):Void
+	public function startTransition(target:CoreStyle, propertyName:String, startValue:Float, endValue:Float, transitionDuration:Float, 
+	transitionDelay:Float, transitionTimingFunction:CSSPropertyValue, onComplete:Transition->Void, onUpdate:Transition->Void, invalidationReason:InvalidationReason):Void
 	{
 		//create a new transition
 		var transition:Transition = new Transition(propertyName, target, transitionDuration, transitionDelay, transitionTimingFunction,

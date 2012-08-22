@@ -12,12 +12,14 @@ import cocktail.core.event.Event;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.unit.UnitManager;
 import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 import cocktail.port.GraphicsContext;
 import cocktail.port.NativeTextInput;
+import cocktail.core.css.CSSData;
 
 /**
  * This is an ElementRenderer in charge of
@@ -100,7 +102,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		//to the Window
 		_nativeTextInput.viewport = {
 			x: globalBounds.x - scrollOffset.x,
-			y: globalBounds.y + globalBounds.height / 2 - coreStyle.computedStyle.fontSize + coreStyle.fontMetrics.ascent / 2 - scrollOffset.y,
+			y: globalBounds.y + globalBounds.height / 2 - coreStyle.fontMetrics.fontSize + coreStyle.fontMetrics.ascent / 2 - scrollOffset.y,
 			width: globalBounds.width,
 			height: globalBounds.height
 		}
@@ -108,26 +110,37 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		//set the style of the text input text using the CSS applying to it
 		//Based on the platform not all of those style might be taken into account
 		
-		_nativeTextInput.fontFamily = coreStyle.computedStyle.fontFamily[0];
-		_nativeTextInput.letterSpacing = coreStyle.computedStyle.letterSpacing;
-		_nativeTextInput.fontSize = coreStyle.computedStyle.fontSize;
+		_nativeTextInput.fontFamily = UnitManager.getFontFamilyAsStringArray(coreStyle.fontFamily)[0];
+		_nativeTextInput.letterSpacing = coreStyle.usedValues.letterSpacing;
+		_nativeTextInput.fontSize = coreStyle.getAbsoluteLength(coreStyle.fontSize);
 	
-		var bold:Bool;
-		switch (coreStyle.computedStyle.fontWeight)
+		var bold:Bool = false;
+		switch (coreStyle.fontWeight)
 		{
-			case lighter, FontWeight.normal,
-			css100, css200, css300, css400:
-				bold = false;
+			case KEYWORD(value):
+				switch(value)
+				{
+					case LIGHTER, NORMAL:
+						bold = false;
+						
+					case BOLDER, BOLD:
+						bold = true;
+						
+					default:
+						throw 'Illegal keyword for bold style';
+				}
 				
-			case FontWeight.bold, bolder, css500, css600,
-			css700, css800, css900:
-				bold = true;
+			case INTEGER(value):
+				bold = value > 400;
+				
+			default:
+				throw 'Illegal value for bold style';
 		}
 		
 		_nativeTextInput.bold = bold;
-		_nativeTextInput.italic = coreStyle.computedStyle.fontStyle == FontStyle.italic;
-		_nativeTextInput.letterSpacing = coreStyle.computedStyle.letterSpacing;
-		_nativeTextInput.color = coreStyle.computedStyle.color.color;
+		_nativeTextInput.italic = coreStyle.getKeyword(coreStyle.fontStyle) == ITALIC;
+		_nativeTextInput.letterSpacing = coreStyle.usedValues.letterSpacing;
+		_nativeTextInput.color = coreStyle.usedValues.color.color;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

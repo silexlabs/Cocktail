@@ -9,8 +9,11 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.port.flash_player;
 
+import cocktail.core.css.CoreStyle;
+import cocktail.core.css.CSSStyleDeclaration;
+import cocktail.core.unit.UnitManager;
 import cocktail.port.NativeElement;
-import cocktail.core.style.ComputedStyle;
+
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 import flash.text.engine.FontMetrics;
@@ -23,6 +26,7 @@ import flash.text.Font;
 import haxe.Log;
 import cocktail.core.font.AbstractFontManagerImpl;
 import cocktail.core.font.FontData;
+import cocktail.core.css.CSSData;
 import cocktail.core.style.StyleData;
 
 
@@ -144,10 +148,10 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 * Overriden to create flash text lines. Uses the flash text engine introduced
 	 * in flash player 10
 	 */
-	override public function createNativeTextElement(text:String, computedStyle:ComputedStyle):NativeElement
+	override public function createNativeTextElement(text:String, style:CoreStyle):NativeElement
 	{
 		//get a flash TextElement, used as the model for a flash textBlock
-		_textBlock.content = getNativeTextElement(text, computedStyle);
+		_textBlock.content = getNativeTextElement(text, style);
 		
 		//create a native flash text line
 		//by default, the width of the line to create is an 
@@ -213,32 +217,34 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 * to apply to it when rendered. A computedStyle
 	 * is provided to render the text
 	 */
-	private function getNativeTextElement(text:String, computedStyle:ComputedStyle):TextElement
+	private function getNativeTextElement(text:String, style:CoreStyle):TextElement
 	{	
 		var textElement:TextElement = new TextElement(text);
+		
+		var usedValues:UsedValuesData = style.usedValues;
 		
 		//create a flash element format object and set its
 		//attribute to match the styles defined in the computedStyle reference
 		var elementFormat:ElementFormat = new ElementFormat();
 		
 		//set font size
-		elementFormat.fontSize = computedStyle.fontSize;
+		elementFormat.fontSize = style.getAbsoluteLength(style.fontSize);
 		
 		//set font weight, style (italique or not), and family
 		var fontDescription:FontDescription = new FontDescription(); 
-		fontDescription.fontWeight = getNativeFontWeight(computedStyle.fontWeight);
-		fontDescription.fontPosture = getNativeFontPosture(computedStyle.fontStyle);
-		fontDescription.fontName = getNativeFontFamily(computedStyle.fontFamily);
+		fontDescription.fontWeight = getNativeFontWeight(style.fontWeight);
+		fontDescription.fontPosture = getNativeFontPosture(style.getKeyword(style.fontStyle));
+		fontDescription.fontName = getNativeFontFamily(UnitManager.getFontFamilyAsStringArray(style.fontFamily));
 		elementFormat.fontDescription = fontDescription;
 		
 		//color of the text
-		elementFormat.color = computedStyle.color.color;
+		elementFormat.color = usedValues.color.color;
 
 		//normal or small caps
-		elementFormat.typographicCase = getNativeFontVariant(computedStyle.fontVariant);
+		elementFormat.typographicCase = getNativeFontVariant(style.getKeyword(style.fontVariant));
 		
 		//space between each letter
-		elementFormat.trackingRight = computedStyle.letterSpacing;
+		elementFormat.trackingRight = style.usedValues.letterSpacing;
 		
 		//set the element format as the text element
 		//element format
@@ -251,17 +257,20 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 * Return a flash FontPosture object from
 	 * a FontStyle
 	 */
-	private function getNativeFontPosture(fontStyle:FontStyle):FontPosture
+	private function getNativeFontPosture(fontStyle:CSSKeywordValue):FontPosture
 	{
 		var nativeFontPosture:FontPosture;
 		
 		switch (fontStyle)
 		{
-			case normal:
+			case NORMAL:
 				nativeFontPosture = FontPosture.NORMAL;
 				
-			case italic, oblique:
+			case ITALIC, OBLIQUE:
 				nativeFontPosture = FontPosture.ITALIC;
+				
+			default:
+				nativeFontPosture = null;
 		}
 		
 		return nativeFontPosture;
@@ -271,17 +280,20 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 * Return a flash TypographicCase object from
 	 * a FontVariant
 	 */
-	private function getNativeFontVariant(fontVariant:FontVariant):TypographicCase
+	private function getNativeFontVariant(fontVariant:CSSKeywordValue):TypographicCase
 	{
 		var nativeFontVariant:TypographicCase;
 		
 		switch (fontVariant)
 		{
-			case normal:
+			case NORMAL:
 				nativeFontVariant = TypographicCase.DEFAULT;
 				
-			case smallCaps:
+			case SMALL_CAPS:
 				nativeFontVariant = TypographicCase.CAPS_AND_SMALL_CAPS;		
+				
+			default:
+				nativeFontVariant = null;
 		}
 		
 		return nativeFontVariant;
@@ -334,29 +346,37 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 * Return a flash FontWeight object from
 	 * a FontWeight
 	 */
-	private function getNativeFontWeight(fontWeight:FontWeight):flash.text.engine.FontWeight
+	private function getNativeFontWeight(fontWeight:CSSPropertyValue):flash.text.engine.FontWeight
 	{
 		var nativeFontWeight:flash.text.engine.FontWeight;
 		
 		switch (fontWeight)
 		{
-			case bold:
-				nativeFontWeight = flash.text.engine.FontWeight.BOLD;
+			case INTEGER(value):
+				if (value > 400)
+				{
+					nativeFontWeight = flash.text.engine.FontWeight.BOLD;
+				}
+				else
+				{
+					nativeFontWeight = flash.text.engine.FontWeight.NORMAL;
+				}
 				
-			case normal:
-				nativeFontWeight = flash.text.engine.FontWeight.NORMAL;
-				
-			case bolder:
-				nativeFontWeight = flash.text.engine.FontWeight.BOLD;
-				
-			case lighter:
-				nativeFontWeight = flash.text.engine.FontWeight.NORMAL;
-				
-			case css100, css200, css300, css400:
-				nativeFontWeight = flash.text.engine.FontWeight.NORMAL;
-				
-			case css500, css600, css700, css800, css900:
-				nativeFontWeight = flash.text.engine.FontWeight.BOLD;
+			case KEYWORD(value):
+				switch(value)
+				{
+					case BOLD, BOLDER:
+						nativeFontWeight = flash.text.engine.FontWeight.BOLD;
+						
+					case NORMAL, LIGHTER:	
+						nativeFontWeight = flash.text.engine.FontWeight.NORMAL;
+						
+					default:
+						nativeFontWeight = null;
+				}
+			
+			default:
+				throw 'Illegal value for font weight style';
 		}
 		
 		return nativeFontWeight;

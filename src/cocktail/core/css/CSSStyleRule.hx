@@ -10,6 +10,7 @@ package cocktail.core.css;
 import cocktail.core.css.CSSData;
 import cocktail.core.css.parsers.CSSParsersData;
 import cocktail.core.css.parsers.CSSSelectorParser;
+import cocktail.core.css.parsers.SelectorSerializer;
 using StringTools;
 
 /**
@@ -21,18 +22,16 @@ class CSSStyleRule extends CSSRule
 {
 	/**
 	 * get/set the selector text. When
-	 * set, parse it
+	 * set, parse it. When get serialze the
+	 * typed selector as a string
 	 */
-	public var selectorText:String;
+	public var selectorText(get_selectorText, set_selectorText):String;
 	
 	/**
-	 * The selector of this style rule, as
+	 * The selectors of this style rule, as
 	 * typed objects
-	 * 
-	 * 	TODO : should be array to represent comma
-	 *	separated selectors
 	 */
-	public var selector:SelectorData;
+	public var selectors:Array<SelectorData>;
 	
 	/**
 	 * Stores all the style definition (the style name / 
@@ -40,6 +39,10 @@ class CSSStyleRule extends CSSRule
 	 */
 	public var style(default, null):CSSStyleDeclaration;
 	
+	/**
+	 * an instance of the class used to parse the selector
+	 * of this style rule
+	 */
 	private var _selectorParser:CSSSelectorParser;
 	
 	/**
@@ -51,10 +54,7 @@ class CSSStyleRule extends CSSRule
 		style = new CSSStyleDeclaration(this);
 		_selectorParser = new CSSSelectorParser();
 		
-		selector = {
-			components:[],
-			pseudoElement:PseudoElementSelectorValue.NONE
-		}
+		selectors = new Array<SelectorData>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -70,6 +70,8 @@ class CSSStyleRule extends CSSRule
 	 */
 	private function parse(css:String):Void
 	{
+		selectors = new Array<SelectorData>();
+		
 		var state:StyleRuleParserState = IGNORE_SPACES;
 		var next:StyleRuleParserState = BEGIN_SELECTOR;
 		var start:Int = 0;
@@ -117,8 +119,8 @@ class CSSStyleRule extends CSSRule
 					}
 					
 				case END_SELECTOR:	
-					var selector = css.substr(start, position - start);
-					_selectorParser.parseSelector(selector, this.selector);
+					var selector:String = css.substr(start, position - start);
+					_selectorParser.parseSelector(selector, selectors);
 					state = next;
 					
 				case BEGIN_STYLES:
@@ -139,13 +141,51 @@ class CSSStyleRule extends CSSRule
 					}
 				
 				case END_STYLES:
-					var styleDeclaration = css.substr(start, position - start);
+					var styleDeclaration:String = css.substr(start, position - start);
 					style.cssText = styleDeclaration;
 					state = IGNORE_SPACES;
 					next = IGNORE_SPACES;
 			}
 			c = css.fastCodeAt(++position);
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE SERIALISER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Serialize the whole style rule : selectors and
+	 * style declarations
+	 */
+	private function serializeStyleRule():String
+	{
+		var serializedStyleRule:String = serializeSelectors(selectors);
+		
+		serializedStyleRule += "{" +  style.cssText + "}";
+		return serializedStyleRule;
+	}
+	
+	/**
+	 *	Serialize the selectors of this style rule as a string. Selectors
+	 * are comma separated
+	 */
+	private function serializeSelectors(selectors:Array<SelectorData>):String
+	{
+		var serializedSelectors:String = "";
+		
+		for (i in 0...selectors.length)
+		{
+			var selector:SelectorData = selectors[i];
+			serializedSelectors += SelectorSerializer.serialize(selector);
+			
+			if (i < selectors.length)
+			{
+				serializedSelectors += ", ";
+			}
+		}
+		
+		return serializedSelectors;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -174,8 +214,31 @@ class CSSStyleRule extends CSSRule
 		return value;
 	}
 	
+	override private function get_cssText():String
+	{
+		return serializeStyleRule();
+	}
+	
+	
 	override private function get_type():Int
 	{
 		return CSSRule.STYLE_RULE;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_selectorText():String
+	{
+		return serializeSelectors(selectors);
+	}
+	
+	//TODO 1 : should do nothing if selector parsing fails
+	private function set_selectorText(value:String):String
+	{
+		this.selectors = new Array<SelectorData>();
+		_selectorParser.parseSelector(value, selectors);
+		return value;
 	}
 }

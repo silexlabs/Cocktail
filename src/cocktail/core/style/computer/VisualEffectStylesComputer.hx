@@ -8,13 +8,14 @@
 package cocktail.core.style.computer;
 
 import cocktail.core.geom.Matrix;
-import cocktail.core.style.ComputedStyle;
-import cocktail.core.style.CoreStyle;
+
+import cocktail.core.css.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.unit.UnitData;
 import cocktail.core.font.FontData;
+import cocktail.core.css.CSSData;
 
 /**
  * This is a static class in charge of
@@ -46,16 +47,11 @@ class VisualEffectStylesComputer
 	 */
 	public static function compute(style:CoreStyle):Void
 	{
-		//get a reference to the computed style structure
-		//holding the used style value (the ones actually used)
-		var computedStyle:ComputedStyle = style.computedStyle;
-		var fontMetrics:FontMetricsData = style.fontMetrics;
-		
 		//transformOrigin
-		computedStyle.transformOrigin = getComputedTransformOrigin(style, fontMetrics);
+		style.usedValues.transformOrigin = getComputedTransformOrigin(style);
 		
 		//transform
-		computedStyle.transform = getComputedTransform(style, fontMetrics);
+		style.usedValues.transform = getComputedTransform(style);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -66,47 +62,78 @@ class VisualEffectStylesComputer
 	 * Compute the transformation origin and returns it as a 2d point
 	 * in pixel
 	 */
-	private static function getComputedTransformOrigin(style:CoreStyle, fontMetrics:FontMetricsData):PointData
+	private static function getComputedTransformOrigin(style:CoreStyle):PointData
 	{
-		var x:Float;
-		var y:Float;
+		var x:Float = 0.0;
+		var y:Float = 0.0;
+		
+		var transformOriginX:CSSPropertyValue = null;
+		var transformOriginY:CSSPropertyValue = null;
+		
+		switch(style.transformOrigin)
+		{
+			case GROUP(value):
+				transformOriginX = value[0];
+				transformOriginY = value[1];
+				
+			default:	
+				
+		}
 		
 		//x axis
-		switch (style.transformOrigin.x)
+		switch (transformOriginX)
 		{
-			case TransformOriginX.length(value):
-				x = UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight);
+			case ABSOLUTE_LENGTH(value):
+				x = value;
 			
-			case TransformOriginX.percent(value):
-				x = UnitManager.getPixelFromPercent(value, style.computedStyle.width);
+			case PERCENTAGE(value):
+				x = UnitManager.getPixelFromPercent(value, style.usedValues.width);
 				
-			case TransformOriginX.left:
-				x = UnitManager.getPixelFromPercent(0, style.computedStyle.width);
+			case KEYWORD(value):
+				switch(value)
+				{
+					case LEFT:
+						x = UnitManager.getPixelFromPercent(0, style.usedValues.width);
+						
+					case CENTER:	
+						x = UnitManager.getPixelFromPercent(50, style.usedValues.width);	
+						
+					case RIGHT:
+						x = UnitManager.getPixelFromPercent(100, style.usedValues.width);
+						
+					default:	
+				}
 				
-			case TransformOriginX.center:
-				x = UnitManager.getPixelFromPercent(50, style.computedStyle.width);	
-				
-			case TransformOriginX.right:
-				x = UnitManager.getPixelFromPercent(100, style.computedStyle.width);		
+			default:
+					
 		}
 		
 		//y axis
-		switch (style.transformOrigin.y)
+		switch (transformOriginY)
 		{
-			case TransformOriginY.length(value):
-				y = UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight);
+			case ABSOLUTE_LENGTH(value):
+				y = value;
 			
-			case TransformOriginY.percent(value):
-				y = UnitManager.getPixelFromPercent(value, style.computedStyle.width);
+			case PERCENTAGE(value):
+				y = UnitManager.getPixelFromPercent(value, style.usedValues.width);
 				
-			case TransformOriginY.top:
-				y = UnitManager.getPixelFromPercent(0, style.computedStyle.width);
+			case KEYWORD(value):
+				switch(value)
+				{
+					case TOP:
+						y = UnitManager.getPixelFromPercent(0, style.usedValues.width);
+						
+					case CENTER:	
+						y = UnitManager.getPixelFromPercent(50, style.usedValues.width);	
+						
+					case BOTTOM:
+						y = UnitManager.getPixelFromPercent(100, style.usedValues.width);
+						
+					default:	
+				}
 				
-			case TransformOriginY.center:
-				y = UnitManager.getPixelFromPercent(50, style.computedStyle.width);	
-				
-			case TransformOriginY.bottom:
-				y = UnitManager.getPixelFromPercent(100, style.computedStyle.width);			
+			default:
+					
 		}
 		
 		//return the point
@@ -122,22 +149,38 @@ class VisualEffectStylesComputer
 	 * Compute a transformation matrix to apply to the htmlElement
 	 * from the array of transform functions concatenated in order
 	 */
-	private static function getComputedTransform(style:CoreStyle, fontMetrics:FontMetricsData):Matrix
+	private static function getComputedTransform(style:CoreStyle):Matrix
 	{
-		var transformFunctions:Array<TransformFunction>;
-		var transformOrigin:PointData = style.computedStyle.transformOrigin;
+		//early return if no transforms are applied, return
+		//an identity matrix
+		if (style.isNone(style.transform))
+		{
+			return new Matrix();
+		}
 		
 		//the matrix that will concatenate the transform functions
 		var matrix:Matrix = new Matrix();
 		
-		//retrieve the transform functions or init an empty array
+		var transformFunctions:Array<CSSTransformFunctionValue> = new Array<CSSTransformFunctionValue>();
+		var transformOrigin:PointData = style.usedValues.transformOrigin;
+		
+		//retrieve the transform functions
 		switch (style.transform)
 		{
-			case Transform.transformFunctions(value):
-				transformFunctions = value;
+			case GROUP(value):
+				for (i in 0...value.length)
+				{
+					switch(value[i])
+					{
+						case TRANSFORM_FUNCTION(value):
+							transformFunctions.push(value);
+							
+						default:	
+					}
+				}
 				
-			case Transform.none:
-				transformFunctions = new Array<TransformFunction>();
+				
+			default:		
 		}
 		
 		//translate the matrix to the coordinate system of the 
@@ -147,61 +190,61 @@ class VisualEffectStylesComputer
 		//apply each transform functions to the matrix in order
 		for (i in 0...transformFunctions.length)
 		{
-			var transformFunction:TransformFunction = transformFunctions[i];
+			var transformFunction:CSSTransformFunctionValue = transformFunctions[i];
 			
 			switch (transformFunction)
 			{
 				//concatenate another matrix
-				case TransformFunction.matrix(data):
+				case MATRIX(data):
 					matrix.concatenate(new Matrix(data));
 				
 				//rotate	
-				case TransformFunction.rotate(value):
+				case ROTATE(value):
 					var angle:Float = UnitManager.getRadFromAngle(value);
 					matrix.rotate(angle);
 				
 				//scale x and y	
-				case TransformFunction.scale(sx, sy):
+				case SCALE(sx, sy):
 					matrix.scale(sx, sy);
 				
 				//scale x	
-				case TransformFunction.scaleX(sx):
+				case SCALE_X(sx):
 					matrix.scale(sx, 1);
 				
 				//scale y	
-				case TransformFunction.scaleY(sy):
+				case SCALE_Y(sy):
 					matrix.scale(1, sy);
 				
 				//skew x and y	
-				case TransformFunction.skew(angleX, angleY):
+				case SKEW(angleX, angleY):
 					var skewX:Float = UnitManager.getRadFromAngle(angleX);
 					var skewY:Float = UnitManager.getRadFromAngle(angleY);
 					matrix.skew(skewX, skewY);
 				
 				//skew x	
-				case TransformFunction.skewX(angleX):
+				case SKEW_X(angleX):
 					var skewX:Float = UnitManager.getRadFromAngle(angleX);
 					matrix.skew(skewX, 0);
 				
 				//skew y	
-				case TransformFunction.skewY(angleY):
+				case SKEW_Y(angleY):
 					var skewY:Float = UnitManager.getRadFromAngle(angleY);
 					matrix.skew(0, skewY);
 				
 				//translate x and y	
-				case TransformFunction.translate(tx, ty):
-					var translationX:Float = getComputedTranslation(style, tx, style.computedStyle.width, fontMetrics);
-					var translationY:Float = getComputedTranslation(style, ty, style.computedStyle.height, fontMetrics);
+				case TRANSLATE(tx, ty):
+					var translationX:Float = getComputedTranslation(style, tx, style.usedValues.width);
+					var translationY:Float = getComputedTranslation(style, ty, style.usedValues.height);
 					matrix.translate(translationX, translationY);
 				
 				//translate x	
-				case TransformFunction.translateX(tx):
-					var translationX:Float = getComputedTranslation(style, tx, style.computedStyle.width, fontMetrics);
+				case TRANSLATE_X(tx):
+					var translationX:Float = getComputedTranslation(style, tx, style.usedValues.width);
 					matrix.translate(translationX, 0.0);
 				
 				//translate y	
-				case TransformFunction.translateY(ty):
-					var translationY:Float = getComputedTranslation(style, ty, style.computedStyle.height, fontMetrics);
+				case TRANSLATE_Y(ty):
+					var translationY:Float = getComputedTranslation(style, ty, style.usedValues.height);
 					matrix.translate(0.0, translationY);	
 			}
 		}
@@ -216,17 +259,19 @@ class VisualEffectStylesComputer
 	/**
 	 * Utils method to compute a TransformValue into a float
 	 */
-	private static function getComputedTranslation(style:CoreStyle, translation:Translation, percentReference:Float, fontMetrics:FontMetricsData):Float
+	private static function getComputedTranslation(style:CoreStyle, translation:CSSTranslationValue, percentReference:Float):Float
 	{
-		var computedTranslation:Float;
+		var computedTranslation:Float = 0.0;
 		
 		switch (translation)
 		{
-			case Translation.length(value):
-				computedTranslation = UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight);
+			case ABSOLUTE_LENGTH(value):
+				computedTranslation = value;
 				
-			case Translation.percent(value):
+			case PERCENTAGE(value):
 				computedTranslation = UnitManager.getPixelFromPercent(value, percentReference);
+				
+			default:	
 		}
 		
 		return computedTranslation;

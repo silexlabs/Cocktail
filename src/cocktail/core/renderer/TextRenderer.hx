@@ -15,12 +15,13 @@ import cocktail.core.linebox.LineBox;
 import cocktail.core.linebox.SpaceLineBox;
 import cocktail.core.linebox.TextLineBox;
 import cocktail.core.renderer.RendererData;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.font.FontManager;
 import haxe.Log;
 import cocktail.core.geom.GeomData;
 import cocktail.core.style.StyleData;
+import cocktail.core.css.CSSData;
 import cocktail.core.font.FontData;
 
 /**
@@ -205,11 +206,11 @@ class TextRenderer extends InvalidatingElementRenderer
 	 * 
 	 * TODO 2 : this is only a partial implementation 
 	 */
-	private function applyWhiteSpace(text:String, whiteSpace:WhiteSpace):String
+	private function applyWhiteSpace(text:String, whiteSpace:CSSKeywordValue):String
 	{
 		switch (whiteSpace)
 		{
-			case normal, nowrap: // remove new lines, spaces and tab
+			case NORMAL, NO_WRAP: // remove new lines, spaces and tab
 
 			var er1 : EReg = ~/[ \t]+/;
 			//TODO 3 : at this point, CR should have been normalised as LF
@@ -219,7 +220,7 @@ class TextRenderer extends InvalidatingElementRenderer
 			
 			text = er4.replace(er3.replace(er2.replace( er1.replace( text , " " ) , " " ), " "), " ");
 			
-			case preLine: // remove spaces
+			case PRE_LINE: // remove spaces
 
 			var er1 : EReg = ~/ *$^ */m;
 			var er2 : EReg = ~/[ \t]+/;
@@ -237,20 +238,22 @@ class TextRenderer extends InvalidatingElementRenderer
 	 * or capitalise them (only the first letter of each word
 	 * is transformed to uppercase)
 	 */
-	private function applyTextTransform(text:String, textTransform:TextTransform):String
+	private function applyTextTransform(text:String, textTransform:CSSKeywordValue):String
 	{
 		switch (textTransform)
 		{
-			case uppercase:
+			case UPPERCASE:
 				text = text.toUpperCase();
 				
-			case lowercase:
+			case LOWERCASE:
 				text = text.toLowerCase();
 				
-			case capitalize:
+			case CAPITALIZE:
 				text = capitalizeText(text);
 				
-			case none:
+			case NONE:
+				
+			default:	
 		}
 		
 		return text;
@@ -295,12 +298,11 @@ class TextRenderer extends InvalidatingElementRenderer
 		if (_textTokensNeedParsing == true)
 		{
 			var processedText:String = _text.nodeValue;
-			
 			//apply white space processing, for instance to collapse
 			//sequences of white spaces if needed
-			processedText = applyWhiteSpace(processedText, coreStyle.computedStyle.whiteSpace);
-			
-			processedText = applyTextTransform(processedText, coreStyle.computedStyle.textTransform);
+			processedText = applyWhiteSpace(processedText, coreStyle.getKeyword(coreStyle.whiteSpace));
+	
+			processedText = applyTextTransform(processedText, coreStyle.getKeyword(coreStyle.textTransform));
 			
 			_textTokens = doGetTextTokens(processedText);
 		}

@@ -7,8 +7,10 @@
 */
 package cocktail.core.style.computer;
 
-import cocktail.core.style.ComputedStyle;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CSSStyleDeclaration;
+
+import cocktail.core.css.CoreStyle;
+import cocktail.core.css.CSSData;
 import cocktail.core.style.StyleData;
 
 /**
@@ -48,22 +50,16 @@ class DisplayStylesComputer
 	 */
 	public static function compute(style:CoreStyle):Void
 	{
-		//get a reference to the computed style structure
-		//holding the used style value (the ones actually used)
-		var computedStyle:ComputedStyle = style.computedStyle;
 		
 		//float
-		computedStyle.cssFloat = getComputedFloat(style, computedStyle.position);
+		//style.cssFloat = getComputedFloat(style, style.position);
 		
 		//display
-		computedStyle.display = getComputedDisplay(style, computedStyle.cssFloat, computedStyle.position);
-		
-		//clear
-		computedStyle.clear = getComputedClear(style, computedStyle.position, computedStyle.display);
+		//style.display = getComputedDisplay(style, style.cssFloat, style.position);
 		
 		
 	}
-	
+	//
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE STATIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -74,21 +70,26 @@ class DisplayStylesComputer
 	 * @param	style
 	 * @param	computedPosition the computed value of position, computed before float
 	 */
-	private static function getComputedFloat(style:CoreStyle, computedPosition:Position):CSSFloat
+	public static function getComputedFloat(style:CoreStyle, computedPosition:CSSPropertyValue):CSSPropertyValue
 	{
-		var ret:CSSFloat;
+		var ret:CSSPropertyValue = style.cssFloat;
 		
-		//if the htmlElement is absolute or fixed position,
-		//it will act as an absolutely positioned htmlElement
-		//and won't take the float style into account,
-		//so it computes to none
-		if (computedPosition == Position.absolute || computedPosition == Position.fixed)
+		switch(computedPosition)
 		{
-			ret = CSSFloat.none;
-		}
-		else
-		{
-			ret = style.cssFloat;
+			case CSSPropertyValue.KEYWORD(value):
+				switch (value)
+				{
+					//if the htmlElement is absolute or fixed position,
+					//it will act as an absolutely positioned htmlElement
+					//and won't take the float style into account,
+					//so it computes to none
+					case CSSKeywordValue.ABSOLUTE, CSSKeywordValue.FIXED:
+						ret = CSSPropertyValue.KEYWORD(CSSKeywordValue.NONE);
+						
+					default:
+				}
+				
+			default:	
 		}
 		
 		return ret;
@@ -104,77 +105,55 @@ class DisplayStylesComputer
 	 * @param computedPosition the computed value of the position which must be computed before
 	 * this one
 	 */
-	private static function getComputedDisplay(style:CoreStyle, computedFloat:CSSFloat, computedPosition:Position):Display
+	public static function getComputedDisplay(style:CoreStyle, computedFloat:CSSPropertyValue, computedPosition:CSSPropertyValue):CSSPropertyValue
 	{
-		var ret:Display;
+		var ret:CSSPropertyValue = style.specifiedValues.getTypedProperty("display").typedValue;
 		
-		//if the htmlElement is a float, it can't
-		//be an inline level element
-		if (computedFloat != CSSFloat.none)
+		if (style.isNone(computedFloat) == false)
 		{
-			switch (style.display)
+			//TODO : should be specified style ?
+			switch (style.specifiedValues.getTypedProperty("display").typedValue)
 			{
-				//for inline level value, default to block
-				case cssInline, inlineBlock:
-					ret = Display.block;
-				
-				//the value remains unchanged for other	
+				case KEYWORD(value):
+					switch(value)
+					{
+						case INLINE, INLINE_BLOCK:
+							ret = KEYWORD(BLOCK);
+							
+						default:	
+					}
 				default:
-					ret = style.display;
-			}	
-		}
-		//if the htmlElement is absolutely positioned, it can't
-		//be inline
-		else if (computedPosition == Position.absolute || computedPosition == Position.fixed)
-		{
-			switch (style.display)
-			{
-				//for inline level value, default to block
-				case cssInline, inlineBlock:
-					ret = Display.block;
-				
-				//the value remains unchanged for other	
-				default:
-					ret = style.display;
 			}	
 		}
 		else
 		{
-			ret = style.display;
+			switch(computedPosition)
+			{
+				case KEYWORD(value):
+					switch(value)
+					{
+						case FIXED, ABSOLUTE:
+							//TODO : should be specified style ?
+							switch (style.specifiedValues.getTypedProperty("display").typedValue)
+							{
+								case KEYWORD(value):
+									switch(value)
+									{
+										case INLINE, INLINE_BLOCK:
+											ret = KEYWORD(BLOCK);
+											
+										default:
+											
+									}
+								default:
+							}	
+							
+						default:	
+					}
+				default:	
+			}
 		}
 		
 		return ret;
 	}
-	
-	/**
-	 * Compute the clear style which might be affected by 
-	 * the display and position style. Only block level
-	 * htmlElement can clear floats and they must
-	 * also be 'in-flow' element (with a 'position' value
-	 * of relative or static)
-	 * 
-	 * @param	style
-	 * @param	computedPosition
-	 * @param	computedDisplay
-	 */
-	private static function getComputedClear(style:CoreStyle, computedPosition:Position, computedDisplay:Display):Clear
-	{
-		var ret:Clear;
-		
-		if (computedDisplay == Display.cssInline || computedDisplay == Display.inlineBlock)
-		{
-			ret = Clear.none;
-		}
-		else if (computedPosition == Position.absolute || computedPosition == Position.fixed)
-		{
-			ret = Clear.none;
-		}
-		else
-		{
-			ret = style.clear;
-		}
-		
-		return ret;
-	}
-	
 }

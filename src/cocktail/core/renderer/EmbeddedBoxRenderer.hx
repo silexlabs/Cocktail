@@ -17,6 +17,7 @@ import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.port.GraphicsContext;
 import cocktail.core.style.StyleData;
+import cocktail.core.css.CSSData;
 
 /**
  * Base class for embedded element
@@ -58,30 +59,33 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		
 		//get the embedded box computers based on
 		//the positioning scheme
-		if (coreStyle.computedStyle.cssFloat == CSSFloat.left || coreStyle.computedStyle.cssFloat == CSSFloat.right)
+		if (isFloat() == true)
 		{
 			boxComputer = new EmbeddedFloatBoxStylesComputer();
 		}
-		else if (coreStyle.computedStyle.position == fixed || coreStyle.computedStyle.position == absolute)
+		else if (isPositioned() == true && isRelativePositioned() == false)
 		{
 			boxComputer = new EmbeddedPositionedBoxStylesComputer();
 		}
 		else
 		{
-			switch(coreStyle.computedStyle.display)
+			switch(coreStyle.getKeyword(coreStyle.display))
 			{
-				case block:
+				case BLOCK:
 					boxComputer = new EmbeddedBlockBoxStylesComputer();
 					
-				case inlineBlock:
+				case INLINE_BLOCK:
 					boxComputer = new EmbeddedInlineBlockBoxStylesComputer();	
 				
 				//not supposed to happen
-				case none:
+				case NONE:
 					boxComputer = null;
 				
-				case cssInline:
+				case INLINE:
 					boxComputer = new EmbeddedInlineBoxStylesComputer();
+					
+				default:
+					throw 'Illegal value for display style';
 			}
 		}
 		

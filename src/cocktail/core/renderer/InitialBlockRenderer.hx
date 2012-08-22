@@ -16,7 +16,7 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.style.formatter.BlockFormattingContext;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
 import haxe.Log;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.layer.LayerRenderer;
@@ -192,12 +192,12 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		
 		if (_verticalScrollBar != null)
 		{
-			windowData.width -= _verticalScrollBar.coreStyle.computedStyle.width;
+			windowData.width -= _verticalScrollBar.coreStyle.usedValues.width;
 		}
 		
 		if (_horizontalScrollBar != null)
 		{
-			windowData.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
+			windowData.height -= _horizontalScrollBar.coreStyle.usedValues.height;
 		}
 		
 		return windowData;

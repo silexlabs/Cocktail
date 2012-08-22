@@ -59,7 +59,7 @@ class Node<NodeClass:Node<NodeClass>> extends NodeBase<NodeClass>
 	 * When this node is a Document or a DocumentType
 	 * which is not used with any Document yet, this is null.
 	 */
-	public var ownerDocument:Document;
+	public var ownerDocument(default, set_ownerDocument):Document;
 	
 	/**
 	 * class constructor
@@ -105,6 +105,11 @@ class Node<NodeClass:Node<NodeClass>> extends NodeBase<NodeClass>
 		}
 		
 		return value;
+	}
+	
+	private function set_ownerDocument(value:Document):Document
+	{
+		return ownerDocument = value;
 	}
 	
 	private function get_nodeName():String

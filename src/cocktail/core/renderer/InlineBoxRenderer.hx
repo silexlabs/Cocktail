@@ -13,7 +13,7 @@ import cocktail.core.linebox.LineBox;
 import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
 import haxe.Log;
 import cocktail.core.geom.GeomData;
 

@@ -7,13 +7,14 @@
 */
 package cocktail.core.style.computer;
 
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.unit.UnitData;
 import haxe.Log;
 import cocktail.core.font.FontData;
+import cocktail.core.css.CSSData;
 
 /**
  * This class computes all the background styles.
@@ -60,8 +61,9 @@ class BackgroundStylesComputer
 	 */
 	public static function compute(style:CoreStyle):Void
 	{
+		
 		//actually compute the background color
-		style.computedStyle.backgroundColor = getComputedBackgroundColor(style);
+		style.usedValues.backgroundColor = getComputedBackgroundColor(style);
 	}
 	
 	/**
@@ -89,25 +91,23 @@ class BackgroundStylesComputer
 	 */
 	public static function computeIndividualBackground(style:CoreStyle, backgroundBox:RectangleData,
 	intrinsicWidth:Null<Float>, intrinsicHeight:Null<Float>, intrinsicRatio:Null<Float>, 
-	backgroundPosition:BackgroundPosition,
-	backgroundSize:BackgroundSize,
-	backgroundOrigin:BackgroundOrigin,
-	backgroundClip:BackgroundClip,
-	backgroundRepeat:BackgroundRepeat,
-	backgroundImage:BackgroundImage):ComputedBackgroundStyleData
+	backgroundPosition:CSSPropertyValue,
+	backgroundSize:CSSPropertyValue,
+	backgroundOrigin:CSSPropertyValue,
+	backgroundClip:CSSPropertyValue,
+	backgroundRepeat:CSSPropertyValue,
+	backgroundImage:CSSPropertyValue):ComputedBackgroundStyleData
 	{
-		var fontMetrics:FontMetricsData = style.fontMetrics;
-		
 		//get the area onto which the background image is positioned
 		var backgroundPositioningArea:RectangleData = getBackgroundPositioningArea(style, backgroundOrigin, backgroundBox);
 		
 		//get the absolute dimensions of the background image
 		var computedBackgroundSize:DimensionData = getComputedBackgroundSize(backgroundSize, backgroundPositioningArea,
-		intrinsicWidth, intrinsicHeight, intrinsicRatio, fontMetrics.fontSize, fontMetrics.xHeight);
+		intrinsicWidth, intrinsicHeight, intrinsicRatio);
 		
 		//get the offset of the background image relative to the background box top left corner
 		var computedBackgroundPosition:PointData = getComputedBackgroundPosition(backgroundPosition,
-		backgroundPositioningArea, computedBackgroundSize, fontMetrics.fontSize, fontMetrics.xHeight);
+		backgroundPositioningArea, computedBackgroundSize);
 		
 		//get the clipping area (the area where the background image is actually displayed)
 		var computedBackgroundClip:RectangleData = getBackgroundPaintingArea(style, backgroundClip, backgroundBox);
@@ -127,7 +127,7 @@ class BackgroundStylesComputer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE STATIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
+	//
 		// BACKGROUND COLOR
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -137,7 +137,7 @@ class BackgroundStylesComputer
 	private static function getComputedBackgroundColor(style:CoreStyle):ColorData
 	{
 		var computedColor:ColorData;
-		computedColor = UnitManager.getColorDataFromCSSColor(style.backgroundColor);
+		computedColor = UnitManager.getColorDataFromCSSColor(style.getColor(style.backgroundColor));
 		
 		return computedColor;
 	}
@@ -156,10 +156,21 @@ class BackgroundStylesComputer
 	 * @param	exReference
 	 * @return
 	 */
-	private static function getComputedBackgroundPosition(backgroundPosition:BackgroundPosition, backgroundPositioningArea:RectangleData, computedBackgroundSize:DimensionData, emReference:Float, exReference:Float):PointData
+	private static function getComputedBackgroundPosition(backgroundPosition:CSSPropertyValue, backgroundPositioningArea:RectangleData, computedBackgroundSize:DimensionData):PointData
 	{
-		var computedBackgroundXPosition:Float = getComputedBackgroundXPosition(backgroundPosition.x, backgroundPositioningArea.width, computedBackgroundSize.width,  emReference, exReference);
-		var computedBackgroundYPosition:Float = getComputedBackgroundYPosition(backgroundPosition.y, backgroundPositioningArea.height, computedBackgroundSize.height, emReference, exReference);
+		var backgroundPositionX:CSSPropertyValue = null;
+		var backgroundPositionY:CSSPropertyValue = null;
+		
+		switch(backgroundPosition)
+		{
+			case GROUP(value):
+				backgroundPositionX = value[0];
+				backgroundPositionY = value[1];
+				
+			default:	
+		}
+		var computedBackgroundXPosition:Float = doGetComputedBackgroundPosition(backgroundPositionX, backgroundPositioningArea.width, computedBackgroundSize.width);
+		var computedBackgroundYPosition:Float = doGetComputedBackgroundPosition(backgroundPositionY, backgroundPositioningArea.height, computedBackgroundSize.height);
 		
 		var computedBackgroundPosition:PointData = {
 			x:computedBackgroundXPosition,
@@ -170,65 +181,45 @@ class BackgroundStylesComputer
 	}
 	
 	/**
-	 * Return the x offset of the background image
+	 * Return the x or y offset of the background image
 	 */
-	private static function getComputedBackgroundXPosition(backgroundPosition:BackgroundPositionX, backgroundPositioningAreaDimension:Float, imageDimension:Float, emReference:Float, exReference:Float):Float
+	private static function doGetComputedBackgroundPosition(backgroundPosition:CSSPropertyValue, backgroundPositioningAreaDimension:Float, imageDimension:Float):Float
 	{
-		var computedBackgroundXPosition:Float;
+		var computedBackgroundPosition:Float = 0.0;
 		
 		switch (backgroundPosition)
 		{
-			case BackgroundPositionX.length(value):
-				computedBackgroundXPosition = UnitManager.getPixelFromLength(value, emReference, exReference);
+			case ABSOLUTE_LENGTH(value):
+				computedBackgroundPosition = value;
 			
-			//for percent value, it is relative to the background positioning area minus the width of the 
-			//background image, such as a 100% will have the right side of the picture touch the right side
+			//for percent value, it is relative to the background positioning area minus the width or height of the 
+			//background image, such as for width, a 100% value will have the right side of the picture touch the right side
 			//of the background positioning area
-			case BackgroundPositionX.percent(value):
-				computedBackgroundXPosition = UnitManager.getPixelFromPercent(value, backgroundPositioningAreaDimension - imageDimension);
+			case PERCENTAGE(value):
+				computedBackgroundPosition = UnitManager.getPixelFromPercent(value, backgroundPositioningAreaDimension - imageDimension);
 			
-			//same as 50%	
-			case BackgroundPositionX.center:
-				computedBackgroundXPosition = UnitManager.getPixelFromPercent(50, backgroundPositioningAreaDimension - imageDimension);
-			
-			//same as 0%	
-			case BackgroundPositionX.left:
-				computedBackgroundXPosition = UnitManager.getPixelFromPercent(0, backgroundPositioningAreaDimension - imageDimension);
-			
-			//same as 100%	
-			case BackgroundPositionX.right:
-				computedBackgroundXPosition = UnitManager.getPixelFromPercent(100, backgroundPositioningAreaDimension - imageDimension);
+			case KEYWORD(value):
+				switch(value)
+				{
+					//same as 50%	
+					case CENTER:
+						computedBackgroundPosition = UnitManager.getPixelFromPercent(50, backgroundPositioningAreaDimension - imageDimension);
+						
+					//same as 0%	
+					case LEFT, TOP:
+						computedBackgroundPosition = UnitManager.getPixelFromPercent(0, backgroundPositioningAreaDimension - imageDimension);
+						
+					//same as 100%	
+					case RIGHT, BOTTOM:
+						computedBackgroundPosition = UnitManager.getPixelFromPercent(100, backgroundPositioningAreaDimension - imageDimension);	
+						
+					default:	
+				}
+				
+			default:	
 		}
 		
-		return computedBackgroundXPosition;
-	}
-	
-	/**
-	 * Return the y offset of the background image. Same as getComputedBackgroundXPosition
-	 */
-	private static function getComputedBackgroundYPosition(backgroundPosition:BackgroundPositionY, backgroundPositioningAreaDimension:Float, imageDimension:Float, emReference:Float, exReference:Float):Float
-	{
-		var computedBackgroundYPosition:Float;
-		
-		switch (backgroundPosition)
-		{
-			case BackgroundPositionY.length(value):
-				computedBackgroundYPosition = UnitManager.getPixelFromLength(value, emReference, exReference);
-				
-			case BackgroundPositionY.percent(value):
-				computedBackgroundYPosition = UnitManager.getPixelFromPercent(value, backgroundPositioningAreaDimension - imageDimension);
-				
-			case BackgroundPositionY.center:
-				computedBackgroundYPosition = UnitManager.getPixelFromPercent(50, backgroundPositioningAreaDimension - imageDimension);
-				
-			case BackgroundPositionY.top:
-				computedBackgroundYPosition = UnitManager.getPixelFromPercent(0, backgroundPositioningAreaDimension - imageDimension);
-				
-			case BackgroundPositionY.bottom:
-				computedBackgroundYPosition = UnitManager.getPixelFromPercent(100, backgroundPositioningAreaDimension - imageDimension);
-		}
-		
-		return computedBackgroundYPosition;
+		return computedBackgroundPosition;
 	}
 	
 			// BACKGROUND SIZE
@@ -244,66 +235,98 @@ class BackgroundStylesComputer
 	 * @param	intrinsicWidth
 	 * @param	intrinsicHeight
 	 * @param	intrinsicRatio
-	 * @param	emReference
-	 * @param	exReference
 	 * @return
 	 */
-	private static function getComputedBackgroundSize(backgroundSize:BackgroundSize, backgroundPositioningArea:RectangleData, intrinsicWidth:Null<Float>, intrinsicHeight:Null<Float>, intrinsicRatio:Null<Float>, emReference:Float, exReference:Float):DimensionData
+	private static function getComputedBackgroundSize(backgroundSize:CSSPropertyValue, backgroundPositioningArea:RectangleData, intrinsicWidth:Null<Float>, intrinsicHeight:Null<Float>, intrinsicRatio:Null<Float>):DimensionData
 	{
-		var computedBackgroundSize:DimensionData;
+		var computedBackgroundSize:DimensionData = {
+			width:0.0,
+			height:0.0
+		};
 		
 		switch (backgroundSize)
 		{
-			//Scale the image, while preserving its
-			//intrinsic aspect ratio (if any), to the largest size such that 
-			//both its width and its height can fit inside the background positioning area.
-			case BackgroundSize.contain:
-				if (intrinsicRatio != null)
+			case KEYWORD(value):
+				switch(value)
 				{
-					var ratio:Float = intrinsicRatio / (backgroundPositioningArea.width / backgroundPositioningArea.height);
-					
-					computedBackgroundSize = {
-						width:intrinsicWidth * ratio,
-						height:intrinsicHeight * ratio
-					}
-				}
-				else
-				{
-					computedBackgroundSize = {
-						width:backgroundPositioningArea.width,
-						height:backgroundPositioningArea.height
-					}
+					//Scale the image, while preserving its
+					//intrinsic aspect ratio (if any), to the largest size such that 
+					//both its width and its height can fit inside the background positioning area.
+					case CONTAIN:
+						if (intrinsicRatio != null)
+						{
+							var ratio:Float = intrinsicRatio / (backgroundPositioningArea.width / backgroundPositioningArea.height);
+							
+							computedBackgroundSize = {
+								width:intrinsicWidth * ratio,
+								height:intrinsicHeight * ratio
+							}
+						}
+						else
+						{
+							computedBackgroundSize = {
+								width:backgroundPositioningArea.width,
+								height:backgroundPositioningArea.height
+							}
+						}
+						
+					//Scale the image, while preserving its intrinsic aspect
+					//ratio (if any), to the smallest size such that both its width
+					//and its height can completely cover the background positioning area.
+					case COVER:				
+						if (intrinsicRatio != null)
+						{
+							var ratio:Float =  (backgroundPositioningArea.width / backgroundPositioningArea.height) / intrinsicRatio;
+							
+							computedBackgroundSize = {
+								width:intrinsicWidth * ratio,
+								height:intrinsicHeight * ratio
+							}
+						}
+						else
+						{
+							computedBackgroundSize = {
+								width:backgroundPositioningArea.width,
+								height:backgroundPositioningArea.height
+							}
+						}	
+						
+					case AUTO:
+						computedBackgroundSize = {
+							width:getBackgroundSizeStyleDimensionData(KEYWORD(AUTO), KEYWORD(AUTO), backgroundPositioningArea.width, backgroundPositioningArea.height,
+							intrinsicWidth, intrinsicHeight, intrinsicRatio),
+							height:getBackgroundSizeStyleDimensionData(KEYWORD(AUTO), KEYWORD(AUTO), backgroundPositioningArea.height, backgroundPositioningArea.width,
+							intrinsicHeight, intrinsicWidth, intrinsicRatio)
+						}
+						
+					default:	
 				}
 				
-			//Scale the image, while preserving its intrinsic aspect
-			//ratio (if any), to the smallest size such that both its width
-			//and its height can completely cover the background positioning area. 	
-			case BackgroundSize.cover:
-				if (intrinsicRatio != null)
-				{
-					var ratio:Float =  (backgroundPositioningArea.width / backgroundPositioningArea.height) / intrinsicRatio;
+				case ABSOLUTE_LENGTH(value):
+					computedBackgroundSize = {
+						width:getBackgroundSizeStyleDimensionData(backgroundSize, KEYWORD(AUTO), backgroundPositioningArea.width, backgroundPositioningArea.height,
+						intrinsicWidth, intrinsicHeight, intrinsicRatio),
+						height:getBackgroundSizeStyleDimensionData(KEYWORD(AUTO), backgroundSize, backgroundPositioningArea.height, backgroundPositioningArea.width,
+						intrinsicHeight, intrinsicWidth, intrinsicRatio)
+					}
 					
+				case PERCENTAGE(value):	
 					computedBackgroundSize = {
-						width:intrinsicWidth * ratio,
-						height:intrinsicHeight * ratio
+						width:getBackgroundSizeStyleDimensionData(backgroundSize, KEYWORD(AUTO), backgroundPositioningArea.width, backgroundPositioningArea.height,
+						intrinsicWidth, intrinsicHeight, intrinsicRatio),
+						height:getBackgroundSizeStyleDimensionData(KEYWORD(AUTO), backgroundSize, backgroundPositioningArea.height, backgroundPositioningArea.width,
+						intrinsicHeight, intrinsicWidth, intrinsicRatio)
 					}
-				}
-				else
-				{
+					
+				case GROUP(value):
 					computedBackgroundSize = {
-						width:backgroundPositioningArea.width,
-						height:backgroundPositioningArea.height
+						width:getBackgroundSizeStyleDimensionData(value[0], value[1], backgroundPositioningArea.width, backgroundPositioningArea.height,
+						intrinsicWidth, intrinsicHeight, intrinsicRatio),
+						height:getBackgroundSizeStyleDimensionData(value[1], value[0], backgroundPositioningArea.height, backgroundPositioningArea.width,
+						intrinsicHeight, intrinsicWidth, intrinsicRatio)
 					}
-				}	
-			
-				
-			case BackgroundSize.dimensions(value):
-				computedBackgroundSize = {
-					width:getBackgroundSizeStyleDimensionData(value.x, value.y, backgroundPositioningArea.width, backgroundPositioningArea.height,
-					intrinsicWidth, intrinsicHeight, intrinsicRatio, emReference, exReference),
-					height:getBackgroundSizeStyleDimensionData(value.y, value.x, backgroundPositioningArea.height, backgroundPositioningArea.width,
-					intrinsicHeight, intrinsicWidth, intrinsicRatio, emReference, exReference)
-				}
+					
+				default:	
 		}
 		
 		return computedBackgroundSize;
@@ -319,54 +342,67 @@ class BackgroundStylesComputer
 	 * @param	intrinsicDimension
 	 * @param	opositeIntrinsicDimension
 	 * @param	intrinsicRatio
-	 * @param	emReference
-	 * @param	exReference
 	 * @return
 	 */
-	private static function getBackgroundSizeStyleDimensionData(value:BackgroundSizeDimension, opositeBackgroundSizeValue:BackgroundSizeDimension,
-	backgroundPositioningAreaDimension:Float, opositeBackgroundAreaDimension:Float, intrinsicDimension:Null<Float>, opositeIntrinsicDimension:Null<Float>, intrinsicRatio:Null<Float>,
-	emReference:Float, exReference:Float):Float
+	private static function getBackgroundSizeStyleDimensionData(backgroundSizeValue:CSSPropertyValue, opositeBackgroundSizeValue:CSSPropertyValue,
+	backgroundPositioningAreaDimension:Float, opositeBackgroundAreaDimension:Float, intrinsicDimension:Null<Float>, opositeIntrinsicDimension:Null<Float>, intrinsicRatio:Null<Float>):Float
 	{
-		var backgroundSizeStyleDimension:Float;
+		var backgroundSizeStyleDimension:Float = 0.0;
 		
-		switch (value)
+		switch (backgroundSizeValue)
 		{
-			//absolute or relative length value
-			case BackgroundSizeDimension.length(value):
-				backgroundSizeStyleDimension = UnitManager.getPixelFromLength(value, emReference, exReference);
+			case ABSOLUTE_LENGTH(value):
+				backgroundSizeStyleDimension = value;
 			
 			//percent relative to the background positioning area	
-			case BackgroundSizeDimension.percent(value):
+			case PERCENTAGE(value):
 				backgroundSizeStyleDimension = UnitManager.getPixelFromPercent(value, backgroundPositioningAreaDimension);
 			
 			//for auto, use intrinsic dimension if any or else,
 			//treated as a 100% value
-			case BackgroundSizeDimension.cssAuto:
-				//if the other dimension is alos auto, use the intrinsic dimension if any
-				if (intrinsicDimension != null && opositeBackgroundSizeValue == BackgroundSizeDimension.cssAuto)
+			case KEYWORD(value):
+				if (value == AUTO)
 				{
-					backgroundSizeStyleDimension = intrinsicDimension;
-				}
-				//if the other dimension is not auto, compute it and use a ratio of its dimension
-				//to keep the proportion of the background image
-				else if (opositeIntrinsicDimension != null && intrinsicRatio != null)
-				{
-					var opositeDimension:Float = getBackgroundSizeStyleDimensionData(opositeBackgroundSizeValue, value,
-					opositeBackgroundAreaDimension, backgroundPositioningAreaDimension, opositeIntrinsicDimension, intrinsicDimension,
-					intrinsicRatio, emReference, exReference);
+					var isOpositeAuto:Bool = false;
+					switch(opositeBackgroundSizeValue)
+					{
+						case KEYWORD(value):
+							if (value == AUTO)
+							{
+								isOpositeAuto = true;
+							}
+						default:	
+					}
 					
-					backgroundSizeStyleDimension = opositeDimension * intrinsicRatio;
+					//if the other dimension is also auto, use the intrinsic dimension if any
+					if (intrinsicDimension != null && isOpositeAuto == true)
+					{
+						backgroundSizeStyleDimension = intrinsicDimension;
+					}
+					//if the other dimension is not auto, compute it and use a ratio of its dimension
+					//to keep the proportion of the background image
+					else if (opositeIntrinsicDimension != null && intrinsicRatio != null)
+					{
+						var opositeDimension:Float = getBackgroundSizeStyleDimensionData(opositeBackgroundSizeValue, backgroundSizeValue,
+						opositeBackgroundAreaDimension, backgroundPositioningAreaDimension, opositeIntrinsicDimension, intrinsicDimension,
+						intrinsicRatio);
+						
+						backgroundSizeStyleDimension = opositeDimension * intrinsicRatio;
+					}
+					//if the background image doesn't have intrinsic dimensions, treat it like 100%
+					else
+					{
+						backgroundSizeStyleDimension = UnitManager.getPixelFromPercent(100, backgroundPositioningAreaDimension);
+					}
 				}
-				//if the background image doesn't have intrinsic dimensions, treat it like 100%
-				else
-				{
-					backgroundSizeStyleDimension = UnitManager.getPixelFromPercent(100, backgroundPositioningAreaDimension);
-				}
+				
+			default:	
+				
 		}
 		
 		return backgroundSizeStyleDimension;
 	}
-	
+	//
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE UTILS STATIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -383,40 +419,45 @@ class BackgroundStylesComputer
 	 * @param	backgroundOrigin
 	 * @return
 	 */
-	private static function getBackgroundPositioningArea(style:CoreStyle, backgroundOrigin:BackgroundOrigin, backgroundBox:RectangleData):RectangleData
+	private static function getBackgroundPositioningArea(style:CoreStyle, backgroundOrigin:CSSPropertyValue, backgroundBox:RectangleData):RectangleData
 	{
-		var backgroundPositioningArea:RectangleData;
-		
-		var height:Float;
-		var width:Float;
-		var x:Float;
-		var y:Float;
+		var height:Float = 0.0;
+		var width:Float =  0.0;
+		var x:Float = 0.0;
+		var y:Float = 0.0;
 		
 		switch (backgroundOrigin)
 		{
-			case BackgroundOrigin.borderBox:
-				height = backgroundBox.height;
-				width = backgroundBox.width;
-				x = 0.0;
-				y = 0.0;
+			case KEYWORD(value):
+				switch(value)
+				{
+					case BORDER_BOX:
+						height = backgroundBox.height;
+						width = backgroundBox.width;
+						x = 0.0;
+						y = 0.0;
+						
+						
+					case PADDING_BOX:
+						height = backgroundBox.height;
+						width = backgroundBox.width;
+						x = 0.0;
+						y = 0.0;
+						
+						
+					case CONTENT_BOX:
+						height = backgroundBox.height - style.usedValues.marginTop - style.usedValues.marginBottom - style.usedValues.paddingTop - style.usedValues.paddingBottom;
+						width = backgroundBox.width - style.usedValues.marginLeft - style.usedValues.marginRight - style.usedValues.paddingLeft - style.usedValues.paddingRight;
+						x = 0.0;
+						y = 0.0;
+						
+					default:	
+				}
 				
-				
-			case BackgroundOrigin.paddingBox:
-				height = backgroundBox.height;
-				width = backgroundBox.width;
-				x = 0.0;
-				y = 0.0;
-				
-				
-			case BackgroundOrigin.contentBox:
-				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.marginBottom - style.computedStyle.paddingTop - style.computedStyle.paddingBottom;
-				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight - style.computedStyle.paddingLeft - style.computedStyle.paddingRight;
-				x = 0.0;
-				y = 0.0 ;
-				
+			default:
 		}
 		
-		backgroundPositioningArea = {
+		var backgroundPositioningArea:RectangleData = {
 			height:height,
 			width:width,
 			x:x,
@@ -440,39 +481,44 @@ class BackgroundStylesComputer
 	 * @param	backgroundBox
 	 * @return
 	 */
-	private static function getBackgroundPaintingArea(style:CoreStyle, backgroundClip:BackgroundClip, backgroundBox:RectangleData):RectangleData
+	private static function getBackgroundPaintingArea(style:CoreStyle, backgroundClip:CSSPropertyValue, backgroundBox:RectangleData):RectangleData
 	{
-		var backgroundPaintingArea:RectangleData;
-		
-		var height:Float;
-		var width:Float;
-		var x:Float;
-		var y:Float;
+		var height:Float = 0.0;
+		var width:Float = 0.0;
+		var x:Float = 0.0;
+		var y:Float = 0.0;
 		
 		switch (backgroundClip)
 		{
-			case BackgroundClip.borderBox:
-				height = backgroundBox.height;
-				width = backgroundBox.width;
-				x = 0.0;
-				y = 0.0;
+			case KEYWORD(value):
+				switch(value)
+				{
+					case BORDER_BOX:
+						height = backgroundBox.height;
+						width = backgroundBox.width;
+						x = 0.0;
+						y = 0.0;
+						
+					case PADDING_BOX:
+						height = backgroundBox.height;
+						width = backgroundBox.width;
+						x = style.usedValues.marginLeft;
+						y = style.usedValues.marginTop;
+						
+						
+					case CONTENT_BOX:
+						height = backgroundBox.height - style.usedValues.marginTop - style.usedValues.marginBottom - style.usedValues.paddingTop - style.usedValues.paddingBottom;
+						width = backgroundBox.width - style.usedValues.marginLeft - style.usedValues.marginRight - style.usedValues.paddingLeft - style.usedValues.paddingRight;
+						x = style.usedValues.marginLeft + style.usedValues.paddingLeft;
+						y = style.usedValues.marginTop + style.usedValues.paddingTop;
+						
+					default:	
+				}
 				
-			case BackgroundClip.paddingBox:
-				height = backgroundBox.height;
-				width = backgroundBox.width;
-				x = style.computedStyle.marginLeft;
-				y = style.computedStyle.marginTop;
-				
-				
-			case BackgroundClip.contentBox:
-				height = backgroundBox.height - style.computedStyle.marginTop - style.computedStyle.marginBottom - style.computedStyle.paddingTop - style.computedStyle.paddingBottom;
-				width = backgroundBox.width - style.computedStyle.marginLeft - style.computedStyle.marginRight - style.computedStyle.paddingLeft - style.computedStyle.paddingRight;
-				x = style.computedStyle.marginLeft + style.computedStyle.paddingLeft;
-				y = style.computedStyle.marginTop + style.computedStyle.paddingTop;
-				
+			default:	
 		}
 		
-		backgroundPaintingArea = {
+		var backgroundPaintingArea:RectangleData = {
 			height:height,
 			width:width,
 			x:x,

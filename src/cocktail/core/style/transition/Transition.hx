@@ -7,12 +7,14 @@
 */
 package cocktail.core.style.transition;
 
+import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.geom.CubicBezier;
-import cocktail.core.style.ComputedStyle;
-import cocktail.core.style.CoreStyle;
+
+import cocktail.core.css.CoreStyle;
 import cocktail.core.style.CSSConstants;
 import cocktail.core.style.StyleData;
 import cocktail.core.renderer.RendererData;
+import cocktail.core.css.CSSData;
 
 /**
  * Represents a property transition form a start
@@ -36,7 +38,7 @@ class Transition
 	 * The easing function that should be used for
 	 * this property
 	 */
-	private var _transitionTimingFunction:TransitionTimingFunctionValue;
+	private var _transitionTimingFunction:CSSPropertyValue;
 	
 	/**
 	 * The value of the transitioned property when
@@ -86,10 +88,10 @@ class Transition
 	public var transitionDuration(default, null):Float;
 	
 	/**
-	 * The target ComputedStyle of the transition onto which
+	 * The target CSSStyleDeclaration of the transition onto which
 	 * update and complete method are called
 	 */
-	public var target(default, null):ComputedStyle;
+	public var target(default, null):CoreStyle;
 	
 	/**
 	 * Returns wether the transition is complete based on the
@@ -108,7 +110,7 @@ class Transition
 	 * class constructor. Set
 	 * the transition attribute
 	 */
-	public function new(propertyName:String, target:ComputedStyle, transitionDuration:Float, transitionDelay:Float, transitionTimingFunction:TransitionTimingFunctionValue,
+	public function new(propertyName:String, target:CoreStyle, transitionDuration:Float, transitionDelay:Float, transitionTimingFunction:CSSPropertyValue,
 	startValue:Float, endValue:Float, onComplete:Transition->Void, onUpdate:Transition->Void, invalidationReason:InvalidationReason) 
 	{
 		this.invalidationReason = invalidationReason;
@@ -164,7 +166,7 @@ class Transition
 	 */
 	private function get_complete():Bool
 	{
-		if (_elapsedTime >= (_transitionDelay + transitionDuration) * 1000)
+		if (_elapsedTime >= (_transitionDelay + transitionDuration))
 		{
 			return true;
 		}
@@ -182,7 +184,7 @@ class Transition
 		//offet between the elapsed time since the transition started 
 		//and the delay to apply to the transition before actually
 		//tweening value
-		var transitionTime:Float = _elapsedTime - (_transitionDelay * 1000);
+		var transitionTime:Float = _elapsedTime - (_transitionDelay);
 		//if the offset is negative, it means that the transition delay time
 		//is not yet complete, and so the start value must be returned
 		if (transitionTime < 0)
@@ -190,45 +192,58 @@ class Transition
 			return _startValue;
 		}
 		
-		var completePercent:Float = (transitionTime) / (transitionDuration * 1000);
+		var completePercent:Float = (transitionTime) / (transitionDuration);
 		
 		switch (_transitionTimingFunction)
 		{
-			//cubic bezier functions
-			case TransitionTimingFunctionValue.ease:
-				var cubicBezier:CubicBezier = new CubicBezier(0.25, 0.1, 0.25, 1.0);
-				return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;
+			case KEYWORD(value):
+				switch(value)
+				{
+					//cubic bezier functions
+					case EASE:
+						var cubicBezier:CubicBezier = new CubicBezier(0.25, 0.1, 0.25, 1.0);
+						return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;
+						
+					case EASE_IN:
+						var cubicBezier:CubicBezier = new CubicBezier(0.25, 0.1, 0.25, 1.0);
+						return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;
+						
+					case EASE_OUT:
+						var cubicBezier:CubicBezier = new CubicBezier(0.25, 0.1, 0.25, 1.0);
+						return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;	
+						
+					case EASE_IN_OUT:
+						var cubicBezier:CubicBezier = new CubicBezier(0.25, 0.1, 0.25, 1.0);
+						return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;
+						
+					//step functions	
+					case STEP_START:
+						return ((_endValue - _startValue) * 1) + _startValue;	
+						
+					case STEP_END:
+						return ((_endValue - _startValue) * 0) + _startValue;	
+						
+					//linear function
+					case LINEAR:
+						return ((_endValue - _startValue) * completePercent) + _startValue;	
+						
+					default:
+						throw 'Illegal keyword value for transition timing function style';
+				}
 				
-			case TransitionTimingFunctionValue.easeIn:
-				var cubicBezier:CubicBezier = new CubicBezier(0.25, 0.1, 0.25, 1.0);
-				return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;
-				
-			case TransitionTimingFunctionValue.easeOut:
-				var cubicBezier:CubicBezier = new CubicBezier(0.25, 0.1, 0.25, 1.0);
-				return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;	
-				
-			case TransitionTimingFunctionValue.easeInOut:
-				var cubicBezier:CubicBezier = new CubicBezier(0.25, 0.1, 0.25, 1.0);
-				return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;		
-				
-			case TransitionTimingFunctionValue.cubicBezier(x1, y1, x2, y2):
+			case CUBIC_BEZIER(x1, y1, x2, y2):
 				var cubicBezier:CubicBezier = new CubicBezier(x1, y1, x2, y2);
 				return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;	
-				
-			//step functions	
-			case TransitionTimingFunctionValue.stepStart:
-				return ((_endValue - _startValue) * 1) + _startValue;	
-				
-			case TransitionTimingFunctionValue.stepEnd:
-				return ((_endValue - _startValue) * 0) + _startValue;		
-				
-			//TODO 1 : implement stepping function
-			case TransitionTimingFunctionValue.steps(intervalNumbers, intervalChange):
-				return ((_endValue - _startValue) * completePercent) + _startValue;			
 			
-			//linear function
-			case TransitionTimingFunctionValue.linear:
-				return ((_endValue - _startValue) * completePercent) + _startValue;
+			//TODO 1 : implement stepping function	
+			case STEPS(intervalNumbers, intervalChange):
+				return ((_endValue - _startValue) * completePercent) + _startValue;	
+				
+			default:
+				throw 'Illegal value for transition timing function style';
+						
+			
+		
 		}
 	}
 }

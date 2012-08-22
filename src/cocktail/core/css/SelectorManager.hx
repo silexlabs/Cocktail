@@ -36,10 +36,8 @@ class SelectorManager
 	/**
 	 * For a given node and selector, return wether
 	 * the node matches all of the components of the selector
-	 * 
-	 * TODO 1 : array should be traversed in reverse order ?
 	 */
-	public function matchSelector(node:HTMLElement, selector:SelectorData):Bool
+	public function matchSelector(node:HTMLElement, selector:SelectorData, matchedPseudoClasses:MatchedPseudoClasses):Bool
 	{
 		var components:Array<SelectorComponentValue> = selector.components;
 		
@@ -65,7 +63,7 @@ class SelectorManager
 			switch(component)
 			{
 				case SelectorComponentValue.COMBINATOR(value):
-					matched = matchCombinator(node, value, cast(components[i + 1]));
+					matched = matchCombinator(node, value, components[i + 1], matchedPseudoClasses);
 					lastWasCombinator = true;
 					
 				case SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(value):
@@ -80,7 +78,7 @@ class SelectorManager
 					}
 					else
 					{
-						matched = matchSimpleSelectorSequence(node, value);
+						matched = matchSimpleSelectorSequence(node, value, matchedPseudoClasses);
 					}
 			}
 			
@@ -111,7 +109,7 @@ class SelectorManager
 	/**
 	 * return wether a combinator is matched
 	 */
-	private function matchCombinator(node:HTMLElement, combinator:CombinatorValue, nextSelectorSequence:SimpleSelectorSequenceData):Bool
+	private function matchCombinator(node:HTMLElement, combinator:CombinatorValue, nextSelectorComponent:SelectorComponentValue, matchedPseudoClasses:MatchedPseudoClasses):Bool
 	{
 		//if the node has no parent, it can't match
 		//any combinator
@@ -120,19 +118,32 @@ class SelectorManager
 			return false;
 		}
 		
+		var nextSelectorSequence:SimpleSelectorSequenceData = null;
+		//the next component at this point is always a simple
+		//selector sequence, there can't be 2 combinators in a row
+		//in a selector, it makes the selector invalid
+		switch(nextSelectorComponent)
+		{
+			case SIMPLE_SELECTOR_SEQUENCE(value):
+				nextSelectorSequence = value;
+				
+			case COMBINATOR(value):	
+				return false;
+		}
+		
 		switch(combinator)
 		{
 			case CombinatorValue.ADJACENT_SIBLING:
-				return matchAdjacentSiblingCombinator(node, nextSelectorSequence);
+				return matchAdjacentSiblingCombinator(node, nextSelectorSequence, matchedPseudoClasses);
 				
 			case CombinatorValue.GENERAL_SIBLING:
-				return matchGeneralSiblingCombinator(node, nextSelectorSequence);
+				return matchGeneralSiblingCombinator(node, nextSelectorSequence, matchedPseudoClasses);
 				
 			case CombinatorValue.CHILD:
-				return matchChildCombinator(node, nextSelectorSequence);
+				return matchChildCombinator(node, nextSelectorSequence, matchedPseudoClasses);
 				
 			case CombinatorValue.DESCENDANT:
-				return matchDescendantCombinator(node, nextSelectorSequence);
+				return matchDescendantCombinator(node, nextSelectorSequence, matchedPseudoClasses);
 		}
 	}
 	
@@ -144,13 +155,13 @@ class SelectorManager
 	 * the preious selector sequence which precedes in 
 	 * the DOM tree
 	 */
-	private function  matchGeneralSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData):Bool
+	private function  matchGeneralSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClasses):Bool
 	{
 		var previousElementSibling:HTMLElement = node.previousElementSibling;
 		
 		while (previousElementSibling != null)
 		{
-			if (matchSimpleSelectorSequence(previousElementSibling, nextSelectorSequence) == true)
+			if (matchSimpleSelectorSequence(previousElementSibling, nextSelectorSequence, matchedPseudoClasses) == true)
 			{
 				return true;
 			}
@@ -167,7 +178,7 @@ class SelectorManager
 	 * element sibling of the node matches
 	 * the previous selector
 	 */
-	private function  matchAdjacentSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData):Bool
+	private function  matchAdjacentSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClasses):Bool
 	{
 		var previousElementSibling:HTMLElement = node.previousElementSibling;
 		
@@ -176,7 +187,7 @@ class SelectorManager
 			return false;
 		}
 		
-		return matchSimpleSelectorSequence(previousElementSibling, nextSelectorSequence);
+		return matchSimpleSelectorSequence(previousElementSibling, nextSelectorSequence, matchedPseudoClasses);
 	}
 	
 	/**
@@ -184,7 +195,7 @@ class SelectorManager
 	 * It is matched when an ancestor of the node
 	 * matches the next selector sequence
 	 */
-	private function matchDescendantCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData):Bool
+	private function matchDescendantCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClasses):Bool
 	{
 		var parentNode:HTMLElement = node.parentNode;
 		
@@ -192,7 +203,7 @@ class SelectorManager
 		//the parent selector
 		while (parentNode != null)
 		{
-			if (matchSimpleSelectorSequence(parentNode, nextSelectorSequence) == true)
+			if (matchSimpleSelectorSequence(parentNode, nextSelectorSequence, matchedPseudoClasses) == true)
 			{
 				return true;
 			}
@@ -210,9 +221,9 @@ class SelectorManager
 	 * next selector sequence must be matched by the 
 	 * direct parent of the node and not just any ancestor
 	 */
-	private function matchChildCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData):Bool
+	private function matchChildCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClasses):Bool
 	{
-		return matchSimpleSelectorSequence(node.parentNode, nextSelectorSequence);
+		return matchSimpleSelectorSequence(node.parentNode, nextSelectorSequence, matchedPseudoClasses);
 	}
 	
 		// SIMPLE SELECTORS
@@ -246,7 +257,7 @@ class SelectorManager
 	 * (class, ID...) but type or universal which are always at the 
 	 * begining of a simple selector sequence
 	 */
-	private function matchSimpleSelectorSequenceItem(node:HTMLElement, simpleSelectorSequenceItem:SimpleSelectorSequenceItemValue):Bool
+	private function matchSimpleSelectorSequenceItem(node:HTMLElement, simpleSelectorSequenceItem:SimpleSelectorSequenceItemValue, matchedPseudoClasses:MatchedPseudoClasses):Bool
 	{
 		switch(simpleSelectorSequenceItem)
 		{
@@ -256,6 +267,10 @@ class SelectorManager
 			//for this check the className of the node	
 			case CLASS(value):
 				//TODO 1 : add class list
+				if (node.className == null)
+				{ 
+					return false;
+				}
 				return node.className.indexOf(value) != -1;
 				
 			//for this check the id attribute of the node	
@@ -263,7 +278,7 @@ class SelectorManager
 				return node.id == value;
 				
 			case PSEUDO_CLASS(value):
-				return matchPseudoClassSelector(node, value);
+				return matchPseudoClassSelector(node, value, matchedPseudoClasses);
 		}		
 	}
 	
@@ -271,7 +286,7 @@ class SelectorManager
 	 * Return wether all items in a simple selector
 	 * sequence are matched
 	 */
-	private function matchSimpleSelectorSequence(node:HTMLElement, simpleSelectorSequence:SimpleSelectorSequenceData):Bool
+	private function matchSimpleSelectorSequence(node:HTMLElement, simpleSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClasses):Bool
 	{
 		//check if sequence start matches
 		if (matchSimpleSelectorSequenceStart(node, simpleSelectorSequence.startValue) == false)
@@ -283,7 +298,7 @@ class SelectorManager
 		for (i in 0...simpleSelectorSequence.simpleSelectors.length)
 		{
 			var simpleSelectorSequence:SimpleSelectorSequenceItemValue = simpleSelectorSequence.simpleSelectors[i];
-			if (matchSimpleSelectorSequenceItem(node, simpleSelectorSequence) == false)
+			if (matchSimpleSelectorSequenceItem(node, simpleSelectorSequence, matchedPseudoClasses) == false)
 			{
 				return false;
 			}
@@ -417,7 +432,7 @@ class SelectorManager
 	 * Return wether a pseudo class matches
 	 * the node
 	 */
-	private function matchPseudoClassSelector(node:HTMLElement, pseudoClassSelector:PseudoClassSelectorValue):Bool
+	private function matchPseudoClassSelector(node:HTMLElement, pseudoClassSelector:PseudoClassSelectorValue, matchedPseudoClasses:MatchedPseudoClasses):Bool
 	{
 		switch (pseudoClassSelector)
 		{
@@ -425,10 +440,10 @@ class SelectorManager
 				return matchStructuralPseudoClassSelector(node, value);
 				
 			case PseudoClassSelectorValue.LINK(value):
-				return matchLinkPseudoClassSelector(node, value);
+				return matchLinkPseudoClassSelector(node, value, matchedPseudoClasses);
 				
 			case PseudoClassSelectorValue.USER_ACTION(value):
-				return matchUserActionPseudoClassSelector(node, value);	
+				return matchUserActionPseudoClassSelector(node, value, matchedPseudoClasses);	
 				
 			case PseudoClassSelectorValue.TARGET:
 				return matchTargetPseudoClassSelector(node);
@@ -440,7 +455,7 @@ class SelectorManager
 				return matchLangPseudoClassSelector(node, value);
 				
 			case PseudoClassSelectorValue.UI_ELEMENT_STATES(value):
-				return matchUIElementStatesSelector(node, value);
+				return matchUIElementStatesSelector(node, value, matchedPseudoClasses);
 		}
 	}
 	
@@ -448,9 +463,19 @@ class SelectorManager
 	 * Return wether a UI state selector
 	 * matches the node
 	 */
-	private function matchUIElementStatesSelector(node:HTMLElement, uiElementState:UIElementStatesValue):Bool
+	private function matchUIElementStatesSelector(node:HTMLElement, uiElementState:UIElementStatesValue, matchedPseudoClasses:MatchedPseudoClasses):Bool
 	{
-		return false;
+		switch(uiElementState)
+		{
+			case UIElementStatesValue.CHECKED:
+				return matchedPseudoClasses.checked;
+				
+			case UIElementStatesValue.DISABLED:
+				return matchedPseudoClasses.disabled;
+				
+			case UIElementStatesValue.ENABLED:
+				return matchedPseudoClasses.enabled;
+		}
 	}
 	
 	/**
@@ -515,8 +540,6 @@ class SelectorManager
 			case StructuralPseudoClassSelectorValue.NTH_OF_TYPE(value):
 				return matchNthOfType(node, value);
 		}
-		
-		return true;
 	}
 	
 	private function matchNthChild(node:HTMLElement, value:StructuralPseudoClassArgumentValue):Bool
@@ -600,18 +623,35 @@ class SelectorManager
 	 * Return wether a link pseudo-class selector
 	 * matches the node
 	 */
-	private function matchLinkPseudoClassSelector(node:HTMLElement, linkPseudoClassSelector:LinkPseudoClassValue):Bool
+	private function matchLinkPseudoClassSelector(node:HTMLElement, linkPseudoClassSelector:LinkPseudoClassValue, matchedPseudoClass:MatchedPseudoClasses):Bool
 	{
-		return true;
+		switch(linkPseudoClassSelector)
+		{
+			case LinkPseudoClassValue.LINK:
+				return matchedPseudoClass.link;
+				
+			case LinkPseudoClassValue.VISITED:
+				return false;
+		}
 	}
 	
 	/**
 	 * Return wether a user pseudo-class selector
 	 * matches the node
 	 */
-	private function matchUserActionPseudoClassSelector(node:HTMLElement, value:UserActionPseudoClassValue):Bool
+	private function matchUserActionPseudoClassSelector(node:HTMLElement, userActionPseudoClassSelector:UserActionPseudoClassValue, matchedPseudoClass:MatchedPseudoClasses):Bool
 	{
-		return true;
+		switch(userActionPseudoClassSelector)
+		{
+			case UserActionPseudoClassValue.ACTIVE:
+				return matchedPseudoClass.active;
+				
+			case UserActionPseudoClassValue.HOVER:
+				return matchedPseudoClass.hover;
+				
+			case UserActionPseudoClassValue.FOCUS:
+				return matchedPseudoClass.focus;
+		}
 	}
 	
 	/**

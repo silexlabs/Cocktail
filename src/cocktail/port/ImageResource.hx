@@ -7,15 +7,12 @@
 */
 package cocktail.port;
 
-/**
- * Set the right runtime specific ResourceLoader at compile-time
- */
 #if macro
-typedef Resource = cocktail.core.resource.AbstractResource;
+typedef ImageResource = cocktail.core.resource.AbstractResource;
 
 #elseif (flash9 || nme)
-typedef Resource = cocktail.core.resource.AbstractResource;
+typedef ImageResource = cocktail.port.flash_player.ImageResource;
 
 #else 
-typedef Resource = cocktail.core.resource.AbstractResource;
+typedef ImageResource = cocktail.core.resource.AbstractResource;
 #end

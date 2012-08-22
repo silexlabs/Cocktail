@@ -7,6 +7,12 @@
 */
 package cocktail.core.html;
 
+import cocktail.core.css.CSSRule;
+import cocktail.core.css.CSSStyleDeclaration;
+import cocktail.core.css.CSSStyleRule;
+import cocktail.core.css.CSSStyleSheet;
+import cocktail.core.css.InitialStyleDeclaration;
+import cocktail.core.css.StyleManager;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.Element;
@@ -36,6 +42,7 @@ import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import haxe.Log;
 import cocktail.core.style.StyleData;
+import cocktail.core.css.CSSData;
 
 /**
  * An HTMLDocument is the root of the HTML hierarchy and holds the entire content.
@@ -104,6 +111,17 @@ class HTMLDocument extends Document
 	private var _hoveredElementRenderer:ElementRenderer;
 	
 	/**
+	 * A reference to the currently mouse downed element, i.e
+	 * the user clicked the primary button of its mouse over 
+	 * this element and hasn't yet release the button.
+	 * 
+	 * If the mouse cursor moves over another element, this
+	 * one still remains the moused element unitl the mouse
+	 * button is released
+	 */
+	private var _mousedDownedElementRenderer:ElementRenderer;
+	
+	/**
 	 * Returns true if document has the ability
 	 * to display elements fullscreen, or false otherwise.
 	 */
@@ -141,7 +159,7 @@ class HTMLDocument extends Document
 	 * to chnge the mouse cursor when needed using
 	 * platform specific APIs
 	 */
-	public var onSetMouseCursor:Cursor->Void;
+	public var onSetMouseCursor:CSSPropertyValue->Void;
 	
 	/**
 	 * a flag determining if a click event must be dispatched
@@ -174,6 +192,12 @@ class HTMLDocument extends Document
 	private var _documentNeedsRendering:Bool;
 	
 	/**
+	 * Wether the document needs to cascade the styles
+	 * on nex invalidation method call
+	 */
+	private var _documentNeedsCascading:Bool;
+	
+	/**
 	 * This class is in charge of keeping track of the
 	 * current touch points and of creating cross-platform
 	 * TouchEvent
@@ -186,11 +210,33 @@ class HTMLDocument extends Document
 	private var _window:Window;
 	
 	/**
+	 * A ref to the style manager holding all the
+	 * style sheet data of the document
+	 */
+	private var _styleManager:StyleManager;
+	
+	/**
+	 * an instance of the initial style declaration. 
+	 * This objects holds all the default values for each
+	 * supported CSS styles.
+	 * 
+	 * When a CSS style has no specified value for a given
+	 * HTML node, then its initial value from this object is used.
+	 * 
+	 * There is only one instance of it for the whole document, 
+	 * as the initial style values are always the same for each
+	 * node type. Every node use this object when cascading
+	 */
+	public var initialStyleDeclaration(default, null):InitialStyleDeclaration;
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new(window:Window = null) 
 	{
 		super();
+		
+		initStyleManager();
 		
 		//TODO 2 : hack, Document probably shouldn't have
 		//ref to Window
@@ -213,12 +259,13 @@ class HTMLDocument extends Document
 		_invalidationScheduled = false;
 		_documentNeedsLayout = true;
 		_documentNeedsRendering = true;
+		_documentNeedsCascading = true;
 	}
 	
 	/**
 	 * Init the body element of the document and the attributes
 	 * depending on it. Set as public so that the body element
-	 * can be reset if the inner HTML of thr whole document
+	 * can be reset if the inner HTML of the whole document
 	 * changes
 	 */
 	public function initBody(htmlBodyElement:HTMLBodyElement):Void
@@ -227,6 +274,64 @@ class HTMLDocument extends Document
 		documentElement.appendChild(body);
 		_hoveredElementRenderer = body.elementRenderer;
 		activeElement = body;
+	}
+	
+	private function initStyleManager():Void
+	{
+		initialStyleDeclaration = new InitialStyleDeclaration();
+		_styleManager = new StyleManager();
+		
+		var defaultStyleSheet:String = "html, address, blockquote, body, dd, div, dl, dt, fieldset, form, frame, frameset, h1, h2, h3, h4,";
+		defaultStyleSheet += "h5, h6, noframes, ol, p, ul, center, dir, hr, menu, pre   { display: block; unicode-bidi: embed }";
+		defaultStyleSheet += "li { display: block; } head { display: none } table { display: table } tr { display: table-row } ";
+		defaultStyleSheet += "thead { display: table-header-group } tbody{ display: table-row-group } tfoot { display: table-footer-group }";
+		defaultStyleSheet += "col { display: table-column } colgroup { display: table-column-group } td, th { display: table-cell }";
+		defaultStyleSheet += "caption { display: table-caption } th { font-weight: bolder; text-align: center } caption { text-align: center }";
+		defaultStyleSheet += " body  { margin: 8px } h1 { font-size: 2em; margin: .67em 0 } h2  { font-size: 1.5em; margin: .75em 0 }";
+		defaultStyleSheet += "h3{ font-size: 1.17em; margin: .83em 0 } h4, p, blockquote, ul,fieldset, form,ol, dl, dir,menu { margin: 1.12em 0 }";
+		defaultStyleSheet += "h5 { font-size: .83em; margin: 1.5em 0 } h6 { font-size: .75em; margin: 1.67em 0 }h1, h2, h3, h4,h5, h6, b,strong";
+        defaultStyleSheet += " { font-weight: bolder }blockquote { margin-left: 40px; margin-right: 40px } i, cite, em,var, address";
+		defaultStyleSheet += "{ font-style: italic }pre, tt, code,kbd, samp  { font-family: monospace }pre { white-space: pre }";
+		defaultStyleSheet += "button, textarea,input, select   { display: inline-block }big { font-size: 1.17em }small, sub, sup { font-size: .83em }";
+		defaultStyleSheet += "sub { vertical-align: sub }sup { vertical-align: super }table { border-spacing: 2px; } thead, tbody, tfoot ";
+		defaultStyleSheet += "{ vertical-align: middle } td, th, tr { vertical-align: inherit } s, strike, del  { text-decoration: line-through }";
+		defaultStyleSheet += "hr { border: 1px inset }ol, ul, dir,menu, dd { padding-left: 40px }ol { list-style-type: decimal }";
+		defaultStyleSheet += "ol ul, ul ol,ul ul, ol ol    { margin-top: 0; margin-bottom: 0 }u, ins          { text-decoration: underline }";
+		//defaultStyleSheet += "br:before { content: '\A'; white-space: pre-line }center          { text-align: center } ";
+		defaultStyleSheet += " :link,:visited { text-decoration: underline } :focus{ outline: thin dotted invert }";
+		
+		var styleSheet:CSSStyleSheet = new CSSStyleSheet(defaultStyleSheet);
+		
+		for (i in 0...styleSheet.cssRules.length)
+		{
+			//trace(styleSheet.cssRules[i]);
+			switch(styleSheet.cssRules[i].type)
+			{
+				case CSSRule.STYLE_RULE:
+					var sr:CSSStyleRule = cast(styleSheet.cssRules[i]);
+					for (j in 0...sr.style.length)
+					{
+						//trace(sr.style.item(j)+" : "+sr.style.getPropertyValue(sr.style.item(j)));
+					}
+			}
+		}
+		
+		_styleManager.addStyleSheet(styleSheet);
+//
+///* Begin bidirectionality settings (do not change) */
+//BDO[DIR="ltr"]  { direction: ltr; unicode-bidi: bidi-override }
+//BDO[DIR="rtl"]  { direction: rtl; unicode-bidi: bidi-override }
+//
+//*[DIR="ltr"]    { direction: ltr; unicode-bidi: embed }
+//*[DIR="rtl"]    { direction: rtl; unicode-bidi: embed }
+//
+//@media print {
+  //h1            { page-break-before: always }
+  //h1, h2, h3,
+  //h4, h5, h6    { page-break-after: avoid }
+  //ul, ol, dl    { page-break-before: avoid }
+//}
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -276,6 +381,9 @@ class HTMLDocument extends Document
 			case HTMLConstants.HTML_LINK_TAG_NAME:
 				element = new HTMLLinkElement();
 				
+			case HTMLConstants.HTML_STYLE_TAG_NAME:
+				element = new HTMLStyleElement();
+				
 			default:
 				element = new HTMLElement(tagName);
 		}
@@ -298,10 +406,8 @@ class HTMLDocument extends Document
 	{
 		//parse the html string into a node object
 		var node:HTMLElement = DOMParser.parse(value, this);
-		
-		documentElement = node.childNodes[0];
+		documentElement = node;
 		initBody(cast(documentElement.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
-		
 		return value;
 	}
 	
@@ -314,6 +420,124 @@ class HTMLDocument extends Document
 		return DOMParser.serialize(documentElement);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC STYLE MANAGER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Add a CSS style sheet to the docuement, and cascade
+	 * all the DOM as the new style sheet likely changes
+	 * the styles value of some nodes
+	 */
+	public function addStyleSheet(stylesheet:CSSStyleSheet):Void
+	{
+		_styleManager.addStyleSheet(stylesheet);
+		documentElement.invalidateStyleDeclaration(true);
+		startCascade(false);
+	}
+	
+	/**
+	 * Remove a CSS style sheet from the document and cascade
+	 * all of the DOM to refresh style definitions
+	 */
+	public function removeStyleSheet(stylesheet:CSSStyleSheet):Void
+	{
+		_styleManager.removeStyleSheet(stylesheet);
+		documentElement.invalidateStyleDeclaration(true);
+		startCascade(false);
+	}
+	
+	/**
+	 * For a given HTML node, retrive all the style declaration from
+	 * the document's style sheets appying to it and return them as 
+	 * a css declaration
+	 */
+	public function getStyleDeclaration(node:HTMLElement):CSSStyleDeclaration
+	{
+		return _styleManager.getStyleDeclaration(node, getMatchedPseudoClasses(node));
+	}
+	 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE STYLE MANAGER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * For a given node, return all of the
+	 * pseudo classes that it currently matches
+	 */
+	private function getMatchedPseudoClasses(node:HTMLElement):MatchedPseudoClasses
+	{
+		var hover:Bool = false;
+		var focus:Bool = false;
+		var active:Bool = false;
+		var link:Bool = false;
+		var enabled:Bool = false;
+		var disabled:Bool = false;
+		var checked:Bool = false;
+		
+		//TODO 1 : shouldn't be null but his when setting style of HTML tag for the first time
+		//check if node is the currently hovered node
+		if (_hoveredElementRenderer != null)
+		{
+			hover = _hoveredElementRenderer.domNode == node;
+		}
+		//TODO 1 : shouldn't be null either
+		//check if node is the currently focused element
+		if (activeElement != null)
+		{
+			focus = activeElement == node;
+		}
+		
+		//check if the node is the currently active (moused down) one
+		if (_mousedDownedElementRenderer != null)
+		{
+			active = _mousedDownedElementRenderer.domNode == node;
+		}
+		
+		//to match the :link pseudo class, the element must both be an anchor ("a") html element and also
+		//have an "href" attribute
+		if (node.tagName == HTMLConstants.HTML_ANCHOR_TAG_NAME && node.getAttribute(HTMLConstants.HTML_HREF_ATTRIBUTE_NAME) != null)
+		{
+			link = true;
+		}
+		
+		//enable/disable state only apply to form input element
+		//
+		//TODO 2 : check if it shouldn't apply to other elements
+		if (node.tagName == HTMLConstants.HTML_INPUT_TAG_NAME)
+		{
+			//check if a disabled attribute is present on the node
+			//to determine wether the form control is enabled or disabled
+			if (node.getAttribute(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME) == null)
+			{
+				enabled = true;
+				disabled = false;
+			}
+			else
+			{
+				disabled = true;
+				enabled = false;
+			}
+			
+			//check if the input element is checked
+			//
+			//might eventually need extra check, what if a text input has a checked attribute ?
+			if (node.getAttribute(HTMLConstants.HTML_CHECKED_ATTRIBUTE_NAME) != null)
+			{
+				checked = true;
+			}
+		}
+		
+		return {
+			hover:hover,
+			focus:focus,
+			active:active,
+			link:link,
+			enabled:enabled,
+			disabled:disabled,
+			checked:checked
+		}
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC PLATFORM CALLBACKS
@@ -341,6 +565,11 @@ class HTMLDocument extends Document
 			case MouseEvent.MOUSE_DOWN:
 				//reset the click sequence when a mouse down is dispatched
 				_shouldDispatchClickOnNextMouseUp = true;
+				
+				//store the currently moused down element
+				_mousedDownedElementRenderer = elementRendererAtPoint;
+				//refresh its style, as now the :active pseudo-class applies to it
+				elementRendererAtPoint.domNode.invalidateStyleDeclaration(false);
 			
 				
 			case MouseEvent.MOUSE_UP:
@@ -350,6 +579,16 @@ class HTMLDocument extends Document
 				{
 					dispatchClickEvent(mouseEvent);
 				}
+				
+				//when the element is released, refresh
+				//its styles, as the :active pseudo class
+				//no longer applies
+				if (_mousedDownedElementRenderer != null)
+				{
+					_mousedDownedElementRenderer = null;
+					elementRendererAtPoint.domNode.invalidateStyleDeclaration(false);
+				}
+				
 		}
 	}
 	
@@ -394,6 +633,7 @@ class HTMLDocument extends Document
 
 		if (_hoveredElementRenderer != elementRendererAtPoint)
 		{
+			//dispatch mouse out on the old hovered HTML element
 			var mouseOutEvent:MouseEvent = new MouseEvent();
 			mouseOutEvent.initMouseEvent(MouseEvent.MOUSE_OUT, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
 			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey, mouseEvent.metaKey, mouseEvent.button, elementRendererAtPoint.domNode);
@@ -401,13 +641,19 @@ class HTMLDocument extends Document
 			_hoveredElementRenderer.domNode.dispatchEvent(mouseOutEvent);
 			
 			var oldHoveredElementRenderer:ElementRenderer = _hoveredElementRenderer;
+			oldHoveredElementRenderer.domNode.invalidateStyleDeclaration(false);
 			_hoveredElementRenderer = elementRendererAtPoint;
 			
+			//dispatch mouse over on the newly hovered HTML element
 			var mouseOverEvent:MouseEvent = new MouseEvent();
 			mouseOverEvent.initMouseEvent(MouseEvent.MOUSE_OVER, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
 			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, oldHoveredElementRenderer.domNode);
 			
 			elementRendererAtPoint.domNode.dispatchEvent(mouseOverEvent);
+			
+			//refresh the style of the newly hovered html element as a :hover
+			//pseudo-class might apply to it
+			elementRendererAtPoint.domNode.invalidateStyleDeclaration(false);
 			
 			//when the hovered element changes, if a mouse up event is dispatched
 			//on the new hovered element, no click should be dispatched on it, as 
@@ -416,7 +662,7 @@ class HTMLDocument extends Document
 			
 			//update the mouse cursor with the cursor style of the newly hovered 
 			//element
-			setMouseCursor(elementRendererAtPoint.domNode.coreStyle.computedStyle.cursor);
+			setMouseCursor(elementRendererAtPoint.domNode.coreStyle.cursor);
 		}
 		
 		elementRendererAtPoint.domNode.dispatchEvent(mouseEvent);
@@ -557,7 +803,7 @@ class HTMLDocument extends Document
 	 * Change the current mouse cursor, using platform
 	 * specific APIs
 	 */
-	private function setMouseCursor(cursor:Cursor):Void
+	private function setMouseCursor(cursor:CSSPropertyValue):Void
 	{
 		if (onSetMouseCursor != null)
 		{
@@ -670,6 +916,15 @@ class HTMLDocument extends Document
 		invalidate();
 	}
 	
+	/**
+	 * schedule a cascade of the document
+	 */
+	public function invalidateCascade():Void
+	{
+		_documentNeedsCascading = true;
+		invalidate();
+	}
+	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -692,15 +947,21 @@ class HTMLDocument extends Document
 	private function doInvalidate():Void
 	{
 		_invalidationScheduled = true;
-		scheduleLayoutAndRender();
+		scheduleCascadeLayoutAndRender();
 	}
 	
 	/**
-	 * layout and render the document
+	 * cascade, layout and render the document
 	 * as needed
 	 */
-	private function layoutAndRender():Void
+	private function cascadeLayoutAndRender():Void
 	{
+		//only cascade if needed
+		if (_documentNeedsCascading == true)
+		{
+			startCascade(true);
+		}
+		
 		//only layout if the invalidate layout
 		//method was called
 		if (_documentNeedsLayout == true)
@@ -735,7 +996,7 @@ class HTMLDocument extends Document
 	 */
 	private function onLayoutSchedule():Void
 	{
-		layoutAndRender();
+		cascadeLayoutAndRender();
 		_invalidationScheduled = false;
 	}
 	
@@ -755,7 +1016,21 @@ class HTMLDocument extends Document
 	 */
 	private function startPendingAnimation():Bool
 	{
-		return documentElement.elementRenderer.startPendingAnimation();
+		return documentElement.startPendingAnimation();
+	}
+	
+	/**
+	 * Star cascading the whole document
+	 * 
+	 * @param programmaticChange whether the cascading
+	 * is the result of a programmatic change to the DOM/CSS.
+	 * It is used to determine wether animation/transition
+	 * can be started during the cascade 
+	 */
+	private function startCascade(programmaticChange:Bool):Void
+	{
+		documentElement.cascade(new Hash<Void>(), programmaticChange);
+		_documentNeedsCascading = false;
 	}
 	
 	
@@ -780,7 +1055,7 @@ class HTMLDocument extends Document
 	 * happen once when a series of style values are set or when many elements
 	 * are attached/removed from the DOM, instead of happening for every change.
 	 */
-	private function scheduleLayoutAndRender():Void
+	private function scheduleCascadeLayoutAndRender():Void
 	{
 		var onLayoutScheduleDelegate:Void->Void = onLayoutSchedule;
 		#if macro

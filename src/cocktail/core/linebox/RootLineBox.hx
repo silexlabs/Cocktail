@@ -8,7 +8,7 @@
 package cocktail.core.linebox;
 
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
 import cocktail.core.geom.GeomData;
 
 /**

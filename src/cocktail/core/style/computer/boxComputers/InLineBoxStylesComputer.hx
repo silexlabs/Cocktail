@@ -7,10 +7,11 @@
 */
 package cocktail.core.style.computer.boxComputers;
 
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.font.FontData;
+import cocktail.core.css.CSSData;
 
 /**
  * The is the box style computer for inline non-embedded
@@ -31,26 +32,26 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * vertical paddings don't apply to non-embedded inline HTMLElements
 	 */
-	override private function measureVerticalPaddings(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	override private function measureVerticalPaddings(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
 		//top
-		style.computedStyle.paddingTop = 0;
+		style.usedValues.paddingTop = 0;
 		//bottom
-		style.computedStyle.paddingBottom = 0;
+		style.usedValues.paddingBottom = 0;
 	}
 	
 	/**
 	 * vertical margins don't apply to non-embedded inline HTMLElements
 	 */
-	override private function measureAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
+	override private function measureAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		//the height is set to null by default
-		var computedHeight:Float = getComputedAutoHeight(style, containingBlockData, fontMetrics);
+		var computedHeight:Float = getComputedAutoHeight(style, containingBlockData);
 		
 		//left margin
-		style.computedStyle.marginTop = 0.0;
+		style.usedValues.marginTop = 0.0;
 		//right margin
-		style.computedStyle.marginBottom = 0.0;
+		style.usedValues.marginBottom = 0.0;
 	
 		return computedHeight;
 	}
@@ -58,15 +59,15 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * vertical margins don't apply to non-embedded inline HTMLElements
 	 */
-	override private function measureHeight(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
+	override private function measureHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		//get the computed height in pixel
-		var computedHeight:Float = getComputedHeight(style, containingBlockData, fontMetrics);
+		var computedHeight:Float = getComputedHeight(style, containingBlockData);
 		
 		//left margin
-		style.computedStyle.marginTop = 0.0;
+		style.usedValues.marginTop = 0.0;
 		//right margin
-		style.computedStyle.marginBottom = 0.0;
+		style.usedValues.marginBottom = 0.0;
 		
 		return computedHeight;
 	}
@@ -74,7 +75,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * auto margin compute to 0 for inline non-embedded HTMLElement
 	 */
-	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Float
+	override private function getComputedAutoMargin(marginStyleValue:CSSPropertyValue, opositeMargin:CSSPropertyValue, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, isHorizontalMargin:Bool):Float
 	{	
 		return 0.0;
 	}
@@ -82,7 +83,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * for inline, non embedded HTMLElement, the width doesn't apply
 	 */
-	override private function getComputedWidth(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
+	override private function getComputedWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		return 0.0;
 	}
@@ -90,7 +91,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * for inline, non embedded HTMLElement, the height doesn't apply
 	 */
-	override private function getComputedHeight(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
+	override private function getComputedHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		return 0.0;
 	}

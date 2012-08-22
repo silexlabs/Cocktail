@@ -8,10 +8,11 @@
 package cocktail.core.linebox;
 
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.style.ComputedStyle;
+
 import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
+import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 
 /**
@@ -62,8 +63,8 @@ class EmbeddedLineBox extends LineBox
 	 */
 	override private function getLeadedAscent():Float 
 	{
-		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
-		return bounds.height + computedStyle.marginTop + computedStyle.marginBottom;
+		var usedValues:UsedValuesData = elementRenderer.coreStyle.usedValues;
+		return bounds.height + usedValues.marginTop + usedValues.marginBottom;
 	}
 	
 	/**

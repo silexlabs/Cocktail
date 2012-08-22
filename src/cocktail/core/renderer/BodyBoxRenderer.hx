@@ -9,9 +9,10 @@ package cocktail.core.renderer;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.style.ComputedStyle;
+
 import cocktail.port.NativeElement;
 import cocktail.core.style.StyleData;
+import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 
 /**
@@ -41,11 +42,12 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	override private function layoutSelf():Void
 	{
 		super.layoutSelf();
-		if (coreStyle.height == Dimension.cssAuto && (isPositioned() == false || isRelativePositioned() == true))
+		
+		if (coreStyle.isAuto(coreStyle.height) == true && (isPositioned() == false || isRelativePositioned() == true))
 		{
-			var computedStyle:ComputedStyle = coreStyle.computedStyle;
-			computedStyle.height = _containingBlock.getContainerBlockData().height - computedStyle.marginTop - computedStyle.marginBottom
-			- computedStyle.paddingTop - computedStyle.paddingBottom;
+			var usedValues:UsedValuesData = coreStyle.usedValues;
+			usedValues.height = _containingBlock.getContainerBlockData().height - usedValues.marginTop - usedValues.marginBottom
+			- usedValues.paddingTop - usedValues.paddingBottom;
 		}
 	}
 	

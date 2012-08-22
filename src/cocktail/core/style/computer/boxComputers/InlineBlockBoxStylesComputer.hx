@@ -6,7 +6,8 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.style.computer.boxComputers;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
+import cocktail.core.css.CSSData;
 import cocktail.core.style.StyleData;
 import haxe.Log;
 
@@ -29,7 +30,7 @@ class InlineBlockBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * for inlineBlock non-embedded HTMLElements, auto margin compute to 0
 	 */
-	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Float
+	override private function getComputedAutoMargin(marginStyleValue:CSSPropertyValue, opositeMargin:CSSPropertyValue, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, isHorizontalMargin:Bool):Float
 	{
 		return 0.0;
 	}

@@ -7,12 +7,14 @@
 */
 package cocktail.core.style.floats;
 
+import cocktail.core.css.CoreStyle;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.style.ComputedStyle;
+
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
+import cocktail.core.css.CSSData;
 import haxe.Log;
 
 /**
@@ -64,26 +66,36 @@ class FloatsManager
 	 * @param	currentFormattingContextY used to compute the new formatting context y position
 	 * @return  the new formatting context y position
 	 */
-	public function clearFloat(clear:Clear, currentFormattingContextY:Float):Float
+	public function clearFloat(clear:CSSPropertyValue, currentFormattingContextY:Float):Float
 	{
 		var ret:Float;
 		
 		switch(clear)
 		{
-			case left:
-				ret = clearLeft(currentFormattingContextY);
-				_floats.left = new Array<RectangleData>();
+			case KEYWORD(value):
+				switch(value)
+				{
+					case LEFT:
+						ret = clearLeft(currentFormattingContextY);
+						_floats.left = new Array<RectangleData>();
+						
+					case RIGHT:	
+						ret = clearRight(currentFormattingContextY);
+						_floats.right = new Array<RectangleData>();
+						
+					case BOTH:	
+						ret = clearBoth(currentFormattingContextY);
+						_floats.right = new Array<RectangleData>();
+						_floats.left = new Array<RectangleData>();
+						
+					case NONE:	
+						ret = currentFormattingContextY;
+						
+					default:
+						ret = currentFormattingContextY;
+				}
 				
-			case right:
-				ret = clearRight(currentFormattingContextY);
-				_floats.right = new Array<RectangleData>();
-				
-			case both:	
-				ret = clearBoth(currentFormattingContextY);
-				_floats.right = new Array<RectangleData>();
-				_floats.left = new Array<RectangleData>();
-			
-			case none:
+			default:
 				ret = currentFormattingContextY;
 		}
 		
@@ -175,18 +187,23 @@ class FloatsManager
 	{
 		var ret:RectangleData;
 		
-		switch (elementRenderer.coreStyle.computedStyle.cssFloat)
+		var coreStyle:CoreStyle = elementRenderer.coreStyle;
+		
+		switch (coreStyle.getKeyword(coreStyle.cssFloat))
 		{
-			case left:
+			case LEFT:
 				ret = getLeftFloatData(elementRenderer, currentFormattingContextY, currentFormattingContextX, containingBlockWidth);
 				_floats.left.push(ret);
 				
-			case right:
+			case RIGHT:
 				ret = getRightFloatData(elementRenderer, currentFormattingContextY, currentFormattingContextX, containingBlockWidth);
 				_floats.right.push(ret);
 				
-			case none:
+			case NONE:
 				ret = null;
+				
+			default:
+				throw 'Illegal value for float style';
 		}
 		
 		return ret;
@@ -230,9 +247,9 @@ class FloatsManager
 		//a float width and height use the margin box of a
 		//HTMLElement
 		
-		var computedStyle:ComputedStyle = elementRenderer.coreStyle.computedStyle;
-		var floatWidth:Float = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight + computedStyle.marginLeft + computedStyle.marginRight;
-		var floatHeight:Float = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom + computedStyle.marginTop + computedStyle.marginBottom;
+		var usedValues:UsedValuesData = elementRenderer.coreStyle.usedValues;
+		var floatWidth:Float = usedValues.width + usedValues.paddingLeft + usedValues.paddingRight + usedValues.marginLeft + usedValues.marginRight;
+		var floatHeight:Float = usedValues.height + usedValues.paddingTop + usedValues.paddingBottom + usedValues.marginTop + usedValues.marginBottom;
 	
 		//get the first y position where the float can be placed
 		var floatY:Float = getFirstAvailableY(currentFormattingContextY, floatWidth, containingBlockWidth);

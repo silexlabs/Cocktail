@@ -7,11 +7,13 @@
 */
 package cocktail.core.style.computer.boxComputers;
 
+import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.html.EmbeddedElement;
-import cocktail.core.style.ComputedStyle;
-import cocktail.core.style.CoreStyle;
+
+import cocktail.core.css.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
+import cocktail.core.css.CSSData;
 import haxe.Log;
 
 /**
@@ -39,22 +41,27 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * Overriden, as dimensions constraints are applied differently
 	 * for embedded block
 	 */
-	override private function measureDimensionsAndMargins(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	override private function measureDimensionsAndMargins(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
-		var computedWidth:Float = measureWidthAndHorizontalMargins(style, containingBlockData, fontMetrics);
-		var computedHeight:Float = measureHeightAndVerticalMargins(style, containingBlockData, fontMetrics);
+		var usedValues:UsedValuesData = style.usedValues;
 		
-		if (style.width == Dimension.cssAuto && style.height == Dimension.cssAuto)
+		var usedWidth:Float = measureWidthAndHorizontalMargins(style, containingBlockData);
+		var usedHeight:Float = measureHeightAndVerticalMargins(style, containingBlockData);
+				
+
+		
+		if (style.isAuto(style.width) == true && style.isAuto(style.height) == true)
 		{
 			//apply a constrain algorithm specific to embedded elements
-			constrainDimensions(style, computedWidth, computedHeight);
+			constrainDimensions(style, usedWidth, usedHeight);
 		}
 		else
 		{
 			//apply regular constrain algorithm
-			style.computedStyle.width = constrainWidth(style, computedWidth);
-			style.computedStyle.height = constrainHeight(style, computedHeight);
+			usedValues.width = constrainWidth(style, usedWidth);
+			usedValues.height = constrainHeight(style, usedHeight);
 		}
+		
 	}
 	
 	/**
@@ -65,28 +72,30 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * For embedded elements, min/max width/height might be linked, for instance,
 	 * applying a max height can also constrain the width to keep aspect ratio
 	 */
-	private function constrainDimensions(style:CoreStyle, computedWidth:Float, computedHeight:Float):Void
+	private function constrainDimensions(style:CoreStyle, usedWidth:Float, usedHeight:Float):Void
 	{
-		var maxHeight:Float = style.computedStyle.maxHeight;
-		var minHeight:Float = style.computedStyle.minHeight;
-		var maxWidth:Float = style.computedStyle.maxWidth;
-		var minWidth:Float = style.computedStyle.minWidth;
+		var usedValues:UsedValuesData = style.usedValues;
+		
+		var maxHeight:Float = usedValues.maxHeight;
+		var minHeight:Float = usedValues.minHeight;
+		var maxWidth:Float = usedValues.maxWidth;
+		var minWidth:Float = usedValues.minWidth;
 		
 		//set flag for each contrain type
 		var widthSuperiorToMaxWidth:Bool = false;
-		if (style.maxWidth != ConstrainedDimension.none)
+		if (style.isNone(style.maxWidth) == false)
 		{
-			widthSuperiorToMaxWidth = computedWidth > maxWidth;
+			widthSuperiorToMaxWidth = usedWidth > maxWidth;
 		}
 		
 		var heightSuperiorToMaxHeight:Bool = false;
-		if (style.maxHeight != ConstrainedDimension.none)
+		if (style.isNone(style.maxHeight) == false)
 		{
-			heightSuperiorToMaxHeight = computedHeight > maxHeight;
+			heightSuperiorToMaxHeight = usedHeight > maxHeight;
 		}
 		
-		var widthInferiorToMinWidth:Bool = computedWidth < minWidth;
-		var heightInferiorToMinHeight:Bool = computedHeight < minHeight;
+		var widthInferiorToMinWidth:Bool = usedWidth < minWidth;
+		var heightInferiorToMinHeight:Bool = usedHeight < minHeight;
 		
 		//apply the dimensions constrained
 		//this alghorithm is not very elegant, but this is a straight
@@ -95,129 +104,131 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		{
 			if (heightSuperiorToMaxHeight == true)
 			{
-				if ((maxWidth / computedWidth) <= (maxHeight / computedHeight))
+				if ((maxWidth / usedWidth) <= (maxHeight / usedHeight))
 				{
-					if (minHeight > maxWidth * (computedHeight / computedWidth))
+					if (minHeight > maxWidth * (usedHeight / usedWidth))
 					{
-						computedHeight = minHeight;
+						usedHeight = minHeight;
 					}
 					else
 					{
-						computedHeight = maxWidth * (computedHeight / computedWidth);
+						usedHeight = maxWidth * (usedHeight / usedWidth);
 					}
-					computedWidth = maxWidth;
+					usedWidth = maxWidth;
 				}
 			}
 			else if (heightInferiorToMinHeight == true)
 			{
-				computedWidth = maxWidth;
-				computedHeight = minHeight;
+				usedWidth = maxWidth;
+				usedHeight = minHeight;
 			}
 			else
 			{
-				if (maxWidth * (computedHeight / computedWidth) > minHeight)
+				if (maxWidth * (usedHeight / usedWidth) > minHeight)
 				{
-					computedHeight = maxWidth * (computedHeight / computedWidth);
+					usedHeight = maxWidth * (usedHeight / usedWidth);
 				}
 				else
 				{
-					computedHeight = minHeight;
+					usedHeight = minHeight;
 				}
-				computedWidth = maxWidth;
+				usedWidth = maxWidth;
 			}
 		}
 		else if (widthInferiorToMinWidth == true)
 		{
 			if (heightInferiorToMinHeight == true)
 			{
-				if (minWidth / computedWidth <= minHeight / computedHeight)
+				if (minWidth / usedWidth <= minHeight / usedHeight)
 				{
-					if (maxWidth < minHeight * (computedWidth / computedHeight))
+					if (maxWidth < minHeight * (usedWidth / usedHeight))
 					{
-						computedWidth = maxWidth;
+						usedWidth = maxWidth;
 					}
 					else
 					{
-						computedWidth = minHeight * (computedWidth / computedHeight);
+						usedWidth = minHeight * (usedWidth / usedHeight);
 					}
-					computedHeight = minHeight;
+					usedHeight = minHeight;
 				}
 				else
 				{
-					if (maxHeight < minWidth * (computedHeight / computedWidth))
+					if (maxHeight < minWidth * (usedHeight / usedWidth))
 					{
-						computedHeight = maxHeight;
+						usedHeight = maxHeight;
 					}
 					else
 					{
-						computedHeight = minWidth * (computedHeight / computedWidth);
+						usedHeight = minWidth * (usedHeight / usedWidth);
 					}
-					computedWidth = minWidth;
+					usedWidth = minWidth;
 				}
 			}
 			else if (heightSuperiorToMaxHeight == true)
 			{
-				computedWidth = minWidth;
-				computedHeight = maxHeight;
+				usedWidth = minWidth;
+				usedHeight = maxHeight;
 			}
 			else
 			{
-				if (minWidth * (computedHeight / computedWidth) < maxHeight)
+				if (minWidth * (usedHeight / usedWidth) < maxHeight)
 				{
-					computedHeight = minWidth * (computedHeight / computedWidth);
+					usedHeight = minWidth * (usedHeight / usedWidth);
 				}
 				else
 				{
-					computedHeight = maxHeight;
+					usedHeight = maxHeight;
 				}
-				computedWidth = minWidth;
+				usedWidth = minWidth;
 			}
 		}
 		else if (heightSuperiorToMaxHeight == true)
 		{
-			if (maxHeight * (computedWidth / computedHeight) > minWidth)
+			if (maxHeight * (usedWidth / usedHeight) > minWidth)
 			{
-				computedWidth = maxHeight * (computedWidth / computedHeight);
+				usedWidth = maxHeight * (usedWidth / usedHeight);
 			}
 			else
 			{
-				computedWidth = minWidth;
+				usedWidth = minWidth;
 			}
-			computedHeight = maxHeight;
+			usedHeight = maxHeight;
 		}
 		else if (heightInferiorToMinHeight == true)
 		{
-			if (minHeight * (computedWidth / computedHeight) < minHeight)
+			if (minHeight * (usedWidth / usedHeight) < minHeight)
 			{
-				computedWidth = minHeight * (computedWidth / computedHeight);
+				usedWidth = minHeight * (usedWidth / usedHeight);
 			}
 			else
 			{
-				computedWidth = minHeight;
+				usedWidth = minHeight;
 			}
-			computedHeight = minHeight;
+			usedHeight = minHeight;
 		}
 		
-		style.computedStyle.width = computedWidth;
-		style.computedStyle.height = computedHeight;
+		usedValues.width = usedWidth;
+		usedValues.height = usedHeight;
 	}
 	
 	
 	/**
 	 * Overriden to process width before margins. For an embedded element a
-	 * computed width can always be computed event when width is auto
+	 * width can always be computed even when width is auto
 	 */
-	override private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
+	override private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
+		var usedValues:UsedValuesData = style.usedValues;
+		
 		//width
-		var computedWidth:Float = getComputedAutoWidth(style, containingBlockData, fontMetrics);
+		var usedWidth:Float = getComputedAutoWidth(style, containingBlockData);
 			
 		//left margin
-		style.computedStyle.marginLeft = getComputedMarginLeft(style, computedWidth, containingBlockData, fontMetrics);
+		usedValues.marginLeft = getComputedMarginLeft(style, usedWidth, containingBlockData);
 		//right margin
-		style.computedStyle.marginRight = getComputedMarginRight(style, computedWidth, containingBlockData, fontMetrics);
+		usedValues.marginRight = getComputedMarginRight(style, usedWidth, containingBlockData);
 		
-		return computedWidth;
+		return usedWidth;
 	}
 	
 	/**
@@ -225,9 +236,11 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * is computed, as an embedded HTMLElement may have an intrinsic width
 	 * and/or intrinsic ratio
 	 */ 
-	override private function getComputedAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
+	override private function getComputedAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
-		var ret:Float = 0.0;
+		var usedValues:UsedValuesData = style.usedValues;
+		
+		var usedWidth:Float = 0.0;
 		
 		var embeddedHTMLElement:EmbeddedElement = cast(style.htmlElement);
 		
@@ -237,10 +250,10 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		//if width style is not specified. Must correct once cascading is implemented
 		if (embeddedHTMLElement.getAttributeNode("width") != null)
 		{
-			ret = embeddedHTMLElement.width;
+			usedWidth = embeddedHTMLElement.width;
 		}
 		//if the 'height' style also is defined as 'auto'
-		else if (style.height == Dimension.cssAuto)
+		else if (style.isAuto(style.height) == true)
 		{
 			//first try to use the intrinsic width of the embedded
 			//HTMLElement if it exist (it might for instance be a
@@ -248,12 +261,12 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			
 			if (embeddedHTMLElement.intrinsicWidth != null)
 			{
-				ret = embeddedHTMLElement.intrinsicWidth;
+				usedWidth = embeddedHTMLElement.intrinsicWidth;
 			}
 			//else deduce the intrinsic width from the intrinsic height and ratio
 			else if (embeddedHTMLElement.intrinsicHeight != null && embeddedHTMLElement.intrinsicRatio != null)
 			{
-				ret = embeddedHTMLElement.intrinsicHeight * embeddedHTMLElement.intrinsicRatio;
+				usedWidth = embeddedHTMLElement.intrinsicHeight * embeddedHTMLElement.intrinsicRatio;
 			}
 			else if (embeddedHTMLElement.intrinsicRatio != null)
 			{
@@ -266,13 +279,11 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 				//constraint equation used for block-level, non-replaced elements in normal flow. 
 				if (containingBlockData.isWidthAuto == false)
 				{
-					var computedStyle:ComputedStyle = style.computedStyle;
-					
-					ret = containingBlockData.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight;
+					usedWidth = containingBlockData.width - usedValues.marginLeft - usedValues.marginRight - usedValues.paddingLeft - usedValues.paddingRight;
 				}
 				else
 				{
-					ret = 0.0;
+					usedWidth = 0.0;
 				}
 			}
 			
@@ -282,29 +293,29 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		else
 		{
 			//compute the used height
-			var computedHeight:Float = getComputedDimension(style.height, containingBlockData.height, containingBlockData.isHeightAuto, fontMetrics.fontSize, fontMetrics.xHeight);
+			var usedHeight:Float = getComputedDimension(style.height, containingBlockData.height, containingBlockData.isHeightAuto);
 			
 			//deduce the width from the intrinsic ratio and the computed height
 			if (embeddedHTMLElement.intrinsicRatio != null)
 			{
-				ret = computedHeight / embeddedHTMLElement.intrinsicRatio;
+				usedWidth = usedHeight / embeddedHTMLElement.intrinsicRatio;
 			}
 			//else use the intrinsic width if defined
 			else if (embeddedHTMLElement.intrinsicWidth != null)
 			{
-				ret = embeddedHTMLElement.intrinsicWidth;
+				usedWidth = embeddedHTMLElement.intrinsicWidth;
 			}
 			else
 			{
 				//Otherwise, if 'width' has a computed value of 'auto',
 				//but none of the conditions above are met, then the used 
 				//value of 'width' becomes 300px.
-				ret = 300;
+				usedWidth = 300;
 			}
 			
 		}
 		
-		return ret;
+		return usedWidth;
 	}
 	
 	/**
@@ -312,9 +323,11 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * is computed, as an embedded HTMLElement may have an intrinsic height
 	 * and/or intrinsic ratio
 	 */ 
-	override private function getComputedAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Float
+	override private function getComputedAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
-		var ret:Float = 0.0;
+		var usedValues:UsedValuesData = style.usedValues;
+		
+		var usedHeight:Float = 0.0;
 		
 		//TODO 4 : should style have a reference to the HTMLElement ? Should they be
 		//applied to multiple HTMLElement ?
@@ -326,22 +339,22 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		//if height style is not specified. Must correct once cascading is implemented
 		if (embeddedHTMLElement.getAttributeNode("height") != null)
 		{
-			ret = embeddedHTMLElement.height;
+			usedHeight = embeddedHTMLElement.height;
 		}
 		//if the 'width' style is also set to 'auto'
-		else if (style.width == Dimension.cssAuto)
+		else if (style.isAuto(style.width) == true)
 		{
 			//try to use the intrinsic height of the embedded
 			//HTMLElement if it exist (it might for instance be a
 			//picture width for an ImageHTMLElement)
 			if (embeddedHTMLElement.intrinsicHeight != null)
 			{
-				ret = embeddedHTMLElement.intrinsicHeight;
+				usedHeight = embeddedHTMLElement.intrinsicHeight;
 			}
 			//else deduce the intrinsic height from the intrinsic width and ratio
 			else if (embeddedHTMLElement.intrinsicWidth != null && embeddedHTMLElement.intrinsicRatio != null)
 			{
-				ret = embeddedHTMLElement.intrinsicWidth * embeddedHTMLElement.intrinsicRatio;
+				usedHeight = embeddedHTMLElement.intrinsicWidth * embeddedHTMLElement.intrinsicRatio;
 			}
 			//TODO 3 : check what must happen here
 			else if (embeddedHTMLElement.intrinsicRatio != null)
@@ -352,47 +365,46 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		//else if 'width' is not 'auto'
 		else
 		{
-			
 			//compute the used value of 'width'
-			var computedWidth:Float = getComputedDimension(style.width, containingBlockData.width, containingBlockData.isWidthAuto, fontMetrics.fontSize, fontMetrics.xHeight);
+			var usedWidth:Float = getComputedDimension(style.width, containingBlockData.width, containingBlockData.isWidthAuto);
 			
 			//deduce the height from the computed width and the intrinsic ratio if it is defined
 			if (embeddedHTMLElement.intrinsicRatio != null)
 			{
-				ret = style.computedStyle.width * embeddedHTMLElement.intrinsicRatio;
+				usedHeight = usedWidth * embeddedHTMLElement.intrinsicRatio;
 			}
 			else
 			{
 				//Otherwise, if 'height' has a computed value of 'auto',
 				//but none of the conditions above are met, then the used value of 'height'
 				//is 150px
-				ret = 150;
+				usedHeight = 150;
 			}
 		}
 		
-		return ret;
+		return usedHeight;
 	}
 	
 	/**
 	 * for block embedded HTMLElement, an 'auto' for vertical margin compute to 0, 
 	 * horizontal margin are computed like for non-embedded block HTMLElements
 	 */
-	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Float
+	override private function getComputedAutoMargin(marginStyleValue:CSSPropertyValue, opositeMargin:CSSPropertyValue, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, isHorizontalMargin:Bool):Float
 	{
-		var computedMargin:Float;
+		var usedMargin:Float;
 	
 		if (isHorizontalMargin == false)
 		{
-			computedMargin = 0.0;
+			usedMargin = 0.0;
 		}
 		else
 		{
 			//the "isDimensionAuto" flag is set to false, as for embedded element, there is always a computed width 
 			//at this point
-			computedMargin = super.getComputedAutoMargin(marginStyleValue, opositeMargin, containingHTMLElementDimension, computedDimension, false, computedPaddingsDimension, fontSize, xHeight, isHorizontalMargin );
+			usedMargin = super.getComputedAutoMargin(marginStyleValue, opositeMargin, containingHTMLElementDimension, computedDimension, false, computedPaddingsDimension, isHorizontalMargin );
 		}
 		
-		return computedMargin;
+		return usedMargin;
 	}
 	
 }

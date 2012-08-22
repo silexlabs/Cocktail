@@ -10,7 +10,6 @@ import cocktail.core.event.Event;
 import cocktail.core.event.UIEvent;
 import cocktail.port.NativeElement;
 import cocktail.core.renderer.VideoRenderer;
-import cocktail.core.resource.ImageLoader;
 import cocktail.port.NativeVideo;
 import cocktail.core.renderer.RendererData;
 

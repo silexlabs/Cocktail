@@ -28,7 +28,7 @@ enum StyleDeclarationParserState {
 	IGNORE_SPACES;
 	INVALID_STYLE;
 	STYLE_SEPARATOR;
-	BEGIN_STYLE_NAME;
+	BEGIN;
 }
 
 enum StyleValueParserState {
@@ -40,6 +40,7 @@ enum StyleValueParserState {
 	INVALID_STYLE_VALUE;
 	IMPORTANT;
 	END;
+	HEXA;
 }
 
 enum AttributeSelectorParserState {

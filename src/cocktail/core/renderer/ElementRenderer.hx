@@ -7,16 +7,20 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.NodeBase;
+import cocktail.core.event.TransitionEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.linebox.LineBox;
+import cocktail.core.style.transition.Animator;
+import cocktail.core.style.transition.Transition;
 import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
-import cocktail.core.style.ComputedStyle;
-import cocktail.core.style.CoreStyle;
+
+import cocktail.core.css.CoreStyle;
 import cocktail.core.style.CSSConstants;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
@@ -24,6 +28,7 @@ import cocktail.core.font.FontData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.port.GraphicsContext;
+import cocktail.core.css.CSSData;
 
 
 /**
@@ -309,49 +314,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC ANIMATION METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Recursively start pending animation
-	 */
-	public function startPendingAnimation():Bool
-	{
-		return doStartPendingAnimation(this);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE ANIMATION METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * start pending animations of self and of all children 
-	 */
-	private function doStartPendingAnimation(elementRenderer:ElementRenderer):Bool
-	{
-		var atLeastOneAnimationStarted:Bool = false;
-		
-		var animationStarted:Bool = elementRenderer.coreStyle.startPendingAnimations();
-		
-		if (animationStarted == true)
-		{
-			atLeastOneAnimationStarted = true;
-		}
-		
-		for (i in 0...childNodes.length)
-		{
-			var animationStarted:Bool = childNodes[i].startPendingAnimation();
-			
-			if (animationStarted == true)
-			{
-				atLeastOneAnimationStarted = true;
-			}
-		}
-		
-		return atLeastOneAnimationStarted;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC RENDERING METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 
@@ -423,7 +385,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		//of the scrolled BlockBoxRenderer.
 		//computing scroll offset should probably be done at the
 		//LayerRenderer level instead of in the ElementRenderer
-		if (coreStyle.computedStyle.position != fixed)
+		if (coreStyle.getKeyword(coreStyle.position) != FIXED)
 		{
 			addedScrollX += scrollLeft;
 			addedScrollY += scrollTop;
@@ -672,16 +634,12 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		return false;
 	}
 	
-	/////////////////////////////////
-	// PRIVATE HELPER METHODS
-	////////////////////////////////
-	
 	/**
 	 * Return the relative offset applied by this ElementRenderer
 	 * when rendering. Only relatively positioned ElementRenderer
 	 * have this offset
 	 */
-	private function getRelativeOffset():PointData
+	public function getRelativeOffset():PointData
 	{
 		var relativeOffset:PointData = { x:0.0, y:0.0 };
 		
@@ -691,14 +649,14 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{
 			//first try to apply the left offset of the ElementRenderer if it is
 			//not auto
-			if (coreStyle.left != PositionOffset.cssAuto)
+			if (coreStyle.isAuto(coreStyle.left) == false)
 			{
-				relativeOffset.x += coreStyle.computedStyle.left;
+				relativeOffset.x += coreStyle.usedValues.left;
 			}
 			//else the right offset,
-			else if (coreStyle.right != PositionOffset.cssAuto)
+			else if (coreStyle.isAuto(coreStyle.right) == false)
 			{
-				relativeOffset.x -= coreStyle.computedStyle.right;
+				relativeOffset.x -= coreStyle.usedValues.right;
 			}
 			
 			//if both left and right offset are auto, then the ElementRenderer uses its static
@@ -706,18 +664,22 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			//be applied
 		
 			//same for vertical offset
-			if (coreStyle.top != PositionOffset.cssAuto)
+			if (coreStyle.isAuto(coreStyle.top) == false)
 			{
-				relativeOffset.y += coreStyle.computedStyle.top; 
+				relativeOffset.y += coreStyle.usedValues.top; 
 			}
-			else if (coreStyle.bottom != PositionOffset.cssAuto)
+			else if (coreStyle.isAuto(coreStyle.bottom) == false)
 			{
-				relativeOffset.y -= coreStyle.computedStyle.bottom; 
+				relativeOffset.y -= coreStyle.usedValues.bottom; 
 			}
 		}
 		
 		return relativeOffset;
 	}
+	
+	/////////////////////////////////
+	// PRIVATE HELPER METHODS
+	////////////////////////////////
 	
 	/**
 	 * Determine wether this ElementRenderer is rendered
@@ -761,7 +723,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{
 			//for absolutely positioned fixed elements, the containing block
 			//is the viewport
-			if (coreStyle.computedStyle.position == fixed)
+			if (coreStyle.getKeyword(coreStyle.position) == FIXED)
 			{
 				return getInitialContainingBlock();
 			}
@@ -913,10 +875,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		var bounds:RectangleData = this.bounds;
 		
 		//fixed positioned
-		if (coreStyle.position == fixed)
+		if (coreStyle.getKeyword(coreStyle.position) == FIXED)
 		{
 			//here it uses its static position for x
-			if (coreStyle.left == PositionOffset.cssAuto && coreStyle.right == PositionOffset.cssAuto)
+			if (coreStyle.isAuto(coreStyle.left) == true && coreStyle.isAuto(coreStyle.right) == true)
 			{
 				globalX = globalContainingBlockOrigin.x + bounds.x;
 			}
@@ -926,7 +888,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				globalX = positionedOrigin.x;
 			}
 			//static position
-			if (coreStyle.top == PositionOffset.cssAuto && coreStyle.bottom == PositionOffset.cssAuto)
+			if (coreStyle.isAuto(coreStyle.top) == true && coreStyle.isAuto(coreStyle.bottom) == true)
 			{
 				globalY = globalContainingBlockOrigin.y + bounds.y;
 			}
@@ -936,10 +898,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			}
 		}
 		//absolute positioned
-		else if (coreStyle.position == absolute)
+		else if (coreStyle.getKeyword(coreStyle.position) == ABSOLUTE)
 		{
 			//static position for x
-			if (coreStyle.left == PositionOffset.cssAuto && coreStyle.right == PositionOffset.cssAuto)
+			if (coreStyle.isAuto(coreStyle.left) == true && coreStyle.isAuto(coreStyle.right) == true)
 			{
 				globalX = globalContainingBlockOrigin.x + bounds.x;
 			}
@@ -948,7 +910,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				globalX = globalPositionnedAncestorOrigin.x + positionedOrigin.x;
 			}
 			//static position for y
-			if (coreStyle.top == PositionOffset.cssAuto && coreStyle.bottom == PositionOffset.cssAuto)
+			if (coreStyle.isAuto(coreStyle.top) == true && coreStyle.isAuto(coreStyle.bottom) == true)
 			{
 				globalY = globalContainingBlockOrigin.y + bounds.y;
 			}

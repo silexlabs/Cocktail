@@ -14,13 +14,14 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.style.computer.VisualEffectStylesComputer;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.Matrix;
 import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
+import cocktail.core.css.CSSData;
 import haxe.Log;
 
 /**
@@ -133,13 +134,17 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		
 		//check the computed z-index of the ElementRenderer which
 		//instantiated the child LayerRenderer
-		switch(newChild.rootElementRenderer.coreStyle.computedStyle.zIndex)
+		switch(newChild.rootElementRenderer.coreStyle.zIndex)
 		{
-			case ZIndex.cssAuto:
+			case KEYWORD(value):
+				if (value != AUTO)
+				{
+					throw 'Illegal value for z-index style';
+				}
 				//the z-index is 'auto'
 				_zeroAndAutoZIndexChildLayerRenderers.push(newChild);
 				
-			case ZIndex.integer(value):
+			case INTEGER(value):
 				if (value == 0)
 				{
 					_zeroAndAutoZIndexChildLayerRenderers.push(newChild);
@@ -152,6 +157,9 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				{
 					insertNegativeZIndexChildRenderer(newChild, value);
 				}
+				
+			default:
+				throw 'Illegal value for z-index style';
 		}
 		
 		return newChild;
@@ -335,7 +343,8 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//painted with the element will have an alpha equal to the opacity style
 		if (rootElementRenderer.isTransparent() == true)
 		{
-			graphicsContext.beginTransparency(rootElementRenderer.coreStyle.computedStyle.opacity);
+			var coreStyle:CoreStyle = rootElementRenderer.coreStyle;
+			graphicsContext.beginTransparency(coreStyle.getNumber(coreStyle.opacity));
 		}
 		
 		//render the rootElementRenderer itself which will also
@@ -386,8 +395,8 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	private function getTransformationMatrix(graphicContext:GraphicsContext):Matrix
 	{
-		var relativeOffset:PointData = getRelativeOffset();
-		var concatenatedMatrix:Matrix = getConcatenatedMatrix(rootElementRenderer.coreStyle.computedStyle.transform, relativeOffset);
+		var relativeOffset:PointData = rootElementRenderer.getRelativeOffset();
+		var concatenatedMatrix:Matrix = getConcatenatedMatrix(rootElementRenderer.coreStyle.usedValues.transform, relativeOffset);
 		
 		//apply relative positioning as well
 		concatenatedMatrix.translate(relativeOffset.x, relativeOffset.y);
@@ -416,51 +425,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		return currentMatrix;
 	}
 	
-	/**
-	 * Return the relative offset applied to the root element renderer
-	 * when rendering. Only relatively positioned root element renderer
-	 * have this offset
-	 */
-	private function getRelativeOffset():PointData
-	{
-		var relativeOffset:PointData = { x:0.0, y:0.0 };
-		
-		//only relatively positioned ElementRenderer can have
-		//an offset
-		if (rootElementRenderer.isRelativePositioned() == true)
-		{
-			var coreStyle:CoreStyle = rootElementRenderer.coreStyle;
-			
-			//first try to apply the left offset of the ElementRenderer if it is
-			//not auto
-			if (coreStyle.left != PositionOffset.cssAuto)
-			{
-				relativeOffset.x += coreStyle.computedStyle.left;
-			}
-			//else the right offset,
-			else if (coreStyle.right != PositionOffset.cssAuto)
-			{
-				relativeOffset.x -= coreStyle.computedStyle.right;
-			}
-			
-			//if both left and right offset are auto, then the ElementRenderer uses its static
-			//position (its normal position in the flow) and no relative offset needs to
-			//be applied
-		
-			//same for vertical offset
-			if (coreStyle.top != PositionOffset.cssAuto)
-			{
-				relativeOffset.y += coreStyle.computedStyle.top; 
-			}
-			else if (coreStyle.bottom != PositionOffset.cssAuto)
-			{
-				relativeOffset.y -= coreStyle.computedStyle.bottom; 
-			}
-		}
-		
-		return relativeOffset;
-	}	
-	
 	/////////////////////////////////
 	// PRIVATE LAYER TREE METHODS
 	////////////////////////////////
@@ -485,9 +449,9 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		{
 			//get the z-index of the child LayerRenderer at the current index
 			var currentRendererZIndex:Int = 0;
-			switch( _positiveZIndexChildLayerRenderers[i].rootElementRenderer.coreStyle.computedStyle.zIndex)
+			switch( _positiveZIndexChildLayerRenderers[i].rootElementRenderer.coreStyle.zIndex)
 			{
-				case ZIndex.integer(value):
+				case INTEGER(value):
 					currentRendererZIndex = value;
 					
 				default:	
@@ -537,9 +501,9 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		{
 			var currentRendererZIndex:Int = 0;
 			
-			switch(_negativeZIndexChildLayerRenderers[i].rootElementRenderer.coreStyle.computedStyle.zIndex)
+			switch(_negativeZIndexChildLayerRenderers[i].rootElementRenderer.coreStyle.zIndex)
 			{
-				case ZIndex.integer(value):
+				case INTEGER(value):
 					currentRendererZIndex = value;
 					
 				default:	
@@ -672,7 +636,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 					elementRenderersAtPointInChildRenderer = childRenderers[i].layerRenderer.getElementRenderersAtPoint(point, scrollX, scrollY);
 				}
 				//TODO 1 : messy, ElementRenderer should be aware of their scrollBounds
-				else if (childRenderers[i].coreStyle.position == fixed)
+				else if (childRenderers[i].coreStyle.getKeyword(childRenderers[i].coreStyle.position) == FIXED)
 				{
 					elementRenderersAtPointInChildRenderer = childRenderers[i].layerRenderer.getElementRenderersAtPoint(point, scrollX , scrollY);
 				}

@@ -7,21 +7,25 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.css.CSSStyleDeclaration;
+import cocktail.core.css.InitialStyleDeclaration;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.linebox.LineBox;
 import cocktail.port.DrawingManager;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
 import cocktail.core.style.floats.FloatsManager;
 import cocktail.core.style.formatter.BlockFormattingContext;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.formatter.InlineFormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
+import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 import cocktail.port.GraphicsContext;
 import haxe.Log;
@@ -178,6 +182,31 @@ class BlockBoxRenderer extends ScrollableRenderer
 		anonymousBlock.appendChild(child);
 		
 		anonymousBlock.coreStyle = anonymousBlock.domNode.coreStyle;
+		
+		//anonymous block use the style of their parent for cascading, they can't 
+		//have style declaration of their own
+		var parentStyleDeclaration:CSSStyleDeclaration = child.domNode.parentNode.coreStyle.computedValues;
+		var parentFontMetrics:FontMetricsData = child.domNode.parentNode.coreStyle.fontMetrics;
+		
+		var htmlDocument:HTMLDocument = cast(child.domNode.ownerDocument);
+		
+		//TODO 1 : can't access htmlDocument.initialStyleDeclaration in macro target
+		//is htmlDocument null ?
+		var initialStyleDeclaration:InitialStyleDeclaration = new InitialStyleDeclaration();
+		
+		var supportedProperties:Array<String> = initialStyleDeclaration.supportedCSSProperties;
+		var properties:Hash<Void> = new Hash<Void>();
+		for ( i in 0...supportedProperties.length)
+		{
+			properties.set(supportedProperties[i], null);
+		}
+		
+		
+		
+		//only use style declarations from the parent node
+		anonymousBlock.coreStyle.cascade(properties, initialStyleDeclaration,
+		initialStyleDeclaration, initialStyleDeclaration, 
+		initialStyleDeclaration, 12, 12, false);
 		
 		return anonymousBlock;
 	}
@@ -377,7 +406,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 			if (child.layerRenderer == referenceLayer)
 			{
 				//TODO 2 : must add more condition, for instance, no float
-				if (child.isReplaced() == false && child.coreStyle.display == block )
+				if (child.isReplaced() == false && child.coreStyle.getKeyword(child.coreStyle.display) == CSSKeywordValue.BLOCK )
 				{
 					var childElementRenderer:Array<ElementRenderer> = getBlockReplacedChildren(child, referenceLayer);
 					var childLength:Int = childElementRenderer.length;
@@ -386,7 +415,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 						ret.push(childElementRenderer[j]);
 					}
 				}
-				else if (child.coreStyle.display == block)
+				else if (child.coreStyle.getKeyword(child.coreStyle.display) == CSSKeywordValue.BLOCK)
 				{
 					ret.push(child);
 				}
@@ -415,7 +444,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 			if (child.layerRenderer == referenceLayer)
 			{
 				//TODO 3 : must add more condition, for instance, no float
-				if (child.isReplaced() == false && child.coreStyle.display != inlineBlock)
+				if (child.isReplaced() == false && child.coreStyle.getKeyword(child.coreStyle.display) != INLINE_BLOCK)
 				{
 					ret.push(child);
 					
@@ -466,7 +495,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 			{
 				doFormat();
 			}
-			else if (coreStyle.computedStyle.display == inlineBlock)
+			else if (coreStyle.getKeyword(coreStyle.display) == INLINE_BLOCK)
 			{
 				doFormat();
 			}
@@ -550,18 +579,18 @@ class BlockBoxRenderer extends ScrollableRenderer
 		}
 		else
 		{
-			switch (coreStyle.computedStyle.display)
+			switch (coreStyle.getKeyword(coreStyle.display))
 			{
 				//element with an inline-block display style
 				//always establishes a new context
-				case inlineBlock:
+				case INLINE_BLOCK:
 				establishesNewFormattingContext = true; 
 				
 				//a block ElementRenderer may start a new inline
 				//formatting context if all its children are inline,
 				//else it participates in the current block formatting
 				//context
-				case block:
+				case BLOCK:
 					if (childrenInline() == true)
 					{
 						establishesNewFormattingContext = true;
@@ -593,7 +622,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 */
 	override private function rendersAsIfEstablishingStackingContext():Bool
 	{
-		if (coreStyle.computedStyle.display == inlineBlock)
+		if (coreStyle.getKeyword(coreStyle.display) == INLINE_BLOCK)
 		{
 			return true;
 		}
@@ -612,23 +641,23 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 */
 	override public function getContainerBlockData():ContainingBlockData
 	{
-		var height:Float = coreStyle.computedStyle.height;
+		var height:Float = coreStyle.usedValues.height;
 		if (_horizontalScrollBar != null)
 		{
-			height -= _horizontalScrollBar.coreStyle.computedStyle.height;
+			height -= _horizontalScrollBar.coreStyle.usedValues.height;
 		}
 		
-		var width:Float = coreStyle.computedStyle.width;
+		var width:Float = coreStyle.usedValues.width;
 		if (_verticalScrollBar != null)
 		{
-			width -= _verticalScrollBar.coreStyle.computedStyle.width;
+			width -= _verticalScrollBar.coreStyle.usedValues.width;
 		}
 		
 		return {
 			width:width,
-			isWidthAuto:this.coreStyle.width == Dimension.cssAuto,
+			isWidthAuto:coreStyle.isAuto(coreStyle.width),
 			height:height,
-			isHeightAuto:this.coreStyle.height == Dimension.cssAuto
+			isHeightAuto:coreStyle.isAuto(coreStyle.height)
 		};
 	}
 }

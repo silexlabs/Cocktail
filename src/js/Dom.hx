@@ -623,6 +623,7 @@ var duration : Int;
 var currentTime : Float;
 var buffered : Dynamic;
 var muted : Bool;
+var volume:Float;
 
 function play() : Void;
 function pause() : Void;

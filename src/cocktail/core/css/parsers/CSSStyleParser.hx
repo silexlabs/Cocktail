@@ -5,7 +5,13 @@ import cocktail.core.css.parsers.CSSParsersData;
 using StringTools;
 
 /**
- * ...
+ * This class is a prser whose role is to parse
+ * CSS property key/value pair into typed CSS
+ * objects.
+ * 
+ * For isntance, it should parse the following value :
+	 * 'margin:15px;'
+ * 
  * @author Yannick DOMINGUEZ
  */
 
@@ -22,10 +28,10 @@ class CSSStyleParser
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	//TODO : should return array of a property type instead of requiring callback
-	public function parseStyle(styles:String, applyProperty:String->Array<CSSPropertyValue>->Bool->Void):Void
+	public function parseStyle(styles:String, applyProperty:String->CSSPropertyValue->Bool->Void):Void
 	{
 		var state:StyleDeclarationParserState = IGNORE_SPACES;
-		var next:StyleDeclarationParserState = BEGIN_STYLE_NAME;
+		var next:StyleDeclarationParserState = BEGIN;
 		
 		var position:Int = 0;
 		
@@ -51,7 +57,7 @@ class CSSStyleParser
 							continue;
 					}
 				
-				case BEGIN_STYLE_NAME:
+				case BEGIN:
 					start = position;
 					state = STYLE_NAME;
 					continue;
@@ -94,7 +100,7 @@ class CSSStyleParser
 				case STYLE_VALUE:
 					position = parseStyleValue(styleName, styles, position, applyProperty);
 					state = IGNORE_SPACES;
-					next = BEGIN_STYLE_NAME;
+					next = BEGIN;
 					
 				case INVALID_STYLE:	
 			}
@@ -102,7 +108,7 @@ class CSSStyleParser
 		}
 	}
 	
-	private function parseStyleValue(propertyName:String, styles:String, position:Int, applyProperty:String->Array<CSSPropertyValue>->Bool->Void):Int
+	public function parseStyleValue(propertyName:String, styles:String, position:Int, applyProperty:String->CSSPropertyValue->Bool->Void):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		
@@ -110,11 +116,15 @@ class CSSStyleParser
 		var next:StyleValueParserState = BEGIN_VALUE;
 		var start:Int = position;
 		
+		var styleValueStart:Int = position + 1;
+		
 		var important:Bool = false;
 		
 		var previousStart:Int = 0;
 		
 		var styleValues:Array<CSSPropertyValue> = [];
+		var styleValuesLists:Array<Array<CSSPropertyValue>> = [];
+		
 		
 		while (!c.isEOF())
 		{
@@ -135,25 +145,46 @@ class CSSStyleParser
 				
 					
 				case SPACE_OR_END:
-					switch(c)
+					if (c.isEOF())
 					{
-						case ' '.code:
-							state = IGNORE_SPACES;
-							next = BEGIN_VALUE;
-							
-						case ';'.code:
-							state = END;
-							continue;
-							
-						default:
-							state = INVALID_STYLE_VALUE;
-							continue;
+						state = END;
+						continue;
 					}
-				
+					else
+					{
+						switch(c)
+						{
+							case ' '.code:
+								state = IGNORE_SPACES;
+								next = BEGIN_VALUE;
+								
+							case ','.code:
+								styleValuesLists.push(styleValues);
+								styleValues = [];
+								state = IGNORE_SPACES;
+								next = BEGIN_VALUE;
+								
+							case ';'.code:
+								state = END;
+								continue;
+								
+							default:
+								state = INVALID_STYLE_VALUE;
+								continue;
+						}
+					}
+					
+				//TODO 1 : add String parsing
 				case BEGIN_VALUE:
 					
 					switch(c)
 					{
+						case ','.code:
+							styleValuesLists.push(styleValues);
+							styleValues = [];
+							state = IGNORE_SPACES;
+							next = BEGIN_VALUE;
+						
 						case ';'.code:
 							state = END;
 							continue;
@@ -162,6 +193,15 @@ class CSSStyleParser
 							state = NUMBER_OR_INTEGER;
 							start = position;
 							continue;
+							
+						case '.'.code:
+							state = NUMBER_OR_INTEGER;
+							start = position;
+							continue;
+							
+						case '#'.code:
+							state = HEXA;
+							start = position;
 							
 						case '!'.code:
 							state = IMPORTANT;
@@ -182,7 +222,11 @@ class CSSStyleParser
 					}
 					
 				case END:	
-					if (c != ";".code)
+					if (c.isEOF())
+					{
+						break;
+					}
+					else if (c != ";".code)
 					{
 						state = INVALID_STYLE_VALUE;
 						continue;
@@ -192,11 +236,26 @@ class CSSStyleParser
 						break;
 					}
 					
+					//TODO 1 : check for the right ident
 				case IMPORTANT:
 					position = parseImportant(styles, position);
-					important = true;
-					state = IGNORE_SPACES;
-					next = END;
+					if (position != -1)
+					{
+						important = true;
+						state = IGNORE_SPACES;
+						next = END;
+					}
+					else
+					{
+						state = INVALID_STYLE_VALUE;
+						continue;
+					}
+					
+					
+					
+				case HEXA:
+					position = parseHexaColor(styles, position, styleValues);
+					state = SPACE_OR_END;
 					
 				case IDENT:
 					position = parseIdentOrFunctionnalNotation(styles, position, styleValues);
@@ -207,13 +266,50 @@ class CSSStyleParser
 					state = SPACE_OR_END;
 					
 				case INVALID_STYLE_VALUE:
-					trace("invalid");
+					//trace("invalid");
 	
 			}
 			c = styles.fastCodeAt(++position);
 		}
 		
-		applyProperty(propertyName, styleValues, important);
+		if (styleValuesLists.length == 0)
+		{
+			if (styleValues.length == 1)
+			{
+				applyProperty(propertyName, styleValues[0], important);
+			}
+			else
+			{
+				applyProperty(propertyName, GROUP(styleValues), important);
+			}
+		}
+		else
+		{
+			var styleListProperty:Array<CSSPropertyValue> = [];
+			
+			if (styleValues.length > 0)
+			{
+				styleValuesLists.push(styleValues);
+			}
+	
+			for (i in 0...styleValuesLists.length)
+			{
+				if (styleValuesLists[i].length == 1)
+				{
+					styleListProperty.push(styleValuesLists[i][0]);
+				}
+				else
+				{
+					styleListProperty.push(GROUP(styleValuesLists[i]));
+				}
+			}
+			
+			
+			
+			applyProperty(propertyName, CSS_LIST(styleListProperty), important);
+		}
+		
+		
 		
 		return position;
 	}
@@ -237,16 +333,30 @@ class CSSStyleParser
 		return -1;
 	}
 	
+	
+	
 	private function parseIntegerOrNumber(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		var start = position;
 		
-		var isNumber:Bool = false;
+		if (c == '-'.code)
+		{
+			c = styles.fastCodeAt(++position);
+		}
+		
+		var isNumber:Bool = c == '.'.code;
 		
 		while (isNumChar(c))
 		{
 			c = styles.fastCodeAt(++position);
+		}
+		
+		if (c.isEOF() && isNumber == false)
+		{
+			var integer:Int = Std.parseInt(styles.substr(start, position - start));
+			styleValues.push(CSSPropertyValue.INTEGER(integer));
+			return position;
 		}
 		
 		if (c == '.'.code)
@@ -257,6 +367,13 @@ class CSSStyleParser
 			{
 				c = styles.fastCodeAt(++position);
 			}
+		}
+		
+		if (c.isEOF())
+		{
+			var number:Float = Std.parseFloat(styles.substr(start, position - start));
+			styleValues.push(CSSPropertyValue.NUMBER(number));
+			return position;
 		}
 		
 		if (isIdentChar(c))
@@ -290,6 +407,7 @@ class CSSStyleParser
 	
 	private function parseDimension(numberOrInteger:Float, styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
+		
 		var c:Int = styles.fastCodeAt(position);
 		var start = position;
 		
@@ -303,61 +421,61 @@ class CSSStyleParser
 		switch(ident)
 		{
 			case "px":
-				styleValues.push(CSSPropertyValue.LENGTH(CSSLengthValue.PX(numberOrInteger)));
+				styleValues.push(LENGTH(PX(numberOrInteger)));
 				
 			case "em":
-				styleValues.push(CSSPropertyValue.LENGTH(CSSLengthValue.EM(numberOrInteger)));
+				styleValues.push(LENGTH(EM(numberOrInteger)));
 				
 			case "ex":
-				styleValues.push(CSSPropertyValue.LENGTH(CSSLengthValue.EX(numberOrInteger)));	
+				styleValues.push(LENGTH(EX(numberOrInteger)));	
 				
 			case "mm":
-				styleValues.push(CSSPropertyValue.LENGTH(CSSLengthValue.MM(numberOrInteger)));		
+				styleValues.push(LENGTH(MM(numberOrInteger)));		
 				
 			case "in":
-				styleValues.push(CSSPropertyValue.LENGTH(CSSLengthValue.IN(numberOrInteger)));	
+				styleValues.push(LENGTH(IN(numberOrInteger)));	
 				
 			case "cm":
-				styleValues.push(CSSPropertyValue.LENGTH(CSSLengthValue.CM(numberOrInteger)));		
+				styleValues.push(LENGTH(CM(numberOrInteger)));		
 				
 			case "pc":
-				styleValues.push(CSSPropertyValue.LENGTH(CSSLengthValue.PC(numberOrInteger)));			
+				styleValues.push(LENGTH(PC(numberOrInteger)));			
 				
 			case "pt":
-				styleValues.push(CSSPropertyValue.LENGTH(CSSLengthValue.PT(numberOrInteger)));
+				styleValues.push(LENGTH(PT(numberOrInteger)));
 				
 			case "deg":
-				styleValues.push(CSSPropertyValue.ANGLE(CSSAngleValue.DEG(numberOrInteger)));
+				styleValues.push(ANGLE(DEG(numberOrInteger)));
 				
 			case "rad":
-				styleValues.push(CSSPropertyValue.ANGLE(CSSAngleValue.RAD(numberOrInteger)));	
+				styleValues.push(ANGLE(RAD(numberOrInteger)));	
 				
 			case "grad":
-				styleValues.push(CSSPropertyValue.ANGLE(CSSAngleValue.GRAD(numberOrInteger)));		
+				styleValues.push(ANGLE(GRAD(numberOrInteger)));		
 				
 			case "turn":
-				styleValues.push(CSSPropertyValue.ANGLE(CSSAngleValue.TURN(numberOrInteger)));	
+				styleValues.push(ANGLE(TURN(numberOrInteger)));	
 				
 			case "s":
-				styleValues.push(CSSPropertyValue.TIME(CSSTimeValue.SECONDS(numberOrInteger)));	
+				styleValues.push(TIME(SECONDS(numberOrInteger)));	
 				
 			case "ms":
-				styleValues.push(CSSPropertyValue.TIME(CSSTimeValue.MILLISECONDS(numberOrInteger)));		
+				styleValues.push(TIME(MILLISECONDS(numberOrInteger)));		
 				
 			case 'Hz':
-				styleValues.push(CSSPropertyValue.FREQUENCY(CSSFrequencyValue.HERTZ(numberOrInteger)));
+				styleValues.push(FREQUENCY(HERTZ(numberOrInteger)));
 				
 			case 'kHz':
-				styleValues.push(CSSPropertyValue.FREQUENCY(CSSFrequencyValue.KILO_HERTZ(numberOrInteger)));
+				styleValues.push(FREQUENCY(KILO_HERTZ(numberOrInteger)));
 				
 			case 'dpi':
-				styleValues.push(CSSPropertyValue.RESOLUTION(CSSResolutionValue.DPI(numberOrInteger)));
+				styleValues.push(RESOLUTION(DPI(numberOrInteger)));
 				
 			case 'dpcm':
-				styleValues.push(CSSPropertyValue.RESOLUTION(CSSResolutionValue.DPCM(numberOrInteger)));	
+				styleValues.push(RESOLUTION(DPCM(numberOrInteger)));	
 				
 			case 'dppx':
-				styleValues.push(CSSPropertyValue.RESOLUTION(CSSResolutionValue.DPPX(numberOrInteger)));		
+				styleValues.push(RESOLUTION(DPPX(numberOrInteger)));		
 				
 		}
 		
@@ -379,13 +497,35 @@ class CSSStyleParser
 		switch(c)
 		{
 			case '('.code:
-				position = parseFunctionnalNotation(ident, styles, position, styleValues);
+				position = parseFunctionnalNotation(ident, styles, ++position, styleValues);
 				
 			default:	
 				parseIdent(ident, styleValues);
 		}
 		
 		return --position;
+	}
+	
+	private function parseHexaColor(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
+	{
+		var c:Int = styles.fastCodeAt(position);
+		var start:Int = position;
+		
+		while (isHexaChar(c))
+		{
+			c = styles.fastCodeAt(++position);
+		}
+		
+		var hexa:String = styles.substr(start, position - start);
+		
+		if (hexa.length == 3 || hexa.length == 6)
+		{
+			styleValues.push(CSSPropertyValue.COLOR(CSSColorValue.HEX(hexa)));
+			return position;
+		}
+		
+		return -1;
+		
 	}
 	
 	private function parseFunctionnalNotation(ident:String, styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
@@ -401,6 +541,42 @@ class CSSStyleParser
 		
 		return position;
 	}
+	
+	
+	
+	private function parseURL(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
+	{
+		
+		var c:Int = styles.fastCodeAt(position);
+		
+		switch(c)
+		{
+			case '"'.code, "'".code:
+				++position;
+				c = styles.fastCodeAt(position);
+		}
+
+		var start = position;
+		
+		while (c != ')'.code && c != '"'.code && c != "'".code)
+		{
+			if (c.isEOF())
+			{
+				return position;
+			}
+			c = styles.fastCodeAt(++position);
+		}
+		
+		styleValues.push(CSSPropertyValue.URL(styles.substr(start, position - start)));
+		
+		return ++position;
+	}
+	
+	private function parseRGB(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
+	{
+		return position;
+	}
+	
 	
 	private function parseIdent(ident:String, styleValues:Array<CSSPropertyValue>):Void
 	{
@@ -437,6 +613,9 @@ class CSSStyleParser
 				
 			case 'oblique':
 				cssPropertyValue = KEYWORD(OBLIQUE);
+				
+			case 'italic':
+				cssPropertyValue = KEYWORD(ITALIC);
 				
 			case 'small-caps':
 				cssPropertyValue = KEYWORD(SMALL_CAPS);
@@ -592,25 +771,118 @@ class CSSStyleParser
 				cssPropertyValue = KEYWORD(START);
 				
 			case 'end':
-				cssPropertyValue = KEYWORD(END);	
+				cssPropertyValue = KEYWORD(END);
+				
+			case 'x-small':
+				cssPropertyValue = KEYWORD(X_SMALL);
+				
+			case 'xx-small':
+				cssPropertyValue = KEYWORD(XX_SMALL);
+				
+			case 'x-large':
+				cssPropertyValue = KEYWORD(X_LARGE);
+				
+			case 'xx-large':
+				cssPropertyValue = KEYWORD(XX_LARGE);
+				
+			case 'medium':
+				cssPropertyValue = KEYWORD(MEDIUM);
+				
+			case 'smaller':
+				cssPropertyValue = KEYWORD(SMALLER);
+				
+			case 'larger':
+				cssPropertyValue = KEYWORD(LARGER);
+				
+			case 'space':
+				cssPropertyValue = KEYWORD(SPACE);
+				
+			case 'round':
+				cssPropertyValue = KEYWORD(ROUND);
+				
+			case 'large':
+				cssPropertyValue = KEYWORD(LARGE);
+				
+			case 'small':
+				cssPropertyValue = KEYWORD(SMALL);
+				
+			case 'repeat-x':
+				cssPropertyValue = KEYWORD(REPEAT_X);
+				
+			case 'repeat-y':
+				cssPropertyValue = KEYWORD(REPEAT_Y);
+				
+			case 'no-repeat':
+				cssPropertyValue = KEYWORD(NO_REPEAT);
+				
+			case 'repeat':
+				cssPropertyValue = KEYWORD(REPEAT);
+				
+			case 'transparent':
+				cssPropertyValue = COLOR(TRANSPARENT);
+				
+			case 'aqua':
+				cssPropertyValue = COLOR(KEYWORD(AQUA));
+				
+			case 'blue':
+				cssPropertyValue = COLOR(KEYWORD(BLUE));
+				
+			case 'black':
+				cssPropertyValue = COLOR(KEYWORD(BLACK));	
+				
+			case 'silver':
+				cssPropertyValue = COLOR(KEYWORD(SILVER));	
+				
+			case 'gray':
+				cssPropertyValue = COLOR(KEYWORD(GRAY));	
+				
+			case 'white':
+				cssPropertyValue = COLOR(KEYWORD(WHITE));	
+				
+			case 'maroon':
+				cssPropertyValue = COLOR(KEYWORD(MAROON));	
+				
+			case 'red':
+				cssPropertyValue = COLOR(KEYWORD(RED));		
+				
+			case 'purple':
+				cssPropertyValue = COLOR(KEYWORD(PURPLE));	
+				
+			case 'fuchsia':
+				cssPropertyValue = COLOR(KEYWORD(FUSHIA));		
+				
+			case 'green':
+				cssPropertyValue = COLOR(KEYWORD(GREEN));	
+				
+			case 'lime':
+				cssPropertyValue = COLOR(KEYWORD(LIME));
+				
+			case 'olive':
+				cssPropertyValue = COLOR(KEYWORD(OLIVE));		
+				
+			case 'yellow':
+				cssPropertyValue = COLOR(KEYWORD(YELLOW));	
+				
+			case 'navy':
+				cssPropertyValue = COLOR(KEYWORD(NAVY));
+				
+			case 'orange':
+				cssPropertyValue = COLOR(KEYWORD(ORANGE));
+				
+			case 'teal':
+				cssPropertyValue = COLOR(KEYWORD(TEAL));
 		}
 		
 		styleValues.push(cssPropertyValue);
 	}
-	
-	private function parseURL(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
-	{
-		return position;
-	}
-	
-	private function parseRGB(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
-	{
-		return position;
-	}
-	
+
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE UTILS METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	static inline function isHexaChar(c) {
+		return (c >= 'a'.code && c <= 'f'.code) || (c >= 'A'.code && c <= 'F'.code) || (c >= '0'.code && c <= '9'.code);
+	}
 	
 	static inline function isStyleNameChar(c) {
 		return (c >= 'a'.code && c <= 'z'.code) || (c >= 'A'.code && c <= 'Z'.code) || (c >= '0'.code && c <= '9'.code) || c == '-'.code;

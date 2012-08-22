@@ -15,11 +15,9 @@ import cocktail.core.html.HTMLImageElement;
 import cocktail.core.html.HTMLObjectElement;
 import cocktail.core.layer.CompositingLayerRenderer;
 import cocktail.core.layer.LayerRenderer;
-import cocktail.core.resource.ImageLoader;
 import cocktail.core.resource.ResourceManager;
 import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
-import cocktail.port.Resource;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 
@@ -103,27 +101,26 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 			
 		}
 		
-		var scaleMode:String = getScaleMode();
-		
-		var assetBounds:RectangleData = getAssetBounds(coreStyle.computedStyle.width, coreStyle.computedStyle.height,
+		var assetBounds:RectangleData = getAssetBounds(coreStyle.usedValues.width, coreStyle.usedValues.height,
 		width, height);
 
+		var scaleMode:String = getScaleMode();
 		
 		switch (scaleMode)
 		{
 			case NO_SCALE:
-				asset.x = globalBounds.x + coreStyle.computedStyle.paddingLeft;
-				asset.y = globalBounds.y + coreStyle.computedStyle.paddingTop;
+				asset.x = globalBounds.x + coreStyle.usedValues.paddingLeft;
+				asset.y = globalBounds.y + coreStyle.usedValues.paddingTop;
 				
 			case EXACT_FIT:
-				asset.x = globalBounds.x + coreStyle.computedStyle.paddingLeft;
-				asset.y = globalBounds.y + coreStyle.computedStyle.paddingTop;
-				asset.scaleX = coreStyle.computedStyle.width / width;
-				asset.scaleY = coreStyle.computedStyle.height / height;
+				asset.x = globalBounds.x + coreStyle.usedValues.paddingLeft;
+				asset.y = globalBounds.y + coreStyle.usedValues.paddingTop;
+				asset.scaleX = coreStyle.usedValues.width / width;
+				asset.scaleY = coreStyle.usedValues.height / height;
 
 			default:
-				asset.x = globalBounds.x + coreStyle.computedStyle.paddingLeft + assetBounds.x;
-				asset.y = globalBounds.y + coreStyle.computedStyle.paddingTop + assetBounds.y;
+				asset.x = globalBounds.x + coreStyle.usedValues.paddingLeft + assetBounds.x;
+				asset.y = globalBounds.y + coreStyle.usedValues.paddingTop + assetBounds.y;
 				asset.scaleX = assetBounds.width / width;
 				asset.scaleY = assetBounds.height / height;
 		}
@@ -132,8 +129,8 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 		var mask = new flash.display.Sprite();
 		mask.graphics.beginFill(0xFF0000, 0.0);
 		mask.graphics.drawRect( 
-		globalBounds.x + coreStyle.computedStyle.paddingLeft, globalBounds.y + coreStyle.computedStyle.paddingTop,
-		coreStyle.computedStyle.width, coreStyle.computedStyle.height);
+		globalBounds.x + coreStyle.usedValues.paddingLeft, globalBounds.y + coreStyle.usedValues.paddingTop,
+		coreStyle.usedValues.width, coreStyle.usedValues.height);
 		mask.graphics.endFill();
 		asset.mask = mask;
 		

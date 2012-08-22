@@ -13,13 +13,14 @@ import cocktail.core.html.EmbeddedElement;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLImageElement;
+import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
-import cocktail.core.style.ComputedStyle;
+
 import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import cocktail.port.NativeBitmapData;
-import cocktail.port.Resource;
 import cocktail.port.NativeElement;
+import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 
 /**
@@ -48,7 +49,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	 */
 	override private function renderEmbeddedAsset(graphicContext:GraphicsContext):Void
 	{
-		var resource:Resource = ResourceManager.getResource(domNode.getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME));
+		var resource:AbstractResource = ResourceManager.getImageResource(domNode.getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME));
 
 		//don't paint anything is the image is not loaded or there was an error
 		//while loading
@@ -57,13 +58,13 @@ class ImageRenderer extends EmbeddedBoxRenderer
 			return;
 		}
 		
-		var computedStyle:ComputedStyle = coreStyle.computedStyle;
+		var usedValues:UsedValuesData = coreStyle.usedValues;
 		
 		var paintBounds:RectangleData = { 
-			x:globalBounds.x + computedStyle.paddingLeft - scrollOffset.x,
-			y:globalBounds.y + computedStyle.paddingTop - scrollOffset.y,
-			width:computedStyle.width,
-			height:computedStyle.height
+			x:globalBounds.x + usedValues.paddingLeft - scrollOffset.x,
+			y:globalBounds.y + usedValues.paddingTop - scrollOffset.y,
+			width:usedValues.width,
+			height:usedValues.height
 		}
 		
 		paintResource(graphicContext, resource.nativeResource, paintBounds, resource.intrinsicWidth, resource.intrinsicHeight);

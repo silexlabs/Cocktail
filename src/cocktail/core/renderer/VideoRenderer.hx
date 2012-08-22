@@ -13,14 +13,15 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLVideoElement;
 import cocktail.core.layer.CompositingLayerRenderer;
 import cocktail.core.layer.LayerRenderer;
+import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
 import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
+import cocktail.port.ImageResource;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.port.NativeVideo;
 import cocktail.port.platform.nativeMedia.NativeMedia;
-import cocktail.port.Resource;
 
 /**
  * Renders an embedded video asset or its poster frame
@@ -100,8 +101,8 @@ class VideoRenderer extends ImageRenderer
 	private function renderVideo(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext):Void
 	{
 		//get the bounds for the video so that it takes the maximum space and is centered
-		var videoBounds:RectangleData = getAssetBounds(coreStyle.computedStyle.width,
-		coreStyle.computedStyle.height, htmlVideoElement.videoWidth, htmlVideoElement.videoHeight);
+		var videoBounds:RectangleData = getAssetBounds(coreStyle.usedValues.width,
+		coreStyle.usedValues.height, htmlVideoElement.videoWidth, htmlVideoElement.videoHeight);
 		
 		var globalBounds:RectangleData = this.globalBounds;
 		
@@ -110,8 +111,8 @@ class VideoRenderer extends ImageRenderer
 		//set the position and size of the native video, relative
 		//to the Window
 		nativeVideo.viewport = {
-			x: globalBounds.x + coreStyle.computedStyle.paddingLeft + videoBounds.x - scrollOffset.x,
-			y: globalBounds.y + coreStyle.computedStyle.paddingTop + videoBounds.y - scrollOffset.y,
+			x: globalBounds.x + coreStyle.usedValues.paddingLeft + videoBounds.x - scrollOffset.x,
+			y: globalBounds.y + coreStyle.usedValues.paddingTop + videoBounds.y - scrollOffset.y,
 			width: videoBounds.width,
 			height: videoBounds.height
 		}
@@ -125,7 +126,7 @@ class VideoRenderer extends ImageRenderer
 	 */
 	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext):Void
 	{
-		var resource:Resource = ResourceManager.getResource(domNode.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
+		var resource:AbstractResource = ResourceManager.getImageResource(domNode.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
 
 		//the poster frame is not loaded or there was an error while loading it
 		if (resource.loaded == false || resource.loadedWithError == true)
@@ -133,12 +134,12 @@ class VideoRenderer extends ImageRenderer
 			return;
 		}
 		
-		var posterBounds:RectangleData = getAssetBounds(coreStyle.computedStyle.width,
-		coreStyle.computedStyle.height, resource.intrinsicWidth, resource.intrinsicHeight);
+		var posterBounds:RectangleData = getAssetBounds(coreStyle.usedValues.width,
+		coreStyle.usedValues.height, resource.intrinsicWidth, resource.intrinsicHeight);
 		
 		var paintBounds:RectangleData = {
-			x:globalBounds.x + coreStyle.computedStyle.paddingLeft + posterBounds.x - scrollOffset.x,
-			y:globalBounds.y + coreStyle.computedStyle.paddingTop + posterBounds.y - scrollOffset.y,
+			x:globalBounds.x + coreStyle.usedValues.paddingLeft + posterBounds.x - scrollOffset.x,
+			y:globalBounds.y + coreStyle.usedValues.paddingTop + posterBounds.y - scrollOffset.y,
 			width:posterBounds.width,
 			height:posterBounds.height
 		}

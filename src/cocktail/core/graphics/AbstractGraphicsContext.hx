@@ -95,6 +95,7 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 		
 		_useTransparency = false;
 		_alpha = 0.0;
+	
 		_orderedChildList = new Array<AbstractGraphicsContext>();
 	}
 	
@@ -282,9 +283,9 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 			//TODO 1 : for some reason CoreStyle is null on InitialBlockRenderer at this point
 			if (elementRenderer.coreStyle != null)
 			{
-				switch (elementRenderer.coreStyle.computedStyle.zIndex)
+				switch (elementRenderer.coreStyle.zIndex)
 				{
-					case ZIndex.integer(value):
+					case INTEGER(value):
 						index = value;
 						
 					default:	

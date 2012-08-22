@@ -187,7 +187,6 @@ class FocusManager
 				{
 					doBuildTabList(child, orderedTabList, indexedTabList);
 				}
-				
 				//check if the child can be focused
 				if (child.isFocusable() == true)
 				{
@@ -279,6 +278,10 @@ class FocusManager
 			//store the new active element before dispatching focus and blur event
 			var oldActiveElement:HTMLElement = activeElement;
 			
+			//refresh the styles of the old focused element, as
+			//:focus styles don't apply to it anymore
+			oldActiveElement.invalidateStyleDeclaration(false);
+			
 			//if the new activeElement is not focusable, the focus
 			//is instead given to the HTMLBodyElement
 			if (newActiveElement.isFocusable() == true)
@@ -289,6 +292,12 @@ class FocusManager
 			{
 				activeElement = body;
 			}
+			
+			
+			//update the styles of the focus element,
+			//as :focud psuedo-class styles might now apply
+			//to it
+			activeElement.invalidateStyleDeclaration(false);
 			
 			//dispatch post-focus event which don't bubbles through the document
 			

@@ -8,13 +8,14 @@
 package cocktail.core.style.formatter;
 
 import cocktail.core.html.HTMLElement;
-import cocktail.core.style.ComputedStyle;
-import cocktail.core.style.CoreStyle;
+
+import cocktail.core.css.CoreStyle;
 import cocktail.core.style.floats.FloatsManager;
 import cocktail.core.style.StyleData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
+import cocktail.core.css.CSSData;
 import haxe.Log;
 
 /**
@@ -79,8 +80,8 @@ class FormattingContext
 	 */
 	private function initFormattingContextData():Void
 	{
-		var x:Float = _formattingContextRoot.coreStyle.computedStyle.paddingLeft;
-		var y:Float = _formattingContextRoot.coreStyle.computedStyle.paddingTop;
+		var x:Float = _formattingContextRoot.coreStyle.usedValues.paddingLeft;
+		var y:Float = _formattingContextRoot.coreStyle.usedValues.paddingTop;
 		
 		_formattingContextData = {
 			x : x,
@@ -116,22 +117,21 @@ class FormattingContext
 
 	private function applyShrinkToFitIfNeeded(elementRenderer:ElementRenderer, minimumWidth:Float):Void
 	{
-		var shrinkedWidth:Float = elementRenderer.coreStyle.computedStyle.width;
-
-		if (elementRenderer.coreStyle.width == Dimension.cssAuto)
+		var style:CoreStyle = elementRenderer.coreStyle;
+		
+		var shrinkedWidth:Float = style.usedValues.width;
+		
+		if (style.isAuto(style.width) == true)
 		{
-			if (elementRenderer.isFloat() == true || elementRenderer.coreStyle.computedStyle.display == inlineBlock)
+			if (elementRenderer.isFloat() == true || style.getKeyword(style.display) == INLINE_BLOCK)
 			{
 				shrinkedWidth = minimumWidth;
 			}
 			else if (elementRenderer.isPositioned() == true && elementRenderer.isRelativePositioned() == false)
 			{
-				var style:CoreStyle = elementRenderer.coreStyle;
-				
 				//shrink-to-fit only happen if either left or right is auto
-				if (style.left == PositionOffset.cssAuto || style.right == PositionOffset.cssAuto)
+				if (style.isAuto(style.left) == true || style.isAuto(style.right) == true)
 				{
-					var computedStyle:ComputedStyle = style.computedStyle;
 					//compute the shrinked width
 					shrinkedWidth = minimumWidth;
 				}
@@ -140,12 +140,10 @@ class FormattingContext
 		//here the width is not shrinked
 		else
 		{
-			shrinkedWidth = elementRenderer.coreStyle.computedStyle.width;
+			shrinkedWidth = style.usedValues.width;
 		}
 		
-		
-		
-		elementRenderer.coreStyle.computedStyle.width = shrinkedWidth;
+		style.usedValues.width = shrinkedWidth;
 	}
 	
 	

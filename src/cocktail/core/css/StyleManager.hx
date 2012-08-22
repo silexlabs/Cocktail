@@ -9,7 +9,7 @@ package cocktail.core.css;
 
 import cocktail.core.html.HTMLElement;
 import cocktail.core.renderer.BlockBoxRenderer;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSData;
 
 /**
@@ -65,14 +65,16 @@ class StyleManager
 	/**
 	 * For a given node, return an object containing
 	 * all the style declarations from the style sheets
-	 * which applies to it
+	 * which applies to it.
+	 * 
+	 * The pseudo class matched by the node are also provided.
+	 * For instance, if the node is hovered by the mouse, it will
+	 * match the hover psuedo class
 	 */
-	public function getStyleDeclaration(node:HTMLElement):CSSStyleDeclaration
+	public function getStyleDeclaration(node:HTMLElement, matchedPseudoClasses:MatchedPseudoClasses):CSSStyleDeclaration
 	{
 		var styleDeclaration:CSSStyleDeclaration = new CSSStyleDeclaration();
-		
-		applyStyleSheets(node, styleDeclaration, _styleSheets);
-		
+		applyStyleSheets(node, styleDeclaration, _styleSheets, matchedPseudoClasses);
 		return styleDeclaration;
 	}
 	
@@ -84,10 +86,10 @@ class StyleManager
 	 * Apply the styles declaration applying to the node to 
 	 * the node's CSSStyleDeclaration object.
 	 */
-	private function applyStyleSheets(node:HTMLElement, nodeStyleDeclaration:CSSStyleDeclaration, styleSheets:Array<CSSStyleSheet>):Void
+	private function applyStyleSheets(node:HTMLElement, nodeStyleDeclaration:CSSStyleDeclaration, styleSheets:Array<CSSStyleSheet>, matchedPseudoClasses:MatchedPseudoClasses):Void
 	{
 		//contain all the style declarations whose selector matches the node
-		var matchingStyleDeclarations:Array<CSSStyleDeclaration> = getMatchingStyleDeclarations(node, styleSheets);
+		var matchingStyleDeclarations:Array<StyleDeclarationData> = getMatchingStyleDeclarations(node, styleSheets, matchedPseudoClasses);
 		
 		//when properties are applied to the nodeStyleDeclaration, this array
 		//store the name of the property so that they are are not applied multiple
@@ -97,7 +99,7 @@ class StyleManager
 		//loop in all the style declarations applying to the node
 		for (i in 0...matchingStyleDeclarations.length)
 		{
-			var cssStyleDeclaration:CSSStyleDeclaration = matchingStyleDeclarations[i];
+			var cssStyleDeclaration:CSSStyleDeclaration = matchingStyleDeclarations[i].style;
 			for (j in 0...cssStyleDeclaration.length)
 			{
 				var property:String = cssStyleDeclaration.item(j);
@@ -116,9 +118,9 @@ class StyleManager
 	 * contained in the document's style sheets which apply to
 	 * the node
 	 */
-	private function getMatchingStyleDeclarations(node:HTMLElement, styleSheets:Array<CSSStyleSheet>):Array<CSSStyleDeclaration>
+	private function getMatchingStyleDeclarations(node:HTMLElement, styleSheets:Array<CSSStyleSheet>, matchedPseudoClasses:MatchedPseudoClasses):Array<StyleDeclarationData>
 	{
-		var matchingStyleDeclarations:Array<CSSStyleDeclaration> = new Array<CSSStyleDeclaration>();
+		var matchingStyleDeclarations:Array<StyleDeclarationData> = new Array<StyleDeclarationData>();
 		
 		//loop in all style sheets
 		var styleSheetsLength:Int = styleSheets.length;
@@ -135,15 +137,36 @@ class StyleManager
 				
 				switch (cssRule.type)
 				{
-					//for style rules, if the selector of the rule
+					//for style rules, if one of the selector of the rule
 					//matches the node, return the style declaration
 					//of the rule
 					case CSSRule.STYLE_RULE:
 						var styleRule:CSSStyleRule = cast(cssRule);
-						if (_selectorManager.matchSelector(node, styleRule.selector) == true)
+						var selectors:Array<SelectorData> = styleRule.selectors;
+						var selectorsLength:Int = selectors.length;
+						
+						//flag used to prevent the same style declaration
+						//to be pushed mulitple times if more than one
+						//selector matches
+						var foundMatchingSelector:Bool = false;
+						
+						for (k in 0...selectorsLength)
 						{
-							matchingStyleDeclarations.push(styleRule.style);
+							if (_selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true && foundMatchingSelector == false)
+							{
+								//if the selector is matched, store the coresponding style declaration
+								//along with the matching selector
+								var matchingStyleDeclaration:StyleDeclarationData = {
+									style:styleRule.style,
+									selector:selectors[k]
+								}
+								
+								matchingStyleDeclarations.push(matchingStyleDeclaration);
+								foundMatchingSelector = true;
+							}
 						}
+						
+						
 						
 					case CSSRule.MEDIA_RULE:
 						//TODO : check if media rule applies before storing
@@ -161,33 +184,18 @@ class StyleManager
 	 * one with the higher priority and applies it to
 	 * the returned node's style declaration
 	 */
-	private function applyMatchingProperty(property:String, matchingStyleDeclarations:Array<CSSStyleDeclaration>, nodeStyleDeclaration:CSSStyleDeclaration):Void
+	private function applyMatchingProperty(property:String, matchingStyleDeclarations:Array<StyleDeclarationData>, nodeStyleDeclaration:CSSStyleDeclaration):Void
 	{
 		//will hold the properties with the same specified property name
 		//which are defined in the matching style declarations
 		var matchingProperties:Array<PropertyData> = new Array<PropertyData>();
 		
 		//loop in all the style declarations applying to the node
-		var matchingStyleDeclarationsLnegth:Int = matchingStyleDeclarations.length;
-		for (i in 0...matchingStyleDeclarationsLnegth)
+		var matchingStyleDeclarationsLength:Int = matchingStyleDeclarations.length;
+		for (i in 0...matchingStyleDeclarationsLength)
 		{
-			var styleDeclaration:CSSStyleDeclaration = matchingStyleDeclarations[i];
-			
-			var cssRule:CSSRule = styleDeclaration.parentRule;
-			
-			var selector:SelectorData = null;
-			
-			//TODO 2 : the selector should be known by that point, add another structure ?
-			//or store an array of CSSRule instead ? > Actually only CSSStyleRule are needed
-			//for this section
-			
-			//retrieve the selector of the style declaration
-			switch(cssRule.type)
-			{
-				case CSSRule.STYLE_RULE:
-					var styleRule:CSSStyleRule = cast(cssRule);
-					selector = styleRule.selector;
-			}
+			var styleDeclaration:CSSStyleDeclaration = matchingStyleDeclarations[i].style;
+			var selector:SelectorData = matchingStyleDeclarations[i].selector;
 			
 			//loop in all the style declarations
 			for (j in 0...styleDeclaration.length)
@@ -197,8 +205,8 @@ class StyleManager
 				if (styleDeclaration.item(j) == property)
 				{
 					var matchingProperty:PropertyData = {
-						value:styleDeclaration.getPropertyValue(property),
-						important:styleDeclaration.getPropertyPriority(property),
+						typedValue:styleDeclaration.getTypedProperty(property).typedValue,
+						important:styleDeclaration.getPropertyPriority(property) == "important",
 						//TODO : origin should be retrieved via stylesheet
 						origin:PropertyOriginValue.AUTHOR,
 						selector:selector
@@ -213,7 +221,7 @@ class StyleManager
 		if (matchingProperties.length == 1)
 		{
 			var matchingProperty:PropertyData = matchingProperties[0];
-			nodeStyleDeclaration.setProperty(property, matchingProperty.value, matchingProperty.important);
+			nodeStyleDeclaration.setTypedProperty(property, matchingProperty.typedValue, matchingProperty.important);
 			return;
 		}
 		
@@ -221,12 +229,13 @@ class StyleManager
 		//origin found are returned
 		matchingProperties = getSortedMatchingPropertiesByPriority(matchingProperties);
 		
+		
 		//if after sorting by origin, only one property remains, then it is the higher priority
 		//one and is applied
 		if (matchingProperties.length == 1)
 		{
 			var matchingProperty:PropertyData = matchingProperties[0];
-			nodeStyleDeclaration.setProperty(property, matchingProperty.value, matchingProperty.important);
+			nodeStyleDeclaration.setTypedProperty(property, matchingProperty.typedValue, matchingProperty.important);
 			return;
 		}
 		
@@ -236,14 +245,14 @@ class StyleManager
 		if (matchingProperties.length == 1)
 		{
 			var matchingProperty:PropertyData = matchingProperties[0];
-			nodeStyleDeclaration.setProperty(property, matchingProperty.value, matchingProperty.important);
+			nodeStyleDeclaration.setTypedProperty(property, matchingProperty.typedValue, matchingProperty.important);
 			return;
 		}
 		
 		//lastly if there still is more than one priority, then the one which was defined
 		//the later in the CSS style sheet is considered the one with the higher priority
 		var matchingProperty:PropertyData = matchingProperties[matchingProperties.length - 1];
-		nodeStyleDeclaration.setProperty(property, matchingProperty.value, matchingProperty.important);
+		nodeStyleDeclaration.setTypedProperty(property, matchingProperty.typedValue, matchingProperty.important);
 	}
 	
 	/**
@@ -274,8 +283,7 @@ class StyleManager
 					userAgentDeclarations.push(matchingProperty);
 					
 				case PropertyOriginValue.AUTHOR:
-					//TODO 2 : add const
-					if (matchingProperty.important == "important")
+					if (matchingProperty.important == true)
 					{
 						authorImportantDeclarations.push(matchingProperty);
 					}
@@ -311,7 +319,7 @@ class StyleManager
 	 */
 	private function getSortedMatchingPropertiesBySpecificity(matchingProperties:Array<PropertyData>):Array<PropertyData>
 	{
-		var matchingProperties:Array<PropertyData> = new Array<PropertyData>();
+		var mostSpecificMatchingProperties:Array<PropertyData> = new Array<PropertyData>();
 		
 		//will store the higher specificity found, so that only properties with the 
 		//higher specificity found are returned
@@ -324,7 +332,7 @@ class StyleManager
 			
 			//get the property specifity, defined as an integer
 			var propertySpecificity:Int = _selectorManager.getSelectorSpecifity(property.selector);
-			
+		
 			//if this property as the highesrt specificity so far, it
 			//becomes the new highest specificity
 			if (propertySpecificity > currentHigherSpecificity)
@@ -332,17 +340,17 @@ class StyleManager
 				currentHigherSpecificity = propertySpecificity;
 				//reset the array to prevent returning properties with lower
 				//specificity
-				matchingProperties = new Array<PropertyData>();
+				mostSpecificMatchingProperties = new Array<PropertyData>();
 			}
 			
 			//add the property if it has the same specificity as the current one
 			if (propertySpecificity == currentHigherSpecificity)
 			{
-				matchingProperties.push(property);
+				mostSpecificMatchingProperties.push(property);
 			}
 		}
 		
-		return matchingProperties;
+		return mostSpecificMatchingProperties;
 	}
 	
 	/**

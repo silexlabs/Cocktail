@@ -10,7 +10,7 @@ package cocktail.core.html;
 import cocktail.core.dom.Node;
 import cocktail.core.renderer.EmbeddedBoxRenderer;
 import cocktail.core.layer.LayerRenderer;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
 import cocktail.port.NativeElement;
 
 /**

@@ -9,15 +9,18 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.port.nme;
 
+import cocktail.core.css.CoreStyle;
 import cocktail.core.font.AbstractFontManagerImpl;
+import cocktail.core.unit.UnitManager;
 import cocktail.port.NativeElement;
-import cocktail.core.style.ComputedStyle;
+
 import flash.text.TextField;
 import flash.text.TextFormat;
 import haxe.Log;
 import cocktail.core.font.FontData;
 import flash.text.TextFieldAutoSize;
 import cocktail.core.style.StyleData;
+import cocktail.core.css.CSSData;
 
 /**
  * This is the nme port for the FontManager
@@ -108,13 +111,13 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	/**
 	 * Create and return a flash text field
 	 */
-	override public function createNativeTextElement(text:String, computedStyle:ComputedStyle):NativeElement
+	override public function createNativeTextElement(text:String, style:CoreStyle):NativeElement
 	{
 		var textField:flash.text.TextField = new flash.text.TextField();
 		textField.text = text;
 		textField.selectable = false;
 		textField.autoSize = TextFieldAutoSize.LEFT;
-		textField.setTextFormat(getTextFormat(computedStyle));
+		textField.setTextFormat(getTextFormat(style));
 
 		return textField;
 	}	
@@ -167,32 +170,46 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 * Return a flash TextFormat object, to be
 	 * used on the created Text Field
 	 */
-	private function getTextFormat(computedStyle:ComputedStyle):TextFormat
+	private function getTextFormat(style:CoreStyle):TextFormat
 	{
 		
+		var usedValues:UsedValuesData = style.usedValues;
+		
 		var textFormat:TextFormat = new TextFormat();
-		textFormat.font = getNativeFontFamily(computedStyle.fontFamily);
+		textFormat.font = getNativeFontFamily(UnitManager.getFontFamilyAsStringArray(style.fontFamily));
 		
-		textFormat.letterSpacing = computedStyle.letterSpacing;
-		textFormat.size = computedStyle.fontSize;
+		textFormat.letterSpacing = usedValues.letterSpacing;
+		textFormat.size = style.getAbsoluteLength(style.fontSize);
 		
-		var bold:Bool;
+		var bold:Bool = false;
 		
-		switch (computedStyle.fontWeight)
+		switch (style.fontWeight)
 		{
-			case lighter, FontWeight.normal,
-			css100, css200, css300, css400:
-				bold = false;
+			case KEYWORD(value):
+				switch(value)
+				{
+					case BOLD, BOLDER:
+						bold = true;
+						
+					default:	
+				}
 				
-			case FontWeight.bold, bolder, css500, css600,
-			css700, css800, css900:
-				bold = true;
+			case INTEGER(value):
+				if (value > 400)
+				{
+					bold = true;
+				}
+				
+			default:	
 		}
 		
 		textFormat.bold = bold;
-		textFormat.italic = computedStyle.fontStyle == FontStyle.italic;
 		
-		textFormat.color = computedStyle.color.color;
+		var fontStyle:CSSKeywordValue = style.getKeyword(style.fontStyle);
+		
+		textFormat.italic = fontStyle == ITALIC || fontStyle == OBLIQUE;
+		
+		textFormat.color = usedValues.color.color;
 		return textFormat;
 	}
 }

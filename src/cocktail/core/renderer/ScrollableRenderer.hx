@@ -12,6 +12,7 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.geom.GeomData;
+import cocktail.core.css.CSSData;
 import cocktail.core.style.StyleData;
 
 /**
@@ -120,7 +121,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 		
 		if (_horizontalScrollBar != null)
 		{
-			horizontalScrollBarContainerBlockData.height += _horizontalScrollBar.coreStyle.computedStyle.height;
+			horizontalScrollBarContainerBlockData.height += _horizontalScrollBar.coreStyle.usedValues.height;
 		}
 		
 		if (_horizontalScrollBar != null)
@@ -132,7 +133,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 		
 		if (_verticalScrollBar != null)
 		{
-			verticalScrollBarContainerBlockData.width += _verticalScrollBar.coreStyle.computedStyle.width;
+			verticalScrollBarContainerBlockData.width += _verticalScrollBar.coreStyle.usedValues.width;
 		}
 		
 		if (_verticalScrollBar != null)
@@ -242,22 +243,31 @@ class ScrollableRenderer extends FlowBoxRenderer
 	 */
 	private function isXAxisClipped():Bool
 	{
-		switch (coreStyle.computedStyle.overflowX)
+		switch (coreStyle.overflowX)
 		{
-			case Overflow.hidden,
-			Overflow.scroll:
-				return true;
-				
-			//when overflow is auto, the x axis is only
-			//clipped if a scrollbar was attached
-			case Overflow.cssAuto:
-				return _horizontalScrollBar != null;
-				
-			case Overflow.visible:
-				if (treatVisibleOverflowAsAuto() == true)
+			case KEYWORD(value):
+				switch(value)
 				{
-					return _horizontalScrollBar != null;
+					case HIDDEN, SCROLL:
+						return true;
+						
+					//when overflow is auto, the x axis is only
+					//clipped if a scrollbar was attached	
+					case AUTO:
+						return _horizontalScrollBar != null;
+						
+					case VISIBLE:
+						if (treatVisibleOverflowAsAuto() == true)
+						{
+							return _horizontalScrollBar != null;
+						}
+						return false;
+						
+					default:
+						return false;
+						
 				}
+			default:
 				return false;
 		}
 	}
@@ -268,20 +278,29 @@ class ScrollableRenderer extends FlowBoxRenderer
 	 */
 	private function isYAxisClipped():Bool
 	{
-		switch (coreStyle.computedStyle.overflowY)
+		switch (coreStyle.overflowY)
 		{
-			case Overflow.hidden,
-			Overflow.scroll:
-				return true;
-				
-			case Overflow.cssAuto:
-				return _verticalScrollBar != null;
-				
-			case Overflow.visible:
-				if (treatVisibleOverflowAsAuto() == true)
+			case KEYWORD(value):
+				switch(value)
 				{
-					return _verticalScrollBar != null;
+					case HIDDEN, SCROLL:
+						return true;
+						
+					case AUTO:
+						return _verticalScrollBar != null;
+						
+					case VISIBLE:
+						if (treatVisibleOverflowAsAuto() == true)
+						{
+							return _verticalScrollBar != null;
+						}
+						return false;
+						
+					default:
+						return false;
+						
 				}
+			default:
 				return false;
 		}
 	}
@@ -390,18 +409,18 @@ class ScrollableRenderer extends FlowBoxRenderer
 		
 		//tries to attach or detach horizontal scrollbar based on x
 		//overflow
-		switch (coreStyle.computedStyle.overflowX)
+		switch (coreStyle.getKeyword(coreStyle.overflowX))
 		{
-			case Overflow.scroll:
+			case SCROLL:
 				attachHorizontalScrollBar();
 				
-			case hidden:
+			case HIDDEN:
 				detachHorizontalScrollBar();
 				
-			case cssAuto:
+			case AUTO:
 				attachOrDetachHorizontalScrollBarIfNecessary();
 				
-			case visible:
+			case VISIBLE:
 				if (treatVisibleOverflowAsAuto() == true)
 				{
 					attachOrDetachHorizontalScrollBarIfNecessary();
@@ -410,22 +429,25 @@ class ScrollableRenderer extends FlowBoxRenderer
 				{
 					detachHorizontalScrollBar();
 				}
+				
+			default:
+				throw "invalid value for overflowX";
 		}
 
 		//tries to attach or detach vertical scrolbar based on 
 		//overflow y
-		switch (coreStyle.computedStyle.overflowY)
+		switch (coreStyle.getKeyword(coreStyle.overflowY))
 		{
-			case Overflow.scroll:
+			case SCROLL:
 				attachVerticalScrollBar();
 				
-			case hidden:
+			case HIDDEN:
 				detachVerticalScrollBar();
 				
-			case cssAuto:
+			case AUTO:
 				attachOrDetachVerticalScrollBarIfNecessary();
 				
-			case visible:
+			case VISIBLE:
 				if (treatVisibleOverflowAsAuto() == true)
 				{
 					attachOrDetachVerticalScrollBarIfNecessary();
@@ -434,6 +456,9 @@ class ScrollableRenderer extends FlowBoxRenderer
 				{
 					detachVerticalScrollBar();
 				}
+				
+			default:
+				throw "invalid value for overflowY";
 		}
 	}
 	
@@ -713,18 +738,17 @@ class ScrollableRenderer extends FlowBoxRenderer
 			return false;
 		}
 		
-		switch (coreStyle.computedStyle.overflowX)
+		switch (coreStyle.getKeyword(coreStyle.overflowX))
 		{
-			case Overflow.visible:
-				
+			case VISIBLE:
 				
 			default:
 				return false;
 		}
 		
-		switch (coreStyle.computedStyle.overflowY)
+		switch (coreStyle.getKeyword(coreStyle.overflowY))
 		{
-			case Overflow.visible:
+			case VISIBLE:
 				
 			default:
 				return false;

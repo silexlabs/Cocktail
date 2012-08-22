@@ -8,13 +8,14 @@
 package cocktail.core.linebox;
 
 import cocktail.core.background.BackgroundManager;
+import cocktail.core.css.CoreStyle;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.NodeBase;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.style.ComputedStyle;
+
 import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
@@ -168,22 +169,25 @@ class LineBox extends NodeBase<LineBox>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	//TODO 4 : doc + missing values for vertical align
+	//TODO 2 : messy , don't work properly
 	public function getBaselineOffset(parentBaselineOffset:Float, parentXHeight:Float):Float
 	{
-		
-		var baselineOffset:Float = parentBaselineOffset + elementRenderer.coreStyle.computedStyle.verticalAlign;
-		
-		switch (elementRenderer.coreStyle.verticalAlign)
-		{
-			case VerticalAlign.middle:
-				baselineOffset -=  (bounds.height / 2) - (parentXHeight / 2);
-				
-			case VerticalAlign.top:
-				
-			default:	
-		}
-		
-		return baselineOffset;
+		return parentBaselineOffset;
+		//var coreStyle:CoreStyle = elementRenderer.coreStyle;
+		//var baselineOffset:Float = parentBaselineOffset + coreStyle.getAbsoluteLength(coreStyle.computedValues.verticalAlign);
+//
+		//
+		//switch (coreStyle.getKeyword(coreStyle.computedValues.verticalAlign))
+		//{
+			//case MIDDLE:
+				//baselineOffset -=  (bounds.height / 2) - (parentXHeight / 2);
+				//
+			//case TOP:
+				//
+			//default:	
+		//}
+		//
+		//return baselineOffset;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

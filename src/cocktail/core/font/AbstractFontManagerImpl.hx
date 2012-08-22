@@ -9,9 +9,10 @@ To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.font;
 
+import cocktail.core.css.CoreStyle;
 import cocktail.core.font.FontData;
 import cocktail.port.NativeElement;
-import cocktail.core.style.ComputedStyle;
+
 import cocktail.core.style.StyleData;
 
 /**
@@ -82,7 +83,7 @@ class AbstractFontManagerImpl
 	 * and the styles that were computed for
 	 * this text
 	 */
-	public function createNativeTextElement(text:String, computedStyle:ComputedStyle):NativeElement
+	public function createNativeTextElement(text:String, style:CoreStyle):NativeElement
 	{
 		return null;
 	}

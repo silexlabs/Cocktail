@@ -6,6 +6,8 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
+import cocktail.core.css.InitialStyleDeclaration;
+import cocktail.core.dom.Document;
 import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.layer.LayerRenderer;
 
@@ -28,6 +30,39 @@ class HTMLHtmlElement extends HTMLElement
 		//for attaching itself, as no parent
 		//will attach it otherwise
 		attach();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to reset the HTMLBodyElement when the innerHTML is set,
+	 * as it reset the whole document
+	 */
+	override private function set_innerHTML(value:String):String
+	{
+		super.set_innerHTML(value);
+		
+		var htmlDocument:HTMLDocument = cast(ownerDocument);
+		htmlDocument.initBody(cast(getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
+		return value;
+	}
+	
+	/**
+	 * Overriden as when its document is provided, the HTMlHtmlElement
+	 * can attach itself
+	 */
+	override private function set_ownerDocument(value:Document):Document
+	{
+		super.set_ownerDocument(value);
+		//as the HTML htmlElement is the root
+		//of the runtime, it is responsible
+		//for attaching and cascading itself, as no parent
+		//will attach it otherwise
+		attach();
+		
+		return value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -83,25 +118,6 @@ class HTMLHtmlElement extends HTMLElement
 	override private function get_offsetParent():HTMLElement
 	{
 		return null;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// DOM PARSER GETTER/SETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Overriden to reset the HTMLBodyElement when the innerHTML is set,
-	 * as it reset the whole document
-	 */
-	override private function set_innerHTML(value:String):String
-	{
-		
-		super.set_innerHTML(value);
-		
-		var htmlDocument:HTMLDocument = cast(ownerDocument);
-		htmlDocument.initBody(cast(getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
-		
-		return value;
 	}
 	
 }

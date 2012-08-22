@@ -9,6 +9,7 @@ package cocktail.core.style.computer.boxComputers;
 
 import cocktail.core.style.StyleData;
 import cocktail.core.unit.UnitManager;
+import cocktail.core.css.CSSData;
 import haxe.Log;
 
 /**
@@ -31,7 +32,7 @@ class EmbeddedInlineBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	/**
 	 * for inline embedded HTMLElement, auto margins compute to 0
 	 */
-	override private function getComputedAutoMargin(marginStyleValue:Margin, opositeMargin:Margin, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, fontSize:Float, xHeight:Float, isHorizontalMargin:Bool):Float
+	override private function getComputedAutoMargin(marginStyleValue:CSSPropertyValue, opositeMargin:CSSPropertyValue, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, isHorizontalMargin:Bool):Float
 	{
 		return 0.0;
 	}

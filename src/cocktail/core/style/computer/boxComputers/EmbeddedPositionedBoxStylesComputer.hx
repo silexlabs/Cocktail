@@ -6,10 +6,12 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.style.computer.boxComputers;
-import cocktail.core.style.ComputedStyle;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CSSStyleDeclaration;
+
+import cocktail.core.css.CoreStyle;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
+import cocktail.core.css.CSSData;
 import haxe.Log;
 
 /**
@@ -34,90 +36,90 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	 * top, left, bottom, right. Also compute
 	 * the margin as needed
 	 */
-	override private function measurePositionOffsets(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	override private function measurePositionOffsets(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
 		//horizontal position offsets and margins
-		measureHorizontalPositionOffsets(style, containingBlockData, fontMetrics);
+		measureHorizontalPositionOffsets(style, containingBlockData);
 		//vertical position offsets and margins
-		measureVerticalPositionOffsets(style, containingBlockData, fontMetrics);	
+		measureVerticalPositionOffsets(style, containingBlockData);	
 	}
 	
 	/**
 	 * Compute, left, right and marginLeft marginRight styles
 	 */
-	private function measureHorizontalPositionOffsets(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	private function measureHorizontalPositionOffsets(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
-		var computedStyle:ComputedStyle = style.computedStyle;
-			
+		var usedValues:UsedValuesData = style.usedValues;
+		
 		//if left or right are 'auto'
-		if (style.left == PositionOffset.cssAuto || style.right == PositionOffset.cssAuto)
+		if (style.isAuto(style.left) == true || style.isAuto(style.right) == true)
 		{
 			//any 'auto' margin is set to 0
-			if (style.marginLeft == Margin.cssAuto)
+			if (style.isAuto(style.marginLeft) == true)
 			{
-				style.computedStyle.marginLeft = 0;
+				usedValues.marginLeft = 0;
 			}
-			if (style.marginRight == Margin.cssAuto)
+			if (style.isAuto(style.marginRight) == true)
 			{
-				style.computedStyle.marginRight = 0;
+				usedValues.marginRight = 0;
 			}
 			
 			//if both left and right are 'auto', left is its static posittion, then right is deduced from the other values
-			if (style.left == PositionOffset.cssAuto && style.right == PositionOffset.cssAuto)
+			if (style.isAuto(style.left) == true && style.isAuto(style.right) == true)
 			{
-				style.computedStyle.left = getComputedStaticLeft(style, containingBlockData);
-				style.computedStyle.right = containingBlockData.width - computedStyle.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left;
+				usedValues.left = getComputedStaticLeft(style, containingBlockData);
+				usedValues.right = containingBlockData.width - usedValues.width - usedValues.marginLeft - usedValues.marginRight - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left;
 			}
 			//if only left is auto, right is computed then left is deduced
-			else if (style.left == PositionOffset.cssAuto)
+			else if (style.isAuto(style.left) == true)
 			{
-				style.computedStyle.right = getComputedPositionOffset(style.right, containingBlockData.width, fontMetrics.fontSize, fontMetrics.xHeight);
-				style.computedStyle.left = containingBlockData.width - computedStyle.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.right - computedStyle.paddingLeft - computedStyle.paddingRight;
+				usedValues.right = getComputedPositionOffset(style.right, containingBlockData.width);
+				usedValues.left = containingBlockData.width - usedValues.width - usedValues.marginLeft - usedValues.marginRight - usedValues.right - usedValues.paddingLeft - usedValues.paddingRight;
 			}
 			//same for right
-			else if (style.right == PositionOffset.cssAuto)
+			else if (style.isAuto(style.right) == true)
 			{
-				style.computedStyle.left = getComputedPositionOffset(style.left, containingBlockData.width, fontMetrics.fontSize, fontMetrics.xHeight);
-				style.computedStyle.right = containingBlockData.width - computedStyle.width - computedStyle.marginLeft - computedStyle.marginRight - computedStyle.left - computedStyle.paddingLeft - computedStyle.paddingRight;
+				usedValues.left = getComputedPositionOffset(style.left, containingBlockData.width);
+				usedValues.right = containingBlockData.width - usedValues.width - usedValues.marginLeft - usedValues.marginRight - usedValues.left - usedValues.paddingLeft - usedValues.paddingRight;
 			}
 		}
 		//if neither left or right are auto
 		else 
 		{
 			//compute left and right
-			style.computedStyle.left = getComputedPositionOffset(style.left, containingBlockData.width, fontMetrics.fontSize, fontMetrics.xHeight);
-			style.computedStyle.right = getComputedPositionOffset(style.right, containingBlockData.width, fontMetrics.fontSize, fontMetrics.xHeight);
+			usedValues.left = getComputedPositionOffset(style.left, containingBlockData.width);
+			usedValues.right = getComputedPositionOffset(style.right, containingBlockData.width);
 			
 			//then deduce the margins
-			if (style.marginLeft == Margin.cssAuto && style.marginRight == Margin.cssAuto)
+			if (style.isAuto(style.marginLeft) == true && style.isAuto(style.marginRight) == true)
 			{
-				var margin:Float = (containingBlockData.width - computedStyle.left - computedStyle.right - computedStyle.paddingLeft - computedStyle.paddingRight) / 2;
+				var margin:Float = (containingBlockData.width - usedValues.left - usedValues.right - usedValues.paddingLeft - usedValues.paddingRight) / 2;
 				
 				//compute the size of one of the margin, which is half the remaining horizontal space
 				//once all other values (padding, width, offset) are remove
-				var computedMargin:Float = (containingBlockData.width - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left - computedStyle.right) / 2;
+				var usedMargin:Float = (containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right) / 2;
 				
-				if (computedMargin >= 0)
+				if (usedMargin >= 0)
 				{
-					style.computedStyle.marginLeft = computedMargin;
-					style.computedStyle.marginRight = computedMargin;
+					usedValues.marginLeft = usedMargin;
+					usedValues.marginRight = usedMargin;
 				}
 				//if the margin width is negative, it is recomputed
 				else
 				{
-					style.computedStyle.marginLeft = 0;
-					style.computedStyle.marginRight = containingBlockData.width - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left - computedStyle.right;
+					usedValues.marginLeft = 0;
+					usedValues.marginRight = containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right;
 				}
 			
-				style.computedStyle.marginLeft = 0;
+				usedValues.marginLeft = 0;
 			}
-			else if (style.marginLeft == Margin.cssAuto)
+			else if (style.isAuto(style.marginLeft) == true)
 			{
-				style.computedStyle.marginLeft = containingBlockData.width - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left - computedStyle.right - computedStyle.marginRight;
+				usedValues.marginLeft = containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right - usedValues.marginRight;
 			}
-			else if (style.marginRight == Margin.cssAuto)
+			else if (style.isAuto(style.marginRight) == true)
 			{
-				style.computedStyle.marginRight = containingBlockData.width - computedStyle.width - computedStyle.paddingLeft - computedStyle.paddingRight - computedStyle.left - computedStyle.right - computedStyle.marginLeft;
+				usedValues.marginRight = containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right - usedValues.marginLeft;
 			}
 		}
 	}
@@ -126,73 +128,73 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	 * Compute, top, bottom and marginTop marginBottom styles. Works the same as
 	 * measureHorizontalPositionOffsets
 	 */
-	private function measureVerticalPositionOffsets(style:CoreStyle, containingBlockData:ContainingBlockData, fontMetrics:FontMetricsData):Void
+	private function measureVerticalPositionOffsets(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
-		var computedStyle:ComputedStyle = style.computedStyle;
+		var usedValues:UsedValuesData = style.usedValues;
 		
-		if (style.top == PositionOffset.cssAuto || style.bottom == PositionOffset.cssAuto)
+		if (style.isAuto(style.top) == true || style.isAuto(style.bottom) == true)
 		{
-			if (style.marginTop == Margin.cssAuto)
+			if (style.isAuto(style.marginTop) == true)
 			{
-				style.computedStyle.marginTop = 0;
+				usedValues.marginTop = 0;
 			}
-			if (style.marginBottom == Margin.cssAuto)
+			if (style.isAuto(style.marginBottom) == true)
 			{
-				style.computedStyle.marginBottom = 0;
-			}
-			
-			if (style.top == PositionOffset.cssAuto && style.bottom == PositionOffset.cssAuto)
-			{
-				style.computedStyle.top = getComputedStaticTop(style, containingBlockData);
-				style.computedStyle.bottom = containingBlockData.height - computedStyle.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top;
+				usedValues.marginBottom = 0;
 			}
 			
-			else if (style.top == PositionOffset.cssAuto)
+			if (style.isAuto(style.top) == true && style.isAuto(style.bottom) == true)
 			{
-				style.computedStyle.bottom = getComputedPositionOffset(style.bottom, containingBlockData.height, fontMetrics.fontSize, fontMetrics.xHeight);
-				style.computedStyle.top = containingBlockData.height - computedStyle.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.bottom - computedStyle.paddingTop - computedStyle.paddingBottom;
+				usedValues.top = getComputedStaticTop(style, containingBlockData);
+				usedValues.bottom = containingBlockData.height - usedValues.height - usedValues.marginTop - usedValues.marginBottom - usedValues.paddingTop - usedValues.paddingBottom - usedValues.top;
 			}
-			else if (style.bottom == PositionOffset.cssAuto)
+			
+			else if (style.isAuto(style.top) == true)
 			{
-				style.computedStyle.top = getComputedPositionOffset(style.top, containingBlockData.height, fontMetrics.fontSize, fontMetrics.xHeight);
-				style.computedStyle.bottom = containingBlockData.height - computedStyle.height - computedStyle.marginTop - computedStyle.marginBottom - computedStyle.top - computedStyle.paddingTop - computedStyle.paddingBottom;
+				usedValues.bottom = getComputedPositionOffset(style.bottom, containingBlockData.height);
+				usedValues.top = containingBlockData.height - usedValues.height - usedValues.marginTop - usedValues.marginBottom - usedValues.bottom - usedValues.paddingTop - usedValues.paddingBottom;
+			}
+			else if (style.isAuto(style.bottom) == true)
+			{
+				usedValues.top = getComputedPositionOffset(style.top, containingBlockData.height);
+				usedValues.bottom = containingBlockData.height - usedValues.height - usedValues.marginTop - usedValues.marginBottom - usedValues.top - usedValues.paddingTop - usedValues.paddingBottom;
 			}
 			else
 			{
-				style.computedStyle.top = getComputedPositionOffset(style.top, containingBlockData.height, fontMetrics.fontSize, fontMetrics.xHeight);
-				style.computedStyle.bottom = getComputedPositionOffset(style.bottom, containingBlockData.height, fontMetrics.fontSize, fontMetrics.xHeight);
+				usedValues.top = getComputedPositionOffset(style.top, containingBlockData.height);
+				usedValues.bottom = getComputedPositionOffset(style.bottom, containingBlockData.height);
 			}
 		}
 	
 		else 
 		{
-			style.computedStyle.top = getComputedPositionOffset(style.top, containingBlockData.height, fontMetrics.fontSize, fontMetrics.xHeight);
-			style.computedStyle.bottom = getComputedPositionOffset(style.bottom, containingBlockData.height, fontMetrics.fontSize, fontMetrics.xHeight);
+			usedValues.top = getComputedPositionOffset(style.top, containingBlockData.height);
+			usedValues.bottom = getComputedPositionOffset(style.bottom, containingBlockData.height);
 			
-			if (style.marginTop == Margin.cssAuto && style.marginBottom == Margin.cssAuto)
+			if (style.isAuto(style.marginTop) == true && style.isAuto(style.marginBottom) == true)
 			{
-				var margin:Float = (containingBlockData.height - computedStyle.top - computedStyle.bottom - computedStyle.paddingTop - computedStyle.paddingBottom) / 2;
+				var margin:Float = (containingBlockData.height - usedValues.top - usedValues.bottom - usedValues.paddingTop - usedValues.paddingBottom) / 2;
 				
-				var computedMargin:Float = (containingBlockData.height - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top - computedStyle.bottom) / 2;
+				var usedMargin:Float = (containingBlockData.height - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.top - usedValues.bottom) / 2;
 				
-				if (computedMargin >= 0)
+				if (usedMargin >= 0)
 				{
-					style.computedStyle.marginTop = computedMargin;
-					style.computedStyle.marginBottom = computedMargin;
+					usedValues.marginTop = usedMargin;
+					usedValues.marginBottom = usedMargin;
 				}
 				else
 				{
-					style.computedStyle.marginTop = 0;
-					style.computedStyle.marginBottom = containingBlockData.height - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top - computedStyle.bottom;
+					usedValues.marginTop = 0;
+					usedValues.marginBottom = containingBlockData.height - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.top - usedValues.bottom;
 				}
 			}
-			else if (style.marginTop == Margin.cssAuto)
+			else if (style.isAuto(style.marginTop) == true)
 			{
-				style.computedStyle.marginTop = containingBlockData.height - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top - computedStyle.bottom - computedStyle.marginBottom;
+				usedValues.marginTop = containingBlockData.height - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.top - usedValues.bottom - usedValues.marginBottom;
 			}
-			else if (style.marginBottom == Margin.cssAuto)
+			else if (style.isAuto(style.marginBottom) == true)
 			{
-				style.computedStyle.marginBottom = containingBlockData.height - computedStyle.height - computedStyle.paddingTop - computedStyle.paddingBottom - computedStyle.top - computedStyle.bottom - computedStyle.marginTop;
+				usedValues.marginBottom = containingBlockData.height - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.top - usedValues.bottom - usedValues.marginTop;
 			}
 		}
 	}
@@ -203,7 +205,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	 */
 	private function getComputedStaticLeft(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
-		return style.computedStyle.marginLeft;
+		return style.usedValues.marginLeft;
 	}
 	
 		/**
@@ -212,7 +214,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	 */
 	private function getComputedStaticTop(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
-		return style.computedStyle.marginTop;
+		return style.usedValues.marginTop;
 	}
 	
 }

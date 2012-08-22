@@ -8,7 +8,7 @@
 package cocktail.core.html;
 
 import cocktail.core.renderer.TextInputRenderer;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
 
 /**
  * Form control.

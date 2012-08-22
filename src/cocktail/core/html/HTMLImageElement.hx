@@ -11,12 +11,13 @@ import cocktail.core.dom.Attr;
 import cocktail.core.dom.Node;
 import cocktail.core.event.EventTarget;
 import cocktail.core.event.UIEvent;
+import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
+import cocktail.port.ImageResource;
 import cocktail.port.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.resource.ImageLoader;
-import cocktail.port.Resource;
 import haxe.Log;
 import cocktail.core.html.EmbeddedElement;
 import cocktail.core.renderer.RendererData;
@@ -137,8 +138,8 @@ class HTMLImageElement extends EmbeddedElement
 	{
 		super.setAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME, value);
 		
-		var resource:Resource = ResourceManager.getResource(value);
-		
+		var resource:AbstractResource = ResourceManager.getImageResource(value);
+
 		if (resource.loaded == false)
 		{
 			_resourceLoadedCallback = onResourceLoaded;
@@ -179,7 +180,7 @@ class HTMLImageElement extends EmbeddedElement
 		resource.removeEventListener(UIEvent.ERROR, _resourceLoadError);
 	}
 	
-	private function onLoadComplete(resource:Resource):Void
+	private function onLoadComplete(resource:AbstractResource):Void
 	{	
 		intrinsicHeight = resource.intrinsicHeight;
 		intrinsicWidth = resource.intrinsicWidth;

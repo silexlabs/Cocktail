@@ -1,3 +1,10 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktail.core.css.parsers;
 
 using StringTools;
@@ -5,10 +12,13 @@ import cocktail.core.css.CSSData;
 import cocktail.core.css.parsers.CSSParsersData;
 
 /**
- * ...
+ * This class is a parser whose role
+ * is to parse a selector string, which may contain
+ * one or many selector and parse them into typed
+ * selector data
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class CSSSelectorParser 
 {
 
@@ -22,7 +32,7 @@ class CSSSelectorParser
 	 * object and store them in the typed selector
 	 * attribute if the selector is valid
 	 */
-	public function parseSelector(selector:String, targetSelector:SelectorData):Void
+	public function parseSelector(selector:String, typedSelectors:Array<SelectorData>):Void
 	{
 		var state:SelectorParserState = IGNORE_SPACES;
 		var next:SelectorParserState = BEGIN_SIMPLE_SELECTOR;
@@ -71,12 +81,13 @@ class CSSSelectorParser
 							case '.'.code:
 								state = SIMPLE_SELECTOR;
 								next = END_CLASS_SELECTOR;
-								start = position;
+								//TODO 1 : hack to add 1 ?
+								start = position + 1;
 								
 							case '#'.code:
 								state = SIMPLE_SELECTOR;
 								next = END_ID_SELECTOR;
-								start = position;
+								start = position + 1;
 								
 							case '*'.code:
 								state = SIMPLE_SELECTOR;
@@ -108,6 +119,7 @@ class CSSSelectorParser
 					{
 						position = parsePseudoClass(selector, position, simpleSelectorSequenceItemValues);
 						state = END_SIMPLE_SELECTOR;
+						next = IGNORE_SPACES;
 					}
 					else
 					{
@@ -139,7 +151,6 @@ class CSSSelectorParser
 							continue;
 							
 						default:
-							trace(String.fromCharCode(c));
 							state = INVALID_SELECTOR;
 							continue;
 					}
@@ -161,7 +172,6 @@ class CSSSelectorParser
 					
 				case END_TYPE_SELECTOR:
 					var type:String = selector.substr(start, position - start);
-					trace(type);
 					simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.TYPE(type);
 					state = END_SIMPLE_SELECTOR;
 					continue;
@@ -229,7 +239,7 @@ class CSSSelectorParser
 					}
 					
 				case INVALID_SELECTOR:
-					trace("invalid");
+					//trace("invalid");
 					return;
 			}
 			c = selector.fastCodeAt(++position);
@@ -258,8 +268,12 @@ class CSSSelectorParser
 		
 		flushSelectors(simpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues, components);
 		
-		targetSelector.components = selectorData.components;
-		targetSelector.pseudoElement = selectorData.pseudoElement;
+		var typedSelector:SelectorData = {
+			components:selectorData.components,
+			pseudoElement:selectorData.pseudoElement
+		}
+		
+		typedSelectors.push(typedSelector);
 	}
 	
 	private function flushSelectors(simpleSelectorSequenceStartValue:SimpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue>, components:Array<SelectorComponentValue>):Void
@@ -442,7 +456,7 @@ class CSSSelectorParser
 					{
 						switch (c)
 						{
-							case '"'.code:
+							case '"'.code, "'".code:
 								operator = selector.substr(start, position - start);
 								start = position;
 								state = BEGIN_VALUE;
@@ -465,7 +479,7 @@ class CSSSelectorParser
 					{
 						switch (c)
 						{
-							case '"'.code:
+							case '"'.code, "'".code:
 								value = selector.substr(start, position - start);
 								state = END_SELECTOR;
 								

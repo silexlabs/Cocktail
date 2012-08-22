@@ -83,6 +83,7 @@ class CSSRulesParser
 					state = IGNORE_SPACES;
 					next = BEGIN_RULE;
 					ruleStarted = false;
+					continue;
 			}
 			
 			c = css.fastCodeAt(++position);

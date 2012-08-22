@@ -170,8 +170,8 @@ class InvalidatingElementRenderer extends ElementRenderer
 		{
 			//if one of the position style (left, right,top, bottom) was changed,
 			//a layout and rendering is only needed for positioned child
-			case CSSConstants.LEFT_STYLE_NAME, CSSConstants.RIGHT_STYLE_NAME,
-			CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
+			case CSSConstants.LEFT, CSSConstants.RIGHT,
+			CSSConstants.TOP, CSSConstants.BOTTOM:
 				
 				if (isPositioned() == true && isRelativePositioned() == false)
 				{
@@ -186,21 +186,21 @@ class InvalidatingElementRenderer extends ElementRenderer
 				}
 				
 			//those style invalidate the child TextµRenderer of this ElementRenderer	
-			case CSSConstants.COLOR_STYLE_NAME, CSSConstants.FONT_FAMILY_STYLE_NAME, CSSConstants.FONT_SIZE_STYLE_NAME,
-			CSSConstants.FONT_VARIANT_STYLE_NAME, CSSConstants.FONT_STYLE_STYLE_NAME, CSSConstants.FONT_WEIGHT_STYLE_NAME,
-			CSSConstants.LETTER_SPACING_STYLE_NAME, CSSConstants.TEXT_TRANSFORM_STYLE_NAME, CSSConstants.WHITE_SPACE_STYLE_NAME:
+			case CSSConstants.COLOR, CSSConstants.FONT_FAMILY, CSSConstants.FONT_SIZE,
+			CSSConstants.FONT_VARIANT, CSSConstants.FONT_STYLE, CSSConstants.FONT_WEIGHT,
+			CSSConstants.LETTER_SPACING, CSSConstants.TEXT_TRANSFORM, CSSConstants.WHITE_SPACE:
 				invalidateText(invalidationReason);
 				_needsLayout = true;
 				invalidateContainingBlock(invalidationReason);
 			
 			//a background style change only requires a re-rendering, as backgrounds never
 			//affects layout
-			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
-			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
-			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
-			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:
+			case CSSConstants.BACKGROUND_COLOR, CSSConstants.BACKGROUND_CLIP,
+			CSSConstants.BACKGROUND_IMAGE, CSSConstants.BACKGROUND_POSITION,
+			CSSConstants.BACKGROUND_ORIGIN, CSSConstants.BACKGROUND_REPEAT,
+			CSSConstants.BACKGROUND_SIZE:
 				invalidateDocumentRendering();
-			
+				
 			//for any other style change,invalidate layout, rendering and 
 			//the containing block
 			default:
@@ -217,10 +217,10 @@ class InvalidatingElementRenderer extends ElementRenderer
 		switch (styleName)
 		{
 			//TODO 2 : not supposed to be called anyway
-			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
-			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
-			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
-			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:
+			case CSSConstants.BACKGROUND_COLOR, CSSConstants.BACKGROUND_CLIP,
+			CSSConstants.BACKGROUND_IMAGE, CSSConstants.BACKGROUND_POSITION,
+			CSSConstants.BACKGROUND_ORIGIN, CSSConstants.BACKGROUND_REPEAT,
+			CSSConstants.BACKGROUND_SIZE:
 			
 			//by default, set a relayout of this containing block and
 			//a rendering of all its children
@@ -237,10 +237,10 @@ class InvalidatingElementRenderer extends ElementRenderer
 	{
 		switch (styleName)
 		{
-			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
-			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
-			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
-			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:	
+			case CSSConstants.BACKGROUND_COLOR, CSSConstants.BACKGROUND_CLIP,
+			CSSConstants.BACKGROUND_IMAGE, CSSConstants.BACKGROUND_POSITION,
+			CSSConstants.BACKGROUND_ORIGIN, CSSConstants.BACKGROUND_REPEAT,
+			CSSConstants.BACKGROUND_SIZE:	
 			
 			default:
 				_positionedChildrenNeedLayout = true;

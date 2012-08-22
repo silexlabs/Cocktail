@@ -7,15 +7,17 @@
 */
 package cocktail.core.linebox;
 
+import cocktail.core.css.CoreStyle;
 import cocktail.core.geom.Matrix;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.style.ComputedStyle;
+
 import cocktail.Lib;
 import cocktail.core.font.FontManager;
 import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
+import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.font.FontData;
 import cocktail.port.NativeText;
@@ -55,7 +57,7 @@ class TextLineBox extends LineBox
 		
 		super(elementRenderer);
 		
-		initNativeTextElement(text, fontManager, elementRenderer.coreStyle.computedStyle);
+		initNativeTextElement(text, fontManager, elementRenderer.coreStyle);
 		
 		//get the dimensions of the text
 		bounds.width = getTextWidth();
@@ -67,11 +69,11 @@ class TextLineBox extends LineBox
 	/**
 	 * Instantiate a platform specific text rendering element
 	 */
-	private function initNativeTextElement(text:String, fontManager:FontManager, computedStyle:ComputedStyle):Void
+	private function initNativeTextElement(text:String, fontManager:FontManager, style:CoreStyle):Void
 	{
 		//create and store a native text element, using the styles of the 
 		//TextRenderer which created this TextLineBox
-		var nativeElement:NativeElement = fontManager.createNativeTextElement(text, computedStyle);
+		var nativeElement:NativeElement = fontManager.createNativeTextElement(text, style);
 		//wrap the native text element
 		_nativeText = new NativeText(nativeElement);
 	}
@@ -156,9 +158,11 @@ class TextLineBox extends LineBox
 		var ascent:Float = _fontMetrics.ascent;
 		var descent:Float = _fontMetrics.descent;
 		
+		var lineHeight:Float = elementRenderer.coreStyle.usedValues.lineHeight;
+		
 		//the leading is an extra height to apply equally to the ascent
 		//and the descent when laying out lines of text
-		var leading:Float = elementRenderer.coreStyle.computedStyle.lineHeight - (ascent + descent);
+		var leading:Float = lineHeight - (ascent + descent);
 
 		//apply leading to the ascent and descent
 		var leadedAscent:Float = ascent + leading / 2;
@@ -175,7 +179,9 @@ class TextLineBox extends LineBox
 		var ascent:Float = _fontMetrics.ascent;
 		var descent:Float = _fontMetrics.descent;	
 	
-		var leading:Float = elementRenderer.coreStyle.computedStyle.lineHeight - (ascent + descent);
+		var lineHeight:Float = elementRenderer.coreStyle.usedValues.lineHeight;
+		
+		var leading:Float = lineHeight - (ascent + descent);
 
 		var leadedAscent:Float = ascent + leading / 2;
 		var leadedDescent:Float = descent + leading / 2;

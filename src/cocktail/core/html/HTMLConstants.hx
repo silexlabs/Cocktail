@@ -120,7 +120,7 @@ class HTMLConstants
 	
 	public static inline var HTML_HIDDEN_ATTRIBUTE_NAME:String = "hidden";
 	
-	public static inline var HTML_TAB_INDEX_ATTRIBUTE_NAME:String = "tabIndex";
+	public static inline var HTML_TAB_INDEX_ATTRIBUTE_NAME:String = "tabindex";
 	
 	public static inline var HTML_STYLE_ATTRIBUTE_NAME:String = "style";
 
@@ -155,6 +155,8 @@ class HTMLConstants
 	public static inline var HTML_HREFLANG_ATTRIBUTE_NAME:String = "hreflang";
 	
 	public static inline var HTML_DISABLED_ATTRIBUTE_NAME:String = "disabled";
+	
+	public static inline var HTML_CHECKED_ATTRIBUTE_NAME:String = "checked";
 	
 	//anchor target const
 

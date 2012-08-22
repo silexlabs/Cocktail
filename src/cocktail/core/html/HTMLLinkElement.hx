@@ -6,6 +6,12 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
+import cocktail.core.css.CSSStyleSheet;
+import cocktail.core.dom.DOMConstants;
+import cocktail.core.event.Event;
+import cocktail.core.event.UIEvent;
+import cocktail.core.resource.AbstractResource;
+import cocktail.core.resource.ResourceManager;
 
 /**
  * The link element allows authors to link their document to other resources.
@@ -73,9 +79,94 @@ class HTMLLinkElement extends HTMLElement
 	 */
 	public var type(get_type, set_type):String;
 	
+	/**
+	 * A reference to the CSS style sheet created by this
+	 * node's content. It is null by default, a style sheet
+	 * is only created if this element has a text child
+	 * node and is attached to the DOM
+	 */
+	public var sheet(default, null):CSSStyleSheet;
+	
 	public function new() 
 	{
 		super(HTMLConstants.HTML_LINK_TAG_NAME);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden, as when the style element is added
+	 * to the DOM, it adds a style sheet to the 
+	 * document if it has a child text node
+	 */
+	override public function attach():Void
+	{
+		addStyleSheet();
+	}
+
+	/**
+	 * Overriden as when this node is removed
+	 * from the dom, it must also remove its 
+	 * style sheet from the document if any
+	 */
+	override public function detach():Void
+	{
+		removeStyleSheet();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * To actually add a style sheet to the 
+	 * document, the style node must both be
+	 * attached to the DOM and have a text
+	 * child node
+	 */
+	private function addStyleSheet():Void
+	{
+		if (type == "text/css" && href != null && rel == "stylesheet")
+		{
+			var text:AbstractResource = ResourceManager.getTextResource(href);
+			if (text.loaded == true)
+			{
+				createStyleSheet(text.nativeResource);
+			}
+			else
+			{
+				text.addEventListener(UIEvent.LOAD, onCSSLoaded);
+			}
+		}
+	}
+	
+	/**
+	 * Remove the style sheet from the document
+	 * if it was previously added
+	 */
+	private function removeStyleSheet():Void
+	{
+		if (sheet != null)
+		{
+			var htmlDocument:HTMLDocument = cast(ownerDocument);
+			htmlDocument.removeStyleSheet(sheet);
+			sheet = null;
+		}
+	}
+	
+	private function onCSSLoaded(event:Event):Void
+	{
+		var text:AbstractResource = cast(event.target);
+		createStyleSheet(text.nativeResource);
+	}
+	
+	private function createStyleSheet(css:String):Void
+	{
+		sheet = new CSSStyleSheet(css);
+		var htmlDocument:HTMLDocument = cast(ownerDocument);
+		htmlDocument.addStyleSheet(sheet);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

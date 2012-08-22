@@ -15,6 +15,7 @@ import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.platform.Platform;
+import cocktail.core.css.CSSData;
 import cocktail.core.style.StyleData;
 
 /**
@@ -162,7 +163,7 @@ class Window extends EventCallback
 	/**
 	 * Change the current mouse cursor if needed
 	 */
-	private function onDocumentSetMouseCursor(cursor:Cursor):Void
+	private function onDocumentSetMouseCursor(cursor:CSSPropertyValue):Void
 	{
 		platform.mouse.setMouseCursor(cursor);
 	}

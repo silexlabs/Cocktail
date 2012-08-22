@@ -1,7 +1,9 @@
 package cocktail.core.css;
 
+import cocktail.core.geom.Matrix;
 import cocktail.core.style.StyleData;
 import cocktail.core.unit.UnitData;
+import cocktail.core.geom.GeomData;
 
 /**
  * ...
@@ -12,26 +14,63 @@ typedef CSSRuleList = Array<CSSRule>;
 
 typedef TypedPropertyData = {
 	var name:String;
-	var value:String;
-	var typedValue:Array<CSSPropertyValue>;
+	var typedValue:CSSPropertyValue;
+	var important:Bool;
 }
 
 typedef PropertyData = {
-	var value:String;
-	var important:String;
+	var important:Bool;
 	var origin:PropertyOriginValue;
+	var typedValue:CSSPropertyValue;
 	var selector:SelectorData;
 }
 
-typedef PropertyDeclarationData = {
-	var name:String;
-	var value:String;
-	var priority:String;
+typedef StyleDeclarationData = {
+	var style:CSSStyleDeclaration;
+	var selector:SelectorData;
+}
+
+typedef MatchedPseudoClasses = {
+	var hover:Bool;
+	var focus:Bool;
+	var active:Bool;
+	var link:Bool;
+	var enabled:Bool;
+	var disabled:Bool;
+	var checked:Bool;
 }
 
 enum PropertyOriginValue {
 	AUTHOR;
 	USER_AGENT;
+}
+
+typedef UsedValuesData = {
+	var width:Float;
+	var minHeight:Float;
+	var	maxHeight:Float;
+	var minWidth:Float;
+	var maxWidth:Float;
+	var	height:Float;
+	var	marginLeft:Float;
+	var	marginRight:Float;
+	var	marginTop:Float;
+	var	marginBottom:Float;
+	var	paddingLeft:Float;
+	var	paddingRight:Float;
+	var	paddingTop:Float;
+	var	paddingBottom:Float;
+	var	left:Float;
+	var	right:Float;
+	var	top:Float;
+	var	bottom:Float;
+	var	textIndent:Float;
+	var	color:ColorData;
+	var lineHeight:Float;
+	var letterSpacing:Float;
+	var	transformOrigin:PointData;
+	var	transform:Matrix;
+	var	backgroundColor:ColorData;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -173,6 +212,8 @@ enum AttributeSelectorValue {
 	 * an element whose "name" attribute
 	 * value is a list of whitespace-separated values,
 	 * one of which is exactly equal to "value"
+	 * 
+	 * TODO 2 : value should be stored as string array
 	 */
 	ATTRIBUTE_LIST(name:String, value:String);
 	
@@ -197,10 +238,15 @@ enum AttributeSelectorValue {
 	/**
 	 * an element whose "name" attribute has a hyphen-separated
 	 * list of values beginning (from the left) with "value"
+	 * 
+	 * TODO 2 : value should be store as string array
 	 */
 	ATTRIBUTE_VALUE_BEGINS_HYPHEN_LIST(name:String, value:String);
 }
 
+/**
+ * List the pseuso class selector types
+ */
 enum PseudoClassSelectorValue {
 	STRUCTURAL(value:StructuralPseudoClassSelectorValue);
 	LINK(value:LinkPseudoClassValue);
@@ -208,18 +254,72 @@ enum PseudoClassSelectorValue {
 	LANG(value:Array<String>);
 	USER_ACTION(value:UserActionPseudoClassValue);
 	UI_ELEMENT_STATES(value:UIElementStatesValue);
+	
+	//TODO 2 : should actually be SelectorData ?
 	NOT(value:SimpleSelectorSequenceData);
 }
 
+/**
+ * List the structural pseudo class, which
+ * are based on the DOM structure
+ */
 enum StructuralPseudoClassSelectorValue {
+	
+	/**
+	 * The :root pseudo-class represents an element 
+	 * that is the root of the document. In HTML 4, this 
+	 * is always the HTML element. 
+	 */
 	ROOT;
+	
+	/**
+	 * The :first-child pseudo-class represents an element
+	 * that is the first child of some other element. 
+	 */
 	FIRST_CHILD;
+	
+	/**
+	 * The :last-child pseudo-class represents 
+	 * an element that is the last child of
+	 * some other element. 
+	 */
 	LAST_CHILD;
+	
+	/**
+	 * The :first-of-type pseudo-class represents
+	 * an element that is the first sibling of its
+	 * type in the list of children of its parent element. 
+	 */
 	FIRST_OF_TYPE;
+	
+	/**
+	 * he :last-of-type pseudo-class represents an element
+	 * that is the last sibling of its type in the list
+	 * of children of its parent element. 
+	 */
 	LAST_OF_TYPE;
+	
+	/**
+	 * Represents an element that has a parent element and whose
+	 * parent element has no other element children. 
+	 * Same as :first-child:last-child
+	 */
 	ONLY_CHILD;
+	
+	/**
+	 * Represents an element that has a parent element and 
+	 * whose parent element has no other element children
+	 * with the same expanded element name
+	 */
 	ONLY_OF_TYPE;
+	
+	/**
+	 * The :empty pseudo-class represents an element 
+	 * that has no children at all. 
+	 */
 	EMPTY;
+	
+	//TODO 2 : doc + implementation
 	NTH_CHILD(value:StructuralPseudoClassArgumentValue);
 	NTH_LAST_CHILD(value:StructuralPseudoClassArgumentValue);
 	NTH_OF_TYPE(value:StructuralPseudoClassArgumentValue);
@@ -232,14 +332,49 @@ enum StructuralPseudoClassArgumentValue {
 	EVEN;
 }
 
+/**
+ * pseudo class applying to anchor
+ */
 enum LinkPseudoClassValue {
+	
+	/**
+	 * The :link pseudo-class applies 
+	 * to links that have not yet been visited. 
+	 */
 	LINK;
+	
+	/**
+	 * The :visited pseudo-class applies once
+	 * the link has been visited by the user. 
+	 */
 	VISITED;
 }
 
+/**
+ * Pseudo classes caused by user actions
+ */
 enum UserActionPseudoClassValue {
+	
+	/**
+	 * The :active pseudo-class applies while an element is being
+	 * activated by the user. For example, between
+	 * the times the user presses the mouse
+	 * button and releases it.
+	 */
 	ACTIVE;
+	
+	/**
+	 * The :hover pseudo-class applies while the user
+	 * designates an element with a pointing device,
+	 * but does not necessarily activate it.
+	 */
 	HOVER;
+	
+	/**
+	 * The :focus pseudo-class applies while an element
+	 * has the focus (accepts keyboard or mouse events,
+	 * or other forms of input). 
+	 */
 	FOCUS;
 }
 
@@ -268,26 +403,131 @@ enum CombinatorValue {
 // STYLE VALUES
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * Lists all the basic types for CSS property values
+ */
 enum CSSPropertyValue {
+	
+	/**
+	 * represents a simple Int
+	 */
 	INTEGER(value:Int);
+	
+	/**
+	 * Represent a floating number
+	 */
 	NUMBER(value:Float);
+	
+	/**
+	 * percentage
+	 */
 	PERCENTAGE(value:Float);
+	
+	/**
+	 * an arbitrary identifier who is
+	 * not a defined CSS keyword
+	 */
 	IDENTIFIER(value:String);
+	
+	/**
+	 * a pre-defined CSS keyword, for instance
+	 * 'auto'
+	 */
 	KEYWORD(value:CSSKeywordValue);
+	
+	/**
+	 * an url
+	 */
 	URL(value:String);
+	
+	/**
+	 * Like an identifier but between quotes
+	 */
 	STRING(value:String);
+	
+	/**
+	 * Represents a dimension expressed with
+	 * a CSS Number followed by a unit. 
+	 * For instance '10px'
+	 */
 	LENGTH(value:CSSLengthValue);
+	
+	/**
+	 * A dimension, like a length but with
+	 * angle unit such as 'deg'
+	 */
 	ANGLE(value:CSSAngleValue);
+	
+	/**
+	 * A dimension, like a length but
+	 * for time unit such as 's'
+	 */
 	TIME(value:CSSTimeValue);
-	COLOR(value:CSSColorValue);
+	
+	/**
+	 * A dimension, like a length but
+	 * for frequency unit such as 'hz'
+	 */
 	FREQUENCY(value:CSSFrequencyValue);
-	REPEAT_STYLE(value:CSSRepeatStyleValue);
+	
+	/**
+	 * A dimension, like a length but
+	 * for resolution unit such as 'dpi'
+	 */
 	RESOLUTION(value:CSSResolutionValue);
+	
+	/**
+	 * a CSS color value
+	 */
+	COLOR(value:CSSColorValue);
+	
+	/**
+	 * an array of CSS properties, represented
+	 * in the CSS string by space separated value.
+	 * For instance '10px 5px', will create a group
+	 * with 2 length items
+	 */
 	GROUP(value:Array<CSSPropertyValue>);
-	LIST(value:Array<CSSPropertyValue>);
+	
+	/**
+	 * Like a group but for comma separated CSS values.
+	 * For instance '10px, 5px' will create a list
+	 * with 2 length items
+	 */
+	CSS_LIST(value:Array<CSSPropertyValue>);
+	
+	/**
+	 * represents the CSS wide keyword inherit
+	 */
 	INHERIT;
+	
+	/**
+	 * represents the CSS wide keyword initial.
+	 */
 	INITIAL;
-//	POSITION(value1:PositionValue, ?value2:PositionValue, ?value3:PositionValue, ?value4:PositionValue);
+	
+	/**
+	 * Represents a number which is the result
+	 * of the computation of a length
+	 */
+	ABSOLUTE_LENGTH(value:Float);
+	
+	/**
+	 * Represents steps for an animation/transition
+	 */
+	STEPS(intervalNumbers:Int, intervalChange:CSSKeywordValue);
+	
+	/**
+	 * Represent easing function for an animation/transition
+	 */
+	CUBIC_BEZIER(x1:Float, y1:Float, x2:Float, y2:Float);
+	
+	/**
+	 * Represent a transformation function defining
+	 * an affine transformation, used by the 'transform'
+	 * style
+	 */
+	TRANSFORM_FUNCTION(value:CSSTransformFunctionValue);
 }
 
 /**
@@ -367,12 +607,13 @@ enum CSSColorValue {
 	CURRENT_COLOR;
 }
 
+
 /**
  * Lists the default available colors
  */
 enum CSSColorKeyword {
 	AQUA;
-	BLOCK;
+	BLACK;
 	BLUE;
 	FUSHIA;
 	GRAY;
@@ -388,6 +629,102 @@ enum CSSColorKeyword {
 	TEAL;
 	WHITE;
 	YELLOW;
+}
+
+/**
+ * The list of allowed transform functions to
+ * apply to a htmlElement
+ */
+enum CSSTransformFunctionValue {
+	
+	/**
+	 * specify a 2D transformation in the form of
+	 * a transformation matrix
+	 */
+	MATRIX(data:MatrixData);
+	
+	/**
+	 * specify a 2D translation by the vector [tx, ty]
+	 */
+	TRANSLATE(tx:CSSTranslationValue, ty:CSSTranslationValue);
+	
+	/**
+	 * specifies a translation by the given amount in the
+	 * X direction
+	 */
+	TRANSLATE_X(tx:CSSTranslationValue);
+	
+	/**
+	 * specifies a translation by the given amount in the
+	 * Y direction
+	 */
+	TRANSLATE_Y(ty:CSSTranslationValue);
+	
+	/**
+	 * Specifies a 2D scale operation by the
+	 * [sx, sy] scaling vector
+	 */
+	SCALE(sx:Float, sy:Float);
+	
+	/**
+	 * Specifies a 2D scale operation by the
+	 * [sx, 1] scaling vector
+	 */
+	SCALE_X(sx:Float);
+	
+	/**
+	 * Specifies a 2D scale operation by the
+	 * [1, sy] scaling vector
+	 */
+	SCALE_Y(sy:Float);
+	
+	/**
+	 * specifies a 2D rotation by the angle specified in the
+	 * parameter about the origin of the element,
+	 * as defined by the TransformOriginStyleValue property
+	 */
+	ROTATE(angle:CSSAngleValue);
+	
+	/**
+	 * specifies a skew transformation
+	 * along the X axis by the given angle.
+	 */
+	SKEW_X(angle:CSSAngleValue);
+	
+	/**
+	 * specifies a skew transformation
+	 * along the Y axis by the given angle.
+	 */
+	SKEW_Y(angle:CSSAngleValue);
+	
+	/**
+	 * specifies a skew transformation 
+	 * along the X and Y axes.
+	 */
+	SKEW(angleX:CSSAngleValue, angleY:CSSAngleValue);
+}
+
+/**
+ * The list of value allowed to 
+ * specify the amount of a translation
+ * 
+ * TODO : is this useful or could be replaced
+ * with CSSPropertyValue ?
+ */
+enum CSSTranslationValue {
+	
+	ABSOLUTE_LENGTH(value:Float);
+	
+	/**
+	 * a length value
+	 */
+	LENGTH(value:CSSLengthValue);
+	
+	/**
+	 * a percentage relative to the htmlElement's
+	 * dimensions
+	 */
+	PERCENTAGE(value:Float);
 }
 
 
@@ -556,20 +893,13 @@ enum CSSTimeValue {
 	MILLISECONDS(value:Float);
 }
 
-enum CSSRepeatStyleValue {
-	REPEAT_X;
-	REPEAT_Y;
-	SINGLE(value:RepeatKeywordValue);
-	DOUBLE(horizontalValue:RepeatKeywordValue, verticalValue:RepeatKeywordValue);
-}
 
-enum RepeatKeywordValue {
-	REPEAT;
-	SPACE;
-	ROUND;
-	NO_REPEAT;
-}
-
+/**
+ * Lists all the pre defined CSS Keywords.
+ * Some are used in multiple styles and their
+ * effects varies based on the style on which
+ * they are used
+ */
 enum CSSKeywordValue {
 	NORMAL;
 	BOLD;
@@ -629,4 +959,19 @@ enum CSSKeywordValue {
 	STEP_END;
 	START;
 	END;
+	XX_SMALL;
+	X_SMALL;
+	SMALL;
+	MEDIUM;
+	LARGE;
+	X_LARGE;
+	XX_LARGE;
+	LARGER;
+	SMALLER;
+	REPEAT;
+	REPEAT_X;
+	REPEAT_Y;
+	SPACE;
+	ROUND;
+	NO_REPEAT;
 }

@@ -11,13 +11,12 @@ import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
 import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.style.ComputedStyle;
+
 import cocktail.core.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
-import cocktail.core.style.computer.TransitionStylesComputer;
 import cocktail.core.window.Window;
 import cocktail.Lib;
 import cocktail.port.DrawingManager;
@@ -34,13 +33,14 @@ import cocktail.core.style.computer.boxComputers.PositionedBoxStylesComputer;
 import cocktail.core.style.computer.DisplayStylesComputer;
 import cocktail.core.style.computer.FontAndTextStylesComputer;
 import cocktail.core.style.computer.VisualEffectStylesComputer;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
 import cocktail.core.style.formatter.BlockFormattingContext;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.formatter.InlineFormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;
 import cocktail.core.unit.UnitManager;
+import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 import haxe.Log;
 
@@ -127,13 +127,6 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function layout(forceLayout:Bool):Void
 	{	
-		//TODO 1 : messy to compute here, but if immediately computed
-		//when set, won't work for transitions
-		coreStyle.computedStyle.opacity = coreStyle.opacity;
-		
-		//TODO 1 : same as above, where to compute this ?
-		TransitionStylesComputer.compute(coreStyle);
-		
 		if (_needsLayout == true || forceLayout == true)
 		{
 			layoutSelf();
@@ -156,10 +149,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//into usable value. For instance, a with defined as a percentage will compute
 		//to a percentage of the containing block width
 		var containingBlockData:ContainingBlockData = _containingBlock.getContainerBlockData();
-		var containingBlockFontMetricsData:FontMetricsData = _containingBlock.coreStyle.fontMetrics;
-
+		
 		//compute the font style (font-size, line-height...)
-		FontAndTextStylesComputer.compute(coreStyle, containingBlockData, containingBlockFontMetricsData);
+		FontAndTextStylesComputer.compute(coreStyle, containingBlockData);
 		
 		//compute the box styles (width, height, margins, paddings...)
 		computeBoxModelStyles(containingBlockData);
@@ -207,7 +199,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function isFloat():Bool
 	{
-		return coreStyle.computedStyle.cssFloat != CSSFloat.none;
+		return coreStyle.isNone(coreStyle.cssFloat) == false;
 	}
 	
 	/**
@@ -231,7 +223,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function isPositioned():Bool
 	{
-		return this.coreStyle.computedStyle.position != Position.cssStatic;
+		return coreStyle.getKeyword(coreStyle.position) != STATIC;
 	}
 	
 	/**
@@ -250,7 +242,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function isRelativePositioned():Bool
 	{
-		return this.coreStyle.computedStyle.position == relative;
+		return coreStyle.getKeyword(coreStyle.position) == RELATIVE;
 	}
 	
 	/**
@@ -267,9 +259,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 	{
 		var ret:Bool = false;
 		
-		switch (this.coreStyle.computedStyle.display) 
+		switch (coreStyle.getKeyword(coreStyle.display)) 
 		{
-			case cssInline, inlineBlock:
+			case INLINE, INLINE_BLOCK:
 				ret = true;
 			
 			default:
@@ -317,7 +309,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	{
 		//it is transformaed if at least one transform
 		//function is applied to it
-		if (coreStyle.transform != Transform.none)
+		if (coreStyle.isNone(coreStyle.transform) == false)
 		{
 			return true;
 		}
@@ -331,12 +323,24 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function isTransparent():Bool
 	{
-		if (coreStyle.opacity != 1.0)
+		//TODO 1 : hack for initial block renderer
+		if (coreStyle.opacity == null)
 		{
-			return true;
+			return false;
 		}
-			
-		return false;
+		
+		switch(coreStyle.opacity)
+		{
+			case CSSPropertyValue.NUMBER(value):
+				if (value != 1.0)
+				{
+					return true;
+				}
+				return false;
+				
+			default:
+				return false;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -353,7 +357,15 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	private function isClear():Bool
 	{
-		return coreStyle.computedStyle.clear != Clear.none;
+		switch(coreStyle.getKeyword(coreStyle.clear))
+		{
+			case LEFT, RIGHT, BOTH:
+			return true;
+						
+			default:	
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -378,10 +390,10 @@ class BoxRenderer extends InvalidatingElementRenderer
 	public function getContainerBlockData():ContainingBlockData
 	{
 		return {
-			width:this.coreStyle.computedStyle.width,
-			isWidthAuto:this.coreStyle.width == Dimension.cssAuto,
-			height:this.coreStyle.computedStyle.height,
-			isHeightAuto:this.coreStyle.height == Dimension.cssAuto
+			width:coreStyle.usedValues.width,
+			isWidthAuto:coreStyle.isAuto(coreStyle.width),
+			height:coreStyle.usedValues.height,
+			isHeightAuto:coreStyle.isAuto(coreStyle.height)
 		};
 	}
 	

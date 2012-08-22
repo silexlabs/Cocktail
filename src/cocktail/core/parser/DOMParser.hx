@@ -41,15 +41,7 @@ class DOMParser
 	 */
 	public static function parse(html:String, ownerDocument:Document):HTMLElement
 	{
-		//wrap the HTML String in a div element, else
-		//when creating the html node, only the first 
-		//node content is deserialized and not its
-		//siblings
-		var wrappedHTML:String = HTMLConstants.HTML_TOKEN_LESS_THAN + HTMLConstants.HTML_DIV_TAG_NAME + HTMLConstants.HTML_TOKEN_MORE_THAN;
-		wrappedHTML += html;
-		wrappedHTML += HTMLConstants.HTML_TOKEN_LESS_THAN + HTMLConstants.HTML_TOKEN_SOLIDUS + HTMLConstants.HTML_DIV_TAG_NAME + HTMLConstants.HTML_TOKEN_MORE_THAN;
-
-		var node:HTMLElement = doSetInnerHTML(Parser.parse(wrappedHTML).firstElement(), ownerDocument);
+		var node:HTMLElement = doSetInnerHTML(Parser.parse(html).firstElement(), ownerDocument);
 		return node;
 	}
 	
@@ -116,15 +108,15 @@ class DOMParser
 				//desrialize the child, thus deserializing
 				//the whole DOM tree recursively
 				var childNode:HTMLElement = doSetInnerHTML(child, ownerDocument);
-
 				htmlElement.appendChild(childNode);
 			} 
 			
 			//set all the attributes of the xml node on the 
 			//new HTMLElement node
 			for( attribute in xml.attributes() ){
-				attribute = attribute.toLowerCase();
 				var value:String = xml.get(attribute);
+				attribute = attribute.toLowerCase();
+				
 				htmlElement.setAttribute(attribute, value);
 			}
 			
@@ -175,26 +167,6 @@ class DOMParser
 					//concatenate all the of the specified styles of the HTMLElement
 					//children into a CSS string
 					var htmlChild:HTMLElement = child;
-					var styleAttributes:NamedNodeMap<HTMLElement> = htmlChild.style.attributes;
-					var concatenatedStyles:String = "";
-					
-					var attributesLength:Int = styleAttributes.length;
-					for (j in 0...attributesLength)
-					{
-						var attribute:Attr<HTMLElement> = cast(styleAttributes.item(j));
-						
-						if (attribute.specified == true)
-						{
-							concatenatedStyles += attribute.name + ":" + attribute.value +";";
-						}
-					}
-					
-					//set the CSS string as the 'style' attribute of the HTMLElement
-					//if at least one style one specified on it
-					if (concatenatedStyles != "")
-					{
-						childXml.set(HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME, concatenatedStyles);
-					}
 					
 					//add the children's content to the Xml of the child
 					xml.addChild(doGetInnerHTML(child, childXml));

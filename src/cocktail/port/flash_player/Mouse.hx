@@ -15,6 +15,7 @@ import cocktail.core.style.StyleData;
 import flash.display.BitmapData;
 import flash.Lib;
 import cocktail.core.geom.GeomData;
+import cocktail.core.css.CSSData;
 import flash.Vector;
 import haxe.Log;
 
@@ -41,28 +42,42 @@ class Mouse extends AbstractMouse
 	/**
 	 * Set the mouse cursor using flash mouse API
 	 */
-	override public function setMouseCursor(cursor:Cursor):Void
+	override public function setMouseCursor(cursor:CSSPropertyValue):Void
 	{
 		//not supported by nme
 		#if flash9
 		
 		switch(cursor)
 		{
-			case Cursor.cssAuto:
-				flash.ui.Mouse.cursor = flash.ui.MouseCursor.AUTO;
+			case KEYWORD(value):
+				switch(value)
+				{
+					case AUTO:
+						flash.ui.Mouse.cursor = flash.ui.MouseCursor.AUTO;
+						
+					case DEFAULT:
+						flash.ui.Mouse.cursor = flash.ui.MouseCursor.ARROW;
+					
+					case POINTER:
+						flash.ui.Mouse.cursor = flash.ui.MouseCursor.BUTTON;	
+						
+					case TEXT:
+						flash.ui.Mouse.cursor = flash.ui.MouseCursor.IBEAM;		
+					
+					//cross-hair don't exist in flash	
+					case CROSSHAIR:
+						flash.ui.Mouse.cursor = flash.ui.MouseCursor.AUTO;		
+						
+					default:
+						throw 'Illegal keyword value for cursor style';
+				}
 				
-			case Cursor.cssDefault:
-				flash.ui.Mouse.cursor = flash.ui.MouseCursor.ARROW;
-			
-			case Cursor.pointer:
-				flash.ui.Mouse.cursor = flash.ui.MouseCursor.BUTTON;	
+			case URL(value):
 				
-			case Cursor.text:
-				flash.ui.Mouse.cursor = flash.ui.MouseCursor.IBEAM;		
+			default:
+				throw 'Illegal value for cursor style';
 			
-			//cross-hair don't exist in flash	
-			case Cursor.crosshair:
-				flash.ui.Mouse.cursor = flash.ui.MouseCursor.AUTO;		
+			
 		}
 		
 		#end

@@ -7,6 +7,8 @@
 */
 package cocktail.core.html;
 
+import cocktail.core.css.InitialStyleDeclaration;
+import cocktail.core.dom.Document;
 import cocktail.core.event.Event;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.UIEvent;
@@ -118,19 +120,7 @@ class ScrollBar extends HTMLElement
 		scroll = 0;
 		maxScroll = 0;
 		_mouseMoveStart = 0;
-		
-		//style the scrollbar parts for vertical
-		//or horizontal scrollbar
-		initScrollBar();
-		
-		if (_isVertical)
-		{
-			initVerticalScrollBar();
-		}
-		else
-		{
-			initHorizontalScrollBar();
-		}
+
 		
 		//attach the different scrollbar parts
 		appendChild(_scrollThumb);
@@ -145,29 +135,54 @@ class ScrollBar extends HTMLElement
 		_upArrow.addEventListener(MouseEvent.MOUSE_DOWN, cast(onUpArrowMouseDown));
 	}
 	
+	override private function set_ownerDocument(value:Document):Document
+	{
+		super.set_ownerDocument(value);
+		
+				
+		//style the scrollbar parts for vertical
+		//or horizontal scrollbar
+		initScrollBar();
+		
+		if (_isVertical)
+		{
+			initVerticalScrollBar();
+		}
+		else
+		{
+			initHorizontalScrollBar();
+		}
+		
+		return value;
+	}
+	
 	/**
 	 * style the scrollbar working for horizontal
 	 * and vertical scrollbar
+	 * 
+	 * TODO 1 : should now use CSS declaration instead o f
+	 * setting each property. Add a Scrollbar selector in
+	 * default style sheet ?
 	 */
 	private function initScrollBar():Void
 	{
-		style.backgroundColor = "#DDDDDD";
+		style.backgroundColor = "gray";
 		style.display = "block";
 		style.position = "absolute";
 		
-		_scrollThumb.style.backgroundColor = "#AAAAAA";
+		_scrollThumb.style.backgroundColor = "black";
 		_scrollThumb.style.position = "absolute";
 		_scrollThumb.style.display = "block";
 		_scrollThumb.style.width = THUMB_DEFAULT_DIMENSION +"px";
 		_scrollThumb.style.height = THUMB_DEFAULT_DIMENSION + "px";
 		
-		_upArrow.style.backgroundColor = "#CCCCCC";
+		_upArrow.style.backgroundColor = "black";
 		_upArrow.style.position = "absolute";
 		_upArrow.style.display = "block";
 		_upArrow.style.width = ARROW_DEFAULT_DIMENSION +"px";
 		_upArrow.style.height = ARROW_DEFAULT_DIMENSION + "px";
 		
-		_downArrow.style.backgroundColor = "#CCCCCC";
+		_downArrow.style.backgroundColor = "black";
 		_downArrow.style.position = "absolute";
 		_downArrow.style.display = "block";
 		_downArrow.style.width = ARROW_DEFAULT_DIMENSION + "px";
@@ -205,6 +220,7 @@ class ScrollBar extends HTMLElement
 		
 		_scrollThumb.style.left = THUMB_DEFAULT_DIMENSION +"px";
 	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING TREE METHODS
@@ -401,16 +417,16 @@ class ScrollBar extends HTMLElement
 		
 		if (_isVertical == true)
 		{
-			var thumbY:Int = Math.round(progress * (coreStyle.computedStyle.height -
-			_upArrow.coreStyle.computedStyle.height - _downArrow.coreStyle.computedStyle.height - _scrollThumb.coreStyle.computedStyle.height)
-			+  _upArrow.coreStyle.computedStyle.height);
+			var thumbY:Int = Math.round(progress * (coreStyle.usedValues.height -
+			_upArrow.coreStyle.usedValues.height - _downArrow.coreStyle.usedValues.height - _scrollThumb.coreStyle.usedValues.height)
+			+  _upArrow.coreStyle.usedValues.height);
 			_scrollThumb.style.top = thumbY + "px";
 		}
 		else
 		{
-			var thumbX:Int = Math.round(progress * (coreStyle.computedStyle.width -
-			_upArrow.coreStyle.computedStyle.width - _downArrow.coreStyle.computedStyle.width - _scrollThumb.coreStyle.computedStyle.width)
-			+  _upArrow.coreStyle.computedStyle.width);
+			var thumbX:Int = Math.round(progress * (coreStyle.usedValues.width -
+			_upArrow.coreStyle.usedValues.width - _downArrow.coreStyle.usedValues.width - _scrollThumb.coreStyle.usedValues.width)
+			+  _upArrow.coreStyle.usedValues.width);
 			
 			_scrollThumb.style.left = thumbX + "px";
 		}
@@ -428,31 +444,31 @@ class ScrollBar extends HTMLElement
 		
 		if (_isVertical == true)
 		{
-			var thumbHeight:Float = coreStyle.computedStyle.height - _downArrow.coreStyle.computedStyle.height - _upArrow.coreStyle.computedStyle.height - maxScroll;
+			var thumbHeight:Float = coreStyle.usedValues.height - _downArrow.coreStyle.usedValues.height - _upArrow.coreStyle.usedValues.height - maxScroll;
 
 			if (thumbHeight < THUMB_DEFAULT_DIMENSION)
 			{
 				thumbHeight = THUMB_DEFAULT_DIMENSION;
 			}
 			
-			if (thumbHeight != _scrollThumb.coreStyle.computedStyle.height)
+			if (thumbHeight != _scrollThumb.coreStyle.usedValues.height)
 			{
-				_scrollThumb.style.height = thumbHeight + "px";
+				//_scrollThumb.style.height = thumbHeight + "px";
 			}
 			
 		}
 		else
 		{
-			var thumbWidth:Float = coreStyle.computedStyle.width - _downArrow.coreStyle.computedStyle.width - _upArrow.coreStyle.computedStyle.width - maxScroll;
+			var thumbWidth:Float = coreStyle.usedValues.width - _downArrow.coreStyle.usedValues.width - _upArrow.coreStyle.usedValues.width - maxScroll;
 
 			if (thumbWidth < THUMB_DEFAULT_DIMENSION)
 			{
 				thumbWidth = THUMB_DEFAULT_DIMENSION;
 			}
 			
-			if (thumbWidth != _scrollThumb.coreStyle.computedStyle.width)
+			if (thumbWidth != _scrollThumb.coreStyle.usedValues.width)
 			{
-				_scrollThumb.style.width = thumbWidth + "px";
+				//_scrollThumb.style.width = thumbWidth + "px";
 			}
 		}
 	}
