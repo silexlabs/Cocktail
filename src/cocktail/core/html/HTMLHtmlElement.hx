@@ -24,12 +24,6 @@ class HTMLHtmlElement extends HTMLElement
 	public function new() 
 	{
 		super(HTMLConstants.HTML_HTML_TAG_NAME);
-		
-		//as the HTML htmlElement is the root
-		//of the runtime, it is responsible
-		//for attaching itself, as no parent
-		//will attach it otherwise
-		attach();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
