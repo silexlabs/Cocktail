@@ -521,7 +521,7 @@ class CSSStyleParser
 		if (hexa.length == 3 || hexa.length == 6)
 		{
 			styleValues.push(CSSPropertyValue.COLOR(CSSColorValue.HEX(hexa)));
-			return position;
+			return --position;
 		}
 		
 		return -1;
