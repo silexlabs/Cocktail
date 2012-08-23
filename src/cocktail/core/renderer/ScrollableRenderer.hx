@@ -14,6 +14,7 @@ import cocktail.core.html.ScrollBar;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
 import cocktail.core.style.StyleData;
+import cocktail.core.renderer.RendererData;
 
 /**
  * A base class for BlockBoxRenderer defining 
@@ -318,7 +319,8 @@ class ScrollableRenderer extends FlowBoxRenderer
 			
 			if (isXAxisClipped() == true || isYAxisClipped() == true)
 			{
-				//scroll(_scrollLeft, _scrollTop);
+				//invalidate layout of scrolled element
+				invalidate(InvalidationReason.other);
 			}
 			
 			if (_horizontalScrollBar != null)

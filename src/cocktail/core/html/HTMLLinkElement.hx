@@ -104,6 +104,7 @@ class HTMLLinkElement extends HTMLElement
 	 */
 	override public function attach():Void
 	{
+		super.attach();
 		addStyleSheet();
 	}
 
@@ -114,6 +115,7 @@ class HTMLLinkElement extends HTMLElement
 	 */
 	override public function detach():Void
 	{
+		super.detach();
 		removeStyleSheet();
 	}
 	

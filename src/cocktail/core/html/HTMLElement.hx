@@ -602,7 +602,7 @@ class HTMLElement extends Element<HTMLElement>
 		//do an initial cascading
 		//of the style of this HTMLElement
 		initialCascadeSelf();
-		
+
 		//if the parent HTMLElement ElementRenderers is null, then
 		//the parent is either not attached to the DOM or not rendered,
 		//and this HTMLElement is not rendered either
@@ -624,25 +624,25 @@ class HTMLElement extends Element<HTMLElement>
 			{
 				//do attach to parent ElementRenderer
 				attachToParentElementRenderer();
-				
-				//the HTMLElement is now attached and can attach its children
-				var length:Int = childNodes.length;
-				for (i in 0...length)
+			}
+			
+			//the HTMLElement is now attached and can attach its children
+			var length:Int = childNodes.length;
+			for (i in 0...length)
+			{
+				//only text and element node can be attached, as other nodes
+				//types are not visual
+				switch (childNodes[i].nodeType)
 				{
-					//only text and element node can be attached, as other nodes
-					//types are not visual
-					switch (childNodes[i].nodeType)
-					{
-						//attach element node
-						case DOMConstants.ELEMENT_NODE:
-							var child:HTMLElement = childNodes[i];
-							child.attach();
-						
-						//attach text node
-						case DOMConstants.TEXT_NODE:
-							var child:Text = cast(childNodes[i]);
-							child.attach();
-					}
+					//attach element node
+					case DOMConstants.ELEMENT_NODE:
+						var child:HTMLElement = childNodes[i];
+						child.attach();
+					
+					//attach text node
+					case DOMConstants.TEXT_NODE:
+						var child:Text = cast(childNodes[i]);
+						child.attach();
 				}
 			}
 		}
@@ -661,8 +661,6 @@ class HTMLElement extends Element<HTMLElement>
 		//is not attached
 		if (isParentRendered() == true)
 		{
-			var parent:HTMLElement = parentNode;
-			
 			//if this HTMLElement isn't currently rendered, no need
 			//to detach it
 			if (elementRenderer != null)
@@ -729,7 +727,7 @@ class HTMLElement extends Element<HTMLElement>
 		}
 		
 		//when one of those property specified value changes, it may affect the rendering of
-		//the HTMLElement. The cascade is interupted and the element is re attached
+		//the HTMLElement. The cascade is interupted and the element is re-attached
 		if (changedProperties.exists(CSSConstants.DISPLAY) || changedProperties.exists(CSSConstants.POSITION) ||
 		changedProperties.exists(CSSConstants.FLOAT) || changedProperties.exists(CSSConstants.TRANSFORM) ||
 		changedProperties.exists(CSSConstants.Z_INDEX) || changedProperties.exists(CSSConstants.OVERFLOW_X) ||
@@ -802,6 +800,7 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			_pendingChangedProperties.set(propertyName, null);
 		}
+
 		
 		cascadeSelf(new Hash<Void>(), false);
 	}
@@ -842,6 +841,7 @@ class HTMLElement extends Element<HTMLElement>
 					_pendingChangedProperties.set(propertyName, null);
 				}
 				
+
 				changedProperties = coreStyle.cascade(_pendingChangedProperties, initialStyleDeclaration, styleManagerCSSDeclaration, style, parentStyleDeclaration, parentFontMetrics.fontSize, parentFontMetrics.xHeight, programmaticChange);
 				
 			}
