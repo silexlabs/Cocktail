@@ -251,7 +251,15 @@ class CSSStyleDeclaration
 		}
 		else
 		{
-			_cssStyleParser.parseStyleValue(name, value, 0, applyProperty);
+			//pass the array by reference
+			var typedProperties:Array<TypedPropertyData> = new Array<TypedPropertyData>();
+			_cssStyleParser.parseStyleValue(name, value, 0, typedProperties);
+			
+			for (i in 0...typedProperties.length)
+			{
+				var typedProperty:TypedPropertyData = typedProperties[i];
+				applyProperty(typedProperty.name, typedProperty.typedValue, typedProperty.important);
+			}
 		}
 	}
 	
@@ -1802,7 +1810,14 @@ class CSSStyleDeclaration
 		//reset properties
 		_properties = new Array<TypedPropertyData>();
 		
-		_cssStyleParser.parseStyle(value, applyProperty);
+		var typedProperties:Array<TypedPropertyData> = _cssStyleParser.parseStyle(value);
+		
+		for (i in 0...typedProperties.length)
+		{
+			var typedProperty:TypedPropertyData = typedProperties[i];
+			applyProperty(typedProperty.name, typedProperty.typedValue, typedProperty.important);
+		}
+		
 		return value;
 	}
 	

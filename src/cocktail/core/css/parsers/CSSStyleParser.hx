@@ -1,3 +1,10 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktail.core.css.parsers;
 
 import cocktail.core.css.CSSData;
@@ -9,8 +16,8 @@ using StringTools;
  * CSS property key/value pair into typed CSS
  * objects.
  * 
- * For isntance, it should parse the following value :
-	 * 'margin:15px;'
+ * For instance, it should parse the following value :
+	 * 'margin:15px;' into a CSSPropertyValue
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -28,10 +35,12 @@ class CSSStyleParser
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	//TODO : should return array of a property type instead of requiring callback
-	public function parseStyle(styles:String, applyProperty:String->CSSPropertyValue->Bool->Void):Void
+	public function parseStyle(styles:String):Array<TypedPropertyData>
 	{
 		var state:StyleDeclarationParserState = IGNORE_SPACES;
 		var next:StyleDeclarationParserState = BEGIN;
+		
+		var typedProperties:Array<TypedPropertyData> = new Array<TypedPropertyData>();
 		
 		var position:Int = 0;
 		
@@ -98,7 +107,7 @@ class CSSStyleParser
 					}
 					
 				case STYLE_VALUE:
-					position = parseStyleValue(styleName, styles, position, applyProperty);
+					position = parseStyleValue(styleName, styles, position, typedProperties);
 					state = IGNORE_SPACES;
 					next = BEGIN;
 					
@@ -106,9 +115,11 @@ class CSSStyleParser
 			}
 			c = styles.fastCodeAt(++position);
 		}
+		
+		return typedProperties;
 	}
 	
-	public function parseStyleValue(propertyName:String, styles:String, position:Int, applyProperty:String->CSSPropertyValue->Bool->Void):Int
+	public function parseStyleValue(propertyName:String, styles:String, position:Int, typedProperties:Array<TypedPropertyData>):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		
@@ -279,11 +290,18 @@ class CSSStyleParser
 		{
 			if (styleValues.length == 1)
 			{
-				applyProperty(propertyName, styleValues[0], important);
+				typedProperties.push( {
+				name:propertyName,
+				typedValue:styleValues[0],
+				important:important});
 			}
 			else
 			{
-				applyProperty(propertyName, GROUP(styleValues), important);
+				typedProperties.push( {
+				name:propertyName,
+				typedValue:GROUP(styleValues),
+				important:important});
+				
 			}
 		}
 		else
@@ -307,9 +325,11 @@ class CSSStyleParser
 				}
 			}
 			
+			typedProperties.push( {
+				name:propertyName,
+				typedValue:CSS_LIST(styleListProperty),
+				important:important});
 			
-			
-			applyProperty(propertyName, CSS_LIST(styleListProperty), important);
 		}
 		
 		
