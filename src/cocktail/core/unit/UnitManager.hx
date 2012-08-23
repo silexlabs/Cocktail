@@ -9,7 +9,7 @@ package cocktail.core.unit;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.unit.UnitData;
-import cocktail.core.style.StyleData;	
+import cocktail.core.layout.LayoutData;	
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
 import haxe.Log;

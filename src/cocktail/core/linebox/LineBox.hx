@@ -19,7 +19,7 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 
 /**
  * 

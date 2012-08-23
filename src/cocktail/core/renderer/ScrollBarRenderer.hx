@@ -9,8 +9,8 @@ package cocktail.core.renderer;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
-import cocktail.core.style.formatter.FormattingContext;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.formatter.FormattingContext;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 
 /**

@@ -10,7 +10,7 @@ package cocktail.core.animation;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSStyleDeclaration;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.css.CSSData;
 

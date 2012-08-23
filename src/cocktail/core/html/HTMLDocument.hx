@@ -42,7 +42,7 @@ import cocktail.Lib;
 import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import haxe.Log;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
 
 /**

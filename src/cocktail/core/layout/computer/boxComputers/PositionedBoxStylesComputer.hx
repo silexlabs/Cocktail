@@ -5,12 +5,12 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.core.style.computer.boxComputers;
+package cocktail.core.layout.computer.boxComputers;
 
 import cocktail.core.css.CSSStyleDeclaration;
 
 import cocktail.core.css.CoreStyle;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 import cocktail.core.css.CSSData;
 import haxe.Log;

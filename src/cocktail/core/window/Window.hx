@@ -16,7 +16,7 @@ import cocktail.core.html.HTMLDocument;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.platform.Platform;
 import cocktail.core.css.CSSData;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 
 /**
  * Represents the window through which the Document is

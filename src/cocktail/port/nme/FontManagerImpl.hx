@@ -19,7 +19,7 @@ import flash.text.TextFormat;
 import haxe.Log;
 import cocktail.core.font.FontData;
 import flash.text.TextFieldAutoSize;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
 
 /**

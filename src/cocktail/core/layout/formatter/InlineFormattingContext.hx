@@ -5,7 +5,7 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.core.style.formatter;
+package cocktail.core.layout.formatter;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSStyleDeclaration;
@@ -16,8 +16,8 @@ import cocktail.core.linebox.StaticPositionLineBox;
 import cocktail.core.linebox.TextLineBox;
 import cocktail.core.linebox.SpaceLineBox;
 
-import cocktail.core.style.floats.FloatsManager;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.floats.FloatsManager;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.renderer.BlockBoxRenderer;

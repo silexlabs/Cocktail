@@ -5,10 +5,10 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.core.style.computer;
+package cocktail.core.layout.computer;
 
 import cocktail.core.css.CoreStyle;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.unit.UnitData;

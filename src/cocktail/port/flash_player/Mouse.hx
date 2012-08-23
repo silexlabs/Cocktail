@@ -11,7 +11,7 @@ import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.platform.mouse.AbstractMouse;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 import flash.display.BitmapData;
 import flash.Lib;
 import cocktail.core.geom.GeomData;

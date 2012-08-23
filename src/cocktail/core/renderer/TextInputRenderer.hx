@@ -15,7 +15,7 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.unit.UnitManager;
 import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 import cocktail.port.GraphicsContext;
 import cocktail.port.NativeTextInput;

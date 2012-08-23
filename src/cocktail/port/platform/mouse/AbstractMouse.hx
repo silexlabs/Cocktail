@@ -10,7 +10,7 @@ package cocktail.port.platform.mouse;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.css.CSSData;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 
 /**
  * This class listens to native mouse event

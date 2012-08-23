@@ -16,7 +16,7 @@ import cocktail.core.event.WheelEvent;
 import cocktail.port.Keyboard;
 import cocktail.port.Mouse;
 import cocktail.port.NativeWindow;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 import cocktail.port.TouchListener;
 
 /**

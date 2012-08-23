@@ -7,16 +7,16 @@
 */
 package cocktail.core.renderer;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.style.computer.boxComputers.BoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
+import cocktail.core.layout.computer.boxComputers.BoxStylesComputer;
+import cocktail.core.layout.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
+import cocktail.core.layout.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
+import cocktail.core.layout.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
+import cocktail.core.layout.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
+import cocktail.core.layout.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
 import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.port.GraphicsContext;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
 
 /**

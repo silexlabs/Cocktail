@@ -38,7 +38,7 @@ import cocktail.core.css.CoreStyle;
 import cocktail.Lib;
 import haxe.Log;
 import cocktail.core.focus.FocusManager;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.font.FontData;

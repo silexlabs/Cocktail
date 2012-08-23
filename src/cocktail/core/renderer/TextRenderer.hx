@@ -16,11 +16,11 @@ import cocktail.core.linebox.SpaceLineBox;
 import cocktail.core.linebox.TextLineBox;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.css.CoreStyle;
-import cocktail.core.style.formatter.FormattingContext;
+import cocktail.core.layout.formatter.FormattingContext;
 import cocktail.core.font.FontManager;
 import haxe.Log;
 import cocktail.core.geom.GeomData;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
 import cocktail.core.font.FontData;
 

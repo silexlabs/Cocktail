@@ -13,7 +13,7 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.renderer.RendererData;
 
 /**

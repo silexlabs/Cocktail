@@ -11,7 +11,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 
 import cocktail.port.NativeElement;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 

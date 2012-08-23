@@ -1,7 +1,7 @@
 package cocktail.core.css;
 
 import cocktail.core.geom.Matrix;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.unit.UnitData;
 import cocktail.core.geom.GeomData;
 

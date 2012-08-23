@@ -14,7 +14,7 @@ import cocktail.core.font.FontData;
 import cocktail.port.FontManagerImpl;
 import cocktail.port.NativeElement;
 
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 
 /**
  * The FontManager is used to get metrics for fonts and

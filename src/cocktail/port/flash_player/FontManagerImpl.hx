@@ -27,7 +27,7 @@ import haxe.Log;
 import cocktail.core.font.AbstractFontManagerImpl;
 import cocktail.core.font.FontData;
 import cocktail.core.css.CSSData;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 
 
 /**

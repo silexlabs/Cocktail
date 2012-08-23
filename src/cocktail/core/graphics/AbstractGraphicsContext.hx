@@ -14,7 +14,7 @@ import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
 import cocktail.core.dom.NodeBase;
 import cocktail.core.geom.GeomData;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.unit.UnitData;
 
 /**
