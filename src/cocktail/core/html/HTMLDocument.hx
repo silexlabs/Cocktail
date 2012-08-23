@@ -11,6 +11,7 @@ import cocktail.core.css.CSSRule;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.CSSStyleRule;
 import cocktail.core.css.CSSStyleSheet;
+import cocktail.core.css.DefaultCSSStyleSheet;
 import cocktail.core.css.InitialStyleDeclaration;
 import cocktail.core.css.StyleManager;
 import cocktail.core.dom.Document;
@@ -276,62 +277,15 @@ class HTMLDocument extends Document
 		activeElement = body;
 	}
 	
+	/**
+	 * Instantaite the style manager and add a default
+	 * style sheet to it
+	 */
 	private function initStyleManager():Void
 	{
 		initialStyleDeclaration = new InitialStyleDeclaration();
 		_styleManager = new StyleManager();
-		
-		var defaultStyleSheet:String = "html, address, blockquote, body, dd, div, dl, dt, fieldset, form, frame, frameset, h1, h2, h3, h4,";
-		defaultStyleSheet += "h5, h6, noframes, ol, p, ul, center, dir, hr, menu, pre   { display: block; unicode-bidi: embed }";
-		defaultStyleSheet += "li { display: block; } head { display: none } table { display: table } tr { display: table-row } ";
-		defaultStyleSheet += "thead { display: table-header-group } tbody{ display: table-row-group } tfoot { display: table-footer-group }";
-		defaultStyleSheet += "col { display: table-column } colgroup { display: table-column-group } td, th { display: table-cell }";
-		defaultStyleSheet += "caption { display: table-caption } th { font-weight: bolder; text-align: center } caption { text-align: center }";
-		defaultStyleSheet += " body  { margin: 8px } h1 { font-size: 2em; margin: .67em 0 } h2  { font-size: 1.5em; margin: .75em 0 }";
-		defaultStyleSheet += "h3{ font-size: 1.17em; margin: .83em 0 } h4, p, blockquote, ul,fieldset, form,ol, dl, dir,menu { margin: 1.12em 0 }";
-		defaultStyleSheet += "h5 { font-size: .83em; margin: 1.5em 0 } h6 { font-size: .75em; margin: 1.67em 0 }h1, h2, h3, h4,h5, h6, b,strong";
-        defaultStyleSheet += " { font-weight: bolder }blockquote { margin-left: 40px; margin-right: 40px } i, cite, em,var, address";
-		defaultStyleSheet += "{ font-style: italic }pre, tt, code,kbd, samp  { font-family: monospace }pre { white-space: pre }";
-		defaultStyleSheet += "button, textarea,input, select   { display: inline-block }big { font-size: 1.17em }small, sub, sup { font-size: .83em }";
-		defaultStyleSheet += "sub { vertical-align: sub }sup { vertical-align: super }table { border-spacing: 2px; } thead, tbody, tfoot ";
-		defaultStyleSheet += "{ vertical-align: middle } td, th, tr { vertical-align: inherit } s, strike, del  { text-decoration: line-through }";
-		defaultStyleSheet += "hr { border: 1px inset }ol, ul, dir,menu, dd { padding-left: 40px }ol { list-style-type: decimal }";
-		defaultStyleSheet += "ol ul, ul ol,ul ul, ol ol    { margin-top: 0; margin-bottom: 0 }u, ins          { text-decoration: underline }";
-		//defaultStyleSheet += "br:before { content: '\A'; white-space: pre-line }center          { text-align: center } ";
-		defaultStyleSheet += " :link,:visited { text-decoration: underline } :focus{ outline: thin dotted invert }";
-		
-		var styleSheet:CSSStyleSheet = new CSSStyleSheet(defaultStyleSheet, PropertyOriginValue.USER_AGENT);
-		
-		for (i in 0...styleSheet.cssRules.length)
-		{
-			//trace(styleSheet.cssRules[i]);
-			switch(styleSheet.cssRules[i].type)
-			{
-				case CSSRule.STYLE_RULE:
-					var sr:CSSStyleRule = cast(styleSheet.cssRules[i]);
-					for (j in 0...sr.style.length)
-					{
-						//trace(sr.style.item(j)+" : "+sr.style.getPropertyValue(sr.style.item(j)));
-					}
-			}
-		}
-		
-		_styleManager.addStyleSheet(styleSheet);
-//
-///* Begin bidirectionality settings (do not change) */
-//BDO[DIR="ltr"]  { direction: ltr; unicode-bidi: bidi-override }
-//BDO[DIR="rtl"]  { direction: rtl; unicode-bidi: bidi-override }
-//
-//*[DIR="ltr"]    { direction: ltr; unicode-bidi: embed }
-//*[DIR="rtl"]    { direction: rtl; unicode-bidi: embed }
-//
-//@media print {
-  //h1            { page-break-before: always }
-  //h1, h2, h3,
-  //h4, h5, h6    { page-break-after: avoid }
-  //ul, ol, dl    { page-break-before: avoid }
-//}
-		
+		_styleManager.addStyleSheet(new DefaultCSSStyleSheet());
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

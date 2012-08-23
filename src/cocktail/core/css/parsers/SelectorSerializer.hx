@@ -19,7 +19,7 @@ class SelectorSerializer
 {
 
 	/**
-	 * Class cosntructor. Private as 
+	 * Class constructor. Private as 
 	 * this is a static class
 	 */
 	private function new() 
