@@ -24,7 +24,9 @@ using StringTools;
 
 class CSSStyleParser 
 {
-
+	/**
+	 * class constructor
+	 */
 	public function new() 
 	{
 		
@@ -34,12 +36,19 @@ class CSSStyleParser
 	// PRIVATE PARSING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : should return array of a property type instead of requiring callback
+	/**
+	 * Parse the whole style declaration, which can contain any number
+	 * of css name/value pair. This method parse property names and when
+	 * a css separator ":" is found, parse the style value until an
+	 * end separator ";" is found
+	 */
 	public function parseStyle(styles:String):Array<TypedPropertyData>
 	{
+		//start by ignoring all spaces
 		var state:StyleDeclarationParserState = IGNORE_SPACES;
 		var next:StyleDeclarationParserState = BEGIN;
 		
+		//will return all the parsed properties
 		var typedProperties:Array<TypedPropertyData> = new Array<TypedPropertyData>();
 		
 		var position:Int = 0;
@@ -47,12 +56,14 @@ class CSSStyleParser
 		var start:Int = position;
 		var c:Int = styles.fastCodeAt(position);
 		
+		//will hold the current css property name
 		var styleName:String = null;
-		
+			
 		while (!c.isEOF())
 		{	
 			switch (state)
 			{
+				//ignore all spaces and line feed
 				case IGNORE_SPACES:
 					switch(c)
 					{
@@ -66,34 +77,47 @@ class CSSStyleParser
 							continue;
 					}
 				
+				//start to parse the css property name 
+				//at the current position
 				case BEGIN:
+					//store the start position of the name, will be
+					//used when the whole name is parsed
 					start = position;
 					state = STYLE_NAME;
 					continue;
 					
+				//read style name until a separator charachrter is found	
 				case STYLE_NAME:
-					if (!isStyleNameChar(c))
+					if (!isIdentChar(c))
 					{
 						switch(c)
 						{
+							//signal that the style value starts
 							case ':'.code:
+								//style name is now parsed
 								styleName = styles.substr(start, position - start);
 								state = IGNORE_SPACES;
 								next = STYLE_VALUE;
 								continue;
-								
+							
+							//spaces are allowed between a property name and the separator ":"
 							case ' '.code:
 								styleName = styles.substr(start, position - start);
 								state = IGNORE_SPACES;
 								next = STYLE_SEPARATOR;
 								continue;
-								
+							
+							//any other charachter between a style name and value makes
+							//the style invalid
 							default:
 								state = INVALID_STYLE;
 								continue;
 						}
 					}
-					
+				
+				//parse the space between a property name
+				//and the style separator ":". Any other charachter
+				//make the style invalid
 				case STYLE_SEPARATOR:
 					
 					if (c == ':'.code)
@@ -106,32 +130,64 @@ class CSSStyleParser
 						continue;
 					}
 					
+				//parse the style value, which return the position
+				//where the style value ends. store the parsed
 				case STYLE_VALUE:
+					//typedProperties is passed by reference and filled by the parseStyleValue
+					//method if the style value is not invalid
 					position = parseStyleValue(styleName, styles, position, typedProperties);
 					state = IGNORE_SPACES;
 					next = BEGIN;
-					
+				
+				//if a style is invalid, return no style
+				//values
+				//
+				//TODO 3: eventually will make
+				//more robust to error
 				case INVALID_STYLE:	
+					return [];
 			}
 			c = styles.fastCodeAt(++position);
 		}
 		
+		//here the whole css string was parsed, all the valid parsed properties
+		//are returned
 		return typedProperties;
 	}
 	
+	/**
+	 * Parse the value of 1 style
+	 * 
+	 * @param	propertyName the name of the style to 
+	 * @param	styles the whole parsed css string, might contain
+	 * multiple css name/value properties
+	 * @param	position the position where the style value begins
+	 * in the parsed css string
+	 * @param	typedProperties the typedProperties which will be filled if the style
+	 * value is valid
+	 * @return	return the position where the style value ended, delimited
+	 * by ";"
+	 */
 	public function parseStyleValue(propertyName:String, styles:String, position:Int, typedProperties:Array<TypedPropertyData>):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		
+		//increment position if first char is separator
+		if (c == ":".code)
+		{
+			position++;
+			c = styles.fastCodeAt(position);
+		}
+		
+		//start by ignoring any initial space, when a charachter
+		//other than space is found, start parsing the first component
+		//of the style value
 		var state:StyleValueParserState = IGNORE_SPACES;
 		var next:StyleValueParserState = BEGIN_VALUE;
+		
 		var start:Int = position;
 		
-		var styleValueStart:Int = position + 1;
-		
 		var important:Bool = false;
-		
-		var previousStart:Int = 0;
 		
 		var styleValues:Array<CSSPropertyValue> = [];
 		var styleValuesLists:Array<Array<CSSPropertyValue>> = [];
@@ -154,7 +210,9 @@ class CSSStyleParser
 							continue;
 					}
 				
-					
+				//in this state, either the end 
+				//of the style value is expected or
+				//another component of the style value
 				case SPACE_OR_END:
 					if (c.isEOF())
 					{
@@ -185,9 +243,13 @@ class CSSStyleParser
 						}
 					}
 					
+				
+				//start parsing a value component
+				//
 				//TODO 1 : add String parsing
 				case BEGIN_VALUE:
 					
+					//try first special value start charachters
 					switch(c)
 					{
 						case ','.code:
@@ -195,30 +257,34 @@ class CSSStyleParser
 							styleValues = [];
 							state = IGNORE_SPACES;
 							next = BEGIN_VALUE;
+							continue;
 						
 						case ';'.code:
 							state = END;
 							continue;
 							
 						case '-'.code:
-							state = NUMBER_OR_INTEGER;
+							state = NUMBER_INTEGER_DIMENSION_PERCENTAGE;
 							start = position;
 							continue;
 							
 						case '.'.code:
-							state = NUMBER_OR_INTEGER;
+							state = NUMBER_INTEGER_DIMENSION_PERCENTAGE;
 							start = position;
 							continue;
 							
 						case '#'.code:
 							state = HEXA;
 							start = position;
+							continue;
 							
 						case '!'.code:
 							state = IMPORTANT;
 							start = position;
+							continue;
 					}
 					
+					//try a generic identifier
 					if (isIdentChar(c))
 					{
 						state = IDENT;
@@ -226,12 +292,20 @@ class CSSStyleParser
 						continue;
 					}
 					
+					//at last try a number
 					if (isNumChar(c))
 					{
-						state = NUMBER_OR_INTEGER;
+						state = NUMBER_INTEGER_DIMENSION_PERCENTAGE;
 						continue;
 					}
 					
+					//any other value makes the style invalid
+					state = INVALID_STYLE_VALUE;
+					continue;
+					
+				//when the end of the style is expected
+				//any charachter other than ";" or the end
+				//of the string is invalid
 				case END:	
 					if (c.isEOF())
 					{
@@ -246,15 +320,41 @@ class CSSStyleParser
 					{
 						break;
 					}
-					
-					//TODO 1 : check for the right ident
+				
+				//parse the "!important" rule
 				case IMPORTANT:
-					position = parseImportant(styles, position);
-					if (position != -1)
+					//increment position as first character is "!"
+					var endPosition:Int = parseImportant(styles, ++position);
+					
+					//when important is valid, the style value must
+					//end after it, there can't be anymore style
+					//components
+					if (endPosition != -1)
 					{
+						position = endPosition;
 						important = true;
 						state = IGNORE_SPACES;
 						next = END;
+					}
+					//if -1 is returned then the ident wasn't 
+					//exactly "!important" which makes the style invalid
+					else
+					{
+						state = INVALID_STYLE_VALUE;
+						continue;
+					}
+					
+					
+				//parse an hex number	
+				case HEXA:
+					//increment position as first charachter is '#'
+					var endPosition:Int = parseHexaColor(styles, ++position, styleValues);
+					
+					//check that the hex value is valid
+					if (endPosition != -1)
+					{
+						position = endPosition; 
+						state = SPACE_OR_END;
 					}
 					else
 					{
@@ -263,19 +363,32 @@ class CSSStyleParser
 					}
 					
 					
-					
-				case HEXA:
-					position = parseHexaColor(styles, position, styleValues);
-					state = SPACE_OR_END;
-					
 				case IDENT:
 					position = parseIdentOrFunctionnalNotation(styles, position, styleValues);
 					state = SPACE_OR_END;
 					
-				case NUMBER_OR_INTEGER:
-					position = parseIntegerOrNumber(styles, position, styleValues);
-					state = SPACE_OR_END;
+				case NUMBER_INTEGER_DIMENSION_PERCENTAGE:
 					
+					//parse the value, return wether its a valid style component
+					var endPosition:Int = parseIntegerNumberDimensionOrPercentage(styles, position, styleValues);
+					
+					if (endPosition != -1)
+					{
+						position = endPosition;
+						state = SPACE_OR_END;
+						continue;
+					}
+					//if -1 is returned then the value was invalid
+					else
+					{
+						state = INVALID_STYLE_VALUE;
+						continue;
+					}
+					
+				//when the style is invalid, return
+				//the end position of the invalid style
+				//so that if subsequent styles are valid,
+				//they can be successfully parsed
 				case INVALID_STYLE_VALUE:
 					if (c == ";".code)
 					{
@@ -338,6 +451,12 @@ class CSSStyleParser
 	}
 	
 	
+
+	/**
+	 * Expect the "important" ident.
+	 * Return the position where "important" end
+	 * or -1 to signal that an unexpected ident was parsed
+	 */
 	private function parseImportant(styles:String, position:Int):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
@@ -357,17 +476,24 @@ class CSSStyleParser
 	}
 	
 	
-	
-	private function parseIntegerOrNumber(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
+	/**
+	 * Called when a number is expected (when starts with a 0-9 number or minus).
+	 * The number might turn out to be a dimension if it is suffixed
+	 * with a unit like, 'px' or a percentage if suffixed with '%'
+	 */
+	private function parseIntegerNumberDimensionOrPercentage(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		var start = position;
 		
+		//increment is starts with minus
 		if (c == '-'.code)
 		{
 			c = styles.fastCodeAt(++position);
 		}
 		
+		//determine wether it is a floating number or integer.
+		//number might start with "." instead of a 0-9 number
 		var isNumber:Bool = c == '.'.code;
 		
 		while (isNumChar(c))
@@ -375,6 +501,8 @@ class CSSStyleParser
 			c = styles.fastCodeAt(++position);
 		}
 		
+		//if the end of the css string is reached and the number
+		//didn't start with ".", then it is an integer
 		if (c.isEOF() && isNumber == false)
 		{
 			var integer:Int = Std.parseInt(styles.substr(start, position - start));
@@ -382,16 +510,20 @@ class CSSStyleParser
 			return position;
 		}
 		
+		//here the number is separated by ".",
+		//it is a floating number
 		if (c == '.'.code)
 		{
 			c = styles.fastCodeAt(++position);
 			isNumber = true;
+			
 			while (isNumChar(c))
 			{
 				c = styles.fastCodeAt(++position);
 			}
 		}
 		
+		//store a number if end of css string
 		if (c.isEOF())
 		{
 			var number:Float = Std.parseFloat(styles.substr(start, position - start));
@@ -399,12 +531,14 @@ class CSSStyleParser
 			return position;
 		}
 		
+		//if the number is followed by a letter, then it is a dimension
 		if (isIdentChar(c))
 		{
 			var numberOrInteger:Float = Std.parseFloat(styles.substr(start, position - start));
 			position = parseDimension(numberOrInteger, styles, position, styleValues);
 		}
 		
+		//else can be number, integer or percentage
 		switch (c)
 		{
 			case ' '.code, ';'.code:
@@ -418,16 +552,20 @@ class CSSStyleParser
 					var integer:Int = Std.parseInt(styles.substr(start, position - start));
 					styleValues.push(CSSPropertyValue.INTEGER(integer));
 				}
-				
+			
+			//number is a percentage	
 			case '%'.code:	
 				var numberOrInteger:Float = Std.parseFloat(styles.substr(start, position - start));
 				styleValues.push(CSSPropertyValue.PERCENTAGE(numberOrInteger));
 				position++;
 		}
 		
-		return --position;
+		return position;
 	}
 	
+	/**
+	 * parse a dimension by parsing the ident after the number
+	 */
 	private function parseDimension(numberOrInteger:Float, styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		
@@ -441,6 +579,7 @@ class CSSStyleParser
 		
 		var ident:String = styles.substr(start, position - start);
 		
+		//check that ident is valid dimension unit, and store it if it is
 		switch(ident)
 		{
 			case "px":
@@ -498,7 +637,12 @@ class CSSStyleParser
 				styleValues.push(RESOLUTION(DPCM(numberOrInteger)));	
 				
 			case 'dppx':
-				styleValues.push(RESOLUTION(DPPX(numberOrInteger)));		
+				styleValues.push(RESOLUTION(DPPX(numberOrInteger)));	
+				
+			//if it's not a valid unit, signal that it is an invalid 
+			//style value
+			default:
+				return -1;
 				
 		}
 		
@@ -905,10 +1049,6 @@ class CSSStyleParser
 	
 	static inline function isHexaChar(c) {
 		return (c >= 'a'.code && c <= 'f'.code) || (c >= 'A'.code && c <= 'F'.code) || (c >= '0'.code && c <= '9'.code);
-	}
-	
-	static inline function isStyleNameChar(c) {
-		return (c >= 'a'.code && c <= 'z'.code) || (c >= 'A'.code && c <= 'Z'.code) || (c >= '0'.code && c <= '9'.code) || c == '-'.code;
 	}
 	
 	static inline function isIdentChar(c) {
