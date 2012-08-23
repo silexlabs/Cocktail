@@ -1,3 +1,10 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktail.core.css;
 
 import cocktail.core.css.CSSData;
@@ -17,7 +24,23 @@ import cocktail.core.unit.UnitManager;
 import cocktail.core.renderer.RendererData;
 
 /**
- * ...
+ * This class has 3 main purposes :
+ *
+ * It is in charge of the cascade, that is
+ * for each supported style it selects the right
+ * value for its HTMLElement based on the priority
+ * of the style declaration.For instance, a style
+ * declared inline on an HTMLElement has a higher
+ * priority than a style declared in a style sheet.
+ * 
+ * For a given style, once its specified value has been
+ * determined through cascading, derive a computed 
+ * value from it which is the value used for inheritance
+ * 
+ * This class is also in charge of starting
+ * transition/animation when the computed value
+ * of an animatable property changes
+ * 
  * @author Yannick DOMINGUEZ
  */
 
@@ -114,24 +137,49 @@ class CoreStyle
 	public var transitionDelay(get_transitionDelay, null):CSSPropertyValue;
 	public var transitionTimingFunction(get_transitionTimingFunction, null):CSSPropertyValue;
 	
-	
-	
+	/**
+	 * Contains the specified values for the HTMLElement which for
+	 * each style can come from a style sheet, an inline
+	 * style declaration or inherited through the parent
+	 */
 	public var specifiedValues:CSSStyleDeclaration;
 	
+	/**
+	 * Contains the computed values for the HTMLElement.
+	 * There is a computed value for each specified style.
+	 * This is the value used for inheritance. Each style
+	 * computes diffferently. For instance if for a given
+	 * the specified value is a Length (for instance '10px')
+	 * , the computed value will be an absolute length in pixel
+	 * (for instance 10)
+	 * 
+	 * Specified values can always be converted to 
+	 * computed values during cascade
+	 */
 	public var computedValues:CSSStyleDeclaration;
 	
+	/**
+	 * This structures holds values of style actually
+	 * used during layout. Not all styles used values
+	 * can be determined during cascade. For instance
+	 * a 'width' defined as '100%' must wait layout
+	 * to determine its used value. This structure
+	 * will hold the actual used value of 'width'
+	 * during layout
+	 */
 	public var usedValues:UsedValuesData;
-	
-	
-	
 	
 	/**
 	 * An instance of the class
-	 * managing this ElementRenderer transitions
+	 * managing this HTMLElement transitions
 	 */
 	private var _animator:Animator;
 	
-		
+	/**
+	 * A reference to the TransitionManager singleton
+	 */
+	private var _transitionManager:TransitionManager;
+	
 	/**
 	 * Returns font metrics for the current style values.
 	 * Font metrics depends on the computed values of
@@ -152,8 +200,6 @@ class CoreStyle
 	
 	/**
 	 * Class constructor
-	 * 
-	 * @param	htmlElement
 	 */
 	public function new(htmlElement:HTMLElement) 
 	{
@@ -168,9 +214,10 @@ class CoreStyle
 		_animator.onTransitionCompleteCallback = onTransitionComplete;
 		_animator.onTransitionUpdateCallback = onTransitionUpdate;
 		
+		_transitionManager = TransitionManager.getInstance();
+		
 		initUsedValues();
 	}
-	
 	
 	/**
 	 * The used values are given a default
@@ -208,67 +255,6 @@ class CoreStyle
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC ANIMATION METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Start pending animations on the animator
-	 */
-	public function startPendingAnimations():Bool
-	{
-		return _animator.startPendingAnimations(this);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE ANIMATION METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * When a transition is complete, invalidate the HTMLElement,
-	 * then dispatch a transition end event
-	 */
-	private function onTransitionComplete(transition:Transition):Void
-	{
-		htmlElement.invalidate(transition.invalidationReason);
-		var transitionEvent:TransitionEvent = new TransitionEvent();
-		transitionEvent.initTransitionEvent(TransitionEvent.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
-		htmlElement.dispatchEvent(transitionEvent);
-	}
-	
-	/**
-	 * When a transition is updated, invalidate the HTMLElement
-	 * to schedule a repaint and relayout of the rendering tree
-	 */
-	private function onTransitionUpdate(transition:Transition):Void
-	{
-		htmlElement.invalidate(transition.invalidationReason);
-	}
-	
-	/**
-	 * Utils method to return the value of a property which can be transitioned
-	 * If the property is currently being transitioned, return the current value
-	 * of the transition, else return the computed value of the property
-	 * @param	propertyName the name of the property whose value is returned
-	 * @param	propertyValue the computed value of the property, returned if
-	 * the property is not transitioning
-	 */
-	private function getTransitionablePropertyValue(propertyName:String, propertyValue:CSSPropertyValue):CSSPropertyValue
-	{
-		//try to get a transition for the property
-		var transition:Transition = TransitionManager.getInstance().getTransition(propertyName, this);
-		//if there actually is a transition in progress for this property,
-		//return its current value
-		if (transition != null)
-		{
-			return CSSPropertyValue.ABSOLUTE_LENGTH(transition.currentValue);
-		}
-		else
-		{
-			return propertyValue;
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC CASCADING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -302,8 +288,8 @@ class CoreStyle
 			//the computed absolute length be correct, font-size
 			//and font-family must have been previously computed
 			//so that the right font metrics is used for the computation
-			cascadeProperty(CSSConstants.FONT_SIZE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, programmaticChange);
-			cascadeProperty(CSSConstants.FONT_FAMILY, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, programmaticChange);
+			cascadeProperty(CSSConstants.FONT_SIZE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, 0, 0, programmaticChange);
+			cascadeProperty(CSSConstants.FONT_FAMILY, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, 0, 0, programmaticChange);
 			
 			properties.remove(CSSConstants.FONT_SIZE);
 			properties.remove(CSSConstants.FONT_FAMILY);
@@ -312,7 +298,8 @@ class CoreStyle
 			
 			//if font-size or font-family changed, all the properties which may depends
 			//on font metrics (because they are for instance Length with 'em' unit) need to be cascaded
-			for (i in 0...lengthCSSProperties.length)
+			var length:Int = lengthCSSProperties.length;
+			for (i in 0...length)
 			{
 				properties.set(lengthCSSProperties[i], null);
 			}
@@ -322,36 +309,22 @@ class CoreStyle
 		//specified values changed during cascading 
 		var changedProperties:Hash<Void> = new Hash<Void>();
 
+		//get the font metrics of this CoreStyle, used for
+		//Length computation
+		var fontMetrics:FontMetricsData = this.fontMetrics;
+		var fontSize:Float = fontMetrics.fontSize;
+		var xHeight:Float = fontMetrics.xHeight;
+		
 		for (propertyName in properties.keys())
 		{
 			//cascade the property, returns a flag of wether the cascade changed
 			//the specified value of the property. Useful to know if children
 			//also need to cascade this property
-			var didChangeSpecifiedValue:Bool = cascadeProperty(propertyName, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, programmaticChange);
+			var didChangeSpecifiedValue:Bool = cascadeProperty(propertyName, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange);
 		
 			if (didChangeSpecifiedValue == true)
 			{
 				changedProperties.set(propertyName, null);
-			}
-		}
-		
-		//apply special treatement when some specific properties
-		//changed
-		for (propertyName in changedProperties.keys())
-		{
-			switch(propertyName)
-			{
-				
-				//TODO 1 : very ineficient, shouldn't be called on first cascade
-				//should cascade in constructor with only initial style declaration ?
-				//
-				//when one of those property specified value changes, it may affect the rendering of
-				//the HTMLElement
-				case CSSConstants.DISPLAY, CSSConstants.POSITION, CSSConstants.FLOAT, CSSConstants.TRANSFORM,
-				CSSConstants.Z_INDEX, CSSConstants.OVERFLOW_X, CSSConstants.OVERFLOW_Y:
-					
-					computedValues.setTypedProperty("display", DisplayStylesComputer.getComputedDisplay(this, cssFloat, position), false);
-					htmlElement.invalidatePositioningScheme();
 			}
 		}
 		
@@ -365,47 +338,53 @@ class CoreStyle
 	/**
 	 * Actually cascade a property
 	 */
-	private function cascadeProperty(propertyName:String, initialStyleDeclaration:CSSStyleDeclaration, styleSheetDeclaration:CSSStyleDeclaration, inlineStyleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, parentFontSize:Float, parentXHeight:Float, programmaticChange:Bool):Bool
+	private function cascadeProperty(propertyName:String, initialStyleDeclaration:CSSStyleDeclaration, styleSheetDeclaration:CSSStyleDeclaration, inlineStyleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool):Bool
 	{
 		//first check if this property is defined inline which always has the
 		//highest priority
-		if (inlineStyleDeclaration.getPropertyValue(propertyName) != null)
+		if (inlineStyleDeclaration.hasProperty(propertyName) == true)
 		{
-			return setProperty(propertyName, inlineStyleDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, programmaticChange);
+			return setProperty(propertyName, inlineStyleDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange);
 		}
 		//else check if a value for this style for this HTMLElement was defined in the document's style sheet
-		else if (styleSheetDeclaration.getPropertyValue(propertyName) != null)
+		else if (styleSheetDeclaration.hasProperty(propertyName) == true)
 		{
-			return setProperty(propertyName, styleSheetDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, programmaticChange);
+			return setProperty(propertyName, styleSheetDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange);
 		}
 		//else if the property is inherithed (for instance 'font-family'),
 		//use the value from the parent
 		else if (isInherited(propertyName) == true)
 		{
-			return setProperty(propertyName, parentStyleDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, programmaticChange);
+			return setProperty(propertyName, parentStyleDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange);
 		}
 		//else at last use the initial value of the property
 		else
 		{
-			return setProperty(propertyName, initialStyleDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, programmaticChange);
+			return setProperty(propertyName, initialStyleDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange);
 		}
 	}
 	
-	private function setProperty(propertyName:String, styleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, initialStyleDeclaration:CSSStyleDeclaration, parentFontSize:Float, parentXHeight:Float, programmaticChange:Bool):Bool
+	/**
+	 * cascade a property by updating its specified value
+	 * and computing its value if necessary
+	 */
+	private function setProperty(propertyName:String, styleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, initialStyleDeclaration:CSSStyleDeclaration, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool):Bool
 	{
+		
 		var propertyData:TypedPropertyData = styleDeclaration.getTypedProperty(propertyName);
 		var property:CSSPropertyValue = propertyData.typedValue;
 		
-		var isNotInitial:Bool = specifiedValues.getTypedProperty(propertyName) != null;
+		var specifiedProperty:TypedPropertyData = specifiedValues.getTypedProperty(propertyName);
+		
+		var isNotInitial:Bool = specifiedProperty != null;
 
-		if (specifiedValues.getTypedProperty(propertyName) != null)
+		if (specifiedProperty != null)
 		{
-			if (Type.enumEq(property, specifiedValues.getTypedProperty(propertyName).typedValue) == true)
+			if (Type.enumEq(property, specifiedProperty.typedValue) == true)
 			{
 				return false;
 			}
 		}
-		
 		
 		specifiedValues.setTypedProperty(propertyName, property, propertyData.important);
 		
@@ -423,7 +402,7 @@ class CoreStyle
 				switch(propertyName)
 				{
 					default:	
-						computedProperty = getComputedProperty(propertyName, property, parentFontSize, parentXHeight);
+						computedProperty = getComputedProperty(propertyName, property, parentFontSize, parentXHeight, fontSize, xHeight);
 				}
 		}
 		
@@ -446,7 +425,7 @@ class CoreStyle
 		
 		htmlElement.invalidate(invalidationReason);
 		
-		return isNotInitial;
+		return true;
 		
 		
 	}
@@ -472,7 +451,7 @@ class CoreStyle
 	 * specified value and so it doesn't need any
 	 * further treatement
 	 */
-	private function getComputedProperty(propertyName:String, property:CSSPropertyValue, parentFontSize:Float, parentXHeight:Float):CSSPropertyValue
+	private function getComputedProperty(propertyName:String, property:CSSPropertyValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float):CSSPropertyValue
 	{
 		switch(propertyName)
 		{
@@ -484,7 +463,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight));
+						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
 						
 					case INTEGER(value):
 						return ABSOLUTE_LENGTH(value);
@@ -571,7 +550,7 @@ class CoreStyle
 						return ABSOLUTE_LENGTH(0);
 						
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight));
+						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
 						
 					default:	
 				}	
@@ -591,10 +570,10 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight));
+						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
 						
 					case PERCENTAGE(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromPercent(value, fontMetrics.fontSize));
+						return ABSOLUTE_LENGTH(UnitManager.getPixelFromPercent(value, fontSize));
 						
 					default:	
 				}
@@ -603,7 +582,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight));
+						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
 	
 					case INTEGER(value):
 						return ABSOLUTE_LENGTH(value);
@@ -615,7 +594,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight));
+						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
 						
 					default:	
 				}
@@ -624,7 +603,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight));
+						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
 						
 					case KEYWORD(value):
 						return ABSOLUTE_LENGTH(0);
@@ -671,7 +650,7 @@ class CoreStyle
 						return GROUP([KEYWORD(value), KEYWORD(CENTER)]);
 					
 					case LENGTH(value):
-						return GROUP([ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight)), KEYWORD(CENTER)]);
+						return GROUP([ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight)), KEYWORD(CENTER)]);
 						
 					case PERCENTAGE(value):
 						return GROUP([PERCENTAGE(value), KEYWORD(CENTER)]);
@@ -682,7 +661,7 @@ class CoreStyle
 						switch(value[0])
 						{
 							case LENGTH(value):
-								backgroundPositionX = ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight));
+								backgroundPositionX = ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
 								
 							default:	
 								backgroundPositionX = value[0];
@@ -691,7 +670,7 @@ class CoreStyle
 						switch(value[1])
 						{
 							case LENGTH(value):
-								backgroundPostionY = ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight));
+								backgroundPostionY = ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
 								
 							default:	
 								backgroundPostionY = value[1];
@@ -739,7 +718,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight));
+						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
 						
 					//TODO	
 					case GROUP(value):
@@ -749,7 +728,7 @@ class CoreStyle
 						switch(value[0])
 						{
 							case LENGTH(value):
-								backgroundSizeX = ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight));
+								backgroundSizeX = ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
 								
 							default:	
 								backgroundSizeX = value[0];
@@ -758,7 +737,7 @@ class CoreStyle
 						switch(value[1])
 						{
 							case LENGTH(value):
-								backgroundSizeY = ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontMetrics.fontSize, fontMetrics.xHeight));
+								backgroundSizeY = ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
 								
 							default:	
 								backgroundSizeY = value[1];
@@ -771,6 +750,67 @@ class CoreStyle
 		}
 		
 		return property;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC ANIMATION METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Start pending animations on the animator
+	 */
+	public function startPendingAnimations():Bool
+	{
+		return _animator.startPendingAnimations(this);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE ANIMATION METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When a transition is complete, invalidate the HTMLElement,
+	 * then dispatch a transition end event
+	 */
+	private function onTransitionComplete(transition:Transition):Void
+	{
+		htmlElement.invalidate(transition.invalidationReason);
+		var transitionEvent:TransitionEvent = new TransitionEvent();
+		transitionEvent.initTransitionEvent(TransitionEvent.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
+		htmlElement.dispatchEvent(transitionEvent);
+	}
+	
+	/**
+	 * When a transition is updated, invalidate the HTMLElement
+	 * to schedule a repaint and relayout of the rendering tree
+	 */
+	private function onTransitionUpdate(transition:Transition):Void
+	{
+		htmlElement.invalidate(transition.invalidationReason);
+	}
+	
+	/**
+	 * Utils method to return the value of a property which can be transitioned
+	 * If the property is currently being transitioned, return the current value
+	 * of the transition, else return the computed value of the property
+	 * @param	propertyName the name of the property whose value is returned
+	 * @param	propertyValue the computed value of the property, returned if
+	 * the property is not transitioning
+	 */
+	private function getTransitionablePropertyValue(propertyName:String, propertyValue:CSSPropertyValue):CSSPropertyValue
+	{
+		//try to get a transition for the property
+		var transition:Transition = _transitionManager.getTransition(propertyName, this);
+		//if there actually is a transition in progress for this property,
+		//return its current value
+		if (transition != null)
+		{
+			return ABSOLUTE_LENGTH(transition.currentValue);
+		}
+		else
+		{
+			return propertyValue;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -794,7 +834,7 @@ class CoreStyle
 	}
 	
 	/**
-	 * Returnwether a given CSS property can
+	 * Return wether a given CSS property can
 	 * be animated/transitioned
 	 * 
 	 * TODO 1 : complete
@@ -978,7 +1018,7 @@ class CoreStyle
 	
 	/////////////////////////////////
 	// STYLE GETTERS
-	// For each, return the serialised
+	// For each, return the
 	// computed value of the style
 	////////////////////////////////
 	

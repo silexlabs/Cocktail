@@ -225,8 +225,7 @@ class CSSStyleSerializer
 				
 			case HSLA(hue, saturation, lightness, alpha):
 				return "hsl(" + Std.string(hue) + "," + Std.string(saturation) + "," + Std.string(lightness) +"," + Std.string(alpha) + ")";	
-				
-			//TODO 2 : is it stored with "#" ?	
+
 			case HEX(value):
 				return value;
 				

@@ -24,6 +24,7 @@ import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.parser.DOMParser;
 import cocktail.core.style.computer.DisplayStylesComputer;
+import cocktail.core.style.CSSConstants;
 import haxe.Stack;
 import haxe.xml.Parser;
 import cocktail.port.NativeElement;
@@ -715,15 +716,7 @@ class HTMLElement extends Element<HTMLElement>
 	 * cahnge. Some pseudo class like :hover are also considered like scripting a change
 	 */
 	public function cascade(parentChangedProperties:Hash<Void>, programmaticChange:Bool):Void
-	{
-		
-		//update style declaration if needed
-		if (_needsStyleDeclarationUpdate == true)
-		{
-			//getStyleDeclaration();
-			//_needsStyleDeclarationUpdate = false;
-		}
-		
+	{	
 		//will hold all the property of this HTMLElement which changed during
 		//cascading
 		var changedProperties:Hash<Void> = new Hash<Void>();
@@ -734,6 +727,17 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			changedProperties = cascadeSelf(parentChangedProperties, programmaticChange);
 			_needsCascading = false;
+		}
+		
+		//when one of those property specified value changes, it may affect the rendering of
+		//the HTMLElement. The cascade is interupted and the element is re attached
+		if (changedProperties.exists(CSSConstants.DISPLAY) || changedProperties.exists(CSSConstants.POSITION) ||
+		changedProperties.exists(CSSConstants.FLOAT) || changedProperties.exists(CSSConstants.TRANSFORM) ||
+		changedProperties.exists(CSSConstants.Z_INDEX) || changedProperties.exists(CSSConstants.OVERFLOW_X) ||
+		changedProperties.exists(CSSConstants.OVERFLOW_Y))
+		{
+			invalidatePositioningScheme();
+				return;
 		}
 		
 		//cascade all the children, to cascade all the DOM tree

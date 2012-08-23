@@ -198,13 +198,32 @@ class CSSStyleDeclaration
 	}
 	
 	/**
+	 * Return wether a value exits for the specified
+	 * property
+	 */
+	public function hasProperty(property:String):Bool
+	{
+		var length:Int = _properties.length;
+		for (i in 0...length)
+		{
+			if (_properties[i].name == property)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * Return the value of the property with the given
 	 * name, serialized as a CSS string, or null if
 	 * thr property is not defined on this style declaration
 	 */
 	public function getPropertyValue(property:String):String
 	{
-		for (i in 0..._properties.length)
+		var length:Int = _properties.length;
+		for (i in 0...length)
 		{
 			var propertyDeclaration:TypedPropertyData = _properties[i];
 			if (propertyDeclaration.name == property)
@@ -243,7 +262,8 @@ class CSSStyleDeclaration
 	 */
 	public function removeProperty(property:String):String
 	{
-		for (i in 0..._properties.length)
+		var length:Int = _properties.length;
+		for (i in 0...length)
 		{
 			var propertyDeclaration:TypedPropertyData = _properties[i];
 			
@@ -329,7 +349,8 @@ class CSSStyleDeclaration
 		
 		//look for a property with the same name
 		//as the old property
-		for (i in 0..._properties.length)
+		var length:Int = _properties.length;
+		for (i in 0...length)
 		{
 			var propertyDeclaration:TypedPropertyData = _properties[i];
 			if (propertyDeclaration.name != property)
