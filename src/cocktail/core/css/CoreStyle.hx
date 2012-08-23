@@ -16,9 +16,9 @@ import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.renderer.InvalidatingElementRenderer;
 import cocktail.core.css.CSSConstants;
-import cocktail.core.style.transition.Animator;
-import cocktail.core.style.transition.Transition;
-import cocktail.core.style.transition.TransitionManager;
+import cocktail.core.animation.Animator;
+import cocktail.core.animation.Transition;
+import cocktail.core.animation.TransitionManager;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.renderer.RendererData;
 

@@ -15,8 +15,8 @@ import cocktail.core.event.TransitionEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.linebox.LineBox;
-import cocktail.core.style.transition.Animator;
-import cocktail.core.style.transition.Transition;
+import cocktail.core.animation.Animator;
+import cocktail.core.animation.Transition;
 import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
 
