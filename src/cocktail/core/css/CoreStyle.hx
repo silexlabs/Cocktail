@@ -370,14 +370,13 @@ class CoreStyle
 	 */
 	private function setProperty(propertyName:String, styleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, initialStyleDeclaration:CSSStyleDeclaration, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool):Bool
 	{
-		
 		var propertyData:TypedPropertyData = styleDeclaration.getTypedProperty(propertyName);
 		var property:CSSPropertyValue = propertyData.typedValue;
 		
 		var specifiedProperty:TypedPropertyData = specifiedValues.getTypedProperty(propertyName);
 		
 		var isNotInitial:Bool = specifiedProperty != null;
-
+		
 		if (specifiedProperty != null)
 		{
 			if (Type.enumEq(property, specifiedProperty.typedValue) == true)

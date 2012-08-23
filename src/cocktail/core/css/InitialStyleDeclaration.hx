@@ -25,7 +25,7 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 	 * An array containing the names of all of the supported
 	 * CSS properties
 	 */
-	public var supportedCSSProperties(default, null):Array<String>;
+	public var supportedCSSProperties(default, null):Hash<Void>;
 	
 	/**
 	 * An array containing the names of all of the supported
@@ -63,22 +63,74 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 	
 	private function initSupportedCSSProperties():Void
 	{
-		supportedCSSProperties = [
-		CSSConstants.WIDTH, CSSConstants.HEIGHT, CSSConstants.DISPLAY, CSSConstants.POSITION, CSSConstants.FLOAT,
-		CSSConstants.CLEAR, CSSConstants.Z_INDEX, CSSConstants.OVERFLOW_X, CSSConstants.OVERFLOW_Y, CSSConstants.VISIBILITY,
-		CSSConstants.OPACITY, CSSConstants.VERTICAL_ALIGN, CSSConstants.LINE_HEIGHT, CSSConstants.MAX_WIDTH, CSSConstants.MAX_HEIGHT,
-		CSSConstants.MIN_WIDTH, CSSConstants.MIN_HEIGHT, CSSConstants.MARGIN_LEFT, CSSConstants.MARGIN_TOP, CSSConstants.MARGIN_RIGHT,
-		CSSConstants.MARGIN_BOTTOM, CSSConstants.PADDING_LEFT, CSSConstants.PADDING_TOP, CSSConstants.PADDING_RIGHT, CSSConstants.MARGIN_BOTTOM,
-		CSSConstants.PADDING_LEFT, CSSConstants.MARGIN_TOP, CSSConstants.MARGIN_RIGHT, CSSConstants.MARGIN_BOTTOM, CSSConstants.PADDING_LEFT,
-		CSSConstants.PADDING_TOP, CSSConstants.PADDING_RIGHT, CSSConstants.MARGIN_BOTTOM, CSSConstants.PADDING_LEFT, CSSConstants.PADDING_TOP,
-		CSSConstants.PADDING_RIGHT, CSSConstants.PADDING_BOTTOM, CSSConstants.LEFT, CSSConstants.RIGHT, CSSConstants.TOP, CSSConstants.BOTTOM,
-		CSSConstants.FONT_FAMILY, CSSConstants.FONT_STYLE, CSSConstants.FONT_VARIANT, CSSConstants.FONT_WEIGHT, CSSConstants.FONT_SIZE,
-		CSSConstants.LETTER_SPACING, CSSConstants.WORD_SPACING, CSSConstants.TEXT_INDENT, CSSConstants.TEXT_ALIGN, CSSConstants.WHITE_SPACE,
-		CSSConstants.TEXT_TRANSFORM, CSSConstants.TRANSITION_PROPERTY, CSSConstants.TRANSITION_DURATION, CSSConstants.TRANSITION_DELAY,
-		CSSConstants.TRANSITION_TIMING_FUNCTION, CSSConstants.TRANSFORM, CSSConstants.TRANSFORM_ORIGIN, CSSConstants.BACKGROUND_COLOR,
-		CSSConstants.BACKGROUND_IMAGE, CSSConstants.BACKGROUND_POSITION, CSSConstants.BACKGROUND_SIZE, CSSConstants.BACKGROUND_REPEAT,
-		CSSConstants.BACKGROUND_CLIP, CSSConstants.BACKGROUND_ORIGIN, CSSConstants.CURSOR, CSSConstants.COLOR
-		];
+		supportedCSSProperties = new Hash<Void>();
+		
+		supportedCSSProperties.set(CSSConstants.DISPLAY, null);
+		supportedCSSProperties.set(CSSConstants.POSITION, null);
+		supportedCSSProperties.set(CSSConstants.FLOAT, null);
+		supportedCSSProperties.set(CSSConstants.CLEAR, null);
+		supportedCSSProperties.set(CSSConstants.Z_INDEX, null);
+		supportedCSSProperties.set(CSSConstants.OVERFLOW_X, null);
+		supportedCSSProperties.set(CSSConstants.OVERFLOW_Y, null);
+		supportedCSSProperties.set(CSSConstants.VISIBILITY, null);
+		supportedCSSProperties.set(CSSConstants.OPACITY, null);
+		supportedCSSProperties.set(CSSConstants.VERTICAL_ALIGN, null);
+		supportedCSSProperties.set(CSSConstants.LINE_HEIGHT, null);
+		
+		supportedCSSProperties.set(CSSConstants.WIDTH, null);
+		supportedCSSProperties.set(CSSConstants.HEIGHT, null);
+		
+		supportedCSSProperties.set(CSSConstants.MIN_WIDTH, null);
+		supportedCSSProperties.set(CSSConstants.MIN_HEIGHT, null);
+		supportedCSSProperties.set(CSSConstants.MAX_WIDTH, null);
+		supportedCSSProperties.set(CSSConstants.MAX_HEIGHT, null);
+		
+		supportedCSSProperties.set(CSSConstants.MARGIN_LEFT, null);
+		supportedCSSProperties.set(CSSConstants.MARGIN_TOP, null);
+		supportedCSSProperties.set(CSSConstants.MARGIN_RIGHT, null);
+		supportedCSSProperties.set(CSSConstants.MARGIN_BOTTOM, null);
+		
+		supportedCSSProperties.set(CSSConstants.PADDING_LEFT, null);
+		supportedCSSProperties.set(CSSConstants.PADDING_TOP, null);
+		supportedCSSProperties.set(CSSConstants.PADDING_RIGHT, null);
+		supportedCSSProperties.set(CSSConstants.PADDING_BOTTOM, null);
+		
+		supportedCSSProperties.set(CSSConstants.LEFT, null);
+		supportedCSSProperties.set(CSSConstants.RIGHT, null);
+		supportedCSSProperties.set(CSSConstants.TOP, null);
+		supportedCSSProperties.set(CSSConstants.BOTTOM, null);
+
+		supportedCSSProperties.set(CSSConstants.FONT_FAMILY, null);
+		supportedCSSProperties.set(CSSConstants.FONT_SIZE, null);
+		supportedCSSProperties.set(CSSConstants.FONT_STYLE, null);
+		supportedCSSProperties.set(CSSConstants.FONT_VARIANT, null);
+		supportedCSSProperties.set(CSSConstants.FONT_WEIGHT, null);
+		
+		supportedCSSProperties.set(CSSConstants.LETTER_SPACING, null);
+		supportedCSSProperties.set(CSSConstants.WORD_SPACING, null);
+		supportedCSSProperties.set(CSSConstants.TEXT_INDENT, null);
+		supportedCSSProperties.set(CSSConstants.TEXT_ALIGN, null);
+		supportedCSSProperties.set(CSSConstants.WHITE_SPACE, null);
+		supportedCSSProperties.set(CSSConstants.TEXT_TRANSFORM, null);
+		supportedCSSProperties.set(CSSConstants.COLOR, null);
+		
+		supportedCSSProperties.set(CSSConstants.TRANSITION_PROPERTY, null);
+		supportedCSSProperties.set(CSSConstants.TRANSITION_DURATION, null);
+		supportedCSSProperties.set(CSSConstants.TRANSITION_DELAY, null);
+		supportedCSSProperties.set(CSSConstants.TRANSITION_TIMING_FUNCTION, null);
+		
+		supportedCSSProperties.set(CSSConstants.TRANSFORM, null);
+		supportedCSSProperties.set(CSSConstants.TRANSFORM_ORIGIN, null);
+		
+		supportedCSSProperties.set(CSSConstants.BACKGROUND_COLOR, null);
+		supportedCSSProperties.set(CSSConstants.BACKGROUND_IMAGE, null);
+		supportedCSSProperties.set(CSSConstants.BACKGROUND_POSITION, null);
+		supportedCSSProperties.set(CSSConstants.BACKGROUND_SIZE, null);
+		supportedCSSProperties.set(CSSConstants.BACKGROUND_REPEAT, null);
+		supportedCSSProperties.set(CSSConstants.BACKGROUND_ORIGIN, null);
+		supportedCSSProperties.set(CSSConstants.BACKGROUND_CLIP, null);
+		
+		supportedCSSProperties.set(CSSConstants.CURSOR, null);
 	}
 	
 	private function initProperties():Void

@@ -799,11 +799,9 @@ class HTMLElement extends Element<HTMLElement>
 		var initialStyleDeclaration:InitialStyleDeclaration = _ownerHTMLDocument.initialStyleDeclaration;
 
 		//set all the supported CSS properties to be updated
-		var supportedProperties:Array<String> = initialStyleDeclaration.supportedCSSProperties;
-		var properties:Hash<Void> = new Hash<Void>();
-		for (i in 0...supportedProperties.length)
+		for ( propertyName in initialStyleDeclaration.supportedCSSProperties.keys())
 		{
-			_pendingChangedProperties.set(supportedProperties[i], null);
+			_pendingChangedProperties.set(propertyName, null);
 		}
 		
 		cascadeSelf(new Hash<Void>(), false);
@@ -846,6 +844,7 @@ class HTMLElement extends Element<HTMLElement>
 				}
 				
 				changedProperties = coreStyle.cascade(_pendingChangedProperties, initialStyleDeclaration, styleManagerCSSDeclaration, style, parentStyleDeclaration, parentFontMetrics.fontSize, parentFontMetrics.xHeight, programmaticChange);
+				
 			}
 		}
 		else
@@ -860,6 +859,7 @@ class HTMLElement extends Element<HTMLElement>
 		}
 		
 		_pendingChangedProperties = new Hash<Void>();
+		
 		return changedProperties;
 	}
 	

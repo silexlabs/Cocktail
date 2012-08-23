@@ -1044,6 +1044,7 @@ class CSSStyleDeclaration
 				}
 				
 			case CSSConstants.BACKGROUND_POSITION:
+				trace(styleValue);
 				switch(styleValue)
 				{	
 					case GROUP(value):
@@ -1250,6 +1251,9 @@ class CSSStyleDeclaration
 			case LENGTH(value):
 				return true;
 				
+			case INTEGER(value):
+				return value == 0;
+				
 			case PERCENTAGE(value):
 				return true;
 				
@@ -1286,6 +1290,9 @@ class CSSStyleDeclaration
 				{
 					return true;
 				}
+				
+			case INTEGER(value):
+				return value == 0;
 				
 			case PERCENTAGE(value):
 				return true;

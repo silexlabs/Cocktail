@@ -194,17 +194,8 @@ class BlockBoxRenderer extends ScrollableRenderer
 		//is htmlDocument null ?
 		var initialStyleDeclaration:InitialStyleDeclaration = new InitialStyleDeclaration();
 		
-		var supportedProperties:Array<String> = initialStyleDeclaration.supportedCSSProperties;
-		var properties:Hash<Void> = new Hash<Void>();
-		for ( i in 0...supportedProperties.length)
-		{
-			properties.set(supportedProperties[i], null);
-		}
-		
-		
-		
 		//only use style declarations from the parent node
-		anonymousBlock.coreStyle.cascade(properties, initialStyleDeclaration,
+		anonymousBlock.coreStyle.cascade(initialStyleDeclaration.supportedCSSProperties, initialStyleDeclaration,
 		initialStyleDeclaration, initialStyleDeclaration, 
 		initialStyleDeclaration, 12, 12, false);
 		
