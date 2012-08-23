@@ -286,6 +286,7 @@ class HTMLDocument extends Document
 		initialStyleDeclaration = new InitialStyleDeclaration();
 		_styleManager = new StyleManager();
 		_styleManager.addStyleSheet(new DefaultCSSStyleSheet());
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -179,7 +179,7 @@ class CSSStyleRule extends CSSRule
 			var selector:SelectorData = selectors[i];
 			serializedSelectors += SelectorSerializer.serialize(selector);
 			
-			if (i < selectors.length)
+			if (i < selectors.length - 1)
 			{
 				serializedSelectors += ", ";
 			}

@@ -23,7 +23,7 @@ class DefaultCSSStyleSheet extends CSSStyleSheet
 	 */
 	public function new() 
 	{
-		super(getDefaultStyleSheet(), PropertyOriginValue.AUTHOR);
+		super(getDefaultStyleSheet(), PropertyOriginValue.USER_AGENT);
 	}
 	
 	/**
@@ -31,6 +31,8 @@ class DefaultCSSStyleSheet extends CSSStyleSheet
 	 */
 	private function getDefaultStyleSheet():String
 	{
+
+		//TODO 3 : li for now is defined as "block" instead of "list-item"
 		return "
 				html, address,
 				blockquote,
@@ -41,7 +43,7 @@ class DefaultCSSStyleSheet extends CSSStyleSheet
 				h5, h6, noframes,
 				ol, p, ul, center,
 				dir, hr, menu, pre   { display: block; unicode-bidi: embed }
-				li              { display: list-item }
+				li              { display: block }
 				head            { display: none }
 				table           { display: table }
 				tr              { display: table-row }
