@@ -7,7 +7,6 @@
 */
 package cocktail.port.air;
 
-import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.port.platform.input.AbstractNativeTextInput;

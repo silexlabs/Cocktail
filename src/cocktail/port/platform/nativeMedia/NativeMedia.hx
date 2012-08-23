@@ -8,7 +8,6 @@
 package cocktail.port.platform.nativeMedia;
 
 import cocktail.core.event.Event;
-import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;

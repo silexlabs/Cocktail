@@ -9,7 +9,6 @@ package cocktail.core.linebox;
 
 import cocktail.core.renderer.ElementRenderer;
 
-import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.css.CSSData;

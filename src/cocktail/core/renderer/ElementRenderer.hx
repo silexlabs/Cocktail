@@ -17,7 +17,6 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.linebox.LineBox;
 import cocktail.core.animation.Animator;
 import cocktail.core.animation.Transition;
-import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
 
 import cocktail.core.css.CoreStyle;

@@ -17,7 +17,6 @@ import cocktail.core.layout.computer.VisualEffectStylesComputer;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.Matrix;
-import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;

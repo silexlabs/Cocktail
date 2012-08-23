@@ -8,7 +8,6 @@
 package cocktail.port.platform.input;
 
 import cocktail.core.geom.GeomData;
-import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 

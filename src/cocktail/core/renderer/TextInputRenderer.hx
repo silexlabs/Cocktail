@@ -13,7 +13,6 @@ import cocktail.core.event.FocusEvent;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.unit.UnitManager;
-import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;

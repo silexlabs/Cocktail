@@ -13,7 +13,6 @@ import cocktail.core.renderer.ElementRenderer;
 
 import cocktail.Lib;
 import cocktail.core.font.FontManager;
-import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;

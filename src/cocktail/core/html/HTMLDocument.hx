@@ -39,7 +39,6 @@ import cocktail.core.renderer.RendererData;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.window.Window;
 import cocktail.Lib;
-import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import haxe.Log;
 import cocktail.core.layout.LayoutData;
@@ -665,10 +664,6 @@ class HTMLDocument extends Document
 	/**
 	 * When the Window is resized, invalidate
 	 * the body, redraw.
-	 * 
-	 * Set the DrawingManager to be re-instantiated
-	 * on next rendering because its bitmap data size no longer
-	 * is the same as the viewport size
 	 */
 	public function onPlatformResizeEvent(event:UIEvent):Void
 	{

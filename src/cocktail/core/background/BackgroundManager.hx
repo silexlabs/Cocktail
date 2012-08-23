@@ -14,7 +14,6 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
-import cocktail.port.DrawingManager;
 import cocktail.port.GraphicsContext;
 import cocktail.port.ImageResource;
 import cocktail.port.NativeElement;

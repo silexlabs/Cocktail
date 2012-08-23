@@ -17,7 +17,6 @@ import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.linebox.LineBox;
-import cocktail.port.DrawingManager;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.floats.FloatsManager;
 import cocktail.core.layout.formatter.BlockFormattingContext;
