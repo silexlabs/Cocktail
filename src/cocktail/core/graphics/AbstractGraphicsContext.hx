@@ -15,7 +15,8 @@ import cocktail.port.NativeElement;
 import cocktail.core.dom.NodeBase;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.unit.UnitData;
+import cocktail.core.css.CSSData;
+
 
 /**
  * Each LayerRenderer has a reference to a graphics context.

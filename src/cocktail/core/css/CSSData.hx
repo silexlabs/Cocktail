@@ -2,7 +2,6 @@ package cocktail.core.css;
 
 import cocktail.core.geom.Matrix;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.unit.UnitData;
 import cocktail.core.geom.GeomData;
 
 /**
@@ -45,6 +44,16 @@ enum PropertyOriginValue {
 	USER_AGENT;
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// USED VALUES
+//////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Represents the used values of an HTMLElement, that is
+ * the value which will be used during layout. For instance,
+ * during layout, width or height are represented by a
+ * floating number
+ */
 typedef UsedValuesData = {
 	var width:Float;
 	var minHeight:Float;
@@ -71,6 +80,15 @@ typedef UsedValuesData = {
 	var	transformOrigin:PointData;
 	var	transform:Matrix;
 	var	backgroundColor:ColorData;
+}
+
+/**
+ * Represents a color with
+ * its alpha (from 0 to 1)
+ */
+typedef ColorData = {
+	var color:Int;
+	var alpha:Float;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

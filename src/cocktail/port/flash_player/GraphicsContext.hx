@@ -7,7 +7,7 @@ import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
 import flash.display.Bitmap;
 import cocktail.core.geom.GeomData;
-import cocktail.core.unit.UnitData;
+import cocktail.core.css.CSSData;
 import flash.display.BitmapData;
 import flash.display.PixelSnapping;
 import flash.display.Sprite;

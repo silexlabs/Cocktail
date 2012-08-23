@@ -11,7 +11,6 @@ import cocktail.core.css.CSSData;
 import cocktail.core.css.parsers.CSSStyleParser;
 import cocktail.core.css.parsers.CSSStyleSerializer;
 import cocktail.core.css.CSSConstants;
-import cocktail.core.unit.UnitData;
 using StringTools;
 
 /**

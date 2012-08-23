@@ -10,7 +10,6 @@ package cocktail.core.layout.computer;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSStyleDeclaration;
-import cocktail.core.unit.UnitData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.unit.UnitManager;
 import cocktail.core.css.CSSData;

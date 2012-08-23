@@ -18,7 +18,6 @@ import cocktail.port.GraphicsContext;
 import cocktail.port.ImageResource;
 import cocktail.port.NativeElement;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.unit.UnitData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.computer.BackgroundStylesComputer;
