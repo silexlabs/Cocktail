@@ -286,6 +286,11 @@ class CSSSelectorParser
 	
 	private function flushSelectors(simpleSelectorSequenceStartValue:SimpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue>, components:Array<SelectorComponentValue>):Void
 	{
+		if (simpleSelectorSequenceStartValue == null && simpleSelectorSequenceItemValues.length == 0)
+		{
+			return;
+		}
+		
 		if (simpleSelectorSequenceStartValue == null)
 		{
 			simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.UNIVERSAL;
