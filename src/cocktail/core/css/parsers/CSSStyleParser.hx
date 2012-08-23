@@ -266,7 +266,10 @@ class CSSStyleParser
 					state = SPACE_OR_END;
 					
 				case INVALID_STYLE_VALUE:
-					//trace("invalid");
+					if (c == ";".code)
+					{
+						return ++position;
+					}
 	
 			}
 			c = styles.fastCodeAt(++position);
