@@ -1044,7 +1044,6 @@ class CSSStyleDeclaration
 				}
 				
 			case CSSConstants.BACKGROUND_POSITION:
-				trace(styleValue);
 				switch(styleValue)
 				{	
 					case GROUP(value):

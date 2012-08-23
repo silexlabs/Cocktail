@@ -30,7 +30,6 @@ import cocktail.core.style.computer.boxComputers.FloatBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.InlineBlockBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.InLineBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.PositionedBoxStylesComputer;
-import cocktail.core.style.computer.DisplayStylesComputer;
 import cocktail.core.style.computer.FontAndTextStylesComputer;
 import cocktail.core.style.computer.VisualEffectStylesComputer;
 import cocktail.core.css.CoreStyle;
@@ -74,7 +73,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 * TODO 2 : code clean up
 	 */
 	override public function render(parentGraphicContext:GraphicsContext):Void
-	{
+	{	
 		renderSelf(parentGraphicContext);
 		renderChildren(parentGraphicContext);
 	}

@@ -15,7 +15,6 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.renderer.InvalidatingElementRenderer;
-import cocktail.core.style.computer.DisplayStylesComputer;
 import cocktail.core.style.CSSConstants;
 import cocktail.core.style.transition.Animator;
 import cocktail.core.style.transition.Transition;
@@ -328,6 +327,10 @@ class CoreStyle
 			}
 		}
 		
+		//apply special computing relationship between
+		//disply, float and position property
+		applyPositionFloatAndDisplayRelationship();
+		
 		return changedProperties;
 	}
 	
@@ -554,7 +557,6 @@ class CoreStyle
 					default:	
 				}	
 				
-				
 			case CSSConstants.CURSOR:
 				switch(property)
 				{
@@ -749,6 +751,59 @@ class CoreStyle
 		}
 		
 		return property;
+	}
+	
+	/**
+	 * Special computing relationship exists between position, 
+	 * float and display. For instance if position is absolute,
+	 * a dispaly value of 'inline' will compute to 'block' as
+	 * absolutely positioned element should always be displayed
+	 * as blocks
+	 */
+	private function applyPositionFloatAndDisplayRelationship():Void
+	{
+		switch(getKeyword(position))
+		{
+			case ABSOLUTE, FIXED:
+				switch(getKeyword(display))
+				{
+					//if position is absolute, inline display
+					//must become block
+					case INLINE, INLINE_BLOCK:
+						computedValues.setTypedProperty(CSSConstants.DISPLAY, KEYWORD(BLOCK), false);
+					
+					default:	
+				}
+				
+				switch(getKeyword(cssFloat))
+				{
+					//if position is absolute, the element
+					//can't be floated
+					case LEFT, RIGHT:
+						computedValues.setTypedProperty(CSSConstants.FLOAT, KEYWORD(NONE), false);
+						
+					default:	
+				}
+				
+			default:	
+				
+				//check if the element is floated
+				switch(getKeyword(cssFloat))
+				{
+					case LEFT, RIGHT:
+						switch (getKeyword(display))
+						{
+							//if the element is floated, it must be a block
+							case INLINE, INLINE_BLOCK:
+							computedValues.setTypedProperty(CSSConstants.DISPLAY, KEYWORD(BLOCK), false);
+							
+							default:
+						}
+						
+					default:	
+				}
+				
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -23,7 +23,6 @@ import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.parser.DOMParser;
-import cocktail.core.style.computer.DisplayStylesComputer;
 import cocktail.core.style.CSSConstants;
 import haxe.Stack;
 import haxe.xml.Parser;
@@ -737,7 +736,7 @@ class HTMLElement extends Element<HTMLElement>
 		changedProperties.exists(CSSConstants.OVERFLOW_Y))
 		{
 			invalidatePositioningScheme();
-				return;
+			return;
 		}
 		
 		//cascade all the children, to cascade all the DOM tree

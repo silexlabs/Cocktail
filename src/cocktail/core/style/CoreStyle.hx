@@ -29,7 +29,6 @@ import cocktail.core.style.computer.boxComputers.InlineBlockBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.InLineBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.PositionedBoxStylesComputer;
 import cocktail.core.style.computer.boxComputers.BoxStylesComputer;
-import cocktail.core.style.computer.DisplayStylesComputer;
 import cocktail.core.style.computer.FontAndTextStylesComputer;
 import cocktail.core.style.computer.VisualEffectStylesComputer;
 import cocktail.core.style.formatter.FormattingContext;

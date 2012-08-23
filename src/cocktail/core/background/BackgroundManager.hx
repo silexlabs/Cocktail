@@ -88,8 +88,7 @@ class BackgroundManager
 		var backgroundClips:Array<CSSPropertyValue> = getAsArray(style.backgroundClip);
 		var backgroundSizes:Array<CSSPropertyValue> = getAsArray(style.backgroundSize);
 		var backgroundRepeats:Array<CSSPropertyValue> = getAsArray(style.backgroundRepeat);
-		
-			
+
 		
 		//loop in all the background images style of the HTMLElement. It is expected
 		//that each array of background styles (such as background origin, background size...)
