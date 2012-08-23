@@ -12,7 +12,7 @@ import cocktail.core.event.Event;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.unit.UnitManager;
+import cocktail.core.css.CSSValueConverter;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
@@ -109,7 +109,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		//set the style of the text input text using the CSS applying to it
 		//Based on the platform not all of those style might be taken into account
 		
-		_nativeTextInput.fontFamily = UnitManager.getFontFamilyAsStringArray(coreStyle.fontFamily)[0];
+		_nativeTextInput.fontFamily = CSSValueConverter.getFontFamilyAsStringArray(coreStyle.fontFamily)[0];
 		_nativeTextInput.letterSpacing = coreStyle.usedValues.letterSpacing;
 		_nativeTextInput.fontSize = coreStyle.getAbsoluteLength(coreStyle.fontSize);
 	

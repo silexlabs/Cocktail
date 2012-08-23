@@ -37,7 +37,7 @@ import cocktail.core.layout.formatter.FormattingContext;
 import cocktail.core.layout.formatter.InlineFormattingContext;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
-import cocktail.core.unit.UnitManager;
+import cocktail.core.css.CSSValueConverter;
 import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 import haxe.Log;

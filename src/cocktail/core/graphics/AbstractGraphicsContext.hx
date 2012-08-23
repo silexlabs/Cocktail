@@ -36,8 +36,8 @@ import cocktail.core.css.CSSData;
  * to instead leverage the native display list of the platform.
  * 
  * For instance, for a video it allows the underlying platform to take care of the rendering,
- * the video being given in its own layer. With just one GraphicContext, the video would have need
- * to be painted onto it for each frame.
+ * the video being given its own layer. With just one GraphicContext, the video would have need
+ * to be painted onto the unique GraphicContext each frame.
  * 
  * It also facilitates integration with native platform UI widget which can live on its own native
  * layer, being composited by the platform, instead of being painted onto a single bitmap.

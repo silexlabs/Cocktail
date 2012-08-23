@@ -21,7 +21,7 @@ import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.computer.BackgroundStylesComputer;
-import cocktail.core.unit.UnitManager;
+import cocktail.core.css.CSSValueConverter;
 import cocktail.core.css.CSSData;
 import cocktail.core.renderer.RendererData;
 import haxe.Log;
@@ -203,7 +203,7 @@ class BackgroundManager
 		if (foundResource == false)
 		{
 			//TODO 1 : re-implement fallback color
-			//var backgroundColor:ColorData = UnitManager.getColorDataFromCSSColor(imageDeclaration.fallbackColor);
+			//var backgroundColor:ColorData = CSSValueConverter.getColorDataFromCSSColor(imageDeclaration.fallbackColor);
 			//graphicContext.fillRect(backgroundBox, backgroundColor);
 		}
 

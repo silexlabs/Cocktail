@@ -11,7 +11,7 @@ package cocktail.port.nme;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.font.AbstractFontManagerImpl;
-import cocktail.core.unit.UnitManager;
+import cocktail.core.css.CSSValueConverter;
 import cocktail.port.NativeElement;
 
 import flash.text.TextField;
@@ -176,7 +176,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 		var usedValues:UsedValuesData = style.usedValues;
 		
 		var textFormat:TextFormat = new TextFormat();
-		textFormat.font = getNativeFontFamily(UnitManager.getFontFamilyAsStringArray(style.fontFamily));
+		textFormat.font = getNativeFontFamily(CSSValueConverter.getFontFamilyAsStringArray(style.fontFamily));
 		
 		textFormat.letterSpacing = usedValues.letterSpacing;
 		textFormat.size = style.getAbsoluteLength(style.fontSize);

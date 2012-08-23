@@ -96,7 +96,7 @@ class MultiTouchManager
 	
 	/**
 	 * Called when a touch end (the user lifts a finger from the screen). Remove the
-	 * Touch object corresponding to the lifted finger by retrieving thanks to its unique
+	 * Touch object corresponding to the lifted finger by retrieving it thanks to its unique
 	 * ID
 	 * 
 	 * @param	touch the removed touch

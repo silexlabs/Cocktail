@@ -11,7 +11,7 @@ package cocktail.port.flash_player;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSStyleDeclaration;
-import cocktail.core.unit.UnitManager;
+import cocktail.core.css.CSSValueConverter;
 import cocktail.port.NativeElement;
 
 import flash.text.engine.ElementFormat;
@@ -234,7 +234,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 		var fontDescription:FontDescription = new FontDescription(); 
 		fontDescription.fontWeight = getNativeFontWeight(style.fontWeight);
 		fontDescription.fontPosture = getNativeFontPosture(style.getKeyword(style.fontStyle));
-		fontDescription.fontName = getNativeFontFamily(UnitManager.getFontFamilyAsStringArray(style.fontFamily));
+		fontDescription.fontName = getNativeFontFamily(CSSValueConverter.getFontFamilyAsStringArray(style.fontFamily));
 		elementFormat.fontDescription = fontDescription;
 		
 		//color of the text

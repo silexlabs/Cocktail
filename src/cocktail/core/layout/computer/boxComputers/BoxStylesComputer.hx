@@ -10,7 +10,7 @@ package cocktail.core.layout.computer.boxComputers;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.unit.UnitManager;
+import cocktail.core.css.CSSValueConverter;
 import cocktail.core.font.FontData;
 import cocktail.core.css.CSSData;
 import haxe.Log;
@@ -425,7 +425,7 @@ class BoxStylesComputer
 				}
 				else
 				{
-					usedMargin = UnitManager.getPixelFromPercent(value, containingHTMLElementDimension);
+					usedMargin = CSSValueConverter.getPixelFromPercent(value, containingHTMLElementDimension);
 				}
 			
 			//auto margins take the remaining place left after
@@ -525,7 +525,7 @@ class BoxStylesComputer
 				}
 				else
 				{
-					computedConstraintDimension = UnitManager.getPixelFromPercent(value, containingHTMLElementDimension);
+					computedConstraintDimension = CSSValueConverter.getPixelFromPercent(value, containingHTMLElementDimension);
 				}
 				
 			//here no constraint are applied,
@@ -571,7 +571,7 @@ class BoxStylesComputer
 				computedPositionOffset = value;
 				
 			case PERCENTAGE(value):
-				computedPositionOffset = UnitManager.getPixelFromPercent(value, containingHTMLElementDimension);
+				computedPositionOffset = CSSValueConverter.getPixelFromPercent(value, containingHTMLElementDimension);
 				
 			default:	
 		}
@@ -601,7 +601,7 @@ class BoxStylesComputer
 			
 			//It's a percentage, compute it from the containing dimension	
 			case PERCENTAGE(value):
-				computedDimensions = UnitManager.getPixelFromPercent(value, containingHTMLElementDimension);
+				computedDimensions = CSSValueConverter.getPixelFromPercent(value, containingHTMLElementDimension);
 
 			case KEYWORD(value):
 				if (value == AUTO)
@@ -643,7 +643,7 @@ class BoxStylesComputer
 			
 			//It's a percentage, compute it from the containing dimension		
 			case PERCENTAGE(value):
-				computedPaddingValue = UnitManager.getPixelFromPercent(value, containingHTMLElementDimension);
+				computedPaddingValue = CSSValueConverter.getPixelFromPercent(value, containingHTMLElementDimension);
 				
 			default:
 				throw 'Illegal value for padding';

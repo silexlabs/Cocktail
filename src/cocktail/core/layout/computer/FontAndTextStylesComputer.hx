@@ -11,7 +11,7 @@ package cocktail.core.layout.computer;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.unit.UnitManager;
+import cocktail.core.css.CSSValueConverter;
 import cocktail.core.css.CSSData;
 import cocktail.core.font.FontData;
 import haxe.Log;
@@ -56,7 +56,7 @@ class FontAndTextStylesComputer
 		//text indent
 		usedValues.textIndent = getUsedTextIndent(style, containingBlockData);
 		
-		usedValues.color = UnitManager.getColorDataFromCSSColor(style.getColor(style.color));
+		usedValues.color = CSSValueConverter.getColorDataFromCSSColor(style.getColor(style.color));
 		
 		//letter spacing
 		usedValues.letterSpacing = getUsedLetterSpacing(style);
@@ -80,7 +80,7 @@ class FontAndTextStylesComputer
 				usedTextIndent = value;
 				
 			case PERCENTAGE(value):
-				usedTextIndent = UnitManager.getPixelFromPercent(value, containingBlockData.width);
+				usedTextIndent = CSSValueConverter.getPixelFromPercent(value, containingBlockData.width);
 				
 			default:	
 		}

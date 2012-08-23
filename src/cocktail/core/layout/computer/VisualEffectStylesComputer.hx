@@ -12,7 +12,7 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
-import cocktail.core.unit.UnitManager;
+import cocktail.core.css.CSSValueConverter;
 import cocktail.core.font.FontData;
 import cocktail.core.css.CSSData;
 
@@ -86,19 +86,19 @@ class VisualEffectStylesComputer
 				x = value;
 			
 			case PERCENTAGE(value):
-				x = UnitManager.getPixelFromPercent(value, style.usedValues.width);
+				x = CSSValueConverter.getPixelFromPercent(value, style.usedValues.width);
 				
 			case KEYWORD(value):
 				switch(value)
 				{
 					case LEFT:
-						x = UnitManager.getPixelFromPercent(0, style.usedValues.width);
+						x = CSSValueConverter.getPixelFromPercent(0, style.usedValues.width);
 						
 					case CENTER:	
-						x = UnitManager.getPixelFromPercent(50, style.usedValues.width);	
+						x = CSSValueConverter.getPixelFromPercent(50, style.usedValues.width);	
 						
 					case RIGHT:
-						x = UnitManager.getPixelFromPercent(100, style.usedValues.width);
+						x = CSSValueConverter.getPixelFromPercent(100, style.usedValues.width);
 						
 					default:	
 				}
@@ -114,19 +114,19 @@ class VisualEffectStylesComputer
 				y = value;
 			
 			case PERCENTAGE(value):
-				y = UnitManager.getPixelFromPercent(value, style.usedValues.width);
+				y = CSSValueConverter.getPixelFromPercent(value, style.usedValues.width);
 				
 			case KEYWORD(value):
 				switch(value)
 				{
 					case TOP:
-						y = UnitManager.getPixelFromPercent(0, style.usedValues.width);
+						y = CSSValueConverter.getPixelFromPercent(0, style.usedValues.width);
 						
 					case CENTER:	
-						y = UnitManager.getPixelFromPercent(50, style.usedValues.width);	
+						y = CSSValueConverter.getPixelFromPercent(50, style.usedValues.width);	
 						
 					case BOTTOM:
-						y = UnitManager.getPixelFromPercent(100, style.usedValues.width);
+						y = CSSValueConverter.getPixelFromPercent(100, style.usedValues.width);
 						
 					default:	
 				}
@@ -199,7 +199,7 @@ class VisualEffectStylesComputer
 				
 				//rotate	
 				case ROTATE(value):
-					var angle:Float = UnitManager.getRadFromAngle(value);
+					var angle:Float = getRadFromAngle(value);
 					matrix.rotate(angle);
 				
 				//scale x and y	
@@ -216,18 +216,18 @@ class VisualEffectStylesComputer
 				
 				//skew x and y	
 				case SKEW(angleX, angleY):
-					var skewX:Float = UnitManager.getRadFromAngle(angleX);
-					var skewY:Float = UnitManager.getRadFromAngle(angleY);
+					var skewX:Float = getRadFromAngle(angleX);
+					var skewY:Float = getRadFromAngle(angleY);
 					matrix.skew(skewX, skewY);
 				
 				//skew x	
 				case SKEW_X(angleX):
-					var skewX:Float = UnitManager.getRadFromAngle(angleX);
+					var skewX:Float = getRadFromAngle(angleX);
 					matrix.skew(skewX, 0);
 				
 				//skew y	
 				case SKEW_Y(angleY):
-					var skewY:Float = UnitManager.getRadFromAngle(angleY);
+					var skewY:Float = getRadFromAngle(angleY);
 					matrix.skew(0, skewY);
 				
 				//translate x and y	
@@ -268,12 +268,37 @@ class VisualEffectStylesComputer
 				computedTranslation = value;
 				
 			case PERCENTAGE(value):
-				computedTranslation = UnitManager.getPixelFromPercent(value, percentReference);
+				computedTranslation = CSSValueConverter.getPixelFromPercent(value, percentReference);
 				
 			default:	
 		}
 		
 		return computedTranslation;
+	}
+	
+	/**
+	 * Get a radian angle from any other angle value
+	 */
+	public static function getRadFromAngle(value:CSSAngleValue):Float
+	{
+		var angle:Float;
+		
+		switch (value)
+		{
+			case DEG(value):
+				angle = value * (Math.PI / 180);
+				
+			case RAD(value):
+				angle = value;
+				
+			case TURN(value):
+				angle = (value * 360) * (Math.PI / 180);
+				
+			case GRAD(value):	
+				angle = value * (Math.PI / 200);
+		}
+		
+		return angle;
 	}
 	
 }

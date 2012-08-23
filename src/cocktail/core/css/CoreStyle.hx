@@ -19,7 +19,7 @@ import cocktail.core.css.CSSConstants;
 import cocktail.core.animation.Animator;
 import cocktail.core.animation.Transition;
 import cocktail.core.animation.TransitionManager;
-import cocktail.core.unit.UnitManager;
+import cocktail.core.css.CSSValueConverter;
 import cocktail.core.renderer.RendererData;
 
 /**
@@ -465,7 +465,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
 						
 					case INTEGER(value):
 						return ABSOLUTE_LENGTH(value);
@@ -504,19 +504,19 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, parentFontSize, parentXHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, parentFontSize, parentXHeight));
 						
 					case PERCENTAGE(value):	
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromPercent(value, parentFontSize));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromPercent(value, parentFontSize));
 						
 					case KEYWORD(value):
 						switch(value)
 						{
 							case XX_SMALL, X_SMALL, SMALL, MEDIUM, LARGE, X_LARGE, XX_LARGE:
-								return ABSOLUTE_LENGTH(UnitManager.getFontSizeFromAbsoluteSizeValue(value));
+								return ABSOLUTE_LENGTH(CSSValueConverter.getFontSizeFromAbsoluteSizeValue(value));
 								
 							case LARGER, SMALLER:
-								return ABSOLUTE_LENGTH(UnitManager.getFontSizeFromRelativeSizeValue(value, parentFontSize));
+								return ABSOLUTE_LENGTH(CSSValueConverter.getFontSizeFromRelativeSizeValue(value, parentFontSize));
 								
 							default:	
 						}
@@ -552,7 +552,7 @@ class CoreStyle
 						return ABSOLUTE_LENGTH(0);
 						
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
 						
 					default:	
 				}	
@@ -571,10 +571,10 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
 						
 					case PERCENTAGE(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromPercent(value, fontSize));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromPercent(value, fontSize));
 						
 					default:	
 				}
@@ -583,7 +583,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
 	
 					case INTEGER(value):
 						return ABSOLUTE_LENGTH(value);
@@ -595,7 +595,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
 						
 					default:	
 				}
@@ -604,7 +604,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
 						
 					case KEYWORD(value):
 						return ABSOLUTE_LENGTH(0);
@@ -617,7 +617,7 @@ class CoreStyle
 				{
 					case COLOR(value):
 						//TODO : currentColor should be parent color
-						return COLOR(UnitManager.getComputedCSSColorFromCSSColor(value, value));
+						return COLOR(CSSValueConverter.getComputedCSSColorFromCSSColor(value, value));
 						
 					default:	
 				}
@@ -626,7 +626,7 @@ class CoreStyle
 				switch(property)
 				{
 					case COLOR(value):
-						return COLOR(UnitManager.getComputedCSSColorFromCSSColor(value, value));
+						return COLOR(CSSValueConverter.getComputedCSSColorFromCSSColor(value, value));
 						
 					default:	
 				}	
@@ -651,7 +651,7 @@ class CoreStyle
 						return GROUP([KEYWORD(value), KEYWORD(CENTER)]);
 					
 					case LENGTH(value):
-						return GROUP([ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight)), KEYWORD(CENTER)]);
+						return GROUP([ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight)), KEYWORD(CENTER)]);
 						
 					case PERCENTAGE(value):
 						return GROUP([PERCENTAGE(value), KEYWORD(CENTER)]);
@@ -662,7 +662,7 @@ class CoreStyle
 						switch(value[0])
 						{
 							case LENGTH(value):
-								backgroundPositionX = ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
+								backgroundPositionX = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
 								
 							default:	
 								backgroundPositionX = value[0];
@@ -671,7 +671,7 @@ class CoreStyle
 						switch(value[1])
 						{
 							case LENGTH(value):
-								backgroundPostionY = ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
+								backgroundPostionY = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
 								
 							default:	
 								backgroundPostionY = value[1];
@@ -719,7 +719,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						return ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
 						
 					//TODO	
 					case GROUP(value):
@@ -729,7 +729,7 @@ class CoreStyle
 						switch(value[0])
 						{
 							case LENGTH(value):
-								backgroundSizeX = ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
+								backgroundSizeX = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
 								
 							default:	
 								backgroundSizeX = value[0];
@@ -738,7 +738,7 @@ class CoreStyle
 						switch(value[1])
 						{
 							case LENGTH(value):
-								backgroundSizeY = ABSOLUTE_LENGTH(UnitManager.getPixelFromLength(value, fontSize, xHeight));
+								backgroundSizeY = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
 								
 							default:	
 								backgroundSizeY = value[1];
@@ -1066,7 +1066,7 @@ class CoreStyle
 		#if macro
 		return { fontSize:12.0, ascent:12.0, descent:12.0, xHeight:12.0, subscriptOffset:3.0, superscriptOffset:3.0, underlineOffset:3.0, spaceWidth:5.0 };
 		#else
-		return _fontManager.getFontMetrics(UnitManager.getCSSFontFamily(fontFamily), getAbsoluteLength(fontSize));
+		return _fontManager.getFontMetrics(computedValues.fontFamily, getAbsoluteLength(fontSize));
 		#end
 	}
 	

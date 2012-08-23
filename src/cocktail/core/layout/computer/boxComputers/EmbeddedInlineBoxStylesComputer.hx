@@ -8,7 +8,7 @@
 package cocktail.core.layout.computer.boxComputers;
 
 import cocktail.core.layout.LayoutData;
-import cocktail.core.unit.UnitManager;
+import cocktail.core.css.CSSValueConverter;
 import cocktail.core.css.CSSData;
 import haxe.Log;
 

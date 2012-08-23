@@ -5,7 +5,7 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.core.unit;
+package cocktail.core.css;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;	
@@ -14,12 +14,12 @@ import cocktail.core.css.CSSData;
 import haxe.Log;
 
 /**
- * This class exposes static unit conversion
- * methods
+ * This class exposes helper static methods
+ * to convert CSS values
  * 
  * @author Yannick DOMINGUEZ
  */
-class UnitManager 
+class CSSValueConverter 
 {
 	/**
 	 * class constructor. Private as this class 
@@ -85,53 +85,10 @@ class UnitManager
 		return lengthValue;
 	}
 	
-	public static function getCSSFontFamily(value:CSSPropertyValue):String
-	{
-		var cssFontFamilyValue:String = "";
-		
-		switch(value)
-		{
-			case CSS_LIST(value):
-				for (i in 0...value.length)
-				{
-					var fontName:String = "";
-					switch(value[i])
-					{
-						case IDENTIFIER(value):
-							fontName = value;
-						
-						case STRING(value):
-							fontName = value;
-							
-						default:
-							throw 'Illegal value for font family style';
-					}
-					
-					//escapes font name constituted of multiple words
-					if (fontName.indexOf(" ") != -1)
-					{
-						fontName = "'" + fontName + "'";
-					}
-					
-					cssFontFamilyValue += fontName;
-					
-					if (i < value.length -1)
-					{
-						cssFontFamilyValue += ",";
-					}
-				}
-				
-			case IDENTIFIER(value):
-				cssFontFamilyValue = value;
-				
-			default:	
-				throw 'Illegal value for font family style';
-				
-		}
-		
-		return cssFontFamilyValue;
-	}
-	
+	/**
+	 * Convert a font-family property into a string array
+	 * of font names
+	 */
 	public static function getFontFamilyAsStringArray(value:CSSPropertyValue):Array<String>
 	{
 		var fontNames:Array<String> = new Array<String>();
@@ -169,6 +126,8 @@ class UnitManager
 	/**
 	 * Takes an absolute size value for a font size and return
 	 * a pixel value
+	 * 
+	 * TODO 2 : values are hard-coded, should go into config ?
 	 */
 	public static function getFontSizeFromAbsoluteSizeValue(absoluteSize:CSSKeywordValue):Float
 	{
@@ -252,6 +211,16 @@ class UnitManager
 	}
 	
 	
+	/**
+	 * Return the computed value of a CSS color from a specified
+	 * CSS Color. For instance, color keyword (blue, red...) are computed
+	 * into rgba color
+	 * 
+	 * TODO 2 : manage currentColor
+	 * 
+	 * @param	colorProperty the specified color value
+	 * @param	currentColor the computed value of the 'color' property
+	 */
 	public static function getComputedCSSColorFromCSSColor(colorProperty:CSSColorValue, currentColor:CSSColorValue):CSSColorValue
 	{
 		switch(colorProperty)
@@ -307,7 +276,49 @@ class UnitManager
 		}
 	}
 	
-	//TODO 4 : probably the ugliest thing I've done so far
+	/**
+	 * Get an integer color and an alpha from 0 to 1 from a serialised color value
+	 */
+	public static function getColorDataFromCSSColor(value:CSSColorValue):ColorData
+	{
+		var colorValue:Int = 0;
+		var alphaValue:Float = 0;
+		
+		switch (value)
+		{
+			case RGBA(red, green, blue, alpha):
+				colorValue = red;
+				colorValue = (colorValue << 8) + green;
+				colorValue = (colorValue << 8) + blue;
+				alphaValue = alpha;	
+				
+			case HSL(hue, saturation, lightness):
+				//TODO 2
+			case HSLA(hue, saturation, lightness, alpha): 
+				//TODO 2
+				
+			default:
+				//other color values (keyword, hex, rgb...) were converted to RGBA during 
+				//cascade
+		}
+		
+		var colorData:ColorData = {
+			color:colorValue,
+			alpha:alphaValue
+		}
+		
+		return colorData;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE STATIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+		/**
+	 * Convert an hex value to RGB
+	 * 
+	 * TODO 4 : probably the ugliest thing I've done so far
+	 */
 	private static function hexToRGBA(hex:String):CSSColorValue
 	{
 		var red:Int = hexToInt(hex.charAt(0)) * 16 + hexToInt(hex.charAt(1));
@@ -317,7 +328,9 @@ class UnitManager
 		return RGBA(red, green, blue, 1.0);
 	}
 	
-	
+	/**
+	 * convert hexa to int
+	 */
 	private static function hexToInt(char:String):Int
 	{
 		switch(char.toUpperCase())
@@ -374,6 +387,10 @@ class UnitManager
 		return 0;
 	}
 	
+	/**
+	 * return a CSS rgba color from a 
+	 * color keyword
+	 */
 	private static function getRGBAColorFromColorKeyword(value:CSSColorKeyword):CSSColorValue
 	{	
 		switch (value)
@@ -430,189 +447,6 @@ class UnitManager
 				return RGBA(255, 255, 0, 1.0);
 				
 		}
-	}
-	
-	
-	/**
-	 * Get an integer color and an alpha from 0 to 1 from a serialised color value
-	 */
-	public static function getColorDataFromCSSColor(value:CSSColorValue):ColorData
-	{
-		var colorValue:Int = 0;
-		var alphaValue:Float = 0;
-		
-		switch (value)
-		{
-			case RGB(red, green, blue):
-				colorValue = red;
-				colorValue = (colorValue << 8) + green;
-				colorValue = (colorValue << 8) + blue;
-				alphaValue = 1.0;
-				
-			case RGB_PERCENTAGE(red, green, blue):
-				colorValue = Math.round(255 / red);
-				colorValue = (colorValue << 8) + Math.round((255 / green));
-				colorValue = (colorValue << 8) + Math.round((255 / blue));
-				alphaValue = 1.0;
-			
-			case RGBA(red, green, blue, alpha):
-				colorValue = red;
-				colorValue = (colorValue << 8) + green;
-				colorValue = (colorValue << 8) + blue;
-				alphaValue = alpha;	
-				
-			case RGBA_PERCENTAGE(red, green, blue, alpha):
-				colorValue = Math.round(255 / red);
-				colorValue = (colorValue << 8) + Math.round(255 / green);
-				colorValue = (colorValue << 8) + Math.round(255 / blue);
-				alphaValue = alpha;	
-				
-			case HEX(value):
-				colorValue = Std.parseInt(StringTools.replace(value, "#", "0x"));
-				alphaValue = 1.0;
-				
-			case KEYWORD(value):
-				colorValue = getColorDataFromColorKeyword(value).color;
-				alphaValue = 1.0;
-			
-			case TRANSPARENT:
-				colorValue = 0xFFFFFF;
-				alphaValue = 0.0;
-				
-			case CURRENT_COLOR:	
-				//TODO 2
-			case HSL(hue, saturation, lightness):
-				//TODO 2
-			case HSLA(hue, saturation, lightness, alpha): 
-				//TODO 2
-				
-		}
-		
-		var colorData:ColorData = {
-			color:colorValue,
-			alpha:alphaValue
-		}
-		
-		return colorData;
-	}
-	
-	/**
-	 * Get a radian angle from any other angle value
-	 */
-	public static function getRadFromAngle(value:CSSAngleValue):Float
-	{
-		var angle:Float;
-		
-		switch (value)
-		{
-			case DEG(value):
-				angle = value * (Math.PI / 180);
-				
-			case RAD(value):
-				angle = value;
-				
-			case TURN(value):
-				angle = (value * 360) * (Math.PI / 180);
-				
-			case GRAD(value):	
-				angle = value * (Math.PI / 200);
-		}
-		
-		return angle;
-	}
-	
-	/**
-	 * Get a degree angle from any other angle value
-	 */
-	public static function getDegreeFromAngle(value:CSSAngleValue):Float
-	{
-		var angle:Float;
-		
-		switch (value)
-		{
-			case DEG(value):
-				angle = value;
-				
-			case RAD(value):
-				angle = value * (180 / Math.PI);
-				
-			case TURN(value):
-				angle = value * 360;
-				
-			case GRAD(value):	
-				angle = value * 0.9;
-		}
-		
-		return angle;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE STATIC METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Get an integer color value from a keyword color value
-	 */
-	private static function getColorDataFromColorKeyword(value:CSSColorKeyword):ColorData
-	{
-		var hexColor:String;
-		
-		switch (value)
-		{
-			case AQUA:
-				hexColor = "#00FFFF";
-				
-			case BLACK:
-				hexColor = "#000000";
-				
-			case BLUE:
-				hexColor = "#0000FF";
-				
-			case FUSHIA:
-				hexColor = "#FF00FF";
-				
-			case GRAY:
-				hexColor = "#808080";
-				
-			case GREEN:
-				hexColor = "#008000";
-				
-			case LIME:
-				hexColor = "#00FF00";
-				
-			case MAROON:
-				hexColor = "#800000";
-				
-			case NAVY:
-				hexColor = "#000080";
-				
-			case OLIVE:
-				hexColor = "#808000";
-				
-			case ORANGE:
-				hexColor = "#FFA500";
-				
-			case PURPLE:
-				hexColor = "#800080";
-				
-			case RED:
-				hexColor = "#FF0000";
-				
-			case SILVER:
-				hexColor = "#C0C0C0";
-				
-			case TEAL:
-				hexColor = "#008080";
-				
-			case WHITE:
-				hexColor = "#FFFFFF";
-				
-			case YELLOW:
-				hexColor = "#FFFF00";
-				
-		}
-		
-		return getColorDataFromCSSColor(CSSColorValue.HEX(hexColor));
 	}
 	
 	/**

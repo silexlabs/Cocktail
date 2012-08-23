@@ -9,7 +9,7 @@ package cocktail.core.layout.computer;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.unit.UnitManager;
+import cocktail.core.css.CSSValueConverter;
 import cocktail.core.geom.GeomData;
 import haxe.Log;
 import cocktail.core.font.FontData;
@@ -136,7 +136,7 @@ class BackgroundStylesComputer
 	private static function getComputedBackgroundColor(style:CoreStyle):ColorData
 	{
 		var computedColor:ColorData;
-		computedColor = UnitManager.getColorDataFromCSSColor(style.getColor(style.backgroundColor));
+		computedColor = CSSValueConverter.getColorDataFromCSSColor(style.getColor(style.backgroundColor));
 		
 		return computedColor;
 	}
@@ -195,22 +195,22 @@ class BackgroundStylesComputer
 			//background image, such as for width, a 100% value will have the right side of the picture touch the right side
 			//of the background positioning area
 			case PERCENTAGE(value):
-				computedBackgroundPosition = UnitManager.getPixelFromPercent(value, backgroundPositioningAreaDimension - imageDimension);
+				computedBackgroundPosition = CSSValueConverter.getPixelFromPercent(value, backgroundPositioningAreaDimension - imageDimension);
 			
 			case KEYWORD(value):
 				switch(value)
 				{
 					//same as 50%	
 					case CENTER:
-						computedBackgroundPosition = UnitManager.getPixelFromPercent(50, backgroundPositioningAreaDimension - imageDimension);
+						computedBackgroundPosition = CSSValueConverter.getPixelFromPercent(50, backgroundPositioningAreaDimension - imageDimension);
 						
 					//same as 0%	
 					case LEFT, TOP:
-						computedBackgroundPosition = UnitManager.getPixelFromPercent(0, backgroundPositioningAreaDimension - imageDimension);
+						computedBackgroundPosition = CSSValueConverter.getPixelFromPercent(0, backgroundPositioningAreaDimension - imageDimension);
 						
 					//same as 100%	
 					case RIGHT, BOTTOM:
-						computedBackgroundPosition = UnitManager.getPixelFromPercent(100, backgroundPositioningAreaDimension - imageDimension);	
+						computedBackgroundPosition = CSSValueConverter.getPixelFromPercent(100, backgroundPositioningAreaDimension - imageDimension);	
 						
 					default:	
 				}
@@ -355,7 +355,7 @@ class BackgroundStylesComputer
 			
 			//percent relative to the background positioning area	
 			case PERCENTAGE(value):
-				backgroundSizeStyleDimension = UnitManager.getPixelFromPercent(value, backgroundPositioningAreaDimension);
+				backgroundSizeStyleDimension = CSSValueConverter.getPixelFromPercent(value, backgroundPositioningAreaDimension);
 			
 			//for auto, use intrinsic dimension if any or else,
 			//treated as a 100% value
@@ -391,7 +391,7 @@ class BackgroundStylesComputer
 					//if the background image doesn't have intrinsic dimensions, treat it like 100%
 					else
 					{
-						backgroundSizeStyleDimension = UnitManager.getPixelFromPercent(100, backgroundPositioningAreaDimension);
+						backgroundSizeStyleDimension = CSSValueConverter.getPixelFromPercent(100, backgroundPositioningAreaDimension);
 					}
 				}
 				
