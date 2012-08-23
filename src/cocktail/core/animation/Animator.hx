@@ -11,7 +11,7 @@ import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.event.TransitionEvent;
 
-import cocktail.core.style.StyleData;
+import cocktail.core.animation.AnimationData;
 import cocktail.core.css.CSSData;
 import cocktail.core.renderer.RendererData;
 
