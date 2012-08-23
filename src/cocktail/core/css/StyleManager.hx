@@ -69,7 +69,7 @@ class StyleManager
 	 * 
 	 * The pseudo class matched by the node are also provided.
 	 * For instance, if the node is hovered by the mouse, it will
-	 * match the hover psuedo class
+	 * match the hover pseudo class
 	 */
 	public function getStyleDeclaration(node:HTMLElement, matchedPseudoClasses:MatchedPseudoClasses):CSSStyleDeclaration
 	{

@@ -745,6 +745,9 @@ class CSSStyleParser
 	}
 	
 	
+	/**
+	 * Try to match an identifier to a CSS value
+	 */
 	private function parseIdent(ident:String, styleValues:Array<CSSPropertyValue>):Void
 	{
 		switch(ident)
@@ -760,6 +763,10 @@ class CSSStyleParser
 		}
 	}
 	
+	/**
+	 * Try to find a CSS keyword or color keyword from an identifier.
+	 * If no match is found, a generic Identifier will be stored
+	 */
 	private function parseKeyword(ident:String, styleValues:Array<CSSPropertyValue>):Void
 	{
 		var cssPropertyValue:CSSPropertyValue = IDENTIFIER(ident);

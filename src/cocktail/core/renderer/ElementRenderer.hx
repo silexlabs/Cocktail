@@ -21,7 +21,7 @@ import cocktail.port.DrawingManager;
 import cocktail.core.geom.GeomData;
 
 import cocktail.core.css.CoreStyle;
-import cocktail.core.style.CSSConstants;
+import cocktail.core.css.CSSConstants;
 import cocktail.core.style.formatter.FormattingContext;
 import cocktail.core.style.StyleData;
 import cocktail.core.font.FontData;

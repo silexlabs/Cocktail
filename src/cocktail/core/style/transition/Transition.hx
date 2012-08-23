@@ -11,7 +11,7 @@ import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.geom.CubicBezier;
 
 import cocktail.core.css.CoreStyle;
-import cocktail.core.style.CSSConstants;
+import cocktail.core.css.CSSConstants;
 import cocktail.core.style.StyleData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.css.CSSData;

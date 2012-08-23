@@ -10,7 +10,7 @@ package cocktail.core.css;
 import cocktail.core.css.CSSData;
 import cocktail.core.css.parsers.CSSStyleParser;
 import cocktail.core.css.parsers.CSSStyleSerializer;
-import cocktail.core.style.CSSConstants;
+import cocktail.core.css.CSSConstants;
 import cocktail.core.unit.UnitData;
 using StringTools;
 
@@ -2470,7 +2470,4 @@ class CSSStyleDeclaration
 		setProperty(CSSConstants.TRANSFORM_ORIGIN, value);
 		return value;		
 	}
-	
-
-	
 }

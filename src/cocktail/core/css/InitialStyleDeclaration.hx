@@ -8,7 +8,7 @@
 package cocktail.core.css;
 
 import cocktail.core.css.CSSData;
-import cocktail.core.style.CSSConstants;
+import cocktail.core.css.CSSConstants;
 
 /**
  * This class holds all the initial values of

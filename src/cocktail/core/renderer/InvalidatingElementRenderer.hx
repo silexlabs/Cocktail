@@ -10,7 +10,7 @@ package cocktail.core.renderer;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.renderer.RendererData;
-import cocktail.core.style.CSSConstants;
+import cocktail.core.css.CSSConstants;
 
 /**
  * This class implements the invalidation behaviour

@@ -23,7 +23,7 @@ import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.parser.DOMParser;
-import cocktail.core.style.CSSConstants;
+import cocktail.core.css.CSSConstants;
 import haxe.Stack;
 import haxe.xml.Parser;
 import cocktail.port.NativeElement;

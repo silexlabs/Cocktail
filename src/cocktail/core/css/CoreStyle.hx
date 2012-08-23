@@ -15,7 +15,7 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.renderer.InvalidatingElementRenderer;
-import cocktail.core.style.CSSConstants;
+import cocktail.core.css.CSSConstants;
 import cocktail.core.style.transition.Animator;
 import cocktail.core.style.transition.Transition;
 import cocktail.core.style.transition.TransitionManager;
