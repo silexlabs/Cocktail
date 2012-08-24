@@ -145,6 +145,16 @@ class HTMLConstants
 	public static inline var HTML_POSTER_ATTRIBUTE_NAME:String = "poster";
 
 	public static inline var HTML_NAME_ATTRIBUTE_NAME:String = "name";
+	
+	public static inline var HTML_PRELOAD_ATTRIBUTE_NAME:String = "preload";
+	
+	//preload attribute values
+	
+	public static inline var PRELOAD_AUTO:String = "auto";
+	
+	public static inline var PRELOAD_NONE:String = "none";
+	
+	public static inline var PRELOAD_METADATA:String = "metadata";
 
 	//anchor target const
 
