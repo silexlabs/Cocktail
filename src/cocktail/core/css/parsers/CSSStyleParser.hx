@@ -833,89 +833,10 @@ class CSSStyleParser
 		switch (name)
 		{
 			case 'rgb':
-				switch(value)
-				{
-					case CSS_LIST(value):
-						if (value.length == 3)
-						{
-							var isPercentRGB:Bool = false;
-							
-							var red:Int = 0;
-							var green:Int = 0;
-							var blue:Int = 0;
-							
-							var percentRed:Float = 0.0;
-							var percentGreen:Float = 0.0;
-							var percentBlue:Float = 0.0;
-							
-							switch(value[0])
-							{
-								case INTEGER(value):
-									red = value;
-									
-								case PERCENTAGE(value):	
-									percentRed = value;
-									isPercentRGB = true;
-									
-								default:
-									return null;
-							}
-							
-							switch(value[1])
-							{
-								case INTEGER(value):
-									green = value;
-									if (isPercentRGB == true)
-									{
-										return null;
-									}
-									
-								case PERCENTAGE(value):
-									percentGreen = value;
-									if (isPercentRGB == false)
-									{
-										return null;
-									}
-								default:
-									return null;
-									
-							}
-							
-							switch(value[2])
-							{
-								case INTEGER(value):
-									blue = value;
-									if (isPercentRGB == true)
-									{
-										return null;
-									}
-									
-								case PERCENTAGE(value):
-									percentBlue = value;
-									if (isPercentRGB == false)
-									{
-										return null;
-									}
-								default:
-									return null;		
-							}
-							
-							if (isPercentRGB == true)
-							{
-								return COLOR(RGB_PERCENTAGE(percentRed, percentGreen, percentBlue));
-							}
-							else
-							{
-								return COLOR(RGB(red, green, blue));
-							}
-							
-						}
-						
-						return null;
-						
-					default:
-						return null;
-				}
+				return parseRGBOrRGBA(value, false);
+			
+			case 'rgba':
+				return parseRGBOrRGBA(value, true);
 				
 			case 'url':
 				switch(value)
@@ -928,6 +849,134 @@ class CSSStyleParser
 					default:	
 						return null;
 				}
+				
+			default:
+				return null;
+		}
+	}
+	
+	private function parseRGBOrRGBA(property:CSSPropertyValue, isRGBA:Bool):CSSPropertyValue
+	{
+		switch(property)
+		{
+			case CSS_LIST(value):
+				
+				if (isRGBA == true)
+				{
+					if (value.length != 4)
+					{
+						return null;
+					}
+				}
+				else
+				{
+					if (value.length != 3)
+					{
+						return null;
+					}
+				}
+				
+				
+				var isPercentRGB:Bool = false;
+				var red:Int = 0;
+				var green:Int = 0;
+				var blue:Int = 0;
+				
+				var percentRed:Float = 0.0;
+				var percentGreen:Float = 0.0;
+				var percentBlue:Float = 0.0;
+				
+				switch(value[0])
+				{
+					case INTEGER(value):
+						red = value;
+						
+					case PERCENTAGE(value):	
+						percentRed = value;
+						isPercentRGB = true;
+						
+					default:
+						return null;
+				}
+				
+				switch(value[1])
+				{
+					case INTEGER(value):
+						green = value;
+						if (isPercentRGB == true)
+						{
+							return null;
+						}
+						
+					case PERCENTAGE(value):
+						percentGreen = value;
+						if (isPercentRGB == false)
+						{
+							return null;
+						}
+					default:
+						return null;
+						
+				}
+				
+				switch(value[2])
+				{
+					case INTEGER(value):
+						blue = value;
+						if (isPercentRGB == true)
+						{
+							return null;
+						}
+						
+					case PERCENTAGE(value):
+						percentBlue = value;
+						if (isPercentRGB == false)
+						{
+							return null;
+						}
+					default:
+						return null;		
+				}
+				
+				if (isRGBA == false)
+				{
+					if (isPercentRGB == true)
+					{
+						return COLOR(RGB_PERCENTAGE(percentRed, percentGreen, percentBlue));
+					}
+					else
+					{
+						return COLOR(RGB(red, green, blue));
+					}
+				}
+				else
+				{
+					var alpha:Float = 0.0;
+					
+					switch(value[3])
+					{
+						case NUMBER(value):
+							alpha = value;
+							
+						case INTEGER(value):
+							alpha = value;
+							
+						default:
+							return null;
+					}
+					
+					if (isPercentRGB == true)
+					{
+						return COLOR(RGBA_PERCENTAGE(percentRed, percentGreen, percentBlue, alpha));
+					}
+					else
+					{
+						return COLOR(RGBA(red, green, blue, alpha));
+					}
+				}
+				
+			
+			return null;
 				
 			default:
 				return null;

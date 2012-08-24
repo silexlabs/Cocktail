@@ -250,9 +250,25 @@ class CSSValueConverter
 				return RGBA(Math.round(255 * (red * 0.01)), Math.round(255 * (green * 0.01)), Math.round(255 * (blue * 0.01)), 1.0);
 				
 			case RGBA(red, green, blue, alpha):
-				return colorProperty;
+				
+				//clamp to valid color values
+				red = clampInteger(red, 255, 0);
+				green = clampInteger(green, 255, 0);
+				blue = clampInteger(blue, 255, 0);
+				
+				alpha = clampNumber(alpha, 1.0, 0.0);
+				
+				return RGBA(red, green, blue, alpha);
 				
 			case RGBA_PERCENTAGE(red, green, blue, alpha):
+				
+				//clamp to valid percent values
+				red = clampNumber(red, 100, 0);
+				green = clampNumber(green, 100, 0);
+				blue = clampNumber(blue, 100, 0);
+				
+				alpha = clampNumber(alpha, 1.0, 0.0);
+				
 				return RGBA(Math.round(255 * (red * 0.01)), Math.round(255 * (green * 0.01)), Math.round(255 * (blue * 0.01)), alpha);
 				
 			case HSL(hue, saturation, lightness):
