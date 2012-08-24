@@ -1159,6 +1159,15 @@ class HTMLElement extends Element<HTMLElement>
 			//node
 			htmlElement = ownerDocument.createElement(name);
 			
+			
+			//set all the attributes of the xml node on the 
+			//new HTMLElement node
+			for( attribute in xml.attributes() ){
+				attribute = attribute.toLowerCase();
+				var value:String = xml.get(attribute);
+				htmlElement.setAttribute(attribute, value);
+			}
+			
 			//loop in all of the xml child node
 			for (child in xml)
 			{
@@ -1183,13 +1192,6 @@ class HTMLElement extends Element<HTMLElement>
 				htmlElement.appendChild(childNode);
 			} 
 			
-			//set all the attributes of the xml node on the 
-			//new HTMLElement node
-			for( attribute in xml.attributes() ){
-				attribute = attribute.toLowerCase();
-				var value:String = xml.get(attribute);
-				htmlElement.setAttribute(attribute, value);
-			}
 			
 			return htmlElement;
 		}

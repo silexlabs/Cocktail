@@ -18,7 +18,7 @@ import cocktail.core.renderer.RendererData;
  * This is an abstract base class for media elements,
  * such as video and audio
  * 
- * TODO 1 : implement preload
+ * TODO 3 : implement "metadata" value for preload
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -78,6 +78,13 @@ class HTMLMediaElement extends EmbeddedElement
 	 * back to the start of the media resource upon reaching the end.
 	 */
 	public var loop(get_loop, set_loop):Bool;
+	
+	/**
+	 * The preload attribute is intended to provide
+	 * a hint to the user agent about what the author
+	 * thinks will lead to the best user experience. 
+	 */
+	public var preload(get_preload, set_preload):String;
 	
 	/////////////////////////////////
 	// ATTRIBUTES
@@ -268,6 +275,15 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private var _nativeMedia:NativeMedia;
 	
+	/**
+	 * Wether the loading of the media resource
+	 * was stalled by the preload attribute.
+	 * For instance if the preload attribute
+	 * is "none", the resource won't be loaded
+	 * until the play method is called explicitely
+	 */
+	private var _stalledByPreload:Bool;
+	
 	private var _initialPlaybackPosition:Float;
 	
 	private var _officialPlaybackPosition:Float;
@@ -299,6 +315,7 @@ class HTMLMediaElement extends EmbeddedElement
 		muted = false;
 		volume = 1.0;
 		
+		_stalledByPreload = false;
 		_loadedDataWasDispatched = false;
 		_defaultPlaybackStartPosition = 0;
 		_officialPlaybackPosition = 0;
@@ -352,6 +369,7 @@ class HTMLMediaElement extends EmbeddedElement
 		return newChild;
 	}
 	
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN ATTRIBUTES METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -366,9 +384,29 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			src = value;
 		}
+		else if (name == HTMLConstants.HTML_PRELOAD_ATTRIBUTE_NAME)
+		{
+			preload = value;
+		}
 		else
 		{
 			super.setAttribute(name, value);
+		}
+	}
+	
+	/**
+	 * overriden to call the right getter for 
+	 * html media attributes
+	 */
+	override public function getAttribute(name:String):String
+	{
+		if (name == HTMLConstants.HTML_PRELOAD_ATTRIBUTE_NAME)
+		{
+			return preload;
+		}
+		else
+		{
+			return super.getAttribute(name);
 		}
 	}
 	
@@ -418,9 +456,20 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		_autoplaying = false;
 		
-		_nativeMedia.play();
-	
-		onTimeUpdateTick();
+		//preload attribute might have prevented
+		//media resource loading. The resource
+		//must be selected and fetched before
+		//playing begins
+		if (_stalledByPreload == true)
+		{
+			selectResource();
+		}
+		else
+		{
+			_nativeMedia.play();
+			onTimeUpdateTick();
+		}
+		
 	}
 	
 	/**
@@ -534,7 +583,6 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		var mode:Int;
 		var candidate:HTMLSourceElement;
-		
 		if (src != null)
 		{
 			mode = RESOURCE_SELECTION_ATTRIBUTE_MODE;
@@ -544,7 +592,8 @@ class HTMLMediaElement extends EmbeddedElement
 			mode = RESOURCE_SELECTION_CHILDREN_MODE;
 			
 			//retrieve the first source child
-			for (i in 0...childNodes.length)
+			var length:Int = childNodes.length;
+			for (i in 0...length)
 			{
 				if (childNodes[i].nodeName == HTMLConstants.HTML_SOURCE_TAG_NAME)
 				{
@@ -616,8 +665,30 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 	}
 	
+	/**
+	 * Actually fetch a resource.
+	 * 
+	 * This is an implementation of the following
+	 * algorithm : 
+	 * http://www.w3.org/TR/html5/media-elements.html#concept-media-load-resource
+	 */
 	private function fetchResource(url:String):Void
 	{
+		//the preload attribute might prevent resource loading, until
+		//the play method is explicitely called y script
+		if (preload == HTMLConstants.PRELOAD_NONE && _stalledByPreload == false)
+		{
+			//the autoplay attribute might override
+			//the preload attribute
+			if (autoplay == false)
+			{
+				networkState = NETWORK_IDLE;
+				fireEvent(Event.SUSPEND, false, false);
+				_stalledByPreload = true;
+				return;
+			}
+		}
+		
 		_nativeMedia.onLoadedMetaData = onLoadedMetaData;
 		_nativeMedia.src = url;
 	}
@@ -853,7 +924,7 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	/**
 	 * When the metadata of the media have been 
-	 * loaded, update the intrinisc dimensions
+	 * loaded, update the intrinsic dimensions
 	 * of the html element and all the attributes
 	 * which can retrieved through this metadata
 	 */
@@ -872,6 +943,17 @@ class HTMLMediaElement extends EmbeddedElement
 		//start listening to loading event, as it begins
 		//as soon as the metadata are loaded
 		onProgressTick();
+		
+		//if the media resource was stalled by
+		//the value of the preload attribute,
+		//the metadata were loaded as a result
+		//of an explicit call to play() and playback
+		//can now begin
+		if (_stalledByPreload == true)
+		{
+			_stalledByPreload = false;
+			play();
+		}
 	}
 	
 	/**
@@ -1018,6 +1100,43 @@ class HTMLMediaElement extends EmbeddedElement
 		super.setAttribute(HTMLConstants.HTML_LOOP_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}
+	
+	private function get_preload():String
+	{
+		var preloadValue:String = super.getAttribute(HTMLConstants.HTML_PRELOAD_ATTRIBUTE_NAME);
+		
+		//if a value is not provided for preload, 
+		//the default missing value is defined as metadata
+		if (preloadValue == null)
+		{
+			return HTMLConstants.PRELOAD_METADATA;
+		}
+		return preloadValue;
+	}
+	
+	private function set_preload(value:String):String
+	{
+		//preload is an enumerated value,
+		//every illegal values are replaced
+		switch(value)
+		{
+			//empty string is valid and maps to auto
+			case "":
+				value = HTMLConstants.PRELOAD_AUTO;
+				
+			//valid values	
+			case HTMLConstants.PRELOAD_AUTO, HTMLConstants.PRELOAD_METADATA,
+			HTMLConstants.PRELOAD_NONE:
+				
+			//default missing value is metadata	
+			default:
+				value = HTMLConstants.PRELOAD_METADATA;
+		}
+		
+		super.setAttribute(HTMLConstants.HTML_PRELOAD_ATTRIBUTE_NAME, value);
+		return value;
+	}
+	
 	
 	/////////////////////////////////
 	// GETTER/SETTER
