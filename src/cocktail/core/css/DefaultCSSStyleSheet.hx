@@ -93,7 +93,7 @@ class DefaultCSSStyleSheet extends CSSStyleSheet
 				ol              { list-style-type: decimal }
 				ol ul, ul ol,
 				ul ul, ol ol    { margin-top: 0; margin-bottom: 0 }
-				u, ins          { text - decoration: underline }
+				u, ins          { text-decoration: underline }
 				
 				center          { text-align: center }
 				:link, :visited { text-decoration: underline }

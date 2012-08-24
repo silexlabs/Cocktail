@@ -146,6 +146,12 @@ class CSSStyleParser
 				case STYLE_VALUE:
 					//parse the property value,null is returned if the property is invalid
 					var typedProperty:TypedPropertyData = parseStyleValue(styleName, styles, position);
+					
+					//global position was updated in the parseStyleValue
+					//to correspond to the end of the style value, separated
+					//by ";" or the end of string
+					position = _position;
+					
 					if (typedProperty != null)
 					{
 						typedProperties.push(typedProperty);
@@ -159,7 +165,7 @@ class CSSStyleParser
 				//
 				//TODO 3: eventually will make
 				//more robust to error
-				case INVALID_STYLE:	
+				case INVALID_STYLE:
 					return [];
 			}
 			c = styles.fastCodeAt(++position);
@@ -565,30 +571,31 @@ class CSSStyleParser
 			var numberOrInteger:Float = Std.parseFloat(styles.substr(start, position - start));
 			position = parseDimension(numberOrInteger, styles, position, styleValues);
 		}
-		
-		//else can be number, integer or percentage
-		switch (c)
+		else
 		{
-		
-			
-			//number is a percentage	
-			case '%'.code:	
-				var numberOrInteger:Float = Std.parseFloat(styles.substr(start, position - start));
-				styleValues.push(CSSPropertyValue.PERCENTAGE(numberOrInteger));
-				++position;
-				
-			default:
-				if (isNumber)
-				{
-					var number:Float = Std.parseFloat(styles.substr(start, position - start));
-					styleValues.push(CSSPropertyValue.NUMBER(number));
-				}
-				else
-				{
-					var integer:Int = Std.parseInt(styles.substr(start, position - start));
-					styleValues.push(CSSPropertyValue.INTEGER(integer));
-				}	
+			//else can be number, integer or percentage
+			switch (c)
+			{
+				//number is a percentage	
+				case '%'.code:	
+					var numberOrInteger:Float = Std.parseFloat(styles.substr(start, position - start));
+					styleValues.push(CSSPropertyValue.PERCENTAGE(numberOrInteger));
+					++position;
+					
+				default:
+					if (isNumber)
+					{
+						var number:Float = Std.parseFloat(styles.substr(start, position - start));
+						styleValues.push(CSSPropertyValue.NUMBER(number));
+					}
+					else
+					{
+						var integer:Int = Std.parseInt(styles.substr(start, position - start));
+						styleValues.push(CSSPropertyValue.INTEGER(integer));
+					}	
+			}
 		}
+		
 		
 		return position;
 	}
