@@ -62,7 +62,7 @@ class MouseEvent extends UIEvent
 	public static inline var MOUSE_DOWN:String = "mousedown";
 	
 	/**
-	 * he mouseover event occurs when the pointing device is moved
+	 * The mouseover event occurs when the pointing device is moved
 	 * onto an element. This event is valid for most elements. 
 	 */
 	public static inline var MOUSE_OVER:String = "mouseover";
