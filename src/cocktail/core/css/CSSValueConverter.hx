@@ -232,16 +232,28 @@ class CSSValueConverter
 				return RGBA(0, 0, 0, 0.0);
 				
 			case RGB(red, green, blue):
+				
+				//clamp to valid color values
+				red = clampInteger(red, 255, 0);
+				green = clampInteger(green, 255, 0);
+				blue = clampInteger(blue, 255, 0);
+				
 				return RGBA(red, green, blue, 1.0);
 				
 			case RGB_PERCENTAGE(red, green, blue):	
-				return RGBA(Math.round(255 / red), Math.round(255 / green), Math.round(255 / blue), 1.0);
+				
+				//clamp to valid percent values
+				red = clampNumber(red, 100, 0);
+				green = clampNumber(green, 100, 0);
+				blue = clampNumber(blue, 100, 0);
+				
+				return RGBA(Math.round(255 * (red * 0.01)), Math.round(255 * (green * 0.01)), Math.round(255 * (blue * 0.01)), 1.0);
 				
 			case RGBA(red, green, blue, alpha):
 				return colorProperty;
 				
 			case RGBA_PERCENTAGE(red, green, blue, alpha):
-				return RGBA(Math.round(255 / red), Math.round(255 / green), Math.round(255 / blue), alpha);
+				return RGBA(Math.round(255 * (red * 0.01)), Math.round(255 * (green * 0.01)), Math.round(255 * (blue * 0.01)), alpha);
 				
 			case HSL(hue, saturation, lightness):
 				return colorProperty;
@@ -314,7 +326,39 @@ class CSSValueConverter
 	// PRIVATE STATIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-		/**
+	/**
+	 * Utils to clamp a number to a given range
+	 */
+	private static function clampNumber(number:Float, max:Float, min:Float):Float
+	{
+		if (number > max)
+		{
+			return max;
+		}
+		if (number < min)
+		{
+			return min;
+		}
+		return number;
+	}
+	
+	/**
+	 * Same as above for integer values
+	 */
+	private static function clampInteger(integer:Int, max:Int, min:Int):Int
+	{
+		if (integer > max)
+		{
+			return max;
+		}
+		if (integer < min)
+		{
+			return min;
+		}
+		return integer;
+	}
+	
+	/**
 	 * Convert an hex value to RGB
 	 * 
 	 * TODO 4 : probably the ugliest thing I've done so far

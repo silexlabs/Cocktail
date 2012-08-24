@@ -311,6 +311,11 @@ class CSSStyleParser
 							state = IMPORTANT;
 							start = position;
 							continue;
+							
+						case '"'.code, "'".code:
+							state = STRING;
+							start = position;
+							continue;
 					}
 					
 					//try a generic identifier
@@ -329,9 +334,6 @@ class CSSStyleParser
 						continue;
 					}
 					
-					trace(styles);
-					trace("invalid");
-					trace(String.fromCharCode(c));
 					//any other value makes the style invalid
 					state = INVALID_STYLE_VALUE;
 					continue;
@@ -396,9 +398,27 @@ class CSSStyleParser
 					}
 					
 					
+				case STRING:
+					var endPosition:Int = parseString(styles, position, styleValues);
+					
+					if (endPosition != -1)
+					{
+						position = endPosition;
+						c = styles.fastCodeAt(position);
+						
+						state = SPACE_OR_END;
+						continue;
+					}
+					else
+					{
+						state = INVALID_STYLE_VALUE;
+						continue;
+					}
+					
 				case IDENT_FUNCTION:
 					var endPosition:Int = parseIdentOrFunctionnalNotation(styles, position, styleValues);
 					
+					//if different from -1, style value is valid
 					if (endPosition != -1)
 					{
 						position = endPosition;
@@ -703,6 +723,30 @@ class CSSStyleParser
 		return position;
 	}
 	
+	private function parseString(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
+	{
+		var quote:Int = styles.fastCodeAt(position);
+		
+		var start:Int = ++position;
+		var c:Int = styles.fastCodeAt(position);
+		
+		while (c != quote)
+		{
+			if (c.isEOF())
+			{
+				return -1;
+			}
+			c = styles.fastCodeAt(++position);
+		}
+		
+		var stringValue:String = styles.substr(start, position - start);
+		
+		styleValues.push(STRING(stringValue));
+		
+		return ++position;
+	}
+	
+	
 	private function parseIdentOrFunctionnalNotation(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
@@ -712,7 +756,7 @@ class CSSStyleParser
 		{
 			c = styles.fastCodeAt(++position);
 		}
-		
+	
 		var ident:String = styles.substr(start, position - start);
 		
 		switch(c)
@@ -766,27 +810,21 @@ class CSSStyleParser
 
 		
 		var cssFunction:String = styles.substr(start, position - start);
-		trace(cssFunction);
 		
 		var functionValues:TypedPropertyData = parseStyleValue("", cssFunction, 0);
 		
-		//_position = position;
+		var functionValue:CSSPropertyValue = getFunctionalNotation(ident, functionValues.typedValue);
 		
-		trace(functionValues);
+		if (functionValue == null)
+		{
+			return -1;
+		}
+		else
+		{
+			styleValues.push(functionValue);
+			return ++position;
+		}
 		
-		return ++position;
-		getFunctionalNotation(ident, functionValues.typedValue);
-		
-		//switch(ident)
-		//{
-			//case 'url':
-				//position = parseURL(styles, position, styleValues);
-				//
-			//case 'rgb':
-				//position = parseRGB(styles, position, styleValues);
-		//}
-		
-		return ++position;
 	}
 	
 	
@@ -800,15 +838,83 @@ class CSSStyleParser
 					case CSS_LIST(value):
 						if (value.length == 3)
 						{
+							var isPercentRGB:Bool = false;
+							
+							var red:Int = 0;
+							var green:Int = 0;
+							var blue:Int = 0;
+							
+							var percentRed:Float = 0.0;
+							var percentGreen:Float = 0.0;
+							var percentBlue:Float = 0.0;
+							
 							switch(value[0])
 							{
 								case INTEGER(value):
+									red = value;
 									
-								default:	
+								case PERCENTAGE(value):	
+									percentRed = value;
+									isPercentRGB = true;
+									
+								default:
+									return null;
 							}
+							
+							switch(value[1])
+							{
+								case INTEGER(value):
+									green = value;
+									if (isPercentRGB == true)
+									{
+										return null;
+									}
+									
+								case PERCENTAGE(value):
+									percentGreen = value;
+									if (isPercentRGB == false)
+									{
+										return null;
+									}
+								default:
+									return null;
+									
+							}
+							
+							switch(value[2])
+							{
+								case INTEGER(value):
+									blue = value;
+									if (isPercentRGB == true)
+									{
+										return null;
+									}
+									
+								case PERCENTAGE(value):
+									percentBlue = value;
+									if (isPercentRGB == false)
+									{
+										return null;
+									}
+								default:
+									return null;		
+							}
+							
+							if (isPercentRGB == true)
+							{
+								return COLOR(RGB_PERCENTAGE(percentRed, percentGreen, percentBlue));
+							}
+							else
+							{
+								return COLOR(RGB(red, green, blue));
+							}
+							
 						}
 						
-					default:	
+						return null;
+						
+					default:
+						return null;
 				}
 				
 			case 'url':
@@ -820,70 +926,13 @@ class CSSStyleParser
 						return CSSPropertyValue.URL(value);
 						
 					default:	
+						return null;
 				}
+				
+			default:
+				return null;
 		}
-		
-		return null;
 	}
-	
-	
-	private function parseURL(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
-	{
-		
-		var c:Int = styles.fastCodeAt(position);
-		
-		switch(c)
-		{
-			case '"'.code, "'".code:
-				++position;
-				c = styles.fastCodeAt(position);
-		}
-
-		var start = position;
-		
-		while (c != ')'.code && c != '"'.code && c != "'".code)
-		{
-			if (c.isEOF())
-			{
-				return -1;
-			}
-			c = styles.fastCodeAt(++position);
-		}
-		
-		styleValues.push(CSSPropertyValue.URL(styles.substr(start, position - start)));
-		
-		return ++position;
-	}
-	
-	private function parseRGB(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
-	{
-		var c:Int = styles.fastCodeAt(position);
-		var start:Int = position;
-		
-		while (c != ')'.code)
-		{
-			if (c.isEOF())
-			{
-				return -1;
-			}
-			c = styles.fastCodeAt(++position);
-		}
-		
-		var rgb:String = styles.substr(start, position - start);
-		var properties:Array<TypedPropertyData> = new Array<TypedPropertyData>();
-		
-		//parseStyleValue("", rgb, 0, properties);
-		
-		trace(properties);
-		
-		if (properties.length != 1)
-		{
-			return -1;
-		}
-		
-		return position;
-	}
-	
 	
 	/**
 	 * Try to match an identifier to a CSS value

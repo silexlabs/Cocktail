@@ -41,6 +41,7 @@ enum StyleValueParserState {
 	IMPORTANT;
 	END;
 	HEX;
+	STRING;
 }
 
 enum AttributeSelectorParserState {
