@@ -217,7 +217,6 @@ class CSSStyleParser
 		//are comma separated
 		var styleValuesLists:Array<Array<CSSPropertyValue>> = [];
 		
-		
 		while (!c.isEOF())
 		{
 			switch(state)
@@ -270,7 +269,6 @@ class CSSStyleParser
 								continue;
 						}
 					}
-					
 				
 				//start parsing a value component
 				//
@@ -280,11 +278,14 @@ class CSSStyleParser
 					//try first special value start charachters
 					switch(c)
 					{
+						//TODO 3 : duplicated code
 						case ','.code:
 							styleValuesLists.push(styleValues);
 							styleValues = [];
 							state = IGNORE_SPACES;
 							next = BEGIN_VALUE;
+							
+							c = styles.fastCodeAt(++position);
 							continue;
 						
 						case ';'.code:
@@ -324,10 +325,13 @@ class CSSStyleParser
 					if (isNumChar(c))
 					{
 						state = NUMBER_INTEGER_DIMENSION_PERCENTAGE;
+						start = position;
 						continue;
 					}
 					
-					
+					trace(styles);
+					trace("invalid");
+					trace(String.fromCharCode(c));
 					//any other value makes the style invalid
 					state = INVALID_STYLE_VALUE;
 					continue;
@@ -393,8 +397,21 @@ class CSSStyleParser
 					
 					
 				case IDENT_FUNCTION:
-					position = parseIdentOrFunctionnalNotation(styles, position, styleValues);
-					state = SPACE_OR_END;
+					var endPosition:Int = parseIdentOrFunctionnalNotation(styles, position, styleValues);
+					
+					if (endPosition != -1)
+					{
+						position = endPosition;
+						c = styles.fastCodeAt(position);
+						
+						state = SPACE_OR_END;
+						continue;
+					}
+					else
+					{
+						state = INVALID_STYLE_VALUE;
+						continue;
+					}
 					
 				case NUMBER_INTEGER_DIMENSION_PERCENTAGE:
 					
@@ -406,7 +423,7 @@ class CSSStyleParser
 						//update position of current char
 						position = endPosition;
 						c = styles.fastCodeAt(position);
-						
+					
 						state = SPACE_OR_END;
 						continue;
 					}
@@ -707,7 +724,7 @@ class CSSStyleParser
 				parseIdent(ident, styleValues);
 		}
 		
-		return --position;
+		return position;
 	}
 	
 	private function parseHexaColor(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
@@ -746,12 +763,18 @@ class CSSStyleParser
 			c = styles.fastCodeAt(++position);
 		}
 		
+
+		
 		var cssFunction:String = styles.substr(start, position - start);
+		trace(cssFunction);
 		
 		var functionValues:TypedPropertyData = parseStyleValue("", cssFunction, 0);
 		
+		//_position = position;
+		
 		trace(functionValues);
 		
+		return ++position;
 		getFunctionalNotation(ident, functionValues.typedValue);
 		
 		//switch(ident)
