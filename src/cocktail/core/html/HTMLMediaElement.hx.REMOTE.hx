@@ -10,6 +10,7 @@ import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.port.platform.nativeMedia.NativeMedia;
+import haxe.Timer;
 import cocktail.core.html.HTMLData;
 import cocktail.core.renderer.RendererData;
 
@@ -272,7 +273,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * access to runtime specific API for 
 	 * video and audio
 	 */
-	public var nativeMedia(default, null):NativeMedia;
+	private var _nativeMedia:NativeMedia;
 	
 	/**
 	 * Wether the loading of the media resource
@@ -367,6 +368,7 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		return newChild;
 	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN ATTRIBUTES METHODS
@@ -464,7 +466,7 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 		else
 		{
-			nativeMedia.play();
+			_nativeMedia.play();
 			onTimeUpdateTick();
 		}
 		
@@ -497,7 +499,7 @@ class HTMLMediaElement extends EmbeddedElement
 			_officialPlaybackPosition = _currentPlaybackPosition;
 		}
 		
-		nativeMedia.pause();
+		_nativeMedia.pause();
 	}
 	
 	/**
@@ -507,7 +509,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	public function canPlayType(type:String):String
 	{
-		return nativeMedia.canPlayType(type);
+		return _nativeMedia.canPlayType(type);
 	}
 	
 	/////////////////////////////////
@@ -533,7 +535,7 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			fireEvent(Event.EMPTIED, false, false);
 			
-			nativeMedia.src = null;
+			_nativeMedia.src = null;
 			
 			networkState = NETWORK_EMPTY;
 			
@@ -687,8 +689,8 @@ class HTMLMediaElement extends EmbeddedElement
 			}
 		}
 		
-		nativeMedia.onLoadedMetaData = onLoadedMetaData;
-		nativeMedia.src = url;
+		_nativeMedia.onLoadedMetaData = onLoadedMetaData;
+		_nativeMedia.src = url;
 	}
 	
 	/**
@@ -741,7 +743,7 @@ class HTMLMediaElement extends EmbeddedElement
 		
 	
 		_currentPlaybackPosition = newPlaybackPosition;
-		nativeMedia.seek(newPlaybackPosition);
+		_nativeMedia.seek(newPlaybackPosition);
 		
 		//TODO 2 : Wait until the user agent has established whether or not 
 		//the media data for the new playback position is available, and, if
@@ -873,7 +875,7 @@ class HTMLMediaElement extends EmbeddedElement
 		_initialPlaybackPosition = 0;
 		_officialPlaybackPosition = 0;
 		
-		duration = nativeMedia.duration;
+		duration = _nativeMedia.duration;
 		fireEvent(Event.DURATION_CHANGE, false, false);
 		
 		setReadyState(HAVE_METADATA);
@@ -928,8 +930,8 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function onLoadedMetaData(e:Event):Void
 	{
-		intrinsicHeight = nativeMedia.height;
-		intrinsicWidth = nativeMedia.width;
+		intrinsicHeight = _nativeMedia.height;
+		intrinsicWidth = _nativeMedia.width;
 		intrinsicRatio = intrinsicHeight / intrinsicWidth;
 		
 		//update playback times and duration
@@ -968,7 +970,7 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 		
 		//update playback position
-		_currentPlaybackPosition = nativeMedia.currentTime;
+		_currentPlaybackPosition = _nativeMedia.currentTime;
 		_officialPlaybackPosition = _currentPlaybackPosition;
 		
 		//check if the end of the media is reached
@@ -1007,9 +1009,8 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		//if the media has not ended playing,
 		//set this method to be called again 
-		#if macro
-		#elseif (flash9 || nme)
-		haxe.Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
+		#if (flash9 || nme)
+		Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
 		#end
 	}
 	
@@ -1024,7 +1025,7 @@ class HTMLMediaElement extends EmbeddedElement
 		fireEvent(Event.PROGRESS, false, false);
 		
 		//check if all of the media has been loaded
-		if (nativeMedia.bytesLoaded >= nativeMedia.bytesTotal)
+		if (_nativeMedia.bytesLoaded >= _nativeMedia.bytesTotal)
 		{
 			setReadyState(HAVE_ENOUGH_DATA);
 			
@@ -1043,9 +1044,8 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		//if not all of the media has been loaded, dispatch
 		//a progress event and set this method to be called again
-		#if macro
-		#elseif (flash9 || nme)
-		haxe.Timer.delay(onProgressTick, PROGRESS_FREQUENCY);
+		#if (flash9 || nme)
+		Timer.delay(onProgressTick, PROGRESS_FREQUENCY);
 		#end
 	}
 	
@@ -1148,13 +1148,13 @@ class HTMLMediaElement extends EmbeddedElement
 		//if sound is no longer muted
 		if (value == false)
 		{
-			nativeMedia.volume = volume;
+			_nativeMedia.volume = volume;
 		}
 		//muting consist on setting volume of native
 		//media to 0
 		else
 		{
-			nativeMedia.volume = 0;
+			_nativeMedia.volume = 0;
 		}
 		
 		muted = value;
@@ -1167,7 +1167,7 @@ class HTMLMediaElement extends EmbeddedElement
 	{
 		if (muted == false)
 		{
-			nativeMedia.volume = value;
+			_nativeMedia.volume = value;
 		}
 		
 		volume = value;
@@ -1184,7 +1184,7 @@ class HTMLMediaElement extends EmbeddedElement
 		//already loaded of the media
 		ranges.push( {
 			start : 0.0,
-			end: duration * (nativeMedia.bytesLoaded / nativeMedia.bytesTotal)
+			end: duration * (_nativeMedia.bytesLoaded / _nativeMedia.bytesTotal)
 		});
 		
 		var timeRanges:TimeRanges = new TimeRanges(ranges);

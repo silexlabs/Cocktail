@@ -10,6 +10,7 @@ import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.port.platform.nativeMedia.NativeMedia;
+import haxe.Timer;
 import cocktail.core.html.HTMLData;
 import cocktail.core.renderer.RendererData;
 
@@ -17,7 +18,7 @@ import cocktail.core.renderer.RendererData;
  * This is an abstract base class for media elements,
  * such as video and audio
  * 
- * TODO 3 : implement "metadata" value for preload
+ * TODO 1 : implement preload
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -77,13 +78,6 @@ class HTMLMediaElement extends EmbeddedElement
 	 * back to the start of the media resource upon reaching the end.
 	 */
 	public var loop(get_loop, set_loop):Bool;
-	
-	/**
-	 * The preload attribute is intended to provide
-	 * a hint to the user agent about what the author
-	 * thinks will lead to the best user experience. 
-	 */
-	public var preload(get_preload, set_preload):String;
 	
 	/////////////////////////////////
 	// ATTRIBUTES
@@ -272,16 +266,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * access to runtime specific API for 
 	 * video and audio
 	 */
-	public var nativeMedia(default, null):NativeMedia;
-	
-	/**
-	 * Wether the loading of the media resource
-	 * was stalled by the preload attribute.
-	 * For instance if the preload attribute
-	 * is "none", the resource won't be loaded
-	 * until the play method is called explicitely
-	 */
-	private var _stalledByPreload:Bool;
+	private var _nativeMedia:NativeMedia;
 	
 	private var _initialPlaybackPosition:Float;
 	
@@ -314,7 +299,6 @@ class HTMLMediaElement extends EmbeddedElement
 		muted = false;
 		volume = 1.0;
 		
-		_stalledByPreload = false;
 		_loadedDataWasDispatched = false;
 		_defaultPlaybackStartPosition = 0;
 		_officialPlaybackPosition = 0;
@@ -382,29 +366,9 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			src = value;
 		}
-		else if (name == HTMLConstants.HTML_PRELOAD_ATTRIBUTE_NAME)
-		{
-			preload = value;
-		}
 		else
 		{
 			super.setAttribute(name, value);
-		}
-	}
-	
-	/**
-	 * overriden to call the right getter for 
-	 * html media attributes
-	 */
-	override public function getAttribute(name:String):String
-	{
-		if (name == HTMLConstants.HTML_PRELOAD_ATTRIBUTE_NAME)
-		{
-			return preload;
-		}
-		else
-		{
-			return super.getAttribute(name);
 		}
 	}
 	
@@ -454,20 +418,9 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		_autoplaying = false;
 		
-		//preload attribute might have prevented
-		//media resource loading. The resource
-		//must be selected and fetched before
-		//playing begins
-		if (_stalledByPreload == true)
-		{
-			selectResource();
-		}
-		else
-		{
-			nativeMedia.play();
-			onTimeUpdateTick();
-		}
-		
+		_nativeMedia.play();
+	
+		onTimeUpdateTick();
 	}
 	
 	/**
@@ -497,7 +450,7 @@ class HTMLMediaElement extends EmbeddedElement
 			_officialPlaybackPosition = _currentPlaybackPosition;
 		}
 		
-		nativeMedia.pause();
+		_nativeMedia.pause();
 	}
 	
 	/**
@@ -507,7 +460,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	public function canPlayType(type:String):String
 	{
-		return nativeMedia.canPlayType(type);
+		return _nativeMedia.canPlayType(type);
 	}
 	
 	/////////////////////////////////
@@ -533,7 +486,7 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			fireEvent(Event.EMPTIED, false, false);
 			
-			nativeMedia.src = null;
+			_nativeMedia.src = null;
 			
 			networkState = NETWORK_EMPTY;
 			
@@ -581,6 +534,7 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		var mode:Int;
 		var candidate:HTMLSourceElement;
+		
 		if (src != null)
 		{
 			mode = RESOURCE_SELECTION_ATTRIBUTE_MODE;
@@ -590,8 +544,7 @@ class HTMLMediaElement extends EmbeddedElement
 			mode = RESOURCE_SELECTION_CHILDREN_MODE;
 			
 			//retrieve the first source child
-			var length:Int = childNodes.length;
-			for (i in 0...length)
+			for (i in 0...childNodes.length)
 			{
 				if (childNodes[i].nodeName == HTMLConstants.HTML_SOURCE_TAG_NAME)
 				{
@@ -663,32 +616,10 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 	}
 	
-	/**
-	 * Actually fetch a resource.
-	 * 
-	 * This is an implementation of the following
-	 * algorithm : 
-	 * http://www.w3.org/TR/html5/media-elements.html#concept-media-load-resource
-	 */
 	private function fetchResource(url:String):Void
 	{
-		//the preload attribute might prevent resource loading, until
-		//the play method is explicitely called y script
-		if (preload == HTMLConstants.PRELOAD_NONE && _stalledByPreload == false)
-		{
-			//the autoplay attribute might override
-			//the preload attribute
-			if (autoplay == false)
-			{
-				networkState = NETWORK_IDLE;
-				fireEvent(Event.SUSPEND, false, false);
-				_stalledByPreload = true;
-				return;
-			}
-		}
-		
-		nativeMedia.onLoadedMetaData = onLoadedMetaData;
-		nativeMedia.src = url;
+		_nativeMedia.onLoadedMetaData = onLoadedMetaData;
+		_nativeMedia.src = url;
 	}
 	
 	/**
@@ -741,7 +672,7 @@ class HTMLMediaElement extends EmbeddedElement
 		
 	
 		_currentPlaybackPosition = newPlaybackPosition;
-		nativeMedia.seek(newPlaybackPosition);
+		_nativeMedia.seek(newPlaybackPosition);
 		
 		//TODO 2 : Wait until the user agent has established whether or not 
 		//the media data for the new playback position is available, and, if
@@ -873,7 +804,7 @@ class HTMLMediaElement extends EmbeddedElement
 		_initialPlaybackPosition = 0;
 		_officialPlaybackPosition = 0;
 		
-		duration = nativeMedia.duration;
+		duration = _nativeMedia.duration;
 		fireEvent(Event.DURATION_CHANGE, false, false);
 		
 		setReadyState(HAVE_METADATA);
@@ -922,14 +853,14 @@ class HTMLMediaElement extends EmbeddedElement
 	
 	/**
 	 * When the metadata of the media have been 
-	 * loaded, update the intrinsic dimensions
+	 * loaded, update the intrinisc dimensions
 	 * of the html element and all the attributes
 	 * which can retrieved through this metadata
 	 */
 	private function onLoadedMetaData(e:Event):Void
 	{
-		intrinsicHeight = nativeMedia.height;
-		intrinsicWidth = nativeMedia.width;
+		intrinsicHeight = _nativeMedia.height;
+		intrinsicWidth = _nativeMedia.width;
 		intrinsicRatio = intrinsicHeight / intrinsicWidth;
 		
 		//update playback times and duration
@@ -941,17 +872,6 @@ class HTMLMediaElement extends EmbeddedElement
 		//start listening to loading event, as it begins
 		//as soon as the metadata are loaded
 		onProgressTick();
-		
-		//if the media resource was stalled by
-		//the value of the preload attribute,
-		//the metadata were loaded as a result
-		//of an explicit call to play() and playback
-		//can now begin
-		if (_stalledByPreload == true)
-		{
-			_stalledByPreload = false;
-			play();
-		}
 	}
 	
 	/**
@@ -968,7 +888,7 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 		
 		//update playback position
-		_currentPlaybackPosition = nativeMedia.currentTime;
+		_currentPlaybackPosition = _nativeMedia.currentTime;
 		_officialPlaybackPosition = _currentPlaybackPosition;
 		
 		//check if the end of the media is reached
@@ -1007,9 +927,8 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		//if the media has not ended playing,
 		//set this method to be called again 
-		#if macro
-		#elseif (flash9 || nme)
-		haxe.Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
+		#if (flash9 || nme)
+		Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
 		#end
 	}
 	
@@ -1024,7 +943,7 @@ class HTMLMediaElement extends EmbeddedElement
 		fireEvent(Event.PROGRESS, false, false);
 		
 		//check if all of the media has been loaded
-		if (nativeMedia.bytesLoaded >= nativeMedia.bytesTotal)
+		if (_nativeMedia.bytesLoaded >= _nativeMedia.bytesTotal)
 		{
 			setReadyState(HAVE_ENOUGH_DATA);
 			
@@ -1043,9 +962,8 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		//if not all of the media has been loaded, dispatch
 		//a progress event and set this method to be called again
-		#if macro
-		#elseif (flash9 || nme)
-		haxe.Timer.delay(onProgressTick, PROGRESS_FREQUENCY);
+		#if (flash9 || nme)
+		Timer.delay(onProgressTick, PROGRESS_FREQUENCY);
 		#end
 	}
 	
@@ -1101,43 +1019,6 @@ class HTMLMediaElement extends EmbeddedElement
 		return value;
 	}
 	
-	private function get_preload():String
-	{
-		var preloadValue:String = super.getAttribute(HTMLConstants.HTML_PRELOAD_ATTRIBUTE_NAME);
-		
-		//if a value is not provided for preload, 
-		//the default missing value is defined as metadata
-		if (preloadValue == null)
-		{
-			return HTMLConstants.PRELOAD_METADATA;
-		}
-		return preloadValue;
-	}
-	
-	private function set_preload(value:String):String
-	{
-		//preload is an enumerated value,
-		//every illegal values are replaced
-		switch(value)
-		{
-			//empty string is valid and maps to auto
-			case "":
-				value = HTMLConstants.PRELOAD_AUTO;
-				
-			//valid values	
-			case HTMLConstants.PRELOAD_AUTO, HTMLConstants.PRELOAD_METADATA,
-			HTMLConstants.PRELOAD_NONE:
-				
-			//default missing value is metadata	
-			default:
-				value = HTMLConstants.PRELOAD_METADATA;
-		}
-		
-		super.setAttribute(HTMLConstants.HTML_PRELOAD_ATTRIBUTE_NAME, value);
-		return value;
-	}
-	
-	
 	/////////////////////////////////
 	// GETTER/SETTER
 	////////////////////////////////
@@ -1148,13 +1029,13 @@ class HTMLMediaElement extends EmbeddedElement
 		//if sound is no longer muted
 		if (value == false)
 		{
-			nativeMedia.volume = volume;
+			_nativeMedia.volume = volume;
 		}
 		//muting consist on setting volume of native
 		//media to 0
 		else
 		{
-			nativeMedia.volume = 0;
+			_nativeMedia.volume = 0;
 		}
 		
 		muted = value;
@@ -1167,7 +1048,7 @@ class HTMLMediaElement extends EmbeddedElement
 	{
 		if (muted == false)
 		{
-			nativeMedia.volume = value;
+			_nativeMedia.volume = value;
 		}
 		
 		volume = value;
@@ -1184,7 +1065,7 @@ class HTMLMediaElement extends EmbeddedElement
 		//already loaded of the media
 		ranges.push( {
 			start : 0.0,
-			end: duration * (nativeMedia.bytesLoaded / nativeMedia.bytesTotal)
+			end: duration * (_nativeMedia.bytesLoaded / _nativeMedia.bytesTotal)
 		});
 		
 		var timeRanges:TimeRanges = new TimeRanges(ranges);

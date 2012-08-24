@@ -158,17 +158,6 @@ class HTMLConstants
 	
 	public static inline var HTML_CHECKED_ATTRIBUTE_NAME:String = "checked";
 	
-	
-	public static inline var HTML_PRELOAD_ATTRIBUTE_NAME:String = "preload";
-	
-	//preload attribute values
-	
-	public static inline var PRELOAD_AUTO:String = "auto";
-	
-	public static inline var PRELOAD_NONE:String = "none";
-	
-	public static inline var PRELOAD_METADATA:String = "metadata";
-
 	//anchor target const
 
 	public static inline var TARGET_BLANK:String = "_blank";
