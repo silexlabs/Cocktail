@@ -34,13 +34,13 @@ enum StyleDeclarationParserState {
 enum StyleValueParserState {
 	IGNORE_SPACES;
 	BEGIN_VALUE;
-	IDENT;
+	IDENT_FUNCTION;
 	NUMBER_INTEGER_DIMENSION_PERCENTAGE;
 	SPACE_OR_END;
 	INVALID_STYLE_VALUE;
 	IMPORTANT;
 	END;
-	HEXA;
+	HEX;
 }
 
 enum AttributeSelectorParserState {

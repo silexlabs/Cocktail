@@ -206,7 +206,7 @@ class StyleManager
 				{
 					var matchingProperty:PropertyData = {
 						typedValue:styleDeclaration.getTypedProperty(property).typedValue,
-						important:styleDeclaration.getPropertyPriority(property) == "important",
+						important:styleDeclaration.getPropertyPriority(property) == CSSConstants.IMPORTANT,
 						origin:styleDeclaration.parentRule.parentStyleSheet.origin,
 						selector:selector
 					}

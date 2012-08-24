@@ -250,15 +250,16 @@ class CSSStyleDeclaration
 		}
 		else
 		{
-			//pass the array by reference
-			var typedProperties:Array<TypedPropertyData> = new Array<TypedPropertyData>();
-			_cssStyleParser.parseStyleValue(name, value, 0, typedProperties);
+			//parse the proeprty, the return property is null
+			//if the style is invalid
+			var typedProperty:TypedPropertyData = _cssStyleParser.parseStyleValue(name, value, 0);
 			
-			for (i in 0...typedProperties.length)
+			if (typedProperty != null)
 			{
-				var typedProperty:TypedPropertyData = typedProperties[i];
 				applyProperty(typedProperty.name, typedProperty.typedValue, typedProperty.important);
 			}
+			
+			
 		}
 	}
 	

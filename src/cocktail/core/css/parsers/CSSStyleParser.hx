@@ -7,6 +7,7 @@
 */
 package cocktail.core.css.parsers;
 
+import cocktail.core.css.CSSConstants;
 import cocktail.core.css.CSSData;
 import cocktail.core.css.parsers.CSSParsersData;
 using StringTools;
@@ -25,11 +26,18 @@ using StringTools;
 class CSSStyleParser 
 {
 	/**
+	 * when parsing a css style declaration 
+	 * with multiple key/value css styles, hold
+	 * the current parsing position
+	 */
+	private var _position:Int;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
 	{
-		
+		_position = 0;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -44,6 +52,9 @@ class CSSStyleParser
 	 */
 	public function parseStyle(styles:String):Array<TypedPropertyData>
 	{
+		//reset the position when parsing multiple styles
+		_position = 0;
+		
 		//start by ignoring all spaces
 		var state:StyleDeclarationParserState = IGNORE_SPACES;
 		var next:StyleDeclarationParserState = BEGIN;
@@ -133,9 +144,13 @@ class CSSStyleParser
 				//parse the style value, which return the position
 				//where the style value ends. store the parsed
 				case STYLE_VALUE:
-					//typedProperties is passed by reference and filled by the parseStyleValue
-					//method if the style value is not invalid
-					position = parseStyleValue(styleName, styles, position, typedProperties);
+					//parse the property value,null is returned if the property is invalid
+					var typedProperty:TypedPropertyData = parseStyleValue(styleName, styles, position);
+					if (typedProperty != null)
+					{
+						typedProperties.push(typedProperty);
+					}
+					
 					state = IGNORE_SPACES;
 					next = BEGIN;
 				
@@ -158,24 +173,22 @@ class CSSStyleParser
 	/**
 	 * Parse the value of 1 style
 	 * 
-	 * @param	propertyName the name of the style to 
+	 * @param	propertyName the name of the style to  parse
 	 * @param	styles the whole parsed css string, might contain
 	 * multiple css name/value properties
 	 * @param	position the position where the style value begins
 	 * in the parsed css string
-	 * @param	typedProperties the typedProperties which will be filled if the style
-	 * value is valid
-	 * @return	return the position where the style value ended, delimited
-	 * by ";"
+	 * @return the typed property resulting from the parsing or null
+	 * if the style was invalid
 	 */
-	public function parseStyleValue(propertyName:String, styles:String, position:Int, typedProperties:Array<TypedPropertyData>):Int
+	public function parseStyleValue(propertyName:String, styles:String, position:Int):TypedPropertyData
 	{
 		var c:Int = styles.fastCodeAt(position);
 		
 		//increment position if first char is separator
 		if (c == ":".code)
 		{
-			position++;
+			++position;
 			c = styles.fastCodeAt(position);
 		}
 		
@@ -187,9 +200,15 @@ class CSSStyleParser
 		
 		var start:Int = position;
 		
+		//will return wether the style is declared important with "!important" token
 		var important:Bool = false;
 		
+		//hold the value of the currently parsed group of style component
+		//which are space separated
 		var styleValues:Array<CSSPropertyValue> = [];
+		
+		//hold the value of each item of the list of style values which
+		//are comma separated
 		var styleValuesLists:Array<Array<CSSPropertyValue>> = [];
 		
 		
@@ -214,6 +233,7 @@ class CSSStyleParser
 				//of the style value is expected or
 				//another component of the style value
 				case SPACE_OR_END:
+					
 					if (c.isEOF())
 					{
 						state = END;
@@ -226,7 +246,9 @@ class CSSStyleParser
 							case ' '.code:
 								state = IGNORE_SPACES;
 								next = BEGIN_VALUE;
-								
+							
+							//a comma signals a list of values, push
+							//the current value in the list value array
 							case ','.code:
 								styleValuesLists.push(styleValues);
 								styleValues = [];
@@ -274,7 +296,7 @@ class CSSStyleParser
 							continue;
 							
 						case '#'.code:
-							state = HEXA;
+							state = HEX;
 							start = position;
 							continue;
 							
@@ -287,7 +309,7 @@ class CSSStyleParser
 					//try a generic identifier
 					if (isIdentChar(c))
 					{
-						state = IDENT;
+						state = IDENT_FUNCTION;
 						start = position;
 						continue;
 					}
@@ -298,6 +320,7 @@ class CSSStyleParser
 						state = NUMBER_INTEGER_DIMENSION_PERCENTAGE;
 						continue;
 					}
+					
 					
 					//any other value makes the style invalid
 					state = INVALID_STYLE_VALUE;
@@ -346,7 +369,7 @@ class CSSStyleParser
 					
 					
 				//parse an hex number	
-				case HEXA:
+				case HEX:
 					//increment position as first charachter is '#'
 					var endPosition:Int = parseHexaColor(styles, ++position, styleValues);
 					
@@ -363,7 +386,7 @@ class CSSStyleParser
 					}
 					
 					
-				case IDENT:
+				case IDENT_FUNCTION:
 					position = parseIdentOrFunctionnalNotation(styles, position, styleValues);
 					state = SPACE_OR_END;
 					
@@ -374,7 +397,10 @@ class CSSStyleParser
 					
 					if (endPosition != -1)
 					{
+						//update position of current char
 						position = endPosition;
+						c = styles.fastCodeAt(position);
+						
 						state = SPACE_OR_END;
 						continue;
 					}
@@ -392,28 +418,35 @@ class CSSStyleParser
 				case INVALID_STYLE_VALUE:
 					if (c == ";".code)
 					{
-						return ++position;
+						//increment the global position, so that
+						//further style might be parsed
+						_position = ++position;
+						return null;
 					}
 	
 			}
 			c = styles.fastCodeAt(++position);
 		}
 		
+		//increment global position, so that further
+		//styles can be parsed
+		_position = position;
+		
 		if (styleValuesLists.length == 0)
 		{
 			if (styleValues.length == 1)
 			{
-				typedProperties.push( {
+				return {
 				name:propertyName,
 				typedValue:styleValues[0],
-				important:important});
+				important:important};
 			}
 			else
 			{
-				typedProperties.push( {
+				return {
 				name:propertyName,
 				typedValue:GROUP(styleValues),
-				important:important});
+				important:important};
 				
 			}
 		}
@@ -438,16 +471,11 @@ class CSSStyleParser
 				}
 			}
 			
-			typedProperties.push( {
+			return {
 				name:propertyName,
 				typedValue:CSS_LIST(styleListProperty),
-				important:important});
-			
+				important:important};
 		}
-		
-		
-		
-		return position;
 	}
 	
 	
@@ -468,7 +496,7 @@ class CSSStyleParser
 		}
 		
 		var ident:String = styles.substr(start, position - start);
-		if (ident == "important")
+		if (ident == CSSConstants.IMPORTANT)
 		{
 			return position;
 		}
@@ -541,7 +569,15 @@ class CSSStyleParser
 		//else can be number, integer or percentage
 		switch (c)
 		{
-			case ' '.code, ';'.code:
+		
+			
+			//number is a percentage	
+			case '%'.code:	
+				var numberOrInteger:Float = Std.parseFloat(styles.substr(start, position - start));
+				styleValues.push(CSSPropertyValue.PERCENTAGE(numberOrInteger));
+				++position;
+				
+			default:
 				if (isNumber)
 				{
 					var number:Float = Std.parseFloat(styles.substr(start, position - start));
@@ -551,13 +587,7 @@ class CSSStyleParser
 				{
 					var integer:Int = Std.parseInt(styles.substr(start, position - start));
 					styleValues.push(CSSPropertyValue.INTEGER(integer));
-				}
-			
-			//number is a percentage	
-			case '%'.code:	
-				var numberOrInteger:Float = Std.parseFloat(styles.substr(start, position - start));
-				styleValues.push(CSSPropertyValue.PERCENTAGE(numberOrInteger));
-				position++;
+				}	
 		}
 		
 		return position;
@@ -697,18 +727,74 @@ class CSSStyleParser
 	
 	private function parseFunctionnalNotation(ident:String, styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
-		switch(ident)
+		var c:Int = styles.fastCodeAt(position);
+		var start:Int = position;
+		
+		while (c != ')'.code)
 		{
-			case 'url':
-				position = parseURL(styles, position, styleValues);
-				
-			case 'rgb':
-				position = parseRGB(styles, position, styleValues);
+			if (c.isEOF())
+			{
+				return -1;
+			}
+			c = styles.fastCodeAt(++position);
 		}
 		
-		return position;
+		var cssFunction:String = styles.substr(start, position - start);
+		
+		var functionValues:TypedPropertyData = parseStyleValue("", cssFunction, 0);
+		
+		trace(functionValues);
+		
+		getFunctionalNotation(ident, functionValues.typedValue);
+		
+		//switch(ident)
+		//{
+			//case 'url':
+				//position = parseURL(styles, position, styleValues);
+				//
+			//case 'rgb':
+				//position = parseRGB(styles, position, styleValues);
+		//}
+		
+		return ++position;
 	}
 	
+	
+	private function getFunctionalNotation(name:String, value:CSSPropertyValue):CSSPropertyValue
+	{
+		switch (name)
+		{
+			case 'rgb':
+				switch(value)
+				{
+					case CSS_LIST(value):
+						if (value.length == 3)
+						{
+							switch(value[0])
+							{
+								case INTEGER(value):
+									
+								default:	
+							}
+						}
+						
+					default:	
+				}
+				
+			case 'url':
+				switch(value)
+				{
+					case IDENTIFIER(value):
+						return CSSPropertyValue.URL(value);
+					case STRING(value):	
+						return CSSPropertyValue.URL(value);
+						
+					default:	
+				}
+		}
+		
+		return null;
+	}
 	
 	
 	private function parseURL(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
@@ -729,7 +815,7 @@ class CSSStyleParser
 		{
 			if (c.isEOF())
 			{
-				return position;
+				return -1;
 			}
 			c = styles.fastCodeAt(++position);
 		}
@@ -741,6 +827,30 @@ class CSSStyleParser
 	
 	private function parseRGB(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
+		var c:Int = styles.fastCodeAt(position);
+		var start:Int = position;
+		
+		while (c != ')'.code)
+		{
+			if (c.isEOF())
+			{
+				return -1;
+			}
+			c = styles.fastCodeAt(++position);
+		}
+		
+		var rgb:String = styles.substr(start, position - start);
+		var properties:Array<TypedPropertyData> = new Array<TypedPropertyData>();
+		
+		//parseStyleValue("", rgb, 0, properties);
+		
+		trace(properties);
+		
+		if (properties.length != 1)
+		{
+			return -1;
+		}
+		
 		return position;
 	}
 	
