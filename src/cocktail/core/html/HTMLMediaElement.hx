@@ -468,6 +468,9 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			_nativeMedia.play();
 			onTimeUpdateTick();
+
+			//we need to launch on play to
+			onProgressTick();
 		}
 		
 	}
@@ -963,8 +966,8 @@ class HTMLMediaElement extends EmbeddedElement
 	private function onTimeUpdateTick():Void
 	{
 		//stop dispatching time updates if the
-		//media is paused
-		if (paused == true)
+		//media is paused or ended
+		if (paused == true && ended == true)
 		{
 			return;
 		}
@@ -976,6 +979,9 @@ class HTMLMediaElement extends EmbeddedElement
 		//check if the end of the media is reached
 		if (duration - _currentPlaybackPosition < PLAYBACK_END_DELTA)
 		{
+			//first, we define that video is ended
+			ended = true;
+
 			//if looping is enabled, seek to the start
 			//of the media
 			if (loop == true)
@@ -984,7 +990,7 @@ class HTMLMediaElement extends EmbeddedElement
 				return;
 			}
 			
-			ended = true;
+			
 			
 			//set current time to the total duration to reflect
 			//the fact that the video reached ending
@@ -1020,26 +1026,29 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function onProgressTick():Void
 	{
-		//dispatch a load progress event
-		//TODO 4 : should it be dispatched before suspend ?
-		fireEvent(Event.PROGRESS, false, false);
-		
-		//check if all of the media has been loaded
-		if (_nativeMedia.bytesLoaded >= _nativeMedia.bytesTotal)
-		{
-			setReadyState(HAVE_ENOUGH_DATA);
+		//we need progress only if media is not playing
+		if(paused != true) {
+			//dispatch a load progress event
+			//TODO 4 : should it be dispatched before suspend ?
+			fireEvent(Event.PROGRESS, false, false);
 			
-			networkState = NETWORK_IDLE;
-			fireEvent(Event.SUSPEND, false, false);
+			//check if all of the media has been loaded
+			if (_nativeMedia.bytesLoaded >= _nativeMedia.bytesTotal)
+			{
+				setReadyState(HAVE_ENOUGH_DATA);
+				
+				networkState = NETWORK_IDLE;
+				fireEvent(Event.SUSPEND, false, false);
+				
+				return;
+			}
 			
-			return;
-		}
-		
-		//TODO 3 : passing from one ready state to 
-		//another should be improved
-		if (readyState == HAVE_METADATA)
-		{
-			setReadyState(HAVE_FUTURE_DATA);
+			//TODO 3 : passing from one ready state to 
+			//another should be improved
+			if (readyState == HAVE_METADATA)
+			{
+				setReadyState(HAVE_FUTURE_DATA);
+			}
 		}
 		
 		//if not all of the media has been loaded, dispatch

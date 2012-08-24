@@ -85,6 +85,14 @@ class NativeVideo extends NativeMedia
 	 */
 	private var _seeking:Bool;
 	
+
+	/**
+	 * is the netstream object has been already launched, or never
+	 * Because in netstream.play we set the source of the file, and there is no over way to do this
+	 * @type bool
+	 */
+	private var playLaunched:Bool;
+
 	/**
 	 * class constructor. Init video
 	 */
@@ -112,9 +120,18 @@ class NativeVideo extends NativeMedia
 	 */
 	override public function play():Void
 	{
-		_netStream.resume();
-	}
-	
+		//because must be call explicitly, we do this to avoid load video before play
+		if (!playLaunched && _src != null) {
+			playLaunched = true;
+
+			_netStream.bufferTime = 1;
+			_netStream.play(_src);
+		}
+		else {
+			_netStream.resume();
+		}
+		
+	}	
 	/**
 	 * call the native pause method
 	 * on the NetStream object
@@ -230,11 +247,7 @@ class NativeVideo extends NativeMedia
 		if (metaWasNull == true)
 		{
 			_metaData = data;
-			
-			//pause video by default, play must be explicitely
-			//called
-			_netStream.pause();
-			
+						
 			onNativeLoadedMetaData();
 		}
 	}
@@ -305,7 +318,6 @@ class NativeVideo extends NativeMedia
 		_metaData = null;
 		
 		_src = value;
-		_netStream.play(value);
 		
 		return value;
 	}
