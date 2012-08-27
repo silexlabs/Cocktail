@@ -514,7 +514,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function doPlay():Void
 	{
-		_nativeMedia.play();
+		nativeMedia.play();
 		onTimeUpdateTick();
 	}
 	
