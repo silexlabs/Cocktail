@@ -84,11 +84,8 @@ class EventTarget
 				//the event flow
 				if (shouldStopEventPropagation(evt) == true)
 				{
-					//reset the event internal state, so that it
-					//can be reused
-					//first store the current defaultPrevented state, else
-					//it will be reset a the time of the return, then tries to
-					//execute the default action before stopping event flow
+					//end the event dispatching by executing default
+					//behaviour if needed
 					return endEventDispatching(evt);
 				}
 			}
@@ -125,8 +122,7 @@ class EventTarget
 					}
 				}
 				
-				//finish event dispatching, call the default actions and reset
-				//the state of the event object
+				//finish event dispatching, call the default actions
 				return endEventDispatching(evt);
 			}
 		}
@@ -286,14 +282,12 @@ class EventTarget
 	}
 	
 	/**
-	 * End the dispatching of an event and
-	 * reset it to its initial state
+	 * End the dispatching of an event
 	 */
 	private function endEventDispatching(evt:Event):Bool
 	{
 		var defaultPrevented:Bool = evt.defaultPrevented;
 		executeDefaultActionIfNeeded(defaultPrevented, evt);
-		evt.reset();
 		return defaultPrevented;
 	}
 	

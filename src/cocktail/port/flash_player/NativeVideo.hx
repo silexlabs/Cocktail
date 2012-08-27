@@ -96,10 +96,26 @@ class NativeVideo extends NativeMedia
 		_video.smoothing = true;
 		_currentTime = 0.0;
 		_seeking = false;
-		_nc = new NetConnection();
+		initNetConnection();
 		_nc.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 		_nc.connect(null); 
 		
+	}
+	
+	/**
+	 * Init the flash NetConnection object
+	 */
+	private function initNetConnection():Void
+	{
+		_nc = new NetConnection();
+	}
+	
+	/**
+	 * Init the flash NetStream object
+	 */
+	private function initNetStream():Void
+	{
+		_netStream = new NetStream(_nc);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -205,7 +221,7 @@ class NativeVideo extends NativeMedia
 	 */
 	private function connectStream():Void
 	{
-		_netStream = new NetStream(_nc);
+		initNetStream();
 		
 		_netStream.client = {
 			onMetaData:onNetStreamMetaData
