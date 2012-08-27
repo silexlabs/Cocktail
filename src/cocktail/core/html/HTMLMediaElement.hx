@@ -692,7 +692,7 @@ class HTMLMediaElement extends EmbeddedElement
 				return;
 			}
 		}
-		_nativeMedia.onLoadedMetaData = onLoadedMetaData;
+		_nativeMedia.onLoadedMetaData = onNativeMediaLoadedMetaData;
 		_nativeMedia.src = url;
 	}
 	
@@ -933,7 +933,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * of the html element and all the attributes
 	 * which can retrieved through this metadata
 	 */
-	private function onLoadedMetaData(e:Event):Void
+	private function onNativeMediaLoadedMetaData(e:Event):Void
 	{
 		intrinsicHeight = _nativeMedia.height;
 		intrinsicWidth = _nativeMedia.width;
