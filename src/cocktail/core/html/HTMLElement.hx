@@ -574,8 +574,13 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		#if macro
 		#else
-		_needsCascading = true;
+		if (nodeType == DOMConstants.ELEMENT_NODE)
+		{
+			_needsCascading = true;
 		_ownerHTMLDocument.invalidateCascade();
+		}
+			
+		
 		#end
 	}
 	
@@ -1447,6 +1452,8 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function set_innerHTML(value:String):String
 	{
+		
+		trace(tagName);
 		var childLength:Int = childNodes.length;
 		for (i in 0...childLength)
 		{
