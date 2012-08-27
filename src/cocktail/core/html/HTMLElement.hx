@@ -572,8 +572,11 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function invalidateCascade():Void
 	{
+		#if macro
+		#else
 		_needsCascading = true;
 		_ownerHTMLDocument.invalidateCascade();
+		#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

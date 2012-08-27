@@ -24,10 +24,13 @@ class TextResource extends AbstractResource
 	 */
 	override private function load(url:String):Void
 	{
+		#if macro
+		#else
 		var http:Http = new Http(url);
 		http.onData = onTextLoadComplete;
 		http.onError = onTextLoadError;
 		http.request(false);
+		#end
 	}
 	
 	private function onTextLoadComplete(text:Dynamic):Void
