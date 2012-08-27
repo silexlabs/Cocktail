@@ -296,24 +296,6 @@ class Event
 	}
 	
 	/**
-	 * Reset the event to its initial state, so
-	 * that it can be re-dispatched
-	 */
-	public function reset():Void
-	{
-		dispatched = false;
-		defaultPrevented = false;
-		propagationStopped = false;
-		immediatePropagationStopped = false;
-		target = null;
-		currentTarget = null;
-		type = null;
-		bubbles = false;
-		cancelable = false;
-		eventPhase = 0;
-	}
-	
-	/**
 	 * When this method is invoked, the event must be canceled,
 	 * meaning any default actions normally taken by the
 	 * implementation as a result of the event must not occur
