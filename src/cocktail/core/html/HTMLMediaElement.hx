@@ -10,6 +10,7 @@ import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.port.platform.nativeMedia.NativeMedia;
+import haxe.Stack;
 import haxe.Timer;
 import cocktail.core.html.HTMLData;
 import cocktail.core.renderer.RendererData;
@@ -628,7 +629,6 @@ class HTMLMediaElement extends EmbeddedElement
 			//TODO 2 : Let absolute URL be the absolute URL that would have resulted 
 			//from resolving the URL specified by the src attribute's value relative
 			//to the media element when the src attribute was last changed.
-			
 			currentSrc = src;
 			fetchResource(currentSrc);	
 		}
@@ -688,7 +688,6 @@ class HTMLMediaElement extends EmbeddedElement
 				return;
 			}
 		}
-		
 		_nativeMedia.onLoadedMetaData = onLoadedMetaData;
 		_nativeMedia.src = url;
 	}
@@ -769,9 +768,9 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 		
 		if (readyState == HAVE_METADATA && (newReadyState == HAVE_CURRENT_DATA || newReadyState == HAVE_ENOUGH_DATA 
-		|| newReadyState == HAVE_FUTURE_DATA))
+		|| newReadyState == HAVE_FUTURE_DATA) || (readyState == HAVE_FUTURE_DATA && newReadyState == HAVE_ENOUGH_DATA))
 		{
-			if (_loadedDataWasDispatched == false)
+			if (_loadedDataWasDispatched == false && readyState == HAVE_METADATA)
 			{
 				fireEvent(Event.LOADED_DATA, false, false);
 				_loadedDataWasDispatched = true;
@@ -977,10 +976,11 @@ class HTMLMediaElement extends EmbeddedElement
 		if (duration - _currentPlaybackPosition < PLAYBACK_END_DELTA)
 		{
 			//if looping is enabled, seek to the start
-			//of the media
+			//of the media, then restart playback
 			if (loop == true)
 			{
 				seek(0);
+				play();
 				return;
 			}
 			
@@ -1061,7 +1061,7 @@ class HTMLMediaElement extends EmbeddedElement
 	private function set_src(value:String):String 
 	{
 		super.setAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME, value);
-		loadResource();
+		selectResource();
 		return value;
 	}
 	
