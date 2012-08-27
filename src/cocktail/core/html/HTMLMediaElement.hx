@@ -447,9 +447,9 @@ class HTMLMediaElement extends EmbeddedElement
 					fireEvent(Event.WAITING, false, false);
 					
 				case HAVE_FUTURE_DATA, HAVE_ENOUGH_DATA:
+					doPlay();
 					fireEvent(Event.PLAYING, false, false);
 			}
-			
 		}
 		
 		_autoplaying = false;
@@ -461,11 +461,6 @@ class HTMLMediaElement extends EmbeddedElement
 		if (_stalledByPreload == true)
 		{
 			selectResource();
-		}
-		else
-		{
-			nativeMedia.play();
-			onTimeUpdateTick();
 		}
 		
 	}
@@ -513,6 +508,15 @@ class HTMLMediaElement extends EmbeddedElement
 	/////////////////////////////////
 	// PRIVATE METHODS
 	////////////////////////////////
+	
+	/**
+	 * Actually start the native media playback
+	 */
+	private function doPlay():Void
+	{
+		_nativeMedia.play();
+		onTimeUpdateTick();
+	}
 	
 	/**
 	 * Start the loading of a media element, this 
@@ -790,6 +794,7 @@ class HTMLMediaElement extends EmbeddedElement
 					
 					if (paused == false)
 					{
+						doPlay();
 						fireEvent(Event.PLAYING, false, false);
 					}
 				}
@@ -802,6 +807,7 @@ class HTMLMediaElement extends EmbeddedElement
 						
 						if (paused == false)
 						{
+							doPlay();
 							fireEvent(Event.PLAYING, false, false);
 						}
 					}
@@ -980,7 +986,6 @@ class HTMLMediaElement extends EmbeddedElement
 				play();
 				return;
 			}
-			
 			ended = true;
 			
 			//set current time to the total duration to reflect
