@@ -1261,7 +1261,7 @@ class CSSStyleParser
 				cssPropertyValue = COLOR(KEYWORD(PURPLE));	
 				
 			case 'fuchsia':
-				cssPropertyValue = COLOR(KEYWORD(FUSHIA));		
+				cssPropertyValue = COLOR(KEYWORD(FUCHSIA));		
 				
 			case 'green':
 				cssPropertyValue = COLOR(KEYWORD(GREEN));	

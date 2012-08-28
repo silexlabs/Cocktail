@@ -599,7 +599,7 @@ class CSSValueConverter
 			case FOREST_GREEN:
 				return RGBA(34, 139, 34, 1.0);	
 				
-			case FUSHIA:
+			case FUCHSIA:
 				return RGBA(255, 0, 255, 1.0);
 				
 			case GAINSBORO:

@@ -239,8 +239,26 @@ class CSSStyleSerializer
 	{
 		switch(keyword)
 		{
+			case ALICE_BLUE:
+				return "aliceblue";
+				
+			case ANTIQUE_WHITE:
+				return "antiquewhite";
+				
 			case AQUA:
 				return 'aqua';
+				
+			case AQUAMARINE:
+				return "aquamarine";	
+				
+			case AZURE:
+				return "azure";	
+				
+			case BEIGE:
+				return "beige";	
+				
+			case BISQUE:
+				return "bisque";	
 				
 			case BLUE:
 				return 'blue';
@@ -248,32 +266,404 @@ class CSSStyleSerializer
 			case BLACK:
 				return 'black';	
 				
-			case SILVER:
-				return 'silver';	
+			case BLANCHE_DALMOND:
+				return "blanchedalmond";	
+			
+			case BLUE_VIOLET:
+				return "blueviolet";
+				
+			case BROWN:
+				return "brown";
+				
+			case BURLY_WOOD:
+				return "burlywood";	
+				
+			case CADET_BLUE:
+				return "cadetblue";	
+				
+			case CHARTREUSE:
+				return "chartreuse";	
+				
+			case CHOCOLATE:
+				return "chocolate";	
+				
+			case CORAL:
+				return "coral";
+				
+			case CORNFLOWER_BLUE:
+				return "cornflowerblue";	
+				
+			case CORNSILK:
+				return "cornsilk";	
+				
+			case CRIMSON:
+				return "crimson";	
+				
+			case CYAN:
+				return "cyan";	
+				
+			case DARK_BLUE:
+				return "darkblue";	
+				
+			case DARK_CYAN:
+				return "darkcyan";	
+				
+			case DARK_GOLDEN_ROD:
+				return "darkgoldenrod";	
+				
+			case DARK_GRAY:
+				return "darkgray";	
+				
+			case DARK_GREEN:
+				return "darkgreen";	
+				
+			case DARK_GREY:
+				return "darkgrey";
+			
+			case DARK_KHAKI:
+				return "darkkhaki";	
+				
+			case DARK_MAGENTA:
+				return "darkmagenta";
+				
+			case DARK_OLIVE_GREEN:
+				return "darkolivegreen";	
+				
+			case DARK_ORANGE:
+				return "darkorange";	
+				
+			case DARK_ORCHID:
+				return "darkorchid";	
+				
+			case DARK_RED:
+				return "darkred";
+				
+			case DARK_SALMON:
+				return "darksalmon";	
+				
+			case DARK_SEA_GREEN:
+				return "darkseagreen";	
+				
+			case DARK_SLATE_BLUE:
+				return "darkslateblue";	
+				
+			case DARK_SLATE_GRAY:
+				return "darkslategray";	
+				
+			case DARK_SLATE_GREY:
+				return "darkslategrey";	
+				
+			case DARK_TURQUOISE:
+				return "darkturquoise";	
+				
+			case DARK_VIOLET:
+				return "darkviolet";	
+				
+			case DEEP_PINK:
+				return "deeppink";
+				
+			case DEEP_SKY_BLUE:
+				return "deepskyblue";	
+				
+			case DIM_GRAY:
+				return "dimgray";	
+				
+			case DIM_GREY:
+				return "dimgrey";	
+				
+			case DODGER_BLUE:
+				return "dodgerblue";	
+			
+			case FIRE_BRICK:
+				return "firebrick";	
+				
+			case FLORAL_WHITE:
+				return "floralwhite";	
+				
+			case FOREST_GREEN:
+				return "forestgreen";	
+				
+			case FUCHSIA:
+				return "fuchsia";	
+				
+			case GAINSBORO:
+				return "gainsboro";	
+				
+			case GHOST_WHITE:
+				return "ghostwhite";		
+				
+			case GOLD:
+				return "gold";	
+				
+			case GOLDEN_ROD:
+				return "goldenrod";			
 				
 			case GRAY:
-				return 'gray';
+				return "gray";		
+				
+			case GREY:
+				return "grey";		
+				
+			case GREEN_YELLOW:
+				return "greenyellow";		
+				
+			case HONEY_DEW:
+				return "honeydew";	
+				
+			case HOT_PINK:
+				return "hotpink";		
+				
+			case INDIGO:
+				return "indigo";	
+				
+			case IVORY:
+				return "ivory";	
+				
+			case INDIAN_RED:
+				return "indianred";			
+				
+			case KHAKI:
+				return "khaki";	
+				
+			case LAVENDER:
+				return "lavender";		
+				
+			case LAVENDER_BLUSH:
+				return "lavenderblush";		
+				
+			case LAWN_GREEN:
+				return "lawngreen";
+				
+			case LEMON_CHIFFON:
+				return "lemonchiffon";	
+				
+			case LIGHT_BLUE:
+				return "lightblue";	
+				
+			case LIGHT_CORAL:
+				return "lightcoral";	
+				
+			case LIGHT_CYAN:
+				return "lightcyan";		
+				
+			case LIGHT_GOLDENROD_YELLOW:
+				return "lightgoldenrodyellow";		
+				
+			case LIGHT_GRAY:
+				return "lightgray";		
+				
+			case LIGHT_GREEN:
+				return "lightgreen";	
+				
+			case LIGHT_GREY:
+				return "lightgrey";
+				
+			case LIGHT_PINK:
+				return "lightpink";	
+				
+			case LIGHT_SALMON:
+				return "lightsalmon";		
+				
+			case LIGHT_SEA_GREEN:
+				return "lightseagreen";		
+		
+			case LIGHT_SKY_BLUE:
+				return "lightskyblue";		
+				
+			case LIGHT_SLATE_GRAY:
+				return "lightslategray";		
+				
+			case LIGHT_SLATE_GREY:
+				return "lightslategrey";	
+				
+			case LIGHT_STEEL_BLUE:
+				return "lightsteelblue";	
+				
+			case LIGHT_YELLOW:
+				return "lightyellow";
+				
+			case LIME:
+				return "lime";	
+				
+			case LIME_GREEN:
+				return "limegreen";	
+				
+			case LINEN:
+				return "linen";	
+				
+			case MAGENTA:
+				return "magenta";		
+				
+			case MAROON:
+				return "marron";	
+				
+			case MEDIUM_AQUAMARINE:
+				return "mediumaquamarine";		
+				
+			case MEDIUM_BLUE:
+				return "mediumblue";
+				
+			case MEDIUM_ORCHID:
+				return "mediumorchid";		
+				
+			case MEDIUM_PURPLE:
+				return "mediumpurple";		
+				
+			case MEDIUM_SEA_GREEN:
+				return "mediumseagreen";	
+				
+			case MEDIUM_SLATE_BLUE:
+				return "mediumslateblue";	
+				
+			case MEDIUM_SPRING_GREEN:
+				return "mediumspringgreen";		
+				
+			case MEDIUM_TURQUOISE:
+				return "mediumturquoise";	
+				
+			case MEDIUM_VIOLET_RED:
+				return "mediumvioletred";	
+				
+			case MIDNIGHT_BLUE:
+				return "midnightblue";	
+				
+			case MINT_CREAM:
+				return "mintcream";		
+				
+			case MISTY_ROSE:
+				return "mistyrose";		
+				
+			case MOCCASIN:
+				return "moccasin";	
+				
+			case NAVAJO_WHITE:
+				return "navajowhite";	
+							
+			case OLD_LACE:
+				return "oldlace";		
+				
+			case OLIVE_DRAB:
+				return "olivedrab";		
+				
+			case ORANGE_RED:
+				return "orangered";		
+				
+			case ORCHID:
+				return "orchid";
+				
+			case PALE_GOLDEN_ROD:
+				return "palegoldenrod";		
+				
+			case PALE_GREEN:
+				return "palegreen";	
+				
+			case PALE_TURQUOISE:
+				return "paleturquoise";		
+				
+			case PALE_VIOLET_RED:
+				return "palevioletred";			
+				
+			case PAPAYA_WHIP:
+				return "papayawhip";
+				
+			case PEACH_PUFF:
+				return "peachpuff";		
+				
+			case PERU:
+				return "peru";	
+				
+			case PINK:
+				return "pink";
+				
+			case PLUM:
+				return "plum";	
+				
+			case POWDER_BLUE:
+				return "powderblue";	
+				
+			case ROSY_BROWN:
+				return "rosybrown";		
+				
+			case ROYAL_BLUE:
+				return "royalblue";	
+				
+			case SADDLE_BROWN:
+				return "saddlebrown";	
+				
+			case SALMON:
+				return "salmon";
+				
+			case SANDY_BROWN:
+				return "sandybrown";
+				
+			case SEA_GREEN:
+				return "seagreen";	
+				
+			case SEA_SHELL:
+				return "seashell";
+				
+			case SIENNA:
+				return "sienna";			
+				
+			case SILVER:
+				return 'silver';
+				
+			case SKY_BLUE:
+				return "skyblue";	
+		
+			case SLATE_BLUE:
+				return "slateblue";			
+				
+			case SLATE_GRAY:
+				return "slategray";		
+				
+			case SLATE_GREY:
+				return "slategrey";		
+				
+			case SNOW:
+				return "snow";		
+				
+			case SPRING_GREEN:
+				return "springgreen";		
+				
+			case STEEL_BLUE:
+				return "steelblue";	
+				
+			case TAN:
+				return "tan";		
+				
+			case THISLE:
+				return "thisle";	
+				
+			case TOMATO:
+				return "tomato";	
+				
+			case TURQUOISE:
+				return "turquoise";		
+				
+			case VIOLET:
+				return "violet";			
+				
+			case WHEAT:
+				return "wheat";
 				
 			case WHITE:
 				return 'white';	
 				
-			case MAROON:
-				return 'maroon';	
+			case WHITE_SMOKE:
+				return "whitesmoke";
+				
+			case YELLOW_GREEN:
+				return "yellowgreen";			
 				
 			case RED:
 				return 'red';
 				
 			case PURPLE:
-				return 'purple';
-				
-			case FUSHIA:
-				return 'fuchsia';		
+				return 'purple';	
 				
 			case GREEN:
 				return 'green';
-				
-			case LIME:
-				return 'lime';
 				
 			case OLIVE:
 				return 'olive';		
