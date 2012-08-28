@@ -1027,6 +1027,13 @@ class HTMLMediaElement extends EmbeddedElement
 		//TODO 4 : should it be dispatched before suspend ?
 		fireEvent(Event.PROGRESS, false, false);
 		
+		//TODO 3 : passing from one ready state to 
+		//another should be improved
+		if (readyState == HAVE_METADATA)
+		{
+			setReadyState(HAVE_FUTURE_DATA);
+		}
+		
 		//check if all of the media has been loaded
 		if (nativeMedia.bytesLoaded >= nativeMedia.bytesTotal)
 		{
@@ -1036,13 +1043,6 @@ class HTMLMediaElement extends EmbeddedElement
 			fireEvent(Event.SUSPEND, false, false);
 			
 			return;
-		}
-		
-		//TODO 3 : passing from one ready state to 
-		//another should be improved
-		if (readyState == HAVE_METADATA)
-		{
-			setReadyState(HAVE_FUTURE_DATA);
 		}
 		
 		//if not all of the media has been loaded, dispatch
