@@ -455,17 +455,164 @@ class CSSValueConverter
 	{	
 		switch (value)
 		{
+			case ALICE_BLUE:
+				return RGBA(240, 248, 255, 1.0);
+				
+			case ANTIQUE_WHITE:
+				return RGBA(250, 235, 215, 1.0);	
+			
 			case AQUA:
 				return RGBA(0, 255, 255, 1.0);
+				
+			case AQUAMARINE:
+				return RGBA(127, 255, 212, 1.0);	
+				
+			case AZURE:
+				return RGBA(240, 255, 255, 1.0);	
+				
+			case BEIGE:
+				return RGBA(245, 245, 220, 1.0);
+				
+			case BISQUE:
+				return RGBA(255, 228, 196, 1.0);		
 				
 			case BLACK:
 				return RGBA(0, 0, 0, 1.0);
 				
+			case BLANCHE_DALMOND:
+				return RGBA(255, 235, 205, 1.0);
+				
 			case BLUE:
 				return RGBA(0, 0, 255, 1.0);
 				
+			case BLUE_VIOLET:
+				return RGBA(138, 43, 226, 1.0);	
+				
+			case BROWN:
+				return RGBA(165, 42, 42, 1.0);	
+				
+			case BURLY_WOOD:
+				return RGBA(222, 184, 135, 1.0);	
+				
+			case CADET_BLUE:
+				return RGBA(95, 158, 160, 1.0);	
+				
+			case CHARTREUSE:
+				return RGBA(127, 255, 0, 1.0);	
+				
+			case CHOCOLATE:
+				return RGBA(210, 105, 30, 1.0);	
+				
+			case CORAL:
+				return RGBA(255, 127, 80, 1.0);	
+				
+			case CORNFLOWER_BLUE:
+				return RGBA(100, 149, 237, 1.0);	
+				
+			case CORNSILK:
+				return RGBA(255, 248, 220, 1.0);	
+				
+			case CRIMSON:
+				return RGBA(220, 20, 60, 1.0);	
+				
+			case CYAN:
+				return RGBA(0, 255, 255, 1.0);	
+				
+			case DARK_BLUE:
+				return RGBA(0, 0, 139, 1.0);	
+				
+			case DARK_CYAN:
+				return RGBA(0, 139, 139, 1.0);	
+				
+			case DARK_GOLDEN_ROD:
+				return RGBA(184, 134, 11, 1.0);	
+				
+			case DARK_GRAY:
+				return RGBA(169, 169, 169, 1.0);	
+				
+			case DARK_GREEN:
+				return RGBA(0, 100, 0, 1.0);	
+				
+			case DARK_GREY:
+				return RGBA(169, 169, 169, 1.0);	
+				
+			case DARK_KHAKI:
+				return RGBA(189, 183, 107, 1.0);
+				
+			case DARK_MAGENTA:
+				return RGBA(139, 0, 139, 1.0);	
+				
+			case DARK_OLIVE_GREEN:
+				return RGBA(85, 107, 47, 1.0);
+				
+			case DARK_ORANGE:
+				return RGBA(255, 140, 0, 1.0);	
+				
+			case DARK_ORCHID:
+				return RGBA(153, 50, 204, 1.0);	
+				
+			case DARK_RED:
+				return RGBA(139, 0, 0, 1.0);	
+				
+			case DARK_SALMON:
+				return RGBA(233, 150, 122, 1.0);	
+				
+			case DARK_SEA_GREEN:
+				return RGBA(143, 188, 143, 1.0);	
+				
+			case DARK_SLATE_BLUE:
+				return RGBA(72, 61, 139, 1.0);	
+				
+			case DARK_SLATE_GRAY:
+				return RGBA(47, 79, 79, 1.0);	
+				
+			case DARK_SLATE_GREY:
+				return RGBA(47, 79, 79, 1.0);	
+				
+			case DARK_TURQUOISE:
+				return RGBA(0, 206, 209, 1.0);	
+				
+			case DARK_VIOLET:
+				return RGBA(148, 0, 211, 1.0);	
+				
+			case DEEP_PINK:
+				return RGBA(255, 20, 147, 1.0);	
+				
+			case DEEP_SKY_BLUE:
+				return RGBA(0, 191, 255, 1.0);	
+				
+			case DIM_GRAY:
+				return RGBA(105, 105, 105, 1.0);	
+				
+			case DIM_GREY:
+				return RGBA(105, 105, 105, 1.0);
+				
+			case DODGER_BLUE:
+				return RGBA(30, 144, 255, 1.0);	
+				
+			case FIRE_BRICK:
+				return RGBA(178, 34, 34, 1.0);	
+				
+			case FLORAL_WHITE:
+				return RGBA(255, 250, 240, 1.0);	
+				
+			case FOREST_GREEN:
+				return RGBA(34, 139, 34, 1.0);	
+				
 			case FUSHIA:
 				return RGBA(255, 0, 255, 1.0);
+				
+			case GAINSBORO:
+				return RGBA(220, 220, 220, 1.0);	
+				
+			case GHOST_WHITE:
+				return RGBA(248, 248, 255, 1.0);	
+				
+			case GOLD:
+				return RGBA(255, 215, 0, 1.0);	
+				
+			case GOLDEN_ROD:
+				return RGBA(218, 165, 32, 1.0);	
 				
 			case GRAY:
 				return RGBA(128, 128, 128, 1.0);
@@ -473,20 +620,194 @@ class CSSValueConverter
 			case GREEN:
 				return RGBA(0, 128, 0, 1.0);
 				
+			case GREEN_YELLOW:
+				return RGBA(173, 255, 47, 1.0);	
+				
+			case GREY:
+				return RGBA(128, 128, 128, 1.0);	
+				
+			case HONEY_DEW:
+				return RGBA(240, 255, 240, 1.0);		
+				
+			case HOT_PINK:
+				return RGBA(255, 105, 180, 1.0);	
+				
+			case INDIAN_RED:
+				return RGBA(205, 92, 92, 1.0);	
+				
+			case INDIGO:
+				return RGBA(75, 0, 130, 1.0);		
+				
+			case IVORY:
+				return RGBA(255, 255, 240, 1.0);		
+				
+			case KHAKI:
+				return RGBA(240, 230, 140, 1.0);	
+				
+			case LAVENDER:
+				return RGBA(230, 230, 250, 1.0);		
+				
+			case LAVENDER_BLUSH:
+				return RGBA(255, 240, 245, 1.0);		
+				
+			case LAWN_GREEN:
+				return RGBA(124, 252, 0, 1.0);		
+				
+			case LEMON_CHIFFON:
+				return RGBA(255, 250, 205, 1.0);	
+				
+			case LIGHT_BLUE:
+				return RGBA(173, 216, 130, 1.0);	
+				
+			case LIGHT_CORAL:
+				return RGBA(240, 128, 128, 1.0);
+				
+			case LIGHT_CYAN:
+				return RGBA(224, 255, 255, 1.0);		
+				
+			case LIGHT_GOLDENROD_YELLOW:
+				return RGBA(250, 250, 210, 1.0);	
+				
+			case LIGHT_GRAY:
+				return RGBA(211, 211, 211, 1.0);	
+				
+			case LIGHT_GREEN:
+				return RGBA(144, 238, 144, 1.0);		
+				
+			case LIGHT_GREY:
+				return RGBA(211, 211, 211, 1.0);	
+				
+			case LIGHT_PINK:
+				return RGBA(255, 182, 193, 1.0);	
+				
+			case LIGHT_SALMON:
+				return RGBA(255, 160, 122, 1.0);	
+				
+			case LIGHT_SEA_GREEN:
+				return RGBA(32, 178, 170, 1.0);		
+				
+			case LIGHT_SKY_BLUE:
+				return RGBA(135, 206, 250, 1.0);		
+				
+			case LIGHT_SLATE_GRAY:
+				return RGBA(119, 136, 153, 1.0);		
+			
+			case LIGHT_SLATE_GREY:
+				return RGBA(119, 136, 153, 1.0);	
+				
+			case LIGHT_STEEL_BLUE:
+				return RGBA(176, 196, 222, 1.0);	
+				
+			case LIGHT_YELLOW:
+				return RGBA(255, 255, 224, 1.0);		
+				
 			case LIME:
 				return RGBA(0, 255, 0, 1.0);
+				
+			case LIME_GREEN:
+				return RGBA(50, 205, 50, 1.0);		
+				
+			case LINEN:
+				return RGBA(250, 240, 230, 1.0);	
+				
+			case MAGENTA:
+				return RGBA(255, 0, 255, 1.0);		
 				
 			case MAROON:
 				return RGBA(128, 0, 0, 1.0);
 				
+			case MEDIUM_AQUAMARINE:
+				return RGBA(102, 205, 170, 1.0);	
+				
+			case MEDIUM_BLUE:
+				return RGBA(0, 0, 205, 1.0);	
+				
+			case MEDIUM_ORCHID:
+				return RGBA(186, 85, 211, 1.0);	
+				
+			case MEDIUM_PURPLE:
+				return RGBA(147, 112, 219, 1.0);		
+				
+			case MEDIUM_SEA_GREEN:
+				return RGBA(60, 179, 113, 1.0);	
+				
+			case MEDIUM_SLATE_BLUE:
+				return RGBA(123, 104, 238, 1.0);	
+				
+			case MEDIUM_SPRING_GREEN:
+				return RGBA(0, 250, 154, 1.0);		
+				
+			case MEDIUM_TURQUOISE:
+				return RGBA(72, 209, 204, 1.0);	
+				
+			case MEDIUM_VIOLET_RED:
+				return RGBA(199, 21, 133, 1.0);	
+				
+			case MIDNIGHT_BLUE:
+				return RGBA(25, 25, 112, 1.0);	
+				
+			case MINT_CREAM:
+				return RGBA(245, 255, 250, 1.0);		
+				
+			case MISTY_ROSE:
+				return RGBA(255, 228, 225, 1.0);	
+				
+			case MOCCASIN:
+				return RGBA(255, 228, 181, 1.0);		
+				
+			case NAVAJO_WHITE:
+				return RGBA(255, 222, 173, 1.0);	
+				
 			case NAVY:
 				return RGBA(0, 0, 128, 1.0);
+				
+			case OLD_LACE:
+				return RGBA(253, 245, 230, 1.0);		
 				
 			case OLIVE:
 				return RGBA(128, 128, 0, 1.0);
 				
+			case OLIVE_DRAB:
+				return RGBA(107, 142, 35, 1.0);		
+				
 			case ORANGE:
 				return RGBA(255, 165, 0, 1.0);
+				
+			case ORANGE_RED:
+				return RGBA(255, 69, 0, 1.0);	
+				
+			case ORCHID:
+				return RGBA(218, 112, 214, 1.0);		
+				
+			case PALE_GOLDEN_ROD:
+				return RGBA(238, 232, 170, 1.0);	
+				
+			case PALE_GREEN:
+				return RGBA(152, 251, 152, 1.0);
+				
+			case PALE_TURQUOISE:
+				return RGBA(175, 238, 238, 1.0);		
+				
+			case PALE_VIOLET_RED:
+				return RGBA(219, 112, 147, 1.0);	
+				
+			case PAPAYA_WHIP:
+				return RGBA(255, 239, 213, 1.0);	
+				
+			case PEACH_PUFF:
+				return RGBA(255, 218, 185, 1.0);	
+				
+			case PERU:
+				return RGBA(205, 133, 63, 1.0);		
+				
+			case PINK:
+				return RGBA(255, 192, 203, 1.0);		
+				
+			case PLUM:
+				return RGBA(221, 160, 221, 1.0);	
+				
+			case POWDER_BLUE:
+				return RGBA(176, 224, 230, 1.0);		
 				
 			case PURPLE:
 				return RGBA(255, 165, 0, 1.0);
@@ -494,17 +815,86 @@ class CSSValueConverter
 			case RED:
 				return RGBA(255, 0, 0, 1.0);
 				
+			case ROSY_BROWN:
+				return RGBA(188, 143, 143, 1.0);	
+				
+			case ROYAL_BLUE:
+				return RGBA(65, 105, 225, 1.0);	
+				
+			case SADDLE_BROWN:
+				return RGBA(139, 69, 19, 1.0);		
+				
+			case SALMON:
+				return RGBA(250, 128, 114, 1.0);	
+				
+			case SANDY_BROWN:
+				return RGBA(244, 164, 96, 1.0);		
+				
+			case SEA_GREEN:
+				return RGBA(46, 139, 87, 1.0);	
+				
+			case SEA_SHELL:
+				return RGBA(255, 245, 238, 1.0);		
+				
+			case SIENNA:
+				return RGBA(160, 82, 45, 1.0);		
+				
 			case SILVER:
 				return RGBA(192, 192, 192, 1.0);
+				
+			case SKY_BLUE:
+				return RGBA(135, 206, 235, 1.0);	
+				
+			case SLATE_BLUE:
+				return RGBA(106, 90, 205, 1.0);		
+				
+			case SLATE_GRAY:
+				return RGBA(112, 128, 144, 1.0);		
+				
+			case SLATE_GREY:
+				return RGBA(112, 128, 144, 1.0);	
+				
+			case SNOW:
+				return RGBA(255, 250, 250, 1.0);
+				
+			case SPRING_GREEN:
+				return RGBA(0, 255, 127, 1.0);		
+				
+			case STEEL_BLUE:
+				return RGBA(70, 130, 180, 1.0);		
+				
+			case TAN:
+				return RGBA(210, 180, 140, 1.0);	
 				
 			case TEAL:
 				return RGBA(0, 128, 128, 1.0);
 				
+			case THISLE:
+				return RGBA(216, 191, 216, 1.0);	
+				
+			case TOMATO:
+				return RGBA(255, 99, 71, 1.0);		
+				
+			case TURQUOISE:
+				return RGBA(64, 224, 208, 1.0);		
+				
+			case VIOLET:
+				return RGBA(238, 130, 238, 1.0);	
+				
+			case WHEAT:
+				return RGBA(245, 222, 179, 1.0);		
+				
 			case WHITE:
 				return RGBA(255, 255, 255, 1.0);
 				
+			case WHITE_SMOKE:
+				return RGBA(245, 245, 245, 1.0);	
+				
 			case YELLOW:
 				return RGBA(255, 255, 0, 1.0);
+				
+			case YELLOW_GREEN:
+				return RGBA(154, 205, 50, 1.0);		
 				
 		}
 	}
