@@ -246,7 +246,7 @@ class FlowBoxRenderer extends BoxRenderer
 	private function doLayoutPositionedChild(elementRenderer:ElementRenderer, containingBlockData:ContainingBlockData):Void
 	{
 		var elementCoreStyle:CoreStyle = elementRenderer.coreStyle;
-		
+
 		//for horizonal offset, if both left and right are not auto,
 		//left takes precedance so we try to apply left offset first
 		if (elementCoreStyle.isAuto(elementCoreStyle.left) == false)

@@ -182,7 +182,6 @@ class CSSSelectorParser
 					
 				case END_CLASS_SELECTOR:
 					var className:String = selector.substr(start, position - start);
-					trace(className);
 					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className));
 					state = END_SIMPLE_SELECTOR;
 					continue;
@@ -244,7 +243,6 @@ class CSSSelectorParser
 					}
 					
 				case INVALID_SELECTOR:
-					//trace("invalid");
 					return;
 			}
 			c = selector.fastCodeAt(++position);
@@ -263,7 +261,6 @@ class CSSSelectorParser
 				
 			case END_CLASS_SELECTOR:
 				var className:String = selector.substr(start, position - start);
-				trace(className);
 				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className));
 				state = END_SIMPLE_SELECTOR;
 				

@@ -120,9 +120,12 @@ class InlineFormattingContext extends FormattingContext
 			if (child.isPositioned() == true && child.isRelativePositioned() == false)
 			{
 				var staticLineBox:LineBox = new StaticPositionLineBox(child);
+						
 				
 				child.bounds.width = child.coreStyle.usedValues.width+ child.coreStyle.usedValues.paddingLeft + child.coreStyle.usedValues.paddingRight ;
-				child.bounds.height = child.coreStyle.usedValues.height+ child.coreStyle.usedValues.paddingTop + child.coreStyle.usedValues.paddingBottom;
+				child.bounds.height = child.coreStyle.usedValues.height + child.coreStyle.usedValues.paddingTop + child.coreStyle.usedValues.paddingBottom;
+				staticLineBox.marginLeft = child.coreStyle.usedValues.marginLeft;
+				staticLineBox.marginRight = child.coreStyle.usedValues.marginRight;
 				lineBox = insertIntoLine([staticLineBox], lineBox, rootLineBoxes, openedElementRenderers);
 			}
 			//here the child either starts a new formatting context, meaning it is displayed
