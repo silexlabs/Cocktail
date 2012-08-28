@@ -40,6 +40,66 @@ class CharacterData extends HTMLElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Cascading doesn't apply to text, only to 
+	 * actual HTMLElement
+	 */
+	override public function cascade(parentChangedProperties:Hash<Void>, programmaticChange:Bool):Void
+	{
+		
+	}
+	
+	/**
+	 * Overriden as cascade doesn't apply
+	 * to text
+	 */
+	override public function invalidateCascade():Void
+	{
+		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as cascade doesn't apply to text
+	 */
+	override private function initialCascadeSelf():Void
+	{
+		
+	}
+	
+	/**
+	 * Overriden as a text as no style declaration
+	 */
+	override private function getStyleDeclaration():Void
+	{
+		
+	}
+	
+	/**
+	 * Overriden as Text is not supposed to instantiate
+	 * any of the attribute used by atual HTMLElement
+	 */
+	override private function init():Void
+	{	
+		
+	}
+	
+	/**
+	 * Overriden as Text is not responsible for
+	 * starting animations, only actual HTMLElement
+	 */
+	override public function startPendingAnimation():Bool
+	{
+		return false;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	

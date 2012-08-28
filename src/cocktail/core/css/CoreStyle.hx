@@ -263,6 +263,7 @@ class CoreStyle
 	 * The specified style for each property can come for multiple 
 	 * source, this method manages the priority among those sources
 	 * 
+	 * @param properties the names of properties to cascade
 	 * @param	initialStyleDeclaration contains the initial value for each of the supported CSS styles.
 	 * Used last if a value for a given style is not provided from other sources
 	 * @param	styleSheetDeclaration	contains all the style values applying to the HTMLElement which
@@ -273,6 +274,8 @@ class CoreStyle
 	 * parent of the HTMLElement, used for inherithance
 	 * @param	parentFontSize parent node's computed font size
 	 * @param	parentXHeight parent node's computed x height
+	 * @param programmaticChange wether the triggering of the cascade is the result of a programmatic (scripted) change
+	 * as opposed to a declarative one
 	 * @return an array containing the names of all the properties whose specified values changed during cascading
 	 */
 	public function cascade(properties:Hash<Void>, initialStyleDeclaration:InitialStyleDeclaration, styleSheetDeclaration:CSSStyleDeclaration, inlineStyleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, parentFontSize:Float, parentXHeight:Float, programmaticChange:Bool):Hash<Void>
@@ -280,16 +283,17 @@ class CoreStyle
 		//TODO 2 : should do the same for "color" which influence style with a currentColor value
 		if (properties.exists(CSSConstants.FONT_SIZE) == true || properties.exists(CSSConstants.FONT_FAMILY) == true)
 		{
-			//when all the properties are cascaded, font size
-			//and font family must be cascaded first, as their
-			//computed values is used to computed some length.
+			//when the value of font-size and/or font-family is cascaded,
+			//they must be cascaded first, as their
+			//computed values is used to compute some length.
 			//For instance if 'width' is defined as '2em', for
-			//the computed absolute length be correct, font-size
+			//the computed absolute length to be correct, font-size
 			//and font-family must have been previously computed
 			//so that the right font metrics is used for the computation
 			cascadeProperty(CSSConstants.FONT_SIZE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, 0, 0, programmaticChange);
 			cascadeProperty(CSSConstants.FONT_FAMILY, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, 0, 0, programmaticChange);
 			
+			//remove them to prevent cascading them twice
 			properties.remove(CSSConstants.FONT_SIZE);
 			properties.remove(CSSConstants.FONT_FAMILY);
 			
@@ -328,7 +332,7 @@ class CoreStyle
 		}
 		
 		//apply special computing relationship between
-		//disply, float and position property
+		//display, float and position property
 		applyPositionFloatAndDisplayRelationship();
 		
 		return changedProperties;
@@ -347,39 +351,48 @@ class CoreStyle
 		//highest priority
 		if (inlineStyleDeclaration.hasProperty(propertyName) == true)
 		{
-			return setProperty(propertyName, inlineStyleDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange);
+			return setProperty(propertyName, inlineStyleDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false);
 		}
 		//else check if a value for this style for this HTMLElement was defined in the document's style sheet
 		else if (styleSheetDeclaration.hasProperty(propertyName) == true)
 		{
-			return setProperty(propertyName, styleSheetDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange);
+			return setProperty(propertyName, styleSheetDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false);
 		}
 		//else if the property is inherithed (for instance 'font-family'),
 		//use the value from the parent
 		else if (isInherited(propertyName) == true)
 		{
-			return setProperty(propertyName, parentStyleDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange);
+			return setProperty(propertyName, parentStyleDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, true);
 		}
 		//else at last use the initial value of the property
 		else
 		{
-			return setProperty(propertyName, initialStyleDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange);
+			return setProperty(propertyName, initialStyleDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false);
 		}
 	}
 	
 	/**
 	 * cascade a property by updating its specified value
 	 * and computing its value if necessary
+	 * 
+	 * @param propertyName the name of the cascaded property
+	 * @param styleDeclaration the style declaration from which the property
+	 * must be retrieved which might be a style sheet style declaration,
+	 * an inline one, the one from the parent or the initial style declaraion
+	 * 
+	 * @return wether the specified value of the property did change
 	 */
-	private function setProperty(propertyName:String, styleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, initialStyleDeclaration:CSSStyleDeclaration, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool):Bool
+	private function setProperty(propertyName:String, styleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, initialStyleDeclaration:CSSStyleDeclaration, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool, isInherited:Bool):Bool
 	{
+		//retrieve the property from the right style declaration
 		var propertyData:TypedPropertyData = styleDeclaration.getTypedProperty(propertyName);
 		var property:CSSPropertyValue = propertyData.typedValue;
 		
+		//get the property with the same name from the specified properties of this CoreStyle
 		var specifiedProperty:TypedPropertyData = specifiedValues.getTypedProperty(propertyName);
 		
-		var isNotInitial:Bool = specifiedProperty != null;
-		
+		//check that the new property has a different value from
+		//the current one. If it doesn't, cascading is over
 		if (specifiedProperty != null)
 		{
 			if (Type.enumEq(property, specifiedProperty.typedValue) == true)
@@ -388,15 +401,26 @@ class CoreStyle
 			}
 		}
 		
+		//update the specified property
 		specifiedValues.setTypedProperty(propertyName, property, propertyData.important);
 		
+		//update the computed property
 		var computedProperty:CSSPropertyValue = null;
-		
 		switch(property)
 		{
+			//for a specified value of inherit, the 
+			//computed value is always the one of the parent
 			case INHERIT:
 				computedProperty = parentStyleDeclaration.getTypedProperty(propertyName).typedValue;
-				
+				//set the inherited flag to make sure that no animation is started as the 
+				//result of this property change
+				isInherited = true;
+			
+			//for a specified value of initial, 
+			//the computed value is the initial one 
+			//
+			//TODO 2 : doesn't make sense ? for instance for font-size whose specified value is medium,
+			//computed value shouldn't be medium. Should Initial and inherit instead affect specified value ?
 			case INITIAL:
 				computedProperty = initialStyleDeclaration.getTypedProperty(propertyName).typedValue;
 				
@@ -412,7 +436,7 @@ class CoreStyle
 		//if it was specified declaratively
 		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(propertyName);
 		
-		if (programmaticChange == true)
+		if (programmaticChange == true && isInherited == false)
 		{
 			if (computedValues.getTypedProperty(propertyName) != null)
 			{
