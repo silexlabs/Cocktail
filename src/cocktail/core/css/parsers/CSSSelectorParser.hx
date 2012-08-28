@@ -160,7 +160,7 @@ class CSSSelectorParser
 					}
 					
 				case SIMPLE_SELECTOR:	
-					if (!isAsciiChar(c))
+					if (!isSelectorChar(c))
 					{
 						switch(c)
 						{
@@ -182,6 +182,7 @@ class CSSSelectorParser
 					
 				case END_CLASS_SELECTOR:
 					var className:String = selector.substr(start, position - start);
+					trace(className);
 					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className));
 					state = END_SIMPLE_SELECTOR;
 					continue;
@@ -249,6 +250,8 @@ class CSSSelectorParser
 			c = selector.fastCodeAt(++position);
 		}
 		
+		//TODO 2 : dusplaicate code, when reading ident, should
+		//read until end of file
 		switch(next)
 		{
 			case END_TYPE_SELECTOR:
@@ -259,7 +262,8 @@ class CSSSelectorParser
 				simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.UNIVERSAL;
 				
 			case END_CLASS_SELECTOR:
-				var className = selector.substr(start, position - start);
+				var className:String = selector.substr(start, position - start);
+				trace(className);
 				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className));
 				state = END_SIMPLE_SELECTOR;
 				
@@ -559,6 +563,10 @@ class CSSSelectorParser
 	
 	static inline function isAsciiChar(c) {
 		return (c >= 'a'.code && c <= 'z'.code) || (c >= 'A'.code && c <= 'Z'.code) || (c >= '0'.code && c <= '9'.code);
+	}
+	
+	static inline function isSelectorChar(c) {
+		return isAsciiChar(c) || c == '-'.code;
 	}
 	
 	static inline function isPseudoClassChar(c) {

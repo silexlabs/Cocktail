@@ -271,6 +271,9 @@ class Animator
 		
 		switch(value)
 		{
+			case INTEGER(value):
+				floats.push(value);
+			
 			case TIME(value):
 				switch(value)
 				{

@@ -48,8 +48,6 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		var usedWidth:Float = measureWidthAndHorizontalMargins(style, containingBlockData);
 		var usedHeight:Float = measureHeightAndVerticalMargins(style, containingBlockData);
 				
-
-		
 		if (style.isAuto(style.width) == true && style.isAuto(style.height) == true)
 		{
 			//apply a constrain algorithm specific to embedded elements

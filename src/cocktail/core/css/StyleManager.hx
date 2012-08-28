@@ -75,6 +75,7 @@ class StyleManager
 	{
 		var styleDeclaration:CSSStyleDeclaration = new CSSStyleDeclaration();
 		applyStyleSheets(node, styleDeclaration, _styleSheets, matchedPseudoClasses);
+		
 		return styleDeclaration;
 	}
 	

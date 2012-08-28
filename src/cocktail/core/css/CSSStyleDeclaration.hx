@@ -1186,7 +1186,9 @@ class CSSStyleDeclaration
 					case KEYWORD(value):
 						switch(value)
 						{
-							case NONE, ALL:
+							//add special case for left and right which 
+							//might be both style names and css keyword
+							case NONE, ALL, LEFT, RIGHT:
 								return true;
 								
 							default:	
@@ -1236,13 +1238,19 @@ class CSSStyleDeclaration
 			case CSSConstants.TRANSITION_DELAY:
 				switch(styleValue)
 				{
+					case INTEGER(value):
+						if (value == 0)
+						{
+							return true;
+						}
+					
 					case TIME(value):
 						return true;
 						
 					default:
 				}
 		}
-	
+		
 		return false;
 	}
 	

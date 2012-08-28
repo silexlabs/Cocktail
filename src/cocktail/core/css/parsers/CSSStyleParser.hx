@@ -988,6 +988,9 @@ class CSSStyleParser
 	 */
 	private function parseIdent(ident:String, styleValues:Array<CSSPropertyValue>):Void
 	{
+		//always compare lowercase string in CSS
+		ident = ident.toLowerCase();
+		
 		switch(ident)
 		{
 			case 'inherit':
@@ -1235,6 +1238,12 @@ class CSSStyleParser
 				
 			case 'aqua':
 				cssPropertyValue = COLOR(KEYWORD(AQUA));
+				
+			case 'dimgray':
+				cssPropertyValue = COLOR(KEYWORD(DIM_GRAY));
+				
+			case 'dimgrey':
+				cssPropertyValue = COLOR(KEYWORD(DIM_GREY));	
 				
 			case 'blue':
 				cssPropertyValue = COLOR(KEYWORD(BLUE));

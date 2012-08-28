@@ -139,7 +139,7 @@ class BoxStylesComputer
 	{
 		//compute the margins and the constrained width and height
 		style.usedValues.width = constrainWidth(style, measureWidthAndHorizontalMargins(style, containingBlockData));
-
+	
 		style.usedValues.height = constrainHeight(style, measureHeightAndVerticalMargins(style, containingBlockData));
 	}
 	
@@ -225,13 +225,15 @@ class BoxStylesComputer
 	private function measureWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		//get the content width (width without margins and paddings)
-		var computedWidth:Float = getComputedWidth(style, containingBlockData);
+		//width must be constrained now, so that margin will be computed with the
+		//actually used width value
+		var computedWidth:Float = constrainWidth(style, getComputedWidth(style, containingBlockData));
 		
 		//left margin
 		style.usedValues.marginLeft = getComputedMarginLeft(style, computedWidth, containingBlockData);
 		//right margin
 		style.usedValues.marginRight = getComputedMarginRight(style, computedWidth, containingBlockData);
-
+		
 		return computedWidth;
 	}
 	
@@ -293,7 +295,9 @@ class BoxStylesComputer
 	private function measureHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
 		//get the computed height in pixel
-		var computedHeight:Float = getComputedHeight(style, containingBlockData);
+		//height must be constrained now so that margin are computed with the 
+		//actual height that will be used
+		var computedHeight:Float = constrainHeight(style, getComputedHeight(style, containingBlockData));
 		
 		//left margin
 		style.usedValues.marginTop = getComputedMarginTop(style, computedHeight, containingBlockData);
