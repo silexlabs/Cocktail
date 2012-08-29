@@ -96,7 +96,7 @@ class DefaultCSSStyleSheet extends CSSStyleSheet
 				u, ins          { text-decoration: underline }
 				
 				center          { text-align: center }
-				:link, :visited { text-decoration: underline }
+				:link, :visited { text-decoration: underline; cursor:pointer; }
 				:focus          { outline: thin dotted invert }
 		";
 	}
