@@ -7,6 +7,7 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.css.CSSConstants;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
 import cocktail.core.geom.Matrix;
@@ -147,6 +148,29 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//into usable value. For instance, a with defined as a percentage will compute
 		//to a percentage of the containing block width
 		var containingBlockData:ContainingBlockData = _containingBlock.getContainerBlockData();
+		
+		//special case for element with percent height, from the CSS 2.1 spec : 
+		// If the height of the containing block is not specified explicitly (i.e., it depends on content height),
+		//and this element is not absolutely positioned, the value computes to 'auto'
+		//
+		//TODO 3 : is it the right place for this check ? Might be either in BoxComputer or in CoreStyle, there
+		//are caveats for both. In CoreStyle, hard to find containing block, in BoxComputer hard to call method
+		//as if height was auto without modifying computedValues
+		if (containingBlockData.isHeightAuto == true)
+		{
+			if (isPositioned() == false || isRelativePositioned() == true)
+			{
+				switch(coreStyle.height)
+				{
+					case PERCENTAGE(value):
+						coreStyle.computedValues.height = CSSConstants.AUTO;
+						
+					default:	
+				}
+			}
+			
+		}
+		
 		
 		//compute the font style (font-size, line-height...)
 		FontAndTextStylesComputer.compute(coreStyle, containingBlockData);
