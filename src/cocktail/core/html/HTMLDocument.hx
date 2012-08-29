@@ -444,13 +444,13 @@ class HTMLDocument extends Document
 		//execute post or canceled activation behaviour
 		if (nearestActivatableElement != null)
 		{
-			if (mouseEvent.defaultPrevented == true)
+			if (clickEvent.defaultPrevented == true)
 			{
 				nearestActivatableElement.runCanceledActivationStep();
 			}
 			else
 			{
-				nearestActivatableElement.runPostClickActivationStep(mouseEvent);
+				nearestActivatableElement.runPostClickActivationStep(clickEvent);
 			}
 		}
 	}

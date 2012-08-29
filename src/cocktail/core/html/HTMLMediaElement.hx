@@ -10,6 +10,7 @@ import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.port.platform.nativeMedia.NativeMedia;
+import haxe.Stack;
 import haxe.Timer;
 import cocktail.core.html.HTMLData;
 import cocktail.core.renderer.RendererData;
@@ -449,9 +450,9 @@ class HTMLMediaElement extends EmbeddedElement
 					fireEvent(Event.WAITING, false, false);
 					
 				case HAVE_FUTURE_DATA, HAVE_ENOUGH_DATA:
+					doPlay();
 					fireEvent(Event.PLAYING, false, false);
 			}
-			
 		}
 		
 		_autoplaying = false;
@@ -463,11 +464,6 @@ class HTMLMediaElement extends EmbeddedElement
 		if (_stalledByPreload == true)
 		{
 			selectResource();
-		}
-		else
-		{
-			_nativeMedia.play();
-			onTimeUpdateTick();
 		}
 		
 	}
@@ -515,6 +511,15 @@ class HTMLMediaElement extends EmbeddedElement
 	/////////////////////////////////
 	// PRIVATE METHODS
 	////////////////////////////////
+	
+	/**
+	 * Actually start the native media playback
+	 */
+	private function doPlay():Void
+	{
+		_nativeMedia.play();
+		onTimeUpdateTick();
+	}
 	
 	/**
 	 * Start the loading of a media element, this 
@@ -628,7 +633,6 @@ class HTMLMediaElement extends EmbeddedElement
 			//TODO 2 : Let absolute URL be the absolute URL that would have resulted 
 			//from resolving the URL specified by the src attribute's value relative
 			//to the media element when the src attribute was last changed.
-			
 			currentSrc = src;
 			fetchResource(currentSrc);	
 		}
@@ -688,8 +692,7 @@ class HTMLMediaElement extends EmbeddedElement
 				return;
 			}
 		}
-		
-		_nativeMedia.onLoadedMetaData = onLoadedMetaData;
+		_nativeMedia.onLoadedMetaData = onNativeMediaLoadedMetaData;
 		_nativeMedia.src = url;
 	}
 	
@@ -769,9 +772,9 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 		
 		if (readyState == HAVE_METADATA && (newReadyState == HAVE_CURRENT_DATA || newReadyState == HAVE_ENOUGH_DATA 
-		|| newReadyState == HAVE_FUTURE_DATA))
+		|| newReadyState == HAVE_FUTURE_DATA) || (readyState == HAVE_FUTURE_DATA && newReadyState == HAVE_ENOUGH_DATA))
 		{
-			if (_loadedDataWasDispatched == false)
+			if (_loadedDataWasDispatched == false && readyState == HAVE_METADATA)
 			{
 				fireEvent(Event.LOADED_DATA, false, false);
 				_loadedDataWasDispatched = true;
@@ -794,6 +797,7 @@ class HTMLMediaElement extends EmbeddedElement
 					
 					if (paused == false)
 					{
+						doPlay();
 						fireEvent(Event.PLAYING, false, false);
 					}
 				}
@@ -806,6 +810,7 @@ class HTMLMediaElement extends EmbeddedElement
 						
 						if (paused == false)
 						{
+							doPlay();
 							fireEvent(Event.PLAYING, false, false);
 						}
 					}
@@ -928,7 +933,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * of the html element and all the attributes
 	 * which can retrieved through this metadata
 	 */
-	private function onLoadedMetaData(e:Event):Void
+	private function onNativeMediaLoadedMetaData(e:Event):Void
 	{
 		intrinsicHeight = _nativeMedia.height;
 		intrinsicWidth = _nativeMedia.width;
@@ -977,13 +982,13 @@ class HTMLMediaElement extends EmbeddedElement
 		if (duration - _currentPlaybackPosition < PLAYBACK_END_DELTA)
 		{
 			//if looping is enabled, seek to the start
-			//of the media
+			//of the media, then restart playback
 			if (loop == true)
 			{
 				seek(0);
+				play();
 				return;
 			}
-			
 			ended = true;
 			
 			//set current time to the total duration to reflect
@@ -1024,6 +1029,13 @@ class HTMLMediaElement extends EmbeddedElement
 		//TODO 4 : should it be dispatched before suspend ?
 		fireEvent(Event.PROGRESS, false, false);
 		
+		//TODO 3 : passing from one ready state to 
+		//another should be improved
+		if (readyState == HAVE_METADATA)
+		{
+			setReadyState(HAVE_FUTURE_DATA);
+		}
+		
 		//check if all of the media has been loaded
 		if (_nativeMedia.bytesLoaded >= _nativeMedia.bytesTotal)
 		{
@@ -1033,13 +1045,6 @@ class HTMLMediaElement extends EmbeddedElement
 			fireEvent(Event.SUSPEND, false, false);
 			
 			return;
-		}
-		
-		//TODO 3 : passing from one ready state to 
-		//another should be improved
-		if (readyState == HAVE_METADATA)
-		{
-			setReadyState(HAVE_FUTURE_DATA);
 		}
 		
 		//if not all of the media has been loaded, dispatch
@@ -1061,7 +1066,7 @@ class HTMLMediaElement extends EmbeddedElement
 	private function set_src(value:String):String 
 	{
 		super.setAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME, value);
-		loadResource();
+		selectResource();
 		return value;
 	}
 	
