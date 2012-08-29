@@ -749,7 +749,17 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		var parent:ElementRenderer = parentNode;
 		while (parent.isPositioned() == false)
 		{
+			//TODO 3 : this check was introduced for anonymous block.
+			//when a positioned element is the descendant of an anonymous block
+			//at the time where this method is first called, the anonymous block
+			//is not attached to the rendering tree yet, so its parent is null.
+			//Be sure that it doesn't cause trouble down the line
+			if (parent.parentNode == null)
+			{
+				break;
+			}
 			parent = parent.parentNode;
+			
 		}
 		return cast(parent);
 	}
