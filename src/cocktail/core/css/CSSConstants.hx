@@ -136,6 +136,8 @@ class CSSConstants
 	//CSS Ident
 	
 	public static inline var IMPORTANT:String = "important";
+	
+	public static inline var AUTO:String = "auto";
 
 	public function new() 
 	{
