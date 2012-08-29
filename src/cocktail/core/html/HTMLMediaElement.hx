@@ -823,8 +823,7 @@ class HTMLMediaElement extends EmbeddedElement
 							{
 								paused = false;
 								fireEvent(Event.PLAY, false, false);
-								
-								play();
+								doPlay();
 								
 								fireEvent(Event.PLAYING, false, false);
 							}
