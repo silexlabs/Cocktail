@@ -11,6 +11,7 @@ import cocktail.core.css.CSSConstants;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
 import cocktail.core.geom.Matrix;
+import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 
 import cocktail.core.layout.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
@@ -153,10 +154,15 @@ class BoxRenderer extends InvalidatingElementRenderer
 		// If the height of the containing block is not specified explicitly (i.e., it depends on content height),
 		//and this element is not absolutely positioned, the value computes to 'auto'
 		//
+		//This doesn't apply if the containing block is the elementRenderer of the HTML Body tag, in which
+		//case, if the body height is auto, it will use the height of the viewport
+		//
 		//TODO 3 : is it the right place for this check ? Might be either in BoxComputer or in CoreStyle, there
 		//are caveats for both. In CoreStyle, hard to find containing block, in BoxComputer hard to call method
 		//as if height was auto without modifying computedValues
-		if (containingBlockData.isHeightAuto == true)
+		//
+		//TODO 4 : the way to test for the body element is a bit hackish
+		if (containingBlockData.isHeightAuto == true && _containingBlock.domNode.tagName != HTMLConstants.HTML_BODY_TAG_NAME)
 		{
 			if (isPositioned() == false || isRelativePositioned() == true)
 			{
