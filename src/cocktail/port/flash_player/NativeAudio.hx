@@ -42,12 +42,6 @@ class NativeAudio extends NativeMedia
 	private var _soundChannel:SoundChannel;
 	
 	/**
-	 * The volume of the sound from 0.0 to
-	 * 1.0
-	 */
-	private var _volume:Float;
-	
-	/**
 	 * Store the current playing time
 	 * of the sound to now where to 
 	 * re-start it after a pause
@@ -62,9 +56,6 @@ class NativeAudio extends NativeMedia
 	{
 		super();
 		_currentTime = 0.0;
-		_volume = 1.0;
-		_sound = new Sound();
-		_sound.addEventListener(Event.ID3, onID3DataReceived);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +69,8 @@ class NativeAudio extends NativeMedia
 	{
 		//playing/resuming is the same as
 		//seeking to current time
-		seek(_currentTime);
+		//seek method expect time in seconds
+		seek(_currentTime / 1000);
 	}
 	
 	/**
@@ -96,20 +88,22 @@ class NativeAudio extends NativeMedia
 			_currentTime = _soundChannel.position;
 			_soundChannel.stop();
 		}
-		
 	}
 	
 	/**
 	 * Seek to a given position in the sound.
 	 * In flash there is no seek method for the
 	 * sound, only play with position arguments
+	 * 
+	 * @param time seek time in seconds
 	 */
 	override public function seek(time:Float):Void 
 	{
 		//playing the flash sound returns
 		//a sound channel object used to control
 		//the sound
-		_soundChannel = _sound.play(time, 0, new SoundTransform(volume, 0));
+		//flash sound object expects time in milliseconds
+		_soundChannel = _sound.play(time * 1000, 0, new SoundTransform(volume, 0));
 	}
 	
 	/**
@@ -171,14 +165,22 @@ class NativeAudio extends NativeMedia
 		return _sound.bytesLoaded;
 	}
 	
+	/**
+	 * Converted to seconds instead of 
+	 * milliseconds
+	 */
 	override private function get_duration():Float
 	{
-		return _sound.length;
+		return _sound.length / 1000;
 	}
 	
+	/**
+	 * Converted to seconds instead of 
+	 * milliseconds
+	 */
 	override private function get_currentTime():Float
 	{
-		return _currentTime;
+		return _soundChannel.position / 1000;
 	}
 	
 	/**
@@ -190,8 +192,11 @@ class NativeAudio extends NativeMedia
 		_currentTime = 0.0;
 		
 		//in flash, Sound object can't be reused
-		//for mulitple sounds
+		//for multiple sounds
 		_sound = new Sound();
+		
+		//listen for metadata loading of sound 
+		_sound.addEventListener(Event.ID3, onID3DataReceived);
 		
 		_sound.load(new URLRequest(value));
 		return value;

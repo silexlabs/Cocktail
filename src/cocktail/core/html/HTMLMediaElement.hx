@@ -982,7 +982,7 @@ class HTMLMediaElement extends EmbeddedElement
 			if (loop == true)
 			{
 				seek(0);
-				play();
+				doPlay();
 				return;
 			}
 			ended = true;
