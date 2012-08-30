@@ -28,6 +28,8 @@ class HTMLConstants
 	
 	public static inline var HTML_VIDEO_TAG_NAME:String = "VIDEO";
 	
+	public static inline var HTML_AUDIO_TAG_NAME:String = "AUDIO";
+	
 	public static inline var HTML_SOURCE_TAG_NAME:String = "SOURCE";
 	
 	public static inline var HTML_DIV_TAG_NAME:String = "DIV";

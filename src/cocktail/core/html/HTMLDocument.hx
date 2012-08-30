@@ -323,6 +323,9 @@ class HTMLDocument extends Document
 			case HTMLConstants.HTML_VIDEO_TAG_NAME:
 				element = new HTMLVideoElement();
 				
+			case HTMLConstants.HTML_AUDIO_TAG_NAME:
+				element = new HTMLAudioElement();
+				
 			case HTMLConstants.HTML_SOURCE_TAG_NAME:
 				element = new HTMLSourceElement();
 				

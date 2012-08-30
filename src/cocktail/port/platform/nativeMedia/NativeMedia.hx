@@ -31,7 +31,7 @@ class NativeMedia
 	/**
 	 * set the volume of the native media
 	 */
-	public var volume(never, set_volume):Float;
+	public var volume(null, set_volume):Float;
 	
 	/**
 	 * set the source of th native media, starting loading

@@ -311,8 +311,8 @@ class HTMLMediaElement extends EmbeddedElement
 		seeking = false;
 		readyState = HAVE_NOTHING;
 		_autoplaying = true;
-		muted = false;
 		volume = 1.0;
+		muted = false;
 		
 		_stalledByPreload = false;
 		_loadedDataWasDispatched = false;
