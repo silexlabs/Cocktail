@@ -806,6 +806,9 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
+	/**
+	 * Align all the line boxes in one line vertically
+	 */
 	private function alignLineBoxesVertically(lineBox:LineBox, lineBoxAscent:Float, formattingContextY:Float, parentBaseLineOffset:Float, formattingContextFontMetrics:FontMetricsData):Void
 	{
 		var length:Int = lineBox.childNodes.length;
@@ -830,6 +833,12 @@ class InlineFormattingContext extends FormattingContext
 			if (child.hasChildNodes() == true)
 			{
 				alignLineBoxesVertically(child, lineBoxAscent, formattingContextY, baselineOffset, formattingContextFontMetrics);
+			}
+			//line box which wrap replaced element or establishes new formatting context apply their
+			//top margin to their bounds here
+			else if (child.isStaticPosition() == true || child.elementRenderer.isReplaced() == true || child.elementRenderer.establishesNewFormattingContext() == true)
+			{
+				child.bounds.y += child.elementRenderer.coreStyle.usedValues.marginTop;
 			}
 		}
 	}
