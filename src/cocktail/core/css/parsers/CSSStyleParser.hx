@@ -1236,8 +1236,27 @@ class CSSStyleParser
 			case 'transparent':
 				cssPropertyValue = COLOR(TRANSPARENT);
 				
+			case 'aliceblue':
+				cssPropertyValue = COLOR(KEYWORD(ALICE_BLUE));
+					
+			case 'antiquewhite':
+				cssPropertyValue = COLOR(KEYWORD(ANTIQUE_WHITE));	
+				
 			case 'aqua':
 				cssPropertyValue = COLOR(KEYWORD(AQUA));
+				
+			case 'aquamarine':
+				cssPropertyValue = COLOR(KEYWORD(AQUAMARINE));	
+				
+			case 'azure':
+				cssPropertyValue = COLOR(KEYWORD(AZURE));	
+				
+			case 'beige':
+				cssPropertyValue = COLOR(KEYWORD(BEIGE));	
+				
+			case 'bisque':
+				cssPropertyValue = COLOR(KEYWORD(BISQUE));	
+				
 				
 			case 'dimgray':
 				cssPropertyValue = COLOR(KEYWORD(DIM_GRAY));
@@ -1250,6 +1269,357 @@ class CSSStyleParser
 				
 			case 'black':
 				cssPropertyValue = COLOR(KEYWORD(BLACK));	
+				
+			case 'blanchedalmond':
+				cssPropertyValue = COLOR(KEYWORD(BLANCHE_DALMOND));	
+					
+			case 'blueviolet':
+				cssPropertyValue = COLOR(KEYWORD(BLUE_VIOLET));
+					
+			case 'brown':
+				cssPropertyValue = COLOR(KEYWORD(BROWN));	
+				
+			case 'burlywood':
+				cssPropertyValue = COLOR(KEYWORD(ALICE_BLUE));	
+				
+			case 'cadetblue':
+				cssPropertyValue = COLOR(KEYWORD(CADET_BLUE));	
+				
+			case 'chartreuse':
+				cssPropertyValue = COLOR(KEYWORD(CHARTREUSE));	
+				
+			case 'chocolate':
+				cssPropertyValue = COLOR(KEYWORD(CHOCOLATE));	
+				
+			case 'coral':
+				cssPropertyValue = COLOR(KEYWORD(CORAL));	
+					
+			case 'cornflowerblue':
+				cssPropertyValue = COLOR(KEYWORD(CORNFLOWER_BLUE));	
+				
+			case 'cornsilk':
+				cssPropertyValue = COLOR(KEYWORD(CORNSILK));	
+				
+			case 'crimson':
+				cssPropertyValue = COLOR(KEYWORD(CRIMSON));	
+	
+			case 'cyan':
+				cssPropertyValue = COLOR(KEYWORD(CYAN));
+						
+			case 'darkblue':
+				cssPropertyValue = COLOR(KEYWORD(DARK_BLUE));	
+				
+			case 'darkgoldenrod':
+				cssPropertyValue = COLOR(KEYWORD(DARK_GOLDEN_ROD));	
+						
+			case 'darkgray':
+				cssPropertyValue = COLOR(KEYWORD(DARK_GRAY));
+					
+			case 'darkgreen':
+				cssPropertyValue = COLOR(KEYWORD(DARK_GREEN));	
+				
+			case 'darkgrey':
+				cssPropertyValue = COLOR(KEYWORD(DARK_GREY));	
+					
+			case 'darkkhaki':
+				cssPropertyValue = COLOR(KEYWORD(DARK_KHAKI));	
+					
+			case 'darkmagenta':
+				cssPropertyValue = COLOR(KEYWORD(DARK_MAGENTA));	
+					
+			case 'darkolivegreen':
+				cssPropertyValue = COLOR(KEYWORD(DARK_OLIVE_GREEN));	
+				
+			case 'darkorange':
+				cssPropertyValue = COLOR(KEYWORD(DARK_ORANGE));	
+				
+			case 'darkorchid':
+				cssPropertyValue = COLOR(KEYWORD(DARK_ORCHID));	
+				
+			case 'darkred':
+				cssPropertyValue = COLOR(KEYWORD(DARK_RED));	
+				
+			case 'darksalmon':
+				cssPropertyValue = COLOR(KEYWORD(DARK_SALMON));	
+				
+			case 'darkseagreen':
+				cssPropertyValue = COLOR(KEYWORD(DARK_SEA_GREEN));	
+				
+			case 'darkslateblue':
+				cssPropertyValue = COLOR(KEYWORD(DARK_SLATE_BLUE));	
+				
+			case 'darkslategray':
+				cssPropertyValue = COLOR(KEYWORD(DARK_SLATE_GRAY));	
+				
+			case 'darkslategrey':
+				cssPropertyValue = COLOR(KEYWORD(DARK_SLATE_GREY));	
+				
+			case 'darkturquoise':
+				cssPropertyValue = COLOR(KEYWORD(DARK_TURQUOISE));	
+						
+			case 'darkviolet':
+				cssPropertyValue = COLOR(KEYWORD(DARK_VIOLET));
+						
+			case 'deeppink':
+				cssPropertyValue = COLOR(KEYWORD(DEEP_PINK));
+						
+			case 'deepskyblue':
+				cssPropertyValue = COLOR(KEYWORD(DEEP_SKY_BLUE));
+						
+			case 'dodgerblue':
+				cssPropertyValue = COLOR(KEYWORD(DODGER_BLUE));
+						
+			case 'firebrick':
+				cssPropertyValue = COLOR(KEYWORD(FIRE_BRICK));
+						
+			case 'floralwhite':
+				cssPropertyValue = COLOR(KEYWORD(FLORAL_WHITE));
+						
+			case 'forestgreen':
+				cssPropertyValue = COLOR(KEYWORD(FOREST_GREEN));
+						
+			case 'gainsboro':
+				cssPropertyValue = COLOR(KEYWORD(GAINSBORO));
+						
+			case 'ghostwhite':
+				cssPropertyValue = COLOR(KEYWORD(GHOST_WHITE));
+						
+			case 'gold':
+				cssPropertyValue = COLOR(KEYWORD(GOLD));
+						
+			case 'goldenrod':
+				cssPropertyValue = COLOR(KEYWORD(GOLDEN_ROD));
+						
+			case 'greenyellow':
+				cssPropertyValue = COLOR(KEYWORD(GREEN_YELLOW));
+						
+			case 'honeydew':
+				cssPropertyValue = COLOR(KEYWORD(HONEY_DEW));
+						
+			case 'hotpink':
+				cssPropertyValue = COLOR(KEYWORD(HOT_PINK));
+						
+			case 'indianred':
+				cssPropertyValue = COLOR(KEYWORD(INDIAN_RED));
+						
+			case 'indigo':
+				cssPropertyValue = COLOR(KEYWORD(INDIGO));
+						
+			case 'ivory':
+				cssPropertyValue = COLOR(KEYWORD(IVORY));
+						
+			case 'khaki':
+				cssPropertyValue = COLOR(KEYWORD(KHAKI));
+						
+			case 'lavender':
+				cssPropertyValue = COLOR(KEYWORD(LAVENDER));
+						
+			case 'lavenderblush':
+				cssPropertyValue = COLOR(KEYWORD(LAVENDER_BLUSH));
+						
+			case 'lawngreen':
+				cssPropertyValue = COLOR(KEYWORD(LAWN_GREEN));
+						
+			case 'lemonchiffon':
+				cssPropertyValue = COLOR(KEYWORD(LEMON_CHIFFON));
+						
+			case 'lightblue':
+				cssPropertyValue = COLOR(KEYWORD(LIGHT_BLUE));
+						
+			case 'lightcoral':
+				cssPropertyValue = COLOR(KEYWORD(LIGHT_CORAL));
+						
+			case 'lightcyan':
+				cssPropertyValue = COLOR(KEYWORD(LIGHT_CYAN));
+						
+			case 'lightgoldenrodyellow':
+				cssPropertyValue = COLOR(KEYWORD(LIGHT_GOLDENROD_YELLOW));
+						
+			case 'lightgray':
+				cssPropertyValue = COLOR(KEYWORD(LIGHT_GRAY));
+						
+			case 'lightgrey':
+				cssPropertyValue = COLOR(KEYWORD(LIGHT_GREY));
+					
+			case 'lightgreen':
+				cssPropertyValue = COLOR(KEYWORD(LIGHT_GREEN));
+						
+			case 'lightpink':
+				cssPropertyValue = COLOR(KEYWORD(LIGHT_PINK));
+						
+			case 'lightsalmon':
+				cssPropertyValue = COLOR(KEYWORD(LIGHT_SALMON));
+						
+			case 'lightseagreen':
+				cssPropertyValue = COLOR(KEYWORD(LIGHT_SEA_GREEN));
+						
+			case 'lightskyblue':
+				cssPropertyValue = COLOR(KEYWORD(LIGHT_SKY_BLUE));
+						
+			case 'lightslategray':
+				cssPropertyValue = COLOR(KEYWORD(LIGHT_SLATE_GRAY));
+						
+			case 'lightslategrey':
+				cssPropertyValue = COLOR(KEYWORD(LIGHT_SLATE_GREY));
+						
+			case 'lightsteelblue':
+				cssPropertyValue = COLOR(KEYWORD(LIGHT_STEEL_BLUE));
+				
+			case 'lightyellow':
+				cssPropertyValue = COLOR(KEYWORD(LIGHT_YELLOW));
+						
+			case 'limegreen':
+				cssPropertyValue = COLOR(KEYWORD(LIME_GREEN));
+						
+			case 'linen':
+				cssPropertyValue = COLOR(KEYWORD(LINEN));
+						
+			case 'magenta':
+				cssPropertyValue = COLOR(KEYWORD(MAGENTA));
+						
+			case 'marron':
+				cssPropertyValue = COLOR(KEYWORD(MAROON));
+						
+			case 'mediumaquamarine':
+				cssPropertyValue = COLOR(KEYWORD(MEDIUM_AQUAMARINE));
+						
+			case 'mediumblue':
+				cssPropertyValue = COLOR(KEYWORD(MEDIUM_BLUE));
+						
+			case 'mediumorchid':
+				cssPropertyValue = COLOR(KEYWORD(MEDIUM_ORCHID));
+						
+			case 'mediumpurple':
+				cssPropertyValue = COLOR(KEYWORD(MEDIUM_PURPLE));
+						
+			case 'mediumseagreen':
+				cssPropertyValue = COLOR(KEYWORD(MEDIUM_SEA_GREEN));
+						
+			case 'mediumslateblue':
+				cssPropertyValue = COLOR(KEYWORD(MEDIUM_SLATE_BLUE));
+						
+			case 'mediumspringgreen':
+				cssPropertyValue = COLOR(KEYWORD(MEDIUM_SPRING_GREEN));
+						
+			case 'mintcream':
+				cssPropertyValue = COLOR(KEYWORD(MINT_CREAM));
+						
+			case 'mistyrose':
+				cssPropertyValue = COLOR(KEYWORD(MISTY_ROSE));
+						
+			case 'moccasin':
+				cssPropertyValue = COLOR(KEYWORD(MOCCASIN));
+						
+			case 'navajowhite':
+				cssPropertyValue = COLOR(KEYWORD(NAVAJO_WHITE));
+						
+			case 'oldlace':
+				cssPropertyValue = COLOR(KEYWORD(OLD_LACE));
+						
+			case 'olivedrab':
+				cssPropertyValue = COLOR(KEYWORD(OLIVE_DRAB));
+						
+			case 'orangered':
+				cssPropertyValue = COLOR(KEYWORD(ORANGE_RED));
+						
+			case 'orchid':
+				cssPropertyValue = COLOR(KEYWORD(ORCHID));
+						
+			case 'palegoldenrod':
+				cssPropertyValue = COLOR(KEYWORD(PALE_GOLDEN_ROD));
+						
+			case 'palegreen':
+				cssPropertyValue = COLOR(KEYWORD(PALE_GREEN));
+						
+			case 'paleturquoise':
+				cssPropertyValue = COLOR(KEYWORD(PALE_TURQUOISE));
+						
+			case 'palevioletred':
+				cssPropertyValue = COLOR(KEYWORD(PALE_VIOLET_RED));
+						
+			case 'papayawhip':
+				cssPropertyValue = COLOR(KEYWORD(PAPAYA_WHIP));
+						
+			case 'peachpuff':
+				cssPropertyValue = COLOR(KEYWORD(PEACH_PUFF));
+						
+			case 'peru':
+				cssPropertyValue = COLOR(KEYWORD(PERU));
+						
+			case 'pink':
+				cssPropertyValue = COLOR(KEYWORD(PINK));
+						
+			case 'plum':
+				cssPropertyValue = COLOR(KEYWORD(PLUM));
+						
+			case 'powderblue':
+				cssPropertyValue = COLOR(KEYWORD(POWDER_BLUE));
+						
+			case 'rosybrown':
+				cssPropertyValue = COLOR(KEYWORD(ROSY_BROWN));
+						
+			case 'royalblue':
+				cssPropertyValue = COLOR(KEYWORD(ROYAL_BLUE));
+						
+			case 'saddlebrown':
+				cssPropertyValue = COLOR(KEYWORD(SADDLE_BROWN));
+						
+			case 'salmon':
+				cssPropertyValue = COLOR(KEYWORD(SALMON));
+						
+			case 'sandybrown':
+				cssPropertyValue = COLOR(KEYWORD(SANDY_BROWN));
+						
+			case 'seagreen':
+				cssPropertyValue = COLOR(KEYWORD(SEA_GREEN));
+						
+			case 'sienna':
+				cssPropertyValue = COLOR(KEYWORD(SIENNA));
+						
+			case 'skyblue':
+				cssPropertyValue = COLOR(KEYWORD(SKY_BLUE));
+						
+			case 'slateblue':
+				cssPropertyValue = COLOR(KEYWORD(SLATE_BLUE));
+						
+			case 'slategray':
+				cssPropertyValue = COLOR(KEYWORD(SLATE_GRAY));
+						
+			case 'slategrey':
+				cssPropertyValue = COLOR(KEYWORD(SLATE_GREY));
+						
+			case 'snow':
+				cssPropertyValue = COLOR(KEYWORD(SNOW));
+						
+			case 'springgreen':
+				cssPropertyValue = COLOR(KEYWORD(SPRING_GREEN));
+						
+			case 'steelblue':
+				cssPropertyValue = COLOR(KEYWORD(STEEL_BLUE));
+						
+			case 'tan':
+				cssPropertyValue = COLOR(KEYWORD(TAN));
+						
+			case 'thisle':
+				cssPropertyValue = COLOR(KEYWORD(THISLE));
+						
+			case 'tomato':
+				cssPropertyValue = COLOR(KEYWORD(TOMATO));
+						
+			case 'turquoise':
+				cssPropertyValue = COLOR(KEYWORD(TURQUOISE));
+						
+			case 'violet':
+				cssPropertyValue = COLOR(KEYWORD(VIOLET));
+						
+			case 'wheat':
+				cssPropertyValue = COLOR(KEYWORD(WHEAT));
+						
+			case 'whitesmoke':
+				cssPropertyValue = COLOR(KEYWORD(WHITE_SMOKE));
+						
+			case 'yellowgreen':
+				cssPropertyValue = COLOR(KEYWORD(YELLOW_GREEN));
 				
 			case 'silver':
 				cssPropertyValue = COLOR(KEYWORD(SILVER));	
