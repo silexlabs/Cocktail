@@ -64,5 +64,18 @@ class InitialLayerRenderer extends LayerRenderer
 		return true;
 	}
 	
+	/////////////////////////////////
+	// OVERRIDEN PRIVATE LAYER TREE METHODS
+	////////////////////////////////	
+	
+	/**
+	 * The initial layer renderer always establishes
+	 * the roor stacking context
+	 */
+	override private function establishesNewStackingContext():Bool
+	{
+		return true;
+	}
+	
 	
 }
