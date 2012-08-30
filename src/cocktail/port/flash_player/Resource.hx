@@ -103,7 +103,6 @@ class Resource extends AbstractResource
 	 */
 	private function onNativeLoadIOError(event:IOErrorEvent):Void
 	{
-		trace(event.toString());
 		removeLoaderListeners(_loader);
 		onLoadError();
 	}
