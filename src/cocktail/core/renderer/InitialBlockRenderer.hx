@@ -120,11 +120,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	}
 	
 	/**
-	 * Overriden as initial block container alwyas establishes a new
-	 * stacking context and creates the root LayerRenderer of the
+	 * Overriden as initial block container alwyas establishes
+	 * creates the root LayerRenderer of the
 	 * LayerRenderer tree
 	 */
-	override public function establishesNewStackingContext():Bool
+	override public function createOwnLayer():Bool
 	{
 		return true;
 	}

@@ -300,29 +300,30 @@ class BoxRenderer extends InvalidatingElementRenderer
 	}
 	
 	/**
-	 * Overriden as BoxRenderer might create new stacking context, for
+	 * Overriden as BoxRenderer might create a new layer, for
 	 * instance if they are positioned.
 	 */
-	override public function establishesNewStackingContext():Bool
+	override public function createOwnLayer():Bool
 	{
-		//transformed box always create new stacking context
+		//transformed box always create new layer
 		if (isTransformed() == true)
 		{
 			return true;
 		}
-		//positioned box also always create a new stacking context
+		//positioned box also always create a new layer
 		else if (isPositioned() == true)
 		{
 			return true;
 		}
 		//transparent ElementRenderer always have their own
-		//LayerRenderer for rendering purpose
+		//layer for rendering purpose so that they can be
+		//rendered offscreen then composited
 		else if (isTransparent() == true)
 		{
 			return true;
 		}
 		
-		//in all other cases, no new stacking context is created
+		//in all other cases, no new layer is created
 		return false;
 	}
 	

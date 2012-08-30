@@ -62,7 +62,7 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 		return true;
 	}
 	
-	override public function establishesNewStackingContext():Bool
+	override public function createOwnLayer():Bool
 	{
 		return false;
 	}

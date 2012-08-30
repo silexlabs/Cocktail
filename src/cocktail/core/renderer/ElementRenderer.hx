@@ -188,7 +188,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * 
 	 * TODO 2 : not very clean, should layerRenderer be null instead
 	 * for ElementRenderer not starting a layer ? -> or should use 
-	 * the establishesNewStackingContextMethod ? + doc is false
+	 * the establishesNewStackingContext Method ? + doc is false
 	 */
 	private var _hasOwnLayer:Bool;
 	
@@ -628,7 +628,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * new LayerRenderer for itself or use the
 	 * one of its parent
 	 */
-	public function establishesNewStackingContext():Bool
+	public function createOwnLayer():Bool
 	{
 		return false;
 	}
@@ -682,14 +682,18 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	
 	/**
 	 * Determine wether this ElementRenderer is rendered
-	 * as if it started a stacking context itself. 
+	 * as if it started a layer itself. 
 	 * 
 	 * For instance, an ElementRenderer which doesn't start
-	 * a stacking context but as a display of inline-block is rendered
-	 * as if it established a new stacking context, but it won't try
+	 * a layer but as a display of inline-block is rendered
+	 * as if it created a new layer, but it won't try
 	 * to render the child layers of its LayerRenderer.
+	 * 
+	 * TODO 3 : is this still necessary now that
+	 * there is a disambiguation between layer and
+	 * stacking context
 	 */
-	private function rendersAsIfEstablishingStackingContext():Bool
+	private function rendersAsIfCreateOwnLayer():Bool
 	{
 		return false;
 	}
@@ -700,7 +704,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function createLayer(parentLayer:LayerRenderer):Void
 	{
-		if (establishesNewStackingContext() == true)
+		if (createOwnLayer() == true)
 		{
 			layerRenderer = new LayerRenderer(this);
 			parentLayer.appendChild(layerRenderer);

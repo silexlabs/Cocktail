@@ -127,6 +127,18 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */ 
 	override public function appendChild(newChild:LayerRenderer):LayerRenderer
 	{
+		if (parentNode != null)
+		{
+			switch(rootElementRenderer.coreStyle.zIndex)
+			{
+				case KEYWORD(value):
+					parentNode.appendChild(newChild);
+					return newChild;
+					
+				default:	
+			}
+		}
+		
 		super.appendChild(newChild);
 		
 		newChild.attach();
@@ -171,6 +183,18 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	override public function removeChild(oldChild:LayerRenderer):LayerRenderer
 	{
+		if (parentNode != null)
+		{
+			switch(rootElementRenderer.coreStyle.zIndex)
+			{
+				case KEYWORD(value):
+					parentNode.removeChild(oldChild);
+					return oldChild;
+					
+				default:	
+			}
+		}
+		
 		var removed:Bool = false;
 		
 		//try each of the array, stop if an element was actually removed from them
@@ -538,7 +562,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		var elementRenderersAtPoint:Array<ElementRenderer> = getElementRenderersAtPoint(point, scrollX, scrollY);
 		
 		var topMostElementRenderer:ElementRenderer = elementRenderersAtPoint[elementRenderersAtPoint.length - 1];
-		
+
 		return topMostElementRenderer;
 	}
 	
@@ -627,7 +651,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		{
 			
 			var elementRenderersAtPointInChildRenderer:Array<ElementRenderer> = [];
-			if (childRenderers[i].establishesNewStackingContext() == true)
+			if (childRenderers[i].createOwnLayer() == true)
 			{
 				//TODO 1 : messy, ElementRenderer should be aware of their scrollBounds
 				if (childRenderers[i].isScrollBar() == true)

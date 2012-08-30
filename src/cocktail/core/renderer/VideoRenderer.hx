@@ -45,10 +45,10 @@ class VideoRenderer extends ImageRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * video always establishes a new stacking context as video rendering
+	 * video always establishes a new layer as video rendering
 	 * is typically done outside of classic display lists
 	 */
-	override public function establishesNewStackingContext():Bool
+	override public function createOwnLayer():Bool
 	{
 		return true;
 	}

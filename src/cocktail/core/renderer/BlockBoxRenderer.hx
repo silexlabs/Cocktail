@@ -240,9 +240,9 @@ class BlockBoxRenderer extends ScrollableRenderer
 	{
 		super.renderChildren(graphicContext);
 		
-		//the BlockBoxRenderer is responsible for rendering its children in the same stacking
-		//context if it establishes a stacking context itself or is rendered as if it did
-		if (establishesNewStackingContext() == true || rendersAsIfEstablishingStackingContext() == true)
+		//the BlockBoxRenderer is responsible for rendering its children in the same layer
+		//context if it establishes a layer itself or is rendered as if it did
+		if (createOwnLayer() == true || rendersAsIfCreateOwnLayer() == true)
 		{
 			//render all the block box which belong to the same stacking context
 			renderBlockContainerChildren(graphicContext);
@@ -520,14 +520,14 @@ class BlockBoxRenderer extends ScrollableRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden as BlockBoxRenderer can also starts a new stacking context
+	 * Overriden as BlockBoxRenderer can also create a new layer
 	 * if the overflow x or y style value is different from visible
 	 */
-	override public function establishesNewStackingContext():Bool
+	override public function createOwnLayer():Bool
 	{
-		var establishesNewStackingContext:Bool = super.establishesNewStackingContext();
+		var creatOwnLayer:Bool = super.createOwnLayer();
 		
-		if (establishesNewStackingContext == true)
+		if (creatOwnLayer == true)
 		{
 			return true;
 		}
@@ -607,10 +607,10 @@ class BlockBoxRenderer extends ScrollableRenderer
 	
 	/**
 	 * overriden as a block box renderer might be rendered as if
-	 * establishing stacking context, based on its computed styles
+	 * it creates its own layer, based on its computed styles
 	 * value
 	 */
-	override private function rendersAsIfEstablishingStackingContext():Bool
+	override private function rendersAsIfCreateOwnLayer():Bool
 	{
 		if (coreStyle.getKeyword(coreStyle.display) == INLINE_BLOCK)
 		{

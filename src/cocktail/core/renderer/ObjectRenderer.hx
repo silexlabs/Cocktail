@@ -50,10 +50,10 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Object always establishes a new stacking context as plugin rendering
+	 * Object always establishes create a new layer as plugin rendering
 	 * is typically done outside of classic display lists
 	 */
-	override public function establishesNewStackingContext():Bool
+	override public function createOwnLayer():Bool
 	{
 		return true;
 	}

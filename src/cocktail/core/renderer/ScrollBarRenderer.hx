@@ -47,9 +47,9 @@ class ScrollBarRenderer extends BlockBoxRenderer
 	}
 	
 	/**
-	 * scrollbars always establishes new stacking context
+	 * scrollbars always create a new layer to render itself
 	 */
-	override public function establishesNewStackingContext():Bool
+	override public function createOwnLayer():Bool
 	{
 		return true;
 	}

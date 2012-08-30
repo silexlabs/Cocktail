@@ -37,7 +37,7 @@ class InitialLayerRenderer extends LayerRenderer
 		//TODO 1 : should use Platform class
 		#if (flash9 || nme)
 		var initialNativeLayer:NativeElement = flash.Lib.current;
-		graphicsContext = new GraphicsContext(this, initialNativeLayer); 
+		graphicsContext = new GraphicsContext(this, initialNativeLayer);
 		#end
 		hasOwnGraphicsContext = true;
 	}
