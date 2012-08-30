@@ -13,6 +13,7 @@ package cocktail;
 
 typedef Image = cocktail.core.html.HTMLImageElement;
 typedef Video = cocktail.core.html.HTMLVideoElement;
+typedef Audio = cocktail.core.html.HTMLAudioElement; 
 typedef HtmlDom = cocktail.core.html.HTMLElement;
 typedef Anchor = cocktail.core.html.HTMLAnchorElement;
 typedef Body = cocktail.core.html.HTMLBodyElement;

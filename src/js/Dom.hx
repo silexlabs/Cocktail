@@ -618,16 +618,22 @@ var defaultValue : String;
 var readOnly : Bool;
 }
 
-typedef Video = {> HtmlDom,
-var duration : Int;
-var currentTime : Float;
-var buffered : Dynamic;
-var muted : Bool;
-var volume:Float;
+typedef Media = {> HtmlDom,
+	var duration : Int;
+	var currentTime : Float;
+	var buffered : Dynamic;
+	var muted : Bool;
+	var volume:Float;
+	var autoplay:Bool;
+	var loop:Bool;
 
-function play() : Void;
-function pause() : Void;
+	function play() : Void;
+	function pause() : Void;
 }
+
+typedef Audio = Media;
+
+typedef Video = Media;
 
 typedef Window = {
 
