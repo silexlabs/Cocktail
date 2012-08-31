@@ -1,0 +1,15 @@
+#sources
+-main Main
+-cp ../../lib/
+
+#binary
+-cpp bin/win
+-D nme
+-cp ../../src/
+-lib nme
+-debug
+--remap flash:nme
+--remap js:cocktail
+
+#copy assets directory
+-cmd cp -R assets bin\win\
