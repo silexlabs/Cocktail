@@ -1,7 +1,0 @@
--swf htmlApp.swf
--cp .
--cp ../../src/
--main Cocktail
---macro Cocktail.create('source.html','MyCustomClass')
---remap js:cocktail
--swf-version 10.2

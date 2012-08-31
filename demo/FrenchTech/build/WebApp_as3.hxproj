@@ -1,31 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<project>
+<project version="2">
   <!-- Output SWF options -->
   <output>
-    <movie disabled="False" />
+    <movie outputType="Application" />
     <movie input="" />
-    <movie path="ski.swf" />
+    <movie path="..\bin\WebApp.swf" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
-    <movie version="9" />
+    <movie version="10" />
+    <movie minorVersion="2" />
+    <movie platform="Flash Player" />
     <movie background="#FFFFFF" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
-    <class path="..\..\src" />
+    <class path="..\src" />
+    <class path="..\..\..\src" />
   </classpaths>
   <!-- Build options -->
   <build>
     <option directives="" />
     <option flashStrict="False" />
-    <option mainClass="Ski" />
+    <option mainClass="org.intermedia.Application" />
     <option enabledebug="False" />
-    <option additional="-swf-version 10.1" />
+    <option additional="-resource data/feed1.rss@feed1&#xA;-resource data/feed2.rss@feed2&#xA;-resource data/feed3.rss@feed3&#xA;--remap js:cocktail" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
-    <!-- example: <library name="..." /> -->
+    <library name="feffects" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>
@@ -46,6 +49,9 @@
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
-    <option testMovie="Default" />
+    <option testMovie="Custom" />
+    <option testMovieCommand="" />
   </options>
+  <!-- Plugin storage -->
+  <storage />
 </project>

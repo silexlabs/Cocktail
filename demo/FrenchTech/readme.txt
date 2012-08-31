@@ -1,8 +1,31 @@
+/*
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
+
+====================
+== Cocktail Demos ==
+====================
+
 @author Raphael Harmel
 @date 2012-02-28
 
-DESCRIPTION
+
+FRENCH TECH
 -----------
+
+Description: a technological news application gathering feeds of several reference websites. Works either as a webapp or as a native app.
+Tested targets: JavaScript, and native targets via PhoneGap (iOS, Android, BlackBerry, Windows Phone...)
+Online demo: http://demos.silexlabs.org/cocktail/FrenchTech/
+Status: source code up to date.
+
+
+APP STORES DESCRIPTION
+----------------------
+
+ENGLISH
 
 This application gathers together a selection of french technological informations.
 The selected information feeds are: Techcrunch France, Silicon Sentier and FrenchWeb.
@@ -12,13 +35,63 @@ Each detail information can be accessed by clicking on it.
 
 This application works on both portrait and landscape modes.
 
---------------------------------------------------------------------------------------
+
 
 Provided for free by Intermedia Paris.
 
-Intermedia Paris provides cross-platform technologies for developing web applications on multiple targets and devices.
+Intermedia Paris provides cross-platform technologies for developing web applications on multiple targets and devices (mobile, tablets, desktop, and TV).
 
 If you have such a need, contact us at contact@im-paris.fr
+
+
+Keywords:
+French,Tech,French Tech,Intermedia,Paris,France,technology,Techcrunch,Silicon Sentier,FrenchWeb
+
+contact@im-paris.fr
+Support URL http://www.silexlabs.org/groups/labs/cocktail/forum/
+
+1.0.1
+Icons & SplashScreens updates
+
+1.0.2
+Android
+-back button handling
+-Resolved error: "the connection to the server was unsuccessful"
+
+-----------------------------------------------------------------------
+
+FRENCH
+
+Cette application rassemble une sélection d'informations technologiques en Français.
+Les flux d'informations sélectionnés sont: Techcrunch France, Silicon Sentier et FrenchWeb.
+
+Elle inclut une navigation "touch" qui permet de passer d'un flux à l'autre par glissement d'un doigt.
+Chaque information détaillée peut être accédée en cliquant sur l'icone correspondante.
+
+Cette application fonctionne en mode portrait et paysage.
+
+
+
+Application proposée gratuitement par Intermedia Paris
+
+Intermedia Paris propose des technologies cross-plateformes afin de développer des application web déployable sur de multiples plateformes (mobile, tablettes, desktop, et TV).
+
+N'hésitez pas à nous contacter si vous avez ce type de besoin: contact@im-paris.fr
+
+
+Mots clés:
+French,Tech,French Tech,Intermedia,Paris,France,technologie,Techcrunch,Silicon Sentier,FrenchWeb
+
+contact@im-paris.fr
+Support URL http://www.silexlabs.org/groups/labs/cocktail/forum/
+
+1.0.1
+Mise à jour des icônes et des splashscreens
+
+1.0.2
+Android
+-gestion du bouton de retour
+-erreur résolue: "the connection to the server was unsuccessful"
 
 
 RSS FEEDS
@@ -274,12 +347,24 @@ Raph:
 
 -------------------------------------------------------------------------------------------------------------------------
 
-Fonctionnalités manquantes / bugs restants:
+Bugs restants:
+-en mode online, quand on scroll rapidement vers le bas et de multiple fois, l'appli se met à charger des flux en continu. Le problème est règlé dès qu'on scroll vers le haut
 -Galaxy note: le bouton de menu silicon sentier ne marche pas
--error screen
 -auto-load rss: pour le flux silicon sentier, il y a a régulièrement deux cellules avec un contenu identique
--items de menu latéraux a mettre avec une ombre visuelle
+
+Fonctionnalités manquantes
+-bouton retour Android
+ => dans la vue detail, devrait permettre de revenir à la homepage => ok
+ => dans la homepage, devrait permettre de sortir de l'appli => ok
 -quand on revient à la vue liste, celle-ci ne devrait pas avoir changé de position
+ => ne pas retirer la swippableView du dom, mais la masquer 
+ => stocker la position du scroll dans une variable et la réaffecter au chargement
+-error screen
+
+Améliorations:
+-sur iPhone 4S, l'appli met 25 secondes à se lancer, et beaucoup moins de temps sur les autres appareil (environ 5 sec au total)
+-items de menu latéraux a mettre avec une ombre visuelle
+
 
 -------------------------------------------------------------------------------------------------------------------------
 	
@@ -324,10 +409,6 @@ Remarques suite à une comparaison avec les application d'information existantes 
 
 -------------------------------------------------------------------------------------------------------------------------
 	
-Cocktail remarks:
--when using a text, I always end up using it within a container to apply the styles
- => could create a helper to emulate a flash textfield
-
 CSS resolved issues:
 -to have a nice layout for cells, and lists, it is necessary to use vertical-align=top
 -box-sizing css property is usefull so that borders are included in container width
@@ -356,19 +437,21 @@ CSS resolved issues:
 -issue with maxWidth on Alex' Android phone:
 	=> in detailView for iframes & img resize, the width is computed manually (without maxWidth)
 
+	
 For AppStore submission:
--ths "demos" word on the splash screen must be removed
+-the "demos" word on the splash screen must be removed => OK
 	
 Missing useful functionalities in cocktail
--zIndex
--not possible to replace text within a container
+-zIndex => added and working ok
+-not possible to replace text
+-within a container-when using a text, I always end up using it within a container to apply the styles
+ => could create a helper to emulate a flash textfield
 -is ScrollTo available ?
 
 NME compilation:
 
 Issues:
 -using flash compilation
- => "nme test "WebApp.nmml" flash" command does not copy the ..\bin\assets to \Export\flash\bin\assets directory as expected
  => text fields are not displayed
  => loaded images make windows app crash
 -when using -webkit-box-sizing:border-box; on iOS safari, the first time it does not work: and lines which should contain 2 cells are only containing one

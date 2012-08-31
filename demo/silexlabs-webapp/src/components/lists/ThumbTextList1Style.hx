@@ -64,7 +64,7 @@ class ThumbTextList1Style
 		domElement.style.paddingTop = "1%";
 		
 		// Samsung TV workaround
-		domElement.style.height = "200px";
+		//domElement.style.height = "200px";
 		
 	}
 	
@@ -220,12 +220,13 @@ class ThumbTextList1Style
 		{
 			domElement.style.width = imageMaxWidth + "px";
 			domElement.style.height = "auto";
+			domElement.style.maxHeight = imageMaxWidth + "px";
 			//domElement.style.height = DimensionStyleValue.length(px(50));
 		}
 		else
 		{
 			domElement.style.maxWidth = imageMaxWidth + "px";
-			domElement.style.maxHeight = "50%";
+			domElement.style.maxHeight = imageMaxWidth + "px";
 			domElement.style.width = "30%";	
 		}
 		
@@ -250,10 +251,11 @@ class ThumbTextList1Style
 	 */
 	public static function getCellTextBlockStyle(domElement:HtmlDom):Void
 	{
-		getCellStyle(domElement);
+		//getCellStyle(domElement);
 		
 		domElement.style.display = "inline-block";
 		domElement.style.marginLeft = "2%";
+		domElement.style.paddingTop = "1%";
 		domElement.style.verticalAlign = "middle";
 		domElement.style.width = "55%";
 	}

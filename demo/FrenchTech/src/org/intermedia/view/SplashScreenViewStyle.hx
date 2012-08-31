@@ -28,8 +28,15 @@ class SplashScreenViewStyle
 		//node.style.display = "block";
 		node.style.position = "absolute";
 		
-		node.style.margin = 0;
-		node.style.padding = 0;
+		node.style.marginBottom = "0px";
+		node.style.marginTop = "0px";
+		node.style.marginLeft = "0px";
+		node.style.marginRight = "0px";
+
+		node.style.paddingBottom = "0px";
+		node.style.paddingTop = "0px";
+		node.style.paddingLeft = "0px";
+		node.style.paddingRight = "0px";
 
 		node.style.width = "100%";
 		node.style.height = "100%";
