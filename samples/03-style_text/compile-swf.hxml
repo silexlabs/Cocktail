@@ -1,6 +1,10 @@
--main Sample
--swf swf/Sample.swf
+#sources
+-main Cocktail
 -cp ../../src/
--swf-header 500:500:60:ffffff
+-cp src
+
+#binary
+-swf bin/swf/Main.swf
 -swf-version 10.2
 --remap js:cocktail
+--macro Cocktail.create('index.html')
