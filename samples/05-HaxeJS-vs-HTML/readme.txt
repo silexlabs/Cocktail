@@ -12,10 +12,13 @@
 Updated on 2012-08-31
 
 
-GettingStarted
+HaxeJS-vs-HTML
 --------------
 
-Description: Cocktail getting started. Article is available here: http://haxe.org/com/libs/cocktail/getting_started_with_cocktail
-Tested targets: JavaScript, Flash, Windows
-Online demo: http://demos.silexlabs.org/cocktail/GettingStarted/
-Status: source code up to date.
+Description:
+	A simple Cocktail example of an Html page with styles and interactivity.
+	It is possible to switch between the HaxeJS version and the innerHtml version.
+Tested targets: JavaScript, Flash & Windows (via NME)
+Online demo: http://demos.silexlabs.org/cocktail/samples/htmlStyle/
+Status: source code up to date
+
