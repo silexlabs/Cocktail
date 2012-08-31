@@ -72,6 +72,6 @@ Description:
 	A simple Cocktail example of an Html page with styles and interactivity.
 	It is possible to switch between the HaxeJS version and the innerHtml version.
 Tested targets: JavaScript, Flash & Windows (via NME)
-Online demo: http://demos.silexlabs.org/cocktail/samples/htmlStyle/
+Online demo: http://demos.silexlabs.org/cocktail/samples/05-HaxeJS-vs-HTML/
 Status: source code up to date
 

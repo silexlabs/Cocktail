@@ -12,13 +12,10 @@
 Updated on 2012-08-31
 
 
-HaxeJS-vs-HTML
---------------
+01-HelloWorld
+-------------
 
-Description:
-	A simple Cocktail example of an Html page with styles and interactivity.
-	It is possible to switch between the HaxeJS version and the innerHtml version.
+Description: a simple text display example
 Tested targets: JavaScript, Flash & Windows (via NME)
-Online demo: http://demos.silexlabs.org/cocktail/samples/05-HaxeJS-vs-HTML/
-Status: source code up to date
-
+Online demo: http://demos.silexlabs.org/cocktail/samples/01-HelloWorld/
+Status: source code up to date.
