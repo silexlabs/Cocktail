@@ -9,10 +9,16 @@
 == Cocktail Samples ==
 ======================
 
-Updated on 2012-08-16
+Updated on 2012-08-31
 
 This file gathers the description and the status of each sample.
-To compile to nme, you need to install nme and hxcpp haxelibs
+
+Possible targets for all samples are:
+ -Haxe targets: JavaScript, Flash
+ -NME targets: iOS, Android, Blackberry, Windows, Mac, Linux
+ -Air targets: iOS, Android, Blackberry, Windows, Mac, Linux, Smart TVs
+ -PhoneGap targets: iOS, Android, Windows Phone, Blackberry, webOS, Symbian
+
 
 01-HelloWorld
 -------------
@@ -53,49 +59,19 @@ Status: source code up to date
 GettingStarted
 --------------
 
-Description:
-	Cocktail getting started.
-	Text and image display, interactivity, and external data loading.
-	Article available here: http://haxe.org/com/libs/cocktail/getting_started_with_cocktail.
-Tested targets: JavaScript & Flash
-Online demo: http://demos.silexlabs.org/cocktail/samples/GettingStarted/
-Status: source code up to date
+Description: Cocktail getting started. Article is available here: http://haxe.org/com/libs/cocktail/getting_started_with_cocktail
+Tested targets: JavaScript, Flash, Windows
+Online demo: http://demos.silexlabs.org/cocktail/GettingStarted/
+Status: source code up to date.
 
 
-htmlApp
--------
-
-Description:
-	This is a simple test to compile an html page in Flash using Cocktail.
-	A Haxe macro is used to dynamically change the displayed content.
-	When using build_as3.hxml, the index.html file is used to create the DOM in Flash.
-	When using build_as3_macro.hxml, the index.html file is used to create the DOM in Flash which is then replaced by the content of source.html using MyCustomClass.hx.
-Tested targets: JavaScript & Flash
-Online demo: 
-Status: source code up to date
-
-=> nettoyer & commenter + readme => valider par yan & lex
-=> a mettre en ligne
-
-=> renommer en:
-cocktailMacro ?
-html2swf
-htmlIndex
-htmlApp
-
-
-htmlStyle
----------
+HaxeJS-vs-HTML
+--------------
 
 Description:
 	A simple Cocktail example of an Html page with styles and interactivity.
-	It is possible to switch between the HaxeJS version and the Html version.
+	It is possible to switch between the HaxeJS version and the innerHtml version.
 Tested targets: JavaScript, Flash & Windows (via NME)
 Online demo: http://demos.silexlabs.org/cocktail/samples/htmlStyle/
 Status: source code up to date
-
-=> nouveau nom HaxeJS-vs-HTML
-
-=> autre samples à mettre à plat
-
 

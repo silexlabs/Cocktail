@@ -1,0 +1,10 @@
+#sources
+-cp ../../src/
+-cp ../../lib/
+-main Main
+
+#binary
+-js bin/js/Main.js
+
+#copy assets directory
+-cmd cp -R assets bin\js\
