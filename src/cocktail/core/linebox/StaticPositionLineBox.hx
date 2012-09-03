@@ -9,6 +9,7 @@ package cocktail.core.linebox;
 
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.geom.GeomData;
+import cocktail.port.NativeElement;
 
 /**
  * This line box is used as a place holder for absolutely
@@ -24,10 +25,25 @@ class StaticPositionLineBox extends LineBox
 		super(elementRenderer);
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as static line box are not supposed
+	 * to render their background as they always wrap
+	 * a block box renderer caused by an absolutely
+	 * positioned element
+	 */
+	override public function render(graphicContext:NativeElement, forceRendering:Bool):Void
+	{
+		
+	}
+	
 	/////////////////////////////////
 	// OVERRIDEN PUBLIC HELPER METHOD
 	////////////////////////////////
-
+	
 	override public function isStaticPosition():Bool
 	{
 		return true;
