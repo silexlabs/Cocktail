@@ -24,33 +24,6 @@ import cocktail.core.html.HTMLElement;
 class KeyboardEvent extends UIEvent
 {	
 	/**
-	 * A user agent must dispatch this event when a key is
-	 * pressed down. The keydown event type is device dependent
-	 * and relies on the capabilities of the input devices 
-	 * and how they are mapped in the operating system. 
-	 * This event type must be generated after the key
-	 * mapping. This event type must be dispatched before
-	 * the keypress and keyup events event associated
-	 * with the same key.
-	 */
-	public static inline var KEY_DOWN:String = "keydown";
-	
-	/**
-	 * A user agent must dispatch this event when a key
-	 * is pressed down, if and only if that key normally 
-	 * produces a character value. The keypress event type 
-	 * is device dependent and relies on the capabilities 
-	 * of the input devices and how they are mapped in 
-	 * the operating system. This event type must be 
-	 * generated after the key mapping. It must not
-	 * be fired when using an input method editor.
-	 * This event type must be dispatched after the 
-	 * keydown event and before the keyup event 
-	 * associated with the same key.
-	 */
-	public static inline var KEY_UP:String = "keyup";
-	
-	/**
 	 * This set of constants must be used to indicate the location 
 	 * of a key on the device. In case a DOM implementation wishes
 	 * to provide a new location information, 

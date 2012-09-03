@@ -10,6 +10,7 @@ package cocktail.core.focus;
 import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.html.HTMLBodyElement;
 import cocktail.core.html.HTMLElement;
@@ -268,11 +269,11 @@ class FocusManager
 			//dispatch pre-focus shift focus event which bubbles in the document
 			
 			var focusOutEvent:FocusEvent = new FocusEvent();
-			focusOutEvent.initFocusEvent(FocusEvent.FOCUS_OUT, true, false, null, 0.0, newActiveElement);
+			focusOutEvent.initFocusEvent(EventConstants.FOCUS_OUT, true, false, null, 0.0, newActiveElement);
 			activeElement.dispatchEvent(focusOutEvent);
 			
 			var focusInEvent:FocusEvent = new FocusEvent();
-			focusInEvent.initFocusEvent(FocusEvent.FOCUS_IN, true, false, null, 0.0, activeElement);
+			focusInEvent.initFocusEvent(EventConstants.FOCUS_IN, true, false, null, 0.0, activeElement);
 			newActiveElement.dispatchEvent(focusInEvent);
 			
 			//store the new active element before dispatching focus and blur event
@@ -302,17 +303,17 @@ class FocusManager
 			//dispatch post-focus event which don't bubbles through the document
 			
 			var blurEvent:FocusEvent = new FocusEvent();
-			blurEvent.initFocusEvent(FocusEvent.BLUR, false, false, null, 0.0, null);
+			blurEvent.initFocusEvent(EventConstants.BLUR, false, false, null, 0.0, null);
 			oldActiveElement.dispatchEvent(blurEvent);
 			
 			var focusEvent:FocusEvent = new FocusEvent();
-			focusEvent.initFocusEvent(FocusEvent.FOCUS, false, false, null, 0.0, null);
+			focusEvent.initFocusEvent(EventConstants.FOCUS, false, false, null, 0.0, null);
 			newActiveElement.dispatchEvent(focusEvent);
 			
 			if (activeElement.onfocus != null)
 			{
 				var focusEvent:FocusEvent = new FocusEvent();
-				focusEvent.initFocusEvent(FocusEvent.FOCUS, true, false, null, 0.0, null);
+				focusEvent.initFocusEvent(EventConstants.FOCUS, true, false, null, 0.0, null);
 				
 				activeElement.onfocus(focusEvent);
 			}

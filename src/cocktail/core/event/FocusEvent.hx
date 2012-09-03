@@ -18,42 +18,6 @@ package cocktail.core.event;
 class FocusEvent extends UIEvent
 {
 	/**
-	 * A user agent must dispatch this event when an event target 
-	 * receives focus. The focus must be given to the element before 
-	 * the dispatch of this event type. This event type is similar to focusin, 
-	 * but is dispatched after focus is shifted, and does not bubble.
-	 */
-	public static inline var FOCUS:String = "focus";
-	
-	/**
-	 * A user agent must dispatch this event when an event target loses focus.
-	 * The focus must be taken from the element before the dispatch of this
-	 * event type. This event type is similar to focusout,
-	 * but is dispatched after focus is shifted, and does not bubble.
-	 */
-	public static inline var BLUR:String = "blur";
-	
-	/**
-	 * A user agent must dispatch this event when an event target
-	 * is about to receive focus. This event type must be 
-	 * dispatched before the element is given focus. The event
-	 * target must be the element which is about to receive focus.
-	 * This event type is similar to focus, but is dispatched before
-	 * focus is shifted, and does bubble.
-	 */
-	public static inline var FOCUS_IN:String = "focusin";
-	
-	/**
-	 * A user agent must dispatch this event when an event target is about to
-	 * lose focus. This event type must be dispatched before 
-	 * the element loses focus. The event target must be 
-	 * the element which is about to lose focus. This event 
-	 * type is similar to blur, but is dispatched before focus 
-	 * is shifted, and does bubble.
-	 */
-	public static inline var FOCUS_OUT:String = "focusout";
-	
-	/**
 	 * Used to identify a secondary EventTarget related to a Focus event, 
 	 * depending on the type of event. For security reasons with nested
 	 * browsing contexts, when tabbing into or out of a nested context,

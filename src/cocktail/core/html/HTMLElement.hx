@@ -16,6 +16,7 @@ import cocktail.core.dom.Element;
 import cocktail.core.dom.NamedNodeMap;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.EventTarget;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.event.UIEvent;
@@ -1080,7 +1081,7 @@ class HTMLElement extends Element<HTMLElement>
 	public function click():Void
 	{
 		var mouseEvent:MouseEvent = new MouseEvent();
-		mouseEvent.initMouseEvent(MouseEvent.CLICK, false, false, null, 0, 0, 0, 0, 0, false, false, false, false,
+		mouseEvent.initMouseEvent(EventConstants.CLICK, false, false, null, 0, 0, 0, 0, 0, false, false, false, false,
 		0, null); 
 		dispatchEvent(mouseEvent);
 	}

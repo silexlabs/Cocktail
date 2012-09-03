@@ -8,6 +8,7 @@
 package cocktail.core.css;
 
 import cocktail.core.css.CSSData;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.TransitionEvent;
 import cocktail.core.font.FontData;
 import cocktail.core.font.FontManager;
@@ -854,7 +855,7 @@ class CoreStyle
 	{
 		htmlElement.invalidate(transition.invalidationReason);
 		var transitionEvent:TransitionEvent = new TransitionEvent();
-		transitionEvent.initTransitionEvent(TransitionEvent.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
+		transitionEvent.initTransitionEvent(EventConstants.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
 		htmlElement.dispatchEvent(transitionEvent);
 	}
 	

@@ -19,6 +19,7 @@ import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.TouchEvent;
@@ -519,7 +520,7 @@ class HTMLDocument extends Document
 	
 		switch(eventType)
 		{
-			case MouseEvent.MOUSE_DOWN:
+			case EventConstants.MOUSE_DOWN:
 				//reset the click sequence when a mouse down is dispatched
 				_shouldDispatchClickOnNextMouseUp = true;
 				
@@ -529,7 +530,7 @@ class HTMLDocument extends Document
 				elementRendererAtPoint.domNode.invalidateStyleDeclaration(false);
 			
 				
-			case MouseEvent.MOUSE_UP:
+			case EventConstants.MOUSE_UP:
 				//on mouse up, if nothing canceled the click sequence, dispatch
 				//a click event after the mouse up event
 				if (_shouldDispatchClickOnNextMouseUp == true)
@@ -592,7 +593,7 @@ class HTMLDocument extends Document
 		{
 			//dispatch mouse out on the old hovered HTML element
 			var mouseOutEvent:MouseEvent = new MouseEvent();
-			mouseOutEvent.initMouseEvent(MouseEvent.MOUSE_OUT, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
+			mouseOutEvent.initMouseEvent(EventConstants.MOUSE_OUT, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
 			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey, mouseEvent.metaKey, mouseEvent.button, elementRendererAtPoint.domNode);
 			
 			_hoveredElementRenderer.domNode.dispatchEvent(mouseOutEvent);
@@ -603,7 +604,7 @@ class HTMLDocument extends Document
 			
 			//dispatch mouse over on the newly hovered HTML element
 			var mouseOverEvent:MouseEvent = new MouseEvent();
-			mouseOverEvent.initMouseEvent(MouseEvent.MOUSE_OVER, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
+			mouseOverEvent.initMouseEvent(EventConstants.MOUSE_OVER, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
 			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, oldHoveredElementRenderer.domNode);
 			
 			elementRendererAtPoint.domNode.dispatchEvent(mouseOverEvent);
@@ -728,7 +729,7 @@ class HTMLDocument extends Document
 		
 		//create a mouse click event from the mouse up event
 		var clickEvent:MouseEvent = new MouseEvent();
-		clickEvent.initMouseEvent(MouseEvent.CLICK, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY,
+		clickEvent.initMouseEvent(EventConstants.CLICK, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY,
 		mouseEvent.clientX, mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey,
 		mouseEvent.metaKey, mouseEvent.button, null);
 		
@@ -796,7 +797,7 @@ class HTMLDocument extends Document
 		
 		//fire a fullscreen event
 		var fullscreenEvent:Event = new Event();
-		fullscreenEvent.initEvent(Event.FULL_SCREEN_CHANGE, true, false);
+		fullscreenEvent.initEvent(EventConstants.FULL_SCREEN_CHANGE, true, false);
 	}
 	
 	/**
@@ -842,7 +843,7 @@ class HTMLDocument extends Document
 		
 		//fire fullscreen event
 		var fullscreenEvent:Event = new Event();
-		fullscreenEvent.initEvent(Event.FULL_SCREEN_CHANGE, true, false);
+		fullscreenEvent.initEvent(EventConstants.FULL_SCREEN_CHANGE, true, false);
 		
 		return value;
 	}

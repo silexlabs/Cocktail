@@ -7,6 +7,7 @@
 */
 package cocktail.core.multitouch;
 
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.EventData;
 import cocktail.core.event.TouchEvent;
 import cocktail.core.event.TouchList;
@@ -59,13 +60,13 @@ class MultiTouchManager
 		
 		switch (touchEvent.type)
 		{
-			case TouchEvent.TOUCH_START:
+			case EventConstants.TOUCH_START:
 				registerTouch(touch, touchEvent, target);
 				
-			case TouchEvent.TOUCH_END:
+			case EventConstants.TOUCH_END:
 				unregisterTouch(touch, touchEvent);
 				
-			case TouchEvent.TOUCH_MOVE:
+			case EventConstants.TOUCH_MOVE:
 				updateTouch(touch, touchEvent);
 		}
 	}
