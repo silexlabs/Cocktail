@@ -42,6 +42,10 @@ class ProgressEvent extends Event
 	public function new() 
 	{
 		super();
+		
+		lengthComputable = false;
+		loaded = 0;
+		total = 0;
 	}
 	
 	/**

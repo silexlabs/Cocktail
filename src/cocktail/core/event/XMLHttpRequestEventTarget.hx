@@ -58,7 +58,6 @@ class XMLHttpRequestEventTarget extends EventTarget
 	 */
 	public var onloadend(default, set_onLoadEnd):ProgressEvent->Void;
 	
-	
 	/**
 	 * class constructor
 	 */

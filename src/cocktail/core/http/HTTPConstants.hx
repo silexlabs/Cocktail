@@ -48,6 +48,88 @@ class HTTPConstants
 	 */
 	public static inline var DONE:Int = 4;
 	
+	// http methods
+	
+	public static inline var CONNECT:String = "connect";
+	
+	public static inline var DELETE:String = "delete";
+	
+	public static inline var GET:String = "get";
+	
+	public static inline var HEAD:String = "head";
+	
+	public static inline var OPTIONS:String = "options";
+	
+	public static inline var POST:String = "post";
+	
+	public static inline var PUT:String = "put";
+	
+	public static inline var TRACE:String = "trace";
+	
+	public static inline var TRACK:String = "track";
+	
+	// http response type
+	
+	public static inline var TYPE_TEXT:String = "text";
+	
+	public static inline var TYPE_ARRAY_BUFFER:String = "arraybuffer";
+	
+	public static inline var TYPE_BLOB:String = "blob";
+	
+	public static inline var TYPE_DOCUMENT:String = "document";
+	
+	public static inline var TYPE_JSON:String = "json";
+	
+	// user-agent http headers
+	
+	public static inline var ACCEPT_CHARSET:String = "accept-charset";
+	
+	public static inline var ACCEPT_ENCODING:String = "accept-encoding";
+	
+	public static inline var ACCESS_CONTROL_REQUEST_HEADERS:String = "access-control-request-headers";
+	
+	public static inline var ACCESS_CONTROL_REQUEST_METHOD:String = "access-control-request-method";
+	
+	public static inline var CONNECTION:String = "connection";
+	
+	public static inline var CONTENT_LENGTH:String = "content-length";
+	
+	public static inline var COOKIE:String = "cookie";
+	
+	public static inline var COOKIE_2:String = "cookie2";
+	
+	public static inline var CONTENT_TRANSFER_ENCODING:String = "content-transfer-encoding";
+	
+	public static inline var DATE:String = "date";
+	
+	public static inline var EXPECT:String = "expect";
+	
+	public static inline var HOST:String = "host";
+	
+	public static inline var KEEP_ALIVE:String = "keep-alive";
+	
+	public static inline var ORIGIN:String = "origin";
+	
+	public static inline var REFERER:String = "referer";
+	
+	public static inline var TE:String = "te";
+	
+	public static inline var TRAILER:String = "trailer";
+	
+	public static inline var TRANSFER_ENCODING:String = "transfer-encoding";
+	
+	public static inline var UPGRADE:String = "upgrade";
+	
+	public static inline var USER_AGENT:String = "user-agent";
+	
+	public static inline var VIA:String = "via";
+	
+	// http header const
+	
+	public static inline var PROXY:String = "proxy-";
+	
+	public static inline var SEC:String = "sec-";
+	
 	private function new() 
 	{
 		

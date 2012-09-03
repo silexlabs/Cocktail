@@ -104,6 +104,11 @@ class DOMException
 	public static inline var VALIDATION_ERR:Int = 16;
 	
 	/**
+	 * The operation is insecure.
+	 */
+	public static inline var SECURITY_ERR:Int = 18;
+	
+	/**
 	 * If the type of an object is incompatible with the expected type of the parameter associated to the object. 
 	 */
 	public static inline var TYPE_MISMATCH_ERR:Int = 19;
