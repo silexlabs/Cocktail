@@ -24,10 +24,44 @@ class XMLHttpRequestEventTarget extends EventTarget
 {
 	
 	/**
-	 * The callback called on mouse click (rapid mouse down and mouse up)
+	 * dispatched when the request starts.
 	 */
-	public var onloadStart(default, set_onLoadStart):MouseEvent->Void;
+	public var onloadStart(default, set_onLoadStart):ProgressEvent->Void;
 
+	/**
+	 * dispatched while sending and loading data
+	 */
+	public var onprogress(default, set_onProgress):ProgressEvent->Void;
+	
+	/**
+	 * dispatched when the request has been aborted. For instance, by invoking the abort() method
+	 */
+	public var onabort(default, set_onAbort):ProgressEvent->Void;
+	
+	/**
+	 * dispatched when the request has failed.
+	 */
+	public var onerror(default, set_onError):ProgressEvent->Void;
+	
+	/**
+	 * dispatched when the request has successfully completed.
+	 */
+	public var onload(default, set_onLoad):ProgressEvent->Void;
+	
+	/**
+	 * dispatched when the author specified timeout has passed before the request could complete.
+	 */
+	public var ontimeout(default, set_onTimeout):ProgressEvent->Void;
+	
+	/**
+	 * dispatched when the request has completed (either in success or failure).
+	 */
+	public var onloadend(default, set_onLoadEnd):ProgressEvent->Void;
+	
+	
+	/**
+	 * class constructor
+	 */
 	public function new() 
 	{
 		
@@ -63,9 +97,45 @@ class XMLHttpRequestEventTarget extends EventTarget
 	// CALLBACKS SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function set_onLoadStart(value:Event->Void):Event->Void
+	private function set_onLoadStart(value:ProgressEvent->Void):ProgressEvent->Void
 	{
-		updateCallbackListener(Event.LOAD_START, value, onvolumechange);
-		return onvolumechange = value;
+		updateCallbackListener(EventConstants.LOAD_START, value, onloadStart);
+		return onloadStart = value;
+	}
+	
+	private function set_onProgress(value:ProgressEvent->Void):ProgressEvent->Void
+	{
+		updateCallbackListener(EventConstants.PROGRESS, value, onprogress);
+		return onprogress = value;
+	}
+	
+	private function set_onAbort(value:ProgressEvent->Void):ProgressEvent->Void
+	{
+		updateCallbackListener(EventConstants.ABORT, value, onabort);
+		return onabort = value;
+	}
+	
+	private function set_onError(value:ProgressEvent->Void):ProgressEvent->Void
+	{
+		updateCallbackListener(EventConstants.ERROR, value, onerror);
+		return onerror = value;
+	}
+	
+	private function set_onLoad(value:ProgressEvent->Void):ProgressEvent->Void
+	{
+		updateCallbackListener(EventConstants.LOAD, value, onload);
+		return onload = value;
+	}
+	
+	private function set_onTimeout(value:ProgressEvent->Void):ProgressEvent->Void
+	{
+		updateCallbackListener(EventConstants.TIME_OUT, value, ontimeout);
+		return ontimeout = value;
+	}
+	
+	private function set_onLoadEnd(value:ProgressEvent->Void):ProgressEvent->Void
+	{
+		updateCallbackListener(EventConstants.LOAD_END, value, onloadend);
+		return onloadend = value;
 	}
 }

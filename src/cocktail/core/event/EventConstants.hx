@@ -150,7 +150,23 @@ class EventConstants
 	// XMLHTTPREQUEST
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Dispatched when the readyState attribute changes at some seemingly 
+	 * arbitrary times for historical reasons.
+	 */
 	public static inline var READY_STATE_CHANGE:String = "readystatechange";
+	
+	/**
+	 * Dispatched when the author specified timeout has passed before
+	 * the request could complete.
+	 */
+	public static inline var TIME_OUT:String = "timeout";
+	
+	/**
+	 * Dispatched when the request has completed 
+	 * (either in success or failure).
+	 */
+	public static inline var LOAD_END:String = "loadend";
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// FULLSCREEN
