@@ -8,6 +8,7 @@
 package cocktail.port.platform.nativeMedia;
 
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
@@ -161,7 +162,7 @@ class NativeMedia
 		if (onLoadedMetaData != null)
 		{
 			var loaddedMetadataEvent:Event = new Event();
-			loaddedMetadataEvent.initEvent(Event.LOADED_METADATA, false, false);
+			loaddedMetadataEvent.initEvent(EventConstants.LOADED_METADATA, false, false);
 			onLoadedMetaData(loaddedMetadataEvent);
 		}
 	}

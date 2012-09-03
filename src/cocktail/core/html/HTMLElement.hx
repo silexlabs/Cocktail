@@ -475,7 +475,7 @@ class HTMLElement extends Element<HTMLElement>
 			{
 				//if the element is focusable, by default
 				//on mouse down, it will gain focus
-				case MouseEvent.MOUSE_DOWN:
+				case EventConstants.MOUSE_DOWN:
 					focus();
 			}
 		}

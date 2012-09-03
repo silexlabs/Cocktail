@@ -7,6 +7,7 @@
 */
 package cocktail.port.flash_player;
 
+import cocktail.core.event.EventConstants;
 import cocktail.core.html.HTMLElement;
 import cocktail.port.NativeElement;
 import cocktail.core.event.KeyboardEvent;
@@ -68,10 +69,10 @@ class Keyboard extends AbstractKeyboard
 		switch (typedEvent.type)
 		{
 			case flash.events.KeyboardEvent.KEY_DOWN:
-				eventType = KeyboardEvent.KEY_DOWN;
+				eventType = EventConstants.KEY_DOWN;
 				
 			case flash.events.KeyboardEvent.KEY_UP:
-				eventType = KeyboardEvent.KEY_UP;
+				eventType = EventConstants.KEY_UP;
 				
 			default:
 				eventType = typedEvent.type;

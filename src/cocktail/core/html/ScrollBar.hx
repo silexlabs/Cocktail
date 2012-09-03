@@ -10,6 +10,7 @@ package cocktail.core.html;
 import cocktail.core.css.InitialStyleDeclaration;
 import cocktail.core.dom.Document;
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.renderer.ElementRenderer;
@@ -129,10 +130,10 @@ class ScrollBar extends HTMLElement
 		
 		//set callbacks on the scrollbar parts
 		//TODO 2 : should be cleaned-up when detached, should keep ref to all the callback
-		addEventListener(MouseEvent.MOUSE_DOWN, cast(onTrackMouseDown));
-		_scrollThumb.addEventListener(MouseEvent.MOUSE_DOWN, cast(onThumbMouseDown));
-		_downArrow.addEventListener(MouseEvent.MOUSE_DOWN, cast(onDownArrowMouseDown));
-		_upArrow.addEventListener(MouseEvent.MOUSE_DOWN, cast(onUpArrowMouseDown));
+		addEventListener(EventConstants.MOUSE_DOWN, cast(onTrackMouseDown));
+		_scrollThumb.addEventListener(EventConstants.MOUSE_DOWN, cast(onThumbMouseDown));
+		_downArrow.addEventListener(EventConstants.MOUSE_DOWN, cast(onDownArrowMouseDown));
+		_upArrow.addEventListener(EventConstants.MOUSE_DOWN, cast(onUpArrowMouseDown));
 	}
 	
 	override private function set_ownerDocument(value:Document):Document
@@ -324,8 +325,8 @@ class ScrollBar extends HTMLElement
 		//TODO 2 : originally, listened to those event on the Body but as the ScrollBar is not
 		//attached to the DOM, the event didn't bubled when mouse hovered track. Should scrollbar
 		//events bubble to document and window ?
-		cocktail.Lib.document.addEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
-		cocktail.Lib.document.addEventListener(MouseEvent.MOUSE_UP, cast(_thumbUpDelegate));
+		cocktail.Lib.document.addEventListener(EventConstants.MOUSE_MOVE, cast(_thumbMoveDelegate));
+		cocktail.Lib.document.addEventListener(EventConstants.MOUSE_UP, cast(_thumbUpDelegate));
 	}
 	
 	/**
@@ -333,8 +334,8 @@ class ScrollBar extends HTMLElement
 	 */
 	private function onThumbMouseUp(event:MouseEvent):Void
 	{
-		cocktail.Lib.document.removeEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
-		cocktail.Lib.document.removeEventListener(MouseEvent.MOUSE_UP, cast(_thumbUpDelegate));
+		cocktail.Lib.document.removeEventListener(EventConstants.MOUSE_MOVE, cast(_thumbMoveDelegate));
+		cocktail.Lib.document.removeEventListener(EventConstants.MOUSE_UP, cast(_thumbUpDelegate));
 	}
 	
 	/**
@@ -476,7 +477,7 @@ class ScrollBar extends HTMLElement
 	private function dispatchScrollEvent():Void
 	{
 		var scrollEvent:UIEvent = new UIEvent();
-		scrollEvent.initUIEvent(UIEvent.SCROLL, false, false, null, 0.0);
+		scrollEvent.initUIEvent(EventConstants.SCROLL, false, false, null, 0.0);
 		dispatchEvent(scrollEvent);
 	}
 	

@@ -8,6 +8,7 @@
 package cocktail.core.renderer;
 
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
@@ -711,7 +712,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 	private function dispatchScrollEvent():Void
 	{
 		var scrollEvent:UIEvent = new UIEvent();
-		scrollEvent.initUIEvent(UIEvent.SCROLL, mustBubbleScrollEvent(), false, null, 0.0);
+		scrollEvent.initUIEvent(EventConstants.SCROLL, mustBubbleScrollEvent(), false, null, 0.0);
 		domNode.dispatchEvent(scrollEvent);
 	}
 	

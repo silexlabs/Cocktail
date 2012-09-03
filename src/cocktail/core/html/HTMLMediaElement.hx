@@ -9,6 +9,7 @@ package cocktail.core.html;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.port.platform.nativeMedia.NativeMedia;
 import cocktail.core.html.HTMLData;
 import cocktail.core.renderer.RendererData;
@@ -439,16 +440,16 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			paused = false;
 			
-			fireEvent(Event.PLAY, false, false);
+			fireEvent(EventConstants.PLAY, false, false);
 			
 			switch (readyState)
 			{
 				case HAVE_NOTHING, HAVE_METADATA, HAVE_CURRENT_DATA:
-					fireEvent(Event.WAITING, false, false);
+					fireEvent(EventConstants.WAITING, false, false);
 					
 				case HAVE_FUTURE_DATA, HAVE_ENOUGH_DATA:
 					doPlay();
-					fireEvent(Event.PLAYING, false, false);
+					fireEvent(EventConstants.PLAYING, false, false);
 			}
 		}
 		
@@ -485,9 +486,9 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			paused = true;
 			
-			fireEvent(Event.TIME_UPDATE, false, false);
+			fireEvent(EventConstants.TIME_UPDATE, false, false);
 			
-			fireEvent(Event.PAUSE, false, false);
+			fireEvent(EventConstants.PAUSE, false, false);
 			
 			_officialPlaybackPosition = _currentPlaybackPosition;
 		}
@@ -530,12 +531,12 @@ class HTMLMediaElement extends EmbeddedElement
 		switch (networkState)
 		{
 			case NETWORK_LOADING, NETWORK_IDLE:
-				fireEvent(Event.ABORT, false, false);
+				fireEvent(EventConstants.ABORT, false, false);
 		}
 		
 		if (networkState != NETWORK_EMPTY)
 		{
-			fireEvent(Event.EMPTIED, false, false);
+			fireEvent(EventConstants.EMPTIED, false, false);
 			
 			nativeMedia.src = null;
 			
@@ -553,7 +554,7 @@ class HTMLMediaElement extends EmbeddedElement
 			if (_officialPlaybackPosition > 0)
 			{
 				_officialPlaybackPosition = 0;
-				fireEvent(Event.TIME_UPDATE, false, false);
+				fireEvent(EventConstants.TIME_UPDATE, false, false);
 			}
 			else
 			{
@@ -612,7 +613,7 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		networkState = NETWORK_LOADING;
 		
-		fireEvent(Event.LOAD_START, false, false);
+		fireEvent(EventConstants.LOAD_START, false, false);
 		
 		if (mode == RESOURCE_SELECTION_ATTRIBUTE_MODE)
 		{
@@ -622,7 +623,7 @@ class HTMLMediaElement extends EmbeddedElement
 				
 				networkState = NETWORK_NO_SOURCE;
 				
-				fireEvent(Event.ERROR, false, false);
+				fireEvent(EventConstants.ERROR, false, false);
 				
 				return;
 			}
@@ -684,7 +685,7 @@ class HTMLMediaElement extends EmbeddedElement
 			if (autoplay == false)
 			{
 				networkState = NETWORK_IDLE;
-				fireEvent(Event.SUSPEND, false, false);
+				fireEvent(EventConstants.SUSPEND, false, false);
 				_stalledByPreload = true;
 				return;
 			}
@@ -739,7 +740,7 @@ class HTMLMediaElement extends EmbeddedElement
 		//playback position. If there are no ranges given in the seekable 
 		//attribute then set the seeking IDL attribute to false and abort these steps.
 		
-		fireEvent(Event.SEEKING, false, false);
+		fireEvent(EventConstants.SEEKING, false, false);
 		
 	
 		_currentPlaybackPosition = newPlaybackPosition;
@@ -749,9 +750,9 @@ class HTMLMediaElement extends EmbeddedElement
 		//the media data for the new playback position is available, and, if
 		//it is, until it has decoded enough data to play back that position.
 		
-		fireEvent(Event.TIME_UPDATE, false, false);
+		fireEvent(EventConstants.TIME_UPDATE, false, false);
 		
-		fireEvent(Event.SEEKED, false, false);
+		fireEvent(EventConstants.SEEKED, false, false);
 	}
 	
 	/**
@@ -765,7 +766,7 @@ class HTMLMediaElement extends EmbeddedElement
 	{
 		if (readyState == HAVE_NOTHING && newReadyState == HAVE_METADATA)
 		{
-			fireEvent(Event.LOADED_METADATA, false, false);
+			fireEvent(EventConstants.LOADED_METADATA, false, false);
 		}
 		
 		if (readyState == HAVE_METADATA && (newReadyState == HAVE_CURRENT_DATA || newReadyState == HAVE_ENOUGH_DATA 
@@ -773,7 +774,7 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			if (_loadedDataWasDispatched == false && readyState == HAVE_METADATA)
 			{
-				fireEvent(Event.LOADED_DATA, false, false);
+				fireEvent(EventConstants.LOADED_DATA, false, false);
 				_loadedDataWasDispatched = true;
 			}
 			
@@ -783,19 +784,19 @@ class HTMLMediaElement extends EmbeddedElement
 				{
 					if (isPotentiallyPlaying() == true)
 					{
-						fireEvent(Event.TIME_UPDATE, false, false);
-						fireEvent(Event.WAITING, false, false);
+						fireEvent(EventConstants.TIME_UPDATE, false, false);
+						fireEvent(EventConstants.WAITING, false, false);
 					}
 				}
 				
 				if (readyState <= HAVE_CURRENT_DATA && newReadyState == HAVE_FUTURE_DATA)
 				{
-					fireEvent(Event.CAN_PLAY, false, false);
+					fireEvent(EventConstants.CAN_PLAY, false, false);
 					
 					if (paused == false)
 					{
 						doPlay();
-						fireEvent(Event.PLAYING, false, false);
+						fireEvent(EventConstants.PLAYING, false, false);
 					}
 				}
 				
@@ -803,12 +804,12 @@ class HTMLMediaElement extends EmbeddedElement
 				{
 					if (readyState == HAVE_CURRENT_DATA)
 					{
-						fireEvent(Event.CAN_PLAY, false, false);
+						fireEvent(EventConstants.CAN_PLAY, false, false);
 						
 						if (paused == false)
 						{
 							doPlay();
-							fireEvent(Event.PLAYING, false, false);
+							fireEvent(EventConstants.PLAYING, false, false);
 						}
 					}
 					
@@ -819,15 +820,15 @@ class HTMLMediaElement extends EmbeddedElement
 							if (autoplay == true)
 							{
 								paused = false;
-								fireEvent(Event.PLAY, false, false);
+								fireEvent(EventConstants.PLAY, false, false);
 								doPlay();
 								
-								fireEvent(Event.PLAYING, false, false);
+								fireEvent(EventConstants.PLAYING, false, false);
 							}
 						}
 					}
 					
-					fireEvent(Event.CAN_PLAY_THROUGH, false, false);
+					fireEvent(EventConstants.CAN_PLAY_THROUGH, false, false);
 				}
 			}
 		}
@@ -877,7 +878,7 @@ class HTMLMediaElement extends EmbeddedElement
 		_officialPlaybackPosition = 0;
 		
 		duration = nativeMedia.duration;
-		fireEvent(Event.DURATION_CHANGE, false, false);
+		fireEvent(EventConstants.DURATION_CHANGE, false, false);
 		
 		setReadyState(HAVE_METADATA);
 		
@@ -993,20 +994,20 @@ class HTMLMediaElement extends EmbeddedElement
 			_officialPlaybackPosition = _currentPlaybackPosition;
 			
 			//should fire a last time update event
-			fireEvent(Event.TIME_UPDATE, false, false);
+			fireEvent(EventConstants.TIME_UPDATE, false, false);
 			
 			//pause the media on reaching the ends
 			if (paused == false)
 			{
 				paused = true;
-				fireEvent(Event.PAUSE, false, false);
+				fireEvent(EventConstants.PAUSE, false, false);
 			}
 			
-			fireEvent(Event.ENDED, false, false);
+			fireEvent(EventConstants.ENDED, false, false);
 			return;
 		}
 		
-		fireEvent(Event.TIME_UPDATE, false, false);
+		fireEvent(EventConstants.TIME_UPDATE, false, false);
 		
 		//if the media has not ended playing,
 		//set this method to be called again 
@@ -1024,7 +1025,7 @@ class HTMLMediaElement extends EmbeddedElement
 	{
 		//dispatch a load progress event
 		//TODO 4 : should it be dispatched before suspend ?
-		fireEvent(Event.PROGRESS, false, false);
+		fireEvent(EventConstants.PROGRESS, false, false);
 		
 		//TODO 3 : passing from one ready state to 
 		//another should be improved
@@ -1039,7 +1040,7 @@ class HTMLMediaElement extends EmbeddedElement
 			setReadyState(HAVE_ENOUGH_DATA);
 			
 			networkState = NETWORK_IDLE;
-			fireEvent(Event.SUSPEND, false, false);
+			fireEvent(EventConstants.SUSPEND, false, false);
 			
 			return;
 		}
@@ -1161,7 +1162,7 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 		
 		muted = value;
-		fireEvent(Event.VOLUME_CHANGE, false, false);
+		fireEvent(EventConstants.VOLUME_CHANGE, false, false);
 		
 		return value;
 	}
@@ -1174,7 +1175,7 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 		
 		volume = value;
-		fireEvent(Event.VOLUME_CHANGE, false, false);
+		fireEvent(EventConstants.VOLUME_CHANGE, false, false);
 		
 		return value;
 	}

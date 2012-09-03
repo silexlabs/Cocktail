@@ -9,6 +9,7 @@ package cocktail.core.html;
 
 import cocktail.core.dom.Attr;
 import cocktail.core.dom.Node;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.EventTarget;
 import cocktail.core.event.UIEvent;
 import cocktail.core.resource.AbstractResource;
@@ -144,8 +145,8 @@ class HTMLImageElement extends EmbeddedElement
 		{
 			_resourceLoadedCallback = onResourceLoaded;
 			_resourceLoadError = onResourceLoadError;
-			resource.addEventListener(UIEvent.LOAD, _resourceLoadedCallback);
-			resource.addEventListener(UIEvent.ERROR, _resourceLoadError);
+			resource.addEventListener(EventConstants.LOAD, _resourceLoadedCallback);
+			resource.addEventListener(EventConstants.ERROR, _resourceLoadError);
 		}
 		else
 		{
@@ -176,8 +177,8 @@ class HTMLImageElement extends EmbeddedElement
 	
 	private function removeListeners(resource:EventTarget):Void
 	{
-		resource.removeEventListener(UIEvent.LOAD, _resourceLoadedCallback);
-		resource.removeEventListener(UIEvent.ERROR, _resourceLoadError);
+		resource.removeEventListener(EventConstants.LOAD, _resourceLoadedCallback);
+		resource.removeEventListener(EventConstants.ERROR, _resourceLoadError);
 	}
 	
 	private function onLoadComplete(resource:AbstractResource):Void
@@ -189,14 +190,14 @@ class HTMLImageElement extends EmbeddedElement
 		invalidate(InvalidationReason.other);
 		
 		var loadEvent:UIEvent = new UIEvent();
-		loadEvent.initUIEvent(UIEvent.LOAD, false, false, null, 0.0);
+		loadEvent.initUIEvent(EventConstants.LOAD, false, false, null, 0.0);
 		dispatchEvent(loadEvent);
 	}
 	
 	private function onLoadError():Void
 	{
 		var errorEvent:UIEvent = new UIEvent();
-		errorEvent.initUIEvent(UIEvent.ERROR, false, false, null, 0.0);
+		errorEvent.initUIEvent(EventConstants.ERROR, false, false, null, 0.0);
 		dispatchEvent(errorEvent);
 	}
 	

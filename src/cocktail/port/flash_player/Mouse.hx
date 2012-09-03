@@ -7,6 +7,7 @@
 */
 package cocktail.port.flash_player;
 
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.port.NativeBitmapData;
@@ -166,13 +167,13 @@ class Mouse extends AbstractMouse
 		switch (typedEvent.type)
 		{
 			case flash.events.MouseEvent.MOUSE_DOWN:
-				eventType = MouseEvent.MOUSE_DOWN;
+				eventType = EventConstants.MOUSE_DOWN;
 				
 			case flash.events.MouseEvent.MOUSE_UP:
-				eventType = MouseEvent.MOUSE_UP;
+				eventType = EventConstants.MOUSE_UP;
 				
 			case flash.events.MouseEvent.MOUSE_MOVE:
-				eventType = MouseEvent.MOUSE_MOVE;	
+				eventType = EventConstants.MOUSE_MOVE;	
 				
 			default:
 				eventType = typedEvent.type;	
@@ -201,7 +202,7 @@ class Mouse extends AbstractMouse
 		
 		var wheelEvent:WheelEvent = new WheelEvent();
 
-		wheelEvent.initWheelEvent(WheelEvent.MOUSE_WHEEL, true, true, null, 0.0, Math.round(typedEvent.stageX), Math.round(typedEvent.stageY),
+		wheelEvent.initWheelEvent(EventConstants.MOUSE_WHEEL, true, true, null, 0.0, Math.round(typedEvent.stageX), Math.round(typedEvent.stageY),
 		Math.round(typedEvent.stageX), Math.round(typedEvent.stageY), 0, null, "", 0, typedEvent.delta, 0, 0 );
 		
 		return wheelEvent;

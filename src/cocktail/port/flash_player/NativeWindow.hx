@@ -8,6 +8,7 @@
 package cocktail.port.flash_player;
 
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.port.NativeBitmapData;
@@ -138,7 +139,7 @@ class NativeWindow extends AbstractNativeWindow
 	override private function getUIEvent(event:Dynamic):UIEvent
 	{
 		var resizeEvent:UIEvent = new UIEvent();
-		resizeEvent.initUIEvent(UIEvent.RESIZE, false, false, null, 0.0);
+		resizeEvent.initUIEvent(EventConstants.RESIZE, false, false, null, 0.0);
 		
 		return resizeEvent;
 	}
@@ -152,7 +153,7 @@ class NativeWindow extends AbstractNativeWindow
 	override private function getEvent(event:Dynamic):Event
 	{
 		var fullScreenChangeEvent:Event = new Event();
-		fullScreenChangeEvent.initEvent(Event.FULL_SCREEN_CHANGE, false, false);
+		fullScreenChangeEvent.initEvent(EventConstants.FULL_SCREEN_CHANGE, false, false);
 		
 		return fullScreenChangeEvent;
 	}

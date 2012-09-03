@@ -7,6 +7,7 @@
 */
 package cocktail.port.flash_player;
 
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.TouchEvent;
 import cocktail.core.event.TouchList;
 import cocktail.port.platform.touch.AbstractTouchListener;
@@ -75,13 +76,13 @@ class TouchListener extends AbstractTouchListener
 		switch (typedEvent.type)
 		{
 			case flash.events.TouchEvent.TOUCH_BEGIN:
-				touchType = TouchEvent.TOUCH_START;
+				touchType = EventConstants.TOUCH_START;
 				
 			case flash.events.TouchEvent.TOUCH_END:
-				touchType = TouchEvent.TOUCH_END;
+				touchType = EventConstants.TOUCH_END;
 				
 			case flash.events.TouchEvent.TOUCH_MOVE:
-				touchType = TouchEvent.TOUCH_MOVE;	
+				touchType = EventConstants.TOUCH_MOVE;	
 				
 			default:
 				touchType = typedEvent.type;	

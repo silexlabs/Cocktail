@@ -9,6 +9,7 @@ package cocktail.core.html;
 import cocktail.core.css.CSSStyleSheet;
 import cocktail.core.dom.DOMConstants;
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
@@ -142,7 +143,7 @@ class HTMLLinkElement extends HTMLElement
 			}
 			else
 			{
-				text.addEventListener(UIEvent.LOAD, onCSSLoaded);
+				text.addEventListener(EventConstants.LOAD, onCSSLoaded);
 			}
 		}
 	}

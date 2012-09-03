@@ -9,6 +9,7 @@ package cocktail.core.background;
 
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.geom.Matrix;
 import cocktail.core.renderer.ElementRenderer;
@@ -188,11 +189,11 @@ class BackgroundManager
 		}
 		else if (resource.loadedWithError == false)
 		{
-			resource.addEventListener(UIEvent.LOAD, function(e) {
+			resource.addEventListener(EventConstants.LOAD, function(e) {
 				elementRenderer.invalidate(InvalidationReason.backgroundImageLoaded);
 			});
 			
-			resource.addEventListener(UIEvent.ERROR, function(e) {
+			resource.addEventListener(EventConstants.ERROR, function(e) {
 				elementRenderer.invalidate(InvalidationReason.backgroundImageLoaded);
 			});
 			

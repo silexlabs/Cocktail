@@ -389,7 +389,7 @@ class EventCallback extends EventTarget
 	
 	private function set_onFullScreenChange(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.FULL_SCREEN_CHANGE, value, onfullscreenchange);
+		updateCallbackListener(EventConstants.FULL_SCREEN_CHANGE, value, onfullscreenchange);
 		return onfullscreenchange = value;
 	}
 	
@@ -534,7 +534,7 @@ class EventCallback extends EventTarget
 	
 	private function set_onTransitionEnd(value:TransitionEvent->Void):TransitionEvent->Void
 	{
-		updateCallbackListener(TransitionEvent.TRANSITION_END, cast(value), cast(ontransitionend));
+		updateCallbackListener(EventConstants.TRANSITION_END, cast(value), cast(ontransitionend));
 		return ontransitionend = value;
 	}
 }

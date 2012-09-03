@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.renderer.ObjectRenderer;
 import cocktail.port.NativeElement;
@@ -114,7 +115,7 @@ class HTMLObjectElement extends EmbeddedElement
 		invalidate(InvalidationReason.other);
 		
 		var loadEvent:UIEvent = new UIEvent();
-		loadEvent.initUIEvent(UIEvent.LOAD, false, false, null, 0.0);
+		loadEvent.initUIEvent(EventConstants.LOAD, false, false, null, 0.0);
 		dispatchEvent(loadEvent);
 	}
 	
@@ -126,7 +127,7 @@ class HTMLObjectElement extends EmbeddedElement
 	private function onLoadError(message:String):Void
 	{
 		var errorEvent:UIEvent = new UIEvent();
-		errorEvent.initUIEvent(UIEvent.ERROR, false, false, null, 0.0);
+		errorEvent.initUIEvent(EventConstants.ERROR, false, false, null, 0.0);
 		dispatchEvent(errorEvent);
 	}
 	

@@ -9,6 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.html.HTMLElement;
@@ -58,7 +59,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		_nativeTextInput = new NativeTextInput();
 		
 		//listen to cocktail focus events on the HTMLInputElement
-		node.addEventListener(FocusEvent.FOCUS, onTextInputFocus);
+		node.addEventListener(EventConstants.FOCUS, onTextInputFocus);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

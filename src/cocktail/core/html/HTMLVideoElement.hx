@@ -7,6 +7,7 @@
 */
 package cocktail.core.html;
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.port.NativeElement;
 import cocktail.core.renderer.VideoRenderer;
@@ -207,8 +208,8 @@ class HTMLVideoElement extends HTMLMediaElement
 	 */
 	private function removeListeners():Void
 	{
-		_posterImage.removeEventListener(UIEvent.LOAD, _onPosterLoadComplete);
-		_posterImage.removeEventListener(UIEvent.ERROR, _onPosterLoadError);
+		_posterImage.removeEventListener(EventConstants.LOAD, _onPosterLoadComplete);
+		_posterImage.removeEventListener(EventConstants.ERROR, _onPosterLoadError);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -224,8 +225,8 @@ class HTMLVideoElement extends HTMLMediaElement
 		
 		_onPosterLoadComplete = onPosterLoadComplete;
 		_onPosterLoadError = onPosterLoadError;
-		_posterImage.addEventListener(UIEvent.LOAD, _onPosterLoadComplete);
-		_posterImage.addEventListener(UIEvent.ERROR, _onPosterLoadError);
+		_posterImage.addEventListener(EventConstants.LOAD, _onPosterLoadComplete);
+		_posterImage.addEventListener(EventConstants.ERROR, _onPosterLoadError);
 		_posterImage.src = value;
 		return value;
 	}

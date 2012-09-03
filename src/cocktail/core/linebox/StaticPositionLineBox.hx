@@ -9,7 +9,7 @@ package cocktail.core.linebox;
 
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.geom.GeomData;
-import cocktail.port.NativeElement;
+import cocktail.port.GraphicsContext;
 
 /**
  * This line box is used as a place holder for absolutely
@@ -35,7 +35,7 @@ class StaticPositionLineBox extends LineBox
 	 * a block box renderer caused by an absolutely
 	 * positioned element
 	 */
-	override public function render(graphicContext:NativeElement, forceRendering:Bool):Void
+	override public function render(graphicContext:GraphicsContext):Void
 	{
 		
 	}
