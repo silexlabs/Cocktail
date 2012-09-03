@@ -42,8 +42,8 @@ class Main
 		var container = Lib.document.createElement("div");
 		
 		// apply styles to the container
-		container.style.st = container.style.marginRight = "auto";
-		container.style.width = "150px";
+		container.style.marginLeft = container.style.marginRight = "auto";
+		//container.style.width = "150px";
 		container.style.textAlign = "center";
 		
 		// create a reference to the body
@@ -73,42 +73,6 @@ class Main
 	{
 		var image:Image = cast(event.target);
 		image.src = "assets/icone_cocktail_blanche_ombre.png";
-		
-		try {
-			// calls the http request
-			var request:Http = new Http("assets/feed.txt");
-			// sets the callbacks
-			request.onData = onData;
-			request.onError = onError;
-			// closes the http request
-			request.request(false);
-		}
-		catch (error:Dynamic) {
-			onError(error);
-		}
-	}
-	
-	/**
-	 * Http request success callback. Attach the external file content to the stage using a centered container.
-	 * @param	string
-	 */
-	public static function onData(string:String):Void
-	{
-		// create a container and attch it to the body
-		var container = createContainer();
-		// create a text node to display the content of the file
-		var text = Lib.document.createTextNode(string);
-		// attach the text node to the container
-		container.appendChild(text);
-	}
-	
-	/**
-	 * Http request error callback. Displays an error message.
-	 * @param	string
-	 */
-	public static function onError(msg:Dynamic):Void
-	{
-		trace("there was an error while loading the external data");
 	}
 	
 }
