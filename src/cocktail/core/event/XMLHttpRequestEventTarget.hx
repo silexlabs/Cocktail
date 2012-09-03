@@ -63,7 +63,7 @@ class XMLHttpRequestEventTarget extends EventTarget
 	 */
 	public function new() 
 	{
-		
+		super();
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -98,43 +98,43 @@ class XMLHttpRequestEventTarget extends EventTarget
 	
 	private function set_onLoadStart(value:ProgressEvent->Void):ProgressEvent->Void
 	{
-		updateCallbackListener(EventConstants.LOAD_START, value, onloadStart);
+		updateCallbackListener(EventConstants.LOAD_START, cast(value), cast(onloadStart));
 		return onloadStart = value;
 	}
 	
 	private function set_onProgress(value:ProgressEvent->Void):ProgressEvent->Void
 	{
-		updateCallbackListener(EventConstants.PROGRESS, value, onprogress);
+		updateCallbackListener(EventConstants.PROGRESS, cast(value), cast(onprogress));
 		return onprogress = value;
 	}
 	
 	private function set_onAbort(value:ProgressEvent->Void):ProgressEvent->Void
 	{
-		updateCallbackListener(EventConstants.ABORT, value, onabort);
+		updateCallbackListener(EventConstants.ABORT, cast(value), cast(onabort));
 		return onabort = value;
 	}
 	
 	private function set_onError(value:ProgressEvent->Void):ProgressEvent->Void
 	{
-		updateCallbackListener(EventConstants.ERROR, value, onerror);
+		updateCallbackListener(EventConstants.ERROR, cast(value), cast(onerror));
 		return onerror = value;
 	}
 	
 	private function set_onLoad(value:ProgressEvent->Void):ProgressEvent->Void
 	{
-		updateCallbackListener(EventConstants.LOAD, value, onload);
+		updateCallbackListener(EventConstants.LOAD, cast(value), cast(onload));
 		return onload = value;
 	}
 	
 	private function set_onTimeout(value:ProgressEvent->Void):ProgressEvent->Void
 	{
-		updateCallbackListener(EventConstants.TIME_OUT, value, ontimeout);
+		updateCallbackListener(EventConstants.TIME_OUT, cast(value), cast(ontimeout));
 		return ontimeout = value;
 	}
 	
 	private function set_onLoadEnd(value:ProgressEvent->Void):ProgressEvent->Void
 	{
-		updateCallbackListener(EventConstants.LOAD_END, value, onloadend);
+		updateCallbackListener(EventConstants.LOAD_END, cast(value), cast(onloadend));
 		return onloadend = value;
 	}
 }
