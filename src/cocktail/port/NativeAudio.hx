@@ -15,6 +15,10 @@ typedef NativeAudio =  cocktail.port.platform.nativeMedia.NativeMedia;
 
 #elseif flash9
 typedef NativeAudio =  cocktail.port.flash_player.NativeAudio;
+
+#elseif nme
+typedef NativeAudio =  cocktail.port.nme.NativeAudio;
+
 #else
 typedef NativeAudio =  cocktail.port.platform.nativeMedia.NativeMedia;
 #end

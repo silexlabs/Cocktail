@@ -134,6 +134,23 @@ class NativeAudio extends NativeMedia
 		onNativeLoadedMetaData();
 	}
 	
+	/**
+	 * Called when the source of the sound
+	 * changes, the Sound object need to 
+	 * be created or re-created
+	 */
+	private function initSound(src:String):Void
+	{
+		//in flash, Sound object can't be reused
+		//for multiple sounds
+		_sound = new Sound();
+		
+		//listen for metadata loading of sound 
+		_sound.addEventListener(Event.ID3, onID3DataReceived);
+		
+		_sound.load(new URLRequest(src));
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SETTER/GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -190,15 +207,7 @@ class NativeAudio extends NativeMedia
 	{
 		//reset playbak time
 		_currentTime = 0.0;
-		
-		//in flash, Sound object can't be reused
-		//for multiple sounds
-		_sound = new Sound();
-		
-		//listen for metadata loading of sound 
-		_sound.addEventListener(Event.ID3, onID3DataReceived);
-		
-		_sound.load(new URLRequest(value));
+		initSound(value);
 		return value;
 	}
 }
