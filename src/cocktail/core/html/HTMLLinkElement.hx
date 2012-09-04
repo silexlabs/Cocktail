@@ -6,11 +6,14 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
+import cocktail.core.css.CSSConstants;
 import cocktail.core.css.CSSStyleSheet;
 import cocktail.core.dom.DOMConstants;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
+import cocktail.core.http.HTTPConstants;
+import cocktail.core.http.XMLHTTPRequest;
 import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.css.CSSData;
@@ -40,7 +43,6 @@ class HTMLLinkElement extends HTMLElement
 	 * which must be present and must contain a valid non-empty URL
 	 * potentially surrounded by spaces. If the href attribute
 	 * is absent, then the element does not define a link.
-	 * 
 	 */
 	public var href(get_href, set_href):String;
 	
@@ -84,8 +86,8 @@ class HTMLLinkElement extends HTMLElement
 	/**
 	 * A reference to the CSS style sheet created by this
 	 * node's content. It is null by default, a style sheet
-	 * is only created if this element has a text child
-	 * node and is attached to the DOM
+	 * is only created if this element links to an external
+	 * stylsheet and is attached to the DOM 
 	 */
 	public var sheet(default, null):CSSStyleSheet;
 	
@@ -99,25 +101,37 @@ class HTMLLinkElement extends HTMLElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden, as when the style element is added
-	 * to the DOM, it adds a style sheet to the 
-	 * document if it has a child text node
+	 * Overriden, as when the link element is added
+	 * to the DOM, it tries to load its linked
+	 * resource if any
 	 */
 	override public function attach():Void
 	{
 		super.attach();
-		addStyleSheet();
+		loadLinkedResource();
 	}
 
 	/**
 	 * Overriden as when this node is removed
 	 * from the dom, it must also remove its 
-	 * style sheet from the document if any
+	 * linked resource if any
 	 */
 	override public function detach():Void
 	{
 		super.detach();
-		removeStyleSheet();
+		unloadLinkedResource();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The link element is not a visual one
+	 */
+	override private function createElementRenderer():Void
+	{
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -125,35 +139,34 @@ class HTMLLinkElement extends HTMLElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * To actually add a style sheet to the 
-	 * document, the style node must both be
-	 * attached to the DOM and have a text
-	 * child node
+	 * Check what kind of external resource
+	 * is linked to and if it is of a 
+	 * supported type, load it
 	 * 
-	 * TODO 1 : clean-up class
+	 * TODO 3 : for now, only CSS stylesheet
+	 * are supported
 	 */
-	private function addStyleSheet():Void
+	private function loadLinkedResource():Void
 	{
-		if (type == "text/css" && href != null && rel == "stylesheet")
+		//check if if the linke element links to an external CSS
+		//stylesheet and load it if it does
+		if (type == CSSConstants.CSS_MIME_TYPE && href != null && rel == CSSConstants.STYLESHEET_REL)
 		{
-			var text:AbstractResource = ResourceManager.getTextResource(href);
-			if (text.loaded == true)
-			{
-				createStyleSheet(text.nativeResource);
-			}
-			else
-			{
-				text.addEventListener(EventConstants.LOAD, onCSSLoaded);
-			}
+			var xmlHttpRequest:XMLHTTPRequest = new XMLHTTPRequest();
+			xmlHttpRequest.open(HTTPConstants.GET, href);
+			xmlHttpRequest.addEventListener(EventConstants.LOAD_END, onCSSLoaded);
+			xmlHttpRequest.send();
 		}
 	}
 	
 	/**
-	 * Remove the style sheet from the document
-	 * if it was previously added
+	 * Unload any linked resource, vary based
+	 * on the type of linked resource
 	 */
-	private function removeStyleSheet():Void
+	private function unloadLinkedResource():Void
 	{
+		//if a CSS stylesheet was loaded, remove
+		//it from the style manager
 		if (sheet != null)
 		{
 			var htmlDocument:HTMLDocument = cast(ownerDocument);
@@ -162,12 +175,20 @@ class HTMLLinkElement extends HTMLElement
 		}
 	}
 	
+	/**
+	 * Callback called when a linked CSS
+	 * stylesheet is successfully loaded
+	 */
 	private function onCSSLoaded(event:Event):Void
 	{
-		var text:AbstractResource = cast(event.target);
-		createStyleSheet(text.nativeResource);
+		var xmlHttpRequest:XMLHTTPRequest = cast(event.target);
+		createStyleSheet(xmlHttpRequest.responseText);
 	}
 	
+	/**
+	 * Create a style sheet object from a CSS string and attach
+	 * it to the style manager
+	 */
 	private function createStyleSheet(css:String):Void
 	{
 		sheet = new CSSStyleSheet(css, PropertyOriginValue.AUTHOR);
@@ -219,6 +240,7 @@ class HTMLLinkElement extends HTMLElement
 		return value;
 	}
 	
+	//TODO 2 : implement
 	private function get_relList():Array<String>
 	{
 		return [];

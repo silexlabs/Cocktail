@@ -493,7 +493,10 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 		}
 		
 		//if the resource is not done loading, schedule a method call
+		#if macro
+		#elseif (flash9 || nme)
 		haxe.Timer.delay(function() { onHttpProgressTick(); }, PROGRESS_UPDATE_FREQUENCY); 
+		#end
 	}
 	
 	/**

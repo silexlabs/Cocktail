@@ -138,6 +138,12 @@ class CSSConstants
 	public static inline var IMPORTANT:String = "important";
 	
 	public static inline var AUTO:String = "auto";
+	
+	//CSS metadata
+	
+	public static inline var CSS_MIME_TYPE:String = "text/css";
+	
+	public static inline var STYLESHEET_REL:String = "stylesheet";
 
 	public function new() 
 	{
