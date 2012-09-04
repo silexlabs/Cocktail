@@ -1,4 +1,12 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktail.port.flash_player;
+
 import cocktail.port.platform.nativeHttp.AbstractNativeHttp;
 import flash.events.Event;
 import flash.events.HTTPStatusEvent;
@@ -8,78 +16,105 @@ import flash.net.URLLoader;
 import flash.net.URLRequest;
 
 /**
- * ...
+ * This is the implementation of the http class
+ * for the flash platform
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class NativeHttp extends AbstractNativeHttp
 {
-
+	/**
+	 * The flash URLLoader, used for 
+	 * http request on the flash platform
+	 */
 	private var _urlLoader:URLLoader;
 	
+	/**
+	 * class constructor
+	 */
 	public function new() 
 	{
 		super();
-		trace("new native http");
 		_urlLoader = new URLLoader();
 	}
 	
-	override public function load(url:String, method:String, data:Dynamic, authorRequestHeaders:Hash<String>):Void
-	{
-		super.load(url, method, data, authorRequestHeaders);
-		
-		var urlRequest:URLRequest = new URLRequest(url);
-		urlRequest.method = method;
-		urlRequest.data = data;
-		trace("load native http");
-		trace(url);
-		_urlLoader = new URLLoader(urlRequest);
-		_urlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHttpStatus);
-		_urlLoader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
-		_urlLoader.addEventListener(Event.COMPLETE, onLoadComplete);
-		_urlLoader.load(urlRequest);
-		
-		#if nme
-		trace(nme.Assets.getText("assets/test.css"));
-		#end
-		
-		responseHeadersLoaded = true;
-		
-		//TODO 2 : implement custom request header
-		//urlRequest.requestHeaders
-		
-	}
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function onIOError(event:IOErrorEvent):Void
-	{
-		trace(event.toString());
-	}
-	
-	private function onLoadComplete(event:Event):Void
-	{
-		trace(_urlLoader.data);
-		trace("load complete");
-		complete = true;
-	}
-	
-	private function onHttpStatus(event:HTTPStatusEvent):Void
-	{
-		trace("status nati");
-		status = event.status;
-		//TODO 2 : no way in flash to get response headers, only in AIR
-		responseHeadersLoaded = true;
-	}
-	
+	/**
+	 * Overriden to stop resource loading
+	 */
 	override public function close():Void
 	{
 		_urlLoader.close();
 	}
 	
-	override private function get_response():Dynamic
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to use flash native URLLoader for the http request
+	 * 
+	 * TODO 2 : implement custom request header
+	 */
+	override private function doLoad(url:String, method:String, data:Dynamic, authorRequestHeaders:Hash<String>):Void
 	{
-		return _urlLoader.data;
+		super.load(url, method, data, authorRequestHeaders);
+		
+		//create a flash URLRequest, storing each parameters of the request
+		var urlRequest:URLRequest = new URLRequest(url);
+		urlRequest.method = method;
+		urlRequest.data = data;
+		
+		//listen for update on the request
+		_urlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHttpStatus);
+		_urlLoader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
+		_urlLoader.addEventListener(Event.COMPLETE, onLoadComplete);
+		
+		//actually starts the request
+		_urlLoader.load(urlRequest);
+		
+		//there is no way in flash (except for AIR) to get the response header,
+		//so they are considered instantly loaded
+		responseHeadersLoaded = true;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Set the error flag
+	 */
+	private function onIOError(event:IOErrorEvent):Void
+	{
+		error = true;
+	}
+	
+	/**
+	 * Set the complete flag, store the loaded resource
+	 */
+	private function onLoadComplete(event:Event):Void
+	{
+		response = _urlLoader.data;
+		complete = true;
+	}
+	
+	/**
+	 * Update the http status code
+	 */
+	private function onHttpStatus(event:HTTPStatusEvent):Void
+	{
+		status = event.status;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN GETTERS/SETTERS
+	// return data from the URLLoader
+	//////////////////////////////////////////////////////////////////////////////////////////
+
 	override private function get_total():Int
 	{
 		return _urlLoader.bytesTotal;

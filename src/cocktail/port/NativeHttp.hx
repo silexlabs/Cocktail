@@ -10,8 +10,10 @@ package cocktail.port;
 #if macro
 typedef NativeHttp =  cocktail.port.platform.nativeHttp.AbstractNativeHttp;
 
-#elseif (flash9 || nme)
+#elseif flash9
 typedef NativeHttp =  cocktail.port.flash_player.NativeHttp;
+#elseif nme
+typedef NativeHttp =  cocktail.port.nme.NativeHttp;
 #else
 typedef NativeHttp =  cocktail.port.platform.nativeHttp.AbstractNativeHttp;
 #end
