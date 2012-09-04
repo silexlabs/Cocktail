@@ -164,11 +164,11 @@ class ImageResource extends AbstractResource
 		else 
 		{
 			#if flash
-			//flash.system.Security.loadPolicyFile(loader.contentLoaderInfo.url + "crossdomain.xml");
+			flash.system.Security.loadPolicyFile(loader.contentLoaderInfo.url + "crossdomain.xml");
 			//poll at regular interval to see if the 
 			//cross domain was loaded. This is the only way,
 			//as flash doesn't have an event for it
-			//onChildAllowsParentTick();
+			onChildAllowsParentTick();
 			#end
 		}
 	}

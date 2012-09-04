@@ -15,6 +15,7 @@ import cocktail.core.event.EventTarget;
 import cocktail.core.event.ProgressEvent;
 import cocktail.core.event.XMLHttpRequestEventTarget;
 import cocktail.core.resource.ResourceManager;
+import cocktail.port.NativeHttp;
 import haxe.Http;
 
 /**
@@ -81,6 +82,17 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	 * loading a resource
 	 */
 	private static inline var PROGRESS_UPDATE_FREQUENCY:Int = 50;
+	
+	/**
+	 * exposes native http capabilities of the 
+	 * underlying platform 
+	 */
+	private var _nativeHttp:NativeHttp;
+	
+	/**
+	 * The headers returned after an http request
+	 */
+	private var _responseHeaders:Hash<String>;
 	
 	// states flags defined here : http://www.w3.org/TR/2012/WD-XMLHttpRequest-20120117/#states
 	
@@ -153,6 +165,11 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	{	
 		super();
 		
+		_nativeHttp = new NativeHttp();
+		
+		
+		responseType = "";
+		
 		//set start state
 		setReadyState(HTTPConstants.UNSENT);
 	}
@@ -169,7 +186,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	 * 
 	 * TODO 2 : most of the algorithm is missing
 	 */
-	public function open(method:String, url:String, async:Bool = false, user:String = null, password:String = null):Void
+	public function open(method:String, url:String, async:Bool = true, user:String = null, password:String = null):Void
 	{
 		//TODO 2 : 
 		//If there is an associated XMLHttpRequest document run these substeps:
@@ -261,7 +278,6 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 		{
 			//TODO 2 :
 			//Otherwise, let encoding be null, mime type be null, and then follow these rules:
-
 			//If data is a ArrayBuffer
 			//Let the request entity body be the raw data represented by data.
 			//If data is a Blob
@@ -318,7 +334,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 			}
 		}
 		
-		_urlResource = ResourceManager.getURLResource(_url, _method, _synchronous, data, _authorRequestHeaders);
+		_nativeHttp.load(_url, _method, data, _authorRequestHeaders);
 		onHttpProgressTick();
 	}
 	
@@ -395,11 +411,11 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	private function onHttpProgressTick():Void
 	{
 		//always update the http status
-		status = _urlResource.status;
+		status = _nativeHttp.status;
 		
 		//if there was an error between the last call to this method and this
 		//call, stop monitoring progress
-		if (_error = true)
+		if (_error == true)
 		{
 			return;
 		}
@@ -415,14 +431,14 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 			//and the HTTP status code of the response is not 301, 302, 303, or 307
 			//
 			//TODO 2 : and the HTTP status code of the response is not 301, 302, 303, or 307
-			if (_urlResource.responseHeadersLoaded == true && _synchronous == false)
+			if (_nativeHttp.responseHeadersLoaded == true && _synchronous == false)
 			{
 				//Switch to the HEADERS_RECEIVED state.
-				_responseHeaders = _urlResource.responseHeaders;
+				_responseHeaders = _nativeHttp.responseHeaders;
 				setReadyState(HTTPConstants.HEADERS_RECEIVED);
 			}
 		}
-		
+						
 		//once headers are received, wait for loading start of the content
 		if (readyState == HTTPConstants.HEADERS_RECEIVED)
 		{
@@ -430,7 +446,8 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 			//or if there is no response entity body and the synchronous flag is unset
 			if (_synchronous == false)
 			{
-				if (_urlResource.loaded > 0 || _responseEntityBody == null)
+				//TODO 2 : or if there is no response entity body
+				if (_nativeHttp.loaded > 0)
 				{
 					//Switch to the LOADING state.
 					setReadyState(HTTPConstants.LOADING);
@@ -444,12 +461,18 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 			//Once the whole response entity body has been received
 			//Or if there is no response entity body and the state is LOADING
 			//Or if there is no response entity body and the synchronous flag is set
-			if (_urlResource.loaded == _urlResource.total || (_responseEntityBody == null && readyState == HTTPConstants.LOADING)
-			|| (_responseEntityBody == null && _synchronous == true))
+			if (_nativeHttp.loaded == _nativeHttp.total)
+			//|| (_responseEntityBody == null && readyState == HTTPConstants.LOADING)
+			//|| (_responseEntityBody == null && _synchronous == true))
 			{
 				//TODO 2 : If the synchronous flag is set, update the response entity body.
 				
 				_synchronous = false;
+				
+				//store response now that it is fully loaded
+				//TODO 2 : only manage text response for now
+				response = _nativeHttp.response;
+				responseText = _nativeHttp.response;
 				
 				//Switch to the DONE state.
 				setReadyState(HTTPConstants.DONE);
@@ -462,7 +485,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 				var loadEndEvent:ProgressEvent = new ProgressEvent();
 				loadEndEvent.initEvent(EventConstants.LOAD_END, false, false);
 				dispatchEvent(loadEndEvent);
-				
+
 				//return to prevent scheduling a call to this
 				//method now that loading is complete
 				return;
@@ -482,7 +505,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	private function makeProgressNotification():Void
 	{
 		var progressEvent:ProgressEvent = new ProgressEvent();
-		progressEvent.initProgressEvent(EventConstants.PROGRESS, false, false, _urlResource.total != 0, _urlResource.loaded, urlResource.total);
+		progressEvent.initProgressEvent(EventConstants.PROGRESS, false, false, _nativeHttp.total != 0, _nativeHttp.loaded, _nativeHttp.total);
 		dispatchEvent(progressEvent);
 	}
 	
@@ -507,7 +530,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	 */
 	private function requestError(error:Int, event:String):Void
 	{
-		_urlResource.close();
+		_nativeHttp.close();
 		
 		_error = true;
 		
@@ -622,7 +645,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	 */
 	private function get_response():Dynamic
 	{
-		if (responseType == "" || responseType == HTTPConstants.TYPE_TEXT)
+		if (responseType == "" && responseType == HTTPConstants.TYPE_TEXT)
 		{
 			switch(readyState)
 			{
@@ -670,7 +693,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	 */
 	private function get_responseText():String
 	{
-		if (responseType != "" || responseType != HTTPConstants.TYPE_TEXT)
+		if (responseType != "" && responseType != HTTPConstants.TYPE_TEXT)
 		{
 			throw DOMException.INVALID_STATE_ERR;
 			return null;
@@ -698,7 +721,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	 */
 	private function get_responseXML():Document
 	{
-		if (responseType != "" || responseType != HTTPConstants.TYPE_DOCUMENT)
+		if (responseType != "" && responseType != HTTPConstants.TYPE_DOCUMENT)
 		{
 			throw DOMException.INVALID_STATE_ERR;
 			return null;
