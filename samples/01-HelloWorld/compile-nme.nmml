@@ -1,23 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project>
 
-  <app title="Cocktail" main="Cocktail" package="org.silexlabs.cocktail" version="1.0.0" company="Silex Labs" />
-  <window width="1024" height="768" fps="30" orientation="portrait" resizable="false" unless="target_flash" />
- 
-  <set name="BUILD_DIR" value="bin" />
-  <set name="SWF_VERSION" value="10.2" />
+	<app main="Cocktail" path="bin" file="Main"/>
+	<meta title="Cocktail" package="org.silexlabs.cocktail" version="1.0.0" company="Silex Labs" />
+	<window width="350" height="450" fps="30" orientation="portrait" resizable="true" unless="target_flash" />
 
-  <classpath name="../../src" />
-  <classpath name="src" />
+	<set name="SWF_VERSION" value="10.2" />
 
-  <haxelib name="nme" />
+	<classpath name="../../src" />
+	<classpath name="src" />
 
-  <ndll name="std" />
-  <ndll name="regexp" />
-  <ndll name="zlib" />
-  <ndll name="nme" haxelib="nme" />
-  
-  <compilerflag name="--remap js:cocktail" />
-  <compilerflag name="--macro Cocktail.create('index.html')" />
+	<haxelib name="nme" />
+
+	<ndll name="std" />
+	<ndll name="regexp" />
+	<ndll name="zlib" />
+	<ndll name="nme" haxelib="nme" />
+
+	<compilerflag name="--remap js:cocktail" />
+	<compilerflag name="--macro Cocktail.create('index.html')" />
 
 </project>

@@ -52,7 +52,7 @@ class Main
 		
 		//HTML & semantics
 		var paragraph = Lib.document.createElement("p");
-		paragraph.appendChild(Lib.document.createTextNode("Cocktail is a HTML rendering engine. It focuses on UIs and bridges the gap between all the targets supported by haXe."));
+		paragraph.appendChild(Lib.document.createTextNode("Cocktail is a HTML rendering engine."));
 		Lib.document.body.appendChild(paragraph);
 	
 		//CSS text
@@ -87,7 +87,7 @@ class Main
 	function buildDomHtml()
 	{
 		//HxTML
-		Lib.document.body.innerHTML = '<div style="width: 50%; margin-right: auto; margin-left: auto; background-color: rgba(255, 255, 255, 0.5);"><h1 style="word-spacing: 10px; color: orange; font-family: arial;">Hello Cocktail</h1><p>Cocktail is a cross-platform library for the haXe programming language. It focuses on UIs and bridges the gap between all the targets supported by haXe.<img id="pic" src="assets/cocktail.png" /></p></div>';
+		Lib.document.body.innerHTML = '<div style="width: 50%; margin-right: auto; margin-left: auto; background-color: rgba(255, 255, 255, 0.5);"><h1 style="word-spacing: 10px; color: orange; font-family: arial;">Hello Cocktail</h1><p>Cocktail is a HTML rendering engine.<img id="pic" src="assets/cocktail.png" /></p></div>';
 
 	}
 	
