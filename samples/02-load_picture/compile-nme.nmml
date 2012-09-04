@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project>
 
-	<app title="Cocktail" main="Cocktail" package="org.silexlabs.cocktail" version="1.0.0" company="Silex Labs" />
+	<app main="Cocktail" path="bin" file="Main"/>
+	<meta title="Cocktail" package="org.silexlabs.cocktail" version="1.0.0" company="Silex Labs" />
 	<window width="350" height="350" fps="30" orientation="portrait" resizable="true" unless="target_flash" />
 
-	<set name="BUILD_DIR" value="bin" />
 	<set name="SWF_VERSION" value="10.2" />
 
 	<classpath name="../../src" />
@@ -12,7 +12,7 @@
 
 	<haxelib name="nme" />
 
-	<template path="assets" rename="bin/assets" ></template>
+	<assets path="assets"></assets>
 
 	<ndll name="std" />
 	<ndll name="regexp" />

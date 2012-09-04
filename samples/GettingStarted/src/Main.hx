@@ -6,7 +6,6 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-import haxe.Http;
 import js.Lib;
 import js.Dom;
 
@@ -30,29 +29,6 @@ class Main
 		// create interactivity
 		image.onmousedown = onMouseDown;
 		image.onmouseup = onMouseUp;
-	}
-	
-	/**
-	 * Creates a centered div container and attach it to the body
-	 * @return container
-	 */
-	public static function createContainer():HtmlDom
-	{
-		// create a container to gather all of our visual elements
-		var container = Lib.document.createElement("div");
-		
-		// apply styles to the container
-		container.style.marginLeft = container.style.marginRight = "auto";
-		//container.style.width = "150px";
-		container.style.textAlign = "center";
-		
-		// create a reference to the body
-		var body = Lib.document.body;
-		
-		//attach the container to the body
-		body.appendChild(container);
-		
-		return container;
 	}
 	
 	/**
