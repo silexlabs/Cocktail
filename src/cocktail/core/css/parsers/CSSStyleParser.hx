@@ -1236,6 +1236,29 @@ class CSSStyleParser
 			case 'transparent':
 				cssPropertyValue = COLOR(TRANSPARENT);
 				
+			default:	
+				cssPropertyValue = parseColorKeyword(ident);
+		}
+		
+		//if no match was found among CSS keywords, then
+		//it is stored as an ident
+		if (cssPropertyValue == null)
+		{
+			cssPropertyValue = IDENTIFIER(ident);
+		}
+
+		styleValues.push(cssPropertyValue);
+	}
+	
+	/**
+	 * Try to match the ident to a CSS color keyword
+	 */
+	private function parseColorKeyword(ident:String):CSSPropertyValue
+	{
+		var cssPropertyValue:CSSPropertyValue = null;
+		
+		switch(ident)
+		{
 			case 'aliceblue':
 				cssPropertyValue = COLOR(KEYWORD(ALICE_BLUE));
 					
@@ -1465,6 +1488,24 @@ class CSSStyleParser
 			case 'lightsteelblue':
 				cssPropertyValue = COLOR(KEYWORD(LIGHT_STEEL_BLUE));
 				
+			default:
+				cssPropertyValue = parseColorKeyword2(ident);
+		}
+		
+		return cssPropertyValue;
+	}
+	
+	/**
+	 * The color keyword method is split in 2 because of
+	 * weird bug when compiling cpp output caused by
+	 * too many switch statements
+	 */
+	private function parseColorKeyword2(ident:String):CSSPropertyValue
+	{
+		var cssPropertyValue:CSSPropertyValue = null;
+		
+		switch(ident)
+		{
 			case 'lightyellow':
 				cssPropertyValue = COLOR(KEYWORD(LIGHT_YELLOW));
 						
@@ -1664,7 +1705,7 @@ class CSSStyleParser
 				cssPropertyValue = COLOR(KEYWORD(TEAL));
 		}
 		
-		styleValues.push(cssPropertyValue);
+		return cssPropertyValue;
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
