@@ -125,16 +125,8 @@ class ImageResource extends AbstractResource
 	 */
 	private function setIntrinsicDimensions(loader:Loader):Void
 	{
-		//nme don't support contentLoaderInfo width and height
-		#if nme
-		intrinsicHeight = Math.round(loader.height);
-		intrinsicWidth = Math.round(loader.width);
-		
-		#else
 		intrinsicHeight = Math.round(loader.contentLoaderInfo.height);
 		intrinsicWidth = Math.round(loader.contentLoaderInfo.width);
-		#end
-		
 		intrinsicRatio = intrinsicWidth / intrinsicHeight;
 	}
 	

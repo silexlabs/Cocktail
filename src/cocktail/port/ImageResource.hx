@@ -10,8 +10,11 @@ package cocktail.port;
 #if macro
 typedef ImageResource = cocktail.core.resource.AbstractResource;
 
-#elseif (flash9 || nme)
+#elseif flash9
 typedef ImageResource = cocktail.port.flash_player.ImageResource;
+
+#elseif nme
+typedef ImageResource = cocktail.port.nme.ImageResource;
 
 #else 
 typedef ImageResource = cocktail.core.resource.AbstractResource;
