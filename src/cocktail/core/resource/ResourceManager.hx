@@ -13,7 +13,7 @@ import cocktail.port.ImageResource;
  * This is a static class used to retrive loaded asset
  * and start the loading of asset if they are not yet loaded.
  * 
- * This allows caching of asset which becomes useful for assets
+ * This allows caching of assets which becomes useful for assets
  * frequently redrawn such as backgrounds
  * 
  * @author Yannick DOMINGUEZ

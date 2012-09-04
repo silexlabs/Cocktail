@@ -71,6 +71,17 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	 */
 	public var onreadystatechange(default, set_onReadyStateChange):Event->Void;
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE ATTRIBUTES
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The interval in milliseconds between dispatching 2
+	 * progress events while the XMLHttpRequest is
+	 * loading a resource
+	 */
+	private static inline var PROGRESS_UPDATE_FREQUENCY:Int = 50;
+	
 	// states flags defined here : http://www.w3.org/TR/2012/WD-XMLHttpRequest-20120117/#states
 	
 	/**
@@ -136,7 +147,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	private var _uploadEvents:Bool;
 	
 	/**
-	 * class constructer.
+	 * class constructor.
 	 */
 	public function new() 
 	{	
@@ -155,8 +166,8 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	 * 
 	 * This is an implementation of the following algorithm :
 	 * http://www.w3.org/TR/2012/WD-XMLHttpRequest-20120117/#the-open-method
-		 * 
-		 * TODO 2 : most of the algorithm is missing
+	 * 
+	 * TODO 2 : most of the algorithm is missing
 	 */
 	public function open(method:String, url:String, async:Bool = false, user:String = null, password:String = null):Void
 	{
@@ -307,8 +318,8 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 			}
 		}
 		
-		//_urlResource = ResourceManager.getURLResource(_url, _method, _synchronous, data, _authorRequestHeaders);
-		//_urlResource.addEventListener(EventConstants.HTTP_STATUS, onHttpStatus);
+		_urlResource = ResourceManager.getURLResource(_url, _method, _synchronous, data, _authorRequestHeaders);
+		onHttpProgressTick();
 	}
 	
 	/**
@@ -376,19 +387,165 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function onHttpStatus(event:Event):Void
+	/**
+	 * Monitor loading of the resource once the
+	 * send method is called. Manage changes
+	 * of ready state
+	 */
+	private function onHttpProgressTick():Void
 	{
-		//status = _urlResource.status;
+		//always update the http status
+		status = _urlResource.status;
 		
-		//TODO 2 : 
-		//If the response has an HTTP status code of 301, 302, 303, or 307
-		//If the redirect violates infinite loop precautions this is a network error.
-		//Otherwise, run these steps:
-		//Set the request URL to the URL conveyed by the Location header.
-		//If the XMLHttpRequest origin and the origin of request URL are same origin transparently follow the redirect while observing the same-origin request event rules.
-		//Otherwise, follow the cross-origin request steps and terminate the steps for this algorithm.
+		//if there was an error between the last call to this method and this
+		//call, stop monitoring progress
+		if (_error = true)
+		{
+			return;
+		}
+		
+		//dispatch progress events
+		makeProgressNotification();
+		makeUploadProgressNotification();
+		
+		//first state after send method call, wait for the response headers
+		if (readyState == HTTPConstants.OPENED)
+		{
+			//Once all HTTP headers have been received, the synchronous flag is unset, 
+			//and the HTTP status code of the response is not 301, 302, 303, or 307
+			//
+			//TODO 2 : and the HTTP status code of the response is not 301, 302, 303, or 307
+			if (_urlResource.responseHeadersLoaded == true && _synchronous == false)
+			{
+				//Switch to the HEADERS_RECEIVED state.
+				_responseHeaders = _urlResource.responseHeaders;
+				setReadyState(HTTPConstants.HEADERS_RECEIVED);
+			}
+		}
+		
+		//once headers are received, wait for loading start of the content
+		if (readyState == HTTPConstants.HEADERS_RECEIVED)
+		{
+			//Once the first byte (or more) of the response entity body has been received and the synchronous flag is unset
+			//or if there is no response entity body and the synchronous flag is unset
+			if (_synchronous == false)
+			{
+				if (_urlResource.loaded > 0 || _responseEntityBody == null)
+				{
+					//Switch to the LOADING state.
+					setReadyState(HTTPConstants.LOADING);
+				}
+			}
+		}
+		
+		//when in loading state, await the complete load of the resource
+		if (readyState == HTTPConstants.LOADING)
+		{
+			//Once the whole response entity body has been received
+			//Or if there is no response entity body and the state is LOADING
+			//Or if there is no response entity body and the synchronous flag is set
+			if (_urlResource.loaded == _urlResource.total || (_responseEntityBody == null && readyState == HTTPConstants.LOADING)
+			|| (_responseEntityBody == null && _synchronous == true))
+			{
+				//TODO 2 : If the synchronous flag is set, update the response entity body.
+				
+				_synchronous = false;
+				
+				//Switch to the DONE state.
+				setReadyState(HTTPConstants.DONE);
+				
+				//TODO 2 : should init with right loaded and total bytes
+				var loadEvent:ProgressEvent = new ProgressEvent();
+				loadEvent.initEvent(EventConstants.LOAD, false, false);
+				dispatchEvent(loadEvent);
+				
+				var loadEndEvent:ProgressEvent = new ProgressEvent();
+				loadEndEvent.initEvent(EventConstants.LOAD_END, false, false);
+				dispatchEvent(loadEndEvent);
+				
+				//return to prevent scheduling a call to this
+				//method now that loading is complete
+				return;
+			}
+		}
+		
+		//if the resource is not done loading, schedule a method call
+		haxe.Timer.delay(function() { onHttpProgressTick(); }, PROGRESS_UPDATE_FREQUENCY); 
 	}
 	
+	/**
+	 * When it is said to make progress notifications, while the download is progressing,
+	 * queue a task to fire a progress event named progress
+	 * about every 50ms or for every byte received, whichever 
+	 * is least frequent.
+	 */
+	private function makeProgressNotification():Void
+	{
+		var progressEvent:ProgressEvent = new ProgressEvent();
+		progressEvent.initProgressEvent(EventConstants.PROGRESS, false, false, _urlResource.total != 0, _urlResource.loaded, urlResource.total);
+		dispatchEvent(progressEvent);
+	}
+	
+	/**
+	 * Same as above for the upload object.
+	 */
+	private function makeUploadProgressNotification():Void
+	{
+		//TODO 2 : implement
+	}
+	
+	/**
+	 * Called when there was an error while fetching the resource
+	 * preventing the resource from being used
+	 * 
+	 * This is an implementation of the following algorithm:
+	 * http://www.w3.org/TR/2012/WD-XMLHttpRequest-20120117/#network-error
+	 * 
+	 * @param	error the code of the error which triggered
+	 * this method call
+	 * @param	event the type of the error event to dispatch
+	 */
+	private function requestError(error:Int, event:String):Void
+	{
+		_urlResource.close();
+		
+		_error = true;
+		
+		readyState = HTTPConstants.DONE;
+		
+		if (_synchronous == true)
+		{
+			throw error;
+			return;
+		}
+		
+		fireReadyStateChange();
+		
+		if (_uploadComplete == false)
+		{
+			_uploadComplete = true;
+			
+			var errorEvent:ProgressEvent = new ProgressEvent();
+			errorEvent.initEvent(event, false, false);
+			
+			upload.dispatchEvent(errorEvent);
+			
+			var loadEnd:ProgressEvent = new ProgressEvent();
+			loadEnd.initEvent(EventConstants.LOAD_END, false, false);
+			
+			upload.dispatchEvent(loadEnd);
+		}
+		
+		var errorEvent:ProgressEvent = new ProgressEvent();
+		errorEvent.initEvent(event, false, false);
+		
+		dispatchEvent(errorEvent);
+		
+		var loadEnd:ProgressEvent = new ProgressEvent();
+		loadEnd.initEvent(EventConstants.LOAD_END, false, false);
+		
+		dispatchEvent(loadEnd);
+	}
 	
 	/**
 	 * change the state of the object and call the
