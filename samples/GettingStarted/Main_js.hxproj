@@ -2,7 +2,7 @@
 <project version="2">
   <!-- Output SWF options -->
   <output>
-    <movie outputType="Application" />
+    <movie outputType="CustomBuild" />
     <movie input="" />
     <movie path="bin\js\Main.js" />
     <movie fps="0" />
@@ -23,7 +23,7 @@
     <option flashStrict="False" />
     <option mainClass="Cocktail" />
     <option enabledebug="False" />
-    <option additional="-cmd cp -R assets bin\swf\" />
+    <option additional="" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>
@@ -40,13 +40,12 @@
   <!-- Executed before build -->
   <preBuildCommand />
   <!-- Executed after build -->
-  <postBuildCommand alwaysRun="False">haxe compile-js.hxml
-haxe compile-swf.hxml</postBuildCommand>
+  <postBuildCommand alwaysRun="False" />
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
     <option testMovie="Custom" />
-    <option testMovieCommand="bin/js/index.html" />
+    <option testMovieCommand="compile-js.hxml" />
   </options>
   <!-- Plugin storage -->
   <storage />
