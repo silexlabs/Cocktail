@@ -22,7 +22,6 @@ import haxe.Log;
 
 #if flash9
 import flash.system.LoaderContext;
-import flash.system.ApplicationDomain;
 #end
 
 /**
@@ -71,7 +70,7 @@ class ImageResource extends AbstractResource
 		//add a loading context so that the resource will be loaded in the current context
 		#if flash9
 		//always check policy file (crossdomain.xml) for cross-domain loading
-		var loadingContext:LoaderContext = new LoaderContext(true, ApplicationDomain.currentDomain);
+		var loadingContext:LoaderContext = new LoaderContext(true);
 
 		//start the loading
 		_loader.load(request, loadingContext);

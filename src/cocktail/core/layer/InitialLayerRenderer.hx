@@ -35,7 +35,8 @@ class InitialLayerRenderer extends LayerRenderer
 	override private function attachGraphicsContext():Void
 	{
 		//TODO 1 : should use Platform class
-		#if (flash9 || nme)
+		#if macro
+		#elseif (flash9 || nme)
 		var initialNativeLayer:NativeElement = flash.Lib.current;
 		graphicsContext = new GraphicsContext(this, initialNativeLayer);
 		#end

@@ -2,6 +2,7 @@ package cocktail.port.flash_player;
 import cocktail.port.platform.nativeHttp.AbstractNativeHttp;
 import flash.events.Event;
 import flash.events.HTTPStatusEvent;
+import flash.events.IOErrorEvent;
 import flash.events.ProgressEvent;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
@@ -31,10 +32,16 @@ class NativeHttp extends AbstractNativeHttp
 		urlRequest.method = method;
 		urlRequest.data = data;
 		trace("load native http");
+		trace(url);
+		_urlLoader = new URLLoader(urlRequest);
 		_urlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHttpStatus);
-		
+		_urlLoader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 		_urlLoader.addEventListener(Event.COMPLETE, onLoadComplete);
 		_urlLoader.load(urlRequest);
+		
+		#if nme
+		trace(nme.Assets.getText("assets/test.css"));
+		#end
 		
 		responseHeadersLoaded = true;
 		
@@ -43,8 +50,15 @@ class NativeHttp extends AbstractNativeHttp
 		
 	}
 	
+	private function onIOError(event:IOErrorEvent):Void
+	{
+		trace(event.toString());
+	}
+	
 	private function onLoadComplete(event:Event):Void
 	{
+		trace(_urlLoader.data);
+		trace("load complete");
 		complete = true;
 	}
 	
