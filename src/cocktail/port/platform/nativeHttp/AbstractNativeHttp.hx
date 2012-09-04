@@ -21,6 +21,8 @@ class AbstractNativeHttp
 	
 	public var error(default, null):Bool;
 	
+	public var complete(default, null):Bool;
+	
 	public function new() 
 	{
 		
@@ -35,6 +37,7 @@ class AbstractNativeHttp
 		responseHeadersLoaded = false;
 		response = null;
 		error = false;
+		complete = false;
 	}
 	
 	public function close():Void

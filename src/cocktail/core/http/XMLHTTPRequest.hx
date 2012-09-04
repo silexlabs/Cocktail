@@ -438,7 +438,6 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 				setReadyState(HTTPConstants.HEADERS_RECEIVED);
 			}
 		}
-						
 		//once headers are received, wait for loading start of the content
 		if (readyState == HTTPConstants.HEADERS_RECEIVED)
 		{
@@ -456,12 +455,14 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 		}
 		
 		//when in loading state, await the complete load of the resource
-		if (readyState == HTTPConstants.LOADING)
+		//also check if the resource is completely loaded in case where
+		//it is loaded immediately for instance if it was cached
+		if (readyState == HTTPConstants.LOADING || _nativeHttp.complete == true)
 		{
 			//Once the whole response entity body has been received
 			//Or if there is no response entity body and the state is LOADING
 			//Or if there is no response entity body and the synchronous flag is set
-			if (_nativeHttp.loaded == _nativeHttp.total)
+			if (_nativeHttp.complete == true)
 			//|| (_responseEntityBody == null && readyState == HTTPConstants.LOADING)
 			//|| (_responseEntityBody == null && _synchronous == true))
 			{
