@@ -352,20 +352,10 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function isTransparent():Bool
 	{
-		//TODO 1 : hack for initial block renderer
-		if (coreStyle.opacity == null)
-		{
-			return false;
-		}
-		
 		switch(coreStyle.opacity)
 		{
 			case CSSPropertyValue.NUMBER(value):
-				if (value != 1.0)
-				{
-					return true;
-				}
-				return false;
+				return value != 1.0;
 				
 			default:
 				return false;

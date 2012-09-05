@@ -77,7 +77,8 @@ class EventTarget
 			targetAncestors.reverse();
 			
 			//make all target ancestor dispatch their events
-			for (i in 0...targetAncestors.length)
+			var length:Int = targetAncestors.length;
+			for (i in 0...length)
 			{
 				targetAncestors[i].dispatchEvent(evt);
 				//if the previous target ancestor stopped propagation, stop
@@ -112,7 +113,8 @@ class EventTarget
 				targetAncestors.reverse();
 				
 				//dispatch all target ancestor, and stop propagation if needed
-				for (i in 0...targetAncestors.length)
+				var length:Int = targetAncestors.length;
+				for (i in 0...length)
 				{
 					targetAncestors[i].dispatchEvent(evt);
 					
@@ -203,7 +205,8 @@ class EventTarget
 			
 			var newEventListeners:Array<EventListener> = new Array<EventListener>();
 			
-			for (i in 0...registeredListeners.length)
+			var length:Int = registeredListeners.length;
+			for (i in 0...length)
 			{
 				var eventListener:EventListener = registeredListeners[i];
 				

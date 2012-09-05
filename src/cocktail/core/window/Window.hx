@@ -57,6 +57,12 @@ class Window extends EventCallback
 	 */
 	public var platform(default, null):Platform;
 	
+	/**
+	 * Store the current mouse cursor value
+	 * to ensure that it needs changing
+	 */
+	private var _currentMouseCursor:CSSPropertyValue;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR & INIT
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -165,7 +171,23 @@ class Window extends EventCallback
 	 */
 	private function onDocumentSetMouseCursor(cursor:CSSPropertyValue):Void
 	{
-		platform.mouse.setMouseCursor(cursor);
+		//null when first called
+		if (_currentMouseCursor == null)
+		{
+			_currentMouseCursor = cursor;
+			platform.mouse.setMouseCursor(cursor);
+		}
+		else
+		{
+			//only update mouse if the value is different
+			//from the current one
+			if (Type.enumEq(cursor, _currentMouseCursor) == false)
+			{
+				_currentMouseCursor = cursor;
+				platform.mouse.setMouseCursor(cursor);
+			}
+		}
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
