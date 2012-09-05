@@ -92,23 +92,25 @@ class StyleManager
 		//contain all the style declarations whose selector matches the node
 		var matchingStyleDeclarations:Array<StyleDeclarationVO> = getMatchingStyleDeclarations(node, styleSheets, matchedPseudoClasses);
 		
-		//when properties are applied to the nodeStyleDeclaration, this array
+		//when properties are applied to the nodeStyleDeclaration, this hash
 		//store the name of the property so that they are are not applied multiple
 		//times
-		var matchedProperties:Array<String> = new Array<String>();
+		var matchedProperties:Hash<Void> = new Hash<Void>();
 		
 		//loop in all the style declarations applying to the node
-		for (i in 0...matchingStyleDeclarations.length)
+		var length:Int = matchingStyleDeclarations.length;
+		for (i in 0...length)
 		{
 			var cssStyleDeclaration:CSSStyleDeclaration = matchingStyleDeclarations[i].style;
-			for (j in 0...cssStyleDeclaration.length)
+			var styleLength:Int = cssStyleDeclaration.length;
+			for (j in 0...styleLength)
 			{
 				var property:String = cssStyleDeclaration.item(j);
 				//check if the property was already previously applied
-				if (alreadyMatched(property, matchedProperties) == false)
+				if (matchedProperties.exists(property) == false)
 				{
 					applyMatchingProperty(property, matchingStyleDeclarations, nodeStyleDeclaration);
-					matchedProperties.push(property);
+					matchedProperties.set(property, null);
 				}
 			}
 		}
@@ -209,7 +211,6 @@ class StyleManager
 		//else property are sorted by style sheet origin. Only properties with highest priority
 		//origin found are returned
 		matchingProperties = getSortedMatchingPropertiesByPriority(matchingProperties);
-		
 		
 		//if after sorting by origin, only one property remains, then it is the higher priority
 		//one and is applied
@@ -332,22 +333,5 @@ class StyleManager
 		}
 		
 		return mostSpecificMatchingProperties;
-	}
-	
-	/**
-	 * Utils method determining if a property was already applied
-	 * to the node's style declaration
-	 */
-	private function alreadyMatched(property:String, matchedProperties:Array<String>):Bool
-	{
-		for (i in 0...matchedProperties.length)
-		{
-			if (matchedProperties[i] == property)
-			{
-				return true;
-			}
-		}
-		
-		return false;
 	}
 }
