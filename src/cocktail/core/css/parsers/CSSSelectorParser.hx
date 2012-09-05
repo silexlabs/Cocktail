@@ -270,6 +270,11 @@ class CSSSelectorParser
 		
 		flushSelectors(simpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues, components);
 		
+		//simple selectors and combinators are parsed from left to 
+		//right but are matched from right to left to match
+		//combinators logic, so the array is reversed
+		selectorData.components.reverse();
+		
 		var typedSelector:SelectorVO = new SelectorVO(selectorData.components, selectorData.pseudoElement);
 		
 		typedSelectors.push(typedSelector);

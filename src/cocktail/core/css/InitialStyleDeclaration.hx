@@ -25,7 +25,8 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 	 * An array containing the names of all of the supported
 	 * CSS properties
 	 */
-	public var supportedCSSProperties(default, null):Hash<Void>;
+	private var _supportedCSSProperties:Hash<Void>;
+	public var supportedCSSProperties(get_supportedCSSProperties, null):Hash<Void>;
 	
 	/**
 	 * An array containing the names of all of the supported
@@ -63,74 +64,74 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 	
 	private function initSupportedCSSProperties():Void
 	{
-		supportedCSSProperties = new Hash<Void>();
+		_supportedCSSProperties = new Hash<Void>();
 		
-		supportedCSSProperties.set(CSSConstants.DISPLAY, null);
-		supportedCSSProperties.set(CSSConstants.POSITION, null);
-		supportedCSSProperties.set(CSSConstants.FLOAT, null);
-		supportedCSSProperties.set(CSSConstants.CLEAR, null);
-		supportedCSSProperties.set(CSSConstants.Z_INDEX, null);
-		supportedCSSProperties.set(CSSConstants.OVERFLOW_X, null);
-		supportedCSSProperties.set(CSSConstants.OVERFLOW_Y, null);
-		supportedCSSProperties.set(CSSConstants.VISIBILITY, null);
-		supportedCSSProperties.set(CSSConstants.OPACITY, null);
-		supportedCSSProperties.set(CSSConstants.VERTICAL_ALIGN, null);
-		supportedCSSProperties.set(CSSConstants.LINE_HEIGHT, null);
+		_supportedCSSProperties.set(CSSConstants.DISPLAY, null);
+		_supportedCSSProperties.set(CSSConstants.POSITION, null);
+		_supportedCSSProperties.set(CSSConstants.FLOAT, null);
+		_supportedCSSProperties.set(CSSConstants.CLEAR, null);
+		_supportedCSSProperties.set(CSSConstants.Z_INDEX, null);
+		_supportedCSSProperties.set(CSSConstants.OVERFLOW_X, null);
+		_supportedCSSProperties.set(CSSConstants.OVERFLOW_Y, null);
+		_supportedCSSProperties.set(CSSConstants.VISIBILITY, null);
+		_supportedCSSProperties.set(CSSConstants.OPACITY, null);
+		_supportedCSSProperties.set(CSSConstants.VERTICAL_ALIGN, null);
+		_supportedCSSProperties.set(CSSConstants.LINE_HEIGHT, null);
 		
-		supportedCSSProperties.set(CSSConstants.WIDTH, null);
-		supportedCSSProperties.set(CSSConstants.HEIGHT, null);
+		_supportedCSSProperties.set(CSSConstants.WIDTH, null);
+		_supportedCSSProperties.set(CSSConstants.HEIGHT, null);
 		
-		supportedCSSProperties.set(CSSConstants.MIN_WIDTH, null);
-		supportedCSSProperties.set(CSSConstants.MIN_HEIGHT, null);
-		supportedCSSProperties.set(CSSConstants.MAX_WIDTH, null);
-		supportedCSSProperties.set(CSSConstants.MAX_HEIGHT, null);
+		_supportedCSSProperties.set(CSSConstants.MIN_WIDTH, null);
+		_supportedCSSProperties.set(CSSConstants.MIN_HEIGHT, null);
+		_supportedCSSProperties.set(CSSConstants.MAX_WIDTH, null);
+		_supportedCSSProperties.set(CSSConstants.MAX_HEIGHT, null);
 		
-		supportedCSSProperties.set(CSSConstants.MARGIN_LEFT, null);
-		supportedCSSProperties.set(CSSConstants.MARGIN_TOP, null);
-		supportedCSSProperties.set(CSSConstants.MARGIN_RIGHT, null);
-		supportedCSSProperties.set(CSSConstants.MARGIN_BOTTOM, null);
+		_supportedCSSProperties.set(CSSConstants.MARGIN_LEFT, null);
+		_supportedCSSProperties.set(CSSConstants.MARGIN_TOP, null);
+		_supportedCSSProperties.set(CSSConstants.MARGIN_RIGHT, null);
+		_supportedCSSProperties.set(CSSConstants.MARGIN_BOTTOM, null);
 		
-		supportedCSSProperties.set(CSSConstants.PADDING_LEFT, null);
-		supportedCSSProperties.set(CSSConstants.PADDING_TOP, null);
-		supportedCSSProperties.set(CSSConstants.PADDING_RIGHT, null);
-		supportedCSSProperties.set(CSSConstants.PADDING_BOTTOM, null);
+		_supportedCSSProperties.set(CSSConstants.PADDING_LEFT, null);
+		_supportedCSSProperties.set(CSSConstants.PADDING_TOP, null);
+		_supportedCSSProperties.set(CSSConstants.PADDING_RIGHT, null);
+		_supportedCSSProperties.set(CSSConstants.PADDING_BOTTOM, null);
 		
-		supportedCSSProperties.set(CSSConstants.LEFT, null);
-		supportedCSSProperties.set(CSSConstants.RIGHT, null);
-		supportedCSSProperties.set(CSSConstants.TOP, null);
-		supportedCSSProperties.set(CSSConstants.BOTTOM, null);
+		_supportedCSSProperties.set(CSSConstants.LEFT, null);
+		_supportedCSSProperties.set(CSSConstants.RIGHT, null);
+		_supportedCSSProperties.set(CSSConstants.TOP, null);
+		_supportedCSSProperties.set(CSSConstants.BOTTOM, null);
 
-		supportedCSSProperties.set(CSSConstants.FONT_FAMILY, null);
-		supportedCSSProperties.set(CSSConstants.FONT_SIZE, null);
-		supportedCSSProperties.set(CSSConstants.FONT_STYLE, null);
-		supportedCSSProperties.set(CSSConstants.FONT_VARIANT, null);
-		supportedCSSProperties.set(CSSConstants.FONT_WEIGHT, null);
+		_supportedCSSProperties.set(CSSConstants.FONT_FAMILY, null);
+		_supportedCSSProperties.set(CSSConstants.FONT_SIZE, null);
+		_supportedCSSProperties.set(CSSConstants.FONT_STYLE, null);
+		_supportedCSSProperties.set(CSSConstants.FONT_VARIANT, null);
+		_supportedCSSProperties.set(CSSConstants.FONT_WEIGHT, null);
 		
-		supportedCSSProperties.set(CSSConstants.LETTER_SPACING, null);
-		supportedCSSProperties.set(CSSConstants.WORD_SPACING, null);
-		supportedCSSProperties.set(CSSConstants.TEXT_INDENT, null);
-		supportedCSSProperties.set(CSSConstants.TEXT_ALIGN, null);
-		supportedCSSProperties.set(CSSConstants.WHITE_SPACE, null);
-		supportedCSSProperties.set(CSSConstants.TEXT_TRANSFORM, null);
-		supportedCSSProperties.set(CSSConstants.COLOR, null);
+		_supportedCSSProperties.set(CSSConstants.LETTER_SPACING, null);
+		_supportedCSSProperties.set(CSSConstants.WORD_SPACING, null);
+		_supportedCSSProperties.set(CSSConstants.TEXT_INDENT, null);
+		_supportedCSSProperties.set(CSSConstants.TEXT_ALIGN, null);
+		_supportedCSSProperties.set(CSSConstants.WHITE_SPACE, null);
+		_supportedCSSProperties.set(CSSConstants.TEXT_TRANSFORM, null);
+		_supportedCSSProperties.set(CSSConstants.COLOR, null);
 		
-		supportedCSSProperties.set(CSSConstants.TRANSITION_PROPERTY, null);
-		supportedCSSProperties.set(CSSConstants.TRANSITION_DURATION, null);
-		supportedCSSProperties.set(CSSConstants.TRANSITION_DELAY, null);
-		supportedCSSProperties.set(CSSConstants.TRANSITION_TIMING_FUNCTION, null);
+		_supportedCSSProperties.set(CSSConstants.TRANSITION_PROPERTY, null);
+		_supportedCSSProperties.set(CSSConstants.TRANSITION_DURATION, null);
+		_supportedCSSProperties.set(CSSConstants.TRANSITION_DELAY, null);
+		_supportedCSSProperties.set(CSSConstants.TRANSITION_TIMING_FUNCTION, null);
 		
-		supportedCSSProperties.set(CSSConstants.TRANSFORM, null);
-		supportedCSSProperties.set(CSSConstants.TRANSFORM_ORIGIN, null);
+		_supportedCSSProperties.set(CSSConstants.TRANSFORM, null);
+		_supportedCSSProperties.set(CSSConstants.TRANSFORM_ORIGIN, null);
 		
-		supportedCSSProperties.set(CSSConstants.BACKGROUND_COLOR, null);
-		supportedCSSProperties.set(CSSConstants.BACKGROUND_IMAGE, null);
-		supportedCSSProperties.set(CSSConstants.BACKGROUND_POSITION, null);
-		supportedCSSProperties.set(CSSConstants.BACKGROUND_SIZE, null);
-		supportedCSSProperties.set(CSSConstants.BACKGROUND_REPEAT, null);
-		supportedCSSProperties.set(CSSConstants.BACKGROUND_ORIGIN, null);
-		supportedCSSProperties.set(CSSConstants.BACKGROUND_CLIP, null);
+		_supportedCSSProperties.set(CSSConstants.BACKGROUND_COLOR, null);
+		_supportedCSSProperties.set(CSSConstants.BACKGROUND_IMAGE, null);
+		_supportedCSSProperties.set(CSSConstants.BACKGROUND_POSITION, null);
+		_supportedCSSProperties.set(CSSConstants.BACKGROUND_SIZE, null);
+		_supportedCSSProperties.set(CSSConstants.BACKGROUND_REPEAT, null);
+		_supportedCSSProperties.set(CSSConstants.BACKGROUND_ORIGIN, null);
+		_supportedCSSProperties.set(CSSConstants.BACKGROUND_CLIP, null);
 		
-		supportedCSSProperties.set(CSSConstants.CURSOR, null);
+		_supportedCSSProperties.set(CSSConstants.CURSOR, null);
 	}
 	
 	private function initProperties():Void
@@ -215,5 +216,23 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		var typedProperty:TypedPropertyVO = new TypedPropertyVO(name, typedValue, false);
 		_properties.push(typedProperty);
 		_propertiesHash.set(name, typedProperty);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// GETTERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return a copy of the hash containing all the property, as
+	 * it is likely to be changed during cascading
+	 */
+	private function get_supportedCSSProperties():Hash<Void>
+	{
+		var supportedPropertiesCopy:Hash<Void> = new Hash<Void>();
+		for ( propertyName in _supportedCSSProperties.keys())
+		{
+			supportedPropertiesCopy.set(propertyName, null);
+		}
+		return supportedPropertiesCopy;
 	}
 }

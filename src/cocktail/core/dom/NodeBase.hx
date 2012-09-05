@@ -146,7 +146,8 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 			
 			//the child are appended after the first loop to prevent
 			//from modifying the child node array while looping
-			for (i in 0...newChildNodes.length)
+			var newChildNodesLength:Int = newChildNodes.length;
+			for (i in 0...newChildNodesLength)
 			{
 				appendChild(newChildNodes[i]);
 			}

@@ -41,11 +41,6 @@ class SelectorManager
 	{
 		var components:Array<SelectorComponentValue> = selector.components;
 		
-		//simple selectors and combinators are parsed from left to 
-		//right but are matched from right to left to match
-		//combinators logic
-		components.reverse();
-		
 		//a flag set to true when the last item in the components array
 		//was a combinator.
 		//This flag is a shortcut to prevent matching again selector
@@ -53,7 +48,8 @@ class SelectorManager
 		var lastWasCombinator:Bool = false;
 		
 		//loop in all the components of the selector
-		for (i in 0...components.length)
+		var length:Int = components.length;
+		for (i in 0...length)
 		{
 			var component:SelectorComponentValue = components[i];
 	
@@ -86,15 +82,9 @@ class SelectorManager
 			//matched, then the selector is not matched
 			if (matched == false)
 			{
-				//back to initial order
-				components.reverse();
-				
 				return false;
 			}
 		}
-		
-		//back to initial order
-		components.reverse();
 		
 		return true;
 	}

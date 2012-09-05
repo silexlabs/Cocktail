@@ -801,13 +801,8 @@ class HTMLElement extends Element<HTMLElement>
 		_ownerHTMLDocument.invalidateCascade();
 		
 		var initialStyleDeclaration:InitialStyleDeclaration = _ownerHTMLDocument.initialStyleDeclaration;
-
 		//set all the supported CSS properties to be updated
-		for ( propertyName in initialStyleDeclaration.supportedCSSProperties.keys())
-		{
-			_pendingChangedProperties.set(propertyName, null);
-		}
-
+		_pendingChangedProperties = initialStyleDeclaration.supportedCSSProperties;
 		
 		cascadeSelf(new Hash<Void>(), false);
 	}

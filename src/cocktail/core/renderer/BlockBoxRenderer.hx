@@ -182,19 +182,11 @@ class BlockBoxRenderer extends ScrollableRenderer
 		
 		anonymousBlock.coreStyle = anonymousBlock.domNode.coreStyle;
 		
-		//anonymous block use the style of their parent for cascading, they can't 
-		//have style declaration of their own
-		var parentStyleDeclaration:CSSStyleDeclaration = child.domNode.parentNode.coreStyle.computedValues;
-		var parentFontMetrics:FontMetricsVO = child.domNode.parentNode.coreStyle.fontMetrics;
+		var initialStyleDeclaration:InitialStyleDeclaration = Lib.document.initialStyleDeclaration;
+		var propertiesToCascade:Hash<Void> = initialStyleDeclaration.supportedCSSProperties;
 		
-		var htmlDocument:HTMLDocument = cast(child.domNode.ownerDocument);
-		
-		//TODO 1 : can't access htmlDocument.initialStyleDeclaration in macro target
-		//is htmlDocument null ?
-		var initialStyleDeclaration:InitialStyleDeclaration = new InitialStyleDeclaration();
-		
-		//only use style declarations from the parent node
-		anonymousBlock.coreStyle.cascade(initialStyleDeclaration.supportedCSSProperties, initialStyleDeclaration,
+		//only use initial style declarations
+		anonymousBlock.coreStyle.cascade(propertiesToCascade, initialStyleDeclaration,
 		initialStyleDeclaration, initialStyleDeclaration, 
 		initialStyleDeclaration, 12, 12, false);
 		
