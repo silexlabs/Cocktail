@@ -285,9 +285,11 @@ class SelectorManager
 		}
 		
 		//check all items
-		for (i in 0...simpleSelectorSequence.simpleSelectors.length)
+		var simpleSelectors:Array<SimpleSelectorSequenceItemValue> =  simpleSelectorSequence.simpleSelectors;
+		var length:Int = simpleSelectors.length;
+		for (i in 0...length)
 		{
-			var simpleSelectorSequence:SimpleSelectorSequenceItemValue = simpleSelectorSequence.simpleSelectors[i];
+			var simpleSelectorSequence:SimpleSelectorSequenceItemValue = simpleSelectors[i];
 			if (matchSimpleSelectorSequenceItem(node, simpleSelectorSequence, matchedPseudoClasses) == false)
 			{
 				return false;
@@ -681,8 +683,8 @@ class SelectorManager
 		}
 		
 		var components:Array<SelectorComponentValue> = selector.components;
-		
-		for (i in 0...components.length)
+		var length:Int = components.length;
+		for (i in 0...length)
 		{
 			var component:SelectorComponentValue = components[i];
 			
@@ -711,9 +713,11 @@ class SelectorManager
 	{
 		getSimpleSelectorSequenceStartSpecificity(simpleSelectorSequence.startValue, selectorSpecificity);
 		
-		for (i in 0...simpleSelectorSequence.simpleSelectors.length)
+		var simpleSelectors:Array<SimpleSelectorSequenceItemValue> = simpleSelectorSequence.simpleSelectors;
+		var length:Int = simpleSelectors.length;
+		for (i in 0...length)
 		{
-			var simpleSelectorSequenceItem:SimpleSelectorSequenceItemValue = simpleSelectorSequence.simpleSelectors[i];
+			var simpleSelectorSequenceItem:SimpleSelectorSequenceItemValue = simpleSelectors[i];
 			getSimpleSelectorSequenceItemSpecificity(simpleSelectorSequenceItem, selectorSpecificity);
 		}
 	}

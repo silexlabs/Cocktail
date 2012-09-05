@@ -161,11 +161,7 @@ class StyleManager
 							}
 						}
 						
-						
-						
-					case CSSRule.MEDIA_RULE:
-						//TODO : check if media rule applies before storing
-						//style declaration
+					default:
 				}
 			}
 		}
