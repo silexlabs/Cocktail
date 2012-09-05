@@ -98,7 +98,7 @@ class Mouse extends AbstractMouse
 		//to the top left of the cursor
 		if (hotSpot == null)
 		{
-			hotSpot = { x:0.0, y:0.0 };
+			hotSpot = new PointVO(0.0, 0.0);
 		}
 		
 		//draw the image dom element onto a 32x32 transparent bitmap data

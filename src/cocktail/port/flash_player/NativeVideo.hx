@@ -346,12 +346,7 @@ class NativeVideo extends NativeMedia
 	 */
 	override private function get_viewport():RectangleVO
 	{
-		return {
-			x:_video.x,
-			y:_video.y,
-			width:_video.width,
-			height:_video.height
-		};
+		return new RectangleVO(_video.x, _video.y, _video.width, _video.height);
 	}
 	
 	override private function set_viewport(value:RectangleVO):RectangleVO

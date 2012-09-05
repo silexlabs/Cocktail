@@ -130,16 +130,9 @@ class FontManagerImpl extends AbstractFontManagerImpl
 		//get the width of a space character
 		var spaceWidth:Float = getSpaceWidth(elementFormat.clone());
 		
-		var fontMetrics:FontMetricsVO = {
-			fontSize:fontSize,
-			ascent:ascent,
-			descent:descent,
-			xHeight:xHeight,
-			spaceWidth:spaceWidth,
-			superscriptOffset:elementFormatFontMetrics.superscriptOffset,
-			subscriptOffset:elementFormatFontMetrics.subscriptOffset,
-			underlineOffset:elementFormatFontMetrics.underlineOffset
-		};
+		var fontMetrics:FontMetricsVO = new FontMetricsVO(fontSize, ascent, descent, xHeight, 
+		elementFormatFontMetrics.subscriptOffset, elementFormatFontMetrics.superscriptOffset,
+		elementFormatFontMetrics.underlineOffset, spaceWidth);
 		
 		return fontMetrics;
 	}
