@@ -88,7 +88,7 @@ class BackgroundStylesComputer
 	 * @return	a structure containing each of the computed background styles for the
 	 * current background-image
 	 */
-	public static function computeIndividualBackground(style:CoreStyle, backgroundBox:RectangleData,
+	public static function computeIndividualBackground(style:CoreStyle, backgroundBox:RectangleVO,
 	intrinsicWidth:Null<Float>, intrinsicHeight:Null<Float>, intrinsicRatio:Null<Float>, 
 	backgroundPosition:CSSPropertyValue,
 	backgroundSize:CSSPropertyValue,
@@ -98,18 +98,18 @@ class BackgroundStylesComputer
 	backgroundImage:CSSPropertyValue):ComputedBackgroundStyleData
 	{
 		//get the area onto which the background image is positioned
-		var backgroundPositioningArea:RectangleData = getBackgroundPositioningArea(style, backgroundOrigin, backgroundBox);
+		var backgroundPositioningArea:RectangleVO = getBackgroundPositioningArea(style, backgroundOrigin, backgroundBox);
 		
 		//get the absolute dimensions of the background image
-		var computedBackgroundSize:DimensionData = getComputedBackgroundSize(backgroundSize, backgroundPositioningArea,
+		var computedBackgroundSize:DimensionVO = getComputedBackgroundSize(backgroundSize, backgroundPositioningArea,
 		intrinsicWidth, intrinsicHeight, intrinsicRatio);
 		
 		//get the offset of the background image relative to the background box top left corner
-		var computedBackgroundPosition:PointData = getComputedBackgroundPosition(backgroundPosition,
+		var computedBackgroundPosition:PointVO = getComputedBackgroundPosition(backgroundPosition,
 		backgroundPositioningArea, computedBackgroundSize);
 		
 		//get the clipping area (the area where the background image is actually displayed)
-		var computedBackgroundClip:RectangleData = getBackgroundPaintingArea(style, backgroundClip, backgroundBox);
+		var computedBackgroundClip:RectangleVO = getBackgroundPaintingArea(style, backgroundClip, backgroundBox);
 		
 		var computedBackgroundStyle:ComputedBackgroundStyleData = {
 			backgroundOrigin:backgroundPositioningArea,
@@ -133,10 +133,10 @@ class BackgroundStylesComputer
 	/**
 	 * Return the background color as an integer
 	 */
-	private static function getComputedBackgroundColor(style:CoreStyle):ColorData
+	private static function getComputedBackgroundColor(style:CoreStyle):ColorVO
 	{
-		var computedColor:ColorData;
-		computedColor = CSSValueConverter.getColorDataFromCSSColor(style.getColor(style.backgroundColor));
+		var computedColor:ColorVO;
+		computedColor = CSSValueConverter.getColorVOFromCSSColor(style.getColor(style.backgroundColor));
 		
 		return computedColor;
 	}
@@ -155,7 +155,7 @@ class BackgroundStylesComputer
 	 * @param	exReference
 	 * @return
 	 */
-	private static function getComputedBackgroundPosition(backgroundPosition:CSSPropertyValue, backgroundPositioningArea:RectangleData, computedBackgroundSize:DimensionData):PointData
+	private static function getComputedBackgroundPosition(backgroundPosition:CSSPropertyValue, backgroundPositioningArea:RectangleVO, computedBackgroundSize:DimensionVO):PointVO
 	{
 		var backgroundPositionX:CSSPropertyValue = null;
 		var backgroundPositionY:CSSPropertyValue = null;
@@ -171,10 +171,7 @@ class BackgroundStylesComputer
 		var computedBackgroundXPosition:Float = doGetComputedBackgroundPosition(backgroundPositionX, backgroundPositioningArea.width, computedBackgroundSize.width);
 		var computedBackgroundYPosition:Float = doGetComputedBackgroundPosition(backgroundPositionY, backgroundPositioningArea.height, computedBackgroundSize.height);
 		
-		var computedBackgroundPosition:PointData = {
-			x:computedBackgroundXPosition,
-			y:computedBackgroundYPosition
-		};
+		var computedBackgroundPosition:PointVO = new PointVO(computedBackgroundXPosition, computedBackgroundYPosition);
 		
 		return computedBackgroundPosition;
 	}
@@ -236,12 +233,9 @@ class BackgroundStylesComputer
 	 * @param	intrinsicRatio
 	 * @return
 	 */
-	private static function getComputedBackgroundSize(backgroundSize:CSSPropertyValue, backgroundPositioningArea:RectangleData, intrinsicWidth:Null<Float>, intrinsicHeight:Null<Float>, intrinsicRatio:Null<Float>):DimensionData
+	private static function getComputedBackgroundSize(backgroundSize:CSSPropertyValue, backgroundPositioningArea:RectangleVO, intrinsicWidth:Null<Float>, intrinsicHeight:Null<Float>, intrinsicRatio:Null<Float>):DimensionVO
 	{
-		var computedBackgroundSize:DimensionData = {
-			width:0.0,
-			height:0.0
-		};
+		var computedBackgroundSize:DimensionVO = new DimensionVO(0.0, 0.0);
 		
 		switch (backgroundSize)
 		{
@@ -256,17 +250,13 @@ class BackgroundStylesComputer
 						{
 							var ratio:Float = intrinsicRatio / (backgroundPositioningArea.width / backgroundPositioningArea.height);
 							
-							computedBackgroundSize = {
-								width:intrinsicWidth * ratio,
-								height:intrinsicHeight * ratio
-							}
+							computedBackgroundSize.width = intrinsicWidth * ratio;
+							computedBackgroundSize.height = intrinsicHeight * ratio;
 						}
 						else
 						{
-							computedBackgroundSize = {
-								width:backgroundPositioningArea.width,
-								height:backgroundPositioningArea.height
-							}
+							computedBackgroundSize.width = backgroundPositioningArea.width;
+							computedBackgroundSize.height = backgroundPositioningArea.height;
 						}
 						
 					//Scale the image, while preserving its intrinsic aspect
@@ -277,53 +267,44 @@ class BackgroundStylesComputer
 						{
 							var ratio:Float =  (backgroundPositioningArea.width / backgroundPositioningArea.height) / intrinsicRatio;
 							
-							computedBackgroundSize = {
-								width:intrinsicWidth * ratio,
-								height:intrinsicHeight * ratio
-							}
+							computedBackgroundSize.width = intrinsicWidth * ratio;
+							computedBackgroundSize.height = intrinsicHeight * ratio;
 						}
 						else
 						{
-							computedBackgroundSize = {
-								width:backgroundPositioningArea.width,
-								height:backgroundPositioningArea.height
-							}
+							computedBackgroundSize.width = backgroundPositioningArea.width;
+							computedBackgroundSize.height = backgroundPositioningArea.height;
 						}	
 						
 					case AUTO:
-						computedBackgroundSize = {
-							width:getBackgroundSizeStyleDimensionData(KEYWORD(AUTO), KEYWORD(AUTO), backgroundPositioningArea.width, backgroundPositioningArea.height,
-							intrinsicWidth, intrinsicHeight, intrinsicRatio),
-							height:getBackgroundSizeStyleDimensionData(KEYWORD(AUTO), KEYWORD(AUTO), backgroundPositioningArea.height, backgroundPositioningArea.width,
-							intrinsicHeight, intrinsicWidth, intrinsicRatio)
-						}
+						
+						computedBackgroundSize.width = getBackgroundSizeStyleDimensionVO(KEYWORD(AUTO), KEYWORD(AUTO), backgroundPositioningArea.width, backgroundPositioningArea.height,
+						intrinsicWidth, intrinsicHeight, intrinsicRatio);
+						computedBackgroundSize.height = getBackgroundSizeStyleDimensionVO(KEYWORD(AUTO), KEYWORD(AUTO), backgroundPositioningArea.height, backgroundPositioningArea.width,
+						intrinsicHeight, intrinsicWidth, intrinsicRatio);
 						
 					default:	
 				}
 				
 				case ABSOLUTE_LENGTH(value):
-					computedBackgroundSize = {
-						width:getBackgroundSizeStyleDimensionData(backgroundSize, KEYWORD(AUTO), backgroundPositioningArea.width, backgroundPositioningArea.height,
-						intrinsicWidth, intrinsicHeight, intrinsicRatio),
-						height:getBackgroundSizeStyleDimensionData(KEYWORD(AUTO), backgroundSize, backgroundPositioningArea.height, backgroundPositioningArea.width,
-						intrinsicHeight, intrinsicWidth, intrinsicRatio)
-					}
+					computedBackgroundSize.width = getBackgroundSizeStyleDimensionVO(backgroundSize, KEYWORD(AUTO), backgroundPositioningArea.width, backgroundPositioningArea.height,
+					intrinsicWidth, intrinsicHeight, intrinsicRatio);
+					computedBackgroundSize.height = getBackgroundSizeStyleDimensionVO(KEYWORD(AUTO), backgroundSize, backgroundPositioningArea.height, backgroundPositioningArea.width,
+					intrinsicHeight, intrinsicWidth, intrinsicRatio);
+					
 					
 				case PERCENTAGE(value):	
-					computedBackgroundSize = {
-						width:getBackgroundSizeStyleDimensionData(backgroundSize, KEYWORD(AUTO), backgroundPositioningArea.width, backgroundPositioningArea.height,
-						intrinsicWidth, intrinsicHeight, intrinsicRatio),
-						height:getBackgroundSizeStyleDimensionData(KEYWORD(AUTO), backgroundSize, backgroundPositioningArea.height, backgroundPositioningArea.width,
-						intrinsicHeight, intrinsicWidth, intrinsicRatio)
-					}
+					computedBackgroundSize.width = getBackgroundSizeStyleDimensionVO(backgroundSize, KEYWORD(AUTO), backgroundPositioningArea.width, backgroundPositioningArea.height,
+					intrinsicWidth, intrinsicHeight, intrinsicRatio);
+					computedBackgroundSize.height = getBackgroundSizeStyleDimensionVO(KEYWORD(AUTO), backgroundSize, backgroundPositioningArea.height, backgroundPositioningArea.width,
+					intrinsicHeight, intrinsicWidth, intrinsicRatio);
+					
 					
 				case GROUP(value):
-					computedBackgroundSize = {
-						width:getBackgroundSizeStyleDimensionData(value[0], value[1], backgroundPositioningArea.width, backgroundPositioningArea.height,
-						intrinsicWidth, intrinsicHeight, intrinsicRatio),
-						height:getBackgroundSizeStyleDimensionData(value[1], value[0], backgroundPositioningArea.height, backgroundPositioningArea.width,
-						intrinsicHeight, intrinsicWidth, intrinsicRatio)
-					}
+					computedBackgroundSize.width = getBackgroundSizeStyleDimensionVO(value[0], value[1], backgroundPositioningArea.width, backgroundPositioningArea.height,
+					intrinsicWidth, intrinsicHeight, intrinsicRatio);
+					computedBackgroundSize.height = getBackgroundSizeStyleDimensionVO(value[1], value[0], backgroundPositioningArea.height, backgroundPositioningArea.width,
+					intrinsicHeight, intrinsicWidth, intrinsicRatio);
 					
 				default:	
 		}
@@ -343,7 +324,7 @@ class BackgroundStylesComputer
 	 * @param	intrinsicRatio
 	 * @return
 	 */
-	private static function getBackgroundSizeStyleDimensionData(backgroundSizeValue:CSSPropertyValue, opositeBackgroundSizeValue:CSSPropertyValue,
+	private static function getBackgroundSizeStyleDimensionVO(backgroundSizeValue:CSSPropertyValue, opositeBackgroundSizeValue:CSSPropertyValue,
 	backgroundPositioningAreaDimension:Float, opositeBackgroundAreaDimension:Float, intrinsicDimension:Null<Float>, opositeIntrinsicDimension:Null<Float>, intrinsicRatio:Null<Float>):Float
 	{
 		var backgroundSizeStyleDimension:Float = 0.0;
@@ -382,7 +363,7 @@ class BackgroundStylesComputer
 					//to keep the proportion of the background image
 					else if (opositeIntrinsicDimension != null && intrinsicRatio != null)
 					{
-						var opositeDimension:Float = getBackgroundSizeStyleDimensionData(opositeBackgroundSizeValue, backgroundSizeValue,
+						var opositeDimension:Float = getBackgroundSizeStyleDimensionVO(opositeBackgroundSizeValue, backgroundSizeValue,
 						opositeBackgroundAreaDimension, backgroundPositioningAreaDimension, opositeIntrinsicDimension, intrinsicDimension,
 						intrinsicRatio);
 						
@@ -418,7 +399,7 @@ class BackgroundStylesComputer
 	 * @param	backgroundOrigin
 	 * @return
 	 */
-	private static function getBackgroundPositioningArea(style:CoreStyle, backgroundOrigin:CSSPropertyValue, backgroundBox:RectangleData):RectangleData
+	private static function getBackgroundPositioningArea(style:CoreStyle, backgroundOrigin:CSSPropertyValue, backgroundBox:RectangleVO):RectangleVO
 	{
 		var height:Float = 0.0;
 		var width:Float =  0.0;
@@ -456,14 +437,7 @@ class BackgroundStylesComputer
 			default:
 		}
 		
-		var backgroundPositioningArea:RectangleData = {
-			height:height,
-			width:width,
-			x:x,
-			y:y
-		}
-		
-		return backgroundPositioningArea;
+		return new RectangleVO(x, y, width, height);
 	}
 	
 	/**
@@ -480,7 +454,7 @@ class BackgroundStylesComputer
 	 * @param	backgroundBox
 	 * @return
 	 */
-	private static function getBackgroundPaintingArea(style:CoreStyle, backgroundClip:CSSPropertyValue, backgroundBox:RectangleData):RectangleData
+	private static function getBackgroundPaintingArea(style:CoreStyle, backgroundClip:CSSPropertyValue, backgroundBox:RectangleVO):RectangleVO
 	{
 		var height:Float = 0.0;
 		var width:Float = 0.0;
@@ -517,13 +491,6 @@ class BackgroundStylesComputer
 			default:	
 		}
 		
-		var backgroundPaintingArea:RectangleData = {
-			height:height,
-			width:width,
-			x:x,
-			y:y
-		}
-		
-		return backgroundPaintingArea;
+		return new RectangleVO(x, y, width, height);
 	}
 }

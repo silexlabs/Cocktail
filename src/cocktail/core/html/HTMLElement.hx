@@ -841,7 +841,7 @@ class HTMLElement extends Element<HTMLElement>
 				}
 				
 				var parentStyleDeclaration:CSSStyleDeclaration = parentNode.coreStyle.computedValues;
-				var parentFontMetrics:FontMetricsData = parentNode.coreStyle.fontMetrics;
+				var parentFontMetrics:FontMetricsVO = parentNode.coreStyle.fontMetrics;
 			
 				for (propertyName in parentChangedProperties.keys())
 				{

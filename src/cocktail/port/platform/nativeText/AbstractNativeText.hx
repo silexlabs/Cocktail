@@ -45,7 +45,7 @@ class AbstractNativeText
 	 * Return the bitmap data of the text for the
 	 * given bounds
 	 */
-	public function getBitmap(bounds:RectangleData):NativeBitmapData
+	public function getBitmap(bounds:RectangleVO):NativeBitmapData
 	{
 		return null;
 	}

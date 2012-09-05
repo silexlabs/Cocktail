@@ -193,7 +193,7 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	 * @param	sourceRect defines the zone from the source bitmap data that must be copied onto the 
 	 * native graphic dom element. Takes the whole bitmap data by default
 	 */
-	public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix = null, sourceRect:RectangleData = null):Void
+	public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix = null, sourceRect:RectangleVO = null):Void
 	{
 		//abstract
 	}
@@ -205,7 +205,7 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	 * @param	destPoint the upper left corner of the rectangular aeaa where the new
 	 * pixels are placed
 	 */
-	public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleData, destPoint:PointData):Void
+	public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO):Void
 	{
 		//abstract
 	}
@@ -215,7 +215,7 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	 * @param rect the rectangle to fill
 	 * @param color the rectangle's color
 	 */
-	public function fillRect(rect:RectangleData, color:ColorData):Void
+	public function fillRect(rect:RectangleVO, color:ColorVO):Void
 	{
 		//abstract
 	}

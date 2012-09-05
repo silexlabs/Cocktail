@@ -81,7 +81,7 @@ class EmbeddedLineBox extends LineBox
 	/**
 	 * Embedded Line boxes return the bounds of its embedded ElementRenderer
 	 */
-	override private function get_bounds():RectangleData
+	override private function get_bounds():RectangleVO
 	{
 		return elementRenderer.bounds;
 	}

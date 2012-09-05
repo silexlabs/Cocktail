@@ -31,7 +31,7 @@ class SelectorSerializer
 	// PUBLIC SERIALIZATION METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public static function serialize(selector:SelectorData):String
+	public static function serialize(selector:SelectorVO):String
 	{
 		var serializedSelector:String = "";
 		
@@ -80,7 +80,7 @@ class SelectorSerializer
 		}
 	}
 	
-	private static function serializeSimpleSelectorSequence(simpleSelectorSequence:SimpleSelectorSequenceData):String
+	private static function serializeSimpleSelectorSequence(simpleSelectorSequence:SimpleSelectorSequenceVO):String
 	{
 		var serializedSimpleSelectorSequence:String = "";
 		

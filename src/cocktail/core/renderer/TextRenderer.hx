@@ -309,7 +309,7 @@ class TextRenderer extends InvalidatingElementRenderer
 		
 		lineBoxes = [];
 		
-		var fontMetrics:FontMetricsData = coreStyle.fontMetrics;
+		var fontMetrics:FontMetricsVO = coreStyle.fontMetrics;
 		var fontManager:FontManager = FontManager.getInstance();
 		
 		var length:Int = _textTokens.length;
@@ -323,7 +323,7 @@ class TextRenderer extends InvalidatingElementRenderer
 	/**
 	 * Create and return a Text line box from a text token
 	 */
-	private function createTextLineBoxFromTextToken(textToken:TextToken, fontMetrics:FontMetricsData, fontManager:FontManager):LineBox
+	private function createTextLineBoxFromTextToken(textToken:TextToken, fontMetrics:FontMetricsVO, fontManager:FontManager):LineBox
 	{
 		//the text of the created text line box
 		var text:String;
@@ -382,9 +382,9 @@ class TextRenderer extends InvalidatingElementRenderer
 	 * Overriden as the bounds of a TextRenderer is formed
 	 * by the bounds of its formatted text line boxes
 	 */
-	override private function get_bounds():RectangleData
+	override private function get_bounds():RectangleVO
 	{
-		var textLineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
+		var textLineBoxesBounds:Array<RectangleVO> = new Array<RectangleVO>();
 		var length:Int = lineBoxes.length;
 		for (i in 0...length)
 		{

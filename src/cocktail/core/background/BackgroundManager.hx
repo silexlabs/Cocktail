@@ -65,7 +65,7 @@ class BackgroundManager
 	 * @param	style
 	 * @return
 	 */
-	public static function render(graphicContext:GraphicsContext, backgroundBox:RectangleData, style:CoreStyle, elementRenderer:ElementRenderer):Void
+	public static function render(graphicContext:GraphicsContext, backgroundBox:RectangleVO, style:CoreStyle, elementRenderer:ElementRenderer):Void
 	{
 		//no need to draw the background if it has no width or height
 		if (Math.round(backgroundBox.width) <= 0 || Math.round(backgroundBox.height) <= 0 )
@@ -158,7 +158,7 @@ class BackgroundManager
 	 * @param	backgroundImage
 	 * @return
 	 */
-	private static function drawBackgroundImage(graphicContext:GraphicsContext, url:String, style:CoreStyle, backgroundBox:RectangleData,
+	private static function drawBackgroundImage(graphicContext:GraphicsContext, url:String, style:CoreStyle, backgroundBox:RectangleVO,
 	backgroundPosition:CSSPropertyValue, backgroundSize:CSSPropertyValue, backgroundOrigin:CSSPropertyValue,
 	backgroundClip:CSSPropertyValue, backgroundRepeat:CSSPropertyValue, backgroundImage:CSSPropertyValue, elementRenderer:ElementRenderer):Void
 	{
@@ -204,7 +204,7 @@ class BackgroundManager
 		if (foundResource == false)
 		{
 			//TODO 1 : re-implement fallback color
-			//var backgroundColor:ColorData = CSSValueConverter.getColorDataFromCSSColor(imageDeclaration.fallbackColor);
+			//var backgroundColor:ColorVO = CSSValueConverter.getColorVOFromCSSColor(imageDeclaration.fallbackColor);
 			//graphicContext.fillRect(backgroundBox, backgroundColor);
 		}
 
@@ -226,10 +226,10 @@ class BackgroundManager
 	 * @param	computedBackgroundPosition
 	 * @param	backgroundRepeat
 	 */
-	public static function doDrawBackgroundImage(backgroundBox:RectangleData, graphicContext:GraphicsContext, resource:AbstractResource,
-	backgroundPositioningBox:RectangleData, backgroundPaintingBox:RectangleData, intrinsicWidth:Float,
-	intrinsicHeight:Float, intrinsicRatio:Float, computedBackgroundSize:DimensionData,
-	computedBackgroundPosition:PointData, backgroundRepeat:CSSPropertyValue):Void
+	public static function doDrawBackgroundImage(backgroundBox:RectangleVO, graphicContext:GraphicsContext, resource:AbstractResource,
+	backgroundPositioningBox:RectangleVO, backgroundPaintingBox:RectangleVO, intrinsicWidth:Float,
+	intrinsicHeight:Float, intrinsicRatio:Float, computedBackgroundSize:DimensionVO,
+	computedBackgroundPosition:PointVO, backgroundRepeat:CSSPropertyValue):Void
 	{	
 
 		var backgroundRepeatX:CSSKeywordValue =  null;
@@ -324,20 +324,13 @@ class BackgroundManager
 		//TODO 3 : doc + separate in 2 methods
 		if ((imageWidth / intrinsicWidth == 1) && (imageHeight / intrinsicHeight == 1))
 		{
-			var destinationPoint:PointData = {
-				x:totalWidth + backgroundBox.x - computedBackgroundPosition.x,
-				y:totalHeight + backgroundBox.y - computedBackgroundPosition.y
-			}
+			var destinationPoint:PointVO = new PointVO(totalWidth + backgroundBox.x - computedBackgroundPosition.x, totalHeight + backgroundBox.y - computedBackgroundPosition.y);
 			
 			var intWidth:Float = intrinsicWidth;
 			var intHeight:Float = intrinsicHeight;
 			
-			var box:RectangleData = {
-				x:backgroundPaintingBox.x - computedBackgroundPosition.x,
-				y:backgroundPaintingBox.y - computedBackgroundPosition.y,
-				width:backgroundPaintingBox.width,
-				height:backgroundPaintingBox.height
-			}
+			var box:RectangleVO = new RectangleVO(backgroundPaintingBox.x - computedBackgroundPosition.x, backgroundPaintingBox.y - computedBackgroundPosition.y,
+			backgroundPaintingBox.width, backgroundPaintingBox.height);
 			
 			while (totalHeight < maxHeight)
 			{

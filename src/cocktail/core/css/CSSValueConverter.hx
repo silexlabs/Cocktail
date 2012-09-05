@@ -307,7 +307,7 @@ class CSSValueConverter
 	/**
 	 * Get an integer color and an alpha from 0 to 1 from a serialised color value
 	 */
-	public static function getColorDataFromCSSColor(value:CSSColorValue):ColorData
+	public static function getColorVOFromCSSColor(value:CSSColorValue):ColorVO
 	{
 		var colorValue:Int = 0;
 		var alphaValue:Float = 0;
@@ -330,7 +330,7 @@ class CSSValueConverter
 				//cascade
 		}
 		
-		var colorData:ColorData = new ColorData(colorValue, alphaValue);
+		var colorData:ColorVO = new ColorVO(colorValue, alphaValue);
 		return colorData;
 	}
 	

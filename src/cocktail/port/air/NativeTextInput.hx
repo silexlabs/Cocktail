@@ -88,7 +88,7 @@ class NativeTextInput extends AbstractNativeTextInput
 	// set/get the attribute on the flash StageText
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override private function get_viewport():RectangleData
+	override private function get_viewport():RectangleVO
 	{
 		return {
 			x:_stageText.viewport.x,
@@ -98,7 +98,7 @@ class NativeTextInput extends AbstractNativeTextInput
 		};
 	}
 	
-	override private function set_viewport(value:RectangleData):RectangleData
+	override private function set_viewport(value:RectangleVO):RectangleVO
 	{
 		var viewPort:Rectangle = new Rectangle(value.x, value.y, value.width, value.height);
 		_stageText.viewPort = viewPort;

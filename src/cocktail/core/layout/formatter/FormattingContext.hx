@@ -58,7 +58,7 @@ class FormattingContext
 	 * Contains the data necessary to place the ElementRenderer in flow, 
 	 * such as the coordinates where to insert the next ElementRenderer
 	 */
-	private var _formattingContextData:RectangleData;
+	private var _formattingContextData:RectangleVO;
 	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT/DISPOSE
@@ -83,12 +83,7 @@ class FormattingContext
 		var x:Float = _formattingContextRoot.coreStyle.usedValues.paddingLeft;
 		var y:Float = _formattingContextRoot.coreStyle.usedValues.paddingTop;
 		
-		_formattingContextData = {
-			x : x,
-			y : y,
-			height : 0.0,
-			width:0.0
-		};
+		_formattingContextData = new RectangleVO(x, y, 0.0, 0.0);
 	}
 	
 	/////////////////////////////////

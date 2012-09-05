@@ -102,7 +102,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//TODO 4 : update doc for this
 		BackgroundStylesComputer.compute(coreStyle);
 		
-		var backgroundBounds:RectangleData = getBackgroundBounds();
+		var backgroundBounds:RectangleVO = getBackgroundBounds();
 		
 		//TODO 3 : should only pass dimensions instead of bounds
 		BackgroundManager.render(graphicContext, backgroundBounds, coreStyle, this);
@@ -404,9 +404,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 * ElementRenderer uses the viewport bounds for its background
 	 * instead of its own
 	 */
-	private function getBackgroundBounds():RectangleData
+	private function getBackgroundBounds():RectangleVO
 	{
-		var globalBounds:RectangleData = get_globalBounds();
+		var globalBounds:RectangleVO = get_globalBounds();
 		globalBounds.x -= scrollOffset.x;
 		globalBounds.y -= scrollOffset.y;
 		return globalBounds;

@@ -230,26 +230,21 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * are always those of the Window (minus scrollbars dimensions
 	 * if displayed)
 	 */
-	override private function get_bounds():RectangleData
+	override private function get_bounds():RectangleVO
 	{
 		var containerBlockData:ContainingBlockData = getContainerBlockData();
 		
 		var width:Float = containerBlockData.width;
 		var height:Float = containerBlockData.height;
 		
-		return {
-			x:0.0,
-			y:0.0,
-			width:width,
-			height:height
-		};
+		return new RectangleVO(0.0, 0.0, width, height);
 	}
 	
 	/**
 	 * For the initial container, the bounds and
 	 * global bounds are the same
 	 */
-	override private function get_globalBounds():RectangleData
+	override private function get_globalBounds():RectangleVO
 	{
 		return bounds;
 	}

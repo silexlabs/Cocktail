@@ -46,7 +46,7 @@ import cocktail.core.css.CSSData;
 		 * be tiled based on the background repeat
 		 * style
 		 */
-		var backgroundSize:DimensionData;
+		var backgroundSize:DimensionVO;
 		
 		/**
 		 * a rectangle used as origin to position
@@ -54,20 +54,20 @@ import cocktail.core.css.CSSData;
 		 * be used to clip it based on the
 		 * background clip style
 		 */
-		var backgroundOrigin:RectangleData;
+		var backgroundOrigin:RectangleVO;
 		
 		/**
 		 * The rectangle clipping the background
 		 * image, might be the rectangle of the content,
 		 * padding or border box of the htmlElement
 		 */
-		var backgroundClip:RectangleData;
+		var backgroundClip:RectangleVO;
 		
 		/**
 		 * the point of origin of the background image
 		 * relative to the backgroundOrigin rectangle
 		 */
-		var backgroundPosition:PointData;
+		var backgroundPosition:PointVO;
 		
 		/**
 		 * how to repeat the background image in the
@@ -89,13 +89,13 @@ import cocktail.core.css.CSSData;
 	 * formatting context
 	 */
 	typedef FloatsData = {
-		var left:Array<RectangleData>;
-		var right:Array<RectangleData>;
+		var left:Array<RectangleVO>;
+		var right:Array<RectangleVO>;
 	}
 	
 	typedef FloatData = {
 		var node:ElementRenderer;
-		var bounds:RectangleData;
+		var bounds:RectangleVO;
 	}
 
 	

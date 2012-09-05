@@ -36,7 +36,7 @@ class CSSSelectorParser
 	 * object and store them in the typed selector
 	 * attribute if the selector is valid
 	 */
-	public function parseSelector(selector:String, typedSelectors:Array<SelectorData>):Void
+	public function parseSelector(selector:String, typedSelectors:Array<SelectorVO>):Void
 	{
 		var state:SelectorParserState = IGNORE_SPACES;
 		var next:SelectorParserState = BEGIN_SIMPLE_SELECTOR;
@@ -48,7 +48,7 @@ class CSSSelectorParser
 		var simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue> = [];
 		var components:Array<SelectorComponentValue> = [];
 		
-		var selectorData:SelectorData = new SelectorData(components, PseudoElementSelectorValue.NONE);
+		var selectorData:SelectorVO = new SelectorVO(components, PseudoElementSelectorValue.NONE);
 		
 		while (!c.isEOF())
 		{
@@ -270,7 +270,7 @@ class CSSSelectorParser
 		
 		flushSelectors(simpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues, components);
 		
-		var typedSelector:SelectorData = new SelectorData(selectorData.components, selectorData.pseudoElement);
+		var typedSelector:SelectorVO = new SelectorVO(selectorData.components, selectorData.pseudoElement);
 		
 		typedSelectors.push(typedSelector);
 	}
@@ -291,7 +291,7 @@ class CSSSelectorParser
 			simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.UNIVERSAL;
 		}
 
-		var simpleSelectorSequence:SimpleSelectorSequenceData = new SimpleSelectorSequenceData(simpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues);
+		var simpleSelectorSequence:SimpleSelectorSequenceVO = new SimpleSelectorSequenceVO(simpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues);
 		components.push(SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(simpleSelectorSequence));
 		
 	}
@@ -393,7 +393,7 @@ class CSSSelectorParser
 		return --position;
 	}
 	
-	private function parsePseudoElement(selector:String, position:Int, selectorData:SelectorData):Int
+	private function parsePseudoElement(selector:String, position:Int, selectorData:SelectorVO):Int
 	{
 		var c:Int = selector.fastCodeAt(position);
 		var start:Int = position;

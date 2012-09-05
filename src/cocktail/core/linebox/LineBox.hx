@@ -57,7 +57,7 @@ class LineBox extends NodeBase<LineBox>
 	 * the bounds of the line box, in the space of its containing
 	 * block (the block which started the inline formatting context)
 	 */
-	public var bounds(get_bounds, null):RectangleData;
+	public var bounds(get_bounds, null):RectangleVO;
 	
 	/**
 	 * the ascent of the line box with its leading applied
@@ -96,12 +96,7 @@ class LineBox extends NodeBase<LineBox>
 	{
 		super();
 		
-		bounds = {
-			x:0.0,
-			y:0.0,
-			width:0.0,
-			height:0.0
-		}
+		bounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
 		
 		this.elementRenderer = elementRenderer;
 		
@@ -212,7 +207,7 @@ class LineBox extends NodeBase<LineBox>
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_bounds():RectangleData
+	private function get_bounds():RectangleVO
 	{
 		return bounds;
 	}

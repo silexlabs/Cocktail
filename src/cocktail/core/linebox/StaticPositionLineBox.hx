@@ -58,7 +58,7 @@ class StaticPositionLineBox extends LineBox
 	 * element, so that its static bounds can be set
 	 * during formatting
 	 */
-	override private function get_bounds():RectangleData
+	override private function get_bounds():RectangleVO
 	{
 		return elementRenderer.bounds;
 	}

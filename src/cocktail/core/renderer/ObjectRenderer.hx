@@ -84,7 +84,7 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 		var htmlObjectElement:HTMLObjectElement = cast(domNode);
 		var asset:flash.display.Loader = cast(htmlObjectElement.embeddedAsset);
 		
-		var globalBounds:RectangleData = globalBounds;
+		var globalBounds:RectangleVO = globalBounds;
 		asset.transform.matrix = new flash.geom.Matrix();
 		
 		var width:Float = 0.0;
@@ -100,7 +100,7 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 			
 		}
 		
-		var assetBounds:RectangleData = getAssetBounds(coreStyle.usedValues.width, coreStyle.usedValues.height,
+		var assetBounds:RectangleVO = getAssetBounds(coreStyle.usedValues.width, coreStyle.usedValues.height,
 		width, height);
 
 		var scaleMode:String = getScaleMode();

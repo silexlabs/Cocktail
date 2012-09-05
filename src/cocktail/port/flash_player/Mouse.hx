@@ -89,7 +89,7 @@ class Mouse extends AbstractMouse
 	 * 
 	 * Set a bitmap as mouse cursor using flash mouse API
 	 */
-	private function setBitmapCursor(nativeBitmapData:NativeBitmapData, hotSpot:PointData):Void
+	private function setBitmapCursor(nativeBitmapData:NativeBitmapData, hotSpot:PointVO):Void
 	{
 		//don't work for nme
 		#if flash9

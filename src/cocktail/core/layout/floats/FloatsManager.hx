@@ -42,8 +42,8 @@ class FloatsManager
 	 */
 	public function new() 
 	{
-		var floatsLeft:Array<RectangleData> = new Array<RectangleData>();
-		var floatsRight:Array<RectangleData> = new Array<RectangleData>();
+		var floatsLeft:Array<RectangleVO> = new Array<RectangleVO>();
+		var floatsRight:Array<RectangleVO> = new Array<RectangleVO>();
 	
 		_floats = {
 			left:floatsLeft,
@@ -77,16 +77,16 @@ class FloatsManager
 				{
 					case LEFT:
 						ret = clearLeft(currentFormattingContextY);
-						_floats.left = new Array<RectangleData>();
+						_floats.left = new Array<RectangleVO>();
 						
 					case RIGHT:	
 						ret = clearRight(currentFormattingContextY);
-						_floats.right = new Array<RectangleData>();
+						_floats.right = new Array<RectangleVO>();
 						
 					case BOTH:	
 						ret = clearBoth(currentFormattingContextY);
-						_floats.right = new Array<RectangleData>();
-						_floats.left = new Array<RectangleData>();
+						_floats.right = new Array<RectangleVO>();
+						_floats.left = new Array<RectangleVO>();
 						
 					case NONE:	
 						ret = currentFormattingContextY;
@@ -145,13 +145,13 @@ class FloatsManager
 	 * floats to clear
 	 * @param floats an array of floats to clear (right or left)
 	 */
-	private function doClearFloat(currentFormattingContextY:Float, floats:Array<RectangleData>):Float
+	private function doClearFloat(currentFormattingContextY:Float, floats:Array<RectangleVO>):Float
 	{
 		//if there are floats in the array, finds the highest one
 		//and return its value
 		if (floats.length > 0)
 		{
-			var highestFloat:RectangleData = floats[0];
+			var highestFloat:RectangleVO = floats[0];
 			
 			for (i in 0...floats.length)
 			{
@@ -183,9 +183,9 @@ class FloatsManager
 	 * @param	htmlElement the floated HTMLElement
 	 * @param	currentFormattingContextY the current y position of the formatting context
 	 */
-	public function registerFloat(elementRenderer:ElementRenderer, currentFormattingContextY:Float, currentFormattingContextX:Float, containingBlockWidth:Float):RectangleData
+	public function registerFloat(elementRenderer:ElementRenderer, currentFormattingContextY:Float, currentFormattingContextX:Float, containingBlockWidth:Float):RectangleVO
 	{
-		var ret:RectangleData;
+		var ret:RectangleVO;
 		
 		var coreStyle:CoreStyle = elementRenderer.coreStyle;
 		
@@ -212,10 +212,10 @@ class FloatsManager
 	/**
 	 * Create a float data structure for a left float
 	 */
-	private function getLeftFloatData(elementRenderer:ElementRenderer, currentFormattingContextY:Float, currentFormattingContextX:Float, containingBlockWidth:Float):RectangleData
+	private function getLeftFloatData(elementRenderer:ElementRenderer, currentFormattingContextY:Float, currentFormattingContextX:Float, containingBlockWidth:Float):RectangleVO
 	{
 		//get float data except for x position
-		var floatData:RectangleData = getFloatData(elementRenderer, currentFormattingContextY, currentFormattingContextX, containingBlockWidth);
+		var floatData:RectangleVO = getFloatData(elementRenderer, currentFormattingContextY, currentFormattingContextX, containingBlockWidth);
 		
 		//a left float is placed to right of all the preceding left float
 		//which are on the same line as this one
@@ -226,10 +226,10 @@ class FloatsManager
 	/**
 	 * Create a float data structure for a right float
 	 */
-	private function getRightFloatData(elementRenderer:ElementRenderer, currentFormattingContextY:Float, currentFormattingContextX:Float, containingBlockWidth:Float):RectangleData
+	private function getRightFloatData(elementRenderer:ElementRenderer, currentFormattingContextY:Float, currentFormattingContextX:Float, containingBlockWidth:Float):RectangleVO
 	{
 		//get float data except for x position
-		var floatData:RectangleData = getFloatData(elementRenderer, currentFormattingContextY, currentFormattingContextX, containingBlockWidth);
+		var floatData:RectangleVO = getFloatData(elementRenderer, currentFormattingContextY, currentFormattingContextX, containingBlockWidth);
 		
 		//a right float is placed to the left of all the preceding right float which
 		//are on the same line
@@ -242,7 +242,7 @@ class FloatsManager
 	 * Create a generic float data structure which can be applied to both
 	 * left and right float
 	 */
-	private function getFloatData(elementRenderer:ElementRenderer, currentFormattingContextY:Float, currentFormattingContextX:Float, containingBlockWidth:Float):RectangleData
+	private function getFloatData(elementRenderer:ElementRenderer, currentFormattingContextY:Float, currentFormattingContextX:Float, containingBlockWidth:Float):RectangleVO
 	{
 		//a float width and height use the margin box of a
 		//HTMLElement
@@ -257,12 +257,7 @@ class FloatsManager
 		//the x position of the float vary for left and right float
 		var floatX:Float = 0.0;
 	
-		return {
-			x: floatX,
-			y: floatY,
-			width:floatWidth,
-			height:floatHeight
-		}
+		return new RectangleVO(floatX, floatY, floatWidth, floatHeight);
 	}
 	
 	/**
@@ -287,7 +282,7 @@ class FloatsManager
 		{
 			//stores all the floats situated at the same height or after
 			//the current y position
-			var afterFloats:Array<RectangleData> = new Array<RectangleData>();
+			var afterFloats:Array<RectangleVO> = new Array<RectangleVO>();
 			
 			//stores the relevant left floats
 			var leftFloatLength:Int = _floats.left.length;
@@ -367,9 +362,9 @@ class FloatsManager
 	 * Do removes the floats among an array of floats (left or right)
 	 * which are above the current y flow
 	 */
-	private function doRemoveFloat(floats:Array<RectangleData>, flowY:Float):Array<RectangleData>
+	private function doRemoveFloat(floats:Array<RectangleVO>, flowY:Float):Array<RectangleVO>
 	{
-		var newFloats:Array<RectangleData> = new Array<RectangleData>();
+		var newFloats:Array<RectangleVO> = new Array<RectangleVO>();
 
 		for (i in 0...floats.length)
 		{

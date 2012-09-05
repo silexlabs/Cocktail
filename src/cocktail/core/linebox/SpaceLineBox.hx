@@ -30,7 +30,7 @@ class SpaceLineBox extends TextLineBox
 	/**
 	 * class constructor
 	 */
-	public function new(elementRenderer:ElementRenderer, fontMetrics:FontMetricsData, fontManager:FontManager) 
+	public function new(elementRenderer:ElementRenderer, fontMetrics:FontMetricsVO, fontManager:FontManager) 
 	{
 		super(elementRenderer, "", fontMetrics, null);
 	}

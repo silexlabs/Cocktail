@@ -33,7 +33,7 @@ class TextLineBox extends LineBox
 	/**
 	 * A ref to the font metrics of the TextRenderer
 	 */
-	private var _fontMetrics:FontMetricsData;
+	private var _fontMetrics:FontMetricsVO;
 	
 	/**
 	 * Proxies access to the native text element wrapped by this
@@ -50,7 +50,7 @@ class TextLineBox extends LineBox
 	/**
 	 * class constructor
 	 */
-	public function new(elementRenderer:ElementRenderer, text:String, fontMetrics:FontMetricsData, fontManager:FontManager) 
+	public function new(elementRenderer:ElementRenderer, text:String, fontMetrics:FontMetricsVO, fontManager:FontManager) 
 	{
 		_fontMetrics = fontMetrics;
 		
@@ -82,12 +82,7 @@ class TextLineBox extends LineBox
 	 */
 	private function initTextBitmap():Void
 	{
-		var bitmapBounds:RectangleData = {
-			x:0.0,
-			y:leadedAscent,
-			height:bounds.height,
-			width:bounds.width
-		}
+		var bitmapBounds:RectangleVO = new RectangleVO(0.0, leadedAscent, bounds.height, bounds.width);
 		
 		//TODO 1 : there is  memory leak, when text is disposed, its bitmap
 		//data is not
@@ -109,17 +104,11 @@ class TextLineBox extends LineBox
 	 */
 	override public function render(graphicContext:GraphicsContext):Void
 	{
-		var rect:RectangleData = {
-			x:0.0,
-			y:0.0,
-			width:bounds.width,
-			height:bounds.height
-		}
+		var rect:RectangleVO = new RectangleVO(0.0, 0.0, bounds.width, bounds.height);
 		
-		var destPoint:PointData = {
-			x:bounds.x + elementRenderer.globalContainingBlockOrigin.x - elementRenderer.scrollOffset.x,
-			y:bounds.y + elementRenderer.globalContainingBlockOrigin.y - elementRenderer.scrollOffset.y
-		}
+		var destPoint:PointVO = new PointVO(
+		bounds.x + elementRenderer.globalContainingBlockOrigin.x - elementRenderer.scrollOffset.x,
+		bounds.y + elementRenderer.globalContainingBlockOrigin.y - elementRenderer.scrollOffset.y);
 		
 		graphicContext.copyPixels(_nativeTextBitmap, rect, destPoint);
 	}

@@ -67,7 +67,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 * at a given size using a Flash text field
 	 * to measure it
 	 */
-	override public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
+	override public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsVO
 	{
 
 		var textField:TextField = new TextField();
@@ -94,18 +94,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 		textField.text = " ";
 		var spaceWidth:Float = textField.width;
 		
-		var fontMetrics:FontMetricsData = {
-			fontSize:fontSize,
-			ascent:ascent,
-			descent:descent,
-			xHeight:xHeight,
-			spaceWidth:spaceWidth,
-			superscriptOffset:1.0,
-			subscriptOffset:1.0,
-			underlineOffset:1.0
-		};
-		
-		return fontMetrics;
+		return new FontMetricsVO(fontSize, ascent, descent, xHeight, 1.0, 1.0, 1.0, spaceWidth);
 	}
 	
 	/**

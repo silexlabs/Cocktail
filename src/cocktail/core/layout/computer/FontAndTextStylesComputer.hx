@@ -43,7 +43,7 @@ class FontAndTextStylesComputer
 	 * compute all the font and text styles of the HTMLElement
 	 * @param	style
 	 * @param	containingBlockData
-	 * @param	containingBlockFontMetricsData
+	 * @param	containingBlockFontMetricsVO
 	 */
 	public static function compute(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
@@ -56,7 +56,7 @@ class FontAndTextStylesComputer
 		//text indent
 		usedValues.textIndent = getUsedTextIndent(style, containingBlockData);
 		
-		usedValues.color = CSSValueConverter.getColorDataFromCSSColor(style.getColor(style.color));
+		usedValues.color = CSSValueConverter.getColorVOFromCSSColor(style.getColor(style.color));
 		
 		//letter spacing
 		usedValues.letterSpacing = getUsedLetterSpacing(style);

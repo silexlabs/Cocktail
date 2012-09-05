@@ -185,7 +185,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 		//anonymous block use the style of their parent for cascading, they can't 
 		//have style declaration of their own
 		var parentStyleDeclaration:CSSStyleDeclaration = child.domNode.parentNode.coreStyle.computedValues;
-		var parentFontMetrics:FontMetricsData = child.domNode.parentNode.coreStyle.fontMetrics;
+		var parentFontMetrics:FontMetricsVO = child.domNode.parentNode.coreStyle.fontMetrics;
 		
 		var htmlDocument:HTMLDocument = cast(child.domNode.ownerDocument);
 		

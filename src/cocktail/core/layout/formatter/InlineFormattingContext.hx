@@ -138,7 +138,7 @@ class InlineFormattingContext extends FormattingContext
 				var childUsedValues:UsedValuesVO = child.coreStyle.usedValues;
 				
 				//set the bounds of the corresponding InlineBoxRenderer
-				var childBounds:RectangleData = child.bounds;
+				var childBounds:RectangleVO = child.bounds;
 				childBounds.width = childUsedValues.width + childUsedValues.paddingLeft + childUsedValues.paddingRight;
 				childBounds.height = childUsedValues.height + childUsedValues.paddingTop + childUsedValues.paddingBottom;
 				
@@ -762,7 +762,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function computeLineBoxHeight(rootLineBox:LineBox):Float
 	{
-		var formattingContextFontMetrics:FontMetricsData = _formattingContextRoot.coreStyle.fontMetrics;
+		var formattingContextFontMetrics:FontMetricsVO = _formattingContextRoot.coreStyle.fontMetrics;
 		setRootLineBoxMetrics(rootLineBox, rootLineBox, 0.0, formattingContextFontMetrics);
 		
 		alignLineBoxesVertically(rootLineBox, rootLineBox.leadedAscent, _formattingContextData.y, 0.0, formattingContextFontMetrics);
@@ -773,7 +773,7 @@ class InlineFormattingContext extends FormattingContext
 		return lineBoxHeight;
 	}
 	
-	private function setRootLineBoxMetrics(lineBox:LineBox, rootLineBox:LineBox, parentBaseLineOffset:Float, formattingContextFontMetrics:FontMetricsData):Void
+	private function setRootLineBoxMetrics(lineBox:LineBox, rootLineBox:LineBox, parentBaseLineOffset:Float, formattingContextFontMetrics:FontMetricsVO):Void
 	{
 		var length:Int = lineBox.childNodes.length;
 		
@@ -809,7 +809,7 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * Align all the line boxes in one line vertically
 	 */
-	private function alignLineBoxesVertically(lineBox:LineBox, lineBoxAscent:Float, formattingContextY:Float, parentBaseLineOffset:Float, formattingContextFontMetrics:FontMetricsData):Void
+	private function alignLineBoxesVertically(lineBox:LineBox, lineBoxAscent:Float, formattingContextY:Float, parentBaseLineOffset:Float, formattingContextFontMetrics:FontMetricsVO):Void
 	{
 		var length:Int = lineBox.childNodes.length;
 		for (i in 0...length)

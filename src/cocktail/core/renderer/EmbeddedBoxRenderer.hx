@@ -128,7 +128,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * @param	assetHeight the intrinsic height of the video or picture
 	 * @return	the bounds of the asset
 	 */
-	private function getAssetBounds(availableWidth:Float, availableHeight:Float, assetWidth:Float, assetHeight:Float):RectangleData
+	private function getAssetBounds(availableWidth:Float, availableHeight:Float, assetWidth:Float, assetHeight:Float):RectangleVO
 	{
 		//those will hold the actual value used for the video or poster 
 		//dimensions, with the kept aspect ratio
@@ -181,11 +181,6 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		var xOffset:Float = (availableWidth - width) / 2;
 		var yOffset:Float = (availableHeight - height) / 2;
 		
-		return {
-			width:width,
-			height:height,
-			x:xOffset,
-			y:yOffset
-		}
+		return new RectangleVO(xOffset, yOffset, width, height);
 	}
 }

@@ -43,6 +43,7 @@ import cocktail.Lib;
 import cocktail.port.GraphicsContext;
 import haxe.Log;
 import cocktail.core.layout.LayoutData;
+import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
 
 /**
@@ -1029,7 +1030,7 @@ class HTMLDocument extends Document
 	{
 		var x:Float = x;
 		var y:Float = y;
-		var elementRendererAtPoint:ElementRenderer = documentElement.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: x, y: y }, 0, 0  );
+		var elementRendererAtPoint:ElementRenderer = documentElement.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( new PointVO(x, y), 0, 0  );
 		
 		//when no element is under mouse like for instance when the mouse leaves
 		//the window, return the body

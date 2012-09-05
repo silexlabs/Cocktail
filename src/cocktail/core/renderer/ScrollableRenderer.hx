@@ -43,7 +43,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 	 * of the ElementRenderer, which are used when scrolling the
 	 * content of this BlockBoxRenderer
 	 */
-	private var _scrollableBounds:RectangleData;
+	private var _scrollableBounds:RectangleVO;
 	
 	/**
 	 * Store the amount of scroll in the x axis of this BlockBoxRenderer
@@ -70,12 +70,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 		_scrollLeft = 0;
 		_scrollTop = 0;
 		
-		_scrollableBounds = {
-			x:0.0,
-			y:0.0,
-			width:0.0,
-			height:0.0
-		}
+		_scrollableBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -352,7 +347,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 	/**
 	 * Get the bounds of all of the children of this BlockBoxRenderer
 	 */
-	private function getScrollableBounds():RectangleData
+	private function getScrollableBounds():RectangleVO
 	{
 		return getChildrenBounds(doGetScrollableBounds(this));
 	}
@@ -364,9 +359,9 @@ class ScrollableRenderer extends FlowBoxRenderer
 	 * Get the bounds of all of the children
 	 * by traversing the rendering tree
 	 */
-	private function doGetScrollableBounds(rootRenderer:ElementRenderer):Array<RectangleData>
+	private function doGetScrollableBounds(rootRenderer:ElementRenderer):Array<RectangleVO>
 	{
-		var childrenBounds:Array<RectangleData> = new Array<RectangleData>();
+		var childrenBounds:Array<RectangleVO> = new Array<RectangleVO>();
 
 		var length:Int = rootRenderer.childNodes.length;
 		for (i in 0...length)
@@ -378,7 +373,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 			{
 				if (child.hasChildNodes() == true)
 				{
-					var childChildrenBounds:Array<RectangleData> = doGetScrollableBounds(child);
+					var childChildrenBounds:Array<RectangleVO> = doGetScrollableBounds(child);
 					
 					var childLength:Int = childChildrenBounds.length;
 					for (j in 0...childLength)

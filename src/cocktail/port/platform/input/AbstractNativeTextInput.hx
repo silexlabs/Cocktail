@@ -28,7 +28,7 @@ class AbstractNativeTextInput
 	 * get/set the position of the text input relative to
 	 * the Window
 	 */
-	public var viewport(get_viewport, set_viewport):RectangleData;
+	public var viewport(get_viewport, set_viewport):RectangleVO;
 	
 	//get/set style attributes
 	
@@ -80,12 +80,12 @@ class AbstractNativeTextInput
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_viewport():RectangleData
+	private function get_viewport():RectangleVO
 	{
 		return viewport;
 	}
 	
-	private function set_viewport(value:RectangleData):RectangleData
+	private function set_viewport(value:RectangleVO):RectangleVO
 	{
 		return viewport = value;
 	}

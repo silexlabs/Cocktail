@@ -61,7 +61,7 @@ class VisualEffectStylesComputer
 	 * Compute the transformation origin and returns it as a 2d point
 	 * in pixel
 	 */
-	private static function getComputedTransformOrigin(style:CoreStyle):PointData
+	private static function getComputedTransformOrigin(style:CoreStyle):PointVO
 	{
 		var x:Float = 0.0;
 		var y:Float = 0.0;
@@ -136,10 +136,7 @@ class VisualEffectStylesComputer
 		}
 		
 		//return the point
-		var transformOriginPoint:PointData = {
-			x:x,
-			y:y
-		}
+		var transformOriginPoint:PointVO = new PointVO(x, y);
 		
 		return transformOriginPoint;
 	}
@@ -161,7 +158,7 @@ class VisualEffectStylesComputer
 		var matrix:Matrix = new Matrix();
 		
 		var transformFunctions:Array<CSSTransformFunctionValue> = new Array<CSSTransformFunctionValue>();
-		var transformOrigin:PointData = style.usedValues.transformOrigin;
+		var transformOrigin:PointVO = style.usedValues.transformOrigin;
 		
 		//retrieve the transform functions
 		switch (style.transform)

@@ -22,6 +22,7 @@ import cocktail.core.animation.Transition;
 import cocktail.core.animation.TransitionManager;
 import cocktail.core.css.CSSValueConverter;
 import cocktail.core.renderer.RendererData;
+import cocktail.core.geom.GeomData;
 
 /**
  * This class has 3 main purposes :
@@ -186,7 +187,7 @@ class CoreStyle
 	 * the 'font-size' and 'font-family' properties
 	 * 
 	 */
-	public var fontMetrics(get_fontMetricsData, null):FontMetricsData;
+	public var fontMetrics(get_fontMetricsData, null):FontMetricsVO;
 	
 	/**
 	 * An instance of fontmanager used to get the font metrics
@@ -247,10 +248,10 @@ class CoreStyle
 		usedValues.textIndent = 0;
 		usedValues.lineHeight = 0.0;
 		usedValues.letterSpacing = 0.0;
-		usedValues.color = new ColorData(0, 1.0);
-		usedValues.transformOrigin = { x:0.0, y:0.0 };
+		usedValues.color = new ColorVO(0, 1.0);
+		usedValues.transformOrigin = new PointVO(0.0, 0.0);
 		usedValues.transform = new Matrix();
-		usedValues.backgroundColor = new ColorData(0, 1.0);
+		usedValues.backgroundColor = new ColorVO(0, 1.0);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -314,7 +315,7 @@ class CoreStyle
 
 		//get the font metrics of this CoreStyle, used for
 		//Length computation
-		var fontMetrics:FontMetricsData = this.fontMetrics;
+		var fontMetrics:FontMetricsVO = this.fontMetrics;
 		var fontSize:Float = fontMetrics.fontSize;
 		var xHeight:Float = fontMetrics.xHeight;
 		
@@ -385,11 +386,11 @@ class CoreStyle
 	private function setProperty(propertyName:String, styleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, initialStyleDeclaration:CSSStyleDeclaration, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool, isInherited:Bool):Bool
 	{
 		//retrieve the property from the right style declaration
-		var propertyData:TypedPropertyData = styleDeclaration.getTypedProperty(propertyName);
+		var propertyData:TypedPropertyVO = styleDeclaration.getTypedProperty(propertyName);
 		var property:CSSPropertyValue = propertyData.typedValue;
 		
 		//get the property with the same name from the specified properties of this CoreStyle
-		var specifiedProperty:TypedPropertyData = specifiedValues.getTypedProperty(propertyName);
+		var specifiedProperty:TypedPropertyVO = specifiedValues.getTypedProperty(propertyName);
 		
 		//check that the new property has a different value from
 		//the current one. If it doesn't, cascading is over
@@ -1083,12 +1084,12 @@ class CoreStyle
 	// GETTERS
 	////////////////////////////////
 	
-	private function get_fontMetricsData():FontMetricsData
+	private function get_fontMetricsData():FontMetricsVO
 	{
 		//TODO 1 : how to deal with font size for macro target ? Does it matter
 		//to get layout info at compile/server time ? use em font ?
 		#if macro
-		return { fontSize:12.0, ascent:12.0, descent:12.0, xHeight:12.0, subscriptOffset:3.0, superscriptOffset:3.0, underlineOffset:3.0, spaceWidth:5.0 };
+		return new FontMetricsVO(12.0, 12.0, 12.0, 12.0, 3.0, 3.0, 3.0, 5.0 );
 		#else
 		return _fontManager.getFontMetrics(computedValues.fontFamily, getAbsoluteLength(fontSize));
 		#end

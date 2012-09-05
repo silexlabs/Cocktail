@@ -37,7 +37,7 @@ class SelectorManager
 	 * For a given node and selector, return wether
 	 * the node matches all of the components of the selector
 	 */
-	public function matchSelector(node:HTMLElement, selector:SelectorData, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+	public function matchSelector(node:HTMLElement, selector:SelectorVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		var components:Array<SelectorComponentValue> = selector.components;
 		
@@ -118,7 +118,7 @@ class SelectorManager
 			return false;
 		}
 		
-		var nextSelectorSequence:SimpleSelectorSequenceData = null;
+		var nextSelectorSequence:SimpleSelectorSequenceVO = null;
 		//the next component at this point is always a simple
 		//selector sequence, there can't be 2 combinators in a row
 		//in a selector, it makes the selector invalid
@@ -155,7 +155,7 @@ class SelectorManager
 	 * the preious selector sequence which precedes in 
 	 * the DOM tree
 	 */
-	private function  matchGeneralSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+	private function  matchGeneralSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		var previousElementSibling:HTMLElement = node.previousElementSibling;
 		
@@ -178,7 +178,7 @@ class SelectorManager
 	 * element sibling of the node matches
 	 * the previous selector
 	 */
-	private function  matchAdjacentSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+	private function  matchAdjacentSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		var previousElementSibling:HTMLElement = node.previousElementSibling;
 		
@@ -195,7 +195,7 @@ class SelectorManager
 	 * It is matched when an ancestor of the node
 	 * matches the next selector sequence
 	 */
-	private function matchDescendantCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+	private function matchDescendantCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		var parentNode:HTMLElement = node.parentNode;
 		
@@ -221,7 +221,7 @@ class SelectorManager
 	 * next selector sequence must be matched by the 
 	 * direct parent of the node and not just any ancestor
 	 */
-	private function matchChildCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+	private function matchChildCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		return matchSimpleSelectorSequence(node.parentNode, nextSelectorSequence, matchedPseudoClasses);
 	}
@@ -286,7 +286,7 @@ class SelectorManager
 	 * Return wether all items in a simple selector
 	 * sequence are matched
 	 */
-	private function matchSimpleSelectorSequence(node:HTMLElement, simpleSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+	private function matchSimpleSelectorSequence(node:HTMLElement, simpleSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		//check if sequence start matches
 		if (matchSimpleSelectorSequenceStart(node, simpleSelectorSequence.startValue) == false)
@@ -482,7 +482,7 @@ class SelectorManager
 	 * Return wether a negation pseudo-class selector
 	 * matches the node
 	 */
-	private function matchNegationPseudoClassSelector(node:HTMLElement, negationSimpleSelectorSequence:SimpleSelectorSequenceData):Bool
+	private function matchNegationPseudoClassSelector(node:HTMLElement, negationSimpleSelectorSequence:SimpleSelectorSequenceVO):Bool
 	{
 		return false;
 	}
@@ -671,12 +671,12 @@ class SelectorManager
 	 * Return the specifity of a selector, which is
 	 * its priority next to other selector
 	 */
-	public function getSelectorSpecifity(selector:SelectorData):Int
+	public function getSelectorSpecifity(selector:SelectorVO):Int
 	{
 		//holds the specificity data, is passe by reference
 		//to all methods which can increment the specificity
 		//attribute
-		var selectorSpecificity:SelectorSpecificityData = new SelectorSpecificityData();
+		var selectorSpecificity:SelectorSpecificityVO = new SelectorSpecificityVO();
 		
 		//a pseudo element increment the specificity
 		switch (selector.pseudoElement)
@@ -717,7 +717,7 @@ class SelectorManager
 	/**
 	 * Increment the specificity of simple selector sequence
 	 */
-	private function getSimpleSelectorSequenceSpecificity(simpleSelectorSequence:SimpleSelectorSequenceData, selectorSpecificity:SelectorSpecificityData):Void
+	private function getSimpleSelectorSequenceSpecificity(simpleSelectorSequence:SimpleSelectorSequenceVO, selectorSpecificity:SelectorSpecificityVO):Void
 	{
 		getSimpleSelectorSequenceStartSpecificity(simpleSelectorSequence.startValue, selectorSpecificity);
 		
@@ -731,7 +731,7 @@ class SelectorManager
 	/**
 	 * Increment specificity according to a simple selector start item
 	 */
-	private function getSimpleSelectorSequenceStartSpecificity(simpleSelectorSequenceStart:SimpleSelectorSequenceStartValue, selectorSpecificity:SelectorSpecificityData):Void
+	private function getSimpleSelectorSequenceStartSpecificity(simpleSelectorSequenceStart:SimpleSelectorSequenceStartValue, selectorSpecificity:SelectorSpecificityVO):Void
 	{
 		switch(simpleSelectorSequenceStart)
 		{
@@ -745,7 +745,7 @@ class SelectorManager
 	/**
 	 * Increment specificity according to a simple selector item
 	 */
-	private function getSimpleSelectorSequenceItemSpecificity(simpleSelectorSequenceItem:SimpleSelectorSequenceItemValue, selectorSpecificity:SelectorSpecificityData):Void
+	private function getSimpleSelectorSequenceItemSpecificity(simpleSelectorSequenceItem:SimpleSelectorSequenceItemValue, selectorSpecificity:SelectorSpecificityVO):Void
 	{
 		switch (simpleSelectorSequenceItem)
 		{

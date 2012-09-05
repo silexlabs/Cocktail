@@ -87,7 +87,7 @@ class NativeMedia
 	 * The viewport represents the position and size of the
 	 * displayed native video relative to the window
 	 */
-	public var viewport(get_viewport, set_viewport):RectangleData;
+	public var viewport(get_viewport, set_viewport):RectangleVO;
 	
 	/**
 	 * class constructor
@@ -215,12 +215,12 @@ class NativeMedia
 		return value;
 	}
 	
-	private function get_viewport():RectangleData
+	private function get_viewport():RectangleVO
 	{
 		return viewport;
 	}
 	
-	private function set_viewport(value:RectangleData):RectangleData
+	private function set_viewport(value:RectangleVO):RectangleVO
 	{
 		return viewport = value;
 	}

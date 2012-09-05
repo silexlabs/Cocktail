@@ -96,17 +96,16 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	 */
 	private function updateNativeTextInput():Void
 	{
-		var globalBounds:RectangleData = this.globalBounds;
+		var globalBounds:RectangleVO = this.globalBounds;
 		
 		//set the position and size of the native text input, relative
 		//to the Window
-		_nativeTextInput.viewport = {
-			x: globalBounds.x - scrollOffset.x,
-			y: globalBounds.y + globalBounds.height / 2 - coreStyle.fontMetrics.fontSize + coreStyle.fontMetrics.ascent / 2 - scrollOffset.y,
-			width: globalBounds.width,
-			height: globalBounds.height
-		}
-	
+		var x:Float = globalBounds.x - scrollOffset.x;
+		var y:Float =  globalBounds.y + globalBounds.height / 2 - coreStyle.fontMetrics.fontSize + coreStyle.fontMetrics.ascent / 2 - scrollOffset.y;
+		var width:Float =  globalBounds.width;
+		var height:Float =  globalBounds.height;
+		_nativeTextInput.viewport = new RectangleVO(x, y, width, height);
+		
 		//set the style of the text input text using the CSS applying to it
 		//Based on the platform not all of those style might be taken into account
 		

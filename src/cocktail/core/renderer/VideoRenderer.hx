@@ -100,21 +100,20 @@ class VideoRenderer extends ImageRenderer
 	private function renderVideo(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext):Void
 	{
 		//get the bounds for the video so that it takes the maximum space and is centered
-		var videoBounds:RectangleData = getAssetBounds(coreStyle.usedValues.width,
+		var videoBounds:RectangleVO = getAssetBounds(coreStyle.usedValues.width,
 		coreStyle.usedValues.height, htmlVideoElement.videoWidth, htmlVideoElement.videoHeight);
 		
-		var globalBounds:RectangleData = this.globalBounds;
+		var globalBounds:RectangleVO = this.globalBounds;
 		
 		var nativeVideo:NativeMedia = htmlVideoElement.nativeMedia;
 		
 		//set the position and size of the native video, relative
 		//to the Window
-		nativeVideo.viewport = {
-			x: globalBounds.x + coreStyle.usedValues.paddingLeft + videoBounds.x - scrollOffset.x,
-			y: globalBounds.y + coreStyle.usedValues.paddingTop + videoBounds.y - scrollOffset.y,
-			width: videoBounds.width,
-			height: videoBounds.height
-		}
+		var x:Float =  globalBounds.x + coreStyle.usedValues.paddingLeft + videoBounds.x - scrollOffset.x;
+		var y:Float =  globalBounds.y + coreStyle.usedValues.paddingTop + videoBounds.y - scrollOffset.y;
+		var width:Float =  videoBounds.width;
+		var height:Float =  videoBounds.height;
+		nativeVideo.viewport = new RectangleVO(x, y, width, height);
 		
 		nativeVideo.attach(graphicContext);
 	}
@@ -133,15 +132,15 @@ class VideoRenderer extends ImageRenderer
 			return;
 		}
 		
-		var posterBounds:RectangleData = getAssetBounds(coreStyle.usedValues.width,
+		var posterBounds:RectangleVO = getAssetBounds(coreStyle.usedValues.width,
 		coreStyle.usedValues.height, resource.intrinsicWidth, resource.intrinsicHeight);
 		
-		var paintBounds:RectangleData = {
-			x:globalBounds.x + coreStyle.usedValues.paddingLeft + posterBounds.x - scrollOffset.x,
-			y:globalBounds.y + coreStyle.usedValues.paddingTop + posterBounds.y - scrollOffset.y,
-			width:posterBounds.width,
-			height:posterBounds.height
-		}
+		var x:Float = globalBounds.x + coreStyle.usedValues.paddingLeft + posterBounds.x - scrollOffset.x;
+		var y:Float = globalBounds.y + coreStyle.usedValues.paddingTop + posterBounds.y - scrollOffset.y;
+		var width:Float = posterBounds.width;
+		var height:Float = posterBounds.height;
+		
+		var paintBounds:RectangleVO = new RectangleVO(x, y, width, height);
 		
 		paintResource(graphicContext, resource.nativeResource, paintBounds, resource.intrinsicWidth, resource.intrinsicHeight);
 	}

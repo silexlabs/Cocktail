@@ -83,7 +83,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * which established the formatting context this ElementRenderer 
 	 * participates in.
 	 */
-	public var bounds(get_bounds, set_bounds):RectangleData;
+	public var bounds(get_bounds, set_bounds):RectangleVO;
 	
 	/**
 	 * The bounds of the ElementRenderer in the space of the Window.
@@ -94,7 +94,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * will be used to determine its global bounds whereas if it
 	 * is absolutely positioned, it will use its positioned bounds
 	 */
-	public var globalBounds(get_globalBounds, never):RectangleData;
+	public var globalBounds(get_globalBounds, never):RectangleVO;
 	
 	/**
 	 * The scrollable bounds of the ElementRenderer in the space of the scrollable containing
@@ -109,7 +109,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * 
 	 * This is a utility read-only method
 	 */
-	public var scrollableBounds(get_scrollableBounds, never):RectangleData;
+	public var scrollableBounds(get_scrollableBounds, never):RectangleVO;
 	
 	/**
 	 * This is the position of the top left padding box corner of the 
@@ -119,7 +119,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * When added to the x and y bounds of the ElementRenderer, 
 	 * it gives the global x and y of the ElementRenderer
 	 */
-	public var globalContainingBlockOrigin:PointData;
+	public var globalContainingBlockOrigin:PointVO;
 	
 	/**
 	 * This is the position of the top left corner of this
@@ -132,7 +132,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * positioned ancestor origin, it gives the global
 	 * positioned origin of the ElementRenderer
 	 */
-	public var positionedOrigin:PointData;
+	public var positionedOrigin:PointVO;
 	
 	/**
 	 * This is the position of the top left padding box corner
@@ -142,13 +142,13 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * It is used when this ElementRenderer
 	 * is absolutely positioned.
 	 */
-	public var globalPositionnedAncestorOrigin:PointData;
+	public var globalPositionnedAncestorOrigin:PointVO;
 	
 	/**
 	 * The total of all the x and y scroll
 	 * applied to the parent of this ElementRenderer
 	 */
-	public var scrollOffset:PointData;
+	public var scrollOffset:PointVO;
 	
 	/**
 	 * A reference to the Node in the DOM tree
@@ -248,33 +248,15 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		_hasOwnLayer = false;
 		_wasPositioned = false;
 		
-		bounds = {
-			x:0.0,
-			y:0.0,
-			width : 0.0,
-			height: 0.0
-		}
+		bounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
 		
-		scrollOffset = {
-			x:0.0,
-			y:0.0
-		}
+		scrollOffset = new PointVO(0.0, 0.0);
 		
-		positionedOrigin = {
-			x:0.0,
-			y:0.0
-		}
+		positionedOrigin = new PointVO(0.0, 0.0);
 		
-		globalPositionnedAncestorOrigin = {
-			x:0.0,
-			y:0.0
-		}
+		globalPositionnedAncestorOrigin = new PointVO(0.0, 0.0); 
 		
-		globalContainingBlockOrigin = {
-			x:0.0,
-			y:0.0
-		}
-		
+		globalContainingBlockOrigin = new PointVO(0.0, 0.0);
 		
 		lineBoxes = new Array<LineBox>();
 	}
@@ -365,7 +347,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		//bounds must be added to the global x and y bounds for the normal flow
 		if (establishesNewFormattingContext() == true)
 		{
-			var globalBounds:RectangleData = globalBounds;
+			var globalBounds:RectangleVO = globalBounds;
 			addedX = globalBounds.x;
 			addedY = globalBounds.y;
 		}
@@ -374,7 +356,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		//its bounds to the global positioned origin
 		if (isPositioned() == true)
 		{
-			var globalBounds:RectangleData = globalBounds;
+			var globalBounds:RectangleVO = globalBounds;
 			addedPositionedX = globalBounds.x;
 			addedPositionedY = globalBounds.y;
 		}
@@ -402,20 +384,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{
 			var child:ElementRenderer = childNodes[i];
 			
-			child.globalContainingBlockOrigin = {
-				x: addedX,
-				y : addedY
-			}
+			child.globalContainingBlockOrigin = new PointVO(addedX, addedY);
 			
-			child.globalPositionnedAncestorOrigin = {
-				x: addedPositionedX,
-				y : addedPositionedY
-			}
+			child.globalPositionnedAncestorOrigin = new PointVO(addedPositionedX, addedPositionedY);
 			
-			child.scrollOffset = {
-				x: addedScrollX,
-				y: addedScrollY
-			}
+			child.scrollOffset = new PointVO(addedScrollX, addedScrollY);
 			
 			//call the method recursively if the child has children itself
 			if (child.hasChildNodes() == true)
@@ -638,9 +611,9 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * when rendering. Only relatively positioned ElementRenderer
 	 * have this offset
 	 */
-	public function getRelativeOffset():PointData
+	public function getRelativeOffset():PointVO
 	{
-		var relativeOffset:PointData = { x:0.0, y:0.0 };
+		var relativeOffset:PointVO = new PointVO(0.0, 0.0);
 		
 		//only relatively positioned ElementRenderer can have
 		//an offset
@@ -794,9 +767,9 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * Determine the bounds of the children of this ElementRenderer
 	 * in this ElementRenderer space
 	 */
-	private function getChildrenBounds(childrenBounds:Array<RectangleData>):RectangleData
+	private function getChildrenBounds(childrenBounds:Array<RectangleVO>):RectangleVO
 	{
-		var bounds:RectangleData;
+		var bounds:RectangleVO;
 		
 		var left:Float = 50000;
 		var top:Float = 50000;
@@ -806,7 +779,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		var length:Int = childrenBounds.length;
 		for (i in 0...length)
 		{
-			var childBounds:RectangleData = childrenBounds[i];
+			var childBounds:RectangleVO = childrenBounds[i];
 			if (childBounds.x < left)
 			{
 				left = childBounds.x;
@@ -825,12 +798,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			}
 		}
 		
-		bounds = {
-				x:left,
-				y:top,
-				width : right - left,
-				height :  bottom - top,
-		}
+		bounds = new RectangleVO(left, top, right - left, bottom - top);
 				
 		//TODO 4 : need to implement better fix,
 		//sould not be negative
@@ -880,12 +848,12 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * Return the bounds of the ElementRenderer relative to the
 	 * Window, depending on its positioning scheme
 	 */
-	private function get_globalBounds():RectangleData
+	private function get_globalBounds():RectangleVO
 	{
 		var globalX:Float;
 		var globalY:Float;
 		
-		var bounds:RectangleData = this.bounds;
+		var bounds:RectangleVO = this.bounds;
 		
 		//fixed positioned
 		if (coreStyle.getKeyword(coreStyle.position) == FIXED)
@@ -939,12 +907,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			globalY = globalContainingBlockOrigin.y + bounds.y;
 		}
 		
-		return {
-			x:globalX,
-			y:globalY,
-			width:bounds.width,
-			height:bounds.height
-		}
+		return new RectangleVO(globalX, globalY, bounds.width, bounds.height);
 	}
 	
 	/**
@@ -955,7 +918,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * TODO 3 : should implement the case of absolutely 
 	 * positioned children
 	 */
-	private function get_scrollableBounds():RectangleData
+	private function get_scrollableBounds():RectangleVO
 	{
 		//if the elementRenderer is not relatively positioned,
 		//the bounds are the same as the regular bounds
@@ -966,23 +929,18 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		//else the bounds with the relative offset applied to them
 		//are returned
-		var relativeOffset:PointData = getRelativeOffset();
-		var bounds:RectangleData = this.bounds;
+		var relativeOffset:PointVO = getRelativeOffset();
+		var bounds:RectangleVO = this.bounds;
 		
-		return {
-			x: bounds.x + relativeOffset.x,
-			y: bounds.y + relativeOffset.y,
-			width: bounds.width,
-			height: bounds.height
-		};
+		return new RectangleVO(bounds.x + relativeOffset.x, bounds.y + relativeOffset.y, bounds.width, bounds.height);
 	}
 	
-	private function get_bounds():RectangleData
+	private function get_bounds():RectangleVO
 	{
 		return bounds;
 	}
 	
-	private function set_bounds(value:RectangleData):RectangleData
+	private function set_bounds(value:RectangleVO):RectangleVO
 	{
 		return bounds = value;
 	}

@@ -154,7 +154,7 @@ class GraphicsContext extends AbstractGraphicsContext
 	/**
 	 * Draw bitmap data into the bitmap display object.
 	 */
-	override public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix = null, sourceRect:RectangleData = null):Void
+	override public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix = null, sourceRect:RectangleVO = null):Void
 	{	
 		//init destination point and sourceRect if null
 		
@@ -167,12 +167,7 @@ class GraphicsContext extends AbstractGraphicsContext
 		{
 			var width:Float = bitmapData.width;
 			var height:Float = bitmapData.height;
-			sourceRect = {
-				x:0.0,
-				y:0.0,
-				width:width,
-				height:height
-			};
+			sourceRect = new RectangleVO(0.0, 0.0, width, height);
 		}
 		
 		//convert the cross-platform rectangle and point into flash natives one
@@ -198,7 +193,7 @@ class GraphicsContext extends AbstractGraphicsContext
 	 * Uses flash native copyPixels method for fast pixel 
 	 * manipulation
 	 */
-	override public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleData, destPoint:PointData):Void
+	override public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO):Void
 	{
 		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
 		var nativeDestPoint:flash.geom.Point = new flash.geom.Point(destPoint.x, destPoint.y);
@@ -230,7 +225,7 @@ class GraphicsContext extends AbstractGraphicsContext
 	 * Uses flash native fillRect method for fast
 	 * rectangle drawing
 	 */
-	override public function fillRect(rect:RectangleData, color:ColorData):Void
+	override public function fillRect(rect:RectangleVO, color:ColorVO):Void
 	{
 		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(rect.x, rect.y, rect.width, rect.height);
 
@@ -239,7 +234,7 @@ class GraphicsContext extends AbstractGraphicsContext
 		argbColor += alpha << 24;
 		
 		var fillRectBitmapData:BitmapData = new BitmapData(Math.round(rect.width), Math.round(rect.height), true, argbColor);
-		copyPixels(fillRectBitmapData, { x:0.0, y:0.0, width:rect.width, height:rect.height }, { x:rect.x, y:rect.y } );
+		copyPixels(fillRectBitmapData, new RectangleVO(0.0, 0.0, rect.width, rect.height), new PointVO(rect.x, rect.y) );
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

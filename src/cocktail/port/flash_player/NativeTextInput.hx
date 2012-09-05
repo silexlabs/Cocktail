@@ -114,17 +114,12 @@ class NativeTextInput extends AbstractNativeTextInput
 	// set/get the attribute on the flash text field and text format
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override private function get_viewport():RectangleData
+	override private function get_viewport():RectangleVO
 	{
-		return {
-			x:_textField.x,
-			y:_textField.y,
-			width:_textField.width,
-			height:_textField.height
-		};
+		return new RectangleVO(_textField.x, _textField.y, _textField.width, _textField.height);
 	}
 	
-	override private function set_viewport(value:RectangleData):RectangleData
+	override private function set_viewport(value:RectangleVO):RectangleVO
 	{
 		_textField.x = value.x;
 		_textField.y = value.y;

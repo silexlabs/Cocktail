@@ -22,28 +22,49 @@ package cocktail.core.geom;
 	/**
 	 * represent a rectangle
 	 */
-	typedef RectangleData = {
-		var x:Float;
-		var y:Float;
-		var width:Float;
-		var height:Float;
+	class RectangleVO {
+		public var x:Float;
+		public var y:Float;
+		public var width:Float;
+		public var height:Float;
+		
+		public function new(x:Float, y:Float, width:Float, height:Float)
+		{
+			this.x = x;
+			this.y = y;
+			this.width = width;
+			this.height = height;
+		}
 	}
 	
 	/**
 	 * Represents a point in 2d space
 	 */
-	typedef PointData = {
-		var x:Float;
-		var y:Float;
+	class PointVO {
+		public var x:Float;
+		public var y:Float;
+		
+		public function new(x:Float, y:Float)
+		{
+			this.x = x;
+			this.y = y;
+		}
 	}
 	
 	/**
 	 * Represents a width and
 	 * height dimension
 	 */
-	typedef DimensionData = {
-		var width:Float;
-		var height:Float;
+	class DimensionVO {
+		
+		public var width:Float;
+		public var height:Float;
+		
+		public function new(width:Float, height:Float)
+		{
+			this.width = width;
+			this.height = height;
+		}
 	}
 
 //////////////////////////////////////////////////////////////////////////////////////////

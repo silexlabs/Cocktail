@@ -98,9 +98,9 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 * by the bounds of all of the line boxes it creates during
 	 * formatting
 	 */
-	override private function get_bounds():RectangleData
+	override private function get_bounds():RectangleVO
 	{
-		var lineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
+		var lineBoxesBounds:Array<RectangleVO> = new Array<RectangleVO>();
 		var length:Int = lineBoxes.length;
 		for (i in 0...length)
 		{

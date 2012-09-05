@@ -100,7 +100,7 @@ class BlockFormattingContext extends FormattingContext
 			var x:Float = concatenatedX + child.coreStyle.usedValues.marginLeft;
 			var y:Float = concatenatedY + marginTop;
 			
-			var childBounds:RectangleData = child.bounds;
+			var childBounds:RectangleVO = child.bounds;
 			childBounds.x = x;
 			childBounds.y = y;
 			childBounds.width = width;
@@ -112,7 +112,7 @@ class BlockFormattingContext extends FormattingContext
 				//element is declared after an inline one, it won't be on the right line
 				if (isFloatRegistered(child) == false)
 				{
-					var floatBounds:RectangleData = _floatsManager.registerFloat(child, concatenatedY, 0, elementRendererUsedValues.width);
+					var floatBounds:RectangleVO = _floatsManager.registerFloat(child, concatenatedY, 0, elementRendererUsedValues.width);
 					_registeredFloats.push( {
 						node:child, 
 						bounds:floatBounds
@@ -122,7 +122,7 @@ class BlockFormattingContext extends FormattingContext
 					return 0.0;
 				}
 				
-				var floatBounds:RectangleData = getRegisteredFloat(child).bounds;
+				var floatBounds:RectangleVO = getRegisteredFloat(child).bounds;
 				
 				childBounds.x = floatBounds.x + usedValues.marginLeft;
 				childBounds.y = floatBounds.y + usedValues.marginTop;

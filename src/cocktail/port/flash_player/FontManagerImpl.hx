@@ -103,7 +103,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 * provided by the flash text engine. The
 	 * font metrics are provided for a given font at a given size
 	 */
-	override private function doGetFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
+	override private function doGetFontMetrics(fontFamily:String, fontSize:Float):FontMetricsVO
 	{
 		//the flash object used to access flash font metrics
 		var elementFormat:ElementFormat = new ElementFormat();
@@ -130,7 +130,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 		//get the width of a space character
 		var spaceWidth:Float = getSpaceWidth(elementFormat.clone());
 		
-		var fontMetrics:FontMetricsData = {
+		var fontMetrics:FontMetricsVO = {
 			fontSize:fontSize,
 			ascent:ascent,
 			descent:descent,

@@ -441,7 +441,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	private function getTransformationMatrix(graphicContext:GraphicsContext):Matrix
 	{
-		var relativeOffset:PointData = rootElementRenderer.getRelativeOffset();
+		var relativeOffset:PointVO = rootElementRenderer.getRelativeOffset();
 		var concatenatedMatrix:Matrix = getConcatenatedMatrix(rootElementRenderer.coreStyle.usedValues.transform, relativeOffset);
 		
 		//apply relative positioning as well
@@ -456,10 +456,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 * transformations applied to the root element renderer, such as for 
 	 * instance its position in the global space
 	 */
-	private function getConcatenatedMatrix(matrix:Matrix, relativeOffset:PointData):Matrix
+	private function getConcatenatedMatrix(matrix:Matrix, relativeOffset:PointVO):Matrix
 	{
 		var currentMatrix:Matrix = new Matrix();
-		var globalBounds:RectangleData = rootElementRenderer.globalBounds;
+		var globalBounds:RectangleVO = rootElementRenderer.globalBounds;
 		
 		//translate to the coordinate system of the root element renderer
 		currentMatrix.translate(globalBounds.x + relativeOffset.x, globalBounds.y + relativeOffset.y);
@@ -602,7 +602,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	
 	//TODO 2 : for now traverse all tree, but should instead return as soon as an ElementRenderer
 	//is found
-	public function getTopMostElementRendererAtPoint(point:PointData, scrollX:Float, scrollY:Float):ElementRenderer
+	public function getTopMostElementRendererAtPoint(point:PointVO, scrollX:Float, scrollY:Float):ElementRenderer
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = getElementRenderersAtPoint(point, scrollX, scrollY);
 		
@@ -611,7 +611,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		return topMostElementRenderer;
 	}
 	
-	private function getElementRenderersAtPoint(point:PointData, scrollX:Float, scrollY:Float):Array<ElementRenderer>
+	private function getElementRenderersAtPoint(point:PointVO, scrollX:Float, scrollY:Float):Array<ElementRenderer>
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = getElementRenderersAtPointInLayer(rootElementRenderer, point, scrollX, scrollY);
 
@@ -634,14 +634,11 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	// PRIVATE HIT-TESTING METHODS
 	////////////////////////////////
 	
-	private function getElementRenderersAtPointInLayer(renderer:ElementRenderer, point:PointData, scrollX:Float, scrollY:Float):Array<ElementRenderer>
+	private function getElementRenderersAtPointInLayer(renderer:ElementRenderer, point:PointVO, scrollX:Float, scrollY:Float):Array<ElementRenderer>
 	{
 		var elementRenderersAtPointInLayer:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		var scrolledPoint:PointData = {
-			x:point.x + scrollX,
-			y:point.y + scrollY
-		}
+		var scrolledPoint:PointVO = new PointVO(point.x + scrollX, point.y + scrollY);
 		
 		if (isWithinBounds(scrolledPoint, renderer.globalBounds) == true)
 		{
@@ -671,10 +668,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				}
 				else
 				{
-					var scrolledPoint:PointData = {
-						x:point.x + scrollX,
-						y:point.y + scrollY
-					}
+					var scrolledPoint:PointVO = new PointVO(point.x + scrollX, point.y + scrollY);
 					
 					if (isWithinBounds(scrolledPoint, child.globalBounds) == true)
 					{
@@ -687,7 +681,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		return elementRenderersAtPointInLayer;
 	}
 	
-	private function getElementRenderersAtPointInChildRenderers(point:PointData, childRenderers:Array<ElementRenderer>, scrollX:Float, scrollY:Float):Array<ElementRenderer>
+	private function getElementRenderersAtPointInChildRenderers(point:PointVO, childRenderers:Array<ElementRenderer>, scrollX:Float, scrollY:Float):Array<ElementRenderer>
 	{
 		var elementRenderersAtPointInChildRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
@@ -729,7 +723,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 * Utils method determining if a given point is within
 	 * a given recrtangle
 	 */
-	private function isWithinBounds(point:PointData, bounds:RectangleData):Bool
+	private function isWithinBounds(point:PointVO, bounds:RectangleVO):Bool
 	{
 		return point.x >= bounds.x && (point.x <= bounds.x + bounds.width) && point.y >= bounds.y && (point.y <= bounds.y + bounds.height);	
 	}

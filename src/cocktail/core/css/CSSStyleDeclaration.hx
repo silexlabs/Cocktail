@@ -159,7 +159,7 @@ class CSSStyleDeclaration
 	 * Holds all the style declarations of this 
 	 * object, as typed objects
 	 */
-	private var _properties:Array<TypedPropertyData>;
+	private var _properties:Array<TypedPropertyVO>;
 	
 	/**
 	 * a reference to a CSS parser instance
@@ -177,7 +177,7 @@ class CSSStyleDeclaration
 	 */
 	public function new(parentRule:CSSRule = null, onStyleChange:String->Void = null) 
 	{
-		_properties = new Array<TypedPropertyData>();
+		_properties = new Array<TypedPropertyVO>();
 		_cssStyleParser = new CSSStyleParser();
 		_onStyleChange = onStyleChange;
 		this.parentRule = parentRule;
@@ -224,7 +224,7 @@ class CSSStyleDeclaration
 		var length:Int = _properties.length;
 		for (i in 0...length)
 		{
-			var propertyDeclaration:TypedPropertyData = _properties[i];
+			var propertyDeclaration:TypedPropertyVO = _properties[i];
 			if (propertyDeclaration.name == property)
 			{
 				return CSSStyleSerializer.serialize(propertyDeclaration.typedValue);
@@ -252,7 +252,7 @@ class CSSStyleDeclaration
 		{
 			//parse the proeprty, the return property is null
 			//if the style is invalid
-			var typedProperty:TypedPropertyData = _cssStyleParser.parseStyleValue(name, value, 0);
+			var typedProperty:TypedPropertyVO = _cssStyleParser.parseStyleValue(name, value, 0);
 			
 			if (typedProperty != null)
 			{
@@ -273,7 +273,7 @@ class CSSStyleDeclaration
 		var length:Int = _properties.length;
 		for (i in 0...length)
 		{
-			var propertyDeclaration:TypedPropertyData = _properties[i];
+			var propertyDeclaration:TypedPropertyVO = _properties[i];
 			
 			if (propertyDeclaration.name == property)
 			{
@@ -304,7 +304,7 @@ class CSSStyleDeclaration
 		var length:Int = _properties.length;
 		for (i in 0...length)
 		{
-			var propertyDeclaration:TypedPropertyData = _properties[i];
+			var propertyDeclaration:TypedPropertyVO = _properties[i];
 			if (propertyDeclaration.name == property)
 			{
 				if (propertyDeclaration.important == true)
@@ -325,12 +325,12 @@ class CSSStyleDeclaration
 	 * Return the property with the given name as a typed property
 	 * object or null if it is not defined on this style declaration
 	 */
-	public function getTypedProperty(property:String):TypedPropertyData
+	public function getTypedProperty(property:String):TypedPropertyVO
 	{
 		var length:Int = _properties.length;
 		for (i in 0...length)
 		{
-			var propertyDeclaration:TypedPropertyData = _properties[i];
+			var propertyDeclaration:TypedPropertyVO = _properties[i];
 			if (propertyDeclaration.name == property)
 			{
 				return propertyDeclaration;
@@ -346,19 +346,19 @@ class CSSStyleDeclaration
 	public function setTypedProperty(property:String, typedValue:CSSPropertyValue, important:Bool):Void
 	{
 		//a new array which will hold all current styles and the new one
-		var newProperties:Array<TypedPropertyData> = new Array<TypedPropertyData>();
+		var newProperties:Array<TypedPropertyVO> = new Array<TypedPropertyVO>();
 		
-		var newProperty:TypedPropertyData = new TypedPropertyData(property, typedValue, important);
+		var newProperty:TypedPropertyVO = new TypedPropertyVO(property, typedValue, important);
 		
 		var foundMatchingProperty:Bool = false;
-		var oldProperty:TypedPropertyData = null;
+		var oldProperty:TypedPropertyVO = null;
 		
 		//look for a property with the same name
 		//as the old property
 		var length:Int = _properties.length;
 		for (i in 0...length)
 		{
-			var propertyDeclaration:TypedPropertyData = _properties[i];
+			var propertyDeclaration:TypedPropertyVO = _properties[i];
 			if (propertyDeclaration.name != property)
 			{
 				newProperties.push(propertyDeclaration);
@@ -1789,7 +1789,7 @@ class CSSStyleDeclaration
 		
 		for (i in 0..._properties.length)
 		{
-			var property:TypedPropertyData = _properties[i];
+			var property:TypedPropertyVO = _properties[i];
 			
 			serializedStyleDeclaration += property.name + ":" + CSSStyleSerializer.serialize(property.typedValue);
 			if (property.important == true)
@@ -1814,13 +1814,13 @@ class CSSStyleDeclaration
 	private function set_cssText(value:String):String
 	{
 		//reset properties
-		_properties = new Array<TypedPropertyData>();
+		_properties = new Array<TypedPropertyVO>();
 		
-		var typedProperties:Array<TypedPropertyData> = _cssStyleParser.parseStyle(value);
+		var typedProperties:Array<TypedPropertyVO> = _cssStyleParser.parseStyle(value);
 		
 		for (i in 0...typedProperties.length)
 		{
-			var typedProperty:TypedPropertyData = typedProperties[i];
+			var typedProperty:TypedPropertyVO = typedProperties[i];
 			applyProperty(typedProperty.name, typedProperty.typedValue, typedProperty.important);
 		}
 		

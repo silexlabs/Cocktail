@@ -46,7 +46,7 @@ class NativeText extends AbstractNativeText
 	 * return the TextLine bitmap data as a
 	 * native flash BitmapData
 	 */
-	override public function getBitmap(bounds:RectangleData):NativeBitmapData
+	override public function getBitmap(bounds:RectangleVO):NativeBitmapData
 	{
 		var bitmap:BitmapData = new BitmapData(Math.round(bounds.width), Math.round(bounds.height), true, 0x00000000);
 		var matrix:Matrix = new Matrix();

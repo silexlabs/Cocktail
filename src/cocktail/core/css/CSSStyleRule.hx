@@ -31,7 +31,7 @@ class CSSStyleRule extends CSSRule
 	 * The selectors of this style rule, as
 	 * typed objects
 	 */
-	public var selectors:Array<SelectorData>;
+	public var selectors:Array<SelectorVO>;
 	
 	/**
 	 * Stores all the style definition (the style name / 
@@ -54,7 +54,7 @@ class CSSStyleRule extends CSSRule
 		style = new CSSStyleDeclaration(this);
 		_selectorParser = new CSSSelectorParser();
 		
-		selectors = new Array<SelectorData>();
+		selectors = new Array<SelectorVO>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -70,7 +70,7 @@ class CSSStyleRule extends CSSRule
 	 */
 	private function parse(css:String):Void
 	{
-		selectors = new Array<SelectorData>();
+		selectors = new Array<SelectorVO>();
 		
 		var state:StyleRuleParserState = IGNORE_SPACES;
 		var next:StyleRuleParserState = BEGIN_SELECTOR;
@@ -170,13 +170,13 @@ class CSSStyleRule extends CSSRule
 	 *	Serialize the selectors of this style rule as a string. Selectors
 	 * are comma separated
 	 */
-	private function serializeSelectors(selectors:Array<SelectorData>):String
+	private function serializeSelectors(selectors:Array<SelectorVO>):String
 	{
 		var serializedSelectors:String = "";
 		
 		for (i in 0...selectors.length)
 		{
-			var selector:SelectorData = selectors[i];
+			var selector:SelectorVO = selectors[i];
 			serializedSelectors += SelectorSerializer.serialize(selector);
 			
 			if (i < selectors.length - 1)
@@ -237,7 +237,7 @@ class CSSStyleRule extends CSSRule
 	//TODO 1 : should do nothing if selector parsing fails
 	private function set_selectorText(value:String):String
 	{
-		this.selectors = new Array<SelectorData>();
+		this.selectors = new Array<SelectorVO>();
 		_selectorParser.parseSelector(value, selectors);
 		return value;
 	}

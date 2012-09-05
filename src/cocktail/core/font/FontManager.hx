@@ -67,7 +67,7 @@ class FontManager
 	 * Returns metrics for a given
 	 * font and font size
 	 */
-	public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
+	public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsVO
 	{
 		return _fontManagerImpl.getFontMetrics(fontFamily, fontSize);
 	}

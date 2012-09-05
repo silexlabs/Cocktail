@@ -38,7 +38,7 @@ class RootLineBox extends LineBox
 	 * The bounds of a root line box is the bounds
 	 * of all of its child line boxes
 	 */
-	override private function get_bounds():RectangleData
+	override private function get_bounds():RectangleVO
 	{
 		return getChildrenBounds(getLineBoxesBounds(this));
 	}
@@ -53,9 +53,9 @@ class RootLineBox extends LineBox
 	/**
 	 * Retrieve all the bounds of the child line box
 	 */
-	private function getLineBoxesBounds(lineBox:LineBox):Array<RectangleData>
+	private function getLineBoxesBounds(lineBox:LineBox):Array<RectangleVO>
 	{
-		var lineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
+		var lineBoxesBounds:Array<RectangleVO> = new Array<RectangleVO>();
 		
 		var length:Int = lineBox.childNodes.length;
 		for (i in 0...length)
@@ -70,7 +70,7 @@ class RootLineBox extends LineBox
 				
 				if (child.hasChildNodes() == true)
 				{
-					var childrenBounds:Array<RectangleData> = getLineBoxesBounds(child);
+					var childrenBounds:Array<RectangleVO> = getLineBoxesBounds(child);
 					var childLength:Int = childrenBounds.length;
 					for (j in 0...childLength)
 					{
@@ -86,10 +86,10 @@ class RootLineBox extends LineBox
 	/**
 	 * Get the bounds of all of the child line boxes bounds
 	 */
-	private function getChildrenBounds(childrenBounds:Array<RectangleData>):RectangleData
+	private function getChildrenBounds(childrenBounds:Array<RectangleVO>):RectangleVO
 	{
 
-		var bounds:RectangleData;
+		var bounds:RectangleVO;
 		
 		var left:Float = 50000;
 		var top:Float = 50000;
@@ -99,7 +99,7 @@ class RootLineBox extends LineBox
 		var length:Int = childrenBounds.length;
 		for (i in 0...length)
 		{
-			var childBounds:RectangleData = childrenBounds[i];
+			var childBounds:RectangleVO = childrenBounds[i];
 			if (childBounds.x < left)
 			{
 				left = childBounds.x;
@@ -118,12 +118,7 @@ class RootLineBox extends LineBox
 			}
 		}
 			
-		bounds = {
-					x:left,
-					y:top,
-					width : right - left,
-					height :  bottom - top,
-				}
+		bounds = new RectangleVO(left, top, right - left, bottom - top);
 		
 		//need to implement better fix,
 		//sould not be negative

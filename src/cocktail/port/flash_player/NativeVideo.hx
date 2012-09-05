@@ -344,7 +344,7 @@ class NativeVideo extends NativeMedia
 	 * Set/get the position of the native flash video object
 	 * to match those of its viewport
 	 */
-	override private function get_viewport():RectangleData
+	override private function get_viewport():RectangleVO
 	{
 		return {
 			x:_video.x,
@@ -354,7 +354,7 @@ class NativeVideo extends NativeMedia
 		};
 	}
 	
-	override private function set_viewport(value:RectangleData):RectangleData
+	override private function set_viewport(value:RectangleVO):RectangleVO
 	{
 		_video.x = value.x;
 		_video.y = value.y;

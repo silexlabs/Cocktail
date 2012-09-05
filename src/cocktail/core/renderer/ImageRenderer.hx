@@ -58,12 +58,11 @@ class ImageRenderer extends EmbeddedBoxRenderer
 		
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		
-		var paintBounds:RectangleData = { 
-			x:globalBounds.x + usedValues.paddingLeft - scrollOffset.x,
-			y:globalBounds.y + usedValues.paddingTop - scrollOffset.y,
-			width:usedValues.width,
-			height:usedValues.height
-		}
+		var x:Float = globalBounds.x + usedValues.paddingLeft - scrollOffset.x;
+		var y:Float = globalBounds.y + usedValues.paddingTop - scrollOffset.y;
+		var width:Float = usedValues.width;
+		var height:Float = usedValues.height;
+		var paintBounds:RectangleVO = new RectangleVO(x, y, width, height);
 		
 		paintResource(graphicContext, resource.nativeResource, paintBounds, resource.intrinsicWidth, resource.intrinsicHeight);
 	}
@@ -75,7 +74,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	/**
 	 * Actually paint the resource's bitmap data on the graphic context.
 	 */
-	private function paintResource(graphicContext:GraphicsContext, nativeBitmapData:NativeBitmapData, bounds:RectangleData, intrinsicWidth:Float, intrinsicHeight:Float):Void
+	private function paintResource(graphicContext:GraphicsContext, nativeBitmapData:NativeBitmapData, bounds:RectangleVO, intrinsicWidth:Float, intrinsicHeight:Float):Void
 	{
 		//check if a tranformaton should be applied to the picture, for instance if the picture
 		//should be rescaled when painted, as if it does not, it can use a faster drawing
@@ -87,12 +86,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 			matrix.translate(bounds.x, bounds.y);
 			matrix.scale(bounds.width / intrinsicWidth , bounds.height / intrinsicHeight );
 		
-			var sourceRect:RectangleData = {
-				x:bounds.x,
-				y:bounds.y,
-				width:bounds.width,
-				height:bounds.height
-			}
+			var sourceRect:RectangleVO = new RectangleVO(bounds.x, bounds.y, bounds.width, bounds.height);
 			
 			graphicContext.drawImage(nativeBitmapData, matrix, sourceRect);
 		}
@@ -105,19 +99,11 @@ class ImageRenderer extends EmbeddedBoxRenderer
 			
 			//the rectangle from the source image that will be painted
 			//it is always the full picture
-			var sourceRect:RectangleData = {
-				x:0.0,
-				y:0.0,
-				width:width,
-				height:height
-			}
+			var sourceRect:RectangleVO = new RectangleVO(0.0, 0.0, width, height);
 			
 			//the coordinates of the top left corner where the picture
 			//will be painted
-			var destPoint:PointData = {
-				x:bounds.x,
-				y:bounds.y
-			}
+			var destPoint:PointVO = new PointVO(bounds.x, bounds.y);
 			
 			graphicContext.copyPixels(nativeBitmapData, sourceRect, destPoint);
 		}

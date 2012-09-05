@@ -11,37 +11,42 @@ import cocktail.core.geom.GeomData;
 
 typedef CSSRuleList = Array<CSSRule>;
 
-class TypedPropertyData {
+class TypedPropertyVO {
+	
+	public var name(default, null):String;
+	public var typedValue(default, null):CSSPropertyValue;
+	public var important(default, null):Bool;
+	
 	public function new(name:String, typedValue:CSSPropertyValue, important:Bool)
 	{
 		this.name = name;
 		this.typedValue = typedValue;
 		this.important = important;
 	}
-	public var name(default, null):String;
-	public var typedValue(default, null):CSSPropertyValue;
-	public var important(default, null):Bool;
 }
 
-class PropertyData {
-	public function new(selector:SelectorData, typedValue:CSSPropertyValue, origin:PropertyOriginValue, important:Bool)
+class PropertyVO {
+	
+	public var important(default, null):Bool;
+	public var origin(default, null):PropertyOriginValue;
+	public var typedValue(default, null):CSSPropertyValue;
+	public var selector(default, null):SelectorVO;
+	
+	public function new(selector:SelectorVO, typedValue:CSSPropertyValue, origin:PropertyOriginValue, important:Bool)
 	{
 		this.important = important;
 		this.origin = origin;
 		this.typedValue = typedValue;
 		this.selector = selector;
 	}
-	public var important(default, null):Bool;
-	public var origin(default, null):PropertyOriginValue;
-	public var typedValue(default, null):CSSPropertyValue;
-	public var selector(default, null):SelectorData;
 }
 
-class StyleDeclarationData {
-	public var style:CSSStyleDeclaration;
-	public var selector:SelectorData;
+class StyleDeclarationVO {
 	
-	public function new(style:CSSStyleDeclaration, selector:SelectorData)
+	public var style(default, null):CSSStyleDeclaration;
+	public var selector(default, null):SelectorVO;
+	
+	public function new(style:CSSStyleDeclaration, selector:SelectorVO)
 	{
 		this.style = style;
 		this.selector = selector;
@@ -111,12 +116,12 @@ class UsedValuesVO {
 	public var top:Float;
 	public var bottom:Float;
 	public var textIndent:Float;
-	public var color:ColorData;
+	public var color:ColorVO;
 	public var lineHeight:Float;
 	public var letterSpacing:Float;
-	public var transformOrigin:PointData;
+	public var transformOrigin:PointVO;
 	public var transform:Matrix;
-	public var backgroundColor:ColorData;
+	public var backgroundColor:ColorVO;
 	public function new(){}
 }
 
@@ -124,7 +129,7 @@ class UsedValuesVO {
  * Represents a color with
  * its alpha (from 0 to 1)
  */
-class ColorData {
+class ColorVO {
 	public var color:Int;
 	public var alpha:Float;
 	
@@ -148,7 +153,7 @@ class ColorData {
  * Specificity is defined by 3 categories whose value are
  * then concatenated into an integer value
  */
-class SelectorSpecificityData {
+class SelectorSpecificityVO {
 	
 	/**
 	 * Incremented for each ID simple selector
@@ -179,7 +184,7 @@ class SelectorSpecificityData {
 /**
  * Contains all the data of one selector
  */
-class SelectorData {
+class SelectorVO {
 	
 	/**
 	 * an array of any combination of selector
@@ -208,7 +213,7 @@ class SelectorData {
  * have any combination of the remaining simple
  * selectors
  */
-class SimpleSelectorSequenceData {
+class SimpleSelectorSequenceVO {
 	
 	/**
 	 * Only one sequence start selector for a selector
@@ -237,7 +242,7 @@ class SimpleSelectorSequenceData {
  * or combinator between 2 simple selector
  */
 enum SelectorComponentValue {
-	SIMPLE_SELECTOR_SEQUENCE(value:SimpleSelectorSequenceData);
+	SIMPLE_SELECTOR_SEQUENCE(value:SimpleSelectorSequenceVO);
 	COMBINATOR(value:CombinatorValue);
 } 
 
@@ -336,8 +341,8 @@ enum PseudoClassSelectorValue {
 	USER_ACTION(value:UserActionPseudoClassValue);
 	UI_ELEMENT_STATES(value:UIElementStatesValue);
 	
-	//TODO 2 : should actually be SelectorData ?
-	NOT(value:SimpleSelectorSequenceData);
+	//TODO 2 : should actually be SelectorVO ?
+	NOT(value:SimpleSelectorSequenceVO);
 }
 
 /**

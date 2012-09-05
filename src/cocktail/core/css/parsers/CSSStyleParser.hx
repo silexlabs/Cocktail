@@ -50,7 +50,7 @@ class CSSStyleParser
 	 * a css separator ":" is found, parse the style value until an
 	 * end separator ";" is found
 	 */
-	public function parseStyle(styles:String):Array<TypedPropertyData>
+	public function parseStyle(styles:String):Array<TypedPropertyVO>
 	{
 		//reset the position when parsing multiple styles
 		_position = 0;
@@ -60,7 +60,7 @@ class CSSStyleParser
 		var next:StyleDeclarationParserState = BEGIN;
 		
 		//will return all the parsed properties
-		var typedProperties:Array<TypedPropertyData> = new Array<TypedPropertyData>();
+		var typedProperties:Array<TypedPropertyVO> = new Array<TypedPropertyVO>();
 		
 		var position:Int = 0;
 		
@@ -145,7 +145,7 @@ class CSSStyleParser
 				//where the style value ends. store the parsed
 				case STYLE_VALUE:
 					//parse the property value,null is returned if the property is invalid
-					var typedProperty:TypedPropertyData = parseStyleValue(styleName, styles, position);
+					var typedProperty:TypedPropertyVO = parseStyleValue(styleName, styles, position);
 					
 					//global position was updated in the parseStyleValue
 					//to correspond to the end of the style value, separated
@@ -187,7 +187,7 @@ class CSSStyleParser
 	 * @return the typed property resulting from the parsing or null
 	 * if the style was invalid
 	 */
-	public function parseStyleValue(propertyName:String, styles:String, position:Int):TypedPropertyData
+	public function parseStyleValue(propertyName:String, styles:String, position:Int):TypedPropertyVO
 	{
 		var c:Int = styles.fastCodeAt(position);
 		
@@ -479,11 +479,11 @@ class CSSStyleParser
 		{
 			if (styleValues.length == 1)
 			{
-				return new TypedPropertyData(propertyName, styleValues[0], important);
+				return new TypedPropertyVO(propertyName, styleValues[0], important);
 			}
 			else
 			{
-				return new TypedPropertyData(propertyName, GROUP(styleValues), important);
+				return new TypedPropertyVO(propertyName, GROUP(styleValues), important);
 				
 			}
 		}
@@ -508,7 +508,7 @@ class CSSStyleParser
 				}
 			}
 			
-			return new TypedPropertyData(propertyName, CSS_LIST(styleListProperty), important);
+			return new TypedPropertyVO(propertyName, CSS_LIST(styleListProperty), important);
 		}
 	}
 	
@@ -802,7 +802,7 @@ class CSSStyleParser
 		
 		var cssFunction:String = styles.substr(start, position - start);
 		
-		var functionValues:TypedPropertyData = parseStyleValue("", cssFunction, 0);
+		var functionValues:TypedPropertyVO = parseStyleValue("", cssFunction, 0);
 		
 		var functionValue:CSSPropertyValue = getFunctionalNotation(ident, functionValues.typedValue);
 		
