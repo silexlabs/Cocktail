@@ -203,8 +203,8 @@ class FlowBoxRenderer extends BoxRenderer
 	
 	private function layoutPositionedChildren():Void
 	{
-		var containerBlockData:ContainingBlockData = getContainerBlockData();
-		var windowData:ContainingBlockData = getWindowData();
+		var containerBlockData:ContainingBlockVO = getContainerBlockData();
+		var windowData:ContainingBlockVO = getWindowData();
 		
 		//lay out each stored children
 		var length:Int = _positionedChildren.length;
@@ -223,7 +223,7 @@ class FlowBoxRenderer extends BoxRenderer
 	 * @param firstPositionedAncestorData the dimensions of the first positioned ancestor
 	 * @param viewportData the dimensions of the viewport
 	 */
-	private function layoutPositionedChild(elementRenderer:ElementRenderer, firstPositionedAncestorData:ContainingBlockData, viewportData:ContainingBlockData):Void
+	private function layoutPositionedChild(elementRenderer:ElementRenderer, firstPositionedAncestorData:ContainingBlockVO, viewportData:ContainingBlockVO):Void
 	{
 		var coreStyle:CoreStyle = elementRenderer.coreStyle;
 		switch (coreStyle.getKeyword(elementRenderer.coreStyle.position))
@@ -243,7 +243,7 @@ class FlowBoxRenderer extends BoxRenderer
 	/**
 	 * Actually lay out the positioned ElementRenderer
 	 */
-	private function doLayoutPositionedChild(elementRenderer:ElementRenderer, containingBlockData:ContainingBlockData):Void
+	private function doLayoutPositionedChild(elementRenderer:ElementRenderer, containingBlockData:ContainingBlockVO):Void
 	{
 		var elementCoreStyle:CoreStyle = elementRenderer.coreStyle;
 

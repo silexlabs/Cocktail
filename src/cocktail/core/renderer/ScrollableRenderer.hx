@@ -112,7 +112,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	//TODO 4 : more complex thant it should
-	private function layoutScrollBarsIfNecessary(viewportData:ContainingBlockData):Void
+	private function layoutScrollBarsIfNecessary(viewportData:ContainingBlockVO):Void
 	{
 		var horizontalScrollBarContainerBlockData = getContainerBlockData();
 		
@@ -662,7 +662,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 	 * without any scrollbars. Used when positioning scrollbars
 	 * themselves
 	 */
-	private function getScrollbarContainerBlock():ContainingBlockData
+	private function getScrollbarContainerBlock():ContainingBlockVO
 	{
 		return super.getContainerBlockData();
 	}

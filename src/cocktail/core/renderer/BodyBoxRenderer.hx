@@ -61,7 +61,7 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	 */
 	override private function getBackgroundBounds():RectangleVO
 	{
-		var windowData:ContainingBlockData = getWindowData();
+		var windowData:ContainingBlockVO = getWindowData();
 		
 		var width:Float = windowData.width;
 		var height:Float = windowData.height;

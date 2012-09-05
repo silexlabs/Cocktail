@@ -42,7 +42,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 * top and bottom which in this case are computed in the 
 	 * width and height methods
 	 */
-	override private function measurePositionOffsets(style:CoreStyle, containingBlockData:ContainingBlockData):Void
+	override private function measurePositionOffsets(style:CoreStyle, containingBlockData:ContainingBlockVO):Void
 	{
 		
 	}
@@ -55,7 +55,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 * auto width is computed. Left and right might be computed in the shrink-to-fit
 	 * method if they are defined as auto
 	 */ 
-	override private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	override private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
 		var usedValues:UsedValuesVO = style.usedValues;
 		
@@ -120,7 +120,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * overriden to also compute left and right style
 	 */
-	override private function measureWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	override private function measureWidth(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
 		var usedValues:UsedValuesVO = style.usedValues;
 		
@@ -227,7 +227,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 * overriden to compute also top, bottom and the vertical margins when an
 	 * auto height is computed.
 	 */ 
-	override private function measureAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	override private function measureAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
 		var usedValues:UsedValuesVO = style.usedValues;
 		
@@ -284,7 +284,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * overriden to also compute top and bottom style
 	 */
-	override private function measureHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	override private function measureHeight(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
 		var usedValues:UsedValuesVO = style.usedValues;
 		
@@ -393,7 +393,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 * compute the static value for left which is the value that will place the left margin edge
 	 * of the HTMLElement to the left edge of its containing HTMLElement
 	 */
-	private function getComputedStaticLeft(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	private function getComputedStaticLeft(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
 		return style.usedValues.marginLeft;
 	}
@@ -402,7 +402,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 * compute the static value for top which is the value that will place the top margin edge
 	 * of the HTMLElement to the top edge of its containing HTMLElement
 	 */
-	private function getComputedStaticTop(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	private function getComputedStaticTop(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
 		return style.usedValues.marginTop;
 	}

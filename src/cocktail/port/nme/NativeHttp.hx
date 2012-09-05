@@ -51,7 +51,7 @@ class NativeHttp extends cocktail.port.flash_player.NativeHttp
 		//else load it
 		else
 		{
-			super.load(url, method, data, authorRequestHeaders);
+			super.doLoad(url, method, data, authorRequestHeaders);
 		}
 	}
 }

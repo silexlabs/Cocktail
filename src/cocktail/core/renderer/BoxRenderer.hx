@@ -148,7 +148,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//element which are necesseray to compute the styles of this ElementRenderer
 		//into usable value. For instance, a with defined as a percentage will compute
 		//to a percentage of the containing block width
-		var containingBlockData:ContainingBlockData = _containingBlock.getContainerBlockData();
+		var containingBlockData:ContainingBlockVO = _containingBlock.getContainerBlockData();
 		
 		//special case for element with percent height, from the CSS 2.1 spec : 
 		// If the height of the containing block is not specified explicitly (i.e., it depends on content height),
@@ -190,7 +190,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 * Compute the box model styles (width, height, paddings, margins...) of the ElementRenderer, based on
 	 * its positioning scheme
 	 */ 
-	private function computeBoxModelStyles(containingBlockDimensions:ContainingBlockData):Void
+	private function computeBoxModelStyles(containingBlockDimensions:ContainingBlockVO):Void
 	{
 		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
 		
@@ -416,14 +416,10 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 * Return the dimensions data
 	 * of the ElementRenderer
 	 */
-	public function getContainerBlockData():ContainingBlockData
+	public function getContainerBlockData():ContainingBlockVO
 	{
-		return {
-			width:coreStyle.usedValues.width,
-			isWidthAuto:coreStyle.isAuto(coreStyle.width),
-			height:coreStyle.usedValues.height,
-			isHeightAuto:coreStyle.isAuto(coreStyle.height)
-		};
+		return new ContainingBlockVO(coreStyle.usedValues.width, coreStyle.isAuto(coreStyle.width),
+		coreStyle.usedValues.height, coreStyle.isAuto(coreStyle.height));
 	}
 	
 	/**
@@ -431,19 +427,12 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 * origin is always to the top left of the window
 	 * displaying the document
 	 */
-	private function getWindowData():ContainingBlockData
+	private function getWindowData():ContainingBlockVO
 	{	
 		var window:Window = Lib.window;
 		var width:Float = window.innerWidth;
 		var height:Float = window.innerHeight;
 		
-		var windowData:ContainingBlockData = {
-			isHeightAuto:false,
-			isWidthAuto:false,
-			width:width,
-			height:height
-		}
-		
-		return windowData;
+		return new ContainingBlockVO(width, false, height, false);
 	}
 }

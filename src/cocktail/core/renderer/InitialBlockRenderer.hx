@@ -137,19 +137,12 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * Overriden as the scontaining dimensionsn for the scrollbars
 	 * appearing for the initial containing block are the viewport's
 	 */
-	override private function getScrollbarContainerBlock():ContainingBlockData
+	override private function getScrollbarContainerBlock():ContainingBlockVO
 	{
 		var width:Float = cocktail.Lib.window.innerWidth;
 		var height:Float = cocktail.Lib.window.innerHeight;
 		
-		var windowData:ContainingBlockData = {
-			isHeightAuto:false,
-			isWidthAuto:false,
-			width:width,
-			height:height
-		}
-		
-		return windowData;
+		return new ContainingBlockVO(width, false, height, false);
 	}
 	
 	/**
@@ -175,39 +168,32 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	/**
 	 * Retrieve the dimension of the Window
 	 */
-	override private function getWindowData():ContainingBlockData
+	override private function getWindowData():ContainingBlockVO
 	{	
 		var width:Float = cocktail.Lib.window.innerWidth;
 		var height:Float = cocktail.Lib.window.innerHeight;
-		
-		var windowData:ContainingBlockData = {
-			isHeightAuto:false,
-			isWidthAuto:false,
-			width:width,
-			height:height
-		}
 		
 		//scrollbars dimension are removed from the Window dimension
 		//if displayed to return the actual available space
 		
 		if (_verticalScrollBar != null)
 		{
-			windowData.width -= _verticalScrollBar.coreStyle.usedValues.width;
+			width -= _verticalScrollBar.coreStyle.usedValues.width;
 		}
 		
 		if (_horizontalScrollBar != null)
 		{
-			windowData.height -= _horizontalScrollBar.coreStyle.usedValues.height;
+			height -= _horizontalScrollBar.coreStyle.usedValues.height;
 		}
 		
-		return windowData;
+		return new ContainingBlockVO(width, false, height, false);
 	}
 	
 	/**
 	 * The dimensions of the initial
 	 * block renderer are always the same as the Window's
 	 */
-	override public function getContainerBlockData():ContainingBlockData
+	override public function getContainerBlockData():ContainingBlockVO
 	{
 		return getWindowData();
 	}
@@ -232,7 +218,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	override private function get_bounds():RectangleVO
 	{
-		var containerBlockData:ContainingBlockData = getContainerBlockData();
+		var containerBlockData:ContainingBlockVO = getContainerBlockData();
 		
 		var width:Float = containerBlockData.width;
 		var height:Float = containerBlockData.height;

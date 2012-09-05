@@ -32,7 +32,7 @@ class FloatBoxStylesComputer extends InlineBlockBoxStylesComputer
 	 * for floated non-embedded HTMLElements, an auto width is computed as 'shrink-to-fit' once all the children
 	 * have been laid out
 	 */
-	override private function getComputedAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	override private function getComputedAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
 		return 0.0;
 	}

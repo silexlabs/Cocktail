@@ -28,11 +28,19 @@ import cocktail.core.css.CSSData;
 	 * Specify for each dimension if it is 'cssAuto', 
 	 * meaning it depends on its content dimension
 	 */
-	typedef ContainingBlockData = {
-		var width:Float;
-		var isWidthAuto:Bool;
-		var height:Float;
-		var isHeightAuto:Bool;
+	class ContainingBlockVO {
+		public var width:Float;
+		public var isWidthAuto(default, null):Bool;
+		public var height:Float;
+		public var isHeightAuto(default, null):Bool;
+		
+		public function new(width:Float, isWidthAuto:Bool, height:Float, isHeightAuto:Bool)
+		{
+			this.width = width;
+			this.isWidthAuto = isWidthAuto;
+			this.height = height;
+			this.isHeightAuto = isHeightAuto;
+		}
 	}
 	
 	/**

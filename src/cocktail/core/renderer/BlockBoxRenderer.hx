@@ -629,7 +629,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 * width or height must be substracted from the containing
 	 * block width/height
 	 */
-	override public function getContainerBlockData():ContainingBlockData
+	override public function getContainerBlockData():ContainingBlockVO
 	{
 		var height:Float = coreStyle.usedValues.height;
 		if (_horizontalScrollBar != null)
@@ -643,11 +643,6 @@ class BlockBoxRenderer extends ScrollableRenderer
 			width -= _verticalScrollBar.coreStyle.usedValues.width;
 		}
 		
-		return {
-			width:width,
-			isWidthAuto:coreStyle.isAuto(coreStyle.width),
-			height:height,
-			isHeightAuto:coreStyle.isAuto(coreStyle.height)
-		};
+		return new ContainingBlockVO(width, coreStyle.isAuto(coreStyle.width), height, coreStyle.isAuto(coreStyle.height));
 	}
 }

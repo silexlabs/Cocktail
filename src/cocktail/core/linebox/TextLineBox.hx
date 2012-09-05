@@ -82,7 +82,7 @@ class TextLineBox extends LineBox
 	 */
 	private function initTextBitmap():Void
 	{
-		var bitmapBounds:RectangleVO = new RectangleVO(0.0, leadedAscent, bounds.height, bounds.width);
+		var bitmapBounds:RectangleVO = new RectangleVO(0.0, leadedAscent, bounds.width, bounds.height);
 		
 		//TODO 1 : there is  memory leak, when text is disposed, its bitmap
 		//data is not

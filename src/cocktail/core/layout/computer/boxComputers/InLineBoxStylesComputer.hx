@@ -32,7 +32,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * vertical paddings don't apply to non-embedded inline HTMLElements
 	 */
-	override private function measureVerticalPaddings(style:CoreStyle, containingBlockData:ContainingBlockData):Void
+	override private function measureVerticalPaddings(style:CoreStyle, containingBlockData:ContainingBlockVO):Void
 	{
 		//top
 		style.usedValues.paddingTop = 0;
@@ -43,7 +43,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * vertical margins don't apply to non-embedded inline HTMLElements
 	 */
-	override private function measureAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	override private function measureAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
 		//the height is set to null by default
 		var computedHeight:Float = getComputedAutoHeight(style, containingBlockData);
@@ -59,7 +59,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * vertical margins don't apply to non-embedded inline HTMLElements
 	 */
-	override private function measureHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	override private function measureHeight(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
 		//get the computed height in pixel
 		var computedHeight:Float = getComputedHeight(style, containingBlockData);
@@ -83,7 +83,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * for inline, non embedded HTMLElement, the width doesn't apply
 	 */
-	override private function getComputedWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	override private function getComputedWidth(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
 		return 0.0;
 	}
@@ -91,7 +91,7 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	/**
 	 * for inline, non embedded HTMLElement, the height doesn't apply
 	 */
-	override private function getComputedHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	override private function getComputedHeight(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
 		return 0.0;
 	}

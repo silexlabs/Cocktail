@@ -61,7 +61,7 @@ class NativeHttp extends AbstractNativeHttp
 	 */
 	override private function doLoad(url:String, method:String, data:Dynamic, authorRequestHeaders:Hash<String>):Void
 	{
-		super.load(url, method, data, authorRequestHeaders);
+		super.doLoad(url, method, data, authorRequestHeaders);
 		
 		//create a flash URLRequest, storing each parameters of the request
 		var urlRequest:URLRequest = new URLRequest(url);

@@ -41,7 +41,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * Overriden, as dimensions constraints are applied differently
 	 * for embedded block
 	 */
-	override private function measureDimensionsAndMargins(style:CoreStyle, containingBlockData:ContainingBlockData):Void
+	override private function measureDimensionsAndMargins(style:CoreStyle, containingBlockData:ContainingBlockVO):Void
 	{
 		var usedValues:UsedValuesVO = style.usedValues;
 		
@@ -214,7 +214,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * Overriden to process width before margins. For an embedded element a
 	 * width can always be computed even when width is auto
 	 */
-	override private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	override private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
 		var usedValues:UsedValuesVO = style.usedValues;
 		
@@ -234,7 +234,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * is computed, as an embedded HTMLElement may have an intrinsic width
 	 * and/or intrinsic ratio
 	 */ 
-	override private function getComputedAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	override private function getComputedAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
 		var usedValues:UsedValuesVO = style.usedValues;
 		
@@ -321,7 +321,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * is computed, as an embedded HTMLElement may have an intrinsic height
 	 * and/or intrinsic ratio
 	 */ 
-	override private function getComputedAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	override private function getComputedAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
 		var usedValues:UsedValuesVO = style.usedValues;
 		

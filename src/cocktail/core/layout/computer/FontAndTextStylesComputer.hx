@@ -45,7 +45,7 @@ class FontAndTextStylesComputer
 	 * @param	containingBlockData
 	 * @param	containingBlockFontMetricsVO
 	 */
-	public static function compute(style:CoreStyle, containingBlockData:ContainingBlockData):Void
+	public static function compute(style:CoreStyle, containingBlockData:ContainingBlockVO):Void
 	{
 		var usedValues:UsedValuesVO = style.usedValues;
 
@@ -70,7 +70,7 @@ class FontAndTextStylesComputer
 	/**
 	 * Compute the text indent to apply to the first line of an inline formatting context
 	 */
-	private static function getUsedTextIndent(style:CoreStyle, containingBlockData:ContainingBlockData):Float
+	private static function getUsedTextIndent(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
 		var usedTextIndent:Float = 0.0;
 		
