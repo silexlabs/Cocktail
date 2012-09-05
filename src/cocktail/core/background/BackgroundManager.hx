@@ -73,11 +73,12 @@ class BackgroundManager
 			return ;
 		}
 		
-		//TODO 1 : re-implement
-		//if (style.computedValues.backgroundColor != BackgroundColor.transparent)
-		//{
+		//no need to draw a background color if it is
+		//completely transparent
+		if (style.usedValues.backgroundColor.alpha != 0.0)
+		{
 			graphicContext.fillRect(backgroundBox, style.usedValues.backgroundColor);
-		//}
+		}
 		
 		var backgroundImages:Array<CSSPropertyValue> = getAsArray(style.backgroundImage);
 		

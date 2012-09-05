@@ -194,6 +194,7 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function layoutChildren():Void
 	{
+		var childNodes:Array<ElementRenderer> = this.childNodes;
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
