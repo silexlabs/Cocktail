@@ -350,12 +350,12 @@ class CoreStyle
 	{
 		//first check if this property is defined inline which always has the
 		//highest priority
-		if (inlineStyleDeclaration.hasProperty(propertyName) == true)
+		if (inlineStyleDeclaration.getTypedProperty(propertyName) != null)
 		{
 			return setProperty(propertyName, inlineStyleDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false);
 		}
 		//else check if a value for this style for this HTMLElement was defined in the document's style sheet
-		else if (styleSheetDeclaration.hasProperty(propertyName) == true)
+		else if (styleSheetDeclaration.getTypedProperty(propertyName) != null)
 		{
 			return setProperty(propertyName, styleSheetDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false);
 		}
@@ -439,7 +439,7 @@ class CoreStyle
 		
 		if (programmaticChange == true && isInherited == false)
 		{
-			if (computedValues.hasProperty(propertyName) == true)
+			if (computedValues.getTypedProperty(propertyName) != null)
 			{
 				if (isAnimatable(propertyName))
 				{

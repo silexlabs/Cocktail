@@ -231,8 +231,20 @@ class GraphicsContext extends AbstractGraphicsContext
 		var alpha:Int = Math.round(255 * color.alpha);
 		argbColor += alpha << 24;
 		
-		var fillRectBitmapData:BitmapData = new BitmapData(Math.round(rect.width), Math.round(rect.height), true, argbColor);
-		copyPixels(fillRectBitmapData, new RectangleVO(0.0, 0.0, rect.width, rect.height), new PointVO(rect.x, rect.y) );
+		//if the color is transparent, a new bitmap data
+		//must be created to composite alpha
+		if (color.alpha != 1.0)
+		{
+			var fillRectBitmapData:BitmapData = new BitmapData(Math.round(rect.width), Math.round(rect.height), true, argbColor);
+			copyPixels(fillRectBitmapData, new RectangleVO(0.0, 0.0, rect.width, rect.height), new PointVO(rect.x, rect.y) );
+			fillRectBitmapData.dispose();
+		}
+		//else, the faster native flash method can be used
+		else
+		{
+			_nativeBitmap.bitmapData.fillRect(new flash.geom.Rectangle(rect.x, rect.y, rect.width, rect.height), argbColor);
+		}
+	
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

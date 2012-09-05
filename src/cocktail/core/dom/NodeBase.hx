@@ -287,7 +287,8 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 		{
 			//loop in all child to find this node and return
 			//the next one
-			var length:Int = parentNode.childNodes.length;
+			var parentChildNodes:Array<NodeClass> = parentNode.childNodes;
+			var length:Int = parentChildNodes.length;
 			for (i in 0...length)
 			{
 				//TODO IMPORTANT : big hack for php target. Without
@@ -295,12 +296,12 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 				//equality ("===") and cause infinite loop. It seems simpler
 				//to correct here than to subclass for php target
 				#if php
-				if (untyped __physeq__(parentNode.childNodes[i], this))
+				if (untyped __physeq__(parentChildNodes[i], this))
 				#else
-				if (parentNode.childNodes[i] == this)
+				if (parentChildNodes[i] == this)
 				#end
 				{
-					return parentNode.childNodes[i + 1];
+					return parentChildNodes[i + 1];
 				}
 			}
 		}

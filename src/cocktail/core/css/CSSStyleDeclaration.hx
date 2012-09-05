@@ -213,24 +213,16 @@ class CSSStyleDeclaration
 	}
 	
 	/**
-	 * Return wether a value exits for the specified
-	 * property
-	 */
-	public function hasProperty(property:String):Bool
-	{
-		return _propertiesHash.exists(property);
-	}
-	
-	/**
 	 * Return the value of the property with the given
 	 * name, serialized as a CSS string, or null if
 	 * thr property is not defined on this style declaration
 	 */
 	public function getPropertyValue(property:String):String
 	{
-		if (hasProperty(property) == true)
+		var typedProperty:TypedPropertyVO = _propertiesHash.get(property);
+		if (typedProperty != null)
 		{
-			return CSSStyleSerializer.serialize(_propertiesHash.get(property).typedValue);
+			return CSSStyleSerializer.serialize(typedProperty.typedValue);
 		}
 		return null;
 	}
@@ -272,28 +264,20 @@ class CSSStyleDeclaration
 	 */
 	public function removeProperty(property:String):String
 	{
+		var typedProperty:TypedPropertyVO = _propertiesHash.get(property);
 		//first check that the property exists
-		if (hasProperty(property) == true)
+		if (typedProperty != null)
 		{
-			var length:Int = _properties.length;
-			for (i in 0...length)
+			_properties.remove(typedProperty);
+			_propertiesHash.remove(property);
+			
+			//call the style update callback if provided
+			if (_onStyleChange != null)
 			{
-				var propertyDeclaration:TypedPropertyVO = _properties[i];
-				
-				if (propertyDeclaration.name == property)
-				{
-					_properties.remove(propertyDeclaration);
-					_propertiesHash.remove(property);
-					
-					//call the style update callback if provided
-					if (_onStyleChange != null)
-					{
-						_onStyleChange(property);
-					}
-					
-					return property;
-				}
+				_onStyleChange(property);
 			}
+			
+			return property;
 		}
 		
 		return null;
@@ -307,19 +291,16 @@ class CSSStyleDeclaration
 	 */
 	public function getPropertyPriority(property:String):String
 	{
-		if (hasProperty(property) == true)
+		var typedProperty:TypedPropertyVO = _propertiesHash.get(property);
+		if (typedProperty != null)
 		{
-			var propertyDeclaration:TypedPropertyVO = _propertiesHash.get(property);
-			if (propertyDeclaration.name == property)
+			if (typedProperty.important == true)
 			{
-				if (propertyDeclaration.important == true)
-				{
-					return CSSConstants.IMPORTANT;
-				}
-				else
-				{
-					return "";
-				}
+				return CSSConstants.IMPORTANT;
+			}
+			else
+			{
+				return "";
 			}
 		}
 		
@@ -341,8 +322,11 @@ class CSSStyleDeclaration
 	 */
 	public function setTypedProperty(property:String, typedValue:CSSPropertyValue, important:Bool):Void
 	{
+		//check if the property already exists
+		var currentProperty:TypedPropertyVO = _propertiesHash.get(property);
+		
 		//here the property doesn't exist yet, create it and store it
-		if (hasProperty(property) == false)
+		if (currentProperty == null)
 		{
 			var newProperty:TypedPropertyVO = new TypedPropertyVO(property, typedValue, important);
 			
@@ -360,7 +344,6 @@ class CSSStyleDeclaration
 		}
 		
 		//here the property exists, update it only if necessary
-		var currentProperty:TypedPropertyVO = _propertiesHash.get(property);
 		if (Type.enumEq(currentProperty.typedValue, typedValue) == false || currentProperty.important != important)
 		{
 			currentProperty.typedValue = typedValue;

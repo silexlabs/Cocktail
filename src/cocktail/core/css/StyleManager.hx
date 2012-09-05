@@ -135,7 +135,6 @@ class StyleManager
 			for (j in 0...cssRulesLength)
 			{
 				var cssRule:CSSRule = cssRules[j];
-				
 				switch (cssRule.type)
 				{
 					//for style rules, if one of the selector of the rule
@@ -144,23 +143,21 @@ class StyleManager
 					case CSSRule.STYLE_RULE:
 						var styleRule:CSSStyleRule = cast(cssRule);
 						var selectors:Array<SelectorVO> = styleRule.selectors;
+						
 						var selectorsLength:Int = selectors.length;
-						
-						//flag used to prevent the same style declaration
-						//to be pushed mulitple times if more than one
-						//selector matches
-						var foundMatchingSelector:Bool = false;
-						
 						for (k in 0...selectorsLength)
 						{
-							if (_selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true && foundMatchingSelector == false)
+							if (_selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true)
 							{
 								//if the selector is matched, store the coresponding style declaration
 								//along with the matching selector
 								var matchingStyleDeclaration:StyleDeclarationVO = new StyleDeclarationVO(styleRule.style, selectors[k]);
-								
 								matchingStyleDeclarations.push(matchingStyleDeclaration);
-								foundMatchingSelector = true;
+								
+								//break to prevent from adding a style declaration
+								//multiplt time if more than one selector
+								//matches
+								break;
 							}
 						}
 						
@@ -197,9 +194,9 @@ class StyleManager
 
 			//if a property with a matching name is found,
 			//it is stored
-			if (styleDeclaration.hasProperty(property))
+			var typedProperty:TypedPropertyVO = styleDeclaration.getTypedProperty(property);
+			if (typedProperty != null)
 			{
-				var typedProperty:TypedPropertyVO = styleDeclaration.getTypedProperty(property);
 				var matchingProperty:PropertyVO = new PropertyVO(selector, typedProperty.typedValue, styleDeclaration.parentRule.parentStyleSheet.origin, typedProperty.important);
 				matchingProperties.push(matchingProperty);
 			}
