@@ -301,7 +301,8 @@ class CSSStyleDeclaration
 	 */
 	public function getPropertyPriority(property:String):String
 	{
-		for (i in 0..._properties.length)
+		var length:Int = _properties.length;
+		for (i in 0...length)
 		{
 			var propertyDeclaration:TypedPropertyData = _properties[i];
 			if (propertyDeclaration.name == property)
@@ -326,7 +327,8 @@ class CSSStyleDeclaration
 	 */
 	public function getTypedProperty(property:String):TypedPropertyData
 	{
-		for (i in 0..._properties.length)
+		var length:Int = _properties.length;
+		for (i in 0...length)
 		{
 			var propertyDeclaration:TypedPropertyData = _properties[i];
 			if (propertyDeclaration.name == property)
@@ -346,11 +348,7 @@ class CSSStyleDeclaration
 		//a new array which will hold all current styles and the new one
 		var newProperties:Array<TypedPropertyData> = new Array<TypedPropertyData>();
 		
-		var newProperty:TypedPropertyData = {
-			name:property,
-			important:important,
-			typedValue:typedValue
-		}
+		var newProperty:TypedPropertyData = new TypedPropertyData(property, typedValue, important);
 		
 		var foundMatchingProperty:Bool = false;
 		var oldProperty:TypedPropertyData = null;

@@ -247,7 +247,7 @@ class FloatsManager
 		//a float width and height use the margin box of a
 		//HTMLElement
 		
-		var usedValues:UsedValuesData = elementRenderer.coreStyle.usedValues;
+		var usedValues:UsedValuesVO = elementRenderer.coreStyle.usedValues;
 		var floatWidth:Float = usedValues.width + usedValues.paddingLeft + usedValues.paddingRight + usedValues.marginLeft + usedValues.marginRight;
 		var floatHeight:Float = usedValues.height + usedValues.paddingTop + usedValues.paddingBottom + usedValues.marginTop + usedValues.marginBottom;
 	

@@ -71,7 +71,7 @@ class StyleManager
 	 * For instance, if the node is hovered by the mouse, it will
 	 * match the hover pseudo class
 	 */
-	public function getStyleDeclaration(node:HTMLElement, matchedPseudoClasses:MatchedPseudoClasses):CSSStyleDeclaration
+	public function getStyleDeclaration(node:HTMLElement, matchedPseudoClasses:MatchedPseudoClassesVO):CSSStyleDeclaration
 	{
 		var styleDeclaration:CSSStyleDeclaration = new CSSStyleDeclaration();
 		applyStyleSheets(node, styleDeclaration, _styleSheets, matchedPseudoClasses);
@@ -87,7 +87,7 @@ class StyleManager
 	 * Apply the styles declaration applying to the node to 
 	 * the node's CSSStyleDeclaration object.
 	 */
-	private function applyStyleSheets(node:HTMLElement, nodeStyleDeclaration:CSSStyleDeclaration, styleSheets:Array<CSSStyleSheet>, matchedPseudoClasses:MatchedPseudoClasses):Void
+	private function applyStyleSheets(node:HTMLElement, nodeStyleDeclaration:CSSStyleDeclaration, styleSheets:Array<CSSStyleSheet>, matchedPseudoClasses:MatchedPseudoClassesVO):Void
 	{
 		//contain all the style declarations whose selector matches the node
 		var matchingStyleDeclarations:Array<StyleDeclarationData> = getMatchingStyleDeclarations(node, styleSheets, matchedPseudoClasses);
@@ -119,7 +119,7 @@ class StyleManager
 	 * contained in the document's style sheets which apply to
 	 * the node
 	 */
-	private function getMatchingStyleDeclarations(node:HTMLElement, styleSheets:Array<CSSStyleSheet>, matchedPseudoClasses:MatchedPseudoClasses):Array<StyleDeclarationData>
+	private function getMatchingStyleDeclarations(node:HTMLElement, styleSheets:Array<CSSStyleSheet>, matchedPseudoClasses:MatchedPseudoClassesVO):Array<StyleDeclarationData>
 	{
 		var matchingStyleDeclarations:Array<StyleDeclarationData> = new Array<StyleDeclarationData>();
 		
@@ -157,10 +157,7 @@ class StyleManager
 							{
 								//if the selector is matched, store the coresponding style declaration
 								//along with the matching selector
-								var matchingStyleDeclaration:StyleDeclarationData = {
-									style:styleRule.style,
-									selector:selectors[k]
-								}
+								var matchingStyleDeclaration:StyleDeclarationData = new StyleDeclarationData(styleRule.style, selectors[k]);
 								
 								matchingStyleDeclarations.push(matchingStyleDeclaration);
 								foundMatchingSelector = true;
@@ -205,13 +202,8 @@ class StyleManager
 				//it is stored
 				if (styleDeclaration.item(j) == property)
 				{
-					var matchingProperty:PropertyData = {
-						typedValue:styleDeclaration.getTypedProperty(property).typedValue,
-						important:styleDeclaration.getPropertyPriority(property) == CSSConstants.IMPORTANT,
-						origin:styleDeclaration.parentRule.parentStyleSheet.origin,
-						selector:selector
-					}
-					
+					var typedProperty:TypedPropertyData = styleDeclaration.getTypedProperty(property);
+					var matchingProperty:PropertyData = new PropertyData(selector, typedProperty.typedValue, styleDeclaration.parentRule.parentStyleSheet.origin, typedProperty.important);
 					matchingProperties.push(matchingProperty);
 				}
 			}

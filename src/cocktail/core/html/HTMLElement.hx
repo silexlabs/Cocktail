@@ -744,10 +744,12 @@ class HTMLElement extends Element<HTMLElement>
 		
 		//cascade all the children, to cascade all the DOM tree
 		//recursively
+		var childNodes:Array<HTMLElement> = this.childNodes;
 		var childLength:Int = childNodes.length;
 		for (i in 0...childLength)
 		{
-			childNodes[i].cascade(changedProperties, programmaticChange);
+			var childNode:HTMLElement = childNodes[i];
+			childNode.cascade(changedProperties, programmaticChange);
 		}
 	}
 	
@@ -1557,14 +1559,14 @@ class HTMLElement extends Element<HTMLElement>
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
 		invalidate(InvalidationReason.needsImmediateLayout);
-		var usedValues:UsedValuesData = coreStyle.usedValues;
+		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight);
 	}
 	
 	private function get_offsetHeight():Int
 	{
 		invalidate(InvalidationReason.needsImmediateLayout);
-		var usedValues:UsedValuesData = coreStyle.usedValues;
+		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
 	}
 	
@@ -1586,14 +1588,14 @@ class HTMLElement extends Element<HTMLElement>
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
 		invalidate(InvalidationReason.needsImmediateLayout);
-		var usedValues:UsedValuesData = coreStyle.usedValues;
+		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight);
 	}
 	
 	private function get_clientHeight():Int
 	{
 		invalidate(InvalidationReason.needsImmediateLayout);
-		var usedValues:UsedValuesData = coreStyle.usedValues;
+		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
 	}
 	

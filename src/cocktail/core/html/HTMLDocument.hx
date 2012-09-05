@@ -412,7 +412,7 @@ class HTMLDocument extends Document
 	 */
 	public function getStyleDeclaration(node:HTMLElement):CSSStyleDeclaration
 	{
-		return _styleManager.getStyleDeclaration(node, getMatchedPseudoClasses(node));
+		return _styleManager.getStyleDeclaration(node, getMatchedPseudoClassesVO(node));
 	}
 	 
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -423,7 +423,7 @@ class HTMLDocument extends Document
 	 * For a given node, return all of the
 	 * pseudo classes that it currently matches
 	 */
-	private function getMatchedPseudoClasses(node:HTMLElement):MatchedPseudoClasses
+	private function getMatchedPseudoClassesVO(node:HTMLElement):MatchedPseudoClassesVO
 	{
 		var hover:Bool = false;
 		var focus:Bool = false;
@@ -486,15 +486,7 @@ class HTMLDocument extends Document
 			}
 		}
 		
-		return {
-			hover:hover,
-			focus:focus,
-			active:active,
-			link:link,
-			enabled:enabled,
-			disabled:disabled,
-			checked:checked
-		}
+		return new MatchedPseudoClassesVO(hover, focus, active, link, enabled, disabled, checked);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

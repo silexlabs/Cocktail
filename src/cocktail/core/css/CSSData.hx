@@ -11,32 +11,69 @@ import cocktail.core.geom.GeomData;
 
 typedef CSSRuleList = Array<CSSRule>;
 
-typedef TypedPropertyData = {
-	var name:String;
-	var typedValue:CSSPropertyValue;
-	var important:Bool;
+class TypedPropertyData {
+	public function new(name:String, typedValue:CSSPropertyValue, important:Bool)
+	{
+		this.name = name;
+		this.typedValue = typedValue;
+		this.important = important;
+	}
+	public var name(default, null):String;
+	public var typedValue(default, null):CSSPropertyValue;
+	public var important(default, null):Bool;
 }
 
-typedef PropertyData = {
-	var important:Bool;
-	var origin:PropertyOriginValue;
-	var typedValue:CSSPropertyValue;
-	var selector:SelectorData;
+class PropertyData {
+	public function new(selector:SelectorData, typedValue:CSSPropertyValue, origin:PropertyOriginValue, important:Bool)
+	{
+		this.important = important;
+		this.origin = origin;
+		this.typedValue = typedValue;
+		this.selector = selector;
+	}
+	public var important(default, null):Bool;
+	public var origin(default, null):PropertyOriginValue;
+	public var typedValue(default, null):CSSPropertyValue;
+	public var selector(default, null):SelectorData;
 }
 
-typedef StyleDeclarationData = {
-	var style:CSSStyleDeclaration;
-	var selector:SelectorData;
+class StyleDeclarationData {
+	public var style:CSSStyleDeclaration;
+	public var selector:SelectorData;
+	
+	public function new(style:CSSStyleDeclaration, selector:SelectorData)
+	{
+		this.style = style;
+		this.selector = selector;
+	}
 }
 
-typedef MatchedPseudoClasses = {
-	var hover:Bool;
-	var focus:Bool;
-	var active:Bool;
-	var link:Bool;
-	var enabled:Bool;
-	var disabled:Bool;
-	var checked:Bool;
+/**
+ * For a given element, when retrieving
+ * its styles, stores which pseudo-classes
+ * the element currently matches
+ */
+class MatchedPseudoClassesVO {
+	
+	public var hover(default, null):Bool;
+	public var focus(default, null):Bool;
+	public var active(default, null):Bool;
+	public var link(default, null):Bool;
+	public var enabled(default, null):Bool;
+	public var disabled(default, null):Bool;
+	public var checked(default, null):Bool;
+	
+	public function new(hover:Bool, focus:Bool, active:Bool, link:Bool, enabled:Bool,
+	disabled:Bool, checked:Bool) 
+	{
+		this.hover = hover;
+		this.focus = focus;
+		this.active = active;
+		this.link = link;
+		this.enabled = enabled;
+		this.disabled = disabled;
+		this.checked = checked;
+	}
 }
 
 enum PropertyOriginValue {
@@ -54,41 +91,48 @@ enum PropertyOriginValue {
  * during layout, width or height are represented by a
  * floating number
  */
-typedef UsedValuesData = {
-	var width:Float;
-	var minHeight:Float;
-	var	maxHeight:Float;
-	var minWidth:Float;
-	var maxWidth:Float;
-	var	height:Float;
-	var	marginLeft:Float;
-	var	marginRight:Float;
-	var	marginTop:Float;
-	var	marginBottom:Float;
-	var	paddingLeft:Float;
-	var	paddingRight:Float;
-	var	paddingTop:Float;
-	var	paddingBottom:Float;
-	var	left:Float;
-	var	right:Float;
-	var	top:Float;
-	var	bottom:Float;
-	var	textIndent:Float;
-	var	color:ColorData;
-	var lineHeight:Float;
-	var letterSpacing:Float;
-	var	transformOrigin:PointData;
-	var	transform:Matrix;
-	var	backgroundColor:ColorData;
+class UsedValuesVO {
+	public var width:Float;
+	public var minHeight:Float;
+	public var maxHeight:Float;
+	public var minWidth:Float;
+	public var maxWidth:Float;
+	public var height:Float;
+	public var marginLeft:Float;
+	public var marginRight:Float;
+	public var marginTop:Float;
+	public var marginBottom:Float;
+	public var paddingLeft:Float;
+	public var paddingRight:Float;
+	public var paddingTop:Float;
+	public var paddingBottom:Float;
+	public var left:Float;
+	public var right:Float;
+	public var top:Float;
+	public var bottom:Float;
+	public var textIndent:Float;
+	public var color:ColorData;
+	public var lineHeight:Float;
+	public var letterSpacing:Float;
+	public var transformOrigin:PointData;
+	public var transform:Matrix;
+	public var backgroundColor:ColorData;
+	public function new(){}
 }
 
 /**
  * Represents a color with
  * its alpha (from 0 to 1)
  */
-typedef ColorData = {
-	var color:Int;
-	var alpha:Float;
+class ColorData {
+	public var color:Int;
+	public var alpha:Float;
+	
+	public function new(color:Int, alpha:Float)
+	{
+		this.color = color;
+		this.alpha = alpha;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -104,43 +148,56 @@ typedef ColorData = {
  * Specificity is defined by 3 categories whose value are
  * then concatenated into an integer value
  */
-typedef SelectorSpecificityData = {
+class SelectorSpecificityData {
 	
 	/**
 	 * Incremented for each ID simple selector
 	 * in the selector
 	 */
-	var idSelectorsNumber:Int;
+	public var idSelectorsNumber:Int;
 	
 	/**
 	 * Incremented for each class and pseudo class
 	 * simple selector in the selector
 	 */
-	var classAttributesAndPseudoClassesNumber:Int;
+	public var classAttributesAndPseudoClassesNumber:Int;
 	
 	/**
 	 * Incremented for each type and pseudo element
 	 * simple selector in the selector
 	 */
-	var typeAndPseudoElementsNumber:Int;
+	public var typeAndPseudoElementsNumber:Int;
+	
+	public function new()
+	{
+		idSelectorsNumber = 0;
+		classAttributesAndPseudoClassesNumber = 0;
+		typeAndPseudoElementsNumber = 0;
+	}
 }
 
 /**
  * Contains all the data of one selector
  */
-typedef SelectorData = {
+class SelectorData {
 	
 	/**
 	 * an array of any combination of selector
 	 * components
 	 */
-	var components:Array<SelectorComponentValue>;
+	public var components:Array<SelectorComponentValue>;
 	
 	/**
 	 * a selector can only have one pseudo element,
 	 * always specified at the end of the selector
 	 */
-	var pseudoElement:PseudoElementSelectorValue;
+	public var pseudoElement:PseudoElementSelectorValue;
+	
+	public function new(components:Array<SelectorComponentValue>, pseudoElement:PseudoElementSelectorValue)
+	{
+		this.components = components;
+		this.pseudoElement = pseudoElement;
+	}
 }
 
 /**
@@ -151,18 +208,24 @@ typedef SelectorData = {
  * have any combination of the remaining simple
  * selectors
  */
-typedef SimpleSelectorSequenceData = {
+class SimpleSelectorSequenceData {
 	
 	/**
 	 * Only one sequence start selector for a selector
 	 * sequence
 	 */
-	var startValue:SimpleSelectorSequenceStartValue;
+	public var startValue:SimpleSelectorSequenceStartValue;
 	
 	/**
 	 * any number of the remaining simple selectors
 	 */
-	var simpleSelectors:Array<SimpleSelectorSequenceItemValue>;
+	public var simpleSelectors:Array<SimpleSelectorSequenceItemValue>;
+	
+	public function new(startValue:SimpleSelectorSequenceStartValue, simpleSelectors:Array<SimpleSelectorSequenceItemValue>)
+	{
+		this.startValue = startValue;
+		this.simpleSelectors = simpleSelectors;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

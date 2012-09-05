@@ -167,7 +167,7 @@ class CoreStyle
 	 * will hold the actual used value of 'width'
 	 * during layout
 	 */
-	public var usedValues:UsedValuesData;
+	public var usedValues:UsedValuesVO;
 	
 	/**
 	 * An instance of the class
@@ -225,33 +225,32 @@ class CoreStyle
 	 */
 	private function initUsedValues():Void
 	{
-		usedValues = {
-			minHeight : 0.0,
-			maxHeight : 0.0,
-			minWidth : 0.0,
-			maxWidth : 0.0,
-			width : 0.0,
-			height : 0.0,
-			marginLeft : 0.0,
-			marginRight : 0.0,
-			marginTop : 0.0,
-			marginBottom : 0.0,
-			paddingLeft : 0.0,
-			paddingRight : 0.0,
-			paddingTop : 0.0,
-			paddingBottom : 0.0,
-			left: 0.0,
-			right: 0.0,
-			top: 0.0,
-			bottom : 0.0,
-			textIndent:0,
-			lineHeight:0.0,
-			letterSpacing:0.0,
-			color:{color:0, alpha:1.0},
-			transformOrigin: { x:0.0, y:0.0 },
-			transform:new Matrix(),
-			backgroundColor:{color:0, alpha:1.0}
-		}
+		usedValues = new UsedValuesVO();
+		usedValues.minHeight = 0.0;
+		usedValues.maxHeight = 0.0;
+		usedValues.minWidth = 0.0;
+		usedValues.maxWidth = 0.0;
+		usedValues.width = 0.0;
+		usedValues.height = 0.0;
+		usedValues.marginLeft = 0.0;
+		usedValues.marginRight = 0.0;
+		usedValues.marginTop = 0.0;
+		usedValues.marginBottom = 0.0;
+		usedValues.paddingLeft = 0.0;
+		usedValues.paddingRight = 0.0;
+		usedValues.paddingTop = 0.0;
+		usedValues.paddingBottom = 0.0;
+		usedValues.left = 0.0;
+		usedValues.right = 0.0;
+		usedValues.top = 0.0;
+		usedValues.bottom = 0.0;
+		usedValues.textIndent = 0;
+		usedValues.lineHeight = 0.0;
+		usedValues.letterSpacing = 0.0;
+		usedValues.color = new ColorData(0, 1.0);
+		usedValues.transformOrigin = { x:0.0, y:0.0 };
+		usedValues.transform = new Matrix();
+		usedValues.backgroundColor = new ColorData(0, 1.0);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -330,11 +330,7 @@ class CSSValueConverter
 				//cascade
 		}
 		
-		var colorData:ColorData = {
-			color:colorValue,
-			alpha:alphaValue
-		}
-		
+		var colorData:ColorData = new ColorData(colorValue, alphaValue);
 		return colorData;
 	}
 	

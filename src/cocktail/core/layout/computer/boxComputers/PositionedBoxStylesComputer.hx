@@ -57,7 +57,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 */ 
 	override private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 		
 		var usedWidth:Float = 0.0;
 		
@@ -122,7 +122,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 */
 	override private function measureWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 		
 		//compute the width which is either defined as a length or a percentage
 		var usedWidth:Float = getComputedWidth(style, containingBlockData);
@@ -229,7 +229,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 */ 
 	override private function measureAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 		
 		var usedHeight:Float = 0.0;
 		
@@ -286,7 +286,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 	 */
 	override private function measureHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 		
 		//compute the height which is either defined as a length or a percentage
 		var usedHeight:Float = getComputedHeight(style, containingBlockData);

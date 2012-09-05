@@ -47,7 +47,7 @@ class FontAndTextStylesComputer
 	 */
 	public static function compute(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 
 		//line height
 		var fontSize:Float = style.getAbsoluteLength(style.fontSize);

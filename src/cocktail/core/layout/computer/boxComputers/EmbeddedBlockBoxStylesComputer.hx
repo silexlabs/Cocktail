@@ -43,7 +43,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 */
 	override private function measureDimensionsAndMargins(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 		
 		var usedWidth:Float = measureWidthAndHorizontalMargins(style, containingBlockData);
 		var usedHeight:Float = measureHeightAndVerticalMargins(style, containingBlockData);
@@ -72,7 +72,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 */
 	private function constrainDimensions(style:CoreStyle, usedWidth:Float, usedHeight:Float):Void
 	{
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 		
 		var maxHeight:Float = usedValues.maxHeight;
 		var minHeight:Float = usedValues.minHeight;
@@ -216,7 +216,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 */
 	override private function measureAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 		
 		//width
 		var usedWidth:Float = getComputedAutoWidth(style, containingBlockData);
@@ -236,7 +236,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 */ 
 	override private function getComputedAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 		
 		var usedWidth:Float = 0.0;
 		
@@ -323,7 +323,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 */ 
 	override private function getComputedAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockData):Float
 	{
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 		
 		var usedHeight:Float = 0.0;
 		

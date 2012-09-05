@@ -665,7 +665,7 @@ class BoxStylesComputer
 	 */
 	private function constrainWidth(style:CoreStyle, usedWidth:Float):Float
 	{
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 		
 		//check that the computedWidth is not 
 		//superior to max width. The max width
@@ -693,7 +693,7 @@ class BoxStylesComputer
 	 */
 	private function constrainHeight(style:CoreStyle, usedHeight:Float):Float
 	{
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 	
 		//check that height is within authorised range
 		if (style.isNone(style.maxHeight) == false)

@@ -479,17 +479,11 @@ class CSSStyleParser
 		{
 			if (styleValues.length == 1)
 			{
-				return {
-				name:propertyName,
-				typedValue:styleValues[0],
-				important:important};
+				return new TypedPropertyData(propertyName, styleValues[0], important);
 			}
 			else
 			{
-				return {
-				name:propertyName,
-				typedValue:GROUP(styleValues),
-				important:important};
+				return new TypedPropertyData(propertyName, GROUP(styleValues), important);
 				
 			}
 		}
@@ -514,10 +508,7 @@ class CSSStyleParser
 				}
 			}
 			
-			return {
-				name:propertyName,
-				typedValue:CSS_LIST(styleListProperty),
-				important:important};
+			return new TypedPropertyData(propertyName, CSS_LIST(styleListProperty), important);
 		}
 	}
 	

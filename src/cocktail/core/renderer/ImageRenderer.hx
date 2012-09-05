@@ -56,7 +56,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 			return;
 		}
 		
-		var usedValues:UsedValuesData = coreStyle.usedValues;
+		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		
 		var paintBounds:RectangleData = { 
 			x:globalBounds.x + usedValues.paddingLeft - scrollOffset.x,

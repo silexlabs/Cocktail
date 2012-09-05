@@ -173,7 +173,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	private function getTextFormat(style:CoreStyle):TextFormat
 	{
 		
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 		
 		var textFormat:TextFormat = new TextFormat();
 		textFormat.font = getNativeFontFamily(CSSValueConverter.getFontFamilyAsStringArray(style.fontFamily));

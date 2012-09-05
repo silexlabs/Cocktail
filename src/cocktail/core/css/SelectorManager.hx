@@ -37,7 +37,7 @@ class SelectorManager
 	 * For a given node and selector, return wether
 	 * the node matches all of the components of the selector
 	 */
-	public function matchSelector(node:HTMLElement, selector:SelectorData, matchedPseudoClasses:MatchedPseudoClasses):Bool
+	public function matchSelector(node:HTMLElement, selector:SelectorData, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		var components:Array<SelectorComponentValue> = selector.components;
 		
@@ -109,7 +109,7 @@ class SelectorManager
 	/**
 	 * return wether a combinator is matched
 	 */
-	private function matchCombinator(node:HTMLElement, combinator:CombinatorValue, nextSelectorComponent:SelectorComponentValue, matchedPseudoClasses:MatchedPseudoClasses):Bool
+	private function matchCombinator(node:HTMLElement, combinator:CombinatorValue, nextSelectorComponent:SelectorComponentValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		//if the node has no parent, it can't match
 		//any combinator
@@ -155,7 +155,7 @@ class SelectorManager
 	 * the preious selector sequence which precedes in 
 	 * the DOM tree
 	 */
-	private function  matchGeneralSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClasses):Bool
+	private function  matchGeneralSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		var previousElementSibling:HTMLElement = node.previousElementSibling;
 		
@@ -178,7 +178,7 @@ class SelectorManager
 	 * element sibling of the node matches
 	 * the previous selector
 	 */
-	private function  matchAdjacentSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClasses):Bool
+	private function  matchAdjacentSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		var previousElementSibling:HTMLElement = node.previousElementSibling;
 		
@@ -195,7 +195,7 @@ class SelectorManager
 	 * It is matched when an ancestor of the node
 	 * matches the next selector sequence
 	 */
-	private function matchDescendantCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClasses):Bool
+	private function matchDescendantCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		var parentNode:HTMLElement = node.parentNode;
 		
@@ -221,7 +221,7 @@ class SelectorManager
 	 * next selector sequence must be matched by the 
 	 * direct parent of the node and not just any ancestor
 	 */
-	private function matchChildCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClasses):Bool
+	private function matchChildCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		return matchSimpleSelectorSequence(node.parentNode, nextSelectorSequence, matchedPseudoClasses);
 	}
@@ -257,7 +257,7 @@ class SelectorManager
 	 * (class, ID...) but type or universal which are always at the 
 	 * begining of a simple selector sequence
 	 */
-	private function matchSimpleSelectorSequenceItem(node:HTMLElement, simpleSelectorSequenceItem:SimpleSelectorSequenceItemValue, matchedPseudoClasses:MatchedPseudoClasses):Bool
+	private function matchSimpleSelectorSequenceItem(node:HTMLElement, simpleSelectorSequenceItem:SimpleSelectorSequenceItemValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		switch(simpleSelectorSequenceItem)
 		{
@@ -286,7 +286,7 @@ class SelectorManager
 	 * Return wether all items in a simple selector
 	 * sequence are matched
 	 */
-	private function matchSimpleSelectorSequence(node:HTMLElement, simpleSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClasses):Bool
+	private function matchSimpleSelectorSequence(node:HTMLElement, simpleSelectorSequence:SimpleSelectorSequenceData, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		//check if sequence start matches
 		if (matchSimpleSelectorSequenceStart(node, simpleSelectorSequence.startValue) == false)
@@ -432,7 +432,7 @@ class SelectorManager
 	 * Return wether a pseudo class matches
 	 * the node
 	 */
-	private function matchPseudoClassSelector(node:HTMLElement, pseudoClassSelector:PseudoClassSelectorValue, matchedPseudoClasses:MatchedPseudoClasses):Bool
+	private function matchPseudoClassSelector(node:HTMLElement, pseudoClassSelector:PseudoClassSelectorValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		switch (pseudoClassSelector)
 		{
@@ -463,7 +463,7 @@ class SelectorManager
 	 * Return wether a UI state selector
 	 * matches the node
 	 */
-	private function matchUIElementStatesSelector(node:HTMLElement, uiElementState:UIElementStatesValue, matchedPseudoClasses:MatchedPseudoClasses):Bool
+	private function matchUIElementStatesSelector(node:HTMLElement, uiElementState:UIElementStatesValue, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		switch(uiElementState)
 		{
@@ -623,7 +623,7 @@ class SelectorManager
 	 * Return wether a link pseudo-class selector
 	 * matches the node
 	 */
-	private function matchLinkPseudoClassSelector(node:HTMLElement, linkPseudoClassSelector:LinkPseudoClassValue, matchedPseudoClass:MatchedPseudoClasses):Bool
+	private function matchLinkPseudoClassSelector(node:HTMLElement, linkPseudoClassSelector:LinkPseudoClassValue, matchedPseudoClass:MatchedPseudoClassesVO):Bool
 	{
 		switch(linkPseudoClassSelector)
 		{
@@ -639,7 +639,7 @@ class SelectorManager
 	 * Return wether a user pseudo-class selector
 	 * matches the node
 	 */
-	private function matchUserActionPseudoClassSelector(node:HTMLElement, userActionPseudoClassSelector:UserActionPseudoClassValue, matchedPseudoClass:MatchedPseudoClasses):Bool
+	private function matchUserActionPseudoClassSelector(node:HTMLElement, userActionPseudoClassSelector:UserActionPseudoClassValue, matchedPseudoClass:MatchedPseudoClassesVO):Bool
 	{
 		switch(userActionPseudoClassSelector)
 		{
@@ -676,11 +676,7 @@ class SelectorManager
 		//holds the specificity data, is passe by reference
 		//to all methods which can increment the specificity
 		//attribute
-		var selectorSpecificity:SelectorSpecificityData = {
-			idSelectorsNumber:0,
-			classAttributesAndPseudoClassesNumber:0,
-			typeAndPseudoElementsNumber:0
-		}
+		var selectorSpecificity:SelectorSpecificityData = new SelectorSpecificityData();
 		
 		//a pseudo element increment the specificity
 		switch (selector.pseudoElement)

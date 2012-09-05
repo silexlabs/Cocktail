@@ -78,7 +78,7 @@ class BlockFormattingContext extends FormattingContext
 	
 	private function doFormat(elementRenderer:ElementRenderer, concatenatedX:Float, concatenatedY:Float, currentLineY:Float, parentCollapsedMarginTop:Float, parentCollapsedMarginBottom:Float):Float
 	{
-		var elementRendererUsedValues:UsedValuesData = elementRenderer.coreStyle.usedValues;
+		var elementRendererUsedValues:UsedValuesVO = elementRenderer.coreStyle.usedValues;
 		
 		concatenatedX += elementRendererUsedValues.paddingLeft  + elementRendererUsedValues.marginLeft;
 
@@ -93,7 +93,7 @@ class BlockFormattingContext extends FormattingContext
 			var marginTop:Float = getCollapsedMarginTop(child, parentCollapsedMarginTop);
 			var marginBottom:Float = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
 			
-			var usedValues:UsedValuesData = child.coreStyle.usedValues;
+			var usedValues:UsedValuesVO = child.coreStyle.usedValues;
 			var width:Float = usedValues.width + usedValues.paddingLeft + usedValues.paddingRight;
 			var height:Float = usedValues.height + usedValues.paddingTop + usedValues.paddingBottom;
 			
@@ -211,7 +211,7 @@ class BlockFormattingContext extends FormattingContext
 	
 	private function getCollapsedMarginTop(child:ElementRenderer, parentCollapsedMarginTop:Float):Float
 	{
-		var childUsedValues:UsedValuesData = child.coreStyle.usedValues;
+		var childUsedValues:UsedValuesVO = child.coreStyle.usedValues;
 		
 		var marginTop:Float = childUsedValues.marginTop;
 
@@ -220,7 +220,7 @@ class BlockFormattingContext extends FormattingContext
 			if (child.previousSibling != null)
 			{
 				var previousSibling:ElementRenderer = child.previousSibling;
-				var previsousSiblingUsedValues:UsedValuesData = previousSibling.coreStyle.usedValues;
+				var previsousSiblingUsedValues:UsedValuesVO = previousSibling.coreStyle.usedValues;
 				if (previsousSiblingUsedValues.paddingBottom == 0)
 				{
 					if (previsousSiblingUsedValues.marginBottom > marginTop)
@@ -256,7 +256,7 @@ class BlockFormattingContext extends FormattingContext
 	
 	private function getCollapsedMarginBottom(child:ElementRenderer, parentCollapsedMarginBottom:Float):Float
 	{
-		var childUsedValues:UsedValuesData = child.coreStyle.usedValues;
+		var childUsedValues:UsedValuesVO = child.coreStyle.usedValues;
 		var marginBottom:Float = childUsedValues.marginBottom;
 		
 		if (childUsedValues.paddingBottom == 0)
@@ -264,7 +264,7 @@ class BlockFormattingContext extends FormattingContext
 			if (child.nextSibling != null)
 			{
 				var nextSibling:ElementRenderer = child.nextSibling;
-				var nextSiblingUsedValues:UsedValuesData = nextSibling.coreStyle.usedValues;
+				var nextSiblingUsedValues:UsedValuesVO = nextSibling.coreStyle.usedValues;
 				if (nextSiblingUsedValues.paddingTop == 0)
 				{
 					if (nextSiblingUsedValues.marginTop > marginBottom)

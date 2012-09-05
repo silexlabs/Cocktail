@@ -62,7 +62,7 @@ class EmbeddedLineBox extends LineBox
 	 */
 	override private function getLeadedAscent():Float 
 	{
-		var usedValues:UsedValuesData = elementRenderer.coreStyle.usedValues;
+		var usedValues:UsedValuesVO = elementRenderer.coreStyle.usedValues;
 		return bounds.height + usedValues.marginTop + usedValues.marginBottom;
 	}
 	

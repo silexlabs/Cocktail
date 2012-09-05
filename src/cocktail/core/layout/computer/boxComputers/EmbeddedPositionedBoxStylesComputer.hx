@@ -49,7 +49,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	 */
 	private function measureHorizontalPositionOffsets(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 		
 		//if left or right are 'auto'
 		if (style.isAuto(style.left) == true || style.isAuto(style.right) == true)
@@ -130,7 +130,7 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	 */
 	private function measureVerticalPositionOffsets(style:CoreStyle, containingBlockData:ContainingBlockData):Void
 	{
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 		
 		if (style.isAuto(style.top) == true || style.isAuto(style.bottom) == true)
 		{

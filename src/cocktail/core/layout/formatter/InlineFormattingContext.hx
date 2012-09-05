@@ -103,7 +103,7 @@ class InlineFormattingContext extends FormattingContext
 		//apply formatting height to formatting context root if auto height
 		if (formattingContextCoreStyle.isAuto(formattingContextCoreStyle.height) == true)
 		{
-			var formattingContextUsedValues:UsedValuesData =  _formattingContextRoot.coreStyle.usedValues;
+			var formattingContextUsedValues:UsedValuesVO =  _formattingContextRoot.coreStyle.usedValues;
 			_formattingContextRoot.bounds.height = _formattingContextData.y  + formattingContextUsedValues.paddingBottom ;
 			formattingContextUsedValues.height = _formattingContextData.y - formattingContextUsedValues.paddingTop;
 		}
@@ -135,7 +135,7 @@ class InlineFormattingContext extends FormattingContext
 			//(it doesn't what's inside those child when formatting)
 			else if (child.establishesNewFormattingContext() == true || child.isReplaced() == true)
 			{
-				var childUsedValues:UsedValuesData = child.coreStyle.usedValues;
+				var childUsedValues:UsedValuesVO = child.coreStyle.usedValues;
 				
 				//set the bounds of the corresponding InlineBoxRenderer
 				var childBounds:RectangleData = child.bounds;
@@ -161,7 +161,7 @@ class InlineFormattingContext extends FormattingContext
 				//create the first line box for this inline box renderer
 				var childLineBox:LineBox = createContainerLineBox(child);
 				
-				var childUsedValues:UsedValuesData = child.coreStyle.usedValues;
+				var childUsedValues:UsedValuesVO = child.coreStyle.usedValues;
 				
 				//the first line box created by an inline box renderer has a left margin and padding
 				childLineBox.marginLeft = childUsedValues.marginLeft;
@@ -429,7 +429,7 @@ class InlineFormattingContext extends FormattingContext
 		var remainingSpace:Float;
 		var flowX:Float;
 		
-		var formattingContextRootUsedValues:UsedValuesData = _formattingContextRoot.coreStyle.usedValues;
+		var formattingContextRootUsedValues:UsedValuesVO = _formattingContextRoot.coreStyle.usedValues;
 		
 		remainingSpace = formattingContextRootUsedValues.width - concatenatedLength - _floatsManager.getLeftFloatOffset(_formattingContextData.y) - 
 		_floatsManager.getRightFloatOffset(_formattingContextData.y + _formattingContextRoot.bounds.y, formattingContextRootUsedValues.width);

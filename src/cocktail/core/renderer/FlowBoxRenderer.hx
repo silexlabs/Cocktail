@@ -280,7 +280,7 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function getLeftOffset(elementRenderer:ElementRenderer):Float
 	{
-		var usedValues:UsedValuesData = elementRenderer.coreStyle.usedValues;
+		var usedValues:UsedValuesVO = elementRenderer.coreStyle.usedValues;
 		return usedValues.left + usedValues.marginLeft;
 	}
 	
@@ -289,7 +289,7 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function getRightOffset(elementRenderer:ElementRenderer, containingHTMLElementWidth:Float):Float
 	{
-		var usedValues:UsedValuesData = elementRenderer.coreStyle.usedValues;
+		var usedValues:UsedValuesVO = elementRenderer.coreStyle.usedValues;
 		return containingHTMLElementWidth - usedValues.width - usedValues.paddingLeft
 		- usedValues.paddingRight - usedValues.right - usedValues.marginRight;
 	}
@@ -299,7 +299,7 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function getTopOffset(elementRenderer:ElementRenderer):Float
 	{
-		var usedValues:UsedValuesData = elementRenderer.coreStyle.usedValues;
+		var usedValues:UsedValuesVO = elementRenderer.coreStyle.usedValues;
 		return usedValues.top + usedValues.marginTop;
 	}
 	
@@ -308,7 +308,7 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function getBottomOffset(elementRenderer:ElementRenderer, containingHTMLElementHeight:Float):Float
 	{
-		var usedValues:UsedValuesData = elementRenderer.coreStyle.usedValues;
+		var usedValues:UsedValuesVO = elementRenderer.coreStyle.usedValues;
 		return containingHTMLElementHeight - usedValues.height - usedValues.paddingTop -
 		usedValues.paddingBottom - usedValues.bottom;
 	}

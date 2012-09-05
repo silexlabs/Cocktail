@@ -45,7 +45,7 @@ class BodyBoxRenderer extends BlockBoxRenderer
 		
 		if (coreStyle.isAuto(coreStyle.height) == true && (isPositioned() == false || isRelativePositioned() == true))
 		{
-			var usedValues:UsedValuesData = coreStyle.usedValues;
+			var usedValues:UsedValuesVO = coreStyle.usedValues;
 			usedValues.height = _containingBlock.getContainerBlockData().height - usedValues.marginTop - usedValues.marginBottom
 			- usedValues.paddingTop - usedValues.paddingBottom;
 		}

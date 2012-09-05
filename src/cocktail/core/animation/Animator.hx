@@ -114,7 +114,7 @@ class Animator
 	 */
 	private function startTransitionIfNeeded(pendingAnimation:PendingAnimationData, style:CoreStyle):Bool
 	{	
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 		
 		//will store the index of the property in the TransitionPorperty
 		//array, so that its duration, delay, and timing function can be found

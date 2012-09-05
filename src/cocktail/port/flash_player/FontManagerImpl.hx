@@ -221,7 +221,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	{	
 		var textElement:TextElement = new TextElement(text);
 		
-		var usedValues:UsedValuesData = style.usedValues;
+		var usedValues:UsedValuesVO = style.usedValues;
 		
 		//create a flash element format object and set its
 		//attribute to match the styles defined in the computedStyle reference

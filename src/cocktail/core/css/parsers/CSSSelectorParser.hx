@@ -48,10 +48,7 @@ class CSSSelectorParser
 		var simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue> = [];
 		var components:Array<SelectorComponentValue> = [];
 		
-		var selectorData:SelectorData = {
-			components:components,
-			pseudoElement:PseudoElementSelectorValue.NONE
-		}
+		var selectorData:SelectorData = new SelectorData(components, PseudoElementSelectorValue.NONE);
 		
 		while (!c.isEOF())
 		{
@@ -273,10 +270,7 @@ class CSSSelectorParser
 		
 		flushSelectors(simpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues, components);
 		
-		var typedSelector:SelectorData = {
-			components:selectorData.components,
-			pseudoElement:selectorData.pseudoElement
-		}
+		var typedSelector:SelectorData = new SelectorData(selectorData.components, selectorData.pseudoElement);
 		
 		typedSelectors.push(typedSelector);
 	}
@@ -297,11 +291,7 @@ class CSSSelectorParser
 			simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.UNIVERSAL;
 		}
 
-		var simpleSelectorSequence:SimpleSelectorSequenceData = {
-			startValue:simpleSelectorSequenceStartValue,
-			simpleSelectors:simpleSelectorSequenceItemValues
-		}
-		
+		var simpleSelectorSequence:SimpleSelectorSequenceData = new SimpleSelectorSequenceData(simpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues);
 		components.push(SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(simpleSelectorSequence));
 		
 	}
