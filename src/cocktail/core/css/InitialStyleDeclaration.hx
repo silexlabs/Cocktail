@@ -212,6 +212,8 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 	 */
 	private function pushProperty(name:String, typedValue:CSSPropertyValue):Void
 	{
-		_properties.push(new TypedPropertyVO(name, typedValue, false));
+		var typedProperty:TypedPropertyVO = new TypedPropertyVO(name, typedValue, false);
+		_properties.push(typedProperty);
+		_propertiesHash.set(name, typedProperty);
 	}
 }

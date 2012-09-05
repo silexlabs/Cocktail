@@ -194,18 +194,14 @@ class StyleManager
 		{
 			var styleDeclaration:CSSStyleDeclaration = matchingStyleDeclarations[i].style;
 			var selector:SelectorVO = matchingStyleDeclarations[i].selector;
-			
-			//loop in all the style declarations
-			for (j in 0...styleDeclaration.length)
+
+			//if a property with a matching name is found,
+			//it is stored
+			if (styleDeclaration.hasProperty(property))
 			{
-				//if a property with a matching name is found,
-				//it is stored
-				if (styleDeclaration.item(j) == property)
-				{
-					var typedProperty:TypedPropertyVO = styleDeclaration.getTypedProperty(property);
-					var matchingProperty:PropertyVO = new PropertyVO(selector, typedProperty.typedValue, styleDeclaration.parentRule.parentStyleSheet.origin, typedProperty.important);
-					matchingProperties.push(matchingProperty);
-				}
+				var typedProperty:TypedPropertyVO = styleDeclaration.getTypedProperty(property);
+				var matchingProperty:PropertyVO = new PropertyVO(selector, typedProperty.typedValue, styleDeclaration.parentRule.parentStyleSheet.origin, typedProperty.important);
+				matchingProperties.push(matchingProperty);
 			}
 		}
 		

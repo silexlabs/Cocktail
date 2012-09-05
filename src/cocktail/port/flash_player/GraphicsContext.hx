@@ -227,8 +227,6 @@ class GraphicsContext extends AbstractGraphicsContext
 	 */
 	override public function fillRect(rect:RectangleVO, color:ColorVO):Void
 	{
-		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(rect.x, rect.y, rect.width, rect.height);
-
 		var argbColor:Int = color.color;
 		var alpha:Int = Math.round(255 * color.alpha);
 		argbColor += alpha << 24;

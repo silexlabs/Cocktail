@@ -162,6 +162,13 @@ class CSSStyleDeclaration
 	private var _properties:Array<TypedPropertyVO>;
 	
 	/**
+	 * Holds the same data as the _properties
+	 * array but allows fast access with
+	 * property name
+	 */
+	private var _propertiesHash:Hash<TypedPropertyVO>;
+	
+	/**
 	 * a reference to a CSS parser instance
 	 */
 	private var _cssStyleParser:CSSStyleParser;
@@ -177,10 +184,19 @@ class CSSStyleDeclaration
 	 */
 	public function new(parentRule:CSSRule = null, onStyleChange:String->Void = null) 
 	{
-		_properties = new Array<TypedPropertyVO>();
+		initPropertiesStructure();
 		_cssStyleParser = new CSSStyleParser();
 		_onStyleChange = onStyleChange;
 		this.parentRule = parentRule;
+	}
+	
+	/**
+	 * Init/reset the properties array and hash
+	 */
+	private function initPropertiesStructure():Void
+	{
+		_properties = new Array<TypedPropertyVO>();
+		_propertiesHash = new Hash<TypedPropertyVO>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -202,16 +218,7 @@ class CSSStyleDeclaration
 	 */
 	public function hasProperty(property:String):Bool
 	{
-		var length:Int = _properties.length;
-		for (i in 0...length)
-		{
-			if (_properties[i].name == property)
-			{
-				return true;
-			}
-		}
-		
-		return false;
+		return _propertiesHash.exists(property);
 	}
 	
 	/**
@@ -221,14 +228,9 @@ class CSSStyleDeclaration
 	 */
 	public function getPropertyValue(property:String):String
 	{
-		var length:Int = _properties.length;
-		for (i in 0...length)
+		if (hasProperty(property) == true)
 		{
-			var propertyDeclaration:TypedPropertyVO = _properties[i];
-			if (propertyDeclaration.name == property)
-			{
-				return CSSStyleSerializer.serialize(propertyDeclaration.typedValue);
-			}
+			return CSSStyleSerializer.serialize(_propertiesHash.get(property).typedValue);
 		}
 		return null;
 	}
@@ -270,23 +272,27 @@ class CSSStyleDeclaration
 	 */
 	public function removeProperty(property:String):String
 	{
-		var length:Int = _properties.length;
-		for (i in 0...length)
+		//first check that the property exists
+		if (hasProperty(property) == true)
 		{
-			var propertyDeclaration:TypedPropertyVO = _properties[i];
-			
-			if (propertyDeclaration.name == property)
+			var length:Int = _properties.length;
+			for (i in 0...length)
 			{
-				var name:String = propertyDeclaration.name;
-				_properties.remove(propertyDeclaration);
+				var propertyDeclaration:TypedPropertyVO = _properties[i];
 				
-				//call the style update callback if provided
-				if (_onStyleChange != null)
+				if (propertyDeclaration.name == property)
 				{
-					_onStyleChange(property);
+					_properties.remove(propertyDeclaration);
+					_propertiesHash.remove(property);
+					
+					//call the style update callback if provided
+					if (_onStyleChange != null)
+					{
+						_onStyleChange(property);
+					}
+					
+					return property;
 				}
-				
-				return name;
 			}
 		}
 		
@@ -301,10 +307,9 @@ class CSSStyleDeclaration
 	 */
 	public function getPropertyPriority(property:String):String
 	{
-		var length:Int = _properties.length;
-		for (i in 0...length)
+		if (hasProperty(property) == true)
 		{
-			var propertyDeclaration:TypedPropertyVO = _properties[i];
+			var propertyDeclaration:TypedPropertyVO = _propertiesHash.get(property);
 			if (propertyDeclaration.name == property)
 			{
 				if (propertyDeclaration.important == true)
@@ -327,82 +332,42 @@ class CSSStyleDeclaration
 	 */
 	public function getTypedProperty(property:String):TypedPropertyVO
 	{
-		var length:Int = _properties.length;
-		for (i in 0...length)
-		{
-			var propertyDeclaration:TypedPropertyVO = _properties[i];
-			if (propertyDeclaration.name == property)
-			{
-				return propertyDeclaration;
-			}
-		}
-		return null;
+		return _propertiesHash.get(property);
 	}
 	
 	/**
-	 * Store the given typed property, replacing the current one
+	 * Store the given typed property, update the current one
 	 * if it was already existing
 	 */
 	public function setTypedProperty(property:String, typedValue:CSSPropertyValue, important:Bool):Void
 	{
-		//a new array which will hold all current styles and the new one
-		var newProperties:Array<TypedPropertyVO> = new Array<TypedPropertyVO>();
-		
-		var newProperty:TypedPropertyVO = new TypedPropertyVO(property, typedValue, important);
-		
-		var foundMatchingProperty:Bool = false;
-		var oldProperty:TypedPropertyVO = null;
-		
-		//look for a property with the same name
-		//as the old property
-		var length:Int = _properties.length;
-		for (i in 0...length)
+		//here the property doesn't exist yet, create it and store it
+		if (hasProperty(property) == false)
 		{
-			var propertyDeclaration:TypedPropertyVO = _properties[i];
-			if (propertyDeclaration.name != property)
-			{
-				newProperties.push(propertyDeclaration);
-			}
-			//a match is found, only push the new property
-			//and not the old one
-			else
-			{
-				newProperties.push(newProperty);
-				oldProperty = propertyDeclaration;
-				foundMatchingProperty = true;
-			}
-		}
-		
-		//here no match was found for the old property, so it is
-		//just added
-		if (foundMatchingProperty == false)
-		{
-			newProperties.push(newProperty);
-		}
-		
-		
-		_properties = newProperties;
-		
-		//call the style change callback if provided
-		if (_onStyleChange != null)
-		{
-			//always call if this is the first
-			//time the property is defined on this object
-			if (oldProperty == null)
+			var newProperty:TypedPropertyVO = new TypedPropertyVO(property, typedValue, important);
+			
+			//always update the properties hash to keep data in 
+			//sync with properties array
+			_propertiesHash.set(property, newProperty);
+			_properties.push(newProperty);
+			
+			if (_onStyleChange != null)
 			{
 				_onStyleChange(property);
 			}
-			//else only call update for properties
-			//which value actually changed
-			//
-			//TODO 2 : shouldn't need to call this method if value didn't
-			//change
-			else
+			
+			return;
+		}
+		
+		//here the property exists, update it only if necessary
+		var currentProperty:TypedPropertyVO = _propertiesHash.get(property);
+		if (Type.enumEq(currentProperty.typedValue, typedValue) == false || currentProperty.important != important)
+		{
+			currentProperty.typedValue = typedValue;
+			currentProperty.important = important;
+			if (_onStyleChange != null)
 			{
-				if (Type.enumEq(oldProperty.typedValue, newProperty.typedValue) == false)
-				{
-					_onStyleChange(property);
-				}
+				_onStyleChange(property);
 			}
 		}
 	}
@@ -1787,7 +1752,8 @@ class CSSStyleDeclaration
 	{
 		var serializedStyleDeclaration:String = "";
 		
-		for (i in 0..._properties.length)
+		var length:Int = _properties.length;
+		for (i in 0...length)
 		{
 			var property:TypedPropertyVO = _properties[i];
 			
@@ -1814,7 +1780,7 @@ class CSSStyleDeclaration
 	private function set_cssText(value:String):String
 	{
 		//reset properties
-		_properties = new Array<TypedPropertyVO>();
+		initPropertiesStructure();
 		
 		var typedProperties:Array<TypedPropertyVO> = _cssStyleParser.parseStyle(value);
 		

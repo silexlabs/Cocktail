@@ -439,7 +439,7 @@ class CoreStyle
 		
 		if (programmaticChange == true && isInherited == false)
 		{
-			if (computedValues.getTypedProperty(propertyName) != null)
+			if (computedValues.hasProperty(propertyName) == true)
 			{
 				if (isAnimatable(propertyName))
 				{
