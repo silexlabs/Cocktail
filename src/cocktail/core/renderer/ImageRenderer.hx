@@ -31,11 +31,25 @@ import cocktail.core.geom.GeomData;
 class ImageRenderer extends EmbeddedBoxRenderer
 {
 	/**
+	 * Store the bounds of the image to paint
+	 */
+	private var _paintBounds:RectangleVO;
+	
+	/**
+	 * Store the destinaton point used by the fast
+	 * graphic routine
+	 */
+	private var _destinationPoint:PointVO;
+	
+	/**
 	 * class constructor
 	 */
 	public function new(domNode:HTMLElement) 
 	{
 		super(domNode);
+		
+		_paintBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		_destinationPoint = new PointVO(0.0, 0.0);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -59,13 +73,12 @@ class ImageRenderer extends EmbeddedBoxRenderer
 		
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		
-		var x:Float = globalBounds.x + usedValues.paddingLeft - scrollOffset.x;
-		var y:Float = globalBounds.y + usedValues.paddingTop - scrollOffset.y;
-		var width:Float = usedValues.width;
-		var height:Float = usedValues.height;
-		var paintBounds:RectangleVO = new RectangleVO(x, y, width, height);
+		_paintBounds.x = globalBounds.x + usedValues.paddingLeft - scrollOffset.x;
+		_paintBounds.y = globalBounds.y + usedValues.paddingTop - scrollOffset.y;
+		_paintBounds.width = usedValues.width;
+		_paintBounds.height = usedValues.height;
 		
-		paintResource(graphicContext, resource.nativeResource, paintBounds, resource.intrinsicWidth, resource.intrinsicHeight);
+		paintResource(graphicContext, resource.nativeResource, _paintBounds, resource.intrinsicWidth, resource.intrinsicHeight);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -86,10 +99,8 @@ class ImageRenderer extends EmbeddedBoxRenderer
 		
 			matrix.translate(bounds.x, bounds.y);
 			matrix.scale(bounds.width / intrinsicWidth , bounds.height / intrinsicHeight );
-		
-			var sourceRect:RectangleVO = new RectangleVO(bounds.x, bounds.y, bounds.width, bounds.height);
 			
-			graphicContext.drawImage(nativeBitmapData, matrix, sourceRect);
+			graphicContext.drawImage(nativeBitmapData, matrix, bounds);
 		}
 		//here a faster drawing routine is used, the picture is drawn 
 		//untransformed at a certain point
@@ -98,15 +109,19 @@ class ImageRenderer extends EmbeddedBoxRenderer
 			var width:Float = intrinsicWidth;
 			var height:Float = intrinsicHeight;
 			
-			//the rectangle from the source image that will be painted
-			//it is always the full picture
-			var sourceRect:RectangleVO = new RectangleVO(0.0, 0.0, width, height);
-			
-			//the coordinates of the top left corner where the picture
+			//update the coordinates of the top left corner where the picture
 			//will be painted
-			var destPoint:PointVO = new PointVO(bounds.x, bounds.y);
+			_destinationPoint.x = bounds.x;
+			_destinationPoint.y = bounds.y;
 			
-			graphicContext.copyPixels(nativeBitmapData, sourceRect, destPoint);
+			//update the rectangle from the source image that will be painted
+			//it is always the full picture
+			bounds.width = width;
+			bounds.height = height;
+			bounds.x = 0.0;
+			bounds.y = 0.0;
+			
+			graphicContext.copyPixels(nativeBitmapData, bounds, _destinationPoint);
 		}
 	}
 	

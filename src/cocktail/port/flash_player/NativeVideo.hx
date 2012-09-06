@@ -100,6 +100,7 @@ class NativeVideo extends NativeMedia
 		initNetConnection();
 		_nc.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 		_nc.connect(null); 
+		viewport = new RectangleVO(0.0, 0.0, 0.0, 0.0);
 	}
 	
 	/**
@@ -346,7 +347,7 @@ class NativeVideo extends NativeMedia
 	 */
 	override private function get_viewport():RectangleVO
 	{
-		return new RectangleVO(_video.x, _video.y, _video.width, _video.height);
+		return viewport;
 	}
 	
 	override private function set_viewport(value:RectangleVO):RectangleVO
@@ -355,7 +356,7 @@ class NativeVideo extends NativeMedia
 		_video.y = value.y;
 		_video.width = value.width;
 		_video.height = value.height;
-		
+		viewport = value;
 		return value;
 	}
 	

@@ -49,6 +49,18 @@ class TextLineBox extends LineBox
 	private var _nativeTextBitmap:NativeBitmapData;
 	
 	/**
+	 * A rectangle containing the dimension
+	 * of the text to render
+	 */
+	private var _renderRect:RectangleVO;
+	
+	/**
+	 * The destination point where to
+	 * draw the text
+	 */
+	private var _destinationPoint:PointVO;
+	
+	/**
 	 * class constructor
 	 */
 	public function new(elementRenderer:ElementRenderer, text:String, fontMetrics:FontMetricsVO, fontManager:FontManager) 
@@ -62,6 +74,9 @@ class TextLineBox extends LineBox
 		//get the dimensions of the text
 		bounds.width = getTextWidth();
 		bounds.height = getTextHeight();
+		
+		_renderRect = new RectangleVO(0.0, 0.0, bounds.width, bounds.height);
+		_destinationPoint = new PointVO(0.0, 0.0);
 		
 		initTextBitmap();
 	}
@@ -105,13 +120,10 @@ class TextLineBox extends LineBox
 	 */
 	override public function render(graphicContext:GraphicsContext):Void
 	{
-		var rect:RectangleVO = new RectangleVO(0.0, 0.0, bounds.width, bounds.height);
-		
-		var destPoint:PointVO = new PointVO(
-		bounds.x + elementRenderer.globalContainingBlockOrigin.x - elementRenderer.scrollOffset.x,
-		bounds.y + elementRenderer.globalContainingBlockOrigin.y - elementRenderer.scrollOffset.y);
-		
-		graphicContext.copyPixels(_nativeTextBitmap, rect, destPoint);
+		_destinationPoint.x = bounds.x + elementRenderer.globalContainingBlockOrigin.x - elementRenderer.scrollOffset.x;
+		_destinationPoint.y = bounds.y + elementRenderer.globalContainingBlockOrigin.y - elementRenderer.scrollOffset.y;
+	
+		graphicContext.copyPixels(_nativeTextBitmap, _renderRect, _destinationPoint);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

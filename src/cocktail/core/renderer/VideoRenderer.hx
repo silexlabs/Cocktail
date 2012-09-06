@@ -110,11 +110,14 @@ class VideoRenderer extends ImageRenderer
 		
 		//set the position and size of the native video, relative
 		//to the Window
-		var x:Float =  globalBounds.x + coreStyle.usedValues.paddingLeft + videoBounds.x - scrollOffset.x;
-		var y:Float =  globalBounds.y + coreStyle.usedValues.paddingTop + videoBounds.y - scrollOffset.y;
-		var width:Float =  videoBounds.width;
-		var height:Float =  videoBounds.height;
-		nativeVideo.viewport = new RectangleVO(x, y, width, height);
+		var videoViewport:RectangleVO = nativeVideo.viewport;
+		videoViewport.x =  globalBounds.x + coreStyle.usedValues.paddingLeft + videoBounds.x - scrollOffset.x;
+		videoViewport.y =  globalBounds.y + coreStyle.usedValues.paddingTop + videoBounds.y - scrollOffset.y;
+		videoViewport.width =  videoBounds.width;
+		videoViewport.height =  videoBounds.height;
+		
+		//TODO 2 : set to update native video position but clumsy
+		nativeVideo.viewport = videoViewport;
 		
 		nativeVideo.attach(graphicContext);
 	}

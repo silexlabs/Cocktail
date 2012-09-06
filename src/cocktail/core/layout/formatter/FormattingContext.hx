@@ -69,7 +69,7 @@ class FormattingContext
 	 */
 	public function new() 
 	{
-		
+		_formattingContextData = new RectangleVO(0.0, 0.0, 0.0, 0.0);
 	}
 	
 	/**
@@ -78,10 +78,10 @@ class FormattingContext
 	 */
 	private function initFormattingContextData():Void
 	{
-		var x:Float = _formattingContextRoot.coreStyle.usedValues.paddingLeft;
-		var y:Float = _formattingContextRoot.coreStyle.usedValues.paddingTop;
-		
-		_formattingContextData = new RectangleVO(x, y, 0.0, 0.0);
+		_formattingContextData.x = _formattingContextRoot.coreStyle.usedValues.paddingLeft;
+		_formattingContextData.y = _formattingContextRoot.coreStyle.usedValues.paddingTop;
+		_formattingContextData.width = 0.0;
+		_formattingContextData.height = 0.0;
 	}
 	
 	/////////////////////////////////
