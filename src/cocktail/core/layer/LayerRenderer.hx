@@ -126,6 +126,12 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	public var hasOwnGraphicsContext(default, null):Bool;
 	
+	/**
+	 * A flag determining wether the layer renderer needs
+	 * to do any rendering. As soon as an ElementRenderer
+	 * from the LayerRenderer needs rendering, its
+	 * LayerRenderer needs rendering
+	 */
 	private var _needsRendering:Bool;
 	
 	/**
@@ -156,9 +162,67 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		_scrolledPoint = new PointVO(0.0, 0.0);
 	}
 	
+	/////////////////////////////////
+	// PUBLIC INVALIDATION METHOD
+	////////////////////////////////
+	
+	/**
+	 * Invalidate the rendering of this layer.
+	 * If this layer has its own graphic context,
+	 * each child layer using the same graphics
+	 * context is also invalidated
+	 */
 	public function invalidateRendering():Void
 	{
+		//if already invalidated, no need to
+		//re-invalidate children
+		if (_needsRendering == true)
+		{
+			return;
+		}
+		
 		_needsRendering = true;
+		
+		//if has own graphic context,
+		//invalidate all children with
+		//same graphic context
+		if (hasOwnGraphicsContext == true)
+		{
+			var length:Int = childNodes.length;
+			for (i in 0...length)
+			{
+				var child:LayerRenderer = childNodes[i];
+				if (child.hasOwnGraphicsContext == false)
+				{
+					invalidateChildLayerRenderer(child);
+				}
+				
+			}
+		}
+	}
+	
+	/////////////////////////////////
+	// PRIVATE INVALIDATION METHOD
+	////////////////////////////////
+	
+	/**
+	 * Invalidate all children with
+	 * the same graphic context as 
+	 * this one
+	 */
+	private function invalidateChildLayerRenderer(rootLayer:LayerRenderer):Void
+	{
+		rootLayer.invalidateRendering();
+		var childNodes:Array<LayerRenderer> = rootLayer.childNodes;
+		var length:Int = childNodes.length;
+		for (i in 0...length)
+		{
+			var child:LayerRenderer = childNodes[i];
+			if (child.hasOwnGraphicsContext == false)
+			{
+				invalidateChildLayerRenderer(child);
+			}
+		}
 	}
 	
 	/////////////////////////////////
@@ -243,8 +307,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	override public function removeChild(oldChild:LayerRenderer):LayerRenderer
 	{
-		invalidateRendering();
-		
 		//the layerRenderer was added to the parent as this
 		//layerRenderer doesn't establish a stacking context
 		if (establishesNewStackingContext() == false)
@@ -517,7 +579,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	public function render(windowWidth:Int, windowHeight:Int ):Void
 	{
-		_needsRendering = true;
+		//_needsRendering = true;
 		
 		//update the dimension of the bitmap data if the window size changed
 		//since last rendering

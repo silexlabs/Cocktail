@@ -386,6 +386,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{
 			var child:ElementRenderer = childNodes[i];
 			
+			//store the global bounds before update, to check if there
+			//is any change. If there is, the child needs to be re-rendered
+			var currentChildGlobalBounds:RectangleVO = child.globalBounds;
+			
 			child.globalContainingBlockOrigin.x = addedX;
 			child.globalContainingBlockOrigin.y = addedY;
 			
@@ -394,6 +398,20 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			
 			child.scrollOffset.x = addedScrollX;
 			child.scrollOffset.y = addedScrollY;
+			
+			//get the updated bounds of the child
+			var newChildGlobalBounds:RectangleVO = child.globalBounds;
+			
+			//if there was any change in the bounds of the child, its
+			//layer is invalidated so that it gets re-painted on next
+			//rendering
+			if (currentChildGlobalBounds.x != newChildGlobalBounds.x ||
+			currentChildGlobalBounds.y != newChildGlobalBounds.y ||
+			currentChildGlobalBounds.width != newChildGlobalBounds.width ||
+			currentChildGlobalBounds.height != newChildGlobalBounds.height)
+			{
+				child.layerRenderer.invalidateRendering();
+			}
 			
 			//call the method recursively if the child has children itself
 			if (child.hasChildNodes() == true)

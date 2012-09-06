@@ -59,6 +59,13 @@ class InvalidatingElementRenderer extends ElementRenderer
 	 */
 	override public function invalidate(invalidationReason:InvalidationReason):Void
 	{
+		//invalidate the layer associated with
+		//this ElementRenderer
+		if (layerRenderer != null)
+		{
+			layerRenderer.invalidateRendering();
+		}
+		
 		switch(invalidationReason)
 		{
 			case InvalidationReason.styleChanged(styleName):
