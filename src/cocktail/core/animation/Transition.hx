@@ -59,6 +59,11 @@ class Transition
 	private var _elapsedTime:Float;
 	
 	/**
+	 * An instance of the class used to compute easing
+	 */
+	private var _cubicBezier:CubicBezier;
+	
+	/**
 	 * The name of the transitioned property. This is
 	 * a CSS property name
 	 */
@@ -124,6 +129,7 @@ class Transition
 		this.onComplete = onComplete;
 		this.onUpdate = onUpdate;
 		_elapsedTime = 0;
+		_cubicBezier = new CubicBezier();
 	}
 	
 	/////////////////////////////////
@@ -201,20 +207,20 @@ class Transition
 				{
 					//cubic bezier functions
 					case EASE:
-						var cubicBezier:CubicBezier = new CubicBezier(0.25, 0.1, 0.25, 1.0);
-						return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;
+						_cubicBezier.init(0.25, 0.1, 0.25, 1.0);
+						return ((_endValue - _startValue) * _cubicBezier.bezierY(completePercent)) + _startValue;
 						
 					case EASE_IN:
-						var cubicBezier:CubicBezier = new CubicBezier(0.25, 0.1, 0.25, 1.0);
-						return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;
+						_cubicBezier.init(0.25, 0.1, 0.25, 1.0);
+						return ((_endValue - _startValue) * _cubicBezier.bezierY(completePercent)) + _startValue;
 						
 					case EASE_OUT:
-						var cubicBezier:CubicBezier = new CubicBezier(0.25, 0.1, 0.25, 1.0);
-						return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;	
+						_cubicBezier.init(0.25, 0.1, 0.25, 1.0);
+						return ((_endValue - _startValue) * _cubicBezier.bezierY(completePercent)) + _startValue;	
 						
 					case EASE_IN_OUT:
-						var cubicBezier:CubicBezier = new CubicBezier(0.25, 0.1, 0.25, 1.0);
-						return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;
+						_cubicBezier.init(0.25, 0.1, 0.25, 1.0);
+						return ((_endValue - _startValue) * _cubicBezier.bezierY(completePercent)) + _startValue;
 						
 					//step functions	
 					case STEP_START:
@@ -232,8 +238,8 @@ class Transition
 				}
 				
 			case CUBIC_BEZIER(x1, y1, x2, y2):
-				var cubicBezier:CubicBezier = new CubicBezier(x1, y1, x2, y2);
-				return ((_endValue - _startValue) * cubicBezier.bezierY(completePercent)) + _startValue;	
+				_cubicBezier.init(x1, y1, x2, y2);
+				return ((_endValue - _startValue) * _cubicBezier.bezierY(completePercent)) + _startValue;	
 			
 			//TODO 1 : implement stepping function	
 			case STEPS(intervalNumbers, intervalChange):
@@ -241,9 +247,6 @@ class Transition
 				
 			default:
 				throw 'Illegal value for transition timing function style';
-						
-			
-		
 		}
 	}
 }

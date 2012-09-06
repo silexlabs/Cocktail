@@ -13,6 +13,7 @@ import flash.display.PixelSnapping;
 import flash.display.Sprite;
 import flash.geom.ColorTransform;
 import flash.geom.Point;
+import flash.geom.Rectangle;
 
 /**
  * The flash implementation of the graphics context. Use native
@@ -52,6 +53,22 @@ class GraphicsContext extends AbstractGraphicsContext
 	private var _height:Int;
 	
 	/**
+	 * A flash native rectanlge object, which
+	 * is re-used for each bitmap drawing
+	 */
+	private var _flashRectangle:Rectangle;
+	
+	/**
+	 * Same as above for flash native point
+	 */
+	private var _flashPoint:Point;
+	
+	/**
+	 * Same as above for flash Matrix
+	 */
+	private var _flashMatrix:flash.geom.Matrix;
+	
+	/**
 	 * class constructor
 	 */
 	public function new(layerRenderer:LayerRenderer = null, nativeLayer:NativeElement = null) 
@@ -66,13 +83,16 @@ class GraphicsContext extends AbstractGraphicsContext
 		
 		_nativeLayer = cast(nativeLayer);
 		_childrenNativeLayer = new Sprite();
-		_nativeBitmap = new Bitmap(new BitmapData(1,1, true, 0x00000000), PixelSnapping.AUTO, true);
+		_nativeBitmap = new Bitmap(new BitmapData(1, 1, true, 0x00000000), PixelSnapping.AUTO, true);
+		_flashRectangle = new Rectangle();
+		_flashPoint = new Point();
+		_flashMatrix = new flash.geom.Matrix();
 		_width = 0;
 		_height = 0;
 		
 		//build native display list
-		_nativeLayer.addChild(_childrenNativeLayer);
 		_nativeLayer.addChild(_nativeBitmap);
+		_nativeLayer.addChild(_childrenNativeLayer);
 	}
 	
 	/**
@@ -93,7 +113,11 @@ class GraphicsContext extends AbstractGraphicsContext
 	 */
 	override public function clear():Void
 	{
-		_nativeBitmap.bitmapData.fillRect(new flash.geom.Rectangle(0, 0, _width, _height), 0x00000000);
+		_flashRectangle.x = 0;
+		_flashRectangle.y = 0;
+		_flashRectangle.width = _width;
+		_flashRectangle.height = _height;
+		_nativeBitmap.bitmapData.fillRect(_flashRectangle, 0x00000000);
 	}
 	
 	/////////////////////////////////
@@ -129,7 +153,8 @@ class GraphicsContext extends AbstractGraphicsContext
 		
 		//refresh all the native flash display list
 		//TODO 3 : shouldn't have to re-attach all, should only attach new item at right index
-		for (i in 0..._orderedChildList.length)
+		var length:Int = _orderedChildList.length;
+		for (i in 0...length)
 		{
 			_childrenNativeLayer.addChild(_orderedChildList[i].nativeLayer);
 		}
@@ -170,11 +195,20 @@ class GraphicsContext extends AbstractGraphicsContext
 			sourceRect = new RectangleVO(0.0, 0.0, width, height);
 		}
 		
-		//convert the cross-platform rectangle and point into flash natives one
-		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
+		//convert the cross-platform rectangle into flash native one
+		_flashRectangle.x = sourceRect.x;
+		_flashRectangle.y = sourceRect.y;
+		_flashRectangle.width = sourceRect.width;
+		_flashRectangle.height = sourceRect.height;
 		
 		var matrixData:MatrixData = matrix.data;
-		var nativeMatrix:flash.geom.Matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
+		
+		_flashMatrix.a = matrixData.a;
+		_flashMatrix.b = matrixData.b;
+		_flashMatrix.c = matrixData.c;
+		_flashMatrix.d = matrixData.d;
+		_flashMatrix.tx = matrixData.e;
+		_flashMatrix.ty = matrixData.f;
 		
 		var colorTransform:ColorTransform = null;
 		
@@ -186,7 +220,7 @@ class GraphicsContext extends AbstractGraphicsContext
 		}
 		
 		//draw the bitmap data onto the current bitmap data with the right transformations
-		_nativeBitmap.bitmapData.draw(bitmapData, nativeMatrix, colorTransform, null, nativeSourceRect, true);
+		_nativeBitmap.bitmapData.draw(bitmapData, _flashMatrix, colorTransform, null, _flashRectangle, true);
 	}
 	
 	/**
@@ -195,8 +229,13 @@ class GraphicsContext extends AbstractGraphicsContext
 	 */
 	override public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO):Void
 	{
-		var nativeSourceRect:flash.geom.Rectangle = new flash.geom.Rectangle(sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height);
-		var nativeDestPoint:flash.geom.Point = new flash.geom.Point(destPoint.x, destPoint.y);
+		_flashRectangle.x = sourceRect.x;
+		_flashRectangle.y = sourceRect.y;
+		_flashRectangle.width = sourceRect.width;
+		_flashRectangle.height = sourceRect.height;
+		
+		_flashPoint.x = destPoint.x;
+		_flashPoint.y = destPoint.y;
 		
 		var alphaBitmapData:BitmapData = null;
 		var alphaPoint:Point = null;
@@ -213,7 +252,7 @@ class GraphicsContext extends AbstractGraphicsContext
 			alphaPoint = new Point(0,0);
 		}
 		
-		_nativeBitmap.bitmapData.copyPixels(bitmapData, nativeSourceRect, nativeDestPoint, alphaBitmapData, alphaPoint, true);
+		_nativeBitmap.bitmapData.copyPixels(bitmapData, _flashRectangle, _flashPoint, alphaBitmapData, alphaPoint, true);
 		
 		if (alphaBitmapData != null)
 		{
@@ -242,7 +281,12 @@ class GraphicsContext extends AbstractGraphicsContext
 		//else, the faster native flash method can be used
 		else
 		{
-			_nativeBitmap.bitmapData.fillRect(new flash.geom.Rectangle(rect.x, rect.y, rect.width, rect.height), argbColor);
+			_flashRectangle.x = rect.x;
+			_flashRectangle.y = rect.y;
+			_flashRectangle.width = rect.width;
+			_flashRectangle.height = rect.height;
+			
+			_nativeBitmap.bitmapData.fillRect(_flashRectangle, argbColor);
 		}
 	
 	}

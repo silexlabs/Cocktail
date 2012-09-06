@@ -515,7 +515,7 @@ class BoxStylesComputer
 			case PERCENTAGE(value):
 				//if the containing HTMLElement dimension is not defined,
 				//min value default to 0, for max value,
-				//default to infinity (no constraints)
+				//default to an "infinite" value (no constraints)
 				if (isContainingDimensionAuto == true)
 				{
 					if (isMinConstraint == true)
@@ -524,7 +524,7 @@ class BoxStylesComputer
 					}
 					else
 					{
-						computedConstraintDimension = Math.POSITIVE_INFINITY;
+						computedConstraintDimension = 100000;
 					}
 				}
 				else
@@ -546,7 +546,7 @@ class BoxStylesComputer
 				}
 				else 
 				{
-					computedConstraintDimension = Math.POSITIVE_INFINITY;
+					computedConstraintDimension = 100000;
 				}
 				
 			default:

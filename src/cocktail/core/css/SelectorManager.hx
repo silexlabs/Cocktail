@@ -251,24 +251,25 @@ class SelectorManager
 	{
 		switch(simpleSelectorSequenceItem)
 		{
-			case ATTRIBUTE(value):
-				return matchAttributeSelector(node, value);
-				
 			//for this check the className of the node	
 			case CLASS(value):
+				var className:String = node.className;
 				//TODO 1 : add class list
-				if (node.className == null)
+				if (className == null)
 				{ 
 					return false;
 				}
-				return node.className.indexOf(value) != -1;
+				return className.indexOf(value) != -1;
 				
 			//for this check the id attribute of the node	
 			case ID(value):
-				return node.id == value;
+				return node.id == value;	
 				
 			case PSEUDO_CLASS(value):
-				return matchPseudoClassSelector(node, value, matchedPseudoClasses);
+				return matchPseudoClassSelector(node, value, matchedPseudoClasses);	
+			
+			case ATTRIBUTE(value):
+				return matchAttributeSelector(node, value);
 		}		
 	}
 	

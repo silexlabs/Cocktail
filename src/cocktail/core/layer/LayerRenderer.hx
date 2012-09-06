@@ -201,6 +201,19 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				throw 'Illegal value for z-index style';
 		}
 		
+		//if the newchild is a compositing layr
+		//check wether the newly added child makes
+		//this LayerRenderer have its own graphics
+		//context and refresh the graphics context tree
+		//if it does
+		if (newChild.isCompositingLayer() == true && hasOwnGraphicsContext == false)
+		{
+			if (establishesNewGraphicsContext() == true)
+			{
+				invalidateGraphicsContextTree();
+			}
+		}
+		
 		return newChild;
 	}
 	
@@ -237,6 +250,19 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		
 		super.removeChild(oldChild);
 	
+		//if the child is a compositing layer,
+		//check wether removing the 
+		//child makes this LayerRenderer's
+		//graphic context no longer useful
+		if (oldChild.isCompositingLayer() == true && hasOwnGraphicsContext == true)
+		{
+			if (establishesNewGraphicsContext() == false)
+			{
+				invalidateGraphicsContextTree();
+			}
+		}
+		
+		
 		return oldChild;
 	}
 	
@@ -317,6 +343,24 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	}
 	
 	/**
+	 * Called when this Layer create or remove its
+	 * own graphics context, the graphics context
+	 * tree must be updated. 
+	 * 
+	 * The parent is detached and reattached, so
+	 * that the graphics context tree can be valid
+	 * again
+	 */
+	private function invalidateGraphicsContextTree():Void
+	{
+		if (parentNode != null)
+		{
+			parentNode.detach();
+			parentNode.attach();
+		}
+	}
+	
+	/**
 	 * Create a new GraphicsContext for this LayerRenderer
 	 * or use the one of its parent
 	 */
@@ -339,6 +383,102 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 * own GraphicsContext
 	 */
 	private function establishesNewGraphicsContext():Bool
+	{
+		if (hasCompositingLayerDescendant(this) == true)
+		{
+			return true;
+		}
+		else if (hasCompositingLayerSibling() == true)
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Return wether a given layer has a descendant which is
+	 * a compositing layer by traversing the layer tree
+	 * recursively.
+	 * 
+	 * If it does, it must then have its own graphic context
+	 * to respect z-index when compositing
+	 */
+	private function hasCompositingLayerDescendant(rootLayerRenderer:LayerRenderer):Bool
+	{
+		var layerLength:Int = rootLayerRenderer.childNodes.length;
+		for (i in 0...layerLength)
+		{
+			var childLayer:LayerRenderer = rootLayerRenderer.childNodes[i];
+			if (childLayer.isCompositingLayer() == true)
+			{
+				return true;
+			}
+			else if (childLayer.hasChildNodes() == true)
+			{
+				var hasCompositingLayer:Bool = hasCompositingLayerDescendant(childLayer);
+				if (hasCompositingLayer == true)
+				{
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * return wether this layer has a sibling which
+	 * is a compositing layer which has a lower z-index
+	 * than itself.
+	 * 
+	 * If the layer has such a sibling, it means it is
+	 * composited on top of a compositing layer and
+	 * it must have its own graphic context to respect
+	 * z-index
+	 */
+	private function hasCompositingLayerSibling():Bool
+	{
+		//get all the sibling by retrieving parent node
+		var parentChildNodes:Array<LayerRenderer> = parentNode.childNodes;
+		
+		for (i in 0...parentChildNodes.length)
+		{
+			var child:LayerRenderer = parentChildNodes[i];
+			if (child != this)
+			{
+				if (child.isCompositingLayer() == true)
+				{
+					return hasLowerZIndex(child);
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Return wether a sibling layer has
+	 * a lower z-index than this layer
+	 * 
+	 * TODO 1 : implement
+	 */
+	private function hasLowerZIndex(siblingLayer:LayerRenderer):Bool
+	{
+		return true;
+	}
+	
+	/////////////////////////////////
+	// PUBLIC HELPER METHODS
+	////////////////////////////////
+	
+	/**
+	 * Wether this layer is a compositing layer,
+	 * meaning it always have its own graphic context.
+	 * For instance, a GPU accelerated video layer is always a
+	 * compositing layer
+	 */
+	public function isCompositingLayer():Bool
 	{
 		return false;
 	}
@@ -380,7 +520,8 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		
 		//render first negative z-index child LayerRenderer from most
 		//negative to least negative
-		for (i in 0..._negativeZIndexChildLayerRenderers.length)
+		var negativeChildLength:Int = _negativeZIndexChildLayerRenderers.length;
+		for (i in 0...negativeChildLength)
 		{
 			_negativeZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
 		}
@@ -406,14 +547,16 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		
 		
 		//render zero and auto z-index child LayerRenderer, in tree order
-		for (i in 0..._zeroAndAutoZIndexChildLayerRenderers.length)
+		var childLength:Int = _zeroAndAutoZIndexChildLayerRenderers.length;
+		for (i in 0...childLength)
 		{
 			_zeroAndAutoZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
 		}
 		
 		//render all the positive LayerRenderer from least positive to 
 		//most positive
-		for (i in 0..._positiveZIndexChildLayerRenderers.length)
+		var positiveChildLength:Int = _positiveZIndexChildLayerRenderers.length;
+		for (i in 0...positiveChildLength)
 		{
 			_positiveZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
 		}

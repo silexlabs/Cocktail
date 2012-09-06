@@ -384,11 +384,14 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{
 			var child:ElementRenderer = childNodes[i];
 			
-			child.globalContainingBlockOrigin = new PointVO(addedX, addedY);
+			child.globalContainingBlockOrigin.x = addedX;
+			child.globalContainingBlockOrigin.y = addedY;
 			
-			child.globalPositionnedAncestorOrigin = new PointVO(addedPositionedX, addedPositionedY);
+			child.globalPositionnedAncestorOrigin.x = addedPositionedX;
+			child.globalPositionnedAncestorOrigin.y = addedPositionedY;
 			
-			child.scrollOffset = new PointVO(addedScrollX, addedScrollY);
+			child.scrollOffset.x = addedScrollX;
+			child.scrollOffset.y = addedScrollY;
 			
 			//call the method recursively if the child has children itself
 			if (child.hasChildNodes() == true)
