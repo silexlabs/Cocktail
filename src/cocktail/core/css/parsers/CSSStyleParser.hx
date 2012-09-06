@@ -30,14 +30,14 @@ class CSSStyleParser
 	 * with multiple key/value css styles, hold
 	 * the current parsing position
 	 */
-	private var _position:Int;
+	private static var _position:Int = 0;
 	
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	private function new() 
 	{
-		_position = 0;
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ class CSSStyleParser
 	 * a css separator ":" is found, parse the style value until an
 	 * end separator ";" is found
 	 */
-	public function parseStyle(styles:String):Array<TypedPropertyVO>
+	public static function parseStyle(styles:String):Array<TypedPropertyVO>
 	{
 		//reset the position when parsing multiple styles
 		_position = 0;
@@ -187,7 +187,7 @@ class CSSStyleParser
 	 * @return the typed property resulting from the parsing or null
 	 * if the style was invalid
 	 */
-	public function parseStyleValue(propertyName:String, styles:String, position:Int):TypedPropertyVO
+	public static function parseStyleValue(propertyName:String, styles:String, position:Int):TypedPropertyVO
 	{
 		var c:Int = styles.fastCodeAt(position);
 		
@@ -519,7 +519,7 @@ class CSSStyleParser
 	 * Return the position where "important" end
 	 * or -1 to signal that an unexpected ident was parsed
 	 */
-	private function parseImportant(styles:String, position:Int):Int
+	private static function parseImportant(styles:String, position:Int):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		var start = position;
@@ -543,7 +543,7 @@ class CSSStyleParser
 	 * The number might turn out to be a dimension if it is suffixed
 	 * with a unit like, 'px' or a percentage if suffixed with '%'
 	 */
-	private function parseIntegerNumberDimensionOrPercentage(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
+	private static function parseIntegerNumberDimensionOrPercentage(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		var start = position;
@@ -631,7 +631,7 @@ class CSSStyleParser
 	/**
 	 * parse a dimension by parsing the ident after the number
 	 */
-	private function parseDimension(numberOrInteger:Float, styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
+	private static function parseDimension(numberOrInteger:Float, styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		
 		var c:Int = styles.fastCodeAt(position);
@@ -714,7 +714,7 @@ class CSSStyleParser
 		return position;
 	}
 	
-	private function parseString(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
+	private static function parseString(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		var quote:Int = styles.fastCodeAt(position);
 		
@@ -738,7 +738,7 @@ class CSSStyleParser
 	}
 	
 	
-	private function parseIdentOrFunctionnalNotation(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
+	private static function parseIdentOrFunctionnalNotation(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		var start = position;
@@ -762,7 +762,7 @@ class CSSStyleParser
 		return position;
 	}
 	
-	private function parseHexaColor(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
+	private static function parseHexaColor(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		var start:Int = position;
@@ -784,7 +784,7 @@ class CSSStyleParser
 		
 	}
 	
-	private function parseFunctionnalNotation(ident:String, styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
+	private static function parseFunctionnalNotation(ident:String, styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		var start:Int = position;
@@ -819,7 +819,7 @@ class CSSStyleParser
 	}
 	
 	
-	private function getFunctionalNotation(name:String, value:CSSPropertyValue):CSSPropertyValue
+	private static function getFunctionalNotation(name:String, value:CSSPropertyValue):CSSPropertyValue
 	{
 		switch (name)
 		{
@@ -846,7 +846,7 @@ class CSSStyleParser
 		}
 	}
 	
-	private function parseRGBOrRGBA(property:CSSPropertyValue, isRGBA:Bool):CSSPropertyValue
+	private static function parseRGBOrRGBA(property:CSSPropertyValue, isRGBA:Bool):CSSPropertyValue
 	{
 		switch(property)
 		{
@@ -977,7 +977,7 @@ class CSSStyleParser
 	/**
 	 * Try to match an identifier to a CSS value
 	 */
-	private function parseIdent(ident:String, styleValues:Array<CSSPropertyValue>):Void
+	private static function parseIdent(ident:String, styleValues:Array<CSSPropertyValue>):Void
 	{
 		//always compare lowercase string in CSS
 		ident = ident.toLowerCase();
@@ -999,7 +999,7 @@ class CSSStyleParser
 	 * Try to find a CSS keyword or color keyword from an identifier.
 	 * If no match is found, a generic Identifier will be stored
 	 */
-	private function parseKeyword(ident:String, styleValues:Array<CSSPropertyValue>):Void
+	private static function parseKeyword(ident:String, styleValues:Array<CSSPropertyValue>):Void
 	{
 		var cssPropertyValue:CSSPropertyValue = IDENTIFIER(ident);
 		
@@ -1244,7 +1244,7 @@ class CSSStyleParser
 	/**
 	 * Try to match the ident to a CSS color keyword
 	 */
-	private function parseColorKeyword(ident:String):CSSPropertyValue
+	private static function parseColorKeyword(ident:String):CSSPropertyValue
 	{
 		var cssPropertyValue:CSSPropertyValue = null;
 		
@@ -1491,7 +1491,7 @@ class CSSStyleParser
 	 * weird bug when compiling cpp output caused by
 	 * too many switch statements
 	 */
-	private function parseColorKeyword2(ident:String):CSSPropertyValue
+	private static function parseColorKeyword2(ident:String):CSSPropertyValue
 	{
 		var cssPropertyValue:CSSPropertyValue = null;
 		

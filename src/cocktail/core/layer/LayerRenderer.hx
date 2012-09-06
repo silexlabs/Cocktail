@@ -126,6 +126,14 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	public var hasOwnGraphicsContext(default, null):Bool;
 	
+	private var _needsRendering:Bool;
+	
+	/**
+	 * A point used to determine wether an
+	 * ElementRenderer is within a given bound
+	 */
+	private var _scrolledPoint:PointVO;
+	
 	/**
 	 * class constructor. init class attributes
 	 */
@@ -140,9 +148,17 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		_negativeZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		
 		hasOwnGraphicsContext = false;
+		_needsRendering = false;
 		
 		_windowWidth = 0;
 		_windowHeight = 0;
+		
+		_scrolledPoint = new PointVO(0.0, 0.0);
+	}
+	
+	public function invalidateRendering():Void
+	{
+		_needsRendering = true;
 	}
 	
 	/////////////////////////////////
@@ -161,6 +177,8 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */ 
 	override public function appendChild(newChild:LayerRenderer):LayerRenderer
 	{
+		invalidateRendering();
+		
 		//add to parent as this LayerRenderer do'esnt establish
 		//new stacking context
 		if (establishesNewStackingContext() == false)
@@ -225,6 +243,8 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	override public function removeChild(oldChild:LayerRenderer):LayerRenderer
 	{
+		invalidateRendering();
+		
 		//the layerRenderer was added to the parent as this
 		//layerRenderer doesn't establish a stacking context
 		if (establishesNewStackingContext() == false)
@@ -497,6 +517,8 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	public function render(windowWidth:Int, windowHeight:Int ):Void
 	{
+		_needsRendering = true;
+		
 		//update the dimension of the bitmap data if the window size changed
 		//since last rendering
 		if (windowWidth != _windowWidth || windowHeight != _windowHeight)
@@ -509,15 +531,21 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			}
 			_windowWidth = windowWidth;
 			_windowHeight = windowHeight;
+			
+			_needsRendering = true;
 		}
 	
-		//only clear the bitmaps if the GraphicsContext
-		//was created by this LayerRenderer
-		if (hasOwnGraphicsContext == true)
+		if (_needsRendering == true)
 		{
-			//reset the bitmap
-			graphicsContext.clear();
+			//only clear the bitmaps if the GraphicsContext
+			//was created by this LayerRenderer
+			if (hasOwnGraphicsContext == true)
+			{
+				//reset the bitmap
+				graphicsContext.clear();
+			}
 		}
+	
 		
 		//render first negative z-index child LayerRenderer from most
 		//negative to least negative
@@ -527,24 +555,30 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			_negativeZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
 		}
 		
-		//init transparency on the graphicContext if the element is transparent. Everything
-		//painted with the element will have an alpha equal to the opacity style
-		if (rootElementRenderer.isTransparent() == true)
+		if (_needsRendering == true)
 		{
-			var coreStyle:CoreStyle = rootElementRenderer.coreStyle;
-			graphicsContext.beginTransparency(coreStyle.getNumber(coreStyle.opacity));
+			//init transparency on the graphicContext if the element is transparent. Everything
+			//painted with the element will have an alpha equal to the opacity style
+			if (rootElementRenderer.isTransparent() == true)
+			{
+				var coreStyle:CoreStyle = rootElementRenderer.coreStyle;
+				graphicsContext.beginTransparency(coreStyle.getNumber(coreStyle.opacity));
+			}
+				
+			//render the rootElementRenderer itself which will also
+			//render all ElementRenderer belonging to this LayerRenderer
+			rootElementRenderer.render(graphicsContext);
+			
+			//stop transparency so that subsequent painted element won't be transparent
+			//if they don't themselves have an opacity
+			if (rootElementRenderer.isTransparent() == true)
+			{
+				graphicsContext.endTransparency();
+			}
 		}
 		
-		//render the rootElementRenderer itself which will also
-		//render all ElementRenderer belonging to this LayerRenderer
-		rootElementRenderer.render(graphicsContext);
 		
-		//stop transparency so that subsequent painted element won't be transparent
-		//if they don't themselves have an opacity
-		if (rootElementRenderer.isTransparent() == true)
-		{
-			graphicsContext.endTransparency();
-		}
+
 		
 		
 		//render zero and auto z-index child LayerRenderer, in tree order
@@ -566,13 +600,20 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//element of their layer
 		rootElementRenderer.renderScrollBars(graphicsContext, windowWidth, windowHeight);
 		
-		//apply transformations to the layer if needed
-		if (rootElementRenderer.isTransformed() == true)
+		if (_needsRendering == true)
 		{
-			//TODO 2 : should already be computed at this point
-			VisualEffectStylesComputer.compute(rootElementRenderer.coreStyle);
-			graphicsContext.transform(getTransformationMatrix(graphicsContext));
+				//apply transformations to the layer if needed
+			if (rootElementRenderer.isTransformed() == true)
+			{
+				//TODO 2 : should already be computed at this point
+				VisualEffectStylesComputer.compute(rootElementRenderer.coreStyle);
+				graphicsContext.transform(getTransformationMatrix(graphicsContext));
+			}
 		}
+		
+		
+		
+		_needsRendering = false;
 	}
 	
 	/////////////////////////////////
@@ -782,9 +823,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	{
 		var elementRenderersAtPointInLayer:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
-		var scrolledPoint:PointVO = new PointVO(point.x + scrollX, point.y + scrollY);
+		_scrolledPoint.x = point.x + scrollX;
+		_scrolledPoint.y = point.y + scrollY;
 		
-		if (isWithinBounds(scrolledPoint, renderer.globalBounds) == true)
+		if (isWithinBounds(_scrolledPoint, renderer.globalBounds) == true)
 		{
 			elementRenderersAtPointInLayer.push(renderer);
 		}
@@ -812,9 +854,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				}
 				else
 				{
-					var scrolledPoint:PointVO = new PointVO(point.x + scrollX, point.y + scrollY);
+					_scrolledPoint.x = point.x + scrollX;
+					_scrolledPoint.y = point.y + scrollY;
 					
-					if (isWithinBounds(scrolledPoint, child.globalBounds) == true)
+					if (isWithinBounds(_scrolledPoint, child.globalBounds) == true)
 					{
 						elementRenderersAtPointInLayer.push(child);
 					}

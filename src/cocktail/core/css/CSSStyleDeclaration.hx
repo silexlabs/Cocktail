@@ -169,11 +169,6 @@ class CSSStyleDeclaration
 	private var _propertiesHash:Hash<TypedPropertyVO>;
 	
 	/**
-	 * a reference to a CSS parser instance
-	 */
-	private var _cssStyleParser:CSSStyleParser;
-	
-	/**
 	 * Optionnal callback, called when the value
 	 * of a style changes
 	 */
@@ -185,7 +180,6 @@ class CSSStyleDeclaration
 	public function new(parentRule:CSSRule = null, onStyleChange:String->Void = null) 
 	{
 		initPropertiesStructure();
-		_cssStyleParser = new CSSStyleParser();
 		_onStyleChange = onStyleChange;
 		this.parentRule = parentRule;
 	}
@@ -246,7 +240,7 @@ class CSSStyleDeclaration
 		{
 			//parse the proeprty, the return property is null
 			//if the style is invalid
-			var typedProperty:TypedPropertyVO = _cssStyleParser.parseStyleValue(name, value, 0);
+			var typedProperty:TypedPropertyVO = CSSStyleParser.parseStyleValue(name, value, 0);
 			
 			if (typedProperty != null)
 			{
@@ -1765,7 +1759,7 @@ class CSSStyleDeclaration
 		//reset properties
 		initPropertiesStructure();
 		
-		var typedProperties:Array<TypedPropertyVO> = _cssStyleParser.parseStyle(value);
+		var typedProperties:Array<TypedPropertyVO> = CSSStyleParser.parseStyle(value);
 		
 		for (i in 0...typedProperties.length)
 		{

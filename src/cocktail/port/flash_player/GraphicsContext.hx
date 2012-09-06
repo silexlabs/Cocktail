@@ -302,7 +302,6 @@ class GraphicsContext extends AbstractGraphicsContext
 			_flashRectangle.y = rect.y;
 			_flashRectangle.width = rect.width;
 			_flashRectangle.height = rect.height;
-			
 			_nativeBitmap.bitmapData.fillRect(_flashRectangle, argbColor);
 		}
 	

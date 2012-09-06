@@ -242,6 +242,13 @@ class HTMLDocument extends Document
 	public var layoutManager(default, null):LayoutManager;
 	
 	/**
+	 * the current mouse point, used when
+	 * retrieving the ElementRenderer
+	 * under mouse
+	 */
+	private var _mousePoint:PointVO;
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new(window:Window = null) 
@@ -272,6 +279,7 @@ class HTMLDocument extends Document
 		_documentNeedsLayout = true;
 		_documentNeedsRendering = true;
 		_documentNeedsCascading = true;
+		_mousePoint = new PointVO(0.0, 0.0);
 		
 		layoutManager = new LayoutManager();
 	}
@@ -1040,9 +1048,9 @@ class HTMLDocument extends Document
 	 */
 	private function getFirstElementRendererWhichCanDispatchMouseEvent(x:Int, y:Int):ElementRenderer
 	{
-		var x:Float = x;
-		var y:Float = y;
-		var elementRendererAtPoint:ElementRenderer = documentElement.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( new PointVO(x, y), 0, 0  );
+		_mousePoint.x = x;
+		_mousePoint.y = y;
+		var elementRendererAtPoint:ElementRenderer = documentElement.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( _mousePoint, 0, 0  );
 		
 		//when no element is under mouse like for instance when the mouse leaves
 		//the window, return the body

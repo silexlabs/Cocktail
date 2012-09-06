@@ -860,8 +860,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		var bounds:RectangleVO = this.bounds;
 		
+		var positionKeyword:CSSKeywordValue = coreStyle.getKeyword(coreStyle.position);
+		
 		//fixed positioned
-		if (coreStyle.getKeyword(coreStyle.position) == FIXED)
+		if (positionKeyword == FIXED)
 		{
 			//here it uses its static position for x
 			if (coreStyle.isAuto(coreStyle.left) == true && coreStyle.isAuto(coreStyle.right) == true)
@@ -884,7 +886,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			}
 		}
 		//absolute positioned
-		else if (coreStyle.getKeyword(coreStyle.position) == ABSOLUTE)
+		else if (positionKeyword == ABSOLUTE)
 		{
 			//static position for x
 			if (coreStyle.isAuto(coreStyle.left) == true && coreStyle.isAuto(coreStyle.right) == true)
