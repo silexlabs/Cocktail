@@ -66,9 +66,9 @@ class InlineFormattingContext extends FormattingContext
 	/**
 	 * class constructor.
 	 */
-	public function new() 
+	public function new(floatsManager:FloatsManager) 
 	{
-		super();
+		super(floatsManager);
 	}
 
 	

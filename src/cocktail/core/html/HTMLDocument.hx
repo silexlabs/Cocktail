@@ -31,6 +31,7 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLHtmlElement;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.html.HTMLInputElement;
+import cocktail.core.layout.floats.FloatsManager;
 import cocktail.core.layout.formatter.BlockFormattingContext;
 import cocktail.core.layout.formatter.InlineFormattingContext;
 import cocktail.core.multitouch.MultiTouchManager;
@@ -276,8 +277,10 @@ class HTMLDocument extends Document
 		_documentNeedsLayout = true;
 		_documentNeedsRendering = true;
 		_documentNeedsCascading = true;
-		inlineFormattingContext = new InlineFormattingContext();
-		blockFormattingContext = new BlockFormattingContext(inlineFormattingContext);
+		
+		var floatsManager:FloatsManager = new FloatsManager();
+		inlineFormattingContext = new InlineFormattingContext(floatsManager);
+		blockFormattingContext = new BlockFormattingContext(inlineFormattingContext, floatsManager);
 	}
 	
 	/**

@@ -60,9 +60,8 @@ class BackgroundStylesComputer
 	 */
 	public static function compute(style:CoreStyle):Void
 	{
-		
 		//actually compute the background color
-		style.usedValues.backgroundColor = getComputedBackgroundColor(style);
+		getComputedBackgroundColor(style);
 	}
 	
 	/**
@@ -133,12 +132,9 @@ class BackgroundStylesComputer
 	/**
 	 * Return the background color as an integer
 	 */
-	private static function getComputedBackgroundColor(style:CoreStyle):ColorVO
+	private static function getComputedBackgroundColor(style:CoreStyle):Void
 	{
-		var computedColor:ColorVO;
-		computedColor = CSSValueConverter.getColorVOFromCSSColor(style.getColor(style.backgroundColor));
-		
-		return computedColor;
+		CSSValueConverter.getColorVOFromCSSColor(style.getColor(style.backgroundColor), style.usedValues.backgroundColor);
 	}
 	
 		// BACKGROUND POSITION

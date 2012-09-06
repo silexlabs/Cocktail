@@ -42,9 +42,16 @@ class FloatsManager
 	 */
 	public function new() 
 	{
+		
+	}
+	
+	/**
+	 * init/reset the class attributes
+	 */
+	public function init():Void
+	{
 		var floatsLeft:Array<RectangleVO> = new Array<RectangleVO>();
 		var floatsRight:Array<RectangleVO> = new Array<RectangleVO>();
-	
 		_floats = new FloatsVO(floatsLeft, floatsRight);
 	}
 	

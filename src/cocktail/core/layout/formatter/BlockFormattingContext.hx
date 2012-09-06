@@ -7,6 +7,7 @@
 */
 package cocktail.core.layout.formatter;
 import cocktail.core.dom.Node;
+import cocktail.core.layout.floats.FloatsManager;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
@@ -43,9 +44,9 @@ class BlockFormattingContext extends FormattingContext
 	/**
 	 * class constructor
 	 */
-	public function new(inlineFormattingContext:InlineFormattingContext) 
+	public function new(inlineFormattingContext:InlineFormattingContext, floatsManager:FloatsManager) 
 	{
-		super();
+		super(floatsManager);
 		_inlineFormattingContext = inlineFormattingContext;
 		_registeredFloats = new Array<FloatVO>();
 	}
@@ -125,7 +126,7 @@ class BlockFormattingContext extends FormattingContext
 					var floatBounds:RectangleVO = _floatsManager.registerFloat(child, concatenatedY, 0, elementRendererUsedValues.width);
 					_registeredFloats.push(new FloatVO(child, floatBounds));
 					
-					format(_formattingContextRoot, _floatsManager);
+					format(_formattingContextRoot, false);
 					return 0.0;
 				}
 				
@@ -155,7 +156,7 @@ class BlockFormattingContext extends FormattingContext
 						//boxes, because of floats
 						if (child.childrenInline() == true)
 						{
-							_inlineFormattingContext.format(cast(child), _floatsManager);
+							_inlineFormattingContext.format(cast(child), false);
 						}				
 		
 						currentLineY = child.bounds.y;

@@ -67,9 +67,10 @@ class FormattingContext
 	/**
 	 * Class constructor
 	 */
-	public function new() 
+	public function new(floatsManager:FloatsManager) 
 	{
 		_formattingContextData = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		_floatsManager = floatsManager;
 	}
 	
 	/**
@@ -92,11 +93,17 @@ class FormattingContext
 	 * starts a formatting
 	 * @param	formattingContextRoot the block box which establishes
 	 * the formating context
+	 * @param resetFloats wether to reset all current registered floats
 	 */
-	public function format(formattingContextRoot:BlockBoxRenderer, floatsManager:FloatsManager):Void
+	public function format(formattingContextRoot:BlockBoxRenderer, resetFloats:Bool):Void
 	{	
 		_formattingContextRoot = formattingContextRoot;
-		_floatsManager = floatsManager;
+		
+		if (resetFloats == true)
+		{
+			_floatsManager.init();
+		}
+		
 		initFormattingContextData();
 		startFormatting();
 		applyShrinkToFitIfNeeded(_formattingContextRoot, _formattingContextData.width);
