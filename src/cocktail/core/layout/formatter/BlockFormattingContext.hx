@@ -30,7 +30,7 @@ import haxe.Log;
 class BlockFormattingContext extends FormattingContext
 {
 	
-	private var _registeredFloats:Array<FloatData>;
+	private var _registeredFloats:Array<FloatVO>;
 	
 	/**
 	 * A reference to an instance of the class laying out
@@ -47,7 +47,7 @@ class BlockFormattingContext extends FormattingContext
 	{
 		super();
 		_inlineFormattingContext = inlineFormattingContext;
-		_registeredFloats = new Array<FloatData>();
+		_registeredFloats = new Array<FloatVO>();
 	}
 	
 	override private function startFormatting():Void
@@ -71,7 +71,7 @@ class BlockFormattingContext extends FormattingContext
 		return false;
 	}
 	
-	private function getRegisteredFloat(child:ElementRenderer):FloatData
+	private function getRegisteredFloat(child:ElementRenderer):FloatVO
 	{
 		var length:Int = _registeredFloats.length;
 		for (i in 0...length)
@@ -123,10 +123,7 @@ class BlockFormattingContext extends FormattingContext
 				if (isFloatRegistered(child) == false)
 				{
 					var floatBounds:RectangleVO = _floatsManager.registerFloat(child, concatenatedY, 0, elementRendererUsedValues.width);
-					_registeredFloats.push( {
-						node:child, 
-						bounds:floatBounds
-					});
+					_registeredFloats.push(new FloatVO(child, floatBounds));
 					
 					format(_formattingContextRoot, _floatsManager);
 					return 0.0;
@@ -214,7 +211,7 @@ class BlockFormattingContext extends FormattingContext
 		
 		_floatsManager.removeFloats(concatenatedY);
 		
-		_registeredFloats = new Array<FloatData>();
+		_registeredFloats = new Array<FloatVO>();
 		
 		return concatenatedY;
 		

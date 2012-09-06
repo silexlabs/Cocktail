@@ -33,8 +33,8 @@ class FloatsManager
 	 * Holds a reference to each of the current left and right
 	 * floats coordinates
 	 */
-	private var _floats:FloatsData;
-	public var floats(getFloats, never):FloatsData;
+	private var _floats:FloatsVO;
+	public var floats(getFloats, never):FloatsVO;
 	
 	/**
 	 * Class constructor, init the structure holding
@@ -45,10 +45,7 @@ class FloatsManager
 		var floatsLeft:Array<RectangleVO> = new Array<RectangleVO>();
 		var floatsRight:Array<RectangleVO> = new Array<RectangleVO>();
 	
-		_floats = {
-			left:floatsLeft,
-			right:floatsRight
-		}
+		_floats = new FloatsVO(floatsLeft, floatsRight);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -447,7 +444,7 @@ class FloatsManager
 	// GETTERS/SETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function getFloats():FloatsData
+	private function getFloats():FloatsVO
 	{
 		return _floats;
 	}

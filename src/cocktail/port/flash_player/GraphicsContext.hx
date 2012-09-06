@@ -69,6 +69,16 @@ class GraphicsContext extends AbstractGraphicsContext
 	private var _flashMatrix:flash.geom.Matrix;
 	
 	/**
+	 * A reuseable rectangle used for fillRect rectangle
+	 */
+	private var _fillRectRectangle:RectangleVO;
+	
+	/**
+	 * A reuseable point used for fillRect rectangle
+	 */
+	private var _fillRectPoint:PointVO;
+	
+	/**
 	 * class constructor
 	 */
 	public function new(layerRenderer:LayerRenderer = null, nativeLayer:NativeElement = null) 
@@ -87,6 +97,8 @@ class GraphicsContext extends AbstractGraphicsContext
 		_flashRectangle = new Rectangle();
 		_flashPoint = new Point();
 		_flashMatrix = new flash.geom.Matrix();
+		_fillRectRectangle = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		_fillRectPoint = new PointVO(0.0, 0.0);
 		_width = 0;
 		_height = 0;
 		
@@ -274,8 +286,13 @@ class GraphicsContext extends AbstractGraphicsContext
 		//must be created to composite alpha
 		if (color.alpha != 1.0)
 		{
+			_fillRectRectangle.width = rect.width;
+			_fillRectRectangle.height = rect.height;
+			_fillRectPoint.x = rect.x;
+			_fillRectPoint.y = rect.y;
+			
 			var fillRectBitmapData:BitmapData = new BitmapData(Math.round(rect.width), Math.round(rect.height), true, argbColor);
-			copyPixels(fillRectBitmapData, new RectangleVO(0.0, 0.0, rect.width, rect.height), new PointVO(rect.x, rect.y) );
+			copyPixels(fillRectBitmapData, _fillRectRectangle, _fillRectPoint );
 			fillRectBitmapData.dispose();
 		}
 		//else, the faster native flash method can be used

@@ -96,14 +96,29 @@ import cocktail.core.css.CSSData;
 	 * floats registered for a 
 	 * formatting context
 	 */
-	typedef FloatsData = {
-		var left:Array<RectangleVO>;
-		var right:Array<RectangleVO>;
+	class FloatsVO {
+		
+		public var left:Array<RectangleVO>;
+		public var right:Array<RectangleVO>;
+		
+		public function new(left:Array<RectangleVO>, right:Array<RectangleVO>)
+		{
+			this.left = left;
+			this.right = right;
+		}
 	}
 	
-	typedef FloatData = {
-		var node:ElementRenderer;
-		var bounds:RectangleVO;
+	class FloatVO {
+		
+		public var node(default, null):ElementRenderer;
+		public var bounds(default, null):RectangleVO;
+		
+		public function new(node:ElementRenderer, bounds:RectangleVO)
+		{
+			this.node = node;
+			this.bounds = bounds;
+		}
+
 	}
 
 	
