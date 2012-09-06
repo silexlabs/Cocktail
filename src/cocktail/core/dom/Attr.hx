@@ -31,8 +31,6 @@ class Attr<ElementClass:Node<ElementClass>> extends Node<Attr<ElementClass>>
 	 * of the string, i.e. any characters
 	 * that an XML processor would recognize as markup
 	 * are instead treated as literal text.
-	 * 
-	 * TODO 5 : create a Text node ?
 	 */
 	public var value(get_value, set_value):String;
 	

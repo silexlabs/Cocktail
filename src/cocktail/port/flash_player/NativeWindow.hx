@@ -1,18 +1,20 @@
 /*
- * Cocktail, HTML rendering engine
- * http://haxe.org/com/libs/cocktail
- *
- * Copyright (c) Silex Labs
- * Cocktail is available under the MIT license
- * http://www.silexlabs.org/labs/cocktail-licensing/
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.port.flash_player;
 
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLElement;
+import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
 import cocktail.port.platform.nativeWindow.AbstractNativeWindow;
+import flash.display.Bitmap;
 import flash.display.StageDisplayState;
 import flash.Lib;
 import flash.net.URLRequest;
@@ -90,6 +92,14 @@ class NativeWindow extends AbstractNativeWindow
 		return flash.Lib.current.stage.displayState == StageDisplayState.FULL_SCREEN;
 	}
 	
+	/**
+	 * Return the flash Stage
+	 */
+	override public function getInitialNativeLayer():NativeElement
+	{
+		return flash.Lib.current;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden private utils methods
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -100,6 +110,8 @@ class NativeWindow extends AbstractNativeWindow
 	override private function setNativeListeners():Void
 	{
 		Lib.current.stage.addEventListener(flash.events.Event.RESIZE, onNativeResize);
+		
+		//not supported by nme
 		#if flash9
 		Lib.current.stage.addEventListener(flash.events.FullScreenEvent.FULL_SCREEN, onNativeFullScreenChange);
 		#end
@@ -111,6 +123,8 @@ class NativeWindow extends AbstractNativeWindow
 	override private function removeNativeListeners():Void
 	{
 		Lib.current.stage.removeEventListener(flash.events.Event.RESIZE, onNativeResize);
+		
+		//not supported by nme
 		#if flash9
 		Lib.current.stage.removeEventListener(flash.events.FullScreenEvent.FULL_SCREEN, onNativeFullScreenChange);
 		#end
@@ -125,7 +139,7 @@ class NativeWindow extends AbstractNativeWindow
 	override private function getUIEvent(event:Dynamic):UIEvent
 	{
 		var resizeEvent:UIEvent = new UIEvent();
-		resizeEvent.initUIEvent(UIEvent.RESIZE, false, false, null, 0.0);
+		resizeEvent.initUIEvent(EventConstants.RESIZE, false, false, null, 0.0);
 		
 		return resizeEvent;
 	}
@@ -139,7 +153,7 @@ class NativeWindow extends AbstractNativeWindow
 	override private function getEvent(event:Dynamic):Event
 	{
 		var fullScreenChangeEvent:Event = new Event();
-		fullScreenChangeEvent.initEvent(Event.FULL_SCREEN_CHANGE, false, false);
+		fullScreenChangeEvent.initEvent(EventConstants.FULL_SCREEN_CHANGE, false, false);
 		
 		return fullScreenChangeEvent;
 	}

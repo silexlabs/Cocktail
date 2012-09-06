@@ -1,18 +1,16 @@
 /*
- * Cocktail, HTML rendering engine
- * http://haxe.org/com/libs/cocktail
- *
- * Copyright (c) Silex Labs
- * Cocktail is available under the MIT license
- * http://www.silexlabs.org/labs/cocktail-licensing/
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.port.platform.nativeMedia.NativeMedia;
-import haxe.Stack;
-import haxe.Timer;
 import cocktail.core.html.HTMLData;
 import cocktail.core.renderer.RendererData;
 
@@ -275,7 +273,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * access to runtime specific API for 
 	 * video and audio
 	 */
-	private var _nativeMedia:NativeMedia;
+	public var nativeMedia(default, null):NativeMedia;
 	
 	/**
 	 * Wether the loading of the media resource
@@ -314,8 +312,8 @@ class HTMLMediaElement extends EmbeddedElement
 		seeking = false;
 		readyState = HAVE_NOTHING;
 		_autoplaying = true;
-		muted = false;
 		volume = 1.0;
+		muted = false;
 		
 		_stalledByPreload = false;
 		_loadedDataWasDispatched = false;
@@ -370,7 +368,6 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		return newChild;
 	}
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN ATTRIBUTES METHODS
@@ -443,16 +440,16 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			paused = false;
 			
-			fireEvent(Event.PLAY, false, false);
+			fireEvent(EventConstants.PLAY, false, false);
 			
 			switch (readyState)
 			{
 				case HAVE_NOTHING, HAVE_METADATA, HAVE_CURRENT_DATA:
-					fireEvent(Event.WAITING, false, false);
+					fireEvent(EventConstants.WAITING, false, false);
 					
 				case HAVE_FUTURE_DATA, HAVE_ENOUGH_DATA:
 					doPlay();
-					fireEvent(Event.PLAYING, false, false);
+					fireEvent(EventConstants.PLAYING, false, false);
 			}
 		}
 		
@@ -489,14 +486,14 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			paused = true;
 			
-			fireEvent(Event.TIME_UPDATE, false, false);
+			fireEvent(EventConstants.TIME_UPDATE, false, false);
 			
-			fireEvent(Event.PAUSE, false, false);
+			fireEvent(EventConstants.PAUSE, false, false);
 			
 			_officialPlaybackPosition = _currentPlaybackPosition;
 		}
 		
-		_nativeMedia.pause();
+		nativeMedia.pause();
 	}
 	
 	/**
@@ -506,7 +503,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	public function canPlayType(type:String):String
 	{
-		return _nativeMedia.canPlayType(type);
+		return nativeMedia.canPlayType(type);
 	}
 	
 	/////////////////////////////////
@@ -518,7 +515,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function doPlay():Void
 	{
-		_nativeMedia.play();
+		nativeMedia.play();
 		onTimeUpdateTick();
 	}
 	
@@ -534,14 +531,14 @@ class HTMLMediaElement extends EmbeddedElement
 		switch (networkState)
 		{
 			case NETWORK_LOADING, NETWORK_IDLE:
-				fireEvent(Event.ABORT, false, false);
+				fireEvent(EventConstants.ABORT, false, false);
 		}
 		
 		if (networkState != NETWORK_EMPTY)
 		{
-			fireEvent(Event.EMPTIED, false, false);
+			fireEvent(EventConstants.EMPTIED, false, false);
 			
-			_nativeMedia.src = null;
+			nativeMedia.src = null;
 			
 			networkState = NETWORK_EMPTY;
 			
@@ -557,7 +554,7 @@ class HTMLMediaElement extends EmbeddedElement
 			if (_officialPlaybackPosition > 0)
 			{
 				_officialPlaybackPosition = 0;
-				fireEvent(Event.TIME_UPDATE, false, false);
+				fireEvent(EventConstants.TIME_UPDATE, false, false);
 			}
 			else
 			{
@@ -616,7 +613,7 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		networkState = NETWORK_LOADING;
 		
-		fireEvent(Event.LOAD_START, false, false);
+		fireEvent(EventConstants.LOAD_START, false, false);
 		
 		if (mode == RESOURCE_SELECTION_ATTRIBUTE_MODE)
 		{
@@ -626,7 +623,7 @@ class HTMLMediaElement extends EmbeddedElement
 				
 				networkState = NETWORK_NO_SOURCE;
 				
-				fireEvent(Event.ERROR, false, false);
+				fireEvent(EventConstants.ERROR, false, false);
 				
 				return;
 			}
@@ -688,13 +685,13 @@ class HTMLMediaElement extends EmbeddedElement
 			if (autoplay == false)
 			{
 				networkState = NETWORK_IDLE;
-				fireEvent(Event.SUSPEND, false, false);
+				fireEvent(EventConstants.SUSPEND, false, false);
 				_stalledByPreload = true;
 				return;
 			}
 		}
-		_nativeMedia.onLoadedMetaData = onNativeMediaLoadedMetaData;
-		_nativeMedia.src = url;
+		nativeMedia.onLoadedMetaData = onNativeMediaLoadedMetaData;
+		nativeMedia.src = url;
 	}
 	
 	/**
@@ -743,19 +740,19 @@ class HTMLMediaElement extends EmbeddedElement
 		//playback position. If there are no ranges given in the seekable 
 		//attribute then set the seeking IDL attribute to false and abort these steps.
 		
-		fireEvent(Event.SEEKING, false, false);
+		fireEvent(EventConstants.SEEKING, false, false);
 		
 	
 		_currentPlaybackPosition = newPlaybackPosition;
-		_nativeMedia.seek(newPlaybackPosition);
+		nativeMedia.seek(newPlaybackPosition);
 		
 		//TODO 2 : Wait until the user agent has established whether or not 
 		//the media data for the new playback position is available, and, if
 		//it is, until it has decoded enough data to play back that position.
 		
-		fireEvent(Event.TIME_UPDATE, false, false);
+		fireEvent(EventConstants.TIME_UPDATE, false, false);
 		
-		fireEvent(Event.SEEKED, false, false);
+		fireEvent(EventConstants.SEEKED, false, false);
 	}
 	
 	/**
@@ -769,7 +766,7 @@ class HTMLMediaElement extends EmbeddedElement
 	{
 		if (readyState == HAVE_NOTHING && newReadyState == HAVE_METADATA)
 		{
-			fireEvent(Event.LOADED_METADATA, false, false);
+			fireEvent(EventConstants.LOADED_METADATA, false, false);
 		}
 		
 		if (readyState == HAVE_METADATA && (newReadyState == HAVE_CURRENT_DATA || newReadyState == HAVE_ENOUGH_DATA 
@@ -777,7 +774,7 @@ class HTMLMediaElement extends EmbeddedElement
 		{
 			if (_loadedDataWasDispatched == false && readyState == HAVE_METADATA)
 			{
-				fireEvent(Event.LOADED_DATA, false, false);
+				fireEvent(EventConstants.LOADED_DATA, false, false);
 				_loadedDataWasDispatched = true;
 			}
 			
@@ -787,19 +784,19 @@ class HTMLMediaElement extends EmbeddedElement
 				{
 					if (isPotentiallyPlaying() == true)
 					{
-						fireEvent(Event.TIME_UPDATE, false, false);
-						fireEvent(Event.WAITING, false, false);
+						fireEvent(EventConstants.TIME_UPDATE, false, false);
+						fireEvent(EventConstants.WAITING, false, false);
 					}
 				}
 				
 				if (readyState <= HAVE_CURRENT_DATA && newReadyState == HAVE_FUTURE_DATA)
 				{
-					fireEvent(Event.CAN_PLAY, false, false);
+					fireEvent(EventConstants.CAN_PLAY, false, false);
 					
 					if (paused == false)
 					{
 						doPlay();
-						fireEvent(Event.PLAYING, false, false);
+						fireEvent(EventConstants.PLAYING, false, false);
 					}
 				}
 				
@@ -807,12 +804,12 @@ class HTMLMediaElement extends EmbeddedElement
 				{
 					if (readyState == HAVE_CURRENT_DATA)
 					{
-						fireEvent(Event.CAN_PLAY, false, false);
+						fireEvent(EventConstants.CAN_PLAY, false, false);
 						
 						if (paused == false)
 						{
 							doPlay();
-							fireEvent(Event.PLAYING, false, false);
+							fireEvent(EventConstants.PLAYING, false, false);
 						}
 					}
 					
@@ -823,15 +820,15 @@ class HTMLMediaElement extends EmbeddedElement
 							if (autoplay == true)
 							{
 								paused = false;
-								fireEvent(Event.PLAY, false, false);
+								fireEvent(EventConstants.PLAY, false, false);
 								doPlay();
 								
-								fireEvent(Event.PLAYING, false, false);
+								fireEvent(EventConstants.PLAYING, false, false);
 							}
 						}
 					}
 					
-					fireEvent(Event.CAN_PLAY_THROUGH, false, false);
+					fireEvent(EventConstants.CAN_PLAY_THROUGH, false, false);
 				}
 			}
 		}
@@ -880,8 +877,8 @@ class HTMLMediaElement extends EmbeddedElement
 		_initialPlaybackPosition = 0;
 		_officialPlaybackPosition = 0;
 		
-		duration = _nativeMedia.duration;
-		fireEvent(Event.DURATION_CHANGE, false, false);
+		duration = nativeMedia.duration;
+		fireEvent(EventConstants.DURATION_CHANGE, false, false);
 		
 		setReadyState(HAVE_METADATA);
 		
@@ -935,8 +932,8 @@ class HTMLMediaElement extends EmbeddedElement
 	 */
 	private function onNativeMediaLoadedMetaData(e:Event):Void
 	{
-		intrinsicHeight = _nativeMedia.height;
-		intrinsicWidth = _nativeMedia.width;
+		intrinsicHeight = nativeMedia.height;
+		intrinsicWidth = nativeMedia.width;
 		intrinsicRatio = intrinsicHeight / intrinsicWidth;
 		
 		//update playback times and duration
@@ -975,7 +972,7 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 		
 		//update playback position
-		_currentPlaybackPosition = _nativeMedia.currentTime;
+		_currentPlaybackPosition = nativeMedia.currentTime;
 		_officialPlaybackPosition = _currentPlaybackPosition;
 		
 		//check if the end of the media is reached
@@ -986,7 +983,7 @@ class HTMLMediaElement extends EmbeddedElement
 			if (loop == true)
 			{
 				seek(0);
-				play();
+				doPlay();
 				return;
 			}
 			ended = true;
@@ -997,25 +994,26 @@ class HTMLMediaElement extends EmbeddedElement
 			_officialPlaybackPosition = _currentPlaybackPosition;
 			
 			//should fire a last time update event
-			fireEvent(Event.TIME_UPDATE, false, false);
+			fireEvent(EventConstants.TIME_UPDATE, false, false);
 			
 			//pause the media on reaching the ends
 			if (paused == false)
 			{
 				paused = true;
-				fireEvent(Event.PAUSE, false, false);
+				fireEvent(EventConstants.PAUSE, false, false);
 			}
 			
-			fireEvent(Event.ENDED, false, false);
+			fireEvent(EventConstants.ENDED, false, false);
 			return;
 		}
 		
-		fireEvent(Event.TIME_UPDATE, false, false);
+		fireEvent(EventConstants.TIME_UPDATE, false, false);
 		
 		//if the media has not ended playing,
 		//set this method to be called again 
-		#if (flash9 || nme)
-		Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
+		#if macro
+		#elseif (flash9 || nme)
+		haxe.Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
 		#end
 	}
 	
@@ -1027,7 +1025,7 @@ class HTMLMediaElement extends EmbeddedElement
 	{
 		//dispatch a load progress event
 		//TODO 4 : should it be dispatched before suspend ?
-		fireEvent(Event.PROGRESS, false, false);
+		fireEvent(EventConstants.PROGRESS, false, false);
 		
 		//TODO 3 : passing from one ready state to 
 		//another should be improved
@@ -1037,20 +1035,21 @@ class HTMLMediaElement extends EmbeddedElement
 		}
 		
 		//check if all of the media has been loaded
-		if (_nativeMedia.bytesLoaded >= _nativeMedia.bytesTotal)
+		if (nativeMedia.bytesLoaded >= nativeMedia.bytesTotal)
 		{
 			setReadyState(HAVE_ENOUGH_DATA);
 			
 			networkState = NETWORK_IDLE;
-			fireEvent(Event.SUSPEND, false, false);
+			fireEvent(EventConstants.SUSPEND, false, false);
 			
 			return;
 		}
 		
 		//if not all of the media has been loaded, dispatch
 		//a progress event and set this method to be called again
-		#if (flash9 || nme)
-		Timer.delay(onProgressTick, PROGRESS_FREQUENCY);
+		#if macro
+		#elseif (flash9 || nme)
+		haxe.Timer.delay(onProgressTick, PROGRESS_FREQUENCY);
 		#end
 	}
 	
@@ -1153,17 +1152,17 @@ class HTMLMediaElement extends EmbeddedElement
 		//if sound is no longer muted
 		if (value == false)
 		{
-			_nativeMedia.volume = volume;
+			nativeMedia.volume = volume;
 		}
 		//muting consist on setting volume of native
 		//media to 0
 		else
 		{
-			_nativeMedia.volume = 0;
+			nativeMedia.volume = 0;
 		}
 		
 		muted = value;
-		fireEvent(Event.VOLUME_CHANGE, false, false);
+		fireEvent(EventConstants.VOLUME_CHANGE, false, false);
 		
 		return value;
 	}
@@ -1172,11 +1171,11 @@ class HTMLMediaElement extends EmbeddedElement
 	{
 		if (muted == false)
 		{
-			_nativeMedia.volume = value;
+			nativeMedia.volume = value;
 		}
 		
 		volume = value;
-		fireEvent(Event.VOLUME_CHANGE, false, false);
+		fireEvent(EventConstants.VOLUME_CHANGE, false, false);
 		
 		return value;
 	}
@@ -1189,7 +1188,7 @@ class HTMLMediaElement extends EmbeddedElement
 		//already loaded of the media
 		ranges.push( {
 			start : 0.0,
-			end: duration * (_nativeMedia.bytesLoaded / _nativeMedia.bytesTotal)
+			end: duration * (nativeMedia.bytesLoaded / nativeMedia.bytesTotal)
 		});
 		
 		var timeRanges:TimeRanges = new TimeRanges(ranges);

@@ -1,12 +1,12 @@
 /*
- * Cocktail, HTML rendering engine
- * http://haxe.org/com/libs/cocktail
- *
- * Copyright (c) Silex Labs
- * Cocktail is available under the MIT license
- * http://www.silexlabs.org/labs/cocktail-licensing/
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.renderer.ObjectRenderer;
 import cocktail.port.NativeElement;
@@ -20,12 +20,8 @@ import cocktail.core.renderer.RendererData;
  * will either be treated as an image, as a nested browsing
  * context, or as an external resource to be processed by a plugin.
  * 
- * TODO 1 IMPORTANT : for now only support embedding of flash movies.
- * Eventually, when a ResourceManager is done, this class might be used
- * to display any type of embedded content
- * 
- * TODO 1 : this is pretty much the same code as HTMLImageElement for now, comments
- * have not been updated either
+ * TODO 1 IMPORTANT : for now only support embedding of flash movies. Should
+ * be able to display any plugin as well as regular picture like .jpg
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -53,9 +49,7 @@ class HTMLObjectElement extends EmbeddedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Reponsible for loading pictures into a NativeElement. 
-	 * Its NativeElement is used by this HTMLImageElement as an
-	 * embedded asset
+	 * Responsible for loading the plugin
 	 */
 	private var _imageLoader:ImageLoader;
 	
@@ -100,7 +94,7 @@ class HTMLObjectElement extends EmbeddedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Instantiate an image specific renderer
+	 * Instantiate an object specific renderer
 	 */
 	override private function createElementRenderer():Void
 	{
@@ -112,9 +106,7 @@ class HTMLObjectElement extends EmbeddedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Called when the picture was successfuly loaded.
-	 * Invalidate the Style and call the
-	 * onLoad callback if provided.
+	 * Called when the plugin was successfuly loaded.
 	 * 
 	 * @param	image the loaded picture stored as a nativeElement
 	 */
@@ -123,20 +115,19 @@ class HTMLObjectElement extends EmbeddedElement
 		invalidate(InvalidationReason.other);
 		
 		var loadEvent:UIEvent = new UIEvent();
-		loadEvent.initUIEvent(UIEvent.LOAD, false, false, null, 0.0);
+		loadEvent.initUIEvent(EventConstants.LOAD, false, false, null, 0.0);
 		dispatchEvent(loadEvent);
 	}
 	
 	/**
 	 * Called when there was an error during loading.
-	 * Call the error callback if provided
 	 * 
 	 * @param	message the error message
 	 */
 	private function onLoadError(message:String):Void
 	{
 		var errorEvent:UIEvent = new UIEvent();
-		errorEvent.initUIEvent(UIEvent.ERROR, false, false, null, 0.0);
+		errorEvent.initUIEvent(EventConstants.ERROR, false, false, null, 0.0);
 		dispatchEvent(errorEvent);
 	}
 	

@@ -14,13 +14,13 @@ package cocktail.core.font;
  * this structures return metrics info
  * on the font
  */
-typedef FontMetricsData = {
+class FontMetricsVO {
 	
 	/**
 	 * The font size of 
 	 * the htmlElement, in pixels
 	 */
-	var fontSize:Float;
+	public var fontSize(default, null):Float;
 	
 	/**
 	 * A characteristic height
@@ -30,7 +30,7 @@ typedef FontMetricsData = {
 	 * for the font has a whole, 
 	 * not specific to any glyphs
 	 */
-	var ascent:Float;
+	public var ascent(default, null):Float;
 	
 	/**
 	 * A characteristic height
@@ -40,7 +40,7 @@ typedef FontMetricsData = {
 	 * for the font has a whole, 
 	 * not specific to any glyphs
 	 */
-	var descent:Float;
+	public var descent(default, null):Float;
 	
 	/**
 	 * This is a standard metrics used 
@@ -48,31 +48,44 @@ typedef FontMetricsData = {
 	 * the height of a lowercase "x" glyph
 	 * at the given font size
 	 */ 
-	var xHeight:Float;
+	public var xHeight(default, null):Float;
 	
 	/**
 	 * A suggested offset to apply
 	 * from the baseline for subscript
 	 * glyphs
 	 */
-	var subscriptOffset:Float;
+	public var subscriptOffset(default, null):Float;
 	
 	/**
 	 * A suggested offset to apply
 	 * from the baseline for superscript
 	 * glyphs
 	 */
-	var superscriptOffset:Float;
+	public var superscriptOffset(default, null):Float;
 	
 	/**
 	 * A suggested offset to apply from
 	 * the baseline when drawing underlines
 	 */
-	var underlineOffset:Float;
+	public var underlineOffset(default, null):Float;
 	
 	/**
 	 * the width of a space character for
 	 * a given font at a given size
 	 */
-	var spaceWidth:Float;
+	public var spaceWidth(default, null):Float;
+	
+	public function new(fontSize:Float, ascent:Float, descent:Float, xHeight:Float, subscriptOffset:Float, superscriptOffset:Float,
+	underlineOffset:Float, spaceWidth:Float)
+	{
+		this.fontSize = fontSize;
+		this.ascent = ascent;
+		this.descent = descent;
+		this.xHeight = xHeight;
+		this.subscriptOffset = subscriptOffset;
+		this.superscriptOffset = superscriptOffset;
+		this.underlineOffset = underlineOffset;
+		this.spaceWidth = spaceWidth;
+	}
 }

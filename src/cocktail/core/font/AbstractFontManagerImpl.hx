@@ -8,10 +8,11 @@
 */
 package cocktail.core.font;
 
+import cocktail.core.css.CoreStyle;
 import cocktail.core.font.FontData;
 import cocktail.port.NativeElement;
-import cocktail.core.style.ComputedStyle;
-import cocktail.core.style.StyleData;
+
+import cocktail.core.layout.LayoutData;
 
 /**
  * The FontManager is used to get metrics for fonts and
@@ -25,14 +26,14 @@ class AbstractFontManagerImpl
 	 * A cache of the computed font metrics where the
 	 * keys are the font name and the font sizes
 	 */
-	private var _computedFontMetrics:Hash<Hash<FontMetricsData>>;
+	private var _computedFontMetrics:Hash<Hash<FontMetricsVO>>;
 	
 	/**
 	 * Class constructor. Init class attributes
 	 */
 	public function new()
 	{
-		_computedFontMetrics = new Hash<Hash<FontMetricsData>>();
+		_computedFontMetrics = new Hash<Hash<FontMetricsVO>>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -43,15 +44,15 @@ class AbstractFontManagerImpl
 	 * Returns metrics for a given
 	 * font and font size
 	 */
-	public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
+	public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsVO
 	{
-		var fontMetrics:FontMetricsData;
+		var fontMetrics:FontMetricsVO;
 		
 		//this method caches all the generated font metrics and
 		//tries first to retrieve them on subsequent calls
 		if (_computedFontMetrics.exists(fontFamily) == true)
 		{
-			var fontSizeHash:Hash<FontMetricsData> = _computedFontMetrics.get(fontFamily);
+			var fontSizeHash:Hash<FontMetricsVO> = _computedFontMetrics.get(fontFamily);
 			if (fontSizeHash.exists(Std.string(fontSize)) == true)
 			{
 				fontMetrics = fontSizeHash.get(Std.string(fontSize));
@@ -66,7 +67,7 @@ class AbstractFontManagerImpl
 		else
 		{
 			fontMetrics = doGetFontMetrics(fontFamily, fontSize);
-			var fontSizeHash:Hash<FontMetricsData> = new Hash<FontMetricsData>();
+			var fontSizeHash:Hash<FontMetricsVO> = new Hash<FontMetricsVO>();
 			fontSizeHash.set(Std.string(fontSize), fontMetrics);
 			
 			_computedFontMetrics.set(fontFamily, fontSizeHash); 
@@ -81,7 +82,7 @@ class AbstractFontManagerImpl
 	 * and the styles that were computed for
 	 * this text
 	 */
-	public function createNativeTextElement(text:String, computedStyle:ComputedStyle):NativeElement
+	public function createNativeTextElement(text:String, style:CoreStyle):NativeElement
 	{
 		return null;
 	}
@@ -94,7 +95,7 @@ class AbstractFontManagerImpl
 	 * Actually compute a font metrics using runtime
 	 * specific API
 	 */
-	private function doGetFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
+	private function doGetFontMetrics(fontFamily:String, fontSize:Float):FontMetricsVO
 	{
 		return null;
 	}

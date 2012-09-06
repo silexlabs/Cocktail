@@ -8,7 +8,10 @@
 */
 package cocktail.core.html;
 
+import cocktail.core.css.InitialStyleDeclaration;
+import cocktail.core.dom.Document;
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.renderer.ElementRenderer;
@@ -27,8 +30,6 @@ import haxe.Log;
  * the public DOM tree
  * 
  * TODO 2 : implement disabled scrollbar when maxScroll is smaller than scroll height / width
- * 
- * TODO 3 : reproducing Windows look and feel, is this what we want ?
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -60,16 +61,14 @@ class ScrollBar extends HTMLElement
 	/**
 	 * The current scroll offset of the scroll bar
 	 */
-	private var _scroll:Float;
-	public var scroll(get_scroll, set_scroll):Float;
+	public var scroll(default, set_scroll):Float;
 	
 	/**
 	 * The maximum scroll offset of the scrollbar, corresponding
 	 * to the height or width bounds of the children of the
 	 * BlockBoxRenderer owning the ScrollBar
 	 */
-	private var _maxScroll:Float;
-	public var maxScroll(get_maxScroll, set_maxScroll):Float;
+	public var maxScroll(default, set_maxScroll):Float;
 	
 	/**
 	 * A reference to the thumb of the scroll
@@ -120,10 +119,29 @@ class ScrollBar extends HTMLElement
 		_upArrow = Lib.document.createElement(HTMLConstants.HTML_DIV_TAG_NAME);
 		_downArrow = Lib.document.createElement(HTMLConstants.HTML_DIV_TAG_NAME);
 	
-		_scroll = 0;
-		_maxScroll = 0;
+		scroll = 0;
+		maxScroll = 0;
 		_mouseMoveStart = 0;
+
 		
+		//attach the different scrollbar parts
+		appendChild(_scrollThumb);
+		appendChild(_upArrow);
+		appendChild(_downArrow);
+		
+		//set callbacks on the scrollbar parts
+		//TODO 2 : should be cleaned-up when detached, should keep ref to all the callback
+		addEventListener(EventConstants.MOUSE_DOWN, cast(onTrackMouseDown));
+		_scrollThumb.addEventListener(EventConstants.MOUSE_DOWN, cast(onThumbMouseDown));
+		_downArrow.addEventListener(EventConstants.MOUSE_DOWN, cast(onDownArrowMouseDown));
+		_upArrow.addEventListener(EventConstants.MOUSE_DOWN, cast(onUpArrowMouseDown));
+	}
+	
+	override private function set_ownerDocument(value:Document):Document
+	{
+		super.set_ownerDocument(value);
+		
+				
 		//style the scrollbar parts for vertical
 		//or horizontal scrollbar
 		initScrollBar();
@@ -137,42 +155,36 @@ class ScrollBar extends HTMLElement
 			initHorizontalScrollBar();
 		}
 		
-		//attach the different scrollbar parts
-		appendChild(_scrollThumb);
-		appendChild(_upArrow);
-		appendChild(_downArrow);
-		
-		//set callbacks on the scrollbar parts
-		//TODO 2 : should be cleaned-up when detached, should keep ref to all the callback
-		addEventListener(MouseEvent.MOUSE_DOWN, cast(onTrackMouseDown));
-		_scrollThumb.addEventListener(MouseEvent.MOUSE_DOWN, cast(onThumbMouseDown));
-		_downArrow.addEventListener(MouseEvent.MOUSE_DOWN, cast(onDownArrowMouseDown));
-		_upArrow.addEventListener(MouseEvent.MOUSE_DOWN, cast(onUpArrowMouseDown));
+		return value;
 	}
 	
 	/**
 	 * style the scrollbar working for horizontal
 	 * and vertical scrollbar
+	 * 
+	 * TODO 1 : should now use CSS declaration instead o f
+	 * setting each property. Add a Scrollbar selector in
+	 * default style sheet ?
 	 */
 	private function initScrollBar():Void
 	{
-		style.backgroundColor = "#DDDDDD";
+		style.backgroundColor = "gray";
 		style.display = "block";
 		style.position = "absolute";
 		
-		_scrollThumb.style.backgroundColor = "#AAAAAA";
+		_scrollThumb.style.backgroundColor = "black";
 		_scrollThumb.style.position = "absolute";
 		_scrollThumb.style.display = "block";
 		_scrollThumb.style.width = THUMB_DEFAULT_DIMENSION +"px";
 		_scrollThumb.style.height = THUMB_DEFAULT_DIMENSION + "px";
 		
-		_upArrow.style.backgroundColor = "#CCCCCC";
+		_upArrow.style.backgroundColor = "black";
 		_upArrow.style.position = "absolute";
 		_upArrow.style.display = "block";
 		_upArrow.style.width = ARROW_DEFAULT_DIMENSION +"px";
 		_upArrow.style.height = ARROW_DEFAULT_DIMENSION + "px";
 		
-		_downArrow.style.backgroundColor = "#CCCCCC";
+		_downArrow.style.backgroundColor = "black";
 		_downArrow.style.position = "absolute";
 		_downArrow.style.display = "block";
 		_downArrow.style.width = ARROW_DEFAULT_DIMENSION + "px";
@@ -210,6 +222,7 @@ class ScrollBar extends HTMLElement
 		
 		_scrollThumb.style.left = THUMB_DEFAULT_DIMENSION +"px";
 	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING TREE METHODS
@@ -313,8 +326,8 @@ class ScrollBar extends HTMLElement
 		//TODO 2 : originally, listened to those event on the Body but as the ScrollBar is not
 		//attached to the DOM, the event didn't bubled when mouse hovered track. Should scrollbar
 		//events bubble to document and window ?
-		cocktail.Lib.document.addEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
-		cocktail.Lib.document.addEventListener(MouseEvent.MOUSE_UP, cast(_thumbUpDelegate));
+		cocktail.Lib.document.addEventListener(EventConstants.MOUSE_MOVE, cast(_thumbMoveDelegate));
+		cocktail.Lib.document.addEventListener(EventConstants.MOUSE_UP, cast(_thumbUpDelegate));
 	}
 	
 	/**
@@ -322,8 +335,8 @@ class ScrollBar extends HTMLElement
 	 */
 	private function onThumbMouseUp(event:MouseEvent):Void
 	{
-		cocktail.Lib.document.removeEventListener(MouseEvent.MOUSE_MOVE, cast(_thumbMoveDelegate));
-		cocktail.Lib.document.removeEventListener(MouseEvent.MOUSE_UP, cast(_thumbUpDelegate));
+		cocktail.Lib.document.removeEventListener(EventConstants.MOUSE_MOVE, cast(_thumbMoveDelegate));
+		cocktail.Lib.document.removeEventListener(EventConstants.MOUSE_UP, cast(_thumbUpDelegate));
 	}
 	
 	/**
@@ -393,29 +406,29 @@ class ScrollBar extends HTMLElement
 	
 	private function updateScroll():Void
 	{
-		if (_scroll > _maxScroll)
+		if (scroll > maxScroll)
 		{
-			_scroll = maxScroll;
+			scroll = maxScroll;
 		}
-		else if (_scroll < 0)
+		else if (scroll < 0)
 		{
-			_scroll = 0;
+			scroll = 0;
 		}
 		
 		var progress:Float = scroll / maxScroll;
 		
 		if (_isVertical == true)
 		{
-			var thumbY:Int = Math.round(progress * (coreStyle.computedStyle.height -
-			_upArrow.coreStyle.computedStyle.height - _downArrow.coreStyle.computedStyle.height - _scrollThumb.coreStyle.computedStyle.height)
-			+  _upArrow.coreStyle.computedStyle.height);
+			var thumbY:Int = Math.round(progress * (coreStyle.usedValues.height -
+			_upArrow.coreStyle.usedValues.height - _downArrow.coreStyle.usedValues.height - _scrollThumb.coreStyle.usedValues.height)
+			+  _upArrow.coreStyle.usedValues.height);
 			_scrollThumb.style.top = thumbY + "px";
 		}
 		else
 		{
-			var thumbX:Int = Math.round(progress * (coreStyle.computedStyle.width -
-			_upArrow.coreStyle.computedStyle.width - _downArrow.coreStyle.computedStyle.width - _scrollThumb.coreStyle.computedStyle.width)
-			+  _upArrow.coreStyle.computedStyle.width);
+			var thumbX:Int = Math.round(progress * (coreStyle.usedValues.width -
+			_upArrow.coreStyle.usedValues.width - _downArrow.coreStyle.usedValues.width - _scrollThumb.coreStyle.usedValues.width)
+			+  _upArrow.coreStyle.usedValues.width);
 			
 			_scrollThumb.style.left = thumbX + "px";
 		}
@@ -433,31 +446,31 @@ class ScrollBar extends HTMLElement
 		
 		if (_isVertical == true)
 		{
-			var thumbHeight:Float = coreStyle.computedStyle.height - _downArrow.coreStyle.computedStyle.height - _upArrow.coreStyle.computedStyle.height - maxScroll;
+			var thumbHeight:Float = coreStyle.usedValues.height - _downArrow.coreStyle.usedValues.height - _upArrow.coreStyle.usedValues.height - maxScroll;
 
 			if (thumbHeight < THUMB_DEFAULT_DIMENSION)
 			{
 				thumbHeight = THUMB_DEFAULT_DIMENSION;
 			}
 			
-			if (thumbHeight != _scrollThumb.coreStyle.computedStyle.height)
+			if (thumbHeight != _scrollThumb.coreStyle.usedValues.height)
 			{
-				_scrollThumb.style.height = thumbHeight + "px";
+				//_scrollThumb.style.height = thumbHeight + "px";
 			}
 			
 		}
 		else
 		{
-			var thumbWidth:Float = coreStyle.computedStyle.width - _downArrow.coreStyle.computedStyle.width - _upArrow.coreStyle.computedStyle.width - maxScroll;
+			var thumbWidth:Float = coreStyle.usedValues.width - _downArrow.coreStyle.usedValues.width - _upArrow.coreStyle.usedValues.width - maxScroll;
 
 			if (thumbWidth < THUMB_DEFAULT_DIMENSION)
 			{
 				thumbWidth = THUMB_DEFAULT_DIMENSION;
 			}
 			
-			if (thumbWidth != _scrollThumb.coreStyle.computedStyle.width)
+			if (thumbWidth != _scrollThumb.coreStyle.usedValues.width)
 			{
-				_scrollThumb.style.width = thumbWidth + "px";
+				//_scrollThumb.style.width = thumbWidth + "px";
 			}
 		}
 	}
@@ -465,7 +478,7 @@ class ScrollBar extends HTMLElement
 	private function dispatchScrollEvent():Void
 	{
 		var scrollEvent:UIEvent = new UIEvent();
-		scrollEvent.initUIEvent(UIEvent.SCROLL, false, false, null, 0.0);
+		scrollEvent.initUIEvent(EventConstants.SCROLL, false, false, null, 0.0);
 		dispatchEvent(scrollEvent);
 	}
 	
@@ -473,38 +486,27 @@ class ScrollBar extends HTMLElement
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_maxScroll():Float 
-	{
-		return _maxScroll;
-	}
-	
 	private function set_maxScroll(value:Float):Float 
 	{
-		var scrollPercent:Float = _scroll / _maxScroll;
+		var scrollPercent:Float = scroll / maxScroll;
 		
-		if (_maxScroll == 0)
+		if (maxScroll == 0)
 		{
 			scrollPercent = 0;
 		}
 		
-		_maxScroll = value;
-		scroll = _maxScroll * scrollPercent; 
+		maxScroll = value;
+		scroll = maxScroll * scrollPercent; 
 		
 		updateThumbSize();
 		
 		return value;
 	}
-
-	private function get_scroll():Float
-	{
-		return _scroll ;
-	}
 	
 	private function set_scroll(value:Float):Float 
 	{
-		_scroll = value;
+		scroll = value;
 		updateScroll();
-		
 		return value;
 	}
 }

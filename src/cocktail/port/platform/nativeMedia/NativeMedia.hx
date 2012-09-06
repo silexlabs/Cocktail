@@ -9,7 +9,10 @@
 package cocktail.port.platform.nativeMedia;
 
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
+import cocktail.port.GraphicsContext;
 import cocktail.port.NativeElement;
+import cocktail.core.geom.GeomData;
 
 /**
  * This is a base class proxying access to 
@@ -30,7 +33,7 @@ class NativeMedia
 	/**
 	 * set the volume of the native media
 	 */
-	public var volume(never, set_volume):Float;
+	public var volume(null, set_volume):Float;
 	
 	/**
 	 * set the source of th native media, starting loading
@@ -82,6 +85,12 @@ class NativeMedia
 	public var onLoadedMetaData:Event->Void;
 	
 	/**
+	 * The viewport represents the position and size of the
+	 * displayed native video relative to the window
+	 */
+	public var viewport(get_viewport, set_viewport):RectangleVO;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
@@ -129,6 +138,16 @@ class NativeMedia
 		return null;
 	}
 	
+	/**
+	 * Attach the native video using native APIs so
+	 * that it is displayed at the dimension and position
+	 * defined by its viewport
+	 */
+	public function attach(graphicsContext:GraphicsContext):Void
+	{
+		//abstract
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// EVENTS
 	// Private native video event handler method
@@ -144,7 +163,7 @@ class NativeMedia
 		if (onLoadedMetaData != null)
 		{
 			var loaddedMetadataEvent:Event = new Event();
-			loaddedMetadataEvent.initEvent(Event.LOADED_METADATA, false, false);
+			loaddedMetadataEvent.initEvent(EventConstants.LOADED_METADATA, false, false);
 			onLoadedMetaData(loaddedMetadataEvent);
 		}
 	}
@@ -196,4 +215,16 @@ class NativeMedia
 	{
 		return value;
 	}
+	
+	private function get_viewport():RectangleVO
+	{
+		return viewport;
+	}
+	
+	private function set_viewport(value:RectangleVO):RectangleVO
+	{
+		return viewport = value;
+	}
+	
+	
 }

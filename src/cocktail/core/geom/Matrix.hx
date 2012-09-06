@@ -152,10 +152,6 @@ class Matrix
 	 */
 	public function rotate(angle:Float):Void
 	{
-		//the matrix that will be rotated. It will be
-		//concatenated with the current matrix. Default to an identity matrix
-		var rotatedMatrix:Matrix = new Matrix();
-		
 		var a:Float = 0.0;
 		var b:Float = 0.0;
 		var c:Float = 0.0;
@@ -196,12 +192,9 @@ class Matrix
 			f:0.0
 		};
 		
-		//and set it to a matrix
-		var rotationMatrix:Matrix = new Matrix(rotationMatrixData);
-		
-		//concatenate the 2 matrices to obtain a matrix rotated around
-		//the transform origin
-		rotatedMatrix.concatenate(rotationMatrix);
+		//the matrix that will be rotated. It will be
+		//concatenated with the current matrix.
+		var rotatedMatrix:Matrix = new Matrix(rotationMatrixData);
 		
 		//concatenate the rotated matrix to the current matrix to
 		//prevent losing any previous transformation
@@ -216,13 +209,9 @@ class Matrix
 	 */
 	public function scale(scaleX:Float, scaleY:Float):Void
 	{	
-		//the matrix that will be scaled . It will be
-		//concatenated with the current matrix. Default to an identity matrix
-		var scaledMatrix:Matrix = new Matrix();
-		
 		//create the matrix data corresponding to an identity matrix
 		//scaled by the scaleX and scaleY factors
-		var scalingMatrixData:MatrixData = {
+		var scaledMatrixData:MatrixData = {
 			a:scaleX,
 			b:0.0,
 			c:0.0,
@@ -231,12 +220,8 @@ class Matrix
 			f:0.0
 		};
 		
-		//and set it to a matrix
-		var scalingMatrix:Matrix = new Matrix(scalingMatrixData);
-		
-		//concatenate the 2 matrices to obtain a matrix scaled around
-		//the transform origin point
-		scaledMatrix.concatenate(scalingMatrix);
+		//the matrix used to scale the current Matrix
+		var scaledMatrix:Matrix = new Matrix(scaledMatrixData);
 		
 		//concatenate the scaled matrix to the current matrix to
 		//prevent losing any previous transformation

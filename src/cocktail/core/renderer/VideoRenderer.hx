@@ -12,24 +12,54 @@ import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLVideoElement;
+import cocktail.core.layer.CompositingLayerRenderer;
+import cocktail.core.layer.LayerRenderer;
+import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
+import cocktail.port.GraphicsContext;
+import cocktail.port.ImageResource;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
-import cocktail.port.Resource;
+import cocktail.port.NativeVideo;
+import cocktail.port.platform.nativeMedia.NativeMedia;
 
 /**
  * Renders an embedded video asset or its poster frame
  * 
+ * Inherits from ImageRenderer as if a poster frame its
+ * displayed, the behaviour is similar
+ * 
  * @author Yannick DOMINGUEZ
  */
-class VideoRenderer extends EmbeddedBoxRenderer
+class VideoRenderer extends ImageRenderer
 {
 	/**
 	 * class constructor
 	 */
-	public function new(node:HTMLElement) 
+	public function new(domNode:HTMLElement) 
 	{
-		super(node);
+		super(domNode);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * video always establishes a new layer as video rendering
+	 * is typically done outside of classic display lists
+	 */
+	override public function createOwnLayer():Bool
+	{
+		return true;
+	}
+	
+	//TODO 1 : doc
+	override private function createLayer(parentLayer:LayerRenderer):Void
+	{
+		layerRenderer = new CompositingLayerRenderer(this);
+		parentLayer.appendChild(layerRenderer);
+		_hasOwnLayer = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -39,9 +69,9 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	/**
 	 * Render the embedded video asset or the video poster frame.
 	 */
-	override private function renderEmbeddedAsset(graphicContext:NativeElement)
+	override private function renderEmbeddedAsset(graphicContext:GraphicsContext)
 	{
-		var htmlVideoElement:HTMLVideoElement = cast(node);
+		var htmlVideoElement:HTMLVideoElement = cast(domNode);
 		
 		//determine wether to render video or poster frame
 		if (htmlVideoElement.shouldRenderPosterFrame() == true)
@@ -53,7 +83,7 @@ class VideoRenderer extends EmbeddedBoxRenderer
 			renderVideo(htmlVideoElement, graphicContext);
 		}
 	}
-		
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -65,135 +95,54 @@ class VideoRenderer extends EmbeddedBoxRenderer
 	 * video might be letterboxed to fit in the available bounds,
 	 * the video always takes the maximum amount of space available
 	 * while keeping its aspect ratio
+	 * 
+	 * TODO 3 : alpha of video no longer managed
 	 */
-	private function renderVideo(htmlVideoElement:HTMLVideoElement, graphicContext:NativeElement):Void
+	private function renderVideo(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext):Void
 	{
 		//get the bounds for the video so that it takes the maximum space and is centered
-		var videoBounds:RectangleData = getAssetBounds(_coreStyle.computedStyle.width,
-		_coreStyle.computedStyle.height, htmlVideoElement.videoWidth, htmlVideoElement.videoHeight);
+		var videoBounds:RectangleVO = getAssetBounds(coreStyle.usedValues.width,
+		coreStyle.usedValues.height, htmlVideoElement.videoWidth, htmlVideoElement.videoHeight);
 		
-		#if (flash9 || nme)
+		var globalBounds:RectangleVO = this.globalBounds;
 		
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
-		containerGraphicContext.addChild(htmlVideoElement.embeddedAsset);
-
-		//add the x and y offset for the video
-		htmlVideoElement.embeddedAsset.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + videoBounds.x;
-		htmlVideoElement.embeddedAsset.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + videoBounds.y;
-
-		//use the actual video width and height
-		htmlVideoElement.embeddedAsset.width = videoBounds.width;
-		htmlVideoElement.embeddedAsset.height = videoBounds.height;
+		var nativeVideo:NativeMedia = htmlVideoElement.nativeMedia;
 		
-		htmlVideoElement.embeddedAsset.alpha = computedStyle.opacity;
+		//set the position and size of the native video, relative
+		//to the Window
+		var x:Float =  globalBounds.x + coreStyle.usedValues.paddingLeft + videoBounds.x - scrollOffset.x;
+		var y:Float =  globalBounds.y + coreStyle.usedValues.paddingTop + videoBounds.y - scrollOffset.y;
+		var width:Float =  videoBounds.width;
+		var height:Float =  videoBounds.height;
+		nativeVideo.viewport = new RectangleVO(x, y, width, height);
 		
-		#end
+		nativeVideo.attach(graphicContext);
 	}
 	
 	/**
 	 * Render the poster frame of the video if the video is not
 	 * yet loaded or has not started playing yet
 	 */
-	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:NativeElement):Void
+	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext):Void
 	{
-		var resource:Resource = ResourceManager.getResource(node.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
+		var resource:AbstractResource = ResourceManager.getImageResource(domNode.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
 
-		//the poster frame is not loaded or there was an erro while loading it
+		//the poster frame is not loaded or there was an error while loading it
 		if (resource.loaded == false || resource.loadedWithError == true)
 		{
 			return;
 		}
 		
-		var posterBounds:RectangleData = getAssetBounds(_coreStyle.computedStyle.width,
-		_coreStyle.computedStyle.height, resource.intrinsicWidth, resource.intrinsicHeight);
+		var posterBounds:RectangleVO = getAssetBounds(coreStyle.usedValues.width,
+		coreStyle.usedValues.height, resource.intrinsicWidth, resource.intrinsicHeight);
 		
-		#if (flash9 || nme)
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext);
-		var bitmap:flash.display.Bitmap = new flash.display.Bitmap(resource.nativeResource, flash.display.PixelSnapping.AUTO, true);
-		containerGraphicContext.addChild(bitmap);
+		var x:Float = globalBounds.x + coreStyle.usedValues.paddingLeft + posterBounds.x - scrollOffset.x;
+		var y:Float = globalBounds.y + coreStyle.usedValues.paddingTop + posterBounds.y - scrollOffset.y;
+		var width:Float = posterBounds.width;
+		var height:Float = posterBounds.height;
 		
-		var globalBounds:RectangleData = globalBounds;
-		bitmap.x = globalBounds.x + _coreStyle.computedStyle.paddingLeft + posterBounds.x;
-		bitmap.y = globalBounds.y + _coreStyle.computedStyle.paddingTop + posterBounds.y;
-		bitmap.width = posterBounds.width;
-		bitmap.height = posterBounds.height;
-		#end
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE UTILS METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Utils method returning the right rectangle so that
-	 * the video or poster frame can take the maximum available width
-	 * and height while preserving their aspect ratio and also be 
-	 * centered in the available space
-	 * 
-	 * @param	availableWidth the maximum width available for the poster frame or video
-	 * @param	availableHeight the maximum height available for the poster frame or video
-	 * @param	assetWidth the intrinsic width of the video or poster frame
-	 * @param	assetHeight the intrinsic height of the video or poster frame
-	 * @return	the bounds of the asset
-	 */
-	private function getAssetBounds(availableWidth:Float, availableHeight:Float, assetWidth:Float, assetHeight:Float):RectangleData
-	{
-		//those will hold the actual value used for the video or poster 
-		//dimensions, with the kept aspect ratio
-		var width:Float;
-		var height:Float;
-
-		if (availableWidth > availableHeight)
-		{
-			//get the ratio between the intrinsic asset width and the width it must be displayed at
-			var ratio:Float = assetHeight / availableHeight;
-			
-			//check that the asset isn't wider than the available width
-			if ((assetWidth / ratio) < availableWidth)
-			{
-				//the asset width use the computed width while the height apply the ratio
-				//to the asset height, so that the ratio is kept while displaying the asset
-				//as big as possible
-				width =  assetWidth / ratio ;
-				height = availableHeight;
-			}
-			//else reduce the height instead of the width
-			else
-			{
-				ratio = assetWidth / availableWidth;
-				
-				width = availableWidth;
-				height = assetHeight / ratio;
-			}
-		}
-		//same as above but inverted
-		else
-		{
-			var ratio:Float = assetWidth / availableWidth;
-			
-			if ((assetHeight / ratio) < availableHeight)
-			{
-				height = assetHeight / ratio;
-				width = availableWidth;
-			}
-			else
-			{
-				ratio = assetHeight / availableHeight;
-				width =  assetWidth / ratio ;
-				height = availableHeight;
-			}
-		}
+		var paintBounds:RectangleVO = new RectangleVO(x, y, width, height);
 		
-		//the asset must be centered in the ElementRenderer, so deduce the offsets
-		//to apply to the x and y direction
-		var xOffset:Float = (availableWidth - width) / 2;
-		var yOffset:Float = (availableHeight - height) /2;
-		
-		return {
-			width:width,
-			height:height,
-			x:xOffset,
-			y:yOffset
-		}
+		paintResource(graphicContext, resource.nativeResource, paintBounds, resource.intrinsicWidth, resource.intrinsicHeight);
 	}
 }

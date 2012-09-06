@@ -133,8 +133,12 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 			
 			var length:Int = childNodes.length;
 			for (i in 0...length)
-			{
+			{		
+				#if php
+				if (untyped __physeq__(childNodes[i], refChild))
+				#else
 				if (childNodes[i] == refChild)
+				#end
 				{
 					newChildNodes.push(newChild);
 				}
@@ -143,7 +147,8 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 			
 			//the child are appended after the first loop to prevent
 			//from modifying the child node array while looping
-			for (i in 0...newChildNodes.length)
+			var newChildNodesLength:Int = newChildNodes.length;
+			for (i in 0...newChildNodesLength)
 			{
 				appendChild(newChildNodes[i]);
 			}
@@ -284,12 +289,21 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 		{
 			//loop in all child to find this node and return
 			//the next one
-			var length:Int = parentNode.childNodes.length;
+			var parentChildNodes:Array<NodeClass> = parentNode.childNodes;
+			var length:Int = parentChildNodes.length;
 			for (i in 0...length)
 			{
-				if (isSameNode(parentNode.childNodes[i]) == true)
+				//TODO IMPORTANT : big hack for php target. Without
+				//this specific method, comparaison does'nt use strict
+				//equality ("===") and cause infinite loop. It seems simpler
+				//to correct here than to subclass for php target
+				#if php
+				if (untyped __physeq__(parentChildNodes[i], this))
+				#else
+				if (parentChildNodes[i] == this)
+				#end
 				{
-					return parentNode.childNodes[i + 1];
+					return parentChildNodes[i + 1];
 				}
 			}
 		}
@@ -313,7 +327,7 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 			var length:Int = parentNode.childNodes.length;
 			for (i in 0...length)
 			{
-				if (isSameNode(parentNode.childNodes[i]) == true)
+				if (parentNode.childNodes[i] == this)
 				{
 					return parentNode.childNodes[i - 1];
 				}

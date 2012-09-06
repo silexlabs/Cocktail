@@ -1,16 +1,16 @@
 /*
- * Cocktail, HTML rendering engine
- * http://haxe.org/com/libs/cocktail
- *
- * Copyright (c) Silex Labs
- * Cocktail is available under the MIT license
- * http://www.silexlabs.org/labs/cocktail-licensing/
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.port.flash_player;
 
 import cocktail.core.html.HTMLMediaElement;
 import cocktail.port.NativeElement;
 import cocktail.port.platform.nativeMedia.NativeMedia;
+import flash.display.DisplayObjectContainer;
 import flash.events.AsyncErrorEvent;
 import flash.events.Event;
 import flash.Lib;
@@ -19,7 +19,7 @@ import flash.media.Video;
 import flash.net.NetConnection;
 import flash.net.NetStream;
 import flash.events.NetStatusEvent;
-import haxe.Timer;
+import cocktail.core.geom.GeomData;
 
 /**
  * This is the flash as3 port of the native video,
@@ -41,7 +41,7 @@ class NativeVideo extends NativeMedia
 	private static inline var NET_CONNECTION_CONNECT_SUCCESS:String = "NetConnection.Connect.Success";
 	
 	private static inline var NET_STREAM_SEEK_NOTIFY:String = "NetStream.Seek.Notify";
-
+	
 	/**
 	 * a reference to the native flash video
 	 * player
@@ -56,7 +56,7 @@ class NativeVideo extends NativeMedia
 	
 	/**
 	 * The native flash net connection object
-	 */
+	 */  
 	private var _nc:NetConnection;
 	
 	/**
@@ -100,7 +100,6 @@ class NativeVideo extends NativeMedia
 		initNetConnection();
 		_nc.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 		_nc.connect(null); 
-		
 	}
 	
 	/**
@@ -174,6 +173,15 @@ class NativeVideo extends NativeMedia
 		return HTMLMediaElement.CAN_PLAY_TYPE_MAYBE;
 	}
 	
+	/**
+	 * Attach the flash video object to the flash display list
+	 */
+	override public function attach(graphicContext:GraphicsContext):Void
+	{
+		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext.nativeLayer);
+		containerGraphicContext.addChild(_video);
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -208,7 +216,7 @@ class NativeVideo extends NativeMedia
 	{
 		if (_netStream.time - _currentTime > 0.2)
 		{
-			Timer.delay(checkSeeking, 5);
+			haxe.Timer.delay(checkSeeking, 5);
 		}
 		else
 		{
@@ -330,6 +338,25 @@ class NativeVideo extends NativeMedia
 	override private function get_nativeElement():NativeElement
 	{
 		return _video;
+	}
+	
+	/**
+	 * Set/get the position of the native flash video object
+	 * to match those of its viewport
+	 */
+	override private function get_viewport():RectangleVO
+	{
+		return new RectangleVO(_video.x, _video.y, _video.width, _video.height);
+	}
+	
+	override private function set_viewport(value:RectangleVO):RectangleVO
+	{
+		_video.x = value.x;
+		_video.y = value.y;
+		_video.width = value.width;
+		_video.height = value.height;
+		
+		return value;
 	}
 	
 }

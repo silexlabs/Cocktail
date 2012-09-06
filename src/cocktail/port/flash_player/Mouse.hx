@@ -1,21 +1,22 @@
 /*
- * Cocktail, HTML rendering engine
- * http://haxe.org/com/libs/cocktail
- *
- * Copyright (c) Silex Labs
- * Cocktail is available under the MIT license
- * http://www.silexlabs.org/labs/cocktail-licensing/
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.port.flash_player;
 
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
-import cocktail.port.NativeElement;
+import cocktail.port.NativeBitmapData;
 import cocktail.port.platform.mouse.AbstractMouse;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
 import flash.display.BitmapData;
 import flash.Lib;
 import cocktail.core.geom.GeomData;
+import cocktail.core.css.CSSData;
 import flash.Vector;
 import haxe.Log;
 
@@ -42,27 +43,44 @@ class Mouse extends AbstractMouse
 	/**
 	 * Set the mouse cursor using flash mouse API
 	 */
-	override public function setMouseCursor(cursor:Cursor):Void
+	override public function setMouseCursor(cursor:CSSPropertyValue):Void
 	{
+		//not supported by nme
 		#if flash9
+		
 		switch(cursor)
 		{
-			case Cursor.cssAuto:
-				flash.ui.Mouse.cursor = flash.ui.MouseCursor.AUTO;
+			case KEYWORD(value):
+				switch(value)
+				{
+					case AUTO:
+						flash.ui.Mouse.cursor = flash.ui.MouseCursor.AUTO;
+						
+					case DEFAULT:
+						flash.ui.Mouse.cursor = flash.ui.MouseCursor.ARROW;
+					
+					case POINTER:
+						flash.ui.Mouse.cursor = flash.ui.MouseCursor.BUTTON;	
+						
+					case TEXT:
+						flash.ui.Mouse.cursor = flash.ui.MouseCursor.IBEAM;		
+					
+					//cross-hair don't exist in flash	
+					case CROSSHAIR:
+						flash.ui.Mouse.cursor = flash.ui.MouseCursor.AUTO;		
+						
+					default:
+						throw 'Illegal keyword value for cursor style';
+				}
 				
-			case Cursor.cssDefault:
-				flash.ui.Mouse.cursor = flash.ui.MouseCursor.ARROW;
-			
-			case Cursor.pointer:
-				flash.ui.Mouse.cursor = flash.ui.MouseCursor.BUTTON;	
+			case URL(value):
 				
-			case Cursor.text:
-				flash.ui.Mouse.cursor = flash.ui.MouseCursor.IBEAM;		
+			default:
+				throw 'Illegal value for cursor style';
 			
-			//cross-hair don't exist in flash	
-			case Cursor.crosshair:
-				flash.ui.Mouse.cursor = flash.ui.MouseCursor.AUTO;		
+			
 		}
+		
 		#end
 	}
 	
@@ -71,19 +89,21 @@ class Mouse extends AbstractMouse
 	 * 
 	 * Set a bitmap as mouse cursor using flash mouse API
 	 */
-	private function setBitmapCursor(nativeElement:NativeElement, hotSpot:PointData):Void
+	private function setBitmapCursor(nativeBitmapData:NativeBitmapData, hotSpot:PointVO):Void
 	{
+		//don't work for nme
 		#if flash9
+		
 		//init the hotSpot if null
 		//to the top left of the cursor
 		if (hotSpot == null)
 		{
-			hotSpot = { x:0.0, y:0.0 };
+			hotSpot = new PointVO(0.0, 0.0);
 		}
 		
 		//draw the image dom element onto a 32x32 transparent bitmap data
 		var mouseCursorBitmapData:BitmapData = new BitmapData(32, 32, true, 0x00FFFFFF);
-		mouseCursorBitmapData.draw(nativeElement);
+		mouseCursorBitmapData.draw(nativeBitmapData);
 		
 		//set the flash mouse cursor data with the drawn bitmap data
 		//and the cursor hot spot
@@ -147,13 +167,13 @@ class Mouse extends AbstractMouse
 		switch (typedEvent.type)
 		{
 			case flash.events.MouseEvent.MOUSE_DOWN:
-				eventType = MouseEvent.MOUSE_DOWN;
+				eventType = EventConstants.MOUSE_DOWN;
 				
 			case flash.events.MouseEvent.MOUSE_UP:
-				eventType = MouseEvent.MOUSE_UP;
+				eventType = EventConstants.MOUSE_UP;
 				
 			case flash.events.MouseEvent.MOUSE_MOVE:
-				eventType = MouseEvent.MOUSE_MOVE;	
+				eventType = EventConstants.MOUSE_MOVE;	
 				
 			default:
 				eventType = typedEvent.type;	
@@ -182,7 +202,7 @@ class Mouse extends AbstractMouse
 		
 		var wheelEvent:WheelEvent = new WheelEvent();
 
-		wheelEvent.initWheelEvent(WheelEvent.MOUSE_WHEEL, true, true, null, 0.0, Math.round(typedEvent.stageX), Math.round(typedEvent.stageY),
+		wheelEvent.initWheelEvent(EventConstants.MOUSE_WHEEL, true, true, null, 0.0, Math.round(typedEvent.stageX), Math.round(typedEvent.stageY),
 		Math.round(typedEvent.stageX), Math.round(typedEvent.stageY), 0, null, "", 0, typedEvent.delta, 0, 0 );
 		
 		return wheelEvent;

@@ -16,12 +16,13 @@ import cocktail.core.linebox.LineBox;
 import cocktail.core.linebox.SpaceLineBox;
 import cocktail.core.linebox.TextLineBox;
 import cocktail.core.renderer.RendererData;
-import cocktail.core.style.CoreStyle;
-import cocktail.core.style.formatter.FormattingContext;
+import cocktail.core.css.CoreStyle;
+import cocktail.core.layout.formatter.FormattingContext;
 import cocktail.core.font.FontManager;
 import haxe.Log;
 import cocktail.core.geom.GeomData;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
+import cocktail.core.css.CSSData;
 import cocktail.core.font.FontData;
 
 /**
@@ -31,7 +32,7 @@ import cocktail.core.font.FontData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class TextRenderer extends ElementRenderer
+class TextRenderer extends InvalidatingElementRenderer
 {
 	/**
 	 * An array where each item contains a text token,
@@ -46,7 +47,20 @@ class TextRenderer extends ElementRenderer
 	 */
 	private var _text:Text;
 	
+	/**
+	 * The current text line box rendering
+	 * is invalid and text needs to be re rendered
+	 */
 	private var _textNeedsRendering:Bool;
+	
+	/**
+	 * flag determining if the text token must
+	 * be recreated, for instance after the value
+	 * of the Text dom node changed
+	 * 
+	 * TODO 2 : should add invalidation reason for this
+	 */
+	private var _textTokensNeedParsing:Bool;
 	
 	/**
 	 * Class constructor.
@@ -56,8 +70,17 @@ class TextRenderer extends ElementRenderer
 		super(node);
 		_text = cast(node);
 		_textNeedsRendering = true;
+		_textTokensNeedParsing = true;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC LAYOUT METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When laid out, text might recreate its text line
+	 * box if they are now invalid
+	 */
 	override public function layout(forceLayout:Bool):Void
 	{	
 		if (_textNeedsRendering == true)
@@ -67,15 +90,22 @@ class TextRenderer extends ElementRenderer
 		}
 	}
 	
-	//TODO 1 IMPORTANT : setting lineBoxes to null causes runtime error in inline formatting context,
-	//need to find a better way to refresh text
-	override private function invalidateText():Void
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC INVALIDATION METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When invalidated, a TextRenderer set its text flag so that
+	 * the text is re-rendered for next layout.
+	 * Text rendering is invalidated for instance when its color changes
+	 */
+	override public function invalidate(invalidationReason:InvalidationReason):Void
 	{
 		_textNeedsRendering = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE STATIC METHODS
+	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -171,21 +201,17 @@ class TextRenderer extends ElementRenderer
 		return textTokens;
 	}
 	
-	/////////////////////////////////
-	// PRIVATE METHODS
-	////////////////////////////////
-	
 	/**
 	 * Apply white space pre-processing tothe string
 	 * of rendered text
 	 * 
 	 * TODO 2 : this is only a partial implementation 
 	 */
-	private function applyWhiteSpace(text:String, whiteSpace:WhiteSpace):String
+	private function applyWhiteSpace(text:String, whiteSpace:CSSKeywordValue):String
 	{
 		switch (whiteSpace)
 		{
-			case normal, nowrap: // remove new lines, spaces and tab
+			case NORMAL, NO_WRAP: // remove new lines, spaces and tab
 
 			var er1 : EReg = ~/[ \t]+/;
 			//TODO 3 : at this point, CR should have been normalised as LF
@@ -195,7 +221,7 @@ class TextRenderer extends ElementRenderer
 			
 			text = er4.replace(er3.replace(er2.replace( er1.replace( text , " " ) , " " ), " "), " ");
 			
-			case preLine: // remove spaces
+			case PRE_LINE: // remove spaces
 
 			var er1 : EReg = ~/ *$^ */m;
 			var er2 : EReg = ~/[ \t]+/;
@@ -213,20 +239,22 @@ class TextRenderer extends ElementRenderer
 	 * or capitalise them (only the first letter of each word
 	 * is transformed to uppercase)
 	 */
-	private function applyTextTransform(text:String, textTransform:TextTransform):String
+	private function applyTextTransform(text:String, textTransform:CSSKeywordValue):String
 	{
 		switch (textTransform)
 		{
-			case uppercase:
+			case UPPERCASE:
 				text = text.toUpperCase();
 				
-			case lowercase:
+			case LOWERCASE:
 				text = text.toLowerCase();
 				
-			case capitalize:
+			case CAPITALIZE:
 				text = capitalizeText(text);
 				
-			case none:
+			case NONE:
+				
+			default:	
 		}
 		
 		return text;
@@ -268,18 +296,21 @@ class TextRenderer extends ElementRenderer
 	 */
 	private function createTextLines():Void
 	{
-		var processedText:String = _text.nodeValue;
+		if (_textTokensNeedParsing == true)
+		{
+			var processedText:String = _text.nodeValue;
+			//apply white space processing, for instance to collapse
+			//sequences of white spaces if needed
+			processedText = applyWhiteSpace(processedText, coreStyle.getKeyword(coreStyle.whiteSpace));
+	
+			processedText = applyTextTransform(processedText, coreStyle.getKeyword(coreStyle.textTransform));
+			
+			_textTokens = doGetTextTokens(processedText);
+		}
 		
-		//apply white space processing, for instance to collapse
-		//sequences of white spaces if needed
-		processedText = applyWhiteSpace(processedText, computedStyle.whiteSpace);
-		
-		processedText = applyTextTransform(processedText, computedStyle.textTransform);
-		
-		_textTokens = doGetTextTokens(processedText);
 		lineBoxes = [];
 		
-		var fontMetrics:FontMetricsData = _coreStyle.fontMetrics;
+		var fontMetrics:FontMetricsVO = coreStyle.fontMetrics;
 		var fontManager:FontManager = FontManager.getInstance();
 		
 		var length:Int = _textTokens.length;
@@ -293,7 +324,7 @@ class TextRenderer extends ElementRenderer
 	/**
 	 * Create and return a Text line box from a text token
 	 */
-	private function createTextLineBoxFromTextToken(textToken:TextToken, fontMetrics:FontMetricsData, fontManager:FontManager):LineBox
+	private function createTextLineBoxFromTextToken(textToken:TextToken, fontMetrics:FontMetricsVO, fontManager:FontManager):LineBox
 	{
 		//the text of the created text line box
 		var text:String;
@@ -352,9 +383,9 @@ class TextRenderer extends ElementRenderer
 	 * Overriden as the bounds of a TextRenderer is formed
 	 * by the bounds of its formatted text line boxes
 	 */
-	override private function get_bounds():RectangleData
+	override private function get_bounds():RectangleVO
 	{
-		var textLineBoxesBounds:Array<RectangleData> = new Array<RectangleData>();
+		var textLineBoxesBounds:Array<RectangleVO> = new Array<RectangleVO>();
 		var length:Int = lineBoxes.length;
 		for (i in 0...length)
 		{

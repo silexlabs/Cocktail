@@ -9,7 +9,7 @@
 package cocktail.core.html;
 
 import cocktail.core.renderer.TextInputRenderer;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
 
 /**
  * Form control.
@@ -111,7 +111,7 @@ class HTMLInputElement extends EmbeddedElement
 	// OVERRIDEN SETTER/GETTER
 	/////////////////////////////////
 	
-	override private function get_intrinsicWidth():Null<Int> 
+	override private function get_intrinsicWidth():Null<Float> 
 	{
 		return HTML_INPUT_TEXT_INTRINSIC_WIDTH;
 	}

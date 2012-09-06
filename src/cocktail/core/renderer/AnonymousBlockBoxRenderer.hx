@@ -7,14 +7,7 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.renderer;
-import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLConstants;
-import cocktail.core.html.HTMLElement;
-import cocktail.core.style.formatter.FormattingContext;
-import cocktail.core.geom.GeomData;
-import cocktail.core.style.StyleData;
-import cocktail.core.font.FontData;
-import cocktail.Lib;
 
 /**
  * Anonmymous block are used to wrap inlineBoxRenderer
@@ -70,7 +63,7 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 		return true;
 	}
 	
-	override public function establishesNewStackingContext():Bool
+	override public function createOwnLayer():Bool
 	{
 		return false;
 	}

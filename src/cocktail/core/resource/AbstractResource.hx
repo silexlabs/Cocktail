@@ -8,6 +8,7 @@
 */
 package cocktail.core.resource;
 
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.EventTarget;
 import cocktail.core.event.UIEvent;
 
@@ -39,12 +40,12 @@ class AbstractResource extends EventTarget
 	/**
 	 * The intrinsic width of the loaded resource
 	 */
-	public var intrinsicWidth(default, null):Int;
+	public var intrinsicWidth(default, null):Float;
 	
 	/**
 	 * The intrinsic height of the loaded resource
 	 */
-	public var intrinsicHeight(default, null):Int;
+	public var intrinsicHeight(default, null):Float;
 	
 	/**
 	 * The intrinsic ratio of the loaded resource
@@ -87,7 +88,7 @@ class AbstractResource extends EventTarget
 		loaded = true;
 		
 		var loadEvent:UIEvent = new UIEvent();
-		loadEvent.initUIEvent(UIEvent.LOAD, false, false, null, 0.0);
+		loadEvent.initUIEvent(EventConstants.LOAD, false, false, null, 0.0);
 		dispatchEvent(loadEvent);
 	}
 	
@@ -101,7 +102,7 @@ class AbstractResource extends EventTarget
 		loadedWithError = true;
 		
 		var errorEvent:UIEvent = new UIEvent();
-		errorEvent.initUIEvent(UIEvent.ERROR, false, false, null, 0.0);
+		errorEvent.initUIEvent(EventConstants.ERROR, false, false, null, 0.0);
 		dispatchEvent(errorEvent);
 	}
 }

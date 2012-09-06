@@ -1,20 +1,28 @@
 /*
- * Cocktail, HTML rendering engine
- * http://haxe.org/com/libs/cocktail
- *
- * Copyright (c) Silex Labs
- * Cocktail is available under the MIT license
- * http://www.silexlabs.org/labs/cocktail-licensing/
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
 
+import cocktail.core.css.CSSRule;
+import cocktail.core.css.CSSStyleDeclaration;
+import cocktail.core.css.CSSStyleRule;
+import cocktail.core.css.CSSStyleSheet;
+import cocktail.core.css.DefaultCSSStyleSheet;
+import cocktail.core.css.InitialStyleDeclaration;
+import cocktail.core.css.StyleManager;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
+import cocktail.core.event.TouchEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.focus.FocusManager;
@@ -23,14 +31,20 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLHtmlElement;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.html.HTMLInputElement;
+import cocktail.core.multitouch.MultiTouchManager;
+import cocktail.core.parser.DOMParser;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
+import cocktail.core.event.EventData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.event.FocusEvent;
+import cocktail.core.window.Window;
 import cocktail.Lib;
+import cocktail.port.GraphicsContext;
 import haxe.Log;
-import haxe.Timer;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
+import cocktail.core.geom.GeomData;
+import cocktail.core.css.CSSData;
 
 /**
  * An HTMLDocument is the root of the HTML hierarchy and holds the entire content.
@@ -39,6 +53,9 @@ import cocktail.core.style.StyleData;
  * 
  * TODO 3 : should manage current click count
  * TODO 3 : should manage double click events
+ * 
+ * TODO 3 : class is too big with too many different
+ * functionality
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -96,6 +113,17 @@ class HTMLDocument extends Document
 	private var _hoveredElementRenderer:ElementRenderer;
 	
 	/**
+	 * A reference to the currently mouse downed element, i.e
+	 * the user clicked the primary button of its mouse over 
+	 * this element and hasn't yet release the button.
+	 * 
+	 * If the mouse cursor moves over another element, this
+	 * one still remains the moused element unitl the mouse
+	 * button is released
+	 */
+	private var _mousedDownedElementRenderer:ElementRenderer;
+	
+	/**
 	 * Returns true if document has the ability
 	 * to display elements fullscreen, or false otherwise.
 	 */
@@ -106,6 +134,13 @@ class HTMLDocument extends Document
 	 * or null if there is no such element.
 	 */
 	public var fullscreenElement(default, set_fullscreenElement):HTMLElement;
+	
+	/**
+	 * getter/setter to set the whole document content with an 
+	 * html string or to serialise the whole document into
+	 * an html string
+	 */
+	public var innerHTML(get_innerHTML, set_innerHTML):String;
 	
 	/**
 	 * Callback listened to by the Window object
@@ -126,7 +161,7 @@ class HTMLDocument extends Document
 	 * to chnge the mouse cursor when needed using
 	 * platform specific APIs
 	 */
-	public var onSetMouseCursor:Cursor->Void;
+	public var onSetMouseCursor:CSSPropertyValue->Void;
 	
 	/**
 	 * a flag determining if a click event must be dispatched
@@ -159,32 +194,80 @@ class HTMLDocument extends Document
 	private var _documentNeedsRendering:Bool;
 	
 	/**
+	 * Wether the document needs to cascade the styles
+	 * on nex invalidation method call
+	 */
+	private var _documentNeedsCascading:Bool;
+	
+	/**
+	 * This class is in charge of keeping track of the
+	 * current touch points and of creating cross-platform
+	 * TouchEvent
+	 */
+	private var _multiTouchManager:MultiTouchManager;
+	
+	/**
+	 * A ref to the global Window object
+	 */
+	private var _window:Window;
+	
+	/**
+	 * A ref to the style manager holding all the
+	 * style sheet data of the document
+	 */
+	private var _styleManager:StyleManager;
+	
+	/**
+	 * an instance of the initial style declaration. 
+	 * This objects holds all the default values for each
+	 * supported CSS styles.
+	 * 
+	 * When a CSS style has no specified value for a given
+	 * HTML node, then its initial value from this object is used.
+	 * 
+	 * There is only one instance of it for the whole document, 
+	 * as the initial style values are always the same for each
+	 * node type. Every node use this object when cascading
+	 */
+	public var initialStyleDeclaration(default, null):InitialStyleDeclaration;
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
-	public function new() 
+	public function new(window:Window = null) 
 	{
 		super();
 		
+		initStyleManager();
+		
+		//TODO 2 : hack, Document probably shouldn't have
+		//ref to Window
+		if (window == null)
+		{
+			window = new Window();
+		}
+		
+		_window = window;
 		_focusManager = new FocusManager();
-			
+		
+		_multiTouchManager = new MultiTouchManager();
+		
 		documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
+		
 		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
-		documentElement.appendChild(body);
-		
-		
-	
 		
 		_shouldDispatchClickOnNextMouseUp = false;
 				
 		_invalidationScheduled = false;
 		_documentNeedsLayout = true;
 		_documentNeedsRendering = true;
+		_documentNeedsCascading = true;
 	}
 	
 	/**
 	 * Init the body element of the document and the attributes
 	 * depending on it. Set as public so that the body element
-	 * can be reset if the inner HTML of thr whole document
+	 * can be reset if the inner HTML of the whole document
 	 * changes
 	 */
 	public function initBody(htmlBodyElement:HTMLBodyElement):Void
@@ -193,6 +276,18 @@ class HTMLDocument extends Document
 		documentElement.appendChild(body);
 		_hoveredElementRenderer = body.elementRenderer;
 		activeElement = body;
+	}
+	
+	/**
+	 * Instantaite the style manager and add a default
+	 * style sheet to it
+	 */
+	private function initStyleManager():Void
+	{
+		initialStyleDeclaration = new InitialStyleDeclaration();
+		_styleManager = new StyleManager();
+		_styleManager.addStyleSheet(new DefaultCSSStyleSheet());
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -230,6 +325,9 @@ class HTMLDocument extends Document
 			case HTMLConstants.HTML_VIDEO_TAG_NAME:
 				element = new HTMLVideoElement();
 				
+			case HTMLConstants.HTML_AUDIO_TAG_NAME:
+				element = new HTMLAudioElement();
+				
 			case HTMLConstants.HTML_SOURCE_TAG_NAME:
 				element = new HTMLSourceElement();
 				
@@ -239,6 +337,12 @@ class HTMLDocument extends Document
 			case HTMLConstants.HTML_PARAM_TAG_NAME:
 				element = new HTMLParamElement();
 				
+			case HTMLConstants.HTML_LINK_TAG_NAME:
+				element = new HTMLLinkElement();
+				
+			case HTMLConstants.HTML_STYLE_TAG_NAME:
+				element = new HTMLStyleElement();
+				
 			default:
 				element = new HTMLElement(tagName);
 		}
@@ -246,6 +350,144 @@ class HTMLDocument extends Document
 		element.ownerDocument = this;
 		
 		return element;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// DOM PARSER GETTER/SETTER AND METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * parse the string representing the
+	 * whole document. The returned node
+	 * is the root of the html document
+	 */
+	private function set_innerHTML(value:String):String
+	{
+		//parse the html string into a node object
+		var node:HTMLElement = DOMParser.parse(value, this);
+		documentElement = node;
+		initBody(cast(documentElement.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
+		return value;
+	}
+	
+	/**
+	 * Return the serialized documentElement
+	 * (the <HTML> element)
+	 */
+	private function get_innerHTML():String
+	{
+		return DOMParser.serialize(documentElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC STYLE MANAGER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Add a CSS style sheet to the docuement, and cascade
+	 * all the DOM as the new style sheet likely changes
+	 * the styles value of some nodes
+	 */
+	public function addStyleSheet(stylesheet:CSSStyleSheet):Void
+	{
+		_styleManager.addStyleSheet(stylesheet);
+		documentElement.invalidateStyleDeclaration(true);
+		startCascade(false);
+	}
+	
+	/**
+	 * Remove a CSS style sheet from the document and cascade
+	 * all of the DOM to refresh style definitions
+	 */
+	public function removeStyleSheet(stylesheet:CSSStyleSheet):Void
+	{
+		_styleManager.removeStyleSheet(stylesheet);
+		documentElement.invalidateStyleDeclaration(true);
+		startCascade(false);
+	}
+	
+	/**
+	 * For a given HTML node, retrive all the style declaration from
+	 * the document's style sheets appying to it and return them as 
+	 * a css declaration
+	 */
+	public function getStyleDeclaration(node:HTMLElement):CSSStyleDeclaration
+	{
+		return _styleManager.getStyleDeclaration(node, getMatchedPseudoClassesVO(node));
+	}
+	 
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE STYLE MANAGER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * For a given node, return all of the
+	 * pseudo classes that it currently matches
+	 */
+	private function getMatchedPseudoClassesVO(node:HTMLElement):MatchedPseudoClassesVO
+	{
+		var hover:Bool = false;
+		var focus:Bool = false;
+		var active:Bool = false;
+		var link:Bool = false;
+		var enabled:Bool = false;
+		var disabled:Bool = false;
+		var checked:Bool = false;
+		
+		//TODO 1 : shouldn't be null but his when setting style of HTML tag for the first time
+		//check if node is the currently hovered node
+		if (_hoveredElementRenderer != null)
+		{
+			hover = _hoveredElementRenderer.domNode == node;
+		}
+		//TODO 1 : shouldn't be null either
+		//check if node is the currently focused element
+		if (activeElement != null)
+		{
+			focus = activeElement == node;
+		}
+		
+		//check if the node is the currently active (moused down) one
+		if (_mousedDownedElementRenderer != null)
+		{
+			active = _mousedDownedElementRenderer.domNode == node;
+		}
+		
+		//to match the :link pseudo class, the element must both be an anchor ("a") html element and also
+		//have an "href" attribute
+		if (node.tagName == HTMLConstants.HTML_ANCHOR_TAG_NAME && node.getAttribute(HTMLConstants.HTML_HREF_ATTRIBUTE_NAME) != null)
+		{
+			link = true;
+		}
+		
+		//enable/disable state only apply to form input element
+		//
+		//TODO 2 : check if it shouldn't apply to other elements
+		if (node.tagName == HTMLConstants.HTML_INPUT_TAG_NAME)
+		{
+			//check if a disabled attribute is present on the node
+			//to determine wether the form control is enabled or disabled
+			if (node.getAttribute(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME) == null)
+			{
+				enabled = true;
+				disabled = false;
+			}
+			else
+			{
+				disabled = true;
+				enabled = false;
+			}
+			
+			//check if the input element is checked
+			//
+			//might eventually need extra check, what if a text input has a checked attribute ?
+			if (node.getAttribute(HTMLConstants.HTML_CHECKED_ATTRIBUTE_NAME) != null)
+			{
+				checked = true;
+			}
+		}
+		
+		return new MatchedPseudoClassesVO(hover, focus, active, link, enabled, disabled, checked);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -266,23 +508,38 @@ class HTMLDocument extends Document
 		//reseted after dispatch
 		var eventType:String = mouseEvent.type;
 		
-		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
-		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
+		elementRendererAtPoint.domNode.dispatchEvent(mouseEvent);
 	
 		switch(eventType)
 		{
-			case MouseEvent.MOUSE_DOWN:
+			case EventConstants.MOUSE_DOWN:
 				//reset the click sequence when a mouse down is dispatched
 				_shouldDispatchClickOnNextMouseUp = true;
+				
+				//store the currently moused down element
+				_mousedDownedElementRenderer = elementRendererAtPoint;
+				//refresh its style, as now the :active pseudo-class applies to it
+				elementRendererAtPoint.domNode.invalidateStyleDeclaration(false);
 			
 				
-			case MouseEvent.MOUSE_UP:
+			case EventConstants.MOUSE_UP:
 				//on mouse up, if nothing canceled the click sequence, dispatch
 				//a click event after the mouse up event
 				if (_shouldDispatchClickOnNextMouseUp == true)
 				{
 					dispatchClickEvent(mouseEvent);
 				}
+				
+				//when the element is released, refresh
+				//its styles, as the :active pseudo class
+				//no longer applies
+				if (_mousedDownedElementRenderer != null)
+				{
+					_mousedDownedElementRenderer = null;
+					elementRendererAtPoint.domNode.invalidateStyleDeclaration(false);
+				}
+				
 		}
 	}
 	
@@ -293,12 +550,12 @@ class HTMLDocument extends Document
 	 */
 	public function onPlatformMouseWheelEvent(wheelEvent:WheelEvent):Void
 	{
-		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(wheelEvent);
-		elementRendererAtPoint.node.dispatchEvent(wheelEvent);
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(wheelEvent.screenX, wheelEvent.screenY);
+		elementRendererAtPoint.domNode.dispatchEvent(wheelEvent);
 		
 		if (wheelEvent.defaultPrevented == false)
 		{
-			var htmlElement:HTMLElement = elementRendererAtPoint.node;
+			var htmlElement:HTMLElement = elementRendererAtPoint.domNode;
 			
 			//get the amount of vertical scrolling to apply in pixel
 			var scrollOffset:Int = Math.round(wheelEvent.deltaY * MOUSE_WHEEL_DELTA_MULTIPLIER) ;
@@ -323,24 +580,31 @@ class HTMLDocument extends Document
 	 */
 	public function onPlatformMouseMoveEvent(mouseEvent:MouseEvent):Void
 	{
-		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
 
 		if (_hoveredElementRenderer != elementRendererAtPoint)
 		{
+			//dispatch mouse out on the old hovered HTML element
 			var mouseOutEvent:MouseEvent = new MouseEvent();
-			mouseOutEvent.initMouseEvent(MouseEvent.MOUSE_OUT, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
-			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey, mouseEvent.metaKey, mouseEvent.button, elementRendererAtPoint.node);
+			mouseOutEvent.initMouseEvent(EventConstants.MOUSE_OUT, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
+			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey, mouseEvent.metaKey, mouseEvent.button, elementRendererAtPoint.domNode);
 			
-			_hoveredElementRenderer.node.dispatchEvent(mouseOutEvent);
+			_hoveredElementRenderer.domNode.dispatchEvent(mouseOutEvent);
 			
 			var oldHoveredElementRenderer:ElementRenderer = _hoveredElementRenderer;
+			oldHoveredElementRenderer.domNode.invalidateStyleDeclaration(false);
 			_hoveredElementRenderer = elementRendererAtPoint;
 			
+			//dispatch mouse over on the newly hovered HTML element
 			var mouseOverEvent:MouseEvent = new MouseEvent();
-			mouseOverEvent.initMouseEvent(MouseEvent.MOUSE_OVER, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
-			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, oldHoveredElementRenderer.node);
+			mouseOverEvent.initMouseEvent(EventConstants.MOUSE_OVER, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
+			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, oldHoveredElementRenderer.domNode);
 			
-			elementRendererAtPoint.node.dispatchEvent(mouseOverEvent);
+			elementRendererAtPoint.domNode.dispatchEvent(mouseOverEvent);
+			
+			//refresh the style of the newly hovered html element as a :hover
+			//pseudo-class might apply to it
+			elementRendererAtPoint.domNode.invalidateStyleDeclaration(false);
 			
 			//when the hovered element changes, if a mouse up event is dispatched
 			//on the new hovered element, no click should be dispatched on it, as 
@@ -349,10 +613,10 @@ class HTMLDocument extends Document
 			
 			//update the mouse cursor with the cursor style of the newly hovered 
 			//element
-			setMouseCursor(elementRendererAtPoint.node.coreStyle.computedStyle.cursor);
+			setMouseCursor(elementRendererAtPoint.domNode.coreStyle.cursor);
 		}
 		
-		elementRendererAtPoint.node.dispatchEvent(mouseEvent);
+		elementRendererAtPoint.domNode.dispatchEvent(mouseEvent);
 	}
 	
 	
@@ -365,7 +629,7 @@ class HTMLDocument extends Document
 	{
 		activeElement.dispatchEvent(keyboardEvent);
 
-		//TODO 4 : should this logic go into HTMLElement ? or is it application/embedder level ?
+		//TODO 4 : should this logic go into HTMLElement ? or is it application/embedder level ? 
 		switch (Std.parseInt(keyboardEvent.keyChar))
 		{
 			case TAB_KEY_CODE:
@@ -396,11 +660,33 @@ class HTMLDocument extends Document
 	
 	/**
 	 * When the Window is resized, invalidate
-	 * the body
+	 * the body, redraw.
 	 */
 	public function onPlatformResizeEvent(event:UIEvent):Void
 	{
 		documentElement.invalidate(InvalidationReason.windowResize);
+	}
+	
+	/**
+	 * When a native touch event occurs, the state of the current
+	 * active touch must be updated, then a new 
+	 * 
+	 * TODO 2 : should add default scrolling behaviour for touch
+	 */
+	public function onPlatformTouchEvent(touchEvent:TouchEvent):Void
+	{	
+		//at this point the TouchEvent contain only the one
+		//Touch which triggered the event
+		var touch:Touch = touchEvent.touches.item(0);
+		var elementAtTouchPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(touch.screenX, touch.screenY);
+		
+		//send the event to the multitouch manager so that it can set up
+		//all of its properties properly
+		_multiTouchManager.setUpTouchEvent(touchEvent, elementAtTouchPoint.domNode);
+		
+		//dispatch the TouchEvent on the node onto which it was triggered
+		elementAtTouchPoint.domNode.dispatchEvent(touchEvent);
+		
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -420,9 +706,9 @@ class HTMLDocument extends Document
 	 */
 	private function dispatchClickEvent(mouseEvent:MouseEvent):Void
 	{
-		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent);
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
 		
-		var htmlElement:HTMLElement = elementRendererAtPoint.node;
+		var htmlElement:HTMLElement = elementRendererAtPoint.domNode;
 		
 		//find the first parent of the HTMLElement which has an activation behaviour, might
 		//return null
@@ -436,7 +722,7 @@ class HTMLDocument extends Document
 		
 		//create a mouse click event from the mouse up event
 		var clickEvent:MouseEvent = new MouseEvent();
-		clickEvent.initMouseEvent(MouseEvent.CLICK, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY,
+		clickEvent.initMouseEvent(EventConstants.CLICK, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY,
 		mouseEvent.clientX, mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey,
 		mouseEvent.metaKey, mouseEvent.button, null);
 		
@@ -464,7 +750,7 @@ class HTMLDocument extends Document
 	 * Change the current mouse cursor, using platform
 	 * specific APIs
 	 */
-	private function setMouseCursor(cursor:Cursor):Void
+	private function setMouseCursor(cursor:CSSPropertyValue):Void
 	{
 		if (onSetMouseCursor != null)
 		{
@@ -504,18 +790,15 @@ class HTMLDocument extends Document
 		
 		//fire a fullscreen event
 		var fullscreenEvent:Event = new Event();
-		fullscreenEvent.initEvent(Event.FULL_SCREEN_CHANGE, true, false);
+		fullscreenEvent.initEvent(EventConstants.FULL_SCREEN_CHANGE, true, false);
 	}
 	
 	/**
 	 * Return wether fullscreen mode is allowed
-	 * 
-	 * TODO 3 : a bit messy to have cross-reference
-	 * to Platform 
 	 */
 	private function get_fullscreenEnabled():Bool
 	{
-		return Lib.window.platform.nativeWindow.fullScreenEnabled();
+		return _window.platform.nativeWindow.fullScreenEnabled();
 	}
 	
 	/**
@@ -553,7 +836,7 @@ class HTMLDocument extends Document
 		
 		//fire fullscreen event
 		var fullscreenEvent:Event = new Event();
-		fullscreenEvent.initEvent(Event.FULL_SCREEN_CHANGE, true, false);
+		fullscreenEvent.initEvent(EventConstants.FULL_SCREEN_CHANGE, true, false);
 		
 		return value;
 	}
@@ -580,6 +863,15 @@ class HTMLDocument extends Document
 		invalidate();
 	}
 	
+	/**
+	 * schedule a cascade of the document
+	 */
+	public function invalidateCascade():Void
+	{
+		_documentNeedsCascading = true;
+		invalidate();
+	}
+	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -602,33 +894,39 @@ class HTMLDocument extends Document
 	private function doInvalidate():Void
 	{
 		_invalidationScheduled = true;
-		scheduleLayoutAndRender();
+		scheduleCascadeLayoutAndRender();
 	}
 	
 	/**
-	 * layout and render the document
+	 * cascade, layout and render the document
 	 * as needed
 	 */
-	private function layoutAndRender():Void
+	private function cascadeLayoutAndRender():Void
 	{
+		//only cascade if needed
+		if (_documentNeedsCascading == true)
+		{
+			startCascade(true);
+		}
+		
 		//only layout if the invalidate layout
 		//method was called
 		if (_documentNeedsLayout == true)
 		{
-		    startLayout(false);
+			startLayout(false);
 			_documentNeedsLayout = false;
 			
-			 //start all pending animations
-			 var atLeastOneAnimationStarted:Bool = startPendingAnimation();
-			 
+			//start all pending animations
+			var atLeastOneAnimationStarted:Bool = startPendingAnimation();
+			
 			//if at least one pending animation started, an immediate layout
 			//must be performed before rendering, else the rendering will be
-     		//done with the end value of the animations instead of the beggining	
-     		//value, resulting in a visual glitch
+			//done with the end value of the animations instead of the beggining
+			//value, resulting in a visual glitch
 			if (atLeastOneAnimationStarted == true)
-     		{
+			{
 				startLayout(true);
-			}	
+			}
 		}
 		
 		//same as for layout
@@ -645,31 +943,43 @@ class HTMLDocument extends Document
 	 */
 	private function onLayoutSchedule():Void
 	{
-		layoutAndRender();
+		cascadeLayoutAndRender();
 		_invalidationScheduled = false;
 	}
 	
 	/**
 	 * Start rendering the rendering
-	 * tree, starting with the root ElementRenderer
+	 * tree, starting with the root LayerRenderer
 	 */ 
 	private function startRendering():Void
 	{
-		#if (flash9 || nme)
-		//start the rendering at the root layer renderer
-		documentElement.elementRenderer.render(flash.Lib.current, false);
-		#end
+		documentElement.elementRenderer.layerRenderer.render(_window.innerWidth, _window.innerHeight);
 	}
 	
 	/**
-     * Start all the pending animation by calling
-     * the start animation method on all elements of the
-     * rendering tree	
-     */	
+	 * Start all the pending animation by calling
+	 * the start animation method on all elements of the
+	 * rendering tree
+	 */
 	private function startPendingAnimation():Bool
 	{
-		return documentElement.elementRenderer.startPendingAnimation();
+		return documentElement.startPendingAnimation();
 	}
+	
+	/**
+	 * Star cascading the whole document
+	 * 
+	 * @param programmaticChange whether the cascading
+	 * is the result of a programmatic change to the DOM/CSS.
+	 * It is used to determine wether animation/transition
+	 * can be started during the cascade 
+	 */
+	private function startCascade(programmaticChange:Bool):Void
+	{
+		documentElement.cascade(new Hash<Void>(), programmaticChange);
+		_documentNeedsCascading = false;
+	}
+	
 	
 	/**
 	 * Start the layout of the rendering tree,
@@ -683,7 +993,7 @@ class HTMLDocument extends Document
 		
 		//set the global bounds on the rendering tree. After this, ElementRenderer
 		//are aware of their bounds relative ot the viewport
-		documentElement.elementRenderer.setGlobalOrigins(0, 0, 0, 0);
+		documentElement.elementRenderer.setGlobalOrigins(0, 0, 0, 0, 0 ,0);
 	}
 	
 	/**
@@ -692,13 +1002,14 @@ class HTMLDocument extends Document
 	 * happen once when a series of style values are set or when many elements
 	 * are attached/removed from the DOM, instead of happening for every change.
 	 */
-	private function scheduleLayoutAndRender():Void
+	private function scheduleCascadeLayoutAndRender():Void
 	{
 		var onLayoutScheduleDelegate:Void->Void = onLayoutSchedule;
-		#if (flash9 || nme)
+		#if macro
+		#elseif (flash9 || nme)
 		//calling the methods 1 millisecond later is enough to ensure
 		//that first all synchronous code is executed
-		Timer.delay(function () { 
+		haxe.Timer.delay(function () { 
 			onLayoutScheduleDelegate();
 		}, INVALIDATION_INTERVAL);
 		#end
@@ -712,12 +1023,14 @@ class HTMLDocument extends Document
 	 * Utils method returning the first ElementRenderer whose dom node
 	 * is an Element node. This is used when dispatching MouseEvent, as their target
 	 * can only be Element node.
+	 * 
+	 * TODO 1 : should never return initial container block, should return body instead
 	 */
-	private function getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent:MouseEvent):ElementRenderer
+	private function getFirstElementRendererWhichCanDispatchMouseEvent(x:Int, y:Int):ElementRenderer
 	{
-		var screenX:Float = mouseEvent.screenX;
-		var screenY:Float = mouseEvent.screenY;
-		var elementRendererAtPoint:ElementRenderer = body.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( { x: screenX, y: screenY }, 0, 0  );
+		var x:Float = x;
+		var y:Float = y;
+		var elementRendererAtPoint:ElementRenderer = documentElement.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( new PointVO(x, y), 0, 0  );
 		
 		//when no element is under mouse like for instance when the mouse leaves
 		//the window, return the body
@@ -726,7 +1039,7 @@ class HTMLDocument extends Document
 			return body.elementRenderer;
 		}
 		
-		while (elementRendererAtPoint.node.nodeType != DOMConstants.ELEMENT_NODE || elementRendererAtPoint.isAnonymousBlockBox() == true)
+		while (elementRendererAtPoint.domNode.nodeType != DOMConstants.ELEMENT_NODE || elementRendererAtPoint.isAnonymousBlockBox() == true)
 		{
 			elementRendererAtPoint = elementRendererAtPoint.parentNode;
 			if (elementRendererAtPoint == null)

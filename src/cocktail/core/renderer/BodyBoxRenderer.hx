@@ -10,8 +10,10 @@ package cocktail.core.renderer;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
+
 import cocktail.port.NativeElement;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
+import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 
 /**
@@ -41,10 +43,12 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	override private function layoutSelf():Void
 	{
 		super.layoutSelf();
-		if (_coreStyle.height == Dimension.cssAuto && (isPositioned() == false || isRelativePositioned() == true))
+		
+		if (coreStyle.isAuto(coreStyle.height) == true && (isPositioned() == false || isRelativePositioned() == true))
 		{
-			this.computedStyle.height = _containingBlock.getContainerBlockData().height - computedStyle.marginTop - computedStyle.marginBottom
-			- computedStyle.paddingTop - computedStyle.paddingBottom;
+			var usedValues:UsedValuesVO = coreStyle.usedValues;
+			usedValues.height = _containingBlock.getContainerBlockData().height - usedValues.marginTop - usedValues.marginBottom
+			- usedValues.paddingTop - usedValues.paddingBottom;
 		}
 	}
 	
@@ -56,21 +60,14 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	 * The HTMLBodyElement uses the bounds of the viewport
 	 * for its background
 	 */
-	override private function getBackgroundBounds():RectangleData
+	override private function getBackgroundBounds():RectangleVO
 	{
-		var windowData:ContainingBlockData = getWindowData();
+		var windowData:ContainingBlockVO = getWindowData();
 		
 		var width:Float = windowData.width;
 		var height:Float = windowData.height;
 		
-		var bodyBounds:RectangleData = {
-			x:0.0,
-			y:0.0,
-			width:width,
-			height:height
-		}
-		
-		return bodyBounds;
+		return new RectangleVO(0.0, 0.0, width, height);
 	}
 	
 	

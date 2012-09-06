@@ -17,7 +17,8 @@ import cocktail.core.event.WheelEvent;
 import cocktail.port.Keyboard;
 import cocktail.port.Mouse;
 import cocktail.port.NativeWindow;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
+import cocktail.port.TouchListener;
 
 /**
  * This class exposes an API to access platform
@@ -49,6 +50,12 @@ class Platform
 	 */
 	public var nativeWindow(default, null):NativeWindow;
 	
+	/**
+	 * An access of the cross platform class used to listen to touch 
+	 * events
+	 */
+	public var touchListener(default, null):TouchListener;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR & INIT
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -63,5 +70,6 @@ class Platform
 		mouse = new Mouse();
 		keyboard = new Keyboard();
 		nativeWindow = new NativeWindow();
+		touchListener = new TouchListener();
 	}
 }

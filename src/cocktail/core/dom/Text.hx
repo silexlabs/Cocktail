@@ -60,6 +60,8 @@ class Text extends CharacterData
 	 * TODO 1 IMPORTANT : this class is not supposed to 
 	 * inherit from HTMLElement and have this method.
 	 * Should they share a IRenderable interface instead ?
+	 * Maybe there should be an HTMLText class in the HTML package
+	 * compositing this one ?
 	 * 
 	 * TODO 1 : when node value changes, should invalidate
 	 * rendering
@@ -74,9 +76,17 @@ class Text extends CharacterData
 	 */
 	override private function attachCoreStyle():Void
 	{
-		var parent:HTMLElement = parentNode;
 		//the TextRenderer inherits its styles from its parent
-		elementRenderer.coreStyle = parent.coreStyle;
+		elementRenderer.coreStyle = parentNode.coreStyle;
+	}
+	
+	/**
+	 * Text is always considered rendered, its first element
+	 * parent will actually determine wether it is rendered
+	 */
+	override private function isRendered():Bool
+	{
+		return true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

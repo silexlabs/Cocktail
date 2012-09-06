@@ -1,31 +1,33 @@
 /*
- * Cocktail, HTML rendering engine
- * http://haxe.org/com/libs/cocktail
- *
- * Copyright (c) Silex Labs
- * Cocktail is available under the MIT license
- * http://www.silexlabs.org/labs/cocktail-licensing/
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.renderer;
 
+import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.NodeBase;
+import cocktail.core.event.TransitionEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.linebox.LineBox;
-import cocktail.port.NativeElement;
-import cocktail.port.DrawingManager;
+import cocktail.core.animation.Animator;
+import cocktail.core.animation.Transition;
 import cocktail.core.geom.GeomData;
-import cocktail.core.style.ComputedStyle;
-import cocktail.core.style.CoreStyle;
-import cocktail.core.style.CSSConstants;
-import cocktail.core.style.formatter.FormattingContext;
-import cocktail.core.style.StyleData;
+
+import cocktail.core.css.CoreStyle;
+import cocktail.core.css.CSSConstants;
+import cocktail.core.layout.formatter.FormattingContext;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.layer.LayerRenderer;
-import haxe.Timer;
+import cocktail.port.GraphicsContext;
+import cocktail.core.css.CSSData;
 
 
 /**
@@ -81,7 +83,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * which established the formatting context this ElementRenderer 
 	 * participates in.
 	 */
-	public var bounds(get_bounds, set_bounds):RectangleData;
+	public var bounds(get_bounds, set_bounds):RectangleVO;
 	
 	/**
 	 * The bounds of the ElementRenderer in the space of the Window.
@@ -92,7 +94,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * will be used to determine its global bounds whereas if it
 	 * is absolutely positioned, it will use its positioned bounds
 	 */
-	public var globalBounds(get_globalBounds, never):RectangleData;
+	public var globalBounds(get_globalBounds, never):RectangleVO;
 	
 	/**
 	 * The scrollable bounds of the ElementRenderer in the space of the scrollable containing
@@ -107,7 +109,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * 
 	 * This is a utility read-only method
 	 */
-	public var scrollableBounds(get_scrollableBounds, never):RectangleData;
+	public var scrollableBounds(get_scrollableBounds, never):RectangleVO;
 	
 	/**
 	 * This is the position of the top left padding box corner of the 
@@ -117,7 +119,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * When added to the x and y bounds of the ElementRenderer, 
 	 * it gives the global x and y of the ElementRenderer
 	 */
-	public var globalContainingBlockOrigin:PointData;
+	public var globalContainingBlockOrigin:PointVO;
 	
 	/**
 	 * This is the position of the top left corner of this
@@ -130,7 +132,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * positioned ancestor origin, it gives the global
 	 * positioned origin of the ElementRenderer
 	 */
-	public var positionedOrigin:PointData;
+	public var positionedOrigin:PointVO;
 	
 	/**
 	 * This is the position of the top left padding box corner
@@ -140,21 +142,30 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * It is used when this ElementRenderer
 	 * is absolutely positioned.
 	 */
-	public var globalPositionnedAncestorOrigin:PointData;
+	public var globalPositionnedAncestorOrigin:PointVO;
+	
+	/**
+	 * The total of all the x and y scroll
+	 * applied to the parent of this ElementRenderer
+	 */
+	public var scrollOffset:PointVO;
 	
 	/**
 	 * A reference to the Node in the DOM tree
 	 * which created this ElementRenderer. It might
 	 * be an HTMLElement or a Text node
+	 * 
+	 * TODO IMPORTANT : for now HTMLElement as event
+	 * Text inherits from HTMLElement in haxe JS API,
+	 * shouldn't be so
 	 */
-	public var node(default, null):HTMLElement;
+	public var domNode(default, null):HTMLElement;
 	
 	/**
 	 * A reference to the coreStyle from which
 	 * the styles of this ElementRenderer are retrieved
 	 */
-	private var _coreStyle:CoreStyle;
-	public var coreStyle(get_coreStyle, set_coreStyle):CoreStyle;
+	public var coreStyle:CoreStyle;
 	
 	/**
 	 * A reference to the LayerRenderer in the LayerRenderer tree
@@ -177,26 +188,18 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * 
 	 * TODO 2 : not very clean, should layerRenderer be null instead
 	 * for ElementRenderer not starting a layer ? -> or should use 
-	 * the establishesNewStackingContextMethod ? + doc is false
+	 * the establishesNewStackingContext Method ? + doc is false
 	 */
 	private var _hasOwnLayer:Bool;
 	
 	/**
-	 * flag similar to hasOwnLayer. When an ElementRenderer is auto z-index
-	 * positioned, it must remove itself from its layerRenderer when detached.
-	 * This flag ensures that it does, as if for instance the detachement was
-	 * caused by the change of this ElementRenderer z-index from auto to an integer,
-	 * without this flags, it won't know that it was auto z-index positioned 
-	 * at the time of detachement
+	 * flag similar to the above. When an ElementRenderer is attached, if it
+	 * is positioned, it registers itself with its first positioned ancestor.
+	 * This flasg is there to ensure that, when detached, the ElementRenderer
+	 * unregisters itself with its first positioned ancestor, even if the 
+	 * detachement was cause by a change to its display style
 	 */
-	private var _wasAutoZIndexPositioned:Bool;
-	
-	/**
-	 * Stores all of the value of styles once computed.
-	 * For example, if a size is set as a percentage, it will
-	 * be stored once computed to pixels into this structure
-	 */
-	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyle;
+	private var _wasPositioned:Bool;
 	
 	/**
 	 * get/set the scrolling in the x axis of this ElementRenderer.
@@ -223,79 +226,39 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * height
 	 */
 	public var scrollHeight(get_scrollHeight, never):Float;
-	
-	private var _needsLayout:Bool;
-	
-	private var _childrenNeedLayout:Bool;
-	
-	private var _positionedChildrenNeedLayout:Bool;
-	
-	private var _needsRendering:Bool;
-	
-	private var _childrenNeedRendering:Bool;
-	
-	private var _needsVisualEffectsRendering:Bool;
 
+	/**
+	 * A reference to the containing block of this
+	 * ElementRenderer, which might be its parent,
+	 * its first positioned ancestor or the initial
+	 * block renderer based on its positioning
+	 * scheme
+	 */
 	private var _containingBlock:FlowBoxRenderer;
-	
 	
 	/**
 	 * class constructor. init class attribute
 	 */
-	public function new(node:HTMLElement) 
+	public function new(domNode:HTMLElement) 
 	{
 		super();
 
-		this.node = node;
-		
+		this.domNode = domNode;
 		
 		_hasOwnLayer = false;
-		_wasAutoZIndexPositioned = false;
+		_wasPositioned = false;
 		
-		bounds = {
-			x:0.0,
-			y:0.0,
-			width : 0.0,
-			height: 0.0
-		}
+		bounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
 		
-		positionedOrigin = {
-			x:0.0,
-			y:0.0
-		}
+		scrollOffset = new PointVO(0.0, 0.0);
 		
-		globalPositionnedAncestorOrigin = {
-			x:0.0,
-			y:0.0
-		}
+		positionedOrigin = new PointVO(0.0, 0.0);
 		
-		globalContainingBlockOrigin = {
-			x:0.0,
-			y:0.0
-		}
+		globalPositionnedAncestorOrigin = new PointVO(0.0, 0.0); 
 		
-		_needsRendering = true;
-		_childrenNeedRendering = true;
-		_needsLayout = true;
-		_childrenNeedLayout = true;
-		_positionedChildrenNeedLayout = true;
-		_needsVisualEffectsRendering = true;
+		globalContainingBlockOrigin = new PointVO(0.0, 0.0);
 		
 		lineBoxes = new Array<LineBox>();
-	}
-	
-	/**
-	 * clean-up method
-	 * 
-	 * TODO 1 : when setting to null, in flash, don't
-	 *	dereference but instead set the actual object to null
-	 */
-	public function dispose():Void
-	{
-		//_lineBoxes = null;
-		//_graphicsContext = null;
-		//_coreStyle = null;
-		//_layerRenderer = null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -305,18 +268,16 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	/**
 	 * overriden as when an ElementRenderer is appended, it must be attached
 	 * to the LayerRenderer tree
-	 */
+	 */ 
 	override public function appendChild(newChild:ElementRenderer):ElementRenderer
 	{
 		super.appendChild(newChild);
 		
-		var elementRendererChild:ElementRenderer = newChild;
-		elementRendererChild.attach();
+		newChild.attach();
 		
 		invalidate(InvalidationReason.other);
 		return newChild;
 	}
-	
 	
 	/**
 	 * overriden as when an ElementRenderer is removed, it must be
@@ -326,55 +287,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		//must happen before calling super, else the ElementRenderer
 		//won't have a parent anymore
-		var elementRendererChild:ElementRenderer = oldChild;
-		elementRendererChild.detach();
+		oldChild.detach();
 		
 		super.removeChild(oldChild);
 		invalidate(InvalidationReason.other);
 		return oldChild;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC ANIMATION METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Recursively start pending animation
-	 */
-	public function startPendingAnimation():Bool
-	{
-		return doStartPendingAnimation(this);
-	}
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE ANIMATION METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * start pending animations of self and of all children 
-	 */
-	private function doStartPendingAnimation(elementRenderer:ElementRenderer):Bool
-	{
-		var atLeastOneAnimationStarted:Bool = false;
-
-		var animationStarted:Bool = elementRenderer.coreStyle.startPendingAnimations();
-
-		if (animationStarted == true)
-		{
-			atLeastOneAnimationStarted = true;
-		}
-
-		for (i in 0...childNodes.length)
-		{
-			var animationStarted:Bool = childNodes[i].startPendingAnimation();
-
-			if (animationStarted == true)
-			{
-				atLeastOneAnimationStarted = true;
-			}
-		}
-
-		return atLeastOneAnimationStarted;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -385,7 +302,16 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * Render this ElementRenderer using the provided
 	 * graphic context as canvas
 	 */
-	public function render(parentGraphicContext:NativeElement, forceRendering:Bool):Void
+	public function render(parentGraphicContext:GraphicsContext):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Render the scrollbars of this ElementRenderer if needed, only
+	 * apply to BlockBoxElementRenderer
+	 */
+	public function renderScrollBars(graphicContext:GraphicsContext, windowWidth:Int, windowHeight:Int):Void
 	{
 		//abstract
 	}
@@ -398,7 +324,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * Layout this ElementRenderer so that it knows its
 	 * bounds and can be rendered to the screen
 	 * 
-	 * @param forceLayout force the layout of this
+	 * @param	forceLayout force the layout of this
 	 * ElementRenderer and of its children
 	 */ 
 	public function layout(forceLayout:Bool):Void
@@ -415,13 +341,13 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * @param	addedPositionedX the added X position for positioned elements
 	 * @param	addedPositionedY the added Y position for positioned elements
 	 */
-	public function setGlobalOrigins(addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
+	public function setGlobalOrigins(addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float, addedScrollX:Float, addedScrollY:Float):Void
 	{
 		//if the element establishes a new formatting context, then its
 		//bounds must be added to the global x and y bounds for the normal flow
 		if (establishesNewFormattingContext() == true)
 		{
-			var globalBounds:RectangleData = globalBounds;
+			var globalBounds:RectangleVO = globalBounds;
 			addedX = globalBounds.x;
 			addedY = globalBounds.y;
 		}
@@ -430,10 +356,27 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		//its bounds to the global positioned origin
 		if (isPositioned() == true)
 		{
-			var globalBounds:RectangleData = globalBounds;
+			var globalBounds:RectangleVO = globalBounds;
 			addedPositionedX = globalBounds.x;
 			addedPositionedY = globalBounds.y;
 		}
+		
+		//TODO 1 : doc + this is a shortcut, should apply
+		//to all elementRenderer whose containing block is a parent
+		//of the scrolled BlockBoxRenderer.
+		//computing scroll offset should probably be done at the
+		//LayerRenderer level instead of in the ElementRenderer
+		if (coreStyle.getKeyword(coreStyle.position) != FIXED)
+		{
+			addedScrollX += scrollLeft;
+			addedScrollY += scrollTop;
+		}
+		else
+		{
+			addedScrollX = 0;
+			addedScrollY = 0;
+		}
+		
 		
 		//for its child of the element
 		var length:Int = childNodes.length;
@@ -441,20 +384,19 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{
 			var child:ElementRenderer = childNodes[i];
 			
-			child.globalContainingBlockOrigin = {
-				x: addedX,
-				y : addedY
-			}
+			child.globalContainingBlockOrigin.x = addedX;
+			child.globalContainingBlockOrigin.y = addedY;
 			
-			child.globalPositionnedAncestorOrigin = {
-				x: addedPositionedX,
-				y : addedPositionedY
-			}
+			child.globalPositionnedAncestorOrigin.x = addedPositionedX;
+			child.globalPositionnedAncestorOrigin.y = addedPositionedY;
+			
+			child.scrollOffset.x = addedScrollX;
+			child.scrollOffset.y = addedScrollY;
 			
 			//call the method recursively if the child has children itself
 			if (child.hasChildNodes() == true)
 			{
-				child.setGlobalOrigins(addedX, addedY, addedPositionedX, addedPositionedY);
+				child.setGlobalOrigins(addedX, addedY, addedPositionedX, addedPositionedY, addedScrollX, addedScrollY);
 			}
 		}
 	}
@@ -482,7 +424,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		_containingBlock = getContainingBlock();
 		
-		attachContaininingBlock();
+		registerWithContaininingBlock();
 	}
 	
 	/**
@@ -491,7 +433,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	public function detach():Void
 	{
-		detachContainingBlock();
+		unregisterWithContainingBlock();
 		_containingBlock = null;
 		
 		//first detach the LayerRenderer of all its children
@@ -506,9 +448,13 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRVIATE ATTACHEMENT METHODS
+	// PRIVATE ATTACHEMENT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Create a LayerRenderer or use the one
+	 * of the parent to be rendered
+	 */
 	private function attachLayer():Void
 	{
 		//create the LayerRenderer if needed
@@ -525,6 +471,9 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		}
 	}
 	
+	/**
+	 * Detach the LayerRenderer
+	 */
 	private function detachLayer():Void
 	{
 		//only detach the LayerRenderer if this ElementRenderer
@@ -536,51 +485,43 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			parent.layerRenderer.removeChild(layerRenderer);
 			_hasOwnLayer = false;
 		}
-		//else if the ElementRenderer was auto z-index positioned when attached,
-		//it means that it was added to the LayerRenderer
-		//as a auto positioned child and must now be removed from it
-		else if (_wasAutoZIndexPositioned == true)
-		{
-			//TODO 3 : is LayerRenderer supposed to be null ?, detachLayer seems
-			//to be called before attachLayer in some case, shouldn't arrive here
-			//if it does
-			if (layerRenderer != null)
-			{
-				layerRenderer.removeAutoZIndexChildElementRenderer(this);
-			}
-			_wasAutoZIndexPositioned = false;
-		}
 		
 		layerRenderer = null;
 	}
 	
-	private function attachContaininingBlock():Void
+	/**
+	 * If the ElementRenderer is positioned, it
+	 * must register itself with its first positioned
+	 * ancestor
+	 */
+	private function registerWithContaininingBlock():Void
 	{
-		//TODO 2 : shouldn't be applied to Scrollbar, or scrollbar ContainingBlock
-		//should always be the parent block box
-		//if the ElementRenderer is positioned, it registers itself
-		//with its first positioned ancestor
 		if (isPositioned() == true)
 		{
 			_containingBlock.addPositionedChildren(this);
+			//flag remembering that the child was positioned at
+			//attach time
+			_wasPositioned = true;
 		}
 	}
 	
-	private function detachContainingBlock():Void
+	/**
+	 * If the ElementRenderer was positioned when attached,
+	 * it must unregister itself from its first positioned
+	 * ancestor
+	 */
+	private function unregisterWithContainingBlock():Void
 	{
-		//the ElementRenderer tries to unregister itself
-		//form its containing block, won't have any effect
-		//if the ElementRenderer is not positionned
-		//
-		//TODO 2 : shouldn't always call it but won't work if the detachement
-		//was caused by the change of the position style
-		_containingBlock.removePositionedChild(this);
+		if (_wasPositioned == true)
+		{
+			_containingBlock.removePositionedChild(this);
+			_wasPositioned = false;
+		}
 	}
 	
 	/////////////////////////////////
 	// PUBLIC HELPER METHODS
 	// Overriden by inheriting classes
-	// TODO 3 : should copy most doc from BoxRenderer
 	////////////////////////////////
 	
 	public function isVerticallyScrollable(scrollOffset:Int):Bool
@@ -633,6 +574,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		return false;
 	}
 	
+	public function isTransparent():Bool
+	{
+		return false;
+	}
+	
 	public function isBlockContainer():Bool
 	{
 		return false;
@@ -648,28 +594,29 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		return false;
 	}
 	
+	public function isTransformed():Bool
+	{
+		return false;
+	}
+	
 	/**
 	 * Determine wether this ElementRenderer creates a
 	 * new LayerRenderer for itself or use the
 	 * one of its parent
 	 */
-	public function establishesNewStackingContext():Bool
+	public function createOwnLayer():Bool
 	{
 		return false;
 	}
-	
-	/////////////////////////////////
-	// PRIVATE HELPER METHODS
-	////////////////////////////////
 	
 	/**
 	 * Return the relative offset applied by this ElementRenderer
 	 * when rendering. Only relatively positioned ElementRenderer
 	 * have this offset
 	 */
-	private function getRelativeOffset():PointData
+	public function getRelativeOffset():PointVO
 	{
-		var relativeOffset:PointData = { x:0.0, y:0.0 };
+		var relativeOffset:PointVO = new PointVO(0.0, 0.0);
 		
 		//only relatively positioned ElementRenderer can have
 		//an offset
@@ -677,14 +624,14 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{
 			//first try to apply the left offset of the ElementRenderer if it is
 			//not auto
-			if (coreStyle.left != PositionOffset.cssAuto)
+			if (coreStyle.isAuto(coreStyle.left) == false)
 			{
-				relativeOffset.x += coreStyle.computedStyle.left;
+				relativeOffset.x += coreStyle.usedValues.left;
 			}
 			//else the right offset,
-			else if (coreStyle.right != PositionOffset.cssAuto)
+			else if (coreStyle.isAuto(coreStyle.right) == false)
 			{
-				relativeOffset.x -= coreStyle.computedStyle.right;
+				relativeOffset.x -= coreStyle.usedValues.right;
 			}
 			
 			//if both left and right offset are auto, then the ElementRenderer uses its static
@@ -692,40 +639,37 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			//be applied
 		
 			//same for vertical offset
-			if (coreStyle.top != PositionOffset.cssAuto)
+			if (coreStyle.isAuto(coreStyle.top) == false)
 			{
-				relativeOffset.y += coreStyle.computedStyle.top; 
+				relativeOffset.y += coreStyle.usedValues.top; 
 			}
-			else if (coreStyle.bottom != PositionOffset.cssAuto)
+			else if (coreStyle.isAuto(coreStyle.bottom) == false)
 			{
-				relativeOffset.y -= coreStyle.computedStyle.bottom; 
+				relativeOffset.y -= coreStyle.usedValues.bottom; 
 			}
 		}
 		
 		return relativeOffset;
 	}
 	
-	/**
-	 * Determine wether this ElementRenderer is rendered
-	 * as if it started a stacking context itself. 
-	 * 
-	 * For instance, an ElementRenderer which doesn't start
-	 * a stacking context but as a display of inline-block is rendered
-	 * as if it established a new stacking context, but it won't try
-	 * to render the child layers of its LayerRenderer.
-	 */
-	private function rendersAsIfEstablishingStackingContext():Bool
-	{
-		return false;
-	}
+	/////////////////////////////////
+	// PRIVATE HELPER METHODS
+	////////////////////////////////
 	
 	/**
-	 * Determine wether this ElementRenderer is 
-	 * both positioned and has an 'auto' z-index value,
-	 * which influence the rendering order of its
-	 * LayerRenderer
+	 * Determine wether this ElementRenderer is rendered
+	 * as if it started a layer itself. 
+	 * 
+	 * For instance, an ElementRenderer which doesn't start
+	 * a layer but as a display of inline-block is rendered
+	 * as if it created a new layer, but it won't try
+	 * to render the child layers of its LayerRenderer.
+	 * 
+	 * TODO 3 : is this still necessary now that
+	 * there is a disambiguation between layer and
+	 * stacking context
 	 */
-	private function isAutoZIndexPositioned():Bool
+	private function rendersAsIfCreateOwnLayer():Bool
 	{
 		return false;
 	}
@@ -736,7 +680,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function createLayer(parentLayer:LayerRenderer):Void
 	{
-		if (establishesNewStackingContext() == true)
+		if (createOwnLayer() == true)
 		{
 			layerRenderer = new LayerRenderer(this);
 			parentLayer.appendChild(layerRenderer);
@@ -745,19 +689,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		else
 		{
 			layerRenderer = parentLayer;
-			
-			//if the ElementRenderer is positioned with
-			//an 'auto' z-index value, then it must be added
-			//in a special array in its LayerRenderer has it will
-			//be rendered during its own rendering phase
-			if (isAutoZIndexPositioned() == true)
-			{
-				layerRenderer.insertAutoZIndexChildElementRenderer(this);
-				
-				//flag that this ElementRenderer was added as auto zindex child,
-				//to be sure that it is removed when detach is called
-				_wasAutoZIndexPositioned = true;
-			}
 		}
 	}
 	
@@ -771,7 +702,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{
 			//for absolutely positioned fixed elements, the containing block
 			//is the viewport
-			if (computedStyle.position == fixed)
+			if (coreStyle.getKeyword(coreStyle.position) == FIXED)
 			{
 				return getInitialContainingBlock();
 			}
@@ -783,10 +714,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			}
 		}
 		//for normal flow children, it is the first block
-		//parent. 
-		//
-		//TODO 1 : what about inline box renderer ? should
-		//return first block or first parent?
+		//parent.
 		else
 		{
 			return getFirstBlockContainer();
@@ -801,7 +729,17 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		var parent:ElementRenderer = parentNode;
 		while (parent.isPositioned() == false)
 		{
+			//TODO 3 : this check was introduced for anonymous block.
+			//when a positioned element is the descendant of an anonymous block
+			//at the time where this method is first called, the anonymous block
+			//is not attached to the rendering tree yet, so its parent is null.
+			//Be sure that it doesn't cause trouble down the line
+			if (parent.parentNode == null)
+			{
+				break;
+			}
 			parent = parent.parentNode;
+			
 		}
 		return cast(parent);
 	}
@@ -811,7 +749,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function getInitialContainingBlock():InitialBlockRenderer
 	{
-		return cast(node.ownerDocument.documentElement.elementRenderer);
+		return cast(domNode.ownerDocument.documentElement.elementRenderer);
 	}
 	
 	/**
@@ -832,20 +770,19 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * Determine the bounds of the children of this ElementRenderer
 	 * in this ElementRenderer space
 	 */
-	private function getChildrenBounds(childrenBounds:Array<RectangleData>):RectangleData
+	private function getChildrenBounds(childrenBounds:Array<RectangleVO>):RectangleVO
 	{
-		var bounds:RectangleData;
+		var bounds:RectangleVO;
 		
 		var left:Float = 50000;
 		var top:Float = 50000;
 		var right:Float = -50000;
 		var bottom:Float = -50000;
 
-		
 		var length:Int = childrenBounds.length;
 		for (i in 0...length)
 		{
-			var childBounds:RectangleData = childrenBounds[i];
+			var childBounds:RectangleVO = childrenBounds[i];
 			if (childBounds.x < left)
 			{
 				left = childBounds.x;
@@ -863,15 +800,8 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				bottom = childBounds.y + childBounds.height;
 			}
 		}
-			
 		
-		
-		bounds = {
-					x:left,
-					y:top,
-					width : right - left,
-					height :  bottom - top,
-				}
+		bounds = new RectangleVO(left, top, right - left, bottom - top);
 				
 		//TODO 4 : need to implement better fix,
 		//sould not be negative
@@ -891,200 +821,26 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	// PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * An ElementRenderer is invalidated for instance when one of its style value changes,
+	 * or when a child is appended to it. When this happens, the ElementRenderer determinates
+	 * the steps to take. 
+	 * 
+	 * For instance, a positioned ElementRenderer might need to also
+	 * invalidate its first positioned ancestor when one of its style changes.
+	 * 
+	 * In most case, invalidating an ElementRenderer schedules an asynchronous re-layout
+	 * and re-rendering with HTMLDocument.
+	 * 
+	 * This methods tries to optimise the number of computation that will be
+	 * needed on next layout and rendering
+	 * 
+	 * @param	invalidationReason an enumeration of all the possible reason causing
+	 * the invalidation
+	 */
 	public function invalidate(invalidationReason:InvalidationReason):Void
 	{
-		switch(invalidationReason)
-		{
-			case InvalidationReason.styleChanged(styleName):
-				invalidatedStyle(styleName, invalidationReason);
-			
-			case InvalidationReason.childStyleChanged(styleName):
-				invalidatedChildStyle(styleName, invalidationReason);
-				
-			case InvalidationReason.positionedChildStyleChanged(styleName):
-				invalidatedPositionedChildStyle(styleName, invalidationReason);
-				
-			case InvalidationReason.needsImmediateLayout:
-				//TODO 1 : should probably also set global origin
-				layout(true);
-				
-			case InvalidationReason.windowResize:
-				_needsLayout = true;
-				_childrenNeedLayout = true;
-				_childrenNeedRendering = true;
-				_needsRendering = true;
-				_positionedChildrenNeedLayout = true;
-				invalidateDocumentLayoutAndRendering();
-				
-			case InvalidationReason.backgroundImageLoaded:
-				_needsRendering = true;
-				invalidateDocumentRendering();
-				
-			case InvalidationReason.other:
-				_needsLayout = true;
-				_childrenNeedLayout = true;
-				_childrenNeedRendering = true;
-				_needsRendering = true;
-				_positionedChildrenNeedLayout = true;
-				invalidateContainingBlock(invalidationReason);
-		}
-	}
-	
-	public function childInvalidated(invalidationReason:InvalidationReason):Void
-	{
-		invalidate(invalidationReason);
-	}
-	
-	public function positionedChildInvalidated(invalidationReason:InvalidationReason):Void
-	{
-		invalidate(invalidationReason);
-	}
-	
-	private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
-	{
-		//TODO 1 : not supposed to happen but bug with scrollbars for now
-		if (parentNode == null)
-		{
-			return;
-		}
-		
-		var containingBlockInvalidationReason:InvalidationReason;
-		
-		switch (invalidationReason)
-		{
-			case InvalidationReason.styleChanged(styleName):
-				if (isPositioned() == true)
-				{
-					containingBlockInvalidationReason = InvalidationReason.positionedChildStyleChanged(styleName);
-				}
-				else
-				{
-					containingBlockInvalidationReason = InvalidationReason.childStyleChanged(styleName);
-				}
-				
-			default:
-				containingBlockInvalidationReason = invalidationReason;
-				
-		}
-		
-		if (isPositioned() == true && isRelativePositioned() == false)
-		{
-			_containingBlock.positionedChildInvalidated(containingBlockInvalidationReason);
-		}
-		else
-		{
-			_containingBlock.childInvalidated(containingBlockInvalidationReason);
-		}
-	}
-	
-	private function invalidateDocumentLayout():Void
-	{
-		var htmlDocument:HTMLDocument = cast(node.ownerDocument);
-		htmlDocument.invalidateLayout();
-	}
-	
-	private function invalidateDocumentRendering():Void
-	{
-		var htmlDocument:HTMLDocument = cast(node.ownerDocument);
-		htmlDocument.invalidateRendering();
-	}
-	
-	private function invalidateDocumentLayoutAndRendering():Void
-	{
-		var htmlDocument:HTMLDocument = cast(node.ownerDocument);
-		htmlDocument.invalidateLayout();
-		htmlDocument.invalidateRendering();
-	}
-	
-	private function invalidatedStyle(styleName:String, invalidationReason:InvalidationReason):Void
-	{
-		switch (styleName)
-		{
-			case CSSConstants.LEFT_STYLE_NAME, CSSConstants.RIGHT_STYLE_NAME,
-			CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
-				
-				_needsRendering = true;
-				if (isPositioned() == true && isRelativePositioned() == false)
-				{
-					_needsLayout = true;
-					invalidateContainingBlock(invalidationReason);
-				}
-				else
-				{
-					invalidateDocumentRendering();
-				}
-				
-			case CSSConstants.COLOR_STYLE_NAME, CSSConstants.FONT_FAMILY_STYLE_NAME, CSSConstants.FONT_SIZE_STYLE_NAME,
-			CSSConstants.FONT_VARIANT_STYLE_NAME, CSSConstants.FONT_STYLE_STYLE_NAME, CSSConstants.FONT_WEIGHT_STYLE_NAME,
-			CSSConstants.LETTER_SPACING_STYLE_NAME, CSSConstants.TEXT_TRANSFORM_STYLE_NAME, CSSConstants.WHITE_SPACE_STYLE_NAME:
-				invalidateText();
-				_needsLayout = true;
-				_needsRendering = true;
-				invalidateContainingBlock(invalidationReason);
-			
-			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
-			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
-			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
-			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:
-				_needsRendering = true;
-				invalidateDocumentRendering();
-				
-			default:
-				_needsLayout = true;
-				_needsRendering = true;
-				_childrenNeedRendering = true;
-				invalidateDocumentRendering();
-				invalidateContainingBlock(invalidationReason);
-		
-				
-		}
-	}
-	
-	private function invalidatedChildStyle(styleName:String, invalidationReason:InvalidationReason):Void
-	{
-		switch (styleName)
-		{
-			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
-			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
-			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
-			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:
-			
-			default:
-				_needsLayout = true;
-				_childrenNeedRendering = true;
-				invalidateContainingBlock(invalidationReason);
-				invalidateDocumentLayoutAndRendering();
-		}
-	}
-	
-	private function invalidatedPositionedChildStyle(styleName:String, invalidationReason:InvalidationReason):Void
-	{
-		switch (styleName)
-		{
-			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
-			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
-			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
-			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:	
-			
-			default:
-				_positionedChildrenNeedLayout = true;
-				_childrenNeedRendering = true;
-				invalidateDocumentLayoutAndRendering();
-		}
-	}
-	
-	/**
-	 * Call when a style which require a re-layout
-	 * of the text (such as font-size, fon-family...)
-	 * is changed
-	 */
-	private function invalidateText():Void
-	{
-		var length:Int = childNodes.length;
-		for (i in 0...length)
-		{
-			childNodes[i].invalidateText();
-		}
+		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1095,16 +851,18 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * Return the bounds of the ElementRenderer relative to the
 	 * Window, depending on its positioning scheme
 	 */
-	private function get_globalBounds():RectangleData
+	private function get_globalBounds():RectangleVO
 	{
 		var globalX:Float;
 		var globalY:Float;
 		
+		var bounds:RectangleVO = this.bounds;
+		
 		//fixed positioned
-		if (_coreStyle.position == fixed)
+		if (coreStyle.getKeyword(coreStyle.position) == FIXED)
 		{
 			//here it uses its static position for x
-			if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
+			if (coreStyle.isAuto(coreStyle.left) == true && coreStyle.isAuto(coreStyle.right) == true)
 			{
 				globalX = globalContainingBlockOrigin.x + bounds.x;
 			}
@@ -1114,7 +872,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				globalX = positionedOrigin.x;
 			}
 			//static position
-			if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
+			if (coreStyle.isAuto(coreStyle.top) == true && coreStyle.isAuto(coreStyle.bottom) == true)
 			{
 				globalY = globalContainingBlockOrigin.y + bounds.y;
 			}
@@ -1124,10 +882,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			}
 		}
 		//absolute positioned
-		else if (_coreStyle.position == absolute)
+		else if (coreStyle.getKeyword(coreStyle.position) == ABSOLUTE)
 		{
 			//static position for x
-			if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
+			if (coreStyle.isAuto(coreStyle.left) == true && coreStyle.isAuto(coreStyle.right) == true)
 			{
 				globalX = globalContainingBlockOrigin.x + bounds.x;
 			}
@@ -1136,7 +894,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				globalX = globalPositionnedAncestorOrigin.x + positionedOrigin.x;
 			}
 			//static position for y
-			if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
+			if (coreStyle.isAuto(coreStyle.top) == true && coreStyle.isAuto(coreStyle.bottom) == true)
 			{
 				globalY = globalContainingBlockOrigin.y + bounds.y;
 			}
@@ -1152,12 +910,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			globalY = globalContainingBlockOrigin.y + bounds.y;
 		}
 		
-		return {
-			x:globalX,
-			y:globalY,
-			width:bounds.width,
-			height:bounds.height
-		}
+		return new RectangleVO(globalX, globalY, bounds.width, bounds.height);
 	}
 	
 	/**
@@ -1168,7 +921,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * TODO 3 : should implement the case of absolutely 
 	 * positioned children
 	 */
-	private function get_scrollableBounds():RectangleData
+	private function get_scrollableBounds():RectangleVO
 	{
 		//if the elementRenderer is not relatively positioned,
 		//the bounds are the same as the regular bounds
@@ -1179,44 +932,18 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		//else the bounds with the relative offset applied to them
 		//are returned
-		var relativeOffset:PointData = getRelativeOffset();
-		var bounds:RectangleData = get_bounds();
+		var relativeOffset:PointVO = getRelativeOffset();
+		var bounds:RectangleVO = this.bounds;
 		
-		return {
-			x: bounds.x + relativeOffset.x,
-			y: bounds.y + relativeOffset.y,
-			width: bounds.width,
-			height: bounds.height
-		};
+		return new RectangleVO(bounds.x + relativeOffset.x, bounds.y + relativeOffset.y, bounds.width, bounds.height);
 	}
 	
-	private function getComputedStyle():ComputedStyle
-	{
-		return _coreStyle.computedStyle;
-	}
-	
-	private function setComputedStyle(value:ComputedStyle):ComputedStyle
-	{
-		return _coreStyle.computedStyle = value;
-	}
-	
-	private function get_coreStyle():CoreStyle
-	{
-		return _coreStyle;
-	}
-	 
-	private function set_coreStyle(value:CoreStyle):CoreStyle
-	{
-		_coreStyle = value;
-		return value;
-	}
-	
-	private function get_bounds():RectangleData
+	private function get_bounds():RectangleVO
 	{
 		return bounds;
 	}
 	
-	private function set_bounds(value:RectangleData):RectangleData
+	private function set_bounds(value:RectangleVO):RectangleVO
 	{
 		return bounds = value;
 	}

@@ -1,10 +1,9 @@
 /*
- * Cocktail, HTML rendering engine
- * http://haxe.org/com/libs/cocktail
- *
- * Copyright (c) Silex Labs
- * Cocktail is available under the MIT license
- * http://www.silexlabs.org/labs/cocktail-licensing/
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.event;
 import cocktail.core.html.HTMLElement;
@@ -27,59 +26,6 @@ import cocktail.core.html.HTMLElement;
  */
 class MouseEvent extends UIEvent
 {	
-	/**
-	 * The click event occurs when the pointing device
-	 * button is clicked over an element. 
-	 * A click is defined as a mousedown and mouseup
-	 * over the same screen location.
-	 * The sequence of these events is:
-	 * mousedown
-	 * mouseup
-	 * click
-	 */
-	public static inline var CLICK:String = "click";
-	
-	/**
-	 * A user agent must dispatch this event when a pointing device button is
-	 * clicked twice over an element. The definition of a double
-	 * click depends on the environment configuration, except that
-	 * the event target must be the same between mousedown, mouseup, 
-	 * and dblclick. This event type must be dispatched after the event
-	 * type click if a click and double click occur simultaneously,
-	 * and after the event type mouseup otherwise.
-	 */
-	public static inline var DOUBLE_CLICK:String = "dblclick";
-	
-	/**
-	 * The mouseup event occurs when the pointing device button is
-	 * released over an element. This event is valid for most elements. 
-	 */
-	public static inline var MOUSE_UP:String = "mouseup";
-	
-	/**
-	 * The mousedown event occurs when the pointing device button
-	 * is pressed over an element. This event is valid for most elements. 
-	 */
-	public static inline var MOUSE_DOWN:String = "mousedown";
-	
-	/**
-	 * The mouseover event occurs when the pointing device is moved
-	 * onto an element. This event is valid for most elements. 
-	 */
-	public static inline var MOUSE_OVER:String = "mouseover";
-	
-	/**
-	 * The mouseout event occurs when the pointing device is moved 
-	 * away from an element. This event is valid for most elements.
-	 */
-	public static inline var MOUSE_OUT:String = "mouseout";
-	
-	/**
-	 * The mousemove event occurs when the pointing device is moved 
-	 * while it is over an element. This event is valid for most elements. 
-	 */
-	public static inline var MOUSE_MOVE:String = "mousemove";
-	
 	/**
 	 * The horizontal coordinate at which the event occurred relative
 	 * to the origin of the screen coordinate system.
