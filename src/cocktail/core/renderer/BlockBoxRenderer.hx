@@ -499,11 +499,13 @@ class BlockBoxRenderer extends ScrollableRenderer
 	{
 		if (childrenInline() == true)
 		{
-			new InlineFormattingContext(this).format(new FloatsManager());
+			var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
+			htmlDocument.inlineFormattingContext.format(this, new FloatsManager());
 		}
 		else
 		{
-			new BlockFormattingContext(this).format(new FloatsManager());
+			var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
+			htmlDocument.blockFormattingContext.format(this, new FloatsManager());
 		}
 	}
 	

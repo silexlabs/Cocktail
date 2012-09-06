@@ -14,6 +14,8 @@ import cocktail.core.dom.NodeBase;
 import cocktail.core.event.TransitionEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.layout.formatter.BlockFormattingContext;
+import cocktail.core.layout.formatter.InlineFormattingContext;
 import cocktail.core.linebox.LineBox;
 import cocktail.core.animation.Animator;
 import cocktail.core.animation.Transition;

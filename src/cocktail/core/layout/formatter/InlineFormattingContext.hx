@@ -64,21 +64,20 @@ class InlineFormattingContext extends FormattingContext
 	private var _firstLineFormatted:Bool;
 	
 	/**
-	 * class constructor. Init class attributes
+	 * class constructor.
 	 */
-	public function new(formattingContextRoot:BlockBoxRenderer) 
+	public function new() 
 	{
-		_unbreakableLineBoxes = new Array<LineBox>();
-		_unbreakableWidth = 0.0;
-		_firstLineFormatted = false;
-		super(formattingContextRoot);
+		super();
 	}
 
 	
 	override private function startFormatting():Void
 	{
-		
 		_unbreakableLineBoxes = new Array<LineBox>();
+		_unbreakableWidth = 0.0;
+		_firstLineFormatted = false;
+		
 		var rootLineBoxes:Array<LineBox> = new Array<LineBox>();
 		var initialRootLineBox:RootLineBox = new RootLineBox(_formattingContextRoot);
 		rootLineBoxes.push(initialRootLineBox);

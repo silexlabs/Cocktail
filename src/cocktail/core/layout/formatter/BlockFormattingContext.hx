@@ -33,11 +33,20 @@ class BlockFormattingContext extends FormattingContext
 	private var _registeredFloats:Array<FloatData>;
 	
 	/**
+	 * A reference to an instance of the class laying out
+	 * inline element. It is passed by reference instead
+	 * of being instantiated each time, this way,
+	 * only one instance is needed for each Document
+	 */ 
+	private var _inlineFormattingContext:InlineFormattingContext;
+	
+	/**
 	 * class constructor
 	 */
-	public function new(formattingContextRoot:BlockBoxRenderer) 
+	public function new(inlineFormattingContext:InlineFormattingContext) 
 	{
-		super(formattingContextRoot);
+		super();
+		_inlineFormattingContext = inlineFormattingContext;
 		_registeredFloats = new Array<FloatData>();
 	}
 	
@@ -85,10 +94,11 @@ class BlockFormattingContext extends FormattingContext
 		concatenatedY += elementRendererUsedValues.paddingTop + parentCollapsedMarginTop;
 		
 		var childHeight:Float = concatenatedY;
-		var length:Int = elementRenderer.childNodes.length;
+		var elementRendererChildNodes:Array<ElementRenderer> = elementRenderer.childNodes;
+		var length:Int = elementRendererChildNodes.length;
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = elementRenderer.childNodes[i];
+			var child:ElementRenderer = elementRendererChildNodes[i];
 			
 			var marginTop:Float = getCollapsedMarginTop(child, parentCollapsedMarginTop);
 			var marginBottom:Float = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
@@ -118,7 +128,7 @@ class BlockFormattingContext extends FormattingContext
 						bounds:floatBounds
 					});
 					
-					format(_floatsManager);
+					format(_formattingContextRoot, _floatsManager);
 					return 0.0;
 				}
 				
@@ -148,8 +158,7 @@ class BlockFormattingContext extends FormattingContext
 						//boxes, because of floats
 						if (child.childrenInline() == true)
 						{
-							var inlineFormattingContext:InlineFormattingContext = new InlineFormattingContext(cast(child));
-							inlineFormattingContext.format(_floatsManager);
+							_inlineFormattingContext.format(cast(child), _floatsManager);
 						}				
 		
 						currentLineY = child.bounds.y;
@@ -204,6 +213,8 @@ class BlockFormattingContext extends FormattingContext
 		concatenatedY += elementRendererUsedValues.paddingBottom + parentCollapsedMarginBottom;
 		
 		_floatsManager.removeFloats(concatenatedY);
+		
+		_registeredFloats = new Array<FloatData>();
 		
 		return concatenatedY;
 		

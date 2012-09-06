@@ -66,12 +66,10 @@ class FormattingContext
 	
 	/**
 	 * Class constructor
-	 * @param	formattingContextRoot the block box which establishes
-	 * the formating context
 	 */
-	public function new(formattingContextRoot:BlockBoxRenderer) 
+	public function new() 
 	{
-		_formattingContextRoot = formattingContextRoot;
+		
 	}
 	
 	/**
@@ -92,9 +90,12 @@ class FormattingContext
 	
 	/**
 	 * starts a formatting
+	 * @param	formattingContextRoot the block box which establishes
+	 * the formating context
 	 */
-	public function format(floatsManager:FloatsManager):Void
+	public function format(formattingContextRoot:BlockBoxRenderer, floatsManager:FloatsManager):Void
 	{	
+		_formattingContextRoot = formattingContextRoot;
 		_floatsManager = floatsManager;
 		initFormattingContextData();
 		startFormatting();
