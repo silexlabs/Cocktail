@@ -36,27 +36,6 @@ class ResourceManager
 		
 	}
 	
-	//TODO 1 : duplicated code
-	public static function getTextResource(url:String):AbstractResource
-	{
-		//init the hash if first request
-		if (_resources == null)
-		{
-			_resources = new Hash<AbstractResource>();
-		}
-		
-		//if the resource with the given url is not
-		//yet stored, create it
-		if (_resources.exists(url) == false)
-		{
-			var resource:TextResource = new TextResource(url);
-			_resources.set(url, resource);
-		}
-		
-		//return the resource with the right URL
-		return _resources.get(url);
-	}
-	
 	/**
 	 * Return the resource at the given url. If it is the first
 	 * time this resource is requested, create a new Resource
