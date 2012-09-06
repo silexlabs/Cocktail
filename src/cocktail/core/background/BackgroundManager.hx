@@ -44,6 +44,17 @@ import haxe.Log;
 class BackgroundManager 
 {
 	/**
+	 * Represents the background box, reused
+	 * for each background
+	 */
+	private static var _box:RectangleVO;
+	
+	/**
+	 * Same as above for destination point
+	 */
+	private static var _destinationPoint:PointVO;
+	
+	/**
 	 * class constructor.
 	 */
 	private function new()
@@ -326,17 +337,30 @@ class BackgroundManager
 		//TODO 3 : doc + separate in 2 methods
 		if ((imageWidth / intrinsicWidth == 1) && (imageHeight / intrinsicHeight == 1))
 		{
-			var destinationPoint:PointVO = new PointVO(totalWidth + backgroundBox.x - computedBackgroundPosition.x, totalHeight + backgroundBox.y - computedBackgroundPosition.y);
+			if (_destinationPoint == null)
+			{
+				_destinationPoint = new PointVO(0.0, 0.0);
+			}
 			
+			_destinationPoint.x = totalWidth + backgroundBox.x - computedBackgroundPosition.x;
+			_destinationPoint.y = totalHeight + backgroundBox.y - computedBackgroundPosition.y;
+				
 			var intWidth:Float = intrinsicWidth;
 			var intHeight:Float = intrinsicHeight;
 			
-			var box:RectangleVO = new RectangleVO(backgroundPaintingBox.x - computedBackgroundPosition.x, backgroundPaintingBox.y - computedBackgroundPosition.y,
-			backgroundPaintingBox.width, backgroundPaintingBox.height);
+			if (_box == null)
+			{
+				_box = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+			}
+			
+			_box.x = backgroundPaintingBox.x - computedBackgroundPosition.x;
+			_box.y = backgroundPaintingBox.y - computedBackgroundPosition.y;
+			_box.width = backgroundPaintingBox.width;
+			_box.height = backgroundPaintingBox.height;
 			
 			while (totalHeight < maxHeight)
 			{
-				graphicContext.copyPixels(resource.nativeResource, box, destinationPoint );
+				graphicContext.copyPixels(resource.nativeResource, _box, _destinationPoint );
 				
 				totalWidth += imageWidth;
 				
@@ -346,8 +370,8 @@ class BackgroundManager
 					totalHeight += imageHeight;
 				}
 				
-				destinationPoint.x = totalWidth + backgroundBox.x - computedBackgroundPosition.x;
-				destinationPoint.y = totalHeight + backgroundBox.y - computedBackgroundPosition.y;
+				_destinationPoint.x = totalWidth + backgroundBox.x - computedBackgroundPosition.x;
+				_destinationPoint.y = totalHeight + backgroundBox.y - computedBackgroundPosition.y;
 			}
 		}
 		else
