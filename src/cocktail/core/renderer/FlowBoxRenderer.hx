@@ -9,7 +9,9 @@
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.layout.LayoutManager;
 import cocktail.core.linebox.LineBox;
 
 import cocktail.core.layout.computer.boxComputers.BlockBoxStylesComputer;
@@ -134,55 +136,6 @@ class FlowBoxRenderer extends BoxRenderer
 			}
 			_positionedChildrenNeedLayout = false;
 		}
-	}
-	
-	/**
-	 * Return box style computer for container box
-	 */
-	override private function getBoxStylesComputer():BoxStylesComputer
-	{
-		var boxComputer:BoxStylesComputer;
-				
-		//get the box computer for float
-		if (isFloat() == true)
-		{
-			boxComputer = new FloatBoxStylesComputer();
-		}
-		
-		//get it for HTMLElement with 'position' value of 'absolute' or 'fixed'
-		else if (isPositioned() == true && isRelativePositioned() == false)
-		{
-			boxComputer = new PositionedBoxStylesComputer();
-		}
-		
-		//else get the box computer based on the display style
-		else
-		{
-			switch(coreStyle.display)
-			{
-				case KEYWORD(value):
-					switch (value)
-					{
-						case BLOCK:
-							boxComputer = new BlockBoxStylesComputer();
-							
-						case INLINE_BLOCK:
-							boxComputer = new InlineBlockBoxStylesComputer();
-							
-						case INLINE:
-							boxComputer = new InLineBoxStylesComputer();
-							
-						//not supposed to happen	
-						default:
-							boxComputer = null;
-					}
-					
-					default:
-						boxComputer = null;
-			}
-		}
-		
-		return boxComputer;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

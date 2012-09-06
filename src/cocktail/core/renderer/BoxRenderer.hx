@@ -13,6 +13,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
 import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLConstants;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 
 import cocktail.core.layout.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
@@ -193,20 +194,11 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */ 
 	private function computeBoxModelStyles(containingBlockDimensions:ContainingBlockVO):Void
 	{
-		var boxComputer:BoxStylesComputer = getBoxStylesComputer();
+		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
+		var boxComputer:BoxStylesComputer = htmlDocument.layoutManager.getBoxStylesComputer(this);
 		
 		//do compute the box model styles
 		boxComputer.measure(coreStyle, containingBlockDimensions);
-	}
-	
-	/**
-	 * Return the right class used to compute the box model
-	 * styles
-	 */
-	private function getBoxStylesComputer():BoxStylesComputer
-	{
-		//abstract
-		return null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

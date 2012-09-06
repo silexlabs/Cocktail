@@ -34,6 +34,7 @@ import cocktail.core.html.HTMLInputElement;
 import cocktail.core.layout.floats.FloatsManager;
 import cocktail.core.layout.formatter.BlockFormattingContext;
 import cocktail.core.layout.formatter.InlineFormattingContext;
+import cocktail.core.layout.LayoutManager;
 import cocktail.core.multitouch.MultiTouchManager;
 import cocktail.core.parser.DOMParser;
 import cocktail.core.renderer.ElementRenderer;
@@ -184,18 +185,6 @@ class HTMLDocument extends Document
 	 */
 	private var _invalidationScheduled:Bool;
 	
-	/**
-	 * An instance of the class laying out inline elements,
-	 * the instance is reused for each inline elements
-	 */
-	public var inlineFormattingContext(default, null):InlineFormattingContext;
-	
-	/**
-	 * An instance of the class laying out block elements,
-	 * the instance is reused for each inline elements
-	 */
-	public var blockFormattingContext(default, null):BlockFormattingContext;
-	
 	/*
 	 * Wheter the document needs a re-layout on next
 	 * ivnvalidation method call
@@ -247,6 +236,12 @@ class HTMLDocument extends Document
 	public var initialStyleDeclaration(default, null):InitialStyleDeclaration;
 	
 	/**
+	 * an instance of the class managing layout.
+	 * Holds instances of each class used during layout
+	 */
+	public var layoutManager(default, null):LayoutManager;
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new(window:Window = null) 
@@ -278,9 +273,7 @@ class HTMLDocument extends Document
 		_documentNeedsRendering = true;
 		_documentNeedsCascading = true;
 		
-		var floatsManager:FloatsManager = new FloatsManager();
-		inlineFormattingContext = new InlineFormattingContext(floatsManager);
-		blockFormattingContext = new BlockFormattingContext(inlineFormattingContext, floatsManager);
+		layoutManager = new LayoutManager();
 	}
 	
 	/**

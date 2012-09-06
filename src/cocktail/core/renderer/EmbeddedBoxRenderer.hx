@@ -7,6 +7,7 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.renderer;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.layout.computer.boxComputers.BoxStylesComputer;
 import cocktail.core.layout.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
@@ -15,6 +16,7 @@ import cocktail.core.layout.computer.boxComputers.EmbeddedInlineBlockBoxStylesCo
 import cocktail.core.layout.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
 import cocktail.core.layout.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
 import cocktail.core.geom.GeomData;
+import cocktail.core.layout.LayoutManager;
 import cocktail.port.GraphicsContext;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
@@ -44,52 +46,6 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	{
 		super.renderSelf(graphicContext);
 		renderEmbeddedAsset(graphicContext);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRVATE RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Return box style computer for replaced box
-	 */
-	override private function getBoxStylesComputer():BoxStylesComputer
-	{
-		var boxComputer:BoxStylesComputer;
-		
-		//get the embedded box computers based on
-		//the positioning scheme
-		if (isFloat() == true)
-		{
-			boxComputer = new EmbeddedFloatBoxStylesComputer();
-		}
-		else if (isPositioned() == true && isRelativePositioned() == false)
-		{
-			boxComputer = new EmbeddedPositionedBoxStylesComputer();
-		}
-		else
-		{
-			switch(coreStyle.getKeyword(coreStyle.display))
-			{
-				case BLOCK:
-					boxComputer = new EmbeddedBlockBoxStylesComputer();
-					
-				case INLINE_BLOCK:
-					boxComputer = new EmbeddedInlineBlockBoxStylesComputer();	
-				
-				//not supposed to happen
-				case NONE:
-					boxComputer = null;
-				
-				case INLINE:
-					boxComputer = new EmbeddedInlineBoxStylesComputer();
-					
-				default:
-					throw 'Illegal value for display style';
-			}
-		}
-		
-		return boxComputer;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
