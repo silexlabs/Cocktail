@@ -847,15 +847,29 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	
 	//TODO 2 : for now traverse all tree, but should instead return as soon as an ElementRenderer
 	//is found
+	/**
+	 * For a given point return the top most ElementRenderer whose bounds contain this point. The top
+	 * most element is determined by the z-index of the layer renderers. If 2 or more elements matches
+	 * the point, the one belonging to the higher layer renderer will be returned
+	 * 
+	 * TODO 2 : shouldn' the scroll offset be directly added to the point ?
+	 * 
+	 * @param	point the target point relative to the window
+	 * @param	scrollX the x scroll offset applied to the point
+	 * @param	scrollY the y scroll offset applied to the point
+	 */
 	public function getTopMostElementRendererAtPoint(point:PointVO, scrollX:Float, scrollY:Float):ElementRenderer
 	{
+		//get all the elementRenderers under the point
 		var elementRenderersAtPoint:Array<ElementRenderer> = getElementRenderersAtPoint(point, scrollX, scrollY);
-		
-		var topMostElementRenderer:ElementRenderer = elementRenderersAtPoint[elementRenderersAtPoint.length - 1];
-
-		return topMostElementRenderer;
+		//return the top most, the last of the array
+		return elementRenderersAtPoint[elementRenderersAtPoint.length - 1];
 	}
 	
+	/**
+	 * Get all the ElemenRenderer whose bounds contain the given point. The returned
+	 * ElementRenderer are ordered by z-index, from smallest to biggest.
+	 */
 	private function getElementRenderersAtPoint(point:PointVO, scrollX:Float, scrollY:Float):Array<ElementRenderer>
 	{
 		var elementRenderersAtPoint:Array<ElementRenderer> = getElementRenderersAtPointInLayer(rootElementRenderer, point, scrollX, scrollY);
@@ -879,6 +893,16 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	// PRIVATE HIT-TESTING METHODS
 	////////////////////////////////
 	
+	/**
+	 * For a given layer, return all of the ElementRenderer belonging to this
+	 * layer whose bounds contain the target point.
+	 * 
+	 * The rendering tree is traversed recursively, starting from the
+	 * root element renderer of this layer
+	 * 
+	 * TODO 2 : can probably be optimised, in one layer, no elements are supposed to
+	 * overlap, meaning that only 1 elementRenderer can be returned for each layer
+	 */
 	private function getElementRenderersAtPointInLayer(renderer:ElementRenderer, point:PointVO, scrollX:Float, scrollY:Float):Array<ElementRenderer>
 	{
 		var elementRenderersAtPointInLayer:Array<ElementRenderer> = new Array<ElementRenderer>();
@@ -886,16 +910,23 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		_scrolledPoint.x = point.x + scrollX;
 		_scrolledPoint.y = point.y + scrollY;
 		
+		//if the target point is within the ElementRenderer bounds, store
+		//the ElementRenderer
 		if (isWithinBounds(_scrolledPoint, renderer.globalBounds) == true)
 		{
-			elementRenderersAtPointInLayer.push(renderer);
+			//ElementRenderer which are no currently visible
+			//can't be hit
+			if (renderer.isVisible() == true)
+			{
+				elementRenderersAtPointInLayer.push(renderer);
+			}
 		}
 		
 		scrollX += renderer.scrollLeft;
 		scrollY += renderer.scrollTop;
 		
-		
 		var length:Int = renderer.childNodes.length;
+		//loop in all the ElementRenderer using this LayerRenderer
 		for (i in 0...length)
 		{
 			var child:ElementRenderer = renderer.childNodes[i];
@@ -904,12 +935,14 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			{
 				if (child.hasChildNodes() == true)
 				{
-					
 					var childElementRenderersAtPointInLayer:Array<ElementRenderer> = getElementRenderersAtPointInLayer(child, point, scrollX, scrollY);
 					var childLength:Int = childElementRenderersAtPointInLayer.length;
 					for (j in 0...childLength)
 					{
-						elementRenderersAtPointInLayer.push(childElementRenderersAtPointInLayer[j]);
+						if (childElementRenderersAtPointInLayer[j].isVisible() == true)
+						{
+							elementRenderersAtPointInLayer.push(childElementRenderersAtPointInLayer[j]);
+						}
 					}
 				}
 				else
@@ -919,7 +952,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 					
 					if (isWithinBounds(_scrolledPoint, child.globalBounds) == true)
 					{
-						elementRenderersAtPointInLayer.push(child);
+						if (child.isVisible() == true)
+						{
+							elementRenderersAtPointInLayer.push(child);
+						}
 					}
 				}
 			}

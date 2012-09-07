@@ -736,7 +736,11 @@ class HTMLElement extends Element<HTMLElement>
 		
 		//cascade the style of this HTMLElement if needed, and store
 		//the name of all the style which changed during cascading
-		if (_needsCascading == true)
+		//
+		//style is cascaded either id tis HTMLElement explicitely needs cascading
+		//for instance, if one of its attribute changed since last cascade or
+		//if some of its parent styles just changed
+		if (_needsCascading == true || parentChangedProperties.keys().hasNext() == true)
 		{
 			changedProperties = cascadeSelf(parentChangedProperties, programmaticChange);
 			_needsCascading = false;

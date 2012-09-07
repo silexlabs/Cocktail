@@ -77,7 +77,14 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function render(parentGraphicContext:GraphicsContext):Void
 	{	
-		renderSelf(parentGraphicContext);
+		//only render self if visible
+		//however children can still be rendered
+		//if they are explicitely visible
+		if (isVisible() == true)
+		{
+			renderSelf(parentGraphicContext);
+		}
+		
 		renderChildren(parentGraphicContext);
 	}
 	
@@ -337,6 +344,18 @@ class BoxRenderer extends InvalidatingElementRenderer
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Determine whether this ElementRenderer should render
+	 * itself. It still influence layout event if not
+	 * visible.
+	 * 
+	 * If one of its children is visible, it is rendered
+	 */
+	override public function isVisible():Bool
+	{
+		return coreStyle.getKeyword(coreStyle.visibility) != HIDDEN;
 	}
 	
 	/**
