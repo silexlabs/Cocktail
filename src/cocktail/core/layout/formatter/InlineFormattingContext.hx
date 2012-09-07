@@ -116,11 +116,16 @@ class InlineFormattingContext extends FormattingContext
 		{
 			var child:ElementRenderer = elementRenderer.childNodes[i];
 			
+			//here the child is absolutely positioned, its static position must be calculated
+			//so that it can be used if the child's left, right, top or bottom attribute are 'auto'.
+			//A dummy 'StaticLineBox' is created which will be formatting instead of the child.
+			//the static line box itself does'nt influence formatting, its height and width are not
+			//added during formatting, it is only used to retrieve the coordinate where the
+			//absolutely positioned should be placed
 			if (child.isPositioned() == true && child.isRelativePositioned() == false)
 			{
 				var staticLineBox:LineBox = new StaticPositionLineBox(child);
 						
-				
 				child.bounds.width = child.coreStyle.usedValues.width+ child.coreStyle.usedValues.paddingLeft + child.coreStyle.usedValues.paddingRight ;
 				child.bounds.height = child.coreStyle.usedValues.height + child.coreStyle.usedValues.paddingTop + child.coreStyle.usedValues.paddingBottom;
 				staticLineBox.marginLeft = child.coreStyle.usedValues.marginLeft;
@@ -131,7 +136,7 @@ class InlineFormattingContext extends FormattingContext
 			//has an inline-block and it has children, or it is replaced/embedded, such as
 			//an ImageRenderer. For all thoses cases, only one line box is created for each child
 			//as it is atomic from the point of view of the inline formatting context
-			//(it doesn't what's inside those child when formatting)
+			//(it doesn't know what's inside those child when formatting)
 			else if (child.establishesNewFormattingContext() == true || child.isReplaced() == true)
 			{
 				var childUsedValues:UsedValuesVO = child.coreStyle.usedValues;
@@ -824,9 +829,20 @@ class InlineFormattingContext extends FormattingContext
 					child.bounds.y = formattingContextY;
 					
 				default:	
-					child.bounds.y = formattingContextY - baselineOffset + lineBoxAscent;
-					//TODO 2 check if neccessary to remove ascent to all children
-					child.bounds.y -= child.leadedAscent;
+					
+					child.bounds.y = formattingContextY - baselineOffset ;
+					
+					//TODO 2 : actually should apply to all but linebox
+					//
+					//for all child line box but container line box, 
+					//add the global ascent of the line and remove own ascent
+					if (child.hasChildNodes() == false)
+					{
+						child.bounds.y += lineBoxAscent;
+						child.bounds.y -= child.leadedAscent;
+					}
+					
+					
 			}
 			
 			if (child.hasChildNodes() == true)

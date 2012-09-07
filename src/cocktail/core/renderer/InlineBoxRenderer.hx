@@ -73,7 +73,6 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	private function renderChildLineBoxes(graphicContext:GraphicsContext):Void
 	{
 		var length:Int = lineBoxes.length;
-		
 		for (i in 0...length)
 		{
 			var childLineBoxes:Array<LineBox> = getLineBoxesInLine(lineBoxes[i]);

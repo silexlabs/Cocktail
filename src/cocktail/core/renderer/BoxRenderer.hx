@@ -95,6 +95,12 @@ class BoxRenderer extends InvalidatingElementRenderer
 	
 	private function renderSelf(graphicContext:GraphicsContext):Void
 	{
+		//compute the background styles which can be computed at this time,
+		//such as the background color, most of the background styles will be computed
+		//during the rendering
+		//
+		//TODO 4 : update doc for this
+		BackgroundStylesComputer.compute(coreStyle);
 		renderBackground(graphicContext);
 	}
 	
@@ -103,14 +109,6 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	private function renderBackground(graphicContext:GraphicsContext):Void
 	{
-
-		//compute the background styles which can be computed at this time,
-		//such as the background color, most of the background styles will be computed
-		//during the rendering
-		//
-		//TODO 4 : update doc for this
-		BackgroundStylesComputer.compute(coreStyle);
-		
 		var backgroundBounds:RectangleVO = getBackgroundBounds();
 		
 		//TODO 3 : should only pass dimensions instead of bounds
