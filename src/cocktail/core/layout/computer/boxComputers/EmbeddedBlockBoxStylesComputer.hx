@@ -385,8 +385,6 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			}
 		}
 		
-		
-		
 		return usedHeight;
 	}
 	
