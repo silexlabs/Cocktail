@@ -183,7 +183,28 @@ class BoxRenderer extends InvalidatingElementRenderer
 					default:	
 				}
 			}
-			
+		}
+		
+		//another special case for absolutely positioned element, from the CSS 2.1 spec : 
+		//
+		//For absolutely positioned elements whose containing block is based on a block 
+		//container element, the percentage is calculated with respect to the width of the
+		//padding box of that element. This is a change from CSS1, where the percentage width
+		//was always calculated with respect to the content box of the parent element. 
+		//
+		//the same rule exist for the height
+		//so if the element is absolutely positioned, the height and width of its
+		//containing block is updated to include its paddings
+		if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			//only apply if the containing block is a block box (not inline, might happen with
+			//relative positioning)
+			if (_containingBlock.isBlockContainer() == true)
+			{
+				var containingBlockUsedValues:UsedValuesVO = _containingBlock.coreStyle.usedValues;
+				containingBlockData.height += containingBlockUsedValues.paddingTop + containingBlockUsedValues.paddingBottom;
+				containingBlockData.width += containingBlockUsedValues.paddingLeft + containingBlockUsedValues.paddingRight;
+			}
 		}
 		
 		
