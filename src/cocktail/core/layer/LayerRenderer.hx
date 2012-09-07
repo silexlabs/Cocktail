@@ -579,8 +579,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	public function render(windowWidth:Int, windowHeight:Int ):Void
 	{
-		//_needsRendering = true;
-		
 		//update the dimension of the bitmap data if the window size changed
 		//since last rendering
 		if (windowWidth != _windowWidth || windowHeight != _windowHeight)
@@ -594,9 +592,12 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			_windowWidth = windowWidth;
 			_windowHeight = windowHeight;
 			
-			_needsRendering = true;
+			//invalidate if the size of the viewport
+			//changed
+			invalidateRendering();
 		}
 	
+		//only render if necessary
 		if (_needsRendering == true)
 		{
 			//only clear the bitmaps if the GraphicsContext
@@ -617,6 +618,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			_negativeZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
 		}
 		
+		//only render if necessary
 		if (_needsRendering == true)
 		{
 			//init transparency on the graphicContext if the element is transparent. Everything
@@ -639,10 +641,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			}
 		}
 		
-		
-
-		
-		
 		//render zero and auto z-index child LayerRenderer, in tree order
 		var childLength:Int = _zeroAndAutoZIndexChildLayerRenderers.length;
 		for (i in 0...childLength)
@@ -662,9 +660,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//element of their layer
 		rootElementRenderer.renderScrollBars(graphicsContext, windowWidth, windowHeight);
 		
+		//only render if necessary
 		if (_needsRendering == true)
 		{
-				//apply transformations to the layer if needed
+			//apply transformations to the layer if needed
 			if (rootElementRenderer.isTransformed() == true)
 			{
 				//TODO 2 : should already be computed at this point
@@ -673,8 +672,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			}
 		}
 		
-		
-		
+		//layer no longer needs rendering
 		_needsRendering = false;
 	}
 	
