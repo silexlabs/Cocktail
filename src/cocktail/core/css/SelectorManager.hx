@@ -251,15 +251,26 @@ class SelectorManager
 	{
 		switch(simpleSelectorSequenceItem)
 		{
-			//for this check the className of the node	
+			//for this check the list of class of the node	
 			case CLASS(value):
-				var className:String = node.className;
-				//TODO 1 : add class list
-				if (className == null)
+				var classList:Array<String> = node.classList;
+				
+				//here the node has no classes
+				if (classList == null)
 				{ 
 					return false;
 				}
-				return className.indexOf(value) != -1;
+				
+				var length:Int = classList.length;
+				for (i in 0...length)
+				{
+					if (value == classList[i])
+					{
+						return true;
+					}
+				}
+				
+				return false;
 				
 			//for this check the id attribute of the node	
 			case ID(value):

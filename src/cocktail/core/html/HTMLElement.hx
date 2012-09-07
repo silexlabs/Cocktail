@@ -91,6 +91,12 @@ class HTMLElement extends Element<HTMLElement>
 	public var className(get_className, set_className):String;
 	
 	/**
+	 * Return the space separated classes
+	 * of the node as an array
+	 */
+	public var classList(default, null):Array<String>;
+	
+	/**
 	 * When specified on an element, it indicates that the element 
 	 * is not yet, or is no longer, directly relevant to the page's
 	 * current state, or that it is being used to
@@ -414,12 +420,17 @@ class HTMLElement extends Element<HTMLElement>
 			//when replacing style attribute, should first remove all styles ?
 			invalidateCascade();
 		}
+		//setting the class name must also update
+		//the classList
+		else if (name == HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME)
+		{
+			className = value;
+		}
 		else
 		{
 			super.setAttribute(name, value);
 			invalidateStyleDeclaration(true);
 		}
-		
 	}
 	
 	/**
@@ -1407,11 +1418,14 @@ class HTMLElement extends Element<HTMLElement>
 	
 	/**
 	 * set the class name value on the attributes
-	 * hash
+	 * hash, update the classList
 	 */
 	private function set_className(value:String):String
 	{
-		setAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME, value);
+		super.setAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME, value);
+		//update the class list as well
+		classList = value.split(" ");
+		
 		return value;
 	}
 	

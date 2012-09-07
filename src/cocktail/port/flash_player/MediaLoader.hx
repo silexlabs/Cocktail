@@ -63,7 +63,7 @@ class MediaLoader extends AbstractMediaLoader
 		
 		//add a loading context so that the resource will be loaded in the current context
 		#if flash9
-		var loadingContext:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain);
+		var loadingContext:LoaderContext = new LoaderContext(false);
 		//always check policy file (crossdomain.xml) for cross-domain loading
 		loadingContext.checkPolicyFile = true;
 

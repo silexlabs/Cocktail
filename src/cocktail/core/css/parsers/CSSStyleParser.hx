@@ -1659,6 +1659,9 @@ class CSSStyleParser
 			case 'gray':
 				cssPropertyValue = COLOR(KEYWORD(GRAY));	
 				
+			case 'grey':
+				cssPropertyValue = COLOR(KEYWORD(GREY));		
+				
 			case 'white':
 				cssPropertyValue = COLOR(KEYWORD(WHITE));	
 				
