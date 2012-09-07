@@ -30,12 +30,13 @@ import cocktail.core.css.CoreStyle;
 class HTMLInputElement extends EmbeddedElement
 {
 	/**
-	 * The intrinsic width and ratio of a text input, 
-	 * as they seem to be in Firefox on Windows
+	 * The intrinsic width and height of a text input used
+	 * when no width or height attribute or CSS style defined, 
+	 * values are abitrary, based on observation
 	 */
 	private static inline var HTML_INPUT_TEXT_INTRINSIC_WIDTH:Int = 150;
 	
-	private static inline var HTML_INPUT_TEXT_INTRINSIC_RATIO:Float = 0.15;
+	private static inline var HTML_INPUT_TEXT_INTRINSIC_HEIGHT:Float = 30;
 	
 	/**
 	 * When the type attribute of the element has the value "text",
@@ -116,9 +117,9 @@ class HTMLInputElement extends EmbeddedElement
 		return HTML_INPUT_TEXT_INTRINSIC_WIDTH;
 	}
 	
-	override private function get_intrinsicRatio():Null<Float> 
+	override private function get_intrinsicHeight():Null<Float> 
 	{
-		return HTML_INPUT_TEXT_INTRINSIC_RATIO;
+		return HTML_INPUT_TEXT_INTRINSIC_HEIGHT;
 	}
 	
 	/////////////////////////////////

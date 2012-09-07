@@ -363,13 +363,18 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		//else if 'width' is not 'auto'
 		else
 		{
-			//compute the used value of 'width'
-			var usedWidth:Float = getComputedDimension(style.width, containingBlockData.width, containingBlockData.isWidthAuto);
-			
 			//deduce the height from the computed width and the intrinsic ratio if it is defined
 			if (embeddedHTMLElement.intrinsicRatio != null)
 			{
+				//compute the used value of 'width'
+				var usedWidth:Float = getComputedDimension(style.width, containingBlockData.width, containingBlockData.isWidthAuto);
+				
 				usedHeight = usedWidth * embeddedHTMLElement.intrinsicRatio;
+			}
+			//else if an intrinsic height exists, use it
+			else if (embeddedHTMLElement.intrinsicHeight != null)
+			{
+				usedHeight = embeddedHTMLElement.intrinsicHeight;
 			}
 			else
 			{
@@ -379,6 +384,8 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 				usedHeight = 150;
 			}
 		}
+		
+		
 		
 		return usedHeight;
 	}
