@@ -43,6 +43,8 @@ class InitialLayerRenderer extends LayerRenderer
 	override private function attachGraphicsContext():Void
 	{
 		//TODO 1 : should use Platform class
+		//TODO 1 : should not use root of platform display list
+		//to faciliate integration of native content
 		#if macro
 		#elseif (flash9 || nme)
 		var initialNativeLayer:NativeElement = flash.Lib.current;
@@ -57,7 +59,8 @@ class InitialLayerRenderer extends LayerRenderer
 	 */
 	override private function detachGraphicsContext():Void 
 	{
-		//TODO 2 : should also use Platform class
+		//TODO 2 : should also use Platform class, should remove all
+		//direct children of Stage
 		#if macro
 		#elseif (flash9 || nme)
 		graphicsContext.dispose();

@@ -142,6 +142,7 @@ class GraphicsContext extends AbstractGraphicsContext
 	override public function dispose():Void
 	{
 		_nativeBitmap.bitmapData.dispose();
+		_nativeLayer.removeChild(_nativeBitmap);
 		_nativeBitmap = null;
 		_nativeLayer = null;
 	}

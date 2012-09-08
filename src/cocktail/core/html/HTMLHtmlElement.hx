@@ -38,7 +38,6 @@ class HTMLHtmlElement extends HTMLElement
 	override private function set_innerHTML(value:String):String
 	{
 		super.set_innerHTML(value);
-		
 		var htmlDocument:HTMLDocument = cast(ownerDocument);
 		htmlDocument.initBody(cast(getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
 		return value;
@@ -95,11 +94,12 @@ class HTMLHtmlElement extends HTMLElement
 	}
 	
 	/**
-	 * do nothing as there is no parent ElementRenderer
+	 * As there is no parent ElementRenderer, the HtmlHtmlElement detach
+	 * its ElementRenderer itself
 	 */
 	override private function detachFromParentElementRenderer():Void
 	{
-		
+		elementRenderer.detach();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

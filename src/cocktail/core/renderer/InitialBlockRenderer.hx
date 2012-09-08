@@ -60,10 +60,12 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	
 	/**
 	 * Overriden as initial block renderer always delete
-	 * its own layer
+	 * its own layer. It also detach it as their is
+	 * no parent layer to do it
 	 */
 	override private function detachLayer():Void
 	{
+		layerRenderer.detach();
 		layerRenderer = null;
 	}
 	

@@ -180,7 +180,6 @@ class Animator
 				}
 			
 			default:
-				trace(style.transitionProperty);
 				throw'Illegal values for transition property style';
 		}
 

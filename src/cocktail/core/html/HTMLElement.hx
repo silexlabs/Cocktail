@@ -638,7 +638,6 @@ class HTMLElement extends Element<HTMLElement>
 			//HTMLElement is not supposed to be rendered
 			if (elementRenderer != null)
 			{
-				//do attach to parent ElementRenderer
 				attachToParentElementRenderer();
 			}
 			
