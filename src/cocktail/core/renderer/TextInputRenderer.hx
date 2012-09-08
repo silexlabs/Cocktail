@@ -15,6 +15,8 @@ import cocktail.core.event.KeyboardEvent;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.css.CSSValueConverter;
 import cocktail.core.geom.GeomData;
+import cocktail.core.layer.CompositingLayerRenderer;
+import cocktail.core.layer.LayerRenderer;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 import cocktail.port.GraphicsContext;
@@ -65,6 +67,22 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * TODO 1 : doc
+	 */
+	override public function createOwnLayer():Bool
+	{
+		return true;
+	}
+	
+	//TODO 1 : doc
+	override private function createLayer(parentLayer:LayerRenderer):Void
+	{
+		layerRenderer = new CompositingLayerRenderer(this);
+		parentLayer.appendChild(layerRenderer);
+		_hasOwnLayer = true;
+	}
 	
 	/**
 	 * Overriden to also render the native text input
