@@ -708,7 +708,7 @@ class HTMLElement extends Element<HTMLElement>
 		//the style declaration is now invalide as
 		//the HTMLElement is no longer attached to the
 		//DOM
-		styleManagerCSSDeclaration = null;
+		_needsStyleDeclarationUpdate = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1034,25 +1034,11 @@ class HTMLElement extends Element<HTMLElement>
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Recursively start pending animation
-	 * 
-	 * @return Wether at least one animation started
-	 */
-	public function startPendingAnimation():Bool
-	{
-		return doStartPendingAnimation();
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE ANIMATION METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
 	 * start pending animations of self and of all children.
 	 * 
 	 * @return Wether at least one animation started
 	 */
-	private function doStartPendingAnimation():Bool
+	public function startPendingAnimation():Bool
 	{
 		var atLeastOneAnimationStarted:Bool = false;
 		
@@ -1062,8 +1048,8 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			atLeastOneAnimationStarted = true;
 		}
-		
-		for (i in 0...childNodes.length)
+		var length:Int = childNodes.length;
+		for (i in 0...length)
 		{
 			var animationStarted:Bool = childNodes[i].startPendingAnimation();
 			

@@ -135,6 +135,17 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	private var _needsRendering:Bool;
 	
 	/**
+	 * A flag determining for a LayerRenderer which 
+	 * has its own graphic context, if the size of the
+	 * bitmap data of its grapic context should be updated.
+	 * 
+	 * It is the case when the size of the viewport changes
+	 * of when a new graphics context is created for this 
+	 * LayerRenderer
+	 */
+	private var _needsBitmapSizeUpdate:Bool;
+	
+	/**
 	 * A point used to determine wether an
 	 * ElementRenderer is within a given bound
 	 */
@@ -154,7 +165,8 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		_negativeZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		
 		hasOwnGraphicsContext = false;
-		_needsRendering = false;
+		_needsRendering = true;
+		_needsBitmapSizeUpdate = true;
 		
 		_windowWidth = 0;
 		_windowHeight = 0;
@@ -284,7 +296,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				throw 'Illegal value for z-index style';
 		}
 		
-		//if the newchild is a compositing layr
+		//if the newchild is a compositing layer
 		//check wether the newly added child makes
 		//this LayerRenderer have its own graphics
 		//context and refresh the graphics context tree
@@ -307,6 +319,8 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	override public function removeChild(oldChild:LayerRenderer):LayerRenderer
 	{
+		invalidateRendering();
+		
 		//the layerRenderer was added to the parent as this
 		//layerRenderer doesn't establish a stacking context
 		if (establishesNewStackingContext() == false)
@@ -447,6 +461,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			graphicsContext = new GraphicsContext(this);
 			parentGraphicsContext.appendChild(graphicsContext);
 			hasOwnGraphicsContext = true;
+			_needsBitmapSizeUpdate = true;
 		}
 		else
 		{
@@ -572,9 +587,24 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	public function render(windowWidth:Int, windowHeight:Int ):Void
 	{
-		//update the dimension of the bitmap data if the window size changed
+		//if the graphic context was instantiated/re-instantiated
+		//since last rendering, the size of its bitmap data should be
+		//updated with the viewport's dimensions
+		if (_needsBitmapSizeUpdate == true)
+		{
+			if (hasOwnGraphicsContext == true)
+			{
+				graphicsContext.initBitmapData(windowWidth, windowHeight);
+			}
+			_needsBitmapSizeUpdate = false;
+			
+			//invalidate rendering of this layer and all layers sharing
+			//the same graphic context
+			invalidateRendering();
+		}
+		//else update the dimension of the bitmap data if the window size changed
 		//since last rendering
-		if (windowWidth != _windowWidth || windowHeight != _windowHeight)
+		else if (windowWidth != _windowWidth || windowHeight != _windowHeight)
 		{
 			//only update the GraphicContext if it was created
 			//by this LayerRenderer
@@ -582,13 +612,14 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			{
 				graphicsContext.initBitmapData(windowWidth, windowHeight);
 			}
-			_windowWidth = windowWidth;
-			_windowHeight = windowHeight;
 			
 			//invalidate if the size of the viewport
 			//changed
 			invalidateRendering();
 		}
+		
+		_windowWidth = windowWidth;
+		_windowHeight = windowHeight;
 	
 		//only render if necessary
 		if (_needsRendering == true)
