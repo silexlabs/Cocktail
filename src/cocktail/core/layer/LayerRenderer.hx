@@ -186,13 +186,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	public function invalidateRendering():Void
 	{
-		//if already invalidated, no need to
-		//re-invalidate children
-		if (_needsRendering == true)
-		{
-			return;
-		}
-		
 		_needsRendering = true;
 		
 		//if has own graphic context,
@@ -253,8 +246,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */ 
 	override public function appendChild(newChild:LayerRenderer):LayerRenderer
 	{
-		invalidateRendering();
-		
 		//add to parent as this LayerRenderer do'esnt establish
 		//new stacking context
 		if (establishesNewStackingContext() == false)
@@ -263,8 +254,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		}
 		
 		super.appendChild(newChild);
-		
-		newChild.attach();
 		
 		//check the computed z-index of the ElementRenderer which
 		//instantiated the child LayerRenderer
@@ -297,16 +286,15 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		}
 		
 		//if the newchild is a compositing layer
-		//check wether the newly added child makes
-		//this LayerRenderer have its own graphics
-		//context and refresh the graphics context tree
-		//if it does
+		//invalidate the graphic context tree as
+		//it is likely to be altered by this change
 		if (newChild.isCompositingLayer() == true)
 		{
-			if (establishesNewGraphicsContext() == true)
-			{
-				invalidateGraphicsContextTree();
-			}
+			invalidateGraphicsContextTree();
+		}
+		else
+		{
+			newChild.attach();
 		}
 		
 		return newChild;
@@ -319,8 +307,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	override public function removeChild(oldChild:LayerRenderer):LayerRenderer
 	{
-		invalidateRendering();
-		
 		//the layerRenderer was added to the parent as this
 		//layerRenderer doesn't establish a stacking context
 		if (establishesNewStackingContext() == false)
@@ -348,17 +334,13 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		super.removeChild(oldChild);
 	
 		//if the child is a compositing layer,
-		//check wether removing the 
-		//child makes this LayerRenderer's
-		//graphic context no longer useful
+		//invalidate the graphic context tree 
+		//as removing it is likely to remove other
+		//graphics context
 		if (oldChild.isCompositingLayer() == true)
 		{
-			if (establishesNewGraphicsContext() == false)
-			{
-				invalidateGraphicsContextTree();
-			}
+			invalidateGraphicsContextTree();
 		}
-		
 		
 		return oldChild;
 	}
@@ -448,6 +430,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	{
 		detach();
 		attach();
+		invalidateRendering();
 	}
 	
 	/**
