@@ -56,8 +56,6 @@ class FontAndTextStylesComputer
 		//text indent
 		usedValues.textIndent = getUsedTextIndent(style, containingBlockData);
 		
-		CSSValueConverter.getColorVOFromCSSColor(style.getColor(style.color), usedValues.color);
-		
 		//letter spacing
 		usedValues.letterSpacing = getUsedLetterSpacing(style);
 		

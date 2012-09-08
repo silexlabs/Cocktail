@@ -15,6 +15,7 @@ import cocktail.core.font.FontManager;
 import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.layout.computer.BackgroundStylesComputer;
 import cocktail.core.renderer.InvalidatingElementRenderer;
 import cocktail.core.css.CSSConstants;
 import cocktail.core.animation.Animator;
@@ -335,6 +336,19 @@ class CoreStyle
 		//apply special computing relationship between
 		//display, float and position property
 		applyPositionFloatAndDisplayRelationship();
+		
+		//if the background color property was changed, computes
+		//its used value immediately, as for color, there is no need
+		//to wait for layout for used values
+		if (changedProperties.exists(CSSConstants.BACKGROUND_COLOR) == true)
+		{
+			CSSValueConverter.getColorVOFromCSSColor(getColor(backgroundColor), usedValues.backgroundColor);
+		}
+		//same as above for the color style
+		if (changedProperties.exists(CSSConstants.COLOR) == true)
+		{
+			CSSValueConverter.getColorVOFromCSSColor(getColor(color), usedValues.color);
+		}
 		
 		return changedProperties;
 	}

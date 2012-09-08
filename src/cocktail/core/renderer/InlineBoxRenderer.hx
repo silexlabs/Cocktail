@@ -38,55 +38,16 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE RENDERING METHODS
+	// OVERRIDEN PUBLIC RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden as InlineBoxRenderer doesn't render a background of his own, it is its
-	 * generatd line boxes which render their own backgrounds
+	 * InlineBoxRenderer don't do any rendering, as the rendering of their line boxes
+	 * is managed by the closest block container ancestor
 	 */
-	override private function renderBackground(graphicContext:GraphicsContext):Void
-	{
+	override public function render(parentGraphicContext:GraphicsContext):Void
+	{	
 		
-	}
-	
-	/**
-	 * Overriden as rendering an inline box renderer consist in rendering all of the 
-	 * line boxes it generated
-	 */
-	override private function renderChildren(graphicContext:GraphicsContext):Void
-	{
-		super.renderChildren(graphicContext);
-		
-		//render all the child line boxes which belong to the same
-		//stacking context as this InlineBoxRenderer
-		renderChildLineBoxes(graphicContext);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Actually render the child line boxes
-	 */
-	private function renderChildLineBoxes(graphicContext:GraphicsContext):Void
-	{
-		var length:Int = lineBoxes.length;
-		for (i in 0...length)
-		{
-			var childLineBoxes:Array<LineBox> = getLineBoxesInLine(lineBoxes[i]);
-			
-			var childLength:Int = childLineBoxes.length;
-			for (j in 0...childLength)
-			{
-				var childLineBox:LineBox = childLineBoxes[j];
-				if (childLineBox.elementRenderer.layerRenderer == layerRenderer)
-				{
-					childLineBox.render(graphicContext);
-				}
-			}
-		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

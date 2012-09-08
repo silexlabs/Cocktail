@@ -53,18 +53,6 @@ class BackgroundStylesComputer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Compute the background styles which can be computed 
-	 * when the layout is done. the background boxes and
-	 * the dimensions of the background images are not yet
-	 * known
-	 */
-	public static function compute(style:CoreStyle):Void
-	{
-		//actually compute the background color
-		getComputedBackgroundColor(style);
-	}
-	
-	/**
 	 * This method is called during rendering for each background image of a HTMLElement
 	 * for each background boxes
 	 * 
@@ -125,17 +113,6 @@ class BackgroundStylesComputer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE STATIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	//
-		// BACKGROUND COLOR
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Return the background color as an integer
-	 */
-	private static function getComputedBackgroundColor(style:CoreStyle):Void
-	{
-		CSSValueConverter.getColorVOFromCSSColor(style.getColor(style.backgroundColor), style.usedValues.backgroundColor);
-	}
 	
 		// BACKGROUND POSITION
 	//////////////////////////////////////////////////////////////////////////////////////////

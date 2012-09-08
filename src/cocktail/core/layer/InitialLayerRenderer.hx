@@ -47,6 +47,7 @@ class InitialLayerRenderer extends LayerRenderer
 		#elseif (flash9 || nme)
 		var initialNativeLayer:NativeElement = flash.Lib.current;
 		graphicsContext = new GraphicsContext(this, initialNativeLayer);
+		_needsBitmapSizeUpdate = true;
 		#end
 		hasOwnGraphicsContext = true;
 	}
