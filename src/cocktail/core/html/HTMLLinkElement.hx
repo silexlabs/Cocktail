@@ -91,9 +91,18 @@ class HTMLLinkElement extends HTMLElement
 	 */
 	public var sheet(default, null):CSSStyleSheet;
 	
+	/**
+	 * Flag which is true when the link element either
+	 * has loaded its resource of it is loading it.
+	 * Used to prevent simultaneaous
+	 * multiple loading of the resource
+	 */
+	private var _hasLoadedResource:Bool;
+	
 	public function new() 
 	{
 		super(HTMLConstants.HTML_LINK_TAG_NAME);
+		_hasLoadedResource = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -107,8 +116,11 @@ class HTMLLinkElement extends HTMLElement
 	 */
 	override public function attach():Void
 	{
+		if (_hasLoadedResource == false)
+		{	
+			loadLinkedResource();
+		}
 		super.attach();
-		loadLinkedResource();
 	}
 
 	/**
@@ -119,7 +131,10 @@ class HTMLLinkElement extends HTMLElement
 	override public function detach():Void
 	{
 		super.detach();
-		unloadLinkedResource();
+		if (_hasLoadedResource == true)
+		{
+			unloadLinkedResource();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -152,6 +167,8 @@ class HTMLLinkElement extends HTMLElement
 		//stylesheet and load it if it does
 		if (type == CSSConstants.CSS_MIME_TYPE && href != null && rel == CSSConstants.STYLESHEET_REL)
 		{
+			_hasLoadedResource = true;
+			
 			var xmlHttpRequest:XMLHTTPRequest = new XMLHTTPRequest();
 			xmlHttpRequest.open(HTTPConstants.GET, href);
 			xmlHttpRequest.addEventListener(EventConstants.LOAD_END, onCSSLoaded);
@@ -172,6 +189,8 @@ class HTMLLinkElement extends HTMLElement
 			var htmlDocument:HTMLDocument = cast(ownerDocument);
 			htmlDocument.removeStyleSheet(sheet);
 			sheet = null;
+			
+			_hasLoadedResource = false;
 		}
 	}
 	

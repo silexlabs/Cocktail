@@ -87,6 +87,10 @@ class HTMLStyleElement extends HTMLElement
 	override public function attach():Void
 	{
 		addStyleSheet();
+		
+		//attach after to prevent uncesseray
+		//cascading
+		super.attach();
 	}
 
 	/**
@@ -96,6 +100,7 @@ class HTMLStyleElement extends HTMLElement
 	 */
 	override public function detach():Void
 	{
+		super.detach();
 		removeStyleSheet();
 	}
 	

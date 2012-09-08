@@ -901,7 +901,17 @@ class CoreStyle
 		//else return the computed value for the given property
 		else
 		{
-			return computedValues.getTypedProperty(propertyName).typedValue;
+			try {
+				return computedValues.getTypedProperty(propertyName).typedValue;
+			}
+			catch(e:Dynamic)
+			{
+				trace(htmlElement);
+				trace(htmlElement.elementRenderer);
+				trace(computedValues.getTypedProperty(propertyName));
+				return null;
+			}
+			
 		}
 	}
 	
