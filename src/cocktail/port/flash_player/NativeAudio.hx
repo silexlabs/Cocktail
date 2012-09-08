@@ -132,6 +132,8 @@ class NativeAudio extends NativeMedia
 	private function onID3DataReceived(event:Event):Void
 	{
 		onNativeLoadedMetaData();
+		_sound.removeEventListener(Event.ID3, onID3DataReceived);
+		_sound.removeEventListener(Event.COMPLETE, onID3DataReceived);
 	}
 	
 	/**
@@ -147,7 +149,9 @@ class NativeAudio extends NativeMedia
 		
 		//listen for metadata loading of sound 
 		_sound.addEventListener(Event.ID3, onID3DataReceived);
-		
+		//the complete loading of the sound is also listened to as some
+		//sound file might be encoded without ID3 tags
+		_sound.addEventListener(Event.COMPLETE, onID3DataReceived);
 		_sound.load(new URLRequest(src));
 	}
 	

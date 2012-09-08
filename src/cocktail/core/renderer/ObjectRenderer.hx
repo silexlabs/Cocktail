@@ -133,7 +133,7 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 		mask.graphics.endFill();
 		asset.mask = mask;
 		
-		//containerGraphicContext.addChild(asset);
+		containerGraphicContext.addChild(asset);
 		
 		#end
 	}

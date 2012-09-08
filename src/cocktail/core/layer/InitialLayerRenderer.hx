@@ -56,8 +56,12 @@ class InitialLayerRenderer extends LayerRenderer
 	 */
 	override private function detachGraphicsContext():Void 
 	{
+		//TODO 2 : should also use Platform class
+		#if macro
+		#elseif (flash9 || nme)
 		graphicsContext.dispose();
 		graphicsContext = null;
+		#end
 		hasOwnGraphicsContext = false;
 	}
 	

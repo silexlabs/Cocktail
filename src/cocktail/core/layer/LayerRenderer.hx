@@ -289,7 +289,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//this LayerRenderer have its own graphics
 		//context and refresh the graphics context tree
 		//if it does
-		if (newChild.isCompositingLayer() == true && hasOwnGraphicsContext == false)
+		if (newChild.isCompositingLayer() == true)
 		{
 			if (establishesNewGraphicsContext() == true)
 			{
@@ -337,7 +337,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//check wether removing the 
 		//child makes this LayerRenderer's
 		//graphic context no longer useful
-		if (oldChild.isCompositingLayer() == true && hasOwnGraphicsContext == true)
+		if (oldChild.isCompositingLayer() == true)
 		{
 			if (establishesNewGraphicsContext() == false)
 			{
@@ -429,18 +429,11 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 * Called when this Layer create or remove its
 	 * own graphics context, the graphics context
 	 * tree must be updated. 
-	 * 
-	 * The parent is detached and reattached, so
-	 * that the graphics context tree can be valid
-	 * again
 	 */
 	private function invalidateGraphicsContextTree():Void
 	{
-		if (parentNode != null)
-		{
-			parentNode.detach();
-			parentNode.attach();
-		}
+		detach();
+		attach();
 	}
 	
 	/**
