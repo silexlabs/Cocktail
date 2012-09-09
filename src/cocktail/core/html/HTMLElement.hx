@@ -860,6 +860,7 @@ class HTMLElement extends Element<HTMLElement>
 
 				changedProperties = coreStyle.cascade(_pendingChangedProperties, initialStyleDeclaration, styleManagerCSSDeclaration, style, parentStyleDeclaration, parentFontMetrics.fontSize, parentFontMetrics.xHeight, programmaticChange);
 				
+		
 			}
 		}
 		else
@@ -1414,6 +1415,10 @@ class HTMLElement extends Element<HTMLElement>
 		super.setAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME, value);
 		//update the class list as well
 		classList = value.split(" ");
+		
+		//when the class name is set, the style declaration
+		//of this HTMLElement should be updated on next cascade
+		invalidateStyleDeclaration(true);
 		
 		return value;
 	}
