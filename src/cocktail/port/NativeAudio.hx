@@ -13,11 +13,11 @@ package cocktail.port;
 #if macro
 typedef NativeAudio =  cocktail.port.platform.nativeMedia.NativeMedia;
 
-#elseif flash9
-typedef NativeAudio =  cocktail.port.flash_player.NativeAudio;
-
 #elseif nme
 typedef NativeAudio =  cocktail.port.nme.NativeAudio;
+
+#elseif flash9
+typedef NativeAudio =  cocktail.port.flash_player.NativeAudio;
 
 #else
 typedef NativeAudio =  cocktail.port.platform.nativeMedia.NativeMedia;
