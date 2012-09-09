@@ -281,6 +281,28 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as for element node, attributes
+	 * are cloned as well
+	 */
+	override private function doCloneNode():ElementClass
+	{
+		var clonedElement:Element<ElementClass> = new Element<ElementClass>(this.tagName);
+		
+		var length:Int = attributes.length;
+		for (i in 0...length)
+		{
+			var clonedAttr:Attr<ElementClass> = attributes.item(i).cloneNode(false);
+			clonedElement.setAttributeNode(clonedAttr);
+		}
+		
+		return cast(clonedElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
