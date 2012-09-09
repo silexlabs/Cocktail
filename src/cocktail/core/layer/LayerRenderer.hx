@@ -604,7 +604,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		_windowWidth = windowWidth;
 		_windowHeight = windowHeight;
 	
-		//only render if necessary
+		//only clear if a rendering is necessary
 		if (_needsRendering == true)
 		{
 			//only clear the bitmaps if the GraphicsContext
@@ -625,8 +625,11 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			_negativeZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
 		}
 		
-		//only render if necessary
-		if (_needsRendering == true)
+		//only render if necessary. This only applies to layer which have
+		//their own graphic context, layer which don't always gets re-painted
+		//
+		//TODO 2 : invalidation for layer is still messy
+		if (_needsRendering == true || hasOwnGraphicsContext == false)
 		{
 			//init transparency on the graphicContext if the element is transparent. Everything
 			//painted with the element will have an alpha equal to the opacity style
@@ -668,7 +671,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		rootElementRenderer.renderScrollBars(graphicsContext, windowWidth, windowHeight);
 		
 		//only render if necessary
-		if (_needsRendering == true)
+		if (_needsRendering == true || hasOwnGraphicsContext)
 		{
 			//apply transformations to the layer if needed
 			if (rootElementRenderer.isTransformed() == true)
