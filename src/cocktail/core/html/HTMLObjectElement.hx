@@ -23,8 +23,9 @@ import cocktail.core.renderer.RendererData;
  * will either be treated as an image, as a nested browsing
  * context, or as an external resource to be processed by a plugin.
  * 
- * TODO 1 IMPORTANT : for now only support embedding of flash movies. Should
- * be able to display any plugin as well as regular picture like .jpg
+ * TODO 1 IMPORTANT : for now only support embedding of flash movies, which are hard-code. Should
+ * be able to display any plugin as well as regular picture like .jpg.
+ * There is currently no easy way to add a third-party plugin
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -37,6 +38,11 @@ class HTMLObjectElement extends EmbeddedElement
 	private static inline var HTML_OBJECT_INTRISIC_WIDTH:Float = 300;
 	
 	private static inline var HTML_OBJECT_INTRINSIC_HEIGHT:Float = 150;
+	
+	/**
+	 * Extension of a flash movie file
+	 */
+	private static inline var SWF_FILE_EXTENSION:String = ".swf";
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// IDL attributes
@@ -52,10 +58,20 @@ class HTMLObjectElement extends EmbeddedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Responsible for loading the plugin
+	 * A reference to the plugin instantiated
+	 * by this HTMLElement. It might be null,
+	 * if the resource is a native one, like
+	 * a picture or if not enough dta are
+	 * provided
 	 */
 	public var plugin(default, null):Plugin;
 	
+	/**
+	 * A flag determining wheter the plugin is
+	 * ready to be used. The plugin, after
+	 * being instantiate call a callback to
+	 * signal that it is ready to be used
+	 */
 	private var _pluginReady:Bool;
 	
 	/**
@@ -91,33 +107,53 @@ class HTMLObjectElement extends EmbeddedElement
 	// OVERRIDEN PUBLIC RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Overriden as when attached to the DOM, 
+	 * check wether a third-party plugin should
+	 * be instantiated
+	 */
 	override public function attach():Void
 	{
 		createPlugin();
-		
 		super.attach();
 	}
 
+	/**
+	 * Overriden as when detached, the plugin
+	 * might need to be destroyed
+	 */
 	override public function detach():Void
 	{
 		super.detach();
-		
 		deletePlugin();
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE PLUGIN METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Instantiate a third-party
+	 * plugin if necessary
+	 */
 	private function createPlugin():Void
 	{
+		//prevent re-instantiating a plugin
 		if (plugin != null)
 		{
 			return;
 		}
 		
+		//an url for the resource must be provided
 		if (data != null)
 		{
-			if (data.indexOf(".swf") != -1)
+			//check that the url contain swf file, for now
+			//this is the only supported type
+			if (data.indexOf(SWF_FILE_EXTENSION) != -1)
 			{
 				var params:Hash<String> = new Hash<String>();
 				
+				//retrive all the name/value of the child param tags
 				for (i in 0...childNodes.length)
 				{
 					var child:HTMLElement = childNodes[i];
@@ -133,28 +169,43 @@ class HTMLObjectElement extends EmbeddedElement
 					}
 				}
 				
+				//retrive all the attributes of this HTMLElement
 				var elementAttributes:Hash<String> = new Hash<String>();
-				
 				for (i in 0...attributes.length)
 				{
 					var attr:Attr<HTMLElement> = attributes.item(i);
 					elementAttributes.set(attr.name, attr.value);
 				}
 				
+				//instantiate the plugin, for now hard-coded SWF plugin
 				plugin = new SWFPlugin(elementAttributes, params, onLoadComplete, onLoadError);
 			}
 		}
 	}
 	
+	/**
+	 * Dispose of the plugin
+	 * 
+	 * TODO 2:  for now, only deleted
+	 * when node removed from DOM, should
+	 * add more conditions, like for instance
+	 * change of data attribute value
+	 */
 	private function deletePlugin():Void
 	{
-		//if (plugin != null)
-		//{
-			//plugin.onload = null;
-			//plugin.onerror = null;
-			//plugin.dispose();
-			//plugin = null;
-		//}
+		//no need to delete the plugin
+		//if the node is still attached to
+		//the DOM
+		if (parentNode != null)
+		{
+			return;
+		}
+		
+		if (plugin != null)
+		{
+			plugin.dispose();
+			plugin = null;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -162,7 +213,11 @@ class HTMLObjectElement extends EmbeddedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Instantiate an object specific renderer
+	 * Instantiate an object specific renderer, if the plugin
+	 * is ready to be used
+	 * 
+	 * TODO 2 : should display fallback content if plugin
+	 * not ready
 	 */
 	override private function createElementRenderer():Void
 	{
@@ -176,6 +231,9 @@ class HTMLObjectElement extends EmbeddedElement
 	// PRIVATE LOADING METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Called by the plugin when it is ready
+	 */
 	private function onLoadComplete():Void
 	{
 		_pluginReady = true;
@@ -187,6 +245,11 @@ class HTMLObjectElement extends EmbeddedElement
 		dispatchEvent(loadEvent);
 	}
 	
+	/**
+	 * Called by the plugin when there
+	 * was an error preventing it
+	 * from working
+	 */
 	private function onLoadError():Void
 	{
 		_pluginReady = false;
