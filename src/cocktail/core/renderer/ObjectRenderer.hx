@@ -31,12 +31,6 @@ import cocktail.core.geom.GeomData;
  */
 class ObjectRenderer extends EmbeddedBoxRenderer
 {
-	private static inline var NO_SCALE:String = "noscale";
-	
-	private static inline var SHOW_ALL:String = "showall";
-	
-	private static inline var EXACT_FIT:String = "exactfit";
-	
 	/**
 	 * class constructor
 	 */
@@ -70,101 +64,32 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 
+	override public function attach():Void
+	{
+		super.attach();
+		var htmlObjectElement:HTMLObjectElement = cast(domNode);
+		htmlObjectElement.plugin.attach(layerRenderer.graphicsContext);
+	}
+	
 	/**
-	 * When rendered, attach the plugin object to the native display list
+	 * Detach the LayerRenderer of this ElementRenderer from the LayerRenderer
+	 * tree if necessary
 	 */
+	override public function detach():Void
+	{
+		var htmlObjectElement:HTMLObjectElement = cast(domNode);
+		htmlObjectElement.plugin.detach(layerRenderer.graphicsContext);
+		super.detach();
+	}
+	
 	override private function renderEmbeddedAsset(graphicContext:GraphicsContext):Void
 	{
-		//TODO 1 : should be removed
-		#if macro
-		
-		#elseif (flash9 || nme)
-		var containerGraphicContext:flash.display.DisplayObjectContainer = cast(graphicContext.nativeLayer);
-	
 		var htmlObjectElement:HTMLObjectElement = cast(domNode);
-		var asset:flash.display.Loader = cast(htmlObjectElement.embeddedAsset);
 		
-		var globalBounds:RectangleVO = globalBounds;
-		asset.transform.matrix = new flash.geom.Matrix();
+		var viewport:RectangleVO = this.globalBounds;
+		viewport.x += coreStyle.usedValues.paddingLeft;
+		viewport.y += coreStyle.usedValues.paddingTop;
 		
-		var width:Float = 0.0;
-		var height:Float = 0.0;
-		
-		//get the intrinsic width and height of the sprite
-		try {
-			width = asset.contentLoaderInfo.width;
-			height = asset.contentLoaderInfo.height;
-		}
-		catch (e:Dynamic)
-		{
-			
-		}
-		
-		var assetBounds:RectangleVO = getAssetBounds(coreStyle.usedValues.width, coreStyle.usedValues.height,
-		width, height);
-
-		var scaleMode:String = getScaleMode();
-		
-		switch (scaleMode)
-		{
-			case NO_SCALE:
-				asset.x = globalBounds.x + coreStyle.usedValues.paddingLeft;
-				asset.y = globalBounds.y + coreStyle.usedValues.paddingTop;
-				
-			case EXACT_FIT:
-				asset.x = globalBounds.x + coreStyle.usedValues.paddingLeft;
-				asset.y = globalBounds.y + coreStyle.usedValues.paddingTop;
-				asset.scaleX = coreStyle.usedValues.width / width;
-				asset.scaleY = coreStyle.usedValues.height / height;
-
-			default:
-				asset.x = globalBounds.x + coreStyle.usedValues.paddingLeft + assetBounds.x;
-				asset.y = globalBounds.y + coreStyle.usedValues.paddingTop + assetBounds.y;
-				asset.scaleX = assetBounds.width / width;
-				asset.scaleY = assetBounds.height / height;
-		}
-		
-		//mask the sprite so that it doesn't overflow
-		var mask = new flash.display.Sprite();
-		mask.graphics.beginFill(0xFF0000, 0.0);
-		mask.graphics.drawRect( 
-		globalBounds.x + coreStyle.usedValues.paddingLeft, globalBounds.y + coreStyle.usedValues.paddingTop,
-		coreStyle.usedValues.width, coreStyle.usedValues.height);
-		mask.graphics.endFill();
-		asset.mask = mask;
-		
-		containerGraphicContext.addChild(asset);
-		
-		#end
+		htmlObjectElement.plugin.viewport = viewport;
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE UTILS METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function getScaleMode():String
-	{
-		var scaleMode:String = SHOW_ALL;
-		for (i in 0...domNode.childNodes.length)
-		{
-			var child:HTMLElement = domNode.childNodes[i];
-			
-			if (child.tagName == HTMLConstants.HTML_PARAM_TAG_NAME)
-			{
-				if (child.getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME) != null)
-				{
-					if (child.getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME) == "scale")
-					{
-						if (child.getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME) != null)
-						{
-							scaleMode = child.getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
-						}
-					}
-				}
-			}
-		}
-		
-		return scaleMode;
-	}
-	
 }

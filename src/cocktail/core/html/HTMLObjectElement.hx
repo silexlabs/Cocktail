@@ -6,9 +6,13 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.html;
+import cocktail.core.dom.Attr;
+import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.renderer.ObjectRenderer;
+import cocktail.plugin.Plugin;
+import cocktail.plugin.swf.SWFPlugin;
 import cocktail.port.NativeElement;
 import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.resource.ImageLoader;
@@ -51,26 +55,21 @@ class HTMLObjectElement extends EmbeddedElement
 	/**
 	 * Responsible for loading the plugin
 	 */
-	private var _imageLoader:ImageLoader;
+	public var plugin(default, null):Plugin;
+	
+	private var _pluginReady:Bool;
 	
 	/**
 	 * class constructor
 	 */
 	public function new() 
 	{
-		_imageLoader = new ImageLoader();
 		super(HTMLConstants.HTML_OBJECT_TAG_NAME);
+		
+		_pluginReady = false;
 		intrinsicHeight = HTML_OBJECT_INTRINSIC_HEIGHT;
 		intrinsicWidth = HTML_OBJECT_INTRISIC_WIDTH;
 		intrinsicRatio = intrinsicWidth / intrinsicHeight;
-	}
-	
-	/**
-	 * the embedded assed is held by the image loader
-	 */
-	override private function initEmbeddedAsset():Void
-	{
-		embeddedAsset = _imageLoader.nativeElement;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -90,6 +89,76 @@ class HTMLObjectElement extends EmbeddedElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override public function attach():Void
+	{
+		createPlugin();
+		
+		super.attach();
+	}
+
+	override public function detach():Void
+	{
+		super.detach();
+		
+		deletePlugin();
+	}
+	
+	private function createPlugin():Void
+	{
+		if (plugin != null)
+		{
+			return;
+		}
+		
+		if (data != null)
+		{
+			if (data.indexOf(".swf") != -1)
+			{
+				var params:Hash<String> = new Hash<String>();
+				
+				for (i in 0...childNodes.length)
+				{
+					var child:HTMLElement = childNodes[i];
+					if (child.tagName == HTMLConstants.HTML_PARAM_TAG_NAME)
+					{
+						var name:String = child.getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME);
+						var value:String = child.getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
+						
+						if (name != null && value != null)
+						{
+							params.set(name, value);
+						}
+					}
+				}
+				
+				var elementAttributes:Hash<String> = new Hash<String>();
+				
+				for (i in 0...attributes.length)
+				{
+					var attr:Attr<HTMLElement> = attributes.item(i);
+					elementAttributes.set(attr.name, attr.value);
+				}
+				
+				plugin = new SWFPlugin(elementAttributes, params, onLoadComplete, onLoadError);
+			}
+		}
+	}
+	
+	private function deletePlugin():Void
+	{
+		//if (plugin != null)
+		//{
+			//plugin.onload = null;
+			//plugin.onerror = null;
+			//plugin.dispose();
+			//plugin = null;
+		//}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -98,20 +167,20 @@ class HTMLObjectElement extends EmbeddedElement
 	 */
 	override private function createElementRenderer():Void
 	{
-		elementRenderer = new ObjectRenderer(this);
+		if (_pluginReady == true)
+		{
+			elementRenderer = new ObjectRenderer(this);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LOADING METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Called when the plugin was successfuly loaded.
-	 * 
-	 * @param	image the loaded picture stored as a nativeElement
-	 */
-	private function onLoadComplete(image:NativeElement):Void
+	private function onLoadComplete():Void
 	{
+		_pluginReady = true;
+		
 		invalidate(InvalidationReason.other);
 		
 		var loadEvent:UIEvent = new UIEvent();
@@ -119,13 +188,10 @@ class HTMLObjectElement extends EmbeddedElement
 		dispatchEvent(loadEvent);
 	}
 	
-	/**
-	 * Called when there was an error during loading.
-	 * 
-	 * @param	message the error message
-	 */
-	private function onLoadError(message:String):Void
+	private function onLoadError():Void
 	{
+		_pluginReady = false;
+		
 		var errorEvent:UIEvent = new UIEvent();
 		errorEvent.initUIEvent(EventConstants.ERROR, false, false, null, 0.0);
 		dispatchEvent(errorEvent);
@@ -135,13 +201,9 @@ class HTMLObjectElement extends EmbeddedElement
 	// IDL SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Starts a loading with the image loader
-	 */
 	private function set_data(value:String):String
 	{
 		super.setAttribute(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME, value);
-		_imageLoader.load([value], onLoadComplete, onLoadError);
 		return value;
 	}
 	
