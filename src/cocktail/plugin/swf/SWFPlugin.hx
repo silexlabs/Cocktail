@@ -217,6 +217,19 @@ class SWFPlugin extends Plugin
 		var bytes = nme.Assets.getBytes(url);
 		if (bytes != null)
 		{
+			#if air
+			
+			//if the runtime is air, use native flash api to load
+			//content from bytes
+			var loadingContext:LoaderContext = new LoaderContext(false);
+			loadingContext.allowCodeImport = true;
+			_loader = new Loader();
+			_loader.contentLoaderInfo.addEventListener(flash.events.Event.INIT, onSWFLoadComplete);
+			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onSWFLoadIOError);
+			_loader.loadBytes(bytes, loadingContext);
+			return;
+			
+			#else
 			//if they are, create a movieclip from it
 			var swf:format.SWF = new format.SWF(bytes);
 			_swf = swf.createMovieClip();
@@ -230,6 +243,7 @@ class SWFPlugin extends Plugin
 			//need to load the swf
 			_loadComplete();
 			return;
+			#end
 		}
 		#end
 		
