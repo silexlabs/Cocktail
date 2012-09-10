@@ -1505,7 +1505,7 @@ class HTMLElement extends Element<HTMLElement>
 	/**
 	 * Utils method describing wether the HTMLElement
 	 * is a void element, meaning it can't have any
-	 * context and can be represented by a self-closing
+	 * content and can be represented by a self-closing
 	 * tag, like for instance the <img/> tag
 	 */
 	public function isVoidElement():Bool
