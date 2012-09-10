@@ -19,7 +19,6 @@ import cocktail.port.ImageResource;
 import cocktail.port.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.renderer.ImageRenderer;
-import cocktail.core.resource.ImageLoader;
 import haxe.Log;
 import cocktail.core.html.EmbeddedElement;
 import cocktail.core.renderer.RendererData;

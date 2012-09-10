@@ -9,7 +9,6 @@ package cocktail.port.flash_player;
 
 import cocktail.core.resource.AbstractResource;
 import cocktail.port.NativeElement;
-import cocktail.core.resource.AbstractMediaLoader;
 import flash.display.Bitmap;
 import flash.display.DisplayObject;
 import flash.display.DisplayObjectContainer;

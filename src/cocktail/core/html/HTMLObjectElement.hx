@@ -15,7 +15,6 @@ import cocktail.plugin.Plugin;
 import cocktail.plugin.swf.SWFPlugin;
 import cocktail.port.NativeElement;
 import cocktail.core.renderer.ImageRenderer;
-import cocktail.core.resource.ImageLoader;
 import cocktail.core.renderer.RendererData;
 
 /**
