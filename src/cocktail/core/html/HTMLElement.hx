@@ -305,7 +305,7 @@ class HTMLElement extends Element<HTMLElement>
 		//init the core style for this HTMLElement
 		initCoreStyle();
 		
-		//init the CSS style adapter
+		//init the CSS inline style declaration
 		initStyle();
 		
 		//init the Id attribute
@@ -313,9 +313,8 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
-	 * Instantiate the right style object for this
-	 * HTMLElement. Overriden by HTMLElements with
-	 * specific style objects, such as HTMLImageElement
+	 * Instantiate the core style object,
+	 * sotring the style of this element
 	 */
 	private function initCoreStyle():Void
 	{
@@ -323,8 +322,7 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
-	 * Init the style adapter providing manipulation
-	 * of the styles through CSS strings
+	 * Init the inline style declaration
 	 */
 	private function initStyle():Void
 	{
@@ -404,8 +402,8 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
-	 * Overriden to update the style of the HTMLElement when
-	 * the style attribte is set
+	 * Overriden to call specific setter merhod for some
+	 * attributes
 	 */
 	override public function setAttribute(name:String, value:String):Void
 	{
@@ -1507,7 +1505,7 @@ class HTMLElement extends Element<HTMLElement>
 	/**
 	 * Utils method describing wether the HTMLElement
 	 * is a void element, meaning it can't have any
-	 * context and can be represented by a self-closing
+	 * content and can be represented by a self-closing
 	 * tag, like for instance the <img/> tag
 	 */
 	public function isVoidElement():Bool
