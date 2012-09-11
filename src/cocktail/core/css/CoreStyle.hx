@@ -513,6 +513,50 @@ class CoreStyle
 					default:	
 				}
 				
+			//for transition property, "left" and "right"
+			//value oare parsed as CSS keywords (they are used for 
+			//float style for instance), but should actually be  computed as
+			//identifier for this property
+			case CSSConstants.TRANSITION_PROPERTY:
+				switch(property)
+				{
+					case KEYWORD(value):
+						switch(value)
+						{
+							case LEFT:
+								return IDENTIFIER(CSSConstants.LEFT);
+								
+							case RIGHT:
+								return IDENTIFIER(CSSConstants.RIGHT);
+								
+							default:	
+						}
+						
+					case CSS_LIST(value):
+						var length:Int = value.length;
+						for (i in 0...length)
+						{
+							switch (value[i])
+							{
+								case KEYWORD(keyword):
+									switch(keyword)
+									{
+										case LEFT:
+											value[i] = IDENTIFIER(CSSConstants.LEFT);
+											
+										case RIGHT:
+											value[i] = IDENTIFIER(CSSConstants.RIGHT);
+											
+										default:	
+									}
+									
+								default:	
+							}
+						}
+						
+					default:	
+				}
+				
 			case CSSConstants.OPACITY:
 				switch(property)
 				{
