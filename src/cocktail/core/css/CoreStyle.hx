@@ -457,12 +457,13 @@ class CoreStyle
 			{
 				if (isAnimatable(propertyName))
 				{
-					_animator.registerPendingAnimation(propertyName, invalidationReason, Reflect.getProperty(usedValues, getIDLName(propertyName)));
+					_animator.registerPendingAnimation(propertyName, invalidationReason, getAnimatablePropertyValue(propertyName));
 				}
 			}
 		}
 		
 		computedValues.setTypedProperty(propertyName, computedProperty, propertyData.important);
+		
 		
 		htmlElement.invalidate(invalidationReason);
 		
@@ -936,11 +937,39 @@ class CoreStyle
 		switch(propertyName)
 		{
 			case CSSConstants.WIDTH, CSSConstants.HEIGHT, CSSConstants.TOP, CSSConstants.BOTTOM,
-			CSSConstants.LEFT, CSSConstants.RIGHT:
+			CSSConstants.LEFT, CSSConstants.RIGHT, CSSConstants.OPACITY:
 				return true;
 				
 			default:
 				return false;
+		}
+	}
+	
+	/**
+	 * For a given animatable property, return its current value as a float,
+	 * so that it can be used to animate
+	 */
+	private function getAnimatablePropertyValue(propertyName:String):Float
+	{
+		switch(propertyName)
+		{
+			case CSSConstants.OPACITY:
+				switch(opacity)
+				{
+					case NUMBER(value):
+						return value;
+					
+					case ABSOLUTE_LENGTH(value):
+						return value;
+						
+					default: 
+						return 0;
+				}
+				
+			//for values which are actually determined
+			//during layout, such as width and height, use the used value
+			default:
+				return Reflect.getProperty(usedValues, getIDLName(propertyName));
 		}
 	}
 	

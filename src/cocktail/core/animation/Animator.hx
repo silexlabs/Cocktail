@@ -8,6 +8,7 @@
 package cocktail.core.animation;
 
 import cocktail.core.css.CoreStyle;
+import cocktail.core.css.CSSConstants;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.event.TransitionEvent;
 
@@ -232,7 +233,7 @@ class Animator
 		//is now the end value of the transition
 		
 		//TODO 1 : really messy to use reflection + for now transition only work for number properties
-		var endValue:Float = Reflect.getProperty(style.usedValues, pendingAnimation.propertyName);
+		var endValue:Float = getEndValue(style, pendingAnimation.propertyName);
 		
 		//start a transition using the TransitionManager
 		transitionManager.startTransition(style, pendingAnimation.propertyName, pendingAnimation.startValue, endValue, 
@@ -240,6 +241,33 @@ class Animator
 	
 		//the transition did in fact start
 		return true;
+	}
+	
+	/**
+	 * Return the current used value for
+	 * a given property, which can be used as
+	 * end value
+	 */
+	private function getEndValue(style:CoreStyle, propertyName:String):Float
+	{
+		switch(propertyName)
+		{
+			case CSSConstants.OPACITY:
+				switch(style.opacity)
+				{
+					case NUMBER(value):
+						return value;
+					
+					case ABSOLUTE_LENGTH(value):
+						return value;
+						
+					default: 
+						return 0;
+				}
+			
+			default:
+				return Reflect.getProperty(style.usedValues, propertyName);
+		}
 	}
 	
 	/**

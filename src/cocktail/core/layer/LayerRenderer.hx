@@ -636,7 +636,21 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			if (rootElementRenderer.isTransparent() == true)
 			{
 				var coreStyle:CoreStyle = rootElementRenderer.coreStyle;
-				graphicsContext.beginTransparency(coreStyle.getNumber(coreStyle.opacity));
+				
+				//get the current opacity value
+				var opacity:Float = 0.0;
+				switch(coreStyle.opacity)
+				{
+					case NUMBER(value):
+						opacity = value;
+						
+					case ABSOLUTE_LENGTH(value):
+						opacity = value;
+						
+					default:	
+				}
+				
+				graphicsContext.beginTransparency(opacity);
 			}
 				
 			//render the rootElementRenderer itself which will also

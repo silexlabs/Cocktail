@@ -382,6 +382,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 			case CSSPropertyValue.NUMBER(value):
 				return value != 1.0;
 				
+			case CSSPropertyValue.ABSOLUTE_LENGTH(value):
+				return value != 1.0;
+				
 			default:
 				return false;
 		}

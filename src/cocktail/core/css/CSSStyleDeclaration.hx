@@ -1711,11 +1711,62 @@ class CSSStyleDeclaration
 	 */
 	private function isValidTransitionGroup(styleValues:Array<CSSPropertyValue>):Bool
 	{
+		//those flag keep track of which property was
+		//already found in the group, ther can't be duplicates
+		var hasTransitionProperty:Bool = false;
+		var hasTransitionTimingFunction:Bool = false;
+		var hasTransitionDelay:Bool = false;
+		var hasTransitionDuration:Bool = false;
+		
 		switch(styleValues.length)
 		{
 			case 2:
+				if (isValidTransitionProperty(styleValues[0]))
+				{
+					hasTransitionProperty = true;
+				}
+				else if (isValidTransitionDelayOrDuration(styleValues[0]))
+				{
+					hasTransitionDuration = true;
+				}
+				else if (isValidTransitionTimingFunction(styleValues[0]))
+				{
+					hasTransitionTimingFunction = true;
+				}
+				else
+				{
+					return false;
+				}
+				
+				if (isValidTransitionProperty(styleValues[1]))
+				{
+					if (hasTransitionProperty == true)
+					{
+						return false;
+					}
+				}
+				else if (isValidTransitionDelayOrDuration(styleValues[1]))
+				{
+					
+				}
+				else if (isValidTransitionTimingFunction(styleValues[1]))
+				{
+					if (hasTransitionTimingFunction == true)
+					{
+						return false;
+					}
+				}
+				else
+				{
+					return false;
+				}
+				
+				return true;
+				
+			case 3:
 				
 				
+			case 4:	
 		}
 		
 		return false;
