@@ -616,6 +616,31 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			}
 		}
 	
+		//init transparency on the graphicContext if the element is transparent. Everything
+		//painted afterwards will have an alpha equal to the opacity style
+		//
+		//TODO 1 : will not work if child layer also have alpha, alpha
+		//won't be combined properly. Should GraphicsContext have offscreen bitmap
+		//for each transparent layer and compose them when transparency end ?
+		if (rootElementRenderer.isTransparent() == true)
+		{
+			var coreStyle:CoreStyle = rootElementRenderer.coreStyle;
+			
+			//get the current opacity value
+			var opacity:Float = 0.0;
+			switch(coreStyle.opacity)
+			{
+				case NUMBER(value):
+					opacity = value;
+					
+				case ABSOLUTE_LENGTH(value):
+					opacity = value;
+					
+				default:	
+			}
+			
+			graphicsContext.beginTransparency(opacity);
+		}
 		
 		//render first negative z-index child LayerRenderer from most
 		//negative to least negative
@@ -631,38 +656,9 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//TODO 2 : invalidation for layer is still messy
 		if (_needsRendering == true || hasOwnGraphicsContext == false)
 		{
-			//init transparency on the graphicContext if the element is transparent. Everything
-			//painted with the element will have an alpha equal to the opacity style
-			if (rootElementRenderer.isTransparent() == true)
-			{
-				var coreStyle:CoreStyle = rootElementRenderer.coreStyle;
-				
-				//get the current opacity value
-				var opacity:Float = 0.0;
-				switch(coreStyle.opacity)
-				{
-					case NUMBER(value):
-						opacity = value;
-						
-					case ABSOLUTE_LENGTH(value):
-						opacity = value;
-						
-					default:	
-				}
-				
-				graphicsContext.beginTransparency(opacity);
-			}
-				
 			//render the rootElementRenderer itself which will also
 			//render all ElementRenderer belonging to this LayerRenderer
 			rootElementRenderer.render(graphicsContext);
-			
-			//stop transparency so that subsequent painted element won't be transparent
-			//if they don't themselves have an opacity
-			if (rootElementRenderer.isTransparent() == true)
-			{
-				graphicsContext.endTransparency();
-			}
 		}
 		
 		//render zero and auto z-index child LayerRenderer, in tree order
@@ -678,6 +674,13 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		for (i in 0...positiveChildLength)
 		{
 			_positiveZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
+		}
+		
+		//stop transparency so that subsequent painted element won't be transparent
+		//if they don't themselves have an opacity inferior to 1
+		if (rootElementRenderer.isTransparent() == true)
+		{
+			graphicsContext.endTransparency();
 		}
 		
 		//scrollbars are always rendered last as they should always be the top
