@@ -244,8 +244,6 @@ class Animator
 	
 	/**
 	 * Utils method returning all the transition timing functions in an array
-	 * 
-	 * TODO 1 : support for lists
 	 */
 	private function getTransitionTimingFunctionsAsArray(transitionTimingFunction:CSSPropertyValue):Array<CSSPropertyValue>
 	{
@@ -253,6 +251,9 @@ class Animator
 		{
 			case KEYWORD(value):
 				return [transitionTimingFunction];
+				
+			case CSS_LIST(value):
+				return value;
 				
 			default:
 				return null;
@@ -270,17 +271,38 @@ class Animator
 		
 		switch(value)
 		{
+			case CSS_LIST(value):
+				for (i in 0...value.length)
+				{
+					floats.push(getTransitionDelayOrDurationAsFloat(value[i]));
+				}
+				
+			default:
+				floats.push(getTransitionDelayOrDurationAsFloat(value));
+		}
+		
+		return floats;
+	}
+	
+	/**
+	 * Convert a transition delay or duration, excluding list
+	 * value as a float, representing the value in milliseconds
+	 */
+	private function getTransitionDelayOrDurationAsFloat(value:CSSPropertyValue):Float
+	{
+		switch(value)
+		{
 			case INTEGER(value):
-				floats.push(value);
+				return value;
 			
 			case TIME(value):
 				switch(value)
 				{
 					case MILLISECONDS(value):
-						floats.push(value);
+						return value;
 						
 					case SECONDS(value):
-						floats.push(value * 1000);
+						return value * 1000;
 						
 					default:	
 				}
@@ -288,7 +310,7 @@ class Animator
 			default:
 		}
 		
-		return floats;
+		return 0.0;
 	}
 	
 	/**

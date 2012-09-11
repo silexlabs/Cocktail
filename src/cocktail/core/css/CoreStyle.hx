@@ -935,7 +935,8 @@ class CoreStyle
 	{
 		switch(propertyName)
 		{
-			case CSSConstants.WIDTH, CSSConstants.HEIGHT, CSSConstants.TOP, CSSConstants.BOTTOM:
+			case CSSConstants.WIDTH, CSSConstants.HEIGHT, CSSConstants.TOP, CSSConstants.BOTTOM,
+			CSSConstants.LEFT, CSSConstants.RIGHT:
 				return true;
 				
 			default:

@@ -125,11 +125,13 @@ class SWFPlugin extends Plugin
 	
 	/**
 	 * Detach the loaded swf from the flash display list
+	 * 
+	 * TODO 1 : should be removed from graphic context but bug for now
+	 * where this is not the same graphic context
 	 */
 	override public function detach(graphicsContext:GraphicsContext):Void
 	{
-		var containerGraphicContext:DisplayObjectContainer = cast(graphicsContext.nativeLayer);
-		containerGraphicContext.removeChild(_swf);
+		_swf.parent.removeChild(_swf);
 	}
 	
 	
@@ -282,8 +284,8 @@ class SWFPlugin extends Plugin
 		
 		//store width height metadata
 		//of the loaded swf
-		_swfHeight = _loader.height;
-		_swfWidth = _loader.width;
+		_swfHeight = _loader.contentLoaderInfo.height;
+		_swfWidth = _loader.contentLoaderInfo.width;
 		
 		_loadComplete();
 	}

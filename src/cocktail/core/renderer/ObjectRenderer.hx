@@ -52,7 +52,9 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 		return true;
 	}
 	
-	//TODO 1 : doc
+	/**
+	 * Instantitate own compositing glayer
+	 */
 	override private function createLayer(parentLayer:LayerRenderer):Void
 	{
 		layerRenderer = new CompositingLayerRenderer(this);
@@ -64,6 +66,10 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 
+	/**
+	 * When attached, gives an opportunity to the
+	 * plugin to attch itself to the display list
+	 */
 	override public function attach():Void
 	{
 		super.attach();
@@ -72,8 +78,8 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	}
 	
 	/**
-	 * Detach the LayerRenderer of this ElementRenderer from the LayerRenderer
-	 * tree if necessary
+	 * When detached, gives an opportunity to
+	 * the plugin to detach itself
 	 */
 	override public function detach():Void
 	{
@@ -82,6 +88,11 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 		super.detach();
 	}
 	
+	/**
+	 * When rendering, update the viewport
+	 * of the plugin, so that the plugin
+	 * can update its display
+	 */
 	override private function renderEmbeddedAsset(graphicContext:GraphicsContext):Void
 	{
 		var htmlObjectElement:HTMLObjectElement = cast(domNode);

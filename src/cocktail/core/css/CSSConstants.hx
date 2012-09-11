@@ -128,6 +128,8 @@ class CSSConstants
 	public static inline var TRANSITION_PROPERTY:String = "transition-property";
 
 	public static inline var TRANSITION_TIMING_FUNCTION:String = "transition-timing-function";
+	
+	public static inline var TRANSITION:String = "transition";
 
 	public static inline var TRANSFORM_ORIGIN:String = "transform-origin";
 

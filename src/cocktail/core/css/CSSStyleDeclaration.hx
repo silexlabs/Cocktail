@@ -1119,76 +1119,150 @@ class CSSStyleDeclaration
 					default:	
 				}
 				
-			//TODO : manage list	
 			case CSSConstants.TRANSITION_PROPERTY:
 				switch(styleValue)
 				{
-					case KEYWORD(value):
-						switch(value)
+					case CSS_LIST(value):
+						var length:Int = value.length;
+						for (i in 0...length)
 						{
-							//add special case for left and right which 
-							//might be both style names and css keyword
-							case NONE, ALL, LEFT, RIGHT:
-								return true;
-								
-							default:	
+							var isValid:Bool = isValidTransitionProperty(value[i]);
+							if (isValid == false)
+							{
+								return false;
+							}
 						}
-						
-					case IDENTIFIER(value):	
-						return true;
-						
-					case INHERIT, INITIAL:
-						return true;	
-						
-					default:	
-				}
-				
-			//TODO : manage list of Time	
-			case CSSConstants.TRANSITION_DURATION:
-				switch(styleValue)
-				{
-					case TIME(value):
-						return true;
-						
-					default:	
-				}
-				
-			//TODO : manage list	
-			case CSSConstants.TRANSITION_TIMING_FUNCTION:
-				switch(styleValue)
-				{
-					case KEYWORD(value):
-						switch(value)
-						{
-							case EASE, EASE_IN, LINEAR, EASE_OUT, EASE_IN_OUT, STEP_START, STEP_END:
-								return true;
-								
-							default:	
-						}
-						
-					case STEPS(intervalNumbers, intervalChange):
-						return true;
-						
-					case CUBIC_BEZIER(x1, y1, x2, y2):	
-						return true;
-						
-					default:	
-				}
-				
-			case CSSConstants.TRANSITION_DELAY:
-				switch(styleValue)
-				{
-					case INTEGER(value):
-						if (value == 0)
-						{
-							return true;
-						}
-					
-					case TIME(value):
 						return true;
 						
 					default:
+						return isValidTransitionProperty(styleValue);
 				}
+					
+			case CSSConstants.TRANSITION_DURATION, CSSConstants.TRANSITION_DELAY:
+				switch(styleValue)
+				{
+					case CSS_LIST(value):
+						var length:Int = value.length;
+						for (i in 0...length)
+						{
+							var isValid:Bool = isValidTransitionDelayOrDuration(value[i]);
+							if (isValid == false)
+							{
+								return false;
+							}
+						}
+						return true;
+						
+					default:	
+						return isValidTransitionDelayOrDuration(styleValue);
+				}
+				
+			case CSSConstants.TRANSITION_TIMING_FUNCTION:
+				switch(styleValue)
+				{
+					case CSS_LIST(value):
+						var length:Int = value.length;
+						for (i in 0...length)
+						{
+							var isValid:Bool = isValidTransitionTimingFunction(value[i]);
+							if (isValid == false)
+							{
+								return false;
+							}
+						}
+						
+					default:	
+						return isValidTransitionTimingFunction(styleValue);
+				}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Return wether a property has a valid value for 
+	 * for the transition-timing-function property, excluding
+	 * group and list value
+	 */
+	private function isValidTransitionTimingFunction(property:CSSPropertyValue):Bool
+	{
+		switch(property)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					case EASE, EASE_IN, LINEAR, EASE_OUT, EASE_IN_OUT, STEP_START, STEP_END:
+						return true;
+						
+					default:	
+				}
+				
+			case STEPS(intervalNumbers, intervalChange):
+				return true;
+				
+			case CUBIC_BEZIER(x1, y1, x2, y2):	
+				return true;
+				
+			default:	
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Return wether a property has a valid value for 
+	 * for the transition-property property, excluding
+	 * group and list value
+	 */
+	private function isValidTransitionProperty(property:CSSPropertyValue):Bool
+	{
+		switch(property)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					//add special case for left and right which 
+					//might be both style names and css keyword
+					case NONE, ALL, LEFT, RIGHT:
+						return true;
+						
+					default:	
+				}
+				
+			case IDENTIFIER(value):	
+				return true;
+				
+			case INHERIT, INITIAL:
+				return true;	
+				
+			default:	
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Return wether a property has a valid value for 
+	 * for the transition-duration or transition-delay properties, excluding
+	 * group and list value
+	 */
+	private function isValidTransitionDelayOrDuration(property:CSSPropertyValue):Bool
+	{
+		switch(property)
+		{
+			case INTEGER(value):
+				if (value == 0)
+				{
+					return true;
+				}
+			
+			case TIME(value):
+				return true;
+				
+			case INHERIT, INITIAL:
+				return true;			
+				
+			default:
 		}
 		
 		return false;
@@ -1276,7 +1350,8 @@ class CSSStyleDeclaration
 	{
 		switch(propertyName)
 		{
-			case CSSConstants.MARGIN, CSSConstants.PADDING, CSSConstants.CSS_OVERFLOW:
+			case CSSConstants.MARGIN, CSSConstants.PADDING, CSSConstants.CSS_OVERFLOW,
+			CSSConstants.TRANSITION:
 				return true;
 				
 			default:
@@ -1581,9 +1656,66 @@ class CSSStyleDeclaration
 						
 				}
 				
+			case CSSConstants.TRANSITION:
+				switch(styleValue)
+				{
+					case CSS_LIST(value):
+						
+					default:
+						return isValidTransitionShorthand(styleValue);
+				}
 				
 			default:	
 						
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Return wether a transition shorthand value
+	 * is valid, excluding list value
+	 */
+	private function isValidTransitionShorthand(styleValue:CSSPropertyValue):Bool
+	{
+		switch(styleValue)
+		{
+			case TIME(value):
+				return isValidTransitionDelayOrDuration(styleValue);
+				
+			case IDENTIFIER(value):
+				return true;
+			
+			case KEYWORD(keyword):
+				var isValid:Bool = isValidTransitionProperty(styleValue);
+				if (isValid == true)
+				{
+					return true;
+				}
+				return isValidTransitionTimingFunction(styleValue);	
+				
+			case GROUP(value):
+				return isValidTransitionGroup(value);
+				
+			case INHERIT, INITIAL:
+				return true;
+				
+			default:
+				return isValidTransitionTimingFunction(styleValue);
+		}
+	}
+	
+	/**
+	 * Return wether a group value for the 
+	 * transition shorthand is valid
+	 */
+	private function isValidTransitionGroup(styleValues:Array<CSSPropertyValue>):Bool
+	{
+		switch(styleValues.length)
+		{
+			case 2:
+				
+				
 		}
 		
 		return false;
