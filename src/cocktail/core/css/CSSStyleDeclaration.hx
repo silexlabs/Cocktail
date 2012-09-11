@@ -1496,8 +1496,153 @@ class CSSStyleDeclaration
 					default:	
 				}
 				
+			//TODO 2 : should force initial value when not specified ?	
+			case CSSConstants.TRANSITION:
+				
+				//all values of transition styles will be pushed in those array before being affected to style
+				//if not empty
+				var transitionPropertyValues:Array<CSSPropertyValue> = new Array<CSSPropertyValue>();
+				var transitionDurationValues:Array<CSSPropertyValue> = new Array<CSSPropertyValue>();
+				var transitionDelayValues:Array<CSSPropertyValue> = new Array<CSSPropertyValue>();
+				var transitionTimingFunctionValues:Array<CSSPropertyValue> = new Array<CSSPropertyValue>();
+				
+				switch(styleValue)
+				{
+					case CSS_LIST(value):
+						for (i in 0...value.length)
+						{
+							switch(value[i])
+							{
+								case GROUP(value):
+									setTransitionGroupShorthand(value, transitionPropertyValues, transitionDurationValues
+									, transitionDelayValues, transitionTimingFunctionValues);
+								
+								default:
+									setTransitionShorthand(value[i], false, transitionPropertyValues, transitionDurationValues
+									, transitionDelayValues, transitionTimingFunctionValues);
+							}
+						}
+					
+					case GROUP(value):
+						setTransitionGroupShorthand(value, transitionPropertyValues, transitionDurationValues
+						, transitionDelayValues, transitionTimingFunctionValues);
+						
+					default:	
+						setTransitionShorthand(styleValue, false, transitionPropertyValues, transitionDurationValues
+						, transitionDelayValues, transitionTimingFunctionValues);
+				}
+				
+				if (transitionPropertyValues.length > 0)
+				{
+					if (transitionPropertyValues.length == 1)
+					{
+						setTypedProperty(CSSConstants.TRANSITION_PROPERTY, transitionPropertyValues[0], important);
+					}
+					else
+					{
+						setTypedProperty(CSSConstants.TRANSITION_PROPERTY, CSS_LIST(transitionPropertyValues), important);
+					}
+				}
+				
+				if (transitionDelayValues.length > 0)
+				{
+					if (transitionDelayValues.length == 1)
+					{
+						setTypedProperty(CSSConstants.TRANSITION_DELAY, transitionDelayValues[0], important);
+					}
+					else
+					{
+						setTypedProperty(CSSConstants.TRANSITION_DELAY, CSS_LIST(transitionDelayValues), important);
+					}
+				}
+				
+				if (transitionDurationValues.length > 0)
+				{
+					if (transitionDurationValues.length == 1)
+					{
+						setTypedProperty(CSSConstants.TRANSITION_DURATION, transitionDurationValues[0], important);
+					}
+					else
+					{
+						setTypedProperty(CSSConstants.TRANSITION_DURATION, CSS_LIST(transitionDurationValues), important);
+					}
+				}
+				
+				if (transitionTimingFunctionValues.length > 0)
+				{
+					if (transitionTimingFunctionValues.length == 1)
+					{
+						setTypedProperty(CSSConstants.TRANSITION_TIMING_FUNCTION, transitionTimingFunctionValues[0], important);
+					}
+					else
+					{
+						setTypedProperty(CSSConstants.TRANSITION_TIMING_FUNCTION, CSS_LIST(transitionTimingFunctionValues), important);
+					}
+				}
+				
 			default:	
 						
+		}
+	}
+	
+	/**
+	 * Set the values for each component of a transition
+	 * shorthand group
+	 */
+	private function setTransitionGroupShorthand(styleValues:Array<CSSPropertyValue>, transitionProperty:Array<CSSPropertyValue>,
+	transitionDuration:Array<CSSPropertyValue>, transitionDelay:Array<CSSPropertyValue>, transitionTimingFunction:Array<CSSPropertyValue>):Void
+	{
+		//a flag checking wether a transition 
+		//duration already exists in the group, if it does
+		//next time value will be transition delay
+		var hasTransitionDuration:Bool = false;
+		
+		for (i in 0...styleValues.length)
+		{
+			setTransitionShorthand(styleValues[i], hasTransitionDuration, transitionProperty, transitionDuration
+			, transitionDelay, transitionTimingFunction);
+			
+			if (isValidTransitionDelayOrDuration(styleValues[i]) == true)
+			{
+				hasTransitionDuration = true;
+			}
+		}
+	}
+	
+	/**
+	 * Set a value of a transition shorthand, excluding group and lists to
+	 * the right transition style
+	 */
+	private function setTransitionShorthand(styleValue:CSSPropertyValue, useDelayForTime:Bool, transitionProperty:Array<CSSPropertyValue>,
+	transitionDuration:Array<CSSPropertyValue>, transitionDelay:Array<CSSPropertyValue>, transitionTimingFunction:Array<CSSPropertyValue>):Void
+	{
+		switch(styleValue)
+		{
+			case IDENTIFIER(value):
+				transitionProperty.push(styleValue);
+				
+			case TIME(value):
+				if (useDelayForTime == false)
+				{
+					transitionDuration.push(styleValue);
+				}
+				else
+				{
+					transitionDelay.push(styleValue);
+				}
+				
+			case KEYWORD(value):
+				if (isValidTransitionProperty(styleValue) == true)
+				{
+					transitionProperty.push(styleValue);
+				}
+				else if (isValidTransitionTimingFunction(styleValue) == true)
+				{
+					transitionTimingFunction.push(styleValue);
+				}
+				
+			default:	
+				transitionTimingFunction.push(styleValue);
 		}
 	}
 	
@@ -1660,6 +1805,16 @@ class CSSStyleDeclaration
 				switch(styleValue)
 				{
 					case CSS_LIST(value):
+						var length:Int = value.length;
+						for (i in 0...length)
+						{
+							if (isValidTransitionShorthand(value[i]) == false)
+							{
+								return false;
+							}
+						}
+						
+						return true;
 						
 					default:
 						return isValidTransitionShorthand(styleValue);
@@ -1708,6 +1863,8 @@ class CSSStyleDeclaration
 	/**
 	 * Return wether a group value for the 
 	 * transition shorthand is valid
+	 * 
+	 * TODO 2 : messy should be separated in sub methods
 	 */
 	private function isValidTransitionGroup(styleValues:Array<CSSPropertyValue>):Bool
 	{
@@ -1718,55 +1875,156 @@ class CSSStyleDeclaration
 		var hasTransitionDelay:Bool = false;
 		var hasTransitionDuration:Bool = false;
 		
-		switch(styleValues.length)
+		//there can only be from 2 to 4 value for a shorthand group
+		if (styleValues.length == 2 || styleValues.length == 3 ||
+		styleValues.length == 4)
 		{
-			case 2:
-				if (isValidTransitionProperty(styleValues[0]))
+			//check first value validity
+			if (isValidTransitionProperty(styleValues[0]))
+			{
+				hasTransitionProperty = true;
+			}
+			else if (isValidTransitionDelayOrDuration(styleValues[0]))
+			{
+				hasTransitionDuration = true;
+			}
+			else if (isValidTransitionTimingFunction(styleValues[0]))
+			{
+				hasTransitionTimingFunction = true;
+			}
+			//here the value is not valid for a transition shorthand
+			else
+			{
+				return false;
+			}
+			
+			//check second value validity
+			if (isValidTransitionProperty(styleValues[1]))
+			{
+				if (hasTransitionProperty == true)
 				{
-					hasTransitionProperty = true;
+					return false;
 				}
-				else if (isValidTransitionDelayOrDuration(styleValues[0]))
+			}
+			else if (isValidTransitionDelayOrDuration(styleValues[1]))
+			{
+				//if 2 values in the shorthand are time values,
+				//the first one is used for duration and the second one
+				//for delay
+				if (hasTransitionDuration == true)
+				{
+					hasTransitionDelay = true;
+				}
+				else
 				{
 					hasTransitionDuration = true;
 				}
-				else if (isValidTransitionTimingFunction(styleValues[0]))
-				{
-					hasTransitionTimingFunction = true;
-				}
-				else
-				{
-					return false;
-				}
-				
-				if (isValidTransitionProperty(styleValues[1]))
-				{
-					if (hasTransitionProperty == true)
-					{
-						return false;
-					}
-				}
-				else if (isValidTransitionDelayOrDuration(styleValues[1]))
-				{
-					
-				}
-				else if (isValidTransitionTimingFunction(styleValues[1]))
-				{
-					if (hasTransitionTimingFunction == true)
-					{
-						return false;
-					}
-				}
-				else
+			}
+			else if (isValidTransitionTimingFunction(styleValues[1]))
+			{
+				if (hasTransitionTimingFunction == true)
 				{
 					return false;
 				}
-				
+			}
+			else
+			{
+				return false;
+			}
+			
+			//if there are only 2 values in the shorthand
+			//the shorthand is valid
+			if (styleValues.length == 2)
+			{
 				return true;
-				
-			case 3:
-				
-				
-			case 4:	
+			}
+			
+			//check third value validity
+			if (isValidTransitionProperty(styleValues[2]))
+			{
+				if (hasTransitionProperty == true)
+				{
+					return false;
+				}
+			}
+			else if (isValidTransitionDelayOrDuration(styleValues[2]))
+			{
+				if (hasTransitionDuration == true)
+				{
+					//return false if there was already 2 time values
+					if (hasTransitionDelay == true)
+					{
+						return false;
+					}
+					else
+					{
+						hasTransitionDelay = true;
+					}
+				}
+				else
+				{
+					hasTransitionDuration = true;
+				}
+			}
+			else if (isValidTransitionTimingFunction(styleValues[2]))
+			{
+				if (hasTransitionTimingFunction == true)
+				{
+					return false;
+				}
+			}
+			else
+			{
+				return false;
+			}
+			
+			//if there was 3 values, the shorthand
+			//is valid
+			if (styleValues.length == 3)
+			{
+				return true;
+			}
+			
+			//check fourth value
+			if (isValidTransitionProperty(styleValues[3]))
+			{
+				if (hasTransitionProperty == true)
+				{
+					return false;
+				}
+			}
+			else if (isValidTransitionDelayOrDuration(styleValues[3]))
+			{
+				if (hasTransitionDuration == true)
+				{
+					//return false if there was already 2 time values
+					if (hasTransitionDelay == true)
+					{
+						return false;
+					}
+					else
+					{
+						hasTransitionDelay = true;
+					}
+				}
+				else
+				{
+					hasTransitionDuration = true;
+				}
+			}
+			else if (isValidTransitionTimingFunction(styleValues[3]))
+			{
+				if (hasTransitionTimingFunction == true)
+				{
+					return false;
+				}
+			}
+			else
+			{
+				return false;
+			}
+			
+			return true;
 		}
 		
 		return false;
