@@ -728,7 +728,7 @@ class UnitManager
 				backgroundsizeY = BackgroundSizeDimension.cssAuto;
 				
 			default:
-				var parsedBackgroundsizeY:VUnit = string2VUnit(backgroundSizes[0]);
+				var parsedBackgroundsizeY:VUnit = string2VUnit(backgroundSizes[1]);
 				
 				switch( parsedBackgroundsizeY.unit)
 				{
