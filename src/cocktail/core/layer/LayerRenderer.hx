@@ -189,16 +189,30 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	// PUBLIC METHOD
 	////////////////////////////////
 	
+	/**
+	 * Called by the document when the graphics
+	 * context tree needs to be updated. It
+	 * can for instance happen when
+	 * a layer which didn't have its own
+	 * graphic context should now have it
+	 */
 	public function updateGraphicsContext():Void
 	{
+		//update if needed
 		if (_needsGraphicsContextUpdate == true)
 		{
+			//detach and re-attach, this will
+			//also detach and re-attach the child
+			//layers
 			if (graphicsContext != null)
 			{
 				detach();
 			}
 			attach();
 		}
+		//only update on children if this layer
+		//didn't update, as if it did, it already
+		//updated its children too
 		else
 		{
 			for (i in 0...childNodes.length)
@@ -212,6 +226,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	// PUBLIC INVALIDATION METHOD
 	////////////////////////////////
 	
+	/**
+	 * Schedule an update of the graphics context
+	 * tree using the document
+	 */
 	public function invalidateGraphicsContext():Void
 	{
 		_needsGraphicsContextUpdate = true;
@@ -326,6 +344,11 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				throw 'Illegal value for z-index style';
 		}
 		
+		//needs to update graphic context, in case the new child
+		//changes it
+		//
+		//TODO 3 : eventually, it might not be needed to invalidate
+		//every time
 		invalidateGraphicsContext();
 		
 		return newChild;
@@ -362,6 +385,11 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		
 		oldChild.detach();
 		
+		
+		//need to update graphic context after removing a child
+		//as it might trigger graphic contex creation/deletion
+		invalidateGraphicsContext();
+		
 		super.removeChild(oldChild);
 		
 		return oldChild;
@@ -387,6 +415,8 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			var child:LayerRenderer = childNodes[i];
 			child.attach();
 		}
+		
+		_needsGraphicsContextUpdate = false;
 	}
 	
 	/**
