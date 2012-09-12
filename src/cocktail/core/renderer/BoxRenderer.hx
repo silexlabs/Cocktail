@@ -199,7 +199,6 @@ class BoxRenderer extends InvalidatingElementRenderer
 			}
 		}
 		
-		
 		//compute the font style (font-size, line-height...)
 		FontAndTextStylesComputer.compute(coreStyle, containingBlockData);
 		

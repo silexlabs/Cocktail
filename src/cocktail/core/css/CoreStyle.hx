@@ -219,6 +219,13 @@ class CoreStyle
 		_transitionManager = TransitionManager.getInstance();
 		
 		initUsedValues();
+		
+		//TODO 1 : shouldn't need to instantiate a new style declaration, should use the one
+		//of the document but not availabler when instantiated
+		var initialStyleDeclaration:InitialStyleDeclaration = new InitialStyleDeclaration();
+		
+		cascade(initialStyleDeclaration.supportedCSSProperties, initialStyleDeclaration, initialStyleDeclaration, initialStyleDeclaration,
+		initialStyleDeclaration, 12, 10, false);
 	}
 	
 	/**
@@ -294,7 +301,7 @@ class CoreStyle
 			//so that the right font metrics is used for the computation
 			cascadeProperty(CSSConstants.FONT_SIZE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, 0, 0, programmaticChange);
 			cascadeProperty(CSSConstants.FONT_FAMILY, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, 0, 0, programmaticChange);
-			
+
 			//remove them to prevent cascading them twice
 			properties.remove(CSSConstants.FONT_SIZE);
 			properties.remove(CSSConstants.FONT_FAMILY);
@@ -313,7 +320,7 @@ class CoreStyle
 		//will return the name of all the properties whose
 		//specified values changed during cascading 
 		var changedProperties:Hash<Void> = new Hash<Void>();
-
+		
 		//get the font metrics of this CoreStyle, used for
 		//Length computation
 		var fontMetrics:FontMetricsVO = this.fontMetrics;
@@ -461,7 +468,6 @@ class CoreStyle
 				}
 			}
 		}
-		
 		computedValues.setTypedProperty(propertyName, computedProperty, propertyData.important);
 		
 		

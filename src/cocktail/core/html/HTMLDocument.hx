@@ -204,6 +204,13 @@ class HTMLDocument extends Document
 	private var _documentNeedsCascading:Bool;
 	
 	/**
+	 * wether the rendering, in charge of layout
+	 * and rendering should be updated after
+	 * its structure changed
+	 */
+	private var _renderingTreeNeedsUpdate:Bool;
+	
+	/**
 	 * This class is in charge of keeping track of the
 	 * current touch points and of creating cross-platform
 	 * TouchEvent
@@ -600,8 +607,19 @@ class HTMLDocument extends Document
 	 */
 	public function onPlatformMouseMoveEvent(mouseEvent:MouseEvent):Void
 	{
+		//TODO 1 : hackish, mouse event shouldn't be 
+		//listened to until docuement is ready
+		if (documentElement.elementRenderer == null)
+		{
+			return;
+		}
+		if (_hoveredElementRenderer == null)
+		{
+			_hoveredElementRenderer = body.elementRenderer;
+		}
+		
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
-
+		
 		if (_hoveredElementRenderer != elementRendererAtPoint)
 		{
 			//dispatch mouse out on the old hovered HTML element
@@ -866,12 +884,22 @@ class HTMLDocument extends Document
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * schedule a layout of the document
+	 * schedule a layout of the document, or 
+	 * layout it immediately if needed
+	 * @param immediate wether the layout should be
+	 * synchronous
 	 */
-	public function invalidateLayout():Void
+	public function invalidateLayout(immediate:Bool):Void
 	{
 		_documentNeedsLayout = true;
-		invalidate();
+		if (immediate == false)
+		{
+			invalidate();
+		}
+		else
+		{
+			cascadeLayoutAndRender();
+		}
 	}
 	
 	/**
@@ -880,6 +908,15 @@ class HTMLDocument extends Document
 	public function invalidateRendering():Void
 	{
 		_documentNeedsRendering = true;
+		invalidate();
+	}
+	
+	/**
+	 * Schedule an update of the rendering tree
+	 */
+	public function invalidateRenderingTree():Void
+	{
+		_renderingTreeNeedsUpdate = true;
 		invalidate();
 	}
 	
@@ -927,6 +964,14 @@ class HTMLDocument extends Document
 		if (_documentNeedsCascading == true)
 		{
 			startCascade(true);
+		}
+		
+		//update the rendering tree before layout and
+		//rendering if needed
+		if (_renderingTreeNeedsUpdate == true)
+		{
+			documentElement.updateElementRenderer();
+			_renderingTreeNeedsUpdate = false;
 		}
 		
 		//only layout if the invalidate layout

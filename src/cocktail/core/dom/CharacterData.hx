@@ -67,14 +67,6 @@ class CharacterData extends HTMLElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden as cascade doesn't apply to text
-	 */
-	override private function initialCascadeSelf():Void
-	{
-		
-	}
-	
-	/**
 	 * Overriden as a text as no style declaration
 	 */
 	override private function getStyleDeclaration():Void

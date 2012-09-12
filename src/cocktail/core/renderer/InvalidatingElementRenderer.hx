@@ -78,8 +78,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 				invalidatedPositionedChildStyle(styleName, invalidationReason);
 				
 			case InvalidationReason.needsImmediateLayout:
-				//TODO 1 : should probably also set global origin
-				layout(true);
+				invalidateDocumentLayout(true);
 				
 			case InvalidationReason.windowResize:
 				_needsLayout = true;
@@ -261,11 +260,13 @@ class InvalidatingElementRenderer extends ElementRenderer
 	
 	/**
 	 * schedule a layout with the HTMLDocument
+	 * @param immediate whether the layout should be
+	 * synchronous
 	 */
-	private function invalidateDocumentLayout():Void
+	private function invalidateDocumentLayout(immediate:Bool):Void
 	{
 		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
-		htmlDocument.invalidateLayout();
+		htmlDocument.invalidateLayout(immediate);
 	}
 	
 	/**
@@ -283,7 +284,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 	private function invalidateDocumentLayoutAndRendering():Void
 	{
 		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
-		htmlDocument.invalidateLayout();
+		htmlDocument.invalidateLayout(false);
 		htmlDocument.invalidateRendering();
 	}
 	

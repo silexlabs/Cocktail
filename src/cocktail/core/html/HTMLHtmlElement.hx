@@ -43,22 +43,6 @@ class HTMLHtmlElement extends HTMLElement
 		return value;
 	}
 	
-	/**
-	 * Overriden as when its document is provided, the HTMlHtmlElement
-	 * can attach itself
-	 */
-	override private function set_ownerDocument(value:Document):Document
-	{
-		super.set_ownerDocument(value);
-		//as the HTML htmlElement is the root
-		//of the runtime, it is responsible
-		//for attaching and cascading itself, as no parent
-		//will attach it otherwise
-		attach();
-		
-		return value;
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING TREE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -85,8 +69,8 @@ class HTMLHtmlElement extends HTMLElement
 	}
 	
 	/**
-	 * do nothing as there is no parent ElementRenderer. The HTMLHTMLElement
-	 * attaches itself 
+	 * do nothing as there is no parent ElementRenderern no need to
+	 * attach to parent
 	 */
 	override private function attachToParentElementRenderer():Void
 	{
@@ -94,12 +78,12 @@ class HTMLHtmlElement extends HTMLElement
 	}
 	
 	/**
-	 * As there is no parent ElementRenderer, the HtmlHtmlElement detach
-	 * its ElementRenderer itself
+	 * As there is no parent ElementRenderer, no need
+	 * to detach from parent
 	 */
 	override private function detachFromParentElementRenderer():Void
 	{
-		elementRenderer.detach();
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
