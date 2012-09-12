@@ -238,6 +238,10 @@ class HTMLObjectElement extends EmbeddedElement
 	{
 		_pluginReady = true;
 		
+		//set the element renderer to be updated,
+		//now that the plugin is ready, it can be created
+		invalidateElementRenderer();
+		
 		invalidate(InvalidationReason.other);
 		
 		var loadEvent:UIEvent = new UIEvent();

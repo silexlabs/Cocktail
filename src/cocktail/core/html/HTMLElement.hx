@@ -825,32 +825,13 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function getStyleDeclaration():Void
 	{
-		//store all the current style of the style declaration
-		//which will need to be cascaded on next cascade
-		if (styleManagerCSSDeclaration != null)
-		{
-			var length:Int = styleManagerCSSDeclaration.length;
-			for (i in 0...length)
-			{
-				_pendingChangedProperties.set(styleManagerCSSDeclaration.item(i), null);
-			}
-		}
+		//set all the styles to be cascaded
+		//
+		//TODO 3 : eventually, should only update style which actually changed
+		_pendingChangedProperties = _ownerHTMLDocument.initialStyleDeclaration.supportedCSSProperties;
 		
 		//update style definition
 		styleManagerCSSDeclaration = _ownerHTMLDocument.getStyleDeclaration(this);
-		
-		//store all the new declared styles which will need to be
-		//cascaded too
-		//
-		//TODO 2 : should do same thing when updating "style" attribute
-		if (styleManagerCSSDeclaration != null)
-		{
-			var length:Int = styleManagerCSSDeclaration.length;
-			for (i in 0...length)
-			{
-				_pendingChangedProperties.set(styleManagerCSSDeclaration.item(i), null);
-			}
-		}
 	}
 	
 	/**
