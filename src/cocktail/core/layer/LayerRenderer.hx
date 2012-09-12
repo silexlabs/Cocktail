@@ -11,6 +11,7 @@ package cocktail.core.layer;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.NodeBase;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.renderer.ElementRenderer;
@@ -135,6 +136,14 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	private var _needsRendering:Bool;
 	
 	/**
+	 * A flag determining wether the layer should
+	 * update its graphics context, it is the case for
+	 * instance when the layer is attached to the rendering
+	 * tree
+	 */
+	private var _needsGraphicsContextUpdate:Bool;
+	
+	/**
 	 * A flag determining for a LayerRenderer which 
 	 * has its own graphic context, if the size of the
 	 * bitmap data of its grapic context should be updated.
@@ -165,8 +174,10 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		_negativeZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		
 		hasOwnGraphicsContext = false;
+		
 		_needsRendering = true;
 		_needsBitmapSizeUpdate = true;
+		_needsGraphicsContextUpdate = true;
 		
 		_windowWidth = 0;
 		_windowHeight = 0;
@@ -175,8 +186,38 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	}
 	
 	/////////////////////////////////
+	// PUBLIC METHOD
+	////////////////////////////////
+	
+	public function updateGraphicsContext():Void
+	{
+		if (_needsGraphicsContextUpdate == true)
+		{
+			if (graphicsContext != null)
+			{
+				detach();
+			}
+			attach();
+		}
+		else
+		{
+			for (i in 0...childNodes.length)
+			{
+				childNodes[i].updateGraphicsContext();
+			}
+		}
+	}
+	
+	/////////////////////////////////
 	// PUBLIC INVALIDATION METHOD
 	////////////////////////////////
+	
+	public function invalidateGraphicsContext():Void
+	{
+		_needsGraphicsContextUpdate = true;
+		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
+		htmlDocument.invalidateGraphicsContextTree();
+	}
 	
 	/**
 	 * Invalidate the rendering of this layer.
@@ -285,17 +326,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				throw 'Illegal value for z-index style';
 		}
 		
-		//if the newchild is a compositing layer
-		//invalidate the graphic context tree as
-		//it is likely to be altered by this change
-		if (newChild.isCompositingLayer() == true)
-		{
-			invalidateGraphicsContextTree();
-		}
-		else
-		{
-			newChild.attach();
-		}
+		invalidateGraphicsContext();
 		
 		return newChild;
 	}
@@ -332,15 +363,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		oldChild.detach();
 		
 		super.removeChild(oldChild);
-	
-		//if the child is a compositing layer,
-		//invalidate the graphic context tree 
-		//as removing it is likely to remove other
-		//graphics context
-		if (oldChild.isCompositingLayer() == true)
-		{
-			invalidateGraphicsContextTree();
-		}
 		
 		return oldChild;
 	}
@@ -419,18 +441,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		}
 		
 		graphicsContext = null;
-	}
-	
-	/**
-	 * Called when this Layer create or remove its
-	 * own graphics context, the graphics context
-	 * tree must be updated. 
-	 */
-	private function invalidateGraphicsContextTree():Void
-	{
-		detach();
-		attach();
-		invalidateRendering();
 	}
 	
 	/**

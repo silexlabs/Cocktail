@@ -38,11 +38,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	public function new(node:HTMLElement) 
 	{
 		super(node);
-		
-		//call the attachement method itself as it is 
-		//supposed to be called by parent ElementRenderer
-		//otherwise
-		attach();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +46,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	
 	/**
 	 * Overriden as initial block renderer always create
-	 * a new intitial layer renderer
+	 * a new intitial layer renderer.
 	 */
 	override private function attachLayer():Void
 	{

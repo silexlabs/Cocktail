@@ -204,11 +204,18 @@ class HTMLDocument extends Document
 	private var _documentNeedsCascading:Bool;
 	
 	/**
-	 * wether the rendering, in charge of layout
+	 * wether the rendering tree, in charge of layout
 	 * and rendering should be updated after
 	 * its structure changed
 	 */
 	private var _renderingTreeNeedsUpdate:Bool;
+	
+	/**
+	 * Wheter the graphics context tree, used
+	 * to paint the rendering tree should
+	 * be updated after its structure changed
+	 */
+	private var _graphicsContextTreeNeedsUpdate:Bool;
 	
 	/**
 	 * This class is in charge of keeping track of the
@@ -286,6 +293,9 @@ class HTMLDocument extends Document
 		_documentNeedsLayout = true;
 		_documentNeedsRendering = true;
 		_documentNeedsCascading = true;
+		_graphicsContextTreeNeedsUpdate = true;
+		_renderingTreeNeedsUpdate = true;
+		
 		_mousePoint = new PointVO(0.0, 0.0);
 		
 		layoutManager = new LayoutManager();
@@ -921,6 +931,16 @@ class HTMLDocument extends Document
 	}
 	
 	/**
+	 * Shedule an update of the graphics
+	 * context tree
+	 */
+	public function invalidateGraphicsContextTree():Void
+	{
+		_graphicsContextTreeNeedsUpdate = true;
+		invalidate();
+	}
+	
+	/**
 	 * schedule a cascade of the document
 	 */
 	public function invalidateCascade():Void
@@ -992,6 +1012,14 @@ class HTMLDocument extends Document
 			{
 				startLayout(true);
 			}
+		}
+		
+		//update the graphics context tree if needed,
+		//before painting onto it
+		if (_graphicsContextTreeNeedsUpdate == true)
+		{
+			documentElement.elementRenderer.layerRenderer.updateGraphicsContext();
+			_graphicsContextTreeNeedsUpdate = false;
 		}
 		
 		//same as for layout

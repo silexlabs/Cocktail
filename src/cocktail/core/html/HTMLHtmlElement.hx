@@ -61,11 +61,15 @@ class HTMLHtmlElement extends HTMLElement
 	
 	/**
 	 * The HTMLHTMLElement always generate a root rendering
-	 * tree element
+	 * tree element.
+	 * 
+	 * It is immediately attach as there are no parent
+	 * to attach it
 	 */
 	override private function createElementRenderer():Void
 	{ 
 		elementRenderer = new InitialBlockRenderer(this);
+		elementRenderer.attach();
 	}
 	
 	/**

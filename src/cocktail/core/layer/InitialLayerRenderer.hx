@@ -26,10 +26,6 @@ class InitialLayerRenderer extends LayerRenderer
 	public function new(rootElementRenderer:ElementRenderer) 
 	{
 		super(rootElementRenderer);
-		
-		//As this is the root of the LayerRenderer, it attaches
-		//itself as it has no parents
-		attach();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -242,8 +242,6 @@ class HTMLObjectElement extends EmbeddedElement
 		//now that the plugin is ready, it can be created
 		invalidateElementRenderer();
 		
-		invalidate(InvalidationReason.other);
-		
 		var loadEvent:UIEvent = new UIEvent();
 		loadEvent.initUIEvent(EventConstants.LOAD, false, false, null, 0.0);
 		dispatchEvent(loadEvent);

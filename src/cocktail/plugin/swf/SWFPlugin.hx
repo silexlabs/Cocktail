@@ -125,13 +125,11 @@ class SWFPlugin extends Plugin
 	
 	/**
 	 * Detach the loaded swf from the flash display list
-	 * 
-	 * TODO 1 : should be removed from graphic context but bug for now
-	 * where this is not the same graphic context
 	 */
 	override public function detach(graphicsContext:GraphicsContext):Void
 	{
-		_swf.parent.removeChild(_swf);
+		var containerGraphicContext:DisplayObjectContainer = cast(graphicsContext.nativeLayer);
+		containerGraphicContext.removeChild(_swf);
 	}
 	
 	
