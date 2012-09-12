@@ -95,7 +95,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 		var isVerticalScrollAttached:Bool = _verticalScrollBar != null;
 		var isHorizontalScrollAttached:Bool = _horizontalScrollBar != null;
 		
-		attachScrollBarsIfnecessary();
+		//attachScrollBarsIfnecessary();
 		
 		if (isVerticalScrollAttached != (_verticalScrollBar != null) || isHorizontalScrollAttached != (_horizontalScrollBar != null) )
 		{

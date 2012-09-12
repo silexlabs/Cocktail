@@ -369,7 +369,15 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			case DOMConstants.ELEMENT_NODE, DOMConstants.TEXT_NODE:
 				invalidateElementRenderer();
+				
+				//when attaching a child, its styles must be cascaded
+				newChild.invalidateStyleDeclaration(false);
 				newChild.invalidateCascade();
+				
+				//the childof the parent must also be cascaded, so
+				//that inherited style are set on the child
+				//
+				//TODO 3 : not sure about this one
 				invalidateCascade();
 		}
 		
@@ -377,8 +385,10 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
-	 * schedule an update of the rendering tree if
-	 * the old child was rendered
+	 * immediately detach
+	 * the old child if it was rendered.
+	 * It will be re-attached on next rendering
+	 * if necessary
 	 * 
 	 * TODO 2 : for now, always update, should check that
 	 * removed child was actually rendered
@@ -392,6 +402,7 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			case DOMConstants.ELEMENT_NODE, DOMConstants.TEXT_NODE:
 				invalidateElementRenderer();
+				oldChild.detach();
 		}
 		
 		super.removeChild(oldChild);
