@@ -48,6 +48,12 @@ class NativeAudio extends NativeMedia
 	 */
 	private var _currentTime:Float;
 	
+	/**
+	 * Flasg tracking wether the sound is currently
+	 * playing
+	 */
+	private var _isPlaying:Bool;
+	
 	
 	/**
 	 * class constructor. Init sound
@@ -56,6 +62,7 @@ class NativeAudio extends NativeMedia
 	{
 		super();
 		_currentTime = 0.0;
+		_isPlaying = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -67,6 +74,8 @@ class NativeAudio extends NativeMedia
 	 */
 	override public function play():Void
 	{
+		_isPlaying = true;
+		
 		//playing/resuming is the same as
 		//seeking to current time
 		//seek method expect time in seconds
@@ -79,6 +88,8 @@ class NativeAudio extends NativeMedia
 	 */
 	override public function pause():Void
 	{
+		_isPlaying = false;
+		
 		//thr sound channel might be null if pause
 		//is called before the sound was played
 		if (_soundChannel != null)
@@ -99,11 +110,32 @@ class NativeAudio extends NativeMedia
 	 */
 	override public function seek(time:Float):Void 
 	{
-		//playing the flash sound returns
-		//a sound channel object used to control
-		//the sound
-		//flash sound object expects time in milliseconds
-		_soundChannel = _sound.play(time * 1000, 0, new SoundTransform(volume, 0));
+		//if the sound is currently playing, stop
+		//it, else 2 sounds will be played at the
+		//same time
+		if (_soundChannel != null)
+		{
+			_soundChannel.stop();
+		}
+		
+		//only play the sound if te sound is supposed
+		//to be currently playing as there is no
+		//way to seek to a position without playing
+		if (_isPlaying == true)
+		{
+			//playing the flash sound returns
+			//a sound channel object used to control
+			//the sound
+			//flash sound object expects time in milliseconds
+			_soundChannel = _sound.play(time * 1000, 0, new SoundTransform(volume, 0));
+		}
+		//else store the seek position where the sound
+		//will start playing, the next time the play
+		//method is called
+		else
+		{
+			_currentTime = time;
+		}
 	}
 	
 	/**
