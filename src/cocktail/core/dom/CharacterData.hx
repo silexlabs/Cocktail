@@ -92,6 +92,15 @@ class CharacterData extends HTMLElement
 		return false;
 	}
 	
+	/**
+	 * Overriden as Text is not responsible for
+	 * ending animations, only actual HTMLElement
+	 */
+	override public function endPendingAnimation():Void
+	{
+		
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////

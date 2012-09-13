@@ -999,7 +999,6 @@ class HTMLDocument extends Document
 		if (_documentNeedsLayout == true)
 		{
 			startLayout(false);
-			_documentNeedsLayout = false;
 			
 			//start all pending animations
 			var atLeastOneAnimationStarted:Bool = startPendingAnimation();
@@ -1027,6 +1026,14 @@ class HTMLDocument extends Document
 		{
 			startRendering();
 			_documentNeedsRendering = false;
+		}
+		
+		//when the document has been entirely updated
+		//end the pending animation
+		if (_documentNeedsLayout == true)
+		{
+			endPendingAnimation();
+			_documentNeedsLayout = false;
 		}
 	}
 	
@@ -1057,6 +1064,19 @@ class HTMLDocument extends Document
 	private function startPendingAnimation():Bool
 	{
 		return documentElement.startPendingAnimation();
+	}
+	
+	/**
+	 * Make all animations which just ended dispose
+	 * of themselves and dispatch a complete event.
+	 * The event must be dispatched once the layout 
+	 * and rendering are done to prevent the user
+	 * from modififying the DOM with not updated
+	 * info
+	 */
+	private function endPendingAnimation():Void
+	{
+		documentElement.endPendingAnimation();
 	}
 	
 	/**

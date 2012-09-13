@@ -1073,6 +1073,21 @@ class HTMLElement extends Element<HTMLElement>
 		return atLeastOneAnimationStarted;
 	}
 	
+	/**
+	 * end pending animation of self and
+	 * children
+	 */
+	public function endPendingAnimation():Void
+	{
+		coreStyle.endPendingAnimation();
+	
+		var length:Int = childNodes.length;
+		for (i in 0...length)
+		{
+			childNodes[i].endPendingAnimation();
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CLICK SYNTHESIS
 	//////////////////////////////////////////////////////////////////////////////////////////

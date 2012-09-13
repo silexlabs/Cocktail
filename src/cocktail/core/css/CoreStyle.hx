@@ -183,6 +183,16 @@ class CoreStyle
 	private var _transitionManager:TransitionManager;
 	
 	/**
+	 * Once a transition is complete, the transition end
+	 * event is not immediately dispatached, it is stored in this
+	 * array and dispatched on the next layout.
+	 * 
+	 * This prevent the event from being dispatched before the 
+	 * layout was updated to reflect the end of the transition
+	 */
+	private var _pendingTransitionEndEvents:Array<TransitionEvent>;
+	
+	/**
 	 * Returns font metrics for the current style values.
 	 * Font metrics depends on the computed values of
 	 * the 'font-size' and 'font-family' properties
@@ -215,6 +225,8 @@ class CoreStyle
 		_animator = new Animator();
 		_animator.onTransitionCompleteCallback = onTransitionComplete;
 		_animator.onTransitionUpdateCallback = onTransitionUpdate;
+		
+		_pendingTransitionEndEvents = new Array<TransitionEvent>();
 		
 		_transitionManager = TransitionManager.getInstance();
 		
@@ -908,20 +920,41 @@ class CoreStyle
 		return _animator.startPendingAnimations(this);
 	}
 	
+	/**
+	 * When called, the layout is up-to-date, the
+	 * pending transition end event can now
+	 * be dispatched
+	 */
+	public function endPendingAnimation():Void
+	{
+		if (_pendingTransitionEndEvents.length > 0)
+		{
+			var length:Int = _pendingTransitionEndEvents.length;
+			for (i in 0...length)
+			{
+				htmlElement.dispatchEvent(_pendingTransitionEndEvents[i]);
+			}
+			//reset the array, each event must be dispatched only once
+			_pendingTransitionEndEvents = new Array<TransitionEvent>();
+		}
+		
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE ANIMATION METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * When a transition is complete, invalidate the HTMLElement,
-	 * then dispatch a transition end event
+	 * create and store a transition end event, it must not be dispatched
+	 * before the layout is updated
 	 */
 	private function onTransitionComplete(transition:Transition):Void
 	{
 		htmlElement.invalidate(transition.invalidationReason);
 		var transitionEvent:TransitionEvent = new TransitionEvent();
 		transitionEvent.initTransitionEvent(EventConstants.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
-		htmlElement.dispatchEvent(transitionEvent);
+		_pendingTransitionEndEvents.push(transitionEvent);
 	}
 	
 	/**
