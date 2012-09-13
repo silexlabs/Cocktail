@@ -458,11 +458,16 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		if (hasOwnGraphicsContext == true)
 		{
 			parentNode.graphicsContext.removeChild(graphicsContext);
-			graphicsContext.dispose();
-			hasOwnGraphicsContext = false;
+			
+			//only delete the graphic context if this layer
+			//shouldn't have a graphics context anymore
+			if (establishesNewGraphicsContext() == false)
+			{
+				graphicsContext.dispose();
+				hasOwnGraphicsContext = false;
+				graphicsContext = null;
+			}
 		}
-		
-		graphicsContext = null;
 	}
 	
 	/**
@@ -473,10 +478,16 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	{
 		if (establishesNewGraphicsContext() == true)
 		{
-			graphicsContext = new GraphicsContext(this);
+			//only re-create the graphic context is there is not
+			//one already
+			if (hasOwnGraphicsContext == false)
+			{
+				graphicsContext = new GraphicsContext(this);
+				_needsBitmapSizeUpdate = true;
+				hasOwnGraphicsContext = true;
+			}
+			
 			parentGraphicsContext.appendChild(graphicsContext);
-			hasOwnGraphicsContext = true;
-			_needsBitmapSizeUpdate = true;
 		}
 		else
 		{
@@ -626,6 +637,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			if (hasOwnGraphicsContext == true)
 			{
 				graphicsContext.initBitmapData(windowWidth, windowHeight);
+				_needsBitmapSizeUpdate = false;
 			}
 			
 			//invalidate if the size of the viewport
