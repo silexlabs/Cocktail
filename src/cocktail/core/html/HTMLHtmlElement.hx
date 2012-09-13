@@ -11,6 +11,7 @@ import cocktail.core.css.InitialStyleDeclaration;
 import cocktail.core.dom.Document;
 import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.layer.LayerRenderer;
+import cocktail.core.renderer.RendererData;
 
 /**
  * Root of an HTML document
@@ -25,6 +26,22 @@ class HTMLHtmlElement extends HTMLElement
 	public function new() 
 	{
 		super(HTMLConstants.HTML_HTML_TAG_NAME);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as the root element renderer
+	 * never has a parent
+	 */
+	override public function invalidate(invalidationReason:InvalidationReason):Void
+	{
+		if (elementRenderer != null)
+		{
+			elementRenderer.invalidate(invalidationReason);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

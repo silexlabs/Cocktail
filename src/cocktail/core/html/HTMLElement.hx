@@ -385,24 +385,21 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
-	 * immediately detach
-	 * the old child if it was rendered.
-	 * It will be re-attached on next rendering
-	 * if necessary
+	 * schedule an update of the rendering, as
+	 * the child removed from the DOM might also
+	 * need to be removed from the rendering tree too
 	 * 
 	 * TODO 2 : for now, always update, should check that
 	 * removed child was actually rendered
 	 */
 	override public function removeChild(oldChild:HTMLElement):HTMLElement
 	{
-		//must happen before calling super, else
-		//the HTMLElement won't have a parent to be detached
-		//from anymore
 		switch (oldChild.nodeType)
 		{
+			//only element and text node can belong to the
+			//rendering tree
 			case DOMConstants.ELEMENT_NODE, DOMConstants.TEXT_NODE:
 				invalidateElementRenderer();
-				oldChild.detach();
 		}
 		
 		super.removeChild(oldChild);
@@ -535,7 +532,13 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		if (elementRenderer != null)
 		{
-			elementRenderer.invalidate(invalidationReason);
+			//checking the parent ensure that the 
+			//element renderer is currently attached
+			//to the rendering tree
+			if (elementRenderer.parentNode != null)
+			{
+				elementRenderer.invalidate(invalidationReason);
+			}
 		}
 	}
 	
@@ -574,10 +577,11 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function invalidatePositioningScheme():Void
 	{
-		if (parentNode != null)
-		{
-			parentNode.invalidateElementRenderer();
-		}
+		invalidateElementRenderer();
+		//if (parentNode != null)
+		//{
+			//parentNode.invalidateElementRenderer();
+		//}
 	}
 	
 	/**
@@ -640,7 +644,7 @@ class HTMLElement extends Element<HTMLElement>
 	public function updateElementRenderer():Void
 	{
 		//if update needed, detach and attach, which
-		//will also detacha dn attach on all its chilren
+		//will also detach and attach on all its chilren
 		//as needed
 		if (_needsElementRendererUpdate == true)
 		{
@@ -656,12 +660,14 @@ class HTMLElement extends Element<HTMLElement>
 		//up to date
 		else
 		{
-			for (i in 0...childNodes.length)
+			var length:Int = childNodes.length;
+			for (i in 0...length)
 			{
 				childNodes[i].updateElementRenderer();
 			}
 		}
 	}
+		
 	
 	/**
 	 * Tries to attach the ElementRender to the rendering tree. If it is
@@ -677,13 +683,26 @@ class HTMLElement extends Element<HTMLElement>
 		//and this HTMLElement is not rendered either
 		if (isParentRendered() == true)
 		{
-			//create the ElementRenderer if needed
-			if (elementRenderer == null && isRendered() == true)
+			//update the element renderer if needed
+			if (elementRenderer == null || _needsElementRendererUpdate == true)
 			{
-				createElementRenderer();
-				if (elementRenderer != null)
+				//check wether the element renderer
+				//can be displayed
+				if (isRendered() == true)
 				{
-					attachCoreStyle();
+					//actually instantiate the element renderer
+					createElementRenderer();
+					
+					if (elementRenderer != null)
+					{
+						attachCoreStyle();
+					}
+				}
+				//dispose of the element renderer
+				//if it is not supposed to be rendered
+				else
+				{
+					elementRenderer = null;
 				}
 			}
 			
@@ -752,9 +771,8 @@ class HTMLElement extends Element<HTMLElement>
 				}
 											
 				//then detach this ElementRenderer from the parent 
-				//ElementRenderer, then destroy it
+				//ElementRenderer
 				detachFromParentElementRenderer();
-				elementRenderer = null;
 			}
 		}
 	}
@@ -929,15 +947,21 @@ class HTMLElement extends Element<HTMLElement>
 			{
 				if (nextSibling.elementRenderer != null)
 				{
-					var elementRenderParent:ElementRenderer = nextSibling.elementRenderer.parentNode;
-					
-					//in the case where the parent of the next sibling's elementRenderer is an 
-					//anonymous block, the anonymous block should be return as sibling
-					if (elementRenderParent.isAnonymousBlockBox() == true)
+					//check that the element renderer of the parent
+					//is currently attached to the rendering tree
+					if (nextSibling.elementRenderer.parentNode != null)
 					{
-						return elementRenderParent;
+						var elementRenderParent:ElementRenderer = nextSibling.elementRenderer.parentNode;
+						
+						//in the case where the parent of the next sibling's elementRenderer is an 
+						//anonymous block, the anonymous block should be return as sibling
+						if (elementRenderParent.isAnonymousBlockBox() == true)
+						{
+							return elementRenderParent;
+						}
+						
+						return nextSibling.elementRenderer;
 					}
-					return nextSibling.elementRenderer;
 				}
 				
 				nextSibling = nextSibling.nextSibling;

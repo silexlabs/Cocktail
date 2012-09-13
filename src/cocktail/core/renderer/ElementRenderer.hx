@@ -454,7 +454,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	public function detach():Void
 	{
 		unregisterWithContainingBlock();
-		_containingBlock = null;
 		
 		//first detach the LayerRenderer of all its children
 		var length:Int = childNodes.length;
