@@ -215,7 +215,8 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//updated its children too
 		else
 		{
-			for (i in 0...childNodes.length)
+			var length:Int = childNodes.length;
+			for (i in 0...length)
 			{
 				childNodes[i].updateGraphicsContext();
 			}
@@ -383,9 +384,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			}
 		}
 		
-		oldChild.detach();
-		
-		
 		//need to update graphic context after removing a child
 		//as it might trigger graphic contex creation/deletion
 		invalidateGraphicsContext();
@@ -444,15 +442,9 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	private function attachGraphicsContext():Void
 	{
-		if (graphicsContext == null)
+		if (parentNode != null)
 		{
-			if (parentNode != null)
-			{
-				if (parentNode.graphicsContext != null)
-				{
-					createGraphicsContext(parentNode.graphicsContext);
-				}
-			}
+			createGraphicsContext(parentNode.graphicsContext);
 		}
 	}
 	

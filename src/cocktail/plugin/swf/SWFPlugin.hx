@@ -114,6 +114,20 @@ class SWFPlugin extends Plugin
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Clean up loaded swf
+	 */
+	override public function dispose():Void
+	{
+		_swf = null;
+		_scaleMode = null;
+		if (_loader != null)
+		{
+			_loader.unloadAndStop();
+			_loader = null;
+		}
+	}
+	
+	/**
 	 * Attach the loaded swf to the flash display list
 	 */
 	override public function attach(graphicsContext:GraphicsContext):Void
