@@ -29,6 +29,9 @@ enum StyleDeclarationParserState {
 	INVALID_STYLE;
 	STYLE_SEPARATOR;
 	BEGIN;
+	COMMENT;
+	BEGIN_COMMENT;
+	END_COMMENT;
 }
 
 enum StyleValueParserState {

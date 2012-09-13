@@ -88,14 +88,57 @@ class CSSStyleParser
 							continue;
 					}
 				
-				//start to parse the css property name 
-				//at the current position
+				//start to parse the css
+				//at the current position,
+				//expect either a css propery name
+				//or the start of a comment
 				case BEGIN:
-					//store the start position of the name, will be
-					//used when the whole name is parsed
-					start = position;
-					state = STYLE_NAME;
-					continue;
+					switch(c)
+					{
+						//begin comment, content is ignored until comment
+						//end
+						case '/'.code:
+							state = BEGIN_COMMENT;
+							
+						default:	
+							//store the start position of the name, will be
+							//used when the whole name is parsed
+							start = position;
+							state = STYLE_NAME;
+							continue;
+					}
+				
+				//check validity of comment	
+				case BEGIN_COMMENT:
+					if (c != '*'.code)
+					{
+						state = INVALID_STYLE;
+					}
+					else
+					{
+						state = COMMENT;
+					}
+				
+				//content ignored until end of comment	
+				case COMMENT:
+					if (c == '*'.code)
+					{
+						state = END_COMMENT;
+					}
+				
+				//check validity of comment end	
+				case END_COMMENT:
+					if (c == '/'.code)
+					{
+						//re-start checking for stylname
+						//or comment
+						state = IGNORE_SPACES;
+						next = BEGIN;
+					}
+					else
+					{
+						state = INVALID_STYLE;
+					}
 					
 				//read style name until a separator charachrter is found	
 				case STYLE_NAME:
@@ -484,7 +527,6 @@ class CSSStyleParser
 			else
 			{
 				return new TypedPropertyVO(propertyName, GROUP(styleValues), important);
-				
 			}
 		}
 		else
