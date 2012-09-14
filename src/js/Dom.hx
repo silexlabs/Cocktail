@@ -50,6 +50,7 @@ function removeChild( child : T ) : T;
 function replaceChild( child : T, oldChild : T ) : Void;
 function getAttribute( attr : String ) : String;
 function setAttribute( attr : String, val : String ) : Void;
+function removeAttribute( attr : String ) : Void;
 }
 
 typedef Dom = MetaDom<Dom>
