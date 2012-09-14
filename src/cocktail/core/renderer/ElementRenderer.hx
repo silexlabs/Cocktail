@@ -477,16 +477,9 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	private function attachLayer():Void
 	{
 		//create the LayerRenderer if needed
-		if (layerRenderer == null)
+		if (parentNode != null)
 		{
-			if (parentNode != null)
-			{
-				var parent:ElementRenderer = parentNode;
-				if (parent.layerRenderer != null)
-				{
-					createLayer(parent.layerRenderer);
-				}
-			}
+			createLayer(parentNode.layerRenderer);
 		}
 	}
 	
@@ -500,12 +493,9 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		//which created it when detached
 		if (_hasOwnLayer == true)
 		{
-			var parent:ElementRenderer = parentNode;
-			parent.layerRenderer.removeChild(layerRenderer);
+			parentNode.layerRenderer.removeChild(layerRenderer);
 			_hasOwnLayer = false;
 		}
-		
-		layerRenderer = null;
 	}
 	
 	/**

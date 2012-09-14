@@ -557,34 +557,6 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
-	 * When a style defining the positioning scheme of this HTMLElement
-	 * changes, such as display or position, this special case happen, as the 
-	 * ElementRenderer might need to be changed.
-	 * 
-	 * For instance if the previous value of Display was
-	 * "block" and it is changed to "none", then the ElementRenderer
-	 * must be removed from the rendering tree and destroyed
-	 * 
-	 * Another example is if the value of Display is "inline" and
-	 * it is swiched to "block", then the current inline ElementRenderer
-	 * must be replaced by a block ElementRenderer
-	 * 
-	 * The element renderer of the parent HTMLElement is invalidated. It
-	 * should be invalidated on the parent as for instance if an HTMLElement was displayed
-	 * as block and is now displayed as inline, the formatting context of the parent
-	 * ElementRenderer might be affected. Calling detach and attach on the parent also
-	 * refresh all the siblings of the element whose positioning scheme changed
-	 */
-	public function invalidatePositioningScheme():Void
-	{
-		invalidateElementRenderer();
-		//if (parentNode != null)
-		//{
-			//parentNode.invalidateElementRenderer();
-		//}
-	}
-	
-	/**
 	 * Invalidate the style declaration retrieved
 	 * from the style manager. This declaration will
 	 * be updated on next cascade
@@ -813,13 +785,14 @@ class HTMLElement extends Element<HTMLElement>
 		}
 	
 		//when one of those property specified value changes, it may affect the rendering of
-		//the HTMLElement. The cascade is interupted and the element is re-attached
+		//the HTMLElement. The element renderer is invalidated, so that it will be updated
+		//before next layout
 		if (changedProperties.exists(CSSConstants.DISPLAY) || changedProperties.exists(CSSConstants.POSITION) ||
 		changedProperties.exists(CSSConstants.FLOAT) || changedProperties.exists(CSSConstants.TRANSFORM) ||
 		changedProperties.exists(CSSConstants.Z_INDEX) || changedProperties.exists(CSSConstants.OVERFLOW_X) ||
 		changedProperties.exists(CSSConstants.OVERFLOW_Y))
 		{
-			invalidatePositioningScheme();
+			invalidateElementRenderer();
 		}
 		
 		//cascade all the children, to cascade all the DOM tree
@@ -1053,15 +1026,7 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			return false;
 		}
-		var htmlParent:HTMLElement = parentNode;
-		if (htmlParent.elementRenderer != null)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return parentNode.elementRenderer != null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
