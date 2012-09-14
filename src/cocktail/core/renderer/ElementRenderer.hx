@@ -247,6 +247,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 
 		this.domNode = domNode;
 		
+		initCoreStyle();
 		_hasOwnLayer = false;
 		_wasPositioned = false;
 		
@@ -261,6 +262,15 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		globalContainingBlockOrigin = new PointVO(0.0, 0.0);
 		
 		lineBoxes = new Array<LineBox>();
+	}
+	
+	/**
+	 * Retrieve a reference to the dom 
+	 * node style object
+	 */
+	private function initCoreStyle():Void
+	{
+		coreStyle = domNode.coreStyle;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

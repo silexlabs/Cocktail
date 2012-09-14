@@ -104,7 +104,7 @@ class HTMLObjectElement extends EmbeddedElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC RENDERING METHODS
+	// OVERRIDEN PUBLIC DOM METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -112,19 +112,19 @@ class HTMLObjectElement extends EmbeddedElement
 	 * check wether a third-party plugin should
 	 * be instantiated
 	 */
-	override public function attach():Void
+	override public function addedToDOM():Void
 	{
+		super.addedToDOM();
 		createPlugin();
-		super.attach();
 	}
 
 	/**
-	 * Overriden as when detached, the plugin
+	 * Overriden as when removed from DOM, the plugin
 	 * might need to be destroyed
 	 */
-	override public function detach():Void
+	override public function removedFromDOM():Void
 	{
-		super.detach();
+		super.removedFromDOM();
 		deletePlugin();
 	}
 	

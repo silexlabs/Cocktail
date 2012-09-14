@@ -474,7 +474,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 		{
 			_horizontalScrollBar = new ScrollBar(false);
 			_horizontalScrollBar.ownerDocument = domNode.ownerDocument;
-			_horizontalScrollBar.attach();
+			_horizontalScrollBar.attach(true);
 			appendChild(_horizontalScrollBar.elementRenderer);
 			_horizontalScrollBar.onscroll = onHorizontalScroll;
 		}
@@ -529,7 +529,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 		{
 			_verticalScrollBar = new ScrollBar(true);
 			_verticalScrollBar.ownerDocument = domNode.ownerDocument;
-			_verticalScrollBar.attach();
+			_verticalScrollBar.attach(true);
 			appendChild(_verticalScrollBar.elementRenderer);
 			_verticalScrollBar.onscroll = onVerticalScroll;
 		}

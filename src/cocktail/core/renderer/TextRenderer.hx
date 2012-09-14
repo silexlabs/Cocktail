@@ -73,6 +73,16 @@ class TextRenderer extends InvalidatingElementRenderer
 		_textTokensNeedParsing = true;
 	}
 	
+		
+	/**
+	 * Overriden, as text use the style of 
+	 * its parent in the DOM tree
+	 */
+	override private function initCoreStyle():Void
+	{
+		coreStyle = domNode.parentNode.coreStyle;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC LAYOUT METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
