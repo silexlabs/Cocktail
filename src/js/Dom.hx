@@ -51,7 +51,6 @@ function replaceChild( child : T, oldChild : T ) : Void;
 function getAttribute( attr : String ) : String;
 function setAttribute( attr : String, val : String ) : Void;
 function removeAttribute( attr : String ) : Void;
-function indexOf(node : MetaDom<T>) : Int;
 }
 
 typedef Dom = MetaDom<Dom>
@@ -211,6 +210,9 @@ var target : HtmlDom;
 var type : String;
 
 // TO COMPLETE... (need infos)
+var pageX:Int;
+var pageY:Int;
+
 var clientX : Int;
 var clientY : Int;
 var offsetX : Int;
@@ -701,7 +703,8 @@ showHelp()
 show...()
 */
 
-  // events
+// events
+function addEventListener( event : String, listener: Event -> Void, useCapture : Bool ) : Void;
 var onload : Event -> Void;
 var onresize : Event -> Void;
 var onscroll : Event -> Void;
