@@ -57,9 +57,12 @@ class InitialLayerRenderer extends LayerRenderer
 		//TODO 2 : should also use Platform class
 		#if macro
 		#elseif (flash9 || nme)
-		flash.Lib.current.removeChild(graphicsContext.nativeLayer);
-		graphicsContext.dispose();
-		graphicsContext = null;
+		if (graphicsContext != null)
+		{
+			flash.Lib.current.removeChild(graphicsContext.nativeLayer);
+			graphicsContext.dispose();
+			graphicsContext = null;
+		}
 		#end
 		hasOwnGraphicsContext = false;
 	}

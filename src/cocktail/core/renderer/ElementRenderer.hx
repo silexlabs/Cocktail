@@ -479,6 +479,9 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * Called by the document before rendering
 	 * if the layer tree was invalidated since
 	 * last rendering
+	 * 
+	 * TODO 1 : not optimised yet, no need to
+	 * detach/attach all in most cases
 	 */
 	public function updateLayerRenderer():Void
 	{

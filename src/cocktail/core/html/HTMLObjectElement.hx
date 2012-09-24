@@ -61,8 +61,9 @@ class HTMLObjectElement extends EmbeddedElement
 	 * A reference to the plugin instantiated
 	 * by this HTMLElement. It might be null,
 	 * if the resource is a native one, like
-	 * a picture or if not enough dta are
-	 * provided
+	 * a picture or if not enough data are
+	 * provided to determine which plugin
+	 * to instantiate
 	 */
 	public var plugin(default, null):Plugin;
 	
@@ -154,7 +155,8 @@ class HTMLObjectElement extends EmbeddedElement
 				var params:Hash<String> = new Hash<String>();
 				
 				//retrive all the name/value of the child param tags
-				for (i in 0...childNodes.length)
+				var length:Int = childNodes.length;
+				for (i in 0...length)
 				{
 					var child:HTMLElement = childNodes[i];
 					if (child.tagName == HTMLConstants.HTML_PARAM_TAG_NAME)
@@ -203,6 +205,7 @@ class HTMLObjectElement extends EmbeddedElement
 		
 		if (plugin != null)
 		{
+			_pluginReady = false;
 			plugin.dispose();
 			plugin = null;
 		}

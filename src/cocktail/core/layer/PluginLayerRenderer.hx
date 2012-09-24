@@ -11,10 +11,10 @@ import cocktail.core.html.HTMLObjectElement;
 import cocktail.core.renderer.ElementRenderer;
 
 /**
- * A speciam kind of compositing layer, dedicated to plugin.
+ * A special kind of compositing layer, dedicated to plugin.
  * When the graphic context of this layer is attached or detached, 
  * call methods on the plugin to allow it
- * to detach / attach itself to the graphic context
+ * to detach / attach itself from / to the graphic context
  * 
  * @author Yannick DOMINGUEZ
  */
