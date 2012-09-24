@@ -105,23 +105,43 @@ class HTMLObjectElement extends EmbeddedElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC DOM METHODS
+	// PUBLIC RENDERING TREE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden as when attached to the DOM, 
-	 * check wether a third-party plugin should
-	 * be instantiated
+	 * Overriden, as when attached, the plugin might need to
+	 * be instantiated.
+	 * 
+	 * Plugins instantiated via an object tag are considered
+	 * visual and are only instantiated if the object
+	 * element is supposed to be rendered
 	 */
-	override public function addedToDOM():Void
+	override public function attach(recursive:Bool):Void
 	{
-		super.addedToDOM();
-		createPlugin();
+		super.attach(recursive);
+		
+		//check that the object tag should be rendered.
+		//Don't check if element renderer is not null, as
+		//the element renderer for this is only created when
+		//the plugin is ready
+		if (isRendered() == true)
+		{
+			createPlugin();
+		}
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC DOM METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Overriden as when removed from DOM, the plugin
-	 * might need to be destroyed
+	 * might need to be destroyed.
+	 * 
+	 * If the plugin is only removed from rendering
+	 * tree, for instance by setting its 'display' style
+	 * to 'none', it is not deleted as it is assumed
+	 * that it might be shown again
 	 */
 	override public function removedFromDOM():Void
 	{
