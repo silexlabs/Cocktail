@@ -44,80 +44,73 @@ import cocktail.core.layer.LayerRenderer;
 class BlockBoxRenderer extends ScrollableRenderer
 {	
 	/**
-	 * flag set when replacing inline children by anonymous block
-	 * to prevent inifinite loop caused by calls to appendChild
-	 */
-	private var _isMakingChildrenNonInline:Bool;
-	
-	/**
 	 * class constructor.
 	 * Init class attributes
 	 */
 	public function new(node:HTMLElement) 
 	{
 		super(node);
-		_isMakingChildrenNonInline = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-
+	
 	/**
-	 * Overriden to replace inline children by anonymous block if
-	 * necessary
+	 * If this block element renderer has both inline and
+	 * block children, the inline children are wrapped
+	 * in anonymous block to preserve the CSS invariant
+	 * where all children of a block must either be all
+	 * inline or all block
 	 */
-	override public function appendChild(newChild:ElementRenderer):ElementRenderer
+	override public function updateAnonymousBlock():Void
 	{
 		//flag determining wether inline children must be wrapped
 		//in anonymous block
 		var shouldMakeChildrenNonInline:Bool = false;
 		
-		var elementRendererChild:ElementRenderer = newChild;
-
-		//if this is the first child, no need to wrap inline block
-		//as it not yet known wether this block box starts an inline
-		//formatting context or participates/establishes a block
-		//formatting context
-		if (childNodes.length > 0)
+		//the BlockBoxRenderer should have at least one significant child to determine wether to 
+		//establish/participate in a block or inline formatting context, and thus if inline children
+		//shoud be wrapped in anonymous block
+		if (hasSignificantChild() == true)
 		{
-			//absolutely positioned children are not taken into account when determining wether this
-			//BlockBoxRenderer establishes/participate in a block or inline formatting context
-			if (elementRendererChild.isPositioned() == false || elementRendererChild.isRelativePositioned() ==  true)
-			{	
-				//the BlockBoxRenderer should have at least one significant child to determine wether to 
-				//establish/participate in a block or inline formatting context, and thus if inline children
-				//shoud be wrapped in anonymous block
-				if (hasSignificantChild() == true)
-				{
-					//if the new child is doesn't match the display of the other children,
+			//store wether the children of this block are curently inline
+			//or block
+			var childrenInline:Bool = childrenInline();
+			
+			//loop in all children, looking for one which doesn't
+			//coreespond to the currrent formatting of the block
+			var length:Int = childNodes.length;
+			for (i in 0...length)
+			{
+				var child:ElementRenderer = childNodes[i];
+				
+				//absolutely positioned children are not taken into account when determining wether this
+				//BlockBoxRenderer establishes/participate in a block or inline formatting context
+				if (child.isPositioned() == false || child.isRelativePositioned() ==  true)
+				{	
+					//if this child doesn't match the display of the other children,
 					///for instance if it is the first inline while all the other
-					//children are block, all the inline children should be wrapped
-					if (elementRendererChild.isInlineLevel() != childrenInline())
+					//children are block, all the inline children should be wrapped in 
+					//anonymous blocks
+					if (child.isInlineLevel() != childrenInline)
 					{
 						shouldMakeChildrenNonInline = true;
+						break;
 					}
 				}
 			}
 		}
 		
-		//append the new child
-		super.appendChild(newChild);
 		//make all children non inline if necessary
 		if (shouldMakeChildrenNonInline == true)
-		{	
-			//check the flag to prevent infinite loop,
-			//as makeChildrenNonInline itself call the 
-			//appendChild method
-			if (_isMakingChildrenNonInline == false)
-			{
-				_isMakingChildrenNonInline = true;
-				makeChildrenNonInline();
-				_isMakingChildrenNonInline = false;
-			}
+		{
+			makeChildrenNonInline();
 		}
-		return newChild;
+		
+		super.updateAnonymousBlock();
 	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE ANONYMOUS BLOCK METHODS

@@ -1008,6 +1008,7 @@ class HTMLDocument extends Document
 		if (_renderingTreeNeedsUpdate == true)
 		{
 			documentElement.updateElementRenderer();
+			documentElement.elementRenderer.updateAnonymousBlock();
 			_renderingTreeNeedsUpdate = false;
 		}
 		

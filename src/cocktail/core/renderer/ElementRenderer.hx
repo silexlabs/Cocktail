@@ -21,6 +21,7 @@ import cocktail.core.linebox.LineBox;
 import cocktail.core.animation.Animator;
 import cocktail.core.animation.Transition;
 import cocktail.core.geom.GeomData;
+import haxe.Stack;
 
 import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSConstants;
@@ -535,6 +536,26 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		detachLayer();
 	}
 	
+	/**
+	 * Called by the document as part of the update of the
+	 * rendering tree. Wraps element renderer in anonymous
+	 * block if necessary by traversing all the 
+	 * rendering tree. For instance if an element renderer
+	 * has both inline and blocjk children, the inline children
+	 * should be wrapped in anonymous blocks
+	 * 
+	 * Wrapping element renderer is only done by BlockBoxRenderer,
+	 * see this class for more info
+	 */
+	public function updateAnonymousBlock():Void
+	{
+		var length:Int = childNodes.length;
+		for (i in 0...length)
+		{
+			childNodes[i].updateAnonymousBlock();
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING TREE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -562,10 +583,8 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function removedFromRenderingTree():Void
 	{
-		//detach from layer render tree and schedule
-		//update of the layer renderer tree
+		//detach from layer render tree
 		detach();
-		invalidateLayerRenderer();
 		
 		//remove itself from containing block
 		unregisterWithContainingBlock();
