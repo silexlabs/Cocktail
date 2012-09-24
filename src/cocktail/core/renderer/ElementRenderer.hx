@@ -374,6 +374,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	public function invalidateLayerRenderer():Void
 	{
 		_needsLayerRendererUpdate = true;
+		
 		switch(domNode.nodeType)
 		{
 			case DOMConstants.ELEMENT_NODE:
@@ -509,12 +510,24 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	public function updateLayerRenderer():Void
 	{
 		if (_needsLayerRendererUpdate == true)
-		{
+		{	
 			_needsLayerRendererUpdate = false;
 			
-			detach();
-			attach();
-			return;
+			//if the element renderer already has a layer
+			//and it should have its own layer, 
+			//
+			//TODO 1 : complete
+			if (_hasOwnLayer == true && createOwnLayer() == true)
+			{
+				
+			}
+			else
+			{
+				detach();
+				attach();
+				return;
+			}
+			
 		}
 		
 		var length:Int = childNodes.length;

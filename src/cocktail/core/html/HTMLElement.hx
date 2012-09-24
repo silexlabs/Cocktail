@@ -777,7 +777,8 @@ class HTMLElement extends Element<HTMLElement>
 			//detach all children element renderer
 			if (recursive == true)
 			{
-				for (i in 0...childNodes.length)
+				var length:Int = childNodes.length;
+				for (i in 0...length)
 				{
 					childNodes[i].detach(true);
 				}

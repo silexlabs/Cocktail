@@ -128,40 +128,30 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 		}
 		else
 		{	
-			//will store the new child nodes with the newly inserted one
-			var newChildNodes:Array<NodeClass> = new Array<NodeClass>();
-			
 			//flag determining wether the new child was inserted
 			var isInserted:Bool = false;
 			
 			var length:Int = childNodes.length;
 			for (i in 0...length)
 			{		
-				#if php
-				if (untyped __physeq__(childNodes[i], refChild))
-				#else
 				if (childNodes[i] == refChild)
-				#end
 				{
-					newChildNodes.push(newChild);
+					childNodes.insert(i, newChild);
 					isInserted = true;
+					break;
 				}
-				newChildNodes.push(childNodes[i]);
 			}
 			
 			//if the ref child wasn't found, push
 			//the new child at the end of the array
 			if (isInserted == false)
 			{
-				newChildNodes.push(newChild);
+				childNodes.push(newChild);
 			}
 			
 			//set the parent of the new child
 			removeFromParentIfNecessary(newChild);
 			newChild.parentNode = cast(this);
-			
-			//set new children as children
-			childNodes = newChildNodes;
 		}
 		
 		return newChild;
