@@ -131,6 +131,9 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 			//will store the new child nodes with the newly inserted one
 			var newChildNodes:Array<NodeClass> = new Array<NodeClass>();
 			
+			//flag determining wether the new child was inserted
+			var isInserted:Bool = false;
+			
 			var length:Int = childNodes.length;
 			for (i in 0...length)
 			{		
@@ -141,17 +144,24 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 				#end
 				{
 					newChildNodes.push(newChild);
+					isInserted = true;
 				}
 				newChildNodes.push(childNodes[i]);
 			}
 			
-			//the child are appended after the first loop to prevent
-			//from modifying the child node array while looping
-			var newChildNodesLength:Int = newChildNodes.length;
-			for (i in 0...newChildNodesLength)
+			//if the ref child wasn't found, push
+			//the new child at the end of the array
+			if (isInserted == false)
 			{
-				appendChild(newChildNodes[i]);
+				newChildNodes.push(newChild);
 			}
+			
+			//set the parent of the new child
+			removeFromParentIfNecessary(newChild);
+			newChild.parentNode = cast(this);
+			
+			//set new children as children
+			childNodes = newChildNodes;
 		}
 		
 		return newChild;

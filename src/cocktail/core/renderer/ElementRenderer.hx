@@ -317,6 +317,28 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		return oldChild;
 	}
 	
+	/**
+	 * Overriden as when an ElementRenderer is inserted, its
+	 * init method should be called
+	 */
+	override public function insertBefore(newChild:ElementRenderer, refChild:ElementRenderer):ElementRenderer
+	{
+		super.insertBefore(newChild, refChild);
+		
+		//if the ref child is null, then the 
+		//new child was inserted using appendChild,
+		//which already calls the init method
+		if (refChild == null)
+		{
+			return newChild;
+		}
+		
+		newChild.addedToRenderingTree();
+		invalidate(InvalidationReason.other);
+		
+		return newChild;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC RENDERING METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
