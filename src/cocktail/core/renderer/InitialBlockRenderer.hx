@@ -38,6 +38,15 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	public function new(node:HTMLElement) 
 	{
 		super(node);
+		
+		//as this is the root of the rendering
+		//tree, it is considered to be its
+		//own containing block
+		//
+		//TODO 3 :maybe not very clean, trouble is that
+		//addedToRenderingTree never called as initial 
+		//block is never attached to a parent
+		_containingBlock = this;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

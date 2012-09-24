@@ -9,6 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.dom.Document;
+import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.NodeBase;
 import cocktail.core.event.TransitionEvent;
@@ -195,6 +196,16 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	private var _hasOwnLayer:Bool;
 	
 	/**
+	 * Wether the layer renderer for this element renderer
+	 * should be re-instantiated and re-attached to the
+	 * layer render tree. Happens for instance, when the 
+	 * 'position' style of the element renderer's html
+	 * element changes and requires the element renderer
+	 * to have its own layer renderer
+	 */
+	private var _needsLayerRendererUpdate:Bool;
+	
+	/**
 	 * flag similar to the above. When an ElementRenderer is attached, if it
 	 * is positioned, it registers itself with its first positioned ancestor.
 	 * This flasg is there to ensure that, when detached, the ElementRenderer
@@ -250,6 +261,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		initCoreStyle();
 		_hasOwnLayer = false;
 		_wasPositioned = false;
+		_needsLayerRendererUpdate = true;
 		
 		bounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
 		
@@ -278,28 +290,26 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * overriden as when an ElementRenderer is appended, it must be attached
-	 * to the LayerRenderer tree
+	 * overriden as when an ElementRenderer is appended, an init 
+	 * method is called on it
 	 */ 
 	override public function appendChild(newChild:ElementRenderer):ElementRenderer
 	{
 		super.appendChild(newChild);
 		
-		newChild.attach();
+		newChild.addedToRenderingTree();
 		
 		invalidate(InvalidationReason.other);
 		return newChild;
 	}
 	
 	/**
-	 * overriden as when an ElementRenderer is removed, it must be
-	 * removed from the LayerRenderer tree
+	 * overriden as when an ElementRenderer is removed, a clean-up 
+	 * method is called on it
 	 */
 	override public function removeChild(oldChild:ElementRenderer):ElementRenderer
 	{
-		//must happen before calling super, else the ElementRenderer
-		//won't have a parent anymore
-		oldChild.detach();
+		oldChild.removedFromRenderingTree();
 		
 		super.removeChild(oldChild);
 		invalidate(InvalidationReason.other);
@@ -326,6 +336,28 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	public function renderScrollBars(graphicContext:GraphicsContext, windowWidth:Int, windowHeight:Int):Void
 	{
 		//abstract
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when the layer renderer of this
+	 * element renderer has been invalidated
+	 * and needs to be re-created before
+	 * next rendering
+	 */
+	public function invalidateLayerRenderer():Void
+	{
+		_needsLayerRendererUpdate = true;
+		switch(domNode.nodeType)
+		{
+			case DOMConstants.ELEMENT_NODE:
+				var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
+				htmlDocument.invalidateLayerTree();
+				
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -436,6 +468,37 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Main method to update the layer tree.
+	 * Traverse the rendering tree recursively
+	 * until all of the layer render tree is
+	 * updated
+	 * 
+	 * ElementRenderer with invalid layer renderer
+	 * attach/detach them as necessary
+	 * 
+	 * Called by the document before rendering
+	 * if the layer tree was invalidated since
+	 * last rendering
+	 */
+	public function updateLayerRenderer():Void
+	{
+		if (_needsLayerRendererUpdate == true)
+		{
+			_needsLayerRendererUpdate = false;
+			
+			detach();
+			attach();
+			return;
+		}
+		
+		var length:Int = childNodes.length;
+		for (i in 0...length)
+		{
+			childNodes[i].updateLayerRenderer();
+		}
+	}
+	
+	/**
 	 * Attach the LayerRenderer of this ElementRenderer
 	 * to the LayerRenderer tree so that it can be rendered
 	 */
@@ -451,10 +514,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			var child:ElementRenderer = childNodes[i];
 			child.attach();
 		}
-		
-		_containingBlock = getContainingBlock();
-		
-		registerWithContaininingBlock();
 	}
 	
 	/**
@@ -463,17 +522,50 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	public function detach():Void
 	{
-		unregisterWithContainingBlock();
-		
 		//first detach the LayerRenderer of all its children
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = childNodes[i];
-			child.detach();
+			childNodes[i].detach();
 		}
 		
 		detachLayer();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING TREE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called by the parent ElementRenderer when
+	 * this ElementRenderer is appended to the
+	 * rendering tree
+	 */
+	private function addedToRenderingTree():Void
+	{
+		//retrieve containing block
+		_containingBlock = getContainingBlock();
+		registerWithContaininingBlock();
+		
+		//schedule update of layer renderer before
+		//next rendering
+		invalidateLayerRenderer();
+	}
+	
+	/**
+	 * Called by the parent ElementRenderer when
+	 * this ElementRenderer is removed from the
+	 * rendering tree
+	 */
+	private function removedFromRenderingTree():Void
+	{
+		//detach from layer render tree and schedule
+		//update of the layer renderer tree
+		detach();
+		invalidateLayerRenderer();
+		
+		//remove itself from containing block
+		unregisterWithContainingBlock();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

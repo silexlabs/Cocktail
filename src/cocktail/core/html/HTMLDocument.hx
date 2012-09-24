@@ -211,6 +211,13 @@ class HTMLDocument extends Document
 	private var _renderingTreeNeedsUpdate:Bool;
 	
 	/**
+	 * wether the layer tree, in charge of the
+	 * rendering of the rendering tree should
+	 * be updated after its structure changed
+	 */
+	private var _layerTreeNeedsUpdate:Bool;
+	
+	/**
 	 * Wheter the graphics context tree, used
 	 * to paint the rendering tree should
 	 * be updated after its structure changed
@@ -295,6 +302,7 @@ class HTMLDocument extends Document
 		_documentNeedsCascading = true;
 		_graphicsContextTreeNeedsUpdate = true;
 		_renderingTreeNeedsUpdate = true;
+		_layerTreeNeedsUpdate = true;
 		
 		_mousePoint = new PointVO(0.0, 0.0);
 		
@@ -931,6 +939,15 @@ class HTMLDocument extends Document
 	}
 	
 	/**
+	 * schedule an update of the layer tree
+	 */
+	public function invalidateLayerTree():Void
+	{
+		_layerTreeNeedsUpdate = true;
+		invalidate();
+	}
+	
+	/**
 	 * Shedule an update of the graphics
 	 * context tree
 	 */
@@ -992,6 +1009,14 @@ class HTMLDocument extends Document
 		{
 			documentElement.updateElementRenderer();
 			_renderingTreeNeedsUpdate = false;
+		}
+		
+		//update the layer tree before rendergin if
+		//needed
+		if (_layerTreeNeedsUpdate == true)
+		{
+			documentElement.elementRenderer.updateLayerRenderer();
+			_layerTreeNeedsUpdate = false;
 		}
 		
 		//only layout if the invalidate layout
