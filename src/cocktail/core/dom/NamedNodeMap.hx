@@ -128,18 +128,7 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 		}
 		
 		_nodesHash.remove(name);
-		
-		var newNodes:Array<Attr<ElementClass>> = new Array<Attr<ElementClass>>();
-		
-		for (i in 0...length)
-		{
-			if (_nodes[i] != removedNode)
-			{
-				newNodes.push(_nodes[i]);
-			}
-		}
-		
-		_nodes = newNodes;
+		_nodes.remove(removedNode);
 		
 		return removedNode;
 	}

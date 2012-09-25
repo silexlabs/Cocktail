@@ -168,7 +168,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		super();
 		
 		this.rootElementRenderer = rootElementRenderer;
-		
 		_zeroAndAutoZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		_positiveZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		_negativeZIndexChildLayerRenderers = new Array<LayerRenderer>();
@@ -196,31 +195,31 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 * a layer which didn't have its own
 	 * graphic context should now have it
 	 */
-	public function updateGraphicsContext():Void
+	public function updateGraphicsContext(force:Bool):Void
 	{
-		//update if needed
-		if (_needsGraphicsContextUpdate == true)
+		if (_needsGraphicsContextUpdate == true || force == true)
 		{
-			//detach and re-attach, this will
-			//also detach and re-attach the child
-			//layers
-			if (graphicsContext != null)
+			_needsGraphicsContextUpdate = false;
+			
+			if (graphicsContext == null)
+			{
+				attach();
+				return;
+			}
+			else if (hasOwnGraphicsContext != establishesNewGraphicsContext())
 			{
 				detach();
+				attach();
+				return;
 			}
-			attach();
 		}
-		//only update on children if this layer
-		//didn't update, as if it did, it already
-		//updated its children too
-		else
+		
+		var length:Int = childNodes.length;
+		for (i in 0...length)
 		{
-			var length:Int = childNodes.length;
-			for (i in 0...length)
-			{
-				childNodes[i].updateGraphicsContext();
-			}
+			childNodes[i].updateGraphicsContext(force);
 		}
+		
 	}
 	
 	/////////////////////////////////
@@ -230,12 +229,16 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	/**
 	 * Schedule an update of the graphics context
 	 * tree using the document
+	 * 
+	 * @param force wether the whole graphics context tree
+	 * should be updated. Happens when inserting/removing
+	 * a compositing layer
 	 */
-	public function invalidateGraphicsContext():Void
+	public function invalidateGraphicsContext(force:Bool):Void
 	{
 		_needsGraphicsContextUpdate = true;
 		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
-		htmlDocument.invalidateGraphicsContextTree();
+		htmlDocument.invalidateGraphicsContextTree(force);
 	}
 	
 	/**
@@ -350,7 +353,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//
 		//TODO 3 : eventually, it might not be needed to invalidate
 		//every time
-		invalidateGraphicsContext();
+		newChild.invalidateGraphicsContext(newChild.isCompositingLayer());
 		
 		return newChild;
 	}
@@ -362,6 +365,12 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	override public function removeChild(oldChild:LayerRenderer):LayerRenderer
 	{
+		
+		oldChild.detach();
+		//need to update graphic context after removing a child
+		//as it might trigger graphic contex creation/deletion
+		oldChild.invalidateGraphicsContext(oldChild.isCompositingLayer());
+		
 		//the layerRenderer was added to the parent as this
 		//layerRenderer doesn't establish a stacking context
 		if (establishesNewStackingContext() == false)
@@ -383,10 +392,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				 _negativeZIndexChildLayerRenderers.remove(oldChild);
 			}
 		}
-		
-		//need to update graphic context after removing a child
-		//as it might trigger graphic contex creation/deletion
-		invalidateGraphicsContext();
 		
 		super.removeChild(oldChild);
 		
@@ -413,8 +418,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			var child:LayerRenderer = childNodes[i];
 			child.attach();
 		}
-		
-		_needsGraphicsContextUpdate = false;
 	}
 	
 	/**
@@ -458,16 +461,11 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		if (hasOwnGraphicsContext == true)
 		{
 			parentNode.graphicsContext.removeChild(graphicsContext);
-			
-			//only delete the graphic context if this layer
-			//shouldn't have a graphics context anymore
-			if (establishesNewGraphicsContext() == false)
-			{
-				graphicsContext.dispose();
-				hasOwnGraphicsContext = false;
-				graphicsContext = null;
-			}
+			graphicsContext.dispose();
+			hasOwnGraphicsContext = false;
 		}
+		
+		graphicsContext = null;
 	}
 	
 	/**
@@ -478,15 +476,9 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	{
 		if (establishesNewGraphicsContext() == true)
 		{
-			//only re-create the graphic context is there is not
-			//one already
-			if (hasOwnGraphicsContext == false)
-			{
-				graphicsContext = new GraphicsContext(this);
-				_needsBitmapSizeUpdate = true;
-				hasOwnGraphicsContext = true;
-			}
-			
+			graphicsContext = new GraphicsContext(this);
+			_needsBitmapSizeUpdate = true;
+			hasOwnGraphicsContext = true;
 			parentGraphicsContext.appendChild(graphicsContext);
 		}
 		else
@@ -798,9 +790,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	private function insertPositiveZIndexChildRenderer(childLayerRenderer:LayerRenderer, rootElementRendererZIndex:Int):Void
 	{
-		//the array of positive child LayerRenderer will be reconstructed
-		var newPositiveZIndexChildRenderers:Array<LayerRenderer> = new Array<LayerRenderer>();
-		
 		//flag checking if the LayerRenderer was already inserted
 		//in the array
 		var isInserted:Bool = false;
@@ -811,7 +800,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		{
 			//get the z-index of the child LayerRenderer at the current index
 			var currentRendererZIndex:Int = 0;
-			switch( _positiveZIndexChildLayerRenderers[i].rootElementRenderer.coreStyle.zIndex)
+			switch(_positiveZIndexChildLayerRenderers[i].rootElementRenderer.coreStyle.zIndex)
 			{
 				case INTEGER(value):
 					currentRendererZIndex = value;
@@ -821,18 +810,12 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			
 			//if the new LayerRenderer has a least positive z-index than the current
 			//child it is inserted at this index
-			//also check that it is only inserted the first time this happens, else it will be
-			//inserted at each subsequent index
-			if (rootElementRendererZIndex < currentRendererZIndex && isInserted == false)
+			if (rootElementRendererZIndex < currentRendererZIndex)
 			{
-				newPositiveZIndexChildRenderers.push(childLayerRenderer);
+				_positiveZIndexChildLayerRenderers.insert(i, childLayerRenderer);
 				isInserted = true;
-
+				break;
 			}
-			
-			//push the current child in the new array
-			newPositiveZIndexChildRenderers.push(_positiveZIndexChildLayerRenderers[i]);
-			
 		}
 		
 		//if the new LayerRenderer wasn't inserted, either
@@ -840,12 +823,8 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//z-index
 		if (isInserted == false)
 		{
-			newPositiveZIndexChildRenderers.push(childLayerRenderer);
+			_positiveZIndexChildLayerRenderers.push(childLayerRenderer);
 		}
-		
-		//replace the current array with the new one
-		_positiveZIndexChildLayerRenderers = newPositiveZIndexChildRenderers;
-
 	}
 	
 	/**
@@ -854,8 +833,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */ 
 	private function insertNegativeZIndexChildRenderer(childLayerRenderer:LayerRenderer, rootElementRendererZIndex:Int):Void
 	{
-		var newNegativeZIndexChildRenderers:Array<LayerRenderer> = new Array<LayerRenderer>();
-
 		var isInserted:Bool = false;
 		
 		var length:Int = _negativeZIndexChildLayerRenderers.length;
@@ -871,22 +848,18 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				default:	
 			}
 			
-			if (currentRendererZIndex  > rootElementRendererZIndex && isInserted == false)
+			if (currentRendererZIndex  > rootElementRendererZIndex)
 			{
-				newNegativeZIndexChildRenderers.push(childLayerRenderer);
+				_negativeZIndexChildLayerRenderers.insert(i, childLayerRenderer);
 				isInserted = true;
+				break;
 			}
-			
-			newNegativeZIndexChildRenderers.push(_negativeZIndexChildLayerRenderers[i]);
 		}
 		
 		if (isInserted == false)
 		{
-			newNegativeZIndexChildRenderers.push(childLayerRenderer);
+			_negativeZIndexChildLayerRenderers.push(childLayerRenderer);
 		}
-		
-		_negativeZIndexChildLayerRenderers = newNegativeZIndexChildRenderers;
-		
 	}
 	
 	/**

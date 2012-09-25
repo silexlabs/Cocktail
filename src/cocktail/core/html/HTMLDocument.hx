@@ -225,6 +225,13 @@ class HTMLDocument extends Document
 	private var _graphicsContextTreeNeedsUpdate:Bool;
 	
 	/**
+	 * Wheter the whole graphics context tree should be
+	 * updated. Happens when a compositing layer is
+	 * attached/removed
+	 */
+	private var _forceGraphicsContextUpdate:Bool;
+	
+	/**
 	 * This class is in charge of keeping track of the
 	 * current touch points and of creating cross-platform
 	 * TouchEvent
@@ -301,6 +308,7 @@ class HTMLDocument extends Document
 		_documentNeedsRendering = true;
 		_documentNeedsCascading = true;
 		_graphicsContextTreeNeedsUpdate = true;
+		_forceGraphicsContextUpdate = false;
 		_renderingTreeNeedsUpdate = true;
 		_layerTreeNeedsUpdate = true;
 		
@@ -951,9 +959,13 @@ class HTMLDocument extends Document
 	 * Shedule an update of the graphics
 	 * context tree
 	 */
-	public function invalidateGraphicsContextTree():Void
+	public function invalidateGraphicsContextTree(force:Bool):Void
 	{
 		_graphicsContextTreeNeedsUpdate = true;
+		if (force == true)
+		{
+			_forceGraphicsContextUpdate = true;
+		}
 		invalidate();
 	}
 	
@@ -1043,8 +1055,10 @@ class HTMLDocument extends Document
 		//before painting onto it
 		if (_graphicsContextTreeNeedsUpdate == true)
 		{
-			documentElement.elementRenderer.layerRenderer.updateGraphicsContext();
+			trace("uppppppppppppppppppppppppp gra");
+			documentElement.elementRenderer.layerRenderer.updateGraphicsContext(_forceGraphicsContextUpdate);
 			_graphicsContextTreeNeedsUpdate = false;
+			_forceGraphicsContextUpdate = false;
 		}
 		
 		//same as for layout

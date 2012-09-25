@@ -532,6 +532,19 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
+	 * Called when the layer renderer of the element
+	 * renderer becomes invalid and needs to be 
+	 * re-created before next layout
+	 */
+	public function invalidateLayerRenderer():Void
+	{
+		if (elementRenderer != null)
+		{
+			elementRenderer.invalidateLayerRenderer();
+		}
+	}
+	
+	/**
 	 * Invalidate the style declaration retrieved
 	 * from the style manager. This declaration will
 	 * be updated on next cascade
@@ -829,13 +842,18 @@ class HTMLElement extends Element<HTMLElement>
 		//when one of those property specified value changes, it may affect the rendering of
 		//the HTMLElement. The element renderer is invalidated, so that it will be updated
 		//before next layout
-		if (changedProperties.exists(CSSConstants.DISPLAY) || changedProperties.exists(CSSConstants.POSITION) ||
-		changedProperties.exists(CSSConstants.FLOAT) || changedProperties.exists(CSSConstants.TRANSFORM) ||
-		changedProperties.exists(CSSConstants.Z_INDEX) || changedProperties.exists(CSSConstants.OVERFLOW_X) ||
-		changedProperties.exists(CSSConstants.OVERFLOW_Y))
+		if (changedProperties.exists(CSSConstants.DISPLAY) || changedProperties.exists(CSSConstants.FLOAT)
+		|| changedProperties.exists(CSSConstants.OVERFLOW_X) || changedProperties.exists(CSSConstants.OVERFLOW_Y))
 		{
 			detach(true);
 			invalidateElementRenderer();
+		}
+		//if one of those properties changed, then the layer renderer of the element renderer needs
+		//to be invalidated, so that it will be updated before next rendering
+		else if (changedProperties.exists(CSSConstants.TRANSFORM) || changedProperties.exists(CSSConstants.Z_INDEX) ||
+		changedProperties.exists(CSSConstants.POSITION))
+		{
+			invalidateLayerRenderer();
 		}
 		
 		//cascade all the children, to cascade all the DOM tree

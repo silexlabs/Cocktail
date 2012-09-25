@@ -299,7 +299,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		super.appendChild(newChild);
 		
 		newChild.addedToRenderingTree();
-		
 		invalidate(InvalidationReason.other);
 		return newChild;
 	}
@@ -511,25 +510,35 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		if (_needsLayerRendererUpdate == true)
 		{	
+			//here the layer is consider updated
 			_needsLayerRendererUpdate = false;
 			
-			//if the element renderer already has a layer
-			//and it should have its own layer, 
-			//
-			//TODO 1 : complete
-			if (_hasOwnLayer == true && createOwnLayer() == true)
+			//if the element renderer currently
+			//doesn't have a layer, always attach it,
+			//element renderer should always have a
+			//layer when rendering
+			if (layerRenderer == null)
 			{
+				attach();
 				
+				//return as attaching also attach all
+				//the children
+				return;
 			}
-			else
+			//else re-attach the layer if the state
+			//of the layer changed, meaning the element
+			//renderer is now supposed to have or no 
+			//longer have its own layer
+			else if (_hasOwnLayer != createOwnLayer())
 			{
 				detach();
 				attach();
 				return;
 			}
-			
 		}
 		
+		//update all the children if this element renderer
+		//didn't do it already
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
@@ -550,8 +559,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			var child:ElementRenderer = childNodes[i];
-			child.attach();
+			childNodes[i].attach();
 		}
 	}
 	
@@ -623,6 +631,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		//remove itself from containing block
 		unregisterWithContainingBlock();
+		_containingBlock = null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -655,6 +664,8 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			parentNode.layerRenderer.removeChild(layerRenderer);
 			_hasOwnLayer = false;
 		}
+		
+		layerRenderer = null;
 	}
 	
 	/**

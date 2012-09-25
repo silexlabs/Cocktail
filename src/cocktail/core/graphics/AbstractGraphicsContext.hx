@@ -118,7 +118,6 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	override public function appendChild(newChild:AbstractGraphicsContext):AbstractGraphicsContext
 	{
 		super.appendChild(newChild);
-	
 		instertIntoOrderedChildList(newChild);
 		
 		return newChild;
@@ -236,37 +235,32 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 		//flasg set to true once the child has found its index in the array
 		var isInserted:Bool = false;
 		
-		//a new list will replace the current one
-		var newOrderedChildList:Array<AbstractGraphicsContext> = new Array<AbstractGraphicsContext>();
-		
 		/**
 		 * Loop in all the list to find the right
 		 * index for the new child
 		 */
-		for (i in 0..._orderedChildList.length)
+		var length:Int = _orderedChildList.length;
+		for (i in 0...length)
 		{
 			//the index of the current child
 			var childIndex:Int = getIndex(_orderedChildList[i].layerRenderer.rootElementRenderer);
 			
 			//the new child is inserted before the first child with a 
 			//z-index superior to its own
-			if (index < childIndex && isInserted == false)
+			if (index < childIndex)
 			{
-				newOrderedChildList.push(newChild);
+				_orderedChildList.insert(i, newChild);
 				isInserted = true;
+				break;
 			}
-			
-			newOrderedChildList.push(_orderedChildList[i]);
 		}
 		
 		//here, the new child was not inserted yet, it might
 		//either be the first element in the array or should be placed last
 		if (isInserted == false)
 		{
-			newOrderedChildList.push(newChild);
+			_orderedChildList.push(newChild);
 		}
-		
-		_orderedChildList = newOrderedChildList;
 	}
 	
 	/**

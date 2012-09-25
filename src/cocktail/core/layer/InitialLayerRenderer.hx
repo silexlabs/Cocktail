@@ -45,8 +45,10 @@ class InitialLayerRenderer extends LayerRenderer
 		flash.Lib.current.addChild(initialNativeLayer);
 		graphicsContext = new GraphicsContext(this, initialNativeLayer);
 		_needsBitmapSizeUpdate = true;
-		#end
 		hasOwnGraphicsContext = true;
+		
+	
+		#end
 	}
 	
 	/**
@@ -62,9 +64,9 @@ class InitialLayerRenderer extends LayerRenderer
 			flash.Lib.current.removeChild(graphicsContext.nativeLayer);
 			graphicsContext.dispose();
 			graphicsContext = null;
+			hasOwnGraphicsContext = false;
 		}
 		#end
-		hasOwnGraphicsContext = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
