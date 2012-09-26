@@ -77,14 +77,21 @@ class NativeTextInput extends AbstractNativeTextInput
 	
 	/**
 	 * The flash text field attach itself to the flash display list
-	 * 
-	 * TODO 1 : graphicsContext no longer a DisplayObjectContainer
 	 */
 	override public function attach(graphicContext:GraphicsContext):Void
 	{
 		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext.nativeLayer);
 		//TODO 3 : in NME, seems to make text field lose focus
 		containerGraphicContext.addChild(_textField);
+	}
+	
+	/**
+	 * The flash text field detach itself from the flash display list
+	 */
+	override public function detach(graphicContext:GraphicsContext):Void
+	{
+		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext.nativeLayer);
+		containerGraphicContext.removeChild(_textField);
 	}
 	
 	/**

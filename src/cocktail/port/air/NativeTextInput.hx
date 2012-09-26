@@ -76,6 +76,15 @@ class NativeTextInput extends AbstractNativeTextInput
 	}
 	
 	/**
+	 * The StageText is detached by removing
+	 * its reference to the stage
+	 */
+	override public function detach(graphicContext:GraphicsContext):Void
+	{
+		_stageText.stage = null;
+	}
+	
+	/**
 	 * set the OS native focus on the StageText object
 	 */
 	override public function focus():Void

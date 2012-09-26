@@ -67,6 +67,15 @@ class AbstractNativeTextInput
 	}
 	
 	/**
+	 * Allow the native text input to detach itself 
+	 * from the rendering tree
+	 */
+	public function detach(graphicContext:GraphicsContext):Void
+	{
+		//abstract
+	}
+	
+	/**
 	 * When the HTMLInputElement creating this text input
 	 * gains focus, allow the native text input to gain 
 	 * native focus
