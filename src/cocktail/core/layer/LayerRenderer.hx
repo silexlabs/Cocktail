@@ -184,6 +184,19 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		_scrolledPoint = new PointVO(0.0, 0.0);
 	}
 	
+	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		_zeroAndAutoZIndexChildLayerRenderers = null;
+		_positiveZIndexChildLayerRenderers = null;
+		_negativeZIndexChildLayerRenderers = null;
+		_scrolledPoint = null;
+		rootElementRenderer = null;
+		graphicsContext = null;
+	}
+	
 	/////////////////////////////////
 	// PUBLIC METHOD
 	////////////////////////////////
