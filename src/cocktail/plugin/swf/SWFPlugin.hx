@@ -12,7 +12,7 @@ import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.html.HTMLConstants;
 import cocktail.plugin.Plugin;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.geom.GeomData;
 
 #if macro

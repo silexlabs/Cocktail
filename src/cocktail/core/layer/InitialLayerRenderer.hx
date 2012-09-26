@@ -7,9 +7,9 @@
 */
 package cocktail.core.layer;
 
+import cocktail.core.graphics.InitialGraphicsContext;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.port.GraphicsContext;
-import cocktail.port.NativeElement;
+import cocktail.core.graphics.GraphicsContext;
 
 /**
  * This a special LayerRenderer used as the root of the 
@@ -38,35 +38,9 @@ class InitialLayerRenderer extends LayerRenderer
 	 */
 	override private function attachGraphicsContext():Void
 	{
-		//TODO 1 : should use Platform class
-		#if macro
-		#elseif (flash9 || nme)
-		var initialNativeLayer:NativeElement = new flash.display.Sprite();
-		flash.Lib.current.addChild(initialNativeLayer);
-		graphicsContext = new GraphicsContext(this, initialNativeLayer);
+		graphicsContext = new InitialGraphicsContext(this);
 		_needsBitmapSizeUpdate = true;
 		hasOwnGraphicsContext = true;
-		
-	
-		#end
-	}
-	
-	/**
-	 * The initial LayerRenderer always dispose of its GraphicsContext
-	 */
-	override private function detachGraphicsContext():Void 
-	{
-		//TODO 2 : should also use Platform class
-		#if macro
-		#elseif (flash9 || nme)
-		if (graphicsContext != null)
-		{
-			flash.Lib.current.removeChild(graphicsContext.nativeLayer);
-			graphicsContext.dispose();
-			graphicsContext = null;
-			hasOwnGraphicsContext = false;
-		}
-		#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

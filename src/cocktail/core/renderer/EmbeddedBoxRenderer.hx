@@ -17,7 +17,7 @@ import cocktail.core.layout.computer.boxComputers.EmbeddedInlineBoxStylesCompute
 import cocktail.core.layout.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutManager;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
 

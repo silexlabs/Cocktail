@@ -7,7 +7,7 @@
 */
 package cocktail.port.air;
 
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.port.platform.input.AbstractNativeTextInput;
 import flash.display.DisplayObjectContainer;

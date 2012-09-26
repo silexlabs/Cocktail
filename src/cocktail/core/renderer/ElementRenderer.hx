@@ -30,7 +30,7 @@ import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.layer.LayerRenderer;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.css.CSSData;
 
 

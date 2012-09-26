@@ -1,7 +1,14 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktail.port.flash_player;
 
 import cocktail.core.geom.Matrix;
-import cocktail.core.graphics.AbstractGraphicsContext;
+import cocktail.core.graphics.AbstractGraphicsContextImpl;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
@@ -14,6 +21,8 @@ import flash.display.Sprite;
 import flash.geom.ColorTransform;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import flash.Lib;
+
 
 /**
  * The flash implementation of the graphics context. Use native
@@ -21,7 +30,7 @@ import flash.geom.Rectangle;
  * 
  * @author Yannick DOMINGUEZ
  */
-class GraphicsContext extends AbstractGraphicsContext
+class GraphicsContextImpl extends AbstractGraphicsContextImpl
 {
 	/**
 	 * The native flash BitmapData
@@ -78,21 +87,27 @@ class GraphicsContext extends AbstractGraphicsContext
 	 */
 	private var _fillRectPoint:PointVO;
 	
+	private var _isInitialGraphicContext:Bool;
+	
 	/**
 	 * class constructor
 	 */
-	public function new(layerRenderer:LayerRenderer = null, nativeLayer:NativeElement = null) 
+	public function new(isInitialGraphicContext:Bool) 
 	{
-		super(layerRenderer);
+		super(isInitialGraphicContext);
 		
-		//create a new Sprite if no sprite is provided
-		if (nativeLayer == null)
+		_isInitialGraphicContext = isInitialGraphicContext;
+	
+		_nativeLayer = new Sprite();
+		
+		
+		if (isInitialGraphicContext == true)
 		{
-			nativeLayer = new Sprite();
+			Lib.current.addChild(_nativeLayer);
 		}
 		
-		_nativeLayer = cast(nativeLayer);
 		_childrenNativeLayer = new Sprite();
+		
 		_nativeBitmap = new Bitmap(new BitmapData(1, 1, true, 0x00000000), PixelSnapping.AUTO, true);
 		_flashRectangle = new Rectangle();
 		_flashPoint = new Point();
@@ -102,9 +117,11 @@ class GraphicsContext extends AbstractGraphicsContext
 		_width = 0;
 		_height = 0;
 		
+		
 		//build native display list
 		_nativeLayer.addChild(_nativeBitmap);
 		_nativeLayer.addChild(_childrenNativeLayer);
+		
 	}
 	
 	/**
@@ -144,6 +161,12 @@ class GraphicsContext extends AbstractGraphicsContext
 		_nativeBitmap.bitmapData.dispose();
 		_nativeLayer.removeChild(_nativeBitmap);
 		_nativeBitmap = null;
+		
+		if (_isInitialGraphicContext == true)
+		{
+			Lib.current.removeChild(_nativeLayer);
+		}
+		
 		_nativeLayer = null;
 	}
 	
@@ -157,32 +180,17 @@ class GraphicsContext extends AbstractGraphicsContext
 		_nativeLayer.transform.matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 	}
 	
-	/**
-	 * When a child GraphicContext is added, also add the children native flash Sprite
-	 */
-	override public function appendChild(newChild:AbstractGraphicsContext):AbstractGraphicsContext
+	override public function attach(parentNativeLayer:NativeElement):Void
 	{
-		super.appendChild(newChild);
-		
-		//refresh all the native flash display list
-		//TODO 3 : shouldn't have to re-attach all, should only attach new item at right index
-		var length:Int = _orderedChildList.length;
-		for (i in 0...length)
-		{
-			_childrenNativeLayer.addChild(_orderedChildList[i].nativeLayer);
-		}
-		
-		return newChild;
+		cast(parentNativeLayer).addChild(nativeLayer);
 	}
 	
-	/**
-	 * Also remove the children native flash Sprite
-	 */
-	override public function removeChild(oldChild:AbstractGraphicsContext):AbstractGraphicsContext
+	override public function detach(parentNativeLayer:NativeElement):Void
 	{
-		super.removeChild(oldChild);
-		_childrenNativeLayer.removeChild(oldChild.nativeLayer);
-		return oldChild;
+		if (nativeLayer.parent != null)
+		{
+			cast(parentNativeLayer).removeChild(nativeLayer);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

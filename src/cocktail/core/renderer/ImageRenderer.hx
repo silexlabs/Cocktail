@@ -16,7 +16,7 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
 import cocktail.core.css.CSSData;

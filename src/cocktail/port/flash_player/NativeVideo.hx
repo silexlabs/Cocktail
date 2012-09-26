@@ -7,6 +7,7 @@
 */
 package cocktail.port.flash_player;
 
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLMediaElement;
 import cocktail.port.NativeElement;
 import cocktail.port.platform.nativeMedia.NativeMedia;

@@ -23,7 +23,7 @@ import cocktail.core.layout.computer.boxComputers.EmbeddedInlineBoxStylesCompute
 import cocktail.core.layout.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
 import cocktail.core.window.Window;
 import cocktail.Lib;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.layout.computer.BackgroundStylesComputer;

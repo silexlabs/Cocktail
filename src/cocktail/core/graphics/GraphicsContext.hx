@@ -8,8 +8,10 @@
 package cocktail.core.graphics;
 
 import cocktail.core.geom.Matrix;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
+import cocktail.port.GraphicsContextImpl;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
 import cocktail.core.dom.NodeBase;
@@ -36,7 +38,7 @@ import cocktail.core.css.CSSData;
  * to instead leverage the native display list of the platform.
  * 
  * For instance, for a video it allows the underlying platform to take care of the rendering,
- * the video being given its own layer. With just one GraphicContext, the video would have need
+ * the video being given its own layer. With just one GraphicContext, the video would have needed
  * to be painted onto the unique GraphicContext each frame.
  * 
  * It also facilitates integration with native platform UI widget which can live on its own native
@@ -44,18 +46,18 @@ import cocktail.core.css.CSSData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
+class GraphicsContext extends NodeBase<GraphicsContext>
 {
 	/**
 	 * A reference to a native layer
 	 */
-	public var nativeLayer(get_nativeLayer, null):NativeElement;
+	public var nativeLayer(get_nativeLayer, never):NativeElement;
 	
 	/**
 	 * A reference to a native bitmap data object of the 
 	 * underlying platform
 	 */
-	public var nativeBitmapData(get_nativeBitmapData, null):NativeBitmapData;
+	public var nativeBitmapData(get_nativeBitmapData, never):NativeBitmapData;
 	
 	/**
 	 * A reference to the LayerRenderer which created this GraphicsContext
@@ -67,45 +69,53 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	 * from most negative to most positive. Ultimately, this is this array which
 	 * is use to order the native layer of the target platform
 	 */
-	private var _orderedChildList:Array<AbstractGraphicsContext>;
+	private var _orderedChildList:Array<GraphicsContext>;
 	
 	/**
-	 * A flag determining wether to use the specified alpha when drawing
-	 * bitmap
+	 * A flag set when the native layers needs to be re-attached to the native
+	 * display list, after a change in the ordered list of child graphics
+	 * context
 	 */
-	private var _useTransparency:Bool;
+	private var _needsNativeLayerUpdate:Bool;
 	
 	/**
-	 * The current used alpha when transparency is activated,
-	 * as defined by the _useTransparency flag
+	 * An instance of the class which actually implements the 
+	 * platform specific API calls to draw and build the native
+	 * display list. 
 	 */
-	private var _alpha:Float;
+	private var _graphicsContextImpl:GraphicsContextImpl;
 
 	/**
 	 * class constructor
 	 * @param layerRenderer the LayerRenderer which instantiated this 
 	 * GraphicsContext
-	 * 
-	 * @param	nativeLayer the reference to the nativeLayer can be passed
-	 * as parameter, else it is instantiated in the constructor
 	 */
-	public function new(layerRenderer:LayerRenderer = null, nativeLayer:NativeElement = null)
+	public function new(layerRenderer:LayerRenderer)
 	{
 		super();
 		this.layerRenderer = layerRenderer;
+		_needsNativeLayerUpdate = true;
+		_orderedChildList = new Array<GraphicsContext>();
 		
-		_useTransparency = false;
-		_alpha = 0.0;
-	
-		_orderedChildList = new Array<AbstractGraphicsContext>();
+		initGraphicsContextImplementation();
 	}
 	
 	/**
-	 * Init the bitmap data with a given size
+	 * Instantaiate the graphics
+	 * context implementation
 	 */
-	public function initBitmapData(width:Int, height:Int):Void
+	private function initGraphicsContextImplementation():Void
 	{
-		//abstract
+		_graphicsContextImpl = new GraphicsContextImpl(false);
+	}
+	
+	/**
+	 * clean-up method, free memory used
+	 * by graphics context
+	 */
+	public function dispose():Void
+	{
+		_graphicsContextImpl.dispose();
 	}
 	
 	/////////////////////////////////
@@ -115,36 +125,102 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	/**
 	 * Override to also update the ordered child list array
 	 */ 
-	override public function appendChild(newChild:AbstractGraphicsContext):AbstractGraphicsContext
+	override public function appendChild(newChild:GraphicsContext):GraphicsContext
 	{
 		super.appendChild(newChild);
 		instertIntoOrderedChildList(newChild);
-		
+		newChild.invalidateNativeLayer();
 		return newChild;
 	}
 	
-	override public function removeChild(oldChild:AbstractGraphicsContext):AbstractGraphicsContext
+	override public function removeChild(oldChild:GraphicsContext):GraphicsContext
 	{
 		super.removeChild(oldChild);
 		
+		oldChild.detach();
+		oldChild.invalidateNativeLayer();
 		_orderedChildList.remove(oldChild);
-		
 		
 		return oldChild;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC GRAPHICS CONTEXT TREE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	public function attach():Void
+	{
+		doAttach();
+		
+		var length:Int = _orderedChildList.length;
+		for (i in 0...length)
+		{
+			_orderedChildList[i].attach();
+		}
+	}
+	
+	private function doAttach():Void
+	{
+		if (parentNode != null)
+		{
+			_graphicsContextImpl.attach(parentNode.nativeLayer);
+		}
+	}
+	
+	private function doDetach():Void
+	{
+		if (parentNode != null)
+		{
+			_graphicsContextImpl.detach(parentNode.nativeLayer);
+		}
+	}
+	
+	public function detach():Void
+	{
+		var length:Int = _orderedChildList.length;
+		for (i in 0...length)
+		{
+			_orderedChildList[i].detach();
+		}
+		
+		doDetach();
+	}
+	
+
+	public function updateNativeLayer():Void
+	{
+		if (_needsNativeLayerUpdate == true)
+		{
+			_needsNativeLayerUpdate = false;
+			detach();
+			attach();
+			return;
+		}
+		
+		var length:Int = _orderedChildList.length;
+		for (i in 0...length)
+		{
+			_orderedChildList[i].updateNativeLayer();
+		}
+	}
+	
+	public function invalidateNativeLayer():Void
+	{
+		_needsNativeLayerUpdate = true;
+		var htmlDocument:HTMLDocument = cast(layerRenderer.rootElementRenderer.domNode.ownerDocument);
+		htmlDocument.invalidateNativeLayerTree();
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC METHODS
+	// PUBLIC RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * clean-up method, free memory used
-	 * by graphics context
+	 * Init the bitmap data with a given size
 	 */
-	public function dispose():Void
+	public function initBitmapData(width:Int, height:Int):Void
 	{
-		//abstract
+		_graphicsContextImpl.initBitmapData(width, height);
 	}
 	
 	/**
@@ -152,7 +228,7 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	 */
 	public function transform(matrix:Matrix):Void
 	{
-		//abstract
+		_graphicsContextImpl.transform(matrix);
 	}
 	
 	/**
@@ -160,7 +236,7 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	 */
 	public function clear():Void
 	{
-		//abstract
+		_graphicsContextImpl.clear();
 	}
 	
 	/**
@@ -170,8 +246,7 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	 */
 	public function beginTransparency(alpha:Float):Void
 	{
-		_useTransparency = true;
-		_alpha = alpha;
+		_graphicsContextImpl.beginTransparency(alpha);
 	}
 	
 	/**
@@ -180,7 +255,7 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	 */
 	public function endTransparency():Void
 	{
-		_useTransparency = false;
+		_graphicsContextImpl.endTransparency();
 	}
 	
 	/**
@@ -194,7 +269,7 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	 */
 	public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix = null, sourceRect:RectangleVO = null):Void
 	{
-		//abstract
+		_graphicsContextImpl.drawImage(bitmapData, matrix, sourceRect);
 	}
 	
 	/**
@@ -206,7 +281,7 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	 */
 	public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO):Void
 	{
-		//abstract
+		_graphicsContextImpl.copyPixels(bitmapData, sourceRect, destPoint);
 	}
 	
 	/**
@@ -216,7 +291,7 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	 */
 	public function fillRect(rect:RectangleVO, color:ColorVO):Void
 	{
-		//abstract
+		_graphicsContextImpl.fillRect(rect, color);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -227,7 +302,7 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	 * Insert the new GraphicsContext based on its z-index (the z-index of the
 	 * ElementRenderer creating the LayerRenderer which created the GraphicsContext)
 	 */
-	private function instertIntoOrderedChildList(newChild:AbstractGraphicsContext):Void
+	private function instertIntoOrderedChildList(newChild:GraphicsContext):Void
 	{
 		//get the index of the new child to insert
 		var index:Int = getIndex(newChild.layerRenderer.rootElementRenderer);
@@ -275,16 +350,12 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 		
 		if (elementRenderer.isPositioned() == true)
 		{
-			//TODO 1 : for some reason CoreStyle is null on InitialBlockRenderer at this point
-			if (elementRenderer.coreStyle != null)
+			switch (elementRenderer.coreStyle.zIndex)
 			{
-				switch (elementRenderer.coreStyle.zIndex)
-				{
-					case INTEGER(value):
-						index = value;
-						
-					default:	
-				}
+				case INTEGER(value):
+					index = value;
+					
+				default:	
 			}
 		}
 		
@@ -297,12 +368,12 @@ class AbstractGraphicsContext extends NodeBase<AbstractGraphicsContext>
 	
 	private function get_nativeBitmapData():NativeBitmapData
 	{
-		return null;
+		return _graphicsContextImpl.nativeBitmapData;
 	}
 	
 	private function get_nativeLayer():NativeElement
 	{
-		return null;
+		return _graphicsContextImpl.nativeLayer;
 	}
 	
 }

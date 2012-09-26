@@ -10,7 +10,7 @@ package cocktail.plugin;
 
 import cocktail.core.event.Event;
 import cocktail.core.event.EventCallback;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.geom.GeomData;
 
 /**

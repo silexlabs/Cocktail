@@ -17,7 +17,7 @@ import cocktail.core.layer.CompositingLayerRenderer;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.layer.PluginLayerRenderer;
 import cocktail.core.resource.ResourceManager;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 
