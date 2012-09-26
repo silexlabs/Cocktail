@@ -101,12 +101,12 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_nativeLayer = new Sprite();
 		
 		
+		_childrenNativeLayer = new Sprite();
+		
 		if (isInitialGraphicContext == true)
 		{
-			Lib.current.addChild(_nativeLayer);
+			Lib.current.addChild(_childrenNativeLayer);
 		}
-		
-		_childrenNativeLayer = new Sprite();
 		
 		_nativeBitmap = new Bitmap(new BitmapData(1, 1, true, 0x00000000), PixelSnapping.AUTO, true);
 		_flashRectangle = new Rectangle();
@@ -119,8 +119,8 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		
 		
 		//build native display list
-		_nativeLayer.addChild(_nativeBitmap);
-		_nativeLayer.addChild(_childrenNativeLayer);
+		_childrenNativeLayer.addChild(_nativeBitmap);
+		_childrenNativeLayer.addChild(_nativeLayer);
 		
 	}
 	
@@ -159,15 +159,16 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	override public function dispose():Void
 	{
 		_nativeBitmap.bitmapData.dispose();
-		_nativeLayer.removeChild(_nativeBitmap);
+		_childrenNativeLayer.removeChild(_nativeBitmap);
 		_nativeBitmap = null;
+		_childrenNativeLayer.removeChild(_nativeLayer);
+		_nativeLayer = null;
 		
 		if (_isInitialGraphicContext == true)
 		{
-			Lib.current.removeChild(_nativeLayer);
+			Lib.current.removeChild(_childrenNativeLayer);
+			_childrenNativeLayer = null;
 		}
-		
-		_nativeLayer = null;
 	}
 	
 	/**
@@ -177,19 +178,19 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	override public function transform(matrix:Matrix):Void
 	{
 		var matrixData:MatrixData = matrix.data;
-		_nativeLayer.transform.matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
+		_childrenNativeLayer.transform.matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 	}
 	
 	override public function attach(parentNativeLayer:NativeElement):Void
 	{
-		cast(parentNativeLayer).addChild(nativeLayer);
+		cast(parentNativeLayer).addChild(_childrenNativeLayer);
 	}
 	
 	override public function detach(parentNativeLayer:NativeElement):Void
 	{
-		if (nativeLayer.parent != null)
+		if (_childrenNativeLayer.parent != null)
 		{
-			cast(parentNativeLayer).removeChild(nativeLayer);
+			cast(parentNativeLayer).removeChild(_childrenNativeLayer);
 		}
 	}
 	

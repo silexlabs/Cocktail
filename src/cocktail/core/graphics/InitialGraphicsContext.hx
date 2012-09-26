@@ -44,4 +44,26 @@ class InitialGraphicsContext extends GraphicsContext
 	{
 		_graphicsContextImpl = new GraphicsContextImpl(true);
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE GRAPHICS CONTEXT TREE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Don't attach the native layer, as for the root graphics context,
+	 * it is managed be the graphics context implementation
+	 */
+	override private function doAttach():Void
+	{
+		
+	}
+	
+	/**
+	 * Don't detach the native layer, as for the root graphics context,
+	 * it is managed be the graphics context implementation
+	 */
+	override private function doDetach():Void
+	{
+		
+	}
 }

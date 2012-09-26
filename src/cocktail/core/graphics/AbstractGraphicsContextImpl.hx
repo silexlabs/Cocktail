@@ -18,11 +18,10 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
 
-
 /**
  * This is the base class for classes which 
- * actually implement the platform specific
- * API calls to drw and build the native display
+ * actually implements the platform specific
+ * API calls to draw and build the native display
  * list ofthe target platform.
  * 
  * It is implemented for each graphic target platform

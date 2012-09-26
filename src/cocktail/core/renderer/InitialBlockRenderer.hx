@@ -63,19 +63,8 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	}
 	
 	/**
-	 * Overriden as initial block renderer always delete
-	 * its own layer. It also detach it as their is
-	 * no parent layer to do it
-	 */
-	override private function detachLayer():Void
-	{
-		layerRenderer.detach();
-		layerRenderer = null;
-	}
-	
-	/**
-	 * never register with containing block as it has
-	 * none
+	 * never register with containing block as it is
+	 * itself
 	 */
 	override private function registerWithContaininingBlock():Void
 	{
@@ -83,7 +72,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	}
 	
 	/**
-	 * same as above for detach
+	 * same as above for unregister
 	 */
 	override private function unregisterWithContainingBlock():Void
 	{

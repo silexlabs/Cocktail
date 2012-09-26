@@ -84,7 +84,7 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	 * display list. 
 	 */
 	private var _graphicsContextImpl:GraphicsContextImpl;
-
+	
 	/**
 	 * class constructor
 	 * @param layerRenderer the LayerRenderer which instantiated this 
@@ -116,6 +116,9 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	public function dispose():Void
 	{
 		_graphicsContextImpl.dispose();
+		_graphicsContextImpl = null;
+		layerRenderer = null;
+		_orderedChildList = null;
 	}
 	
 	/////////////////////////////////
@@ -123,16 +126,22 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	////////////////////////////////
 	
 	/**
-	 * Override to also update the ordered child list array
+	 * Overriden to update the ordered child list array, when 
+	 * a new graphics context is added
 	 */ 
 	override public function appendChild(newChild:GraphicsContext):GraphicsContext
 	{
 		super.appendChild(newChild);
+		
 		instertIntoOrderedChildList(newChild);
 		newChild.invalidateNativeLayer();
+		
 		return newChild;
 	}
 	
+	/**
+	 * Overriden to detach the old child 
+	 */
 	override public function removeChild(oldChild:GraphicsContext):GraphicsContext
 	{
 		super.removeChild(oldChild);
@@ -148,45 +157,11 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	// PUBLIC GRAPHICS CONTEXT TREE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function attach():Void
-	{
-		doAttach();
-		
-		var length:Int = _orderedChildList.length;
-		for (i in 0...length)
-		{
-			_orderedChildList[i].attach();
-		}
-	}
-	
-	private function doAttach():Void
-	{
-		if (parentNode != null)
-		{
-			_graphicsContextImpl.attach(parentNode.nativeLayer);
-		}
-	}
-	
-	private function doDetach():Void
-	{
-		if (parentNode != null)
-		{
-			_graphicsContextImpl.detach(parentNode.nativeLayer);
-		}
-	}
-	
-	public function detach():Void
-	{
-		var length:Int = _orderedChildList.length;
-		for (i in 0...length)
-		{
-			_orderedChildList[i].detach();
-		}
-		
-		doDetach();
-	}
-	
-
+	/**
+	 * Main method building the native layer tree.
+	 * Called by the document when the tree needs
+	 * to be updated
+	 */
 	public function updateNativeLayer():Void
 	{
 		if (_needsNativeLayerUpdate == true)
@@ -204,11 +179,70 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 		}
 	}
 	
+	/**
+	 * called when the native layer is invalid, schedule
+	 * a call to update the native layer tree
+	 */
 	public function invalidateNativeLayer():Void
 	{
 		_needsNativeLayerUpdate = true;
 		var htmlDocument:HTMLDocument = cast(layerRenderer.rootElementRenderer.domNode.ownerDocument);
 		htmlDocument.invalidateNativeLayerTree();
+	}
+	
+	/**
+	 * attachement for graphics context
+	 * consist in attaching the native layer
+	 * to the native display list
+	 */
+	public function attach():Void
+	{
+		doAttach();
+		
+		var length:Int = _orderedChildList.length;
+		for (i in 0...length)
+		{
+			_orderedChildList[i].attach();
+		}
+	}
+	
+	/**
+	 * when detached, the graphics context
+	 * detach its native layer from
+	 * the native layer tree
+	 */
+	public function detach():Void
+	{
+		var length:Int = _orderedChildList.length;
+		for (i in 0...length)
+		{
+			_orderedChildList[i].detach();
+		}
+		
+		doDetach();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE GRAPHICS CONTEXT TREE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Actually attach the native layer
+	 */
+	private function doAttach():Void
+	{
+		_graphicsContextImpl.attach(parentNode.nativeLayer);
+	}
+	
+	/**
+	 * Actually detach the native layer
+	 */
+	private function doDetach():Void
+	{
+		if (parentNode != null)
+		{
+			_graphicsContextImpl.detach(parentNode.nativeLayer);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -800,7 +800,12 @@ class HTMLElement extends Element<HTMLElement>
 			//then detach this ElementRenderer from the parent 
 			//ElementRenderer
 			detachFromParentElementRenderer();
-			elementRenderer.dispose();
+			
+			//TODO 1 : trouble for now in HTMLDocument, when disposing
+			//of element renderer, if it is the currently hovered element
+			//throws exception when mouse move. Store hovered HTMLElement 
+			//instead ?
+			//elementRenderer.dispose();
 			elementRenderer = null;
 		}
 	}

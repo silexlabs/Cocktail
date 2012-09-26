@@ -29,22 +29,6 @@ class HTMLHtmlElement extends HTMLElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC INVALIDATION METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Overriden as the root element renderer
-	 * never has a parent
-	 */
-	override public function invalidate(invalidationReason:InvalidationReason):Void
-	{
-		if (elementRenderer != null)
-		{
-			elementRenderer.invalidate(invalidationReason);
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -79,14 +63,10 @@ class HTMLHtmlElement extends HTMLElement
 	/**
 	 * The HTMLHTMLElement always generate a root rendering
 	 * tree element.
-	 * 
-	 * It is immediately attach as there are no parent
-	 * to attach it
 	 */
 	override private function createElementRenderer():Void
 	{ 
 		elementRenderer = new InitialBlockRenderer(this);
-		elementRenderer.attach();
 	}
 	
 	/**
