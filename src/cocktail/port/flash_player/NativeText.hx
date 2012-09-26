@@ -30,12 +30,28 @@ class NativeText extends AbstractNativeText
 	private var _textLine:TextLine;
 	
 	/**
+	 * The native bitmap data extracted from
+	 * the text
+	 */
+	private var _nativeBitmap:BitmapData;
+	
+	/**
 	 * class constructor
 	 */
 	public function new(nativeElement:NativeElement) 
 	{
 		super(nativeElement);
 		_textLine = cast(nativeElement);
+	}
+	
+	/**
+	 * clean-up method
+	 */
+	override public function dispose():Void
+	{
+		_textLine = null;
+		_nativeBitmap.dispose();
+		_nativeBitmap = null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -48,12 +64,12 @@ class NativeText extends AbstractNativeText
 	 */
 	override public function getBitmap(bounds:RectangleVO):NativeBitmapData
 	{
-		var bitmap:BitmapData = new BitmapData(Math.round(bounds.width), Math.round(bounds.height), true, 0x00000000);
+		_nativeBitmap = new BitmapData(Math.round(bounds.width), Math.round(bounds.height), true, 0x00000000);
 		var matrix:Matrix = new Matrix();
 		matrix.translate(bounds.x, bounds.y);
-		bitmap.draw(_nativeElement, matrix);
+		_nativeBitmap.draw(_nativeElement, matrix);
 		
-		return bitmap;
+		return _nativeBitmap;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

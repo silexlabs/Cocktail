@@ -218,6 +218,13 @@ class HTMLDocument extends Document
 	private var _layerTreeNeedsUpdate:Bool;
 	
 	/**
+	 * Wether the native layer tree which is 
+	 * a tree formed of native display list
+	 * elements needs to be updated
+	 */
+	private var _nativeLayerTreeNeedsUpdate:Bool;
+	
+	/**
 	 * Wheter the graphics context tree, used
 	 * to paint the rendering tree should
 	 * be updated after its structure changed
@@ -311,6 +318,7 @@ class HTMLDocument extends Document
 		_forceGraphicsContextUpdate = false;
 		_renderingTreeNeedsUpdate = true;
 		_layerTreeNeedsUpdate = true;
+		_nativeLayerTreeNeedsUpdate = true;
 		
 		_mousePoint = new PointVO(0.0, 0.0);
 		
@@ -956,6 +964,15 @@ class HTMLDocument extends Document
 	}
 	
 	/**
+	 * schedule an update of the native layer tree
+	 */
+	public function invalidateNativeLayerTree():Void
+	{
+		_nativeLayerTreeNeedsUpdate = true;
+		invalidate();
+	}
+	
+	/**
 	 * Shedule an update of the graphics
 	 * context tree
 	 */
@@ -1055,10 +1072,16 @@ class HTMLDocument extends Document
 		//before painting onto it
 		if (_graphicsContextTreeNeedsUpdate == true)
 		{
-			trace("uppppppppppppppppppppppppp gra");
 			documentElement.elementRenderer.layerRenderer.updateGraphicsContext(_forceGraphicsContextUpdate);
 			_graphicsContextTreeNeedsUpdate = false;
 			_forceGraphicsContextUpdate = false;
+		}
+		
+		//update the tree of native layer if needed
+		if (_nativeLayerTreeNeedsUpdate == true)
+		{
+			documentElement.elementRenderer.layerRenderer.graphicsContext.updateNativeLayer();
+			_nativeLayerTreeNeedsUpdate = false;
 		}
 		
 		//same as for layout

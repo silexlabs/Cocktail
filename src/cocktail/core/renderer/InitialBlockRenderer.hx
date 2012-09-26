@@ -230,7 +230,12 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		var width:Float = containerBlockData.width;
 		var height:Float = containerBlockData.height;
 		
-		return new RectangleVO(0.0, 0.0, width, height);
+		bounds.x = 0.0;
+		bounds.y = 0.0;
+		bounds.width = 0.0;
+		bounds.height = 0.0;
+		
+		return bounds;
 	}
 	
 	/**

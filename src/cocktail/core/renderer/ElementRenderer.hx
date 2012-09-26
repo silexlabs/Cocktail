@@ -110,10 +110,8 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * For instance if the ElementRenderer is relatively positioned, its
 	 * bounds once transformed with the relative offset are returned
 	 * instead of its bounds in the flow like the regular bounds.
-	 * 
-	 * This is a utility read-only method
 	 */
-	public var scrollableBounds(get_scrollableBounds, never):RectangleVO;
+	public var scrollableBounds(get_scrollableBounds, null):RectangleVO;
 	
 	/**
 	 * This is the position of the top left padding box corner of the 
@@ -274,7 +272,32 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		globalContainingBlockOrigin = new PointVO(0.0, 0.0);
 		
+		scrollableBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		
 		lineBoxes = new Array<LineBox>();
+	}
+	
+	/**
+	 * clean-up method
+	 */
+	public function dispose():Void
+	{
+		domNode = null;
+		coreStyle = null;
+		bounds = null;
+		scrollOffset = null;
+		positionedOrigin = null;
+		globalPositionnedAncestorOrigin = null;
+		globalContainingBlockOrigin = null;
+		layerRenderer = null;
+		
+		var length:Int = lineBoxes.length;
+		for (i in 0...length)
+		{
+			lineBoxes[i].dispose();
+		}
+		
+		lineBoxes = null;
 	}
 	
 	/**
@@ -576,7 +599,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			childNodes[i].detach();
 		}
 		
-		detachLayer();
+		if (layerRenderer != null)
+		{
+			detachLayer();
+		}
 	}
 	
 	/**
@@ -663,6 +689,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{
 			parentNode.layerRenderer.removeChild(layerRenderer);
 			_hasOwnLayer = false;
+			layerRenderer.dispose();
 		}
 		
 		layerRenderer = null;
@@ -1122,7 +1149,12 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		var relativeOffset:PointVO = getRelativeOffset();
 		var bounds:RectangleVO = this.bounds;
 		
-		return new RectangleVO(bounds.x + relativeOffset.x, bounds.y + relativeOffset.y, bounds.width, bounds.height);
+		scrollableBounds.x = bounds.x + relativeOffset.x;
+		scrollableBounds.y = bounds.y + relativeOffset.y;
+		scrollableBounds.width = bounds.width;
+		scrollableBounds.height = bounds.height;
+		
+		return scrollableBounds;
 	}
 	
 	private function get_bounds():RectangleVO

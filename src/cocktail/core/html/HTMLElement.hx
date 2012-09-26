@@ -800,6 +800,7 @@ class HTMLElement extends Element<HTMLElement>
 			//then detach this ElementRenderer from the parent 
 			//ElementRenderer
 			detachFromParentElementRenderer();
+			elementRenderer.dispose();
 			elementRenderer = null;
 		}
 	}

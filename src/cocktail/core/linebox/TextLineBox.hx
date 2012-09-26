@@ -82,6 +82,22 @@ class TextLineBox extends LineBox
 	}
 	
 	/**
+	 * cleanup method
+	 */
+	override public function dispose():Void
+	{
+		super.dispose();
+		if (_nativeText != null)
+		{
+			_nativeText.dispose();
+			_nativeText = null;
+		}
+		_fontMetrics = null;
+		_renderRect = null;
+		_destinationPoint = null;
+	}
+	
+	/**
 	 * Instantiate a platform specific text rendering element
 	 */
 	private function initNativeTextElement(text:String, fontManager:FontManager, style:CoreStyle):Void
