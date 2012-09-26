@@ -61,4 +61,20 @@ class PluginLayerRenderer extends CompositingLayerRenderer
 		super.detach();
 	}
 	
+	/////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	////////////////////////////////
+	
+	/**
+	 * override to prevent updating the bitmap
+	 * data, plugin don't need bitmap data
+	 * 
+	 * TODO 2 : might actually be useful to draw background, borders...
+	 * should use graphic context of parent
+	 */
+	override private function initBitmapData(width:Int, height:Int):Void
+	{
+		
+	}
+	
 }

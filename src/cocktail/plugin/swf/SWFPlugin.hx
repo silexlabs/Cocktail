@@ -91,7 +91,7 @@ class SWFPlugin extends Plugin
 	public function new(elementAttributes:Hash<String>, params:Hash<String>, loadComplete:Void->Void, loadError:Void->Void) 
 	{
 		super(elementAttributes, params, loadComplete, loadError);
-
+		
 		//retrive the scale mode if provded or use default
 		if (params.exists(SCALE_MODE))
 		{
@@ -122,7 +122,10 @@ class SWFPlugin extends Plugin
 		_scaleMode = null;
 		if (_loader != null)
 		{
+			//method doesn't exists in nme
+			#if (air || flash)
 			_loader.unloadAndStop();
+			#end
 			_loader = null;
 		}
 	}

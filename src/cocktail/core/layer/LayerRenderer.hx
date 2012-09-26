@@ -625,7 +625,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		{
 			if (hasOwnGraphicsContext == true)
 			{
-				graphicsContext.initBitmapData(windowWidth, windowHeight);
+				initBitmapData(windowWidth, windowHeight);
 			}
 			_needsBitmapSizeUpdate = false;
 			
@@ -641,7 +641,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			//by this LayerRenderer
 			if (hasOwnGraphicsContext == true)
 			{
-				graphicsContext.initBitmapData(windowWidth, windowHeight);
+				initBitmapData(windowWidth, windowHeight);
 				_needsBitmapSizeUpdate = false;
 			}
 			
@@ -755,6 +755,15 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	/////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	////////////////////////////////
+	
+	/**
+	 * Refresh the size of the graphics context's
+	 * bitmap data
+	 */
+	private function initBitmapData(width:Int, height:Int):Void
+	{
+		graphicsContext.initBitmapData(width, height);
+	}
 	
 	/**
 	 * Compute all the transformation that should be applied to this LayerRenderer
