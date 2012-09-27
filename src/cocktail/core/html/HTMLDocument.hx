@@ -219,6 +219,13 @@ class HTMLDocument extends Document
 	private var _layerTreeNeedsUpdate:Bool;
 	
 	/**
+	 * Wether the stacking contexts, which represents
+	 * the z-index for the layer of the document
+	 * needs to be updated
+	 */
+	private var _stackingContextsNeedUpdate:Bool;
+	
+	/**
 	 * Wether the native layer tree which is 
 	 * a tree formed of native display list
 	 * elements needs to be updated
@@ -320,6 +327,7 @@ class HTMLDocument extends Document
 		_renderingTreeNeedsUpdate = true;
 		_layerTreeNeedsUpdate = true;
 		_nativeLayerTreeNeedsUpdate = true;
+		_stackingContextsNeedUpdate = true;
 		
 		_mousePoint = new PointVO(0.0, 0.0);
 		
@@ -965,6 +973,15 @@ class HTMLDocument extends Document
 	}
 	
 	/**
+	 * schedule an update of the stacking context
+	 */
+	public function invalidateStackingContexts():Void
+	{
+		_stackingContextsNeedUpdate = true;
+		invalidate();
+	}
+	
+	/**
 	 * schedule an update of the native layer tree
 	 */
 	public function invalidateNativeLayerTree():Void
@@ -1048,6 +1065,13 @@ class HTMLDocument extends Document
 		{
 			documentElement.elementRenderer.updateLayerRenderer();
 			_layerTreeNeedsUpdate = false;
+		}
+		
+		//update the layers stacking contexts
+		if (_stackingContextsNeedUpdate == true)
+		{
+			documentElement.elementRenderer.layerRenderer.updateStackingContext();
+			_stackingContextsNeedUpdate = false;
 		}
 		
 		//only layout if the invalidate layout
