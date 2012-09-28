@@ -52,12 +52,6 @@ class TransitionManager
 	private static var _instance:TransitionManager;
 	
 	/**
-	 * The time, in milliseconds between each update of the transition
-	 * in progress
-	 */
-	private static inline var TRANSITION_UPDATE_SPEED:Int = 20;
-	
-	/**
 	 * Store a ref to each transitions in progress, where
 	 * the key is a CSS property name and the value is the
 	 * array of transition in progress for this property
@@ -208,7 +202,7 @@ class TransitionManager
 		
 		//set a delayed method call which will be repeated
 		//as long as needed
-		Lib.document.timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
+		Lib.document.timer.delay(onTransitionTick);
 	}
 	
 	/**
@@ -274,7 +268,7 @@ class TransitionManager
 		//drop to 0, delay a call to this method
 		if (_currentTransitionsNumber > 0)
 		{
-			Lib.document.timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
+			Lib.document.timer.delay(onTransitionTick);
 		}
 	}
 	

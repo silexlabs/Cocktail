@@ -77,4 +77,13 @@ class PluginLayerRenderer extends CompositingLayerRenderer
 		
 	}
 	
+	/**
+	 * No need to clear, its not suposed to have
+	 * bitmap
+	 */
+	override private function clear():Void
+	{
+	
+	}
+	
 }

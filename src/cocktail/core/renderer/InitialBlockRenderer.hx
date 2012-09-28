@@ -102,7 +102,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	override private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
 	{
-		invalidateDocumentLayoutAndRendering();
+		invalidateLayoutAndRendering();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

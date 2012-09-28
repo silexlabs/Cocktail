@@ -371,17 +371,11 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//same graphic context
 		if (hasOwnGraphicsContext == true)
 		{
-			var length:Int = childNodes.length;
-			for (i in 0...length)
-			{
-				var child:LayerRenderer = childNodes[i];
-				if (child.hasOwnGraphicsContext == false)
-				{
-					invalidateChildLayerRenderer(child);
-				}
-				
-			}
+			invalidateChildLayerRenderer(this);
 		}
+		
+		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
+		htmlDocument.invalidateRendering();
 	}
 	
 	/**
@@ -411,14 +405,15 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	private function invalidateChildLayerRenderer(rootLayer:LayerRenderer):Void
 	{
-		rootLayer.invalidateRendering();
 		var childNodes:Array<LayerRenderer> = rootLayer.childNodes;
 		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
 			var child:LayerRenderer = childNodes[i];
+			
 			if (child.hasOwnGraphicsContext == false)
 			{
+				child.invalidateRendering();
 				invalidateChildLayerRenderer(child);
 			}
 		}
@@ -715,7 +710,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			if (hasOwnGraphicsContext == true)
 			{
 				//reset the bitmap
-				graphicsContext.clear();
+				clear();
 			}
 		}
 	
@@ -757,7 +752,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//their own graphic context, layer which don't always gets re-painted
 		//
 		//TODO 2 : invalidation for layer is still messy
-		if (_needsRendering == true || hasOwnGraphicsContext == false)
+		if (_needsRendering == true)
 		{
 			//render the rootElementRenderer itself which will also
 			//render all ElementRenderer belonging to this LayerRenderer
@@ -817,6 +812,14 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	private function initBitmapData(width:Int, height:Int):Void
 	{
 		graphicsContext.initBitmapData(width, height);
+	}
+	
+	/**
+	 * Reset the bitmap
+	 */
+	private function clear():Void
+	{
+		graphicsContext.clear();
 	}
 	
 	/**

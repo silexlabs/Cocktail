@@ -85,13 +85,6 @@ class HTMLDocument extends Document
 	private static inline var MOUSE_WHEEL_DELTA_MULTIPLIER:Int = 10;
 	
 	/**
-	 * The minimum amount of time between two layout and rendering. Can
-	 * be used to set the framerate of the application. Dividing 1000
-	 * by this value gives the framerate of the application
-	 */
-	private static inline var INVALIDATION_INTERVAL:Int = 20;
-	
-	/**
 	 * The element that contains the content for the document.
 	 * 
 	 * The body is the root of the visual content in HTML
@@ -1044,7 +1037,7 @@ class HTMLDocument extends Document
 	private function doInvalidate():Void
 	{
 		_invalidationScheduled = true;
-		timer.delay(onLayoutSchedule, INVALIDATION_INTERVAL);
+		timer.delay(onLayoutSchedule);
 	}
 	
 	/**

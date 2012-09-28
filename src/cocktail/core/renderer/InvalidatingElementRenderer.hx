@@ -11,6 +11,7 @@ import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.css.CSSConstants;
+import haxe.Stack;
 
 /**
  * This class implements the invalidation behaviour
@@ -50,6 +51,20 @@ class InvalidatingElementRenderer extends ElementRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING TREE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * when added to the rendering tree, 
+	 * this element needs a layout
+	 */
+	override private function addedToRenderingTree():Void
+	{
+		super.addedToRenderingTree();
+		invalidateLayout();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -59,13 +74,6 @@ class InvalidatingElementRenderer extends ElementRenderer
 	 */
 	override public function invalidate(invalidationReason:InvalidationReason):Void
 	{
-		//invalidate the layer associated with
-		//this ElementRenderer
-		if (layerRenderer != null)
-		{
-			layerRenderer.invalidateRendering();
-		}
-		
 		switch(invalidationReason)
 		{
 			case InvalidationReason.styleChanged(styleName):
@@ -78,19 +86,18 @@ class InvalidatingElementRenderer extends ElementRenderer
 				invalidatedPositionedChildStyle(styleName, invalidationReason);
 				
 			case InvalidationReason.needsImmediateLayout:
-				invalidateDocumentLayout(true);
+				invalidateLayoutImmediate();
 				
 			case InvalidationReason.windowResize:
-				_needsLayout = true;
 				_childrenNeedLayout = true;
 				_positionedChildrenNeedLayout = true;
-				invalidateDocumentLayoutAndRendering();
+				invalidateLayoutAndRendering();
 				
 			case InvalidationReason.backgroundImageLoaded:
-				invalidateDocumentRendering();
+				invalidateRendering();
 				
 			case InvalidationReason.other:
-				_needsLayout = true;
+				invalidateLayout();
 				_childrenNeedLayout = true;
 				_positionedChildrenNeedLayout = true;
 				invalidateContainingBlock(invalidationReason);
@@ -124,8 +131,8 @@ class InvalidatingElementRenderer extends ElementRenderer
 	 */
 	private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
 	{
-		//TODO 1 : not supposed to happen but bug with scrollbars for now
-		if (parentNode == null)
+		//TODO 1 : not supposed to happen
+		if (_containingBlock == null)
 		{
 			return;
 		}
@@ -181,22 +188,22 @@ class InvalidatingElementRenderer extends ElementRenderer
 				
 				if (isPositioned() == true && isRelativePositioned() == false)
 				{
-					_needsLayout = true;
+					invalidateLayoutAndRendering();
 					invalidateContainingBlock(invalidationReason);
 				}
 				//if the child is relatively positioned, it only needs a rendering, as its
 				//layout is not affected by those styles
 				else
 				{
-					invalidateDocumentRendering();
+					invalidateRendering();
 				}
 				
-			//those style invalidate the child TextµRenderer of this ElementRenderer	
+			//those style invalidate the child TextRenderer of this ElementRenderer	
 			case CSSConstants.COLOR, CSSConstants.FONT_FAMILY, CSSConstants.FONT_SIZE,
 			CSSConstants.FONT_VARIANT, CSSConstants.FONT_STYLE, CSSConstants.FONT_WEIGHT,
 			CSSConstants.LETTER_SPACING, CSSConstants.TEXT_TRANSFORM, CSSConstants.WHITE_SPACE:
 				invalidateText(invalidationReason);
-				_needsLayout = true;
+				invalidateLayoutAndRendering();
 				invalidateContainingBlock(invalidationReason);
 			
 			//a background style change only requires a re-rendering, as backgrounds never
@@ -205,12 +212,12 @@ class InvalidatingElementRenderer extends ElementRenderer
 			CSSConstants.BACKGROUND_IMAGE, CSSConstants.BACKGROUND_POSITION,
 			CSSConstants.BACKGROUND_ORIGIN, CSSConstants.BACKGROUND_REPEAT,
 			CSSConstants.BACKGROUND_SIZE:
-				invalidateDocumentRendering();
+				invalidateRendering();
 				
 			//for any other style change,invalidate layout, rendering and 
 			//the containing block
 			default:
-				_needsLayout = true;
+				invalidateLayout();
 				invalidateContainingBlock(invalidationReason);
 		}
 	}
@@ -231,8 +238,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 			//by default, set a relayout of this containing block and
 			//a rendering of all its children
 			default:
-				_needsLayout = true;
-				invalidateDocumentLayoutAndRendering();
+				invalidateLayoutAndRendering();
 		}
 	}
 	
@@ -250,7 +256,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 			
 			default:
 				_positionedChildrenNeedLayout = true;
-				invalidateDocumentLayoutAndRendering();
+				//invalidateLayoutAndRendering();
 		}
 	}
 	
@@ -260,32 +266,56 @@ class InvalidatingElementRenderer extends ElementRenderer
 	
 	/**
 	 * schedule a layout with the HTMLDocument
-	 * @param immediate whether the layout should be
-	 * synchronous
 	 */
-	private function invalidateDocumentLayout(immediate:Bool):Void
+	private function invalidateLayout():Void
 	{
+		_needsLayout = true;
 		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
-		htmlDocument.invalidateLayout(immediate);
+		if (htmlDocument != null)
+		{
+			htmlDocument.invalidateLayout(false);
+		}
 	}
 	
 	/**
-	 * schedule a rendering with the HTMLDocument
+	 * execute a layout immediately
 	 */
-	private function invalidateDocumentRendering():Void
+	public function invalidateLayoutImmediate():Void
 	{
+		_needsLayout = true;
 		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
-		htmlDocument.invalidateRendering();
+		htmlDocument.invalidateLayout(true);
 	}
 	
 	/**
-	 * schedule a layout and rendering with the HTMLDocument
+	 * schedule a rendering
 	 */
-	private function invalidateDocumentLayoutAndRendering():Void
+	private function invalidateRendering():Void
 	{
+		//invalidate the layer associated with
+		//this ElementRenderer
+		if (layerRenderer != null)
+		{
+			layerRenderer.invalidateRendering();
+		}
+	}
+	
+	/**
+	 * schedule a layout and rendering
+	 */
+	private function invalidateLayoutAndRendering():Void
+	{
+		_needsLayout = true;
+		
 		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
 		htmlDocument.invalidateLayout(false);
-		htmlDocument.invalidateRendering();
+		
+		//invalidate the layer associated with
+		//this ElementRenderer
+		if (layerRenderer != null)
+		{
+			layerRenderer.invalidateRendering();
+		}
 	}
 	
 	/**

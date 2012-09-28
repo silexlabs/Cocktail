@@ -33,7 +33,8 @@ class Timer
 		//TODO 3 : for now only support for flash runtime
 		//use enter frame intead of timer, seems more efficient because
 		//synchronised with screen refresh
-		flash.Lib.current.stage.addEventListener(flash.events.Event.ENTER_FRAME, function(e) { onUpdate(); } );
+		flash.Lib.current.stage.addEventListener(flash.events.Event.ENTER_FRAME, function(e) {flash.Lib.current.stage.invalidate(); } );
+		flash.Lib.current.stage.addEventListener(flash.events.Event.RENDER, function(e) { onUpdate(); } );
 		#end
 	}
 	
@@ -43,9 +44,11 @@ class Timer
 	
 	/**
 	 * Set up a method to be called after the provided
-	 * delay has passed
+	 * delay has passed.
+	 * 
+	 * If no delay is given, the method will be called on next update
 	 */
-	public function delay(timerCallback:Void->Void, delay:Float):Void
+	public function delay(timerCallback:Void->Void, delay:Float = 0):Void
 	{
 		//represents the absolute time in milliseconds when this
 		//method should be called
