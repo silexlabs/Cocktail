@@ -630,6 +630,11 @@ class BlockBoxRenderer extends ScrollableRenderer
 			width -= _verticalScrollBar.coreStyle.usedValues.width;
 		}
 		
-		return new ContainingBlockVO(width, coreStyle.isAuto(coreStyle.width), height, coreStyle.isAuto(coreStyle.height));
+		_containerBlockData.width = width;
+		_containerBlockData.isWidthAuto = coreStyle.isAuto(coreStyle.width);
+		_containerBlockData.height = height;
+		_containerBlockData.isHeightAuto = coreStyle.isAuto(coreStyle.height);
+		
+		return _containerBlockData;
 	}
 }

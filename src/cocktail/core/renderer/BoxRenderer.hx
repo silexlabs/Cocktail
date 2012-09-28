@@ -58,11 +58,27 @@ import haxe.Log;
 class BoxRenderer extends InvalidatingElementRenderer
 {
 	/**
+	 * Holds the dimensions of this box
+	 * renderer, use by its children for layout
+	 */
+	private var _containerBlockData:ContainingBlockVO;
+	
+	/**
+	 * Holds the current dimensions of the window
+	 * 
+	 * TODO 2 : should be held by the window object, just a
+	 * DimensionVO ?
+	 */
+	private var _windowData:ContainingBlockVO;
+	
+	/**
 	 * class constructor
 	 */
 	public function new(domNode:HTMLElement) 
 	{
 		super(domNode);
+		_containerBlockData = new ContainingBlockVO(0.0, false, 0.0, false);
+		_windowData = new ContainingBlockVO(0.0, false, 0.0, false);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -435,8 +451,11 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	public function getContainerBlockData():ContainingBlockVO
 	{
-		return new ContainingBlockVO(coreStyle.usedValues.width, coreStyle.isAuto(coreStyle.width),
-		coreStyle.usedValues.height, coreStyle.isAuto(coreStyle.height));
+		_containerBlockData.width = coreStyle.usedValues.width;
+		_containerBlockData.isWidthAuto = coreStyle.isAuto(coreStyle.width);
+		_containerBlockData.height = coreStyle.usedValues.height;
+		_containerBlockData.isHeightAuto = coreStyle.isAuto(coreStyle.height);
+		return _containerBlockData;
 	}
 	
 	/**
@@ -450,6 +469,11 @@ class BoxRenderer extends InvalidatingElementRenderer
 		var width:Float = window.innerWidth;
 		var height:Float = window.innerHeight;
 		
-		return new ContainingBlockVO(width, false, height, false);
+		_windowData.width = window.innerWidth;
+		_windowData.height = window.innerHeight;
+		_windowData.isHeightAuto = false;
+		_windowData.isWidthAuto = false;
+		
+		return _windowData;
 	}
 }

@@ -90,6 +90,12 @@ class LineBox extends NodeBase<LineBox>
 	public var paddingRight:Float;
 	
 	/**
+	 * Holds the current bounds of the 
+	 * children
+	 */ 
+	private var _childrenBounds:RectangleVO;
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new(elementRenderer:ElementRenderer) 
@@ -97,6 +103,7 @@ class LineBox extends NodeBase<LineBox>
 		super();
 		
 		bounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		_childrenBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
 		
 		this.elementRenderer = elementRenderer;
 		
@@ -248,9 +255,6 @@ class LineBox extends NodeBase<LineBox>
 	 */
 	private function getChildrenBounds(childrenBounds:Array<RectangleVO>):RectangleVO
 	{
-
-		var bounds:RectangleVO;
-		
 		var left:Float = 50000;
 		var top:Float = 50000;
 		var right:Float = -50000;
@@ -278,20 +282,23 @@ class LineBox extends NodeBase<LineBox>
 			}
 		}
 			
-		bounds = new RectangleVO(left, top, right - left, bottom - top);
+		_childrenBounds.x = left;
+		_childrenBounds.y = top;
+		_childrenBounds.width = left - right;
+		_childrenBounds.height = bottom - top;
 		
 		//need to implement better fix,
 		//sould not be negative
-		if (bounds.width < 0)
+		if (_childrenBounds.width < 0)
 		{
-			bounds.width = 0;
+			_childrenBounds.width = 0;
 		}
-		if (bounds.height < 0)
+		if (_childrenBounds.height < 0)
 		{
-			bounds.height = 0;
+			_childrenBounds.height = 0;
 		}
 				
-		return bounds;
+		return _childrenBounds;
 		
 	}
 	

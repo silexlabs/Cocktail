@@ -90,6 +90,12 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	public var bounds(get_bounds, set_bounds):RectangleVO;
 	
 	/**
+	 * Holds the current 
+	 * bounds of the children
+	 */
+	private var _childrenBounds:RectangleVO;
+	
+	/**
 	 * The bounds of the ElementRenderer in the space of the Window.
 	 * 
 	 * Returns the
@@ -275,6 +281,8 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		globalContainingBlockOrigin = new PointVO(0.0, 0.0);
 		
 		scrollableBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		
+		_childrenBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
 		
 		lineBoxes = new Array<LineBox>();
 	}
@@ -1064,8 +1072,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function getChildrenBounds(childrenBounds:Array<RectangleVO>):RectangleVO
 	{
-		var bounds:RectangleVO;
-		
 		var left:Float = 50000;
 		var top:Float = 50000;
 		var right:Float = -50000;
@@ -1093,20 +1099,23 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			}
 		}
 		
-		bounds = new RectangleVO(left, top, right - left, bottom - top);
+		_childrenBounds.x = left;
+		_childrenBounds.y = top;
+		_childrenBounds.width = right - left;
+		_childrenBounds.height = bottom - top;
 				
 		//TODO 4 : need to implement better fix,
 		//sould not be negative
-		if (bounds.width < 0)
+		if (_childrenBounds.width < 0)
 		{
-			bounds.width = 0;
+			_childrenBounds.width = 0;
 		}
-		if (bounds.height < 0)
+		if (_childrenBounds.height < 0)
 		{
-			bounds.height = 0;
+			_childrenBounds.height = 0;
 		}
 				
-		return bounds;
+		return _childrenBounds;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

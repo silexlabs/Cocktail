@@ -195,7 +195,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 			height -= _horizontalScrollBar.coreStyle.usedValues.height;
 		}
 		
-		return new ContainingBlockVO(width, false, height, false);
+		_containerBlockData.width = width;
+		_containerBlockData.height = height;
+		_containerBlockData.isHeightAuto = false;
+		_containerBlockData.isWidthAuto = false;
+		return _containerBlockData;
 	}
 	
 	/**
