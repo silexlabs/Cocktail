@@ -92,13 +92,13 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	/**
 	 * The bounds of the ElementRenderer in the space of the Window.
 	 * 
-	 * This is a utility read-only property which returns the
+	 * Returns the
 	 * relevant global bounds for an ElementRenderer. For instance
 	 * if the ElementRenderer uses the normal flow, then its bounds
 	 * will be used to determine its global bounds whereas if it
 	 * is absolutely positioned, it will use its positioned bounds
 	 */
-	public var globalBounds(get_globalBounds, never):RectangleVO;
+	public var globalBounds(get_globalBounds, null):RectangleVO;
 	
 	/**
 	 * The scrollable bounds of the ElementRenderer in the space of the scrollable containing
@@ -264,6 +264,8 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		bounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
 		
+		globalBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		
 		scrollOffset = new PointVO(0.0, 0.0);
 		
 		positionedOrigin = new PointVO(0.0, 0.0);
@@ -285,6 +287,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		domNode = null;
 		coreStyle = null;
 		bounds = null;
+		globalBounds = null;
 		scrollOffset = null;
 		positionedOrigin = null;
 		globalPositionnedAncestorOrigin = null;
@@ -474,9 +477,14 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{
 			var child:ElementRenderer = childNodes[i];
 			
+			var childGlobalBounds:RectangleVO = child.globalBounds;
+			
 			//store the global bounds before update, to check if there
 			//is any change. If there is, the child needs to be re-rendered
-			var currentChildGlobalBounds:RectangleVO = child.globalBounds;
+			var currentX:Float = childGlobalBounds.x;
+			var currentY:Float = childGlobalBounds.y;
+			var currentWidth:Float = childGlobalBounds.width;
+			var currentHeight:Float = childGlobalBounds.height;
 			
 			child.globalContainingBlockOrigin.x = addedX;
 			child.globalContainingBlockOrigin.y = addedY;
@@ -487,16 +495,16 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			child.scrollOffset.x = addedScrollX;
 			child.scrollOffset.y = addedScrollY;
 			
-			//get the updated bounds of the child
-			var newChildGlobalBounds:RectangleVO = child.globalBounds;
+			//make the child compute its new global bounds
+			child.updateGlobalBounds();
 			
 			//if there was any change in the bounds of the child, its
 			//layer is invalidated so that it gets re-painted on next
 			//rendering
-			if (currentChildGlobalBounds.x != newChildGlobalBounds.x ||
-			currentChildGlobalBounds.y != newChildGlobalBounds.y ||
-			currentChildGlobalBounds.width != newChildGlobalBounds.width ||
-			currentChildGlobalBounds.height != newChildGlobalBounds.height)
+			if (currentX != childGlobalBounds.x ||
+			currentY != childGlobalBounds.y ||
+			currentWidth != childGlobalBounds.width ||
+			currentHeight != childGlobalBounds.height)
 			{
 				child.layerRenderer.invalidateRendering();
 			}
@@ -507,6 +515,78 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				child.setGlobalOrigins(addedX, addedY, addedPositionedX, addedPositionedY, addedScrollX, addedScrollY);
 			}
 		}
+	}
+	
+	/**
+	 * update the global bounds bounds of the ElementRenderer
+	 * which are its bounds relative to the
+	 * Window
+	 */
+	public function updateGlobalBounds():Void
+	{
+		var globalX:Float;
+		var globalY:Float;
+		
+		var bounds:RectangleVO = this.bounds;
+		
+		var positionKeyword:CSSKeywordValue = coreStyle.getKeyword(coreStyle.position);
+		
+		//fixed positioned
+		if (positionKeyword == FIXED)
+		{
+			//here it uses its static position for x
+			if (coreStyle.isAuto(coreStyle.left) == true && coreStyle.isAuto(coreStyle.right) == true)
+			{
+				globalX = globalContainingBlockOrigin.x + bounds.x;
+			}
+			//here it uses its position relative to the Window for x
+			else
+			{
+				globalX = positionedOrigin.x;
+			}
+			//static position
+			if (coreStyle.isAuto(coreStyle.top) == true && coreStyle.isAuto(coreStyle.bottom) == true)
+			{
+				globalY = globalContainingBlockOrigin.y + bounds.y;
+			}
+			else
+			{
+				globalY = positionedOrigin.y;
+			}
+		}
+		//absolute positioned
+		else if (positionKeyword == ABSOLUTE)
+		{
+			//static position for x
+			if (coreStyle.isAuto(coreStyle.left) == true && coreStyle.isAuto(coreStyle.right) == true)
+			{
+				globalX = globalContainingBlockOrigin.x + bounds.x;
+			}
+			else
+			{
+				globalX = globalPositionnedAncestorOrigin.x + positionedOrigin.x;
+			}
+			//static position for y
+			if (coreStyle.isAuto(coreStyle.top) == true && coreStyle.isAuto(coreStyle.bottom) == true)
+			{
+				globalY = globalContainingBlockOrigin.y + bounds.y;
+			}
+			else
+			{
+				globalY = globalPositionnedAncestorOrigin.y + positionedOrigin.y;
+			}
+		}
+		//here the ElementRenderer uses the normal flow
+		else
+		{
+			globalX = globalContainingBlockOrigin.x + bounds.x;
+			globalY = globalContainingBlockOrigin.y + bounds.y;
+		}
+		
+		globalBounds.x = globalX;
+		globalBounds.y = globalY;
+		globalBounds.width = bounds.width;
+		globalBounds.height = bounds.height;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1058,73 +1138,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Return the bounds of the ElementRenderer relative to the
-	 * Window, depending on its positioning scheme
-	 */
+
 	private function get_globalBounds():RectangleVO
 	{
-		var globalX:Float;
-		var globalY:Float;
-		
-		var bounds:RectangleVO = this.bounds;
-		
-		var positionKeyword:CSSKeywordValue = coreStyle.getKeyword(coreStyle.position);
-		
-		//fixed positioned
-		if (positionKeyword == FIXED)
-		{
-			//here it uses its static position for x
-			if (coreStyle.isAuto(coreStyle.left) == true && coreStyle.isAuto(coreStyle.right) == true)
-			{
-				globalX = globalContainingBlockOrigin.x + bounds.x;
-			}
-			//here it uses its position relative to the Window for x
-			else
-			{
-				globalX = positionedOrigin.x;
-			}
-			//static position
-			if (coreStyle.isAuto(coreStyle.top) == true && coreStyle.isAuto(coreStyle.bottom) == true)
-			{
-				globalY = globalContainingBlockOrigin.y + bounds.y;
-			}
-			else
-			{
-				globalY = positionedOrigin.y;
-			}
-		}
-		//absolute positioned
-		else if (positionKeyword == ABSOLUTE)
-		{
-			//static position for x
-			if (coreStyle.isAuto(coreStyle.left) == true && coreStyle.isAuto(coreStyle.right) == true)
-			{
-				globalX = globalContainingBlockOrigin.x + bounds.x;
-			}
-			else
-			{
-				globalX = globalPositionnedAncestorOrigin.x + positionedOrigin.x;
-			}
-			//static position for y
-			if (coreStyle.isAuto(coreStyle.top) == true && coreStyle.isAuto(coreStyle.bottom) == true)
-			{
-				globalY = globalContainingBlockOrigin.y + bounds.y;
-			}
-			else
-			{
-				globalY = globalPositionnedAncestorOrigin.y + positionedOrigin.y;
-			}
-		}
-		//here the ElementRenderer uses the normal flow
-		else
-		{
-			globalX = globalContainingBlockOrigin.x + bounds.x;
-			globalY = globalContainingBlockOrigin.y + bounds.y;
-		}
-		
-		return new RectangleVO(globalX, globalY, bounds.width, bounds.height);
+		return globalBounds;
 	}
 	
 	/**

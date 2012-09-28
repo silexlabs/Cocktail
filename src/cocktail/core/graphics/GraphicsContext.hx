@@ -133,7 +133,7 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	{
 		super.appendChild(newChild);
 		
-		instertIntoOrderedChildList(newChild);
+		insertIntoOrderedChildList(newChild);
 		newChild.invalidateNativeLayer();
 		
 		return newChild;
@@ -231,7 +231,16 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	 */
 	private function doAttach():Void
 	{
-		_graphicsContextImpl.attach(parentNode.nativeLayer);
+		var parn:Array<GraphicsContext> = untyped parentNode._orderedChildList;
+	
+		for (i in 0...parn.length)
+		{
+			if (parn[i] == this)
+			{
+				_graphicsContextImpl.attach(parentNode.nativeLayer, i);
+				return;
+			}
+		}
 	}
 	
 	/**
@@ -336,7 +345,7 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	 * Insert the new GraphicsContext based on its z-index (the z-index of the
 	 * ElementRenderer creating the LayerRenderer which created the GraphicsContext)
 	 */
-	private function instertIntoOrderedChildList(newChild:GraphicsContext):Void
+	private function insertIntoOrderedChildList(newChild:GraphicsContext):Void
 	{
 		//get the index of the new child to insert
 		var index:Int = getIndex(newChild.layerRenderer.rootElementRenderer);
@@ -344,10 +353,9 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 		//flasg set to true once the child has found its index in the array
 		var isInserted:Bool = false;
 		
-		/**
-		 * Loop in all the list to find the right
-		 * index for the new child
-		 */
+		
+		//Loop in all the list to find the right
+		//index for the new child
 		var length:Int = _orderedChildList.length;
 		for (i in 0...length)
 		{

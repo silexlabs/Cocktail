@@ -77,7 +77,7 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	{
 		var htmlObjectElement:HTMLObjectElement = cast(domNode);
 		
-		var viewport:RectangleVO = this.globalBounds;
+		var viewport:RectangleVO = new RectangleVO(globalBounds.x, globalBounds.y, globalBounds.width, globalBounds.height);
 		viewport.x += coreStyle.usedValues.paddingLeft;
 		viewport.y += coreStyle.usedValues.paddingTop;
 		

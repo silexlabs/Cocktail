@@ -79,7 +79,7 @@ class AbstractGraphicsContextImpl
 	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function attach(parentNativeLayer:NativeElement):Void
+	public function attach(parentNativeLayer:NativeElement, index:Int):Void
 	{
 		//abstract
 	}

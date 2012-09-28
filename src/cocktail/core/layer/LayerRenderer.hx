@@ -706,7 +706,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		
 		_windowWidth = windowWidth;
 		_windowHeight = windowHeight;
-	
+		
 		//only clear if a rendering is necessary
 		if (_needsRendering == true)
 		{
@@ -1091,31 +1091,38 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		var length:Int = childRenderers.length;
 		for (i in 0...length)
 		{
-			
-			var elementRenderersAtPointInChildRenderer:Array<ElementRenderer> = [];
-			if (childRenderers[i].createOwnLayer() == true)
-			{
-				//TODO 1 : messy, ElementRenderer should be aware of their scrollBounds
-				if (childRenderers[i].isScrollBar() == true)
+				
+				//TODO 1 : hack, child renderer never 
+				//supposed to be null at this point
+				if (childRenderers[i] != null)
 				{
-					elementRenderersAtPointInChildRenderer = childRenderers[i].layerRenderer.getElementRenderersAtPoint(point, scrollX, scrollY);
+					var elementRenderersAtPointInChildRenderer:Array<ElementRenderer> = [];
+				
+					if (childRenderers[i].createOwnLayer() == true)
+					{
+						//TODO 1 : messy, ElementRenderer should be aware of their scrollBounds
+						if (childRenderers[i].isScrollBar() == true)
+						{
+							elementRenderersAtPointInChildRenderer = childRenderers[i].layerRenderer.getElementRenderersAtPoint(point, scrollX, scrollY);
+						}
+						//TODO 1 : messy, ElementRenderer should be aware of their scrollBounds
+						else if (childRenderers[i].coreStyle.getKeyword(childRenderers[i].coreStyle.position) == FIXED)
+						{
+							elementRenderersAtPointInChildRenderer = childRenderers[i].layerRenderer.getElementRenderersAtPoint(point, scrollX , scrollY);
+						}
+						else
+						{
+							elementRenderersAtPointInChildRenderer = childRenderers[i].layerRenderer.getElementRenderersAtPoint(point, scrollX + rootElementRenderer.scrollLeft, scrollY + rootElementRenderer.scrollTop);
+						}
+					}
+				
+					var childLength:Int = elementRenderersAtPointInChildRenderer.length;
+					for (j in 0...childLength)
+					{
+						elementRenderersAtPointInChildRenderers.push(elementRenderersAtPointInChildRenderer[j]);
+					}
 				}
-				//TODO 1 : messy, ElementRenderer should be aware of their scrollBounds
-				else if (childRenderers[i].coreStyle.getKeyword(childRenderers[i].coreStyle.position) == FIXED)
-				{
-					elementRenderersAtPointInChildRenderer = childRenderers[i].layerRenderer.getElementRenderersAtPoint(point, scrollX , scrollY);
-				}
-				else
-				{
-					elementRenderersAtPointInChildRenderer = childRenderers[i].layerRenderer.getElementRenderersAtPoint(point, scrollX + rootElementRenderer.scrollLeft, scrollY + rootElementRenderer.scrollTop);
-				}
-			}
-		
-			var childLength:Int = elementRenderersAtPointInChildRenderer.length;
-			for (j in 0...childLength)
-			{
-				elementRenderersAtPointInChildRenderers.push(elementRenderersAtPointInChildRenderer[j]);
-			}
+				
 		}
 		
 		
