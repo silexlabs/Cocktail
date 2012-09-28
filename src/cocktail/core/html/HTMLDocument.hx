@@ -42,6 +42,7 @@ import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.event.EventData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.event.FocusEvent;
+import cocktail.core.timer.Timer;
 import cocktail.core.window.Window;
 import cocktail.Lib;
 import cocktail.core.graphics.GraphicsContext;
@@ -179,6 +180,13 @@ class HTMLDocument extends Document
 	private var _shouldDispatchClickOnNextMouseUp:Bool;
 	
 	/**
+	 * A timer controlling the whole document event loop.
+	 * Method which must be called asynchronously register
+	 * themselves with the timer
+	 */
+	public var timer:Timer;
+	
+	/**
 	 * Wether a call to the invalidation method is already
 	 * scheduled, only one call to this method
 	 * method can be scheduled at a time to prevent too many
@@ -298,6 +306,7 @@ class HTMLDocument extends Document
 	{
 		super();
 		
+		timer = new Timer();
 		initStyleManager();
 		
 		//TODO 2 : hack, Document probably shouldn't have
@@ -1029,13 +1038,13 @@ class HTMLDocument extends Document
 	}
 	
 	/**
-	 * Actually schedule an invalidation if one
+	 * Actually schedule an update if one
 	 * is not yet scheduled
 	 */
 	private function doInvalidate():Void
 	{
 		_invalidationScheduled = true;
-		scheduleCascadeLayoutAndRender();
+		timer.delay(onLayoutSchedule, INVALIDATION_INTERVAL);
 	}
 	
 	/**
@@ -1081,7 +1090,7 @@ class HTMLDocument extends Document
 			startLayout(false);
 			
 			//start all pending animations
-			var atLeastOneAnimationStarted:Bool = startPendingAnimation();
+			var atLeastOneAnimationStarted:Bool = documentElement.startPendingAnimation();
 			
 			//if at least one pending animation started, an immediate layout
 			//must be performed before rendering, else the rendering will be
@@ -1112,7 +1121,7 @@ class HTMLDocument extends Document
 		//same as for layout
 		if (_documentNeedsRendering == true)
 		{
-			startRendering();
+			documentElement.elementRenderer.layerRenderer.render(_window.innerWidth, _window.innerHeight);
 			_documentNeedsRendering = false;
 		}
 		
@@ -1120,7 +1129,13 @@ class HTMLDocument extends Document
 		//end the pending animation
 		if (_documentNeedsLayout == true)
 		{
-			endPendingAnimation();
+			//Make all animations which just ended dispose
+			//of themselves and dispatch a complete event.
+			//The event must be dispatched once the layout 
+			//and rendering are done to prevent the user
+			//from modififying the DOM with not updated
+			//info
+			documentElement.endPendingAnimation();
 			_documentNeedsLayout = false;
 		}
 	}
@@ -1133,38 +1148,6 @@ class HTMLDocument extends Document
 	{
 		_invalidationScheduled = false;
 		cascadeLayoutAndRender();
-	}
-	
-	/**
-	 * Start rendering the rendering
-	 * tree, starting with the root LayerRenderer
-	 */ 
-	private function startRendering():Void
-	{
-		documentElement.elementRenderer.layerRenderer.render(_window.innerWidth, _window.innerHeight);
-	}
-	
-	/**
-	 * Start all the pending animation by calling
-	 * the start animation method on all elements of the
-	 * rendering tree
-	 */
-	private function startPendingAnimation():Bool
-	{
-		return documentElement.startPendingAnimation();
-	}
-	
-	/**
-	 * Make all animations which just ended dispose
-	 * of themselves and dispatch a complete event.
-	 * The event must be dispatched once the layout 
-	 * and rendering are done to prevent the user
-	 * from modififying the DOM with not updated
-	 * info
-	 */
-	private function endPendingAnimation():Void
-	{
-		documentElement.endPendingAnimation();
 	}
 	
 	/**
@@ -1181,7 +1164,6 @@ class HTMLDocument extends Document
 		_documentNeedsCascading = false;
 	}
 	
-	
 	/**
 	 * Start the layout of the rendering tree,
 	 * starting with the root ElementRenderer
@@ -1195,25 +1177,6 @@ class HTMLDocument extends Document
 		//set the global bounds on the rendering tree. After this, ElementRenderer
 		//are aware of their bounds relative ot the viewport
 		documentElement.elementRenderer.setGlobalOrigins(0, 0, 0, 0, 0 ,0);
-	}
-	
-	/**
-	 * Set a timer to trigger a layout and rendering of the document asynchronously.
-	 * Setting a timer to execute the layout and rendering ensure that it only
-	 * happen once when a series of style values are set or when many elements
-	 * are attached/removed from the DOM, instead of happening for every change.
-	 */
-	private function scheduleCascadeLayoutAndRender():Void
-	{
-		var onLayoutScheduleDelegate:Void->Void = onLayoutSchedule;
-		#if macro
-		#elseif (flash9 || nme)
-		//calling the methods 1 millisecond later is enough to ensure
-		//that first all synchronous code is executed
-		haxe.Timer.delay(function () { 
-			onLayoutScheduleDelegate();
-		}, INVALIDATION_INTERVAL);
-		#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

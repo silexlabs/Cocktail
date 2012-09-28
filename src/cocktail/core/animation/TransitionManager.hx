@@ -13,6 +13,7 @@ import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.css.CSSData;
+import cocktail.Lib;
 
 /**
  * The transition manager is in charge of starting
@@ -205,12 +206,9 @@ class TransitionManager
 		//time can be calculated
 		_lastTick = Date.now().getTime();
 		
-		#if macro
-		#elseif (flash9 || nme)
 		//set a delayed method call which will be repeated
 		//as long as needed
-		haxe.Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
-		#end
+		Lib.document.timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
 	}
 	
 	/**
@@ -276,10 +274,7 @@ class TransitionManager
 		//drop to 0, delay a call to this method
 		if (_currentTransitionsNumber > 0)
 		{
-			#if macro
-			#elseif (flash9 || nme)
-			haxe.Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
-			#end
+			Lib.document.timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
 		}
 	}
 	
