@@ -831,7 +831,17 @@ class HTMLElement extends Element<HTMLElement>
 	{	
 		//will hold all the property of this HTMLElement which changed during
 		//cascading
-		var changedProperties:Hash<Void> = new Hash<Void>();
+		var changedProperties:Hash<Void> = null;
+		
+		//check wether some properties of the parent where cascaded
+		var parentHasChangedProperties:Bool = false;
+		if (parentChangedProperties != null)
+		{
+			if (parentChangedProperties.keys().hasNext() == true)
+			{
+				parentHasChangedProperties = true;
+			}
+		}
 		
 		//cascade the style of this HTMLElement if needed, and store
 		//the name of all the style which changed during cascading
@@ -839,27 +849,27 @@ class HTMLElement extends Element<HTMLElement>
 		//style is cascaded either id tis HTMLElement explicitely needs cascading
 		//for instance, if one of its attribute changed since last cascade or
 		//if some of its parent styles just changed
-		if (_needsCascading == true || parentChangedProperties.keys().hasNext() == true)
+		if (_needsCascading == true || parentHasChangedProperties == true)
 		{
 			changedProperties = cascadeSelf(parentChangedProperties, programmaticChange);
 			_needsCascading = false;
-		}
-	
-		//when one of those property specified value changes, it may affect the rendering of
-		//the HTMLElement. The element renderer is invalidated, so that it will be updated
-		//before next layout
-		if (changedProperties.exists(CSSConstants.DISPLAY) || changedProperties.exists(CSSConstants.FLOAT)
-		|| changedProperties.exists(CSSConstants.OVERFLOW_X) || changedProperties.exists(CSSConstants.OVERFLOW_Y))
-		{
-			detach(true);
-			invalidateElementRenderer();
-		}
-		//if one of those properties changed, then the layer renderer of the element renderer needs
-		//to be invalidated, so that it will be updated before next rendering
-		else if (changedProperties.exists(CSSConstants.TRANSFORM) || changedProperties.exists(CSSConstants.Z_INDEX) ||
-		changedProperties.exists(CSSConstants.POSITION))
-		{
-			invalidateLayerRenderer();
+			
+			//when one of those property specified value changes, it may affect the rendering of
+			//the HTMLElement. The element renderer is invalidated, so that it will be updated
+			//before next layout
+			if (changedProperties.exists(CSSConstants.DISPLAY) || changedProperties.exists(CSSConstants.FLOAT)
+			|| changedProperties.exists(CSSConstants.OVERFLOW_X) || changedProperties.exists(CSSConstants.OVERFLOW_Y))
+			{
+				detach(true);
+				invalidateElementRenderer();
+			}
+			//if one of those properties changed, then the layer renderer of the element renderer needs
+			//to be invalidated, so that it will be updated before next rendering
+			else if (changedProperties.exists(CSSConstants.TRANSFORM) || changedProperties.exists(CSSConstants.Z_INDEX) ||
+			changedProperties.exists(CSSConstants.POSITION))
+			{
+				invalidateLayerRenderer();
+			}
 		}
 		
 		//cascade all the children, to cascade all the DOM tree
@@ -908,7 +918,7 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		var initialStyleDeclaration:InitialStyleDeclaration = _ownerHTMLDocument.initialStyleDeclaration;
 		
-		var changedProperties:Hash<Void> = new Hash<Void>();
+		var changedProperties:Hash<Void> = null;
 		
 		if (parentNode != null)
 		{
@@ -923,12 +933,14 @@ class HTMLElement extends Element<HTMLElement>
 				var parentStyleDeclaration:CSSStyleDeclaration = parentNode.coreStyle.computedValues;
 				var parentFontMetrics:FontMetricsVO = parentNode.coreStyle.fontMetrics;
 			
-				for (propertyName in parentChangedProperties.keys())
+				if (parentChangedProperties != null)
 				{
-					_pendingChangedProperties.set(propertyName, null);
+					for (propertyName in parentChangedProperties.keys())
+					{
+						_pendingChangedProperties.set(propertyName, null);
+					}
 				}
-				
-
+	
 				changedProperties = coreStyle.cascade(_pendingChangedProperties, initialStyleDeclaration, styleManagerCSSDeclaration, style, parentStyleDeclaration, parentFontMetrics.fontSize, parentFontMetrics.xHeight, programmaticChange);
 			}
 		}
