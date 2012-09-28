@@ -293,6 +293,12 @@ class HTMLDocument extends Document
 	private var _mousePoint:PointVO;
 	
 	/**
+	 * For a given HTMLElement, store
+	 * which CSS pseudo classes it currently matches
+	 */
+	private var _matchedPseudoClasses:MatchedPseudoClassesVO;
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new(window:Window = null) 
@@ -308,6 +314,9 @@ class HTMLDocument extends Document
 		{
 			window = new Window();
 		}
+		
+		_matchedPseudoClasses = new MatchedPseudoClassesVO(false, false, false,
+		false, false, false, false);
 		
 		_window = window;
 		_focusManager = new FocusManager();
@@ -559,7 +568,15 @@ class HTMLDocument extends Document
 			}
 		}
 		
-		return new MatchedPseudoClassesVO(hover, focus, active, link, enabled, disabled, checked);
+		_matchedPseudoClasses.hover = hover;
+		_matchedPseudoClasses.focus = focus;
+		_matchedPseudoClasses.active = active;
+		_matchedPseudoClasses.link = link;
+		_matchedPseudoClasses.enabled = enabled;
+		_matchedPseudoClasses.disabled = disabled;
+		_matchedPseudoClasses.checked = checked;
+		
+		return _matchedPseudoClasses;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

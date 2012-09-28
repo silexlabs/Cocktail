@@ -60,13 +60,13 @@ class StyleDeclarationVO {
  */
 class MatchedPseudoClassesVO {
 	
-	public var hover(default, null):Bool;
-	public var focus(default, null):Bool;
-	public var active(default, null):Bool;
-	public var link(default, null):Bool;
-	public var enabled(default, null):Bool;
-	public var disabled(default, null):Bool;
-	public var checked(default, null):Bool;
+	public var hover:Bool;
+	public var focus:Bool;
+	public var active:Bool;
+	public var link:Bool;
+	public var enabled:Bool;
+	public var disabled:Bool;
+	public var checked:Bool;
 	
 	public function new(hover:Bool, focus:Bool, active:Bool, link:Bool, enabled:Bool,
 	disabled:Bool, checked:Bool) 
