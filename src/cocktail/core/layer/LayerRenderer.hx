@@ -587,8 +587,9 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	}
 	
 	/**
-	 * return wether this layer has a sibling which
-	 * is a compositing layer which has a lower z-index
+	 * return wether this layer has a sibling stacking
+	 * context which
+	 * is established by a compositing layer which has a lower z-index
 	 * than itself.
 	 * 
 	 * If the layer has such a sibling, it means it is
@@ -598,33 +599,37 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	private function hasCompositingLayerSibling():Bool
 	{
-		//get all the sibling by retrieving parent node
-		var parentChildNodes:Array<LayerRenderer> = parentNode.childNodes;
-		
-		for (i in 0...parentChildNodes.length)
+		//find the first parent which establish a stacking context
+		//this is the stacking context onto which this layer belongs
+		var parentStackingContext:LayerRenderer = parentNode;
+		while (parentStackingContext.establishesNewStackingContext() == false)
 		{
-			var child:LayerRenderer = parentChildNodes[i];
-			if (child != this)
+			parentStackingContext = parentStackingContext.parentNode;
+		}
+		
+		//get all layer in parent stacking context in z-order
+		var concatenatedChildLayers:Array<LayerRenderer> = new Array<LayerRenderer>();
+		concatenatedChildLayers = concatenatedChildLayers.concat(parentStackingContext.negativeZIndexChildLayerRenderers);
+		concatenatedChildLayers = concatenatedChildLayers.concat(parentStackingContext.zeroAndAutoZIndexChildLayerRenderers);
+		concatenatedChildLayers = concatenatedChildLayers.concat(parentStackingContext.positiveZIndexChildLayerRenderers);
+		
+		var length:Int = concatenatedChildLayers.length;
+		for (i in 0...length)
+		{
+			var child:LayerRenderer = concatenatedChildLayers[i];
+			//if this layer is found before any compositing layer
+			//then it is rendred below and doesn't need a compositing layer
+			if (child == this)
 			{
-				if (child.isCompositingLayer() == true)
-				{
-					return hasLowerZIndex(child);
-				}
+				return false;
+			}
+			else if (child.isCompositingLayer() == true)
+			{
+				return true;
 			}
 		}
 		
 		return false;
-	}
-	
-	/**
-	 * Return wether a sibling layer has
-	 * a lower z-index than this layer
-	 * 
-	 * TODO 1 : implement
-	 */
-	private function hasLowerZIndex(siblingLayer:LayerRenderer):Bool
-	{
-		return true;
 	}
 	
 	/////////////////////////////////
@@ -655,16 +660,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	public function render(windowWidth:Int, windowHeight:Int ):Void
 	{
-		if (rootElementRenderer.domNode.className != null)
-		{
-			if (rootElementRenderer.domNode.className.indexOf("Group1 Layer wolf_src0 page2-3") != -1)
-			{
-				trace(_needsRendering);
-				trace(hasOwnGraphicsContext);
-				trace(graphicsContext.layerRenderer.rootElementRenderer.domNode.className);
-			}
-		}
-		
 		//if the graphic context was instantiated/re-instantiated
 		//since last rendering, the size of its bitmap data should be
 		//updated with the viewport's dimensions
