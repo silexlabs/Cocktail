@@ -1173,10 +1173,10 @@ class HTMLElement extends Element<HTMLElement>
 	/**
 	 * dispatch event of type Event
 	 */
-	private function fireEvent(eventTye:String, bubbles:Bool, cancelable:Bool):Void
+	private function fireEvent(eventType:String, bubbles:Bool, cancelable:Bool):Void
 	{
 		var event:Event = new Event();
-		event.initEvent(eventTye, bubbles, cancelable);
+		event.initEvent(eventType, bubbles, cancelable);
 		dispatchEvent(event);
 	}
 	

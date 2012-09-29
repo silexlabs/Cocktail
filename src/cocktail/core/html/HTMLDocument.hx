@@ -26,6 +26,7 @@ import cocktail.core.event.TouchEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.focus.FocusManager;
+import cocktail.core.hittest.HitTestManager;
 import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLHtmlElement;
@@ -255,6 +256,14 @@ class HTMLDocument extends Document
 	private var _multiTouchManager:MultiTouchManager;
 	
 	/**
+	 * Used to perform hit test on the layer and
+	 * rendering trees to determine for instance 
+	 * which element renderer is currently under
+	 * the mouse pointer
+	 */
+	private var _hitTestManager:HitTestManager;
+	
+	/**
 	 * A ref to the global Window object
 	 */
 	private var _window:Window;
@@ -320,6 +329,8 @@ class HTMLDocument extends Document
 		
 		_window = window;
 		_focusManager = new FocusManager();
+		
+		_hitTestManager = new HitTestManager();
 		
 		_multiTouchManager = new MultiTouchManager();
 		
@@ -1204,7 +1215,7 @@ class HTMLDocument extends Document
 	{
 		_mousePoint.x = x;
 		_mousePoint.y = y;
-		var elementRendererAtPoint:ElementRenderer = documentElement.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( _mousePoint, 0, 0  );
+		var elementRendererAtPoint:ElementRenderer = _hitTestManager.getTopMostElementRendererAtPoint(documentElement.elementRenderer.layerRenderer, _mousePoint, 0, 0  );
 		
 		//when no element is under mouse like for instance when the mouse leaves
 		//the window, return the body
