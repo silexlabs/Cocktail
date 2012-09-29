@@ -13,7 +13,6 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.renderer.ObjectRenderer;
 import cocktail.plugin.Plugin;
 import cocktail.plugin.swf.SWFPlugin;
-import cocktail.port.NativeElement;
 import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.renderer.RendererData;
 

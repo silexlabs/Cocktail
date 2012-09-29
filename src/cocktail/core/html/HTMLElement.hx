@@ -27,7 +27,6 @@ import cocktail.core.parser.DOMParser;
 import cocktail.core.css.CSSConstants;
 import haxe.Stack;
 import haxe.xml.Parser;
-import cocktail.port.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;

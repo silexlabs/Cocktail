@@ -24,6 +24,7 @@ import flash.geom.ColorTransform;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.Lib;
+import haxe.Stack;
 
 
 /**

@@ -119,10 +119,10 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	 */ 
 	override public function removeChild(oldChild:GraphicsContext):GraphicsContext
 	{
-		super.removeChild(oldChild);
-		
 		oldChild.detach();
 		oldChild.invalidateNativeLayer();
+		
+		super.removeChild(oldChild);
 		
 		return oldChild;
 	}
