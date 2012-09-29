@@ -17,12 +17,13 @@ import cocktail.core.dom.NodeBase;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
+import cocktail.port.NativeLayer;
 
 /**
  * This is the base class for classes which 
  * actually implements the platform specific
  * API calls to draw and build the native display
- * list ofthe target platform.
+ * list of the target platform.
  * 
  * It is implemented for each graphic target platform
  * 
@@ -33,7 +34,7 @@ class AbstractGraphicsContextImpl
 	/**
 	 * A reference to a native layer
 	 */
-	public var nativeLayer(get_nativeLayer, null):NativeElement;
+	public var nativeLayer(get_nativeLayer, null):NativeLayer;
 	
 	/**
 	 * A reference to a native bitmap data object of the 
@@ -55,13 +56,8 @@ class AbstractGraphicsContextImpl
 
 	/**
 	 * class constructor
-	 * 
-	 * @param isInitialGraphicContext wether this
-	 * graphic context implementation is created by
-	 * the root graphic context and should represent
-	 * the root of the native display list
 	 */
-	public function new(isInitialGraphicContext:Bool)
+	public function new()
 	{
 		_useTransparency = false;
 		_alpha = 0.0;
@@ -79,12 +75,22 @@ class AbstractGraphicsContextImpl
 	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function attach(parentNativeLayer:NativeElement, index:Int):Void
+	public function attach(graphicsContext:GraphicsContext):Void
 	{
 		//abstract
 	}
 	
-	public function detach(parentNativeLayer:NativeElement):Void
+	public function detach(graphicsContext:GraphicsContext):Void
+	{
+		//abstract
+	}
+	
+	public function attachToRoot():Void
+	{
+		//abstract
+	}
+	
+	public function detachFromRoot():Void
 	{
 		//abstract
 	}
@@ -179,7 +185,7 @@ class AbstractGraphicsContextImpl
 		return null;
 	}
 	
-	private function get_nativeLayer():NativeElement
+	private function get_nativeLayer():NativeLayer
 	{
 		return null;
 	}

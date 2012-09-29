@@ -9,9 +9,11 @@ package cocktail.port.flash_player;
 
 import cocktail.core.geom.Matrix;
 import cocktail.core.graphics.AbstractGraphicsContextImpl;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
+import cocktail.port.NativeLayer;
 import flash.display.Bitmap;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
@@ -87,26 +89,17 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	 */
 	private var _fillRectPoint:PointVO;
 	
-	private var _isInitialGraphicContext:Bool;
-	
 	/**
 	 * class constructor
 	 */
-	public function new(isInitialGraphicContext:Bool) 
+	public function new() 
 	{
-		super(isInitialGraphicContext);
+		super();
 		
-		_isInitialGraphicContext = isInitialGraphicContext;
-	
 		_nativeLayer = new Sprite();
 		
 		
 		_childrenNativeLayer = new Sprite();
-		
-		if (isInitialGraphicContext == true)
-		{
-			Lib.current.addChild(_childrenNativeLayer);
-		}
 		
 		_nativeBitmap = new Bitmap(new BitmapData(1, 1, true, 0x00000000), PixelSnapping.AUTO, true);
 		_flashRectangle = new Rectangle();
@@ -163,12 +156,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_nativeBitmap = null;
 		_childrenNativeLayer.removeChild(_nativeLayer);
 		_nativeLayer = null;
-		
-		if (_isInitialGraphicContext == true)
-		{
-			Lib.current.removeChild(_childrenNativeLayer);
-			_childrenNativeLayer = null;
-		}
+		_childrenNativeLayer = null;
 	}
 	
 	/**
@@ -181,16 +169,29 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_childrenNativeLayer.transform.matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 	}
 	
-	override public function attach(parentNativeLayer:NativeElement, index:Int):Void
+	override public function attach(graphicsContext:GraphicsContext):Void
 	{
-		cast(parentNativeLayer).addChildAt(_childrenNativeLayer, index);
+		graphicsContext.parentNode.nativeLayer.addChild(_childrenNativeLayer);
 	}
 	
-	override public function detach(parentNativeLayer:NativeElement):Void
+	override public function detach(graphicsContext:GraphicsContext):Void
 	{
 		if (_childrenNativeLayer.parent != null)
 		{
-			cast(parentNativeLayer).removeChild(_childrenNativeLayer);
+			graphicsContext.parentNode.nativeLayer.removeChild(_childrenNativeLayer);
+		}
+	}
+	
+	override public function attachToRoot():Void
+	{
+		Lib.current.addChild(_childrenNativeLayer);
+	}
+	
+	override public function detachFromRoot():Void
+	{
+		if (_childrenNativeLayer.parent != null)
+		{
+			Lib.current.removeChild(_childrenNativeLayer);
 		}
 	}
 	
@@ -326,7 +327,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		return _nativeBitmap.bitmapData;
 	}
 	
-	override private function get_nativeLayer():NativeElement
+	override private function get_nativeLayer():NativeLayer
 	{
 		return _nativeLayer;
 	}

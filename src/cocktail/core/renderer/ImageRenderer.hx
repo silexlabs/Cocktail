@@ -100,7 +100,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 			matrix.translate(bounds.x, bounds.y);
 			matrix.scale(bounds.width / intrinsicWidth , bounds.height / intrinsicHeight );
 			
-			graphicContext.drawImage(nativeBitmapData, matrix, bounds);
+			graphicContext.graphics.drawImage(nativeBitmapData, matrix, bounds);
 		}
 		//here a faster drawing routine is used, the picture is drawn 
 		//untransformed at a certain point
@@ -121,7 +121,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 			bounds.x = 0.0;
 			bounds.y = 0.0;
 			
-			graphicContext.copyPixels(nativeBitmapData, bounds, _destinationPoint);
+			graphicContext.graphics.copyPixels(nativeBitmapData, bounds, _destinationPoint);
 		}
 	}
 	

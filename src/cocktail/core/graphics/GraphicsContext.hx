@@ -18,6 +18,7 @@ import cocktail.core.dom.NodeBase;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
+import cocktail.port.NativeLayer;
 
 
 /**
@@ -51,13 +52,7 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	/**
 	 * A reference to a native layer
 	 */
-	public var nativeLayer(get_nativeLayer, never):NativeElement;
-	
-	/**
-	 * A reference to a native bitmap data object of the 
-	 * underlying platform
-	 */
-	public var nativeBitmapData(get_nativeBitmapData, never):NativeBitmapData;
+	public var nativeLayer(get_nativeLayer, never):NativeLayer;
 	
 	/**
 	 * A reference to the LayerRenderer which created this GraphicsContext
@@ -65,11 +60,11 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	public var layerRenderer(default, null):LayerRenderer;
 	
 	/**
-	 * Holds a list of all the child GraphicsContext ordered by z-index,
-	 * from most negative to most positive. Ultimately, this is this array which
-	 * is use to order the native layer of the target platform
+	 * An instance of the class which actually implements the 
+	 * platform specific API calls to draw and build the native
+	 * display list. 
 	 */
-	private var _orderedChildList:Array<GraphicsContext>;
+	public var graphics(default, null):GraphicsContextImpl;
 	
 	/**
 	 * A flag set when the native layers needs to be re-attached to the native
@@ -77,13 +72,6 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	 * context
 	 */
 	private var _needsNativeLayerUpdate:Bool;
-	
-	/**
-	 * An instance of the class which actually implements the 
-	 * platform specific API calls to draw and build the native
-	 * display list. 
-	 */
-	private var _graphicsContextImpl:GraphicsContextImpl;
 	
 	/**
 	 * class constructor
@@ -95,18 +83,7 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 		super();
 		this.layerRenderer = layerRenderer;
 		_needsNativeLayerUpdate = true;
-		_orderedChildList = new Array<GraphicsContext>();
-		
-		initGraphicsContextImplementation();
-	}
-	
-	/**
-	 * Instantaiate the graphics
-	 * context implementation
-	 */
-	private function initGraphicsContextImplementation():Void
-	{
-		_graphicsContextImpl = new GraphicsContextImpl(false);
+		graphics = new GraphicsContextImpl();
 	}
 	
 	/**
@@ -115,10 +92,9 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	 */
 	public function dispose():Void
 	{
-		_graphicsContextImpl.dispose();
-		_graphicsContextImpl = null;
+		graphics.dispose();
+		graphics = null;
 		layerRenderer = null;
-		_orderedChildList = null;
 	}
 	
 	/////////////////////////////////
@@ -126,29 +102,27 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	////////////////////////////////
 	
 	/**
-	 * Overriden to update the ordered child list array, when 
-	 * a new graphics context is added
+	 * Overriden to invalidate the native layer tree
 	 */ 
 	override public function appendChild(newChild:GraphicsContext):GraphicsContext
 	{
 		super.appendChild(newChild);
 		
-		insertIntoOrderedChildList(newChild);
 		newChild.invalidateNativeLayer();
 		
 		return newChild;
 	}
 	
 	/**
-	 * Overriden to detach the old child 
-	 */
+	 * Overriden to invalidate the native layer tree
+	 * and detach the old child
+	 */ 
 	override public function removeChild(oldChild:GraphicsContext):GraphicsContext
 	{
 		super.removeChild(oldChild);
 		
 		oldChild.detach();
 		oldChild.invalidateNativeLayer();
-		_orderedChildList.remove(oldChild);
 		
 		return oldChild;
 	}
@@ -172,10 +146,10 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 			return;
 		}
 		
-		var length:Int = _orderedChildList.length;
+		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			_orderedChildList[i].updateNativeLayer();
+			childNodes[i].updateNativeLayer();
 		}
 	}
 	
@@ -199,10 +173,10 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	{
 		doAttach();
 		
-		var length:Int = _orderedChildList.length;
+		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			_orderedChildList[i].attach();
+			childNodes[i].attach();
 		}
 	}
 	
@@ -213,10 +187,10 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	 */
 	public function detach():Void
 	{
-		var length:Int = _orderedChildList.length;
+		var length:Int = childNodes.length;
 		for (i in 0...length)
 		{
-			_orderedChildList[i].detach();
+			childNodes[i].detach();
 		}
 		
 		doDetach();
@@ -231,16 +205,7 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	 */
 	private function doAttach():Void
 	{
-		var parn:Array<GraphicsContext> = untyped parentNode._orderedChildList;
-	
-		for (i in 0...parn.length)
-		{
-			if (parn[i] == this)
-			{
-				_graphicsContextImpl.attach(parentNode.nativeLayer, i);
-				return;
-			}
-		}
+		graphics.attach(this);
 	}
 	
 	/**
@@ -248,174 +213,16 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	 */
 	private function doDetach():Void
 	{
-		if (parentNode != null)
-		{
-			_graphicsContextImpl.detach(parentNode.nativeLayer);
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Init the bitmap data with a given size
-	 */
-	public function initBitmapData(width:Int, height:Int):Void
-	{
-		_graphicsContextImpl.initBitmapData(width, height);
-	}
-	
-	/**
-	 * Apply a transformation matrix to the layer
-	 */
-	public function transform(matrix:Matrix):Void
-	{
-		_graphicsContextImpl.transform(matrix);
-	}
-	
-	/**
-	 * Clears the bitmap data
-	 */
-	public function clear():Void
-	{
-		_graphicsContextImpl.clear();
-	}
-	
-	/**
-	 * When called, all subsequent calls to bitmap
-	 * drawing methods draw transparent bitmap with
-	 * the provided alpha, until endTransparency is called
-	 */
-	public function beginTransparency(alpha:Float):Void
-	{
-		_graphicsContextImpl.beginTransparency(alpha);
-	}
-	
-	/**
-	 * End the use of transparency when drawing 
-	 * bitmaps
-	 */
-	public function endTransparency():Void
-	{
-		_graphicsContextImpl.endTransparency();
-	}
-	
-	/**
-	 * Draw bitmap data onto the bitmap surface. Alpha is preserved 
-	 * for transparent bitmap
-	 * @param	bitmapData the source  bitmap data
-	 * @param	matrix a transformation matrix to apply yo the bitmap data when drawing to 
-	 * to the bitmap. Defaults to an identity matrix
-	 * @param	sourceRect defines the zone from the source bitmap data that must be copied onto the 
-	 * native graphic dom element. Takes the whole bitmap data by default
-	 */
-	public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix = null, sourceRect:RectangleVO = null):Void
-	{
-		_graphicsContextImpl.drawImage(bitmapData, matrix, sourceRect);
-	}
-	
-	/**
-	 * fast pixel manipulation method used when no transformation is applied to the image
-	 * @param	bitmapData the pixels to copy
-	 * @param	sourceRect the area of the source bitmap data to use
-	 * @param	destPoint the upper left corner of the rectangular aeaa where the new
-	 * pixels are placed
-	 */
-	public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO):Void
-	{
-		_graphicsContextImpl.copyPixels(bitmapData, sourceRect, destPoint);
-	}
-	
-	/**
-	 * Fill a rect with the specified color
-	 * @param rect the rectangle to fill
-	 * @param color the rectangle's color
-	 */
-	public function fillRect(rect:RectangleVO, color:ColorVO):Void
-	{
-		_graphicsContextImpl.fillRect(rect, color);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Insert the new GraphicsContext based on its z-index (the z-index of the
-	 * ElementRenderer creating the LayerRenderer which created the GraphicsContext)
-	 */
-	private function insertIntoOrderedChildList(newChild:GraphicsContext):Void
-	{
-		//get the index of the new child to insert
-		var index:Int = getIndex(newChild.layerRenderer.rootElementRenderer);
-		
-		//flasg set to true once the child has found its index in the array
-		var isInserted:Bool = false;
-		
-		
-		//Loop in all the list to find the right
-		//index for the new child
-		var length:Int = _orderedChildList.length;
-		for (i in 0...length)
-		{
-			//the index of the current child
-			var childIndex:Int = getIndex(_orderedChildList[i].layerRenderer.rootElementRenderer);
-			
-			//the new child is inserted before the first child with a 
-			//z-index superior to its own
-			if (index < childIndex)
-			{
-				_orderedChildList.insert(i, newChild);
-				isInserted = true;
-				break;
-			}
-		}
-		
-		//here, the new child was not inserted yet, it might
-		//either be the first element in the array or should be placed last
-		if (isInserted == false)
-		{
-			_orderedChildList.push(newChild);
-		}
-	}
-	
-	/**
-	 * Utils mehod returning the z-index of an ElementRenderer.
-	 * If the ElementRenderer is not positioned, it always has
-	 * a z-index of 0 and is inserted visually following document
-	 * order
-	 */
-	private function getIndex(elementRenderer:ElementRenderer):Int
-	{
-		var index:Int = 0;
-		
-		if (elementRenderer.isPositioned() == true)
-		{
-			switch (elementRenderer.coreStyle.zIndex)
-			{
-				case INTEGER(value):
-					index = value;
-					
-				default:	
-			}
-		}
-		
-		return index;
+		graphics.detach(this);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_nativeBitmapData():NativeBitmapData
+	private function get_nativeLayer():NativeLayer
 	{
-		return _graphicsContextImpl.nativeBitmapData;
-	}
-	
-	private function get_nativeLayer():NativeElement
-	{
-		return _graphicsContextImpl.nativeLayer;
+		return graphics.nativeLayer;
 	}
 	
 }

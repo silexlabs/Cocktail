@@ -19,7 +19,6 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
 
-
 /**
  * Represents the graphics context at the 
  * root of the graphics context tree
@@ -36,34 +35,28 @@ class InitialGraphicsContext extends GraphicsContext
 		super(layerRenderer);
 	}
 	
-	/**
-	 * Overriden to signal to the graphics context implementation
-	 * to use the root of the native display list
-	 */
-	override private function initGraphicsContextImplementation():Void
-	{
-		_graphicsContextImpl = new GraphicsContextImpl(true);
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE GRAPHICS CONTEXT TREE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Don't attach the native layer, as for the root graphics context,
-	 * it is managed be the graphics context implementation
+	 * For the initial graphic context, 
+	 * make the graphics context root attach
+	 * itself to the root of the native
+	 * display list
 	 */
 	override private function doAttach():Void
 	{
-		
+		graphics.attachToRoot();
 	}
 	
 	/**
-	 * Don't detach the native layer, as for the root graphics context,
-	 * it is managed be the graphics context implementation
+	 * make the graphics context implementation 
+	 * detach itself from the root of
+	 * the native display list
 	 */
 	override private function doDetach():Void
 	{
-		
+		graphics.detachFromRoot();
 	}
 }

@@ -89,7 +89,7 @@ class BackgroundManager
 		//completely transparent
 		if (style.usedValues.backgroundColor.alpha != 0.0)
 		{
-			graphicContext.fillRect(backgroundBox, style.usedValues.backgroundColor);
+			graphicContext.graphics.fillRect(backgroundBox, style.usedValues.backgroundColor);
 		}
 		
 		var backgroundImages:Array<CSSPropertyValue> = getAsArray(style.backgroundImage);
@@ -360,7 +360,7 @@ class BackgroundManager
 			
 			while (totalHeight < maxHeight)
 			{
-				graphicContext.copyPixels(resource.nativeResource, _box, _destinationPoint );
+				graphicContext.graphics.copyPixels(resource.nativeResource, _box, _destinationPoint );
 				
 				totalWidth += imageWidth;
 				
@@ -390,7 +390,7 @@ class BackgroundManager
 				
 				matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight);
 				
-				graphicContext.drawImage(resource.nativeResource, matrix, backgroundPaintingBox);
+				graphicContext.graphics.drawImage(resource.nativeResource, matrix, backgroundPaintingBox);
 				
 				totalWidth += imageWidth;
 				

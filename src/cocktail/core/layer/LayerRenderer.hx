@@ -730,7 +730,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				default:	
 			}
 			
-			graphicsContext.beginTransparency(opacity);
+			graphicsContext.graphics.beginTransparency(opacity);
 		}
 		
 		//render first negative z-index child LayerRenderer from most
@@ -771,7 +771,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//if they don't themselves have an opacity inferior to 1
 		if (rootElementRenderer.isTransparent() == true)
 		{
-			graphicsContext.endTransparency();
+			graphicsContext.graphics.endTransparency();
 		}
 		
 		//scrollbars are always rendered last as they should always be the top
@@ -786,7 +786,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			{
 				//TODO 2 : should already be computed at this point
 				VisualEffectStylesComputer.compute(rootElementRenderer.coreStyle);
-				graphicsContext.transform(getTransformationMatrix(graphicsContext));
+				graphicsContext.graphics.transform(getTransformationMatrix(graphicsContext));
 			}
 		}
 		
@@ -804,7 +804,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	private function initBitmapData(width:Int, height:Int):Void
 	{
-		graphicsContext.initBitmapData(width, height);
+		graphicsContext.graphics.initBitmapData(width, height);
 	}
 	
 	/**
@@ -812,7 +812,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	private function clear():Void
 	{
-		graphicsContext.clear();
+		graphicsContext.graphics.clear();
 	}
 	
 	/**

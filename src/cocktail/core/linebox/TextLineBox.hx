@@ -139,7 +139,7 @@ class TextLineBox extends LineBox
 		_destinationPoint.x = bounds.x + elementRenderer.globalContainingBlockOrigin.x - elementRenderer.scrollOffset.x;
 		_destinationPoint.y = bounds.y + elementRenderer.globalContainingBlockOrigin.y - elementRenderer.scrollOffset.y;
 	
-		graphicContext.copyPixels(_nativeTextBitmap, _renderRect, _destinationPoint);
+		graphicContext.graphics.copyPixels(_nativeTextBitmap, _renderRect, _destinationPoint);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
