@@ -29,11 +29,18 @@ class HitTestManager
 	private var _scrolledPoint:PointVO;
 	
 	/**
+	 * Holds the element renderers for the last hit tested
+	 * point
+	 */
+	private var _elementRenderersAtPoint:Array<ElementRenderer>;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
 	{
 		_scrolledPoint = new PointVO(0.0, 0.0);
+		
 	}
 	
 	/////////////////////////////////
@@ -56,10 +63,12 @@ class HitTestManager
 	 */
 	public function getTopMostElementRendererAtPoint(layer:LayerRenderer, point:PointVO, scrollX:Float, scrollY:Float):ElementRenderer
 	{
-		//get all the elementRenderers under the point
-		var elementRenderersAtPoint:Array<ElementRenderer> = getElementRenderersAtPoint(layer, point, scrollX, scrollY);
+		_elementRenderersAtPoint = new Array<ElementRenderer>();
+		
+		//get all the elementRenderers under the point, update the element renderers array
+		getElementRenderersAtPoint(_elementRenderersAtPoint, layer, point, scrollX, scrollY);
 		//return the top most, the last of the array
-		return elementRenderersAtPoint[elementRenderersAtPoint.length - 1];
+		return _elementRenderersAtPoint[_elementRenderersAtPoint.length - 1];
 	}
 	
 	/////////////////////////////////
@@ -70,23 +79,14 @@ class HitTestManager
 	 * Get all the ElemenRenderer whose bounds contain the given point. The returned
 	 * ElementRenderers are ordered by z-index, from most negative to most positive.
 	 */
-	private function getElementRenderersAtPoint(layer:LayerRenderer, point:PointVO, scrollX:Float, scrollY:Float):Array<ElementRenderer>
+	private function getElementRenderersAtPoint(elementRenderersAtPoint:Array<ElementRenderer>, layer:LayerRenderer, point:PointVO, scrollX:Float, scrollY:Float):Void
 	{
-		var elementRenderersAtPoint:Array<ElementRenderer> = getElementRenderersAtPointInLayer(layer, layer.rootElementRenderer, point, scrollX, scrollY);
+		getElementRenderersAtPointInLayer(elementRenderersAtPoint, layer, layer.rootElementRenderer, point, scrollX, scrollY);
 
 		if (layer.rootElementRenderer.hasChildNodes() == true)
 		{
-			var childRenderers:Array<ElementRenderer> = getChildRenderers(layer);
-			
-			var elementRenderersAtPointInChildRenderers:Array<ElementRenderer> = getElementRenderersAtPointInChildRenderers(layer.rootElementRenderer, point, childRenderers, scrollX, scrollY);
-			var length:Int = elementRenderersAtPointInChildRenderers.length;
-			for (i in 0...length)
-			{
-				elementRenderersAtPoint.push(elementRenderersAtPointInChildRenderers[i]);
-			}
+			getElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, point, scrollX, scrollY);
 		}
-	
-		return elementRenderersAtPoint;
 	}
 	
 	
@@ -100,10 +100,8 @@ class HitTestManager
 	 * TODO 2 : can probably be optimised, in one layer, no elements are supposed to
 	 * overlap, meaning that only 1 elementRenderer can be returned for each layer
 	 */
-	private function getElementRenderersAtPointInLayer(layer:LayerRenderer, renderer:ElementRenderer, point:PointVO, scrollX:Float, scrollY:Float):Array<ElementRenderer>
+	private function getElementRenderersAtPointInLayer(elementRenderersAtPoint:Array<ElementRenderer>, layer:LayerRenderer, renderer:ElementRenderer, point:PointVO, scrollX:Float, scrollY:Float):Void
 	{
-		var elementRenderersAtPointInLayer:Array<ElementRenderer> = new Array<ElementRenderer>();
-		
 		_scrolledPoint.x = point.x + scrollX;
 		_scrolledPoint.y = point.y + scrollY;
 		
@@ -115,7 +113,7 @@ class HitTestManager
 			//can't be hit
 			if (renderer.isVisible() == true)
 			{
-				elementRenderersAtPointInLayer.push(renderer);
+				elementRenderersAtPoint.push(renderer);
 			}
 		}
 		
@@ -132,15 +130,7 @@ class HitTestManager
 			{
 				if (child.hasChildNodes() == true)
 				{
-					var childElementRenderersAtPointInLayer:Array<ElementRenderer> = getElementRenderersAtPointInLayer(layer, child, point, scrollX, scrollY);
-					var childLength:Int = childElementRenderersAtPointInLayer.length;
-					for (j in 0...childLength)
-					{
-						if (childElementRenderersAtPointInLayer[j].isVisible() == true)
-						{
-							elementRenderersAtPointInLayer.push(childElementRenderersAtPointInLayer[j]);
-						}
-					}
+					getElementRenderersAtPointInLayer(elementRenderersAtPoint, layer, child, point, scrollX, scrollY);
 				}
 				else
 				{
@@ -151,58 +141,48 @@ class HitTestManager
 					{
 						if (child.isVisible() == true)
 						{
-							elementRenderersAtPointInLayer.push(child);
+							elementRenderersAtPoint.push(child);
 						}
 					}
 				}
 			}
 		}
-		
-		return elementRenderersAtPointInLayer;
 	}
-	
-	private function getElementRenderersAtPointInChildRenderers(elementRenderer:ElementRenderer, point:PointVO, childRenderers:Array<ElementRenderer>, scrollX:Float, scrollY:Float):Array<ElementRenderer>
+	private function getElementRenderersAtPointInChildRenderers(elementRenderersAtPoint:Array<ElementRenderer>, layer:LayerRenderer, point:PointVO, scrollX:Float, scrollY:Float):Void
 	{
-		var elementRenderersAtPointInChildRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
-		
+		doGetElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, layer.negativeZIndexChildLayerRenderers, point, scrollX, scrollY);
+		doGetElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, layer.zeroAndAutoZIndexChildLayerRenderers, point, scrollX, scrollY);
+		doGetElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, layer.positiveZIndexChildLayerRenderers, point, scrollX, scrollY);
+	}
+	private function doGetElementRenderersAtPointInChildRenderers(elementRenderersAtPoint:Array<ElementRenderer>, layer:LayerRenderer, childRenderers:Array<LayerRenderer>, point:PointVO, scrollX:Float, scrollY:Float):Void
+	{
 		var length:Int = childRenderers.length;
 		for (i in 0...length)
 		{
-				
+				var child:ElementRenderer = childRenderers[i].rootElementRenderer;
 				//TODO 1 : hack, child renderer never 
 				//supposed to be null at this point
-				if (childRenderers[i] != null)
+				if (child != null)
 				{
-					var elementRenderersAtPointInChildRenderer:Array<ElementRenderer> = [];
-				
-					if (childRenderers[i].createOwnLayer() == true)
+					if (child.createOwnLayer() == true)
 					{
 						//TODO 1 : messy, ElementRenderer should be aware of their scrollBounds
-						if (childRenderers[i].isScrollBar() == true)
+						if (child.isScrollBar() == true)
 						{
-							elementRenderersAtPointInChildRenderer = getElementRenderersAtPoint(childRenderers[i].layerRenderer, point, scrollX, scrollY);
+							getElementRenderersAtPoint(elementRenderersAtPoint, child.layerRenderer, point, scrollX, scrollY);
 						}
 						//TODO 1 : messy, ElementRenderer should be aware of their scrollBounds
-						else if (childRenderers[i].coreStyle.getKeyword(childRenderers[i].coreStyle.position) == FIXED)
+						else if (child.coreStyle.getKeyword(child.coreStyle.position) == FIXED)
 						{
-							elementRenderersAtPointInChildRenderer = getElementRenderersAtPoint(childRenderers[i].layerRenderer, point, scrollX , scrollY);
+							getElementRenderersAtPoint(elementRenderersAtPoint, child.layerRenderer, point, scrollX , scrollY);
 						}
 						else
 						{
-							elementRenderersAtPointInChildRenderer = getElementRenderersAtPoint(childRenderers[i].layerRenderer, point, scrollX + elementRenderer.scrollLeft, scrollY + elementRenderer.scrollTop);
+							getElementRenderersAtPoint(elementRenderersAtPoint, child.layerRenderer, point, scrollX + layer.rootElementRenderer.scrollLeft, scrollY + layer.rootElementRenderer.scrollTop);
 						}
-					}
-				
-					var childLength:Int = elementRenderersAtPointInChildRenderer.length;
-					for (j in 0...childLength)
-					{
-						elementRenderersAtPointInChildRenderers.push(elementRenderersAtPointInChildRenderer[j]);
 					}
 				}
 		}
-		
-		
-		return elementRenderersAtPointInChildRenderers;
 	}
 	
 	/**
@@ -213,35 +193,4 @@ class HitTestManager
 	{
 		return point.x >= bounds.x && (point.x <= bounds.x + bounds.width) && point.y >= bounds.y && (point.y <= bounds.y + bounds.height);	
 	}
-	
-	/**
-	 * Concatenate all the child element renderers of this
-	 * LayerRenderer
-	 */
-	private function getChildRenderers(layer:LayerRenderer):Array<ElementRenderer>
-	{
-		var childRenderers:Array<ElementRenderer> = new Array<ElementRenderer>();
-		
-		var length:Int = layer.negativeZIndexChildLayerRenderers.length;
-		for (i in 0...length)
-		{
-			var childRenderer:LayerRenderer = layer.negativeZIndexChildLayerRenderers[i];
-			childRenderers.push(childRenderer.rootElementRenderer);
-		}
-		length = layer.zeroAndAutoZIndexChildLayerRenderers.length;
-		for (i in 0...length)
-		{
-			var childRenderer:LayerRenderer = layer.zeroAndAutoZIndexChildLayerRenderers[i];
-			childRenderers.push(childRenderer.rootElementRenderer);
-		}
-		length = layer.positiveZIndexChildLayerRenderers.length;
-		for (i in 0...length)
-		{
-			var childRenderer:LayerRenderer = layer.positiveZIndexChildLayerRenderers[i];
-			childRenderers.push(childRenderer.rootElementRenderer);
-		}
-		
-		return childRenderers;
-	}
-	
 }
