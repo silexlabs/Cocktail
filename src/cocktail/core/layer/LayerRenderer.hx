@@ -434,6 +434,33 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	/**
 	 * Overriden to schedule updates
 	 */ 
+	override public function insertBefore(newChild:LayerRenderer, refChild:LayerRenderer):LayerRenderer
+	{
+		super.insertBefore(newChild, refChild);
+		
+		//if the refChild is null, then the new child
+		//was inserted with appendChild and already invalidated
+		if (refChild == null)
+		{
+			return newChild;
+		}
+		
+		invalidateStackingContext();
+		newChild.invalidateStackingContext();
+		
+		//needs to update graphic context, in case the new child
+		//changes it
+		//
+		//TODO 3 : eventually, it might not be needed to invalidate
+		//every time
+		newChild.invalidateGraphicsContext(newChild.isCompositingLayer());
+		
+		return newChild;
+	}
+	
+	/**
+	 * Overriden to schedule updates
+	 */ 
 	override public function removeChild(oldChild:LayerRenderer):LayerRenderer
 	{
 		oldChild.detach();

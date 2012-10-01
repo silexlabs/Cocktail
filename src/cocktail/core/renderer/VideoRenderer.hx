@@ -54,12 +54,13 @@ class VideoRenderer extends ImageRenderer
 		return true;
 	}
 	
-	//TODO 1 : doc
-	override private function createLayer(parentLayer:LayerRenderer):Void
+	/**
+	 * Instantiate its own layer which is
+	 * a compositing layer for the video
+	 */
+	override private function doCreateLayer():Void
 	{
 		layerRenderer = new CompositingLayerRenderer(this);
-		parentLayer.appendChild(layerRenderer);
-		_hasOwnLayer = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

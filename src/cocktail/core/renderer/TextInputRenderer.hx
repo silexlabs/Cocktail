@@ -83,11 +83,9 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	 * A text input always create its own compositing
 	 * layer
 	 */
-	override private function createLayer(parentLayer:LayerRenderer):Void
+	override private function doCreateLayer():Void
 	{
 		layerRenderer = new TextInputLayerRenderer(this);
-		parentLayer.appendChild(layerRenderer);
-		_hasOwnLayer = true;
 	}
 	
 	/**

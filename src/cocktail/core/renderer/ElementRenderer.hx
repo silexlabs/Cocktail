@@ -623,7 +623,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{	
 			//here the layer is consider updated
 			_needsLayerRendererUpdate = false;
-			
 			//if the element renderer currently
 			//doesn't have a layer, always attach it,
 			//element renderer should always have a
@@ -646,6 +645,17 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 				attach();
 				return;
 			}
+			//else, if the element renderer has its own
+			//layer, refresh its position in its parent child
+			//node list
+			else
+			{
+				if (createOwnLayer() == true)
+				{
+					parentNode.layerRenderer.insertBefore(layerRenderer, getNextLayerRendererSibling());
+				}
+			}
+				
 		}
 		
 		//update all the children if this element renderer
@@ -982,14 +992,58 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		if (createOwnLayer() == true)
 		{
-			layerRenderer = new LayerRenderer(this);
-			parentLayer.appendChild(layerRenderer);
+			doCreateLayer();
+			parentLayer.insertBefore(layerRenderer, getNextLayerRendererSibling());
 			_hasOwnLayer = true;
 		}
 		else
 		{
 			layerRenderer = parentLayer;
 		}
+	}
+	
+	/**
+	 * Actually instantiate the layer whose
+	 * type might vary based on the type
+	 * of renderer
+	 */
+	private function doCreateLayer():Void
+	{
+		layerRenderer = new LayerRenderer(this);
+	}
+	
+	/**
+	 * Return the first next sibling which creates its own
+	 * layer. It is used to know the index where to attach
+	 * this element renderer's layer in the layer renderer
+	 * tree. If there is no suvh sibling, it will be appended
+	 * to its parent layer
+	 * 
+	 * @return a layer renderer or null if there is no next
+	 * sibling with its own layer
+	 */
+	private function getNextLayerRendererSibling():LayerRenderer
+	{
+		var nextElementRendererSibling:ElementRenderer = nextSibling;
+		if (nextSibling == null)
+		{
+			return null;
+		}
+		
+		while (nextElementRendererSibling != null)
+		{
+			if (nextElementRendererSibling.layerRenderer != null)
+			{
+				if (nextElementRendererSibling.createOwnLayer() == true)
+				{
+					return nextElementRendererSibling.layerRenderer;
+				}
+			}
+			
+			nextElementRendererSibling = nextElementRendererSibling.nextSibling;
+		}
+		
+		return null;
 	}
 	
 	/**

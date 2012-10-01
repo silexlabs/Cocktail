@@ -57,11 +57,9 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	 * Instantitate its own compositing layer, which
 	 * is a subclass dedicated to plugin rendering
 	 */
-	override private function createLayer(parentLayer:LayerRenderer):Void
+	override private function doCreateLayer():Void
 	{
 		layerRenderer = new PluginLayerRenderer(this);
-		parentLayer.appendChild(layerRenderer);
-		_hasOwnLayer = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
