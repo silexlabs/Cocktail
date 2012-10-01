@@ -127,6 +127,18 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 		return oldChild;
 	}
 	
+	/**
+	 * Overriden to invalidate the native layer tree
+	 */ 
+	override public function insertBefore(newChild:GraphicsContext, refChild:GraphicsContext):GraphicsContext
+	{
+		super.insertBefore(newChild, refChild);
+
+		newChild.invalidateNativeLayer();
+		
+		return newChild;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC GRAPHICS CONTEXT TREE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////

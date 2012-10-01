@@ -137,21 +137,22 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 				if (childNodes[i] == refChild)
 				{
 					childNodes.insert(i, newChild);
+					
+					//set the parent of the new child
+					removeFromParentIfNecessary(newChild);
+					newChild.parentNode = cast(this);
+					
 					isInserted = true;
 					break;
 				}
 			}
 			
-			//if the ref child wasn't found, push
-			//the new child at the end of the array
+			//if the ref child wasn't found, throw
+			//a dom exception
 			if (isInserted == false)
 			{
-				childNodes.push(newChild);
+				throw DOMException.NOT_FOUND_ERR;
 			}
-			
-			//set the parent of the new child
-			removeFromParentIfNecessary(newChild);
-			newChild.parentNode = cast(this);
 		}
 		
 		return newChild;

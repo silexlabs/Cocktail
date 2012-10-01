@@ -529,7 +529,53 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			graphicsContext = new GraphicsContext(this);
 			_needsBitmapSizeUpdate = true;
 			hasOwnGraphicsContext = true;
-			parentGraphicsContext.appendChild(graphicsContext);
+			
+			//get all the child stacking contexts of the first parent
+			//establishing a stacking context, this layer belongs to those
+			//stacking contexts
+			var parentStackingContexts:Array<LayerRenderer> = getParentStackingContext();
+			
+			var foundSelf:Bool = false;
+			var inserted:Bool = false;
+			
+			//loop to find the position where to insert this new graphics context, it must
+			//be inserted before its first sibling with a superior z-index. The sibling
+			//must also establish a new graphics context
+			var length:Int = parentStackingContexts.length;
+			for (i in 0...length)
+			{
+				var child:LayerRenderer = parentStackingContexts[i];
+				
+				if (foundSelf == true)
+				{
+					if (concatenatedChildLayers[i].graphicsContext != null)
+					{
+						if (concatenatedChildLayers[i].hasOwnGraphicsContext == true)
+						{
+							parentGraphicsContext.insertBefore(graphicsContext, concatenatedChildLayers[i].graphicsContext);
+							inserted = true;
+							break;
+						}
+							
+					}
+				}
+				
+				//when this layer is found, the next layer
+				//it will be inserted into the next layer
+				//establishing a stacking context
+				if (child == this)
+				{
+					foundSelf = true;
+				}
+			}
+			
+			//here the new graphics context is
+			//inserted last
+			if (inserted == false)
+			{
+				parentGraphicsContext.appendChild(graphicsContext);
+			}
+			
 		}
 		else
 		{
@@ -543,7 +589,15 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	private function establishesNewGraphicsContext():Bool
 	{
-		if (hasCompositingLayerDescendant(this) == true)
+		//layer must establish a stacking context to have
+		//own graphic context
+		//TODO 2 : not sure about this one, seems to work
+		//so far
+		if (establishesNewStackingContext() == false)
+		{
+			return false;
+		}
+		else if (hasCompositingLayerDescendant(this) == true)
 		{
 			return true;
 		}
@@ -599,24 +653,12 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	private function hasCompositingLayerSibling():Bool
 	{
-		//find the first parent which establish a stacking context
-		//this is the stacking context onto which this layer belongs
-		var parentStackingContext:LayerRenderer = parentNode;
-		while (parentStackingContext.establishesNewStackingContext() == false)
-		{
-			parentStackingContext = parentStackingContext.parentNode;
-		}
+		var parentStackingContexts:Array<LayerRenderer> = getParentStackingContext();
 		
-		//get all layer in parent stacking context in z-order
-		var concatenatedChildLayers:Array<LayerRenderer> = new Array<LayerRenderer>();
-		concatenatedChildLayers = concatenatedChildLayers.concat(parentStackingContext.negativeZIndexChildLayerRenderers);
-		concatenatedChildLayers = concatenatedChildLayers.concat(parentStackingContext.zeroAndAutoZIndexChildLayerRenderers);
-		concatenatedChildLayers = concatenatedChildLayers.concat(parentStackingContext.positiveZIndexChildLayerRenderers);
-		
-		var length:Int = concatenatedChildLayers.length;
+		var length:Int = parentStackingContexts.length;
 		for (i in 0...length)
 		{
-			var child:LayerRenderer = concatenatedChildLayers[i];
+			var child:LayerRenderer = parentStackingContexts[i];
 			//if this layer is found before any compositing layer
 			//then it is rendred below and doesn't need a compositing layer
 			if (child == this)
@@ -660,6 +702,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	public function render(windowWidth:Int, windowHeight:Int ):Void
 	{
+		_needsRendering = true;
 		//if the graphic context was instantiated/re-instantiated
 		//since last rendering, the size of its bitmap data should be
 		//updated with the viewport's dimensions
@@ -854,6 +897,28 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	/////////////////////////////////
 	// PRIVATE LAYER TREE METHODS
 	////////////////////////////////
+	
+	/**
+	 * Returns all the stacking contexts of the
+	 * parent ordered by z-index
+	 */
+	private function getParentStackingContext():Array<LayerRenderer>
+	{
+		//find the first parent establishing a stacking context
+		var parentStackingContext:LayerRenderer = parentNode;
+		while (parentStackingContext.establishesNewStackingContext() == false)
+		{
+			parentStackingContext = parentStackingContext.parentNode;
+		}
+		
+		//get all layer in parent stacking context in z-order
+		var parentStackingContexts:Array<LayerRenderer> = new Array<LayerRenderer>();
+		parentStackingContexts = parentStackingContexts.concat(parentStackingContext.negativeZIndexChildLayerRenderers);
+		parentStackingContexts = parentStackingContexts.concat(parentStackingContext.zeroAndAutoZIndexChildLayerRenderers);
+		parentStackingContexts = parentStackingContexts.concat(parentStackingContext.positiveZIndexChildLayerRenderers);
+		
+		return parentStackingContexts;
+	}
 	
 	/**
 	 * When inserting a new child LayerRenderer in the positive z-index
