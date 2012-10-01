@@ -243,7 +243,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 			//by default, set a relayout of this containing block and
 			//a rendering of all its children
 			default:
-				invalidateLayoutAndRendering();
+				_childrenNeedLayout = true;
 		}
 	}
 	
@@ -261,7 +261,6 @@ class InvalidatingElementRenderer extends ElementRenderer
 			
 			default:
 				_positionedChildrenNeedLayout = true;
-				//invalidateLayoutAndRendering();
 		}
 	}
 	

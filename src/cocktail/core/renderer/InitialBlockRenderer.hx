@@ -98,11 +98,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	
 	/**
 	 * As the initial block renderer has no containing block,
-	 * invalidate the document instead
+	 * do nothing
 	 */
 	override private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
 	{
-		invalidateLayoutAndRendering();
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
