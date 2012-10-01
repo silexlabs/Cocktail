@@ -170,9 +170,9 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_childrenNativeLayer.transform.matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 	}
 	
-	override public function attach(graphicsContext:GraphicsContext):Void
+	override public function attach(graphicsContext:GraphicsContext, index:Int):Void
 	{
-		graphicsContext.parentNode.nativeLayer.addChild(_childrenNativeLayer);
+		graphicsContext.parentNode.nativeLayer.addChildAt(_childrenNativeLayer, index);
 	}
 	
 	override public function detach(graphicsContext:GraphicsContext):Void

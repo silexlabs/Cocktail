@@ -548,11 +548,11 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 				
 				if (foundSelf == true)
 				{
-					if (concatenatedChildLayers[i].graphicsContext != null)
+					if (child.graphicsContext != null)
 					{
-						if (concatenatedChildLayers[i].hasOwnGraphicsContext == true)
+						if (child.hasOwnGraphicsContext == true)
 						{
-							parentGraphicsContext.insertBefore(graphicsContext, concatenatedChildLayers[i].graphicsContext);
+							parentGraphicsContext.insertBefore(graphicsContext, child.graphicsContext);
 							inserted = true;
 							break;
 						}

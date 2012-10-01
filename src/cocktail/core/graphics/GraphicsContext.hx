@@ -217,7 +217,17 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	 */
 	private function doAttach():Void
 	{
-		graphics.attach(this);
+		//find the index of this graphic context among its
+		//parent's child nodes
+		var index:Int = 0;
+		var previousGraphicsContextSibling:GraphicsContext = this.previousSibling;
+		while (previousGraphicsContextSibling != null)
+		{
+			index++;
+			previousGraphicsContextSibling = previousGraphicsContextSibling.previousSibling;
+		}
+		
+		graphics.attach(this, index);
 	}
 	
 	/**

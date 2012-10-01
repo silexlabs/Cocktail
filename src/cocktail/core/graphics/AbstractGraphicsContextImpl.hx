@@ -75,7 +75,7 @@ class AbstractGraphicsContextImpl
 	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function attach(graphicsContext:GraphicsContext):Void
+	public function attach(graphicsContext:GraphicsContext, index:Int):Void
 	{
 		//abstract
 	}
