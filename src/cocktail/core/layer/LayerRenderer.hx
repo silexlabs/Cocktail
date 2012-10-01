@@ -468,7 +468,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		
 		invalidateStackingContext();
 		newChild.invalidateStackingContext();
-		
+		newChild.invalidateRendering();
 		//needs to update graphic context, in case the new child
 		//changes it
 		//
@@ -484,13 +484,15 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */ 
 	override public function removeChild(oldChild:LayerRenderer):LayerRenderer
 	{
-		oldChild.detach();
 		//need to update graphic context after removing a child
 		//as it might trigger graphic contex creation/deletion
 		oldChild.invalidateGraphicsContext(oldChild.isCompositingLayer());
 		oldChild.invalidateStackingContext();
+		oldChild.invalidateRendering();
 		invalidateStackingContext();
 		
+		oldChild.detach();
+
 		super.removeChild(oldChild);
 		
 		return oldChild;

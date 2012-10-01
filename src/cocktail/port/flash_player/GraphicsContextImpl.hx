@@ -113,8 +113,6 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		
 	}
 	
-	private static var _g:Int;
-	
 	/**
 	 * Create new BitmapData when the size of the window changes
 	 */
@@ -126,15 +124,11 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		//here the bitmap data is created for the first time
 		if (_nativeBitmap == null)
 		{
-			_g++;
-			trace(_g);
 			_nativeBitmap = new Bitmap(new BitmapData(width, height, true, 0x00000000), PixelSnapping.AUTO, true);
 			_childrenNativeLayer.addChildAt(_nativeBitmap, 0);
 		}
 		else
 		{
-			_g++;
-			trace(_g);
 			_nativeBitmap.bitmapData.dispose();
 			_nativeBitmap.bitmapData = new BitmapData(width, height, true, 0x00000000);
 		}

@@ -97,10 +97,8 @@ class InvalidatingElementRenderer extends ElementRenderer
 				invalidateRendering();
 				
 			case InvalidationReason.other:
-				invalidateLayout();
 				_childrenNeedLayout = true;
 				_positionedChildrenNeedLayout = true;
-				invalidateContainingBlock(invalidationReason);
 		}
 	}
 	
