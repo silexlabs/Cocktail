@@ -8,6 +8,7 @@
 package cocktail.core.timer;
 
 import cocktail.core.timer.TimerData;
+import haxe.Log;
 
 /**
  * Manages the event loop of the document.
@@ -27,14 +28,13 @@ class Timer
 	public function new() 
 	{
 		_pendingCallbacks = new Array<TimerCallbackVO>();
-		
+
 		#if macro
 		#else
 		//TODO 3 : for now only support for flash runtime
 		//use enter frame intead of timer, seems more efficient because
 		//synchronised with screen refresh
-		flash.Lib.current.stage.addEventListener(flash.events.Event.ENTER_FRAME, function(e) {flash.Lib.current.stage.invalidate(); } );
-		flash.Lib.current.stage.addEventListener(flash.events.Event.RENDER, function(e) { onUpdate(); } );
+		flash.Lib.current.stage.addEventListener(flash.events.Event.ENTER_FRAME, function(e) {onUpdate(); } );
 		#end
 	}
 	
@@ -91,7 +91,8 @@ class Timer
 			}
 			
 			//now that loop is over, remove completed callbacks
-			for (j in 0...completedCallbacks.length)
+			length = completedCallbacks.length;
+			for (j in 0...length)
 			{
 				_pendingCallbacks.remove(completedCallbacks[j]);
 			}
