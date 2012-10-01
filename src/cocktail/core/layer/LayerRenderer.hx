@@ -354,16 +354,37 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	{
 		_needsRendering = true;
 		
-		//if has own graphic context,
-		//invalidate all children with
-		//same graphic context
 		if (hasOwnGraphicsContext == true)
 		{
 			invalidateChildLayerRenderer(this);
 		}
+		else
+		{
+			//if the child has no graphics context, 
+			//invalidate instead the first parent which does
+			if (parentNode != null)
+			{
+				var parent = parentNode;
+				while(parent.establishesNewGraphicsContext() == false)
+				{
+					parent = parent.parentNode;
+				}
+				
+				parent.invalidateRendering();
+			}
+		}
 		
 		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
 		htmlDocument.invalidateRendering();
+	}
+	
+	/**
+	 * only invalidate self, used when invalidating
+	 * children to prevent infinite loop
+	 */
+	public function invalidateOwnRendering():Void
+	{
+		_needsRendering = true;
 	}
 	
 	/**
@@ -401,7 +422,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			
 			if (child.hasOwnGraphicsContext == false)
 			{
-				child.invalidateRendering();
+				child.invalidateOwnRendering();
 				invalidateChildLayerRenderer(child);
 			}
 		}
@@ -729,7 +750,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	public function render(windowWidth:Int, windowHeight:Int ):Void
 	{
-		_needsRendering = true;
 		//if the graphic context was instantiated/re-instantiated
 		//since last rendering, the size of its bitmap data should be
 		//updated with the viewport's dimensions
@@ -813,8 +833,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		
 		//only render if necessary. This only applies to layer which have
 		//their own graphic context, layer which don't always gets re-painted
-		//
-		//TODO 2 : invalidation for layer is still messy
 		if (_needsRendering == true)
 		{
 			//render the rootElementRenderer itself which will also
@@ -849,7 +867,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		rootElementRenderer.renderScrollBars(graphicsContext, windowWidth, windowHeight);
 		
 		//only render if necessary
-		if (_needsRendering == true || hasOwnGraphicsContext)
+		if (_needsRendering == true)
 		{
 			//apply transformations to the layer if needed
 			if (rootElementRenderer.isTransformed() == true)
