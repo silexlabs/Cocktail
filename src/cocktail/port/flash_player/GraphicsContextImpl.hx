@@ -98,11 +98,8 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		super();
 		
 		_nativeLayer = new Sprite();
-		
-		
 		_childrenNativeLayer = new Sprite();
 		
-		_nativeBitmap = new Bitmap(new BitmapData(1, 1, true, 0x00000000), PixelSnapping.AUTO, true);
 		_flashRectangle = new Rectangle();
 		_flashPoint = new Point();
 		_flashMatrix = new flash.geom.Matrix();
@@ -111,12 +108,12 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_width = 0;
 		_height = 0;
 		
-		
 		//build native display list
-		_childrenNativeLayer.addChild(_nativeBitmap);
 		_childrenNativeLayer.addChild(_nativeLayer);
 		
 	}
+	
+	private static var _g:Int;
 	
 	/**
 	 * Create new BitmapData when the size of the window changes
@@ -126,8 +123,21 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_width = width;
 		_height = height;
 		
-		_nativeBitmap.bitmapData.dispose();
-		_nativeBitmap.bitmapData = new BitmapData(width, height, true, 0x00000000);
+		//here the bitmap data is created for the first time
+		if (_nativeBitmap == null)
+		{
+			_g++;
+			trace(_g);
+			_nativeBitmap = new Bitmap(new BitmapData(width, height, true, 0x00000000), PixelSnapping.AUTO, true);
+			_childrenNativeLayer.addChildAt(_nativeBitmap, 0);
+		}
+		else
+		{
+			_g++;
+			trace(_g);
+			_nativeBitmap.bitmapData.dispose();
+			_nativeBitmap.bitmapData = new BitmapData(width, height, true, 0x00000000);
+		}
 	}
 	
 	/**
@@ -136,11 +146,14 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	 */
 	override public function clear():Void
 	{
-		_flashRectangle.x = 0;
-		_flashRectangle.y = 0;
-		_flashRectangle.width = _width;
-		_flashRectangle.height = _height;
-		_nativeBitmap.bitmapData.fillRect(_flashRectangle, 0x00000000);
+		if (_nativeBitmap != null)
+		{
+			_flashRectangle.x = 0;
+			_flashRectangle.y = 0;
+			_flashRectangle.width = _width;
+			_flashRectangle.height = _height;
+			_nativeBitmap.bitmapData.fillRect(_flashRectangle, 0x00000000);
+		}
 	}
 	
 	/////////////////////////////////
@@ -152,9 +165,14 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	 */
 	override public function dispose():Void
 	{
-		_nativeBitmap.bitmapData.dispose();
-		_childrenNativeLayer.removeChild(_nativeBitmap);
-		_nativeBitmap = null;
+		if (_nativeBitmap != null)
+		{
+			_nativeBitmap.bitmapData.dispose();
+			_childrenNativeLayer.removeChild(_nativeBitmap);
+			_nativeBitmap = null;
+		}
+		
+		
 		_childrenNativeLayer.removeChild(_nativeLayer);
 		_nativeLayer = null;
 		_childrenNativeLayer = null;

@@ -206,6 +206,11 @@ class InvalidatingElementRenderer extends ElementRenderer
 				invalidateLayoutAndRendering();
 				invalidateContainingBlock(invalidationReason);
 			
+			//when opacity changes, only rendering
+			//needs to be updated
+			case CSSConstants.OPACITY:
+				invalidateRendering();
+				
 			//a background style change only requires a re-rendering, as backgrounds never
 			//affects layout
 			case CSSConstants.BACKGROUND_COLOR, CSSConstants.BACKGROUND_CLIP,

@@ -75,21 +75,41 @@ class AbstractGraphicsContextImpl
 	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Attach the native layer to the native display list
+	 * 
+	 * @param	graphicsContext the graphic context containing
+	 * the native layer where this native layer should be attached
+	 * @param	index the index of the graphic context owning this
+	 * graphic context implemention in its parent's children list
+	 */
 	public function attach(graphicsContext:GraphicsContext, index:Int):Void
 	{
 		//abstract
 	}
 	
+	/**
+	 * Detach the native from the native display list
+	 */
 	public function detach(graphicsContext:GraphicsContext):Void
 	{
 		//abstract
 	}
 	
+	/**
+	 * Attach the native layer to the root
+	 * of the native display list, used for
+	 * the root graphics context
+	 */
 	public function attachToRoot():Void
 	{
 		//abstract
 	}
 	
+	/**
+	 * Detach the native layer from
+	 * the root of the native display list
+	 */
 	public function detachFromRoot():Void
 	{
 		//abstract

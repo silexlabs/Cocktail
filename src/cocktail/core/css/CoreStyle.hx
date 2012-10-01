@@ -477,6 +477,8 @@ class CoreStyle
 				if (isAnimatable(propertyName))
 				{
 					_animator.registerPendingAnimation(propertyName, invalidationReason, getAnimatablePropertyValue(propertyName));
+					var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
+					htmlDocument.invalidatePendingAnimations();
 				}
 			}
 		}
@@ -952,6 +954,11 @@ class CoreStyle
 	private function onTransitionComplete(transition:Transition):Void
 	{
 		htmlElement.invalidate(transition.invalidationReason);
+		
+		//schedule an update of the pending animations
+		var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
+		htmlDocument.invalidatePendingAnimations();
+		
 		var transitionEvent:TransitionEvent = new TransitionEvent();
 		transitionEvent.initTransitionEvent(EventConstants.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
 		_pendingTransitionEndEvents.push(transitionEvent);

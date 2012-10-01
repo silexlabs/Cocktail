@@ -235,6 +235,12 @@ class HTMLDocument extends Document
 	private var _nativeLayerTreeNeedsUpdate:Bool;
 	
 	/**
+	 * Wether some pending animations need to 
+	 * be started or ended
+	 */
+	private var _pendingAnimationsNeedUpdate:Bool;
+	
+	/**
 	 * Wheter the graphics context tree, used
 	 * to paint the rendering tree should
 	 * be updated after its structure changed
@@ -350,6 +356,7 @@ class HTMLDocument extends Document
 		_layerTreeNeedsUpdate = true;
 		_nativeLayerTreeNeedsUpdate = true;
 		_stackingContextsNeedUpdate = true;
+		_pendingAnimationsNeedUpdate = true;
 		
 		_mousePoint = new PointVO(0.0, 0.0);
 		
@@ -1021,6 +1028,15 @@ class HTMLDocument extends Document
 	}
 	
 	/**
+	 * schedule starting/ending the pending animations
+	 */
+	public function invalidatePendingAnimations():Void
+	{
+		_pendingAnimationsNeedUpdate = true;
+		invalidate();
+	}
+	
+	/**
 	 * Shedule an update of the graphics
 	 * context tree
 	 */
@@ -1109,7 +1125,11 @@ class HTMLDocument extends Document
 		if (_documentNeedsLayout == true)
 		{
 			startLayout(false);
-			
+		}
+		
+		//start all the pending animations if any
+		if (_pendingAnimationsNeedUpdate == true)
+		{
 			//start all pending animations
 			var atLeastOneAnimationStarted:Bool = documentElement.startPendingAnimation();
 			
@@ -1148,16 +1168,16 @@ class HTMLDocument extends Document
 		
 		//when the document has been entirely updated
 		//end the pending animation
-		if (_documentNeedsLayout == true)
+		if (_pendingAnimationsNeedUpdate == true)
 		{
 			//Make all animations which just ended dispose
 			//of themselves and dispatch a complete event.
 			//The event must be dispatched once the layout 
 			//and rendering are done to prevent the user
-			//from modififying the DOM with not updated
+			//from modififying the DOM with not up to date
 			//info
 			documentElement.endPendingAnimation();
-			_documentNeedsLayout = false;
+			_pendingAnimationsNeedUpdate = false;
 		}
 	}
 	
