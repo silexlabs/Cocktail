@@ -637,7 +637,8 @@ class InlineFormattingContext extends FormattingContext
 	//TODO 2 : add doc, remove start and end spaces in a line
 	private function removeSpaces(rootLineBox:LineBox):Void
 	{
-		var lineBoxes:Array<LineBox> = getLineBoxTreeAsArray(rootLineBox);
+		var lineBoxes:Array<LineBox> = new Array<LineBox>();
+		getLineBoxTreeAsArray(rootLineBox, lineBoxes);
 		
 		if (lineBoxes.length == 0)
 		{
@@ -675,8 +676,8 @@ class InlineFormattingContext extends FormattingContext
 			i++;
 		}
 		
-		
-		lineBoxes = getLineBoxTreeAsArray(rootLineBox);
+		var lineBoxes:Array<LineBox> = new Array<LineBox>();
+		getLineBoxTreeAsArray(rootLineBox, lineBoxes);
 		
 		if (lineBoxes.length == 0)
 		{
@@ -715,29 +716,22 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
-	private function getLineBoxTreeAsArray(rootLineBox:LineBox):Array<LineBox>
+	private function getLineBoxTreeAsArray(rootLineBox:LineBox, lineBoxes:Array<LineBox>):Void
 	{
-		var ret:Array<LineBox> = new Array<LineBox>();
-		
+		var length:Int = rootLineBox.childNodes.length;
 		for (i in 0...rootLineBox.childNodes.length)
 		{
 			var child:LineBox = rootLineBox.childNodes[i];
 			
 			if (child.hasChildNodes() == true && child.isStaticPosition() == false)
 			{
-				var children:Array<LineBox> = getLineBoxTreeAsArray(child);
-				for (j in 0...children.length)
-				{
-					ret.push(children[j]);
-				}
+				getLineBoxTreeAsArray(child, lineBoxes);
 			}
 			else
 			{
-				ret.push(child);
+				lineBoxes.push(child);
 			}
 		}
-		
-		return ret;
 	}
 	
 	/////////////////////////////////
