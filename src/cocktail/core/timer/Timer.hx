@@ -9,6 +9,7 @@ package cocktail.core.timer;
 
 import cocktail.core.timer.TimerData;
 import haxe.Log;
+import haxe.Stack;
 
 /**
  * Manages the event loop of the document.
@@ -25,10 +26,19 @@ class Timer
 	 */
 	private var _pendingCallbacks:Array<TimerCallbackVO>;
 	
+	/**
+	 * Keep track of the number of pending
+	 * methods which needs to be called. 
+	 * Allow to reduce methods call when 
+	 * no method calls are pending
+	 */
+	private var _pendingCount:Int;
+	
 	public function new() 
 	{
 		_pendingCallbacks = new Array<TimerCallbackVO>();
-
+		_pendingCount = 0;
+		
 		#if macro
 		#else
 		//TODO 3 : for now only support for flash runtime
@@ -50,11 +60,35 @@ class Timer
 	 */
 	public function delay(timerCallback:Void->Void, delay:Float = 0):Void
 	{
+		//increment global counter to be
+		//sure this callback gets called
+		_pendingCount++;
+		
 		//represents the absolute time in milliseconds when this
 		//method should be called
 		var callbackTime:Float = Date.now().getTime() + delay;
 		
-		_pendingCallbacks.push(new TimerCallbackVO(timerCallback, callbackTime));
+		//try to re-use a pending callback object
+		var length:Int = _pendingCallbacks.length;
+		for (i in 0...length)
+		{
+			var pendingCallback:TimerCallbackVO = _pendingCallbacks[i];
+			//the object can be re-used once it has been called
+			if (pendingCallback.called == true)
+			{
+				pendingCallback.called = false;
+				pendingCallback.callbackTime = callbackTime;
+				pendingCallback.timerCallback = timerCallback;
+				return;
+			}
+		}
+		
+		//if no objects are re-usable, create one
+		var newTimerCallback:TimerCallbackVO = new TimerCallbackVO();
+		newTimerCallback.called = false;
+		newTimerCallback.callbackTime = callbackTime;
+		newTimerCallback.timerCallback = timerCallback;
+		_pendingCallbacks.push(newTimerCallback);
 	}
 	
 	/////////////////////////////////
@@ -68,13 +102,9 @@ class Timer
 	private function onUpdate():Void
 	{
 		//do nothing if no callbacks are registered
-		if (_pendingCallbacks.length > 0)
+		if (_pendingCount > 0)
 		{
 			var time:Float = Date.now().getTime();
-			
-			//will hold called callback, can't remove them right away
-			//during loop
-			var completedCallbacks = new Array<TimerCallbackVO>();
 			
 			var length:Int = _pendingCallbacks.length;
 			for (i in 0...length)
@@ -83,18 +113,18 @@ class Timer
 				
 				//check if the current time is superior to the target
 				//time of the callback
-				if (pendingCallback.callbackTime < time)
+				if (pendingCallback.callbackTime < time && pendingCallback.called == false)
 				{
 					pendingCallback.timerCallback();
-					completedCallbacks.push(pendingCallback);
+					
+					//mark the pending callback object
+					//as re-usable
+					pendingCallback.called = true;
+					
+					//decrement to prevent unecessary calls when no method
+					//call is pending
+					_pendingCount--;
 				}
-			}
-			
-			//now that loop is over, remove completed callbacks
-			length = completedCallbacks.length;
-			for (j in 0...length)
-			{
-				_pendingCallbacks.remove(completedCallbacks[j]);
 			}
 		}
 	}

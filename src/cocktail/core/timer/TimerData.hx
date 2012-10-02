@@ -18,14 +18,21 @@ package cocktail.core.timer;
   */
 class TimerCallbackVO 
 {
-	public var timerCallback(default, null):Void->Void;
+	public var timerCallback:Void->Void;
 	
 	public var callbackTime:Float;
 	
-	public function new(timerCallback:Void->Void, callbackTime:Float) 
+	/**
+	 * wether the current callback was called, in
+	 * which case it can be re-used for another 
+	 * callback
+	 */
+	public var called:Bool;
+	
+	public function new() 
 	{
-		this.timerCallback = timerCallback;
-		this.callbackTime = callbackTime;
+		callbackTime = 0;
+		called = false;
 	}
 	
 }
