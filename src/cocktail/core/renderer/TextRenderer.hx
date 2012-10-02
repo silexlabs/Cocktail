@@ -115,6 +115,29 @@ class TextRenderer extends InvalidatingElementRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as the bounds of a TextRenderer is formed
+	 * by the bounds of its formatted text line boxes
+	 */
+	override public function updateBounds():Void
+	{
+		var textLineBoxesBounds:Array<RectangleVO> = new Array<RectangleVO>();
+		var length:Int = lineBoxes.length;
+		for (i in 0...length)
+		{
+			textLineBoxesBounds.push(lineBoxes[i].bounds);
+		}
+		
+		var childrenBounds:RectangleVO = getChildrenBounds(textLineBoxesBounds);
+		bounds.x = childrenBounds.x;
+		bounds.y = childrenBounds.y;
+		bounds.width = childrenBounds.width;
+		bounds.height = childrenBounds.height;
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -383,25 +406,5 @@ class TextRenderer extends InvalidatingElementRenderer
 	override public function isInlineLevel():Bool
 	{
 		return true;
-	}
-	
-	/////////////////////////////////
-	// OVERRIDEN SETTER/GETTER
-	////////////////////////////////
-	
-	/**
-	 * Overriden as the bounds of a TextRenderer is formed
-	 * by the bounds of its formatted text line boxes
-	 */
-	override private function get_bounds():RectangleVO
-	{
-		var textLineBoxesBounds:Array<RectangleVO> = new Array<RectangleVO>();
-		var length:Int = lineBoxes.length;
-		for (i in 0...length)
-		{
-			textLineBoxesBounds.push(lineBoxes[i].bounds);
-		}
-		
-		return getChildrenBounds(textLineBoxesBounds);
 	}
 }

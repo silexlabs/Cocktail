@@ -62,6 +62,20 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		
 	}
 	
+	/**
+	 * overriden as the bounds of the initial block container
+	 * are always those of the Window (minus scrollbars dimensions
+	 * if displayed)
+	 */
+	override public function updateBounds():Void
+	{
+		var containerBlockData:ContainingBlockVO = getContainerBlockData();
+		bounds.x = 0.0;
+		bounds.y = 0.0;
+		bounds.width = containerBlockData.width;
+		bounds.height = containerBlockData.height;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE ATTACHEMENT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -223,26 +237,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * overriden as the bounds of the initial block container
-	 * are always those of the Window (minus scrollbars dimensions
-	 * if displayed)
-	 */
-	override private function get_bounds():RectangleVO
-	{
-		var containerBlockData:ContainingBlockVO = getContainerBlockData();
-		
-		var width:Float = containerBlockData.width;
-		var height:Float = containerBlockData.height;
-		
-		bounds.x = 0.0;
-		bounds.y = 0.0;
-		bounds.width = 0.0;
-		bounds.height = 0.0;
-		
-		return bounds;
-	}
 	
 	/**
 	 * For the initial container, the bounds and
