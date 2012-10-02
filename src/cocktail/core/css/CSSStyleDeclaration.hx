@@ -162,13 +162,6 @@ class CSSStyleDeclaration
 	private var _properties:Array<TypedPropertyVO>;
 	
 	/**
-	 * Holds the same data as the _properties
-	 * array but allows fast access with
-	 * property name
-	 */
-	private var _propertiesHash:Hash<TypedPropertyVO>;
-	
-	/**
 	 * Optionnal callback, called when the value
 	 * of a style changes
 	 */
@@ -190,7 +183,6 @@ class CSSStyleDeclaration
 	private function initPropertiesStructure():Void
 	{
 		_properties = new Array<TypedPropertyVO>();
-		_propertiesHash = new Hash<TypedPropertyVO>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -213,7 +205,7 @@ class CSSStyleDeclaration
 	 */
 	public function getPropertyValue(property:String):String
 	{
-		var typedProperty:TypedPropertyVO = _propertiesHash.get(property);
+		var typedProperty:TypedPropertyVO = getTypedProperty(property);
 		if (typedProperty != null)
 		{
 			return CSSStyleSerializer.serialize(typedProperty.typedValue);
@@ -230,7 +222,7 @@ class CSSStyleDeclaration
 	 * TODO 1 : check that property name is valid and that
 	 * "!important" is not in parsed value
 	 */
-	public function setProperty(name:String, value:String, priority:String = null)
+	public function setProperty(name:String, value:String, priority:String = null):Void
 	{
 		if (value == null)
 		{
@@ -246,8 +238,6 @@ class CSSStyleDeclaration
 			{
 				applyProperty(typedProperty.name, typedProperty.typedValue, typedProperty.important);
 			}
-			
-			
 		}
 	}
 	
@@ -258,12 +248,11 @@ class CSSStyleDeclaration
 	 */
 	public function removeProperty(property:String):String
 	{
-		var typedProperty:TypedPropertyVO = _propertiesHash.get(property);
+		var typedProperty:TypedPropertyVO = getTypedProperty(property);
 		//first check that the property exists
 		if (typedProperty != null)
 		{
 			_properties.remove(typedProperty);
-			_propertiesHash.remove(property);
 			
 			//call the style update callback if provided
 			if (_onStyleChange != null)
@@ -285,7 +274,7 @@ class CSSStyleDeclaration
 	 */
 	public function getPropertyPriority(property:String):String
 	{
-		var typedProperty:TypedPropertyVO = _propertiesHash.get(property);
+		var typedProperty:TypedPropertyVO =getTypedProperty(property);
 		if (typedProperty != null)
 		{
 			if (typedProperty.important == true)
@@ -307,7 +296,15 @@ class CSSStyleDeclaration
 	 */
 	public function getTypedProperty(property:String):TypedPropertyVO
 	{
-		return _propertiesHash.get(property);
+		var length:Int = _properties.length;
+		for (i in 0...length)
+		{
+			if (_properties[i].name == property)
+			{
+				return _properties[i];
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -317,16 +314,13 @@ class CSSStyleDeclaration
 	public function setTypedProperty(property:String, typedValue:CSSPropertyValue, important:Bool):Void
 	{
 		//check if the property already exists
-		var currentProperty:TypedPropertyVO = _propertiesHash.get(property);
+		var currentProperty:TypedPropertyVO = getTypedProperty(property);
 		
 		//here the property doesn't exist yet, create it and store it
 		if (currentProperty == null)
 		{
 			var newProperty:TypedPropertyVO = new TypedPropertyVO(property, typedValue, important);
 			
-			//always update the properties hash to keep data in 
-			//sync with properties array
-			_propertiesHash.set(property, newProperty);
 			_properties.push(newProperty);
 			
 			if (_onStyleChange != null)
