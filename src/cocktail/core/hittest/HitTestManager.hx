@@ -35,11 +35,17 @@ class HitTestManager
 	private var _elementRenderersAtPoint:Array<ElementRenderer>;
 	
 	/**
+	 * The point being hit tested
+	 */
+	private var _targetPoint:PointVO;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
 	{
 		_scrolledPoint = new PointVO(0.0, 0.0);
+		_targetPoint = new PointVO(0.0, 0.0);
 		
 	}
 	
@@ -57,16 +63,20 @@ class HitTestManager
 	 *	is found
 	 * 
 	 * @param	layer the root layer where the hit test begins
-	 * @param	point the target point relative to the window
+	 * @param	x the target x point relative to the window
+	 * @param	y the target y point relative to the window
 	 * @param	scrollX the x scroll offset applied to the point
 	 * @param	scrollY the y scroll offset applied to the point
 	 */
-	public function getTopMostElementRendererAtPoint(layer:LayerRenderer, point:PointVO, scrollX:Float, scrollY:Float):ElementRenderer
+	public function getTopMostElementRendererAtPoint(layer:LayerRenderer, x:Float, y:Float, scrollX:Float, scrollY:Float):ElementRenderer
 	{
+		_targetPoint.x = x;
+		_targetPoint.y = y;
+		
 		_elementRenderersAtPoint = new Array<ElementRenderer>();
 		
 		//get all the elementRenderers under the point, update the element renderers array
-		getElementRenderersAtPoint(_elementRenderersAtPoint, layer, point, scrollX, scrollY);
+		getElementRenderersAtPoint(_elementRenderersAtPoint, layer, _targetPoint, scrollX, scrollY);
 		//return the top most, the last of the array
 		return _elementRenderersAtPoint[_elementRenderersAtPoint.length - 1];
 	}
@@ -83,6 +93,7 @@ class HitTestManager
 	{
 		getElementRenderersAtPointInLayer(elementRenderersAtPoint, layer, layer.rootElementRenderer, point, scrollX, scrollY);
 
+		
 		if (layer.rootElementRenderer.hasChildNodes() == true)
 		{
 			getElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, point, scrollX, scrollY);

@@ -301,13 +301,6 @@ class HTMLDocument extends Document
 	public var layoutManager(default, null):LayoutManager;
 	
 	/**
-	 * the current mouse point, used when
-	 * retrieving the ElementRenderer
-	 * under mouse
-	 */
-	private var _mousePoint:PointVO;
-	
-	/**
 	 * For a given HTMLElement, store
 	 * which CSS pseudo classes it currently matches
 	 */
@@ -357,8 +350,6 @@ class HTMLDocument extends Document
 		_nativeLayerTreeNeedsUpdate = true;
 		_stackingContextsNeedUpdate = true;
 		_pendingAnimationsNeedUpdate = true;
-		
-		_mousePoint = new PointVO(0.0, 0.0);
 		
 		layoutManager = new LayoutManager();
 	}
@@ -697,7 +688,7 @@ class HTMLDocument extends Document
 		{
 			_hoveredElementRenderer = body.elementRenderer;
 		}
-		
+
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
 		
 		if (_hoveredElementRenderer != elementRendererAtPoint)
@@ -1233,10 +1224,8 @@ class HTMLDocument extends Document
 	 */
 	private function getFirstElementRendererWhichCanDispatchMouseEvent(x:Int, y:Int):ElementRenderer
 	{
-		_mousePoint.x = x;
-		_mousePoint.y = y;
-		var elementRendererAtPoint:ElementRenderer = _hitTestManager.getTopMostElementRendererAtPoint(documentElement.elementRenderer.layerRenderer, _mousePoint, 0, 0  );
-		
+		var elementRendererAtPoint:ElementRenderer = _hitTestManager.getTopMostElementRendererAtPoint(documentElement.elementRenderer.layerRenderer, x, y, 0, 0  );
+
 		//when no element is under mouse like for instance when the mouse leaves
 		//the window, return the body
 		if (elementRendererAtPoint == null)

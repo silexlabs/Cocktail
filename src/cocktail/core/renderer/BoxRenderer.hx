@@ -333,13 +333,8 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function createOwnLayer():Bool
 	{
-		//transformed box always create new layer
-		if (isTransformed() == true)
-		{
-			return true;
-		}
 		//positioned box also always create a new layer
-		else if (isPositioned() == true)
+		if (isPositioned() == true)
 		{
 			return true;
 		}
@@ -347,6 +342,11 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//layer for rendering purpose so that they can be
 		//rendered offscreen then composited
 		else if (isTransparent() == true)
+		{
+			return true;
+		}
+		//transformed box always create new layer
+		else if (isTransformed() == true)
 		{
 			return true;
 		}
