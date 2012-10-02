@@ -20,6 +20,7 @@ import cocktail.core.css.CSSData;
 import flash.display.BitmapData;
 import flash.display.PixelSnapping;
 import flash.display.Sprite;
+import flash.display.StageQuality;
 import flash.geom.ColorTransform;
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -98,7 +99,11 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		super();
 		
 		_nativeLayer = new Sprite();
+		_nativeLayer.mouseEnabled = false;
+		_nativeLayer.mouseChildren = false;
 		_childrenNativeLayer = new Sprite();
+		_childrenNativeLayer.mouseEnabled = false;
+		_childrenNativeLayer.mouseChildren = false;
 		
 		_flashRectangle = new Rectangle();
 		_flashPoint = new Point();
@@ -107,7 +112,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_fillRectPoint = new PointVO(0.0, 0.0);
 		_width = 0;
 		_height = 0;
-		
+
 		//build native display list
 		_childrenNativeLayer.addChild(_nativeLayer);
 		
@@ -124,7 +129,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		//here the bitmap data is created for the first time
 		if (_nativeBitmap == null)
 		{
-			_nativeBitmap = new Bitmap(new BitmapData(width, height, true, 0x00000000), PixelSnapping.AUTO, true);
+			_nativeBitmap = new Bitmap(new BitmapData(width, height, true, 0x00000000), PixelSnapping.AUTO, false);
 			_childrenNativeLayer.addChildAt(_nativeBitmap, 0);
 		}
 		else
@@ -232,9 +237,9 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		}
 		
 		//convert the cross-platform rectangle into flash native one
-		_flashRectangle.x = sourceRect.x;
-		_flashRectangle.y = sourceRect.y;
-		_flashRectangle.width = sourceRect.width;
+		_flashRectangle.x = Math.round(sourceRect.x);
+		_flashRectangle.y = Math.round(sourceRect.y);
+		_flashRectangle.width = Math.round(sourceRect.width);
 		_flashRectangle.height = sourceRect.height;
 		
 		var matrixData:MatrixData = matrix.data;
@@ -265,13 +270,13 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	 */
 	override public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO):Void
 	{
-		_flashRectangle.x = sourceRect.x;
-		_flashRectangle.y = sourceRect.y;
-		_flashRectangle.width = sourceRect.width;
-		_flashRectangle.height = sourceRect.height;
+		_flashRectangle.x = Math.round(sourceRect.x);
+		_flashRectangle.y = Math.round(sourceRect.y);
+		_flashRectangle.width = Math.round(sourceRect.width);
+		_flashRectangle.height = Math.round(sourceRect.height);
 		
-		_flashPoint.x = destPoint.x;
-		_flashPoint.y = destPoint.y;
+		_flashPoint.x = Math.round(destPoint.x);
+		_flashPoint.y = Math.round(destPoint.y);
 		
 		var alphaBitmapData:BitmapData = null;
 		var alphaPoint:Point = null;
@@ -310,10 +315,10 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		//must be created to composite alpha
 		if (color.alpha != 1.0)
 		{
-			_fillRectRectangle.width = rect.width;
-			_fillRectRectangle.height = rect.height;
-			_fillRectPoint.x = rect.x;
-			_fillRectPoint.y = rect.y;
+			_fillRectRectangle.width = Math.round(rect.width);
+			_fillRectRectangle.height = Math.round(rect.height);
+			_fillRectPoint.x = Math.round(rect.x);
+			_fillRectPoint.y = Math.round(rect.y);
 			
 			var fillRectBitmapData:BitmapData = new BitmapData(Math.round(rect.width), Math.round(rect.height), true, argbColor);
 			copyPixels(fillRectBitmapData, _fillRectRectangle, _fillRectPoint );
@@ -322,10 +327,10 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		//else, the faster native flash method can be used
 		else
 		{
-			_flashRectangle.x = rect.x;
-			_flashRectangle.y = rect.y;
-			_flashRectangle.width = rect.width;
-			_flashRectangle.height = rect.height;
+			_flashRectangle.x = Math.round(rect.x);
+			_flashRectangle.y = Math.round(rect.y);
+			_flashRectangle.width = Math.round(rect.width);
+			_flashRectangle.height = Math.round(rect.height);
 			_nativeBitmap.bitmapData.fillRect(_flashRectangle, argbColor);
 		}
 	

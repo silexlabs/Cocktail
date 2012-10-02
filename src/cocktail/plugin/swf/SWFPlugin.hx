@@ -22,6 +22,7 @@ import flash.display.DisplayObjectContainer;
 import flash.display.DisplayObject;
 import flash.display.Sprite;
 import flash.display.Loader;
+import flash.geom.Rectangle;
 import flash.net.URLRequest;
 #if flash
 import flash.system.LoaderContext;
@@ -84,6 +85,11 @@ class SWFPlugin extends Plugin
 	 * The flash loader used to load the swf
 	 */
 	private var _loader:Loader;
+	
+	/**
+	 * A rectangle used to mask the loaded swf
+	 */
+	private var _scrollRect:Rectangle;
 	
 	/**
 	 * class constructor, start loading the swf
@@ -176,7 +182,7 @@ class SWFPlugin extends Plugin
 		viewport = value;
 		
 		//reset the transformations of the swf
-		_swf.transform.matrix = new flash.geom.Matrix();
+		_swf.transform.matrix.identity();
 		
 		//get the bounds where the swf should be displayed
 		var assetBounds:RectangleVO = getAssetBounds(viewport.width, viewport.height,
@@ -186,31 +192,39 @@ class SWFPlugin extends Plugin
 		switch (_scaleMode)
 		{
 			case NO_SCALE:
-				_swf.x = viewport.x;
-				_swf.y = viewport.y;
+				_swf.x = Math.round(viewport.x);
+				_swf.y = Math.round(viewport.y);
 				
 			case EXACT_FIT:
-				_swf.x = viewport.x;
-				_swf.y = viewport.y;
+				_swf.x = Math.round(viewport.x);
+				_swf.y = Math.round(viewport.y);
 				_swf.scaleX = viewport.width / _swfWidth;
 				_swf.scaleY = viewport.height / _swfHeight;
 
 			default:
-				_swf.x = viewport.x + assetBounds.x;
-				_swf.y = viewport.y + assetBounds.y;
+				_swf.x = Math.round(viewport.x + assetBounds.x);
+				_swf.y = Math.round(viewport.y + assetBounds.y);
 				_swf.scaleX = assetBounds.width / _swfWidth;
 				_swf.scaleY = assetBounds.height / _swfHeight;
 		}
 		
-		//mask the swf so that it doesn't overflow
-		var mask = new Sprite();
-		mask.graphics.beginFill(0xFF0000, 0.0);
-		mask.graphics.drawRect( 
-		viewport.x, viewport.y,
-		viewport.width, viewport.height);
-		mask.graphics.endFill();
-		_swf.mask = mask;
+		//apply a scroll rect to the swf to prevent it
+		//from overflowing in object tag
+		if (_scrollRect == null)
+		{
+			_scrollRect = new Rectangle(Math.round(-viewport.x), Math.round( -viewport.y), Math.round(viewport.width), Math.round(viewport.height));
+		}
+		else
+		{
+			_scrollRect.x = Math.round(-viewport.x);
+			_scrollRect.y = Math.round(-viewport.y);
+			_scrollRect.width = Math.round(viewport.width);
+			_scrollRect.height = Math.round(viewport.height);
+		}
 		
+		_swf.scrollRect = _scrollRect;
+		
+				
 		return viewport;
 	}
 	
