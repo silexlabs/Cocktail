@@ -63,9 +63,16 @@ class Animator
 	 */
 	public function startPendingAnimations(style:CoreStyle):Bool
 	{
+		//do nothing if there are no pending animations
+		if (_pendingAnimations.length == 0)
+		{
+			return false;
+		}
+		
 		var atLeastOneAnimationStarted:Bool = false;
 		
-		for (i in 0..._pendingAnimations.length)
+		var length:Int = _pendingAnimations.length;
+		for (i in 0...length)
 		{
 			var animationStarted:Bool = startTransitionIfNeeded(_pendingAnimations[i], style);
 			if (animationStarted == true)

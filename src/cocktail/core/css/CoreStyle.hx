@@ -216,7 +216,14 @@ class CoreStyle
 	public function new(htmlElement:HTMLElement) 
 	{
 		this.htmlElement = htmlElement;
-		
+		init();
+	}
+	
+	/**
+	 * Init class attributes
+	 */
+	private function init():Void
+	{
 		computedValues = new CSSStyleDeclaration();
 		specifiedValues = new CSSStyleDeclaration();
 		
@@ -231,13 +238,6 @@ class CoreStyle
 		_transitionManager = TransitionManager.getInstance();
 		
 		initUsedValues();
-		
-		//TODO 1 : shouldn't need to instantiate a new style declaration, should use the one
-		//of the document but not availabler when instantiated
-		var initialStyleDeclaration:InitialStyleDeclaration = new InitialStyleDeclaration();
-		
-		cascade(initialStyleDeclaration.supportedCSSProperties, initialStyleDeclaration, initialStyleDeclaration, initialStyleDeclaration,
-		initialStyleDeclaration, 12, 10, false);
 	}
 	
 	/**
