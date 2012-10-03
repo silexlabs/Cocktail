@@ -274,7 +274,7 @@ class CSSStyleDeclaration
 	 */
 	public function getPropertyPriority(property:String):String
 	{
-		var typedProperty:TypedPropertyVO =getTypedProperty(property);
+		var typedProperty:TypedPropertyVO = getTypedProperty(property);
 		if (typedProperty != null)
 		{
 			if (typedProperty.important == true)

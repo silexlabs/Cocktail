@@ -92,10 +92,16 @@ class StyleManager
 		//contain all the style declarations whose selector matches the node
 		var matchingStyleDeclarations:Array<StyleDeclarationVO> = getMatchingStyleDeclarations(node, styleSheets, matchedPseudoClasses);
 		
-		//when properties are applied to the nodeStyleDeclaration, this hash
-		//store the name of the property so that they are are not applied multiple
+		//no style declaration matches this node
+		if (matchingStyleDeclarations == null)
+		{
+			return;
+		}
+		
+		//when properties are applied to the nodeStyleDeclaration,
+		//stores the name of the property so that they are are not applied multiple
 		//times
-		var matchedProperties:Hash<Void> = new Hash<Void>();
+		var matchedProperties:Array<String> = new Array<String>();
 		
 		//loop in all the style declarations applying to the node
 		var length:Int = matchingStyleDeclarations.length;
@@ -107,23 +113,41 @@ class StyleManager
 			{
 				var property:String = cssStyleDeclaration.item(j);
 				//check if the property was already previously applied
-				if (matchedProperties.exists(property) == false)
+				if (alreadyMatched(property, matchedProperties) == false)
 				{
 					applyMatchingProperty(property, matchingStyleDeclarations, nodeStyleDeclaration);
-					matchedProperties.set(property, null);
 				}
 			}
 		}
 	}
 	
 	/**
+	 * Return wether a given property was
+	 * already matched
+	 */
+	private function alreadyMatched(property:String, matchedProperties:Array<String>):Bool
+	{
+		var length:Int = matchedProperties.length;
+		for (i in 0...length)
+		{
+			if (matchedProperties[i] == property)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * Return an array containing all the style declarations
 	 * contained in the document's style sheets which apply to
-	 * the node
+	 * the node or null if there are none
 	 */
 	private function getMatchingStyleDeclarations(node:HTMLElement, styleSheets:Array<CSSStyleSheet>, matchedPseudoClasses:MatchedPseudoClassesVO):Array<StyleDeclarationVO>
 	{
-		var matchingStyleDeclarations:Array<StyleDeclarationVO> = new Array<StyleDeclarationVO>();
+		//only instantiate if needed
+		var matchingStyleDeclarations:Array<StyleDeclarationVO> = null;
 		
 		//loop in all style sheets
 		var styleSheetsLength:Int = styleSheets.length;
@@ -154,6 +178,10 @@ class StyleManager
 								//if the selector is matched, store the coresponding style declaration
 								//along with the matching selector
 								var matchingStyleDeclaration:StyleDeclarationVO = new StyleDeclarationVO(styleRule.style, selectors[k]);
+								if (matchingStyleDeclarations == null)
+								{
+									matchingStyleDeclarations = new Array<StyleDeclarationVO>();
+								}
 								matchingStyleDeclarations.push(matchingStyleDeclaration);
 								
 								//break to prevent from adding a style declaration
@@ -251,26 +279,40 @@ class StyleManager
 	 */
 	private function getSortedMatchingPropertiesByPriority(matchingProperties:Array<PropertyVO>):Array<PropertyVO>
 	{
-		var userAgentDeclarations:Array<PropertyVO> = new Array<PropertyVO>();
-		var authorNormalDeclarations:Array<PropertyVO> = new Array<PropertyVO>();
-		var authorImportantDeclarations:Array<PropertyVO> = new Array<PropertyVO>();
+		//only instantiated if used
+		var userAgentDeclarations:Array<PropertyVO> = null;
+		var authorNormalDeclarations:Array<PropertyVO> = null;
+		var authorImportantDeclarations:Array<PropertyVO> = null;
 		
 		//push all the mathing ptiorities into the array corresponding to their priority
-		for (i in 0...matchingProperties.length)
+		var length:Int = matchingProperties.length;
+		for (i in 0...length)
 		{
 			var matchingProperty:PropertyVO = matchingProperties[i];
 			switch(matchingProperty.origin)
 			{
 				case PropertyOriginValue.USER_AGENT:
+					if (userAgentDeclarations == null)
+					{
+						userAgentDeclarations = new Array<PropertyVO>();
+					}
 					userAgentDeclarations.push(matchingProperty);
 					
 				case PropertyOriginValue.AUTHOR:
 					if (matchingProperty.important == true)
 					{
+						if (authorImportantDeclarations == null)
+						{
+							authorImportantDeclarations = new Array<PropertyVO>();
+						}
 						authorImportantDeclarations.push(matchingProperty);
 					}
 					else
 					{
+						if (authorNormalDeclarations == null)
+						{
+							authorNormalDeclarations = new Array<PropertyVO>();
+						}
 						authorNormalDeclarations.push(matchingProperty);
 					}
 			}
@@ -278,13 +320,14 @@ class StyleManager
 		
 		//first if at least one of the matching priorities is declared important
 		//then the important properties are returned
-		if (authorImportantDeclarations.length > 0)
+		if (authorImportantDeclarations != null)
 		{
 			return authorImportantDeclarations;
 		}
 		
+		
 		//here normal author defined properties are returned
-		if (authorNormalDeclarations.length > 0)
+		if (authorNormalDeclarations != null)
 		{
 			return authorNormalDeclarations;
 		}
@@ -308,7 +351,8 @@ class StyleManager
 		var currentHigherSpecificity:Int = 0;
 		
 		//loop in all properties
-		for (i in 0...matchingProperties.length)
+		var length:Int = matchingProperties.length;
+		for (i in 0...length)
 		{
 			var property:PropertyVO = matchingProperties[i];
 			

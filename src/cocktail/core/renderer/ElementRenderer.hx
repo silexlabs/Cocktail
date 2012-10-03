@@ -503,6 +503,12 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			child.scrollOffset.x = addedScrollX;
 			child.scrollOffset.y = addedScrollY;
 			
+			//some subclass of element renderer need
+			//to update there bounds, for instance inline
+			//box renderer update their bounds to reflect
+			//their content
+			child.updateBounds();
+			
 			//make the child compute its new global bounds
 			child.updateGlobalBounds();
 			
@@ -526,6 +532,15 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	}
 	
 	/**
+	 * Update the bounds relative to the 
+	 * containing block
+	 */
+	public function updateBounds():Void
+	{
+		//abstract
+	}
+	
+	/**
 	 * update the global bounds bounds of the ElementRenderer
 	 * which are its bounds relative to the
 	 * Window
@@ -534,8 +549,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		var globalX:Float;
 		var globalY:Float;
-		
-		var bounds:RectangleVO = this.bounds;
 		
 		var positionKeyword:CSSKeywordValue = coreStyle.getKeyword(coreStyle.position);
 		

@@ -16,6 +16,7 @@ import cocktail.port.NativeElement;
 import cocktail.core.css.CoreStyle;
 import haxe.Log;
 import cocktail.core.geom.GeomData;
+import haxe.Stack;
 
 /**
  * An Inline Box renderer is an element which participates
@@ -51,15 +52,15 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN GETTER
+	// OVERRIDEN PUBLIC LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	/**
 	 * Overriden as the bounds of an inline box renderer is formed
 	 * by the bounds of all of the line boxes it creates during
 	 * formatting
 	 */
-	override private function get_bounds():RectangleVO
+	override public function updateBounds():Void
 	{
 		var lineBoxesBounds:Array<RectangleVO> = new Array<RectangleVO>();
 		var length:Int = lineBoxes.length;
@@ -68,6 +69,10 @@ class InlineBoxRenderer extends FlowBoxRenderer
 			lineBoxesBounds.push(lineBoxes[i].bounds);
 		}
 		
-		return getChildrenBounds(lineBoxesBounds);
+		var childrenBounds:RectangleVO =  getChildrenBounds(lineBoxesBounds);
+		bounds.x = childrenBounds.x;
+		bounds.y = childrenBounds.y;
+		bounds.width = childrenBounds.width;
+		bounds.height = childrenBounds.height;
 	}
 }

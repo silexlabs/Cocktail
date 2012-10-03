@@ -30,12 +30,6 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 	private var _nodes:Array<Attr<ElementClass>>;
 	
 	/**
-	 * The nodes are also stored as an hash
-	 * for quick retrieval with node name
-	 */
-	private var _nodesHash:Hash<Attr<ElementClass>>;
-	
-	/**
 	 * The number of nodes in this map.
 	 */
 	public var length(get_length, never):Int;
@@ -46,7 +40,6 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 	public function new() 
 	{
 		_nodes = new Array<Attr<ElementClass>>();
-		_nodesHash = new Hash<Attr<ElementClass>>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +55,16 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 	 */
 	public function getNamedItem(name:String):Attr<ElementClass>
 	{
-		return _nodesHash.get(name);
+		var length:Int = _nodes.length;
+		for (i in 0...length)
+		{
+			if (_nodes[i].name == name)
+			{
+				return _nodes[i];
+			}
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -100,8 +102,6 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 			_nodes.push(arg);
 		}
 		
-		_nodesHash.set(arg.nodeName, arg);
-		
 		return replacedNode;
 	}
 	
@@ -127,7 +127,6 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 			return null;
 		}
 		
-		_nodesHash.remove(name);
 		_nodes.remove(removedNode);
 		
 		return removedNode;
