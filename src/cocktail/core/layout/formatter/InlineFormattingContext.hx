@@ -69,12 +69,16 @@ class InlineFormattingContext extends FormattingContext
 	public function new(floatsManager:FloatsManager) 
 	{
 		super(floatsManager);
+		_unbreakableLineBoxes = new Array<LineBox>();
 	}
 
-	
 	override private function startFormatting():Void
 	{
-		_unbreakableLineBoxes = new Array<LineBox>();
+		if (_unbreakableLineBoxes.length > 0)
+		{
+			_unbreakableLineBoxes = new Array<LineBox>();
+		}
+	
 		_unbreakableWidth = 0.0;
 		_firstLineFormatted = false;
 		
@@ -160,7 +164,11 @@ class InlineFormattingContext extends FormattingContext
 			else if (child.hasChildNodes() == true)
 			{
 				//remove all the previous line boxes before creating new ones
-				child.lineBoxes = new Array<LineBox>();
+				//if needed
+				if (child.lineBoxes.length > 0)
+				{
+					child.lineBoxes = new Array<LineBox>();
+				}
 			
 				//create the first line box for this inline box renderer
 				var childLineBox:LineBox = createContainerLineBox(child);
@@ -286,7 +294,8 @@ class InlineFormattingContext extends FormattingContext
 
 				//create new line boxes for all the inline box renderer which still have
 				//children to format, and add them to the new line
-				for (j in 0...openedElementRenderers.length)
+				var length:Int = openedElementRenderers.length;
+				for (j in 0...length)
 				{
 					//all line boxes are attached as child of the previous created line box
 					//and not as sibling to respect the hierarchy of the previous line
@@ -308,8 +317,12 @@ class InlineFormattingContext extends FormattingContext
 			//update position on current line where the next line boxes will be added
 			_formattingContextData.x += _unbreakableWidth;
 			
-			//reset unbreakable line box now that they were added to the line
-			_unbreakableLineBoxes = new Array<LineBox>();
+			if (_unbreakableLineBoxes.length > 0)
+			{
+				//reset unbreakable line box now that they were added to the line
+				_unbreakableLineBoxes = new Array<LineBox>();
+			}
+			
 			_unbreakableWidth = 0;
 		}
 		
@@ -325,8 +338,10 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function formatLine(rootLineBox:LineBox, isLastLine:Bool):Void
 	{
-		
-		removeSpaces(rootLineBox);
+		if (rootLineBox.hasChildNodes() == true)
+		{
+			removeSpaces(rootLineBox);
+		}
 		
 		//format line boxes horizontally
 		var lineBoxWidth:Float = alignLineBox(rootLineBox, isLastLine, getConcatenatedWidth(rootLineBox));
@@ -689,7 +704,6 @@ class InlineFormattingContext extends FormattingContext
 		while (i >= 0)
 		{
 			var lineBox:LineBox = lineBoxes[i];
-			
 		
 			if (lineBox.isSpace() == true)
 			{
@@ -708,7 +722,7 @@ class InlineFormattingContext extends FormattingContext
 			{
 				if (lineBox.isStaticPosition() == false)
 				{
-						break;
+					break;
 				}
 			}
 			
@@ -719,7 +733,7 @@ class InlineFormattingContext extends FormattingContext
 	private function getLineBoxTreeAsArray(rootLineBox:LineBox, lineBoxes:Array<LineBox>):Void
 	{
 		var length:Int = rootLineBox.childNodes.length;
-		for (i in 0...rootLineBox.childNodes.length)
+		for (i in 0...length)
 		{
 			var child:LineBox = rootLineBox.childNodes[i];
 			
