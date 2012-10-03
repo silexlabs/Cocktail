@@ -207,6 +207,12 @@ class CoreStyle
 	private var _fontManager:FontManager;
 	
 	/**
+	 * During cascade, holds the name of 
+	 * all the properties whose value changed
+	 */
+	private var _changedProperties:Array<String>;
+	
+	/**
 	 * The owning HTMLElement
 	 */
 	public var htmlElement:HTMLElement;
@@ -227,6 +233,8 @@ class CoreStyle
 	{
 		computedValues = new CSSStyleDeclaration();
 		specifiedValues = new CSSStyleDeclaration();
+		
+		_changedProperties = new Array<String>();
 		
 		_fontManager = FontManager.getInstance();
 		
@@ -351,7 +359,7 @@ class CoreStyle
 		
 		//will store all the properties which value
 		//change during cascading
-		var changedProperties:Array<String> = null;
+		_changedProperties.clear();
 		
 		//holds the properties which will get cascaded
 		var propertiesToCascade:Array<String> = null;
@@ -377,11 +385,7 @@ class CoreStyle
 	
 			if (didChangeSpecifiedValue == true)
 			{
-				if (changedProperties == null)
-				{
-					changedProperties = new Array<String>();
-				}
-				changedProperties.push(propertiesToCascade[i]);
+				_changedProperties.push(propertiesToCascade[i]);
 			}
 		}
 		
@@ -393,14 +397,12 @@ class CoreStyle
 		//during cascading to be cascaded, so that when the
 		//next child is cascaded it knows all the styles
 		//which changed on its parent
-		if (changedProperties != null)
+		var length:Int = _changedProperties.length;
+		for (i in 0...length)
 		{
-			var length:Int = changedProperties.length;
-			for (i in 0...length)
-			{
-				cascadeManager.addPropertyToCascade(changedProperties[i]);
-			}
+			cascadeManager.addPropertyToCascade(_changedProperties[i]);
 		}
+		
 		
 		//apply special computing relationship between
 		//display, float and position property
