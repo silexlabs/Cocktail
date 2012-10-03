@@ -1148,76 +1148,70 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		var length:Int = lineBoxes.length;
 		for (i in 0...length)
 		{
-			var childBounds:RectangleVO = lineBoxes[i].bounds;
-			if (childBounds.x < bounds.x)
-			{
-				bounds.x = childBounds.x;
-			}
-			if (childBounds.y < bounds.y)
-			{
-				bounds.y = childBounds.y;
-			}
-			if (childBounds.x + childBounds.width > bounds.x + bounds.width)
-			{
-				bounds.width = childBounds.x + childBounds.width - bounds.x;
-			}
-			if (childBounds.y + childBounds.height  > bounds.y + bounds.height)
-			{
-				bounds.height = childBounds.y + childBounds.height - bounds.y;
-			}
+			doGetBounds(lineBoxes[i].bounds, bounds);
 		}
 	}
 	
 	/**
-	 * Determine the bounds of the children of this ElementRenderer
-	 * in this ElementRenderer space
+	 * Set the bounds of an array of linebox
+	 * on a provided bounds object
 	 */
-	private function getChildrenBounds(childrenBounds:Array<RectangleVO>):RectangleVO
+	private function getChildrenBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
 	{
-		var left:Float = 50000;
-		var top:Float = 50000;
-		var right:Float = -50000;
-		var bottom:Float = -50000;
-
-		var length:Int = childrenBounds.length;
+		//first reset the bounds
+		bounds.x = 50000;
+		bounds.y = 50000;
+		bounds.width = 0;
+		bounds.height = 0;
+		
+		var length:Int = lineBoxes.length;
 		for (i in 0...length)
 		{
-			var childBounds:RectangleVO = childrenBounds[i];
-			if (childBounds.x < left)
-			{
-				left = childBounds.x;
-			}
-			if (childBounds.y < top)
-			{
-				top = childBounds.y;
-			}
-			if (childBounds.x + childBounds.width > right)
-			{
-				right = childBounds.x + childBounds.width;
-			}
-			if (childBounds.y + childBounds.height  > bottom)
-			{
-				bottom = childBounds.y + childBounds.height;
-			}
+			doGetBounds(lineBoxes[i].bounds, bounds);
 		}
-		
-		_childrenBounds.x = left;
-		_childrenBounds.y = top;
-		_childrenBounds.width = right - left;
-		_childrenBounds.height = bottom - top;
-				
-		//TODO 4 : need to implement better fix,
-		//sould not be negative
-		if (_childrenBounds.width < 0)
+	}
+	
+	/**
+	 * apply the bounds of a children to
+	 * the global bounds
+	 */
+	private function doGetBounds(childBounds:RectangleVO, globalBounds:RectangleVO):Void
+	{
+		if (childBounds.x < globalBounds.x)
 		{
-			_childrenBounds.width = 0;
+			globalBounds.x = childBounds.x;
 		}
-		if (_childrenBounds.height < 0)
+		if (childBounds.y < globalBounds.y)
 		{
-			_childrenBounds.height = 0;
+			globalBounds.y = childBounds.y;
 		}
-				
-		return _childrenBounds;
+		if (childBounds.x + childBounds.width > globalBounds.x + globalBounds.width)
+		{
+			globalBounds.width = childBounds.x + childBounds.width - globalBounds.x;
+		}
+		if (childBounds.y + childBounds.height  > globalBounds.y + globalBounds.height)
+		{
+			globalBounds.height = childBounds.y + childBounds.height - globalBounds.y;
+		}
+	}
+	
+	/**
+	 * Traverse all the children recursively
+	 * and apply their bounds to the
+	 * target bounds
+	 */
+	private function doGetChildrenBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
+	{
+		var length:Int = rootElementRenderer.childNodes.length;
+		for (i in 0...length)
+		{
+			var child:ElementRenderer = rootElementRenderer.childNodes[i];
+			doGetBounds(child.bounds, bounds);
+			if (child.hasChildNodes() == true)
+			{
+				doGetChildrenBounds(child, bounds);
+			}
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
