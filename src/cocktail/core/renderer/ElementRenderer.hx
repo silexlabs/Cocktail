@@ -1134,6 +1134,41 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	}
 	
 	/**
+	 * Set the bounds of an array of linebox
+	 * on a provided bounds object
+	 */
+	private function getLineBoxesBounds(lineBoxes:Array<LineBox>, bounds:RectangleVO):Void
+	{
+		//first reset the bounds
+		bounds.x = 50000;
+		bounds.y = 50000;
+		bounds.width = 0;
+		bounds.height = 0;
+		
+		var length:Int = lineBoxes.length;
+		for (i in 0...length)
+		{
+			var childBounds:RectangleVO = lineBoxes[i].bounds;
+			if (childBounds.x < bounds.x)
+			{
+				bounds.x = childBounds.x;
+			}
+			if (childBounds.y < bounds.y)
+			{
+				bounds.y = childBounds.y;
+			}
+			if (childBounds.x + childBounds.width > bounds.x + bounds.width)
+			{
+				bounds.width = childBounds.x + childBounds.width - bounds.x;
+			}
+			if (childBounds.y + childBounds.height  > bounds.y + bounds.height)
+			{
+				bounds.height = childBounds.y + childBounds.height - bounds.y;
+			}
+		}
+	}
+	
+	/**
 	 * Determine the bounds of the children of this ElementRenderer
 	 * in this ElementRenderer space
 	 */

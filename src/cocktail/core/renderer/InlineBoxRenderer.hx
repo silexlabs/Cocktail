@@ -62,17 +62,6 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 */
 	override public function updateBounds():Void
 	{
-		var lineBoxesBounds:Array<RectangleVO> = new Array<RectangleVO>();
-		var length:Int = lineBoxes.length;
-		for (i in 0...length)
-		{
-			lineBoxesBounds.push(lineBoxes[i].bounds);
-		}
-		
-		var childrenBounds:RectangleVO =  getChildrenBounds(lineBoxesBounds);
-		bounds.x = childrenBounds.x;
-		bounds.y = childrenBounds.y;
-		bounds.width = childrenBounds.width;
-		bounds.height = childrenBounds.height;
+		getLineBoxesBounds(lineBoxes, bounds);
 	}
 }
