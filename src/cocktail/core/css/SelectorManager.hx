@@ -241,7 +241,7 @@ class SelectorManager
 		switch(simpleSelectorSequenceStart)
 		{
 			case SimpleSelectorSequenceStartValue.TYPE(value):
-				return node.tagName == value.toUpperCase();
+				return node.tagName == value;
 				
 			case SimpleSelectorSequenceStartValue.UNIVERSAL:
 				return true;
