@@ -41,6 +41,14 @@ class CharacterData extends HTMLElement
 		super("");
 	}
 	
+	/**
+	 * text nodes can't have children
+	 */
+	override private function initChildNodes():Void
+	{
+		
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -61,6 +69,14 @@ class CharacterData extends HTMLElement
 	override public function invalidateCascade():Void
 	{
 		
+	}
+	
+	/**
+	 * text nodes can't have children
+	 */
+	override public function hasChildNodes():Bool
+	{
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

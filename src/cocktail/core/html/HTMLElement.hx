@@ -27,6 +27,7 @@ import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.parser.DOMParser;
 import cocktail.core.css.CSSConstants;
+import cocktail.core.timer.Timer;
 import haxe.Stack;
 import haxe.xml.Parser;
 import cocktail.core.event.Event;
@@ -565,10 +566,13 @@ class HTMLElement extends Element<HTMLElement>
 		//apply to all child if recursive
 		if (recursive == true)
 		{
-			var length:Int = childNodes.length;
-			for (i in 0...length)
+			if (nodeType == DOMConstants.ELEMENT_NODE)
 			{
-				childNodes[i].invalidateStyleDeclaration(true);
+				var length:Int = childNodes.length;
+				for (i in 0...length)
+				{
+					childNodes[i].invalidateStyleDeclaration(true);
+				}
 			}
 		}
 		
@@ -721,13 +725,17 @@ class HTMLElement extends Element<HTMLElement>
 			}
 		}
 		
-		//traverse all the DOM recursively to be
-		//sure to update all element renderers
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		if (nodeType == DOMConstants.ELEMENT_NODE)
 		{
-			childNodes[i].updateElementRenderer();
+			//traverse all the DOM recursively to be
+			//sure to update all element renderers
+			var length:Int = childNodes.length;
+			for (i in 0...length)
+			{
+				childNodes[i].updateElementRenderer();
+			}
 		}
+		
 	}
 		
 		
@@ -767,11 +775,15 @@ class HTMLElement extends Element<HTMLElement>
 			//if recursive, now attach all the children
 			if (recursive == true)
 			{
-				var length:Int = childNodes.length;
-				for (i in 0...length)
+				if (nodeType == DOMConstants.ELEMENT_NODE)
 				{
-					childNodes[i].attach(true);
+					var length:Int = childNodes.length;
+					for (i in 0...length)
+					{
+						childNodes[i].attach(true);
+					}
 				}
+				
 			}
 		}
 		
@@ -796,10 +808,13 @@ class HTMLElement extends Element<HTMLElement>
 			//detach all children element renderer
 			if (recursive == true)
 			{
-				var length:Int = childNodes.length;
-				for (i in 0...length)
+				if (nodeType == DOMConstants.ELEMENT_NODE)
 				{
-					childNodes[i].detach(true);
+					var length:Int = childNodes.length;
+					for (i in 0...length)
+					{
+						childNodes[i].detach(true);
+					}
 				}
 			}
 			
