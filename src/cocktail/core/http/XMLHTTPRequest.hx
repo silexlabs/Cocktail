@@ -304,7 +304,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 		{
 			//TODO 2 : If the synchronous flag is set, release the storage mutex.
 		}
-		else if (_registeredEventListeners.keys().hasNext() == true)
+		else if (_registeredEventListeners != null)
 		{
 			_uploadEvents = true;
 		}

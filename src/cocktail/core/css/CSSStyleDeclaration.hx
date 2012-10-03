@@ -2199,7 +2199,8 @@ class CSSStyleDeclaration
 		
 		var typedProperties:Array<TypedPropertyVO> = CSSStyleParser.parseStyle(value);
 		
-		for (i in 0...typedProperties.length)
+		var length:Int = typedProperties.length;
+		for (i in 0...length)
 		{
 			var typedProperty:TypedPropertyVO = typedProperties[i];
 			applyProperty(typedProperty.name, typedProperty.typedValue, typedProperty.important);
