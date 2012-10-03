@@ -198,7 +198,7 @@ class CoreStyle
 	 * the 'font-size' and 'font-family' properties
 	 * 
 	 */
-	public var fontMetrics(get_fontMetricsData, null):FontMetricsVO;
+	public var fontMetrics(default, null):FontMetricsVO;
 	
 	/**
 	 * An instance of fontmanager used to get the font metrics
@@ -334,12 +334,16 @@ class CoreStyle
 				{
 					cascadeManager.addPropertyToCascade(lengthCSSProperties[i]);
 				}
+				
+				//refreshthe font metrics when either font family or font size hanges
+				#if macro
+				fontMetrics = new FontMetricsVO(12.0, 12.0, 12.0, 12.0, 3.0, 3.0, 3.0, 5.0 );
+				#else
+				fontMetrics = _fontManager.getFontMetrics(computedValues.fontFamily, getAbsoluteLength(fontSize));
+				#end
 			}
 		}
 		
-		//get the font metrics of this CoreStyle, used for
-		//Length computation
-		var fontMetrics:FontMetricsVO = this.fontMetrics;
 		var fontSize:Float = fontMetrics.fontSize;
 		var xHeight:Float = fontMetrics.xHeight;
 		
@@ -1253,21 +1257,6 @@ class CoreStyle
 			default:
 				return false;
 		}
-	}
-	
-	/////////////////////////////////
-	// GETTERS
-	////////////////////////////////
-	
-	private function get_fontMetricsData():FontMetricsVO
-	{
-		//TODO 1 : how to deal with font size for macro target ? Does it matter
-		//to get layout info at compile/server time ? use em font ?
-		#if macro
-		return new FontMetricsVO(12.0, 12.0, 12.0, 12.0, 3.0, 3.0, 3.0, 5.0 );
-		#else
-		return _fontManager.getFontMetrics(computedValues.fontFamily, getAbsoluteLength(fontSize));
-		#end
 	}
 	
 	/////////////////////////////////
