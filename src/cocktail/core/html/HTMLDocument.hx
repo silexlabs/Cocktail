@@ -7,6 +7,7 @@
 */
 package cocktail.core.html;
 
+import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CSSRule;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.CSSStyleRule;
@@ -307,6 +308,13 @@ class HTMLDocument extends Document
 	private var _matchedPseudoClasses:MatchedPseudoClassesVO;
 	
 	/**
+	 * An instance of the cascade manager. During the cascade,
+	 * keep track of the styles which must be updated
+	 * for each HTMLElement
+	 */
+	private var _cascadeManager:CascadeManager;
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new(window:Window = null) 
@@ -315,6 +323,8 @@ class HTMLDocument extends Document
 		
 		timer = new Timer();
 		initStyleManager();
+		
+		_cascadeManager = new CascadeManager();
 		
 		//TODO 2 : hack, Document probably shouldn't have
 		//ref to Window
@@ -1192,7 +1202,7 @@ class HTMLDocument extends Document
 	 */
 	private function startCascade(programmaticChange:Bool):Void
 	{
-		documentElement.cascade(new Hash<Void>(), programmaticChange);
+		documentElement.cascade(_cascadeManager, programmaticChange);
 		_documentNeedsCascading = false;
 	}
 	

@@ -7,6 +7,7 @@
 */
 package cocktail.core.html;
 
+import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.InitialStyleDeclaration;
 import cocktail.core.dom.Attr;
@@ -271,12 +272,16 @@ class HTMLElement extends Element<HTMLElement>
 	 * Between 2 cascade, store the names of all the
 	 * properties whose value changed and which need
 	 * to be re-cascaded.
-	 * 
-	 * Stored as a hash, for easy retrieval and so that properties
-	 * which are changed multiple times between cascade are
-	 * only stored and cascaded once
 	 */
-	private var _pendingChangedProperties:Hash<Void>;
+	private var _pendingChangedProperties:Array<String>;
+	
+	/**
+	 * A flag determining wether all the CSS styles
+	 * of this HTMLElement needs to be cascaded.
+	 * Happens for instance the first time this
+	 * HTMLElement is added to the DOM
+	 */
+	private var _shouldCascadeAllProperties:Bool;
 	
 	/**
 	 * A reference to the ownerDocument, typed as
@@ -302,7 +307,7 @@ class HTMLElement extends Element<HTMLElement>
 		
 		_needsCascading = false;
 		_needsStyleDeclarationUpdate = false;
-		_pendingChangedProperties = new Hash<Void>();
+		_shouldCascadeAllProperties = true;
 		_needsElementRendererUpdate = true;
 	}
 	
@@ -820,52 +825,38 @@ class HTMLElement extends Element<HTMLElement>
 	 * for each supported CSS style, find the right value to use among
 	 * the different provided values
 	 * 
-	 * @param parentChangedProperties a hash containing the names of all of the
-	 * styles of the parent whose values changed during cascading
+	 * @param cascadeManager keep track of the style that need to be cascaded. For
+	 * instance contain the styles of the parent which were just cascaded
 	 * 
 	 * @param programmaticChange wether the cascade was caused by a scripted property
 	 * cahnge. Some pseudo class like :hover are also considered like scripting a change
 	 */
-	public function cascade(parentChangedProperties:Hash<Void>, programmaticChange:Bool):Void
+	public function cascade(cascadeManager:CascadeManager, programmaticChange:Bool):Void
 	{	
-		//will hold all the property of this HTMLElement which changed during
-		//cascading
-		var changedProperties:Hash<Void> = null;
-		
-		//check wether some properties of the parent where cascaded
-		var parentHasChangedProperties:Bool = false;
-		if (parentChangedProperties != null)
-		{
-			if (parentChangedProperties.keys().hasNext() == true)
-			{
-				parentHasChangedProperties = true;
-			}
-		}
-		
 		//cascade the style of this HTMLElement if needed, and store
 		//the name of all the style which changed during cascading
 		//
 		//style is cascaded either id tis HTMLElement explicitely needs cascading
 		//for instance, if one of its attribute changed since last cascade or
 		//if some of its parent styles just changed
-		if (_needsCascading == true || parentHasChangedProperties == true)
+		if (_needsCascading == true || cascadeManager.hasPropertiesToCascade == true)
 		{
-			changedProperties = cascadeSelf(parentChangedProperties, programmaticChange);
+			cascadeSelf(cascadeManager, programmaticChange);
 			_needsCascading = false;
 			
 			//when one of those property specified value changes, it may affect the rendering of
 			//the HTMLElement. The element renderer is invalidated, so that it will be updated
 			//before next layout
-			if (changedProperties.exists(CSSConstants.DISPLAY) || changedProperties.exists(CSSConstants.FLOAT)
-			|| changedProperties.exists(CSSConstants.OVERFLOW_X) || changedProperties.exists(CSSConstants.OVERFLOW_Y))
+			if (cascadeManager.hasDisplay == true || cascadeManager.hasFloat == true
+			|| cascadeManager.hasOverflowX == true || cascadeManager.hasOverflowY == true)
 			{
 				detach(true);
 				invalidateElementRenderer();
 			}
 			//if one of those properties changed, then the layer renderer of the element renderer needs
 			//to be invalidated, so that it will be updated before next rendering
-			else if (changedProperties.exists(CSSConstants.TRANSFORM) || changedProperties.exists(CSSConstants.Z_INDEX) ||
-			changedProperties.exists(CSSConstants.POSITION))
+			else if (cascadeManager.hasTransform == true || cascadeManager.hasZIndex == true ||
+			cascadeManager.hasPosition == true)
 			{
 				invalidateLayerRenderer();
 			}
@@ -878,7 +869,7 @@ class HTMLElement extends Element<HTMLElement>
 		for (i in 0...childLength)
 		{
 			var childNode:HTMLElement = childNodes[i];
-			childNode.cascade(changedProperties, programmaticChange);
+			childNode.cascade(cascadeManager, programmaticChange);
 		}
 	}
 	
@@ -895,7 +886,7 @@ class HTMLElement extends Element<HTMLElement>
 		//set all the styles to be cascaded
 		//
 		//TODO 3 : eventually, should only update style which actually changed
-		_pendingChangedProperties = _ownerHTMLDocument.initialStyleDeclaration.supportedCSSProperties;
+		_shouldCascadeAllProperties = true;
 		
 		//update style definition
 		styleManagerCSSDeclaration = _ownerHTMLDocument.getStyleDeclaration(this);
@@ -905,19 +896,16 @@ class HTMLElement extends Element<HTMLElement>
 	 * Make the HTMLElement cascade its styles. The cascaded styles are those whihc have
 	 * been modified since last cascade on this HTMLElement and the styles of the direct
 	 * parent which have been modified during this cascade
-	 * @param	parentChangedProperties the properties which changed on the parent during this
+	 * @param	cascadeManager contain the properties which changed on the parent during this
 	 * cascade
 	 * @param	programmaticChange wether the change is programmatic. If it is,
 	 * animations may be started
-	 * @return
 	 * 
 	 * TODO 1 : should subclass in HTMLHTMLElement
 	 */
-	private function cascadeSelf(parentChangedProperties:Hash<Void>, programmaticChange:Bool):Hash<Void>
+	private function cascadeSelf(cascadeManager:CascadeManager, programmaticChange:Bool):Void
 	{
 		var initialStyleDeclaration:InitialStyleDeclaration = _ownerHTMLDocument.initialStyleDeclaration;
-		
-		var changedProperties:Hash<Void> = null;
 		
 		if (parentNode != null)
 		{
@@ -932,15 +920,20 @@ class HTMLElement extends Element<HTMLElement>
 				var parentStyleDeclaration:CSSStyleDeclaration = parentNode.coreStyle.computedValues;
 				var parentFontMetrics:FontMetricsVO = parentNode.coreStyle.fontMetrics;
 			
-				if (parentChangedProperties != null)
+				if (_shouldCascadeAllProperties == true)
 				{
-					for (propertyName in parentChangedProperties.keys())
+					cascadeManager.shouldCascadeAll();
+				}
+				else if (_pendingChangedProperties != null)
+				{
+					var length:Int = _pendingChangedProperties.length;
+					for (i in 0...length)
 					{
-						_pendingChangedProperties.set(propertyName, null);
+						cascadeManager.addPropertyToCascade(_pendingChangedProperties[i]);
 					}
 				}
 	
-				changedProperties = coreStyle.cascade(_pendingChangedProperties, initialStyleDeclaration, styleManagerCSSDeclaration, style, parentStyleDeclaration, parentFontMetrics.fontSize, parentFontMetrics.xHeight, programmaticChange);
+				coreStyle.cascade(cascadeManager, initialStyleDeclaration, styleManagerCSSDeclaration, style, parentStyleDeclaration, parentFontMetrics.fontSize, parentFontMetrics.xHeight, programmaticChange);
 			}
 		}
 		else
@@ -951,18 +944,30 @@ class HTMLElement extends Element<HTMLElement>
 				_needsStyleDeclarationUpdate = false;
 			}
 			
-			changedProperties = coreStyle.cascade(_pendingChangedProperties, initialStyleDeclaration, styleManagerCSSDeclaration, style, initialStyleDeclaration, 12, 12, programmaticChange);
+			if (_shouldCascadeAllProperties == true)
+			{
+				cascadeManager.shouldCascadeAll();
+			}
+			else if (_pendingChangedProperties != null)
+			{
+				var length:Int = _pendingChangedProperties.length;
+				for (i in 0...length)
+				{
+					cascadeManager.addPropertyToCascade(_pendingChangedProperties[i]);
+				}
+			}
+			
+			coreStyle.cascade(cascadeManager, initialStyleDeclaration, styleManagerCSSDeclaration, style, initialStyleDeclaration, 12, 12, programmaticChange);
 		}
 		
-		_pendingChangedProperties = new Hash<Void>();
-		
-		return changedProperties;
+		_shouldCascadeAllProperties = false;
+		_pendingChangedProperties = null;
 	}
 	
 	/**
 	 * When a value of the inline style declaration
 	 * of the HTMLElement changes, store the name
-	 * of the changed property in the hash of property
+	 * of the changed property in the properties
 	 * to cascade and invalidate the cascade
 	 * 
 	 * @param changedProperty the name of the property
@@ -970,7 +975,19 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function onInlineStyleChange(changedProperty:String):Void
 	{
-		_pendingChangedProperties.set(changedProperty, null);
+		//no need to store the property if all properties
+		//are supposed to be cascaded anyway
+		if (_shouldCascadeAllProperties == false)
+		{
+			//instantiate the array only if used
+			if (_pendingChangedProperties == null)
+			{
+				_pendingChangedProperties = new Array<String>();
+			}
+			
+			_pendingChangedProperties.push(changedProperty);
+		}
+		
 		invalidateCascade();
 	}
 	

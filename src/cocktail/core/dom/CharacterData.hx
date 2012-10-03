@@ -8,6 +8,7 @@
 */
 package cocktail.core.dom;
 
+import cocktail.core.css.CascadeManager;
 import cocktail.core.html.HTMLElement;
 
 /**
@@ -48,7 +49,7 @@ class CharacterData extends HTMLElement
 	 * Cascading doesn't apply to text, only to 
 	 * actual HTMLElement
 	 */
-	override public function cascade(parentChangedProperties:Hash<Void>, programmaticChange:Bool):Void
+	override public function cascade(cascadeManager:CascadeManager, programmaticChange:Bool):Void
 	{
 		
 	}

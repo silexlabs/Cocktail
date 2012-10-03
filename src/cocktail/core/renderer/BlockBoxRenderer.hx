@@ -7,6 +7,7 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.InitialStyleDeclaration;
 import cocktail.core.dom.Node;
@@ -27,6 +28,7 @@ import cocktail.core.font.FontData;
 import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.graphics.GraphicsContext;
+import cocktail.Lib;
 import haxe.Log;
 import cocktail.core.layer.LayerRenderer;
 
@@ -175,11 +177,14 @@ class BlockBoxRenderer extends ScrollableRenderer
 		
 		anonymousBlock.coreStyle = anonymousBlock.domNode.coreStyle;
 		
+		//TODO 2 : shouldn't have to instantiate each time
+		var cascadeManager:CascadeManager = new CascadeManager();
+		cascadeManager.shouldCascadeAll();
+		
 		var initialStyleDeclaration:InitialStyleDeclaration = Lib.document.initialStyleDeclaration;
-		var propertiesToCascade:Hash<Void> = initialStyleDeclaration.supportedCSSProperties;
 		
 		//only use initial style declarations
-		anonymousBlock.coreStyle.cascade(propertiesToCascade, initialStyleDeclaration,
+		anonymousBlock.coreStyle.cascade(cascadeManager, initialStyleDeclaration,
 		initialStyleDeclaration, initialStyleDeclaration, 
 		initialStyleDeclaration, 12, 12, false);
 		
