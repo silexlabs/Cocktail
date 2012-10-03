@@ -138,11 +138,12 @@ class LineBox extends NodeBase<LineBox>
 	 */
 	public function render(graphicContext:GraphicsContext):Void
 	{
-		var childBounds:RectangleVO = getChildrenBounds(getLineBoxesBounds(this));
+		//update children bounds
+		getLineBoxesBounds(this, _childrenBounds);
 		
-		bounds.width = childBounds.width;
-		bounds.height = childBounds.height;
-		bounds.x = childBounds.x + elementRenderer.globalBounds.x - elementRenderer.scrollOffset.x;
+		bounds.width = _childrenBounds.width;
+		bounds.height = _childrenBounds.height;
+		bounds.x = _childrenBounds.x + elementRenderer.globalBounds.x - elementRenderer.scrollOffset.x;
 		bounds.y = elementRenderer.globalBounds.y - elementRenderer.scrollOffset.y;
 		
 		BackgroundManager.render(graphicContext, bounds, elementRenderer.coreStyle, elementRenderer);
@@ -210,96 +211,56 @@ class LineBox extends NodeBase<LineBox>
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-		//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	//TODO 4 : those method are already on ElementRenderer, share a common class ? interface ?
-	//add an helper class ?
-	
 	/**
 	 * Retrieve all the bounds of the child line box
 	 */
-	private function getLineBoxesBounds(lineBox:LineBox):Array<RectangleVO>
+	private function getLineBoxesBounds(rootLineBox:LineBox, bounds:RectangleVO):Void
 	{
-		var lineBoxesBounds:Array<RectangleVO> = new Array<RectangleVO>();
-		
-		var length:Int = lineBox.childNodes.length;
+		var length:Int = rootLineBox.childNodes.length;
 		for (i in 0...length)
 		{
-			var child:LineBox = lineBox.childNodes[i];
+			var child:LineBox = rootLineBox.childNodes[i];
 			
 			//absolutely positioned line box are not used to compute the
 			//bounds of the root line box
 			if (child.isStaticPosition() == false)
 			{
-				lineBoxesBounds.push(child.bounds);
+				doGetBounds(child.bounds, bounds);
 				
 				if (child.hasChildNodes() == true)
 				{
-					var childrenBounds:Array<RectangleVO> = getLineBoxesBounds(child);
-					var childLength:Int = childrenBounds.length;
-					for (j in 0...childLength)
-					{
-						lineBoxesBounds.push(childrenBounds[j]);
-					}
+					getLineBoxesBounds(child, bounds);
 				}
 			}
 		}
-		
-		return lineBoxesBounds;
 	}
 	
 	/**
-	 * Get the bounds of all of the child line boxes bounds
+	 * apply the bounds of a children to
+	 * the global bounds
+	 * 
+	 * TODO 4 : this method is duplicated from
+	 * ElementRenderer
+	 * 
 	 */
-	private function getChildrenBounds(childrenBounds:Array<RectangleVO>):RectangleVO
+	private function doGetBounds(childBounds:RectangleVO, globalBounds:RectangleVO):Void
 	{
-		var left:Float = 50000;
-		var top:Float = 50000;
-		var right:Float = -50000;
-		var bottom:Float = -50000;
-		
-		var length:Int = childrenBounds.length;
-		for (i in 0...length)
+		if (childBounds.x < globalBounds.x)
 		{
-			var childBounds:RectangleVO = childrenBounds[i];
-			if (childBounds.x < left)
-			{
-				left = childBounds.x;
-			}
-			if (childBounds.y < top)
-			{
-				top = childBounds.y;
-			}
-			if (childBounds.x + childBounds.width > right)
-			{
-				right = childBounds.x + childBounds.width;
-			}
-			if (childBounds.y + childBounds.height  > bottom)
-			{
-				bottom = childBounds.y + childBounds.height;
-			}
+			globalBounds.x = childBounds.x;
 		}
-			
-		_childrenBounds.x = left;
-		_childrenBounds.y = top;
-		_childrenBounds.width = left - right;
-		_childrenBounds.height = bottom - top;
-		
-		//need to implement better fix,
-		//sould not be negative
-		if (_childrenBounds.width < 0)
+		if (childBounds.y < globalBounds.y)
 		{
-			_childrenBounds.width = 0;
+			globalBounds.y = childBounds.y;
 		}
-		if (_childrenBounds.height < 0)
+		if (childBounds.x + childBounds.width > globalBounds.x + globalBounds.width)
 		{
-			_childrenBounds.height = 0;
+			globalBounds.width = childBounds.x + childBounds.width - globalBounds.x;
 		}
-				
-		return _childrenBounds;
-		
+		if (childBounds.y + childBounds.height  > globalBounds.y + globalBounds.height)
+		{
+			globalBounds.height = childBounds.y + childBounds.height - globalBounds.y;
+		}
 	}
 	
 	/**
