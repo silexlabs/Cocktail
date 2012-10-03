@@ -35,7 +35,7 @@ class Animator
 	 * An array holding the data necessary to start all pending
 	 * animations on next layout
 	 */
-	private var _pendingAnimations:Array<PendingAnimationData>;
+	private var _pendingAnimations:Array<PendingAnimationVO>;
 	
 	/**
 	 * Called when a transition has just been completed
@@ -49,7 +49,7 @@ class Animator
 
 	public function new() 
 	{
-		_pendingAnimations = new Array<PendingAnimationData>();
+		_pendingAnimations = new Array<PendingAnimationVO>();
 	}
 	
 	/////////////////////////////////
@@ -83,7 +83,7 @@ class Animator
 		
 		//clear the pending animation to prevent from being started
 		//for each layout
-		_pendingAnimations = new Array<PendingAnimationData>();
+		_pendingAnimations = new Array<PendingAnimationVO>();
 		
 		return atLeastOneAnimationStarted;
 	}
@@ -100,11 +100,11 @@ class Animator
 	 */
 	public function registerPendingAnimation(propertyName:String, invalidationReason:InvalidationReason, startValue:Float):Void
 	{
-		_pendingAnimations.push( {
-			propertyName:propertyName,
-			invalidationReason:invalidationReason,
-			startValue:startValue
-		});
+		var pendingAnimation:PendingAnimationVO = new PendingAnimationVO();
+		pendingAnimation.propertyName = propertyName;
+		pendingAnimation.invalidationReason = invalidationReason;
+		pendingAnimation.startValue = startValue;
+		_pendingAnimations.push(pendingAnimation);
 	}
 	
 	/////////////////////////////////
@@ -120,7 +120,7 @@ class Animator
 	 * start
 	 * @return wheter the animation did start
 	 */
-	private function startTransitionIfNeeded(pendingAnimation:PendingAnimationData, style:CoreStyle):Bool
+	private function startTransitionIfNeeded(pendingAnimation:PendingAnimationVO, style:CoreStyle):Bool
 	{	
 		var usedValues:UsedValuesVO = style.usedValues;
 		

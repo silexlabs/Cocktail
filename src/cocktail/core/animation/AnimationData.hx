@@ -21,8 +21,12 @@ import cocktail.core.renderer.RendererData;
  * when the value of a CSS property changes, but the animation
  * is actually started on next layout
  */
-typedef PendingAnimationData = {
-		var propertyName:String;
-		var invalidationReason:InvalidationReason;
-		var startValue:Float;
+class PendingAnimationVO {
+		public var propertyName:String;
+		public var invalidationReason:InvalidationReason;
+		public var startValue:Float;
+		public function new():Void
+		{
+			
+		}
 }
