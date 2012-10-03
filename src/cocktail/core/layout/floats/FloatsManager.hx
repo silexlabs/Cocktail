@@ -42,7 +42,9 @@ class FloatsManager
 	 */
 	public function new() 
 	{
-		
+		var floatsLeft:Array<RectangleVO> = new Array<RectangleVO>();
+		var floatsRight:Array<RectangleVO> = new Array<RectangleVO>();
+		_floats = new FloatsVO(floatsLeft, floatsRight);
 	}
 	
 	/**
@@ -50,9 +52,12 @@ class FloatsManager
 	 */
 	public function init():Void
 	{
-		var floatsLeft:Array<RectangleVO> = new Array<RectangleVO>();
-		var floatsRight:Array<RectangleVO> = new Array<RectangleVO>();
-		_floats = new FloatsVO(floatsLeft, floatsRight);
+		if (_floats.left.length > 0 || floats.right.length > 0)
+		{
+			var floatsLeft:Array<RectangleVO> = new Array<RectangleVO>();
+			var floatsRight:Array<RectangleVO> = new Array<RectangleVO>();
+			_floats = new FloatsVO(floatsLeft, floatsRight);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
