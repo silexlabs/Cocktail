@@ -49,7 +49,7 @@ class Animator
 
 	public function new() 
 	{
-		_pendingAnimations = new Array<PendingAnimationVO>();
+		
 	}
 	
 	/////////////////////////////////
@@ -64,7 +64,7 @@ class Animator
 	public function startPendingAnimations(style:CoreStyle):Bool
 	{
 		//do nothing if there are no pending animations
-		if (_pendingAnimations.length == 0)
+		if (_pendingAnimations == null)
 		{
 			return false;
 		}
@@ -83,7 +83,7 @@ class Animator
 		
 		//clear the pending animation to prevent from being started
 		//for each layout
-		_pendingAnimations = new Array<PendingAnimationVO>();
+		_pendingAnimations = null;
 		
 		return atLeastOneAnimationStarted;
 	}
@@ -104,6 +104,10 @@ class Animator
 		pendingAnimation.propertyName = propertyName;
 		pendingAnimation.invalidationReason = invalidationReason;
 		pendingAnimation.startValue = startValue;
+		if (_pendingAnimations == null)
+		{
+			_pendingAnimations = new Array<PendingAnimationVO>();
+		}
 		_pendingAnimations.push(pendingAnimation);
 	}
 	

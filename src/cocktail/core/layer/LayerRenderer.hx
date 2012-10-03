@@ -8,6 +8,7 @@
 */
 package cocktail.core.layer;
 
+using cocktail.core.utils.Utils;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.NodeBase;
@@ -250,9 +251,9 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			_needsStackingContextUpdate = false;
 			
 			//reset all stacking context
-			negativeZIndexChildLayerRenderers = new Array<LayerRenderer>();
-			zeroAndAutoZIndexChildLayerRenderers = new Array<LayerRenderer>();
-			positiveZIndexChildLayerRenderers = new Array<LayerRenderer>();
+			negativeZIndexChildLayerRenderers.clear();
+			zeroAndAutoZIndexChildLayerRenderers.clear();
+			positiveZIndexChildLayerRenderers.clear();
 			
 			//only layer renderer which establish themselve a stacking context
 			//can have child stacking context, this excludes layer with an 'auto'
@@ -393,9 +394,9 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	public function invalidateStackingContext():Void
 	{	
-		negativeZIndexChildLayerRenderers = new Array<LayerRenderer>();
-		zeroAndAutoZIndexChildLayerRenderers = new Array<LayerRenderer>();
-		positiveZIndexChildLayerRenderers = new Array<LayerRenderer>();
+		negativeZIndexChildLayerRenderers.clear();
+		zeroAndAutoZIndexChildLayerRenderers.clear();
+		positiveZIndexChildLayerRenderers.clear();
 		
 		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
 		htmlDocument.invalidateStackingContexts();

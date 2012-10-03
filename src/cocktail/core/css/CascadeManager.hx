@@ -7,6 +7,8 @@
 */
 package cocktail.core.css;
 
+using cocktail.core.utils.Utils;
+
 /**
  * During cascading, an instance of this
  * clas is passed to each children in need
@@ -94,6 +96,7 @@ class CascadeManager
 	 */
 	public function new() 
 	{
+		propertiesToCascade = new Array<String>();
 		reset();
 	}
 	
@@ -102,6 +105,11 @@ class CascadeManager
 	 */
 	public function reset():Void
 	{
+		if (hasPropertiesToCascade == true)
+		{
+			propertiesToCascade.clear();
+		}
+		
 		hasFontSize = false;
 		hasFontFamily = false;
 		hasBackgroundColor = false;
@@ -115,7 +123,6 @@ class CascadeManager
 		hasPosition = false;
 		hasPropertiesToCascade = false;
 		cascadeAll = false;
-		propertiesToCascade = new Array<String>();
 	}
 	
 	/**

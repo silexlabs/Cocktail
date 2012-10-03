@@ -7,6 +7,7 @@
 */
 package cocktail.core.html;
 
+using cocktail.core.utils.Utils;
 import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.InitialStyleDeclaration;
@@ -309,6 +310,7 @@ class HTMLElement extends Element<HTMLElement>
 		_needsStyleDeclarationUpdate = false;
 		_shouldCascadeAllProperties = true;
 		_needsElementRendererUpdate = true;
+		_pendingChangedProperties = new Array<String>();
 	}
 	
 	/**
@@ -924,7 +926,7 @@ class HTMLElement extends Element<HTMLElement>
 				{
 					cascadeManager.shouldCascadeAll();
 				}
-				else if (_pendingChangedProperties != null)
+				else
 				{
 					var length:Int = _pendingChangedProperties.length;
 					for (i in 0...length)
@@ -948,7 +950,7 @@ class HTMLElement extends Element<HTMLElement>
 			{
 				cascadeManager.shouldCascadeAll();
 			}
-			else if (_pendingChangedProperties != null)
+			else
 			{
 				var length:Int = _pendingChangedProperties.length;
 				for (i in 0...length)
@@ -961,7 +963,7 @@ class HTMLElement extends Element<HTMLElement>
 		}
 		
 		_shouldCascadeAllProperties = false;
-		_pendingChangedProperties = null;
+		_pendingChangedProperties.clear();
 	}
 	
 	/**
@@ -979,12 +981,6 @@ class HTMLElement extends Element<HTMLElement>
 		//are supposed to be cascaded anyway
 		if (_shouldCascadeAllProperties == false)
 		{
-			//instantiate the array only if used
-			if (_pendingChangedProperties == null)
-			{
-				_pendingChangedProperties = new Array<String>();
-			}
-			
 			_pendingChangedProperties.push(changedProperty);
 		}
 		

@@ -7,6 +7,7 @@
 */
 package cocktail.core.css;
 
+using cocktail.core.utils.Utils;
 import cocktail.core.css.CSSData;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.TransitionEvent;
@@ -335,7 +336,8 @@ class CoreStyle
 					cascadeManager.addPropertyToCascade(lengthCSSProperties[i]);
 				}
 				
-				//refreshthe font metrics when either font family or font size hanges
+				//refresh the font metrics when either font family or font size hanges
+				//TODO 1 : should go in macro implementation of font metrics
 				#if macro
 				fontMetrics = new FontMetricsVO(12.0, 12.0, 12.0, 12.0, 3.0, 3.0, 3.0, 5.0 );
 				#else
@@ -351,7 +353,7 @@ class CoreStyle
 		//change during cascading
 		var changedProperties:Array<String> = null;
 		
-		//holds theproperties which will get cascaded
+		//holds the properties which will get cascaded
 		var propertiesToCascade:Array<String> = null;
 		
 		//if all properties must be cascaded, retrieve the
@@ -975,17 +977,18 @@ class CoreStyle
 	 */
 	public function endPendingAnimation():Void
 	{
-		if (_pendingTransitionEndEvents.length > 0)
+		var length:Int = _pendingTransitionEndEvents.length;
+		if (length == 0)
 		{
-			var length:Int = _pendingTransitionEndEvents.length;
-			for (i in 0...length)
-			{
-				htmlElement.dispatchEvent(_pendingTransitionEndEvents[i]);
-			}
-			//reset the array, each event must be dispatched only once
-			_pendingTransitionEndEvents = new Array<TransitionEvent>();
+			return;
 		}
 		
+		for (i in 0...length)
+		{
+			htmlElement.dispatchEvent(_pendingTransitionEndEvents[i]);
+		}
+		//reset the array, each event must be dispatched only once
+		_pendingTransitionEndEvents.clear();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

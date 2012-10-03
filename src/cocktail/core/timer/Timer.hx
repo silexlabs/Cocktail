@@ -38,7 +38,6 @@ class Timer
 	{
 		_pendingCallbacks = new Array<TimerCallbackVO>();
 		_pendingCount = 0;
-		
 		#if macro
 		#else
 		//TODO 3 : for now only support for flash runtime

@@ -7,6 +7,8 @@
 */
 package cocktail.core.layout.formatter;
 
+using cocktail.core.utils.Utils;
+
 import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.linebox.EmbeddedLineBox;
@@ -74,10 +76,8 @@ class InlineFormattingContext extends FormattingContext
 
 	override private function startFormatting():Void
 	{
-		if (_unbreakableLineBoxes.length > 0)
-		{
-			_unbreakableLineBoxes = new Array<LineBox>();
-		}
+		
+		_unbreakableLineBoxes.clear();
 	
 		_unbreakableWidth = 0.0;
 		_firstLineFormatted = false;
