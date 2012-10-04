@@ -66,11 +66,18 @@ class InlineFormattingContext extends FormattingContext
 	private var _firstLineFormatted:Bool;
 	
 	/**
+	 * Used to store the current line box
+	 * tree as an array
+	 */
+	private var _lineBoxesAsArray:Array<LineBox>;
+	
+	/**
 	 * class constructor.
 	 */
 	public function new(floatsManager:FloatsManager) 
 	{
 		super(floatsManager);
+		_lineBoxesAsArray = new Array<LineBox>();
 		_unbreakableLineBoxes = new Array<LineBox>();
 	}
 
@@ -652,18 +659,19 @@ class InlineFormattingContext extends FormattingContext
 	//TODO 2 : add doc, remove start and end spaces in a line
 	private function removeSpaces(rootLineBox:LineBox):Void
 	{
-		var lineBoxes:Array<LineBox> = new Array<LineBox>();
-		getLineBoxTreeAsArray(rootLineBox, lineBoxes);
+		_lineBoxesAsArray.clear();
+		getLineBoxTreeAsArray(rootLineBox, _lineBoxesAsArray);
 		
-		if (lineBoxes.length == 0)
+		if (_lineBoxesAsArray.length == 0)
 		{
 			return;
 		}
 		
 		var i:Int = 0;
-		while (i < lineBoxes.length)
+		var length:Int = _lineBoxesAsArray.length;
+		while (i < length)
 		{
-			var lineBox:LineBox = lineBoxes[i];
+			var lineBox:LineBox = _lineBoxesAsArray[i];
 			if (lineBox.isSpace() == true)
 			{
 				var coreStyle:CoreStyle = lineBox.elementRenderer.coreStyle;
@@ -690,20 +698,19 @@ class InlineFormattingContext extends FormattingContext
 			
 			i++;
 		}
+		_lineBoxesAsArray.clear();
+		getLineBoxTreeAsArray(rootLineBox, _lineBoxesAsArray);
 		
-		var lineBoxes:Array<LineBox> = new Array<LineBox>();
-		getLineBoxTreeAsArray(rootLineBox, lineBoxes);
-		
-		if (lineBoxes.length == 0)
+		if (_lineBoxesAsArray.length == 0)
 		{
 			return;
 		}
 		
 		
-		var i:Int = lineBoxes.length - 1;
+		var i:Int = _lineBoxesAsArray.length - 1;
 		while (i >= 0)
 		{
-			var lineBox:LineBox = lineBoxes[i];
+			var lineBox:LineBox = _lineBoxesAsArray[i];
 		
 			if (lineBox.isSpace() == true)
 			{
