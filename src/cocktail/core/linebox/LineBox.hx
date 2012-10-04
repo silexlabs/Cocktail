@@ -90,12 +90,6 @@ class LineBox extends NodeBase<LineBox>
 	public var paddingRight:Float;
 	
 	/**
-	 * Holds the current bounds of the 
-	 * children
-	 */ 
-	private var _childrenBounds:RectangleVO;
-	
-	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new(elementRenderer:ElementRenderer) 
@@ -103,7 +97,6 @@ class LineBox extends NodeBase<LineBox>
 		super();
 		
 		bounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
-		_childrenBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
 		
 		this.elementRenderer = elementRenderer;
 		
@@ -139,11 +132,11 @@ class LineBox extends NodeBase<LineBox>
 	public function render(graphicContext:GraphicsContext):Void
 	{
 		//update children bounds
-		getLineBoxesBounds(this, _childrenBounds);
+		getLineBoxesBounds(this, bounds);
 		
-		bounds.width = _childrenBounds.width;
-		bounds.height = _childrenBounds.height;
-		bounds.x = _childrenBounds.x + elementRenderer.globalBounds.x - elementRenderer.scrollOffset.x;
+		//bounds.width = _childrenBounds.width;
+		//bounds.height = _childrenBounds.height;
+		bounds.x = bounds.x + elementRenderer.globalBounds.x - elementRenderer.scrollOffset.x;
 		bounds.y = elementRenderer.globalBounds.y - elementRenderer.scrollOffset.y;
 		
 		BackgroundManager.render(graphicContext, bounds, elementRenderer.coreStyle, elementRenderer);

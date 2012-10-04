@@ -155,31 +155,23 @@ class SWFPlugin extends Plugin
 		containerGraphicContext.removeChild(_swf);
 	}
 	
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN SETTERS/GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
 	 * When the viewport changes, the position
 	 * and/or dimension of the swf must be updated
 	 */
-	override private function set_viewport(value:RectangleVO):RectangleVO
+	override public function updateViewport(x:Float, y:Float, width:Float, height:Float):Void
 	{
-		//the viewport is null on first call
-		if (viewport == null)
-		{
-			return viewport = value;
-		}
-		
 		//only update if one the attribute of the viewport changed
-		if (value.x == viewport.x && value.y == viewport.y
-		&& value.width == viewport.width && value.height == viewport.height)
+		if (x == viewport.x && y == viewport.y
+		&& width == viewport.width && height == viewport.height)
 		{
-			return viewport;
+			return;
 		}
 		
-		viewport = value;
+		viewport.x = x;
+		viewport.y = y;
+		viewport.width = width;
+		viewport.height = height;
 		
 		//reset the transformations of the swf
 		_swf.transform.matrix.identity();
@@ -225,7 +217,7 @@ class SWFPlugin extends Plugin
 		_swf.scrollRect = _scrollRect;
 		
 				
-		return viewport;
+		return;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

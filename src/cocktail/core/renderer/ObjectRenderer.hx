@@ -74,11 +74,6 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	override private function renderEmbeddedAsset(graphicContext:GraphicsContext):Void
 	{
 		var htmlObjectElement:HTMLObjectElement = cast(domNode);
-		
-		var viewport:RectangleVO = new RectangleVO(globalBounds.x, globalBounds.y, globalBounds.width, globalBounds.height);
-		viewport.x += coreStyle.usedValues.paddingLeft;
-		viewport.y += coreStyle.usedValues.paddingTop;
-		
-		htmlObjectElement.plugin.viewport = viewport;
+		htmlObjectElement.plugin.updateViewport(globalBounds.x + coreStyle.usedValues.paddingLeft, globalBounds.y + coreStyle.usedValues.paddingTop, globalBounds.width, globalBounds.height);
 	}
 }

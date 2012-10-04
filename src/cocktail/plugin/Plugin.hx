@@ -35,7 +35,7 @@ class Plugin
 	 * It is computed by the instantiating object
 	 * or mebed node
 	 */
-	public var viewport(get_viewport, set_viewport):RectangleVO;
+	public var viewport(default, null):RectangleVO;
 	
 	/**
 	 * A callback provided by the instantiating class, 
@@ -78,6 +78,15 @@ class Plugin
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Called when the viewport where the plugin
+	 * should be displayed is updated
+	 */
+	public function updateViewport(x:Float, y:Float, width:Float, height:Float):Void
+	{
+		
+	}
+	
+	/**
 	 * Called before the plugin is destroyed to perform
 	 * necessary clean-up
 	 */
@@ -109,19 +118,4 @@ class Plugin
 	{
 		
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTER/SETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_viewport():RectangleVO
-	{
-		return viewport;
-	}
-	
-	private function set_viewport(value:RectangleVO):RectangleVO
-	{
-		return viewport = value;
-	}
-	
 }
