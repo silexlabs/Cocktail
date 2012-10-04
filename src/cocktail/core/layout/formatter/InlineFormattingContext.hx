@@ -324,12 +324,8 @@ class InlineFormattingContext extends FormattingContext
 			//update position on current line where the next line boxes will be added
 			_formattingContextData.x += _unbreakableWidth;
 			
-			if (_unbreakableLineBoxes.length > 0)
-			{
-				//reset unbreakable line box now that they were added to the line
-				_unbreakableLineBoxes = new Array<LineBox>();
-			}
-			
+			//reset unbreakable line box now that they were added to the line
+			_unbreakableLineBoxes.clear();
 			_unbreakableWidth = 0;
 		}
 		
