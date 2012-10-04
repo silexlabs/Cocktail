@@ -126,7 +126,19 @@ class StyleManager
 	 */
 	public function getStyleDeclaration(node:HTMLElement, matchedPseudoClasses:MatchedPseudoClassesVO):CSSStyleDeclaration
 	{
-		var styleDeclaration:CSSStyleDeclaration = new CSSStyleDeclaration();
+		var styleDeclaration:CSSStyleDeclaration = null;
+		
+		//reuse the style declaration if existing
+		if (node.styleManagerCSSDeclaration != null)
+		{
+			styleDeclaration = node.styleManagerCSSDeclaration;
+			styleDeclaration.reset();
+		}
+		else
+		{
+			styleDeclaration = new CSSStyleDeclaration();
+		}
+		
 		applyStyleSheets(node, styleDeclaration, _styleSheets, matchedPseudoClasses);
 		
 		return styleDeclaration;

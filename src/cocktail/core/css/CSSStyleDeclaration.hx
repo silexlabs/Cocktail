@@ -24,7 +24,7 @@ using StringTools;
  * @author Yannick DOMINGUEZ
  */
 
-class CSSStyleDeclaration 
+class CSSStyleDeclaration
 {
 
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -175,6 +175,17 @@ class CSSStyleDeclaration
 		initPropertiesStructure();
 		_onStyleChange = onStyleChange;
 		this.parentRule = parentRule;
+	}
+	
+	/**
+	 * clean-up method to reuse
+	 * style declaration
+	 */
+	public function reset():Void
+	{
+		_onStyleChange = null;
+		parentRule = null;
+		initPropertiesStructure();
 	}
 	
 	/**
