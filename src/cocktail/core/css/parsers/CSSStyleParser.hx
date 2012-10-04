@@ -522,11 +522,19 @@ class CSSStyleParser
 		{
 			if (styleValues.length == 1)
 			{
-				return new TypedPropertyVO(propertyName, styleValues[0], important);
+				var typedProperty:TypedPropertyVO = TypedPropertyVO.getPool().get();
+				typedProperty.important = important;
+				typedProperty.name = propertyName;
+				typedProperty.typedValue = styleValues[0];
+				return typedProperty;
 			}
 			else
 			{
-				return new TypedPropertyVO(propertyName, GROUP(styleValues), important);
+				var typedProperty:TypedPropertyVO = TypedPropertyVO.getPool().get();
+				typedProperty.important = important;
+				typedProperty.name = propertyName;
+				typedProperty.typedValue = GROUP(styleValues);
+				return typedProperty;
 			}
 		}
 		else
@@ -550,7 +558,12 @@ class CSSStyleParser
 				}
 			}
 			
-			return new TypedPropertyVO(propertyName, CSS_LIST(styleListProperty), important);
+			var typedProperty:TypedPropertyVO = TypedPropertyVO.getPool().get();
+			typedProperty.important = important;
+			typedProperty.name = propertyName;
+			typedProperty.typedValue = CSS_LIST(styleListProperty);
+			
+			return typedProperty;
 		}
 	}
 	

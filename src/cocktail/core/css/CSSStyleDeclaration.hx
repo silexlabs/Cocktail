@@ -185,6 +185,13 @@ class CSSStyleDeclaration
 	{
 		_onStyleChange = null;
 		parentRule = null;
+		
+		var length:Int = _properties.length;
+		for (i in 0...length)
+		{
+			TypedPropertyVO.getPool().release(_properties[i]);
+		}
+		
 		initPropertiesStructure();
 	}
 	
@@ -264,6 +271,7 @@ class CSSStyleDeclaration
 		if (typedProperty != null)
 		{
 			_properties.remove(typedProperty);
+			TypedPropertyVO.getPool().release(typedProperty);
 			
 			//call the style update callback if provided
 			if (_onStyleChange != null)
@@ -330,8 +338,10 @@ class CSSStyleDeclaration
 		//here the property doesn't exist yet, create it and store it
 		if (currentProperty == null)
 		{
-			var newProperty:TypedPropertyVO = new TypedPropertyVO(property, typedValue, important);
-			
+			var newProperty:TypedPropertyVO = TypedPropertyVO.getPool().get();
+			newProperty.important = important;
+			newProperty.typedValue = typedValue;
+			newProperty.name = property;
 			_properties.push(newProperty);
 			
 			if (_onStyleChange != null)
