@@ -108,7 +108,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_flashRectangle = new Rectangle();
 		_flashPoint = new Point();
 		_flashMatrix = new flash.geom.Matrix();
-		_fillRectRectangle = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		_fillRectRectangle = new RectangleVO();
 		_fillRectPoint = new PointVO(0.0, 0.0);
 		_width = 0;
 		_height = 0;
@@ -220,20 +220,13 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	/**
 	 * Draw bitmap data into the bitmap display object.
 	 */
-	override public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix = null, sourceRect:RectangleVO = null):Void
+	override public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix, sourceRect:RectangleVO):Void
 	{	
 		//init destination point and sourceRect if null
 		
 		if (matrix == null)
 		{
 			matrix = new Matrix();
-		}
-		
-		if (sourceRect == null)
-		{
-			var width:Float = bitmapData.width;
-			var height:Float = bitmapData.height;
-			sourceRect = new RectangleVO(0.0, 0.0, width, height);
 		}
 		
 		//convert the cross-platform rectangle into flash native one

@@ -75,7 +75,9 @@ class TextLineBox extends LineBox
 		bounds.width = getTextWidth();
 		bounds.height = getTextHeight();
 		
-		_renderRect = new RectangleVO(0.0, 0.0, bounds.width, bounds.height);
+		_renderRect = new RectangleVO();
+		_renderRect.width = bounds.width;
+		_renderRect.height = bounds.height;
 		_destinationPoint = new PointVO(0.0, 0.0);
 		
 		initTextBitmap();
@@ -122,8 +124,10 @@ class TextLineBox extends LineBox
 	 */
 	private function initTextBitmap():Void
 	{
-		var bitmapBounds:RectangleVO = new RectangleVO(0.0, leadedAscent, bounds.width, bounds.height);
-		
+		var bitmapBounds:RectangleVO = new RectangleVO();
+		bitmapBounds.y = leadedAscent;
+		bitmapBounds.width = bounds.width;
+		bitmapBounds.height = bounds.height;
 		//TODO 1 : there is  memory leak, when text is disposed, its bitmap
 		//data is not
 		_nativeTextBitmap = _nativeText.getBitmap(bitmapBounds);

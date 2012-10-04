@@ -439,7 +439,6 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	private function getBackgroundBounds():RectangleVO
 	{
-		var globalBounds:RectangleVO = get_globalBounds();
 		globalBounds.x -= scrollOffset.x;
 		globalBounds.y -= scrollOffset.y;
 		return globalBounds;

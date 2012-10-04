@@ -350,7 +350,7 @@ class BackgroundManager
 			
 			if (_box == null)
 			{
-				_box = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+				_box = new RectangleVO();
 			}
 			
 			_box.x = backgroundPaintingBox.x - computedBackgroundPosition.x;

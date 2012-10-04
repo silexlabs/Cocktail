@@ -66,7 +66,7 @@ class Plugin
 	
 	public function new(elementAttributes:Hash<String>, params:Hash<String>,loadComplete:Void->Void, loadError:Void->Void) 
 	{
-		viewport = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		viewport = new RectangleVO();
 		_loadComplete = loadComplete;
 		_loadError = loadError;
 		_elementAttributes = elementAttributes;

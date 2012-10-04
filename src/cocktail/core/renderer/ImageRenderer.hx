@@ -48,7 +48,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	{
 		super(domNode);
 		
-		_paintBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		_paintBounds = new RectangleVO();
 		_destinationPoint = new PointVO(0.0, 0.0);
 	}
 	

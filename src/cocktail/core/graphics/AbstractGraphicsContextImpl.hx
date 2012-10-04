@@ -165,11 +165,11 @@ class AbstractGraphicsContextImpl
 	 * for transparent bitmap
 	 * @param	bitmapData the source  bitmap data
 	 * @param	matrix a transformation matrix to apply yo the bitmap data when drawing to 
-	 * to the bitmap. Defaults to an identity matrix
+	 * to the bitmap.
 	 * @param	sourceRect defines the zone from the source bitmap data that must be copied onto the 
-	 * native graphic dom element. Takes the whole bitmap data by default
+	 * native graphic dom element.
 	 */
-	public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix = null, sourceRect:RectangleVO = null):Void
+	public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix, sourceRect:RectangleVO):Void
 	{
 		//abstract
 	}

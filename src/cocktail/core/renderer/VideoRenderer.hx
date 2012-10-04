@@ -145,7 +145,11 @@ class VideoRenderer extends ImageRenderer
 		var width:Float = posterBounds.width;
 		var height:Float = posterBounds.height;
 		
-		var paintBounds:RectangleVO = new RectangleVO(x, y, width, height);
+		var paintBounds:RectangleVO = new RectangleVO();
+		paintBounds.x = x;
+		paintBounds.y = y;
+		paintBounds.width = width;
+		paintBounds.height = height;
 		
 		paintResource(graphicContext, resource.nativeResource, paintBounds, resource.intrinsicWidth, resource.intrinsicHeight);
 	}

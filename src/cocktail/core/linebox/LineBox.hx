@@ -96,7 +96,7 @@ class LineBox extends NodeBase<LineBox>
 	{
 		super();
 		
-		bounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		bounds = new RectangleVO();
 		
 		this.elementRenderer = elementRenderer;
 		
@@ -114,7 +114,7 @@ class LineBox extends NodeBase<LineBox>
 	 */
 	public function dispose():Void
 	{
-		bounds = null;
+		//bounds = null;
 		elementRenderer = null;
 	}
 	

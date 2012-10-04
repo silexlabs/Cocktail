@@ -70,7 +70,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 		_scrollLeft = 0;
 		_scrollTop = 0;
 		
-		_scrollableBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		_scrollableBounds = new RectangleVO();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

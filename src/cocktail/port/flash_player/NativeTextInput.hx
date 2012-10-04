@@ -124,7 +124,12 @@ class NativeTextInput extends AbstractNativeTextInput
 	
 	override private function get_viewport():RectangleVO
 	{
-		return new RectangleVO(_textField.x, _textField.y, _textField.width, _textField.height);
+		var rect:RectangleVO = new RectangleVO();
+		rect.x = _textField.x;
+		rect.y = _textField.y;
+		rect.width = _textField.width;
+		rect.height = _textField.height;
+		return rect;
 	}
 	
 	override private function set_viewport(value:RectangleVO):RectangleVO

@@ -266,7 +266,12 @@ class FloatsManager
 		//the x position of the float vary for left and right float
 		var floatX:Float = 0.0;
 	
-		return new RectangleVO(floatX, floatY, floatWidth, floatHeight);
+		var rect:RectangleVO = new RectangleVO();
+		rect.x  = floatX;
+		rect.y = floatY;
+		rect.width = floatWidth;
+		rect.height = floatHeight;
+		return rect;
 	}
 	
 	/**

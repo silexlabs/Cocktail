@@ -87,7 +87,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * which established the formatting context this ElementRenderer 
 	 * participates in.
 	 */
-	public var bounds(get_bounds, set_bounds):RectangleVO;
+	public var bounds(get_bounds, null):RectangleVO;
 	
 	/**
 	 * Holds the current 
@@ -268,9 +268,9 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		_wasPositioned = false;
 		_needsLayerRendererUpdate = true;
 		
-		bounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		bounds = new RectangleVO();
 		
-		globalBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		globalBounds = new RectangleVO();
 		
 		scrollOffset = new PointVO(0.0, 0.0);
 		
@@ -280,9 +280,9 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		globalContainingBlockOrigin = new PointVO(0.0, 0.0);
 		
-		scrollableBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		scrollableBounds = new RectangleVO();
 		
-		_childrenBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		_childrenBounds = new RectangleVO();
 		
 		lineBoxes = new Array<LineBox>();
 	}
@@ -294,6 +294,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	{
 		domNode = null;
 		coreStyle = null;
+		
 		bounds = null;
 		globalBounds = null;
 		scrollOffset = null;
@@ -1282,11 +1283,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	private function get_bounds():RectangleVO
 	{
 		return bounds;
-	}
-	
-	private function set_bounds(value:RectangleVO):RectangleVO
-	{
-		return bounds = value;
 	}
 	
 	private function get_scrollLeft():Float 

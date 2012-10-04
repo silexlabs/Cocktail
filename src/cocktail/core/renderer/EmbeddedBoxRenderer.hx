@@ -138,6 +138,11 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		var xOffset:Float = (availableWidth - width) / 2;
 		var yOffset:Float = (availableHeight - height) / 2;
 		
-		return new RectangleVO(xOffset, yOffset, width, height);
+		var rect:RectangleVO = new RectangleVO();
+		rect.x = xOffset;
+		rect.y = yOffset;
+		rect.width = width;
+		rect.height = height;
+		return rect;
 	}
 }

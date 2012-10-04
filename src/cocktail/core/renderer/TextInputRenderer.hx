@@ -123,7 +123,12 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		var y:Float =  globalBounds.y + globalBounds.height / 2 - coreStyle.fontMetrics.fontSize + coreStyle.fontMetrics.ascent / 2 - scrollOffset.y;
 		var width:Float =  globalBounds.width;
 		var height:Float =  globalBounds.height;
-		nativeTextInput.viewport = new RectangleVO(x, y, width, height);
+		var viewport:RectangleVO = new RectangleVO();
+		viewport.x = x;
+		viewport.y = y;
+		viewport.width = width;
+		viewport.height = height;
+		nativeTextInput.viewport = viewport;
 		
 		//set the style of the text input text using the CSS applying to it
 		//Based on the platform not all of those style might be taken into account

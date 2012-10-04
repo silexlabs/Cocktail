@@ -101,7 +101,7 @@ class NativeVideo extends NativeMedia
 		initNetConnection();
 		_nc.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 		_nc.connect(null); 
-		viewport = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		viewport = new RectangleVO();
 	}
 	
 	/**
