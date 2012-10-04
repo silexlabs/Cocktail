@@ -12,6 +12,7 @@ import cocktail.core.css.parsers.CSSStyleParser;
 import cocktail.core.css.parsers.CSSStyleSerializer;
 import cocktail.core.css.CSSConstants;
 using StringTools;
+using cocktail.core.utils.Utils;
 
 /**
  * This objects holds declarations of style properties in key/value
@@ -172,9 +173,9 @@ class CSSStyleDeclaration
 	 */
 	public function new(parentRule:CSSRule = null, onStyleChange:String->Void = null) 
 	{
-		initPropertiesStructure();
 		_onStyleChange = onStyleChange;
 		this.parentRule = parentRule;
+		_properties = new Array<TypedPropertyVO>();
 	}
 	
 	/**
@@ -192,15 +193,7 @@ class CSSStyleDeclaration
 			TypedPropertyVO.getPool().release(_properties[i]);
 		}
 		
-		initPropertiesStructure();
-	}
-	
-	/**
-	 * Init/reset the properties array and hash
-	 */
-	private function initPropertiesStructure():Void
-	{
-		_properties = new Array<TypedPropertyVO>();
+		_properties.clear();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -2213,7 +2206,7 @@ class CSSStyleDeclaration
 	private function set_cssText(value:String):String
 	{
 		//reset properties
-		initPropertiesStructure();
+		_properties.clear();
 		
 		var typedProperties:Array<TypedPropertyVO> = CSSStyleParser.parseStyle(value);
 		
