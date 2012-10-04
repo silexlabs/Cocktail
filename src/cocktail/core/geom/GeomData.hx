@@ -79,12 +79,22 @@ package cocktail.core.geom;
 	/**
 	 * Represents the values of a 3x3 Matrix
 	 */
-	typedef MatrixData = {
-		var a:Float;
-		var b:Float;
-		var c:Float;
-		var d:Float;
-		var e:Float;
-		var f:Float;
+	class MatrixVO {
+		public var a:Float;
+		public var b:Float;
+		public var c:Float;
+		public var d:Float;
+		public var e:Float;
+		public var f:Float;
+		
+		public function new()
+		{
+			a = 1.0;
+			b = 0.0;
+			c = 0.0;
+			d = 1.0;
+			e = 0.0;
+			f = 0.0;
+		}
 	}
 

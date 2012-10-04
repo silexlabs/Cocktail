@@ -183,7 +183,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	 */
 	override public function transform(matrix:Matrix):Void
 	{
-		var matrixData:MatrixData = matrix.data;
+		var matrixData:MatrixVO = matrix.data;
 		_childrenNativeLayer.transform.matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 	}
 	
@@ -242,7 +242,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_flashRectangle.width = Math.round(sourceRect.width);
 		_flashRectangle.height = sourceRect.height;
 		
-		var matrixData:MatrixData = matrix.data;
+		var matrixData:MatrixVO = matrix.data;
 		
 		_flashMatrix.a = matrixData.a;
 		_flashMatrix.b = matrixData.b;

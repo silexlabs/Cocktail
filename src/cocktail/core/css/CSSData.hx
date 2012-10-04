@@ -857,7 +857,7 @@ enum CSSTransformFunctionValue {
 	 * specify a 2D transformation in the form of
 	 * a transformation matrix
 	 */
-	MATRIX(data:MatrixData);
+	MATRIX(data:MatrixVO);
 	
 	/**
 	 * specify a 2D translation by the vector [tx, ty]
