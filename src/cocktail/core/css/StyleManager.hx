@@ -194,6 +194,11 @@ class StyleManager
 	private function getMatchingStyleDeclarations(node:HTMLElement, styleSheets:Array<CSSStyleSheet>, matchedPseudoClasses:MatchedPseudoClassesVO):Array<StyleDeclarationVO>
 	{
 		//clean-up for re-use
+		var length:Int = _matchingStyleDeclaration.length;
+		for (i in 0...length)
+		{
+			StyleDeclarationVO.getPool().release(_matchingStyleDeclaration[i]);
+		}
 		_matchingStyleDeclaration.clear();
 		
 		//loop in all style sheets
@@ -224,7 +229,9 @@ class StyleManager
 							{
 								//if the selector is matched, store the coresponding style declaration
 								//along with the matching selector
-								var matchingStyleDeclaration:StyleDeclarationVO = new StyleDeclarationVO(styleRule.style, selectors[k]);
+								var matchingStyleDeclaration:StyleDeclarationVO = StyleDeclarationVO.getPool().get();
+								matchingStyleDeclaration.style = styleRule.style;
+								matchingStyleDeclaration.selector = selectors[k];
 								_matchingStyleDeclaration.push(matchingStyleDeclaration);
 								
 								//break to prevent from adding a style declaration

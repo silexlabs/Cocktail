@@ -59,15 +59,31 @@ class PropertyVO implements IPoolable {
 	}
 }
 
-class StyleDeclarationVO {
+class StyleDeclarationVO implements IPoolable {
 	
-	public var style(default, null):CSSStyleDeclaration;
-	public var selector(default, null):SelectorVO;
+	public var style:CSSStyleDeclaration;
+	public var selector:SelectorVO;
 	
-	public function new(style:CSSStyleDeclaration, selector:SelectorVO)
+	private static var _pool:ObjectPool<StyleDeclarationVO>;
+	
+	public static function getPool():ObjectPool<StyleDeclarationVO>
 	{
-		this.style = style;
-		this.selector = selector;
+		if (_pool == null)
+		{
+			_pool = new ObjectPool<StyleDeclarationVO>(StyleDeclarationVO);
+		}
+		return _pool;
+	}
+	
+	public function new()
+	{
+		
+	}
+	
+	public function reset():Void
+	{
+		this.style = null;
+		this.selector = null;
 	}
 }
 
