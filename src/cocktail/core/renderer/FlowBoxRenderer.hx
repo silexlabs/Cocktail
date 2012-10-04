@@ -55,6 +55,7 @@ class FlowBoxRenderer extends BoxRenderer
 	{
 		super(node);
 		_positionedChildren = new Array<ElementRenderer>();
+		lineBoxes = new Array<LineBox>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

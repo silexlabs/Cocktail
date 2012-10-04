@@ -283,8 +283,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		scrollableBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
 		
 		_childrenBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
-		
-		lineBoxes = new Array<LineBox>();
 	}
 	
 	/**
