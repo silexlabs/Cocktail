@@ -215,6 +215,11 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 	 */
 	public function hasChildNodes():Bool
 	{
+		if (childNodes == null)
+		{
+			return false;
+		}
+		
 		return childNodes.length > 0;
 	}
 	

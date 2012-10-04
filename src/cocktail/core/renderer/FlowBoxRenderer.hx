@@ -46,7 +46,7 @@ class FlowBoxRenderer extends BoxRenderer
 	 * Positioned children register and unregister
 	 * themselves when attached and detached
 	 */
-	private var _positionedChildren:Array<ElementRenderer>;
+	private var _positionedChildren:List<ElementRenderer>;
 	
 	/**
 	 * class constructor
@@ -54,8 +54,7 @@ class FlowBoxRenderer extends BoxRenderer
 	public function new(node:HTMLElement) 
 	{
 		super(node);
-		_positionedChildren = new Array<ElementRenderer>();
-		lineBoxes = new Array<LineBox>();
+		_positionedChildren = new List<ElementRenderer>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +68,7 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	public function addPositionedChildren(element:ElementRenderer):Void
 	{
-		_positionedChildren.push(element);
+		_positionedChildren.add(element);
 	}
 	
 	/**
@@ -132,12 +131,11 @@ class FlowBoxRenderer extends BoxRenderer
 		var windowData:ContainingBlockVO = getWindowData();
 		
 		//lay out each stored children
-		var length:Int = _positionedChildren.length;
-		for (i in 0...length)
+		for (positionedChild in _positionedChildren)
 		{
 			//layout the child ElementRenderer which set its x and y positioned origin in the space of this ElementRenderer's
 			//positioned origin
-			layoutPositionedChild(_positionedChildren[i], containerBlockData, windowData);
+			layoutPositionedChild(positionedChild, containerBlockData, windowData);
 		}
 	}
 	
