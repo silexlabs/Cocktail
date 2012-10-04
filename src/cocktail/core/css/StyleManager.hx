@@ -266,7 +266,11 @@ class StyleManager
 			var typedProperty:TypedPropertyVO = styleDeclaration.getTypedProperty(property);
 			if (typedProperty != null)
 			{
-				var matchingProperty:PropertyVO = new PropertyVO(selector, typedProperty.typedValue, styleDeclaration.parentRule.parentStyleSheet.origin, typedProperty.important);
+				var matchingProperty:PropertyVO = PropertyVO.getPool().get();
+				matchingProperty.selector = selector;
+				matchingProperty.typedValue = typedProperty.typedValue;
+				matchingProperty.origin = styleDeclaration.parentRule.parentStyleSheet.origin;
+				matchingProperty.important = typedProperty.important;
 				_matchingProperties.push(matchingProperty);
 			}
 		}
@@ -276,6 +280,7 @@ class StyleManager
 		{
 			var matchingProperty:PropertyVO = _matchingProperties[0];
 			nodeStyleDeclaration.setTypedProperty(property, matchingProperty.typedValue, matchingProperty.important);
+			PropertyVO.getPool().release(matchingProperty);
 			return;
 		}
 		
@@ -289,6 +294,7 @@ class StyleManager
 		{
 			var matchingProperty:PropertyVO = tempMatchingProperties[0];
 			nodeStyleDeclaration.setTypedProperty(property, matchingProperty.typedValue, matchingProperty.important);
+			PropertyVO.getPool().release(matchingProperty);
 			return;
 		}
 		
@@ -299,6 +305,7 @@ class StyleManager
 		{
 			var matchingProperty:PropertyVO = tempMatchingProperties[0];
 			nodeStyleDeclaration.setTypedProperty(property, matchingProperty.typedValue, matchingProperty.important);
+			PropertyVO.getPool().release(matchingProperty);
 			return;
 		}
 		
@@ -306,6 +313,12 @@ class StyleManager
 		//the later in the CSS style sheet is considered the one with the higher priority
 		var matchingProperty:PropertyVO = tempMatchingProperties[tempMatchingProperties.length - 1];
 		nodeStyleDeclaration.setTypedProperty(property, matchingProperty.typedValue, matchingProperty.important);
+		
+		//release properties for reuse
+		for (i in 0...tempMatchingProperties.length)
+		{
+			PropertyVO.getPool().release(tempMatchingProperties[i]);
+		}
 	}
 	
 	/**
@@ -352,6 +365,18 @@ class StyleManager
 		//then the important properties are returned
 		if (_authorImportantDeclarations.length > 0)
 		{
+			//release properties that won't be used
+			var length:Int = _authorNormalDeclarations.length;
+			for (i in 0...length)
+			{
+				PropertyVO.getPool().release(_authorNormalDeclarations[i]);
+			}
+			length = _userAgentDeclarations.length;
+			for (i in 0...length)
+			{
+				PropertyVO.getPool().release(_userAgentDeclarations[i]);
+			}
+			
 			return _authorImportantDeclarations;
 		}
 		
@@ -359,6 +384,12 @@ class StyleManager
 		//here normal author defined properties are returned
 		if (_authorNormalDeclarations.length > 0)
 		{
+			length = _userAgentDeclarations.length;
+			for (i in 0...length)
+			{
+				PropertyVO.getPool().release(_userAgentDeclarations[i]);
+			}
+			
 			return _authorNormalDeclarations;
 		}
 		
@@ -394,6 +425,14 @@ class StyleManager
 			if (propertySpecificity > currentHigherSpecificity)
 			{
 				currentHigherSpecificity = propertySpecificity;
+				
+				//release properties that won't be used
+				var length:Int = _mostSpecificMatchingProperties.length;
+				for (j in 0...length)
+				{
+					PropertyVO.getPool().release(_mostSpecificMatchingProperties[j]);
+				}
+				
 				//reset the array to prevent returning properties with lower
 				//specificity
 				_mostSpecificMatchingProperties.clear();

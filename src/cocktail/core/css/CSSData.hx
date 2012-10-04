@@ -3,6 +3,8 @@ package cocktail.core.css;
 import cocktail.core.geom.Matrix;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
+import cocktail.core.utils.IPoolable;
+import cocktail.core.utils.ObjectPool;
 
 /**
  * ...
@@ -25,19 +27,35 @@ class TypedPropertyVO {
 	}
 }
 
-class PropertyVO {
+class PropertyVO implements IPoolable {
 	
-	public var important(default, null):Bool;
-	public var origin(default, null):PropertyOriginValue;
-	public var typedValue(default, null):CSSPropertyValue;
-	public var selector(default, null):SelectorVO;
+	public var important:Bool;
+	public var origin:PropertyOriginValue;
+	public var typedValue:CSSPropertyValue;
+	public var selector:SelectorVO;
 	
-	public function new(selector:SelectorVO, typedValue:CSSPropertyValue, origin:PropertyOriginValue, important:Bool)
+	private static var _pool:ObjectPool<PropertyVO>;
+	
+	public static function getPool():ObjectPool<PropertyVO>
 	{
-		this.important = important;
-		this.origin = origin;
-		this.typedValue = typedValue;
-		this.selector = selector;
+		if (_pool == null)
+		{
+			_pool = new ObjectPool<PropertyVO>(PropertyVO);
+		}
+		return _pool;
+	}
+	
+	public function new()
+	{
+		reset();
+	}
+	
+	public function reset():Void
+	{
+		this.important = false;
+		this.origin = null;
+		this.typedValue = null;
+		this.selector = null;
 	}
 }
 
