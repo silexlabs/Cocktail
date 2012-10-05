@@ -30,9 +30,9 @@ import cocktail.core.css.CSSData;
 	 */
 	class ContainingBlockVO {
 		public var width:Float;
-		public var isWidthAuto(default, null):Bool;
+		public var isWidthAuto:Bool;
 		public var height:Float;
-		public var isHeightAuto(default, null):Bool;
+		public var isHeightAuto:Bool;
 		
 		public function new(width:Float, isWidthAuto:Bool, height:Float, isHeightAuto:Bool)
 		{

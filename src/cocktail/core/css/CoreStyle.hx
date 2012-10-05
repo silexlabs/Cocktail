@@ -7,6 +7,7 @@
 */
 package cocktail.core.css;
 
+using cocktail.core.utils.Utils;
 import cocktail.core.css.CSSData;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.TransitionEvent;
@@ -198,12 +199,18 @@ class CoreStyle
 	 * the 'font-size' and 'font-family' properties
 	 * 
 	 */
-	public var fontMetrics(get_fontMetricsData, null):FontMetricsVO;
+	public var fontMetrics(default, null):FontMetricsVO;
 	
 	/**
 	 * An instance of fontmanager used to get the font metrics
 	 */
 	private var _fontManager:FontManager;
+	
+	/**
+	 * During cascade, holds the name of 
+	 * all the properties whose value changed
+	 */
+	private var _changedProperties:Array<String>;
 	
 	/**
 	 * The owning HTMLElement
@@ -216,9 +223,18 @@ class CoreStyle
 	public function new(htmlElement:HTMLElement) 
 	{
 		this.htmlElement = htmlElement;
-		
+		init();
+	}
+	
+	/**
+	 * Init class attributes
+	 */
+	private function init():Void
+	{
 		computedValues = new CSSStyleDeclaration();
 		specifiedValues = new CSSStyleDeclaration();
+		
+		_changedProperties = new Array<String>();
 		
 		_fontManager = FontManager.getInstance();
 		
@@ -231,13 +247,6 @@ class CoreStyle
 		_transitionManager = TransitionManager.getInstance();
 		
 		initUsedValues();
-		
-		//TODO 1 : shouldn't need to instantiate a new style declaration, should use the one
-		//of the document but not availabler when instantiated
-		var initialStyleDeclaration:InitialStyleDeclaration = new InitialStyleDeclaration();
-		
-		cascade(initialStyleDeclaration.supportedCSSProperties, initialStyleDeclaration, initialStyleDeclaration, initialStyleDeclaration,
-		initialStyleDeclaration, 12, 10, false);
 	}
 	
 	/**
@@ -284,7 +293,8 @@ class CoreStyle
 	 * The specified style for each property can come for multiple 
 	 * source, this method manages the priority among those sources
 	 * 
-	 * @param properties the names of properties to cascade
+	 * @param cascadeManager contain the names of the properties to update and info about the current
+	 * cascade
 	 * @param	initialStyleDeclaration contains the initial value for each of the supported CSS styles.
 	 * Used last if a value for a given style is not provided from other sources
 	 * @param	styleSheetDeclaration	contains all the style values applying to the HTMLElement which
@@ -299,11 +309,20 @@ class CoreStyle
 	 * as opposed to a declarative one
 	 * @return an array containing the names of all the properties whose specified values changed during cascading
 	 */
-	public function cascade(properties:Hash<Void>, initialStyleDeclaration:InitialStyleDeclaration, styleSheetDeclaration:CSSStyleDeclaration, inlineStyleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, parentFontSize:Float, parentXHeight:Float, programmaticChange:Bool):Hash<Void>
+	public function cascade(cascadeManager:CascadeManager, initialStyleDeclaration:InitialStyleDeclaration, styleSheetDeclaration:CSSStyleDeclaration, inlineStyleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, parentFontSize:Float, parentXHeight:Float, programmaticChange:Bool):Void
 	{
-		//TODO 2 : should do the same for "color" which influence style with a currentColor value
-		if (properties.exists(CSSConstants.FONT_SIZE) == true || properties.exists(CSSConstants.FONT_FAMILY) == true)
+		//no need to cascade if no styles need to be
+		//updated on this HTMLElement
+		if (cascadeManager.hasPropertiesToCascade == false)
 		{
+			return;
+		}
+		
+		//TODO 2 : should do the same for "color" which influence style with a currentColor value
+		if (cascadeManager.hasFontSize == true || cascadeManager.hasFontFamily == true || cascadeManager.cascadeAll == true)
+		{
+			//TODO 2 : for now, font-size and font-family are cascaded twice
+			
 			//when the value of font-size and/or font-family is cascaded,
 			//they must be cascaded first, as their
 			//computed values is used to compute some length.
@@ -311,46 +330,79 @@ class CoreStyle
 			//the computed absolute length to be correct, font-size
 			//and font-family must have been previously computed
 			//so that the right font metrics is used for the computation
-			cascadeProperty(CSSConstants.FONT_SIZE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, 0, 0, programmaticChange);
-			cascadeProperty(CSSConstants.FONT_FAMILY, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, 0, 0, programmaticChange);
-
-			//remove them to prevent cascading them twice
-			properties.remove(CSSConstants.FONT_SIZE);
-			properties.remove(CSSConstants.FONT_FAMILY);
-			
-			var lengthCSSProperties:Array<String> = initialStyleDeclaration.lengthCSSProperties;
+			var fontSizeDidChange:Bool = cascadeProperty(CSSConstants.FONT_SIZE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, 0, 0, programmaticChange);
+			var fontFamilyDidChange:Bool = cascadeProperty(CSSConstants.FONT_FAMILY, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, 0, 0, programmaticChange);
 			
 			//if font-size or font-family changed, all the properties which may depends
 			//on font metrics (because they are for instance Length with 'em' unit) need to be cascaded
-			var length:Int = lengthCSSProperties.length;
-			for (i in 0...length)
+			if (fontSizeDidChange == true || fontFamilyDidChange == true)
 			{
-				properties.set(lengthCSSProperties[i], null);
+				var lengthCSSProperties:Array<String> = initialStyleDeclaration.lengthCSSProperties;
+				var length:Int = lengthCSSProperties.length;
+				for (i in 0...length)
+				{
+					cascadeManager.addPropertyToCascade(lengthCSSProperties[i]);
+				}
+				
+				//refresh the font metrics when either font family or font size hanges
+				//TODO 1 : should go in macro implementation of font metrics
+				#if macro
+				fontMetrics = new FontMetricsVO(12.0, 12.0, 12.0, 12.0, 3.0, 3.0, 3.0, 5.0 );
+				#else
+				fontMetrics = _fontManager.getFontMetrics(computedValues.fontFamily, getAbsoluteLength(fontSize));
+				#end
 			}
 		}
-				
-		//will return the name of all the properties whose
-		//specified values changed during cascading 
-		var changedProperties:Hash<Void> = new Hash<Void>();
 		
-		//get the font metrics of this CoreStyle, used for
-		//Length computation
-		var fontMetrics:FontMetricsVO = this.fontMetrics;
 		var fontSize:Float = fontMetrics.fontSize;
 		var xHeight:Float = fontMetrics.xHeight;
 		
-		for (propertyName in properties.keys())
+		//will store all the properties which value
+		//change during cascading
+		_changedProperties.clear();
+		
+		//holds the properties which will get cascaded
+		var propertiesToCascade:Array<String> = null;
+		
+		//if all properties must be cascaded, retrieve the
+		//name of the all the supprted properties
+		if (cascadeManager.cascadeAll == true)
+		{
+			propertiesToCascade = initialStyleDeclaration.supportedCSSProperties;
+		}
+		else
+		{
+			propertiesToCascade = cascadeManager.propertiesToCascade;
+		}
+		
+		var length:Int = propertiesToCascade.length;
+		for (i in 0...length)
 		{
 			//cascade the property, returns a flag of wether the cascade changed
 			//the specified value of the property. Useful to know if children
 			//also need to cascade this property
-			var didChangeSpecifiedValue:Bool = cascadeProperty(propertyName, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange);
-		
+			var didChangeSpecifiedValue:Bool = cascadeProperty(propertiesToCascade[i], initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange);
+	
 			if (didChangeSpecifiedValue == true)
 			{
-				changedProperties.set(propertyName, null);
+				_changedProperties.push(propertiesToCascade[i]);
 			}
 		}
+		
+		//now that all properties where cascaded, 
+		//reset the list
+		cascadeManager.reset();
+		
+		//add the list of properties which value changed
+		//during cascading to be cascaded, so that when the
+		//next child is cascaded it knows all the styles
+		//which changed on its parent
+		var length:Int = _changedProperties.length;
+		for (i in 0...length)
+		{
+			cascadeManager.addPropertyToCascade(_changedProperties[i]);
+		}
+		
 		
 		//apply special computing relationship between
 		//display, float and position property
@@ -359,17 +411,15 @@ class CoreStyle
 		//if the background color property was changed, computes
 		//its used value immediately, as for color, there is no need
 		//to wait for layout for used values
-		if (changedProperties.exists(CSSConstants.BACKGROUND_COLOR) == true)
+		if (cascadeManager.hasBackgroundColor == true)
 		{
 			CSSValueConverter.getColorVOFromCSSColor(getColor(backgroundColor), usedValues.backgroundColor);
 		}
 		//same as above for the color style
-		if (changedProperties.exists(CSSConstants.COLOR) == true)
+		if (cascadeManager.hasColor == true)
 		{
 			CSSValueConverter.getColorVOFromCSSColor(getColor(color), usedValues.color);
 		}
-		
-		return changedProperties;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -477,6 +527,8 @@ class CoreStyle
 				if (isAnimatable(propertyName))
 				{
 					_animator.registerPendingAnimation(propertyName, invalidationReason, getAnimatablePropertyValue(propertyName));
+					var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
+					htmlDocument.invalidatePendingAnimations();
 				}
 			}
 		}
@@ -927,17 +979,18 @@ class CoreStyle
 	 */
 	public function endPendingAnimation():Void
 	{
-		if (_pendingTransitionEndEvents.length > 0)
+		var length:Int = _pendingTransitionEndEvents.length;
+		if (length == 0)
 		{
-			var length:Int = _pendingTransitionEndEvents.length;
-			for (i in 0...length)
-			{
-				htmlElement.dispatchEvent(_pendingTransitionEndEvents[i]);
-			}
-			//reset the array, each event must be dispatched only once
-			_pendingTransitionEndEvents = new Array<TransitionEvent>();
+			return;
 		}
 		
+		for (i in 0...length)
+		{
+			htmlElement.dispatchEvent(_pendingTransitionEndEvents[i]);
+		}
+		//reset the array, each event must be dispatched only once
+		_pendingTransitionEndEvents.clear();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -952,6 +1005,11 @@ class CoreStyle
 	private function onTransitionComplete(transition:Transition):Void
 	{
 		htmlElement.invalidate(transition.invalidationReason);
+		
+		//schedule an update of the pending animations
+		var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
+		htmlDocument.invalidatePendingAnimations();
+		
 		var transitionEvent:TransitionEvent = new TransitionEvent();
 		transitionEvent.initTransitionEvent(EventConstants.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
 		_pendingTransitionEndEvents.push(transitionEvent);
@@ -1204,21 +1262,6 @@ class CoreStyle
 			default:
 				return false;
 		}
-	}
-	
-	/////////////////////////////////
-	// GETTERS
-	////////////////////////////////
-	
-	private function get_fontMetricsData():FontMetricsVO
-	{
-		//TODO 1 : how to deal with font size for macro target ? Does it matter
-		//to get layout info at compile/server time ? use em font ?
-		#if macro
-		return new FontMetricsVO(12.0, 12.0, 12.0, 12.0, 3.0, 3.0, 3.0, 5.0 );
-		#else
-		return _fontManager.getFontMetrics(computedValues.fontFamily, getAbsoluteLength(fontSize));
-		#end
 	}
 	
 	/////////////////////////////////

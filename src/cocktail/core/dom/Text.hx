@@ -72,15 +72,6 @@ class Text extends CharacterData
 	}
 	
 	/**
-	 * Text node use their parent's CoreStyle
-	 */
-	override private function attachCoreStyle():Void
-	{
-		//the TextRenderer inherits its styles from its parent
-		elementRenderer.coreStyle = parentNode.coreStyle;
-	}
-	
-	/**
 	 * Text is always considered rendered, its first element
 	 * parent will actually determine wether it is rendered
 	 */

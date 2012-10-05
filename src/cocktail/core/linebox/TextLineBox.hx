@@ -14,7 +14,7 @@ import cocktail.core.renderer.ElementRenderer;
 
 import cocktail.Lib;
 import cocktail.core.font.FontManager;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
 import cocktail.core.css.CSSData;
@@ -75,10 +75,36 @@ class TextLineBox extends LineBox
 		bounds.width = getTextWidth();
 		bounds.height = getTextHeight();
 		
-		_renderRect = new RectangleVO(0.0, 0.0, bounds.width, bounds.height);
+		_renderRect = new RectangleVO();
+		_renderRect.width = bounds.width;
+		_renderRect.height = bounds.height;
 		_destinationPoint = new PointVO(0.0, 0.0);
 		
 		initTextBitmap();
+	}
+	
+	/**
+	 * text line box can't have children
+	 */
+	override private function initChildNodes():Void
+	{
+		
+	}
+	
+	/**
+	 * cleanup method
+	 */
+	override public function dispose():Void
+	{
+		super.dispose();
+		if (_nativeText != null)
+		{
+			_nativeText.dispose();
+			_nativeText = null;
+		}
+		_fontMetrics = null;
+		_renderRect = null;
+		_destinationPoint = null;
 	}
 	
 	/**
@@ -98,8 +124,10 @@ class TextLineBox extends LineBox
 	 */
 	private function initTextBitmap():Void
 	{
-		var bitmapBounds:RectangleVO = new RectangleVO(0.0, leadedAscent, bounds.width, bounds.height);
-		
+		var bitmapBounds:RectangleVO = new RectangleVO();
+		bitmapBounds.y = leadedAscent;
+		bitmapBounds.width = bounds.width;
+		bitmapBounds.height = bounds.height;
 		//TODO 1 : there is  memory leak, when text is disposed, its bitmap
 		//data is not
 		_nativeTextBitmap = _nativeText.getBitmap(bitmapBounds);
@@ -123,7 +151,7 @@ class TextLineBox extends LineBox
 		_destinationPoint.x = bounds.x + elementRenderer.globalContainingBlockOrigin.x - elementRenderer.scrollOffset.x;
 		_destinationPoint.y = bounds.y + elementRenderer.globalContainingBlockOrigin.y - elementRenderer.scrollOffset.y;
 	
-		graphicContext.copyPixels(_nativeTextBitmap, _renderRect, _destinationPoint);
+		graphicContext.graphics.copyPixels(_nativeTextBitmap, _renderRect, _destinationPoint);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

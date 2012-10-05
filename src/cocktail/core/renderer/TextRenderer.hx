@@ -73,6 +73,16 @@ class TextRenderer extends InvalidatingElementRenderer
 		_textTokensNeedParsing = true;
 	}
 	
+		
+	/**
+	 * Overriden, as text use the style of 
+	 * its parent in the DOM tree
+	 */
+	override private function initCoreStyle():Void
+	{
+		coreStyle = domNode.parentNode.coreStyle;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC LAYOUT METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -102,6 +112,19 @@ class TextRenderer extends InvalidatingElementRenderer
 	override public function invalidate(invalidationReason:InvalidationReason):Void
 	{
 		_textNeedsRendering = true;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Overriden as the bounds of a TextRenderer is formed
+	 * by the bounds of its formatted text line boxes
+	 */
+	override public function updateBounds():Void
+	{
+		getLineBoxesBounds(lineBoxes, bounds);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -373,25 +396,5 @@ class TextRenderer extends InvalidatingElementRenderer
 	override public function isInlineLevel():Bool
 	{
 		return true;
-	}
-	
-	/////////////////////////////////
-	// OVERRIDEN SETTER/GETTER
-	////////////////////////////////
-	
-	/**
-	 * Overriden as the bounds of a TextRenderer is formed
-	 * by the bounds of its formatted text line boxes
-	 */
-	override private function get_bounds():RectangleVO
-	{
-		var textLineBoxesBounds:Array<RectangleVO> = new Array<RectangleVO>();
-		var length:Int = lineBoxes.length;
-		for (i in 0...length)
-		{
-			textLineBoxesBounds.push(lineBoxes[i].bounds);
-		}
-		
-		return getChildrenBounds(textLineBoxesBounds);
 	}
 }

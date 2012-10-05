@@ -110,27 +110,27 @@ class HTMLLinkElement extends HTMLElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden, as when the link element is added
-	 * to the DOM, it tries to load its linked
-	 * resource if any
+	 * Overriden, as when added
+	 * to the DOM, the link element
+	 * tries to load its linked resource
 	 */
-	override public function attach():Void
+	override public function addedToDOM():Void
 	{
 		if (_hasLoadedResource == false)
 		{	
 			loadLinkedResource();
 		}
-		super.attach();
+		super.addedToDOM();
 	}
 
 	/**
-	 * Overriden as when this node is removed
-	 * from the dom, it must also remove its 
-	 * linked resource if any
+	 * Overriden as when detahed from
+	 * the DOM, the link dispose of its
+	 * linked resource as needed
 	 */
-	override public function detach():Void
+	override public function removedFromDOM():Void
 	{
-		super.detach();
+		super.removedFromDOM();
 		if (_hasLoadedResource == true)
 		{
 			unloadLinkedResource();

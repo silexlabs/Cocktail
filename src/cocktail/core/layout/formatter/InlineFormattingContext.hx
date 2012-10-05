@@ -7,6 +7,8 @@
 */
 package cocktail.core.layout.formatter;
 
+using cocktail.core.utils.Utils;
+
 import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.linebox.EmbeddedLineBox;
@@ -64,17 +66,26 @@ class InlineFormattingContext extends FormattingContext
 	private var _firstLineFormatted:Bool;
 	
 	/**
+	 * Used to store the current line box
+	 * tree as an array
+	 */
+	private var _lineBoxesAsArray:Array<LineBox>;
+	
+	/**
 	 * class constructor.
 	 */
 	public function new(floatsManager:FloatsManager) 
 	{
 		super(floatsManager);
+		_lineBoxesAsArray = new Array<LineBox>();
+		_unbreakableLineBoxes = new Array<LineBox>();
 	}
 
-	
 	override private function startFormatting():Void
 	{
-		_unbreakableLineBoxes = new Array<LineBox>();
+		
+		_unbreakableLineBoxes.clear();
+	
 		_unbreakableWidth = 0.0;
 		_firstLineFormatted = false;
 		
@@ -160,7 +171,11 @@ class InlineFormattingContext extends FormattingContext
 			else if (child.hasChildNodes() == true)
 			{
 				//remove all the previous line boxes before creating new ones
-				child.lineBoxes = new Array<LineBox>();
+				//if needed
+				if (child.lineBoxes.length > 0)
+				{
+					child.lineBoxes = new Array<LineBox>();
+				}
 			
 				//create the first line box for this inline box renderer
 				var childLineBox:LineBox = createContainerLineBox(child);
@@ -286,7 +301,8 @@ class InlineFormattingContext extends FormattingContext
 
 				//create new line boxes for all the inline box renderer which still have
 				//children to format, and add them to the new line
-				for (j in 0...openedElementRenderers.length)
+				var length:Int = openedElementRenderers.length;
+				for (j in 0...length)
 				{
 					//all line boxes are attached as child of the previous created line box
 					//and not as sibling to respect the hierarchy of the previous line
@@ -309,7 +325,7 @@ class InlineFormattingContext extends FormattingContext
 			_formattingContextData.x += _unbreakableWidth;
 			
 			//reset unbreakable line box now that they were added to the line
-			_unbreakableLineBoxes = new Array<LineBox>();
+			_unbreakableLineBoxes.clear();
 			_unbreakableWidth = 0;
 		}
 		
@@ -325,8 +341,10 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function formatLine(rootLineBox:LineBox, isLastLine:Bool):Void
 	{
-		
-		removeSpaces(rootLineBox);
+		if (rootLineBox.hasChildNodes() == true)
+		{
+			removeSpaces(rootLineBox);
+		}
 		
 		//format line boxes horizontally
 		var lineBoxWidth:Float = alignLineBox(rootLineBox, isLastLine, getConcatenatedWidth(rootLineBox));
@@ -637,17 +655,19 @@ class InlineFormattingContext extends FormattingContext
 	//TODO 2 : add doc, remove start and end spaces in a line
 	private function removeSpaces(rootLineBox:LineBox):Void
 	{
-		var lineBoxes:Array<LineBox> = getLineBoxTreeAsArray(rootLineBox);
+		_lineBoxesAsArray.clear();
+		getLineBoxTreeAsArray(rootLineBox, _lineBoxesAsArray);
 		
-		if (lineBoxes.length == 0)
+		if (_lineBoxesAsArray.length == 0)
 		{
 			return;
 		}
 		
 		var i:Int = 0;
-		while (i < lineBoxes.length)
+		var length:Int = _lineBoxesAsArray.length;
+		while (i < length)
 		{
-			var lineBox:LineBox = lineBoxes[i];
+			var lineBox:LineBox = _lineBoxesAsArray[i];
 			if (lineBox.isSpace() == true)
 			{
 				var coreStyle:CoreStyle = lineBox.elementRenderer.coreStyle;
@@ -674,21 +694,19 @@ class InlineFormattingContext extends FormattingContext
 			
 			i++;
 		}
+		_lineBoxesAsArray.clear();
+		getLineBoxTreeAsArray(rootLineBox, _lineBoxesAsArray);
 		
-		
-		lineBoxes = getLineBoxTreeAsArray(rootLineBox);
-		
-		if (lineBoxes.length == 0)
+		if (_lineBoxesAsArray.length == 0)
 		{
 			return;
 		}
 		
 		
-		var i:Int = lineBoxes.length - 1;
+		var i:Int = _lineBoxesAsArray.length - 1;
 		while (i >= 0)
 		{
-			var lineBox:LineBox = lineBoxes[i];
-			
+			var lineBox:LineBox = _lineBoxesAsArray[i];
 		
 			if (lineBox.isSpace() == true)
 			{
@@ -707,7 +725,7 @@ class InlineFormattingContext extends FormattingContext
 			{
 				if (lineBox.isStaticPosition() == false)
 				{
-						break;
+					break;
 				}
 			}
 			
@@ -715,29 +733,22 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
-	private function getLineBoxTreeAsArray(rootLineBox:LineBox):Array<LineBox>
+	private function getLineBoxTreeAsArray(rootLineBox:LineBox, lineBoxes:Array<LineBox>):Void
 	{
-		var ret:Array<LineBox> = new Array<LineBox>();
-		
-		for (i in 0...rootLineBox.childNodes.length)
+		var length:Int = rootLineBox.childNodes.length;
+		for (i in 0...length)
 		{
 			var child:LineBox = rootLineBox.childNodes[i];
 			
 			if (child.hasChildNodes() == true && child.isStaticPosition() == false)
 			{
-				var children:Array<LineBox> = getLineBoxTreeAsArray(child);
-				for (j in 0...children.length)
-				{
-					ret.push(children[j]);
-				}
+				getLineBoxTreeAsArray(child, lineBoxes);
 			}
 			else
 			{
-				ret.push(child);
+				lineBoxes.push(child);
 			}
 		}
-		
-		return ret;
 	}
 	
 	/////////////////////////////////

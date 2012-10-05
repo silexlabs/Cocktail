@@ -41,6 +41,8 @@ class RootLineBox extends LineBox
 	 */
 	override private function get_bounds():RectangleVO
 	{
-		return getChildrenBounds(getLineBoxesBounds(this));
+		//TODO 3 : shouldn'thave to update bounds each time
+		getLineBoxesBounds(this, bounds);
+		return bounds;
 	}
 }

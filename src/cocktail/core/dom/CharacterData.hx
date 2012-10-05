@@ -8,6 +8,7 @@
 */
 package cocktail.core.dom;
 
+import cocktail.core.css.CascadeManager;
 import cocktail.core.html.HTMLElement;
 
 /**
@@ -40,6 +41,14 @@ class CharacterData extends HTMLElement
 		super("");
 	}
 	
+	/**
+	 * text nodes can't have children
+	 */
+	override private function initChildNodes():Void
+	{
+		
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -48,7 +57,7 @@ class CharacterData extends HTMLElement
 	 * Cascading doesn't apply to text, only to 
 	 * actual HTMLElement
 	 */
-	override public function cascade(parentChangedProperties:Hash<Void>, programmaticChange:Bool):Void
+	override public function cascade(cascadeManager:CascadeManager, programmaticChange:Bool):Void
 	{
 		
 	}
@@ -60,6 +69,14 @@ class CharacterData extends HTMLElement
 	override public function invalidateCascade():Void
 	{
 		
+	}
+	
+	/**
+	 * text nodes can't have children
+	 */
+	override public function hasChildNodes():Bool
+	{
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

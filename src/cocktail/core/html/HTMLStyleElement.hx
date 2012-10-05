@@ -55,7 +55,8 @@ class HTMLStyleElement extends HTMLElement
 	{
 		super.appendChild(newChild);
 		
-		if (newChild.nodeType == DOMConstants.TEXT_NODE)
+		//check that the style element is currently attach to the DOM
+		if (newChild.nodeType == DOMConstants.TEXT_NODE && parentNode != null)
 		{
 			addStyleSheet();
 		}
@@ -84,13 +85,10 @@ class HTMLStyleElement extends HTMLElement
 	 * to the DOM, it adds a style sheet to the 
 	 * document if it has a child text node
 	 */
-	override public function attach():Void
+	override public function addedToDOM():Void
 	{
+		super.addedToDOM();
 		addStyleSheet();
-		
-		//attach after to prevent uncesseray
-		//cascading
-		super.attach();
 	}
 
 	/**
@@ -98,9 +96,9 @@ class HTMLStyleElement extends HTMLElement
 	 * from the dom, it must also remove its 
 	 * style sheet from the document if any
 	 */
-	override public function detach():Void
+	override public function removedFromDOM():Void
 	{
-		super.detach();
+		super.removedFromDOM();
 		removeStyleSheet();
 	}
 	

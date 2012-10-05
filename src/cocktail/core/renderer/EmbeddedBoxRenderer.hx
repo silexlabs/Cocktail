@@ -17,7 +17,7 @@ import cocktail.core.layout.computer.boxComputers.EmbeddedInlineBoxStylesCompute
 import cocktail.core.layout.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutManager;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
 
@@ -138,6 +138,11 @@ class EmbeddedBoxRenderer extends BoxRenderer
 		var xOffset:Float = (availableWidth - width) / 2;
 		var yOffset:Float = (availableHeight - height) / 2;
 		
-		return new RectangleVO(xOffset, yOffset, width, height);
+		var rect:RectangleVO = new RectangleVO();
+		rect.x = xOffset;
+		rect.y = yOffset;
+		rect.width = width;
+		rect.height = height;
+		return rect;
 	}
 }

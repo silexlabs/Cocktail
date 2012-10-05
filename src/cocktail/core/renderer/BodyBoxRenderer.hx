@@ -66,8 +66,12 @@ class BodyBoxRenderer extends BlockBoxRenderer
 		
 		var width:Float = windowData.width;
 		var height:Float = windowData.height;
+		bounds.width = width;
+		bounds.height = height;
+		bounds.x = 0.0;
+		bounds.y = 0.0;
 		
-		return new RectangleVO(0.0, 0.0, width, height);
+		return bounds;
 	}
 	
 	

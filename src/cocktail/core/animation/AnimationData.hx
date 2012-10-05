@@ -17,12 +17,37 @@ import cocktail.core.renderer.RendererData;
 	
 /**
  * Holds all the data necessary to start a transition.
- * It it said to be a pending animation, as it stored
+ * It it said to be a pending animation, as it is stored
  * when the value of a CSS property changes, but the animation
  * is actually started on next layout
  */
-typedef PendingAnimationData = {
-		var propertyName:String;
-		var invalidationReason:InvalidationReason;
-		var startValue:Float;
+class PendingAnimationVO {
+	public var propertyName:String;
+	public var invalidationReason:InvalidationReason;
+	public var startValue:Float;
+	public function new():Void
+	{
+		
+	}
+}
+
+/**
+ * Contain an array of all the transitions registered
+ * for a given CSS property name
+ */
+class TransitionsVO {
+	/**
+	 * every transition for the property name
+	 */
+	public var transitions:Array<Transition>;
+	
+	/**
+	 * The name of the transitioned CSS style
+	 */
+	public var propertyName:String;
+	
+	public function new():Void
+	{
+		
+	}
 }

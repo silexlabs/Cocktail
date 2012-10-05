@@ -17,9 +17,10 @@ import cocktail.core.css.CSSValueConverter;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layer.CompositingLayerRenderer;
 import cocktail.core.layer.LayerRenderer;
+import cocktail.core.layer.TextInputLayerRenderer;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeTextInput;
 import cocktail.core.css.CSSData;
 
@@ -43,7 +44,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	 * A reference to a class wrapping a native, 
 	 * runtime specific text input
 	 */
-	private var _nativeTextInput:NativeTextInput;
+	public var nativeTextInput(default, null):NativeTextInput;
 	
 	/**
 	 * Get/set the value of the text input
@@ -58,7 +59,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	{
 		super(node);
 
-		_nativeTextInput = new NativeTextInput();
+		nativeTextInput = new NativeTextInput();
 		
 		//listen to cocktail focus events on the HTMLInputElement
 		node.addEventListener(EventConstants.FOCUS, onTextInputFocus);
@@ -69,30 +70,30 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * TODO 1 : doc
+	 * A text input always create its own layer,
+	 * has it is needs to be composited to
+	 * leverage the native platfrom text input
 	 */
 	override public function createOwnLayer():Bool
 	{
 		return true;
 	}
 	
-	//TODO 1 : doc
-	override private function createLayer(parentLayer:LayerRenderer):Void
+	/**
+	 * A text input always create its own compositing
+	 * layer
+	 */
+	override private function doCreateLayer():Void
 	{
-		layerRenderer = new CompositingLayerRenderer(this);
-		parentLayer.appendChild(layerRenderer);
-		_hasOwnLayer = true;
+		layerRenderer = new TextInputLayerRenderer(this);
 	}
 	
 	/**
-	 * Overriden to also render the native text input
+	 * Overriden to update the native text input display
 	 */
 	override private function renderEmbeddedAsset(graphicContext:GraphicsContext)
 	{
 		updateNativeTextInput();
-		//TODO 2 : should create detach() method too ?
-		//-> yes and this method should only be called when ElementRenderer is detached
-		_nativeTextInput.attach(graphicContext);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +107,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	 */
 	private function onTextInputFocus(e:Event):Void
 	{
-		_nativeTextInput.focus();
+		nativeTextInput.focus();
 	}
 	
 	/**
@@ -122,14 +123,19 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		var y:Float =  globalBounds.y + globalBounds.height / 2 - coreStyle.fontMetrics.fontSize + coreStyle.fontMetrics.ascent / 2 - scrollOffset.y;
 		var width:Float =  globalBounds.width;
 		var height:Float =  globalBounds.height;
-		_nativeTextInput.viewport = new RectangleVO(x, y, width, height);
+		var viewport:RectangleVO = new RectangleVO();
+		viewport.x = x;
+		viewport.y = y;
+		viewport.width = width;
+		viewport.height = height;
+		nativeTextInput.viewport = viewport;
 		
 		//set the style of the text input text using the CSS applying to it
 		//Based on the platform not all of those style might be taken into account
 		
-		_nativeTextInput.fontFamily = CSSValueConverter.getFontFamilyAsStringArray(coreStyle.fontFamily)[0];
-		_nativeTextInput.letterSpacing = coreStyle.usedValues.letterSpacing;
-		_nativeTextInput.fontSize = coreStyle.getAbsoluteLength(coreStyle.fontSize);
+		nativeTextInput.fontFamily = CSSValueConverter.getFontFamilyAsStringArray(coreStyle.fontFamily)[0];
+		nativeTextInput.letterSpacing = coreStyle.usedValues.letterSpacing;
+		nativeTextInput.fontSize = coreStyle.getAbsoluteLength(coreStyle.fontSize);
 	
 		var bold:Bool = false;
 		switch (coreStyle.fontWeight)
@@ -154,10 +160,10 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 				throw 'Illegal value for bold style';
 		}
 		
-		_nativeTextInput.bold = bold;
-		_nativeTextInput.italic = coreStyle.getKeyword(coreStyle.fontStyle) == ITALIC;
-		_nativeTextInput.letterSpacing = coreStyle.usedValues.letterSpacing;
-		_nativeTextInput.color = coreStyle.usedValues.color.color;
+		nativeTextInput.bold = bold;
+		nativeTextInput.italic = coreStyle.getKeyword(coreStyle.fontStyle) == ITALIC;
+		nativeTextInput.letterSpacing = coreStyle.usedValues.letterSpacing;
+		nativeTextInput.color = coreStyle.usedValues.color.color;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -166,11 +172,11 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	
 	private function get_value():String 
 	{
-		return _nativeTextInput.value;
+		return nativeTextInput.value;
 	}
 	
 	private function set_value(value:String):String 
 	{
-		return _nativeTextInput.value = value;
+		return nativeTextInput.value = value;
 	}
 }

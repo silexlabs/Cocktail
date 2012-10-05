@@ -8,7 +8,7 @@
 package cocktail.port.platform.input;
 
 import cocktail.core.geom.GeomData;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeElement;
 
 /**
@@ -62,6 +62,15 @@ class AbstractNativeTextInput
 	 * is attach varies based on the platform
 	 */
 	public function attach(graphicContext:GraphicsContext):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Allow the native text input to detach itself 
+	 * from the rendering tree
+	 */
+	public function detach(graphicContext:GraphicsContext):Void
 	{
 		//abstract
 	}

@@ -11,6 +11,7 @@ import cocktail.core.css.InitialStyleDeclaration;
 import cocktail.core.dom.Document;
 import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.layer.LayerRenderer;
+import cocktail.core.renderer.RendererData;
 
 /**
  * Root of an HTML document
@@ -62,14 +63,10 @@ class HTMLHtmlElement extends HTMLElement
 	/**
 	 * The HTMLHTMLElement always generate a root rendering
 	 * tree element.
-	 * 
-	 * It is immediately attach as there are no parent
-	 * to attach it
 	 */
 	override private function createElementRenderer():Void
 	{ 
 		elementRenderer = new InitialBlockRenderer(this);
-		elementRenderer.attach();
 	}
 	
 	/**

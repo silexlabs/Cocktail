@@ -173,13 +173,13 @@ class CSSSelectorParser
 					
 				case END_TYPE_SELECTOR:
 					var type:String = selector.substr(start, position - start);
-					simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.TYPE(type);
+					simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.TYPE(type.toUpperCase());
 					state = END_SIMPLE_SELECTOR;
 					continue;
 					
 				case END_CLASS_SELECTOR:
 					var className:String = selector.substr(start, position - start);
-					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className));
+					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CSS_CLASS(className));
 					state = END_SIMPLE_SELECTOR;
 					continue;
 					
@@ -251,14 +251,15 @@ class CSSSelectorParser
 		{
 			case END_TYPE_SELECTOR:
 				var type = selector.substr(start, position - start);
-				simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.TYPE(type);
+				//type stored internally as uppercase to match html tag name
+				simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.TYPE(type.toUpperCase());
 				
 			case END_UNIVERSAL_SELECTOR:	
 				simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.UNIVERSAL;
 				
 			case END_CLASS_SELECTOR:
 				var className:String = selector.substr(start, position - start);
-				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className));
+				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CSS_CLASS(className));
 				state = END_SIMPLE_SELECTOR;
 				
 			case END_ID_SELECTOR:

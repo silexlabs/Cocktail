@@ -16,7 +16,7 @@ import cocktail.core.layer.CompositingLayerRenderer;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.ImageResource;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
@@ -54,12 +54,13 @@ class VideoRenderer extends ImageRenderer
 		return true;
 	}
 	
-	//TODO 1 : doc
-	override private function createLayer(parentLayer:LayerRenderer):Void
+	/**
+	 * Instantiate its own layer which is
+	 * a compositing layer for the video
+	 */
+	override private function doCreateLayer():Void
 	{
 		layerRenderer = new CompositingLayerRenderer(this);
-		parentLayer.appendChild(layerRenderer);
-		_hasOwnLayer = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -144,7 +145,11 @@ class VideoRenderer extends ImageRenderer
 		var width:Float = posterBounds.width;
 		var height:Float = posterBounds.height;
 		
-		var paintBounds:RectangleVO = new RectangleVO(x, y, width, height);
+		var paintBounds:RectangleVO = new RectangleVO();
+		paintBounds.x = x;
+		paintBounds.y = y;
+		paintBounds.width = width;
+		paintBounds.height = height;
 		
 		paintResource(graphicContext, resource.nativeResource, paintBounds, resource.intrinsicWidth, resource.intrinsicHeight);
 	}

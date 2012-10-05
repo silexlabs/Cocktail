@@ -7,7 +7,7 @@
 */
 package cocktail.port.air;
 
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.port.platform.input.AbstractNativeTextInput;
 import flash.display.DisplayObjectContainer;
@@ -73,6 +73,15 @@ class NativeTextInput extends AbstractNativeTextInput
 	override public function attach(graphicContext:GraphicsContext):Void
 	{
 		_stageText.stage = Lib.current.stage;
+	}
+	
+	/**
+	 * The StageText is detached by removing
+	 * its reference to the stage
+	 */
+	override public function detach(graphicContext:GraphicsContext):Void
+	{
+		_stageText.stage = null;
 	}
 	
 	/**
