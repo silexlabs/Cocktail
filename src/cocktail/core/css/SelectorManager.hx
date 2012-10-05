@@ -252,7 +252,7 @@ class SelectorManager
 		switch(simpleSelectorSequenceItem)
 		{
 			//for this check the list of class of the node	
-			case CLASS(value):
+			case CSS_CLASS(value):
 				var classList:Array<String> = node.classList;
 				
 				//here the node has no classes
@@ -761,7 +761,7 @@ class SelectorManager
 			case PSEUDO_CLASS(value):
 				selectorSpecificity.classAttributesAndPseudoClassesNumber++;
 				
-			case CLASS(value):
+			case CSS_CLASS(value):
 				selectorSpecificity.classAttributesAndPseudoClassesNumber++;
 				
 			case ID(value):

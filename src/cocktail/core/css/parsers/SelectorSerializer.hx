@@ -132,7 +132,7 @@ class SelectorSerializer
 			case ID(value):
 				return "#" + value;
 				
-			case CLASS(value):
+			case CSS_CLASS(value):
 				return "." + value;
 				
 			case ATTRIBUTE(value):

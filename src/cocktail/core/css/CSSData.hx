@@ -254,7 +254,7 @@ enum SelectorComponentValue {
 enum SimpleSelectorSequenceItemValue {
 	ATTRIBUTE(value:AttributeSelectorValue);
 	PSEUDO_CLASS(value:PseudoClassSelectorValue);
-	CLASS(value:String);
+	CSS_CLASS(value:String);
 	ID(value:String);
 }
 
