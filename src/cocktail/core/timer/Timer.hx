@@ -38,7 +38,7 @@ class Timer
 	{
 		_pendingCallbacks = new Array<TimerCallbackVO>();
 		_pendingCount = 0;
-		#if macro
+		#if (macro || php)
 		#else
 		//TODO 3 : for now only support for flash runtime
 		//use enter frame intead of timer, seems more efficient because

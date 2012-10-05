@@ -15,5 +15,5 @@ typedef NativeLayer =  Dynamic;
 typedef NativeLayer =  flash.display.DisplayObjectContainer;
 
 #else
-typedef NativeElement =  Dynamic;
+typedef NativeLayer =  Dynamic;
 #end
