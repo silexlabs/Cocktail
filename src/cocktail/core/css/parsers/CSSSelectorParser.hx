@@ -179,7 +179,7 @@ class CSSSelectorParser
 					
 				case END_CLASS_SELECTOR:
 					var className:String = selector.substr(start, position - start);
-					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className));
+					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CSS_CLASS(className));
 					state = END_SIMPLE_SELECTOR;
 					continue;
 					
@@ -259,7 +259,7 @@ class CSSSelectorParser
 				
 			case END_CLASS_SELECTOR:
 				var className:String = selector.substr(start, position - start);
-				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className));
+				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CSS_CLASS(className));
 				state = END_SIMPLE_SELECTOR;
 				
 			case END_ID_SELECTOR:
