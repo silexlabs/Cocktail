@@ -372,10 +372,15 @@ class HTMLDocument extends Document
 	 */
 	public function initBody(htmlBodyElement:HTMLBodyElement):Void
 	{
-		body = htmlBodyElement;
-		documentElement.appendChild(body);
-		_hoveredElementRenderer = body.elementRenderer;
-		activeElement = body;
+		if (htmlBodyElement != null)
+		{	
+			body = htmlBodyElement;
+			documentElement.appendChild(body);
+			_hoveredElementRenderer = body.elementRenderer;
+			activeElement = body;
+			
+		}
+	
 	}
 	
 	/**
