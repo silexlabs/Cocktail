@@ -14,5 +14,5 @@ typedef GraphicsContextImpl = cocktail.core.graphics.AbstractGraphicsContextImpl
 typedef GraphicsContextImpl =  cocktail.port.flash_player.GraphicsContextImpl;
 
 #else
-typedef GraphicsContextImpl = cocktail.core.graphics.AbstractGraphicsContext;
+typedef GraphicsContextImpl = cocktail.core.graphics.AbstractGraphicsContextImpl;
 #end
