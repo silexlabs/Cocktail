@@ -11,7 +11,6 @@ package cocktail.core.layer;
 using cocktail.core.utils.Utils;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
-import cocktail.core.dom.NodeBase;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
@@ -21,6 +20,7 @@ import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.Matrix;
 import cocktail.core.graphics.GraphicsContext;
+import cocktail.core.utils.FastNode;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
@@ -79,7 +79,7 @@ import haxe.Stack;
  * 
  * @author Yannick DOMINGUEZ
  */
-class LayerRenderer extends NodeBase<LayerRenderer>
+class LayerRenderer extends FastNode<LayerRenderer>
 {
 	/**
 	 * A reference to the ElementRenderer which
@@ -230,10 +230,11 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			}
 		}
 		
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:LayerRenderer = firstChild;
+		while(child != null)
 		{
-			childNodes[i].updateGraphicsContext(force);
+			child.updateGraphicsContext(force);
+			child = child.nextSibling;
 		}
 	}
 	
@@ -265,10 +266,11 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//}
 		
 		//traverse all the layer renderer tree
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:LayerRenderer = firstChild;
+		while(child != null)
 		{
-			childNodes[i].updateStackingContext();
+			child.updateStackingContext();
+			child = child.nextSibling;
 		}
 	}
 	
@@ -281,11 +283,9 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	autoAndZeroChildContext:Array<LayerRenderer>,
 	positiveChildContext:Array<LayerRenderer>)
 	{
-		var length:Int = rootLayerRenderer.childNodes.length;
-		for (i in 0...length)
+		var child:LayerRenderer = rootLayerRenderer.firstChild;
+		while(child != null)
 		{
-			var child:LayerRenderer = rootLayerRenderer.childNodes[i];
-			
 			//check the computed z-index of the ElementRenderer which
 			//instantiated the child LayerRenderer
 			//to find into which array the child must be inserted
@@ -323,6 +323,8 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 			{
 				doUpdateStackingContext(child, negativeChildContext, autoAndZeroChildContext, positiveChildContext);
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	
@@ -415,17 +417,15 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	private function invalidateChildLayerRenderer(rootLayer:LayerRenderer):Void
 	{
-		var childNodes:Array<LayerRenderer> = rootLayer.childNodes;
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:LayerRenderer = rootLayer.firstChild;
+		while (child != null)
 		{
-			var child:LayerRenderer = childNodes[i];
-			
 			if (child.hasOwnGraphicsContext == false)
 			{
 				child.invalidateOwnRendering();
 				invalidateChildLayerRenderer(child);
 			}
+			child = child.nextSibling;
 		}
 	}
 	
@@ -436,7 +436,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	/**
 	 * Overriden to schedule updates
 	 */ 
-	override public function appendChild(newChild:LayerRenderer):LayerRenderer
+	override public function appendChild(newChild:LayerRenderer):Void
 	{
 		super.appendChild(newChild);
 		
@@ -449,14 +449,12 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//TODO 3 : eventually, it might not be needed to invalidate
 		//every time
 		newChild.invalidateGraphicsContext(newChild.isCompositingLayer());
-		
-		return newChild;
 	}
 	
 	/**
 	 * Overriden to schedule updates
 	 */ 
-	override public function insertBefore(newChild:LayerRenderer, refChild:LayerRenderer):LayerRenderer
+	override public function insertBefore(newChild:LayerRenderer, refChild:LayerRenderer):Void
 	{
 		super.insertBefore(newChild, refChild);
 		
@@ -464,7 +462,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//was inserted with appendChild and already invalidated
 		if (refChild == null)
 		{
-			return newChild;
+			return;
 		}
 		
 		invalidateStackingContext();
@@ -476,14 +474,12 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		//TODO 3 : eventually, it might not be needed to invalidate
 		//every time
 		newChild.invalidateGraphicsContext(newChild.isCompositingLayer());
-		
-		return newChild;
 	}
 	
 	/**
 	 * Overriden to schedule updates
 	 */ 
-	override public function removeChild(oldChild:LayerRenderer):LayerRenderer
+	override public function removeChild(oldChild:LayerRenderer):Void
 	{
 		//need to update graphic context after removing a child
 		//as it might trigger graphic contex creation/deletion
@@ -495,8 +491,6 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		oldChild.detach();
 
 		super.removeChild(oldChild);
-		
-		return oldChild;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -511,13 +505,13 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	public function attach():Void
 	{
 		attachGraphicsContext();
-		
+
 		//attach all its children recursively
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:LayerRenderer = firstChild;
+		while (child != null)
 		{
-			var child:LayerRenderer = childNodes[i];
 			child.attach();
+			child = child.nextSibling;
 		}
 	}
 	
@@ -527,11 +521,11 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	public function detach():Void
 	{
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:LayerRenderer = firstChild;
+		while (child != null)
 		{
-			var child:LayerRenderer = childNodes[i];
 			child.detach();
+			child = child.nextSibling;
 		}
 		
 		detachGraphicsContext();
@@ -670,22 +664,23 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	 */
 	private function hasCompositingLayerDescendant(rootLayerRenderer:LayerRenderer):Bool
 	{
-		var layerLength:Int = rootLayerRenderer.childNodes.length;
-		for (i in 0...layerLength)
+		var child:LayerRenderer = rootLayerRenderer.firstChild;
+		while (child != null)
 		{
-			var childLayer:LayerRenderer = rootLayerRenderer.childNodes[i];
-			if (childLayer.isCompositingLayer() == true)
+			if (child.isCompositingLayer() == true)
 			{
 				return true;
 			}
-			else if (childLayer.hasChildNodes() == true)
+			else if (child.firstChild != null)
 			{
-				var hasCompositingLayer:Bool = hasCompositingLayerDescendant(childLayer);
+				var hasCompositingLayer:Bool = hasCompositingLayerDescendant(child);
 				if (hasCompositingLayer == true)
 				{
 					return true;
 				}
 			}
+			
+			child = child.nextSibling;
 		}
 		
 		return false;

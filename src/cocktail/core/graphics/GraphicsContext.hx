@@ -11,10 +11,10 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
+import cocktail.core.utils.FastNode;
 import cocktail.port.GraphicsContextImpl;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
-import cocktail.core.dom.NodeBase;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
@@ -47,7 +47,7 @@ import cocktail.port.NativeLayer;
  * 
  * @author Yannick DOMINGUEZ
  */
-class GraphicsContext extends NodeBase<GraphicsContext>
+class GraphicsContext extends FastNode<GraphicsContext>
 {
 	/**
 	 * A reference to a native layer
@@ -104,39 +104,33 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	/**
 	 * Overriden to invalidate the native layer tree
 	 */ 
-	override public function appendChild(newChild:GraphicsContext):GraphicsContext
+	override public function appendChild(newChild:GraphicsContext):Void
 	{
 		super.appendChild(newChild);
 		
 		newChild.invalidateNativeLayer();
-		
-		return newChild;
 	}
 	
 	/**
 	 * Overriden to invalidate the native layer tree
 	 * and detach the old child
 	 */ 
-	override public function removeChild(oldChild:GraphicsContext):GraphicsContext
+	override public function removeChild(oldChild:GraphicsContext):Void
 	{
 		oldChild.detach();
 		oldChild.invalidateNativeLayer();
 		
 		super.removeChild(oldChild);
-		
-		return oldChild;
 	}
 	
 	/**
 	 * Overriden to invalidate the native layer tree
 	 */ 
-	override public function insertBefore(newChild:GraphicsContext, refChild:GraphicsContext):GraphicsContext
+	override public function insertBefore(newChild:GraphicsContext, refChild:GraphicsContext):Void
 	{
 		super.insertBefore(newChild, refChild);
 
 		newChild.invalidateNativeLayer();
-		
-		return newChild;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -158,10 +152,11 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 			return;
 		}
 		
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:GraphicsContext = firstChild;
+		while (child != null)
 		{
-			childNodes[i].updateNativeLayer();
+			child.updateNativeLayer();
+			child = child.nextSibling;
 		}
 	}
 	
@@ -185,10 +180,11 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	{
 		doAttach();
 		
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:GraphicsContext = firstChild;
+		while (child != null)
 		{
-			childNodes[i].attach();
+			child.attach();
+			child = child.nextSibling;
 		}
 	}
 	
@@ -199,10 +195,11 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	 */
 	public function detach():Void
 	{
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:GraphicsContext = firstChild;
+		while (child != null)
 		{
-			childNodes[i].detach();
+			child.detach();
+			child = child.nextSibling;
 		}
 		
 		doDetach();
