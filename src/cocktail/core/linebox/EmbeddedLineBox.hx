@@ -10,7 +10,7 @@ package cocktail.core.linebox;
 
 import cocktail.core.renderer.ElementRenderer;
 
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
@@ -35,6 +35,14 @@ class EmbeddedLineBox extends LineBox
 	public function new(elementRenderer:ElementRenderer) 
 	{
 		super(elementRenderer);
+	}
+	
+	/**
+	 * embedded line box can't have children
+	 */
+	override private function initChildNodes():Void
+	{
+		
 	}
 	
 	/////////////////////////////////

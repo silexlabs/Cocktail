@@ -9,6 +9,7 @@
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.layout.LayoutManager;
@@ -54,38 +55,6 @@ class FlowBoxRenderer extends BoxRenderer
 	{
 		super(node);
 		_positionedChildren = new Array<ElementRenderer>();
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Return all the LineBoxes created by this ElementRenderer
-	 * in one line, as an array of LineBoxes
-	 */
-	private function getLineBoxesInLine(rootLineBox:LineBox):Array<LineBox>
-	{
-		var ret:Array<LineBox> = new Array<LineBox>();
-		
-		var length:Int = rootLineBox.childNodes.length;
-		for (i in 0...length)
-		{
-			var child:LineBox = rootLineBox.childNodes[i];
-			ret.push(child);
-			
-			if (child.hasChildNodes() == true)
-			{
-				var childLineBoxes:Array<LineBox> = getLineBoxesInLine(child);
-				
-				var childLength:Int = childLineBoxes.length;
-				for (j in 0...childLength)
-				{
-					ret.push(childLineBoxes[j]);
-				}
-			}
-		}
-		return ret;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

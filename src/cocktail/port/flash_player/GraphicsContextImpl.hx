@@ -1,19 +1,32 @@
+/*
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+*/
 package cocktail.port.flash_player;
 
 import cocktail.core.geom.Matrix;
-import cocktail.core.graphics.AbstractGraphicsContext;
+import cocktail.core.graphics.AbstractGraphicsContextImpl;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
+import cocktail.port.NativeLayer;
 import flash.display.Bitmap;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
 import flash.display.BitmapData;
 import flash.display.PixelSnapping;
 import flash.display.Sprite;
+import flash.display.StageQuality;
 import flash.geom.ColorTransform;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import flash.Lib;
+import haxe.Stack;
+
 
 /**
  * The flash implementation of the graphics context. Use native
@@ -21,7 +34,7 @@ import flash.geom.Rectangle;
  * 
  * @author Yannick DOMINGUEZ
  */
-class GraphicsContext extends AbstractGraphicsContext
+class GraphicsContextImpl extends AbstractGraphicsContextImpl
 {
 	/**
 	 * The native flash BitmapData
@@ -81,30 +94,28 @@ class GraphicsContext extends AbstractGraphicsContext
 	/**
 	 * class constructor
 	 */
-	public function new(layerRenderer:LayerRenderer = null, nativeLayer:NativeElement = null) 
+	public function new() 
 	{
-		super(layerRenderer);
+		super();
 		
-		//create a new Sprite if no sprite is provided
-		if (nativeLayer == null)
-		{
-			nativeLayer = new Sprite();
-		}
-		
-		_nativeLayer = cast(nativeLayer);
+		_nativeLayer = new Sprite();
+		_nativeLayer.mouseEnabled = false;
+		_nativeLayer.mouseChildren = false;
 		_childrenNativeLayer = new Sprite();
-		_nativeBitmap = new Bitmap(new BitmapData(1, 1, true, 0x00000000), PixelSnapping.AUTO, true);
+		_childrenNativeLayer.mouseEnabled = false;
+		_childrenNativeLayer.mouseChildren = false;
+		
 		_flashRectangle = new Rectangle();
 		_flashPoint = new Point();
 		_flashMatrix = new flash.geom.Matrix();
-		_fillRectRectangle = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		_fillRectRectangle = new RectangleVO();
 		_fillRectPoint = new PointVO(0.0, 0.0);
 		_width = 0;
 		_height = 0;
-		
+
 		//build native display list
-		_nativeLayer.addChild(_nativeBitmap);
-		_nativeLayer.addChild(_childrenNativeLayer);
+		_childrenNativeLayer.addChild(_nativeLayer);
+		
 	}
 	
 	/**
@@ -115,8 +126,17 @@ class GraphicsContext extends AbstractGraphicsContext
 		_width = width;
 		_height = height;
 		
-		_nativeBitmap.bitmapData.dispose();
-		_nativeBitmap.bitmapData = new BitmapData(width, height, true, 0x00000000);
+		//here the bitmap data is created for the first time
+		if (_nativeBitmap == null)
+		{
+			_nativeBitmap = new Bitmap(new BitmapData(width, height, true, 0x00000000), PixelSnapping.AUTO, false);
+			_childrenNativeLayer.addChildAt(_nativeBitmap, 0);
+		}
+		else
+		{
+			_nativeBitmap.bitmapData.dispose();
+			_nativeBitmap.bitmapData = new BitmapData(width, height, true, 0x00000000);
+		}
 	}
 	
 	/**
@@ -125,11 +145,14 @@ class GraphicsContext extends AbstractGraphicsContext
 	 */
 	override public function clear():Void
 	{
-		_flashRectangle.x = 0;
-		_flashRectangle.y = 0;
-		_flashRectangle.width = _width;
-		_flashRectangle.height = _height;
-		_nativeBitmap.bitmapData.fillRect(_flashRectangle, 0x00000000);
+		if (_nativeBitmap != null)
+		{
+			_flashRectangle.x = 0;
+			_flashRectangle.y = 0;
+			_flashRectangle.width = _width;
+			_flashRectangle.height = _height;
+			_nativeBitmap.bitmapData.fillRect(_flashRectangle, 0x00000000);
+		}
 	}
 	
 	/////////////////////////////////
@@ -141,10 +164,17 @@ class GraphicsContext extends AbstractGraphicsContext
 	 */
 	override public function dispose():Void
 	{
-		_nativeBitmap.bitmapData.dispose();
-		_nativeLayer.removeChild(_nativeBitmap);
-		_nativeBitmap = null;
+		if (_nativeBitmap != null)
+		{
+			_nativeBitmap.bitmapData.dispose();
+			_childrenNativeLayer.removeChild(_nativeBitmap);
+			_nativeBitmap = null;
+		}
+		
+		
+		_childrenNativeLayer.removeChild(_nativeLayer);
 		_nativeLayer = null;
+		_childrenNativeLayer = null;
 	}
 	
 	/**
@@ -153,36 +183,34 @@ class GraphicsContext extends AbstractGraphicsContext
 	 */
 	override public function transform(matrix:Matrix):Void
 	{
-		var matrixData:MatrixData = matrix.data;
-		_nativeLayer.transform.matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
+		var matrixData:MatrixVO = matrix.data;
+		_childrenNativeLayer.transform.matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
 	}
 	
-	/**
-	 * When a child GraphicContext is added, also add the children native flash Sprite
-	 */
-	override public function appendChild(newChild:AbstractGraphicsContext):AbstractGraphicsContext
+	override public function attach(graphicsContext:GraphicsContext, index:Int):Void
 	{
-		super.appendChild(newChild);
-		
-		//refresh all the native flash display list
-		//TODO 3 : shouldn't have to re-attach all, should only attach new item at right index
-		var length:Int = _orderedChildList.length;
-		for (i in 0...length)
+		graphicsContext.parentNode.nativeLayer.addChildAt(_childrenNativeLayer, index);
+	}
+	
+	override public function detach(graphicsContext:GraphicsContext):Void
+	{
+		if (_childrenNativeLayer.parent != null)
 		{
-			_childrenNativeLayer.addChild(_orderedChildList[i].nativeLayer);
+			graphicsContext.parentNode.nativeLayer.removeChild(_childrenNativeLayer);
 		}
-		
-		return newChild;
 	}
 	
-	/**
-	 * Also remove the children native flash Sprite
-	 */
-	override public function removeChild(oldChild:AbstractGraphicsContext):AbstractGraphicsContext
+	override public function attachToRoot():Void
 	{
-		super.removeChild(oldChild);
-		_childrenNativeLayer.removeChild(oldChild.nativeLayer);
-		return oldChild;
+		Lib.current.addChild(_childrenNativeLayer);
+	}
+	
+	override public function detachFromRoot():Void
+	{
+		if (_childrenNativeLayer.parent != null)
+		{
+			Lib.current.removeChild(_childrenNativeLayer);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -192,7 +220,7 @@ class GraphicsContext extends AbstractGraphicsContext
 	/**
 	 * Draw bitmap data into the bitmap display object.
 	 */
-	override public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix = null, sourceRect:RectangleVO = null):Void
+	override public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix, sourceRect:RectangleVO):Void
 	{	
 		//init destination point and sourceRect if null
 		
@@ -201,20 +229,13 @@ class GraphicsContext extends AbstractGraphicsContext
 			matrix = new Matrix();
 		}
 		
-		if (sourceRect == null)
-		{
-			var width:Float = bitmapData.width;
-			var height:Float = bitmapData.height;
-			sourceRect = new RectangleVO(0.0, 0.0, width, height);
-		}
-		
 		//convert the cross-platform rectangle into flash native one
-		_flashRectangle.x = sourceRect.x;
-		_flashRectangle.y = sourceRect.y;
-		_flashRectangle.width = sourceRect.width;
+		_flashRectangle.x = Math.round(sourceRect.x);
+		_flashRectangle.y = Math.round(sourceRect.y);
+		_flashRectangle.width = Math.round(sourceRect.width);
 		_flashRectangle.height = sourceRect.height;
 		
-		var matrixData:MatrixData = matrix.data;
+		var matrixData:MatrixVO = matrix.data;
 		
 		_flashMatrix.a = matrixData.a;
 		_flashMatrix.b = matrixData.b;
@@ -242,13 +263,13 @@ class GraphicsContext extends AbstractGraphicsContext
 	 */
 	override public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO):Void
 	{
-		_flashRectangle.x = sourceRect.x;
-		_flashRectangle.y = sourceRect.y;
-		_flashRectangle.width = sourceRect.width;
-		_flashRectangle.height = sourceRect.height;
+		_flashRectangle.x = Math.round(sourceRect.x);
+		_flashRectangle.y = Math.round(sourceRect.y);
+		_flashRectangle.width = Math.round(sourceRect.width);
+		_flashRectangle.height = Math.round(sourceRect.height);
 		
-		_flashPoint.x = destPoint.x;
-		_flashPoint.y = destPoint.y;
+		_flashPoint.x = Math.round(destPoint.x);
+		_flashPoint.y = Math.round(destPoint.y);
 		
 		var alphaBitmapData:BitmapData = null;
 		var alphaPoint:Point = null;
@@ -287,10 +308,10 @@ class GraphicsContext extends AbstractGraphicsContext
 		//must be created to composite alpha
 		if (color.alpha != 1.0)
 		{
-			_fillRectRectangle.width = rect.width;
-			_fillRectRectangle.height = rect.height;
-			_fillRectPoint.x = rect.x;
-			_fillRectPoint.y = rect.y;
+			_fillRectRectangle.width = Math.round(rect.width);
+			_fillRectRectangle.height = Math.round(rect.height);
+			_fillRectPoint.x = Math.round(rect.x);
+			_fillRectPoint.y = Math.round(rect.y);
 			
 			var fillRectBitmapData:BitmapData = new BitmapData(Math.round(rect.width), Math.round(rect.height), true, argbColor);
 			copyPixels(fillRectBitmapData, _fillRectRectangle, _fillRectPoint );
@@ -299,10 +320,10 @@ class GraphicsContext extends AbstractGraphicsContext
 		//else, the faster native flash method can be used
 		else
 		{
-			_flashRectangle.x = rect.x;
-			_flashRectangle.y = rect.y;
-			_flashRectangle.width = rect.width;
-			_flashRectangle.height = rect.height;
+			_flashRectangle.x = Math.round(rect.x);
+			_flashRectangle.y = Math.round(rect.y);
+			_flashRectangle.width = Math.round(rect.width);
+			_flashRectangle.height = Math.round(rect.height);
 			_nativeBitmap.bitmapData.fillRect(_flashRectangle, argbColor);
 		}
 	
@@ -317,7 +338,7 @@ class GraphicsContext extends AbstractGraphicsContext
 		return _nativeBitmap.bitmapData;
 	}
 	
-	override private function get_nativeLayer():NativeElement
+	override private function get_nativeLayer():NativeLayer
 	{
 		return _nativeLayer;
 	}

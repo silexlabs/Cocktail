@@ -69,7 +69,7 @@ class FormattingContext
 	 */
 	public function new(floatsManager:FloatsManager) 
 	{
-		_formattingContextData = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		_formattingContextData = new RectangleVO();
 		_floatsManager = floatsManager;
 	}
 	

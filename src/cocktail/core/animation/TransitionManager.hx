@@ -12,15 +12,17 @@ import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.renderer.RendererData;
+import cocktail.core.animation.AnimationData;
 import cocktail.core.css.CSSData;
+import cocktail.Lib;
 
 /**
  * The transition manager is in charge of starting
  * and stopping the transition of properties.
  * 
  * When at least one transition is in progress, the
- * TransitionManager sets a timer to update the transition
- * while in progress
+ * TransitionManager setup delayed called to an
+ * update method
  * 
  * The TransitionManager is a singleton and is in charge of
  * all the transitions in the Document
@@ -29,17 +31,17 @@ import cocktail.core.css.CSSData;
 	 * - the value of a transitionable property is updated
 	 * - a pending animation is registered storing all the data needed to start
 	 * a transition
-	 * - when the next scheduled layout starts, CoreStyle tries to start all registered
+	 * - when the next scheduled layout starts, the animator tries to start all registered
 	 * pending animations
-	 * - CoreStyle checks if the property should be transitioned
+	 * - the animator checks if the property should be transitioned
 	 * - if it does, starts a new transition using the TransitionManager
-	 * - the TransitionManager calls at regular interval the onUpdate callback
-	 * of each transition, which triggers invalidation in CoreStyle, thus
-	 * re-painting the document as needed
-	 * - While a transition is in progress, the corresponding ComputedStyle only return its
-	 * transitioned value
+	 * - the TransitionManager schedule calls to its update callbacks while transitions
+	 * are in progress, which triggers an invalidation mechanisms causing the document
+	 * to be re-painted
+	 * - While a transition is in progress, getting the computed value of the property return
+	 * its current transitioning value
 	 * - When the transition is complete, calls its complete callback, triggering invalidation
-	 * in CoreStyle and the dispatch of a transition end event on the transitioned element
+	 * and the dispatch of a transition end event on the transitioned element
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -51,18 +53,12 @@ class TransitionManager
 	private static var _instance:TransitionManager;
 	
 	/**
-	 * The time, in milliseconds between each update of the transition
-	 * in progress
+	 * Store a ref to each transitions in progress.
+	 * Each index corresponds to one CSS style
+	 * and the object at the index contains all
+	 * the current transitions for this property name
 	 */
-	private static inline var TRANSITION_UPDATE_SPEED:Int = 20;
-	
-	/**
-	 * Store a ref to each transitions in progress, where
-	 * the key is a CSS property name and the value is the
-	 * array of transition in progress for this property
-	 * name
-	 */
-	private var _transitions:Hash<Array<Transition>>;
+	private var _transitions:Array<TransitionsVO>;
 	
 	/**
 	 * The current number of transition in progress. When it
@@ -83,7 +79,7 @@ class TransitionManager
 	 */
 	private function new() 
 	{
-		_transitions = new Hash();
+		_transitions = new Array<TransitionsVO>();
 		_currentTransitionsNumber = 0;
 		_lastTick = 0;
 	}
@@ -120,22 +116,24 @@ class TransitionManager
 			return null;
 		}
 		
-		//check that a key in the hash matches the property name.
-		//if it does not then no property with this name is transitioning
-		if (_transitions.exists(propertyName))
+		//get all the transitions in progress for the given property name
+		var transitionsForProperty:Array<Transition> = getTransitionsForProperty(propertyName);
+		if (transitionsForProperty == null)
 		{
-			var propertyTransitions:Array<Transition> = _transitions.get(propertyName);
-			//look for a transition object with the right target
-			var length:Int = propertyTransitions.length;
-			for (i in 0...length)
+			return null;
+		}
+		
+		//look for a transition object with the right target
+		var length:Int = transitionsForProperty.length;
+		for (i in 0...length)
+		{
+			if (transitionsForProperty[i].target == style)
 			{
-				if (propertyTransitions[i].target == style)
-				{
-					return propertyTransitions[i];
-				}
+				return transitionsForProperty[i];
 			}
 		}
 		
+		//no transition found
 		return null;
 	}
 	
@@ -149,24 +147,29 @@ class TransitionManager
 		//create a new transition
 		var transition:Transition = new Transition(propertyName, target, transitionDuration, transitionDelay, transitionTimingFunction,
 		startValue, endValue, onComplete, onUpdate, invalidationReason);
-
-		//create a key in the hash for the property name
-		//of the new transition if necessary
-		if (_transitions.exists(propertyName) == false)
+		
+		//get the array to store the transition the new transition
+		var transitionsForProperty:Array<Transition> = getTransitionsForProperty(propertyName);
+		
+		//if there is not an object yet for this property name, create it
+		if (transitionsForProperty == null)
 		{
-			_transitions.set(propertyName, []);
+			transitionsForProperty = new Array<Transition>();
+			
+			var transitionsVO:TransitionsVO = new TransitionsVO();
+			transitionsVO.propertyName = propertyName;
+			transitionsVO.transitions = transitionsForProperty;
+			_transitions.push(transitionsVO);
 		}
 		
-		//store the new transition
-		var propertyTransitions:Array<Transition> = _transitions.get(propertyName);
-		propertyTransitions.push(transition);
+		transitionsForProperty.push(transition);
 		
 		//if the number of transition in progress was 0
-		//before this one, then the update timer must be
+		//before this one, then the update mechanism must be
 		//started
 		if (_currentTransitionsNumber == 0)
 		{
-			startTransitionTimer();
+			startTransitionUpdate();
 		}
 		
 		//increment the number of transition in progress
@@ -175,18 +178,18 @@ class TransitionManager
 	
 	/**
 	 * Stop a transition upon completion or if it was
-	 * canceled ansd dispose of it
+	 * canceled and dispose of it
 	 */
 	public function stopTransition(transition:Transition):Void
 	{
 		//remove the stored reference to the transition
-		var propertyTransitions:Array<Transition> = _transitions.get(transition.propertyName);
+		var propertyTransitions:Array<Transition> = getTransitionsForProperty(transition.propertyName);
 		propertyTransitions.remove(transition);
 		//clean-up
 		transition.dispose();
 		
-		//decrement the number of transition in prgress
-		//to be sure that the update timer stops if there
+		//decrement the number of transition in progress
+		//to be sure that the update stops if there
 		//are no more transition in progress
 		_currentTransitionsNumber--;
 	}
@@ -196,21 +199,37 @@ class TransitionManager
 	////////////////////////////////
 	
 	/**
-	 * Start the update timer
+	 * return the array of transitions
+	 * for a given CSS property name or null if there
+	 * are none
 	 */
-	private function startTransitionTimer():Void
+	private function getTransitionsForProperty(propertyName:String):Array<Transition>
+	{
+		var length:Int = _transitions.length;
+		for (i in 0...length)
+		{
+			if (_transitions[i].propertyName == propertyName)
+			{
+				return _transitions[i].transitions;
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Start schduling updates
+	 */
+	private function startTransitionUpdate():Void
 	{
 		//store the current date timestamp, so that
-		//on each timer tick, the actual elapsed
+		//on each tick, the actual elapsed
 		//time can be calculated
 		_lastTick = Date.now().getTime();
 		
-		#if macro
-		#elseif (flash9 || nme)
 		//set a delayed method call which will be repeated
 		//as long as needed
-		haxe.Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
-		#end
+		Lib.document.timer.delay(onTransitionTick);
 	}
 	
 	/**
@@ -230,18 +249,20 @@ class TransitionManager
 		//of this method
 		_lastTick = tick;
 		
-		//loop in all Transition in the hash
-		for (propertyTransitions in _transitions)
+		var transitionsLength:Int = _transitions.length;
+		//loop in all Transition 
+		for (i in 0...transitionsLength)
 		{
 			//store each completed transition, which will be stopped after this loop
 			//(stopped after loop to prevent from modifying the transition array while
 			//looping in it)
 			var completedTransitions:Array<Transition> = new Array<Transition>();
 			
-			var length:Int = propertyTransitions.length;
-			for (i in 0...length)
+			var transitionsForProperty:Array<Transition> = _transitions[i].transitions;
+			var length:Int = transitionsForProperty.length;
+			for (j in 0...length)
 			{
-				var transition:Transition = propertyTransitions[i];
+				var transition:Transition = transitionsForProperty[j];
 				
 				//update the elapsed time of the transition with
 				//the actual elapsed interval since this method
@@ -276,10 +297,7 @@ class TransitionManager
 		//drop to 0, delay a call to this method
 		if (_currentTransitionsNumber > 0)
 		{
-			#if macro
-			#elseif (flash9 || nme)
-			haxe.Timer.delay(onTransitionTick, TRANSITION_UPDATE_SPEED);
-			#end
+			Lib.document.timer.delay(onTransitionTick);
 		}
 	}
 	

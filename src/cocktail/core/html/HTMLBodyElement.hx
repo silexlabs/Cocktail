@@ -7,6 +7,7 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.html;
+import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.dom.Node;
 import cocktail.core.renderer.BodyBoxRenderer;
@@ -53,9 +54,9 @@ class HTMLBodyElement extends HTMLElement
 	 * 
 	 * TODO 3 : is this the right place to do this or should it just happen in ElementRenderer ?
 	 */
-	override private function cascadeSelf(parentChangedProperties:Hash<Void>, programmaticChange:Bool):Hash<Void>
+	override private function cascadeSelf(cascadeManager:CascadeManager, programmaticChange:Bool):Void
 	{
-		var changedProperties:Hash<Void> = super.cascadeSelf(parentChangedProperties, programmaticChange);
+		super.cascadeSelf(cascadeManager, programmaticChange);
 		
 		var parentCoreStyle:CoreStyle = parentNode.coreStyle;
 		
@@ -83,7 +84,5 @@ class HTMLBodyElement extends HTMLElement
 				default:	
 			}
 		}
-		
-		return changedProperties;
 	}
 }

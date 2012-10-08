@@ -11,6 +11,7 @@ import cocktail.core.css.CSSConstants;
 import cocktail.core.css.CSSData;
 import cocktail.core.css.parsers.CSSParsersData;
 using StringTools;
+using cocktail.core.utils.Utils;
 
 /**
  * This class is a prser whose role is to parse
@@ -31,6 +32,12 @@ class CSSStyleParser
 	 * the current parsing position
 	 */
 	private static var _position:Int = 0;
+	
+	/**
+	 * When parsing, holds all the resulting
+	 * typed properties objects
+	 */
+	private static var _typedProperties:Array<TypedPropertyVO>;
 	
 	/**
 	 * class constructor
@@ -59,8 +66,15 @@ class CSSStyleParser
 		var state:StyleDeclarationParserState = IGNORE_SPACES;
 		var next:StyleDeclarationParserState = BEGIN;
 		
+		//init and reset returned array
+		if (_typedProperties == null)
+		{
+			_typedProperties = new Array<TypedPropertyVO>();
+		}
+		_typedProperties.clear();
+		
 		//will return all the parsed properties
-		var typedProperties:Array<TypedPropertyVO> = new Array<TypedPropertyVO>();
+		var typedProperties:Array<TypedPropertyVO> = _typedProperties;
 		
 		var position:Int = 0;
 		
@@ -522,11 +536,19 @@ class CSSStyleParser
 		{
 			if (styleValues.length == 1)
 			{
-				return new TypedPropertyVO(propertyName, styleValues[0], important);
+				var typedProperty:TypedPropertyVO = TypedPropertyVO.getPool().get();
+				typedProperty.important = important;
+				typedProperty.name = propertyName;
+				typedProperty.typedValue = styleValues[0];
+				return typedProperty;
 			}
 			else
 			{
-				return new TypedPropertyVO(propertyName, GROUP(styleValues), important);
+				var typedProperty:TypedPropertyVO = TypedPropertyVO.getPool().get();
+				typedProperty.important = important;
+				typedProperty.name = propertyName;
+				typedProperty.typedValue = GROUP(styleValues);
+				return typedProperty;
 			}
 		}
 		else
@@ -550,7 +572,12 @@ class CSSStyleParser
 				}
 			}
 			
-			return new TypedPropertyVO(propertyName, CSS_LIST(styleListProperty), important);
+			var typedProperty:TypedPropertyVO = TypedPropertyVO.getPool().get();
+			typedProperty.important = important;
+			typedProperty.name = propertyName;
+			typedProperty.typedValue = CSS_LIST(styleListProperty);
+			
+			return typedProperty;
 		}
 	}
 	

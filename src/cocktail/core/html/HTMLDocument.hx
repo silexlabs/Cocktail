@@ -7,6 +7,7 @@
 */
 package cocktail.core.html;
 
+import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CSSRule;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.CSSStyleRule;
@@ -26,6 +27,7 @@ import cocktail.core.event.TouchEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.focus.FocusManager;
+import cocktail.core.hittest.HitTestManager;
 import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLHtmlElement;
@@ -42,13 +44,15 @@ import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.event.EventData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.event.FocusEvent;
+import cocktail.core.timer.Timer;
 import cocktail.core.window.Window;
 import cocktail.Lib;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import haxe.Log;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
+import haxe.Stack;
 
 /**
  * An HTMLDocument is the root of the HTML hierarchy and holds the entire content.
@@ -81,13 +85,6 @@ class HTMLDocument extends Document
 	 * on Windows implementation
 	 */
 	private static inline var MOUSE_WHEEL_DELTA_MULTIPLIER:Int = 10;
-	
-	/**
-	 * The minimum amount of time between two layout and rendering. Can
-	 * be used to set the framerate of the application. Dividing 1000
-	 * by this value gives the framerate of the application
-	 */
-	private static inline var INVALIDATION_INTERVAL:Int = 20;
 	
 	/**
 	 * The element that contains the content for the document.
@@ -178,6 +175,13 @@ class HTMLDocument extends Document
 	private var _shouldDispatchClickOnNextMouseUp:Bool;
 	
 	/**
+	 * A timer controlling the whole document event loop.
+	 * Method which must be called asynchronously register
+	 * themselves with the timer
+	 */
+	public var timer:Timer;
+	
+	/**
 	 * Wether a call to the invalidation method is already
 	 * scheduled, only one call to this method
 	 * method can be scheduled at a time to prevent too many
@@ -211,6 +215,33 @@ class HTMLDocument extends Document
 	private var _renderingTreeNeedsUpdate:Bool;
 	
 	/**
+	 * wether the layer tree, in charge of the
+	 * rendering of the rendering tree should
+	 * be updated after its structure changed
+	 */
+	private var _layerTreeNeedsUpdate:Bool;
+	
+	/**
+	 * Wether the stacking contexts, which represents
+	 * the z-index for the layer of the document
+	 * needs to be updated
+	 */
+	private var _stackingContextsNeedUpdate:Bool;
+	
+	/**
+	 * Wether the native layer tree which is 
+	 * a tree formed of native display list
+	 * elements needs to be updated
+	 */
+	private var _nativeLayerTreeNeedsUpdate:Bool;
+	
+	/**
+	 * Wether some pending animations need to 
+	 * be started or ended
+	 */
+	private var _pendingAnimationsNeedUpdate:Bool;
+	
+	/**
 	 * Wheter the graphics context tree, used
 	 * to paint the rendering tree should
 	 * be updated after its structure changed
@@ -218,11 +249,26 @@ class HTMLDocument extends Document
 	private var _graphicsContextTreeNeedsUpdate:Bool;
 	
 	/**
+	 * Wheter the whole graphics context tree should be
+	 * updated. Happens when a compositing layer is
+	 * attached/removed
+	 */
+	private var _forceGraphicsContextUpdate:Bool;
+	
+	/**
 	 * This class is in charge of keeping track of the
 	 * current touch points and of creating cross-platform
 	 * TouchEvent
 	 */
 	private var _multiTouchManager:MultiTouchManager;
+	
+	/**
+	 * Used to perform hit test on the layer and
+	 * rendering trees to determine for instance 
+	 * which element renderer is currently under
+	 * the mouse pointer
+	 */
+	private var _hitTestManager:HitTestManager;
 	
 	/**
 	 * A ref to the global Window object
@@ -256,11 +302,17 @@ class HTMLDocument extends Document
 	public var layoutManager(default, null):LayoutManager;
 	
 	/**
-	 * the current mouse point, used when
-	 * retrieving the ElementRenderer
-	 * under mouse
+	 * For a given HTMLElement, store
+	 * which CSS pseudo classes it currently matches
 	 */
-	private var _mousePoint:PointVO;
+	private var _matchedPseudoClasses:MatchedPseudoClassesVO;
+	
+	/**
+	 * An instance of the cascade manager. During the cascade,
+	 * keep track of the styles which must be updated
+	 * for each HTMLElement
+	 */
+	private var _cascadeManager:CascadeManager;
 	
 	/**
 	 * class constructor. Init class attributes
@@ -269,7 +321,10 @@ class HTMLDocument extends Document
 	{
 		super();
 		
+		timer = new Timer();
 		initStyleManager();
+		
+		_cascadeManager = new CascadeManager();
 		
 		//TODO 2 : hack, Document probably shouldn't have
 		//ref to Window
@@ -278,8 +333,13 @@ class HTMLDocument extends Document
 			window = new Window();
 		}
 		
+		_matchedPseudoClasses = new MatchedPseudoClassesVO(false, false, false,
+		false, false, false, false);
+		
 		_window = window;
 		_focusManager = new FocusManager();
+		
+		_hitTestManager = new HitTestManager();
 		
 		_multiTouchManager = new MultiTouchManager();
 		
@@ -294,9 +354,12 @@ class HTMLDocument extends Document
 		_documentNeedsRendering = true;
 		_documentNeedsCascading = true;
 		_graphicsContextTreeNeedsUpdate = true;
+		_forceGraphicsContextUpdate = false;
 		_renderingTreeNeedsUpdate = true;
-		
-		_mousePoint = new PointVO(0.0, 0.0);
+		_layerTreeNeedsUpdate = true;
+		_nativeLayerTreeNeedsUpdate = true;
+		_stackingContextsNeedUpdate = true;
+		_pendingAnimationsNeedUpdate = true;
 		
 		layoutManager = new LayoutManager();
 	}
@@ -309,10 +372,15 @@ class HTMLDocument extends Document
 	 */
 	public function initBody(htmlBodyElement:HTMLBodyElement):Void
 	{
-		body = htmlBodyElement;
-		documentElement.appendChild(body);
-		_hoveredElementRenderer = body.elementRenderer;
-		activeElement = body;
+		if (htmlBodyElement != null)
+		{	
+			body = htmlBodyElement;
+			documentElement.appendChild(body);
+			_hoveredElementRenderer = body.elementRenderer;
+			activeElement = body;
+			
+		}
+	
 	}
 	
 	/**
@@ -524,7 +592,15 @@ class HTMLDocument extends Document
 			}
 		}
 		
-		return new MatchedPseudoClassesVO(hover, focus, active, link, enabled, disabled, checked);
+		_matchedPseudoClasses.hover = hover;
+		_matchedPseudoClasses.focus = focus;
+		_matchedPseudoClasses.active = active;
+		_matchedPseudoClasses.link = link;
+		_matchedPseudoClasses.enabled = enabled;
+		_matchedPseudoClasses.disabled = disabled;
+		_matchedPseudoClasses.checked = checked;
+		
+		return _matchedPseudoClasses;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -627,7 +703,7 @@ class HTMLDocument extends Document
 		{
 			_hoveredElementRenderer = body.elementRenderer;
 		}
-		
+
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
 		
 		if (_hoveredElementRenderer != elementRendererAtPoint)
@@ -931,12 +1007,52 @@ class HTMLDocument extends Document
 	}
 	
 	/**
+	 * schedule an update of the layer tree
+	 */
+	public function invalidateLayerTree():Void
+	{
+		_layerTreeNeedsUpdate = true;
+		invalidate();
+	}
+	
+	/**
+	 * schedule an update of the stacking context
+	 */
+	public function invalidateStackingContexts():Void
+	{
+		_stackingContextsNeedUpdate = true;
+		invalidate();
+	}
+	
+	/**
+	 * schedule an update of the native layer tree
+	 */
+	public function invalidateNativeLayerTree():Void
+	{
+		_nativeLayerTreeNeedsUpdate = true;
+		invalidate();
+	}
+	
+	/**
+	 * schedule starting/ending the pending animations
+	 */
+	public function invalidatePendingAnimations():Void
+	{
+		_pendingAnimationsNeedUpdate = true;
+		invalidate();
+	}
+	
+	/**
 	 * Shedule an update of the graphics
 	 * context tree
 	 */
-	public function invalidateGraphicsContextTree():Void
+	public function invalidateGraphicsContextTree(force:Bool):Void
 	{
 		_graphicsContextTreeNeedsUpdate = true;
+		if (force == true)
+		{
+			_forceGraphicsContextUpdate = true;
+		}
 		invalidate();
 	}
 	
@@ -965,13 +1081,13 @@ class HTMLDocument extends Document
 	}
 	
 	/**
-	 * Actually schedule an invalidation if one
+	 * Actually schedule an update if one
 	 * is not yet scheduled
 	 */
 	private function doInvalidate():Void
 	{
 		_invalidationScheduled = true;
-		scheduleCascadeLayoutAndRender();
+		timer.delay(onLayoutSchedule);
 	}
 	
 	/**
@@ -991,7 +1107,23 @@ class HTMLDocument extends Document
 		if (_renderingTreeNeedsUpdate == true)
 		{
 			documentElement.updateElementRenderer();
+			documentElement.elementRenderer.updateAnonymousBlock();
 			_renderingTreeNeedsUpdate = false;
+		}
+		
+		//update the layer tree before rendergin if
+		//needed
+		if (_layerTreeNeedsUpdate == true)
+		{
+			documentElement.elementRenderer.updateLayerRenderer();
+			_layerTreeNeedsUpdate = false;
+		}
+		
+		//update the layers stacking contexts
+		if (_stackingContextsNeedUpdate == true)
+		{
+			documentElement.elementRenderer.layerRenderer.updateStackingContext();
+			_stackingContextsNeedUpdate = false;
 		}
 		
 		//only layout if the invalidate layout
@@ -999,9 +1131,13 @@ class HTMLDocument extends Document
 		if (_documentNeedsLayout == true)
 		{
 			startLayout(false);
-			
+		}
+		
+		//start all the pending animations if any
+		if (_pendingAnimationsNeedUpdate == true)
+		{
 			//start all pending animations
-			var atLeastOneAnimationStarted:Bool = startPendingAnimation();
+			var atLeastOneAnimationStarted:Bool = documentElement.startPendingAnimation();
 			
 			//if at least one pending animation started, an immediate layout
 			//must be performed before rendering, else the rendering will be
@@ -1017,23 +1153,37 @@ class HTMLDocument extends Document
 		//before painting onto it
 		if (_graphicsContextTreeNeedsUpdate == true)
 		{
-			documentElement.elementRenderer.layerRenderer.updateGraphicsContext();
+			documentElement.elementRenderer.layerRenderer.updateGraphicsContext(_forceGraphicsContextUpdate);
 			_graphicsContextTreeNeedsUpdate = false;
+			_forceGraphicsContextUpdate = false;
+		}
+		
+		//update the tree of native layer if needed
+		if (_nativeLayerTreeNeedsUpdate == true)
+		{
+			documentElement.elementRenderer.layerRenderer.graphicsContext.updateNativeLayer();
+			_nativeLayerTreeNeedsUpdate = false;
 		}
 		
 		//same as for layout
 		if (_documentNeedsRendering == true)
 		{
-			startRendering();
+			documentElement.elementRenderer.layerRenderer.render(_window.innerWidth, _window.innerHeight);
 			_documentNeedsRendering = false;
 		}
 		
 		//when the document has been entirely updated
 		//end the pending animation
-		if (_documentNeedsLayout == true)
+		if (_pendingAnimationsNeedUpdate == true)
 		{
-			endPendingAnimation();
-			_documentNeedsLayout = false;
+			//Make all animations which just ended dispose
+			//of themselves and dispatch a complete event.
+			//The event must be dispatched once the layout 
+			//and rendering are done to prevent the user
+			//from modififying the DOM with not up to date
+			//info
+			documentElement.endPendingAnimation();
+			_pendingAnimationsNeedUpdate = false;
 		}
 	}
 	
@@ -1043,40 +1193,8 @@ class HTMLDocument extends Document
 	 */
 	private function onLayoutSchedule():Void
 	{
-		cascadeLayoutAndRender();
 		_invalidationScheduled = false;
-	}
-	
-	/**
-	 * Start rendering the rendering
-	 * tree, starting with the root LayerRenderer
-	 */ 
-	private function startRendering():Void
-	{
-		documentElement.elementRenderer.layerRenderer.render(_window.innerWidth, _window.innerHeight);
-	}
-	
-	/**
-	 * Start all the pending animation by calling
-	 * the start animation method on all elements of the
-	 * rendering tree
-	 */
-	private function startPendingAnimation():Bool
-	{
-		return documentElement.startPendingAnimation();
-	}
-	
-	/**
-	 * Make all animations which just ended dispose
-	 * of themselves and dispatch a complete event.
-	 * The event must be dispatched once the layout 
-	 * and rendering are done to prevent the user
-	 * from modififying the DOM with not updated
-	 * info
-	 */
-	private function endPendingAnimation():Void
-	{
-		documentElement.endPendingAnimation();
+		cascadeLayoutAndRender();
 	}
 	
 	/**
@@ -1089,10 +1207,9 @@ class HTMLDocument extends Document
 	 */
 	private function startCascade(programmaticChange:Bool):Void
 	{
-		documentElement.cascade(new Hash<Void>(), programmaticChange);
+		documentElement.cascade(_cascadeManager, programmaticChange);
 		_documentNeedsCascading = false;
 	}
-	
 	
 	/**
 	 * Start the layout of the rendering tree,
@@ -1109,25 +1226,6 @@ class HTMLDocument extends Document
 		documentElement.elementRenderer.setGlobalOrigins(0, 0, 0, 0, 0 ,0);
 	}
 	
-	/**
-	 * Set a timer to trigger a layout and rendering of the document asynchronously.
-	 * Setting a timer to execute the layout and rendering ensure that it only
-	 * happen once when a series of style values are set or when many elements
-	 * are attached/removed from the DOM, instead of happening for every change.
-	 */
-	private function scheduleCascadeLayoutAndRender():Void
-	{
-		var onLayoutScheduleDelegate:Void->Void = onLayoutSchedule;
-		#if macro
-		#elseif (flash9 || nme)
-		//calling the methods 1 millisecond later is enough to ensure
-		//that first all synchronous code is executed
-		haxe.Timer.delay(function () { 
-			onLayoutScheduleDelegate();
-		}, INVALIDATION_INTERVAL);
-		#end
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1141,10 +1239,8 @@ class HTMLDocument extends Document
 	 */
 	private function getFirstElementRendererWhichCanDispatchMouseEvent(x:Int, y:Int):ElementRenderer
 	{
-		_mousePoint.x = x;
-		_mousePoint.y = y;
-		var elementRendererAtPoint:ElementRenderer = documentElement.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( _mousePoint, 0, 0  );
-		
+		var elementRendererAtPoint:ElementRenderer = _hitTestManager.getTopMostElementRendererAtPoint(documentElement.elementRenderer.layerRenderer, x, y, 0, 0  );
+
 		//when no element is under mouse like for instance when the mouse leaves
 		//the window, return the body
 		if (elementRendererAtPoint == null)

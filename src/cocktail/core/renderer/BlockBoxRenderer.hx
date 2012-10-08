@@ -7,6 +7,7 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.InitialStyleDeclaration;
 import cocktail.core.dom.Node;
@@ -26,7 +27,8 @@ import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
+import cocktail.Lib;
 import haxe.Log;
 import cocktail.core.layer.LayerRenderer;
 
@@ -44,80 +46,73 @@ import cocktail.core.layer.LayerRenderer;
 class BlockBoxRenderer extends ScrollableRenderer
 {	
 	/**
-	 * flag set when replacing inline children by anonymous block
-	 * to prevent inifinite loop caused by calls to appendChild
-	 */
-	private var _isMakingChildrenNonInline:Bool;
-	
-	/**
 	 * class constructor.
 	 * Init class attributes
 	 */
 	public function new(node:HTMLElement) 
 	{
 		super(node);
-		_isMakingChildrenNonInline = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-
+	
 	/**
-	 * Overriden to replace inline children by anonymous block if
-	 * necessary
+	 * If this block element renderer has both inline and
+	 * block children, the inline children are wrapped
+	 * in anonymous block to preserve the CSS invariant
+	 * where all children of a block must either be all
+	 * inline or all block
 	 */
-	override public function appendChild(newChild:ElementRenderer):ElementRenderer
+	override public function updateAnonymousBlock():Void
 	{
 		//flag determining wether inline children must be wrapped
 		//in anonymous block
 		var shouldMakeChildrenNonInline:Bool = false;
 		
-		var elementRendererChild:ElementRenderer = newChild;
-
-		//if this is the first child, no need to wrap inline block
-		//as it not yet known wether this block box starts an inline
-		//formatting context or participates/establishes a block
-		//formatting context
-		if (childNodes.length > 0)
+		//the BlockBoxRenderer should have at least one significant child to determine wether to 
+		//establish/participate in a block or inline formatting context, and thus if inline children
+		//shoud be wrapped in anonymous block
+		if (hasSignificantChild() == true)
 		{
-			//absolutely positioned children are not taken into account when determining wether this
-			//BlockBoxRenderer establishes/participate in a block or inline formatting context
-			if (elementRendererChild.isPositioned() == false || elementRendererChild.isRelativePositioned() ==  true)
-			{	
-				//the BlockBoxRenderer should have at least one significant child to determine wether to 
-				//establish/participate in a block or inline formatting context, and thus if inline children
-				//shoud be wrapped in anonymous block
-				if (hasSignificantChild() == true)
-				{
-					//if the new child is doesn't match the display of the other children,
+			//store wether the children of this block are curently inline
+			//or block
+			var childrenInline:Bool = childrenInline();
+			
+			//loop in all children, looking for one which doesn't
+			//coreespond to the currrent formatting of the block
+			var length:Int = childNodes.length;
+			for (i in 0...length)
+			{
+				var child:ElementRenderer = childNodes[i];
+				
+				//absolutely positioned children are not taken into account when determining wether this
+				//BlockBoxRenderer establishes/participate in a block or inline formatting context
+				if (child.isPositioned() == false || child.isRelativePositioned() ==  true)
+				{	
+					//if this child doesn't match the display of the other children,
 					///for instance if it is the first inline while all the other
-					//children are block, all the inline children should be wrapped
-					if (elementRendererChild.isInlineLevel() != childrenInline())
+					//children are block, all the inline children should be wrapped in 
+					//anonymous blocks
+					if (child.isInlineLevel() != childrenInline)
 					{
 						shouldMakeChildrenNonInline = true;
+						break;
 					}
 				}
 			}
 		}
 		
-		//append the new child
-		super.appendChild(newChild);
 		//make all children non inline if necessary
 		if (shouldMakeChildrenNonInline == true)
-		{	
-			//check the flag to prevent infinite loop,
-			//as makeChildrenNonInline itself call the 
-			//appendChild method
-			if (_isMakingChildrenNonInline == false)
-			{
-				_isMakingChildrenNonInline = true;
-				makeChildrenNonInline();
-				_isMakingChildrenNonInline = false;
-			}
+		{
+			makeChildrenNonInline();
 		}
-		return newChild;
+		
+		super.updateAnonymousBlock();
 	}
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE ANONYMOUS BLOCK METHODS
@@ -182,11 +177,14 @@ class BlockBoxRenderer extends ScrollableRenderer
 		
 		anonymousBlock.coreStyle = anonymousBlock.domNode.coreStyle;
 		
+		//TODO 2 : shouldn't have to instantiate each time
+		var cascadeManager:CascadeManager = new CascadeManager();
+		cascadeManager.shouldCascadeAll();
+		
 		var initialStyleDeclaration:InitialStyleDeclaration = Lib.document.initialStyleDeclaration;
-		var propertiesToCascade:Hash<Void> = initialStyleDeclaration.supportedCSSProperties;
 		
 		//only use initial style declarations
-		anonymousBlock.coreStyle.cascade(propertiesToCascade, initialStyleDeclaration,
+		anonymousBlock.coreStyle.cascade(cascadeManager, initialStyleDeclaration,
 		initialStyleDeclaration, initialStyleDeclaration, 
 		initialStyleDeclaration, 12, 12, false);
 		
@@ -237,16 +235,16 @@ class BlockBoxRenderer extends ScrollableRenderer
 		if (createOwnLayer() == true || rendersAsIfCreateOwnLayer() == true)
 		{
 			//render all the block box which belong to the same stacking context
-			renderBlockContainerChildren(graphicContext);
+			renderBlockContainerChildren(this, layerRenderer, graphicContext);
 			
 			//TODO 5 : render non-positioned float
 			
 			//render all the replaced (embedded) box displayed as blocks belonging
 			//to the same stacking context
-			renderBlockReplacedChildren(graphicContext);
+			renderBlockReplacedChildren(this, layerRenderer, graphicContext);
 			
 			//render all the line boxes belonging to the same stacking context
-			renderLineBoxes(graphicContext);
+			renderLineBoxes(this, layerRenderer, graphicContext);
 		}
 	}
 	
@@ -258,16 +256,51 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 * Render all the LineBoxes of child BlockBoxRenderer which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderLineBoxes(graphicContext:GraphicsContext):Void
+	private function renderLineBoxes(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext):Void
 	{
-		//retrieve all the line boxes in all of the lines generated in this BlockBoxRenderer
-		var lineBoxes:Array<LineBox> = getChilrenLineBoxes(this, layerRenderer);
-
-		//loop in all of the lineboxes
-		var length:Int = lineBoxes.length;
+		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.childrenInline() == true)
+		{
+			var blockBoxRenderer:ElementRenderer = rootRenderer;
+			
+			var length:Int = blockBoxRenderer.lineBoxes.length;
+			for (i in 0...length)
+			{
+				renderLineBoxesInLine(blockBoxRenderer.lineBoxes[i], graphicContext);
+			}
+		}
+		else
+		{
+			var length:Int = rootRenderer.childNodes.length;
+			for (i in 0...length)
+			{
+				var child:ElementRenderer = rootRenderer.childNodes[i];
+			
+				if (child.layerRenderer == referenceLayer)
+				{
+					if (child.isReplaced() == false)
+					{	
+						renderLineBoxes(child, referenceLayer, graphicContext);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Render all the line boxes in one line
+	 */
+	private function renderLineBoxesInLine(rootLineBox:LineBox, graphicContext:GraphicsContext):Void
+	{
+		var length:Int = rootLineBox.childNodes.length;
 		for (i in 0...length)
 		{
-			lineBoxes[i].render(graphicContext);
+			var child:LineBox = rootLineBox.childNodes[i];
+			child.render(graphicContext);
+			
+			if (child.hasChildNodes() == true)
+			{
+				renderLineBoxesInLine(child, graphicContext);
+			}
 		}
 	}
 	
@@ -275,13 +308,25 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 * Render all the replaced children displayed as blocks which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderBlockReplacedChildren(graphicContext:GraphicsContext):Void
+	private function renderBlockReplacedChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext):Void
 	{
-		var childrenBlockReplaced:Array<ElementRenderer> = getBlockReplacedChildren(this, layerRenderer);
-		var length:Int = childrenBlockReplaced.length;
+		var length:Int = rootRenderer.childNodes.length;
 		for (i in 0...length)
 		{
-			childrenBlockReplaced[i].render(graphicContext);
+			var child:ElementRenderer = rootRenderer.childNodes[i];
+			
+			if (child.layerRenderer == referenceLayer)
+			{
+				//TODO 2 : must add more condition, for instance, no float
+				if (child.isReplaced() == false && child.coreStyle.getKeyword(child.coreStyle.display) == CSSKeywordValue.BLOCK )
+				{
+					renderBlockReplacedChildren(child, referenceLayer, graphicContext);
+				}
+				else if (child.coreStyle.getKeyword(child.coreStyle.display) == CSSKeywordValue.BLOCK)
+				{
+					child.render(graphicContext);
+				}
+			}
 		}
 	}
 	
@@ -289,13 +334,25 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 * Render all the BlockBoxRenderer which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderBlockContainerChildren(graphicContext:GraphicsContext):Void
+	private function renderBlockContainerChildren(rootElementRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext):Void
 	{
-		var childrenBlockContainer:Array<ElementRenderer> = getBlockContainerChildren(this, layerRenderer);
-		var length:Int = childrenBlockContainer.length;
+		var length:Int = rootElementRenderer.childNodes.length;
 		for (i in 0...length)
 		{
-			childrenBlockContainer[i].render(graphicContext);
+			var child:ElementRenderer = rootElementRenderer.childNodes[i];
+			
+			//check that the child is not positioned, as if it is an auto z-index positioned
+			//element, it will be on the same layerRenderer but should not be rendered as 
+			//a block container children
+			if (child.layerRenderer == referenceLayer)
+			{
+				//TODO 3 : must add more condition, for instance, no float
+				if (child.isReplaced() == false && child.coreStyle.getKeyword(child.coreStyle.display) != INLINE_BLOCK)
+				{
+					child.render(graphicContext);
+					renderBlockContainerChildren(child, referenceLayer, graphicContext);
+				}
+			}
 		}
 	}
 	
@@ -313,133 +370,6 @@ class BlockBoxRenderer extends ScrollableRenderer
 		{
 			_verticalScrollBar.elementRenderer.layerRenderer.render(windowWidth, windowHeight);
 		}
-	}
-	
-	/**
-	 * Return all the line box belonging to the same
-	 * stacking context as this BlockBoxRenderer
-	 * 
-	 * TODO 4 : can probably be simplified
-	 */
-	private function getChilrenLineBoxes(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer):Array<LineBox>
-	{
-		var ret:Array<LineBox> = new Array<LineBox>();
-		
-		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.childrenInline() == true)
-		{
-			var blockBoxRenderer:ElementRenderer = rootRenderer;
-			
-			var length:Int = blockBoxRenderer.lineBoxes.length;
-			for (i in 0...length)
-			{
-				var lineBoxes:Array<LineBox> = getLineBoxesInLine(blockBoxRenderer.lineBoxes[i]);
-
-				var childLength:Int = lineBoxes.length;
-				for (j in 0...childLength)
-				{
-					if (lineBoxes[j].elementRenderer.layerRenderer == referenceLayer)
-					{
-						ret.push(lineBoxes[j]);
-					}
-				}
-			}
-		}
-		else
-		{
-			var length:Int = rootRenderer.childNodes.length;
-			for (i in 0...length)
-			{
-				var child:ElementRenderer = rootRenderer.childNodes[i];
-			
-				if (child.layerRenderer == referenceLayer)
-				{
-					if (child.isReplaced() == false)
-					{	
-						var childLineBoxes:Array<LineBox> = getChilrenLineBoxes(child, referenceLayer);
-						var childLength:Int = childLineBoxes.length;
-						for (j in 0...childLength)
-						{
-							ret.push(childLineBoxes[j]);
-						}
-					}
-				}
-			}
-		}
-		
-		return ret;
-	}
-	
-	/**
-	 * Return all the replaced child displayed as block belonging
-	 * to the same stacking context
-	 * 
-	 * TODO 1 : all those methods should only be 1 method pushing into different arrays, and
-	 * only called once when dom changes
-	 */
-	private function getBlockReplacedChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer):Array<ElementRenderer>
-	{
-		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
-		
-		var length:Int = rootRenderer.childNodes.length;
-		for (i in 0...length)
-		{
-			var child:ElementRenderer = rootRenderer.childNodes[i];
-			
-			if (child.layerRenderer == referenceLayer)
-			{
-				//TODO 2 : must add more condition, for instance, no float
-				if (child.isReplaced() == false && child.coreStyle.getKeyword(child.coreStyle.display) == CSSKeywordValue.BLOCK )
-				{
-					var childElementRenderer:Array<ElementRenderer> = getBlockReplacedChildren(child, referenceLayer);
-					var childLength:Int = childElementRenderer.length;
-					for (j in 0...childLength)
-					{
-						ret.push(childElementRenderer[j]);
-					}
-				}
-				else if (child.coreStyle.getKeyword(child.coreStyle.display) == CSSKeywordValue.BLOCK)
-				{
-					ret.push(child);
-				}
-			}
-		}
-		
-		return ret;
-	}
-	
-	/**
-	 * Return all the BlockBoxRenderer children belonging
-	 * to the same stacking context
-	 */
-	private function getBlockContainerChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer):Array<ElementRenderer>
-	{
-		var ret:Array<ElementRenderer> = new Array<ElementRenderer>();
-		
-		var length:Int = rootRenderer.childNodes.length;
-		for (i in 0...length)
-		{
-			var child:ElementRenderer = rootRenderer.childNodes[i];
-			
-			//check that the child is not positioned, as if it is an auto z-index positioned
-			//element, it will be on the same layerRenderer but should not be rendered as 
-			//a block container children
-			if (child.layerRenderer == referenceLayer)
-			{
-				//TODO 3 : must add more condition, for instance, no float
-				if (child.isReplaced() == false && child.coreStyle.getKeyword(child.coreStyle.display) != INLINE_BLOCK)
-				{
-					ret.push(child);
-					
-					var childElementRenderer:Array<ElementRenderer> = getBlockContainerChildren(child, referenceLayer);
-					var childLength:Int = childElementRenderer.length;
-					for (j in 0...childLength)
-					{
-						ret.push(childElementRenderer[j]);
-					}
-				}
-			}
-		}
-		return ret;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -637,6 +567,11 @@ class BlockBoxRenderer extends ScrollableRenderer
 			width -= _verticalScrollBar.coreStyle.usedValues.width;
 		}
 		
-		return new ContainingBlockVO(width, coreStyle.isAuto(coreStyle.width), height, coreStyle.isAuto(coreStyle.height));
+		_containerBlockData.width = width;
+		_containerBlockData.isWidthAuto = coreStyle.isAuto(coreStyle.width);
+		_containerBlockData.height = height;
+		_containerBlockData.isHeightAuto = coreStyle.isAuto(coreStyle.height);
+		
+		return _containerBlockData;
 	}
 }

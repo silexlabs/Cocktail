@@ -16,7 +16,7 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
 import cocktail.core.css.CSSData;
@@ -48,7 +48,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	{
 		super(domNode);
 		
-		_paintBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		_paintBounds = new RectangleVO();
 		_destinationPoint = new PointVO(0.0, 0.0);
 	}
 	
@@ -100,7 +100,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 			matrix.translate(bounds.x, bounds.y);
 			matrix.scale(bounds.width / intrinsicWidth , bounds.height / intrinsicHeight );
 			
-			graphicContext.drawImage(nativeBitmapData, matrix, bounds);
+			graphicContext.graphics.drawImage(nativeBitmapData, matrix, bounds);
 		}
 		//here a faster drawing routine is used, the picture is drawn 
 		//untransformed at a certain point
@@ -121,7 +121,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 			bounds.x = 0.0;
 			bounds.y = 0.0;
 			
-			graphicContext.copyPixels(nativeBitmapData, bounds, _destinationPoint);
+			graphicContext.graphics.copyPixels(nativeBitmapData, bounds, _destinationPoint);
 		}
 	}
 	

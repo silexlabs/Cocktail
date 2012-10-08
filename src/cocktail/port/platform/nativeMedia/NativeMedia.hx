@@ -10,7 +10,7 @@ package cocktail.port.platform.nativeMedia;
 
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 
