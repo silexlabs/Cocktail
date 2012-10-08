@@ -296,6 +296,15 @@ class HTMLDocument extends Document
 			activeElement = body;
 		}
 	}
+
+	/**
+	 * Init the document element.
+	 * @param	htmlBodyElement
+	 */
+	public function initDocumentElement(htmlElement:HTMLElement):Void
+	{
+		documentElement = htmlElement;
+	}
 	
 	/**
 	 * Instantaite the style manager and add a default
