@@ -12,6 +12,7 @@ import cocktail.core.dom.Document;
 import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.DOMParser;
 
 /**
  * Root of an HTML document
@@ -41,6 +42,20 @@ class HTMLHtmlElement extends HTMLElement
 		super.set_innerHTML(value);
 		var htmlDocument:HTMLDocument = cast(ownerDocument);
 		htmlDocument.initBody(cast(getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
+		return value;
+	}
+
+	/**
+	 * Overriden as the HTML element doesn't have any parent node.
+	 */
+	override private function set_outerHTML(value:String):String
+	{
+		//parse the html string into a node object
+		var node:HTMLElement = DOMParser.parse(value, ownerDocument);
+
+		var htmlDocument:HTMLDocument = cast(ownerDocument);
+		htmlDocument.initDocumentElement(node);
+
 		return value;
 	}
 	
