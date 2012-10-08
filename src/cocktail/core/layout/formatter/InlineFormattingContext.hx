@@ -237,7 +237,6 @@ class InlineFormattingContext extends FormattingContext
 				//insert the array of created line boxes into the current line. It might create as many
 				//new lines as necessary. Returns a reference to the last inserted line box, used as starting
 				//point to lay out subsequent siblings and children
-				
 				var textLength:Int = child.lineBoxes.length;
 				for (j in 0...textLength)
 				{

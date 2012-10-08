@@ -1,9 +1,10 @@
 /*
-	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
-	This project is © 2010-2011 Silex Labs and is released under the GPL License:
-	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+ * Cocktail, HTML rendering engine
+ * http://haxe.org/com/libs/cocktail
+ *
+ * Copyright (c) Silex Labs
+ * Cocktail is available under the MIT license
+ * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.html;
 
@@ -33,6 +34,7 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLHtmlElement;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.html.HTMLInputElement;
+import cocktail.core.invalidation.InvalidationManager;
 import cocktail.core.layout.floats.FloatsManager;
 import cocktail.core.layout.formatter.BlockFormattingContext;
 import cocktail.core.layout.formatter.InlineFormattingContext;
@@ -182,80 +184,6 @@ class HTMLDocument extends Document
 	public var timer:Timer;
 	
 	/**
-	 * Wether a call to the invalidation method is already
-	 * scheduled, only one call to this method
-	 * method can be scheduled at a time to prevent too many
-	 * re-layout and re-rendering
-	 */
-	private var _invalidationScheduled:Bool;
-	
-	/*
-	 * Wheter the document needs a re-layout on next
-	 * ivnvalidation method call
-	 */ 
-	private var _documentNeedsLayout:Bool;
-	
-	/*
-	 * Wheter the document needs a re-rendering on next
-	 * ivnvalidation method call
-	 */ 
-	private var _documentNeedsRendering:Bool;
-	
-	/**
-	 * Wether the document needs to cascade the styles
-	 * on nex invalidation method call
-	 */
-	private var _documentNeedsCascading:Bool;
-	
-	/**
-	 * wether the rendering tree, in charge of layout
-	 * and rendering should be updated after
-	 * its structure changed
-	 */
-	private var _renderingTreeNeedsUpdate:Bool;
-	
-	/**
-	 * wether the layer tree, in charge of the
-	 * rendering of the rendering tree should
-	 * be updated after its structure changed
-	 */
-	private var _layerTreeNeedsUpdate:Bool;
-	
-	/**
-	 * Wether the stacking contexts, which represents
-	 * the z-index for the layer of the document
-	 * needs to be updated
-	 */
-	private var _stackingContextsNeedUpdate:Bool;
-	
-	/**
-	 * Wether the native layer tree which is 
-	 * a tree formed of native display list
-	 * elements needs to be updated
-	 */
-	private var _nativeLayerTreeNeedsUpdate:Bool;
-	
-	/**
-	 * Wether some pending animations need to 
-	 * be started or ended
-	 */
-	private var _pendingAnimationsNeedUpdate:Bool;
-	
-	/**
-	 * Wheter the graphics context tree, used
-	 * to paint the rendering tree should
-	 * be updated after its structure changed
-	 */
-	private var _graphicsContextTreeNeedsUpdate:Bool;
-	
-	/**
-	 * Wheter the whole graphics context tree should be
-	 * updated. Happens when a compositing layer is
-	 * attached/removed
-	 */
-	private var _forceGraphicsContextUpdate:Bool;
-	
-	/**
 	 * This class is in charge of keeping track of the
 	 * current touch points and of creating cross-platform
 	 * TouchEvent
@@ -273,7 +201,7 @@ class HTMLDocument extends Document
 	/**
 	 * A ref to the global Window object
 	 */
-	private var _window:Window;
+	public var window(default, null):Window;
 	
 	/**
 	 * A ref to the style manager holding all the
@@ -302,6 +230,12 @@ class HTMLDocument extends Document
 	public var layoutManager(default, null):LayoutManager;
 	
 	/**
+	 * an instance of the class managing the invalidation
+	 * and update of the document
+	 */
+	public var invalidationManager(default, null):InvalidationManager;
+	
+	/**
 	 * For a given HTMLElement, store
 	 * which CSS pseudo classes it currently matches
 	 */
@@ -312,7 +246,7 @@ class HTMLDocument extends Document
 	 * keep track of the styles which must be updated
 	 * for each HTMLElement
 	 */
-	private var _cascadeManager:CascadeManager;
+	public var cascadeManager(default, null):CascadeManager;
 	
 	/**
 	 * class constructor. Init class attributes
@@ -323,8 +257,9 @@ class HTMLDocument extends Document
 		
 		timer = new Timer();
 		initStyleManager();
+		invalidationManager = new InvalidationManager(this);
 		
-		_cascadeManager = new CascadeManager();
+		cascadeManager = new CascadeManager();
 		
 		//TODO 2 : hack, Document probably shouldn't have
 		//ref to Window
@@ -336,7 +271,7 @@ class HTMLDocument extends Document
 		_matchedPseudoClasses = new MatchedPseudoClassesVO(false, false, false,
 		false, false, false, false);
 		
-		_window = window;
+		this.window = window;
 		_focusManager = new FocusManager();
 		
 		_hitTestManager = new HitTestManager();
@@ -348,18 +283,6 @@ class HTMLDocument extends Document
 		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
 		
 		_shouldDispatchClickOnNextMouseUp = false;
-				
-		_invalidationScheduled = false;
-		_documentNeedsLayout = true;
-		_documentNeedsRendering = true;
-		_documentNeedsCascading = true;
-		_graphicsContextTreeNeedsUpdate = true;
-		_forceGraphicsContextUpdate = false;
-		_renderingTreeNeedsUpdate = true;
-		_layerTreeNeedsUpdate = true;
-		_nativeLayerTreeNeedsUpdate = true;
-		_stackingContextsNeedUpdate = true;
-		_pendingAnimationsNeedUpdate = true;
 		
 		layoutManager = new LayoutManager();
 	}
@@ -497,7 +420,7 @@ class HTMLDocument extends Document
 	{
 		_styleManager.addStyleSheet(stylesheet);
 		documentElement.invalidateStyleDeclaration(true);
-		startCascade(false);
+		documentElement.cascade(cascadeManager, false);
 	}
 	
 	/**
@@ -508,7 +431,7 @@ class HTMLDocument extends Document
 	{
 		_styleManager.removeStyleSheet(stylesheet);
 		documentElement.invalidateStyleDeclaration(true);
-		startCascade(false);
+		documentElement.cascade(cascadeManager, false);
 	}
 	
 	/**
@@ -922,7 +845,7 @@ class HTMLDocument extends Document
 	 */
 	private function get_fullscreenEnabled():Bool
 	{
-		return _window.platform.nativeWindow.fullScreenEnabled();
+		return window.platform.nativeWindow.fullScreenEnabled();
 	}
 	
 	/**
@@ -963,267 +886,6 @@ class HTMLDocument extends Document
 		fullscreenEvent.initEvent(EventConstants.FULL_SCREEN_CHANGE, true, false);
 		
 		return value;
-	}
-	
-	/////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC INVALIDATION METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * schedule a layout of the document, or 
-	 * layout it immediately if needed
-	 * @param immediate wether the layout should be
-	 * synchronous
-	 */
-	public function invalidateLayout(immediate:Bool):Void
-	{
-		_documentNeedsLayout = true;
-		if (immediate == false)
-		{
-			invalidate();
-		}
-		else
-		{
-			cascadeLayoutAndRender();
-		}
-	}
-	
-	/**
-	 * schedule a rendering of the document
-	 */
-	public function invalidateRendering():Void
-	{
-		_documentNeedsRendering = true;
-		invalidate();
-	}
-	
-	/**
-	 * Schedule an update of the rendering tree
-	 */
-	public function invalidateRenderingTree():Void
-	{
-		_renderingTreeNeedsUpdate = true;
-		invalidate();
-	}
-	
-	/**
-	 * schedule an update of the layer tree
-	 */
-	public function invalidateLayerTree():Void
-	{
-		_layerTreeNeedsUpdate = true;
-		invalidate();
-	}
-	
-	/**
-	 * schedule an update of the stacking context
-	 */
-	public function invalidateStackingContexts():Void
-	{
-		_stackingContextsNeedUpdate = true;
-		invalidate();
-	}
-	
-	/**
-	 * schedule an update of the native layer tree
-	 */
-	public function invalidateNativeLayerTree():Void
-	{
-		_nativeLayerTreeNeedsUpdate = true;
-		invalidate();
-	}
-	
-	/**
-	 * schedule starting/ending the pending animations
-	 */
-	public function invalidatePendingAnimations():Void
-	{
-		_pendingAnimationsNeedUpdate = true;
-		invalidate();
-	}
-	
-	/**
-	 * Shedule an update of the graphics
-	 * context tree
-	 */
-	public function invalidateGraphicsContextTree(force:Bool):Void
-	{
-		_graphicsContextTreeNeedsUpdate = true;
-		if (force == true)
-		{
-			_forceGraphicsContextUpdate = true;
-		}
-		invalidate();
-	}
-	
-	/**
-	 * schedule a cascade of the document
-	 */
-	public function invalidateCascade():Void
-	{
-		_documentNeedsCascading = true;
-		invalidate();
-	}
-	
-	/////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE INVALIDATION METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * schedule an invalidation
-	 */
-	private function invalidate():Void
-	{
-		if (_invalidationScheduled == false)
-		{
-			doInvalidate();
-		}
-	}
-	
-	/**
-	 * Actually schedule an update if one
-	 * is not yet scheduled
-	 */
-	private function doInvalidate():Void
-	{
-		_invalidationScheduled = true;
-		timer.delay(onLayoutSchedule);
-	}
-	
-	/**
-	 * cascade, layout and render the document
-	 * as needed
-	 */
-	private function cascadeLayoutAndRender():Void
-	{
-		//only cascade if needed
-		if (_documentNeedsCascading == true)
-		{
-			startCascade(true);
-		}
-		
-		//update the rendering tree before layout and
-		//rendering if needed
-		if (_renderingTreeNeedsUpdate == true)
-		{
-			documentElement.updateElementRenderer();
-			documentElement.elementRenderer.updateAnonymousBlock();
-			_renderingTreeNeedsUpdate = false;
-		}
-		
-		//update the layer tree before rendergin if
-		//needed
-		if (_layerTreeNeedsUpdate == true)
-		{
-			documentElement.elementRenderer.updateLayerRenderer();
-			_layerTreeNeedsUpdate = false;
-		}
-		
-		//update the layers stacking contexts
-		if (_stackingContextsNeedUpdate == true)
-		{
-			documentElement.elementRenderer.layerRenderer.updateStackingContext();
-			_stackingContextsNeedUpdate = false;
-		}
-		
-		//only layout if the invalidate layout
-		//method was called
-		if (_documentNeedsLayout == true)
-		{
-			startLayout(false);
-		}
-		
-		//start all the pending animations if any
-		if (_pendingAnimationsNeedUpdate == true)
-		{
-			//start all pending animations
-			var atLeastOneAnimationStarted:Bool = documentElement.startPendingAnimation();
-			
-			//if at least one pending animation started, an immediate layout
-			//must be performed before rendering, else the rendering will be
-			//done with the end value of the animations instead of the beggining
-			//value, resulting in a visual glitch
-			if (atLeastOneAnimationStarted == true)
-			{
-				startLayout(true);
-			}
-		}
-		
-		//update the graphics context tree if needed,
-		//before painting onto it
-		if (_graphicsContextTreeNeedsUpdate == true)
-		{
-			documentElement.elementRenderer.layerRenderer.updateGraphicsContext(_forceGraphicsContextUpdate);
-			_graphicsContextTreeNeedsUpdate = false;
-			_forceGraphicsContextUpdate = false;
-		}
-		
-		//update the tree of native layer if needed
-		if (_nativeLayerTreeNeedsUpdate == true)
-		{
-			documentElement.elementRenderer.layerRenderer.graphicsContext.updateNativeLayer();
-			_nativeLayerTreeNeedsUpdate = false;
-		}
-		
-		//same as for layout
-		if (_documentNeedsRendering == true)
-		{
-			documentElement.elementRenderer.layerRenderer.render(_window.innerWidth, _window.innerHeight);
-			_documentNeedsRendering = false;
-		}
-		
-		//when the document has been entirely updated
-		//end the pending animation
-		if (_pendingAnimationsNeedUpdate == true)
-		{
-			//Make all animations which just ended dispose
-			//of themselves and dispatch a complete event.
-			//The event must be dispatched once the layout 
-			//and rendering are done to prevent the user
-			//from modififying the DOM with not up to date
-			//info
-			documentElement.endPendingAnimation();
-			_pendingAnimationsNeedUpdate = false;
-		}
-	}
-	
-	/**
-	 * Callback called after an invalidation is
-	 * scheduled, starts the layout and rendering
-	 */
-	private function onLayoutSchedule():Void
-	{
-		_invalidationScheduled = false;
-		cascadeLayoutAndRender();
-	}
-	
-	/**
-	 * Star cascading the whole document
-	 * 
-	 * @param programmaticChange whether the cascading
-	 * is the result of a programmatic change to the DOM/CSS.
-	 * It is used to determine wether animation/transition
-	 * can be started during the cascade 
-	 */
-	private function startCascade(programmaticChange:Bool):Void
-	{
-		documentElement.cascade(_cascadeManager, programmaticChange);
-		_documentNeedsCascading = false;
-	}
-	
-	/**
-	 * Start the layout of the rendering tree,
-	 * starting with the root ElementRenderer
-	 */
-	private function startLayout(forceLayout:Bool):Void
-	{
-		//layout all ElementRenderer, after this, ElementRenderer are 
-		//aware of their bounds relative to their containing block
-		documentElement.elementRenderer.layout(forceLayout);
-		
-		//set the global bounds on the rendering tree. After this, ElementRenderer
-		//are aware of their bounds relative ot the viewport
-		documentElement.elementRenderer.setGlobalOrigins(0, 0, 0, 0, 0 ,0);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

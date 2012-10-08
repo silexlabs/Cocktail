@@ -534,7 +534,7 @@ class HTMLElement extends Element<HTMLElement>
 		_needsElementRendererUpdate = true;
 		if (_ownerHTMLDocument != null)
 		{
-			_ownerHTMLDocument.invalidateRenderingTree();
+			_ownerHTMLDocument.invalidationManager.invalidateRenderingTree();
 		}
 	}
 	
@@ -589,7 +589,7 @@ class HTMLElement extends Element<HTMLElement>
 		_needsCascading = true;
 		if (_ownerHTMLDocument != null)
 		{
-			_ownerHTMLDocument.invalidateCascade();
+			_ownerHTMLDocument.invalidationManager.invalidateCascade();
 		}
 	}
 	

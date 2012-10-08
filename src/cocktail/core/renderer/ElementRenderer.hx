@@ -413,7 +413,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{
 			case DOMConstants.ELEMENT_NODE:
 				var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
-				htmlDocument.invalidateLayerTree();
+				htmlDocument.invalidationManager.invalidateLayerTree();
 				
 		}
 	}

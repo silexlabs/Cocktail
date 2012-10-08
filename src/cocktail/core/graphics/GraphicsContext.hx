@@ -173,7 +173,7 @@ class GraphicsContext extends NodeBase<GraphicsContext>
 	{
 		_needsNativeLayerUpdate = true;
 		var htmlDocument:HTMLDocument = cast(layerRenderer.rootElementRenderer.domNode.ownerDocument);
-		htmlDocument.invalidateNativeLayerTree();
+		htmlDocument.invalidationManager.invalidateNativeLayerTree();
 	}
 	
 	/**

@@ -259,13 +259,11 @@ class BlockBoxRenderer extends ScrollableRenderer
 	private function renderLineBoxes(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext):Void
 	{
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.childrenInline() == true)
-		{
-			var blockBoxRenderer:ElementRenderer = rootRenderer;
-			
-			var length:Int = blockBoxRenderer.lineBoxes.length;
+		{	
+			var length:Int = rootRenderer.lineBoxes.length;
 			for (i in 0...length)
 			{
-				renderLineBoxesInLine(blockBoxRenderer.lineBoxes[i], graphicContext);
+				renderLineBoxesInLine(rootRenderer.lineBoxes[i], graphicContext);
 			}
 		}
 		else
