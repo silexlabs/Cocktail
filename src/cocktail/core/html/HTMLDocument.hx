@@ -139,13 +139,6 @@ class HTMLDocument extends Document
 	public var fullscreenElement(default, set_fullscreenElement):HTMLElement;
 	
 	/**
-	 * getter/setter to set the whole document content with an 
-	 * html string or to serialise the whole document into
-	 * an html string
-	 */
-	public var innerHTML(get_innerHTML, set_innerHTML):String;
-	
-	/**
 	 * Callback listened to by the Window object
 	 * to enter fullscreen mode when needed using
 	 * platform specific API
@@ -378,33 +371,6 @@ class HTMLDocument extends Document
 		element.ownerDocument = this;
 		
 		return element;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// DOM PARSER GETTER/SETTER AND METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * parse the string representing the
-	 * whole document. The returned node
-	 * is the root of the html document
-	 */
-	private function set_innerHTML(value:String):String
-	{
-		//parse the html string into a node object
-		var node:HTMLElement = DOMParser.parse(value, this);
-		documentElement = node;
-		initBody(cast(documentElement.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
-		return value;
-	}
-	
-	/**
-	 * Return the serialized documentElement
-	 * (the <HTML> element)
-	 */
-	private function get_innerHTML():String
-	{
-		return DOMParser.serialize(documentElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
