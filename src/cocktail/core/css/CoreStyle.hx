@@ -528,7 +528,7 @@ class CoreStyle
 				{
 					_animator.registerPendingAnimation(propertyName, invalidationReason, getAnimatablePropertyValue(propertyName));
 					var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
-					htmlDocument.invalidatePendingAnimations();
+					htmlDocument.invalidationManager.invalidatePendingAnimations();
 				}
 			}
 		}
@@ -1008,7 +1008,7 @@ class CoreStyle
 		
 		//schedule an update of the pending animations
 		var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
-		htmlDocument.invalidatePendingAnimations();
+		htmlDocument.invalidationManager.invalidatePendingAnimations();
 		
 		var transitionEvent:TransitionEvent = new TransitionEvent();
 		transitionEvent.initTransitionEvent(EventConstants.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
