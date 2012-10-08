@@ -683,7 +683,7 @@ class HTMLDocument extends Document
 	 */
 	public function onPlatformResizeEvent(event:UIEvent):Void
 	{
-		documentElement.invalidate(InvalidationReason.windowResize);
+		//documentElement.invalidate(InvalidationReason.windowResize);
 	}
 	
 	/**

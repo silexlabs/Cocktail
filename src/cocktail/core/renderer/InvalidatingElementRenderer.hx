@@ -69,113 +69,33 @@ class InvalidatingElementRenderer extends ElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Main invalidation method. Switch the invalidation reason
-	 * to determine the steps to take
+	 * TODO 1 : invalidation must be revised
 	 */
-	override public function invalidate(invalidationReason:InvalidationReason):Void
+	override public function invalidate():Void
 	{
-		switch(invalidationReason)
-		{
-			case InvalidationReason.styleChanged(styleName):
-				invalidatedStyle(styleName, invalidationReason);
-			
-			case InvalidationReason.childStyleChanged(styleName):
-				invalidatedChildStyle(styleName, invalidationReason);
-				
-			case InvalidationReason.positionedChildStyleChanged(styleName):
-				invalidatedPositionedChildStyle(styleName, invalidationReason);
-				
-			case InvalidationReason.needsImmediateLayout:
-				invalidateLayoutImmediate();
-				
-			case InvalidationReason.windowResize:
-				_childrenNeedLayout = true;
-				_positionedChildrenNeedLayout = true;
-				invalidateLayoutAndRendering();
-				
-			case InvalidationReason.backgroundImageLoaded:
-				invalidateRendering();
-				
-			case InvalidationReason.other:
-				_childrenNeedLayout = true;
-				_positionedChildrenNeedLayout = true;
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE INVALIDATION METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Called when an in flow child was invalidated
-	 */
-	public function childInvalidated(invalidationReason:InvalidationReason):Void
-	{
-		invalidate(invalidationReason);
+		_childrenNeedLayout = true;
+		_positionedChildrenNeedLayout = true;
 	}
 	
 	/**
-	 * Called when a positioned child was invalidated
+	 * schedule a rendering
 	 */
-	public function positionedChildInvalidated(invalidationReason:InvalidationReason):Void
+	override public function invalidateRendering():Void
 	{
-		invalidate(invalidationReason);
-	}
-	
-	/**
-	 * Invalidate the containing block of the ElementRenderer,
-	 * which might be the parent, the first positioned ancestor
-	 * or the initial block renderer
-	 */
-	private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
-	{
-		//TODO 1 : not supposed to happen
-		if (_containingBlock == null)
+		//invalidate the layer associated with
+		//this ElementRenderer
+		if (layerRenderer != null)
 		{
-			return;
-		}
-		
-		var containingBlockInvalidationReason:InvalidationReason;
-		
-		//for the containing block, the invalidation reason might change so that
-		//the containing block knows that it was a children that was initially
-		//invalidated, not itself
-		switch (invalidationReason)
-		{
-			case InvalidationReason.styleChanged(styleName):
-				if (isPositioned() == true)
-				{
-					containingBlockInvalidationReason = InvalidationReason.positionedChildStyleChanged(styleName);
-				}
-				else
-				{
-					containingBlockInvalidationReason = InvalidationReason.childStyleChanged(styleName);
-				}
-				
-			default:
-				containingBlockInvalidationReason = invalidationReason;
-				
-		}
-		
-		//call different invalidation method for positioned and
-		//in flow block container
-		//
-		//TODO 2 : might be redundant with the invalidationreason change ?
-		if (isPositioned() == true && isRelativePositioned() == false)
-		{
-			_containingBlock.positionedChildInvalidated(containingBlockInvalidationReason);
-		}
-		else
-		{
-			_containingBlock.childInvalidated(containingBlockInvalidationReason);
+			layerRenderer.invalidateRendering();
 		}
 	}
 	
 	/**
-	 * Called when a style change if this ElementRenderer
-	 * caused the invalidation
+	 * When a style changed, determine wether a layout
+	 * and rendering is needed for this element and for
+	 * its containing block
 	 */
-	private function invalidatedStyle(styleName:String, invalidationReason:InvalidationReason):Void
+	override public function invalidateStyle(styleName:String):Void
 	{
 		switch (styleName)
 		{
@@ -187,7 +107,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 				if (isPositioned() == true && isRelativePositioned() == false)
 				{
 					invalidateLayoutAndRendering();
-					invalidateContainingBlock(invalidationReason);
+					invalidateContainingBlock(styleName);
 				}
 				//if the child is relatively positioned, it only needs a rendering, as its
 				//layout is not affected by those styles
@@ -200,9 +120,9 @@ class InvalidatingElementRenderer extends ElementRenderer
 			case CSSConstants.COLOR, CSSConstants.FONT_FAMILY, CSSConstants.FONT_SIZE,
 			CSSConstants.FONT_VARIANT, CSSConstants.FONT_STYLE, CSSConstants.FONT_WEIGHT,
 			CSSConstants.LETTER_SPACING, CSSConstants.TEXT_TRANSFORM, CSSConstants.WHITE_SPACE:
-				invalidateText(invalidationReason);
+				invalidateText();
 				invalidateLayoutAndRendering();
-				invalidateContainingBlock(invalidationReason);
+				invalidateContainingBlock(styleName);
 			
 			//when opacity or visibility changes, only rendering
 			//needs to be updated
@@ -221,14 +141,125 @@ class InvalidatingElementRenderer extends ElementRenderer
 			//the containing block
 			default:
 				invalidateLayout();
-				invalidateContainingBlock(invalidationReason);
+				invalidateContainingBlock(styleName);
+		}
+	}
+	
+	/**
+	 * perform an immediate layout of this element renderer
+	 */
+	override public function invalidateLayoutImmediate():Void
+	{
+		_needsLayout = true;
+		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
+		htmlDocument.invalidationManager.invalidateLayout(true);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when an in flow child was invalidated
+	 */
+	public function childInvalidated():Void
+	{
+		invalidate();
+	}
+	
+	/**
+	 * Called when a positioned child was invalidated
+	 */
+	public function positionedChildInvalidated():Void
+	{
+		invalidate();
+	}
+	
+	/**
+	 * Invalidate the containing block of the ElementRenderer,
+	 * which might be the parent, the first positioned ancestor
+	 * or the initial block renderer
+	 */
+	private function invalidateContainingBlock(styleName:String):Void
+	{
+		//TODO 1 : not supposed to happen
+		if (_containingBlock == null)
+		{
+			return;
+		}
+		
+		//call different invalidation method for positioned and
+		//in flow block container
+		//
+		//TODO 2 : might be redundant with the invalidationreason change ?
+		if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			_containingBlock.invalidatedChildStyle(styleName);
+		}
+		else
+		{
+			_containingBlock.invalidatedPositionedChildStyle(styleName);
+		}
+	}
+	
+	/**
+	 * Called when a style change if this ElementRenderer
+	 * caused the invalidation
+	 */
+	private function invalidatedStyle(styleName:String):Void
+	{
+		switch (styleName)
+		{
+			//if one of the position style (left, right,top, bottom) was changed,
+			//a layout and rendering is only needed for positioned child
+			case CSSConstants.LEFT, CSSConstants.RIGHT,
+			CSSConstants.TOP, CSSConstants.BOTTOM:
+				
+				if (isPositioned() == true && isRelativePositioned() == false)
+				{
+					invalidateLayoutAndRendering();
+					invalidateContainingBlock(styleName);
+				}
+				//if the child is relatively positioned, it only needs a rendering, as its
+				//layout is not affected by those styles
+				else
+				{
+					invalidateRendering();
+				}
+				
+			//those style invalidate the child TextRenderer of this ElementRenderer	
+			case CSSConstants.COLOR, CSSConstants.FONT_FAMILY, CSSConstants.FONT_SIZE,
+			CSSConstants.FONT_VARIANT, CSSConstants.FONT_STYLE, CSSConstants.FONT_WEIGHT,
+			CSSConstants.LETTER_SPACING, CSSConstants.TEXT_TRANSFORM, CSSConstants.WHITE_SPACE:
+				invalidateText();
+				invalidateLayoutAndRendering();
+				invalidateContainingBlock(styleName);
+			
+			//when opacity or visibility changes, only rendering
+			//needs to be updated
+			case CSSConstants.OPACITY, CSSConstants.VISIBILITY:
+				invalidateRendering();
+				
+			//a background style change only requires a re-rendering, as backgrounds never
+			//affects layout
+			case CSSConstants.BACKGROUND_COLOR, CSSConstants.BACKGROUND_CLIP,
+			CSSConstants.BACKGROUND_IMAGE, CSSConstants.BACKGROUND_POSITION,
+			CSSConstants.BACKGROUND_ORIGIN, CSSConstants.BACKGROUND_REPEAT,
+			CSSConstants.BACKGROUND_SIZE:
+				invalidateRendering();
+				
+			//for any other style change,invalidate layout, rendering and 
+			//the containing block
+			default:
+				invalidateLayout();
+				invalidateContainingBlock(styleName);
 		}
 	}
 	
 	/**
 	 * Called when an inflow child style was changed
 	 */
-	private function invalidatedChildStyle(styleName:String, invalidationReason:InvalidationReason):Void
+	public function invalidatedChildStyle(styleName:String):Void
 	{
 		switch (styleName)
 		{
@@ -248,7 +279,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 	/**
 	 * Called when a positioned children style was changed
 	 */
-	private function invalidatedPositionedChildStyle(styleName:String, invalidationReason:InvalidationReason):Void
+	public function invalidatedPositionedChildStyle(styleName:String):Void
 	{
 		switch (styleName)
 		{
@@ -280,29 +311,6 @@ class InvalidatingElementRenderer extends ElementRenderer
 	}
 	
 	/**
-	 * execute a layout immediately
-	 */
-	public function invalidateLayoutImmediate():Void
-	{
-		_needsLayout = true;
-		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
-		htmlDocument.invalidationManager.invalidateLayout(true);
-	}
-	
-	/**
-	 * schedule a rendering
-	 */
-	private function invalidateRendering():Void
-	{
-		//invalidate the layer associated with
-		//this ElementRenderer
-		if (layerRenderer != null)
-		{
-			layerRenderer.invalidateRendering();
-		}
-	}
-	
-	/**
 	 * schedule a layout and rendering
 	 */
 	private function invalidateLayoutAndRendering():Void
@@ -323,7 +331,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 	/**
 	 * Invalidate the TextRenderer children
 	 */
-	private function invalidateText(invalidationReason:InvalidationReason):Void
+	private function invalidateText():Void
 	{
 		var length:Int = childNodes.length;
 		for (i in 0...length)
@@ -331,7 +339,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 			var child:ElementRenderer = childNodes[i];
 			if (child.isText() == true)
 			{
-				child.invalidate(invalidationReason);
+				child.invalidate();
 			}
 		}
 	}

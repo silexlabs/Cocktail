@@ -94,15 +94,13 @@ class Animator
 	 * animatable property is changed
 	 * 
 	 * @param	propertyName the name of the property to animate
-	 * @param	invalidationReason the invalidation reason caused by the property change
 	 * @param	startValue the current computed value of the animatable property, used as
 	 * starting value if the animation actually starts
 	 */
-	public function registerPendingAnimation(propertyName:String, invalidationReason:InvalidationReason, startValue:Float):Void
+	public function registerPendingAnimation(propertyName:String, startValue:Float):Void
 	{
 		var pendingAnimation:PendingAnimationVO = new PendingAnimationVO();
 		pendingAnimation.propertyName = propertyName;
-		pendingAnimation.invalidationReason = invalidationReason;
 		pendingAnimation.startValue = startValue;
 		if (_pendingAnimations == null)
 		{
@@ -248,7 +246,7 @@ class Animator
 		
 		//start a transition using the TransitionManager
 		transitionManager.startTransition(style, pendingAnimation.propertyName, pendingAnimation.startValue, endValue, 
-		transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate, pendingAnimation.invalidationReason);
+		transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate);
 	
 		//the transition did in fact start
 		return true;

@@ -940,7 +940,7 @@ class HTMLMediaElement extends EmbeddedElement
 		establishMediaTimeline();
 		
 		//refresh the layout
-		invalidate(InvalidationReason.other);
+		invalidate();
 		
 		//start listening to loading event, as it begins
 		//as soon as the metadata are loaded

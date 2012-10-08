@@ -518,15 +518,40 @@ class HTMLElement extends Element<HTMLElement>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Called when the specified value of a style requiring a re-layout
-	 * is changed, for instance when the width is changed. Invalidate
-	 * the layout of the elementRenderer if the HTMLElement is rendered
+	 * generic invalidation method, invalidate
+	 * all aspects of the element renderer
+	 * if not null
 	 */
-	public function invalidate(invalidationReason:InvalidationReason):Void
+	public function invalidate():Void
 	{
 		if (elementRenderer != null)
 		{
-			elementRenderer.invalidate(invalidationReason);
+			elementRenderer.invalidate();
+		}
+	}
+	
+	/**
+	 * Called when the specified value of a style 
+	 * changed, may invalidated the layout and/or
+	 * rendering of the element renderer
+	 */
+	public function invalidateStyle(styleName:String):Void
+	{
+		if (elementRenderer != null)
+		{
+			elementRenderer.invalidateStyle(styleName);
+		}
+	}
+	
+	/**
+	 * called when the element renderer requires
+	 * an immediate layout
+	 */
+	public function invalidateLayoutImmediately():Void
+	{
+		if (elementRenderer != null)
+		{
+			elementRenderer.invalidateLayoutImmediate();
 		}
 	}
 	
@@ -1719,14 +1744,14 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		invalidate(InvalidationReason.needsImmediateLayout);
+		invalidateLayoutImmediately();
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight);
 	}
 	
 	private function get_offsetHeight():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
+		invalidateLayoutImmediately();
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
 	}
@@ -1734,7 +1759,7 @@ class HTMLElement extends Element<HTMLElement>
 	//TODO 3  : unit test
 	private function get_offsetLeft():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
+		invalidateLayoutImmediately();
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.positionedOrigin.x);
@@ -1744,7 +1769,7 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_offsetTop():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
+		invalidateLayoutImmediately();
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.positionedOrigin.y);
@@ -1756,14 +1781,14 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		invalidate(InvalidationReason.needsImmediateLayout);
+		invalidateLayoutImmediately();
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight);
 	}
 	
 	private function get_clientHeight():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
+		invalidateLayoutImmediately();
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
 	}
@@ -1771,14 +1796,14 @@ class HTMLElement extends Element<HTMLElement>
 	//TODO 5 : should be top border height
 	private function get_clientTop():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
+		invalidateLayoutImmediately();
 		return 0;
 	}
 	
 	//TODO 5 : should be left border width
 	private function get_clientLeft():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
+		invalidateLayoutImmediately();
 		return 0;
 	}
 }

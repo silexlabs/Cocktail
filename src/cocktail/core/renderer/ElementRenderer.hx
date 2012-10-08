@@ -334,7 +334,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		super.appendChild(newChild);
 		
 		newChild.addedToRenderingTree();
-		invalidate(InvalidationReason.other);
+		invalidate();
 		return newChild;
 	}
 	
@@ -347,7 +347,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		oldChild.removedFromRenderingTree();
 		
 		super.removeChild(oldChild);
-		invalidate(InvalidationReason.other);
+		invalidate();
 		return oldChild;
 	}
 	
@@ -368,7 +368,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		}
 		
 		newChild.addedToRenderingTree();
-		invalidate(InvalidationReason.other);
+		invalidate();
 		
 		return newChild;
 	}
@@ -1240,21 +1240,44 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	/**
 	 * An ElementRenderer is invalidated for instance when one of its style value changes,
 	 * or when a child is appended to it. When this happens, the ElementRenderer determinates
-	 * the steps to take. 
+	 * the steps to take (wether to re-layout and/or re-render the element)
 	 * 
-	 * For instance, a positioned ElementRenderer might need to also
-	 * invalidate its first positioned ancestor when one of its style changes.
+	 * In most cases, an invalidation schedule an update of the docuement
+	 * layout and rendering
 	 * 
-	 * In most case, invalidating an ElementRenderer schedules an asynchronous re-layout
-	 * and re-rendering with HTMLDocument.
-	 * 
-	 * This methods tries to optimise the number of computation that will be
-	 * needed on next layout and rendering
-	 * 
-	 * @param	invalidationReason an enumeration of all the possible reason causing
-	 * the invalidation
+	 * This method is a generic invalidation method
+	 * for cases which are not yet optimised
 	 */
-	public function invalidate(invalidationReason:InvalidationReason):Void
+	public function invalidate():Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Called when a style of the owning HTMLElement
+	 * changed
+	 * @param	styleName the name of the style whose
+	 * value changed
+	 */
+	public function invalidateStyle(styleName:String):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Called when an immediate layout must be performed
+	 * on this element renderer
+	 */
+	public function invalidateLayoutImmediate():Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Called when this element renderer needs
+	 * to be re-rendered
+	 */
+	public function invalidateRendering():Void
 	{
 		//abstract
 	}

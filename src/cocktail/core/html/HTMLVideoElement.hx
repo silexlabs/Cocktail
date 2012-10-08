@@ -192,7 +192,7 @@ class HTMLVideoElement extends HTMLMediaElement
 	private function onPosterLoadComplete(e:Event):Void
 	{
 		removeListeners();
-		invalidate(InvalidationReason.other);
+		invalidate();
 	}
 	
 	/**

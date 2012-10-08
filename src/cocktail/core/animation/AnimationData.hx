@@ -23,7 +23,6 @@ import cocktail.core.renderer.RendererData;
  */
 class PendingAnimationVO {
 	public var propertyName:String;
-	public var invalidationReason:InvalidationReason;
 	public var startValue:Float;
 	public function new():Void
 	{

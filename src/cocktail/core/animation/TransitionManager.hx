@@ -142,11 +142,11 @@ class TransitionManager
 	 * Transition obejct
 	 */
 	public function startTransition(target:CoreStyle, propertyName:String, startValue:Float, endValue:Float, transitionDuration:Float, 
-	transitionDelay:Float, transitionTimingFunction:CSSPropertyValue, onComplete:Transition->Void, onUpdate:Transition->Void, invalidationReason:InvalidationReason):Void
+	transitionDelay:Float, transitionTimingFunction:CSSPropertyValue, onComplete:Transition->Void, onUpdate:Transition->Void):Void
 	{
 		//create a new transition
 		var transition:Transition = new Transition(propertyName, target, transitionDuration, transitionDelay, transitionTimingFunction,
-		startValue, endValue, onComplete, onUpdate, invalidationReason);
+		startValue, endValue, onComplete, onUpdate);
 		
 		//get the array to store the transition the new transition
 		var transitionsForProperty:Array<Transition> = getTransitionsForProperty(propertyName);
