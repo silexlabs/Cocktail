@@ -237,17 +237,15 @@ class TransitionManager
 	 * transition is in progress to call the right
 	 * callback for the transition
 	 */
-	private function onTransitionTick():Void
+	private function onTransitionTick(timeStamp:Float):Void
 	{
-		//get the current timestamp
-		var tick:Float = Date.now().getTime();
 		//store the actual elapsed time since the last
 		//time this methd was called, in milliseconds
-		var interval:Float = tick - _lastTick;
+		var interval:Float = timeStamp - _lastTick;
 		
 		//the last time is updated for the next call
 		//of this method
-		_lastTick = tick;
+		_lastTick = timeStamp;
 		
 		var transitionsLength:Int = _transitions.length;
 		//loop in all Transition 

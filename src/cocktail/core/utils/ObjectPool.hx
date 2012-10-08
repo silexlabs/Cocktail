@@ -20,21 +20,14 @@ class ObjectPool<T:IPoolable>
 		_freeObjectIndex = -1;
 	}
 	
-	private static var _t:Int = 0;
-	
-	private static var _r:Int = 0;
 	public function get():T
 	{
 		if (_freeObjectIndex == -1)
 		{
-			_t++;
-			//trace("instanttttttttttt : " + _t);
 			return Type.createInstance(_pooledClass, []);
 		}
 		else
 		{
-			_r++;
-			//trace("reuse : " + _r);
 			var object:T = _pool[_freeObjectIndex];
 			_freeObjectIndex--;
 			return object;
