@@ -141,10 +141,16 @@ class HTMLElement extends Element<HTMLElement>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * sets or gets the HTML
+	 * sets or gets the inner HTML
 	 * syntax describing the element's descendants.
 	 */
 	public var innerHTML(get_innerHTML, set_innerHTML):String;
+	
+	/**
+	 * sets or gets the outer HTML
+	 * syntax describing the element and its descendants.
+	 */
+	public var outerHTML(get_outerHTML, set_outerHTML):String;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Rendering attributes
@@ -534,7 +540,7 @@ class HTMLElement extends Element<HTMLElement>
 		_needsElementRendererUpdate = true;
 		if (_ownerHTMLDocument != null)
 		{
-			_ownerHTMLDocument.invalidateRenderingTree();
+			_ownerHTMLDocument.invalidationManager.invalidateRenderingTree();
 		}
 	}
 	
@@ -589,7 +595,7 @@ class HTMLElement extends Element<HTMLElement>
 		_needsCascading = true;
 		if (_ownerHTMLDocument != null)
 		{
-			_ownerHTMLDocument.invalidateCascade();
+			_ownerHTMLDocument.invalidationManager.invalidateCascade();
 		}
 	}
 	
@@ -1555,7 +1561,7 @@ class HTMLElement extends Element<HTMLElement>
 	
 	/**
 	 * Remove all the currently added child nodes,
-	 * deserialise the passed HTML string and attach
+	 * deserialize the passed HTML string and attach
 	 * the resulting child nodes
 	 * 
 	 * @param	value an HTML String 
@@ -1595,9 +1601,34 @@ class HTMLElement extends Element<HTMLElement>
 		
 		return value;
 	}
-	
+
 	/**
-	 * Serialise the descendant nodes of this HTMLElement
+	 * Remove all the currently added child nodes,
+	 * deserialize the passed HTML string and attach
+	 * the resulting child nodes
+	 * 
+	 * @param	value an HTML String 
+	 */
+	private function set_outerHTML(value:String):String
+	{
+		//parse the html string into a node object
+		var node:HTMLElement = DOMParser.parse(value, ownerDocument);
+
+		var oldNextSibling:HTMLElement = this.nextSibling;
+		parentNode.removeChild(cast(this));
+
+		if (node == null)
+		{
+			return value;
+		}
+
+		parentNode.insertBefore( node, oldNextSibling );
+
+		return value;
+	}
+
+	/**
+	 * Serialize the descendant nodes of this HTMLElement
 	 * and return the result as an HTML String
 	 */
 	private function get_innerHTML():String
@@ -1608,6 +1639,18 @@ class HTMLElement extends Element<HTMLElement>
 		//remove the first and last tag, as they correspond to this HTMLElement
 		//tag which should not be returned as its inner html
 		str = str.substr(str.indexOf(HTMLConstants.HTML_TOKEN_MORE_THAN) + 1 , str.lastIndexOf(HTMLConstants.HTML_TOKEN_LESS_THAN) - str.indexOf(HTMLConstants.HTML_TOKEN_MORE_THAN) - 1);
+		
+		return str;
+	}
+	
+	/**
+	 * Serialize the HTMLElement and it's children
+	 * and return the result as an HTML String
+	 */
+	private function get_outerHTML():String
+	{
+		//serialise this node into an HTML string
+		var str:String = DOMParser.serialize(this);
 		
 		return str;
 	}

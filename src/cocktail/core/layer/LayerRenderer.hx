@@ -342,7 +342,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 	{
 		_needsGraphicsContextUpdate = true;
 		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
-		htmlDocument.invalidateGraphicsContextTree(force);
+		htmlDocument.invalidationManager.invalidateGraphicsContextTree(force);
 	}
 	
 	/**
@@ -376,7 +376,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		}
 		
 		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
-		htmlDocument.invalidateRendering();
+		htmlDocument.invalidationManager.invalidateRendering();
 	}
 	
 	/**
@@ -399,7 +399,7 @@ class LayerRenderer extends NodeBase<LayerRenderer>
 		positiveZIndexChildLayerRenderers.clear();
 		
 		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
-		htmlDocument.invalidateStackingContexts();
+		htmlDocument.invalidationManager.invalidateStackingContexts();
 		
 		_needsStackingContextUpdate = true;
 	}
