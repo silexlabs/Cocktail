@@ -294,9 +294,16 @@ class HTMLDocument extends Document
 			documentElement.appendChild(body);
 			_hoveredElementRenderer = body.elementRenderer;
 			activeElement = body;
-			
 		}
-	
+	}
+
+	/**
+	 * Init the document element.
+	 * @param	htmlBodyElement
+	 */
+	public function initDocumentElement(htmlElement:HTMLElement):Void
+	{
+		documentElement = htmlElement;
 	}
 	
 	/**
