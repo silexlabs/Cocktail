@@ -414,7 +414,6 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			case DOMConstants.ELEMENT_NODE:
 				var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
 				htmlDocument.invalidationManager.invalidateLayerTree();
-				
 		}
 	}
 	
@@ -734,6 +733,25 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		for (i in 0...length)
 		{
 			childNodes[i].updateAnonymousBlock();
+		}
+	}
+	
+	/**
+	 * Called by the document when the line box
+	 * trees belonging to block box element renderer
+	 * establishing an inline formatting context
+	 * needs to be updated
+	 * 
+	 * line boxes are generated for elements 
+	 * participating in an inline formatting
+	 * context
+	 */
+	public function updateLineBoxes():Void
+	{
+		var length:Int = childNodes.length;
+		for (i in 0...length)
+		{
+			childNodes[i].updateLineBoxes();
 		}
 	}
 	

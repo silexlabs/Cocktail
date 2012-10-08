@@ -174,7 +174,7 @@ class HTMLDocument extends Document
 	 * Method which must be called asynchronously register
 	 * themselves with the timer
 	 */
-	public var timer:Timer;
+	public var timer(default, null):Timer;
 	
 	/**
 	 * This class is in charge of keeping track of the
@@ -294,9 +294,7 @@ class HTMLDocument extends Document
 			documentElement.appendChild(body);
 			_hoveredElementRenderer = body.elementRenderer;
 			activeElement = body;
-			
 		}
-	
 	}
 	
 	/**
@@ -568,7 +566,6 @@ class HTMLDocument extends Document
 			{
 				scrollableHTMLElement.scrollTop -= scrollOffset;
 			}
-		
 		}
 	}
 	

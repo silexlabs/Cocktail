@@ -236,6 +236,8 @@ class InvalidationManager
 		}
 	}
 	
+	private static var _g:Int = 0;
+	
 	/**
 	 * Actually schedule an update if one
 	 * is not yet scheduled
@@ -265,6 +267,7 @@ class InvalidationManager
 		{
 			_htmlDocument.documentElement.updateElementRenderer();
 			_htmlDocument.documentElement.elementRenderer.updateAnonymousBlock();
+			_htmlDocument.documentElement.elementRenderer.updateLineBoxes();
 			_renderingTreeNeedsUpdate = false;
 		}
 		

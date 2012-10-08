@@ -17,6 +17,7 @@ import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
+import cocktail.core.linebox.EmbeddedLineBox;
 import cocktail.core.linebox.LineBox;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.floats.FloatsManager;
@@ -28,6 +29,8 @@ import cocktail.core.font.FontData;
 import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.graphics.GraphicsContext;
+import cocktail.core.linebox.RootLineBox;
+import cocktail.core.linebox.StaticPositionLineBox;
 import cocktail.Lib;
 import haxe.Log;
 import cocktail.core.layer.LayerRenderer;
@@ -46,12 +49,78 @@ import cocktail.core.layer.LayerRenderer;
 class BlockBoxRenderer extends ScrollableRenderer
 {	
 	/**
+	 * An array where each item represents a line
+	 * . Used when this block box establishes an 
+	 * inline formatting context
+	 */
+	public var rootLineBoxes:Array<LineBox>;
+	
+	/**
+	 * count the number of root line box
+	 * used, this is used to prevent creating
+	 * too much root line box when updateing layout
+	 */
+	private var _usedRootLineBoxes:Int;
+	
+	/**
 	 * class constructor.
 	 * Init class attributes
 	 */
 	public function new(node:HTMLElement) 
 	{
 		super(node);
+		rootLineBoxes = new Array<LineBox>();
+		_usedRootLineBoxes = 0;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC LINE BOXES METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * reset each root line box owned by this
+	 * block box. Root line box are reused
+	 * instead of being instantiated each time
+	 */
+	public function resetRootLineBoxes():Void
+	{
+		var length:Int = rootLineBoxes.length;
+		for (i in 0...length)
+		{
+			//reset the root line box data
+			var rootLineBox:LineBox = rootLineBoxes[i];
+			rootLineBox.bounds.x = 0;
+			rootLineBox.bounds.y = 0;
+			rootLineBox.bounds.width = 0;
+			rootLineBox.bounds.height = 0;
+			
+			//remove all its children
+			var childLength:Int = rootLineBox.childNodes.length;
+			for (j in 0...childLength)
+			{
+				rootLineBox.removeChild(rootLineBox.childNodes[0]);
+			}
+		}
+		
+		_usedRootLineBoxes = 0;
+	}
+	
+	/**
+	 * Return a usable root line box, used during
+	 * layout
+	 */
+	public function getRootLineBox():RootLineBox
+	{
+		_usedRootLineBoxes++;
+	
+		//create a new root line box if all root line
+		//boxes are used
+		if (_usedRootLineBoxes > rootLineBoxes.length)
+		{
+			rootLineBoxes.push(new RootLineBox(this));
+		}
+		
+		return cast(rootLineBoxes[_usedRootLineBoxes - 1]);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -260,10 +329,11 @@ class BlockBoxRenderer extends ScrollableRenderer
 	{
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.childrenInline() == true)
 		{	
-			var length:Int = rootRenderer.lineBoxes.length;
+			var blockboxRenderer:BlockBoxRenderer = cast(rootRenderer);
+			var length:Int = blockboxRenderer.rootLineBoxes.length;
 			for (i in 0...length)
 			{
-				renderLineBoxesInLine(rootRenderer.lineBoxes[i], graphicContext);
+				renderLineBoxesInLine(blockboxRenderer.rootLineBoxes[i], graphicContext);
 			}
 		}
 		else

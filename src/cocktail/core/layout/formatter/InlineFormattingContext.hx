@@ -99,8 +99,10 @@ class InlineFormattingContext extends FormattingContext
 		_unbreakableWidth = 0.0;
 		_firstLineFormatted = false;
 		
+		_formattingContextRoot.resetRootLineBoxes();
+		
 		var rootLineBoxes:Array<LineBox> = new Array<LineBox>();
-		var initialRootLineBox:RootLineBox = new RootLineBox(_formattingContextRoot);
+		var initialRootLineBox:RootLineBox = _formattingContextRoot.getRootLineBox();
 		rootLineBoxes.push(initialRootLineBox);
 		
 		_firstLineFormatted = false;
@@ -117,7 +119,7 @@ class InlineFormattingContext extends FormattingContext
 		//format the last line
 		formatLine(rootLineBoxes[rootLineBoxes.length - 1], true);
 
-		_formattingContextRoot.lineBoxes = rootLineBoxes;
+		_formattingContextRoot.rootLineBoxes = rootLineBoxes;
 
 		var formattingContextCoreStyle:CoreStyle = _formattingContextRoot.coreStyle;
 		//apply formatting height to formatting context root if auto height
@@ -145,12 +147,14 @@ class InlineFormattingContext extends FormattingContext
 			//absolutely positioned should be placed
 			if (child.isPositioned() == true && child.isRelativePositioned() == false)
 			{
-				var staticLineBox:LineBox = new StaticPositionLineBox(child);
-						
+				var staticLineBox:LineBox = child.lineBoxes[0];
+				child.bounds.x = 0;
+				child.bounds.y = 0;
 				child.bounds.width = child.coreStyle.usedValues.width+ child.coreStyle.usedValues.paddingLeft + child.coreStyle.usedValues.paddingRight ;
 				child.bounds.height = child.coreStyle.usedValues.height + child.coreStyle.usedValues.paddingTop + child.coreStyle.usedValues.paddingBottom;
 				staticLineBox.marginLeft = child.coreStyle.usedValues.marginLeft;
 				staticLineBox.marginRight = child.coreStyle.usedValues.marginRight;
+				
 				lineBox = insertIntoLine(staticLineBox, lineBox, rootLineBoxes, openedElementRenderers);
 			}
 			//here the child either starts a new formatting context, meaning it is displayed
@@ -164,12 +168,14 @@ class InlineFormattingContext extends FormattingContext
 				
 				//set the bounds of the corresponding InlineBoxRenderer
 				var childBounds:RectangleVO = child.bounds;
+				child.bounds.x = 0;
+				child.bounds.y = 0;
 				childBounds.width = childUsedValues.width + childUsedValues.paddingLeft + childUsedValues.paddingRight;
 				childBounds.height = childUsedValues.height + childUsedValues.paddingTop + childUsedValues.paddingBottom;
 				
 				//create the embedded line box representing the InlineBoxRenderer in
 				//the inline formatting context
-				var embeddedLineBox:LineBox = new EmbeddedLineBox(child);
+				var embeddedLineBox:LineBox = child.lineBoxes[0];
 				
 				embeddedLineBox.marginLeft = childUsedValues.marginLeft;
 				embeddedLineBox.marginRight = childUsedValues.marginRight;
@@ -302,7 +308,7 @@ class InlineFormattingContext extends FormattingContext
 			formatLine(rootLineBoxes[rootLineBoxes.length -1], false);
 			
 			//create a new root for the next line, and add it to the line array
-			var rootLineBox:RootLineBox = new RootLineBox(_formattingContextRoot);
+			var rootLineBox:RootLineBox = _formattingContextRoot.getRootLineBox();
 			rootLineBoxes.push(rootLineBox);
 			
 			//set the line box which will be used to layout the following children
