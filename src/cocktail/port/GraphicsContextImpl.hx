@@ -8,11 +8,11 @@
 package cocktail.port;
 
 #if macro
-typedef GraphicsContext = cocktail.core.graphics.AbstractGraphicsContext;
+typedef GraphicsContextImpl = cocktail.core.graphics.AbstractGraphicsContextImpl;
 
 #elseif (flash9 || nme)
-typedef GraphicsContext =  cocktail.port.flash_player.GraphicsContext;
+typedef GraphicsContextImpl =  cocktail.port.flash_player.GraphicsContextImpl;
 
 #else
-typedef GraphicsContext = cocktail.core.graphics.AbstractGraphicsContext;
+typedef GraphicsContextImpl = cocktail.core.graphics.AbstractGraphicsContextImpl;
 #end

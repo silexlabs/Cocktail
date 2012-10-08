@@ -22,11 +22,18 @@ import cocktail.core.css.CSSData;
 class SelectorManager 
 {
 	/**
+	 * Used to count the current selector specifity.
+	 * Implemented as class attribute to only 
+	 * instantiate one
+	 */
+	private var _selectorSpecificityVO:SelectorSpecificityVO;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
 	{
-		
+		_selectorSpecificityVO = new SelectorSpecificityVO();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -234,7 +241,7 @@ class SelectorManager
 		switch(simpleSelectorSequenceStart)
 		{
 			case SimpleSelectorSequenceStartValue.TYPE(value):
-				return node.tagName == value.toUpperCase();
+				return node.tagName == value;
 				
 			case SimpleSelectorSequenceStartValue.UNIVERSAL:
 				return true;
@@ -677,10 +684,13 @@ class SelectorManager
 	 */
 	public function getSelectorSpecifity(selector:SelectorVO):Int
 	{
-		//holds the specificity data, is passe by reference
+		//holds the specificity data, is passed by reference
 		//to all methods which can increment the specificity
 		//attribute
-		var selectorSpecificity:SelectorSpecificityVO = new SelectorSpecificityVO();
+		//reset before usage
+		_selectorSpecificityVO.classAttributesAndPseudoClassesNumber = 0;
+		_selectorSpecificityVO.idSelectorsNumber = 0;
+		_selectorSpecificityVO.typeAndPseudoElementsNumber = 0;
 		
 		//a pseudo element increment the specificity
 		switch (selector.pseudoElement)
@@ -689,7 +699,7 @@ class SelectorManager
 			PseudoElementSelectorValue.FIRST_LINE,
 			PseudoElementSelectorValue.AFTER,
 			PseudoElementSelectorValue.BEFORE:
-				selectorSpecificity.typeAndPseudoElementsNumber++;
+				_selectorSpecificityVO.typeAndPseudoElementsNumber++;
 			
 			case PseudoElementSelectorValue.NONE:	
 		}
@@ -705,7 +715,7 @@ class SelectorManager
 				case SelectorComponentValue.COMBINATOR(value):
 					
 				case SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(value):
-					getSimpleSelectorSequenceSpecificity(value, selectorSpecificity);
+					getSimpleSelectorSequenceSpecificity(value, _selectorSpecificityVO);
 			}
 		}
 		
@@ -713,7 +723,7 @@ class SelectorManager
 		//for instance, if idSelectorsNumber is equal to 1, classAttributesAndPseudoClassesNumber to 0
 		//and typeAndPseudoElementsNumber to 2,
 		//the specificity is 102
-		var concatenatedSpecificity:String = Std.string(selectorSpecificity.idSelectorsNumber) + Std.string(selectorSpecificity.classAttributesAndPseudoClassesNumber) + Std.string(selectorSpecificity.typeAndPseudoElementsNumber);
+		var concatenatedSpecificity:String = Std.string(_selectorSpecificityVO.idSelectorsNumber) + Std.string(_selectorSpecificityVO.classAttributesAndPseudoClassesNumber) + Std.string(_selectorSpecificityVO.typeAndPseudoElementsNumber);
 
 		return Std.parseInt(concatenatedSpecificity);
 	}

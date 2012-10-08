@@ -17,7 +17,7 @@ import cocktail.core.layer.CompositingLayerRenderer;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.layer.PluginLayerRenderer;
 import cocktail.core.resource.ResourceManager;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 
@@ -57,11 +57,9 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	 * Instantitate its own compositing layer, which
 	 * is a subclass dedicated to plugin rendering
 	 */
-	override private function createLayer(parentLayer:LayerRenderer):Void
+	override private function doCreateLayer():Void
 	{
 		layerRenderer = new PluginLayerRenderer(this);
-		parentLayer.appendChild(layerRenderer);
-		_hasOwnLayer = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -76,11 +74,6 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	override private function renderEmbeddedAsset(graphicContext:GraphicsContext):Void
 	{
 		var htmlObjectElement:HTMLObjectElement = cast(domNode);
-		
-		var viewport:RectangleVO = this.globalBounds;
-		viewport.x += coreStyle.usedValues.paddingLeft;
-		viewport.y += coreStyle.usedValues.paddingTop;
-		
-		htmlObjectElement.plugin.viewport = viewport;
+		htmlObjectElement.plugin.updateViewport(globalBounds.x + coreStyle.usedValues.paddingLeft, globalBounds.y + coreStyle.usedValues.paddingTop, globalBounds.width, globalBounds.height);
 	}
 }

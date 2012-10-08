@@ -409,8 +409,12 @@ class BackgroundStylesComputer
 				
 			default:
 		}
-		
-		return new RectangleVO(x, y, width, height);
+		var rectangle:RectangleVO = new RectangleVO();
+		rectangle.x = x;
+		rectangle.y = y;
+		rectangle.width = width;
+		rectangle.height = height;
+		return rectangle;
 	}
 	
 	/**
@@ -464,6 +468,12 @@ class BackgroundStylesComputer
 			default:	
 		}
 		
-		return new RectangleVO(x, y, width, height);
+		var rectangle:RectangleVO = new RectangleVO();
+		rectangle.x = x;
+		rectangle.y = y;
+		rectangle.width = width;
+		rectangle.height = height;
+		
+		return rectangle;
 	}
 }

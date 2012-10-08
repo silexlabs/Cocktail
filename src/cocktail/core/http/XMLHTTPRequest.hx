@@ -304,7 +304,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 		{
 			//TODO 2 : If the synchronous flag is set, release the storage mutex.
 		}
-		else if (_registeredEventListeners.keys().hasNext() == true)
+		else if (_registeredEventListeners != null)
 		{
 			_uploadEvents = true;
 		}
@@ -494,10 +494,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 		}
 		
 		//if the resource is not done loading, schedule a method call
-		#if macro
-		#elseif (flash9 || nme)
-		haxe.Timer.delay(function() { onHttpProgressTick(); }, PROGRESS_UPDATE_FREQUENCY); 
-		#end
+		Lib.document.timer.delay(onHttpProgressTick, PROGRESS_UPDATE_FREQUENCY);
 	}
 	
 	/**

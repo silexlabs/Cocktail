@@ -12,7 +12,7 @@ import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.html.HTMLConstants;
 import cocktail.plugin.Plugin;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.geom.GeomData;
 
 #if macro
@@ -22,6 +22,7 @@ import flash.display.DisplayObjectContainer;
 import flash.display.DisplayObject;
 import flash.display.Sprite;
 import flash.display.Loader;
+import flash.geom.Rectangle;
 import flash.net.URLRequest;
 #if flash
 import flash.system.LoaderContext;
@@ -86,12 +87,17 @@ class SWFPlugin extends Plugin
 	private var _loader:Loader;
 	
 	/**
+	 * A rectangle used to mask the loaded swf
+	 */
+	private var _scrollRect:Rectangle;
+	
+	/**
 	 * class constructor, start loading the swf
 	 */
 	public function new(elementAttributes:Hash<String>, params:Hash<String>, loadComplete:Void->Void, loadError:Void->Void) 
 	{
 		super(elementAttributes, params, loadComplete, loadError);
-
+		
 		//retrive the scale mode if provded or use default
 		if (params.exists(SCALE_MODE))
 		{
@@ -122,7 +128,10 @@ class SWFPlugin extends Plugin
 		_scaleMode = null;
 		if (_loader != null)
 		{
+			//method doesn't exists in nme
+			#if (air || flash)
 			_loader.unloadAndStop();
+			#end
 			_loader = null;
 		}
 	}
@@ -146,34 +155,26 @@ class SWFPlugin extends Plugin
 		containerGraphicContext.removeChild(_swf);
 	}
 	
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN SETTERS/GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
 	 * When the viewport changes, the position
 	 * and/or dimension of the swf must be updated
 	 */
-	override private function set_viewport(value:RectangleVO):RectangleVO
+	override public function updateViewport(x:Float, y:Float, width:Float, height:Float):Void
 	{
-		//the viewport is null on first call
-		if (viewport == null)
-		{
-			return viewport = value;
-		}
-		
 		//only update if one the attribute of the viewport changed
-		if (value.x == viewport.x && value.y == viewport.y
-		&& value.width == viewport.width && value.height == viewport.height)
+		if (x == viewport.x && y == viewport.y
+		&& width == viewport.width && height == viewport.height)
 		{
-			return viewport;
+			return;
 		}
 		
-		viewport = value;
+		viewport.x = x;
+		viewport.y = y;
+		viewport.width = width;
+		viewport.height = height;
 		
 		//reset the transformations of the swf
-		_swf.transform.matrix = new flash.geom.Matrix();
+		_swf.transform.matrix.identity();
 		
 		//get the bounds where the swf should be displayed
 		var assetBounds:RectangleVO = getAssetBounds(viewport.width, viewport.height,
@@ -183,32 +184,40 @@ class SWFPlugin extends Plugin
 		switch (_scaleMode)
 		{
 			case NO_SCALE:
-				_swf.x = viewport.x;
-				_swf.y = viewport.y;
+				_swf.x = Math.round(viewport.x);
+				_swf.y = Math.round(viewport.y);
 				
 			case EXACT_FIT:
-				_swf.x = viewport.x;
-				_swf.y = viewport.y;
+				_swf.x = Math.round(viewport.x);
+				_swf.y = Math.round(viewport.y);
 				_swf.scaleX = viewport.width / _swfWidth;
 				_swf.scaleY = viewport.height / _swfHeight;
 
 			default:
-				_swf.x = viewport.x + assetBounds.x;
-				_swf.y = viewport.y + assetBounds.y;
+				_swf.x = Math.round(viewport.x + assetBounds.x);
+				_swf.y = Math.round(viewport.y + assetBounds.y);
 				_swf.scaleX = assetBounds.width / _swfWidth;
 				_swf.scaleY = assetBounds.height / _swfHeight;
 		}
 		
-		//mask the swf so that it doesn't overflow
-		var mask = new Sprite();
-		mask.graphics.beginFill(0xFF0000, 0.0);
-		mask.graphics.drawRect( 
-		viewport.x, viewport.y,
-		viewport.width, viewport.height);
-		mask.graphics.endFill();
-		_swf.mask = mask;
+		//apply a scroll rect to the swf to prevent it
+		//from overflowing in object tag
+		if (_scrollRect == null)
+		{
+			_scrollRect = new Rectangle(Math.round(-viewport.x), Math.round( -viewport.y), Math.round(viewport.width), Math.round(viewport.height));
+		}
+		else
+		{
+			_scrollRect.x = Math.round(-viewport.x);
+			_scrollRect.y = Math.round(-viewport.y);
+			_scrollRect.width = Math.round(viewport.width);
+			_scrollRect.height = Math.round(viewport.height);
+		}
 		
-		return viewport;
+		_swf.scrollRect = _scrollRect;
+		
+				
+		return;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -393,7 +402,12 @@ class SWFPlugin extends Plugin
 		var xOffset:Float = (availableWidth - width) / 2;
 		var yOffset:Float = (availableHeight - height) / 2;
 		
-		return new RectangleVO(xOffset, yOffset, width, height);
+		var rect:RectangleVO = new RectangleVO();
+		rect.x = xOffset;
+		rect.y = yOffset;
+		rect.width = width;
+		rect.height = height;
+		return rect;
 	}
 	#end
 }

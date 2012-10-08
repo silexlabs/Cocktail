@@ -1011,10 +1011,7 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		//if the media has not ended playing,
 		//set this method to be called again 
-		#if macro
-		#elseif (flash9 || nme)
-		haxe.Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
-		#end
+		_ownerHTMLDocument.timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
 	}
 	
 	/**
@@ -1047,10 +1044,7 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		//if not all of the media has been loaded, dispatch
 		//a progress event and set this method to be called again
-		#if macro
-		#elseif (flash9 || nme)
-		haxe.Timer.delay(onProgressTick, PROGRESS_FREQUENCY);
-		#end
+		_ownerHTMLDocument.timer.delay(onProgressTick, PROGRESS_FREQUENCY);
 	}
 	
 	/////////////////////////////////

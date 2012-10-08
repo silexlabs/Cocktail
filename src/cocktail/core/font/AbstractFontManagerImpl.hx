@@ -26,14 +26,14 @@ class AbstractFontManagerImpl
 	 * A cache of the computed font metrics where the
 	 * keys are the font name and the font sizes
 	 */
-	private var _computedFontMetrics:Hash<Hash<FontMetricsVO>>;
+	private var _computedFontMetrics:Hash<IntHash<FontMetricsVO>>;
 	
 	/**
 	 * Class constructor. Init class attributes
 	 */
 	public function new()
 	{
-		_computedFontMetrics = new Hash<Hash<FontMetricsVO>>();
+		_computedFontMetrics = new Hash<IntHash<FontMetricsVO>>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -52,23 +52,23 @@ class AbstractFontManagerImpl
 		//tries first to retrieve them on subsequent calls
 		if (_computedFontMetrics.exists(fontFamily) == true)
 		{
-			var fontSizeHash:Hash<FontMetricsVO> = _computedFontMetrics.get(fontFamily);
-			if (fontSizeHash.exists(Std.string(fontSize)) == true)
+			var fontSizeHash:IntHash<FontMetricsVO> = _computedFontMetrics.get(fontFamily);
+			if (fontSizeHash.exists(Math.round(fontSize)) == true)
 			{
-				fontMetrics = fontSizeHash.get(Std.string(fontSize));
+				fontMetrics = fontSizeHash.get(Math.round(fontSize));
 			}
 			else
 			{
 				fontMetrics = doGetFontMetrics(fontFamily, fontSize);
-				fontSizeHash.set(Std.string(fontSize), fontMetrics);
+				fontSizeHash.set(Math.round(fontSize), fontMetrics);
 				_computedFontMetrics.set(fontFamily, fontSizeHash); 
 			}
 		}
 		else
 		{
 			fontMetrics = doGetFontMetrics(fontFamily, fontSize);
-			var fontSizeHash:Hash<FontMetricsVO> = new Hash<FontMetricsVO>();
-			fontSizeHash.set(Std.string(fontSize), fontMetrics);
+			var fontSizeHash:IntHash<FontMetricsVO> = new IntHash<FontMetricsVO>();
+			fontSizeHash.set(Math.round(fontSize), fontMetrics);
 			
 			_computedFontMetrics.set(fontFamily, fontSizeHash); 
 		}

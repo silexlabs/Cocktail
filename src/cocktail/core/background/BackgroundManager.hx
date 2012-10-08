@@ -16,7 +16,7 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.ImageResource;
 import cocktail.port.NativeElement;
 import cocktail.core.layout.LayoutData;
@@ -89,7 +89,7 @@ class BackgroundManager
 		//completely transparent
 		if (style.usedValues.backgroundColor.alpha != 0.0)
 		{
-			graphicContext.fillRect(backgroundBox, style.usedValues.backgroundColor);
+			graphicContext.graphics.fillRect(backgroundBox, style.usedValues.backgroundColor);
 		}
 		
 		var backgroundImages:Array<CSSPropertyValue> = getAsArray(style.backgroundImage);
@@ -350,7 +350,7 @@ class BackgroundManager
 			
 			if (_box == null)
 			{
-				_box = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+				_box = new RectangleVO();
 			}
 			
 			_box.x = backgroundPaintingBox.x - computedBackgroundPosition.x;
@@ -360,7 +360,7 @@ class BackgroundManager
 			
 			while (totalHeight < maxHeight)
 			{
-				graphicContext.copyPixels(resource.nativeResource, _box, _destinationPoint );
+				graphicContext.graphics.copyPixels(resource.nativeResource, _box, _destinationPoint );
 				
 				totalWidth += imageWidth;
 				
@@ -390,7 +390,7 @@ class BackgroundManager
 				
 				matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight);
 				
-				graphicContext.drawImage(resource.nativeResource, matrix, backgroundPaintingBox);
+				graphicContext.graphics.drawImage(resource.nativeResource, matrix, backgroundPaintingBox);
 				
 				totalWidth += imageWidth;
 				

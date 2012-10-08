@@ -67,6 +67,14 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 	public function new() 
 	{
 		super();
+		initChildNodes();
+	}
+	
+	/**
+	 * Instantiate the array containing child nodes
+	 */
+	private function initChildNodes():Void
+	{
 		childNodes = new Array<NodeClass>();
 	}
 	
@@ -128,29 +136,30 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 		}
 		else
 		{	
-			//will store the new child nodes with the newly inserted one
-			var newChildNodes:Array<NodeClass> = new Array<NodeClass>();
+			//flag determining wether the new child was inserted
+			var isInserted:Bool = false;
 			
 			var length:Int = childNodes.length;
 			for (i in 0...length)
 			{		
-				#if php
-				if (untyped __physeq__(childNodes[i], refChild))
-				#else
 				if (childNodes[i] == refChild)
-				#end
 				{
-					newChildNodes.push(newChild);
+					childNodes.insert(i, newChild);
+					
+					//set the parent of the new child
+					removeFromParentIfNecessary(newChild);
+					newChild.parentNode = cast(this);
+					
+					isInserted = true;
+					break;
 				}
-				newChildNodes.push(childNodes[i]);
 			}
 			
-			//the child are appended after the first loop to prevent
-			//from modifying the child node array while looping
-			var newChildNodesLength:Int = newChildNodes.length;
-			for (i in 0...newChildNodesLength)
+			//if the ref child wasn't found, throw
+			//a dom exception
+			if (isInserted == false)
 			{
-				appendChild(newChildNodes[i]);
+				throw DOMException.NOT_FOUND_ERR;
 			}
 		}
 		
@@ -206,6 +215,11 @@ class NodeBase<NodeClass:NodeBase<NodeClass>> extends EventCallback
 	 */
 	public function hasChildNodes():Bool
 	{
+		if (childNodes == null)
+		{
+			return false;
+		}
+		
 		return childNodes.length > 0;
 	}
 	

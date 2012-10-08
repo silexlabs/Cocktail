@@ -7,6 +7,7 @@
 */
 package cocktail.core.layout.floats;
 
+using cocktail.core.utils.Utils;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.html.HTMLElement;
@@ -42,7 +43,9 @@ class FloatsManager
 	 */
 	public function new() 
 	{
-		
+		var floatsLeft:Array<RectangleVO> = new Array<RectangleVO>();
+		var floatsRight:Array<RectangleVO> = new Array<RectangleVO>();
+		_floats = new FloatsVO(floatsLeft, floatsRight);
 	}
 	
 	/**
@@ -50,9 +53,11 @@ class FloatsManager
 	 */
 	public function init():Void
 	{
-		var floatsLeft:Array<RectangleVO> = new Array<RectangleVO>();
-		var floatsRight:Array<RectangleVO> = new Array<RectangleVO>();
-		_floats = new FloatsVO(floatsLeft, floatsRight);
+		if (_floats.left.length > 0 || floats.right.length > 0)
+		{
+			_floats.left.clear();
+			_floats.right.clear();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -81,16 +86,16 @@ class FloatsManager
 				{
 					case LEFT:
 						ret = clearLeft(currentFormattingContextY);
-						_floats.left = new Array<RectangleVO>();
+						_floats.left.clear();
 						
 					case RIGHT:	
 						ret = clearRight(currentFormattingContextY);
-						_floats.right = new Array<RectangleVO>();
+						_floats.right.clear();
 						
 					case BOTH:	
 						ret = clearBoth(currentFormattingContextY);
-						_floats.right = new Array<RectangleVO>();
-						_floats.left = new Array<RectangleVO>();
+						_floats.right.clear();
+						_floats.left.clear();
 						
 					case NONE:	
 						ret = currentFormattingContextY;
@@ -261,7 +266,12 @@ class FloatsManager
 		//the x position of the float vary for left and right float
 		var floatX:Float = 0.0;
 	
-		return new RectangleVO(floatX, floatY, floatWidth, floatHeight);
+		var rect:RectangleVO = new RectangleVO();
+		rect.x  = floatX;
+		rect.y = floatY;
+		rect.width = floatWidth;
+		rect.height = floatHeight;
+		return rect;
 	}
 	
 	/**
@@ -368,9 +378,16 @@ class FloatsManager
 	 */
 	private function doRemoveFloat(floats:Array<RectangleVO>, flowY:Float):Array<RectangleVO>
 	{
+		var length:Int = floats.length;
+		
+		if (length == 0)
+		{
+			return floats;
+		}
+		
 		var newFloats:Array<RectangleVO> = new Array<RectangleVO>();
-
-		for (i in 0...floats.length)
+		
+		for (i in 0...length)
 		{
 			//if a floats y position + its height is superior to the flow,
 			//then it is kept

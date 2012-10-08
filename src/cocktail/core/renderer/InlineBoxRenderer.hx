@@ -11,11 +11,12 @@ package cocktail.core.renderer;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.linebox.LineBox;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.css.CoreStyle;
 import haxe.Log;
 import cocktail.core.geom.GeomData;
+import haxe.Stack;
 
 /**
  * An Inline Box renderer is an element which participates
@@ -51,23 +52,16 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN GETTER
+	// OVERRIDEN PUBLIC LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	/**
 	 * Overriden as the bounds of an inline box renderer is formed
 	 * by the bounds of all of the line boxes it creates during
 	 * formatting
 	 */
-	override private function get_bounds():RectangleVO
+	override public function updateBounds():Void
 	{
-		var lineBoxesBounds:Array<RectangleVO> = new Array<RectangleVO>();
-		var length:Int = lineBoxes.length;
-		for (i in 0...length)
-		{
-			lineBoxesBounds.push(lineBoxes[i].bounds);
-		}
-		
-		return getChildrenBounds(lineBoxesBounds);
+		getLineBoxesBounds(lineBoxes, bounds);
 	}
 }

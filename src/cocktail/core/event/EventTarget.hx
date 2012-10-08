@@ -26,11 +26,11 @@ class EventTarget
 	private var _registeredEventListeners:Hash<Array<EventListener>>;
 	
 	/**
-	 * class constructor. Init class attributes
+	 * class constructor
 	 */
 	public function new() 
 	{
-		_registeredEventListeners = new Hash<Array<EventListener>>();
+		
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -133,10 +133,13 @@ class EventTarget
 		//itself at AT_TARGET phase
 		else
 		{
-			//tries to dispatch event registered for the event type
-			if (_registeredEventListeners.exists(evt.type) == true)
+			if (_registeredEventListeners != null)
 			{
-				doDispatchEvent(_registeredEventListeners.get(evt.type), evt);
+				//tries to dispatch event registered for the event type
+				if (_registeredEventListeners.exists(evt.type) == true)
+				{
+					doDispatchEvent(_registeredEventListeners.get(evt.type), evt);
+				}
 			}
 		}
 		
@@ -172,6 +175,11 @@ class EventTarget
 	 */
 	public function addEventListener(type:String, listener:Event->Void, useCapture:Bool = false):Void
 	{
+		if (_registeredEventListeners == null)
+		{
+			_registeredEventListeners = new Hash<Array<EventListener>>();
+		}
+		
 		if (_registeredEventListeners.exists(type) == false)
 		{
 			_registeredEventListeners.set(type, new Array<EventListener>());
@@ -200,6 +208,12 @@ class EventTarget
 	 */
 	public function removeEventListener(type:String, listener:Event->Void, useCapture:Bool = false):Void
 	{
+		//no event listener was added yet
+		if (_registeredEventListeners == null)
+		{
+			return;
+		}
+		
 		if (_registeredEventListeners.exists(type) == true)
 		{
 			var registeredListeners:Array<EventListener> = _registeredEventListeners.get(type);

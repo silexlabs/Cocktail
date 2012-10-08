@@ -11,10 +11,10 @@ import cocktail.core.html.HTMLObjectElement;
 import cocktail.core.renderer.ElementRenderer;
 
 /**
- * A speciam kind of compositing layer, dedicated to plugin.
+ * A special kind of compositing layer, dedicated to plugin.
  * When the graphic context of this layer is attached or detached, 
  * call methods on the plugin to allow it
- * to detach / attach itself to the graphic context
+ * to detach / attach itself from / to the graphic context
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -59,6 +59,31 @@ class PluginLayerRenderer extends CompositingLayerRenderer
 			htmlObjectElement.plugin.detach(graphicsContext);
 		}
 		super.detach();
+	}
+	
+	/////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	////////////////////////////////
+	
+	/**
+	 * override to prevent updating the bitmap
+	 * data, plugin don't need bitmap data
+	 * 
+	 * TODO 2 : might actually be useful to draw background, borders...
+	 * should use graphic context of parent
+	 */
+	override private function initBitmapData(width:Int, height:Int):Void
+	{
+		
+	}
+	
+	/**
+	 * No need to clear, its not suposed to have
+	 * bitmap
+	 */
+	override private function clear():Void
+	{
+	
 	}
 	
 }

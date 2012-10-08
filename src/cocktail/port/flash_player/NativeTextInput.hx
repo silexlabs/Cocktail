@@ -7,6 +7,7 @@
 */
 package cocktail.port.flash_player;
 
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.port.platform.input.AbstractNativeTextInput;
 import flash.display.DisplayObjectContainer;
@@ -76,14 +77,21 @@ class NativeTextInput extends AbstractNativeTextInput
 	
 	/**
 	 * The flash text field attach itself to the flash display list
-	 * 
-	 * TODO 1 : graphicsContext no longer a DisplayObjectContainer
 	 */
 	override public function attach(graphicContext:GraphicsContext):Void
 	{
 		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext.nativeLayer);
 		//TODO 3 : in NME, seems to make text field lose focus
 		containerGraphicContext.addChild(_textField);
+	}
+	
+	/**
+	 * The flash text field detach itself from the flash display list
+	 */
+	override public function detach(graphicContext:GraphicsContext):Void
+	{
+		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext.nativeLayer);
+		containerGraphicContext.removeChild(_textField);
 	}
 	
 	/**
@@ -116,7 +124,12 @@ class NativeTextInput extends AbstractNativeTextInput
 	
 	override private function get_viewport():RectangleVO
 	{
-		return new RectangleVO(_textField.x, _textField.y, _textField.width, _textField.height);
+		var rect:RectangleVO = new RectangleVO();
+		rect.x = _textField.x;
+		rect.y = _textField.y;
+		rect.width = _textField.width;
+		rect.height = _textField.height;
+		return rect;
 	}
 	
 	override private function set_viewport(value:RectangleVO):RectangleVO

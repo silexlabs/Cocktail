@@ -70,13 +70,13 @@ class ScrollableRenderer extends FlowBoxRenderer
 		_scrollLeft = 0;
 		_scrollTop = 0;
 		
-		_scrollableBounds = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		_scrollableBounds = new RectangleVO();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	/**
 	 * Overriden to deal with the scrollbars once the children of this
 	 * BlockBoxRenderer are laid out
@@ -89,7 +89,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 		//which might display scrollbars
 		if (canAlwaysOverflow() == false)
 		{
-			_scrollableBounds = getScrollableBounds();
+			updateScrollableBounds();
 		}
 		
 		var isVerticalScrollAttached:Bool = _verticalScrollBar != null;
@@ -344,48 +344,16 @@ class ScrollableRenderer extends FlowBoxRenderer
 	// not be scrolled and clipped. ElementRenderer should be able to know
 	//their containing block
 	
-	/**
-	 * Get the bounds of all of the children of this BlockBoxRenderer
-	 */
-	private function getScrollableBounds():RectangleVO
-	{
-		return getChildrenBounds(doGetScrollableBounds(this));
-	}
-	
 	//TODO 2 : work but shouldn't have to parse all rendering tree, should be done during formatting
 	//and then another pass for absolutely positioned children. Maybe this way less expensive in
 	//the  end because only called when useful ?
+	//also should use scrollbars in bounds ?
 	/**
-	 * Get the bounds of all of the children
-	 * by traversing the rendering tree
+	 * Get the bounds of all of the children of this BlockBoxRenderer
 	 */
-	private function doGetScrollableBounds(rootRenderer:ElementRenderer):Array<RectangleVO>
+	private function updateScrollableBounds():Void
 	{
-		var childrenBounds:Array<RectangleVO> = new Array<RectangleVO>();
-
-		var length:Int = rootRenderer.childNodes.length;
-		for (i in 0...length)
-		{
-			
-			var child:ElementRenderer = rootRenderer.childNodes[i];
-				
-			if (child.domNode != _horizontalScrollBar && child.domNode != _verticalScrollBar)
-			{
-				if (child.hasChildNodes() == true)
-				{
-					var childChildrenBounds:Array<RectangleVO> = doGetScrollableBounds(child);
-					
-					var childLength:Int = childChildrenBounds.length;
-					for (j in 0...childLength)
-					{
-						childrenBounds.push(childChildrenBounds[j]);
-					}
-				}
-				
-				childrenBounds.push(child.scrollableBounds);
-			}
-		}
-		return childrenBounds;
+		getChildrenBounds(this, _scrollableBounds);
 	}
 	
 	//TODO 3 : implement border case where one has scroll attached, and the 
@@ -474,7 +442,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 		{
 			_horizontalScrollBar = new ScrollBar(false);
 			_horizontalScrollBar.ownerDocument = domNode.ownerDocument;
-			_horizontalScrollBar.attach();
+			_horizontalScrollBar.attach(true);
 			appendChild(_horizontalScrollBar.elementRenderer);
 			_horizontalScrollBar.onscroll = onHorizontalScroll;
 		}
@@ -529,7 +497,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 		{
 			_verticalScrollBar = new ScrollBar(true);
 			_verticalScrollBar.ownerDocument = domNode.ownerDocument;
-			_verticalScrollBar.attach();
+			_verticalScrollBar.attach(true);
 			appendChild(_verticalScrollBar.elementRenderer);
 			_verticalScrollBar.onscroll = onVerticalScroll;
 		}

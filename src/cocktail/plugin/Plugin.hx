@@ -10,7 +10,7 @@ package cocktail.plugin;
 
 import cocktail.core.event.Event;
 import cocktail.core.event.EventCallback;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.geom.GeomData;
 
 /**
@@ -35,7 +35,7 @@ class Plugin
 	 * It is computed by the instantiating object
 	 * or mebed node
 	 */
-	public var viewport(get_viewport, set_viewport):RectangleVO;
+	public var viewport(default, null):RectangleVO;
 	
 	/**
 	 * A callback provided by the instantiating class, 
@@ -66,7 +66,7 @@ class Plugin
 	
 	public function new(elementAttributes:Hash<String>, params:Hash<String>,loadComplete:Void->Void, loadError:Void->Void) 
 	{
-		viewport = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		viewport = new RectangleVO();
 		_loadComplete = loadComplete;
 		_loadError = loadError;
 		_elementAttributes = elementAttributes;
@@ -76,6 +76,15 @@ class Plugin
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when the viewport where the plugin
+	 * should be displayed is updated
+	 */
+	public function updateViewport(x:Float, y:Float, width:Float, height:Float):Void
+	{
+		
+	}
 	
 	/**
 	 * Called before the plugin is destroyed to perform
@@ -109,19 +118,4 @@ class Plugin
 	{
 		
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTER/SETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_viewport():RectangleVO
-	{
-		return viewport;
-	}
-	
-	private function set_viewport(value:RectangleVO):RectangleVO
-	{
-		return viewport = value;
-	}
-	
 }

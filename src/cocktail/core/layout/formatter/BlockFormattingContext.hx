@@ -6,6 +6,9 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.layout.formatter;
+
+using cocktail.core.utils.Utils;
+
 import cocktail.core.dom.Node;
 import cocktail.core.layout.floats.FloatsManager;
 
@@ -212,7 +215,7 @@ class BlockFormattingContext extends FormattingContext
 		
 		_floatsManager.removeFloats(concatenatedY);
 		
-		_registeredFloats = new Array<FloatVO>();
+		_registeredFloats.clear();
 		
 		return concatenatedY;
 		

@@ -13,7 +13,6 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.renderer.ObjectRenderer;
 import cocktail.plugin.Plugin;
 import cocktail.plugin.swf.SWFPlugin;
-import cocktail.port.NativeElement;
 import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.renderer.RendererData;
 
@@ -61,8 +60,9 @@ class HTMLObjectElement extends EmbeddedElement
 	 * A reference to the plugin instantiated
 	 * by this HTMLElement. It might be null,
 	 * if the resource is a native one, like
-	 * a picture or if not enough dta are
-	 * provided
+	 * a picture or if not enough data are
+	 * provided to determine which plugin
+	 * to instantiate
 	 */
 	public var plugin(default, null):Plugin;
 	
@@ -104,27 +104,47 @@ class HTMLObjectElement extends EmbeddedElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC RENDERING METHODS
+	// PUBLIC RENDERING TREE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden as when attached to the DOM, 
-	 * check wether a third-party plugin should
-	 * be instantiated
+	 * Overriden, as when attached, the plugin might need to
+	 * be instantiated.
+	 * 
+	 * Plugins instantiated via an object tag are considered
+	 * visual and are only instantiated if the object
+	 * element is supposed to be rendered
 	 */
-	override public function attach():Void
+	override public function attach(recursive:Bool):Void
 	{
-		createPlugin();
-		super.attach();
+		super.attach(recursive);
+		
+		//check that the object tag should be rendered.
+		//Don't check if element renderer is not null, as
+		//the element renderer for this is only created when
+		//the plugin is ready
+		if (isRendered() == true)
+		{
+			createPlugin();
+		}
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC DOM METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Overriden as when detached, the plugin
-	 * might need to be destroyed
+	 * Overriden as when removed from DOM, the plugin
+	 * might need to be destroyed.
+	 * 
+	 * If the plugin is only removed from rendering
+	 * tree, for instance by setting its 'display' style
+	 * to 'none', it is not deleted as it is assumed
+	 * that it might be shown again
 	 */
-	override public function detach():Void
+	override public function removedFromDOM():Void
 	{
-		super.detach();
+		super.removedFromDOM();
 		deletePlugin();
 	}
 	
@@ -154,7 +174,8 @@ class HTMLObjectElement extends EmbeddedElement
 				var params:Hash<String> = new Hash<String>();
 				
 				//retrive all the name/value of the child param tags
-				for (i in 0...childNodes.length)
+				var length:Int = childNodes.length;
+				for (i in 0...length)
 				{
 					var child:HTMLElement = childNodes[i];
 					if (child.tagName == HTMLConstants.HTML_PARAM_TAG_NAME)
@@ -203,6 +224,7 @@ class HTMLObjectElement extends EmbeddedElement
 		
 		if (plugin != null)
 		{
+			_pluginReady = false;
 			plugin.dispose();
 			plugin = null;
 		}

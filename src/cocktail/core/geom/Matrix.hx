@@ -25,15 +25,19 @@ class Matrix
 	/**
 	 * Stores each value of this 3x3 matrix
 	 */
-	public var data(default, set_data):MatrixData;
+	public var data(default, null):MatrixVO;
 	
 	/**
 	 * Class constructor. Creates a 3x3 matrix with the given parameters.
 	 * It defaults to an identity matrix (no transformations), if the given
 	 * matrix data are null.
 	 */
-	public function new(data:MatrixData = null) 
+	public function new(data:MatrixVO = null) 
 	{
+		if (data == null)
+		{
+			data = new MatrixVO();
+		}
 		this.data = data;
 	}
 	
@@ -46,33 +50,12 @@ class Matrix
 	 */
 	public function identity():Void
 	{
-		data = {
-			a : 1.0,
-			b : 0.0, 
-			c : 0.0,
-			d : 1.0,
-			e : 0.0,
-			f : 0.0
-		};
-	}
-	
-	/**
-	 * Set the values of this 3x3 matrix, fall back to an
-	 * identity matrix if null
-	 * 
-	 * @param contains 6 values
-	 */
-	private function set_data(data:MatrixData):MatrixData
-	{
-		this.data = data;
-		
-		//init the null matrix as an identity matrix
-		if (data == null)
-		{
-			identity();
-		}
-		
-		return data;
+		data.a = 1.0;
+		data.b = 0.0;
+		data.c = 0.0;
+		data.d = 1.0;
+		data.e = 0.0;
+		data.f = 0.0;
 	}
 	
 	/**
@@ -89,8 +72,8 @@ class Matrix
 	public function concatenate(matrix:Matrix):Void
 	{
 		//get a ref to current and target matrix data
-		var currentMatrixData:MatrixData = data;
-		var targetMatrixData:MatrixData = matrix.data;
+		var currentMatrixData:MatrixVO = data;
+		var targetMatrixData:MatrixVO = matrix.data;
 		
 		//multiply the two matrix data values
 		var a:Float = currentMatrixData.a * targetMatrixData.a + currentMatrixData.c * targetMatrixData.b;
@@ -101,14 +84,13 @@ class Matrix
 		var f:Float = currentMatrixData.b * targetMatrixData.e + currentMatrixData.d * targetMatrixData.f + currentMatrixData.f;
 		
 		//concatenate the result
-		var concatenatedMatrixData:MatrixData = {
-			a : a,
-			b : b,
-			c : c,
-			d : d,
-			e : e,
-			f : f
-		};
+		var concatenatedMatrixData:MatrixVO = new MatrixVO();
+		concatenatedMatrixData.a = a;
+		concatenatedMatrixData.b = b;
+		concatenatedMatrixData.c = c;
+		concatenatedMatrixData.d = d;
+		concatenatedMatrixData.e = e;
+		concatenatedMatrixData.f = f;
 		
 		//then set it as this matrix data
 		this.data = concatenatedMatrixData;
@@ -128,14 +110,13 @@ class Matrix
 	{
 		//create the matrix data corresponding to an identity matrix
 		//translated by x and y
-		var translationMatrixData:MatrixData = {
-			a:1.0,
-			b:0.0,
-			c:0.0,
-			d:1.0,
-			e:x,
-			f:y
-		}
+		var translationMatrixData:MatrixVO = new MatrixVO();
+		translationMatrixData.a = 1.0;
+		translationMatrixData.b = 0.0;
+		translationMatrixData.c = 0.0;
+		translationMatrixData.d = 1.0;
+		translationMatrixData.e = x;
+		translationMatrixData.f = y;
 		
 		//create the corresponding matrix
 		var translationMatrix:Matrix = new Matrix(translationMatrixData);
@@ -183,14 +164,13 @@ class Matrix
 		
 		//create the matrix data corresponding to an identity matrix
 		//rotated by the angle
-		var rotationMatrixData:MatrixData = {
-			a:a,
-			b:b,
-			c:c * -1.0,
-			d:d,
-			e:0.0,
-			f:0.0
-		};
+		var rotationMatrixData:MatrixVO = new MatrixVO();
+		rotationMatrixData.a = a;
+		rotationMatrixData.b = b;
+		rotationMatrixData.c = c * -1.0;
+		rotationMatrixData.d = d;
+		rotationMatrixData.e = 0.0;
+		rotationMatrixData.f = 0.0;
 		
 		//the matrix that will be rotated. It will be
 		//concatenated with the current matrix.
@@ -211,14 +191,13 @@ class Matrix
 	{	
 		//create the matrix data corresponding to an identity matrix
 		//scaled by the scaleX and scaleY factors
-		var scaledMatrixData:MatrixData = {
-			a:scaleX,
-			b:0.0,
-			c:0.0,
-			d:scaleY,
-			e:0.0,
-			f:0.0
-		};
+		var scaledMatrixData:MatrixVO = new MatrixVO();
+		scaledMatrixData.a = scaleX;
+		scaledMatrixData.b = 0.0;
+		scaledMatrixData.c = 0.0;
+		scaledMatrixData.d = scaleY;
+		scaledMatrixData.e = 0.0;
+		scaledMatrixData.f = 0.0;
 		
 		//the matrix used to scale the current Matrix
 		var scaledMatrix:Matrix = new Matrix(scaledMatrixData);
@@ -243,14 +222,13 @@ class Matrix
 		
 		//create the matrix data corresponding to an identity matrix
 		//skewed by the skewX and skewY factors
-		var skewingMatrixData:MatrixData = {
-			a:1.0,
-			b:Math.tan(skewY),
-			c:Math.tan(skewX),
-			d:1.0,
-			e:0.0,
-			f:0.0
-		};
+		var skewingMatrixData:MatrixVO = new MatrixVO();
+		skewingMatrixData.a = 1.0;
+		skewingMatrixData.b = Math.tan(skewY);
+		skewingMatrixData.c = Math.tan(skewX);
+		skewingMatrixData.d = 1.0;
+		skewingMatrixData.e = 0.0;
+		skewingMatrixData.f = 0.0;
 		
 		//and set it to a matrix
 		var skewingMatrix:Matrix = new Matrix(skewingMatrixData);

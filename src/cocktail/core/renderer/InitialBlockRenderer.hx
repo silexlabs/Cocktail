@@ -38,6 +38,42 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	public function new(node:HTMLElement) 
 	{
 		super(node);
+		
+		//as this is the root of the rendering
+		//tree, it is considered to be its
+		//own containing block
+		//
+		//TODO 3 :maybe not very clean, trouble is that
+		//addedToRenderingTree never called as initial 
+		//block is never attached to a parent
+		_containingBlock = this;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * for the initial bloc renderer, the global
+	 * bounds are the viewport bounds
+	 */
+	override public function updateGlobalBounds():Void
+	{
+		
+	}
+	
+	/**
+	 * overriden as the bounds of the initial block container
+	 * are always those of the Window (minus scrollbars dimensions
+	 * if displayed)
+	 */
+	override public function updateBounds():Void
+	{
+		var containerBlockData:ContainingBlockVO = getContainerBlockData();
+		bounds.x = 0.0;
+		bounds.y = 0.0;
+		bounds.width = containerBlockData.width;
+		bounds.height = containerBlockData.height;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -54,19 +90,8 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	}
 	
 	/**
-	 * Overriden as initial block renderer always delete
-	 * its own layer. It also detach it as their is
-	 * no parent layer to do it
-	 */
-	override private function detachLayer():Void
-	{
-		layerRenderer.detach();
-		layerRenderer = null;
-	}
-	
-	/**
-	 * never register with containing block as it has
-	 * none
+	 * never register with containing block as it is
+	 * itself
 	 */
 	override private function registerWithContaininingBlock():Void
 	{
@@ -74,7 +99,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	}
 	
 	/**
-	 * same as above for detach
+	 * same as above for unregister
 	 */
 	override private function unregisterWithContainingBlock():Void
 	{
@@ -87,11 +112,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	
 	/**
 	 * As the initial block renderer has no containing block,
-	 * invalidate the document instead
+	 * do nothing
 	 */
 	override private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
 	{
-		invalidateDocumentLayoutAndRendering();
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -184,7 +209,11 @@ class InitialBlockRenderer extends BlockBoxRenderer
 			height -= _horizontalScrollBar.coreStyle.usedValues.height;
 		}
 		
-		return new ContainingBlockVO(width, false, height, false);
+		_containerBlockData.width = width;
+		_containerBlockData.height = height;
+		_containerBlockData.isHeightAuto = false;
+		_containerBlockData.isWidthAuto = false;
+		return _containerBlockData;
 	}
 	
 	/**
@@ -208,21 +237,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * overriden as the bounds of the initial block container
-	 * are always those of the Window (minus scrollbars dimensions
-	 * if displayed)
-	 */
-	override private function get_bounds():RectangleVO
-	{
-		var containerBlockData:ContainingBlockVO = getContainerBlockData();
-		
-		var width:Float = containerBlockData.width;
-		var height:Float = containerBlockData.height;
-		
-		return new RectangleVO(0.0, 0.0, width, height);
-	}
 	
 	/**
 	 * For the initial container, the bounds and
