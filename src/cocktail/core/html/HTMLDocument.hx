@@ -304,6 +304,11 @@ class HTMLDocument extends Document
 	public function initDocumentElement(htmlElement:HTMLElement):Void
 	{
 		documentElement = htmlElement;
+
+		if (documentElement.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME).length > 0)
+		{
+			initBody(cast(documentElement.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
+		}
 	}
 	
 	/**
