@@ -24,14 +24,6 @@ class StaticPositionLineBox extends LineBox
 	{
 		super(elementRenderer);
 	}
-
-	/**
-	 * static line box can't have children
-	 */
-	override private function initChildNodes():Void
-	{
-		
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC RENDERING METHODS

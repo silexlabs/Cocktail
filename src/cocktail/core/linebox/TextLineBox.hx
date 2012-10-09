@@ -84,14 +84,6 @@ class TextLineBox extends LineBox
 	}
 	
 	/**
-	 * text line box can't have children
-	 */
-	override private function initChildNodes():Void
-	{
-		
-	}
-	
-	/**
 	 * cleanup method
 	 */
 	override public function dispose():Void

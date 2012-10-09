@@ -95,10 +95,12 @@ class BlockBoxRenderer extends ScrollableRenderer
 			rootLineBox.bounds.height = 0;
 			
 			//remove all its children
-			var childLength:Int = rootLineBox.childNodes.length;
-			for (j in 0...childLength)
+			var child:LineBox = rootLineBox.firstChild;
+			while(child != null)
 			{
-				rootLineBox.removeChild(rootLineBox.childNodes[0]);
+				var nextSibling:LineBox = child.nextSibling;
+				rootLineBox.removeChild(child);
+				child = nextSibling;
 			}
 		}
 		
@@ -359,16 +361,17 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 */
 	private function renderLineBoxesInLine(rootLineBox:LineBox, graphicContext:GraphicsContext):Void
 	{
-		var length:Int = rootLineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = rootLineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = rootLineBox.childNodes[i];
 			child.render(graphicContext);
 			
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				renderLineBoxesInLine(child, graphicContext);
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	

@@ -356,7 +356,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function formatLine(rootLineBox:LineBox, isLastLine:Bool):Void
 	{
-		if (rootLineBox.hasChildNodes() == true)
+		if (rootLineBox.firstChild != null)
 		{
 			removeSpaces(rootLineBox);
 		}
@@ -388,14 +388,12 @@ class InlineFormattingContext extends FormattingContext
 	{
 		var concatenatedWidth:Float = 0.0;
 		
-		var length:Int = lineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = lineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = lineBox.childNodes[i];
-			
 			if (child.isStaticPosition() == false)
 			{
-				if (child.hasChildNodes() == true)
+				if (child.firstChild != null)
 				{
 					concatenatedWidth += getConcatenatedWidth(child);
 				}
@@ -403,6 +401,7 @@ class InlineFormattingContext extends FormattingContext
 				concatenatedWidth += child.bounds.width;
 			}
 			
+			child = child.nextSibling;
 		}
 		
 		return concatenatedWidth;
@@ -418,11 +417,10 @@ class InlineFormattingContext extends FormattingContext
 	{
 		var spacesNumber:Int = 0;
 		
-		for (i in 0...lineBox.childNodes.length)
+		var child:LineBox = lineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = lineBox.childNodes[i];
-			
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				spacesNumber += getSpacesNumber(child);
 			}
@@ -431,6 +429,8 @@ class InlineFormattingContext extends FormattingContext
 			{
 				spacesNumber++;
 			}
+			
+			child = child.nextSibling;
 		}
 		
 		return spacesNumber;
@@ -526,12 +526,10 @@ class InlineFormattingContext extends FormattingContext
 	{
 		flowX += lineBox.paddingLeft + lineBox.marginLeft;
 		
-		var length:Int = lineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = lineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = lineBox.childNodes[i];
-			
-			if (child.hasChildNodes() == true && child.isStaticPosition() == false)
+			if (child.firstChild != null && child.isStaticPosition() == false)
 			{
 				flowX = alignLeft(flowX, child);
 			}
@@ -545,6 +543,8 @@ class InlineFormattingContext extends FormattingContext
 				}
 			
 			}
+			
+			child = child.nextSibling;
 		}
 		
 		flowX += lineBox.paddingRight + lineBox.marginRight;
@@ -567,18 +567,18 @@ class InlineFormattingContext extends FormattingContext
 	{
 		flowX += lineBox.marginLeft + lineBox.paddingLeft;
 		
-		var length:Int = lineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = lineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = lineBox.childNodes[i];
-			
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				flowX =  alignCenter(flowX, remainingSpace, child);
 			}
 			
 			child.bounds.x = (remainingSpace / 2) + flowX;
 			flowX += child.bounds.width;
+			
+			child = child.nextSibling;
 		}
 		
 		flowX += lineBox.marginRight + lineBox.paddingRight;
@@ -600,18 +600,18 @@ class InlineFormattingContext extends FormattingContext
 	{
 		flowX += lineBox.marginLeft + lineBox.paddingLeft;
 		
-		var length:Int = lineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = lineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = lineBox.childNodes[i];
-			
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				flowX = alignRight(flowX, remainingSpace, child);
 			}
 			
 			child.bounds.x = flowX + remainingSpace;
 			flowX += child.bounds.width;
+			
+			child = child.nextSibling;
 		}
 		
 		flowX += lineBox.marginRight + lineBox.paddingRight;
@@ -630,11 +630,9 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function alignJustify(flowX:Float, remainingSpace:Float, lineBox:LineBox, spacesInLine:Int):Void
 	{
-		var length:Int = lineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = lineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = lineBox.childNodes[i];
-			
 			if (child.isSpace() == true)
 			{
 				var spaceWidth:Float = (remainingSpace / spacesInLine);
@@ -647,10 +645,12 @@ class InlineFormattingContext extends FormattingContext
 			child.bounds.x =  flowX;
 			flowX += child.bounds.width;
 			
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				alignJustify(flowX, remainingSpace, child, spacesInLine);
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	
@@ -750,12 +750,10 @@ class InlineFormattingContext extends FormattingContext
 	
 	private function getLineBoxTreeAsArray(rootLineBox:LineBox, lineBoxes:Array<LineBox>):Void
 	{
-		var length:Int = rootLineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = rootLineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = rootLineBox.childNodes[i];
-			
-			if (child.hasChildNodes() == true && child.isStaticPosition() == false)
+			if (child.firstChild != null && child.isStaticPosition() == false)
 			{
 				getLineBoxTreeAsArray(child, lineBoxes);
 			}
@@ -763,6 +761,8 @@ class InlineFormattingContext extends FormattingContext
 			{
 				lineBoxes.push(child);
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	
@@ -805,12 +805,9 @@ class InlineFormattingContext extends FormattingContext
 	
 	private function setRootLineBoxMetrics(lineBox:LineBox, rootLineBox:LineBox, parentBaseLineOffset:Float, formattingContextFontMetrics:FontMetricsVO):Void
 	{
-		var length:Int = lineBox.childNodes.length;
-		
-		for (i in 0...length)
+		var child:LineBox = lineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = lineBox.childNodes[i];
-			
 			if (child.isStaticPosition() == false)
 			{
 				var leadedAscent:Float = child.leadedAscent;
@@ -827,11 +824,13 @@ class InlineFormattingContext extends FormattingContext
 					rootLineBox.leadedDescent = leadedDescent + baselineOffset;
 				}
 				
-				if (child.hasChildNodes() == true)
+				if (child.firstChild != null)
 				{
 					setRootLineBoxMetrics(child, rootLineBox, baselineOffset, formattingContextFontMetrics);
 				}
 			}
+			
+			child = child.nextSibling;
 			
 		}
 	}
@@ -841,11 +840,9 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function alignLineBoxesVertically(lineBox:LineBox, lineBoxAscent:Float, formattingContextY:Float, parentBaseLineOffset:Float, formattingContextFontMetrics:FontMetricsVO):Void
 	{
-		var length:Int = lineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = lineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = lineBox.childNodes[i];
-			
 			var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, formattingContextFontMetrics.xHeight);
 			
 			var childCoreStyle:CoreStyle = child.elementRenderer.coreStyle;
@@ -862,7 +859,7 @@ class InlineFormattingContext extends FormattingContext
 					//
 					//for all child line box but container line box, 
 					//add the global ascent of the line and remove own ascent
-					if (child.hasChildNodes() == false)
+					if (child.firstChild != null)
 					{
 						child.bounds.y += lineBoxAscent;
 						child.bounds.y -= child.leadedAscent;
@@ -871,7 +868,7 @@ class InlineFormattingContext extends FormattingContext
 					
 			}
 			
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				alignLineBoxesVertically(child, lineBoxAscent, formattingContextY, baselineOffset, formattingContextFontMetrics);
 			}
@@ -881,6 +878,8 @@ class InlineFormattingContext extends FormattingContext
 			{
 				child.bounds.y += child.elementRenderer.coreStyle.usedValues.marginTop;
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	
