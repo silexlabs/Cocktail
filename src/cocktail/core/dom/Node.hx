@@ -308,7 +308,7 @@ class Node<NodeClass:Node<NodeClass>> extends EventCallback
 	override private function getTargetAncestors():Array<EventTarget>
 	{
 		var parent:NodeClass = parentNode;
-		var targetAncestors:Array<EventTarget> = new Array<EventTarget>();
+		var targetAncestors:Array<EventTarget> = super.getTargetAncestors();
 		
 		while (parent != null)
 		{

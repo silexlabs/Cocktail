@@ -11,6 +11,7 @@ import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
+using cocktail.core.utils.Utils;
 
 /**
  * Manages hit testing of the layer and rendering.
@@ -46,7 +47,7 @@ class HitTestManager
 	{
 		_scrolledPoint = new PointVO(0.0, 0.0);
 		_targetPoint = new PointVO(0.0, 0.0);
-		
+		_elementRenderersAtPoint = new Array<ElementRenderer>();
 	}
 	
 	/////////////////////////////////
@@ -73,7 +74,7 @@ class HitTestManager
 		_targetPoint.x = x;
 		_targetPoint.y = y;
 		
-		_elementRenderersAtPoint = new Array<ElementRenderer>();
+		_elementRenderersAtPoint.clear();
 		
 		//get all the elementRenderers under the point, update the element renderers array
 		getElementRenderersAtPoint(_elementRenderersAtPoint, layer, _targetPoint, scrollX, scrollY);
