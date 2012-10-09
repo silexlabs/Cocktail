@@ -11,7 +11,7 @@ import cocktail.core.background.BackgroundManager;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
-import cocktail.core.dom.NodeBase;
+
 import cocktail.core.geom.GeomData;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
