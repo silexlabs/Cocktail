@@ -108,6 +108,13 @@ class LayerRenderer extends FastNode<LayerRenderer>
 	public var negativeZIndexChildLayerRenderers(default, null):Array<LayerRenderer>;
 	
 	/**
+	 * Holds all the stacking context of the first
+	 * parent layer renderer establishing a stacking
+	 * context, from most negative to most negative
+	 */
+	private var _parentStackingContexts:Array<LayerRenderer>;
+	
+	/**
 	 * The graphics context onto which all the ElementRenderers
 	 * belonging to this LayerRenderer are painted onto
 	 */
@@ -176,6 +183,7 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		zeroAndAutoZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		positiveZIndexChildLayerRenderers = new Array<LayerRenderer>();
 		negativeZIndexChildLayerRenderers = new Array<LayerRenderer>();
+		_parentStackingContexts = new Array<LayerRenderer>();
 		
 		hasOwnGraphicsContext = false;
 		
@@ -955,12 +963,24 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		}
 		
 		//get all layer in parent stacking context in z-order
-		var parentStackingContexts:Array<LayerRenderer> = new Array<LayerRenderer>();
-		parentStackingContexts = parentStackingContexts.concat(parentStackingContext.negativeZIndexChildLayerRenderers);
-		parentStackingContexts = parentStackingContexts.concat(parentStackingContext.zeroAndAutoZIndexChildLayerRenderers);
-		parentStackingContexts = parentStackingContexts.concat(parentStackingContext.positiveZIndexChildLayerRenderers);
+		_parentStackingContexts.clear();
+		var length:Int = parentStackingContext.negativeZIndexChildLayerRenderers.length;
+		for (i in 0...length)
+		{
+			_parentStackingContexts.push(parentStackingContext.negativeZIndexChildLayerRenderers[i]);
+		}
+		length = parentStackingContext.zeroAndAutoZIndexChildLayerRenderers.length;
+		for (i in 0...length)
+		{
+			_parentStackingContexts.push(parentStackingContext.zeroAndAutoZIndexChildLayerRenderers[i]);
+		}
+		length = parentStackingContext.positiveZIndexChildLayerRenderers.length;
+		for (i in 0...length)
+		{
+			_parentStackingContexts.push(parentStackingContext.positiveZIndexChildLayerRenderers[i]);
+		}
 		
-		return parentStackingContexts;
+		return _parentStackingContexts;
 	}
 	
 	/**
