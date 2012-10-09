@@ -134,11 +134,9 @@ class InlineFormattingContext extends FormattingContext
 	private function doFormat(elementRenderer:ElementRenderer, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
 		//loop in all the child of the container
-		var length:Int = elementRenderer.childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = elementRenderer.firstChild;
+		while(child != null)
 		{
-			var child:ElementRenderer = elementRenderer.childNodes[i];
-			
 			//here the child is absolutely positioned, its static position must be calculated
 			//so that it can be used if the child's left, right, top or bottom attribute are 'auto'.
 			//A dummy 'StaticLineBox' is created which will be formatting instead of the child.
@@ -184,7 +182,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			//here the child is an inline box renderer, which will create one line box for each
 			//line its children are in
-			else if (child.hasChildNodes() == true)
+			else if (child.firstChild != null)
 			{
 				//remove all the previous line boxes before creating new ones
 				//if needed
@@ -249,6 +247,8 @@ class InlineFormattingContext extends FormattingContext
 					lineBox = insertIntoLine(child.lineBoxes[j], lineBox, rootLineBoxes, openedElementRenderers);
 				}
 			}
+			
+			child = child.nextSibling;
 		}
 	
 		return lineBox;

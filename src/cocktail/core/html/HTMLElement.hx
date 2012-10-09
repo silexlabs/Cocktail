@@ -740,18 +740,20 @@ class HTMLElement extends Element<HTMLElement>
 				//to re-create all its children
 				else
 				{
-					var elementRendererChildren:Array<ElementRenderer> = elementRenderer.childNodes;
+					//var elementRendererChildren:Array<ElementRenderer> = elementRenderer.childNodes;
 				
 					//detach and attach only own element renderer
 					detach(false);
 					attach(false);
 					
+					//TODO 2 : is it necessary to re-append all child ?
+					
 					//re-append all children
-					var length:Int = elementRendererChildren.length;
-					for (i in 0...length) 
-					{
-						elementRenderer.appendChild(elementRendererChildren[0]);
-					}
+					//var length:Int = elementRendererChildren.length;
+					//for (i in 0...length) 
+					//{
+						//elementRenderer.appendChild(elementRendererChildren[0]);
+					//}
 				}	
 			}
 		}

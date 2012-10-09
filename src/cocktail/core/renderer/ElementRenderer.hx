@@ -21,6 +21,7 @@ import cocktail.core.linebox.LineBox;
 import cocktail.core.animation.Animator;
 import cocktail.core.animation.Transition;
 import cocktail.core.geom.GeomData;
+import cocktail.core.utils.FastNode;
 import haxe.Stack;
 
 import cocktail.core.css.CoreStyle;
@@ -66,7 +67,7 @@ import cocktail.core.css.CSSData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class ElementRenderer extends NodeBase<ElementRenderer>
+class ElementRenderer extends FastNode<ElementRenderer>
 {
 	/**
 	 * The bounds of the ElementRenderer.
@@ -329,33 +330,31 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * overriden as when an ElementRenderer is appended, an init 
 	 * method is called on it
 	 */ 
-	override public function appendChild(newChild:ElementRenderer):ElementRenderer
+	override public function appendChild(newChild:ElementRenderer):Void
 	{
 		super.appendChild(newChild);
 		
 		newChild.addedToRenderingTree();
 		invalidate();
-		return newChild;
 	}
 	
 	/**
 	 * overriden as when an ElementRenderer is removed, a clean-up 
 	 * method is called on it
 	 */
-	override public function removeChild(oldChild:ElementRenderer):ElementRenderer
+	override public function removeChild(oldChild:ElementRenderer):Void
 	{
 		oldChild.removedFromRenderingTree();
 		
 		super.removeChild(oldChild);
 		invalidate();
-		return oldChild;
 	}
 	
 	/**
 	 * Overriden as when an ElementRenderer is inserted, its
 	 * init method should be called
 	 */
-	override public function insertBefore(newChild:ElementRenderer, refChild:ElementRenderer):ElementRenderer
+	override public function insertBefore(newChild:ElementRenderer, refChild:ElementRenderer):Void
 	{
 		super.insertBefore(newChild, refChild);
 		
@@ -364,13 +363,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		//which already calls the init method
 		if (refChild == null)
 		{
-			return newChild;
+			return;
 		}
 		
 		newChild.addedToRenderingTree();
 		invalidate();
-		
-		return newChild;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -480,11 +477,9 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		
 		//for its child of the element
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			var child:ElementRenderer = childNodes[i];
-			
 			var childGlobalBounds:RectangleVO = child.globalBounds;
 			
 			//store the global bounds before update, to check if there
@@ -524,10 +519,12 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			}
 			
 			//call the method recursively if the child has children itself
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				child.setGlobalOrigins(addedX, addedY, addedPositionedX, addedPositionedY, addedScrollX, addedScrollY);
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	
@@ -673,10 +670,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		//update all the children if this element renderer
 		//didn't do it already
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			childNodes[i].updateLayerRenderer();
+			child.updateLayerRenderer();
+			child = child.nextSibling;
 		}
 	}
 	
@@ -690,10 +688,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		//the ElementRenderer is attached to the LayerRenderer
 		//tree and must now also attach its children
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			childNodes[i].attach();
+			child.attach();
+			child = child.nextSibling;
 		}
 	}
 	
@@ -704,10 +703,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	public function detach():Void
 	{
 		//first detach the LayerRenderer of all its children
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			childNodes[i].detach();
+			child.detach();
+			child = child.nextSibling;
 		}
 		
 		if (layerRenderer != null)
@@ -729,10 +729,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	public function updateAnonymousBlock():Void
 	{
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			childNodes[i].updateAnonymousBlock();
+			child.updateAnonymousBlock();
+			child = child.nextSibling;
 		}
 	}
 	
@@ -748,10 +749,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	public function updateLineBoxes():Void
 	{
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			childNodes[i].updateLineBoxes();
+			child.updateLineBoxes();
+			child = child.nextSibling;
 		}
 	}
 	
@@ -1221,15 +1223,16 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function doGetChildrenBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
 	{
-		var length:Int = rootElementRenderer.childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = rootElementRenderer.firstChild;
+		while(child != null)
 		{
-			var child:ElementRenderer = rootElementRenderer.childNodes[i];
 			doGetBounds(child.bounds, bounds);
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				doGetChildrenBounds(child, bounds);
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	

@@ -333,14 +333,14 @@ class InvalidatingElementRenderer extends ElementRenderer
 	 */
 	private function invalidateText():Void
 	{
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			var child:ElementRenderer = childNodes[i];
 			if (child.isText() == true)
 			{
 				child.invalidate();
 			}
+			child = child.nextSibling;
 		}
 	}
 	
