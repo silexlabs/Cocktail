@@ -313,6 +313,8 @@ class HTMLElement extends Element<HTMLElement>
 		super(tagName);
 		init();
 		
+		classList = new Array<String>();
+		
 		_needsCascading = false;
 		_needsStyleDeclarationUpdate = false;
 		_shouldCascadeAllProperties = true;
@@ -1554,6 +1556,7 @@ class HTMLElement extends Element<HTMLElement>
 	private function set_className(value:String):String
 	{
 		super.setAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME, value);
+		
 		//update the class list as well
 		classList = value.split(" ");
 		

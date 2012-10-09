@@ -346,26 +346,22 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:HTMLElement = cast(node.childNodes[i]);
+				var childNode:HTMLElement = node.childNodes[i];
 				switch (childNode.nodeType)
 				{
 					case DOMConstants.ELEMENT_NODE:
-						var elementNode:HTMLElement = childNode;
-						var elementClassName:String = elementNode.getAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME);
-						if (elementClassName != null)
+						var classList:Array<String> = childNode.classList;
+						var foundFlag:Bool = false;
+						var classListLength:Int = classList.length;
+						for (j in 0...classListLength)
 						{
-							var elementClassNames:Array<String> = elementClassName.split(" ");
-							
-							var foundFlag:Bool = false;
-							for (j in 0...elementClassNames.length)
+							if (classList[j] == className && foundFlag == false)
 							{
-								if (elementClassNames[j] == className && foundFlag == false)
-								{
-									elements.push(elementNode);
-									foundFlag = true;
-								}
+								elements.push(childNode);
+								foundFlag = true;
 							}
 						}
+						
 				}
 				
 				doGetElementsByClassName(childNode, className, elements);
