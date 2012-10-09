@@ -479,7 +479,7 @@ class CoreStyle
 		//the current one. If it doesn't, cascading is over
 		if (specifiedProperty != null)
 		{
-			if (Type.enumEq(property, specifiedProperty.typedValue) == true)
+			if (property == specifiedProperty.typedValue)
 			{
 				return false;
 			}
