@@ -313,8 +313,6 @@ class HTMLElement extends Element<HTMLElement>
 		super(tagName);
 		init();
 		
-		classList = new Array<String>();
-		
 		_needsCascading = false;
 		_needsStyleDeclarationUpdate = false;
 		_shouldCascadeAllProperties = true;
@@ -608,8 +606,8 @@ class HTMLElement extends Element<HTMLElement>
 				}
 			}
 		}
-		
 		invalidateCascade();
+		
 	}
 	
 	/**
@@ -620,9 +618,11 @@ class HTMLElement extends Element<HTMLElement>
 	public function invalidateCascade():Void
 	{
 		_needsCascading = true;
+		
 		if (_ownerHTMLDocument != null)
 		{
 			_ownerHTMLDocument.invalidationManager.invalidateCascade();
+
 		}
 	}
 	

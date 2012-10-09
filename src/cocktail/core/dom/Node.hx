@@ -106,6 +106,15 @@ class Node<NodeClass:Node<NodeClass>> extends EventCallback
 	public function new() 
 	{
 		super();
+		initChildNodes();
+	}
+	
+	/**
+	 * Instantiate an array to hold child nodes
+	 * for this node
+	 */
+	private function initChildNodes():Void
+	{
 		childNodes = new Array<NodeClass>();
 	}
 	

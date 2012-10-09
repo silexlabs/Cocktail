@@ -53,7 +53,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 * . Used when this block box establishes an 
 	 * inline formatting context
 	 */
-	public var rootLineBoxes:Array<LineBox>;
+	public var rootLineBoxes(default, null):Array<LineBox>;
 	
 	/**
 	 * count the number of root line box
@@ -122,6 +122,14 @@ class BlockBoxRenderer extends ScrollableRenderer
 			rootLineBoxes.push(new RootLineBox(this));
 		}
 		
+		return cast(rootLineBoxes[_usedRootLineBoxes - 1]);
+	}
+	
+	/**
+	 * Return the last added root line box
+	 */
+	public function getLastRootLineBox():RootLineBox
+	{
 		return cast(rootLineBoxes[_usedRootLineBoxes - 1]);
 	}
 	

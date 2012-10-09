@@ -101,10 +101,8 @@ class InlineFormattingContext extends FormattingContext
 		
 		_formattingContextRoot.resetRootLineBoxes();
 		
-		var rootLineBoxes:Array<LineBox> = new Array<LineBox>();
 		var initialRootLineBox:RootLineBox = _formattingContextRoot.getRootLineBox();
-		rootLineBoxes.push(initialRootLineBox);
-		
+
 		_firstLineFormatted = false;
 		
 		//TODO : should implement text indent in a cleaner way
@@ -114,12 +112,10 @@ class InlineFormattingContext extends FormattingContext
 		_formattingContextData.x = _formattingContextRoot.coreStyle.usedValues.textIndent;
 		_formattingContextData.x += _floatsManager.getLeftFloatOffset(_formattingContextRoot.bounds.y);
 		
-		doFormat(_formattingContextRoot, initialRootLineBox, rootLineBoxes, _openedElementRenderers);
+		doFormat(_formattingContextRoot, initialRootLineBox, _openedElementRenderers);
 
 		//format the last line
-		formatLine(rootLineBoxes[rootLineBoxes.length - 1], true);
-
-		_formattingContextRoot.rootLineBoxes = rootLineBoxes;
+		formatLine(_formattingContextRoot.getLastRootLineBox(), true);
 
 		var formattingContextCoreStyle:CoreStyle = _formattingContextRoot.coreStyle;
 		//apply formatting height to formatting context root if auto height
@@ -131,7 +127,9 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
-	private function doFormat(elementRenderer:ElementRenderer, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
+	private static var _g:Int = 0;
+	
+	private function doFormat(elementRenderer:ElementRenderer, lineBox:LineBox, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
 		//loop in all the child of the container
 		var child:ElementRenderer = elementRenderer.firstChild;
@@ -153,7 +151,7 @@ class InlineFormattingContext extends FormattingContext
 				staticLineBox.marginLeft = child.coreStyle.usedValues.marginLeft;
 				staticLineBox.marginRight = child.coreStyle.usedValues.marginRight;
 				
-				lineBox = insertIntoLine(staticLineBox, lineBox, rootLineBoxes, openedElementRenderers);
+				lineBox = insertIntoLine(staticLineBox, lineBox, openedElementRenderers);
 			}
 			//here the child either starts a new formatting context, meaning it is displayed
 			//has an inline-block and it has children, or it is replaced/embedded, such as
@@ -178,7 +176,7 @@ class InlineFormattingContext extends FormattingContext
 				embeddedLineBox.marginLeft = childUsedValues.marginLeft;
 				embeddedLineBox.marginRight = childUsedValues.marginRight;
 				
-				lineBox = insertIntoLine(embeddedLineBox, lineBox, rootLineBoxes, openedElementRenderers);
+				lineBox = insertIntoLine(embeddedLineBox, lineBox, openedElementRenderers);
 			}
 			//here the child is an inline box renderer, which will create one line box for each
 			//line its children are in
@@ -216,7 +214,7 @@ class InlineFormattingContext extends FormattingContext
 				//a reference to the last added line box is returned, so that it can
 				//be used as a starting point when laying out the siblings of the 
 				//inline box renderer
-				lineBox = doFormat(child, childLineBox, rootLineBoxes, openedElementRenderers);
+				lineBox = doFormat(child, childLineBox, openedElementRenderers);
 				
 				//now that all of the child of the inline box renderer as been laid out,
 				//remove the reference to this inline box renderer so that when a new line
@@ -244,7 +242,7 @@ class InlineFormattingContext extends FormattingContext
 				var textLength:Int = child.lineBoxes.length;
 				for (j in 0...textLength)
 				{
-					lineBox = insertIntoLine(child.lineBoxes[j], lineBox, rootLineBoxes, openedElementRenderers);
+					lineBox = insertIntoLine(child.lineBoxes[j], lineBox, openedElementRenderers);
 				}
 			}
 			
@@ -270,7 +268,7 @@ class InlineFormattingContext extends FormattingContext
 	 * Insert a line boxe into the current line. If the line boxe
 	 * can't fit in the line, create a new line 
 	 */
-	private function insertIntoLine(childLineBox:LineBox, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
+	private function insertIntoLine(childLineBox:LineBox, lineBox:LineBox, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
 		//store the line box in the unbreakable line box array, which is
 		//a buffer preventing break between elements which are not supposed to
@@ -305,11 +303,10 @@ class InlineFormattingContext extends FormattingContext
 			//format the current line which is currently the last in the line array
 			//, now that all the line box in it are known
 			//each of the line boxes will be placed in x and y on this line
-			formatLine(rootLineBoxes[rootLineBoxes.length -1], false);
+			formatLine(_formattingContextRoot.getLastRootLineBox(), false);
 			
 			//create a new root for the next line, and add it to the line array
 			var rootLineBox:RootLineBox = _formattingContextRoot.getRootLineBox();
-			rootLineBoxes.push(rootLineBox);
 			
 			//set the line box which will be used to layout the following children
 			//as the new root line box

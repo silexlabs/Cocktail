@@ -317,7 +317,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:HTMLElement = cast(node.childNodes[i]);
+				var childNode:HTMLElement = node.childNodes[i];
 				
 				//if matching tagName, push child node
 				if (childNode.nodeName == tagName)
@@ -351,17 +351,19 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 				{
 					case DOMConstants.ELEMENT_NODE:
 						var classList:Array<String> = childNode.classList;
-						var foundFlag:Bool = false;
-						var classListLength:Int = classList.length;
-						for (j in 0...classListLength)
+						if (classList != null)
 						{
-							if (classList[j] == className && foundFlag == false)
+							var foundFlag:Bool = false;
+							var classListLength:Int = classList.length;
+							for (j in 0...classListLength)
 							{
-								elements.push(childNode);
-								foundFlag = true;
+								if (classList[j] == className && foundFlag == false)
+								{
+									elements.push(childNode);
+									foundFlag = true;
+								}
 							}
 						}
-						
 				}
 				
 				doGetElementsByClassName(childNode, className, elements);
