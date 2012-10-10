@@ -299,7 +299,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		
 		//if the color is transparent, a new bitmap data
 		//must be created to composite alpha
-		if (color.alpha != 1.0)
+		if (color.alpha != 1.0 || _useTransparency == true)
 		{
 			_fillRectRectangle.width = Math.round(rect.width);
 			_fillRectRectangle.height = Math.round(rect.height);
