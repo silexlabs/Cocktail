@@ -11,11 +11,12 @@ import cocktail.core.background.BackgroundManager;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
-import cocktail.core.dom.NodeBase;
+
 import cocktail.core.geom.GeomData;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.graphics.GraphicsContext;
+import cocktail.core.utils.FastNode;
 import cocktail.port.NativeElement;
 import cocktail.core.layout.LayoutData;
 
@@ -45,7 +46,7 @@ import cocktail.core.layout.LayoutData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class LineBox extends NodeBase<LineBox>
+class LineBox extends FastNode<LineBox>
 {
 	/**
 	 * A reference to the element renderer which created this
@@ -209,22 +210,22 @@ class LineBox extends NodeBase<LineBox>
 	 */
 	private function getLineBoxesBounds(rootLineBox:LineBox, bounds:RectangleVO):Void
 	{
-		var length:Int = rootLineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = rootLineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = rootLineBox.childNodes[i];
-			
 			//absolutely positioned line box are not used to compute the
 			//bounds of the root line box
 			if (child.isStaticPosition() == false)
 			{
 				doGetBounds(child.bounds, bounds);
 				
-				if (child.hasChildNodes() == true)
+				if (child.firstChild != null)
 				{
 					getLineBoxesBounds(child, bounds);
 				}
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	

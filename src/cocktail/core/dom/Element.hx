@@ -317,7 +317,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:HTMLElement = cast(node.childNodes[i]);
+				var childNode:HTMLElement = node.childNodes[i];
 				
 				//if matching tagName, push child node
 				if (childNode.nodeName == tagName)
@@ -346,22 +346,20 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:HTMLElement = cast(node.childNodes[i]);
+				var childNode:HTMLElement = node.childNodes[i];
 				switch (childNode.nodeType)
 				{
 					case DOMConstants.ELEMENT_NODE:
-						var elementNode:HTMLElement = childNode;
-						var elementClassName:String = elementNode.getAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME);
-						if (elementClassName != null)
+						var classList:Array<String> = childNode.classList;
+						if (classList != null)
 						{
-							var elementClassNames:Array<String> = elementClassName.split(" ");
-							
 							var foundFlag:Bool = false;
-							for (j in 0...elementClassNames.length)
+							var classListLength:Int = classList.length;
+							for (j in 0...classListLength)
 							{
-								if (elementClassNames[j] == className && foundFlag == false)
+								if (classList[j] == className && foundFlag == false)
 								{
-									elements.push(elementNode);
+									elements.push(childNode);
 									foundFlag = true;
 								}
 							}

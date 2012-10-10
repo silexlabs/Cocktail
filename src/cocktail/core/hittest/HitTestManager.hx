@@ -11,6 +11,7 @@ import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
+using cocktail.core.utils.Utils;
 
 /**
  * Manages hit testing of the layer and rendering.
@@ -46,7 +47,7 @@ class HitTestManager
 	{
 		_scrolledPoint = new PointVO(0.0, 0.0);
 		_targetPoint = new PointVO(0.0, 0.0);
-		
+		_elementRenderersAtPoint = new Array<ElementRenderer>();
 	}
 	
 	/////////////////////////////////
@@ -73,7 +74,7 @@ class HitTestManager
 		_targetPoint.x = x;
 		_targetPoint.y = y;
 		
-		_elementRenderersAtPoint = new Array<ElementRenderer>();
+		_elementRenderersAtPoint.clear();
 		
 		//get all the elementRenderers under the point, update the element renderers array
 		getElementRenderersAtPoint(_elementRenderersAtPoint, layer, _targetPoint, scrollX, scrollY);
@@ -94,7 +95,7 @@ class HitTestManager
 		getElementRenderersAtPointInLayer(elementRenderersAtPoint, layer, layer.rootElementRenderer, point, scrollX, scrollY);
 
 		
-		if (layer.rootElementRenderer.hasChildNodes() == true)
+		if (layer.rootElementRenderer.firstChild != null)
 		{
 			getElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, point, scrollX, scrollY);
 		}
@@ -131,15 +132,13 @@ class HitTestManager
 		scrollX += renderer.scrollLeft;
 		scrollY += renderer.scrollTop;
 		
-		var length:Int = renderer.childNodes.length;
+		var child:ElementRenderer = renderer.firstChild;
 		//loop in all the ElementRenderer using this LayerRenderer
-		for (i in 0...length)
+		while(child != null)
 		{
-			var child:ElementRenderer = renderer.childNodes[i];
-			
 			if (child.layerRenderer == layer)
 			{
-				if (child.hasChildNodes() == true)
+				if (child.firstChild != null)
 				{
 					getElementRenderersAtPointInLayer(elementRenderersAtPoint, layer, child, point, scrollX, scrollY);
 				}
@@ -157,6 +156,8 @@ class HitTestManager
 					}
 				}
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	private function getElementRenderersAtPointInChildRenderers(elementRenderersAtPoint:Array<ElementRenderer>, layer:LayerRenderer, point:PointVO, scrollX:Float, scrollY:Float):Void

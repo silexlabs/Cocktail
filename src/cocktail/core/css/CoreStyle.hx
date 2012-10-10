@@ -479,7 +479,7 @@ class CoreStyle
 		//the current one. If it doesn't, cascading is over
 		if (specifiedProperty != null)
 		{
-			if (Type.enumEq(property, specifiedProperty.typedValue) == true)
+			if (property == specifiedProperty.typedValue)
 			{
 				return false;
 			}
@@ -518,15 +518,13 @@ class CoreStyle
 		
 		//TODO 1 : try to start transition here, if value was herited, no transition must start. Same
 		//if it was specified declaratively
-		var invalidationReason:InvalidationReason = InvalidationReason.styleChanged(propertyName);
-		
 		if (programmaticChange == true && isInherited == false)
 		{
 			if (computedValues.getTypedProperty(propertyName) != null)
 			{
 				if (isAnimatable(propertyName))
 				{
-					_animator.registerPendingAnimation(propertyName, invalidationReason, getAnimatablePropertyValue(propertyName));
+					_animator.registerPendingAnimation(propertyName, getAnimatablePropertyValue(propertyName));
 					var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
 					htmlDocument.invalidationManager.invalidatePendingAnimations();
 				}
@@ -535,7 +533,7 @@ class CoreStyle
 		computedValues.setTypedProperty(propertyName, computedProperty, propertyData.important);
 		
 		
-		htmlElement.invalidate(invalidationReason);
+		htmlElement.invalidateStyle(propertyName);
 		
 		return true;
 		
@@ -1004,7 +1002,7 @@ class CoreStyle
 	 */
 	private function onTransitionComplete(transition:Transition):Void
 	{
-		htmlElement.invalidate(transition.invalidationReason);
+		htmlElement.invalidateStyle(transition.propertyName);
 		
 		//schedule an update of the pending animations
 		var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
@@ -1021,7 +1019,7 @@ class CoreStyle
 	 */
 	private function onTransitionUpdate(transition:Transition):Void
 	{
-		htmlElement.invalidate(transition.invalidationReason);
+		htmlElement.invalidateStyle(transition.propertyName);
 	}
 	
 	/**

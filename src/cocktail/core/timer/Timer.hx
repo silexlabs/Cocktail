@@ -57,7 +57,7 @@ class Timer
 	 * 
 	 * If no delay is given, the method will be called on next update
 	 */
-	public function delay(timerCallback:Void->Void, delay:Float = 0):Void
+	public function delay(timerCallback:Float->Void, delay:Float = 0):Void
 	{
 		//increment global counter to be
 		//sure this callback gets called
@@ -114,7 +114,9 @@ class Timer
 				//time of the callback
 				if (pendingCallback.callbackTime < time && pendingCallback.called == false)
 				{
-					pendingCallback.timerCallback();
+					//when the callback is called, it is given the current
+					//time stamp
+					pendingCallback.timerCallback(time);
 					
 					//mark the pending callback object
 					//as re-usable

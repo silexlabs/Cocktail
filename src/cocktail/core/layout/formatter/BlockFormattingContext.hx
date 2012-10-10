@@ -98,12 +98,10 @@ class BlockFormattingContext extends FormattingContext
 		concatenatedY += elementRendererUsedValues.paddingTop + parentCollapsedMarginTop;
 		
 		var childHeight:Float = concatenatedY;
-		var elementRendererChildNodes:Array<ElementRenderer> = elementRenderer.childNodes;
-		var length:Int = elementRendererChildNodes.length;
-		for (i in 0...length)
+		
+		var child:ElementRenderer = elementRenderer.firstChild;
+		while(child != null)
 		{
-			var child:ElementRenderer = elementRendererChildNodes[i];
-			
 			var marginTop:Float = getCollapsedMarginTop(child, parentCollapsedMarginTop);
 			var marginBottom:Float = getCollapsedMarginBottom(child, parentCollapsedMarginBottom);
 			
@@ -142,7 +140,7 @@ class BlockFormattingContext extends FormattingContext
 			}
 			//for child with children of their own, their padding and margin are added at
 			//the beginning of the recursive method
-			else if (child.hasChildNodes() == true)
+			else if (child.firstChild != null)
 			{
 				//children starting their own formatting context are not laid out
 				//by this formatting context
@@ -191,6 +189,8 @@ class BlockFormattingContext extends FormattingContext
 			{
 				_formattingContextData.height = concatenatedY;
 			}
+			
+			child = child.nextSibling;
 		}
 		
 		//the current ElementRenderer can either have an auto height

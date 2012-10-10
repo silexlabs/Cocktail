@@ -40,12 +40,11 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 	 * is removed form the DOM, the anonymous block must
 	 * also be removed
 	 */
-	override public function removeChild(oldChild:ElementRenderer):ElementRenderer
+	override public function removeChild(oldChild:ElementRenderer):Void
 	{
 		super.removeChild(oldChild);
 		//removes itself
 		parentNode.removeChild(this);
-		return oldChild;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
