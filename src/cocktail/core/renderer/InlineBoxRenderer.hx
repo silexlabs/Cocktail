@@ -51,6 +51,22 @@ class InlineBoxRenderer extends FlowBoxRenderer
 		
 	}
 	
+	/**
+	 * inline box create line boxes, which are
+	 * created during layout to contain children,
+	 * one is created per line where there are children
+	 */
+	override public function updateLineBoxes():Void
+	{
+		lineBoxes = new Array<LineBox>();
+		var child:ElementRenderer = firstChild;
+		while(child != null)
+		{
+			child.updateLineBoxes();
+			child = child.nextSibling;
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////

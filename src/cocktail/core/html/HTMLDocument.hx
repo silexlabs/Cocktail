@@ -683,12 +683,13 @@ class HTMLDocument extends Document
 	}
 	
 	/**
-	 * When the Window is resized, invalidate
-	 * the body, redraw.
+	 * When the Window is resized, schedule a layout
+	 * and repaint of the document
 	 */
 	public function onPlatformResizeEvent(event:UIEvent):Void
 	{
-		//documentElement.invalidate(InvalidationReason.windowResize);
+		invalidationManager.invalidateLayout(false, true);
+		invalidationManager.invalidateRendering();
 	}
 	
 	/**

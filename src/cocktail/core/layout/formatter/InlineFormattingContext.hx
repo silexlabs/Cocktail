@@ -677,9 +677,11 @@ class InlineFormattingContext extends FormattingContext
 		
 		var i:Int = 0;
 		var length:Int = _lineBoxesAsArray.length;
+		
 		while (i < length)
 		{
 			var lineBox:LineBox = _lineBoxesAsArray[i];
+			
 			if (lineBox.isSpace() == true)
 			{
 				var coreStyle:CoreStyle = lineBox.elementRenderer.coreStyle;
@@ -698,7 +700,24 @@ class InlineFormattingContext extends FormattingContext
 				//absolute line box do not influence this
 				if (lineBox.isStaticPosition() == false)
 				{
-					break;
+					if (lineBox.isEmbedded() == true)
+					{
+						break;
+					}
+					else
+					{
+						//if child only contains spaces, don't break the
+						//line
+						var child:LineBox = lineBox.firstChild;
+						while (child != null)
+						{
+							if (child.isSpace() == false)
+							{
+								break;
+							}
+							child = child.nextSibling;
+						}
+					}
 				}
 				
 				
