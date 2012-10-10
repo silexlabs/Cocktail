@@ -502,6 +502,14 @@ var borderColor : Dynamic;
 var borderStyle : String;
 var borderWidth : Dynamic;
 
+var borderTopLeftRadius : Dynamic;
+var borderTopRightRadius : Dynamic;
+var borderBottomRightRadius : Dynamic;
+var borderBottomLeftRadius : Dynamic;
+var borderRadius : Dynamic;
+
+
+
 
 var margin : Dynamic;
 var marginBottom : Dynamic;
