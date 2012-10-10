@@ -11,7 +11,7 @@ import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.Node;
-import cocktail.core.dom.NodeBase;
+
 import cocktail.core.event.TransitionEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
@@ -21,6 +21,7 @@ import cocktail.core.linebox.LineBox;
 import cocktail.core.animation.Animator;
 import cocktail.core.animation.Transition;
 import cocktail.core.geom.GeomData;
+import cocktail.core.utils.FastNode;
 import haxe.Stack;
 
 import cocktail.core.css.CoreStyle;
@@ -66,7 +67,7 @@ import cocktail.core.css.CSSData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class ElementRenderer extends NodeBase<ElementRenderer>
+class ElementRenderer extends FastNode<ElementRenderer>
 {
 	/**
 	 * The bounds of the ElementRenderer.
@@ -329,33 +330,31 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * overriden as when an ElementRenderer is appended, an init 
 	 * method is called on it
 	 */ 
-	override public function appendChild(newChild:ElementRenderer):ElementRenderer
+	override public function appendChild(newChild:ElementRenderer):Void
 	{
 		super.appendChild(newChild);
 		
 		newChild.addedToRenderingTree();
-		invalidate(InvalidationReason.other);
-		return newChild;
+		invalidate();
 	}
 	
 	/**
 	 * overriden as when an ElementRenderer is removed, a clean-up 
 	 * method is called on it
 	 */
-	override public function removeChild(oldChild:ElementRenderer):ElementRenderer
+	override public function removeChild(oldChild:ElementRenderer):Void
 	{
 		oldChild.removedFromRenderingTree();
 		
 		super.removeChild(oldChild);
-		invalidate(InvalidationReason.other);
-		return oldChild;
+		invalidate();
 	}
 	
 	/**
 	 * Overriden as when an ElementRenderer is inserted, its
 	 * init method should be called
 	 */
-	override public function insertBefore(newChild:ElementRenderer, refChild:ElementRenderer):ElementRenderer
+	override public function insertBefore(newChild:ElementRenderer, refChild:ElementRenderer):Void
 	{
 		super.insertBefore(newChild, refChild);
 		
@@ -364,13 +363,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		//which already calls the init method
 		if (refChild == null)
 		{
-			return newChild;
+			return;
 		}
 		
 		newChild.addedToRenderingTree();
-		invalidate(InvalidationReason.other);
-		
-		return newChild;
+		invalidate();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -413,8 +410,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		{
 			case DOMConstants.ELEMENT_NODE:
 				var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
-				htmlDocument.invalidateLayerTree();
-				
+				htmlDocument.invalidationManager.invalidateLayerTree();
 		}
 	}
 	
@@ -481,11 +477,9 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		
 		//for its child of the element
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			var child:ElementRenderer = childNodes[i];
-			
 			var childGlobalBounds:RectangleVO = child.globalBounds;
 			
 			//store the global bounds before update, to check if there
@@ -525,10 +519,12 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			}
 			
 			//call the method recursively if the child has children itself
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				child.setGlobalOrigins(addedX, addedY, addedPositionedX, addedPositionedY, addedScrollX, addedScrollY);
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	
@@ -674,10 +670,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		//update all the children if this element renderer
 		//didn't do it already
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			childNodes[i].updateLayerRenderer();
+			child.updateLayerRenderer();
+			child = child.nextSibling;
 		}
 	}
 	
@@ -691,10 +688,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		//the ElementRenderer is attached to the LayerRenderer
 		//tree and must now also attach its children
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			childNodes[i].attach();
+			child.attach();
+			child = child.nextSibling;
 		}
 	}
 	
@@ -705,10 +703,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	public function detach():Void
 	{
 		//first detach the LayerRenderer of all its children
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			childNodes[i].detach();
+			child.detach();
+			child = child.nextSibling;
 		}
 		
 		if (layerRenderer != null)
@@ -730,10 +729,31 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	public function updateAnonymousBlock():Void
 	{
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			childNodes[i].updateAnonymousBlock();
+			child.updateAnonymousBlock();
+			child = child.nextSibling;
+		}
+	}
+	
+	/**
+	 * Called by the document when the line box
+	 * trees belonging to block box element renderer
+	 * establishing an inline formatting context
+	 * needs to be updated
+	 * 
+	 * line boxes are generated for elements 
+	 * participating in an inline formatting
+	 * context
+	 */
+	public function updateLineBoxes():Void
+	{
+		var child:ElementRenderer = firstChild;
+		while(child != null)
+		{
+			child.updateLineBoxes();
+			child = child.nextSibling;
 		}
 	}
 	
@@ -1203,15 +1223,16 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function doGetChildrenBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
 	{
-		var length:Int = rootElementRenderer.childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = rootElementRenderer.firstChild;
+		while(child != null)
 		{
-			var child:ElementRenderer = rootElementRenderer.childNodes[i];
 			doGetBounds(child.bounds, bounds);
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				doGetChildrenBounds(child, bounds);
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	
@@ -1222,21 +1243,44 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	/**
 	 * An ElementRenderer is invalidated for instance when one of its style value changes,
 	 * or when a child is appended to it. When this happens, the ElementRenderer determinates
-	 * the steps to take. 
+	 * the steps to take (wether to re-layout and/or re-render the element)
 	 * 
-	 * For instance, a positioned ElementRenderer might need to also
-	 * invalidate its first positioned ancestor when one of its style changes.
+	 * In most cases, an invalidation schedule an update of the docuement
+	 * layout and rendering
 	 * 
-	 * In most case, invalidating an ElementRenderer schedules an asynchronous re-layout
-	 * and re-rendering with HTMLDocument.
-	 * 
-	 * This methods tries to optimise the number of computation that will be
-	 * needed on next layout and rendering
-	 * 
-	 * @param	invalidationReason an enumeration of all the possible reason causing
-	 * the invalidation
+	 * This method is a generic invalidation method
+	 * for cases which are not yet optimised
 	 */
-	public function invalidate(invalidationReason:InvalidationReason):Void
+	public function invalidate():Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Called when a style of the owning HTMLElement
+	 * changed
+	 * @param	styleName the name of the style whose
+	 * value changed
+	 */
+	public function invalidateStyle(styleName:String):Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Called when an immediate layout must be performed
+	 * on this element renderer
+	 */
+	public function invalidateLayoutImmediate():Void
+	{
+		//abstract
+	}
+	
+	/**
+	 * Called when this element renderer needs
+	 * to be re-rendered
+	 */
+	public function invalidateRendering():Void
 	{
 		//abstract
 	}

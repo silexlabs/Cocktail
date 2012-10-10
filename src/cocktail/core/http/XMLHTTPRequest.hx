@@ -335,7 +335,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 		}
 		
 		_nativeHttp.load(_url, _method, data, _authorRequestHeaders);
-		onHttpProgressTick();
+		onHttpProgressTick(0);
 	}
 	
 	/**
@@ -408,7 +408,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	 * send method is called. Manage changes
 	 * of ready state
 	 */
-	private function onHttpProgressTick():Void
+	private function onHttpProgressTick(timeStamp:Float):Void
 	{
 		//always update the http status
 		status = _nativeHttp.status;

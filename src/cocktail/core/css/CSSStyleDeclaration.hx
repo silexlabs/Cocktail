@@ -346,7 +346,7 @@ class CSSStyleDeclaration
 		}
 		
 		//here the property exists, update it only if necessary
-		if (Type.enumEq(currentProperty.typedValue, typedValue) == false || currentProperty.important != important)
+		if (currentProperty.typedValue != typedValue || currentProperty.important != important)
 		{
 			currentProperty.typedValue = typedValue;
 			currentProperty.important = important;

@@ -316,7 +316,7 @@ class ScrollableRenderer extends FlowBoxRenderer
 			if (isXAxisClipped() == true || isYAxisClipped() == true)
 			{
 				//invalidate layout of scrolled element
-				invalidate(InvalidationReason.other);
+				invalidate();
 			}
 			
 			if (_horizontalScrollBar != null)

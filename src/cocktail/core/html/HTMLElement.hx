@@ -141,10 +141,16 @@ class HTMLElement extends Element<HTMLElement>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * sets or gets the HTML
+	 * sets or gets the inner HTML
 	 * syntax describing the element's descendants.
 	 */
 	public var innerHTML(get_innerHTML, set_innerHTML):String;
+	
+	/**
+	 * sets or gets the outer HTML
+	 * syntax describing the element and its descendants.
+	 */
+	public var outerHTML(get_outerHTML, set_outerHTML):String;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Rendering attributes
@@ -512,15 +518,40 @@ class HTMLElement extends Element<HTMLElement>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Called when the specified value of a style requiring a re-layout
-	 * is changed, for instance when the width is changed. Invalidate
-	 * the layout of the elementRenderer if the HTMLElement is rendered
+	 * generic invalidation method, invalidate
+	 * all aspects of the element renderer
+	 * if not null
 	 */
-	public function invalidate(invalidationReason:InvalidationReason):Void
+	public function invalidate():Void
 	{
 		if (elementRenderer != null)
 		{
-			elementRenderer.invalidate(invalidationReason);
+			elementRenderer.invalidate();
+		}
+	}
+	
+	/**
+	 * Called when the specified value of a style 
+	 * changed, may invalidated the layout and/or
+	 * rendering of the element renderer
+	 */
+	public function invalidateStyle(styleName:String):Void
+	{
+		if (elementRenderer != null)
+		{
+			elementRenderer.invalidateStyle(styleName);
+		}
+	}
+	
+	/**
+	 * called when the element renderer requires
+	 * an immediate layout
+	 */
+	public function invalidateLayoutImmediately():Void
+	{
+		if (elementRenderer != null)
+		{
+			elementRenderer.invalidateLayoutImmediate();
 		}
 	}
 	
@@ -534,7 +565,7 @@ class HTMLElement extends Element<HTMLElement>
 		_needsElementRendererUpdate = true;
 		if (_ownerHTMLDocument != null)
 		{
-			_ownerHTMLDocument.invalidateRenderingTree();
+			_ownerHTMLDocument.invalidationManager.invalidateRenderingTree();
 		}
 	}
 	
@@ -575,8 +606,8 @@ class HTMLElement extends Element<HTMLElement>
 				}
 			}
 		}
-		
 		invalidateCascade();
+		
 	}
 	
 	/**
@@ -587,9 +618,11 @@ class HTMLElement extends Element<HTMLElement>
 	public function invalidateCascade():Void
 	{
 		_needsCascading = true;
+		
 		if (_ownerHTMLDocument != null)
 		{
-			_ownerHTMLDocument.invalidateCascade();
+			_ownerHTMLDocument.invalidationManager.invalidateCascade();
+
 		}
 	}
 	
@@ -709,18 +742,20 @@ class HTMLElement extends Element<HTMLElement>
 				//to re-create all its children
 				else
 				{
-					var elementRendererChildren:Array<ElementRenderer> = elementRenderer.childNodes;
+					//var elementRendererChildren:Array<ElementRenderer> = elementRenderer.childNodes;
 				
 					//detach and attach only own element renderer
 					detach(false);
 					attach(false);
 					
+					//TODO 2 : is it necessary to re-append all child ?
+					
 					//re-append all children
-					var length:Int = elementRendererChildren.length;
-					for (i in 0...length) 
-					{
-						elementRenderer.appendChild(elementRendererChildren[0]);
-					}
+					//var length:Int = elementRendererChildren.length;
+					//for (i in 0...length) 
+					//{
+						//elementRenderer.appendChild(elementRendererChildren[0]);
+					//}
 				}	
 			}
 		}
@@ -1521,6 +1556,7 @@ class HTMLElement extends Element<HTMLElement>
 	private function set_className(value:String):String
 	{
 		super.setAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME, value);
+		
 		//update the class list as well
 		classList = value.split(" ");
 		
@@ -1555,7 +1591,7 @@ class HTMLElement extends Element<HTMLElement>
 	
 	/**
 	 * Remove all the currently added child nodes,
-	 * deserialise the passed HTML string and attach
+	 * deserialize the passed HTML string and attach
 	 * the resulting child nodes
 	 * 
 	 * @param	value an HTML String 
@@ -1595,9 +1631,34 @@ class HTMLElement extends Element<HTMLElement>
 		
 		return value;
 	}
-	
+
 	/**
-	 * Serialise the descendant nodes of this HTMLElement
+	 * Remove all the currently added child nodes,
+	 * deserialize the passed HTML string and attach
+	 * the resulting child nodes
+	 * 
+	 * @param	value an HTML String 
+	 */
+	private function set_outerHTML(value:String):String
+	{
+		//parse the html string into a node object
+		var node:HTMLElement = DOMParser.parse(value, ownerDocument);
+
+		var oldNextSibling:HTMLElement = this.nextSibling;
+		parentNode.removeChild(cast(this));
+
+		if (node == null)
+		{
+			return value;
+		}
+
+		parentNode.insertBefore( node, oldNextSibling );
+
+		return value;
+	}
+
+	/**
+	 * Serialize the descendant nodes of this HTMLElement
 	 * and return the result as an HTML String
 	 */
 	private function get_innerHTML():String
@@ -1608,6 +1669,18 @@ class HTMLElement extends Element<HTMLElement>
 		//remove the first and last tag, as they correspond to this HTMLElement
 		//tag which should not be returned as its inner html
 		str = str.substr(str.indexOf(HTMLConstants.HTML_TOKEN_MORE_THAN) + 1 , str.lastIndexOf(HTMLConstants.HTML_TOKEN_LESS_THAN) - str.indexOf(HTMLConstants.HTML_TOKEN_MORE_THAN) - 1);
+		
+		return str;
+	}
+	
+	/**
+	 * Serialize the HTMLElement and it's children
+	 * and return the result as an HTML String
+	 */
+	private function get_outerHTML():String
+	{
+		//serialise this node into an HTML string
+		var str:String = DOMParser.serialize(this);
 		
 		return str;
 	}
@@ -1676,14 +1749,14 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		invalidate(InvalidationReason.needsImmediateLayout);
+		invalidateLayoutImmediately();
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight);
 	}
 	
 	private function get_offsetHeight():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
+		invalidateLayoutImmediately();
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
 	}
@@ -1691,7 +1764,7 @@ class HTMLElement extends Element<HTMLElement>
 	//TODO 3  : unit test
 	private function get_offsetLeft():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
+		invalidateLayoutImmediately();
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.positionedOrigin.x);
@@ -1701,7 +1774,7 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_offsetTop():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
+		invalidateLayoutImmediately();
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.positionedOrigin.y);
@@ -1713,14 +1786,14 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		//need to perform an immediate layout to be sure
 		//that the computed styles are up to date
-		invalidate(InvalidationReason.needsImmediateLayout);
+		invalidateLayoutImmediately();
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight);
 	}
 	
 	private function get_clientHeight():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
+		invalidateLayoutImmediately();
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
 	}
@@ -1728,14 +1801,14 @@ class HTMLElement extends Element<HTMLElement>
 	//TODO 5 : should be top border height
 	private function get_clientTop():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
+		invalidateLayoutImmediately();
 		return 0;
 	}
 	
 	//TODO 5 : should be left border width
 	private function get_clientLeft():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
+		invalidateLayoutImmediately();
 		return 0;
 	}
 }

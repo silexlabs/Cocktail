@@ -1,7 +1,16 @@
+/*
+ * Cocktail, HTML rendering engine
+ * http://haxe.org/com/libs/cocktail
+ *
+ * Copyright (c) Silex Labs
+ * Cocktail is available under the MIT license
+ * http://www.silexlabs.org/labs/cocktail-licensing/
+*/
 package cocktail.core.css.parsers;
 
 /**
- * ...
+ * states enums for state parsers
+ * 
  * @author Yannick DOMINGUEZ
  */
 
@@ -68,9 +77,13 @@ enum StyleRuleParserState {
 
 enum StyleSheetRulesParserState {
 	IGNORE_SPACES;
+	BEGIN;
 	BEGIN_RULE;
 	RULE;
 	END_RULE;
+	COMMENT;
+	BEGIN_COMMENT;
+	END_COMMENT;
 }
 
 enum StyleSheetRuleParserState {

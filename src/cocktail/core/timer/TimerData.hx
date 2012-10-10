@@ -18,7 +18,7 @@ package cocktail.core.timer;
   */
 class TimerCallbackVO 
 {
-	public var timerCallback:Void->Void;
+	public var timerCallback:Float->Void;
 	
 	public var callbackTime:Float;
 	

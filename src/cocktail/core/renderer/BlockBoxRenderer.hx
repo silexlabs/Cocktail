@@ -17,6 +17,7 @@ import cocktail.core.event.WheelEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
+import cocktail.core.linebox.EmbeddedLineBox;
 import cocktail.core.linebox.LineBox;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.floats.FloatsManager;
@@ -28,6 +29,8 @@ import cocktail.core.font.FontData;
 import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.graphics.GraphicsContext;
+import cocktail.core.linebox.RootLineBox;
+import cocktail.core.linebox.StaticPositionLineBox;
 import cocktail.Lib;
 import haxe.Log;
 import cocktail.core.layer.LayerRenderer;
@@ -46,12 +49,88 @@ import cocktail.core.layer.LayerRenderer;
 class BlockBoxRenderer extends ScrollableRenderer
 {	
 	/**
+	 * An array where each item represents a line
+	 * . Used when this block box establishes an 
+	 * inline formatting context
+	 */
+	public var rootLineBoxes(default, null):Array<LineBox>;
+	
+	/**
+	 * count the number of root line box
+	 * used, this is used to prevent creating
+	 * too much root line box when updateing layout
+	 */
+	private var _usedRootLineBoxes:Int;
+	
+	/**
 	 * class constructor.
 	 * Init class attributes
 	 */
 	public function new(node:HTMLElement) 
 	{
 		super(node);
+		rootLineBoxes = new Array<LineBox>();
+		_usedRootLineBoxes = 0;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC LINE BOXES METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * reset each root line box owned by this
+	 * block box. Root line box are reused
+	 * instead of being instantiated each time
+	 */
+	public function resetRootLineBoxes():Void
+	{
+		var length:Int = rootLineBoxes.length;
+		for (i in 0...length)
+		{
+			//reset the root line box data
+			var rootLineBox:LineBox = rootLineBoxes[i];
+			rootLineBox.bounds.x = 0;
+			rootLineBox.bounds.y = 0;
+			rootLineBox.bounds.width = 0;
+			rootLineBox.bounds.height = 0;
+			
+			//remove all its children
+			var child:LineBox = rootLineBox.firstChild;
+			while(child != null)
+			{
+				var nextSibling:LineBox = child.nextSibling;
+				rootLineBox.removeChild(child);
+				child = nextSibling;
+			}
+		}
+		
+		_usedRootLineBoxes = 0;
+	}
+	
+	/**
+	 * Return a usable root line box, used during
+	 * layout
+	 */
+	public function getRootLineBox():RootLineBox
+	{
+		_usedRootLineBoxes++;
+	
+		//create a new root line box if all root line
+		//boxes are used
+		if (_usedRootLineBoxes > rootLineBoxes.length)
+		{
+			rootLineBoxes.push(new RootLineBox(this));
+		}
+		
+		return cast(rootLineBoxes[_usedRootLineBoxes - 1]);
+	}
+	
+	/**
+	 * Return the last added root line box
+	 */
+	public function getLastRootLineBox():RootLineBox
+	{
+		return cast(rootLineBoxes[_usedRootLineBoxes - 1]);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -82,11 +161,9 @@ class BlockBoxRenderer extends ScrollableRenderer
 			
 			//loop in all children, looking for one which doesn't
 			//coreespond to the currrent formatting of the block
-			var length:Int = childNodes.length;
-			for (i in 0...length)
+			var child:ElementRenderer = firstChild;
+			while(child != null)
 			{
-				var child:ElementRenderer = childNodes[i];
-				
 				//absolutely positioned children are not taken into account when determining wether this
 				//BlockBoxRenderer establishes/participate in a block or inline formatting context
 				if (child.isPositioned() == false || child.isRelativePositioned() ==  true)
@@ -101,6 +178,8 @@ class BlockBoxRenderer extends ScrollableRenderer
 						break;
 					}
 				}
+				
+				child = child.nextSibling;
 			}
 		}
 		
@@ -133,10 +212,10 @@ class BlockBoxRenderer extends ScrollableRenderer
 		
 		//loop in the child nodes in reverse order, as the child nodes
 		//array will be modified during this loop
-		var i:Int = childNodes.length -1;
-		while( i >= 0)
+		var child:ElementRenderer = lastChild;
+		while(child != null)
 		{
-			var child:ElementRenderer = childNodes[i];
+			var previousSibling:ElementRenderer = child.previousSibling;
 			
 			//for inline children, create an anonymous block, and attach the child to it
 			if (child.isInlineLevel() == true)
@@ -151,7 +230,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 				newChildNodes.push(child);
 			}
 			
-			i--;
+			child = previousSibling;
 		}
 		
 		//must reverse as the child nodes where
@@ -202,10 +281,9 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 */
 	private function hasSignificantChild():Bool
 	{
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			var child:ElementRenderer = childNodes[i];
 			if (child.isFloat() == false)
 			{
 				if (child.isPositioned() == false || child.isRelativePositioned() == true)
@@ -215,6 +293,8 @@ class BlockBoxRenderer extends ScrollableRenderer
 					return true;
 				}
 			}
+			
+			child = child.nextSibling;
 		}
 		return false;
 	}
@@ -259,22 +339,19 @@ class BlockBoxRenderer extends ScrollableRenderer
 	private function renderLineBoxes(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext):Void
 	{
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.childrenInline() == true)
-		{
-			var blockBoxRenderer:ElementRenderer = rootRenderer;
-			
-			var length:Int = blockBoxRenderer.lineBoxes.length;
+		{	
+			var blockboxRenderer:BlockBoxRenderer = cast(rootRenderer);
+			var length:Int = blockboxRenderer.rootLineBoxes.length;
 			for (i in 0...length)
 			{
-				renderLineBoxesInLine(blockBoxRenderer.lineBoxes[i], graphicContext);
+				renderLineBoxesInLine(blockboxRenderer.rootLineBoxes[i], graphicContext);
 			}
 		}
 		else
 		{
-			var length:Int = rootRenderer.childNodes.length;
-			for (i in 0...length)
+			var child:ElementRenderer = rootRenderer.firstChild;
+			while(child != null)
 			{
-				var child:ElementRenderer = rootRenderer.childNodes[i];
-			
 				if (child.layerRenderer == referenceLayer)
 				{
 					if (child.isReplaced() == false)
@@ -282,6 +359,8 @@ class BlockBoxRenderer extends ScrollableRenderer
 						renderLineBoxes(child, referenceLayer, graphicContext);
 					}
 				}
+				
+				child = child.nextSibling;
 			}
 		}
 	}
@@ -291,16 +370,17 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 */
 	private function renderLineBoxesInLine(rootLineBox:LineBox, graphicContext:GraphicsContext):Void
 	{
-		var length:Int = rootLineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = rootLineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = rootLineBox.childNodes[i];
 			child.render(graphicContext);
 			
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				renderLineBoxesInLine(child, graphicContext);
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	
@@ -310,11 +390,9 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 */
 	private function renderBlockReplacedChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext):Void
 	{
-		var length:Int = rootRenderer.childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = rootRenderer.firstChild;
+		while(child != null)
 		{
-			var child:ElementRenderer = rootRenderer.childNodes[i];
-			
 			if (child.layerRenderer == referenceLayer)
 			{
 				//TODO 2 : must add more condition, for instance, no float
@@ -327,6 +405,8 @@ class BlockBoxRenderer extends ScrollableRenderer
 					child.render(graphicContext);
 				}
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	
@@ -336,11 +416,9 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 */
 	private function renderBlockContainerChildren(rootElementRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext):Void
 	{
-		var length:Int = rootElementRenderer.childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = rootElementRenderer.firstChild;
+		while(child != null)
 		{
-			var child:ElementRenderer = rootElementRenderer.childNodes[i];
-			
 			//check that the child is not positioned, as if it is an auto z-index positioned
 			//element, it will be on the same layerRenderer but should not be rendered as 
 			//a block container children
@@ -353,6 +431,8 @@ class BlockBoxRenderer extends ScrollableRenderer
 					renderBlockContainerChildren(child, referenceLayer, graphicContext);
 				}
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	

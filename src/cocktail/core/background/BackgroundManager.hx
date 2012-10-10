@@ -203,11 +203,11 @@ class BackgroundManager
 		else if (resource.loadedWithError == false)
 		{
 			resource.addEventListener(EventConstants.LOAD, function(e) {
-				elementRenderer.invalidate(InvalidationReason.backgroundImageLoaded);
+				elementRenderer.invalidateRendering();
 			});
 			
 			resource.addEventListener(EventConstants.ERROR, function(e) {
-				elementRenderer.invalidate(InvalidationReason.backgroundImageLoaded);
+				elementRenderer.invalidateRendering();
 			});
 			
 			foundResource = true;

@@ -68,7 +68,7 @@ class Attr<ElementClass:Node<ElementClass>> extends Node<Attr<ElementClass>>
 	}
 	
 	/**
-	 * Attribute nodes can't have children
+	 * attribute nodes can't have children
 	 */
 	override private function initChildNodes():Void
 	{

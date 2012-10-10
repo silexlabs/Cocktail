@@ -37,14 +37,6 @@ class EmbeddedLineBox extends LineBox
 		super(elementRenderer);
 	}
 	
-	/**
-	 * embedded line box can't have children
-	 */
-	override private function initChildNodes():Void
-	{
-		
-	}
-	
 	/////////////////////////////////
 	// OVERRIDEN PUBLIC RENDERING METHODS
 	////////////////////////////////

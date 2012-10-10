@@ -15,6 +15,9 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.linebox.EmbeddedLineBox;
+import cocktail.core.linebox.LineBox;
+import cocktail.core.linebox.StaticPositionLineBox;
 
 import cocktail.core.layout.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
 import cocktail.core.layout.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
@@ -79,6 +82,37 @@ class BoxRenderer extends InvalidatingElementRenderer
 		super(domNode);
 		_containerBlockData = new ContainingBlockVO(0.0, false, 0.0, false);
 		_windowData = new ContainingBlockVO(0.0, false, 0.0, false);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC ATTACHEMENT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * overriden as box might generate one
+	 * line box if they are inline level
+	 */
+	override public function updateLineBoxes():Void
+	{
+		lineBoxes = new Array<LineBox>();
+		
+		//positioned box generate static line box, used as dummy
+		//to find their static position
+		if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			var staticLineBox:StaticPositionLineBox = new StaticPositionLineBox(this);
+			lineBoxes.push(staticLineBox);
+		}
+		//non-positioned box create embedded box, it can represent
+		//an embedded element llike a picture or an inline-block block
+		//box
+		else
+		{
+			var embeddedLineBox:EmbeddedLineBox = new EmbeddedLineBox(this);
+			lineBoxes.push(embeddedLineBox);
+		}
+			
+		super.updateLineBoxes();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
