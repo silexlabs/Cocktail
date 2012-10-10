@@ -129,7 +129,8 @@ class SWFPlugin extends Plugin
 		if (_loader != null)
 		{
 			//method doesn't exists in nme
-			#if (air || flash)
+			#if nme
+			#elseif (air || flash)
 			_loader.unloadAndStop();
 			#end
 			_loader = null;

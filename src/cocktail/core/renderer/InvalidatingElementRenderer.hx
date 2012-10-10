@@ -75,6 +75,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 	{
 		_childrenNeedLayout = true;
 		_positionedChildrenNeedLayout = true;
+		invalidateLayoutAndRendering();
 	}
 	
 	/**
@@ -152,7 +153,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 	{
 		_needsLayout = true;
 		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
-		htmlDocument.invalidationManager.invalidateLayout(true);
+		htmlDocument.invalidationManager.invalidateLayout(true, false);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -306,7 +307,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
 		if (htmlDocument != null)
 		{
-			htmlDocument.invalidationManager.invalidateLayout(false);
+			htmlDocument.invalidationManager.invalidateLayout(false, false);
 		}
 	}
 	
@@ -318,7 +319,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 		_needsLayout = true;
 		
 		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
-		htmlDocument.invalidationManager.invalidateLayout(false);
+		htmlDocument.invalidationManager.invalidateLayout(false, false);
 		
 		//invalidate the layer associated with
 		//this ElementRenderer
