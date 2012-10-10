@@ -75,6 +75,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 	{
 		_childrenNeedLayout = true;
 		_positionedChildrenNeedLayout = true;
+		invalidateLayoutAndRendering();
 	}
 	
 	/**
