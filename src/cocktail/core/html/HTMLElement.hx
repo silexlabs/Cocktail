@@ -652,7 +652,7 @@ class HTMLElement extends Element<HTMLElement>
 		//when attached to a new parent, 
 		//the styles definition must be updated
 		//and cascaded
-		invalidateStyleDeclaration(false);
+		invalidateStyleDeclaration(true);
 		invalidateCascade();
 	}
 	
