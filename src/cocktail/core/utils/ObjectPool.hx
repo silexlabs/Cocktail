@@ -13,28 +13,24 @@ class ObjectPool<T:IPoolable>
 
 	private var _pooledClass:Class<T>;
 	
+	private var _args:Array<Dynamic>;
+	
 	public function new(pooledClass:Class<T>) 
 	{
 		_pooledClass = pooledClass;
 		_pool = new Array<T>();
 		_freeObjectIndex = -1;
+		_args = [];
 	}
 	
-	private static var _t:Int = 0;
-	
-	private static var _r:Int = 0;
 	public function get():T
 	{
 		if (_freeObjectIndex == -1)
 		{
-			_t++;
-			//trace("instanttttttttttt : " + _t);
-			return Type.createInstance(_pooledClass, []);
+			return Type.createInstance(_pooledClass, _args);
 		}
 		else
 		{
-			_r++;
-			//trace("reuse : " + _r);
 			var object:T = _pool[_freeObjectIndex];
 			_freeObjectIndex--;
 			return object;

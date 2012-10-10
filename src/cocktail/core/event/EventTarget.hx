@@ -7,6 +7,7 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.event;
+using cocktail.core.utils.Utils;
 
 /**
  * Allows registration and removal 
@@ -24,6 +25,13 @@ class EventTarget
 	 * they were registered
 	 */
 	private var _registeredEventListeners:Hash<Array<EventListener>>;
+	
+	/**
+	 * When dispatching an event, 
+	 * holds all the parent
+	 * ancestors
+	 */
+	private var _targetAncestors:Array<EventTarget>;
 	
 	/**
 	 * class constructor
@@ -311,11 +319,21 @@ class EventTarget
 	
 	/**
 	 * Return all the EventTarget ancestors of this EventTarget,
-	 * implemented by inheriting classes
+	 * filling the arrayimplemented by inheriting classes
 	 */
 	private function getTargetAncestors():Array<EventTarget>
 	{
-		return [];
+		//create or reset the array
+		if (_targetAncestors == null)
+		{
+			_targetAncestors = new Array<EventTarget>();
+		}
+		else
+		{
+			_targetAncestors.clear();
+		}
+		
+		return _targetAncestors;
 	}
 	
 	/**

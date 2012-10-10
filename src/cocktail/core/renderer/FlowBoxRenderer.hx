@@ -117,11 +117,11 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	private function layoutChildren():Void
 	{
-		var childNodes:Array<ElementRenderer> = this.childNodes;
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			childNodes[i].layout(_childrenNeedLayout);
+			child.layout(_childrenNeedLayout);
+			child = child.nextSibling;
 		}
 	}
 	
@@ -250,11 +250,9 @@ class FlowBoxRenderer extends BoxRenderer
 	 */
 	override public function childrenInline():Bool
 	{	
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			var child:ElementRenderer = childNodes[i];
-			
 			if (child.isInlineLevel() == true)
 			{
 				//floated and absolutely positioned element are not taken into
@@ -267,6 +265,8 @@ class FlowBoxRenderer extends BoxRenderer
 					}
 				}
 			}
+			
+			child = child.nextSibling;
 		}
 		return false;
 	}

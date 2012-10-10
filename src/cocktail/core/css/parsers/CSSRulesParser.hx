@@ -1,3 +1,11 @@
+/*
+ * Cocktail, HTML rendering engine
+ * http://haxe.org/com/libs/cocktail
+ *
+ * Copyright (c) Silex Labs
+ * Cocktail is available under the MIT license
+ * http://www.silexlabs.org/labs/cocktail-licensing/
+*/
 package cocktail.core.css.parsers;
 
 using StringTools;
@@ -39,7 +47,7 @@ class CSSRulesParser
 	public function parseRules(css:String):Array<String>
 	{
 		var state:StyleSheetRulesParserState = IGNORE_SPACES;
-		var next:StyleSheetRulesParserState = BEGIN_RULE;
+		var next:StyleSheetRulesParserState = BEGIN;
 		var start:Int = 0;
 		var position:Int = 0;
 		var c:Int = css.fastCodeAt(position);
@@ -64,6 +72,18 @@ class CSSRulesParser
 							continue;
 					}
 					
+				case BEGIN:
+					switch(c)
+					{
+						case '/'.code:
+							state = BEGIN_COMMENT;
+							
+						default:
+							start = position;
+							state = BEGIN_RULE;
+							continue;
+					}	
+					
 				case BEGIN_RULE:
 					start = position;
 					state = RULE;
@@ -81,9 +101,34 @@ class CSSRulesParser
 					var rule:String = css.substr(start, position - start);
 					rules.push(rule);
 					state = IGNORE_SPACES;
-					next = BEGIN_RULE;
+					next = BEGIN;
 					ruleStarted = false;
 					continue;
+					
+				case BEGIN_COMMENT:
+					//invalid comment, return all valid rules
+					//so far, the rest of the stylesheet is ignored
+					if (c != '*'.code)
+					{
+						return rules;
+					}
+					else
+					{
+						state = COMMENT;
+					}
+					
+				case COMMENT:
+					if (c == '*'.code)
+					{
+						state = END_COMMENT;
+					}
+				
+				case END_COMMENT:
+					if (c == '/'.code)
+					{
+						state = IGNORE_SPACES;
+						next = BEGIN;
+					}	
 			}
 			
 			c = css.fastCodeAt(++position);

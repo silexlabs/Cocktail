@@ -222,13 +222,6 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	 */
 	override public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix, sourceRect:RectangleVO):Void
 	{	
-		//init destination point and sourceRect if null
-		
-		if (matrix == null)
-		{
-			matrix = new Matrix();
-		}
-		
 		//convert the cross-platform rectangle into flash native one
 		_flashRectangle.x = Math.round(sourceRect.x);
 		_flashRectangle.y = Math.round(sourceRect.y);
@@ -306,7 +299,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		
 		//if the color is transparent, a new bitmap data
 		//must be created to composite alpha
-		if (color.alpha != 1.0)
+		if (color.alpha != 1.0 || _useTransparency == true)
 		{
 			_fillRectRectangle.width = Math.round(rect.width);
 			_fillRectRectangle.height = Math.round(rect.height);

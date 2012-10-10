@@ -101,10 +101,8 @@ class InlineFormattingContext extends FormattingContext
 		
 		_formattingContextRoot.resetRootLineBoxes();
 		
-		var rootLineBoxes:Array<LineBox> = new Array<LineBox>();
 		var initialRootLineBox:RootLineBox = _formattingContextRoot.getRootLineBox();
-		rootLineBoxes.push(initialRootLineBox);
-		
+
 		_firstLineFormatted = false;
 		
 		//TODO : should implement text indent in a cleaner way
@@ -114,12 +112,10 @@ class InlineFormattingContext extends FormattingContext
 		_formattingContextData.x = _formattingContextRoot.coreStyle.usedValues.textIndent;
 		_formattingContextData.x += _floatsManager.getLeftFloatOffset(_formattingContextRoot.bounds.y);
 		
-		doFormat(_formattingContextRoot, initialRootLineBox, rootLineBoxes, _openedElementRenderers);
+		doFormat(_formattingContextRoot, initialRootLineBox, _openedElementRenderers);
 
 		//format the last line
-		formatLine(rootLineBoxes[rootLineBoxes.length - 1], true);
-
-		_formattingContextRoot.rootLineBoxes = rootLineBoxes;
+		formatLine(_formattingContextRoot.getLastRootLineBox(), true);
 
 		var formattingContextCoreStyle:CoreStyle = _formattingContextRoot.coreStyle;
 		//apply formatting height to formatting context root if auto height
@@ -131,14 +127,14 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
-	private function doFormat(elementRenderer:ElementRenderer, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
+	private static var _g:Int = 0;
+	
+	private function doFormat(elementRenderer:ElementRenderer, lineBox:LineBox, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
 		//loop in all the child of the container
-		var length:Int = elementRenderer.childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = elementRenderer.firstChild;
+		while(child != null)
 		{
-			var child:ElementRenderer = elementRenderer.childNodes[i];
-			
 			//here the child is absolutely positioned, its static position must be calculated
 			//so that it can be used if the child's left, right, top or bottom attribute are 'auto'.
 			//A dummy 'StaticLineBox' is created which will be formatting instead of the child.
@@ -155,7 +151,7 @@ class InlineFormattingContext extends FormattingContext
 				staticLineBox.marginLeft = child.coreStyle.usedValues.marginLeft;
 				staticLineBox.marginRight = child.coreStyle.usedValues.marginRight;
 				
-				lineBox = insertIntoLine(staticLineBox, lineBox, rootLineBoxes, openedElementRenderers);
+				lineBox = insertIntoLine(staticLineBox, lineBox, openedElementRenderers);
 			}
 			//here the child either starts a new formatting context, meaning it is displayed
 			//has an inline-block and it has children, or it is replaced/embedded, such as
@@ -180,11 +176,11 @@ class InlineFormattingContext extends FormattingContext
 				embeddedLineBox.marginLeft = childUsedValues.marginLeft;
 				embeddedLineBox.marginRight = childUsedValues.marginRight;
 				
-				lineBox = insertIntoLine(embeddedLineBox, lineBox, rootLineBoxes, openedElementRenderers);
+				lineBox = insertIntoLine(embeddedLineBox, lineBox, openedElementRenderers);
 			}
 			//here the child is an inline box renderer, which will create one line box for each
 			//line its children are in
-			else if (child.hasChildNodes() == true)
+			else if (child.firstChild != null)
 			{
 				//remove all the previous line boxes before creating new ones
 				//if needed
@@ -218,7 +214,7 @@ class InlineFormattingContext extends FormattingContext
 				//a reference to the last added line box is returned, so that it can
 				//be used as a starting point when laying out the siblings of the 
 				//inline box renderer
-				lineBox = doFormat(child, childLineBox, rootLineBoxes, openedElementRenderers);
+				lineBox = doFormat(child, childLineBox, openedElementRenderers);
 				
 				//now that all of the child of the inline box renderer as been laid out,
 				//remove the reference to this inline box renderer so that when a new line
@@ -246,9 +242,11 @@ class InlineFormattingContext extends FormattingContext
 				var textLength:Int = child.lineBoxes.length;
 				for (j in 0...textLength)
 				{
-					lineBox = insertIntoLine(child.lineBoxes[j], lineBox, rootLineBoxes, openedElementRenderers);
+					lineBox = insertIntoLine(child.lineBoxes[j], lineBox, openedElementRenderers);
 				}
 			}
+			
+			child = child.nextSibling;
 		}
 	
 		return lineBox;
@@ -270,7 +268,7 @@ class InlineFormattingContext extends FormattingContext
 	 * Insert a line boxe into the current line. If the line boxe
 	 * can't fit in the line, create a new line 
 	 */
-	private function insertIntoLine(childLineBox:LineBox, lineBox:LineBox, rootLineBoxes:Array<LineBox>, openedElementRenderers:Array<ElementRenderer>):LineBox
+	private function insertIntoLine(childLineBox:LineBox, lineBox:LineBox, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
 		//store the line box in the unbreakable line box array, which is
 		//a buffer preventing break between elements which are not supposed to
@@ -305,11 +303,10 @@ class InlineFormattingContext extends FormattingContext
 			//format the current line which is currently the last in the line array
 			//, now that all the line box in it are known
 			//each of the line boxes will be placed in x and y on this line
-			formatLine(rootLineBoxes[rootLineBoxes.length -1], false);
+			formatLine(_formattingContextRoot.getLastRootLineBox(), false);
 			
 			//create a new root for the next line, and add it to the line array
 			var rootLineBox:RootLineBox = _formattingContextRoot.getRootLineBox();
-			rootLineBoxes.push(rootLineBox);
 			
 			//set the line box which will be used to layout the following children
 			//as the new root line box
@@ -356,7 +353,7 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function formatLine(rootLineBox:LineBox, isLastLine:Bool):Void
 	{
-		if (rootLineBox.hasChildNodes() == true)
+		if (rootLineBox.firstChild != null)
 		{
 			removeSpaces(rootLineBox);
 		}
@@ -388,14 +385,12 @@ class InlineFormattingContext extends FormattingContext
 	{
 		var concatenatedWidth:Float = 0.0;
 		
-		var length:Int = lineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = lineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = lineBox.childNodes[i];
-			
 			if (child.isStaticPosition() == false)
 			{
-				if (child.hasChildNodes() == true)
+				if (child.firstChild != null)
 				{
 					concatenatedWidth += getConcatenatedWidth(child);
 				}
@@ -403,6 +398,7 @@ class InlineFormattingContext extends FormattingContext
 				concatenatedWidth += child.bounds.width;
 			}
 			
+			child = child.nextSibling;
 		}
 		
 		return concatenatedWidth;
@@ -418,11 +414,10 @@ class InlineFormattingContext extends FormattingContext
 	{
 		var spacesNumber:Int = 0;
 		
-		for (i in 0...lineBox.childNodes.length)
+		var child:LineBox = lineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = lineBox.childNodes[i];
-			
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				spacesNumber += getSpacesNumber(child);
 			}
@@ -431,6 +426,8 @@ class InlineFormattingContext extends FormattingContext
 			{
 				spacesNumber++;
 			}
+			
+			child = child.nextSibling;
 		}
 		
 		return spacesNumber;
@@ -526,12 +523,10 @@ class InlineFormattingContext extends FormattingContext
 	{
 		flowX += lineBox.paddingLeft + lineBox.marginLeft;
 		
-		var length:Int = lineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = lineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = lineBox.childNodes[i];
-			
-			if (child.hasChildNodes() == true && child.isStaticPosition() == false)
+			if (child.firstChild != null && child.isStaticPosition() == false)
 			{
 				flowX = alignLeft(flowX, child);
 			}
@@ -545,6 +540,8 @@ class InlineFormattingContext extends FormattingContext
 				}
 			
 			}
+			
+			child = child.nextSibling;
 		}
 		
 		flowX += lineBox.paddingRight + lineBox.marginRight;
@@ -567,18 +564,18 @@ class InlineFormattingContext extends FormattingContext
 	{
 		flowX += lineBox.marginLeft + lineBox.paddingLeft;
 		
-		var length:Int = lineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = lineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = lineBox.childNodes[i];
-			
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				flowX =  alignCenter(flowX, remainingSpace, child);
 			}
 			
 			child.bounds.x = (remainingSpace / 2) + flowX;
 			flowX += child.bounds.width;
+			
+			child = child.nextSibling;
 		}
 		
 		flowX += lineBox.marginRight + lineBox.paddingRight;
@@ -600,18 +597,18 @@ class InlineFormattingContext extends FormattingContext
 	{
 		flowX += lineBox.marginLeft + lineBox.paddingLeft;
 		
-		var length:Int = lineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = lineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = lineBox.childNodes[i];
-			
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				flowX = alignRight(flowX, remainingSpace, child);
 			}
 			
 			child.bounds.x = flowX + remainingSpace;
 			flowX += child.bounds.width;
+			
+			child = child.nextSibling;
 		}
 		
 		flowX += lineBox.marginRight + lineBox.paddingRight;
@@ -630,11 +627,9 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function alignJustify(flowX:Float, remainingSpace:Float, lineBox:LineBox, spacesInLine:Int):Void
 	{
-		var length:Int = lineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = lineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = lineBox.childNodes[i];
-			
 			if (child.isSpace() == true)
 			{
 				var spaceWidth:Float = (remainingSpace / spacesInLine);
@@ -647,10 +642,12 @@ class InlineFormattingContext extends FormattingContext
 			child.bounds.x =  flowX;
 			flowX += child.bounds.width;
 			
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				alignJustify(flowX, remainingSpace, child, spacesInLine);
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	
@@ -750,12 +747,10 @@ class InlineFormattingContext extends FormattingContext
 	
 	private function getLineBoxTreeAsArray(rootLineBox:LineBox, lineBoxes:Array<LineBox>):Void
 	{
-		var length:Int = rootLineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = rootLineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = rootLineBox.childNodes[i];
-			
-			if (child.hasChildNodes() == true && child.isStaticPosition() == false)
+			if (child.firstChild != null && child.isStaticPosition() == false)
 			{
 				getLineBoxTreeAsArray(child, lineBoxes);
 			}
@@ -763,6 +758,8 @@ class InlineFormattingContext extends FormattingContext
 			{
 				lineBoxes.push(child);
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	
@@ -805,12 +802,9 @@ class InlineFormattingContext extends FormattingContext
 	
 	private function setRootLineBoxMetrics(lineBox:LineBox, rootLineBox:LineBox, parentBaseLineOffset:Float, formattingContextFontMetrics:FontMetricsVO):Void
 	{
-		var length:Int = lineBox.childNodes.length;
-		
-		for (i in 0...length)
+		var child:LineBox = lineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = lineBox.childNodes[i];
-			
 			if (child.isStaticPosition() == false)
 			{
 				var leadedAscent:Float = child.leadedAscent;
@@ -827,11 +821,13 @@ class InlineFormattingContext extends FormattingContext
 					rootLineBox.leadedDescent = leadedDescent + baselineOffset;
 				}
 				
-				if (child.hasChildNodes() == true)
+				if (child.firstChild != null)
 				{
 					setRootLineBoxMetrics(child, rootLineBox, baselineOffset, formattingContextFontMetrics);
 				}
 			}
+			
+			child = child.nextSibling;
 			
 		}
 	}
@@ -841,11 +837,9 @@ class InlineFormattingContext extends FormattingContext
 	 */
 	private function alignLineBoxesVertically(lineBox:LineBox, lineBoxAscent:Float, formattingContextY:Float, parentBaseLineOffset:Float, formattingContextFontMetrics:FontMetricsVO):Void
 	{
-		var length:Int = lineBox.childNodes.length;
-		for (i in 0...length)
+		var child:LineBox = lineBox.firstChild;
+		while(child != null)
 		{
-			var child:LineBox = lineBox.childNodes[i];
-			
 			var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, formattingContextFontMetrics.xHeight);
 			
 			var childCoreStyle:CoreStyle = child.elementRenderer.coreStyle;
@@ -862,7 +856,7 @@ class InlineFormattingContext extends FormattingContext
 					//
 					//for all child line box but container line box, 
 					//add the global ascent of the line and remove own ascent
-					if (child.hasChildNodes() == false)
+					if (child.firstChild != null)
 					{
 						child.bounds.y += lineBoxAscent;
 						child.bounds.y -= child.leadedAscent;
@@ -871,7 +865,7 @@ class InlineFormattingContext extends FormattingContext
 					
 			}
 			
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				alignLineBoxesVertically(child, lineBoxAscent, formattingContextY, baselineOffset, formattingContextFontMetrics);
 			}
@@ -881,6 +875,8 @@ class InlineFormattingContext extends FormattingContext
 			{
 				child.bounds.y += child.elementRenderer.coreStyle.usedValues.marginTop;
 			}
+			
+			child = child.nextSibling;
 		}
 	}
 	

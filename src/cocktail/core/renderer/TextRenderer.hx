@@ -109,7 +109,7 @@ class TextRenderer extends InvalidatingElementRenderer
 	 * the text is re-rendered for next layout.
 	 * Text rendering is invalidated for instance when its color changes
 	 */
-	override public function invalidate(invalidationReason:InvalidationReason):Void
+	override public function invalidate():Void
 	{
 		_textNeedsRendering = true;
 	}

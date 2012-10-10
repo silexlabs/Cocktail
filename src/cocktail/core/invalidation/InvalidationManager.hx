@@ -351,7 +351,7 @@ class InvalidationManager
 	 * Callback called after an invalidation is
 	 * scheduled, starts updating the document
 	 */
-	private function onUpdateSchedule():Void
+	private function onUpdateSchedule(timeStamp:Float):Void
 	{
 		_invalidationScheduled = false;
 		updateDocument();

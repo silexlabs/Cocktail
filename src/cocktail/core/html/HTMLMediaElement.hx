@@ -516,7 +516,7 @@ class HTMLMediaElement extends EmbeddedElement
 	private function doPlay():Void
 	{
 		nativeMedia.play();
-		onTimeUpdateTick();
+		onTimeUpdateTick(0);
 	}
 	
 	/**
@@ -940,11 +940,11 @@ class HTMLMediaElement extends EmbeddedElement
 		establishMediaTimeline();
 		
 		//refresh the layout
-		invalidate(InvalidationReason.other);
+		invalidate();
 		
 		//start listening to loading event, as it begins
 		//as soon as the metadata are loaded
-		onProgressTick();
+		onProgressTick(0);
 		
 		//if the media resource was stalled by
 		//the value of the preload attribute,
@@ -962,7 +962,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * Called at a regular frequency while
 	 * the media is playing
 	 */
-	private function onTimeUpdateTick():Void
+	private function onTimeUpdateTick(timeStamp:Float):Void
 	{
 		//stop dispatching time updates if the
 		//media is paused
@@ -1018,7 +1018,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * Called at a regular frequency whild the media is
 	 * being loaded
 	 */
-	private function onProgressTick():Void
+	private function onProgressTick(timeStamp:Float):Void
 	{
 		//dispatch a load progress event
 		//TODO 4 : should it be dispatched before suspend ?

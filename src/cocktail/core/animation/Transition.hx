@@ -105,20 +105,12 @@ class Transition
 	public var complete(get_complete, never):Bool;
 	
 	/**
-	 * A reference to the invalidation which started this transition,
-	 * most liekly a property value change. Will be used for invalidation
-	 * on each update tick
-	 */
-	public var invalidationReason(default, null):InvalidationReason;
-	
-	/**
 	 * class constructor. Set
 	 * the transition attribute
 	 */
 	public function new(propertyName:String, target:CoreStyle, transitionDuration:Float, transitionDelay:Float, transitionTimingFunction:CSSPropertyValue,
-	startValue:Float, endValue:Float, onComplete:Transition->Void, onUpdate:Transition->Void, invalidationReason:InvalidationReason) 
+	startValue:Float, endValue:Float, onComplete:Transition->Void, onUpdate:Transition->Void) 
 	{
-		this.invalidationReason = invalidationReason;
 		_transitionDelay = transitionDelay;
 		this.transitionDuration = transitionDuration;
 		_transitionTimingFunction = transitionTimingFunction;

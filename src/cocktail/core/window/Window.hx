@@ -182,7 +182,7 @@ class Window extends EventCallback
 		{
 			//only update mouse if the value is different
 			//from the current one
-			if (Type.enumEq(cursor, _currentMouseCursor) == false)
+			if (cursor != _currentMouseCursor)
 			{
 				_currentMouseCursor = cursor;
 				platform.mouse.setMouseCursor(cursor);
