@@ -240,6 +240,13 @@ class HTMLDocument extends Document
 	 * for each HTMLElement
 	 */
 	public var cascadeManager(default, null):CascadeManager;
+		
+   /**  	
+	* getter/setter to set the whole document content with an  	
+	* html string or to serialise the whole document into
+	* an html string  	
+   */ 	
+	public var innerHTML(get_innerHTML, set_innerHTML):String;
 	
 	/**
 	 * class constructor. Init class attributes
@@ -297,20 +304,6 @@ class HTMLDocument extends Document
 		}
 	}
 
-	/**
-	 * Init the document element.
-	 * @param	htmlBodyElement
-	 */
-	public function initDocumentElement(htmlElement:HTMLElement):Void
-	{
-		documentElement = htmlElement;
-
-		if (documentElement.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME).length > 0)
-		{
-			initBody(cast(documentElement.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
-		}
-	}
-	
 	/**
 	 * Instantaite the style manager and add a default
 	 * style sheet to it
@@ -502,6 +495,34 @@ class HTMLDocument extends Document
 		_matchedPseudoClasses.checked = checked;
 		
 		return _matchedPseudoClasses;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// DOM PARSER GETTER/SETTER AND METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+  
+	/**
+	 * parse the string representing the
+	 * whole document. The returned node
+	 * is the root of the html document
+	 */
+	private function set_innerHTML(value:String):String
+	{
+		//parse the html string into a node object
+		var node:HTMLElement = DOMParser.parse(value, this);
+		documentElement = node;
+		initBody(cast(documentElement.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
+		
+		return value;
+	}
+
+   /**
+	* Return the serialized documentElement
+	* (the <HTML> element)
+	*/
+	private function get_innerHTML():String
+	{
+		return DOMParser.serialize(documentElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

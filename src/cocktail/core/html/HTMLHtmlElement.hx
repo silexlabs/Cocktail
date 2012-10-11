@@ -9,6 +9,7 @@
 package cocktail.core.html;
 import cocktail.core.css.InitialStyleDeclaration;
 import cocktail.core.dom.Document;
+import cocktail.core.dom.DOMException;
 import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.RendererData;
@@ -46,16 +47,11 @@ class HTMLHtmlElement extends HTMLElement
 	}
 
 	/**
-	 * Overriden as the HTML element doesn't have any parent node.
+	 * Overriden as the HTML element's outerHTML can't be set
 	 */
 	override private function set_outerHTML(value:String):String
 	{
-		//parse the html string into a node object
-		var node:HTMLElement = DOMParser.parse(value, ownerDocument);
-
-		var htmlDocument:HTMLDocument = cast(ownerDocument);
-		htmlDocument.initDocumentElement(node);
-
+		throw DOMException.NO_MODIFICATION_ALLOWED_ERR;
 		return value;
 	}
 	
