@@ -68,18 +68,25 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	/**
 	 * A flash native rectanlge object, which
 	 * is re-used for each bitmap drawing
+	 * 
+	 * static, only need one instance at a time
 	 */
-	private var _flashRectangle:Rectangle;
+	private static var _flashRectangle:Rectangle;
 	
 	/**
 	 * Same as above for flash native point
 	 */
-	private var _flashPoint:Point;
+	private static var _flashPoint:Point;
+	
+	/**
+	 * same as above, but used as point for alpha
+	 */
+	private static var _flashAlphaPoint:Point;
 	
 	/**
 	 * Same as above for flash Matrix
 	 */
-	private var _flashMatrix:flash.geom.Matrix;
+	private static var _flashMatrix:flash.geom.Matrix;
 	
 	/**
 	 * A reuseable rectangle used for fillRect rectangle
@@ -89,7 +96,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	/**
 	 * A reuseable point used for fillRect rectangle
 	 */
-	private var _fillRectPoint:PointVO;
+	private static var _fillRectPoint:PointVO;
 	
 	/**
 	 * class constructor
@@ -98,6 +105,17 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	{
 		super();
 		
+		//instantiate all static flash object on first use
+		if (_flashRectangle == null)
+		{
+			_flashRectangle = new Rectangle();
+			_flashPoint = new Point();
+			_flashAlphaPoint = new Point();
+			_flashMatrix = new flash.geom.Matrix();
+			_fillRectRectangle = new RectangleVO();
+			_fillRectPoint = new PointVO(0.0, 0.0);
+		}
+		
 		_nativeLayer = new Sprite();
 		_nativeLayer.mouseEnabled = false;
 		_nativeLayer.mouseChildren = false;
@@ -105,11 +123,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_childrenNativeLayer.mouseEnabled = false;
 		_childrenNativeLayer.mouseChildren = false;
 		
-		_flashRectangle = new Rectangle();
-		_flashPoint = new Point();
-		_flashMatrix = new flash.geom.Matrix();
-		_fillRectRectangle = new RectangleVO();
-		_fillRectPoint = new PointVO(0.0, 0.0);
+		
 		_width = 0;
 		_height = 0;
 
@@ -273,10 +287,11 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			color += alpha << 24;
 			
 			alphaBitmapData = new BitmapData(Math.round(sourceRect.width), Math.round(sourceRect.height), true, color);
-			alphaPoint = new Point(0,0);
+			_flashAlphaPoint.x = 0;
+			_flashAlphaPoint.y = 0;
 		}
 		
-		_nativeBitmap.bitmapData.copyPixels(bitmapData, _flashRectangle, _flashPoint, alphaBitmapData, alphaPoint, true);
+		_nativeBitmap.bitmapData.copyPixels(bitmapData, _flashRectangle, _flashPoint, alphaBitmapData, _flashAlphaPoint, true);
 		
 		if (alphaBitmapData != null)
 		{
