@@ -21,24 +21,34 @@ import cocktail.core.geom.GeomData;
  */
 class Matrix 
 {
-	
 	/**
-	 * Stores each value of this 3x3 matrix
+	 * matrix data for 3x3
 	 */
-	public var data(default, null):MatrixVO;
+	public var a:Float;
+	
+	public var b:Float;
+	
+	public var c:Float;
+	
+	public var e:Float;
+	
+	public var d:Float;
+	
+	public var f:Float;
 	
 	/**
 	 * Class constructor. Creates a 3x3 matrix with the given parameters.
 	 * It defaults to an identity matrix (no transformations), if the given
 	 * matrix data are null.
 	 */
-	public function new(data:MatrixVO = null) 
+	public function new(a:Float = 1.0, b:Float = 0.0, c:Float = 0.0, d:Float = 1.0, e:Float = 0.0, f:Float = 0.0) 
 	{
-		if (data == null)
-		{
-			data = new MatrixVO();
-		}
-		this.data = data;
+		this.a = a;
+		this.b = b;
+		this.c = c;
+		this.d = d;
+		this.e = e;
+		this.f = f;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -50,12 +60,12 @@ class Matrix
 	 */
 	public function identity():Void
 	{
-		data.a = 1.0;
-		data.b = 0.0;
-		data.c = 0.0;
-		data.d = 1.0;
-		data.e = 0.0;
-		data.f = 0.0;
+		a = 1.0;
+		b = 0.0;
+		c = 0.0;
+		d = 1.0;
+		e = 0.0;
+		f = 0.0;
 	}
 	
 	/**
@@ -71,29 +81,13 @@ class Matrix
 	 */
 	public function concatenate(matrix:Matrix):Void
 	{
-		//get a ref to current and target matrix data
-		var currentMatrixData:MatrixVO = data;
-		var targetMatrixData:MatrixVO = matrix.data;
-		
 		//multiply the two matrix data values
-		var a:Float = currentMatrixData.a * targetMatrixData.a + currentMatrixData.c * targetMatrixData.b;
-		var b:Float = currentMatrixData.b * targetMatrixData.a + currentMatrixData.d * targetMatrixData.b;
-		var c:Float = currentMatrixData.a * targetMatrixData.c + currentMatrixData.c * targetMatrixData.d;
-		var d:Float = currentMatrixData.b * targetMatrixData.c + currentMatrixData.d * targetMatrixData.d;
-		var e:Float = currentMatrixData.a * targetMatrixData.e + currentMatrixData.c * targetMatrixData.f + currentMatrixData.e;
-		var f:Float = currentMatrixData.b * targetMatrixData.e + currentMatrixData.d * targetMatrixData.f + currentMatrixData.f;
-		
-		//concatenate the result
-		var concatenatedMatrixData:MatrixVO = new MatrixVO();
-		concatenatedMatrixData.a = a;
-		concatenatedMatrixData.b = b;
-		concatenatedMatrixData.c = c;
-		concatenatedMatrixData.d = d;
-		concatenatedMatrixData.e = e;
-		concatenatedMatrixData.f = f;
-		
-		//then set it as this matrix data
-		this.data = concatenatedMatrixData;
+		this.a = a * matrix.a + c * matrix.b;
+		this.b = b * matrix.a + d * matrix.b;
+		this.c = a * matrix.c + c * matrix.d;
+		this.d = b * matrix.c + d * matrix.d;
+		this.e = a * matrix.e + c * matrix.f + e;
+		this.f = b * matrix.e + d * matrix.f + f;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -108,22 +102,11 @@ class Matrix
 	 */
 	public function translate(x:Float, y:Float):Void
 	{
-		//create the matrix data corresponding to an identity matrix
-		//translated by x and y
-		var translationMatrixData:MatrixVO = new MatrixVO();
-		translationMatrixData.a = 1.0;
-		translationMatrixData.b = 0.0;
-		translationMatrixData.c = 0.0;
-		translationMatrixData.d = 1.0;
-		translationMatrixData.e = x;
-		translationMatrixData.f = y;
-		
-		//create the corresponding matrix
-		var translationMatrix:Matrix = new Matrix(translationMatrixData);
-		
-		//concatenate the translation to the current matrix to prevent
+		//create the matrix corresponding to an identity matrix
+		//translated by x and y.
+		//concatenate the translation matrix to the current matrix to prevent
 		//losing any previous translation
-		concatenate(translationMatrix);
+		concatenate(new Matrix(1.0, 0.0, 0.0, 1.0, x, y  ));
 	}
 	
 	/**
@@ -164,21 +147,9 @@ class Matrix
 		
 		//create the matrix data corresponding to an identity matrix
 		//rotated by the angle
-		var rotationMatrixData:MatrixVO = new MatrixVO();
-		rotationMatrixData.a = a;
-		rotationMatrixData.b = b;
-		rotationMatrixData.c = c * -1.0;
-		rotationMatrixData.d = d;
-		rotationMatrixData.e = 0.0;
-		rotationMatrixData.f = 0.0;
-		
-		//the matrix that will be rotated. It will be
-		//concatenated with the current matrix.
-		var rotatedMatrix:Matrix = new Matrix(rotationMatrixData);
-		
-		//concatenate the rotated matrix to the current matrix to
+		//concatenate the rotation matrix to the current matrix to
 		//prevent losing any previous transformation
-		concatenate(rotatedMatrix);
+		concatenate(new Matrix(a, b, c * -1.0, d, 0.0, 0.0));
 	}
 	
 	/**
@@ -191,20 +162,9 @@ class Matrix
 	{	
 		//create the matrix data corresponding to an identity matrix
 		//scaled by the scaleX and scaleY factors
-		var scaledMatrixData:MatrixVO = new MatrixVO();
-		scaledMatrixData.a = scaleX;
-		scaledMatrixData.b = 0.0;
-		scaledMatrixData.c = 0.0;
-		scaledMatrixData.d = scaleY;
-		scaledMatrixData.e = 0.0;
-		scaledMatrixData.f = 0.0;
-		
-		//the matrix used to scale the current Matrix
-		var scaledMatrix:Matrix = new Matrix(scaledMatrixData);
-		
 		//concatenate the scaled matrix to the current matrix to
 		//prevent losing any previous transformation
-		concatenate(scaledMatrix);
+		concatenate(new Matrix(scaleX, 0.0, 0.0, scaleY, 0.0, 0.0));
 	}
 	
 	/**
@@ -216,29 +176,10 @@ class Matrix
 	 */
 	public function skew(skewX:Float, skewY:Float):Void
 	{
-		//the matrix that will be skewed. It will be
-		//concatenated with the current matrix. Default to an identity matrix
-		var skewedMatrix:Matrix = new Matrix();
-		
 		//create the matrix data corresponding to an identity matrix
 		//skewed by the skewX and skewY factors
-		var skewingMatrixData:MatrixVO = new MatrixVO();
-		skewingMatrixData.a = 1.0;
-		skewingMatrixData.b = Math.tan(skewY);
-		skewingMatrixData.c = Math.tan(skewX);
-		skewingMatrixData.d = 1.0;
-		skewingMatrixData.e = 0.0;
-		skewingMatrixData.f = 0.0;
-		
-		//and set it to a matrix
-		var skewingMatrix:Matrix = new Matrix(skewingMatrixData);
-		
-		//concatenate the 2 matrices to obtain a matrix skewed around
-		//the transform origin point
-		skewedMatrix.concatenate(skewingMatrix);
-		
 		//concatenate the skewed matrix to the current matrix to
 		//prevent losing any previous transformation
-		concatenate(skewedMatrix);
+		concatenate(new Matrix(1.0, Math.tan(skewY), Math.tan(skewY), 1.0, 0.0, 0.0));
 	}
 }

@@ -907,7 +907,7 @@ enum CSSTransformFunctionValue {
 	 * specify a 2D transformation in the form of
 	 * a transformation matrix
 	 */
-	MATRIX(data:MatrixVO);
+	MATRIX(a:Float, b:Float, c:Float, d:Float, e:Float, f:Float);
 	
 	/**
 	 * specify a 2D translation by the vector [tx, ty]
