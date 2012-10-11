@@ -101,7 +101,7 @@ var onmouseup : Event -> Void;
 var onresize : Event -> Void;
 
 function addEventListener( event : String, listener: Event -> Void, useCapture : Bool ) : Void;
-function removeEventListener( type : String, listener: Event -> Void, useCapture : Bool ) : Bool;
+function removeEventListener( type : String, listener: Event -> Void, useCapture : Bool ) : Void;
 function dispatchEvent( event : CustomEvent ) : Void;
 
 function requestFullScreen() : Void;
@@ -705,6 +705,7 @@ show...()
 
 // events
 function addEventListener( event : String, listener: Event -> Void, useCapture : Bool ) : Void;
+function removeEventListener( type : String, listener: Event -> Void, useCapture : Bool ) : Void;
 var onload : Event -> Void;
 var onresize : Event -> Void;
 var onscroll : Event -> Void;
