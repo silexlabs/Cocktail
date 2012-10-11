@@ -37,6 +37,17 @@ class Matrix
 	public var f:Float;
 	
 	/**
+	 * Used internally when an helper
+	 * method is called, like rotation,
+	 * to represent the matrix of this
+	 * transformation.
+	 * 
+	 * static, only one instance needed for
+	 * all matrices
+	 */
+	private static var _concatenationMatrix:Matrix;
+	
+	/**
 	 * Class constructor. Creates a 3x3 matrix with the given parameters.
 	 * It defaults to an identity matrix (no transformations), if the given
 	 * matrix data are null.
@@ -106,7 +117,7 @@ class Matrix
 		//translated by x and y.
 		//concatenate the translation matrix to the current matrix to prevent
 		//losing any previous translation
-		concatenate(new Matrix(1.0, 0.0, 0.0, 1.0, x, y  ));
+		concatenate(getConcatenationMatrix(1.0, 0.0, 0.0, 1.0, x, y  ));
 	}
 	
 	/**
@@ -149,7 +160,7 @@ class Matrix
 		//rotated by the angle
 		//concatenate the rotation matrix to the current matrix to
 		//prevent losing any previous transformation
-		concatenate(new Matrix(a, b, c * -1.0, d, 0.0, 0.0));
+		concatenate(getConcatenationMatrix(a, b, c * -1.0, d, 0.0, 0.0));
 	}
 	
 	/**
@@ -164,7 +175,7 @@ class Matrix
 		//scaled by the scaleX and scaleY factors
 		//concatenate the scaled matrix to the current matrix to
 		//prevent losing any previous transformation
-		concatenate(new Matrix(scaleX, 0.0, 0.0, scaleY, 0.0, 0.0));
+		concatenate(getConcatenationMatrix(scaleX, 0.0, 0.0, scaleY, 0.0, 0.0));
 	}
 	
 	/**
@@ -180,6 +191,35 @@ class Matrix
 		//skewed by the skewX and skewY factors
 		//concatenate the skewed matrix to the current matrix to
 		//prevent losing any previous transformation
-		concatenate(new Matrix(1.0, Math.tan(skewY), Math.tan(skewY), 1.0, 0.0, 0.0));
+		concatenate(getConcatenationMatrix(1.0, Math.tan(skewY), Math.tan(skewY), 1.0, 0.0, 0.0));
 	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE STATIC UTILS METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return the matrix instance 
+	 * used for concatenation. Instantiate
+	 * it if needed, and set its value as
+	 * given
+	 */
+	private static function getConcatenationMatrix(a:Float, b:Float, c:Float, d:Float, e:Float, f:Float):Matrix
+	{
+		if (_concatenationMatrix == null)
+		{
+			_concatenationMatrix = new Matrix();
+		}
+		
+		_concatenationMatrix.a = a;
+		_concatenationMatrix.b = b;
+		_concatenationMatrix.c = c;
+		_concatenationMatrix.d = d;
+		_concatenationMatrix.e = e;
+		_concatenationMatrix.f = f;
+		
+		return _concatenationMatrix;
+	}
+	
 }
