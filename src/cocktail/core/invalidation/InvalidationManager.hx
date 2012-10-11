@@ -38,6 +38,12 @@ class InvalidationManager
 	 */ 
 	private var _documentNeedsLayout:Bool;
 	
+	/**
+	 * Wether all elements will be laid out,
+	 * even if they were not invalidated
+	 */
+	private var _forceLayout:Bool;
+	
 	/*
 	 * Wheter the document needs a re-rendering on next
 	 * ivnvalidation method call
@@ -119,6 +125,7 @@ class InvalidationManager
 		_nativeLayerTreeNeedsUpdate = true;
 		_stackingContextsNeedUpdate = true;
 		_pendingAnimationsNeedUpdate = true;
+		_forceLayout = false;
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -130,10 +137,13 @@ class InvalidationManager
 	 * layout it immediately if needed
 	 * @param immediate wether the layout should be
 	 * synchronous
+	 * @param force when true, force all elements to 
+	 * be re-laid out
 	 */
-	public function invalidateLayout(immediate:Bool):Void
+	public function invalidateLayout(immediate:Bool, force:Bool):Void
 	{
 		_documentNeedsLayout = true;
+		_forceLayout = force;
 		if (immediate == false)
 		{
 			invalidate();
@@ -290,7 +300,8 @@ class InvalidationManager
 		//method was called
 		if (_documentNeedsLayout == true)
 		{
-			startLayout(false);
+			startLayout(_forceLayout);
+			_forceLayout = false;
 		}
 		
 		//start all the pending animations if any
@@ -305,7 +316,7 @@ class InvalidationManager
 			//value, resulting in a visual glitch
 			if (atLeastOneAnimationStarted == true)
 			{
-				startLayout(true);
+				startLayout(false);
 			}
 		}
 		

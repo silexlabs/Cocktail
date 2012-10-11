@@ -229,6 +229,18 @@ class TextRenderer extends InvalidatingElementRenderer
 	 * of rendered text
 	 * 
 	 * TODO 2 : this is only a partial implementation 
+	 * 
+	 * TODO 1 : the whole white-space processing should be re-factored in this way :
+		 * - when the update line box method is called, all line boxes are
+		 * created. For text, the white space processing is applied before creating
+		 * text line boxes
+		 * - a line box tree is created afterwards (another method
+		 * in HTMLDocument ?) (or should intead use rendering tree
+		 * as line box tree will be modified during layout ?). It is used to further clean the line boxes,
+		 * like for instance remove spaces following other spaces
+		 * - during layout, when each line is laid out, apply final white space
+		 * processing, like removing the spaces at the beggining and end
+	 * 
 	 */
 	private function applyWhiteSpace(text:String, whiteSpace:CSSKeywordValue):String
 	{
