@@ -707,6 +707,17 @@ class HTMLDocument extends Document
 		//dispatch the TouchEvent on the node onto which it was triggered
 		elementAtTouchPoint.domNode.dispatchEvent(touchEvent);
 		
+		//if a start or move touch event default behaviour is canceled
+		//it should prevent simulating a click event when the touch ends
+		switch(touchEvent.type)
+		{
+			case EventConstants.TOUCH_START, EventConstants.TOUCH_MOVE:
+				if (touchEvent.defaultPrevented == true)
+				{
+					_shouldDispatchClickOnNextMouseUp = false;
+				}
+		}
+		
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
