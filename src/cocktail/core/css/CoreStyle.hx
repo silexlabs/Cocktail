@@ -1066,6 +1066,18 @@ class CoreStyle
 	{
 		switch(propertyName)
 		{
+			case CSSConstants.MIN_HEIGHT:
+				return CSSConstants.HEIGHT;
+				
+			case CSSConstants.MAX_HEIGHT:
+				return CSSConstants.MAX_HEIGHT;
+				
+			case CSSConstants.MIN_WIDTH:
+				return CSSConstants.MIN_WIDTH;
+				
+			case CSSConstants.MAX_WIDTH:
+				return CSSConstants.MAX_WIDTH;
+			
 			default:
 				return propertyName;
 		}

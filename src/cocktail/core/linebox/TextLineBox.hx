@@ -120,8 +120,6 @@ class TextLineBox extends LineBox
 		bitmapBounds.y = leadedAscent;
 		bitmapBounds.width = bounds.width;
 		bitmapBounds.height = bounds.height;
-		//TODO 1 : there is  memory leak, when text is disposed, its bitmap
-		//data is not
 		_nativeTextBitmap = _nativeText.getBitmap(bitmapBounds);
 	}
 	
