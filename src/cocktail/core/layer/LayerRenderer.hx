@@ -173,6 +173,18 @@ class LayerRenderer extends FastNode<LayerRenderer>
 	private var _needsBitmapSizeUpdate:Bool;
 	
 	/**
+	 * This is the alpha, from 0 to 1 which
+	 * should be used when rendering all
+	 * the element renderer of this
+	 * layer.
+	 * 
+	 * This is the combined value of
+	 * the alphas of this layer
+	 * and its ancestors
+	 */
+	private var _alpha:Float;
+	
+	/**
 	 * class constructor. init class attributes
 	 */
 	public function new(rootElementRenderer:ElementRenderer) 
@@ -191,6 +203,8 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		_needsBitmapSizeUpdate = true;
 		_needsGraphicsContextUpdate = true;
 		_needsStackingContextUpdate = true;
+		
+		_alpha = 1.0;
 		
 		_windowWidth = 0;
 		_windowHeight = 0;
@@ -244,6 +258,54 @@ class LayerRenderer extends FastNode<LayerRenderer>
 			child.updateGraphicsContext(force);
 			child = child.nextSibling;
 		}
+	}
+	
+	/**
+	 * Update the alpha of this layer before
+	 * rendering. It is obtained by
+	 * combining the alpha of the root element
+	 * renderer with the alpha of the parent layer.
+	 * 
+	 * For instance if the parent alpha is 0.5 and
+	 * this layer's root element renderer is 0.5,
+	 * then this layer alpha will be 0.25
+	 * 
+	 * @param	parentAlpha the alpha of the parent
+	 * layer
+	 */
+	public function updateLayerAlpha(parentAlpha:Float):Void
+	{
+		//default to 1 if the layer is opaque
+		var layerAlpha:Float = 1.0;
+		
+		//get opacity of root element renderer if transparent
+		if (rootElementRenderer.isTransparent() == true)
+		{
+			var coreStyle:CoreStyle = rootElementRenderer.coreStyle;
+			
+			switch(coreStyle.opacity)
+			{
+				case NUMBER(value):
+					layerAlpha = value;
+					
+				case ABSOLUTE_LENGTH(value):
+					layerAlpha = value;
+					
+				default:	
+			}
+		}
+		
+		//combine alpha with parent alpha
+		_alpha = layerAlpha * parentAlpha;
+		
+		//update the whole layer tree recursively
+		var child:LayerRenderer = firstChild;
+		while (child != null)
+		{
+			child.updateLayerAlpha(_alpha);
+			child = child.nextSibling;
+		}
+		
 	}
 	
 	/**
@@ -802,32 +864,6 @@ class LayerRenderer extends FastNode<LayerRenderer>
 				clear();
 			}
 		}
-	
-		//init transparency on the graphicContext if the element is transparent. Everything
-		//painted afterwards will have an alpha equal to the opacity style
-		//
-		//TODO 1 : will not work if child layer also have alpha, alpha
-		//won't be combined properly. Should GraphicsContext have offscreen bitmap
-		//for each transparent layer and compose them when transparency end ?
-		if (rootElementRenderer.isTransparent() == true)
-		{
-			var coreStyle:CoreStyle = rootElementRenderer.coreStyle;
-			
-			//get the current opacity value
-			var opacity:Float = 0.0;
-			switch(coreStyle.opacity)
-			{
-				case NUMBER(value):
-					opacity = value;
-					
-				case ABSOLUTE_LENGTH(value):
-					opacity = value;
-					
-				default:	
-			}
-			
-			graphicsContext.graphics.beginTransparency(opacity);
-		}
 		
 		//render first negative z-index child LayerRenderer from most
 		//negative to least negative
@@ -841,9 +877,22 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		//their own graphic context, layer which don't always gets re-painted
 		if (_needsRendering == true)
 		{
+			//if this layer is transparent, start a transparent
+			//layer with the graphics context
+			if (_alpha != 1.0)
+			{
+				graphicsContext.graphics.beginTransparency(_alpha);
+			}
+			
 			//render the rootElementRenderer itself which will also
 			//render all ElementRenderer belonging to this LayerRenderer
 			rootElementRenderer.render(graphicsContext);
+			
+			//end transparency layer
+			if (_alpha != 1.0)
+			{
+				graphicsContext.graphics.endTransparency();
+			}
 		}
 		
 		//render zero and auto z-index child LayerRenderer, in tree order
@@ -859,13 +908,6 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		for (i in 0...positiveChildLength)
 		{
 			positiveZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
-		}
-		
-		//stop transparency so that subsequent painted element won't be transparent
-		//if they don't themselves have an opacity inferior to 1
-		if (rootElementRenderer.isTransparent() == true)
-		{
-			graphicsContext.graphics.endTransparency();
 		}
 		
 		//scrollbars are always rendered last as they should always be the top
