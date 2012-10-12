@@ -89,6 +89,11 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	private static var _flashMatrix:flash.geom.Matrix;
 	
 	/**
+	 * Same as above for flash color transform
+	 */
+	private static var _flashColorTransform:ColorTransform;
+	
+	/**
 	 * A reuseable rectangle used for fillRect rectangle
 	 */
 	private var _fillRectRectangle:RectangleVO;
@@ -114,6 +119,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			_flashMatrix = new flash.geom.Matrix();
 			_fillRectRectangle = new RectangleVO();
 			_fillRectPoint = new PointVO(0.0, 0.0);
+			_flashColorTransform = new ColorTransform();
 		}
 		
 		_nativeLayer = new Sprite();
@@ -254,7 +260,8 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		//transparency is used
 		if (_useTransparency == true)
 		{
-			colorTransform = new ColorTransform(1.0, 1.0, 1.0, _alpha);
+			colorTransform = _flashColorTransform;
+			_flashColorTransform.alphaMultiplier = _alpha;
 		}
 		
 		//draw the bitmap data onto the current bitmap data with the right transformations
