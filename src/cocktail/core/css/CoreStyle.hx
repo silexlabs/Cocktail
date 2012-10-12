@@ -64,7 +64,7 @@ class CoreStyle
 	public var marginLeft(get_marginLeft, null):CSSPropertyValue;
 	public var marginRight(get_marginRight, null):CSSPropertyValue;
 	public var marginTop(get_marginTop, null):CSSPropertyValue;
-	public var marginBottom(get_marginTop, null):CSSPropertyValue;
+	public var marginBottom(get_marginBottom, null):CSSPropertyValue;
 	
 	public var paddingLeft(get_paddingLeft, null):CSSPropertyValue;
 	public var paddingRight(get_paddingRight, null):CSSPropertyValue;
@@ -1066,6 +1066,18 @@ class CoreStyle
 	{
 		switch(propertyName)
 		{
+			case CSSConstants.MIN_HEIGHT:
+				return CSSConstants.HEIGHT;
+				
+			case CSSConstants.MAX_HEIGHT:
+				return CSSConstants.MAX_HEIGHT;
+				
+			case CSSConstants.MIN_WIDTH:
+				return CSSConstants.MIN_WIDTH;
+				
+			case CSSConstants.MAX_WIDTH:
+				return CSSConstants.MAX_WIDTH;
+			
 			default:
 				return propertyName;
 		}

@@ -234,7 +234,7 @@ class FlowBoxRenderer extends BoxRenderer
 	{
 		var usedValues:UsedValuesVO = elementRenderer.coreStyle.usedValues;
 		return containingHTMLElementHeight - usedValues.height - usedValues.paddingTop -
-		usedValues.paddingBottom - usedValues.bottom;
+		usedValues.paddingBottom - usedValues.bottom - usedValues.marginBottom;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
