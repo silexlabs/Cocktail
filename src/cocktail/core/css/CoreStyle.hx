@@ -64,7 +64,7 @@ class CoreStyle
 	public var marginLeft(get_marginLeft, null):CSSPropertyValue;
 	public var marginRight(get_marginRight, null):CSSPropertyValue;
 	public var marginTop(get_marginTop, null):CSSPropertyValue;
-	public var marginBottom(get_marginTop, null):CSSPropertyValue;
+	public var marginBottom(get_marginBottom, null):CSSPropertyValue;
 	
 	public var paddingLeft(get_paddingLeft, null):CSSPropertyValue;
 	public var paddingRight(get_paddingRight, null):CSSPropertyValue;
