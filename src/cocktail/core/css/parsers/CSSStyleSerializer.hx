@@ -148,8 +148,8 @@ class CSSStyleSerializer
 	{
 		switch(transformFunction)
 		{
-			case MATRIX(data):
-				return "matrix(" + Std.string(data.a) + "," + Std.string(data.b) + "," + Std.string(data.c) + "," + Std.string(data.d) + "," + Std.string(data.e) + "," + Std.string(data.f) + ")";
+			case MATRIX(a, b, c, d, e, f):
+				return "matrix(" + Std.string(a) + "," + Std.string(b) + "," + Std.string(c) + "," + Std.string(d) + "," + Std.string(e) + "," + Std.string(f) + ")";
 				
 			case TRANSLATE(tx, ty):
 				return "translate(" + serializeTranslation(tx) + "," + serializeTranslation(ty) + ")";

@@ -191,8 +191,8 @@ class VisualEffectStylesComputer
 			switch (transformFunction)
 			{
 				//concatenate another matrix
-				case MATRIX(data):
-					matrix.concatenate(new Matrix(data));
+				case MATRIX(a, b ,c, d, e, f):
+					matrix.concatenate(new Matrix(a, b, c, d, e, f));
 				
 				//rotate	
 				case ROTATE(value):

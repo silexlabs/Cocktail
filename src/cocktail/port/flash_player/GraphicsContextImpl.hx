@@ -68,18 +68,25 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	/**
 	 * A flash native rectanlge object, which
 	 * is re-used for each bitmap drawing
+	 * 
+	 * static, only need one instance at a time
 	 */
-	private var _flashRectangle:Rectangle;
+	private static var _flashRectangle:Rectangle;
 	
 	/**
 	 * Same as above for flash native point
 	 */
-	private var _flashPoint:Point;
+	private static var _flashPoint:Point;
+	
+	/**
+	 * same as above, but used as point for alpha
+	 */
+	private static var _flashAlphaPoint:Point;
 	
 	/**
 	 * Same as above for flash Matrix
 	 */
-	private var _flashMatrix:flash.geom.Matrix;
+	private static var _flashMatrix:flash.geom.Matrix;
 	
 	/**
 	 * A reuseable rectangle used for fillRect rectangle
@@ -89,7 +96,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	/**
 	 * A reuseable point used for fillRect rectangle
 	 */
-	private var _fillRectPoint:PointVO;
+	private static var _fillRectPoint:PointVO;
 	
 	/**
 	 * class constructor
@@ -98,6 +105,17 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	{
 		super();
 		
+		//instantiate all static flash object on first use
+		if (_flashRectangle == null)
+		{
+			_flashRectangle = new Rectangle();
+			_flashPoint = new Point();
+			_flashAlphaPoint = new Point();
+			_flashMatrix = new flash.geom.Matrix();
+			_fillRectRectangle = new RectangleVO();
+			_fillRectPoint = new PointVO(0.0, 0.0);
+		}
+		
 		_nativeLayer = new Sprite();
 		_nativeLayer.mouseEnabled = false;
 		_nativeLayer.mouseChildren = false;
@@ -105,11 +123,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_childrenNativeLayer.mouseEnabled = false;
 		_childrenNativeLayer.mouseChildren = false;
 		
-		_flashRectangle = new Rectangle();
-		_flashPoint = new Point();
-		_flashMatrix = new flash.geom.Matrix();
-		_fillRectRectangle = new RectangleVO();
-		_fillRectPoint = new PointVO(0.0, 0.0);
+		
 		_width = 0;
 		_height = 0;
 
@@ -183,8 +197,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	 */
 	override public function transform(matrix:Matrix):Void
 	{
-		var matrixData:MatrixVO = matrix.data;
-		_childrenNativeLayer.transform.matrix = new flash.geom.Matrix(matrixData.a, matrixData.b, matrixData.c, matrixData.d, matrixData.e, matrixData.f);
+		_childrenNativeLayer.transform.matrix = new flash.geom.Matrix(matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f);
 	}
 	
 	override public function attach(graphicsContext:GraphicsContext, index:Int):Void
@@ -228,14 +241,12 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_flashRectangle.width = Math.round(sourceRect.width);
 		_flashRectangle.height = sourceRect.height;
 		
-		var matrixData:MatrixVO = matrix.data;
-		
-		_flashMatrix.a = matrixData.a;
-		_flashMatrix.b = matrixData.b;
-		_flashMatrix.c = matrixData.c;
-		_flashMatrix.d = matrixData.d;
-		_flashMatrix.tx = matrixData.e;
-		_flashMatrix.ty = matrixData.f;
+		_flashMatrix.a = matrix.a;
+		_flashMatrix.b = matrix.b;
+		_flashMatrix.c = matrix.c;
+		_flashMatrix.d = matrix.d;
+		_flashMatrix.tx = matrix.e;
+		_flashMatrix.ty = matrix.f;
 		
 		var colorTransform:ColorTransform = null;
 		
@@ -276,10 +287,11 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			color += alpha << 24;
 			
 			alphaBitmapData = new BitmapData(Math.round(sourceRect.width), Math.round(sourceRect.height), true, color);
-			alphaPoint = new Point(0,0);
+			_flashAlphaPoint.x = 0;
+			_flashAlphaPoint.y = 0;
 		}
 		
-		_nativeBitmap.bitmapData.copyPixels(bitmapData, _flashRectangle, _flashPoint, alphaBitmapData, alphaPoint, true);
+		_nativeBitmap.bitmapData.copyPixels(bitmapData, _flashRectangle, _flashPoint, alphaBitmapData, _flashAlphaPoint, true);
 		
 		if (alphaBitmapData != null)
 		{

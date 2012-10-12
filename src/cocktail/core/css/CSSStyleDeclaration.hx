@@ -1229,9 +1229,9 @@ class CSSStyleDeclaration
 			case KEYWORD(value):
 				switch(value)
 				{
-					//add special case for left and right which 
-					//might be both style names and css keyword
-					case NONE, ALL, LEFT, RIGHT:
+					//add special case for left, right, top and bottom which 
+					//might both be style names and css keyword
+					case NONE, ALL, LEFT, RIGHT, TOP, BOTTOM:
 						return true;
 						
 					default:	
@@ -1587,7 +1587,6 @@ class CSSStyleDeclaration
 						setTypedProperty(CSSConstants.TRANSITION_TIMING_FUNCTION, CSS_LIST(transitionTimingFunctionValues), important);
 					}
 				}
-				
 			default:	
 						
 		}

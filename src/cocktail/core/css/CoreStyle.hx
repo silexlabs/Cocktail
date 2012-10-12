@@ -581,8 +581,8 @@ class CoreStyle
 					default:	
 				}
 				
-			//for transition property, "left" and "right"
-			//value oare parsed as CSS keywords (they are used for 
+			//for transition property, "left" "right, "top" and "bottom"
+			//value are parsed as CSS keywords (they are used for 
 			//float style for instance), but should actually be  computed as
 			//identifier for this property
 			case CSSConstants.TRANSITION_PROPERTY:
@@ -596,6 +596,12 @@ class CoreStyle
 								
 							case RIGHT:
 								return IDENTIFIER(CSSConstants.RIGHT);
+								
+							case TOP:	
+								return IDENTIFIER(CSSConstants.TOP);
+								
+							case BOTTOM:
+								return IDENTIFIER(CSSConstants.BOTTOM);
 								
 							default:	
 						}
