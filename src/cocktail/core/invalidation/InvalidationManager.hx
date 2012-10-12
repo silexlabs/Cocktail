@@ -339,6 +339,7 @@ class InvalidationManager
 		//same as for layout
 		if (_documentNeedsRendering == true)
 		{
+			_htmlDocument.documentElement.elementRenderer.layerRenderer.updateLayerAlpha(1.0);
 			_htmlDocument.documentElement.elementRenderer.layerRenderer.render(_htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
 			_documentNeedsRendering = false;
 		}
