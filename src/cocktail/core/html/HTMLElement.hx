@@ -417,11 +417,10 @@ class HTMLElement extends Element<HTMLElement>
 	override public function setAttribute(name:String, value:String):Void
 	{
 		//when the value of the "style" attribute changes, the whole
-		//inline style delcaration is refreshed
+		//inline style declaration is refreshed
 		if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
 		{
 			style.cssText = value;
-			super.setAttribute(name, value);
 			
 			//TODO 1 : retrieve changed style or done automatically via callback ?
 			//when replacing style attribute, should first remove all styles ?
@@ -446,7 +445,13 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	override public function getAttribute(name:String):String
 	{
-		if (name == HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME)
+		//special case for the style attribute, as it has
+		//its dedicated object
+		if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
+		{
+			return style.cssText;
+		}
+		else if (name == HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME)
 		{
 			return Std.string(get_tabIndex());
 		}

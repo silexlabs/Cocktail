@@ -164,9 +164,13 @@ class DOMParser
 						}
 					}
 					
-					//concatenate all the of the specified styles of the HTMLElement
-					//children into a CSS string
-					var htmlChild:HTMLElement = child;
+					//special case for the "style" attribute,
+					//retrived from the style declaration object
+					//and serialized if at least one style is declared
+					if (child.style.length > 0)
+					{
+						childXml.set(HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME, child.style.cssText);
+					}
 					
 					//add the children's content to the Xml of the child
 					xml.addChild(doGetInnerHTML(child, childXml));
