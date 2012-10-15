@@ -17,23 +17,14 @@ class FastNode<NodeClass:FastNode<NodeClass>>
 	
 	public var previousSibling:NodeClass;
 	
-	//public var childNodes:Array<NodeClass>;
-	
 	public function new() 
 	{
-		//childNodes = new Array<NodeClass>();
+		
 	}
-	
-	//public function hasChildNodes():Bool
-	//{
-		//return childNodes.length > 0;
-	//}
 	
 	public function removeChild(oldChild:NodeClass):Void
 	{
 		oldChild.parentNode = null;
-		
-		//childNodes.remove(oldChild);
 		
 		if (firstChild == oldChild && lastChild == oldChild)
 		{
@@ -76,8 +67,6 @@ class FastNode<NodeClass:FastNode<NodeClass>>
 		removeFromParentIfNecessary(newChild);
 		newChild.parentNode = cast(this);
 		
-		//childNodes.push(newChild);
-		
 		if (firstChild == null)
 		{
 			firstChild = newChild;
@@ -111,33 +100,7 @@ class FastNode<NodeClass:FastNode<NodeClass>>
 			appendChild(newChild);
 			return;
 		}
-		//
-		//flag determining wether the new child was inserted
-			//var isInserted:Bool = false;
-			//
-			//var length:Int = childNodes.length;
-			//for (i in 0...length)
-			//{		
-				//if (childNodes[i] == refChild)
-				//{
-					//childNodes.insert(i, newChild);
-					//
-					//set the parent of the new child
-					//removeFromParentIfNecessary(newChild);
-					//newChild.parentNode = cast(this);
-					//
-					//isInserted = true;
-					//break;
-				//}
-			//}
-			//
-			//if the ref child wasn't found, throw
-			//a dom exception
-			//if (isInserted == false)
-			//{
-				//throw "pouet";
-			//}
-		//
+		
 		removeFromParentIfNecessary(newChild);
 		newChild.parentNode = cast(this);
 		

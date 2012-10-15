@@ -1083,7 +1083,7 @@ class LayerRenderer extends FastNode<LayerRenderer>
 			if (currentRendererZIndex  > rootElementRendererZIndex)
 			{
 				negativeZIndexChildLayerRenderers.insert(i, childLayerRenderer);
-				break;
+				return;
 			}
 		}
 		
