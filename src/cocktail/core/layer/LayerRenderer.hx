@@ -1032,10 +1032,6 @@ class LayerRenderer extends FastNode<LayerRenderer>
 	 */
 	private function insertPositiveZIndexChildRenderer(childLayerRenderer:LayerRenderer, rootElementRendererZIndex:Int, positiveZIndexChildLayerRenderers:Array<LayerRenderer>):Void
 	{
-		//flag checking if the LayerRenderer was already inserted
-		//in the array
-		var isInserted:Bool = false;
-		
 		//loop in all the positive z-index array
 		var length:Int = positiveZIndexChildLayerRenderers.length;
 		for (i in 0...length)
@@ -1055,18 +1051,14 @@ class LayerRenderer extends FastNode<LayerRenderer>
 			if (rootElementRendererZIndex < currentRendererZIndex)
 			{
 				positiveZIndexChildLayerRenderers.insert(i, childLayerRenderer);
-				isInserted = true;
-				break;
+				return;
 			}
 		}
 		
 		//if the new LayerRenderer wasn't inserted, either
 		//it is the first item in the array or it has the most positive
 		//z-index
-		if (isInserted == false)
-		{
-			positiveZIndexChildLayerRenderers.push(childLayerRenderer);
-		}
+		positiveZIndexChildLayerRenderers.push(childLayerRenderer);
 	}
 	
 	/**
@@ -1075,8 +1067,6 @@ class LayerRenderer extends FastNode<LayerRenderer>
 	 */ 
 	private function insertNegativeZIndexChildRenderer(childLayerRenderer:LayerRenderer, rootElementRendererZIndex:Int, negativeZIndexChildLayerRenderers:Array<LayerRenderer>):Void
 	{
-		var isInserted:Bool = false;
-		
 		var length:Int = negativeZIndexChildLayerRenderers.length;
 		for (i in 0...length)
 		{
@@ -1093,15 +1083,11 @@ class LayerRenderer extends FastNode<LayerRenderer>
 			if (currentRendererZIndex  > rootElementRendererZIndex)
 			{
 				negativeZIndexChildLayerRenderers.insert(i, childLayerRenderer);
-				isInserted = true;
 				break;
 			}
 		}
 		
-		if (isInserted == false)
-		{
-			negativeZIndexChildLayerRenderers.push(childLayerRenderer);
-		}
+		negativeZIndexChildLayerRenderers.push(childLayerRenderer);
 	}
 	
 	/**
