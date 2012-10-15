@@ -84,7 +84,7 @@ class Animator
 		
 		//clear the pending animation to prevent from being started
 		//for each layout
-		_pendingAnimations.clear();
+		_pendingAnimations = _pendingAnimations.clear();
 		
 		return atLeastOneAnimationStarted;
 	}

@@ -1018,7 +1018,7 @@ class HTMLElement extends Element<HTMLElement>
 		}
 		
 		_shouldCascadeAllProperties = false;
-		_pendingChangedProperties.clear();
+		_pendingChangedProperties = _pendingChangedProperties.clear();
 	}
 	
 	/**

@@ -193,7 +193,7 @@ class CSSStyleDeclaration
 			TypedPropertyVO.getPool().release(_properties[i]);
 		}
 		
-		_properties.clear();
+		_properties = _properties.clear();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -2205,7 +2205,7 @@ class CSSStyleDeclaration
 	private function set_cssText(value:String):String
 	{
 		//reset properties
-		_properties.clear();
+		_properties = _properties.clear();
 		
 		var typedProperties:Array<TypedPropertyVO> = CSSStyleParser.parseStyle(value);
 		

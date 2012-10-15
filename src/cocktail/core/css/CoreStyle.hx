@@ -359,7 +359,7 @@ class CoreStyle
 		
 		//will store all the properties which value
 		//change during cascading
-		_changedProperties.clear();
+		_changedProperties = _changedProperties.clear();
 		
 		//holds the properties which will get cascaded
 		var propertiesToCascade:Array<String> = null;
@@ -994,7 +994,7 @@ class CoreStyle
 			htmlElement.dispatchEvent(_pendingTransitionEndEvents[i]);
 		}
 		//reset the array, each event must be dispatched only once
-		_pendingTransitionEndEvents.clear();
+		_pendingTransitionEndEvents = _pendingTransitionEndEvents.clear();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

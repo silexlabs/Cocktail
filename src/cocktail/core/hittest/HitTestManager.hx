@@ -74,7 +74,7 @@ class HitTestManager
 		_targetPoint.x = x;
 		_targetPoint.y = y;
 		
-		_elementRenderersAtPoint.clear();
+		_elementRenderersAtPoint = _elementRenderersAtPoint.clear();
 		
 		//get all the elementRenderers under the point, update the element renderers array
 		getElementRenderersAtPoint(_elementRenderersAtPoint, layer, _targetPoint, scrollX, scrollY);

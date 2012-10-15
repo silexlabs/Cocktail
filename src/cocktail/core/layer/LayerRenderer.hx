@@ -322,9 +322,9 @@ class LayerRenderer extends FastNode<LayerRenderer>
 			_needsStackingContextUpdate = false;
 			
 			//reset all stacking context
-			negativeZIndexChildLayerRenderers.clear();
-			zeroAndAutoZIndexChildLayerRenderers.clear();
-			positiveZIndexChildLayerRenderers.clear();
+			negativeZIndexChildLayerRenderers = negativeZIndexChildLayerRenderers.clear();
+			zeroAndAutoZIndexChildLayerRenderers = zeroAndAutoZIndexChildLayerRenderers.clear();
+			positiveZIndexChildLayerRenderers = positiveZIndexChildLayerRenderers.clear();
 			
 			//only layer renderer which establish themselve a stacking context
 			//can have child stacking context, this excludes layer with an 'auto'
@@ -466,9 +466,9 @@ class LayerRenderer extends FastNode<LayerRenderer>
 	 */
 	public function invalidateStackingContext():Void
 	{	
-		negativeZIndexChildLayerRenderers.clear();
-		zeroAndAutoZIndexChildLayerRenderers.clear();
-		positiveZIndexChildLayerRenderers.clear();
+		negativeZIndexChildLayerRenderers = negativeZIndexChildLayerRenderers.clear();
+		zeroAndAutoZIndexChildLayerRenderers = zeroAndAutoZIndexChildLayerRenderers.clear();
+		positiveZIndexChildLayerRenderers = positiveZIndexChildLayerRenderers.clear();
 		
 		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
 		htmlDocument.invalidationManager.invalidateStackingContexts();
@@ -1005,7 +1005,7 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		}
 		
 		//get all layer in parent stacking context in z-order
-		_parentStackingContexts.clear();
+		_parentStackingContexts = _parentStackingContexts.clear();
 		var length:Int = parentStackingContext.negativeZIndexChildLayerRenderers.length;
 		for (i in 0...length)
 		{

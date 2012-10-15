@@ -93,8 +93,8 @@ class InlineFormattingContext extends FormattingContext
 	override private function startFormatting():Void
 	{
 		
-		_unbreakableLineBoxes.clear();
-		_openedElementRenderers.clear();
+		_unbreakableLineBoxes = _unbreakableLineBoxes.clear();
+		_openedElementRenderers = _openedElementRenderers.clear();
 		
 		_unbreakableWidth = 0.0;
 		_firstLineFormatted = false;
@@ -338,7 +338,7 @@ class InlineFormattingContext extends FormattingContext
 		_formattingContextData.x += _unbreakableWidth;
 		
 		//reset unbreakable line box now that they were added to the line
-		_unbreakableLineBoxes.clear();
+		_unbreakableLineBoxes = _unbreakableLineBoxes.clear();
 		_unbreakableWidth = 0;
 		
 		return lineBox;
@@ -667,7 +667,7 @@ class InlineFormattingContext extends FormattingContext
 	//TODO 2 : add doc, remove start and end spaces in a line
 	private function removeSpaces(rootLineBox:LineBox):Void
 	{
-		_lineBoxesAsArray.clear();
+		_lineBoxesAsArray = _lineBoxesAsArray.clear();
 		getLineBoxTreeAsArray(rootLineBox, _lineBoxesAsArray);
 		
 		if (_lineBoxesAsArray.length == 0)
@@ -725,7 +725,7 @@ class InlineFormattingContext extends FormattingContext
 			
 			i++;
 		}
-		_lineBoxesAsArray.clear();
+		_lineBoxesAsArray = _lineBoxesAsArray.clear();
 		getLineBoxTreeAsArray(rootLineBox, _lineBoxesAsArray);
 		
 		if (_lineBoxesAsArray.length == 0)
