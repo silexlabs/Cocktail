@@ -11,7 +11,7 @@ package cocktail.port;
 typedef SWFResource = cocktail.core.resource.AbstractResource;
 
 #elseif nme
-typedef SWFResource = cocktail.port.nme.SWFResource;
+typedef SWFResource = cocktail.port.flash_player.SWFResource;
 
 #elseif flash9
 typedef SWFResource = cocktail.port.flash_player.SWFResource;

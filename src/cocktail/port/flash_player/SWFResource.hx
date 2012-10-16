@@ -12,7 +12,9 @@ import cocktail.core.resource.AbstractResource;
 import flash.display.Loader;
 import flash.events.IOErrorEvent;
 import flash.net.URLRequest;
+#if flash
 import flash.system.LoaderContext;
+#end
 
 /**
  * Load and store an swf file, for the
@@ -65,12 +67,12 @@ class SWFResource extends AbstractResource
 			#else
 			//if they are, create a movieclip from it
 			var swf:format.SWF = new format.SWF(bytes);
-			_swf = swf.createMovieClip();
+			nativeResource = swf.createMovieClip();
 			
 			//store width height metadata
 			//of the swf
-			_swfHeight = swf.height;
-			_swfWidth = swf.width;
+			intrinsicHeight = swf.height;
+			intrinsicWidth = swf.width;
 			
 			//call the ready callback and return, no
 			//need to load the swf
