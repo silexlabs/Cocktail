@@ -1034,7 +1034,7 @@ class CoreStyle
 	 * of the transition, else return the computed value of the property
 	 * @param	propertyName the name of the property whose value is returned
 	 */
-	private function getTransitionablePropertyValue(propertyName:String):CSSPropertyValue
+	private inline function getTransitionablePropertyValue(propertyName:String):CSSPropertyValue
 	{
 		//try to get a transition for the property
 		var transition:Transition = _transitionManager.getTransition(propertyName, this);

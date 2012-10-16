@@ -306,17 +306,18 @@ class CSSStyleDeclaration
 	 * Return the property with the given name as a typed property
 	 * object or null if it is not defined on this style declaration
 	 */
-	public function getTypedProperty(property:String):TypedPropertyVO
+	public inline function getTypedProperty(property:String):TypedPropertyVO
 	{
+		var typedProperty:TypedPropertyVO = null;
 		var length:Int = _properties.length;
 		for (i in 0...length)
 		{
 			if (_properties[i].name == property)
 			{
-				return _properties[i];
+				typedProperty =  _properties[i];
 			}
 		}
-		return null;
+		return typedProperty;
 	}
 	
 	/**
