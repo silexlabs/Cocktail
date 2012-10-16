@@ -199,7 +199,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//element which are necesseray to compute the styles of this ElementRenderer
 		//into usable value. For instance, a with defined as a percentage will compute
 		//to a percentage of the containing block width
-		var containingBlockData:ContainingBlockVO = _containingBlock.getContainerBlockData();
+		var containingBlockData:ContainingBlockVO = containingBlock.getContainerBlockData();
 		
 		//special case for element with percent height, from the CSS 2.1 spec : 
 		// If the height of the containing block is not specified explicitly (i.e., it depends on content height),
@@ -213,7 +213,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//as if height was auto without modifying computedValues
 		//
 		//TODO 4 : the way to test for the body element is a bit hackish
-		if (containingBlockData.isHeightAuto == true && _containingBlock.domNode.tagName != HTMLConstants.HTML_BODY_TAG_NAME)
+		if (containingBlockData.isHeightAuto == true && containingBlock.domNode.tagName != HTMLConstants.HTML_BODY_TAG_NAME)
 		{
 			if (isPositioned() == false || isRelativePositioned() == true)
 			{
@@ -241,9 +241,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 		{
 			//only apply if the containing block is a block box (not inline, might happen with
 			//relative positioning)
-			if (_containingBlock.isBlockContainer() == true)
+			if (containingBlock.isBlockContainer() == true)
 			{
-				var containingBlockUsedValues:UsedValuesVO = _containingBlock.coreStyle.usedValues;
+				var containingBlockUsedValues:UsedValuesVO = containingBlock.coreStyle.usedValues;
 				containingBlockData.height += containingBlockUsedValues.paddingTop + containingBlockUsedValues.paddingBottom;
 				containingBlockData.width += containingBlockUsedValues.paddingLeft + containingBlockUsedValues.paddingRight;
 			}

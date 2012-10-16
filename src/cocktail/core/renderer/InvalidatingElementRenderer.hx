@@ -184,7 +184,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 	private function invalidateContainingBlock(styleName:String):Void
 	{
 		//TODO 1 : not supposed to happen
-		if (_containingBlock == null)
+		if (containingBlock == null)
 		{
 			return;
 		}
@@ -195,11 +195,11 @@ class InvalidatingElementRenderer extends ElementRenderer
 		//TODO 2 : might be redundant with the invalidationreason change ?
 		if (isPositioned() == true && isRelativePositioned() == false)
 		{
-			_containingBlock.invalidatedChildStyle(styleName);
+			containingBlock.invalidatedChildStyle(styleName);
 		}
 		else
 		{
-			_containingBlock.invalidatedPositionedChildStyle(styleName);
+			containingBlock.invalidatedPositionedChildStyle(styleName);
 		}
 	}
 	

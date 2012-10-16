@@ -139,6 +139,20 @@ class FormattingContext
 					shrinkedWidth = minimumWidth;
 				}
 			}
+			else 
+			{
+				//border case, if containing block is absolute with auto width, and the element
+				//renderer is also auto width, then they depend on each other, CSS 2.1 doesn't seem
+				//to adress this issue, so here it is implemented as shrink-to-fit for the element
+				var containingBlock:ElementRenderer = elementRenderer.containingBlock;
+				if (containingBlock.isPositioned() && containingBlock.isRelativePositioned() == false)
+				{
+					if (style.isAuto(containingBlock.coreStyle.width))
+					{
+						shrinkedWidth = minimumWidth;
+					}
+				}
+			}
 		}
 		//here the width is not shrinked
 		else
@@ -147,6 +161,7 @@ class FormattingContext
 		}
 		
 		style.usedValues.width = shrinkedWidth;
+		elementRenderer.bounds.width = shrinkedWidth;
 	}
 	
 	

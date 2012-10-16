@@ -253,7 +253,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * block renderer based on its positioning
 	 * scheme
 	 */
-	private var _containingBlock:FlowBoxRenderer;
+	public var containingBlock(default, null):FlowBoxRenderer;
 	
 	/**
 	 * class constructor. init class attribute
@@ -769,7 +769,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	private function addedToRenderingTree():Void
 	{
 		//retrieve containing block
-		_containingBlock = getContainingBlock();
+		containingBlock = getContainingBlock();
 		registerWithContaininingBlock();
 		
 		//schedule update of layer renderer before
@@ -789,7 +789,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		
 		//remove itself from containing block
 		unregisterWithContainingBlock();
-		_containingBlock = null;
+		containingBlock = null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -836,7 +836,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	{
 		if (isPositioned() == true)
 		{
-			_containingBlock.addPositionedChildren(this);
+			containingBlock.addPositionedChildren(this);
 			//flag remembering that the child was positioned at
 			//attach time
 			_wasPositioned = true;
@@ -852,7 +852,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	{
 		if (_wasPositioned == true)
 		{
-			_containingBlock.removePositionedChild(this);
+			containingBlock.removePositionedChild(this);
 			_wasPositioned = false;
 		}
 	}

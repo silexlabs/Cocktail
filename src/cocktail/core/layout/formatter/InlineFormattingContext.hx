@@ -127,8 +127,6 @@ class InlineFormattingContext extends FormattingContext
 		}
 	}
 	
-	private static var _g:Int = 0;
-	
 	private function doFormat(elementRenderer:ElementRenderer, lineBox:LineBox, openedElementRenderers:Array<ElementRenderer>):LineBox
 	{
 		//loop in all the child of the container
