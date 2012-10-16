@@ -9,6 +9,7 @@
 package cocktail.core.resource;
 
 import cocktail.port.ImageResource;
+import cocktail.port.SWFResource;
 
 /**
  * This is a static class used to retrive loaded asset
@@ -37,17 +38,24 @@ class ResourceManager
 	}
 	
 	/**
+	 * Init resource hash on first use
+	 */
+	private static function init():Void
+	{
+		if (_resources == null)
+		{
+			_resources = new Hash<AbstractResource>();
+		}
+	}
+	
+	/**
 	 * Return the resource at the given url. If it is the first
 	 * time this resource is requested, create a new Resource
 	 * object which will starts its loading itself
 	 */
 	public static function getImageResource(url:String):AbstractResource
 	{
-		//init the hash if first request
-		if (_resources == null)
-		{
-			_resources = new Hash<AbstractResource>();
-		}
+		init();
 		
 		//if the resource with the given url is not
 		//yet stored, create it
@@ -58,6 +66,26 @@ class ResourceManager
 		}
 		
 		//return the resource with the right URL
+		return _resources.get(url);
+	}
+	
+	/**
+	 * Return an SWF resource, start loading it if
+	 * first request.
+	 * 
+	 * TODO 2 : should SWF loading be in core ?
+	 * Should be abstracted as binary loading ?
+	 */
+	public static function getSWFResource(url:String):AbstractResource
+	{
+		init();
+		
+		if (_resources.exists(url) == false)
+		{
+			var resource:SWFResource = new SWFResource(url);
+			_resources.set(url, resource);
+		}
+		
 		return _resources.get(url);
 	}
 }
