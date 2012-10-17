@@ -145,36 +145,38 @@ class InvalidationManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * synchronously update the document
+	 */
+	public function updateDocumentImmediately():Void
+	{
+		updateDocument();
+	}
+	
+	/**
 	 * schedule a layout and rendering of the docuement
 	 * when the viewport is resized
 	 */
 	public function invalidateViewportSize():Void
 	{
-		invalidateLayout(false, true);
+		invalidateLayout(true);
 		invalidateRendering();
 		_viewportResized = true;
 	}
 	
 	/**
-	 * schedule a layout of the document, or 
-	 * layout it immediately if needed
-	 * @param immediate wether the layout should be
-	 * synchronous
+	 * schedule a layout of the document
 	 * @param force when true, force all elements to 
 	 * be re-laid out
 	 */
-	public function invalidateLayout(immediate:Bool, force:Bool):Void
+	public function invalidateLayout(force:Bool):Void
 	{
+		if (_forceLayout == true)
+		{
+			_forceLayout = force;
+		}
+	
 		_documentNeedsLayout = true;
-		_forceLayout = force;
-		if (immediate == false)
-		{
-			invalidate();
-		}
-		else
-		{
-			updateDocument();
-		}
+		invalidate();
 	}
 	
 	/**
@@ -269,8 +271,6 @@ class InvalidationManager
 		}
 	}
 	
-	private static var _g:Int = 0;
-	
 	/**
 	 * Actually schedule an update if one
 	 * is not yet scheduled
@@ -325,6 +325,7 @@ class InvalidationManager
 		{
 			startLayout(_forceLayout);
 			_forceLayout = false;
+			_documentNeedsLayout = false;
 		}
 		
 		//start all the pending animations if any
@@ -341,7 +342,7 @@ class InvalidationManager
 			{
 				startLayout(false);
 			}
-		}
+		} 
 		
 		//update the graphics context tree if needed,
 		//before painting onto it

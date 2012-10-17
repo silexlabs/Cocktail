@@ -1268,15 +1268,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	}
 	
 	/**
-	 * Called when an immediate layout must be performed
-	 * on this element renderer
-	 */
-	public function invalidateLayoutImmediate():Void
-	{
-		//abstract
-	}
-	
-	/**
 	 * Called when this element renderer needs
 	 * to be re-rendered
 	 */

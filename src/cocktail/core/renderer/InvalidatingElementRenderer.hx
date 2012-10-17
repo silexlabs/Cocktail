@@ -146,16 +146,6 @@ class InvalidatingElementRenderer extends ElementRenderer
 		}
 	}
 	
-	/**
-	 * perform an immediate layout of this element renderer
-	 */
-	override public function invalidateLayoutImmediate():Void
-	{
-		_needsLayout = true;
-		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
-		htmlDocument.invalidationManager.invalidateLayout(true, false);
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -307,7 +297,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
 		if (htmlDocument != null)
 		{
-			htmlDocument.invalidationManager.invalidateLayout(false, false);
+			htmlDocument.invalidationManager.invalidateLayout(false);
 		}
 	}
 	
@@ -319,7 +309,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 		_needsLayout = true;
 		
 		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
-		htmlDocument.invalidationManager.invalidateLayout(false, false);
+		htmlDocument.invalidationManager.invalidateLayout(false);
 		
 		//invalidate the layer associated with
 		//this ElementRenderer
