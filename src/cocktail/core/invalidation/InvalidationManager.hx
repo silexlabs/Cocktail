@@ -381,12 +381,14 @@ class InvalidationManager
 			_pendingAnimationsNeedUpdate = false;
 		}
 		
+		//if the viewport was resized since last update,
+		//dispatched a resize event now that layout is up to date
 		if (_viewportResized == true)
 		{
+			_viewportResized = false;
 			var resizeEvent:UIEvent = new UIEvent();
 			resizeEvent.initUIEvent(EventConstants.RESIZE, false, false, null, 0);
 			_htmlDocument.window.dispatchEvent(resizeEvent);
-			_viewportResized = false;
 		}
 	}
 	
