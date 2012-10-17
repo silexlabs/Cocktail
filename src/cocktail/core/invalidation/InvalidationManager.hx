@@ -8,6 +8,8 @@
 */
 package cocktail.core.invalidation;
 
+import cocktail.core.event.EventConstants;
+import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLDocument;
 
 /**
@@ -105,6 +107,15 @@ class InvalidationManager
 	private var _forceGraphicsContextUpdate:Bool;
 	
 	/**
+	 * Wheter the viewport size changed
+	 * since last document update.
+	 * If it did, then a resize
+	 * event should be dispatched
+	 * after next update
+	 */
+	private var _viewportResized:Bool;
+	
+	/**
 	 * a reference to the HTMLDocument owning
 	 * the invalidation manager
 	 */
@@ -126,11 +137,23 @@ class InvalidationManager
 		_stackingContextsNeedUpdate = true;
 		_pendingAnimationsNeedUpdate = true;
 		_forceLayout = false;
+		_viewportResized = false;
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * schedule a layout and rendering of the docuement
+	 * when the viewport is resized
+	 */
+	public function invalidateViewportSize():Void
+	{
+		invalidateLayout(false, true);
+		invalidateRendering();
+		_viewportResized = true;
+	}
 	
 	/**
 	 * schedule a layout of the document, or 
@@ -356,6 +379,14 @@ class InvalidationManager
 			//info
 			_htmlDocument.documentElement.endPendingAnimation();
 			_pendingAnimationsNeedUpdate = false;
+		}
+		
+		if (_viewportResized == true)
+		{
+			var resizeEvent:UIEvent = new UIEvent();
+			resizeEvent.initUIEvent(EventConstants.RESIZE, false, false, null, 0);
+			_htmlDocument.window.dispatchEvent(resizeEvent);
+			_viewportResized = false;
 		}
 	}
 	

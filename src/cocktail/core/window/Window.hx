@@ -11,6 +11,7 @@ package cocktail.core.window;
 import cocktail.core.dom.Document;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventCallback;
+import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
@@ -94,7 +95,7 @@ class Window extends EventCallback
 		platform.keyboard.onKeyDown = htmlDocument.onPlatformKeyDownEvent;
 		platform.keyboard.onKeyUp = htmlDocument.onPlatformKeyUpEvent;
 		
-		platform.nativeWindow.onResize = htmlDocument.onPlatformResizeEvent;
+		platform.nativeWindow.onResize = onPlatformResizeEvent;
 		
 		platform.touchListener.onTouchStart = htmlDocument.onPlatformTouchEvent;
 		platform.touchListener.onTouchMove = htmlDocument.onPlatformTouchEvent;
@@ -189,6 +190,20 @@ class Window extends EventCallback
 			}
 		}
 		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When the viewport is resized, invalidate
+	 * the html document so that its layout
+	 * and rendering gets updated
+	 */
+	private function onPlatformResizeEvent(e:UIEvent):Void
+	{
+		document.invalidationManager.invalidateViewportSize();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
