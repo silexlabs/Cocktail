@@ -136,6 +136,29 @@ class HTMLObjectElement extends EmbeddedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
+	 * overriden as when aded to the DOM,
+	 * if a data attribute is given, the resource
+	 * is fetched
+	 */
+	override private function addedToDOM():Void
+	{
+		super.addedToDOM();
+		
+		if (data != null)
+		{
+			//for now only SWF files are supported
+			if (data.indexOf(SWF_FILE_EXTENSION) != -1)
+			{
+				//start loading the resource, the resource
+				//need to be completely loaded before
+				//the plugin is instantiated
+				ResourceManager.getSWFResource(data);
+			}
+		}
+	}
+	
+	
+	/**
 	 * Overriden as when removed from DOM, the plugin
 	 * might need to be destroyed.
 	 * 

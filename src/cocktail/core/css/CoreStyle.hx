@@ -1126,7 +1126,7 @@ class CoreStyle
 			//for values which are actually determined
 			//during layout, such as width and height, use the used value
 			default:
-				return Reflect.getProperty(usedValues, getIDLName(propertyName));
+				return Reflect.field(usedValues, getIDLName(propertyName));
 		}
 	}
 	

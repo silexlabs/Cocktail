@@ -276,7 +276,7 @@ class Animator
 				}
 			
 			default:
-				return Reflect.getProperty(style.usedValues, propertyName);
+				return Reflect.field(style.usedValues, propertyName);
 		}
 	}
 	
