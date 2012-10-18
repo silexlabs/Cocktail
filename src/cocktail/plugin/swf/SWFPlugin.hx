@@ -90,6 +90,10 @@ class SWFPlugin extends Plugin
 	 */
 	private var _scrollRect:Rectangle;
 	
+	/**
+	 * the flash loader used to load
+	 * the swf from its bytes
+	 */
 	private var _loader:Loader;
 	
 	/**
@@ -113,34 +117,33 @@ class SWFPlugin extends Plugin
 		//until this swf is successfully loaded
 		var loadedSWF:NativeHttp = ResourceManager.getSWFResource(elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
 		
+		//all swf are loaded as byte array to prevent them from playing
+		//until used with an object tag, the bytes are loaded via a flash loader
 		_loader = new Loader();
+		//loading bytes is asynchronous
 		_loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, onSWFLoadComplete);
-		var loaderContext:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain);
 		
+		#if nme
+		_loader.loadBytes(loadedSWF.response);
+		#else
+		
+		//for target other than nme, needs loader context to allow code import
+		var loaderContext:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain);
 		loaderContext.allowCodeImport = true;
+		
+		//this property is a legacy property, doing the same thing as allowCodeImport.
+		//Not present for every version of air and flash player but still seem required
+		//for air for iOS
 		if (Reflect.hasField(loaderContext, "allowLoadBytesCodeExecution"))
 		{
 			loaderContext.allowLoadBytesCodeExecution = true;
 		}
 		
-		
 		_loader.loadBytes(loadedSWF.response, loaderContext);
+		#end
 	}
 	
-	private function onSWFLoadComplete(event:flash.events.Event):Void
-	{
-		trace("load comple");
-		
-	
-		_swfHeight = _loader.contentLoaderInfo.height;
-		_swfWidth = _loader.contentLoaderInfo.width;
-		_swf = _loader.content;
-		
-		//swf plugin is now ready
-		//TODO 1 : don't seem to work unless swf readiness
-		//is delayed
-		Lib.document.timer.delay(function(e) { _loadComplete(); });
-	}
+
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHOD
@@ -233,6 +236,22 @@ class SWFPlugin extends Plugin
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE UTILS METHODS
 	//////////////////////////////////// //////////////////////////////////////////////////////
+	
+	/**
+	 * When the swf is done loading, store
+	 * its data
+	 */
+	private function onSWFLoadComplete(event:flash.events.Event):Void
+	{
+		_swfHeight = _loader.contentLoaderInfo.height;
+		_swfWidth = _loader.contentLoaderInfo.width;
+		_swf = _loader.content;
+		
+		//swf plugin is now ready
+		//TODO 1 : don't seem to work unless swf readiness
+		//is delayed
+		Lib.document.timer.delay(function(e) { _loadComplete(); });
+	}
 	
 	/**
 	 * TODO 1 : this method is duplicated from EmbeddedElementRenderer, should

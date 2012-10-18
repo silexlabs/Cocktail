@@ -11,7 +11,6 @@ package cocktail.core.resource;
 import cocktail.core.http.HTTPConstants;
 import cocktail.port.ImageResource;
 import cocktail.port.NativeHttp;
-import cocktail.port.SWFResource;
 import cocktail.port.platform.nativeHttp.NativeHTTPData;
 
 /**
