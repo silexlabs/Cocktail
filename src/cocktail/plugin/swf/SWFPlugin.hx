@@ -86,15 +86,17 @@ class SWFPlugin extends Plugin
 	private var _swfWidth:Float;
 	
 	/**
-	 * A rectangle used to mask the loaded swf
-	 */
-	private var _scrollRect:Rectangle;
-	
-	/**
 	 * the flash loader used to load
 	 * the swf from its bytes
 	 */
 	private var _loader:Loader;
+	
+	/**
+	 * Used to mask the swf so that it
+	 * doesn't overflow the bounds
+	 * of the object tag
+	 */
+	private var _mask:Sprite;
 	
 	/**
 	 * class constructor, get a reference to the loaded swf
@@ -102,28 +104,39 @@ class SWFPlugin extends Plugin
 	public function new(elementAttributes:Hash<String>, params:Hash<String>, loadComplete:Void->Void, loadError:Void->Void) 
 	{
 		super(elementAttributes, params, loadComplete, loadError);
-		
+		init();
+	}
+	
+	/**
+	 * init swf plugin
+	 */
+	private function init():Void
+	{
 		//retrive the scale mode if provded or use default
-		if (params.exists(SCALE_MODE))
+		if (_params.exists(SCALE_MODE))
 		{
-			_scaleMode = params.get(SCALE_MODE);
+			_scaleMode = _params.get(SCALE_MODE);
 		}
 		else
 		{
 			_scaleMode = SHOW_ALL;
 		}
 		
+		//will be used to mask the swf
+		_mask = new Sprite();
+		
 		//retrieve the loaded swf, the plugin is not instantiated
 		//until this swf is successfully loaded
-		var loadedSWF:NativeHttp = ResourceManager.getSWFResource(elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
+		var loadedSWF:NativeHttp = ResourceManager.getSWFResource(_elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
 		
 		//all swf are loaded as byte array to prevent them from playing
 		//until used with an object tag, the bytes are loaded via a flash loader
 		_loader = new Loader();
 		//loading bytes is asynchronous
-		_loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, onSWFLoadComplete);
+		_loader.contentLoaderInfo.addEventListener(flash.events.Event.INIT, onSWFLoadComplete);
 		
 		#if nme
+		//nme don't need loader context
 		_loader.loadBytes(loadedSWF.response);
 		#else
 		
@@ -213,24 +226,11 @@ class SWFPlugin extends Plugin
 				_swf.scaleY = assetBounds.height / _swfHeight;
 		}
 		
-		//apply a scroll rect to the swf to prevent it
-		//from overflowing in object tag
-		if (_scrollRect == null)
-		{
-			_scrollRect = new Rectangle(Math.round(-viewport.x), Math.round( -viewport.y), Math.round(viewport.width), Math.round(viewport.height));
-		}
-		else
-		{
-			_scrollRect.x = Math.round(-viewport.x);
-			_scrollRect.y = Math.round(-viewport.y);
-			_scrollRect.width = Math.round(viewport.width);
-			_scrollRect.height = Math.round(viewport.height);
-		}
-		
-		_swf.scrollRect = _scrollRect;
-		
-				
-		return;
+		//update swf's mask position and dimensions
+		_mask.graphics.clear();
+		_mask.graphics.beginFill(0xFF0000, 0.5);
+		_mask.graphics.drawRect(viewport.x, viewport.y, viewport.width, viewport.height);
+		_mask.graphics.endFill();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -246,6 +246,10 @@ class SWFPlugin extends Plugin
 		_swfHeight = _loader.contentLoaderInfo.height;
 		_swfWidth = _loader.contentLoaderInfo.width;
 		_swf = _loader.content;
+		
+		//mask the swf, size of mask
+		//is updated with the viewport
+		_swf.mask = _mask;
 		
 		//swf plugin is now ready
 		//TODO 1 : don't seem to work unless swf readiness
