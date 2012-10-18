@@ -665,11 +665,10 @@ class LayerRenderer extends FastNode<LayerRenderer>
 				{
 					if (child.graphicsContext != null)
 					{
-						if (child.hasOwnGraphicsContext == true)
+						if (child.hasOwnGraphicsContext == true && inserted == false)
 						{
 							parentGraphicsContext.insertBefore(graphicsContext, child.graphicsContext);
 							inserted = true;
-							break;
 						}
 							
 					}
