@@ -17,6 +17,7 @@ import cocktail.plugin.Plugin;
 import cocktail.plugin.swf.SWFPlugin;
 import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.renderer.RendererData;
+import cocktail.port.NativeHttp;
 
 /**
  * The object element can represent an external resource,
@@ -197,16 +198,16 @@ class HTMLObjectElement extends EmbeddedElement
 			if (data.indexOf(SWF_FILE_EXTENSION) != -1)
 			{
 				//retrieve the resource the plugin will use
-				var resource:AbstractResource = ResourceManager.getSWFResource(data);
+				var resource:NativeHttp = ResourceManager.getSWFResource(data);
 				
 				//if it couldn't be loaded, don't create the plugin
-				if (resource.loadedWithError == true)
+				if (resource.error == true)
 				{
 					return;
 				}
 				//if the resource is not yet loaded, 
 				//wait for its load end
-				if (resource.loaded == false)
+				if (resource.complete == false)
 				{
 					resource.addEventListener(EventConstants.LOAD, onPluginResourceLoaded);
 					return;

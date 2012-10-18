@@ -16,6 +16,7 @@ import cocktail.core.resource.ResourceManager;
 import cocktail.plugin.Plugin;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.geom.GeomData;
+import cocktail.port.NativeHttp;
 
 #if macro
 #elseif (flash || nme)
@@ -27,6 +28,7 @@ import flash.display.Loader;
 import flash.geom.Rectangle;
 import flash.net.URLRequest;
 #if flash
+import flash.system.ApplicationDomain;
 import flash.system.LoaderContext;
 #end
 #end
@@ -88,6 +90,8 @@ class SWFPlugin extends Plugin
 	 */
 	private var _scrollRect:Rectangle;
 	
+	private var _loader:Loader;
+	
 	/**
 	 * class constructor, get a reference to the loaded swf
 	 */
@@ -107,16 +111,35 @@ class SWFPlugin extends Plugin
 		
 		//retrieve the loaded swf, the plugin is not instantiated
 		//until this swf is successfully loaded
-		var loadedSWF:AbstractResource = ResourceManager.getSWFResource(elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
+		var loadedSWF:NativeHttp = ResourceManager.getSWFResource(elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
 		
-		_swfHeight = loadedSWF.intrinsicHeight;
-		_swfWidth = loadedSWF.intrinsicWidth;
-		_swf = loadedSWF.nativeResource;
+		_loader = new Loader();
+		_loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, onSWFLoadComplete);
+		var loaderContext:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain);
+		
+		loaderContext.allowCodeImport = true;
+		if (Reflect.hasField(loaderContext, "allowLoadBytesCodeExecution"))
+		{
+			loaderContext.allowLoadBytesCodeExecution = true;
+		}
+		
+		
+		_loader.loadBytes(loadedSWF.response, loaderContext);
+	}
+	
+	private function onSWFLoadComplete(event:flash.events.Event):Void
+	{
+		trace("load comple");
+		
+	
+		_swfHeight = _loader.contentLoaderInfo.height;
+		_swfWidth = _loader.contentLoaderInfo.width;
+		_swf = _loader.content;
 		
 		//swf plugin is now ready
 		//TODO 1 : don't seem to work unless swf readiness
 		//is delayed
-		Lib.document.timer.delay(function(e) { loadComplete(); });
+		Lib.document.timer.delay(function(e) { _loadComplete(); });
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

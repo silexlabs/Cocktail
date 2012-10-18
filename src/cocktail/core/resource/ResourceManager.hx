@@ -8,8 +8,11 @@
 */
 package cocktail.core.resource;
 
+import cocktail.core.http.HTTPConstants;
 import cocktail.port.ImageResource;
+import cocktail.port.NativeHttp;
 import cocktail.port.SWFResource;
+import cocktail.port.platform.nativeHttp.NativeHTTPData;
 
 /**
  * This is a static class used to retrive loaded asset
@@ -29,6 +32,12 @@ class ResourceManager
 	private static var _resources:Hash<AbstractResource>;
 	
 	/**
+	 * Store requested swf resources, where the 
+	 * key is the url of the swf
+	 */
+	private static var _swfResources:Hash<NativeHttp>;
+	
+	/**
 	 * class constructor. Private as this class
 	 * is meant to be used through its static methods
 	 */
@@ -45,6 +54,11 @@ class ResourceManager
 		if (_resources == null)
 		{
 			_resources = new Hash<AbstractResource>();
+		}
+		
+		if (_swfResources == null)
+		{
+			_swfResources = new Hash<NativeHttp>();
 		}
 	}
 	
@@ -76,16 +90,17 @@ class ResourceManager
 	 * TODO 2 : should SWF loading be in core ?
 	 * Should be abstracted as binary loading ?
 	 */
-	public static function getSWFResource(url:String):AbstractResource
+	public static function getSWFResource(url:String):NativeHttp
 	{
 		init();
 		
-		if (_resources.exists(url) == false)
+		if (_swfResources.exists(url) == false)
 		{
-			var resource:SWFResource = new SWFResource(url);
-			_resources.set(url, resource);
+			var resource:NativeHttp = new NativeHttp();
+			resource.load(url, HTTPConstants.GET, null, null, DataFormatValue.BINARY);
+			_swfResources.set(url, resource);
 		}
 		
-		return _resources.get(url);
+		return _swfResources.get(url);
 	}
 }
