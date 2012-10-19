@@ -252,9 +252,7 @@ class SWFPlugin extends Plugin
 		_swf.mask = _mask;
 		
 		//swf plugin is now ready
-		//TODO 1 : don't seem to work unless swf readiness
-		//is delayed
-		Lib.document.timer.delay(function(e) { _loadComplete(); });
+		_loadComplete();
 	}
 	
 	/**
