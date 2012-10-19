@@ -1,0 +1,14 @@
+-cp ../../../../src/
+-cp ../../src/
+-main history.HistoryTests
+-lib utest
+-swf9 ../../bin/history/historyTestAs3.swf
+-swf-version 10.1
+
+--next
+
+-cp ../../../../src/
+-cp ../../src/
+-main history.HistoryTests
+-lib utest
+-js ../../bin/history/historyTestJS.js
