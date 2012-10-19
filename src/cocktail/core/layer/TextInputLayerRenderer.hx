@@ -58,13 +58,4 @@ class TextInputLayerRenderer extends CompositingLayerRenderer
 		super.detach();
 	}
 	
-	/////////////////////////////////
-	// OVERRIDEN PRIVATE RENDERING METHODS
-	////////////////////////////////
-
-	override private function initBitmapData(width:Int, height:Int):Void
-	{
-		
-	}
-	
 }

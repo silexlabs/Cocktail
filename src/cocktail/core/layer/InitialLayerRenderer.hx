@@ -39,7 +39,6 @@ class InitialLayerRenderer extends LayerRenderer
 	override private function attachGraphicsContext():Void
 	{
 		graphicsContext = new InitialGraphicsContext(this);
-		_needsBitmapSizeUpdate = true;
 		hasOwnGraphicsContext = true;
 	}
 	

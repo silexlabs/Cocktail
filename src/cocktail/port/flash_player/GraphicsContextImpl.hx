@@ -143,9 +143,6 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	 */
 	override public function initBitmapData(width:Int, height:Int):Void
 	{
-		_width = width;
-		_height = height;
-		
 		//here the bitmap data is created for the first time
 		if (_nativeBitmap == null)
 		{
@@ -154,9 +151,18 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		}
 		else
 		{
+			//no need to update if the size didn't change
+			if (_width == width && _height == height)
+			{
+				return;
+			}
+			
 			_nativeBitmap.bitmapData.dispose();
 			_nativeBitmap.bitmapData = new BitmapData(width, height, true, 0x00000000);
 		}
+		
+		_width = width;
+		_height = height;
 	}
 	
 	/**

@@ -62,20 +62,23 @@ class PluginLayerRenderer extends CompositingLayerRenderer
 	}
 	
 	/////////////////////////////////
-	// OVERRIDEN PRIVATE RENDERING METHODS
+	// OVERRIDEN PRIVATE HELPER METHODS
 	////////////////////////////////
 	
 	/**
-	 * override to prevent updating the bitmap
-	 * data, plugin don't need bitmap data
-	 * 
-	 * TODO 2 : might actually be useful to draw background, borders...
-	 * should use graphic context of parent
+	 * For composited plugin, they
+	 * use the bitmap of their parent
+	 * if they need to render border,
+	 * background...
 	 */
-	override private function initBitmapData(width:Int, height:Int):Void
+	override public function needsBitmap():Bool
 	{
-		
+		return false;
 	}
+	
+	/////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	////////////////////////////////
 	
 	/**
 	 * No need to clear, its not suposed to have

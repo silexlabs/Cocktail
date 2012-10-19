@@ -116,6 +116,15 @@ class InvalidationManager
 	private var _viewportResized:Bool;
 	
 	/**
+	 * Wether the graphics context bitmap
+	 * onto which the document is rendered
+	 * needs to update their size.
+	 * Happens for instance when the 
+	 * viweport sizes changes
+	 */
+	private var _bitmapSizeNeedsUpdate:Bool;
+	
+	/**
 	 * a reference to the HTMLDocument owning
 	 * the invalidation manager
 	 */
@@ -138,6 +147,7 @@ class InvalidationManager
 		_pendingAnimationsNeedUpdate = true;
 		_forceLayout = false;
 		_viewportResized = false;
+		_bitmapSizeNeedsUpdate = true;
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -161,6 +171,17 @@ class InvalidationManager
 		invalidateLayout(true);
 		invalidateRendering();
 		_viewportResized = true;
+		_bitmapSizeNeedsUpdate = true;
+	}
+	
+	/**
+	 * schedule an update of the sizes
+	 * of the bitmaps used for rendering
+	 */
+	public function invalidateBitmapSizes():Void
+	{
+		_bitmapSizeNeedsUpdate = true;
+		invalidate();
 	}
 	
 	/**
@@ -360,11 +381,24 @@ class InvalidationManager
 			_nativeLayerTreeNeedsUpdate = false;
 		}
 		
+		//when the viewport is resized or on first update,
+		//all bitmaps used for rendering
+		//needs to update their sizes to match
+		//the new size
+		if (_bitmapSizeNeedsUpdate == true)
+		{
+			_htmlDocument.documentElement.elementRenderer.layerRenderer.graphicsContext.updateGraphicsSize(_htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
+			_bitmapSizeNeedsUpdate = false;
+		}
+		
 		//same as for layout
 		if (_documentNeedsRendering == true)
 		{
+			//for each layer, compute its alpha by concatenating alpha of all ancestor layers
+			//TODO 2 : need not to be updated each rendering
 			_htmlDocument.documentElement.elementRenderer.layerRenderer.updateLayerAlpha(1.0);
-			_htmlDocument.documentElement.elementRenderer.layerRenderer.render(_htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
+			
+			_htmlDocument.documentElement.elementRenderer.layerRenderer.render();
 			_documentNeedsRendering = false;
 		}
 		

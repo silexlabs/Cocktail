@@ -121,17 +121,6 @@ class LayerRenderer extends FastNode<LayerRenderer>
 	public var graphicsContext(default, null):GraphicsContext;
 	
 	/**
-	 * Store the current width of the window. Used to check if the window
-	 * changed size in between renderings
-	 */
-	private var _windowWidth:Int;
-	
-	/**
-	 * Same as windowWidth for height
-	 */
-	private var _windowHeight:Int;
-	
-	/**
 	 * A flag determining wether this LayerRenderer has its own
 	 * GraphicsContext or use the one of its parent. It helps
 	 * to determine if this LayerRenderer is responsible to perform
@@ -162,17 +151,6 @@ class LayerRenderer extends FastNode<LayerRenderer>
 	private var _needsStackingContextUpdate:Bool;
 	
 	/**
-	 * A flag determining for a LayerRenderer which 
-	 * has its own graphic context, if the size of the
-	 * bitmap data of its grapic context should be updated.
-	 * 
-	 * It is the case when the size of the viewport changes
-	 * of when a new graphics context is created for this 
-	 * LayerRenderer
-	 */
-	private var _needsBitmapSizeUpdate:Bool;
-	
-	/**
 	 * This is the alpha, from 0 to 1 which
 	 * should be used when rendering all
 	 * the element renderer of this
@@ -200,14 +178,10 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		hasOwnGraphicsContext = false;
 		
 		_needsRendering = true;
-		_needsBitmapSizeUpdate = true;
 		_needsGraphicsContextUpdate = true;
 		_needsStackingContextUpdate = true;
 		
 		_alpha = 1.0;
-		
-		_windowWidth = 0;
-		_windowHeight = 0;
 	}
 	
 	/**
@@ -642,7 +616,6 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		if (establishesNewGraphicsContext() == true)
 		{
 			graphicsContext = new GraphicsContext(this);
-			_needsBitmapSizeUpdate = true;
 			hasOwnGraphicsContext = true;
 			
 			//get all the child stacking contexts of the first parent
@@ -804,6 +777,15 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		return false;
 	}
 	
+	/**
+	 * Wheter this layer needs its own bitmap
+	 * when it has its own graphics context
+	 */
+	public function needsBitmap():Bool
+	{
+		return true;
+	}
+	
 	/////////////////////////////////
 	// PUBLIC RENDERING METHODS
 	////////////////////////////////
@@ -811,47 +793,9 @@ class LayerRenderer extends FastNode<LayerRenderer>
 	/**
 	 * Starts the rendering of this LayerRenderer.
 	 * Render all its child layers and its root ElementRenderer
-	 * 
-	 * @param windowWidth the current width of the window
-	 * @param windowHeight the current height of the window
 	 */
-	public function render(windowWidth:Int, windowHeight:Int ):Void
+	public function render():Void
 	{
-		//if the graphic context was instantiated/re-instantiated
-		//since last rendering, the size of its bitmap data should be
-		//updated with the viewport's dimensions
-		if (_needsBitmapSizeUpdate == true)
-		{
-			if (hasOwnGraphicsContext == true)
-			{
-				initBitmapData(windowWidth, windowHeight);
-			}
-			_needsBitmapSizeUpdate = false;
-			
-			//invalidate rendering of this layer and all layers sharing
-			//the same graphic context
-			invalidateRendering();
-		}
-		//else update the dimension of the bitmap data if the window size changed
-		//since last rendering
-		else if (windowWidth != _windowWidth || windowHeight != _windowHeight)
-		{
-			//only update the GraphicContext if it was created
-			//by this LayerRenderer
-			if (hasOwnGraphicsContext == true)
-			{
-				initBitmapData(windowWidth, windowHeight);
-				_needsBitmapSizeUpdate = false;
-			}
-			
-			//invalidate if the size of the viewport
-			//changed
-			invalidateRendering();
-		}
-		
-		_windowWidth = windowWidth;
-		_windowHeight = windowHeight;
-		
 		//only clear if a rendering is necessary
 		if (_needsRendering == true)
 		{
@@ -869,7 +813,7 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		var negativeChildLength:Int = negativeZIndexChildLayerRenderers.length;
 		for (i in 0...negativeChildLength)
 		{
-			negativeZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
+			negativeZIndexChildLayerRenderers[i].render();
 		}
 		
 		//only render if necessary. This only applies to layer which have
@@ -898,7 +842,7 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		var childLength:Int = zeroAndAutoZIndexChildLayerRenderers.length;
 		for (i in 0...childLength)
 		{
-			zeroAndAutoZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
+			zeroAndAutoZIndexChildLayerRenderers[i].render();
 		}
 		
 		//render all the positive LayerRenderer from least positive to 
@@ -906,12 +850,12 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		var positiveChildLength:Int = positiveZIndexChildLayerRenderers.length;
 		for (i in 0...positiveChildLength)
 		{
-			positiveZIndexChildLayerRenderers[i].render(windowWidth, windowHeight);
+			positiveZIndexChildLayerRenderers[i].render();
 		}
 		
 		//scrollbars are always rendered last as they should always be the top
 		//element of their layer
-		rootElementRenderer.renderScrollBars(graphicsContext, windowWidth, windowHeight);
+		rootElementRenderer.renderScrollBars(graphicsContext);
 		
 		//only render if necessary
 		if (_needsRendering == true)
@@ -932,15 +876,6 @@ class LayerRenderer extends FastNode<LayerRenderer>
 	/////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	////////////////////////////////
-	
-	/**
-	 * Refresh the size of the graphics context's
-	 * bitmap data
-	 */
-	private function initBitmapData(width:Int, height:Int):Void
-	{
-		graphicsContext.graphics.initBitmapData(width, height);
-	}
 	
 	/**
 	 * Reset the bitmap
