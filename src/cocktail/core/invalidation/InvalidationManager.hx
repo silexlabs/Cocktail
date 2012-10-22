@@ -398,7 +398,8 @@ class InvalidationManager
 			//TODO 2 : need not to be updated each rendering
 			_htmlDocument.documentElement.elementRenderer.layerRenderer.updateLayerAlpha(1.0);
 			
-			_htmlDocument.documentElement.elementRenderer.layerRenderer.render();
+			//start rendering of the document at the initial stacking context
+			_htmlDocument.documentElement.elementRenderer.layerRenderer.stackingContext.render();
 			_documentNeedsRendering = false;
 		}
 		

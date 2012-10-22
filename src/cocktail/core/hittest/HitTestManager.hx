@@ -94,7 +94,6 @@ class HitTestManager
 	{
 		getElementRenderersAtPointInLayer(elementRenderersAtPoint, layer, layer.rootElementRenderer, point, scrollX, scrollY);
 
-		
 		if (layer.rootElementRenderer.firstChild != null)
 		{
 			getElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, point, scrollX, scrollY);
@@ -162,9 +161,9 @@ class HitTestManager
 	}
 	private function getElementRenderersAtPointInChildRenderers(elementRenderersAtPoint:Array<ElementRenderer>, layer:LayerRenderer, point:PointVO, scrollX:Float, scrollY:Float):Void
 	{
-		doGetElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, layer.negativeZIndexChildLayerRenderers, point, scrollX, scrollY);
-		doGetElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, layer.zeroAndAutoZIndexChildLayerRenderers, point, scrollX, scrollY);
-		doGetElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, layer.positiveZIndexChildLayerRenderers, point, scrollX, scrollY);
+		//doGetElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, layer.negativeZIndexChildLayerRenderers, point, scrollX, scrollY);
+		//doGetElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, layer.zeroAndAutoZIndexChildLayerRenderers, point, scrollX, scrollY);
+		//doGetElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, layer.positiveZIndexChildLayerRenderers, point, scrollX, scrollY);
 	}
 	private function doGetElementRenderersAtPointInChildRenderers(elementRenderersAtPoint:Array<ElementRenderer>, layer:LayerRenderer, childRenderers:Array<LayerRenderer>, point:PointVO, scrollX:Float, scrollY:Float):Void
 	{

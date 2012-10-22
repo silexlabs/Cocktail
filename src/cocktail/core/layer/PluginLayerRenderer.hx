@@ -36,9 +36,9 @@ class PluginLayerRenderer extends CompositingLayerRenderer
 	 * When attached, gives an opportunity to the
 	 * plugin to attch itself to the display list
 	 */
-	override public function attach():Void
+	override public function attachGraphicsContext():Void
 	{
-		super.attach();
+		super.attachGraphicsContext();
 		var htmlObjectElement:HTMLObjectElement = cast(rootElementRenderer.domNode);
 		htmlObjectElement.plugin.attach(graphicsContext);
 	}
@@ -48,7 +48,7 @@ class PluginLayerRenderer extends CompositingLayerRenderer
 	 * the plugin to detach itself from
 	 * the display list
 	 */
-	override public function detach():Void
+	override public function detachGraphicsContext():Void
 	{
 		//TODO 2 : when the layer is first created
 		//it has no graphics context yet, should
@@ -58,7 +58,7 @@ class PluginLayerRenderer extends CompositingLayerRenderer
 			var htmlObjectElement:HTMLObjectElement = cast(rootElementRenderer.domNode);
 			htmlObjectElement.plugin.detach(graphicsContext);
 		}
-		super.detach();
+		super.detachGraphicsContext();
 	}
 	
 	/////////////////////////////////

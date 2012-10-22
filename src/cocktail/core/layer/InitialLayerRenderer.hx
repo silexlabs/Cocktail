@@ -10,6 +10,7 @@ package cocktail.core.layer;
 import cocktail.core.graphics.InitialGraphicsContext;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.graphics.GraphicsContext;
+import cocktail.core.stacking.StackingContext;
 
 /**
  * This a special LayerRenderer used as the root of the 
@@ -29,17 +30,34 @@ class InitialLayerRenderer extends LayerRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC ATTACHEMENT METHODS
+	// OVERRIDEN PRIVATE ATTACHEMENT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * The initial LayerRenderer always creates the GraphicsContext
 	 * at the root of the GraphicsContext tree
 	 */
-	override private function attachGraphicsContext():Void
+	override private function doAttachGraphicsContext():Void
 	{
 		graphicsContext = new InitialGraphicsContext(this);
 		hasOwnGraphicsContext = true;
+	}
+	
+	/**
+	 * The initial layer renderer always creates the StackingContext
+	 * at the root of the stacking context tree
+	 */
+	override private function doAttachStackingContext():Void
+	{
+		stackingContext = new StackingContext(this);
+	}
+	
+	/**
+	 * No need to detach the stacking context of the root layer
+	 */
+	override private function doDetachStackingContext():Void
+	{
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -65,6 +83,14 @@ class InitialLayerRenderer extends LayerRenderer
 	override private function establishesNewStackingContext():Bool
 	{
 		return true;
+	}
+	
+	/**
+	 * The root layer has no siblings
+	 */
+	override private function hasCompositingLayerSibling():Bool
+	{
+		return false;
 	}
 	
 	

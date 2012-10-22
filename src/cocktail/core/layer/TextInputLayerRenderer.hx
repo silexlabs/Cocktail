@@ -33,9 +33,9 @@ class TextInputLayerRenderer extends CompositingLayerRenderer
 	// OVERRIDEN PUBLIC RENDERING TREE METHODS
 	////////////////////////////////
 	
-	override public function attach():Void
+	override public function attachGraphicsContext():Void
 	{
-		super.attach();
+		super.attachGraphicsContext();
 		var htmlInputElement:HTMLInputElement = cast(rootElementRenderer.domNode);
 		if (htmlInputElement.elementRenderer != null)
 		{
@@ -44,7 +44,7 @@ class TextInputLayerRenderer extends CompositingLayerRenderer
 		}
 	}
 	
-	override public function detach():Void
+	override public function detachGraphicsContext():Void
 	{
 		if (hasOwnGraphicsContext == true)
 		{
@@ -55,7 +55,7 @@ class TextInputLayerRenderer extends CompositingLayerRenderer
 				textInputRenderer.nativeTextInput.detach(graphicsContext);
 			}
 		}
-		super.detach();
+		super.detachGraphicsContext();
 	}
 	
 }
