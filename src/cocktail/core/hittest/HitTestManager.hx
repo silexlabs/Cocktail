@@ -11,13 +11,19 @@ import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
+import cocktail.core.stacking.StackingContext;
 using cocktail.core.utils.Utils;
 
 /**
- * Manages hit testing of the layer and rendering.
+ * Manages hit testing of the document.
  * For a given point can return element renderers
  * and layers intersecting it and can order
  * them by z-index 
+ * 
+ * When hit testing, the stacking context tree
+ * is traversed recursively and hit test
+ * each of its own layer layer and each layer hit tests each 
+ * of its own element renderers
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -63,13 +69,13 @@ class HitTestManager
 	 * TODO 2 : for now traverse all tree, but should instead return as soon as an ElementRenderer
 	 *	is found
 	 * 
-	 * @param	layer the root layer where the hit test begins
+	 * @param	stackingContext the root stacking context where the hit test begins
 	 * @param	x the target x point relative to the window
 	 * @param	y the target y point relative to the window
 	 * @param	scrollX the x scroll offset applied to the point
 	 * @param	scrollY the y scroll offset applied to the point
 	 */
-	public function getTopMostElementRendererAtPoint(layer:LayerRenderer, x:Float, y:Float, scrollX:Float, scrollY:Float):ElementRenderer
+	public function getTopMostElementRendererAtPoint(stackingContext:StackingContext, x:Float, y:Float, scrollX:Float, scrollY:Float):ElementRenderer
 	{
 		_targetPoint.x = x;
 		_targetPoint.y = y;
@@ -77,7 +83,7 @@ class HitTestManager
 		_elementRenderersAtPoint = _elementRenderersAtPoint.clear();
 		
 		//get all the elementRenderers under the point, update the element renderers array
-		getElementRenderersAtPoint(_elementRenderersAtPoint, layer, _targetPoint, scrollX, scrollY);
+		getElementRenderersAtPointInStackingContext(_elementRenderersAtPoint, stackingContext, _targetPoint, scrollX, scrollY);
 		//return the top most, the last of the array
 		return _elementRenderersAtPoint[_elementRenderersAtPoint.length - 1];
 	}
@@ -87,16 +93,42 @@ class HitTestManager
 	////////////////////////////////
 	
 	/**
-	 * Get all the ElemenRenderer whose bounds contain the given point. The returned
-	 * ElementRenderers are ordered by z-index, from most negative to most positive.
+	 * For a given stacking context, hit test
+	 * all the layer belonging to this stacking context,
+	 * and start hit test of its child stacking context
 	 */
-	private function getElementRenderersAtPoint(elementRenderersAtPoint:Array<ElementRenderer>, layer:LayerRenderer, point:PointVO, scrollX:Float, scrollY:Float):Void
+	private function getElementRenderersAtPointInStackingContext(elementRenderersAtPoint:Array<ElementRenderer>, stackingContext:StackingContext, point:PointVO, scrollX:Float, scrollY:Float):Void
 	{
-		getElementRenderersAtPointInLayer(elementRenderersAtPoint, layer, layer.rootElementRenderer, point, scrollX, scrollY);
-
-		if (layer.rootElementRenderer.firstChild != null)
+		getElementRenderersAtPointInLayers(elementRenderersAtPoint, stackingContext.layerRenderer, stackingContext.layerRenderer.rootElementRenderer, point, scrollX, scrollY);
+	
+		var child:StackingContext = stackingContext.firstChild;
+		while (child != null)
 		{
-			getElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, point, scrollX, scrollY);
+			getElementRenderersAtPointInStackingContext(elementRenderersAtPoint, child, point, scrollX, scrollY);
+			child = child.nextSibling;
+		}
+	}
+	
+	/**
+	 * For a given layer hit test
+	 * all the element renderers belonging
+	 * to this layer. Start hit testing of
+	 * layers which belongs to the same stacking
+	 * context
+	 */
+	private function getElementRenderersAtPointInLayers(elementRenderersAtPoint:Array<ElementRenderer>, layer:LayerRenderer, renderer:ElementRenderer, point:PointVO, scrollX:Float, scrollY:Float):Void
+	{
+		getElementRenderersAtPointInLayer(elementRenderersAtPoint, layer, renderer, point, scrollX, scrollY);
+		
+		var child:LayerRenderer = layer.firstChild;
+		while (child != null)
+		{
+			if (child.hasOwnStackingContext == false)
+			{
+				getElementRenderersAtPointInLayers(elementRenderersAtPoint, child, renderer, point, scrollX, scrollY);
+			}
+			
+			child = child.nextSibling;
 		}
 	}
 	
@@ -104,9 +136,6 @@ class HitTestManager
 	/**
 	 * For a given layer, return all of the ElementRenderer belonging to this
 	 * layer whose bounds contain the target point.
-	 * 
-	 * The rendering tree is traversed recursively, starting from the
-	 * root element renderer of this layer
 	 * 
 	 * TODO 2 : can probably be optimised, in one layer, no elements are supposed to
 	 * overlap, meaning that only 1 elementRenderer can be returned for each layer
@@ -132,11 +161,12 @@ class HitTestManager
 		scrollY += renderer.scrollTop;
 		
 		var child:ElementRenderer = renderer.firstChild;
-		//loop in all the ElementRenderer using this LayerRenderer
+		//loop in all the ElementRenderer belonging to the target layer
 		while(child != null)
 		{
 			if (child.layerRenderer == layer)
 			{
+				//if the child has child of its own, hit test them
 				if (child.firstChild != null)
 				{
 					getElementRenderersAtPointInLayer(elementRenderersAtPoint, layer, child, point, scrollX, scrollY);
@@ -157,42 +187,6 @@ class HitTestManager
 			}
 			
 			child = child.nextSibling;
-		}
-	}
-	private function getElementRenderersAtPointInChildRenderers(elementRenderersAtPoint:Array<ElementRenderer>, layer:LayerRenderer, point:PointVO, scrollX:Float, scrollY:Float):Void
-	{
-		//doGetElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, layer.negativeZIndexChildLayerRenderers, point, scrollX, scrollY);
-		//doGetElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, layer.zeroAndAutoZIndexChildLayerRenderers, point, scrollX, scrollY);
-		//doGetElementRenderersAtPointInChildRenderers(elementRenderersAtPoint, layer, layer.positiveZIndexChildLayerRenderers, point, scrollX, scrollY);
-	}
-	private function doGetElementRenderersAtPointInChildRenderers(elementRenderersAtPoint:Array<ElementRenderer>, layer:LayerRenderer, childRenderers:Array<LayerRenderer>, point:PointVO, scrollX:Float, scrollY:Float):Void
-	{
-		var length:Int = childRenderers.length;
-		for (i in 0...length)
-		{
-				var child:ElementRenderer = childRenderers[i].rootElementRenderer;
-				//TODO 1 : hack, child renderer never 
-				//supposed to be null at this point
-				if (child != null)
-				{
-					if (child.createOwnLayer() == true)
-					{
-						//TODO 1 : messy, ElementRenderer should be aware of their scrollBounds
-						if (child.isScrollBar() == true)
-						{
-							getElementRenderersAtPoint(elementRenderersAtPoint, child.layerRenderer, point, scrollX, scrollY);
-						}
-						//TODO 1 : messy, ElementRenderer should be aware of their scrollBounds
-						else if (child.coreStyle.getKeyword(child.coreStyle.position) == FIXED)
-						{
-							getElementRenderersAtPoint(elementRenderersAtPoint, child.layerRenderer, point, scrollX , scrollY);
-						}
-						else
-						{
-							getElementRenderersAtPoint(elementRenderersAtPoint, child.layerRenderer, point, scrollX + layer.rootElementRenderer.scrollLeft, scrollY + layer.rootElementRenderer.scrollTop);
-						}
-					}
-				}
 		}
 	}
 	

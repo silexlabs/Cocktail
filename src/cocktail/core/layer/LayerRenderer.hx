@@ -596,41 +596,57 @@ class LayerRenderer extends FastNode<LayerRenderer>
 			graphicsContext = new GraphicsContext(this);
 			hasOwnGraphicsContext = true;
 			
-			//get all the child stacking contexts of the first parent
-			//establishing a stacking context, this layer belongs to those
-			//stacking contexts
+			//get the stacking context of the parent, this child
+			//layer belongs to it
 			var parentStackingContext:StackingContext = parentNode.stackingContext;
 			
 			var foundSelf:Bool = false;
 			
+			var child:StackingContext = parentStackingContext.firstChild;
+			
 			//loop to find the position where to insert this new graphics context, it must
 			//be inserted before its first sibling with a superior z-index. The sibling
 			//must also establish a new graphics context
-			//var length:Int = parentStackingContexts.length;
-			//for (i in 0...length)
-			//{
-				//var child:LayerRenderer = parentStackingContexts[i];
-				//
-				//if (foundSelf == true)
-				//{
-					//if (child.graphicsContext != null)
-					//{
-						//if (child.hasOwnGraphicsContext == true)
-						//{
-							//parentGraphicsContext.insertBefore(graphicsContext, child.graphicsContext);
-							//return;
-						//}
-					//}
-				//}
-				//
-				//when this layer is found, the next layer
-				//it will be inserted into the next layer
-				//establishing a stacking context
-				//if (child == this)
-				//{
-					//foundSelf = true;
-				//}
-			//}
+			while(child != null)
+			{
+				if (foundSelf == true)
+				{
+					if (child.layerRenderer.graphicsContext != null)
+					{
+						if (child.layerRenderer.hasOwnGraphicsContext == true)
+						{
+							parentGraphicsContext.insertBefore(graphicsContext, child.layerRenderer.graphicsContext);
+							return;
+						}
+					}
+				}
+				
+				//when this layer is found,
+				//its graphic context will be
+				//inserted before the graphics context
+				//of the next layer owning a graphics context
+				if (hasOwnStackingContext == true)
+				{
+					if (child.layerRenderer == this)
+					{
+						foundSelf = true;
+					}
+				}
+				//if the layer doesn't have its own stacking context,
+				//find itself among the layer belonging to its graphics context
+				else
+				{
+					//TODO 2 : this behaviour assumes that layer creating
+					//a graphics context also create a stacking context, which
+					//might not always be true
+					if (stackingContext.layerRenderer == this)
+					{
+						foundSelf = true;
+					}
+				}
+				
+				child = child.nextSibling;
+			}
 			
 			//here the new graphics context is
 			//inserted last as it didn't found a sibling
