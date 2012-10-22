@@ -4,6 +4,14 @@
 		"selected_items":
 		[
 			[
+				"Aser",
+				"Assert"
+			],
+			[
+				"for",
+				"forward"
+			],
+			[
 				"fun",
 				"fun	Function"
 			],
@@ -436,25 +444,29 @@
 	"buffers":
 	[
 		{
+			"file": "/home/lexa/Documents/www/Dropbox/fdt-workspace/Cocktail/src/cocktail/core/history/History.hx",
 			"settings":
 			{
-				"buffer_size": 0,
+				"buffer_size": 2712,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/Users/lexa/Dropbox/fdt-workspace/Cocktail/test/unit_tests/src/geom/MatrixTests.hx",
+			"file": "/home/lexa/Documents/www/Dropbox/fdt-workspace/Cocktail/src/cocktail/core/history/HistoryData.hx",
 			"settings":
 			{
-				"buffer_size": 4748,
+				"buffer_size": 822,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/Users/lexa/Dropbox/fdt-workspace/Cocktail/test/unit_tests/src/history/HistoryTests",
+			"contents": "/*\n * Cocktail, HTML rendering engine\n * http://haxe.org/com/libs/cocktail\n *\n * Copyright (c) Silex Labs\n * Cocktail is available under the MIT license\n * http://www.silexlabs.org/labs/cocktail-licensing/\n*/\n\npackage history;\n//import cocktail.core.history.History;\nimport js.Lib;\nimport js.Dom;\n\nimport utest.Assert;\nimport utest.Runner;\nimport utest.ui.Report;\n\n/**\n * Units tests for history API\n */\n\nclass HistoryTests \n{\n	public static function main()\n	{\n		trace(\"...tests begin...\");\n		var runner = new Runner();\n		runner.addCase(new HistoryTests());\n		Report.create(runner);\n		runner.run();\n	}\n\n	public var history:History;\n	\n	public function new() \n	{\n		// init history\n		// history = new History();\n		history = Lib.window.history;\n\n		var stateObj = { \n			title : \"page 1\", \n			url : \"page1.html\",\n		};\n		history.pushState(stateObj, \"page 1\", \"#page1.html\");\n		var stateObj = { \n			title : \"page 2\", \n			url : \"page2.html\",\n		};\n		history.pushState(stateObj, \"page 2\", \"#page2.html\");\n		var stateObj = { \n			title : \"page 3\", \n			url : \"page3.html\",\n		};\n		history.pushState(stateObj, \"page 3\", \"#page3.html\");\n	}\n	/**\n	 * test history methods\n	 */\n	public function testHistoryMethods():Void\n	{\n		trace(\"testHistory\");\n		// Check the length of the history stack\n		//Assert.equals(3, history.length);\n\n		// Check the current state\n		Assert.equals(\"page 3\", history.state.title);\n\n		_testHistoryBack();\n	}\n	public function _testHistoryBack():Void\n	{\n		trace(\"testHistoryBack\");\n		// Send the user agent forward\n		history.back(); \n\n		var async = Assert.createAsync(function(){\n			trace(\"test history async\");\n			Assert.equals(\"page 2\", history.state.title);\n			_testHistoryForward();\n		}, 1000);\n		haxe.Timer.delay(async, 500);\n\n	}\n	public function _testHistoryForward():Void\n	{\n		trace(\"testHistoryForward\");\n		// Send the user agent back\n		history.forward();\n\n		var async = Assert.createAsync(function(){\n			trace(\"test history async\");\n			Assert.equals(\"page 3\", history.state.title);\n			_testHistoryGoNeg();\n		}, 1000);\n		haxe.Timer.delay(async, 500);\n\n	}\n	public function _testHistoryGoNeg():Void\n	{\n		trace(\"testHistoryGoNeg\");\n		// Send the user agent back (negative) or forward (positive)\n		// by a given number of items\n		history.go(-2);\n\n		var async = Assert.createAsync(function(){\n			trace(\"test history async\");\n			Assert.equals(\"page 1\", history.state.title);\n			_testHistoryGoPositive();\n		}, 1000);\n		haxe.Timer.delay(async, 500);\n\n	}\n	public function _testHistoryGoPositive():Void\n	{\n		trace(\"testHistoryGoPositive\");\n		// Send the user agent back (negative) or forward (positive)\n		// by a given number of items\n		history.go(2);\n\n		var async = Assert.createAsync(function(){\n			trace(\"test history async\");\n			Assert.equals(\"page 3\", history.state.title);\n		}, 1000);\n		haxe.Timer.delay(async, 500);\n	}\n	/*\n	 * test history events\n	 */\n	public function testHistoryEvents():Void\n	{\n		Assert.isTrue(true);\n		history.on\n	}\n}",
+			"file": "/home/lexa/Documents/www/Dropbox/fdt-workspace/Cocktail/test/unit_tests/src/history/HistoryTests.hx",
+			"file_size": 2932,
+			"file_write_time": 1350734748000000,
 			"settings":
 			{
-				"buffer_size": 570,
+				"buffer_size": 2945,
 				"line_ending": "Unix"
 			}
 		},
@@ -462,7 +474,15 @@
 			"file": "build.hxml",
 			"settings":
 			{
-				"buffer_size": 268,
+				"buffer_size": 114,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/lexa/Documents/www/Dropbox/fdt-workspace/Cocktail/src/js/Dom.hx",
+			"settings":
+			{
+				"buffer_size": 16634,
 				"line_ending": "Unix"
 			}
 		}
@@ -495,6 +515,11 @@
 	},
 	"file_history":
 	[
+		"/home/lexa/Documents/www/Dropbox/fdt-workspace/Cocktail/src/cocktail/core/timer/Timer.hx",
+		"/home/lexa/Documents/www/Dropbox/fdt-workspace/Cocktail/test/unit_tests/bin/history/historyTest.html",
+		"/home/lexa/Documents/www/Dropbox/fdt-workspace/Cocktail/test/unit_tests/build/history/build.hxml",
+		"/Users/lexa/Dropbox/fdt-workspace/Cocktail/test/unit_tests/src/geom/MatrixTests.hx",
+		"/Users/lexa/Dropbox/fdt-workspace/Cocktail/test/unit_tests/src/history/HistoryTests",
 		"/Users/lexa/Dropbox/fdt-workspace/Silex/bin/third-party-tools/ckeditor/config.js",
 		"/Users/lexa/Dropbox/fdt-workspace/Brix/src/brix/component/interaction/Draggable.hx",
 		"/Users/lexa/Dropbox/fdt-workspace/Silex/src/silex/ui/list/ThemesList.hx",
@@ -617,12 +642,7 @@
 		"/Users/lexa/Dropbox/fdt-workspace/Silex/test/src/publication-ribbon-toolbox/index.html",
 		"/Users/lexa/Dropbox/fdt-workspace/Silex/test/src/publication-selection/index.html",
 		"/Users/lexa/Dropbox/fdt-workspace/Silex/test/src/template/TestClient.hx",
-		"/Users/lexa/Dropbox/fdt-workspace/Silex/build/build-js-builder.hxml",
-		"/Users/lexa/Dropbox/fdt-workspace/Silex/build/build-php.hxml",
-		"/Users/lexa/Dropbox/fdt-workspace/Silex/build/build-player.hxml",
-		"/Users/lexa/Dropbox/fdt-workspace/Silex/build/silex.sublime-project",
-		"/Users/lexa/Dropbox/fdt-workspace/silex_portable_app/bin/.macos/silex-open-manager-mac",
-		"/Users/lexa/Dropbox/fdt-workspace/silex_portable_app/bin/.macos/silex-start-mac"
+		"/Users/lexa/Dropbox/fdt-workspace/Silex/build/build-js-builder.hxml"
 	],
 	"find":
 	{
@@ -643,6 +663,35 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"Event",
+			"Event->",
+			"html\");",
+			");//",
+			"Assert.equals",
+			"20000",
+			"2000",
+			"		var async = Assert.createAsync(function(){\n",
+			"		// Check the current state\n",
+			"	}\n	public function",
+			"	}\n	public function _testHistoryForward():Void\n	{\n",
+			"function test",
+			"\");",
+			"	{\n",
+			"trace(\"history.length = \"+history.length);\n",
+			"html\");",
+			", \"",
+			"\"- \"+history.state",
+			"		history.",
+			"history.",
+			"+history",
+			" history",
+			"history",
+			"3",
+			"stateObj, \"page",
+			"//			url",
+			"page1.html",
+			"			url",
+			"?",
 			"geom",
 			"selectable",
 			"head",
@@ -741,36 +790,7 @@
 			"new ",
 			"NAV_LAYER_NAME",
 			"nav",
-			"addComponent",
-			"addLayer",
-			".layer",
-			"indexOfChild",
-			"elementposition",
-			"elementindex",
-			"getelementindex",
-			"getindex",
-			"getposition",
-			"getelementposition",
-			"index",
-			"position",
-			"addLayer",
-			"position",
-			"addLayer",
-			"header",
-			"name",
-			"page",
-			"publicationModel",
-			"addMaster",
-			"addLayer",
-			"publicationModel.application.id",
-			"getLayerNodes",
-			"getLayers",
-			"getLayerNodes",
-			"addMaster",
-			"page.name",
-			"page:Page",
-			"_LAYER_NAME",
-			"container"
+			"addComponent"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -787,7 +807,7 @@
 			"publicationName",
 			"components"
 		],
-		"reverse": false,
+		"reverse": true,
 		"show_context": true,
 		"use_buffer2": true,
 		"whole_word": false,
@@ -796,14 +816,98 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 0,
 			"sheets":
 			[
 				{
 					"buffer": 0,
+					"file": "/home/lexa/Documents/www/Dropbox/fdt-workspace/Cocktail/src/cocktail/core/history/History.hx",
 					"settings":
 					{
-						"buffer_size": 0,
+						"buffer_size": 2712,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1902,
+								1902
+							]
+						],
+						"settings":
+						{
+							"haxe-build-id": 0,
+							"syntax": "Packages/HaXe/HaXe.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 765.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/home/lexa/Documents/www/Dropbox/fdt-workspace/Cocktail/src/cocktail/core/history/HistoryData.hx",
+					"settings":
+					{
+						"buffer_size": 822,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								747,
+								747
+							]
+						],
+						"settings":
+						{
+							"haxe-build-id": 0,
+							"syntax": "Packages/HaXe/HaXe.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/home/lexa/Documents/www/Dropbox/fdt-workspace/Cocktail/test/unit_tests/src/history/HistoryTests.hx",
+					"settings":
+					{
+						"buffer_size": 2945,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2940,
+								2940
+							]
+						],
+						"settings":
+						{
+							"haxe-build-id": 0,
+							"syntax": "Packages/HaXe/HaXe.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1805.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "build.hxml",
+					"settings":
+					{
+						"buffer_size": 114,
 						"regions":
 						{
 						},
@@ -816,92 +920,38 @@
 						],
 						"settings":
 						{
-							"syntax": "Packages/Text/Plain text.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "/Users/lexa/Dropbox/fdt-workspace/Cocktail/test/unit_tests/src/geom/MatrixTests.hx",
-					"settings":
-					{
-						"buffer_size": 4748,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								4748
-							]
-						],
-						"settings":
-						{
-							"haxe-build-id": 0,
-							"syntax": "Packages/HaXe/HaXe.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "/Users/lexa/Dropbox/fdt-workspace/Cocktail/test/unit_tests/src/history/HistoryTests",
-					"settings":
-					{
-						"buffer_size": 570,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								386,
-								386
-							]
-						],
-						"settings":
-						{
-							"haxe-build-id": 0,
-							"syntax": "Packages/HaXe/HaXe.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "build.hxml",
-					"settings":
-					{
-						"buffer_size": 268,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								268,
-								268
-							]
-						],
-						"settings":
-						{
 							"syntax": "Packages/HaXe/Hxml.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/home/lexa/Documents/www/Dropbox/fdt-workspace/Cocktail/src/js/Dom.hx",
+					"settings":
+					{
+						"buffer_size": 16634,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7852,
+								7852
+							]
+						],
+						"settings":
+						{
+							"haxe-build-id": 0,
+							"syntax": "Packages/HaXe/HaXe.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 4916.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"

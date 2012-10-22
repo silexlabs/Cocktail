@@ -18,6 +18,7 @@ import utest.ui.Report;
 
 /**
  * Units tests for history API
+ * I have named the package historyApi instead of history because it used to have side effects in firefox js
  */
 
 class HistoryTests 
@@ -37,8 +38,7 @@ class HistoryTests
 	{
 		// init history
 		// history = new History();
-		this.history = Lib.window.history;
-		trace("history = "+this.history);
+		history = Lib.window.history;
 
 		var stateObj = { 
 			title : "page 1", 
@@ -131,6 +131,14 @@ class HistoryTests
 	 */
 	public function testHistoryEvents():Void
 	{
+		trace("Test Events");
+		//history.onpopstate = onPopState;
+		Lib.window.onpopstate = onPopState;
 		Assert.isTrue(true);
+	}
+	function onPopState(e:Event) 
+	{
+		var event : PopStateEvent = cast(e);
+		trace("onPopState "+event.state);
 	}
 }

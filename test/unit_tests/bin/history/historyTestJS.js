@@ -1162,21 +1162,84 @@ haxe.io.Error.OutsideBounds = ["OutsideBounds",2];
 haxe.io.Error.OutsideBounds.toString = $estr;
 haxe.io.Error.OutsideBounds.__enum__ = haxe.io.Error;
 haxe.io.Error.Custom = function(e) { var $x = ["Custom",3,e]; $x.__enum__ = haxe.io.Error; $x.toString = $estr; return $x; }
-var history = history || {}
-history.HistoryTests = $hxClasses["history.HistoryTests"] = function() {
+var historyApi = historyApi || {}
+historyApi.HistoryTests = $hxClasses["historyApi.HistoryTests"] = function() {
+	this.history = js.Lib.window.history;
+	var stateObj = { title : "page 1", url : "?page1.html"};
+	this.history.pushState(stateObj,"page 1","?page1.html");
+	var stateObj1 = { title : "page 2", url : "?page2.html"};
+	this.history.pushState(stateObj1,"page 2","?page2.html");
+	var stateObj2 = { title : "page 3", url : "?page3.html"};
+	this.history.pushState(stateObj2,"page 3","?page3.html");
 };
-history.HistoryTests.__name__ = ["history","HistoryTests"];
-history.HistoryTests.main = function() {
+historyApi.HistoryTests.__name__ = ["historyApi","HistoryTests"];
+historyApi.HistoryTests.main = function() {
+	haxe.Log.trace("...tests begin...",{ fileName : "HistoryTests.hx", lineNumber : 28, className : "historyApi.HistoryTests", methodName : "main"});
 	var runner = new utest.Runner();
-	runner.addCase(new history.HistoryTests());
+	runner.addCase(new historyApi.HistoryTests());
 	utest.ui.Report.create(runner);
 	runner.run();
 }
-history.HistoryTests.prototype = {
-	testMatrixTransformations: function() {
-		utest.Assert.equals(0,500,null,{ fileName : "HistoryTests.hx", lineNumber : 39, className : "history.HistoryTests", methodName : "testMatrixTransformations"});
+historyApi.HistoryTests.prototype = {
+	onPopState: function(e) {
+		var event = e;
+		haxe.Log.trace("onPopState " + Std.string(event.state),{ fileName : "HistoryTests.hx", lineNumber : 142, className : "historyApi.HistoryTests", methodName : "onPopState"});
 	}
-	,__class__: history.HistoryTests
+	,testHistoryEvents: function() {
+		haxe.Log.trace("Test Events",{ fileName : "HistoryTests.hx", lineNumber : 134, className : "historyApi.HistoryTests", methodName : "testHistoryEvents"});
+		js.Lib.window.onpopstate = $bind(this,this.onPopState);
+		utest.Assert.isTrue(true,null,{ fileName : "HistoryTests.hx", lineNumber : 137, className : "historyApi.HistoryTests", methodName : "testHistoryEvents"});
+	}
+	,_testHistoryGoPositive: function() {
+		var _g = this;
+		haxe.Log.trace("testHistoryGoPositive",{ fileName : "HistoryTests.hx", lineNumber : 118, className : "historyApi.HistoryTests", methodName : "_testHistoryGoPositive"});
+		this.history.go(2);
+		var async = utest.Assert.createAsync(function() {
+			haxe.Log.trace("test history async",{ fileName : "HistoryTests.hx", lineNumber : 124, className : "historyApi.HistoryTests", methodName : "_testHistoryGoPositive"});
+			utest.Assert.equals("page 3",_g.history.state.title,null,{ fileName : "HistoryTests.hx", lineNumber : 125, className : "historyApi.HistoryTests", methodName : "_testHistoryGoPositive"});
+		},1000);
+		haxe.Timer.delay(async,500);
+	}
+	,_testHistoryGoNeg: function() {
+		var _g = this;
+		haxe.Log.trace("testHistoryGoNeg",{ fileName : "HistoryTests.hx", lineNumber : 103, className : "historyApi.HistoryTests", methodName : "_testHistoryGoNeg"});
+		this.history.go(-2);
+		var async = utest.Assert.createAsync(function() {
+			haxe.Log.trace("test history async",{ fileName : "HistoryTests.hx", lineNumber : 109, className : "historyApi.HistoryTests", methodName : "_testHistoryGoNeg"});
+			utest.Assert.equals("page 1",_g.history.state.title,null,{ fileName : "HistoryTests.hx", lineNumber : 110, className : "historyApi.HistoryTests", methodName : "_testHistoryGoNeg"});
+			_g._testHistoryGoPositive();
+		},1000);
+		haxe.Timer.delay(async,500);
+	}
+	,_testHistoryForward: function() {
+		var _g = this;
+		haxe.Log.trace("testHistoryForward",{ fileName : "HistoryTests.hx", lineNumber : 89, className : "historyApi.HistoryTests", methodName : "_testHistoryForward"});
+		this.history.forward();
+		var async = utest.Assert.createAsync(function() {
+			haxe.Log.trace("test history async",{ fileName : "HistoryTests.hx", lineNumber : 94, className : "historyApi.HistoryTests", methodName : "_testHistoryForward"});
+			utest.Assert.equals("page 3",_g.history.state.title,null,{ fileName : "HistoryTests.hx", lineNumber : 95, className : "historyApi.HistoryTests", methodName : "_testHistoryForward"});
+			_g._testHistoryGoNeg();
+		},1000);
+		haxe.Timer.delay(async,500);
+	}
+	,_testHistoryBack: function() {
+		var _g = this;
+		haxe.Log.trace("testHistoryBack",{ fileName : "HistoryTests.hx", lineNumber : 75, className : "historyApi.HistoryTests", methodName : "_testHistoryBack"});
+		this.history.back();
+		var async = utest.Assert.createAsync(function() {
+			haxe.Log.trace("test history async",{ fileName : "HistoryTests.hx", lineNumber : 80, className : "historyApi.HistoryTests", methodName : "_testHistoryBack"});
+			utest.Assert.equals("page 2",_g.history.state.title,null,{ fileName : "HistoryTests.hx", lineNumber : 81, className : "historyApi.HistoryTests", methodName : "_testHistoryBack"});
+			_g._testHistoryForward();
+		},1000);
+		haxe.Timer.delay(async,500);
+	}
+	,testHistoryMethods: function() {
+		haxe.Log.trace("testHistory",{ fileName : "HistoryTests.hx", lineNumber : 64, className : "historyApi.HistoryTests", methodName : "testHistoryMethods"});
+		utest.Assert.equals("page 3",this.history.state.title,null,{ fileName : "HistoryTests.hx", lineNumber : 69, className : "historyApi.HistoryTests", methodName : "testHistoryMethods"});
+		this._testHistoryBack();
+	}
+	,history: null
+	,__class__: historyApi.HistoryTests
 }
 var js = js || {}
 js.Boot = $hxClasses["js.Boot"] = function() { }
@@ -3118,4 +3181,4 @@ if(typeof window != "undefined") {
 js.Lib.onerror = null;
 utest.TestHandler.POLLING_TIME = 10;
 utest.ui.text.HtmlReport.platform = "javascript";
-history.HistoryTests.main();
+historyApi.HistoryTests.main();

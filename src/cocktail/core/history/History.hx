@@ -7,11 +7,7 @@
 */
 package cocktail.core.history;
 
-import cocktail.core.layer.LayerRenderer;
-import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.geom.GeomData;
-import cocktail.core.css.CSSData;
-using cocktail.core.utils.Utils;
+import cocktail.core.history.HistoryData;
 
 /**
  * Implementation of the history API as stated here http://dev.w3.org/html5/spec/single-page.html#history
@@ -27,14 +23,37 @@ class History
 	 */
 	public var state(getState, null):Dynamic;
 	/**
-	 * 
+	 * array of states
 	 */
-	private var stateArray:Array<Dynamic>;
+	private var stateArray:Array<StateData>;
+	/**
+	 *
+	 */
+	private var currentIdx
+	/**
+	 * event.state contains a copy of the information that was provided to pushState() or replaceState()
+	 */
+	private var onpopstate
 	/**
 	 * class constructor
 	 */
 	public function new() 
 	{
+		stateArray = new Array();
+	}
+	/**
+	 * getter for the length property
+	 */
+	public function getLength():Int 
+	{
+		return 0;
+	}
+	/**
+	 * getter for the state property
+	 */
+	public function getState():Dynamic 
+	{
+		return null;
 	}
 	/**
 	 * Goes back or forward the specified number of steps in the joint session history.
@@ -42,21 +61,23 @@ class History
 	 */
 	public function go(delta:Int) 
 	{
-		
+		// make a copy of the state data
+		// throw a 
+		//see http://dev.w3.org/html5/spec/single-page.html?utm_source=dlvr.it&utm_medium=feed#event-popstate
 	}
 	/**
 	 * Goes back one step in the joint session history. If there is no previous page, does nothing.
 	 */
 	public function back()
 	{
-		
+		go(-1);
 	}
 	/**
 	 * Goes forward one step in the joint session history. If there is no next page, does nothing.
 	 */
 	public function forward()
 	{
-		
+		go(1);
 	}
 	/**
 	 * Pushes the given data onto the session history, with the given title, and, if provided, the given URL.
