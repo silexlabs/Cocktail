@@ -960,7 +960,7 @@ class LayerRenderer extends FastNode<LayerRenderer>
 	 */
 	private function getTransformationMatrix(graphicContext:GraphicsContext):Matrix
 	{
-		var relativeOffset:PointVO = rootElementRenderer.getRelativeOffset();
+		var relativeOffset:PointVO = getRelativeOffset(rootElementRenderer);
 		var concatenatedMatrix:Matrix = getConcatenatedMatrix(rootElementRenderer.coreStyle.usedValues.transform, relativeOffset);
 		
 		//apply relative positioning as well
@@ -988,6 +988,49 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		//translate back from the coordinate system of the root element renderer
 		currentMatrix.translate((globalBounds.x + relativeOffset.x) * -1, (globalBounds.y + relativeOffset.y) * -1);
 		return currentMatrix;
+	}
+	
+		
+	/**
+	 * Return the relative offset applied to an ElementRenerer as an x/y point. 
+	 * Return 0,0 if the element renderer is not relatively positioned
+	 */
+	private function getRelativeOffset(elementRenderer:ElementRenderer):PointVO
+	{
+		var relativeOffset:PointVO = new PointVO(0.0, 0.0);
+		
+		//only relatively positioned ElementRenderer can have
+		//an offset
+		if (elementRenderer.isRelativePositioned() == true)
+		{
+			//first try to apply the left offset of the ElementRenderer if it is
+			//not auto
+			if (elementRenderer.coreStyle.isAuto(elementRenderer.coreStyle.left) == false)
+			{
+				relativeOffset.x += elementRenderer.coreStyle.usedValues.left;
+			}
+			//else the right offset,
+			else if (elementRenderer.coreStyle.isAuto(elementRenderer.coreStyle.right) == false)
+			{
+				relativeOffset.x -= elementRenderer.coreStyle.usedValues.right;
+			}
+			
+			//if both left and right offset are auto, then the ElementRenderer uses its static
+			//position (its normal position in the flow) and no relative offset needs to
+			//be applied
+		
+			//same for vertical offset
+			if (elementRenderer.coreStyle.isAuto(elementRenderer.coreStyle.top) == false)
+			{
+				relativeOffset.y += elementRenderer.coreStyle.usedValues.top; 
+			}
+			else if (elementRenderer.coreStyle.isAuto(elementRenderer.coreStyle.bottom) == false)
+			{
+				relativeOffset.y -= elementRenderer.coreStyle.usedValues.bottom; 
+			}
+		}
+		
+		return relativeOffset;
 	}
 	
 	/////////////////////////////////

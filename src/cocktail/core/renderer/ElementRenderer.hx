@@ -928,49 +928,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		return false;
 	}
 	
-	/**
-	 * Return the relative offset applied by this ElementRenderer
-	 * when rendering. Only relatively positioned ElementRenderer
-	 * have this offset
-	 */
-	public function getRelativeOffset():PointVO
-	{
-		var relativeOffset:PointVO = new PointVO(0.0, 0.0);
-		
-		//only relatively positioned ElementRenderer can have
-		//an offset
-		if (isRelativePositioned() == true)
-		{
-			//first try to apply the left offset of the ElementRenderer if it is
-			//not auto
-			if (coreStyle.isAuto(coreStyle.left) == false)
-			{
-				relativeOffset.x += coreStyle.usedValues.left;
-			}
-			//else the right offset,
-			else if (coreStyle.isAuto(coreStyle.right) == false)
-			{
-				relativeOffset.x -= coreStyle.usedValues.right;
-			}
-			
-			//if both left and right offset are auto, then the ElementRenderer uses its static
-			//position (its normal position in the flow) and no relative offset needs to
-			//be applied
-		
-			//same for vertical offset
-			if (coreStyle.isAuto(coreStyle.top) == false)
-			{
-				relativeOffset.y += coreStyle.usedValues.top; 
-			}
-			else if (coreStyle.isAuto(coreStyle.bottom) == false)
-			{
-				relativeOffset.y -= coreStyle.usedValues.bottom; 
-			}
-		}
-		
-		return relativeOffset;
-	}
-	
 	/////////////////////////////////
 	// PRIVATE HELPER METHODS
 	////////////////////////////////
