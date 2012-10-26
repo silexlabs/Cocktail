@@ -21,7 +21,7 @@ import cocktail.port.ImageResource;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.port.NativeVideo;
-import cocktail.port.platform.nativeMedia.NativeMedia;
+import cocktail.port.base.NativeMedia;
 
 /**
  * Renders an embedded video asset or its poster frame

@@ -11,7 +11,7 @@ package cocktail.port;
 typedef TimerImpl = cocktail.core.timer.AbstractTimerImpl;
 
 #elseif (flash9 || nme)
-typedef TimerImpl =  cocktail.port.flash_player.TimerImpl;
+typedef TimerImpl =  cocktail.port.platform.flash_player.TimerImpl;
 
 #else
 typedef TimerImpl = cocktail.core.timer.AbstractTimerImpl;

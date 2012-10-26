@@ -11,10 +11,10 @@ package cocktail.port;
 typedef ImageResource = cocktail.core.resource.AbstractResource;
 
 #elseif nme
-typedef ImageResource = cocktail.port.nme.ImageResource;
+typedef ImageResource = cocktail.port.platform.nme.ImageResource;
 
 #elseif flash9
-typedef ImageResource = cocktail.port.flash_player.ImageResource;
+typedef ImageResource = cocktail.port.platform.flash_player.ImageResource;
 
 #else 
 typedef ImageResource = cocktail.core.resource.AbstractResource;

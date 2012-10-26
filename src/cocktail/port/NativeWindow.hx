@@ -8,14 +8,12 @@
 */
 package cocktail.port;
 
-/**
- * Set the right runtime specific NativeWindow at compile-time
- */
 #if macro
-typedef NativeWindow =  cocktail.port.platform.nativeWindow.AbstractNativeWindow;
+typedef NativeWindow =  cocktail.port.base.NativeWindowBase;
 
 #elseif (flash9 || nme)
-typedef NativeWindow =  cocktail.port.flash_player.NativeWindow;
+typedef NativeWindow =  cocktail.port.platform.flash_player.NativeWindow;
+
 #else
-typedef NativeWindow =  cocktail.port.platform.nativeWindow.AbstractNativeWindow;
+typedef NativeWindow =  cocktail.port.base.NativeWindowBase;
 #end

@@ -11,7 +11,7 @@ package cocktail.port;
 typedef GraphicsContextImpl = cocktail.core.graphics.AbstractGraphicsContextImpl;
 
 #elseif (flash9 || nme)
-typedef GraphicsContextImpl =  cocktail.port.flash_player.GraphicsContextImpl;
+typedef GraphicsContextImpl =  cocktail.port.platform.flash_player.GraphicsContextImpl;
 
 #else
 typedef GraphicsContextImpl = cocktail.core.graphics.AbstractGraphicsContextImpl;

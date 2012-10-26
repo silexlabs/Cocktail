@@ -7,15 +7,12 @@
 */
 package cocktail.port;
 
-/**
- * Set the right runtime specific touch listener at compile-time
- */
 #if macro
-typedef TouchListener = cocktail.port.platform.touch.AbstractTouchListener;
+typedef TouchListener = cocktail.port.base.TouchListenerBase;
 
 #elseif (flash9 || nme)
-typedef TouchListener =  cocktail.port.flash_player.TouchListener;
+typedef TouchListener =  cocktail.port.platform.flash_player.TouchListener;
 
 #else
-typedef TouchListener = cocktail.port.platform.touch.AbstractTouchListener;
+typedef TouchListener = cocktail.port.base.TouchListenerBase;
 #end
