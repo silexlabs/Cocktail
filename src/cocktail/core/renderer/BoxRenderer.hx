@@ -395,9 +395,14 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function isTransformed():Bool
 	{
-		//it is transformaed if at least one transform
+		//it is transformed if at least one transform
 		//function is applied to it
 		if (coreStyle.isNone(coreStyle.transform) == false)
+		{
+			return true;
+		}
+		//relative positioning is considered as a transformation
+		else if (isRelativePositioned() == true)
 		{
 			return true;
 		}

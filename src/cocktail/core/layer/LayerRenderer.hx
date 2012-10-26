@@ -136,6 +136,18 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	private var _alpha:Float;
 	
 	/**
+	 * This is the transformation matrix
+	 * used when rendering the layer.
+	 * 
+	 * It is the concatenation of all
+	 * the transformations of the ancestor
+	 * layers
+	 * 
+	 * Default is an identity matrix
+	 */
+	private var _matrix:Matrix;
+	
+	/**
 	 * class constructor. init class attributes
 	 */
 	public function new(rootElementRenderer:ElementRenderer) 
@@ -151,6 +163,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		_needsGraphicsContextUpdate = true;
 		_needsStackingContextUpdate = true;
 		
+		_matrix = new Matrix();
 		_alpha = 1.0;
 	}
 	
@@ -202,6 +215,36 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	}
 	
 	/**
+	 * Update the transformation matrix of this layer before
+	 * rendering. It is obtained by concatenating the transformations
+	 * of this layer with those of the ancestors layers
+	 */
+	public function updateLayerMatrix(parentMatrix:Matrix):Void
+	{
+		//reset layer's matrix
+		_matrix.identity();
+		
+		if (rootElementRenderer.isTransformed() == true)
+		{
+			//TODO 2 : should it still be separate class ?
+			VisualEffectStylesComputer.compute(rootElementRenderer.coreStyle);
+			//update transformation matrix of layer 
+			_matrix = getTransformationMatrix();
+		}
+		
+		//concatenate layer transformation with parent transformations
+		_matrix.concatenate(parentMatrix);
+		
+		//update the whole layer tree recursively
+		var child:LayerRenderer = firstChild;
+		while (child != null)
+		{
+			child.updateLayerMatrix(parentMatrix);
+			child = child.nextSibling;
+		}
+	}
+	
+	/**
 	 * Update the alpha of this layer before
 	 * rendering. It is obtained by
 	 * combining the alpha of the root element
@@ -246,7 +289,6 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 			child.updateLayerAlpha(_alpha);
 			child = child.nextSibling;
 		}
-		
 	}
 	
 	/**
@@ -910,9 +952,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 			//apply transformations to the layer if needed
 			if (rootElementRenderer.isTransformed() == true)
 			{
-				//TODO 2 : should already be computed at this point
-				VisualEffectStylesComputer.compute(rootElementRenderer.coreStyle);
-				graphicsContext.graphics.transform(getTransformationMatrix(graphicsContext));
+				graphicsContext.graphics.transform(_matrix);
 			}
 		}
 		
@@ -956,7 +996,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 * Compute all the transformation that should be applied to this LayerRenderer
 	 * and return it as a transformation matrix
 	 */
-	private function getTransformationMatrix(graphicContext:GraphicsContext):Matrix
+	private function getTransformationMatrix():Matrix
 	{
 		var relativeOffset:PointVO = getRelativeOffset(rootElementRenderer);
 		var concatenatedMatrix:Matrix = getConcatenatedMatrix(rootElementRenderer.coreStyle.usedValues.transform, relativeOffset);

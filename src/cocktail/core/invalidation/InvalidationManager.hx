@@ -10,6 +10,7 @@ package cocktail.core.invalidation;
 
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
+import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.stacking.StackingContext;
 
@@ -395,6 +396,11 @@ class InvalidationManager
 		//same as for layout
 		if (_documentNeedsRendering == true)
 		{
+			//for each concatenate its transformations with those of its parents
+			//TODO 2 : need not to be updated each rendering. Also shouldn't create
+			//new matrix each time
+			_htmlDocument.documentElement.elementRenderer.layerRenderer.updateLayerMatrix(new Matrix());
+			
 			//for each layer, compute its alpha by concatenating alpha of all ancestor layers
 			//TODO 2 : need not to be updated each rendering
 			_htmlDocument.documentElement.elementRenderer.layerRenderer.updateLayerAlpha(1.0);
