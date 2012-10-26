@@ -9,8 +9,7 @@
 package cocktail.port;
 
 #if macro
-typedef FontManagerImpl = cocktail.core.font.AbstractFontManagerImpl;
-
+typedef FontManagerImpl = cocktail.port.macro.FontManagerImpl;
 #elseif flash9
 typedef FontManagerImpl = cocktail.port.flash_player.FontManagerImpl;
 #elseif nme
