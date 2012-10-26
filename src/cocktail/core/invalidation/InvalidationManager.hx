@@ -465,7 +465,7 @@ class InvalidationManager
 		
 		//set the global bounds on the rendering tree. After this, ElementRenderer
 		//are aware of their bounds relative ot the viewport
-		_htmlDocument.documentElement.elementRenderer.setGlobalOrigins(0, 0, 0, 0, 0 ,0);
+		_htmlDocument.documentElement.elementRenderer.setGlobalOrigins(0, 0, 0, 0);
 	}
 	
 }

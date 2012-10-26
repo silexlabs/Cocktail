@@ -141,12 +141,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	public var globalPositionnedAncestorOrigin:PointVO;
 	
 	/**
-	 * The total of all the x and y scroll
-	 * applied to the parent of this ElementRenderer
-	 */
-	public var scrollOffset:PointVO;
-	
-	/**
 	 * A reference to the Node in the DOM tree
 	 * which created this ElementRenderer. It might
 	 * be an HTMLElement or a Text node
@@ -260,8 +254,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		
 		globalBounds = new RectangleVO();
 		
-		scrollOffset = new PointVO(0.0, 0.0);
-		
 		positionedOrigin = new PointVO(0.0, 0.0);
 		
 		globalPositionnedAncestorOrigin = new PointVO(0.0, 0.0); 
@@ -283,7 +275,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		
 		bounds = null;
 		globalBounds = null;
-		scrollOffset = null;
 		positionedOrigin = null;
 		globalPositionnedAncestorOrigin = null;
 		globalContainingBlockOrigin = null;
@@ -363,16 +354,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * Render this ElementRenderer using the provided
 	 * graphic context as canvas
 	 */
-	public function render(parentGraphicContext:GraphicsContext):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Render the scrollbars of this ElementRenderer if needed, only
-	 * apply to BlockBoxElementRenderer
-	 */
-	public function renderScrollBars(graphicContext:GraphicsContext):Void
+	public function render(parentGraphicContext:GraphicsContext, scrollOffset:PointVO):Void
 	{
 		//abstract
 	}
@@ -424,7 +406,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * @param	addedPositionedX the added X position for positioned elements
 	 * @param	addedPositionedY the added Y position for positioned elements
 	 */
-	public function setGlobalOrigins(addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float, addedScrollX:Float, addedScrollY:Float):Void
+	public function setGlobalOrigins(addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
 	{
 		//if the element establishes a new formatting context, then its
 		//bounds must be added to the global x and y bounds for the normal flow
@@ -444,23 +426,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 			addedPositionedY = globalBounds.y;
 		}
 		
-		//TODO 1 : doc + this is a shortcut, should apply
-		//to all elementRenderer whose containing block is a parent
-		//of the scrolled BlockBoxRenderer.
-		//computing scroll offset should probably be done at the
-		//LayerRenderer level instead of in the ElementRenderer
-		if (coreStyle.getKeyword(coreStyle.position) != FIXED)
-		{
-			addedScrollX += scrollLeft;
-			addedScrollY += scrollTop;
-		}
-		else
-		{
-			addedScrollX = 0;
-			addedScrollY = 0;
-		}
-		
-		
 		//for its child of the element
 		var child:ElementRenderer = firstChild;
 		while(child != null)
@@ -479,9 +444,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 			
 			child.globalPositionnedAncestorOrigin.x = addedPositionedX;
 			child.globalPositionnedAncestorOrigin.y = addedPositionedY;
-			
-			child.scrollOffset.x = addedScrollX;
-			child.scrollOffset.y = addedScrollY;
 			
 			//some subclass of element renderer need
 			//to update there bounds, for instance inline
@@ -506,7 +468,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 			//call the method recursively if the child has children itself
 			if (child.firstChild != null)
 			{
-				child.setGlobalOrigins(addedX, addedY, addedPositionedX, addedPositionedY, addedScrollX, addedScrollY);
+				child.setGlobalOrigins(addedX, addedY, addedPositionedX, addedPositionedY);
 			}
 			
 			child = child.nextSibling;

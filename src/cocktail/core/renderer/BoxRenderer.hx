@@ -121,9 +121,6 @@ class BoxRenderer extends InvalidatingElementRenderer
 	
 	/**
 	 * overriden to render elements specific to a box (background, border...)
-	 * TODO 4 : apply visibility
-	 * 
-	 * TODO 2 : code clean up
 	 */
 	override public function render(parentGraphicContext:GraphicsContext):Void
 	{	
@@ -473,8 +470,6 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	private function getBackgroundBounds():RectangleVO
 	{
-		globalBounds.x -= scrollOffset.x;
-		globalBounds.y -= scrollOffset.y;
 		return globalBounds;
 	}
 	
