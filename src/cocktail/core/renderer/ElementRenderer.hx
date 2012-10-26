@@ -108,19 +108,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	public var globalBounds(get_globalBounds, null):RectangleVO;
 	
 	/**
-	 * The scrollable bounds of the ElementRenderer in the space of the scrollable containing
-	 * block used to determine the scrolling area of the containing block. 
-	 * 
-	 * The difference with the regular bounds is that any offset needed
-	 * in the computation of scrollable bounds are added. 
-	 * 
-	 * For instance if the ElementRenderer is relatively positioned, its
-	 * bounds once transformed with the relative offset are returned
-	 * instead of its bounds in the flow like the regular bounds.
-	 */
-	public var scrollableBounds(get_scrollableBounds, null):RectangleVO;
-	
-	/**
 	 * This is the position of the top left padding box corner of the 
 	 * containing block of this ElementRenderer in the Window space.
 	 * This is used to render elements using the normal flow.
@@ -280,9 +267,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		globalPositionnedAncestorOrigin = new PointVO(0.0, 0.0); 
 		
 		globalContainingBlockOrigin = new PointVO(0.0, 0.0);
-		
-		scrollableBounds = new RectangleVO();
-		
+				
 		_childrenBounds = new RectangleVO();
 		
 		lineBoxes = new Array<LineBox>();
@@ -862,16 +847,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	// Overriden by inheriting classes
 	////////////////////////////////
 	
-	public function isVerticallyScrollable(scrollOffset:Int):Bool
-	{
-		return false;
-	}
-	
-	public function isHorizontallyScrollable(scrollOffset:Int):Bool
-	{
-		return false;
-	}
-	
 	public function establishesNewFormattingContext():Bool
 	{
 		return false;
@@ -1283,36 +1258,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	private function get_globalBounds():RectangleVO
 	{
 		return globalBounds;
-	}
-	
-	/**
-	 * Return the bounds of the ElementRenderer as they
-	 * need to be to compute the scrollable bounds of its
-	 * containing block
-	 * 
-	 * TODO 3 : should implement the case of absolutely 
-	 * positioned children
-	 */
-	private function get_scrollableBounds():RectangleVO
-	{
-		//if the elementRenderer is not relatively positioned,
-		//the bounds are the same as the regular bounds
-		if (isRelativePositioned() == false)
-		{
-			return bounds;
-		}
-		
-		//else the bounds with the relative offset applied to them
-		//are returned
-		var relativeOffset:PointVO = getRelativeOffset();
-		var bounds:RectangleVO = this.bounds;
-		
-		scrollableBounds.x = bounds.x + relativeOffset.x;
-		scrollableBounds.y = bounds.y + relativeOffset.y;
-		scrollableBounds.width = bounds.width;
-		scrollableBounds.height = bounds.height;
-		
-		return scrollableBounds;
 	}
 	
 	private function get_bounds():RectangleVO

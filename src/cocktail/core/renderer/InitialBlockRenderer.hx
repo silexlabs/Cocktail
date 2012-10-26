@@ -155,67 +155,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Overriden as the scontaining dimensionsn for the scrollbars
-	 * appearing for the initial containing block are the viewport's
-	 */
-	override private function getScrollbarContainerBlock():ContainingBlockVO
-	{
-		var width:Float = cocktail.Lib.window.innerWidth;
-		var height:Float = cocktail.Lib.window.innerHeight;
-		
-		return new ContainingBlockVO(width, false, height, false);
-	}
-	
-	/**
-	 * When dispatched on the HTMLHTMLElement,
-	 * the scroll event must bubble to be dispatched
-	 * on the Document and Window objects
-	 */
-	override private function mustBubbleScrollEvent():Bool
-	{
-		return true;
-	}
-	
-	/**
-	 * A computed value of visible for the overflow on the initial
-	 * block renderer is the same as auto, as it is likely that
-	 * scrollbar must be displayed to scroll through the document
-	 */
-	override private function treatVisibleOverflowAsAuto():Bool
-	{
-		return true;
-	}
-	
-	/**
-	 * Retrieve the dimension of the Window
-	 */
-	override private function getWindowData():ContainingBlockVO
-	{	
-		var width:Float = cocktail.Lib.window.innerWidth;
-		var height:Float = cocktail.Lib.window.innerHeight;
-		
-		//scrollbars dimension are removed from the Window dimension
-		//if displayed to return the actual available space
-		
-		if (_verticalScrollBar != null)
-		{
-			width -= _verticalScrollBar.coreStyle.usedValues.width;
-		}
-		
-		if (_horizontalScrollBar != null)
-		{
-			height -= _horizontalScrollBar.coreStyle.usedValues.height;
-		}
-		
-		_containerBlockData.width = width;
-		_containerBlockData.height = height;
-		_containerBlockData.isHeightAuto = false;
-		_containerBlockData.isWidthAuto = false;
-		return _containerBlockData;
-	}
-	
+
 	/**
 	 * The dimensions of the initial
 	 * block renderer are always the same as the Window's

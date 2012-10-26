@@ -639,7 +639,7 @@ class LayerRenderer extends FastNode<LayerRenderer>
 					//TODO 2 : this behaviour assumes that layer creating
 					//a graphics context also create a stacking context, which
 					//might not always be true
-					if (stackingContext.layerRenderer == this)
+					if (stackingContext.layerRenderer == child.layerRenderer)
 					{
 						foundSelf = true;
 					}
@@ -652,7 +652,6 @@ class LayerRenderer extends FastNode<LayerRenderer>
 			//inserted last as it didn't found a sibling
 			//with a lower z-index
 			parentGraphicsContext.appendChild(graphicsContext);
-			
 		}
 		else
 		{

@@ -46,7 +46,7 @@ import cocktail.core.layer.LayerRenderer;
  * 
  * @author Yannick DOMINGUEZ
  */
-class BlockBoxRenderer extends ScrollableRenderer
+class BlockBoxRenderer extends FlowBoxRenderer
 {	
 	/**
 	 * An array where each item represents a line
@@ -438,22 +438,6 @@ class BlockBoxRenderer extends ScrollableRenderer
 		}
 	}
 	
-	/**
-	 * Render the scrollbars of this BlockBoxRenderer if needed
-	 */
-	override public function renderScrollBars(graphicContext:GraphicsContext):Void
-	{
-		if (_horizontalScrollBar != null)
-		{
-			_horizontalScrollBar.elementRenderer.layerRenderer.render();
-		}
-		
-		if (_verticalScrollBar != null)
-		{
-			_verticalScrollBar.elementRenderer.layerRenderer.render();
-		}
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -630,30 +614,34 @@ class BlockBoxRenderer extends ScrollableRenderer
 		return false;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
-	 * Overriden, as if scrollbars are displayed, their 
-	 * width or height must be substracted from the containing
-	 * block width/height
+	 * Determine wether this BlockBoxRenderer always overflows
+	 * in both x and y axis. If either overflow x or y
+	 * is deifferent from visible, then it is considered to
+	 * not always overflow
 	 */
-	override public function getContainerBlockData():ContainingBlockVO
-	{
-		var height:Float = coreStyle.usedValues.height;
-		if (_horizontalScrollBar != null)
+	private function canAlwaysOverflow():Bool
+	{	
+		switch (coreStyle.getKeyword(coreStyle.overflowX))
 		{
-			height -= _horizontalScrollBar.coreStyle.usedValues.height;
+			case VISIBLE:
+				
+			default:
+				return false;
 		}
 		
-		var width:Float = coreStyle.usedValues.width;
-		if (_verticalScrollBar != null)
+		switch (coreStyle.getKeyword(coreStyle.overflowY))
 		{
-			width -= _verticalScrollBar.coreStyle.usedValues.width;
+			case VISIBLE:
+				
+			default:
+				return false;
 		}
 		
-		_containerBlockData.width = width;
-		_containerBlockData.isWidthAuto = coreStyle.isAuto(coreStyle.width);
-		_containerBlockData.height = height;
-		_containerBlockData.isHeightAuto = coreStyle.isAuto(coreStyle.height);
-		
-		return _containerBlockData;
+		return true;
 	}
 }

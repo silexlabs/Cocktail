@@ -930,17 +930,20 @@ class HTMLDocument extends Document
 	 * The scrollOffset is also provided as if a vertically scrollable element
 	 * is completely scrolled and adding this offset won't make a difference,
 	 * then it is not considered scrollable
+	 * 
+	 * TODO 1 : should use htmlElement.scrollHeight - (htmlElement.scrollTop + scrollOffset)
+	 * + check wether a vertical scrollbar is displayed with layer
 	 */
 	private function getFirstVerticallyScrollableHTMLElement(htmlElement:HTMLElement, scrollOffset:Int):HTMLElement
 	{
-		while (htmlElement.isVerticallyScrollable(scrollOffset) == false)
-		{
-			htmlElement = htmlElement.parentNode;
-			if ( htmlElement == null)
-			{
-				return null;
-			}
-		}
+		//while (htmlElement.isVerticallyScrollable(scrollOffset) == false)
+		//{
+			//htmlElement = htmlElement.parentNode;
+			//if ( htmlElement == null)
+			//{
+				//return null;
+			//}
+		//}
 		
 		return htmlElement;
 	}

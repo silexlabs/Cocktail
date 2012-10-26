@@ -11,6 +11,7 @@ package cocktail.core.invalidation;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLDocument;
+import cocktail.core.stacking.StackingContext;
 
 /**
  * This class is in charge of keeping

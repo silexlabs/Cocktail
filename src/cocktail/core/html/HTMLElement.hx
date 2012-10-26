@@ -1398,40 +1398,6 @@ class HTMLElement extends Element<HTMLElement>
 	// SCROLLING SETTER/GETTER AND METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Utils method determining wether
-	 * the HTMLElement displays an active
-	 * vertical scrolbar
-	 * @param scrollOffset an optionnal parameter determining
-	 * the scroll offset which tries to be applied to the vertical scrollbar.
-	 * If applying the offset doesn't scroll the HTMLElement, for instance
-	 * if the HTMLElement is completely scrolled and a positive offset
-	 * is applied to it, then the method return false
-	 * 
-	 * @return true if a vertical scrollbar is displayed
-	 * and isactive
-	 */
-	public function isVerticallyScrollable(scrollOffset:Int = 0):Bool
-	{
-		if (elementRenderer != null)
-		{
-			return elementRenderer.isVerticallyScrollable(scrollOffset);
-		}
-		return false;
-	}
-	
-	/**
-	 * same as absove for the horizontal scrollbar
-	 */
-	public function isHorizontallyScrollable(scrollOffset:Int = 0):Bool
-	{
-		if (elementRenderer != null)
-		{
-			return elementRenderer.isHorizontallyScrollable(scrollOffset);
-		}
-		return false;
-	}
-	
 	//TODO 3 : should unit test, not very sure what this getter
 	//is supposed to return
 	private function get_scrollHeight():Int
