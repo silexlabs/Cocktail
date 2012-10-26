@@ -70,18 +70,18 @@ class VideoRenderer extends ImageRenderer
 	/**
 	 * Render the embedded video asset or the video poster frame.
 	 */
-	override private function renderEmbeddedAsset(graphicContext:GraphicsContext)
+	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, scrollOffset:PointVO)
 	{
 		var htmlVideoElement:HTMLVideoElement = cast(domNode);
 		
 		//determine wether to render video or poster frame
 		if (htmlVideoElement.shouldRenderPosterFrame() == true)
 		{
-			renderPosterFrame(htmlVideoElement, graphicContext);
+			renderPosterFrame(htmlVideoElement, graphicContext, scrollOffset);
 		}
 		else
 		{
-			renderVideo(htmlVideoElement, graphicContext);
+			renderVideo(htmlVideoElement, graphicContext, scrollOffset);
 		}
 	}
 	
@@ -99,7 +99,7 @@ class VideoRenderer extends ImageRenderer
 	 * 
 	 * TODO 3 : alpha of video no longer managed
 	 */
-	private function renderVideo(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext):Void
+	private function renderVideo(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext, scrollOffset:PointVO):Void
 	{
 		//get the bounds for the video so that it takes the maximum space and is centered
 		var videoBounds:RectangleVO = getAssetBounds(coreStyle.usedValues.width,
@@ -127,7 +127,7 @@ class VideoRenderer extends ImageRenderer
 	 * Render the poster frame of the video if the video is not
 	 * yet loaded or has not started playing yet
 	 */
-	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext):Void
+	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext, scrollOffset:PointVO):Void
 	{
 		var resource:AbstractResource = ResourceManager.getImageResource(domNode.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
 

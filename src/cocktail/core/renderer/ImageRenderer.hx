@@ -60,7 +60,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	 * When rendered, renders the embedded picture using the
 	 * graphicContext as canvas
 	 */
-	override private function renderEmbeddedAsset(graphicContext:GraphicsContext):Void
+	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, scrollOffset:PointVO):Void
 	{
 		var resource:AbstractResource = ResourceManager.getImageResource(domNode.getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME));
 

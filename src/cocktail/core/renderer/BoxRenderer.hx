@@ -122,17 +122,17 @@ class BoxRenderer extends InvalidatingElementRenderer
 	/**
 	 * overriden to render elements specific to a box (background, border...)
 	 */
-	override public function render(parentGraphicContext:GraphicsContext):Void
+	override public function render(parentGraphicContext:GraphicsContext, scrollOffset:PointVO):Void
 	{	
 		//only render self if visible
 		//however children can still be rendered
 		//if they are explicitely visible
 		if (isVisible() == true)
 		{
-			renderSelf(parentGraphicContext);
+			renderSelf(parentGraphicContext, scrollOffset);
 		}
 		
-		renderChildren(parentGraphicContext);
+		renderChildren(parentGraphicContext, scrollOffset);
 	}
 	
 	
@@ -140,15 +140,15 @@ class BoxRenderer extends InvalidatingElementRenderer
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function renderSelf(graphicContext:GraphicsContext):Void
+	private function renderSelf(graphicContext:GraphicsContext, scrollOffset:PointVO):Void
 	{
-		renderBackground(graphicContext);
+		renderBackground(graphicContext, scrollOffset);
 	}
 	
 	/**
 	 * Render the background of the box using the provided graphic context
 	 */
-	private function renderBackground(graphicContext:GraphicsContext):Void
+	private function renderBackground(graphicContext:GraphicsContext, scrollOffset):Void
 	{
 		var backgroundBounds:RectangleVO = getBackgroundBounds();
 		
@@ -159,7 +159,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	/**
 	 * Render the children of the box
 	 */
-	private function renderChildren(graphicContext:GraphicsContext):Void
+	private function renderChildren(graphicContext:GraphicsContext, scrollOffset:PointVO):Void
 	{
 		//abstract
 	}

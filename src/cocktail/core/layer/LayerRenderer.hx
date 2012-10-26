@@ -14,6 +14,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
+import cocktail.core.layer.ScrollableView;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.layout.computer.VisualEffectStylesComputer;
 import cocktail.core.css.CoreStyle;
@@ -26,6 +27,7 @@ import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
 import haxe.Log;
+import cocktail.core.layer.ScrollableView;
 import haxe.Stack;
 
 /**
@@ -58,7 +60,7 @@ import haxe.Stack;
  * 
  * @author Yannick DOMINGUEZ
  */
-class LayerRenderer extends FastNode<LayerRenderer>
+class LayerRenderer extends ScrollableView<LayerRenderer>
 {
 	/**
 	 * A reference to the ElementRenderer which
@@ -885,7 +887,7 @@ class LayerRenderer extends FastNode<LayerRenderer>
 			
 			//render the rootElementRenderer itself which will also
 			//render all ElementRenderer belonging to this LayerRenderer
-			rootElementRenderer.render(graphicsContext);
+			rootElementRenderer.render(graphicsContext, _scrollOffset);
 			
 			//end transparency layer
 			if (_alpha != 1.0)
@@ -901,10 +903,6 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		{
 			renderChildrenInSameStackingContext(this);
 		}
-		
-		//scrollbars are always rendered last as they should always be the top
-		//element of their layer
-		rootElementRenderer.renderScrollBars(graphicsContext);
 		
 		//only render if necessary
 		if (_needsRendering == true)

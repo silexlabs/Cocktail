@@ -91,9 +91,9 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	/**
 	 * Overriden to update the native text input display
 	 */
-	override private function renderEmbeddedAsset(graphicContext:GraphicsContext)
+	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, scrollOffset:PointVO)
 	{
-		updateNativeTextInput();
+		updateNativeTextInput(scrollOffset);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -113,7 +113,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	/**
 	 * Update the display of the native text input
 	 */
-	private function updateNativeTextInput():Void
+	private function updateNativeTextInput(scrollOffset:PointVO):Void
 	{
 		var globalBounds:RectangleVO = this.globalBounds;
 		
