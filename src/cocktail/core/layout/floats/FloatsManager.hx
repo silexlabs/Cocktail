@@ -55,8 +55,8 @@ class FloatsManager
 	{
 		if (_floats.left.length > 0 || floats.right.length > 0)
 		{
-			_floats.left.clear();
-			_floats.right.clear();
+			_floats.left = _floats.left.clear();
+			_floats.right = _floats.right.clear();
 		}
 	}
 	
@@ -86,16 +86,16 @@ class FloatsManager
 				{
 					case LEFT:
 						ret = clearLeft(currentFormattingContextY);
-						_floats.left.clear();
+						_floats.left = _floats.left.clear();
 						
 					case RIGHT:	
 						ret = clearRight(currentFormattingContextY);
-						_floats.right.clear();
+						_floats.right = _floats.right.clear();
 						
 					case BOTH:	
 						ret = clearBoth(currentFormattingContextY);
-						_floats.right.clear();
-						_floats.left.clear();
+						_floats.right = _floats.right.clear();
+						_floats.left = _floats.left.clear();
 						
 					case NONE:	
 						ret = currentFormattingContextY;

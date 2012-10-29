@@ -330,7 +330,7 @@ class EventTarget
 		}
 		else
 		{
-			_targetAncestors.clear();
+			_targetAncestors = _targetAncestors.clear();
 		}
 		
 		return _targetAncestors;

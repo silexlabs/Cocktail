@@ -344,7 +344,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 			var length:Int = blockboxRenderer.rootLineBoxes.length;
 			for (i in 0...length)
 			{
-				renderLineBoxesInLine(blockboxRenderer.rootLineBoxes[i], graphicContext);
+				renderLineBoxesInLine(blockboxRenderer.rootLineBoxes[i], graphicContext, referenceLayer);
 			}
 		}
 		else
@@ -368,16 +368,18 @@ class BlockBoxRenderer extends ScrollableRenderer
 	/**
 	 * Render all the line boxes in one line
 	 */
-	private function renderLineBoxesInLine(rootLineBox:LineBox, graphicContext:GraphicsContext):Void
+	private function renderLineBoxesInLine(rootLineBox:LineBox, graphicContext:GraphicsContext, referenceLayer:LayerRenderer):Void
 	{
 		var child:LineBox = rootLineBox.firstChild;
 		while(child != null)
 		{
-			child.render(graphicContext);
-			
-			if (child.firstChild != null)
+			if (child.elementRenderer.layerRenderer == referenceLayer)
 			{
-				renderLineBoxesInLine(child, graphicContext);
+				child.render(graphicContext);
+				if (child.firstChild != null)
+				{
+					renderLineBoxesInLine(child, graphicContext, referenceLayer);
+				}
 			}
 			
 			child = child.nextSibling;

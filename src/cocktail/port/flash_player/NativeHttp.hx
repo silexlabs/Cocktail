@@ -13,7 +13,9 @@ import flash.events.HTTPStatusEvent;
 import flash.events.IOErrorEvent;
 import flash.events.ProgressEvent;
 import flash.net.URLLoader;
+import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
+import cocktail.port.platform.nativeHttp.NativeHTTPData;
 
 /**
  * This is the implementation of the http class
@@ -59,19 +61,29 @@ class NativeHttp extends AbstractNativeHttp
 	 * 
 	 * TODO 2 : implement custom request header
 	 */
-	override private function doLoad(url:String, method:String, data:Dynamic, authorRequestHeaders:Hash<String>):Void
+	override private function doLoad(url:String, method:String, data:Dynamic, authorRequestHeaders:Hash<String>, dataFormat:DataFormatValue):Void
 	{
-		super.doLoad(url, method, data, authorRequestHeaders);
+		super.doLoad(url, method, data, authorRequestHeaders, dataFormat);
 		
 		//create a flash URLRequest, storing each parameters of the request
 		var urlRequest:URLRequest = new URLRequest(url);
 		urlRequest.method = method;
 		urlRequest.data = data;
 		
+		//set the loaded data format
+		switch(dataFormat)
+		{
+			case DataFormatValue.TEXT:
+				_urlLoader.dataFormat = URLLoaderDataFormat.TEXT;
+				
+			case DataFormatValue.BINARY:
+				_urlLoader.dataFormat = URLLoaderDataFormat.BINARY;
+		}
+		
 		//listen for update on the request
 		_urlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHttpStatus);
 		_urlLoader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
-		_urlLoader.addEventListener(Event.COMPLETE, onLoadComplete);
+		_urlLoader.addEventListener(Event.COMPLETE, onNativeLoadComplete);
 		
 		//actually starts the request
 		_urlLoader.load(urlRequest);
@@ -96,7 +108,7 @@ class NativeHttp extends AbstractNativeHttp
 	/**
 	 * Set the complete flag, store the loaded resource
 	 */
-	private function onLoadComplete(event:Event):Void
+	private function onNativeLoadComplete(event:Event):Void
 	{
 		response = _urlLoader.data;
 		complete = true;

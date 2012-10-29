@@ -64,7 +64,7 @@ class CoreStyle
 	public var marginLeft(get_marginLeft, null):CSSPropertyValue;
 	public var marginRight(get_marginRight, null):CSSPropertyValue;
 	public var marginTop(get_marginTop, null):CSSPropertyValue;
-	public var marginBottom(get_marginTop, null):CSSPropertyValue;
+	public var marginBottom(get_marginBottom, null):CSSPropertyValue;
 	
 	public var paddingLeft(get_paddingLeft, null):CSSPropertyValue;
 	public var paddingRight(get_paddingRight, null):CSSPropertyValue;
@@ -359,7 +359,7 @@ class CoreStyle
 		
 		//will store all the properties which value
 		//change during cascading
-		_changedProperties.clear();
+		_changedProperties = _changedProperties.clear();
 		
 		//holds the properties which will get cascaded
 		var propertiesToCascade:Array<String> = null;
@@ -994,7 +994,7 @@ class CoreStyle
 			htmlElement.dispatchEvent(_pendingTransitionEndEvents[i]);
 		}
 		//reset the array, each event must be dispatched only once
-		_pendingTransitionEndEvents.clear();
+		_pendingTransitionEndEvents = _pendingTransitionEndEvents.clear();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1034,7 +1034,7 @@ class CoreStyle
 	 * of the transition, else return the computed value of the property
 	 * @param	propertyName the name of the property whose value is returned
 	 */
-	private function getTransitionablePropertyValue(propertyName:String):CSSPropertyValue
+	private inline function getTransitionablePropertyValue(propertyName:String):CSSPropertyValue
 	{
 		//try to get a transition for the property
 		var transition:Transition = _transitionManager.getTransition(propertyName, this);
@@ -1066,6 +1066,18 @@ class CoreStyle
 	{
 		switch(propertyName)
 		{
+			case CSSConstants.MIN_HEIGHT:
+				return CSSConstants.HEIGHT;
+				
+			case CSSConstants.MAX_HEIGHT:
+				return CSSConstants.MAX_HEIGHT;
+				
+			case CSSConstants.MIN_WIDTH:
+				return CSSConstants.MIN_WIDTH;
+				
+			case CSSConstants.MAX_WIDTH:
+				return CSSConstants.MAX_WIDTH;
+			
 			default:
 				return propertyName;
 		}
@@ -1114,7 +1126,7 @@ class CoreStyle
 			//for values which are actually determined
 			//during layout, such as width and height, use the used value
 			default:
-				return Reflect.getProperty(usedValues, getIDLName(propertyName));
+				return Reflect.field(usedValues, getIDLName(propertyName));
 		}
 	}
 	
@@ -1274,277 +1286,277 @@ class CoreStyle
 	// computed value of the style
 	////////////////////////////////
 	
-	private function get_opacity():CSSPropertyValue
+	private inline  function get_opacity():CSSPropertyValue
 	{
 		return getTransitionablePropertyValue(CSSConstants.OPACITY);
 	}
 	
-	private function get_marginLeft():CSSPropertyValue 
+	private inline  function get_marginLeft():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.MARGIN_LEFT);
 	}
 	
-	private function get_marginRight():CSSPropertyValue 
+	private inline function get_marginRight():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.MARGIN_RIGHT);
 	}
 	
-	private function get_marginTop():CSSPropertyValue 
+	private inline function get_marginTop():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.MARGIN_TOP);
 	}
 	
-	private function get_marginBottom():CSSPropertyValue 
+	private inline function get_marginBottom():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.MARGIN_BOTTOM);
 	}
 	
-	private function get_paddingLeft():CSSPropertyValue 
+	private inline function get_paddingLeft():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.PADDING_LEFT);
 	}
 	
-	private function get_paddingRight():CSSPropertyValue 
+	private inline function get_paddingRight():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.PADDING_RIGHT);
 	}
 	
-	private function get_paddingTop():CSSPropertyValue 
+	private inline function get_paddingTop():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.PADDING_TOP);
 	}
 	
-	private function get_paddingBottom():CSSPropertyValue 
+	private inline function get_paddingBottom():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.PADDING_BOTTOM);
 	}
 	
-	private function get_width():CSSPropertyValue 
+	private inline function get_width():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.WIDTH);
 	}
 	
-	private function get_height():CSSPropertyValue 
+	private inline function get_height():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.HEIGHT);
 	}
 	
-	private function get_minHeight():CSSPropertyValue 
+	private inline function get_minHeight():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.MIN_HEIGHT);
 	}
 	
-	private function get_maxHeight():CSSPropertyValue 
+	private inline function get_maxHeight():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.MAX_HEIGHT);
 	}
 	
-	private function get_minWidth():CSSPropertyValue 
+	private inline  function get_minWidth():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.MIN_WIDTH);
 	}
 	
-	private function get_maxWidth():CSSPropertyValue 
+	private inline function get_maxWidth():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.MAX_WIDTH);
 	}
 	
-	private function get_top():CSSPropertyValue 
+	private inline function get_top():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.TOP);
 	}
 	
-	private function get_left():CSSPropertyValue 
+	private inline function get_left():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.LEFT);
 	}
 	
-	private function get_bottom():CSSPropertyValue 
+	private inline function get_bottom():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.BOTTOM);
 	}
 	
-	private function get_right():CSSPropertyValue 
+	private inline function get_right():CSSPropertyValue 
 	{
 		return getTransitionablePropertyValue(CSSConstants.RIGHT);
 	}
 	
-	private function get_fontSize():CSSPropertyValue
+	private inline function get_fontSize():CSSPropertyValue
 	{
 		return getTransitionablePropertyValue(CSSConstants.FONT_SIZE);
 	}
 	
-	private function get_display():CSSPropertyValue
+	private inline function get_display():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.DISPLAY).typedValue;
 	}
 	
-	private function get_position():CSSPropertyValue
+	private inline inline function get_position():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.POSITION).typedValue;
 	}
 	
-	private function get_cssFloat():CSSPropertyValue
+	private inline function get_cssFloat():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.FLOAT).typedValue;
 	}
 	
-	private function get_clear():CSSPropertyValue
+	private inline function get_clear():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.CLEAR).typedValue;
 	}
 	
-	private function get_zIndex():CSSPropertyValue
+	private inline function get_zIndex():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.Z_INDEX).typedValue;
 	}
 	
-	private function get_backgroundColor():CSSPropertyValue
+	private inline function get_backgroundColor():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_COLOR).typedValue;
 	}
 	
-	private function get_backgroundImage():CSSPropertyValue
+	private inline function get_backgroundImage():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_IMAGE).typedValue;
 	}
 
-	private function get_backgroundOrigin():CSSPropertyValue
+	private inline function get_backgroundOrigin():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_ORIGIN).typedValue;
 	}
 	
-	private function get_backgroundClip():CSSPropertyValue
+	private inline function get_backgroundClip():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_CLIP).typedValue;
 	}
 	
-	private function get_backgroundRepeat():CSSPropertyValue
+	private inline function get_backgroundRepeat():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_REPEAT).typedValue;
 	}
 	
-	private function get_backgroundSize():CSSPropertyValue
+	private inline function get_backgroundSize():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_SIZE).typedValue;
 	}
 	
-	private function get_backgroundPosition():CSSPropertyValue
+	private inline function get_backgroundPosition():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_POSITION).typedValue;
 	}
 	
-	private function get_fontWeight():CSSPropertyValue
+	private inline function get_fontWeight():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.FONT_WEIGHT).typedValue;
 	}
 	
-	private function get_fontStyle():CSSPropertyValue
+	private inline function get_fontStyle():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.FONT_STYLE).typedValue;
 	}
 	
-	private function get_fontFamily():CSSPropertyValue
+	private inline function get_fontFamily():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.FONT_FAMILY).typedValue;
 	}
 	
-	private function get_fontVariant():CSSPropertyValue
+	private inline function get_fontVariant():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.FONT_VARIANT).typedValue;
 	}
 	
-	private function get_color():CSSPropertyValue
+	private inline function get_color():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.COLOR).typedValue;
 	}
 	
-	private function get_lineHeight():CSSPropertyValue
+	private inline function get_lineHeight():CSSPropertyValue
 	{
 		return getTransitionablePropertyValue(CSSConstants.LINE_HEIGHT);
 	}
 	
-	private function get_textTransform():CSSPropertyValue
+	private inline function get_textTransform():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.TEXT_TRANSFORM).typedValue;
 	}
 	
-	private function get_letterSpacing():CSSPropertyValue
+	private inline function get_letterSpacing():CSSPropertyValue
 	{
 		return getTransitionablePropertyValue(CSSConstants.LETTER_SPACING);
 	}
 	
-	private function get_wordSpacing():CSSPropertyValue
+	private inline function get_wordSpacing():CSSPropertyValue
 	{
 		return getTransitionablePropertyValue(CSSConstants.WORD_SPACING);
 	}
 	
-	private function get_whiteSpace():CSSPropertyValue
+	private inline function get_whiteSpace():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.WHITE_SPACE).typedValue;
 	}
 	
-	private function get_textAlign():CSSPropertyValue
+	private inline function get_textAlign():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.TEXT_ALIGN).typedValue;
 	}
 	
-	private function get_textIndent():CSSPropertyValue
+	private inline function get_textIndent():CSSPropertyValue
 	{
 		return getTransitionablePropertyValue(CSSConstants.TEXT_INDENT);
 	}
 	
-	private function get_verticalAlign():CSSPropertyValue
+	private inline function get_verticalAlign():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.VERTICAL_ALIGN).typedValue;
 	}
 	
-	private function get_visibility():CSSPropertyValue
+	private inline function get_visibility():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.VISIBILITY).typedValue;
 	}
 	
-	private function get_overflowX():CSSPropertyValue
+	private inline function get_overflowX():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.OVERFLOW_X).typedValue;
 	}
 	
-	private function get_overflowY():CSSPropertyValue
+	private inline function get_overflowY():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.OVERFLOW_Y).typedValue;
 	}
 	
-	private function get_transformOrigin():CSSPropertyValue
+	private inline function get_transformOrigin():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.TRANSFORM_ORIGIN).typedValue;
 	}
 	
-	private function get_transform():CSSPropertyValue
+	private inline function get_transform():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.TRANSFORM).typedValue;
 	}
 	
-	private function get_cursor():CSSPropertyValue
+	private inline function get_cursor():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.CURSOR).typedValue;
 	}
 	
-	private function get_transitionProperty():CSSPropertyValue
+	private inline function get_transitionProperty():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.TRANSITION_PROPERTY).typedValue;
 	}
 	
-	private function get_transitionDuration():CSSPropertyValue
+	private inline function get_transitionDuration():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.TRANSITION_DURATION).typedValue;
 	}
 	
-	private function get_transitionTimingFunction():CSSPropertyValue
+	private inline function get_transitionTimingFunction():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.TRANSITION_TIMING_FUNCTION).typedValue;
 	}
 	
-	private function get_transitionDelay():CSSPropertyValue
+	private inline function get_transitionDelay():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.TRANSITION_DELAY).typedValue;
 	}

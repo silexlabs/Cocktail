@@ -11,10 +11,13 @@ import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.renderer.ObjectRenderer;
+import cocktail.core.resource.AbstractResource;
+import cocktail.core.resource.ResourceManager;
 import cocktail.plugin.Plugin;
 import cocktail.plugin.swf.SWFPlugin;
 import cocktail.core.renderer.ImageRenderer;
 import cocktail.core.renderer.RendererData;
+import cocktail.port.NativeHttp;
 
 /**
  * The object element can represent an external resource,
@@ -134,6 +137,29 @@ class HTMLObjectElement extends EmbeddedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
+	 * overriden as when aded to the DOM,
+	 * if a data attribute is given, the resource
+	 * is fetched
+	 */
+	override private function addedToDOM():Void
+	{
+		super.addedToDOM();
+		
+		if (data != null)
+		{
+			//for now only SWF files are supported
+			if (data.indexOf(SWF_FILE_EXTENSION) != -1)
+			{
+				//start loading the resource, the resource
+				//need to be completely loaded before
+				//the plugin is instantiated
+				ResourceManager.getSWFResource(data);
+			}
+		}
+	}
+	
+	
+	/**
 	 * Overriden as when removed from DOM, the plugin
 	 * might need to be destroyed.
 	 * 
@@ -171,6 +197,22 @@ class HTMLObjectElement extends EmbeddedElement
 			//this is the only supported type
 			if (data.indexOf(SWF_FILE_EXTENSION) != -1)
 			{
+				//retrieve the resource the plugin will use
+				var resource:NativeHttp = ResourceManager.getSWFResource(data);
+				
+				//if it couldn't be loaded, don't create the plugin
+				if (resource.error == true)
+				{
+					return;
+				}
+				//if the resource is not yet loaded, 
+				//wait for its load end
+				if (resource.complete == false)
+				{
+					resource.addEventListener(EventConstants.LOAD, onPluginResourceLoaded);
+					return;
+				}
+				
 				var params:Hash<String> = new Hash<String>();
 				
 				//retrive all the name/value of the child param tags
@@ -228,6 +270,17 @@ class HTMLObjectElement extends EmbeddedElement
 			plugin.dispose();
 			plugin = null;
 		}
+	}
+	
+	/**
+	 * called when the resource necessary
+	 * to instantiate the plugin was loaded
+	 */
+	private function onPluginResourceLoaded(e:Event):Void
+	{
+		e.target.removeEventListener(EventConstants.LOAD, onPluginResourceLoaded);
+		//try to create the plugin now that the resource is ready
+		createPlugin();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

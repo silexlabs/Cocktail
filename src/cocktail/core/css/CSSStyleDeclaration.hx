@@ -193,7 +193,7 @@ class CSSStyleDeclaration
 			TypedPropertyVO.getPool().release(_properties[i]);
 		}
 		
-		_properties.clear();
+		_properties = _properties.clear();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -306,17 +306,18 @@ class CSSStyleDeclaration
 	 * Return the property with the given name as a typed property
 	 * object or null if it is not defined on this style declaration
 	 */
-	public function getTypedProperty(property:String):TypedPropertyVO
+	public inline function getTypedProperty(property:String):TypedPropertyVO
 	{
+		var typedProperty:TypedPropertyVO = null;
 		var length:Int = _properties.length;
 		for (i in 0...length)
 		{
 			if (_properties[i].name == property)
 			{
-				return _properties[i];
+				typedProperty =  _properties[i];
 			}
 		}
-		return null;
+		return typedProperty;
 	}
 	
 	/**
@@ -2205,7 +2206,7 @@ class CSSStyleDeclaration
 	private function set_cssText(value:String):String
 	{
 		//reset properties
-		_properties.clear();
+		_properties = _properties.clear();
 		
 		var typedProperties:Array<TypedPropertyVO> = CSSStyleParser.parseStyle(value);
 		

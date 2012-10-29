@@ -417,11 +417,10 @@ class HTMLElement extends Element<HTMLElement>
 	override public function setAttribute(name:String, value:String):Void
 	{
 		//when the value of the "style" attribute changes, the whole
-		//inline style delcaration is refreshed
+		//inline style declaration is refreshed
 		if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
 		{
 			style.cssText = value;
-			super.setAttribute(name, value);
 			
 			//TODO 1 : retrieve changed style or done automatically via callback ?
 			//when replacing style attribute, should first remove all styles ?
@@ -446,7 +445,13 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	override public function getAttribute(name:String):String
 	{
-		if (name == HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME)
+		//special case for the style attribute, as it has
+		//its dedicated object
+		if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
+		{
+			return style.cssText;
+		}
+		else if (name == HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME)
 		{
 			return Std.string(get_tabIndex());
 		}
@@ -544,14 +549,14 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
-	 * called when the element renderer requires
-	 * an immediate layout
+	 * if the HTML element is rendered, update
+	 * the document synchronously
 	 */
-	public function invalidateLayoutImmediately():Void
+	public function updateDocumentImmediately():Void
 	{
 		if (elementRenderer != null)
 		{
-			elementRenderer.invalidateLayoutImmediate();
+			_ownerHTMLDocument.invalidationManager.updateDocumentImmediately();
 		}
 	}
 	
@@ -1013,7 +1018,7 @@ class HTMLElement extends Element<HTMLElement>
 		}
 		
 		_shouldCascadeAllProperties = false;
-		_pendingChangedProperties.clear();
+		_pendingChangedProperties = _pendingChangedProperties.clear();
 	}
 	
 	/**
@@ -1747,16 +1752,16 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_offsetWidth():Int
 	{
-		//need to perform an immediate layout to be sure
+		//need to perform an immediate update to be sure
 		//that the computed styles are up to date
-		invalidateLayoutImmediately();
+		updateDocumentImmediately();
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight);
 	}
 	
 	private function get_offsetHeight():Int
 	{
-		invalidateLayoutImmediately();
+		updateDocumentImmediately();
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
 	}
@@ -1764,7 +1769,7 @@ class HTMLElement extends Element<HTMLElement>
 	//TODO 3  : unit test
 	private function get_offsetLeft():Int
 	{
-		invalidateLayoutImmediately();
+		updateDocumentImmediately();
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.positionedOrigin.x);
@@ -1774,7 +1779,7 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_offsetTop():Int
 	{
-		invalidateLayoutImmediately();
+		updateDocumentImmediately();
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.positionedOrigin.y);
@@ -1784,16 +1789,14 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_clientWidth():Int
 	{
-		//need to perform an immediate layout to be sure
-		//that the computed styles are up to date
-		invalidateLayoutImmediately();
+		updateDocumentImmediately();
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight);
 	}
 	
 	private function get_clientHeight():Int
 	{
-		invalidateLayoutImmediately();
+		updateDocumentImmediately();
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
 	}
@@ -1801,14 +1804,14 @@ class HTMLElement extends Element<HTMLElement>
 	//TODO 5 : should be top border height
 	private function get_clientTop():Int
 	{
-		invalidateLayoutImmediately();
+		updateDocumentImmediately();
 		return 0;
 	}
 	
 	//TODO 5 : should be left border width
 	private function get_clientLeft():Int
 	{
-		invalidateLayoutImmediately();
+		updateDocumentImmediately();
 		return 0;
 	}
 }

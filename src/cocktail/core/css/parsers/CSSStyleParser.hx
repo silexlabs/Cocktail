@@ -71,7 +71,7 @@ class CSSStyleParser
 		{
 			_typedProperties = new Array<TypedPropertyVO>();
 		}
-		_typedProperties.clear();
+		_typedProperties = _typedProperties.clear();
 		
 		//will return all the parsed properties
 		var typedProperties:Array<TypedPropertyVO> = _typedProperties;

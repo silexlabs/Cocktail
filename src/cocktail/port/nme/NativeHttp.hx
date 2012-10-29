@@ -7,6 +7,8 @@
 */
 package cocktail.port.nme;
 
+import cocktail.port.platform.nativeHttp.NativeHTTPData;
+
 /**
  * This is the implementation of the http class
  * for the nme platform. 
@@ -37,7 +39,7 @@ class NativeHttp extends cocktail.port.flash_player.NativeHttp
 	/**
 	 * Overriden to first check if the requested asset was embedded
 	 */
-	override public function doLoad(url:String, method:String, data:Dynamic, authorRequestHeaders:Hash<String>):Void
+	override public function doLoad(url:String, method:String, data:Dynamic, authorRequestHeaders:Hash<String>, dataFormat:DataFormatValue):Void
 	{
 		var asset:String = nme.Assets.getText(url);
 		
@@ -51,7 +53,7 @@ class NativeHttp extends cocktail.port.flash_player.NativeHttp
 		//else load it
 		else
 		{
-			super.doLoad(url, method, data, authorRequestHeaders);
+			super.doLoad(url, method, data, authorRequestHeaders, dataFormat);
 		}
 	}
 }

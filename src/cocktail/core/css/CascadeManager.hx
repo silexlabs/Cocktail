@@ -107,7 +107,7 @@ class CascadeManager
 	{
 		if (hasPropertiesToCascade == true)
 		{
-			propertiesToCascade.clear();
+			propertiesToCascade = propertiesToCascade.clear();
 		}
 		
 		hasFontSize = false;

@@ -68,7 +68,7 @@ class CSSSelectorParser
 					}
 					
 				case BEGIN_SIMPLE_SELECTOR:
-					if (isAsciiChar(c))
+					if (isSelectorChar(c))
 					{
 						state = SIMPLE_SELECTOR;
 						next = END_TYPE_SELECTOR;
@@ -116,7 +116,7 @@ class CSSSelectorParser
 					next = IGNORE_SPACES;
 					
 				case BEGIN_PSEUDO_SELECTOR:
-					if (isAsciiChar(c))
+					if (isSelectorChar(c))
 					{
 						position = parsePseudoClass(selector, position, simpleSelectorSequenceItemValues);
 						state = END_SIMPLE_SELECTOR;
@@ -207,7 +207,7 @@ class CSSSelectorParser
 					
 				case COMBINATOR:
 					
-					if (isAsciiChar(c))
+					if (isSelectorChar(c))
 					{
 						state = BEGIN_SIMPLE_SELECTOR;
 						components.push(SelectorComponentValue.COMBINATOR(CombinatorValue.DESCENDANT));
@@ -453,7 +453,7 @@ class CSSSelectorParser
 			switch(state)
 			{
 				case ATTRIBUTE:
-					if (!isAsciiChar(c))
+					if (!isSelectorChar(c))
 					{
 						attribute = selector.substr(start, position - start);
 						state = OPERATOR;
@@ -485,7 +485,7 @@ class CSSSelectorParser
 					state = VALUE;
 					
 				case VALUE:
-					if (!isAsciiChar(c))
+					if (!isSelectorChar(c))
 					{
 						switch (c)
 						{
@@ -559,7 +559,7 @@ class CSSSelectorParser
 	}
 	
 	static inline function isSelectorChar(c) {
-		return isAsciiChar(c) || c == '-'.code;
+		return isAsciiChar(c) || c == '-'.code || c == '_'.code;
 	}
 	
 	static inline function isPseudoClassChar(c) {

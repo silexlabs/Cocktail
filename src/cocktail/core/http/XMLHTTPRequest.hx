@@ -16,6 +16,7 @@ import cocktail.core.event.ProgressEvent;
 import cocktail.core.event.XMLHttpRequestEventTarget;
 import cocktail.core.resource.ResourceManager;
 import cocktail.port.NativeHttp;
+import cocktail.port.platform.nativeHttp.NativeHTTPData;
 import haxe.Http;
 
 /**
@@ -334,7 +335,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 			}
 		}
 		
-		_nativeHttp.load(_url, _method, data, _authorRequestHeaders);
+		_nativeHttp.load(_url, _method, data, _authorRequestHeaders, DataFormatValue.TEXT);
 		onHttpProgressTick(0);
 	}
 	

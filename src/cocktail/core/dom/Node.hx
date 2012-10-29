@@ -176,9 +176,6 @@ class Node<NodeClass:Node<NodeClass>> extends EventCallback
 		}
 		else
 		{	
-			//flag determining wether the new child was inserted
-			var isInserted:Bool = false;
-			
 			var length:Int = childNodes.length;
 			for (i in 0...length)
 			{		
@@ -189,18 +186,13 @@ class Node<NodeClass:Node<NodeClass>> extends EventCallback
 					//set the parent of the new child
 					removeFromParentIfNecessary(newChild);
 					newChild.parentNode = cast(this);
-					
-					isInserted = true;
-					break;
+					return newChild;
 				}
 			}
 			
 			//if the ref child wasn't found, throw
 			//a dom exception
-			if (isInserted == false)
-			{
-				throw DOMException.NOT_FOUND_ERR;
-			}
+			throw DOMException.NOT_FOUND_ERR;
 		}
 		
 		return newChild;

@@ -11,9 +11,12 @@ package cocktail.plugin.swf;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.html.HTMLConstants;
+import cocktail.core.resource.AbstractResource;
+import cocktail.core.resource.ResourceManager;
 import cocktail.plugin.Plugin;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.geom.GeomData;
+import cocktail.port.NativeHttp;
 
 #if macro
 #elseif (flash || nme)
@@ -25,6 +28,7 @@ import flash.display.Loader;
 import flash.geom.Rectangle;
 import flash.net.URLRequest;
 #if flash
+import flash.system.ApplicationDomain;
 import flash.system.LoaderContext;
 #end
 #end
@@ -82,61 +86,82 @@ class SWFPlugin extends Plugin
 	private var _swfWidth:Float;
 	
 	/**
-	 * The flash loader used to load the swf
+	 * the flash loader used to load
+	 * the swf from its bytes
 	 */
 	private var _loader:Loader;
 	
 	/**
-	 * A rectangle used to mask the loaded swf
+	 * Used to mask the swf so that it
+	 * doesn't overflow the bounds
+	 * of the object tag
 	 */
-	private var _scrollRect:Rectangle;
+	private var _mask:Sprite;
 	
 	/**
-	 * class constructor, start loading the swf
+	 * class constructor, get a reference to the loaded swf
 	 */
 	public function new(elementAttributes:Hash<String>, params:Hash<String>, loadComplete:Void->Void, loadError:Void->Void) 
 	{
 		super(elementAttributes, params, loadComplete, loadError);
-		
+		init();
+	}
+	
+	/**
+	 * init swf plugin
+	 */
+	private function init():Void
+	{
 		//retrive the scale mode if provded or use default
-		if (params.exists(SCALE_MODE))
+		if (_params.exists(SCALE_MODE))
 		{
-			_scaleMode = params.get(SCALE_MODE);
+			_scaleMode = _params.get(SCALE_MODE);
 		}
 		else
 		{
 			_scaleMode = SHOW_ALL;
 		}
 		
-		_swfHeight = 0;
-		_swfWidth = 0;
+		//will be used to mask the swf
+		_mask = new Sprite();
 		
-		//start loading
-		loadSWF(elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
+		//retrieve the loaded swf, the plugin is not instantiated
+		//until this swf is successfully loaded
+		var loadedSWF:NativeHttp = ResourceManager.getSWFResource(_elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
+		
+		//all swf are loaded as byte array to prevent them from playing
+		//until used with an object tag, the bytes are loaded via a flash loader
+		_loader = new Loader();
+		//loading bytes is asynchronous
+		_loader.contentLoaderInfo.addEventListener(flash.events.Event.INIT, onSWFLoadComplete);
+		
+		#if nme
+		//nme don't need loader context
+		_loader.loadBytes(loadedSWF.response);
+		#else
+		
+		//for target other than nme, needs loader context to allow code import
+		var loaderContext:LoaderContext = new LoaderContext(false, ApplicationDomain.currentDomain);
+		loaderContext.allowCodeImport = true;
+		
+		//this property is a legacy property, doing the same thing as allowCodeImport.
+		//Not present for every version of air and flash player but still seem required
+		//for air for iOS
+		if (Reflect.hasField(loaderContext, "allowLoadBytesCodeExecution"))
+		{
+			loaderContext.allowLoadBytesCodeExecution = true;
+		}
+		
+		_loader.loadBytes(loadedSWF.response, loaderContext);
+		#end
 	}
+	
+
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Clean up loaded swf
-	 */
-	override public function dispose():Void
-	{
-		_swf = null;
-		_scaleMode = null;
-		if (_loader != null)
-		{
-			//method doesn't exists in nme
-			#if nme
-			#elseif (air || flash)
-			_loader.unloadAndStop();
-			#end
-			_loader = null;
-		}
-	}
-	
+
 	/**
 	 * Attach the loaded swf to the flash display list
 	 */
@@ -201,124 +226,11 @@ class SWFPlugin extends Plugin
 				_swf.scaleY = assetBounds.height / _swfHeight;
 		}
 		
-		//apply a scroll rect to the swf to prevent it
-		//from overflowing in object tag
-		if (_scrollRect == null)
-		{
-			_scrollRect = new Rectangle(Math.round(-viewport.x), Math.round( -viewport.y), Math.round(viewport.width), Math.round(viewport.height));
-		}
-		else
-		{
-			_scrollRect.x = Math.round(-viewport.x);
-			_scrollRect.y = Math.round(-viewport.y);
-			_scrollRect.width = Math.round(viewport.width);
-			_scrollRect.height = Math.round(viewport.height);
-		}
-		
-		_swf.scrollRect = _scrollRect;
-		
-				
-		return;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE LOADING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * start loading the swf. 
-	 * If nme is targeted, first check
-	 * wether the swf is embedded
-	 * 
-	 * @param	url the url of the swf
-	 * to load
-	 */
-	private function loadSWF(url:String):Void
-	{
-		#if nme
-		//check wether bytes are available for this
-		//url
-		var bytes = nme.Assets.getBytes(url);
-		if (bytes != null)
-		{
-			#if air
-			
-			//if the runtime is air, use native flash api to load
-			//content from bytes
-			var loadingContext:LoaderContext = new LoaderContext(false);
-			loadingContext.allowCodeImport = true;
-			_loader = new Loader();
-			_loader.contentLoaderInfo.addEventListener(flash.events.Event.INIT, onSWFLoadComplete);
-			_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onSWFLoadIOError);
-			_loader.loadBytes(bytes, loadingContext);
-			return;
-			
-			#else
-			//if they are, create a movieclip from it
-			var swf:format.SWF = new format.SWF(bytes);
-			_swf = swf.createMovieClip();
-			
-			//store width height metadata
-			//of the swf
-			_swfHeight = swf.height;
-			_swfWidth = swf.width;
-			
-			//call the ready callback and return, no
-			//need to load the swf
-			_loadComplete();
-			return;
-			#end
-		}
-		#end
-		
-		_loader = new Loader();
-		
-		//listen for complete/error event on the loader
-		_loader.contentLoaderInfo.addEventListener(flash.events.Event.INIT, onSWFLoadComplete);
-		_loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onSWFLoadIOError);
-		
-		//instantiate a native request object
-		var request:URLRequest = new URLRequest(url);
-		
-		//add a loading context so that the resource will be loaded in the current context
-		#if flash
-		var loadingContext:LoaderContext = new LoaderContext(false);
-		//always check policy file (crossdomain.xml) for cross-domain loading
-		loadingContext.checkPolicyFile = true;
-
-		//start the loading
-		_loader.load(request, loadingContext);
-		#else
-		//start the loading
-		_loader.load(request);
-		#end
-	}
-	
-
-	/**
-	 * When loaded, store the loaded swf, call the
-	 * success callback as the plugin is now ready
-	 */
-	private function onSWFLoadComplete(event:flash.events.Event):Void
-	{	
-		removeLoaderListeners(_loader);
-		_swf = _loader.content;
-		
-		//store width height metadata
-		//of the loaded swf
-		_swfHeight = _loader.contentLoaderInfo.height;
-		_swfWidth = _loader.contentLoaderInfo.width;
-		
-		_loadComplete();
-	}
-	
-	/**
-	 * Call the error callback
-	 */
-	private function onSWFLoadIOError(event:IOErrorEvent):Void
-	{
-		removeLoaderListeners(_loader);
-		_loadError();
+		//update swf's mask position and dimensions
+		_mask.graphics.clear();
+		_mask.graphics.beginFill(0xFF0000, 0.5);
+		_mask.graphics.drawRect(viewport.x, viewport.y, viewport.width, viewport.height);
+		_mask.graphics.endFill();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -326,12 +238,21 @@ class SWFPlugin extends Plugin
 	//////////////////////////////////// //////////////////////////////////////////////////////
 	
 	/**
-	 * Remove loading listeners from the flash loader
+	 * When the swf is done loading, store
+	 * its data
 	 */
-	private function removeLoaderListeners(loader:Loader):Void
+	private function onSWFLoadComplete(event:flash.events.Event):Void
 	{
-		loader.contentLoaderInfo.removeEventListener(flash.events.Event.INIT, onSWFLoadComplete);
-		loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onSWFLoadIOError);
+		_swfHeight = _loader.contentLoaderInfo.height;
+		_swfWidth = _loader.contentLoaderInfo.width;
+		_swf = _loader.content;
+		
+		//mask the swf, size of mask
+		//is updated with the viewport
+		_swf.mask = _mask;
+		
+		//swf plugin is now ready
+		_loadComplete();
 	}
 	
 	/**

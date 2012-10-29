@@ -46,7 +46,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		//TODO 3 :maybe not very clean, trouble is that
 		//addedToRenderingTree never called as initial 
 		//block is never attached to a parent
-		_containingBlock = this;
+		containingBlock = this;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

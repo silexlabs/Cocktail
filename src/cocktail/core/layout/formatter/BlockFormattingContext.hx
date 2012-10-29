@@ -215,7 +215,7 @@ class BlockFormattingContext extends FormattingContext
 		
 		_floatsManager.removeFloats(concatenatedY);
 		
-		_registeredFloats.clear();
+		_registeredFloats = _registeredFloats.clear();
 		
 		return concatenatedY;
 		
