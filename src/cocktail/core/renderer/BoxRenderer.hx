@@ -122,17 +122,17 @@ class BoxRenderer extends InvalidatingElementRenderer
 	/**
 	 * overriden to render elements specific to a box (background, border...)
 	 */
-	override public function render(parentGraphicContext:GraphicsContext, scrollOffset:PointVO):Void
+	override public function render(parentGraphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{	
 		//only render self if visible
 		//however children can still be rendered
 		//if they are explicitely visible
 		if (isVisible() == true)
 		{
-			renderSelf(parentGraphicContext, scrollOffset);
+			renderSelf(parentGraphicContext, clipRect, scrollOffset);
 		}
 		
-		renderChildren(parentGraphicContext, scrollOffset);
+		renderChildren(parentGraphicContext, clipRect, scrollOffset);
 	}
 	
 	
@@ -140,26 +140,26 @@ class BoxRenderer extends InvalidatingElementRenderer
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function renderSelf(graphicContext:GraphicsContext, scrollOffset:PointVO):Void
+	private function renderSelf(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
-		renderBackground(graphicContext, scrollOffset);
+		renderBackground(graphicContext, clipRect, scrollOffset);
 	}
 	
 	/**
 	 * Render the background of the box using the provided graphic context
 	 */
-	private function renderBackground(graphicContext:GraphicsContext, scrollOffset):Void
+	private function renderBackground(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset):Void
 	{
 		var backgroundBounds:RectangleVO = getBackgroundBounds();
 		
 		//TODO 3 : should only pass dimensions instead of bounds
-		BackgroundManager.render(graphicContext, backgroundBounds, coreStyle, this);
+		BackgroundManager.render(graphicContext, backgroundBounds, coreStyle, this, clipRect);
 	}
 	
 	/**
 	 * Render the children of the box
 	 */
-	private function renderChildren(graphicContext:GraphicsContext, scrollOffset:PointVO):Void
+	private function renderChildren(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		//abstract
 	}

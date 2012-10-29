@@ -60,10 +60,10 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	 * When rendered, renders the embedded picture using the
 	 * graphicContext as canvas
 	 */
-	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, scrollOffset:PointVO):Void
+	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		var resource:AbstractResource = ResourceManager.getImageResource(domNode.getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME));
-
+		
 		//don't paint anything is the image is not loaded or there was an error
 		//while loading
 		if (resource.loaded == false || resource.loadedWithError == true)
@@ -78,7 +78,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 		_paintBounds.width = usedValues.width;
 		_paintBounds.height = usedValues.height;
 		
-		paintResource(graphicContext, resource.nativeResource, _paintBounds, resource.intrinsicWidth, resource.intrinsicHeight);
+		paintResource(graphicContext, resource.nativeResource, _paintBounds, resource.intrinsicWidth, resource.intrinsicHeight, clipRect);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	/**
 	 * Actually paint the resource's bitmap data on the graphic context.
 	 */
-	private function paintResource(graphicContext:GraphicsContext, nativeBitmapData:NativeBitmapData, bounds:RectangleVO, intrinsicWidth:Float, intrinsicHeight:Float):Void
+	private function paintResource(graphicContext:GraphicsContext, nativeBitmapData:NativeBitmapData, bounds:RectangleVO, intrinsicWidth:Float, intrinsicHeight:Float, clipRect:RectangleVO):Void
 	{
 		//check if a tranformaton should be applied to the picture, for instance if the picture
 		//should be rescaled when painted, as if it does not, it can use a faster drawing
@@ -100,7 +100,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 			matrix.translate(bounds.x, bounds.y);
 			matrix.scale(bounds.width / intrinsicWidth , bounds.height / intrinsicHeight );
 			
-			graphicContext.graphics.drawImage(nativeBitmapData, matrix, bounds);
+			graphicContext.graphics.drawImage(nativeBitmapData, matrix, bounds, clipRect);
 		}
 		//here a faster drawing routine is used, the picture is drawn 
 		//untransformed at a certain point
@@ -121,7 +121,7 @@ class ImageRenderer extends EmbeddedBoxRenderer
 			bounds.x = 0.0;
 			bounds.y = 0.0;
 			
-			graphicContext.graphics.copyPixels(nativeBitmapData, bounds, _destinationPoint);
+			graphicContext.graphics.copyPixels(nativeBitmapData, bounds, _destinationPoint, clipRect);
 		}
 	}
 	

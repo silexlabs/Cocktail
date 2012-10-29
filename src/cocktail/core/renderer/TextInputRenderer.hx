@@ -91,7 +91,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	/**
 	 * Overriden to update the native text input display
 	 */
-	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, scrollOffset:PointVO)
+	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO)
 	{
 		updateNativeTextInput(scrollOffset);
 	}

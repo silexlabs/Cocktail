@@ -168,8 +168,10 @@ class AbstractGraphicsContextImpl
 	 * to the bitmap.
 	 * @param	sourceRect defines the zone from the source bitmap data that must be copied onto the 
 	 * native graphic dom element.
+	 * @param clipRect define the zone in the drawn bitmap where pixels can be painted, all pixels
+	 * outside of this rectangle are never painted
 	 */
-	public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix, sourceRect:RectangleVO):Void
+	public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix, sourceRect:RectangleVO, clipRect:RectangleVO):Void
 	{
 		//abstract
 	}
@@ -180,8 +182,10 @@ class AbstractGraphicsContextImpl
 	 * @param	sourceRect the area of the source bitmap data to use
 	 * @param	destPoint the upper left corner of the rectangular aeaa where the new
 	 * pixels are placed
+	 * @param clipRect define the zone in the drawn bitmap where pixels can be painted, all pixels
+	 * outside of this rectangle are never painted
 	 */
-	public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO):Void
+	public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO, clipRect:RectangleVO):Void
 	{
 		//abstract
 	}
@@ -190,8 +194,10 @@ class AbstractGraphicsContextImpl
 	 * Fill a rect with the specified color
 	 * @param rect the rectangle to fill
 	 * @param color the rectangle's color
+	 * @param clipRect define the zone in the drawn bitmap where pixels can be painted, all pixels
+	 * outside of this rectangle are never painted
 	 */
-	public function fillRect(rect:RectangleVO, color:ColorVO):Void
+	public function fillRect(rect:RectangleVO, color:ColorVO, clipRect:RectangleVO):Void
 	{
 		//abstract
 	}

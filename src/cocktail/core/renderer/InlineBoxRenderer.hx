@@ -46,7 +46,7 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 * InlineBoxRenderer don't do any rendering, as the rendering of their line boxes
 	 * is managed by the closest block container ancestor
 	 */
-	override public function render(parentGraphicContext:GraphicsContext, scrollOffset:PointVO):Void
+	override public function render(parentGraphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{	
 		
 	}

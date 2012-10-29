@@ -306,25 +306,25 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	/**
 	 * Overriden as a BlockBoxRenderer render its children too
 	 */
-	override private function renderChildren(graphicContext:GraphicsContext, scrollOffset:PointVO):Void
+	override private function renderChildren(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
-		super.renderChildren(graphicContext, scrollOffset);
+		super.renderChildren(graphicContext, clipRect, scrollOffset);
 		
 		//the BlockBoxRenderer is responsible for rendering its children in the same layer
 		//context if it establishes a layer itself or is rendered as if it did
 		if (createOwnLayer() == true || rendersAsIfCreateOwnLayer() == true)
 		{
 			//render all the block box which belong to the same stacking context
-			renderBlockContainerChildren(this, layerRenderer, graphicContext, scrollOffset);
+			renderBlockContainerChildren(this, layerRenderer, graphicContext, clipRect, scrollOffset);
 			
 			//TODO 5 : render non-positioned float
 			
 			//render all the replaced (embedded) box displayed as blocks belonging
 			//to the same stacking context
-			renderBlockReplacedChildren(this, layerRenderer, graphicContext, scrollOffset);
+			renderBlockReplacedChildren(this, layerRenderer, graphicContext, clipRect, scrollOffset);
 			
 			//render all the line boxes belonging to the same stacking context
-			renderLineBoxes(this, layerRenderer, graphicContext, scrollOffset);
+			renderLineBoxes(this, layerRenderer, graphicContext, clipRect, scrollOffset);
 		}
 	}
 	
@@ -336,7 +336,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Render all the LineBoxes of child BlockBoxRenderer which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderLineBoxes(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext, scrollOffset):Void
+	private function renderLineBoxes(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.childrenInline() == true)
 		{	
@@ -344,7 +344,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			var length:Int = blockboxRenderer.rootLineBoxes.length;
 			for (i in 0...length)
 			{
-				renderLineBoxesInLine(blockboxRenderer.rootLineBoxes[i], graphicContext, referenceLayer, scrollOffset);
+				renderLineBoxesInLine(blockboxRenderer.rootLineBoxes[i], graphicContext, referenceLayer, clipRect, scrollOffset);
 			}
 		}
 		else
@@ -356,7 +356,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				{
 					if (child.isReplaced() == false)
 					{	
-						renderLineBoxes(child, referenceLayer, graphicContext, scrollOffset);
+						renderLineBoxes(child, referenceLayer, graphicContext, clipRect, scrollOffset);
 					}
 				}
 				
@@ -368,17 +368,17 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	/**
 	 * Render all the line boxes in one line
 	 */
-	private function renderLineBoxesInLine(rootLineBox:LineBox, graphicContext:GraphicsContext, referenceLayer:LayerRenderer, scrollOffset:PointVO):Void
+	private function renderLineBoxesInLine(rootLineBox:LineBox, graphicContext:GraphicsContext, referenceLayer:LayerRenderer, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		var child:LineBox = rootLineBox.firstChild;
 		while(child != null)
 		{
 			if (child.elementRenderer.layerRenderer == referenceLayer)
 			{
-				child.render(graphicContext, scrollOffset);
+				child.render(graphicContext, clipRect, scrollOffset);
 				if (child.firstChild != null)
 				{
-					renderLineBoxesInLine(child, graphicContext, referenceLayer, scrollOffset);
+					renderLineBoxesInLine(child, graphicContext, referenceLayer, clipRect, scrollOffset);
 				}
 			}
 			
@@ -390,7 +390,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Render all the replaced children displayed as blocks which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderBlockReplacedChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext, scrollOffset:PointVO):Void
+	private function renderBlockReplacedChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		var child:ElementRenderer = rootRenderer.firstChild;
 		while(child != null)
@@ -400,11 +400,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				//TODO 2 : must add more condition, for instance, no float
 				if (child.isReplaced() == false && child.coreStyle.getKeyword(child.coreStyle.display) == CSSKeywordValue.BLOCK )
 				{
-					renderBlockReplacedChildren(child, referenceLayer, graphicContext, scrollOffset);
+					renderBlockReplacedChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
 				}
 				else if (child.coreStyle.getKeyword(child.coreStyle.display) == CSSKeywordValue.BLOCK)
 				{
-					child.render(graphicContext, scrollOffset);
+					child.render(graphicContext, clipRect, scrollOffset);
 				}
 			}
 			
@@ -416,7 +416,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Render all the BlockBoxRenderer which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderBlockContainerChildren(rootElementRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext, scrollOffset:PointVO):Void
+	private function renderBlockContainerChildren(rootElementRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		var child:ElementRenderer = rootElementRenderer.firstChild;
 		while(child != null)
@@ -429,8 +429,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				//TODO 3 : must add more condition, for instance, no float
 				if (child.isReplaced() == false && child.coreStyle.getKeyword(child.coreStyle.display) != INLINE_BLOCK)
 				{
-					child.render(graphicContext, scrollOffset);
-					renderBlockContainerChildren(child, referenceLayer, graphicContext, scrollOffset);
+					child.render(graphicContext, clipRect, scrollOffset);
+					renderBlockContainerChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
 				}
 			}
 			

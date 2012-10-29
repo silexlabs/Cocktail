@@ -245,7 +245,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	/**
 	 * Draw bitmap data into the bitmap display object.
 	 */
-	override public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix, sourceRect:RectangleVO):Void
+	override public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix, sourceRect:RectangleVO, clipRect:RectangleVO):Void
 	{	
 		//convert the cross-platform rectangle into flash native one
 		_flashRectangle.x = Math.round(sourceRect.x);
@@ -278,7 +278,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	 * Uses flash native copyPixels method for fast pixel 
 	 * manipulation
 	 */
-	override public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO):Void
+	override public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO, clipRect:RectangleVO):Void
 	{
 		_flashRectangle.x = Math.round(sourceRect.x);
 		_flashRectangle.y = Math.round(sourceRect.y);
@@ -316,7 +316,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	 * Uses flash native fillRect method for fast
 	 * rectangle drawing
 	 */
-	override public function fillRect(rect:RectangleVO, color:ColorVO):Void
+	override public function fillRect(rect:RectangleVO, color:ColorVO, clipRect:RectangleVO):Void
 	{
 		var argbColor:Int = color.color;
 		var alpha:Int = Math.round(255 * color.alpha);
@@ -332,7 +332,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			_fillRectPoint.y = Math.round(rect.y);
 			
 			var fillRectBitmapData:BitmapData = new BitmapData(Math.round(rect.width), Math.round(rect.height), true, argbColor);
-			copyPixels(fillRectBitmapData, _fillRectRectangle, _fillRectPoint );
+			copyPixels(fillRectBitmapData, _fillRectRectangle, _fillRectPoint, clipRect );
 			fillRectBitmapData.dispose();
 		}
 		//else, the faster native flash method can be used

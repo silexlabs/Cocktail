@@ -35,7 +35,7 @@ class StaticPositionLineBox extends LineBox
 	 * a block box renderer caused by an absolutely
 	 * positioned element
 	 */
-	override public function render(graphicContext:GraphicsContext, scrollOffset:PointVO):Void
+	override public function render(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		
 	}

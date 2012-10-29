@@ -59,7 +59,7 @@ class SpaceLineBox extends TextLineBox
 	/**
 	 * Spaces don't need to be rendered
 	 */
-	override public function render(graphicContext:GraphicsContext, scrollOffset:PointVO):Void
+	override public function render(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		
 	}

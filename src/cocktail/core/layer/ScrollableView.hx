@@ -85,7 +85,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		var child:ViewClass = firstChild;
 		while (child != null)
 		{
-			child.updateScrollOffset();
+			child.updateClipRect();
 			child = cast(child.nextSibling);
 		}
 	}
@@ -204,8 +204,9 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 			//TODO  : if scrollableBounds.x - bounds.x < 0, scrollLeftForChild = scrollableBounds.x + scrollLeft, 
 			//same for y, as if scrollLeft specified as 0, child should
 			//be rendered using layer top left as origin.
-				
-			addScrollOffsetToChildren(cast(this), scrollLeft, scrollTop, cast(this));
+			_scrollOffset.x += scrollLeft;
+			_scrollOffset.y += scrollTop;
+			addScrollOffsetToChildren(cast(this), _scrollOffset.x, _scrollOffset.y, cast(this));
 		}
 		
 		var child:ViewClass = firstChild;
@@ -284,6 +285,11 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 			y = rootElementRenderer.globalBounds.y;
 			height = rootElementRenderer.globalBounds.height;
 		}
+		
+		_clippedBounds.x = x;
+		_clippedBounds.y = y;
+		_clippedBounds.width = width;
+		_clippedBounds.height = height;
 		
 		while (child != null)
 		{
@@ -366,6 +372,8 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		bounds.y = 50000;
 		bounds.width = 0;
 		bounds.height = 0;
+		
+		doGetBounds(rootElementRenderer.globalBounds, bounds);
 		
 		doGetElementRenderersBounds(rootElementRenderer, bounds);
 	}

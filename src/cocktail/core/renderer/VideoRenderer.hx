@@ -70,14 +70,14 @@ class VideoRenderer extends ImageRenderer
 	/**
 	 * Render the embedded video asset or the video poster frame.
 	 */
-	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, scrollOffset:PointVO)
+	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO)
 	{
 		var htmlVideoElement:HTMLVideoElement = cast(domNode);
 		
 		//determine wether to render video or poster frame
 		if (htmlVideoElement.shouldRenderPosterFrame() == true)
 		{
-			renderPosterFrame(htmlVideoElement, graphicContext, scrollOffset);
+			renderPosterFrame(htmlVideoElement, graphicContext, clipRect, scrollOffset);
 		}
 		else
 		{
@@ -127,7 +127,7 @@ class VideoRenderer extends ImageRenderer
 	 * Render the poster frame of the video if the video is not
 	 * yet loaded or has not started playing yet
 	 */
-	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext, scrollOffset:PointVO):Void
+	private function renderPosterFrame(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		var resource:AbstractResource = ResourceManager.getImageResource(domNode.getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME));
 
@@ -151,6 +151,6 @@ class VideoRenderer extends ImageRenderer
 		paintBounds.width = width;
 		paintBounds.height = height;
 		
-		paintResource(graphicContext, resource.nativeResource, paintBounds, resource.intrinsicWidth, resource.intrinsicHeight);
+		paintResource(graphicContext, resource.nativeResource, paintBounds, resource.intrinsicWidth, resource.intrinsicHeight, clipRect);
 	}
 }

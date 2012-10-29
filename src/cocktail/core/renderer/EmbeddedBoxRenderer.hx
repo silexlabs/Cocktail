@@ -42,10 +42,10 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * overriden to also render the embedded asset, for instance a picture for
 	 * an image renderer
 	 */
-	override private function renderSelf(graphicContext:GraphicsContext, scrollOffset:PointVO):Void
+	override private function renderSelf(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
-		super.renderSelf(graphicContext, scrollOffset);
-		renderEmbeddedAsset(graphicContext, scrollOffset);
+		super.renderSelf(graphicContext, clipRect, scrollOffset);
+		renderEmbeddedAsset(graphicContext, clipRect, scrollOffset);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	/**
 	 * Renders an embedded asset using the graphic context as canvas
 	 */
-	private function renderEmbeddedAsset(graphicContext:GraphicsContext, scrollOffset:PointVO)
+	private function renderEmbeddedAsset(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO)
 	{
 		//abstract
 	}

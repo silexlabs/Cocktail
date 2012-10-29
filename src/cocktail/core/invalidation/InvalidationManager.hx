@@ -401,6 +401,23 @@ class InvalidationManager
 			//new matrix each time
 			_htmlDocument.documentElement.elementRenderer.layerRenderer.updateLayerMatrix(new Matrix());
 			
+			//update all of the layers element renderers bounds
+			_htmlDocument.documentElement.elementRenderer.layerRenderer.updateBounds();
+			
+			//update clipped bounds of layers which don't overflow 
+			_htmlDocument.documentElement.elementRenderer.layerRenderer.updateClippedBounds();
+			
+			//update the bounds of the layers used for scrolling
+			_htmlDocument.documentElement.elementRenderer.layerRenderer.updateBounds();
+			
+			//update the added scroll offset of all the layers
+			_htmlDocument.documentElement.elementRenderer.layerRenderer.resetScrollOffset();
+			_htmlDocument.documentElement.elementRenderer.layerRenderer.updateScrollOffset();
+			
+			//update the clip rects of layers used for rendering
+			_htmlDocument.documentElement.elementRenderer.layerRenderer.resetClipRect();
+			_htmlDocument.documentElement.elementRenderer.layerRenderer.updateClipRect();
+			
 			//for each layer, compute its alpha by concatenating alpha of all ancestor layers
 			//TODO 2 : need not to be updated each rendering
 			_htmlDocument.documentElement.elementRenderer.layerRenderer.updateLayerAlpha(1.0);

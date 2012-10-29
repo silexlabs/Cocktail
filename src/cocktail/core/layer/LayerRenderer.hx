@@ -927,7 +927,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 			
 			//render the rootElementRenderer itself which will also
 			//render all ElementRenderer belonging to this LayerRenderer
-			rootElementRenderer.render(graphicsContext, _scrollOffset);
+			rootElementRenderer.render(graphicsContext, _clipRect, _scrollOffset);
 			
 			//end transparency layer
 			if (_alpha != 1.0)

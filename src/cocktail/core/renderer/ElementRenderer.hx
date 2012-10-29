@@ -354,7 +354,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * Render this ElementRenderer using the provided
 	 * graphic context as canvas
 	 */
-	public function render(parentGraphicContext:GraphicsContext, scrollOffset:PointVO):Void
+	public function render(parentGraphicContext:GraphicsContext, cliprect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		//abstract
 	}
