@@ -1068,25 +1068,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	}
 	
 	/**
-	 * Set the bounds of an array of linebox
-	 * on a provided bounds object
-	 */
-	private function getChildrenBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
-	{
-		//first reset the bounds
-		bounds.x = 50000;
-		bounds.y = 50000;
-		bounds.width = 0;
-		bounds.height = 0;
-		
-		var length:Int = lineBoxes.length;
-		for (i in 0...length)
-		{
-			doGetBounds(lineBoxes[i].bounds, bounds);
-		}
-	}
-	
-	/**
 	 * apply the bounds of a children to
 	 * the global bounds
 	 */

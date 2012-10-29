@@ -1,7 +1,10 @@
 package cocktail.core.layer;
 
+import cocktail.core.html.ScrollBar;
 import cocktail.core.utils.FastNode;
 import cocktail.core.geom.GeomData;
+import cocktail.core.renderer.ElementRenderer;
+import cocktail.core.css.CSSData;
 /**
  * ...
  * @author Yannick DOMINGUEZ
@@ -9,48 +12,532 @@ import cocktail.core.geom.GeomData;
 
 class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewClass>
 {	
-	//
-	///**
-	 //* A reference to the horizontal scrollbar which
-	 //* might be displayed by this BlockBoxRenderer
-	 //*/
-	//private var _horizontalScrollBar:ScrollBar;
-	//
-	///**
-	 //* A reference to the vertical scrollbar which
-	 //* might be displayed by this BlockBoxRenderer
-	 //*/
-	//private var _verticalScrollBar:ScrollBar;
-	//
-	///**
-	 //* Those are the bounds of the children (both in-flow and positioned)
-	 //* of the ElementRenderer, which are used when scrolling the
-	 //* content of this BlockBoxRenderer
-	 //*/
-	//private var _scrollableBounds:RectangleVO;
-	//
-	///**
-	 //* Store the amount of scroll in the x axis of this BlockBoxRenderer
-	 //*/
-	//private var _scrollLeft:Float;
-	//
-	///**
-	 //* Store the amount of scroll in the y axis of this BlockBoxRenderer
-	 //*/
-	//private var _scrollTop:Float;
+	/**
+	 * A reference to the ElementRenderer which
+	 * created the LayerRenderer
+	 */
+	public var rootElementRenderer(default, null):ElementRenderer;
+	
+	/**
+	 * A reference to the horizontal scrollbar which
+	 * might be displayed by this BlockBoxRenderer
+	 */
+	private var _horizontalScrollBar:ScrollBar;
+	
+	/**
+	 * A reference to the vertical scrollbar which
+	 * might be displayed by this BlockBoxRenderer
+	 */
+	private var _verticalScrollBar:ScrollBar;
+	
 	
 	private var _scrollOffset:PointVO; 
 	
-	public function new() 
+	public var bounds(default, null):RectangleVO;
+	
+	private var _clippedBounds:RectangleVO;
+	
+	private var _scrollableBounds:RectangleVO; 
+	
+	private var _clipRect:RectangleVO;
+	
+	public var scrollLeft(default, null):Float;
+	
+	public var scrollTop(default, null):Float;
+	
+	public function new(rootElementRenderer:ElementRenderer) 
 	{
 		super();
 		
+		scrollLeft = 0;
+		scrollTop = 0;
+		
 		_scrollOffset = new PointVO(0, 0);
-		//_scrollLeft = 0;
-		//_scrollTop = 0;
-		//
-		//_scrollableBounds = new RectangleVO();
+		bounds = new RectangleVO();
+		_clippedBounds = new RectangleVO();
+		_scrollableBounds = new RectangleVO();
+		_clipRect = new RectangleVO();
 	}
+	
+	public function resetClipRect():Void
+	{
+		_clipRect.x = -50000;
+		_clipRect.y = -50000;
+		_clipRect.width = 100000;
+		_clipRect.height = 100000;
+		
+		var child:ViewClass = firstChild;
+		while (child != null)
+		{
+			child.resetClipRect();
+			child = cast(child.nextSibling);
+		}
+	}
+	
+	public function updateClipRect():Void
+	{
+		if (isXAxisClipped() == true || isYAxisClipped() == true)
+		{
+			getIntersection(_clipRect, _clippedBounds, _clipRect);
+			clipChildren(cast(this), _clipRect, cast(this));
+		}
+		
+		var child:ViewClass = firstChild;
+		while (child != null)
+		{
+			child.updateScrollOffset();
+			child = cast(child.nextSibling);
+		}
+	}
+	
+	private function clipChildren(rootLayerRenderer:ViewClass, clipRect:RectangleVO, referenceLayer:ViewClass):Void
+	{
+		var child:ViewClass = rootLayerRenderer.firstChild;
+		while (child != null)
+		{
+			child.clipIfNeeded(clipRect, referenceLayer);
+			
+			if (child.firstChild != null)
+			{
+				clipChildren(child, clipRect, referenceLayer);
+			}
+			
+			child = cast(child.nextSibling);
+		}
+	}
+	
+	public function clipIfNeeded(clipRect:RectangleVO, layer:ViewClass):Void
+	{
+		if (rootElementRenderer.coreStyle.getKeyword(rootElementRenderer.coreStyle.position) == FIXED)
+		{
+			return;
+		}
+		
+		if (isContainingBlockChildren(layer) == true)
+		{
+			return;
+		}
+		
+		getIntersection(_clipRect, clipRect, _clipRect);
+	}
+	
+	private function getIntersection(firstRectangle:RectangleVO, secondRectangle:RectangleVO, bounds:RectangleVO):Void
+	{
+		var left:Float = 0;
+		var right:Float = 0;
+		var top:Float = 0;
+		var bottom:Float =  0;
+		
+		if (firstRectangle.x + firstRectangle.width < secondRectangle.x
+		|| secondRectangle.x + secondRectangle.width < firstRectangle.x
+		|| firstRectangle.y + firstRectangle.height < secondRectangle.y
+		|| secondRectangle.y + secondRectangle.height < firstRectangle.y)
+		{
+			bounds.x = 0;
+			bounds.y = 0;
+			bounds.height = 0;
+			bounds.width = 0;
+			return;
+		}
+		
+		if (firstRectangle.x < secondRectangle.x)
+		{
+			left = secondRectangle.x;
+		}
+		else
+		{
+			left = firstRectangle.x;
+		}
+		
+		if (firstRectangle.x + firstRectangle.width < secondRectangle.x + secondRectangle.width)
+		{
+			right = firstRectangle.x + firstRectangle.width;
+		}
+		else
+		{
+			right = secondRectangle.x + secondRectangle.width;
+		}
+		
+		if (firstRectangle.y < secondRectangle.y)
+		{
+			top = secondRectangle.y;
+		}
+		else
+		{
+			top = firstRectangle.y;
+		}
+		
+		if (firstRectangle.y + firstRectangle.height < secondRectangle.y + secondRectangle.height)
+		{
+			bottom = firstRectangle.y + firstRectangle.height;
+		}
+		else
+		{
+			bottom = secondRectangle.y + secondRectangle.height;
+		}
+		
+		
+		bounds.x = left;
+		bounds.y = top;
+		bounds.width = right - left;
+		bounds.height = bottom - top;
+	}
+	
+	public function resetScrollOffset():Void
+	{
+		_scrollOffset.x = 0;
+		_scrollOffset.y = 0;
+		
+		var child:ViewClass = firstChild;
+		while (child != null)
+		{
+			child.resetScrollOffset();
+			child = cast(child.nextSibling);
+		}
+	}
+	
+	public function updateScrollOffset():Void
+	{
+		
+		if (isXAxisClipped() == true || isYAxisClipped() == true)
+		{
+			//TODO  : if scrollableBounds.x - bounds.x < 0, scrollLeftForChild = scrollableBounds.x + scrollLeft, 
+			//same for y, as if scrollLeft specified as 0, child should
+			//be rendered using layer top left as origin.
+				
+			addScrollOffsetToChildren(cast(this), scrollLeft, scrollTop, cast(this));
+		}
+		
+		var child:ViewClass = firstChild;
+		while (child != null)
+		{
+			child.updateScrollOffset();
+			child = cast(child.nextSibling);
+		}
+	}
+	
+	public function addScrollOffsetIfNeeded(layer:ViewClass, scrollLeft:Float, scrollTop:Float):Void
+	{
+		if (rootElementRenderer.coreStyle.getKeyword(rootElementRenderer.coreStyle.position) == FIXED)
+		{
+			return;
+		}
+		
+		if (isContainingBlockChildren(layer) == true)
+		{
+			return;
+		}
+		
+		_scrollOffset.x += scrollLeft;
+		_scrollOffset.y += scrollTop;
+		
+	}
+	
+	private function addScrollOffsetToChildren(rootLayerRenderer:ViewClass, scrollLeft:Float, scrollTop:Float, referenceLayer:ViewClass):Void
+	{
+		var child:ViewClass = rootLayerRenderer.firstChild;
+		while (child != null)
+		{
+			child.addScrollOffsetIfNeeded(referenceLayer, scrollLeft, scrollTop);
+			
+			if (child.firstChild != null)
+			{
+				addScrollOffsetToChildren(child, scrollLeft, scrollTop, referenceLayer);
+			}
+			
+			child = cast(child.nextSibling);
+		}
+	}
+	
+	public function updateBounds():Void
+	{
+		var child:ViewClass = firstChild;
+		
+		//TODO : apply layer's transformation matrix
+		getElementRenderersBounds(rootElementRenderer, bounds);
+		
+		while (child != null)
+		{
+			child.updateBounds();
+			child = cast(child.nextSibling);
+		}
+	}
+	
+	public function updateClippedBounds():Void
+	{
+		var child:ViewClass = firstChild;
+		
+		var x:Float = bounds.x;
+		var y:Float = bounds.y;
+		var width:Float = bounds.width;
+		var height:Float = bounds.height;
+		
+		//TODO : apply layers transformation to x and y
+		if (isXAxisClipped() == true)
+		{
+			x = rootElementRenderer.globalBounds.x;
+			width = rootElementRenderer.globalBounds.width;
+		}
+		
+		if (isYAxisClipped() == true)
+		{
+			y = rootElementRenderer.globalBounds.y;
+			height = rootElementRenderer.globalBounds.height;
+		}
+		
+		while (child != null)
+		{
+			child.updateClippedBounds();
+			child = cast(child.nextSibling);
+		}
+	}
+	
+	public function updateScrollableBounds():Void
+	{
+		var child:ViewClass = firstChild;
+		
+		//TODO : apply layer's transformation matrix
+		getScrollableBounds(cast(this), _scrollableBounds);
+		
+		while (child != null)
+		{
+			child.updateBounds();
+			child = cast(child.nextSibling);
+		}
+	}
+	
+	public function getScrollableBoundsIfNeeded(layer:ViewClass):RectangleVO
+	{
+		if (rootElementRenderer.coreStyle.getKeyword(rootElementRenderer.coreStyle.position) == FIXED)
+		{
+			return null;
+		}
+		
+		if (isContainingBlockChildren(layer) == true)
+		{
+			return null;
+		}
+		
+		
+		if (isXAxisClipped() == false && isYAxisClipped() == false)
+		{
+			return bounds;
+		}
+		else
+		{
+			return _clippedBounds;
+		}
+	}
+	
+	private function isContainingBlockChildren(layer:ViewClass):Bool
+	{
+		var containingBlock:ElementRenderer = rootElementRenderer.containingBlock;
+		
+		var layerContainingBlock:ElementRenderer = layer.rootElementRenderer.containingBlock;
+		
+		if (containingBlock == layerContainingBlock)
+		{
+			return false;
+		}
+		
+		var parent:ElementRenderer = layerContainingBlock;
+		
+		while (parent != null)
+		{
+			if (parent == containingBlock)
+			{
+				return true;
+			}
+			
+			parent = parent.parentNode;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Set the bounds of an array of linebox
+	 * on a provided bounds object
+	 */
+	private function getElementRenderersBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
+	{
+		//first reset the bounds
+		bounds.x = 50000;
+		bounds.y = 50000;
+		bounds.width = 0;
+		bounds.height = 0;
+		
+		doGetElementRenderersBounds(rootElementRenderer, bounds);
+	}
+	
+	/**
+	 * Traverse all the children recursively
+	 * and apply their bounds to the
+	 * target bounds
+	 */
+	private function doGetElementRenderersBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
+	{
+		var child:ElementRenderer = rootElementRenderer.firstChild;
+		while(child != null)
+		{
+			if (child.layerRenderer == cast(this))
+			{
+				doGetBounds(child.globalBounds, bounds);
+				if (child.firstChild != null)
+				{
+					doGetElementRenderersBounds(child, bounds);
+				}
+			}
+			
+			child = child.nextSibling;
+		}
+	}
+	
+	private function getScrollableBounds(rootLayerRenderer:ViewClass, scrollableBounds:RectangleVO):Void
+	{
+		bounds.x = 50000;
+		bounds.y = 50000;
+		bounds.width = 0;
+		bounds.height = 0;
+		
+		doGetBounds(this.bounds, scrollableBounds);
+		
+		doGetScrollableBounds(rootLayerRenderer, scrollableBounds, cast(this), true, true);
+	}
+	
+	private function doGetScrollableBounds(rootLayerRenderer:ViewClass, scrollableBounds:RectangleVO, referenceLayer:ViewClass, useHorizontalBounds:Bool, useVerticalBounds:Bool):Void
+	{
+		var child:ViewClass = rootLayerRenderer.firstChild;
+		while(child != null)
+		{
+			var childBounds:RectangleVO = child.getScrollableBoundsIfNeeded(referenceLayer);
+			
+			if (childBounds != null)
+			{
+				doGetBounds(childBounds, scrollableBounds, useHorizontalBounds, useVerticalBounds);
+				if (child.firstChild != null)
+				{
+					if (child.isXAxisClipped() == true)
+					{
+						useHorizontalBounds = false;
+					}
+					
+					if (child.isYAxisClipped() == true)
+					{
+						useVerticalBounds = false;
+					}
+					
+					if (useHorizontalBounds == true || useVerticalBounds == true)
+					{
+						doGetScrollableBounds(child, scrollableBounds, referenceLayer, useHorizontalBounds, useVerticalBounds);
+					}
+				}
+			}
+				
+			child = cast(child.nextSibling);
+		}
+	}
+	
+	/**
+	 * apply the bounds of a children to
+	 * the global bounds
+	 */
+	private function doGetBounds(childBounds:RectangleVO, globalBounds:RectangleVO, useHorizontalBounds:Bool = true, useVerticalBounds:Bool = true ):Void
+	{
+		if (useHorizontalBounds == true)
+		{
+			if (childBounds.x < globalBounds.x)
+			{
+				globalBounds.x = childBounds.x;
+			}
+			if (childBounds.x + childBounds.width > globalBounds.x + globalBounds.width)
+			{
+				globalBounds.width = childBounds.x + childBounds.width - globalBounds.x;
+			}
+		}
+		
+		if (useVerticalBounds == true)
+		{
+			if (childBounds.y < globalBounds.y)
+			{
+				globalBounds.y = childBounds.y;
+			}
+			
+			if (childBounds.y + childBounds.height  > globalBounds.y + globalBounds.height)
+			{
+				globalBounds.height = childBounds.y + childBounds.height - globalBounds.y;
+			}
+		}
+	}
+	
+	
+	/**
+	 * Determine wheter the x axis of this layer
+	 * is clipped to its width
+	 */
+	public function isXAxisClipped():Bool
+	{
+		switch (rootElementRenderer.coreStyle.getKeyword(rootElementRenderer.coreStyle.overflowX))
+		{
+			case HIDDEN, SCROLL:
+				return true;
+				
+			//when overflow is auto, the x axis is only
+			//clipped if a scrollbar was attached	
+			case AUTO:
+				return _horizontalScrollBar != null;
+				
+			case VISIBLE:
+				if (treatVisibleOverflowAsAuto() == true)
+				{
+					return _horizontalScrollBar != null;
+				}
+				return false;
+				
+			default:
+				return false;
+		}
+	}
+	
+	/**
+	 * Determine wheter the y axis of this layer
+	 * is clipped to its height
+	 */
+	public function isYAxisClipped():Bool
+	{
+		switch (rootElementRenderer.coreStyle.getKeyword(rootElementRenderer.coreStyle.overflowY))
+		{
+			case HIDDEN, SCROLL:
+				return true;
+				
+			case AUTO:
+				return _verticalScrollBar != null;
+				
+			case VISIBLE:
+				if (treatVisibleOverflowAsAuto() == true)
+				{
+					return _verticalScrollBar != null;
+				}
+				return false;
+				
+			default:
+				return false;
+		}
+	}
+	
+	/**
+	 * This helper method is used to differentiate between
+	 * a block box renderer and the initial block box renderer.
+	 * 
+	 * For the initial block box renderer, a computed value
+	 * of visible for overflow behaves the same as a computed
+	 * value of auto
+	 */
+	private function treatVisibleOverflowAsAuto():Bool
+	{
+		return false;
+	}
+	
 	//
 	//
 	//
@@ -148,74 +635,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE SCROLLING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	//
-	///**
-	 //* Determine wheter the x axis of this BlockBoxRenderer
-	 //* is clipped to its width
-	 //*/
-	//private function isXAxisClipped():Bool
-	//{
-		//switch (coreStyle.overflowX)
-		//{
-			//case KEYWORD(value):
-				//switch(value)
-				//{
-					//case HIDDEN, SCROLL:
-						//return true;
-						//
-					//when overflow is auto, the x axis is only
-					//clipped if a scrollbar was attached	
-					//case AUTO:
-						//return _horizontalScrollBar != null;
-						//
-					//case VISIBLE:
-						//if (treatVisibleOverflowAsAuto() == true)
-						//{
-							//return _horizontalScrollBar != null;
-						//}
-						//return false;
-						//
-					//default:
-						//return false;
-						//
-				//}
-			//default:
-				//return false;
-		//}
-	//}
-	//
-	///**
-	 //* Determine wheter the y axis of this BlockBoxRenderer
-	 //* is clipped to its height
-	 //*/
-	//private function isYAxisClipped():Bool
-	//{
-		//switch (coreStyle.overflowY)
-		//{
-			//case KEYWORD(value):
-				//switch(value)
-				//{
-					//case HIDDEN, SCROLL:
-						//return true;
-						//
-					//case AUTO:
-						//return _verticalScrollBar != null;
-						//
-					//case VISIBLE:
-						//if (treatVisibleOverflowAsAuto() == true)
-						//{
-							//return _verticalScrollBar != null;
-						//}
-						//return false;
-						//
-					//default:
-						//return false;
-						//
-				//}
-			//default:
-				//return false;
-		//}
-	//}
+	
 	//
 	///**
 	 //* When a scroll value changes, update the rendering
@@ -548,19 +968,6 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		//}
 		//
 		//return true;
-	//}
-	//
-	///**
-	 //* This helper method is used to differentiate between
-	 //* a block box renderer and the initial block box renderer.
-	 //* 
-	 //* For the initial block box renderer, a computed value
-	 //* of visible for overflow behaves the same as a computed
-	 //* value of auto
-	 //*/
-	//private function treatVisibleOverflowAsAuto():Bool
-	//{
-		//return false;
 	//}
 	//
 }

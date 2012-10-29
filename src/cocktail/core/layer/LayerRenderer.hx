@@ -61,13 +61,7 @@ import haxe.Stack;
  * @author Yannick DOMINGUEZ
  */
 class LayerRenderer extends ScrollableView<LayerRenderer>
-{
-	/**
-	 * A reference to the ElementRenderer which
-	 * created the LayerRenderer
-	 */
-	public var rootElementRenderer(default, null):ElementRenderer;
-	
+{	
 	/**
 	 * The stacking context onto which this
 	 * layer belong, determining its z-index
@@ -152,7 +146,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 */
 	public function new(rootElementRenderer:ElementRenderer) 
 	{
-		super();
+		super(rootElementRenderer);
 		
 		this.rootElementRenderer = rootElementRenderer;
 		
@@ -218,6 +212,10 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 * Update the transformation matrix of this layer before
 	 * rendering. It is obtained by concatenating the transformations
 	 * of this layer with those of the ancestors layers
+	 * 
+	 * TODO 2 : might need to split matrix of transform style and of
+	 * relative positioning, as relative positioning shouldn't apply
+	 * to fixed elements
 	 */
 	public function updateLayerMatrix(parentMatrix:Matrix):Void
 	{
