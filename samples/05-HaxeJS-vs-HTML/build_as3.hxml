@@ -9,4 +9,4 @@
 --remap js:cocktail
 
 #copy assets directory
--cmd cp -R assets bin\swf\
+-cmd cp -R assets bin/swf/

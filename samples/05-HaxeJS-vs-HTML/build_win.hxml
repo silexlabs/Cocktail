@@ -12,4 +12,4 @@
 --remap js:cocktail
 
 #copy assets directory
--cmd cp -R assets bin\win\
+-cmd cp -R assets bin/win/
