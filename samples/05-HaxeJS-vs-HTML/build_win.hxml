@@ -12,4 +12,5 @@
 --remap js:cocktail
 
 #copy assets directory
--cmd cp -R assets bin/win/
+# will not work in windos, TODO: use nmml file instead of hxml
+-cmd cp -R assets bin\win\

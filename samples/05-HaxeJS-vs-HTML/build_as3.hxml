@@ -4,9 +4,6 @@
 -main Main
 
 #binary
--swf bin/swf/Main.swf
+-swf bin/Main.swf
 -swf-version 10.2
 --remap js:cocktail
-
-#copy assets directory
--cmd cp -R assets bin/swf/
