@@ -53,6 +53,20 @@ class AbstractGraphicsContextImpl
 	 * as defined by the _useTransparency flag
 	 */
 	private var _alpha:Float;
+	
+	/**
+	 * A flag determining wether to use the
+	 * provided transformations matrix when
+	 * drawing to bitmap
+	 */
+	private var _useTransformations:Bool;
+	
+	/**
+	 * The transformations matrix to use when
+	 * drawing if the use transformations flag
+	 * is true
+	 */
+	private var _matrix:Matrix;
 
 	/**
 	 * class constructor
@@ -60,6 +74,7 @@ class AbstractGraphicsContextImpl
 	public function new()
 	{
 		_useTransparency = false;
+		_useTransformations = false;
 		_alpha = 0.0;
 	}
 	
@@ -158,6 +173,27 @@ class AbstractGraphicsContextImpl
 	public function endTransparency():Void
 	{
 		_useTransparency = false;
+	}
+	
+	/**
+	 * When called, all subsequent calls to bitmap
+	 * drawing methods draw using the provided transformation
+	 * matrix, until endTransformations is called
+	 */
+	public function beginTransformations(matrix:Matrix):Void
+	{
+		_useTransformations = true;
+		_matrix = matrix;
+	}
+	
+	/**
+	 * End the use of the transformation
+	 * matrix when drawing
+	 */
+	public function endTransformations():Void
+	{
+		_matrix = null;
+		_useTransformations = false;
 	}
 	
 	/**

@@ -227,7 +227,6 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 			//update transformation matrix of layer 
 			_matrix = getTransformationMatrix();
 		}
-		
 		//concatenate layer transformation with parent transformations
 		_matrix.concatenate(parentMatrix);
 		
@@ -235,7 +234,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		var child:LayerRenderer = firstChild;
 		while (child != null)
 		{
-			child.updateLayerMatrix(parentMatrix);
+			child.updateLayerMatrix(_matrix);
 			child = child.nextSibling;
 		}
 	}
@@ -944,9 +943,16 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 				graphicsContext.graphics.beginTransparency(_alpha);
 			}
 			
+			//apply layer matrix to graphics context, so that all element
+			//renderers of the lyer use those transformations
+			graphicsContext.graphics.beginTransformations(_matrix);
+			
 			//render the rootElementRenderer itself which will also
 			//render all ElementRenderer belonging to this LayerRenderer
 			rootElementRenderer.render(graphicsContext, _clipRect, _scrollOffset);
+			
+			//stop using the layer's transformations
+			graphicsContext.graphics.endTransformations();
 			
 			//end transparency layer
 			if (_alpha != 1.0)
@@ -961,16 +967,6 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		if (hasOwnStackingContext == true)
 		{
 			renderChildrenInSameStackingContext(this);
-		}
-		
-		//only render if necessary
-		if (_needsRendering == true)
-		{
-			//apply transformations to the layer if needed
-			if (rootElementRenderer.isTransformed() == true)
-			{
-				graphicsContext.graphics.transform(_matrix);
-			}
 		}
 		
 		//layer no longer needs rendering

@@ -341,12 +341,24 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		{
 			
 			var clippedRect:RectangleVO = new RectangleVO();
-			GeomUtils.intersectBounds(rect, clipRect, clippedRect);
+			clippedRect.x  = rect.x;
+			clippedRect.y  = rect.y;
+			clippedRect.width  = rect.width;
+			clippedRect.height  = rect.height;
+			
+			if (_useTransformations == true)
+			{
+				clippedRect.x += _matrix.e;
+				clippedRect.y += _matrix.f;
+			}
+			
+			GeomUtils.intersectBounds(clippedRect, clipRect, clippedRect);
 			
 			_flashRectangle.x = Math.round(clippedRect.x);
 			_flashRectangle.y = Math.round(clippedRect.y);
 			_flashRectangle.width = Math.round(clippedRect.width);
 			_flashRectangle.height = Math.round(clippedRect.height);
+			
 			_nativeBitmap.bitmapData.fillRect(_flashRectangle, argbColor);
 		}
 	
