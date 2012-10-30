@@ -1,7 +1,7 @@
 ECHO OFF
 ECHO.
 ECHO uninstalling application...
-CALL adt -uninstallApp -platform android -appid fr.intermedia-paris.WatTV
+CALL adt -uninstallApp -platform android -appid fr.intermedia-paris.test1
 ECHO.
 ECHO generating android version via Air...
 CALL adt -package -target apk -storetype pkcs12 -keystore sampleCert.pfx -storepass password ../../bin/native_apps/Android_Air.apk Air_config.xml -C ../../bin Main.swf assets
