@@ -171,12 +171,17 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 */
 	public function updateClipRect():Void
 	{
+		//if this layer is clipped in the x, y or both axis,
+		//find its own clip rect and apply it to its children
 		if (isXAxisClipped() == true || isYAxisClipped() == true)
 		{
+			//find the intersecting rect between its current clip rect (clip
+			//rect established by its ancestors) and its own clip rect
 			GeomUtils.intersectBounds(_clipRect, _clippedBounds, _clipRect);
 			clipChildren(cast(this), _clipRect, cast(this));
 		}
 		
+		//clip while layer tree recursively
 		var child:ViewClass = firstChild;
 		while (child != null)
 		{
@@ -185,11 +190,22 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		}
 	}
 	
+	/**
+	 * When a layer is clipped because of its overflow style, apply its
+	 * own clip rect to all its descendant layer
+	 * 
+	 * @param	rootLayerRenderer the current layer onto which the clip rect is applied
+	 * @param	clipRect the clip rect to apply
+	 * @param	referenceLayer the layer which was clipped
+	 */
 	private function clipChildren(rootLayerRenderer:ViewClass, clipRect:RectangleVO, referenceLayer:ViewClass):Void
 	{
+		//traverse all descendants
 		var child:ViewClass = rootLayerRenderer.firstChild;
 		while (child != null)
 		{
+			//try to apply the clipping to the child, the child
+			//determine wether it applies to it
 			child.clipIfNeeded(clipRect, referenceLayer);
 			
 			if (child.firstChild != null)
@@ -201,18 +217,32 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		}
 	}
 	
+	/**
+	 * When an ancestor layer is clipped, this method is
+	 * called with the clip rect of the ancestor and a reference
+	 * to the ancestor. This layer determines wether this clipping
+	 * should apply to itself
+	 * 
+	 * @param	clipRect the clip rect to apply to this layer
+	 * @param	layer the layer which was clipped
+	 */
 	public function clipIfNeeded(clipRect:RectangleVO, layer:ViewClass):Void
 	{
+		//if the layer's root element renderer is fixed, than it can't be clipped as
+		//its containing block is the viewport
 		if (rootElementRenderer.coreStyle.getKeyword(rootElementRenderer.coreStyle.position) == FIXED)
 		{
 			return;
 		}
-		
+		//else if the containing block is a parent of the clipped layer, the
+		//the clipping doesn't apply to this layer
 		if (isContainingBlockChildren(layer) == true)
 		{
 			return;
 		}
 		
+		//else clip by finding the intersecting rect between
+		//the current clip rect and the ancestor's clip rect
 		GeomUtils.intersectBounds(_clipRect, clipRect, _clipRect);
 	}
 	
@@ -220,6 +250,10 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	// SCROLL OFFSET METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Reset scroll offset of all layers before
+	 * re-computing it
+	 */
 	public function resetScrollOffset():Void
 	{
 		_scrollOffset.x = 0;
@@ -233,19 +267,28 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		}
 	}
 	
+	/**
+	 * Update the scroll offset of this layer
+	 * which is the added scroll offset of all 
+	 * its ancestor and its own, if it has any
+	 */
 	public function updateScrollOffset():Void
 	{
-		
+		//if clipped, add its own scroll offset and add it to its children
 		if (isXAxisClipped() == true || isYAxisClipped() == true)
 		{
 			//TODO  : if scrollableBounds.x - bounds.x < 0, scrollLeftForChild = scrollableBounds.x + scrollLeft, 
 			//same for y, as if scrollLeft specified as 0, child should
 			//be rendered using layer top left as origin.
+			//TODO  : should only update y if only y clipped ? -> no need, scrollTop would be 0 ?
 			_scrollOffset.x += scrollLeft;
 			_scrollOffset.y += scrollTop;
+			//add offset to all descendant
 			addScrollOffsetToChildren(cast(this), _scrollOffset.x, _scrollOffset.y, cast(this));
 		}
 		
+		//apply scroll offset to the whole
+		//layer tree recursively
 		var child:ViewClass = firstChild;
 		while (child != null)
 		{
@@ -254,28 +297,48 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		}
 	}
 	
+	/**
+	 * Called when an ancestor has a scroll left and/top offset.
+	 * This layer determine wether it should add it to its own
+	 * scroll offset
+	 */
 	public function addScrollOffsetIfNeeded(layer:ViewClass, scrollLeft:Float, scrollTop:Float):Void
 	{
+		//scroll offset don't apply to fiexed element, as they are always positioned relative to the
+		//viewport
 		if (rootElementRenderer.coreStyle.getKeyword(rootElementRenderer.coreStyle.position) == FIXED)
 		{
 			return;
 		}
-		
+		//if the layer with the scroll offset is a child of the containing block
+		//of this layer, then the scroll offset doesn't apply to it
 		if (isContainingBlockChildren(layer) == true)
 		{
 			return;
 		}
 		
+		//else add to own offset
 		_scrollOffset.x += scrollLeft;
 		_scrollOffset.y += scrollTop;
 		
 	}
 	
+	/**
+	 * When a layer  has a scroll offset left or top, it tries to add it
+	 * to all its descendant. Each descendant determine wether it applies
+	 * to itself
+	 * @param	rootLayerRenderer the current layer onto which the scroll offset is applied
+	 * @param	scrollLeft the scroll left of the offset layer
+	 * @param	scrollTop the scroll top of the offset layer
+	 * @param	referenceLayer the layer with a scroll left and/or top
+	 */
 	private function addScrollOffsetToChildren(rootLayerRenderer:ViewClass, scrollLeft:Float, scrollTop:Float, referenceLayer:ViewClass):Void
 	{
+		//traverse all descedant recursively
 		var child:ViewClass = rootLayerRenderer.firstChild;
 		while (child != null)
 		{
+			//each child determine wether the scroll offset applies to it
 			child.addScrollOffsetIfNeeded(referenceLayer, scrollLeft, scrollTop);
 			
 			if (child.firstChild != null)
@@ -291,6 +354,11 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	// BOUNDS METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Update the bounds of this layer, which
+	 * are the transformed bounds of all its 
+	 * element renderers
+	 */
 	public function updateBounds():Void
 	{
 		var child:ViewClass = firstChild;
@@ -298,6 +366,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		//TODO : apply layer's transformation matrix
 		getElementRenderersBounds(rootElementRenderer, bounds);
 		
+		//update bounds of all layers recursively
 		while (child != null)
 		{
 			child.updateBounds();
@@ -305,22 +374,34 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		}
 	}
 	
+	/**
+	 * Update the clipped bounds of this
+	 * layer, which are the bounds it has
+	 * if overflow is not visible. It is 
+	 * the transformated bounds of its root
+	 * element renderers
+	 */
 	public function updateClippedBounds():Void
 	{
 		var child:ViewClass = firstChild;
 		
+		//clipped bounds are at first same as bounds,
+		//they remain the same if the layer has overflow
+		//visible
 		var x:Float = bounds.x;
 		var y:Float = bounds.y;
 		var width:Float = bounds.width;
 		var height:Float = bounds.height;
 		
 		//TODO : apply layers transformation to x and y
+		//clip the x axis
 		if (isXAxisClipped() == true)
 		{
 			x = rootElementRenderer.globalBounds.x;
 			width = rootElementRenderer.globalBounds.width;
 		}
 		
+		//clip the y axis
 		if (isYAxisClipped() == true)
 		{
 			y = rootElementRenderer.globalBounds.y;
@@ -332,6 +413,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		_clippedBounds.width = width;
 		_clippedBounds.height = height;
 		
+		//update all layer tree recursively
 		while (child != null)
 		{
 			child.updateClippedBounds();
@@ -339,37 +421,40 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		}
 	}
 	
-	
-	
 	/**
-	 * Set the bounds of an array of linebox
-	 * on a provided bounds object
+	 * get the bounds of all the element
+	 * renders using this layer, starting
+	 * from the root element renderer
 	 */
 	private function getElementRenderersBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
 	{
-		//first reset the bounds
+		//reset the bounds
 		bounds.x = 50000;
 		bounds.y = 50000;
 		bounds.width = 0;
 		bounds.height = 0;
 		
+		//first add the bounds of the root element renderer
 		GeomUtils.addBounds(rootElementRenderer.globalBounds, bounds);
 		
+		//then all its children using this layer
 		doGetElementRenderersBounds(rootElementRenderer, bounds);
 	}
 	
 	/**
-	 * Traverse all the children recursively
-	 * and apply their bounds to the
-	 * target bounds
+	 * Traverse all element renderers
+	 * of this layer recursively and add their bounds
+	 * to the layer's bounds
 	 */
 	private function doGetElementRenderersBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
 	{
 		var child:ElementRenderer = rootElementRenderer.firstChild;
 		while(child != null)
 		{
+			//check that child belong to this layer
 			if (child.layerRenderer == cast(this))
 			{
+				//add bounds of child
 				GeomUtils.addBounds(child.globalBounds, bounds);
 				if (child.firstChild != null)
 				{
@@ -385,6 +470,11 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	// SCROLLABLE BOUNDS METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Update the scrollable bounds of this layer
+	 * which are formed by its own bounds and
+	 * the bounds of all descedant layers
+	 */
 	public function updateScrollableBounds():Void
 	{
 		var child:ViewClass = firstChild;
@@ -392,6 +482,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		//TODO : apply layer's transformation matrix
 		getScrollableBounds(cast(this), _scrollableBounds);
 		
+		//update all the layer tree recursively
 		while (child != null)
 		{
 			child.updateBounds();
@@ -399,29 +490,121 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		}
 	}
 	
+	/**
+	 * Called when an ancestor is computing its scrollable bounds, this layer
+	 * determine what bounds to return to this ancestor.
+	 * 
+	 * @param	layer the ancestor layer computing its scroll bounds
+	 * @return	bounds or clipped bounds of this layer, or null if doesn't apply
+	 */
 	public function getScrollableBoundsIfNeeded(layer:ViewClass):RectangleVO
 	{
+		//if the layer is fixed, then it won't be scrolled by its ancestor, and so
+		//it returns null as it shouldn't be added to its ancestor scroll bounds
 		if (rootElementRenderer.coreStyle.getKeyword(rootElementRenderer.coreStyle.position) == FIXED)
 		{
 			return null;
 		}
 		
+		//else if the containing block of this layers is a parent of the 
+		//root element renderer of the ancestor layer, then this layer
+		//won't be scrolled by the ancestor layer
 		if (isContainingBlockChildren(layer) == true)
 		{
 			return null;
 		}
 		
-		
+		//else if not clipped, return the bounds of its element renderers
 		if (isXAxisClipped() == false && isYAxisClipped() == false)
 		{
 			return bounds;
 		}
+		//else return its clipped bounds
 		else
 		{
 			return _clippedBounds;
 		}
 	}
 	
+	/**
+	 * Get the scroll bounds of this layer by getting 
+	 * the bounds of all the descendant layers
+	 */
+	private function getScrollableBounds(rootLayerRenderer:ViewClass, scrollableBounds:RectangleVO):Void
+	{
+		bounds.x = 50000;
+		bounds.y = 50000;
+		bounds.width = 0;
+		bounds.height = 0;
+		
+		//first add its own bounds
+		GeomUtils.addBounds(this.bounds, scrollableBounds);
+		
+		//add bounds of all descedant layers
+		doGetScrollableBounds(rootLayerRenderer, scrollableBounds, cast(this), true, true);
+	}
+	
+	/**
+	 * Traverse all layer descendant and request bounds on each
+	 * @param	rootLayerRenderer the current layer whose bounds are requested
+	 * @param	scrollableBounds the scrollable bounds of this layer where all other bounds are added
+	 * @param	referenceLayer a reference to this layer, then one whose scroll bounds are requested
+	 * @param	getHorizontalBounds wheter horizontal bounds should be requested on descendant layer
+	 * @param	getVerticalBounds wheter vertical bounds should be requested on descendant layer
+	 */
+	private function doGetScrollableBounds(rootLayerRenderer:ViewClass, scrollableBounds:RectangleVO, referenceLayer:ViewClass, getHorizontalBounds:Bool, getVerticalBounds:Bool):Void
+	{
+		//traverse all the layer tree recursively
+		var child:ViewClass = rootLayerRenderer.firstChild;
+		while(child != null)
+		{
+			//request bounds of child, child determine what bounds it should return
+			var childBounds:RectangleVO = child.getScrollableBoundsIfNeeded(referenceLayer);
+			
+			//if child returned null bounds, then it is not 
+			//scrolled by this layer
+			if (childBounds != null)
+			{
+				//else, add bounds of child to scrollable bounds
+				GeomUtils.addBounds(childBounds, scrollableBounds, getHorizontalBounds, getVerticalBounds);
+				if (child.firstChild != null)
+				{
+					//if child x-axis is clipped, then there is no need
+					//to request horizontal bounds on its children, the
+					//only horizontal bounds added to the scrollable bounds
+					//are the clipped horizontal bounds of the child
+					if (child.isXAxisClipped() == true)
+					{
+						getHorizontalBounds = false;
+					}
+					
+					//same for y-axis
+					if (child.isYAxisClipped() == true)
+					{
+						getVerticalBounds = false;
+					}
+					
+					//if both x and y axis are clipped, there is no need to
+					//request child bounds.
+					if (getHorizontalBounds == true || getVerticalBounds == true)
+					{
+						doGetScrollableBounds(child, scrollableBounds, referenceLayer, getHorizontalBounds, getVerticalBounds);
+					}
+				}
+			}
+				
+			child = cast(child.nextSibling);
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// UTILS METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Determine wether the target layer's root element renderer is a child of this layer's
+	 * root element renderer's containing block.
+	 */
 	private function isContainingBlockChildren(layer:ViewClass):Bool
 	{
 		var containingBlock:ElementRenderer = rootElementRenderer.containingBlock;
@@ -447,55 +630,6 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		
 		return false;
 	}
-	
-	private function getScrollableBounds(rootLayerRenderer:ViewClass, scrollableBounds:RectangleVO):Void
-	{
-		bounds.x = 50000;
-		bounds.y = 50000;
-		bounds.width = 0;
-		bounds.height = 0;
-		
-		GeomUtils.addBounds(this.bounds, scrollableBounds);
-		
-		doGetScrollableBounds(rootLayerRenderer, scrollableBounds, cast(this), true, true);
-	}
-	
-	private function doGetScrollableBounds(rootLayerRenderer:ViewClass, scrollableBounds:RectangleVO, referenceLayer:ViewClass, useHorizontalBounds:Bool, useVerticalBounds:Bool):Void
-	{
-		var child:ViewClass = rootLayerRenderer.firstChild;
-		while(child != null)
-		{
-			var childBounds:RectangleVO = child.getScrollableBoundsIfNeeded(referenceLayer);
-			
-			if (childBounds != null)
-			{
-				GeomUtils.addBounds(childBounds, scrollableBounds, useHorizontalBounds, useVerticalBounds);
-				if (child.firstChild != null)
-				{
-					if (child.isXAxisClipped() == true)
-					{
-						useHorizontalBounds = false;
-					}
-					
-					if (child.isYAxisClipped() == true)
-					{
-						useVerticalBounds = false;
-					}
-					
-					if (useHorizontalBounds == true || useVerticalBounds == true)
-					{
-						doGetScrollableBounds(child, scrollableBounds, referenceLayer, useHorizontalBounds, useVerticalBounds);
-					}
-				}
-			}
-				
-			child = cast(child.nextSibling);
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// UTILS METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Determine wheter the x axis of this layer
