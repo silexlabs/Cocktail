@@ -11,6 +11,7 @@ import cocktail.core.background.BackgroundManager;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
+import cocktail.core.geom.GeomUtils;
 
 import cocktail.core.geom.GeomData;
 import cocktail.core.layer.LayerRenderer;
@@ -226,7 +227,7 @@ class LineBox extends FastNode<LineBox>
 			//bounds of the root line box
 			if (child.isStaticPosition() == false)
 			{
-				doGetBounds(child.bounds, bounds);
+				GeomUtils.addBounds(child.bounds, bounds);
 				
 				if (child.firstChild != null)
 				{
@@ -235,34 +236,6 @@ class LineBox extends FastNode<LineBox>
 			}
 			
 			child = child.nextSibling;
-		}
-	}
-	
-	/**
-	 * apply the bounds of a children to
-	 * the global bounds
-	 * 
-	 * TODO 4 : this method is duplicated from
-	 * ElementRenderer
-	 * 
-	 */
-	private function doGetBounds(childBounds:RectangleVO, globalBounds:RectangleVO):Void
-	{
-		if (childBounds.x < globalBounds.x)
-		{
-			globalBounds.x = childBounds.x;
-		}
-		if (childBounds.y < globalBounds.y)
-		{
-			globalBounds.y = childBounds.y;
-		}
-		if (childBounds.x + childBounds.width > globalBounds.x + globalBounds.width)
-		{
-			globalBounds.width = childBounds.x + childBounds.width - globalBounds.x;
-		}
-		if (childBounds.y + childBounds.height  > globalBounds.y + globalBounds.height)
-		{
-			globalBounds.height = childBounds.y + childBounds.height - globalBounds.y;
 		}
 	}
 	

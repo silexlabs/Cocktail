@@ -248,10 +248,10 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	override public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix, sourceRect:RectangleVO, clipRect:RectangleVO):Void
 	{	
 		//convert the cross-platform rectangle into flash native one
-		_flashRectangle.x = Math.round(sourceRect.x);
-		_flashRectangle.y = Math.round(sourceRect.y);
-		_flashRectangle.width = Math.round(sourceRect.width);
-		_flashRectangle.height = sourceRect.height;
+		_flashRectangle.x = Math.round(sourceRect.x) + clipRect.x - matrix.e;
+		_flashRectangle.y = Math.round(sourceRect.y) + clipRect.y - matrix.f;
+		_flashRectangle.width = Math.round(clipRect.width) ;
+		_flashRectangle.height = Math.round(clipRect.height) ;
 		
 		_flashMatrix.a = matrix.a;
 		_flashMatrix.b = matrix.b;
@@ -280,13 +280,13 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	 */
 	override public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO, clipRect:RectangleVO):Void
 	{
-		_flashRectangle.x = Math.round(sourceRect.x);
-		_flashRectangle.y = Math.round(sourceRect.y);
-		_flashRectangle.width = Math.round(sourceRect.width);
-		_flashRectangle.height = Math.round(sourceRect.height);
+		_flashRectangle.x = Math.round(sourceRect.x) + clipRect.x - destPoint.x;
+		_flashRectangle.y = Math.round(sourceRect.y) + clipRect.y - destPoint.y;
+		_flashRectangle.width = Math.round(clipRect.width) ;
+		_flashRectangle.height = Math.round(clipRect.height) ;
 		
-		_flashPoint.x = Math.round(destPoint.x);
-		_flashPoint.y = Math.round(destPoint.y);
+		_flashPoint.x = Math.round(clipRect.x);
+		_flashPoint.y = Math.round(clipRect.y);
 		
 		var alphaBitmapData:BitmapData = null;
 		var alphaPoint:Point = null;
@@ -299,7 +299,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			var alpha:Int = Math.round(255 * _alpha);
 			color += alpha << 24;
 			
-			alphaBitmapData = new BitmapData(Math.round(sourceRect.width), Math.round(sourceRect.height), true, color);
+			alphaBitmapData = new BitmapData(Math.round(clipRect.width), Math.round(clipRect.height), true, color);
 			_flashAlphaPoint.x = 0;
 			_flashAlphaPoint.y = 0;
 		}

@@ -11,6 +11,7 @@ import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.Node;
+import cocktail.core.geom.GeomUtils;
 
 import cocktail.core.event.TransitionEvent;
 import cocktail.core.html.HTMLDocument;
@@ -1063,31 +1064,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		var length:Int = lineBoxes.length;
 		for (i in 0...length)
 		{
-			doGetBounds(lineBoxes[i].bounds, bounds);
-		}
-	}
-	
-	/**
-	 * apply the bounds of a children to
-	 * the global bounds
-	 */
-	private function doGetBounds(childBounds:RectangleVO, globalBounds:RectangleVO):Void
-	{
-		if (childBounds.x < globalBounds.x)
-		{
-			globalBounds.x = childBounds.x;
-		}
-		if (childBounds.y < globalBounds.y)
-		{
-			globalBounds.y = childBounds.y;
-		}
-		if (childBounds.x + childBounds.width > globalBounds.x + globalBounds.width)
-		{
-			globalBounds.width = childBounds.x + childBounds.width - globalBounds.x;
-		}
-		if (childBounds.y + childBounds.height  > globalBounds.y + globalBounds.height)
-		{
-			globalBounds.height = childBounds.y + childBounds.height - globalBounds.y;
+			GeomUtils.addBounds(lineBoxes[i].bounds, bounds);
 		}
 	}
 	
@@ -1101,7 +1078,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		var child:ElementRenderer = rootElementRenderer.firstChild;
 		while(child != null)
 		{
-			doGetBounds(child.bounds, bounds);
+			GeomUtils.addBounds(child.bounds, bounds);
 			if (child.firstChild != null)
 			{
 				doGetChildrenBounds(child, bounds);

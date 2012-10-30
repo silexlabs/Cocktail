@@ -9,6 +9,7 @@
 package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
+import cocktail.core.geom.GeomUtils;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLVideoElement;
@@ -34,11 +35,24 @@ import cocktail.port.base.NativeMedia;
 class VideoRenderer extends ImageRenderer
 {
 	/**
+	 * Holds the bounds of the poster frame of the
+	 * video
+	 */
+	private var _posterBounds:RectangleVO;
+	
+	/**
+	 * Holds the bounds of the video
+	 */
+	private var _videoBounds:RectangleVO;
+	
+	/**
 	 * class constructor
 	 */
 	public function new(domNode:HTMLElement) 
 	{
 		super(domNode);
+		_posterBounds = new RectangleVO();
+		_videoBounds = new RectangleVO();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -102,20 +116,18 @@ class VideoRenderer extends ImageRenderer
 	private function renderVideo(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext, scrollOffset:PointVO):Void
 	{
 		//get the bounds for the video so that it takes the maximum space and is centered
-		var videoBounds:RectangleVO = getAssetBounds(coreStyle.usedValues.width,
-		coreStyle.usedValues.height, htmlVideoElement.videoWidth, htmlVideoElement.videoHeight);
-		
-		var globalBounds:RectangleVO = this.globalBounds;
+		GeomUtils.getCenteredBounds(coreStyle.usedValues.width,
+		coreStyle.usedValues.height, htmlVideoElement.videoWidth, htmlVideoElement.videoHeight, _videoBounds);
 		
 		var nativeVideo:NativeMedia = htmlVideoElement.nativeMedia;
 		
 		//set the position and size of the native video, relative
 		//to the Window
 		var videoViewport:RectangleVO = nativeVideo.viewport;
-		videoViewport.x =  globalBounds.x + coreStyle.usedValues.paddingLeft + videoBounds.x - scrollOffset.x;
-		videoViewport.y =  globalBounds.y + coreStyle.usedValues.paddingTop + videoBounds.y - scrollOffset.y;
-		videoViewport.width =  videoBounds.width;
-		videoViewport.height =  videoBounds.height;
+		videoViewport.x =  globalBounds.x + coreStyle.usedValues.paddingLeft + _videoBounds.x - scrollOffset.x;
+		videoViewport.y =  globalBounds.y + coreStyle.usedValues.paddingTop + _videoBounds.y - scrollOffset.y;
+		videoViewport.width =  _videoBounds.width;
+		videoViewport.height =  _videoBounds.height;
 		
 		//TODO 2 : set to update native video position but clumsy
 		nativeVideo.viewport = videoViewport;
@@ -137,13 +149,14 @@ class VideoRenderer extends ImageRenderer
 			return;
 		}
 		
-		var posterBounds:RectangleVO = getAssetBounds(coreStyle.usedValues.width,
-		coreStyle.usedValues.height, resource.intrinsicWidth, resource.intrinsicHeight);
+		//update the bounds of the poster frame
+		GeomUtils.getCenteredBounds(coreStyle.usedValues.width,
+		coreStyle.usedValues.height, resource.intrinsicWidth, resource.intrinsicHeight, _posterBounds);
 		
-		var x:Float = globalBounds.x + coreStyle.usedValues.paddingLeft + posterBounds.x - scrollOffset.x;
-		var y:Float = globalBounds.y + coreStyle.usedValues.paddingTop + posterBounds.y - scrollOffset.y;
-		var width:Float = posterBounds.width;
-		var height:Float = posterBounds.height;
+		var x:Float = globalBounds.x + coreStyle.usedValues.paddingLeft + _posterBounds.x - scrollOffset.x;
+		var y:Float = globalBounds.y + coreStyle.usedValues.paddingTop + _posterBounds.y - scrollOffset.y;
+		var width:Float = _posterBounds.width;
+		var height:Float = _posterBounds.height;
 		
 		var paintBounds:RectangleVO = new RectangleVO();
 		paintBounds.x = x;

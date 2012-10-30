@@ -407,9 +407,6 @@ class InvalidationManager
 			//update clipped bounds of layers which don't overflow 
 			_htmlDocument.documentElement.elementRenderer.layerRenderer.updateClippedBounds();
 			
-			//update the bounds of the layers used for scrolling
-			_htmlDocument.documentElement.elementRenderer.layerRenderer.updateBounds();
-			
 			//update the added scroll offset of all the layers
 			_htmlDocument.documentElement.elementRenderer.layerRenderer.resetScrollOffset();
 			_htmlDocument.documentElement.elementRenderer.layerRenderer.updateScrollOffset();

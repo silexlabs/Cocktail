@@ -1,57 +1,138 @@
+/*
+ * Cocktail, HTML rendering engine
+ * http://haxe.org/com/libs/cocktail
+ *
+ * Copyright (c) Silex Labs
+ * Cocktail is available under the MIT license
+ * http://www.silexlabs.org/labs/cocktail-licensing/
+*/
 package cocktail.core.layer;
 
 import cocktail.core.html.ScrollBar;
 import cocktail.core.utils.FastNode;
 import cocktail.core.geom.GeomData;
+import cocktail.core.geom.GeomUtils;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.css.CSSData;
+
 /**
- * ...
+ * This is a base class for layers which represent the 
+ * z-ordering of the document. This base class implements
+ * all the functionnality for scrolling and masking (implementation of
+ * the CSS 'overflow' style).
+ * 
+ * More general information about layer can be found in the LayerRenderer class
+ * 
+ * All the bounds defined in this class (bounds, scrollableBounds...), 
+ * are defined in document space. This space's origin is the top left
+ * of the canvas where the document is rendered and the bottom is the bottom
+ * most point where the document is rendered.
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewClass>
 {	
 	/**
 	 * A reference to the ElementRenderer which
-	 * created the LayerRenderer
+	 * created the layer
 	 */
 	public var rootElementRenderer(default, null):ElementRenderer;
 	
 	/**
 	 * A reference to the horizontal scrollbar which
-	 * might be displayed by this BlockBoxRenderer
+	 * might be displayed on the layer. Is null while
+	 * no horizontal scrollbar is displayed
 	 */
 	private var _horizontalScrollBar:ScrollBar;
 	
 	/**
 	 * A reference to the vertical scrollbar which
-	 * might be displayed by this BlockBoxRenderer
+	 * might be displayed on the layer. Is null while
+	 * no vertical scrollbar is displayed
 	 */
 	private var _verticalScrollBar:ScrollBar;
 	
-	
+	/**
+	 * This is thee added scroll offsets of all
+	 * the ancestors layers. For instance if an
+	 * ancestor layer as an overflow of 'hidden'
+	 * and has a scrollLeft of 5, it will add
+	 * 5 to scrollOffset.x of this layer
+	 */
 	private var _scrollOffset:PointVO; 
 	
+	/**
+	 * Those represent the bounds of the layer
+	 * in the document space. The bounds of the layer
+	 * are the bounds of all the element renderers using
+	 * it as layer. The layer transformations are applied
+	 * to those bounds. For instance, if the layer's root
+	 * element renderer is relative positioned with a
+	 * 'left' style of 10px, then 10 will be added to 
+	 * bounds.x
+	 */
 	public var bounds(default, null):RectangleVO;
 	
+	/**
+	 * Those are the bounds used when overflow of this
+	 * layer is not visible. Those matches the bounds
+	 * of the root element renderer with the layer's
+	 * transformations applied to them.
+	 * 
+	 * If overflow is visible, those are the same
+	 * as the bounds of the layer
+	 */
 	private var _clippedBounds:RectangleVO;
 	
+	/**
+	 * if the layer's overflow is not visible, those
+	 * are the bounds used to determine the scrolling
+	 * area masked by this layer.
+	 * Those bounds encompasses the layer's own bound
+	 * and all the bounds of its descendant layers
+	 */
 	private var _scrollableBounds:RectangleVO; 
 	
+	/**
+	 * This is the clipping rect of the layer, representing
+	 * the area where this layer can actually be painted.
+	 * 
+	 * For instance if a layer has an overflow not visible, then
+	 * is will clip its own bounds to the size and position of its root
+	 * element renderer, and will also clip its children. Its children
+	 * can in turn be further clipped if they themselves have an
+	 * overflow not visible.
+	 * 
+	 * The initial layer, at the top of the layer tree has initially
+	 * a clip rect matching the viewport, as this is the maximum area
+	 * which can be painted
+	 */
 	private var _clipRect:RectangleVO;
 	
+	/**
+	 * Represent the offset in the x-axis to apply
+	 * to these layer children if the layer does not
+	 * overflow in the x-axis. The scroll offset can't be
+	 * inferior to 0
+	 */
 	public var scrollLeft(default, null):Float;
 	
+	/**
+	 * same as scrollLeft for the y-axis
+	 */
 	public var scrollTop(default, null):Float;
 	
+	/**
+	 * class constructor
+	 * @param	rootElementRenderer the element renderer
+	 * which created the layer
+	 */
 	public function new(rootElementRenderer:ElementRenderer) 
 	{
 		super();
 		
 		scrollLeft = 0;
 		scrollTop = 0;
-		
 		_scrollOffset = new PointVO(0, 0);
 		bounds = new RectangleVO();
 		_clippedBounds = new RectangleVO();
@@ -59,13 +140,23 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		_clipRect = new RectangleVO();
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// CLIP RECT METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Reset the clip rect of all layers before
+	 * re-computing it
+	 */
 	public function resetClipRect():Void
 	{
+		//set it to an 'infinite' value
 		_clipRect.x = -50000;
 		_clipRect.y = -50000;
 		_clipRect.width = 100000;
 		_clipRect.height = 100000;
 		
+		//traverse whole layer tree
 		var child:ViewClass = firstChild;
 		while (child != null)
 		{
@@ -74,11 +165,15 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		}
 	}
 	
+	/**
+	 * Update the clip rect of this layer,
+	 * by clipping itself and its children if needed
+	 */
 	public function updateClipRect():Void
 	{
 		if (isXAxisClipped() == true || isYAxisClipped() == true)
 		{
-			getIntersection(_clipRect, _clippedBounds, _clipRect);
+			GeomUtils.intersectBounds(_clipRect, _clippedBounds, _clipRect);
 			clipChildren(cast(this), _clipRect, cast(this));
 		}
 		
@@ -118,70 +213,12 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 			return;
 		}
 		
-		getIntersection(_clipRect, clipRect, _clipRect);
+		GeomUtils.intersectBounds(_clipRect, clipRect, _clipRect);
 	}
 	
-	private function getIntersection(firstRectangle:RectangleVO, secondRectangle:RectangleVO, bounds:RectangleVO):Void
-	{
-		var left:Float = 0;
-		var right:Float = 0;
-		var top:Float = 0;
-		var bottom:Float =  0;
-		
-		if (firstRectangle.x + firstRectangle.width < secondRectangle.x
-		|| secondRectangle.x + secondRectangle.width < firstRectangle.x
-		|| firstRectangle.y + firstRectangle.height < secondRectangle.y
-		|| secondRectangle.y + secondRectangle.height < firstRectangle.y)
-		{
-			bounds.x = 0;
-			bounds.y = 0;
-			bounds.height = 0;
-			bounds.width = 0;
-			return;
-		}
-		
-		if (firstRectangle.x < secondRectangle.x)
-		{
-			left = secondRectangle.x;
-		}
-		else
-		{
-			left = firstRectangle.x;
-		}
-		
-		if (firstRectangle.x + firstRectangle.width < secondRectangle.x + secondRectangle.width)
-		{
-			right = firstRectangle.x + firstRectangle.width;
-		}
-		else
-		{
-			right = secondRectangle.x + secondRectangle.width;
-		}
-		
-		if (firstRectangle.y < secondRectangle.y)
-		{
-			top = secondRectangle.y;
-		}
-		else
-		{
-			top = firstRectangle.y;
-		}
-		
-		if (firstRectangle.y + firstRectangle.height < secondRectangle.y + secondRectangle.height)
-		{
-			bottom = firstRectangle.y + firstRectangle.height;
-		}
-		else
-		{
-			bottom = secondRectangle.y + secondRectangle.height;
-		}
-		
-		
-		bounds.x = left;
-		bounds.y = top;
-		bounds.width = right - left;
-		bounds.height = bottom - top;
-	}
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// SCROLL OFFSET METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	public function resetScrollOffset():Void
 	{
@@ -250,6 +287,10 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		}
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// BOUNDS METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	public function updateBounds():Void
 	{
 		var child:ViewClass = firstChild;
@@ -297,6 +338,52 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 			child = cast(child.nextSibling);
 		}
 	}
+	
+	
+	
+	/**
+	 * Set the bounds of an array of linebox
+	 * on a provided bounds object
+	 */
+	private function getElementRenderersBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
+	{
+		//first reset the bounds
+		bounds.x = 50000;
+		bounds.y = 50000;
+		bounds.width = 0;
+		bounds.height = 0;
+		
+		GeomUtils.addBounds(rootElementRenderer.globalBounds, bounds);
+		
+		doGetElementRenderersBounds(rootElementRenderer, bounds);
+	}
+	
+	/**
+	 * Traverse all the children recursively
+	 * and apply their bounds to the
+	 * target bounds
+	 */
+	private function doGetElementRenderersBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
+	{
+		var child:ElementRenderer = rootElementRenderer.firstChild;
+		while(child != null)
+		{
+			if (child.layerRenderer == cast(this))
+			{
+				GeomUtils.addBounds(child.globalBounds, bounds);
+				if (child.firstChild != null)
+				{
+					doGetElementRenderersBounds(child, bounds);
+				}
+			}
+			
+			child = child.nextSibling;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// SCROLLABLE BOUNDS METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	public function updateScrollableBounds():Void
 	{
@@ -361,46 +448,6 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		return false;
 	}
 	
-	/**
-	 * Set the bounds of an array of linebox
-	 * on a provided bounds object
-	 */
-	private function getElementRenderersBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
-	{
-		//first reset the bounds
-		bounds.x = 50000;
-		bounds.y = 50000;
-		bounds.width = 0;
-		bounds.height = 0;
-		
-		doGetBounds(rootElementRenderer.globalBounds, bounds);
-		
-		doGetElementRenderersBounds(rootElementRenderer, bounds);
-	}
-	
-	/**
-	 * Traverse all the children recursively
-	 * and apply their bounds to the
-	 * target bounds
-	 */
-	private function doGetElementRenderersBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
-	{
-		var child:ElementRenderer = rootElementRenderer.firstChild;
-		while(child != null)
-		{
-			if (child.layerRenderer == cast(this))
-			{
-				doGetBounds(child.globalBounds, bounds);
-				if (child.firstChild != null)
-				{
-					doGetElementRenderersBounds(child, bounds);
-				}
-			}
-			
-			child = child.nextSibling;
-		}
-	}
-	
 	private function getScrollableBounds(rootLayerRenderer:ViewClass, scrollableBounds:RectangleVO):Void
 	{
 		bounds.x = 50000;
@@ -408,7 +455,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		bounds.width = 0;
 		bounds.height = 0;
 		
-		doGetBounds(this.bounds, scrollableBounds);
+		GeomUtils.addBounds(this.bounds, scrollableBounds);
 		
 		doGetScrollableBounds(rootLayerRenderer, scrollableBounds, cast(this), true, true);
 	}
@@ -422,7 +469,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 			
 			if (childBounds != null)
 			{
-				doGetBounds(childBounds, scrollableBounds, useHorizontalBounds, useVerticalBounds);
+				GeomUtils.addBounds(childBounds, scrollableBounds, useHorizontalBounds, useVerticalBounds);
 				if (child.firstChild != null)
 				{
 					if (child.isXAxisClipped() == true)
@@ -446,38 +493,9 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		}
 	}
 	
-	/**
-	 * apply the bounds of a children to
-	 * the global bounds
-	 */
-	private function doGetBounds(childBounds:RectangleVO, globalBounds:RectangleVO, useHorizontalBounds:Bool = true, useVerticalBounds:Bool = true ):Void
-	{
-		if (useHorizontalBounds == true)
-		{
-			if (childBounds.x < globalBounds.x)
-			{
-				globalBounds.x = childBounds.x;
-			}
-			if (childBounds.x + childBounds.width > globalBounds.x + globalBounds.width)
-			{
-				globalBounds.width = childBounds.x + childBounds.width - globalBounds.x;
-			}
-		}
-		
-		if (useVerticalBounds == true)
-		{
-			if (childBounds.y < globalBounds.y)
-			{
-				globalBounds.y = childBounds.y;
-			}
-			
-			if (childBounds.y + childBounds.height  > globalBounds.y + globalBounds.height)
-			{
-				globalBounds.height = childBounds.y + childBounds.height - globalBounds.y;
-			}
-		}
-	}
-	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// UTILS METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Determine wheter the x axis of this layer
@@ -491,7 +509,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 				return true;
 				
 			//when overflow is auto, the x axis is only
-			//clipped if a scrollbar was attached	
+			//clipped if a scrollbar is displayed
 			case AUTO:
 				return _horizontalScrollBar != null;
 				
@@ -535,9 +553,10 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	
 	/**
 	 * This helper method is used to differentiate between
-	 * a block box renderer and the initial block box renderer.
+	 * a layer and the initial layer, at the top of the layer
+	 * tree
 	 * 
-	 * For the initial block box renderer, a computed value
+	 * For the initial layer, a computed value
 	 * of visible for overflow behaves the same as a computed
 	 * value of auto
 	 */
@@ -590,7 +609,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	//override private function get_scrollTop():Float 
 	//{
 		//return _scrollTop;
-	//}
+	//}  
 	//
 	//override private function set_scrollTop(value:Float):Float 
 	//{
@@ -678,26 +697,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 			//_isUpdatingScroll = false;
 		//}
 	//}
-	//
-	//TODO 2 : should manage the following case : 
-	// - child is relative positioned,
-	// - child is absolute positioned
-	// - child is fixed positioned or absolute positoned but 
-	// block container is parent of this block box renderer and it must
-	// not be scrolled and clipped. ElementRenderer should be able to know
-	//their containing block
-	//
-	//TODO 2 : work but shouldn't have to parse all rendering tree, should be done during formatting
-	//and then another pass for absolutely positioned children. Maybe this way less expensive in
-	//the  end because only called when useful ?
-	//also should use scrollbars in bounds ?
-	///**
-	 //* Get the bounds of all of the children of this BlockBoxRenderer
-	 //*/
-	//private function updateScrollableBounds():Void
-	//{
-		//getChildrenBounds(this, _scrollableBounds);
-	//}
+	
 	//
 	//TODO 3 : implement border case where one has scroll attached, and the 
 	//other is visible but should still display scroll
