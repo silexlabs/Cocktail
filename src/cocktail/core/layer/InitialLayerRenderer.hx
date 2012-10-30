@@ -95,5 +95,18 @@ class InitialLayerRenderer extends LayerRenderer
 		return false;
 	}
 	
+	/////////////////////////////////
+	// OVERRIDEN PRIVATE UTILS METHODS
+	////////////////////////////////	
+	
+	/**
+	 * overriden as for the initial layer, a computed value
+	 * of visible for overflow behaves the same as a computed
+	 * value of auto
+	 */
+	override private function treatVisibleOverflowAsAuto():Bool
+	{
+		return true;
+	}
 	
 }

@@ -115,12 +115,12 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 * overflow in the x-axis. The scroll offset can't be
 	 * inferior to 0
 	 */
-	public var scrollLeft(default, null):Float;
+	public var scrollLeft(default, set_scrollLeft):Float;
 	
 	/**
 	 * same as scrollLeft for the y-axis
 	 */
-	public var scrollTop(default, null):Float;
+	public var scrollTop(default, set_scrollTop):Float;
 	
 	/**
 	 * class constructor
@@ -130,6 +130,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	public function new(rootElementRenderer:ElementRenderer) 
 	{
 		super();
+		this.rootElementRenderer = rootElementRenderer;
 		
 		scrollLeft = 0;
 		scrollTop = 0;
@@ -146,21 +147,25 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	
 	/**
 	 * Reset the clip rect of all layers before
-	 * re-computing it
+	 * re-computing it. All layers default
+	 * to the clip rect defined by the viewport.
+	 * 
+	 * The initial layer defines the x and y
+	 * of this clip rect
 	 */
-	public function resetClipRect():Void
+	public function resetClipRect(x:Float, y:Float, width:Float, height:Float):Void
 	{
 		//set it to an 'infinite' value
-		_clipRect.x = -50000;
-		_clipRect.y = -50000;
-		_clipRect.width = 100000;
-		_clipRect.height = 100000;
+		_clipRect.x = x;
+		_clipRect.y = y;
+		_clipRect.width = width;
+		_clipRect.height = height;
 		
 		//traverse whole layer tree
 		var child:ViewClass = firstChild;
 		while (child != null)
 		{
-			child.resetClipRect();
+			child.resetClipRect(x, y, width, height);
 			child = cast(child.nextSibling);
 		}
 	}
@@ -206,13 +211,19 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		{
 			//try to apply the clipping to the child, the child
 			//determine wether it applies to it
-			child.clipIfNeeded(clipRect, referenceLayer);
+			var childWasClipped:Bool = child.clipIfNeeded(clipRect, referenceLayer);
 			
-			if (child.firstChild != null)
+			//child return wether it was clipped or not,
+			//if it wasn't clipped, then its child layer
+			//shouldn't be clipped either
+			if (childWasClipped == true)
 			{
-				clipChildren(child, clipRect, referenceLayer);
+				if (child.firstChild != null)
+				{
+					clipChildren(child, clipRect, referenceLayer);
+				}
 			}
-			
+		
 			child = cast(child.nextSibling);
 		}
 	}
@@ -225,25 +236,27 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 * 
 	 * @param	clipRect the clip rect to apply to this layer
 	 * @param	layer the layer which was clipped
+	 * @return	return wether the layer was clipped
 	 */
-	public function clipIfNeeded(clipRect:RectangleVO, layer:ViewClass):Void
+	public function clipIfNeeded(clipRect:RectangleVO, layer:ViewClass):Bool
 	{
 		//if the layer's root element renderer is fixed, than it can't be clipped as
 		//its containing block is the viewport
 		if (rootElementRenderer.coreStyle.getKeyword(rootElementRenderer.coreStyle.position) == FIXED)
 		{
-			return;
+			return false;
 		}
 		//else if the containing block is a parent of the clipped layer, the
 		//the clipping doesn't apply to this layer
 		if (isContainingBlockChildren(layer) == true)
 		{
-			return;
+			return false;
 		}
 		
 		//else clip by finding the intersecting rect between
 		//the current clip rect and the ancestor's clip rect
 		GeomUtils.intersectBounds(_clipRect, clipRect, _clipRect);
+		return true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -598,6 +611,61 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// SCROLL GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function set_scrollLeft(value:Float):Float
+	{
+		//if the layer can't be scrolled on the x-axis, 
+		//scroll left remain 0
+		if (isXAxisClipped() == false)
+		{
+			return scrollLeft = 0;
+		}
+		
+		//negative values are illegal
+		if (value <= 0)
+		{
+			scrollLeft = 0;
+		}
+		//if the value is more than available scrollable width, set
+		//the value to the max scrollable width
+		else if (value > _scrollableBounds.width)
+		{
+			scrollLeft = _scrollableBounds.width;
+		}
+		else
+		{
+			scrollLeft = value;
+		}
+		
+		return value;
+	}
+
+	private function set_scrollTop(value:Float):Float
+	{
+		if (isYAxisClipped() == false)
+		{
+			return scrollTop = 0;
+		}
+		
+		if (value <= 0)
+		{
+			scrollTop = 0;
+		}
+		else if (value > _scrollableBounds.height)
+		{
+			scrollTop = _scrollableBounds.height;
+		}
+		else
+		{
+			scrollTop = value;
+		}
+		
+		return value;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// UTILS METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -706,64 +774,6 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	// OVERRIDEN SCROLLING GETTERS/SETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	//
-	///**
-	 //* Overriden as BlockBoxRenderer might actually be scrolled
-	 //*/
-	//override private function get_scrollLeft():Float 
-	//{
-		//return _scrollLeft;
-	//}
-	//
-	///**
-	 //* Overriden as BLockBoxRenderer might actually be scrolled
-	 //*/
-	//override private function set_scrollLeft(value:Float):Float 
-	//{
-		//negative values are illegal
-		//if (value <= 0)
-		//{
-			//_scrollLeft = 0;
-		//}
-		//if the value if more the available scrollable width, set
-		//the value to the max scrollable width
-		//else if (value > getHorizontalMaxScroll())
-		//{
-			//_scrollLeft = getHorizontalMaxScroll();
-		//}
-		//else
-		//{
-			//_scrollLeft = value;
-		//}
-		//
-		//updateScroll();
-		//
-		//return value;
-	//}
-	//
-	//override private function get_scrollTop():Float 
-	//{
-		//return _scrollTop;
-	//}  
-	//
-	//override private function set_scrollTop(value:Float):Float 
-	//{
-		//if (value <= 0)
-		//{
-			//_scrollTop = 0;
-		//}
-		//else if (value > getVerticalMaxScroll())
-		//{
-			//_scrollTop = getVerticalMaxScroll();
-		//}
-		//else
-		//{
-			//_scrollTop = value;
-		//}
-		//
-		//updateScroll();
-		//
-		//return value;
-	//}
 	//
 	///**
 	 //* overriden as the scroll width for a block
@@ -1037,48 +1047,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	//
-	///**
-	 //* Utils method to return the containing block data
-	 //* without any scrollbars. Used when positioning scrollbars
-	 //* themselves
-	 //*/
-	//private function getScrollbarContainerBlock():ContainingBlockVO
-	//{
-		//return super.getContainerBlockData();
-	//}
 	//
-	///**
-	 //* Return the maximum amount of scroll in pixels in the
-	 //* vertical direcion. Maximum scroll can't be negative
-	 //*/
-	//private function getVerticalMaxScroll():Float
-	//{
-		//var maxScroll:Float = _scrollableBounds.height - getContainerBlockData().height;
-		//
-		//if the container is higher than its children, 
-		//then it can't be scrolled
-		//if (maxScroll < 0)
-		//{
-			//return 0;
-		//}
-		//
-		//return maxScroll;
-	//}
-	//
-	///**
-	 //* Same as above for horizontal max scroll
-	 //*/
-	//private function getHorizontalMaxScroll():Float
-	//{
-		//var maxScroll:Float = _scrollableBounds.width - getContainerBlockData().width;
-		//
-		//if (maxScroll < 0)
-		//{
-			//return 0;
-		//}
-		//
-		//return maxScroll;
-	//}
 	//
 	///**
 	 //* Determine wether this BlockBoxRenderer always overflows

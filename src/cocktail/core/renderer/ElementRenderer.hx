@@ -176,10 +176,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	/**
 	 * Determine wheter this ElementRenderer establishes its own
 	 * stacking context (instantiates a new LayerRenderer)
-	 * 
-	 * TODO 2 : not very clean, should layerRenderer be null instead
-	 * for ElementRenderer not starting a layer ? -> or should use 
-	 * the establishesNewStackingContext Method ? + doc is false
 	 */
 	private var _hasOwnLayer:Bool;
 	
@@ -205,12 +201,12 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	/**
 	 * get/set the scrolling in the x axis of this ElementRenderer.
 	 */
-	public var scrollLeft(get_scrollLeft, set_scrollLeft):Float;
+	public var scrollLeft(default, set_scrollLeft):Float;
 	
 	/**
 	 * get/set the scrolling in the y axis of this ElementRenderer
 	 */
-	public var scrollTop(get_scrollTop, set_scrollTop):Float;
+	public var scrollTop(default, set_scrollTop):Float;
 	
 	/**
 	 * get the larger width between the ElementRenderer's and its children
@@ -1129,6 +1125,46 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// SCROLL GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * If this element renderer creates its own
+	 * layer, then forward scroll left update
+	 * to the layer. If it doesn't create
+	 * any layer, then no need to forward as
+	 * it won't be taken into account anyway.
+	 * Element renderer which can be scrolled
+	 * ('overflow' different from visible)
+	 * always create their own layer
+	 * 
+	 * The layer will determine 
+	 * wether to actually update scroll left.
+	 */
+	private function set_scrollLeft(value:Float):Float 
+	{
+		if (_hasOwnLayer == true)
+		{
+			layerRenderer.scrollLeft = value;
+		}
+		
+		return value;
+	}
+	
+	/**
+	 * same as scroll left for top
+	 */
+	private function set_scrollTop(value:Float):Float 
+	{
+		if (_hasOwnLayer == true)
+		{
+			layerRenderer.scrollTop = value;
+		}
+		
+		return value;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1140,26 +1176,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	private function get_bounds():RectangleVO
 	{
 		return bounds;
-	}
-	
-	private function get_scrollLeft():Float 
-	{
-		return 0;
-	}
-	
-	private function set_scrollLeft(value:Float):Float 
-	{
-		return value;
-	}
-	
-	private function get_scrollTop():Float 
-	{
-		return 0;
-	}
-	
-	private function set_scrollTop(value:Float):Float 
-	{
-		return value;
 	}
 	
 	private function get_scrollWidth():Float

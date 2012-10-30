@@ -7,6 +7,7 @@
 */
 package cocktail.port.platform.flash_player;
 
+import cocktail.core.geom.GeomUtils;
 import cocktail.core.geom.Matrix;
 import cocktail.core.graphics.AbstractGraphicsContextImpl;
 import cocktail.core.graphics.GraphicsContext;
@@ -209,7 +210,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	 */
 	override public function transform(matrix:Matrix):Void
 	{
-		_childrenNativeLayer.transform.matrix = new flash.geom.Matrix(matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f);
+		//_childrenNativeLayer.transform.matrix = new flash.geom.Matrix(matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f);
 	}
 	
 	override public function attach(graphicsContext:GraphicsContext, index:Int):Void
@@ -321,7 +322,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		var argbColor:Int = color.color;
 		var alpha:Int = Math.round(255 * color.alpha);
 		argbColor += alpha << 24;
-		
+
 		//if the color is transparent, a new bitmap data
 		//must be created to composite alpha
 		if (color.alpha != 1.0 || _useTransparency == true)
@@ -338,10 +339,14 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		//else, the faster native flash method can be used
 		else
 		{
-			_flashRectangle.x = Math.round(rect.x);
-			_flashRectangle.y = Math.round(rect.y);
-			_flashRectangle.width = Math.round(rect.width);
-			_flashRectangle.height = Math.round(rect.height);
+			
+			var clippedRect:RectangleVO = new RectangleVO();
+			GeomUtils.intersectBounds(rect, clipRect, clippedRect);
+			
+			_flashRectangle.x = Math.round(clippedRect.x);
+			_flashRectangle.y = Math.round(clippedRect.y);
+			_flashRectangle.width = Math.round(clippedRect.width);
+			_flashRectangle.height = Math.round(clippedRect.height);
 			_nativeBitmap.bitmapData.fillRect(_flashRectangle, argbColor);
 		}
 	

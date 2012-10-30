@@ -148,8 +148,6 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	{
 		super(rootElementRenderer);
 		
-		this.rootElementRenderer = rootElementRenderer;
-		
 		hasOwnGraphicsContext = false;
 		hasOwnStackingContext = false;
 		
@@ -215,7 +213,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 * 
 	 * TODO 2 : might need to split matrix of transform style and of
 	 * relative positioning, as relative positioning shouldn't apply
-	 * to fixed elements
+	 * to fixed elements but other transformations do
 	 */
 	public function updateLayerMatrix(parentMatrix:Matrix):Void
 	{
@@ -888,6 +886,25 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		return true;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN BOUNDS METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to also
+	 * add the layer's transformations
+	 * to the bounds
+	 * 
+	 * TODO 2 : for now only support
+	 * translation
+	 */
+	override public function updateBounds():Void
+	{
+		super.updateBounds();
+		bounds.x += _matrix.e;
+		bounds.y += _matrix.f;
+	}
+	
 	/////////////////////////////////
 	// PUBLIC RENDERING METHODS
 	////////////////////////////////
@@ -903,6 +920,8 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 */
 	public function render():Void
 	{
+		_needsRendering = true;
+		
 		//only clear if a rendering is necessary
 		if (_needsRendering == true)
 		{
