@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<application xmlns="http://ns.adobe.com/air/application/3.4"> 
+    <id>fr.intermedia-paris.test1</id> 
+    <name>GetStarted</name> 
+    <filename>GetStarted</filename> 
+    <versionNumber>0.0.1</versionNumber> 
+    <copyright>Copyright 2012 Silex Labs</copyright>
+	<initialWindow>
+		<content>Main.swf</content>
+		<aspectRatio>landscape</aspectRatio>
+		<autoOrients>true</autoOrients>
+		<renderMode>direct</renderMode>
+		<systemChrome>standard</systemChrome>
+		<transparent>false</transparent>
+		<visible>true</visible>
+		<minimizable>true</minimizable>
+		<maximizable>true</maximizable>
+		<resizable>true</resizable>
+		<fullScreen>true</fullScreen>
+		<width>330</width>
+		<height>460</height>
+		<x>150</x>
+		<y>150</y>
+		<minSize>0 0</minSize>
+	</initialWindow> 
+	<android> 
+		<manifestAdditions> 
+			<![CDATA[ 
+				<manifest> 
+					<uses-permission android:name="android.permission.INTERNET" />
+					<application android:hardwareAccelerated="true"/> 
+					<supports-screens android:smallScreens="true"/>
+					<supports-screens android:normalScreens="true"/>
+					<supports-screens android:largeScreens="false"/>
+					<supports-screens android:xlargeScreens="false"/>
+				</manifest> 
+			]]> 
+		</manifestAdditions> 
+	</android>
+	<!-- iOS specific capabilities -->
+    <iPhone>
+        <!-- A list of plist key/value pairs to be added to the application Info.plist -->
+		<InfoAdditions>
+			<![CDATA[
+				<key>UIDeviceFamily</key>
+				<array>
+					<string>1</string>
+					<string>2</string>
+				</array>
+ 				<key>UIPrerenderedIcon</key>
+				<true/>
+				<key>UIApplicationExitsOnSuspend</key>
+				<true/>	
+			]]>
+		</InfoAdditions>
+		<requestedDisplayResolution>standard</requestedDisplayResolution>
+	</iPhone>
+</application>
