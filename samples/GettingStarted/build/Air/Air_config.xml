@@ -7,7 +7,7 @@
     <copyright>Copyright 2012 Silex Labs</copyright>
 	<initialWindow>
 		<content>Main.swf</content>
-		<aspectRatio>landscape</aspectRatio>
+		<aspectRatio>any</aspectRatio>
 		<autoOrients>true</autoOrients>
 		<renderMode>direct</renderMode>
 		<systemChrome>standard</systemChrome>
