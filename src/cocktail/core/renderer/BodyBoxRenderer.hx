@@ -60,7 +60,7 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	 * The HTMLBodyElement uses the bounds of the viewport
 	 * for its background
 	 */
-	override private function getBackgroundBounds():RectangleVO
+	override private function getBackgroundBounds(scrollOffset:PointVO):RectangleVO
 	{
 		var windowData:ContainingBlockVO = getWindowData();
 		

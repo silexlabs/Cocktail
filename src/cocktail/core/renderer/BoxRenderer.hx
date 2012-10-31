@@ -75,6 +75,12 @@ class BoxRenderer extends InvalidatingElementRenderer
 	private var _windowData:ContainingBlockVO;
 	
 	/**
+	 * Holds the dimensions and position of the background
+	 * of this box renderer, in viewport bounds
+	 */
+	private var _backgroundBounds:RectangleVO;
+	
+	/**
 	 * class constructor
 	 */
 	public function new(domNode:HTMLElement) 
@@ -82,6 +88,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		super(domNode);
 		_containerBlockData = new ContainingBlockVO(0.0, false, 0.0, false);
 		_windowData = new ContainingBlockVO(0.0, false, 0.0, false);
+		_backgroundBounds = new RectangleVO();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -150,7 +157,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	private function renderBackground(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
-		var backgroundBounds:RectangleVO = getBackgroundBounds();
+		var backgroundBounds:RectangleVO = getBackgroundBounds(scrollOffset);
 		
 		//TODO 3 : should only pass dimensions instead of bounds
 		BackgroundManager.render(graphicContext, backgroundBounds, coreStyle, this, clipRect);
@@ -473,9 +480,14 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 * ElementRenderer uses the viewport bounds for its background
 	 * instead of its own
 	 */
-	private function getBackgroundBounds():RectangleVO
+	private function getBackgroundBounds(scrollOffset:PointVO):RectangleVO
 	{
-		return globalBounds;
+		_backgroundBounds.x = globalBounds.x - scrollOffset.x;
+		_backgroundBounds.y = globalBounds.y - scrollOffset.y;
+		_backgroundBounds.width = globalBounds.width;
+		_backgroundBounds.height = globalBounds.height;
+		
+		return _backgroundBounds;
 	}
 	
 	/**

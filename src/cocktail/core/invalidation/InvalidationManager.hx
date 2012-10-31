@@ -417,8 +417,8 @@ class InvalidationManager
 			initialLayerRenderer.resetScrollOffset();
 			initialLayerRenderer.updateScrollOffset();
 			
-			//update the clip rects of layers used for rendering
-			initialLayerRenderer.resetClipRect(initialLayerRenderer.scrollLeft, initialLayerRenderer.scrollTop, _htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
+			//update the clip rects of layers used for rendering, default clip rect corresponds to the viewport
+			initialLayerRenderer.resetClipRect(0, 0, _htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
 			initialLayerRenderer.updateClipRect();
 			
 			//for each layer, compute its alpha by concatenating alpha of all ancestor layers

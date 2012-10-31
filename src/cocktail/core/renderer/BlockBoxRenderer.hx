@@ -614,6 +614,25 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return false;
 	}
 	
+	/**
+	 * Overriden, has if this block box renderer has its own
+	 * layer, it must not use the scrollLeft and scrollTop
+	 * of its layer when rendering background, as they
+	 * should only apply to child element renderers and layers
+	 */
+	override private function getBackgroundBounds(scrollOffset:PointVO):RectangleVO
+	{
+		var backgroundBounds:RectangleVO = super.getBackgroundBounds(scrollOffset);
+		
+		if (_hasOwnLayer == true)
+		{
+			backgroundBounds.x += layerRenderer.scrollLeft;
+			backgroundBounds.y += layerRenderer.scrollTop;
+		}
+		
+		return backgroundBounds;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////

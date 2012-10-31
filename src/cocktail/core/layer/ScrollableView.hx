@@ -24,7 +24,7 @@ import haxe.Stack;
  * 
  * More general information about layer can be found in the LayerRenderer class
  * 
- * All the bounds defined in this class (bounds, scrollableBounds...), 
+ * Some bounds defined in this class (bounds, scrollableBounds...), 
  * are defined in document space. This space's origin is the top left
  * of the canvas where the document is rendered and the bottom is the bottom
  * most point where the document is rendered.
@@ -54,13 +54,20 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	private var _verticalScrollBar:ScrollBar;
 	
 	/**
-	 * This is thee added scroll offsets of all
+	 * This is the added scroll offsets of all
 	 * the ancestors layers. For instance if an
 	 * ancestor layer as an overflow of 'hidden'
 	 * and has a scrollLeft of 5, it will add
 	 * 5 to scrollOffset.x of this layer
 	 */
-	private var _scrollOffset:PointVO; 
+	private var _ancestorsScrollOffset:PointVO; 
+	
+	/**
+	 * Same as ancestorsScrollOffset but it
+	 * also includes the layer's own scrollLeft
+	 * and scrollTop;
+	 */
+	private var _scrollOffset:PointVO;
 	
 	/**
 	 * Those represent the bounds of the layer
@@ -104,9 +111,10 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 * can in turn be further clipped if they themselves have an
 	 * overflow not visible.
 	 * 
-	 * The initial layer, at the top of the layer tree has initially
-	 * a clip rect matching the viewport, as this is the maximum area
-	 * which can be painted
+	 * The initial clip rect for all layers is the viewport
+	 * as this is the maximum area which can be painted
+	 * 
+	 * The clip rect is defined in the space of the viewport
 	 */
 	private var _clipRect:RectangleVO;
 	
@@ -135,6 +143,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		
 		scrollLeft = 0;
 		scrollTop = 0;
+		_ancestorsScrollOffset = new PointVO(0, 0);
 		_scrollOffset = new PointVO(0, 0);
 		bounds = new RectangleVO();
 		_clippedBounds = new RectangleVO();
@@ -150,13 +159,9 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 * Reset the clip rect of all layers before
 	 * re-computing it. All layers default
 	 * to the clip rect defined by the viewport.
-	 * 
-	 * The initial layer defines the x and y
-	 * of this clip rect
 	 */
 	public function resetClipRect(x:Float, y:Float, width:Float, height:Float):Void
 	{
-		//set it to an 'infinite' value
 		_clipRect.x = x;
 		_clipRect.y = y;
 		_clipRect.width = width;
@@ -181,9 +186,19 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		//find its own clip rect and apply it to its children
 		if (isXAxisClipped() == true || isYAxisClipped() == true)
 		{
+			//before computing clip rect, convert the clipped bounds from
+			//document space to viewport space with scroll offsets
+			_clippedBounds.x -= _ancestorsScrollOffset.x;
+			_clippedBounds.y -= _ancestorsScrollOffset.y;
+			
 			//find the intersecting rect between its current clip rect (clip
 			//rect established by its ancestors) and its own clip rect
 			GeomUtils.intersectBounds(_clipRect, _clippedBounds, _clipRect);
+			
+			//convert back to document space
+			_clippedBounds.x += _ancestorsScrollOffset.x;
+			_clippedBounds.y += _ancestorsScrollOffset.y;
+			
 			clipChildren(cast(this), _clipRect, cast(this));
 		}
 		
@@ -270,6 +285,8 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 */
 	public function resetScrollOffset():Void
 	{
+		_ancestorsScrollOffset.x = 0;
+		_ancestorsScrollOffset.y = 0;
 		_scrollOffset.x = 0;
 		_scrollOffset.y = 0;
 		
@@ -284,7 +301,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	/**
 	 * Update the scroll offset of this layer
 	 * which is the added scroll offset of all 
-	 * its ancestor and its own, if it has any
+	 * its ancestors
 	 */
 	public function updateScrollOffset():Void
 	{
@@ -294,11 +311,9 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 			//TODO  : if scrollableBounds.x - bounds.x < 0, scrollLeftForChild = scrollableBounds.x + scrollLeft, 
 			//same for y, as if scrollLeft specified as 0, child should
 			//be rendered using layer top left as origin.
-			//TODO  : should only update y if only y clipped ? -> no need, scrollTop would be 0 ?
-			_scrollOffset.x += scrollLeft;
-			_scrollOffset.y += scrollTop;
+			
 			//add offset to all descendant
-			addScrollOffsetToChildren(cast(this), _scrollOffset.x, _scrollOffset.y, cast(this));
+			addScrollOffsetToChildren(cast(this), scrollLeft, scrollTop, cast(this));
 		}
 		
 		//apply scroll offset to the whole
@@ -309,6 +324,10 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 			child.updateScrollOffset();
 			child = cast(child.nextSibling);
 		}
+		
+		//can now update combined scrolloffset
+		_scrollOffset.x = _ancestorsScrollOffset.x + scrollLeft;
+		_scrollOffset.y = _ancestorsScrollOffset.y + scrollTop;
 	}
 	
 	/**
@@ -332,8 +351,8 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		}
 		
 		//else add to own offset
-		_scrollOffset.x += scrollLeft;
-		_scrollOffset.y += scrollTop;
+		_ancestorsScrollOffset.x += scrollLeft;
+		_ancestorsScrollOffset.y += scrollTop;
 		
 	}
 	
