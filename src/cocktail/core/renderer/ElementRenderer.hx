@@ -201,12 +201,12 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	/**
 	 * get/set the scrolling in the x axis of this ElementRenderer.
 	 */
-	public var scrollLeft(default, set_scrollLeft):Float;
+	public var scrollLeft(get_scrollLeft, set_scrollLeft):Float;
 	
 	/**
 	 * get/set the scrolling in the y axis of this ElementRenderer
 	 */
-	public var scrollTop(default, set_scrollTop):Float;
+	public var scrollTop(get_scrollTop, set_scrollTop):Float;
 	
 	/**
 	 * get the larger width between the ElementRenderer's and its children
@@ -1152,7 +1152,22 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	}
 	
 	/**
-	 * same as scroll left for top
+	 * same as when setting scroll left, if element
+	 * has own layer, retrieve scroll left from layer,
+	 * else it doesn't have any scroll left
+	 */
+	private function get_scrollLeft():Float
+	{
+		if (_hasOwnLayer == true)
+		{
+			return layerRenderer.scrollLeft;
+		}
+		
+		return 0;
+	}
+	
+	/**
+	 * same as setting scroll left for top
 	 */
 	private function set_scrollTop(value:Float):Float 
 	{
@@ -1162,6 +1177,19 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		}
 		
 		return value;
+	}
+	
+	/**
+	 * same as getting scroll left for top
+	 */
+	private function get_scrollTop():Float
+	{
+		if (_hasOwnLayer == true)
+		{
+			return layerRenderer.scrollTop;
+		}
+		
+		return 0;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
