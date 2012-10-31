@@ -14,6 +14,7 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.css.CSSData;
+import haxe.Stack;
 
 /**
  * This is a base class for layers which represent the 
@@ -498,7 +499,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		//update all the layer tree recursively
 		while (child != null)
 		{
-			child.updateBounds();
+			child.updateScrollableBounds();
 			child = cast(child.nextSibling);
 		}
 	}
@@ -545,10 +546,10 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 */
 	private function getScrollableBounds(rootLayerRenderer:ViewClass, scrollableBounds:RectangleVO):Void
 	{
-		bounds.x = 50000;
-		bounds.y = 50000;
-		bounds.width = 0;
-		bounds.height = 0;
+		scrollableBounds.x = 50000;
+		scrollableBounds.y = 50000;
+		scrollableBounds.width = 0;
+		scrollableBounds.height = 0;
 		
 		//first add its own bounds
 		GeomUtils.addBounds(this.bounds, scrollableBounds);
@@ -573,6 +574,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		{
 			//request bounds of child, child determine what bounds it should return
 			var childBounds:RectangleVO = child.getScrollableBoundsIfNeeded(referenceLayer);
+
 			
 			//if child returned null bounds, then it is not 
 			//scrolled by this layer
@@ -580,6 +582,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 			{
 				//else, add bounds of child to scrollable bounds
 				GeomUtils.addBounds(childBounds, scrollableBounds, getHorizontalBounds, getVerticalBounds);
+				
 				if (child.firstChild != null)
 				{
 					//if child x-axis is clipped, then there is no need
@@ -705,6 +708,12 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 */
 	public function isXAxisClipped():Bool
 	{
+		//only block containers can be clipped
+		if (rootElementRenderer.isBlockContainer() == false)
+		{
+			return false;
+		}
+		
 		switch (rootElementRenderer.coreStyle.getKeyword(rootElementRenderer.coreStyle.overflowX))
 		{
 			case HIDDEN, SCROLL:
@@ -733,6 +742,12 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 */
 	public function isYAxisClipped():Bool
 	{
+		//only block containers can be clipped
+		if (rootElementRenderer.isBlockContainer() == false)
+		{
+			return false;
+		}
+		
 		switch (rootElementRenderer.coreStyle.getKeyword(rootElementRenderer.coreStyle.overflowY))
 		{
 			case HIDDEN, SCROLL:

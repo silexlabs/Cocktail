@@ -410,6 +410,9 @@ class InvalidationManager
 			//update clipped bounds of layers which don't overflow 
 			initialLayerRenderer.updateClippedBounds();
 			
+			//update the scrollable bounds of the layer which define the area it can scroll
+			initialLayerRenderer.updateScrollableBounds();
+			
 			//update the added scroll offset of all the layers
 			initialLayerRenderer.resetScrollOffset();
 			initialLayerRenderer.updateScrollOffset();

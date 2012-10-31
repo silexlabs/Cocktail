@@ -148,7 +148,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	/**
 	 * Render the background of the box using the provided graphic context
 	 */
-	private function renderBackground(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset):Void
+	private function renderBackground(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		var backgroundBounds:RectangleVO = getBackgroundBounds();
 		

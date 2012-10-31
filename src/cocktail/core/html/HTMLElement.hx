@@ -549,18 +549,6 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
-	 * if the HTML element is rendered, update
-	 * the document synchronously
-	 */
-	public function updateDocumentImmediately():Void
-	{
-		if (elementRenderer != null)
-		{
-			_ownerHTMLDocument.invalidationManager.updateDocumentImmediately();
-		}
-	}
-	
-	/**
 	 * Called when the element renderer of this HTMLElement
 	 * has become invalid and needs to be re-created before
 	 * next layout and rendering
@@ -629,6 +617,22 @@ class HTMLElement extends Element<HTMLElement>
 			_ownerHTMLDocument.invalidationManager.invalidateCascade();
 
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * update the document immediately instead of waiting
+	 * for the next scheduled update. Needed by some public
+	 * API, like for instance those returning the computed
+	 * position of an element, those dimensions should be returned
+	 * synchronously
+	 */
+	private function updateDocumentImmediately():Void
+	{
+		_ownerHTMLDocument.invalidationManager.updateDocumentImmediately();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1420,6 +1424,8 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function set_scrollLeft(value:Int):Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			elementRenderer.scrollLeft = value;
@@ -1438,6 +1444,8 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function set_scrollTop(value:Int):Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			elementRenderer.scrollTop = value;
