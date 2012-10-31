@@ -650,15 +650,30 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		{
 			scrollLeft = 0;
 		}
-		//if the value is more than available scrollable width, set
-		//the value to the max scrollable width
-		else if (value > _scrollableBounds.width)
-		{
-			scrollLeft = _scrollableBounds.width;
-		}
 		else
 		{
-			scrollLeft = value;
+			//else get maximum available scroll
+			var maxWidthScroll:Float = _scrollableBounds.width - _clippedBounds.width;
+			
+			//if negative, means that content of layer's width is smaller than
+			//the root element render width, so it can't be scrolled
+			if (maxWidthScroll <= 0)
+			{
+				scrollLeft = 0;
+			}
+			//else clip the scroll value to the max scroll width
+			//if necessary
+			else
+			{
+				if (value > maxWidthScroll)
+				{
+					scrollLeft = maxWidthScroll;
+				}
+				else
+				{
+					scrollLeft = value;
+				}
+			}
 		}
 		
 		return value;
@@ -675,13 +690,25 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		{
 			scrollTop = 0;
 		}
-		else if (value > _scrollableBounds.height)
+		else 
 		{
-			scrollTop = _scrollableBounds.height;
-		}
-		else
-		{
-			scrollTop = value;
+			var maxHeightScroll:Float = _scrollableBounds.height - _clippedBounds.height;
+			
+			if (maxHeightScroll <= 0)
+			{
+				scrollTop = 0;
+			}
+			else
+			{
+				if (value > maxHeightScroll)
+				{
+					scrollTop = maxHeightScroll;
+				}
+				else
+				{
+					scrollTop = value;
+				}
+			}
 		}
 		
 		return value;
