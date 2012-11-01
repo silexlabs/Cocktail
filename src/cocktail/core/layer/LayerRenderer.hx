@@ -139,7 +139,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 * 
 	 * Default is an identity matrix
 	 */
-	private var _matrix:Matrix;
+	public var matrix(default, null):Matrix;
 	
 	/**
 	 * class constructor. init class attributes
@@ -155,7 +155,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		_needsGraphicsContextUpdate = true;
 		_needsStackingContextUpdate = true;
 		
-		_matrix = new Matrix();
+		matrix = new Matrix();
 		_alpha = 1.0;
 	}
 	
@@ -218,23 +218,23 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	public function updateLayerMatrix(parentMatrix:Matrix):Void
 	{
 		//reset layer's matrix
-		_matrix.identity();
+		matrix.identity();
 		
 		if (rootElementRenderer.isTransformed() == true)
 		{
 			//TODO 2 : should it still be separate class ?
 			VisualEffectStylesComputer.compute(rootElementRenderer.coreStyle);
 			//update transformation matrix of layer 
-			_matrix = getTransformationMatrix();
+			matrix = getTransformationMatrix();
 		}
 		//concatenate layer transformation with parent transformations
-		_matrix.concatenate(parentMatrix);
+		matrix.concatenate(parentMatrix);
 		
 		//update the whole layer tree recursively
 		var child:LayerRenderer = firstChild;
 		while (child != null)
 		{
-			child.updateLayerMatrix(_matrix);
+			child.updateLayerMatrix(matrix);
 			child = child.nextSibling;
 		}
 	}
@@ -900,8 +900,25 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	override public function updateBounds():Void
 	{
 		super.updateBounds();
-		bounds.x += _matrix.e;
-		bounds.y += _matrix.f;
+		bounds.x += matrix.e;
+		bounds.y += matrix.f;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN SCROLL GETTER/SETTER
+	// overriden to invalidate rendering when updated
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function set_scrollLeft(value:Float):Float
+	{
+		invalidateRendering();
+		return super.set_scrollLeft(value);
+	}
+
+	override private function set_scrollTop(value:Float):Float
+	{
+		invalidateRendering();
+		return super.set_scrollTop(value);
 	}
 	
 	/////////////////////////////////
@@ -945,11 +962,11 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 			
 			//apply layer matrix to graphics context, so that all element
 			//renderers of the lyer use those transformations
-			graphicsContext.graphics.beginTransformations(_matrix);
+			graphicsContext.graphics.beginTransformations(matrix);
 			
 			//render the rootElementRenderer itself which will also
 			//render all ElementRenderer belonging to this LayerRenderer
-			rootElementRenderer.render(graphicsContext, _clipRect, _scrollOffset);
+			rootElementRenderer.render(graphicsContext, clipRect, scrollOffset);
 			
 			//stop using the layer's transformations
 			graphicsContext.graphics.endTransformations();

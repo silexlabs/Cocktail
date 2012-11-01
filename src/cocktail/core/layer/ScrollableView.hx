@@ -67,7 +67,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 * also includes the layer's own scrollLeft
 	 * and scrollTop;
 	 */
-	private var _scrollOffset:PointVO;
+	public var scrollOffset(default, null):PointVO;
 	
 	/**
 	 * Those represent the bounds of the layer
@@ -116,7 +116,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 * 
 	 * The clip rect is defined in the space of the viewport
 	 */
-	private var _clipRect:RectangleVO;
+	public var clipRect(default, null):RectangleVO;
 	
 	/**
 	 * Represent the offset in the x-axis to apply
@@ -144,11 +144,11 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		scrollLeft = 0;
 		scrollTop = 0;
 		_ancestorsScrollOffset = new PointVO(0, 0);
-		_scrollOffset = new PointVO(0, 0);
+		scrollOffset = new PointVO(0, 0);
 		bounds = new RectangleVO();
 		_clippedBounds = new RectangleVO();
 		_scrollableBounds = new RectangleVO();
-		_clipRect = new RectangleVO();
+		clipRect = new RectangleVO();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -162,10 +162,10 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 */
 	public function resetClipRect(x:Float, y:Float, width:Float, height:Float):Void
 	{
-		_clipRect.x = x;
-		_clipRect.y = y;
-		_clipRect.width = width;
-		_clipRect.height = height;
+		clipRect.x = x;
+		clipRect.y = y;
+		clipRect.width = width;
+		clipRect.height = height;
 		
 		//traverse whole layer tree
 		var child:ViewClass = firstChild;
@@ -193,13 +193,13 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 			
 			//find the intersecting rect between its current clip rect (clip
 			//rect established by its ancestors) and its own clip rect
-			GeomUtils.intersectBounds(_clipRect, _clippedBounds, _clipRect);
+			GeomUtils.intersectBounds(clipRect, _clippedBounds, clipRect);
 			
 			//convert back to document space
 			_clippedBounds.x += _ancestorsScrollOffset.x;
 			_clippedBounds.y += _ancestorsScrollOffset.y;
 			
-			clipChildren(cast(this), _clipRect, cast(this));
+			clipChildren(cast(this), clipRect, cast(this));
 		}
 		
 		//clip while layer tree recursively
@@ -250,11 +250,11 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 * to the ancestor. This layer determines wether this clipping
 	 * should apply to itself
 	 * 
-	 * @param	clipRect the clip rect to apply to this layer
+	 * @param	parentClipRect the clip rect to apply to this layer
 	 * @param	layer the layer which was clipped
 	 * @return	return wether the layer was clipped
 	 */
-	public function clipIfNeeded(clipRect:RectangleVO, layer:ViewClass):Bool
+	public function clipIfNeeded(parentClipRect:RectangleVO, layer:ViewClass):Bool
 	{
 		//if the layer's root element renderer is fixed, than it can't be clipped as
 		//its containing block is the viewport
@@ -271,7 +271,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		
 		//else clip by finding the intersecting rect between
 		//the current clip rect and the ancestor's clip rect
-		GeomUtils.intersectBounds(_clipRect, clipRect, _clipRect);
+		GeomUtils.intersectBounds(clipRect, parentClipRect, clipRect);
 		return true;
 	}
 	
@@ -287,8 +287,8 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	{
 		_ancestorsScrollOffset.x = 0;
 		_ancestorsScrollOffset.y = 0;
-		_scrollOffset.x = 0;
-		_scrollOffset.y = 0;
+		scrollOffset.x = 0;
+		scrollOffset.y = 0;
 		
 		var child:ViewClass = firstChild;
 		while (child != null)
@@ -326,8 +326,8 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		}
 		
 		//can now update combined scrolloffset
-		_scrollOffset.x = _ancestorsScrollOffset.x + scrollLeft;
-		_scrollOffset.y = _ancestorsScrollOffset.y + scrollTop;
+		scrollOffset.x = _ancestorsScrollOffset.x + scrollLeft;
+		scrollOffset.y = _ancestorsScrollOffset.y + scrollTop;
 	}
 	
 	/**

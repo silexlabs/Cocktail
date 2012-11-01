@@ -427,6 +427,10 @@ class InvalidationManager
 			
 			//start rendering of the document at the initial stacking context
 			initialLayerRenderer.stackingContext.render();
+			
+			//update the hit testing bound to respond accurately to user interaction
+			_htmlDocument.documentElement.elementRenderer.updateHitTestingBounds();
+			
 			_documentNeedsRendering = false;
 		}
 		

@@ -12,6 +12,7 @@ import cocktail.core.dom.Document;
 import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.Node;
 import cocktail.core.geom.GeomUtils;
+import cocktail.core.geom.Matrix;
 
 import cocktail.core.event.TransitionEvent;
 import cocktail.core.html.HTMLDocument;
@@ -92,13 +93,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	public var bounds(get_bounds, null):RectangleVO;
 	
 	/**
-	 * Holds the current 
-	 * bounds of the children
-	 */
-	private var _childrenBounds:RectangleVO;
-	
-	/**
-	 * The bounds of the ElementRenderer in the space of the Window.
+	 * The bounds of the ElementRenderer in the space of the document.
 	 * 
 	 * Returns the
 	 * relevant global bounds for an ElementRenderer. For instance
@@ -107,6 +102,20 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * is absolutely positioned, it will use its positioned bounds
 	 */
 	public var globalBounds(get_globalBounds, null):RectangleVO;
+	
+	/**
+	 * Those are the bounds of the element renderer used for hit testing,
+	 * for instance when a mouse pointer hovers the document, those
+	 * bounds are used to determine wheter this element renderer is under
+	 * the mouse pointer.
+	 * 
+	 * Those bounds are the global bounds converted to the viewport space
+	 * by adding the all the scroll offsets of ancestors layers, and
+	 * all transformations matrix of ancestors layers. Those
+	 * bounds are also clipped by all ancestors layer, as if a part
+	 * of the element is not displayed, this part can't be hit-tested
+	 */
+	public var hitTestingBounds(default, null):RectangleVO;
 	
 	/**
 	 * This is the position of the top left padding box corner of the 
@@ -253,11 +262,11 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		
 		positionedOrigin = new PointVO(0.0, 0.0);
 		
+		hitTestingBounds = new RectangleVO();
+		
 		globalPositionnedAncestorOrigin = new PointVO(0.0, 0.0); 
 		
 		globalContainingBlockOrigin = new PointVO(0.0, 0.0);
-				
-		_childrenBounds = new RectangleVO();
 		
 		lineBoxes = new Array<LineBox>();
 	}
@@ -273,6 +282,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		bounds = null;
 		globalBounds = null;
 		positionedOrigin = null;
+		hitTestingBounds = null;
 		globalPositionnedAncestorOrigin = null;
 		globalContainingBlockOrigin = null;
 		layerRenderer = null;
@@ -341,6 +351,56 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		
 		newChild.addedToRenderingTree();
 		invalidate();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC HIT TESTING METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Update the bounds of the element renderer used for
+	 * hit testing. Update the whole rendering tree recursively
+	 */
+	public function updateHitTestingBounds():Void
+	{
+		//start with global bounds
+		hitTestingBounds.x = globalBounds.x;
+		hitTestingBounds.y = globalBounds.y;
+		hitTestingBounds.width = globalBounds.width;
+		hitTestingBounds.height = globalBounds.height;
+		
+		//apply offset and matrix of layer to converted document bounds
+		//to viewport bounds
+		var scrollOffset:PointVO = layerRenderer.scrollOffset;
+		hitTestingBounds.x -= scrollOffset.x;
+		hitTestingBounds.y -= scrollOffset.y;
+		
+		//TODO 2 : for now, only translations supported, if layer
+		//is rotated or scaled, it won't hit test properly
+		var matrix:Matrix = layerRenderer.matrix;
+		hitTestingBounds.x += matrix.e;
+		hitTestingBounds.y += matrix.f;
+		
+		//if the element renderer is the root of its layer, then it
+		//shouldn't use its scrollLeft and srollTop, which should only
+		//apply to child element renderers and child layers
+		if (_hasOwnLayer == true)
+		{
+			hitTestingBounds.x += layerRenderer.scrollLeft;
+			hitTestingBounds.y += layerRenderer.scrollTop;
+		}
+		
+		//clip the hit testing bounds with the clip rect of the layer, which
+		//is also defined in viewport space
+		GeomUtils.intersectBounds(layerRenderer.clipRect, hitTestingBounds, hitTestingBounds);
+		
+		//update hit test bounds of all element renderers
+		var child:ElementRenderer = firstChild;
+		while (child != null)
+		{
+			child.updateHitTestingBounds();
+			child = child.nextSibling;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
