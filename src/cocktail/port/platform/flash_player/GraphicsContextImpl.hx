@@ -261,6 +261,14 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_flashMatrix.tx = matrix.e;
 		_flashMatrix.ty = matrix.f;
 		
+		if (_useTransformations == true)
+		{
+			_flashMatrix.tx += _matrix.e;
+			_flashMatrix.ty += _matrix.f;
+			_flashRectangle.width += _matrix.e ;
+			_flashRectangle.height += _matrix.f ;
+		}
+		
 		var colorTransform:ColorTransform = null;
 		
 		//use a colorTransform to apply the alphe if 
@@ -286,8 +294,17 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_flashRectangle.width = Math.round(clipRect.width) ;
 		_flashRectangle.height = Math.round(clipRect.height) ;
 		
+		
 		_flashPoint.x = Math.round(clipRect.x);
 		_flashPoint.y = Math.round(clipRect.y);
+		
+		if (_useTransformations == true)
+		{
+			_flashPoint.x += _matrix.e;
+			_flashPoint.y += _matrix.f;
+			_flashRectangle.width -= _matrix.e ;
+			_flashRectangle.height -= _matrix.f ;
+		}
 		
 		var alphaBitmapData:BitmapData = null;
 		var alphaPoint:Point = null;
