@@ -58,6 +58,8 @@ class DOMConstants
 	
 	public static inline var TRANSITION_EVENT_INTERFACE:String = "TransitionEvent";
 
+	public static inline var POPSTATE_EVENT_INTERFACE:String = "PopStateEvent";
+	
 	//Element const
 	
 	/**
