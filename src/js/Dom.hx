@@ -247,6 +247,13 @@ var changedTouches:TouchList;
 var targetTouches:TouchList;
 }
 
+typedef WheelEvent = { > Event,
+var deltaX : Float;
+var deltaY : Float;
+var deltaZ : Float;
+var deltaMode : Int;
+}
+
 typedef TouchList = {
 	var length:Int;
 	function item(index:Int):Touch;
