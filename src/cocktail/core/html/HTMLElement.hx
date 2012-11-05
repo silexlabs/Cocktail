@@ -549,18 +549,6 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
-	 * if the HTML element is rendered, update
-	 * the document synchronously
-	 */
-	public function updateDocumentImmediately():Void
-	{
-		if (elementRenderer != null)
-		{
-			_ownerHTMLDocument.invalidationManager.updateDocumentImmediately();
-		}
-	}
-	
-	/**
 	 * Called when the element renderer of this HTMLElement
 	 * has become invalid and needs to be re-created before
 	 * next layout and rendering
@@ -629,6 +617,22 @@ class HTMLElement extends Element<HTMLElement>
 			_ownerHTMLDocument.invalidationManager.invalidateCascade();
 
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * update the document immediately instead of waiting
+	 * for the next scheduled update. Needed by some public
+	 * API, like for instance those returning the computed
+	 * position of an element, those dimensions should be returned
+	 * synchronously
+	 */
+	private function updateDocumentImmediately():Void
+	{
+		_ownerHTMLDocument.invalidationManager.updateDocumentImmediately();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1398,40 +1402,6 @@ class HTMLElement extends Element<HTMLElement>
 	// SCROLLING SETTER/GETTER AND METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Utils method determining wether
-	 * the HTMLElement displays an active
-	 * vertical scrolbar
-	 * @param scrollOffset an optionnal parameter determining
-	 * the scroll offset which tries to be applied to the vertical scrollbar.
-	 * If applying the offset doesn't scroll the HTMLElement, for instance
-	 * if the HTMLElement is completely scrolled and a positive offset
-	 * is applied to it, then the method return false
-	 * 
-	 * @return true if a vertical scrollbar is displayed
-	 * and isactive
-	 */
-	public function isVerticallyScrollable(scrollOffset:Int = 0):Bool
-	{
-		if (elementRenderer != null)
-		{
-			return elementRenderer.isVerticallyScrollable(scrollOffset);
-		}
-		return false;
-	}
-	
-	/**
-	 * same as absove for the horizontal scrollbar
-	 */
-	public function isHorizontallyScrollable(scrollOffset:Int = 0):Bool
-	{
-		if (elementRenderer != null)
-		{
-			return elementRenderer.isHorizontallyScrollable(scrollOffset);
-		}
-		return false;
-	}
-	
 	//TODO 3 : should unit test, not very sure what this getter
 	//is supposed to return
 	private function get_scrollHeight():Int
@@ -1454,6 +1424,8 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function set_scrollLeft(value:Int):Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			elementRenderer.scrollLeft = value;
@@ -1472,6 +1444,8 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function set_scrollTop(value:Int):Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			elementRenderer.scrollTop = value;

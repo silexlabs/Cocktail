@@ -50,14 +50,16 @@ class InitialLayerRenderer extends LayerRenderer
 	override private function doAttachStackingContext():Void
 	{
 		stackingContext = new StackingContext(this);
+		hasOwnStackingContext = true;
 	}
 	
 	/**
-	 * No need to detach the stacking context of the root layer
+	 * always detach stacking context
 	 */
 	override private function doDetachStackingContext():Void
 	{
-		
+		stackingContext = null;
+		hasOwnStackingContext = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -93,5 +95,18 @@ class InitialLayerRenderer extends LayerRenderer
 		return false;
 	}
 	
+	/////////////////////////////////
+	// OVERRIDEN PRIVATE UTILS METHODS
+	////////////////////////////////	
+	
+	/**
+	 * overriden as for the initial layer, a computed value
+	 * of visible for overflow behaves the same as a computed
+	 * value of auto
+	 */
+	override private function treatVisibleOverflowAsAuto():Bool
+	{
+		return true;
+	}
 	
 }

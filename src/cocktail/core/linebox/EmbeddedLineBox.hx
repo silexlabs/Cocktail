@@ -44,9 +44,9 @@ class EmbeddedLineBox extends LineBox
 	/**
 	 * Embeded LineBoxes defer rendering to their ElementRenderer
 	 */
-	override public function render(graphicContext:GraphicsContext):Void
+	override public function render(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
-		elementRenderer.render(graphicContext);
+		elementRenderer.render(graphicContext, clipRect, scrollOffset);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

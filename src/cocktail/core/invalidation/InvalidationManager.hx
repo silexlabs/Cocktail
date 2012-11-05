@@ -10,7 +10,10 @@ package cocktail.core.invalidation;
 
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
+import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLDocument;
+import cocktail.core.layer.LayerRenderer;
+import cocktail.core.stacking.StackingContext;
 
 /**
  * This class is in charge of keeping
@@ -394,12 +397,40 @@ class InvalidationManager
 		//same as for layout
 		if (_documentNeedsRendering == true)
 		{
+			var initialLayerRenderer:LayerRenderer = _htmlDocument.documentElement.elementRenderer.layerRenderer;
+			
+			//for each concatenate its transformations with those of its parents
+			//TODO 2 : need not to be updated each rendering. Also shouldn't create
+			//new matrix each time
+			initialLayerRenderer.updateLayerMatrix(new Matrix());
+			
+			//update all of the layers element renderers bounds
+			initialLayerRenderer.updateBounds();
+			
+			//update clipped bounds of layers which don't overflow 
+			initialLayerRenderer.updateClippedBounds();
+			
+			//update the scrollable bounds of the layer which define the area it can scroll
+			initialLayerRenderer.updateScrollableBounds();
+			
+			//update the added scroll offset of all the layers
+			initialLayerRenderer.resetScrollOffset();
+			initialLayerRenderer.updateScrollOffset();
+			
+			//update the clip rects of layers used for rendering, default clip rect corresponds to the viewport
+			initialLayerRenderer.resetClipRect(0, 0, _htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
+			initialLayerRenderer.updateClipRect();
+			
 			//for each layer, compute its alpha by concatenating alpha of all ancestor layers
 			//TODO 2 : need not to be updated each rendering
-			_htmlDocument.documentElement.elementRenderer.layerRenderer.updateLayerAlpha(1.0);
+			initialLayerRenderer.updateLayerAlpha(1.0);
 			
 			//start rendering of the document at the initial stacking context
-			_htmlDocument.documentElement.elementRenderer.layerRenderer.stackingContext.render();
+			initialLayerRenderer.stackingContext.render();
+			
+			//update the hit testing bound to respond accurately to user interaction
+			_htmlDocument.documentElement.elementRenderer.updateHitTestingBounds();
+			
 			_documentNeedsRendering = false;
 		}
 		
@@ -464,7 +495,7 @@ class InvalidationManager
 		
 		//set the global bounds on the rendering tree. After this, ElementRenderer
 		//are aware of their bounds relative ot the viewport
-		_htmlDocument.documentElement.elementRenderer.setGlobalOrigins(0, 0, 0, 0, 0 ,0);
+		_htmlDocument.documentElement.elementRenderer.setGlobalOrigins(0, 0, 0, 0);
 	}
 	
 }

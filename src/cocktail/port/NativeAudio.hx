@@ -7,18 +7,15 @@
 */
 package cocktail.port;
 
-/**
- * Set the right runtime specific audio at compile-time
- */
 #if macro
-typedef NativeAudio =  cocktail.port.platform.nativeMedia.NativeMedia;
+typedef NativeAudio =  cocktail.port.base.NativeMedia;
 
 #elseif nme
-typedef NativeAudio =  cocktail.port.nme.NativeAudio;
+typedef NativeAudio =  cocktail.port.platform.nme.NativeAudio;
 
-#elseif flash9
-typedef NativeAudio =  cocktail.port.flash_player.NativeAudio;
+#elseif flash
+typedef NativeAudio =  cocktail.port.platform.flash_player.NativeAudio;
 
 #else
-typedef NativeAudio =  cocktail.port.platform.nativeMedia.NativeMedia;
+typedef NativeAudio =  cocktail.port.base.NativeMedia;
 #end

@@ -11,6 +11,8 @@ import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.Node;
+import cocktail.core.geom.GeomUtils;
+import cocktail.core.geom.Matrix;
 
 import cocktail.core.event.TransitionEvent;
 import cocktail.core.html.HTMLDocument;
@@ -91,13 +93,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	public var bounds(get_bounds, null):RectangleVO;
 	
 	/**
-	 * Holds the current 
-	 * bounds of the children
-	 */
-	private var _childrenBounds:RectangleVO;
-	
-	/**
-	 * The bounds of the ElementRenderer in the space of the Window.
+	 * The bounds of the ElementRenderer in the space of the document.
 	 * 
 	 * Returns the
 	 * relevant global bounds for an ElementRenderer. For instance
@@ -108,17 +104,18 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	public var globalBounds(get_globalBounds, null):RectangleVO;
 	
 	/**
-	 * The scrollable bounds of the ElementRenderer in the space of the scrollable containing
-	 * block used to determine the scrolling area of the containing block. 
+	 * Those are the bounds of the element renderer used for hit testing,
+	 * for instance when a mouse pointer hovers the document, those
+	 * bounds are used to determine wheter this element renderer is under
+	 * the mouse pointer.
 	 * 
-	 * The difference with the regular bounds is that any offset needed
-	 * in the computation of scrollable bounds are added. 
-	 * 
-	 * For instance if the ElementRenderer is relatively positioned, its
-	 * bounds once transformed with the relative offset are returned
-	 * instead of its bounds in the flow like the regular bounds.
+	 * Those bounds are the global bounds converted to the viewport space
+	 * by adding the all the scroll offsets of ancestors layers, and
+	 * all transformations matrix of ancestors layers. Those
+	 * bounds are also clipped by all ancestors layer, as if a part
+	 * of the element is not displayed, this part can't be hit-tested
 	 */
-	public var scrollableBounds(get_scrollableBounds, null):RectangleVO;
+	public var hitTestingBounds(default, null):RectangleVO;
 	
 	/**
 	 * This is the position of the top left padding box corner of the 
@@ -152,12 +149,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * is absolutely positioned.
 	 */
 	public var globalPositionnedAncestorOrigin:PointVO;
-	
-	/**
-	 * The total of all the x and y scroll
-	 * applied to the parent of this ElementRenderer
-	 */
-	public var scrollOffset:PointVO;
 	
 	/**
 	 * A reference to the Node in the DOM tree
@@ -194,10 +185,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	/**
 	 * Determine wheter this ElementRenderer establishes its own
 	 * stacking context (instantiates a new LayerRenderer)
-	 * 
-	 * TODO 2 : not very clean, should layerRenderer be null instead
-	 * for ElementRenderer not starting a layer ? -> or should use 
-	 * the establishesNewStackingContext Method ? + doc is false
 	 */
 	private var _hasOwnLayer:Bool;
 	
@@ -273,17 +260,13 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		
 		globalBounds = new RectangleVO();
 		
-		scrollOffset = new PointVO(0.0, 0.0);
-		
 		positionedOrigin = new PointVO(0.0, 0.0);
+		
+		hitTestingBounds = new RectangleVO();
 		
 		globalPositionnedAncestorOrigin = new PointVO(0.0, 0.0); 
 		
 		globalContainingBlockOrigin = new PointVO(0.0, 0.0);
-		
-		scrollableBounds = new RectangleVO();
-		
-		_childrenBounds = new RectangleVO();
 		
 		lineBoxes = new Array<LineBox>();
 	}
@@ -298,8 +281,8 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		
 		bounds = null;
 		globalBounds = null;
-		scrollOffset = null;
 		positionedOrigin = null;
+		hitTestingBounds = null;
 		globalPositionnedAncestorOrigin = null;
 		globalContainingBlockOrigin = null;
 		layerRenderer = null;
@@ -371,6 +354,56 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC HIT TESTING METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Update the bounds of the element renderer used for
+	 * hit testing. Update the whole rendering tree recursively
+	 */
+	public function updateHitTestingBounds():Void
+	{
+		//start with global bounds
+		hitTestingBounds.x = globalBounds.x;
+		hitTestingBounds.y = globalBounds.y;
+		hitTestingBounds.width = globalBounds.width;
+		hitTestingBounds.height = globalBounds.height;
+		
+		//apply offset and matrix of layer to converted document bounds
+		//to viewport bounds
+		var scrollOffset:PointVO = layerRenderer.scrollOffset;
+		hitTestingBounds.x -= scrollOffset.x;
+		hitTestingBounds.y -= scrollOffset.y;
+		
+		//TODO 2 : for now, only translations supported, if layer
+		//is rotated or scaled, it won't hit test properly
+		var matrix:Matrix = layerRenderer.matrix;
+		hitTestingBounds.x += matrix.e;
+		hitTestingBounds.y += matrix.f;
+		
+		//if the element renderer is the root of its layer, then it
+		//shouldn't use its scrollLeft and srollTop, which should only
+		//apply to child element renderers and child layers
+		if (_hasOwnLayer == true)
+		{
+			hitTestingBounds.x += layerRenderer.scrollLeft;
+			hitTestingBounds.y += layerRenderer.scrollTop;
+		}
+		
+		//clip the hit testing bounds with the clip rect of the layer, which
+		//is also defined in viewport space
+		GeomUtils.intersectBounds(layerRenderer.clipRect, hitTestingBounds, hitTestingBounds);
+		
+		//update hit test bounds of all element renderers
+		var child:ElementRenderer = firstChild;
+		while (child != null)
+		{
+			child.updateHitTestingBounds();
+			child = child.nextSibling;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC RENDERING METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 
@@ -378,16 +411,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * Render this ElementRenderer using the provided
 	 * graphic context as canvas
 	 */
-	public function render(parentGraphicContext:GraphicsContext):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Render the scrollbars of this ElementRenderer if needed, only
-	 * apply to BlockBoxElementRenderer
-	 */
-	public function renderScrollBars(graphicContext:GraphicsContext):Void
+	public function render(parentGraphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		//abstract
 	}
@@ -439,7 +463,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * @param	addedPositionedX the added X position for positioned elements
 	 * @param	addedPositionedY the added Y position for positioned elements
 	 */
-	public function setGlobalOrigins(addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float, addedScrollX:Float, addedScrollY:Float):Void
+	public function setGlobalOrigins(addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
 	{
 		//if the element establishes a new formatting context, then its
 		//bounds must be added to the global x and y bounds for the normal flow
@@ -459,23 +483,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 			addedPositionedY = globalBounds.y;
 		}
 		
-		//TODO 1 : doc + this is a shortcut, should apply
-		//to all elementRenderer whose containing block is a parent
-		//of the scrolled BlockBoxRenderer.
-		//computing scroll offset should probably be done at the
-		//LayerRenderer level instead of in the ElementRenderer
-		if (coreStyle.getKeyword(coreStyle.position) != FIXED)
-		{
-			addedScrollX += scrollLeft;
-			addedScrollY += scrollTop;
-		}
-		else
-		{
-			addedScrollX = 0;
-			addedScrollY = 0;
-		}
-		
-		
 		//for its child of the element
 		var child:ElementRenderer = firstChild;
 		while(child != null)
@@ -494,9 +501,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 			
 			child.globalPositionnedAncestorOrigin.x = addedPositionedX;
 			child.globalPositionnedAncestorOrigin.y = addedPositionedY;
-			
-			child.scrollOffset.x = addedScrollX;
-			child.scrollOffset.y = addedScrollY;
 			
 			//some subclass of element renderer need
 			//to update there bounds, for instance inline
@@ -521,7 +525,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 			//call the method recursively if the child has children itself
 			if (child.firstChild != null)
 			{
-				child.setGlobalOrigins(addedX, addedY, addedPositionedX, addedPositionedY, addedScrollX, addedScrollY);
+				child.setGlobalOrigins(addedX, addedY, addedPositionedX, addedPositionedY);
 			}
 			
 			child = child.nextSibling;
@@ -862,16 +866,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	// Overriden by inheriting classes
 	////////////////////////////////
 	
-	public function isVerticallyScrollable(scrollOffset:Int):Bool
-	{
-		return false;
-	}
-	
-	public function isHorizontallyScrollable(scrollOffset:Int):Bool
-	{
-		return false;
-	}
-	
 	public function establishesNewFormattingContext():Bool
 	{
 		return false;
@@ -951,49 +945,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	public function createOwnLayer():Bool
 	{
 		return false;
-	}
-	
-	/**
-	 * Return the relative offset applied by this ElementRenderer
-	 * when rendering. Only relatively positioned ElementRenderer
-	 * have this offset
-	 */
-	public function getRelativeOffset():PointVO
-	{
-		var relativeOffset:PointVO = new PointVO(0.0, 0.0);
-		
-		//only relatively positioned ElementRenderer can have
-		//an offset
-		if (isRelativePositioned() == true)
-		{
-			//first try to apply the left offset of the ElementRenderer if it is
-			//not auto
-			if (coreStyle.isAuto(coreStyle.left) == false)
-			{
-				relativeOffset.x += coreStyle.usedValues.left;
-			}
-			//else the right offset,
-			else if (coreStyle.isAuto(coreStyle.right) == false)
-			{
-				relativeOffset.x -= coreStyle.usedValues.right;
-			}
-			
-			//if both left and right offset are auto, then the ElementRenderer uses its static
-			//position (its normal position in the flow) and no relative offset needs to
-			//be applied
-		
-			//same for vertical offset
-			if (coreStyle.isAuto(coreStyle.top) == false)
-			{
-				relativeOffset.y += coreStyle.usedValues.top; 
-			}
-			else if (coreStyle.isAuto(coreStyle.bottom) == false)
-			{
-				relativeOffset.y -= coreStyle.usedValues.bottom; 
-			}
-		}
-		
-		return relativeOffset;
 	}
 	
 	/////////////////////////////////
@@ -1169,50 +1120,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		var length:Int = lineBoxes.length;
 		for (i in 0...length)
 		{
-			doGetBounds(lineBoxes[i].bounds, bounds);
-		}
-	}
-	
-	/**
-	 * Set the bounds of an array of linebox
-	 * on a provided bounds object
-	 */
-	private function getChildrenBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
-	{
-		//first reset the bounds
-		bounds.x = 50000;
-		bounds.y = 50000;
-		bounds.width = 0;
-		bounds.height = 0;
-		
-		var length:Int = lineBoxes.length;
-		for (i in 0...length)
-		{
-			doGetBounds(lineBoxes[i].bounds, bounds);
-		}
-	}
-	
-	/**
-	 * apply the bounds of a children to
-	 * the global bounds
-	 */
-	private function doGetBounds(childBounds:RectangleVO, globalBounds:RectangleVO):Void
-	{
-		if (childBounds.x < globalBounds.x)
-		{
-			globalBounds.x = childBounds.x;
-		}
-		if (childBounds.y < globalBounds.y)
-		{
-			globalBounds.y = childBounds.y;
-		}
-		if (childBounds.x + childBounds.width > globalBounds.x + globalBounds.width)
-		{
-			globalBounds.width = childBounds.x + childBounds.width - globalBounds.x;
-		}
-		if (childBounds.y + childBounds.height  > globalBounds.y + globalBounds.height)
-		{
-			globalBounds.height = childBounds.y + childBounds.height - globalBounds.y;
+			GeomUtils.addBounds(lineBoxes[i].bounds, bounds);
 		}
 	}
 	
@@ -1226,7 +1134,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		var child:ElementRenderer = rootElementRenderer.firstChild;
 		while(child != null)
 		{
-			doGetBounds(child.bounds, bounds);
+			GeomUtils.addBounds(child.bounds, bounds);
 			if (child.firstChild != null)
 			{
 				doGetChildrenBounds(child, bounds);
@@ -1277,6 +1185,74 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// SCROLL GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * If this element renderer creates its own
+	 * layer, then forward scroll left update
+	 * to the layer. If it doesn't create
+	 * any layer, then no need to forward as
+	 * it won't be taken into account anyway.
+	 * Element renderer which can be scrolled
+	 * ('overflow' different from visible)
+	 * always create their own layer
+	 * 
+	 * The layer will determine 
+	 * wether to actually update scroll left.
+	 */
+	private function set_scrollLeft(value:Float):Float 
+	{
+		if (_hasOwnLayer == true)
+		{
+			layerRenderer.scrollLeft = value;
+		}
+		
+		return value;
+	}
+	
+	/**
+	 * same as when setting scroll left, if element
+	 * has own layer, retrieve scroll left from layer,
+	 * else it doesn't have any scroll left
+	 */
+	private function get_scrollLeft():Float
+	{
+		if (_hasOwnLayer == true)
+		{
+			return layerRenderer.scrollLeft;
+		}
+		
+		return 0;
+	}
+	
+	/**
+	 * same as setting scroll left for top
+	 */
+	private function set_scrollTop(value:Float):Float 
+	{
+		if (_hasOwnLayer == true)
+		{
+			layerRenderer.scrollTop = value;
+		}
+		
+		return value;
+	}
+	
+	/**
+	 * same as getting scroll left for top
+	 */
+	private function get_scrollTop():Float
+	{
+		if (_hasOwnLayer == true)
+		{
+			return layerRenderer.scrollTop;
+		}
+		
+		return 0;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1285,59 +1261,9 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		return globalBounds;
 	}
 	
-	/**
-	 * Return the bounds of the ElementRenderer as they
-	 * need to be to compute the scrollable bounds of its
-	 * containing block
-	 * 
-	 * TODO 3 : should implement the case of absolutely 
-	 * positioned children
-	 */
-	private function get_scrollableBounds():RectangleVO
-	{
-		//if the elementRenderer is not relatively positioned,
-		//the bounds are the same as the regular bounds
-		if (isRelativePositioned() == false)
-		{
-			return bounds;
-		}
-		
-		//else the bounds with the relative offset applied to them
-		//are returned
-		var relativeOffset:PointVO = getRelativeOffset();
-		var bounds:RectangleVO = this.bounds;
-		
-		scrollableBounds.x = bounds.x + relativeOffset.x;
-		scrollableBounds.y = bounds.y + relativeOffset.y;
-		scrollableBounds.width = bounds.width;
-		scrollableBounds.height = bounds.height;
-		
-		return scrollableBounds;
-	}
-	
 	private function get_bounds():RectangleVO
 	{
 		return bounds;
-	}
-	
-	private function get_scrollLeft():Float 
-	{
-		return 0;
-	}
-	
-	private function set_scrollLeft(value:Float):Float 
-	{
-		return value;
-	}
-	
-	private function get_scrollTop():Float 
-	{
-		return 0;
-	}
-	
-	private function set_scrollTop(value:Float):Float 
-	{
-		return value;
 	}
 	
 	private function get_scrollWidth():Float

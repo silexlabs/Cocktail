@@ -7,18 +7,15 @@
 */
 package cocktail.port;
 
-/**
- * Set the right runtime specific NativeText at compile-time
- */
 #if macro
-typedef NativeText =  cocktail.port.platform.nativeText.AbstractNativeText;
+typedef NativeText =  cocktail.port.base.NativeTextBase;
 
 #elseif flash9
-typedef NativeText =  cocktail.port.flash_player.NativeText;
+typedef NativeText =  cocktail.port.platform.flash_player.NativeText;
 
 #elseif nme
-typedef NativeText =  cocktail.port.nme.NativeText;
+typedef NativeText =  cocktail.port.platform.nme.NativeText;
 
 #else
-typedef NativeText =  cocktail.port.platform.nativeText.AbstractNativeText;
+typedef NativeText =  cocktail.port.base.NativeTextBase;
 #end

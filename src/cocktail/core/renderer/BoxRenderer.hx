@@ -75,6 +75,12 @@ class BoxRenderer extends InvalidatingElementRenderer
 	private var _windowData:ContainingBlockVO;
 	
 	/**
+	 * Holds the dimensions and position of the background
+	 * of this box renderer, in viewport bounds
+	 */
+	private var _backgroundBounds:RectangleVO;
+	
+	/**
 	 * class constructor
 	 */
 	public function new(domNode:HTMLElement) 
@@ -82,6 +88,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		super(domNode);
 		_containerBlockData = new ContainingBlockVO(0.0, false, 0.0, false);
 		_windowData = new ContainingBlockVO(0.0, false, 0.0, false);
+		_backgroundBounds = new RectangleVO();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -121,21 +128,18 @@ class BoxRenderer extends InvalidatingElementRenderer
 	
 	/**
 	 * overriden to render elements specific to a box (background, border...)
-	 * TODO 4 : apply visibility
-	 * 
-	 * TODO 2 : code clean up
 	 */
-	override public function render(parentGraphicContext:GraphicsContext):Void
+	override public function render(parentGraphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{	
 		//only render self if visible
 		//however children can still be rendered
 		//if they are explicitely visible
 		if (isVisible() == true)
 		{
-			renderSelf(parentGraphicContext);
+			renderSelf(parentGraphicContext, clipRect, scrollOffset);
 		}
 		
-		renderChildren(parentGraphicContext);
+		renderChildren(parentGraphicContext, clipRect, scrollOffset);
 	}
 	
 	
@@ -143,26 +147,26 @@ class BoxRenderer extends InvalidatingElementRenderer
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function renderSelf(graphicContext:GraphicsContext):Void
+	private function renderSelf(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
-		renderBackground(graphicContext);
+		renderBackground(graphicContext, clipRect, scrollOffset);
 	}
 	
 	/**
 	 * Render the background of the box using the provided graphic context
 	 */
-	private function renderBackground(graphicContext:GraphicsContext):Void
+	private function renderBackground(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
-		var backgroundBounds:RectangleVO = getBackgroundBounds();
+		var backgroundBounds:RectangleVO = getBackgroundBounds(scrollOffset);
 		
 		//TODO 3 : should only pass dimensions instead of bounds
-		BackgroundManager.render(graphicContext, backgroundBounds, coreStyle, this);
+		BackgroundManager.render(graphicContext, backgroundBounds, coreStyle, this, clipRect);
 	}
 	
 	/**
 	 * Render the children of the box
 	 */
-	private function renderChildren(graphicContext:GraphicsContext):Void
+	private function renderChildren(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		//abstract
 	}
@@ -398,9 +402,14 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function isTransformed():Bool
 	{
-		//it is transformaed if at least one transform
+		//it is transformed if at least one transform
 		//function is applied to it
 		if (coreStyle.isNone(coreStyle.transform) == false)
+		{
+			return true;
+		}
+		//relative positioning is considered as a transformation
+		else if (isRelativePositioned() == true)
 		{
 			return true;
 		}
@@ -471,11 +480,14 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 * ElementRenderer uses the viewport bounds for its background
 	 * instead of its own
 	 */
-	private function getBackgroundBounds():RectangleVO
+	private function getBackgroundBounds(scrollOffset:PointVO):RectangleVO
 	{
-		globalBounds.x -= scrollOffset.x;
-		globalBounds.y -= scrollOffset.y;
-		return globalBounds;
+		_backgroundBounds.x = globalBounds.x - scrollOffset.x;
+		_backgroundBounds.y = globalBounds.y - scrollOffset.y;
+		_backgroundBounds.width = globalBounds.width;
+		_backgroundBounds.height = globalBounds.height;
+		
+		return _backgroundBounds;
 	}
 	
 	/**
