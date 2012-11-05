@@ -11,7 +11,7 @@ package cocktail.core.resource;
 import cocktail.core.http.HTTPConstants;
 import cocktail.port.ImageResource;
 import cocktail.port.NativeHttp;
-import cocktail.port.platform.nativeHttp.NativeHTTPData;
+import cocktail.core.http.HTTPData;
 
 /**
  * This is a static class used to retrive loaded asset

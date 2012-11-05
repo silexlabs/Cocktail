@@ -136,12 +136,12 @@ class TextLineBox extends LineBox
 	 * TODO 2 : should use globalBounds instead, but global bounds is
 	 * used itself to determine the bounds of the text
 	 */
-	override public function render(graphicContext:GraphicsContext):Void
+	override public function render(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
-		_destinationPoint.x = bounds.x + elementRenderer.globalContainingBlockOrigin.x - elementRenderer.scrollOffset.x;
-		_destinationPoint.y = bounds.y + elementRenderer.globalContainingBlockOrigin.y - elementRenderer.scrollOffset.y;
-	
-		graphicContext.graphics.copyPixels(_nativeTextBitmap, _renderRect, _destinationPoint);
+		_destinationPoint.x = bounds.x + elementRenderer.globalContainingBlockOrigin.x - scrollOffset.x;
+		_destinationPoint.y = bounds.y + elementRenderer.globalContainingBlockOrigin.y - scrollOffset.y;
+		
+		graphicContext.graphics.copyPixels(_nativeTextBitmap, _renderRect, _destinationPoint, clipRect);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -46,7 +46,7 @@ import cocktail.core.layer.LayerRenderer;
  * 
  * @author Yannick DOMINGUEZ
  */
-class BlockBoxRenderer extends ScrollableRenderer
+class BlockBoxRenderer extends FlowBoxRenderer
 {	
 	/**
 	 * An array where each item represents a line
@@ -306,25 +306,25 @@ class BlockBoxRenderer extends ScrollableRenderer
 	/**
 	 * Overriden as a BlockBoxRenderer render its children too
 	 */
-	override private function renderChildren(graphicContext:GraphicsContext):Void
+	override private function renderChildren(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
-		super.renderChildren(graphicContext);
+		super.renderChildren(graphicContext, clipRect, scrollOffset);
 		
 		//the BlockBoxRenderer is responsible for rendering its children in the same layer
 		//context if it establishes a layer itself or is rendered as if it did
 		if (createOwnLayer() == true || rendersAsIfCreateOwnLayer() == true)
 		{
 			//render all the block box which belong to the same stacking context
-			renderBlockContainerChildren(this, layerRenderer, graphicContext);
+			renderBlockContainerChildren(this, layerRenderer, graphicContext, clipRect, scrollOffset);
 			
 			//TODO 5 : render non-positioned float
 			
 			//render all the replaced (embedded) box displayed as blocks belonging
 			//to the same stacking context
-			renderBlockReplacedChildren(this, layerRenderer, graphicContext);
+			renderBlockReplacedChildren(this, layerRenderer, graphicContext, clipRect, scrollOffset);
 			
 			//render all the line boxes belonging to the same stacking context
-			renderLineBoxes(this, layerRenderer, graphicContext);
+			renderLineBoxes(this, layerRenderer, graphicContext, clipRect, scrollOffset);
 		}
 	}
 	
@@ -336,7 +336,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 * Render all the LineBoxes of child BlockBoxRenderer which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderLineBoxes(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext):Void
+	private function renderLineBoxes(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.childrenInline() == true)
 		{	
@@ -344,7 +344,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 			var length:Int = blockboxRenderer.rootLineBoxes.length;
 			for (i in 0...length)
 			{
-				renderLineBoxesInLine(blockboxRenderer.rootLineBoxes[i], graphicContext, referenceLayer);
+				renderLineBoxesInLine(blockboxRenderer.rootLineBoxes[i], graphicContext, referenceLayer, clipRect, scrollOffset);
 			}
 		}
 		else
@@ -356,7 +356,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 				{
 					if (child.isReplaced() == false)
 					{	
-						renderLineBoxes(child, referenceLayer, graphicContext);
+						renderLineBoxes(child, referenceLayer, graphicContext, clipRect, scrollOffset);
 					}
 				}
 				
@@ -368,17 +368,17 @@ class BlockBoxRenderer extends ScrollableRenderer
 	/**
 	 * Render all the line boxes in one line
 	 */
-	private function renderLineBoxesInLine(rootLineBox:LineBox, graphicContext:GraphicsContext, referenceLayer:LayerRenderer):Void
+	private function renderLineBoxesInLine(rootLineBox:LineBox, graphicContext:GraphicsContext, referenceLayer:LayerRenderer, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		var child:LineBox = rootLineBox.firstChild;
 		while(child != null)
 		{
 			if (child.elementRenderer.layerRenderer == referenceLayer)
 			{
-				child.render(graphicContext);
+				child.render(graphicContext, clipRect, scrollOffset);
 				if (child.firstChild != null)
 				{
-					renderLineBoxesInLine(child, graphicContext, referenceLayer);
+					renderLineBoxesInLine(child, graphicContext, referenceLayer, clipRect, scrollOffset);
 				}
 			}
 			
@@ -390,7 +390,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 * Render all the replaced children displayed as blocks which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderBlockReplacedChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext):Void
+	private function renderBlockReplacedChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		var child:ElementRenderer = rootRenderer.firstChild;
 		while(child != null)
@@ -400,11 +400,11 @@ class BlockBoxRenderer extends ScrollableRenderer
 				//TODO 2 : must add more condition, for instance, no float
 				if (child.isReplaced() == false && child.coreStyle.getKeyword(child.coreStyle.display) == CSSKeywordValue.BLOCK )
 				{
-					renderBlockReplacedChildren(child, referenceLayer, graphicContext);
+					renderBlockReplacedChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
 				}
 				else if (child.coreStyle.getKeyword(child.coreStyle.display) == CSSKeywordValue.BLOCK)
 				{
-					child.render(graphicContext);
+					child.render(graphicContext, clipRect, scrollOffset);
 				}
 			}
 			
@@ -416,7 +416,7 @@ class BlockBoxRenderer extends ScrollableRenderer
 	 * Render all the BlockBoxRenderer which
 	 * belong to the same stacking context as this BlockBoxRenderer
 	 */
-	private function renderBlockContainerChildren(rootElementRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext):Void
+	private function renderBlockContainerChildren(rootElementRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		var child:ElementRenderer = rootElementRenderer.firstChild;
 		while(child != null)
@@ -429,28 +429,12 @@ class BlockBoxRenderer extends ScrollableRenderer
 				//TODO 3 : must add more condition, for instance, no float
 				if (child.isReplaced() == false && child.coreStyle.getKeyword(child.coreStyle.display) != INLINE_BLOCK)
 				{
-					child.render(graphicContext);
-					renderBlockContainerChildren(child, referenceLayer, graphicContext);
+					child.render(graphicContext, clipRect, scrollOffset);
+					renderBlockContainerChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
 				}
 			}
 			
 			child = child.nextSibling;
-		}
-	}
-	
-	/**
-	 * Render the scrollbars of this BlockBoxRenderer if needed
-	 */
-	override public function renderScrollBars(graphicContext:GraphicsContext):Void
-	{
-		if (_horizontalScrollBar != null)
-		{
-			_horizontalScrollBar.elementRenderer.layerRenderer.render();
-		}
-		
-		if (_verticalScrollBar != null)
-		{
-			_verticalScrollBar.elementRenderer.layerRenderer.render();
 		}
 	}
 	
@@ -631,29 +615,52 @@ class BlockBoxRenderer extends ScrollableRenderer
 	}
 	
 	/**
-	 * Overriden, as if scrollbars are displayed, their 
-	 * width or height must be substracted from the containing
-	 * block width/height
+	 * Overriden, has if this block box renderer has its own
+	 * layer, it must not use the scrollLeft and scrollTop
+	 * of its layer when rendering background, as they
+	 * should only apply to child element renderers and layers
 	 */
-	override public function getContainerBlockData():ContainingBlockVO
+	override private function getBackgroundBounds(scrollOffset:PointVO):RectangleVO
 	{
-		var height:Float = coreStyle.usedValues.height;
-		if (_horizontalScrollBar != null)
+		var backgroundBounds:RectangleVO = super.getBackgroundBounds(scrollOffset);
+		
+		if (_hasOwnLayer == true)
 		{
-			height -= _horizontalScrollBar.coreStyle.usedValues.height;
+			backgroundBounds.x += layerRenderer.scrollLeft;
+			backgroundBounds.y += layerRenderer.scrollTop;
 		}
 		
-		var width:Float = coreStyle.usedValues.width;
-		if (_verticalScrollBar != null)
+		return backgroundBounds;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Determine wether this BlockBoxRenderer always overflows
+	 * in both x and y axis. If either overflow x or y
+	 * is deifferent from visible, then it is considered to
+	 * not always overflow
+	 */
+	private function canAlwaysOverflow():Bool
+	{	
+		switch (coreStyle.getKeyword(coreStyle.overflowX))
 		{
-			width -= _verticalScrollBar.coreStyle.usedValues.width;
+			case VISIBLE:
+				
+			default:
+				return false;
 		}
 		
-		_containerBlockData.width = width;
-		_containerBlockData.isWidthAuto = coreStyle.isAuto(coreStyle.width);
-		_containerBlockData.height = height;
-		_containerBlockData.isHeightAuto = coreStyle.isAuto(coreStyle.height);
+		switch (coreStyle.getKeyword(coreStyle.overflowY))
+		{
+			case VISIBLE:
+				
+			default:
+				return false;
+		}
 		
-		return _containerBlockData;
+		return true;
 	}
 }

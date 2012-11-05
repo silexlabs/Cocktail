@@ -16,7 +16,7 @@ import cocktail.core.event.ProgressEvent;
 import cocktail.core.event.XMLHttpRequestEventTarget;
 import cocktail.core.resource.ResourceManager;
 import cocktail.port.NativeHttp;
-import cocktail.port.platform.nativeHttp.NativeHTTPData;
+import cocktail.core.http.HTTPData;
 import haxe.Http;
 
 /**

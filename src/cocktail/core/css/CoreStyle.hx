@@ -345,12 +345,7 @@ class CoreStyle
 				}
 				
 				//refresh the font metrics when either font family or font size hanges
-				//TODO 1 : should go in macro implementation of font metrics
-				#if macro
-				fontMetrics = new FontMetricsVO(12.0, 12.0, 12.0, 12.0, 3.0, 3.0, 3.0, 5.0 );
-				#else
 				fontMetrics = _fontManager.getFontMetrics(computedValues.fontFamily, getAbsoluteLength(fontSize));
-				#end
 			}
 		}
 		

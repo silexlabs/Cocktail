@@ -77,7 +77,7 @@ class BackgroundManager
 	 * @param	style
 	 * @return
 	 */
-	public static function render(graphicContext:GraphicsContext, backgroundBox:RectangleVO, style:CoreStyle, elementRenderer:ElementRenderer):Void
+	public static function render(graphicContext:GraphicsContext, backgroundBox:RectangleVO, style:CoreStyle, elementRenderer:ElementRenderer, clipRect:RectangleVO):Void
 	{
 		//no need to draw the background if it has no width or height
 		if (Math.round(backgroundBox.width) <= 0 || Math.round(backgroundBox.height) <= 0 )
@@ -89,7 +89,7 @@ class BackgroundManager
 		//completely transparent
 		if (style.usedValues.backgroundColor.alpha != 0.0)
 		{
-			graphicContext.graphics.fillRect(backgroundBox, style.usedValues.backgroundColor);
+			graphicContext.graphics.fillRect(backgroundBox, style.usedValues.backgroundColor, clipRect);
 		}
 		
 		var backgroundImages:Array<CSSPropertyValue> = getAsArray(style.backgroundImage);
@@ -116,7 +116,7 @@ class BackgroundManager
 				case URL(value):
 					drawBackgroundImage(graphicContext, value, style, backgroundBox,
 					backgroundPositions[i], backgroundSizes[i], backgroundOrigins[i], backgroundClips[i],
-					backgroundRepeats[i], backgroundImages[i], elementRenderer);
+					backgroundRepeats[i], backgroundImages[i], elementRenderer, clipRect);
 					
 				default:	
 			}
@@ -173,7 +173,7 @@ class BackgroundManager
 	 */
 	private static function drawBackgroundImage(graphicContext:GraphicsContext, url:String, style:CoreStyle, backgroundBox:RectangleVO,
 	backgroundPosition:CSSPropertyValue, backgroundSize:CSSPropertyValue, backgroundOrigin:CSSPropertyValue,
-	backgroundClip:CSSPropertyValue, backgroundRepeat:CSSPropertyValue, backgroundImage:CSSPropertyValue, elementRenderer:ElementRenderer):Void
+	backgroundClip:CSSPropertyValue, backgroundRepeat:CSSPropertyValue, backgroundImage:CSSPropertyValue, elementRenderer:ElementRenderer, clipRect:RectangleVO):Void
 	{
 		var foundResource:Bool = false;
 		
@@ -196,7 +196,7 @@ class BackgroundManager
 				resource.intrinsicRatio,
 				computedGradientStyles.backgroundSize,
 				computedGradientStyles.backgroundPosition,
-				computedGradientStyles.backgroundRepeat);
+				computedGradientStyles.backgroundRepeat, clipRect);
 				
 			foundResource = true;
 		}
@@ -242,7 +242,7 @@ class BackgroundManager
 	public static function doDrawBackgroundImage(backgroundBox:RectangleVO, graphicContext:GraphicsContext, resource:AbstractResource,
 	backgroundPositioningBox:RectangleVO, backgroundPaintingBox:RectangleVO, intrinsicWidth:Float,
 	intrinsicHeight:Float, intrinsicRatio:Float, computedBackgroundSize:DimensionVO,
-	computedBackgroundPosition:PointVO, backgroundRepeat:CSSPropertyValue):Void
+	computedBackgroundPosition:PointVO, backgroundRepeat:CSSPropertyValue, clipRect:RectangleVO):Void
 	{	
 
 		var backgroundRepeatX:CSSKeywordValue =  null;
@@ -360,7 +360,7 @@ class BackgroundManager
 			
 			while (totalHeight < maxHeight)
 			{
-				graphicContext.graphics.copyPixels(resource.nativeResource, _box, _destinationPoint );
+				graphicContext.graphics.copyPixels(resource.nativeResource, _box, _destinationPoint, clipRect );
 				
 				totalWidth += imageWidth;
 				
@@ -390,7 +390,7 @@ class BackgroundManager
 				
 				matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight);
 				
-				graphicContext.graphics.drawImage(resource.nativeResource, matrix, backgroundPaintingBox);
+				graphicContext.graphics.drawImage(resource.nativeResource, matrix, backgroundPaintingBox, clipRect);
 				
 				totalWidth += imageWidth;
 				

@@ -14,6 +14,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
+import cocktail.core.layer.ScrollableView;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.layout.computer.VisualEffectStylesComputer;
 import cocktail.core.css.CoreStyle;
@@ -26,6 +27,7 @@ import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
 import haxe.Log;
+import cocktail.core.layer.ScrollableView;
 import haxe.Stack;
 
 /**
@@ -58,14 +60,8 @@ import haxe.Stack;
  * 
  * @author Yannick DOMINGUEZ
  */
-class LayerRenderer extends FastNode<LayerRenderer>
-{
-	/**
-	 * A reference to the ElementRenderer which
-	 * created the LayerRenderer
-	 */
-	public var rootElementRenderer(default, null):ElementRenderer;
-	
+class LayerRenderer extends ScrollableView<LayerRenderer>
+{	
 	/**
 	 * The stacking context onto which this
 	 * layer belong, determining its z-index
@@ -134,13 +130,23 @@ class LayerRenderer extends FastNode<LayerRenderer>
 	private var _alpha:Float;
 	
 	/**
+	 * This is the transformation matrix
+	 * used when rendering the layer.
+	 * 
+	 * It is the concatenation of all
+	 * the transformations of the ancestor
+	 * layers
+	 * 
+	 * Default is an identity matrix
+	 */
+	public var matrix(default, null):Matrix;
+	
+	/**
 	 * class constructor. init class attributes
 	 */
 	public function new(rootElementRenderer:ElementRenderer) 
 	{
-		super();
-		
-		this.rootElementRenderer = rootElementRenderer;
+		super(rootElementRenderer);
 		
 		hasOwnGraphicsContext = false;
 		hasOwnStackingContext = false;
@@ -149,6 +155,7 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		_needsGraphicsContextUpdate = true;
 		_needsStackingContextUpdate = true;
 		
+		matrix = new Matrix();
 		_alpha = 1.0;
 	}
 	
@@ -200,6 +207,39 @@ class LayerRenderer extends FastNode<LayerRenderer>
 	}
 	
 	/**
+	 * Update the transformation matrix of this layer before
+	 * rendering. It is obtained by concatenating the transformations
+	 * of this layer with those of the ancestors layers
+	 * 
+	 * TODO 2 : might need to split matrix of transform style and of
+	 * relative positioning, as relative positioning shouldn't apply
+	 * to fixed elements but other transformations do
+	 */
+	public function updateLayerMatrix(parentMatrix:Matrix):Void
+	{
+		//reset layer's matrix
+		matrix.identity();
+		
+		if (rootElementRenderer.isTransformed() == true)
+		{
+			//TODO 2 : should it still be separate class ?
+			VisualEffectStylesComputer.compute(rootElementRenderer.coreStyle);
+			//update transformation matrix of layer 
+			matrix = getTransformationMatrix();
+		}
+		//concatenate layer transformation with parent transformations
+		matrix.concatenate(parentMatrix);
+		
+		//update the whole layer tree recursively
+		var child:LayerRenderer = firstChild;
+		while (child != null)
+		{
+			child.updateLayerMatrix(matrix);
+			child = child.nextSibling;
+		}
+	}
+	
+	/**
 	 * Update the alpha of this layer before
 	 * rendering. It is obtained by
 	 * combining the alpha of the root element
@@ -244,7 +284,6 @@ class LayerRenderer extends FastNode<LayerRenderer>
 			child.updateLayerAlpha(_alpha);
 			child = child.nextSibling;
 		}
-		
 	}
 	
 	/**
@@ -639,7 +678,7 @@ class LayerRenderer extends FastNode<LayerRenderer>
 					//TODO 2 : this behaviour assumes that layer creating
 					//a graphics context also create a stacking context, which
 					//might not always be true
-					if (stackingContext.layerRenderer == this)
+					if (stackingContext.layerRenderer == child.layerRenderer)
 					{
 						foundSelf = true;
 					}
@@ -652,7 +691,6 @@ class LayerRenderer extends FastNode<LayerRenderer>
 			//inserted last as it didn't found a sibling
 			//with a lower z-index
 			parentGraphicsContext.appendChild(graphicsContext);
-			
 		}
 		else
 		{
@@ -847,6 +885,42 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		return true;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN BOUNDS METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to also
+	 * add the layer's transformations
+	 * to the bounds
+	 * 
+	 * TODO 2 : for now only support
+	 * translation
+	 */
+	override public function updateBounds():Void
+	{
+		super.updateBounds();
+		bounds.x += matrix.e;
+		bounds.y += matrix.f;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN SCROLL GETTER/SETTER
+	// overriden to invalidate rendering when updated
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function set_scrollLeft(value:Float):Float
+	{
+		invalidateRendering();
+		return super.set_scrollLeft(value);
+	}
+
+	override private function set_scrollTop(value:Float):Float
+	{
+		invalidateRendering();
+		return super.set_scrollTop(value);
+	}
+	
 	/////////////////////////////////
 	// PUBLIC RENDERING METHODS
 	////////////////////////////////
@@ -862,6 +936,8 @@ class LayerRenderer extends FastNode<LayerRenderer>
 	 */
 	public function render():Void
 	{
+		_needsRendering = true;
+		
 		//only clear if a rendering is necessary
 		if (_needsRendering == true)
 		{
@@ -884,9 +960,16 @@ class LayerRenderer extends FastNode<LayerRenderer>
 				graphicsContext.graphics.beginTransparency(_alpha);
 			}
 			
+			//apply layer matrix to graphics context, so that all element
+			//renderers of the lyer use those transformations
+			graphicsContext.graphics.beginTransformations(matrix);
+			
 			//render the rootElementRenderer itself which will also
 			//render all ElementRenderer belonging to this LayerRenderer
-			rootElementRenderer.render(graphicsContext);
+			rootElementRenderer.render(graphicsContext, clipRect, scrollOffset);
+			
+			//stop using the layer's transformations
+			graphicsContext.graphics.endTransformations();
 			
 			//end transparency layer
 			if (_alpha != 1.0)
@@ -901,22 +984,6 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		if (hasOwnStackingContext == true)
 		{
 			renderChildrenInSameStackingContext(this);
-		}
-		
-		//scrollbars are always rendered last as they should always be the top
-		//element of their layer
-		rootElementRenderer.renderScrollBars(graphicsContext);
-		
-		//only render if necessary
-		if (_needsRendering == true)
-		{
-			//apply transformations to the layer if needed
-			if (rootElementRenderer.isTransformed() == true)
-			{
-				//TODO 2 : should already be computed at this point
-				VisualEffectStylesComputer.compute(rootElementRenderer.coreStyle);
-				graphicsContext.graphics.transform(getTransformationMatrix(graphicsContext));
-			}
 		}
 		
 		//layer no longer needs rendering
@@ -959,9 +1026,9 @@ class LayerRenderer extends FastNode<LayerRenderer>
 	 * Compute all the transformation that should be applied to this LayerRenderer
 	 * and return it as a transformation matrix
 	 */
-	private function getTransformationMatrix(graphicContext:GraphicsContext):Matrix
+	private function getTransformationMatrix():Matrix
 	{
-		var relativeOffset:PointVO = rootElementRenderer.getRelativeOffset();
+		var relativeOffset:PointVO = getRelativeOffset(rootElementRenderer);
 		var concatenatedMatrix:Matrix = getConcatenatedMatrix(rootElementRenderer.coreStyle.usedValues.transform, relativeOffset);
 		
 		//apply relative positioning as well
@@ -989,6 +1056,49 @@ class LayerRenderer extends FastNode<LayerRenderer>
 		//translate back from the coordinate system of the root element renderer
 		currentMatrix.translate((globalBounds.x + relativeOffset.x) * -1, (globalBounds.y + relativeOffset.y) * -1);
 		return currentMatrix;
+	}
+	
+		
+	/**
+	 * Return the relative offset applied to an ElementRenerer as an x/y point. 
+	 * Return 0,0 if the element renderer is not relatively positioned
+	 */
+	private function getRelativeOffset(elementRenderer:ElementRenderer):PointVO
+	{
+		var relativeOffset:PointVO = new PointVO(0.0, 0.0);
+		
+		//only relatively positioned ElementRenderer can have
+		//an offset
+		if (elementRenderer.isRelativePositioned() == true)
+		{
+			//first try to apply the left offset of the ElementRenderer if it is
+			//not auto
+			if (elementRenderer.coreStyle.isAuto(elementRenderer.coreStyle.left) == false)
+			{
+				relativeOffset.x += elementRenderer.coreStyle.usedValues.left;
+			}
+			//else the right offset,
+			else if (elementRenderer.coreStyle.isAuto(elementRenderer.coreStyle.right) == false)
+			{
+				relativeOffset.x -= elementRenderer.coreStyle.usedValues.right;
+			}
+			
+			//if both left and right offset are auto, then the ElementRenderer uses its static
+			//position (its normal position in the flow) and no relative offset needs to
+			//be applied
+		
+			//same for vertical offset
+			if (elementRenderer.coreStyle.isAuto(elementRenderer.coreStyle.top) == false)
+			{
+				relativeOffset.y += elementRenderer.coreStyle.usedValues.top; 
+			}
+			else if (elementRenderer.coreStyle.isAuto(elementRenderer.coreStyle.bottom) == false)
+			{
+				relativeOffset.y -= elementRenderer.coreStyle.usedValues.bottom; 
+			}
+		}
+		
+		return relativeOffset;
 	}
 	
 	/////////////////////////////////

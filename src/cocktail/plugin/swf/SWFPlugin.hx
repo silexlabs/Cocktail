@@ -10,6 +10,7 @@ package cocktail.plugin.swf;
 
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
+import cocktail.core.geom.GeomUtils;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
@@ -67,6 +68,11 @@ class SWFPlugin extends Plugin
 	private var _swf:DisplayObject;
 	
 	/**
+	 * Holds the bounds of the swf object
+	 */
+	private var _swfBounds:RectangleVO;
+	
+	/**
 	 * The height of the loaded swf,
 	 * as defined in flash authoring tool
 	 * or in the metadata of the swf.
@@ -104,6 +110,7 @@ class SWFPlugin extends Plugin
 	public function new(elementAttributes:Hash<String>, params:Hash<String>, loadComplete:Void->Void, loadError:Void->Void) 
 	{
 		super(elementAttributes, params, loadComplete, loadError);
+		_swfBounds = new RectangleVO();
 		init();
 	}
 	
@@ -203,8 +210,8 @@ class SWFPlugin extends Plugin
 		_swf.transform.matrix.identity();
 		
 		//get the bounds where the swf should be displayed
-		var assetBounds:RectangleVO = getAssetBounds(viewport.width, viewport.height,
-		_swfWidth, _swfHeight);
+		GeomUtils.getCenteredBounds(viewport.width, viewport.height,
+		_swfWidth, _swfHeight, _swfBounds);
 		
 		//apply flash scale mode to the swf
 		switch (_scaleMode)
@@ -220,10 +227,10 @@ class SWFPlugin extends Plugin
 				_swf.scaleY = viewport.height / _swfHeight;
 
 			default:
-				_swf.x = Math.round(viewport.x + assetBounds.x);
-				_swf.y = Math.round(viewport.y + assetBounds.y);
-				_swf.scaleX = assetBounds.width / _swfWidth;
-				_swf.scaleY = assetBounds.height / _swfHeight;
+				_swf.x = Math.round(viewport.x + _swfBounds.x);
+				_swf.y = Math.round(viewport.y + _swfBounds.y);
+				_swf.scaleX = _swfBounds.width / _swfWidth;
+				_swf.scaleY = _swfBounds.height / _swfHeight;
 		}
 		
 		//update swf's mask position and dimensions
@@ -253,83 +260,6 @@ class SWFPlugin extends Plugin
 		
 		//swf plugin is now ready
 		_loadComplete();
-	}
-	
-	/**
-	 * TODO 1 : this method is duplicated from EmbeddedElementRenderer, should
-	 * not need to. Should ObjectRenderer instead retrive size of the swf somehow ?
-	 * or set as static method ?
-	 * 
-	 * Utils method returning the right rectangle so that
-	 * a picture or video can take the maximum available width
-	 * and height while preserving their aspect ratio and also be 
-	 * centered in the available space
-	 * 
-	 * @param	availableWidth the maximum width available for the picture or video
-	 * @param	availableHeight the maximum height available for the picture or video
-	 * @param	assetWidth the intrinsic width of the video or picture
-	 * @param	assetHeight the intrinsic height of the video or picture
-	 * @return	the bounds of the asset
-	 */
-	private function getAssetBounds(availableWidth:Float, availableHeight:Float, assetWidth:Float, assetHeight:Float):RectangleVO
-	{
-		//those will hold the actual value used for the video or poster 
-		//dimensions, with the kept aspect ratio
-		var width:Float;
-		var height:Float;
-
-		if (availableWidth > availableHeight)
-		{
-			//get the ratio between the intrinsic asset width and the width it must be displayed at
-			var ratio:Float = assetHeight / availableHeight;
-			
-			//check that the asset isn't wider than the available width
-			if ((assetWidth / ratio) < availableWidth)
-			{
-				//the asset width use the computed width while the height apply the ratio
-				//to the asset height, so that the ratio is kept while displaying the asset
-				//as big as possible
-				width =  assetWidth / ratio ;
-				height = availableHeight;
-			}
-			//else reduce the height instead of the width
-			else
-			{
-				ratio = assetWidth / availableWidth;
-				
-				width = availableWidth;
-				height = assetHeight / ratio;
-			}
-		}
-		//same as above but inverted
-		else
-		{
-			var ratio:Float = assetWidth / availableWidth;
-			
-			if ((assetHeight / ratio) < availableHeight)
-			{
-				height = assetHeight / ratio;
-				width = availableWidth;
-			}
-			else
-			{
-				ratio = assetHeight / availableHeight;
-				width =  assetWidth / ratio ;
-				height = availableHeight;
-			}
-		}
-		
-		//the asset must be centered in the ElementRenderer, so deduce the offsets
-		//to apply to the x and y direction
-		var xOffset:Float = (availableWidth - width) / 2;
-		var yOffset:Float = (availableHeight - height) / 2;
-		
-		var rect:RectangleVO = new RectangleVO();
-		rect.x = xOffset;
-		rect.y = yOffset;
-		rect.width = width;
-		rect.height = height;
-		return rect;
 	}
 	#end
 }

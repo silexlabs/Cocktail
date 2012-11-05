@@ -71,7 +71,7 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	 * of the plugin, so that the plugin
 	 * can update its display
 	 */
-	override private function renderEmbeddedAsset(graphicContext:GraphicsContext):Void
+	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		var htmlObjectElement:HTMLObjectElement = cast(domNode);
 		htmlObjectElement.plugin.updateViewport(globalBounds.x + coreStyle.usedValues.paddingLeft, globalBounds.y + coreStyle.usedValues.paddingTop, globalBounds.width, globalBounds.height);
