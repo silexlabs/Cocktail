@@ -392,7 +392,10 @@ class EventConstants
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * TODO 2 : doc
+	 * A user agent must dispatch this event when a document view or an element
+	 * has been scrolled. This event type is dispatched after the scroll has
+	 * occurred.When dispatched on the Document element,
+	 * this event type must bubble to the defaultView object.
 	 */
 	public static inline var SCROLL:String = "scroll";
 	

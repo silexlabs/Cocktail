@@ -38,8 +38,6 @@ class CSSRulesParser
 	 * Separate each CSS rule in a style sheet
 	 * and return them as an array of string
 	 * 
-	 * TODO : parse comments
-	 * 
 	 * @param	css the whole css style sheet to parse
 	 * @return	an array where each item is a string representing
 	 * a CSS rule
