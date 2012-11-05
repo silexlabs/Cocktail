@@ -1,0 +1,7 @@
+
+
+-cp ../../../../src/
+-cp ../../src/
+-main historyApi.HistoryTests
+-lib utest
+-js ../../bin/history/historyTestJS.js

@@ -319,9 +319,16 @@ var defaultValue : String;
 
 typedef History = {
 var length : Int;
+var state : Dynamic;
 function back() : Void;
 function forward() : Void;
-function go( p : Dynamic ) : Void;
+function go( delta:Int ) : Void;
+function pushState( data : Dynamic, title : String, ?url : String):Void;
+function replaceState( data : Dynamic, title : String, ?url : String):Void;
+}
+// popstate events are dispatched when history changes
+typedef PopStateEvent = {> Event,
+var state : Dynamic; // contains the object passed to pushState or replaceState
 }
 
 typedef IFrame = {> HtmlDom,
@@ -508,6 +515,14 @@ var borderTopWidth : Dynamic;
 var borderColor : Dynamic;
 var borderStyle : String;
 var borderWidth : Dynamic;
+
+var borderTopLeftRadius : Dynamic;
+var borderTopRightRadius : Dynamic;
+var borderBottomRightRadius : Dynamic;
+var borderBottomLeftRadius : Dynamic;
+var borderRadius : Dynamic;
+
+
 
 
 var margin : Dynamic;
@@ -719,5 +734,6 @@ var onscroll : Event -> Void;
 var onunload : Event -> Void;
 
 var onerror : String -> String -> Int -> Bool;
+var onpopstate : Event -> Void;
 
 }
