@@ -450,58 +450,253 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	override private function layoutChildren():Void
 	{
 		super.layoutChildren();
-		format();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * starts the formatting of this block box if it
-	 * establishes a new formatting context.
-	 */
-	private function format():Void
+	private function layoutChildren():Void
 	{
-		if (establishesNewFormattingContext() == true )
+		if (establishesNewBlockFormattingContext() == true)
 		{
-			if (isPositioned() == true && isRelativePositioned() == false)
+			floatedElements = new Array<ElementRenderer>();
+		}
+		else
+		{
+			var parentFloatedElements:Array<ElementRenderer> = containingBlock.floatedElements;
+			updateFloatedElements(parentFloatedElements);
+		}
+		
+		if (childrenInline() == false)
+		{
+			shouldLayoutAgain = layoutBlockChildrenAndFloats();
+		}
+		else
+		{
+			shouldLayoutAgain = layoutInlineChildrenAndFloats();
+		}
+		
+		
+		if (coreStyle.isAuto(coreStyle.height) == true)
+		{
+			//TODO : take min-height into account ?
+			if (childrenInline() == true)
 			{
-				doFormat();
+				//TODO : adding vertical padding and borders
+				bounds.height = getLineBoxesBounds().height;
 			}
-			else if (isFloat() == true)
+			else
 			{
-				doFormat();
+				if (establishesNewBlockFormattingContext() == false)
+				{
+					//TODO : adding vertical padding and borders
+					bounds.height = getChildrenBounds().height;
+				}
+				else
+				{
+					//TODO : add vertical padding and borders
+					bounds.height = getChildrenMarginBounds().height;
+					
+					//TODO : if floats bounds higher, use instead for height
+				}
 			}
-			else if (coreStyle.getKeyword(coreStyle.display) == INLINE_BLOCK)
+		}
+		
+		if (establishesNewBlockFormattingContext() == true && coreStyle.isAuto(coreStyle.width) == true)
+		{
+			if (useShrinkToFit() == true)
 			{
-				doFormat();
-			}
-			else if (childrenInline() == false)
-			{
-				doFormat();
+				
 			}
 		}
 	}
 	
-	/**
-	 * Actually starts formatting this BlockBoxRenderer
-	 * if it indeed establishes a new formatting context.
-	 * 
-	 * Instantiate the right formatting context, based
-	 * on the display of the children
-	 */
-	private function doFormat():Void
+	private function layoutBlockChildrenAndFloats():Bool
 	{
-		if (childrenInline() == true)
+		var childPosition:PointVO = new PointVO(0, 0);
+			
+		var child:ElementRenderer = firstChild;
+		while (child != null)
 		{
-			var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
-			htmlDocument.layoutManager.inlineFormattingContext.format(this, true);
+			if (child.hasClearance() == true)
+			{
+				applyClearance(childPosition, floatedElements);
+			}
+			
+			if (child.isPositioned() == true && child.isRelativePositioned() == false)
+			{
+				//TODO : margin collapsing
+				if (child.isFloat() == false)
+				{
+					if (child.establishesNewBlockFormattingContext() == false && child.isBlockContainer() == true)
+					{
+						childPosition.y += child.coreStyle.usedValues.marginTop;
+						childPosition.x = child.coreStyle.usedValues.marginLeft;
+						
+						child.bounds.x = childPosition.x;
+						child.bounds.y = childPosition.y;
+						
+						child.layout();
+					}
+					else
+					{
+						child.layout();
+						findFirstAvailableYAndX(childPosition, floatedElements, child.bounds.width);
+						
+						childPosition.y += child.coreStyle.usedValues.marginTop;
+						childPosition.x += child.coreStyle.usedValues.marginLeft;
+					}
+					
+					childPosition.y += child.bounds.height;
+					childPosition.y += child.coreStyle.usedValues.marginBottom;
+				}
+				else
+				{
+					child.layout();
+					
+					if (floatAlreadyRegistered(child) == false)
+					{
+						var floatedElement = floatedElements.insert(child);
+						
+						child.bounds.x = floatedElement.x + child.coreStyle.usedValues.marginLeft;
+						child.bounds.y = floatedElement.y + child.coreStyle.usedValues.marginTop;
+						
+						addFloatedElementToBlockFormattingRoot(floatedElement);
+						return true;
+					}
+				}
+			}
+			
+			child = child.nextSibling;
 		}
-		else
+	}
+	
+	//TODO : add final step where the bounds of all child are updated
+	//based on the line box they created
+	private function layoutInlineChildrenAndFloats():Bool
+	{
+		var lineBoxPosition:PointVO = new PointVO(0, 0);
+		
+		var child:ElementRenderer = firstChild;
+		var lineBox:LineBox = new LineBox(child, width);
+		
+		var openedElementRendererStack:Array<ElementRenderer> = new Array<ElementRenderer>();
+	}
+	
+	private function doFormat(elementRenderer:ElementRenderer, lineBox:LineBox, inlineBox:InlineBox, openedElementRenderers:Array<ElementRenderer>, lineBoxPosition:PointVO):InlineBox
+	{
+		//loop in all the child of the container
+		var child:ElementRenderer = elementRenderer.firstChild;
+		while(child != null)
 		{
-			var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
-			htmlDocument.layoutManager.blockFormattingContext.format(this, true);
+			if (child.isPositioned() == true && child.isRelativePositioned() == false)
+			{
+				if (child.establishesNewBlockFormattingContext() == true || child.isReplaced() == true)
+				{
+					if (child.isReplaced() == false)
+					{
+						child.layout();
+					}
+					
+					var inlineBox:InlineBox = child.inlineBoxes[0];
+					inlineBox.bounds.width = child.bounds.width;
+					inlineBox.marginLeft = child.coreStyle.usedValues.marginLeft;
+					inlineBox.marginRight = child.coreStyle.usedValues.marginRight;
+					
+					var lineIsFull:Bool = lineBox.insert(inlineBox, parentInlineBox);
+					
+					if (lineIsFull == true)
+					{
+						lineBox = layoutLineBox(lineBox, lineBoxPosition, openedElementRenderers);
+						lineBoxes.push(lineBox);
+					}
+				}
+				//here the child is an inline box renderer, which will create one line box for each
+				//line its children are in
+				else if (child.firstChild != null)
+				{
+					//create the first line box for this inline box renderer
+					var childInLineBox:InLineBox = new InlineBox(child);
+					
+					var childUsedValues:UsedValuesVO = child.coreStyle.usedValues;
+					
+					//the first line box created by an inline box renderer has a left margin and padding
+					childInLineBox.marginLeft = childUsedValues.marginLeft;
+					childInLineBox.paddingLeft = childUsedValues.paddingLeft;
+					//the left margin and padding is added to the unbreakable width as the next line box in the line 
+					//can't be separated from this margin and padding
+					lineBox.addUnbreakeableWidth(childUsedValues.marginLeft + childUsedValues.paddingLeft);
+					
+					//attach the line box to its parent line box
+					inlineBox.appendChild(childInLineBox);
+
+					//store the inline box renderer, each time a new line is created
+					//by laying out a child of this inline box renderer, a new line box
+					//with a reference to this inline box renderer will be created, so that
+					//each line into which this inline box renderer is laid out can be
+					openedElementRenderers.push(child);
+					
+					//format all the children of the inline box renderer recursively
+					//a reference to the last added line box is returned, so that it can
+					//be used as a starting point when laying out the siblings of the 
+					//inline box renderer
+					inlineBox = doFormat(child, lineBox, childInLineBox, openedElementRenderers, lineBoxPosition);
+					
+					//now that all of the child of the inline box renderer as been laid out,
+					//remove the reference to this inline box renderer so that when a new line
+					//is created, no line box pointing to this inline box renderer is created
+					openedElementRenderers.pop();
+					
+					//The current line box must also be set to the parent line box so that no more
+					//line boxes are added to this line box as it is done formatting its child line boxes
+					inlineBox = inlineBox.parentNode;
+					
+					//The right margin and padding is added to the last generated line box of the current inline
+					//box renderer
+					var lastInLineBox:InLineBox = child.inlineBoxes[child.inlineBoxes.length - 1];
+					lastInLineBox.marginRight = childUsedValues.marginRight;
+					lastInLineBox.paddingRight = childUsedValues.paddingRight;
+					lineBox.addUnbreakeableWidth(childUsedValues.marginRight + childUsedValues.paddingRight);
+				}
+				//here the child is a TextRenderer, which has as many text line box
+				//as needed to reperesent all the content of the TextRenderer
+				else
+				{
+					//insert the array of created line boxes into the current line. It might create as many
+					//new lines as necessary. Returns a reference to the last inserted line box, used as starting
+					//point to lay out subsequent siblings and children
+					var textLength:Int = child.inlineBoxes.length;
+					for (j in 0...textLength)
+					{
+						lineBox = insertIntoLine(child.inlineBoxes[j], lineBox, openedElementRenderers);
+					}
+				}
+			}
+			
+			child = child.nextSibling;
+		}
+	
+		return inlineBox;
+	}
+	
+	private function layoutLineBox(lineBox:LineBox, lineBoxPosition:PointVO, openedElementRenderers:Array<ElementRenderer>):LineBox
+	{
+		lineBox.layout();
+						
+		lineBox = new LineBox();
+
+		var currentInlineBox:InlineBox = lineBox.rootInlineBox;
+		//create new line boxes for all the inline box renderer which still have
+		//children to format, and add them to the new line
+		var length:Int = openedElementRenderers.length;
+		for (j in 0...length)
+		{
+			//all line boxes are attached as child of the previous created line box
+			//and not as sibling to respect the hierarchy of the previous line
+			var childInLineBox:InlineBox = new InlineBox(openedElementRenderers[j]);
+			currentInlineBox.appendChild(childInLineBox);
+			currentInlineBox = childInLineBox;
 		}
 	}
 	
@@ -527,63 +722,47 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	/**
 	 * Determine wether the ElementRenderer
-	 * establishes a new formatting context for
+	 * establishes a new block formatting context for
 	 * its children or participate in its
-	 * parent formatting context
+	 * parent block formatting context
 	 */
-	override public function establishesNewFormattingContext():Bool
+	override public function establishesNewBlockFormattingContext():Bool
 	{
-		var establishesNewFormattingContext:Bool = false;
+		var establishesNewBlockFormattingContext:Bool = false;
 		
-		//floats always establishes new formatting context
+		//floats always establishes new block formatting context
 		if (isFloat() == true)
 		{
-			establishesNewFormattingContext = true;
+			establishesNewBlockFormattingContext = true;
 		}
-		//block box renderer which may use scrollbars to display
-		//their children always establishes a new formatting context
+		//block box renderer which may hide their overflowing
+		//children always start a new block formatting context
 		else if (canAlwaysOverflow() == false)
 		{
-			establishesNewFormattingContext = true;
+			establishesNewBlockFormattingContext = true;
 		}
-		//positioned element which are not relative always establishes new context
+		//positioned element which are not relative always establishes new block context
 		else if (isPositioned() == true && isRelativePositioned() == false)
 		{
-			establishesNewFormattingContext = true;
-		}
-		//anonymous block always establish new inline formatting as they are used 
-		//to wrap inline elements in block formatting
-		else if (isAnonymousBlockBox() == true)
-		{
-			establishesNewFormattingContext = true;
+			establishesNewBlockFormattingContext = true;
 		}
 		else
 		{
 			switch (coreStyle.getKeyword(coreStyle.display))
 			{
 				//element with an inline-block display style
-				//always establishes a new context
+				//always establishes a new block formatting context
 				case INLINE_BLOCK:
-				establishesNewFormattingContext = true; 
-				
-				//a block ElementRenderer may start a new inline
-				//formatting context if all its children are inline,
-				//else it participates in the current block formatting
-				//context
-				case BLOCK:
-					if (childrenInline() == true)
-					{
-						establishesNewFormattingContext = true;
-					}
+				establishesNewBlockFormattingContext = true; 
 		
 				default:
 			}
 		}
 		
 		//in the other cases, the block particpates in its parent's
-		//formatting context
+		//block formatting context
 		
-		return establishesNewFormattingContext;
+		return establishesNewBlockFormattingContext;
 	}
 	
 	override public function isBlockContainer():Bool
