@@ -33,12 +33,12 @@ import cocktail.core.layer.LayerRenderer;
 
 /**
  * A block box renderer is an element which participate
- * in a block formatting context and which can establish
+ * in a block or inline formatting context and which can establish
  * either a block or inline formatting context.
  * 
  * When it starts an inline formatting context, it holds
- * an array of root line box which are the start of
- * each of the lines created by this block box.
+ * an array of line box which which represents
+ * each line created by this block box.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -387,15 +387,33 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * layout all of the block box children in normal 
+	 * flow and floated children
+	 */
 	override private function layoutChildren():Void
 	{
+		//first, update list of floated elements affecting
+		//the layout of children of the block box, those are all the 
+		//floated elements in the same block formatting
+		//context
+		
+		//if this block box is a block formatting root,
+		//then it needs to reset its floated element list,
+		//as it's children can't be affected by floated elements
+		//from another block formatting context
 		if (establishesNewBlockFormattingContext() == true)
 		{
+			//this flag ensure that floated element list is reseted
+			//if layout is in progress and a floated element was found
+			//during layout
 			if (_isLayingOut == false)
 			{
 				floatsManager.init();
 			}
 		}
+		//else this block box retrives floated element from its containing block
+		//and convert their bounds to its own bounds
 		else
 		{
 			var containingBlockAsBlock:BlockBoxRenderer = cast(containingBlock);
@@ -406,54 +424,75 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_isLayingOut = true;
 		
 		var shouldLayoutAgain:Bool = false;
+		
+		//children are either all block level or all inline level
+		//(exluding floated and absolutely positioned element), 
+		//so this block either formatting them as blocks are lines
 		if (childrenInline() == false)
 		{
 			shouldLayoutAgain = layoutBlockChildrenAndFloats();
 		}
 		else
 		{
+			trace(this);
 			shouldLayoutAgain = layoutInlineChildrenAndFloats();
 		} 
 		
+		//if the height of this block box is auto, it depends
+		//on its content height, and can computed now that all
+		//children are laid out
 		if (coreStyle.isAuto(coreStyle.height) == true)
 		{
+			//reset bounds that will be used as children bounds
 			_layoutBounds.x = 500000;
 			_layoutBounds.y = 500000;
 			_layoutBounds.width = 0;
 			_layoutBounds.height = 0;
 			
 			//TODO : take min-height into account ?
+			//if this block box establish an inline formatting context
+			//its height is the added height of all the line boxes
+			//it generates
 			if (childrenInline() == true)
 			{
-				//TODO : adding vertical padding and borders
 				getLineBoxesBounds(lineBoxes, _layoutBounds);
 				bounds.height = _layoutBounds.height;
 			}
+			//else it is the added height of all its block children, excluding
+			//floated and absolutely positioned elements
 			else
 			{
+				//if it isn't a block formatting root, it uses the bounds
+				//of the border box of its children
 				if (establishesNewBlockFormattingContext() == false)
 				{
-					//TODO : adding vertical padding and borders
+					//TODO : only normal flow children should be used
 					getChildrenBounds(this, _layoutBounds);
 					bounds.height = _layoutBounds.height;
 				}
+				//if it is a block formatting root, it uses the bounds
+				//of the margin box of its children
 				else
 				{
-					//TODO : add vertical padding and borders
+					//TODO : only normal flow children should be used
 					getChildrenMarginBounds(this, _layoutBounds);
 					bounds.height = _layoutBounds.height;
 					
+					//in addition of the block box has floated descedant whose bottom
+					//are below its bottom, then the height includes those floated elements
 					//TODO : if floats bounds higher, use instead for height
 				}
 			}
 		}
 		
+		//the width of this block box might need to be re-computed if it uses its 'shrink-to-width'
+		//width which roughly matches the width of its descendant
+		//
+		//'shrink-to-fit' is used for block formatting root with an auto width
+		//TODO : should not include initial containing block
 		if (establishesNewBlockFormattingContext() == true && coreStyle.isAuto(coreStyle.width) == true)
 		{
-			if (useShrinkToFit() == true)
-			{
-				
-			}
+			
 		}
 		
 		_isLayingOut = false;
@@ -462,13 +501,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	//TODO : implement
-	private function useShrinkToFit():Bool
-	{
-		return true;
-	}
-	
+
+	/**
+	 * get the bounds of all the line boxes
+	 * generated by this block box
+	 */
 	private function getLineBoxesBounds(lineBoxes:Array<LineBox>, bounds:RectangleVO):Void
 	{
 		var length:Int = lineBoxes.length;
@@ -510,55 +547,90 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	
+	/**
+	 * Called when all children are blocks. 
+	 * Layout them as well as floated children
+	 * 
+	 * @return wether layout need to be restarted. Happens
+	 * when a floated child is first found, layout of the 
+	 * block formatting context must be done again as the float
+	 * may influence previous block's layout
+	 */
 	private function layoutBlockChildrenAndFloats():Bool
 	{
+		//holds the x,y position, in this block box space where
+		//to position the next child
 		var childPosition:PointVO = new PointVO(0, 0);
 			
+		//loop in all children
 		var child:ElementRenderer = firstChild;
 		while (child != null)
 		{
+			//if child has clearance it will be placed below previous
+			//left, right or both float based on the value of the clear style
 			if (child.hasClearance() == true)
 			{
-				//TODO : when clearing, should only clear flotes declared before in document order
+				//TODO : when clearing, should only clear floats declared before in document order
 				floatsManager.clearFloats(child.coreStyle.clear, childPosition.y);
 			}
-			
-			if (child.isPositioned() == true && child.isRelativePositioned() == false)
+			//absolutely positioned child are not positioned here
+			if (child.isPositioned() == false || child.isRelativePositioned() == true)
 			{
 				//TODO : margin collapsing
+				//if the child is not a float
 				if (child.isFloat() == false)
 				{
+					//if it is a block box not establishing a new block formatting
 					if (child.establishesNewBlockFormattingContext() == false && child.isBlockContainer() == true)
 					{
+						//add its own margin to the x/y position, as it is the position
+						//of its border box
 						childPosition.y += child.coreStyle.usedValues.marginTop;
 						childPosition.x = child.coreStyle.usedValues.marginLeft;
 						
+						//update bounds of child
 						child.bounds.x = childPosition.x;
 						child.bounds.y = childPosition.y;
 						
+						//child can now be layout, it needs to know its own x and y bounds
+						//before laying out its children to correctly deal with floated elements
 						child.layout(true);
 					}
+					//here the child is either a replaced block level element or a block box
+					//establishing a new block formatting
 					else
 					{
+						//the child must first be laid out so that its width and height are known
 						child.layout(true);
-						//TODO : for child, should use margin box width and for containing block content width
-						childPosition.y = floatsManager.getFirstAvailableYPosition(childPosition.y, child.bounds.width, bounds.width);
 						
+						//this child x and y position is influenced by floated elements, so the first y position
+						//where this child can fit given the floated element must be found
+						var childMarginWidth:Float = child.bounds.width + child.coreStyle.usedValues.marginLeft + child.coreStyle.usedValues.marginRight;
+						var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight;
+						childPosition.y = floatsManager.getFirstAvailableYPosition(childPosition.y, childMarginWidth, contentWidth);
+						
+						//TODO : for x add left float offset
 						childPosition.y += child.coreStyle.usedValues.marginTop;
 						childPosition.x += child.coreStyle.usedValues.marginLeft;
 					}
 					
+					//add the current's child height so that next block child will be placed below it
 					childPosition.y += child.bounds.height;
 					childPosition.y += child.coreStyle.usedValues.marginBottom;
 				}
+				//here the child is a floated element
 				else
 				{
+					//it must first be laid out so that its width and height are known
 					child.layout(true);
 					
+					//each a float is found, it is stored and the layout is re-started at
+					//the first parent block formatting root, so do nothing if the float
+					//was already found to prevent infinite loop
 					if (floatsManager.isAlreadyRegistered(child) == false)
 					{
-						//TODO : remove paddings from containing block width
-						var floatBounds:RectangleVO = floatsManager.registerFloat(child, childPosition, containingBlock.bounds.width );
+						var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight;
+						var floatBounds:RectangleVO = floatsManager.registerFloat(child, childPosition, contentWidth);
 						
 						child.bounds.x = floatBounds.x + child.coreStyle.usedValues.marginLeft;
 						child.bounds.y = floatBounds.y + child.coreStyle.usedValues.marginTop;
@@ -591,7 +663,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	//TODO : add final step where the bounds of all child are updated
-	//based on the line box they created
+	//based on the inline box they created
 	private function layoutInlineChildrenAndFloats():Bool
 	{
 		//var lineBoxPosition:PointVO = new PointVO(0, 0);
@@ -719,6 +791,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	*/
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////

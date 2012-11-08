@@ -48,33 +48,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * for the initial bloc renderer, the global
-	 * bounds are the viewport bounds
-	 */
-	override public function updateGlobalBounds():Void
-	{
-		
-	}
-	
-	/**
-	 * overriden as the bounds of the initial block container
-	 * are always those of the Window (minus scrollbars dimensions
-	 * if displayed)
-	 */
-	override public function updateBounds():Void
-	{
-		var containerBlockData:ContainingBlockVO = getContainerBlockData();
-		bounds.x = 0.0;
-		bounds.y = 0.0;
-		bounds.width = containerBlockData.width;
-		bounds.height = containerBlockData.height;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE ATTACHEMENT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	

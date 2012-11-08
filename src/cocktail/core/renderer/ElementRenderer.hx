@@ -115,16 +115,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	public var hitTestingBounds(default, null):RectangleVO;
 	
 	/**
-	 * This is the position of the top left padding box corner of the 
-	 * containing block of this ElementRenderer in the Window space.
-	 * This is used to render elements using the normal flow.
-	 * 
-	 * When added to the x and y bounds of the ElementRenderer, 
-	 * it gives the global x and y of the ElementRenderer
-	 */
-	public var globalContainingBlockOrigin:PointVO;
-	
-	/**
 	 * This is the position of the top left corner of this
 	 * ElementRenderer relative to the top left padding box
 	 * corner of the first positioned ancestor of this
@@ -136,16 +126,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * positioned origin of the ElementRenderer
 	 */
 	public var positionedOrigin:PointVO;
-	
-	/**
-	 * This is the position of the top left padding box corner
-	 * of the first positioned ancestor of this ElementRenderer
-	 * in the Window space.
-	 * 
-	 * It is used when this ElementRenderer
-	 * is absolutely positioned.
-	 */
-	public var globalPositionnedAncestorOrigin:PointVO;
 	
 	/**
 	 * A reference to the Node in the DOM tree
@@ -260,10 +240,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		
 		hitTestingBounds = new RectangleVO();
 		
-		globalPositionnedAncestorOrigin = new PointVO(0.0, 0.0); 
-		
-		globalContainingBlockOrigin = new PointVO(0.0, 0.0);
-		
 		inlineBoxes = new Array<InlineBox>();
 	}
 	
@@ -279,8 +255,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		globalBounds = null;
 		positionedOrigin = null;
 		hitTestingBounds = null;
-		globalPositionnedAncestorOrigin = null;
-		globalContainingBlockOrigin = null;
 		layerRenderer = null;
 		
 		var length:Int = inlineBoxes.length;
@@ -461,62 +435,20 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 */
 	public function setGlobalOrigins(addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
 	{
-		//if the element establishes a new formatting context, then its
-		//bounds must be added to the global x and y bounds for the normal flow
-		if (establishesNewBlockFormattingContext() == true)
+		if (isBlockContainer() == true)
 		{
-			var globalBounds:RectangleVO = globalBounds;
-			addedX = globalBounds.x;
-			addedY = globalBounds.y;
-		}
-		
-		//if the element is positioned, it must also add
-		//its bounds to the global positioned origin
-		if (isPositioned() == true)
-		{
-			var globalBounds:RectangleVO = globalBounds;
-			addedPositionedX = globalBounds.x;
-			addedPositionedY = globalBounds.y;
+			addedX = globalBounds.x + coreStyle.usedValues.paddingLeft;
+			addedY = globalBounds.y + coreStyle.usedValues.paddingTop;
 		}
 		
 		//for its child of the element
 		var child:ElementRenderer = firstChild;
 		while(child != null)
 		{
-			var childGlobalBounds:RectangleVO = child.globalBounds;
-			
-			//store the global bounds before update, to check if there
-			//is any change. If there is, the child needs to be re-rendered
-			var currentX:Float = childGlobalBounds.x;
-			var currentY:Float = childGlobalBounds.y;
-			var currentWidth:Float = childGlobalBounds.width;
-			var currentHeight:Float = childGlobalBounds.height;
-			
-			child.globalContainingBlockOrigin.x = addedX;
-			child.globalContainingBlockOrigin.y = addedY;
-			
-			child.globalPositionnedAncestorOrigin.x = addedPositionedX;
-			child.globalPositionnedAncestorOrigin.y = addedPositionedY;
-			
-			//some subclass of element renderer need
-			//to update there bounds, for instance inline
-			//box renderer update their bounds to reflect
-			//their content
-			child.updateBounds();
-			
-			//make the child compute its new global bounds
-			child.updateGlobalBounds();
-			
-			//if there was any change in the bounds of the child, its
-			//layer is invalidated so that it gets re-painted on next
-			//rendering
-			if (currentX != childGlobalBounds.x ||
-			currentY != childGlobalBounds.y ||
-			currentWidth != childGlobalBounds.width ||
-			currentHeight != childGlobalBounds.height)
-			{
-				child.layerRenderer.invalidateRendering();
-			}
+			child.globalBounds.x = addedX + child.bounds.x;
+			child.globalBounds.y = addedY + child.bounds.y;
+			child.globalBounds.width = child.bounds.width;
+			child.globalBounds.height = child.bounds.height;
 			
 			//call the method recursively if the child has children itself
 			if (child.firstChild != null)
@@ -526,85 +458,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 			
 			child = child.nextSibling;
 		}
-	}
-	
-	/**
-	 * Update the bounds relative to the 
-	 * containing block
-	 */
-	public function updateBounds():Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * update the global bounds bounds of the ElementRenderer
-	 * which are its bounds relative to the
-	 * Window
-	 */
-	public function updateGlobalBounds():Void
-	{
-		var globalX:Float;
-		var globalY:Float;
-		
-		var positionKeyword:CSSKeywordValue = coreStyle.getKeyword(coreStyle.position);
-		
-		//fixed positioned
-		if (positionKeyword == FIXED)
-		{
-			//here it uses its static position for x
-			if (coreStyle.isAuto(coreStyle.left) == true && coreStyle.isAuto(coreStyle.right) == true)
-			{
-				globalX = globalContainingBlockOrigin.x + bounds.x;
-			}
-			//here it uses its position relative to the Window for x
-			else
-			{
-				globalX = positionedOrigin.x;
-			}
-			//static position
-			if (coreStyle.isAuto(coreStyle.top) == true && coreStyle.isAuto(coreStyle.bottom) == true)
-			{
-				globalY = globalContainingBlockOrigin.y + bounds.y;
-			}
-			else
-			{
-				globalY = positionedOrigin.y;
-			}
-		}
-		//absolute positioned
-		else if (positionKeyword == ABSOLUTE)
-		{
-			//static position for x
-			if (coreStyle.isAuto(coreStyle.left) == true && coreStyle.isAuto(coreStyle.right) == true)
-			{
-				globalX = globalContainingBlockOrigin.x + bounds.x;
-			}
-			else
-			{
-				globalX = globalPositionnedAncestorOrigin.x + positionedOrigin.x;
-			}
-			//static position for y
-			if (coreStyle.isAuto(coreStyle.top) == true && coreStyle.isAuto(coreStyle.bottom) == true)
-			{
-				globalY = globalContainingBlockOrigin.y + bounds.y;
-			}
-			else
-			{
-				globalY = globalPositionnedAncestorOrigin.y + positionedOrigin.y;
-			}
-		}
-		//here the ElementRenderer uses the normal flow
-		else
-		{
-			globalX = globalContainingBlockOrigin.x + bounds.x;
-			globalY = globalContainingBlockOrigin.y + bounds.y;
-		}
-		
-		globalBounds.x = globalX;
-		globalBounds.y = globalY;
-		globalBounds.width = bounds.width;
-		globalBounds.height = bounds.height;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

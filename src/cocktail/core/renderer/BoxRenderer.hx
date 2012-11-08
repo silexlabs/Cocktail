@@ -181,11 +181,11 @@ class BoxRenderer extends InvalidatingElementRenderer
 	
 	/**
 	 * Called when the ElementRenderer needs to lays itself out,
-	 * meanng its must compute its dimensions
+	 * meaning its must compute its dimensions
 	 */
 	private function layoutSelf():Void
 	{
-		//get the dimensions and font metrics of the containing block of this 
+		//get the dimensions of the containing block of this 
 		//element which are necesseray to compute the styles of this ElementRenderer
 		//into usable value. For instance, a with defined as a percentage will compute
 		//to a percentage of the containing block width
@@ -244,6 +244,13 @@ class BoxRenderer extends InvalidatingElementRenderer
 		
 		//compute the box styles (width, height, margins, paddings...)
 		computeBoxModelStyles(containingBlockData);
+		
+		//now that the used values for layout are computed, they can be used
+		//for the width and height of the bounds of this box. Width and height
+		//might be computed again, for instance if it depends on children height
+		var usedValues:UsedValuesVO = coreStyle.usedValues;
+		bounds.width = usedValues.width + usedValues.paddingLeft + usedValues.paddingRight;
+		bounds.height = usedValues.height + usedValues.paddingTop + usedValues.paddingBottom;
 	}
 	
 		
