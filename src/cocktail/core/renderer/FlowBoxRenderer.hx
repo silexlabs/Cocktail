@@ -112,17 +112,13 @@ class FlowBoxRenderer extends BoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Actually layout all the children of the ElementRenderer by calling
-	 * the layout on all the children
+	 * Layout the children of the box which belongs
+	 * to the normal flow or are floated.
+	 * Implemented by BlockBoxRenderer
 	 */
 	private function layoutChildren():Void
 	{
-		var child:ElementRenderer = firstChild;
-		while(child != null)
-		{
-			child.layout(_childrenNeedLayout);
-			child = child.nextSibling;
-		}
+		//abstract
 	}
 	
 	private function layoutPositionedChildren():Void

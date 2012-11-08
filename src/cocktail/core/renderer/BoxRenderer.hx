@@ -297,6 +297,19 @@ class BoxRenderer extends InvalidatingElementRenderer
 	}
 	
 	/**
+	 * Determine wether the ElementRenderer clears, left floats,
+	 * right floats or both which are declared before it in the
+	 * block formatting context into which it participates.
+	 * 
+	 * If it does, it will positioned below any previous left, right
+	 * or both floats
+	 */
+	override public function hasClearance():Bool
+	{	
+		return coreStyle.isNone(coreStyle.clear) == false;
+	}
+	
+	/**
 	 * A positioned element is one that 
 	 * is positioned outside of the normal
 	 * flow.

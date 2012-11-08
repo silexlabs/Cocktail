@@ -80,4 +80,17 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	{
 		getLineBoxesBounds(lineBoxes, bounds);
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * only block level elements can introduce
+	 * clearance
+	 */
+	override public function hasClearance():Bool
+	{	
+		return false;
+	}
 }

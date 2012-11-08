@@ -156,7 +156,7 @@ class InlineFormattingContext extends FormattingContext
 			//an ImageRenderer. For all thoses cases, only one line box is created for each child
 			//as it is atomic from the point of view of the inline formatting context
 			//(it doesn't know what's inside those child when formatting)
-			else if (child.establishesNewFormattingContext() == true || child.isReplaced() == true)
+			else if (child.establishesNewBlockFormattingContext() == true || child.isReplaced() == true)
 			{
 				var childUsedValues:UsedValuesVO = child.coreStyle.usedValues;
 				
@@ -291,12 +291,12 @@ class InlineFormattingContext extends FormattingContext
 		{
 			//TODO : should be padding left instead ?
 			//
-			_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData.y + _formattingContextRoot.bounds.y, _unbreakableWidth,
-			_formattingContextRoot.coreStyle.usedValues.width);
+			//_formattingContextData.y = _floatsManager.getFirstAvailableY(_formattingContextData.y + _formattingContextRoot.bounds.y, _unbreakableWidth,
+			//_formattingContextRoot.coreStyle.usedValues.width);
 			
 			_formattingContextData.y -= _formattingContextRoot.bounds.y;
 			
-			_formattingContextData.x = _floatsManager.getLeftFloatOffset(_formattingContextData.y + _formattingContextRoot.bounds.y);
+			//_formattingContextData.x = _floatsManager.getLeftFloatOffset(_formattingContextData.y + _formattingContextRoot.bounds.y);
 			
 			//format the current line which is currently the last in the line array
 			//, now that all the line box in it are known
@@ -888,7 +888,7 @@ class InlineFormattingContext extends FormattingContext
 			}
 			//line box which wrap replaced element or establishes new formatting context apply their
 			//top margin to their bounds here
-			else if (child.isStaticPosition() == true || child.elementRenderer.isReplaced() == true || child.elementRenderer.establishesNewFormattingContext() == true)
+			else if (child.isStaticPosition() == true || child.elementRenderer.isReplaced() == true || child.elementRenderer.establishesNewBlockFormattingContext() == true)
 			{
 				child.bounds.y += child.elementRenderer.coreStyle.usedValues.marginTop;
 			}

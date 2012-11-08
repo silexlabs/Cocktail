@@ -14,10 +14,12 @@ import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
+import cocktail.core.geom.GeomUtils;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
 import cocktail.core.linebox.EmbeddedLineBox;
+import cocktail.core.linebox.InlineBox;
 import cocktail.core.linebox.LineBox;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.floats.FloatsManager;
@@ -62,6 +64,17 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private var _usedRootLineBoxes:Int;
 	
+	public var floatsManager:FloatsManager;
+	
+	private var _isLayingOut:Bool;
+	
+	/**
+	 * Those bounds are used during layout to
+	 * get the width and height of this block
+	 * box when it depends on its children.
+	 */
+	private var _layoutBounds:RectangleVO;
+	
 	/**
 	 * class constructor.
 	 * Init class attributes
@@ -71,6 +84,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		super(node);
 		rootLineBoxes = new Array<LineBox>();
 		_usedRootLineBoxes = 0;
+		floatsManager = new FloatsManager();
+		_isLayingOut = false;
+		_layoutBounds = new RectangleVO();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -338,7 +354,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function renderLineBoxes(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
-		if (rootRenderer.establishesNewFormattingContext() == true && rootRenderer.childrenInline() == true)
+		if (rootRenderer.establishesNewBlockFormattingContext() == true && rootRenderer.childrenInline() == true)
 		{	
 			var blockboxRenderer:BlockBoxRenderer = cast(rootRenderer);
 			var length:Int = blockboxRenderer.rootLineBoxes.length;
@@ -442,32 +458,25 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Overriden as a BlockBoxRenderer might
-	 * also start the formatting of its
-	 * in flow children
-	 */
 	override private function layoutChildren():Void
-	{
-		super.layoutChildren();
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function layoutChildren():Void
 	{
 		if (establishesNewBlockFormattingContext() == true)
 		{
-			floatedElements = new Array<ElementRenderer>();
+			if (_isLayingOut == false)
+			{
+				floatsManager.init();
+			}
 		}
 		else
 		{
-			var parentFloatedElements:Array<ElementRenderer> = containingBlock.floatedElements;
-			updateFloatedElements(parentFloatedElements);
+			var containingBlockAsBlock:BlockBoxRenderer = cast(containingBlock);
+			//TODO : convert float in containing block space to this space
+			//floatsManager.convertToSpace(this, containingBlockAsBlock.floatsManager, containingBlockAsBlock);
 		}
 		
+		_isLayingOut = true;
+		
+		var shouldLayoutAgain:Bool = false;
 		if (childrenInline() == false)
 		{
 			shouldLayoutAgain = layoutBlockChildrenAndFloats();
@@ -475,28 +484,35 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		else
 		{
 			shouldLayoutAgain = layoutInlineChildrenAndFloats();
-		}
-		
+		} 
 		
 		if (coreStyle.isAuto(coreStyle.height) == true)
 		{
+			_layoutBounds.x = 500000;
+			_layoutBounds.y = 500000;
+			_layoutBounds.width = 0;
+			_layoutBounds.height = 0;
+			
 			//TODO : take min-height into account ?
 			if (childrenInline() == true)
 			{
 				//TODO : adding vertical padding and borders
-				bounds.height = getLineBoxesBounds().height;
+				getLineBoxesBounds(lineBoxes, _layoutBounds);
+				bounds.height = _layoutBounds.height;
 			}
 			else
 			{
 				if (establishesNewBlockFormattingContext() == false)
 				{
 					//TODO : adding vertical padding and borders
-					bounds.height = getChildrenBounds().height;
+					getChildrenBounds(this, _layoutBounds);
+					bounds.height = _layoutBounds.height;
 				}
 				else
 				{
 					//TODO : add vertical padding and borders
-					bounds.height = getChildrenMarginBounds().height;
+					getChildrenMarginBounds(this, _layoutBounds);
+					bounds.height = _layoutBounds.height;
 					
 					//TODO : if floats bounds higher, use instead for height
 				}
@@ -510,6 +526,50 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				
 			}
 		}
+		
+		_isLayingOut = false;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	//TODO : implement
+	private function useShrinkToFit():Bool
+	{
+		return true;
+	}
+	
+	
+	private function getChildrenBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
+	{
+		var child:ElementRenderer = rootElementRenderer.firstChild;
+		while(child != null)
+		{
+			GeomUtils.addBounds(child.bounds, bounds);
+			if (child.firstChild != null)
+			{
+				doGetChildrenBounds(child, bounds);
+			}
+			
+			child = child.nextSibling;
+		}
+	}
+	
+	//TODO : for each child bounds, add intermediate child bounds with margins
+	private function getChildrenMarginBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
+	{
+		var child:ElementRenderer = rootElementRenderer.firstChild;
+		while(child != null)
+		{
+			GeomUtils.addBounds(child.bounds, bounds);
+			if (child.firstChild != null)
+			{
+				doGetChildrenBounds(child, bounds);
+			}
+			
+			child = child.nextSibling;
+		}
 	}
 	
 	private function layoutBlockChildrenAndFloats():Bool
@@ -521,7 +581,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			if (child.hasClearance() == true)
 			{
-				applyClearance(childPosition, floatedElements);
+				//TODO : when clearing, should only clear flotes declared before in document order
+				floatsManager.clearFloats(child.coreStyle.clear, childPosition.y);
 			}
 			
 			if (child.isPositioned() == true && child.isRelativePositioned() == false)
@@ -537,12 +598,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						child.bounds.x = childPosition.x;
 						child.bounds.y = childPosition.y;
 						
-						child.layout();
+						child.layout(true);
 					}
 					else
 					{
-						child.layout();
-						findFirstAvailableYAndX(childPosition, floatedElements, child.bounds.width);
+						child.layout(true);
+						//TODO : for child, should use margin box width and for containing block content width
+						childPosition.y = floatsManager.getFirstAvailableYPosition(childPosition.y, child.bounds.width, bounds.width);
 						
 						childPosition.y += child.coreStyle.usedValues.marginTop;
 						childPosition.x += child.coreStyle.usedValues.marginLeft;
@@ -553,16 +615,32 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				}
 				else
 				{
-					child.layout();
+					child.layout(true);
 					
-					if (floatAlreadyRegistered(child) == false)
+					if (floatsManager.isAlreadyRegistered(child) == false)
 					{
-						var floatedElement = floatedElements.insert(child);
+						//TODO : remove paddings from containing block width
+						var floatBounds:RectangleVO = floatsManager.registerFloat(child, childPosition, containingBlock.bounds.width );
 						
-						child.bounds.x = floatedElement.x + child.coreStyle.usedValues.marginLeft;
-						child.bounds.y = floatedElement.y + child.coreStyle.usedValues.marginTop;
+						child.bounds.x = floatBounds.x + child.coreStyle.usedValues.marginLeft;
+						child.bounds.y = floatBounds.y + child.coreStyle.usedValues.marginTop;
 						
-						addFloatedElementToBlockFormattingRoot(floatedElement);
+						var xOffset:Float = 0;
+						var yOffset:Float = 0;
+						
+						var blockFormattingRoot:ElementRenderer = this;
+						
+						while (blockFormattingRoot.establishesNewBlockFormattingContext() == false)
+						{
+							if (blockFormattingRoot.parentNode == null)
+							{
+								break;
+							}
+							blockFormattingRoot = blockFormattingRoot.parentNode;
+						}
+						
+						//TODO : convert float in current space to block root space
+						//blockFormattingRoot.addFloatedElementToBlockFormattingRoot(floatedElement);
 						return true;
 					}
 				}
@@ -570,20 +648,23 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			
 			child = child.nextSibling;
 		}
+		
+		return false;
 	}
 	
 	//TODO : add final step where the bounds of all child are updated
 	//based on the line box they created
 	private function layoutInlineChildrenAndFloats():Bool
 	{
-		var lineBoxPosition:PointVO = new PointVO(0, 0);
-		
-		var child:ElementRenderer = firstChild;
-		var lineBox:LineBox = new LineBox(child, width);
-		
-		var openedElementRendererStack:Array<ElementRenderer> = new Array<ElementRenderer>();
+		//var lineBoxPosition:PointVO = new PointVO(0, 0);
+		//
+		//var child:ElementRenderer = firstChild;
+		//var lineBox:LineBox = new LineBox(child, width);
+		//
+		//var openedElementRendererStack:Array<ElementRenderer> = new Array<ElementRenderer>();
+		return false;
 	}
-	
+	/**
 	private function doFormat(elementRenderer:ElementRenderer, lineBox:LineBox, inlineBox:InlineBox, openedElementRenderers:Array<ElementRenderer>, lineBoxPosition:PointVO):InlineBox
 	{
 		//loop in all the child of the container
@@ -617,7 +698,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				else if (child.firstChild != null)
 				{
 					//create the first line box for this inline box renderer
-					var childInLineBox:InLineBox = new InlineBox(child);
+					var childInLineBox:InlineBox = new InlineBox(child);
 					
 					var childUsedValues:UsedValuesVO = child.coreStyle.usedValues;
 					
@@ -699,7 +780,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			currentInlineBox = childInLineBox;
 		}
 	}
-	
+	*/
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -710,9 +791,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	override public function createOwnLayer():Bool
 	{
-		var creatOwnLayer:Bool = super.createOwnLayer();
+		//check first wether it should create a new layer
+		//anyway
+		var createOwnLayer:Bool = super.createOwnLayer();
 		
-		if (creatOwnLayer == true)
+		if (createOwnLayer == true)
 		{
 			return true;
 		}

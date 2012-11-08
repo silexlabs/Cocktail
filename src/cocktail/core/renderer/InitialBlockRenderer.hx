@@ -137,7 +137,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * The initial block container always establishes a block formatting context
 	 * for its children
 	 */
-	override public function establishesNewFormattingContext():Bool
+	override public function establishesNewBlockFormattingContext():Bool
 	{
 		return true;
 	}

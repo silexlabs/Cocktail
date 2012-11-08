@@ -602,7 +602,7 @@ class LineBox
 			}
 			//line box which wrap replaced element or establishes new formatting context apply their
 			//top margin to their bounds here
-			else if (child.isStaticPosition() == true || child.elementRenderer.isReplaced() == true || child.elementRenderer.establishesNewFormattingContext() == true)
+			else if (child.isStaticPosition() == true || child.elementRenderer.isReplaced() == true || child.elementRenderer.establishesNewBlockFormattingContext() == true)
 			{
 				child.bounds.y += child.elementRenderer.coreStyle.usedValues.marginTop;
 			}

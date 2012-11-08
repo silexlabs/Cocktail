@@ -467,7 +467,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	{
 		//if the element establishes a new formatting context, then its
 		//bounds must be added to the global x and y bounds for the normal flow
-		if (establishesNewFormattingContext() == true)
+		if (establishesNewBlockFormattingContext() == true)
 		{
 			var globalBounds:RectangleVO = globalBounds;
 			addedX = globalBounds.x;
@@ -866,12 +866,17 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	// Overriden by inheriting classes
 	////////////////////////////////
 	
-	public function establishesNewFormattingContext():Bool
+	public function establishesNewBlockFormattingContext():Bool
 	{
 		return false;
 	}
 	
 	public function isScrollBar():Bool
+	{
+		return false;
+	}
+	
+	public function hasClearance():Bool
 	{
 		return false;
 	}
