@@ -18,21 +18,15 @@ import cocktail.core.geom.GeomUtils;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
-import cocktail.core.linebox.EmbeddedLineBox;
+import cocktail.core.layout.LineBox;
 import cocktail.core.linebox.InlineBox;
-import cocktail.core.linebox.LineBox;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.floats.FloatsManager;
-import cocktail.core.layout.formatter.BlockFormattingContext;
-import cocktail.core.layout.formatter.FormattingContext;
-import cocktail.core.layout.formatter.InlineFormattingContext;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.graphics.GraphicsContext;
-import cocktail.core.linebox.RootLineBox;
-import cocktail.core.linebox.StaticPositionLineBox;
 import cocktail.Lib;
 import haxe.Log;
 import cocktail.core.layer.LayerRenderer;
@@ -55,14 +49,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * . Used when this block box establishes an 
 	 * inline formatting context
 	 */
-	public var rootLineBoxes(default, null):Array<LineBox>;
-	
-	/**
-	 * count the number of root line box
-	 * used, this is used to prevent creating
-	 * too much root line box when updateing layout
-	 */
-	private var _usedRootLineBoxes:Int;
+	public var lineBoxes(default, null):Array<LineBox>;
 	
 	public var floatsManager:FloatsManager;
 	
@@ -82,71 +69,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	public function new(node:HTMLElement) 
 	{
 		super(node);
-		rootLineBoxes = new Array<LineBox>();
-		_usedRootLineBoxes = 0;
+		
+		lineBoxes = new Array<LineBox>();
 		floatsManager = new FloatsManager();
 		_isLayingOut = false;
 		_layoutBounds = new RectangleVO();
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC LINE BOXES METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * reset each root line box owned by this
-	 * block box. Root line box are reused
-	 * instead of being instantiated each time
-	 */
-	public function resetRootLineBoxes():Void
-	{
-		var length:Int = rootLineBoxes.length;
-		for (i in 0...length)
-		{
-			//reset the root line box data
-			var rootLineBox:LineBox = rootLineBoxes[i];
-			rootLineBox.bounds.x = 0;
-			rootLineBox.bounds.y = 0;
-			rootLineBox.bounds.width = 0;
-			rootLineBox.bounds.height = 0;
-			
-			//remove all its children
-			var child:LineBox = rootLineBox.firstChild;
-			while(child != null)
-			{
-				var nextSibling:LineBox = child.nextSibling;
-				rootLineBox.removeChild(child);
-				child = nextSibling;
-			}
-		}
-		
-		_usedRootLineBoxes = 0;
-	}
-	
-	/**
-	 * Return a usable root line box, used during
-	 * layout
-	 */
-	public function getRootLineBox():RootLineBox
-	{
-		_usedRootLineBoxes++;
-	
-		//create a new root line box if all root line
-		//boxes are used
-		if (_usedRootLineBoxes > rootLineBoxes.length)
-		{
-			rootLineBoxes.push(new RootLineBox(this));
-		}
-		
-		return cast(rootLineBoxes[_usedRootLineBoxes - 1]);
-	}
-	
-	/**
-	 * Return the last added root line box
-	 */
-	public function getLastRootLineBox():RootLineBox
-	{
-		return cast(rootLineBoxes[_usedRootLineBoxes - 1]);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -357,10 +284,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		if (rootRenderer.establishesNewBlockFormattingContext() == true && rootRenderer.childrenInline() == true)
 		{	
 			var blockboxRenderer:BlockBoxRenderer = cast(rootRenderer);
-			var length:Int = blockboxRenderer.rootLineBoxes.length;
+			var length:Int = blockboxRenderer.lineBoxes.length;
 			for (i in 0...length)
 			{
-				renderLineBoxesInLine(blockboxRenderer.rootLineBoxes[i], graphicContext, referenceLayer, clipRect, scrollOffset);
+				renderLineBoxesInLine(blockboxRenderer.lineBoxes[i], graphicContext, referenceLayer, clipRect, scrollOffset);
 			}
 		}
 		else
@@ -383,23 +310,25 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	/**
 	 * Render all the line boxes in one line
+	 * 
+	 * TODO : update with new LineBox
 	 */
 	private function renderLineBoxesInLine(rootLineBox:LineBox, graphicContext:GraphicsContext, referenceLayer:LayerRenderer, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
-		var child:LineBox = rootLineBox.firstChild;
-		while(child != null)
-		{
-			if (child.elementRenderer.layerRenderer == referenceLayer)
-			{
-				child.render(graphicContext, clipRect, scrollOffset);
-				if (child.firstChild != null)
-				{
-					renderLineBoxesInLine(child, graphicContext, referenceLayer, clipRect, scrollOffset);
-				}
-			}
-			
-			child = child.nextSibling;
-		}
+		//var child:LineBox = rootLineBox.firstChild;
+		//while(child != null)
+		//{
+			//if (child.elementRenderer.layerRenderer == referenceLayer)
+			//{
+				//child.render(graphicContext, clipRect, scrollOffset);
+				//if (child.firstChild != null)
+				//{
+					//renderLineBoxesInLine(child, graphicContext, referenceLayer, clipRect, scrollOffset);
+				//}
+			//}
+			//
+			//child = child.nextSibling;
+		//}
 	}
 	
 	/**
@@ -540,6 +469,15 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return true;
 	}
 	
+	private function getLineBoxesBounds(lineBoxes:Array<LineBox>, bounds:RectangleVO):Void
+	{
+		var length:Int = lineBoxes.length;
+		for (i in 0...length)
+		{
+			//TODO : manage bounds of LineBox
+			//GeomUtils.addBounds(lineBoxes[i].bounds, bounds);
+		}
+	}
 	
 	private function getChildrenBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
 	{

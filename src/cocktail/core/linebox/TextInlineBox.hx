@@ -29,7 +29,7 @@ import cocktail.port.NativeText;
  * 
  * @author Yannick DOMINGUEZ
  */
-class TextLineBox extends LineBox
+class TextInlineBox extends InlineBox
 {
 	/**
 	 * A ref to the font metrics of the TextRenderer
@@ -121,36 +121,6 @@ class TextLineBox extends LineBox
 		bitmapBounds.width = bounds.width;
 		bitmapBounds.height = bounds.height;
 		_nativeTextBitmap = _nativeText.getBitmap(bitmapBounds);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Render the text using the graphic context as canvas.
-	 * 
-	 * TODO 4 : should also render text decoration, or should
-	 * be on TextRenderer ?
-	 * 
-	 * TODO 2 : should use globalBounds instead, but global bounds is
-	 * used itself to determine the bounds of the text
-	 */
-	override public function render(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
-	{
-		_destinationPoint.x = bounds.x + elementRenderer.globalContainingBlockOrigin.x - scrollOffset.x;
-		_destinationPoint.y = bounds.y + elementRenderer.globalContainingBlockOrigin.y - scrollOffset.y;
-		
-		graphicContext.graphics.copyPixels(_nativeTextBitmap, _renderRect, _destinationPoint, clipRect);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override public function getBaselineOffset(parentBaselineOffset:Float, parentXHeight:Float):Float
-	{
-		return parentBaselineOffset;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

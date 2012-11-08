@@ -12,12 +12,11 @@ import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.linebox.LineBox;
-import cocktail.core.linebox.SpaceLineBox;
-import cocktail.core.linebox.TextLineBox;
+import cocktail.core.linebox.InlineBox;
+import cocktail.core.linebox.SpaceInlineBox;
+import cocktail.core.linebox.TextInlineBox;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.css.CoreStyle;
-import cocktail.core.layout.formatter.FormattingContext;
 import cocktail.core.font.FontManager;
 import haxe.Log;
 import cocktail.core.geom.GeomData;
@@ -120,11 +119,11 @@ class TextRenderer extends InvalidatingElementRenderer
 
 	/**
 	 * Overriden as the bounds of a TextRenderer is formed
-	 * by the bounds of its formatted text line boxes
+	 * by the bounds of its formatted text inline boxes
 	 */
 	override public function updateBounds():Void
 	{
-		getLineBoxesBounds(lineBoxes, bounds);
+		getInlineBoxesBounds(inlineBoxes, bounds);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -343,7 +342,7 @@ class TextRenderer extends InvalidatingElementRenderer
 			_textTokens = doGetTextTokens(processedText);
 		}
 		
-		lineBoxes = [];
+		inlineBoxes = [];
 		
 		var fontMetrics:FontMetricsVO = coreStyle.fontMetrics;
 		var fontManager:FontManager = FontManager.getInstance();
@@ -352,38 +351,38 @@ class TextRenderer extends InvalidatingElementRenderer
 		for (i in 0...length)
 		{
 			//create and store the line boxes
-			lineBoxes.push(createTextLineBoxFromTextToken(_textTokens[i], fontMetrics, fontManager));
+			inlineBoxes.push(createTextInlineBoxFromTextToken(_textTokens[i], fontMetrics, fontManager));
 		}
 	}
 	
 	/**
 	 * Create and return a Text line box from a text token
 	 */
-	private function createTextLineBoxFromTextToken(textToken:TextToken, fontMetrics:FontMetricsVO, fontManager:FontManager):LineBox
+	private function createTextInlineBoxFromTextToken(textToken:TextToken, fontMetrics:FontMetricsVO, fontManager:FontManager):InlineBox
 	{
 		//the text of the created text line box
 		var text:String;
 		
-		var textLineBox:TextLineBox;
+		var textInlineBox:TextInlineBox;
 		
 		switch(textToken)
 		{
 			case word(value):
 				text = value;
-				textLineBox = new TextLineBox(this, text, fontMetrics, fontManager);
+				textInlineBox = new TextInlineBox(this, text, fontMetrics, fontManager);
 		
 			case space:
-				textLineBox = new SpaceLineBox(this, fontMetrics, fontManager);
+				textInlineBox = new SpaceInlineBox(this, fontMetrics, fontManager);
 				
 			//TODO 5 : implement tab and line feed	
 			case tab:
-				textLineBox = new TextLineBox(this, "", fontMetrics, fontManager);
+				textInlineBox = new TextInlineBox(this, "", fontMetrics, fontManager);
 				
 			case lineFeed:
-				textLineBox = new TextLineBox(this, "", fontMetrics, fontManager);
+				textInlineBox = new TextInlineBox(this, "", fontMetrics, fontManager);
 		}
 		
-		return textLineBox;
+		return textInlineBox;
 	}
 
 	/////////////////////////////////

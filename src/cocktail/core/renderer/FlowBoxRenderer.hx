@@ -13,7 +13,6 @@ import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.layout.LayoutManager;
-import cocktail.core.linebox.LineBox;
 
 import cocktail.core.layout.computer.boxComputers.BlockBoxStylesComputer;
 import cocktail.core.layout.computer.boxComputers.BoxStylesComputer;
@@ -22,7 +21,6 @@ import cocktail.core.layout.computer.boxComputers.InlineBlockBoxStylesComputer;
 import cocktail.core.layout.computer.boxComputers.InLineBoxStylesComputer;
 import cocktail.core.layout.computer.boxComputers.PositionedBoxStylesComputer;
 import cocktail.core.css.CoreStyle;
-import cocktail.core.layout.formatter.FormattingContext;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;

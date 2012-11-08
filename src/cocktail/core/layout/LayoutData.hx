@@ -11,7 +11,6 @@ import cocktail.core.dom.Node;
 import cocktail.core.geom.GeomData;
 import cocktail.core.geom.Matrix;
 import cocktail.core.css.CoreStyle;
-import cocktail.core.layout.formatter.FormattingContext;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InlineBoxRenderer;
 import cocktail.core.renderer.TextRenderer;

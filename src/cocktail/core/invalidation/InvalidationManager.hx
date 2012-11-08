@@ -324,7 +324,7 @@ class InvalidationManager
 		{
 			_htmlDocument.documentElement.updateElementRenderer();
 			_htmlDocument.documentElement.elementRenderer.updateAnonymousBlock();
-			_htmlDocument.documentElement.elementRenderer.updateLineBoxes();
+			_htmlDocument.documentElement.elementRenderer.updateInlineBoxes();
 			_renderingTreeNeedsUpdate = false;
 		}
 		

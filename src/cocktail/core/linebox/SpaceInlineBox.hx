@@ -26,7 +26,7 @@ import cocktail.core.css.CSSData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class SpaceLineBox extends TextLineBox
+class SpaceInlineBox extends TextInlineBox
 {
 	/**
 	 * class constructor
@@ -48,18 +48,6 @@ class SpaceLineBox extends TextLineBox
 	 * as there is no text element, there is no bitmap data
 	 */
 	override private function initTextBitmap():Void
-	{
-		
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC RENDERING METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Spaces don't need to be rendered
-	 */
-	override public function render(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		
 	}

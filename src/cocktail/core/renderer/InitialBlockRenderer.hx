@@ -14,8 +14,6 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.layer.InitialLayerRenderer;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
-import cocktail.core.layout.formatter.BlockFormattingContext;
-import cocktail.core.layout.formatter.FormattingContext;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CoreStyle;
 import haxe.Log;

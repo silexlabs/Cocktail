@@ -15,9 +15,7 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.linebox.EmbeddedLineBox;
-import cocktail.core.linebox.LineBox;
-import cocktail.core.linebox.StaticPositionLineBox;
+import cocktail.core.linebox.InlineBox;
 
 import cocktail.core.layout.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
 import cocktail.core.layout.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
@@ -39,9 +37,6 @@ import cocktail.core.layout.computer.boxComputers.PositionedBoxStylesComputer;
 import cocktail.core.layout.computer.FontAndTextStylesComputer;
 import cocktail.core.layout.computer.VisualEffectStylesComputer;
 import cocktail.core.css.CoreStyle;
-import cocktail.core.layout.formatter.BlockFormattingContext;
-import cocktail.core.layout.formatter.FormattingContext;
-import cocktail.core.layout.formatter.InlineFormattingContext;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 import cocktail.core.css.CSSValueConverter;
@@ -97,29 +92,20 @@ class BoxRenderer extends InvalidatingElementRenderer
 	
 	/**
 	 * overriden as box might generate one
-	 * line box if they are inline level
+	 * inline box if they are inline level
 	 */
-	override public function updateLineBoxes():Void
+	override public function updateInlineBoxes():Void
 	{
-		lineBoxes = new Array<LineBox>();
+		inlineBoxes = new Array<InlineBox>();
 		
-		//positioned box generate static line box, used as dummy
-		//to find their static position
-		if (isPositioned() == true && isRelativePositioned() == false)
-		{
-			var staticLineBox:StaticPositionLineBox = new StaticPositionLineBox(this);
-			lineBoxes.push(staticLineBox);
-		}
 		//non-positioned box create embedded box, it can represent
 		//an embedded element llike a picture or an inline-block block
 		//box
-		else
-		{
-			var embeddedLineBox:EmbeddedLineBox = new EmbeddedLineBox(this);
-			lineBoxes.push(embeddedLineBox);
-		}
+		var inlineBox:InlineBox = new InlineBox(this);
+		inlineBoxes.push(inlineBox);
+		
 			
-		super.updateLineBoxes();
+		super.updateInlineBoxes();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
