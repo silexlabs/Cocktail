@@ -8,7 +8,6 @@
 */
 
 package historyApi;
-import cocktail.core.history.History;
 import js.Lib;
 import js.Dom;
 
@@ -27,7 +26,6 @@ class HistoryTests
 {
 	public static function main()
 	{
-		trace("...tests begin...");
 		var runner = new Runner();
 		runner.addCase(new HistoryTests());
 		Report.create(runner);
@@ -46,8 +44,10 @@ class HistoryTests
 	public function initHistory() 
 	{
 		// init history
-		history = new History();
-		//history = Lib.window.history;
+		history = Lib.window.history;
+		if (history == null){
+			throw("this browser does not support history api");
+		}
 
 		var stateObj = { 
 			title : "page 1", 
@@ -74,6 +74,7 @@ class HistoryTests
 		trace("testHistory");
 		// reset history
 		initHistory();
+
 		// Check the length of the history stack
 		//Assert.equals(3, history.length);
 
@@ -158,7 +159,7 @@ class HistoryTests
 	{
 		trace("_testHistoryAddEventListener");
 		// create callback
-		async = Assert.createEvent(_callbackHistoryAddEventListener, 1000);
+		async = Assert.createEvent(cast(_callbackHistoryAddEventListener), 1000);
 
 		// attach listener
 		Lib.window.addEventListener("popstate", async, true);

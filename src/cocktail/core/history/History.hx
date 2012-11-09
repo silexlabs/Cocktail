@@ -16,6 +16,9 @@ import cocktail.core.event.EventConstants;
  * Notes
  * - the intial state is the browser state, it is pushed at start, currentIdx is then 0, not sure if this is right because specs do not say if the browser initial state should be pushed or not
  * - stateDataArray should always have more than 0 elements and currentIdx should always be positive
+ * Todo:
+ * - methods to resolve urls? (do like the css and xml parsers of COcktail, not with regexp)
+ * - update window.location
  */
 class History
 {	    	
@@ -44,8 +47,15 @@ class History
 	{
 		// intial state is the browser state
 		stateDataArray = new Array();
-		stateDataArray.push(computeStateData(null, null, null));
 		currentIdx = 0;
+
+		// add the initial browser state to the history
+		// todo: use the location to resolve the url
+		stateDataArray.push( {
+			state:null,
+			title:"",
+			url:null
+		});
 	}
 	/**
 	 * getter for the length property
@@ -72,7 +82,11 @@ class History
 		state = cloneData(stateDataArray[currentIdx].state);
 
 		// fire the popstate event
-		onPopState(state);
+		onPopState({
+			state : state,
+			title : stateDataArray[currentIdx].title,
+			url : stateDataArray[currentIdx].url
+		});
 	}
 	/**
 	 * Goes back one step in the joint session history. If there is no previous page, does nothing.
@@ -132,7 +146,6 @@ class History
 		// create the event
 		var event:PopStateEvent = new PopStateEvent();
 		event.initPopStateEvent(EventConstants.POP_STATE, true, false, null, 0.0, clonedState);
-
   		// dispatch event on window
 		Lib.window.dispatchEvent(event);
 
@@ -209,7 +222,8 @@ class History
 			{
 				// todo: use location
 				//base = Lib.document.location.href;
-				throw("location is not yet implemented");
+				// throw("location is not yet implemented");
+				base = "";
 			}
 		}
 		// replace all "\" by "/" in url
