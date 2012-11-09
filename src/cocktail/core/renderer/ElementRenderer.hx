@@ -435,6 +435,13 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 */
 	public function setGlobalOrigins(addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
 	{
+		if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			addedPositionedX = globalBounds.x + coreStyle.usedValues.paddingLeft;
+			addedPositionedY = globalBounds.y + coreStyle.usedValues.paddingTop;
+			addedX = addedPositionedX;
+			addedY = addedPositionedY;
+		}
 		if (isBlockContainer() == true)
 		{
 			addedX = globalBounds.x + coreStyle.usedValues.paddingLeft;
@@ -445,8 +452,25 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		var child:ElementRenderer = firstChild;
 		while(child != null)
 		{
-			child.globalBounds.x = addedX + child.bounds.x;
-			child.globalBounds.y = addedY + child.bounds.y;
+			if (child.isPositioned() == true && child.isRelativePositioned() == false)
+			{
+				if (child.coreStyle.getKeyword(child.coreStyle.position) == FIXED)
+				{
+					child.globalBounds.x = child.bounds.x;
+					child.globalBounds.y = child.bounds.y;
+				}
+				else
+				{
+					child.globalBounds.x = addedPositionedX + child.bounds.x;
+					child.globalBounds.y = addedPositionedY + child.bounds.y;
+				}
+			}
+			else
+			{
+				child.globalBounds.x = addedX + child.bounds.x;
+				child.globalBounds.y = addedY + child.bounds.y;
+			}
+			
 			child.globalBounds.width = child.bounds.width;
 			child.globalBounds.height = child.bounds.height;
 			

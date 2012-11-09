@@ -128,6 +128,7 @@ class FlowBoxRenderer extends BoxRenderer
 		var length:Int = _positionedChildren.length;
 		for (i in 0...length)
 		{
+			_positionedChildren[i].layout(true);
 			//layout the child ElementRenderer which set its x and y positioned origin in the space of this ElementRenderer's
 			//positioned origin
 			layoutPositionedChild(_positionedChildren[i], containerBlockData, windowData);
@@ -169,14 +170,14 @@ class FlowBoxRenderer extends BoxRenderer
 		//left takes precedance so we try to apply left offset first
 		if (elementCoreStyle.isAuto(elementCoreStyle.left) == false)
 		{
-			elementRenderer.positionedOrigin.x = getLeftOffset(elementRenderer);
+			elementRenderer.bounds.x = getLeftOffset(elementRenderer);
 		}
 		//if no left offset is defined, then try to apply a right offset.
 		//Right offset takes the containing block width minus the
 		//width of the positioned children as value for a 0 right offset
 		else if (elementCoreStyle.isAuto(elementCoreStyle.right) == false)
 		{
-			elementRenderer.positionedOrigin.x = getRightOffset(elementRenderer, containingBlockData.width);
+			elementRenderer.bounds.x = getRightOffset(elementRenderer, containingBlockData.width);
 		}
 		//if both right and left are 'auto', then the ElementRenderer is positioned to its
 		//static position, the position it would have had in the flow if it were positioned as 'static'.
@@ -185,11 +186,11 @@ class FlowBoxRenderer extends BoxRenderer
 		//for vertical offset, the same rule as horizontal offsets apply
 		if (elementCoreStyle.isAuto(elementCoreStyle.top) == false)
 		{
-			elementRenderer.positionedOrigin.y = getTopOffset(elementRenderer);
+			elementRenderer.bounds.y = getTopOffset(elementRenderer);
 		}
 		else if (elementCoreStyle.isAuto(elementCoreStyle.bottom) == false)
 		{
-			elementRenderer.positionedOrigin.y = getBottomOffset(elementRenderer, containingBlockData.height);
+			elementRenderer.bounds.y = getBottomOffset(elementRenderer, containingBlockData.height);
 		}
 	}
 	

@@ -614,7 +614,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					if (child.establishesNewBlockFormattingContext() == false && child.isBlockContainer() == true)
 					{
 						//add its own margin to the x/y position, as it is the position
-						//of its border box
+						//of its border box. Top margin is collapsed with adjoining margins
+						//if needed
 						childPosition.y += child.getCollapsedTopMargin();
 						childPosition.x = child.coreStyle.usedValues.marginLeft;
 						
@@ -623,7 +624,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						child.bounds.y = childPosition.y;
 						
 						//child can now be layout, it needs to know its own x and y bounds
-						//before laying out its children to correctly deal with floated elements
+						//before laying out its children to correctly deal with floated elements,
+						//as child need to convert floated elements to own space
 						child.layout(true);
 					}
 					//here the child is either a replaced block level element or a block box
@@ -640,13 +642,17 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						childPosition.y = floatsManager.getFirstAvailableYPosition(childPosition.y, childMarginWidth, contentWidth);
 						
 						//TODO : for x add left float offset
-						childPosition.y += child.coreStyle.usedValues.marginTop;
+						//add child margins. Top margin is collapsed with
+						//adjoining margins if needed
+						childPosition.y += child.getCollapsedTopMargin();
 						childPosition.x += child.coreStyle.usedValues.marginLeft;
 					}
 					
 					//add the current's child height so that next block child will be placed below it
 					childPosition.y += child.bounds.height;
-					childPosition.y += child.coreStyle.usedValues.marginBottom;
+					//add child bottom margin, collapsed with adjoining margins
+					//if needed
+					childPosition.y += child.getCollapsedBottomMargin();
 				}
 				//here the child is a floated element
 				else
@@ -828,6 +834,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	override private function collapseTopMarginWithFirstChildTopMargin():Bool
 	{ 
+		//TODO : should be first normal flow child as well
 		if (firstChild == null)
 		{
 			return false;
@@ -852,8 +859,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return true;
 	}
 	
-	override private function collapseTopMarginWithBottomMargin():Bool
-	{
+	/**
+	 * same as collapseTopMarginWithFirstChildTopMargin
+	 * for bottom margin
+	 */
+	override private function collapseBottomMarginWithLastChildBottomMargin():Bool
+	{ 
 		return false;
 	}
 	

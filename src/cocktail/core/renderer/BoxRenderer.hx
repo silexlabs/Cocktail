@@ -380,7 +380,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 			lastChild.getAdjoiningBottomMargins(adjoiningMargins);
 			return getCollapsedMargin(adjoiningMargins);
 		}
-		else if (collapseBottomMarginWithTopMargin() == true)
+		else if (collapseTopMarginWithBottomMargin() == true)
 		{
 			var adjoiningMargins:Array<Float> = new Array<Float>();
 			adjoiningMargins.push(coreStyle.usedValues.marginTop);
@@ -409,7 +409,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		{
 			lastChild.getAdjoiningBottomMargins(adjoiningMargins);
 		}
-		else if (collapseBottomMarginWithTopMargin() == true)
+		else if (collapseTopMarginWithBottomMargin() == true)
 		{
 			adjoiningMargins.push(coreStyle.usedValues.marginTop);
 			if (previousSibling != null)
@@ -580,18 +580,25 @@ class BoxRenderer extends InvalidatingElementRenderer
 		return false;
 	}
 	
+	/**
+	 * Return wether the top and bottom margin of this 
+	 * box should collapse
+	 */
 	private function collapseTopMarginWithBottomMargin():Bool
 	{
-		return false;
-	}
-	
-	/**
-	 * same as collapseTopMarginWithBottomMargin
-	 * TODO : only one method is enough ?
-	 */
-	private function collapseBottomMarginWithTopMargin():Bool
-	{
-		return false;
+		if (firstChild != null)
+		{
+			//TODO : check that all combined children have a 0 height
+			//or all of their margin collapse
+		}
+		
+		//if the box has vertical padding, then the margins are not adjoining
+		if (coreStyle.usedValues.paddingTop != 0 || coreStyle.usedValues.paddingBottom != 0)
+		{
+			return false;
+		}
+		
+		return true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
