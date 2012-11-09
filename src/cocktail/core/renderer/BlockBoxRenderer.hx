@@ -434,9 +434,21 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		else
 		{
-			trace(this);
 			shouldLayoutAgain = layoutInlineChildrenAndFloats();
 		} 
+		
+		//the width of this block box might need to be re-computed if it uses its 'shrink-to-width'
+		//width which roughly matches the width of its descendant
+		//'shrink-to-fit' is used for block formatting root with an auto width
+		//once 'shrink-to-fit' width is found, layout needs to be done again
+		//
+		//note : 'shrink-to-fit' is done here, this way all floated elements in block formatting have been
+		//found
+		//TODO : should not include initial containing block
+		if (establishesNewBlockFormattingContext() == true && coreStyle.isAuto(coreStyle.width) == true)
+		{
+			
+		}
 		
 		//if the height of this block box is auto, it depends
 		//on its content height, and can computed now that all
@@ -449,14 +461,15 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			_layoutBounds.width = 0;
 			_layoutBounds.height = 0;
 			
-			//TODO : take min-height into account ?
+			var childrenHeight:Float = 0;
+			
 			//if this block box establish an inline formatting context
 			//its height is the added height of all the line boxes
 			//it generates
 			if (childrenInline() == true)
 			{
 				getLineBoxesBounds(lineBoxes, _layoutBounds);
-				bounds.height = _layoutBounds.height;
+				childrenHeight = _layoutBounds.height;
 			}
 			//else it is the added height of all its block children, excluding
 			//floated and absolutely positioned elements
@@ -466,9 +479,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				//of the border box of its children
 				if (establishesNewBlockFormattingContext() == false)
 				{
-					//TODO : only normal flow children should be used
 					getChildrenBounds(this, _layoutBounds);
-					bounds.height = _layoutBounds.height;
+					childrenHeight = _layoutBounds.height;
 				}
 				//if it is a block formatting root, it uses the bounds
 				//of the margin box of its children
@@ -476,23 +488,30 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				{
 					//TODO : only normal flow children should be used
 					getChildrenMarginBounds(this, _layoutBounds);
-					bounds.height = _layoutBounds.height;
+					childrenHeight = _layoutBounds.height;
 					
 					//in addition of the block box has floated descedant whose bottom
 					//are below its bottom, then the height includes those floated elements
 					//TODO : if floats bounds higher, use instead for height
 				}
 			}
-		}
-		
-		//the width of this block box might need to be re-computed if it uses its 'shrink-to-width'
-		//width which roughly matches the width of its descendant
-		//
-		//'shrink-to-fit' is used for block formatting root with an auto width
-		//TODO : should not include initial containing block
-		if (establishesNewBlockFormattingContext() == true && coreStyle.isAuto(coreStyle.width) == true)
-		{
 			
+			//constrain children height if needed
+			if (coreStyle.isNone(coreStyle.maxHeight) == false)
+			{
+				if (childrenHeight > coreStyle.usedValues.maxHeight)
+				{
+					childrenHeight = coreStyle.usedValues.maxHeight;
+				}
+			}
+			
+			if (childrenHeight < coreStyle.usedValues.minHeight)
+			{
+				childrenHeight = coreStyle.usedValues.minHeight;
+			}
+			
+			//bounds height matches the border box
+			bounds.height = childrenHeight + coreStyle.usedValues.paddingTop + coreStyle.usedValues.paddingBottom;
 		}
 		
 		_isLayingOut = false;
@@ -516,17 +535,28 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	
+	/**
+	 * get the border box bounds of the descendant block box, exluding
+	 * absolutely positioned and floated elements
+	 */
 	private function getChildrenBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
 	{
 		var child:ElementRenderer = rootElementRenderer.firstChild;
 		while(child != null)
 		{
-			GeomUtils.addBounds(child.bounds, bounds);
-			if (child.firstChild != null)
+			if (child.isFloat() == false)
 			{
-				doGetChildrenBounds(child, bounds);
+				if (child.isPositioned() == false || child.isRelativePositioned() == true)
+				{
+					GeomUtils.addBounds(child.bounds, bounds);
+					if (child.firstChild != null)
+					{
+						doGetChildrenBounds(child, bounds);
+					}
+				}
+				
 			}
-			
+	
 			child = child.nextSibling;
 		}
 	}
@@ -566,9 +596,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var child:ElementRenderer = firstChild;
 		while (child != null)
 		{
-			//if child has clearance it will be placed below previous
+			//if child can introduce clearance it will be placed below previous
 			//left, right or both float based on the value of the clear style
-			if (child.hasClearance() == true)
+			if (child.canHaveClearance() == true)
 			{
 				//TODO : when clearing, should only clear floats declared before in document order
 				floatsManager.clearFloats(child.coreStyle.clear, childPosition.y);
@@ -585,7 +615,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					{
 						//add its own margin to the x/y position, as it is the position
 						//of its border box
-						childPosition.y += child.coreStyle.usedValues.marginTop;
+						childPosition.y += child.getCollapsedTopMargin();
 						childPosition.x = child.coreStyle.usedValues.marginLeft;
 						
 						//update bounds of child
@@ -791,6 +821,41 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	*/
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE MARGIN COLLAPSING METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override private function collapseTopMarginWithFirstChildTopMargin():Bool
+	{ 
+		if (firstChild == null)
+		{
+			return false;
+		}
+		
+		//TODO : should check on first normal flow child
+		if (firstChild.isBlockContainer() == false)
+		{
+			return false;
+		}
+		
+		if (establishesNewBlockFormattingContext() == true)
+		{
+			return false;
+		}
+		
+		if (coreStyle.usedValues.paddingTop != 0)
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	override private function collapseTopMarginWithBottomMargin():Bool
+	{
+		return false;
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC HELPER METHODS

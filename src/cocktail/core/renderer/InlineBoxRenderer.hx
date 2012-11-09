@@ -78,7 +78,7 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 * only block level elements can introduce
 	 * clearance
 	 */
-	override public function hasClearance():Bool
+	override public function canHaveClearance():Bool
 	{	
 		return false;
 	}

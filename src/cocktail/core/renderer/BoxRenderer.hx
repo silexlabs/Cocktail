@@ -268,6 +268,333 @@ class BoxRenderer extends InvalidatingElementRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC MARGIN COLLAPSING METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return the result of collapsing the top margin od this box
+	 * will all adjoining margins. Returns the used top margin
+	 * if it doesn't collapse with any margin
+	 * 
+	 * If the top margin do collapse, a non 0 value is only returned
+	 * for the first adjoining margin so that when laying out, only
+	 * the first box with collapsed margin is offset on the y axis.
+	 * 
+	 * For instance if a block box top margin collapse with the 
+	 * top margin of its first child, when this method is called
+	 * on the parent, it will return the width of the collapsed margin
+	 * and it will return 0 when called on the first child
+	 */
+	override public function getCollapsedTopMargin():Float
+	{
+		//if the top margin is collapsed with the parent's top
+		//margin, return 0 as the collapsed margin will be applied
+		//to the parent instead
+		if (collapseTopMarginWithParentTopMargin() == true)
+		{
+			return 0;
+		}
+		//same if collapsing with the previous sibling bottom margin
+		else if (collapseTopMarginWithPreviousSiblingBottomMargin() == true)
+		{
+			return 0;
+		}
+		
+		//if top margin collapse with top margin of first child, retrieve
+		//the width of all the adjoining margin which collapse, and retrieve
+		//the collapsed value from them
+		if (collapseTopMarginWithFirstChildTopMargin() == true)
+		{
+			var adjoiningMargins:Array<Float> = new Array<Float>();
+			adjoiningMargins.push(coreStyle.usedValues.marginTop);
+			firstChild.getAdjoiningTopMargins(adjoiningMargins);
+			return getCollapsedMargin(adjoiningMargins);
+		}
+		//same if the top margin collapse with own bottom margin
+		else if (collapseTopMarginWithBottomMargin() == true)
+		{
+			var adjoiningMargins:Array<Float> = new Array<Float>();
+			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+			//var firstChildCollapsedTopMargin:Float = firstChild.getAdjoiningTopMargins(adjoiningMargins);
+			return getCollapsedMargin(adjoiningMargins);
+		}
+		
+		//if the top margin doesn't collapse, return its used value
+		return coreStyle.usedValues.marginTop;
+	}
+	
+	/**
+	 * When called on an element, store all its adjoining top margin
+	 * which collapse with its top margin so that it can determine
+	 * its collapsed margin width
+	 */
+	override public function getAdjoiningTopMargins(adjoiningMargins:Array<Float>):Void
+	{
+		//if the current element top margin collapses, store its used width
+		if (collapseTopMarginWithParentTopMargin() == true)
+		{
+			adjoiningMargins.push(coreStyle.usedValues.marginTop);
+		}
+		else if (collapseTopMarginWithPreviousSiblingBottomMargin() == true)
+		{
+			adjoiningMargins.push(coreStyle.usedValues.marginTop);
+		}
+		
+		//if the current element also collapse with its first child top margin,
+		//the first child top margin must also be used when computing collapsed margin
+		//width
+		if (collapseTopMarginWithFirstChildTopMargin() == true)
+		{
+			firstChild.getAdjoiningTopMargins(adjoiningMargins);
+		}
+		//same if current element collapse with own bottom margin
+		else if (collapseTopMarginWithBottomMargin() == true)
+		{
+			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+			//next sibling might collapse with bottom margin
+			if (nextSibling != null)
+			{
+				nextSibling.getAdjoiningTopMargins(adjoiningMargins);
+			}
+		}
+	}
+	
+	/**
+	 * same as getCollapsedTopMargin for bottom margins
+	 */
+	override public function getCollapsedBottomMargin():Float
+	{
+		if (collapseBottomMarginWithParentBottomMargin() == true)
+		{
+			return 0;
+		}
+		else if (collapseBottomMarginWithNextSiblingTopMargin() == true)
+		{
+			return 0;
+		}
+		
+		if (collapseBottomMarginWithLastChildBottomMargin() == true)
+		{
+			var adjoiningMargins:Array<Float> = new Array<Float>();
+			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+			lastChild.getAdjoiningBottomMargins(adjoiningMargins);
+			return getCollapsedMargin(adjoiningMargins);
+		}
+		else if (collapseBottomMarginWithTopMargin() == true)
+		{
+			var adjoiningMargins:Array<Float> = new Array<Float>();
+			adjoiningMargins.push(coreStyle.usedValues.marginTop);
+			//var firstChildCollapsedTopMargin:Float = firstChild.getAdjoiningTopMargins(adjoiningMargins);
+			return getCollapsedMargin(adjoiningMargins);
+		}
+		
+		return coreStyle.usedValues.marginBottom;
+	}
+	
+	/**
+	 * same as getAdjoiningTopMargins for bottom margins
+	 */
+	override public function getAdjoiningBottomMargins(adjoiningMargins:Array<Float>):Void
+	{
+		if (collapseBottomMarginWithParentBottomMargin() == true)
+		{
+			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+		}
+		else if (collapseBottomMarginWithNextSiblingTopMargin() == true)
+		{
+			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+		}
+		
+		if (collapseBottomMarginWithLastChildBottomMargin() == true)
+		{
+			lastChild.getAdjoiningBottomMargins(adjoiningMargins);
+		}
+		else if (collapseBottomMarginWithTopMargin() == true)
+		{
+			adjoiningMargins.push(coreStyle.usedValues.marginTop);
+			if (previousSibling != null)
+			{
+				previousSibling.getAdjoiningBottomMargins(adjoiningMargins);
+			}
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE MARGIN COLLAPSING METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * for a given list of adjoining margins width,
+	 * determine the width to use as collapsed width and
+	 * return it
+	 */
+	private function getCollapsedMargin(adjoiningMargins:Array<Float>):Float
+	{
+		//positive and negative margin are stored separately
+		var maximumPositiveMargin:Float = 0.0;
+		var maximumNegativeMargin:Float = 0.0;
+		
+		//loop in all adjoining margins width to find the
+		//most positive and the most negative ones
+		var length:Int = adjoiningMargins.length;
+		for (i in 0...length)
+		{
+			var adjoiningMargin:Float = adjoiningMargins[i];
+			if (adjoiningMargin > maximumPositiveMargin)
+			{
+				maximumPositiveMargin = adjoiningMargin;
+			}
+			else if (adjoiningMargin < maximumNegativeMargin)
+			{
+				maximumNegativeMargin = adjoiningMargin;
+			}
+		}
+		
+		//the collapsed value is the difference between the most positive
+		//margin width and the absolute value of the most negative one
+		return maximumPositiveMargin - Math.abs(maximumNegativeMargin);
+	}
+	
+	/**
+	 * Return wether the top margin of this box should
+	 * collapse with the top margin of its parent
+	 * 
+	 * TODO : if this box has clearance, it should not collapse
+	 */
+	private function collapseTopMarginWithParentTopMargin():Bool
+	{
+		//if the box as no parent, it is the initial
+		//container block and don't collapse
+		if (parentNode == null)
+		{
+			return false;
+		}
+		
+		//TODO : firstChild might actually be positioned or floated,
+		//it should be first noram flow block level child
+		//if this box is not the first child of its parent it won't collapse
+		//with its top margin
+		if (parentNode.firstChild != this)
+		{
+			return false;
+		}
+		
+		//the root of block formatting (a float, an absolutely positioned element...)
+		//don't collapse its margin with its children margin
+		if (parentNode.establishesNewBlockFormattingContext() == true)
+		{
+			return false;
+		}
+		
+		//if a padding separate the parent top margin and this box 
+		//top margin, they don't collapse
+		if (parentNode.coreStyle.usedValues.paddingTop != 0)
+		{
+			return false;
+		}
+		
+		//in all other cases, margins collapse
+		return true;
+	}
+	
+	/**
+	 * same as collapseTopMarginWithParentTopMargin for bottom
+	 * margin
+	 */
+	private function collapseBottomMarginWithParentBottomMargin():Bool
+	{
+		if (parentNode == null)
+		{
+			return false;
+		}
+		
+		//TODO : lastChild might actually be positioned or floated,
+		//it should be last noram flow block level child
+		if (parentNode.lastChild != this)
+		{
+			return false;
+		}
+		
+		if (parentNode.establishesNewBlockFormattingContext() == true)
+		{
+			return false;
+		}
+		
+		if (parentNode.coreStyle.usedValues.paddingBottom != 0)
+		{
+			return false;
+		}
+
+		return true;
+	}
+	
+	/**
+	 * Return wether the top margin should
+	 * collapse with the previous sibling's
+	 * bottom margin
+	 */
+	private function collapseTopMarginWithPreviousSiblingBottomMargin():Bool
+	{
+		//TODO : should be first normal flow previous sibling
+		//if no previous sibling, then this box is first
+		//child of its parent
+		if (previousSibling == null)
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * same as collapseTopMarginWithPreviousSiblingBottomMargin
+	 * for bottom margin
+	 */
+	private function collapseBottomMarginWithNextSiblingTopMargin():Bool
+	{
+		//TODO : should be first normal flow previous sibling
+		if (previousSibling == null)
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Wether the top margin of this collapse with the top margin
+	 * of its first child. False by default, as only applies to block
+	 * box
+	 */
+	private function collapseTopMarginWithFirstChildTopMargin():Bool
+	{ 
+		return false;
+	}
+	
+	/**
+	 * same as collapseTopMarginWithFirstChildTopMargin
+	 * for bottom margin
+	 */
+	private function collapseBottomMarginWithLastChildBottomMargin():Bool
+	{ 
+		return false;
+	}
+	
+	private function collapseTopMarginWithBottomMargin():Bool
+	{
+		return false;
+	}
+	
+	/**
+	 * same as collapseTopMarginWithBottomMargin
+	 * TODO : only one method is enough ?
+	 */
+	private function collapseBottomMarginWithTopMargin():Bool
+	{
+		return false;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -290,14 +617,14 @@ class BoxRenderer extends InvalidatingElementRenderer
 	}
 	
 	/**
-	 * Determine wether the ElementRenderer clears, left floats,
+	 * Determine wether the ElementRenderer can clear, left floats,
 	 * right floats or both which are declared before it in the
 	 * block formatting context into which it participates.
 	 * 
 	 * If it does, it will positioned below any previous left, right
-	 * or both floats
+	 * or both floats. When it does, it is said to have clearance
 	 */
-	override public function hasClearance():Bool
+	override public function canHaveClearance():Bool
 	{	
 		return coreStyle.isNone(coreStyle.clear) == false;
 	}

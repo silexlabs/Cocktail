@@ -461,6 +461,46 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC MARGIN COLLAPSING METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * return the top margin of an element which 
+	 * might be the result of collapsing multiple
+	 * adjoining margins
+	 */
+	public function getCollapsedTopMargin():Float
+	{
+		return 0.0;
+	}
+	
+	/**
+	 * same as getCollapsedTopMargin for bottom
+	 * margin
+	 */
+	public function getCollapsedBottomMargin():Float
+	{
+		return 0.0;
+	}
+	
+	/**
+	 * push the width of each adjoining margin 
+	 * of this element's top margin
+	 */
+	public function getAdjoiningTopMargins(adjoiningMargins:Array<Float>):Void
+	{
+		
+	}
+	
+	/**
+	 * same as getAdjoiningTopMargins for bottom margins
+	 */
+	public function getAdjoiningBottomMargins(adjoiningMargins:Array<Float>):Void
+	{
+		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC ATTACHEMENT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -725,7 +765,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		return false;
 	}
 	
-	public function hasClearance():Bool
+	public function canHaveClearance():Bool
 	{
 		return false;
 	}
