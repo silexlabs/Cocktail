@@ -326,9 +326,10 @@ function go( delta:Int ) : Void;
 function pushState( data : Dynamic, title : String, ?url : String):Void;
 function replaceState( data : Dynamic, title : String, ?url : String):Void;
 }
-// popstate events are dispatched when history changes
+// The popstate event is fired in certain cases when navigating to a session history entry.
 typedef PopStateEvent = {> Event,
-var state : Dynamic; // contains the object passed to pushState or replaceState
+	// contains the object passed to pushState or replaceState, or null if it is the initial document state
+	var state : Null<Dynamic>; 
 }
 
 typedef IFrame = {> HtmlDom,

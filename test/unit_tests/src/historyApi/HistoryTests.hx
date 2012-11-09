@@ -8,7 +8,6 @@
 */
 
 package historyApi;
-//import cocktail.core.history.History;
 import js.Lib;
 import js.Dom;
 
@@ -19,13 +18,14 @@ import utest.ui.Report;
 /**
  * Units tests for history API
  * I have named the package historyApi instead of history because it used to have side effects in firefox js
+ * TODO:
+ * - test History::resolveUrl - ie use a url in the state passed to pushState
  */
 
 class HistoryTests 
 {
 	public static function main()
 	{
-		trace("...tests begin...");
 		var runner = new Runner();
 		runner.addCase(new HistoryTests());
 		Report.create(runner);
@@ -34,11 +34,20 @@ class HistoryTests
 
 	public var history:History;
 	
+	//////////////////////////////////////////////////////////////////////////
 	public function new() 
 	{
+	}
+	/**
+	 * init history for a new test, called before all sery of tests
+	 */
+	public function initHistory() 
+	{
 		// init history
-		// history = new History();
 		history = Lib.window.history;
+		if (history == null){
+			throw("this browser does not support history api");
+		}
 
 		var stateObj = { 
 			title : "page 1", 
@@ -56,12 +65,16 @@ class HistoryTests
 		};
 		history.pushState(stateObj, "page 3", "?page3.html");
 	}
+	//////////////////////////////////////////////////////////////////////////
 	/**
 	 * test history methods
 	 */
 	public function testHistoryMethods():Void
 	{
 		trace("testHistory");
+		// reset history
+		initHistory();
+
 		// Check the length of the history stack
 		//Assert.equals(3, history.length);
 
@@ -70,10 +83,10 @@ class HistoryTests
 
 		_testHistoryBack();
 	}
-	public function _testHistoryBack():Void
+	private function _testHistoryBack():Void
 	{
 		trace("testHistoryBack");
-		// Send the user agent forward
+		// Send the user agent back
 		history.back(); 
 
 		var async = Assert.createAsync(function(){
@@ -84,10 +97,10 @@ class HistoryTests
 		haxe.Timer.delay(async, 500);
 
 	}
-	public function _testHistoryForward():Void
+	private function _testHistoryForward():Void
 	{
 		trace("testHistoryForward");
-		// Send the user agent back
+		// Send the user agent forward
 		history.forward();
 
 		var async = Assert.createAsync(function(){
@@ -98,7 +111,7 @@ class HistoryTests
 		haxe.Timer.delay(async, 500);
 
 	}
-	public function _testHistoryGoNeg():Void
+	private function _testHistoryGoNeg():Void
 	{
 		trace("testHistoryGoNeg");
 		// Send the user agent back (negative) or forward (positive)
@@ -113,7 +126,7 @@ class HistoryTests
 		haxe.Timer.delay(async, 500);
 
 	}
-	public function _testHistoryGoPositive():Void
+	private function _testHistoryGoPositive():Void
 	{
 		trace("testHistoryGoPositive");
 		// Send the user agent back (negative) or forward (positive)
@@ -126,19 +139,68 @@ class HistoryTests
 		}, 1000);
 		haxe.Timer.delay(async, 500);
 	}
+	//////////////////////////////////////////////////////////////////////////
 	/*
 	 * test history events
 	 */
 	public function testHistoryEvents():Void
 	{
-		trace("Test Events");
-		//history.onpopstate = onPopState;
-		Lib.window.onpopstate = onPopState;
-		Assert.isTrue(true);
+		trace("testHistoryEvents");
+		// reset history
+		initHistory();
+
+		_testHistoryAddEventListener();
 	}
-	function onPopState(e:Event) 
+	/**
+	 * store a reference to the ongoing callback 
+	 */
+	private var async:Event->Void;
+	private function _testHistoryAddEventListener():Void
 	{
-		var event : PopStateEvent = cast(e);
-		trace("onPopState "+event.state);
+		trace("_testHistoryAddEventListener");
+		// create callback
+		async = Assert.createEvent(cast(_callbackHistoryAddEventListener), 1000);
+
+		// attach listener
+		Lib.window.addEventListener("popstate", async, true);
+
+		// Send the user agent back
+		history.back(); 
+	}
+	private function _callbackHistoryAddEventListener(e:Event){
+		trace("test history async");
+		// get the typed event object
+		var event:PopStateEvent = cast(e);
+		// check the state
+		Assert.equals("page 2", event.state.title);
+		// remove listener
+		Lib.window.removeEventListener("popstate", async, true);
+		async = null;
+		// continue the test
+		_testHistoryCallback();
+	}
+	private function _testHistoryCallback():Void
+	{
+		trace("_testHistoryCallback");
+
+		// create callback
+		var async = Assert.createEvent(_callbackHistoryCallback, 1000);
+
+		// attach listener
+		Lib.window.onpopstate = async;
+
+		// Send the user agent forward
+		history.forward();
+	}
+	private function _callbackHistoryCallback(e:Event){
+		trace("test history async");
+		// get the typed event object
+		var event:PopStateEvent = cast(e);
+		// check the state
+		Assert.equals("page 3", event.state.title);
+		// remove listener
+		Lib.window.onpopstate= null;
+		// continue the test
+		// ??
 	}
 }
