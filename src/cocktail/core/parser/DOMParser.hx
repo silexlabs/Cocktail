@@ -51,7 +51,18 @@ class DOMParser
 	 */
 	public static function serialize(node:HTMLElement):String
 	{
+		// serialize node's children
 		var xml:Xml = doGetInnerHTML(node, Xml.createElement(node.nodeName));
+		// serialize node's attributes
+		for (i in 0...node.attributes.length)
+		{
+			var attribute:Attr<HTMLElement> = cast(node.attributes.item(i));
+
+			if (attribute.specified == true)
+			{
+				xml.set(attribute.name, attribute.value);
+			}
+		}
 		return xml.toString();
 	}
 	
@@ -157,7 +168,7 @@ class DOMParser
 					for (j in 0...childAttributesLength)
 					{
 						var attribute:Attr<HTMLElement> = cast(childAttributes.item(j));
-						
+
 						if (attribute.specified == true)
 						{
 							childXml.set(attribute.name, attribute.value);
