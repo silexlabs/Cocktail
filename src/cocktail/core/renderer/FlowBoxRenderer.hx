@@ -47,12 +47,20 @@ class FlowBoxRenderer extends BoxRenderer
 	private var _positionedChildren:Array<ElementRenderer>;
 	
 	/**
+	 * A point used to find the static position
+	 * of an absolutely positioned child, reused
+	 * for each static position computation
+	 */
+	private var _childStaticOrigin:PointVO;
+	
+	/**
 	 * class constructor
 	 */
 	public function new(node:HTMLElement) 
 	{
 		super(node);
 		_positionedChildren = new Array<ElementRenderer>();
+		_childStaticOrigin = new PointVO(0, 0);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +91,7 @@ class FlowBoxRenderer extends BoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overridenas FlowBoxRenderer are also responsible
+	 * Overriden as FlowBoxRenderer are also responsible
 	 * for laying out their children
 	 */
 	override public function layout(forceLayout:Bool):Void
@@ -181,7 +189,12 @@ class FlowBoxRenderer extends BoxRenderer
 		}
 		//if both right and left are 'auto', then the ElementRenderer is positioned to its
 		//static position, the position it would have had in the flow if it were positioned as 'static'.
-		//At this point the bounds of the ElementRenderer already matches its static position
+		//At this point the layout of all the normal flow element belonging to the same formatting
+		//is done, and the element renderer can retrieve its static position
+		else
+		{
+			elementRenderer.staticOrigin.x = getStaticPosition(elementRenderer).x;
+		}
 		
 		//for vertical offset, the same rule as horizontal offsets apply
 		if (elementCoreStyle.isAuto(elementCoreStyle.top) == false)
@@ -191,6 +204,10 @@ class FlowBoxRenderer extends BoxRenderer
 		else if (elementCoreStyle.isAuto(elementCoreStyle.bottom) == false)
 		{
 			elementRenderer.bounds.y = getBottomOffset(elementRenderer, containingBlockData.height);
+		}
+		else
+		{
+			elementRenderer.staticOrigin.y = getStaticPosition(elementRenderer).y;
 		}
 	}
 	
@@ -232,37 +249,63 @@ class FlowBoxRenderer extends BoxRenderer
 		usedValues.paddingBottom - usedValues.bottom - usedValues.marginBottom;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERIDEN PUBLIC HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
-	 * Determine wether the children of this ElementRenderer
-	 * are all block level or if they are all inline level
-	 * elements
-	 * 
-	 * @return true if at least one child is inline level
+	 * Return the static position of an absolutely positioned
+	 * element renderer, which is the position it would have had
+	 * if it weren't absolutely positioned. This position is
+	 * relative to its first containing block parent
 	 */
-	override public function childrenInline():Bool
-	{	
-		var child:ElementRenderer = firstChild;
-		while(child != null)
+	private function getStaticPosition(elementRenderer:ElementRenderer):PointVO
+	{
+		//find the first parent which is a block container, it will
+		//be the containing block that the element renderer would have
+		//had with a static positioning
+		var parent:ElementRenderer = elementRenderer.parentNode;
+		while (parent != null)
 		{
-			if (child.isInlineLevel() == true)
+			if (parent.isBlockContainer() == true)
 			{
-				//floated and absolutely positioned element are not taken into
-				//account
-				if (child.isFloat() == false)
-				{
-					if (child.isPositioned() == false || child.isRelativePositioned() == true)
-					{
-						return true;
-					}
-				}
+				break;
 			}
 			
-			child = child.nextSibling;
+			parent = parent.parentNode;
 		}
-		return false;
+		
+		//retrieving the static position depends
+		//on wether the containing block establishes/participate
+		//in a block formatting or if it establishes an inline
+		//formatting
+		//
+		//here it participates/establishes a block formatting
+		if (parent.childrenInline() == false)
+		{
+			//get the first previous sibling belonging to the normal flow
+			var previousNormalFlowSibling:ElementRenderer = elementRenderer.previousNormalFlowSibling;
+			
+			//if there is none, static position is the top left of the containing block
+			if (previousNormalFlowSibling == null)
+			{
+				//use the top and left margin
+				_childStaticOrigin.x = elementRenderer.coreStyle.usedValues.marginLeft;
+				_childStaticOrigin.y = elementRenderer.coreStyle.usedValues.marginTop;
+			}
+			//else static position is below the previous normal flow sibling
+			else
+			{
+				_childStaticOrigin.x = elementRenderer.coreStyle.usedValues.marginLeft;
+				
+				//placed below margin box of previous normal flow child
+				_childStaticOrigin.y = previousNormalFlowSibling.bounds.y + previousNormalFlowSibling.coreStyle.usedValues.marginBottom;
+				//add top margin of element which never collapse when finding static position
+				_childStaticOrigin.y += elementRenderer.coreStyle.usedValues.marginTop;
+			}
+		}
+		//here the containing block establishes an inline formatting
+		else
+		{
+			//TODO : static position in inline formatting
+		}
+		
+		return _childStaticOrigin;
 	}
 }

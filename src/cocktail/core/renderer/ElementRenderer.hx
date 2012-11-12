@@ -115,17 +115,15 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	public var hitTestingBounds(default, null):RectangleVO;
 	
 	/**
-	 * This is the position of the top left corner of this
-	 * ElementRenderer relative to the top left padding box
-	 * corner of the first positioned ancestor of this
-	 * ElementRenderer.
-	 * 
-	 * It is used when this ElementRenderer
-	 * is absolutely positioned. When added to the global
-	 * positioned ancestor origin, it gives the global
-	 * positioned origin of the ElementRenderer
+	 * For absolutely positioned elements,
+	 * this represents their x and y offset relative
+	 * to their static containing block, which
+	 * is the containing block they would have had
+	 * if they weren't positioned. This origin
+	 * is used when the left and right and/or top and
+	 * bottom style are auto
 	 */
-	public var positionedOrigin:PointVO;
+	public var staticOrigin:PointVO;
 	
 	/**
 	 * A reference to the Node in the DOM tree
@@ -219,6 +217,20 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	public var containingBlock(default, null):FlowBoxRenderer;
 	
 	/**
+	 * Return the first previous sibling belonging to the
+	 * normal flow (not floatged or absolutely positioned)
+	 * or null if no such sibling exists
+	 */
+	public var previousNormalFlowSibling(get_previousNormalFlowSibling, null):ElementRenderer;
+	
+	/**
+	 * Return the first next sibling belonging to the
+	 * normal flow (not floatged or absolutely positioned)
+	 * or null if no such sibling exists
+	 */
+	public var nextNormalFlowSibling(get_nextNormalFlowSibling, null):ElementRenderer;
+	
+	/**
 	 * class constructor. init class attribute
 	 */
 	public function new(domNode:HTMLElement) 
@@ -236,7 +248,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		
 		globalBounds = new RectangleVO();
 		
-		positionedOrigin = new PointVO(0.0, 0.0);
+		staticOrigin = new PointVO(0.0, 0.0);
 		
 		hitTestingBounds = new RectangleVO();
 		
@@ -253,7 +265,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		
 		bounds = null;
 		globalBounds = null;
-		positionedOrigin = null;
+		staticOrigin = null;
 		hitTestingBounds = null;
 		layerRenderer = null;
 		
@@ -435,12 +447,10 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 */
 	public function setGlobalOrigins(addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
 	{
-		if (isPositioned() == true && isRelativePositioned() == false)
+		if (isPositioned() == true)
 		{
 			addedPositionedX = globalBounds.x + coreStyle.usedValues.paddingLeft;
 			addedPositionedY = globalBounds.y + coreStyle.usedValues.paddingTop;
-			addedX = addedPositionedX;
-			addedY = addedPositionedY;
 		}
 		if (isBlockContainer() == true)
 		{
@@ -456,13 +466,45 @@ class ElementRenderer extends FastNode<ElementRenderer>
 			{
 				if (child.coreStyle.getKeyword(child.coreStyle.position) == FIXED)
 				{
-					child.globalBounds.x = child.bounds.x;
-					child.globalBounds.y = child.bounds.y;
+					if (child.coreStyle.isAuto(child.coreStyle.left) == true && child.coreStyle.isAuto(child.coreStyle.right) == true)
+					{
+						child.globalBounds.x = child.staticOrigin.x;
+					}
+					else
+					{
+						child.globalBounds.x = child.bounds.x;
+					}
+					if (child.coreStyle.isAuto(child.coreStyle.top) == true && child.coreStyle.isAuto(child.coreStyle.bottom) == true)
+					{
+						child.globalBounds.y = child.staticOrigin.y;
+					}
+					else
+					{
+						child.globalBounds.y = child.bounds.y;
+					}
+					
 				}
 				else
 				{
-					child.globalBounds.x = addedPositionedX + child.bounds.x;
-					child.globalBounds.y = addedPositionedY + child.bounds.y;
+					if (child.coreStyle.isAuto(child.coreStyle.left) == true && child.coreStyle.isAuto(child.coreStyle.right) == true)
+					{
+						child.globalBounds.x = addedX + child.staticOrigin.x;
+					}
+					else
+					{
+						child.globalBounds.x = addedPositionedX + child.bounds.x;
+					}
+					
+					if (child.coreStyle.isAuto(child.coreStyle.top) == true && child.coreStyle.isAuto(child.coreStyle.bottom) == true)
+					{
+						child.globalBounds.y = addedY + child.staticOrigin.y;
+						trace(child.globalBounds.y);
+						trace(child.coreStyle.specifiedValues.backgroundColor);
+					}
+					else
+					{
+						child.globalBounds.y = addedPositionedY + child.bounds.y;
+					}
 				}
 			}
 			else
@@ -1168,6 +1210,50 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		}
 		
 		return 0;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// TREE TRAVERSAL GETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_previousNormalFlowSibling():ElementRenderer
+	{
+		var previousElementRendererSibling:ElementRenderer = previousSibling;
+		
+		while (previousElementRendererSibling != null)
+		{
+			if (previousElementRendererSibling.isFloat() == false)
+			{
+				if (previousElementRendererSibling.isPositioned() == false || previousElementRendererSibling.isRelativePositioned() == true)
+				{
+					return previousElementRendererSibling;
+				}
+			}
+			
+			previousElementRendererSibling = previousElementRendererSibling.previousSibling;
+		}
+		
+		return null;
+	}
+	
+	private function get_nextNormalFlowSibling():ElementRenderer
+	{
+		var nextElementRendererSibling:ElementRenderer = nextSibling;
+	
+		while (nextElementRendererSibling != null)
+		{
+			if (nextElementRendererSibling.isFloat() == false)
+			{
+				if (nextElementRendererSibling.isPositioned() == false || nextElementRendererSibling.isRelativePositioned() == true)
+				{
+					return nextElementRendererSibling;
+				}
+			}
+			
+			nextElementRendererSibling = nextElementRendererSibling.nextSibling;
+		}
+		
+		return null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -940,6 +940,36 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return true;
 	}
 	
+	/**
+	 * Determine wether the children of this block box
+	 * are all block level or if they are all inline level
+	 * elements
+	 * 
+	 * @return true if at least one child is inline level
+	 */
+	override public function childrenInline():Bool
+	{	
+		var child:ElementRenderer = firstChild;
+		while(child != null)
+		{
+			if (child.isInlineLevel() == true)
+			{
+				//floated and absolutely positioned element are not taken into
+				//account
+				if (child.isFloat() == false)
+				{
+					if (child.isPositioned() == false || child.isRelativePositioned() == true)
+					{
+						return true;
+					}
+				}
+			}
+			
+			child = child.nextSibling;
+		}
+		return false;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////

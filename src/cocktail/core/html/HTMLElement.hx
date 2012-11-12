@@ -1746,7 +1746,7 @@ class HTMLElement extends Element<HTMLElement>
 		updateDocumentImmediately();
 		if (elementRenderer != null)
 		{
-			return Math.round(elementRenderer.positionedOrigin.x);
+			return Math.round(elementRenderer.bounds.x);
 		}
 		return 0;
 	}
@@ -1756,7 +1756,7 @@ class HTMLElement extends Element<HTMLElement>
 		updateDocumentImmediately();
 		if (elementRenderer != null)
 		{
-			return Math.round(elementRenderer.positionedOrigin.y);
+			return Math.round(elementRenderer.bounds.y);
 		}
 		return 0;
 	}
