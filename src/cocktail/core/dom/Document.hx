@@ -16,6 +16,7 @@ import cocktail.core.event.MouseEvent;
 import cocktail.core.event.TransitionEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
+import cocktail.core.event.PopStateEvent;
 import cocktail.core.html.HTMLElement;
 
 /**
@@ -157,6 +158,9 @@ class Document extends Node<Document>
 				
 			case DOMConstants.TRANSITION_EVENT_INTERFACE:
 				return new TransitionEvent();
+				
+			case DOMConstants.POPSTATE_EVENT_INTERFACE:
+				return new PopStateEvent();
 				
 			default:
 				throw DOMException.NOT_SUPPORTED_ERR;
