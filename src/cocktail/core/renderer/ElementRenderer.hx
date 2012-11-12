@@ -447,72 +447,36 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 */
 	public function setGlobalOrigins(addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
 	{
+		//if is positioned, set the global position for its own children
 		if (isPositioned() == true)
 		{
 			addedPositionedX = globalBounds.x + coreStyle.usedValues.paddingLeft;
 			addedPositionedY = globalBounds.y + coreStyle.usedValues.paddingTop;
 		}
+		//if is block container, set the normal flow position for its children
 		if (isBlockContainer() == true)
 		{
 			addedX = globalBounds.x + coreStyle.usedValues.paddingLeft;
 			addedY = globalBounds.y + coreStyle.usedValues.paddingTop;
 		}
 		
-		//for its child of the element
+		//for each child of the element
 		var child:ElementRenderer = firstChild;
 		while(child != null)
 		{
+			//set global bounds for absolutely positioned child
 			if (child.isPositioned() == true && child.isRelativePositioned() == false)
 			{
-				if (child.coreStyle.getKeyword(child.coreStyle.position) == FIXED)
-				{
-					if (child.coreStyle.isAuto(child.coreStyle.left) == true && child.coreStyle.isAuto(child.coreStyle.right) == true)
-					{
-						child.globalBounds.x = child.staticOrigin.x;
-					}
-					else
-					{
-						child.globalBounds.x = child.bounds.x;
-					}
-					if (child.coreStyle.isAuto(child.coreStyle.top) == true && child.coreStyle.isAuto(child.coreStyle.bottom) == true)
-					{
-						child.globalBounds.y = child.staticOrigin.y;
-					}
-					else
-					{
-						child.globalBounds.y = child.bounds.y;
-					}
-					
-				}
-				else
-				{
-					if (child.coreStyle.isAuto(child.coreStyle.left) == true && child.coreStyle.isAuto(child.coreStyle.right) == true)
-					{
-						child.globalBounds.x = addedX + child.staticOrigin.x;
-					}
-					else
-					{
-						child.globalBounds.x = addedPositionedX + child.bounds.x;
-					}
-					
-					if (child.coreStyle.isAuto(child.coreStyle.top) == true && child.coreStyle.isAuto(child.coreStyle.bottom) == true)
-					{
-						child.globalBounds.y = addedY + child.staticOrigin.y;
-						trace(child.globalBounds.y);
-						trace(child.coreStyle.specifiedValues.backgroundColor);
-					}
-					else
-					{
-						child.globalBounds.y = addedPositionedY + child.bounds.y;
-					}
-				}
+				setAbsolutelyPositionedGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
 			}
+			//set global bounds for normal flow child
 			else
 			{
 				child.globalBounds.x = addedX + child.bounds.x;
 				child.globalBounds.y = addedY + child.bounds.y;
 			}
 			
+			//set global dimension for child
 			child.globalBounds.width = child.bounds.width;
 			child.globalBounds.height = child.bounds.height;
 			
@@ -523,6 +487,69 @@ class ElementRenderer extends FastNode<ElementRenderer>
 			}
 			
 			child = child.nextSibling;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE LAYOUT METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Set the global bounds of an absolutely positioned
+	 * element
+	 */
+	public function setAbsolutelyPositionedGlobalOrigins(elementRenderer:ElementRenderer, addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
+	{
+		var elementRendererCoreStyle:CoreStyle = elementRenderer.coreStyle;
+		
+		//here the element is fixed positioned (relative to the viewport)
+		if (elementRendererCoreStyle.getKeyword(elementRendererCoreStyle.position) == FIXED)
+		{
+			//if both left and right are auto, static position is used
+			if (elementRendererCoreStyle.isAuto(elementRendererCoreStyle.left) == true && elementRendererCoreStyle.isAuto(elementRendererCoreStyle.right) == true)
+			{
+				elementRenderer.globalBounds.x = elementRenderer.staticOrigin.x;
+			}
+			//else use own bounds, for fixed element, no need to add previous global bounds
+			//as they are always positioned relative to the viewport
+			else
+			{
+				elementRenderer.globalBounds.x = elementRenderer.bounds.x;
+			}
+			//same for vertical position
+			if (elementRendererCoreStyle.isAuto(elementRendererCoreStyle.top) == true && elementRendererCoreStyle.isAuto(elementRendererCoreStyle.bottom) == true)
+			{
+				elementRenderer.globalBounds.y = elementRenderer.staticOrigin.y;
+			}
+			else
+			{
+				elementRenderer.globalBounds.y = elementRenderer.bounds.y;
+			}
+		}
+		//here the element is absolute positioned (relative to first positioned ancestor)
+		else
+		{
+			//if left and right auto, use static position
+			if (elementRendererCoreStyle.isAuto(elementRendererCoreStyle.left) == true && elementRendererCoreStyle.isAuto(elementRendererCoreStyle.right) == true)
+			{
+				//add global normal flow position to static position
+				elementRenderer.globalBounds.x = addedX + elementRenderer.staticOrigin.x;
+			}
+			//here uses bounds which are relative to first positioned ancestor
+			else
+			{
+				//add previous positioned ancestor global position
+				elementRenderer.globalBounds.x = addedPositionedX + elementRenderer.bounds.x;
+			}
+			//same for vertical position
+			if (elementRendererCoreStyle.isAuto(elementRendererCoreStyle.top) == true && elementRendererCoreStyle.isAuto(elementRendererCoreStyle.bottom) == true)
+			{
+				elementRenderer.globalBounds.y = addedY + elementRenderer.staticOrigin.y;
+			}
+			else
+			{
+				elementRenderer.globalBounds.y = addedPositionedY + elementRenderer.bounds.y;
+			}
 		}
 	}
 	

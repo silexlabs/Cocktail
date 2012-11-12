@@ -295,7 +295,7 @@ class FlowBoxRenderer extends BoxRenderer
 				_childStaticOrigin.x = elementRenderer.coreStyle.usedValues.marginLeft;
 				
 				//placed below margin box of previous normal flow child
-				_childStaticOrigin.y = previousNormalFlowSibling.bounds.y + previousNormalFlowSibling.coreStyle.usedValues.marginBottom;
+				_childStaticOrigin.y = previousNormalFlowSibling.bounds.y + previousNormalFlowSibling.bounds.height + previousNormalFlowSibling.coreStyle.usedValues.marginBottom;
 				//add top margin of element which never collapse when finding static position
 				_childStaticOrigin.y += elementRenderer.coreStyle.usedValues.marginTop;
 			}
