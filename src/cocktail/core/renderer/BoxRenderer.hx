@@ -470,11 +470,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 			return false;
 		}
 		
-		//TODO : firstChild might actually be positioned or floated,
-		//it should be first noram flow block level child
-		//if this box is not the first child of its parent it won't collapse
+		//if this box is not the first normal flow child of its parent it won't collapse
 		//with its top margin
-		if (parentNode.firstChild != this)
+		if (previousNormalFlowSibling != null)
 		{
 			return false;
 		}
@@ -508,9 +506,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 			return false;
 		}
 		
-		//TODO : lastChild might actually be positioned or floated,
-		//it should be last noram flow block level child
-		if (parentNode.lastChild != this)
+		if (nextNormalFlowSibling != null)
 		{
 			return false;
 		}
@@ -535,10 +531,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	private function collapseTopMarginWithPreviousSiblingBottomMargin():Bool
 	{
-		//TODO : should be first normal flow previous sibling
-		//if no previous sibling, then this box is first
-		//child of its parent
-		if (previousSibling == null)
+		//if no previous normal flow sibling, then this box is first
+		//normal flow child of its parent
+		if (previousNormalFlowSibling == null)
 		{
 			return false;
 		}
@@ -552,8 +547,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	private function collapseBottomMarginWithNextSiblingTopMargin():Bool
 	{
-		//TODO : should be first normal flow previous sibling
-		if (previousSibling == null)
+		if (nextNormalFlowSibling == null)
 		{
 			return false;
 		}
