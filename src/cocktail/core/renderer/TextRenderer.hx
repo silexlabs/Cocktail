@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.linebox.InlineBox;
@@ -71,7 +72,6 @@ class TextRenderer extends InvalidatingElementRenderer
 		_textNeedsRendering = true;
 		_textTokensNeedParsing = true;
 	}
-	
 		
 	/**
 	 * Overriden, as text use the style of 
@@ -83,19 +83,60 @@ class TextRenderer extends InvalidatingElementRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC LAYOUT METHOD
+	// OVERRIDEN PUBLIC RENDERING METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When laid out, text might recreate its text line
-	 * box if they are now invalid
+	 * update text elements used 
+	 * for rendering
 	 */
-	override public function layout(forceLayout:Bool):Void
-	{	
+	override public function updateText():Void
+	{
+		var child:ElementRenderer = firstChild;
+		while (child != null)
+		{
+			child.updateText();
+			child = child.nextSibling;
+		}
+		
 		if (_textNeedsRendering == true)
 		{
 			createTextLines();
 			_textNeedsRendering = false;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	override public function render(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
+	{	
+		var inlineBoxesLength:Int = inlineBoxes.length;
+
+		for (i in 0...inlineBoxesLength)
+		{
+			var inlineBox:TextInlineBox = cast(inlineBoxes[i]);
+			if (inlineBox.isSpace() == false)
+			{
+				
+				var rect:RectangleVO = new RectangleVO();
+				rect.width = inlineBox.bounds.width;
+				rect.height = inlineBox.bounds.height;
+				var destPoint:PointVO = new PointVO(inlineBox.bounds.x, inlineBox.bounds.y);
+				if (inlineBox.lineBox != null)
+				{
+					destPoint.y += inlineBox.lineBox.bounds.y;
+					//trace(inlineBox.lineBox.bounds.y);
+				}
+				
+				
+				
+				graphicContext.graphics.copyPixels(inlineBox.nativeTextBitmap, rect, destPoint, clipRect);
+			}
+			
+			//TODO : draw background with background manager for each with global bounds
 		}
 	}
 	

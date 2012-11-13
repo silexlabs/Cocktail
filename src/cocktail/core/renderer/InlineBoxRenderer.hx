@@ -43,15 +43,20 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * InlineBoxRenderer don't do any rendering, as the rendering of their line boxes
-	 * is managed by the closest block container ancestor
+	 * When rendering, in charge of rendering each inline box created by this InlineBoxRenderer,
+	 * in the order of the line box where they are declared
 	 * 
 	 * TODO : instead, when render called, should render each inline box -> but should be done line box by line box, might
 	 * cause z-index issue ?
 	 */
 	override public function render(parentGraphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{	
-		
+		var inlineBoxesLength:Int = inlineBoxes.length;
+		for (i in 0...inlineBoxesLength)
+		{
+			var inlineBox:InlineBox = inlineBoxes[i];
+			//TODO : draw background with background manager for each with global bounds
+		}
 	}
 	
 	/**

@@ -54,6 +54,8 @@ class InlineBox extends FastNode<InlineBox>
 	 */
 	public var paddingRight:Float;
 	
+	public var lineBox:LineBox;
+	
 	/**
 	 * class constructor. Init class attributes
 	 */

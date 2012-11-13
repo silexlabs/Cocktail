@@ -46,7 +46,7 @@ class TextInlineBox extends InlineBox
 	 * The bitmap data extracted from the native text to 
 	 * be displayed on screen
 	 */
-	private var _nativeTextBitmap:NativeBitmapData;
+	public var nativeTextBitmap(default, null):NativeBitmapData;
 	
 	/**
 	 * A rectangle containing the dimension
@@ -79,7 +79,6 @@ class TextInlineBox extends InlineBox
 		_renderRect.width = bounds.width;
 		_renderRect.height = bounds.height;
 		_destinationPoint = new PointVO(0.0, 0.0);
-		
 		initTextBitmap();
 	}
 	
@@ -120,7 +119,7 @@ class TextInlineBox extends InlineBox
 		bitmapBounds.y = leadedAscent;
 		bitmapBounds.width = bounds.width;
 		bitmapBounds.height = bounds.height;
-		_nativeTextBitmap = _nativeText.getBitmap(bitmapBounds);
+		nativeTextBitmap = _nativeText.getBitmap(bitmapBounds);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

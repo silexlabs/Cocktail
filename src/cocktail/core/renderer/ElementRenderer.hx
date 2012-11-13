@@ -398,6 +398,20 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		//abstract
 	}
 	
+	/**
+	 * update text elements used 
+	 * for rendering
+	 */
+	public function updateText():Void
+	{
+		var child:ElementRenderer = firstChild;
+		while (child != null)
+		{
+			child.updateText();
+			child = child.nextSibling;
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -946,10 +960,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * a layer but as a display of inline-block is rendered
 	 * as if it created a new layer, but it won't try
 	 * to render the child layers of its LayerRenderer.
-	 * 
-	 * TODO 3 : is this still necessary now that
-	 * there is a disambiguation between layer and
-	 * stacking context
 	 */
 	private function rendersAsIfCreateOwnLayer():Bool
 	{

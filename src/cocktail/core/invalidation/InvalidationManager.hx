@@ -348,6 +348,10 @@ class InvalidationManager
 		if (_documentNeedsLayout == true)
 		{
 			startLayout(_forceLayout);
+			
+			//update text element used for rendering
+			_htmlDocument.documentElement.elementRenderer.updateText();
+			
 			_forceLayout = false;
 			_documentNeedsLayout = false;
 		}
