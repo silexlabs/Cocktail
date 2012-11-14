@@ -71,6 +71,16 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private var _lineBoxPosition:PointVO;
 	
 	/**
+	 * Reused structure when computing bounds
+	 * of inline children, used to hold
+	 * the bounds of an inline box with the added
+	 * x and y offset of its line box so that it is
+	 * converted to the space of the containing block 
+	 * (this)
+	 */
+	private var _inlineBoxGlobalBounds:RectangleVO;
+	
+	/**
 	 * class constructor.
 	 * Init class attributes
 	 */
@@ -82,6 +92,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_childPosition = new PointVO(0, 0);
 		lineBoxes = new Array<LineBox>();
 		floatsManager = new FloatsManager();
+		_inlineBoxGlobalBounds = new RectangleVO();
 		_isLayingOut = false;
 	}
 	
@@ -447,6 +458,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			
 			//retrieve line boxes total height
 			childrenHeight = _lineBoxPosition.y;
+			
+			//now that all children's inlineBoxes have been
+			//laid out, their bounds can be updated
+			updateInlineChildrenBounds(this);
 		} 
 		
 		//the width of this block box might need to be re-computed if it uses its 'shrink-to-width'
@@ -594,28 +609,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//was already found to prevent infinite loop
 					if (floatsManager.isAlreadyRegistered(child) == false)
 					{
-						var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight;
-						var floatBounds:RectangleVO = floatsManager.registerFloat(child, _childPosition, contentWidth);
-						
-						child.bounds.x = floatBounds.x + child.coreStyle.usedValues.marginLeft;
-						child.bounds.y = floatBounds.y + child.coreStyle.usedValues.marginTop;
-						
-						var xOffset:Float = 0;
-						var yOffset:Float = 0;
-						
-						var blockFormattingRoot:ElementRenderer = this;
-						
-						while (blockFormattingRoot.establishesNewBlockFormattingContext() == false)
-						{
-							if (blockFormattingRoot.parentNode == null)
-							{
-								break;
-							}
-							blockFormattingRoot = blockFormattingRoot.parentNode;
-						}
-						
-						//TODO : convert float in current space to block root space
-						//blockFormattingRoot.addFloatedElementToBlockFormattingRoot(floatedElement);
+						registerFloatedElement(child, _childPosition);
 						return true;
 					}
 				}
@@ -627,6 +621,32 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return false;
 	}
 	
+	//TODO : implement
+	private function registerFloatedElement(floatedElement:ElementRenderer, childPosition:PointVO):Void
+	{
+		var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight;
+		var floatBounds:RectangleVO = floatsManager.registerFloat(floatedElement, childPosition, contentWidth);
+		
+		floatedElement.bounds.x = floatBounds.x + floatedElement.coreStyle.usedValues.marginLeft;
+		floatedElement.bounds.y = floatBounds.y + floatedElement.coreStyle.usedValues.marginTop;
+		
+		var xOffset:Float = 0;
+		var yOffset:Float = 0;
+		
+		var blockFormattingRoot:ElementRenderer = this;
+		
+		while (blockFormattingRoot.establishesNewBlockFormattingContext() == false)
+		{
+			if (blockFormattingRoot.parentNode == null)
+			{
+				break;
+			}
+			blockFormattingRoot = blockFormattingRoot.parentNode;
+		}
+		
+		//TODO : convert float in current space to block root space
+		//blockFormattingRoot.addFloatedElementToBlockFormattingRoot(floatedElement);
+	}
 
 	/**
 	 * When all children are inline level, format them as 
@@ -884,6 +904,57 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	
 		return inlineBox;
+	}
+	
+	/**
+	 * Update the bounds, relative top the containing
+	 * block (this) of all the normal flow inline
+	 * children
+	 */
+	private function updateInlineChildrenBounds(elementRenderer:ElementRenderer):Void
+	{
+		//loop in all inline children
+		var child:ElementRenderer = elementRenderer.firstChild;
+		while(child != null)
+		{
+			//only compute bounds of normal flow children (no float and no absolut positioned)
+			if ((child.isPositioned() == false || child.isRelativePositioned() == true) && child.isFloat() == false)
+			{
+				//reset bounds of child
+				child.bounds.width = 0;
+				child.bounds.height = 0;
+				child.bounds.x = 50000;
+				child.bounds.y = 50000;
+				
+				//bounds of child is bounds of all its inline boxes, which 
+				//might be any number of inline boxes for inline container
+				//or just one for inline-block or replaced elements
+				var inlineBoxesLength:Int = child.inlineBoxes.length;
+				for (i in 0...inlineBoxesLength)
+				{
+					var inlineBox:InlineBox = child.inlineBoxes[i];
+					
+					//inlineBox bounds are relative to their line box, so the
+					//x and y of the line box needs to be added to get the inline
+					//box bounds in the space of the containing block
+					_inlineBoxGlobalBounds.width = inlineBox.bounds.width;
+					_inlineBoxGlobalBounds.height = inlineBox.bounds.height;
+					_inlineBoxGlobalBounds.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x;
+					_inlineBoxGlobalBounds.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y;
+					
+					GeomUtils.addBounds(_inlineBoxGlobalBounds, child.bounds);
+				}
+				
+				
+				//recurse down the rendering tree
+				if (child.firstChild != null)
+				{
+					updateInlineChildrenBounds(child);
+				}
+			}
+			
+			child = child.nextSibling;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
