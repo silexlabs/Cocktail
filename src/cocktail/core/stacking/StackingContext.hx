@@ -9,6 +9,7 @@
 package cocktail.core.stacking;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.utils.FastNode;
+import cocktail.core.css.CSSData;
 
 /**
  * Stacking contexts are used to determine the z-index
@@ -33,9 +34,7 @@ import cocktail.core.utils.FastNode;
  * 
  * When rendering of the document starts, the render method is called on each
  * stacking context, in stacking context (z-index) order. Each stacking context
- * in turn call the render method of its layer renderer. Each layer renderer
- * is in turn responsible for rendering each child layer which belong to
- * the same stacking context, in layer tree order
+ * in turn call the render method of its layer renderer.
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -60,7 +59,16 @@ class StackingContext extends FastNode<StackingContext>
 	 * Start the rendering of the layer which 
 	 * instantiated this stacking context, and
 	 * render all the stacking context tree
-	 * recursively
+	 * recursively.
+	 * 
+	 * Rendering is in 3 phases :
+		 * first stacking context with a negative z-index are
+		 * rendered
+		 * 
+		 * then stacking context with a 0 zindex are rendered, along with layer renderer
+		 * with an 'auto' zindex, following layer tree (not stacking context tree) order
+		 * 
+		 * finally stacking context with a positive z index are rendered
 	 */
 	public function render():Void
 	{
@@ -68,9 +76,86 @@ class StackingContext extends FastNode<StackingContext>
 		
 		var child:StackingContext = firstChild;
 		
+		//flasg determining wether layer with a 0 or auto
+		//z-index have already been renderd
+		var hasRenderedAutoAndZeroLayers:Bool = false;
+		
 		while (child != null)
 		{
-			child.render();
+			//check the zindex of the child to be sure to render in right
+			//zindex order
+			switch(child.layerRenderer.rootElementRenderer.coreStyle.zIndex)
+			{
+				case INTEGER(value):
+					
+					//if zindex is 0, then the layer will be rendered
+					//along with auto layer, following layer tree order
+					if (value == 0)
+					{
+						
+					}
+					else
+					{
+						//first time a positive zindex stacking context is found,
+						//render all 0 stacking context and auto layer before this
+						//positive stacking context
+						if (value > 0 && hasRenderedAutoAndZeroLayers == false)
+						{
+							renderChildrenInSameStackingContext(layerRenderer);
+							hasRenderedAutoAndZeroLayers = true;
+						}
+						
+						child.render();
+					}
+					
+				default:	
+			}
+			
+			child = child.nextSibling;
+		}
+		
+		//if 0 and auto zindex were not rendered, for instance
+		//if this stacking context only has 0 zindex child, render
+		//now
+		if (hasRenderedAutoAndZeroLayers == false)
+		{
+			renderChildrenInSameStackingContext(layerRenderer);
+		}
+	}
+	
+	/**
+	 * Render all child layer belonging to this stacking
+	 * context as well as child stacking context with a zindex of
+	 * 0, which must be rendered in layer tree order
+	 */
+	private function renderChildrenInSameStackingContext(rootLayer:LayerRenderer):Void
+	{
+		var child:LayerRenderer = rootLayer.firstChild;
+		while (child != null)
+		{
+			if (child.hasOwnStackingContext == false)
+			{
+				child.render();
+				//render all 'auto' layer renderer belonging
+				//to this stacking context recursively
+				renderChildrenInSameStackingContext(child);
+			}
+			else
+			{
+				switch(child.rootElementRenderer.coreStyle.zIndex)
+				{
+					case INTEGER(value):
+						if (value == 0)
+						{
+							//rendering should start at the stacking
+							//context so that child stacking context
+							//are also rendered
+							child.stackingContext.render();
+						}
+					default:	
+				}
+			}
+			
 			child = child.nextSibling;
 		}
 	}

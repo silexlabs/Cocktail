@@ -102,15 +102,11 @@ class FlowBoxRenderer extends BoxRenderer
 		//layout all the in flow children (non positioned or floated)
 		layoutChildren();
 		
-		if (_positionedChildrenNeedLayout == true || forceLayout == true)
+		//if this ElementRenderer is positioned, it means that it is the first positioned ancestor
+		//for its positioned children and it is its responsability to lay them out
+		if (isPositioned() == true)
 		{
-			//if this ElementRenderer is positioned, it means that it is the first positioned ancestor
-			//for its positioned children and it is its responsability to lay them out
-			if (isPositioned() == true)
-			{
-				layoutPositionedChildren();
-			}
-			_positionedChildrenNeedLayout = false;
+			layoutPositionedChildren();
 		}
 	}
 	
@@ -342,7 +338,6 @@ class FlowBoxRenderer extends BoxRenderer
 				
 				_childStaticOrigin.y = lastInlineBox.bounds.y + lastInlineBox.lineBox.bounds.y;
 				_childStaticOrigin.y += elementRenderer.coreStyle.usedValues.marginTop;
-				
 			}
 		}
 		

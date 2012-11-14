@@ -212,7 +212,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 * of this layer with those of the ancestors layers
 	 * 
 	 * TODO 2 : might need to split matrix of transform style and of
-	 * relative positioning, as relative positioning shouldn't apply
+	 * relative positioning, as relative positioning of ancestors shouldn't apply
 	 * to fixed elements but other transformations do
 	 */
 	public function updateLayerMatrix(parentMatrix:Matrix):Void
@@ -732,7 +732,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 			//get the z-index of the root element renderer of this layer
 			var zIndex:Int = getZIndex(this);
 			
-			//loop in all the sibling stacking context, thenew stacking context
+			//loop in all the sibling stacking context, the new stacking context
 			//created by this layer should be inserted before the first stacking
 			//context whose layer has a z-index superior to this one
 			var child:StackingContext = parentStackingContext.firstChild;
@@ -929,10 +929,6 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 * Starts the rendering of this LayerRenderer.
 	 * Render all the element renderer belonging
 	 * to this layer starting with the root element renderer.
-	 * 
-	 * If this layer establishes a new stacking context, also
-	 * renders every child layer belonging to the same
-	 * stacking context, in layer tree order
 	 */
 	public function render():Void
 	{
@@ -978,14 +974,6 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 			}
 		}
 		
-		//if this layer establishes a new stacking context
-		//it must render all its children belonging to the
-		//same stacking context, in tree order
-		if (hasOwnStackingContext == true)
-		{
-			renderChildrenInSameStackingContext(this);
-		}
-		
 		//layer no longer needs rendering
 		_needsRendering = false;
 	}
@@ -993,26 +981,6 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	/////////////////////////////////
 	// PRIVATE RENDERING METHODS
 	////////////////////////////////
-	
-	/**
-	 * When this layer establish a new stacking context,
-	 * it starts the rendering of all its children belonging
-	 * to the same stacking context in tree order
-	 */
-	private function renderChildrenInSameStackingContext(rootLayer:LayerRenderer):Void
-	{
-		var child:LayerRenderer = rootLayer.firstChild;
-		while (child != null)
-		{
-			if (child.hasOwnStackingContext == false)
-			{
-				child.render();
-				renderChildrenInSameStackingContext(child);
-			}
-			
-			child = child.nextSibling;
-		}
-	}
 	
 	/**
 	 * Reset the bitmap

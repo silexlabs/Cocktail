@@ -651,11 +651,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	/**
 	 * When all children are inline level, format them as 
 	 * lines. Also format floated children
-	 * 
-	 * TODO : add final step where the bounds of all child are updated
-	 *	based on the inline boxes they created -> add another step
-	 * in InvalidationManager to prevent calculating bounds until layout
-	 * is sure to be final
 	 */
 	private function layoutInlineChildrenAndFloats():Bool
 	{
