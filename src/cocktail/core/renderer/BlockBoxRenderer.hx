@@ -330,13 +330,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			if (child.layerRenderer == referenceLayer)
 			{
+				child.render(graphicContext, clipRect, scrollOffset);
+				
 				//TODO : should ne render float, other condition too ? inline-block ?
 				if (child.firstChild != null)
 				{
 					renderInlineChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
 				}
-				
-				child.render(graphicContext, clipRect, scrollOffset);
 			}
 			
 			child = child.nextSibling;
@@ -849,6 +849,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				//line box its children are in
 				else if (child.firstChild != null)
 				{
+					//the child must first be laid out so that
+					//it computes its dimensions and font metrics
+					child.layout(true);
+					
 					//reset inline boxes before adding new ones
 					child.inlineBoxes = new Array<InlineBox>();
 					
@@ -920,6 +924,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//only compute bounds of normal flow children (no float and no absolut positioned)
 			if ((child.isPositioned() == false || child.isRelativePositioned() == true) && child.isFloat() == false)
 			{
+				//recurse down the rendering tree
+				if (child.firstChild != null)
+				{
+					updateInlineChildrenBounds(child);
+				}
+				
 				//reset bounds of child
 				child.bounds.width = 0;
 				child.bounds.height = 0;
@@ -934,24 +944,51 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				{
 					var inlineBox:InlineBox = child.inlineBoxes[i];
 					
+					//TODO : should be implemented on LineBox
+					if (inlineBox.firstChild != null)
+					{
+						updateInlineBoxBounds(inlineBox);
+					}
+			
 					//inlineBox bounds are relative to their line box, so the
 					//x and y of the line box needs to be added to get the inline
 					//box bounds in the space of the containing block
 					_inlineBoxGlobalBounds.width = inlineBox.bounds.width;
 					_inlineBoxGlobalBounds.height = inlineBox.bounds.height;
-					_inlineBoxGlobalBounds.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x;
-					_inlineBoxGlobalBounds.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y;
+					
+					//TODO : lineBox should never be null at this point
+					if (inlineBox.lineBox != null)
+					{
+						_inlineBoxGlobalBounds.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x;
+						_inlineBoxGlobalBounds.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y;
+					}
 					
 					GeomUtils.addBounds(_inlineBoxGlobalBounds, child.bounds);
 				}
-				
-				
-				//recurse down the rendering tree
-				if (child.firstChild != null)
-				{
-					updateInlineChildrenBounds(child);
-				}
 			}
+			
+			child = child.nextSibling;
+		}
+	}
+	
+	/**
+	 * Update the bound of a container inline box whose
+	 * bounds depends on its descendant inline boxes
+	 * 
+	 * TODO : should actually implemented by LineBox during
+	 * layout method
+	 */
+	private function updateInlineBoxBounds(inlineBox:InlineBox):Void
+	{
+		inlineBox.bounds.x = 50000;
+		inlineBox.bounds.y = 50000;
+		inlineBox.bounds.width = 0;
+		inlineBox.bounds.height = 0;
+		
+		var child:InlineBox = inlineBox.firstChild;
+		while (child != null)
+		{
+			GeomUtils.addBounds(child.bounds, inlineBox.bounds);
 			
 			child = child.nextSibling;
 		}

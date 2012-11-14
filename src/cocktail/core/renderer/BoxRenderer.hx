@@ -370,13 +370,17 @@ class BoxRenderer extends InvalidatingElementRenderer
 		}
 		else if (collapseBottomMarginWithNextSiblingTopMargin() == true)
 		{
-			return 0;
+			var adjoiningMargins:Array<Float> = new Array<Float>();
+			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+			nextNormalFlowSibling.getAdjoiningBottomMargins(adjoiningMargins);
+			return getCollapsedMargin(adjoiningMargins);
 		}
 		
 		if (collapseBottomMarginWithLastChildBottomMargin() == true)
 		{
 			var adjoiningMargins:Array<Float> = new Array<Float>();
 			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+			//TODO : should be last normal flow child
 			lastChild.getAdjoiningBottomMargins(adjoiningMargins);
 			return getCollapsedMargin(adjoiningMargins);
 		}
@@ -384,6 +388,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		{
 			var adjoiningMargins:Array<Float> = new Array<Float>();
 			adjoiningMargins.push(coreStyle.usedValues.marginTop);
+			//TODO : should be first normal flow child
 			//var firstChildCollapsedTopMargin:Float = firstChild.getAdjoiningTopMargins(adjoiningMargins);
 			return getCollapsedMargin(adjoiningMargins);
 		}

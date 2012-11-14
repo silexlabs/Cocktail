@@ -8,6 +8,7 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.linebox.InlineBox;
@@ -49,13 +50,14 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 * TODO : instead, when render called, should render each inline box -> but should be done line box by line box, might
 	 * cause z-index issue ?
 	 */
-	override public function render(parentGraphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
+	override public function render(graphicsContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{	
 		var inlineBoxesLength:Int = inlineBoxes.length;
 		for (i in 0...inlineBoxesLength)
 		{
 			var inlineBox:InlineBox = inlineBoxes[i];
-			//TODO : draw background with background manager for each with global bounds
+			//TODO : should line box bounds + global bounds of containing block
+			BackgroundManager.render(graphicsContext, inlineBoxes[i].bounds, coreStyle, this, clipRect);
 		}
 	}
 	

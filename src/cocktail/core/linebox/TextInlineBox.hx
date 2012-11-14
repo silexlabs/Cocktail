@@ -114,7 +114,7 @@ class TextInlineBox extends InlineBox
 	 * get the bitmap data from the native text
 	 */
 	private function initTextBitmap():Void
-	{
+	{	
 		var bitmapBounds:RectangleVO = new RectangleVO();
 		bitmapBounds.y = leadedAscent;
 		bitmapBounds.width = bounds.width;
