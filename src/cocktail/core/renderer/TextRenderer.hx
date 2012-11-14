@@ -24,6 +24,7 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
 import cocktail.core.font.FontData;
+import haxe.Stack;
 
 /**
  * Renders a run of text by creating as many text line box
@@ -114,29 +115,23 @@ class TextRenderer extends InvalidatingElementRenderer
 	override public function render(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{	
 		var inlineBoxesLength:Int = inlineBoxes.length;
-
 		for (i in 0...inlineBoxesLength)
 		{
 			var inlineBox:TextInlineBox = cast(inlineBoxes[i]);
 			if (inlineBox.isSpace() == false)
 			{
-				
 				var rect:RectangleVO = new RectangleVO();
 				rect.width = inlineBox.bounds.width;
 				rect.height = inlineBox.bounds.height;
-				var destPoint:PointVO = new PointVO(inlineBox.bounds.x, inlineBox.bounds.y);
+				var destPoint:PointVO = new PointVO(inlineBox.bounds.x + globalBounds.x, inlineBox.bounds.y + globalBounds.y);
 				if (inlineBox.lineBox != null)
 				{
 					destPoint.y += inlineBox.lineBox.bounds.y;
-					//trace(inlineBox.lineBox.bounds.y);
+					destPoint.x += inlineBox.lineBox.bounds.x;
 				}
-				
-				
 				
 				graphicContext.graphics.copyPixels(inlineBox.nativeTextBitmap, rect, destPoint, clipRect);
 			}
-			
-			//TODO : draw background with background manager for each with global bounds
 		}
 	}
 	

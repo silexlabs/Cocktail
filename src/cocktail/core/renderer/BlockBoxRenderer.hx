@@ -373,7 +373,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			if (child.layerRenderer == referenceLayer)
 			{
 				//TODO 3 : must add more condition, for instance, no float
-				if (child.isReplaced() == false && child.coreStyle.getKeyword(child.coreStyle.display) != INLINE_BLOCK)
+				if (child.isReplaced() == false && child.coreStyle.getKeyword(child.coreStyle.display) != INLINE_BLOCK && child.isInlineLevel() == false)
 				{
 					child.render(graphicContext, clipRect, scrollOffset);
 					renderBlockContainerChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
@@ -438,7 +438,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			shouldLayoutAgain = layoutBlockChildrenAndFloats();
 			
-			//retrive block children added height
+			//retrieve block children total height
 			childrenHeight = _childPosition.y;
 		}
 		else
@@ -545,16 +545,17 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						//add its own margin to the x/y position, as it is the position
 						//of its border box. Top margin is collapsed with adjoining margins
 						//if needed
+						//floats are not taken into account when positioning it but if it creates
+						//line boxes they might be shortened by those floats
 						_childPosition.y += child.getCollapsedTopMargin();
-						_childPosition.x = child.coreStyle.usedValues.marginLeft;
 						
 						//update postion of child
-						child.bounds.x = _childPosition.x;
+						child.bounds.x = child.coreStyle.usedValues.marginLeft;
 						child.bounds.y = _childPosition.y;
 						
 						//child can now be layout, it needs to know its own x and y bounds
 						//before laying out its children to correctly deal with floated elements,
-						//as child need to convert floated elements to own space
+						//as child need to convert floated elements to their own space
 						child.layout(true);
 					}
 					//here the child is either a replaced block level element or a block box
@@ -574,7 +575,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						//add child margins. Top margin is collapsed with
 						//adjoining margins if needed
 						_childPosition.y += child.getCollapsedTopMargin();
-						_childPosition.x += child.coreStyle.usedValues.marginLeft;
 					}
 					
 					//add the current's child height so that next block child will be placed below it
@@ -633,7 +633,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * lines. Also format floated children
 	 * 
 	 * TODO : add final step where the bounds of all child are updated
-	 *	based on the inline boxes they created
+	 *	based on the inline boxes they created -> add another step
+	 * in InvalidationManager to prevent calculating bounds until layout
+	 * is sure to be final
 	 */
 	private function layoutInlineChildrenAndFloats():Bool
 	{

@@ -30,6 +30,8 @@ class LineBox
 	
 	private var _spacesNumber:Int;
 	
+	private var _minimumHeight:Float;
+	
 	public function new(elementRenderer:ElementRenderer, availableWidth:Float, minimumHeight:Float, isFirstLine:Bool) 
 	{
 		//TODO : if first line, apply text indent to _addedWidth
@@ -39,6 +41,7 @@ class LineBox
 		_spacesNumber = 0;
 		_unbreakableWidth = 0;
 		_addedWidth = 0;
+		_minimumHeight = minimumHeight;
 		_unbreakableInlineBoxes = new Array<InlineBox>();
 		rootInlineBox = new InlineBox(elementRenderer);
 		bounds = new RectangleVO();
@@ -122,7 +125,11 @@ class LineBox
 		bounds.width = alignLineBox(rootInlineBox, isLastLine, _addedWidth);
 		
 		bounds.height = computeLineBoxHeight(rootInlineBox);
-		bounds.height = 50;
+		
+		if (bounds.height < _minimumHeight)
+		{
+			bounds.height = _minimumHeight;
+		}
 	}
 	
 	
