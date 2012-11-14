@@ -480,7 +480,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//if the height of this block box is auto, it depends
 		//on its content height, and can computed now that all
 		//children are laid out
-		if (coreStyle.isAuto(coreStyle.height) == true)
+		if (coreStyle.isAuto(coreStyle.height) == true && isAutoHeightAbsolutelyPositionedWithNotAutoTopAndBottom() == false)
 		{
 			//at this point children height is known and might match block children, with
 			//appropriately collapsed margins
@@ -521,6 +521,28 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 
+	/**
+	 * Returns wether this block box is absolutely positioned, with
+	 * an auto height and top and bottom styles which are not auto.
+	 * In this particular case, the height can be deduced from solving
+	 * this equation :
+	 * 
+	 * 'top' + 'margin-top' + 'border-top-width' + 'padding-top' + 'height' + 'padding-bottom' + 'border-bottom-width' + 'margin-bottom' + 'bottom' = height of containing block 
+	 * 
+	 * In this case, height should not be content height and was already computed
+	 * 
+	 * note : couldn't think of a shorther func name
+	 */
+	private function isAutoHeightAbsolutelyPositionedWithNotAutoTopAndBottom():Bool
+	{
+		if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			return coreStyle.isAuto(coreStyle.top) == false && coreStyle.isAuto(coreStyle.bottom) == false;
+		}
+		
+		return false;
+	}
+	
 	/**
 	 * Called when all children are blocks. 
 	 * Layout them as well as floated children
