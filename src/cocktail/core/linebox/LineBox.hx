@@ -104,7 +104,6 @@ class LineBox
 	
 	public function layout(isLastLine:Bool, parentInlineBox:InlineBox):Void
 	{
-		trace("layout line box");
 		if (isLastLine == true)
 		{
 			_addedWidth += _unbreakableWidth;
@@ -175,7 +174,6 @@ class LineBox
 		x += inlineBox.paddingLeft + inlineBox.marginLeft;
 		
 		var child:InlineBox = inlineBox.firstChild;
-		
 		while(child != null)
 		{
 			if (child.firstChild != null)

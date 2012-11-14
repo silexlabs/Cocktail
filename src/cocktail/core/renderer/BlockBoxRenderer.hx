@@ -698,8 +698,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function layoutInlineChildrenAndFloats():Bool
 	{
-		trace("start inline layout");
-		
 		//reset the array of line boxes before layout
 		lineBoxes = new Array<LineBox>();
 		
@@ -752,7 +750,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return lineBox;
 	}
 	
-	private function layoutLineBox(lineBox:LineBox, lineBoxPosition:PointVO, openedElementRenderers:Array<ElementRenderer>):LineBox
+	private function layoutLineBox(lineBox:LineBox, lineBoxPosition:PointVO, openedElementRenderers:Array<ElementRenderer>):InlineBox
 	{
 		lineBox.layout(false, null);
 		
@@ -762,7 +760,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//TODO : get x offset at new y
 		var newLineBox:LineBox = createLineBox(lineBoxPosition);
 		
-		var currentInlineBox:InlineBox = lineBox.rootInlineBox;
+		var currentInlineBox:InlineBox = newLineBox.rootInlineBox;
+		
 		//create new inline boxes for all the inline box renderer which still have
 		//children to format, and add them to the new line box
 		var length:Int = openedElementRenderers.length;
@@ -774,12 +773,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//
 			//TODO : not needed actually ? z-order defined by element renderer tree now
 			//not line box tree -> but needed to get bounds
-			var childInLineBox:InlineBox = new InlineBox(openedElementRenderers[i]);
-			currentInlineBox.appendChild(childInLineBox);
-			currentInlineBox = childInLineBox;
+			var childInlineBox:InlineBox = new InlineBox(openedElementRenderers[i]);
+			openedElementRenderers[i].inlineBoxes.push(childInlineBox);
+			currentInlineBox.appendChild(childInlineBox);
+			currentInlineBox = childInlineBox;
 		}
 		
-		return newLineBox;
+		return currentInlineBox;
 	}
 	
 	private function doLayoutInlineChildrenAndFloats(elementRenderer:ElementRenderer, lineBox:LineBox, inlineBox:InlineBox, openedElementRenderers:Array<ElementRenderer>, lineBoxPosition:PointVO):InlineBox
@@ -803,13 +803,19 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//insert the array of created inline boxes into the current line. As many new line boxes
 					//as needed are created
 					var textLength:Int = child.inlineBoxes.length;
-					for (j in 0...textLength)
+					for (i in 0...textLength)
 					{
-						var lineIsFull:Bool = lineBox.insert(child.inlineBoxes[j], inlineBox);
-						
+						var lineIsFull:Bool = lineBox.insert(child.inlineBoxes[i], inlineBox);
+						//if inserting this text would make the line full, create a new line for it
 						if (lineIsFull == true)
 						{
-							lineBox = layoutLineBox(lineBox, lineBoxPosition, openedElementRenderers);
+							//layout current line, create a new one and return the inlineBox where
+							//the next inlineBox should be attached
+							inlineBox = layoutLineBox(lineBox, lineBoxPosition, openedElementRenderers);
+							//get a reference to the newly created line box
+							lineBox = lineBoxes[lineBoxes.length - 1];
+							//text inline box can now be inserted in the new line box
+							lineBox.insert(child.inlineBoxes[i], inlineBox);
 						}
 					}
 				}
@@ -839,26 +845,32 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					
 					if (lineIsFull == true)
 					{
-						lineBox = layoutLineBox(lineBox, lineBoxPosition, openedElementRenderers);
+						inlineBox = layoutLineBox(lineBox, lineBoxPosition, openedElementRenderers);
+						lineBox = lineBoxes[lineBoxes.length - 1];
+						lineBox.insert(childInlineBox, inlineBox);
 					}
 				}
 				//here the child is an inline box renderer, which will create one inline box for each
 				//line box its children are in
 				else if (child.firstChild != null)
 				{
+					//reset inline boxes before adding new ones
+					child.inlineBoxes = new Array<InlineBox>();
+					
 					//create the first inline box for this inline box renderer
-					var childInLineBox:InlineBox = new InlineBox(child);
+					var childInlineBox:InlineBox = new InlineBox(child);
+					child.inlineBoxes.push(childInlineBox);
 					
 					var childUsedValues:UsedValuesVO = child.coreStyle.usedValues;
 					
 					//the first inline box created by an inline box renderer has its left margin and padding
-					childInLineBox.marginLeft = childUsedValues.marginLeft;
-					childInLineBox.paddingLeft = childUsedValues.paddingLeft;
+					childInlineBox.marginLeft = childUsedValues.marginLeft;
+					childInlineBox.paddingLeft = childUsedValues.paddingLeft;
 					//the left margin and padding are added as an unbreakable width
 					lineBox.addUnbreakableWidth(childUsedValues.marginLeft + childUsedValues.paddingLeft);
 					
 					//attach the child inline box to its parent inline box
-					inlineBox.appendChild(childInLineBox);
+					inlineBox.appendChild(childInlineBox);
 
 					//store the inline box renderer. Each time a new linebox is created
 					//by laying out a descandant of this inline box renderer, a new inline box
@@ -871,7 +883,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//a reference to the last added inline box is returned, so that it can
 					//be used as a starting point when laying out the siblings of the 
 					//inline box renderer
-					inlineBox = doLayoutInlineChildrenAndFloats(child, lineBox, childInLineBox, openedElementRenderers, lineBoxPosition);
+					inlineBox = doLayoutInlineChildrenAndFloats(child, lineBox, childInlineBox, openedElementRenderers, lineBoxPosition);
 					
 					//now that all of the descendant of the inline box renderer have been laid out,
 					//remove the reference to this inline box renderer so that when a new line box
