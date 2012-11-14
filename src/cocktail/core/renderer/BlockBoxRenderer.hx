@@ -529,7 +529,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * 
 	 * 'top' + 'margin-top' + 'border-top-width' + 'padding-top' + 'height' + 'padding-bottom' + 'border-bottom-width' + 'margin-bottom' + 'bottom' = height of containing block 
 	 * 
-	 * In this case, height should not be content height and was already computed
+	 * In this case, height should not be content height and was already computed before laying out children
 	 * 
 	 * note : couldn't think of a shorther func name
 	 */

@@ -522,7 +522,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 			//if both left and right are auto, static position is used
 			if (elementRendererCoreStyle.isAuto(elementRendererCoreStyle.left) == true && elementRendererCoreStyle.isAuto(elementRendererCoreStyle.right) == true)
 			{
-				elementRenderer.globalBounds.x = elementRenderer.staticOrigin.x;
+				elementRenderer.globalBounds.x = addedX + elementRenderer.staticOrigin.x;
 			}
 			//else use own bounds, for fixed element, no need to add previous global bounds
 			//as they are always positioned relative to the viewport
@@ -533,7 +533,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 			//same for vertical position
 			if (elementRendererCoreStyle.isAuto(elementRendererCoreStyle.top) == true && elementRendererCoreStyle.isAuto(elementRendererCoreStyle.bottom) == true)
 			{
-				elementRenderer.globalBounds.y = elementRenderer.staticOrigin.y;
+				elementRenderer.globalBounds.y =addedY + elementRenderer.staticOrigin.y;
 			}
 			else
 			{
