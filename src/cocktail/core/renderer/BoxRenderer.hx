@@ -585,6 +585,8 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	private function collapseTopMarginWithBottomMargin():Bool
 	{
+		//TODO : only normal flow children should count, if 
+		//all children are aboslute, margin can collapse
 		if (firstChild != null)
 		{
 			//TODO : check that all combined children have a 0 height
@@ -594,6 +596,23 @@ class BoxRenderer extends InvalidatingElementRenderer
 		
 		//if the box has vertical padding, then the margins are not adjoining
 		if (coreStyle.usedValues.paddingTop != 0 || coreStyle.usedValues.paddingBottom != 0)
+		{
+			return false;
+		}
+		
+		//if the height is not null, then margin are not adjoining
+		//
+		//note : at this point, it is sure that there is no vertical paddings and border,
+		//so we can use bounds height which are border box height because only content height
+		//remains. This method is also called after layout, so at this point bounds.height is
+		//the final used height
+		if (bounds.height != 0)
+		{
+			return false;
+		}
+		
+		//top and bottom margin can't collapse if anew block formatting is established
+		if (establishesNewBlockFormattingContext() == true)
 		{
 			return false;
 		}

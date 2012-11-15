@@ -612,6 +612,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						//add child margins. Top margin is collapsed with
 						//adjoining margins if needed
 						_childPosition.y += child.getCollapsedTopMargin();
+						
+						//update position of child
+						child.bounds.y = _childPosition.y;
+						child.bounds.x = child.coreStyle.usedValues.marginLeft;
 					}
 					
 					//add the current's child height so that next block child will be placed below it
