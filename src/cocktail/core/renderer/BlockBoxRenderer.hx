@@ -821,13 +821,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				//element or it is replaced, like an inline image renderer
 				else if (child.establishesNewBlockFormattingContext() == true || child.isReplaced() == true)
 				{
-					//for inline-block, they need to be laid out 
-					//before they are inserted so that their width and height 
-					//is known
-					if (child.isReplaced() == false)
-					{
-						child.layout(true);
-					}
+					//the child must first be laid out so that its width
+					//and height are known
+					child.layout(true);
 					
 					//those element generate only one inline box so
 					//that they can be inserted in an inline formatting
