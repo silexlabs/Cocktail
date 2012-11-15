@@ -623,13 +623,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//add child bottom margin, collapsed with adjoining margins
 					//if needed
 					_childPosition.y += child.getCollapsedBottomMargin();
-					
-					if (child.domNode.id == "pouet")
-					{
-						
-						trace(_childPosition.y );
-						trace(child.getCollapsedBottomMargin());
-					}
 				}
 				//here the child is a floated element
 				else
