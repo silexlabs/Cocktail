@@ -750,6 +750,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//must be preserved to render with the right z-order and to get the right
 			//bounds for each inline box renderer
 			var childInlineBox:InlineBox = new InlineBox(openedElementRenderers[i]);
+			childInlineBox.lineBox = newLineBox;
 			openedElementRenderers[i].inlineBoxes.push(childInlineBox);
 			currentInlineBox.appendChild(childInlineBox);
 			currentInlineBox = childInlineBox;
@@ -860,6 +861,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					
 					//create the first inline box for this inline box renderer
 					var childInlineBox:InlineBox = new InlineBox(child);
+					childInlineBox.lineBox = lineBox;
 					child.inlineBoxes.push(childInlineBox);
 					
 					var childUsedValues:UsedValuesVO = child.coreStyle.usedValues;
@@ -960,15 +962,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					_inlineBoxGlobalBounds.width = inlineBox.bounds.width;
 					_inlineBoxGlobalBounds.height = inlineBox.bounds.height;
 					
-					//TODO : lineBox should never be null at this point
-					if (inlineBox.lineBox != null)
-					{
-						_inlineBoxGlobalBounds.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x;
-						_inlineBoxGlobalBounds.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y;
-					}
+					_inlineBoxGlobalBounds.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x;
+					_inlineBoxGlobalBounds.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y;
 					
 					GeomUtils.addBounds(_inlineBoxGlobalBounds, child.bounds);
 				}
+				
+				
 			}
 			
 			child = child.nextSibling;
@@ -993,7 +993,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		while (child != null)
 		{
 			GeomUtils.addBounds(child.bounds, inlineBox.bounds);
-			
 			child = child.nextSibling;
 		}
 	}
