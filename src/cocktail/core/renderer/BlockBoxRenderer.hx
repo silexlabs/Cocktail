@@ -623,6 +623,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//add child bottom margin, collapsed with adjoining margins
 					//if needed
 					_childPosition.y += child.getCollapsedBottomMargin();
+					
+					if (child.domNode.id == "pouet")
+					{
+						
+						trace(_childPosition.y );
+						trace(child.getCollapsedBottomMargin());
+					}
 				}
 				//here the child is a floated element
 				else
@@ -1021,23 +1028,26 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	override private function collapseTopMarginWithFirstChildTopMargin():Bool
 	{ 
-		//TODO : should be first normal flow child as well
-		if (firstChild == null)
+		//if there is no normal flow child, can't collapse
+		if (firstNormalFlowChild == null)
 		{
 			return false;
 		}
 		
-		//TODO : should check on first normal flow child
-		if (firstChild.isBlockContainer() == false)
+		//margin can only collapse with block level elements
+		if (firstNormalFlowChild.isBlockContainer() == false)
 		{
 			return false;
 		}
 		
+		//margin of block formatting root don't collapse with
+		//children's margin
 		if (establishesNewBlockFormattingContext() == true)
 		{
 			return false;
 		}
 		
+		//if padding prevent margins from adjoining, they can't collapse
 		if (coreStyle.usedValues.paddingTop != 0)
 		{
 			return false;
@@ -1049,6 +1059,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	/**
 	 * same as collapseTopMarginWithFirstChildTopMargin
 	 * for bottom margin
+	 * 
+	 * TODO : implement
 	 */
 	override private function collapseBottomMarginWithLastChildBottomMargin():Bool
 	{ 
