@@ -30,6 +30,7 @@ import cocktail.core.graphics.GraphicsContext;
 import cocktail.Lib;
 import haxe.Log;
 import cocktail.core.layer.LayerRenderer;
+import haxe.Stack;
 
 /**
  * A block box renderer is an element which participate
@@ -926,7 +927,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			if ((child.isPositioned() == false || child.isRelativePositioned() == true) && child.isFloat() == false)
 			{
 				//recurse down the rendering tree
-				if (child.firstChild != null)
+				//if the child establishes a new formatting context, it is an inline-block which
+				//takes of its own layout
+				if (child.firstChild != null && child.establishesNewBlockFormattingContext() == false)
 				{
 					updateInlineChildrenBounds(child);
 				}
