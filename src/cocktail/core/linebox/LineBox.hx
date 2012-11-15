@@ -152,8 +152,14 @@ class LineBox
 			bounds.height = _minimumHeight;
 		}
 		
-		//TODO : need better implementation ?
-		//line box with no content have a zero height
+		//TODO : need better implementation :
+		// from spec : 
+		//Line boxes that contain no text, no preserved white space,
+		//no inline elements with non-zero margins, padding, or borders,
+		//and no other in-flow content (such as images, inline blocks or 
+		//inline tables), and do not end with a preserved newline must be treated
+		//as zero-height line boxes for the purposes of determining the positions 
+		//of any elements inside of them, and must be treated as not existing for any other purpose. 
 		if (rootInlineBox.firstChild == null)
 		{
 			bounds.height = 0;
