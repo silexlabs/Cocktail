@@ -4,6 +4,7 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.font.FontData;
 import cocktail.core.geom.GeomData;
 using cocktail.core.utils.Utils;
+import cocktail.core.css.CSSData;
 
 /**
  * ...
@@ -32,6 +33,8 @@ class LineBox
 	
 	private var _minimumHeight:Float;
 	
+	private var _firstInlineBoxInserted:Bool;
+	
 	public function new(elementRenderer:ElementRenderer, availableWidth:Float, minimumHeight:Float, isFirstLine:Bool) 
 	{
 		//TODO : if first line, apply text indent to _addedWidth
@@ -41,6 +44,7 @@ class LineBox
 		_spacesNumber = 0;
 		_unbreakableWidth = 0;
 		_addedWidth = 0;
+		_firstInlineBoxInserted = false;
 		_minimumHeight = minimumHeight;
 		_unbreakableInlineBoxes = new Array<InlineBox>();
 		rootInlineBox = new InlineBox(elementRenderer);
@@ -58,6 +62,23 @@ class LineBox
 	//TODO : remove space inserted at beginning
 	public function insert(inlineBox:InlineBox, parentInlineBox:InlineBox):Bool
 	{
+		//TODO : implement cleanly, remove space at beginning of line
+		if (_firstInlineBoxInserted == false)
+		{
+			if (inlineBox.isSpace() == true)
+			{
+				switch(inlineBox.elementRenderer.coreStyle.getKeyword(inlineBox.elementRenderer.coreStyle.whiteSpace))
+				{
+					case NORMAL, NO_WRAP, PRE_WRAP:
+						return false;
+						
+					default:	
+				}
+			}
+			
+			_firstInlineBoxInserted = true;
+		}
+		
 		_unbreakableInlineBoxes.push(inlineBox);	
 	
 		var inlineBoxWidth:Float = inlineBox.bounds.width + inlineBox.marginLeft + inlineBox.marginRight;
@@ -130,22 +151,39 @@ class LineBox
 		{
 			bounds.height = _minimumHeight;
 		}
+		
+		//TODO : need better implementation ?
+		//line box with no content have a zero height
+		if (rootInlineBox.firstChild == null)
+		{
+			bounds.height = 0;
+		}
 	}
 	
-	
+	/**
+	 * Align the inline boxes of this line 
+	 * box horizontally
+	 * 
+	 * return the total occupied by inline boxes once
+	 * they are properly aligned
+	 */
 	private function alignLineBox(rootInlineBox:InlineBox, isLastLine:Bool, concatenatedLength:Float):Float
 	{	
+		//get the remaining space left on the line after
+		//withdrawing all inline boxes length
+		//this space isused when centering inline boxes
 		var remainingSpace:Float =  _availableWidth - concatenatedLength;
 		var x:Float = 0;
 		
-		remainingSpace = _availableWidth - concatenatedLength;
-		
+		//if this line box is the first of its containing block
+		//, apply text indent
 		if (_isFirstLine == true)
 		{
 			x += _elementRenderer.coreStyle.usedValues.textIndent;
 			remainingSpace -= _elementRenderer.coreStyle.usedValues.textIndent;
 		}
 		
+		//switch alignement of text
 		switch (_elementRenderer.coreStyle.getKeyword(_elementRenderer.coreStyle.textAlign))
 		{
 			case LEFT:
@@ -158,13 +196,18 @@ class LineBox
 				alignCenter(x, remainingSpace, rootInlineBox);
 				
 			case JUSTIFY:
+				//last line of a block is not justified to 
+				//prevent streching white space too much
 				if (isLastLine == true)
 				{
 					alignLeft(x, rootInlineBox);
 				}
 				else
 				{
+					//when justifying, inline boxes takes the whole
+					//line box width
 					concatenatedLength = _availableWidth;
+					
 					alignJustify(x, remainingSpace, rootInlineBox, _spacesNumber);
 				}
 				
@@ -172,10 +215,15 @@ class LineBox
 				throw 'Illegal value for text-align style';
 		}
 		
+		//return the total width ocuppied by inline boxes
 		return concatenatedLength;
 	}
 	
 	
+	/**
+	 * Align all the inline box in this
+	 * line box starting from left to right
+	 */
 	private function alignLeft(x:Float, inlineBox:InlineBox):Float
 	{
 		x += inlineBox.paddingLeft + inlineBox.marginLeft;
@@ -201,7 +249,10 @@ class LineBox
 		return x;
 	}
 	
-
+	/**
+	 * Align inline boxes of this line box
+	 * by centering them in the line box
+	 */
 	private function alignCenter(x:Float, remainingSpace:Float, inlineBox:InlineBox):Float
 	{
 		x += inlineBox.marginLeft + inlineBox.paddingLeft;
@@ -225,6 +276,10 @@ class LineBox
 		return x;
 	}
 	
+	/**
+	 * Align the inline boxes of this line
+	 * box from right to left
+	 */
 	private function alignRight(x:Float, remainingSpace:Float, inlineBox:InlineBox):Float
 	{
 		x += inlineBox.marginLeft + inlineBox.paddingLeft;
@@ -248,6 +303,11 @@ class LineBox
 		return x;
 	}
 	
+	/**
+	 * Justify inline boxes of this line
+	 * box by stretching each white space equally
+	 * so that inline boxes fill the whole line box
+	 */
 	private function alignJustify(x:Float, remainingSpace:Float, inlineBox:InlineBox, spacesInLine:Int):Void
 	{
 		var child:InlineBox = inlineBox.firstChild;
