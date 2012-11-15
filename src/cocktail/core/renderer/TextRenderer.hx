@@ -329,7 +329,8 @@ class TextRenderer extends InvalidatingElementRenderer
 		 * concatenate each character and transform
 		 * the first to upper case
 		 */
-		for (i in 0...text.length)
+		var length:Int = text.length;
+		for (i in 0...length)
 		{	
 			if (i == 0)
 			{

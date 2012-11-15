@@ -231,6 +231,20 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	public var nextNormalFlowSibling(get_nextNormalFlowSibling, null):ElementRenderer;
 	
 	/**
+	 * Return the first child belonging to the
+	 * normal flow (not floatged or absolutely positioned)
+	 * or null if no such child exists
+	 */
+	public var firstNormalFlowChild(get_firstNormalFlowChild, null):ElementRenderer;
+	
+	/**
+	 * Return the last child belonging to the
+	 * normal flow (not floatged or absolutely positioned)
+	 * or null if no such child exists
+	 */
+	public var lastNormalFlowChild(get_lastNormalFlowChild, null):ElementRenderer;
+	
+	/**
 	 * class constructor. init class attribute
 	 */
 	public function new(domNode:HTMLElement) 
@@ -1288,6 +1302,46 @@ class ElementRenderer extends FastNode<ElementRenderer>
 			}
 			
 			nextElementRendererSibling = nextElementRendererSibling.nextSibling;
+		}
+		
+		return null;
+	}
+	
+	private function get_firstNormalFlowChild():ElementRenderer
+	{
+		var firstElementRendererChild:ElementRenderer = firstChild;
+		
+		if (firstElementRendererChild != null)
+		{
+			if (firstElementRendererChild.isFloat() == false)
+			{
+				if (firstElementRendererChild.isPositioned() == false || firstElementRendererChild.isRelativePositioned() == true)
+				{
+					return firstElementRendererChild;
+				}
+			}
+			
+			return firstElementRendererChild.nextNormalFlowSibling;
+		}
+		
+		return null;
+	}
+	
+	private function get_lastNormalFlowChild():ElementRenderer
+	{
+		var lastElementRendererChild:ElementRenderer = lastChild;
+		
+		if (lastElementRendererChild != null)
+		{
+			if (lastElementRendererChild.isFloat() == false)
+			{
+				if (lastElementRendererChild.isPositioned() == false || lastElementRendererChild.isRelativePositioned() == true)
+				{
+					return lastElementRendererChild;
+				}
+			}
+			
+			return lastElementRendererChild.previousNormalFlowSibling;
 		}
 		
 		return null;

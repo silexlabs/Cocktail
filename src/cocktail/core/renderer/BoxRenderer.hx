@@ -307,7 +307,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		{
 			var adjoiningMargins:Array<Float> = new Array<Float>();
 			adjoiningMargins.push(coreStyle.usedValues.marginTop);
-			firstChild.getAdjoiningTopMargins(adjoiningMargins);
+			firstNormalFlowChild.getAdjoiningTopMargins(adjoiningMargins);
 			return getCollapsedMargin(adjoiningMargins);
 		}
 		//same if the top margin collapse with own bottom margin
@@ -345,7 +345,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//width
 		if (collapseTopMarginWithFirstChildTopMargin() == true)
 		{
-			firstChild.getAdjoiningTopMargins(adjoiningMargins);
+			firstNormalFlowChild.getAdjoiningTopMargins(adjoiningMargins);
 		}
 		//same if current element collapse with own bottom margin
 		else if (collapseTopMarginWithBottomMargin() == true)
@@ -372,7 +372,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		{
 			var adjoiningMargins:Array<Float> = new Array<Float>();
 			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-			nextNormalFlowSibling.getAdjoiningBottomMargins(adjoiningMargins);
+			nextNormalFlowSibling.getAdjoiningTopMargins(adjoiningMargins);
 			return getCollapsedMargin(adjoiningMargins);
 		}
 		
@@ -381,7 +381,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 			var adjoiningMargins:Array<Float> = new Array<Float>();
 			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
 			//TODO : should be last normal flow child
-			lastChild.getAdjoiningBottomMargins(adjoiningMargins);
+			lastNormalFlowChild.getAdjoiningBottomMargins(adjoiningMargins);
 			return getCollapsedMargin(adjoiningMargins);
 		}
 		else if (collapseTopMarginWithBottomMargin() == true)
@@ -412,7 +412,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		
 		if (collapseBottomMarginWithLastChildBottomMargin() == true)
 		{
-			lastChild.getAdjoiningBottomMargins(adjoiningMargins);
+			lastNormalFlowChild.getAdjoiningBottomMargins(adjoiningMargins);
 		}
 		else if (collapseTopMarginWithBottomMargin() == true)
 		{
@@ -585,14 +585,32 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	private function collapseTopMarginWithBottomMargin():Bool
 	{
-		if (firstChild != null)
+		if (firstNormalFlowChild != null)
 		{
 			//TODO : check that all combined children have a 0 height
 			//or all of their margin collapse
+			return false;
 		}
 		
 		//if the box has vertical padding, then the margins are not adjoining
 		if (coreStyle.usedValues.paddingTop != 0 || coreStyle.usedValues.paddingBottom != 0)
+		{
+			return false;
+		}
+		
+		//if the height is not null, then margin are not adjoining
+		//
+		//note : at this point, it is sure that there is no vertical paddings and border,
+		//so we can use bounds height which are border box height because only content height
+		//remains. This method is also called after layout, so at this point bounds.height is
+		//the final used height
+		if (bounds.height != 0)
+		{
+			return false;
+		}
+		
+		//top and bottom margin can't collapse if anew block formatting is established
+		if (establishesNewBlockFormattingContext() == true)
 		{
 			return false;
 		}
