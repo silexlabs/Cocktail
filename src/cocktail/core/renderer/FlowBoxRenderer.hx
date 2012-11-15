@@ -12,6 +12,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.layer.LayerRenderer;
 import cocktail.core.layout.LayoutManager;
 import cocktail.core.linebox.InlineBox;
 
@@ -62,6 +63,42 @@ class FlowBoxRenderer extends BoxRenderer
 		super(node);
 		_positionedChildren = new Array<ElementRenderer>();
 		_childStaticOrigin = new PointVO(0, 0);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Render inline children of a box recursively.
+	 * Put here as it is used by both block renderers
+	 * starting an inline formatting and inline box
+	 * with their own layer (for instance with a relative position)
+	 * 
+	 * @param	rootRenderer
+	 * @param	referenceLayer
+	 * @param	graphicContext
+	 * @param	clipRect
+	 * @param	scrollOffset
+	 */
+	private function renderInlineChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
+	{
+		var child:ElementRenderer = rootRenderer.firstChild;
+		while(child != null)
+		{
+			if (child.layerRenderer == referenceLayer)
+			{
+				child.render(graphicContext, clipRect, scrollOffset);
+				
+				//TODO : should ne render float, other condition too ? inline-block ?
+				if (child.firstChild != null)
+				{
+					renderInlineChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
+				}
+			}
+			
+			child = child.nextSibling;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

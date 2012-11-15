@@ -11,6 +11,7 @@ package cocktail.core.renderer;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.layer.LayerRenderer;
 import cocktail.core.linebox.InlineBox;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeElement;
@@ -53,12 +54,16 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	override public function render(graphicsContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{	
 		var inlineBoxesLength:Int = inlineBoxes.length;
+
 		for (i in 0...inlineBoxesLength)
 		{
 			var inlineBox:InlineBox = inlineBoxes[i];
+			
 			//TODO : should line box bounds + global bounds of containing block
 			BackgroundManager.render(graphicsContext, inlineBoxes[i].bounds, coreStyle, this, clipRect);
 		}
+		//render child inline box if needed
+		renderChildren(graphicsContext, clipRect, scrollOffset);
 	}
 	
 	/**
@@ -74,6 +79,26 @@ class InlineBoxRenderer extends FlowBoxRenderer
 		{
 			child.updateInlineBoxes();
 			child = child.nextSibling;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as a InlineBoxRenderer may render its children if it creates its
+	 * own layer. For instance if it is relative positioned, it should render all its
+	 * inline children
+	 */
+	override private function renderChildren(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
+	{
+		super.renderChildren(graphicContext, clipRect, scrollOffset);
+		
+		//if it creates its own layer, render all child inline box renderer
+		if (createOwnLayer() == true)
+		{
+			renderInlineChildren(this, layerRenderer, graphicContext, clipRect, scrollOffset);
 		}
 	}
 	

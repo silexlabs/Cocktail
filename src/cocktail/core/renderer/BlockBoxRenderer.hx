@@ -323,26 +323,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	
-	private function renderInlineChildren(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
-	{
-		var child:ElementRenderer = rootRenderer.firstChild;
-		while(child != null)
-		{
-			if (child.layerRenderer == referenceLayer)
-			{
-				child.render(graphicContext, clipRect, scrollOffset);
-				
-				//TODO : should ne render float, other condition too ? inline-block ?
-				if (child.firstChild != null)
-				{
-					renderInlineChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
-				}
-			}
-			
-			child = child.nextSibling;
-		}
-	}
-	
 	/**
 	 * Render all the replaced children displayed as blocks which
 	 * belong to the same stacking context as this BlockBoxRenderer
