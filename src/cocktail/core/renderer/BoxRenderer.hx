@@ -589,6 +589,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		{
 			//TODO : check that all combined children have a 0 height
 			//or all of their margin collapse
+			return false;
 		}
 		
 		//if the box has vertical padding, then the margins are not adjoining
