@@ -43,6 +43,28 @@ import cocktail.core.css.CSSData;
 	}
 	
 	/**
+	 * During layout, specifies the
+	 * current layout being measured
+	 */
+	enum LayoutStateValue {
+		
+		//normal layout for normal flow
+		NORMAL;
+		
+		//when a block box width is shrink-to-fit, 
+		//use this state to get its prefered width,
+		//which is the total width of its content,
+		//without breaks except explicit breaks
+		SHRINK_TO_FIT_PREFERED_WIDTH;
+		
+		//when a block box width is shrink-to-fit, 
+		//use this state to get its prefered minimum width,
+		//which is the total width of its content,
+		//wit breaks happening between each elements
+		SHRINK_TO_FIT_PREFERED_MINIMUM_WIDTH;
+	}
+	
+	/**
 	 * Store the computed background style
 	 * for one background image
 	 */

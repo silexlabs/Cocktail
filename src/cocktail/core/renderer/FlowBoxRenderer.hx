@@ -132,18 +132,18 @@ class FlowBoxRenderer extends BoxRenderer
 	 * Overriden as FlowBoxRenderer are also responsible
 	 * for laying out their children
 	 */
-	override public function layout(forceLayout:Bool):Void
+	override public function layout(forceLayout:Bool, layoutState:LayoutStateValue):Void
 	{
-		super.layout(forceLayout);
+		super.layout(forceLayout, layoutState);
 		
 		//layout all the in flow children (non positioned or floated)
-		layoutChildren();
+		layoutChildren(layoutState);
 		
 		//if this ElementRenderer is positioned, it means that it is the first positioned ancestor
 		//for its positioned children and it is its responsability to lay them out
 		if (isPositioned() == true)
 		{
-			layoutPositionedChildren();
+			layoutPositionedChildren(layoutState);
 		}
 	}
 	
@@ -156,12 +156,12 @@ class FlowBoxRenderer extends BoxRenderer
 	 * to the normal flow or are floated.
 	 * Implemented by BlockBoxRenderer
 	 */
-	private function layoutChildren():Void
+	private function layoutChildren(layoutState:LayoutStateValue):Void
 	{
 		//abstract
 	}
 	
-	private function layoutPositionedChildren():Void
+	private function layoutPositionedChildren(layoutState:LayoutStateValue):Void
 	{
 		var containerBlockData:ContainingBlockVO = getContainerBlockData();
 		var windowData:ContainingBlockVO = getWindowData();
@@ -170,7 +170,7 @@ class FlowBoxRenderer extends BoxRenderer
 		var length:Int = _positionedChildren.length;
 		for (i in 0...length)
 		{
-			_positionedChildren[i].layout(true);
+			_positionedChildren[i].layout(true, layoutState);
 			//layout the child ElementRenderer which set its x and y positioned origin in the space of this ElementRenderer's
 			//positioned origin
 			layoutPositionedChild(_positionedChildren[i], containerBlockData, windowData);

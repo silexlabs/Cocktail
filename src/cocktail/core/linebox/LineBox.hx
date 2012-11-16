@@ -5,6 +5,7 @@ import cocktail.core.font.FontData;
 import cocktail.core.geom.GeomData;
 using cocktail.core.utils.Utils;
 import cocktail.core.css.CSSData;
+import cocktail.core.layout.LayoutData;
 
 /**
  * ...
@@ -35,7 +36,9 @@ class LineBox
 	
 	private var _firstInlineBoxInserted:Bool;
 	
-	public function new(elementRenderer:ElementRenderer, availableWidth:Float, minimumHeight:Float, isFirstLine:Bool) 
+	private var _layoutState:LayoutStateValue;
+	
+	public function new(elementRenderer:ElementRenderer, availableWidth:Float, minimumHeight:Float, isFirstLine:Bool, layoutState:LayoutStateValue) 
 	{
 		//TODO : if first line, apply text indent to _addedWidth
 		_availableWidth = availableWidth;
@@ -47,6 +50,8 @@ class LineBox
 		_firstInlineBoxInserted = false;
 		_minimumHeight = minimumHeight;
 		_unbreakableInlineBoxes = new Array<InlineBox>();
+		_layoutState = layoutState;
+		
 		rootInlineBox = new InlineBox(elementRenderer);
 		bounds = new RectangleVO();
 	}
@@ -95,7 +100,11 @@ class LineBox
 			//TODO 1 : should apply white space processing model for line break here
 			if (remainingLineWidth - _unbreakableWidth < 0)
 			{
-				return true;
+				//TODO : should still break for line feed
+				if (_layoutState != LayoutStateValue.SHRINK_TO_FIT_PREFERED_WIDTH)
+				{
+					return true;
+				}
 			}
 			else
 			{
@@ -117,6 +126,11 @@ class LineBox
 			}
 		}
 		
+		if (_layoutState == LayoutStateValue.SHRINK_TO_FIT_PREFERED_MINIMUM_WIDTH)
+		{
+			return true;
+		}
+
 		return false;
 	}
 	

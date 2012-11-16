@@ -92,8 +92,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			usedWidth = containingBlockData.width - usedValues.marginLeft - usedValues.left - usedValues.right - usedValues.marginRight - usedValues.paddingLeft - usedValues.paddingRight;
 		}
 		//if width is auto and left, right or both are auto, then the width will be "shrinked-to-fit" once all the children have been laid out,
-		//so the width is first set to the containing block width width which will allow to find the max line width of the formatted children
-		//used by the shrink-to-fit method during formatting
+		//so the width is first set to 0 and the shrink-to-fit width will be found during layout
 		else
 		{
 			//if only left is auto, compute right then deduce left from the remaining horizontal space
@@ -108,10 +107,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 				usedValues.left = getComputedPositionOffset(style.left, containingBlockData.width);
 			}
 			
-			//TODO 2 : setting the containing element width is a hack which will not
-			//always work. The shrink to fit computation of this class needs to be 
-			//improved
-			usedWidth = containingBlockData.width;
+			usedWidth = 0;
 		}
 		
 		return usedWidth;

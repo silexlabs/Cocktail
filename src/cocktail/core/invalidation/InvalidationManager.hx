@@ -14,6 +14,7 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.stacking.StackingContext;
+import cocktail.core.layout.LayoutData;
 
 /**
  * This class is in charge of keeping
@@ -495,7 +496,7 @@ class InvalidationManager
 	{
 		//layout all ElementRenderer, after this, ElementRenderer are 
 		//aware of their bounds relative to their containing block
-		_htmlDocument.documentElement.elementRenderer.layout(forceLayout);
+		_htmlDocument.documentElement.elementRenderer.layout(forceLayout, LayoutStateValue.NORMAL);
 		
 		//set the global bounds on the rendering tree. After this, ElementRenderer
 		//are aware of their bounds relative ot the viewport

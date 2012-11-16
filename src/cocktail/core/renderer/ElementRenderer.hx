@@ -459,7 +459,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * @param	forceLayout force the layout of this
 	 * ElementRenderer and of its children
 	 */ 
-	public function layout(forceLayout:Bool):Void
+	public function layout(forceLayout:Bool, layoutState:LayoutStateValue):Void
 	{	
 		//abstract
 	}

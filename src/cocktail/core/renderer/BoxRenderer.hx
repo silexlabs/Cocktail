@@ -166,7 +166,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 * in computing its styles (box model, font, text...) into usable values and determining its 
 	 * bounds in the space of the containing block which started its formatting context.
 	 */
-	override public function layout(forceLayout:Bool):Void
+	override public function layout(forceLayout:Bool, layoutState:LayoutStateValue):Void
 	{	
 		if (_needsLayout == true || forceLayout == true)
 		{

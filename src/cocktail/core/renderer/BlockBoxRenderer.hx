@@ -54,8 +54,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	public var floatsManager:FloatsManager;
 	
-	private var _isLayingOut:Bool;
-	
 	/**
 	 * during block layout, store position
 	 * where next block child will be placed,
@@ -82,6 +80,14 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private var _inlineBoxGlobalBounds:RectangleVO;
 	
 	/**
+	 * If this block box establishes a new formatting
+	 * context and its width is shrink-to-fit, this
+	 * rectangle is used to retrieve the total
+	 * width of the block formatting context
+	 */
+	private var _blockFormattingBounds:RectangleVO;
+	
+	/**
 	 * class constructor.
 	 * Init class attributes
 	 */
@@ -94,7 +100,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		lineBoxes = new Array<LineBox>();
 		floatsManager = new FloatsManager();
 		_inlineBoxGlobalBounds = new RectangleVO();
-		_isLayingOut = false;
+		_blockFormattingBounds = new RectangleVO();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -381,10 +387,85 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * layout all of the block box children in normal 
-	 * flow and floated children
+	 * Layout all the children of this block box
+	 * and deduce this block box width and height
+	 * from it if needed
 	 */
-	override private function layoutChildren():Void
+	override private function layoutChildren(layoutState:LayoutStateValue):Void
+	{
+		//before laying out, update the list of floated elements
+		updateFloatedElements();
+		
+		//do a first layout of the children
+		//if any floated element was encountered for the first time
+		//during this layout, then it return true, and the layout
+		//should be done again with the new floated element list
+		var shouldLayoutAgain:Bool = doLayoutChildren(layoutState);
+		
+		//while floated element are found, redo the layout
+		while (shouldLayoutAgain == true)
+		{
+			shouldLayoutAgain = false;
+			//update floated element list before re-layout
+			//if this block is a block formatting root, no need
+			//to update the list as it is immediately updated
+			//as soon as the floated element is found
+			if (establishesNewBlockFormattingContext() == false)
+			{
+				updateFloatedElements();
+			}
+			shouldLayoutAgain = doLayoutChildren(layoutState);
+		}
+		
+		//if the width of this block box should be shrink-to-fit, it
+		//can now be found 
+		applyShrinkToFitIfNeeded();
+		
+		//if the height of this block box depends on its content, 
+		//it can now be found
+		applyContentHeightIfNeeded();
+	}
+	
+	/**
+	 * layout all the children either in a block or inline
+	 * formatting
+	 * 
+	 * Return wether the layout should be done again, happens
+	 * when a floated element is found for the first time during
+	 * the current layout
+	 */
+	private function doLayoutChildren(layoutState:LayoutStateValue):Bool
+	{
+		var shouldLayoutAgain:Bool = false;
+		
+		//children are either all block level or all inline level
+		//(exluding floated and absolutely positioned element), 
+		//so this block either formatting them as blocks are lines
+		if (childrenInline() == false)
+		{
+			shouldLayoutAgain = layoutBlockChildrenAndFloats(layoutState);
+		}
+		else
+		{
+			shouldLayoutAgain = layoutInlineChildrenAndFloats(layoutState);
+			
+			//now that all children's inlineBoxes have been
+			//laid out, their bounds can be updated
+			updateInlineChildrenBounds(this);
+		}
+		
+		return shouldLayoutAgain;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Update the list of floated element by converting
+	 * their position to this block own space
+	 */
+	private function updateFloatedElements():Void
 	{
 		//first, update list of floated elements affecting
 		//the layout of children of the block box, those are all the 
@@ -397,13 +478,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//from another block formatting context
 		if (establishesNewBlockFormattingContext() == true)
 		{
-			//this flag ensure that floated element list is reseted
-			//if layout is in progress and a floated element was found
-			//during layout
-			if (_isLayingOut == false)
-			{
-				floatsManager.init();
-			}
+			floatsManager.init();
 		}
 		//else this block box retrives floated element from its containing block
 		//and convert their bounds to its own bounds
@@ -413,62 +488,118 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//TODO : convert float in containing block space to this space
 			//floatsManager.convertToSpace(this, containingBlockAsBlock.floatsManager, containingBlockAsBlock);
 		}
-		
-		_isLayingOut = true;
-		
-		var shouldLayoutAgain:Bool = false;
-		
-		//once layout is done, store the total height of
-		//the laid out children, which will be sued as content
-		//height for this block if its height is defined as 'auto'
-		var childrenHeight:Float = 0;
-		
-		//children are either all block level or all inline level
-		//(exluding floated and absolutely positioned element), 
-		//so this block either formatting them as blocks are lines
-		if (childrenInline() == false)
+	}
+	
+	/**
+	 * If this block box width should be shrink-to-fit, compute it.
+	 * 
+	 * shrink-to-fit width roughly matches the width of the
+	 * content of this block.
+	 * 
+	 * shrink-to-fit width is only applied to block formatting root
+	 * with an auto width
+	 */
+	private function applyShrinkToFitIfNeeded():Void
+	{
+		//absolutely positioned element with not auto left and right style don't use shrink-to-fit width
+		if (establishesNewBlockFormattingContext() == true && coreStyle.isAuto(coreStyle.width) == true && isAutoWidthAbsolutelyPositionedWithNotAutoLeftAndRight() == false)
 		{
-			shouldLayoutAgain = layoutBlockChildrenAndFloats();
+			//first prefered minimum width is found by laying out children by breaking line
+			//at all possible line breaks
+			doLayoutChildren(LayoutStateValue.SHRINK_TO_FIT_PREFERED_MINIMUM_WIDTH);
 			
-			//retrieve block children total height
-			childrenHeight = _childPosition.y;
+			//retrieve the maximum width of content formatted for prefered minimum width
+			getBlockFormattingBounds();
+			var preferedMinimumWidth:Float = _blockFormattingBounds.width;
+			
+			//then prefered width is found by laying children without breaking line
+			//unless explicit break, such as a line feed happends
+			doLayoutChildren(LayoutStateValue.SHRINK_TO_FIT_PREFERED_WIDTH);
+			
+			//retrieve maximum width of content formatted for prefered width
+			getBlockFormattingBounds();
+			var preferedWidth:Float = _blockFormattingBounds.width;
+			
+			//available width is content width of containing block
+			var availableWidth:Float = containingBlock.coreStyle.usedValues.width;
+			
+			//apply shrink to fit formula
+			var shrinkToFitWidth:Float = Math.min(Math.max(preferedMinimumWidth, availableWidth), preferedWidth);
+			
+			coreStyle.usedValues.width = shrinkToFitWidth;
+			bounds.width = shrinkToFitWidth + coreStyle.usedValues.paddingLeft + coreStyle.usedValues.paddingRight;
+			
+			//now that shrink to fit is known layout children with it
+			doLayoutChildren(LayoutStateValue.NORMAL);
 		}
-		else
+	}
+	
+	/**
+	 * Get the bounds of all the children of this block box
+	 * belonging to the same block formatting
+	 */
+	private function getBlockFormattingBounds():Void
+	{
+		_blockFormattingBounds.x = 50000;
+		_blockFormattingBounds.y = 50000;
+		_blockFormattingBounds.width = 0;
+		_blockFormattingBounds.height = 0;
+			
+		doGetBlockFormattingBounds(this, _blockFormattingBounds, 0, 0);	
+	}
+	
+	/**
+	 * do get block formatting bounds by traversing the
+	 * rendering tree recursively
+	 */
+	private function doGetBlockFormattingBounds(rootElementRenderer:ElementRenderer, blockFormattingBounds:RectangleVO, xOffset:Float, yOffset:Float):Void
+	{
+		var child:ElementRenderer = rootElementRenderer.firstChild;
+		while (child != null)
 		{
-			shouldLayoutAgain = layoutInlineChildrenAndFloats();
+			if (child.isFloat() == false)
+			{
+				if (child.isPositioned() == false || child.isRelativePositioned() == true)
+				{
+					var childBlockFormattingBounds:RectangleVO = new RectangleVO();
+					
+					childBlockFormattingBounds.x = child.bounds.x + xOffset - child.coreStyle.usedValues.marginLeft;
+					childBlockFormattingBounds.y = child.bounds.y + yOffset - child.coreStyle.usedValues.marginTop;
+					childBlockFormattingBounds.width = child.bounds.width + child.coreStyle.usedValues.marginRight + child.coreStyle.usedValues.marginLeft;
+					childBlockFormattingBounds.height = child.bounds.height + child.coreStyle.usedValues.marginBottom + child.coreStyle.usedValues.marginTop;
+
+					GeomUtils.addBounds(childBlockFormattingBounds, blockFormattingBounds);
+					
+					if (child.establishesNewBlockFormattingContext() == false && child.firstChild != null)
+					{
+						doGetBlockFormattingBounds(child, blockFormattingBounds, xOffset + child.bounds.x, yOffset + child.bounds.y);
+					}
+				}
+			}
 			
-			//retrieve line boxes total height
-			childrenHeight = _lineBoxPosition.y;
-			
-			//now that all children's inlineBoxes have been
-			//laid out, their bounds can be updated
-			updateInlineChildrenBounds(this);
-		} 
-		
-		//the width of this block box might need to be re-computed if it uses its 'shrink-to-width'
-		//width which roughly matches the width of its descendant
-		//'shrink-to-fit' is used for block formatting root with an auto width
-		//once 'shrink-to-fit' width is found, layout needs to be done again
-		//
-		//note : 'shrink-to-fit' is done here, this way all floated elements in block formatting have been
-		//found
-		//TODO : should not include initial containing block
-		if (establishesNewBlockFormattingContext() == true && coreStyle.isAuto(coreStyle.width) == true)
-		{
-			
+			child = child.nextSibling;
 		}
-		
-		//if the height of this block box is auto, it depends
-		//on its content height, and can computed now that all
-		//children are laid out
+	}
+	
+	/**
+	 * If the height od this block box depends on its content,
+	 * it can computed now that its children have been laid out
+	 */
+	private function applyContentHeightIfNeeded():Void
+	{
 		if (coreStyle.isAuto(coreStyle.height) == true && isAutoHeightAbsolutelyPositionedWithNotAutoTopAndBottom() == false)
 		{
-			//at this point children height is known and might match block children, with
-			//appropriately collapsed margins
-			//or line boxes height based on formatting
-			//
-			//only normal flow children's height (not absolutely positioned or floated)
-			//are taken into account
+			//children height is either line boxes bounds or block children bounds
+			//only normal flow children are taken into acount
+			var childrenHeight:Float = 0;
+			if (childrenInline() == false)
+			{
+				childrenHeight = _childPosition.y;
+			}
+			else
+			{
+				childrenHeight = _lineBoxPosition.y;
+			}
 			
 			//in addition if this block box establishes a new block formatting and has floated descedant whose bottom
 			//are below its bottom, then the height includes those floated elements
@@ -494,14 +625,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//bounds height matches the border box
 			bounds.height = childrenHeight + coreStyle.usedValues.paddingTop + coreStyle.usedValues.paddingBottom;
 		}
-		
-		_isLayingOut = false;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-
 	/**
 	 * Returns wether this block box is absolutely positioned, with
 	 * an auto height and top and bottom styles which are not auto.
@@ -525,6 +650,21 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	/**
+	 * Same as above for width computing.
+	 * In this particular case, the width can be
+	 * deduced and should not be shrink-to-fit
+	 */
+	private function isAutoWidthAbsolutelyPositionedWithNotAutoLeftAndRight():Bool
+	{
+		if (isPositioned() == true && isRelativePositioned() == false)
+		{
+			return coreStyle.isAuto(coreStyle.left) == false && coreStyle.isAuto(coreStyle.right) == false;
+		}
+		
+		return false;
+	}
+	
+	/**
 	 * Called when all children are blocks. 
 	 * Layout them as well as floated children
 	 * 
@@ -533,7 +673,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * block formatting context must be done again as the float
 	 * may influence previous block's layout
 	 */
-	private function layoutBlockChildrenAndFloats():Bool
+	private function layoutBlockChildrenAndFloats(layoutState:LayoutStateValue):Bool
 	{
 		//holds the x,y position, in this block box space where
 		//to position the next child
@@ -574,14 +714,14 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						//child can now be layout, it needs to know its own x and y bounds
 						//before laying out its children to correctly deal with floated elements,
 						//as child need to convert floated elements to their own space
-						child.layout(true);
+						child.layout(true, layoutState);
 					}
 					//here the child is either a replaced block level element or a block box
 					//establishing a new block formatting
 					else
 					{
 						//the child must first be laid out so that its width and height are known
-						child.layout(true);
+						child.layout(true, layoutState);
 						
 						//this child x and y position is influenced by floated elements, so the first y position
 						//where this child can fit given the floated elements must be found
@@ -609,7 +749,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				else
 				{
 					//it must first be laid out so that its width and height are known
-					child.layout(true);
+					child.layout(true, layoutState);
 					
 					//each a float is found, it is stored and the layout is re-started at
 					//the first parent block formatting root, so do nothing if the float
@@ -659,7 +799,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * When all children are inline level, format them as 
 	 * lines. Also format floated children
 	 */
-	private function layoutInlineChildrenAndFloats():Bool
+	private function layoutInlineChildrenAndFloats(layoutState:LayoutStateValue):Bool
 	{
 		//reset the array of line boxes before layout
 		lineBoxes = new Array<LineBox>();
@@ -670,14 +810,14 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_lineBoxPosition.x = 0;
 		_lineBoxPosition.y = 0;
 		
-		var firstLineBox:LineBox = createLineBox(_lineBoxPosition);
+		var firstLineBox:LineBox = createLineBox(_lineBoxPosition, layoutState);
 		
 		//during layout hold the inline box renderer currently laying out descendant inline boxes
 		var openedElementRendererStack:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
 		//do layout, return the last created inline box
 		var lastInlineBox:InlineBox = doLayoutInlineChildrenAndFloats(this, firstLineBox, firstLineBox.rootInlineBox,
-		openedElementRendererStack, _lineBoxPosition);
+		openedElementRendererStack, _lineBoxPosition, layoutState);
 		
 		//layout the last line
 		var lastLineBox:LineBox = lineBoxes[lineBoxes.length - 1];
@@ -693,7 +833,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Create and return a new line box. Position
 	 * it relative to its containing block 
 	 */
-	private function createLineBox(lineBoxPosition:PointVO):LineBox
+	private function createLineBox(lineBoxPosition:PointVO, layoutState:LayoutStateValue):LineBox
 	{
 		//the width of a line box is the client width of the containing block minus
 		//the margin box width of any floated element intersecting with the line
@@ -705,7 +845,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//line-height style of the containing block
 		var minimumHeight:Float = coreStyle.usedValues.lineHeight;
 		
-		var lineBox:LineBox = new LineBox(this, availableWidth, minimumHeight, true);
+		var lineBox:LineBox = new LineBox(this, availableWidth, minimumHeight, true, layoutState);
 		
 		//TODO : get x float offset
 		//position the line box in x and y relative to the containing block (this)
@@ -726,7 +866,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * Returns the inlineBox where all subsequent inlineBox
 	 * can be attached
 	 */
-	private function layoutLineBox(lineBox:LineBox, lineBoxPosition:PointVO, openedElementRenderers:Array<ElementRenderer>):InlineBox
+	private function layoutLineBox(lineBox:LineBox, lineBoxPosition:PointVO, openedElementRenderers:Array<ElementRenderer>, layoutState:LayoutStateValue):InlineBox
 	{
 		lineBox.layout(false, null);
 		
@@ -734,7 +874,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		lineBoxPosition.y += lineBox.bounds.height;
 		
 		//TODO : get x offset at new y
-		var newLineBox:LineBox = createLineBox(lineBoxPosition);
+		var newLineBox:LineBox = createLineBox(lineBoxPosition, layoutState);
 		
 		//will be returned as the inline box where next inline boxes
 		//can be attached to
@@ -772,7 +912,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * the containing block (this)
 	 * @return the inlineBoxw where subsequent inline boxes can be attached to
 	 */
-	private function doLayoutInlineChildrenAndFloats(elementRenderer:ElementRenderer, lineBox:LineBox, inlineBox:InlineBox, openedElementRenderers:Array<ElementRenderer>, lineBoxPosition:PointVO):InlineBox
+	private function doLayoutInlineChildrenAndFloats(elementRenderer:ElementRenderer, lineBox:LineBox, inlineBox:InlineBox, openedElementRenderers:Array<ElementRenderer>, lineBoxPosition:PointVO, layoutState:LayoutStateValue):InlineBox
 	{
 		//loop in all the child of the container
 		var child:ElementRenderer = elementRenderer.firstChild;
@@ -806,7 +946,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						{
 							//layout current line, create a new one and return the inlineBox where
 							//the next text inlineBox should be attached
-							inlineBox = layoutLineBox(lineBox, lineBoxPosition, openedElementRenderers);
+							inlineBox = layoutLineBox(lineBox, lineBoxPosition, openedElementRenderers, layoutState);
 							//get a reference to the newly created line box
 							lineBox = lineBoxes[lineBoxes.length - 1];
 							//text inline box can now be inserted in the new line box
@@ -823,7 +963,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				{
 					//the child must first be laid out so that its width
 					//and height are known
-					child.layout(true);
+					child.layout(true, LayoutStateValue.NORMAL);
 					
 					//those element generate only one inline box so
 					//that they can be inserted in an inline formatting
@@ -839,7 +979,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					var lineIsFull:Bool = lineBox.insert(childInlineBox, inlineBox);
 					if (lineIsFull == true)
 					{
-						inlineBox = layoutLineBox(lineBox, lineBoxPosition, openedElementRenderers);
+						inlineBox = layoutLineBox(lineBox, lineBoxPosition, openedElementRenderers, layoutState);
 						lineBox = lineBoxes[lineBoxes.length - 1];
 						lineBox.insert(childInlineBox, inlineBox);
 					}
@@ -850,7 +990,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				{
 					//the child must first be laid out so that
 					//it computes its dimensions and font metrics
-					child.layout(true);
+					child.layout(true, LayoutStateValue.NORMAL);
 					
 					//reset inline boxes before adding new ones
 					child.inlineBoxes = new Array<InlineBox>();
@@ -884,7 +1024,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//a reference to the last added inline box is returned, so that it can
 					//be used as a starting point when laying out the siblings of the 
 					//inline box renderer
-					inlineBox = doLayoutInlineChildrenAndFloats(child, lineBox, childInlineBox, openedElementRenderers, lineBoxPosition);
+					inlineBox = doLayoutInlineChildrenAndFloats(child, lineBox, childInlineBox, openedElementRenderers, lineBoxPosition, layoutState);
 					
 					//now that all of the descendant of the inline box renderer have been laid out,
 					//remove the reference to this inline box renderer so that when a new line box
@@ -958,8 +1098,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					_inlineBoxGlobalBounds.width = inlineBox.bounds.width;
 					_inlineBoxGlobalBounds.height = inlineBox.bounds.height;
 					
-					_inlineBoxGlobalBounds.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x;
-					_inlineBoxGlobalBounds.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y;
+					if (inlineBox.lineBox != null)
+					{
+						_inlineBoxGlobalBounds.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x;
+						_inlineBoxGlobalBounds.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y;
+					}
+					
 					
 					GeomUtils.addBounds(_inlineBoxGlobalBounds, child.bounds);
 				}
