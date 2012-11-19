@@ -134,7 +134,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function renderSelf(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
-	{
+	{	
 		renderBackground(graphicContext, clipRect, scrollOffset);
 	}
 	

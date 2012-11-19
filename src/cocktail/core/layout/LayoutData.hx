@@ -119,10 +119,10 @@ import cocktail.core.css.CSSData;
 	 */
 	class FloatsVO {
 		
-		public var left:Array<RectangleVO>;
-		public var right:Array<RectangleVO>;
+		public var left:Array<FloatVO>;
+		public var right:Array<FloatVO>;
 		
-		public function new(left:Array<RectangleVO>, right:Array<RectangleVO>)
+		public function new(left:Array<FloatVO>, right:Array<FloatVO>)
 		{
 			this.left = left;
 			this.right = right;

@@ -466,12 +466,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * their position to this block own space
 	 */
 	private function updateFloatedElements():Void
-	{
-		//first, update list of floated elements affecting
-		//the layout of children of the block box, those are all the 
-		//floated elements in the same block formatting
-		//context
-		
+	{	
 		//if this block box is a block formatting root,
 		//then it needs to reset its floated element list,
 		//as it's children can't be affected by floated elements
@@ -480,13 +475,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			floatsManager.init();
 		}
-		//else this block box retrives floated element from its containing block
-		//and convert their bounds to its own bounds
+		//else this block box retrieves floated element from the nearest
+		//block formatting context root and convert them to its own space
 		else
 		{
-			var containingBlockAsBlock:BlockBoxRenderer = cast(containingBlock);
-			//TODO : convert float in containing block space to this space
-			//floatsManager.convertToSpace(this, containingBlockAsBlock.floatsManager, containingBlockAsBlock);
+			var blockFormattingContextRoot:BlockBoxRenderer =  getNearestBlockFormattingContextRoot();
+			floatsManager.retrieveFloatsFrom(this, blockFormattingContextRoot, getBlockBoxesOffset(this, blockFormattingContextRoot));
 		}
 	}
 	
@@ -771,28 +765,19 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//TODO : implement
 	private function registerFloatedElement(floatedElement:ElementRenderer, childPosition:PointVO):Void
 	{
+		var blockFormattingContextRoot:BlockBoxRenderer = getNearestBlockFormattingContextRoot();
+		
+		var offset:PointVO = getBlockBoxesOffset(this, blockFormattingContextRoot);
+		
+		var floatOffset:PointVO = new PointVO(0, 0);
+		floatOffset.x = childPosition.x - floatOffset.x;
+		floatOffset.y = childPosition.y - floatOffset.y;
+		
 		var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight;
-		var floatBounds:RectangleVO = floatsManager.registerFloat(floatedElement, childPosition, contentWidth);
+		var floatVO:FloatVO = blockFormattingContextRoot.floatsManager.registerFloat(floatedElement, floatOffset, contentWidth);
 		
-		floatedElement.bounds.x = floatBounds.x + floatedElement.coreStyle.usedValues.marginLeft;
-		floatedElement.bounds.y = floatBounds.y + floatedElement.coreStyle.usedValues.marginTop;
-		
-		var xOffset:Float = 0;
-		var yOffset:Float = 0;
-		
-		var blockFormattingRoot:ElementRenderer = this;
-		
-		while (blockFormattingRoot.establishesNewBlockFormattingContext() == false)
-		{
-			if (blockFormattingRoot.parentNode == null)
-			{
-				break;
-			}
-			blockFormattingRoot = blockFormattingRoot.parentNode;
-		}
-		
-		//TODO : convert float in current space to block root space
-		//blockFormattingRoot.addFloatedElementToBlockFormattingRoot(floatedElement);
+		floatedElement.bounds.x = floatVO.bounds.x;
+		floatedElement.bounds.y = floatVO.bounds.y;
 	}
 
 	/**
@@ -1329,6 +1314,53 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return the x and y offset between a target and source
+	 * block box
+	 */
+	private function getBlockBoxesOffset(target:BlockBoxRenderer, source:BlockBoxRenderer):PointVO
+	{
+		var offset:PointVO = new PointVO(0, 0);
+		
+		var parent:ElementRenderer = target;
+		while (parent != null)
+		{
+			offset.x += parent.bounds.x;
+			offset.y += parent.bounds.y;
+			
+			if (parent == source)
+			{
+				return offset;
+			}
+			
+			parent = parent.parentNode;
+			
+		}
+		
+		return offset;
+	}
+	
+	/**
+	 * Returns the ancestor block box formatting context root into
+	 * which this block box participates
+	 */
+	private function getNearestBlockFormattingContextRoot():BlockBoxRenderer
+	{
+		var parent:ElementRenderer = this;
+		
+		while (parent != null)
+		{
+			if (parent.establishesNewBlockFormattingContext() == true)
+			{
+				return cast(parent);
+			}
+			
+			parent = parent.parentNode;
+		}
+		
+		return cast(parent);
+	}
 	
 	/**
 	 * Determine wether this BlockBoxRenderer always overflows
