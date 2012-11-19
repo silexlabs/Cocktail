@@ -302,8 +302,8 @@ class FloatsManager
 		
 		//a right float is placed to the left of all the preceding right float which
 		//are on the same line
-		floatData.x = containingBlockWidth - floatData.width - getRightFloatOffset(floatData.y, containingBlockWidth);
-		
+		floatData.x = containingBlockWidth - floatData.width - getRightFloatOffset(floatData.y, containingBlockWidth) + currentChildPosition.x;
+
 		var floatVO:FloatVO = new FloatVO(elementRenderer, floatData);
 		
 		return floatVO;
