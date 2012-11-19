@@ -277,10 +277,15 @@ class FloatsManager
 	{
 		//get float data except for x position
 		var floatData:RectangleVO = getFloatData(elementRenderer, currentChildPosition, containingBlockWidth);
-		
+
 		//a left float is placed to right of all the preceding left float
 		//which are on the same line as this one
 		floatData.x = getLeftFloatOffset(floatData.y);
+		
+		if (floatData.x < currentChildPosition.x)
+		{
+			floatData.x = currentChildPosition.x;
+		}
 		
 		var floatVO:FloatVO = new FloatVO(elementRenderer, floatData);
 		

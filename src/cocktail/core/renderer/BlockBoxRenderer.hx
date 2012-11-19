@@ -722,15 +722,25 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						var childMarginWidth:Float = child.bounds.width + child.coreStyle.usedValues.marginLeft + child.coreStyle.usedValues.marginRight;
 						var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight;
 						_childPosition.y = floatsManager.getFirstAvailableYPosition(_childPosition.y, childMarginWidth, contentWidth);
-						
-						//TODO : for x add left float offset
+
 						//add child margins. Top margin is collapsed with
 						//adjoining margins if needed
 						_childPosition.y += child.getCollapsedTopMargin();
 						
 						//update position of child
 						child.bounds.y = _childPosition.y;
-						child.bounds.x = child.coreStyle.usedValues.marginLeft;
+						
+						//for x position, it is either defined by floated elements or by the left
+						//margin, whichever is bigger
+						var leftFloatOffset:Float = floatsManager.getLeftFloatOffset(_childPosition.y);
+						if (leftFloatOffset > child.coreStyle.usedValues.marginLeft)
+						{
+							child.bounds.x = leftFloatOffset;
+						}
+						else
+						{
+							child.bounds.x = child.coreStyle.usedValues.marginLeft;
+						}
 					}
 					
 					//add the current's child height so that next block child will be placed below it
@@ -762,22 +772,42 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return false;
 	}
 	
-	//TODO : implement
+	/**
+	 * When a floated element is first encountered, it is stored, then
+	 * layout of this block box starts over, now including the floated
+	 * element.
+	 * 
+	 * The floated element is stored on the nearest block formatting context root
+	 * ancestor (which might be this). When layout is started overf, floated elements
+	 * list is updated
+	 */
 	private function registerFloatedElement(floatedElement:ElementRenderer, childPosition:PointVO):Void
 	{
 		var blockFormattingContextRoot:BlockBoxRenderer = getNearestBlockFormattingContextRoot();
 		
+		//get the x and y offset between this and the first block formatting context root ancestor
 		var offset:PointVO = getBlockBoxesOffset(this, blockFormattingContextRoot);
 		
+		//store the floated element margin box position relative to the block formatting context
+		//root content box
 		var floatOffset:PointVO = new PointVO(0, 0);
-		floatOffset.x = childPosition.x - floatOffset.x;
-		floatOffset.y = childPosition.y - floatOffset.y;
+		floatOffset.x = childPosition.x + offset.x;
+		floatOffset.y = childPosition.y + offset.y;
 		
+		//get this block box content width
 		var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight;
+		
+		//store the floated element, determine where it should be positioned, taking other floated elements
+		//into account
 		var floatVO:FloatVO = blockFormattingContextRoot.floatsManager.registerFloat(floatedElement, floatOffset, contentWidth);
 		
-		floatedElement.bounds.x = floatVO.bounds.x;
-		floatedElement.bounds.y = floatVO.bounds.y;
+		//position the border box of the floated element relative to this block box
+		floatedElement.bounds.x = floatVO.bounds.x + floatedElement.coreStyle.usedValues.marginLeft;
+		floatedElement.bounds.y = floatVO.bounds.y + floatedElement.coreStyle.usedValues.marginTop;
+
+		//convert back from the block formatting root space to this block box space
+		floatedElement.bounds.x -= offset.x;
+		floatedElement.bounds.y -= offset.y;
 	}
 
 	/**
@@ -822,22 +852,18 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		//the width of a line box is the client width of the containing block minus
 		//the margin box width of any floated element intersecting with the line
-		//
-		//TODO : remove left and float offset at the current y position
-		var availableWidth:Float = coreStyle.usedValues.width;
-		
+		var availableWidth:Float = coreStyle.usedValues.width - floatsManager.getLeftFloatOffset(lineBoxPosition.y) - floatsManager.getRightFloatOffset(lineBoxPosition.y, coreStyle.usedValues.width);
+
 		//the minimum height that the line box can have is given by the
 		//line-height style of the containing block
 		var minimumHeight:Float = coreStyle.usedValues.lineHeight;
 		
 		var lineBox:LineBox = new LineBox(this, availableWidth, minimumHeight, true, layoutState);
 		
-		//TODO : get x float offset
 		//position the line box in x and y relative to the containing block (this)
 		//taking floated elements into account
-		lineBox.bounds.x = lineBoxPosition.x;
 		lineBox.bounds.y = lineBoxPosition.y;
-		
+		lineBox.bounds.x = floatsManager.getLeftFloatOffset(lineBox.bounds.y);
 		lineBoxes.push(lineBox);
 		
 		return lineBox;
@@ -855,10 +881,15 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		lineBox.layout(false, null);
 		
-		//TODO : set x to float offset x
+		//after layout, height of line box is known and added
+		//to position correctly next line box
 		lineBoxPosition.y += lineBox.bounds.height;
 		
-		//TODO : get x offset at new y
+		//find the first y position where the next line box should be created.
+		//it should be created at a position where the content which couldn't 
+		//fit on the previous line can be placed
+		lineBoxPosition.y = floatsManager.getFirstAvailableYPosition(lineBoxPosition.y, lineBox.unbreakableWidth, coreStyle.usedValues.width);
+		
 		var newLineBox:LineBox = createLineBox(lineBoxPosition, layoutState);
 		
 		//will be returned as the inline box where next inline boxes
@@ -962,6 +993,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					
 					//insert the inline box, create a new line box if needed to hold the inline box
 					var lineIsFull:Bool = lineBox.insert(childInlineBox, inlineBox);
+					
 					if (lineIsFull == true)
 					{
 						inlineBox = layoutLineBox(lineBox, lineBoxPosition, openedElementRenderers, layoutState);

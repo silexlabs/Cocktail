@@ -16,7 +16,7 @@ class LineBox
 {
 	private var _unbreakableInlineBoxes:Array<InlineBox>;
 	
-	private var _unbreakableWidth:Float;
+	public var unbreakableWidth(default, null):Float;
 	
 	public var rootInlineBox:InlineBox;
 	
@@ -45,7 +45,7 @@ class LineBox
 		_isFirstLine = isFirstLine;
 		_elementRenderer = elementRenderer;
 		_spacesNumber = 0;
-		_unbreakableWidth = 0;
+		unbreakableWidth = 0;
 		_addedWidth = 0;
 		_firstInlineBoxInserted = false;
 		_minimumHeight = minimumHeight;
@@ -59,7 +59,7 @@ class LineBox
 	
 	public function addUnbreakableWidth(width:Float):Void
 	{
-		_unbreakableWidth += width;
+		unbreakableWidth += width;
 		_addedWidth += width;
 	}
 	
@@ -88,7 +88,7 @@ class LineBox
 	
 		var inlineBoxWidth:Float = inlineBox.bounds.width + inlineBox.marginLeft + inlineBox.marginRight;
 		
-		_unbreakableWidth += inlineBoxWidth;
+		unbreakableWidth += inlineBoxWidth;
 	
 		//TODO : if it is a space which make line break, remove the space
 		if (introduceBreakOpportunity(inlineBox) == true)
@@ -98,7 +98,7 @@ class LineBox
 
 			//if there isn't enough space to fit all the line box which can't be broken
 			//TODO 1 : should apply white space processing model for line break here
-			if (remainingLineWidth - _unbreakableWidth < 0)
+			if (remainingLineWidth - unbreakableWidth < 0)
 			{
 				//TODO : should still break for line feed
 				if (_layoutState != LayoutStateValue.SHRINK_TO_FIT_PREFERED_WIDTH)
@@ -108,7 +108,7 @@ class LineBox
 			}
 			else
 			{
-				_addedWidth += _unbreakableWidth;
+				_addedWidth += unbreakableWidth;
 				
 				//now that a break opportunity can occur in the line, 
 				//push all the elements in the unbreakable line box
@@ -122,7 +122,7 @@ class LineBox
 				
 				//reset unbreakable line box now that they were added to the line
 				_unbreakableInlineBoxes = _unbreakableInlineBoxes.clear();
-				_unbreakableWidth = 0;
+				unbreakableWidth = 0;
 			}
 		}
 		
@@ -144,7 +144,7 @@ class LineBox
 	{
 		if (isLastLine == true)
 		{
-			_addedWidth += _unbreakableWidth;
+			_addedWidth += unbreakableWidth;
 				
 			//now that a break opportunity can occur in the line, 
 			//push all the elements in the unbreakable line box
