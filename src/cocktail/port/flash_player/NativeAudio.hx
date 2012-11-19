@@ -10,6 +10,7 @@ import cocktail.core.html.HTMLMediaElement;
 import cocktail.core.layout.floats.FloatsManager;
 import cocktail.port.platform.nativeMedia.NativeMedia;
 import flash.events.Event;
+import flash.events.IOErrorEvent;
 import flash.media.ID3Info;
 import flash.media.Sound;
 import flash.media.SoundChannel;
@@ -184,7 +185,19 @@ class NativeAudio extends NativeMedia
 		//the complete loading of the sound is also listened to as some
 		//sound file might be encoded without ID3 tags
 		_sound.addEventListener(Event.COMPLETE, onID3DataReceived);
+		//listen for url loading error
+		_sound.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
+		
 		_sound.load(new URLRequest(src));
+	}
+	
+	/**
+	 * Called when there was an error while
+	 * loading the sound
+	 */
+	private function onIOError(e:IOErrorEvent):Void
+	{
+		//TODO : implement fallback
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
