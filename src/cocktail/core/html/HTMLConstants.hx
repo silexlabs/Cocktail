@@ -114,6 +114,8 @@ class HTMLConstants
 	
 	public static inline var HTML_STYLE_TAG_NAME:String = "STYLE";
 	
+	public static inline var HTML_BR_TAG_NAME:String = "BR";
+	
 	//attributes names
 	
 	public static inline var HTML_ID_ATTRIBUTE_NAME:String = "id";

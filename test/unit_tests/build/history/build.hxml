@@ -1,7 +1,16 @@
 
-
 -cp ../../../../src/
 -cp ../../src/
 -main historyApi.HistoryTests
 -lib utest
 -js ../../bin/history/historyTestJS.js
+
+--next
+
+-cp ../../../../src/
+-cp ../../src/
+-main historyApi.HistoryTests
+-lib utest
+-swf9 ../../bin/history/historyTestAS3.swf
+-swf-version 10.2
+--remap js:cocktail

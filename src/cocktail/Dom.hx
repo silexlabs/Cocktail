@@ -30,3 +30,6 @@ typedef CustomEvent = cocktail.core.event.CustomEvent;
 typedef TouchEvent = cocktail.core.event.TouchEvent;
 
 typedef HtmlCollection<Dynamic> = Array<Dynamic>;
+
+typedef History = cocktail.core.history.History;
+typedef PopStateEvent = cocktail.core.event.PopStateEvent;
