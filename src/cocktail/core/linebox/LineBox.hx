@@ -392,6 +392,21 @@ class LineBox
 		return lineBoxHeight;
 	}
 	
+	private function updateOffsetFromParentInlineBox(rootInlineBox:InlineBox):Void
+	{
+		var child:InlineBox = rootInlineBox.firstChild;
+		while (child != null)
+		{
+			switch(child.elementRenderer.coreStyle.verticalAlign)
+			{
+				case BASELINE:
+					child.offsetFromParentInlineBox.y = 
+			}
+			
+			child = child.nextSibling;
+		}
+	}
+	
 	//private function setRootLineBoxMetrics(lineBox:LineBox, rootLineBox:LineBox, parentBaseLineOffset:Float, formattingContextFontMetrics:FontMetricsVO):Void
 	//{
 		//var child:LineBox = lineBox.firstChild;
