@@ -135,49 +135,6 @@ class TextInlineBox extends InlineBox
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Return the leaded ascent of the generated text
-	 */
-	override private function getLeadedAscent():Float 
-	{
-		var ascent:Float = _fontMetrics.ascent;
-		var descent:Float = _fontMetrics.descent;
-		
-		var lineHeight:Float = elementRenderer.coreStyle.usedValues.lineHeight;
-		
-		//the leading is an extra height to apply equally to the ascent
-		//and the descent when laying out lines of text
-		var leading:Float = lineHeight - (ascent + descent);
-
-		//apply leading to the ascent and descent
-		var leadedAscent:Float = ascent + leading / 2;
-		var leadedDescent:Float = descent + leading / 2;
-		
-		return leadedAscent;
-	}
-	
-	/**
-	 * Return the leaded descent of the generated text
-	 */
-	override private function getLeadedDescent():Float 
-	{
-		var ascent:Float = _fontMetrics.ascent;
-		var descent:Float = _fontMetrics.descent;	
-	
-		var lineHeight:Float = elementRenderer.coreStyle.usedValues.lineHeight;
-		
-		var leading:Float = lineHeight - (ascent + descent);
-
-		var leadedAscent:Float = ascent + leading / 2;
-		var leadedDescent:Float = descent + leading / 2;
-		
-		return leadedDescent;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	//  PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	

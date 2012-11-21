@@ -1,4 +1,5 @@
 package cocktail.core.linebox;
+import cocktail.core.geom.GeomUtils;
 import cocktail.core.linebox.InlineBox;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.font.FontData;
@@ -32,13 +33,11 @@ class LineBox
 	
 	private var _spacesNumber:Int;
 	
-	private var _minimumHeight:Float;
-	
 	private var _firstInlineBoxInserted:Bool;
 	
 	private var _layoutState:LayoutStateValue;
 	
-	public function new(elementRenderer:ElementRenderer, availableWidth:Float, minimumHeight:Float, isFirstLine:Bool, layoutState:LayoutStateValue) 
+	public function new(elementRenderer:ElementRenderer, availableWidth:Float, isFirstLine:Bool, layoutState:LayoutStateValue) 
 	{
 		//TODO : if first line, apply text indent to _addedWidth
 		_availableWidth = availableWidth;
@@ -48,7 +47,6 @@ class LineBox
 		unbreakableWidth = 0;
 		_addedWidth = 0;
 		_firstInlineBoxInserted = false;
-		_minimumHeight = minimumHeight;
 		_unbreakableInlineBoxes = new Array<InlineBox>();
 		_layoutState = layoutState;
 		
@@ -161,10 +159,6 @@ class LineBox
 		
 		bounds.height = computeLineBoxHeight(rootInlineBox);
 		
-		if (bounds.height < _minimumHeight)
-		{
-			bounds.height = _minimumHeight;
-		}
 		
 		//TODO : need better implementation :
 		// from spec : 
@@ -381,107 +375,236 @@ class LineBox
 	 */
 	private function computeLineBoxHeight(rootInlineBox:InlineBox):Float
 	{
-		//var formattingContextFontMetrics:FontMetricsVO = _elementRenderer.coreStyle.fontMetrics;
-		//setRootLineBoxMetrics(rootLineBox, rootLineBox, 0.0, formattingContextFontMetrics);
-		//
-		//alignLineBoxesVertically(rootLineBox, rootLineBox.leadedAscent, _formattingContextData.y, 0.0, formattingContextFontMetrics);
-
-		//compute the line box height
-		var lineBoxHeight:Float = rootInlineBox.bounds.height;
+	
+		updateInlineBoxesBounds(rootInlineBox);
+		
+		updateOffsetFromParentInlineBox(rootInlineBox);
+		
+		var lineBoxHeight:Float = getLineBoxHeight(rootInlineBox, _elementRenderer.coreStyle.usedValues.lineHeight, 0);
+		
+		updateOffsetFromLineBox(rootInlineBox, lineBoxHeight, 0);
 		
 		return lineBoxHeight;
 	}
 	
-	private function updateOffsetFromParentInlineBox(rootInlineBox:InlineBox):Void
+	private function updateInlineBoxesBounds(inlineBox:InlineBox):Void
 	{
-		var child:InlineBox = rootInlineBox.firstChild;
+		var child:InlineBox = inlineBox.firstChild;
 		while (child != null)
 		{
-			switch(child.elementRenderer.coreStyle.verticalAlign)
+			if (child.isText() == false && child.isEmbedded() == false)
 			{
-				case BASELINE:
-					child.offsetFromParentInlineBox.y = 
+				updateInlineBoxesBounds(child);
+				
+				updateInlineBoxBounds(child);
+				
+				
 			}
 			
 			child = child.nextSibling;
 		}
 	}
 	
-	//private function setRootLineBoxMetrics(lineBox:LineBox, rootLineBox:LineBox, parentBaseLineOffset:Float, formattingContextFontMetrics:FontMetricsVO):Void
-	//{
-		//var child:LineBox = lineBox.firstChild;
-		//while(child != null)
-		//{
-			//var leadedAscent:Float = child.leadedAscent;
-			//var leadedDescent:Float = child.leadedDescent;
-			//var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, formattingContextFontMetrics.xHeight);
-			//TODO : should vertical align be added recursively ?
-			//if (leadedAscent + baselineOffset > rootLineBox.leadedAscent)
-			//{
-				//rootLineBox.leadedAscent = leadedAscent + baselineOffset;
-			//}
-			//
-			//if (leadedDescent + baselineOffset > rootLineBox.leadedDescent)
-			//{
-				//rootLineBox.leadedDescent = leadedDescent + baselineOffset;
-			//}
-			//
-			//if (child.firstChild != null)
-			//{
-				//setRootLineBoxMetrics(child, rootLineBox, baselineOffset, formattingContextFontMetrics);
-			//}
-			//
-			//child = child.nextSibling;
-			//
-		//}
-	//}
-	//
-	///**
-	 //* Align all the line boxes in one line vertically
-	 //*/
-	//private function alignLineBoxesVertically(lineBox:LineBox, lineBoxAscent:Float, formattingContextY:Float, parentBaseLineOffset:Float, formattingContextFontMetrics:FontMetricsVO):Void
-	//{
-		//var child:LineBox = lineBox.firstChild;
-		//while(child != null)
-		//{
-			//var baselineOffset:Float = child.getBaselineOffset(parentBaseLineOffset, formattingContextFontMetrics.xHeight);
-			//
-			//var childCoreStyle:CoreStyle = child.elementRenderer.coreStyle;
-			//switch(childCoreStyle.getKeyword(childCoreStyle.verticalAlign))
-			//{
-				//case TOP:
-					//child.bounds.y = formattingContextY;
-					//
-				//default:	
-					//
-					//child.bounds.y = formattingContextY - baselineOffset ;
-					//
-					//TODO 2 : actually should apply to all but linebox
-					//
-					//for all child line box but container line box, 
-					//add the global ascent of the line and remove own ascent
-					//if (child.firstChild != null)
-					//{
-						//child.bounds.y += lineBoxAscent;
-						//child.bounds.y -= child.leadedAscent;
-					//}
-					//
-					//
-			//}
-			//
-			//if (child.firstChild != null)
-			//{
-				//alignLineBoxesVertically(child, lineBoxAscent, formattingContextY, baselineOffset, formattingContextFontMetrics);
-			//}
-			//line box which wrap replaced element or establishes new formatting context apply their
-			//top margin to their bounds here
-			//else if (child.isStaticPosition() == true || child.elementRenderer.isReplaced() == true || child.elementRenderer.establishesNewBlockFormattingContext() == true)
-			//{
-				//child.bounds.y += child.elementRenderer.coreStyle.usedValues.marginTop;
-			//}
-			//
-			//child = child.nextSibling;
-		//}
-	//}
-	//
+	
+	/**
+	 * Update the bound of a container inline box whose
+	 * bounds depends on its descendant inline boxes
+	 * 
+	 * TODO : should actually implemented by LineBox during
+	 * layout method
+	 */
+	private function updateInlineBoxBounds(inlineBox:InlineBox):Void
+	{
+		inlineBox.bounds.x = 50000;
+		inlineBox.bounds.y = 50000;
+		inlineBox.bounds.width = 0;
+		inlineBox.bounds.height = 0;
+		
+		var child:InlineBox = inlineBox.firstChild;
+		while (child != null)
+		{
+			GeomUtils.addBounds(child.bounds, inlineBox.bounds);
+			child = child.nextSibling;
+		}
+	}
+	
+	private function updateOffsetFromParentInlineBox(inlineBox:InlineBox):Void
+	{
+		var child:InlineBox = inlineBox.firstChild;
+		while (child != null)
+		{
+			switch(child.elementRenderer.coreStyle.verticalAlign)
+			{
+				case KEYWORD(value):
+					switch(value)
+					{
+						case BASELINE:
+							var yOffset:Float = child.elementRenderer.coreStyle.fontMetrics.ascent - inlineBox.elementRenderer.coreStyle.fontMetrics.ascent;
+							child.offsetFromParentInlineBox.y = yOffset;
+							
+						case MIDDLE:
+							var yOffset:Float = (child.bounds.height / 2) - (inlineBox.leadedAscent + inlineBox.elementRenderer.coreStyle.fontMetrics.xHeight);
+							
+						case TEXT_BOTTOM:
+							
+						case TEXT_TOP:
+							
+						case SUB:
+							
+						case SUPER:	
+							
+						case TOP, BOTTOM:	
+							child.offsetFromParentInlineBox.y = 0;
+							
+						default:	
+					}
+					
+				case LENGTH(value):
+					
+				case PERCENTAGE(value):
+					
+				default:	
+					
+			}
+			
+			if (child.isEmbedded() == false)
+			{
+				if (child.firstChild != null)
+				{
+					updateOffsetFromParentInlineBox(child);
+				}
+			}
+			
+			child = child.nextSibling;
+		}
+	}
+	
+	private function updateOffsetFromLineBox(inlineBox:InlineBox, lineBoxHeight:Float, addedY:Float):Void
+	{
+		var child:InlineBox = inlineBox.firstChild;
+		while (child != null)
+		{
+			if (isTopAligned(child))
+			{
+				child.bounds.y = 0;
+			}
+			else if (isBottomAligned(child))
+			{
+				child.bounds.y = lineBoxHeight - getAlignedSubTreeHeight(child, child.bounds.height, 0, false);
+			}
+			else
+			{
+				child.bounds.y = addedY + child.offsetFromParentInlineBox.y;
+			}
+			
+			if (child.isEmbedded() == false)
+			{
+				if (child.firstChild != null)
+				{
+					updateOffsetFromLineBox(child, lineBoxHeight, child.bounds.y);
+				}
+			}
+			
+			child = child.nextSibling;
+		}
+	}
+	
+	private function getLineBoxHeight(inlineBox:InlineBox, lineBoxHeight:Float, addedY:Float):Float
+	{
+		var child:InlineBox = inlineBox.firstChild;
+		while (child != null)
+		{
+			if (isTopOrBottomAligned(child) == true)
+			{
+				var alignedSubTreeHeight:Float = getAlignedSubTreeHeight(child, child.bounds.height, 0, true);
+				
+				if (alignedSubTreeHeight > lineBoxHeight)
+				{
+					lineBoxHeight = alignedSubTreeHeight;
+				}
+			}
+			else 
+			{
+				if (child.offsetFromParentInlineBox.y + addedY + child.bounds.height > lineBoxHeight)
+				{
+					lineBoxHeight = child.offsetFromParentInlineBox.y + addedY + child.bounds.height;
+				}
+				
+				if (child.isEmbedded() == false)
+				{
+					if (child.firstChild != null)
+					{
+						lineBoxHeight = getLineBoxHeight(child, lineBoxHeight, addedY + child.offsetFromParentInlineBox.y);
+					}
+				}
+			}
+			
+			child = child.nextSibling;
+		}
+		
+		return lineBoxHeight;
+	}
+	
+	private function isTopOrBottomAligned(inlineBox:InlineBox):Bool
+	{
+		switch(inlineBox.elementRenderer.coreStyle.verticalAlign)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					case TOP, BOTTOM:	
+						return true;
+						
+					default:	
+				}
+				
+			default:	
+		}
+		
+		return false;
+	}
+	
+	private function isTopAligned(inlineBox:InlineBox):Bool
+	{
+		switch(inlineBox.elementRenderer.coreStyle.verticalAlign)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					case TOP:	
+						return true;
+						
+					default:	
+				}
+				
+			default:	
+		}
+		
+		return false;
+	}
+	
+	private function isBottomAligned(inlineBox:InlineBox):Bool
+	{
+		switch(inlineBox.elementRenderer.coreStyle.verticalAlign)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					case BOTTOM:	
+						return true;
+						
+					default:	
+				}
+				
+			default:	
+		}
+		
+		return false;
+	}
+	
+	private function getAlignedSubTreeHeight(inlineBox:InlineBox, alignedSubTreeHeight:Float, addedY:Float, includeChildTopAndBottomInlineBoxes:Bool):Float
+	{
+		return alignedSubTreeHeight;
+	}
+	
 }

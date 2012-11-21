@@ -2,6 +2,7 @@ package cocktail.core.linebox;
 
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.utils.FastNode;
+import cocktail.core.font.FontData;
 import cocktail.core.geom.GeomData;
 
 /**
@@ -57,6 +58,14 @@ class InlineBox extends FastNode<InlineBox>
 	public var lineBox:LineBox;
 	
 	/**
+	 * The x/y position of this inline box's
+	 * top left corner relative to the x/y position
+	 * of the top left corner of its parent inline box.
+	 * Computed during line box layout
+	 */
+	public var offsetFromParentInlineBox(default, null):PointVO;
+	
+	/**
 	 * class constructor. Init class attributes
 	 */
 	public function new(elementRenderer:ElementRenderer) 
@@ -64,6 +73,7 @@ class InlineBox extends FastNode<InlineBox>
 		super();
 		
 		bounds = new RectangleVO();
+		offsetFromParentInlineBox = new PointVO(0, 0);
 		
 		this.elementRenderer = elementRenderer;
 		
@@ -120,18 +130,45 @@ class InlineBox extends FastNode<InlineBox>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Return the leaded ascent of the line box
+	 * Return the leaded ascent of the inline box
 	 */
 	private function getLeadedAscent():Float 
 	{
-		return 0;
+		var fontMetrics:FontMetricsVO = elementRenderer.coreStyle.fontMetrics; 
+		
+		var ascent:Float = fontMetrics.ascent;
+		var descent:Float = fontMetrics.descent;
+		
+		var lineHeight:Float = elementRenderer.coreStyle.usedValues.lineHeight;
+		
+		//the leading is an extra height to apply equally to the ascent
+		//and the descent when laying out lines of text
+		var leading:Float = lineHeight - (ascent + descent);
+
+		//apply leading to the ascent and descent
+		var leadedAscent:Float = ascent + leading / 2;
+		var leadedDescent:Float = descent + leading / 2;
+		
+		return leadedAscent;
 	}
 	
 	/**
-	 * Return the leaded descent of the line box
+	 * Return the leaded descent of the inline box
 	 */
 	private function getLeadedDescent():Float 
 	{
-		return 0;
+		var fontMetrics:FontMetricsVO = elementRenderer.coreStyle.fontMetrics; 
+		
+		var ascent:Float = fontMetrics.ascent;
+		var descent:Float = fontMetrics.descent;	
+	
+		var lineHeight:Float = elementRenderer.coreStyle.usedValues.lineHeight;
+		
+		var leading:Float = lineHeight - (ascent + descent);
+
+		var leadedAscent:Float = ascent + leading / 2;
+		var leadedDescent:Float = descent + leading / 2;
+		
+		return leadedDescent;
 	}
 }

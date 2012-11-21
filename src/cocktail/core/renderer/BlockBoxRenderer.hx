@@ -853,12 +853,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//the width of a line box is the client width of the containing block minus
 		//the margin box width of any floated element intersecting with the line
 		var availableWidth:Float = coreStyle.usedValues.width - floatsManager.getLeftFloatOffset(lineBoxPosition.y) - floatsManager.getRightFloatOffset(lineBoxPosition.y, coreStyle.usedValues.width);
-
-		//the minimum height that the line box can have is given by the
-		//line-height style of the containing block
-		var minimumHeight:Float = coreStyle.usedValues.lineHeight;
 		
-		var lineBox:LineBox = new LineBox(this, availableWidth, minimumHeight, true, layoutState);
+		var lineBox:LineBox = new LineBox(this, availableWidth, true, layoutState);
 		
 		//position the line box in x and y relative to the containing block (this)
 		//taking floated elements into account
@@ -1102,12 +1098,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				for (i in 0...inlineBoxesLength)
 				{
 					var inlineBox:InlineBox = child.inlineBoxes[i];
-					
-					//TODO : should be implemented on LineBox
-					if (inlineBox.firstChild != null)
-					{
-						updateInlineBoxBounds(inlineBox);
-					}
 			
 					//inlineBox bounds are relative to their line box, so the
 					//x and y of the line box needs to be added to get the inline
@@ -1132,27 +1122,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	
-	/**
-	 * Update the bound of a container inline box whose
-	 * bounds depends on its descendant inline boxes
-	 * 
-	 * TODO : should actually implemented by LineBox during
-	 * layout method
-	 */
-	private function updateInlineBoxBounds(inlineBox:InlineBox):Void
-	{
-		inlineBox.bounds.x = 50000;
-		inlineBox.bounds.y = 50000;
-		inlineBox.bounds.width = 0;
-		inlineBox.bounds.height = 0;
-		
-		var child:InlineBox = inlineBox.firstChild;
-		while (child != null)
-		{
-			GeomUtils.addBounds(child.bounds, inlineBox.bounds);
-			child = child.nextSibling;
-		}
-	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE MARGIN COLLAPSING METHOD
