@@ -138,8 +138,17 @@ class LineBox
 		return true;
 	}
 	
+	/**
+	 * Layout the line box, which consist in placing all its inline box
+	 * x/y position relative to the top left of the line box
+	 * 
+	 * @param	isLastLine
+	 * @param	parentInlineBox
+	 */
 	public function layout(isLastLine:Bool, parentInlineBox:InlineBox):Void
 	{
+		//TODO : messy
+		//called to insert remaining child for last line, should be separate method ?
 		if (isLastLine == true)
 		{
 			_addedWidth += unbreakableWidth;
@@ -155,37 +164,65 @@ class LineBox
 			}
 		}
 		
-		bounds.width = alignLineBox(rootInlineBox, isLastLine, _addedWidth);
+		//align all the inline box in the x-axis and return the total horizontal space
+		//taken by the aligned inline boxes
+		bounds.width = alignInlineBoxesHorizontally(rootInlineBox, isLastLine, _addedWidth);
 		
-		bounds.height = computeLineBoxHeight(rootInlineBox);
+		//update the width and height bounds of the non-replaced inline
+		//boxes of the line box
+		updateInlineBoxesBounds(rootInlineBox);
 		
+		//align the inline boxes vertically and return the total height taken 
+		//by the aligned inline boxes
+		bounds.height = alignInlineBoxesVertically();
 		
-		//TODO : need better implementation :
-		// from spec : 
-		//Line boxes that contain no text, no preserved white space,
-		//no inline elements with non-zero margins, padding, or borders,
-		//and no other in-flow content (such as images, inline blocks or 
-		//inline tables), and do not end with a preserved newline must be treated
-		//as zero-height line boxes for the purposes of determining the positions 
-		//of any elements inside of them, and must be treated as not existing for any other purpose. 
-		if (rootInlineBox.firstChild == null)
+		//an empty line box has a 0 height
+		if (isEmptyLineBox() == true)
 		{
 			bounds.height = 0;
 		}
 	}
 	
 	/**
-	 * Align the inline boxes of this line 
-	 * box horizontally
+	 * Determine wether the line box is empty.
+	 * An empty line box has a 0 height.
 	 * 
-	 * return the total occupied by inline boxes once
+	 * The definition of an empty line box (from the CSS 2.1 spec) :
+		 * Line boxes that contain no text, no preserved white space,
+		 * no inline elements with non-zero margins, padding, or borders,
+		 * and no other in-flow content (such as images, inline blocks or 
+		 * inline tables), and do not end with a preserved newline must be treated
+		 * as zero-height line boxes for the purposes of determining the positions 
+		 * of any elements inside of them, and must be treated as not
+		 * existing for any other purpose. 
+	 */
+	private function isEmptyLineBox():Bool
+	{
+		//TODO : implement all conditions
+		if (rootInlineBox.firstChild == null)
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
+	/////////////////////////////////
+	// PRIVATE HORIZONTAL ALIGNEMENT METHODS
+	/////////////////////////////////
+	
+	/**
+	 * compute the x position for all the inline boxes in
+	 * this line box
+	 * 
+	 * return the total width occupied by inline boxes once
 	 * they are properly aligned
 	 */
-	private function alignLineBox(rootInlineBox:InlineBox, isLastLine:Bool, concatenatedLength:Float):Float
+	private function alignInlineBoxesHorizontally(rootInlineBox:InlineBox, isLastLine:Bool, concatenatedLength:Float):Float
 	{	
 		//get the remaining space left on the line after
 		//withdrawing all inline boxes length
-		//this space isused when centering inline boxes
+		//this space is used when centering inline boxes
 		var remainingSpace:Float =  _availableWidth - concatenatedLength;
 		var x:Float = 0;
 		
@@ -232,7 +269,6 @@ class LineBox
 		//return the total width ocuppied by inline boxes
 		return concatenatedLength;
 	}
-	
 	
 	/**
 	 * Align all the inline box in this
@@ -347,37 +383,20 @@ class LineBox
 			child = child.nextSibling;
 		}
 	}
-	//
-	//
-	// LINE LAYOUT METHODS
-	// Those methods are used to determine the x and y position
-	// of each element in the line
-//////////////////////////////////////////////////////////////////
-
-
+	
 	/////////////////////////////////
 	// PRIVATE VERTICAL ALIGNEMENT METHODS
 	/////////////////////////////////
 	
 	/**
-	 * 
-	 * 
-	 * TODO : finish implementation of verticalAlign
-	 * 
-	 * TODO : update doc
-	 * 
-	 * TODO : On a block container element whose content is composed of inline-level
-	 * elements, 'line-height' specifies the minimal height of line boxes
-	 * within the element. The minimum height consists of a minimum
-	 * height above the baseline and a minimum depth below it, exactly
-	 * as if each line box starts with a zero-width inline box with t
-	 * he element's font and line height properties. We call that imaginary box a "strut." (The name is inspired by TeX.). 
+	 * Compute and return the height of the line box
+	 * which is the height from the top of its top-most
+	 * inline box and the bottom of its bottom-most
+	 * inline box
 	 */
-	private function computeLineBoxHeight(rootInlineBox:InlineBox):Float
+	private function alignInlineBoxesVertically():Float
 	{
 	
-		updateInlineBoxesBounds(rootInlineBox);
-		
 		updateOffsetFromParentInlineBox(rootInlineBox);
 		
 		var lineBoxHeight:Float = getLineBoxHeight(rootInlineBox, _elementRenderer.coreStyle.usedValues.lineHeight, 0);
@@ -387,6 +406,10 @@ class LineBox
 		return lineBoxHeight;
 	}
 	
+	/**
+	 * Update the width and height bounds of all the non-replaced
+	 * inline boxes of the line box
+	 */
 	private function updateInlineBoxesBounds(inlineBox:InlineBox):Void
 	{
 		var child:InlineBox = inlineBox.firstChild;
@@ -395,23 +418,16 @@ class LineBox
 			if (child.isText() == false && child.isEmbedded() == false)
 			{
 				updateInlineBoxesBounds(child);
-				
 				updateInlineBoxBounds(child);
-				
-				
 			}
 			
 			child = child.nextSibling;
 		}
 	}
 	
-	
 	/**
 	 * Update the bound of a container inline box whose
 	 * bounds depends on its descendant inline boxes
-	 * 
-	 * TODO : should actually implemented by LineBox during
-	 * layout method
 	 */
 	private function updateInlineBoxBounds(inlineBox:InlineBox):Void
 	{
@@ -428,31 +444,45 @@ class LineBox
 		}
 	}
 	
+	/**
+	 * All inline boxes have an x/y position relative to their parent inline box,
+	 * or to the strut if the parent is the root inline box.
+	 * 
+	 * This method update the y position of all the inline boxes by traversing
+	 * the inline box tree recursivley. This position is influenced by the 
+	 * vertical-align style of the inline box
+	 */
 	private function updateOffsetFromParentInlineBox(inlineBox:InlineBox):Void
 	{
 		var child:InlineBox = inlineBox.firstChild;
 		while (child != null)
 		{
+			//y position depends on the vertical alignement
 			switch(child.elementRenderer.coreStyle.verticalAlign)
 			{
 				case KEYWORD(value):
 					switch(value)
 					{
+						//align baseline of child to baseline of parent
 						case BASELINE:
 							var yOffset:Float = child.elementRenderer.coreStyle.fontMetrics.ascent - inlineBox.elementRenderer.coreStyle.fontMetrics.ascent;
 							child.offsetFromParentInlineBox.y = yOffset;
-							
+						
+						//align the vertical mid-point of the child to the
+						//baseline of the parent + half its x-height
 						case MIDDLE:
 							var yOffset:Float = (child.bounds.height / 2) - (inlineBox.leadedAscent + inlineBox.elementRenderer.coreStyle.fontMetrics.xHeight);
 							
 						case TEXT_BOTTOM:
-							
+							//TODO
 						case TEXT_TOP:
-							
+							//TODO
 						case SUB:
-							
+							//TODO
 						case SUPER:	
-							
+							//TODO
+						//top and bottom inline box can only 
+						//be aligned once the line box height is known
 						case TOP, BOTTOM:	
 							child.offsetFromParentInlineBox.y = 0;
 							
@@ -467,6 +497,8 @@ class LineBox
 					
 			}
 			
+			//update the child if the child inline box is a non-replaced inline
+			//box with children
 			if (child.isEmbedded() == false)
 			{
 				if (child.firstChild != null)
@@ -479,15 +511,33 @@ class LineBox
 		}
 	}
 	
+	/**
+	 * The x/y bounds position of each inline box is defined in the space of 
+	 * the line box. This methods compute the y bounds position of all inline box.
+	 * 
+	 * The total line box height (the height bounds of all the inline boxes) must
+	 * be known so that inline boxes aligned to the top or bottom of the line box
+	 * can be placed
+	 * 
+	 * Traverse the inline box tree recursively
+	 * 
+	 * @param	inlineBox
+	 * @param	lineBoxHeight the total line box height
+	 * @param	addedY thr current added y of all the ancestor inline boxes up to the root
+	 * inline boxes
+	 */
 	private function updateOffsetFromLineBox(inlineBox:InlineBox, lineBoxHeight:Float, addedY:Float):Void
 	{
 		var child:InlineBox = inlineBox.firstChild;
 		while (child != null)
 		{
+			//top aligned child are always placed at 0 (top of the line box)
 			if (isTopAligned(child))
 			{
 				child.bounds.y = 0;
 			}
+			//bottom aligned child align the bottom of their aligned sub tree
+			//to the bottom of the line box
 			else if (isBottomAligned(child))
 			{
 				child.bounds.y = lineBoxHeight - getAlignedSubTreeHeight(child, child.bounds.height, 0, false);
@@ -497,6 +547,7 @@ class LineBox
 				child.bounds.y = addedY + child.offsetFromParentInlineBox.y;
 			}
 			
+			//call recursively for non-replaced inline boxes
 			if (child.isEmbedded() == false)
 			{
 				if (child.firstChild != null)
@@ -509,13 +560,31 @@ class LineBox
 		}
 	}
 	
+	/**
+	 * Compute the line box height which is the height bounds
+	 * of all the inline boxes in it, once those inline boxes
+	 * have been vertically aligned
+	 * 
+	 * @param	inlineBox
+	 * @param	lineBoxHeight the current max height bounds that were found
+	 * @param	addedY the added y position of the ancestors inline boxes relative
+	 * to the line boxe
+	 * @return	the max inline box height bounds found
+	 */
 	private function getLineBoxHeight(inlineBox:InlineBox, lineBoxHeight:Float, addedY:Float):Float
 	{
 		var child:InlineBox = inlineBox.firstChild;
 		while (child != null)
 		{
+			//when computing line box height, top and bottom aligned
+			//inline boxes are assumed to be at a y position of 0 and
+			//their height bounds is the bounds of their aligned subtree
+			//which includes all their descendant inline box except those
+			//which are also top or bottom aligned
 			if (isTopOrBottomAligned(child) == true)
 			{
+				//if this child inline box also has top or bottom aligned descendant, they 
+				//will be added to the line box height computation
 				var alignedSubTreeHeight:Float = getAlignedSubTreeHeight(child, child.bounds.height, 0, true);
 				
 				if (alignedSubTreeHeight > lineBoxHeight)
@@ -525,11 +594,14 @@ class LineBox
 			}
 			else 
 			{
+				//check wether y position of the inline box + its height is superior to the current max height
 				if (child.offsetFromParentInlineBox.y + addedY + child.bounds.height > lineBoxHeight)
 				{
 					lineBoxHeight = child.offsetFromParentInlineBox.y + addedY + child.bounds.height;
 				}
 				
+				//for non-replaced inline boxes which are not
+				//top or bottom aligned, call recursively
 				if (child.isEmbedded() == false)
 				{
 					if (child.firstChild != null)
@@ -545,6 +617,10 @@ class LineBox
 		return lineBoxHeight;
 	}
 	
+	/**
+	 * Return wether an inline box has a vertical align
+	 * style of either top or bottom
+	 */
 	private function isTopOrBottomAligned(inlineBox:InlineBox):Bool
 	{
 		switch(inlineBox.elementRenderer.coreStyle.verticalAlign)
@@ -564,6 +640,10 @@ class LineBox
 		return false;
 	}
 	
+	/**
+	 * Return wether an inline box has a vertical align
+	 * style of top
+	 */
 	private function isTopAligned(inlineBox:InlineBox):Bool
 	{
 		switch(inlineBox.elementRenderer.coreStyle.verticalAlign)
@@ -583,6 +663,10 @@ class LineBox
 		return false;
 	}
 	
+	/**
+	 * Return wether an inline box has a vertical align
+	 * style of bottom
+	 */
 	private function isBottomAligned(inlineBox:InlineBox):Bool
 	{
 		switch(inlineBox.elementRenderer.coreStyle.verticalAlign)
@@ -602,8 +686,29 @@ class LineBox
 		return false;
 	}
 	
+	/**
+	 * For an inline box with a vertical
+	 * align style of either top or bottom,
+	 * returns the height of the bounds of 
+	 * itself and its vertically aligned
+	 * descendant. This height is used when
+	 * computed the line box height
+	 * 
+	 * Traverse the inline box tree recursively
+	 * starting from the top/botom inline box
+	 * 
+	 * @param	inlineBox
+	 * @param	alignedSubTreeHeight the max height found 
+	 * in the aligned subtree
+	 * @param	addedY the current added y of all the parent inline boxes
+	 * @param	includeChildTopAndBottomInlineBoxes when a descendant is also 
+	 * top or bottom aligned, wether to include its own aligned sub tree height
+	 * in the computation
+	 * @return the height bounds of the top/bottom inline box and all its descendant
+	 */
 	private function getAlignedSubTreeHeight(inlineBox:InlineBox, alignedSubTreeHeight:Float, addedY:Float, includeChildTopAndBottomInlineBoxes:Bool):Float
 	{
+		//TODO : implement
 		return alignedSubTreeHeight;
 	}
 	
