@@ -259,42 +259,30 @@ class TextRenderer extends InvalidatingElementRenderer
 	
 	/**
 	 * Apply white space pre-processing to the string
-	 * of rendered text
-	 * 
-	 * TODO 2 : this is only a partial implementation 
-	 * 
-	 * TODO 1 : the whole white-space processing should be re-factored in this way :
-		 * - when the update line box method is called, all line boxes are
-		 * created. For text, the white space processing is applied before creating
-		 * text line boxes
-		 * - a line box tree is created afterwards (another method
-		 * in HTMLDocument ?) (or should intead use rendering tree
-		 * as line box tree will be modified during layout ?). It is used to further clean the line boxes,
-		 * like for instance remove spaces following other spaces
-		 * - during layout, when each line is laid out, apply final white space
-		 * processing, like removing the spaces at the beggining and end
-	 * 
+	 * of rendered text. subsequent white space processing
+	 * is applied once the line boxes have been laid out
 	 */
-	private function applyWhiteSpace(text:String, whiteSpace:CSSKeywordValue):String
+	private function applyWhiteSpaceProcessing(text:String, whiteSpace:CSSKeywordValue):String
 	{
 		switch (whiteSpace)
 		{
-			case NORMAL, NO_WRAP: // remove new lines, spaces and tab
-
-			var er1 : EReg = ~/[ \t]+/;
-			//TODO 3 : at this point, CR should have been normalised as LF
-			var er2 : EReg = ~/\r+/g;
-			var er3 : EReg = ~/\n+/g;
-			var er4 : EReg = ~/\s+/g;
+			case NORMAL, NO_WRAP: 
+				text = removeControlCharactersSurroundingLineFeed(text);
+				text = convertLineFeedsToSpaces(text);
+				text = convertTabToSpaces(text);
+				text = concatenateSpaces(text);
 			
-			text = er4.replace(er3.replace(er2.replace( er1.replace( text , " " ) , " " ), " "), " ");
-			
-			case PRE_LINE: // remove spaces
-
-			var er1 : EReg = ~/ *$^ */m;
-			var er2 : EReg = ~/[ \t]+/;
-
-			text = er2.replace( er1.replace( text , "\n" ) , " " );
+			case PRE_LINE: 
+				text = removeControlCharactersSurroundingLineFeed(text);
+				text = convertTabToSpaces(text);
+				text = concatenateSpaces(text);
+				
+			case PRE, PRE_WRAP:
+				//TODO : If 'white-space' is set to 'pre' or 'pre-wrap', 
+				//any sequence of spaces (U+0020) unbroken by an element 
+				//boundary is treated as a sequence of non-breaking spaces.
+				//However, for 'pre-wrap', a line breaking opportunity exists 
+				//at the end of the sequence. 
 
 			default:
 		}
@@ -363,6 +351,7 @@ class TextRenderer extends InvalidatingElementRenderer
 						default:
 							outputText += buffer;
 							buffer = "";
+							outputText += sourceText.charAt(position);
 							state = COPY;
 					}
 					
@@ -378,6 +367,7 @@ class TextRenderer extends InvalidatingElementRenderer
 							outputText += sourceText.charAt(position);
 							
 						default:
+							outputText += sourceText.charAt(position);
 							state = COPY;
 					}
 			}
@@ -395,6 +385,10 @@ class TextRenderer extends InvalidatingElementRenderer
 	/**
 	 * Concatenate spaces of text, i.e if multiple space
 	 * are following ony one remains
+	 * 
+	 * TODO : should be aware wether last charachter of previous
+	 * inline in rendering tree is also space, if it does it should
+	 * start in state CONCATENATE
 	 */
 	private function concatenateSpaces(sourceText:String):String
 	{
@@ -416,12 +410,11 @@ class TextRenderer extends InvalidatingElementRenderer
 					switch(c)
 					{
 						case ' '.code:
-							outputText += " ";
+							outputText += sourceText.charAt(position);
 							state = CONCATENATE;
 							
 						default:
 							outputText += sourceText.charAt(position);
-							
 					}
 					
 				//in this state omit to copy all subsequent spaces to output	
@@ -439,16 +432,16 @@ class TextRenderer extends InvalidatingElementRenderer
 			c = sourceText.fastCodeAt(++position);
 		}
 		
-		return sourceText;
+		return outputText;
 	}
 	
 	/**
 	 * Remove line feeds from source text
 	 */
-	private function removeLineFeeds(sourceText:String):String
+	private function convertLineFeedsToSpaces(sourceText:String):String
 	{
 		var er : EReg = ~/\n/g;
-		return er.replace(sourceText, "");
+		return er.replace(sourceText, " ");
 	}
 	
 	/**
@@ -528,7 +521,7 @@ class TextRenderer extends InvalidatingElementRenderer
 			var processedText:String = _text.nodeValue;
 			//apply white space processing, for instance to collapse
 			//sequences of white spaces if needed
-			processedText = applyWhiteSpace(processedText, coreStyle.getKeyword(coreStyle.whiteSpace));
+			processedText = applyWhiteSpaceProcessing(processedText, coreStyle.getKeyword(coreStyle.whiteSpace));
 	
 			processedText = applyTextTransform(processedText, coreStyle.getKeyword(coreStyle.textTransform));
 			
