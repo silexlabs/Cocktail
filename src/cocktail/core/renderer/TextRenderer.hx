@@ -25,6 +25,7 @@ import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
 import cocktail.core.font.FontData;
 import haxe.Stack;
+using StringTools;
 
 /**
  * Renders a run of text by creating as many text line box
@@ -35,6 +36,16 @@ import haxe.Stack;
  */
 class TextRenderer extends InvalidatingElementRenderer
 {
+	//states used for text parsers
+	
+	private static inline var COPY:Int = 0;
+	
+	private static inline var BUFFER:Int = 1;
+	
+	private static inline var AFTER_LINE_FEED:Int = 2;
+	
+	private static inline var CONCATENATE:Int = 3;
+	
 	/**
 	 * An array where each item contains a text token,
 	 * representing the kind of text contained (a word,
@@ -247,7 +258,7 @@ class TextRenderer extends InvalidatingElementRenderer
 	}
 	
 	/**
-	 * Apply white space pre-processing tothe string
+	 * Apply white space pre-processing to the string
 	 * of rendered text
 	 * 
 	 * TODO 2 : this is only a partial implementation 
@@ -290,7 +301,165 @@ class TextRenderer extends InvalidatingElementRenderer
 		
 		return text;
 	}
+	
+	/**
+	 * remove all tab, carriage return, and spaces
+	 * surrounding a line feed
+	 */
+	private function removeControlCharactersSurroundingLineFeed(sourceText:String):String
+	{
+		var state:Int = COPY;
 		
+		var position:Int = 0;
+		var c:Int = sourceText.fastCodeAt(position);
+		
+		//the returned cleaned text
+		var outputText:String = "";
+		
+		//when spaces, carriage return and tabs are encountered
+		//they are buffered before being added to the output string
+		//to be sure that they don't surround a line feed
+		var buffer:String = "";
+		
+		//loop in all character of the text
+		while (!c.isEOF())
+		{
+			switch (state)
+			{
+				//in this state, regular charachter are copied
+				//to the output string
+				case COPY:
+					switch(c)
+					{
+						//when a tab, space or carirage return encountered
+						//it is buffered, as it is not yet certain that
+						//it should be added to the output
+						case '\t'.code, ' '.code, '\r'.code:
+							buffer += sourceText.charAt(position);
+							state = BUFFER;
+						
+						case '\n'.code:
+							outputText += sourceText.charAt(position);
+							state = AFTER_LINE_FEED;
+							
+						default:	
+							outputText += sourceText.charAt(position);
+					}
+					
+				case BUFFER:	
+					switch(c)
+					{
+						//if buffered tab, space or carriage return
+						//are followed by line feed, they are not added
+						case '\n'.code:
+							buffer = "";
+							outputText += sourceText.charAt(position);
+							state = AFTER_LINE_FEED;
+							
+						case '\t'.code, ' '.code, '\r'.code:
+							buffer += sourceText.charAt(position);
+						
+						//here buffer added to output text when regular character found	
+						default:
+							outputText += buffer;
+							buffer = "";
+							state = COPY;
+					}
+					
+				//after a line feed, all tab, space and
+				//carriage return immediately following
+				//are not added to output
+				case AFTER_LINE_FEED:
+					switch(c)
+					{
+						case '\t'.code, ' '.code, '\r'.code:
+							
+						case '\n'.code:
+							outputText += sourceText.charAt(position);
+							
+						default:
+							state = COPY;
+					}
+			}
+			
+			c = sourceText.fastCodeAt(++position);
+		}
+		
+		//add last buffered charachter if text
+		//ends with space tab or carriage return
+		outputText += buffer;
+		
+		return outputText;
+	}
+	
+	/**
+	 * Concatenate spaces of text, i.e if multiple space
+	 * are following ony one remains
+	 */
+	private function concatenateSpaces(sourceText:String):String
+	{
+		var state:Int = COPY;
+		
+		var position:Int = 0;
+		var c:Int = sourceText.fastCodeAt(position);
+		
+		//the returned text with concatenated space
+		var outputText:String = "";
+		
+		while (!c.isEOF())
+		{
+			switch (state)
+			{
+				//in this state copy all charachter to output until space is
+				//found
+				case COPY:
+					switch(c)
+					{
+						case ' '.code:
+							outputText += " ";
+							state = CONCATENATE;
+							
+						default:
+							outputText += sourceText.charAt(position);
+							
+					}
+					
+				//in this state omit to copy all subsequent spaces to output	
+				case CONCATENATE:
+					switch(c)
+					{
+						case ' '.code:
+							
+						default:
+							outputText += sourceText.charAt(position);
+							state = COPY;
+					}
+			}
+			
+			c = sourceText.fastCodeAt(++position);
+		}
+		
+		return sourceText;
+	}
+	
+	/**
+	 * Remove line feeds from source text
+	 */
+	private function removeLineFeeds(sourceText:String):String
+	{
+		var er : EReg = ~/\n/g;
+		return er.replace(sourceText, "");
+	}
+	
+	/**
+	 * Convert all tab characters into spaces
+	 */
+	private function convertTabToSpaces(sourceText:String):String
+	{
+		var er : EReg = ~/\t/g;
+		return er.replace(sourceText, " ");
+	}
+	
 	/**
 	 * Transform a text letters into uppercase, lowercase
 	 * or capitalise them (only the first letter of each word
