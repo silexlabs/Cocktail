@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+	<chapter name="visual-formatting-model">
+		<section name="Containing blocks">
+			<test 
+			name="containing-block-026"
+			description="Element position based on containing block"
+			url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-026.xht"
+			></test>
+		</section>
+	</chapter>
+</data>

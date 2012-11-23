@@ -1,0 +1,7 @@
+-swf bin/cocktail_browser.swf
+-resource res/Tests-list.xml@tests-list
+-main src.CocktailBrowser
+-cp src
+-cp ../../src
+-swf-version 10.2
+--remap js:cocktail

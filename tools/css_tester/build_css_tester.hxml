@@ -1,0 +1,4 @@
+-js bin/css_tester.js
+-resource res/Tests-list.xml@tests-list
+-main src.CSSTester
+-cp src
