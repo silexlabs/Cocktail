@@ -367,6 +367,9 @@ class HTMLDocument extends Document
 			case HTMLConstants.HTML_STYLE_TAG_NAME:
 				element = new HTMLStyleElement();
 				
+			case HTMLConstants.HTML_BR_TAG_NAME:
+				element = new HTMLBRElement();
+				
 			default:
 				element = new HTMLElement(tagName);
 		}

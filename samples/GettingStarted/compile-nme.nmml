@@ -12,7 +12,7 @@
 
 	<haxelib name="nme" />
 
-	<assets path="assets"></assets>
+	<assets path="bin/assets" rename="assets"></assets>
 
 	<ndll name="std" />
 	<ndll name="regexp" />

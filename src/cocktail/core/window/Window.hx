@@ -19,6 +19,7 @@ import cocktail.port.NativeBitmapData;
 import cocktail.port.platform.Platform;
 import cocktail.core.css.CSSData;
 import cocktail.core.layout.LayoutData;
+import cocktail.core.history.History;
 
 /**
  * Represents the window through which the Document is
@@ -58,6 +59,11 @@ class Window extends EventCallback
 	 * events and methods are retrieved
 	 */
 	public var platform(default, null):Platform;
+	
+	/**
+	 * A reference to the history instance
+	 */
+	public var history:History;
 	
 	/**
 	 * Store the current mouse cursor value
@@ -110,6 +116,9 @@ class Window extends EventCallback
 		htmlDocument.onSetMouseCursor = onDocumentSetMouseCursor;
 		
 		document = htmlDocument;
+
+		// history
+		history = new History();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
