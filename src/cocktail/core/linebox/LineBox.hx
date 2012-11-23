@@ -39,7 +39,6 @@ class LineBox
 	
 	public function new(elementRenderer:ElementRenderer, availableWidth:Float, isFirstLine:Bool, layoutState:LayoutStateValue) 
 	{
-		//TODO : if first line, apply text indent to _addedWidth
 		_availableWidth = availableWidth;
 		_isFirstLine = isFirstLine;
 		_elementRenderer = elementRenderer;

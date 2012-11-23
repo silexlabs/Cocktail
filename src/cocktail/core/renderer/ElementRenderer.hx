@@ -130,7 +130,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * which created this ElementRenderer. It might
 	 * be an HTMLElement or a Text node
 	 * 
-	 * TODO IMPORTANT : for now HTMLElement as event
+	 * TODO IMPORTANT : for now HTMLElement as even
 	 * Text inherits from HTMLElement in haxe JS API,
 	 * shouldn't be so
 	 */
@@ -195,9 +195,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * get the larger width between the ElementRenderer's and its children
 	 * width
 	 * 
-	 * TODO 3 : does it mean that scrollBounds should also be computed for
-	 * this ElementRenderer ? renamed as childrenBounds ?
-	 * check http://dev.w3.org/csswg/cssom-view/#dom-element-scrollwidth
+	 * TODO 3 : implement, same for scrollHeight
 	 */
 	public var scrollWidth(get_scrollWidth, never):Float;
 	
