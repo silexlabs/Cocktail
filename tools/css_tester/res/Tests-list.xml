@@ -7,6 +7,11 @@
 			description="Element position based on containing block"
 			url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-026.xht"
 			></test>
+			<test 
+			name="containing-block-001"
+			description="Element position based on containing block"
+			url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c526-font-sz-000.xht"
+			></test>
 		</section>
 	</chapter>
 </data>

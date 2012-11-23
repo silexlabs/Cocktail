@@ -33,8 +33,7 @@ class CocktailBrowser
 		//use a php proxy to prevent cross-domain issue
 		var http:Http = new Http(baseUrl+"proxy.php?url="+testUrl);
 		http.onData = function(e) {
-			trace(e);
-			//js.Lib.document.innerHTML = e;
+			js.Lib.document.innerHTML = e;
 		}
 		
 		http.request(false);
