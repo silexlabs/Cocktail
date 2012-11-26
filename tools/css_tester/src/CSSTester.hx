@@ -60,8 +60,6 @@ class CSSTester
 				}
 				htmlTests += "</ul>";
 			}
-			
-			htmlTests += "<ul>";
 		}
 		
 		var testsBrowser = js.Lib.document.getElementById(TEST_DIV_ID);
