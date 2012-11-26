@@ -80,6 +80,7 @@ class CSSStyleDeclaration
 	public var backgroundSize(get_backgroundSize, set_backgroundSize):String;
 	public var backgroundPosition(get_backgroundPosition, set_backgroundPosition):String;
 	public var backgroundClip(get_backgroundClip, set_backgroundClip):String;
+	public var backgroundAttachment(get_backgroundAttachment, set_backgroundAttachment):String;
 	
 	/**
 	 * font styles
@@ -996,6 +997,24 @@ class CSSStyleDeclaration
 						
 					case INHERIT, INITIAL:
 						return true;	
+						
+					default:	
+				}
+				
+			case CSSConstants.BACKGROUND_ATTACHMENT:
+				switch(styleValue)
+				{
+					case KEYWORD(value):
+						switch(value)
+						{
+							case SCROLL, FIXED:
+								return true;
+								
+							default:	
+						}
+						
+					case INHERIT, INITIAL:
+						return true;
 						
 					default:	
 				}
@@ -2734,6 +2753,17 @@ class CSSStyleDeclaration
 	private function get_backgroundClip():String
 	{
 		return getPropertyValue(CSSConstants.BACKGROUND_CLIP);
+	}
+	
+	private function set_backgroundAttachment(value:String):String
+	{
+		setProperty(CSSConstants.BACKGROUND_ATTACHMENT, value);
+		return value;
+	}
+	
+	private function get_backgroundAttachment():String
+	{
+		return getPropertyValue(CSSConstants.BACKGROUND_ATTACHMENT);
 	}
 	
 	private function set_backgroundPosition(value:String):String

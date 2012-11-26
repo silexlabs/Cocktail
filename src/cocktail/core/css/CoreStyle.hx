@@ -94,6 +94,7 @@ class CoreStyle
 	public var backgroundSize(get_backgroundSize, null):CSSPropertyValue;
 	public var backgroundPosition(get_backgroundPosition, null):CSSPropertyValue;
 	public var backgroundClip(get_backgroundClip, null):CSSPropertyValue;
+	public var backgroundAttachment(get_backgroundAttachment, null):CSSPropertyValue;
 	
 	/**
 	 * font styles
@@ -1424,6 +1425,11 @@ class CoreStyle
 	private inline function get_backgroundClip():CSSPropertyValue
 	{
 		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_CLIP).typedValue;
+	}
+	
+	private inline function get_backgroundAttachment():CSSPropertyValue
+	{
+		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_ATTACHMENT).typedValue;
 	}
 	
 	private inline function get_backgroundRepeat():CSSPropertyValue

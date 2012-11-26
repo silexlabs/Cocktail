@@ -81,6 +81,8 @@ class CSSConstants
 	
 	public static inline var BACKGROUND_CLIP:String = "background-clip";
 	
+	public static inline var BACKGROUND_ATTACHMENT:String = "background-attachment";
+	
 	public static inline var FONT_SIZE:String = "font-size";
 	
 	public static inline var FONT_WEIGHT:String = "font-weight";
