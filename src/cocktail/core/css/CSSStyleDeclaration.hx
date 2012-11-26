@@ -73,6 +73,7 @@ class CSSStyleDeclaration
 	/**
 	 * background styles
 	 */
+	public var background(get_backgroundAttachment, set_background):String;
 	public var backgroundColor(get_backgroundColor, set_backgroundColor):String;
 	public var backgroundImage(get_backgroundImage, set_backgroundImage):String;
 	public var backgroundRepeat(get_backgroundRepeat, set_backgroundRepeat):String;
@@ -1379,7 +1380,7 @@ class CSSStyleDeclaration
 		switch(propertyName)
 		{
 			case CSSConstants.MARGIN, CSSConstants.PADDING, CSSConstants.CSS_OVERFLOW,
-			CSSConstants.TRANSITION:
+			CSSConstants.TRANSITION, CSSConstants.BACKGROUND:
 				return true;
 				
 			default:
@@ -1806,6 +1807,17 @@ class CSSStyleDeclaration
 						
 					default:
 				}	
+				
+			case CSSConstants.BACKGROUND:
+				switch(styleValue)
+				{
+					case URL(value):
+						return true;
+						
+					case COLOR(value):
+						return true;
+						
+				}
 				
 			case CSSConstants.CSS_OVERFLOW:
 				switch(styleValue)
@@ -2698,6 +2710,17 @@ class CSSStyleDeclaration
 	{
 		setProperty(CSSConstants.TEXT_ALIGN, value);
 		return value;
+	}
+	
+	private function set_background(value:String):String
+	{
+		setProperty(CSSConstants.BACKGROUND, value);
+		return value;
+	}
+	
+	private function get_background():String
+	{
+		return getPropertyValue(CSSConstants.BACKGROUND);
 	}
 	
 	private function set_backgroundColor(value:String):String
