@@ -780,7 +780,7 @@ class LayerRenderer extends FastNode<LayerRenderer>
 			{
 				return false;
 			}
-			else if (child.isCompositingLayer() == true)
+			else if (child.isCompositingLayer() == true || child.hasOwnGraphicsContext == true)
 			{
 				return true;
 			}
