@@ -143,7 +143,7 @@ class CSSSelectorParser
 				case END_SIMPLE_SELECTOR:
 					switch(c)
 					{
-						case ' '.code, '>'.code:
+						case ' '.code, '\n'.code, '\r'.code, '>'.code:
 							state = BEGIN_COMBINATOR;
 							continue;
 								
@@ -161,11 +161,11 @@ class CSSSelectorParser
 					{
 						switch(c)
 						{
-							case ' '.code, '>'.code, ':'.code, '#'.code, '.'.code, '['.code:
+							case ' '.code, '\n'.code, '\r'.code, '>'.code, ':'.code, '#'.code, '.'.code, '['.code:
 								state = next;
 								continue;
 								
-							default:	
+							default:
 								state = INVALID_SELECTOR;
 								continue;
 						}
