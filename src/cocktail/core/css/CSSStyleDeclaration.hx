@@ -1363,7 +1363,6 @@ class CSSStyleDeclaration
 		
 		return false;
 	}
-
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE SHORTHANDS METHODS
@@ -1807,17 +1806,12 @@ class CSSStyleDeclaration
 						
 					default:
 				}	
-				
+			
+			//TODO : for now only support background shorthand for CSS 2.1
+			//when using a CSS 3 background style, need to use individual property
+			//for now
 			case CSSConstants.BACKGROUND:
-				switch(styleValue)
-				{
-					case URL(value):
-						return true;
-						
-					case COLOR(value):
-						return true;
-						
-				}
+				return isValidBackgroundShorthand(styleValue);
 				
 			case CSSConstants.CSS_OVERFLOW:
 				switch(styleValue)
@@ -1861,6 +1855,106 @@ class CSSStyleDeclaration
 				
 			default:	
 						
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Return wether a background shorthand value
+	 * is valid, excluding list value
+	 */
+	private function isValidBackgroundShorthand(styleValue:CSSPropertyValue):Bool
+	{
+		switch(styleValue)
+		{
+			case URL(value):
+				return true;
+				
+			case COLOR(value):
+				return true;
+				
+			case KEYWORD(value):
+				switch (value)
+				{
+					//list all valid keywords for background-repeat, background-attachment
+					//and background-position
+					case REPEAT, REPEAT_X, REPEAT_Y, NO_REPEAT, FIXED, SCROLL,
+					LEFT, CENTER, RIGHT, TOP, BOTTOM:
+						return true;
+						
+					default:	
+				}
+				
+			case GROUP(value):	
+				
+				var length:Int = value.length;
+				
+				//one flag for each property, as property
+				//order must be respected for background shorthand
+				//property can be ommited however
+				var foundBackgroundColor:Bool = false;
+				var foundBackgroundImage:Bool = false;
+				var foundBackgroundRepeat:Bool = false;
+				var foundBackgroundAttachment:Bool = false;
+				
+				//background position can have 2 components
+				var foundFirstBackgroundPosition:Bool = false;
+				var foundSecondBackgroundPosition:Bool = false;
+				
+				for (i in 0...length)
+				{
+					switch(value[i])
+					{
+						case COLOR(value):
+							//if a color was already found, then style is
+							//invalid
+							if (foundBackgroundColor == true)
+							{
+								return false;
+							}
+							foundBackgroundColor = true;
+							
+						case URL(value):
+							if (foundBackgroundImage == true)
+							{
+								return false;
+							}
+							foundBackgroundImage = true;
+							//set also as true, as now that a url was found
+							//no color can be defined after
+							foundBackgroundColor = true;
+							
+						default:
+							if (isValidBackgroundRepeat(value[i]) == true)
+							{
+								if (foundBackgroundRepeat == true)
+								{
+									return false;
+								}
+								
+								foundBackgroundRepeat = true;
+								foundBackgroundImage = true;
+								foundBackgroundColor = true;
+							}
+							else if (isValidBackgroundAttachment(value[i]) == true)
+							{
+								if (foundBackgroundAttachment == true)
+								{
+									return false;
+								}
+								
+								foundBackgroundAttachment = true;
+								foundBackgroundColor = true;
+								foundBackgroundRepeat = true;
+								foundBackgroundImage = true; 
+							}
+					}
+				}
+				return isValidBackgroundShorthand(styleValue);
+				
+			case INHERIT, INITIAL:
+				return true;
 		}
 		
 		return false;
