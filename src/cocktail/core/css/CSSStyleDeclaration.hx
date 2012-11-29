@@ -1524,6 +1524,75 @@ class CSSStyleDeclaration
 					default:	
 				}
 				
+			case CSSConstants.BACKGROUND:
+				switch(styleValue)
+				{
+					case URL(value):
+						setTypedProperty(CSSConstants.BACKGROUND_IMAGE, styleValue, important);
+						
+					case COLOR(value):
+						setTypedProperty(CSSConstants.BACKGROUND_COLOR, styleValue, important);
+						
+					case KEYWORD(value):
+						if (isValidBackgroundRepeat(styleValue) == true)
+						{
+							setTypedProperty(CSSConstants.BACKGROUND_REPEAT, styleValue, important);
+						}
+						else if (isValidBackgroundPosition(styleValue) == true)
+						{
+							setTypedProperty(CSSConstants.BACKGROUND_POSITION, styleValue, important);
+						}
+						else if (isValidBackgroundAttachment(styleValue) == true)
+						{
+							setTypedProperty(CSSConstants.BACKGROUND_ATTACHMENT, styleValue, important);
+						}
+						
+					case GROUP(value):
+						var length:Int = value.length;
+						
+						//background position can have 2 components, store the first so
+						//that if another is found, group them
+						var firstBackgroundPosition:CSSPropertyValue = null;
+						
+						for (i in 0...length)
+						{
+							switch(value[i])
+							{
+								case COLOR(color):
+									setTypedProperty(CSSConstants.BACKGROUND_COLOR, value[i], important);
+									
+								case URL(url):
+									setTypedProperty(CSSConstants.BACKGROUND_IMAGE, value[i], important);
+									
+								default:
+									if (isValidBackgroundRepeat(value[i]) == true)
+									{
+										setTypedProperty(CSSConstants.BACKGROUND_REPEAT, value[i], important);
+									}
+									else if (isValidBackgroundAttachment(value[i]) == true)
+									{
+										setTypedProperty(CSSConstants.BACKGROUND_ATTACHMENT, value[i], important);
+									}
+									else if (isValidBackgroundPosition(value[i]) == true)
+									{
+										if (firstBackgroundPosition == null)
+										{
+											setTypedProperty(CSSConstants.BACKGROUND_POSITION, value[i], important);
+											firstBackgroundPosition = value[i];
+										}
+										//when a second value is found which is a background
+										//position, group it with the first
+										else
+										{
+											setTypedProperty(CSSConstants.BACKGROUND_POSITION, CSSPropertyValue.GROUP([firstBackgroundPosition, value[i]]), important);
+										}
+									}
+							}
+						}
+						
+					default:	
+				}
+				
 			//TODO 2 : should force initial value when not specified ?	
 			case CSSConstants.TRANSITION:
 				
@@ -1949,12 +2018,81 @@ class CSSStyleDeclaration
 								foundBackgroundRepeat = true;
 								foundBackgroundImage = true; 
 							}
+							else if (isValidBackgroundPosition(value[i]) == true)
+							{
+								if (foundSecondBackgroundPosition == true)
+								{
+									return false;
+								}
+								
+								if (foundFirstBackgroundPosition == true)
+								{
+									foundSecondBackgroundPosition = true;
+								}
+								else
+								{
+									foundFirstBackgroundPosition = true;
+								}
+								
+								foundBackgroundAttachment = true;
+								foundBackgroundColor = true;
+								foundBackgroundRepeat = true;
+								foundBackgroundImage = true; 
+							}
 					}
 				}
 				return isValidBackgroundShorthand(styleValue);
 				
 			case INHERIT, INITIAL:
 				return true;
+				
+			default:	
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Wether the style is a valid background repeat value,
+	 * excluding inherit and initial
+	 */
+	private function isValidBackgroundRepeat(styleValue:CSSPropertyValue):Bool
+	{
+		switch (styleValue)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					case REPEAT, REPEAT_X, REPEAT_Y, NO_REPEAT:
+						return true;
+						
+					default:
+				}	
+				
+			default:	
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Wether the style is a valid background attachment value,
+	 * excluding inherit and initial
+	 */
+	private function isValidBackgroundAttachment(styleValue:CSSPropertyValue):Bool
+	{
+		switch (styleValue)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					case FIXED, SCROLL:
+						return true;
+						
+					default:
+				}	
+				
+			default:	
 		}
 		
 		return false;
