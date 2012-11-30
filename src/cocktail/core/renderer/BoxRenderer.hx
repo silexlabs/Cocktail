@@ -168,11 +168,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function layout(forceLayout:Bool, layoutState:LayoutStateValue):Void
 	{	
-		if (_needsLayout == true || forceLayout == true)
-		{
-			layoutSelf();
-			_needsLayout = false;
-		}
+		layoutSelfIfNeeded(forceLayout);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -183,8 +179,14 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 * Called when the ElementRenderer needs to lays itself out,
 	 * meaning its must compute its dimensions
 	 */
-	private function layoutSelf():Void
+	private function layoutSelfIfNeeded(forceLayout:Bool):Void
 	{
+		//only do if necessary
+		if (_needsLayout == false && forceLayout == false)
+		{
+			return;
+		}
+		
 		//get the dimensions of the containing block of this 
 		//element which are necesseray to compute the styles of this ElementRenderer
 		//into usable value. For instance, a with defined as a percentage will compute
@@ -251,6 +253,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		bounds.width = usedValues.width + usedValues.paddingLeft + usedValues.paddingRight;
 		bounds.height = usedValues.height + usedValues.paddingTop + usedValues.paddingBottom;
+		
+		//reset dirty flag
+		_needsLayout = false;
 	}
 	
 		
@@ -287,6 +292,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function getCollapsedTopMargin():Float
 	{
+		//makes sure that used values for margin are up to date
+		layoutSelfIfNeeded(false);
+		
 		//if the top margin is collapsed with the parent's top
 		//margin, return 0 as the collapsed margin will be applied
 		//to the parent instead
@@ -330,6 +338,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function getAdjoiningTopMargins(adjoiningMargins:Array<Float>):Void
 	{
+		//makes sure that used values for margin are up to date
+		layoutSelfIfNeeded(false);
+		
 		//if the current element top margin collapses, store its used width
 		if (collapseTopMarginWithParentTopMargin() == true)
 		{
@@ -364,6 +375,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function getCollapsedBottomMargin():Float
 	{
+		//makes sure that used values for margin are up to date
+		layoutSelfIfNeeded(false);
+		
 		if (collapseBottomMarginWithParentBottomMargin() == true)
 		{
 			return 0;
@@ -401,6 +415,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function getAdjoiningBottomMargins(adjoiningMargins:Array<Float>):Void
 	{
+		//makes sure that used values for margin are up to date
+		layoutSelfIfNeeded(false);
+		
 		if (collapseBottomMarginWithParentBottomMargin() == true)
 		{
 			adjoiningMargins.push(coreStyle.usedValues.marginBottom);

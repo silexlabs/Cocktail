@@ -40,9 +40,14 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	 * case where the height should be the height of the initial containing block
 	 * if it specified as 'auto'
 	 */
-	override private function layoutSelf():Void
+	override private function layoutSelfIfNeeded(forceLayout:Bool):Void
 	{
-		super.layoutSelf();
+		if (_needsLayout == false && forceLayout == false)
+		{
+			return;
+		}
+		
+		super.layoutSelfIfNeeded(forceLayout);
 		
 		if (coreStyle.isAuto(coreStyle.height) == true && (isPositioned() == false || isRelativePositioned() == true))
 		{
