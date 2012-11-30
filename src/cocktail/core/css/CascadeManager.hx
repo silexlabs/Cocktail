@@ -62,6 +62,16 @@ class CascadeManager
 	public var hasDisplay(default, null):Bool;
 	
 	/**
+	 * wether the line height property needs cascading
+	 */
+	public var hasLineHeight(default, null):Bool;
+	
+	/**
+	 * wether the letter spacing needs cascading
+	 */
+	public var hasLetterSpacing(default, null):Bool;
+	
+	/**
 	 * wether the float property needs cascading
 	 */
 	public var hasFloat(default, null):Bool;
@@ -118,6 +128,8 @@ class CascadeManager
 		hasFloat = false;
 		hasOverflowX = false;
 		hasOverflowY = false;
+		hasLetterSpacing = false;
+		hasLineHeight = false;
 		hasTransform = false;
 		hasZIndex = false;
 		hasPosition = false;
@@ -200,6 +212,24 @@ class CascadeManager
 					return true;
 				}
 				
+			case CSSConstants.LINE_HEIGHT:
+				if (hasLineHeight == false)
+				{
+					hasLineHeight = true;
+				}
+				else
+				{
+					return true;
+				}
+			case CSSConstants.LETTER_SPACING:
+				if (hasLetterSpacing == false)
+				{
+					hasLetterSpacing = true;
+				}
+				else
+				{
+					return true;
+				}	
 			case CSSConstants.FONT_FAMILY:
 				if (hasFontFamily == false)
 				{

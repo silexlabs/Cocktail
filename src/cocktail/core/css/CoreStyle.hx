@@ -416,6 +416,39 @@ class CoreStyle
 		{
 			CSSValueConverter.getColorVOFromCSSColor(getColor(color), usedValues.color);
 		}
+		
+		//same as above for line height
+		if (cascadeManager.hasLineHeight == true)
+		{
+			switch (lineHeight)
+			{
+				case ABSOLUTE_LENGTH(value):
+					usedValues.lineHeight = value;
+					
+				case KEYWORD(value):
+					usedValues.lineHeight = fontSize * 1.2;
+					
+				case NUMBER(value):
+					usedValues.lineHeight = fontSize * value;
+					
+				default:	
+			}
+		}
+		
+		//same as above for letter spacing
+		if (cascadeManager.hasLetterSpacing == true)
+		{
+			switch(letterSpacing)
+			{
+				case ABSOLUTE_LENGTH(value):
+					usedValues.letterSpacing = value;
+					
+				case KEYWORD(value):
+					usedValues.letterSpacing = 0.0;
+					
+				default:	
+			}
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
