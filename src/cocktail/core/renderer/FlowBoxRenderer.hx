@@ -90,8 +90,8 @@ class FlowBoxRenderer extends BoxRenderer
 			{
 				child.render(graphicContext, clipRect, scrollOffset);
 				
-				//TODO : should ne render float, other condition too ? inline-block ?
-				if (child.firstChild != null)
+				//render recursively except for child establishing new formatting context, such as inline-block
+				if (child.firstChild != null && child.establishesNewBlockFormattingContext() == false)
 				{
 					renderInlineChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
 				}
