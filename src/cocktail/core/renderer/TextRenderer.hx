@@ -46,6 +46,8 @@ class TextRenderer extends InvalidatingElementRenderer
 	
 	private static inline var CONCATENATE:Int = 3;
 	
+	private static inline var CAPITALIZE_STATE:Int = 4;
+	
 	/**
 	 * An array where each item contains a text token,
 	 * representing the kind of text contained (a word,
@@ -483,28 +485,50 @@ class TextRenderer extends InvalidatingElementRenderer
 	 * Capitalise a text (turn each word's first letter
 	 * to uppercase)
 	 */
-	private function capitalizeText(text:String):String
+	private function capitalizeText(sourceText:String):String
 	{
-		var capitalizedText:String = "";
+		var state:Int = CAPITALIZE_STATE;
+		var position:Int = 0;
+		var c:Int = sourceText.fastCodeAt(position);
 		
-		/**
-		 * concatenate each character and transform
-		 * the first to upper case
-		 */
-		var length:Int = text.length;
-		for (i in 0...length)
-		{	
-			if (i == 0)
+		//the returned text with capitalised words
+		var outputText:String = "";
+		
+		while (!c.isEOF())
+		{
+			switch (state)
 			{
-				capitalizedText += text.charAt(i).toUpperCase();
-			}
-			else
-			{
-				capitalizedText += text.charAt(i);
+				//in this state copy all charachter to output until space is
+				//found
+				case COPY:
+					switch(c)
+					{
+						case ' '.code:
+							outputText += sourceText.charAt(position);
+							state = CAPITALIZE_STATE;
+							
+						default:
+							outputText += sourceText.charAt(position);
+					}
+					
+				//in this state, copy all spaces until a word begins
+				//and capitalize the first letter
+				case CAPITALIZE_STATE:
+					switch(c)
+					{
+						case ' '.code:
+							outputText += sourceText.charAt(position);
+							
+						default:
+							outputText += sourceText.charAt(position).toUpperCase();
+							state = COPY;
+					}
 			}
 			
+			c = sourceText.fastCodeAt(++position);
 		}
-		return capitalizedText;
+		
+		return outputText;
 	}
 	
 	/**
