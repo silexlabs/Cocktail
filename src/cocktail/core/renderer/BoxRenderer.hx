@@ -15,6 +15,7 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.linebox.EmbeddedInlineBox;
 import cocktail.core.linebox.InlineBox;
 
 import cocktail.core.layout.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
@@ -101,7 +102,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//non-positioned box create embedded box, it can represent
 		//an embedded element llike a picture or an inline-block block
 		//box
-		var inlineBox:InlineBox = new InlineBox(this);
+		var inlineBox:InlineBox = new EmbeddedInlineBox(this);
 		inlineBoxes.push(inlineBox);
 		
 			
