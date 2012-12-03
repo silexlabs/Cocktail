@@ -274,6 +274,11 @@ class CSSStyleParser
 		//are comma separated
 		var styleValuesLists:Array<Array<CSSPropertyValue>> = [];
 		
+		//hold the value of each item of the font notation, for
+		//font-size and line height, like '12px/120%'. Can contain
+		//only 2 items else style is invalid
+		var fontNotations:Array<CSSPropertyValue> = [];
+		
 		while (!c.isEOF())
 		{
 			switch(state)
@@ -294,15 +299,31 @@ class CSSStyleParser
 				//in this state, either the end 
 				//of the style value is expected or
 				//another component of the style value
-				case SPACE_OR_END:
+				case COMPONENT_OR_END:
 					
 					if (c.isEOF())
 					{
 						state = END;
 						continue;
 					}
+					//there can only be 2 items for font notation, if 2
+					//slashes are found in a row, style is invalid
+					else if (c == '/'.code && fontNotations.length > 0)
+					{
+						state = INVALID_STYLE_VALUE;
+						continue;
+					}
 					else
 					{
+						//if last value was first part of font notation
+						//store font notation
+						if (fontNotations.length == 1)
+						{
+							fontNotations.push(styleValues.pop());
+							styleValues.push(FONT_SIZE_LINE_HEIGHT_GROUP(fontNotations[0], fontNotations[1]));
+							fontNotations = [];
+						}
+								
 						switch(c)
 						{
 							case ' '.code:
@@ -314,6 +335,16 @@ class CSSStyleParser
 							case ','.code:
 								styleValuesLists.push(styleValues);
 								styleValues = [];
+								state = IGNORE_SPACES;
+								next = BEGIN_VALUE;
+							
+							//a slash signals a font notation	
+							case '/'.code:
+								
+								//get the last style value which is the
+								//first component of the font notation
+								fontNotations.push(styleValues.pop());
+								
 								state = IGNORE_SPACES;
 								next = BEGIN_VALUE;
 								
@@ -446,7 +477,7 @@ class CSSStyleParser
 					if (endPosition != -1)
 					{
 						position = endPosition; 
-						state = SPACE_OR_END;
+						state = COMPONENT_OR_END;
 					}
 					else
 					{
@@ -463,7 +494,7 @@ class CSSStyleParser
 						position = endPosition;
 						c = styles.fastCodeAt(position);
 						
-						state = SPACE_OR_END;
+						state = COMPONENT_OR_END;
 						continue;
 					}
 					else
@@ -481,7 +512,7 @@ class CSSStyleParser
 						position = endPosition;
 						c = styles.fastCodeAt(position);
 						
-						state = SPACE_OR_END;
+						state = COMPONENT_OR_END;
 						continue;
 					}
 					else
@@ -501,7 +532,7 @@ class CSSStyleParser
 						position = endPosition;
 						c = styles.fastCodeAt(position);
 					
-						state = SPACE_OR_END;
+						state = COMPONENT_OR_END;
 						continue;
 					}
 					//if -1 is returned then the value was invalid
@@ -532,8 +563,18 @@ class CSSStyleParser
 		//styles can be parsed
 		_position = position;
 		
+		//flush font notation if needed
+		if (fontNotations.length == 1)
+		{
+			fontNotations.push(styleValues.pop());
+			styleValues.push(FONT_SIZE_LINE_HEIGHT_GROUP(fontNotations[0], fontNotations[1]));
+			fontNotations = [];
+		}
+		
+		//if there is no list of styles
 		if (styleValuesLists.length == 0)
 		{
+			//and no group of styles either
 			if (styleValues.length == 1)
 			{
 				var typedProperty:TypedPropertyVO = TypedPropertyVO.getPool().get();
@@ -542,6 +583,7 @@ class CSSStyleParser
 				typedProperty.typedValue = styleValues[0];
 				return typedProperty;
 			}
+			//else group the style values
 			else
 			{
 				var typedProperty:TypedPropertyVO = TypedPropertyVO.getPool().get();
