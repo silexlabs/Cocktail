@@ -85,7 +85,6 @@ class LineBox
 		var inlineBoxWidth:Float = inlineBox.bounds.width + inlineBox.marginLeft + inlineBox.marginRight;
 		
 		unbreakableWidth += inlineBoxWidth;
-	
 		//TODO : if it is a space which make line break, remove the space
 		if (introduceBreakOpportunity(inlineBox) == true)
 		{
@@ -115,7 +114,6 @@ class LineBox
 					_unbreakableInlineBoxes[i].lineBox = this;
 					parentInlineBox.appendChild(_unbreakableInlineBoxes[i]);
 				}
-				
 				//reset unbreakable line box now that they were added to the line
 				_unbreakableInlineBoxes = _unbreakableInlineBoxes.clear();
 				unbreakableWidth = 0;

@@ -11,6 +11,8 @@ import cocktail.core.dom.Node;
 import cocktail.core.geom.GeomData;
 import cocktail.core.geom.Matrix;
 import cocktail.core.css.CoreStyle;
+import cocktail.core.linebox.InlineBox;
+import cocktail.core.linebox.LineBox;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InlineBoxRenderer;
 import cocktail.core.renderer.TextRenderer;
@@ -111,6 +113,40 @@ import cocktail.core.css.CSSData;
 		var backgroundImage:CSSPropertyValue;
 	}
 	
+	/**
+	 * Holds all the data necessary
+	 * when performing an inline formatting
+	 */
+	class InlineFormattingVO {
+		
+		/**
+		 * the current line box where inlineBox can be inserted
+		 */
+		public var lineBox:LineBox;
+		
+		/**
+		 * the current inlineBox where other inlineBox can be attached 
+		 * to create the inline box tree for the current line box
+		 */
+		public var inlineBox:InlineBox;
+		
+		/**
+		 * the stack of inline box renderer which still have 
+		 * children to layout
+		 */
+		public var openedElementRenderers:Array<ElementRenderer>;
+		
+		/**
+		 * the current x and y position where to place the next
+		 * line box relative to the containing block (this)
+		 */
+		public var lineBoxPosition:PointVO;
+		
+		public function new()
+		{
+			
+		}
+	}
 	
 	/**
 	 * Represents the left and right

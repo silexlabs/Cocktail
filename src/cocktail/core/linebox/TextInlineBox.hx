@@ -61,6 +61,10 @@ class TextInlineBox extends InlineBox
 	private var _destinationPoint:PointVO;
 	
 	/**
+	 * the dispalyed text
+	 */
+	private var _text:String;
+	/**
 	 * class constructor
 	 */
 	public function new(elementRenderer:ElementRenderer, text:String, fontMetrics:FontMetricsVO, fontManager:FontManager) 
@@ -69,6 +73,7 @@ class TextInlineBox extends InlineBox
 		
 		super(elementRenderer);
 		
+		_text = text;
 		initNativeTextElement(text, fontManager, elementRenderer.coreStyle);
 		
 		//get the dimensions of the text

@@ -59,8 +59,8 @@ class InlineBoxRenderer extends FlowBoxRenderer
 			var rect:RectangleVO = new RectangleVO();
 			rect.width = inlineBox.bounds.width;
 			rect.height = inlineBox.bounds.height;
-			rect.x = inlineBox.bounds.x + globalBounds.x;
-			rect.y = inlineBox.bounds.y + globalBounds.y;
+			rect.x = inlineBox.bounds.x + globalBounds.x + inlineBox.lineBox.bounds.x;
+			rect.y = inlineBox.bounds.y + globalBounds.y + inlineBox.lineBox.bounds.y;
 			
 			BackgroundManager.render(graphicsContext, rect, coreStyle, this, clipRect);
 		}

@@ -28,6 +28,7 @@ import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.Lib;
+import haxe.Firebug;
 import haxe.Log;
 import cocktail.core.layer.LayerRenderer;
 import haxe.Stack;
@@ -780,7 +781,27 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//was already found to prevent infinite loop
 					if (floatsManager.isAlreadyRegistered(child) == false)
 					{
-						registerFloatedElement(child, _childPosition);
+						var childPosition:PointVO = _childPosition;
+						
+						//implementation of a border case, if the previous 
+						//sibling is an anonymous block starting an inline formatting context,
+						//then the float should be aligned to the top of its last line box
+						var previousFlowSibling:ElementRenderer = child.previousNormalFlowSibling;
+						if (previousFlowSibling != null)
+						{
+							if (previousFlowSibling.isAnonymousBlockBox() == true)
+							{
+								if (previousFlowSibling.childrenInline() == true)
+								{
+									childPosition = new PointVO(_childPosition.x, _childPosition.y);
+									var blockPreviousSibling:AnonymousBlockBoxRenderer = cast(previousFlowSibling);
+									var lastLineBox:LineBox = blockPreviousSibling.lineBoxes[blockPreviousSibling.lineBoxes.length - 1];
+									childPosition.y = lastLineBox.bounds.y + blockPreviousSibling.bounds.y;
+								}
+							}
+						}
+						
+						registerFloatedElement(child, childPosition);
 						return true;
 					}
 				}
@@ -844,15 +865,21 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//block box
 		_lineBoxPosition.x = 0;
 		_lineBoxPosition.y = 0;
-		
+				Firebug.redirectTraces();
 		var firstLineBox:LineBox = createLineBox(_lineBoxPosition, layoutState);
 		
 		//during layout hold the inline box renderer currently laying out descendant inline boxes
 		var openedElementRendererStack:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
+		//holds all the inline formatting data which get updated during layout
+		var inlineFormattingData:InlineFormattingVO = new InlineFormattingVO();
+		inlineFormattingData.inlineBox = firstLineBox.rootInlineBox;
+		inlineFormattingData.lineBox = firstLineBox;
+		inlineFormattingData.openedElementRenderers = openedElementRendererStack;
+		inlineFormattingData.lineBoxPosition = _lineBoxPosition;
+		
 		//do layout, return the last created inline box
-		var lastInlineBox:InlineBox = doLayoutInlineChildrenAndFloats(this, firstLineBox, firstLineBox.rootInlineBox,
-		openedElementRendererStack, _lineBoxPosition, layoutState);
+		var lastInlineBox:InlineBox = doLayoutInlineChildrenAndFloats(this, inlineFormattingData, layoutState);
 		
 		//if a float was first found during layout,
 		//it should be done again
@@ -882,9 +909,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//the width of a line box is the client width of the containing block minus
 		//the margin box width of any floated element intersecting with the line
 		var availableWidth:Float = coreStyle.usedValues.width - floatsManager.getLeftFloatOffset(lineBoxPosition.y) - floatsManager.getRightFloatOffset(lineBoxPosition.y, coreStyle.usedValues.width);
-		
+
 		var lineBox:LineBox = new LineBox(this, availableWidth, true, layoutState);
-		
+
 		//position the line box in x and y relative to the containing block (this)
 		//taking floated elements into account
 		lineBox.bounds.y = lineBoxPosition.y;
@@ -898,12 +925,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * When a line box was filled with inlineBoxes,
 	 * lay it out, which set all its inlineBoxes x and y
 	 * relative to the top left of the line box.
-	 * 
-	 * Returns the inlineBox where all subsequent inlineBox
-	 * can be attached
 	 */
-	private function layoutLineBox(lineBox:LineBox, lineBoxPosition:PointVO, openedElementRenderers:Array<ElementRenderer>, layoutState:LayoutStateValue):InlineBox
+	private function layoutLineBox(inlineFormattingData:InlineFormattingVO, layoutState:LayoutStateValue):Void
 	{
+		var lineBox:LineBox = inlineFormattingData.lineBox;
+		var lineBoxPosition:PointVO = inlineFormattingData.lineBoxPosition;
+		var openedElementRenderers:Array<ElementRenderer> = inlineFormattingData.openedElementRenderers;
+		
 		lineBox.layout(false, null);
 		
 		//after layout, height of line box is known and added
@@ -917,7 +945,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		var newLineBox:LineBox = createLineBox(lineBoxPosition, layoutState);
 		
-		//will be returned as the inline box where next inline boxes
+		//will be stored as the inline box where next inline boxes
 		//can be attached to
 		var currentInlineBox:InlineBox = newLineBox.rootInlineBox;
 		
@@ -937,7 +965,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			currentInlineBox = childInlineBox;
 		}
 		
-		return currentInlineBox;
+		inlineFormattingData.lineBox = newLineBox;
+		inlineFormattingData.inlineBox = currentInlineBox;
 	}
 	
 	/**
@@ -945,15 +974,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * traversing all inline box renderer children
 	 * recursively
 	 * @param	elementRenderer the current element renderer being laid out in line box
-	 * @param	lineBox the current line box where inlineBox can be inserted
-	 * @param	inlineBox the current inlineBox where other inlineBox can be attached to create the inline box tree
-	 * for the current line box
-	 * @param	openedElementRenderers the stack of inline box renderer which still have children to layout
-	 * @param	lineBoxPosition the current x and y position where to place the next line box relative to 
-	 * the containing block (this)
-	 * @return the inlineBoxw where subsequent inline boxes can be attached to
+	 * @param	inlineFormattingData holds the inline formatting data
+	 * @param	layoutState current layout performed, for instance a shrink-to-fit might require
+	 * a layout where no lines are broken
 	 */
-	private function doLayoutInlineChildrenAndFloats(elementRenderer:ElementRenderer, lineBox:LineBox, inlineBox:InlineBox, openedElementRenderers:Array<ElementRenderer>, lineBoxPosition:PointVO, layoutState:LayoutStateValue):InlineBox
+	private function doLayoutInlineChildrenAndFloats(elementRenderer:ElementRenderer, inlineFormattingData:InlineFormattingVO, layoutState:LayoutStateValue):InlineBox
 	{	
 		//loop in all the child of the container
 		var child:ElementRenderer = elementRenderer.firstChild;
@@ -971,7 +996,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					{
 						//for inline formatting, float are replaced are aligned
 						//with the current line box position
-						registerFloatedElement(child, lineBoxPosition);
+						registerFloatedElement(child, inlineFormattingData.lineBoxPosition);
 						
 						//for inline formatting, a flag is set instead
 						//of just returning a flag as return value
@@ -989,20 +1014,19 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					var textLength:Int = child.inlineBoxes.length;
 					for (i in 0...textLength)
 					{
-						var lineIsFull:Bool = lineBox.insert(child.inlineBoxes[i], inlineBox);
+						var lineIsFull:Bool = inlineFormattingData.lineBox.insert(child.inlineBoxes[i], inlineFormattingData.inlineBox);
 						//if inserting this text would make the line full, create a new line for it
 						if (lineIsFull == true)
 						{
-							//layout current line, create a new one and return the inlineBox where
-							//the next text inlineBox should be attached
-							inlineBox = layoutLineBox(lineBox, lineBoxPosition, openedElementRenderers, layoutState);
-							//get a reference to the newly created line box
-							lineBox = lineBoxes[lineBoxes.length - 1];
+							//layout current line, create a new one and set it on the
+							//inline formatting data
+							layoutLineBox(inlineFormattingData, layoutState);
+							
 							//text inline box can now be inserted in the new line box
 							//
 							//TODO : instead of just adding last text inline box, should insert all
 							//unbreakable elements of last line box
-							lineBox.insert(child.inlineBoxes[i], inlineBox);
+							inlineFormattingData.lineBox.insert(child.inlineBoxes[i], inlineFormattingData.inlineBox);
 						}
 					}
 				}
@@ -1025,13 +1049,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					childInlineBox.marginRight = child.coreStyle.usedValues.marginRight;
 					
 					//insert the inline box, create a new line box if needed to hold the inline box
-					var lineIsFull:Bool = lineBox.insert(childInlineBox, inlineBox);
+					var lineIsFull:Bool = inlineFormattingData.lineBox.insert(childInlineBox, inlineFormattingData.inlineBox);
 					
 					if (lineIsFull == true)
 					{
-						inlineBox = layoutLineBox(lineBox, lineBoxPosition, openedElementRenderers, layoutState);
-						lineBox = lineBoxes[lineBoxes.length - 1];
-						lineBox.insert(childInlineBox, inlineBox);
+						layoutLineBox(inlineFormattingData, layoutState);
+						inlineFormattingData.lineBox.insert(childInlineBox, inlineFormattingData.inlineBox);
 					}
 				}
 				//here the child is an inline box renderer, which will create one inline box for each
@@ -1047,7 +1070,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					
 					//create the first inline box for this inline box renderer
 					var childInlineBox:InlineBox = new InlineBox(child);
-					childInlineBox.lineBox = lineBox;
+					childInlineBox.lineBox = inlineFormattingData.lineBox;
 					child.inlineBoxes.push(childInlineBox);
 					
 					var childUsedValues:UsedValuesVO = child.coreStyle.usedValues;
@@ -1057,24 +1080,24 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					childInlineBox.paddingLeft = childUsedValues.paddingLeft;
 					//the left margin and padding are added as an unbreakable width, as it can't be separated
 					//from next inline box until a break opportunity occurs
-					lineBox.addUnbreakableWidth(childUsedValues.marginLeft + childUsedValues.paddingLeft);
+					inlineFormattingData.lineBox.addUnbreakableWidth(childUsedValues.marginLeft + childUsedValues.paddingLeft);
 					
 					//attach the child inline box to its parent inline box to form the inline box tree for the current
 					//line box
-					inlineBox.appendChild(childInlineBox);
+					inlineFormattingData.inlineBox.appendChild(childInlineBox);
 
 					//store the inline box renderer. Each time a new line box is created
 					//by laying out a descandant of this inline box renderer, a new inline box
 					//with a reference to this inline box renderer will be added to the new
 					//line box. This way the inline box renderer will have one inline box
 					//for each line box where it has descendant
-					openedElementRenderers.push(child);
+					inlineFormattingData.openedElementRenderers.push(child);
 					
 					//format all the children of the inline box renderer recursively.
 					//a reference to the last added inline box is returned, so that it can
 					//be used as a starting point when laying out the siblings of the 
 					//inline box renderer
-					inlineBox = doLayoutInlineChildrenAndFloats(child, lineBox, childInlineBox, openedElementRenderers, lineBoxPosition, layoutState);
+					inlineFormattingData.inlineBox = doLayoutInlineChildrenAndFloats(child, inlineFormattingData, layoutState);
 					
 					//early exit if float was found as
 					//inline formatting should be
@@ -1087,25 +1110,25 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//now that all of the descendant of the inline box renderer have been laid out,
 					//remove the reference to this inline box renderer so that when a new line box
 					//is created, no new inline box pointing to this inline box renderer are created
-					openedElementRenderers.pop();
+					inlineFormattingData.openedElementRenderers.pop();
 					
 					//The current inline box must also be set to the parent inline box so that no more
 					//inline boxes are added to this inline box as it is done laying out its child inline boxes
-					inlineBox = inlineBox.parentNode;
+					inlineFormattingData.inlineBox = inlineFormattingData.inlineBox.parentNode;
 					
 					//The right margin and padding is added to the last generated inline box of the current inline
 					//box renderer
 					var lastInLineBox:InlineBox = child.inlineBoxes[child.inlineBoxes.length - 1];
 					lastInLineBox.marginRight = childUsedValues.marginRight;
 					lastInLineBox.paddingRight = childUsedValues.paddingRight;
-					lineBox.addUnbreakableWidth(childUsedValues.marginRight + childUsedValues.paddingRight);
+					inlineFormattingData.lineBox.addUnbreakableWidth(childUsedValues.marginRight + childUsedValues.paddingRight);
 				}
 			}
 			
 			child = child.nextSibling;
 		}
 	
-		return inlineBox;
+		return inlineFormattingData.inlineBox;
 	}
 	
 	/**
