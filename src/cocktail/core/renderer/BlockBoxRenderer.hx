@@ -88,6 +88,15 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private var _blockFormattingBounds:RectangleVO;
 	
 	/**
+	 * A flag which might be set during inline
+	 * formatting if a float is found, meaning
+	 * that layout of block should
+	 * be re-done with the new float
+	 * data
+	 */
+	private var _floatFound:Bool;
+	
+	/**
 	 * class constructor.
 	 * Init class attributes
 	 */
@@ -99,6 +108,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_childPosition = new PointVO(0, 0);
 		lineBoxes = new Array<LineBox>();
 		floatsManager = new FloatsManager();
+		_floatFound = false;
 		_inlineBoxGlobalBounds = new RectangleVO();
 		_blockFormattingBounds = new RectangleVO();
 	}
@@ -120,10 +130,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//in anonymous block
 		var shouldMakeChildrenNonInline:Bool = false;
 		
-		//the BlockBoxRenderer should have at least one significant child to determine wether to 
+		//the BlockBoxRenderer should have at least one normal flow child to determine wether to 
 		//establish/participate in a block or inline formatting context, and thus if inline children
 		//shoud be wrapped in anonymous block
-		if (hasSignificantChild() == true)
+		if (firstNormalFlowChild != null)
 		{
 			//store wether the children of this block are curently inline
 			//or block
@@ -238,35 +248,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		initialStyleDeclaration, 12, 12, false);
 		
 		return anonymousBlock;
-	}
-	
-	/**
-	 * returns wether the FlowBoxRenderer has at least one significant child
-	 * which can define wether he establish/participate in a block or inline
-	 * formatting context.
-	 * 
-	 * For instance if the FlowBoxRenderer has only absolutely positioned
-	 * or floated children, it can't yet know from its children wether
-	 * to establish/participate in a bock or inline formatting context
-	 */
-	private function hasSignificantChild():Bool
-	{
-		var child:ElementRenderer = firstChild;
-		while(child != null)
-		{
-			if (child.isFloat() == false)
-			{
-				if (child.isPositioned() == false || child.isRelativePositioned() == true)
-				{
-					//if at least one child child is not absolutely positioned
-					//or floated, formatting context to used can be determined
-					return true;
-				}
-			}
-			
-			child = child.nextSibling;
-		}
-		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -754,7 +735,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//it must first be laid out so that its width and height are known
 					child.layout(true, layoutState);
 					
-					//each a float is found, it is stored and the layout is re-started at
+					//each time a float is found, it is stored and the layout is re-started at
 					//the first parent block formatting root, so do nothing if the float
 					//was already found to prevent infinite loop
 					if (floatsManager.isAlreadyRegistered(child) == false)
@@ -832,6 +813,15 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//do layout, return the last created inline box
 		var lastInlineBox:InlineBox = doLayoutInlineChildrenAndFloats(this, firstLineBox, firstLineBox.rootInlineBox,
 		openedElementRendererStack, _lineBoxPosition, layoutState);
+		
+		//if a float was first found during layout,
+		//it should be done again
+		if (_floatFound == true)
+		{
+			//reset flag before new layout
+			_floatFound = false;
+			return true;
+		}
 		
 		//layout the last line
 		var lastLineBox:LineBox = lineBoxes[lineBoxes.length - 1];
@@ -924,7 +914,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * @return the inlineBoxw where subsequent inline boxes can be attached to
 	 */
 	private function doLayoutInlineChildrenAndFloats(elementRenderer:ElementRenderer, lineBox:LineBox, inlineBox:InlineBox, openedElementRenderers:Array<ElementRenderer>, lineBoxPosition:PointVO, layoutState:LayoutStateValue):InlineBox
-	{
+	{	
 		//loop in all the child of the container
 		var child:ElementRenderer = elementRenderer.firstChild;
 		while(child != null)
@@ -932,15 +922,23 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//absolutely positionned children can't be formatted in an inline formatting context
 			if (child.isPositioned() == false || child.isRelativePositioned() == true)
 			{
-				//here the child is floated, its floated position is stored and the 
-				//whole layout of the block formatting will be done again with this added
-				//floated element
-				//
-				//TODO : can only restart inline formatting of containing block ?
+				//here the child is floated, apply same behaviour as when a float is found
+				//during bloc formatting
 				if (child.isFloat() == true)
 				{
-					//TODO : store float, then restart layout of first root block container ancestor
-					//create common method with block formatting float behaviour ?
+					child.layout(true, layoutState);
+					if (floatsManager.isAlreadyRegistered(child) == false)
+					{
+						//for inline formatting, float are replaced are aligned
+						//with the current line box position
+						registerFloatedElement(child, lineBoxPosition);
+						
+						//for inline formatting, a flag is set instead
+						//of just returning a flag as return value
+						//already used
+						_floatFound = true;
+						return null;
+					}
 				}
 				//here the child is a TextRenderer, which has as many text inline box
 				//as needed to represent all the content of the TextRenderer
@@ -1037,6 +1035,14 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//be used as a starting point when laying out the siblings of the 
 					//inline box renderer
 					inlineBox = doLayoutInlineChildrenAndFloats(child, lineBox, childInlineBox, openedElementRenderers, lineBoxPosition, layoutState);
+					
+					//early exit if float was found as
+					//inline formatting should be
+					//restarted
+					if (_floatFound == true)
+					{
+						return null;
+					}
 					
 					//now that all of the descendant of the inline box renderer have been laid out,
 					//remove the reference to this inline box renderer so that when a new line box
