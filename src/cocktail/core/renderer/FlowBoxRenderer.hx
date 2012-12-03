@@ -86,7 +86,7 @@ class FlowBoxRenderer extends BoxRenderer
 		var child:ElementRenderer = rootRenderer.firstChild;
 		while(child != null)
 		{
-			if (child.layerRenderer == referenceLayer)
+			if (child.layerRenderer == referenceLayer && child.isFloat() == false)
 			{
 				child.render(graphicContext, clipRect, scrollOffset);
 				

@@ -144,9 +144,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			var child:ElementRenderer = firstChild;
 			while(child != null)
 			{
-				//absolutely positioned children are not taken into account when determining wether this
+				//absolutely positioned and floated children are not taken into account when determining wether this
 				//BlockBoxRenderer establishes/participate in a block or inline formatting context
-				if (child.isPositioned() == false || child.isRelativePositioned() ==  true)
+				if ((child.isPositioned() == false || child.isRelativePositioned() ==  true) && child.isFloat() == false)
 				{	
 					//if this child doesn't match the display of the other children,
 					///for instance if it is the first inline while all the other
@@ -268,11 +268,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//render all the block box which belong to the same stacking context
 			renderBlockContainerChildren(this, layerRenderer, graphicContext, clipRect, scrollOffset);
 			
-			//TODO 5 : render non-positioned float
-			
 			//render all the replaced (embedded) box displayed as blocks belonging
 			//to the same stacking context
 			renderBlockReplacedChildren(this, layerRenderer, graphicContext, clipRect, scrollOffset);
+			
+			//render all non-positioned floated elements
+			renderFloatedChildren(this, layerRenderer, graphicContext, clipRect, scrollOffset);
 			
 			//render all the line boxes belonging to the same stacking context
 			renderLineBoxes(this, layerRenderer, graphicContext, clipRect, scrollOffset);
@@ -320,9 +321,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var child:ElementRenderer = rootRenderer.firstChild;
 		while(child != null)
 		{
-			if (child.layerRenderer == referenceLayer)
+			if (child.layerRenderer == referenceLayer && child.isFloat() == false)
 			{
-				//TODO 2 : must add more condition, for instance, no float
 				if (child.isReplaced() == false && child.coreStyle.getKeyword(child.coreStyle.display) == CSSKeywordValue.BLOCK )
 				{
 					renderBlockReplacedChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
@@ -351,10 +351,38 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//a block container children
 			if (child.layerRenderer == referenceLayer)
 			{
-				if (child.isReplaced() == false && child.coreStyle.getKeyword(child.coreStyle.display) != INLINE_BLOCK && child.isInlineLevel() == false)
+				if (child.isFloat() == false 
+				&& child.isReplaced() == false 
+				&& child.coreStyle.getKeyword(child.coreStyle.display) != INLINE_BLOCK 
+				&& child.isInlineLevel() == false)
 				{
 					child.render(graphicContext, clipRect, scrollOffset);
 					renderBlockContainerChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
+				}
+			}
+			
+			child = child.nextSibling;
+		}
+	}
+	
+	/**
+	 * Render all the floated BlockBoxRenderer which
+	 * belong to the same stacking context as this BlockBoxRenderer
+	 */
+	private function renderFloatedChildren(rootElementRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
+	{
+		var child:ElementRenderer = rootElementRenderer.firstChild;
+		while(child != null)
+		{
+			if (child.layerRenderer == referenceLayer)
+			{
+				if (child.isFloat() == true)
+				{
+					child.render(graphicContext, clipRect, scrollOffset);
+				}
+				else
+				{
+					renderFloatedChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
 				}
 			}
 			
