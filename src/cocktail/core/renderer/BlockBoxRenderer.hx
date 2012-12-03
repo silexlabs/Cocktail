@@ -190,6 +190,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//anonymous block, in order and will replace the current child nodes array
 		var newChildNodes:Array<ElementRenderer> = new Array<ElementRenderer>();
 		
+		//hold the last created anonymous block, so that contiguous
+		//inline level children are added to the same anonymous block
+		//box instead of creating new one each time
+		var lastCreatedAnonymousBlock:AnonymousBlockBoxRenderer = null;
+		
 		//loop in the child nodes in reverse order, as the child nodes
 		//array will be modified during this loop
 		var child:ElementRenderer = lastChild;
@@ -200,13 +205,20 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//for inline children, create an anonymous block, and attach the child to it
 			if (child.isInlineLevel() == true)
 			{
-				//TODO 2 : only 1 anonymous block should be created for contiguous
-				//inline elements
-				var anonymousBlock:AnonymousBlockBoxRenderer = createAnonymousBlock(child);
-				newChildNodes.push(anonymousBlock);
+				//use the previous if no block level child were in-between
+				if (lastCreatedAnonymousBlock != null)
+				{
+					lastCreatedAnonymousBlock.insertBefore(child, lastCreatedAnonymousBlock.lastChild);
+				}
+				else
+				{
+					lastCreatedAnonymousBlock = createAnonymousBlock(child);
+					newChildNodes.push(lastCreatedAnonymousBlock);
+				}
 			}
 			else
 			{
+				lastCreatedAnonymousBlock = null;
 				newChildNodes.push(child);
 			}
 			
