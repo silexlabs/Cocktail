@@ -136,6 +136,7 @@ class TextRenderer extends InvalidatingElementRenderer
 				var rect:RectangleVO = new RectangleVO();
 				rect.width = inlineBox.bounds.width;
 				rect.height = inlineBox.bounds.height;
+				
 				var destPoint:PointVO = new PointVO(inlineBox.bounds.x + globalBounds.x, inlineBox.bounds.y + globalBounds.y);
 				if (inlineBox.lineBox != null)
 				{

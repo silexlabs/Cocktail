@@ -498,8 +498,18 @@ class ElementRenderer extends FastNode<ElementRenderer>
 			//set global bounds for normal flow child
 			else
 			{
-				child.globalBounds.x = addedX + child.bounds.x;
-				child.globalBounds.y = addedY + child.bounds.y;
+				child.globalBounds.x = addedX;
+				child.globalBounds.y = addedY;
+				
+				//block level child also add their their own
+				//offset relative to their containing block,
+				//whereas inline level child are represented 
+				//by inline boxes which take care of this offset
+				if (child.isBlockContainer() == true)
+				{
+					child.globalBounds.x += child.bounds.x;
+					child.globalBounds.y += child.bounds.y;
+				}
 			}
 			
 			//set global dimension for child
@@ -545,7 +555,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 			//same for vertical position
 			if (elementRendererCoreStyle.isAuto(elementRendererCoreStyle.top) == true && elementRendererCoreStyle.isAuto(elementRendererCoreStyle.bottom) == true)
 			{
-				elementRenderer.globalBounds.y =addedY + elementRenderer.staticOrigin.y;
+				elementRenderer.globalBounds.y = addedY + elementRenderer.staticOrigin.y;
 			}
 			else
 			{
