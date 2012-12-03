@@ -208,7 +208,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				//use the previous if no block level child were in-between
 				if (lastCreatedAnonymousBlock != null)
 				{
-					lastCreatedAnonymousBlock.insertBefore(child, lastCreatedAnonymousBlock.lastChild);
+					lastCreatedAnonymousBlock.insertBefore(child, lastCreatedAnonymousBlock.firstChild);
 				}
 				else
 				{
