@@ -57,7 +57,6 @@ class LineBox
 	public function addUnbreakableWidth(width:Float):Void
 	{
 		unbreakableWidth += width;
-		_addedWidth += width;
 	}
 	
 	//TODO : keep track of inserted spaces number
