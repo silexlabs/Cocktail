@@ -865,7 +865,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//block box
 		_lineBoxPosition.x = 0;
 		_lineBoxPosition.y = 0;
-				Firebug.redirectTraces();
+		
 		var firstLineBox:LineBox = createLineBox(_lineBoxPosition, layoutState);
 		
 		//during layout hold the inline box renderer currently laying out descendant inline boxes
@@ -891,11 +891,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		
 		//layout the last line
-		var lastLineBox:LineBox = lineBoxes[lineBoxes.length - 1];
-		lastLineBox.layout(true, lastInlineBox);
+		inlineFormattingData.lineBox.layout(true, lastInlineBox);
+		
 		//add last line box height so that the total line boxes height
 		//is known
-		_lineBoxPosition.y += lastLineBox.bounds.height;
+		_lineBoxPosition.y += inlineFormattingData.lineBox.bounds.height;
 		
 		return false;
 	}
@@ -1085,7 +1085,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//attach the child inline box to its parent inline box to form the inline box tree for the current
 					//line box
 					inlineFormattingData.inlineBox.appendChild(childInlineBox);
-
+					//current inline box is now the child
+					inlineFormattingData.inlineBox = childInlineBox;
+					
 					//store the inline box renderer. Each time a new line box is created
 					//by laying out a descandant of this inline box renderer, a new inline box
 					//with a reference to this inline box renderer will be added to the new

@@ -806,7 +806,7 @@ class CSSValueConverter
 				return RGBA(176, 224, 230, 1.0);		
 				
 			case PURPLE:
-				return RGBA(255, 165, 0, 1.0);
+				return RGBA(128, 0, 128, 1.0);
 				
 			case RED:
 				return RGBA(255, 0, 0, 1.0);
