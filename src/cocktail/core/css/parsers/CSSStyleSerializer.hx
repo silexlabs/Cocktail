@@ -100,6 +100,9 @@ class CSSStyleSerializer
 			case GROUP(value):
 				return serializeGroup(value);
 				
+			case FONT_SIZE_LINE_HEIGHT_GROUP(fontSize, lineHeight):
+				return serialize(fontSize) + "/" + serialize(lineHeight);
+				
 			case CSS_LIST(value):
 				return serializeList(value);
 				

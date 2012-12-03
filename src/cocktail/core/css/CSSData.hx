@@ -626,6 +626,15 @@ enum CSSPropertyValue {
 	GROUP(value:Array<CSSPropertyValue>);
 	
 	/**
+	 * represent a special notation for the font shorthand
+	 * where the first value is the font size and the second
+	 * the line height. It is noted like this : "12px/100%",
+	 * this value means a font size of 12px and a line height
+	 * of 100% of the font size
+	 */
+	FONT_SIZE_LINE_HEIGHT_GROUP(fontSize:CSSPropertyValue, lineHeight:CSSPropertyValue);
+	
+	/**
 	 * Like a group but for comma separated CSS values.
 	 * For instance '10px, 5px' will create a list
 	 * with 2 length items
