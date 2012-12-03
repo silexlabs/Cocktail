@@ -86,6 +86,7 @@ class CSSStyleDeclaration
 	/**
 	 * font styles
 	 */
+	public var font(get_font, set_font):String;
 	public var fontSize(get_fontSize, set_fontSize):String;
 	public var fontWeight(get_fontWeight, set_fontWeight):String;
 	public var fontStyle(get_fontStyle, set_fontStyle):String;
@@ -1379,7 +1380,7 @@ class CSSStyleDeclaration
 		switch(propertyName)
 		{
 			case CSSConstants.MARGIN, CSSConstants.PADDING, CSSConstants.CSS_OVERFLOW,
-			CSSConstants.TRANSITION, CSSConstants.BACKGROUND:
+			CSSConstants.TRANSITION, CSSConstants.BACKGROUND, CSSConstants.FONT:
 				return true;
 				
 			default:
@@ -1588,6 +1589,45 @@ class CSSStyleDeclaration
 										}
 									}
 							}
+						}
+						
+					default:	
+				}
+				
+			case CSSConstants.FONT:
+				switch(styleValue)
+				{
+					case GROUP(values):
+						//set all font styles except font family
+						setFontShorthandGoup(values, important);
+						//in this case, font-family has only one font name which is the last value
+						setTypedProperty(CSSConstants.FONT_FAMILY, values[values.length - 1], important);
+						
+					case CSS_LIST(values):
+						switch(values[0])
+						{
+							case GROUP(groupValues):
+								//set all font styles except font family
+								setFontShorthandGoup(groupValues, important);
+								
+								//in list case, the font names are the last item of the group
+								//which is the first font name and all the subsequent list
+								//values are the other font names
+								var fontNames:Array<CSSPropertyValue> = [];
+								fontNames.push(groupValues[groupValues.length - 1]);
+								
+								var length:Int = values.length;
+								var i:Int = 1;
+								while (i < length)
+								{
+									fontNames.push(values[i]);
+									i++;
+								}
+								
+								//set the list of font name
+								setTypedProperty(CSSConstants.FONT_FAMILY, CSS_LIST(fontNames), important);
+								
+							default:
 						}
 						
 					default:	
@@ -1902,6 +1942,9 @@ class CSSStyleDeclaration
 					default:	
 						
 				}
+			
+			case CSSConstants.FONT:
+				return isValidFontShorthand(styleValue);
 				
 			case CSSConstants.TRANSITION:
 				switch(styleValue)
@@ -2129,6 +2172,339 @@ class CSSStyleDeclaration
 			default:
 				return isValidTransitionTimingFunction(styleValue);
 		}
+	}
+	
+	/**
+	 * Apply all the values of the font shorthand when font shorthand
+	 * is a group or list of values, excluding the font family values
+	 */
+	private function setFontShorthandGoup(styleValues:Array<CSSPropertyValue>, important:Bool):Void
+	{
+		var foundFontStyle:Bool = false;
+		var foundFontVariant:Bool = false;
+		var foundFontWeight:Bool = false;
+		
+		var length:Int = styleValues.length;
+		for (i in 0...length)
+		{
+			switch(styleValues[i])
+			{
+				case KEYWORD(value):
+					switch(value)
+					{
+						case ITALIC, OBLIQUE:
+							setTypedProperty(CSSConstants.FONT_STYLE, styleValues[i], important);
+							foundFontStyle = true;
+							
+						case SMALL_CAPS:
+							setTypedProperty(CSSConstants.FONT_VARIANT, styleValues[i], important);
+							foundFontVariant = true;
+							
+						case BOLD, BOLDER, LIGHTER:
+							setTypedProperty(CSSConstants.FONT_WEIGHT, styleValues[i], important);
+							foundFontWeight = true;
+							
+						case XX_SMALL, X_SMALL, SMALL, MEDIUM,
+						LARGE, X_LARGE, XX_LARGE, LARGER, SMALLER:
+							setTypedProperty(CSSConstants.FONT_SIZE, styleValues[i], important);
+							
+						case NORMAL:
+							if (foundFontStyle == true)
+							{
+								if (foundFontVariant == true)
+								{
+									setTypedProperty(CSSConstants.FONT_WEIGHT, styleValues[i], important);
+								}
+								else
+								{
+									setTypedProperty(CSSConstants.FONT_VARIANT, styleValues[i], important);
+								}
+							}
+							else
+							{
+								setTypedProperty(CSSConstants.FONT_STYLE, styleValues[i], important);
+							}
+							
+						default:
+					}
+					
+				case INTEGER(value):
+					switch(value)
+					{
+						case 100, 200, 300, 400, 500,
+						600, 700, 800, 900:
+							setTypedProperty(CSSConstants.FONT_WEIGHT, styleValues[i], important);
+							foundFontWeight = true;
+					
+							
+						default:
+					}
+					
+				case LENGTH(value):
+					setTypedProperty(CSSConstants.FONT_SIZE, styleValues[i], important);
+					
+				case PERCENTAGE(value):
+					setTypedProperty(CSSConstants.FONT_SIZE, styleValues[i], important);
+				
+				case FONT_SIZE_LINE_HEIGHT_GROUP(fontSize, lineHeight):
+					setTypedProperty(CSSConstants.FONT_SIZE, fontSize, important);
+					setTypedProperty(CSSConstants.LINE_HEIGHT, lineHeight, important);
+					
+				default:
+					
+			}
+		}
+	}
+	
+	/**
+	 * Wether the stylevalue is a
+	 * valid value for the font shorthand
+	 */
+	private function isValidFontShorthand(styleValue:CSSPropertyValue):Bool
+	{
+		switch (styleValue)
+		{
+			case GROUP(values):
+				return isValidFontGroup(values);
+				
+			//when parsed, if font family has more than one item
+			//(like 'arial, times...'), it results in a list where
+			//the first item is a group of all the font styles including
+			//the first font name for font family, and all the other list
+			//items are subsequent font names for font-family
+			case CSS_LIST(values):
+				switch(values[0])
+				{
+					case GROUP(groupValues):
+						var isValidFontGroup:Bool = isValidFontGroup(groupValues);
+						if (isValidFontGroup == true)
+						{
+							var length:Int = values.length;
+							var i:Int = 1;
+							while (i < length)
+							{
+								switch(values[i])
+								{
+									case STRING(value):
+										
+									case IDENTIFIER(value):
+										
+									default:
+										return false;
+								}
+								
+								i++;
+							}
+						}
+						else
+						{
+							return false;
+						}
+						
+					default:
+						return false;
+				}
+				
+				
+			case INHERIT, INITIAL:
+				return true;
+				
+			default:
+				return false;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Return wether a group of styles are valid
+	 * for the font shorthand, excluding inherit and initial
+	 * values
+	 */
+	private function isValidFontGroup(styleValues:Array<CSSPropertyValue>):Bool
+	{
+		//flag for all font style which can be found,
+		//set to true when found or if a style which
+		//should always be declared after it is found.
+		//if a style is found twice, the shorthand
+		//is invalid
+		var foundFontStyle:Bool = false;
+		var foundFontVariant:Bool = false;
+		var foundFontWeight:Bool = false;
+		var foundFontSize:Bool = false;
+		var foundFontNotation:Bool = false;
+		var foundFontFamily:Bool = false;
+		
+		var length:Int = styleValues.length;
+		for (i in 0...length)
+		{
+			switch(styleValues[i])
+			{
+				case KEYWORD(value):
+					switch(value)
+					{
+						case ITALIC, OBLIQUE:
+							if (foundFontStyle == true)
+							{
+								return false;
+							}
+							
+							foundFontStyle = true;
+							
+						case SMALL_CAPS:
+							if (foundFontVariant == true)
+							{
+								return false;
+							}
+							
+							foundFontVariant = true;
+							
+						case BOLD, BOLDER, LIGHTER:
+							if (foundFontWeight == true)
+							{
+								return false;
+							}
+							
+							foundFontWeight = true;
+							
+						case XX_SMALL, X_SMALL, SMALL, MEDIUM,
+						LARGE, X_LARGE, XX_LARGE, LARGER, SMALLER:
+							if (foundFontSize == true)
+							{
+								return false;
+							}
+							
+							foundFontSize = true;
+							foundFontStyle = true;
+							foundFontVariant = true;
+							
+						case NORMAL:
+							if (foundFontStyle == true)
+							{
+								if (foundFontVariant == true)
+								{
+									if (foundFontWeight == true)
+									{
+										return false;
+									}
+									else
+									{
+										foundFontWeight = true;
+									}
+								}
+								else
+								{
+									foundFontVariant = true;
+								}
+							}
+							else
+							{
+								foundFontStyle = true;
+							}
+							
+						default:
+							return false;
+					}
+					
+				case INTEGER(value):
+					switch(value)
+					{
+						case 100, 200, 300, 400, 500,
+						600, 700, 800, 900:
+							if (foundFontWeight == true)
+							{
+								return false;
+							}
+							
+							foundFontWeight = true;
+					
+							
+						default:
+							return false;
+					}
+					
+					
+				case STRING(value):
+					
+					//a font size should always be
+					//declared before a font family
+					if (foundFontSize == false)
+					{
+						return false;
+					}
+					
+					foundFontFamily = true;
+					foundFontNotation = true;
+					foundFontSize = true;
+					foundFontStyle = true;
+					foundFontVariant = true;
+					foundFontWeight = true;
+				
+				case IDENTIFIER(value):
+					
+					//a font size should always be
+					//declared before a font family
+					if (foundFontSize == false)
+					{
+						return false;
+					}
+					
+					foundFontFamily = true;
+					foundFontNotation = true;
+					foundFontSize = true;
+					foundFontStyle = true;
+					foundFontVariant = true;
+					foundFontWeight = true;
+				
+				case LENGTH(value):
+					if (foundFontSize == true)
+					{
+						return false;
+					}
+					
+					foundFontNotation = true;
+					foundFontSize = true;
+					foundFontStyle = true;
+					foundFontVariant = true;
+					foundFontWeight = true;
+					
+				case PERCENTAGE(value):
+					if (foundFontSize == true)
+					{
+						return false;
+					}
+					
+					foundFontNotation = true;
+					foundFontSize = true;
+					foundFontStyle = true;
+					foundFontVariant = true;
+					foundFontWeight = true;
+				
+				case FONT_SIZE_LINE_HEIGHT_GROUP(fontSize, lineHeight):
+					if (foundFontNotation == true)
+					{
+						return false;
+					}
+					
+					foundFontNotation = true;
+					foundFontSize = true;
+					foundFontStyle = true;
+					foundFontVariant = true;
+					foundFontWeight = true;
+					
+				default:
+					return false;
+					
+			}
+		}
+		
+		//font family and font size are both required
+		if (foundFontFamily == false || foundFontSize == false)
+		{
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -2787,6 +3163,17 @@ class CSSStyleDeclaration
 	{
 		setProperty(CSSConstants.CLEAR, value);
 		return value;
+	}
+	
+	private function set_font(value:String):String
+	{
+		setProperty(CSSConstants.FONT, value);
+		return value;
+	}
+	
+	private function get_font():String
+	{
+		return getPropertyValue(CSSConstants.FONT);
 	}
 	
 	private function get_fontSize():String

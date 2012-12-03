@@ -95,6 +95,8 @@ class CSSConstants
 	
 	public static inline var FONT_VARIANT:String = "font-variant";
 	
+	public static inline var FONT:String = "font";
+	
 	public static inline var COLOR:String = "color";
 	
 	public static inline var LINE_HEIGHT:String = "line-height";
