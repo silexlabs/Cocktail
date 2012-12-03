@@ -319,7 +319,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{
 				if (child.layerRenderer == referenceLayer)
 				{
-					if (child.isReplaced() == false)
+					if (child.isReplaced() == false && child.isFloat() == false)
 					{	
 						renderLineBoxes(child, referenceLayer, graphicContext, clipRect, scrollOffset);
 					}
@@ -370,7 +370,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//a block container children
 			if (child.layerRenderer == referenceLayer)
 			{
-				//TODO 3 : must add more condition, for instance, no float
 				if (child.isReplaced() == false && child.coreStyle.getKeyword(child.coreStyle.display) != INLINE_BLOCK && child.isInlineLevel() == false)
 				{
 					child.render(graphicContext, clipRect, scrollOffset);
