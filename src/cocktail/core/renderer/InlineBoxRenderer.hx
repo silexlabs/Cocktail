@@ -47,9 +47,6 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	/**
 	 * When rendering, in charge of rendering each inline box created by this InlineBoxRenderer,
 	 * in the order of the line box where they are declared
-	 * 
-	 * TODO : instead, when render called, should render each inline box -> but should be done line box by line box, might
-	 * cause z-index issue ?
 	 */
 	override public function render(graphicsContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{	
@@ -59,8 +56,13 @@ class InlineBoxRenderer extends FlowBoxRenderer
 		{
 			var inlineBox:InlineBox = inlineBoxes[i];
 			
-			//TODO : should line box bounds + global bounds of containing block
-			BackgroundManager.render(graphicsContext, inlineBoxes[i].bounds, coreStyle, this, clipRect);
+			var rect:RectangleVO = new RectangleVO();
+			rect.width = inlineBox.bounds.width;
+			rect.height = inlineBox.bounds.height;
+			rect.x = inlineBox.bounds.x + globalBounds.x;
+			rect.y = inlineBox.bounds.y + globalBounds.y;
+			
+			BackgroundManager.render(graphicsContext, rect, coreStyle, this, clipRect);
 		}
 		//render child inline box if needed
 		renderChildren(graphicsContext, clipRect, scrollOffset);
