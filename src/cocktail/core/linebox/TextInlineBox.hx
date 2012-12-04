@@ -84,17 +84,8 @@ class TextInlineBox extends InlineBox
 		_renderRect.width = bounds.width;
 		_renderRect.height = bounds.height;
 		_destinationPoint = new PointVO(0.0, 0.0);
-		try {
-			initTextBitmap();
-		}
-		catch (e:Dynamic)
-		{
-			trace(text);
-			trace(fontMetrics.ascent);
-			trace(fontMetrics.descent);
-			trace(elementRenderer.coreStyle.usedValues.lineHeight);
-		}
-		
+
+		initTextBitmap();
 	}
 	
 	/**
