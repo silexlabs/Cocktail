@@ -59,8 +59,6 @@ class LineBox
 		unbreakableWidth += width;
 	}
 	
-	//TODO : keep track of inserted spaces number
-	//TODO : remove space inserted at beginning
 	public function insert(inlineBox:InlineBox, parentInlineBox:InlineBox):Bool
 	{
 		//TODO : implement cleanly, remove space at beginning of line
@@ -92,7 +90,7 @@ class LineBox
 		var inlineBoxWidth:Float = inlineBox.bounds.width + inlineBox.marginLeft + inlineBox.marginRight;
 		
 		unbreakableWidth += inlineBoxWidth;
-		//TODO : if it is a space which make line break, remove the space
+		
 		if (introduceBreakOpportunity(inlineBox) == true)
 		{
 			//get the remaining available space on the current line
@@ -167,6 +165,9 @@ class LineBox
 			}
 		}
 		
+		//remove all spaces at the end of the line box tree if needed
+		removeTrailingSpaces(rootInlineBox);
+		
 		//align all the inline box in the x-axis and return the total horizontal space
 		//taken by the aligned inline boxes
 		bounds.width = alignInlineBoxesHorizontally(rootInlineBox, isLastLine, _addedWidth);
@@ -184,6 +185,63 @@ class LineBox
 		{
 			bounds.height = 0;
 		}
+	}
+	
+	/**
+	 * Remove all the spaces at the end of the line if
+	 * those space have a white space value of normal, nowrap
+	 * or preline.
+	 * @return wether space can be further removed or a non-space
+	 * or a space with another white space value was found
+	 */
+	private function removeTrailingSpaces(inlineBox:InlineBox):Bool
+	{
+		//start with the end of the line box tree
+		var child:InlineBox = inlineBox.lastChild;
+		while (child != null)
+		{
+			//first call recursively to remove spaces at the end
+			//of line box tree
+			if (child.isEmbedded() == false)
+			{
+				if (child.firstChild != null)
+				{
+					var canRemoveSpacesFurther:Bool = removeTrailingSpaces(child);
+					//if false, a non-space or with a wrong white space was found
+					//and there is non need to remove other spaces
+					if (canRemoveSpacesFurther == false)
+					{
+						return false;
+					}
+				}
+			}
+			
+			//store previous sibling before in case where child remove
+			//from line box tree
+			var previousSibling:InlineBox = child.previousSibling;
+			
+			//if child is a space with the right white space, remove it
+			if (child.isSpace() == true)
+			{
+				switch(child.elementRenderer.coreStyle.getKeyword(child.elementRenderer.coreStyle.whiteSpace))
+				{
+					case NORMAL, NO_WRAP, PRE_LINE:
+						child.parentNode.removeChild(child);
+					
+					default:
+						return false;
+				}
+			}
+			//else stop removing spaces
+			else
+			{
+				return false;
+			}
+			
+			child = previousSibling;
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -449,7 +507,14 @@ class LineBox
 		var child:InlineBox = inlineBox.firstChild;
 		while (child != null)
 		{
-			GeomUtils.addBounds(child.bounds, inlineBox.bounds);
+			//should use margin bounds of the children
+			var childBounds:RectangleVO = new RectangleVO();
+			childBounds.x = child.bounds.x - child.marginLeft;
+			childBounds.y = child.bounds.y;
+			childBounds.width = child.bounds.width + child.marginRight + child.marginLeft;
+			childBounds.height = child.bounds.height;
+			
+			GeomUtils.addBounds(childBounds, inlineBox.bounds);
 			child = child.nextSibling;
 		}
 	}
