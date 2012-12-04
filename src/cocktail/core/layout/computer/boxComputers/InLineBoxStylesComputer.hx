@@ -30,17 +30,6 @@ class InLineBoxStylesComputer extends BoxStylesComputer
 	}
 	
 	/**
-	 * vertical paddings don't apply to non-embedded inline HTMLElements
-	 */
-	override private function measureVerticalPaddings(style:CoreStyle, containingBlockData:ContainingBlockVO):Void
-	{
-		//top
-		style.usedValues.paddingTop = 0;
-		//bottom
-		style.usedValues.paddingBottom = 0;
-	}
-	
-	/**
 	 * vertical margins don't apply to non-embedded inline HTMLElements
 	 */
 	override private function measureAutoHeight(style:CoreStyle, containingBlockData:ContainingBlockVO):Float

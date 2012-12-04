@@ -191,11 +191,11 @@ class FlowBoxRenderer extends BoxRenderer
 		{	
 			//positioned 'fixed' ElementRenderer, use the viewport
 			case FIXED:
-				doLayoutPositionedChild(elementRenderer, viewportData);
+				doLayoutPositionedChild(elementRenderer, viewportData, false);
 				
 			//positioned 'absolute' ElementRenderer use the first positioned ancestor data	
 			case ABSOLUTE:
-				doLayoutPositionedChild(elementRenderer, firstPositionedAncestorData);
+				doLayoutPositionedChild(elementRenderer, firstPositionedAncestorData, true);
 				
 			default:
 		}
@@ -203,8 +203,11 @@ class FlowBoxRenderer extends BoxRenderer
 	
 	/**
 	 * Actually lay out the positioned ElementRenderer
+	 * @param elementRenderer the absolute of fixed element laid out
+	 * @param containingBlockData contain the dimension of the first positioned ancestor or the viewport
+	 * @param isAbsolutelyPositioned wether the element is absolut (true) or fixed (false) positioned
 	 */
-	private function doLayoutPositionedChild(elementRenderer:ElementRenderer, containingBlockData:ContainingBlockVO):Void
+	private function doLayoutPositionedChild(elementRenderer:ElementRenderer, containingBlockData:ContainingBlockVO, isAbsolutelyPositioned:Bool):Void
 	{
 		var elementCoreStyle:CoreStyle = elementRenderer.coreStyle;
 
@@ -212,14 +215,14 @@ class FlowBoxRenderer extends BoxRenderer
 		//left takes precedance so we try to apply left offset first
 		if (elementCoreStyle.isAuto(elementCoreStyle.left) == false)
 		{
-			elementRenderer.bounds.x = getLeftOffset(elementRenderer);
+			elementRenderer.bounds.x = getLeftOffset(elementRenderer, isAbsolutelyPositioned);
 		}
 		//if no left offset is defined, then try to apply a right offset.
 		//Right offset takes the containing block width minus the
 		//width of the positioned children as value for a 0 right offset
 		else if (elementCoreStyle.isAuto(elementCoreStyle.right) == false)
 		{
-			elementRenderer.bounds.x = getRightOffset(elementRenderer, containingBlockData.width);
+			elementRenderer.bounds.x = getRightOffset(elementRenderer, containingBlockData.width, isAbsolutelyPositioned);
 		}
 		//if both right and left are 'auto', then the ElementRenderer is positioned to its
 		//static position, the position it would have had in the flow if it were positioned as 'static'.
@@ -233,11 +236,11 @@ class FlowBoxRenderer extends BoxRenderer
 		//for vertical offset, the same rule as horizontal offsets apply
 		if (elementCoreStyle.isAuto(elementCoreStyle.top) == false)
 		{
-			elementRenderer.bounds.y = getTopOffset(elementRenderer);
+			elementRenderer.bounds.y = getTopOffset(elementRenderer, isAbsolutelyPositioned);
 		}
 		else if (elementCoreStyle.isAuto(elementCoreStyle.bottom) == false)
 		{
-			elementRenderer.bounds.y = getBottomOffset(elementRenderer, containingBlockData.height);
+			elementRenderer.bounds.y = getBottomOffset(elementRenderer, containingBlockData.height, isAbsolutelyPositioned);
 		}
 		else
 		{
@@ -248,39 +251,77 @@ class FlowBoxRenderer extends BoxRenderer
 	/**
 	 * get the left offset to apply the ElementRenderer
 	 */
-	private function getLeftOffset(elementRenderer:ElementRenderer):Float
+	private function getLeftOffset(elementRenderer:ElementRenderer, isAbsolutelyPositioned:Bool):Float
 	{
 		var usedValues:UsedValuesVO = elementRenderer.coreStyle.usedValues;
-		return usedValues.left + usedValues.marginLeft;
+		var leftOffset:Float = usedValues.left + usedValues.marginLeft;
+		
+		//if the element is absolut positioned, then it is
+		//placed relative to the padding box and not content
+		//box of its first positioned ancestor, so any padding
+		//of this first positioned ancesotr is removed
+		if (isAbsolutelyPositioned == true)
+		{
+			leftOffset -= coreStyle.usedValues.paddingLeft;
+		}
+		
+		return leftOffset;
 	}
 	
 	/**
 	 * get the right offset to apply the ElementRenderer
 	 */
-	private function getRightOffset(elementRenderer:ElementRenderer, containingHTMLElementWidth:Float):Float
+	private function getRightOffset(elementRenderer:ElementRenderer, containingHTMLElementWidth:Float, isAbsolutelyPositioned:Bool):Float
 	{
 		var usedValues:UsedValuesVO = elementRenderer.coreStyle.usedValues;
-		return containingHTMLElementWidth - usedValues.width - usedValues.paddingLeft
+		
+		var rightOffset:Float = containingHTMLElementWidth - usedValues.width - usedValues.paddingLeft
 		- usedValues.paddingRight - usedValues.right - usedValues.marginRight;
+		
+		//place relative to padding box instead of content box
+		if (isAbsolutelyPositioned == true)
+		{
+			rightOffset += coreStyle.usedValues.paddingRight;
+		}
+		
+		return rightOffset;
 	}
 	
 	/**
 	 * get the top offset to apply the ElementRenderer
 	 */
-	private function getTopOffset(elementRenderer:ElementRenderer):Float
+	private function getTopOffset(elementRenderer:ElementRenderer, isAbsolutelyPositioned:Bool):Float
 	{
 		var usedValues:UsedValuesVO = elementRenderer.coreStyle.usedValues;
-		return usedValues.top + usedValues.marginTop;
+		
+		var topOffset:Float = usedValues.top + usedValues.marginTop;
+		
+		//place relative to padding box instead of content box
+		if (isAbsolutelyPositioned == true)
+		{
+			topOffset -= coreStyle.usedValues.paddingTop;
+		}
+		
+		return topOffset;
 	}
 	
 	/**
 	 * get the bottom offset to apply the ElementRenderer
 	 */
-	private function getBottomOffset(elementRenderer:ElementRenderer, containingHTMLElementHeight:Float):Float
+	private function getBottomOffset(elementRenderer:ElementRenderer, containingHTMLElementHeight:Float, isAbsolutelyPositioned:Bool):Float
 	{
 		var usedValues:UsedValuesVO = elementRenderer.coreStyle.usedValues;
-		return containingHTMLElementHeight - usedValues.height - usedValues.paddingTop -
+		
+		var bottomOffset:Float = containingHTMLElementHeight - usedValues.height - usedValues.paddingTop -
 		usedValues.paddingBottom - usedValues.bottom - usedValues.marginBottom;
+		
+		//place relative to padding box instead of content box
+		if (isAbsolutelyPositioned == true)
+		{
+			bottomOffset += coreStyle.usedValues.paddingBottom;
+		}
+		
+		return bottomOffset;
 	}
 	
 	/**
