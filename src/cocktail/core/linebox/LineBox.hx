@@ -401,7 +401,11 @@ class LineBox
 	{
 		updateOffsetFromParentInlineBox(rootInlineBox);
 		
-		var lineBoxHeight:Float = getLineBoxHeight(rootInlineBox, _elementRenderer.coreStyle.usedValues.lineHeight, 0);
+		var lineBoxBounds:RectangleVO = new RectangleVO();
+		lineBoxBounds.height = _elementRenderer.coreStyle.usedValues.lineHeight;
+		
+		getLineBoxHeight(rootInlineBox, lineBoxBounds, 0);
+		var lineBoxHeight:Float = lineBoxBounds.height;
 		
 		updateOffsetFromLineBox(rootInlineBox, lineBoxHeight, 0);
 		
@@ -472,12 +476,13 @@ class LineBox
 						//align baseline of child to baseline of parent
 						case BASELINE:
 							var yOffset:Float = child.elementRenderer.coreStyle.fontMetrics.ascent - inlineBox.elementRenderer.coreStyle.fontMetrics.ascent;
-							child.offsetFromParentInlineBox.y = yOffset;
+							child.offsetFromParentInlineBox.y = -yOffset;
 						
 						//align the vertical mid-point of the child to the
 						//baseline of the parent + half its x-height
 						case MIDDLE:
-							var yOffset:Float = (child.bounds.height / 2) - (inlineBox.leadedAscent + inlineBox.elementRenderer.coreStyle.fontMetrics.xHeight);
+							var yOffset:Float = (child.elementRenderer.coreStyle.fontMetrics.ascent + (child.bounds.height / 2)) - (inlineBox.leadedAscent + (inlineBox.elementRenderer.coreStyle.fontMetrics.xHeight / 2));
+							child.offsetFromParentInlineBox.y = -yOffset;
 							
 						case TEXT_BOTTOM:
 							//TODO
@@ -487,6 +492,7 @@ class LineBox
 							//TODO
 						case SUPER:	
 							//TODO
+							
 						//top and bottom inline box can only 
 						//be aligned once the line box height is known
 						case TOP, BOTTOM:	
@@ -497,7 +503,7 @@ class LineBox
 					
 				case ABSOLUTE_LENGTH(value):
 					var offsetFromBaseline:Float = child.elementRenderer.coreStyle.fontMetrics.ascent - inlineBox.elementRenderer.coreStyle.fontMetrics.ascent;
-					child.offsetFromParentInlineBox.y = - value;
+					child.offsetFromParentInlineBox.y = -value;
 					
 				case PERCENTAGE(value):
 					
@@ -552,7 +558,7 @@ class LineBox
 			}
 			else
 			{
-				child.bounds.y = child.offsetFromParentInlineBox.y;
+				child.bounds.y = addedY + child.offsetFromParentInlineBox.y;
 			}
 			
 			//call recursively for non-replaced inline boxes
@@ -621,17 +627,14 @@ class LineBox
 	}
 	
 	/**
-	 * Compute the line box height which is the height bounds
+	 * Compute the line box bounds, including its height which is the height bounds
 	 * of all the inline boxes in it, once those inline boxes
 	 * have been vertically aligned
 	 * 
 	 * @param	inlineBox
-	 * @param	lineBoxHeight the current max height bounds that were found
-	 * @param	addedY the added y position of the ancestors inline boxes relative
-	 * to the line boxe
-	 * @return	the max inline box height bounds found
+	 * @param	lineBoxBounds the current bounds of the line box
 	 */
-	private function getLineBoxHeight(inlineBox:InlineBox, lineBoxHeight:Float, addedY:Float):Float
+	private function getLineBoxHeight(inlineBox:InlineBox, lineBoxBounds:RectangleVO, addedY:Float):Void
 	{
 		var child:InlineBox = inlineBox.firstChild;
 		while (child != null)
@@ -647,18 +650,19 @@ class LineBox
 				//will be added to the line box height computation
 				var alignedSubTreeHeight:Float = getAlignedSubTreeHeight(child, child.bounds.height, 0, true);
 				
-				if (alignedSubTreeHeight > lineBoxHeight)
-				{
-					lineBoxHeight = alignedSubTreeHeight;
-				}
+				//TODO : re-implement with bounds
+				//if (alignedSubTreeHeight > lineBoxHeight)
+				//{
+					//lineBoxHeight = alignedSubTreeHeight;
+				//}
 			}
 			else 
 			{
-				//check wether y position of the inline box + its height is superior to the current max height
-				if (child.offsetFromParentInlineBox.y + addedY + child.bounds.height > lineBoxHeight)
-				{
-					lineBoxHeight = child.offsetFromParentInlineBox.y + addedY + child.bounds.height;
-				}
+				var childBounds:RectangleVO = new RectangleVO();
+				childBounds.y = child.offsetFromParentInlineBox.y + addedY;
+				childBounds.height = child.bounds.height;
+				
+				GeomUtils.addBounds(childBounds, lineBoxBounds);
 				
 				//for non-replaced inline boxes which are not
 				//top or bottom aligned, call recursively
@@ -666,15 +670,13 @@ class LineBox
 				{
 					if (child.firstChild != null)
 					{
-						lineBoxHeight = getLineBoxHeight(child, lineBoxHeight, addedY + child.offsetFromParentInlineBox.y);
+						getLineBoxHeight(child, lineBoxBounds, addedY + child.offsetFromParentInlineBox.y);
 					}
 				}
 			}
 			
 			child = child.nextSibling;
 		}
-		
-		return lineBoxHeight;
 	}
 	
 	/**
