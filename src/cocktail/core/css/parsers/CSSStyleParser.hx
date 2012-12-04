@@ -341,12 +341,24 @@ class CSSStyleParser
 							//a slash signals a font notation	
 							case '/'.code:
 								
-								//get the last style value which is the
-								//first component of the font notation
-								fontNotations.push(styleValues.pop());
+								//the font notation can only happen for
+								//a 'font' style shorthand, else the style
+								//is invalid
+								if (propertyName == CSSConstants.FONT)
+								{
+									//get the last style value which is the
+									//first component of the font notation
+									fontNotations.push(styleValues.pop());
+									
+									state = IGNORE_SPACES;
+									next = BEGIN_VALUE;
+								}
+								else
+								{
+									state = INVALID_STYLE_VALUE;
+									continue;
+								}
 								
-								state = IGNORE_SPACES;
-								next = BEGIN_VALUE;
 								
 							case ';'.code:
 								state = END;
