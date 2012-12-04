@@ -505,7 +505,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 				//offset relative to their containing block,
 				//whereas inline level child are represented 
 				//by inline boxes which take care of this offset
-				if (child.isBlockContainer() == true)
+				if (child.isInlineLevel() == false)
 				{
 					child.globalBounds.x += child.bounds.x;
 					child.globalBounds.y += child.bounds.y;
