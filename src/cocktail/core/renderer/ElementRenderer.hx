@@ -476,8 +476,8 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		//if is positioned, set the global position for its own children
 		if (isPositioned() == true)
 		{
-			addedPositionedX = globalBounds.x + coreStyle.usedValues.paddingLeft;
-			addedPositionedY = globalBounds.y + coreStyle.usedValues.paddingTop;
+			addedPositionedX = globalBounds.x;
+			addedPositionedY = globalBounds.y;
 		}
 		//if is block container, set the normal flow position for its children
 		if (isBlockContainer() == true)
