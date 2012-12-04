@@ -399,12 +399,15 @@ class LineBox
 	 */
 	private function alignInlineBoxesVertically():Float
 	{
-	
 		updateOffsetFromParentInlineBox(rootInlineBox);
 		
 		var lineBoxHeight:Float = getLineBoxHeight(rootInlineBox, _elementRenderer.coreStyle.usedValues.lineHeight, 0);
 		
 		updateOffsetFromLineBox(rootInlineBox, lineBoxHeight, 0);
+		
+		var minimumTop:Float = getMinimumTop(rootInlineBox, 0);
+		
+		applyMinimumTop(rootInlineBox, minimumTop);
 		
 		return lineBoxHeight;
 	}
@@ -492,7 +495,9 @@ class LineBox
 						default:	
 					}
 					
-				case LENGTH(value):
+				case ABSOLUTE_LENGTH(value):
+					var offsetFromBaseline:Float = child.elementRenderer.coreStyle.fontMetrics.ascent - inlineBox.elementRenderer.coreStyle.fontMetrics.ascent;
+					child.offsetFromParentInlineBox.y = - value;
 					
 				case PERCENTAGE(value):
 					
@@ -547,15 +552,67 @@ class LineBox
 			}
 			else
 			{
-				child.bounds.y = addedY + child.offsetFromParentInlineBox.y;
+				child.bounds.y = child.offsetFromParentInlineBox.y;
 			}
 			
 			//call recursively for non-replaced inline boxes
-			if (child.isEmbedded() == false)
+			if (child.isEmbedded() == false && child.isText() == false)
 			{
+				//inline boxes add global y
+				child.bounds.y += addedY;
+				
 				if (child.firstChild != null)
 				{
 					updateOffsetFromLineBox(child, lineBoxHeight, child.bounds.y);
+				}
+			}
+			
+			child = child.nextSibling;
+		}
+	}
+	
+	private function getMinimumTop(inlineBox:InlineBox, minimumTop:Float):Float
+	{
+		var child:InlineBox = inlineBox.firstChild;
+		while (child != null)
+		{
+			if (isTopOrBottomAligned(child) == false)
+			{
+				if (child.bounds.y < minimumTop)
+				{
+					minimumTop = child.bounds.y;
+				}
+				
+				if (child.isEmbedded() == false)
+				{
+					if (child.firstChild != null)
+					{
+						minimumTop = getMinimumTop(child, minimumTop);
+					}
+				}
+			}
+			
+			child = child.nextSibling;
+		}
+		
+		return minimumTop;
+	}
+	
+	private function applyMinimumTop(inlineBox:InlineBox, minimumTop:Float):Void
+	{
+		var child:InlineBox = inlineBox.firstChild;
+		while (child != null)
+		{
+			if (isTopOrBottomAligned(child) == false)
+			{
+				child.bounds.y -= minimumTop;
+				
+				if (child.isEmbedded() == false)
+				{
+					if (child.firstChild != null)
+					{
+						applyMinimumTop(child, minimumTop);
+					}
 				}
 			}
 			
