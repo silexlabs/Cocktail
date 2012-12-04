@@ -501,11 +501,19 @@ class ElementRenderer extends FastNode<ElementRenderer>
 				child.globalBounds.x = addedX;
 				child.globalBounds.y = addedY;
 				
-				//block level child also add their their own
+				//block level and replaced child also add their their own
 				//offset relative to their containing block,
-				//whereas inline level child are represented 
+				//whereas non-replaced inline level child are represented 
 				//by inline boxes which take care of this offset
-				if (child.isInlineLevel() == false)
+				if (child.isInlineLevel() == false || child.isReplaced() == true)
+				{
+					child.globalBounds.x += child.bounds.x;
+					child.globalBounds.y += child.bounds.y;
+				}
+				//here the element is an inline-block whose bounds
+				//matches the one inline box it generated during 
+				//inline formatting
+				else if (isBlockContainer() == true)
 				{
 					child.globalBounds.x += child.bounds.x;
 					child.globalBounds.y += child.bounds.y;
