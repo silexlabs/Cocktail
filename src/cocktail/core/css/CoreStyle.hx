@@ -757,6 +757,12 @@ class CoreStyle
 			case CSSConstants.LINE_HEIGHT:
 				switch(property)
 				{
+					case NUMBER(value):
+						return ABSOLUTE_LENGTH(value * fontSize);
+						
+					case INTEGER(value):
+						return ABSOLUTE_LENGTH(value * fontSize);
+					
 					case LENGTH(value):
 						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
 						

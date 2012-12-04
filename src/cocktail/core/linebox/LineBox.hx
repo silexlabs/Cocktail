@@ -80,6 +80,8 @@ class LineBox
 			_firstInlineBoxInserted = true;
 		}
 		
+		//increment spaces number which is needed
+		//for text justification algorithm
 		if (inlineBox.isSpace() == true)
 		{
 			_spacesNumber++;

@@ -897,6 +897,12 @@ class CSSStyleDeclaration
 							return true;
 						}
 						
+					case INTEGER(value):
+						if (value >= 0)
+						{
+							return true;
+						}
+						
 					case PERCENTAGE(value):
 						if (value >= 0)
 						{
