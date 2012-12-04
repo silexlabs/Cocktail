@@ -517,6 +517,10 @@ class LineBox
 			GeomUtils.addBounds(childBounds, inlineBox.bounds);
 			child = child.nextSibling;
 		}
+		
+		//add paddings of inline box
+		inlineBox.bounds.width += inlineBox.paddingLeft + inlineBox.paddingRight;
+		inlineBox.bounds.x -= inlineBox.paddingLeft;
 	}
 	
 	/**
