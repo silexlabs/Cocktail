@@ -80,6 +80,11 @@ class LineBox
 			_firstInlineBoxInserted = true;
 		}
 		
+		if (inlineBox.isSpace() == true)
+		{
+			_spacesNumber++;
+		}
+		
 		_unbreakableInlineBoxes.push(inlineBox);	
 	
 		var inlineBoxWidth:Float = inlineBox.bounds.width + inlineBox.marginLeft + inlineBox.marginRight;
