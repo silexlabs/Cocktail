@@ -513,7 +513,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 				//here the element is an inline-block whose bounds
 				//matches the one inline box it generated during 
 				//inline formatting
-				else if (isBlockContainer() == true)
+				else if (child.isBlockContainer() == true)
 				{
 					child.globalBounds.x += child.bounds.x;
 					child.globalBounds.y += child.bounds.y;
