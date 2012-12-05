@@ -907,6 +907,9 @@ class CSSStyleParser
 		
 	}
 	
+	/**
+	 * parse css functional notation, like : url(myurl) or rgb(red,green,blue)
+	 */
 	private static function parseFunctionnalNotation(ident:String, styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
@@ -924,6 +927,19 @@ class CSSStyleParser
 
 		
 		var cssFunction:String = styles.substr(start, position - start);
+		
+		//add quote to url if forgotten by author, url are
+		//parsed as string instead of indent to allow any charachter
+		if (ident == 'url')
+		{
+			if (cssFunction.charAt(0) != "'" && cssFunction.charAt(0) != '"')
+			{
+				cssFunction = "'" + cssFunction + "'";
+				trace(cssFunction);
+				trace(styles);
+			}
+		}
+		
 		
 		var functionValues:TypedPropertyVO = parseStyleValue("", cssFunction, 0);
 		
