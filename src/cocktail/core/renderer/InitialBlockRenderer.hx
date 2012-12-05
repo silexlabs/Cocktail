@@ -89,6 +89,29 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	{
 		
 	}
+		
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to update the bounds of the initial bloc renderer as well, which
+	 * are the bounds of the viewport
+	 */
+	override public function setGlobalOrigins(addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
+	{
+		super.setGlobalOrigins(addedX, addedY, addedPositionedX, addedPositionedY);
+		
+		var viewportData:ContainingBlockVO = getWindowData();
+		bounds.x = 0;
+		bounds.y = 0;
+		bounds.width = viewportData.width;
+		bounds.height = viewportData.height;
+		globalBounds.x = 0;
+		globalBounds.y = 0;
+		globalBounds.width = viewportData.width;
+		globalBounds.height = viewportData.height;
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE LAYOUT METHODS
