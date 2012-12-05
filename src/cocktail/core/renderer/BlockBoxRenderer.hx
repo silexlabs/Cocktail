@@ -1165,6 +1165,15 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				//might be any number of inline boxes for inline container
 				//or just one for inline-block or replaced elements
 				var inlineBoxesLength:Int = child.inlineBoxes.length;
+				
+				//if the child has no inline box, reset
+				//bounds
+				if (inlineBoxesLength == 0)
+				{
+					child.bounds.x = 0;
+					child.bounds.y = 0;
+				}
+				
 				for (i in 0...inlineBoxesLength)
 				{
 					var inlineBox:InlineBox = child.inlineBoxes[i];
