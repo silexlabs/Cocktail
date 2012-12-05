@@ -221,10 +221,20 @@ class BackgroundStylesComputer
 					case CONTAIN:
 						if (intrinsicRatio != null)
 						{
-							var ratio:Float = intrinsicRatio / (backgroundPositioningArea.width / backgroundPositioningArea.height);
+							var ratio:Float = backgroundPositioningArea.width / backgroundPositioningArea.height;
 							
-							computedBackgroundSize.width = intrinsicWidth * ratio;
-							computedBackgroundSize.height = intrinsicHeight * ratio;
+							//in this case intrinsic width will be
+							//inferior to available width
+							if (intrinsicRatio < ratio)
+							{
+								computedBackgroundSize.height = backgroundPositioningArea.height;
+								computedBackgroundSize.width = backgroundPositioningArea.height * intrinsicRatio;
+							}
+							else
+							{
+								computedBackgroundSize.width = backgroundPositioningArea.width;
+								computedBackgroundSize.height = backgroundPositioningArea.width / intrinsicRatio;
+							}
 						}
 						else
 						{
@@ -238,10 +248,20 @@ class BackgroundStylesComputer
 					case COVER:				
 						if (intrinsicRatio != null)
 						{
-							var ratio:Float =  (backgroundPositioningArea.width / backgroundPositioningArea.height) / intrinsicRatio;
+							var ratio:Float = backgroundPositioningArea.width / backgroundPositioningArea.height;
 							
-							computedBackgroundSize.width = intrinsicWidth * ratio;
-							computedBackgroundSize.height = intrinsicHeight * ratio;
+							//in this case intrinsic width will be
+							//equal to available width
+							if (intrinsicRatio > ratio)
+							{
+								computedBackgroundSize.height = backgroundPositioningArea.height;
+								computedBackgroundSize.width = backgroundPositioningArea.height * intrinsicRatio;
+							}
+							else
+							{
+								computedBackgroundSize.width = backgroundPositioningArea.width;
+								computedBackgroundSize.height = backgroundPositioningArea.width / intrinsicRatio;
+							}
 						}
 						else
 						{
