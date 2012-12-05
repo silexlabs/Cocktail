@@ -505,6 +505,14 @@ class LineBox
 		inlineBox.bounds.height = 0;
 		
 		var child:InlineBox = inlineBox.firstChild;
+
+		//reset bounds if the inline box has no child
+		if (child == null)
+		{
+			inlineBox.bounds.x = 0;
+			inlineBox.bounds.y = 0;
+		}
+		
 		while (child != null)
 		{
 			//should use margin bounds of the children
