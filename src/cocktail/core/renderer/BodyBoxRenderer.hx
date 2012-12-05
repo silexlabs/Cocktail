@@ -36,7 +36,7 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overiden as the body's element renderer computed height is a special
+	 * Overiden as the body's element renderer used height is a special
 	 * case where the height should be the height of the initial containing block
 	 * if it specified as 'auto'
 	 */
@@ -60,6 +60,23 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as when the body's height is specified as auto,
+	 * it is considered not auto for its children at it takes
+	 * the viewport's height
+	 */
+	override public function getContainerBlockData():ContainingBlockVO
+	{
+		super.getContainerBlockData();
+		
+		if (coreStyle.isAuto(coreStyle.height) == true && (isPositioned() == false || isRelativePositioned() == true))
+		{
+			_containerBlockData.isHeightAuto = false;
+		}
+		
+		return _containerBlockData;
+	}
 	
 	/**
 	 * The HTMLBodyElement uses the bounds of the viewport

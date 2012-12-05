@@ -935,8 +935,6 @@ class CSSStyleParser
 			if (cssFunction.charAt(0) != "'" && cssFunction.charAt(0) != '"')
 			{
 				cssFunction = "'" + cssFunction + "'";
-				trace(cssFunction);
-				trace(styles);
 			}
 		}
 		
