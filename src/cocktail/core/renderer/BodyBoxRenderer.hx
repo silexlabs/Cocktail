@@ -64,7 +64,7 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	/**
 	 * Overriden as when the body's height is specified as auto,
 	 * it is considered not auto for its children at it takes
-	 * the viewport's height
+	 * the viewport's height instead of its content height
 	 */
 	override public function getContainerBlockData():ContainingBlockVO
 	{

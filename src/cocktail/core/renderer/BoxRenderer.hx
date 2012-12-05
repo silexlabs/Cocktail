@@ -198,22 +198,18 @@ class BoxRenderer extends InvalidatingElementRenderer
 		// If the height of the containing block is not specified explicitly (i.e., it depends on content height),
 		//and this element is not absolutely positioned, the value computes to 'auto'
 		//
-		//This doesn't apply if the containing block is the elementRenderer of the HTML Body tag, in which
-		//case, if the body height is auto, it will use the height of the viewport
-		//
-		//TODO 3 : is it the right place for this check ? Might be either in BoxComputer or in CoreStyle, there
-		//are caveats for both. In CoreStyle, hard to find containing block, in BoxComputer hard to call method
-		//as if height was auto without modifying computedValues
-		//
-		//TODO 4 : the way to test for the body element is a bit hackish
-		if (containingBlockData.isHeightAuto == true && containingBlock.domNode.tagName != HTMLConstants.HTML_BODY_TAG_NAME)
+		//important note : this is not implemented like in the spec (compute to auto) but instead
+		//the containing block height is set to the first parent with a not auto height. This is
+		//the implementation found in chrome and firefox and solves the common issue of a parent
+		//depending on its children height with children depending themselves on its height
+		if (containingBlockData.isHeightAuto == true)
 		{
 			if (isPositioned() == false || isRelativePositioned() == true)
 			{
 				switch(coreStyle.height)
 				{
 					case PERCENTAGE(value):
-						coreStyle.computedValues.height = CSSConstants.AUTO;
+						containingBlockData.height = getHeightOfFirstParentWithNotAutoHeight();
 						
 					default:	
 				}
@@ -259,7 +255,28 @@ class BoxRenderer extends InvalidatingElementRenderer
 		_needsLayout = false;
 	}
 	
+	/**
+	 * Return the used height of the first
+	 * parent which has a not aut height, if there
+	 * is none, return the height of the initial
+	 * block container which is the viewport height
+	 */	
+	private function getHeightOfFirstParentWithNotAutoHeight():Float
+	{
+		var parent:FlowBoxRenderer = cast(parentNode);
+		while (parent != null)
+		{
+			if (parent.getContainerBlockData().isHeightAuto == false)
+			{
+				return parent.coreStyle.usedValues.height;
+			}
+			
+			parent = cast(parent.parentNode);
+		}
 		
+		return 0;
+	}
+	
 	/**
 	 * Compute the box model styles (width, height, paddings, margins...) of the ElementRenderer, based on
 	 * its positioning scheme
