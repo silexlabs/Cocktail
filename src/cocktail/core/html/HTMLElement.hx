@@ -255,6 +255,13 @@ class HTMLElement extends Element<HTMLElement>
 	////////////////////////////////
 	
 	/**
+	 * Wether the htmlElement is currently
+	 * attached to the DOM, meaning that
+	 * the document itself is its ancestor
+	 */
+	public var attachedToDOM(get_attachedToDOM, null):Bool;
+	
+	/**
 	 * Wether the style of this HTMLElement need to be
 	 * cascaded. Cascading determine for each supported
 	 * style, which value to use
@@ -313,6 +320,7 @@ class HTMLElement extends Element<HTMLElement>
 		super(tagName);
 		init();
 		
+		attachedToDOM = false;
 		_needsCascading = false;
 		_needsStyleDeclarationUpdate = false;
 		_shouldCascadeAllProperties = true;
@@ -374,7 +382,7 @@ class HTMLElement extends Element<HTMLElement>
 	override public function appendChild(newChild:HTMLElement):HTMLElement
 	{
 		super.appendChild(newChild);
-		newChild.addedToDOM();
+		newChild.appended();
 		
 		//when added a child, this 
 		//HTMLElement should be re-cascaded
@@ -397,7 +405,7 @@ class HTMLElement extends Element<HTMLElement>
 	override public function removeChild(oldChild:HTMLElement):HTMLElement
 	{
 		super.removeChild(oldChild);
-		oldChild.removedFromDOM();
+		oldChild.removed();
 		return oldChild;
 	}
 	
@@ -641,11 +649,60 @@ class HTMLElement extends Element<HTMLElement>
 	
 	/**
 	 * Called by the parent HTMLElement
-	 * when this HTMLElement is attached to the DOM
+	 * when this HTMLElement is attached to it,
+	 * check wether this HTMLElement is now
+	 * attached to the DOM, meaning that
+	 * the document itself is its ancesotr
+	 */
+	private function appended():Void
+	{
+		//do nothing if already attached to the DOM
+		if (attachedToDOM == false)
+		{
+			if (isAttachedToDOM() == true)
+			{
+				attachedToDOM = true;
+				addedToDOM();
+				
+				//all the child of this htmlelement are
+				//now attached to the DOM as well
+				var child:HTMLElement = firstChild;
+				while (child != null)
+				{
+					child.appended();
+					child = child.nextSibling;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Called by the parent HTMLElement
+	 * when this HTMLElement is removed from it
+	 */
+	private function removed():Void
+	{
+		attachedToDOM = false;
+		
+		removedFromDOM();
+		
+		//all child are now detached from DOM
+		//as well
+		var child:HTMLElement = firstChild;
+		while (child != null)
+		{
+			child.removed();
+			child = child.nextSibling;
+		}
+	}
+	
+	/**
+	 * Called when the htmlelement is attached
+	 * to the DOM
 	 */
 	private function addedToDOM():Void
 	{
-		//schdule an update of the element renderer of this
+		//schedule an update of the element renderer of this
 		//HTMLElement
 		//
 		//only element and text node are visual and can be
@@ -666,9 +723,8 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
-	 * Called by the parent HTMLElement if
-	 * when this HTMLElement is removed from the
-	 * DOM
+	 * Called when the htmlelement is
+	 * removed from the DOM
 	 */
 	private function removedFromDOM():Void
 	{
@@ -686,6 +742,31 @@ class HTMLElement extends Element<HTMLElement>
 				detach(true);
 				invalidateElementRenderer();
 		}
+	}
+	
+	/**
+	 * Return wether this htmlelement is attached to the
+	 * DOM. Check all ancestors until either a document
+	 * is found, meaning the htmlelement is in factg attached
+	 * to the DOM or null
+	 * 
+	 * TODO 3 : for now check wether ancestor is HTML HTML element
+	 * but should be document instead. Trouble is for now, document
+	 * element is not attached as a child of document
+	 */
+	private function isAttachedToDOM():Bool
+	{
+		var parent:HTMLElement = parentNode;
+		while (parent != null)
+		{
+			if (parent.nodeName == HTMLConstants.HTML_HTML_TAG_NAME)
+			{
+				return true;
+			}
+			parent = parent.parentNode;
+		}
+		
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1787,5 +1868,10 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		updateDocumentImmediately();
 		return 0;
+	}
+	
+	private function get_attachedToDOM():Bool
+	{
+		return attachedToDOM;
 	}
 }
