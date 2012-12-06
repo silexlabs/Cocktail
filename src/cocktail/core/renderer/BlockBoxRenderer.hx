@@ -637,6 +637,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				childrenHeight = coreStyle.usedValues.minHeight;
 			}
 			
+			coreStyle.usedValues.height = childrenHeight;
 			//bounds height matches the border box
 			bounds.height = childrenHeight + coreStyle.usedValues.paddingTop + coreStyle.usedValues.paddingBottom;
 		}
