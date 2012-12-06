@@ -795,7 +795,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		var child:LayerRenderer = rootLayerRenderer.firstChild;
 		while (child != null)
 		{
-			if (child.isCompositingLayer() == true)
+			if (child.isCompositingLayer() == true || child.hasOwnGraphicsContext == true)
 			{
 				return true;
 			}
