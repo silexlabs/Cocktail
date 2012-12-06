@@ -850,7 +850,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 			{
 				return false;
 			}
-			else if (child.layerRenderer.isCompositingLayer() == true)
+			else if (child.layerRenderer.isCompositingLayer() == true || child.layerRenderer.hasOwnGraphicsContext == true)
 			{
 				return true;
 			}
