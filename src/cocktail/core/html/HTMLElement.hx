@@ -909,15 +909,15 @@ class HTMLElement extends Element<HTMLElement>
 			//the HTMLElement. The element renderer is invalidated, so that it will be updated
 			//before next layout
 			if (cascadeManager.hasDisplay == true || cascadeManager.hasFloat == true
-			|| cascadeManager.hasOverflowX == true || cascadeManager.hasOverflowY == true)
+			|| cascadeManager.hasOverflowX == true || cascadeManager.hasOverflowY == true ||
+			cascadeManager.hasPosition == true)
 			{
 				detach(true);
 				invalidateElementRenderer();
 			}
 			//if one of those properties changed, then the layer renderer of the element renderer needs
 			//to be invalidated, so that it will be updated before next rendering
-			else if (cascadeManager.hasTransform == true || cascadeManager.hasZIndex == true ||
-			cascadeManager.hasPosition == true)
+			else if (cascadeManager.hasTransform == true || cascadeManager.hasZIndex == true)
 			{
 				invalidateLayerRenderer();
 			}
