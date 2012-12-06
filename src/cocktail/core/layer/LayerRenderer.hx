@@ -902,18 +902,18 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		var child:LayerRenderer = rootLayer.firstChild;
 		while (child != null)
 		{
-			//if the reference layer is found before
-			//a layer with its own graphics context, then
-			//it is below and don't need its own
-			//graphics context
-			if (child == referenceLayer)
-			{
-				return false;
-			}
-			
 			//child is auto layer
 			if (child.hasOwnStackingContext == false)
 			{
+				//if the reference layer is found before
+				//a layer with its own graphics context, then
+				//it is below and don't need its own
+				//graphics context
+				if (child == referenceLayer)
+				{
+					return false;
+				}
+				
 				if (child.isCompositingLayer() == true || child.hasOwnGraphicsContext == true)
 				{
 					return true;
@@ -934,6 +934,11 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 					case INTEGER(value):
 						if (value == 0)
 						{
+							if (child == referenceLayer)
+							{
+								return false;
+							}
+							
 							if (child.isCompositingLayer() == true || child.hasOwnGraphicsContext == true)
 							{
 								return true;
