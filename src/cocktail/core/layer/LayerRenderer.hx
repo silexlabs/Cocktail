@@ -816,8 +816,8 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	
 	/**
 	 * return wether this layer has a sibling stacking
-	 * context which
-	 * is established by a compositing layer which has a lower z-index
+	 * context or layer which
+	 * has its own graphics context and has a lower z-index
 	 * than itself.
 	 * 
 	 * If the layer has such a sibling, it means it is
@@ -841,9 +841,31 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 			return false;
 		}
 		
+		//a flag determining wether layer with auto and 0
+		//z-index of parent have already been checked
+		var hasCheckedAutoAndZeroLayers:Bool = false;
+		
 		var child:StackingContext = parentStackingContext.firstChild;
 		while (child != null)
 		{
+			//layer with a 0 or auto z-index must be checked by following
+			//layer tree order
+			if (hasCheckedAutoAndZeroLayers == false)
+			{
+				//the first time a child stacking context with a z-index of 0 or more
+				//is found, check all auto layer and 0 stacking context in layer tree order
+				if (child.layerRenderer.getZIndex(child.layerRenderer) >= 0)
+				{
+					var ret:Bool = hasZeroOrAutoCompositingLayerSibling(parentStackingContext.layerRenderer, this);
+					if (ret == true)
+					{
+						return true;
+					}
+					
+					hasCheckedAutoAndZeroLayers = true;
+				}
+			}
+			
 			//if this layer is found before any compositing layer
 			//then it is rendred below and doesn't need a compositing layer
 			if (child.layerRenderer == this)
@@ -853,6 +875,72 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 			else if (child.layerRenderer.isCompositingLayer() == true || child.layerRenderer.hasOwnGraphicsContext == true)
 			{
 				return true;
+			}
+			
+			child = child.nextSibling;
+		}
+		
+		//here, there is no child stacking context with a zindex != 0, 
+		//but layer with auto and 0 zindex shoul still
+		//be checked
+		if (hasCheckedAutoAndZeroLayers == false)
+		{
+			return hasZeroOrAutoCompositingLayerSibling(parentStackingContext.layerRenderer, this);
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * In a given stacking context, check
+	 * among the auto and 0 zindex layer wether there is a compositing layer
+	 * or a layer with its own graphics context which is below the reference
+	 * layer
+	 */
+	private function hasZeroOrAutoCompositingLayerSibling(rootLayer:LayerRenderer, referenceLayer:LayerRenderer):Bool
+	{
+		var child:LayerRenderer = rootLayer.firstChild;
+		while (child != null)
+		{
+			//if the reference layer is found before
+			//a layer with its own graphics context, then
+			//it is below and don't need its own
+			//graphics context
+			if (child == referenceLayer)
+			{
+				return false;
+			}
+			
+			//child is auto layer
+			if (child.hasOwnStackingContext == false)
+			{
+				if (child.isCompositingLayer() == true || child.hasOwnGraphicsContext == true)
+				{
+					return true;
+				}
+				
+				//check all layers belonging to the same stacking context
+				var ret:Bool = hasZeroOrAutoCompositingLayerSibling(child, referenceLayer);
+				if (ret == true)
+				{
+					return true;
+				}
+			}
+			//child is 0 zindex layer
+			else
+			{
+				switch(child.rootElementRenderer.coreStyle.zIndex)
+				{
+					case INTEGER(value):
+						if (value == 0)
+						{
+							if (child.isCompositingLayer() == true || child.hasOwnGraphicsContext == true)
+							{
+								return true;
+							}
+						}
+					default:	
+				}
 			}
 			
 			child = child.nextSibling;
