@@ -588,7 +588,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		//GraphicContext, it is responsible for disposing of it
 		if (hasOwnGraphicsContext == true)
 		{
-			parentNode.graphicsContext.removeChild(graphicsContext);
+			graphicsContext.parentNode.removeChild(graphicsContext);
 			graphicsContext.dispose();
 			hasOwnGraphicsContext = false;
 		}
@@ -672,7 +672,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 							}
 							else
 							{
-								parentGraphicsContext.insertBefore(graphicsContext, nextSiblingWithGraphicsContext.graphicsContext);
+								nextSiblingWithGraphicsContext.graphicsContext.parentNode.insertBefore(graphicsContext, nextSiblingWithGraphicsContext.graphicsContext);
 								return;
 							}
 						}
@@ -681,13 +681,13 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 					}
 				}
 				
-				if (foundSelf == true)
+				if (foundSelf == true && child.layerRenderer != this)
 				{
 					if (child.layerRenderer.graphicsContext != null)
 					{
 						if (child.layerRenderer.hasOwnGraphicsContext == true)
 						{
-							parentGraphicsContext.insertBefore(graphicsContext, child.layerRenderer.graphicsContext);
+							child.layerRenderer.graphicsContext.parentNode.insertBefore(graphicsContext, child.layerRenderer.graphicsContext);
 							return;
 						}
 					}
@@ -722,7 +722,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 					}
 					else
 					{
-						parentGraphicsContext.insertBefore(graphicsContext, nextSiblingWithGraphicsContext.graphicsContext);
+						nextSiblingWithGraphicsContext.graphicsContext.parentNode.insertBefore(graphicsContext, nextSiblingWithGraphicsContext.graphicsContext);
 						return;
 					}
 				}
