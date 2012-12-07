@@ -643,11 +643,44 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 			
 			var child:StackingContext = parentStackingContext.firstChild;
 			
+			var hasCheckedAutoAndZeroLayers:Bool = false;
+			
 			//loop to find the position where to insert this new graphics context, it must
 			//be inserted before its first sibling with a superior z-index. The sibling
 			//must also establish a new graphics context
 			while(child != null)
 			{
+				//check among zero and auto layer of parent stacking context, in tree order,
+				//looking for the first next sibling with a graphics context
+				if (hasCheckedAutoAndZeroLayers == false)
+				{
+					if (child.layerRenderer.getZIndex(child.layerRenderer) >= 0)
+					{
+						var nextSiblingWithGraphicsContext:LayerRenderer = getNextSiblingWithGraphicsContext(parentStackingContext.layerRenderer, this, foundSelf);
+						
+						//if null, neither this layer was found nor a next sibling
+						//layer with a graphics context
+						if (nextSiblingWithGraphicsContext != null)
+						{
+							//here this layer was found but no next sibling, meaning
+							//that the next sibling either has a positive z-index or
+							//this layer is the last layer with a graphic context
+							//of its parent stacking context
+							if (nextSiblingWithGraphicsContext == this)
+							{
+								foundSelf = true;
+							}
+							else
+							{
+								parentGraphicsContext.insertBefore(graphicsContext, nextSiblingWithGraphicsContext.graphicsContext);
+								return;
+							}
+						}
+						
+						hasCheckedAutoAndZeroLayers = true;
+					}
+				}
+				
 				if (foundSelf == true)
 				{
 					if (child.layerRenderer.graphicsContext != null)
@@ -671,20 +704,28 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 						foundSelf = true;
 					}
 				}
-				//if the layer doesn't have its own stacking context,
-				//find itself among the layer belonging to its graphics context
-				else
+				
+				child = child.nextSibling;
+			}
+			
+			//check among auto and 0 zindex layer of parent stacking context
+			//if not already done
+			if (hasCheckedAutoAndZeroLayers == false)
+			{
+				var nextSiblingWithGraphicsContext:LayerRenderer = getNextSiblingWithGraphicsContext(parentStackingContext.layerRenderer, this, foundSelf);
+						
+				if (nextSiblingWithGraphicsContext != null)
 				{
-					//TODO 2 : this behaviour assumes that layer creating
-					//a graphics context also create a stacking context, which
-					//might not always be true
-					if (stackingContext.layerRenderer == child.layerRenderer)
+					if (nextSiblingWithGraphicsContext == this)
 					{
 						foundSelf = true;
 					}
+					else
+					{
+						parentGraphicsContext.insertBefore(graphicsContext, nextSiblingWithGraphicsContext.graphicsContext);
+						return;
+					}
 				}
-				
-				child = child.nextSibling;
 			}
 			
 			//here the new graphics context is
@@ -695,6 +736,97 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		else
 		{
 			graphicsContext = parentGraphicsContext;
+		}
+	}
+	
+	/**
+	 * In a given stacking context, seek
+	 * among the auto and 0 zindex layer the first next sibling
+	 * of the reference layer which has its own graphics context,
+	 * so that the layer's graphics context can be inserted before it
+	 * 
+	 * This method returns a layer which can be :
+		 * the reference layer, return to signal that the reference layer was found
+		 * and the next layer sibling with a graphic context should be returned
+		 * the next sibling layer with a graphics context onto which the reference
+		 * layer graphics context should be attached
+		 * null if none of the above was found
+	 */
+	private function getNextSiblingWithGraphicsContext(rootLayer:LayerRenderer, referenceLayer:LayerRenderer, hasFoundSelf:Bool):LayerRenderer
+	{
+		var nextSiblingWithGraphicsContext:LayerRenderer = null;
+		
+		var child:LayerRenderer = rootLayer.firstChild;
+		while (child != null)
+		{
+			//child is auto layer
+			if (child.hasOwnStackingContext == false)
+			{
+				//if the reference layer is found, then
+				//the next sibling with a graphic context
+				//should be returned
+				if (child == referenceLayer)
+				{
+					hasFoundSelf = true;
+				}
+				//if the reference layer was already found, return
+				//the first sibling with a graphic context
+				else if (hasFoundSelf == true)
+				{
+					if (child.hasOwnGraphicsContext == true)
+					{
+						return child;
+					}
+				}
+				
+				//check all layers belonging to the same stacking context
+				var childNextSiblingWithGraphicsContext:LayerRenderer = getNextSiblingWithGraphicsContext(child, referenceLayer, hasFoundSelf);
+				if (childNextSiblingWithGraphicsContext != null)
+				{
+					if (childNextSiblingWithGraphicsContext == referenceLayer)
+					{
+						hasFoundSelf = true;
+					}
+					else
+					{
+						return childNextSiblingWithGraphicsContext;
+					}
+				}
+			}
+			//child is 0 z-index layer
+			else
+			{
+				switch(child.rootElementRenderer.coreStyle.zIndex)
+				{
+					case INTEGER(value):
+						if (value == 0)
+						{
+							if (child == referenceLayer)
+							{
+								hasFoundSelf = true;
+							}
+							else if (hasFoundSelf == true)
+							{
+								if (child.hasOwnGraphicsContext == true)
+								{
+									return child;
+								}
+							}
+						}
+					default:	
+				}
+			}
+			
+			child = child.nextSibling;
+		}
+		
+		if (hasFoundSelf == true)
+		{
+			return referenceLayer;
+		}
+		else
+		{
+			return null;
 		}
 	}
 	
