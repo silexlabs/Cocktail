@@ -440,7 +440,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		//if the width of this block box should be shrink-to-fit, it
 		//can now be found 
-		applyShrinkToFitIfNeeded();
+		applyShrinkToFitIfNeeded(layoutState);
 		
 		//if the height of this block box depends on its content, 
 		//it can now be found
@@ -511,13 +511,20 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * shrink-to-fit width roughly matches the width of the
 	 * content of this block.
 	 * 
-	 * shrink-to-fit width is only applied to block formatting root
-	 * with an auto width
+	 * shrink-to-fit width is applied to block formatting root
+	 * with an auto width. It can also be applied to child block
+	 * container when a shrink-to-fit layout is in progress.
+	 * 
+	 * For instance, if this block has an inline-block child, when
+	 * computed the preferred minimum width, the inline-block child
+	 * would also be layout with the prefered minimum width layout state
 	 */
-	private function applyShrinkToFitIfNeeded():Void
+	private function applyShrinkToFitIfNeeded(layoutState:LayoutStateValue):Void
 	{
 		//absolutely positioned element with not auto left and right style don't use shrink-to-fit width
-		if (establishesNewBlockFormattingContext() == true && coreStyle.isAuto(coreStyle.width) == true && isAutoWidthAbsolutelyPositionedWithNotAutoLeftAndRight() == false)
+		//if the layout stat is not normal, shrink to fit might also be applied to block box which haven't auto width
+		//but which still needs to compute their shrink-yo-fit width for their ancestor block formatting context
+		if (establishesNewBlockFormattingContext() == true && (coreStyle.isAuto(coreStyle.width) == true || layoutState != NORMAL) && isAutoWidthAbsolutelyPositionedWithNotAutoLeftAndRight() == false)
 		{
 			//first prefered minimum width is found by laying out children by breaking line
 			//at all possible line breaks
@@ -1051,7 +1058,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				{
 					//the child must first be laid out so that its width
 					//and height are known
-					child.layout(true, LayoutStateValue.NORMAL);
+					child.layout(true, layoutState);
 					
 					//those element generate only one inline box so
 					//that they can be inserted in an inline formatting

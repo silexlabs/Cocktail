@@ -89,20 +89,28 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	{
 		
 	}
-		
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC LAYOUT METHODS
+	// OVERRIDEN PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden to update the bounds of the initial bloc renderer as well, which
-	 * are the bounds of the viewport
+	 * Overriden as the initial containing block always takes the size
+	 * of the viewport
 	 */
-	override public function setGlobalOrigins(addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
+	override private function layoutSelfIfNeeded(forceLayout:Bool):Void
 	{
-		super.setGlobalOrigins(addedX, addedY, addedPositionedX, addedPositionedY);
+		//only do if necessary
+		if (_needsLayout == false && forceLayout == false)
+		{
+			return;
+		}
 		
 		var viewportData:ContainingBlockVO = getWindowData();
+		
+		coreStyle.usedValues.width = viewportData.width;
+		coreStyle.usedValues.height = viewportData.height;
+		
 		bounds.x = 0;
 		bounds.y = 0;
 		bounds.width = viewportData.width;
@@ -111,18 +119,17 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		globalBounds.y = 0;
 		globalBounds.width = viewportData.width;
 		globalBounds.height = viewportData.height;
+
+		//reset dirty flag
+		_needsLayout = false;
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * shrink-to-fit width never applies to the initial 
 	 * container which always has the same size as
 	 * the viewport's
 	 */
-	override private function applyShrinkToFitIfNeeded():Void
+	override private function applyShrinkToFitIfNeeded(layoutState:LayoutStateValue):Void
 	{
 		
 	}
