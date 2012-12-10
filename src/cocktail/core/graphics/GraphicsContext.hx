@@ -135,6 +135,11 @@ class GraphicsContext extends FastNode<GraphicsContext>
 	{
 		super.insertBefore(newChild, refChild);
 
+		if (refChild == null)
+		{
+			return;
+		}
+		
 		newChild.invalidateNativeLayer();
 		newChild.invalidateBitmapSize();
 	}
