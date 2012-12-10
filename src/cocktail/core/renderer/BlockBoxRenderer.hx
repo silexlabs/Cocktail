@@ -1243,7 +1243,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		
 		//if padding prevent margins from adjoining, they can't collapse
-		if (coreStyle.usedValues.paddingTop != 0)
+		if (coreStyle.usedValues.paddingTop != 0 || firstNormalFlowChild.coreStyle.usedValues.paddingTop != 0)
 		{
 			return false;
 		}
@@ -1260,6 +1260,37 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	override private function collapseBottomMarginWithLastChildBottomMargin():Bool
 	{ 
 		return false;
+	}
+	
+	/**
+	 * Return wether line boxes or block box descandant have
+	 * a combined height of 0
+	 */
+	override private function hasZeroHeightChildren():Bool
+	{
+		//block establish an inline formatting
+		if (childrenInline() == true)
+		{
+			//check wether on the line box has a non-zero
+			//height
+			var lineBoxesLength:Int = lineBoxes.length;
+			for (i in 0...lineBoxesLength)
+			{
+				if (lineBoxes[i].bounds.height > 0)
+				{
+					return false;
+				}
+			}
+		}
+		//block establish or participate in block formatting
+		else
+		{
+			//TODO : might not be enough, should also check if all
+			//chidren margin collapse
+			return bounds.height == 0;
+		}
+		
+		return true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

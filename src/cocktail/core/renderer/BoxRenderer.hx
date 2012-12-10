@@ -312,7 +312,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	{
 		//makes sure that used values for margin are up to date
 		layoutSelfIfNeeded(false);
-		
+						
 		//if the top margin is collapsed with the parent's top
 		//margin, return 0 as the collapsed margin will be applied
 		//to the parent instead
@@ -334,6 +334,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 			var adjoiningMargins:Array<Float> = new Array<Float>();
 			adjoiningMargins.push(coreStyle.usedValues.marginTop);
 			firstNormalFlowChild.getAdjoiningTopMargins(adjoiningMargins);
+			
 			return getCollapsedMargin(adjoiningMargins);
 		}
 		//same if the top margin collapse with own bottom margin
@@ -341,7 +342,12 @@ class BoxRenderer extends InvalidatingElementRenderer
 		{
 			var adjoiningMargins:Array<Float> = new Array<Float>();
 			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-			//var firstChildCollapsedTopMargin:Float = firstChild.getAdjoiningTopMargins(adjoiningMargins);
+			
+			if (nextNormalFlowSibling != null)
+			{
+				nextNormalFlowSibling.getAdjoiningTopMargins(adjoiningMargins);
+			}
+			
 			return getCollapsedMargin(adjoiningMargins);
 		}
 		
@@ -380,10 +386,11 @@ class BoxRenderer extends InvalidatingElementRenderer
 		else if (collapseTopMarginWithBottomMargin() == true)
 		{
 			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+			
 			//next sibling might collapse with bottom margin
-			if (nextSibling != null)
+			if (nextNormalFlowSibling != null)
 			{
-				nextSibling.getAdjoiningTopMargins(adjoiningMargins);
+				nextNormalFlowSibling.getAdjoiningTopMargins(adjoiningMargins);
 			}
 		}
 	}
@@ -400,28 +407,25 @@ class BoxRenderer extends InvalidatingElementRenderer
 		{
 			return 0;
 		}
-		else if (collapseBottomMarginWithNextSiblingTopMargin() == true)
+		else if (collapseTopMarginWithBottomMargin() == true)
 		{
-			var adjoiningMargins:Array<Float> = new Array<Float>();
-			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-			nextNormalFlowSibling.getAdjoiningTopMargins(adjoiningMargins);
-			return getCollapsedMargin(adjoiningMargins);
+			return 0;
 		}
 		
 		if (collapseBottomMarginWithLastChildBottomMargin() == true)
 		{
 			var adjoiningMargins:Array<Float> = new Array<Float>();
 			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-			//TODO : should be last normal flow child
 			lastNormalFlowChild.getAdjoiningBottomMargins(adjoiningMargins);
+			
 			return getCollapsedMargin(adjoiningMargins);
 		}
-		else if (collapseTopMarginWithBottomMargin() == true)
+		else if (collapseBottomMarginWithNextSiblingTopMargin() == true)
 		{
 			var adjoiningMargins:Array<Float> = new Array<Float>();
-			adjoiningMargins.push(coreStyle.usedValues.marginTop);
-			//TODO : should be first normal flow child
-			//var firstChildCollapsedTopMargin:Float = firstChild.getAdjoiningTopMargins(adjoiningMargins);
+			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+			nextNormalFlowSibling.getAdjoiningTopMargins(adjoiningMargins);
+			
 			return getCollapsedMargin(adjoiningMargins);
 		}
 		
@@ -622,9 +626,12 @@ class BoxRenderer extends InvalidatingElementRenderer
 	{
 		if (firstNormalFlowChild != null)
 		{
-			//TODO : check that all combined children have a 0 height
-			//or all of their margin collapse
-			return false;
+			//check that the combined children height
+			//is zero
+			if (hasZeroHeightChildren() == false)
+			{
+				return false;
+			}
 		}
 		
 		//if the box has vertical padding, then the margins are not adjoining
@@ -644,13 +651,25 @@ class BoxRenderer extends InvalidatingElementRenderer
 			return false;
 		}
 		
-		//top and bottom margin can't collapse if anew block formatting is established
+		//top and bottom margin can't collapse if a new block formatting is established
 		if (establishesNewBlockFormattingContext() == true)
 		{
 			return false;
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Return wether the combined height
+	 * of children is 0, making the top
+	 * and bottom margin adjoining
+	 * 
+	 * Implemented by block box
+	 */
+	private function hasZeroHeightChildren():Bool
+	{
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
