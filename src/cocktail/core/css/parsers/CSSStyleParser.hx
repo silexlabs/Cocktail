@@ -371,8 +371,6 @@ class CSSStyleParser
 					}
 				
 				//start parsing a value component
-				//
-				//TODO 1 : add String parsing
 				case BEGIN_VALUE:
 					
 					//try first special value start charachters
@@ -392,12 +390,7 @@ class CSSStyleParser
 							state = END;
 							continue;
 							
-						case '-'.code:
-							state = NUMBER_INTEGER_DIMENSION_PERCENTAGE;
-							start = position;
-							continue;
-							
-						case '.'.code:
+						case '-'.code, '+'.code, '.'.code:
 							state = NUMBER_INTEGER_DIMENSION_PERCENTAGE;
 							start = position;
 							continue;
@@ -671,8 +664,8 @@ class CSSStyleParser
 		var c:Int = styles.fastCodeAt(position);
 		var start = position;
 		
-		//increment is starts with minus
-		if (c == '-'.code)
+		//increment if starts with minus or plus sign
+		if (c == '-'.code || c == "+".code)
 		{
 			c = styles.fastCodeAt(++position);
 		}
