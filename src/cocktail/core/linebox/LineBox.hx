@@ -357,11 +357,21 @@ class LineBox
 				}
 				else
 				{
-					//when justifying, inline boxes takes the whole
-					//line box width
-					concatenatedLength = _availableWidth;
+					//pre and pre-wrap value for whitespace prevent altering white space width,
+					//thus preventing justification
+					switch(_elementRenderer.coreStyle.getKeyword(_elementRenderer.coreStyle.whiteSpace))
+					{
+						case PRE, PRE_WRAP:
+							alignLeft(x, rootInlineBox);
+							
+						default:	
+							//when justifying, inline boxes takes the whole
+							//line box width
+							concatenatedLength = _availableWidth;
+							alignJustify(x, remainingSpace, rootInlineBox, _spacesNumber);
+					}
 					
-					alignJustify(x, remainingSpace, rootInlineBox, _spacesNumber);
+				
 				}
 				
 			default:
