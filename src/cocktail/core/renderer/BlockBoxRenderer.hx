@@ -541,6 +541,20 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//apply shrink to fit formula
 			var shrinkToFitWidth:Float = Math.min(Math.max(preferedMinimumWidth, availableWidth), preferedWidth);
 			
+			//constrain shrink-to-fit width if needed
+			if (coreStyle.isNone(coreStyle.maxWidth) == false)
+			{
+				if (shrinkToFitWidth > coreStyle.usedValues.maxWidth)
+				{
+					shrinkToFitWidth = coreStyle.usedValues.maxWidth;
+				}
+			}
+			
+			if (shrinkToFitWidth < coreStyle.usedValues.minWidth)
+			{
+				shrinkToFitWidth = coreStyle.usedValues.minWidth;
+			}
+			
 			coreStyle.usedValues.width = shrinkToFitWidth;
 			bounds.width = shrinkToFitWidth + coreStyle.usedValues.paddingLeft + coreStyle.usedValues.paddingRight;
 			
