@@ -1,8 +1,15 @@
+body {
+	margin:0;
+}
+
 object, iframe {
 	border: solid black 1px;
+	float: left;
+	margin:0;
 }
 
 #test-list {
 	overflow : scroll;
 	height:400px;
+	clear:left;
 }
