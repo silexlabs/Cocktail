@@ -2090,7 +2090,7 @@ class CSSStyleDeclaration
 							}
 					}
 				}
-				return isValidBackgroundShorthand(styleValue);
+				return true;
 				
 			case INHERIT, INITIAL:
 				return true;
