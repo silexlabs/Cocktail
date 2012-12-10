@@ -53,7 +53,6 @@ class LineBox
 		bounds = new RectangleVO();
 	}
 	
-	
 	public function addUnbreakableWidth(width:Float):Void
 	{
 		unbreakableWidth += width;
@@ -61,7 +60,8 @@ class LineBox
 	
 	public function insert(inlineBox:InlineBox, parentInlineBox:InlineBox):Bool
 	{
-		//TODO : implement cleanly, remove space at beginning of line
+		//spaces at the beginning of the line are removed if they
+		//have the right white space
 		if (_firstInlineBoxInserted == false)
 		{
 			if (inlineBox.isSpace() == true)
@@ -85,46 +85,48 @@ class LineBox
 			_spacesNumber++;
 		}
 		
+		//add thenew inline box to the unbreakable inline box buffer,
+		//it will be added to the line if there is enough space or if
+		//its white space prevents the line from breaking
 		_unbreakableInlineBoxes.push(inlineBox);	
 	
 		var inlineBoxWidth:Float = inlineBox.bounds.width + inlineBox.marginLeft + inlineBox.marginRight;
-		
 		unbreakableWidth += inlineBoxWidth;
 		
-		if (introduceBreakOpportunity(inlineBox) == true)
-		{
-			//get the remaining available space on the current line
-			var remainingLineWidth:Float = _availableWidth - _addedWidth;
+		//get the remaining available space on the current line
+		var remainingLineWidth:Float = _availableWidth - _addedWidth;
 
-			//if there isn't enough space to fit all the line box which can't be broken
-			//TODO 1 : should apply white space processing model for line break here
-			if (remainingLineWidth - unbreakableWidth < 0)
+		//line box always break if the inline box represents a line feed
+		if (inlineBox.isLineFeed() == true)
+		{
+			return true;
+		}
+		//if there isn't enough space to fit all the inline box which can't be broken
+		else if (remainingLineWidth - unbreakableWidth < 0)
+		{
+			//if the new inline box introduce a break opportunity, break the line
+			if (introduceBreakOpportunity(inlineBox) == true)
 			{
-				//TODO : should still break for line feed
-				if (_layoutState != LayoutStateValue.SHRINK_TO_FIT_PREFERED_WIDTH)
-				{
-					return true;
-				}
+				return true;
 			}
+			//else add all the unbreakable inline boxes to the line box
 			else
 			{
 				_addedWidth += unbreakableWidth;
-				
-				//now that a break opportunity can occur in the line, 
-				//push all the elements in the unbreakable line box
-				//in the current line
-				var unbreakableLength:Int = _unbreakableInlineBoxes.length;
-				for (i in 0...unbreakableLength)
-				{
-					_unbreakableInlineBoxes[i].lineBox = this;
-					parentInlineBox.appendChild(_unbreakableInlineBoxes[i]);
-				}
-				//reset unbreakable line box now that they were added to the line
-				_unbreakableInlineBoxes = _unbreakableInlineBoxes.clear();
-				unbreakableWidth = 0;
+				addUnbreakableInlineBoxesToLineBox(parentInlineBox);
 			}
 		}
+		//if there is still enough space and the inline box
+		//introduce a break opportunity, add all the unbreakable
+		//inline boxes to the this line box
+		else if (introduceBreakOpportunity(inlineBox) == true)
+		{
+			_addedWidth += unbreakableWidth;
+			addUnbreakableInlineBoxesToLineBox(parentInlineBox);
+		}
 		
+		//if a shrink to fit preferred minimum width is computed, then a break
+		//must happen between each inline box
 		if (_layoutState == LayoutStateValue.SHRINK_TO_FIT_PREFERED_MINIMUM_WIDTH)
 		{
 			return true;
@@ -133,9 +135,48 @@ class LineBox
 		return false;
 	}
 	
-	//TODO : implement
+	/**
+	 * Attach all current unbreakable inline boxes to the
+	 * line box, for instance when a breaking opportunity
+	 * happens
+	 */
+	private function addUnbreakableInlineBoxesToLineBox(parentInlineBox:InlineBox):Void
+	{
+		var unbreakableLength:Int = _unbreakableInlineBoxes.length;
+		for (i in 0...unbreakableLength)
+		{
+			_unbreakableInlineBoxes[i].lineBox = this;
+			parentInlineBox.appendChild(_unbreakableInlineBoxes[i]);
+		}
+		
+		//reset unbreakable inline box now that they were added to the line
+		_unbreakableInlineBoxes = _unbreakableInlineBoxes.clear();
+		unbreakableWidth = 0;
+	}
+	
+	/**
+	 * Return wether the inlineBox introduce a break opportunity
+	 */
 	private function introduceBreakOpportunity(inlineBox:InlineBox):Bool
 	{
+		//TODO : if inline box is line feed, should always return true
+		
+		//if a shrink-to-fit preferred width is being computed, only
+		//break at line feed
+		if (_layoutState == LayoutStateValue.SHRINK_TO_FIT_PREFERED_WIDTH)
+		{
+			return false;
+		}
+		
+		//pre and no-wrap white space value prevent line breaks
+		switch(inlineBox.elementRenderer.coreStyle.getKeyword(inlineBox.elementRenderer.coreStyle.whiteSpace))
+		{
+			case PRE, NO_WRAP:
+				return false;
+				
+			default:	
+		}
+		
 		return true;
 	}
 	

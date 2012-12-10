@@ -117,10 +117,20 @@ class InlineBox extends FastNode<InlineBox>
 	}
 	
 	/**
-	 * Wether the line box represents
+	 * Wether the inline box represents
 	 * an embeded asset such as a picture
 	 */
 	public function isEmbedded():Bool
+	{
+		return false;
+	}
+	
+	/**
+	 * Wether the inline box represents
+	 * a line feed control carachter, 
+	 * breaking the current line
+	 */
+	public function isLineFeed():Bool
 	{
 		return false;
 	}

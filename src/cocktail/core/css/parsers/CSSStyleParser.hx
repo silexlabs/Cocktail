@@ -1166,7 +1166,7 @@ class CSSStyleParser
 			case 'pre':
 				cssPropertyValue = KEYWORD(PRE);
 				
-			case 'no-wrap':
+			case 'nowrap':
 				cssPropertyValue = KEYWORD(NO_WRAP);	
 				
 			case 'pre-wrap':
