@@ -319,6 +319,10 @@ class CoreStyle
 			return;
 		}
 		
+		//will store all the properties which value
+		//change during cascading
+		_changedProperties = _changedProperties.clear();
+		
 		//TODO 2 : should do the same for "color" which influence style with a currentColor value
 		if (cascadeManager.hasFontSize == true || cascadeManager.hasFontFamily == true || cascadeManager.cascadeAll == true)
 		{
@@ -361,6 +365,10 @@ class CoreStyle
 			//only cascade color propery if value actually changed
 			if (colorDidChange == true)
 			{
+				//make sure to mark the color style as changed, so that its
+				//used value get re-computed after cascade
+				_changedProperties.push(CSSConstants.COLOR);
+				
 				var colorCSSProperties:Array<String> = initialStyleDeclaration.colorCSSProperties;
 				var length:Int = colorCSSProperties.length;
 				for (i in 0...length)
@@ -372,10 +380,6 @@ class CoreStyle
 		
 		var fontSize:Float = fontMetrics.fontSize;
 		var xHeight:Float = fontMetrics.xHeight;
-		
-		//will store all the properties which value
-		//change during cascading
-		_changedProperties = _changedProperties.clear();
 		
 		//holds the properties which will get cascaded
 		var propertiesToCascade:Array<String> = null;

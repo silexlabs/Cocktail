@@ -1357,7 +1357,7 @@ class CSSStyleParser
 			case 'transparent':
 				cssPropertyValue = COLOR(TRANSPARENT);
 				
-			case 'currentColor':
+			case 'currentcolor':
 				cssPropertyValue = COLOR(CURRENT_COLOR);
 				
 			default:	
