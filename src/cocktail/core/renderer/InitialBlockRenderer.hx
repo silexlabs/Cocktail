@@ -100,12 +100,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 */
 	override private function layoutSelfIfNeeded(forceLayout:Bool):Void
 	{
-		//only do if necessary
-		if (_needsLayout == false && forceLayout == false)
-		{
-			return;
-		}
-		
 		var viewportData:ContainingBlockVO = getWindowData();
 		
 		coreStyle.usedValues.width = viewportData.width;
@@ -119,9 +113,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		globalBounds.y = 0;
 		globalBounds.width = viewportData.width;
 		globalBounds.height = viewportData.height;
-
-		//reset dirty flag
-		_needsLayout = false;
 	}
 	
 	/**
