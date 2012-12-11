@@ -44,9 +44,8 @@ class CSSStyleSerializer
 			case IDENTIFIER(value):
 				return value;
 			
-			//TODO 2 : add quotes ?
 			case STRING(value):
-				return value;
+				return '"'+value+'"';
 				
 			//TODO 2 : should be the absolute escaped url	
 			case URL(value):

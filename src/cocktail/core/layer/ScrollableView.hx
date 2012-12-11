@@ -99,7 +99,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 * Those bounds encompasses the layer's own bound
 	 * and all the bounds of its descendant layers
 	 */
-	private var _scrollableBounds:RectangleVO; 
+	public var scrollableBounds(default, null):RectangleVO; 
 	
 	/**
 	 * This is the clipping rect of the layer, representing
@@ -147,7 +147,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		scrollOffset = new PointVO(0, 0);
 		bounds = new RectangleVO();
 		_clippedBounds = new RectangleVO();
-		_scrollableBounds = new RectangleVO();
+		scrollableBounds = new RectangleVO();
 		clipRect = new RectangleVO();
 	}
 	
@@ -513,7 +513,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		var child:ViewClass = firstChild;
 		
 		//TODO : apply layer's transformation matrix
-		getScrollableBounds(cast(this), _scrollableBounds);
+		getScrollableBounds(cast(this), scrollableBounds);
 		
 		//update all the layer tree recursively
 		while (child != null)
@@ -653,7 +653,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		else
 		{
 			//else get maximum available scroll
-			var maxWidthScroll:Float = _scrollableBounds.width - _clippedBounds.width;
+			var maxWidthScroll:Float = scrollableBounds.width - _clippedBounds.width;
 			
 			//if negative, means that content of layer's width is smaller than
 			//the root element render width, so it can't be scrolled
@@ -692,7 +692,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		}
 		else 
 		{
-			var maxHeightScroll:Float = _scrollableBounds.height - _clippedBounds.height;
+			var maxHeightScroll:Float = scrollableBounds.height - _clippedBounds.height;
 			
 			if (maxHeightScroll <= 0)
 			{
@@ -828,42 +828,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		return false;
 	}
 	
-	//
-	//
-	//
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN SCROLLING GETTERS/SETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	//
-	//
-	///**
-	 //* overriden as the scroll width for a block
-	 //* box might be its scrollable bounds width
-	 //* 
-	 //* TODO 4 : should it be only when scrollbars are
-	 //* displayed ?
-	 //*/
-	//override private function get_scrollWidth():Float
-	//{
-		//if (_scrollableBounds.width > bounds.width)
-		//{
-			//return _scrollableBounds.width;
-		//}
-		//
-		//return bounds.width;
-	//}
-	//
-	//override private function get_scrollHeight():Float
-	//{
-		//if (_scrollableBounds.height > bounds.height)
-		//{
-			//return _scrollableBounds.height;
-		//}
-		//
-		//return bounds.height;
-	//}
-	//
-	//
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE SCROLLING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////

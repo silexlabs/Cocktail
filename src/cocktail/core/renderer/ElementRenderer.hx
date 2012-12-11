@@ -192,16 +192,14 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	public var scrollTop(get_scrollTop, set_scrollTop):Float;
 	
 	/**
-	 * get the larger width between the ElementRenderer's and its children
-	 * width
-	 * 
-	 * TODO 3 : implement, same for scrollHeight
+	 * get the greater value between the element's content area 
+	 * width and its scrollable content width
 	 */
 	public var scrollWidth(get_scrollWidth, never):Float;
 	
 	/**
-	 * get the larger height between the ElementRenderer's and its children
-	 * height
+	 * get the greater value between the element's content area 
+	 * height and its scrollable content height
 	 */
 	public var scrollHeight(get_scrollHeight, never):Float;
 
@@ -1379,11 +1377,31 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	
 	private function get_scrollWidth():Float
 	{
+		if (_hasOwnLayer == true)
+		{
+			var scrollableWidth:Float = layerRenderer.scrollableBounds.width;
+			
+			if (scrollableWidth > bounds.width)
+			{
+				return scrollableWidth;
+			}
+		}
+		
 		return bounds.width;
 	}
 	
 	private function get_scrollHeight():Float
 	{
+		if (_hasOwnLayer == true)
+		{
+			var scrollableHeight:Float = layerRenderer.scrollableBounds.height;
+			
+			if (scrollableHeight > bounds.height)
+			{
+				return scrollableHeight;
+			}
+		}
+		
 		return bounds.height;
 	}
 }

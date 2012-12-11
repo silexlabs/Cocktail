@@ -1478,6 +1478,8 @@ class HTMLElement extends Element<HTMLElement>
 
 	private function get_scrollHeight():Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.scrollHeight);
@@ -1487,6 +1489,8 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_scrollWidth():Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.scrollWidth);
@@ -1507,6 +1511,8 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_scrollLeft():Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.scrollLeft);
@@ -1527,6 +1533,8 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_scrollTop():Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.scrollTop);

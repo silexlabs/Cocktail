@@ -216,8 +216,6 @@ class CSSValueConverter
 	 * CSS Color. For instance, color keyword (blue, red...) are computed
 	 * into rgba color
 	 * 
-	 * TODO 2 : manage currentColor
-	 * 
 	 * @param	colorProperty the specified color value
 	 * @param	currentColor the computed value of the 'color' property
 	 */

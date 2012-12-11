@@ -134,7 +134,6 @@ class DOMParser
 			return htmlElement;
 		}
 		
-		//TODO 2 : will cause bug if node type not supported
 		return null;
 	}
 	
