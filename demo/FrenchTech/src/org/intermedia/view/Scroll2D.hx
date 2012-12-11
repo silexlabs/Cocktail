@@ -304,7 +304,8 @@ class Scroll2D
 	{
 		// create the tween
         _horizontalTween = new Tween( xOrigin, xTarget, Constants.SWIP_HORIZONTAL_TWEEN_DELAY, Quad.easeOut );
-		_horizontalTween.setTweenHandlers( onHorizontalScrollCallback, horizontalTweenEnd );
+		_horizontalTween.onUpdate( onHorizontalScrollCallback );
+		_horizontalTween.onFinish( horizontalTweenEnd );
 		
         // launch the tween
         _horizontalTween.start();

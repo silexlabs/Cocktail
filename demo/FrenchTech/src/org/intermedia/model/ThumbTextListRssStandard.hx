@@ -100,6 +100,11 @@ class ThumbTextListRssStandard
 				if (cell.thumbUrl == "")
 				{
 					// for silicon sentier feed, add thumb if missing
+					if (listId == Feeds.FEED_1.url)
+					{
+						cell.thumbUrl = Feeds.FEED_1.thumb;
+					}
+					// for silicon sentier feed, add thumb if missing
 					if (listId == Feeds.FEED_2.url)
 					{
 						cell.thumbUrl = Feeds.FEED_2.thumb;

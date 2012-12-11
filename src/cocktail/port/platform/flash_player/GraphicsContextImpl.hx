@@ -105,6 +105,13 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	private static var _fillRectPoint:PointVO;
 	
 	/**
+	 * optimisation, this flag prevent
+	 * the bitmap from being cleared 
+	 * mutiple times in a row
+	 */
+	private var _isClear:Bool;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
@@ -122,6 +129,8 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			_fillRectPoint = new PointVO(0.0, 0.0);
 			_flashColorTransform = new ColorTransform();
 		}
+		
+		_isClear = true;
 		
 		_nativeLayer = new Sprite();
 		_nativeLayer.mouseEnabled = false;
@@ -178,7 +187,11 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			_flashRectangle.y = 0;
 			_flashRectangle.width = _width;
 			_flashRectangle.height = _height;
-			_nativeBitmap.bitmapData.fillRect(_flashRectangle, 0x00000000);
+			if (_isClear == false)
+			{
+				_nativeBitmap.bitmapData.fillRect(_flashRectangle, 0x00000000);
+				_isClear = true;
+			}
 		}
 	}
 	
@@ -281,6 +294,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		
 		//draw the bitmap data onto the current bitmap data with the right transformations
 		_nativeBitmap.bitmapData.draw(bitmapData, _flashMatrix, colorTransform, null, _flashRectangle, true);
+		_isClear = false;
 	}
 	
 	/**
@@ -323,7 +337,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		}
 		
 		_nativeBitmap.bitmapData.copyPixels(bitmapData, _flashRectangle, _flashPoint, alphaBitmapData, _flashAlphaPoint, true);
-		
+		_isClear = false;
 		if (alphaBitmapData != null)
 		{
 			alphaBitmapData.dispose();
@@ -377,6 +391,8 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			_flashRectangle.height = Math.round(clippedRect.height);
 			
 			_nativeBitmap.bitmapData.fillRect(_flashRectangle, argbColor);
+			
+			_isClear = false;
 		}
 	
 	}

@@ -95,7 +95,8 @@ class CroppedImage extends ViewBase
 	{
 		// create the tween
         var tween = new Tween( 0, 1, 400 );
-		tween.setTweenHandlers( tweenOpacity, tweenEnd );
+		tween.onUpdate( tweenOpacity );
+		tween.onFinish( tweenEnd );
         // launch the tween
         tween.start();
 	}
