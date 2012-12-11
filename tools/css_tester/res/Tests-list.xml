@@ -1,224 +1,265 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<data><chapter name="chapter-8-boxmodel">
-<section name="8.3.1-collapsing-margins">
-<test name="margin-collapse-001" description="margin-collapsing-horizontal-margins-do-not-collapse" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-001.xht"></test>
-<test name="margin-collapse-002" description="margin-collapsing-maximum-of-the-two-adjoining-margins" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-002.xht"></test>
-<test name="margin-collapse-003" description="margin-collapsing-negative-margins-adjoining-positive-margins" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-003.xht"></test>
-<test name="margin-collapse-004" description="margin-collapsing-negative-margins-deducted-from-zero" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-004.xht"></test>
-<test name="margin-collapse-032" description="margin-collapsing" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-032.xht"></test>
-</section></chapter><chapter name="chapter-9-visual-formatting-model">
+<data>
+<chapter name="chapter-8-boxmodel">
+	<section name="8.3.1-collapsing-margins">
+		<test name="margin-collapse-001" description="margin-collapsing-horizontal-margins-do-not-collapse" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-001.xht"></test>
+		<test name="margin-collapse-002" description="margin-collapsing-maximum-of-the-two-adjoining-margins" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-002.xht"></test>
+		<test name="margin-collapse-003" description="margin-collapsing-negative-margins-adjoining-positive-margins" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-003.xht"></test>
+		<test name="margin-collapse-004" description="margin-collapsing-negative-margins-deducted-from-zero" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-004.xht"></test>
+		<test name="margin-collapse-032" description="margin-collapsing" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-032.xht"></test>
+	</section>
+</chapter>
 
-<section name="9.1.1-the-viewport">
-<test name="viewport-002" description="scrolling-mechanism" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/viewport-002.xht"></test>
-<test name="viewport-003" description="scrolling-mechanism-and-right-to-left" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/viewport-003.xht"></test>
-</section><section name="9.1.2-containing-blocks">
-<test name="containing-block-026" description="element-position-based-on-containing-block" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-026.xht"></test>
-<test name="containing-block-027" description="content-is-not-confined-by-containing-blocks" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-027.xht"></test>
+<chapter name="chapter-9-visual-formatting-model">
+	<section name="9.1.1-the-viewport">
+		<test name="viewport-002" description="scrolling-mechanism" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/viewport-002.xht"></test>
+		<test name="viewport-003" description="scrolling-mechanism-and-right-to-left" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/viewport-003.xht"></test>
+	</section>
+	<section name="9.1.2-containing-blocks">
+		<test name="containing-block-026" description="element-position-based-on-containing-block" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-026.xht"></test>
+		<test name="containing-block-027" description="content-is-not-confined-by-containing-blocks" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-027.xht"></test>
+	</section>
+	<section name="9.2.1-block-level-elements-and-block-boxes">
+		<test name="box-generation-001" description="block-level-elements-generate-principal-block-boxes-with-block-boxes" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/box-generation-001.xht"></test>
+		<test name="box-generation-002" description="block-level-elements-generate-principal-block-boxes-with-inline-boxes" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/box-generation-002.xht"></test>
+		<test name="containing-block-028" description="principal-block-box-establishes-the-containing-block" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-028.xht"></test>
+	</section>
+	<section name="9.2.4-the-'display'-property">
+		<test name="descendant-display-none-001" description="descendant-elements-and-'display:-none'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/descendant-display-none-001.xht"></test>
+		<test name="descendant-display-override-001" description="overriding-display-none-from-parent" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/descendant-display-override-001.xht"></test>
+		<test name="display-001" description="display-set-to-'inline'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/display-001.xht"></test>
+		<test name="display-002" description="display-set-to-'block'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/display-002.xht"></test>
+		<test name="display-005" description="display-set-to-'inline-block'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/display-005.xht"></test>
+		<test name="display-initial-001" description="display-initial-value" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/display-initial-001.xht"></test>
+	</section>
+	<section name="9.3-positioning-schemes">
+		<test name="position-absolute-001" description="absolute-positions-impact-on-later-siblings" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-absolute-001.xht"></test>
+		<test name="position-relative-004" description="relative-positioning-dimensions" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-004.xht"></test>
+		<test name="position-relative-005" description="relative-positioning-with-left" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-005.xht"></test>
+		<test name="position-relative-006" description="relative-positioning-with-right" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-006.xht"></test>
+		<test name="position-relative-007" description="relative-positioning-with-'left'-set-and-'right'-'auto'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-007.xht"></test>
+		<test name="position-relative-008" description="relative-positioning-with-'right'-set-and-'left'-'auto'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-008.xht"></test>
+		<test name="position-relative-009" description="over-constrained-situation-with-position-'left'-property" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-009.xht"></test>
+		<test name="position-relative-020" description="relative-positioning-and-overflow:-auto" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-020.xht"></test>
+		<test name="position-relative-021" description="relative-positioning-and-overflow:-scroll" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-021.xht"></test>
+	</section>
+	<section name="9.3.1-choosing-a-positioning-scheme:-'position'-property">
+		<test name="position-absolute-002" description="position-absolute-size-and-positioning" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-absolute-002.xht"></test>
+		<test name="position-fixed-001" description="fixed-position-elements-impact-on-later-siblings" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-fixed-001.xht"></test>
+		<test name="position-fixed-002" description="position-fixed-size-and-positioning" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-fixed-002.xht"></test>
+		<test name="position-relative-001" description="relative-positioning-and-normal-flow" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-001.xht"></test>
+		<test name="position-relative-002" description="elements-following-relatively-positioned-elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-002.xht"></test>
+		<test name="position-static-001" description="content-laid-out-in-normal-flow-when-'position'-is-set-to-'static'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-static-001.xht"></test>
+	</section>
+	<section name="9.4.1-block-formatting-contexts">
+		<test name="block-formatting-contexts-001" description="vertical-layout-of-boxes" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/block-formatting-contexts-001.xht"></test>
+		<test name="block-formatting-contexts-009" description="new-block-formatting-context-with-absolute-positioned-elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/block-formatting-contexts-009.xht"></test>
+		<test name="block-formatting-contexts-010" description="inline-block-elements-establish-a-new-block-formatting-context" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/block-formatting-contexts-010.xht"></test>
+	</section>
+	<section name="9.4.2-inline-formatting-context">
+		<test name="empty-inline-001" description="empty-inline-elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/empty-inline-001.xht"></test>
+		<test name="inline-formatting-context-001" description="inline-formatting-context-and-basic-horizontal-layout" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-formatting-context-001.xht"></test>
+		<test name="inline-formatting-context-002" description="inline-formatting-context-with-a-horizontal-left-margins" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-formatting-context-002.xht"></test>
+		<test name="inline-formatting-context-003" description="inline-formatting-context-with-a-horizontal-right-margins" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-formatting-context-003.xht"></test>
+		<test name="inline-formatting-context-006" description="inline-formatting-context-with-left-padding" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-formatting-context-006.xht"></test>
+		<test name="inline-formatting-context-007" description="inline-formatting-context-with-right-padding" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-formatting-context-007.xht"></test>
+		<test name="inline-formatting-context-012" description="inline-boxes-vertically-stack-if-they-do-not-fit-horizontally" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-formatting-context-012.xht"></test>
+		<test name="inline-formatting-context-013" description="overflow-set-to-'scroll'-establishes-a-new-block-formatting-context" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-formatting-context-013.xht"></test>
+	</section>
+	<section name="9.6-absolute-positioning">
+		<test name="position-absolute-003" description="absolute-position-element-taken-out-of-flow" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-absolute-003.xht"></test>
+		<test name="position-absolute-004" description="absolutely-positioned-elements-establishes-a-new-containing-block-for-normal-flow-children" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-absolute-004.xht"></test>
+		<test name="position-absolute-005" description="absolutely-positioned-elements-do-not-establish-a-new-containing-block-for-fixed-position-descendants" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-absolute-005.xht"></test>
+		<test name="position-absolute-006" description="absolutely-positioned-elements-establishes-a-new-containing-block-for-absolutely-positioned-children" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-absolute-006.xht"></test>
+		<test name="position-absolute-007" description="absolutely-positioned-elements-child-behavior" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-absolute-007.xht"></test>
+		<test name="position-absolute-008" description="float-is-computed-to-'none'-when-element-is-absolutely-positioned" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-absolute-008.xht"></test>
+		<test name="position-fixed-007" description="float-is-computed-to-'none'-when-element-is-fixed-positioned" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-fixed-007.xht"></test>
+	</section>
+	<section name="9.5.2-floats">
+		<test name="adjacent-floats-001" description="Multiple floated boxes adjacent to each other" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/adjacent-floats-001.xht"></test>
+	</section>
+	<section name="9.8.2-relative-positioning">
+		<test name="position-relative-027" description="relatively-positioned-elements-with-auto-positioning-with-anonymous-boxes-before-and-after" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-027.xht"></test>
+		<test name="position-relative-028" description="relatively-positioned-elements-with-auto-positioning-with-anonymous-boxes-after" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-028.xht"></test>
+		<test name="position-relative-029" description="relatively-positioned-elements-with-auto-positioning-with-inline-box-after" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-029.xht"></test>
+		<test name="position-relative-030" description="relatively-positioned-elements-with-auto-positioning-with-anonymous-boxes-before-and-after-with-trailing-inline" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-030.xht"></test>
+		<test name="position-relative-032" description="relatively-positioned-box-has-no-impact-on-boxes-which-follow" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-032.xht"></test>
+		<test name="position-relative-033" description="relatively-positioned-box-has-no-impact-on-boxes-which-follow-and-boxes-may-overlap" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-033.xht"></test>
+		<test name="position-relative-034" description="relatively-positioned-content-inside-container-with-overflow-auto" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-034.xht"></test>
+		<test name="position-relative-035" description="relatively-positioned-boxes-preserve-the-space-created-for-it-in-flow" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-035.xht"></test>
+		<test name="position-relative-036" description="relatively-positioned-content-inside-container-with-overflow-scroll" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-036.xht"></test>
+	</section>
+	<section name="9.9.1-specifying-the-stack-level:-the-'z-index'-property">
+		<test name="z-index-abspos-001" description="css:-z-index-auto,--1-and-backgrounds-(child)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-001.xht"></test>
+		<test name="z-index-abspos-002" description="css:-z-index-auto-and--1-(siblings)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-002.xht"></test>
+		<test name="z-index-abspos-003" description="css:-z-index-0,--1-and-backgrounds-(child)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-003.xht"></test>
+		<test name="z-index-abspos-004" description="css:-z-index-auto-and-0-(siblings)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-004.xht"></test>
+		<test name="z-index-abspos-005" description="css:-z-index-auto-and-0-(siblings)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-005.xht"></test>
+		<test name="z-index-abspos-006" description="css:-z-index-and-select-elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-006.xht"></test>
+		<test name="z-index-abspos-007" description="css:-z-index-1,--1-and-backgrounds-(child)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-007.xht"></test>
+		<test name="z-index-abspos-008" description="z-index" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-008.xht"></test>
+		<test name="z-index-abspos-009" description="css:-z-index-and-the-canvas-and-background-propagation" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-009.xht"></test>
+	</section>
+</chapter>
 
-</section><section name="9.2.1-block-level-elements-and-block-boxes">
-<test name="box-generation-001" description="block-level-elements-generate-principal-block-boxes-with-block-boxes" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/box-generation-001.xht"></test>
-<test name="box-generation-002" description="block-level-elements-generate-principal-block-boxes-with-inline-boxes" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/box-generation-002.xht"></test>
-<test name="containing-block-028" description="principal-block-box-establishes-the-containing-block" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-028.xht"></test>
-</section><section name="9.2.4-the-'display'-property">
-<test name="descendant-display-none-001" description="descendant-elements-and-'display:-none'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/descendant-display-none-001.xht"></test>
-<test name="descendant-display-override-001" description="overriding-display-none-from-parent" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/descendant-display-override-001.xht"></test>
-<test name="display-001" description="display-set-to-'inline'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/display-001.xht"></test>
-<test name="display-002" description="display-set-to-'block'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/display-002.xht"></test>
-<test name="display-005" description="display-set-to-'inline-block'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/display-005.xht"></test>
-<test name="display-initial-001" description="display-initial-value" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/display-initial-001.xht"></test>
-</section><section name="9.3-positioning-schemes">
-<test name="position-absolute-001" description="absolute-positions-impact-on-later-siblings" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-absolute-001.xht"></test>
-<test name="position-relative-004" description="relative-positioning-dimensions" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-004.xht"></test>
-<test name="position-relative-005" description="relative-positioning-with-left" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-005.xht"></test>
-<test name="position-relative-006" description="relative-positioning-with-right" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-006.xht"></test>
-<test name="position-relative-007" description="relative-positioning-with-'left'-set-and-'right'-'auto'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-007.xht"></test>
-<test name="position-relative-008" description="relative-positioning-with-'right'-set-and-'left'-'auto'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-008.xht"></test>
-<test name="position-relative-009" description="over-constrained-situation-with-position-'left'-property" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-009.xht"></test>
-<test name="position-relative-020" description="relative-positioning-and-overflow:-auto" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-020.xht"></test>
-<test name="position-relative-021" description="relative-positioning-and-overflow:-scroll" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-021.xht"></test>
-</section><section name="9.3.1-choosing-a-positioning-scheme:-'position'-property">
-<test name="position-absolute-002" description="position-absolute-size-and-positioning" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-absolute-002.xht"></test>
-<test name="position-fixed-001" description="fixed-position-elements-impact-on-later-siblings" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-fixed-001.xht"></test>
-<test name="position-fixed-002" description="position-fixed-size-and-positioning" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-fixed-002.xht"></test>
-<test name="position-relative-001" description="relative-positioning-and-normal-flow" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-001.xht"></test>
-<test name="position-relative-002" description="elements-following-relatively-positioned-elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-002.xht"></test>
-<test name="position-static-001" description="content-laid-out-in-normal-flow-when-'position'-is-set-to-'static'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-static-001.xht"></test>
+<chapter name="chapter-10-visual-formatting-model-details">
+	<section name="10.1-definition-of-containing-block">
+		<test name="containing-block-001" description="containing-block-for-relative-positioned-elements-is-nearest-block-level-ancestor" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-001.xht"></test>
+		<test name="containing-block-003" description="containing-block-for-relative-positioned-elements-is-nearest-inline-block-ancestor" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-003.xht"></test>
+		<test name="containing-block-004" description="containing-block-for-static-positioned-elements-is-nearest-block-level-ancestor" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-004.xht"></test>
+		<test name="containing-block-006" description="containing-block-for-static-positioned-elements-is-nearest-inline-block-ancestor" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-006.xht"></test>
+		<test name="containing-block-007" description="initial-containing-block-for-fixed-positioned-elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-007.xht"></test>
+		<test name="containing-block-008" description="containing-block-for-absolute-positioned-elements-is-nearest-positioned-(absolute)-ancestor" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-008.xht"></test>
+		<test name="containing-block-009" description="containing-block-for-absolute-positioned-elements-is-nearest-positioned-(relative)-ancestor" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-009.xht"></test>
+		<test name="containing-block-010" description="containing-block-for-absolute-positioned-elements-is-nearest-positioned-(fixed)-ancestor" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-010.xht"></test>
+		<test name="containing-block-011" description="containing-blocks-inline-level-elements-position-based-on-left-to-right-direction-and-parent-element-is-relative" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-011.xht"></test>
+		<test name="containing-block-013" description="containing-blocks-inline-level-elements-position-based-on-left-to-right-direction-and-parent-element-is-absolute" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-013.xht"></test>
+		<test name="containing-block-015" description="containing-blocks-inline-level-elements-position-based-on-left-to-right-direction-and-parent-element-is-fixed" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-015.xht"></test>
+		<test name="containing-block-017" description="containing-blocks-block-level-elements-position-based-on-left-to-right-direction-and-parent-element-is-relative" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-017.xht"></test>
+		<test name="containing-block-019" description="containing-blocks-block-level-elements-position-based-on-left-to-right-direction-and-parent-element-is-absolute" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-019.xht"></test>
+		<test name="containing-block-021" description="containing-blocks-block-level-elements-position-based-on-left-to-right-direction-and-parent-element-is-fixed" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-021.xht"></test>
+		<test name="containing-block-023" description="containing-blocks-fall-back-to-initial-containing-block" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-023.xht"></test>
+	</section>
+	<section name="10.3.2-inline-replaced-elements">
+		<test name="inline-replaced-width-001" description="inline-replaced-elements-and-'auto'-specified-for-'margin-left',-'margin-right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-replaced-width-001.xht"></test>
+		<test name="inline-replaced-width-006" description="inline-replaced-elements-and-'auto'-specified-for-'margin-left',-'margin-right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-replaced-width-006.xht"></test>
+		<test name="inline-replaced-width-011" description="replaced-inline-elements-with-%-widths" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-replaced-width-011.xht"></test>
+		<test name="inline-replaced-width-012" description="replaced-inline-elements-wrapping-around-floats-(%-widths)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-replaced-width-012.xht"></test>
+		<test name="inline-replaced-width-013" description="replaced-inline-elements-wrapping-around-floats-(pixel-widths)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-replaced-width-013.xht"></test>
+		<test name="inline-replaced-width-014" description="replaced-inline-elements-with-%-widths" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-replaced-width-014.xht"></test>
+		<test name="inline-replaced-width-015" description="replaced-inline-elements-wrapping-around-floats-(%-widths)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-replaced-width-015.xht"></test>
+	</section>
+	<section name="10.3.4-block-level,-replaced-elements-in-normal-flow">
+		<test name="block-replaced-width-001" description="block-replaced-elements-and-'auto'-specified-for-'margin-left',-'margin-right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/block-replaced-width-001.xht"></test>
+		<test name="block-replaced-width-006" description="block-replaced-elements-and-'auto'-specified-for-'margin-left',-'margin-right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/block-replaced-width-006.xht"></test>
+		<test name="c43-center-000" description="replaced-elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c43-center-000.xht"></test>
+		<test name="c43-rpl-bbx-000" description="replaced-elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c43-rpl-bbx-000.xht"></test>
+		<test name="c43-rpl-bbx-001" description="replaced-elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c43-rpl-bbx-001.xht"></test>
+		<test name="replaced-elements-001" description="replaced-elements-margin" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/replaced-elements-001.xht"></test>
+	</section>
+	<section name="10.3.8-absolutely-positioned,-replaced-elements">
+		<test name="absolute-replaced-width-001" description="absolute-replaced-elements-and-'auto'-specified-for-'margin-left',-'margin-right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-001.xht"></test>
+		<test name="absolute-replaced-width-006" description="absolute-replaced-elements-and-'auto'-specified-for-'margin-left',-'margin-right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-006.xht"></test>
+		<test name="absolute-replaced-width-008" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-'auto'-specified-for-'margin-left',-'margin-right',-'left',-'right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-008.xht"></test>
+		<test name="absolute-replaced-width-013" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-'auto'-specified-for-'margin-left',-'margin-right',-'left',-'right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-013.xht"></test>
+		<test name="absolute-replaced-width-015" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-'auto'-specified-for-'margin-left',-'margin-right',-'left',-'right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-015.xht"></test>
+		<test name="absolute-replaced-width-020" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-'auto'-specified-for-'margin-left',-'margin-right',-'left',-'right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-020.xht"></test>
+		<test name="absolute-replaced-width-022" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-'auto'-specified-for-'margin-left',-'margin-right',-'right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-022.xht"></test>
+		<test name="absolute-replaced-width-027" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-'auto'-specified-for-'margin-left',-'margin-right',-'right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-027.xht"></test>
+		<test name="absolute-replaced-width-029" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-'auto'-specified-for-'margin-left',-'margin-right',-'right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-029.xht"></test>
+		<test name="absolute-replaced-width-034" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-'auto'-specified-for-'margin-left',-'margin-right',-'right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-034.xht"></test>
+		<test name="absolute-replaced-width-036" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-'auto'-specified-for-'margin-left',-'margin-right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-036.xht"></test>
+		<test name="absolute-replaced-width-041" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-'auto'-specified-for-'margin-left',-'margin-right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-041.xht"></test>
+		<test name="absolute-replaced-width-043" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-'auto'-specified-for-'margin-left',-'margin-right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-043.xht"></test>
+		<test name="absolute-replaced-width-048" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-'auto'-specified-for-'margin-left',-'margin-right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-048.xht"></test>
+		<test name="absolute-replaced-width-050" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-'auto'-specified-for-'margin-right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-050.xht"></test>
+		<test name="absolute-replaced-width-055" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-'auto'-specified-for-'margin-right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-055.xht"></test>
+		<test name="absolute-replaced-width-057" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-'auto'-specified-for-'margin-right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-057.xht"></test>
+		<test name="absolute-replaced-width-062" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-'auto'-specified-for-'margin-right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-062.xht"></test>
+		<test name="absolute-replaced-width-064" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-intrinsic-width-and-over-constrained-situation" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-064.xht"></test>
+		<test name="absolute-replaced-width-069" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-percentage-intrinsic-width-and-over-constrained-situation" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-069.xht"></test>
+		<test name="absolute-replaced-width-071" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-intrinsic-width-and-over-constrained-situation" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-071.xht"></test>
+		<test name="absolute-replaced-width-076" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-percentage-intrinsic-width-and-over-constrained-situation" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-076.xht"></test>
+	</section>
+	<section name="10.3.9-inline-block',-non-replaced-elements-in-normal-flow">
+		<test name="inline-block-non-replaced-width-001" description="inline-block-non-replaced-elements-shrink-to-fit" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-non-replaced-width-001.xht"></test>
+		<test name="inline-block-non-replaced-width-002" description="inline-block-non-replaced-elements-with-'margin-left'-and-'margin-right'-set-to-'auto'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-non-replaced-width-002.xht"></test>
+	</section>
+	<section name="10.4-minimum-and-maximum-widths:-'min-width'-and-'max-width'">
+		<test name="max-width-006" description="max-width-using-pixels-with-a-nominal-value,-96px" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/max-width-006.xht"></test>
+		<test name="max-width-094" description="max-width-using-percentages-with-a-nominal-value,-100%" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/max-width-094.xht"></test>
+		<test name="max-width-applies-to-008" description="max-width-applied-to-elements-with-'display'-set-to-'inline'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/max-width-applies-to-008.xht"></test>
+		<test name="max-width-applies-to-009" description="max-width-applied-to-elements-with-'display'-set-to-'block'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/max-width-applies-to-009.xht"></test>
+		<test name="max-width-applies-to-012" description="max-width-applied-to-elements-with-'display'-set-to-'inline-block'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/max-width-applies-to-012.xht"></test>
+		<test name="min-width-006" description="min-width-using-pixels-with-a-nominal-value,-96px" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/min-width-006.xht"></test>
+		<test name="min-width-007" description="min-width-using-pixels-with-a-positive-nominal-value,-+96px" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/min-width-007.xht"></test>
+		<test name="min-width-072" description="min-width-using-'em'-units-with-a-nominal-value,-6em" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/min-width-072.xht"></test>
+		<test name="min-width-094" description="min-width-using-percentages-with-a-nominal-value,-100%" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/min-width-094.xht"></test>
+		<test name="min-width-applies-to-008" description="min-width-applied-to-elements-with-'display'-set-to-'inline'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/min-width-applies-to-008.xht"></test>
+		<test name="min-width-applies-to-009" description="min-width-applied-to-elements-with-'display'-set-to-'block'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/min-width-applies-to-009.xht"></test>
+		<test name="min-width-applies-to-012" description="min-width-applied-to-elements-with-'display'-set-to-'inline-block'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/min-width-applies-to-012.xht"></test>
+	</section>
+	<section name="10.8.1-leading-and-half-leading">
+		<test name="leading-001" description="leading-and-half-leading-line-heights" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/leading-001.xht"></test>
+		<test name="line-box-height-002" description="height-for-inline-replaced-elements-and-'line-height'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/line-box-height-002.xht"></test>
+		<test name="line-height-105" description="line-height-with-a-nominal-value,-5" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/line-height-105.xht"></test>
+		<test name="line-height-bleed-001" description="glyphs-overflow-line-box" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/line-height-bleed-001.xht"></test>
+		<test name="line-height-largest-001" description="line-height-with-multiple-font-sizes" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/line-height-largest-001.xht"></test>
+		<test name="vertical-align-019" description="vertical-align-using-points-with-a-nominal-value,-72pt" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/vertical-align-019.xht"></test>
+		<test name="vertical-align-114" description="vertical-align-with-a-keyword,-'middle'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/vertical-align-114.xht"></test>
+	</section>
+</chapter>
 
-</section><section name="9.4.1-block-formatting-contexts">
-<test name="block-formatting-contexts-001" description="vertical-layout-of-boxes" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/block-formatting-contexts-001.xht"></test>
-<test name="block-formatting-contexts-009" description="new-block-formatting-context-with-absolute-positioned-elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/block-formatting-contexts-009.xht"></test>
-<test name="block-formatting-contexts-010" description="inline-block-elements-establish-a-new-block-formatting-context" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/block-formatting-contexts-010.xht"></test>
-</section><section name="9.4.2-inline-formatting-context">
-<test name="empty-inline-001" description="empty-inline-elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/empty-inline-001.xht"></test>
-<test name="inline-formatting-context-001" description="inline-formatting-context-and-basic-horizontal-layout" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-formatting-context-001.xht"></test>
-<test name="inline-formatting-context-002" description="inline-formatting-context-with-a-horizontal-left-margins" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-formatting-context-002.xht"></test>
-<test name="inline-formatting-context-003" description="inline-formatting-context-with-a-horizontal-right-margins" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-formatting-context-003.xht"></test>
-<test name="inline-formatting-context-006" description="inline-formatting-context-with-left-padding" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-formatting-context-006.xht"></test>
-<test name="inline-formatting-context-007" description="inline-formatting-context-with-right-padding" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-formatting-context-007.xht"></test>
-<test name="inline-formatting-context-012" description="inline-boxes-vertically-stack-if-they-do-not-fit-horizontally" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-formatting-context-012.xht"></test>
-<test name="inline-formatting-context-013" description="overflow-set-to-'scroll'-establishes-a-new-block-formatting-context" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-formatting-context-013.xht"></test>
-</section><section name="9.6-absolute-positioning">
-<test name="position-absolute-003" description="absolute-position-element-taken-out-of-flow" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-absolute-003.xht"></test>
-<test name="position-absolute-004" description="absolutely-positioned-elements-establishes-a-new-containing-block-for-normal-flow-children" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-absolute-004.xht"></test>
-<test name="position-absolute-005" description="absolutely-positioned-elements-do-not-establish-a-new-containing-block-for-fixed-position-descendants" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-absolute-005.xht"></test>
-<test name="position-absolute-006" description="absolutely-positioned-elements-establishes-a-new-containing-block-for-absolutely-positioned-children" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-absolute-006.xht"></test>
-<test name="position-absolute-007" description="absolutely-positioned-elements-child-behavior" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-absolute-007.xht"></test>
-<test name="position-absolute-008" description="float-is-computed-to-'none'-when-element-is-absolutely-positioned" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-absolute-008.xht"></test>
-<test name="position-fixed-007" description="float-is-computed-to-'none'-when-element-is-fixed-positioned" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-fixed-007.xht"></test>
+<chapter name="chapter-11-visual-effects">
+	<section name="11.1.1-overflow:-the-'overflow'-property">
+		<test name="clipping-002" description="overflow':-basic-test" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-002.xht"></test>
+		<test name="clipping-003" description="css-test" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-003.xht"></test>
+		<test name="clipping-004" description="css-clipping-test" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-004.xht"></test>
+		<test name="clipping-005" description="css-clipping-test" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-005.xht"></test>
+		<test name="clipping-006" description="css-clipping-test" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-006.xht"></test>
+		<test name="clipping-007" description="" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-007.xht"></test>
+		<test name="clipping-008" description="css-clipping-test" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-008.xht"></test>
+		<test name="clipping-015" description="css-clipping-test" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-015.xht"></test>
+		<test name="overflow-001" description="overflow-set-to-'visible'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/overflow-001.xht"></test>
+		<test name="overflow-002" description="overflow-set-to-'hidden'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/overflow-002.xht"></test>
+		<test name="overflow-003" description="interact-overflow-set-to-'scroll'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/overflow-003.xht"></test>
+		<test name="overflow-004" description="interact-overflow-set-to-'auto'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/overflow-004.xht"></test>
+	</section>
+</chapter>
 
-</section><section name="9.8.2-relative-positioning">
-<test name="position-relative-027" description="relatively-positioned-elements-with-auto-positioning-with-anonymous-boxes-before-and-after" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-027.xht"></test>
-<test name="position-relative-028" description="relatively-positioned-elements-with-auto-positioning-with-anonymous-boxes-after" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-028.xht"></test>
-<test name="position-relative-029" description="relatively-positioned-elements-with-auto-positioning-with-inline-box-after" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-029.xht"></test>
-<test name="position-relative-030" description="relatively-positioned-elements-with-auto-positioning-with-anonymous-boxes-before-and-after-with-trailing-inline" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-030.xht"></test>
-<test name="position-relative-032" description="relatively-positioned-box-has-no-impact-on-boxes-which-follow" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-032.xht"></test>
-<test name="position-relative-033" description="relatively-positioned-box-has-no-impact-on-boxes-which-follow-and-boxes-may-overlap" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-033.xht"></test>
-<test name="position-relative-034" description="relatively-positioned-content-inside-container-with-overflow-auto" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-034.xht"></test>
-<test name="position-relative-035" description="relatively-positioned-boxes-preserve-the-space-created-for-it-in-flow" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-035.xht"></test>
-<test name="position-relative-036" description="relatively-positioned-content-inside-container-with-overflow-scroll" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-036.xht"></test>
+<chapter name="chapter-14-colors-and-backgrounds">
+	<section name="14.1-foreground-color:-the-'color'-property">
+		<test name="color-004" description="color-set-to-hex-with-six-digits-with-a-nominal-value-#999999" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/color-004.xht"></test>
+		<test name="color-060" description="color-set-to-rgb()-using-integers-with-the-minimum-plus-one-value,-rgb(1,-1,-1)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/color-060.xht"></test>
+		<test name="color-063" description="color-set-to-rgb()-using-integers-with-a-nominal-value,-rgb(128,-128,-128)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/color-063.xht"></test>
+		<test name="color-140" description="color-set-to-purple" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/color-140.xht"></test>
+	</section>
+	<section name="14.2.1-background-properties">
+		<test name="background-001" description="background-with-color" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/background-001.xht"></test>
+		<test name="background-002" description="background-with-an-image" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/background-002.xht"></test>
+		<test name="background-015" description="background-with-(repeat-image)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/background-015.xht"></test>
+	</section>
+</chapter>
 
-</section><section name="9.9.1-specifying-the-stack-level:-the-'z-index'-property">
-<test name="z-index-abspos-001" description="css:-z-index-auto,--1-and-backgrounds-(child)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-001.xht"></test>
-<test name="z-index-abspos-002" description="css:-z-index-auto-and--1-(siblings)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-002.xht"></test>
-<test name="z-index-abspos-003" description="css:-z-index-0,--1-and-backgrounds-(child)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-003.xht"></test>
-<test name="z-index-abspos-004" description="css:-z-index-auto-and-0-(siblings)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-004.xht"></test>
-<test name="z-index-abspos-005" description="css:-z-index-auto-and-0-(siblings)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-005.xht"></test>
-<test name="z-index-abspos-006" description="css:-z-index-and-select-elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-006.xht"></test>
-<test name="z-index-abspos-007" description="css:-z-index-1,--1-and-backgrounds-(child)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-007.xht"></test>
-<test name="z-index-abspos-008" description="z-index" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-008.xht"></test>
-<test name="z-index-abspos-009" description="css:-z-index-and-the-canvas-and-background-propagation" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/z-index-abspos-009.xht"></test>
-</section></chapter><chapter name="chapter-10-visual-formatting-model-details">
-<section name="10.1-definition-of-containing-block">
-<test name="containing-block-001" description="containing-block-for-relative-positioned-elements-is-nearest-block-level-ancestor" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-001.xht"></test>
-<test name="containing-block-003" description="containing-block-for-relative-positioned-elements-is-nearest-inline-block-ancestor" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-003.xht"></test>
-<test name="containing-block-004" description="containing-block-for-static-positioned-elements-is-nearest-block-level-ancestor" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-004.xht"></test>
-<test name="containing-block-006" description="containing-block-for-static-positioned-elements-is-nearest-inline-block-ancestor" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-006.xht"></test>
-<test name="containing-block-007" description="initial-containing-block-for-fixed-positioned-elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-007.xht"></test>
-<test name="containing-block-008" description="containing-block-for-absolute-positioned-elements-is-nearest-positioned-(absolute)-ancestor" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-008.xht"></test>
-<test name="containing-block-009" description="containing-block-for-absolute-positioned-elements-is-nearest-positioned-(relative)-ancestor" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-009.xht"></test>
-<test name="containing-block-010" description="containing-block-for-absolute-positioned-elements-is-nearest-positioned-(fixed)-ancestor" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-010.xht"></test>
-<test name="containing-block-011" description="containing-blocks-inline-level-elements-position-based-on-left-to-right-direction-and-parent-element-is-relative" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-011.xht"></test>
-<test name="containing-block-013" description="containing-blocks-inline-level-elements-position-based-on-left-to-right-direction-and-parent-element-is-absolute" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-013.xht"></test>
-<test name="containing-block-015" description="containing-blocks-inline-level-elements-position-based-on-left-to-right-direction-and-parent-element-is-fixed" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-015.xht"></test>
-<test name="containing-block-017" description="containing-blocks-block-level-elements-position-based-on-left-to-right-direction-and-parent-element-is-relative" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-017.xht"></test>
-<test name="containing-block-019" description="containing-blocks-block-level-elements-position-based-on-left-to-right-direction-and-parent-element-is-absolute" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-019.xht"></test>
-<test name="containing-block-021" description="containing-blocks-block-level-elements-position-based-on-left-to-right-direction-and-parent-element-is-fixed" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-021.xht"></test>
-<test name="containing-block-023" description="containing-blocks-fall-back-to-initial-containing-block" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/containing-block-023.xht"></test>
-</section><section name="10.3.2-inline-replaced-elements">
-<test name="inline-replaced-width-001" description="inline-replaced-elements-and-'auto'-specified-for-'margin-left',-'margin-right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-replaced-width-001.xht"></test>
-<test name="inline-replaced-width-006" description="inline-replaced-elements-and-'auto'-specified-for-'margin-left',-'margin-right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-replaced-width-006.xht"></test>
-<test name="inline-replaced-width-011" description="replaced-inline-elements-with-%-widths" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-replaced-width-011.xht"></test>
-<test name="inline-replaced-width-012" description="replaced-inline-elements-wrapping-around-floats-(%-widths)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-replaced-width-012.xht"></test>
-<test name="inline-replaced-width-013" description="replaced-inline-elements-wrapping-around-floats-(pixel-widths)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-replaced-width-013.xht"></test>
-<test name="inline-replaced-width-014" description="replaced-inline-elements-with-%-widths" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-replaced-width-014.xht"></test>
-<test name="inline-replaced-width-015" description="replaced-inline-elements-wrapping-around-floats-(%-widths)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-replaced-width-015.xht"></test>
-</section><section name="10.3.4-block-level,-replaced-elements-in-normal-flow">
-<test name="block-replaced-width-001" description="block-replaced-elements-and-'auto'-specified-for-'margin-left',-'margin-right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/block-replaced-width-001.xht"></test>
-<test name="block-replaced-width-006" description="block-replaced-elements-and-'auto'-specified-for-'margin-left',-'margin-right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/block-replaced-width-006.xht"></test>
-<test name="c43-center-000" description="replaced-elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c43-center-000.xht"></test>
-<test name="c43-rpl-bbx-000" description="replaced-elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c43-rpl-bbx-000.xht"></test>
-<test name="c43-rpl-bbx-001" description="replaced-elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c43-rpl-bbx-001.xht"></test>
-<test name="replaced-elements-001" description="replaced-elements-margin" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/replaced-elements-001.xht"></test>
-</section><section name="10.3.8-absolutely-positioned,-replaced-elements">
-<test name="absolute-replaced-width-001" description="absolute-replaced-elements-and-'auto'-specified-for-'margin-left',-'margin-right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-001.xht"></test>
-<test name="absolute-replaced-width-006" description="absolute-replaced-elements-and-'auto'-specified-for-'margin-left',-'margin-right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-006.xht"></test>
-<test name="absolute-replaced-width-008" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-'auto'-specified-for-'margin-left',-'margin-right',-'left',-'right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-008.xht"></test>
-<test name="absolute-replaced-width-013" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-'auto'-specified-for-'margin-left',-'margin-right',-'left',-'right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-013.xht"></test>
-<test name="absolute-replaced-width-015" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-'auto'-specified-for-'margin-left',-'margin-right',-'left',-'right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-015.xht"></test>
-<test name="absolute-replaced-width-020" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-'auto'-specified-for-'margin-left',-'margin-right',-'left',-'right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-020.xht"></test>
-<test name="absolute-replaced-width-022" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-'auto'-specified-for-'margin-left',-'margin-right',-'right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-022.xht"></test>
-<test name="absolute-replaced-width-027" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-'auto'-specified-for-'margin-left',-'margin-right',-'right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-027.xht"></test>
-<test name="absolute-replaced-width-029" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-'auto'-specified-for-'margin-left',-'margin-right',-'right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-029.xht"></test>
-<test name="absolute-replaced-width-034" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-'auto'-specified-for-'margin-left',-'margin-right',-'right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-034.xht"></test>
-<test name="absolute-replaced-width-036" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-'auto'-specified-for-'margin-left',-'margin-right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-036.xht"></test>
-<test name="absolute-replaced-width-041" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-'auto'-specified-for-'margin-left',-'margin-right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-041.xht"></test>
-<test name="absolute-replaced-width-043" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-'auto'-specified-for-'margin-left',-'margin-right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-043.xht"></test>
-<test name="absolute-replaced-width-048" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-'auto'-specified-for-'margin-left',-'margin-right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-048.xht"></test>
-<test name="absolute-replaced-width-050" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-'auto'-specified-for-'margin-right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-050.xht"></test>
-<test name="absolute-replaced-width-055" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-'auto'-specified-for-'margin-right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-055.xht"></test>
-<test name="absolute-replaced-width-057" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-'auto'-specified-for-'margin-right'-and-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-057.xht"></test>
-<test name="absolute-replaced-width-062" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-'auto'-specified-for-'margin-right'-and-percentage-intrinsic-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-062.xht"></test>
-<test name="absolute-replaced-width-064" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-intrinsic-width-and-over-constrained-situation" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-064.xht"></test>
-<test name="absolute-replaced-width-069" description="absolute-replaced-elements-with-'direction'-as-left-to-right,-percentage-intrinsic-width-and-over-constrained-situation" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-069.xht"></test>
-<test name="absolute-replaced-width-071" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-intrinsic-width-and-over-constrained-situation" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-071.xht"></test>
-<test name="absolute-replaced-width-076" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-percentage-intrinsic-width-and-over-constrained-situation" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-076.xht"></test>
-</section><section name="10.3.9-inline-block',-non-replaced-elements-in-normal-flow">
-<test name="inline-block-non-replaced-width-001" description="inline-block-non-replaced-elements-shrink-to-fit" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-non-replaced-width-001.xht"></test>
-<test name="inline-block-non-replaced-width-002" description="inline-block-non-replaced-elements-with-'margin-left'-and-'margin-right'-set-to-'auto'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-non-replaced-width-002.xht"></test>
-</section><section name="10.4-minimum-and-maximum-widths:-'min-width'-and-'max-width'">
-<test name="max-width-006" description="max-width-using-pixels-with-a-nominal-value,-96px" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/max-width-006.xht"></test>
-<test name="max-width-094" description="max-width-using-percentages-with-a-nominal-value,-100%" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/max-width-094.xht"></test>
-<test name="max-width-applies-to-008" description="max-width-applied-to-elements-with-'display'-set-to-'inline'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/max-width-applies-to-008.xht"></test>
-<test name="max-width-applies-to-009" description="max-width-applied-to-elements-with-'display'-set-to-'block'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/max-width-applies-to-009.xht"></test>
-<test name="max-width-applies-to-012" description="max-width-applied-to-elements-with-'display'-set-to-'inline-block'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/max-width-applies-to-012.xht"></test>
-<test name="min-width-006" description="min-width-using-pixels-with-a-nominal-value,-96px" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/min-width-006.xht"></test>
-<test name="min-width-007" description="min-width-using-pixels-with-a-positive-nominal-value,-+96px" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/min-width-007.xht"></test>
-<test name="min-width-072" description="min-width-using-'em'-units-with-a-nominal-value,-6em" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/min-width-072.xht"></test>
-<test name="min-width-094" description="min-width-using-percentages-with-a-nominal-value,-100%" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/min-width-094.xht"></test>
-<test name="min-width-applies-to-008" description="min-width-applied-to-elements-with-'display'-set-to-'inline'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/min-width-applies-to-008.xht"></test>
-<test name="min-width-applies-to-009" description="min-width-applied-to-elements-with-'display'-set-to-'block'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/min-width-applies-to-009.xht"></test>
-<test name="min-width-applies-to-012" description="min-width-applied-to-elements-with-'display'-set-to-'inline-block'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/min-width-applies-to-012.xht"></test>
-</section><section name="10.8.1-leading-and-half-leading">
-<test name="leading-001" description="leading-and-half-leading-line-heights" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/leading-001.xht"></test>
-<test name="line-box-height-002" description="height-for-inline-replaced-elements-and-'line-height'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/line-box-height-002.xht"></test>
-<test name="line-height-105" description="line-height-with-a-nominal-value,-5" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/line-height-105.xht"></test>
-<test name="line-height-bleed-001" description="glyphs-overflow-line-box" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/line-height-bleed-001.xht"></test>
-<test name="line-height-largest-001" description="line-height-with-multiple-font-sizes" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/line-height-largest-001.xht"></test>
-<test name="vertical-align-019" description="vertical-align-using-points-with-a-nominal-value,-72pt" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/vertical-align-019.xht"></test>
-<test name="vertical-align-114" description="vertical-align-with-a-keyword,-'middle'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/vertical-align-114.xht"></test>
-</section></chapter><chapter name="chapter-11-visual-effects">
-<section name="11.1.1-overflow:-the-'overflow'-property">
-<test name="clipping-002" description="overflow':-basic-test" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-002.xht"></test>
-<test name="clipping-003" description="css-test" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-003.xht"></test>
-<test name="clipping-004" description="css-clipping-test" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-004.xht"></test>
-<test name="clipping-005" description="css-clipping-test" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-005.xht"></test>
-<test name="clipping-006" description="css-clipping-test" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-006.xht"></test>
-<test name="clipping-007" description="" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-007.xht"></test>
-<test name="clipping-008" description="css-clipping-test" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-008.xht"></test>
-<test name="clipping-015" description="css-clipping-test" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-015.xht"></test>
-<test name="overflow-001" description="overflow-set-to-'visible'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/overflow-001.xht"></test>
-<test name="overflow-002" description="overflow-set-to-'hidden'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/overflow-002.xht"></test>
-<test name="overflow-003" description="interact-overflow-set-to-'scroll'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/overflow-003.xht"></test>
-<test name="overflow-004" description="interact-overflow-set-to-'auto'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/overflow-004.xht"></test>
-</section></chapter><chapter name="chapter-14-colors-and-backgrounds">
-<section name="14.1-foreground-color:-the-'color'-property">
-<test name="color-004" description="color-set-to-hex-with-six-digits-with-a-nominal-value-#999999" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/color-004.xht"></test>
-<test name="color-060" description="color-set-to-rgb()-using-integers-with-the-minimum-plus-one-value,-rgb(1,-1,-1)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/color-060.xht"></test>
-<test name="color-063" description="color-set-to-rgb()-using-integers-with-a-nominal-value,-rgb(128,-128,-128)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/color-063.xht"></test>
-<test name="color-140" description="color-set-to-purple" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/color-140.xht"></test>
-</section><section name="14.2.1-background-properties">
-<test name="background-001" description="background-with-color" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/background-001.xht"></test>
-<test name="background-002" description="background-with-an-image" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/background-002.xht"></test>
-<test name="background-015" description="background-with-(repeat-image)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/background-015.xht"></test>
-</section></chapter><chapter name="chapter-15-font">
-<section name="15.7-font-size:-the-'font-size'-property">
-<test name="font-size-006" description="font-size-using-pixels-with-a-nominal-value,-96px" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-size-006.xht"></test>
-<test name="font-size-094" description="font-size-using-percentages-with-a-nominal-value,-100%" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-size-094.xht"></test>
-<test name="font-size-107" description="font-size-set-to-the-keyword-'large'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-size-107.xht"></test>
-<test name="font-size-110" description="font-size-set-to-the-keyword-'larger'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-size-110.xht"></test>
-<test name="font-size-111" description="font-size-set-to-the-keyword-'smaller'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-size-111.xht"></test>
-</section><section name="15.4-font-styling:-the-'font-style'-property">
-<test name="font-style-002" description="font-style-set-to-'italic'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-style-002.xht"></test>
-<test name="font-style-003" description="font-style-set-to-'oblique'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-style-003.xht"></test>
-</section><section name="15.5-small-caps:-the-'font-variant'-property">
-<test name="font-variant-002" description="font-variant-set-to-'small-caps'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-variant-002.xht"></test>
-<test name="font-weight-002" description="font-weight-set-to-the-keyword-'bold'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-weight-002.xht"></test>
-</section></chapter><chapter name="chapter-16-text">
-<section name="16.4-letter-and-word-spacing:-the-'letter-spacing'-and-'word-spacing'-properties">
-<test name="letter-spacing-007" description="letter-spacing-using-pixels-with-a-nominal-value,-96px" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/letter-spacing-007.xht"></test>
-<test name="letter-spacing-justify-001" description="letter-spacing-and-'text-align:-justify'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/letter-spacing-justify-001.xht"></test>
-<test name="word-spacing-019" description="word-spacing-set-to-a-nominal-value-of-'72pt'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/word-spacing-019.xht"></test>
-</section><section name="16.2-alignment:-the-'text-align'-property">
-<test name="text-align-001" description="text-align-set-to-'left'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-001.xht"></test>
-<test name="text-align-002" description="text-align-set-to-'right'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-002.xht"></test>
-<test name="text-align-003" description="text-align-set-to-'center'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-003.xht"></test>
-<test name="text-align-004" description="text-align-set-to-'justify'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-004.xht"></test>
-<test name="text-align-applies-to-001" description="text-align-application-on-a-'display:-inline'-element" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-applies-to-001.xht"></test>
-</section><section name="16.1-indentation:-the-'text-indent'-property">
-<test name="text-indent-007" description="text-indent-using-pixels-with-a-nominal-value,-96px" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-indent-007.xht"></test>
-</section><section name="16.5-capitalization:-the-'text-transform'-property">
-<test name="text-transform-001" description="text-transform-set-to-'capitalize'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-transform-001.xht"></test>
-<test name="text-transform-002" description="text-transform-set-to-'lowercase'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-transform-002.xht"></test>
-<test name="text-transform-003" description="text-transform-set-to-'uppercase'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-transform-003.xht"></test>
-<test name="text-transform-004" description="text-transform-set-to-'none'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-transform-004.xht"></test>
-</section></chapter></data>
+<chapter name="chapter-15-font">
+	<section name="15.7-font-size:-the-'font-size'-property">
+		<test name="font-size-006" description="font-size-using-pixels-with-a-nominal-value,-96px" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-size-006.xht"></test>
+		<test name="font-size-094" description="font-size-using-percentages-with-a-nominal-value,-100%" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-size-094.xht"></test>
+		<test name="font-size-107" description="font-size-set-to-the-keyword-'large'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-size-107.xht"></test>
+		<test name="font-size-110" description="font-size-set-to-the-keyword-'larger'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-size-110.xht"></test>
+		<test name="font-size-111" description="font-size-set-to-the-keyword-'smaller'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-size-111.xht"></test>
+	</section>
+	<section name="15.4-font-styling:-the-'font-style'-property">
+		<test name="font-style-002" description="font-style-set-to-'italic'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-style-002.xht"></test>
+		<test name="font-style-003" description="font-style-set-to-'oblique'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-style-003.xht"></test>
+	</section>
+	<section name="15.5-small-caps:-the-'font-variant'-property">
+		<test name="font-variant-002" description="font-variant-set-to-'small-caps'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-variant-002.xht"></test>
+		<test name="font-weight-002" description="font-weight-set-to-the-keyword-'bold'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/font-weight-002.xht"></test>
+	</section>
+</chapter>
+
+<chapter name="chapter-16-text">
+	<section name="16.4-letter-and-word-spacing:-the-'letter-spacing'-and-'word-spacing'-properties">
+		<test name="letter-spacing-007" description="letter-spacing-using-pixels-with-a-nominal-value,-96px" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/letter-spacing-007.xht"></test>
+		<test name="letter-spacing-justify-001" description="letter-spacing-and-'text-align:-justify'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/letter-spacing-justify-001.xht"></test>
+		<test name="word-spacing-019" description="word-spacing-set-to-a-nominal-value-of-'72pt'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/word-spacing-019.xht"></test>
+	</section>
+	<section name="16.2-alignment:-the-'text-align'-property">
+		<test name="text-align-001" description="text-align-set-to-'left'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-001.xht"></test>
+		<test name="text-align-002" description="text-align-set-to-'right'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-002.xht"></test>
+		<test name="text-align-003" description="text-align-set-to-'center'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-003.xht"></test>
+		<test name="text-align-004" description="text-align-set-to-'justify'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-004.xht"></test>
+		<test name="text-align-applies-to-001" description="text-align-application-on-a-'display:-inline'-element" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-applies-to-001.xht"></test>
+	</section>
+	<section name="16.1-indentation:-the-'text-indent'-property">
+		<test name="text-indent-007" description="text-indent-using-pixels-with-a-nominal-value,-96px" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-indent-007.xht"></test>
+	</section>
+	<section name="16.5-capitalization:-the-'text-transform'-property">
+		<test name="text-transform-001" description="text-transform-set-to-'capitalize'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-transform-001.xht"></test>
+		<test name="text-transform-002" description="text-transform-set-to-'lowercase'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-transform-002.xht"></test>
+		<test name="text-transform-003" description="text-transform-set-to-'uppercase'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-transform-003.xht"></test>
+		<test name="text-transform-004" description="text-transform-set-to-'none'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-transform-004.xht"></test>
+	</section>
+</chapter>
+</data>
