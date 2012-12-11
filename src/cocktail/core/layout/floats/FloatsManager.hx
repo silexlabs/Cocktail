@@ -299,10 +299,10 @@ class FloatsManager
 	{
 		//get float data except for x position
 		var floatData:RectangleVO = getFloatData(elementRenderer, currentChildPosition, containingBlockWidth);
-		
+
 		//a right float is placed to the left of all the preceding right float which
 		//are on the same line
-		floatData.x = containingBlockWidth - floatData.width - getRightFloatOffset(floatData.y, containingBlockWidth) + currentChildPosition.x;
+		floatData.x = containingBlockWidth - floatData.width - getRightFloatOffset(floatData.y, containingBlockWidth + currentChildPosition.x) + currentChildPosition.x;
 
 		var floatVO:FloatVO = new FloatVO(elementRenderer, floatData);
 		
@@ -434,7 +434,8 @@ class FloatsManager
 		var rightFloatOffset:Float = 0;
 		
 		//loop in all right floats
-		for (i in 0...floats.right.length)
+		var length:Int = floats.right.length;
+		for (i in 0...length)
 		{
 			var floatBounds:RectangleVO = floats.right[i].bounds;
 			//determine if the float intersects the line at y
