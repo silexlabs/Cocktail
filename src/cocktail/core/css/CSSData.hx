@@ -348,8 +348,6 @@ enum AttributeSelectorValue {
 	 * an element whose "name" attribute
 	 * value is a list of whitespace-separated values,
 	 * one of which is exactly equal to "value"
-	 * 
-	 * TODO 2 : value should be stored as string array
 	 */
 	ATTRIBUTE_LIST(name:String, value:String);
 	
@@ -374,8 +372,6 @@ enum AttributeSelectorValue {
 	/**
 	 * an element whose "name" attribute has a hyphen-separated
 	 * list of values beginning (from the left) with "value"
-	 * 
-	 * TODO 2 : value should be store as string array
 	 */
 	ATTRIBUTE_VALUE_BEGINS_HYPHEN_LIST(name:String, value:String);
 }

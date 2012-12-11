@@ -429,9 +429,6 @@ class HTMLElement extends Element<HTMLElement>
 		if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
 		{
 			style.cssText = value;
-			
-			//TODO 1 : retrieve changed style or done automatically via callback ?
-			//when replacing style attribute, should first remove all styles ?
 			invalidateCascade();
 		}
 		//setting the class name must also update
@@ -733,8 +730,6 @@ class HTMLElement extends Element<HTMLElement>
 			//synchronously detach the element renderer
 			//of this HTMLElement and its child, and 
 			//schedule an update of the rendering tree
-			//
-			//TODO 3 : is scheduling necessary ?
 			//
 			//only element and text node can belong to the
 			//rendering tree
@@ -1214,8 +1209,6 @@ class HTMLElement extends Element<HTMLElement>
 	
 	/**
 	 * Return wether this HTMLElement is supposed to be rendered
-	 * 
-	 * TODO 3 : unit tests for "hidden" attribute
 	 */
 	private function isRendered():Bool
 	{
@@ -1482,9 +1475,7 @@ class HTMLElement extends Element<HTMLElement>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SCROLLING SETTER/GETTER AND METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	//TODO 3 : should unit test, not very sure what this getter
-	//is supposed to return
+
 	private function get_scrollHeight():Int
 	{
 		if (elementRenderer != null)
@@ -1821,7 +1812,6 @@ class HTMLElement extends Element<HTMLElement>
 		return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
 	}
 	
-	//TODO 3  : unit test
 	private function get_offsetLeft():Int
 	{
 		updateDocumentImmediately();

@@ -82,7 +82,6 @@ class CSSSelectorParser
 							case '.'.code:
 								state = SIMPLE_SELECTOR;
 								next = END_CLASS_SELECTOR;
-								//TODO 1 : hack to add 1 ?
 								start = position + 1;
 								
 							case '#'.code:

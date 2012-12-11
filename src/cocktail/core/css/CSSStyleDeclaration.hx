@@ -232,9 +232,6 @@ class CSSStyleDeclaration
 	 * Do nothing if the name or the value are not valid.
 	 * If the name is valid and the value is null, remove
 	 * the property
-	 * 
-	 * TODO 1 : check that property name is valid and that
-	 * "!important" is not in parsed value
 	 */
 	public function setProperty(name:String, value:String, priority:String = null):Void
 	{
@@ -676,15 +673,32 @@ class CSSStyleDeclaration
 						
 					default:
 				}
-				
-			//TODO 1 : need better check	
+					
 			case CSSConstants.FONT_FAMILY:
 				switch(styleValue)
 				{
 					case CSS_LIST(values):
+						
+						var length:Int = values.length;
+						for (i in 0...length)
+						{
+							switch(values[i])
+							{
+								case IDENTIFIER(value):
+									
+								case STRING(value):
+									
+								default:
+									return false;
+							}
+						}
+						
 						return true;
 						
 					case IDENTIFIER(value):
+						return true;
+						
+					case STRING(value):
 						return true;
 						
 					case INHERIT, INITIAL:
@@ -1378,8 +1392,6 @@ class CSSStyleDeclaration
 	/**
 	 * Return wether a property is a
 	 * CSS shorthand, usgin its name
-	 * 
-	 * TODO 1 : complete shorthands
 	 */
 	private function isShorthand(propertyName:String):Bool
 	{
@@ -1485,7 +1497,6 @@ class CSSStyleDeclaration
 						setTypedProperty(CSSConstants.PADDING_TOP, styleValue, important);
 						setTypedProperty(CSSConstants.PADDING_BOTTOM, styleValue, important);	
 						
-					//TODO 2 : is inherit allowed for each value in shorthand ?	
 					case INHERIT, INITIAL:	
 						setTypedProperty(CSSConstants.PADDING_LEFT, styleValue, important);
 						setTypedProperty(CSSConstants.PADDING_RIGHT,styleValue, important);
@@ -2516,8 +2527,6 @@ class CSSStyleDeclaration
 	/**
 	 * Return wether a group value for the 
 	 * transition shorthand is valid
-	 * 
-	 * TODO 2 : messy should be separated in sub methods
 	 */
 	private function isValidTransitionGroup(styleValues:Array<CSSPropertyValue>):Bool
 	{
@@ -2854,8 +2863,8 @@ class CSSStyleDeclaration
 		_properties = _properties.clear();
 		
 		var typedProperties:Array<TypedPropertyVO> = CSSStyleParser.parseStyle(value);
-		
-		for (i in 0...typedProperties.length)
+		var length:Int = typedProperties.length;
+		for (i in 0...length)
 		{
 			var typedProperty:TypedPropertyVO = typedProperties[i];
 			applyProperty(typedProperty.name, typedProperty.typedValue, typedProperty.important);
