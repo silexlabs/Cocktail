@@ -34,6 +34,13 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 	 */
 	public var lengthCSSProperties(default, null):Array<String>;
 	
+	/**
+	 * An array containing the names of all the supported
+	 * CSS properties which can be defined as a CSS color
+	 * or can have a CSS color component
+	 */
+	public var colorCSSProperties(default, null):Array<String>;
+	
 	
 	/**
 	 * Class constructor. Push all the initial values
@@ -44,6 +51,7 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		
 		initSupportedCSSProperties();
 		initLengthCSSProperties();
+		initColorCSSProperties();
 		initProperties();
 	}
 	
@@ -58,6 +66,13 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		CSSConstants.LEFT, CSSConstants.RIGHT, CSSConstants.TOP, CSSConstants.BOTTOM, CSSConstants.LETTER_SPACING,
 		CSSConstants.WORD_SPACING, CSSConstants.TEXT_INDENT, CSSConstants.TRANSFORM, CSSConstants.TRANSFORM_ORIGIN,
 		CSSConstants.BACKGROUND_POSITION, CSSConstants.BACKGROUND_SIZE
+		];
+	}
+	
+	private function initColorCSSProperties():Void
+	{
+		colorCSSProperties = [
+			CSSConstants.BACKGROUND_COLOR, CSSConstants.COLOR
 		];
 	}
 	

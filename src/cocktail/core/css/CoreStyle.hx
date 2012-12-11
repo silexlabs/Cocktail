@@ -350,6 +350,26 @@ class CoreStyle
 			}
 		}
 		
+		//when the value of the color style changes, all the style
+		//which value might be a color value must be cascaded, as
+		//if they use the currentColor keyword, their value will be
+		//the same as the one of the color style value
+		if (cascadeManager.hasColor == true)
+		{
+			var colorDidChange:Bool = cascadeProperty(CSSConstants.COLOR, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentFontSize, parentXHeight, 0, 0, programmaticChange);
+			
+			//only cascade color propery if value actually changed
+			if (colorDidChange == true)
+			{
+				var colorCSSProperties:Array<String> = initialStyleDeclaration.colorCSSProperties;
+				var length:Int = colorCSSProperties.length;
+				for (i in 0...length)
+				{
+					cascadeManager.addPropertyToCascade(colorCSSProperties[i]);
+				}
+			}
+		}
+		
 		var fontSize:Float = fontMetrics.fontSize;
 		var xHeight:Float = fontMetrics.xHeight;
 		
@@ -541,7 +561,8 @@ class CoreStyle
 				switch(propertyName)
 				{
 					default:	
-						computedProperty = getComputedProperty(propertyName, property, parentFontSize, parentXHeight, fontSize, xHeight);
+						var parentColor:CSSColorValue = getColor(parentStyleDeclaration.getTypedProperty(CSSConstants.COLOR).typedValue);
+						computedProperty = getComputedProperty(propertyName, property, parentFontSize, parentXHeight, fontSize, xHeight, parentColor);
 				}
 		}
 		
@@ -590,7 +611,7 @@ class CoreStyle
 	 * specified value and so it doesn't need any
 	 * further treatement
 	 */
-	private function getComputedProperty(propertyName:String, property:CSSPropertyValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float):CSSPropertyValue
+	private function getComputedProperty(propertyName:String, property:CSSPropertyValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, parentColor:CSSColorValue):CSSPropertyValue
 	{
 		switch(propertyName)
 		{
@@ -613,7 +634,8 @@ class CoreStyle
 			//for transition property, "left" "right, "top" and "bottom"
 			//value are parsed as CSS keywords (they are used for 
 			//float style for instance), but should actually be  computed as
-			//identifier for this property
+			//identifier for this property, as they refer to the top, left, right, bottom
+			//CSS styles
 			case CSSConstants.TRANSITION_PROPERTY:
 				switch(property)
 				{
@@ -649,6 +671,12 @@ class CoreStyle
 											
 										case RIGHT:
 											value[i] = IDENTIFIER(CSSConstants.RIGHT);
+											
+										case TOP:	
+											return IDENTIFIER(CSSConstants.TOP);
+								
+										case BOTTOM:	
+											return IDENTIFIER(CSSConstants.BOTTOM);		
 											
 										default:	
 									}
@@ -717,7 +745,6 @@ class CoreStyle
 					//TODO : manage transform function to turn values
 					//into absolutes length
 					case KEYWORD(value):
-						//computedValues.transform = property;
 						
 					default:	
 				}
@@ -809,8 +836,7 @@ class CoreStyle
 				switch(property)
 				{
 					case COLOR(value):
-						//TODO : currentColor should be parent color
-						return COLOR(CSSValueConverter.getComputedCSSColorFromCSSColor(value, value));
+						return COLOR(CSSValueConverter.getComputedCSSColorFromCSSColor(value, parentColor));
 						
 					default:	
 				}
@@ -819,7 +845,7 @@ class CoreStyle
 				switch(property)
 				{
 					case COLOR(value):
-						return COLOR(CSSValueConverter.getComputedCSSColorFromCSSColor(value, value));
+						return COLOR(CSSValueConverter.getComputedCSSColorFromCSSColor(value, getColor(color)));
 						
 					default:	
 				}	
@@ -829,10 +855,8 @@ class CoreStyle
 				switch(property)
 				{
 					case KEYWORD(value):
-						//computedValues.backgroundImage = property;
 						
 					case URL(value):
-						//computedValues.backgroundImage = property;
 						
 					default:	
 				}

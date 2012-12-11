@@ -956,9 +956,6 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 * composited on top of a compositing layer and
 	 * it must have its own graphic context to respect
 	 * z-index
-	 * 
-	 * TODO 1 : should also inspect layer which don't
-	 * establish stacking context
 	 */
 	private function hasCompositingLayerSibling():Bool
 	{
