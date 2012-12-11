@@ -96,7 +96,6 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		else
 		{
 			//if only left is auto, compute right then deduce left from the remaining horizontal space
-			//TODO 4 : left is not actually computed yet, it must be computed during shrink-to-fit
 			if (style.isAuto(style.left) == true)
 			{
 				usedValues.right = getComputedPositionOffset(style.right, containingBlockData.width);
