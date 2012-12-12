@@ -776,7 +776,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						
 						//for x position, it is either defined by floated elements or by the left
 						//margin, whichever is bigger
-						var leftFloatOffset:Float = floatsManager.getLeftFloatOffset(_childPosition.y);
+						var leftFloatOffset:Float = floatsManager.getLeftFloatOffset(_childPosition.y, childMarginHeight);
 						if (leftFloatOffset > child.coreStyle.usedValues.marginLeft)
 						{
 							child.bounds.x = leftFloatOffset;
@@ -931,14 +931,14 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		//the width of a line box is the client width of the containing block minus
 		//the margin box width of any floated element intersecting with the line
-		var availableWidth:Float = coreStyle.usedValues.width - floatsManager.getLeftFloatOffset(lineBoxPosition.y) - floatsManager.getRightFloatOffset(lineBoxPosition.y, coreStyle.usedValues.width);
+		var availableWidth:Float = coreStyle.usedValues.width - floatsManager.getLeftFloatOffset(lineBoxPosition.y, coreStyle.usedValues.lineHeight) - floatsManager.getRightFloatOffset(lineBoxPosition.y, coreStyle.usedValues.lineHeight, coreStyle.usedValues.width);
 
 		var lineBox:LineBox = new LineBox(this, availableWidth, true, layoutState);
 
 		//position the line box in x and y relative to the containing block (this)
 		//taking floated elements into account
 		lineBox.bounds.y = lineBoxPosition.y;
-		lineBox.bounds.x = floatsManager.getLeftFloatOffset(lineBox.bounds.y);
+		lineBox.bounds.x = floatsManager.getLeftFloatOffset(lineBox.bounds.y, coreStyle.usedValues.lineHeight);
 		lineBoxes.push(lineBox);
 		
 		return lineBox;

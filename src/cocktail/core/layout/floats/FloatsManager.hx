@@ -276,7 +276,7 @@ class FloatsManager
 
 		//a left float is placed to right of all the preceding left float
 		//which are on the same line as this one
-		floatData.x = getLeftFloatOffset(floatData.y);
+		floatData.x = getLeftFloatOffset(floatData.y, floatData.height);
 		
 		if (floatData.x < currentChildPosition.x)
 		{
@@ -298,7 +298,7 @@ class FloatsManager
 
 		//a right float is placed to the left of all the preceding right float which
 		//are on the same line
-		floatData.x = containingBlockWidth - floatData.width - getRightFloatOffset(floatData.y, containingBlockWidth + currentChildPosition.x) + currentChildPosition.x;
+		floatData.x = containingBlockWidth - floatData.width - getRightFloatOffset(floatData.y, floatData.height, containingBlockWidth + currentChildPosition.x) + currentChildPosition.x;
 
 		var floatVO:FloatVO = new FloatVO(elementRenderer, floatData);
 		
@@ -432,12 +432,7 @@ class FloatsManager
 	private function canFitElementAtY(y:Float, elementHeight:Float, elementWidth:Float, containingBlockWidth:Float, containingBlockXOffset:Float):Bool
 	{
 		//test if top y position of element can fit
-		if (getLeftFloatOffset(y) + getRightFloatOffset(y, containingBlockWidth) + elementWidth > containingBlockWidth + containingBlockXOffset)
-		{
-			return false;
-		}
-		//test if bottom y position of element can fit
-		else if (getLeftFloatOffset(y + elementHeight) + getRightFloatOffset(y + elementHeight, containingBlockWidth) + elementWidth > containingBlockWidth + containingBlockXOffset)
+		if (getLeftFloatOffset(y, elementHeight) + getRightFloatOffset(y, elementHeight, containingBlockWidth) + elementWidth > containingBlockWidth + containingBlockXOffset)
 		{
 			return false;
 		}
@@ -452,56 +447,25 @@ class FloatsManager
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Return the right float offset at a y position. The right float offset is
-	 * the added width of all the right floats which would be intersected if an horizontal
-	 * line was drawn at the y position.
+	 * Return the left float offset intersecting with the line between y and y + elementHeight. The left float offset is
+	 * the added width of all the left floats intersecting this line
 	 */
-	public function getRightFloatOffset(y:Float, containingWidth:Float):Float
-	{
-		var rightFloatOffset:Float = 0;
-		
-		//loop in all right floats
-		var length:Int = floats.right.length;
-		for (i in 0...length)
-		{
-			var floatBounds:RectangleVO = floats.right[i].bounds;
-			//determine if the float intersects the line at y
-			if (floatBounds.y + floatBounds.height > y &&
-			floatBounds.y <= y)
-			{
-				//if it does, if its offset form the right border of the containing
-				//block is superior to the current stored right offset, it becomes
-				//the right offset
-				if (containingWidth - floatBounds.x > rightFloatOffset)
-				{
-					rightFloatOffset = containingWidth - floatBounds.x;
-				}
-			}
-		}
-		
-		return rightFloatOffset;
-	}
-	
-	/**
-	 * Return the left float offset at a y position. The left float offset is
-	 * the added width of all the left floats which would be intersected if an horizontal
-	 * line was drawn at the y position.
-	 * 
-	 */
-	public function getLeftFloatOffset(y:Float):Float
+	public function getLeftFloatOffset(y:Float, elementHeight:Float):Float
 	{
 		var leftFloatOffset:Float = 0;
 		
 		//loop in all left floats
-		for (i in 0...floats.left.length)
+		var length:Int = floats.left.length;
+		for (i in 0...length)
 		{
 			var floatBounds:RectangleVO = floats.left[i].bounds;
 			
-			//determine if the float intersects the line at y
+			//determine if the float intersects the line
 			if (floatBounds.y + floatBounds.height > y &&
-			floatBounds.y <= y)
+			floatBounds.y <= y
+			|| floatBounds.y <= (y + elementHeight) && floatBounds.y > y)
 			{
-				//if it does, if its offset form the left border of the containing
+				//if it does, if its offset from the left border of the containing
 				//block is superior to the current stored left offset, it becomes
 				//the left offset
 				if (floatBounds.x + floatBounds.width > leftFloatOffset)
@@ -512,5 +476,30 @@ class FloatsManager
 		}
 		
 		return leftFloatOffset;
+	}
+	
+	/**
+	 * same as above for right float offset
+	 */
+	public function getRightFloatOffset(y:Float, elementHeight:Float, containingWidth:Float):Float
+	{
+		var rightFloatOffset:Float = 0;
+		
+		var length:Int = floats.right.length;
+		for (i in 0...length)
+		{
+			var floatBounds:RectangleVO = floats.right[i].bounds;
+			if (floatBounds.y + floatBounds.height > y &&
+			floatBounds.y <= y
+			|| floatBounds.y <= (y + elementHeight) && floatBounds.y > y)
+			{
+				if (containingWidth - floatBounds.x > rightFloatOffset)
+				{
+					rightFloatOffset = containingWidth - floatBounds.x;
+				}
+			}
+		}
+		
+		return rightFloatOffset;
 	}
 }
