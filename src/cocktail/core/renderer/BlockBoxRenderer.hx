@@ -726,7 +726,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			if (child.canHaveClearance() == true)
 			{
 				//TODO : when clearing, should only clear floats declared before in document order
-				floatsManager.clearFloats(child.coreStyle.clear, _childPosition.y);
+				var clearance:Float = floatsManager.getClearance(this, _childPosition.y);
 			}
 			//absolutely positioned child are not positioned here
 			if (child.isPositioned() == false || child.isRelativePositioned() == true)

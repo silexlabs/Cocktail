@@ -118,117 +118,101 @@ class FloatsManager
 	// used to clear current floats
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Clears the left, right or both floats and return the new y position of
-	 * the flow, the one below the cleared floats.
-	 * 
-	 * Empties the cleared floats array(s)
-	 * 
-	 * @param	clear the type of clearance (left, right or both)
-	 * @param	currentFormattingContextY used to compute the new formatting context y position
-	 * @return  the new formatting context y position
-	 */
-	public function clearFloats(clear:CSSPropertyValue, currentFormattingContextY:Float):Float
+
+	public function getClearance(target:ElementRenderer, currentY:Float):Float
 	{
-		var ret:Float;
+		var clearance:Float = 0;
 		
-		switch(clear)
+		switch(target.coreStyle.getKeyword(target.coreStyle.clear))
 		{
-			case KEYWORD(value):
-				switch(value)
-				{
-					case LEFT:
-						ret = clearLeft(currentFormattingContextY);
-						
-					case RIGHT:	
-						ret = clearRight(currentFormattingContextY);
-						
-					case BOTH:	
-						ret = clearBoth(currentFormattingContextY);
-						
-					case NONE:	
-						ret = currentFormattingContextY;
-						
-					default:
-						ret = currentFormattingContextY;
-				}
+			
+			case LEFT:
+				clearance = doGetClearance(target, currentY, floats.left);
+				
+			case RIGHT:	
+				clearance = doGetClearance(target, currentY, floats.right);
+				
+			case BOTH:	
+				clearance = clearBoth(target, currentY);
 				
 			default:
-				ret = currentFormattingContextY;
 		}
 		
-		return ret;
-	}
-	
-	/**
-	 * Clear left floats
-	 */
-	private function clearLeft(currentFormattingContextY:Float):Float
-	{
-		return doClearFloat(currentFormattingContextY, floats.left);
-	}
-	
-	/**
-	 * Clear right floats
-	 */
-	private function clearRight(currentFormattingContextY:Float):Float
-	{
-		return doClearFloat(currentFormattingContextY, floats.right);
+		return clearance;
 	}
 	
 	/**
 	 * Clear right and left floats
 	 */
-	private function clearBoth(currentFormattingContextY:Float):Float
+	private function clearBoth(target:ElementRenderer, currentY:Float):Float
 	{
-		var leftY:Float = doClearFloat(currentFormattingContextY, floats.left);
-		var rightY:Float = doClearFloat(currentFormattingContextY, floats.right);
+		var leftClearance:Float = doGetClearance(target, currentY, floats.left);
+		var rightClearance:Float = doGetClearance(target, currentY, floats.right);
 		
-		if (leftY > rightY)
+		//the higher clearance between right and left float is the 
+		//used one
+		if (leftClearance > rightClearance)
 		{
-			return leftY;
+			return leftClearance;
 		}
 		else
 		{
-			return rightY;
+			return rightClearance;
 		}
 	}
 	
-	/**
-	 * Actually clears a set of float (right or left). Finds the highest
-	 * float among the cleared float and return its height + y as the new
-	 * formatting context y position
-	 * 
-	 * @param currentFormattingContextY the current formatting context y position, this value is returned if there are no 
-	 * floats to clear
-	 * @param floats an array of floats to clear (right or left)
-	 */
-	private function doClearFloat(currentFormattingContextY:Float, floats:Array<FloatVO>):Float
+	private function doGetClearance(target:ElementRenderer, currentY:Float, floats:Array<FloatVO>):Float
 	{
-		//if there are floats in the array, finds the highest one
-		//and return its value
-		if (floats.length > 0)
+		var clearance:Float = 0;
+		
+		var maxY:Float = currentY;
+		
+		var length:Int = floats.length;
+		for (i in 0...length)
 		{
-			var highestFloat:RectangleVO = floats[0].bounds;
-			
-			for (i in 0...floats.length)
+			if (isParentOrPreviousSibling(floats[i].node, target) == true)
 			{
 				var floatBounds:RectangleVO = floats[i].bounds;
-				if (floatBounds.y + floatBounds.height > highestFloat.y + highestFloat.height)
+				if (floatBounds.y + floatBounds.height > maxY)
 				{
-					highestFloat = floatBounds;
+					maxY = floatBounds.y + floatBounds.height;
 				}
 			}
 			
-			return highestFloat.y + highestFloat.height;
-			
 		}
-		//else use the current formattingContextData y position as it doesn't change if
-		//no floats are cleared
-		else
+		
+		return maxY - currentY;
+	}
+	
+	/**
+	 * Return wether the target element is a previous sibling or
+	 * a parent of the source element
+	 */
+	private function isParentOrPreviousSibling(target:ElementRenderer, source:ElementRenderer):Bool
+	{
+		var previousSibling:ElementRenderer = source.previousSibling;
+		while (previousSibling != null)
 		{
-			return currentFormattingContextY;
+			if (previousSibling == target)
+			{
+				return true;
+			}
+			
+			previousSibling = previousSibling.previousSibling;
 		}
+		
+		var parent:ElementRenderer = source.parentNode;
+		while (parent != null)
+		{
+			if (parent == target)
+			{
+				return true; 
+			}
+			
+			parent = parent.parentNode;
+		}
+		
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
