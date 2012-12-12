@@ -933,7 +933,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//the margin box width of any floated element intersecting with the line
 		var availableWidth:Float = coreStyle.usedValues.width - floatsManager.getLeftFloatOffset(lineBoxPosition.y, coreStyle.usedValues.lineHeight) - floatsManager.getRightFloatOffset(lineBoxPosition.y, coreStyle.usedValues.lineHeight, coreStyle.usedValues.width);
 
-		var lineBox:LineBox = new LineBox(this, availableWidth, true, layoutState);
+		var lineBox:LineBox = new LineBox(this, availableWidth, lineBoxes.length == 0, layoutState);
 
 		//position the line box in x and y relative to the containing block (this)
 		//taking floated elements into account
