@@ -37,6 +37,14 @@ class LineBox
 	
 	private var _layoutState:LayoutStateValue;
 	
+	/**
+	 * Store the current width of all the
+	 * spaces that would be removed if
+	 * the white space processing was
+	 * applied
+	 */
+	private var _trailingSpaceWidth:Float;
+	
 	public function new(elementRenderer:ElementRenderer, availableWidth:Float, isFirstLine:Bool, layoutState:LayoutStateValue) 
 	{
 		_availableWidth = availableWidth;
@@ -48,6 +56,7 @@ class LineBox
 		_firstInlineBoxInserted = false;
 		_unbreakableInlineBoxes = new Array<InlineBox>();
 		_layoutState = layoutState;
+		_trailingSpaceWidth = 0;
 		
 		rootInlineBox = new InlineBox(elementRenderer);
 		bounds = new RectangleVO();
@@ -56,6 +65,31 @@ class LineBox
 	public function addUnbreakableWidth(width:Float):Void
 	{
 		unbreakableWidth += width;
+	}
+	
+	/**
+	 * Utils method returning wether there is enough
+	 * horizontal space on the line to insert an element
+	 * with the given width. 
+	 * 
+	 * It doesn't take white space into account, just remaining
+	 * space on the line
+	 */
+	public function widthCanFit(width:Float):Bool
+	{
+		//remove the width of all the spaces that would be removed
+		//if the line was layout now
+		_trailingSpaceWidth = 0;
+		getTrailingSpacesWidth(rootInlineBox);
+		
+		if (_addedWidth + width - _trailingSpaceWidth <= _availableWidth)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	public function insert(inlineBox:InlineBox, parentInlineBox:InlineBox):Bool
@@ -280,6 +314,60 @@ class LineBox
 			}
 			
 			child = previousSibling;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Get the added width of all the trailing spacesthat would
+	 * be removed if the line box were layout now, taking white space
+	 * into accounts. This is use to deduce the current width that the line
+	 * box would have if it were layout immediately.
+	 * 
+	 * Works similar to removeTrailingSpaces
+	 */
+	private function getTrailingSpacesWidth(inlineBox:InlineBox):Bool
+	{
+		//start with the end of the line box tree
+		var child:InlineBox = inlineBox.lastChild;
+		while (child != null)
+		{
+			//first call recursively to add all spaces width at the end
+			//of line box tree
+			if (child.isEmbedded() == false)
+			{
+				if (child.firstChild != null)
+				{
+					var canAddSpacesWidthFurther:Bool = getTrailingSpacesWidth(child);
+					//if false, a non-space or with a wrong white space was found
+					//and there is no need to add other spaces width
+					if (canAddSpacesWidthFurther == false)
+					{
+						return false;
+					}
+				}
+			}
+			
+			//if child is a space with the right white space, add its width
+			if (child.isSpace() == true)
+			{
+				switch(child.elementRenderer.coreStyle.getKeyword(child.elementRenderer.coreStyle.whiteSpace))
+				{
+					case NORMAL, NO_WRAP, PRE_LINE:
+						_trailingSpaceWidth += child.bounds.width;
+					
+					default:
+						return false;
+				}
+			}
+			//else stop adding width
+			else
+			{
+				return false;
+			}
+			
+			child = child.previousSibling;
 		}
 		
 		return true;

@@ -1017,6 +1017,14 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					child.layout(true, layoutState);
 					if (floatsManager.isAlreadyRegistered(child) == false)
 					{
+						//check wether there is enough space in the current line to fit the floated
+						//element. If not, create a new line box to fit it.
+						var floatMarginWidth:Float = child.bounds.width + child.coreStyle.usedValues.marginLeft + child.coreStyle.usedValues.marginRight;
+						if (inlineFormattingData.lineBox.widthCanFit(floatMarginWidth) == false)
+						{
+							layoutLineBox(inlineFormattingData, layoutState);
+						}
+						
 						//for inline formatting, float are replaced are aligned
 						//with the current line box position
 						registerFloatedElement(child, inlineFormattingData.lineBoxPosition);
