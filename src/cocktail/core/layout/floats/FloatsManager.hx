@@ -323,7 +323,7 @@ class FloatsManager
 		var floatHeight:Float = elementRenderer.bounds.height + usedValues.marginTop + usedValues.marginBottom;
 	
 		//get the first y position where the float can be placed
-		var floatY:Float = getFirstAvailableYPosition(currentChildPosition.y, floatWidth, containingBlockWidth);
+		var floatY:Float = getFirstAvailableYPosition(currentChildPosition.y, floatHeight, floatWidth, containingBlockWidth);
 		
 		//the x position of the float vary for left and right float
 		var floatX:Float = 0.0;
@@ -341,11 +341,12 @@ class FloatsManager
 	 * (floated or not) with a width equal to elementWidth can be inserted
 	 * without overlapping floats or other elements
 	 * @param	currentYPosition the current y position where to insert children in containing block space
+	 * @param	elementHeight the height of the element which must be inserted
 	 * @param	elementWidth the width of the element that must be inserted
 	 * @param	containingBlockWidth the maximum available width in the current line
 	 * @return  the y position where the element can be inserted
 	 */
-	public function getFirstAvailableYPosition(currentYPosition:Float, elementWidth:Float, containingBlockWidth:Float):Float
+	public function getFirstAvailableYPosition(currentYPosition:Float, elementHeight:Float, elementWidth:Float, containingBlockWidth:Float):Float
 	{
 		//the y position default to the current y position
 		//in the case where the element can be immediately inserted
@@ -354,10 +355,11 @@ class FloatsManager
 		
 		//loop while there isn't enough horizontal space at the current y position to insert the
 		//element
-		while (getLeftFloatOffset(retY) + getRightFloatOffset(retY, containingBlockWidth) + elementWidth > containingBlockWidth)
+		while (canFitElementAtY(retY, elementHeight, elementWidth, containingBlockWidth) == false)
 		{
 			//stores all the floats situated at the same height or after
-			//the current y position
+			//the current y position and/or at the same height or after the current
+			//y position + height of the element to insert
 			var afterFloats:Array<RectangleVO> = new Array<RectangleVO>();
 			
 			//stores the relevant left floats
@@ -365,17 +367,20 @@ class FloatsManager
 			for (i in 0...leftFloatLength)
 			{
 				var floatBounds:RectangleVO = floats.left[i].bounds;
-				if (floatBounds.y <= retY && floatBounds.height + floatBounds.y > retY)
+				if (floatBounds.y <= retY && floatBounds.height + floatBounds.y > retY
+				|| floatBounds.y <= (retY + elementHeight) && floatBounds.y > retY)
 				{
 					afterFloats.push(floatBounds);
 				}
 			}
 			
 			//stores the relevant right floats
-			for (i in 0...floats.right.length)
+			var rightFloatLength:Int = floats.right.length;
+			for (i in 0...rightFloatLength)
 			{
 				var floatBounds:RectangleVO = floats.right[i].bounds;
-				if (floatBounds.y <= retY && floatBounds.height + floatBounds.y > retY)
+				if (floatBounds.y <= retY && floatBounds.height + floatBounds.y > retY
+				|| floatBounds.y <= (retY + elementHeight) && floatBounds.y > retY)
 				{
 					afterFloats.push(floatBounds);
 				}
@@ -390,7 +395,8 @@ class FloatsManager
 			}
 			//else the next float is found. The next float
 			//is the one whose bottom is the closest to the
-			//current y position while being equal or below
+			//current y position + element height (forming the
+			//bottom position of the element) while being equal or below
 			//the y position
 			else
 			{
@@ -418,6 +424,28 @@ class FloatsManager
 		}
 		//at this point the y position to insert the element is found
 		return retY;
+	}
+	
+	/**
+	 * Returns wether the element can be fitted at the y position,
+	 * given its bounds and the available width
+	 */
+	private function canFitElementAtY(y:Float, elementHeight:Float, elementWidth:Float, containingBlockWidth:Float):Bool
+	{
+		//test if top y position of element can fit
+		if (getLeftFloatOffset(y) + getRightFloatOffset(y, containingBlockWidth) + elementWidth > containingBlockWidth)
+		{
+			return false;
+		}
+		//test if bottom y position of element can fit
+		else if (getLeftFloatOffset(y + elementHeight) + getRightFloatOffset(y + elementHeight, containingBlockWidth) + elementWidth > containingBlockWidth)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -763,8 +763,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						//this child x and y position is influenced by floated elements, so the first y position
 						//where this child can fit given the floated elements must be found
 						var childMarginWidth:Float = child.bounds.width + child.coreStyle.usedValues.marginLeft + child.coreStyle.usedValues.marginRight;
+						var childMarginHeight:Float = child.bounds.height + child.getCollapsedTopMargin() + child.getCollapsedBottomMargin();
 						var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight;
-						_childPosition.y = floatsManager.getFirstAvailableYPosition(_childPosition.y, childMarginWidth, contentWidth);
+						_childPosition.y = floatsManager.getFirstAvailableYPosition(_childPosition.y, childMarginHeight, childMarginWidth, contentWidth);
 
 						//add child margins. Top margin is collapsed with
 						//adjoining margins if needed
@@ -963,7 +964,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//find the first y position where the next line box should be created.
 		//it should be created at a position where the content which couldn't 
 		//fit on the previous line can be placed
-		lineBoxPosition.y = floatsManager.getFirstAvailableYPosition(lineBoxPosition.y, lineBox.unbreakableWidth, coreStyle.usedValues.width);
+		lineBoxPosition.y = floatsManager.getFirstAvailableYPosition(lineBoxPosition.y, coreStyle.usedValues.lineHeight, lineBox.unbreakableWidth, coreStyle.usedValues.width);
 		
 		var newLineBox:LineBox = createLineBox(lineBoxPosition, layoutState);
 		
