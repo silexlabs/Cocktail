@@ -69,6 +69,14 @@ class SelectorManager
 					matched = matchCombinator(node, value, components[i + 1], matchedPseudoClasses);
 					lastWasCombinator = true;
 					
+					//if the combinator is a child combinator, the relevant
+					//node becomes the parent node as any subsequent would
+					//apply to it instead of the current node
+					if (value == CHILD)
+					{
+						node = node.parentNode;
+					}
+					
 				case SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(value):
 					//if the previous item was a combinator, then 
 					//this simple selector sequence was already
