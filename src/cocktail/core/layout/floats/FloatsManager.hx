@@ -90,17 +90,13 @@ class FloatsManager
 
 		var sourceFloatsManager:FloatsManager = sourceBlockBox.floatsManager;
 		
-		var leftFloatsLength:Int = sourceFloatsManager.floats.left.length;
-		
 		convertArrayOfFloats(floats.left, sourceFloatsManager.floats.left, offset);
 		convertArrayOfFloats(floats.right, sourceFloatsManager.floats.right, offset);
-		
 	}
 	
 	private function convertArrayOfFloats(target:Array<FloatVO>, source:Array<FloatVO>, offset:PointVO):Void
 	{
 		var floatsLength:Int = source.length;
-		
 		for (i in 0...floatsLength)
 		{
 			var floatBounds:RectangleVO = new RectangleVO();
@@ -323,7 +319,7 @@ class FloatsManager
 		var floatHeight:Float = elementRenderer.bounds.height + usedValues.marginTop + usedValues.marginBottom;
 	
 		//get the first y position where the float can be placed
-		var floatY:Float = getFirstAvailableYPosition(currentChildPosition.y, floatHeight, floatWidth, containingBlockWidth);
+		var floatY:Float = getFirstAvailableYPosition(currentChildPosition.y, floatHeight, floatWidth, containingBlockWidth, currentChildPosition.x);
 		
 		//the x position of the float vary for left and right float
 		var floatX:Float = 0.0;
@@ -344,9 +340,13 @@ class FloatsManager
 	 * @param	elementHeight the height of the element which must be inserted
 	 * @param	elementWidth the width of the element that must be inserted
 	 * @param	containingBlockWidth the maximum available width in the current line
+	 * @param	containingBlockXOffset the x offset of the containing blokc relative to its first block formatting ancestor.
+	 * Used when inserting floated element to convert the containing block to the block formatting context root space. 
+	 * When seeking first y position of non-floated element, always 0 as the y position is seeked in the space of the containing block
+	 * 
 	 * @return  the y position where the element can be inserted
 	 */
-	public function getFirstAvailableYPosition(currentYPosition:Float, elementHeight:Float, elementWidth:Float, containingBlockWidth:Float):Float
+	public function getFirstAvailableYPosition(currentYPosition:Float, elementHeight:Float, elementWidth:Float, containingBlockWidth:Float, containingBlockXOffset:Float):Float
 	{
 		//the y position default to the current y position
 		//in the case where the element can be immediately inserted
@@ -355,7 +355,7 @@ class FloatsManager
 		
 		//loop while there isn't enough horizontal space at the current y position to insert the
 		//element
-		while (canFitElementAtY(retY, elementHeight, elementWidth, containingBlockWidth) == false)
+		while (canFitElementAtY(retY, elementHeight, elementWidth, containingBlockWidth, containingBlockXOffset) == false)
 		{
 			//stores all the floats situated at the same height or after
 			//the current y position and/or at the same height or after the current
@@ -419,7 +419,6 @@ class FloatsManager
 				//the loop then starts again and test if there is enough horizontal
 				//space in the new y position to insert the element
 				retY += nextY;
-				
 			}
 		}
 		//at this point the y position to insert the element is found
@@ -430,15 +429,15 @@ class FloatsManager
 	 * Returns wether the element can be fitted at the y position,
 	 * given its bounds and the available width
 	 */
-	private function canFitElementAtY(y:Float, elementHeight:Float, elementWidth:Float, containingBlockWidth:Float):Bool
+	private function canFitElementAtY(y:Float, elementHeight:Float, elementWidth:Float, containingBlockWidth:Float, containingBlockXOffset:Float):Bool
 	{
 		//test if top y position of element can fit
-		if (getLeftFloatOffset(y) + getRightFloatOffset(y, containingBlockWidth) + elementWidth > containingBlockWidth)
+		if (getLeftFloatOffset(y) + getRightFloatOffset(y, containingBlockWidth) + elementWidth > containingBlockWidth + containingBlockXOffset)
 		{
 			return false;
 		}
 		//test if bottom y position of element can fit
-		else if (getLeftFloatOffset(y + elementHeight) + getRightFloatOffset(y + elementHeight, containingBlockWidth) + elementWidth > containingBlockWidth)
+		else if (getLeftFloatOffset(y + elementHeight) + getRightFloatOffset(y + elementHeight, containingBlockWidth) + elementWidth > containingBlockWidth + containingBlockXOffset)
 		{
 			return false;
 		}
