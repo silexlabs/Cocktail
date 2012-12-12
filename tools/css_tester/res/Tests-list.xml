@@ -77,6 +77,14 @@
 	</section>
 	<section name="9.5.2-floats">
 		<test name="adjacent-floats-001" description="Multiple floated boxes adjacent to each other" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/adjacent-floats-001.xht"></test>
+		<test name="c414-flt-fit-000" description="Stacking Non-Replaced Left Floats" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c414-flt-fit-000.xht"></test>
+		<test name="c414-flt-fit-001" description="Stacking Replaced Left Floats" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c414-flt-fit-001.xht"></test>
+		<test name="c414-flt-fit-002" description="Stacking Mixed Floats Part I" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c414-flt-fit-002.xht"></test>
+		<test name="c414-flt-fit-003" description="Stacking Mixed Floats Part I" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c414-flt-fit-003.xht"></test>
+		<test name="c414-flt-fit-004" description="Stacking Mixed Floats Part III" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c414-flt-fit-004.xht"></test>
+		<test name="c414-flt-fit-005" description="Non-Replaced Float Not Fitting Beside Opposite Float" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c414-flt-fit-005.xht"></test>
+		<test name="c414-flt-wrap-000" description="Text Not Fitting Beside Non-Replaced Float" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c414-flt-wrap-000.xht"></test>
+	
 	</section>
 	<section name="9.8.2-relative-positioning">
 		<test name="position-relative-027" description="relatively-positioned-elements-with-auto-positioning-with-anonymous-boxes-before-and-after" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-027.xht"></test>
