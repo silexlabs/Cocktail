@@ -736,7 +736,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				if (child.canHaveClearance() == true)
 				{
 					//the position were the child will be placed if it doesn't have clearance
-					var hypotheticalChildYPosition:Float = _childPosition.y + child.coreStyle.usedValues.marginTop;
+					var hypotheticalChildYPosition:Float = _childPosition.y + child.getCollapsedTopMargin();
 					
 					//check wether child actually has clearance, meaning that it should be placed
 					//below a float declare earlier in the document
