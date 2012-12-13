@@ -92,7 +92,7 @@ class LineBox
 		}
 	}
 	
-	public function insert(inlineBox:InlineBox, parentInlineBox:InlineBox):Bool
+	public function insert(inlineBox:InlineBox, parentInlineBox:InlineBox, force:Bool):Bool
 	{
 		//spaces at the beginning of the line are removed if they
 		//have the right white space
@@ -119,7 +119,7 @@ class LineBox
 			_spacesNumber++;
 		}
 		
-		//add thenew inline box to the unbreakable inline box buffer,
+		//add the new inline box to the unbreakable inline box buffer,
 		//it will be added to the line if there is enough space or if
 		//its white space prevents the line from breaking
 		_unbreakableInlineBoxes.push(inlineBox);	
@@ -138,8 +138,10 @@ class LineBox
 		//if there isn't enough space to fit all the inline box which can't be broken
 		else if (remainingLineWidth - unbreakableWidth < 0)
 		{
-			//if the new inline box introduce a break opportunity, break the line
-			if (introduceBreakOpportunity(inlineBox) == true)
+			//if the new inline box introduce a break opportunity, break the line,
+			//unless the new inline box is forced to belong to this inline box, for instance
+			//if it already couldn't fit in the previous line box
+			if (introduceBreakOpportunity(inlineBox) == true && force == false)
 			{
 				return true;
 			}
@@ -151,9 +153,10 @@ class LineBox
 			}
 		}
 		//if there is still enough space and the inline box
-		//introduce a break opportunity, add all the unbreakable
+		//introduce a break opportunity or is forced to belong to
+		//this line box, add all the unbreakable
 		//inline boxes to the this line box
-		else if (introduceBreakOpportunity(inlineBox) == true)
+		else if (introduceBreakOpportunity(inlineBox) == true || force == true)
 		{
 			_addedWidth += unbreakableWidth;
 			addUnbreakableInlineBoxesToLineBox(parentInlineBox);

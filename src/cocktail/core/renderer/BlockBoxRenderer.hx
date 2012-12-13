@@ -1120,7 +1120,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					var textLength:Int = child.inlineBoxes.length;
 					for (i in 0...textLength)
 					{
-						var lineIsFull:Bool = inlineFormattingData.lineBox.insert(child.inlineBoxes[i], inlineFormattingData.inlineBox);
+						var lineIsFull:Bool = inlineFormattingData.lineBox.insert(child.inlineBoxes[i], inlineFormattingData.inlineBox, false);
 						//if inserting this text would make the line full, create a new line for it
 						if (lineIsFull == true)
 						{
@@ -1132,7 +1132,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 							//
 							//TODO : instead of just adding last text inline box, should insert all
 							//unbreakable elements of last line box
-							inlineFormattingData.lineBox.insert(child.inlineBoxes[i], inlineFormattingData.inlineBox);
+							inlineFormattingData.lineBox.insert(child.inlineBoxes[i], inlineFormattingData.inlineBox, true);
 						}
 					}
 				}
@@ -1155,12 +1155,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					childInlineBox.marginRight = child.coreStyle.usedValues.marginRight;
 					
 					//insert the inline box, create a new line box if needed to hold the inline box
-					var lineIsFull:Bool = inlineFormattingData.lineBox.insert(childInlineBox, inlineFormattingData.inlineBox);
+					var lineIsFull:Bool = inlineFormattingData.lineBox.insert(childInlineBox, inlineFormattingData.inlineBox, false);
 					
 					if (lineIsFull == true)
 					{
 						layoutLineBox(inlineFormattingData, layoutState);
-						inlineFormattingData.lineBox.insert(childInlineBox, inlineFormattingData.inlineBox);
+						inlineFormattingData.lineBox.insert(childInlineBox, inlineFormattingData.inlineBox, true);
 					}
 				}
 				//here the child is an inline box renderer, which will create one inline box for each
