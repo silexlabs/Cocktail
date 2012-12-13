@@ -160,7 +160,7 @@ class SelectorManager
 	 * the preious selector sequence which precedes in 
 	 * the DOM tree
 	 */
-	private function  matchGeneralSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+	private function matchGeneralSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		var previousElementSibling:HTMLElement = node.previousElementSibling;
 		

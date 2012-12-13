@@ -330,7 +330,7 @@ class StyleManager
 		
 		//lastly if there still is more than one priority, then the one which was defined
 		//the later in the CSS style sheet is considered the one with the higher priority
-		var matchingProperty:PropertyVO = tempMatchingProperties[tempMatchingProperties.length - 1];
+		var matchingProperty:PropertyVO = tempMatchingProperties[0];
 		nodeStyleDeclaration.setTypedProperty(property, matchingProperty.typedValue, matchingProperty.important);
 		
 		//release properties for reuse
