@@ -467,8 +467,8 @@ class CSSSelectorParser
 						{
 							case '"'.code, "'".code:
 								operator = selector.substr(start, position - start);
-								start = position;
 								position++;
+								start = position;
 								state = STRING_VALUE;
 								
 							case ']'.code:
