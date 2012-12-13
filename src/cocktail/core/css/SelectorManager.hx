@@ -527,12 +527,35 @@ class SelectorManager
 				return node.hasChildNodes();
 				
 			case StructuralPseudoClassSelectorValue.FIRST_CHILD:
-				return node.previousSibling == null;
+				
+				//HTML root element is not considered a first child
+				//
+				//TODO : parent of root node should actually be a document
+				if (node.parentNode == null)
+				{
+					return false;
+				}
+				
+				return node.previousElementSibling == null;
 				
 			case StructuralPseudoClassSelectorValue.LAST_CHILD:
-				return node.nextSibling == null;
+				
+				//HTML root element not considered last child
+				if (node.parentNode == null)
+				{
+					return false;
+				}
+				
+				return node.nextElementSibling == null;
 				
 			case StructuralPseudoClassSelectorValue.ONLY_CHILD:
+				
+				//HTML root element is not considered only child
+				if (node.parentNode == null)
+				{
+					return false;
+				}
+				
 				return node.parentNode.childNodes.length == 1;
 				
 			case StructuralPseudoClassSelectorValue.ROOT:
