@@ -228,10 +228,10 @@ class FloatsManager
 		var length:Int = floats.length;
 		for (i in 0...length)
 		{
-			if (isParentOrPreviousSibling(floats[i].node, target) == true)
+			if (isDeclaredBefore(floats[i].node, target) == true)
 			{
 				var floatBounds:RectangleVO = floats[i].bounds;
-				if (floatBounds.y + floatBounds.height > maxY)
+				if (floatBounds.y + floatBounds.height >= maxY)
 				{
 					maxY = floatBounds.y + floatBounds.height;
 				}
@@ -247,10 +247,10 @@ class FloatsManager
 		var length:Int = floats.length;
 		for (i in 0...length)
 		{
-			if (isParentOrPreviousSibling(floats[i].node, target) == true)
+			if (isDeclaredBefore(floats[i].node, target) == true)
 			{
 				var floatBounds:RectangleVO = floats[i].bounds;
-				if (floatBounds.y + floatBounds.height > currentY)
+				if (floatBounds.y + floatBounds.height >= currentY)
 				{
 					return true;
 				}
@@ -262,11 +262,12 @@ class FloatsManager
 	}
 	
 	/**
-	 * Return wether the target element is a previous sibling or
-	 * a parent of the source element
+	 * Return wether the target element is declared before the source
+	 * element in the document
 	 */
-	private function isParentOrPreviousSibling(target:ElementRenderer, source:ElementRenderer):Bool
+	private function isDeclaredBefore(target:ElementRenderer, source:ElementRenderer):Bool
 	{
+		//check first all previous sibling
 		var previousSibling:ElementRenderer = source.previousSibling;
 		while (previousSibling != null)
 		{
@@ -279,14 +280,19 @@ class FloatsManager
 		}
 		
 		var parent:ElementRenderer = source.parentNode;
-		while (parent != null)
+		if (parent == target)
 		{
-			if (parent == target)
+			return true;
+		}
+		
+		//climb up rendering tree
+		if (parent != null)
+		{
+			var isDeclaredBefore:Bool = isDeclaredBefore(target, parent);
+			if (isDeclaredBefore == true)
 			{
-				return true; 
+				return true;
 			}
-			
-			parent = parent.parentNode;
 		}
 		
 		return false;
