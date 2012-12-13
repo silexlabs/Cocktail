@@ -707,7 +707,7 @@ class CSSStyleDeclaration
 					default:
 				}
 				
-			case CSSConstants.FLOAT:
+			case CSSConstants.FLOAT, CSSConstants.CLEAR:
 				switch(styleValue)
 				{
 					case KEYWORD(value):
@@ -724,7 +724,6 @@ class CSSStyleDeclaration
 						
 					default:	
 				}
-				
 				
 			case CSSConstants.WHITE_SPACE:
 				switch(styleValue)
