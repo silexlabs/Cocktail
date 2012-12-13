@@ -463,27 +463,33 @@ class CSSSelectorParser
 				case OPERATOR:
 					if (!isOperatorChar(c))
 					{
-						switch (c)
+						switch(c)
 						{
 							case '"'.code, "'".code:
 								operator = selector.substr(start, position - start);
 								start = position;
-								state = BEGIN_VALUE;
+								position++;
+								state = STRING_VALUE;
 								
 							case ']'.code:
 								state = END_SELECTOR;
 								
 							default:
-								state = INVALID_SELECTOR;
+								
+								if (isSelectorChar(c) == true)
+								{
+									operator = selector.substr(start, position - start);
+									start = position;
+									state = IDENTIFIER_VALUE;
+								}
+								else
+								{
+									state = INVALID_SELECTOR;
+								}
 						}
 					}
 					
-					
-				case BEGIN_VALUE:
-					start = position;
-					state = VALUE;
-					
-				case VALUE:
+				case STRING_VALUE:
 					if (!isSelectorChar(c))
 					{
 						switch (c)
@@ -494,6 +500,20 @@ class CSSSelectorParser
 								
 							case ']'.code:
 								state = INVALID_SELECTOR;
+								
+							default:
+								state = INVALID_SELECTOR;
+						}
+					}
+					
+				case IDENTIFIER_VALUE:
+					if (!isSelectorChar(c))
+					{
+						switch (c)
+						{
+							case ']'.code:
+								value = selector.substr(start, position - start);
+								state = END_SELECTOR;
 								
 							default:
 								state = INVALID_SELECTOR;

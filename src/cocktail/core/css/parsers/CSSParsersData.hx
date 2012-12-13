@@ -59,8 +59,8 @@ enum StyleValueParserState {
 enum AttributeSelectorParserState {
 	ATTRIBUTE;
 	OPERATOR;
-	BEGIN_VALUE;
-	VALUE;
+	IDENTIFIER_VALUE;
+	STRING_VALUE;
 	END_SELECTOR;
 	INVALID_SELECTOR;
 }
