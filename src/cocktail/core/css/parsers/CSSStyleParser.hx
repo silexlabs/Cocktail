@@ -460,9 +460,11 @@ class CSSStyleParser
 					if (endPosition != -1)
 					{
 						position = endPosition;
+						c = styles.fastCodeAt(position);
 						important = true;
 						state = IGNORE_SPACES;
 						next = END;
+						continue;
 					}
 					//if -1 is returned then the ident wasn't 
 					//exactly "!important" which makes the style invalid
@@ -638,18 +640,26 @@ class CSSStyleParser
 	private static function parseImportant(styles:String, position:Int):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
-		var start = position;
 		
+		//spaces are accepted between "!" and "important"
+		while (c == " ".code)
+		{
+			c = styles.fastCodeAt(++position);
+		}
+		
+		var start:Int = position;
 		while (isIdentChar(c))
 		{
 			c = styles.fastCodeAt(++position);
 		}
 		
 		var ident:String = styles.substr(start, position - start);
+		
 		if (ident == CSSConstants.IMPORTANT)
 		{
 			return position;
 		}
+		
 		return -1;
 	}
 	
