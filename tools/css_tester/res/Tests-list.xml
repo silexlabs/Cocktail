@@ -1,5 +1,42 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <data>
+<chapter name="chapter-5-Selectors">
+	<section name="5.1 Pattern matching">
+		<test name="selectors-001" description="CSS Selectors (basic)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/selectors-001.xht"></test>
+	</section>
+	<section name="5.2.1 Grouping">
+		<test name="c12-grouping-000" description="Grouping" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c12-grouping-000.xht"></test>
+		<test name="grouping-000" description="Selectors: Grouping" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/grouping-000.xht"></test>
+		<test name="grouping-001" description="Selectors: Grouping: Invalid grouping" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/grouping-001.xht"></test>
+		<test name="grouping-002" description="Condensing selectors" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/grouping-002.xht"></test>
+	</section>
+	<section name="5.3 Universal selector">
+		<test name="universal-selector-001" description="Universal selector" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/universal-selector-001.xht"></test>
+		<test name="universal-selector-002" description="Implied universal selector for pseudo selector" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/universal-selector-002.xht"></test>
+		<test name="universal-selector-003" description="Implied universal selector for class selector" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/universal-selector-003.xht"></test>
+		<test name="universal-selector-004" description="Implied universal selector for ID" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/universal-selector-004.xht"></test>
+	</section>
+	<section name="5.4 Type selector">
+		<test name="selectors-002" description="CSS Selectors (basic tests)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/selectors-002.xht"></test>
+		<test name="type-selector-001" description="Type selectors" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/type-selector-001.xht"></test>
+	</section>
+	<section name="5.5 Descendant selectors">
+		<test name="c16-descendant-000" description="Descendant selectors (Contextual selectors)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c16-descendant-000.xht"></test>
+		<test name="c16-descendant-001" description="Contextual selectors" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c16-descendant-001.xht"></test>
+		<test name="c16-descendant-002" description="Contextual selectors" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c16-descendant-002.xht"></test>
+		<test name="descendant-selector-000" description="Selectors: Descendant selectors" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/descendant-selector-000.xht"></test>
+		<test name="descendant-selector-001" description="Selectors: Descendant selectors and universal selector" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/descendant-selector-001.xht"></test>
+		<test name="descendent-selector-001" description="Descendent selector does not apply to parent element" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/descendent-selector-001.xht"></test>
+	</section>
+	<section name="5.6 Child selectors">
+		<test name="child-selector-001" description="Child selector does not match when there is no matching parent" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/child-selector-001.xht"></test>
+		<test name="child-selector-002" description="Child selector without direct child" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/child-selector-002.xht"></test>
+		<test name="child-selector-003" description="Child selector" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/child-selector-003.xht"></test>
+	</section>
+	<section name="5.7 Adjacent sibling selectors">
+		<test name="adjacent-000" description="Selectors: Adjacent selectors" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/adjacent-000.xht"></test>
+	</section>
+</chapter>
 <chapter name="chapter-8-boxmodel">
 	<section name="8.3.1-collapsing-margins">
 		<test name="margin-collapse-001" description="margin-collapsing-horizontal-margins-do-not-collapse" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-001.xht"></test>
@@ -222,6 +259,7 @@
 		<test name="inline-block-width-001a" description="Test for 'width: auto' on inline-block" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-width-001a.xht"></test>
 		<test name="inline-block-width-001b" description="Test for 'width: auto' on inline-block" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-width-001b.xht"></test>
 		<test name="inline-block-width-002a" description="Test for 'width: auto' on inline-block" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-width-002a.xht"></test>
+		<test name="inline-block-width-002b" description="Test for 'width: <length>' on inline-block" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-width-002b.xht"></test>
 
 	</section>
 	<section name="10.4-minimum-and-maximum-widths:-'min-width'-and-'max-width'">
