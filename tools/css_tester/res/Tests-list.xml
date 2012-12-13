@@ -84,7 +84,44 @@
 		<test name="c414-flt-fit-004" description="Stacking Mixed Floats Part III" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c414-flt-fit-004.xht"></test>
 		<test name="c414-flt-fit-005" description="Non-Replaced Float Not Fitting Beside Opposite Float" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c414-flt-fit-005.xht"></test>
 		<test name="c414-flt-wrap-000" description="Text Not Fitting Beside Non-Replaced Float" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c414-flt-wrap-000.xht"></test>
-	
+		<test name="c5525--fltblck-001" description="float" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c5525-fltblck-001.xht"></test>
+		<test name="c5525--fltwrap-000" description="float" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c5525-fltwrap-000.xht"></test>
+		<test name="float-005" description="float" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/float-005.xht"></test>
+		<test name="float-006" description="floats - zero height empty float" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/float-006.xht"></test>
+		<test name="float-001" description="Floats, shifting left until it touches container edge" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-001.xht"></test>
+		<test name="float-002" description="Floats, shifting right until it touches container edge" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-002.xht"></test>
+		<test name="float-003" description="Floats, shifting left until touching other floats" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-003.xht"></test>
+		<test name="float-004" description="Floats, shifting right until touching other floats" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-004.xht"></test>
+		<test name="float-006" description="Left floats interacting with inline content" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-006.xht"></test>
+		<test name="float-007" description="Floated elements shifting down below non-floated elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-007.xht"></test>
+		<test name="float-008" description="Floats and block box flow" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-008.xht"></test>
+		<test name="float-009" description="Right floats interacting with right-to-left inline content" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-009.xht"></test>
+		<test name="float-014" description="Left floated element margins do not collapse" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-014.xht"></test>
+		<test name="float-015" description="Right floated elements margins do not collapse" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-015.xht"></test>
+		<test name="float-019" description="Float applied to absolutely positioned elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-019.xht"></test>
+		<test name="float-020" description="Left floated elements and text wrapping" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-020.xht"></test>
+		<test name="float-021" description="Right floated elements and text wrapping" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-021.xht"></test>
+		<test name="float-022" description="Elements do not float when 'float' is set to 'none'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-022.xht"></test>
+		<test name="float-023" description="Floated elements and container edges" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-023.xht"></test>
+		<test name="float-024" description="Left float with earlier floated siblings" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-024.xht"></test>
+		<test name="float-025" description="Right floating elements and container edge" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-025.xht"></test>
+		<test name="float-026" description="Margin affects left floated elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-026.xht"></test>
+		<test name="float-027" description="Margin affects right floated elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-027.xht"></test>
+		<test name="float-028" description="Floats and containment" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-028.xht"></test>
+		<test name="float-029" description="Content flowing around floated elements" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/floats-029.xht"></test>
+	</section>
+	<section name="9.5.2-Controlling flow next to floats: the 'clear' property">
+		<test name="clear-001" description="Clear set to 'left'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clear-001.xht"></test>
+		<test name="clear-002" description="Clear set to 'right'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clear-002.xht"></test>
+		<test name="clear-003" description="Clear set to 'both'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clear-003.xht"></test>
+		<test name="clear-004" description="Clear set to 'none'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clear-004.xht"></test>
+		<test name="clear-005" description="Clear set to 'inherit'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clear-005.xht"></test>
+		<test name="clear-applies-to-000" description="Clear on floats after floats with display:none blocks between them'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clear-applies-to-000.xht"></test>
+		<test name="clear-applies-to-008" description="Clear on inline elements'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clear-applies-to-008.xht"></test>
+		<test name="clear-applies-to-009" description="Clear applied to element with 'display' set to block'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clear-applies-to-009.xht"></test>
+		<test name="clear-applies-to-012" description="Clear applied to element with 'display' set to inline-block" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clear-applies-to-012.xht"></test>
+		<test name="clear-clearance-calculation-003" description="Clearance calculations - clear box collapsing margins" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clear-clearance-calculation-003.xht"></test>
+		<test name="clear-clearance-calculation-004" description="clear and clearance calculation - margin collapsing" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clear-clearance-calculation-004.xht"></test>
 	</section>
 	<section name="9.8.2-relative-positioning">
 		<test name="position-relative-027" description="relatively-positioned-elements-with-auto-positioning-with-anonymous-boxes-before-and-after" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-027.xht"></test>
@@ -170,8 +207,22 @@
 		<test name="absolute-replaced-width-076" description="absolute-replaced-elements-with-'direction'-as-right-to-left,-percentage-intrinsic-width-and-over-constrained-situation" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-replaced-width-076.xht"></test>
 	</section>
 	<section name="10.3.9-inline-block',-non-replaced-elements-in-normal-flow">
+		<test name="absolute-non-replaced-width-017" description="'shrink-to-fit' width of absolutely positioned, non-replaced elements - direction (left-to-right), inline-block and max-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-non-replaced-width-017.xht"></test>
+		<test name="absolute-non-replaced-width-018" description="'shrink-to-fit' width of absolutely positioned, non-replaced elements - direction (left-to-right), inline-block and max-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/absolute-non-replaced-width-018.xht"></test>
+		<test name="float-non-replaced-width-007" description="'shrink-to-fit' width of floating, non-replaced elements - inline-block and max-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/float-non-replaced-width-007.xht"></test>
+		<test name="float-non-replaced-width-011" description="'shrink-to-fit' width of floating, non-replaced elements - inline-block and max-width " url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/float-non-replaced-width-011.xht"></test>
+		<test name="inline-block-002" description="inline-block: width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-002.xht"></test>
+		<test name="inline-block-003" description="inline-block: width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-003.xht"></test>
+		<test name="inline-block-004" description="inline-block: width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-004.xht"></test>
+		<test name="inline-block-005" description="inline-block: width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-005.xht"></test>
 		<test name="inline-block-non-replaced-width-001" description="inline-block-non-replaced-elements-shrink-to-fit" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-non-replaced-width-001.xht"></test>
 		<test name="inline-block-non-replaced-width-002" description="inline-block-non-replaced-elements-with-'margin-left'-and-'margin-right'-set-to-'auto'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-non-replaced-width-002.xht"></test>
+		<test name="inline-block-non-replaced-width-003" description="'shrink-to-fit' width of inline-block non-replaced elements - max-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-non-replaced-width-003.xht"></test>
+		<test name="inline-block-non-replaced-width-004" description="'shrink-to-fit' width of inline-block non-replaced elements - max-width" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-non-replaced-width-004.xht"></test>
+		<test name="inline-block-width-001a" description="Test for 'width: auto' on inline-block" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-width-001a.xht"></test>
+		<test name="inline-block-width-001b" description="Test for 'width: auto' on inline-block" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-width-001b.xht"></test>
+		<test name="inline-block-width-002a" description="Test for 'width: auto' on inline-block" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-block-width-002a.xht"></test>
+
 	</section>
 	<section name="10.4-minimum-and-maximum-widths:-'min-width'-and-'max-width'">
 		<test name="max-width-006" description="max-width-using-pixels-with-a-nominal-value,-96px" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/max-width-006.xht"></test>
