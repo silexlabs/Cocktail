@@ -36,6 +36,8 @@ class FloatsManager
 	 */
 	public var floats(default, null):FloatsVO;
 	
+	public var childrenWithClearance:Array<ElementRenderer>;
+	
 	/**
 	 * Class constructor, init the structure holding
 	 * the floats data
@@ -44,6 +46,7 @@ class FloatsManager
 	{
 		var floatsLeft:Array<FloatVO> = new Array<FloatVO>();
 		var floatsRight:Array<FloatVO> = new Array<FloatVO>();
+		childrenWithClearance = new Array<ElementRenderer>();
 		floats = new FloatsVO(floatsLeft, floatsRight);
 	}
 	
@@ -57,9 +60,11 @@ class FloatsManager
 			floats.left = floats.left.clear();
 			floats.right = floats.right.clear();
 		}
+		
+		childrenWithClearance = new Array<ElementRenderer>();
 	}
 	
-	public function isAlreadyRegistered(elementRenderer:ElementRenderer):Bool
+	public function floatIsAlreadyRegistered(elementRenderer:ElementRenderer):Bool
 	{
 		var leftFloatsLength:Int = floats.left.length;
 		
@@ -82,6 +87,25 @@ class FloatsManager
 		}
 		
 		return false;
+	}
+	
+	public function clearIsAlreadyRegistered(elementRenderer:ElementRenderer):Bool
+	{
+		var length:Int = childrenWithClearance.length;
+		for (i in 0...length)
+		{
+			if (childrenWithClearance[i] == elementRenderer)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public function registerClear(elementRenderer:ElementRenderer):Void
+	{
+		childrenWithClearance.push(elementRenderer);
 	}
 	
 	public function retrieveFloatsFrom(targetBlockBox:BlockBoxRenderer, sourceBlockBox:BlockBoxRenderer, offset:PointVO):Void
@@ -141,6 +165,28 @@ class FloatsManager
 		return clearance;
 	}
 	
+	public function hasClearance(target:ElementRenderer, currentY:Float):Bool
+	{
+		var hasClearance:Bool = false;
+		
+		switch(target.coreStyle.getKeyword(target.coreStyle.clear))
+		{
+			
+			case LEFT:
+				hasClearance = doGetHasClearance(target, currentY, floats.left);
+				
+			case RIGHT:	
+				hasClearance = doGetHasClearance(target, currentY, floats.right);
+				
+			case BOTH:	
+				hasClearance = hasClearanceBoth(target, currentY);
+				
+			default:
+		}
+		
+		return hasClearance;
+	}
+	
 	/**
 	 * Clear right and left floats
 	 */
@@ -159,6 +205,18 @@ class FloatsManager
 		{
 			return rightClearance;
 		}
+	}
+	
+	private function hasClearanceBoth(target:ElementRenderer, currentY:Float):Bool
+	{
+		var hasLeftClearance:Bool = doGetHasClearance(target, currentY, floats.left);
+		
+		if (hasLeftClearance == true)
+		{
+			return true;
+		}
+		
+		return doGetHasClearance(target, currentY, floats.right); 
 	}
 	
 	private function doGetClearance(target:ElementRenderer, currentY:Float, floats:Array<FloatVO>):Float
@@ -182,6 +240,25 @@ class FloatsManager
 		}
 		
 		return maxY - currentY;
+	}
+	
+	private function doGetHasClearance(target:ElementRenderer, currentY:Float, floats:Array<FloatVO>):Bool
+	{
+		var length:Int = floats.length;
+		for (i in 0...length)
+		{
+			if (isParentOrPreviousSibling(floats[i].node, target) == true)
+			{
+				var floatBounds:RectangleVO = floats[i].bounds;
+				if (floatBounds.y + floatBounds.height > currentY)
+				{
+					return true;
+				}
+			}
+			
+		}
+		
+		return false;
 	}
 	
 	/**

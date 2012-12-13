@@ -414,26 +414,26 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	override private function layoutChildren(layoutState:LayoutStateValue):Void
 	{
-		//before laying out, update the list of floated elements
-		updateFloatedElements();
+		//before laying out, update the list of floated and clear elements
+		updateFloatedAndClearElements();
 		
 		//do a first layout of the children
-		//if any floated element was encountered for the first time
+		//if any floated or clear element was encountered for the first time
 		//during this layout, then it return true, and the layout
-		//should be done again with the new floated element list
+		//should be done again with the new floated and clear element list
 		var shouldLayoutAgain:Bool = doLayoutChildren(layoutState);
 		
-		//while floated element are found, redo the layout
+		//while floated and clear elements are found, redo the layout
 		while (shouldLayoutAgain == true)
 		{
 			shouldLayoutAgain = false;
-			//update floated element list before re-layout
+			//update floated and clear element list before re-layout
 			//if this block is a block formatting root, no need
 			//to update the list as it is immediately updated
-			//as soon as the floated element is found
+			//as soon as the floated or clear element is found
 			if (establishesNewBlockFormattingContext() == false)
 			{
-				updateFloatedElements();
+				updateFloatedAndClearElements();
 			}
 			shouldLayoutAgain = doLayoutChildren(layoutState);
 		}
@@ -484,24 +484,27 @@ class BlockBoxRenderer extends FlowBoxRenderer
 
 	/**
 	 * Update the list of floated element by converting
-	 * their position to this block own space
+	 * their position to this block own space,
+	 * and retrieve the list of clear element from the
+	 * block formatting root
 	 */
-	private function updateFloatedElements():Void
+	private function updateFloatedAndClearElements():Void
 	{	
 		//if this block box is a block formatting root,
-		//then it needs to reset its floated element list,
-		//as it's children can't be affected by floated elements
+		//then it needs to reset its floated element and clear element list,
+		//as it's children can't be affected by floated end clear elements
 		//from another block formatting context
 		if (establishesNewBlockFormattingContext() == true)
 		{
 			floatsManager.init();
 		}
-		//else this block box retrieves floated element from the nearest
-		//block formatting context root and convert them to its own space
+		//else this block box retrieves floated and clear elements from the nearest
+		//block formatting context root and convert float elements to its own space
 		else
 		{
 			var blockFormattingContextRoot:BlockBoxRenderer =  getNearestBlockFormattingContextRoot();
 			floatsManager.retrieveFloatsFrom(this, blockFormattingContextRoot, getBlockBoxesOffset(this, blockFormattingContextRoot));
+			floatsManager.childrenWithClearance = blockFormattingContextRoot.floatsManager.childrenWithClearance;
 		}
 	}
 	
@@ -721,28 +724,59 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var child:ElementRenderer = firstChild;
 		while (child != null)
 		{
-			//if child can introduce clearance it will be placed below previous
-			//left, right or both float based on the value of the clear style
-			if (child.canHaveClearance() == true)
-			{
-				//TODO : when clearing, should only clear floats declared before in document order
-				var clearance:Float = floatsManager.getClearance(this, _childPosition.y);
-			}
 			//absolutely positioned child are not positioned here
 			if (child.isPositioned() == false || child.isRelativePositioned() == true)
 			{
+				//wether child has clearance, in which case i doesn't need to add its
+				//top margin to its y position
+				var childHasClearance:Bool = false;
+				
+				//if child can introduce clearance it will be placed below previous
+				//left, right or both float based on the value of the clear style
+				if (child.canHaveClearance() == true)
+				{
+					//the position were the child will be placed if it doesn't have clearance
+					var hypotheticalChildYPosition:Float = _childPosition.y + child.coreStyle.usedValues.marginTop;
+					
+					//check wether child actually has clearance, meaning that it should be placed
+					//below a float declare earlier in the document
+					if (floatsManager.hasClearance(child, hypotheticalChildYPosition) == true)
+					{
+						//first time the child with clearance is found, layout
+						//of block must be restarted has clearance child might
+						//influence margin collapsing
+						if (floatsManager.clearIsAlreadyRegistered(child) == false)
+						{
+							registerClearElement(child);
+							return true;
+						}
+						//suqsequent times, compute actual clearance and set it 
+						//as the y position were the child will be placed
+						else
+						{
+							var clearance:Float = floatsManager.getClearance(child, hypotheticalChildYPosition);
+							_childPosition.y += clearance;
+							childHasClearance = true;
+						}
+					}
+				}
+				
 				//if the child is not a float
 				if (child.isFloat() == false)
 				{
 					//if it is a block box not establishing a new block formatting
 					if (child.establishesNewBlockFormattingContext() == false && child.isBlockContainer() == true)
 					{
-						//add its own margin to the x/y position, as it is the position
-						//of its border box. Top margin is collapsed with adjoining margins
-						//if needed
-						//floats are not taken into account when positioning it but if it creates
-						//line boxes they might be shortened by those floats
-						_childPosition.y += child.getCollapsedTopMargin();
+						//if child has clearance, its top margin is not used
+						if (childHasClearance == false)
+						{
+							//add its own margin to the x/y position, as it is the position
+							//of its border box. Top margin is collapsed with adjoining margins
+							//if needed
+							//floats are not taken into account when positioning it but if it creates
+							//line boxes they might be shortened by those floats
+							_childPosition.y += child.getCollapsedTopMargin();
+						}
 						
 						//update postion of child
 						child.bounds.x = child.coreStyle.usedValues.marginLeft;
@@ -767,9 +801,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight;
 						_childPosition.y = floatsManager.getFirstAvailableYPosition(_childPosition.y, childMarginHeight, childMarginWidth, contentWidth, 0);
 
-						//add child margins. Top margin is collapsed with
-						//adjoining margins if needed
-						_childPosition.y += child.getCollapsedTopMargin();
+						//if child has clearance, its top margin is not used
+						if (childHasClearance == false)
+						{
+							//add child margins. Top margin is collapsed with
+							//adjoining margins if needed
+							_childPosition.y += child.getCollapsedTopMargin();
+						}
 						
 						//update position of child
 						child.bounds.y = _childPosition.y;
@@ -802,7 +840,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//each time a float is found, it is stored and the layout is re-started at
 					//the first parent block formatting root, so do nothing if the float
 					//was already found to prevent infinite loop
-					if (floatsManager.isAlreadyRegistered(child) == false)
+					if (floatsManager.floatIsAlreadyRegistered(child) == false)
 					{
 						var childPosition:PointVO = _childPosition;
 						
@@ -834,6 +872,17 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * When a clear element is first encountered, it is
+	 * stored in the nearest block formatting context root
+	 * ancestor and layout is started again
+	 */
+	private function registerClearElement(clearElement:ElementRenderer):Void
+	{
+		var blockFormattingContextRoot:BlockBoxRenderer = getNearestBlockFormattingContextRoot();
+		blockFormattingContextRoot.floatsManager.registerClear(clearElement);
 	}
 	
 	/**
@@ -1015,7 +1064,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				if (child.isFloat() == true)
 				{
 					child.layout(true, layoutState);
-					if (floatsManager.isAlreadyRegistered(child) == false)
+					if (floatsManager.floatIsAlreadyRegistered(child) == false)
 					{
 						//check wether there is enough space in the current line to fit the floated
 						//element. If not, create a new line box to fit it.
