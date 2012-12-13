@@ -1066,6 +1066,32 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					child.layout(true, layoutState);
 					if (floatsManager.floatIsAlreadyRegistered(child) == false)
 					{
+						//implementation for a border case : a float in an inline formatting
+						//can also have clearance, mostly similar to element with clearance
+						//in block formatting layout
+						if (child.canHaveClearance() == true)
+						{
+							var hypotheticalChildYPosition:Float = inlineFormattingData.lineBoxPosition.y + child.coreStyle.usedValues.marginTop;
+							
+							if (floatsManager.hasClearance(child, hypotheticalChildYPosition) == true)
+							{
+								if (floatsManager.clearIsAlreadyRegistered(child) == false)
+								{
+									registerClearElement(child);
+								}
+								
+								//if float does have clearance, place it below any other float, acting more like
+								//a block formatting
+								var clearance:Float = floatsManager.getClearance(child, hypotheticalChildYPosition);
+								var clearedFloatPosition:PointVO = new PointVO(0, 0);
+								clearedFloatPosition.y = inlineFormattingData.lineBoxPosition.y + clearance;
+								registerFloatedElement(child, clearedFloatPosition);
+								_floatFound = true;
+								return null;
+							}
+						}
+						
+						//here the float doesn't have clearance
 						//check wether there is enough space in the current line to fit the floated
 						//element. If not, create a new line box to fit it.
 						var floatMarginWidth:Float = child.bounds.width + child.coreStyle.usedValues.marginLeft + child.coreStyle.usedValues.marginRight;
