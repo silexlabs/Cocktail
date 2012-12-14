@@ -445,28 +445,60 @@ class CSSSelectorParser
 		var operator:String = null;
 		var value:String = null;
 		
-		var state:AttributeSelectorParserState = ATTRIBUTE;
+		var state:AttributeSelectorParserState = IGNORE_SPACES;
+		var next:AttributeSelectorParserState = ATTRIBUTE;
 		
 		while (true)
 		{
 			switch(state)
 			{
+				case IGNORE_SPACES:
+					switch(c)
+					{
+						case
+							'\n'.code,
+							'\r'.code,
+							'\t'.code,
+							' '.code:
+						default:
+							state = next;
+							continue;
+					}
+				
 				case ATTRIBUTE:
 					if (!isSelectorChar(c))
 					{
 						attribute = selector.substr(start, position - start);
-						state = OPERATOR;
-						start = position;
-						continue;
+						
+						if (c == ']'.code)
+						{
+							state = END_SELECTOR;
+						}
+						else
+						{
+							state = IGNORE_SPACES;
+							next = BEGIN_OPERATOR;
+							continue;
+						}
 					}
 				
+				case BEGIN_OPERATOR:
+					start = position;
+					state = OPERATOR;
+					
 				case OPERATOR:
 					if (!isOperatorChar(c))
 					{
-						switch(c)
+						operator = selector.substr(start, position - start);
+						state = IGNORE_SPACES;
+						next = END_OPERATOR;
+						continue;
+					}
+					
+				case END_OPERATOR:
+					switch(c)
 						{
 							case '"'.code, "'".code:
-								operator = selector.substr(start, position - start);
 								position++;
 								start = position;
 								state = STRING_VALUE;
@@ -478,7 +510,6 @@ class CSSSelectorParser
 								
 								if (isSelectorChar(c) == true)
 								{
-									operator = selector.substr(start, position - start);
 									start = position;
 									state = IDENTIFIER_VALUE;
 								}
@@ -487,7 +518,6 @@ class CSSSelectorParser
 									state = INVALID_SELECTOR;
 								}
 						}
-					}
 					
 				case STRING_VALUE:
 					if (!isSelectorChar(c))

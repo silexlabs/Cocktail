@@ -57,7 +57,10 @@ enum StyleValueParserState {
 }
 
 enum AttributeSelectorParserState {
+	IGNORE_SPACES;
+	END_OPERATOR;
 	ATTRIBUTE;
+	BEGIN_OPERATOR;
 	OPERATOR;
 	IDENTIFIER_VALUE;
 	STRING_VALUE;

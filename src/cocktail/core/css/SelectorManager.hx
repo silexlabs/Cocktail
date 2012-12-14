@@ -360,8 +360,8 @@ class SelectorManager
 	}
 	
 	/**
-	 * return wether the valu of the "name" attribute is a hyphen
-	 * separated lsit whose first item is "value"
+	 * return wether the value of the "name" attribute is a hyphen
+	 * separated list whose first item is "value"
 	 */
 	private function matchAttributeBeginsHyphenList(node:HTMLElement, name:String, value:String):Bool
 	{
@@ -372,8 +372,15 @@ class SelectorManager
 			return false;
 		}
 		
-		var attributeValueAsList:Array<String> = attributeValue.split("-");
-		return attributeValueAsList[0] == value;
+		//valid if value exactly matches the attribute
+		if (attributeValue == value)
+		{
+			return true;
+		}
+		
+		//else valid if begins with value + hyphen
+		var hyphenValue:String = value + "-";
+		return attributeValue.substr(0, hyphenValue.length) == hyphenValue;
 	}
 	
 	/**
