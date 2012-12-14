@@ -36,6 +36,25 @@
 	<section name="5.7 Adjacent sibling selectors">
 		<test name="adjacent-000" description="Selectors: Adjacent selectors" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/adjacent-000.xht"></test>
 	</section>
+	<section name="5.8 Attribute selectors">
+		<test name="attribute-000" description="Selectors: Attribute selectors: Generic match" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-000.xht"></test>
+		<test name="attribute-001" description="Selectors: Attribute selectors: Generic match with the universal selector" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-001.xht"></test>
+		<test name="attribute-002" description="Selectors: Attribute selectors: Exact match" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-002.xht"></test>
+		<test name="attribute-003" description="Selectors: Attribute selectors: Exact match with the universal selector" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-003.xht"></test>
+		<test name="attribute-004" description="Selectors: Attribute selectors: Partial match" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-004.xht"></test>
+		<test name="attribute-005" description="Selectors: Attribute selectors: Partial match with the universal selector" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-005.xht"></test>
+		<test name="attribute-006" description="Selectors: Attribute selectors: Substring matching" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-006.xht"></test>
+		<test name="attribute-007" description="Selectors: Attribute selectors: Substring matching with the universal selector" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-007.xht"></test>
+		<test name="attribute-selector-001" description="ID selector without value and no matching element" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-selector-001.xht"></test>
+		<test name="attribute-selector-002" description="Attribute selector without value" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-selector-002.xht"></test>
+		<test name="attribute-value-selector-001" description="Attribute selector matching value" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-value-selector-001.xht"></test>
+		<test name="attribute-value-selector-002" description="Attribute selector matching value in hyphenated list" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-value-selector-002.xht"></test>
+		<test name="attribute-value-selector-003" description="Attribute selector matching value in list" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-value-selector-003.xht"></test>
+		<test name="attribute-value-selector-004" description="Numeric attributes" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-value-selector-004.xht"></test>
+		<test name="attribute-value-selector-006" description="Multiple and repeating attributes" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-value-selector-006.xht"></test>
+		<test name="attribute-value-selector-008" description="attribute selector - att=val" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-value-selector-008.xht"></test>
+		<test name="attribute-value-selector-009" description="lang attribute selector - att |= val" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/attribute-value-selector-009.xht"></test>
+	</section>
 </chapter>
 <chapter name="chapter-8-boxmodel">
 	<section name="8.3.1-collapsing-margins">
@@ -43,7 +62,15 @@
 		<test name="margin-collapse-002" description="margin-collapsing-maximum-of-the-two-adjoining-margins" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-002.xht"></test>
 		<test name="margin-collapse-003" description="margin-collapsing-negative-margins-adjoining-positive-margins" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-003.xht"></test>
 		<test name="margin-collapse-004" description="margin-collapsing-negative-margins-deducted-from-zero" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-004.xht"></test>
+		<test name="margin-collapse-009" description="Margin collapsing and elements with 'overflow' set to 'hidden'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-009.xht"></test>
+		<test name="margin-collapse-010" description="Margin collapsing and elements with 'overflow' set to 'scroll'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-010.xht"></test>
+		<test name="margin-collapse-011" description="Margin collapsing and elements with 'overflow' set to 'auto'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-011.xht"></test>
+		<test name="margin-collapse-017" description="Margin collapsing - parent edge and element edge are the same when margins collapse" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-017.xht"></test>
+		<test name="margin-collapse-031" description="margin collapsing" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-031.xht"></test>
 		<test name="margin-collapse-032" description="margin-collapsing" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-032.xht"></test>
+		<test name="margin-collapse-033" description="margin collapsing - clear" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-033.xht"></test>
+		<test name="margin-collapse-034" description="margin collapsing - clear" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-034.xht"></test>
+		<test name="margin-collapse-037" description="Collapsing margins - margin-bottom of the last in-flow child block collapsing with its parent min-height block's bottom margin" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/margin-collapse-037.xht"></test>
 	</section>
 </chapter>
 
@@ -276,6 +303,9 @@
 		<test name="min-width-applies-to-009" description="min-width-applied-to-elements-with-'display'-set-to-'block'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/min-width-applies-to-009.xht"></test>
 		<test name="min-width-applies-to-012" description="min-width-applied-to-elements-with-'display'-set-to-'inline-block'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/min-width-applies-to-012.xht"></test>
 	</section>
+	<section name="10.6.1 inline, non-replaced elements">
+		<test name="inline-non-replaced-height-002" description="Inline non-replaced elements and padding" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/inline-non-replaced-height-002.xht"></test>
+	</section>
 	<section name="10.8.1-leading-and-half-leading">
 		<test name="leading-001" description="leading-and-half-leading-line-heights" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/leading-001.xht"></test>
 		<test name="line-box-height-002" description="height-for-inline-replaced-elements-and-'line-height'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/line-box-height-002.xht"></test>
@@ -343,11 +373,17 @@
 		<test name="word-spacing-019" description="word-spacing-set-to-a-nominal-value-of-'72pt'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/word-spacing-019.xht"></test>
 	</section>
 	<section name="16.2-alignment:-the-'text-align'-property">
+		<test name="c546-txt-align-000" description="text-align" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/c546-txt-align-000.xht"></test>
 		<test name="text-align-001" description="text-align-set-to-'left'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-001.xht"></test>
 		<test name="text-align-002" description="text-align-set-to-'right'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-002.xht"></test>
 		<test name="text-align-003" description="text-align-set-to-'center'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-003.xht"></test>
 		<test name="text-align-004" description="text-align-set-to-'justify'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-004.xht"></test>
+		<test name="text-align-005" description="text-align-set-to-'inherit'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-005.xht"></test>
 		<test name="text-align-applies-to-001" description="text-align-application-on-a-'display:-inline'-element" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-applies-to-001.xht"></test>
+		<test name="text-align-applies-to-002" description="text-align-application-on-a-'display:-block'-element" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-applies-to-002.xht"></test>
+		<test name="text-align-applies-to-005" description="text-align-application-on-a-'display:-inline-block'-element" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-applies-to-005.xht"></test>
+		<test name="text-align-white-space-001" description="Text-align set to 'justify' with 'white-space' set to 'pre'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-align-white-space-001.xht"></test>
+	
 	</section>
 	<section name="16.1-indentation:-the-'text-indent'-property">
 		<test name="text-indent-007" description="text-indent-using-pixels-with-a-nominal-value,-96px" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-indent-007.xht"></test>
