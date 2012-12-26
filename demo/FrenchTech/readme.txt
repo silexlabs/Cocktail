@@ -158,7 +158,25 @@ Selected Feeds:
      => description => résumé sans html
      => content:encoded => thumb + html
 
+01net
+http://www.01net.com/rss/RSS_ACTUS_techno.xml
+=> publicités
+	 
+Le Monde technologies:
+http://www.lemonde.fr/rss/tag/technologies.xml
+=> publicités
 
+Google Science/High Tech:
+http://news.google.fr/news?pz=1&cf=all&ned=fr&hl=fr&topic=t&output=rss
+ => item
+     => title
+ 	 => pubDate
+	 => link
+	 => category
+     => description => résumé avec html
+
+Yahoo technologies:
+http://fr.news.yahoo.com/rss/technologies
 
 wordpress parameters:
 http://codex.wordpress.org/Class_Reference/WP_Query

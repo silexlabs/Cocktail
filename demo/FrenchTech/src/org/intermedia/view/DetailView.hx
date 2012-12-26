@@ -151,12 +151,22 @@ class DetailView extends ViewBase
 		// update content
 		// remove node
 		node.removeChild(_contentContainer);
-		_contentContainer.innerHTML = _data.content;
+		_contentContainer.innerHTML = _data.description;
 		// resize children iframe & img
 		resizeNodeChildrenTag(_contentContainer,"iframe");
 		resizeNodeChildrenTag(_contentContainer, "img");
 		// attach node
 		node.appendChild(_contentContainer);
+		
+		// update content
+		// remove node
+		/*node.removeChild(_contentContainer);
+		_contentContainer.innerHTML = _data.content;
+		// resize children iframe & img
+		resizeNodeChildrenTag(_contentContainer,"iframe");
+		resizeNodeChildrenTag(_contentContainer, "img");
+		// attach node
+		node.appendChild(_contentContainer);*/
 		
 	}
 

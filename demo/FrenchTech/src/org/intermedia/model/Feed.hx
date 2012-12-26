@@ -6,20 +6,18 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-package org.intermedia;
+package org.intermedia.model;
 
 /**
- * This clas defines the application global settings
- * 
+ * This class the Feed Model
  * @author Raphael Harmel
  */
 
-class Settings 
+typedef Feed =
 {
-	// debug flag
-	public static inline var DEBUG:Bool = true;
-	
-	// online flag
-	public static inline var ONLINE:Bool = true;
-	
+	var id:Int;
+	var thumb:String;
+	var title:String;
+	var url:String;
+	var generatedBy:String;
 }

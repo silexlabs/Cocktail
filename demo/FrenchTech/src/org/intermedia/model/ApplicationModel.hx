@@ -57,8 +57,24 @@ class ApplicationModel
 	 * Calls onModelStartsLoading, then calls load() on the DataLoader with the right number of cell to load
 	 * @param	numberOfCellsToLoad
 	 */
-	public function loadCellData(feed:String):Void
+	public function loadCellData(id:String):Void
 	{
+		var feed:Feed = {id:0,thumb:"",title:"",url:"",generatedBy:""};
+		
+		// get the feed corresponding to the id (=the url)
+		if (id == Feeds.FEED_1.url)
+		{
+			feed = Feeds.FEED_1;
+		}
+		else if (id == Feeds.FEED_2.url)
+		{
+			feed = Feeds.FEED_2;
+		}
+		else if (id == Feeds.FEED_3.url)
+		{
+			feed = Feeds.FEED_3;
+		}
+		
 		// if first data loading is occuring
 		if (_loadedCellsData.length == 0)
 		{

@@ -1329,7 +1329,7 @@ if(!org.intermedia.model) org.intermedia.model = {}
 org.intermedia.model.ApplicationModel = $hxClasses["org.intermedia.model.ApplicationModel"] = function() {
 	this._loadedCellsData = new Array();
 	this._loadedDetailData = new Array();
-	this._dataLoader = new org.intermedia.model.DataLoader(false);
+	this._dataLoader = new org.intermedia.model.DataLoader(true);
 };
 org.intermedia.model.ApplicationModel.__name__ = true;
 org.intermedia.model.ApplicationModel.prototype = {
@@ -1343,7 +1343,9 @@ org.intermedia.model.ApplicationModel.prototype = {
 		}
 		if(this.onModelCellDataLoaded != null) this.onModelCellDataLoaded(listData);
 	}
-	,loadCellData: function(feed) {
+	,loadCellData: function(id) {
+		var feed = { id : 0, thumb : "", title : "", url : "", generatedBy : ""};
+		if(id == { id : 0, title : "Frenchweb", url : "http://frenchweb.fr/feed/", thumb : "assets/Frenchweb-Logo-700x700.jpg", generatedBy : "wordpress"}.url) feed = { id : 0, title : "Frenchweb", url : "http://frenchweb.fr/feed/", thumb : "assets/Frenchweb-Logo-700x700.jpg", generatedBy : "wordpress"}; else if(id == { id : 1, title : "Techcrunch", thumb : "assets/techcrunch-logo.png", url : "http://fr.techcrunch.com/feed/", generatedBy : "wordpress"}.url) feed = { id : 1, title : "Techcrunch", thumb : "assets/techcrunch-logo.png", url : "http://fr.techcrunch.com/feed/", generatedBy : "wordpress"}; else if(id == { id : 2, title : "01net", thumb : "assets/01net-logo.jpg", url : "http://www.01net.com/rss/actus.xml", generatedBy : "wordpress"}.url) feed = { id : 2, title : "01net", thumb : "assets/01net-logo.jpg", url : "http://www.01net.com/rss/actus.xml", generatedBy : "wordpress"};
 		if(this._loadedCellsData.length == 0) {
 			if(this.onModelStartsLoading != null) this.onModelStartsLoading();
 		}
@@ -1359,24 +1361,29 @@ org.intermedia.model.DataLoader = $hxClasses["org.intermedia.model.DataLoader"] 
 };
 org.intermedia.model.DataLoader.__name__ = true;
 org.intermedia.model.DataLoader.prototype = {
-	onCellsXmlLoaded: function(listId,xml) {
-		this.onCellDataLoaded({ id : listId, cells : org.intermedia.model.ThumbTextListRssStandard.rss2Cells(xml,listId)});
+	onCellsXmlLoaded: function(feed,xml) {
+		this.onCellDataLoaded({ id : feed.url, cells : org.intermedia.model.ThumbTextListRssStandard.rss2Cells(xml,feed)});
 	}
 	,loadCellData: function(feed,itemsPerPage,successCallback,errorCallback) {
 		this.onCellDataLoaded = successCallback;
 		this.onLoadingError = errorCallback;
 		var fullUrl = "";
 		if(this._online) {
+			var debug = new org.intermedia.Debug();
+			debug.traceDuration("DataLoader step0");
 			var pageIndex = 1;
-			if(this._pageIndexHash.exists(feed)) pageIndex = this._pageIndexHash.get(feed) + 1;
-			this._pageIndexHash.set(feed,pageIndex);
-			fullUrl = feed + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
+			if(this._pageIndexHash.exists(feed.url)) pageIndex = this._pageIndexHash.get(feed.url) + 1;
+			this._pageIndexHash.set(feed.url,pageIndex);
+			if(feed.generatedBy == "wordpress") fullUrl = feed.url + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
+			console.log("test1: " + fullUrl);
+			console.log("load xml feed");
 			var xmlLoader = new org.intermedia.model.XmlLoader(fullUrl,this._online,$bind(this,this.onCellsXmlLoaded),this.onLoadingError,feed);
+			debug.traceDuration("DataLoader feed " + feed.url);
 		} else {
 			var debug = new org.intermedia.Debug();
 			debug.traceDuration("DataLoader step0");
-			if(feed == { id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/", thumb : "assets/techcrunch-logo.png"}.url) this.onCellsXmlLoaded(feed,Xml.parse(haxe.Resource.getString("feed1"))); else if(feed == { id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/", thumb : "assets/Silicon-Sentier.jpg"}.url) this.onCellsXmlLoaded(feed,Xml.parse(haxe.Resource.getString("feed2"))); else if(feed == { id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/", thumb : "assets/Frenchweb-Logo-700x700.jpg"}.url) this.onCellsXmlLoaded(feed,Xml.parse(haxe.Resource.getString("feed3")));
-			debug.traceDuration("DataLoader feed" + feed);
+			if(feed.url == { id : 0, title : "Frenchweb", url : "http://frenchweb.fr/feed/", thumb : "assets/Frenchweb-Logo-700x700.jpg", generatedBy : "wordpress"}.url) this.onCellsXmlLoaded(feed,Xml.parse(haxe.Resource.getString("feed1"))); else if(feed.url == { id : 1, title : "Techcrunch", thumb : "assets/techcrunch-logo.png", url : "http://fr.techcrunch.com/feed/", generatedBy : "wordpress"}.url) this.onCellsXmlLoaded(feed,Xml.parse(haxe.Resource.getString("feed2"))); else if(feed.url == { id : 2, title : "01net", thumb : "assets/01net-logo.jpg", url : "http://www.01net.com/rss/actus.xml", generatedBy : "wordpress"}.url) this.onCellsXmlLoaded(feed,Xml.parse(haxe.Resource.getString("feed3")));
+			debug.traceDuration("DataLoader feed " + Std.string(feed));
 		}
 	}
 	,__class__: org.intermedia.model.DataLoader
@@ -1385,8 +1392,7 @@ org.intermedia.model.Feeds = $hxClasses["org.intermedia.model.Feeds"] = function
 org.intermedia.model.Feeds.__name__ = true;
 org.intermedia.model.ThumbTextListRssStandard = $hxClasses["org.intermedia.model.ThumbTextListRssStandard"] = function() { }
 org.intermedia.model.ThumbTextListRssStandard.__name__ = true;
-org.intermedia.model.ThumbTextListRssStandard.rss2Cells = function(rss,listId) {
-	if(listId == null) listId = "";
+org.intermedia.model.ThumbTextListRssStandard.rss2Cells = function(rss,feed) {
 	var cells = new Array();
 	var channelNode = rss.firstElement().firstElement();
 	if(channelNode == null) return cells;
@@ -1415,10 +1421,7 @@ org.intermedia.model.ThumbTextListRssStandard.rss2Cells = function(rss,listId) {
 					if(cell.thumbUrl == "") cell.thumbUrl = org.intermedia.model.ThumbTextListRssStandard.getThumb(cell.content);
 				}
 			}
-			if(cell.thumbUrl == "") {
-				if(listId == { id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/", thumb : "assets/techcrunch-logo.png"}.url) cell.thumbUrl = { id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/", thumb : "assets/techcrunch-logo.png"}.thumb;
-				if(listId == { id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/", thumb : "assets/Silicon-Sentier.jpg"}.url) cell.thumbUrl = { id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/", thumb : "assets/Silicon-Sentier.jpg"}.thumb;
-			}
+			if(cell.thumbUrl == "") cell.thumbUrl = feed.thumb;
 			if(cell.title != "" && cell.thumbUrl != "" && (cell.description != "" || cell.content != "")) cells.push(cell);
 		}
 	}
@@ -1480,30 +1483,29 @@ org.intermedia.model.ThumbTextListRssStandard.getThumb = function(htmlString) {
 	}
 	return "";
 }
-org.intermedia.model.XmlLoader = $hxClasses["org.intermedia.model.XmlLoader"] = function(xmlUrl,online,successCallback,errorCallback,listId) {
-	if(listId == null) listId = "";
+org.intermedia.model.XmlLoader = $hxClasses["org.intermedia.model.XmlLoader"] = function(xmlUrl,online,successCallback,errorCallback,feed) {
 	this._online = online;
 	this.onLoadSuccess = successCallback;
 	this.onLoadError = errorCallback;
-	this.loadXmlFeed(listId,xmlUrl);
+	this.loadXmlFeed(feed,xmlUrl);
 };
 org.intermedia.model.XmlLoader.__name__ = true;
 org.intermedia.model.XmlLoader.prototype = {
-	onXmlLoaded: function(listId,xmlString) {
+	onXmlLoaded: function(feed,xmlString) {
 		var xml = Xml.parse(xmlString);
-		if(this.onLoadSuccess != null) this.onLoadSuccess(listId,xml);
+		if(this.onLoadSuccess != null) this.onLoadSuccess(feed,xml);
 	}
 	,onXmlError: function(error) {
 		if(this.onLoadError != null) this.onLoadError(error);
 	}
-	,loadXmlFeed: function(listId,xmlUrl) {
+	,loadXmlFeed: function(feed,xmlUrl) {
 		var _g = this;
 		var fullUrl = "";
 		fullUrl = "http://demos.silexlabs.org/cocktail/simple-webapp/XmlProxy.php?url=" + StringTools.urlEncode(xmlUrl);
 		try {
 			var httpRequest = new haxe.Http(fullUrl);
 			httpRequest.onData = function(xml) {
-				_g.onXmlLoaded(listId,xml);
+				_g.onXmlLoaded(feed,xml);
 			};
 			httpRequest.onError = $bind(this,this.onXmlError);
 			httpRequest.request(false);
@@ -1920,7 +1922,7 @@ org.intermedia.view.DetailView.prototype = $extend(org.intermedia.view.ViewBase.
 		this._authorElement = js.Lib.document.createTextNode(this._data.author);
 		this._authorContainer.appendChild(this._authorElement);
 		this.node.removeChild(this._contentContainer);
-		this._contentContainer.innerHTML = this._data.content;
+		this._contentContainer.innerHTML = this._data.description;
 		this.resizeNodeChildrenTag(this._contentContainer,"iframe");
 		this.resizeNodeChildrenTag(this._contentContainer,"img");
 		this.node.appendChild(this._contentContainer);
@@ -2142,7 +2144,7 @@ org.intermedia.view.ListViewBase.prototype = $extend(org.intermedia.view.ViewBas
 	,onScrollCallback: function(event) {
 		if(!this._dataRequested && this.node.scrollTop >= this.node.scrollHeight - (js.Lib.window.innerHeight - 78) - 10) {
 			this._dataRequested = true;
-			this.setData(this._data);
+			this.onDataRequestCallback(this.id);
 		}
 	}
 	,onListItemSelectedCallback: function(cellData) {
@@ -2647,13 +2649,13 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 	org.intermedia.view.SwippableListViewStyle.setListsContainerStyle(this._listsContainer);
 	this._listViews = new Array();
 	this.list0 = new org.intermedia.view.ListViewText();
-	this.list0.id = { id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/", thumb : "assets/techcrunch-logo.png"}.url;
+	this.list0.id = { id : 0, title : "Frenchweb", url : "http://frenchweb.fr/feed/", thumb : "assets/Frenchweb-Logo-700x700.jpg", generatedBy : "wordpress"}.url;
 	this._listViews.push(this.list0);
 	this.list1 = new org.intermedia.view.ThumbTextList1Bis(2);
-	this.list1.id = { id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/", thumb : "assets/Silicon-Sentier.jpg"}.url;
+	this.list1.id = { id : 1, title : "Techcrunch", thumb : "assets/techcrunch-logo.png", url : "http://fr.techcrunch.com/feed/", generatedBy : "wordpress"}.url;
 	this._listViews.push(this.list1);
 	this.list2 = new org.intermedia.view.ThumbTextList1(2);
-	this.list2.id = { id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/", thumb : "assets/Frenchweb-Logo-700x700.jpg"}.url;
+	this.list2.id = { id : 2, title : "01net", thumb : "assets/01net-logo.jpg", url : "http://www.01net.com/rss/actus.xml", generatedBy : "wordpress"}.url;
 	this._listViews.push(this.list2);
 	this.positionLists();
 	var _g = 0, _g1 = this._listViews;
@@ -2958,7 +2960,7 @@ org.intermedia.view.ViewManager.prototype = {
 		this._menu = new org.intermedia.view.MenuListViewText();
 		this._menu.displayListBottomLoader = false;
 		this._body.appendChild(this._menu.node);
-		this._menu.setData([{ id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/", thumb : "assets/techcrunch-logo.png"},{ id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/", thumb : "assets/Silicon-Sentier.jpg"},{ id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/", thumb : "assets/Frenchweb-Logo-700x700.jpg"}]);
+		this._menu.setData([{ id : 0, title : "Frenchweb", url : "http://frenchweb.fr/feed/", thumb : "assets/Frenchweb-Logo-700x700.jpg", generatedBy : "wordpress"},{ id : 1, title : "Techcrunch", thumb : "assets/techcrunch-logo.png", url : "http://fr.techcrunch.com/feed/", generatedBy : "wordpress"},{ id : 2, title : "01net", thumb : "assets/01net-logo.jpg", url : "http://www.01net.com/rss/actus.xml", generatedBy : "wordpress"}]);
 		this._swippableListView = new org.intermedia.view.SwippableListView();
 		this._body.appendChild(this._swippableListView.node);
 		this._currentView = this._swippableListView;
@@ -2975,9 +2977,9 @@ org.intermedia.view.ViewManager.prototype = {
 		this._swippableListView.onDataRequest = ($_=this._applicationController,$bind($_,$_.loadCellData));
 		this._swippableListView.onHorizontalMove = ($_=this._menu,$bind($_,$_.moveHorizontally));
 		this._swippableListView.onHorizontalTweenEnd = ($_=this._menu,$bind($_,$_.horizontalTweenEnd));
-		this._applicationController.loadCellData({ id : 0, title : "Techcrunch", url : "http://fr.techcrunch.com/feed/", thumb : "assets/techcrunch-logo.png"}.url);
-		this._applicationController.loadCellData({ id : 1, title : "SiliconSentier", url : "http://siliconsentier.org/feed/", thumb : "assets/Silicon-Sentier.jpg"}.url);
-		this._applicationController.loadCellData({ id : 2, title : "Frenchweb", url : "http://frenchweb.fr/feed/", thumb : "assets/Frenchweb-Logo-700x700.jpg"}.url);
+		this._applicationController.loadCellData({ id : 0, title : "Frenchweb", url : "http://frenchweb.fr/feed/", thumb : "assets/Frenchweb-Logo-700x700.jpg", generatedBy : "wordpress"}.url);
+		this._applicationController.loadCellData({ id : 1, title : "Techcrunch", thumb : "assets/techcrunch-logo.png", url : "http://fr.techcrunch.com/feed/", generatedBy : "wordpress"}.url);
+		this._applicationController.loadCellData({ id : 2, title : "01net", thumb : "assets/01net-logo.jpg", url : "http://www.01net.com/rss/actus.xml", generatedBy : "wordpress"}.url);
 		this._body.removeChild(this._loadingView.node);
 	}
 	,onLoad: function(event) {
