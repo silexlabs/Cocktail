@@ -19,19 +19,19 @@ class Feeds
 		id:0,
 		title:"Techcrunch",
 		url:"http://fr.techcrunch.com/feed/",
-		thumb:"http://demos.silexlabs.org/cocktail/FrenchTech/assets/techcrunch-logo.png"
+		thumb:"assets/techcrunch-logo.png"
 		};	
 	public static inline var FEED_2:Feed = {
 		id:1,
 		title:"SiliconSentier",
 		url:"http://siliconsentier.org/feed/",
-		thumb:"http://demos.silexlabs.org/cocktail/FrenchTech/assets/Silicon-Sentier.jpg"
+		thumb:"assets/Silicon-Sentier.jpg"
 		};	
 	public static inline var FEED_3:Feed = {
 		id:2,
 		title:"Frenchweb",
 		url:"http://frenchweb.fr/feed/",
-		thumb:"http://demos.silexlabs.org/cocktail/FrenchTech/assets/Frenchweb-Logo-700x700.jpg"
+		thumb:"assets/Frenchweb-Logo-700x700.jpg"
 		};	
 }
 
