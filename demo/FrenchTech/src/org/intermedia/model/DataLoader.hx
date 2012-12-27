@@ -83,11 +83,14 @@ class DataLoader
 			if (feed.generatedBy == "wordpress")
 			{
 				// build feed's full Url 
+				//fullUrl = feed.url + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
 				fullUrl = feed.url + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
 			}
-			trace("test1: " + fullUrl);
-			
-			trace("load xml feed");
+			else
+			{
+				fullUrl = feed.url;
+			}
+
 			// load xml feed
 			var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onCellsXmlLoaded, onLoadingError, feed);
 

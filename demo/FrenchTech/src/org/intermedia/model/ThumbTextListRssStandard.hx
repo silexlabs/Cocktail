@@ -80,9 +80,9 @@ class ThumbTextListRssStandard
 					{
 						// get and clean the node text
 						cell.description = cleanText(itemParam.firstChild().nodeValue);
-						
+						trace(cell.description);
 						// get the thumb image
-						cell.thumbUrl = getThumb(cell.description);
+						if(cell.thumbUrl == "") cell.thumbUrl = getThumb(cell.description);
 						
 					}
 					
@@ -101,21 +101,6 @@ class ThumbTextListRssStandard
 				// if thumb url is empty, fill it with default image
 				if (cell.thumbUrl == "")
 				{
-					// for FEED_1, add thumb if missing
-					/*if (listId == Feeds.FEED_1.url)
-					{
-						cell.thumbUrl = Feeds.FEED_1.thumb;
-					}
-					// for FEED_2, add thumb if missing
-					if (listId == Feeds.FEED_2.url)
-					{
-						cell.thumbUrl = Feeds.FEED_2.thumb;
-					}
-					// for FEED_3, add thumb if missing
-					if (listId == Feeds.FEED_3.url)
-					{
-						cell.thumbUrl = Feeds.FEED_3.thumb;
-					}*/
 					cell.thumbUrl = feed.thumb;
 				}
 				

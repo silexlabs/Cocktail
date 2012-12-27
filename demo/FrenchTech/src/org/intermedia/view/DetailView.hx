@@ -99,10 +99,10 @@ class DetailView extends ViewBase
 		//node.appendChild(_thumbnail);
 		
 		// add description
-		//_descriptionContainer = Lib.document.createElement("div");
-		//DetailStyle.setDescription(_descriptionContainer);
+		/*_descriptionContainer = Lib.document.createElement("div");
+		DetailStyle.setDescription(_descriptionContainer);
 		//_descriptionContainer.appendChild(_descriptionElement);
-		//node.appendChild(_descriptionContainer);
+		node.appendChild(_descriptionContainer);*/
 		
 		// add content
 		_contentContainer = Lib.document.createElement("div");
@@ -148,25 +148,28 @@ class DetailView extends ViewBase
 		_descriptionElement.text = _data.description + "\n";
 		_descriptionContainer.appendChild(_descriptionElement);*/
 		
-		// update content
+		// update description
 		// remove node
-		node.removeChild(_contentContainer);
-		_contentContainer.innerHTML = _data.description;
+		/*node.removeChild(_descriptionContainer);
+		_descriptionContainer.innerHTML = _data.description;
 		// resize children iframe & img
-		resizeNodeChildrenTag(_contentContainer,"iframe");
-		resizeNodeChildrenTag(_contentContainer, "img");
+		resizeNodeChildrenTag(_descriptionContainer,"iframe");
+		resizeNodeChildrenTag(_descriptionContainer, "img");
 		// attach node
-		node.appendChild(_contentContainer);
+		node.appendChild(_descriptionContainer);*/
+		
+		// id content is empty, fill it with description
+		if (_data.content == "") _data.content = _data.description;
 		
 		// update content
 		// remove node
-		/*node.removeChild(_contentContainer);
+		node.removeChild(_contentContainer);
 		_contentContainer.innerHTML = _data.content;
 		// resize children iframe & img
 		resizeNodeChildrenTag(_contentContainer,"iframe");
 		resizeNodeChildrenTag(_contentContainer, "img");
 		// attach node
-		node.appendChild(_contentContainer);*/
+		node.appendChild(_contentContainer);
 		
 	}
 

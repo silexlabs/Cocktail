@@ -166,7 +166,7 @@ StringTools.urlDecode = function(s) {
 	return decodeURIComponent(s.split("+").join(" "));
 }
 StringTools.htmlUnescape = function(s) {
-	return s.split("&gt;").join(">").split("&lt;").join("<").split("&amp;").join("&");
+	return s.split("&gt;").join(">").split("&lt;").join("<").split("&quot;").join("\"").split("&#039;").join("'").split("&amp;").join("&");
 }
 StringTools.isSpace = function(s,pos) {
 	var c = HxOverrides.cca(s,pos);
@@ -1345,7 +1345,7 @@ org.intermedia.model.ApplicationModel.prototype = {
 	}
 	,loadCellData: function(id) {
 		var feed = { id : 0, thumb : "", title : "", url : "", generatedBy : ""};
-		if(id == { id : 0, title : "Frenchweb", url : "http://frenchweb.fr/feed/", thumb : "assets/Frenchweb-Logo-700x700.jpg", generatedBy : "wordpress"}.url) feed = { id : 0, title : "Frenchweb", url : "http://frenchweb.fr/feed/", thumb : "assets/Frenchweb-Logo-700x700.jpg", generatedBy : "wordpress"}; else if(id == { id : 1, title : "Techcrunch", thumb : "assets/techcrunch-logo.png", url : "http://fr.techcrunch.com/feed/", generatedBy : "wordpress"}.url) feed = { id : 1, title : "Techcrunch", thumb : "assets/techcrunch-logo.png", url : "http://fr.techcrunch.com/feed/", generatedBy : "wordpress"}; else if(id == { id : 2, title : "01net", thumb : "assets/01net-logo.jpg", url : "http://www.01net.com/rss/actus.xml", generatedBy : "wordpress"}.url) feed = { id : 2, title : "01net", thumb : "assets/01net-logo.jpg", url : "http://www.01net.com/rss/actus.xml", generatedBy : "wordpress"};
+		if(id == { id : 0, title : "iPhon.fr", thumb : "assets/iphon_fr-logo.jpg", url : "http://www.iphon.fr/feed/rss2", generatedBy : "wordpress"}.url) feed = { id : 0, title : "iPhon.fr", thumb : "assets/iphon_fr-logo.jpg", url : "http://www.iphon.fr/feed/rss2", generatedBy : "wordpress"}; else if(id == { id : 1, title : "FrAndroid", thumb : "assets/frandroid-logo.png", url : "http://www.frandroid.com/feed", generatedBy : "wordpress"}.url) feed = { id : 1, title : "FrAndroid", thumb : "assets/frandroid-logo.png", url : "http://www.frandroid.com/feed", generatedBy : "wordpress"}; else if(id == { id : 2, title : "frenchiPhone", thumb : "assets/frenchiphone-logo.png", url : "http://www.frenchiphone.com/feed/", generatedBy : "wordpress"}.url) feed = { id : 2, title : "frenchiPhone", thumb : "assets/frenchiphone-logo.png", url : "http://www.frenchiphone.com/feed/", generatedBy : "wordpress"};
 		if(this._loadedCellsData.length == 0) {
 			if(this.onModelStartsLoading != null) this.onModelStartsLoading();
 		}
@@ -1374,15 +1374,13 @@ org.intermedia.model.DataLoader.prototype = {
 			var pageIndex = 1;
 			if(this._pageIndexHash.exists(feed.url)) pageIndex = this._pageIndexHash.get(feed.url) + 1;
 			this._pageIndexHash.set(feed.url,pageIndex);
-			if(feed.generatedBy == "wordpress") fullUrl = feed.url + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
-			console.log("test1: " + fullUrl);
-			console.log("load xml feed");
+			if(feed.generatedBy == "wordpress") fullUrl = feed.url + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex; else fullUrl = feed.url;
 			var xmlLoader = new org.intermedia.model.XmlLoader(fullUrl,this._online,$bind(this,this.onCellsXmlLoaded),this.onLoadingError,feed);
 			debug.traceDuration("DataLoader feed " + feed.url);
 		} else {
 			var debug = new org.intermedia.Debug();
 			debug.traceDuration("DataLoader step0");
-			if(feed.url == { id : 0, title : "Frenchweb", url : "http://frenchweb.fr/feed/", thumb : "assets/Frenchweb-Logo-700x700.jpg", generatedBy : "wordpress"}.url) this.onCellsXmlLoaded(feed,Xml.parse(haxe.Resource.getString("feed1"))); else if(feed.url == { id : 1, title : "Techcrunch", thumb : "assets/techcrunch-logo.png", url : "http://fr.techcrunch.com/feed/", generatedBy : "wordpress"}.url) this.onCellsXmlLoaded(feed,Xml.parse(haxe.Resource.getString("feed2"))); else if(feed.url == { id : 2, title : "01net", thumb : "assets/01net-logo.jpg", url : "http://www.01net.com/rss/actus.xml", generatedBy : "wordpress"}.url) this.onCellsXmlLoaded(feed,Xml.parse(haxe.Resource.getString("feed3")));
+			if(feed.url == { id : 0, title : "iPhon.fr", thumb : "assets/iphon_fr-logo.jpg", url : "http://www.iphon.fr/feed/rss2", generatedBy : "wordpress"}.url) this.onCellsXmlLoaded(feed,Xml.parse(haxe.Resource.getString("feed1"))); else if(feed.url == { id : 1, title : "FrAndroid", thumb : "assets/frandroid-logo.png", url : "http://www.frandroid.com/feed", generatedBy : "wordpress"}.url) this.onCellsXmlLoaded(feed,Xml.parse(haxe.Resource.getString("feed2"))); else if(feed.url == { id : 2, title : "frenchiPhone", thumb : "assets/frenchiphone-logo.png", url : "http://www.frenchiphone.com/feed/", generatedBy : "wordpress"}.url) this.onCellsXmlLoaded(feed,Xml.parse(haxe.Resource.getString("feed3")));
 			debug.traceDuration("DataLoader feed " + Std.string(feed));
 		}
 	}
@@ -1414,7 +1412,8 @@ org.intermedia.model.ThumbTextListRssStandard.rss2Cells = function(rss,feed) {
 				if(itemParam.getNodeName() == "dc:creator") cell.author = itemParam.firstChild().getNodeValue();
 				if(itemParam.getNodeName() == "description") {
 					cell.description = org.intermedia.model.ThumbTextListRssStandard.cleanText(itemParam.firstChild().getNodeValue());
-					cell.thumbUrl = org.intermedia.model.ThumbTextListRssStandard.getThumb(cell.description);
+					console.log(cell.description);
+					if(cell.thumbUrl == "") cell.thumbUrl = org.intermedia.model.ThumbTextListRssStandard.getThumb(cell.description);
 				}
 				if(itemParam.getNodeName() == "content:encoded") {
 					cell.content = org.intermedia.model.ThumbTextListRssStandard.cleanText(itemParam.firstChild().getNodeValue());
@@ -1655,7 +1654,7 @@ org.intermedia.view.CellTextStyle.setCellTextStyle = function(node) {
 	node.style.wordSpacing = "normal";
 	node.style.textIndent = "0px";
 	node.style.whiteSpace = "normal";
-	node.style.textAlign = "left";
+	node.style.textAlign = "justify";
 	node.style.verticalAlign = "middle";
 	node.style.color = "#444444";
 }
@@ -1770,7 +1769,7 @@ org.intermedia.view.CellThumbText1Style.setCellStyle = function(node,cellPerLine
 }
 org.intermedia.view.CellThumbText1Style.setThumbnailMaskStyle = function(node) {
 	node.style.marginTop = Std.string(8) + "%";
-	node.style.marginLeft = "3%";
+	node.style.marginLeft = "2%";
 	node.style.width = Std.string(34) + "%";
 	node.style.height = Std.string(70) + "%";
 	node.style.overflowX = "hidden";
@@ -1780,7 +1779,7 @@ org.intermedia.view.CellThumbText1Style.setThumbnailMaskStyle = function(node) {
 org.intermedia.view.CellThumbText1Style.setTextBlockStyle = function(node) {
 	node.style.display = "inline-block";
 	node.style.marginTop = Std.string(4) + "%";
-	node.style.marginLeft = "3%";
+	node.style.marginLeft = "2%";
 	node.style.verticalAlign = "top";
 	node.style.width = Std.string(60) + "%";
 }
@@ -1845,17 +1844,18 @@ org.intermedia.view.DetailStyle.setDetailStyle = function(node) {
 	node.style.marginRight = "0px";
 	node.style.marginTop = Std.string(43) + "px";
 	node.style.marginBottom = "0px";
-	node.style.paddingLeft = Std.string(2) + "%";
-	node.style.paddingRight = Std.string(2) + "%";
+	node.style.paddingLeft = Std.string(5) + "%";
+	node.style.paddingRight = Std.string(5) + "%";
 	node.style.paddingTop = Std.string(10) + "px";
 	node.style.paddingBottom = Std.string(10) + "px";
-	node.style.width = Std.string(96) + "%";
+	node.style.width = Std.string(90) + "%";
 	node.style.height = "auto";
 	node.style.top = Std.string(43) + "px";
 	node.style.bottom = "0px";
 	node.style.overflowX = "hidden";
 	node.style.overflowY = "hidden";
 	node.style.backgroundColor = "#FEFEFE";
+	node.style.textAlign = "justify";
 }
 org.intermedia.view.DetailStyle.setText = function(node) {
 	node.style.display = "block";
@@ -1892,8 +1892,8 @@ org.intermedia.view.DetailView.prototype = $extend(org.intermedia.view.ViewBase.
 		var originalWidth = Std.parseInt(nodeToResize.getAttribute("width"));
 		var originalHeight = Std.parseInt(nodeToResize.getAttribute("height"));
 		if(Std.parseInt(nodeToResize.getAttribute("width")) > js.Lib.window.innerWidth) {
-			var newWidth = 96 * js.Lib.window.innerWidth / 100 | 0;
-			nodeToResize.style.width = Std.string(96) + "%";
+			var newWidth = 90 * js.Lib.window.innerWidth / 100 | 0;
+			nodeToResize.style.width = Std.string(90) + "%";
 			var newHeight = originalHeight * newWidth / originalWidth | 0;
 			nodeToResize.style.height = Std.string(newHeight) + "px";
 		} else {
@@ -1921,8 +1921,9 @@ org.intermedia.view.DetailView.prototype = $extend(org.intermedia.view.ViewBase.
 		this._authorContainer.removeChild(this._authorElement);
 		this._authorElement = js.Lib.document.createTextNode(this._data.author);
 		this._authorContainer.appendChild(this._authorElement);
+		if(this._data.content == "") this._data.content = this._data.description;
 		this.node.removeChild(this._contentContainer);
-		this._contentContainer.innerHTML = this._data.description;
+		this._contentContainer.innerHTML = this._data.content;
 		this.resizeNodeChildrenTag(this._contentContainer,"iframe");
 		this.resizeNodeChildrenTag(this._contentContainer,"img");
 		this.node.appendChild(this._contentContainer);
@@ -2649,13 +2650,13 @@ org.intermedia.view.SwippableListView = $hxClasses["org.intermedia.view.Swippabl
 	org.intermedia.view.SwippableListViewStyle.setListsContainerStyle(this._listsContainer);
 	this._listViews = new Array();
 	this.list0 = new org.intermedia.view.ListViewText();
-	this.list0.id = { id : 0, title : "Frenchweb", url : "http://frenchweb.fr/feed/", thumb : "assets/Frenchweb-Logo-700x700.jpg", generatedBy : "wordpress"}.url;
+	this.list0.id = { id : 0, title : "iPhon.fr", thumb : "assets/iphon_fr-logo.jpg", url : "http://www.iphon.fr/feed/rss2", generatedBy : "wordpress"}.url;
 	this._listViews.push(this.list0);
 	this.list1 = new org.intermedia.view.ThumbTextList1Bis(2);
-	this.list1.id = { id : 1, title : "Techcrunch", thumb : "assets/techcrunch-logo.png", url : "http://fr.techcrunch.com/feed/", generatedBy : "wordpress"}.url;
+	this.list1.id = { id : 1, title : "FrAndroid", thumb : "assets/frandroid-logo.png", url : "http://www.frandroid.com/feed", generatedBy : "wordpress"}.url;
 	this._listViews.push(this.list1);
 	this.list2 = new org.intermedia.view.ThumbTextList1(2);
-	this.list2.id = { id : 2, title : "01net", thumb : "assets/01net-logo.jpg", url : "http://www.01net.com/rss/actus.xml", generatedBy : "wordpress"}.url;
+	this.list2.id = { id : 2, title : "frenchiPhone", thumb : "assets/frenchiphone-logo.png", url : "http://www.frenchiphone.com/feed/", generatedBy : "wordpress"}.url;
 	this._listViews.push(this.list2);
 	this.positionLists();
 	var _g = 0, _g1 = this._listViews;
@@ -2960,7 +2961,7 @@ org.intermedia.view.ViewManager.prototype = {
 		this._menu = new org.intermedia.view.MenuListViewText();
 		this._menu.displayListBottomLoader = false;
 		this._body.appendChild(this._menu.node);
-		this._menu.setData([{ id : 0, title : "Frenchweb", url : "http://frenchweb.fr/feed/", thumb : "assets/Frenchweb-Logo-700x700.jpg", generatedBy : "wordpress"},{ id : 1, title : "Techcrunch", thumb : "assets/techcrunch-logo.png", url : "http://fr.techcrunch.com/feed/", generatedBy : "wordpress"},{ id : 2, title : "01net", thumb : "assets/01net-logo.jpg", url : "http://www.01net.com/rss/actus.xml", generatedBy : "wordpress"}]);
+		this._menu.setData([{ id : 0, title : "iPhon.fr", thumb : "assets/iphon_fr-logo.jpg", url : "http://www.iphon.fr/feed/rss2", generatedBy : "wordpress"},{ id : 1, title : "FrAndroid", thumb : "assets/frandroid-logo.png", url : "http://www.frandroid.com/feed", generatedBy : "wordpress"},{ id : 2, title : "frenchiPhone", thumb : "assets/frenchiphone-logo.png", url : "http://www.frenchiphone.com/feed/", generatedBy : "wordpress"}]);
 		this._swippableListView = new org.intermedia.view.SwippableListView();
 		this._body.appendChild(this._swippableListView.node);
 		this._currentView = this._swippableListView;
@@ -2977,9 +2978,9 @@ org.intermedia.view.ViewManager.prototype = {
 		this._swippableListView.onDataRequest = ($_=this._applicationController,$bind($_,$_.loadCellData));
 		this._swippableListView.onHorizontalMove = ($_=this._menu,$bind($_,$_.moveHorizontally));
 		this._swippableListView.onHorizontalTweenEnd = ($_=this._menu,$bind($_,$_.horizontalTweenEnd));
-		this._applicationController.loadCellData({ id : 0, title : "Frenchweb", url : "http://frenchweb.fr/feed/", thumb : "assets/Frenchweb-Logo-700x700.jpg", generatedBy : "wordpress"}.url);
-		this._applicationController.loadCellData({ id : 1, title : "Techcrunch", thumb : "assets/techcrunch-logo.png", url : "http://fr.techcrunch.com/feed/", generatedBy : "wordpress"}.url);
-		this._applicationController.loadCellData({ id : 2, title : "01net", thumb : "assets/01net-logo.jpg", url : "http://www.01net.com/rss/actus.xml", generatedBy : "wordpress"}.url);
+		this._applicationController.loadCellData({ id : 0, title : "iPhon.fr", thumb : "assets/iphon_fr-logo.jpg", url : "http://www.iphon.fr/feed/rss2", generatedBy : "wordpress"}.url);
+		this._applicationController.loadCellData({ id : 1, title : "FrAndroid", thumb : "assets/frandroid-logo.png", url : "http://www.frandroid.com/feed", generatedBy : "wordpress"}.url);
+		this._applicationController.loadCellData({ id : 2, title : "frenchiPhone", thumb : "assets/frenchiphone-logo.png", url : "http://www.frenchiphone.com/feed/", generatedBy : "wordpress"}.url);
 		this._body.removeChild(this._loadingView.node);
 	}
 	,onLoad: function(event) {

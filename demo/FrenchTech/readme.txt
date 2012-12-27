@@ -130,6 +130,8 @@ Selected Feeds:
      => description => résumé
      => content:encoded => thumb + html
 > http://feedproxy.google.com/francaistechcrunch => http://fr.techcrunch.com/feed/
+ => plus de version francaise depuis octobre 2012, anglais uniquement
+ => partie europe pas accessible en rss
  => item
      => title
  	 => pubDate
@@ -161,6 +163,7 @@ Selected Feeds:
 01net
 http://www.01net.com/rss/RSS_ACTUS_techno.xml
 => publicités
+=> pas de contenu, uniquement une trop brève description
 	 
 Le Monde technologies:
 http://www.lemonde.fr/rss/tag/technologies.xml
@@ -177,6 +180,23 @@ http://news.google.fr/news?pz=1&cf=all&ned=fr&hl=fr&topic=t&output=rss
 
 Yahoo technologies:
 http://fr.news.yahoo.com/rss/technologies
+=> ne sort que 3 items
+=> apparement pas d'API pour generer des flux rss customs afin de récupérer plus d'informations.
+
+FrenchiPhone
+http://feeds.feedburner.com/IphoneFranceFrFrenchiphone
+http://www.frenchiphone.com/feed/
+=> flux paginés
+
+iPhon.fr
+http://feeds.feedburner.com/IphonfrBlogIphone
+http://www.iphon.fr/feed/rss2
+=> pas de flux paginés
+
+FrAndroid
+http://feeds.feedburner.com/Frandroid
+http://www.frandroid.com/feed
+=> flux paginés
 
 wordpress parameters:
 http://codex.wordpress.org/Class_Reference/WP_Query

@@ -62,7 +62,7 @@ class CellThumbText1Style
 	public static function setThumbnailMaskStyle(node:HtmlDom):Void
 	{
 		node.style.marginTop = Std.string(CELL_TOP_MARGIN_PERCENT) + "%";
-		node.style.marginLeft = "3%";
+		node.style.marginLeft = "2%";
 
 		node.style.width = Std.string(CELL_THUMB_WIDTH_PERCENT) + "%";
 		node.style.height = Std.string(70) + "%";
@@ -84,7 +84,7 @@ class CellThumbText1Style
 		node.style.display = "inline-block";
 		
 		node.style.marginTop = Std.string(Std.int(CELL_TOP_MARGIN_PERCENT/2)) + "%";
-		node.style.marginLeft = "3%";
+		node.style.marginLeft = "2%";
 		
 		node.style.verticalAlign = "top";
 		node.style.width = Std.string(CELL_TEXT_WIDTH_PERCENT) + "%";
