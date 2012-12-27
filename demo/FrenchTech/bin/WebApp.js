@@ -1768,7 +1768,7 @@ org.intermedia.view.CellThumbText1Style.setCellStyle = function(node,cellPerLine
 	org.intermedia.view.CellStyle.addBorder(node,1);
 }
 org.intermedia.view.CellThumbText1Style.setThumbnailMaskStyle = function(node) {
-	node.style.marginTop = Std.string(8) + "%";
+	node.style.marginTop = Std.string(14) + "px";
 	node.style.marginLeft = "2%";
 	node.style.width = Std.string(34) + "%";
 	node.style.height = Std.string(70) + "%";
@@ -1778,7 +1778,7 @@ org.intermedia.view.CellThumbText1Style.setThumbnailMaskStyle = function(node) {
 }
 org.intermedia.view.CellThumbText1Style.setTextBlockStyle = function(node) {
 	node.style.display = "inline-block";
-	node.style.marginTop = Std.string(4) + "%";
+	node.style.marginTop = Std.string(7) + "px";
 	node.style.marginLeft = "2%";
 	node.style.verticalAlign = "top";
 	node.style.width = Std.string(60) + "%";
