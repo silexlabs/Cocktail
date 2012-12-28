@@ -50,6 +50,8 @@ class MenuCellTextStyle
 		// remove border
 		CellStyle.removeBorder(node);
 		node.style.backgroundColor = null;
+
+		node.style.cursor = "pointer";
 	}
 	
 	/**

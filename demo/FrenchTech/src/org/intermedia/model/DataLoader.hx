@@ -11,6 +11,7 @@ package org.intermedia.model;
 import haxe.Firebug;
 import org.intermedia.Debug;
 import org.intermedia.model.ApplicationModel;
+import org.intermedia.model.Feed;
 
 /**
  * Loads a rss feed and parses it either to a CellData or a DetailData returned to the ApplicationModel
@@ -53,7 +54,7 @@ class DataLoader
 	 * @param	endIndex
 	 * @param	?callBack
 	 */
-	public function loadCellData(feed:String, itemsPerPage:Int, successCallback:ListData->Void, errorCallback:Dynamic->Void):Void
+	public function loadCellData(feed:Feed, itemsPerPage:Int, successCallback:ListData->Void, errorCallback:Dynamic->Void):Void
 	{
 		// set callbacks
 		onCellDataLoaded = successCallback;
@@ -64,21 +65,36 @@ class DataLoader
 		// prepare online feed url
 		if (_online)
 		{			
+			// debug is used here for iPhone 4S where parsing is really slow when using PhoneGap
+			var debug:Debug = new Debug();
+			debug.traceDuration("DataLoader step0");
+
 			// current list page index
 			var pageIndex:Int = 1;
 			
 			// handle page index
-			if (_pageIndexHash.exists(feed))
+			if (_pageIndexHash.exists(feed.url))
 			{
-				pageIndex = _pageIndexHash.get(feed) + 1;
+				pageIndex = _pageIndexHash.get(feed.url) + 1;
 			}
-			_pageIndexHash.set(feed,pageIndex);
+			_pageIndexHash.set(feed.url,pageIndex);
 			
-			// build feed's full Url 
-			fullUrl = feed + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
-			
+			// specific to wordpress
+			if (feed.generatedBy == "wordpress")
+			{
+				// build feed's full Url 
+				//fullUrl = feed.url + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
+				fullUrl = feed.url + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
+			}
+			else
+			{
+				fullUrl = feed.url;
+			}
+
 			// load xml feed
 			var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onCellsXmlLoaded, onLoadingError, feed);
+
+			debug.traceDuration("DataLoader feed " + feed.url);
 		}
 		// prepare local feed url
 		else
@@ -87,19 +103,19 @@ class DataLoader
 			var debug:Debug = new Debug();
 			debug.traceDuration("DataLoader step0");
 			// depending on the feed, load corresponding local xml ressource, parse it and call callback 
-			if (feed == Feeds.FEED_1.url)
+			if (feed.url == Feeds.FEED_1.url )
 			{
 				onCellsXmlLoaded(feed, Xml.parse(haxe.Resource.getString("feed1")));
 			}
-			else if (feed == Feeds.FEED_2.url)
+			else if (feed.url == Feeds.FEED_2.url)
 			{
 				onCellsXmlLoaded(feed, Xml.parse(haxe.Resource.getString("feed2")));
 			}
-			else if (feed == Feeds.FEED_3.url)
+			else if (feed.url == Feeds.FEED_3.url)
 			{
 				onCellsXmlLoaded(feed, Xml.parse(haxe.Resource.getString("feed3")));
 			}
-			debug.traceDuration("DataLoader feed" + feed);
+			debug.traceDuration("DataLoader feed " + feed);
 		}
 		
 	}
@@ -109,7 +125,7 @@ class DataLoader
 	 * @param	cellData
 	 * @param	?callBack
 	 */
-	public function loadDetailData(cellData:CellData, successCallback:DetailData->Void, errorCallback:Dynamic->Void):Void
+	/*public function loadDetailData(cellData:CellData, successCallback:DetailData->Void, errorCallback:Dynamic->Void):Void
 	{
 		// set callbacks
 		onCellDetailLoaded = successCallback;
@@ -136,7 +152,7 @@ class DataLoader
 		}
 		
 		var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onLoadSuccessDelegate, onLoadingError);
-	}
+	}*/
 	
 	/**
 	 * cells rss loaded callback
@@ -144,9 +160,9 @@ class DataLoader
 	 * 
 	 * @param	xml
 	 */
-	private function onCellsXmlLoaded(listId:String, xml:Xml):Void
+	private function onCellsXmlLoaded(feed:Feed, xml:Xml):Void
 	{
-		onCellDataLoaded({id:listId ,cells:ThumbTextListRssStandard.rss2Cells(xml,listId)});
+		onCellDataLoaded({id:feed.url ,cells:ThumbTextListRssStandard.rss2Cells(xml,feed)});
 	}	
 	
 	/**
@@ -155,9 +171,9 @@ class DataLoader
 	 * 
 	 * @param	xml
 	 */
-	private function onCellDetailXmlLoaded(xml:Xml,cellData:CellData):Void
+	/*private function onCellDetailXmlLoaded(xml:Xml,cellData:CellData):Void
 	{
 		onCellDetailLoaded(CellDetailsRss.rss2CellDetail(xml,cellData));
-	}
+	}*/
 	
 }

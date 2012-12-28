@@ -75,7 +75,7 @@ class Constants
 	
 	// set detail constants
 	public static inline var DETAIL_BG_COLOR:String = CELL_BG_COLOR;
-	public static inline var DETAIL_HORIZONTAL_PADDING_PERCENT:Int = 2;
+	public static inline var DETAIL_HORIZONTAL_PADDING_PERCENT:Int = 5;
 	public static inline var DETAIL_HORIZONTAL_PERCENT:Int = 100 - 2 * DETAIL_HORIZONTAL_PADDING_PERCENT;
 	public static inline var DETAIL_VERTICAL_PADDING_PIXELS:Int = 10;
 	

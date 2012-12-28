@@ -24,8 +24,8 @@ Online demo: http://demos.silexlabs.org/cocktail/FrenchTech/
 Status: source code up to date.
 
 
-APP STORES DESCRIPTION
-----------------------
+DESCRIPTION
+-----------
 
 ENGLISH
 
@@ -130,6 +130,8 @@ Selected Feeds:
      => description => résumé
      => content:encoded => thumb + html
 > http://feedproxy.google.com/francaistechcrunch => http://fr.techcrunch.com/feed/
+ => plus de version francaise depuis octobre 2012, anglais uniquement
+ => partie europe pas accessible en rss
  => item
      => title
  	 => pubDate
@@ -158,7 +160,43 @@ Selected Feeds:
      => description => résumé sans html
      => content:encoded => thumb + html
 
+01net
+http://www.01net.com/rss/RSS_ACTUS_techno.xml
+=> publicités
+=> pas de contenu, uniquement une trop brève description
+	 
+Le Monde technologies:
+http://www.lemonde.fr/rss/tag/technologies.xml
+=> publicités
 
+Google Science/High Tech:
+http://news.google.fr/news?pz=1&cf=all&ned=fr&hl=fr&topic=t&output=rss
+ => item
+     => title
+ 	 => pubDate
+	 => link
+	 => category
+     => description => résumé avec html
+
+Yahoo technologies:
+http://fr.news.yahoo.com/rss/technologies
+=> ne sort que 3 items
+=> apparement pas d'API pour generer des flux rss customs afin de récupérer plus d'informations.
+
+FrenchiPhone
+http://feeds.feedburner.com/IphoneFranceFrFrenchiphone
+http://www.frenchiphone.com/feed/
+=> flux paginés
+
+iPhon.fr
+http://feeds.feedburner.com/IphonfrBlogIphone
+http://www.iphon.fr/feed/rss2
+=> pas de flux paginés
+
+FrAndroid
+http://feeds.feedburner.com/Frandroid
+http://www.frandroid.com/feed
+=> flux paginés
 
 wordpress parameters:
 http://codex.wordpress.org/Class_Reference/WP_Query
@@ -166,8 +204,8 @@ http://codex.wordpress.org/Class_Reference/WP_Query
 -paged
 
 
-Intermedia Market spec feedback
--------------------------------
+French Tech spec feedback
+-------------------------
 
 application model should contain
 	=> the "page" concept, which can contain lists and more
@@ -289,7 +327,7 @@ To do Alex pre fine tuning:
 -items de menu latéraux a mettre avec une police moins grande et a moitié, avec ombre visuelle
 
 
-Feedback market Pol & Alex 24/04/2012
+Feedback Pol & Alex 24/04/2012
 
 Scroll swippable view
  => scroll horizontal a ameliorer (cf. Android Market) => OK
@@ -315,7 +353,7 @@ Menu:
  => bug release menu => OK
 
  
-Point market 27/04/2012
+Point 27/04/2012
 => menu cliquable a finaliser => OK
 => redimensionement
 	=> propriété du viewport "height=device-height" retirée, résultat hide url bar ne fonctionne plus car impacte le redimmensionnement en mode paysage
@@ -324,7 +362,7 @@ App native via PhoneGap:
 => bottom loading screen non visible => OK
 => les flux locaux ne se chargent pas => Réglé en utilisant les fichiers locaux comme ressources haxe => OK
 
-Point market 04/05/2012
+Point 04/05/2012
 Pol:
 -Toujours des données locales ?
  Le bandeau de haut de page est tellement rédhibitoire que si nous devons utiliser ces données il faudrait mettre à jour les références en terme de feed
@@ -335,7 +373,7 @@ Pol:
 Alex:
 - quand le detail contient une image large, au retour a la liste ca bug => problème avec les iframes & images trop larges => OK
 - la barre d adresse du navigateur est a moitier remontee seulement => complètement désactivé => OK
-- le scroll vertical et son acceleration sont moins bien qu'avant
+- le scroll vertical et son acceleration sont moins bien qu'avant => OK
 
 Raph:
 -iPhone:
@@ -347,6 +385,24 @@ Raph:
 -Générique:
 	=> quand on atteint la fin d'un contenu, le scroll s'arrete net. Il devrait rebondire avec un easeInOut => réglé en utilisant le scroll natif => OK
 
+	
+Update 2012-12-28:
+-changed feeds to iPhon.fr, FrAndroid, frenchiPhone => OK
+-recompiler avec la dernière version de Haxe et en utilisant les flux on-line => voir les performances et la quantité de données => OK
+-remplacer les flux foireux (trop lents, images trop grosses...) par d'autres. => OK
+-mettre toutes les images en dur dans l'application => OK
+-click sur une cellule => detail, puis back => retour tout en haut de la liste, le scroll n'est pas conservé => OK
+-mettre un bouton pour switcher entre les flux online et offline (offline par défaut) => OK
+-initialiser l'appli avec les données locales, et si on detecte une connection, charger les données en ligne
+-enlever les lien => getElementByTagName => addEventListener(e.preventDefault)
+-faire une homepage & enlever les 5 première vignettes du flux principal ?
+-utiliser une liste à 1 cellule par ligne pour le flux 3 ?
+-photos se chargent "en commencant par le bas" au lieu du haut
+-on peut sans doute encore améliorer la mise en page des 2 1eres lignes... a discuter avec pol
+-une petite interpolation sur les images cropées ?
+-compilation PhoneGap
+-mise à jour AppStore Apple, Google & windows
+
 -------------------------------------------------------------------------------------------------------------------------
 
 Bugs restants:
@@ -356,8 +412,8 @@ Bugs restants:
 
 Fonctionnalités manquantes
 -bouton retour Android
- => dans la vue detail, devrait permettre de revenir à la homepage => ok
- => dans la homepage, devrait permettre de sortir de l'appli => ok
+ => dans la vue detail, devrait permettre de revenir à la homepage => OK
+ => dans la homepage, devrait permettre de sortir de l'appli => OK
 -quand on revient à la vue liste, celle-ci ne devrait pas avoir changé de position
  => ne pas retirer la swippableView du dom, mais la masquer 
  => stocker la position du scroll dans une variable et la réaffecter au chargement
@@ -365,6 +421,7 @@ Fonctionnalités manquantes
 
 Améliorations:
 -sur iPhone 4S, l'appli met 25 secondes à se lancer, et beaucoup moins de temps sur les autres appareil (environ 5 sec au total)
+=> réglé grace à la nouvelle version de Haxe 2.10
 -items de menu latéraux a mettre avec une ombre visuelle
 
 
@@ -407,7 +464,7 @@ Remarques suite à une comparaison avec les application d'information existantes 
 -Vue detail:
 	=> pour lire les articles suivants et précédents
 		=> ajouter des boutons avec icones flèches 
-		=> sroll latéral
+		=> scroll latéral
 
 -------------------------------------------------------------------------------------------------------------------------
 	
