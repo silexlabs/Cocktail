@@ -393,9 +393,10 @@ Update 2012-12-28:
 -mettre toutes les images en dur dans l'application => OK
 -enlever les lien => getElementByTagName => addEventListener(e.preventDefault)
 -faire une homepage & enlever les 5 première vignettes du flux principal ?
--utiliser une liste à 1 cellule par ligne pour le flux 3
+-utiliser une liste à 1 cellule par ligne pour le flux 3 ?
 -photos se chargent "en commencant par le bas" au lieu du haut
--click sur une cellule => detail, puis back => retour tout en haut de la liste, c'est possible de garder le scroll? (tu peux utiliser des encres ou scrollTop)
+-click sur une cellule => detail, puis back => retour tout en haut de la liste, c'est possible de garder le scroll?
+ => utiliser des ancres ou scrollTop
 -on peut sans doute encore améliorer la mise en page des 2 1eres lignes... a discuter avec pol
 -une petite interpolation sur les images cropées ?
 -compilation PhoneGap
