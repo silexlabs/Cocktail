@@ -51,6 +51,9 @@ class ListViewBase extends ViewBase
 	// data requested flag. used to make sure only one data request happens when reaching the bottom of the list
 	private var _dataRequested:Bool;
 	
+	// _scrollTopPosition is used to store the vertical scroll position of the current list
+	private var _scrollTopPosition:Int;
+
 	// Used to resolve a mobile safari bug
 	// _scrollTop is used to store previous scrollTop value and set it back after new data has been added to the DOM
 	//private var _scrollTop:Int;
@@ -233,7 +236,22 @@ class ListViewBase extends ViewBase
 			cell.refreshStyles();
 		}
 	}
-
+	
+	/**
+	 * Store the current list scrollTop position
+	 */
+	public function storeScrollTopPosition():Void
+	{
+		_scrollTopPosition = node.scrollTop;
+	}
+	
+	/**
+	 * Apply the current list scrollTop position
+	 */
+	public function applyScrollTopPosition():Void
+	{
+		node.scrollTop = _scrollTopPosition;
+	}
 }
 
 typedef ListStyleModel =

@@ -373,7 +373,7 @@ Pol:
 Alex:
 - quand le detail contient une image large, au retour a la liste ca bug => problème avec les iframes & images trop larges => OK
 - la barre d adresse du navigateur est a moitier remontee seulement => complètement désactivé => OK
-- le scroll vertical et son acceleration sont moins bien qu'avant
+- le scroll vertical et son acceleration sont moins bien qu'avant => OK
 
 Raph:
 -iPhone:
@@ -391,12 +391,12 @@ Update 2012-12-28:
 -recompiler avec la dernière version de Haxe et en utilisant les flux on-line => voir les performances et la quantité de données => OK
 -remplacer les flux foireux (trop lents, images trop grosses...) par d'autres. => OK
 -mettre toutes les images en dur dans l'application => OK
+-mettre un bouton pour switcher entre les flux online et offline (offline par défaut)
+-click sur une cellule => detail, puis back => retour tout en haut de la liste, le scroll n'est pas conservé => OK
 -enlever les lien => getElementByTagName => addEventListener(e.preventDefault)
 -faire une homepage & enlever les 5 première vignettes du flux principal ?
 -utiliser une liste à 1 cellule par ligne pour le flux 3 ?
 -photos se chargent "en commencant par le bas" au lieu du haut
--click sur une cellule => detail, puis back => retour tout en haut de la liste, c'est possible de garder le scroll?
- => utiliser des ancres ou scrollTop
 -on peut sans doute encore améliorer la mise en page des 2 1eres lignes... a discuter avec pol
 -une petite interpolation sur les images cropées ?
 -compilation PhoneGap
@@ -411,8 +411,8 @@ Bugs restants:
 
 Fonctionnalités manquantes
 -bouton retour Android
- => dans la vue detail, devrait permettre de revenir à la homepage => ok
- => dans la homepage, devrait permettre de sortir de l'appli => ok
+ => dans la vue detail, devrait permettre de revenir à la homepage => OK
+ => dans la homepage, devrait permettre de sortir de l'appli => OK
 -quand on revient à la vue liste, celle-ci ne devrait pas avoir changé de position
  => ne pas retirer la swippableView du dom, mais la masquer 
  => stocker la position du scroll dans une variable et la réaffecter au chargement

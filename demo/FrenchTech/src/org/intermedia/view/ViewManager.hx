@@ -175,6 +175,7 @@ class ViewManager
 		// remove swippable view touch events listener
 		//_swippableListView.unsetTouchEvents();
 		// remove swippableListView and menu and add empty detail view
+		_swippableListView.storeScrollTopPosition();
 		_body.removeChild(_swippableListView.node);
 		_body.removeChild(_menu.node);
 
@@ -271,6 +272,7 @@ class ViewManager
 		_body.removeChild(_detailView.node);
 		_body.appendChild(_menu.node);
 		_body.appendChild(_swippableListView.node);
+		_swippableListView.applyScrollTopPosition();
 
 		// set _currentView
 		_currentView = _swippableListView;
