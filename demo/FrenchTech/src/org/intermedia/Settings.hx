@@ -17,9 +17,9 @@ package org.intermedia;
 class Settings 
 {
 	// debug flag
-	public static inline var DEBUG:Bool = true;
+	public static inline var DEBUG:Bool = false;
 	
 	// online flag
-	public static inline var ONLINE:Bool = true;
+	public static inline var ONLINE:Bool = false;
 	
 }

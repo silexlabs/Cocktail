@@ -125,7 +125,7 @@ class DataLoader
 	 * @param	cellData
 	 * @param	?callBack
 	 */
-	public function loadDetailData(cellData:CellData, successCallback:DetailData->Void, errorCallback:Dynamic->Void):Void
+	/*public function loadDetailData(cellData:CellData, successCallback:DetailData->Void, errorCallback:Dynamic->Void):Void
 	{
 		// set callbacks
 		onCellDetailLoaded = successCallback;
@@ -152,7 +152,7 @@ class DataLoader
 		}
 		
 		var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onLoadSuccessDelegate, onLoadingError);
-	}
+	}*/
 	
 	/**
 	 * cells rss loaded callback
@@ -171,9 +171,9 @@ class DataLoader
 	 * 
 	 * @param	xml
 	 */
-	private function onCellDetailXmlLoaded(xml:Xml,cellData:CellData):Void
+	/*private function onCellDetailXmlLoaded(xml:Xml,cellData:CellData):Void
 	{
 		onCellDetailLoaded(CellDetailsRss.rss2CellDetail(xml,cellData));
-	}
+	}*/
 	
 }

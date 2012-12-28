@@ -148,9 +148,9 @@ class ViewManager
 		_swippableListView.onHorizontalTweenEnd = _menu.horizontalTweenEnd;
 		
 		// Call loadCellData() on the application controller with the default cell number (between 5 to 10)
+		_applicationController.loadCellData(Feeds.FEED_3.url);
 		_applicationController.loadCellData(Feeds.FEED_1.url);
 		_applicationController.loadCellData(Feeds.FEED_2.url);
-		_applicationController.loadCellData(Feeds.FEED_3.url);
 		
 		_body.removeChild(_loadingView.node);
 		

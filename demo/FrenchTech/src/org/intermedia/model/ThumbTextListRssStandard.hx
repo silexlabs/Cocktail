@@ -80,7 +80,6 @@ class ThumbTextListRssStandard
 					{
 						// get and clean the node text
 						cell.description = cleanText(itemParam.firstChild().nodeValue);
-						trace(cell.description);
 						// get the thumb image
 						if(cell.thumbUrl == "") cell.thumbUrl = getThumb(cell.description);
 						

@@ -24,8 +24,8 @@ Online demo: http://demos.silexlabs.org/cocktail/FrenchTech/
 Status: source code up to date.
 
 
-APP STORES DESCRIPTION
-----------------------
+DESCRIPTION
+-----------
 
 ENGLISH
 
@@ -204,8 +204,8 @@ http://codex.wordpress.org/Class_Reference/WP_Query
 -paged
 
 
-Intermedia Market spec feedback
--------------------------------
+French Tech spec feedback
+-------------------------
 
 application model should contain
 	=> the "page" concept, which can contain lists and more
@@ -327,7 +327,7 @@ To do Alex pre fine tuning:
 -items de menu latéraux a mettre avec une police moins grande et a moitié, avec ombre visuelle
 
 
-Feedback market Pol & Alex 24/04/2012
+Feedback Pol & Alex 24/04/2012
 
 Scroll swippable view
  => scroll horizontal a ameliorer (cf. Android Market) => OK
@@ -353,7 +353,7 @@ Menu:
  => bug release menu => OK
 
  
-Point market 27/04/2012
+Point 27/04/2012
 => menu cliquable a finaliser => OK
 => redimensionement
 	=> propriété du viewport "height=device-height" retirée, résultat hide url bar ne fonctionne plus car impacte le redimmensionnement en mode paysage
@@ -362,7 +362,7 @@ App native via PhoneGap:
 => bottom loading screen non visible => OK
 => les flux locaux ne se chargent pas => Réglé en utilisant les fichiers locaux comme ressources haxe => OK
 
-Point market 04/05/2012
+Point 04/05/2012
 Pol:
 -Toujours des données locales ?
  Le bandeau de haut de page est tellement rédhibitoire que si nous devons utiliser ces données il faudrait mettre à jour les références en terme de feed
@@ -385,6 +385,22 @@ Raph:
 -Générique:
 	=> quand on atteint la fin d'un contenu, le scroll s'arrete net. Il devrait rebondire avec un easeInOut => réglé en utilisant le scroll natif => OK
 
+	
+Update 2012-12-28:
+-changed feeds to iPhon.fr, FrAndroid, frenchiPhone => OK
+-recompiler avec la dernière version de Haxe et en utilisant les flux on-line => voir les performances et la quantité de données => OK
+-remplacer les flux foireux (trop lents, images trop grosses...) par d'autres. => OK
+-mettre toutes les images en dur dans l'application => OK
+-enlever les lien => getElementByTagName => addEventListener(e.preventDefault)
+-faire une homepage & enlever les 5 première vignettes du flux principal ?
+-utiliser une liste à 1 cellule par ligne pour le flux 3
+-photos se chargent "en commencant par le bas" au lieu du haut
+-click sur une cellule => detail, puis back => retour tout en haut de la liste, c'est possible de garder le scroll? (tu peux utiliser des encres ou scrollTop)
+-on peut sans doute encore améliorer la mise en page des 2 1eres lignes... a discuter avec pol
+-une petite interpolation sur les images cropées ?
+-compilation PhoneGap
+-mise à jour AppStore Apple, Google & windows
+
 -------------------------------------------------------------------------------------------------------------------------
 
 Bugs restants:
@@ -403,6 +419,7 @@ Fonctionnalités manquantes
 
 Améliorations:
 -sur iPhone 4S, l'appli met 25 secondes à se lancer, et beaucoup moins de temps sur les autres appareil (environ 5 sec au total)
+=> réglé grace à la nouvelle version de Haxe 2.10
 -items de menu latéraux a mettre avec une ombre visuelle
 
 
@@ -445,7 +462,7 @@ Remarques suite à une comparaison avec les application d'information existantes 
 -Vue detail:
 	=> pour lire les articles suivants et précédents
 		=> ajouter des boutons avec icones flèches 
-		=> sroll latéral
+		=> scroll latéral
 
 -------------------------------------------------------------------------------------------------------------------------
 	

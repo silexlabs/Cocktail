@@ -93,7 +93,7 @@ class ApplicationModel
 	 * Calls onModelStartsLoading, then calls load() on the DataLoader with the right CellData to retrieve the DetailData
 	 * @param	cellData
 	 */
-	public function loadDetailData(cellData:CellData):Void
+	/*public function loadDetailData(cellData:CellData):Void
 	{
 		// calls onModelStartsLoading if initialised
 		if(onModelStartsLoading != null)
@@ -103,7 +103,7 @@ class ApplicationModel
 		
 		// Calls load() on the DataLoader with the right CellData to retrieve the DetailData
 		_dataLoader.loadDetailData(cellData, onDetailDataLoadComplete, onModelDataLoadError);
-	}
+	}*/
 
 	/**
 	 * Call onModelCellDataLoaded with the cellData array
