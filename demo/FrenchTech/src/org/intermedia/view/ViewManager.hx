@@ -15,6 +15,7 @@ import js.Dom;
 import org.intermedia.controller.ApplicationController;
 import org.intermedia.model.ApplicationModel;
 import org.intermedia.model.Feeds;
+import org.intermedia.Settings;
 
 /**
  * In charge of instantiating the views, listening to the application model changes and communicating with the controller.
@@ -103,9 +104,11 @@ class ViewManager
 	private function init():Void
 	{
 		// Instantiate header
-		 _header = new HeaderView();
+		_header = new HeaderView();
 		_header.data = Constants.HEADER_HOME_TITLE;
+		_header.displayRefreshButton = true;
 		_header.onBackButtonClick = onHeaderBackButtonPressed;
+		_header.onRefreshButtonClick = onHeaderRefreshButtonPressed;
 		_body.appendChild(_header.node);
 		
 		// init menu
@@ -114,6 +117,34 @@ class ViewManager
 		_body.appendChild(_menu.node);
 		_menu.data = [Feeds.FEED_1, Feeds.FEED_2, Feeds.FEED_3];
 		
+		// create detail view
+		_detailView = new DetailView();
+
+		// onresize callback
+		Lib.window.onresize = function (event:Event) { refreshStyles();};
+		
+		// Sets callback on the model to be notified of model changes.
+		_applicationModel.onModelStartsLoading = onStartLoading;
+		_applicationModel.onModelDataLoadError = onLoadingError;
+		_applicationModel.onModelCellDataLoaded = onCellDataLoaded;
+		_applicationModel.onModelDetailDataLoaded = onDetailDataLoaded;
+		
+		// init _swippableView
+		initSwippableView();
+		
+		// Sets callback on the view to be notified of user actions.
+		// set menu item selelected callback
+		_menu.onListItemSelected = onMenuItemSelectedCallback;
+		
+		_body.removeChild(_loadingView.node);
+		
+	}
+	
+	/**
+	 * _swippableView init
+	 */
+	private function initSwippableView():Void
+	{
 		// init swippable view
 		_swippableListView = new SwippableListView();
 		
@@ -123,24 +154,6 @@ class ViewManager
 		// set _currentView
 		_currentView = _swippableListView;
 		
-		// create detail view
-		_detailView = new DetailView();
-
-		// onresize callback
-		Lib.window.onresize = function (event:Event) { refreshStyles();};
-		
-		
-		// Sets callback on the model to be notified of model changes.
-		_applicationModel.onModelStartsLoading = onStartLoading;
-		_applicationModel.onModelDataLoadError = onLoadingError;
-		_applicationModel.onModelCellDataLoaded = onCellDataLoaded;
-		_applicationModel.onModelDetailDataLoaded = onDetailDataLoaded;
-		
-		
-		// Sets callback on the view to be notified of user actions.
-		// set menu item selelected callback
-		_menu.onListItemSelected = onMenuItemSelectedCallback;
-		
 		// set swippableView callbacks
 		_swippableListView.onListItemSelected = onListItemSelectedCallback;
 		_swippableListView.onDataRequest = _applicationController.loadCellData;
@@ -148,12 +161,9 @@ class ViewManager
 		_swippableListView.onHorizontalTweenEnd = _menu.horizontalTweenEnd;
 		
 		// Call loadCellData() on the application controller with the default cell number (between 5 to 10)
+		_applicationController.loadCellData(Feeds.FEED_3.url);
 		_applicationController.loadCellData(Feeds.FEED_1.url);
 		_applicationController.loadCellData(Feeds.FEED_2.url);
-		_applicationController.loadCellData(Feeds.FEED_3.url);
-		
-		_body.removeChild(_loadingView.node);
-		
 	}
 	
 	/**
@@ -175,6 +185,7 @@ class ViewManager
 		// remove swippable view touch events listener
 		//_swippableListView.unsetTouchEvents();
 		// remove swippableListView and menu and add empty detail view
+		_swippableListView.storeScrollTopPosition();
 		_body.removeChild(_swippableListView.node);
 		_body.removeChild(_menu.node);
 
@@ -224,6 +235,9 @@ class ViewManager
 		
 		// display header back button
 		_header.displayBackButton = true;
+
+		// hide header refresh button
+		_header.displayRefreshButton = false;
 		
 		// update header zIndex using a workaround
 		setZIndexToMax(_header);
@@ -254,7 +268,7 @@ class ViewManager
 	}
 	
 	/**
-	 * Call goBackToListView on the application controller.
+	 * Header Back button click callback
 	 */
 	public function onHeaderBackButtonPressed():Void
 	{
@@ -264,6 +278,9 @@ class ViewManager
 		// hide header back button
 		_header.displayBackButton = false;
 		
+		// display header refresh button
+		_header.displayRefreshButton = true;
+		
 		// PhoneGap Android specific: unset hardware back button so it has the default behaviour, which exits the application
 		untyped Lib.document.removeEventListener("backbutton", onHeaderBackButtonPressed, false);
 
@@ -271,6 +288,7 @@ class ViewManager
 		_body.removeChild(_detailView.node);
 		_body.appendChild(_menu.node);
 		_body.appendChild(_swippableListView.node);
+		_swippableListView.applyScrollTopPosition();
 
 		// set _currentView
 		_currentView = _swippableListView;
@@ -284,6 +302,28 @@ class ViewManager
 		// on resize callback is called here to resolve an Android Browser bug, where application width is not refreshed correctly
 		_swippableListView.scrollToCurrentList();
 		
+		// refresh styles
+		refreshStyles();
+	}
+	
+	/**
+	 * Header Refresh button click callback
+	 */
+	public function onHeaderRefreshButtonPressed():Void
+	{
+		// switch between ofline and online
+		Settings.getInstance().online = !Settings.getInstance().online;
+		
+		// reset menu
+		_menu.index = 1;
+		
+		// reset applicationModel DataLoader
+		_applicationModel.initDataLoader();
+		
+		// remove and recreate _swippableListView
+		_body.removeChild(_swippableListView.node);
+		initSwippableView();
+
 		// refresh styles
 		refreshStyles();
 	}

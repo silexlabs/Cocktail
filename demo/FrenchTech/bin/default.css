@@ -44,3 +44,7 @@ text-decoration:none;*/
 /*-webkit-overflow-scrolling: touch;*/
 
 }
+
+a>img {
+	display:block;
+}

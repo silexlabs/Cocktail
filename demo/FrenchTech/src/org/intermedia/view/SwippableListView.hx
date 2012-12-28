@@ -76,9 +76,14 @@ class SwippableListView extends ListViewBase
 	// horizontal tween end
 	public var onHorizontalTweenEnd:Int->Void;
 	
+	// _scrollTop is used to store the scroll position on the current list. It is used when pressing the back button of the detail view
+	private var _scrollTop:Int;
+
 	public function new()
 	{
 		super();
+		
+		_scrollTop = 0;
 		
 		// display loading
 		displayLoading = true;
@@ -480,4 +485,25 @@ class SwippableListView extends ListViewBase
 	{
 		_scrollHandler.initialScrollPosition = { x:node.scrollLeft, y:_currentListView.node.scrollTop };
 	}
+	
+	/**
+	 * Store the current list scrollTop position
+	 */
+	override public function storeScrollTopPosition():Void
+	{
+		list0.storeScrollTopPosition();
+		list1.storeScrollTopPosition();
+		list2.storeScrollTopPosition();
+	}
+	
+	/**
+	 * Apply the current list scrollTop position
+	 */
+	override public function applyScrollTopPosition():Void
+	{
+		list0.applyScrollTopPosition();
+		list1.applyScrollTopPosition();
+		list2.applyScrollTopPosition();
+	}
+	
 }

@@ -8,7 +8,6 @@
 */
 package org.intermedia.controller;
 
-import haxe.Firebug;
 import org.intermedia.model.ApplicationModel;
 
 
@@ -54,9 +53,9 @@ class ApplicationController
 	 * Prompt the model to load the detail data matching the provided cell data and to notify the view to open the detail view
 	 * @param	cellData
 	 */
-	public function openDetailView(cellData:CellData):Void
+	/*public function openDetailView(cellData:CellData):Void
 	{
 		_applicationModel.loadDetailData(cellData);
-	}
+	}*/
 	
 }
