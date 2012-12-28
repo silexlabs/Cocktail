@@ -16,10 +16,28 @@ package org.intermedia;
 
 class Settings 
 {
+	// settings singleton
+	private static var _settings:Settings;
+	
 	// debug flag
 	public static inline var DEBUG:Bool = false;
 	
 	// online flag
-	public static inline var ONLINE:Bool = false;
+	public var online:Bool = false;
+	
+	private function new():Void
+	{
+		
+	}
+	
+	// get the singleton instance
+	public static function getInstance():Settings
+	{
+		if (_settings == null)
+		{
+			_settings = new Settings();
+		}
+		return _settings;
+	}
 	
 }

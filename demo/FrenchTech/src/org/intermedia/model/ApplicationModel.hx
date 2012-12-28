@@ -49,8 +49,17 @@ class ApplicationModel
 		_loadedCellsData = new Array<CellData>();
 		_loadedDetailData = new Array<DetailData>();
 		
+		// init dataLoader
+		initDataLoader();
+	}
+	
+	/**
+	 * init data loader
+	 */
+	public function initDataLoader():Void
+	{
 		// init _dataLoader with online switch
-		_dataLoader = new DataLoader(Settings.ONLINE);
+		_dataLoader = new DataLoader(Settings.getInstance().online);		
 	}
 	
 	/**

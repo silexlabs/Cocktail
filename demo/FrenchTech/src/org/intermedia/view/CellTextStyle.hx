@@ -51,6 +51,7 @@ class CellTextStyle
 
 		node.style.backgroundColor = Constants.CELL_BG_COLOR;
 
+		node.style.cursor = "pointer";
 	}
 	
 	/**

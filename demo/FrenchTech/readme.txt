@@ -391,8 +391,9 @@ Update 2012-12-28:
 -recompiler avec la dernière version de Haxe et en utilisant les flux on-line => voir les performances et la quantité de données => OK
 -remplacer les flux foireux (trop lents, images trop grosses...) par d'autres. => OK
 -mettre toutes les images en dur dans l'application => OK
--mettre un bouton pour switcher entre les flux online et offline (offline par défaut)
 -click sur une cellule => detail, puis back => retour tout en haut de la liste, le scroll n'est pas conservé => OK
+-mettre un bouton pour switcher entre les flux online et offline (offline par défaut) => OK
+-initialiser l'appli avec les données locales, et si on detecte une connection, charger les données en ligne
 -enlever les lien => getElementByTagName => addEventListener(e.preventDefault)
 -faire une homepage & enlever les 5 première vignettes du flux principal ?
 -utiliser une liste à 1 cellule par ligne pour le flux 3 ?

@@ -194,7 +194,7 @@ class ListViewBase extends ViewBase
 			_dataRequested = true;
 			
 			// if using online data
-			if(Settings.ONLINE)
+			if(Settings.getInstance().online)
 			{
 				// call callback
 				onDataRequestCallback(id);
