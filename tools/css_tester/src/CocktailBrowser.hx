@@ -3,8 +3,8 @@ import haxe.Firebug;
 import haxe.Http;
 
 /**
- * load and display an html file with cocktail.
- * The url of the html file is provided by flash vars
+ * display an html string with cocktail.
+ * The html string is provided by flash vars
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -18,25 +18,7 @@ class CocktailBrowser
 	
 	public function new() 
 	{
-		var testUrl = "";
-		var baseUrl = "";
-		
-		#if flash
-		//get html file url
-		testUrl = flash.Lib.current.loaderInfo.parameters.testUrl;
-		baseUrl = flash.Lib.current.loaderInfo.url;
-		
-		//get root location of swf
-		baseUrl = baseUrl.substr(0, baseUrl.lastIndexOf("/") + 1);
-		#end
-		
-		//use a php proxy to prevent cross-domain issue
-		var http:Http = new Http(baseUrl+"proxy.php?url="+testUrl);
-		http.onData = function(e) {
-			js.Lib.document.innerHTML = e;
-		}
-		
-		http.request(false);
+		js.Lib.document.innerHTML = flash.Lib.current.loaderInfo.parameters.html;
 	}
 	
 }

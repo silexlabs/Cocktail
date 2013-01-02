@@ -1,19 +1,22 @@
 package src;
+
+import haxe.Http;
 import js.Dom;
 import js.Lib;
 import haxe.Resource;
 
 /**
- * Allow to browse css w3c test and display
- * them in both the native js of the browser
- * and with cocktail compiled in flash
+ * Allow to display html/css tests in both the native js of the browser
+ * and with cocktail compiled in flash. Tests can come from a pre-defined
+ * lists loaded at startup or be inputed via a form
  * 
  * @author Yannick DOMINGUEZ
  */
 class CSSTester 
 {
+	private static inline var TESTS_LIST_URL:String = "Tests-list.xml";
 
-	private static inline var COCKTAIL_SWF_URL:String = "cocktail_browser.swf?testUrl=";
+	private static inline var COCKTAIL_SWF_URL:String = "cocktail_browser.swf?html=";
 	
 	private static inline var FLASH_OBJECT_ID:String = "flash-test";
 	
@@ -21,15 +24,29 @@ class CSSTester
 	
 	private static inline var TEST_DIV_ID:String = "test-list";
 	
+	private static inline var HTML_INPUT_ID:String = "htmlInput";
+	
+	public static inline var HTML_FORM_ID:String = "htmlForm";
+	
 	static function main()
 	{
 		new CSSTester();
 	}
 	
+	/**
+	 * constructor, when the browser is ready,
+	 * load the xml file containing the list of tests
+	 */
 	public function new() 
 	{
 		js.Lib.window.onload = function(e) {	
-			initTestsBrowser();
+			var http = new Http(TESTS_LIST_URL);
+			
+			http.onData = function(e) {
+				initTestsBrowser(e);
+			}
+			
+			http.request(false);
 		}
 	}
 	
@@ -37,10 +54,11 @@ class CSSTester
 	 * parse the list of available test and display
 	 * it in html
 	 */
-	private function initTestsBrowser():Void
+	function initTestsBrowser(testsList:String):Void
 	{
-		//xml list stored as embedded resource
-		var testsList:String = Resource.getString("tests-list");
+		//listen for html input form submission, display inputed html when happens
+		var htmlForm = Lib.document.getElementById(HTML_FORM_ID);
+		untyped htmlForm.addEventListener("submit", onHtmlFormSubmit);
 		
 		var xml = Xml.parse(testsList).firstElement();
 		var htmlTests = "";
@@ -65,7 +83,6 @@ class CSSTester
 		var testsBrowser = js.Lib.document.getElementById(TEST_DIV_ID);
 		testsBrowser.innerHTML = htmlTests;
 		
-		
 		//add click listener to all anchor to refresh js frame and flash object
 		//when clicked
 		var anchors = testsBrowser.getElementsByTagName("a");
@@ -77,26 +94,55 @@ class CSSTester
 	}
 	
 	/**
-	 * When a test description is clicked, display
-	 * the test in both an iframe for the js version
-	 * and in an object tag for the cocktail flash
-	 * version
+	 * When the html form is submitted, display
+	 * the inputed html
 	 */
-	private function onTestClick(e:Event)
+	function onHtmlFormSubmit(e:Event)
 	{
 		untyped e.preventDefault();
 		
+		var htmlInput:Textarea = cast(Lib.document.getElementById(HTML_INPUT_ID));
+		updateHtml(htmlInput.value);
+	}
+	
+	/**
+	 * When a test description is clicked, load the 
+	 * corresponding text and display it
+	 */
+	function onTestClick(e:Event)
+	{
+		untyped e.preventDefault();
 		var anchor:Anchor = cast(e.target);
+		
+		//always use proxy to prevent cross-domain security error
+		var http = new Http("proxy.php?url="+anchor.href);
+		http.onData = function(e) {
+			updateHtml(e);
+		}
+		
+		http.request(false);
+	}
+	
+	/**
+	 * Update the displayed html in the js frame, the
+	 * flash object and the html input
+	 */
+	function updateHtml(html:String)
+	{
+		var urlEncodedHtml = StringTools.urlEncode(html);
+		
 		var jsFrame:Frame = cast(Lib.document.getElementById(JS_FRAME_ID));
-		trace(jsFrame);
-		jsFrame.src = anchor.href;
 		
-		
+		//use data uri scheme to prevent loading the html multiple times, might 
+		//not work in older browser
+		jsFrame.src = "data:text/html,"+urlEncodedHtml;
+	
+		//for flash, html provided as flash vars
 		var flashObject = Lib.document.getElementById(FLASH_OBJECT_ID);
-		untyped flashObject.data = COCKTAIL_SWF_URL + StringTools.urlEncode(anchor.href);
+		untyped flashObject.data = COCKTAIL_SWF_URL + urlEncodedHtml;
 		
-		trace(jsFrame.src);
-		
+		var htmlInput:Textarea = cast(Lib.document.getElementById(HTML_INPUT_ID));
+		htmlInput.value = html;
 	}
 	
 }
