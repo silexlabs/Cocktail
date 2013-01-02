@@ -4,6 +4,7 @@ import haxe.Http;
 import js.Dom;
 import js.Lib;
 import haxe.Resource;
+import js.JQuery;
 
 /**
  * Allow to display html/css tests in both the native js of the browser
@@ -95,7 +96,7 @@ class CSSTester
 			for (section in chapter.elements())
 			{
 				htmlTests += "<h3>" + section.get("name") + "</h3>";
-				htmlTests += "<ul>";
+				htmlTests += "<ul class='nav nav-tabs nav-stacked'>";
 				for (test in section.elements())
 				{
 					htmlTests += "<li><a href='" + test.get("url") + "'>" + test.get("name") + "</a>";
@@ -123,9 +124,10 @@ class CSSTester
 	 */
 	function onUpdate(e:Event)
 	{
-		untyped e.preventDefault();
 		var editor:Dynamic = untyped ace.edit(HTML_EDITOR_ID);
 		updateHtml(untyped editor.getValue());
+		
+		untyped new JQuery("#editorModal").modal("hide");
 	}
 	
 	/**
