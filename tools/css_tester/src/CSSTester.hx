@@ -8,7 +8,9 @@ import haxe.Resource;
 /**
  * Allow to display html/css tests in both the native js of the browser
  * and with cocktail compiled in flash. Tests can come from a pre-defined
- * lists loaded at startup or be inputed via a form
+ * lists loaded at startup or be inputed via a code editor
+ * 
+ * The Ace code editor is used : http://ace.ajax.org/#nav=about
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -26,7 +28,9 @@ class CSSTester
 	
 	private static inline var TEST_DIV_ID:String = "test-list";
 	
-	private static inline var HTML_INPUT_ID:String = "htmlInput";
+	private static inline var HTML_EDITOR_ID:String = "editor";
+	
+	private static inline var UPDATE_BUTTON_ID:String = "updateBtn";
 	
 	static function main()
 	{
@@ -46,9 +50,10 @@ class CSSTester
 	 */
 	function init()
 	{
-		//listen for html input content change, display inputed html when happens
-		var htmlInput = Lib.document.getElementById(HTML_INPUT_ID);
-		untyped htmlInput.addEventListener("change", onHtmlInputChange);
+		//when this button is clicked, the display is updated with the content
+		//of the code editor
+		var updateButton = Lib.document.getElementById(UPDATE_BUTTON_ID);
+		untyped updateButton.addEventListener("click", onUpdate);
 		
 		//tests url either use a default, or can use an alternate
 		//file provided by query string parameter
@@ -113,14 +118,14 @@ class CSSTester
 	}
 	
 	/**
-	 * When the html input value changes, refresh
-	 * the display
+	 * Called when the html must be updated from
+	 * the code editor content
 	 */
-	function onHtmlInputChange(e:Event)
+	function onUpdate(e:Event)
 	{
 		untyped e.preventDefault();
-		var htmlInput:Textarea = cast(Lib.document.getElementById(HTML_INPUT_ID));
-		updateHtml(htmlInput.value);
+		var editor:Dynamic = untyped ace.edit(HTML_EDITOR_ID);
+		updateHtml(untyped editor.getValue());
 	}
 	
 	/**
@@ -159,8 +164,9 @@ class CSSTester
 		var flashObject = Lib.document.getElementById(FLASH_OBJECT_ID);
 		untyped flashObject.data = COCKTAIL_SWF_URL + urlEncodedHtml;
 		
-		var htmlInput:Textarea = cast(Lib.document.getElementById(HTML_INPUT_ID));
-		htmlInput.value = html;
+		//refresh code editor content
+		var editor:Dynamic = untyped ace.edit(HTML_EDITOR_ID);
+		editor.setValue(html);
 	}
 	
 }

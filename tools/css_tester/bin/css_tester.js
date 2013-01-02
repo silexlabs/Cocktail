@@ -1865,8 +1865,8 @@ src.CSSTester.prototype = {
 		jsFrame.src = "data:text/html," + urlEncodedHtml;
 		var flashObject = js.Lib.document.getElementById("flash-test");
 		flashObject.data = "cocktail_browser.swf?html=" + urlEncodedHtml;
-		var htmlInput = js.Lib.document.getElementById("htmlInput");
-		htmlInput.value = html;
+		var editor = ace.edit("editor");
+		editor.setValue(html);
 	}
 	,onTestClick: function(e) {
 		var _g = this;
@@ -1878,10 +1878,10 @@ src.CSSTester.prototype = {
 		};
 		http.request(false);
 	}
-	,onHtmlInputChange: function(e) {
+	,onUpdate: function(e) {
 		e.preventDefault();
-		var htmlInput = js.Lib.document.getElementById("htmlInput");
-		this.updateHtml(htmlInput.value);
+		var editor = ace.edit("editor");
+		this.updateHtml(editor.getValue());
 	}
 	,initTestsBrowser: function(testsList) {
 		var xml = Xml.parse(testsList).firstElement();
@@ -1914,8 +1914,8 @@ src.CSSTester.prototype = {
 	}
 	,init: function() {
 		var _g = this;
-		var htmlInput = js.Lib.document.getElementById("htmlInput");
-		htmlInput.addEventListener("change",$bind(this,this.onHtmlInputChange));
+		var updateButton = js.Lib.document.getElementById("updateBtn");
+		updateButton.addEventListener("click",$bind(this,this.onUpdate));
 		var testUrl = "Tests-list.xml";
 		var prmstr = HxOverrides.substr(js.Lib.window.location.search,1,null);
 		var prmarr = prmstr.split("&");
@@ -2009,5 +2009,6 @@ src.CSSTester.COCKTAIL_SWF_URL = "cocktail_browser.swf?html=";
 src.CSSTester.FLASH_OBJECT_ID = "flash-test";
 src.CSSTester.JS_FRAME_ID = "js-test";
 src.CSSTester.TEST_DIV_ID = "test-list";
-src.CSSTester.HTML_INPUT_ID = "htmlInput";
+src.CSSTester.HTML_EDITOR_ID = "editor";
+src.CSSTester.UPDATE_BUTTON_ID = "updateBtn";
 src.CSSTester.main();

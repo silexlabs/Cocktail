@@ -12,8 +12,13 @@
 		</object>
 		<div id="test-list">
 		</div>
-		<form id="htmlForm">
-			<textarea id="htmlInput"></textarea>
-		</form>
+		<div id="editor"></div>
+		<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			var editor = ace.edit("editor");
+			editor.setTheme("ace/theme/monokai");
+			editor.getSession().setMode("ace/mode/javascript");
+		</script>
+		<button id="updateBtn">update</button>
 	</body>
 </html>

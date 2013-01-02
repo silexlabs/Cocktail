@@ -6,12 +6,27 @@ object, iframe {
 	border: solid black 1px;
 	float: left;
 	margin:0;
+	width:600px;
+	height:400px;
 }
 
 #test-list {
 	overflow : scroll;
 	height:400px;
-	width:400px;
+	width:600px;
 	clear:left;
 	float:left;
+}
+
+textarea {
+	float:left;
+	
+	display:block;
+}
+
+#editor { 
+	left:600px;
+	top:400px;
+	width:600px;
+	height:400px;
 }
