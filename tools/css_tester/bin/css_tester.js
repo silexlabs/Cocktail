@@ -1878,7 +1878,7 @@ src.CSSTester.prototype = {
 		};
 		http.request(false);
 	}
-	,onHtmlFormSubmit: function(e) {
+	,onHtmlInputChange: function(e) {
 		e.preventDefault();
 		var htmlInput = js.Lib.document.getElementById("htmlInput");
 		this.updateHtml(htmlInput.value);
@@ -1914,8 +1914,8 @@ src.CSSTester.prototype = {
 	}
 	,init: function() {
 		var _g = this;
-		var htmlForm = js.Lib.document.getElementById("htmlForm");
-		htmlForm.addEventListener("submit",$bind(this,this.onHtmlFormSubmit));
+		var htmlInput = js.Lib.document.getElementById("htmlInput");
+		htmlInput.addEventListener("change",$bind(this,this.onHtmlInputChange));
 		var testUrl = "Tests-list.xml";
 		var prmstr = HxOverrides.substr(js.Lib.window.location.search,1,null);
 		var prmarr = prmstr.split("&");
@@ -2010,5 +2010,4 @@ src.CSSTester.FLASH_OBJECT_ID = "flash-test";
 src.CSSTester.JS_FRAME_ID = "js-test";
 src.CSSTester.TEST_DIV_ID = "test-list";
 src.CSSTester.HTML_INPUT_ID = "htmlInput";
-src.CSSTester.HTML_FORM_ID = "htmlForm";
 src.CSSTester.main();

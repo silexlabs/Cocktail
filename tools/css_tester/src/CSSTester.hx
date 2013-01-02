@@ -28,8 +28,6 @@ class CSSTester
 	
 	private static inline var HTML_INPUT_ID:String = "htmlInput";
 	
-	public static inline var HTML_FORM_ID:String = "htmlForm";
-	
 	static function main()
 	{
 		new CSSTester();
@@ -48,9 +46,9 @@ class CSSTester
 	 */
 	function init()
 	{
-		//listen for html input form submission, display inputed html when happens
-		var htmlForm = Lib.document.getElementById(HTML_FORM_ID);
-		untyped htmlForm.addEventListener("submit", onHtmlFormSubmit);
+		//listen for html input content change, display inputed html when happens
+		var htmlInput = Lib.document.getElementById(HTML_INPUT_ID);
+		untyped htmlInput.addEventListener("change", onHtmlInputChange);
 		
 		//tests url either use a default, or can use an alternate
 		//file provided by query string parameter
@@ -115,10 +113,10 @@ class CSSTester
 	}
 	
 	/**
-	 * When the html form is submitted, display
-	 * the inputed html
+	 * When the html input value changes, refresh
+	 * the display
 	 */
-	function onHtmlFormSubmit(e:Event)
+	function onHtmlInputChange(e:Event)
 	{
 		untyped e.preventDefault();
 		var htmlInput:Textarea = cast(Lib.document.getElementById(HTML_INPUT_ID));
