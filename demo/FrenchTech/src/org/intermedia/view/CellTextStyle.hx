@@ -51,6 +51,7 @@ class CellTextStyle
 
 		node.style.backgroundColor = Constants.CELL_BG_COLOR;
 
+		node.style.cursor = "pointer";
 	}
 	
 	/**
@@ -77,7 +78,7 @@ class CellTextStyle
 		node.style.wordSpacing = "normal";
 		node.style.textIndent = "0px";
 		node.style.whiteSpace = "normal";
-		node.style.textAlign = "left";
+		node.style.textAlign = "justify";
 		
 		node.style.verticalAlign = "middle";
 		

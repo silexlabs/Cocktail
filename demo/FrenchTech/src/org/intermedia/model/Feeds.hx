@@ -17,28 +17,26 @@ class Feeds
 {
 	public static inline var FEED_1:Feed = {
 		id:0,
-		title:"Techcrunch",
-		url:"http://fr.techcrunch.com/feed/",
-		thumb:"http://demos.silexlabs.org/cocktail/FrenchTech/assets/techcrunch-logo.png"
-		};	
+		title:"iPhon.fr",
+		thumb:"assets/iphon_fr-logo.jpg",
+		//url:"http://feeds.feedburner.com/IphonfrBlogIphone",
+		url:"http://www.iphon.fr/feed/rss2",
+		generatedBy:"wordpress"
+		};
 	public static inline var FEED_2:Feed = {
 		id:1,
-		title:"SiliconSentier",
-		url:"http://siliconsentier.org/feed/",
-		thumb:"http://demos.silexlabs.org/cocktail/FrenchTech/assets/Silicon-Sentier.jpg"
-		};	
+		title:"FrAndroid",
+		thumb:"assets/frandroid-logo.png",
+		//url:"http://feeds.feedburner.com/Frandroid",
+		url:"http://www.frandroid.com/feed",
+		generatedBy:"wordpress"
+		};
 	public static inline var FEED_3:Feed = {
 		id:2,
-		title:"Frenchweb",
-		url:"http://frenchweb.fr/feed/",
-		thumb:"http://demos.silexlabs.org/cocktail/FrenchTech/assets/Frenchweb-Logo-700x700.jpg"
-		};	
-}
-
-typedef Feed =
-{
-	var id:Int;
-	var title:String;
-	var url:String;
-	var thumb:String;
+		title:"frenchiPhone",
+		thumb:"assets/frenchiphone-logo.png",
+		//url:"http://feeds.feedburner.com/IphoneFranceFrFrenchiphone",
+		url:"http://www.frenchiphone.com/feed/",
+		generatedBy:"wordpress"
+		};
 }

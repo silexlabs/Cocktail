@@ -64,6 +64,9 @@ class DetailStyle
 		//node.style.overflowY = "auto";
 		
 		node.style.backgroundColor = Constants.DETAIL_BG_COLOR;
+		
+		node.style.textAlign = "justify";
+
 	}
 
 	/**

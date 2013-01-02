@@ -105,6 +105,8 @@ class HeaderStyle
 		node.style.paddingLeft = "30px";
 		node.style.top = "0px";
 		node.style.left = "0px";
+
+		node.style.cursor = "pointer";
 	}
 
 	/**
@@ -118,6 +120,41 @@ class HeaderStyle
 		node.style.position = "relative";
 		node.style.top = "0px";
 		node.style.left = "0px";
+
+		node.style.cursor = "pointer";
+	}
+	
+	/**
+	 * Defines refresh button Style
+	 * 
+	 * @param	node
+	 */
+	public static function setRefreshButtonStyle(node:HtmlDom):Void
+	{
+		node.style.position = "absolute";
+		//node.style.paddingTop = "6px";
+		//node.style.paddingRight = "10px";
+		node.style.top = "0px";
+		node.style.right = "0px";
+	}
+
+	/**
+	 * Defines refresh button image Style
+	 * 
+	 * @param	node
+	 */
+	public static function setRefreshButtonImageStyle(node:HtmlDom):Void
+	{
+		var THUMB_MARGIN:Int = 5;
+		
+		node.style.display = "inline";
+		node.style.position = "relative";
+		node.style.top = Std.string(THUMB_MARGIN) + "px";
+		node.style.right = Std.string(2*THUMB_MARGIN) + "px";
+		node.style.width = Std.string(Constants.HEADER_HEIGHT - 2 * THUMB_MARGIN) + "px";
+		node.style.height = Std.string(Constants.HEADER_HEIGHT - 2 * THUMB_MARGIN) + "px";
+
+		node.style.cursor = "pointer";
 	}
 	
 	/**
@@ -135,8 +172,7 @@ class HeaderStyle
 		node.style.left = Std.string(2*THUMB_MARGIN) + "px";
 		node.style.width = Std.string(Constants.HEADER_HEIGHT - 2 * THUMB_MARGIN) + "px";
 		node.style.height = Std.string(Constants.HEADER_HEIGHT - 2 * THUMB_MARGIN) + "px";
-		
-		
+				
 	}
 	
 }

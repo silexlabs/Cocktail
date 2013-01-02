@@ -17,11 +17,12 @@ package org.intermedia.model;
 
 import haxe.Http;
 import org.intermedia.model.ApplicationModel;
+import org.intermedia.model.Feed;
 
 class XmlLoader
 {
 	// Defines onLoadSuccess callback, called when the xml feed is loaded
-	private var onLoadSuccess : String->Xml->Void;
+	private var onLoadSuccess : Feed->Xml->Void;
 
 	// Defines onLoadError callback, called when the xml feed has not been loaded succesfully
 	private var onLoadError : Dynamic->Void;
@@ -37,7 +38,7 @@ class XmlLoader
 	 * @param	successCallback
 	 * @param	errorCallback
 	 */
-	public function new(xmlUrl:String, online:Bool, successCallback:String->Xml->Void, errorCallback:Dynamic->Void, ?listId:String="") 
+	public function new(xmlUrl:String, online:Bool, successCallback:Feed->Xml->Void, errorCallback:Dynamic->Void, ?feed:Feed) 
 	{
 		_online = online;
 		
@@ -46,7 +47,7 @@ class XmlLoader
 		onLoadError = errorCallback;
 		
 		// load the xml feed
-		loadXmlFeed(listId, xmlUrl);
+		loadXmlFeed(feed, xmlUrl);
 	}
 	
 	/**
@@ -54,7 +55,7 @@ class XmlLoader
 	 * 
 	 * @param	xmlUrl
 	 */
-	private function loadXmlFeed(listId:String, xmlUrl:String):Void
+	private function loadXmlFeed(feed:Feed, xmlUrl:String):Void
 	{
 		var fullUrl:String = "";
 		
@@ -65,7 +66,7 @@ class XmlLoader
 		try
 		{
 			var httpRequest:Http = new Http(fullUrl);
-			httpRequest.onData = function (xml:String) { onXmlLoaded(listId, xml); };
+			httpRequest.onData = function (xml:String) { onXmlLoaded(feed, xml); };
 			httpRequest.onError = onXmlError;
 			httpRequest.request(false);
 		}
@@ -95,7 +96,7 @@ class XmlLoader
 	 * 
 	 * @param	response
 	 */
-	private function onXmlLoaded(listId:String, xmlString:String):Void
+	private function onXmlLoaded(feed:Feed, xmlString:String):Void
 	{
 		// parse the xml feed
 		var xml:Xml =  Xml.parse(xmlString);
@@ -103,7 +104,7 @@ class XmlLoader
 		// calls onLoadSuccess callback with xml
 		if (onLoadSuccess != null)
 		{
-			onLoadSuccess(listId,xml);
+			onLoadSuccess(feed,xml);
 		}
 	}
 	
