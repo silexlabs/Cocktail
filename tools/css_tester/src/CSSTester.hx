@@ -14,7 +14,9 @@ import haxe.Resource;
  */
 class CSSTester 
 {
-	private static inline var TESTS_LIST_URL:String = "Tests-list.xml";
+	private static inline var DEFAULT_TESTS_LIST_URL:String = "Tests-list.xml";
+	
+	private static inline var ALTERNATE_TESTS_LIST_URL_PARAMETER:String = "tests";
 
 	private static inline var COCKTAIL_SWF_URL:String = "cocktail_browser.swf?html=";
 	
@@ -33,21 +35,44 @@ class CSSTester
 		new CSSTester();
 	}
 	
-	/**
-	 * constructor, when the browser is ready,
-	 * load the xml file containing the list of tests
-	 */
 	public function new() 
 	{
 		js.Lib.window.onload = function(e) {	
-			var http = new Http(TESTS_LIST_URL);
-			
-			http.onData = function(e) {
-				initTestsBrowser(e);
-			}
-			
-			http.request(false);
+			init();
 		}
+	}
+	
+	/**
+	 * when the browser is ready,
+	 * load the xml file containing the list of tests
+	 */
+	function init()
+	{
+		//listen for html input form submission, display inputed html when happens
+		var htmlForm = Lib.document.getElementById(HTML_FORM_ID);
+		untyped htmlForm.addEventListener("submit", onHtmlFormSubmit);
+		
+		//tests url either use a default, or can use an alternate
+		//file provided by query string parameter
+		var testUrl = DEFAULT_TESTS_LIST_URL;
+		
+		var prmstr = Lib.window.location.search.substr(1);
+		var prmarr = prmstr.split("&");
+		for (i in 0...prmarr.length) {
+			var tmparr = prmarr[i].split("=");
+			if (tmparr[0] == ALTERNATE_TESTS_LIST_URL_PARAMETER)
+			{
+				testUrl = tmparr[1];
+			}
+		}
+		
+		var http = new Http(testUrl);
+		
+		http.onData = function(e) {
+			initTestsBrowser(e);
+		}
+		
+		http.request(false);
 	}
 	
 	/**
@@ -56,10 +81,6 @@ class CSSTester
 	 */
 	function initTestsBrowser(testsList:String):Void
 	{
-		//listen for html input form submission, display inputed html when happens
-		var htmlForm = Lib.document.getElementById(HTML_FORM_ID);
-		untyped htmlForm.addEventListener("submit", onHtmlFormSubmit);
-		
 		var xml = Xml.parse(testsList).firstElement();
 		var htmlTests = "";
 		
@@ -100,7 +121,6 @@ class CSSTester
 	function onHtmlFormSubmit(e:Event)
 	{
 		untyped e.preventDefault();
-		
 		var htmlInput:Textarea = cast(Lib.document.getElementById(HTML_INPUT_ID));
 		updateHtml(htmlInput.value);
 	}

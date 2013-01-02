@@ -1851,11 +1851,7 @@ var src = src || {}
 src.CSSTester = $hxClasses["src.CSSTester"] = function() {
 	var _g = this;
 	js.Lib.window.onload = function(e) {
-		var http = new haxe.Http("Tests-list.xml");
-		http.onData = function(e1) {
-			_g.initTestsBrowser(e1);
-		};
-		http.request(false);
+		_g.init();
 	};
 };
 src.CSSTester.__name__ = ["src","CSSTester"];
@@ -1888,8 +1884,6 @@ src.CSSTester.prototype = {
 		this.updateHtml(htmlInput.value);
 	}
 	,initTestsBrowser: function(testsList) {
-		var htmlForm = js.Lib.document.getElementById("htmlForm");
-		htmlForm.addEventListener("submit",$bind(this,this.onHtmlFormSubmit));
 		var xml = Xml.parse(testsList).firstElement();
 		var htmlTests = "";
 		var $it0 = xml.elements();
@@ -1917,6 +1911,25 @@ src.CSSTester.prototype = {
 			var i = _g1++;
 			anchors[i].addEventListener("click",$bind(this,this.onTestClick));
 		}
+	}
+	,init: function() {
+		var _g = this;
+		var htmlForm = js.Lib.document.getElementById("htmlForm");
+		htmlForm.addEventListener("submit",$bind(this,this.onHtmlFormSubmit));
+		var testUrl = "Tests-list.xml";
+		var prmstr = HxOverrides.substr(js.Lib.window.location.search,1,null);
+		var prmarr = prmstr.split("&");
+		var _g1 = 0, _g2 = prmarr.length;
+		while(_g1 < _g2) {
+			var i = _g1++;
+			var tmparr = prmarr[i].split("=");
+			if(tmparr[0] == "tests") testUrl = tmparr[1];
+		}
+		var http = new haxe.Http(testUrl);
+		http.onData = function(e) {
+			_g.initTestsBrowser(e);
+		};
+		http.request(false);
 	}
 	,__class__: src.CSSTester
 }
@@ -1990,7 +2003,8 @@ haxe.Unserializer.DEFAULT_RESOLVER = Type;
 haxe.Unserializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
 haxe.Unserializer.CODES = null;
 js.Lib.onerror = null;
-src.CSSTester.TESTS_LIST_URL = "Tests-list.xml";
+src.CSSTester.DEFAULT_TESTS_LIST_URL = "Tests-list.xml";
+src.CSSTester.ALTERNATE_TESTS_LIST_URL_PARAMETER = "tests";
 src.CSSTester.COCKTAIL_SWF_URL = "cocktail_browser.swf?html=";
 src.CSSTester.FLASH_OBJECT_ID = "flash-test";
 src.CSSTester.JS_FRAME_ID = "js-test";

@@ -11,5 +11,7 @@ object, iframe {
 #test-list {
 	overflow : scroll;
 	height:400px;
+	width:400px;
 	clear:left;
+	float:left;
 }
