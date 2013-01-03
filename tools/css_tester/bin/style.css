@@ -2,17 +2,23 @@
 object, iframe {
 	border: none;
 	width:100%;
-	height:500px;
+	height:400px;
+	min-height:400px;
 }
 
 header {
-	margin-top:-20px;
+	background-color:#F5F5F5;
+	color:red;
+}
+
+#main-container {
+	right:0;
 }
 
 #editor
 {
 	width:100%;
-	height:100%;
+	height:400px;
 }
 
 #main-container .well
@@ -28,14 +34,10 @@ header {
 
 #editorModal {
 	width:auto;
-	left:10%;
-	right:10%;
-	margin:0;
+	left:20%;
+	right:20%;
 }
 
 #editorModal .modal-body {
 	height:500px;
-	max-height:70%;
-	overflow:visible;
-	padding:0;
 }
