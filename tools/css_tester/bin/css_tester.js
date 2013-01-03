@@ -1883,6 +1883,9 @@ src.CSSTester.prototype = {
 		this.updateHtml(editor.getValue());
 		new js.JQuery("#editorModal").modal("hide");
 	}
+	,onWindowScroll: function(e) {
+		if(new js.JQuery(js.Lib.window).scrollTop() > new js.JQuery("header").innerHeight()) new js.JQuery("#main-container").addClass("fixed"); else new js.JQuery("#main-container").removeClass("fixed");
+	}
 	,initTestsBrowser: function(testsList) {
 		var xml = Xml.parse(testsList).firstElement();
 		var htmlTests = "";
@@ -1916,6 +1919,7 @@ src.CSSTester.prototype = {
 		var _g = this;
 		var updateButton = js.Lib.document.getElementById("updateBtn");
 		updateButton.addEventListener("click",$bind(this,this.onUpdate));
+		js.Lib.window.addEventListener("scroll",$bind(this,this.onWindowScroll));
 		var testUrl = "Tests-list.xml";
 		var prmstr = HxOverrides.substr(js.Lib.window.location.search,1,null);
 		var prmarr = prmstr.split("&");

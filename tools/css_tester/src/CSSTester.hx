@@ -56,6 +56,10 @@ class CSSTester
 		var updateButton = Lib.document.getElementById(UPDATE_BUTTON_ID);
 		untyped updateButton.addEventListener("click", onUpdate);
 		
+		//listen to window scroll to place some elements if needed
+		untyped Lib.window.addEventListener("scroll", onWindowScroll);
+		
+		
 		//tests url either use a default, or can use an alternate
 		//file provided by query string parameter
 		var testUrl = DEFAULT_TESTS_LIST_URL;
@@ -116,6 +120,23 @@ class CSSTester
 			untyped anchors[i].addEventListener("click", onTestClick);
 		}
 		
+	}
+	
+	/**
+	 * When the window is scrolled past the header, 
+	 * the js and flash frame are fixed sot that they
+	 * always remain on screen
+	 */
+	function onWindowScroll(e:Event)
+	{
+		if (new JQuery(Lib.window).scrollTop() > new JQuery("header").innerHeight())
+		{
+			new JQuery("#main-container").addClass('fixed');
+		}
+		else
+		{
+			new JQuery("#main-container").removeClass('fixed');
+		}
 	}
 	
 	/**

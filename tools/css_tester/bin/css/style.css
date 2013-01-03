@@ -15,6 +15,22 @@ header {
 	height:100%;
 }
 
+#global-container{
+	position:relative;
+}
+
+#main-container {
+	position:absolute;
+	padding-right:20px;
+	top:0;
+	right:0;
+}
+
+#main-container.fixed {
+	padding-top:20px;
+	position:fixed;
+}
+
 #main-container .well
 {
 	background-color:white;
