@@ -91,11 +91,11 @@ class CSSTester
 		//parse test xml and build html from it
 		for (chapter in xml.elements())
 		{
-			htmlTests += "<h2>" + chapter.get("name") + "</h2>";
+			htmlTests += "<h3>" + chapter.get("name") + "</h2>";
 			
 			for (section in chapter.elements())
 			{
-				htmlTests += "<h3>" + section.get("name") + "</h3>";
+				htmlTests += "<h4>" + section.get("name") + "</h3>";
 				htmlTests += "<ul class='nav nav-tabs nav-stacked'>";
 				for (test in section.elements())
 				{

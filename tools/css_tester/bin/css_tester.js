@@ -1889,11 +1889,11 @@ src.CSSTester.prototype = {
 		var $it0 = xml.elements();
 		while( $it0.hasNext() ) {
 			var chapter = $it0.next();
-			htmlTests += "<h2>" + chapter.get("name") + "</h2>";
+			htmlTests += "<h3>" + chapter.get("name") + "</h2>";
 			var $it1 = chapter.elements();
 			while( $it1.hasNext() ) {
 				var section = $it1.next();
-				htmlTests += "<h3>" + section.get("name") + "</h3>";
+				htmlTests += "<h4>" + section.get("name") + "</h3>";
 				htmlTests += "<ul class='nav nav-tabs nav-stacked'>";
 				var $it2 = section.elements();
 				while( $it2.hasNext() ) {

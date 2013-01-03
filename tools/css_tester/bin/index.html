@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link href="bootstrap.min.css" type="text/css" rel="stylesheet" />
-		<link href="bootstrap-responsive.min.css" type="text/css" rel="stylesheet" />
-		<link href="style.css" type="text/css" rel="stylesheet" />
-		<script type="text/javascript" src="jquery.js" ></script>
-		<script type="text/javascript" src="bootstrap.min.js" ></script>
+		<link href="css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+		<link href="css/bootstrap-responsive.min.css" type="text/css" rel="stylesheet" />
+		<link href="css/style.css" type="text/css" rel="stylesheet" />
+		<script type="text/javascript" src="js/jquery.js" ></script>
+		<script type="text/javascript" src="js/bootstrap.min.js" ></script>
 		<script type="text/javascript" src="css_tester.js" ></script>
 	</head>
 	<body>
 		<div class="page-header">
-			<h1>Cocktail sandbox</h1>
+			<div class="row-fluid">
+					<div id="span12">
+						<h1>Cocktail sandbox</h1>
+					</div>
+			</div>
 		</div>
 		
 		<div class="container-fluid">
@@ -20,21 +24,36 @@
 				</div>
 				<div class="span9" id="main-container">
 					<div class="row-fluid">
-						<div class="span6 well">
-							<iframe id="js-test" ></iframe>
-							<p>Rendered by your browser</p>
+						<div class="span6">
+							<div class="well">
+								<iframe id="js-test" ></iframe>
+							</div>
+							<p class="text-info">Rendered by your browser</p>
 						</div>
-						<div class="span6 well">
-							<object id="flash-test">
-								<param name="wmode" value="transparent" />
-							</object>
-							<p>Rendered by Cocktail</p>
+						<div class="span6">
+							<div class="well">
+								<object id="flash-test">
+									<param name="wmode" value="transparent" />
+								</object>
+							</div>
+							<p class="text-info"><i class="icon-search icon-white"></i>Rendered by Cocktail</p>
 						</div>
 					</div>
-					<div class="row-fluid well">
-						<div class="span12">
-							<button type="button" data-toggle="modal" data-target="#editorModal" class="btn btn-primary">update</button>
+					<div class="row-fluid">
+						<div class="span3">
+							<button type="button" data-toggle="modal" data-target="#editorModal" class="btn btn-primary btn-large btn-block">Edit</button>
 						</div>	
+						<p class="span9">
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+							Proin imperdiet, erat non interdum tincidunt, lorem lectus eleifend magna, 
+							quis blandit arcu nisi feugiat urna. Phasellus blandit erat et erat interdum hendrerit.
+							Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. 
+							Vestibulum varius condimentum ipsum eget consectetur. Nam ultricies purus in nibh congue cursus.
+							Duis porta, elit et gravida bibendum, ipsum nisi fringilla purus, vitae vulputate nisi nisi
+							in tellus. Sed augue arcu, ultrices quis vulputate quis, varius et dui. 
+							Nunc sem nibh, vestibulum a commodo ut, dignissim non urna. 
+							Integer neque enim, varius eget pharetra quis, vestibulum rhoncus tellus.
+						</p>	
 					</div>
 				</div>
 			</div>
