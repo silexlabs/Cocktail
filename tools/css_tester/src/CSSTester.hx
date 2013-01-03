@@ -111,7 +111,14 @@ class CSSTester
 				htmlTests += "<ul class='nav nav-tabs nav-stacked'>";
 				for (test in section.elements())
 				{
-					htmlTests += "<li><a href='" + test.get("url") + "'>" + test.get("name") + "</a>";
+					if (test.get("description") != null)
+					{
+						htmlTests += "<li><a data-placement='right' rel='tooltip' href='" + test.get("url") +"' title='"+test.get("description") + "'>" + test.get("name") + "</a>";
+					}
+					else
+					{
+						htmlTests += "<li><a href='" + test.get("url") + "'>" + test.get("name") + "</a>";
+					}
 				}
 				htmlTests += "</ul>";
 			}
@@ -119,6 +126,9 @@ class CSSTester
 		
 		var testsBrowser = js.Lib.document.getElementById(TEST_DIV_ID);
 		testsBrowser.innerHTML = htmlTests;
+		
+		//activate all tooltips
+		untyped new JQuery('[rel=tooltip]').tooltip(); 
 		
 		//add click listener to all anchor to refresh js frame and flash object
 		//when clicked

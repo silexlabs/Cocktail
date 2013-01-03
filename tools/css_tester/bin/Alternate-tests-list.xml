@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+<chapter>
+	<section >
+		<test name="selectors-001" description="CSS Selectors (basic)" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/selectors-001.xht"></test>
+	</section>
+</chapter>
+</data>

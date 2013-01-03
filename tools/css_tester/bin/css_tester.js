@@ -1902,13 +1902,14 @@ src.CSSTester.prototype = {
 				var $it2 = section.elements();
 				while( $it2.hasNext() ) {
 					var test = $it2.next();
-					htmlTests += "<li><a href='" + test.get("url") + "'>" + test.get("name") + "</a>";
+					if(test.get("description") != null) htmlTests += "<li><a data-placement='right' rel='tooltip' href='" + test.get("url") + "' title='" + test.get("description") + "'>" + test.get("name") + "</a>"; else htmlTests += "<li><a href='" + test.get("url") + "'>" + test.get("name") + "</a>";
 				}
 				htmlTests += "</ul>";
 			}
 		}
 		var testsBrowser = js.Lib.document.getElementById("test-list");
 		testsBrowser.innerHTML = htmlTests;
+		new js.JQuery("[rel=tooltip]").tooltip();
 		var anchors = testsBrowser.getElementsByTagName("a");
 		var _g1 = 0, _g = anchors.length;
 		while(_g1 < _g) {
