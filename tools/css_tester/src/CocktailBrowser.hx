@@ -20,5 +20,4 @@ class CocktailBrowser
 	{
 		js.Lib.document.innerHTML = flash.Lib.current.loaderInfo.parameters.html;
 	}
-	
 }

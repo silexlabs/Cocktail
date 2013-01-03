@@ -95,11 +95,19 @@ class CSSTester
 		//parse test xml and build html from it
 		for (chapter in xml.elements())
 		{
-			htmlTests += "<h3>" + chapter.get("name") + "</h2>";
+			if (chapter.get("name") != null)
+			{
+				htmlTests += "<h3>" + chapter.get("name") + "</h3>";
+			}
+			
 			
 			for (section in chapter.elements())
 			{
-				htmlTests += "<h4>" + section.get("name") + "</h3>";
+				if (section.get("name") != null)
+				{
+					htmlTests += "<h4>" + section.get("name") + "</h4>";
+				}
+				
 				htmlTests += "<ul class='nav nav-tabs nav-stacked'>";
 				for (test in section.elements())
 				{
@@ -184,8 +192,12 @@ class CSSTester
 		jsFrame.src = "data:text/html,"+urlEncodedHtml;
 	
 		//for flash, html provided as flash vars
-		var flashObject = Lib.document.getElementById(FLASH_OBJECT_ID);
-		untyped flashObject.data = COCKTAIL_SWF_URL + urlEncodedHtml;
+		var swfObject = new js.SWFObject(COCKTAIL_SWF_URL + urlEncodedHtml, FLASH_OBJECT_ID, 400, 400, "11", "#FFFFFF" );
+		swfObject.addParam("wmode", "transparent");
+		swfObject.write(FLASH_OBJECT_ID);
+		
+		//var flashObject = Lib.document.getElementById(FLASH_OBJECT_ID);
+		//untyped flashObject.data = COCKTAIL_SWF_URL + urlEncodedHtml;
 		
 		//refresh code editor content
 		var editor:Dynamic = untyped ace.edit(HTML_EDITOR_ID);
