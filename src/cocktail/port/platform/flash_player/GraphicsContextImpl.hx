@@ -134,11 +134,9 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		
 		_nativeLayer = new Sprite();
 		_nativeLayer.mouseEnabled = false;
-		_nativeLayer.mouseChildren = false;
+		
 		_childrenNativeLayer = new Sprite();
 		_childrenNativeLayer.mouseEnabled = false;
-		_childrenNativeLayer.mouseChildren = false;
-		
 		
 		_width = 0;
 		_height = 0;
