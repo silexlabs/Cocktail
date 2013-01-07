@@ -137,7 +137,7 @@ class TextRenderer extends InvalidatingElementRenderer
 				rect.width = inlineBox.bounds.width;
 				rect.height = inlineBox.bounds.height;
 				
-				var destPoint:PointVO = new PointVO(inlineBox.bounds.x + globalBounds.x, inlineBox.bounds.y + globalBounds.y);
+				var destPoint:PointVO = new PointVO(inlineBox.bounds.x + globalBounds.x - scrollOffset.x, inlineBox.bounds.y + globalBounds.y - scrollOffset.y);
 				if (inlineBox.lineBox != null)
 				{
 					destPoint.y += inlineBox.lineBox.bounds.y;
