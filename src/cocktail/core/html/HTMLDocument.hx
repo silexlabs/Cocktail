@@ -589,20 +589,24 @@ class HTMLDocument extends Document
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(wheelEvent.screenX, wheelEvent.screenY);
 		elementRendererAtPoint.domNode.dispatchEvent(wheelEvent);
 		
-		if (wheelEvent.defaultPrevented == false)
-		{
-			var htmlElement:HTMLElement = elementRendererAtPoint.domNode;
-			
+		//TODO 2 : automatic scrolling deactivated until scrollbar properly implemented
+		//for now, scrolling can be implemented by using scrollTop and scrollLeft property
+		//on an HTMLElement with an overflow = hidden style
+		
+		//if (wheelEvent.defaultPrevented == false)
+		//{
+			//var htmlElement:HTMLElement = elementRendererAtPoint.domNode;
+			//
 			//get the amount of vertical scrolling to apply in pixel
-			var scrollOffset:Int = Math.round(wheelEvent.deltaY * MOUSE_WHEEL_DELTA_MULTIPLIER) ;
-			
+			//var scrollOffset:Int = Math.round(wheelEvent.deltaY * MOUSE_WHEEL_DELTA_MULTIPLIER) ;
+			//
 			//get the first ancestor which can be vertically scrolled
-			var scrollableHTMLElement:HTMLElement = getFirstVerticallyScrollableHTMLElement(htmlElement, scrollOffset);
-			if (scrollableHTMLElement != null)
-			{
-				scrollableHTMLElement.scrollTop -= scrollOffset;
-			}
-		}
+			//var scrollableHTMLElement:HTMLElement = getFirstVerticallyScrollableHTMLElement(htmlElement, scrollOffset);
+			//if (scrollableHTMLElement != null)
+			//{
+				//scrollableHTMLElement.scrollTop -= scrollOffset;
+			//}
+		//}
 	}
 	
 	/**
