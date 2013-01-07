@@ -12,6 +12,7 @@ import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.event.KeyboardEvent;
+import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.css.CSSValueConverter;
 import cocktail.core.geom.GeomData;
@@ -121,6 +122,14 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		//to the Window
 		var x:Float = globalBounds.x - scrollOffset.x;
 		var y:Float =  globalBounds.y + globalBounds.height / 2 - coreStyle.fontMetrics.fontSize + coreStyle.fontMetrics.ascent / 2 - scrollOffset.y;
+		
+		//add the layer's transformations if it has any
+		//
+		//TODO 3 : only translation for now
+		var layerMatrix:Matrix = layerRenderer.matrix;
+		x += layerMatrix.e;
+		y += layerMatrix.f;
+		
 		var width:Float =  globalBounds.width;
 		var height:Float =  globalBounds.height;
 		var viewport:RectangleVO = new RectangleVO();
