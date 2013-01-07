@@ -94,7 +94,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	 */
 	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO)
 	{
-		updateNativeTextInput(scrollOffset);
+		updateNativeTextInput(scrollOffset, clipRect);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	/**
 	 * Update the display of the native text input
 	 */
-	private function updateNativeTextInput(scrollOffset:PointVO):Void
+	private function updateNativeTextInput(scrollOffset:PointVO, clipRect:RectangleVO):Void
 	{
 		var globalBounds:RectangleVO = this.globalBounds;
 		
@@ -138,6 +138,10 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		viewport.width = width;
 		viewport.height = height;
 		nativeTextInput.viewport = viewport;
+		
+		//update clip rect of native text input, so that
+		//it doesn't overflow its layer clip rect
+		nativeTextInput.clipRect = clipRect;
 		
 		//set the style of the text input text using the CSS applying to it
 		//Based on the platform not all of those style might be taken into account

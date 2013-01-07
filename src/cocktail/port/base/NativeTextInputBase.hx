@@ -30,6 +30,13 @@ class NativeTextInputBase
 	 */
 	public var viewport(get_viewport, set_viewport):RectangleVO;
 	
+	/**
+	 * get/set the cliprect of the text input which is the rectangle,
+	 * relative to the Window where the text input can be displayed 
+	 * without being masked
+	 */
+	public var clipRect(get_clipRect, set_clipRect):RectangleVO;
+	
 	//get/set style attributes
 	
 	public var italic(get_italic, set_italic):Bool;
@@ -97,6 +104,16 @@ class NativeTextInputBase
 	private function set_viewport(value:RectangleVO):RectangleVO
 	{
 		return viewport = value;
+	}
+	
+	private function get_clipRect():RectangleVO
+	{
+		return clipRect;
+	}
+	
+	private function set_clipRect(value:RectangleVO):RectangleVO
+	{
+		return clipRect = value;
 	}
 	
 	private function set_italic(value:Bool):Bool

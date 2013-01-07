@@ -11,6 +11,8 @@ import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.base.NativeTextInputBase;
 import cocktail.port.NativeElement;
 import flash.display.DisplayObjectContainer;
+import flash.display.Sprite;
+import flash.geom.Rectangle;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFieldType;
@@ -50,6 +52,12 @@ class NativeTextInput extends NativeTextInputBase
 	private var _textFormat:TextFormat;
 	
 	/**
+	 * Mask the text field so that it doesn't
+	 * overflow its clip rect bounds
+	 */
+	private var _mask:Sprite;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
@@ -57,6 +65,9 @@ class NativeTextInput extends NativeTextInputBase
 		super();
 		
 		_textField = new TextField();
+		
+		_mask = new Sprite();
+		_textField.mask = _mask;
 		
 		//not supported in nme
 		#if flash9
@@ -138,6 +149,21 @@ class NativeTextInput extends NativeTextInputBase
 		_textField.y = value.y;
 		_textField.width = value.width;
 		_textField.height = value.height;
+		
+		return value;
+	}
+	
+	override private function get_clipRect():RectangleVO
+	{
+		return clipRect;
+	}
+	
+	override private function set_clipRect(value:RectangleVO):RectangleVO
+	{
+		_mask.graphics.clear();
+		_mask.graphics.beginFill(0xFF0000, 0.5);
+		_mask.graphics.drawRect(value.x, value.y, value.width, value.height);
+		_mask.graphics.endFill();
 		
 		return value;
 	}
