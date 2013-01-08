@@ -107,9 +107,7 @@ class ViewManager
 		// Instantiate header
 		_header = new HeaderView();
 		_header.data = Constants.HEADER_HOME_TITLE;
-		//_header.displayRefreshButton = true;
 		_header.onBackButtonClick = onHeaderBackButtonPressed;
-		//_header.onRefreshButtonClick = switchFeed;
 		_body.appendChild(_header.node);
 		
 		// init menu
@@ -237,9 +235,6 @@ class ViewManager
 		// display header back button
 		_header.displayBackButton = true;
 
-		// hide header refresh button
-		//_header.displayRefreshButton = false;
-		
 		// update header zIndex using a workaround
 		setZIndexToMax(_header);
 		
@@ -264,9 +259,6 @@ class ViewManager
 	 */
 	public function onLoadingError(feed:Feed, error:Dynamic):Void
 	{
-		//trace("Load error: " + Std.string(error));
-		//haxe.Firebug.trace("Load error: " + Std.string(error));
-		
 		// if online network error, load offline feed
 		if (error == Settings.DATALOADER_TIMEOUT_MESSAGE)
 		{
@@ -287,9 +279,6 @@ class ViewManager
 		
 		// hide header back button
 		_header.displayBackButton = false;
-		
-		// display header refresh button
-		//_header.displayRefreshButton = true;
 		
 		// PhoneGap Android specific: unset hardware back button so it has the default behaviour, which exits the application
 		untyped Lib.document.removeEventListener("backbutton", onHeaderBackButtonPressed, false);
@@ -315,18 +304,6 @@ class ViewManager
 		// refresh styles
 		refreshStyles();
 	}
-	
-	/**
-	 * Header Refresh button click callback
-	 */
-	/*public function switchFeed():Void
-	{
-		// switch between offline and online
-		Settings.getInstance().online = !Settings.getInstance().online;
-		
-		// reload corresponding feed
-		reloadFeed();
-	}*/
 	
 	/**
 	 * Reload feed depending on online value (stored in Settings)
