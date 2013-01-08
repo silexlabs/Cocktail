@@ -24,15 +24,15 @@ class HeaderView extends ViewBase
 	public var onBackButtonClick:Void->Void;
 	
 	// Called when the refresh button is clicked
-	public var onRefreshButtonClick:Void->Void;
+	//public var onRefreshButtonClick:Void->Void;
 	
 	// set / get displaying the back button
 	private var _displayBackButton:Bool;
 	public var displayBackButton(getDisplayBackButton, setDisplayBackButton):Bool;
 	
 	// set / get displaying the refresh button
-	private var _displayRefreshButton:Bool;
-	public var displayRefreshButton(getDisplayRefreshButton, setDisplayRefreshButton):Bool;
+	//private var _displayRefreshButton:Bool;
+	//public var displayRefreshButton(getDisplayRefreshButton, setDisplayRefreshButton):Bool;
 	
 	// text container, to be built in the constructor
 	private var _titleContainer:HtmlDom;
@@ -47,7 +47,7 @@ class HeaderView extends ViewBase
 	private var _backButtonContainer:HtmlDom;
 
 	// refresh button container, to be built in the constructor, and attached/detached depending on displayRefreshButton value
-	private var _refreshButtonContainer:HtmlDom;
+	//private var _refreshButtonContainer:HtmlDom;
 
 	public function new()
 	{
@@ -56,7 +56,7 @@ class HeaderView extends ViewBase
 		// init attributes
 		_data = "";
 		_backButtonContainer = buildBackButtonView();
-		_refreshButtonContainer = buildRefreshButtonView();
+		//_refreshButtonContainer = buildRefreshButtonView();
 	}
 	
 	/**
@@ -99,17 +99,17 @@ class HeaderView extends ViewBase
 	 * back button getter
 	 * @return
 	 */
-	private function getDisplayRefreshButton():Bool
+	/*private function getDisplayRefreshButton():Bool
 	{
 		return _displayRefreshButton;
-	}
+	}*/
 	
 	/**
 	 * back button setter
 	 * @param	v
 	 * @return
 	 */
-	private function setDisplayRefreshButton(v:Bool):Bool
+	/*private function setDisplayRefreshButton(v:Bool):Bool
 	{
 		_displayRefreshButton = v;
 		
@@ -129,7 +129,7 @@ class HeaderView extends ViewBase
 			}
 		}
 		return _displayRefreshButton;
-	}
+	}*/
 	
 	/**
 	 * build header view, with tile and title

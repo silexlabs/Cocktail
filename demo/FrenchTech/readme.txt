@@ -393,7 +393,7 @@ Update 2012-12-28:
 -mettre toutes les images en dur dans l'application => OK
 -click sur une cellule => detail, puis back => retour tout en haut de la liste, le scroll n'est pas conservé => OK
 -mettre un bouton pour switcher entre les flux online et offline (offline par défaut) => OK
--initialiser l'appli avec les données locales, et si on detecte une connection, charger les données en ligne
+-essayer d'initialiser l'appli avec les données en ligne, et si on detecte une erreur de connexion, charger les données locales => OK
 -enlever les lien => getElementByTagName => addEventListener(e.preventDefault)
 -faire une homepage & enlever les 5 première vignettes du flux principal ?
 -utiliser une liste à 1 cellule par ligne pour le flux 3 ?
@@ -402,6 +402,12 @@ Update 2012-12-28:
 -une petite interpolation sur les images cropées ?
 -compilation PhoneGap
 -mise à jour AppStore Apple, Google & windows
+
+Check 02/01/12 Alex & Yannick
+-notif nouveaux item activée par click
+-stockage local
+-slide images thumbnail
+-premiere page avec thumb
 
 -------------------------------------------------------------------------------------------------------------------------
 
