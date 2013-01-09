@@ -30,10 +30,6 @@ class HeaderView extends ViewBase
 	private var _displayBackButton:Bool;
 	public var displayBackButton(getDisplayBackButton, setDisplayBackButton):Bool;
 	
-	// set / get displaying the refresh button
-	//private var _displayRefreshButton:Bool;
-	//public var displayRefreshButton(getDisplayRefreshButton, setDisplayRefreshButton):Bool;
-	
 	// text container, to be built in the constructor
 	private var _titleContainer:HtmlDom;
 	
@@ -46,9 +42,6 @@ class HeaderView extends ViewBase
 	// back button container, to be built in the constructor, and attached/detached depending on displayBackButton value
 	private var _backButtonContainer:HtmlDom;
 
-	// refresh button container, to be built in the constructor, and attached/detached depending on displayRefreshButton value
-	//private var _refreshButtonContainer:HtmlDom;
-
 	public function new()
 	{
 		super();
@@ -56,7 +49,6 @@ class HeaderView extends ViewBase
 		// init attributes
 		_data = "";
 		_backButtonContainer = buildBackButtonView();
-		//_refreshButtonContainer = buildRefreshButtonView();
 	}
 	
 	/**
@@ -94,42 +86,6 @@ class HeaderView extends ViewBase
 		}
 		return _displayBackButton;
 	}
-	
-	/**
-	 * back button getter
-	 * @return
-	 */
-	/*private function getDisplayRefreshButton():Bool
-	{
-		return _displayRefreshButton;
-	}*/
-	
-	/**
-	 * back button setter
-	 * @param	v
-	 * @return
-	 */
-	/*private function setDisplayRefreshButton(v:Bool):Bool
-	{
-		_displayRefreshButton = v;
-		
-		// if back button has to be displayed, remove thumb image, and attach backbutton to this
-		if (_displayRefreshButton)
-		{
-			//node.removeChild(_image);
-			node.appendChild(_refreshButtonContainer);
-		}
-		// if it has to be hidden, first check if back button is already attached to this, and then remove it and then add thumb
-		else
-		{
-			if(_refreshButtonContainer.parentNode != null)
-			{
-				node.removeChild(_refreshButtonContainer);
-				//node.appendChild(_image);
-			}
-		}
-		return _displayRefreshButton;
-	}*/
 	
 	/**
 	 * build header view, with tile and title
