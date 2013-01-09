@@ -34,6 +34,9 @@ class CroppedImage extends ViewBase
 	// onImageLoadSuccess callback
 	public var onImageLoadSuccess:Void->Void;
 	
+	// Opacity delay
+	private var _opacityDelayInit:Int = Constants.CELL_THUMB_OPACITY_DELAY_INIT;
+	
 	public function new(style:Dynamic)
 	{
 		super();
@@ -80,12 +83,14 @@ class CroppedImage extends ViewBase
 		node.appendChild(_image);
 		
 		// display thumb using a random effect
-		Timer.delay(fadeIn, Std.random(Constants.CELL_THUMB_APPARITION_DELAY));
+		Timer.delay(fadeIn, Std.random(_opacityDelayInit));
 		
 		if (onImageLoadSuccess != null)
 		{
 			onImageLoadSuccess();
 		}
+		_opacityDelayInit = _opacityDelayInit * 3;
+		
 	}
 	
 	/**
@@ -94,7 +99,7 @@ class CroppedImage extends ViewBase
 	private function fadeIn():Void
 	{
 		// create the tween
-        var tween = new Tween( 0, 1, 400 );
+        var tween = new Tween( 0, 1, Constants.CELL_THUMB_OPACITY_FADE_DURATION );
 		tween.onUpdate( tweenOpacity );
 		tween.onFinish( tweenEnd );
         // launch the tween

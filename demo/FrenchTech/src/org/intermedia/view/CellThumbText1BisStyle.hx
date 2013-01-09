@@ -23,8 +23,8 @@ import org.intermedia.model.ApplicationModel;
 
 class CellThumbText1BisStyle
 {
-	static inline var CELL_TEXT_WIDTH_PERCENT:Int = 60;
-	public static inline var CELL_THUMB_WIDTH_PERCENT:Int = 100 - CELL_TEXT_WIDTH_PERCENT - 5;
+	private static inline var CELL_TEXT_WIDTH_PERCENT:Int = 60;
+	private static inline var CELL_THUMB_WIDTH_PERCENT:Int = 100 - CELL_TEXT_WIDTH_PERCENT - 5;
 	
 	/**
 	 * Defines cell Style
