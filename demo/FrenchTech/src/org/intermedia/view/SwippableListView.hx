@@ -43,7 +43,8 @@ class SwippableListView extends ListViewBase
 	private var _listViews:Array<ListViewBase>;
 	
 	//private var list0:ListViewText;
-	private var list0:ThumbTextList1Bis;
+	//private var list0:ThumbTextList1Bis;
+	private var list0:ThumbTextList1;
 	private var list1:ThumbTextList1Bis;
 	private var list2:ThumbTextList1;
 	private var _list1Data:Array<CellData>;
@@ -106,7 +107,7 @@ class SwippableListView extends ListViewBase
 		
 		// create all needed lists and add them to the _listView array
 		//list0 = new ListViewText();
-		list0 = new ThumbTextList1Bis(1);
+		list0 = new ThumbTextList1(1);
 		list0.id = Feeds.FEED_1.url;
 		_listViews.push(list0);
 		
@@ -230,6 +231,8 @@ class SwippableListView extends ListViewBase
 			}
 			scrollToCurrentList();
 		}
+		
+		refreshStyles();
 	}
 	
 	/**

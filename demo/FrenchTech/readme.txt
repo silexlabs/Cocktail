@@ -385,6 +385,19 @@ Raph:
 -Générique:
 	=> quand on atteint la fin d'un contenu, le scroll s'arrete net. Il devrait rebondire avec un easeInOut => réglé en utilisant le scroll natif => OK
 
+Fonctionnalités manquantes
+-bouton retour Android
+ => dans la vue detail, devrait permettre de revenir à la homepage => OK
+ => dans la homepage, devrait permettre de sortir de l'appli => OK
+-quand on revient à la vue liste, celle-ci ne devrait pas avoir changé de position => OK
+ => ne pas retirer la swippableView du dom, mais la masquer 
+ => stocker la position du scroll dans une variable et la réaffecter au chargement
+-error screen
+
+Améliorations:
+-sur iPhone 4S, l'appli met 25 secondes à se lancer, et beaucoup moins de temps sur les autres appareil (environ 5 sec au total)
+=> réglé grace à la nouvelle version de Haxe 2.10
+-items de menu latéraux a mettre avec une ombre visuelle
 	
 Update 2012-12-28:
 -changed feeds to iPhon.fr, FrAndroid, frenchiPhone => OK
@@ -397,6 +410,7 @@ Update 2012-12-28:
 -enlever les lien => getElementByTagName => addEventListener(e.preventDefault)
 -faire une homepage & enlever les 5 première vignettes du flux principal ?
 -utiliser une liste à 1 cellule par ligne pour le flux 3 => OK
+-premiere page avec thumb + text => OK
 -photos se chargent "en commencant par le bas" au lieu du haut => OK
 -on peut sans doute encore améliorer la mise en page des 2 1eres lignes... a discuter avec pol
 -une petite interpolation sur les images cropées ?
@@ -407,34 +421,18 @@ Check 02/01/12 Alex & Yannick
 -notif nouveaux item activée par click
 -stockage local
 -slide images thumbnail
--premiere page avec thumb
 
 -------------------------------------------------------------------------------------------------------------------------
 
 Bugs restants:
 -en mode online, quand on scroll rapidement vers le bas et de multiple fois, l'appli se met à charger des flux en continu. Le problème est règlé dès qu'on scroll vers le haut
 -Galaxy note: le bouton de menu silicon sentier ne marche pas
--auto-load rss: pour le flux silicon sentier, il y a a régulièrement deux cellules avec un contenu identique
-
-Fonctionnalités manquantes
--bouton retour Android
- => dans la vue detail, devrait permettre de revenir à la homepage => OK
- => dans la homepage, devrait permettre de sortir de l'appli => OK
--quand on revient à la vue liste, celle-ci ne devrait pas avoir changé de position
- => ne pas retirer la swippableView du dom, mais la masquer 
- => stocker la position du scroll dans une variable et la réaffecter au chargement
--error screen
-
-Améliorations:
--sur iPhone 4S, l'appli met 25 secondes à se lancer, et beaucoup moins de temps sur les autres appareil (environ 5 sec au total)
-=> réglé grace à la nouvelle version de Haxe 2.10
--items de menu latéraux a mettre avec une ombre visuelle
-
+-auto-load rss: pour le flux silicon sentier, il y a a régulièrement deux cellules avec un contenu identique => réglé
 
 -------------------------------------------------------------------------------------------------------------------------
 	
 Dans le futur
--Pouvoir switcher entre les flux locaux & online
+-Pouvoir switcher entre les flux locaux & online => obsolète
 	=> par click sur texte du header
 	=> avec un bouton dans le header
 -version online
