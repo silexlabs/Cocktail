@@ -619,4 +619,20 @@ class TextRenderer extends InvalidatingElementRenderer
 	{
 		return true;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When computing hit testing bounds, first set them 
+	 * to the global bounds, then add the x and y of all
+	 * the text inline boxes bounds.
+	 */
+	override private function resetHitTestingBounds():Void
+	{
+		super.resetHitTestingBounds();
+		hitTestingBounds.x += bounds.x;
+		hitTestingBounds.y += bounds.y;
+	}
 }
