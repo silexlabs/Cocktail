@@ -1769,39 +1769,33 @@ class HTMLElement extends Element<HTMLElement>
 	private function get_offsetParent():HTMLElement
 	{
 		//here the HTMLElement is not
-		//attached to the DOM
-		if (parentNode == null)
+		//rendered 
+		if (elementRenderer == null)
 		{
 			return null;
 		}
 		
+		//fixed positioned element are relative to the viewport
+		switch(coreStyle.getKeyword(coreStyle.position))
+		{
+			case FIXED:
+				return null;
+			
+			default:	
+		}
+		
+		//find the first non-static parent or return the body
 		var parent:HTMLElement = parentNode;
-		
-		//if the parent is not rendered, it can't
-		//have an offset
-		if (parent.elementRenderer == null)
+		while (parent != null)
 		{
-			return null;
+			if (parent.elementRenderer.isPositioned() == true || parent.tagName == HTMLConstants.HTML_BODY_TAG_NAME)
+			{
+				return parent;
+			}
+			parent = parent.parentNode;
 		}
 		
-		//loop in all the parents until a positioned or a null parent is found
-		var isOffsetParent:Bool = parent.elementRenderer.isPositioned();
-		
-		while (isOffsetParent == false)
-		{
-			if (parent.parentNode != null)
-			{
-				parent = parent.parentNode;
-				isOffsetParent = parent.elementRenderer.isPositioned();
-			}
-			//break the loop if the current parent has no parent
-			else
-			{
-				isOffsetParent = true;
-			}
-		}
-		
-		return parent;
+		return null;
 	}
 	
 	private function get_offsetWidth():Int
@@ -1825,7 +1819,17 @@ class HTMLElement extends Element<HTMLElement>
 		updateDocumentImmediately();
 		if (elementRenderer != null)
 		{
-			return Math.round(elementRenderer.bounds.x);
+			var offsetParent:HTMLElement = get_offsetParent();
+			//if there is no offset parent, return x relative to the viewport
+			if (offsetParent == null)
+			{
+				return Math.round(elementRenderer.globalBounds.x);
+			}
+			//else subtract from offset parent x
+			else
+			{
+				return Math.round(elementRenderer.globalBounds.x - offsetParent.elementRenderer.globalBounds.x);
+			}
 		}
 		return 0;
 	}
@@ -1835,7 +1839,17 @@ class HTMLElement extends Element<HTMLElement>
 		updateDocumentImmediately();
 		if (elementRenderer != null)
 		{
-			return Math.round(elementRenderer.bounds.y);
+			var offsetParent:HTMLElement = get_offsetParent();
+			//if there is no offset parent, return y relative to the viewport
+			if (offsetParent == null)
+			{
+				return Math.round(elementRenderer.globalBounds.y);
+			}
+			//else subtract from offset parent y
+			else
+			{
+				return Math.round(elementRenderer.globalBounds.y - offsetParent.elementRenderer.globalBounds.y);
+			}
 		}
 		return 0;
 	}
