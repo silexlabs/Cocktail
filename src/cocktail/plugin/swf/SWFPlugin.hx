@@ -56,6 +56,16 @@ class SWFPlugin extends Plugin
 	
 	private static inline var SCALE_MODE:String = "scalemode";
 	
+	//html attributes
+	
+	private static inline var DATA_ATTRIBUTE:String = "data";
+	
+	private static inline var FLASHVARS_ATTRIBUTE:String = "flashvars";
+	
+	private static inline var WMODE_ATTRIBUTE:String = "wmode";
+	
+	private static inline var WMODE_TRANSPARENT:String = "transparent";
+	
 	/**
 	 * Store the scale mode of this swf. Either
 	 * defined in a param tag or uses a default
@@ -184,7 +194,7 @@ class SWFPlugin extends Plugin
 		var data = null;
 		
 		//check if url has any query string params
-		var swfUrl:String = _elementAttributes.get("data");
+		var swfUrl:String = _elementAttributes.get(DATA_ATTRIBUTE);
 		if (swfUrl.indexOf("?") != -1)
 		{
 			data = { };
@@ -192,14 +202,14 @@ class SWFPlugin extends Plugin
 		}
 		
 		//check if flash vars param exists
-		if (_params.exists("flashvars"))
+		if (_params.exists(FLASHVARS_ATTRIBUTE))
 		{
 			if (data == null)
 			{
 				data = { };
 			}
 			
-			parseQueryString(data, _params.get("flashvars"));
+			parseQueryString(data, _params.get(FLASHVARS_ATTRIBUTE));
 		}
 		
 		return data;
@@ -241,6 +251,24 @@ class SWFPlugin extends Plugin
 	{
 		var containerGraphicContext:DisplayObjectContainer = cast(graphicsContext.nativeLayer);
 		containerGraphicContext.removeChild(_swf);
+	}
+	
+	/**
+	 * SWF plugin might be composited, based on its
+	 * wmode param
+	 * @return
+	 */
+	override public function isCompositedPlugin():Bool
+	{
+		if (_params.exists(WMODE_ATTRIBUTE) == true)
+		{
+			if (_params.get(WMODE_ATTRIBUTE) == WMODE_TRANSPARENT)
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	/**

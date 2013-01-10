@@ -14,7 +14,7 @@ import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.geom.GeomData;
 
 /**
- * base class fro third-party plugin, instantiated through
+ * base class for third-party plugin, instantiated through
  * object or embed tag
  * 
  * note : this is a first draft of a plugin system, for now
@@ -93,6 +93,19 @@ class Plugin
 	public function dispose():Void
 	{
 		
+	}
+	
+	/**
+	 * The plugin must return wether it is a
+	 * composited layer, meaning that it will need
+	 * its own bitmap surface to be rendered.
+	 * 
+	 * Default is false to prevent creating too
+	 * many bitmaps
+	 */
+	public function isCompositedPlugin():Bool
+	{
+		return false;
 	}
 	
 	/**

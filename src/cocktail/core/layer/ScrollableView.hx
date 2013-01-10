@@ -411,7 +411,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 * Update the clipped bounds of this
 	 * layer, which are the bounds it has
 	 * if overflow is not visible. It is 
-	 * the transformated bounds of its root
+	 * the transformed bounds of its root
 	 * element renderers
 	 */
 	public function updateClippedBounds():Void

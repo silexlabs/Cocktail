@@ -11,9 +11,9 @@ import cocktail.core.renderer.ElementRenderer;
 
 /**
  * Compositing layer are used for elements 
- * which can't be redered by drawing bitmap,
+ * which can't be rendered by drawing bitmap,
  * for instance an hardware accelerated video
- * rendering is hadled by the GPU. It is
+ * rendering is handled by the GPU. It is
  * given a compositing layer so that it can
  * be integrated in the DOM
  * 
@@ -31,12 +31,21 @@ class CompositingLayerRenderer extends LayerRenderer
 	}
 	
 	/**
-	 * A compositing layer always has its own
-	 * graphic context for compositing
+	 * A compositing layer in most cases has its own
+	 * graphic context for compositing, but it may
+	 * depend. For instance a plugin layer renderer might
+	 * not always need a graphic context based on its plugin
 	 */
 	override private function establishesNewGraphicsContext():Bool
 	{
-		return true;
+		if (isCompositingLayer() == true)
+		{
+			return true;
+		}
+		else
+		{
+			return super.establishesNewGraphicsContext();
+		}
 	}
 	
 	/////////////////////////////////
