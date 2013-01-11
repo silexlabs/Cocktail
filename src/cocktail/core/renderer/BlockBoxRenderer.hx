@@ -533,8 +533,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function applyShrinkToFitIfNeeded(layoutState:LayoutStateValue):Void
 	{
+		
 		//absolutely positioned element with not auto left and right style don't use shrink-to-fit width
-		//if the layout stat is not normal, shrink to fit might also be applied to block box which haven't auto width
+		//if the layout state is not normal, shrink to fit might also be applied to block box which haven't auto width
 		//but which still needs to compute their shrink-yo-fit width for their ancestor block formatting context
 		if (establishesNewBlockFormattingContext() == true && (coreStyle.isAuto(coreStyle.width) == true || layoutState != NORMAL) && isAutoWidthAbsolutelyPositionedWithNotAutoLeftAndRight() == false)
 		{
@@ -546,6 +547,17 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			getBlockFormattingBounds();
 			var preferedMinimumWidth:Float = _blockFormattingBounds.width;
 			
+			//in the case where this block has not an auto width, if its own width
+			//is superior to the maximum width of its content, use its own width
+			//instead
+			if (coreStyle.isAuto(coreStyle.width) == false)
+			{
+				if (bounds.width > preferedMinimumWidth)
+				{
+					preferedMinimumWidth = bounds.width;
+				}
+			}
+			
 			//then prefered width is found by laying children without breaking line
 			//unless explicit break, such as a line feed happends
 			doLayoutChildren(LayoutStateValue.SHRINK_TO_FIT_PREFERED_WIDTH);
@@ -553,6 +565,16 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//retrieve maximum width of content formatted for prefered width
 			getBlockFormattingBounds();
 			var preferedWidth:Float = _blockFormattingBounds.width;
+			
+			//same as for prefered minimum width, use own width
+			//if superior to children width
+			if (coreStyle.isAuto(coreStyle.width) == false)
+			{
+				if (bounds.width > preferedWidth)
+				{
+					preferedWidth = bounds.width;
+				}
+			}
 			
 			//available width is content width of containing block
 			var availableWidth:Float = containingBlock.coreStyle.usedValues.width;
