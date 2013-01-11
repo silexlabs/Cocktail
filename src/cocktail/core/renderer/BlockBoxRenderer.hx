@@ -639,6 +639,15 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_floatedElementsBounds.y = 50000;
 		_floatedElementsBounds.width = 0;
 		_floatedElementsBounds.height = 0;
+		
+		//if there are no floated elements in this block formatting
+		//return 0 bounds
+		if (floatsManager.floats.left.length == 0 && floatsManager.floats.right.length == 0)
+		{
+			_floatedElementsBounds.x = 0;
+			_floatedElementsBounds.y = 0;
+			return;
+		}
 			
 		//we can use the bounds of the floats manager which are
 		//already in the space of this block box
