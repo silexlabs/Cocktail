@@ -89,6 +89,14 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private var _blockFormattingBounds:RectangleVO;
 	
 	/**
+	 * If this block establishes a new formatting context
+	 * and its height is auto, then the height of
+	 * its floated elements migt influence its own
+	 * height
+	 */
+	private var _floatedElementsBounds:RectangleVO;
+	
+	/**
 	 * A flag which might be set during inline
 	 * formatting if a float is found, meaning
 	 * that layout of block should
@@ -112,6 +120,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_floatFound = false;
 		_inlineBoxGlobalBounds = new RectangleVO();
 		_blockFormattingBounds = new RectangleVO();
+		_floatedElementsBounds = new RectangleVO();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -621,6 +630,35 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	/**
+	 * Get the bounds of all the floated elements
+	 * belonging to the same block formatting
+	 */
+	private function getFloatedElementsBounds():Void
+	{
+		_floatedElementsBounds.x = 50000;
+		_floatedElementsBounds.y = 50000;
+		_floatedElementsBounds.width = 0;
+		_floatedElementsBounds.height = 0;
+			
+		//we can use the bounds of the floats manager which are
+		//already in the space of this block box
+		doGetFloatedElementsBounds(floatsManager.floats.left, _floatedElementsBounds);
+		doGetFloatedElementsBounds(floatsManager.floats.right, _floatedElementsBounds);
+	}
+	
+	/**
+	 * Set the bounds of an array
+	 * of floated element bounds on a result bounds
+	 */
+	private function doGetFloatedElementsBounds(floats:Array<FloatVO>, floatedElementsBounds:RectangleVO):Void
+	{
+		for (i in 0...floats.length)
+		{
+			GeomUtils.addBounds(floats[i].bounds, floatedElementsBounds);
+		}
+	}
+	
+	/**
 	 * If the height od this block box depends on its content,
 	 * it can computed now that its children have been laid out
 	 */
@@ -644,7 +682,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//are below its bottom, then the height includes those floated elements
 			if (establishesNewBlockFormattingContext() == true)
 			{
-				//TODO : if floats bounds higher, use instead for height
+				//update bounds of floated element of this block formatting context
+				getFloatedElementsBounds();
+				//use those bounds if higher than normal flow children height
+				if (_floatedElementsBounds.y + _floatedElementsBounds.height > childrenHeight)
+				{
+					childrenHeight = _floatedElementsBounds.y + _floatedElementsBounds.height;
+				}
 			}
 			
 			//constrain children height if needed
@@ -1299,8 +1343,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					
 					GeomUtils.addBounds(_inlineBoxGlobalBounds, child.bounds);
 				}
-				
-				
 			}
 			
 			child = child.nextSibling;
