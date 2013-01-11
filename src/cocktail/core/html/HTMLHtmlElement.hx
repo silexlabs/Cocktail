@@ -111,4 +111,20 @@ class HTMLHtmlElement extends HTMLElement
 		return null;
 	}
 	
+	/**
+	 * The html root don't have an offset top
+	 */
+	override private function get_offsetTop():Int
+	{
+		return 0;
+	}
+	
+	/**
+	 * The html root don't have an offset left
+	 */
+	override private function get_offsetLeft():Int
+	{
+		return 0;
+	}
+	
 }

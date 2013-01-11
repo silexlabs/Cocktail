@@ -12,6 +12,7 @@ import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.event.KeyboardEvent;
+import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.css.CSSValueConverter;
 import cocktail.core.geom.GeomData;
@@ -93,7 +94,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	 */
 	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO)
 	{
-		updateNativeTextInput(scrollOffset);
+		updateNativeTextInput(scrollOffset, clipRect);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -113,7 +114,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	/**
 	 * Update the display of the native text input
 	 */
-	private function updateNativeTextInput(scrollOffset:PointVO):Void
+	private function updateNativeTextInput(scrollOffset:PointVO, clipRect:RectangleVO):Void
 	{
 		var globalBounds:RectangleVO = this.globalBounds;
 		
@@ -121,6 +122,14 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		//to the Window
 		var x:Float = globalBounds.x - scrollOffset.x;
 		var y:Float =  globalBounds.y + globalBounds.height / 2 - coreStyle.fontMetrics.fontSize + coreStyle.fontMetrics.ascent / 2 - scrollOffset.y;
+		
+		//add the layer's transformations if it has any
+		//
+		//TODO 3 : only translation for now
+		var layerMatrix:Matrix = layerRenderer.matrix;
+		x += layerMatrix.e;
+		y += layerMatrix.f;
+		
 		var width:Float =  globalBounds.width;
 		var height:Float =  globalBounds.height;
 		var viewport:RectangleVO = new RectangleVO();
@@ -129,6 +138,10 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		viewport.width = width;
 		viewport.height = height;
 		nativeTextInput.viewport = viewport;
+		
+		//update clip rect of native text input, so that
+		//it doesn't overflow its layer clip rect
+		nativeTextInput.clipRect = clipRect;
 		
 		//set the style of the text input text using the CSS applying to it
 		//Based on the platform not all of those style might be taken into account

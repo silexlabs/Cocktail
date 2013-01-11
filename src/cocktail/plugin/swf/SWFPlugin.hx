@@ -56,6 +56,16 @@ class SWFPlugin extends Plugin
 	
 	private static inline var SCALE_MODE:String = "scalemode";
 	
+	//html attributes
+	
+	private static inline var DATA_ATTRIBUTE:String = "data";
+	
+	private static inline var FLASHVARS_ATTRIBUTE:String = "flashvars";
+	
+	private static inline var WMODE_ATTRIBUTE:String = "wmode";
+	
+	private static inline var WMODE_TRANSPARENT:String = "transparent";
+	
 	/**
 	 * Store the scale mode of this swf. Either
 	 * defined in a param tag or uses a default
@@ -159,11 +169,66 @@ class SWFPlugin extends Plugin
 			loaderContext.allowLoadBytesCodeExecution = true;
 		}
 		
+		//get content loader info parameters
+		loaderContext.parameters = getLoaderContextParams();
+		
 		_loader.loadBytes(loadedSWF.response, loaderContext);
 		#end
 	}
 	
-
+	/**
+	 * Returns the param from the swf loader which simulates
+	 * the flash vars for the loaded swf. It concateantes
+	 * the "flashvars" param tag if present and the query 
+	 * string parameters of the loaded swf if present.
+	 * 
+	 * for example if the swf is loaded with this markup :
+		 * <object data="mySwf?mySwfParam=value">
+			* <param name="flashvars" value="myFlashVarParam=value" />
+		 * </object>
+	 * It will have two parameters : mySwfParam and myFlashVarParam,
+	 * accessible from the content loader info
+	 */
+	private function getLoaderContextParams():Dynamic
+	{
+		var data = null;
+		
+		//check if url has any query string params
+		var swfUrl:String = _elementAttributes.get(DATA_ATTRIBUTE);
+		if (swfUrl.indexOf("?") != -1)
+		{
+			data = { };
+			parseQueryString(data, swfUrl.substr(swfUrl.indexOf("?") + 1));
+		}
+		
+		//check if flash vars param exists
+		if (_params.exists(FLASHVARS_ATTRIBUTE))
+		{
+			if (data == null)
+			{
+				data = { };
+			}
+			
+			parseQueryString(data, _params.get(FLASHVARS_ATTRIBUTE));
+		}
+		
+		return data;
+	}
+	
+	/**
+	 * Utils method parsing query string and setting 
+	 * the parsed value on data
+	 */
+	private function parseQueryString(data:Dynamic, queryString:String):Void
+	{
+		var params:Array<String> = queryString.split("&");
+	
+		for (i in 0...params.length)
+		{
+			var param:Array<String> = params[i].split("=");
+			Reflect.setField(data, param[0], param[1]);
+		}
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHOD
@@ -186,6 +251,24 @@ class SWFPlugin extends Plugin
 	{
 		var containerGraphicContext:DisplayObjectContainer = cast(graphicsContext.nativeLayer);
 		containerGraphicContext.removeChild(_swf);
+	}
+	
+	/**
+	 * SWF plugin might be composited, based on its
+	 * wmode param
+	 * @return
+	 */
+	override public function isCompositedPlugin():Bool
+	{
+		if (_params.exists(WMODE_ATTRIBUTE) == true)
+		{
+			if (_params.get(WMODE_ATTRIBUTE) == WMODE_TRANSPARENT)
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	/**

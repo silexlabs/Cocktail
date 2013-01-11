@@ -7,6 +7,7 @@
 */
 package cocktail.port.platform.flash_player;
 
+import cocktail.core.http.HTTPConstants;
 import cocktail.port.base.NativeHttpBase;
 import flash.events.Event;
 import flash.events.HTTPStatusEvent;
@@ -68,6 +69,29 @@ class NativeHttp extends NativeHttpBase
 		//create a flash URLRequest, storing each parameters of the request
 		var urlRequest:URLRequest = new URLRequest(url);
 		urlRequest.method = method;
+		
+		//if the url contains a query string (?myparam=myvalue), it is parsed
+		//and added to the data to send
+		if (url.indexOf("?") != -1)
+		{
+			var queryString:String = url.substr(url.indexOf("?") + 1);
+			var params:Array<String> = queryString.split("&");
+		
+			for (i in 0...params.length)
+			{
+				var param:Array<String> = params[i].split("=");
+				//initialise data if previously null	
+				if (data == null)
+				{
+					data = { };
+				}
+				Reflect.setField(data, param[0], param[1]);
+			}
+			
+			//remove the query string from the called url
+			urlRequest.url = url.substring(0, url.indexOf("?"));
+		}
+		
 		urlRequest.data = data;
 		
 		//set the loaded data format

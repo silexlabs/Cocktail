@@ -1,15 +1,43 @@
-body {
-	margin:0;
+
+object, iframe, embed {
+	border: none;
+	width:100%;
+	height:400px !important;
+	min-height:400px !important;
 }
 
-object, iframe {
-	border: solid black 1px;
-	float: left;
-	margin:0;
+header {
+	background-color:#F5F5F5;
+	color:red;
 }
 
-#test-list {
-	overflow : scroll;
+#main-container {
+	right:0;
+}
+
+#editor
+{
+	width:100%;
 	height:400px;
-	clear:left;
+}
+
+#main-container .well
+{
+	background-color:white;
+	border-width: 5px;
+}
+
+#test-list li
+{
+	background-color:white;
+}
+
+#editorModal {
+	width:auto;
+	left:20%;
+	right:20%;
+}
+
+#editorModal .modal-body {
+	height:500px;
 }

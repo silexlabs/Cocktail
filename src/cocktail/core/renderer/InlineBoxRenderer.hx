@@ -116,4 +116,20 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	{	
 		return false;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When computing hit testing bounds, first set them 
+	 * to the global bounds, then add the x and y of all
+	 * the inline box bounds.
+	 */
+	override private function resetHitTestingBounds():Void
+	{
+		super.resetHitTestingBounds();
+		hitTestingBounds.x += bounds.x;
+		hitTestingBounds.y += bounds.y;
+	}
 }

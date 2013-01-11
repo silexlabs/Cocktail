@@ -137,7 +137,7 @@ class TextRenderer extends InvalidatingElementRenderer
 				rect.width = inlineBox.bounds.width;
 				rect.height = inlineBox.bounds.height;
 				
-				var destPoint:PointVO = new PointVO(inlineBox.bounds.x + globalBounds.x, inlineBox.bounds.y + globalBounds.y);
+				var destPoint:PointVO = new PointVO(inlineBox.bounds.x + globalBounds.x - scrollOffset.x, inlineBox.bounds.y + globalBounds.y - scrollOffset.y);
 				if (inlineBox.lineBox != null)
 				{
 					destPoint.y += inlineBox.lineBox.bounds.y;
@@ -618,5 +618,21 @@ class TextRenderer extends InvalidatingElementRenderer
 	override public function isInlineLevel():Bool
 	{
 		return true;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When computing hit testing bounds, first set them 
+	 * to the global bounds, then add the x and y of all
+	 * the text inline boxes bounds.
+	 */
+	override private function resetHitTestingBounds():Void
+	{
+		super.resetHitTestingBounds();
+		hitTestingBounds.x += bounds.x;
+		hitTestingBounds.y += bounds.y;
 	}
 }

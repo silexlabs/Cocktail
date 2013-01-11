@@ -5,11 +5,11 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.port.platform;
+package cocktail.port.platform.air;
 
 import cocktail.core.graphics.GraphicsContext;
+import cocktail.port.base.NativeTextInputBase;
 import cocktail.port.NativeElement;
-import cocktail.port.platform.input.AbstractNativeTextInput;
 import flash.display.DisplayObjectContainer;
 import flash.geom.Rectangle;
 import flash.Lib;
@@ -28,7 +28,7 @@ import cocktail.core.geom.GeomData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class NativeTextInput extends AbstractNativeTextInput
+class NativeTextInput extends NativeTextInputBase
 {
 
 	//those const holds CSS standard font name and their equivalent
@@ -82,6 +82,9 @@ class NativeTextInput extends AbstractNativeTextInput
 	override public function detach(graphicContext:GraphicsContext):Void
 	{
 		_stageText.stage = null;
+		
+		//makes sure that garbage collection is called
+		_stageText.dispose();
 	}
 	
 	/**

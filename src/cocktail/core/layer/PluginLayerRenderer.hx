@@ -62,6 +62,20 @@ class PluginLayerRenderer extends CompositingLayerRenderer
 	}
 	
 	/////////////////////////////////
+	// OVERRIDEN PUBLIC HELPER METHODS
+	////////////////////////////////
+	
+	/**
+	 * A plugin layer is composited if its plugin 
+	 * requires it
+	 */
+	override public function isCompositingLayer():Bool
+	{
+		var htmlObjectElement:HTMLObjectElement = cast(rootElementRenderer.domNode);
+		return htmlObjectElement.plugin.isCompositedPlugin();
+	}
+	
+	/////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	////////////////////////////////
 	

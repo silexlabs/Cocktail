@@ -85,4 +85,33 @@ class HTMLBodyElement extends HTMLElement
 			}
 		}
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN COORDS SETTERS/GETTERS
+	// Setters/Getters for an HTMLElement position and dimensions in the publication
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * The body don't have an offset parent
+	 */
+	override private function get_offsetParent():HTMLElement
+	{
+		return null;
+	}
+	
+	/**
+	 * The body don't have an offset top
+	 */
+	override private function get_offsetTop():Int
+	{
+		return 0;
+	}
+	
+	/**
+	 * The body don't have an offset left
+	 */
+	override private function get_offsetLeft():Int
+	{
+		return 0;
+	}
 }

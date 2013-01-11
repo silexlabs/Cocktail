@@ -355,11 +355,10 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 */
 	public function updateHitTestingBounds():Void
 	{
-		//start with global bounds
-		hitTestingBounds.x = globalBounds.x;
-		hitTestingBounds.y = globalBounds.y;
-		hitTestingBounds.width = globalBounds.width;
-		hitTestingBounds.height = globalBounds.height;
+		
+		//set initial value for hit testing bounds, start
+		//with global bounds in most cases
+		resetHitTestingBounds();
 		
 		//apply offset and matrix of layer to converted document bounds
 		//to viewport bounds
@@ -979,6 +978,18 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	/////////////////////////////////
 	// PRIVATE HELPER METHODS
 	////////////////////////////////
+	
+	/**
+	 * When computing hit testing bounds, first set them 
+	 * to the global bounds.
+	 */
+	private function resetHitTestingBounds():Void
+	{
+		hitTestingBounds.x = globalBounds.x;
+		hitTestingBounds.y = globalBounds.y;
+		hitTestingBounds.width = globalBounds.width;
+		hitTestingBounds.height = globalBounds.height;
+	}
 	
 	/**
 	 * Determine wether this ElementRenderer is rendered
