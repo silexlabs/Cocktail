@@ -218,12 +218,30 @@ class CoreStyle
 	 */
 	public var htmlElement:HTMLElement;
 	
+	///////////////////////////////////
+	// STYLE FLAGS
+	//////////////////////////////////
+	// Those flag define aspects of an element
+	// like wether it is floated or positioned.
+	// Those flags are used for info requested
+	// extensively during layout and rendering,
+	// storing those flag prevents from computing
+	// the same info multiple time during layout
+	// and rendering
+	
+	/**
+	 * Wether the element with this core style is left
+	 * or right floated
+	 */
+	public var isFloat(default, null):Bool;
+	
 	/**
 	 * Class constructor
 	 */
 	public function new(htmlElement:HTMLElement) 
 	{
 		this.htmlElement = htmlElement;
+		isFloat = false;
 		init();
 	}
 	
@@ -472,6 +490,12 @@ class CoreStyle
 					
 				default:	
 			}
+		}
+		
+		//store wether element is floated
+		if (cascadeManager.hasFloat == true)
+		{
+			isFloat = isNone(cssFloat) == false;
 		}
 	}
 	

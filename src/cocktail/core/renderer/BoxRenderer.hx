@@ -691,7 +691,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function isFloat():Bool
 	{
-		return coreStyle.isNone(coreStyle.cssFloat) == false;
+		return coreStyle.isFloat;
 	}
 	
 	/**
