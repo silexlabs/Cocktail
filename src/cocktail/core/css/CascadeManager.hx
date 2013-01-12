@@ -36,70 +36,39 @@ class CascadeManager
 	 */
 	public var hasPropertiesToCascade(default, null):Bool;
 	
-	/**
-	 * wether the font-size property needs cascading
-	 */
+	//////////////////////////////
+	// flags for property which need cascading,
+	// true when a property needs cascading
+	
 	public var hasFontSize(default, null):Bool;
 	
-	/**
-	 * wether the font-family property needs cascading
-	 */
 	public var hasFontFamily(default, null):Bool;
 	
-	/**
-	 * wether the background-color property needs cascading
-	 */
 	public var hasBackgroundColor(default, null):Bool;
 	
-	/**
-	 * wether the color property needs cascading
-	 */
 	public var hasColor(default, null):Bool;
 	
-	/**
-	 * wether the display property needs cascading
-	 */
 	public var hasDisplay(default, null):Bool;
 	
-	/**
-	 * wether the line height property needs cascading
-	 */
 	public var hasLineHeight(default, null):Bool;
 	
-	/**
-	 * wether the letter spacing needs cascading
-	 */
 	public var hasLetterSpacing(default, null):Bool;
 	
-	/**
-	 * wether the float property needs cascading
-	 */
 	public var hasFloat(default, null):Bool;
 	
-	/**
-	 * wether the overflow-x property needs cascading
-	 */
 	public var hasOverflowX(default, null):Bool;
 	
-	/**
-	 * wether the overflow-y property needs cascading
-	 */
 	public var hasOverflowY(default, null):Bool;
 	
-	/**
-	 * wether the transform property needs cascading
-	 */
 	public var hasTransform(default, null):Bool;
 	
-	/**
-	 * wether the z-index property needs cascading
-	 */
 	public var hasZIndex(default, null):Bool;
 	
-	/**
-	 * wether the position property needs cascading
-	 */
 	public var hasPosition(default, null):Bool;
+	
+	public var hasVisible(default, null):Bool;
+	
+	public var hasOpacity(default, null):Bool;
 	
 	/**
 	 * class constructor
@@ -133,6 +102,9 @@ class CascadeManager
 		hasTransform = false;
 		hasZIndex = false;
 		hasPosition = false;
+		hasVisible = false;
+		hasOpacity = false;
+		
 		hasPropertiesToCascade = false;
 		cascadeAll = false;
 	}
@@ -230,10 +202,29 @@ class CascadeManager
 				{
 					return true;
 				}	
+				
+			case CSSConstants.OPACITY:
+				if (hasOpacity == false)
+				{
+					hasOpacity = true;
+				}
+				else
+				{
+					return true;
+				}
 			case CSSConstants.FONT_FAMILY:
 				if (hasFontFamily == false)
 				{
 					hasFontFamily = true;
+				}
+				else
+				{
+					return true;
+				}
+			case CSSConstants.VISIBILITY:
+				if (hasVisible == false)
+				{
+					hasVisible = true;
 				}
 				else
 				{

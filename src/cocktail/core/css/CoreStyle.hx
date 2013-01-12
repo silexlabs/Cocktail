@@ -233,7 +233,60 @@ class CoreStyle
 	 * Wether the element with this core style is left
 	 * or right floated
 	 */
-	public var isFloat(default, null):Bool;
+	public var isFloat:Bool;
+	
+	/**
+	 * Wether the element is inline or block level
+	 */
+	public var isInlineLevel:Bool;
+	
+	/**
+	 * Wether the element has a display computed value
+	 * of inline-block
+	 */
+	public var isInlineBlock:Bool;
+	
+	/**
+	 * Wether the element has a display computed value
+	 * of block
+	 */
+	public var isBlock:Bool;
+	
+	/**
+	 * Wether the element is visible, it still 
+	 * influence layout even if hidden
+	 */
+	public var isVisible:Bool;
+	
+	/**
+	 * Wether the element has a position style 
+	 * different from 'static'
+	 */
+	public var isPositioned:Bool;
+	
+	/**
+	 * Wether the element has a position style
+	 * of 'relative'
+	 */
+	public var isRelativePositioned:Bool;
+	
+	/**
+	 * Wether the element has both an overflow-x
+	 * and overflow-y of 'visible'
+	 */
+	public var canAlwaysOverflow:Bool;
+	
+	/**
+	 * Wether the element is transformed via the
+	 * transform style or with a relative positioning
+	 */
+	public var isTransformed:Bool;
+	
+	/**
+	 * Wether the element has an opacity
+	 * different from 1.0
+	 */
+	public var isTransparent:Bool;
 	
 	/**
 	 * Class constructor
@@ -241,7 +294,18 @@ class CoreStyle
 	public function new(htmlElement:HTMLElement) 
 	{
 		this.htmlElement = htmlElement;
+		
 		isFloat = false;
+		isInlineLevel = false;
+		isInlineBlock = false;
+		isBlock = false;
+		isVisible = false;
+		isPositioned = false;
+		isRelativePositioned = false;
+		canAlwaysOverflow = false;
+		isTransformed = false;
+		isTransparent = false;
+		
 		init();
 	}
 	
@@ -492,10 +556,112 @@ class CoreStyle
 			}
 		}
 		
-		//store wether element is floated
+		//update property flags which need it
+		
 		if (cascadeManager.hasFloat == true)
 		{
 			isFloat = isNone(cssFloat) == false;
+		}
+		
+		if (cascadeManager.hasDisplay == true)
+		{
+			isInlineLevel = false;
+			isInlineBlock = false;
+			isBlock = false;
+			
+			switch (getKeyword(display)) 
+			{
+				case INLINE:
+					isInlineLevel = true;
+					isInlineBlock = false;
+					isBlock = false;
+				
+				case INLINE_BLOCK:
+					isInlineLevel = true;
+					isInlineBlock = true;
+					isBlock = false;
+					
+				case BLOCK:	
+					isBlock = true;
+					isInlineLevel = false;
+					isInlineBlock = false;
+				
+				default:
+			}
+		}
+		
+		if (cascadeManager.hasVisible == true)
+		{
+			isVisible = getKeyword(visibility) != HIDDEN;
+		}
+		
+		if (cascadeManager.hasPosition == true)
+		{
+			switch (getKeyword(position))
+			{
+				case STATIC:
+					isPositioned = false;
+					isRelativePositioned = false;
+					
+				case ABSOLUTE, FIXED:
+					isPositioned = true;
+					isRelativePositioned = false;
+					
+				case RELATIVE:
+					isPositioned = true;
+					isRelativePositioned = true;
+					
+				default:	
+			}
+		}
+		
+		if (cascadeManager.hasOverflowX || cascadeManager.hasOverflowY)
+		{
+			canAlwaysOverflow = true;
+			
+			switch (getKeyword(overflowX))
+			{
+				case VISIBLE:
+					
+				default:
+					canAlwaysOverflow = false;
+			}
+			
+			switch (getKeyword(overflowY))
+			{
+				case VISIBLE:
+					
+				default:
+					canAlwaysOverflow = false;
+			}
+		}
+		
+		if (cascadeManager.hasTransform || cascadeManager.hasPosition)
+		{
+			isTransformed = false;
+			if (isRelativePositioned == true)
+			{
+				isTransformed = true;
+			}
+			else if (isNone(transform) == false)
+			{
+				isTransformed = true;
+			}
+		}
+		
+		if (cascadeManager.hasOpacity == true)
+		{
+			isTransparent = false;
+			switch(opacity)
+			{
+				case CSSPropertyValue.NUMBER(value):
+					isTransparent = value != 1.0;
+					
+				case CSSPropertyValue.ABSOLUTE_LENGTH(value):
+					isTransparent = value != 1.0;
+					
+				default:
+			}
 		}
 	}
 	

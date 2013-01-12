@@ -728,7 +728,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function isPositioned():Bool
 	{
-		return coreStyle.getKeyword(coreStyle.position) != STATIC;
+		return coreStyle.isPositioned;
 	}
 	
 	/**
@@ -747,7 +747,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function isRelativePositioned():Bool
 	{
-		return coreStyle.getKeyword(coreStyle.position) == RELATIVE;
+		return coreStyle.isRelativePositioned;
 	}
 	
 	/**
@@ -762,18 +762,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function isInlineLevel():Bool
 	{
-		var ret:Bool = false;
-		
-		switch (coreStyle.getKeyword(coreStyle.display)) 
-		{
-			case INLINE, INLINE_BLOCK:
-				ret = true;
-			
-			default:
-				ret = false;
-		}
-		
-		return ret;
+		return coreStyle.isInlineLevel;
 	}
 	
 	/**
@@ -813,19 +802,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function isTransformed():Bool
 	{
-		//it is transformed if at least one transform
-		//function is applied to it
-		if (coreStyle.isNone(coreStyle.transform) == false)
-		{
-			return true;
-		}
-		//relative positioning is considered as a transformation
-		else if (isRelativePositioned() == true)
-		{
-			return true;
-		}
-		
-		return false;
+		return coreStyle.isTransformed;
 	}
 	
 	/**
@@ -837,7 +814,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function isVisible():Bool
 	{
-		return coreStyle.getKeyword(coreStyle.visibility) != HIDDEN;
+		return coreStyle.isVisible;
 	}
 	
 	/**
@@ -846,17 +823,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function isTransparent():Bool
 	{
-		switch(coreStyle.opacity)
-		{
-			case CSSPropertyValue.NUMBER(value):
-				return value != 1.0;
-				
-			case CSSPropertyValue.ABSOLUTE_LENGTH(value):
-				return value != 1.0;
-				
-			default:
-				return false;
-		}
+		return coreStyle.isTransparent;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -345,11 +345,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			if (child.layerRenderer == referenceLayer && child.isFloat() == false)
 			{
-				if (child.isReplaced() == false && child.coreStyle.getKeyword(child.coreStyle.display) == CSSKeywordValue.BLOCK )
+				if (child.isReplaced() == false && child.coreStyle.isBlock == true )
 				{
 					renderBlockReplacedChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
 				}
-				else if (child.coreStyle.getKeyword(child.coreStyle.display) == CSSKeywordValue.BLOCK)
+				else if (child.coreStyle.isBlock == true)
 				{
 					child.render(graphicContext, clipRect, scrollOffset);
 				}
@@ -375,7 +375,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{
 				if (child.isFloat() == false 
 				&& child.isReplaced() == false 
-				&& child.coreStyle.getKeyword(child.coreStyle.display) != INLINE_BLOCK 
+				&& child.coreStyle.isInlineBlock == false 
 				&& child.isInlineLevel() == false)
 				{
 					child.render(graphicContext, clipRect, scrollOffset);
@@ -1570,7 +1570,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	override private function rendersAsIfCreateOwnLayer():Bool
 	{
-		if (coreStyle.getKeyword(coreStyle.display) == INLINE_BLOCK)
+		if (coreStyle.isInlineBlock)
 		{
 			return true;
 		}
@@ -1660,22 +1660,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function canAlwaysOverflow():Bool
 	{	
-		switch (coreStyle.getKeyword(coreStyle.overflowX))
-		{
-			case VISIBLE:
-				
-			default:
-				return false;
-		}
-		
-		switch (coreStyle.getKeyword(coreStyle.overflowY))
-		{
-			case VISIBLE:
-				
-			default:
-				return false;
-		}
-		
-		return true;
+		return coreStyle.canAlwaysOverflow;
 	}
 }
