@@ -12,6 +12,7 @@ import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
+import cocktail.core.geom.GeomUtils;
 import cocktail.core.geom.Matrix;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.resource.AbstractResource;
@@ -47,12 +48,19 @@ class BackgroundManager
 	 * Represents the background box, reused
 	 * for each background
 	 */
-	private static var _box:RectangleVO;
+	private static var _box:RectangleVO = new RectangleVO();
 	
 	/**
 	 * Same as above for destination point
 	 */
-	private static var _destinationPoint:PointVO;
+	private static var _destinationPoint:PointVO = new PointVO(0.0, 0.0);
+	
+	/**
+	 * Those bounds are used to determine if the painted background
+	 * intersect with the clip rect, if it doesn't it won't
+	 * be displayed on screen
+	 */
+	private static var _intersectionBounds:RectangleVO = new RectangleVO();
 	
 	/**
 	 * class constructor.
@@ -89,12 +97,37 @@ class BackgroundManager
 		//completely transparent
 		if (style.usedValues.backgroundColor.alpha != 0.0)
 		{
+			
+			_intersectionBounds.x = backgroundBox.x;
+			_intersectionBounds.y = backgroundBox.y;
+			_intersectionBounds.width = backgroundBox.width;
+			_intersectionBounds.height = backgroundBox.height;
+			
+			//determine wether the background box intersect with the clipped rect
+			GeomUtils.intersectBounds(_intersectionBounds, clipRect, _intersectionBounds);
+			if (_intersectionBounds.width == 0 || _intersectionBounds.height == 0)
+			{
+				return;
+			}
+			
 			graphicContext.graphics.fillRect(backgroundBox, style.usedValues.backgroundColor, clipRect);
 		}
 		
 		//if the element has no background image to draw,
 		//early return
 		if (style.hasBackgroundImage == false)
+		{
+			return;
+		}
+		
+		_intersectionBounds.x = backgroundBox.x;
+		_intersectionBounds.y = backgroundBox.y;
+		_intersectionBounds.width = backgroundBox.width;
+		_intersectionBounds.height = backgroundBox.height;
+		
+		//determine wether the background box intersect with the clipped rect
+		GeomUtils.intersectBounds(_intersectionBounds, clipRect, _intersectionBounds);
+		if (_intersectionBounds.width == 0 || _intersectionBounds.height == 0)
 		{
 			return;
 		}
@@ -344,21 +377,11 @@ class BackgroundManager
 		//TODO 3 : doc + separate in 2 methods
 		if ((imageWidth / intrinsicWidth == 1) && (imageHeight / intrinsicHeight == 1))
 		{
-			if (_destinationPoint == null)
-			{
-				_destinationPoint = new PointVO(0.0, 0.0);
-			}
-			
 			_destinationPoint.x = totalWidth + backgroundBox.x - computedBackgroundPosition.x;
 			_destinationPoint.y = totalHeight + backgroundBox.y - computedBackgroundPosition.y;
 				
 			var intWidth:Float = intrinsicWidth;
 			var intHeight:Float = intrinsicHeight;
-			
-			if (_box == null)
-			{
-				_box = new RectangleVO();
-			}
 			
 			_box.x = backgroundPaintingBox.x - computedBackgroundPosition.x;
 			_box.y = backgroundPaintingBox.y - computedBackgroundPosition.y;

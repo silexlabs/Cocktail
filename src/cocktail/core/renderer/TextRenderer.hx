@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
+import cocktail.core.geom.GeomUtils;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
@@ -82,6 +83,11 @@ class TextRenderer extends InvalidatingElementRenderer
 	private var _renderRect:RectangleVO;
 	
 	/**
+	 * A reusable rect used during rendering
+	 */
+	private var _intersectBounds:RectangleVO;
+	
+	/**
 	 * Class constructor.
 	 */
 	public function new(node:HTMLElement) 
@@ -91,6 +97,7 @@ class TextRenderer extends InvalidatingElementRenderer
 		_textNeedsRendering = true;
 		_textTokensNeedParsing = true;
 		_renderRect = new RectangleVO();
+		_intersectBounds = new RectangleVO();
 	}
 		
 	/**
@@ -149,7 +156,17 @@ class TextRenderer extends InvalidatingElementRenderer
 					destPoint.x += inlineBox.lineBox.bounds.x;
 				}
 				
-				graphicContext.graphics.copyPixels(inlineBox.nativeTextBitmap, _renderRect, destPoint, clipRect);
+				_intersectBounds.x = destPoint.x;
+				_intersectBounds.y = destPoint.y;
+				_intersectBounds.width = _renderRect.width;
+				_intersectBounds.height = _renderRect.height;
+				
+				GeomUtils.intersectBounds(_intersectBounds, clipRect, _intersectBounds);
+				
+				if (_intersectBounds.width > 0 && _intersectBounds.height > 0)
+				{
+					graphicContext.graphics.copyPixels(inlineBox.nativeTextBitmap, _renderRect, destPoint, clipRect);
+				}
 			}
 		}
 	}
