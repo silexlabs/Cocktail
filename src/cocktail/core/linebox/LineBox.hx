@@ -112,12 +112,11 @@ class LineBox
 		{
 			if (inlineBox.isSpace() == true)
 			{
-				switch(inlineBox.elementRenderer.coreStyle.getKeyword(inlineBox.elementRenderer.coreStyle.whiteSpace))
+				var inlineBoxCoreStyle:CoreStyle = inlineBox.elementRenderer.coreStyle;
+				if (inlineBoxCoreStyle.hasNormalWhiteSpace == true || inlineBoxCoreStyle.hasPreWrapWhiteSpace == true 
+				|| inlineBoxCoreStyle.hasNoWrapWhiteSpace)
 				{
-					case NORMAL, NO_WRAP, PRE_WRAP:
-						return false;
-						
-					default:	
+					return false;
 				}
 			}
 			
@@ -217,13 +216,12 @@ class LineBox
 			return false;
 		}
 		
+		
 		//pre and no-wrap white space value prevent line breaks
-		switch(inlineBox.elementRenderer.coreStyle.getKeyword(inlineBox.elementRenderer.coreStyle.whiteSpace))
+		var inlineBoxCoreStyle:CoreStyle = inlineBox.elementRenderer.coreStyle;
+		if (inlineBoxCoreStyle.hasPreWhiteSpace == true || inlineBoxCoreStyle.hasNoWrapWhiteSpace == true)
 		{
-			case PRE, NO_WRAP:
-				return false;
-				
-			default:	
+			return false;
 		}
 		
 		return true;
@@ -313,13 +311,16 @@ class LineBox
 			//if child is a space with the right white space, remove it
 			if (child.isSpace() == true)
 			{
-				switch(child.elementRenderer.coreStyle.getKeyword(child.elementRenderer.coreStyle.whiteSpace))
+				var inlineBoxCoreStyle:CoreStyle = child.elementRenderer.coreStyle;
+				if (inlineBoxCoreStyle.hasNormalWhiteSpace == true ||
+				inlineBoxCoreStyle.hasNoWrapWhiteSpace == true || 
+				inlineBoxCoreStyle.hasPreLineWhiteSpace == true)
 				{
-					case NORMAL, NO_WRAP, PRE_LINE:
-						child.parentNode.removeChild(child);
-					
-					default:
-						return false;
+					child.parentNode.removeChild(child);
+				}
+				else
+				{
+					return false;
 				}
 			}
 			//else stop removing spaces
@@ -702,49 +703,55 @@ class LineBox
 		while (child != null)
 		{
 			var childCoreStyle:CoreStyle = child.elementRenderer.coreStyle;
-			//y position depends on the vertical alignement
-			switch(childCoreStyle.verticalAlign)
+			
+			//first check if baseline aligned, most common case
+			if (childCoreStyle.isBaselineAligned == true)
 			{
-				case KEYWORD(value):
-					switch(value)
-					{
-						//align baseline of child to baseline of parent
-						case BASELINE:
-							var yOffset:Float = childCoreStyle.fontMetrics.ascent - inlineBox.elementRenderer.coreStyle.fontMetrics.ascent;
-							child.offsetFromParentInlineBox.y = -yOffset;
-						
-						//align the vertical mid-point of the child to the
-						//baseline of the parent + half its x-height
-						case MIDDLE:
-							var yOffset:Float = (childCoreStyle.fontMetrics.ascent + (child.bounds.height / 2)) - (inlineBox.leadedAscent + (inlineBox.elementRenderer.coreStyle.fontMetrics.xHeight / 2));
-							child.offsetFromParentInlineBox.y = -yOffset;
-							
-						case TEXT_BOTTOM:
-							//TODO
-						case TEXT_TOP:
-							//TODO
-						case SUB:
-							//TODO
-						case SUPER:	
-							//TODO
-							
-						//top and bottom inline box can only 
-						//be aligned once the line box height is known
-						case TOP, BOTTOM:	
-							child.offsetFromParentInlineBox.y = 0;
-							
-						default:	
-					}
-					
-				case ABSOLUTE_LENGTH(value):
-					var offsetFromBaseline:Float = childCoreStyle.fontMetrics.ascent - inlineBox.elementRenderer.coreStyle.fontMetrics.ascent;
-					child.offsetFromParentInlineBox.y = -value;
-					
-				case PERCENTAGE(value):
-					
-				default:	
-					
+				var yOffset:Float = childCoreStyle.fontMetrics.ascent - inlineBox.elementRenderer.coreStyle.fontMetrics.ascent;
+				child.offsetFromParentInlineBox.y = -yOffset;
 			}
+			else
+			{
+				//y position depends on the vertical alignement
+				switch(childCoreStyle.verticalAlign)
+				{
+					case KEYWORD(value):
+						switch(value)
+						{
+							//align the vertical mid-point of the child to the
+							//baseline of the parent + half its x-height
+							case MIDDLE:
+								var yOffset:Float = (childCoreStyle.fontMetrics.ascent + (child.bounds.height / 2)) - (inlineBox.leadedAscent + (inlineBox.elementRenderer.coreStyle.fontMetrics.xHeight / 2));
+								child.offsetFromParentInlineBox.y = -yOffset;
+								
+							case TEXT_BOTTOM:
+								//TODO
+							case TEXT_TOP:
+								//TODO
+							case SUB:
+								//TODO
+							case SUPER:	
+								//TODO
+								
+							//top and bottom inline box can only 
+							//be aligned once the line box height is known
+							case TOP, BOTTOM:	
+								child.offsetFromParentInlineBox.y = 0;
+								
+							default:	
+						}
+						
+					case ABSOLUTE_LENGTH(value):
+						var offsetFromBaseline:Float = childCoreStyle.fontMetrics.ascent - inlineBox.elementRenderer.coreStyle.fontMetrics.ascent;
+						child.offsetFromParentInlineBox.y = -value;
+						
+					case PERCENTAGE(value):
+						
+					default:	
+						
+				}
+			}
+			
 			
 			//update the child if the child inline box is a non-replaced inline
 			//box with children

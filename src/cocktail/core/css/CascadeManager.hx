@@ -74,6 +74,10 @@ class CascadeManager
 	
 	public var hasVerticalAlign(default, null):Bool;
 	
+	public var hasClear(default, null):Bool;
+	
+	public var hasWhiteSpace(default, null):Bool;
+	
 	/**
 	 * class constructor
 	 */
@@ -110,6 +114,8 @@ class CascadeManager
 		hasOpacity = false;
 		hasBackgroundImage = false;
 		hasVerticalAlign = false;
+		hasClear = false;
+		hasWhiteSpace = false;
 		
 		hasPropertiesToCascade = false;
 		cascadeAll = false;
@@ -185,6 +191,25 @@ class CascadeManager
 				}
 				//here the property already was
 				//added
+				else
+				{
+					return true;
+				}
+				
+			case CSSConstants.CLEAR:
+				if (hasClear == false)
+				{
+					hasClear = true;
+				}
+				else
+				{
+					return true;
+				}
+			case CSSConstants.WHITE_SPACE:
+				if (hasWhiteSpace == false)
+				{
+					hasWhiteSpace = true;
+				}
 				else
 				{
 					return true;

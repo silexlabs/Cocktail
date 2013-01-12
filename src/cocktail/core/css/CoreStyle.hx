@@ -307,6 +307,48 @@ class CoreStyle
 	public var isBottomAligned:Bool;
 	
 	/**
+	 * Wether the element's vertical align
+	 * style is baseline
+	 */
+	public var isBaselineAligned:Bool;
+	
+	/**
+	 * Wether the element has not 'none'
+	 * for clear style
+	 */
+	public var canHaveClearance:Bool;
+	
+	/**
+	 * Wether the white space style is 
+	 * 'pre'
+	 */
+	public var hasPreWhiteSpace:Bool;
+	
+	/**
+	 * Wether the white space style is 
+	 * 'no-wrap'
+	 */
+	public var hasNoWrapWhiteSpace:Bool;
+	
+	/**
+	 * Wether the white space style is 
+	 * 'pre-line'
+	 */
+	public var hasPreLineWhiteSpace:Bool;
+	
+	/**
+	 * Wether the white space style is 
+	 * 'pre-wrap'
+	 */
+	public var hasPreWrapWhiteSpace:Bool;
+	
+	/**
+	 * Wether the white space style is 
+	 * 'normal'
+	 */
+	public var hasNormalWhiteSpace:Bool;
+	
+	/**
 	 * Class constructor
 	 */
 	public function new(htmlElement:HTMLElement) 
@@ -326,6 +368,13 @@ class CoreStyle
 		hasBackgroundImage = false;
 		isTopAligned = false;
 		isBottomAligned = false;
+		isBaselineAligned = false;
+		canHaveClearance = false;
+		hasPreWhiteSpace = false;
+		hasNoWrapWhiteSpace = false;
+		hasNormalWhiteSpace = false;
+		hasPreLineWhiteSpace = false;
+		hasPreWrapWhiteSpace = false;
 		
 		init();
 	}
@@ -694,6 +743,7 @@ class CoreStyle
 		{
 			isTopAligned = false;
 			isBottomAligned = false;
+			isBaselineAligned = false;
 			
 			switch(verticalAlign)
 			{
@@ -706,8 +756,45 @@ class CoreStyle
 						case BOTTOM:
 							isBottomAligned = true;
 							
+						case BASELINE:
+							isBaselineAligned = true;
+							
 						default:	
 					}
+					
+				default:	
+			}
+		}
+		
+		if (cascadeManager.hasClear == true)
+		{
+			canHaveClearance = isNone(clear) == false;
+		}
+		
+		if (cascadeManager.hasWhiteSpace == true)
+		{
+			hasPreLineWhiteSpace = false;
+			hasPreWhiteSpace = false;
+			hasNoWrapWhiteSpace = false;
+			hasNormalWhiteSpace = false;
+			hasPreWrapWhiteSpace = false;
+			
+			switch(getKeyword(whiteSpace))
+			{
+				case PRE:
+					hasPreWhiteSpace = true;
+					
+				case PRE_LINE:
+					hasPreLineWhiteSpace = true;
+					
+				case PRE_WRAP:
+					hasPreWrapWhiteSpace = true;
+					
+				case NO_WRAP:
+					hasNoWrapWhiteSpace = true;
+					
+				case NORMAL:
+					hasNormalWhiteSpace = true;
 					
 				default:	
 			}

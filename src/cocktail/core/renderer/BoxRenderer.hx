@@ -704,7 +704,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function canHaveClearance():Bool
 	{	
-		return coreStyle.isNone(coreStyle.clear) == false;
+		return coreStyle.canHaveClearance;
 	}
 	
 	/**
