@@ -52,11 +52,6 @@ class LineBox
 	
 	public function new(elementRenderer:ElementRenderer, availableWidth:Float, isFirstLine:Bool, layoutState:LayoutStateValue) 
 	{
-		init(elementRenderer, availableWidth, isFirstLine, layoutState);
-	}
-	
-	private function init(elementRenderer:ElementRenderer, availableWidth:Float, isFirstLine:Bool, layoutState:LayoutStateValue):Void
-	{
 		_availableWidth = availableWidth;
 		_isFirstLine = isFirstLine;
 		_elementRenderer = elementRenderer;
@@ -368,13 +363,16 @@ class LineBox
 			//if child is a space with the right white space, add its width
 			if (child.isSpace() == true)
 			{
-				switch(child.elementRenderer.coreStyle.getKeyword(child.elementRenderer.coreStyle.whiteSpace))
+				var inlineBoxCoreStyle:CoreStyle = child.elementRenderer.coreStyle;
+				if (inlineBoxCoreStyle.hasNormalWhiteSpace == true ||
+				inlineBoxCoreStyle.hasNoWrapWhiteSpace == true || 
+				inlineBoxCoreStyle.hasPreLineWhiteSpace == true)
 				{
-					case NORMAL, NO_WRAP, PRE_LINE:
-						_trailingSpaceWidth += child.bounds.width;
-					
-					default:
-						return false;
+					_trailingSpaceWidth += child.bounds.width;
+				}
+				else
+				{
+					return false;
 				}
 			}
 			//else stop adding width

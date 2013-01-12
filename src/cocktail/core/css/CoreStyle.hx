@@ -349,6 +349,16 @@ class CoreStyle
 	public var hasNormalWhiteSpace:Bool;
 	
 	/**
+	 * Wether the width style has a 'auto' value
+	 */
+	public var hasAutoWidth:Bool;
+	
+	/**
+	 * Wether the height style has a 'auto' value
+	 */
+	public var hasAutoHeight:Bool;
+	
+	/**
 	 * Class constructor
 	 */
 	public function new(htmlElement:HTMLElement) 
@@ -375,6 +385,8 @@ class CoreStyle
 		hasNormalWhiteSpace = false;
 		hasPreLineWhiteSpace = false;
 		hasPreWrapWhiteSpace = false;
+		hasAutoHeight = false;
+		hasAutoWidth = false;
 		
 		init();
 	}
@@ -798,6 +810,16 @@ class CoreStyle
 					
 				default:	
 			}
+		}
+		
+		if (cascadeManager.hasWidth == true)
+		{
+			hasAutoWidth = isAuto(width);
+		}
+		
+		if (cascadeManager.hasHeight == true)
+		{
+			hasAutoHeight = isAuto(height);
 		}
 	}
 	
@@ -1425,18 +1447,26 @@ class CoreStyle
 	 */
 	private inline function getTransitionablePropertyValue(propertyName:String):CSSPropertyValue
 	{
-		//try to get a transition for the property
-		var transition:Transition = _transitionManager.getTransition(propertyName, this);
-		//if there actually is a transition in progress for this property,
-		//return its current value
-		if (transition != null)
-		{
-			return ABSOLUTE_LENGTH(transition.currentValue);
-		}
-		//else return the computed value for the given property
-		else
+		//shortcut if there are not any transitions in progress
+		if (_transitionManager.hasTransitionsInProgress == false)
 		{
 			return computedValues.getTypedProperty(propertyName).typedValue;
+		}
+		else
+		{
+			//try to get a transition for the property
+			var transition:Transition = _transitionManager.getTransition(propertyName, this);
+			//if there actually is a transition in progress for this property,
+			//return its current value
+			if (transition != null)
+			{
+				return ABSOLUTE_LENGTH(transition.currentValue);
+			}
+			//else return the computed value for the given property
+			else
+			{
+				return computedValues.getTypedProperty(propertyName).typedValue;
+			}
 		}
 	}
 	

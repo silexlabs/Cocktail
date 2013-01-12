@@ -537,7 +537,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//absolutely positioned element with not auto left and right style don't use shrink-to-fit width
 		//if the layout state is not normal, shrink to fit might also be applied to block box which haven't auto width
 		//but which still needs to compute their shrink-yo-fit width for their ancestor block formatting context
-		if (establishesNewBlockFormattingContext() == true && (coreStyle.isAuto(coreStyle.width) == true || layoutState != NORMAL) && isAutoWidthAbsolutelyPositionedWithNotAutoLeftAndRight() == false)
+		if (establishesNewBlockFormattingContext() == true && (coreStyle.hasAutoWidth == true || layoutState != NORMAL) && isAutoWidthAbsolutelyPositionedWithNotAutoLeftAndRight() == false)
 		{
 			//first prefered minimum width is found by laying out children by breaking line
 			//at all possible line breaks
@@ -550,7 +550,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//in the case where this block has not an auto width, if its own width
 			//is superior to the maximum width of its content, use its own width
 			//instead
-			if (coreStyle.isAuto(coreStyle.width) == false)
+			if (coreStyle.hasAutoWidth == false)
 			{
 				if (bounds.width > preferedMinimumWidth)
 				{

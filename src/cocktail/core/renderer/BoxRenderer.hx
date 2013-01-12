@@ -875,9 +875,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 	public function getContainerBlockData():ContainingBlockVO
 	{
 		_containerBlockData.width = coreStyle.usedValues.width;
-		_containerBlockData.isWidthAuto = coreStyle.isAuto(coreStyle.width);
+		_containerBlockData.isWidthAuto = coreStyle.hasAutoWidth;
 		_containerBlockData.height = coreStyle.usedValues.height;
-		_containerBlockData.isHeightAuto = coreStyle.isAuto(coreStyle.height);
+		_containerBlockData.isHeightAuto = coreStyle.hasAutoHeight;
 		return _containerBlockData;
 	}
 	

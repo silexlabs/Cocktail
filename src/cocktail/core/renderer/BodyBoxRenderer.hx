@@ -49,7 +49,7 @@ class BodyBoxRenderer extends BlockBoxRenderer
 		
 		super.layoutSelfIfNeeded(forceLayout);
 		
-		if (coreStyle.isAuto(coreStyle.height) == true && (isPositioned() == false || isRelativePositioned() == true))
+		if (coreStyle.hasAutoHeight == true && (isPositioned() == false || isRelativePositioned() == true))
 		{
 			var usedValues:UsedValuesVO = coreStyle.usedValues;
 			usedValues.height = containingBlock.getContainerBlockData().height - usedValues.marginTop - usedValues.marginBottom
@@ -91,7 +91,7 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	{
 		super.getContainerBlockData();
 		
-		if (coreStyle.isAuto(coreStyle.height) == true && (isPositioned() == false || isRelativePositioned() == true))
+		if (coreStyle.hasAutoHeight == true && (isPositioned() == false || isRelativePositioned() == true))
 		{
 			_containerBlockData.isHeightAuto = false;
 		}

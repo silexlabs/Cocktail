@@ -67,6 +67,13 @@ class TransitionManager
 	private var _currentTransitionsNumber:Int;
 	
 	/**
+	 * Wether at least one animation is in progress.
+	 * Meant to provide fast access to this info 
+	 * to exterior classes
+	 */
+	public var hasTransitionsInProgress:Bool;
+	
+	/**
 	 * The timestamp of the last tick of the update Timer.
 	 * Stored to compensate the elapsed time when the time between
 	 * two timer tick was longer than intended
@@ -81,6 +88,7 @@ class TransitionManager
 	{
 		_transitions = new Array<TransitionsVO>();
 		_currentTransitionsNumber = 0;
+		hasTransitionsInProgress = false;
 		_lastTick = 0;
 	}
 	
@@ -109,13 +117,6 @@ class TransitionManager
 	 */
 	public function getTransition(propertyName:String, style:CoreStyle):Transition
 	{
-		//shortcut, return null if no transition
-		//are currently in progress
-		if (_currentTransitionsNumber == 0)
-		{
-			return null;
-		}
-		
 		//get all the transitions in progress for the given property name
 		var transitionsForProperty:Array<Transition> = getTransitionsForProperty(propertyName);
 		if (transitionsForProperty == null)
@@ -170,6 +171,7 @@ class TransitionManager
 		if (_currentTransitionsNumber == 0)
 		{
 			startTransitionUpdate();
+			hasTransitionsInProgress = true;
 		}
 		
 		//increment the number of transition in progress
@@ -296,6 +298,10 @@ class TransitionManager
 		if (_currentTransitionsNumber > 0)
 		{
 			Lib.document.timer.delay(onTransitionTick);
+		}
+		else
+		{
+			hasTransitionsInProgress = false;
 		}
 	}
 	

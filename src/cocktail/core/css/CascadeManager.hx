@@ -78,6 +78,10 @@ class CascadeManager
 	
 	public var hasWhiteSpace(default, null):Bool;
 	
+	public var hasWidth(default, null):Bool;
+	
+	public var hasHeight(default, null):Bool;
+	
 	/**
 	 * class constructor
 	 */
@@ -116,6 +120,8 @@ class CascadeManager
 		hasVerticalAlign = false;
 		hasClear = false;
 		hasWhiteSpace = false;
+		hasWidth = false;
+		hasHeight = false;
 		
 		hasPropertiesToCascade = false;
 		cascadeAll = false;
@@ -196,6 +202,24 @@ class CascadeManager
 					return true;
 				}
 				
+			case CSSConstants.WIDTH:
+				if (hasWidth == false)
+				{
+					hasWidth = true;
+				}
+				else
+				{
+					return true;
+				}
+			case CSSConstants.HEIGHT:
+				if (hasHeight == false)
+				{
+					hasHeight = true;
+				}
+				else
+				{
+					return true;
+				}	
 			case CSSConstants.CLEAR:
 				if (hasClear == false)
 				{

@@ -182,7 +182,7 @@ class BoxStylesComputer
 	 */
 	private function measureWidthAndHorizontalMargins(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
-		if (style.isAuto(style.width) == true)
+		if (style.hasAutoWidth == true)
 		{
 			return measureAutoWidth(style, containingBlockData);
 		}
@@ -251,7 +251,7 @@ class BoxStylesComputer
 		//the height might be null at this point if it must take the content size
 		//it will be set once all its children HTMLElements have been laid out
 		
-		if (style.isAuto(style.height) == true)
+		if (style.hasAutoHeight == true)
 		{
 			return measureAutoHeight(style, containingBlockData);
 		}
@@ -362,33 +362,33 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the left margin and return it as pixels
 	 */
-	private function getComputedMarginLeft(style:CoreStyle, computedWidth:Float, containingBlockData:ContainingBlockVO):Float
+	private inline function getComputedMarginLeft(style:CoreStyle, computedWidth:Float, containingBlockData:ContainingBlockVO):Float
 	{
-		return getComputedMargin(style.marginLeft, style.marginRight, containingBlockData.width, computedWidth, style.isAuto(style.width), style.usedValues.paddingRight + style.usedValues.paddingLeft, true );
+		return getComputedMargin(style.marginLeft, style.marginRight, containingBlockData.width, computedWidth, style.hasAutoWidth, style.usedValues.paddingRight + style.usedValues.paddingLeft, true );
 	}
 	
 	/**
 	 * Compute the size of the right margin and return it as pixels
 	 */
-	private function getComputedMarginRight(style:CoreStyle, computedWidth:Float, containingBlockData:ContainingBlockVO):Float
+	private inline function getComputedMarginRight(style:CoreStyle, computedWidth:Float, containingBlockData:ContainingBlockVO):Float
 	{
-		return getComputedMargin(style.marginRight, style.marginLeft, containingBlockData.width, computedWidth, style.isAuto(style.width), style.usedValues.paddingRight + style.usedValues.paddingLeft, true  );
+		return getComputedMargin(style.marginRight, style.marginLeft, containingBlockData.width, computedWidth, style.hasAutoWidth, style.usedValues.paddingRight + style.usedValues.paddingLeft, true  );
 	}
 	 
 	/**
 	 * Compute the size of the top margin and return it as pixels
 	 */
-	private function getComputedMarginTop(style:CoreStyle, computedHeight:Float, containingBlockData:ContainingBlockVO):Float
+	private inline function getComputedMarginTop(style:CoreStyle, computedHeight:Float, containingBlockData:ContainingBlockVO):Float
 	{
-		return getComputedMargin(style.marginTop, style.marginBottom, containingBlockData.height, computedHeight, style.isAuto(style.height), style.usedValues.paddingTop + style.usedValues.paddingBottom, false  );
+		return getComputedMargin(style.marginTop, style.marginBottom, containingBlockData.height, computedHeight, style.hasAutoHeight, style.usedValues.paddingTop + style.usedValues.paddingBottom, false  );
 	}
 	
 	/**
 	 * Compute the size of the bottom margin and return it as pixels
 	 */
-	private function getComputedMarginBottom(style:CoreStyle, computedHeight:Float, containingBlockData:ContainingBlockVO):Float
+	private inline function getComputedMarginBottom(style:CoreStyle, computedHeight:Float, containingBlockData:ContainingBlockVO):Float
 	{
-		return getComputedMargin(style.marginBottom, style.marginTop, containingBlockData.height, computedHeight, style.isAuto(style.height), style.usedValues.paddingTop + style.usedValues.paddingBottom, false  );
+		return getComputedMargin(style.marginBottom, style.marginTop, containingBlockData.height, computedHeight, style.hasAutoHeight, style.usedValues.paddingTop + style.usedValues.paddingBottom, false  );
 	}
 	
 	/**
@@ -409,7 +409,7 @@ class BoxStylesComputer
 	private function getComputedMargin(marginStyleValue:CSSPropertyValue, opositeMargin:CSSPropertyValue, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, isHorizontalMargin:Bool):Float
 	{
 		//the return value
-		var usedMargin:Float;
+		var usedMargin:Float = 0;
 		
 		//check which type of value is defined
 		switch (marginStyleValue)
