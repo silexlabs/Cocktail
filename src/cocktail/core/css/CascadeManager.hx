@@ -72,6 +72,8 @@ class CascadeManager
 	
 	public var hasBackgroundImage(default, null):Bool;
 	
+	public var hasVerticalAlign(default, null):Bool;
+	
 	/**
 	 * class constructor
 	 */
@@ -107,6 +109,7 @@ class CascadeManager
 		hasVisible = false;
 		hasOpacity = false;
 		hasBackgroundImage = false;
+		hasVerticalAlign = false;
 		
 		hasPropertiesToCascade = false;
 		cascadeAll = false;
@@ -195,7 +198,15 @@ class CascadeManager
 				{
 					return true;
 				}
-				
+			case CSSConstants.VERTICAL_ALIGN:
+				if (hasVerticalAlign == false)
+				{
+					hasVerticalAlign = true;
+				}
+				else
+				{
+					return true;
+				}
 			case CSSConstants.LINE_HEIGHT:
 				if (hasLineHeight == false)
 				{

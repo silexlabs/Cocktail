@@ -100,6 +100,12 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	private var _fillRectRectangle:RectangleVO;
 	
 	/**
+	 * A resusable rectangle used as clip rect for
+	 * fillRect rectangle
+	 */
+	private var _clippedRectRectangle:RectangleVO;
+	
+	/**
 	 * A reuseable point used for fillRect rectangle
 	 */
 	private static var _fillRectPoint:PointVO;
@@ -128,6 +134,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			_fillRectRectangle = new RectangleVO();
 			_fillRectPoint = new PointVO(0.0, 0.0);
 			_flashColorTransform = new ColorTransform();
+			_clippedRectRectangle = new RectangleVO();
 		}
 		
 		_isClear = true;
@@ -368,25 +375,23 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		//else, the faster native flash method can be used
 		else
 		{
-			
-			var clippedRect:RectangleVO = new RectangleVO();
-			clippedRect.x  = rect.x;
-			clippedRect.y  = rect.y;
-			clippedRect.width  = rect.width;
-			clippedRect.height  = rect.height;
+			_clippedRectRectangle.x  = rect.x;
+			_clippedRectRectangle.y  = rect.y;
+			_clippedRectRectangle.width  = rect.width;
+			_clippedRectRectangle.height  = rect.height;
 			
 			if (_useTransformations == true)
 			{
-				clippedRect.x += _matrix.e;
-				clippedRect.y += _matrix.f;
+				_clippedRectRectangle.x += _matrix.e;
+				_clippedRectRectangle.y += _matrix.f;
 			}
 			
-			GeomUtils.intersectBounds(clippedRect, clipRect, clippedRect);
+			GeomUtils.intersectBounds(_clippedRectRectangle, clipRect, _clippedRectRectangle);
 			
-			_flashRectangle.x = Math.round(clippedRect.x);
-			_flashRectangle.y = Math.round(clippedRect.y);
-			_flashRectangle.width = Math.round(clippedRect.width);
-			_flashRectangle.height = Math.round(clippedRect.height);
+			_flashRectangle.x = Math.round(_clippedRectRectangle.x);
+			_flashRectangle.y = Math.round(_clippedRectRectangle.y);
+			_flashRectangle.width = Math.round(_clippedRectRectangle.width);
+			_flashRectangle.height = Math.round(_clippedRectRectangle.height);
 			
 			_nativeBitmap.bitmapData.fillRect(_flashRectangle, argbColor);
 			

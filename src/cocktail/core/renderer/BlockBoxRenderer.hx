@@ -1487,41 +1487,31 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	override public function establishesNewBlockFormattingContext():Bool
 	{
-		var establishesNewBlockFormattingContext:Bool = false;
-		
 		//floats always establishes new block formatting context
-		if (isFloat() == true)
+		if (coreStyle.isFloat == true)
 		{
-			establishesNewBlockFormattingContext = true;
+			return true;
 		}
 		//block box renderer which may hide their overflowing
 		//children always start a new block formatting context
-		else if (canAlwaysOverflow() == false)
+		else if (coreStyle.canAlwaysOverflow == false)
 		{
-			establishesNewBlockFormattingContext = true;
+			return true;
 		}
 		//positioned element which are not relative always establishes new block context
-		else if (isPositioned() == true && isRelativePositioned() == false)
+		else if (coreStyle.isPositioned == true && coreStyle.isRelativePositioned == false)
 		{
-			establishesNewBlockFormattingContext = true;
+			return true;
 		}
-		else
+		else if (coreStyle.isInlineBlock == true)
 		{
-			switch (coreStyle.getKeyword(coreStyle.display))
-			{
-				//element with an inline-block display style
-				//always establishes a new block formatting context
-				case INLINE_BLOCK:
-				establishesNewBlockFormattingContext = true; 
-		
-				default:
-			}
+			return true;
 		}
 		
 		//in the other cases, the block particpates in its parent's
 		//block formatting context
 		
-		return establishesNewBlockFormattingContext;
+		return false;
 	}
 	
 	override public function isBlockContainer():Bool

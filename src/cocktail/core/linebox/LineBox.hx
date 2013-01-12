@@ -1,4 +1,5 @@
 package cocktail.core.linebox;
+import cocktail.core.css.CoreStyle;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.linebox.InlineBox;
 import cocktail.core.renderer.ElementRenderer;
@@ -686,21 +687,22 @@ class LineBox
 		var child:InlineBox = inlineBox.firstChild;
 		while (child != null)
 		{
+			var childCoreStyle:CoreStyle = child.elementRenderer.coreStyle;
 			//y position depends on the vertical alignement
-			switch(child.elementRenderer.coreStyle.verticalAlign)
+			switch(childCoreStyle.verticalAlign)
 			{
 				case KEYWORD(value):
 					switch(value)
 					{
 						//align baseline of child to baseline of parent
 						case BASELINE:
-							var yOffset:Float = child.elementRenderer.coreStyle.fontMetrics.ascent - inlineBox.elementRenderer.coreStyle.fontMetrics.ascent;
+							var yOffset:Float = childCoreStyle.fontMetrics.ascent - inlineBox.elementRenderer.coreStyle.fontMetrics.ascent;
 							child.offsetFromParentInlineBox.y = -yOffset;
 						
 						//align the vertical mid-point of the child to the
 						//baseline of the parent + half its x-height
 						case MIDDLE:
-							var yOffset:Float = (child.elementRenderer.coreStyle.fontMetrics.ascent + (child.bounds.height / 2)) - (inlineBox.leadedAscent + (inlineBox.elementRenderer.coreStyle.fontMetrics.xHeight / 2));
+							var yOffset:Float = (childCoreStyle.fontMetrics.ascent + (child.bounds.height / 2)) - (inlineBox.leadedAscent + (inlineBox.elementRenderer.coreStyle.fontMetrics.xHeight / 2));
 							child.offsetFromParentInlineBox.y = -yOffset;
 							
 						case TEXT_BOTTOM:
@@ -721,7 +723,7 @@ class LineBox
 					}
 					
 				case ABSOLUTE_LENGTH(value):
-					var offsetFromBaseline:Float = child.elementRenderer.coreStyle.fontMetrics.ascent - inlineBox.elementRenderer.coreStyle.fontMetrics.ascent;
+					var offsetFromBaseline:Float = childCoreStyle.fontMetrics.ascent - inlineBox.elementRenderer.coreStyle.fontMetrics.ascent;
 					child.offsetFromParentInlineBox.y = -value;
 					
 				case PERCENTAGE(value):
@@ -904,21 +906,7 @@ class LineBox
 	 */
 	private function isTopOrBottomAligned(inlineBox:InlineBox):Bool
 	{
-		switch(inlineBox.elementRenderer.coreStyle.verticalAlign)
-		{
-			case KEYWORD(value):
-				switch(value)
-				{
-					case TOP, BOTTOM:	
-						return true;
-						
-					default:	
-				}
-				
-			default:	
-		}
-		
-		return false;
+		return (inlineBox.elementRenderer.coreStyle.isBottomAligned == true || inlineBox.elementRenderer.coreStyle.isTopAligned);
 	}
 	
 	/**
@@ -927,21 +915,7 @@ class LineBox
 	 */
 	private function isTopAligned(inlineBox:InlineBox):Bool
 	{
-		switch(inlineBox.elementRenderer.coreStyle.verticalAlign)
-		{
-			case KEYWORD(value):
-				switch(value)
-				{
-					case TOP:	
-						return true;
-						
-					default:	
-				}
-				
-			default:	
-		}
-		
-		return false;
+		return inlineBox.elementRenderer.coreStyle.isTopAligned;
 	}
 	
 	/**
@@ -950,21 +924,7 @@ class LineBox
 	 */
 	private function isBottomAligned(inlineBox:InlineBox):Bool
 	{
-		switch(inlineBox.elementRenderer.coreStyle.verticalAlign)
-		{
-			case KEYWORD(value):
-				switch(value)
-				{
-					case BOTTOM:	
-						return true;
-						
-					default:	
-				}
-				
-			default:	
-		}
-		
-		return false;
+		return inlineBox.elementRenderer.coreStyle.isBottomAligned;
 	}
 	
 	/**

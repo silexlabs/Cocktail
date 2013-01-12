@@ -295,6 +295,18 @@ class CoreStyle
 	public var hasBackgroundImage:Bool;
 	
 	/**
+	 * Wether the element's vertical align
+	 * style is top
+	 */
+	public var isTopAligned:Bool;
+	
+	/**
+	 * Wether the element's vertical align
+	 * style is bottom
+	 */
+	public var isBottomAligned:Bool;
+	
+	/**
 	 * Class constructor
 	 */
 	public function new(htmlElement:HTMLElement) 
@@ -312,6 +324,8 @@ class CoreStyle
 		isTransformed = false;
 		isTransparent = false;
 		hasBackgroundImage = false;
+		isTopAligned = false;
+		isBottomAligned = false;
 		
 		init();
 	}
@@ -674,6 +688,29 @@ class CoreStyle
 		if (cascadeManager.hasBackgroundImage == true)
 		{
 			hasBackgroundImage = isNone(backgroundImage) == false;
+		}
+		
+		if (cascadeManager.hasVerticalAlign == true)
+		{
+			isTopAligned = false;
+			isBottomAligned = false;
+			
+			switch(verticalAlign)
+			{
+				case KEYWORD(value):
+					switch(value)
+					{
+						case TOP:	
+							isTopAligned = true;
+							
+						case BOTTOM:
+							isBottomAligned = true;
+							
+						default:	
+					}
+					
+				default:	
+			}
 		}
 	}
 	
