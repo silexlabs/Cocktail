@@ -38,6 +38,10 @@ class LineBox
 	
 	private var _layoutState:LayoutStateValue;
 	
+	private var _childBounds:RectangleVO;
+	
+	private var _lineBoxesBounds:RectangleVO;
+	
 	/**
 	 * Store the current width of all the
 	 * spaces that would be removed if
@@ -47,6 +51,11 @@ class LineBox
 	private var _trailingSpaceWidth:Float;
 	
 	public function new(elementRenderer:ElementRenderer, availableWidth:Float, isFirstLine:Bool, layoutState:LayoutStateValue) 
+	{
+		init(elementRenderer, availableWidth, isFirstLine, layoutState);
+	}
+	
+	private function init(elementRenderer:ElementRenderer, availableWidth:Float, isFirstLine:Bool, layoutState:LayoutStateValue):Void
 	{
 		_availableWidth = availableWidth;
 		_isFirstLine = isFirstLine;
@@ -61,6 +70,8 @@ class LineBox
 		
 		rootInlineBox = new InlineBox(elementRenderer);
 		bounds = new RectangleVO();
+		_childBounds = new RectangleVO();
+		_lineBoxesBounds = new RectangleVO();
 	}
 	
 	public function addUnbreakableWidth(width:Float):Void
@@ -602,11 +613,15 @@ class LineBox
 	{
 		updateOffsetFromParentInlineBox(rootInlineBox);
 		
-		var lineBoxBounds:RectangleVO = new RectangleVO();
-		lineBoxBounds.height = _elementRenderer.coreStyle.usedValues.lineHeight;
+		_lineBoxesBounds.x = 0;
+		_lineBoxesBounds.y = 0;
+		_lineBoxesBounds.width = 0;
+		_lineBoxesBounds.height = 0;
 		
-		getLineBoxHeight(rootInlineBox, lineBoxBounds, 0);
-		var lineBoxHeight:Float = lineBoxBounds.height;
+		_lineBoxesBounds.height = _elementRenderer.coreStyle.usedValues.lineHeight;
+		
+		getLineBoxHeight(rootInlineBox, _lineBoxesBounds, 0);
+		var lineBoxHeight:Float = _lineBoxesBounds.height;
 		
 		updateOffsetFromLineBox(rootInlineBox, lineBoxHeight, 0);
 		
@@ -659,13 +674,12 @@ class LineBox
 		while (child != null)
 		{
 			//should use margin bounds of the children
-			var childBounds:RectangleVO = new RectangleVO();
-			childBounds.x = child.bounds.x - child.marginLeft;
-			childBounds.y = child.bounds.y;
-			childBounds.width = child.bounds.width + child.marginRight + child.marginLeft;
-			childBounds.height = child.bounds.height;
+			_childBounds.x = child.bounds.x - child.marginLeft;
+			_childBounds.y = child.bounds.y;
+			_childBounds.width = child.bounds.width + child.marginRight + child.marginLeft;
+			_childBounds.height = child.bounds.height;
 			
-			GeomUtils.addBounds(childBounds, inlineBox.bounds);
+			GeomUtils.addBounds(_childBounds, inlineBox.bounds);
 			child = child.nextSibling;
 		}
 		
@@ -879,11 +893,15 @@ class LineBox
 			}
 			else 
 			{
-				var childBounds:RectangleVO = new RectangleVO();
-				childBounds.y = child.offsetFromParentInlineBox.y + addedY;
-				childBounds.height = child.bounds.height;
+				_childBounds.x = 0;
+				_childBounds.y = 0;
+				_childBounds.width = 0;
+				_childBounds.height = 0;
 				
-				GeomUtils.addBounds(childBounds, lineBoxBounds);
+				_childBounds.y = child.offsetFromParentInlineBox.y + addedY;
+				_childBounds.height = child.bounds.height;
+				
+				GeomUtils.addBounds(_childBounds, lineBoxBounds);
 				
 				//for non-replaced inline boxes which are not
 				//top or bottom aligned, call recursively
