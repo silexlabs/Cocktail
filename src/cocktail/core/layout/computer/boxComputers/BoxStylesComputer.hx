@@ -454,7 +454,7 @@ class BoxStylesComputer
 	 */
 	private function getComputedAutoMargin(marginStyleValue:CSSPropertyValue, opositeMargin:CSSPropertyValue, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, isHorizontalMargin:Bool):Float
 	{
-		var computedMargin:Float;
+		var computedMargin:Float = 0;
 		
 		//if the containing dimension is set to auto,
 		//margin default to 0. Top and bottom margin also default to 0 with
@@ -501,7 +501,7 @@ class BoxStylesComputer
 	 */
 	private function getComputedConstrainedDimension(constrainedDimension:CSSPropertyValue, containingHTMLElementDimension:Float, isContainingDimensionAuto:Bool, isMinConstraint:Bool = false):Float
 	{
-		var computedConstraintDimension:Float;
+		var computedConstraintDimension:Float = 0;
 		
 		//check which type of value is defined
 		switch (constrainedDimension)
@@ -671,7 +671,7 @@ class BoxStylesComputer
 		//superior to max width. The max width
 		//can be defined as "none" if there are 
 		//no width limit on this HTMLElement
-		if (style.isNone(style.maxWidth) == false)
+		if (style.hasMaxWidth == true)
 		{
 			if (usedWidth > usedValues.maxWidth)
 			{
@@ -696,7 +696,7 @@ class BoxStylesComputer
 		var usedValues:UsedValuesVO = style.usedValues;
 	
 		//check that height is within authorised range
-		if (style.isNone(style.maxHeight) == false)
+		if (style.hasMaxHeight == true)
 		{
 			if (usedHeight > usedValues.maxHeight)
 			{

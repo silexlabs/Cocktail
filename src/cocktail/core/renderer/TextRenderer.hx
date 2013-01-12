@@ -77,6 +77,11 @@ class TextRenderer extends InvalidatingElementRenderer
 	private var _textTokensNeedParsing:Bool;
 	
 	/**
+	 * A reusable rect used during rendering
+	 */
+	private var _renderRect:RectangleVO;
+	
+	/**
 	 * Class constructor.
 	 */
 	public function new(node:HTMLElement) 
@@ -85,6 +90,7 @@ class TextRenderer extends InvalidatingElementRenderer
 		_text = cast(node);
 		_textNeedsRendering = true;
 		_textTokensNeedParsing = true;
+		_renderRect = new RectangleVO();
 	}
 		
 	/**
@@ -133,9 +139,8 @@ class TextRenderer extends InvalidatingElementRenderer
 			var inlineBox:TextInlineBox = cast(inlineBoxes[i]);
 			if (inlineBox.isSpace() == false)
 			{
-				var rect:RectangleVO = new RectangleVO();
-				rect.width = inlineBox.bounds.width;
-				rect.height = inlineBox.bounds.height;
+				_renderRect.width = inlineBox.bounds.width;
+				_renderRect.height = inlineBox.bounds.height;
 				
 				var destPoint:PointVO = new PointVO(inlineBox.bounds.x + globalBounds.x - scrollOffset.x, inlineBox.bounds.y + globalBounds.y - scrollOffset.y);
 				if (inlineBox.lineBox != null)
@@ -144,7 +149,7 @@ class TextRenderer extends InvalidatingElementRenderer
 					destPoint.x += inlineBox.lineBox.bounds.x;
 				}
 				
-				graphicContext.graphics.copyPixels(inlineBox.nativeTextBitmap, rect, destPoint, clipRect);
+				graphicContext.graphics.copyPixels(inlineBox.nativeTextBitmap, _renderRect, destPoint, clipRect);
 			}
 		}
 	}

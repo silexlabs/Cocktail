@@ -81,13 +81,13 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		
 		//set flag for each contrain type
 		var widthSuperiorToMaxWidth:Bool = false;
-		if (style.isNone(style.maxWidth) == false)
+		if (style.hasMaxWidth == true)
 		{
 			widthSuperiorToMaxWidth = usedWidth > maxWidth;
 		}
 		
 		var heightSuperiorToMaxHeight:Bool = false;
-		if (style.isNone(style.maxHeight) == false)
+		if (style.hasMaxHeight == true)
 		{
 			heightSuperiorToMaxHeight = usedHeight > maxHeight;
 		}

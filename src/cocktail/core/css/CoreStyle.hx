@@ -359,6 +359,18 @@ class CoreStyle
 	public var hasAutoHeight:Bool;
 	
 	/**
+	 * Wether the max-width style has a value
+	 * other than none
+	 */
+	public var hasMaxWidth:Bool;
+	
+	/**
+	 * Wether the max-height style has a value
+	 * other than none
+	 */
+	public var hasMaxHeight:Bool;
+	
+	/**
 	 * Class constructor
 	 */
 	public function new(htmlElement:HTMLElement) 
@@ -387,6 +399,8 @@ class CoreStyle
 		hasPreWrapWhiteSpace = false;
 		hasAutoHeight = false;
 		hasAutoWidth = false;
+		hasMaxHeight = false;
+		hasMaxWidth = false;
 		
 		init();
 	}
@@ -820,6 +834,16 @@ class CoreStyle
 		if (cascadeManager.hasHeight == true)
 		{
 			hasAutoHeight = isAuto(height);
+		}
+		
+		if (cascadeManager.hasMaxHeight == true)
+		{
+			hasMaxHeight = isNone(maxHeight) == false;
+		}
+		
+		if (cascadeManager.hasMaxWidth == true)
+		{
+			hasMaxWidth = isNone(maxWidth) == false;
 		}
 	}
 	

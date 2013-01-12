@@ -374,8 +374,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			if (child.layerRenderer == referenceLayer)
 			{
 				if (child.isFloat() == false 
-				&& child.isReplaced() == false 
-				&& child.coreStyle.isInlineBlock == false 
+				&& child.isReplaced() == false  
 				&& child.isInlineLevel() == false)
 				{
 					child.render(graphicContext, clipRect, scrollOffset);
@@ -568,7 +567,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			
 			//same as for prefered minimum width, use own width
 			//if superior to children width
-			if (coreStyle.isAuto(coreStyle.width) == false)
+			if (coreStyle.hasAutoWidth == false)
 			{
 				if (bounds.width > preferedWidth)
 				{
@@ -583,7 +582,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			var shrinkToFitWidth:Float = Math.min(Math.max(preferedMinimumWidth, availableWidth), preferedWidth);
 			
 			//constrain shrink-to-fit width if needed
-			if (coreStyle.isNone(coreStyle.maxWidth) == false)
+			if (coreStyle.hasMaxWidth == true)
 			{
 				if (shrinkToFitWidth > coreStyle.usedValues.maxWidth)
 				{
@@ -723,7 +722,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			}
 			
 			//constrain children height if needed
-			if (coreStyle.isNone(coreStyle.maxHeight) == false)
+			if (coreStyle.hasMaxHeight == true)
 			{
 				if (childrenHeight > coreStyle.usedValues.maxHeight)
 				{

@@ -82,6 +82,10 @@ class CascadeManager
 	
 	public var hasHeight(default, null):Bool;
 	
+	public var hasMaxHeight(default, null):Bool;
+	
+	public var hasMaxWidth(default, null):Bool;
+	
 	/**
 	 * class constructor
 	 */
@@ -122,6 +126,8 @@ class CascadeManager
 		hasWhiteSpace = false;
 		hasWidth = false;
 		hasHeight = false;
+		hasMaxHeight = false;
+		hasMaxWidth = false;
 		
 		hasPropertiesToCascade = false;
 		cascadeAll = false;
@@ -201,7 +207,24 @@ class CascadeManager
 				{
 					return true;
 				}
-				
+			case CSSConstants.MAX_HEIGHT:
+				if (hasMaxHeight == false)
+				{
+					hasMaxHeight = true;
+				}
+				else
+				{
+					return true;
+				}	
+			case CSSConstants.MAX_WIDTH:
+				if (hasMaxWidth == false)
+				{
+					hasMaxWidth = true;
+				}
+				else
+				{
+					return true;
+				}		
 			case CSSConstants.WIDTH:
 				if (hasWidth == false)
 				{
