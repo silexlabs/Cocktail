@@ -772,19 +772,19 @@ class BoxRenderer extends InvalidatingElementRenderer
 	override public function createOwnLayer():Bool
 	{
 		//positioned box also always create a new layer
-		if (isPositioned() == true)
+		if (coreStyle.isPositioned == true)
 		{
 			return true;
 		}
 		//transparent ElementRenderer always have their own
 		//layer for rendering purpose so that they can be
 		//rendered offscreen then composited
-		else if (isTransparent() == true)
+		else if (coreStyle.isTransparent == true)
 		{
 			return true;
 		}
 		//transformed box always create new layer
-		else if (isTransformed() == true)
+		else if (coreStyle.isTransformed == true)
 		{
 			return true;
 		}

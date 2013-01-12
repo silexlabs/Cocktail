@@ -92,6 +92,13 @@ class BackgroundManager
 			graphicContext.graphics.fillRect(backgroundBox, style.usedValues.backgroundColor, clipRect);
 		}
 		
+		//if the element has no background image to draw,
+		//early return
+		if (style.hasBackgroundImage == false)
+		{
+			return;
+		}
+		
 		var backgroundImages:Array<CSSPropertyValue> = getAsArray(style.backgroundImage);
 		
 		var backgroundPositions:Array<CSSPropertyValue> = getAsArray(style.backgroundPosition);

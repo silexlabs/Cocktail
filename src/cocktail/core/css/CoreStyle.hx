@@ -289,6 +289,12 @@ class CoreStyle
 	public var isTransparent:Bool;
 	
 	/**
+	 * Wether the element has a non 'none'
+	 * value for background image
+	 */
+	public var hasBackgroundImage:Bool;
+	
+	/**
 	 * Class constructor
 	 */
 	public function new(htmlElement:HTMLElement) 
@@ -305,6 +311,7 @@ class CoreStyle
 		canAlwaysOverflow = false;
 		isTransformed = false;
 		isTransparent = false;
+		hasBackgroundImage = false;
 		
 		init();
 	}
@@ -662,6 +669,11 @@ class CoreStyle
 					
 				default:
 			}
+		}
+		
+		if (cascadeManager.hasBackgroundImage == true)
+		{
+			hasBackgroundImage = isNone(backgroundImage) == false;
 		}
 	}
 	

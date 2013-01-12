@@ -70,6 +70,8 @@ class CascadeManager
 	
 	public var hasOpacity(default, null):Bool;
 	
+	public var hasBackgroundImage(default, null):Bool;
+	
 	/**
 	 * class constructor
 	 */
@@ -104,6 +106,7 @@ class CascadeManager
 		hasPosition = false;
 		hasVisible = false;
 		hasOpacity = false;
+		hasBackgroundImage = false;
 		
 		hasPropertiesToCascade = false;
 		cascadeAll = false;
@@ -179,6 +182,15 @@ class CascadeManager
 				}
 				//here the property already was
 				//added
+				else
+				{
+					return true;
+				}
+			case CSSConstants.BACKGROUND_IMAGE:
+				if (hasBackgroundImage == false)
+				{
+					hasBackgroundImage = true;
+				}
 				else
 				{
 					return true;
