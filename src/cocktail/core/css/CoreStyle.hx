@@ -248,6 +248,12 @@ class CoreStyle
 	
 	/**
 	 * Wether the element has a display computed value
+	 * of inline
+	 */
+	public var isInline:Bool;
+	
+	/**
+	 * Wether the element has a display computed value
 	 * of block
 	 */
 	public var isBlock:Bool;
@@ -269,6 +275,12 @@ class CoreStyle
 	 * of 'relative'
 	 */
 	public var isRelativePositioned:Bool;
+	
+	/**
+	 * Wether the element has a position style
+	 * of 'fixed'
+	 */
+	public var isFixedPositioned:Bool;
 	
 	/**
 	 * Wether the element has both an overflow-x
@@ -384,6 +396,7 @@ class CoreStyle
 		isVisible = false;
 		isPositioned = false;
 		isRelativePositioned = false;
+		isFixedPositioned = false;
 		canAlwaysOverflow = false;
 		isTransformed = false;
 		isTransparent = false;
@@ -401,6 +414,7 @@ class CoreStyle
 		hasAutoWidth = false;
 		hasMaxHeight = false;
 		hasMaxWidth = false;
+		isInline = false;
 		
 		init();
 	}
@@ -664,23 +678,20 @@ class CoreStyle
 			isInlineLevel = false;
 			isInlineBlock = false;
 			isBlock = false;
+			isInline = false;
 			
 			switch (getKeyword(display)) 
 			{
 				case INLINE:
 					isInlineLevel = true;
-					isInlineBlock = false;
-					isBlock = false;
+					isInline = true;
 				
 				case INLINE_BLOCK:
 					isInlineLevel = true;
 					isInlineBlock = true;
-					isBlock = false;
 					
 				case BLOCK:	
 					isBlock = true;
-					isInlineLevel = false;
-					isInlineBlock = false;
 				
 				default:
 			}
@@ -693,15 +704,20 @@ class CoreStyle
 		
 		if (cascadeManager.hasPosition == true)
 		{
+			isPositioned = false;
+			isRelativePositioned = false;
+			isFixedPositioned = false;
+			
 			switch (getKeyword(position))
 			{
 				case STATIC:
-					isPositioned = false;
-					isRelativePositioned = false;
 					
-				case ABSOLUTE, FIXED:
+				case ABSOLUTE:
 					isPositioned = true;
-					isRelativePositioned = false;
+				
+				case FIXED:	
+					isPositioned = true;
+					isFixedPositioned = true;
 					
 				case RELATIVE:
 					isPositioned = true;

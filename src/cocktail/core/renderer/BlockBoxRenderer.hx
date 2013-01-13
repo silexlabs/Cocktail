@@ -1475,7 +1475,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			return true;
 		}
 		
-		return canAlwaysOverflow() != true;
+		return coreStyle.canAlwaysOverflow != true;
 	}
 	
 	/**
@@ -1563,7 +1563,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			return true;
 		}
-		else if (isFloat() == true)
+		else if (coreStyle.isFloat == true)
 		{
 			return true;
 		}
@@ -1641,14 +1641,4 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		return cast(parent);
 	}
 	
-	/**
-	 * Determine wether this BlockBoxRenderer always overflows
-	 * in both x and y axis. If either overflow x or y
-	 * is deifferent from visible, then it is considered to
-	 * not always overflow
-	 */
-	private function canAlwaysOverflow():Bool
-	{	
-		return coreStyle.canAlwaysOverflow;
-	}
 }

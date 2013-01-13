@@ -142,6 +142,12 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	public var matrix(default, null):Matrix;
 	
 	/**
+	 * A reusable point used to store the 
+	 * relative offset of this layer
+	 */
+	private var _relativeOffset:PointVO;
+	
+	/**
 	 * class constructor. init class attributes
 	 */
 	public function new(rootElementRenderer:ElementRenderer) 
@@ -156,6 +162,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		_needsStackingContextUpdate = true;
 		
 		matrix = new Matrix();
+		_relativeOffset = new PointVO(0, 0);
 		_alpha = 1.0;
 	}
 	
@@ -1255,7 +1262,8 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 */
 	private function getRelativeOffset(elementRenderer:ElementRenderer):PointVO
 	{
-		var relativeOffset:PointVO = new PointVO(0.0, 0.0);
+		_relativeOffset.x = 0;
+		_relativeOffset.y = 0;
 		
 		//only relatively positioned ElementRenderer can have
 		//an offset
@@ -1265,12 +1273,12 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 			//not auto
 			if (elementRenderer.coreStyle.isAuto(elementRenderer.coreStyle.left) == false)
 			{
-				relativeOffset.x += elementRenderer.coreStyle.usedValues.left;
+				_relativeOffset.x += elementRenderer.coreStyle.usedValues.left;
 			}
 			//else the right offset,
 			else if (elementRenderer.coreStyle.isAuto(elementRenderer.coreStyle.right) == false)
 			{
-				relativeOffset.x -= elementRenderer.coreStyle.usedValues.right;
+				_relativeOffset.x -= elementRenderer.coreStyle.usedValues.right;
 			}
 			
 			//if both left and right offset are auto, then the ElementRenderer uses its static
@@ -1280,15 +1288,15 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 			//same for vertical offset
 			if (elementRenderer.coreStyle.isAuto(elementRenderer.coreStyle.top) == false)
 			{
-				relativeOffset.y += elementRenderer.coreStyle.usedValues.top; 
+				_relativeOffset.y += elementRenderer.coreStyle.usedValues.top; 
 			}
 			else if (elementRenderer.coreStyle.isAuto(elementRenderer.coreStyle.bottom) == false)
 			{
-				relativeOffset.y -= elementRenderer.coreStyle.usedValues.bottom; 
+				_relativeOffset.y -= elementRenderer.coreStyle.usedValues.bottom; 
 			}
 		}
 		
-		return relativeOffset;
+		return _relativeOffset;
 	}
 	
 	/////////////////////////////////

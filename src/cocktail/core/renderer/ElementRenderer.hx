@@ -357,8 +357,19 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	{
 		
 		//set initial value for hit testing bounds, start
-		//with global bounds in most cases
-		resetHitTestingBounds();
+		//with global bounds
+		hitTestingBounds.x = globalBounds.x;
+		hitTestingBounds.y = globalBounds.y;
+		hitTestingBounds.width = globalBounds.width;
+		hitTestingBounds.height = globalBounds.height;
+		
+		//if inline box renderer or text, add x and y
+		//bounds of all inline boxes
+		if (coreStyle.isInline || isText() == true)
+		{
+			hitTestingBounds.x += bounds.x;
+			hitTestingBounds.y += bounds.y;
+		}
 		
 		//apply offset and matrix of layer to converted document bounds
 		//to viewport bounds
@@ -544,7 +555,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		var elementRendererCoreStyle:CoreStyle = elementRenderer.coreStyle;
 		
 		//here the element is fixed positioned (relative to the viewport)
-		if (elementRendererCoreStyle.getKeyword(elementRendererCoreStyle.position) == FIXED)
+		if (elementRendererCoreStyle.isFixedPositioned)
 		{
 			//if both left and right are auto, static position is used
 			if (elementRendererCoreStyle.isAuto(elementRendererCoreStyle.left) == true && elementRendererCoreStyle.isAuto(elementRendererCoreStyle.right) == true)
@@ -980,18 +991,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	////////////////////////////////
 	
 	/**
-	 * When computing hit testing bounds, first set them 
-	 * to the global bounds.
-	 */
-	private function resetHitTestingBounds():Void
-	{
-		hitTestingBounds.x = globalBounds.x;
-		hitTestingBounds.y = globalBounds.y;
-		hitTestingBounds.width = globalBounds.width;
-		hitTestingBounds.height = globalBounds.height;
-	}
-	
-	/**
 	 * Determine wether this ElementRenderer is rendered
 	 * as if it started a layer itself. 
 	 * 
@@ -1077,7 +1076,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		{
 			//for absolutely positioned fixed elements, the containing block
 			//is the viewport
-			if (coreStyle.getKeyword(coreStyle.position) == FIXED)
+			if (coreStyle.isFixedPositioned == true)
 			{
 				return getInitialContainingBlock();
 			}

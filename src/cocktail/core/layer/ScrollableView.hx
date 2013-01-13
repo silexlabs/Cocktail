@@ -258,7 +258,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	{
 		//if the layer's root element renderer is fixed, than it can't be clipped as
 		//its containing block is the viewport
-		if (rootElementRenderer.coreStyle.getKeyword(rootElementRenderer.coreStyle.position) == FIXED)
+		if (rootElementRenderer.coreStyle.isFixedPositioned == true)
 		{
 			return false;
 		}
@@ -339,7 +339,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	{
 		//scroll offset don't apply to fiexed element, as they are always positioned relative to the
 		//viewport
-		if (rootElementRenderer.coreStyle.getKeyword(rootElementRenderer.coreStyle.position) == FIXED)
+		if (rootElementRenderer.coreStyle.isFixedPositioned == true)
 		{
 			return;
 		}
@@ -534,7 +534,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	{
 		//if the layer is fixed, then it won't be scrolled by its ancestor, and so
 		//it returns null as it shouldn't be added to its ancestor scroll bounds
-		if (rootElementRenderer.coreStyle.getKeyword(rootElementRenderer.coreStyle.position) == FIXED)
+		if (rootElementRenderer.coreStyle.isFixedPositioned == true)
 		{
 			return null;
 		}
