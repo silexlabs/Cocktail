@@ -74,9 +74,12 @@ class BoxStylesComputer
 		measureDimensionsAndMargins(style, containingBlockData);
 		
 		//measure the top, left, right and bottom offsets
-		//used when the HTMLElement is 'positioned' (any position style
+		//used when the element is 'positioned' (any position style
 		//but 'static')
-		measurePositionOffsets(style, containingBlockData);
+		if (style.isPositioned == true)
+		{
+			measurePositionOffsets(style, containingBlockData);
+		}
 		
 		//At this point, all the dimensions of the HTMLElement are known maybe except the
 		//content height if it was set to 'auto' and thus depends on its content's height.

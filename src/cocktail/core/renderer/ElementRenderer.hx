@@ -87,7 +87,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * which established the formatting context this ElementRenderer 
 	 * participates in.
 	 */
-	public var bounds(get_bounds, null):RectangleVO;
+	public var bounds(default, null):RectangleVO;
 	
 	/**
 	 * The bounds of the ElementRenderer in the space of the document.
@@ -1378,11 +1378,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	private function get_globalBounds():RectangleVO
 	{
 		return globalBounds;
-	}
-	
-	private function get_bounds():RectangleVO
-	{
-		return bounds;
 	}
 	
 	private function get_scrollWidth():Float
