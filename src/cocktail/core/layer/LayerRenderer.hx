@@ -1271,12 +1271,12 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		{
 			//first try to apply the left offset of the ElementRenderer if it is
 			//not auto
-			if (elementRenderer.coreStyle.isAuto(elementRenderer.coreStyle.left) == false)
+			if (elementRenderer.coreStyle.hasAutoLeft == false)
 			{
 				_relativeOffset.x += elementRenderer.coreStyle.usedValues.left;
 			}
 			//else the right offset,
-			else if (elementRenderer.coreStyle.isAuto(elementRenderer.coreStyle.right) == false)
+			else if (elementRenderer.coreStyle.hasAutoRight == false)
 			{
 				_relativeOffset.x -= elementRenderer.coreStyle.usedValues.right;
 			}
@@ -1286,11 +1286,11 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 			//be applied
 		
 			//same for vertical offset
-			if (elementRenderer.coreStyle.isAuto(elementRenderer.coreStyle.top) == false)
+			if (elementRenderer.coreStyle.hasAutoTop == false)
 			{
 				_relativeOffset.y += elementRenderer.coreStyle.usedValues.top; 
 			}
-			else if (elementRenderer.coreStyle.isAuto(elementRenderer.coreStyle.bottom) == false)
+			else if (elementRenderer.coreStyle.hasAutoBottom == false)
 			{
 				_relativeOffset.y -= elementRenderer.coreStyle.usedValues.bottom; 
 			}

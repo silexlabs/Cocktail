@@ -694,7 +694,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function applyContentHeightIfNeeded():Void
 	{
-		if (coreStyle.isAuto(coreStyle.height) == true && isAutoHeightAbsolutelyPositionedWithNotAutoTopAndBottom() == false)
+		if (coreStyle.hasAutoHeight == true && isAutoHeightAbsolutelyPositionedWithNotAutoTopAndBottom() == false)
 		{
 			//children height is either line boxes bounds or block children bounds
 			//only normal flow children are taken into acount
@@ -757,7 +757,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		if (isPositioned() == true && isRelativePositioned() == false)
 		{
-			return coreStyle.isAuto(coreStyle.top) == false && coreStyle.isAuto(coreStyle.bottom) == false;
+			return coreStyle.hasAutoTop == false && coreStyle.hasAutoBottom == false;
 		}
 		
 		return false;
@@ -772,7 +772,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		if (isPositioned() == true && isRelativePositioned() == false)
 		{
-			return coreStyle.isAuto(coreStyle.left) == false && coreStyle.isAuto(coreStyle.right) == false;
+			return coreStyle.hasAutoLeft == false && coreStyle.hasAutoRight == false;
 		}
 		
 		return false;

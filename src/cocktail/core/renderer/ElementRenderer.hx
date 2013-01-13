@@ -558,7 +558,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		if (elementRendererCoreStyle.isFixedPositioned)
 		{
 			//if both left and right are auto, static position is used
-			if (elementRendererCoreStyle.isAuto(elementRendererCoreStyle.left) == true && elementRendererCoreStyle.isAuto(elementRendererCoreStyle.right) == true)
+			if (elementRendererCoreStyle.hasAutoLeft == true && elementRendererCoreStyle.hasAutoRight == true)
 			{
 				elementRenderer.globalBounds.x = addedX + elementRenderer.staticOrigin.x;
 			}
@@ -569,7 +569,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 				elementRenderer.globalBounds.x = elementRenderer.bounds.x;
 			}
 			//same for vertical position
-			if (elementRendererCoreStyle.isAuto(elementRendererCoreStyle.top) == true && elementRendererCoreStyle.isAuto(elementRendererCoreStyle.bottom) == true)
+			if (elementRendererCoreStyle.hasAutoTop == true && elementRendererCoreStyle.hasAutoBottom == true)
 			{
 				elementRenderer.globalBounds.y = addedY + elementRenderer.staticOrigin.y;
 			}
@@ -582,7 +582,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		else
 		{
 			//if left and right auto, use static position
-			if (elementRendererCoreStyle.isAuto(elementRendererCoreStyle.left) == true && elementRendererCoreStyle.isAuto(elementRendererCoreStyle.right) == true)
+			if (elementRendererCoreStyle.hasAutoLeft == true && elementRendererCoreStyle.hasAutoRight == true)
 			{
 				//add global normal flow position to static position
 				elementRenderer.globalBounds.x = addedX + elementRenderer.staticOrigin.x;
@@ -594,7 +594,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 				elementRenderer.globalBounds.x = addedPositionedX + elementRenderer.bounds.x;
 			}
 			//same for vertical position
-			if (elementRendererCoreStyle.isAuto(elementRendererCoreStyle.top) == true && elementRendererCoreStyle.isAuto(elementRendererCoreStyle.bottom) == true)
+			if (elementRendererCoreStyle.hasAutoTop == true && elementRendererCoreStyle.hasAutoBottom == true)
 			{
 				elementRenderer.globalBounds.y = addedY + elementRenderer.staticOrigin.y;
 			}

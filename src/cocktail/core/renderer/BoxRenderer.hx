@@ -831,27 +831,6 @@ class BoxRenderer extends InvalidatingElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Determine wether the ElementRenderer introduces
-	 * 'clearance', which as the effect of placing
-	 * the ElementRenderer below any preceding floated
-	 * ElementRenderer. An ElementRenderer introduces clearance
-	 * if he clears either left floats, right floats
-	 * or both
-	 */
-	private function isClear():Bool
-	{
-		switch(coreStyle.getKeyword(coreStyle.clear))
-		{
-			case LEFT, RIGHT, BOTH:
-			return true;
-						
-			default:	
-		}
-		
-		return false;
-	}
-	
-	/**
 	 * Helper method returning the bounds to 
 	 * be used to draw the background. Meant
 	 * to be overriden as for instance the HTMLBodyElement's

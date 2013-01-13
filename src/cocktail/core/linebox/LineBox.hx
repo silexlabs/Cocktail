@@ -38,9 +38,9 @@ class LineBox
 	
 	private var _layoutState:LayoutStateValue;
 	
-	private var _childBounds:RectangleVO;
+	private static var _childBounds:RectangleVO = new RectangleVO();
 	
-	private var _lineBoxesBounds:RectangleVO;
+	private static var _lineBoxesBounds:RectangleVO = new RectangleVO();
 	
 	/**
 	 * Store the current width of all the
@@ -65,8 +65,6 @@ class LineBox
 		
 		rootInlineBox = new InlineBox(elementRenderer);
 		bounds = new RectangleVO();
-		_childBounds = new RectangleVO();
-		_lineBoxesBounds = new RectangleVO();
 	}
 	
 	public function addUnbreakableWidth(width:Float):Void
@@ -932,7 +930,7 @@ class LineBox
 	 * Return wether an inline box has a vertical align
 	 * style of either top or bottom
 	 */
-	private function isTopOrBottomAligned(inlineBox:InlineBox):Bool
+	private inline function isTopOrBottomAligned(inlineBox:InlineBox):Bool
 	{
 		return (inlineBox.elementRenderer.coreStyle.isBottomAligned == true || inlineBox.elementRenderer.coreStyle.isTopAligned);
 	}
@@ -941,7 +939,7 @@ class LineBox
 	 * Return wether an inline box has a vertical align
 	 * style of top
 	 */
-	private function isTopAligned(inlineBox:InlineBox):Bool
+	private inline function isTopAligned(inlineBox:InlineBox):Bool
 	{
 		return inlineBox.elementRenderer.coreStyle.isTopAligned;
 	}
@@ -950,7 +948,7 @@ class LineBox
 	 * Return wether an inline box has a vertical align
 	 * style of bottom
 	 */
-	private function isBottomAligned(inlineBox:InlineBox):Bool
+	private inline function isBottomAligned(inlineBox:InlineBox):Bool
 	{
 		return inlineBox.elementRenderer.coreStyle.isBottomAligned;
 	}

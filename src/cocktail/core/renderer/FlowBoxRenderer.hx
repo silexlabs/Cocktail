@@ -213,14 +213,14 @@ class FlowBoxRenderer extends BoxRenderer
 
 		//for horizonal offset, if both left and right are not auto,
 		//left takes precedance so we try to apply left offset first
-		if (elementCoreStyle.isAuto(elementCoreStyle.left) == false)
+		if (elementCoreStyle.hasAutoLeft == false)
 		{
 			elementRenderer.bounds.x = getLeftOffset(elementRenderer, isAbsolutelyPositioned);
 		}
 		//if no left offset is defined, then try to apply a right offset.
 		//Right offset takes the containing block width minus the
 		//width of the positioned children as value for a 0 right offset
-		else if (elementCoreStyle.isAuto(elementCoreStyle.right) == false)
+		else if (elementCoreStyle.hasAutoRight == false)
 		{
 			elementRenderer.bounds.x = getRightOffset(elementRenderer, containingBlockData.width, isAbsolutelyPositioned);
 		}
@@ -234,11 +234,11 @@ class FlowBoxRenderer extends BoxRenderer
 		}
 		
 		//for vertical offset, the same rule as horizontal offsets apply
-		if (elementCoreStyle.isAuto(elementCoreStyle.top) == false)
+		if (elementCoreStyle.hasAutoTop == false)
 		{
 			elementRenderer.bounds.y = getTopOffset(elementRenderer, isAbsolutelyPositioned);
 		}
-		else if (elementCoreStyle.isAuto(elementCoreStyle.bottom) == false)
+		else if (elementCoreStyle.hasAutoBottom == false)
 		{
 			elementRenderer.bounds.y = getBottomOffset(elementRenderer, containingBlockData.height, isAbsolutelyPositioned);
 		}

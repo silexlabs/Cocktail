@@ -387,6 +387,48 @@ class CoreStyle
 	 */
 	public var isLeftAligned:Bool;
 	
+	/**
+	 * Wether 'top' has 'auto' value
+	 */
+	public var hasAutoTop:Bool;
+	
+	/**
+	 * same for bottom
+	 */
+	public var hasAutoBottom:Bool;
+	
+	/**
+	 * same for left
+	 */
+	public var hasAutoLeft:Bool;
+	
+	/**
+	 * same for right
+	 */
+	public var hasAutoRight:Bool;
+	
+	/**
+	 * Wether 'margin-left' is 'auto'
+	 */
+	public var hasAutoMarginLeft:Bool;
+	
+	/**
+	 * same for 'margin-right'
+	 */
+	public var hasAutoMarginRight:Bool;
+	
+	/**
+	 * same for 'margin-top'
+	 */
+	public var hasAutoMarginTop:Bool;
+	
+	/**
+	 * same for 'margin-bottom'
+	 */
+	public var hasAutoMarginBottom:Bool;
+	
+	
+	
 	
 	/**
 	 * Class constructor
@@ -422,6 +464,14 @@ class CoreStyle
 		hasMaxWidth = false;
 		isInline = false;
 		isLeftAligned = false;
+		hasAutoTop = false;
+		hasAutoBottom = false;
+		hasAutoLeft = false;
+		hasAutoRight = false;
+		hasAutoMarginTop = false;
+		hasAutoMarginBottom = false;
+		hasAutoMarginLeft = false;
+		hasAutoMarginRight = false;
 		
 		init();
 	}
@@ -879,6 +929,26 @@ class CoreStyle
 					
 				default:	
 			}
+		}
+		
+		if (cascadeManager.hasTop == true)
+		{
+			hasAutoTop = isAuto(top);
+		}
+		
+		if (cascadeManager.hasBottom == true)
+		{
+			hasAutoBottom = isAuto(bottom);
+		}
+		
+		if (cascadeManager.hasLeft == true)
+		{
+			hasAutoLeft = isAuto(left);
+		}
+		
+		if (cascadeManager.hasRight == true)
+		{
+			hasAutoRight = isAuto(right);
 		}
 	}
 	

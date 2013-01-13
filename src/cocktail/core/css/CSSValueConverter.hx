@@ -194,7 +194,7 @@ class CSSValueConverter
 	 * @param	reference the reference value
 	 * @return a percentage of the reference value
 	 */
-	public static function getPixelFromPercent(percent:Float, reference:Float):Float
+	public inline static function getPixelFromPercent(percent:Float, reference:Float):Float
 	{
 		return reference * (percent * 0.01);
 	}
@@ -205,7 +205,7 @@ class CSSValueConverter
 	 * @param	reference
 	 * @return
 	 */
-	public static function getPercentFromPixel(pixel:Float, reference:Float):Float
+	public inline static function getPercentFromPixel(pixel:Float, reference:Float):Float
 	{
 		return (reference / pixel) * 100;
 	}

@@ -88,6 +88,22 @@ class CascadeManager
 	
 	public var hasTextAlign(default, null):Bool;
 	
+	public var hasTop(default, null):Bool;
+	
+	public var hasBottom(default, null):Bool;
+	
+	public var hasLeft(default, null):Bool;
+	
+	public var hasRight(default, null):Bool;
+	
+	public var hasMarginLeft(default, null):Bool;
+	
+	public var hasMarginTop(default, null):Bool;
+	
+	public var hasMarginRight(default, null):Bool;
+	
+	public var hasMarginBottom(default, null):Bool;
+	
 	/**
 	 * class constructor
 	 */
@@ -131,6 +147,14 @@ class CascadeManager
 		hasMaxHeight = false;
 		hasMaxWidth = false;
 		hasTextAlign = false;
+		hasTop = false;
+		hasBottom = false;
+		hasLeft = false;
+		hasRight = false;
+		hasMarginTop = false;
+		hasMarginBottom = false;
+		hasMarginLeft = false;
+		hasMarginRight = false;
 		
 		hasPropertiesToCascade = false;
 		cascadeAll = false;
@@ -210,6 +234,78 @@ class CascadeManager
 				{
 					return true;
 				}
+			case CSSConstants.MARGIN_TOP:
+				if (hasMarginTop == false)
+				{
+					hasMarginTop = true; 
+				}
+				else
+				{
+					return true;
+				}	
+			case CSSConstants.MARGIN_BOTTOM:
+				if (hasMarginBottom == false)
+				{
+					hasMarginBottom = true; 
+				}
+				else
+				{
+					return true;
+				}	
+			case CSSConstants.MARGIN_LEFT:
+				if (hasMarginLeft == false)
+				{
+					hasMarginLeft = true; 
+				}
+				else
+				{
+					return true;
+				}	
+			case CSSConstants.MARGIN_RIGHT:
+				if (hasMarginRight == false)
+				{
+					hasMarginRight = true; 
+				}
+				else
+				{
+					return true;
+				}		
+			case CSSConstants.TOP:
+				if (hasTop == false)
+				{
+					hasTop = true; 
+				}
+				else
+				{
+					return true;
+				}
+			case CSSConstants.BOTTOM:
+				if (hasBottom == false)
+				{
+					hasBottom = true; 
+				}
+				else
+				{
+					return true;
+				}	
+			case CSSConstants.LEFT:
+				if (hasLeft == false)
+				{
+					hasLeft = true; 
+				}
+				else
+				{
+					return true;
+				}	
+			case CSSConstants.RIGHT:
+				if (hasRight == false)
+				{
+					hasRight = true; 
+				}
+				else
+				{
+					return true;
+				}	
 			case CSSConstants.TEXT_ALIGN:	
 				if (hasTextAlign == false)
 				{
