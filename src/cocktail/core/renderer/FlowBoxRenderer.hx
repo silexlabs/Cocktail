@@ -187,17 +187,15 @@ class FlowBoxRenderer extends BoxRenderer
 	private function layoutPositionedChild(elementRenderer:ElementRenderer, firstPositionedAncestorData:ContainingBlockVO, viewportData:ContainingBlockVO):Void
 	{
 		var coreStyle:CoreStyle = elementRenderer.coreStyle;
-		switch (coreStyle.getKeyword(elementRenderer.coreStyle.position))
-		{	
-			//positioned 'fixed' ElementRenderer, use the viewport
-			case FIXED:
-				doLayoutPositionedChild(elementRenderer, viewportData, false);
-				
-			//positioned 'absolute' ElementRenderer use the first positioned ancestor data	
-			case ABSOLUTE:
-				doLayoutPositionedChild(elementRenderer, firstPositionedAncestorData, true);
-				
-			default:
+		//positioned 'fixed' ElementRenderer, use the viewport
+		if (coreStyle.isFixedPositioned == true)
+		{
+			doLayoutPositionedChild(elementRenderer, viewportData, false);
+		}
+		//positioned 'absolute' ElementRenderer use the first positioned ancestor data	
+		else
+		{
+			doLayoutPositionedChild(elementRenderer, firstPositionedAncestorData, true);
 		}
 	}
 	
