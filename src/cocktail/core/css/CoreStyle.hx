@@ -383,6 +383,12 @@ class CoreStyle
 	public var hasMaxHeight:Bool;
 	
 	/**
+	 * Wether 'text-align' has a 'left' value
+	 */
+	public var isLeftAligned:Bool;
+	
+	
+	/**
 	 * Class constructor
 	 */
 	public function new(htmlElement:HTMLElement) 
@@ -415,6 +421,7 @@ class CoreStyle
 		hasMaxHeight = false;
 		hasMaxWidth = false;
 		isInline = false;
+		isLeftAligned = false;
 		
 		init();
 	}
@@ -860,6 +867,18 @@ class CoreStyle
 		if (cascadeManager.hasMaxWidth == true)
 		{
 			hasMaxWidth = isNone(maxWidth) == false;
+		}
+		
+		if (cascadeManager.hasTextAlign == true)
+		{
+			isLeftAligned = false;
+			switch(getKeyword(textAlign))
+			{
+				case LEFT:
+					isLeftAligned = true;
+					
+				default:	
+			}
 		}
 	}
 	

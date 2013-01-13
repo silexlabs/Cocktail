@@ -86,6 +86,8 @@ class CascadeManager
 	
 	public var hasMaxWidth(default, null):Bool;
 	
+	public var hasTextAlign(default, null):Bool;
+	
 	/**
 	 * class constructor
 	 */
@@ -128,6 +130,7 @@ class CascadeManager
 		hasHeight = false;
 		hasMaxHeight = false;
 		hasMaxWidth = false;
+		hasTextAlign = false;
 		
 		hasPropertiesToCascade = false;
 		cascadeAll = false;
@@ -207,6 +210,15 @@ class CascadeManager
 				{
 					return true;
 				}
+			case CSSConstants.TEXT_ALIGN:	
+				if (hasTextAlign == false)
+				{
+					hasTextAlign = true;
+				}
+				else
+				{
+					return true;
+				}	
 			case CSSConstants.MAX_HEIGHT:
 				if (hasMaxHeight == false)
 				{

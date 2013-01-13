@@ -438,46 +438,51 @@ class LineBox
 			remainingSpace -= _elementRenderer.coreStyle.usedValues.textIndent;
 		}
 		
-		//switch alignement of text
-		switch (_elementRenderer.coreStyle.getKeyword(_elementRenderer.coreStyle.textAlign))
+		//switch text alignement,
+		//shortcut for left, the most common case
+		if (_elementRenderer.coreStyle.isLeftAligned == true)
 		{
-			case LEFT:
-				alignLeft(x, rootInlineBox);
-				
-			case RIGHT:
-				alignRight(x, remainingSpace, rootInlineBox);
-				
-			case CENTER:
-				alignCenter(x, remainingSpace, rootInlineBox);
-				
-			case JUSTIFY:
-				//last line of a block is not justified to 
-				//prevent streching white space too much
-				if (isLastLine == true)
-				{
-					alignLeft(x, rootInlineBox);
-				}
-				else
-				{
-					//pre and pre-wrap value for whitespace prevent altering white space width,
-					//thus preventing justification
-					switch(_elementRenderer.coreStyle.getKeyword(_elementRenderer.coreStyle.whiteSpace))
+			alignLeft(x, rootInlineBox);
+		}
+		else
+		{
+			switch (_elementRenderer.coreStyle.getKeyword(_elementRenderer.coreStyle.textAlign))
+			{
+				case RIGHT:
+					alignRight(x, remainingSpace, rootInlineBox);
+					
+				case CENTER:
+					alignCenter(x, remainingSpace, rootInlineBox);
+					
+				case JUSTIFY:
+					//last line of a block is not justified to 
+					//prevent streching white space too much
+					if (isLastLine == true)
 					{
-						case PRE, PRE_WRAP:
-							alignLeft(x, rootInlineBox);
-							
-						default:	
-							//when justifying, inline boxes takes the whole
-							//line box width
-							concatenatedLength = _availableWidth;
-							alignJustify(x, remainingSpace, rootInlineBox, _spacesNumber);
+						alignLeft(x, rootInlineBox);
+					}
+					else
+					{
+						//pre and pre-wrap value for whitespace prevent altering white space width,
+						//thus preventing justification
+						switch(_elementRenderer.coreStyle.getKeyword(_elementRenderer.coreStyle.whiteSpace))
+						{
+							case PRE, PRE_WRAP:
+								alignLeft(x, rootInlineBox);
+								
+							default:	
+								//when justifying, inline boxes takes the whole
+								//line box width
+								concatenatedLength = _availableWidth;
+								alignJustify(x, remainingSpace, rootInlineBox, _spacesNumber);
+						}
+						
+					
 					}
 					
-				
-				}
-				
-			default:
-				throw 'Illegal value for text-align style';
+				default:
+					throw 'Illegal value for text-align style';
+			}
 		}
 		
 		//return the total width ocuppied by inline boxes
