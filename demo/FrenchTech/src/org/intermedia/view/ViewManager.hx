@@ -239,8 +239,9 @@ class ViewManager
 		setZIndexToMax(_header);
 		
 		// refresh styles
-		refreshStyles();
-		
+		//refreshStyles();
+		Timer.delay(refreshStyles, 50);
+				
 		// hide loader
 		_detailView.displayLoading = false;
 		
