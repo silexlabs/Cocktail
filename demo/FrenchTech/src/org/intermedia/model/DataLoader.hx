@@ -120,8 +120,6 @@ class DataLoader
 	 */
 	private function checkOnlineFeeds():Void
 	{
-		trace("checkOnlineFeeds: " + _feedsCount);
-		
 		if (_feedsCount < Feeds.FEED_QTY)
 		{
 			if(onLoadingError != null)
