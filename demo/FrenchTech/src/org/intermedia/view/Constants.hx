@@ -68,10 +68,11 @@ class Constants
 	public static inline var CELL_MIN_WIDTH:Int = 160;
 
 	// set cells thumb constants
-	public static inline var CELL_THUMB_APPARITION_DELAY:Int = 1500;
+	public static inline var CELL_THUMB_OPACITY_DELAY_INIT:Int = 800;
+	public static inline var CELL_THUMB_OPACITY_FADE_DURATION:Int = 400;
 	
 	// set cells thumb text constants
-	public static inline var CELL_THUMB_TEXT_TITLE_LENGTH:Int = 42;
+	//public static inline var CELL_THUMB_TEXT_TITLE_LENGTH:Int = 42;
 	
 	// set detail constants
 	public static inline var DETAIL_BG_COLOR:String = CELL_BG_COLOR;
