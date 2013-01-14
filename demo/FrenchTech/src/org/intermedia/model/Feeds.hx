@@ -15,8 +15,11 @@ package org.intermedia.model;
 
 class Feeds 
 {
+	public static inline var FEED_QTY:Int = 3;
+	
 	public static inline var FEED_1:Feed = {
 		id:0,
+		ressource:"feed1",
 		title:"iPhon.fr",
 		thumb:"assets/iphon_fr-logo.jpg",
 		//url:"http://feeds.feedburner.com/IphonfrBlogIphone",
@@ -25,6 +28,7 @@ class Feeds
 		};
 	public static inline var FEED_2:Feed = {
 		id:1,
+		ressource:"feed2",
 		title:"FrAndroid",
 		thumb:"assets/frandroid-logo.png",
 		//url:"http://feeds.feedburner.com/Frandroid",
@@ -33,6 +37,7 @@ class Feeds
 		};
 	public static inline var FEED_3:Feed = {
 		id:2,
+		ressource:"feed3",
 		title:"frenchiPhone",
 		thumb:"assets/frenchiphone-logo.png",
 		//url:"http://feeds.feedburner.com/IphoneFranceFrFrenchiphone",

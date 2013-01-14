@@ -16,6 +16,7 @@ package org.intermedia.model;
 typedef Feed =
 {
 	var id:Int;
+	var ressource:String;
 	var thumb:String;
 	var title:String;
 	var url:String;
