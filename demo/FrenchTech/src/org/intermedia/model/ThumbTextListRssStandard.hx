@@ -79,7 +79,7 @@ class ThumbTextListRssStandard
 					if (itemParam.nodeName == "description")
 					{
 						// get and clean the node text
-						cell.description = cleanText(itemParam.firstChild().nodeValue);
+						cell.description = removeIFrames(cleanText(itemParam.firstChild().nodeValue));
 						// get the thumb image
 						if(cell.thumbUrl == "") cell.thumbUrl = getThumb(cell.description);
 						
@@ -89,7 +89,7 @@ class ThumbTextListRssStandard
 					if (itemParam.nodeName == "content:encoded")
 					{
 						// get and clean the node text
-						cell.content = cleanText(itemParam.firstChild().nodeValue);
+						cell.content = removeIFrames(cleanText(itemParam.firstChild().nodeValue));
 						
 						// get the thumb image
 						if(cell.thumbUrl == "") cell.thumbUrl = getThumb(cell.content);
@@ -124,6 +124,31 @@ class ThumbTextListRssStandard
 	static private function cleanText(text:String):String
 	{
 		return(StringTools.htmlUnescape(cleanCharCodes(text)));
+	}
+	
+	
+	static private function removeIFrames(text:String):String
+	{
+		// get thumbnail from description
+		var IFRAME_START_STRING:String = "<iframe";
+		var IFRAME_END_STRING:String = "</iframe>";
+		
+		var cleanedString:String = text;
+		var iframeStartIndex:Int = cleanedString.indexOf(IFRAME_START_STRING);
+		var iframeString:String = "";
+
+		// get all iframes and remove them
+		while ( iframeStartIndex != -1)
+		{
+			iframeString = cleanedString.substr(iframeStartIndex);
+			var iframeEndIndex:Int = iframeString.indexOf(IFRAME_END_STRING);
+			iframeString = iframeString.substr(0, iframeEndIndex + IFRAME_END_STRING.length);
+			cleanedString = StringTools.replace(cleanedString, iframeString, "");
+			
+			iframeStartIndex = cleanedString.indexOf(IFRAME_START_STRING);
+			
+		}
+		return cleanedString;
 	}
 	
 	/**
