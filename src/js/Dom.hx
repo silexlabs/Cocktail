@@ -37,6 +37,7 @@ var nodeValue : String;
 
 var parentNode : T;
 var childNodes : HtmlCollection<T>;
+var attributes : HtmlCollection<T>;
 var firstChild : T;
 var lastChild : T;
 var nextSibling : T;
