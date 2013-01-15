@@ -8,6 +8,7 @@
 */
 package org.intermedia.view;
 
+import haxe.Timer;
 import js.Lib;
 import js.Dom;
 import org.intermedia.view.Scroll2D;
@@ -78,7 +79,7 @@ class DetailView extends ViewBase
 	 * overrides parent's class
 	 */
 	override private function buildView():Void
-	{
+	{		
 		DetailStyle.setDetailStyle(node);
 
 		// add title
@@ -236,8 +237,8 @@ class DetailView extends ViewBase
 		// reset style
 		DetailStyle.setDetailStyle(node);
 		// resize children iframe & img
-		resizeNodeChildrenTag(_contentContainer,"iframe");
-		resizeNodeChildrenTag(_contentContainer,"img");
+		//resizeNodeChildrenTag(_contentContainer,"iframe");
+		resizeNodeChildrenTag(_contentContainer, "img");
 	}
 	
 	/**
@@ -275,6 +276,15 @@ class DetailView extends ViewBase
 		var originalHeight:Int = Std.parseInt(nodeToResize.getAttribute("height"));
 		
 		// set width & heigth
+		// if width & height attributes are undefined, set width style to 100%
+		if ( (originalWidth == null) && (originalHeight == null))
+		{
+			nodeToResize.style.width = "100%";
+			nodeToResize.style.maxWidth = Std.string(untyped { nodeToResize.naturalWidth; }) + "px";
+			nodeToResize.style.maxHeight = Std.string(untyped { nodeToResize.naturalHeight; }) + "px";
+		}
+		
+		// if width attribute is bigger than device width, resize the image
 		if ( Std.parseInt(nodeToResize.getAttribute("width")) > Lib.window.innerWidth )
 		{
 			var newWidth:Int = Std.int(Constants.DETAIL_HORIZONTAL_PERCENT * Lib.window.innerWidth / 100);
@@ -284,11 +294,12 @@ class DetailView extends ViewBase
 			var newHeight:Int = Std.int(originalHeight * newWidth / originalWidth);
 			nodeToResize.style.height = Std.string(newHeight) + "px";
 		}
+		// if width attribute is smaller than device width, use width & height attribute as style values
 		else
 		{
-			nodeToResize.style.width = Std.parseInt(nodeToResize.getAttribute("width")) + "px";
-			nodeToResize.style.height = Std.parseInt(nodeToResize.getAttribute("height")) + "px";
-		}
+			nodeToResize.style.width = originalWidth + "px";
+			nodeToResize.style.height = originalHeight + "px";
+		}	
 	
 		// remove width & height attributes to avoid browsers incorrect behaviours
 		//untyped { tagNodes[i].removeAttribute("width"); };

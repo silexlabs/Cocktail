@@ -27,6 +27,13 @@ class CellThumbText1 extends CellBase
 	// cropping mask containing the image
 	private var _croppedImage:CroppedImage;
 
+	// set cells thumb text constants when cellPerLine=1
+	private var _titleLength:Int = 0;
+	// set cells thumb text constants when cellPerLine=1
+	private static inline var TITLE_LENGTH_1:Int = 120;
+	// set cells thumb text constants when cellPerLine=2
+	private static inline var TITLE_LENGTH_2:Int = 50;
+
 	/**
 	 * constructor
 	 * 
@@ -35,7 +42,16 @@ class CellThumbText1 extends CellBase
 	 */
 	public function new(?cellPerLine:Int = 1, ?style:CellStyleModel) 
 	{
-		super(cellPerLine,style);
+		super(cellPerLine, style);
+		
+		if (_cellPerLine == 1)
+		{
+			_titleLength = TITLE_LENGTH_1;
+		}
+		else
+		{
+			_titleLength = TITLE_LENGTH_2;
+		}
 	}
 
 	/**
@@ -52,7 +68,6 @@ class CellThumbText1 extends CellBase
 			title:CellThumbText1Style.setTitleStyle,
 			author:null
 		}
-		
 	}
 	
 	/**
@@ -86,10 +101,10 @@ class CellThumbText1 extends CellBase
 		{
 			var text:String = _data.title;
 			// shorten title
-			if (text.length > Constants.CELL_THUMB_TEXT_TITLE_LENGTH)
+			if (text.length > _titleLength)
 			{
 				// shorten title to TITLE_LENGTH
-				text = text.substr(0, Constants.CELL_THUMB_TEXT_TITLE_LENGTH);
+				text = text.substr(0, _titleLength);
 				// then shorten it until the last space character and add "..." at the end
 				text = text.substr(0, text.lastIndexOf(" ")) + "...";
 			}

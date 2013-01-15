@@ -22,9 +22,10 @@ import org.intermedia.model.ApplicationModel;
 
 class CellThumbText1Style
 {
-	static inline var CELL_TEXT_WIDTH_PERCENT:Int = 60;
-	public static inline var CELL_THUMB_WIDTH_PERCENT:Int = 100 - CELL_TEXT_WIDTH_PERCENT - 6;
-	public static inline var CELL_TOP_MARGIN_PIXELS:Int = 14;
+	private static inline var CELL_TEXT_WIDTH_PERCENT:Int = 60;
+	private static inline var CELL_THUMB_WIDTH_PERCENT:Int = 100 - CELL_TEXT_WIDTH_PERCENT - 6;
+	private static inline var CELL_TOP_MARGIN_PIXELS:Int = 6;
+	private static inline var CELL_THUMB_HEIGHT_PERCENT:Int = 85;
 	
 	/**
 	 * Defines cell Style
@@ -65,7 +66,7 @@ class CellThumbText1Style
 		node.style.marginLeft = "2%";
 
 		node.style.width = Std.string(CELL_THUMB_WIDTH_PERCENT) + "%";
-		node.style.height = Std.string(70) + "%";
+		node.style.height = Std.string(CELL_THUMB_HEIGHT_PERCENT) + "%";
 		
 		// apply mask style so it can crop the image
 		node.style.overflowX = "hidden";
@@ -83,7 +84,8 @@ class CellThumbText1Style
 		//setCellStyle(node);
 		node.style.display = "inline-block";
 		
-		node.style.marginTop = Std.string(Std.int(CELL_TOP_MARGIN_PIXELS/2)) + "px";
+		//node.style.marginTop = Std.string(Std.int(CELL_TOP_MARGIN_PIXELS/2)) + "px";
+		node.style.marginTop = Std.string(CELL_TOP_MARGIN_PIXELS) + "px";
 		node.style.marginLeft = "2%";
 		
 		node.style.verticalAlign = "top";

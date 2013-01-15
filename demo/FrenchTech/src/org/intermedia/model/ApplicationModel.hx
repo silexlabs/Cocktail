@@ -27,7 +27,7 @@ class ApplicationModel
 	public var onModelDetailDataLoaded:DetailData->Void;
 	
 	// Called when there was a loading error
-	public var onModelDataLoadError:Dynamic->Void;
+	public var onModelDataLoadError:Feed->Dynamic->Void;
 	
 	// Called when the loading starts
 	public var onModelStartsLoading:Void->Void;
@@ -68,7 +68,7 @@ class ApplicationModel
 	 */
 	public function loadCellData(id:String):Void
 	{
-		var feed:Feed = {id:0,thumb:"",title:"",url:"",generatedBy:""};
+		var feed:Feed = {id:0,ressource:"",thumb:"",title:"",url:"",generatedBy:""};
 		
 		// get the feed corresponding to the id (=the url)
 		if (id == Feeds.FEED_1.url)
@@ -134,7 +134,6 @@ class ApplicationModel
 		{
 			onModelCellDataLoaded(listData);
 		}
-
 	}
 	
 	/**

@@ -14,6 +14,7 @@ import js.Lib;
 import js.Dom;
 import org.intermedia.controller.ApplicationController;
 import org.intermedia.model.ApplicationModel;
+import org.intermedia.model.Feed;
 import org.intermedia.model.Feeds;
 import org.intermedia.Settings;
 
@@ -106,9 +107,7 @@ class ViewManager
 		// Instantiate header
 		_header = new HeaderView();
 		_header.data = Constants.HEADER_HOME_TITLE;
-		_header.displayRefreshButton = true;
 		_header.onBackButtonClick = onHeaderBackButtonPressed;
-		_header.onRefreshButtonClick = onHeaderRefreshButtonPressed;
 		_body.appendChild(_header.node);
 		
 		// init menu
@@ -124,7 +123,7 @@ class ViewManager
 		Lib.window.onresize = function (event:Event) { refreshStyles();};
 		
 		// Sets callback on the model to be notified of model changes.
-		_applicationModel.onModelStartsLoading = onStartLoading;
+		//_applicationModel.onModelStartsLoading = onStartLoading;
 		_applicationModel.onModelDataLoadError = onLoadingError;
 		_applicationModel.onModelCellDataLoaded = onCellDataLoaded;
 		_applicationModel.onModelDetailDataLoaded = onDetailDataLoaded;
@@ -160,7 +159,7 @@ class ViewManager
 		_swippableListView.onHorizontalMove = _menu.moveHorizontally;
 		_swippableListView.onHorizontalTweenEnd = _menu.horizontalTweenEnd;
 		
-		// Call loadCellData() on the application controller with the default cell number (between 5 to 10)
+		// Call loadCellData() on the application controller
 		_applicationController.loadCellData(Feeds.FEED_3.url);
 		_applicationController.loadCellData(Feeds.FEED_1.url);
 		_applicationController.loadCellData(Feeds.FEED_2.url);
@@ -236,15 +235,13 @@ class ViewManager
 		// display header back button
 		_header.displayBackButton = true;
 
-		// hide header refresh button
-		_header.displayRefreshButton = false;
-		
 		// update header zIndex using a workaround
 		setZIndexToMax(_header);
 		
 		// refresh styles
-		refreshStyles();
-		
+		//refreshStyles();
+		Timer.delay(refreshStyles, 50);
+				
 		// hide loader
 		_detailView.displayLoading = false;
 		
@@ -261,10 +258,16 @@ class ViewManager
 	/**
 	 * Display the error view
 	 */
-	public function onLoadingError(error:Dynamic):Void
+	public function onLoadingError(feed:Feed, error:Dynamic):Void
 	{
-		trace("Load error: " + Std.string(error));
-		haxe.Firebug.trace("Load error: " + Std.string(error));
+		// if online network error, load offline feed
+		if (error == Settings.DATALOADER_TIMEOUT_MESSAGE)
+		{
+			// switch to offline feed
+			Settings.getInstance().online = false;
+			reloadFeed();
+		}
+		
 	}
 	
 	/**
@@ -277,9 +280,6 @@ class ViewManager
 		
 		// hide header back button
 		_header.displayBackButton = false;
-		
-		// display header refresh button
-		_header.displayRefreshButton = true;
 		
 		// PhoneGap Android specific: unset hardware back button so it has the default behaviour, which exits the application
 		untyped Lib.document.removeEventListener("backbutton", onHeaderBackButtonPressed, false);
@@ -307,13 +307,10 @@ class ViewManager
 	}
 	
 	/**
-	 * Header Refresh button click callback
+	 * Reload feed depending on online value (stored in Settings)
 	 */
-	public function onHeaderRefreshButtonPressed():Void
+	public function reloadFeed():Void
 	{
-		// switch between ofline and online
-		Settings.getInstance().online = !Settings.getInstance().online;
-		
 		// reset menu
 		_menu.index = 1;
 		

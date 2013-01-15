@@ -9,9 +9,11 @@
 package org.intermedia.model;
 
 import haxe.Firebug;
+import haxe.Timer;
 import org.intermedia.Debug;
 import org.intermedia.model.ApplicationModel;
 import org.intermedia.model.Feed;
+import org.intermedia.Settings;
 
 /**
  * Loads a rss feed and parses it either to a CellData or a DetailData returned to the ApplicationModel
@@ -23,9 +25,9 @@ class DataLoader
 {
 
 	// Defines onLoad callback, called when the xml feed is loaded
-	private var onCellDataLoaded : ListData->Void;
-	private var onCellDetailLoaded : DetailData->Void;
-	private var onLoadingError : Dynamic->Void;
+	private var onCellDataLoaded:ListData->Void;
+	private var onCellDetailLoaded:DetailData->Void;
+	private var onLoadingError:Feed->Dynamic->Void;
 	
 	// online/offline switch
 	private var _online:Bool;
@@ -38,6 +40,8 @@ class DataLoader
 
 	// feed page index Hash containing page index for each already requested list
 	private var _pageIndexHash:Hash<Int>;
+	
+	private var _feedsCount:Int = 0;
 
 	public function new(?online:Bool=true)
 	{
@@ -46,6 +50,11 @@ class DataLoader
 		_pageIndexHash = new Hash<Int>();
 		_online = online;
 		
+		if (_online)
+		{
+			// set timer, used to cancel online data loading if it takes too long, and switch to offline data loading
+			Timer.delay(checkOnlineFeeds, Settings.ONLINE_FEED_DELAY);
+		}
 	}
 	
 	/**
@@ -54,7 +63,7 @@ class DataLoader
 	 * @param	endIndex
 	 * @param	?callBack
 	 */
-	public function loadCellData(feed:Feed, itemsPerPage:Int, successCallback:ListData->Void, errorCallback:Dynamic->Void):Void
+	public function loadCellData(feed:Feed, itemsPerPage:Int, successCallback:ListData->Void, errorCallback:Feed->Dynamic->Void):Void
 	{
 		// set callbacks
 		onCellDataLoaded = successCallback;
@@ -62,13 +71,13 @@ class DataLoader
 		
 		var fullUrl:String = "";
 		
+		// debug is used here to measure parsing speed
+		var debug:Debug = new Debug();
+		debug.traceDuration("DataLoader step0");
+
 		// prepare online feed url
 		if (_online)
 		{			
-			// debug is used here for iPhone 4S where parsing is really slow when using PhoneGap
-			var debug:Debug = new Debug();
-			debug.traceDuration("DataLoader step0");
-
 			// current list page index
 			var pageIndex:Int = 1;
 			
@@ -83,7 +92,6 @@ class DataLoader
 			if (feed.generatedBy == "wordpress")
 			{
 				// build feed's full Url 
-				//fullUrl = feed.url + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
 				fullUrl = feed.url + "?posts_per_page=" + itemsPerPage + "&paged=" + pageIndex;
 			}
 			else
@@ -92,33 +100,36 @@ class DataLoader
 			}
 
 			// load xml feed
-			var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onCellsXmlLoaded, onLoadingError, feed);
+			var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onCellsXmlLoaded, loadingError, feed);
 
 			debug.traceDuration("DataLoader feed " + feed.url);
 		}
 		// prepare local feed url
 		else
 		{
-			// debug is used here for iPhone 4S where parsing is really slow when using PhoneGap
-			var debug:Debug = new Debug();
-			debug.traceDuration("DataLoader step0");
 			// depending on the feed, load corresponding local xml ressource, parse it and call callback 
-			if (feed.url == Feeds.FEED_1.url )
-			{
-				onCellsXmlLoaded(feed, Xml.parse(haxe.Resource.getString("feed1")));
-			}
-			else if (feed.url == Feeds.FEED_2.url)
-			{
-				onCellsXmlLoaded(feed, Xml.parse(haxe.Resource.getString("feed2")));
-			}
-			else if (feed.url == Feeds.FEED_3.url)
-			{
-				onCellsXmlLoaded(feed, Xml.parse(haxe.Resource.getString("feed3")));
-			}
+			onCellsXmlLoaded(feed, Xml.parse(haxe.Resource.getString(feed.ressource)));
+			
 			debug.traceDuration("DataLoader feed " + feed);
 		}
 		
 	}
+	
+	/**
+	 * Checks if all online feeds have been loaded, if not send loading error to the view so that it can be refreshed with offline data
+	 */
+	private function checkOnlineFeeds():Void
+	{
+		if (_feedsCount < Feeds.FEED_QTY)
+		{
+			if(onLoadingError != null)
+			{
+				onLoadingError(null,Settings.DATALOADER_TIMEOUT_MESSAGE);
+			}
+		}
+		
+	}
+	
 	
 	/**
 	 * Same as above for detail data
@@ -142,7 +153,7 @@ class DataLoader
 			fullUrl = "http://www.silexlabs.org/feed/ep_get_item_info?format=rss2&p=" + cellData.id;
 			
 			// load xml feed
-			var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onLoadSuccessDelegate, onLoadingError);
+			var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onLoadSuccessDelegate, loadingError);
 		}
 		// prepare local feed url
 		else
@@ -151,7 +162,7 @@ class DataLoader
 			onCellDetailXmlLoaded(Xml.parse(haxe.Resource.getString("detail")),cellData);
 		}
 		
-		var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onLoadSuccessDelegate, onLoadingError);
+		var xmlLoader:XmlLoader = new XmlLoader(fullUrl, _online, onLoadSuccessDelegate, loadingError);
 	}*/
 	
 	/**
@@ -162,8 +173,22 @@ class DataLoader
 	 */
 	private function onCellsXmlLoaded(feed:Feed, xml:Xml):Void
 	{
+		_feedsCount++;
+		
 		onCellDataLoaded({id:feed.url ,cells:ThumbTextListRssStandard.rss2Cells(xml,feed)});
-	}	
+	}
+	
+	/**
+	 * Loading error callback - reload the offline data if online data is not available
+	 * 
+	 * @param	feed
+	 * @param	error
+	 */
+	private function loadingError(feed:Feed, error:Dynamic):Void
+	{
+		_online = false;
+		loadCellData(feed, 0, onCellDataLoaded, null);
+	}
 	
 	/**
 	 * cell detail rss loaded callback

@@ -25,7 +25,7 @@ class XmlLoader
 	private var onLoadSuccess : Feed->Xml->Void;
 
 	// Defines onLoadError callback, called when the xml feed has not been loaded succesfully
-	private var onLoadError : Dynamic->Void;
+	private var onLoadError : Feed->Dynamic->Void;
 	
 	// online/offline switch
 	private var _online:Bool;
@@ -38,7 +38,7 @@ class XmlLoader
 	 * @param	successCallback
 	 * @param	errorCallback
 	 */
-	public function new(xmlUrl:String, online:Bool, successCallback:Feed->Xml->Void, errorCallback:Dynamic->Void, ?feed:Feed) 
+	public function new(xmlUrl:String, online:Bool, successCallback:Feed->Xml->Void, errorCallback:Feed->Dynamic->Void, ?feed:Feed) 
 	{
 		_online = online;
 		
@@ -66,37 +66,37 @@ class XmlLoader
 		try
 		{
 			var httpRequest:Http = new Http(fullUrl);
-			httpRequest.onData = function (xml:String) { onXmlLoaded(feed, xml); };
-			httpRequest.onError = onXmlError;
+			httpRequest.onData = function (xml:String) { onFeedLoaded(feed, xml); };
+			httpRequest.onError = function(error:Dynamic) { onFeedLoadError(feed, error); };
 			httpRequest.request(false);
 		}
 		// catch the error if any
 		catch (error:Dynamic)
 		{
-			onXmlError(error);
+			onFeedLoadError(feed, error);
 		}
 	}
 	
 	/**
-	 * Xml feeds error callback
+	 * feeds loading error callback
 	 * 
 	 * @param	msg
 	 */
-	private function onXmlError(error:Dynamic):Void
+	private function onFeedLoadError(feed:Feed, error:Dynamic):Void
 	{
 		// calls onLoad callback with xml
 		if (onLoadError != null)
 		{
-			onLoadError(error);
+			onLoadError(feed, error);
 		}
 	}
 	
 	/**
-	 * Xml feeds success callback
+	 * feeds loading success callback
 	 * 
 	 * @param	response
 	 */
-	private function onXmlLoaded(feed:Feed, xmlString:String):Void
+	private function onFeedLoaded(feed:Feed, xmlString:String):Void
 	{
 		// parse the xml feed
 		var xml:Xml =  Xml.parse(xmlString);
