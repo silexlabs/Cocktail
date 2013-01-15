@@ -35,7 +35,7 @@ class GeomUtils
 	 * @param	getHorizontalBounds wether to add horizontal bounds
 	 * @param	getVerticalBounds wether to add vertical bounds
 	 */
-	public static function addBounds(addedBounds:RectangleVO, bounds:RectangleVO, getHorizontalBounds:Bool = true, getVerticalBounds:Bool = true ):Void
+	public inline static function addBounds(addedBounds:RectangleVO, bounds:RectangleVO, getHorizontalBounds:Bool = true, getVerticalBounds:Bool = true ):Void
 	{
 		//add horizontal bounds if needed
 		if (getHorizontalBounds == true)

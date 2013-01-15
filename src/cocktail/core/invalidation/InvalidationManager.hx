@@ -163,6 +163,14 @@ class InvalidationManager
 	 */
 	private var _repaintWholeViewport:Bool;
 	
+	/**
+	 * A flag determining wether the dirty rect
+	 * added to the global dirty rect is the first
+	 * since last rendering. If it is, it becomes
+	 * the dirty rect instead of being aded to it
+	 */
+	private var _firstDirtyRect:Bool;
+	
 	
 	public function new(htmlDocument:HTMLDocument) 
 	{
@@ -185,6 +193,8 @@ class InvalidationManager
 		
 		_initialMatrix = new Matrix();
 		_dirtyRect = new RectangleVO();
+		
+		_firstDirtyRect = true;
 		
 		//for the first rendering, the
 		//while viewport must be painted
@@ -272,7 +282,21 @@ class InvalidationManager
 		//dirty rect
 		else
 		{
-			GeomUtils.intersectBounds(_dirtyRect, dirtyRect, _dirtyRect);
+			//id this the first dirty rect added, it is 
+			//used as is instead of added
+			if (_firstDirtyRect == true)
+			{
+				_dirtyRect.x = dirtyRect.x;
+				_dirtyRect.y = dirtyRect.y;
+				_dirtyRect.width = dirtyRect.width;
+				_dirtyRect.height = dirtyRect.height;
+				
+				_firstDirtyRect = false;
+			}
+			else
+			{
+				GeomUtils.addBounds(dirtyRect, _dirtyRect);
+			}
 		}
 	}
 	
@@ -516,10 +540,11 @@ class InvalidationManager
 			_repaintWholeViewport = false;
 			
 			//reset the dirty rect for next rendering
+			_firstDirtyRect = true;
 			_dirtyRect.x = 0;
 			_dirtyRect.y = 0;
-				_dirtyRect.width = _htmlDocument.window.innerWidth;
-				_dirtyRect.height = _htmlDocument.window.innerHeight;
+			_dirtyRect.width = 0;
+			_dirtyRect.height = 0;
 		}
 		
 		//when the document has been entirely updated
