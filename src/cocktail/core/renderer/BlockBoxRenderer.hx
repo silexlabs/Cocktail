@@ -445,22 +445,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//if any floated or clear element was encountered for the first time
 		//during this layout, then it return true, and the layout
 		//should be done again with the new floated and clear element list
-		var shouldLayoutAgain:Bool = doLayoutChildren(layoutState);
-		
-		//while floated and clear elements are found, redo the layout
-		while (shouldLayoutAgain == true)
-		{
-			shouldLayoutAgain = false;
-			//update floated and clear element list before re-layout
-			//if this block is a block formatting root, no need
-			//to update the list as it is immediately updated
-			//as soon as the floated or clear element is found
-			if (establishesNewBlockFormattingContext() == false)
-			{
-				updateFloatedAndClearElements();
-			}
-			shouldLayoutAgain = doLayoutChildren(layoutState);
-		}
+		doLayoutChildren(layoutState);
 		
 		//if the width of this block box should be shrink-to-fit, it
 		//can now be found 
@@ -474,45 +459,33 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	/**
 	 * layout all the children either in a block or inline
 	 * formatting
-	 * 
-	 * Return wether the layout should be done again, happens
-	 * when a floated element is found for the first time during
-	 * the current layout
 	 */
-	private function doLayoutChildren(layoutState:LayoutStateValue):Bool
+	private function doLayoutChildren(layoutState:LayoutStateValue):Void
 	{
-		var shouldLayoutAgain:Bool = false;
-		
 		//children are either all block level or all inline level
 		//(exluding floated and absolutely positioned element), 
-		//so this block either formatting them as blocks are lines
+		//so this block either formatting them as blocks or lines
 		if (childrenInline() == false)
 		{
-			shouldLayoutAgain = layoutBlockChildrenAndFloats(layoutState);
+			layoutBlockChildrenAndFloats(layoutState);
 		}
 		else
 		{
-			shouldLayoutAgain = layoutInlineChildrenAndFloats(layoutState);
+			layoutInlineChildrenAndFloats(layoutState);
 			
 			//now that all children's inlineBoxes have been
 			//laid out, their bounds can be updated
 			updateInlineChildrenBounds(this);
 		}
-		
-		return shouldLayoutAgain;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-
 	/**
 	 * Update the list of floated element by converting
 	 * their position to this block own space,
 	 * and retrieve the list of clear element from the
 	 * block formatting root
 	 */
-	private function updateFloatedAndClearElements():Void
+	public function updateFloatedAndClearElements():Void
 	{	
 		//if this block box is a block formatting root,
 		//then it needs to reset its floated element and clear element list,
@@ -532,6 +505,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+
 	/**
 	 * If this block box width should be shrink-to-fit, compute it.
 	 * 
@@ -548,7 +525,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function applyShrinkToFitIfNeeded(layoutState:LayoutStateValue):Void
 	{
-		
 		//absolutely positioned element with not auto left and right style don't use shrink-to-fit width
 		//if the layout state is not normal, shrink to fit might also be applied to block box which haven't auto width
 		//but which still needs to compute their shrink-yo-fit width for their ancestor block formatting context
@@ -795,13 +771,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	/**
 	 * Called when all children are blocks. 
 	 * Layout them as well as floated children
-	 * 
-	 * @return wether layout need to be restarted. Happens
-	 * when a floated child is first found, layout of the 
-	 * block formatting context must be done again as the float
-	 * may influence previous block's layout
 	 */
-	private function layoutBlockChildrenAndFloats(layoutState:LayoutStateValue):Bool
+	private function layoutBlockChildrenAndFloats(layoutState:LayoutStateValue):Void
 	{
 		//holds the x,y position, in this block box space where
 		//to position the next child
@@ -815,7 +786,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//absolutely positioned child are not positioned here
 			if (child.isPositioned() == false || child.isRelativePositioned() == true)
 			{
-				//wether child has clearance, in which case i doesn't need to add its
+				//wether child has clearance, in which case it doesn't need to add its
 				//top margin to its y position
 				var childHasClearance:Bool = false;
 				
@@ -825,27 +796,21 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				{
 					//the position were the child will be placed if it doesn't have clearance
 					var hypotheticalChildYPosition:Float = _childPosition.y + child.getCollapsedTopMargin();
-					
+
 					//check wether child actually has clearance, meaning that it should be placed
-					//below a float declare earlier in the document
+					//below a float declared earlier in the document
 					if (floatsManager.hasClearance(child, hypotheticalChildYPosition) == true)
 					{
-						//first time the child with clearance is found, layout
-						//of block must be restarted has clearance child might
-						//influence margin collapsing
+						//register the clearing element the first time it is found
 						if (floatsManager.clearIsAlreadyRegistered(child) == false)
 						{
 							registerClearElement(child);
-							return true;
 						}
-						//suqsequent times, compute actual clearance and set it 
+						//compute actual clearance and set it 
 						//as the y position were the child will be placed
-						else
-						{
-							var clearance:Float = floatsManager.getClearance(child, hypotheticalChildYPosition);
-							_childPosition.y += clearance;
-							childHasClearance = true;
-						}
+						var clearance:Float = floatsManager.getClearance(child, hypotheticalChildYPosition);
+						_childPosition.y += clearance;
+						childHasClearance = true;
 					}
 				}
 				
@@ -925,9 +890,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//it must first be laid out so that its width and height are known
 					child.layout(true, layoutState);
 					
-					//each time a float is found, it is stored and the layout is re-started at
-					//the first parent block formatting root, so do nothing if the float
-					//was already found to prevent infinite loop
+					//first time a float is found, register it
+					//TOOD 2 : now that there is only 1 pass no need to check
+					//if already registered
 					if (floatsManager.floatIsAlreadyRegistered(child) == false)
 					{
 						var childPosition:PointVO = _childPosition;
@@ -951,36 +916,37 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						}
 						
 						registerFloatedElement(child, childPosition);
-						return true;
 					}
 				}
 			}
 			
 			child = child.nextSibling;
 		}
-		
-		return false;
 	}
 	
 	/**
 	 * When a clear element is first encountered, it is
-	 * stored in the nearest block formatting context root
-	 * ancestor and layout is started again
+	 * stored in the nearest block formatting context root,
+	 * then all the all the ancestor of this block update
+	 * their clear elements reference
 	 */
 	private function registerClearElement(clearElement:ElementRenderer):Void
 	{
 		var blockFormattingContextRoot:BlockBoxRenderer = getNearestBlockFormattingContextRoot();
 		blockFormattingContextRoot.floatsManager.registerClear(clearElement);
+		
+		//update float and clear ref of parents
+		updateAncestorsFloatedAndClearElements();
 	}
 	
 	/**
-	 * When a floated element is first encountered, it is stored, then
-	 * layout of this block box starts over, now including the floated
-	 * element.
+	 * When a floated element is first encountered, it is stored
 	 * 
 	 * The floated element is stored on the nearest block formatting context root
-	 * ancestor (which might be this). When layout is started overf, floated elements
-	 * list is updated
+	 * ancestor (which might be this).
+	 * 
+	 * Then all ancestors of this block until the block formatting root update
+	 * their floated elemenet reference to add a reference to the newly added element
 	 */
 	private function registerFloatedElement(floatedElement:ElementRenderer, childPosition:PointVO):Void
 	{
@@ -1009,13 +975,38 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//convert back from the block formatting root space to this block box space
 		floatedElement.bounds.x -= offset.x;
 		floatedElement.bounds.y -= offset.y;
+		
+		//update float and clear ref of parents
+		updateAncestorsFloatedAndClearElements();
+	}
+	
+	/**
+	 * Update the reference of the floated and clear element
+	 * for all the ancestors of this block until the
+	 * block formatting root
+	 */
+	private function updateAncestorsFloatedAndClearElements():Void
+	{
+		var parent:BlockBoxRenderer = this;
+		while (parent != null)
+		{
+			if (parent.isBlockContainer() == true && parent.establishesNewBlockFormattingContext() == false)
+			{
+				parent.updateFloatedAndClearElements();
+				parent = cast(parent.parentNode);
+			}
+			else
+			{
+				return;
+			}
+		}
 	}
 
 	/**
 	 * When all children are inline level, format them as 
 	 * lines. Also format floated children
 	 */
-	private function layoutInlineChildrenAndFloats(layoutState:LayoutStateValue):Bool
+	private function layoutInlineChildrenAndFloats(layoutState:LayoutStateValue):Void
 	{
 		//reset the array of line boxes before layout
 		lineBoxes = new Array<LineBox>();
@@ -1043,11 +1034,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		//if a float was first found during layout,
 		//it should be done again
+		//
+		//TODO 2 : not implemented, when a float is found on
+		//a line, the layout of the line should be done again
 		if (_floatFound == true)
 		{
 			//reset flag before new layout
 			_floatFound = false;
-			return true;
 		}
 		
 		//layout the last line
@@ -1056,8 +1049,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//add last line box height so that the total line boxes height
 		//is known
 		_lineBoxPosition.y += inlineFormattingData.lineBox.bounds.height;
-		
-		return false;
 	}
 	
 	/**
@@ -1175,28 +1166,28 @@ class BlockBoxRenderer extends FlowBoxRenderer
 								clearedFloatPosition.y = inlineFormattingData.lineBoxPosition.y + clearance;
 								registerFloatedElement(child, clearedFloatPosition);
 								_floatFound = true;
-								return null;
 							}
 						}
-						
-						//here the float doesn't have clearance
-						//check wether there is enough space in the current line to fit the floated
-						//element. If not, create a new line box to fit it.
-						var floatMarginWidth:Float = child.bounds.width + child.coreStyle.usedValues.marginLeft + child.coreStyle.usedValues.marginRight;
-						if (inlineFormattingData.lineBox.widthCanFit(floatMarginWidth) == false)
+						else
 						{
-							layoutLineBox(inlineFormattingData, layoutState);
+							//here the float doesn't have clearance
+							//check wether there is enough space in the current line to fit the floated
+							//element. If not, create a new line box to fit it.
+							var floatMarginWidth:Float = child.bounds.width + child.coreStyle.usedValues.marginLeft + child.coreStyle.usedValues.marginRight;
+							if (inlineFormattingData.lineBox.widthCanFit(floatMarginWidth) == false)
+							{
+								layoutLineBox(inlineFormattingData, layoutState);
+							}
+							
+							//for inline formatting, float are replaced are aligned
+							//with the current line box position
+							registerFloatedElement(child, inlineFormattingData.lineBoxPosition);
+							
+							//for inline formatting, a flag is set instead
+							//of just returning a flag as return value
+							//already used
+							_floatFound = true;
 						}
-						
-						//for inline formatting, float are replaced are aligned
-						//with the current line box position
-						registerFloatedElement(child, inlineFormattingData.lineBoxPosition);
-						
-						//for inline formatting, a flag is set instead
-						//of just returning a flag as return value
-						//already used
-						_floatFound = true;
-						return null;
 					}
 				}
 				//here the child is a TextRenderer, which has as many text inline box
