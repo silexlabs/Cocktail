@@ -1140,13 +1140,15 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	
 	override private function set_scrollLeft(value:Float):Float
 	{
-		invalidateRendering();
+		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
+		htmlDocument.invalidationManager.invalidateRendering(clipRect);
 		return super.set_scrollLeft(value);
 	}
 
 	override private function set_scrollTop(value:Float):Float
 	{
-		invalidateRendering();
+		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
+		htmlDocument.invalidationManager.invalidateRendering(clipRect);
 		return super.set_scrollTop(value);
 	}
 	

@@ -10,11 +10,13 @@ package cocktail.core.invalidation;
 
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
+import cocktail.core.geom.GeomUtils;
 import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.stacking.StackingContext;
 import cocktail.core.layout.LayoutData;
+import cocktail.core.geom.GeomData;
 
 /**
  * This class is in charge of keeping
@@ -142,6 +144,25 @@ class InvalidationManager
 	 */
 	private var _initialMatrix:Matrix;
 	
+	/**
+	 * Between each rendering, each time the 
+	 * invalidate rendering method is called, 
+	 * the bounds which must be repainted are
+	 * provided and added to the dirty rect.
+	 * 
+	 * The dirty rect is the actual rectangle
+	 * which gets repainted on the next rendering,
+	 * this prevent repainting the whole viewport
+	 * each time
+	 */
+	private var _dirtyRect:RectangleVO;
+	
+	/**
+	 * A flag which if true means that the whole
+	 * viewport must be updated on next rendering
+	 */
+	private var _repaintWholeViewport:Bool;
+	
 	
 	public function new(htmlDocument:HTMLDocument) 
 	{
@@ -163,6 +184,11 @@ class InvalidationManager
 		_bitmapSizeNeedsUpdate = true;
 		
 		_initialMatrix = new Matrix();
+		_dirtyRect = new RectangleVO();
+		
+		//for the first rendering, the
+		//while viewport must be painted
+		_repaintWholeViewport = true;
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -216,12 +242,38 @@ class InvalidationManager
 	}
 	
 	/**
-	 * schedule a rendering of the document
+	 * schedule a rendering of the document.
+	 * 
+	 * An optionnal dirty rect is provided,
+	 * which is the area which should be repainted on
+	 * next rendering.
+	 * 
+	 * If no dirty rect is provided, the whole viewport
+	 * will be repainted on next rendering
 	 */
-	public function invalidateRendering():Void
+	public function invalidateRendering(dirtyRect:RectangleVO = null):Void
 	{
 		_documentNeedsRendering = true;
 		invalidate();
+		
+		//early return if all the viewport
+		//should already be repainted
+		if (_repaintWholeViewport == true)
+		{
+			return;
+		}
+		
+		if (dirtyRect == null)
+		{
+			_repaintWholeViewport = true;
+		}
+		//if provided dirty rect is not null, 
+		//add its bounds to the global document
+		//dirty rect
+		else
+		{
+			GeomUtils.intersectBounds(_dirtyRect, dirtyRect, _dirtyRect);
+		}
 	}
 	
 	/**
@@ -431,8 +483,23 @@ class InvalidationManager
 			initialLayerRenderer.resetScrollOffset();
 			initialLayerRenderer.updateScrollOffset();
 			
-			//update the clip rects of layers used for rendering, default clip rect corresponds to the viewport
-			initialLayerRenderer.resetClipRect(0, 0, _htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
+			//if the whole viewport is set to be repainted,
+			//the dirty rect becomes the whole viewport
+			if (_repaintWholeViewport == true)
+			{
+				_dirtyRect.x = 0;
+				_dirtyRect.y = 0;
+				_dirtyRect.width = _htmlDocument.window.innerWidth;
+				_dirtyRect.height = _htmlDocument.window.innerHeight;
+			}
+			
+			//on every layer with its bitmap, clear the area of the dirty rect which is about to
+			//be repainted
+			initialLayerRenderer.clear(_dirtyRect.x, _dirtyRect.y, _dirtyRect.width, _dirtyRect.height);
+			
+			//update the clip rects of layers used for rendering, default clip rect corresponds to the dirty rect
+			//TODO 1 : should have a separate dirty rect var instead, else mess with hit testing bounds
+			initialLayerRenderer.resetClipRect(_dirtyRect.x, _dirtyRect.y, _dirtyRect.width, _dirtyRect.height);
 			initialLayerRenderer.updateClipRect();
 			
 			//for each layer, compute its alpha by concatenating alpha of all ancestor layers
@@ -446,6 +513,13 @@ class InvalidationManager
 			_htmlDocument.documentElement.elementRenderer.updateHitTestingBounds();
 			
 			_documentNeedsRendering = false;
+			_repaintWholeViewport = false;
+			
+			//reset the dirty rect for next rendering
+			_dirtyRect.x = 0;
+			_dirtyRect.y = 0;
+				_dirtyRect.width = _htmlDocument.window.innerWidth;
+				_dirtyRect.height = _htmlDocument.window.innerHeight;
 		}
 		
 		//when the document has been entirely updated

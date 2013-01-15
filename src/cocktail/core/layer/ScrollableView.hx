@@ -481,11 +481,15 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 */
 	private function doGetElementRenderersBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
 	{
+		//must cast this into a layerRenderer
+		//TODO 3 : clumsy, should implementation be in LayerRenderer ?
+		var thisAsLayer:LayerRenderer = cast(this);
+		
 		var child:ElementRenderer = rootElementRenderer.firstChild;
 		while(child != null)
 		{
 			//check that child belong to this layer
-			if (child.layerRenderer == cast(this))
+			if (child.layerRenderer == thisAsLayer)
 			{
 				//add bounds of child
 				GeomUtils.addBounds(child.globalBounds, bounds);
