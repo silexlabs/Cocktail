@@ -80,12 +80,19 @@ class TextRenderer extends InvalidatingElementRenderer
 	/**
 	 * A reusable rect used during rendering
 	 */
-	private var _renderRect:RectangleVO;
+	private static var _renderRect:RectangleVO = new RectangleVO();
 	
 	/**
 	 * A reusable rect used during rendering
 	 */
-	private var _intersectBounds:RectangleVO;
+	private static var _intersectBounds:RectangleVO = new RectangleVO();
+	
+	/**
+	 * a reusable point used to compute the 
+	 * position where to render each text inline
+	 * box
+	 */
+	private static var _destPoint:PointVO = new PointVO(0, 0);
 	
 	/**
 	 * Class constructor.
@@ -96,8 +103,6 @@ class TextRenderer extends InvalidatingElementRenderer
 		_text = cast(node);
 		_textNeedsRendering = true;
 		_textTokensNeedParsing = true;
-		_renderRect = new RectangleVO();
-		_intersectBounds = new RectangleVO();
 	}
 		
 	/**
@@ -143,21 +148,22 @@ class TextRenderer extends InvalidatingElementRenderer
 		var inlineBoxesLength:Int = inlineBoxes.length;
 		for (i in 0...inlineBoxesLength)
 		{
-			var inlineBox:TextInlineBox = cast(inlineBoxes[i]);
+			var inlineBox:InlineBox = inlineBoxes[i];
 			if (inlineBox.isSpace() == false)
 			{
 				_renderRect.width = inlineBox.bounds.width;
 				_renderRect.height = inlineBox.bounds.height;
 				
-				var destPoint:PointVO = new PointVO(inlineBox.bounds.x + globalBounds.x - scrollOffset.x, inlineBox.bounds.y + globalBounds.y - scrollOffset.y);
+				_destPoint.x = inlineBox.bounds.x + globalBounds.x - scrollOffset.x;
+				_destPoint.y = inlineBox.bounds.y + globalBounds.y - scrollOffset.y;
 				if (inlineBox.lineBox != null)
 				{
-					destPoint.y += inlineBox.lineBox.bounds.y;
-					destPoint.x += inlineBox.lineBox.bounds.x;
+					_destPoint.y += inlineBox.lineBox.bounds.y;
+					_destPoint.x += inlineBox.lineBox.bounds.x;
 				}
 				
-				_intersectBounds.x = destPoint.x;
-				_intersectBounds.y = destPoint.y;
+				_intersectBounds.x = _destPoint.x;
+				_intersectBounds.y = _destPoint.y;
 				_intersectBounds.width = _renderRect.width;
 				_intersectBounds.height = _renderRect.height;
 				
@@ -165,7 +171,9 @@ class TextRenderer extends InvalidatingElementRenderer
 				
 				if (_intersectBounds.width > 0 && _intersectBounds.height > 0)
 				{
-					graphicContext.graphics.copyPixels(inlineBox.nativeTextBitmap, _renderRect, destPoint, clipRect);
+					//need to type to get ref to native bitmap data
+					var typedTextInlineBox:TextInlineBox = cast(inlineBox);
+					graphicContext.graphics.copyPixels(typedTextInlineBox.nativeTextBitmap, _renderRect, _destPoint, clipRect);
 				}
 			}
 		}
