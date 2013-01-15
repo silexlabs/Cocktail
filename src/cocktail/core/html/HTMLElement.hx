@@ -1500,8 +1500,6 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function set_scrollLeft(value:Int):Int
 	{
-		updateDocumentImmediately();
-		
 		if (elementRenderer != null)
 		{
 			elementRenderer.scrollLeft = value;
@@ -1522,8 +1520,6 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function set_scrollTop(value:Int):Int
 	{
-		updateDocumentImmediately();
-		
 		if (elementRenderer != null)
 		{
 			elementRenderer.scrollTop = value;
