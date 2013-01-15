@@ -50,21 +50,21 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 * used to hold a runtime specific default
 	 * font name for serif font
 	 */
-	private static inline var SERIF_CSS_FONT_NAME:String = "Serif";
+	private static inline var SERIF_CSS_FONT_NAME:String = "SERIF";
 	private static inline var SERIF_FLASH_FONT_NAME:String = "_serif";
 	
 	/**
 	 * used to hold a runtime specific default
 	 * font name for sans-serif font
 	 */
-	private static inline var SANS_SERIF_CSS_FONT_NAME:String = "Sans-Serif";
+	private static inline var SANS_SERIF_CSS_FONT_NAME:String = "SANS-SERIF";
 	private static inline var SANS_SERIF_FLASH_FONT_NAME:String = "_sans";
 	
 	/**
 	 * used to hold a runtime specific default
 	 * font name for monospace font (like courier)
 	 */
-	private static inline var MONOSPACE_CSS_FONT_NAME:String = "Monospace";
+	private static inline var MONOSPACE_CSS_FONT_NAME:String = "MONOSPACE";
 	private static inline var MONOSPACE_FLASH_FONT_NAME:String = "_typewriter";
 	
 	/**
@@ -304,7 +304,8 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	{
 		var fontFamily:String = "";
 		
-		for (i in 0...value.length)
+		var length:Int = value.length;
+		for (i in 0...length)
 		{
 			var fontName:String = value[i];
 			
@@ -313,13 +314,13 @@ class FontManagerImpl extends AbstractFontManagerImpl
 			//flash generic font name
 			switch (fontName.toUpperCase())
 			{
-				case SERIF_CSS_FONT_NAME.toUpperCase():
+				case SERIF_CSS_FONT_NAME:
 					fontName = SERIF_FLASH_FONT_NAME;
 					
-				case SANS_SERIF_CSS_FONT_NAME.toUpperCase():
+				case SANS_SERIF_CSS_FONT_NAME:
 					fontName = SANS_SERIF_FLASH_FONT_NAME;
 					
-				case MONOSPACE_CSS_FONT_NAME.toUpperCase():
+				case MONOSPACE_CSS_FONT_NAME:
 					fontName = MONOSPACE_FLASH_FONT_NAME;
 			}
 			
