@@ -732,6 +732,15 @@ class BoxRenderer extends InvalidatingElementRenderer
 	}
 	
 	/**
+	 * Determine wether the element has the 
+	 * 'position' value of either 'absolute' or 'fixed'
+	 */
+	override public function isAbsolutelyPositioned():Bool
+	{
+		return coreStyle.isAbsolutelyPositioned;
+	}
+	
+	/**
 	 * Determine wether an ElementRenderer has
 	 * the 'position' value 'relative'.
 	 * 

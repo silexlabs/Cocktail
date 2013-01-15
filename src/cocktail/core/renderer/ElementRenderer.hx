@@ -499,7 +499,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		while(child != null)
 		{
 			//set global bounds for absolutely positioned child
-			if (child.isPositioned() == true && child.isRelativePositioned() == false)
+			if (child.isAbsolutelyPositioned())
 			{
 				setAbsolutelyPositionedGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
 			}
@@ -925,6 +925,11 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		return false;
 	}
 	
+	public function isAbsolutelyPositioned():Bool
+	{
+		return false;
+	}
+	
 	public function isInlineLevel():Bool
 	{
 		return false;
@@ -1072,7 +1077,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 */
 	private function getContainingBlock():FlowBoxRenderer
 	{	
-		if (isPositioned() == true && isRelativePositioned() == false)
+		if (isAbsolutelyPositioned() == true)
 		{
 			//for absolutely positioned fixed elements, the containing block
 			//is the viewport
@@ -1299,7 +1304,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		{
 			if (previousElementRendererSibling.isFloat() == false)
 			{
-				if (previousElementRendererSibling.isPositioned() == false || previousElementRendererSibling.isRelativePositioned() == true)
+				if (previousElementRendererSibling.isAbsolutelyPositioned() == false)
 				{
 					return previousElementRendererSibling;
 				}

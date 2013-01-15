@@ -1536,7 +1536,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				//account
 				if (child.isFloat() == false)
 				{
-					if (child.isPositioned() == false || child.isRelativePositioned() == true)
+					if (child.isAbsolutelyPositioned() == false)
 					{
 						return true;
 					}

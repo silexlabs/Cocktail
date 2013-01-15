@@ -283,6 +283,12 @@ class CoreStyle
 	public var isFixedPositioned:Bool;
 	
 	/**
+	 * Wether the element has a position style
+	 * of 'fixed' or 'absolute'
+	 */
+	public var isAbsolutelyPositioned:Bool;
+	
+	/**
 	 * Wether the element has both an overflow-x
 	 * and overflow-y of 'visible'
 	 */
@@ -472,6 +478,7 @@ class CoreStyle
 		hasAutoMarginBottom = false;
 		hasAutoMarginLeft = false;
 		hasAutoMarginRight = false;
+		isAbsolutelyPositioned = false;
 		
 		init();
 	}
@@ -764,6 +771,7 @@ class CoreStyle
 			isPositioned = false;
 			isRelativePositioned = false;
 			isFixedPositioned = false;
+			isAbsolutelyPositioned = false;
 			
 			switch (getKeyword(position))
 			{
@@ -771,10 +779,12 @@ class CoreStyle
 					
 				case ABSOLUTE:
 					isPositioned = true;
+					isAbsolutelyPositioned = true;
 				
 				case FIXED:	
 					isPositioned = true;
 					isFixedPositioned = true;
+					isAbsolutelyPositioned = true;
 					
 				case RELATIVE:
 					isPositioned = true;

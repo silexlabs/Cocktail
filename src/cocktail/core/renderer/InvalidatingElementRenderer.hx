@@ -105,7 +105,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 			case CSSConstants.LEFT, CSSConstants.RIGHT,
 			CSSConstants.TOP, CSSConstants.BOTTOM:
 				
-				if (isPositioned() == true && isRelativePositioned() == false)
+				if (isAbsolutelyPositioned() == true)
 				{
 					invalidateLayoutAndRendering();
 					invalidateContainingBlock(styleName);
