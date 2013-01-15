@@ -11,6 +11,7 @@ package cocktail.core.layer;
 using cocktail.core.utils.Utils;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
+import cocktail.core.geom.GeomUtils;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.ScrollBar;
@@ -148,6 +149,16 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	private var _relativeOffset:PointVO;
 	
 	/**
+	 * A reusable rectangle used during rendering.
+	 * 
+	 * It intersect the bounds of the clip rect of
+	 * the layer with the dirty rect of the document
+	 * to determine which rectangle of the layer
+	 * needs actually to be repainted
+	 */
+	private var _layerDirtyRect:RectangleVO;
+	
+	/**
 	 * class constructor. init class attributes
 	 */
 	public function new(rootElementRenderer:ElementRenderer) 
@@ -163,6 +174,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		
 		matrix = new Matrix();
 		_relativeOffset = new PointVO(0, 0);
+		_layerDirtyRect = new RectangleVO();
 		_alpha = 1.0;
 	}
 	
@@ -1181,8 +1193,11 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 * Starts the rendering of this LayerRenderer.
 	 * Render all the element renderer belonging
 	 * to this layer starting with the root element renderer.
+	 * 
+	 * @param dirtyRect the rectangle in the viewport space
+	 * which actually needs to be repainted
 	 */
-	public function render():Void
+	public function render(dirtyRect:RectangleVO):Void
 	{
 		_needsRendering = true;
 		
@@ -1196,13 +1211,17 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 				graphicsContext.graphics.beginTransparency(_alpha);
 			}
 			
+			//intersect the global dirty rect and the clip rect of this
+			//layer to determine which rect of the layer needs to be repainted
+			GeomUtils.intersectBounds(dirtyRect, clipRect, _layerDirtyRect);
+			
 			//apply layer matrix to graphics context, so that all element
 			//renderers of the lyer use those transformations
 			graphicsContext.graphics.beginTransformations(matrix);
 			
 			//render the rootElementRenderer itself which will also
 			//render all ElementRenderer belonging to this LayerRenderer
-			rootElementRenderer.render(graphicsContext, clipRect, scrollOffset);
+			rootElementRenderer.render(graphicsContext, _layerDirtyRect, scrollOffset);
 			
 			//stop using the layer's transformations
 			graphicsContext.graphics.endTransformations();

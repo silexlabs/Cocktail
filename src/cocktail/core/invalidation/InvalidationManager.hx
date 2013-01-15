@@ -507,6 +507,18 @@ class InvalidationManager
 			initialLayerRenderer.resetScrollOffset();
 			initialLayerRenderer.updateScrollOffset();
 			
+			
+			//update the clip rects of layers used for rendering, default clip rect starts with the viewport
+			initialLayerRenderer.resetClipRect(0, 0, _htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
+			initialLayerRenderer.updateClipRect();
+			
+			//update the hit testing bound to respond accurately to user interaction
+			_htmlDocument.documentElement.elementRenderer.updateHitTestingBounds();
+			
+			//for each layer, compute its alpha by concatenating alpha of all ancestor layers
+			//TODO 2 : need not to be updated each rendering
+			initialLayerRenderer.updateLayerAlpha(1.0);
+			
 			//if the whole viewport is set to be repainted,
 			//the dirty rect becomes the whole viewport
 			if (_repaintWholeViewport == true)
@@ -521,20 +533,9 @@ class InvalidationManager
 			//be repainted
 			initialLayerRenderer.clear(_dirtyRect.x, _dirtyRect.y, _dirtyRect.width, _dirtyRect.height);
 			
-			//update the clip rects of layers used for rendering, default clip rect corresponds to the dirty rect
-			//TODO 1 : should have a separate dirty rect var instead, else mess with hit testing bounds
-			initialLayerRenderer.resetClipRect(_dirtyRect.x, _dirtyRect.y, _dirtyRect.width, _dirtyRect.height);
-			initialLayerRenderer.updateClipRect();
-			
-			//for each layer, compute its alpha by concatenating alpha of all ancestor layers
-			//TODO 2 : need not to be updated each rendering
-			initialLayerRenderer.updateLayerAlpha(1.0);
-			
-			//start rendering of the document at the initial stacking context
-			initialLayerRenderer.stackingContext.render();
-			
-			//update the hit testing bound to respond accurately to user interaction
-			_htmlDocument.documentElement.elementRenderer.updateHitTestingBounds();
+			//start rendering of the document at the initial stacking context, providing the direct
+			//rect to prevent repainting the whole viewport if not necessary
+			initialLayerRenderer.stackingContext.render(_dirtyRect);
 			
 			_documentNeedsRendering = false;
 			_repaintWholeViewport = false;

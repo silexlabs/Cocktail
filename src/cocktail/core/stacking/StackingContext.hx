@@ -10,6 +10,7 @@ package cocktail.core.stacking;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.utils.FastNode;
 import cocktail.core.css.CSSData;
+import cocktail.core.geom.GeomData;
 
 /**
  * Stacking contexts are used to determine the z-index
@@ -69,10 +70,13 @@ class StackingContext extends FastNode<StackingContext>
 		 * with an 'auto' zindex, following layer tree (not stacking context tree) order
 		 * 
 		 * finally stacking context with a positive z index are rendered
+		 * 
+	 *	@param dirtyRect the rect in the viewport space which needs
+	 * to actually be repainted
 	 */
-	public function render():Void
+	public function render(dirtyRect:RectangleVO):Void
 	{
-		layerRenderer.render();
+		layerRenderer.render(dirtyRect);
 		
 		var child:StackingContext = firstChild;
 		
@@ -101,11 +105,11 @@ class StackingContext extends FastNode<StackingContext>
 						//positive stacking context
 						if (value > 0 && hasRenderedAutoAndZeroLayers == false)
 						{
-							renderChildrenInSameStackingContext(layerRenderer);
+							renderChildrenInSameStackingContext(layerRenderer, dirtyRect);
 							hasRenderedAutoAndZeroLayers = true;
 						}
 						
-						child.render();
+						child.render(dirtyRect);
 					}
 					
 				default:	
@@ -119,7 +123,7 @@ class StackingContext extends FastNode<StackingContext>
 		//now
 		if (hasRenderedAutoAndZeroLayers == false)
 		{
-			renderChildrenInSameStackingContext(layerRenderer);
+			renderChildrenInSameStackingContext(layerRenderer, dirtyRect);
 		}
 	}
 	
@@ -128,17 +132,17 @@ class StackingContext extends FastNode<StackingContext>
 	 * context as well as child stacking context with a zindex of
 	 * 0, which must be rendered in layer tree order
 	 */
-	private function renderChildrenInSameStackingContext(rootLayer:LayerRenderer):Void
+	private function renderChildrenInSameStackingContext(rootLayer:LayerRenderer, dirtyRect:RectangleVO):Void
 	{
 		var child:LayerRenderer = rootLayer.firstChild;
 		while (child != null)
 		{
 			if (child.hasOwnStackingContext == false)
 			{
-				child.render();
+				child.render(dirtyRect);
 				//render all 'auto' layer renderer belonging
 				//to this stacking context recursively
-				renderChildrenInSameStackingContext(child);
+				renderChildrenInSameStackingContext(child, dirtyRect);
 			}
 			else
 			{
@@ -150,7 +154,7 @@ class StackingContext extends FastNode<StackingContext>
 							//rendering should start at the stacking
 							//context so that child stacking context
 							//are also rendered
-							child.stackingContext.render();
+							child.stackingContext.render(dirtyRect);
 						}
 					default:	
 				}
