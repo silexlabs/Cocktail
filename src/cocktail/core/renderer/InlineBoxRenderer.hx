@@ -33,11 +33,18 @@ import haxe.Stack;
 class InlineBoxRenderer extends FlowBoxRenderer
 {
 	/**
+	 * A reusable rectangle used during inline box
+	 * rendering to compute their bounds
+	 */
+	private var _renderRect:RectangleVO;
+	
+	/**
 	 * class constructor
 	 */
 	public function new(node:HTMLElement) 
 	{
 		super(node);
+		_renderRect = new RectangleVO();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -50,20 +57,24 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 */
 	override public function render(graphicsContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{	
-		var inlineBoxesLength:Int = inlineBoxes.length;
-
-		for (i in 0...inlineBoxesLength)
+		//render background if at least a background image or background color should be drawn
+		if (coreStyle.hasBackgroundImage == true || coreStyle.hasBackgroundColor == true)
 		{
-			var inlineBox:InlineBox = inlineBoxes[i];
-			
-			var rect:RectangleVO = new RectangleVO();
-			rect.width = inlineBox.bounds.width;
-			rect.height = inlineBox.bounds.height;
-			rect.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x + globalBounds.x;
-			rect.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y + globalBounds.y;
-			
-			BackgroundManager.render(graphicsContext, rect, coreStyle, this, clipRect);
+			var inlineBoxesLength:Int = inlineBoxes.length;
+			for (i in 0...inlineBoxesLength)
+			{
+				var inlineBox:InlineBox = inlineBoxes[i];
+
+				_renderRect.width = inlineBox.bounds.width;
+				_renderRect.height = inlineBox.bounds.height;
+				_renderRect.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x + globalBounds.x;
+				_renderRect.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y + globalBounds.y;
+				
+				BackgroundManager.render(graphicsContext, _renderRect, coreStyle, this, clipRect);
+			}
 		}
+		
+		
 		//render child inline box if needed
 		renderChildren(graphicsContext, clipRect, scrollOffset);
 	}

@@ -313,6 +313,12 @@ class CoreStyle
 	public var hasBackgroundImage:Bool;
 	
 	/**
+	 * Wether the background color is not 
+	 * 'transparent'
+	 */
+	public var hasBackgroundColor:Bool;
+	
+	/**
 	 * Wether the element's vertical align
 	 * style is top
 	 */
@@ -433,9 +439,6 @@ class CoreStyle
 	 */
 	public var hasAutoMarginBottom:Bool;
 	
-	
-	
-	
 	/**
 	 * Class constructor
 	 */
@@ -479,6 +482,7 @@ class CoreStyle
 		hasAutoMarginLeft = false;
 		hasAutoMarginRight = false;
 		isAbsolutelyPositioned = false;
+		hasBackgroundColor = false;
 		
 		init();
 	}
@@ -690,6 +694,10 @@ class CoreStyle
 		if (cascadeManager.hasBackgroundColor == true)
 		{
 			CSSValueConverter.getColorVOFromCSSColor(getColor(backgroundColor), usedValues.backgroundColor);
+			
+			//if the background color is transparent, it is considered
+			//to not have background color for rendering purpose
+			hasBackgroundColor = usedValues.backgroundColor.alpha != 0.0;
 		}
 		//same as above for the color style
 		if (cascadeManager.hasColor == true)

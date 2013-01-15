@@ -134,9 +134,17 @@ class BoxRenderer extends InvalidatingElementRenderer
 	// PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * The element renderer renders itself (background, border, embedded asset...)
+	 */
 	private function renderSelf(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{	
-		renderBackground(graphicContext, clipRect, scrollOffset);
+		//render the background if there is at least one image to render and the background
+		//color is not transparent
+		if (coreStyle.hasBackgroundImage == true || coreStyle.hasBackgroundColor == true)
+		{
+			renderBackground(graphicContext, clipRect, scrollOffset);
+		}
 	}
 	
 	/**

@@ -89,6 +89,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private var _blockFormattingBounds:RectangleVO;
 	
 	/**
+	 * a reusable rect used for the bounds of the 
+	 * children during the computation of this block 
+	 * bounds
+	 */
+	private var _childBlockFormattingBounds:RectangleVO;
+	
+	/**
 	 * If this block establishes a new formatting context
 	 * and its height is auto, then the height of
 	 * its floated elements migt influence its own
@@ -121,6 +128,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_inlineBoxGlobalBounds = new RectangleVO();
 		_blockFormattingBounds = new RectangleVO();
 		_floatedElementsBounds = new RectangleVO();
+		_childBlockFormattingBounds = new RectangleVO();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -156,16 +164,19 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{
 				//absolutely positioned and floated children are not taken into account when determining wether this
 				//BlockBoxRenderer establishes/participate in a block or inline formatting context
-				if ((child.isPositioned() == false || child.isRelativePositioned() ==  true) && child.isFloat() == false)
+				if (child.isAbsolutelyPositioned() == false)
 				{	
-					//if this child doesn't match the display of the other children,
-					///for instance if it is the first inline while all the other
-					//children are block, all the inline children should be wrapped in 
-					//anonymous blocks
-					if (child.isInlineLevel() != childrenInline)
+					if (child.isFloat() == false)
 					{
-						shouldMakeChildrenNonInline = true;
-						break;
+						//if this child doesn't match the display of the other children,
+						///for instance if it is the first inline while all the other
+						//children are block, all the inline children should be wrapped in 
+						//anonymous blocks
+						if (child.isInlineLevel() != childrenInline)
+						{
+							shouldMakeChildrenNonInline = true;
+							break;
+						}
 					}
 				}
 				
@@ -628,16 +639,14 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		{
 			if (child.isFloat() == false)
 			{
-				if (child.isPositioned() == false || child.isRelativePositioned() == true)
+				if (child.isAbsolutelyPositioned() == false)
 				{
-					var childBlockFormattingBounds:RectangleVO = new RectangleVO();
-					
-					childBlockFormattingBounds.x = child.bounds.x + xOffset - child.coreStyle.usedValues.marginLeft;
-					childBlockFormattingBounds.y = child.bounds.y + yOffset - child.coreStyle.usedValues.marginTop;
-					childBlockFormattingBounds.width = child.bounds.width + child.coreStyle.usedValues.marginRight + child.coreStyle.usedValues.marginLeft;
-					childBlockFormattingBounds.height = child.bounds.height + child.coreStyle.usedValues.marginBottom + child.coreStyle.usedValues.marginTop;
+					_childBlockFormattingBounds.x = child.bounds.x + xOffset - child.coreStyle.usedValues.marginLeft;
+					_childBlockFormattingBounds.y = child.bounds.y + yOffset - child.coreStyle.usedValues.marginTop;
+					_childBlockFormattingBounds.width = child.bounds.width + child.coreStyle.usedValues.marginRight + child.coreStyle.usedValues.marginLeft;
+					_childBlockFormattingBounds.height = child.bounds.height + child.coreStyle.usedValues.marginBottom + child.coreStyle.usedValues.marginTop;
 
-					GeomUtils.addBounds(childBlockFormattingBounds, blockFormattingBounds);
+					GeomUtils.addBounds(_childBlockFormattingBounds, blockFormattingBounds);
 					
 					if (child.establishesNewBlockFormattingContext() == false && child.firstChild != null)
 					{

@@ -1324,7 +1324,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		{
 			if (nextElementRendererSibling.isFloat() == false)
 			{
-				if (nextElementRendererSibling.isPositioned() == false || nextElementRendererSibling.isRelativePositioned() == true)
+				if (nextElementRendererSibling.isAbsolutelyPositioned() == false)
 				{
 					return nextElementRendererSibling;
 				}
@@ -1344,7 +1344,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		{
 			if (firstElementRendererChild.isFloat() == false)
 			{
-				if (firstElementRendererChild.isPositioned() == false || firstElementRendererChild.isRelativePositioned() == true)
+				if (firstElementRendererChild.isAbsolutelyPositioned() == false)
 				{
 					return firstElementRendererChild;
 				}
@@ -1364,7 +1364,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		{
 			if (lastElementRendererChild.isFloat() == false)
 			{
-				if (lastElementRendererChild.isPositioned() == false || lastElementRendererChild.isRelativePositioned() == true)
+				if (lastElementRendererChild.isAbsolutelyPositioned() == false)
 				{
 					return lastElementRendererChild;
 				}
