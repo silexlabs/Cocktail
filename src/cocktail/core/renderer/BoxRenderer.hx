@@ -35,7 +35,6 @@ import cocktail.core.layout.computer.boxComputers.FloatBoxStylesComputer;
 import cocktail.core.layout.computer.boxComputers.InlineBlockBoxStylesComputer;
 import cocktail.core.layout.computer.boxComputers.InLineBoxStylesComputer;
 import cocktail.core.layout.computer.boxComputers.PositionedBoxStylesComputer;
-import cocktail.core.layout.computer.FontAndTextStylesComputer;
 import cocktail.core.layout.computer.VisualEffectStylesComputer;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;
@@ -246,8 +245,12 @@ class BoxRenderer extends InvalidatingElementRenderer
 			}
 		}
 		
-		//compute the font style (font-size, line-height...)
-		FontAndTextStylesComputer.compute(coreStyle, containingBlockData);
+		//ppdate text indent for first line of block establishing
+		//inline formatting
+		if (coreStyle.isBlock && childrenInline() == true)
+		{
+			updateUsedTextIndent(containingBlockData.width);
+		}
 		
 		//compute the box styles (width, height, margins, paddings...)
 		computeBoxModelStyles(containingBlockData);
@@ -261,6 +264,24 @@ class BoxRenderer extends InvalidatingElementRenderer
 		
 		//reset dirty flag
 		_needsLayout = false;
+	}
+	
+	/**
+	 * Compute the used text indent value to apply to the first line of a block establishing
+	 * an inline formatting
+	 */
+	private function updateUsedTextIndent(containingBlockWidth:Float):Void
+	{
+		switch(coreStyle.textIndent)
+		{
+			case ABSOLUTE_LENGTH(value):
+				coreStyle.usedValues.textIndent = value;
+				
+			case PERCENTAGE(value):
+				coreStyle.usedValues.textIndent = CSSValueConverter.getPixelFromPercent(value, containingBlockWidth);
+				
+			default:	
+		}
 	}
 	
 	/**
