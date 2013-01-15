@@ -498,6 +498,8 @@ class CoreStyle
 		_changedProperties = new Array<String>();
 		
 		_fontManager = FontManager.getInstance();
+		//TODO 3 : messy
+		fontMetrics = _fontManager.getFontMetrics("arial", 12);
 		
 		_animator = new Animator();
 		_animator.onTransitionCompleteCallback = onTransitionComplete;

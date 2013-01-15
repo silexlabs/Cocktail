@@ -113,14 +113,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	private var _floatFound:Bool;
 	
 	/**
-	 * A cascade manager used to set the styles
-	 * on generated anonymous block
-	 * 
-	 * TODO 2 : messy
-	 */
-	private static var _cascadeManager:CascadeManager = new CascadeManager();
-	
-	/**
 	 * class constructor.
 	 * Init class attributes
 	 */
@@ -283,13 +275,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		anonymousBlock.coreStyle = anonymousBlock.domNode.coreStyle;
 		
-		_cascadeManager.shouldCascadeAll();
+		//TODO 3 : all of this is very messy but before that styles of anonymous blocks
+		//were cascaded which was very expensive and useless
 		var initialStyleDeclaration:InitialStyleDeclaration = Lib.document.initialStyleDeclaration;
-		
-		//only use initial style declarations
-		anonymousBlock.coreStyle.cascade(_cascadeManager, initialStyleDeclaration,
-		initialStyleDeclaration, initialStyleDeclaration, 
-		initialStyleDeclaration, 12, 12, false);
+		anonymousBlock.coreStyle.specifiedValues = initialStyleDeclaration;
+		anonymousBlock.coreStyle.computedValues = initialStyleDeclaration.initialComputedStyleDeclaration;
+		anonymousBlock.coreStyle.isLeftAligned = true;
 		
 		return anonymousBlock;
 	}
