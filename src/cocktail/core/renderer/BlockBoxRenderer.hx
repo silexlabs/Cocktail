@@ -384,12 +384,17 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//a block container children
 			if (child.layerRenderer == referenceLayer)
 			{
-				if (child.isFloat() == false 
-				&& child.isReplaced() == false  
-				&& child.isInlineLevel() == false)
+				if (child.isInlineLevel() == false)
 				{
-					child.render(graphicContext, clipRect, scrollOffset);
-					renderBlockContainerChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
+					if (child.isReplaced() == false)
+					{
+						if (child.isFloat() == false)
+						{
+							child.render(graphicContext, clipRect, scrollOffset);
+							renderBlockContainerChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
+						}
+					}
+					
 				}
 			}
 			

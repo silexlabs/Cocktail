@@ -1707,7 +1707,7 @@ class CoreStyle
 	 * used by each node in the document unless another
 	 * value is explicitely used
 	 */
-	private function isInherited(propertyName:String):Bool
+	private inline function isInherited(propertyName:String):Bool
 	{
 		switch(propertyName)
 		{

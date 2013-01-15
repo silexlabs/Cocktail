@@ -159,6 +159,13 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	private var _layerDirtyRect:RectangleVO;
 	
 	/**
+	 * A reusable matrix used to
+	 * concatenate all the transformations
+	 * of this layer
+	 */
+	private var _currentMatrix:Matrix;
+	
+	/**
 	 * class constructor. init class attributes
 	 */
 	public function new(rootElementRenderer:ElementRenderer) 
@@ -173,6 +180,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		_needsStackingContextUpdate = true;
 		
 		matrix = new Matrix();
+		_currentMatrix = new Matrix();
 		_relativeOffset = new PointVO(0, 0);
 		_layerDirtyRect = new RectangleVO();
 		_alpha = 1.0;
@@ -1272,17 +1280,17 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 */
 	private function getConcatenatedMatrix(matrix:Matrix, relativeOffset:PointVO):Matrix
 	{
-		var currentMatrix:Matrix = new Matrix();
+		_currentMatrix.identity();
 		var globalBounds:RectangleVO = rootElementRenderer.globalBounds;
 		
 		//translate to the coordinate system of the root element renderer
-		currentMatrix.translate(globalBounds.x + relativeOffset.x, globalBounds.y + relativeOffset.y);
+		_currentMatrix.translate(globalBounds.x + relativeOffset.x, globalBounds.y + relativeOffset.y);
 		
-		currentMatrix.concatenate(matrix);
+		_currentMatrix.concatenate(matrix);
 		
 		//translate back from the coordinate system of the root element renderer
-		currentMatrix.translate((globalBounds.x + relativeOffset.x) * -1, (globalBounds.y + relativeOffset.y) * -1);
-		return currentMatrix;
+		_currentMatrix.translate((globalBounds.x + relativeOffset.x) * -1, (globalBounds.y + relativeOffset.y) * -1);
+		return _currentMatrix;
 	}
 	
 		

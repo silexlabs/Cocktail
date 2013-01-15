@@ -13,6 +13,7 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
 import cocktail.core.stacking.StackingContext;
 import haxe.Log;
+import haxe.Log;
 using cocktail.core.utils.Utils;
 
 /**
@@ -175,7 +176,7 @@ class HitTestManager
 	 * Utils method determining if a given point is within
 	 * a given recrtangle
 	 */
-	private function isWithinBounds(point:PointVO, bounds:RectangleVO):Bool
+	private inline function isWithinBounds(point:PointVO, bounds:RectangleVO):Bool
 	{
 		return point.x >= bounds.x && (point.x <= bounds.x + bounds.width) && point.y >= bounds.y && (point.y <= bounds.y + bounds.height);	
 	}
