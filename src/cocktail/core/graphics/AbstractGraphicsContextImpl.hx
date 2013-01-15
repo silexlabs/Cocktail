@@ -148,9 +148,10 @@ class AbstractGraphicsContextImpl
 	}
 	
 	/**
-	 * Clears the bitmap data
+	 * Clears a given rectangle of the bitmap data.
+	 * The coordinate are provided in viewport space
 	 */
-	public function clear():Void
+	public function clear(x:Float, y:Float, width:Float, height:Float):Void
 	{
 		//abstract
 	}

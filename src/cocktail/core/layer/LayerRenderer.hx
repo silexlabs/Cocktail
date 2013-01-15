@@ -1155,6 +1155,27 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	////////////////////////////////
 	
 	/**
+	 * clear the area of the bitmap which
+	 * is about to be repainted on all
+	 * layers which have there own 
+	 * graphics context
+	 */
+	public function clear(x:Float, y:Float, width:Float, height:Float):Void
+	{
+		if (hasOwnGraphicsContext == true)
+		{
+			doClear(x, y, width, height);
+		}
+		
+		var child:LayerRenderer = firstChild;
+		while (child != null)
+		{
+			child.clear(x, y, width, height);
+			child = child.nextSibling;
+		}
+	}
+	
+	/**
 	 * Starts the rendering of this LayerRenderer.
 	 * Render all the element renderer belonging
 	 * to this layer starting with the root element renderer.
@@ -1162,18 +1183,6 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	public function render():Void
 	{
 		_needsRendering = true;
-		
-		//only clear if a rendering is necessary
-		if (_needsRendering == true)
-		{
-			//only clear the bitmaps if the GraphicsContext
-			//was created by this LayerRenderer
-			if (hasOwnGraphicsContext == true)
-			{
-				//reset the bitmap
-				clear();
-			}
-		}
 		
 		//only render if necessary
 		if (_needsRendering == true)
@@ -1214,9 +1223,9 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	/**
 	 * Reset the bitmap
 	 */
-	private function clear():Void
+	private function doClear(x:Float, y:Float, width:Float, height:Float):Void
 	{
-		graphicsContext.graphics.clear();
+		graphicsContext.graphics.clear(x, y, width, height);
 	}
 	
 	/**

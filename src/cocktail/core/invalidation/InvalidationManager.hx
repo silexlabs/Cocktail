@@ -134,6 +134,15 @@ class InvalidationManager
 	 */
 	private var _htmlDocument:HTMLDocument;
 	
+	/**
+	 * When computing the transformations matrix
+	 * of all the layers of the document by  concatenating
+	 * them , start
+	 * with this identity matrix
+	 */
+	private var _initialMatrix:Matrix;
+	
+	
 	public function new(htmlDocument:HTMLDocument) 
 	{
 		_htmlDocument = htmlDocument;
@@ -152,6 +161,8 @@ class InvalidationManager
 		_forceLayout = false;
 		_viewportResized = false;
 		_bitmapSizeNeedsUpdate = true;
+		
+		_initialMatrix = new Matrix();
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -405,9 +416,7 @@ class InvalidationManager
 			var initialLayerRenderer:LayerRenderer = _htmlDocument.documentElement.elementRenderer.layerRenderer;
 			
 			//for each concatenate its transformations with those of its parents
-			//TODO 2 : need not to be updated each rendering. Also shouldn't create
-			//new matrix each time
-			initialLayerRenderer.updateLayerMatrix(new Matrix());
+			initialLayerRenderer.updateLayerMatrix(_initialMatrix);
 			
 			//update all of the layers element renderers bounds
 			initialLayerRenderer.updateBounds();

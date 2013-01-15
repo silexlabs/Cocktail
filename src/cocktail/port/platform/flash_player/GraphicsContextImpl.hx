@@ -181,17 +181,17 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	}
 	
 	/**
-	 * clear the BitmapData by filling it with
+	 * clear a rectangle of the BitmapData by filling it with
 	 * transparent black
 	 */
-	override public function clear():Void
+	override public function clear(x:Float, y:Float, width:Float, height:Float):Void
 	{
 		if (_nativeBitmap != null)
 		{
-			_flashRectangle.x = 0;
-			_flashRectangle.y = 0;
-			_flashRectangle.width = _width;
-			_flashRectangle.height = _height;
+			_flashRectangle.x = x;
+			_flashRectangle.y = y;
+			_flashRectangle.width = width;
+			_flashRectangle.height = height;
 			if (_isClear == false)
 			{
 				_nativeBitmap.bitmapData.fillRect(_flashRectangle, 0x00000000);
