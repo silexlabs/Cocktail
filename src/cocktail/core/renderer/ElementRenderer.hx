@@ -767,12 +767,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 */
 	public function updateAnonymousBlock():Void
 	{
-		var child:ElementRenderer = firstChild;
-		while(child != null)
-		{
-			child.updateAnonymousBlock();
-			child = child.nextSibling;
-		}
+		
 	}
 	
 	/**
