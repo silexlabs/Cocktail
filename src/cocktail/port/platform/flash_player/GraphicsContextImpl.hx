@@ -325,8 +325,6 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			_flashRectangle.height -= _matrix.f ;
 		}
 		
-		var alphaBitmapData:BitmapData = null;
-		var alphaPoint:Point = null;
 		
 		//create a transparency bitmap data if transparency is
 		//used
@@ -336,17 +334,20 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			var alpha:Int = Math.round(255 * _alpha);
 			color += alpha << 24;
 			
-			alphaBitmapData = new BitmapData(Math.round(clipRect.width), Math.round(clipRect.height), true, color);
+			var alphaBitmapData:BitmapData = new BitmapData(Math.round(clipRect.width), Math.round(clipRect.height), true, color);
 			_flashAlphaPoint.x = 0;
 			_flashAlphaPoint.y = 0;
-		}
-		
-		_nativeBitmap.bitmapData.copyPixels(bitmapData, _flashRectangle, _flashPoint, alphaBitmapData, _flashAlphaPoint, true);
-		_isClear = false;
-		if (alphaBitmapData != null)
-		{
+			
+			_nativeBitmap.bitmapData.copyPixels(bitmapData, _flashRectangle, _flashPoint, alphaBitmapData, _flashAlphaPoint, true);
+			
 			alphaBitmapData.dispose();
 		}
+		else
+		{
+			_nativeBitmap.bitmapData.copyPixels(bitmapData, _flashRectangle, _flashPoint, null, null, true);
+		}
+		
+		_isClear = false;
 	}
 	
 	/**

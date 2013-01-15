@@ -74,14 +74,14 @@ class GeomUtils
 	 * @param	bounds2 second bounds to intersec
 	 * @param	resultBounds store the intersecting bounds of the 2 bounds
 	 */
-	public static function intersectBounds(bounds1:RectangleVO, bounds2:RectangleVO, resultBounds:RectangleVO):Void
+	public inline static function intersectBounds(bounds1:RectangleVO, bounds2:RectangleVO, resultBounds:RectangleVO):Void
 	{
 		var left:Float = 0;
 		var right:Float = 0;
 		var top:Float = 0;
 		var bottom:Float =  0;
 		
-		//early return if the 2 bounds don't intersect at all
+		//here bounds don't intersect at all
 		if (bounds1.x + bounds1.width < bounds2.x
 		|| bounds2.x + bounds2.width < bounds1.x
 		|| bounds1.y + bounds1.height < bounds2.y
@@ -92,50 +92,51 @@ class GeomUtils
 			resultBounds.y = 0;
 			resultBounds.height = 0;
 			resultBounds.width = 0;
-			return;
-		}
-		
-		if (bounds1.x < bounds2.x)
-		{
-			left = bounds2.x;
 		}
 		else
 		{
-			left = bounds1.x;
+			if (bounds1.x < bounds2.x)
+			{
+				left = bounds2.x;
+			}
+			else
+			{
+				left = bounds1.x;
+			}
+			
+			if (bounds1.x + bounds1.width < bounds2.x + bounds2.width)
+			{
+				right = bounds1.x + bounds1.width;
+			}
+			else
+			{
+				right = bounds2.x + bounds2.width;
+			}
+			
+			if (bounds1.y < bounds2.y)
+			{
+				top = bounds2.y;
+			}
+			else
+			{
+				top = bounds1.y;
+			}
+			
+			if (bounds1.y + bounds1.height < bounds2.y + bounds2.height)
+			{
+				bottom = bounds1.y + bounds1.height;
+			}
+			else
+			{
+				bottom = bounds2.y + bounds2.height;
+			}
+			
+			//apply resulting bounds
+			resultBounds.x = left;
+			resultBounds.y = top;
+			resultBounds.width = right - left;
+			resultBounds.height = bottom - top;
 		}
-		
-		if (bounds1.x + bounds1.width < bounds2.x + bounds2.width)
-		{
-			right = bounds1.x + bounds1.width;
-		}
-		else
-		{
-			right = bounds2.x + bounds2.width;
-		}
-		
-		if (bounds1.y < bounds2.y)
-		{
-			top = bounds2.y;
-		}
-		else
-		{
-			top = bounds1.y;
-		}
-		
-		if (bounds1.y + bounds1.height < bounds2.y + bounds2.height)
-		{
-			bottom = bounds1.y + bounds1.height;
-		}
-		else
-		{
-			bottom = bounds2.y + bounds2.height;
-		}
-		
-		//apply resulting bounds
-		resultBounds.x = left;
-		resultBounds.y = top;
-		resultBounds.width = right - left;
-		resultBounds.height = bottom - top;
 	}
 	
 	/**
