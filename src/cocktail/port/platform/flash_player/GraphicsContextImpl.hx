@@ -267,10 +267,10 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	override public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix, sourceRect:RectangleVO, clipRect:RectangleVO):Void
 	{	
 		//convert the cross-platform rectangle into flash native one
-		_flashRectangle.x = Math.round(sourceRect.x) + clipRect.x - matrix.e;
-		_flashRectangle.y = Math.round(sourceRect.y) + clipRect.y - matrix.f;
-		_flashRectangle.width = Math.round(clipRect.width) ;
-		_flashRectangle.height = Math.round(clipRect.height) ;
+		_flashRectangle.x = sourceRect.x + clipRect.x - matrix.e;
+		_flashRectangle.y = sourceRect.y + clipRect.y - matrix.f;
+		_flashRectangle.width = clipRect.width ;
+		_flashRectangle.height = clipRect.height;
 		
 		_flashMatrix.a = matrix.a;
 		_flashMatrix.b = matrix.b;
@@ -308,14 +308,14 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	 */
 	override public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO, clipRect:RectangleVO):Void
 	{
-		_flashRectangle.x = Math.round(sourceRect.x) + clipRect.x - destPoint.x;
-		_flashRectangle.y = Math.round(sourceRect.y) + clipRect.y - destPoint.y;
-		_flashRectangle.width = Math.round(clipRect.width) ;
-		_flashRectangle.height = Math.round(clipRect.height) ;
+		_flashRectangle.x = sourceRect.x + clipRect.x - destPoint.x;
+		_flashRectangle.y = sourceRect.y + clipRect.y - destPoint.y;
+		_flashRectangle.width = clipRect.width ;
+		_flashRectangle.height = clipRect.height;
 		
 		
-		_flashPoint.x = Math.round(clipRect.x);
-		_flashPoint.y = Math.round(clipRect.y);
+		_flashPoint.x = clipRect.x;
+		_flashPoint.y = clipRect.y;
 		
 		if (_useTransformations == true)
 		{
@@ -364,10 +364,10 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		//must be created to composite alpha
 		if (color.alpha != 1.0 || _useTransparency == true)
 		{
-			_fillRectRectangle.width = Math.round(rect.width);
-			_fillRectRectangle.height = Math.round(rect.height);
-			_fillRectPoint.x = Math.round(rect.x);
-			_fillRectPoint.y = Math.round(rect.y);
+			_fillRectRectangle.width = rect.width;
+			_fillRectRectangle.height = rect.height;
+			_fillRectPoint.x = rect.x;
+			_fillRectPoint.y = rect.y;
 			
 			var fillRectBitmapData:BitmapData = new BitmapData(Math.round(rect.width), Math.round(rect.height), true, argbColor);
 			copyPixels(fillRectBitmapData, _fillRectRectangle, _fillRectPoint, clipRect );
@@ -389,10 +389,10 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			
 			GeomUtils.intersectBounds(_clippedRectRectangle, clipRect, _clippedRectRectangle);
 			
-			_flashRectangle.x = Math.round(_clippedRectRectangle.x);
-			_flashRectangle.y = Math.round(_clippedRectRectangle.y);
-			_flashRectangle.width = Math.round(_clippedRectRectangle.width);
-			_flashRectangle.height = Math.round(_clippedRectRectangle.height);
+			_flashRectangle.x = _clippedRectRectangle.x;
+			_flashRectangle.y = _clippedRectRectangle.y;
+			_flashRectangle.width = _clippedRectRectangle.width;
+			_flashRectangle.height = _clippedRectRectangle.height;
 			
 			_nativeBitmap.bitmapData.fillRect(_flashRectangle, argbColor);
 			
