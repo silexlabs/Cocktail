@@ -98,7 +98,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * will be used to determine its global bounds whereas if it
 	 * is absolutely positioned, it will use its positioned bounds
 	 */
-	public var globalBounds(get_globalBounds, null):RectangleVO;
+	public var globalBounds(default, null):RectangleVO;
 	
 	/**
 	 * Those are the bounds of the element renderer used for hit testing,
@@ -1375,10 +1375,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 
-	private function get_globalBounds():RectangleVO
-	{
-		return globalBounds;
-	}
 	
 	private function get_scrollWidth():Float
 	{

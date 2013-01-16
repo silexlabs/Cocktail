@@ -180,17 +180,4 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		return this;
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * For the initial container, the bounds and
-	 * global bounds are the same
-	 */
-	override private function get_globalBounds():RectangleVO
-	{
-		return bounds;
-	}
-	
 }
