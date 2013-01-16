@@ -301,6 +301,12 @@ class CoreStyle
 	public var isTransformed:Bool;
 	
 	/**
+	 * Wether the element has value of 'transform'
+	 * which is not 'none'
+	 */
+	public var hasCSSTransform:Bool;
+	
+	/**
 	 * Wether the element has an opacity
 	 * different from 1.0
 	 */
@@ -483,6 +489,7 @@ class CoreStyle
 		hasAutoMarginRight = false;
 		isAbsolutelyPositioned = false;
 		hasBackgroundColor = false;
+		hasCSSTransform = false;
 		
 		init();
 	}
@@ -832,6 +839,8 @@ class CoreStyle
 		if (cascadeManager.hasTransform || cascadeManager.hasPosition)
 		{
 			isTransformed = false;
+			hasCSSTransform = false;
+			
 			if (isRelativePositioned == true)
 			{
 				isTransformed = true;
@@ -839,6 +848,7 @@ class CoreStyle
 			else if (isNone(transform) == false)
 			{
 				isTransformed = true;
+				hasCSSTransform = true;
 			}
 		}
 		

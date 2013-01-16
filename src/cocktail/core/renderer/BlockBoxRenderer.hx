@@ -458,7 +458,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		//if the width of this block box should be shrink-to-fit, it
 		//can now be found 
-		applyShrinkToFitIfNeeded(layoutState);
+		if (establishesNewBlockFormattingContext() == true)
+		{
+			applyShrinkToFitIfNeeded(layoutState);
+		}
 		
 		//if the height of this block box depends on its content, 
 		//it can now be found
@@ -537,7 +540,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//absolutely positioned element with not auto left and right style don't use shrink-to-fit width
 		//if the layout state is not normal, shrink to fit might also be applied to block box which haven't auto width
 		//but which still needs to compute their shrink-yo-fit width for their ancestor block formatting context
-		if (establishesNewBlockFormattingContext() == true && (coreStyle.hasAutoWidth == true || layoutState != NORMAL) && isAutoWidthAbsolutelyPositionedWithNotAutoLeftAndRight() == false)
+		if ((coreStyle.hasAutoWidth == true || layoutState != NORMAL) && isAutoWidthAbsolutelyPositionedWithNotAutoLeftAndRight() == false)
 		{
 			//first prefered minimum width is found by laying out children by breaking line
 			//at all possible line breaks

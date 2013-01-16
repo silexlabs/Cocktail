@@ -970,6 +970,11 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		return false;
 	}
 	
+	public function hasCSSTransform():Bool
+	{
+		return false;
+	}
+	
 	public function isVisible():Bool
 	{
 		return true;

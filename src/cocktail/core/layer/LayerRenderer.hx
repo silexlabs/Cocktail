@@ -250,7 +250,12 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		if (rootElementRenderer.isTransformed() == true)
 		{
 			//TODO 2 : should it still be separate class ?
-			VisualEffectStylesComputer.compute(rootElementRenderer.coreStyle);
+			//if transform property is not 'none', compute transformation
+			//matrix and center of transformations
+			if (rootElementRenderer.hasCSSTransform() == true)
+			{
+				VisualEffectStylesComputer.compute(rootElementRenderer.coreStyle);
+			}
 			//update transformation matrix of layer 
 			matrix = getTransformationMatrix();
 		}
@@ -1264,12 +1269,19 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	private function getTransformationMatrix():Matrix
 	{
 		var relativeOffset:PointVO = getRelativeOffset(rootElementRenderer);
-		var concatenatedMatrix:Matrix = getConcatenatedMatrix(rootElementRenderer.coreStyle.usedValues.transform, relativeOffset);
+
+		_currentMatrix.identity();
+		
+		//if transform property is not 'none', concatenate the css matrix
+		if (rootElementRenderer.hasCSSTransform() == true)
+		{
+			getConcatenatedMatrix(rootElementRenderer.coreStyle.usedValues.transform, relativeOffset);
+		}
 		
 		//apply relative positioning as well
-		concatenatedMatrix.translate(relativeOffset.x, relativeOffset.y);
+		_currentMatrix.translate(relativeOffset.x, relativeOffset.y);
 		
-		return concatenatedMatrix;
+		return _currentMatrix;
 	}
 	
 	/**
@@ -1278,9 +1290,8 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 * transformations applied to the root element renderer, such as for 
 	 * instance its position in the global space
 	 */
-	private function getConcatenatedMatrix(matrix:Matrix, relativeOffset:PointVO):Matrix
+	private function getConcatenatedMatrix(matrix:Matrix, relativeOffset:PointVO):Void
 	{
-		_currentMatrix.identity();
 		var globalBounds:RectangleVO = rootElementRenderer.globalBounds;
 		
 		//translate to the coordinate system of the root element renderer
@@ -1290,7 +1301,6 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		
 		//translate back from the coordinate system of the root element renderer
 		_currentMatrix.translate((globalBounds.x + relativeOffset.x) * -1, (globalBounds.y + relativeOffset.y) * -1);
-		return _currentMatrix;
 	}
 	
 		

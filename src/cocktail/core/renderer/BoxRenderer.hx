@@ -844,6 +844,16 @@ class BoxRenderer extends InvalidatingElementRenderer
 	}
 	
 	/**
+	 * Determine wether the ElementRenderer has a
+	 * 'transform' style with a value different of
+	 * 'none'
+	 */
+	override public function hasCSSTransform():Bool
+	{
+		return coreStyle.hasCSSTransform;
+	}
+	
+	/**
 	 * Determine whether this ElementRenderer should render
 	 * itself. It still influence layout event if not
 	 * visible.
