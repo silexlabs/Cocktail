@@ -290,7 +290,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		var layerAlpha:Float = 1.0;
 		
 		//get opacity of root element renderer if transparent
-		if (rootElementRenderer.isTransparent() == true)
+		if (rootElementRenderer.coreStyle.isTransparent == true)
 		{
 			var coreStyle:CoreStyle = rootElementRenderer.coreStyle;
 			

@@ -97,7 +97,6 @@ class BackgroundManager
 		//completely transparent
 		if (style.usedValues.backgroundColor.alpha != 0.0)
 		{
-			
 			_intersectionBounds.x = backgroundBox.x;
 			_intersectionBounds.y = backgroundBox.y;
 			_intersectionBounds.width = backgroundBox.width;

@@ -299,8 +299,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		super.renderChildren(graphicContext, clipRect, scrollOffset);
 		
 		//the BlockBoxRenderer is responsible for rendering its children in the same layer
-		//context if it establishes a layer itself or is rendered as if it did
-		if (createOwnLayer() == true || rendersAsIfCreateOwnLayer() == true)
+		//context if it establishes a layer itself or is rendered as if it did (for instance inline-block are
+		//rendered as if they started their own layer)
+		if (createOwnLayer() == true || coreStyle.isInlineBlock == true || coreStyle.isFloat == true)
 		{
 			//render all the block box which belong to the same stacking context
 			renderBlockContainerChildren(this, layerRenderer, graphicContext, clipRect, scrollOffset);
@@ -1565,25 +1566,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * overriden as a block box renderer might be rendered as if
-	 * it creates its own layer, based on its computed styles
-	 * value
-	 */
-	override private function rendersAsIfCreateOwnLayer():Bool
-	{
-		if (coreStyle.isInlineBlock)
-		{
-			return true;
-		}
-		else if (coreStyle.isFloat == true)
-		{
-			return true;
-		}
-		
-		return false;
-	}
 	
 	/**
 	 * Overriden, has if this block box renderer has its own

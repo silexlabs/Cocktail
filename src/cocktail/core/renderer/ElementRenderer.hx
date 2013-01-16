@@ -1003,20 +1003,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	////////////////////////////////
 	
 	/**
-	 * Determine wether this ElementRenderer is rendered
-	 * as if it started a layer itself. 
-	 * 
-	 * For instance, an ElementRenderer which doesn't start
-	 * a layer but as a display of inline-block is rendered
-	 * as if it created a new layer, but it won't try
-	 * to render the child layers of its LayerRenderer.
-	 */
-	private function rendersAsIfCreateOwnLayer():Bool
-	{
-		return false;
-	}
-	
-	/**
 	 * Create a new LayerRenderer for this ElementRenderer or
 	 * use the one from its parent
 	 */
