@@ -40,69 +40,69 @@ class CascadeManager
 	// flags for property which need cascading,
 	// true when a property needs cascading
 	
-	public var hasFontSize(default, null):Bool;
+	public var hasFontSize:Bool;
 	
-	public var hasFontFamily(default, null):Bool;
+	public var hasFontFamily:Bool;
 	
-	public var hasBackgroundColor(default, null):Bool;
+	public var hasBackgroundColor:Bool;
 	
-	public var hasColor(default, null):Bool;
+	public var hasColor:Bool;
 	
-	public var hasDisplay(default, null):Bool;
+	public var hasDisplay:Bool;
 	
-	public var hasLineHeight(default, null):Bool;
+	public var hasLineHeight:Bool;
 	
-	public var hasLetterSpacing(default, null):Bool;
+	public var hasLetterSpacing:Bool;
 	
-	public var hasFloat(default, null):Bool;
+	public var hasFloat:Bool;
 	
-	public var hasOverflowX(default, null):Bool;
+	public var hasOverflowX:Bool;
 	
-	public var hasOverflowY(default, null):Bool;
+	public var hasOverflowY:Bool;
 	
-	public var hasTransform(default, null):Bool;
+	public var hasTransform:Bool;
 	
-	public var hasZIndex(default, null):Bool;
+	public var hasZIndex:Bool;
 	
-	public var hasPosition(default, null):Bool;
+	public var hasPosition:Bool;
 	
-	public var hasVisible(default, null):Bool;
+	public var hasVisible:Bool;
 	
-	public var hasOpacity(default, null):Bool;
+	public var hasOpacity:Bool;
 	
-	public var hasBackgroundImage(default, null):Bool;
+	public var hasBackgroundImage:Bool;
 	
-	public var hasVerticalAlign(default, null):Bool;
+	public var hasVerticalAlign:Bool;
 	
-	public var hasClear(default, null):Bool;
+	public var hasClear:Bool;
 	
-	public var hasWhiteSpace(default, null):Bool;
+	public var hasWhiteSpace:Bool;
 	
-	public var hasWidth(default, null):Bool;
+	public var hasWidth:Bool;
 	
-	public var hasHeight(default, null):Bool;
+	public var hasHeight:Bool;
 	
-	public var hasMaxHeight(default, null):Bool;
+	public var hasMaxHeight:Bool;
 	
-	public var hasMaxWidth(default, null):Bool;
+	public var hasMaxWidth:Bool;
 	
-	public var hasTextAlign(default, null):Bool;
+	public var hasTextAlign:Bool;
 	
-	public var hasTop(default, null):Bool;
+	public var hasTop:Bool;
 	
-	public var hasBottom(default, null):Bool;
+	public var hasBottom:Bool;
 	
-	public var hasLeft(default, null):Bool;
+	public var hasLeft:Bool;
 	
-	public var hasRight(default, null):Bool;
+	public var hasRight:Bool;
 	
-	public var hasMarginLeft(default, null):Bool;
+	public var hasMarginLeft:Bool;
 	
-	public var hasMarginTop(default, null):Bool;
+	public var hasMarginTop:Bool;
 	
-	public var hasMarginRight(default, null):Bool;
+	public var hasMarginRight:Bool;
 	
-	public var hasMarginBottom(default, null):Bool;
+	public var hasMarginBottom:Bool;
 	
 	/**
 	 * class constructor

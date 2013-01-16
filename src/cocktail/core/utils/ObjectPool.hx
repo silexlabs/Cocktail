@@ -37,8 +37,6 @@ class ObjectPool<T:IPoolable>
 		}
 	}
 	
-	private static var _g:Int = 0;
-	
 	public function release(object:T):Void
 	{
 		object.reset();

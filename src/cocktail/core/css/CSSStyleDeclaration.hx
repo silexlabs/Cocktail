@@ -365,6 +365,25 @@ class CSSStyleDeclaration
 		}
 	}
 	
+	/**
+	 * Same as above but faster, only called when
+	 * it is known that this is the first time this property
+	 * is set on this style declaration
+	 */
+	public function setTypedPropertyInitial(property:String, typedValue:CSSPropertyValue, important:Bool):Void
+	{
+		var newProperty:TypedPropertyVO = _typedPropertyVOPool.get();
+		newProperty.important = important;
+		newProperty.typedValue = typedValue;
+		newProperty.name = property;
+		_properties.push(newProperty);
+		
+		if (_onStyleChange != null)
+		{
+			_onStyleChange(property);
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE STYLE VALIDITY METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -990,25 +990,25 @@ class CoreStyle
 		var typedProperty:TypedPropertyVO = inlineStyleDeclaration.getTypedProperty(propertyName);
 		if (typedProperty != null)
 		{
-			return setProperty(propertyName, typedProperty, parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false);
+			return setProperty(propertyName, typedProperty, parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, false);
 		}
 		
 		//else check if a value for this style for this HTMLElement was defined in the document's style sheet
 		typedProperty = styleSheetDeclaration.getTypedProperty(propertyName);
 		if (typedProperty != null)
 		{
-			return setProperty(propertyName, typedProperty, parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false);
+			return setProperty(propertyName, typedProperty, parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, false);
 		}
 		
 		//else if the property is inherithed (for instance 'font-family'),
 		//use the value from the parent
 		if (isInherited(propertyName) == true)
 		{
-			return setProperty(propertyName, parentStyleDeclaration.getTypedProperty(propertyName), parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, true);
+			return setProperty(propertyName, parentStyleDeclaration.getTypedProperty(propertyName), parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, true, false);
 		}
 		
 		//else at last use the initial value of the property
-		return setProperty(propertyName, initialStyleDeclaration.getTypedProperty(propertyName), parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false);
+		return setProperty(propertyName, initialStyleDeclaration.getTypedProperty(propertyName), parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, true);
 	}
 	
 	/**
@@ -1023,7 +1023,7 @@ class CoreStyle
 	 * 
 	 * @return wether the specified value of the property did change
 	 */
-	private function setProperty(propertyName:String, cascadedProperty:TypedPropertyVO, parentStyleDeclaration:CSSStyleDeclaration, initialStyleDeclaration:CSSStyleDeclaration, parentColor:CSSColorValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool, isInherited:Bool):Bool
+	private function setProperty(propertyName:String, cascadedProperty:TypedPropertyVO, parentStyleDeclaration:CSSStyleDeclaration, initialStyleDeclaration:CSSStyleDeclaration, parentColor:CSSColorValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool, isInherited:Bool, isInitial:Bool):Bool
 	{
 		var property:CSSPropertyValue = cascadedProperty.typedValue;
 		
@@ -1040,40 +1040,58 @@ class CoreStyle
 			}
 		}
 		
-		//update the specified property
-		specifiedValues.setTypedProperty(propertyName, property, cascadedProperty.important);
+		if (specifiedProperty != null)
+		{
+			//update the specified property
+			specifiedValues.setTypedProperty(propertyName, property, cascadedProperty.important);
+		}
+		else
+		{
+			//same as above but faster
+			specifiedValues.setTypedPropertyInitial(propertyName, property, cascadedProperty.important);
+		}
+		
 		
 		//update the computed property
 		var computedProperty:CSSPropertyValue = null;
-		switch(property)
+		
+		//if the value to apply is the not
+		//the initial style value
+		if (isInitial == false)
 		{
-			//for a specified value of inherit, the 
-			//computed value is always the one of the parent
-			case INHERIT:
-				computedProperty = parentStyleDeclaration.getTypedProperty(propertyName).typedValue;
-				//set the inherited flag to make sure that no animation is started as the 
-				//result of this property change
-				isInherited = true;
-			
-			//for a specified value of initial, 
-			//the computed value is the initial one 
-			//
-			//TODO 2 : doesn't make sense ? for instance for font-size whose specified value is medium,
-			//computed value shouldn't be medium. Should Initial and inherit instead affect specified value ?
-			case INITIAL:
-				computedProperty = initialStyleDeclaration.getTypedProperty(propertyName).typedValue;
+			switch(property)
+			{
+				//for a specified value of inherit, the 
+				//computed value is always the one of the parent
+				case INHERIT:
+					computedProperty = parentStyleDeclaration.getTypedProperty(propertyName).typedValue;
+					//set the inherited flag to make sure that no animation is started as the 
+					//result of this property change
+					isInherited = true;
 				
-			default:
-				switch(propertyName)
-				{
-					default:	
-						computedProperty = getComputedProperty(propertyName, property, parentFontSize, parentXHeight, fontSize, xHeight, parentColor);
-				}
+				//for a specified value of initial, 
+				//the computed value is the initial one 
+				//
+				//TODO 2 : doesn't make sense ? for instance for font-size whose specified value is medium,
+				//computed value shouldn't be medium. Should Initial and inherit instead affect specified value ?
+				case INITIAL:
+					computedProperty = initialStyleDeclaration.getTypedProperty(propertyName).typedValue;
+					
+				default:	
+					computedProperty = getComputedProperty(propertyName, property, parentFontSize, parentXHeight, fontSize, xHeight, parentColor);
+			}
 		}
+		//when initial value applied it is 
+		//sure that it won't be 'inherit' or 'initial'
+		else
+		{
+			computedProperty =  getComputedProperty(propertyName, property, parentFontSize, parentXHeight, fontSize, xHeight, parentColor);
+		}
+		
 		
 		//TODO 1 : try to start transition here, if value was herited, no transition must start. Same
 		//if it was specified declaratively
-		if (programmaticChange == true && isInherited == false)
+		if (programmaticChange == true && isInherited == false && specifiedProperty != null)
 		{
 			if (computedValues.getTypedProperty(propertyName) != null)
 			{
@@ -1085,7 +1103,15 @@ class CoreStyle
 				}
 			}
 		}
-		computedValues.setTypedProperty(propertyName, computedProperty, cascadedProperty.important);
+		
+		if (specifiedProperty != null)
+		{
+			computedValues.setTypedProperty(propertyName, computedProperty, cascadedProperty.important);
+		}
+		else
+		{
+			computedValues.setTypedPropertyInitial(propertyName, computedProperty, cascadedProperty.important);
+		}
 		
 		
 		htmlElement.invalidateStyle(propertyName);
