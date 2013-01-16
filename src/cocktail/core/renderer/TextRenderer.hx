@@ -149,7 +149,7 @@ class TextRenderer extends InvalidatingElementRenderer
 		for (i in 0...inlineBoxesLength)
 		{
 			var inlineBox:InlineBox = inlineBoxes[i];
-			if (inlineBox.isSpace() == false)
+			if (inlineBox.isSpace == false)
 			{
 				_renderRect.width = inlineBox.bounds.width;
 				_renderRect.height = inlineBox.bounds.height;

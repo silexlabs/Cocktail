@@ -73,6 +73,8 @@ class TextInlineBox extends InlineBox
 		
 		super(elementRenderer);
 		
+		isText = true;
+		
 		_text = text;
 		initNativeTextElement(text, fontManager, elementRenderer.coreStyle);
 		
@@ -126,18 +128,6 @@ class TextInlineBox extends InlineBox
 		bitmapBounds.width = bounds.width;
 		bitmapBounds.height = bounds.height;
 		nativeTextBitmap = _nativeText.getBitmap(bitmapBounds);
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Overriden as this is the text line box
-	 */
-	override public function isText():Bool
-	{
-		return true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

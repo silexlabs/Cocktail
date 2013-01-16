@@ -86,15 +86,19 @@ class FlowBoxRenderer extends BoxRenderer
 		var child:ElementRenderer = rootRenderer.firstChild;
 		while(child != null)
 		{
-			if (child.layerRenderer == referenceLayer && child.isFloat() == false)
+			if (child.layerRenderer == referenceLayer)
 			{
-				child.render(graphicContext, clipRect, scrollOffset);
-				
-				//render recursively except for child establishing new formatting context, such as inline-block
-				if (child.firstChild != null && child.establishesNewBlockFormattingContext() == false)
+				if (child.coreStyle.isFloat == false)
 				{
-					renderInlineChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
+					child.render(graphicContext, clipRect, scrollOffset);
+					
+					//render recursively except for child establishing new formatting context, such as inline-block
+					if (child.firstChild != null && child.establishesNewBlockFormattingContext() == false)
+					{
+						renderInlineChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
+					}
 				}
+				
 			}
 			
 			child = child.nextSibling;

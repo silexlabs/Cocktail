@@ -14,6 +14,16 @@ class InlineBox extends FastNode<InlineBox>
 {
 
 	/**
+	 * Helper return wether this is a text inline box
+	 */
+	public var isText:Bool;
+	
+	/**
+	 * Helper return wether this is a space inline box
+	 */
+	public var isSpace:Bool;
+	
+	/**
 	 * A reference to the element renderer which created this
 	 * line box
 	 */
@@ -72,6 +82,9 @@ class InlineBox extends FastNode<InlineBox>
 	{
 		super();
 		
+		isSpace = false;
+		isText = false;
+		
 		bounds = new RectangleVO();
 		offsetFromParentInlineBox = new PointVO(0, 0);
 		
@@ -98,23 +111,6 @@ class InlineBox extends FastNode<InlineBox>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Wether this is a TextLineBox
-	 */
-	public function isText():Bool
-	{
-		return false;
-	}
-	
-	/**
-	 * Helper method to determine if this
-	 * line box wraps a space character
-	 */
-	public function isSpace():Bool
-	{
-		return false;
-	}
 	
 	/**
 	 * Wether the inline box represents

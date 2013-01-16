@@ -103,7 +103,7 @@ class LineBox
 		//have the right white space
 		if (_firstInlineBoxInserted == false)
 		{
-			if (inlineBox.isSpace() == true)
+			if (inlineBox.isSpace == true)
 			{
 				var inlineBoxCoreStyle:CoreStyle = inlineBox.elementRenderer.coreStyle;
 				if (inlineBoxCoreStyle.hasNormalWhiteSpace == true || inlineBoxCoreStyle.hasPreWrapWhiteSpace == true 
@@ -118,7 +118,7 @@ class LineBox
 		
 		//increment spaces number which is needed
 		//for text justification algorithm
-		if (inlineBox.isSpace() == true)
+		if (inlineBox.isSpace == true)
 		{
 			_spacesNumber++;
 		}
@@ -302,7 +302,7 @@ class LineBox
 			var previousSibling:InlineBox = child.previousSibling;
 			
 			//if child is a space with the right white space, remove it
-			if (child.isSpace() == true)
+			if (child.isSpace == true)
 			{
 				var inlineBoxCoreStyle:CoreStyle = child.elementRenderer.coreStyle;
 				if (inlineBoxCoreStyle.hasNormalWhiteSpace == true ||
@@ -359,7 +359,7 @@ class LineBox
 			}
 			
 			//if child is a space with the right white space, add its width
-			if (child.isSpace() == true)
+			if (child.isSpace == true)
 			{
 				var inlineBoxCoreStyle:CoreStyle = child.elementRenderer.coreStyle;
 				if (inlineBoxCoreStyle.hasNormalWhiteSpace == true ||
@@ -580,7 +580,7 @@ class LineBox
 		var child:InlineBox = inlineBox.firstChild;
 		while(child != null)
 		{
-			if (child.isSpace() == true)
+			if (child.isSpace == true)
 			{
 				var spaceWidth:Float = (remainingSpace / spacesInLine);
 				
@@ -643,7 +643,7 @@ class LineBox
 		var child:InlineBox = inlineBox.firstChild;
 		while (child != null)
 		{
-			if (child.isText() == false && child.isEmbedded() == false)
+			if (child.isText == false && child.isEmbedded() == false)
 			{
 				updateInlineBoxesBounds(child);
 				updateInlineBoxBounds(child);
@@ -805,7 +805,7 @@ class LineBox
 			}
 			
 			//call recursively for non-replaced inline boxes
-			if (child.isEmbedded() == false && child.isText() == false)
+			if (child.isEmbedded() == false && child.isText == false)
 			{
 				//inline boxes add global y
 				child.bounds.y += addedY;

@@ -34,6 +34,7 @@ class SpaceInlineBox extends TextInlineBox
 	public function new(elementRenderer:ElementRenderer, fontMetrics:FontMetricsVO, fontManager:FontManager) 
 	{
 		super(elementRenderer, "", fontMetrics, null);
+		isSpace = true;
 	}
 	
 	/**
@@ -50,15 +51,6 @@ class SpaceInlineBox extends TextInlineBox
 	override private function initTextBitmap():Void
 	{
 		
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override public function isSpace():Bool
-	{
-		return true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
