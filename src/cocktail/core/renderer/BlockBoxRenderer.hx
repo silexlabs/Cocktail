@@ -1207,7 +1207,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				}
 				//here the child is a TextRenderer, which has as many text inline box
 				//as needed to represent all the content of the TextRenderer
-				else if (child.isText() == true)
+				else if (child.isText == true)
 				{
 					//insert the array of created inline boxes into the current line. As many new line boxes
 					//as needed are created to hold all those text inline boxes

@@ -255,6 +255,12 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	public var isBlockContainer:Bool;
 	
 	/**
+	 * Helper atribute, return wether
+	 * this ElementRenderer is a TextRenderer
+	 */
+	public var isText:Bool;
+	
+	/**
 	 * class constructor. init class attribute
 	 */
 	public function new(domNode:HTMLElement) 
@@ -280,6 +286,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		
 		isBlockContainer = false;
 		isReplaced = false;
+		isText = false;
 	}
 	
 	/**
@@ -382,7 +389,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		
 		//if inline box renderer or text, add x and y
 		//bounds of all inline boxes
-		if (coreStyle.isInline || isText() == true)
+		if (coreStyle.isInline || isText == true)
 		{
 			hitTestingBounds.x += bounds.x;
 			hitTestingBounds.y += bounds.y;
@@ -943,11 +950,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	}
 	
 	public function isInlineLevel():Bool
-	{
-		return false;
-	}
-	
-	public function isText():Bool
 	{
 		return false;
 	}

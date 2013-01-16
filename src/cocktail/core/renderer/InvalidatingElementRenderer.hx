@@ -327,7 +327,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 		var child:ElementRenderer = firstChild;
 		while(child != null)
 		{
-			if (child.isText() == true)
+			if (child.isText == true)
 			{
 				child.invalidate();
 			}

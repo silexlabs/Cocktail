@@ -103,6 +103,8 @@ class TextRenderer extends InvalidatingElementRenderer
 		_text = cast(node);
 		_textNeedsRendering = true;
 		_textTokensNeedParsing = true;
+		
+		isText = true;
 	}
 		
 	/**
@@ -638,11 +640,6 @@ class TextRenderer extends InvalidatingElementRenderer
 	override public function isPositioned():Bool
 	{
 		return false;
-	}
-	
-	override public function isText():Bool
-	{
-		return true;
 	}
 	
 	override public function isInlineLevel():Bool
