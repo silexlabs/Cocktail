@@ -172,7 +172,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		while (child != null)
 		{
 			child.resetClipRect(x, y, width, height);
-			child = cast(child.nextSibling);
+			child = child.nextSibling;
 		}
 	}
 	
@@ -207,7 +207,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		while (child != null)
 		{
 			child.updateClipRect();
-			child = cast(child.nextSibling);
+			child = child.nextSibling;
 		}
 	}
 	
@@ -240,7 +240,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 				}
 			}
 		
-			child = cast(child.nextSibling);
+			child = child.nextSibling;
 		}
 	}
 	
@@ -294,7 +294,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		while (child != null)
 		{
 			child.resetScrollOffset();
-			child = cast(child.nextSibling);
+			child = child.nextSibling;
 		}
 	}
 	
@@ -322,7 +322,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		while (child != null)
 		{
 			child.updateScrollOffset();
-			child = cast(child.nextSibling);
+			child = child.nextSibling;
 		}
 		
 		//can now update combined scrolloffset
@@ -379,7 +379,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 				addScrollOffsetToChildren(child, scrollLeft, scrollTop, referenceLayer);
 			}
 			
-			child = cast(child.nextSibling);
+			child = child.nextSibling;
 		}
 	}
 	
@@ -403,7 +403,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		while (child != null)
 		{
 			child.updateBounds();
-			child = cast(child.nextSibling);
+			child = child.nextSibling;
 		}
 	}
 	
@@ -450,7 +450,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		while (child != null)
 		{
 			child.updateClippedBounds();
-			child = cast(child.nextSibling);
+			child = child.nextSibling;
 		}
 	}
 	
@@ -523,7 +523,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		while (child != null)
 		{
 			child.updateScrollableBounds();
-			child = cast(child.nextSibling);
+			child = child.nextSibling;
 		}
 	}
 	
@@ -632,7 +632,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 				}
 			}
 				
-			child = cast(child.nextSibling);
+			child = child.nextSibling;
 		}
 	}
 	
