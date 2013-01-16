@@ -340,7 +340,7 @@ class FlowBoxRenderer extends BoxRenderer
 		var staticContainingBlock:ElementRenderer = elementRenderer.parentNode;
 		while (staticContainingBlock != null)
 		{
-			if (staticContainingBlock.isBlockContainer() == true)
+			if (staticContainingBlock.isBlockContainer == true)
 			{
 				break;
 			}
@@ -390,7 +390,7 @@ class FlowBoxRenderer extends BoxRenderer
 				var parent:ElementRenderer = elementRenderer.parentNode;
 				//if it is a block, then this element is the first of the inline formatting context,
 				//and can be placed to the top left of the containing block
-				if (parent.isBlockContainer() == true)
+				if (parent.isBlockContainer == true)
 				{
 					//use the top and left margin
 					_childStaticOrigin.x = elementRenderer.coreStyle.usedValues.marginLeft;

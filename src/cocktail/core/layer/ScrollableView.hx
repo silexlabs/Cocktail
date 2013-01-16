@@ -759,7 +759,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	public function isXAxisClipped():Bool
 	{
 		//only block containers can be clipped
-		if (rootElementRenderer.isBlockContainer() == false)
+		if (rootElementRenderer.isBlockContainer == false)
 		{
 			return false;
 		}
@@ -799,7 +799,7 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	public function isYAxisClipped():Bool
 	{
 		//only block containers can be clipped
-		if (rootElementRenderer.isBlockContainer() == false)
+		if (rootElementRenderer.isBlockContainer == false)
 		{
 			return false;
 		}

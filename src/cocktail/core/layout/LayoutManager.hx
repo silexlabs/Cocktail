@@ -85,7 +85,7 @@ class LayoutManager
 		//get the box computer for float
 		if (elementRenderer.isFloat() == true)
 		{
-			if (elementRenderer.isReplaced() == true)
+			if (elementRenderer.isReplaced == true)
 			{
 				return embeddedFloatBoxStylesComputer;
 			}
@@ -97,7 +97,7 @@ class LayoutManager
 		//get it for HTMLElement with 'position' value of 'absolute' or 'fixed'
 		else if (elementRenderer.isPositioned() == true && elementRenderer.isRelativePositioned() == false)
 		{
-			if (elementRenderer.isReplaced() == true)
+			if (elementRenderer.isReplaced == true)
 			{
 				return embeddedPositionedBoxStylesComputer;
 			}
@@ -115,7 +115,7 @@ class LayoutManager
 					switch (value)
 					{
 						case BLOCK:
-							if (elementRenderer.isReplaced() == true)
+							if (elementRenderer.isReplaced == true)
 							{
 								return embeddedBlockBoxStylesComputer;
 							}
@@ -126,7 +126,7 @@ class LayoutManager
 							
 							
 						case INLINE_BLOCK:
-							if (elementRenderer.isReplaced() == true)
+							if (elementRenderer.isReplaced == true)
 							{
 								return embeddedInlineBlockBoxStylesComputer;
 							}
@@ -136,7 +136,7 @@ class LayoutManager
 							}
 							
 						case INLINE:
-							if (elementRenderer.isReplaced() == true)
+							if (elementRenderer.isReplaced == true)
 							{
 								return embeddedInlineBoxStylesComputer;
 							}

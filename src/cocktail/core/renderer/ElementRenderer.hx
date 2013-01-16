@@ -241,6 +241,20 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	public var lastNormalFlowChild(get_lastNormalFlowChild, null):ElementRenderer;
 	
 	/**
+	 * Helper attribute, return wether
+	 * this ElementRenderer is a replaced
+	 * element, like an ImageRenderer
+	 */
+	public var isReplaced:Bool;
+	
+	/**
+	 * Helper attribute, return wether
+	 * this ElementRenderer is a 
+	 * block box renderer
+	 */
+	public var isBlockContainer:Bool;
+	
+	/**
 	 * class constructor. init class attribute
 	 */
 	public function new(domNode:HTMLElement) 
@@ -263,6 +277,9 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		hitTestingBounds = new RectangleVO();
 		
 		inlineBoxes = new Array<InlineBox>();
+		
+		isBlockContainer = false;
+		isReplaced = false;
 	}
 	
 	/**
@@ -488,7 +505,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 			addedPositionedY = globalBounds.y;
 		}
 		//if is block container, set the normal flow position for its children
-		if (isBlockContainer() == true)
+		if (isBlockContainer == true)
 		{
 			addedX = globalBounds.x + coreStyle.usedValues.paddingLeft;
 			addedY = globalBounds.y + coreStyle.usedValues.paddingTop;
@@ -513,7 +530,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 				//offset relative to their containing block,
 				//whereas non-replaced inline level child are represented 
 				//by inline boxes which take care of this offset
-				if (child.isInlineLevel() == false || child.isReplaced() == true)
+				if (child.isInlineLevel() == false || child.isReplaced == true)
 				{
 					child.globalBounds.x += child.bounds.x;
 					child.globalBounds.y += child.bounds.y;
@@ -521,7 +538,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 				//here the element is an inline-block whose bounds
 				//matches the one inline box it generated during 
 				//inline formatting
-				else if (child.isBlockContainer() == true)
+				else if (child.isBlockContainer == true)
 				{
 					child.globalBounds.x += child.bounds.x;
 					child.globalBounds.y += child.bounds.y;
@@ -930,11 +947,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		return false;
 	}
 	
-	public function isReplaced():Bool
-	{
-		return false;
-	}
-	
 	public function isText():Bool
 	{
 		return false;
@@ -946,11 +958,6 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	}
 	
 	public function isTransparent():Bool
-	{
-		return false;
-	}
-	
-	public function isBlockContainer():Bool
 	{
 		return false;
 	}
@@ -1137,7 +1144,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	private function getFirstBlockContainer():FlowBoxRenderer
 	{
 		var parent:ElementRenderer = parentNode;
-		while (parent.isBlockContainer() == false)
+		while (parent.isBlockContainer == false)
 		{
 			parent = parent.parentNode;
 		}

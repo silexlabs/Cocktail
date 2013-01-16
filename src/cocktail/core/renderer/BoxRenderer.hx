@@ -237,7 +237,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		{
 			//only apply if the containing block is a block box (not inline, might happen with
 			//relative positioning)
-			if (containingBlock.isBlockContainer() == true)
+			if (containingBlock.isBlockContainer == true)
 			{
 				var containingBlockUsedValues:UsedValuesVO = containingBlock.coreStyle.usedValues;
 				containingBlockData.height += containingBlockUsedValues.paddingTop + containingBlockUsedValues.paddingBottom;

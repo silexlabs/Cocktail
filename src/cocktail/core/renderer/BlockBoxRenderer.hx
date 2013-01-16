@@ -129,6 +129,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		_blockFormattingBounds = new RectangleVO();
 		_floatedElementsBounds = new RectangleVO();
 		_childBlockFormattingBounds = new RectangleVO();
+		
+		isBlockContainer = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -325,7 +327,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function renderLineBoxes(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
-		if (rootRenderer.isBlockContainer() == true && rootRenderer.childrenInline() == true)
+		if (rootRenderer.isBlockContainer == true && rootRenderer.childrenInline() == true)
 		{	
 			renderInlineChildren(rootRenderer, referenceLayer, graphicContext, clipRect, scrollOffset);
 		}
@@ -336,7 +338,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{
 				if (child.layerRenderer == referenceLayer)
 				{
-					if (child.isReplaced() == false)
+					if (child.isReplaced == false)
 					{	
 						if (child.coreStyle.isFloat == false)
 						{
@@ -363,7 +365,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{
 				if (child.coreStyle.isFloat == false)
 				{
-					if (child.isReplaced() == false && child.coreStyle.isBlock == true )
+					if (child.isReplaced == false && child.coreStyle.isBlock == true )
 					{
 						renderBlockReplacedChildren(child, referenceLayer, graphicContext, clipRect, scrollOffset);
 					}
@@ -395,7 +397,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{
 				if (child.coreStyle.isInlineLevel == false)
 				{
-					if (child.isReplaced() == false)
+					if (child.isReplaced == false)
 					{
 						if (child.coreStyle.isFloat == false)
 						{
@@ -830,7 +832,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				if (child.isFloat() == false)
 				{
 					//if it is a block box not establishing a new block formatting
-					if (child.establishesNewBlockFormattingContext() == false && child.isBlockContainer() == true)
+					if (child.establishesNewBlockFormattingContext() == false && child.isBlockContainer == true)
 					{
 						//if child has clearance, its top margin is not used
 						if (childHasClearance == false)
@@ -1002,7 +1004,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var parent:BlockBoxRenderer = this;
 		while (parent != null)
 		{
-			if (parent.isBlockContainer() == true && parent.establishesNewBlockFormattingContext() == false)
+			if (parent.isBlockContainer == true && parent.establishesNewBlockFormattingContext() == false)
 			{
 				parent.updateFloatedAndClearElements();
 				parent = cast(parent.parentNode);
@@ -1229,7 +1231,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				}
 				//here the child either establishes a new formatting context, for instance an inline-block
 				//element or it is replaced, like an inline image renderer
-				else if (child.establishesNewBlockFormattingContext() == true || child.isReplaced() == true)
+				else if (child.establishesNewBlockFormattingContext() == true || child.isReplaced == true)
 				{
 					//the child must first be laid out so that its width
 					//and height are known
@@ -1410,7 +1412,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		}
 		
 		//margin can only collapse with block level elements
-		if (firstNormalFlowChild.isBlockContainer() == false)
+		if (firstNormalFlowChild.isBlockContainer == false)
 		{
 			return false;
 		}
@@ -1528,11 +1530,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//block formatting context
 		
 		return false;
-	}
-	
-	override public function isBlockContainer():Bool
-	{
-		return true;
 	}
 	
 	/**
