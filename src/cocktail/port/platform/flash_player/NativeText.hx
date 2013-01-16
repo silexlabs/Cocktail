@@ -36,6 +36,12 @@ class NativeText extends NativeTextBase
 	private var _nativeBitmap:BitmapData;
 	
 	/**
+	 * A reusable matrix used to trnaslate
+	 * drawn text
+	 */
+	private static var _matrix:Matrix = new Matrix();
+	
+	/**
 	 * class constructor
 	 */
 	public function new(nativeElement:NativeElement) 
@@ -65,9 +71,9 @@ class NativeText extends NativeTextBase
 	override public function getBitmap(bounds:RectangleVO):NativeBitmapData
 	{
 		_nativeBitmap = new BitmapData(Math.round(bounds.width), Math.round(bounds.height), true, 0x00000000);
-		var matrix:Matrix = new Matrix();
-		matrix.translate(bounds.x, bounds.y);
-		_nativeBitmap.draw(_nativeElement, matrix);
+		_matrix.identity();
+		_matrix.translate(bounds.x, bounds.y);
+		_nativeBitmap.draw(_nativeElement, _matrix);
 		
 		return _nativeBitmap;
 	}

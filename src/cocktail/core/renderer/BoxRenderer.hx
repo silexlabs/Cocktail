@@ -120,7 +120,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//only render self if visible
 		//however children can still be rendered
 		//if they are explicitely visible
-		if (isVisible() == true)
+		if (coreStyle.isVisible == true)
 		{
 			renderSelf(parentGraphicContext, clipRect, scrollOffset);
 		}
