@@ -987,26 +987,28 @@ class CoreStyle
 	{
 		//first check if this property is defined inline which always has the
 		//highest priority
-		if (inlineStyleDeclaration.getTypedProperty(propertyName) != null)
+		var typedProperty:TypedPropertyVO = inlineStyleDeclaration.getTypedProperty(propertyName);
+		if (typedProperty != null)
 		{
-			return setProperty(propertyName, inlineStyleDeclaration, parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false);
+			return setProperty(propertyName, typedProperty, parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false);
 		}
+		
 		//else check if a value for this style for this HTMLElement was defined in the document's style sheet
-		else if (styleSheetDeclaration.getTypedProperty(propertyName) != null)
+		typedProperty = styleSheetDeclaration.getTypedProperty(propertyName);
+		if (typedProperty != null)
 		{
-			return setProperty(propertyName, styleSheetDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false);
+			return setProperty(propertyName, typedProperty, parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false);
 		}
+		
 		//else if the property is inherithed (for instance 'font-family'),
 		//use the value from the parent
-		else if (isInherited(propertyName) == true)
+		if (isInherited(propertyName) == true)
 		{
-			return setProperty(propertyName, parentStyleDeclaration, parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, true);
+			return setProperty(propertyName, parentStyleDeclaration.getTypedProperty(propertyName), parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, true);
 		}
+		
 		//else at last use the initial value of the property
-		else
-		{
-			return setProperty(propertyName, initialStyleDeclaration, parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false);
-		}
+		return setProperty(propertyName, initialStyleDeclaration.getTypedProperty(propertyName), parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false);
 	}
 	
 	/**
@@ -1014,17 +1016,16 @@ class CoreStyle
 	 * and computing its value if necessary
 	 * 
 	 * @param propertyName the name of the cascaded property
-	 * @param styleDeclaration the style declaration from which the property
-	 * must be retrieved which might be a style sheet style declaration,
-	 * an inline one, the one from the parent or the initial style declaraion
+	 * @param cascadedProperty the property used as reference
+	 * for the cascading, might come from a style sheet 
+	 * delcaration, inline declaration, might be inherited or
+	 * might be the initial value for this property
 	 * 
 	 * @return wether the specified value of the property did change
 	 */
-	private function setProperty(propertyName:String, styleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, initialStyleDeclaration:CSSStyleDeclaration, parentColor:CSSColorValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool, isInherited:Bool):Bool
+	private function setProperty(propertyName:String, cascadedProperty:TypedPropertyVO, parentStyleDeclaration:CSSStyleDeclaration, initialStyleDeclaration:CSSStyleDeclaration, parentColor:CSSColorValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool, isInherited:Bool):Bool
 	{
-		//retrieve the property from the right style declaration
-		var propertyData:TypedPropertyVO = styleDeclaration.getTypedProperty(propertyName);
-		var property:CSSPropertyValue = propertyData.typedValue;
+		var property:CSSPropertyValue = cascadedProperty.typedValue;
 		
 		//get the property with the same name from the specified properties of this CoreStyle
 		var specifiedProperty:TypedPropertyVO = specifiedValues.getTypedProperty(propertyName);
@@ -1040,7 +1041,7 @@ class CoreStyle
 		}
 		
 		//update the specified property
-		specifiedValues.setTypedProperty(propertyName, property, propertyData.important);
+		specifiedValues.setTypedProperty(propertyName, property, cascadedProperty.important);
 		
 		//update the computed property
 		var computedProperty:CSSPropertyValue = null;
@@ -1084,7 +1085,7 @@ class CoreStyle
 				}
 			}
 		}
-		computedValues.setTypedProperty(propertyName, computedProperty, propertyData.important);
+		computedValues.setTypedProperty(propertyName, computedProperty, cascadedProperty.important);
 		
 		
 		htmlElement.invalidateStyle(propertyName);
