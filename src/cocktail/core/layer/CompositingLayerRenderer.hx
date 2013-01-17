@@ -38,14 +38,19 @@ class CompositingLayerRenderer extends LayerRenderer
 	 */
 	override private function establishesNewGraphicsContext():Bool
 	{
-		if (isCompositingLayer() == true)
+		//compositing may be deactivated altogether 
+		if (Config.ENABLE_COMPOSITING == true)
 		{
-			return true;
+			if (isCompositingLayer() == true)
+			{
+				return true;
+			}
+			else
+			{
+				return super.establishesNewGraphicsContext();
+			}
 		}
-		else
-		{
-			return super.establishesNewGraphicsContext();
-		}
+		return false;
 	}
 	
 	/////////////////////////////////

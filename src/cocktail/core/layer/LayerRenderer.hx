@@ -9,6 +9,7 @@
 package cocktail.core.layer;
 
 using cocktail.core.utils.Utils;
+import cocktail.Config;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
 import cocktail.core.geom.GeomUtils;
@@ -868,13 +869,17 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 */
 	private function establishesNewGraphicsContext():Bool
 	{
-		if (hasCompositingLayerDescendant(this) == true)
+		//compositing may be entirely disabled
+		if (Config.ENABLE_COMPOSITING == true)
 		{
-			return true;
-		}
-		else if (hasCompositingLayerSibling() == true)
-		{
-			return true;
+			if (hasCompositingLayerDescendant(this) == true)
+			{
+				return true;
+			}
+			else if (hasCompositingLayerSibling() == true)
+			{
+				return true;
+			}
 		}
 		
 		return false;

@@ -46,15 +46,13 @@ class TextInputLayerRenderer extends CompositingLayerRenderer
 	
 	override public function detachGraphicsContext():Void
 	{
-		if (hasOwnGraphicsContext == true)
+		var htmlInputElement:HTMLInputElement = cast(rootElementRenderer.domNode);
+		if (htmlInputElement.elementRenderer != null)
 		{
-			var htmlInputElement:HTMLInputElement = cast(rootElementRenderer.domNode);
-			if (htmlInputElement.elementRenderer != null)
-			{
-				var textInputRenderer:TextInputRenderer = cast(htmlInputElement.elementRenderer);
-				textInputRenderer.nativeTextInput.detach(graphicsContext);
-			}
+			var textInputRenderer:TextInputRenderer = cast(htmlInputElement.elementRenderer);
+			textInputRenderer.nativeTextInput.detach(graphicsContext);
 		}
+		
 		super.detachGraphicsContext();
 	}
 	
