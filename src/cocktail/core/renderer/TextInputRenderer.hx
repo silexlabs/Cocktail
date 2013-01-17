@@ -141,7 +141,10 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		
 		//update clip rect of native text input, so that
 		//it doesn't overflow its layer clip rect
-		nativeTextInput.clipRect = clipRect;
+		//
+		//TODO 3 : use direct reference to layerRenderer clipRect as there
+		//seems to be a bug with the provided clip rect which is modified
+		nativeTextInput.clipRect = layerRenderer.clipRect;
 		
 		//set the style of the text input text using the CSS applying to it
 		//Based on the platform not all of those style might be taken into account
