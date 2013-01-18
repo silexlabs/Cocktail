@@ -259,6 +259,11 @@ class NativeTextInput extends NativeTextInputBase
 		return _textField.text = textValue;
 	}
 	
+	override private function set_maxLength(value:Int):Int
+	{
+		return _textField.maxChars = value;
+	}
+	
 	override private function set_letterSpacing(value:Float):Float
 	{
 		_textFormat.letterSpacing = value;

@@ -216,4 +216,9 @@ class NativeTextInput extends NativeTextInputBase
 		return _stageText.text = textValue;
 	}
 	
+	override private function set_maxLength(value:Int):Int
+	{
+		return _stageText.maxChars = value; 
+	}
+	
 }

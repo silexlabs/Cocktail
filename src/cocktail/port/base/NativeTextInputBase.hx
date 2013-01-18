@@ -25,6 +25,11 @@ class NativeTextInputBase
 	public var value(get_value, set_value):String;
 	
 	/**
+	 * get/set the maxLength of the text input
+	 */
+	public var maxLength(default, set_maxLength):Int;
+	
+	/**
 	 * get/set the position of the text input relative to
 	 * the Window
 	 */
@@ -174,6 +179,11 @@ class NativeTextInputBase
 	private function set_value(textValue:String):String 
 	{
 		return value = textValue;
+	}
+	
+	private function set_maxLength(value:Int):Int 
+	{
+		return maxLength = value;
 	}
 	
 	private function set_letterSpacing(value:Float):Float

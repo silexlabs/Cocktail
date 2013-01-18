@@ -53,6 +53,11 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	public var value(get_value, set_value):String;
 	
 	/**
+	 * Get/set the maxLength of the text input
+	 */
+	public var maxLength(default, set_maxLength):Int;
+	
+	/**
 	 * class constructor
 	 * @param	node
 	 */
@@ -194,5 +199,10 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	private function set_value(value:String):String 
 	{
 		return nativeTextInput.value = value;
+	}
+	
+	private function set_maxLength(value:Int):Int
+	{
+		return nativeTextInput.maxLength = value;
 	}
 }
