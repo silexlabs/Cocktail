@@ -328,7 +328,17 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */
 	private function renderLineBoxes(rootRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
-		if (rootRenderer.isBlockContainer == true && rootRenderer.childrenInline() == true)
+		//check if container can have line boxes
+		var canHaveLineBoxes:Bool = false;
+		if (rootRenderer.isBlockContainer == true)
+		{
+			if (rootRenderer.childrenInline() == true)
+			{
+				canHaveLineBoxes = true;
+			}
+		}
+		
+		if (canHaveLineBoxes == true)
 		{	
 			renderInlineChildren(rootRenderer, referenceLayer, graphicContext, clipRect, scrollOffset);
 		}

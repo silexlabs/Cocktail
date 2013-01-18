@@ -74,9 +74,12 @@ class InlineBoxRenderer extends FlowBoxRenderer
 			}
 		}
 		
-		
-		//render child inline box if needed
-		renderChildren(graphicsContext, clipRect, scrollOffset);
+		//only call if has children
+		if (firstChild != null)
+		{
+			//render child inline box if needed
+			renderChildren(graphicsContext, clipRect, scrollOffset);
+		}
 	}
 	
 	/**

@@ -250,11 +250,14 @@ class BoxRenderer extends InvalidatingElementRenderer
 			}
 		}
 		
-		//ppdate text indent for first line of block establishing
+		//update text indent for first line of block establishing
 		//inline formatting
-		if (coreStyle.isBlock && childrenInline() == true)
+		if (coreStyle.isBlock == true)
 		{
-			updateUsedTextIndent(containingBlockData.width);
+			if (childrenInline() == true)
+			{
+				updateUsedTextIndent(containingBlockData.width);
+			}
 		}
 		
 		//compute the box styles (width, height, margins, paddings...)
