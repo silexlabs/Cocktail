@@ -779,7 +779,6 @@ class HTMLDocument extends Document
 					else
 					{
 						var yOffset:Float = touchEvent.touches.item(0).screenY - _lastTouchStartPosition.y;
-						trace(yOffset);
 						if (Math.abs(yOffset) > Config.TOUCH_MOVE_PREVENT_CLICK_DISTANCE)
 						{
 							_shouldDispatchClickOnNextMouseUp = false;
