@@ -7,6 +7,7 @@
 */
 package cocktail.port.platform.flash_player;
 
+import cocktail.Config;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
@@ -16,6 +17,7 @@ import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
 import flash.display.Bitmap;
 import flash.display.StageDisplayState;
+import flash.display.StageQuality;
 import flash.Lib;
 import flash.net.URLRequest;
 import haxe.Log;
@@ -44,6 +46,13 @@ class NativeWindow extends NativeWindowBase
 		//in Flash, the Stage is always defined as no scale as the transformations
 		//will be managed by Cocktail
 		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
+		
+		//optionnally may display with low quality
+		//to improve rendering speed.
+		if (Config.USE_LOW_STAGE_QUALITY == true)
+		{
+			Lib.current.stage.quality = StageQuality.LOW;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

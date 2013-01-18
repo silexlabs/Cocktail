@@ -61,6 +61,15 @@ class Config
 	 */
 	public static inline var ENABLE_BITMAP_SMOOTHING:Bool = true;
 	
+	/**
+	 * Flash specific.
+	 * 
+	 * Use a low stage quality to slightly improve performance, however
+	 * it degrades visual rendering. If the application is mostly bitmap
+	 * based, it doesn't make much difference in the rendering
+	 */
+	public static inline var USE_LOW_STAGE_QUALITY:Bool = false;
+	
 	public function new() 
 	{
 		
