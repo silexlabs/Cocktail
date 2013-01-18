@@ -111,6 +111,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+
 	
 	/**
 	 * overriden to render elements specific to a box (background, border...)
@@ -125,7 +126,11 @@ class BoxRenderer extends InvalidatingElementRenderer
 			renderSelf(parentGraphicContext, clipRect, scrollOffset);
 		}
 		
-		renderChildren(parentGraphicContext, clipRect, scrollOffset);
+		//only call if only has one children
+		if (firstChild != null)
+		{
+			renderChildren(parentGraphicContext, clipRect, scrollOffset);
+		}
 	}
 	
 	

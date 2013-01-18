@@ -140,14 +140,23 @@ class FlowBoxRenderer extends BoxRenderer
 	{
 		super.layout(forceLayout, layoutState);
 		
-		//layout all the in flow children (non positioned or floated)
-		layoutChildren(layoutState);
+		//only call if has children
+		if (firstChild != null)
+		{
+			//layout all the in flow children (non positioned or floated)
+			layoutChildren(layoutState);
+		}
+		
 		
 		//if this ElementRenderer is positioned, it means that it is the first positioned ancestor
 		//for its positioned children and it is its responsability to lay them out
 		if (isPositioned() == true)
 		{
-			layoutPositionedChildren(layoutState);
+			//only call if has positioned children
+			if (_positionedChildren.length > 0 )
+			{
+				layoutPositionedChildren(layoutState);
+			}
 		}
 	}
 	
