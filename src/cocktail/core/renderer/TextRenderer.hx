@@ -147,6 +147,19 @@ class TextRenderer extends InvalidatingElementRenderer
 	
 	override public function render(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{	
+		//check wether text will be displayed on screen
+		_intersectBounds.x = hitTestingBounds.x;
+		_intersectBounds.y = hitTestingBounds.y;
+		_intersectBounds.width = hitTestingBounds.width;
+		_intersectBounds.height = hitTestingBounds.height;
+		
+		
+		GeomUtils.intersectBounds(_intersectBounds, clipRect, _intersectBounds);
+		if (_intersectBounds.width == 0 || _intersectBounds.height == 0)
+		{
+			return;
+		}
+		
 		var inlineBoxesLength:Int = inlineBoxes.length;
 		for (i in 0...inlineBoxesLength)
 		{
@@ -164,19 +177,10 @@ class TextRenderer extends InvalidatingElementRenderer
 					_destPoint.x += inlineBox.lineBox.bounds.x;
 				}
 				
-				_intersectBounds.x = _destPoint.x;
-				_intersectBounds.y = _destPoint.y;
-				_intersectBounds.width = _renderRect.width;
-				_intersectBounds.height = _renderRect.height;
+				//need to type to get ref to native bitmap data
+				var typedTextInlineBox:TextInlineBox = cast(inlineBox);
+				graphicContext.graphics.copyPixels(typedTextInlineBox.nativeTextBitmap, _renderRect, _destPoint, clipRect);
 				
-				GeomUtils.intersectBounds(_intersectBounds, clipRect, _intersectBounds);
-				
-				if (_intersectBounds.width > 0 && _intersectBounds.height > 0)
-				{
-					//need to type to get ref to native bitmap data
-					var typedTextInlineBox:TextInlineBox = cast(inlineBox);
-					graphicContext.graphics.copyPixels(typedTextInlineBox.nativeTextBitmap, _renderRect, _destPoint, clipRect);
-				}
 			}
 		}
 	}

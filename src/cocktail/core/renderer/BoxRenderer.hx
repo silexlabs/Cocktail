@@ -11,6 +11,7 @@ package cocktail.core.renderer;
 import cocktail.core.css.CSSConstants;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
+import cocktail.core.geom.GeomUtils;
 import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
@@ -76,6 +77,11 @@ class BoxRenderer extends InvalidatingElementRenderer
 	private var _backgroundBounds:RectangleVO;
 	
 	/**
+	 * A reusable rect used during rendering
+	 */
+	private static var _intersectBounds:RectangleVO = new RectangleVO();
+	
+	/**
 	 * class constructor
 	 */
 	public function new(domNode:HTMLElement) 
@@ -118,12 +124,28 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function render(parentGraphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{	
+		//check wether box will be displayed on screen,
+		//early return if it doesn't
+		//
+		//TODO 3 : might cause issue for children with negative margin ?
+		_intersectBounds.x = hitTestingBounds.x;
+		_intersectBounds.y = hitTestingBounds.y;
+		_intersectBounds.width = hitTestingBounds.width;
+		_intersectBounds.height = hitTestingBounds.height;
+	
+		GeomUtils.intersectBounds(_intersectBounds, clipRect, _intersectBounds);
+		if (_intersectBounds.width == 0 || _intersectBounds.height == 0)
+		{
+			return;
+		}
+			
 		//only render self if visible
 		//however children can still be rendered
 		//if they are explicitely visible
 		if (coreStyle.isVisible == true)
 		{
-			renderSelf(parentGraphicContext, clipRect, scrollOffset);
+				//only render self if sure that it will be displayed
+				renderSelf(parentGraphicContext, clipRect, scrollOffset);
 		}
 		
 		//only call if only has one children
