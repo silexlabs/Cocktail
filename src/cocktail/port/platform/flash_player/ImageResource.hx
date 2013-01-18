@@ -71,6 +71,9 @@ class ImageResource extends AbstractResource
 		//always check policy file (crossdomain.xml) for cross-domain loading
 		var loadingContext:LoaderContext = new LoaderContext(true);
 
+		//trigger decoding of picture in another thread
+		loadingContext.imageDecodingPolicy = flash.system.ImageDecodingPolicy.ON_LOAD;
+		
 		//start the loading
 		_loader.load(request, loadingContext);
 		#else
