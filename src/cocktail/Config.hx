@@ -44,6 +44,16 @@ class Config
 	 */
 	public static inline var ENABLE_MOUSE_EVENT:Bool = true;
 	
+	/**
+	 * The distance in pixel that a touch on screen has to move to 
+	 * prevent dispatching a click event on next touch up. 
+	 * 
+	 * If the touch moves more than this distance, then it is assumed
+	 * that the user don't want to click but instead is scrolling 
+	 * or drag'n'dropping an element
+	 */ 
+	public static inline var TOUCH_MOVE_PREVENT_CLICK_DISTANCE:Int = 10;
+	
 	public function new() 
 	{
 		

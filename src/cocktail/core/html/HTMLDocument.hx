@@ -8,6 +8,7 @@
 */
 package cocktail.core.html;
 
+import cocktail.Config;
 import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CSSRule;
 import cocktail.core.css.CSSStyleDeclaration;
@@ -163,9 +164,21 @@ class HTMLDocument extends Document
 	 * 
 	 * A click event is dispatched if there was a mouse down
 	 * event then a mouse up event dispatched on the same hovered
-	 * element
+	 * element.
+	 * 
+	 * Additionaly, if touch event are also dispatched, if
+	 * the touch moves too much between the mouse down / touch down
+	 * and mouse up / touch up event, then no click is dispatched
+	 * as it is assumed that the user is probably scrolling instead
 	 */
 	private var _shouldDispatchClickOnNextMouseUp:Bool;
+	
+	/**
+	 * When a touch start event is dispatched, store its
+	 * position so that the total touch offset can be processed
+	 * when subsequent touch move and touch end events are dispatched
+	 */
+	private var _lastTouchStartPosition:PointVO;
 	
 	/**
 	 * A timer controlling the whole document event loop.
@@ -281,6 +294,7 @@ class HTMLDocument extends Document
 		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
 		
 		_shouldDispatchClickOnNextMouseUp = false;
+		_lastTouchStartPosition = new PointVO(0, 0);
 		
 		layoutManager = new LayoutManager();
 	}
@@ -728,17 +742,59 @@ class HTMLDocument extends Document
 		//dispatch the TouchEvent on the node onto which it was triggered
 		elementAtTouchPoint.domNode.dispatchEvent(touchEvent);
 		
-		//if a start or move touch event default behaviour is canceled
-		//it should prevent simulating a click event when the touch ends
-		switch(touchEvent.type)
+		//check if simulating a click event when the touch ends should
+		//be prevented
+		if (_shouldDispatchClickOnNextMouseUp == true)
 		{
-			case EventConstants.TOUCH_START, EventConstants.TOUCH_MOVE:
-				if (touchEvent.defaultPrevented == true)
-				{
-					_shouldDispatchClickOnNextMouseUp = false;
-				}
+			switch(touchEvent.type)
+			{	
+				case EventConstants.TOUCH_START:
+					//if default prevented, prevent click
+					if (touchEvent.defaultPrevented == true)
+					{
+						_shouldDispatchClickOnNextMouseUp = false;
+					}
+					//else if multi touch, prevent click
+					else if (touchEvent.touches.length > 1)
+					{
+						
+					}
+					//else store touch start position, if touch
+					//then moves too much, click prevented
+					else
+					{
+						_lastTouchStartPosition.x = touchEvent.touches.item(0).screenX;
+						_lastTouchStartPosition.y = touchEvent.touches.item(0).screenY;
+					}
+					
+				case EventConstants.TOUCH_MOVE:
+					//if default prevented, prevent click
+					if (touchEvent.defaultPrevented == true)
+					{
+						_shouldDispatchClickOnNextMouseUp = false;
+					}
+					//else check the offset of the current touch position
+					//from the place where it started, and if the distance
+					//is too great, prevent click dispatch
+					else
+					{
+						var yOffset:Float = touchEvent.touches.item(0).screenY - _lastTouchStartPosition.y;
+						trace(yOffset);
+						if (Math.abs(yOffset) > Config.TOUCH_MOVE_PREVENT_CLICK_DISTANCE)
+						{
+							_shouldDispatchClickOnNextMouseUp = false;
+						}
+						else
+						{
+							var xOffset:Float = touchEvent.touches.item(0).screenX - _lastTouchStartPosition.x;
+							if (Math.abs(xOffset) > Config.TOUCH_MOVE_PREVENT_CLICK_DISTANCE)
+							{
+								_shouldDispatchClickOnNextMouseUp = false;
+							}
+						}
+					}
+			}
 		}
-		
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
