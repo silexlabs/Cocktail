@@ -54,6 +54,13 @@ class Config
 	 */ 
 	public static inline var TOUCH_MOVE_PREVENT_CLICK_DISTANCE:Int = 10;
 	
+	/**
+	 * When drawing bitmap, determine if smoothing should be applied
+	 * to it when it not displayed at 100% of its size. This improves
+	 * the rendering of the bitmap but decreases performances.
+	 */
+	public static inline var ENABLE_BITMAP_SMOOTHING:Bool = true;
+	
 	public function new() 
 	{
 		

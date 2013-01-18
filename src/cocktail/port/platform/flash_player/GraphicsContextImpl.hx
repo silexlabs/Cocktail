@@ -7,6 +7,7 @@
 */
 package cocktail.port.platform.flash_player;
 
+import cocktail.Config;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.geom.Matrix;
 import cocktail.core.graphics.AbstractGraphicsContextImpl;
@@ -298,7 +299,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		}
 		
 		//draw the bitmap data onto the current bitmap data with the right transformations
-		_nativeBitmap.bitmapData.draw(bitmapData, _flashMatrix, colorTransform, null, _flashRectangle, true);
+		_nativeBitmap.bitmapData.draw(bitmapData, _flashMatrix, colorTransform, null, _flashRectangle, Config.ENABLE_BITMAP_SMOOTHING);
 		_isClear = false;
 	}
 	
