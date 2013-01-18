@@ -784,6 +784,12 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 			return false;
 		}
 		
+		//here x is clipped
+		if (rootElementRenderer.coreStyle.hasHiddenOrScrollOverflowX == true)
+		{
+			return true;
+		}
+		
 		switch (rootElementRenderer.coreStyle.getKeyword(rootElementRenderer.coreStyle.overflowX))
 		{
 			case HIDDEN, SCROLL:
@@ -822,6 +828,12 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		if (rootElementRenderer.coreStyle.canAlwaysOverflow == true)
 		{
 			return false;
+		}
+		
+		//here y is clipped
+		if (rootElementRenderer.coreStyle.hasHiddenOrScrollOverflowY == true)
+		{
+			return true;
 		}
 		
 		switch (rootElementRenderer.coreStyle.getKeyword(rootElementRenderer.coreStyle.overflowY))

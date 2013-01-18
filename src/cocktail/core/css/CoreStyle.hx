@@ -295,6 +295,18 @@ class CoreStyle
 	public var canAlwaysOverflow:Bool;
 	
 	/**
+	 * Wether the element have 'hidden' or 'scroll'
+	 * for overflow-x value
+	 */
+	public var hasHiddenOrScrollOverflowX:Bool;
+
+	/**
+	 * Wether the element have 'hidden' or 'scroll'
+	 * for overflow-y value
+	 */
+	public var hasHiddenOrScrollOverflowY:Bool;
+	
+	/**
 	 * Wether the element is transformed via the
 	 * transform style or with a relative positioning
 	 */
@@ -490,6 +502,8 @@ class CoreStyle
 		isAbsolutelyPositioned = false;
 		hasBackgroundColor = false;
 		hasCSSTransform = false;
+		hasHiddenOrScrollOverflowX = false;
+		hasHiddenOrScrollOverflowY = false;
 		
 		init();
 	}
@@ -818,10 +832,15 @@ class CoreStyle
 		if (cascadeManager.hasOverflowX || cascadeManager.hasOverflowY)
 		{
 			canAlwaysOverflow = true;
+			hasHiddenOrScrollOverflowX = false;
 			
 			switch (getKeyword(overflowX))
 			{
 				case VISIBLE:
+					
+				case HIDDEN, SCROLL:
+					hasHiddenOrScrollOverflowX = true;
+					canAlwaysOverflow = false;
 					
 				default:
 					canAlwaysOverflow = false;
@@ -830,6 +849,10 @@ class CoreStyle
 			switch (getKeyword(overflowY))
 			{
 				case VISIBLE:
+					
+				case HIDDEN, SCROLL:
+					hasHiddenOrScrollOverflowY = true;
+					canAlwaysOverflow = false;
 					
 				default:
 					canAlwaysOverflow = false;
