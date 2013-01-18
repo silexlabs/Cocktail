@@ -58,8 +58,12 @@ class MouseListenerBase
 	 */
 	public function new() 
 	{
-		//starts to listen to native mouse events
-		setNativeListeners();
+		//mouse event might be disabled entirely
+		if (Config.ENABLE_MOUSE_EVENT == true)
+		{
+			//starts to listen to native mouse events
+			setNativeListeners();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
