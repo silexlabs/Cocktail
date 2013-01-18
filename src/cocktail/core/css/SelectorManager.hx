@@ -757,13 +757,11 @@ class SelectorManager
 			}
 		}
 		
-		//specificity has 3 categories, whose int values are concatenated as a string then parsed as int
+		//specificity has 3 categories, whose int values are concatenated
 		//for instance, if idSelectorsNumber is equal to 1, classAttributesAndPseudoClassesNumber to 0
 		//and typeAndPseudoElementsNumber to 2,
 		//the specificity is 102
-		var concatenatedSpecificity:String = Std.string(_selectorSpecificityVO.idSelectorsNumber) + Std.string(_selectorSpecificityVO.classAttributesAndPseudoClassesNumber) + Std.string(_selectorSpecificityVO.typeAndPseudoElementsNumber);
-
-		return Std.parseInt(concatenatedSpecificity);
+		return _selectorSpecificityVO.idSelectorsNumber * 100 + _selectorSpecificityVO.classAttributesAndPseudoClassesNumber * 10 + _selectorSpecificityVO.typeAndPseudoElementsNumber;
 	}
 	
 	/**
