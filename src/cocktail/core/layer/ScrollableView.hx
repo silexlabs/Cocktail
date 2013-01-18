@@ -182,9 +182,20 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 */
 	public function updateClipRect():Void
 	{
+		//check if clipped
+		var clipped:Bool = false;
+		if (isXAxisClipped() == true)
+		{
+			clipped = true;
+		}
+		else if (isYAxisClipped() == true)
+		{
+			clipped = true;
+		}
+		
 		//if this layer is clipped in the x, y or both axis,
 		//find its own clip rect and apply it to its children
-		if (isXAxisClipped() == true || isYAxisClipped() == true)
+		if (clipped == true)
 		{
 			//before computing clip rect, convert the clipped bounds from
 			//document space to viewport space with scroll offsets
@@ -305,14 +316,16 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 */
 	public function updateScrollOffset():Void
 	{
-		//if clipped, add its own scroll offset and add it to its children
-		if (isXAxisClipped() == true || isYAxisClipped() == true)
+		//TODO  : if scrollableBounds.x - bounds.x < 0, scrollLeftForChild = scrollableBounds.x + scrollLeft, 
+		//same for y, as if scrollLeft specified as 0, child should
+		//be rendered using layer top left as origin.
+		if (isXAxisClipped() == true)
 		{
-			//TODO  : if scrollableBounds.x - bounds.x < 0, scrollLeftForChild = scrollableBounds.x + scrollLeft, 
-			//same for y, as if scrollLeft specified as 0, child should
-			//be rendered using layer top left as origin.
-			
 			//add offset to all descendant
+			addScrollOffsetToChildren(cast(this), scrollLeft, scrollTop, cast(this));
+		}
+		else if (isYAxisClipped() == true)
+		{
 			addScrollOffsetToChildren(cast(this), scrollLeft, scrollTop, cast(this));
 		}
 		
@@ -552,15 +565,16 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		}
 		
 		//else if not clipped, return the bounds of its element renderers
-		if (isXAxisClipped() == false && isYAxisClipped() == false)
+		if (isXAxisClipped() == false)
 		{
-			return bounds;
+			if (isYAxisClipped() == false)
+			{
+				return bounds;
+			}
 		}
+		
 		//else return its clipped bounds
-		else
-		{
-			return _clippedBounds;
-		}
+		return _clippedBounds;
 	}
 	
 	/**

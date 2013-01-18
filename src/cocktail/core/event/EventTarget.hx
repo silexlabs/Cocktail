@@ -143,10 +143,11 @@ class EventTarget
 		{
 			if (_registeredEventListeners != null)
 			{
+				var eventRegisteredForEventType:Null<Array<EventListener>> = _registeredEventListeners.get(evt.type);
 				//tries to dispatch event registered for the event type
-				if (_registeredEventListeners.exists(evt.type) == true)
+				if (eventRegisteredForEventType != null)
 				{
-					doDispatchEvent(_registeredEventListeners.get(evt.type), evt);
+					doDispatchEvent(eventRegisteredForEventType, evt);
 				}
 			}
 		}
