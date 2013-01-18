@@ -1222,16 +1222,23 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		//only render if necessary
 		if (_needsRendering == true)
 		{
+			//intersect the global dirty rect and the clip rect of this
+			//layer to determine which rect of the layer needs to be repainted
+			GeomUtils.intersectBounds(dirtyRect, clipRect, _layerDirtyRect);
+			
+			//if the layer doesn't intersect the dirty rect at all, no need to 
+			//re-render
+			if (_layerDirtyRect.width == 0 || _layerDirtyRect.height == 0)
+			{
+				return;
+			}
+			
 			//if this layer is transparent, start a transparent
 			//layer with the graphics context
 			if (_alpha != 1.0)
 			{
 				graphicsContext.graphics.beginTransparency(_alpha);
 			}
-			
-			//intersect the global dirty rect and the clip rect of this
-			//layer to determine which rect of the layer needs to be repainted
-			GeomUtils.intersectBounds(dirtyRect, clipRect, _layerDirtyRect);
 			
 			//apply layer matrix to graphics context, so that all element
 			//renderers of the lyer use those transformations
