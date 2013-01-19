@@ -533,7 +533,6 @@ class InvalidationManager
 			initialLayerRenderer.resetScrollOffset();
 			initialLayerRenderer.updateScrollOffset();
 			
-			
 			//update the clip rects of layers used for rendering, default clip rect starts with the viewport
 			initialLayerRenderer.resetClipRect(0, 0, _htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
 			initialLayerRenderer.updateClipRect();
@@ -579,32 +578,17 @@ class InvalidationManager
 		//to reuse most of the drawn bitmap region
 		else if (_scrollOffsetNeedsUpdate == true)
 		{
+			//no need to update most of the layer bounds, as any 
+			//change which would have changed them would have caused regular
+			//rendering to be done instead
+			
 			var initialLayerRenderer:LayerRenderer = _htmlDocument.documentElement.elementRenderer.layerRenderer;
 			
-			//for each concatenate its transformations with those of its parents
-			initialLayerRenderer.updateLayerMatrix(_initialMatrix);
-			
-			//update all of the layers element renderers bounds
-			initialLayerRenderer.updateBounds();
-			
-			//update clipped bounds of layers which don't overflow 
-			initialLayerRenderer.updateClippedBounds();
-			
-			//update the scrollable bounds of the layer which define the area it can scroll
-			initialLayerRenderer.updateScrollableBounds();
-			
-			//update the added scroll offset of all the layers
 			initialLayerRenderer.resetScrollOffset();
 			initialLayerRenderer.updateScrollOffset();
 			
-			
-			//update the clip rects of layers used for rendering, default clip rect starts with the viewport
 			initialLayerRenderer.resetClipRect(0, 0, _htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
 			initialLayerRenderer.updateClipRect();
-			
-			//for each layer, compute its alpha by concatenating alpha of all ancestor layers
-			//TODO 2 : need not to be updated each rendering
-			initialLayerRenderer.updateLayerAlpha(1.0);
 			
 			//update the hit testing bound to respond accurately to user interaction
 			_htmlDocument.documentElement.elementRenderer.updateHitTestingBounds();
