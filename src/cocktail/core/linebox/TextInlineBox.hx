@@ -46,7 +46,7 @@ class TextInlineBox extends InlineBox
 	 * The bitmap data extracted from the native text to 
 	 * be displayed on screen
 	 */
-	public var nativeTextBitmap(default, null):NativeBitmapData;
+	public var nativeTextBitmap(get_nativeTextBitmap, null):NativeBitmapData;
 	
 	/**
 	 * A rectangle containing the dimension
@@ -59,6 +59,11 @@ class TextInlineBox extends InlineBox
 	 * draw the text
 	 */
 	private var _destinationPoint:PointVO;
+	
+	/**
+	 * A reusable rectangle used to draw text to bitmap
+	 */
+	private static var _bitmapBounds:RectangleVO = new RectangleVO();
 	
 	/**
 	 * the dispalyed text
@@ -86,8 +91,6 @@ class TextInlineBox extends InlineBox
 		_renderRect.width = bounds.width;
 		_renderRect.height = bounds.height;
 		_destinationPoint = new PointVO(0.0, 0.0);
-
-		initTextBitmap();
 	}
 	
 	/**
@@ -123,16 +126,26 @@ class TextInlineBox extends InlineBox
 	 */
 	private function initTextBitmap():Void
 	{	
-		var bitmapBounds:RectangleVO = new RectangleVO();
-		bitmapBounds.y = leadedAscent;
-		bitmapBounds.width = bounds.width;
-		bitmapBounds.height = bounds.height;
-		nativeTextBitmap = _nativeText.getBitmap(bitmapBounds);
+		_bitmapBounds.y = leadedAscent;
+		_bitmapBounds.width = bounds.width;
+		_bitmapBounds.height = bounds.height;
+		nativeTextBitmap = _nativeText.getBitmap(_bitmapBounds);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	//  PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_nativeTextBitmap():NativeBitmapData
+	{
+		//bitmap for text is created the first
+		//time it is drawn
+		if (nativeTextBitmap == null)
+		{
+			initTextBitmap();
+		}
+		return nativeTextBitmap;
+	}
 	
 	/**
 	 * return the generated text width

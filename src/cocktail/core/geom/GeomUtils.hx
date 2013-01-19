@@ -76,10 +76,7 @@ class GeomUtils
 	 */
 	public inline static function intersectBounds(bounds1:RectangleVO, bounds2:RectangleVO, resultBounds:RectangleVO):Void
 	{
-		var left:Float = 0;
-		var right:Float = 0;
-		var top:Float = 0;
-		var bottom:Float =  0;
+
 		
 		//here bounds don't intersect at all
 		if (bounds1.x + bounds1.width < bounds2.x
@@ -95,6 +92,11 @@ class GeomUtils
 		}
 		else
 		{
+			var left:Float = 0;
+			var right:Float = 0;
+			var top:Float = 0;
+			var bottom:Float =  0;
+			
 			if (bounds1.x < bounds2.x)
 			{
 				left = bounds2.x;
