@@ -167,6 +167,15 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	private var _currentMatrix:Matrix;
 	
 	/**
+	 * Flag set when the layer is scrolled
+	 * top and or left. If true, the layer
+	 * can reuse most of its rendered region
+	 * when scrolled instead of repainting
+	 * all of its region
+	 */
+	private var _canUpdateScrollRegion:Bool;
+	
+	/**
 	 * class constructor. init class attributes
 	 */
 	public function new(rootElementRenderer:ElementRenderer) 
@@ -179,6 +188,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		_needsRendering = true;
 		_needsGraphicsContextUpdate = true;
 		_needsStackingContextUpdate = true;
+		_canUpdateScrollRegion = false;
 		
 		matrix = new Matrix();
 		_currentMatrix = new Matrix();
@@ -248,12 +258,12 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		//reset layer's matrix
 		matrix.identity();
 		
-		if (rootElementRenderer.isTransformed() == true)
+		if (rootElementRenderer.coreStyle.isTransformed == true)
 		{
 			//TODO 2 : should it still be separate class ?
 			//if transform property is not 'none', compute transformation
 			//matrix and center of transformations
-			if (rootElementRenderer.hasCSSTransform() == true)
+			if (rootElementRenderer.coreStyle.hasCSSTransform == true)
 			{
 				VisualEffectStylesComputer.compute(rootElementRenderer.coreStyle);
 			}
@@ -1171,14 +1181,16 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	override private function set_scrollLeft(value:Float):Float
 	{
 		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
-		htmlDocument.invalidationManager.invalidateRendering(clipRect);
+		htmlDocument.invalidationManager.invalidateScrollOffset();
+		_canUpdateScrollRegion = true;
 		return super.set_scrollLeft(value);
 	}
 
 	override private function set_scrollTop(value:Float):Float
 	{
 		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
-		htmlDocument.invalidationManager.invalidateRendering(clipRect);
+		htmlDocument.invalidationManager.invalidateScrollOffset();
+		_canUpdateScrollRegion = true;
 		return super.set_scrollTop(value);
 	}
 	
@@ -1260,6 +1272,140 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		
 		//layer no longer needs rendering
 		_needsRendering = false;
+		_canUpdateScrollRegion = false;
+	}
+	
+	/**
+	 * This method is called when an update of document is
+	 * needed, but was only caused because one or many layers
+	 * were scrolled to the top or left, this method allows
+	 * for re-using the current bitmap and only redraw new region 
+	 * appearing after the scroll
+	 */
+	public function updateScrollRegion(dirtyRect:RectangleVO):Void
+	{
+		//if true means that this layer was scrolled since last documeent
+		//update
+		if (_canUpdateScrollRegion == true)
+		{
+			//get the top and left scroll offset since last document
+			//update
+			var leftScrollOffset:Float = scrollOffset.x - _previousScrollOffsetX;
+			var topScrollOffset:Float = scrollOffset.y - _previousScrollOffsetY;
+			
+			//this is the rect that will be used to define the area
+			//of the current bitmap which can be reused
+			var copyRect:RectangleVO = new RectangleVO();
+			copyRect.x = clipRect.x;
+			copyRect.y = clipRect.y;
+			copyRect.width = clipRect.width;
+			copyRect.height = clipRect.height;
+			
+			//this is the point where the copied bitmap will be copied
+			var copyDestination:PointVO = new PointVO(clipRect.x, clipRect.y);
+			
+			
+			
+			//if there was a vertical scroll since last update
+			if (topScrollOffset != 0)
+			{
+				//the copied region must remove the scroll offset as
+				//this part have to be redrawn
+				copyRect.height -= Math.abs(topScrollOffset);
+				
+				//baed on wheter the scroll is toward the top or
+				//bottom, either move the origin of the region that
+				//will be copied or move where it will be copied
+				if (topScrollOffset > 0)
+				{
+					copyRect.y += topScrollOffset;
+				}
+				else
+				{
+					copyDestination.y -= topScrollOffset;
+				}
+				
+				//this rect represent the region which has to be redrawn
+				//because of the scroll
+				var scrollTopRect:RectangleVO = new RectangleVO();
+				scrollTopRect.width = clipRect.width;
+				scrollTopRect.height = Math.abs(topScrollOffset);
+				scrollTopRect.x = clipRect.x;
+				
+				//check wether scroll is toward the top or bottom
+				if (topScrollOffset > 0)
+				{
+					scrollTopRect.y = clipRect.y + clipRect.height - topScrollOffset;
+				}
+				else
+				{
+					scrollTopRect.y = clipRect.y;
+				}
+				
+				//intersect the region which has to be redrawn
+				//with the global dirty rect
+				if (dirtyRect.width == 0 && dirtyRect.height == 0)
+				{
+					//here this is the first use of the dirty rect
+					dirtyRect.x = scrollTopRect.x;
+					dirtyRect.y = scrollTopRect.y;
+					dirtyRect.width = scrollTopRect.width;
+					dirtyRect.height = scrollTopRect.height;
+				}
+				else
+				{
+					GeomUtils.intersectBounds(dirtyRect, scrollTopRect, dirtyRect);
+				}
+			}
+			
+			//same as for scroll top, for horizontal scrolling
+			if (leftScrollOffset != 0)
+			{
+				copyRect.width -= Math.abs(leftScrollOffset);
+				
+				if (leftScrollOffset > 0)
+				{
+					copyRect.x += leftScrollOffset;
+				}
+				
+				var scrollLeftRect:RectangleVO = new RectangleVO();
+				scrollLeftRect.width = Math.abs(leftScrollOffset);
+				scrollLeftRect.height = clipRect.height;
+				scrollLeftRect.y = clipRect.y;
+				
+				if (leftScrollOffset > 0)
+				{
+					scrollLeftRect.x = clipRect.x + clipRect.width - leftScrollOffset;
+				}
+				else
+				{
+					scrollLeftRect.x = clipRect.x;
+				}
+				
+				if (dirtyRect.width == 0 && dirtyRect.height == 0)
+				{
+					dirtyRect.x = scrollLeftRect.x;
+					dirtyRect.y = scrollLeftRect.y;
+					dirtyRect.width = scrollLeftRect.width;
+					dirtyRect.height = scrollLeftRect.height;
+				}
+				else
+				{
+					GeomUtils.intersectBounds(dirtyRect, scrollLeftRect, dirtyRect);
+				}
+			}
+			
+			//draw the region which can be copied at its new position after scrolling
+			graphicsContext.graphics.copyRect(copyRect, copyDestination.x, copyDestination.y);
+			_canUpdateScrollRegion = false;
+		}
+		
+		var child:LayerRenderer = firstChild;
+		while (child != null)
+		{
+			child.updateScrollRegion(dirtyRect);
+			child = child.nextSibling;
+		}
 	}
 	
 	/////////////////////////////////

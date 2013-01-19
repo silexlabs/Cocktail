@@ -59,6 +59,12 @@ class InvalidationManager
 	private var _documentNeedsRendering:Bool;
 	
 	/**
+	 * Set to true when at least one layer of the document
+	 * was scrolled since last document update
+	 */
+	private var _scrollOffsetNeedsUpdate:Bool;
+	
+	/**
 	 * Wether the document needs to cascade the styles
 	 * on nex invalidation method call
 	 */
@@ -190,6 +196,7 @@ class InvalidationManager
 		_forceLayout = false;
 		_viewportResized = false;
 		_bitmapSizeNeedsUpdate = true;
+		_scrollOffsetNeedsUpdate = false;
 		
 		_initialMatrix = new Matrix();
 		_dirtyRect = new RectangleVO();
@@ -298,6 +305,25 @@ class InvalidationManager
 				GeomUtils.addBounds(dirtyRect, _dirtyRect);
 			}
 		}
+	}
+	
+	/**
+	 * Called when the scroll top and/or left of a 
+	 * layer has changed. Schedule an update of
+	 * the document. 
+	 * 
+	 * If until the next update, the
+	 * document rendering is not invalidated with the
+	 * invalidateRendering method , this 
+	 * flag allows for faster redraw of scrolled layer,
+	 * as the already drawn region of the layer can 
+	 * be mostly reused and only the new region appearing
+	 * because of scroll needs to be actually redrawn
+	 */
+	public function invalidateScrollOffset():Void
+	{
+		_scrollOffsetNeedsUpdate = true;
+		invalidate();
 	}
 	
 	/**
@@ -543,10 +569,73 @@ class InvalidationManager
 			//reset the dirty rect for next rendering
 			_firstDirtyRect = true;
 			_dirtyRect.x = 0;
-			_dirtyRect.y = 0;
+			_dirtyRect.y = 0; 
 			_dirtyRect.width = 0;
 			_dirtyRect.height = 0;
 		}
+		else if (_scrollOffsetNeedsUpdate == true)
+		{
+			var initialLayerRenderer:LayerRenderer = _htmlDocument.documentElement.elementRenderer.layerRenderer;
+			
+			//for each concatenate its transformations with those of its parents
+			initialLayerRenderer.updateLayerMatrix(_initialMatrix);
+			
+			//update all of the layers element renderers bounds
+			initialLayerRenderer.updateBounds();
+			
+			//update clipped bounds of layers which don't overflow 
+			initialLayerRenderer.updateClippedBounds();
+			
+			//update the scrollable bounds of the layer which define the area it can scroll
+			initialLayerRenderer.updateScrollableBounds();
+			
+			//update the added scroll offset of all the layers
+			initialLayerRenderer.resetScrollOffset();
+			initialLayerRenderer.updateScrollOffset();
+			
+			
+			//update the clip rects of layers used for rendering, default clip rect starts with the viewport
+			initialLayerRenderer.resetClipRect(0, 0, _htmlDocument.window.innerWidth, _htmlDocument.window.innerHeight);
+			initialLayerRenderer.updateClipRect();
+			
+			//for each layer, compute its alpha by concatenating alpha of all ancestor layers
+			//TODO 2 : need not to be updated each rendering
+			initialLayerRenderer.updateLayerAlpha(1.0);
+			
+			//update the hit testing bound to respond accurately to user interaction
+			_htmlDocument.documentElement.elementRenderer.updateHitTestingBounds();
+			
+			_dirtyRect.x = 0;
+			_dirtyRect.y = 0; 
+			_dirtyRect.width = 0;
+			_dirtyRect.height = 0;
+			
+			initialLayerRenderer.updateScrollRegion(_dirtyRect);
+			//trace(_dirtyRect.x);
+			//trace(_dirtyRect.y);
+			//trace(_dirtyRect.width);
+			//trace(_dirtyRect.height);
+			//on every layer with its bitmap, clear the area of the dirty rect which is about to
+			//be repainted
+			initialLayerRenderer.clear(_dirtyRect.x, _dirtyRect.y, _dirtyRect.width, _dirtyRect.height);
+			
+			//start rendering of the document at the initial stacking context, providing the direct
+			//rect to prevent repainting the whole viewport if not necessary
+			initialLayerRenderer.stackingContext.render(_dirtyRect);
+			
+			_documentNeedsRendering = false;
+			_repaintWholeViewport = false;
+			
+			//reset the dirty rect for next rendering
+			_firstDirtyRect = true;
+			_dirtyRect.x = 0;
+			_dirtyRect.y = 0; 
+			_dirtyRect.width = 0;
+			_dirtyRect.height = 0;
+			
+		}
+		
+		_scrollOffsetNeedsUpdate = false;
 		
 		//when the document has been entirely updated
 		//end the pending animation

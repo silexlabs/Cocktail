@@ -70,6 +70,19 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	public var scrollOffset(default, null):PointVO;
 	
 	/**
+	 * When setting a new scroll offset for the layer, save
+	 * the previous value of x. It is used when
+	 * redrawing layer which scrolled to only redraw
+	 * the part of the layer which scrolled
+	 */
+	private var _previousScrollOffsetX:Float;
+	
+	/**
+	 * same as above for scroll offset y
+	 */
+	private var _previousScrollOffsetY:Float;
+	
+	/**
 	 * Those represent the bounds of the layer
 	 * in the document space. The bounds of the layer
 	 * are the bounds of all the element renderers using
@@ -143,6 +156,9 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		
 		scrollLeft = 0;
 		scrollTop = 0;
+		
+		_previousScrollOffsetX = 0;
+		_previousScrollOffsetY = 0;
 		_ancestorsScrollOffset = new PointVO(0, 0);
 		scrollOffset = new PointVO(0, 0);
 		bounds = new RectangleVO();
@@ -298,6 +314,10 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	{
 		_ancestorsScrollOffset.x = 0;
 		_ancestorsScrollOffset.y = 0;
+		
+		_previousScrollOffsetX = scrollOffset.x;
+		_previousScrollOffsetY = scrollOffset.y;
+		
 		scrollOffset.x = 0;
 		scrollOffset.y = 0;
 		

@@ -168,6 +168,15 @@ class AbstractGraphicsContextImpl
 	}
 	
 	/**
+	 * Takes a region of the current bitmap matching rect,
+	 * and duplicate it on the current at the x/y position
+	 */
+	public function copyRect(rect:RectangleVO, x:Float, y:Float):Void
+	{
+		//abstract
+	}
+	
+	/**
 	 * End the use of transparency when drawing 
 	 * bitmaps
 	 */

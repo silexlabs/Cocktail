@@ -402,6 +402,23 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	
 	}
 	
+	/**
+	 * Duplicate a region of the bitmap using flash API
+	 */
+	override public function copyRect(rect:RectangleVO, x:Float, y:Float):Void
+	{
+		_flashRectangle.x = rect.x;
+		_flashRectangle.y = rect.y;
+		_flashRectangle.width = rect.width;
+		_flashRectangle.height = rect.height;
+		
+		_flashPoint.x = x;
+		_flashPoint.y = y;
+		
+		_nativeBitmap.bitmapData.copyPixels(_nativeBitmap.bitmapData, _flashRectangle, _flashPoint, null, null, true);
+	}
+	
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN GETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
