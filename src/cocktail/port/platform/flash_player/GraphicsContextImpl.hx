@@ -415,7 +415,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_flashPoint.x = x;
 		_flashPoint.y = y;
 		
-		_nativeBitmap.bitmapData.copyPixels(_nativeBitmap.bitmapData, _flashRectangle, _flashPoint, null, null, true);
+		_nativeBitmap.bitmapData.copyPixels(_nativeBitmap.bitmapData, _flashRectangle, _flashPoint, null, null, false);
 	}
 	
 	

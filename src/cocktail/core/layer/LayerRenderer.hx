@@ -1174,24 +1174,18 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN SCROLL GETTER/SETTER
-	// overriden to invalidate rendering when updated
+	// OVERRIDEN SCROLL UTILS METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override private function set_scrollLeft(value:Float):Float
+	/**
+	 * Called when the value of scroll left or scroll top
+	 * changed on a layer which can scroll
+	 */
+	override private function scrollChanged():Void
 	{
 		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
 		htmlDocument.invalidationManager.invalidateScrollOffset();
 		_canUpdateScrollRegion = true;
-		return super.set_scrollLeft(value);
-	}
-
-	override private function set_scrollTop(value:Float):Float
-	{
-		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
-		htmlDocument.invalidationManager.invalidateScrollOffset();
-		_canUpdateScrollRegion = true;
-		return super.set_scrollTop(value);
 	}
 	
 	/////////////////////////////////
@@ -1366,6 +1360,10 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 				if (leftScrollOffset > 0)
 				{
 					copyRect.x += leftScrollOffset;
+				}
+				else
+				{
+					copyDestination.x -= leftScrollOffset;
 				}
 				
 				var scrollLeftRect:RectangleVO = new RectangleVO();

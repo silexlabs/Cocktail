@@ -686,6 +686,10 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		//negative values are illegal
 		if (value <= 0)
 		{
+			if (scrollLeft > 0)
+			{
+				scrollChanged();
+			}
 			scrollLeft = 0;
 		}
 		else
@@ -697,6 +701,11 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 			//the root element render width, so it can't be scrolled
 			if (maxWidthScroll <= 0)
 			{
+				if (scrollLeft != 0)
+				{
+					scrollChanged();
+				}
+				
 				scrollLeft = 0;
 			}
 			//else clip the scroll value to the max scroll width
@@ -705,10 +714,20 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 			{
 				if (value > maxWidthScroll)
 				{
+					if (scrollLeft != maxWidthScroll)
+					{
+						scrollChanged();
+					}
+					
 					scrollLeft = maxWidthScroll;
 				}
 				else
 				{
+					if (scrollLeft != value)
+					{
+						scrollChanged();
+					}
+					
 					scrollLeft = value;
 				}
 			}
@@ -726,6 +745,10 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		
 		if (value <= 0)
 		{
+			if (scrollTop > 0)
+			{
+				scrollChanged();
+			}
 			scrollTop = 0;
 		}
 		else 
@@ -734,16 +757,31 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 			
 			if (maxHeightScroll <= 0)
 			{
+				if (scrollTop != 0)
+				{
+					scrollChanged();
+				}
+				
 				scrollTop = 0;
 			}
 			else
 			{
 				if (value > maxHeightScroll)
 				{
+					if (scrollTop != maxHeightScroll)
+					{
+						scrollChanged();
+					}
+					
 					scrollTop = maxHeightScroll;
 				}
 				else
 				{
+					if (scrollTop != value)
+					{
+						scrollChanged();
+					}
+					
 					scrollTop = value;
 				}
 			}
@@ -755,6 +793,15 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// UTILS METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when the value of scroll left or scroll top
+	 * changed on a layer which can scroll
+	 */
+	private function scrollChanged():Void
+	{
+		//abstract
+	}
 	
 	/**
 	 * Determine wether the target layer's root element renderer is a child of this layer's
