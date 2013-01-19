@@ -572,7 +572,11 @@ class InvalidationManager
 			_dirtyRect.y = 0; 
 			_dirtyRect.width = 0;
 			_dirtyRect.height = 0;
+			_scrollOffsetNeedsUpdate = false;
 		}
+		//special case of rendering, here rendering is needed only because 
+		//one or multiple layer have been scrolled. Can be optimised
+		//to reuse most of the drawn bitmap region
 		else if (_scrollOffsetNeedsUpdate == true)
 		{
 			var initialLayerRenderer:LayerRenderer = _htmlDocument.documentElement.elementRenderer.layerRenderer;
@@ -610,17 +614,12 @@ class InvalidationManager
 			_dirtyRect.width = 0;
 			_dirtyRect.height = 0;
 			
+			//layer which have been scrolled reuse here their previous rendered bitmap
+			//and update a dirty rect of all the region which actually needs to be rendered
 			initialLayerRenderer.updateScrollRegion(_dirtyRect);
-			//trace(_dirtyRect.x);
-			//trace(_dirtyRect.y);
-			//trace(_dirtyRect.width);
-			//trace(_dirtyRect.height);
-			//on every layer with its bitmap, clear the area of the dirty rect which is about to
-			//be repainted
-			initialLayerRenderer.clear(_dirtyRect.x, _dirtyRect.y, _dirtyRect.width, _dirtyRect.height);
 			
-			//start rendering of the document at the initial stacking context, providing the direct
-			//rect to prevent repainting the whole viewport if not necessary
+			//clear and repaint the scroll region needing it
+			initialLayerRenderer.clear(_dirtyRect.x, _dirtyRect.y, _dirtyRect.width, _dirtyRect.height);
 			initialLayerRenderer.stackingContext.render(_dirtyRect);
 			
 			_documentNeedsRendering = false;
@@ -632,10 +631,8 @@ class InvalidationManager
 			_dirtyRect.y = 0; 
 			_dirtyRect.width = 0;
 			_dirtyRect.height = 0;
-			
+			_scrollOffsetNeedsUpdate = false;
 		}
-		
-		_scrollOffsetNeedsUpdate = false;
 		
 		//when the document has been entirely updated
 		//end the pending animation
