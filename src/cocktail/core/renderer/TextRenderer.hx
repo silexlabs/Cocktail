@@ -8,6 +8,7 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.css.CSSValueConverter;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
 import cocktail.core.geom.GeomUtils;
@@ -594,18 +595,22 @@ class TextRenderer extends InvalidatingElementRenderer
 		var fontMetrics:FontMetricsVO = coreStyle.fontMetrics;
 		var fontManager:FontManager = FontManager.getInstance();
 		
+		//return the font family for the text inline box as a string, formatted for
+		//the native platform
+		var fontFamily:String = fontManager.getNativeFontFamily(CSSValueConverter.getFontFamilyAsStringArray(coreStyle.fontFamily));
+		
 		var length:Int = _textTokens.length;
 		for (i in 0...length)
 		{
 			//create and store the line boxes
-			inlineBoxes.push(createTextInlineBoxFromTextToken(_textTokens[i], fontMetrics, fontManager));
+			inlineBoxes.push(createTextInlineBoxFromTextToken(_textTokens[i], fontMetrics, fontManager, fontFamily));
 		}
 	}
 	
 	/**
 	 * Create and return a Text line box from a text token
 	 */
-	private function createTextInlineBoxFromTextToken(textToken:TextToken, fontMetrics:FontMetricsVO, fontManager:FontManager):InlineBox
+	private function createTextInlineBoxFromTextToken(textToken:TextToken, fontMetrics:FontMetricsVO, fontManager:FontManager, fontFamily:String):InlineBox
 	{
 		//the text of the created text line box
 		var text:String;
@@ -616,17 +621,17 @@ class TextRenderer extends InvalidatingElementRenderer
 		{
 			case word(value):
 				text = value;
-				textInlineBox = new TextInlineBox(this, text, fontMetrics, fontManager);
+				textInlineBox = new TextInlineBox(this, text, fontMetrics, fontManager, fontFamily);
 		
 			case space:
-				textInlineBox = new SpaceInlineBox(this, fontMetrics, fontManager);
+				textInlineBox = new SpaceInlineBox(this, fontMetrics, fontManager, fontFamily);
 				
 			//TODO 5 : implement tab and line feed	
 			case tab:
-				textInlineBox = new TextInlineBox(this, "", fontMetrics, fontManager);
+				textInlineBox = new TextInlineBox(this, "", fontMetrics, fontManager, fontFamily);
 				
 			case lineFeed:
-				textInlineBox = new TextInlineBox(this, "", fontMetrics, fontManager);
+				textInlineBox = new TextInlineBox(this, "", fontMetrics, fontManager, fontFamily);
 		}
 		
 		return textInlineBox;

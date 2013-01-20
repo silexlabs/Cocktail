@@ -77,8 +77,18 @@ class FontManager
 	 * and the styles that were computed for
 	 * this text
 	 */
-	public function createNativeTextElement(text:String, style:CoreStyle):NativeElement
+	public function createNativeTextElement(text:String, style:CoreStyle, fontFamily:String):NativeElement
 	{
-		return _fontManagerImpl.createNativeTextElement(text, style);
+		return _fontManagerImpl.createNativeTextElement(text, style, fontFamily);
+	}
+	
+	/**
+	 * Get a css cont family array and return it
+	 * as a string of font family formatted for the
+	 * native runtime
+	 */
+	public function getNativeFontFamily(fontFamily:Array<String>):String
+	{
+		return _fontManagerImpl.getNativeFontFamily(fontFamily);
 	}
 }

@@ -72,7 +72,7 @@ class TextInlineBox extends InlineBox
 	/**
 	 * class constructor
 	 */
-	public function new(elementRenderer:ElementRenderer, text:String, fontMetrics:FontMetricsVO, fontManager:FontManager) 
+	public function new(elementRenderer:ElementRenderer, text:String, fontMetrics:FontMetricsVO, fontManager:FontManager, fontFamily:String) 
 	{
 		_fontMetrics = fontMetrics;
 		
@@ -81,7 +81,7 @@ class TextInlineBox extends InlineBox
 		isText = true;
 		
 		_text = text;
-		initNativeTextElement(text, fontManager, elementRenderer.coreStyle);
+		initNativeTextElement(text, fontManager, elementRenderer.coreStyle, fontFamily);
 		
 		//get the dimensions of the text
 		bounds.width = getTextWidth();
@@ -112,11 +112,11 @@ class TextInlineBox extends InlineBox
 	/**
 	 * Instantiate a platform specific text rendering element
 	 */
-	private function initNativeTextElement(text:String, fontManager:FontManager, style:CoreStyle):Void
+	private function initNativeTextElement(text:String, fontManager:FontManager, style:CoreStyle, fontFamily:String):Void
 	{
 		//create and store a native text element, using the styles of the 
 		//TextRenderer which created this TextLineBox
-		var nativeElement:NativeElement = fontManager.createNativeTextElement(text, style);
+		var nativeElement:NativeElement = fontManager.createNativeTextElement(text, style, fontFamily);
 		//wrap the native text element
 		_nativeText = new NativeText(nativeElement);
 	}

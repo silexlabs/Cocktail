@@ -31,16 +31,16 @@ class SpaceInlineBox extends TextInlineBox
 	/**
 	 * class constructor
 	 */
-	public function new(elementRenderer:ElementRenderer, fontMetrics:FontMetricsVO, fontManager:FontManager) 
+	public function new(elementRenderer:ElementRenderer, fontMetrics:FontMetricsVO, fontManager:FontManager, fontFamily:String) 
 	{
-		super(elementRenderer, "", fontMetrics, null);
+		super(elementRenderer, "", fontMetrics, null, fontFamily);
 		isSpace = true;
 	}
 	
 	/**
 	 * Don't need to create a native text element for space
 	 */ 
-	override private function initNativeTextElement(text:String, fontManager:FontManager, style:CoreStyle):Void
+	override private function initNativeTextElement(text:String, fontManager:FontManager, style:CoreStyle, fontFamily:String):Void
 	{
 		
 	}

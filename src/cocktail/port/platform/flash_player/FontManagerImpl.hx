@@ -140,10 +140,10 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 * Overriden to create flash text lines. Uses the flash text engine introduced
 	 * in flash player 10
 	 */
-	override public function createNativeTextElement(text:String, style:CoreStyle):NativeElement
+	override public function createNativeTextElement(text:String, style:CoreStyle, fontFamily:String):NativeElement
 	{
 		//get a flash TextElement, used as the model for a flash textBlock
-		_textBlock.content = getNativeTextElement(text, style);
+		_textBlock.content = getNativeTextElement(text, style, fontFamily);
 		
 		//create a native flash text line
 		//by default, the width of the line to create is an 
@@ -163,6 +163,50 @@ class FontManagerImpl extends AbstractFontManagerImpl
 		
 		return text;
 	}	
+	
+	/**
+	 * Takes the array containing every font to apply to the
+	 * text (ordered by priority, the first available font being
+	 * used) and return a comma separated list containing the ordered
+	 * font names
+	 * 
+	 * @return a comma separated list of font, generally ordered from most
+	 * specific to most generic, e.g "Universe,Arial,_sans"
+	 */
+	override public function getNativeFontFamily(value:Array<String>):String
+	{
+		var fontFamily:String = "";
+		
+		var length:Int = value.length;
+		for (i in 0...length)
+		{
+			var fontName:String = value[i];
+			
+			//check if the font name is a generic CSS font name,
+			//in which case, it needs to be replaced with the corresponding
+			//flash generic font name
+			switch (fontName.toUpperCase())
+			{
+				case SERIF_CSS_FONT_NAME:
+					fontName = SERIF_FLASH_FONT_NAME;
+					
+				case SANS_SERIF_CSS_FONT_NAME:
+					fontName = SANS_SERIF_FLASH_FONT_NAME;
+					
+				case MONOSPACE_CSS_FONT_NAME:
+					fontName = MONOSPACE_FLASH_FONT_NAME;
+			}
+			
+			fontFamily += fontName;
+			
+			if (i < value.length - 1)
+			{
+				fontFamily += ",";
+			}
+		}
+		
+		return fontFamily;
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Private methods, font rendering and measure
@@ -209,7 +253,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 * to apply to it when rendered. A computedStyle
 	 * is provided to render the text
 	 */
-	private function getNativeTextElement(text:String, style:CoreStyle):TextElement
+	private function getNativeTextElement(text:String, style:CoreStyle, fontFamily:String):TextElement
 	{	
 		var textElement:TextElement = new TextElement(text);
 		
@@ -226,7 +270,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 		var fontDescription:FontDescription = new FontDescription(); 
 		fontDescription.fontWeight = getNativeFontWeight(style.fontWeight);
 		fontDescription.fontPosture = getNativeFontPosture(style.getKeyword(style.fontStyle));
-		fontDescription.fontName = getNativeFontFamily(CSSValueConverter.getFontFamilyAsStringArray(style.fontFamily));
+		fontDescription.fontName = fontFamily;
 		elementFormat.fontDescription = fontDescription;
 		
 		//color of the text
@@ -289,50 +333,6 @@ class FontManagerImpl extends AbstractFontManagerImpl
 		}
 		
 		return nativeFontVariant;
-	}
-	
-	/**
-	 * Takes the array containing every font to apply to the
-	 * text (ordered by priority, the first available font being
-	 * used) and return a comma separated list containing the ordered
-	 * font names
-	 * 
-	 * @return a comma separated list of font, generally ordered from most
-	 * specific to most generic, e.g "Universe,Arial,_sans"
-	 */
-	private function getNativeFontFamily(value:Array<String>):String
-	{
-		var fontFamily:String = "";
-		
-		var length:Int = value.length;
-		for (i in 0...length)
-		{
-			var fontName:String = value[i];
-			
-			//check if the font name is a generic CSS font name,
-			//in which case, it needs to be replaced with the corresponding
-			//flash generic font name
-			switch (fontName.toUpperCase())
-			{
-				case SERIF_CSS_FONT_NAME:
-					fontName = SERIF_FLASH_FONT_NAME;
-					
-				case SANS_SERIF_CSS_FONT_NAME:
-					fontName = SANS_SERIF_FLASH_FONT_NAME;
-					
-				case MONOSPACE_CSS_FONT_NAME:
-					fontName = MONOSPACE_FLASH_FONT_NAME;
-			}
-			
-			fontFamily += fontName;
-			
-			if (i < value.length - 1)
-			{
-				fontFamily += ",";
-			}
-		}
-		
-		return fontFamily;
 	}
 	
 	/**
