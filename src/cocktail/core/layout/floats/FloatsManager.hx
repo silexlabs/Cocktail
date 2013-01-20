@@ -34,7 +34,7 @@ class FloatsManager
 	 * Holds a reference to each of the current left and right
 	 * floats coordinates
 	 */
-	public var floats(default, null):FloatsVO;
+	public var floats:FloatsVO;
 	
 	public var childrenWithClearance:Array<ElementRenderer>;
 	
@@ -64,31 +64,6 @@ class FloatsManager
 		childrenWithClearance = new Array<ElementRenderer>();
 	}
 	
-	public function floatIsAlreadyRegistered(elementRenderer:ElementRenderer):Bool
-	{
-		var leftFloatsLength:Int = floats.left.length;
-		
-		for (i in 0...leftFloatsLength)
-		{
-			if (floats.left[i].node == elementRenderer)
-			{
-				return true;
-			}
-		}
-		
-		var rightFloatsLength:Int = floats.right.length;
-		
-		for (i in 0...rightFloatsLength)
-		{
-			if (floats.right[i].node == elementRenderer)
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
 	public function clearIsAlreadyRegistered(elementRenderer:ElementRenderer):Bool
 	{
 		var length:Int = childrenWithClearance.length;
@@ -107,35 +82,6 @@ class FloatsManager
 	{
 		childrenWithClearance.push(elementRenderer);
 	}
-	
-	public function retrieveFloatsFrom(targetBlockBox:BlockBoxRenderer, sourceBlockBox:BlockBoxRenderer, offset:PointVO):Void
-	{
-		init();
-
-		var sourceFloatsManager:FloatsManager = sourceBlockBox.floatsManager;
-		
-		convertArrayOfFloats(floats.left, sourceFloatsManager.floats.left, offset);
-		convertArrayOfFloats(floats.right, sourceFloatsManager.floats.right, offset);
-	}
-	
-	private function convertArrayOfFloats(target:Array<FloatVO>, source:Array<FloatVO>, offset:PointVO):Void
-	{
-		var floatsLength:Int = source.length;
-		for (i in 0...floatsLength)
-		{
-			var floatBounds:RectangleVO = new RectangleVO();
-			var sourceFloatBounds:RectangleVO = source[i].bounds;
-			
-			floatBounds.x = sourceFloatBounds.x - offset.x;
-			floatBounds.y = sourceFloatBounds.y - offset.y;
-			floatBounds.width = sourceFloatBounds.width;
-			floatBounds.height = sourceFloatBounds.height;
-			
-			var floatVO:FloatVO = new FloatVO(source[i].node, floatBounds);
-			target.push(floatVO);
-		}
-	}
-	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CLEARANCE METHODS
@@ -304,89 +250,115 @@ class FloatsManager
 	// floated element
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+
+	public function registerFloat(elementRenderer:ElementRenderer):Void
+	{
+		switch (elementRenderer.coreStyle.getKeyword(elementRenderer.coreStyle.cssFloat))
+		{
+			case LEFT:
+				floats.left.push(new FloatVO(elementRenderer, new RectangleVO()));
+				
+			case RIGHT:
+				floats.right.push(new FloatVO(elementRenderer, new RectangleVO()));
+				
+			default:
+				throw 'Illegal value for float style';
+		}
+	}
+	
 	/**
 	 * Create and store a float data structure from a floated element
 	 */
-	public function registerFloat(elementRenderer:ElementRenderer, currentChildPosition:PointVO, containingBlockWidth:Float):FloatVO
+	public function updateFloatBounds(elementRenderer:ElementRenderer, currentChildPosition:PointVO, containingBlockWidth:Float):RectangleVO
 	{
-		var ret:FloatVO;
-		
-		var coreStyle:CoreStyle = elementRenderer.coreStyle;
-		
-		switch (coreStyle.getKeyword(coreStyle.cssFloat))
+		var float:FloatVO = getFloatByNode(elementRenderer);
+		switch (elementRenderer.coreStyle.getKeyword(elementRenderer.coreStyle.cssFloat))
 		{
 			case LEFT:
-				ret = getLeftFloatData(elementRenderer, currentChildPosition, containingBlockWidth);
-				floats.left.push(ret);
-				
+				float.bounds = getLeftFloatBounds(elementRenderer, currentChildPosition, containingBlockWidth);
+
 			case RIGHT:
-				ret = getRightFloatData(elementRenderer, currentChildPosition, containingBlockWidth);
-				floats.right.push(ret);
-				
-			case NONE:
-				ret = null;
+				float.bounds = getRightFloatBounds(elementRenderer, currentChildPosition, containingBlockWidth);
 				
 			default:
 				throw 'Illegal value for float style';
 		}
 		
-		return ret;
+		return float.bounds;
+	}
+	
+	private function getFloatByNode(node:ElementRenderer):FloatVO
+	{
+		var leftLength:Int = floats.left.length;
+		for (i in 0...leftLength)
+		{
+			if (floats.left[i].node == node)
+			{
+				return floats.left[i];
+			}
+		}
+		
+		var rightLength:Int = floats.right.length;
+		for (i in 0...rightLength)
+		{
+			if (floats.right[i].node == node)
+			{
+				return floats.right[i];
+			}
+		}
+		
+		return null;
 	}
 	
 	/**
 	 * Create a float data structure for a left float
 	 */
-	private function getLeftFloatData(elementRenderer:ElementRenderer, currentChildPosition:PointVO, containingBlockWidth:Float):FloatVO
+	private function getLeftFloatBounds(elementRenderer:ElementRenderer, currentChildPosition:PointVO, containingBlockWidth:Float):RectangleVO
 	{
 		//get float data except for x position
-		var floatData:RectangleVO = getFloatData(elementRenderer, currentChildPosition, containingBlockWidth);
+		var floatBounds:RectangleVO = getFloatBounds(elementRenderer, currentChildPosition, containingBlockWidth);
 
 		//a left float is placed to right of all the preceding left float
 		//which are on the same line as this one
-		floatData.x = getLeftFloatOffset(floatData.y, floatData.height);
+		floatBounds.x = getLeftFloatOffset(floatBounds.y, floatBounds.height, currentChildPosition);
 		
-		if (floatData.x < currentChildPosition.x)
+		if (floatBounds.x < currentChildPosition.x)
 		{
-			floatData.x = currentChildPosition.x;
+			floatBounds.x = currentChildPosition.x;
 		}
 		
-		var floatVO:FloatVO = new FloatVO(elementRenderer, floatData);
-		
-		return floatVO;
+		return floatBounds;
 	}
 	
 	/**
 	 * Create a float data structure for a right float
 	 */
-	private function getRightFloatData(elementRenderer:ElementRenderer, currentChildPosition:PointVO, containingBlockWidth:Float):FloatVO
+	private function getRightFloatBounds(elementRenderer:ElementRenderer, currentChildPosition:PointVO, containingBlockWidth:Float):RectangleVO
 	{
 		//get float data except for x position
-		var floatData:RectangleVO = getFloatData(elementRenderer, currentChildPosition, containingBlockWidth);
+		var floatBounds:RectangleVO = getFloatBounds(elementRenderer, currentChildPosition, containingBlockWidth);
 
 		//a right float is placed to the left of all the preceding right float which
 		//are on the same line
-		floatData.x = containingBlockWidth - floatData.width - getRightFloatOffset(floatData.y, floatData.height, containingBlockWidth + currentChildPosition.x) + currentChildPosition.x;
-
-		var floatVO:FloatVO = new FloatVO(elementRenderer, floatData);
+		floatBounds.x = containingBlockWidth - floatBounds.width - getRightFloatOffset(floatBounds.y, floatBounds.height, containingBlockWidth + currentChildPosition.x, currentChildPosition) + currentChildPosition.x;
 		
-		return floatVO;
+		return floatBounds;
 	}
 	
 	/**
 	 * Create a generic float data structure which can be applied to both
 	 * left and right float
 	 */
-	private function getFloatData(elementRenderer:ElementRenderer, currentChildPosition:PointVO, containingBlockWidth:Float):RectangleVO
+	private function getFloatBounds(elementRenderer:ElementRenderer, currentChildPosition:PointVO, containingBlockWidth:Float):RectangleVO
 	{
-		//a float width and height use the margin box of a
-		//HTMLElement
+		//a float width and height use the margin box of an element
 		
 		var usedValues:UsedValuesVO = elementRenderer.coreStyle.usedValues;
 		var floatWidth:Float = elementRenderer.bounds.width + usedValues.marginLeft + usedValues.marginRight;
 		var floatHeight:Float = elementRenderer.bounds.height + usedValues.marginTop + usedValues.marginBottom;
 	
 		//get the first y position where the float can be placed
-		var floatY:Float = getFirstAvailableYPosition(currentChildPosition.y, floatHeight, floatWidth, containingBlockWidth, currentChildPosition.x);
+		var floatY:Float = getFirstAvailableYPosition(currentChildPosition.y, floatHeight, floatWidth, containingBlockWidth, currentChildPosition);
 		
 		//the x position of the float vary for left and right float
 		var floatX:Float = 0.0;
@@ -407,13 +379,13 @@ class FloatsManager
 	 * @param	elementHeight the height of the element which must be inserted
 	 * @param	elementWidth the width of the element that must be inserted
 	 * @param	containingBlockWidth the maximum available width in the current line
-	 * @param	containingBlockXOffset the x offset of the containing blokc relative to its first block formatting ancestor.
+	 * @param	containingBlockOffset the x and y offset of the containing blokc relative to its first block formatting ancestor.
 	 * Used when inserting floated element to convert the containing block to the block formatting context root space. 
 	 * When seeking first y position of non-floated element, always 0 as the y position is seeked in the space of the containing block
 	 * 
 	 * @return  the y position where the element can be inserted
 	 */
-	public function getFirstAvailableYPosition(currentYPosition:Float, elementHeight:Float, elementWidth:Float, containingBlockWidth:Float, containingBlockXOffset:Float):Float
+	public function getFirstAvailableYPosition(currentYPosition:Float, elementHeight:Float, elementWidth:Float, containingBlockWidth:Float, containingBlockOffset:PointVO):Float
 	{
 		//the y position default to the current y position
 		//in the case where the element can be immediately inserted
@@ -422,7 +394,7 @@ class FloatsManager
 		
 		//loop while there isn't enough horizontal space at the current y position to insert the
 		//element
-		while (canFitElementAtY(retY, elementHeight, elementWidth, containingBlockWidth, containingBlockXOffset) == false)
+		while (canFitElementAtY(retY, elementHeight, elementWidth, containingBlockWidth, containingBlockOffset) == false)
 		{
 			//stores all the floats situated at the same height or after
 			//the current y position and/or at the same height or after the current
@@ -496,10 +468,10 @@ class FloatsManager
 	 * Returns wether the element can be fitted at the y position,
 	 * given its bounds and the available width
 	 */
-	private function canFitElementAtY(y:Float, elementHeight:Float, elementWidth:Float, containingBlockWidth:Float, containingBlockXOffset:Float):Bool
+	private function canFitElementAtY(y:Float, elementHeight:Float, elementWidth:Float, containingBlockWidth:Float, containingBlockOffset:PointVO):Bool
 	{
 		//test if top y position of element can fit
-		if (getLeftFloatOffset(y, elementHeight) + getRightFloatOffset(y, elementHeight, containingBlockWidth) + elementWidth > containingBlockWidth + containingBlockXOffset)
+		if (getLeftFloatOffset(y, elementHeight, containingBlockOffset) + getRightFloatOffset(y, elementHeight, containingBlockWidth, containingBlockOffset) + elementWidth > containingBlockWidth + containingBlockOffset.x)
 		{
 			return false;
 		}
@@ -517,9 +489,11 @@ class FloatsManager
 	 * Return the left float offset intersecting with the line between y and y + elementHeight. The left float offset is
 	 * the added width of all the left floats intersecting this line
 	 */
-	public function getLeftFloatOffset(y:Float, elementHeight:Float):Float
+	public function getLeftFloatOffset(y:Float, elementHeight:Float, offset:PointVO):Float
 	{
 		var leftFloatOffset:Float = 0;
+		
+		var offsetY:Float = y + offset.y;
 		
 		//loop in all left floats
 		var length:Int = floats.left.length;
@@ -528,16 +502,16 @@ class FloatsManager
 			var floatBounds:RectangleVO = floats.left[i].bounds;
 			
 			//determine if the float intersects the line
-			if (floatBounds.y + floatBounds.height > y &&
-			floatBounds.y <= y
-			|| floatBounds.y <= (y + elementHeight) && floatBounds.y > y)
+			if (floatBounds.y + floatBounds.height > offsetY &&
+			floatBounds.y <= offsetY
+			|| floatBounds.y <= (offsetY + elementHeight) && floatBounds.y > offsetY)
 			{
 				//if it does, if its offset from the left border of the containing
 				//block is superior to the current stored left offset, it becomes
 				//the left offset
 				if (floatBounds.x + floatBounds.width > leftFloatOffset)
 				{
-					leftFloatOffset = floatBounds.x + floatBounds.width;
+					leftFloatOffset = floatBounds.x + floatBounds.width - offset.x;
 				}
 			}
 		}
@@ -548,17 +522,19 @@ class FloatsManager
 	/**
 	 * same as above for right float offset
 	 */
-	public function getRightFloatOffset(y:Float, elementHeight:Float, containingWidth:Float):Float
+	public function getRightFloatOffset(y:Float, elementHeight:Float, containingWidth:Float, offset:PointVO):Float
 	{
 		var rightFloatOffset:Float = 0;
+		
+		var offsetY:Float = y;
 		
 		var length:Int = floats.right.length;
 		for (i in 0...length)
 		{
 			var floatBounds:RectangleVO = floats.right[i].bounds;
-			if (floatBounds.y + floatBounds.height > y &&
-			floatBounds.y <= y
-			|| floatBounds.y <= (y + elementHeight) && floatBounds.y > y)
+			if (floatBounds.y + floatBounds.height > offsetY &&
+			floatBounds.y <= offsetY
+			|| floatBounds.y <= (offsetY + elementHeight) && floatBounds.y > offsetY)
 			{
 				if (containingWidth - floatBounds.x > rightFloatOffset)
 				{

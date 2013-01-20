@@ -168,7 +168,7 @@ import cocktail.core.css.CSSData;
 	class FloatVO {
 		
 		public var node(default, null):ElementRenderer;
-		public var bounds(default, null):RectangleVO;
+		public var bounds:RectangleVO;
 		
 		public function new(node:ElementRenderer, bounds:RectangleVO)
 		{
