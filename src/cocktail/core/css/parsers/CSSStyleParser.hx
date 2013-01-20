@@ -584,7 +584,7 @@ class CSSStyleParser
 			//and no group of styles either
 			if (styleValues.length == 1)
 			{
-				var typedProperty:TypedPropertyVO = TypedPropertyVO.getPool().get();
+				var typedProperty:TypedPropertyVO = new TypedPropertyVO();
 				typedProperty.important = important;
 				typedProperty.name = propertyName;
 				typedProperty.typedValue = styleValues[0];
@@ -593,7 +593,7 @@ class CSSStyleParser
 			//else group the style values
 			else
 			{
-				var typedProperty:TypedPropertyVO = TypedPropertyVO.getPool().get();
+				var typedProperty:TypedPropertyVO = new TypedPropertyVO();
 				typedProperty.important = important;
 				typedProperty.name = propertyName;
 				typedProperty.typedValue = GROUP(styleValues);
@@ -621,7 +621,7 @@ class CSSStyleParser
 				}
 			}
 			
-			var typedProperty:TypedPropertyVO = TypedPropertyVO.getPool().get();
+			var typedProperty:TypedPropertyVO = new TypedPropertyVO();
 			typedProperty.important = important;
 			typedProperty.name = propertyName;
 			typedProperty.typedValue = CSS_LIST(styleListProperty);

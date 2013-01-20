@@ -173,12 +173,6 @@ class CSSStyleDeclaration
 	private var _onStyleChange:String->Void;
 	
 	/**
-	 * A reference to the object pool providing
-	 * TypedPropertyVO objects
-	 */
-	private static var _typedPropertyVOPool:ObjectPool<TypedPropertyVO> = TypedPropertyVO.getPool();
-	
-	/**
 	 * Class constructor
 	 */
 	public function new(parentRule:CSSRule = null, onStyleChange:String->Void = null) 
@@ -196,12 +190,6 @@ class CSSStyleDeclaration
 	{
 		_onStyleChange = null;
 		parentRule = null;
-		
-		var length:Int = _properties.length;
-		for (i in 0...length)
-		{
-			_typedPropertyVOPool.release(_properties[i]);
-		}
 		
 		_properties = _properties.clear();
 	}
@@ -271,7 +259,6 @@ class CSSStyleDeclaration
 		if (typedProperty != null)
 		{
 			_properties.remove(typedProperty);
-			_typedPropertyVOPool.release(typedProperty);
 			
 			//call the style update callback if provided
 			if (_onStyleChange != null)
@@ -339,7 +326,7 @@ class CSSStyleDeclaration
 		//here the property doesn't exist yet, create it and store it
 		if (currentProperty == null)
 		{
-			var newProperty:TypedPropertyVO = _typedPropertyVOPool.get();
+			var newProperty:TypedPropertyVO = new TypedPropertyVO();
 			newProperty.important = important;
 			newProperty.typedValue = typedValue;
 			newProperty.name = property;
@@ -372,7 +359,7 @@ class CSSStyleDeclaration
 	 */
 	public function setTypedPropertyInitial(property:String, typedValue:CSSPropertyValue, important:Bool):Void
 	{
-		var newProperty:TypedPropertyVO = _typedPropertyVOPool.get();
+		var newProperty:TypedPropertyVO = new TypedPropertyVO();
 		newProperty.important = important;
 		newProperty.typedValue = typedValue;
 		newProperty.name = property;

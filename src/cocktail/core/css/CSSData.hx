@@ -13,33 +13,15 @@ import cocktail.core.utils.ObjectPool;
 
 typedef CSSRuleList = Array<CSSRule>;
 
-class TypedPropertyVO implements IPoolable {
+class TypedPropertyVO {
 	
 	public var name:String;
 	public var typedValue:CSSPropertyValue;
 	public var important:Bool;
 	
-	private static var _pool:ObjectPool<TypedPropertyVO>;
-	
-	public static function getPool():ObjectPool<TypedPropertyVO>
-	{
-		if (_pool == null)
-		{
-			_pool = new ObjectPool<TypedPropertyVO>(TypedPropertyVO);
-		}
-		return _pool;
-	}
-	
 	public function new()
 	{
-		important = false;
-	}
-	
-	public function reset():Void
-	{
-		name = null;
-		typedValue = null;
-		important = false;
+		
 	}
 }
 
