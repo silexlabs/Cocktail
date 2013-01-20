@@ -29,10 +29,16 @@ import cocktail.core.css.CSSData;
 class SpaceInlineBox extends TextInlineBox
 {
 	/**
+	 * the width of the space in pixels
+	 */
+	private var _spaceWidth:Float;
+	
+	/**
 	 * class constructor
 	 */
-	public function new(elementRenderer:ElementRenderer, fontMetrics:FontMetricsVO, fontManager:FontManager, fontFamily:String) 
+	public function new(elementRenderer:ElementRenderer, fontMetrics:FontMetricsVO, fontManager:FontManager, fontFamily:String, spaceWidth:Float) 
 	{
+		_spaceWidth = spaceWidth;
 		super(elementRenderer, "", fontMetrics, null, fontFamily);
 		isSpace = true;
 	}
@@ -56,16 +62,9 @@ class SpaceInlineBox extends TextInlineBox
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * return the space width using the font metrics
-	 */
+
 	override private function getTextWidth():Float
 	{
-		//the width of a space is retrieved from the font metrics, plus the letter spacing
-		//which also apply to space and the word spacing which applies only to space
-		var letterSpacing:Float = elementRenderer.coreStyle.usedValues.letterSpacing;
-		var wordSpacing:Float = elementRenderer.coreStyle.getAbsoluteLength(elementRenderer.coreStyle.wordSpacing);
-		return _fontMetrics.spaceWidth + letterSpacing + wordSpacing;
+		return _spaceWidth;
 	}
 }

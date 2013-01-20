@@ -599,18 +599,24 @@ class TextRenderer extends InvalidatingElementRenderer
 		//the native platform
 		var fontFamily:String = fontManager.getNativeFontFamily(CSSValueConverter.getFontFamilyAsStringArray(coreStyle.fontFamily));
 		
+		//the width of a space is retrieved from the font metrics, plus the letter spacing
+		//which also apply to space and the word spacing which applies only to space
+		var letterSpacing:Float = coreStyle.usedValues.letterSpacing;
+		var wordSpacing:Float = coreStyle.getAbsoluteLength(coreStyle.wordSpacing);
+		var spaceWidth:Float = fontMetrics.spaceWidth + letterSpacing + wordSpacing;
+		
 		var length:Int = _textTokens.length;
 		for (i in 0...length)
 		{
 			//create and store the line boxes
-			inlineBoxes.push(createTextInlineBoxFromTextToken(_textTokens[i], fontMetrics, fontManager, fontFamily));
+			inlineBoxes.push(createTextInlineBoxFromTextToken(_textTokens[i], fontMetrics, fontManager, fontFamily, spaceWidth));
 		}
 	}
 	
 	/**
 	 * Create and return a Text line box from a text token
 	 */
-	private function createTextInlineBoxFromTextToken(textToken:TextToken, fontMetrics:FontMetricsVO, fontManager:FontManager, fontFamily:String):InlineBox
+	private function createTextInlineBoxFromTextToken(textToken:TextToken, fontMetrics:FontMetricsVO, fontManager:FontManager, fontFamily:String, spaceWidth:Float):InlineBox
 	{
 		//the text of the created text line box
 		var text:String;
@@ -624,7 +630,7 @@ class TextRenderer extends InvalidatingElementRenderer
 				textInlineBox = new TextInlineBox(this, text, fontMetrics, fontManager, fontFamily);
 		
 			case space:
-				textInlineBox = new SpaceInlineBox(this, fontMetrics, fontManager, fontFamily);
+				textInlineBox = new SpaceInlineBox(this, fontMetrics, fontManager, fontFamily, spaceWidth);
 				
 			//TODO 5 : implement tab and line feed	
 			case tab:
