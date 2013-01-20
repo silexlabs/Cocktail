@@ -610,11 +610,8 @@ class CoreStyle
 		//the currentColor value
 		var parentColor:CSSColorValue = getColor(parentStyleDeclaration.getTypedProperty(CSSConstants.COLOR).typedValue);
 		
-		//TODO 2 : should do the same for "color" which influence style with a currentColor value
 		if (cascadeManager.hasFontSize == true || cascadeManager.hasFontFamily == true || cascadeManager.cascadeAll == true)
 		{
-			//TODO 2 : for now, font-size and font-family are cascaded twice
-			
 			//when the value of font-size and/or font-family is cascaded,
 			//they must be cascaded first, as their
 			//computed values is used to compute some length.
@@ -639,6 +636,10 @@ class CoreStyle
 				//refresh the font metrics when either font family or font size hanges
 				fontMetrics = _fontManager.getFontMetrics(computedValues.fontFamily, getAbsoluteLength(fontSize));
 			}
+			
+			//prevent from being cascaded twice
+			cascadeManager.removePropertyToCascade(CSSConstants.FONT_SIZE);
+			cascadeManager.removePropertyToCascade(CSSConstants.FONT_FAMILY);
 		}
 		
 		//when the value of the color style changes, all the style
@@ -648,6 +649,7 @@ class CoreStyle
 		if (cascadeManager.hasColor == true)
 		{
 			var colorDidChange:Bool = cascadeProperty(CSSConstants.COLOR, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange);
+			
 			
 			//only cascade color propery if value actually changed
 			if (colorDidChange == true)
@@ -663,6 +665,9 @@ class CoreStyle
 					cascadeManager.addPropertyToCascade(colorCSSProperties[i]);
 				}
 			}
+			
+			//prevent color from being cascaded twice
+			cascadeManager.removePropertyToCascade(CSSConstants.COLOR);
 		}
 		
 		var fontSize:Float = fontMetrics.fontSize;

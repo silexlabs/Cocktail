@@ -196,6 +196,25 @@ class CascadeManager
 	}
 	
 	/**
+	 * remove a property to cascade
+	 */
+	public function removePropertyToCascade(name:String):Void
+	{
+		var length:Int = propertiesToCascade.length;
+		for (i in 0...length)
+		{
+			if (propertiesToCascade[i] == name)
+			{
+				propertiesToCascade.remove(propertiesToCascade[i]);
+				//set property flag to false if needed
+				deFlagProperty(name);
+				break;
+			}
+		}
+		
+	}
+	
+	/**
 	 * When called, the next cascade will update
 	 * all the properties
 	 */
@@ -517,5 +536,26 @@ class CascadeManager
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * if the removed proeprty has an associated flag,
+	 * set it to false
+	 */
+	private function deFlagProperty(name:String):Void
+	{
+		switch(name)
+		{
+			case CSSConstants.COLOR:
+				hasColor = false;
+				
+			case CSSConstants.FONT_SIZE:
+				hasFontSize = false;	
+				
+			case CSSConstants.FONT_FAMILY:
+				hasFontFamily = false;
+				
+			default:	
+		}
 	}
 }
