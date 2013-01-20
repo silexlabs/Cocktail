@@ -261,6 +261,14 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	public var isText:Bool;
 	
 	/**
+	 * Wether this element renderer has at
+	 * least one line box. It must be 
+	 * a block box renderer with inline 
+	 * children to have line boxes
+	 */
+	public var hasLineBoxes:Bool;
+	
+	/**
 	 * class constructor. init class attribute
 	 */
 	public function new(domNode:HTMLElement) 
@@ -287,6 +295,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		isBlockContainer = false;
 		isReplaced = false;
 		isText = false;
+		hasLineBoxes = false;
 	}
 	
 	/**

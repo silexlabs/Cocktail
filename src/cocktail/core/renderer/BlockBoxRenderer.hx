@@ -341,7 +341,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var canHaveLineBoxes:Bool = false;
 		if (rootRenderer.isBlockContainer == true)
 		{
-			if (rootRenderer.childrenInline() == true)
+			if (rootRenderer.hasLineBoxes == true)
 			{
 				canHaveLineBoxes = true;
 			}
@@ -1036,6 +1036,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		//reset the array of line boxes before layout
 		lineBoxes = new Array<LineBox>();
+		hasLineBoxes = false;
 		
 		//this will hold the x and y position where
 		//to place the next line box, relative to this
@@ -1094,6 +1095,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		lineBox.bounds.y = lineBoxPosition.y;
 		lineBox.bounds.x = floatsManager.getLeftFloatOffset(lineBox.bounds.y, coreStyle.usedValues.lineHeight, _offsetFromBlockFormattingRoot);
 		lineBoxes.push(lineBox);
+		hasLineBoxes = true;
 		
 		return lineBox;
 	}
