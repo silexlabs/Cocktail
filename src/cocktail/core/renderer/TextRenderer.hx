@@ -253,7 +253,7 @@ class TextRenderer extends InvalidatingElementRenderer
 				}
 			}
 			//If the character is a space
-			else if (StringTools.isSpace(text, i) == true)
+			else if (text.fastCodeAt(i) == ' '.code)
 			{
 				
 				//If a word was being formed by concatenating
