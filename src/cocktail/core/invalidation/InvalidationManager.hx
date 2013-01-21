@@ -663,6 +663,7 @@ class InvalidationManager
 	 */
 	private function startCascade(programmaticChange:Bool):Void
 	{
+		_htmlDocument.cascadeManager.reset();
 		_htmlDocument.documentElement.cascade(_htmlDocument.cascadeManager, programmaticChange);
 		_documentNeedsCascading = false;
 	}

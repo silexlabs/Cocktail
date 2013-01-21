@@ -715,7 +715,6 @@ class CoreStyle
 			cascadeManager.addPropertyToCascade(_changedProperties[i]);
 		}
 		
-		
 		//apply special computing relationship between
 		//display, float and position property
 		applyPositionFloatAndDisplayRelationship();
@@ -771,7 +770,15 @@ class CoreStyle
 		}
 		
 		//update property flags which need it
+		updateCoreStyleAttribute(cascadeManager);
 		
+	}
+	
+	/**
+	 * update core style flags
+	 */
+	private function updateCoreStyleAttribute(cascadeManager:CascadeManager):Void
+	{
 		if (cascadeManager.hasFloat == true)
 		{
 			isFloat = isNone(cssFloat) == false;
