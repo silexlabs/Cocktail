@@ -260,17 +260,11 @@ class HTMLDocument extends Document
 	public var innerHTML(get_innerHTML, set_innerHTML):String;
 	
 	/**
-	 * class constructor. Init class attributes
+	 * class constructor.
 	 */
 	public function new(window:Window = null) 
 	{
 		super();
-		
-		timer = new Timer();
-		initStyleManager();
-		invalidationManager = new InvalidationManager(this);
-		
-		cascadeManager = new CascadeManager();
 		
 		//TODO 2 : hack, Document probably shouldn't have
 		//ref to Window
@@ -279,10 +273,25 @@ class HTMLDocument extends Document
 			window = new Window();
 		}
 		
+		this.window = window;
+		
+		init();	
+	}
+	
+	/**
+	 * global document init
+	 */
+	private function init():Void
+	{
+		timer = new Timer();
+		initStyleManager();
+		invalidationManager = new InvalidationManager(this);
+		
+		cascadeManager = new CascadeManager();
+		
 		_matchedPseudoClasses = new MatchedPseudoClassesVO(false, false, false,
 		false, false, false, false);
 		
-		this.window = window;
 		_focusManager = new FocusManager();
 		
 		_hitTestManager = new HitTestManager();

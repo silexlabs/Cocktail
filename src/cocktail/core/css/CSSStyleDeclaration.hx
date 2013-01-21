@@ -162,10 +162,18 @@ class CSSStyleDeclaration
 	
 	/**
 	 * Holds all the style declarations of this 
-	 * object, as typed objects
+	 * object, as typed objects, in the order
+	 * where they are added
 	 */
 	private var _properties:Array<TypedPropertyVO>;
 	
+	/**
+	 * Holds all the style declarations of this
+	 * object, ordered by index, where each index
+	 * is a CSS property. This allows for fast
+	 * retrival of typed property
+	 */
+	private var _indexedProperties:Array<TypedPropertyVO>;
 	/**
 	 * Optionnal callback, called when the value
 	 * of a style changes
@@ -180,6 +188,13 @@ class CSSStyleDeclaration
 		_onStyleChange = onStyleChange;
 		this.parentRule = parentRule;
 		_properties = new Array<TypedPropertyVO>();
+		
+		_indexedProperties = new Array <TypedPropertyVO>();
+		
+		//for the indexed property array, init as many item as there are
+		//supprted CSS style, each index will hold a CSS style value,
+		//always for the same style
+		resetIndexedProperties();
 	}
 	
 	/**
@@ -192,6 +207,19 @@ class CSSStyleDeclaration
 		parentRule = null;
 		
 		_properties = _properties.clear();
+		resetIndexedProperties();
+	}
+	
+	/**
+	 * reinit indexed properties array
+	 */
+	private function resetIndexedProperties():Void
+	{
+		var supportedProperties:Int = CSSConstants.SUPPORTED_STYLES_NUMBER;
+		for (i in 0...supportedProperties)
+		{
+			_indexedProperties[i] = null;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -258,6 +286,7 @@ class CSSStyleDeclaration
 		if (typedProperty != null)
 		{
 			_properties.remove(typedProperty);
+			_indexedProperties[index] =  null;
 			
 			//call the style update callback if provided
 			if (_onStyleChange != null)
@@ -301,16 +330,7 @@ class CSSStyleDeclaration
 	 */
 	public function getTypedProperty(propertyIndex:Int):TypedPropertyVO
 	{
-		var typedProperty:TypedPropertyVO = null;
-		var length:Int = _properties.length;
-		for (i in 0...length)
-		{
-			if (_properties[i].index == propertyIndex)
-			{
-				typedProperty =  _properties[i];
-			}
-		}
-		return typedProperty;
+		return _indexedProperties[propertyIndex];
 	}
 	
 	/**
@@ -330,6 +350,7 @@ class CSSStyleDeclaration
 			newProperty.typedValue = typedValue;
 			newProperty.index = propertyIndex;
 			_properties.push(newProperty);
+			_indexedProperties[propertyIndex] = newProperty;
 			
 			if (_onStyleChange != null)
 			{
@@ -363,6 +384,7 @@ class CSSStyleDeclaration
 		newProperty.typedValue = typedValue;
 		newProperty.index = propertyIndex;
 		_properties.push(newProperty);
+		_indexedProperties[propertyIndex] = newProperty;
 		
 		if (_onStyleChange != null)
 		{
@@ -2872,6 +2894,7 @@ class CSSStyleDeclaration
 	{
 		//reset properties
 		_properties = _properties.clear();
+		resetIndexedProperties();
 		
 		var typedProperties:Array<TypedPropertyVO> = CSSStyleParser.parseStyle(value);
 		var length:Int = typedProperties.length;

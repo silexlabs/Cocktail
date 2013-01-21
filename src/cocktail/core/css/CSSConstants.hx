@@ -15,6 +15,11 @@ package cocktail.core.css;
 class CSSConstants 
 {
 
+	/**
+	 * Holds the total number of supported CSS styles
+	 */
+	public static inline var SUPPORTED_STYLES_NUMBER:Int = 62;
+	
 	//style names
 	
 	public static inline var DISPLAY:Int = 0;
