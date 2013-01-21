@@ -307,10 +307,26 @@ class TextRenderer extends InvalidatingElementRenderer
 		switch (whiteSpace)
 		{
 			case NORMAL, NO_WRAP: 
-				text = removeControlCharactersSurroundingLineFeed(text);
-				text = convertLineFeedsToSpaces(text);
-				text = convertTabToSpaces(text);
-				text = concatenateSpaces(text);
+				
+				//flag to prevent unecessary processing
+				var hasLineFeed:Bool = text.indexOf("\n") != -1;
+				if (hasLineFeed == true)
+				{
+					text = removeControlCharactersSurroundingLineFeed(text);
+					text = convertLineFeedsToSpaces(text);
+				}
+				
+				var hasTab:Bool = text.indexOf("\t") != -1;
+				if (hasTab == true)
+				{
+					text = convertTabToSpaces(text);
+				}
+				
+				var hasSpace:Bool = text.indexOf(" ") != -1;
+				if (hasSpace == true)
+				{
+					text = concatenateSpaces(text);
+				}
 			
 			case PRE_LINE: 
 				text = removeControlCharactersSurroundingLineFeed(text);
