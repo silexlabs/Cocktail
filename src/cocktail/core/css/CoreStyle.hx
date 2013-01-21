@@ -605,6 +605,10 @@ class CoreStyle
 		//will store all the properties which value
 		//change during cascading
 		_changedProperties = _changedProperties.clear();
+				
+		//flag to prevent checking stylesheet with no styles
+		var hasInlineStyle:Bool = inlineStyleDeclaration.length > 0;
+		var hasStyleSheetStyle:Bool = styleSheetDeclaration.length > 0;
 		
 		//color of parent might be used to inherit it for some color styles with
 		//the currentColor value
@@ -619,8 +623,8 @@ class CoreStyle
 			//the computed absolute length to be correct, font-size
 			//and font-family must have been previously computed
 			//so that the right font metrics is used for the computation
-			var fontSizeDidChange:Bool = cascadeProperty(CSSConstants.FONT_SIZE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange);
-			var fontFamilyDidChange:Bool = cascadeProperty(CSSConstants.FONT_FAMILY, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange);
+			var fontSizeDidChange:Bool = cascadeProperty(CSSConstants.FONT_SIZE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			var fontFamilyDidChange:Bool = cascadeProperty(CSSConstants.FONT_FAMILY, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
 			
 			//if font-size or font-family changed, all the properties which may depends
 			//on font metrics (because they are for instance Length with 'em' unit) need to be cascaded
@@ -648,7 +652,7 @@ class CoreStyle
 		//the same as the one of the color style value
 		if (cascadeManager.hasColor == true)
 		{
-			var colorDidChange:Bool = cascadeProperty(CSSConstants.COLOR, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange);
+			var colorDidChange:Bool = cascadeProperty(CSSConstants.COLOR, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
 			
 			
 			//only cascade color propery if value actually changed
@@ -693,7 +697,7 @@ class CoreStyle
 			//cascade the property, returns a flag of wether the cascade changed
 			//the specified value of the property. Useful to know if children
 			//also need to cascade this property
-			var didChangeSpecifiedValue:Bool = cascadeProperty(propertiesToCascade[i], initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange);
+			var didChangeSpecifiedValue:Bool = cascadeProperty(propertiesToCascade[i], initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
 	
 			if (didChangeSpecifiedValue == true)
 			{
@@ -1024,25 +1028,32 @@ class CoreStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE CASCADING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+
 	
 	/**
 	 * Actually cascade a property
 	 */
-	private function cascadeProperty(propertyIndex:Int, initialStyleDeclaration:CSSStyleDeclaration, styleSheetDeclaration:CSSStyleDeclaration, inlineStyleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, parentColor:CSSColorValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool):Bool
+	private function cascadeProperty(propertyIndex:Int, initialStyleDeclaration:CSSStyleDeclaration, styleSheetDeclaration:CSSStyleDeclaration, inlineStyleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, parentColor:CSSColorValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool, hasInlineStyle:Bool, hasStyleSheetStyle:Bool):Bool
 	{
 		//first check if this property is defined inline which always has the
 		//highest priority
-		var typedProperty:TypedPropertyVO = inlineStyleDeclaration.getTypedProperty(propertyIndex);
-		if (typedProperty != null)
+		if (hasInlineStyle == true)
 		{
-			return setProperty(propertyIndex, typedProperty, parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, false);
+			var typedProperty:TypedPropertyVO = inlineStyleDeclaration.getTypedProperty(propertyIndex);
+			if (typedProperty != null)
+			{
+				return setProperty(propertyIndex, typedProperty, parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, false);
+			}
 		}
 		
 		//else check if a value for this style for this HTMLElement was defined in the document's style sheet
-		typedProperty = styleSheetDeclaration.getTypedProperty(propertyIndex);
-		if (typedProperty != null)
+		if (hasStyleSheetStyle == true)
 		{
-			return setProperty(propertyIndex, typedProperty, parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, false);
+			var typedProperty:TypedPropertyVO = styleSheetDeclaration.getTypedProperty(propertyIndex);
+			if (typedProperty != null)
+			{
+				return setProperty(propertyIndex, typedProperty, parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, false);
+			}
 		}
 		
 		//else if the property is inherithed (for instance 'font-family'),
