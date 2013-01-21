@@ -11,11 +11,6 @@ class EmbeddedInlineBox extends InlineBox
 	public function new(elementRenderer:ElementRenderer) 
 	{
 		super(elementRenderer);
+		isEmbedded = true;
 	}
-	
-	override public function isEmbedded():Bool
-	{
-		return true;
-	}
-	
 }

@@ -135,7 +135,7 @@ class LineBox
 		var remainingLineWidth:Float = _availableWidth - _addedWidth;
 
 		//line box always break if the inline box represents a line feed
-		if (inlineBox.isLineFeed() == true)
+		if (inlineBox.isLineFeed == true)
 		{
 			return true;
 		}
@@ -283,7 +283,7 @@ class LineBox
 		{
 			//first call recursively to remove spaces at the end
 			//of line box tree
-			if (child.isEmbedded() == false)
+			if (child.isEmbedded == false)
 			{
 				if (child.firstChild != null)
 				{
@@ -344,7 +344,7 @@ class LineBox
 		{
 			//first call recursively to add all spaces width at the end
 			//of line box tree
-			if (child.isEmbedded() == false)
+			if (child.isEmbedded == false)
 			{
 				if (child.firstChild != null)
 				{
@@ -643,7 +643,7 @@ class LineBox
 		var child:InlineBox = inlineBox.firstChild;
 		while (child != null)
 		{
-			if (child.isText == false && child.isEmbedded() == false)
+			if (child.isText == false && child.isEmbedded == false)
 			{
 				updateInlineBoxesBounds(child);
 				updateInlineBoxBounds(child);
@@ -756,7 +756,7 @@ class LineBox
 			
 			//update the child if the child inline box is a non-replaced inline
 			//box with children
-			if (child.isEmbedded() == false)
+			if (child.isEmbedded == false)
 			{
 				if (child.firstChild != null)
 				{
@@ -805,7 +805,7 @@ class LineBox
 			}
 			
 			//call recursively for non-replaced inline boxes
-			if (child.isEmbedded() == false && child.isText == false)
+			if (child.isEmbedded == false && child.isText == false)
 			{
 				//inline boxes add global y
 				child.bounds.y += addedY;
@@ -832,7 +832,7 @@ class LineBox
 					minimumTop = child.bounds.y;
 				}
 				
-				if (child.isEmbedded() == false)
+				if (child.isEmbedded == false)
 				{
 					if (child.firstChild != null)
 					{
@@ -856,7 +856,7 @@ class LineBox
 			{
 				child.bounds.y -= minimumTop;
 				
-				if (child.isEmbedded() == false)
+				if (child.isEmbedded == false)
 				{
 					if (child.firstChild != null)
 					{
@@ -913,7 +913,7 @@ class LineBox
 				
 				//for non-replaced inline boxes which are not
 				//top or bottom aligned, call recursively
-				if (child.isEmbedded() == false)
+				if (child.isEmbedded == false)
 				{
 					if (child.firstChild != null)
 					{

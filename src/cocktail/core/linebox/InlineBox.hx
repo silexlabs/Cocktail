@@ -24,6 +24,18 @@ class InlineBox extends FastNode<InlineBox>
 	public var isSpace:Bool;
 	
 	/**
+	 * Helper return wether this inline box wrap
+	 * an embedded element, like an image
+	 */
+	public var isEmbedded:Bool;
+	
+	/**
+	 * Helper return wether this inline box
+	 * is a line feed
+	 */
+	public var isLineFeed:Bool;
+	
+	/**
 	 * A reference to the element renderer which created this
 	 * line box
 	 */
@@ -84,6 +96,8 @@ class InlineBox extends FastNode<InlineBox>
 		
 		isSpace = false;
 		isText = false;
+		isEmbedded = false;
+		isLineFeed = false;
 		
 		bounds = new RectangleVO();
 		offsetFromParentInlineBox = new PointVO(0, 0);
@@ -106,29 +120,6 @@ class InlineBox extends FastNode<InlineBox>
 	{
 		//bounds = null;
 		elementRenderer = null;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Wether the inline box represents
-	 * an embeded asset such as a picture
-	 */
-	public function isEmbedded():Bool
-	{
-		return false;
-	}
-	
-	/**
-	 * Wether the inline box represents
-	 * a line feed control carachter, 
-	 * breaking the current line
-	 */
-	public function isLineFeed():Bool
-	{
-		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
