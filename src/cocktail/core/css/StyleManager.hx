@@ -35,10 +35,10 @@ class StyleManager
 	
 	/**
 	 * when properties are applied to a style declaration,
-	 * stores the name of the properties so that they are are not
+	 * stores the index of the properties so that they are are not
 	 * applied multiple times
 	 */
-	private var _matchedProperties:Array<String>;
+	private var _matchedProperties:Array<Int>;
 	
 	/**
 	 * Holds all the style declaration applying to 
@@ -86,7 +86,7 @@ class StyleManager
 		_matchingStyleDeclaration = new Array<StyleDeclarationVO>();
 		_mostSpecificMatchingProperties = new Array<PropertyVO>();
 		_matchingProperties = new Array<PropertyVO>();
-		_matchedProperties = new Array<String>();
+		_matchedProperties = new Array<Int>();
 		_userAgentDeclarations = new Array<PropertyVO>();
 		_authorNormalDeclarations = new Array<PropertyVO>();
 		_authorImportantDeclarations = new Array<PropertyVO>();
@@ -169,12 +169,12 @@ class StyleManager
 			var styleLength:Int = cssStyleDeclaration.length;
 			for (j in 0...styleLength)
 			{
-				var property:String = cssStyleDeclaration.item(j);
+				var propertyIndex:Int = cssStyleDeclaration.item(j);
 				//check if the property was already previously applied
-				if (alreadyMatched(property, _matchedProperties) == false)
+				if (alreadyMatched(propertyIndex, _matchedProperties) == false)
 				{
-					applyMatchingProperty(property, matchingStyleDeclarations, nodeStyleDeclaration);
-					_matchedProperties.push(property);
+					applyMatchingProperty(propertyIndex, matchingStyleDeclarations, nodeStyleDeclaration);
+					_matchedProperties.push(propertyIndex);
 				}
 			}
 		}
@@ -184,12 +184,12 @@ class StyleManager
 	 * Return wether a given property was
 	 * already matched
 	 */
-	private function alreadyMatched(property:String, matchedProperties:Array<String>):Bool
+	private function alreadyMatched(propertyIndex:Int, matchedProperties:Array<Int>):Bool
 	{
 		var length:Int = matchedProperties.length;
 		for (i in 0...length)
 		{
-			if (matchedProperties[i] == property)
+			if (matchedProperties[i] == propertyIndex)
 			{
 				return true;
 			}
@@ -267,7 +267,7 @@ class StyleManager
 	 * one with the higher priority and applies it to
 	 * the returned node's style declaration
 	 */
-	private function applyMatchingProperty(property:String, matchingStyleDeclarations:Array<StyleDeclarationVO>, nodeStyleDeclaration:CSSStyleDeclaration):Void
+	private function applyMatchingProperty(propertyIndex:Int, matchingStyleDeclarations:Array<StyleDeclarationVO>, nodeStyleDeclaration:CSSStyleDeclaration):Void
 	{
 		//will hold the properties with the same specified property name
 		//which are defined in the matching style declarations
@@ -282,7 +282,7 @@ class StyleManager
 
 			//if a property with a matching name is found,
 			//it is stored
-			var typedProperty:TypedPropertyVO = styleDeclaration.getTypedProperty(property);
+			var typedProperty:TypedPropertyVO = styleDeclaration.getTypedProperty(propertyIndex);
 			if (typedProperty != null)
 			{
 				var matchingProperty:PropertyVO = PropertyVO.getPool().get();
@@ -298,7 +298,7 @@ class StyleManager
 		if (_matchingProperties.length == 1)
 		{
 			var matchingProperty:PropertyVO = _matchingProperties[0];
-			nodeStyleDeclaration.setTypedProperty(property, matchingProperty.typedValue, matchingProperty.important);
+			nodeStyleDeclaration.setTypedProperty(propertyIndex, matchingProperty.typedValue, matchingProperty.important);
 			PropertyVO.getPool().release(matchingProperty);
 			return;
 		}
@@ -312,7 +312,7 @@ class StyleManager
 		if (tempMatchingProperties.length == 1)
 		{
 			var matchingProperty:PropertyVO = tempMatchingProperties[0];
-			nodeStyleDeclaration.setTypedProperty(property, matchingProperty.typedValue, matchingProperty.important);
+			nodeStyleDeclaration.setTypedProperty(propertyIndex, matchingProperty.typedValue, matchingProperty.important);
 			PropertyVO.getPool().release(matchingProperty);
 			return;
 		}
@@ -323,7 +323,7 @@ class StyleManager
 		if (tempMatchingProperties.length == 1)
 		{
 			var matchingProperty:PropertyVO = tempMatchingProperties[0];
-			nodeStyleDeclaration.setTypedProperty(property, matchingProperty.typedValue, matchingProperty.important);
+			nodeStyleDeclaration.setTypedProperty(propertyIndex, matchingProperty.typedValue, matchingProperty.important);
 			PropertyVO.getPool().release(matchingProperty);
 			return;
 		}
@@ -331,7 +331,7 @@ class StyleManager
 		//lastly if there still is more than one priority, then the one which was defined
 		//the later in the CSS style sheet is considered the one with the higher priority
 		var matchingProperty:PropertyVO = tempMatchingProperties[tempMatchingProperties.length - 1];
-		nodeStyleDeclaration.setTypedProperty(property, matchingProperty.typedValue, matchingProperty.important);
+		nodeStyleDeclaration.setTypedProperty(propertyIndex, matchingProperty.typedValue, matchingProperty.important);
 		
 		//release properties for reuse
 		var length:Int = tempMatchingProperties.length;

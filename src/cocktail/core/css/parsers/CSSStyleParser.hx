@@ -344,7 +344,7 @@ class CSSStyleParser
 								//the font notation can only happen for
 								//a 'font' style shorthand, else the style
 								//is invalid
-								if (propertyName == CSSConstants.FONT)
+								if (propertyName == CSSConstants.FONT_NAME)
 								{
 									//get the last style value which is the
 									//first component of the font notation
@@ -586,7 +586,7 @@ class CSSStyleParser
 			{
 				var typedProperty:TypedPropertyVO = new TypedPropertyVO();
 				typedProperty.important = important;
-				typedProperty.name = propertyName;
+				typedProperty.index = CSSConstants.getPropertyIndexFromName(propertyName);
 				typedProperty.typedValue = styleValues[0];
 				return typedProperty;
 			}
@@ -595,7 +595,7 @@ class CSSStyleParser
 			{
 				var typedProperty:TypedPropertyVO = new TypedPropertyVO();
 				typedProperty.important = important;
-				typedProperty.name = propertyName;
+				typedProperty.index = CSSConstants.getPropertyIndexFromName(propertyName);
 				typedProperty.typedValue = GROUP(styleValues);
 				return typedProperty;
 			}
@@ -623,7 +623,7 @@ class CSSStyleParser
 			
 			var typedProperty:TypedPropertyVO = new TypedPropertyVO();
 			typedProperty.important = important;
-			typedProperty.name = propertyName;
+			typedProperty.index = CSSConstants.getPropertyIndexFromName(propertyName);
 			typedProperty.typedValue = CSS_LIST(styleListProperty);
 			
 			return typedProperty;

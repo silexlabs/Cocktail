@@ -15,7 +15,7 @@ typedef CSSRuleList = Array<CSSRule>;
 
 class TypedPropertyVO {
 	
-	public var name:String;
+	public var index:Int;
 	public var typedValue:CSSPropertyValue;
 	public var important:Bool;
 	

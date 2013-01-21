@@ -170,12 +170,12 @@ class CSSStyleDeclaration
 	 * Optionnal callback, called when the value
 	 * of a style changes
 	 */
-	private var _onStyleChange:String->Void;
+	private var _onStyleChange:Int->Void;
 	
 	/**
 	 * Class constructor
 	 */
-	public function new(parentRule:CSSRule = null, onStyleChange:String->Void = null) 
+	public function new(parentRule:CSSRule = null, onStyleChange:Int->Void = null) 
 	{
 		_onStyleChange = onStyleChange;
 		this.parentRule = parentRule;
@@ -202,19 +202,19 @@ class CSSStyleDeclaration
 	 * Return the style declaration
 	 * at the given index
 	 */
-	public function item(index:Int):String
+	public function item(index:Int):Int
 	{
-		return _properties[index].name;
+		return _properties[index].index;
 	}
 	
 	/**
 	 * Return the value of the property with the given
-	 * name, serialized as a CSS string, or null if
+	 * index, serialized as a CSS string, or null if
 	 * thr property is not defined on this style declaration
 	 */
-	public function getPropertyValue(property:String):String
+	public function getPropertyValue(propertyIndex:Int):String
 	{
-		var typedProperty:TypedPropertyVO = getTypedProperty(property);
+		var typedProperty:TypedPropertyVO = getTypedProperty(propertyIndex);
 		if (typedProperty != null)
 		{
 			return CSSStyleSerializer.serialize(typedProperty.typedValue);
@@ -223,39 +223,38 @@ class CSSStyleDeclaration
 	}
 	
 	/**
-	 * Set the value of the property with the given name. 
+	 * Set the value of the property with the given index. 
 	 * Do nothing if the name or the value are not valid.
 	 * If the name is valid and the value is null, remove
 	 * the property
 	 */
-	public function setProperty(name:String, value:String, priority:String = null):Void
+	public function setProperty(index:Int, value:String, priority:String = null):Void
 	{
 		if (value == null)
 		{
-			removeProperty(name);
+			removeProperty(index);
 		}
 		else
 		{
 			//parse the proeprty, the return property is null
 			//if the style is invalid
-			var typedProperty:TypedPropertyVO = CSSStyleParser.parseStyleValue(name, value, 0);
+			var typedProperty:TypedPropertyVO = CSSStyleParser.parseStyleValue(CSSConstants.getPropertyNameFromIndex(index), value, 0);
 			
 			if (typedProperty != null)
 			{
-				applyProperty(typedProperty.name, typedProperty.typedValue, typedProperty.important);
+				applyProperty(typedProperty.index, typedProperty.typedValue, typedProperty.important);
 			}
 		}
 	}
 	
 	/**
-	 * Remove the property with the given name from
-	 * the style declarations, and return its name if it
-	 * exists, else return null
+	 * Remove the property with the given index from
+	 * the style declarations, and return its index if it
+	 * exists, else return -1
 	 */
-	public function removeProperty(property:String):String
+	public function removeProperty(index:Int):Int
 	{
-		var typedProperty:TypedPropertyVO = getTypedProperty(property);
-		//first check that the property exists
+		var typedProperty:TypedPropertyVO = getTypedProperty(index);
 		if (typedProperty != null)
 		{
 			_properties.remove(typedProperty);
@@ -263,24 +262,24 @@ class CSSStyleDeclaration
 			//call the style update callback if provided
 			if (_onStyleChange != null)
 			{
-				_onStyleChange(property);
+				_onStyleChange(index);
 			}
 			
-			return property;
+			return index;
 		}
 		
-		return null;
+		return -1;
 	}
 	
 	/**
 	 * Return the priority (important or not) of the property
-	 * with the given name.
+	 * with the given index.
 	 * Return the empty string if the property is not important, 
 	 * else return null
 	 */
-	public function getPropertyPriority(property:String):String
+	public function getPropertyPriority(propertyIndex:Int):String
 	{
-		var typedProperty:TypedPropertyVO = getTypedProperty(property);
+		var typedProperty:TypedPropertyVO = getTypedProperty(propertyIndex);
 		if (typedProperty != null)
 		{
 			if (typedProperty.important == true)
@@ -297,16 +296,16 @@ class CSSStyleDeclaration
 	}
 	
 	/**
-	 * Return the property with the given name as a typed property
+	 * Return the property with the given index as a typed property
 	 * object or null if it is not defined on this style declaration
 	 */
-	public inline function getTypedProperty(property:String):TypedPropertyVO
+	public inline function getTypedProperty(propertyIndex:Int):TypedPropertyVO
 	{
 		var typedProperty:TypedPropertyVO = null;
 		var length:Int = _properties.length;
 		for (i in 0...length)
 		{
-			if (_properties[i].name == property)
+			if (_properties[i].index == propertyIndex)
 			{
 				typedProperty =  _properties[i];
 			}
@@ -318,10 +317,10 @@ class CSSStyleDeclaration
 	 * Store the given typed property, update the current one
 	 * if it was already existing
 	 */
-	public function setTypedProperty(property:String, typedValue:CSSPropertyValue, important:Bool):Void
+	public function setTypedProperty(propertyIndex:Int, typedValue:CSSPropertyValue, important:Bool):Void
 	{
 		//check if the property already exists
-		var currentProperty:TypedPropertyVO = getTypedProperty(property);
+		var currentProperty:TypedPropertyVO = getTypedProperty(propertyIndex);
 		
 		//here the property doesn't exist yet, create it and store it
 		if (currentProperty == null)
@@ -329,12 +328,12 @@ class CSSStyleDeclaration
 			var newProperty:TypedPropertyVO = new TypedPropertyVO();
 			newProperty.important = important;
 			newProperty.typedValue = typedValue;
-			newProperty.name = property;
+			newProperty.index = propertyIndex;
 			_properties.push(newProperty);
 			
 			if (_onStyleChange != null)
 			{
-				_onStyleChange(property);
+				_onStyleChange(propertyIndex);
 			}
 			
 			return;
@@ -347,7 +346,7 @@ class CSSStyleDeclaration
 			currentProperty.important = important;
 			if (_onStyleChange != null)
 			{
-				_onStyleChange(property);
+				_onStyleChange(propertyIndex);
 			}
 		}
 	}
@@ -357,17 +356,17 @@ class CSSStyleDeclaration
 	 * it is known that this is the first time this property
 	 * is set on this style declaration
 	 */
-	public function setTypedPropertyInitial(property:String, typedValue:CSSPropertyValue, important:Bool):Void
+	public function setTypedPropertyInitial(propertyIndex:Int, typedValue:CSSPropertyValue, important:Bool):Void
 	{
 		var newProperty:TypedPropertyVO = new TypedPropertyVO();
 		newProperty.important = important;
 		newProperty.typedValue = typedValue;
-		newProperty.name = property;
+		newProperty.index = propertyIndex;
 		_properties.push(newProperty);
 		
 		if (_onStyleChange != null)
 		{
-			_onStyleChange(property);
+			_onStyleChange(propertyIndex);
 		}
 	}
 	
@@ -376,36 +375,36 @@ class CSSStyleDeclaration
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Apply the property using the provided property name, 
+	 * Apply the property using the provided property index, 
 	 * value and priority if the property is valid
 	 */
-	private function applyProperty(propertyName:String, styleValue:CSSPropertyValue, important:Bool):Void
+	private function applyProperty(propertyIndex:Int, styleValue:CSSPropertyValue, important:Bool):Void
 	{
 		//shorthand property like 'margin' are a special case
-		if (isShorthand(propertyName) == true)
+		if (isShorthand(propertyIndex) == true)
 		{
 			//check that the shorthand value is valid and apply it
 			//to each individual property if it is
-			if (isValidShorthand(propertyName, styleValue) == true)
+			if (isValidShorthand(propertyIndex, styleValue) == true)
 			{
-				setShorthand(propertyName, styleValue, important);
+				setShorthand(propertyIndex, styleValue, important);
 			}
 		}
 		//check if a property is valid before setting it
-		else if (isValidProperty(propertyName, styleValue) == true)
+		else if (isValidProperty(propertyIndex, styleValue) == true)
 		{
-			setTypedProperty(propertyName, styleValue, important);
+			setTypedProperty(propertyIndex, styleValue, important);
 		}
 	}
 	
 	/**
 	 * Main validity method. For each supported style, return wether the 
 	 * provided value is valid or not. It also return false if the property
-	 * name is not a valid CSS property
+	 * index is not a valid CSS property index
 	 */
-	private function isValidProperty(propertyName:String, styleValue:CSSPropertyValue):Bool
+	private function isValidProperty(propertyIndex:Int, styleValue:CSSPropertyValue):Bool
 	{
-		switch(propertyName)
+		switch(propertyIndex)
 		{
 			case CSSConstants.WIDTH, CSSConstants.HEIGHT:
 				switch(styleValue)
@@ -1405,9 +1404,9 @@ class CSSStyleDeclaration
 	 * Return wether a property is a
 	 * CSS shorthand, usgin its name
 	 */
-	private function isShorthand(propertyName:String):Bool
+	private function isShorthand(propertyIndex:Int):Bool
 	{
-		switch(propertyName)
+		switch(propertyIndex)
 		{
 			case CSSConstants.MARGIN, CSSConstants.PADDING, CSSConstants.CSS_OVERFLOW,
 			CSSConstants.TRANSITION, CSSConstants.BACKGROUND, CSSConstants.FONT:
@@ -1422,9 +1421,9 @@ class CSSStyleDeclaration
 	 * Apply the individual values repesented by a shorthand, once it has
 	 * been checked that the value of the shorthand is valid
 	 */
-	private function setShorthand(propertyName:String, styleValue:CSSPropertyValue, important:Bool):Void
+	private function setShorthand(propertyIndex:Int, styleValue:CSSPropertyValue, important:Bool):Void
 	{
-		switch(propertyName)
+		switch(propertyIndex)
 		{
 			case CSSConstants.MARGIN:
 				switch(styleValue)
@@ -1815,9 +1814,9 @@ class CSSStyleDeclaration
 	 * Return wether the value of a given CSS shorthand property
 	 * is valid
 	 */
-	private function isValidShorthand(propertyName:String, styleValue:CSSPropertyValue):Bool
+	private function isValidShorthand(propertyIndex:Int, styleValue:CSSPropertyValue):Bool
 	{
-		switch(propertyName)
+		switch(propertyIndex)
 		{
 			case CSSConstants.MARGIN:
 				switch(styleValue)
@@ -2849,7 +2848,7 @@ class CSSStyleDeclaration
 		{
 			var property:TypedPropertyVO = _properties[i];
 			
-			serializedStyleDeclaration += property.name + ":" + CSSStyleSerializer.serialize(property.typedValue);
+			serializedStyleDeclaration += CSSConstants.getPropertyNameFromIndex(property.index) + ":" + CSSStyleSerializer.serialize(property.typedValue);
 			if (property.important == true)
 			{
 				serializedStyleDeclaration += " !important";
@@ -2879,7 +2878,7 @@ class CSSStyleDeclaration
 		for (i in 0...length)
 		{
 			var typedProperty:TypedPropertyVO = typedProperties[i];
-			applyProperty(typedProperty.name, typedProperty.typedValue, typedProperty.important);
+			applyProperty(typedProperty.index, typedProperty.typedValue, typedProperty.important);
 		}
 		
 		return value;

@@ -208,10 +208,10 @@ class CoreStyle
 	private var _fontManager:FontManager;
 	
 	/**
-	 * During cascade, holds the name of 
+	 * During cascade, holds the index of 
 	 * all the properties whose value changed
 	 */
-	private var _changedProperties:Array<String>;
+	private var _changedProperties:Array<Int>;
 	
 	/**
 	 * The owning HTMLElement
@@ -516,7 +516,7 @@ class CoreStyle
 		computedValues = new CSSStyleDeclaration();
 		specifiedValues = new CSSStyleDeclaration();
 		
-		_changedProperties = new Array<String>();
+		_changedProperties = new Array<Int>();
 		
 		_fontManager = FontManager.getInstance();
 		//TODO 3 : messy
@@ -626,7 +626,7 @@ class CoreStyle
 			//on font metrics (because they are for instance Length with 'em' unit) need to be cascaded
 			if (fontSizeDidChange == true || fontFamilyDidChange == true)
 			{
-				var lengthCSSProperties:Array<String> = initialStyleDeclaration.lengthCSSProperties;
+				var lengthCSSProperties:Array<Int> = initialStyleDeclaration.lengthCSSProperties;
 				var length:Int = lengthCSSProperties.length;
 				for (i in 0...length)
 				{
@@ -658,7 +658,7 @@ class CoreStyle
 				//used value get re-computed after cascade
 				_changedProperties.push(CSSConstants.COLOR);
 				
-				var colorCSSProperties:Array<String> = initialStyleDeclaration.colorCSSProperties;
+				var colorCSSProperties:Array<Int> = initialStyleDeclaration.colorCSSProperties;
 				var length:Int = colorCSSProperties.length;
 				for (i in 0...length)
 				{
@@ -674,7 +674,7 @@ class CoreStyle
 		var xHeight:Float = fontMetrics.xHeight;
 		
 		//holds the properties which will get cascaded
-		var propertiesToCascade:Array<String> = null;
+		var propertiesToCascade:Array<Int> = null;
 		
 		//if all properties must be cascaded, retrieve the
 		//name of the all the supprted properties
@@ -1028,39 +1028,39 @@ class CoreStyle
 	/**
 	 * Actually cascade a property
 	 */
-	private function cascadeProperty(propertyName:String, initialStyleDeclaration:CSSStyleDeclaration, styleSheetDeclaration:CSSStyleDeclaration, inlineStyleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, parentColor:CSSColorValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool):Bool
+	private function cascadeProperty(propertyIndex:Int, initialStyleDeclaration:CSSStyleDeclaration, styleSheetDeclaration:CSSStyleDeclaration, inlineStyleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, parentColor:CSSColorValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool):Bool
 	{
 		//first check if this property is defined inline which always has the
 		//highest priority
-		var typedProperty:TypedPropertyVO = inlineStyleDeclaration.getTypedProperty(propertyName);
+		var typedProperty:TypedPropertyVO = inlineStyleDeclaration.getTypedProperty(propertyIndex);
 		if (typedProperty != null)
 		{
-			return setProperty(propertyName, typedProperty, parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, false);
+			return setProperty(propertyIndex, typedProperty, parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, false);
 		}
 		
 		//else check if a value for this style for this HTMLElement was defined in the document's style sheet
-		typedProperty = styleSheetDeclaration.getTypedProperty(propertyName);
+		typedProperty = styleSheetDeclaration.getTypedProperty(propertyIndex);
 		if (typedProperty != null)
 		{
-			return setProperty(propertyName, typedProperty, parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, false);
+			return setProperty(propertyIndex, typedProperty, parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, false);
 		}
 		
 		//else if the property is inherithed (for instance 'font-family'),
 		//use the value from the parent
-		if (isInherited(propertyName) == true)
+		if (isInherited(propertyIndex) == true)
 		{
-			return setProperty(propertyName, parentStyleDeclaration.getTypedProperty(propertyName), parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, true, false);
+			return setProperty(propertyIndex, parentStyleDeclaration.getTypedProperty(propertyIndex), parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, true, false);
 		}
 		
 		//else at last use the initial value of the property
-		return setProperty(propertyName, initialStyleDeclaration.getTypedProperty(propertyName), parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, true);
+		return setProperty(propertyIndex, initialStyleDeclaration.getTypedProperty(propertyIndex), parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, true);
 	}
 	
 	/**
 	 * cascade a property by updating its specified value
 	 * and computing its value if necessary
 	 * 
-	 * @param propertyName the name of the cascaded property
+	 * @param propertyIndex the index of the cascaded property
 	 * @param cascadedProperty the property used as reference
 	 * for the cascading, might come from a style sheet 
 	 * delcaration, inline declaration, might be inherited or
@@ -1068,12 +1068,12 @@ class CoreStyle
 	 * 
 	 * @return wether the specified value of the property did change
 	 */
-	private function setProperty(propertyName:String, cascadedProperty:TypedPropertyVO, parentStyleDeclaration:CSSStyleDeclaration, initialStyleDeclaration:CSSStyleDeclaration, parentColor:CSSColorValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool, isInherited:Bool, isInitial:Bool):Bool
+	private function setProperty(propertyIndex:Int, cascadedProperty:TypedPropertyVO, parentStyleDeclaration:CSSStyleDeclaration, initialStyleDeclaration:CSSStyleDeclaration, parentColor:CSSColorValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool, isInherited:Bool, isInitial:Bool):Bool
 	{
 		var property:CSSPropertyValue = cascadedProperty.typedValue;
 		
 		//get the property with the same name from the specified properties of this CoreStyle
-		var specifiedProperty:TypedPropertyVO = specifiedValues.getTypedProperty(propertyName);
+		var specifiedProperty:TypedPropertyVO = specifiedValues.getTypedProperty(propertyIndex);
 		
 		//check that the new property has a different value from
 		//the current one. If it doesn't, cascading is over
@@ -1088,12 +1088,12 @@ class CoreStyle
 		if (specifiedProperty != null)
 		{
 			//update the specified property
-			specifiedValues.setTypedProperty(propertyName, property, cascadedProperty.important);
+			specifiedValues.setTypedProperty(propertyIndex, property, cascadedProperty.important);
 		}
 		else
 		{
 			//same as above but faster
-			specifiedValues.setTypedPropertyInitial(propertyName, property, cascadedProperty.important);
+			specifiedValues.setTypedPropertyInitial(propertyIndex, property, cascadedProperty.important);
 		}
 		
 		
@@ -1109,7 +1109,7 @@ class CoreStyle
 				//for a specified value of inherit, the 
 				//computed value is always the one of the parent
 				case INHERIT:
-					computedProperty = parentStyleDeclaration.getTypedProperty(propertyName).typedValue;
+					computedProperty = parentStyleDeclaration.getTypedProperty(propertyIndex).typedValue;
 					//set the inherited flag to make sure that no animation is started as the 
 					//result of this property change
 					isInherited = true;
@@ -1120,17 +1120,17 @@ class CoreStyle
 				//TODO 2 : doesn't make sense ? for instance for font-size whose specified value is medium,
 				//computed value shouldn't be medium. Should Initial and inherit instead affect specified value ?
 				case INITIAL:
-					computedProperty = initialStyleDeclaration.getTypedProperty(propertyName).typedValue;
+					computedProperty = initialStyleDeclaration.getTypedProperty(propertyIndex).typedValue;
 					
 				default:	
-					computedProperty = getComputedProperty(propertyName, property, parentFontSize, parentXHeight, fontSize, xHeight, parentColor);
+					computedProperty = getComputedProperty(propertyIndex, property, parentFontSize, parentXHeight, fontSize, xHeight, parentColor);
 			}
 		}
 		//when initial value applied it is 
 		//sure that it won't be 'inherit' or 'initial'
 		else
 		{
-			computedProperty =  getComputedProperty(propertyName, property, parentFontSize, parentXHeight, fontSize, xHeight, parentColor);
+			computedProperty =  getComputedProperty(propertyIndex, property, parentFontSize, parentXHeight, fontSize, xHeight, parentColor);
 		}
 		
 		
@@ -1138,11 +1138,11 @@ class CoreStyle
 		//if it was specified declaratively
 		if (programmaticChange == true && isInherited == false && specifiedProperty != null)
 		{
-			if (computedValues.getTypedProperty(propertyName) != null)
+			if (computedValues.getTypedProperty(propertyIndex) != null)
 			{
-				if (isAnimatable(propertyName))
+				if (isAnimatable(propertyIndex))
 				{
-					_animator.registerPendingAnimation(propertyName, getAnimatablePropertyValue(propertyName));
+					_animator.registerPendingAnimation(propertyIndex, getAnimatablePropertyValue(propertyIndex));
 					var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
 					htmlDocument.invalidationManager.invalidatePendingAnimations();
 				}
@@ -1151,15 +1151,15 @@ class CoreStyle
 		
 		if (specifiedProperty != null)
 		{
-			computedValues.setTypedProperty(propertyName, computedProperty, cascadedProperty.important);
+			computedValues.setTypedProperty(propertyIndex, computedProperty, cascadedProperty.important);
 		}
 		else
 		{
-			computedValues.setTypedPropertyInitial(propertyName, computedProperty, cascadedProperty.important);
+			computedValues.setTypedPropertyInitial(propertyIndex, computedProperty, cascadedProperty.important);
 		}
 		
 		
-		htmlElement.invalidateStyle(propertyName);
+		htmlElement.invalidateStyle(propertyIndex);
 		
 		return true;
 		
@@ -1187,9 +1187,9 @@ class CoreStyle
 	 * specified value and so it doesn't need any
 	 * further treatement
 	 */
-	private function getComputedProperty(propertyName:String, property:CSSPropertyValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, parentColor:CSSColorValue):CSSPropertyValue
+	private function getComputedProperty(propertyIndex:Int, property:CSSPropertyValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, parentColor:CSSColorValue):CSSPropertyValue
 	{
-		switch(propertyName)
+		switch(propertyIndex)
 		{
 			case CSSConstants.MIN_WIDTH, CSSConstants.MIN_HEIGHT, CSSConstants.MAX_HEIGHT, CSSConstants.MAX_WIDTH,
 			CSSConstants.LEFT, CSSConstants.RIGHT, CSSConstants.TOP, CSSConstants.BOTTOM,
@@ -1219,16 +1219,16 @@ class CoreStyle
 						switch(value)
 						{
 							case LEFT:
-								return IDENTIFIER(CSSConstants.LEFT);
+								return IDENTIFIER(CSSConstants.LEFT_IDENT);
 								
 							case RIGHT:
-								return IDENTIFIER(CSSConstants.RIGHT);
+								return IDENTIFIER(CSSConstants.RIGHT_IDENT);
 								
 							case TOP:	
-								return IDENTIFIER(CSSConstants.TOP);
+								return IDENTIFIER(CSSConstants.TOP_IDENT);
 								
 							case BOTTOM:
-								return IDENTIFIER(CSSConstants.BOTTOM);
+								return IDENTIFIER(CSSConstants.BOTTOM_IDENT);
 								
 							default:	
 						}
@@ -1243,16 +1243,16 @@ class CoreStyle
 									switch(keyword)
 									{
 										case LEFT:
-											value[i] = IDENTIFIER(CSSConstants.LEFT);
+											value[i] = IDENTIFIER(CSSConstants.LEFT_IDENT);
 											
 										case RIGHT:
-											value[i] = IDENTIFIER(CSSConstants.RIGHT);
+											value[i] = IDENTIFIER(CSSConstants.RIGHT_IDENT);
 											
 										case TOP:	
-											return IDENTIFIER(CSSConstants.TOP);
+											return IDENTIFIER(CSSConstants.TOP_IDENT);
 								
 										case BOTTOM:	
-											return IDENTIFIER(CSSConstants.BOTTOM);		
+											return IDENTIFIER(CSSConstants.BOTTOM_IDENT);		
 											
 										default:	
 									}
@@ -1643,15 +1643,15 @@ class CoreStyle
 	 */
 	private function onTransitionComplete(transition:Transition):Void
 	{
-		htmlElement.invalidateStyle(transition.propertyName);
+		htmlElement.invalidateStyle(transition.propertyIndex);
 		
 		//schedule an update of the pending animations
 		var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
 		htmlDocument.invalidationManager.invalidatePendingAnimations();
 		
-		var transitionEvent:TransitionEvent = new TransitionEvent();
-		transitionEvent.initTransitionEvent(EventConstants.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
-		_pendingTransitionEndEvents.push(transitionEvent);
+		//var transitionEvent:TransitionEvent = new TransitionEvent();
+		//transitionEvent.initTransitionEvent(EventConstants.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
+		//_pendingTransitionEndEvents.push(transitionEvent);
 	}
 	
 	/**
@@ -1660,26 +1660,26 @@ class CoreStyle
 	 */
 	private function onTransitionUpdate(transition:Transition):Void
 	{
-		htmlElement.invalidateStyle(transition.propertyName);
+		htmlElement.invalidateStyle(transition.propertyIndex);
 	}
 	
 	/**
 	 * Utils method to return the value of a property which can be transitioned
 	 * If the property is currently being transitioned, return the current value
 	 * of the transition, else return the computed value of the property
-	 * @param	propertyName the name of the property whose value is returned
+	 * @param	propertyIndex the index of the property whose value is returned
 	 */
-	private inline function getTransitionablePropertyValue(propertyName:String):CSSPropertyValue
+	private inline function getTransitionablePropertyValue(properyIndex:Int):CSSPropertyValue
 	{
 		//shortcut if there are not any transitions in progress
 		if (_transitionManager.hasTransitionsInProgress == false)
 		{
-			return computedValues.getTypedProperty(propertyName).typedValue;
+			return computedValues.getTypedProperty(properyIndex).typedValue;
 		}
 		else
 		{
 			//try to get a transition for the property
-			var transition:Transition = _transitionManager.getTransition(propertyName, this);
+			var transition:Transition = _transitionManager.getTransition(properyIndex, this);
 			//if there actually is a transition in progress for this property,
 			//return its current value
 			if (transition != null)
@@ -1689,7 +1689,7 @@ class CoreStyle
 			//else return the computed value for the given property
 			else
 			{
-				return computedValues.getTypedProperty(propertyName).typedValue;
+				return computedValues.getTypedProperty(properyIndex).typedValue;
 			}
 		}
 	}
@@ -1705,24 +1705,24 @@ class CoreStyle
 	 * 
 	 * TODO 1 : complete
 	 */
-	private function getIDLName(propertyName:String):String
+	private function getIDLName(propertyIndex:Int):String
 	{
-		switch(propertyName)
+		switch(propertyIndex)
 		{
 			case CSSConstants.MIN_HEIGHT:
-				return CSSConstants.HEIGHT;
+				return CSSConstants.HEIGHT_IDL_NAME;
 				
 			case CSSConstants.MAX_HEIGHT:
-				return CSSConstants.MAX_HEIGHT;
+				return CSSConstants.MAX_HEIGHT_IDL_NAME;
 				
 			case CSSConstants.MIN_WIDTH:
-				return CSSConstants.MIN_WIDTH;
+				return CSSConstants.MIN_WIDTH_IDL_NAME;
 				
 			case CSSConstants.MAX_WIDTH:
-				return CSSConstants.MAX_WIDTH;
+				return CSSConstants.MAX_WIDTH_IDL_NAME;
 			
 			default:
-				return propertyName;
+				return null;
 		}
 	}
 	
@@ -1732,9 +1732,9 @@ class CoreStyle
 	 * 
 	 * TODO 1 : complete
 	 */
-	private function isAnimatable(propertyName:String):Bool
+	private function isAnimatable(propertyIndex:Int):Bool
 	{
-		switch(propertyName)
+		switch(propertyIndex)
 		{
 			case CSSConstants.WIDTH, CSSConstants.HEIGHT, CSSConstants.TOP, CSSConstants.BOTTOM,
 			CSSConstants.LEFT, CSSConstants.RIGHT, CSSConstants.OPACITY:
@@ -1749,9 +1749,9 @@ class CoreStyle
 	 * For a given animatable property, return its current value as a float,
 	 * so that it can be used to animate
 	 */
-	private function getAnimatablePropertyValue(propertyName:String):Float
+	private function getAnimatablePropertyValue(propertyIndex:Int):Float
 	{
-		switch(propertyName)
+		switch(propertyIndex)
 		{
 			case CSSConstants.OPACITY:
 				switch(opacity)
@@ -1769,7 +1769,7 @@ class CoreStyle
 			//for values which are actually determined
 			//during layout, such as width and height, use the used value
 			default:
-				return Reflect.field(usedValues, getIDLName(propertyName));
+				return Reflect.field(usedValues, getIDLName(propertyIndex));
 		}
 	}
 	
@@ -1784,9 +1784,9 @@ class CoreStyle
 	 * used by each node in the document unless another
 	 * value is explicitely used
 	 */
-	private inline function isInherited(propertyName:String):Bool
+	private inline function isInherited(propertyIndex:Int):Bool
 	{
-		switch(propertyName)
+		switch(propertyIndex)
 		{
 			case CSSConstants.COLOR, CSSConstants.CURSOR, CSSConstants.FONT_FAMILY,
 			CSSConstants.FONT_SIZE, CSSConstants.FONT_STYLE, CSSConstants.FONT_VARIANT,

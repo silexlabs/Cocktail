@@ -85,7 +85,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * As the initial block renderer has no containing block,
 	 * do nothing
 	 */
-	override private function invalidateContainingBlock(styleName:String):Void
+	override private function invalidateContainingBlock(styleIndex:Int):Void
 	{
 		
 	}

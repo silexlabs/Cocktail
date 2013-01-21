@@ -1211,10 +1211,10 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	/**
 	 * Called when a style of the owning HTMLElement
 	 * changed
-	 * @param	styleName the name of the style whose
+	 * @param	styleIndex the index of the style whose
 	 * value changed
 	 */
-	public function invalidateStyle(styleName:String):Void
+	public function invalidateStyle(styleIndex:Int):Void
 	{
 		//abstract
 	}

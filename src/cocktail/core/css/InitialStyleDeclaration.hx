@@ -25,21 +25,21 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 	 * An array containing the names of all of the supported
 	 * CSS properties
 	 */
-	public var supportedCSSProperties(default, null):Array<String>;
+	public var supportedCSSProperties(default, null):Array<Int>;
 	
 	/**
 	 * An array containing the names of all of the supported
 	 * CSS properties which can be defined as a CSS Length
 	 * or can have Length component
 	 */
-	public var lengthCSSProperties(default, null):Array<String>;
+	public var lengthCSSProperties(default, null):Array<Int>;
 	
 	/**
 	 * An array containing the names of all the supported
 	 * CSS properties which can be defined as a CSS color
 	 * or can have a CSS color component
 	 */
-	public var colorCSSProperties(default, null):Array<String>;
+	public var colorCSSProperties(default, null):Array<Int>;
 	
 	/**
 	 * Contain all the computed values of the initial
@@ -179,11 +179,11 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 	/**
 	 * Utils method to push properties
 	 */
-	private function pushProperty(name:String, typedValue:CSSPropertyValue):Void
+	private function pushProperty(index:Int, typedValue:CSSPropertyValue):Void
 	{
 		var typedProperty:TypedPropertyVO = new TypedPropertyVO();
 		typedProperty.important = false;
-		typedProperty.name = name;
+		typedProperty.index = index;
 		typedProperty.typedValue = typedValue;
 		_properties.push(typedProperty);
 	}
@@ -272,8 +272,8 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 	/**
 	 * Utils method to push computed properties
 	 */
-	private function pushComputedProperty(name:String, typedValue:CSSPropertyValue):Void
+	private function pushComputedProperty(index:Int, typedValue:CSSPropertyValue):Void
 	{
-		initialComputedStyleDeclaration.setTypedProperty(name, typedValue, false);
+		initialComputedStyleDeclaration.setTypedProperty(index, typedValue, false);
 	}
 }

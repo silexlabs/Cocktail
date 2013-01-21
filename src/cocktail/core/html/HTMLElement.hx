@@ -284,11 +284,11 @@ class HTMLElement extends Element<HTMLElement>
 	private var _needsElementRendererUpdate:Bool;
 	
 	/**
-	 * Between 2 cascade, store the names of all the
+	 * Between 2 cascade, store the index of all the
 	 * properties whose value changed and which need
 	 * to be re-cascaded.
 	 */
-	private var _pendingChangedProperties:Array<String>;
+	private var _pendingChangedProperties:Array<Int>;
 	
 	/**
 	 * A flag determining wether all the CSS styles
@@ -325,7 +325,7 @@ class HTMLElement extends Element<HTMLElement>
 		_needsStyleDeclarationUpdate = false;
 		_shouldCascadeAllProperties = true;
 		_needsElementRendererUpdate = true;
-		_pendingChangedProperties = new Array<String>();
+		_pendingChangedProperties = new Array<Int>();
 	}
 	
 	/**
@@ -534,11 +534,11 @@ class HTMLElement extends Element<HTMLElement>
 	 * changed, may invalidated the layout and/or
 	 * rendering of the element renderer
 	 */
-	public function invalidateStyle(styleName:String):Void
+	public function invalidateStyle(styleIndex:Int):Void
 	{
 		if (elementRenderer != null)
 		{
-			elementRenderer.invalidateStyle(styleName);
+			elementRenderer.invalidateStyle(styleIndex);
 		}
 	}
 	
@@ -1092,20 +1092,20 @@ class HTMLElement extends Element<HTMLElement>
 	
 	/**
 	 * When a value of the inline style declaration
-	 * of the HTMLElement changes, store the name
+	 * of the HTMLElement changes, store the index
 	 * of the changed property in the properties
 	 * to cascade and invalidate the cascade
 	 * 
-	 * @param changedProperty the name of the property
+	 * @param changedPropertyIndex the index of the property
 	 * which changed
 	 */
-	private function onInlineStyleChange(changedProperty:String):Void
+	private function onInlineStyleChange(changedPropertyIndex:Int):Void
 	{
 		//no need to store the property if all properties
 		//are supposed to be cascaded anyway
 		if (_shouldCascadeAllProperties == false)
 		{
-			_pendingChangedProperties.push(changedProperty);
+			_pendingChangedProperties.push(changedPropertyIndex);
 		}
 		
 		invalidateCascade();

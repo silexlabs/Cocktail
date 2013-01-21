@@ -21,10 +21,10 @@ using cocktail.core.utils.Utils;
 class CascadeManager 
 {
 	/**
-	 * Contains all the names of the properties which
+	 * Contains all the index of the properties which
 	 * currently need cascading
 	 */
-	public var propertiesToCascade(default, null):Array<String>;
+	public var propertiesToCascade(default, null):Array<Int>;
 	
 	/**
 	 * Wether all the supprted properties should be cascaded
@@ -109,7 +109,7 @@ class CascadeManager
 	 */
 	public function new() 
 	{
-		propertiesToCascade = new Array<String>();
+		propertiesToCascade = new Array<Int>();
 		reset();
 	}
 	
@@ -163,7 +163,7 @@ class CascadeManager
 	/**
 	 * Add a property to cascade
 	 */
-	public function addPropertyToCascade(name:String):Void
+	public function addPropertyToCascade(index:Int):Void
 	{     
 		//don't need to add if all properties should
 		//already be updated
@@ -175,7 +175,7 @@ class CascadeManager
 		//update the right if the added property match
 		//a flag. If the flagged property was already
 		//added, no need to add it again
-		var wasAlreadyAdded:Bool = flagProperty(name);
+		var wasAlreadyAdded:Bool = flagProperty(index);
 		if (wasAlreadyAdded == true)
 		{
 			return;
@@ -185,29 +185,29 @@ class CascadeManager
 		var length:Int = propertiesToCascade.length;
 		for (i in 0...length)
 		{
-			if (propertiesToCascade[i] == name)
+			if (propertiesToCascade[i] == index)
 			{
 				return;
 			}
 		}
 		
-		propertiesToCascade.push(name);
+		propertiesToCascade.push(index);
 		hasPropertiesToCascade = true;
 	}
 	
 	/**
 	 * remove a property to cascade
 	 */
-	public function removePropertyToCascade(name:String):Void
+	public function removePropertyToCascade(index:Int):Void
 	{
 		var length:Int = propertiesToCascade.length;
 		for (i in 0...length)
 		{
-			if (propertiesToCascade[i] == name)
+			if (propertiesToCascade[i] == index)
 			{
 				propertiesToCascade.remove(propertiesToCascade[i]);
 				//set property flag to false if needed
-				deFlagProperty(name);
+				deFlagProperty(index);
 				break;
 			}
 		}
@@ -232,14 +232,14 @@ class CascadeManager
 	 * This method set the flag for the added property if
 	 * needed
 	 * 
-	 * @param	name the property to add
+	 * @param	index the index of the property to add
 	 * @return wether the property was already previously
 	 * added, in which case it doesn't need to be 
 	 * re-added
 	 */
-	private function flagProperty(name:String):Bool
+	private function flagProperty(index:Int):Bool
 	{
-		switch(name)
+		switch(index)
 		{
 			//check wether the property is fon-size
 			case CSSConstants.FONT_SIZE:
@@ -542,9 +542,9 @@ class CascadeManager
 	 * if the removed proeprty has an associated flag,
 	 * set it to false
 	 */
-	private function deFlagProperty(name:String):Void
+	private function deFlagProperty(index:Int):Void
 	{
-		switch(name)
+		switch(index)
 		{
 			case CSSConstants.COLOR:
 				hasColor = false;
