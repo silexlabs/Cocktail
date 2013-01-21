@@ -328,7 +328,7 @@ class CSSStyleDeclaration
 	 * Return the property with the given index as a typed property
 	 * object or null if it is not defined on this style declaration
 	 */
-	public function getTypedProperty(propertyIndex:Int):TypedPropertyVO
+	public inline function getTypedProperty(propertyIndex:Int):TypedPropertyVO
 	{
 		return _indexedProperties[propertyIndex];
 	}

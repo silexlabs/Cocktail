@@ -8,6 +8,7 @@
 */
 package cocktail.core.renderer;
 import cocktail.core.html.HTMLConstants;
+import cocktail.core.html.HTMLElement;
 
 /**
  * Anonmymous block are used to wrap inlineBoxRenderer
@@ -23,11 +24,23 @@ import cocktail.core.html.HTMLConstants;
 class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 {
 	/**
+	 * a "dummy" html element reused for all
+	 * anonymous blocks
+	 */
+	private static var _node:HTMLElement;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
 	{
-		super(Lib.document.createElement(HTMLConstants.HTML_DIV_TAG_NAME));
+		//create dummy node first time
+		if (_node == null)
+		{
+			_node = Lib.document.createElement(HTMLConstants.HTML_DIV_TAG_NAME);
+		}
+		
+		super(_node);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
