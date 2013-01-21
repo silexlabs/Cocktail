@@ -383,17 +383,6 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		super.appendChild(newChild);
 		newChild.appended();
-		
-		//when added a child, this 
-		//HTMLElement should be re-cascaded
-		//so that the child can inherit
-		//its parent style
-		//
-		//TODO 3 : shouldn't instead the 
-		//new child retrieve the inheritable
-		//styles values from its parent
-		invalidateCascade();
-		
 		return newChild;
 	}
 	
