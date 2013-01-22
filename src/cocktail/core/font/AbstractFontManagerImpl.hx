@@ -50,14 +50,11 @@ class AbstractFontManagerImpl
 		
 		//this method caches all the generated font metrics and
 		//tries first to retrieve them on subsequent calls
-		if (_computedFontMetrics.exists(fontFamily) == true)
+		var fontSizeHash:IntHash<FontMetricsVO> = _computedFontMetrics.get(fontFamily);
+		if (fontSizeHash != null)
 		{
-			var fontSizeHash:IntHash<FontMetricsVO> = _computedFontMetrics.get(fontFamily);
-			if (fontSizeHash.exists(Math.round(fontSize)) == true)
-			{
-				fontMetrics = fontSizeHash.get(Math.round(fontSize));
-			}
-			else
+			fontMetrics = fontSizeHash.get(Math.round(fontSize));
+			if (fontMetrics == null)
 			{
 				fontMetrics = doGetFontMetrics(fontFamily, fontSize);
 				fontSizeHash.set(Math.round(fontSize), fontMetrics);
@@ -67,7 +64,7 @@ class AbstractFontManagerImpl
 		else
 		{
 			fontMetrics = doGetFontMetrics(fontFamily, fontSize);
-			var fontSizeHash:IntHash<FontMetricsVO> = new IntHash<FontMetricsVO>();
+			fontSizeHash = new IntHash<FontMetricsVO>();
 			fontSizeHash.set(Math.round(fontSize), fontMetrics);
 			
 			_computedFontMetrics.set(fontFamily, fontSizeHash); 
