@@ -688,7 +688,18 @@ class CoreStyle
 		}
 		else
 		{
-			propertiesToCascade = cascadeManager.propertiesToCascade;
+			//add the name of all properties flagged as needing cascade
+			propertiesToCascade = new Array<Int>();
+			
+			var flaggedProperties:Array<Bool> = cascadeManager.propertiesToCascade;
+			var flaggedPropertiesLength:Int = flaggedProperties.length;
+			for (i in 0...flaggedPropertiesLength)
+			{
+				if (flaggedProperties[i] == true)
+				{
+					propertiesToCascade.push(i);
+				}
+			}
 		}
 		
 		var length:Int = propertiesToCascade.length;

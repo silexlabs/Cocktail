@@ -21,10 +21,11 @@ using cocktail.core.utils.Utils;
 class CascadeManager 
 {
 	/**
-	 * Contains all the index of the properties which
-	 * currently need cascading
+	 * Has an item for each supported CSS properties.
+	 * Each of this item is a flag determining wether
+	 * the property should be cascaded
 	 */
-	public var propertiesToCascade(default, null):Array<Int>;
+	public var propertiesToCascade(default, null):Array<Bool>;
 	
 	/**
 	 * Wether all the supprted properties should be cascaded
@@ -109,7 +110,7 @@ class CascadeManager
 	 */
 	public function new() 
 	{
-		propertiesToCascade = new Array<Int>();
+		propertiesToCascade = new Array<Bool>();
 		reset();
 	}
 	
@@ -120,8 +121,14 @@ class CascadeManager
 	{
 		if (hasPropertiesToCascade == true)
 		{
-			propertiesToCascade = propertiesToCascade.clear();
+			//unset all the properties flag
+			for (i in 0...CSSConstants.SUPPORTED_STYLES_NUMBER)
+			{
+				propertiesToCascade[i] = false;
+			}
 		}
+		
+		
 		
 		hasFontSize = false;
 		hasFontFamily = false;
@@ -181,17 +188,8 @@ class CascadeManager
 			return;
 		}
 		
-		//check if the property was already added
-		var length:Int = propertiesToCascade.length;
-		for (i in 0...length)
-		{
-			if (propertiesToCascade[i] == index)
-			{
-				return;
-			}
-		}
+		propertiesToCascade[index] = true;
 		
-		propertiesToCascade.push(index);
 		hasPropertiesToCascade = true;
 	}
 	
@@ -200,18 +198,8 @@ class CascadeManager
 	 */
 	public function removePropertyToCascade(index:Int):Void
 	{
-		var length:Int = propertiesToCascade.length;
-		for (i in 0...length)
-		{
-			if (propertiesToCascade[i] == index)
-			{
-				propertiesToCascade.remove(propertiesToCascade[i]);
-				//set property flag to false if needed
-				deFlagProperty(index);
-				break;
-			}
-		}
-		
+		unFlagProperty(index);
+		propertiesToCascade[index] = false;
 	}
 	
 	/**
@@ -542,7 +530,7 @@ class CascadeManager
 	 * if the removed proeprty has an associated flag,
 	 * set it to false
 	 */
-	private function deFlagProperty(index:Int):Void
+	private function unFlagProperty(index:Int):Void
 	{
 		switch(index)
 		{
