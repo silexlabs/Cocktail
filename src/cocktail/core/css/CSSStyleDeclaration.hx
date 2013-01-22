@@ -152,7 +152,7 @@ class CSSStyleDeclaration
 	 * The number of style declaration on this
 	 * object
 	 */
-	public var length(get_length, null):Int;
+	public var length(default, null):Int;
 	
 	/**
 	 * A reference to the rule owning this style
@@ -161,19 +161,24 @@ class CSSStyleDeclaration
 	public var parentRule(default, null):CSSRule;
 	
 	/**
-	 * Holds all the style declarations of this 
-	 * object, as typed objects, in the order
-	 * where they are added
-	 */
-	private var _properties:Array<TypedPropertyVO>;
-	
-	/**
 	 * Holds all the style declarations of this
 	 * object, ordered by index, where each index
 	 * is a CSS property. This allows for fast
 	 * retrival of typed property
 	 */
 	private var _indexedProperties:Array<TypedPropertyVO>;
+	
+	/**
+	 * Holds an item for each supported CSS style. For
+	 * each item, hold the CSS index of the inserted style
+	 * or -1 if no style was added at this index yet
+	 * 
+	 * For instance if the first style inserted in this stylesheet
+	 * has the 30 CSS index, the value of the index 0 of this
+	 * array will be 30.
+	 */
+	private var _propertiesPositions:Array<Int>;
+	
 	/**
 	 * Optionnal callback, called when the value
 	 * of a style changes
@@ -187,14 +192,21 @@ class CSSStyleDeclaration
 	{
 		_onStyleChange = onStyleChange;
 		this.parentRule = parentRule;
-		_properties = new Array<TypedPropertyVO>();
 		
-		_indexedProperties = new Array <TypedPropertyVO>();
+		_indexedProperties = new Array<TypedPropertyVO>();
+		_propertiesPositions = new Array<Int>();
+		
+		length = 0;
 		
 		//for the indexed property array, init as many item as there are
 		//supprted CSS style, each index will hold a CSS style value,
 		//always for the same style
 		resetIndexedProperties();
+		
+		//for the position array, init as many item as there are
+		//supported CSS styles, each index represents a CSS style and
+		//holds the position of where the item was inserted
+		resetPropertiesPositions();
 	}
 	
 	/**
@@ -205,9 +217,10 @@ class CSSStyleDeclaration
 	{
 		_onStyleChange = null;
 		parentRule = null;
+		length = 0;
 		
-		_properties = _properties.clear();
 		resetIndexedProperties();
+		resetPropertiesPositions();
 	}
 	
 	/**
@@ -215,10 +228,46 @@ class CSSStyleDeclaration
 	 */
 	private function resetIndexedProperties():Void
 	{
-		var supportedProperties:Int = CSSConstants.SUPPORTED_STYLES_NUMBER;
-		for (i in 0...supportedProperties)
+		for (i in 0...CSSConstants.SUPPORTED_STYLES_NUMBER)
 		{
 			_indexedProperties[i] = null;
+		}
+	}
+	
+	/**
+	 * Init the positions of all the css styles, when
+	 * a style is not present in this style sheet, its
+	 * index has a -1 value
+	 */
+	private function resetPropertiesPositions():Void
+	{
+		for (i in 0...CSSConstants.SUPPORTED_STYLES_NUMBER)
+		{
+			_propertiesPositions[i] = -1;
+		}
+	}
+	
+	/**
+	 * When a property is removed from this style sheet, decrement
+	 * all the index of the properties that were added after it
+	 * @param	removedPropertyIndex the CSS index of the property
+	 * that was just removed
+	 */
+	private function decrementPropertiesPositions(removedPropertyIndex:Int):Void
+	{
+		//when the index of the property that was removed 
+		//is found, decrement all the following properties index
+		var foundProperty:Bool = false;
+		for (i in 0...length)
+		{
+			if (foundProperty == true)
+			{
+				_propertiesPositions[i] = _propertiesPositions[i - 1];
+			}
+			if (_propertiesPositions[i] == removedPropertyIndex)
+			{
+				foundProperty = true;
+			}
 		}
 	}
 	
@@ -227,12 +276,18 @@ class CSSStyleDeclaration
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Return the style declaration
+	 * Return the index of the style
 	 * at the given index
 	 */
 	public function item(index:Int):Int
 	{
-		return _properties[index].index;
+		//TODO 3 : should throw execption ?
+		if (index > length - 1)
+		{
+			//out of bound item
+			return -1;
+		}
+		return _propertiesPositions[index];
 	}
 	
 	/**
@@ -285,7 +340,12 @@ class CSSStyleDeclaration
 		var typedProperty:TypedPropertyVO = getTypedProperty(index);
 		if (typedProperty != null)
 		{
-			_properties.remove(typedProperty);
+			//reorder the position array and decrement number of css style
+			//in stylesheet
+			decrementPropertiesPositions(index);
+			_propertiesPositions[length] = -1;
+			length--;
+			
 			_indexedProperties[index] =  null;
 			
 			//call the style update callback if provided
@@ -349,7 +409,12 @@ class CSSStyleDeclaration
 			newProperty.important = important;
 			newProperty.typedValue = typedValue;
 			newProperty.index = propertyIndex;
-			_properties.push(newProperty);
+			
+			//store the order where this css style was added by 
+			//storing its index at the current length
+			_propertiesPositions[length] = propertyIndex;
+			length++;
+			
 			_indexedProperties[propertyIndex] = newProperty;
 			
 			if (_onStyleChange != null)
@@ -383,7 +448,10 @@ class CSSStyleDeclaration
 		newProperty.important = important;
 		newProperty.typedValue = typedValue;
 		newProperty.index = propertyIndex;
-		_properties.push(newProperty);
+		
+		_propertiesPositions[length] = propertyIndex;
+		length++;
+		
 		_indexedProperties[propertyIndex] = newProperty;
 		
 		if (_onStyleChange != null)
@@ -2865,10 +2933,9 @@ class CSSStyleDeclaration
 	{
 		var serializedStyleDeclaration:String = "";
 		
-		var length:Int = _properties.length;
 		for (i in 0...length)
 		{
-			var property:TypedPropertyVO = _properties[i];
+			var property:TypedPropertyVO = _indexedProperties[_propertiesPositions[i]];
 			
 			serializedStyleDeclaration += CSSConstants.getPropertyNameFromIndex(property.index) + ":" + CSSStyleSerializer.serialize(property.typedValue);
 			if (property.important == true)
@@ -2893,8 +2960,9 @@ class CSSStyleDeclaration
 	private function set_cssText(value:String):String
 	{
 		//reset properties
-		_properties = _properties.clear();
 		resetIndexedProperties();
+		resetPropertiesPositions();
+		length = 0;
 		
 		var typedProperties:Array<TypedPropertyVO> = CSSStyleParser.parseStyle(value);
 		var length:Int = typedProperties.length;
@@ -2905,11 +2973,6 @@ class CSSStyleDeclaration
 		}
 		
 		return value;
-	}
-	
-	private function get_length():Int
-	{
-		return _properties.length;
 	}
 	
 	/////////////////////////////////
