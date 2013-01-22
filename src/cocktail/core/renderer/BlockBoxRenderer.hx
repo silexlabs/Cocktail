@@ -514,19 +514,18 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	}
 	
 	/**
-	 * Update the list of floated element by retriving
-	 * them from the block formatting root, or if this block
-	 * is a block formatting root, find all its floated children
+	 * Update the list of floated and clear element in the 
+	 * block formatting context. Block formatting
+	 * root reset their floated and clear elements array,
+	 * and block boxes retrieve them from their
+	 * first block formatting context root ancestor
 	 */
 	public function updateFloatedAndClearElements():Void
 	{	
-		//if this block box is a block formatting root,
-		//then it needs to retrive all the floated children
-		//belonging to its block formatting
+		//reset float array
 		if (establishesNewBlockFormattingContext() == true)
 		{
 			floatsManager.init();
-			registerFloatedElements(this, floatsManager);
 			
 			_offsetFromBlockFormattingRoot.x = 0;
 			_offsetFromBlockFormattingRoot.y = 0;
@@ -540,6 +539,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//update this block's offset relative to its first block formatting ancestor
 			_offsetFromBlockFormattingRoot = getBlockBoxesOffset(this, blockFormattingContextRoot);
 			
+			//the offset is from the content area of this block
+			_offsetFromBlockFormattingRoot.x += coreStyle.usedValues.paddingLeft;
+			_offsetFromBlockFormattingRoot.y += coreStyle.usedValues.paddingTop;
+			
 			floatsManager.floats = blockFormattingContextRoot.floatsManager.floats;
 			floatsManager.childrenWithClearance = blockFormattingContextRoot.floatsManager.childrenWithClearance;
 		}
@@ -548,31 +551,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE LAYOUT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Traverse a block formatting recursively, and register
-	 * all the floated elements in it
-	 */
-	private function registerFloatedElements(rootElementRenderer:ElementRenderer, referenceFloatManager:FloatsManager):Void
-	{
-		var child:ElementRenderer = rootElementRenderer.firstChild;
-		while (child != null)
-		{
-			if (child.isFloat() == true)
-			{
-				referenceFloatManager.registerFloat(child);
-			}
-			else if (child.establishesNewBlockFormattingContext() == false)
-			{
-				if (child.firstChild != null)
-				{
-					registerFloatedElements(child, referenceFloatManager);
-				}
-			}
-			
-			child = child.nextSibling;
-		}
-	}
 	
 	/**
 	 * If this block box width should be shrink-to-fit, compute it.
@@ -917,8 +895,14 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						var childMarginWidth:Float = child.bounds.width + child.coreStyle.usedValues.marginLeft + child.coreStyle.usedValues.marginRight;
 						var childMarginHeight:Float = child.bounds.height + child.getCollapsedTopMargin() + child.getCollapsedBottomMargin();
 						var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight;
-						_childPosition.y = floatsManager.getFirstAvailableYPosition(_childPosition.y, childMarginHeight, childMarginWidth, contentWidth, _offsetFromBlockFormattingRoot);
-
+						
+						var firstYPosition:Float = floatsManager.getFirstAvailableYPosition(child,
+						_childPosition.y + _offsetFromBlockFormattingRoot.y, 
+						childMarginHeight, childMarginWidth, contentWidth, _offsetFromBlockFormattingRoot.x);
+						
+						//the first y is returned in the block formatting space, convert it to this block space
+						_childPosition.y = firstYPosition - _offsetFromBlockFormattingRoot.y;
+						
 						//if child has clearance, its top margin is not used
 						if (childHasClearance == false)
 						{
@@ -932,7 +916,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						
 						//for x position, it is either defined by floated elements or by the left
 						//margin, whichever is bigger
-						var leftFloatOffset:Float = floatsManager.getLeftFloatOffset(_childPosition.y, childMarginHeight, _offsetFromBlockFormattingRoot);
+						var leftFloatOffset:Float = floatsManager.getLeftFloatOffset(child,
+						_childPosition.y + _offsetFromBlockFormattingRoot.y, childMarginHeight, _offsetFromBlockFormattingRoot.x);
+						
+						//the left float offset is defined in block formatting space, convert it to this bbloc's space
+						leftFloatOffset -= _offsetFromBlockFormattingRoot.x;
+						
 						if (leftFloatOffset > child.coreStyle.usedValues.marginLeft)
 						{
 							child.bounds.x = leftFloatOffset;
@@ -975,7 +964,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						}
 					}
 					
-					updateFloatedElementBounds(child, childPosition);
+					registerFloatedElement(child, childPosition);
 				}
 			}
 			
@@ -999,25 +988,21 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	/**
 	 * When a floated element is laid out,
-	 * it must update its bounds among the registered
-	 * floated elements of this block formatting context
+	 * it must be registered and have its bounds
+	 * updated
 	 */
-	private function updateFloatedElementBounds(floatedElement:ElementRenderer, childPosition:PointVO):Void
+	private function registerFloatedElement(floatedElement:ElementRenderer, childPosition:PointVO):Void
 	{
 		var blockFormattingContextRoot:BlockBoxRenderer = getNearestBlockFormattingContextRoot();
-		
-		//store the floated element margin box position relative to the block formatting context
-		//root content box
-		var floatOffset:PointVO = new PointVO(0, 0);
-		floatOffset.x = childPosition.x + _offsetFromBlockFormattingRoot.x;
-		floatOffset.y = childPosition.y + _offsetFromBlockFormattingRoot.y;
 		
 		//get this block box content width
 		var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight;
 		
 		//update the bounds of the floated, taking other floated elements into account and return
-		//the bounds of the floated element in the block formatting space
-		var floatBounds:RectangleVO = blockFormattingContextRoot.floatsManager.updateFloatBounds(floatedElement, floatOffset, contentWidth);
+		//the bounds of the floated element in the block formatting root space
+		var floatBounds:RectangleVO = blockFormattingContextRoot.floatsManager.updateFloatBounds(floatedElement,
+		childPosition.y + _offsetFromBlockFormattingRoot.y, 
+		contentWidth, _offsetFromBlockFormattingRoot.x);
 		
 		//position the border box of the floated element relative to this block box
 		floatedElement.bounds.x = floatBounds.x + floatedElement.coreStyle.usedValues.marginLeft;
@@ -1086,14 +1071,25 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		//the width of a line box is the client width of the containing block minus
 		//the margin box width of any floated element intersecting with the line
-		var availableWidth:Float = coreStyle.usedValues.width - floatsManager.getLeftFloatOffset(lineBoxPosition.y, coreStyle.usedValues.lineHeight, _offsetFromBlockFormattingRoot) - floatsManager.getRightFloatOffset(lineBoxPosition.y, coreStyle.usedValues.lineHeight, coreStyle.usedValues.width, _offsetFromBlockFormattingRoot);
+		var availableWidth:Float = floatsManager.getRightFloatOffset(this, lineBoxPosition.y + _offsetFromBlockFormattingRoot.y,
+		coreStyle.usedValues.lineHeight, 0, _offsetFromBlockFormattingRoot.x, coreStyle.usedValues.width)
+		-
+		floatsManager.getLeftFloatOffset(this, lineBoxPosition.y + _offsetFromBlockFormattingRoot.y, coreStyle.usedValues.lineHeight, _offsetFromBlockFormattingRoot.x);
 
 		var lineBox:LineBox = new LineBox(this, availableWidth, lineBoxes.length == 0, layoutState);
 
 		//position the line box in x and y relative to the containing block (this)
 		//taking floated elements into account
 		lineBox.bounds.y = lineBoxPosition.y;
-		lineBox.bounds.x = floatsManager.getLeftFloatOffset(lineBox.bounds.y, coreStyle.usedValues.lineHeight, _offsetFromBlockFormattingRoot);
+		
+		//get left offset for line box
+		var leftFloatOffset:Float = floatsManager.getLeftFloatOffset(this, lineBox.bounds.y + _offsetFromBlockFormattingRoot.y,
+		coreStyle.usedValues.lineHeight, _offsetFromBlockFormattingRoot.x);
+		
+		//convert from block formatting root space to this block space
+		leftFloatOffset -= _offsetFromBlockFormattingRoot.x;
+		
+		lineBox.bounds.x = leftFloatOffset;
 		lineBoxes.push(lineBox);
 		hasLineBoxes = true;
 		
@@ -1120,7 +1116,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//find the first y position where the next line box should be created.
 		//it should be created at a position where the content which couldn't 
 		//fit on the previous line can be placed
-		lineBoxPosition.y = floatsManager.getFirstAvailableYPosition(lineBoxPosition.y, coreStyle.usedValues.lineHeight, lineBox.unbreakableWidth, coreStyle.usedValues.width, _offsetFromBlockFormattingRoot);
+		var firstAvailableY:Float = floatsManager.getFirstAvailableYPosition(this, lineBoxPosition.y + _offsetFromBlockFormattingRoot.y,
+		coreStyle.usedValues.lineHeight, lineBox.unbreakableWidth, coreStyle.usedValues.width, _offsetFromBlockFormattingRoot.x);
+		
+		//convert the y from block formatting root space to this block space
+		firstAvailableY -= _offsetFromBlockFormattingRoot.y;
+		
+		lineBoxPosition.y = firstAvailableY;
 		
 		var newLineBox:LineBox = createLineBox(lineBoxPosition, layoutState);
 		
@@ -1191,7 +1193,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 							var clearance:Float = floatsManager.getClearance(child, hypotheticalChildYPosition);
 							var clearedFloatPosition:PointVO = new PointVO(0, 0);
 							clearedFloatPosition.y = inlineFormattingData.lineBoxPosition.y + clearance;
-							updateFloatedElementBounds(child, clearedFloatPosition);
+							registerFloatedElement(child, clearedFloatPosition);
 							_floatFound = true;
 						}
 					}
@@ -1208,7 +1210,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						
 						//for inline formatting, float are replaced are aligned
 						//with the current line box position
-						updateFloatedElementBounds(child, inlineFormattingData.lineBoxPosition);
+						registerFloatedElement(child, inlineFormattingData.lineBoxPosition);
 						
 						//for inline formatting, a flag is set instead
 						//of just returning a flag as return value
