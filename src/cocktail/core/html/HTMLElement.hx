@@ -383,6 +383,12 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		super.appendChild(newChild);
 		newChild.appended();
+		
+		//when a new child is added, refreh the style of this html element
+		//TODO 2 : don't seem necessary, but tried to remove it and add
+		//regression when testing an html doc with just a body, style
+		//seemed not to be set on htmlhtmlelement
+		invalidateCascade();
 		return newChild;
 	}
 	
