@@ -2,5 +2,5 @@
 -main src.CocktailBrowser
 -cp src
 -cp ../../src
--swf-version 10.2
+-swf-version 11.4
 --remap js:cocktail
