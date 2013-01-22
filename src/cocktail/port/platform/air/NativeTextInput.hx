@@ -82,9 +82,6 @@ class NativeTextInput extends NativeTextInputBase
 	override public function detach(graphicContext:GraphicsContext):Void
 	{
 		_stageText.stage = null;
-		
-		//makes sure that garbage collection is called
-		_stageText.dispose();
 	}
 	
 	/**
