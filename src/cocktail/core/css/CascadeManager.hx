@@ -179,17 +179,8 @@ class CascadeManager
 			return;
 		}
 		
-		//update the right if the added property match
-		//a flag. If the flagged property was already
-		//added, no need to add it again
-		var wasAlreadyAdded:Bool = flagProperty(index);
-		if (wasAlreadyAdded == true)
-		{
-			return;
-		}
-		
 		propertiesToCascade[index] = true;
-		
+		flagProperty(index);
 		hasPropertiesToCascade = true;
 	}
 	
@@ -220,310 +211,109 @@ class CascadeManager
 	 * This method set the flag for the added property if
 	 * needed
 	 * 
-	 * @param	index the index of the property to add
-	 * @return wether the property was already previously
-	 * added, in which case it doesn't need to be 
-	 * re-added
+	 * @param	index the index of the property to flag
 	 */
-	private function flagProperty(index:Int):Bool
+	private function flagProperty(index:Int):Void
 	{
 		switch(index)
 		{
 			//check wether the property is fon-size
 			case CSSConstants.FONT_SIZE:
-				if (hasFontSize == false)
-				{
-					hasFontSize = true;
-				}
-				//here the property already was
-				//added
-				else
-				{
-					return true;
-				}
+				hasFontSize = true;
+				
 			case CSSConstants.MARGIN_TOP:
-				if (hasMarginTop == false)
-				{
-					hasMarginTop = true; 
-				}
-				else
-				{
-					return true;
-				}	
+				hasMarginTop = true;
+				
 			case CSSConstants.MARGIN_BOTTOM:
-				if (hasMarginBottom == false)
-				{
-					hasMarginBottom = true; 
-				}
-				else
-				{
-					return true;
-				}	
+				hasMarginBottom = true; 
+				
 			case CSSConstants.MARGIN_LEFT:
-				if (hasMarginLeft == false)
-				{
-					hasMarginLeft = true; 
-				}
-				else
-				{
-					return true;
-				}	
+				hasMarginLeft = true;
+				
 			case CSSConstants.MARGIN_RIGHT:
-				if (hasMarginRight == false)
-				{
-					hasMarginRight = true; 
-				}
-				else
-				{
-					return true;
-				}		
+				hasMarginRight = true; 
+			
 			case CSSConstants.TOP:
-				if (hasTop == false)
-				{
-					hasTop = true; 
-				}
-				else
-				{
-					return true;
-				}
+				hasTop = true; 
+				
 			case CSSConstants.BOTTOM:
-				if (hasBottom == false)
-				{
-					hasBottom = true; 
-				}
-				else
-				{
-					return true;
-				}	
+				hasBottom = true; 
+				
 			case CSSConstants.LEFT:
-				if (hasLeft == false)
-				{
-					hasLeft = true; 
-				}
-				else
-				{
-					return true;
-				}	
+				hasLeft = true; 
+				
 			case CSSConstants.RIGHT:
-				if (hasRight == false)
-				{
-					hasRight = true; 
-				}
-				else
-				{
-					return true;
-				}	
+				hasRight = true; 
+				
 			case CSSConstants.TEXT_ALIGN:	
-				if (hasTextAlign == false)
-				{
-					hasTextAlign = true;
-				}
-				else
-				{
-					return true;
-				}	
+				hasTextAlign = true;
+				
 			case CSSConstants.MAX_HEIGHT:
-				if (hasMaxHeight == false)
-				{
-					hasMaxHeight = true;
-				}
-				else
-				{
-					return true;
-				}	
+				hasMaxHeight = true;
+				
 			case CSSConstants.MAX_WIDTH:
-				if (hasMaxWidth == false)
-				{
-					hasMaxWidth = true;
-				}
-				else
-				{
-					return true;
-				}		
+				hasMaxWidth = true;
+				
 			case CSSConstants.WIDTH:
-				if (hasWidth == false)
-				{
-					hasWidth = true;
-				}
-				else
-				{
-					return true;
-				}
+				hasWidth = true;
+					
 			case CSSConstants.HEIGHT:
-				if (hasHeight == false)
-				{
-					hasHeight = true;
-				}
-				else
-				{
-					return true;
-				}	
+				hasHeight = true;
+				
 			case CSSConstants.CLEAR:
-				if (hasClear == false)
-				{
-					hasClear = true;
-				}
-				else
-				{
-					return true;
-				}
+				hasClear = true;
+				
 			case CSSConstants.WHITE_SPACE:
-				if (hasWhiteSpace == false)
-				{
-					hasWhiteSpace = true;
-				}
-				else
-				{
-					return true;
-				}
+				hasWhiteSpace = true;
+				
 			case CSSConstants.BACKGROUND_IMAGE:
-				if (hasBackgroundImage == false)
-				{
-					hasBackgroundImage = true;
-				}
-				else
-				{
-					return true;
-				}
+				hasBackgroundImage = true;
+				
 			case CSSConstants.VERTICAL_ALIGN:
-				if (hasVerticalAlign == false)
-				{
-					hasVerticalAlign = true;
-				}
-				else
-				{
-					return true;
-				}
+				hasVerticalAlign = true;
+				
 			case CSSConstants.LINE_HEIGHT:
-				if (hasLineHeight == false)
-				{
-					hasLineHeight = true;
-				}
-				else
-				{
-					return true;
-				}
+				hasLineHeight = true;
+				
 			case CSSConstants.LETTER_SPACING:
-				if (hasLetterSpacing == false)
-				{
-					hasLetterSpacing = true;
-				}
-				else
-				{
-					return true;
-				}	
+				hasLetterSpacing = true;
 				
 			case CSSConstants.OPACITY:
-				if (hasOpacity == false)
-				{
-					hasOpacity = true;
-				}
-				else
-				{
-					return true;
-				}
+				hasOpacity = true;
+				
 			case CSSConstants.FONT_FAMILY:
-				if (hasFontFamily == false)
-				{
-					hasFontFamily = true;
-				}
-				else
-				{
-					return true;
-				}
+				hasFontFamily = true;
+				
 			case CSSConstants.VISIBILITY:
-				if (hasVisible == false)
-				{
-					hasVisible = true;
-				}
-				else
-				{
-					return true;
-				}
+				hasVisible = true;
+					
 			case CSSConstants.BACKGROUND_COLOR:
-				if (hasBackgroundColor == false)
-				{
-					hasBackgroundColor = true;
-				}
-				else
-				{
-					return true;
-				}	
+				hasBackgroundColor = true;
+				
 			case CSSConstants.COLOR:
-				if (hasColor == false)
-				{
-					hasColor = true;
-				}
-				else
-				{
-					return true;
-				}	
+				hasColor = true;
+				
 			case CSSConstants.DISPLAY:
-				if (hasDisplay == false)
-				{
-					hasDisplay = true;
-				}
-				else
-				{
-					return true;
-				}
+				hasDisplay = true;
+					
 			case CSSConstants.FLOAT:
-				if (hasFloat == false)
-				{
-					hasFloat = true;
-				}
-				else
-				{
-					return true;
-				}
+				hasFloat = true;
+				
 			case CSSConstants.OVERFLOW_X:
-				if (hasOverflowX == false)
-				{
-					hasOverflowX = true;
-				}
-				else
-				{
-					return true;
-				}	
+				hasOverflowX = true;
+					
 			case CSSConstants.OVERFLOW_Y:
-				if (hasOverflowY == false)
-				{
-					hasOverflowY = true;
-				}
-				else
-				{
-					return true;
-				}	
+				hasOverflowY = true;
+				
 			case CSSConstants.TRANSFORM:
-				if (hasTransform == false)
-				{
-					hasTransform = true;
-				}
-				else
-				{
-					return true;
-				}	
+				hasTransform = true;
+					
 			case CSSConstants.Z_INDEX:
-				if (hasZIndex == false)
-				{
-					hasZIndex = true;
-				}
-				else
-				{
-					return true;
-				}		
+				hasZIndex = true;
+				
 			case CSSConstants.POSITION:
-				if (hasPosition == false)
-				{
-					hasPosition = true;
-				}
-				else
-				{
-					return true;
-				}		
+				hasPosition = true;
 		}
-		
-		return false;
 	}
 	
 	/**
