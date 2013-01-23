@@ -752,8 +752,12 @@ class CoreStyle
 		}
 		
 		//same as above for line height
-		if (cascadeManager.hasLineHeight == true)
-		{
+		//if (cascadeManager.hasLineHeight == true)
+		//{
+		
+		//TODO 3 : shouldn't update each time but for some reason, sometimes
+		//line height set wrong which causes text on same line to be misaligned
+		
 			switch (lineHeight)
 			{
 				case ABSOLUTE_LENGTH(value):
@@ -767,7 +771,7 @@ class CoreStyle
 					
 				default:	
 			}
-		}
+		//}
 		
 		//same as above for letter spacing
 		if (cascadeManager.hasLetterSpacing == true)
