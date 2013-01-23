@@ -7,16 +7,12 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 
-====================
-== Cocktail Demos ==
-====================
-
 @author Raphael Harmel
 @date 2012-02-28
 
-
-FRENCH TECH
------------
+====================
+== FRENCH TECH ==
+====================
 
 Description: a technological news application gathering feeds of several reference websites. Works either as a webapp or as a native app.
 Tested targets: JavaScript, and native targets via PhoneGap (iOS, Android, BlackBerry, Windows Phone...)
@@ -30,12 +26,10 @@ DESCRIPTION
 ENGLISH
 
 This application gathers together a selection of french technological informations.
-The selected information feeds are: Techcrunch France, Silicon Sentier and FrenchWeb.
+The selected information feeds are: iPhon.fr, FrAndroid and frenchiPhone.
 
 It includes touch navigation to swipe between different informations feeds.
 Each detail information can be accessed by clicking on it.
-
-This application works on both portrait and landscape modes.
 
 
 
@@ -47,7 +41,7 @@ If you have such a need, contact us at contact@im-paris.fr
 
 
 Keywords:
-French,Tech,French Tech,Intermedia,Paris,France,technology,Techcrunch,Silicon Sentier,FrenchWeb
+French,Tech,French Tech,Intermedia,Paris,France,technology,iOS,Android,iPhon,iPhon.fr,FrAndroid,frenchiPhone,french,iPhone
 
 contact@im-paris.fr
 Support URL http://www.silexlabs.org/groups/labs/cocktail/forum/
@@ -60,12 +54,16 @@ Android
 -back button handling
 -Resolved error: "the connection to the server was unsuccessful"
 
+2.0.0
+Changed feeds from Techcrunch,Silicon Sentier,FrenchWeb
+to iPhon.fr, FrAndroid and frenchiPhone
+
 -----------------------------------------------------------------------
 
 FRENCH
 
 Cette application rassemble une sélection d'informations technologiques en Français.
-Les flux d'informations sélectionnés sont: Techcrunch France, Silicon Sentier et FrenchWeb.
+Les flux d'informations sélectionnés sont: iPhon.fr, FrAndroid and frenchiPhone.
 
 Elle inclut une navigation "touch" qui permet de passer d'un flux à l'autre par glissement d'un doigt.
 Chaque information détaillée peut être accédée en cliquant sur l'icone correspondante.
@@ -82,7 +80,7 @@ N'hésitez pas à nous contacter si vous avez ce type de besoin: contact@im-paris.
 
 
 Mots clés:
-French,Tech,French Tech,Intermedia,Paris,France,technologie,Techcrunch,Silicon Sentier,FrenchWeb
+French,Tech,French Tech,Intermedia,Paris,France,technologie,iOS,Android,iPhon,iPhon.fr,FrAndroid,frenchiPhone,french,iPhone
 
 contact@im-paris.fr
 Support URL http://www.silexlabs.org/groups/labs/cocktail/forum/
@@ -94,6 +92,10 @@ Mise à jour des icônes et des splashscreens
 Android
 -gestion du bouton de retour
 -erreur résolue: "the connection to the server was unsuccessful"
+
+2.0.0
+Modification des flux de Techcrunch,Silicon Sentier,FrenchWeb
+en iPhon.fr, FrAndroid and frenchiPhone
 
 
 RSS FEEDS
