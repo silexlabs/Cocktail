@@ -1184,7 +1184,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	override private function scrollChanged():Void
 	{
 		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
-		htmlDocument.invalidationManager.invalidateScrollOffset();
+		htmlDocument.invalidationManager.invalidateRendering(clipRect);
 		_canUpdateScrollRegion = true;
 	}
 	
