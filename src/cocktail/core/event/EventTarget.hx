@@ -234,10 +234,7 @@ class EventTarget
 			{
 				var eventListener:EventListener = registeredListeners[i];
 				
-				if (eventListener.eventType == type && eventListener.useCapture == useCapture && eventListener.listener == listener) {
-					eventListener.dispose();
-				}
-				else
+				if (eventListener.eventType != type || eventListener.useCapture != useCapture || eventListener.listener != listener)
 				{
 					newEventListeners.push(eventListener);
 				}
