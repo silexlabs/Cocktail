@@ -896,7 +896,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						var childMarginHeight:Float = child.bounds.height + child.getCollapsedTopMargin() + child.getCollapsedBottomMargin();
 						var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight;
 						
-						var firstYPosition:Float = floatsManager.getFirstAvailableYPosition(child,
+						var firstYPosition:Float = floatsManager.getFirstAvailableYPosition(
 						_childPosition.y + _offsetFromBlockFormattingRoot.y, 
 						childMarginHeight, childMarginWidth, contentWidth, _offsetFromBlockFormattingRoot.x);
 						
@@ -916,7 +916,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						
 						//for x position, it is either defined by floated elements or by the left
 						//margin, whichever is bigger
-						var leftFloatOffset:Float = floatsManager.getLeftFloatOffset(child,
+						var leftFloatOffset:Float = floatsManager.getLeftFloatOffset(
 						_childPosition.y + _offsetFromBlockFormattingRoot.y, childMarginHeight, _offsetFromBlockFormattingRoot.x);
 						
 						//the left float offset is defined in block formatting space, convert it to this bbloc's space
@@ -1000,7 +1000,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		//update the bounds of the floated, taking other floated elements into account and return
 		//the bounds of the floated element in the block formatting root space
-		var floatBounds:RectangleVO = blockFormattingContextRoot.floatsManager.updateFloatBounds(floatedElement,
+		var floatBounds:RectangleVO = blockFormattingContextRoot.floatsManager.registerFloat(floatedElement,
 		childPosition.y + _offsetFromBlockFormattingRoot.y, 
 		contentWidth, _offsetFromBlockFormattingRoot.x);
 		
@@ -1071,10 +1071,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	{
 		//the width of a line box is the client width of the containing block minus
 		//the margin box width of any floated element intersecting with the line
-		var availableWidth:Float = floatsManager.getRightFloatOffset(this, lineBoxPosition.y + _offsetFromBlockFormattingRoot.y,
+		var availableWidth:Float = floatsManager.getRightFloatOffset(lineBoxPosition.y + _offsetFromBlockFormattingRoot.y,
 		coreStyle.usedValues.lineHeight, 0, _offsetFromBlockFormattingRoot.x, coreStyle.usedValues.width)
 		-
-		floatsManager.getLeftFloatOffset(this, lineBoxPosition.y + _offsetFromBlockFormattingRoot.y, coreStyle.usedValues.lineHeight, _offsetFromBlockFormattingRoot.x);
+		floatsManager.getLeftFloatOffset(lineBoxPosition.y + _offsetFromBlockFormattingRoot.y, coreStyle.usedValues.lineHeight, _offsetFromBlockFormattingRoot.x);
 
 		var lineBox:LineBox = new LineBox(this, availableWidth, lineBoxes.length == 0, layoutState);
 
@@ -1083,7 +1083,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		lineBox.bounds.y = lineBoxPosition.y;
 		
 		//get left offset for line box
-		var leftFloatOffset:Float = floatsManager.getLeftFloatOffset(this, lineBox.bounds.y + _offsetFromBlockFormattingRoot.y,
+		var leftFloatOffset:Float = floatsManager.getLeftFloatOffset(lineBox.bounds.y + _offsetFromBlockFormattingRoot.y,
 		coreStyle.usedValues.lineHeight, _offsetFromBlockFormattingRoot.x);
 		
 		//convert from block formatting root space to this block space
@@ -1116,7 +1116,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//find the first y position where the next line box should be created.
 		//it should be created at a position where the content which couldn't 
 		//fit on the previous line can be placed
-		var firstAvailableY:Float = floatsManager.getFirstAvailableYPosition(this, lineBoxPosition.y + _offsetFromBlockFormattingRoot.y,
+		var firstAvailableY:Float = floatsManager.getFirstAvailableYPosition(lineBoxPosition.y + _offsetFromBlockFormattingRoot.y,
 		coreStyle.usedValues.lineHeight, lineBox.unbreakableWidth, coreStyle.usedValues.width, _offsetFromBlockFormattingRoot.x);
 		
 		//convert the y from block formatting root space to this block space
