@@ -851,7 +851,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						}
 						//compute actual clearance and set it 
 						//as the y position were the child will be placed
-						var clearance:Float = floatsManager.getClearance(child, hypotheticalChildYPosition);
+						var clearance:Float = floatsManager.getClearance(child, hypotheticalChildYPosition + _offsetFromBlockFormattingRoot.y);
+			
 						_childPosition.y += clearance;
 						childHasClearance = true;
 					}
