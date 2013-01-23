@@ -220,6 +220,17 @@ class BackgroundManager
 		
 		if (resource.loaded == true)
 		{
+				_intersectionBounds.x = backgroundBox.x;
+				_intersectionBounds.y = backgroundBox.y;
+				_intersectionBounds.width = backgroundBox.width;
+				_intersectionBounds.height = backgroundBox.height;
+		
+				//determine the clip rect for the background image, which is the intersection
+				//between the bounds of the element and its clip rect
+				//
+				//TODO 2 : can use hit testing bounds instead ?
+				GeomUtils.intersectBounds(_intersectionBounds, clipRect, _intersectionBounds);
+			
 				var computedGradientStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
 				style, backgroundBox, resource.intrinsicWidth, resource.intrinsicHeight, resource.intrinsicRatio, backgroundPosition,
 				backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
@@ -235,7 +246,7 @@ class BackgroundManager
 				resource.intrinsicRatio,
 				computedGradientStyles.backgroundSize,
 				computedGradientStyles.backgroundPosition,
-				computedGradientStyles.backgroundRepeat, clipRect);
+				computedGradientStyles.backgroundRepeat, _intersectionBounds);
 				
 			foundResource = true;
 		}
