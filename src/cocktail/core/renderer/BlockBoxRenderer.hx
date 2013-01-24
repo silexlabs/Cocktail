@@ -842,13 +842,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 
 					//check wether child actually has clearance, meaning that it should be placed
 					//below a float declared earlier in the document
-					if (floatsManager.hasClearance(child, hypotheticalChildYPosition) == true)
+					if (floatsManager.hasClearance(child, hypotheticalChildYPosition + _offsetFromBlockFormattingRoot.y) == true)
 					{
-						//register the clearing element the first time it is found
-						if (floatsManager.clearIsAlreadyRegistered(child) == false)
-						{
-							registerClearElement(child);
-						}
+						registerClearElement(child);
+						
 						//compute actual clearance and set it 
 						//as the y position were the child will be placed
 						var clearance:Float = floatsManager.getClearance(child, hypotheticalChildYPosition + _offsetFromBlockFormattingRoot.y);
@@ -976,10 +973,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	/**
 	 * When a clear element is found, it is 
 	 * stored on the block formatting root.
-	 * 
-	 * Clear elements can't be registered before layout
-	 * begins, as there is no way to know until layout if they
-	 * actually introduce clearance
 	 */
 	private function registerClearElement(clearElement:ElementRenderer):Void
 	{
@@ -1184,10 +1177,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						
 						if (floatsManager.hasClearance(child, hypotheticalChildYPosition) == true)
 						{
-							if (floatsManager.clearIsAlreadyRegistered(child) == false)
-							{
-								registerClearElement(child);
-							}
+							registerClearElement(child);
 							
 							//if float does have clearance, place it below any other float, acting more like
 							//a block formatting

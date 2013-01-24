@@ -76,20 +76,6 @@ class FloatsManager
 		childrenWithClearance = new Array<ElementRenderer>();
 	}
 	
-	public function clearIsAlreadyRegistered(elementRenderer:ElementRenderer):Bool
-	{
-		var length:Int = childrenWithClearance.length;
-		for (i in 0...length)
-		{
-			if (childrenWithClearance[i] == elementRenderer)
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
 	public function registerClear(elementRenderer:ElementRenderer):Void
 	{
 		childrenWithClearance.push(elementRenderer);
@@ -186,15 +172,12 @@ class FloatsManager
 		var length:Int = floats.length;
 		for (i in 0...length)
 		{
-			if (isDeclaredBefore(floats[i].node, target) == true)
+			var floatBounds:RectangleVO = floats[i].bounds;
+			if (floatBounds.y + floatBounds.height >= maxY
+			|| floatBounds.y <= maxY  && floatBounds.y + floatBounds.height > maxY)
 			{
-				var floatBounds:RectangleVO = floats[i].bounds;
-				if (floatBounds.y + floatBounds.height >= maxY)
-				{
-					maxY = floatBounds.y + floatBounds.height;
-				}
+				maxY = floatBounds.y + floatBounds.height;
 			}
-			
 		}
 		
 		return maxY - currentY;
@@ -205,49 +188,9 @@ class FloatsManager
 		var length:Int = floats.length;
 		for (i in 0...length)
 		{
-			if (isDeclaredBefore(floats[i].node, target) == true)
-			{
-				var floatBounds:RectangleVO = floats[i].bounds;
-				if (floatBounds.y + floatBounds.height >= currentY)
-				{
-					return true;
-				}
-			}
-			
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * Return wether the target element is declared before the source
-	 * element in the document
-	 */
-	private function isDeclaredBefore(target:ElementRenderer, source:ElementRenderer):Bool
-	{
-		//check first all previous sibling
-		var previousSibling:ElementRenderer = source.previousSibling;
-		while (previousSibling != null)
-		{
-			if (previousSibling == target)
-			{
-				return true;
-			}
-			
-			previousSibling = previousSibling.previousSibling;
-		}
-		
-		var parent:ElementRenderer = source.parentNode;
-		if (parent == target)
-		{
-			return true;
-		}
-		
-		//climb up rendering tree
-		if (parent != null)
-		{
-			var isDeclaredBefore:Bool = isDeclaredBefore(target, parent);
-			if (isDeclaredBefore == true)
+			var floatBounds:RectangleVO = floats[i].bounds;
+			if (floatBounds.y + floatBounds.height >= currentY
+			|| floatBounds.y <= currentY  && floatBounds.y + floatBounds.height > currentY)
 			{
 				return true;
 			}
