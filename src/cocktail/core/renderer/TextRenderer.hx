@@ -148,6 +148,12 @@ class TextRenderer extends InvalidatingElementRenderer
 	
 	override public function render(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{	
+		//check wether text is supposed to be rendered
+		if (coreStyle.isVisible == false)
+		{
+			return;
+		}
+		
 		//check wether text will be displayed on screen
 		_intersectBounds.x = hitTestingBounds.x;
 		_intersectBounds.y = hitTestingBounds.y;
