@@ -25,6 +25,7 @@ import cocktail.core.animation.TransitionManager;
 import cocktail.core.css.CSSValueConverter;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.geom.GeomData;
+import cocktail.core.resource.ResourceManager;
 
 /**
  * This class has 3 main purposes :
@@ -921,9 +922,23 @@ class CoreStyle
 			}
 		}
 		
+		//for background image, if an url is provided, 
+		//start loading the image
 		if (cascadeManager.hasBackgroundImage == true)
 		{
-			hasBackgroundImage = isNone(backgroundImage) == false;
+			hasBackgroundImage = false;
+			if (isNone(backgroundImage) == false)
+			{
+				hasBackgroundImage = true;
+				
+				switch (backgroundImage)
+				{
+					case URL(value):
+						ResourceManager.getImageResource(value);
+						
+					default:	
+				}
+			}
 		}
 		
 		if (cascadeManager.hasVerticalAlign == true)

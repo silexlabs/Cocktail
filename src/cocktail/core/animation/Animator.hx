@@ -152,15 +152,12 @@ class Animator
 				}
 				
 			case IDENTIFIER(value):
-				
-				//TODO 1 : there should be a method to get a property name from its index
-
 				//if only one property name is defined, it must
 				//match the name of the pending animation property
-				//if (value != pendingAnimation.propertyName)
-				//{
-					//return false;
-				//}		
+				if (value != CSSConstants.getPropertyNameFromIndex(pendingAnimation.propertyIndex))
+				{
+					return false;
+				}		
 			
 			//here, check in the list of transitionable property
 			//for a match
@@ -174,12 +171,12 @@ class Animator
 						case IDENTIFIER(value):
 							//if there is a match, store the index
 							//of the match
-							//if (value == pendingAnimation.propertyName)
-							//{
+							if (value == CSSConstants.getPropertyNameFromIndex(pendingAnimation.propertyIndex))
+							{
 								//propertyIndex = i;
 								//foundFlag = true;
 								//break;
-							//}	
+							}	
 							
 						default:
 							throw 'Illegal value for transition property';
