@@ -67,8 +67,8 @@ class InlineBoxRenderer extends FlowBoxRenderer
 
 				_renderRect.width = inlineBox.bounds.width;
 				_renderRect.height = inlineBox.bounds.height;
-				_renderRect.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x + globalBounds.x;
-				_renderRect.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y + globalBounds.y;
+				_renderRect.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x + globalBounds.x - scrollOffset.x;
+				_renderRect.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y + globalBounds.y - scrollOffset.y;
 				
 				BackgroundManager.render(graphicsContext, _renderRect, coreStyle, this, clipRect);
 			}
