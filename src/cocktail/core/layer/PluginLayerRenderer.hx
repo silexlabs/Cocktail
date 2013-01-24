@@ -53,7 +53,7 @@ class PluginLayerRenderer extends CompositingLayerRenderer
 		//TODO 2 : when the layer is first created
 		//it has no graphics context yet, should
 		//not happen ?
-		if (hasOwnGraphicsContext == true)
+		if (graphicsContext != null)
 		{
 			var htmlObjectElement:HTMLObjectElement = cast(rootElementRenderer.domNode);
 			htmlObjectElement.plugin.detach(graphicsContext);
