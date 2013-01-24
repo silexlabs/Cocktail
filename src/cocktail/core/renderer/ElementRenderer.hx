@@ -174,12 +174,12 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	
 	/**
 	 * flag similar to the above. When an ElementRenderer is attached, if it
-	 * is positioned, it registers itself with its first positioned ancestor.
-	 * This flasg is there to ensure that, when detached, the ElementRenderer
+	 * is absolutely positioned, it registers itself with its first positioned ancestor.
+	 * This flag is there to ensure that, when detached, the ElementRenderer
 	 * unregisters itself with its first positioned ancestor, even if the 
 	 * detachement was cause by a change to its display style
 	 */
-	private var _wasPositioned:Bool;
+	private var _wasAbsolutelyPositioned:Bool;
 	
 	/**
 	 * get/set the scrolling in the x axis of this ElementRenderer.
@@ -279,7 +279,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		
 		initCoreStyle();
 		_hasOwnLayer = false;
-		_wasPositioned = false;
+		_wasAbsolutelyPositioned = false;
 		_needsLayerRendererUpdate = true;
 		
 		bounds = new RectangleVO();
@@ -894,32 +894,32 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	}
 	
 	/**
-	 * If the ElementRenderer is positioned, it
+	 * If the ElementRenderer is absolutely positioned, it
 	 * must register itself with its first positioned
 	 * ancestor
 	 */
 	private function registerWithContaininingBlock():Void
 	{
-		if (isPositioned() == true)
+		if (isAbsolutelyPositioned() == true)
 		{
-			containingBlock.addPositionedChildren(this);
-			//flag remembering that the child was positioned at
+			containingBlock.addAbsolutelyPositionedChildren(this);
+			//flag remembering that the child was absolutely positioned at
 			//attach time
-			_wasPositioned = true;
+			_wasAbsolutelyPositioned = true;
 		}
 	}
 	
 	/**
-	 * If the ElementRenderer was positioned when attached,
+	 * If the ElementRenderer was absolutely positioned when attached,
 	 * it must unregister itself from its first positioned
 	 * ancestor
 	 */
 	private function unregisterWithContainingBlock():Void
 	{
-		if (_wasPositioned == true)
+		if (_wasAbsolutelyPositioned == true)
 		{
-			containingBlock.removePositionedChild(this);
-			_wasPositioned = false;
+			containingBlock.removeAbsolutelyPositionedChild(this);
+			_wasAbsolutelyPositioned = false;
 		}
 	}
 	

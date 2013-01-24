@@ -39,14 +39,14 @@ import cocktail.core.font.FontData;
 class FlowBoxRenderer extends BoxRenderer 
 {
 	/**
-	 * holds a reference to each positioned child
+	 * holds a reference to each absolutely positioned child
 	 * for which this FlowBoxRenderer is the first
 	 * positioned ancestor.
 	 * 
-	 * Positioned children register and unregister
+	 * Absolutely positioned children register and unregister
 	 * themselves when attached and detached
 	 */
-	private var _positionedChildren:Array<ElementRenderer>;
+	private var _absolutelyPositionedChildren:Array<ElementRenderer>;
 	
 	/**
 	 * A point used to find the static position
@@ -61,7 +61,7 @@ class FlowBoxRenderer extends BoxRenderer
 	public function new(node:HTMLElement) 
 	{
 		super(node);
-		_positionedChildren = new Array<ElementRenderer>();
+		_absolutelyPositionedChildren = new Array<ElementRenderer>();
 		_childStaticOrigin = new PointVO(0, 0);
 	}
 	
@@ -110,22 +110,22 @@ class FlowBoxRenderer extends BoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Used by positioned children to register themselves to their
+	 * Used by absolutely positioned children to register themselves to their
 	 * first positioned ancestor so that they can be laid out by it.
 	 * Called when the children are attached
 	 */
-	public function addPositionedChildren(element:ElementRenderer):Void
+	public function addAbsolutelyPositionedChildren(element:ElementRenderer):Void
 	{
-		_positionedChildren.push(element);
+		_absolutelyPositionedChildren.push(element);
 	}
 	
 	/**
-	 * The positioned children unregister themselves when they 
+	 * The absolutely positioned children unregister themselves when they 
 	 * are detached
 	 */
-	public function removePositionedChild(element:ElementRenderer):Void
+	public function removeAbsolutelyPositionedChild(element:ElementRenderer):Void
 	{
-		_positionedChildren.remove(element);
+		_absolutelyPositionedChildren.remove(element);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -149,13 +149,13 @@ class FlowBoxRenderer extends BoxRenderer
 		
 		
 		//if this ElementRenderer is positioned, it means that it is the first positioned ancestor
-		//for its positioned children and it is its responsability to lay them out
+		//for its absolutely positioned children and it is its responsability to lay them out
 		if (isPositioned() == true)
 		{
 			//only call if has positioned children
-			if (_positionedChildren.length > 0 )
+			if (_absolutelyPositionedChildren.length > 0 )
 			{
-				layoutPositionedChildren(layoutState);
+				layoutAbsolutelyPositionedChildren(layoutState);
 			}
 		}
 	}
@@ -174,19 +174,22 @@ class FlowBoxRenderer extends BoxRenderer
 		//abstract
 	}
 	
-	private function layoutPositionedChildren(layoutState:LayoutStateValue):Void
+	/**
+	 * Layout all the absolutely positioned children, with style fixed and absolute
+	 */
+	private function layoutAbsolutelyPositionedChildren(layoutState:LayoutStateValue):Void
 	{
 		var containerBlockData:ContainingBlockVO = getContainerBlockData();
 		var windowData:ContainingBlockVO = getWindowData();
 		
 		//lay out each stored children
-		var length:Int = _positionedChildren.length;
+		var length:Int = _absolutelyPositionedChildren.length;
 		for (i in 0...length)
 		{
-			_positionedChildren[i].layout(true, layoutState);
+			_absolutelyPositionedChildren[i].layout(true, layoutState);
 			//layout the child ElementRenderer which set its x and y positioned origin in the space of this ElementRenderer's
 			//positioned origin
-			layoutPositionedChild(_positionedChildren[i], containerBlockData, windowData);
+			layoutPositionedChild(_absolutelyPositionedChildren[i], containerBlockData, windowData);
 		}
 	}
 	
