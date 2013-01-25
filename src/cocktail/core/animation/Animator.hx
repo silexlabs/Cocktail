@@ -277,9 +277,7 @@ class Animator
 			
 			default:
 				
-				//TODO 1 : need method fromPropertyIndex, toPropertyIndex
-				return 0;
-				//return Reflect.field(style.usedValues, propertyName);
+				return Reflect.field(style.usedValues, CSSConstants.getPropertyNameFromIndex(propertyIndex));
 		}
 	}
 	
