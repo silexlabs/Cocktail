@@ -1,7 +1,0 @@
--cp ../src
--cp ../../../src/
--cp ../../../lib/
--main WebApp
--swf ../bin/WebApp.swf
---remap js:cocktail
--swf-version 10.2
