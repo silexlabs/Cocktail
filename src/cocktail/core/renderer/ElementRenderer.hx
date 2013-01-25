@@ -398,7 +398,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		
 		//if inline box renderer or text, add x and y
 		//bounds of all inline boxes
-		if (coreStyle.isInline || isText == true)
+		if (coreStyle.isInline == true || isText == true)
 		{
 			hitTestingBounds.x += bounds.x;
 			hitTestingBounds.y += bounds.y;

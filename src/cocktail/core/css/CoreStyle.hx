@@ -804,7 +804,7 @@ class CoreStyle
 			isFloat = isNone(cssFloat) == false;
 		}
 		
-		if (cascadeManager.hasDisplay == true)
+		if (cascadeManager.hasDisplay == true || cascadeManager.hasPosition == true || cascadeManager.hasFloat == true)
 		{
 			isInlineLevel = false;
 			isInlineBlock = false;
