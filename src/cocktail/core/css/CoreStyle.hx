@@ -922,6 +922,26 @@ class CoreStyle
 			}
 		}
 		
+		if (cascadeManager.hasMarginTop == true)
+		{
+			hasAutoMarginTop = isAuto(marginTop);
+		}
+		
+		if (cascadeManager.hasMarginBottom == true)
+		{
+			hasAutoMarginBottom = isAuto(marginBottom);
+		}
+		
+		if (cascadeManager.hasMarginLeft == true)
+		{
+			hasAutoMarginLeft = isAuto(marginLeft);
+		}
+		
+		if (cascadeManager.hasMarginRight == true)
+		{
+			hasAutoMarginRight = isAuto(marginRight);
+		}
+		
 		//for background image, if an url is provided, 
 		//start loading the image
 		if (cascadeManager.hasBackgroundImage == true)

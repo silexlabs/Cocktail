@@ -216,7 +216,26 @@ class BoxStylesComputer
 		style.usedValues.marginRight = getComputedMarginRight(style, usedWidth, containingBlockData);
 
 		//the width is computed now that the sizes of the margins are computed
-		return getComputedAutoWidth(style, containingBlockData);
+		var computedWidth:Float = getComputedAutoWidth(style, containingBlockData);
+		
+		//apply min-width and max-width constrain to the computed width
+		var constrainedWidth:Float = constrainWidth(style, computedWidth);
+		
+		//if the width was indeed constrain
+		if (constrainedWidth != computedWidth)
+		{
+			//and if both the left and right margin are auto, then they takes each half of the remaining space in the
+			//containing block so the element will be centered in its containing block
+			if (style.hasAutoMarginLeft && style.hasAutoMarginRight)
+			{
+				var marginWidth:Float = (containingBlockData.width - style.usedValues.paddingLeft - style.usedValues.paddingRight - constrainedWidth) / 2;
+				
+				style.usedValues.marginLeft = marginWidth;
+				style.usedValues.marginRight = marginWidth;
+			}
+		}
+		
+		return computedWidth;
 	}
 	
 	/**
