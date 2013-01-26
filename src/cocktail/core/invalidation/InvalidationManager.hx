@@ -8,6 +8,7 @@
 */
 package cocktail.core.invalidation;
 
+import cocktail.Config;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.geom.GeomUtils;
@@ -217,7 +218,11 @@ class InvalidationManager
 	 */
 	public function updateDocumentImmediately():Void
 	{
-		updateDocument();
+		//may be deactivated
+		if (Config.ENABLE_SYNCHRONOUS_UPDATE)
+		{
+			updateDocument();
+		}
 	}
 	
 	/**

@@ -70,6 +70,19 @@ class Config
 	 */
 	public static inline var USE_LOW_STAGE_QUALITY:Bool = false;
 	
+	/**
+	 * The document might be updated immediately instead of waiting
+	 * for next update on some conditions. For instance, getting
+	 * the offsetWidth or offsetTop of an HTMLElement requires the document
+	 * to be up to date.
+	 * 
+	 * It can be deactivated for improved performance, but some properties
+	 * might return not up to date value. If you deactivatye it avoid setting
+	 * styles and immediately requesting the size or position of an element, set
+	 * a timer instead
+	 */
+	public static inline var ENABLE_SYNCHRONOUS_UPDATE:Bool = true;
+	
 	public function new() 
 	{
 		
