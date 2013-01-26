@@ -42,7 +42,7 @@ class DefaultCSSStyleSheet extends CSSStyleSheet
 				h1, h2, h3, h4,
 				h5, h6, noframes,
 				ol, p, ul, center,
-				dir, hr, menu, pre   { display: block; unicode-bidi: embed }
+				dir, hr, menu, pre, nav   { display: block; unicode-bidi: embed }
 				li              { display: block }
 				head            { display: none }
 				table           { display: table }
