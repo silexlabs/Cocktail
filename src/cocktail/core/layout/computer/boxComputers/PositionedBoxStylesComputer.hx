@@ -134,8 +134,8 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			{
 				//compute the size of one of the margin, which is half the remaining horizontal space
 				//once all other values (padding, width, offset) are remove
-				var usedMargin:Float = (containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right) / 2;
-				
+				var usedMargin:Float = (containingBlockData.width - usedWidth - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right) / 2;
+
 				if (usedMargin >= 0)
 				{
 					usedValues.marginLeft = usedMargin;
@@ -145,7 +145,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 				else
 				{
 					usedValues.marginLeft = 0;
-					usedValues.marginRight = containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right;
+					usedValues.marginRight = containingBlockData.width - usedWidth - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right;
 				}
 			
 			}
@@ -155,13 +155,13 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 				//compute margin right then deduce margin left from the remaining horizontal
 				//space
 				usedValues.marginRight = getComputedMarginRight(style, usedWidth, containingBlockData);
-				usedValues.marginLeft = containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right - usedValues.marginRight;
+				usedValues.marginLeft = containingBlockData.width - usedWidth - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right - usedValues.marginRight;
 			}
 			//same if only margin right is auto
 			else if (style.hasAutoMarginRight == true)
 			{
 				usedValues.marginLeft = getComputedMarginLeft(style, usedWidth, containingBlockData);
-				usedValues.marginRight = containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right - usedValues.marginLeft;
+				usedValues.marginRight = containingBlockData.width - usedWidth - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right - usedValues.marginLeft;
 			}
 			//else if no margins are auto, compute them
 			else
@@ -196,19 +196,19 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			if (style.hasAutoLeft == true && style.hasAutoRight == true)
 			{
 				usedValues.left = getComputedStaticLeft(style, containingBlockData);
-				usedValues.right = containingBlockData.width - usedValues.marginLeft - usedValues.marginRight - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left;
+				usedValues.right = containingBlockData.width - usedValues.marginLeft - usedValues.marginRight - usedWidth - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left;
 			}
 			//if only left is auto, compute right then deduce left from the remaining horizontal space
 			else if (style.hasAutoLeft == true)
 			{
 				usedValues.right = getComputedPositionOffset(style.right, containingBlockData.width);
-				usedValues.left = containingBlockData.width - usedValues.marginLeft - usedValues.marginRight - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.right;
+				usedValues.left = containingBlockData.width - usedValues.marginLeft - usedValues.marginRight - usedWidth - usedValues.paddingLeft - usedValues.paddingRight - usedValues.right;
 			}
 			//same for right
 			else if(style.hasAutoRight == true)
 			{
 				usedValues.left = getComputedPositionOffset(style.left, containingBlockData.width);
-				usedValues.right = containingBlockData.width - usedValues.marginLeft - usedValues.marginRight - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left;
+				usedValues.right = containingBlockData.width - usedValues.marginLeft - usedValues.marginRight - usedWidth - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left;
 			}
 		}
 		
