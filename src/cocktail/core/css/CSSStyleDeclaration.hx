@@ -11,6 +11,7 @@ import cocktail.core.css.CSSData;
 import cocktail.core.css.parsers.CSSStyleParser;
 import cocktail.core.css.parsers.CSSStyleSerializer;
 import cocktail.core.css.CSSConstants;
+import cocktail.Lib;
 using StringTools;
 using cocktail.core.utils.Utils;
 import cocktail.core.utils.ObjectPool;
@@ -1665,6 +1666,20 @@ class CSSStyleDeclaration
 						{
 							setTypedProperty(CSSConstants.BACKGROUND_ATTACHMENT, styleValue, important);
 						}
+						else
+						{
+							switch(value)
+							{
+								case NONE:
+									setTypedProperty(CSSConstants.BACKGROUND_ATTACHMENT, Lib.document.initialStyleDeclaration.getTypedProperty(CSSConstants.BACKGROUND_ATTACHMENT).typedValue, important);
+									setTypedProperty(CSSConstants.BACKGROUND_POSITION, Lib.document.initialStyleDeclaration.getTypedProperty(CSSConstants.BACKGROUND_POSITION).typedValue, important);
+									setTypedProperty(CSSConstants.BACKGROUND_COLOR, Lib.document.initialStyleDeclaration.getTypedProperty(CSSConstants.BACKGROUND_COLOR).typedValue, important);
+									setTypedProperty(CSSConstants.BACKGROUND_REPEAT, Lib.document.initialStyleDeclaration.getTypedProperty(CSSConstants.BACKGROUND_REPEAT).typedValue, important);
+									setTypedProperty(CSSConstants.BACKGROUND_IMAGE, Lib.document.initialStyleDeclaration.getTypedProperty(CSSConstants.BACKGROUND_IMAGE).typedValue, important);
+									
+								default:	
+							}
+						}
 						
 					case GROUP(value):
 						var length:Int = value.length;
@@ -2108,9 +2123,9 @@ class CSSStyleDeclaration
 				switch (value)
 				{
 					//list all valid keywords for background-repeat, background-attachment
-					//and background-position
+					//and background-position as well as 'none' to reset all background properties
 					case REPEAT, REPEAT_X, REPEAT_Y, NO_REPEAT, FIXED, SCROLL,
-					LEFT, CENTER, RIGHT, TOP, BOTTOM:
+					LEFT, CENTER, RIGHT, TOP, BOTTOM, NONE:
 						return true;
 						
 					default:	
