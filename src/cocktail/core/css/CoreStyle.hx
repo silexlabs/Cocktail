@@ -459,12 +459,21 @@ class CoreStyle
 	public var hasAutoMarginBottom:Bool;
 	
 	/**
+	 * Wether at least one style can be transitioned, as
+	 * defined by the value of the 'transition-property'
+	 * style. If it is none, there can't be any transition
+	 * for this element
+	 */
+	public var hasTransitionnableProperties:Bool;
+	
+	/**
 	 * Class constructor
 	 */
 	public function new(htmlElement:HTMLElement) 
 	{
 		this.htmlElement = htmlElement;
 		
+		hasTransitionnableProperties = false;
 		isFloat = false;
 		isInlineLevel = false;
 		isInlineBlock = false;
@@ -614,6 +623,22 @@ class CoreStyle
 		//color of parent might be used to inherit it for some color styles with
 		//the currentColor value
 		var parentColor:CSSColorValue = getColor(parentStyleDeclaration.getTypedProperty(CSSConstants.COLOR).typedValue);
+		
+		//if the style defining which transition can be transitionned must be cascaded,
+		//cascade first to know if other properties will need to start transition during 
+		//cascade
+		if (cascadeManager.hasTransitionProperty == true)
+		{
+			cascadeProperty(CSSConstants.TRANSITION_PROPERTY, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			
+			//store wether there are properties which can be transitioned. When other
+			//properties are computed, they can bypass the start transition step if
+			//no property should be transitioned
+			hasTransitionnableProperties = isNone(transitionProperty) == false;
+			
+			//remove so that it isn't cascaded twice
+			cascadeManager.removePropertyToCascade(CSSConstants.TRANSITION_PROPERTY);
+		}
 		
 		if (cascadeManager.hasFontSize == true || cascadeManager.hasFontFamily == true || cascadeManager.cascadeAll == true)
 		{
@@ -1195,17 +1220,22 @@ class CoreStyle
 		}
 		
 		
-		//TODO 1 : try to start transition here, if value was herited, no transition must start. Same
-		//if it was specified declaratively
-		if (programmaticChange == true && isInherited == false && specifiedProperty != null)
+		//try to start a transition on the property
+		
+		//non need if no property are declared to be transitioned
+		if (hasTransitionnableProperties == true)
 		{
-			if (computedValues.getTypedProperty(propertyIndex) != null)
+			//if property is inherited or style was not programmatic, don't start transition
+			if (programmaticChange == true && isInherited == false && specifiedProperty != null)
 			{
-				if (isAnimatable(propertyIndex))
+				if (computedValues.getTypedProperty(propertyIndex) != null)
 				{
-					_animator.registerPendingAnimation(propertyIndex, getAnimatablePropertyValue(propertyIndex));
-					var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
-					htmlDocument.invalidationManager.invalidatePendingAnimations();
+					if (isAnimatable(propertyIndex))
+					{
+						_animator.registerPendingAnimation(propertyIndex, getAnimatablePropertyValue(propertyIndex));
+						var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
+						htmlDocument.invalidationManager.invalidatePendingAnimations();
+					}
 				}
 			}
 		}

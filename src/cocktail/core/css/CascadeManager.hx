@@ -105,6 +105,8 @@ class CascadeManager
 	
 	public var hasMarginBottom:Bool;
 	
+	public var hasTransitionProperty:Bool;
+	
 	/**
 	 * class constructor
 	 */
@@ -162,6 +164,7 @@ class CascadeManager
 		hasMarginBottom = false;
 		hasMarginLeft = false;
 		hasMarginRight = false;
+		hasTransitionProperty = false;
 		
 		hasPropertiesToCascade = false;
 		cascadeAll = false;
@@ -232,9 +235,12 @@ class CascadeManager
 				
 			case CSSConstants.MARGIN_RIGHT:
 				hasMarginRight = true; 
+				
+			case CSSConstants.TRANSITION_PROPERTY:
+				hasTransitionProperty = true;
 			
 			case CSSConstants.TOP:
-				hasTop = true; 
+				hasTop = true; 	
 				
 			case CSSConstants.BOTTOM:
 				hasBottom = true; 
@@ -332,6 +338,9 @@ class CascadeManager
 				
 			case CSSConstants.FONT_FAMILY:
 				hasFontFamily = false;
+				
+			case CSSConstants.TRANSITION_PROPERTY:
+				hasTransitionProperty = false;
 				
 			default:	
 		}
