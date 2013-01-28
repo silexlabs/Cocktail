@@ -239,10 +239,25 @@ class SelectorVO {
 	 */
 	public var pseudoElement:PseudoElementSelectorValue;
 	
-	public function new(components:Array<SelectorComponentValue>, pseudoElement:PseudoElementSelectorValue)
+	/**
+	 * Store wether the first component (starting from the right)
+	 * of this selector is a class selector. Used for optimisations
+	 * during cascade
+	 */
+	public var beginsWithClass:Bool;
+	
+	/**
+	 * If the selector begins with a class, it is stored
+	 * here, else it is null
+	 */
+	public var firstClass:String;
+	
+	public function new(components:Array<SelectorComponentValue>, pseudoElement:PseudoElementSelectorValue, beginsWithClass:Bool, firstClass:String)
 	{
 		this.components = components;
 		this.pseudoElement = pseudoElement;
+		this.beginsWithClass = beginsWithClass;
+		this.firstClass = firstClass;
 	}
 }
 

@@ -48,7 +48,7 @@ class CSSSelectorParser
 		var simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue> = [];
 		var components:Array<SelectorComponentValue> = [];
 		
-		var selectorData:SelectorVO = new SelectorVO(components, PseudoElementSelectorValue.NONE);
+		var selectorData:SelectorVO = new SelectorVO(components, PseudoElementSelectorValue.NONE, false, null);
 		
 		while (!c.isEOF())
 		{
@@ -275,7 +275,10 @@ class CSSSelectorParser
 		//combinators logic, so the array is reversed
 		selectorData.components.reverse();
 		
-		var typedSelector:SelectorVO = new SelectorVO(selectorData.components, selectorData.pseudoElement);
+		//if the selector begins with a clas return it, else return null
+		var firstClass:String = getFirstClass(selectorData.components);
+		
+		var typedSelector:SelectorVO = new SelectorVO(selectorData.components, selectorData.pseudoElement, firstClass != null, firstClass);
 		
 		typedSelectors.push(typedSelector);
 	}
@@ -597,6 +600,38 @@ class CSSSelectorParser
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * if the selector begins with a class selector, return it,
+	 * else return null
+	 */
+	private function getFirstClass(components:Array<SelectorComponentValue>):String
+	{
+		switch(components[0])
+		{
+			case SIMPLE_SELECTOR_SEQUENCE(value):
+				//check that don't start with type selector
+				if (value.startValue == UNIVERSAL)
+				{
+					//check that has at least 1 simple selector
+					if (value.simpleSelectors.length != 0)
+					{
+						//check that the first simple selector is a class selector
+						switch(value.simpleSelectors[0])
+						{
+							case CSS_CLASS(value):
+								return value;
+								
+							default:	
+						}
+					}
+				}
+				
+			//won't happen, selector always begins with selector sequence	
+			case COMBINATOR(value):
+		}
+		return null;
+	}
 	
 	static inline function isOperatorChar(c:Int):Bool
 	{

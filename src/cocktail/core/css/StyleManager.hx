@@ -237,7 +237,36 @@ class StyleManager
 						var selectorsLength:Int = selectors.length;
 						for (k in 0...selectorsLength)
 						{
-							if (_selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true)
+							var selector:SelectorVO = selectors[k];
+							var match:Bool = false;
+							
+							//to optimise speed the matchSelector method must be called
+							//the least time possible
+							
+							//if the selector begins with a class, 
+							//then only match if the node has at least one class,
+							//and contains the first class of the selector
+							if (selector.beginsWithClass == true)
+							{
+								if (matchedPseudoClasses.hasClasses == true)
+								{
+									var classListLength:Int = node.classList.length;
+									for (l in 0...classListLength)
+									{
+										if (node.classList[l] == selector.firstClass)
+										{
+											match = _selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true;
+										}
+									}
+								}
+							}
+							//in other cases, match
+							else
+							{
+								match = _selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true;
+							}
+							
+							if (match == true)
 							{
 								//if the selector is matched, store the coresponding style declaration
 								//along with the matching selector
