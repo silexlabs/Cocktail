@@ -312,16 +312,21 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//rendered as if they started their own layer)
 		if (createOwnLayer() == true || coreStyle.isInlineBlock == true || coreStyle.isFloat == true)
 		{
-			//render all the block box which belong to the same stacking context
-			renderBlockContainerChildren(this, layerRenderer, graphicContext, clipRect, scrollOffset);
-			
-			//render all the replaced (embedded) box displayed as blocks belonging
-			//to the same stacking context
-			renderBlockReplacedChildren(this, layerRenderer, graphicContext, clipRect, scrollOffset);
-			
+			//make sures that the block has no line boxes, meaning
+			//that it can have block children
+			if (lineBoxes.length == 0)
+			{
+				//render all the block box which belong to the same stacking context
+				renderBlockContainerChildren(this, layerRenderer, graphicContext, clipRect, scrollOffset);
+				
+				//render all the replaced (embedded) box displayed as blocks belonging
+				//to the same stacking context
+				renderBlockReplacedChildren(this, layerRenderer, graphicContext, clipRect, scrollOffset);
+			}
+		
 			//render all non-positioned floated elements
 			renderFloatedChildren(this, layerRenderer, graphicContext, clipRect, scrollOffset);
-			
+				
 			//render all the line boxes belonging to the same stacking context
 			renderLineBoxes(this, layerRenderer, graphicContext, clipRect, scrollOffset);
 		}
@@ -403,16 +408,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	
 	/**
 	 * Render all the BlockBoxRenderer which
-	 * belong to the same stacking context as this BlockBoxRenderer
+	 * belong to the same layer as this BlockBoxRenderer
 	 */
 	private function renderBlockContainerChildren(rootElementRenderer:ElementRenderer, referenceLayer:LayerRenderer, graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		var child:ElementRenderer = rootElementRenderer.firstChild;
 		while(child != null)
 		{
-			//check that the child is not positioned, as if it is an auto z-index positioned
-			//element, it will be on the same layerRenderer but should not be rendered as 
-			//a block container children
 			if (child.layerRenderer == referenceLayer)
 			{
 				if (child.coreStyle.isInlineLevel == false)

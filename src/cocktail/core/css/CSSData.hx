@@ -88,7 +88,11 @@ class StyleDeclarationVO implements IPoolable {
 /**
  * For a given element, when retrieving
  * its styles, stores which pseudo-classes
- * the element currently matches
+ * the element currently matches.
+ * 
+ * Also store some additional data about
+ * the node, such as wether it has an ID,
+ * used to optimise cascading
  */
 class MatchedPseudoClassesVO {
 	
@@ -100,8 +104,11 @@ class MatchedPseudoClassesVO {
 	public var disabled:Bool;
 	public var checked:Bool;
 	
+	public var hasId:Bool;
+	public var hasClasses:Bool;
+	
 	public function new(hover:Bool, focus:Bool, active:Bool, link:Bool, enabled:Bool,
-	disabled:Bool, checked:Bool) 
+	disabled:Bool, checked:Bool, hasId:Bool, hasClasses:Bool) 
 	{
 		this.hover = hover;
 		this.focus = focus;
@@ -110,6 +117,8 @@ class MatchedPseudoClassesVO {
 		this.enabled = enabled;
 		this.disabled = disabled;
 		this.checked = checked;
+		this.hasId = hasId;
+		this.hasClasses = false;
 	}
 }
 
