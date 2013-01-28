@@ -63,7 +63,7 @@ class LineBox
 		_layoutState = layoutState;
 		_trailingSpaceWidth = 0;
 		
-		rootInlineBox = new InlineBox(elementRenderer);
+		rootInlineBox = new InlineBox(elementRenderer, elementRenderer.getLeadedAscent(), elementRenderer.getLeadedDescent());
 		bounds = new RectangleVO();
 	}
 	

@@ -90,7 +90,7 @@ class InlineBox extends FastNode<InlineBox>
 	/**
 	 * class constructor. Init class attributes
 	 */
-	public function new(elementRenderer:ElementRenderer) 
+	public function new(elementRenderer:ElementRenderer, leadedAscent:Float, leadedDescent:Float) 
 	{
 		super();
 		
@@ -109,8 +109,8 @@ class InlineBox extends FastNode<InlineBox>
 		paddingLeft = 0;
 		paddingRight = 0;
 		
-		leadedAscent = getLeadedAscent();
-		leadedDescent = getLeadedDescent();
+		this.leadedAscent = leadedAscent;
+		this.leadedDescent = leadedDescent;
 	}
 		
 	/**
@@ -118,54 +118,6 @@ class InlineBox extends FastNode<InlineBox>
 	 */
 	public function dispose():Void
 	{
-		//bounds = null;
 		elementRenderer = null;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Return the leaded ascent of the inline box
-	 */
-	private function getLeadedAscent():Float 
-	{
-		var fontMetrics:FontMetricsVO = elementRenderer.coreStyle.fontMetrics; 
-		
-		var ascent:Float = fontMetrics.ascent;
-		var descent:Float = fontMetrics.descent;
-		
-		var lineHeight:Float = elementRenderer.coreStyle.usedValues.lineHeight;
-		
-		//the leading is an extra height to apply equally to the ascent
-		//and the descent when laying out lines of text
-		var leading:Float = lineHeight - (ascent + descent);
-
-		//apply leading to the ascent and descent
-		var leadedAscent:Float = ascent + leading / 2;
-		var leadedDescent:Float = descent + leading / 2;
-		
-		return leadedAscent;
-	}
-	
-	/**
-	 * Return the leaded descent of the inline box
-	 */
-	private function getLeadedDescent():Float 
-	{
-		var fontMetrics:FontMetricsVO = elementRenderer.coreStyle.fontMetrics; 
-		
-		var ascent:Float = fontMetrics.ascent;
-		var descent:Float = fontMetrics.descent;	
-	
-		var lineHeight:Float = elementRenderer.coreStyle.usedValues.lineHeight;
-		
-		var leading:Float = lineHeight - (ascent + descent);
-
-		var leadedAscent:Float = ascent + leading / 2;
-		var leadedDescent:Float = descent + leading / 2;
-		
-		return leadedDescent;
 	}
 }

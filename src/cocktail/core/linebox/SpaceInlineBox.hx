@@ -19,52 +19,27 @@ import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.font.FontData;
 import cocktail.core.css.CSSData;
+
 /**
- * A subclass of TextLineBox, a space is lighter as 
+ * A subclass of Inline box, a space is similar to a TextInlineBox but lighter as 
  * it doesn't need to instantiate a native text display object,
  * its font metrics thanks to the spaceWidth attribute are sufficient for layout
  * 
  * @author Yannick DOMINGUEZ
  */
-class SpaceInlineBox extends TextInlineBox
+class SpaceInlineBox extends InlineBox
 {
-	/**
-	 * the width of the space in pixels
-	 */
-	private var _spaceWidth:Float;
-	
 	/**
 	 * class constructor
 	 */
-	public function new(elementRenderer:ElementRenderer, fontMetrics:FontMetricsVO, fontManager:FontManager, fontFamily:String, spaceWidth:Float) 
+	public function new(elementRenderer:ElementRenderer, leadedAscent:Float, leadedDescent:Float, spaceWidth:Float) 
 	{
-		_spaceWidth = spaceWidth;
-		super(elementRenderer, "", fontMetrics, null, fontFamily);
+		super(elementRenderer, leadedAscent, leadedDescent);
+		
+		bounds.width = spaceWidth;
+		bounds.height = leadedAscent + leadedDescent;
+		
 		isSpace = true;
-	}
-	
-	/**
-	 * Don't need to create a native text element for space
-	 */ 
-	override private function initNativeTextElement(text:String, fontManager:FontManager, style:CoreStyle, fontFamily:String):Void
-	{
-		
-	}
-	
-	/**
-	 * as there is no text element, there is no bitmap data
-	 */
-	override private function initTextBitmap():Void
-	{
-		
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	override private function getTextWidth():Float
-	{
-		return _spaceWidth;
+		isText = true;
 	}
 }

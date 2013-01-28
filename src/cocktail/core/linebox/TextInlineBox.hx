@@ -32,11 +32,6 @@ import cocktail.port.NativeText;
 class TextInlineBox extends InlineBox
 {
 	/**
-	 * A ref to the font metrics of the TextRenderer
-	 */
-	private var _fontMetrics:FontMetricsVO;
-	
-	/**
 	 * Proxies access to the native text element wrapped by this
 	 * text line box
 	 */
@@ -47,18 +42,6 @@ class TextInlineBox extends InlineBox
 	 * be displayed on screen
 	 */
 	public var nativeTextBitmap(get_nativeTextBitmap, null):NativeBitmapData;
-	
-	/**
-	 * A rectangle containing the dimension
-	 * of the text to render
-	 */
-	private var _renderRect:RectangleVO;
-	
-	/**
-	 * The destination point where to
-	 * draw the text
-	 */
-	private var _destinationPoint:PointVO;
 	
 	/**
 	 * A reusable rectangle used to draw text to bitmap
@@ -72,11 +55,9 @@ class TextInlineBox extends InlineBox
 	/**
 	 * class constructor
 	 */
-	public function new(elementRenderer:ElementRenderer, text:String, fontMetrics:FontMetricsVO, fontManager:FontManager, fontFamily:String) 
+	public function new(elementRenderer:ElementRenderer, leadedAscent:Float, leadedDescent:Float, text:String, fontMetrics:FontMetricsVO, fontManager:FontManager, fontFamily:String) 
 	{
-		_fontMetrics = fontMetrics;
-		
-		super(elementRenderer);
+		super(elementRenderer, leadedAscent, leadedDescent);
 		
 		isText = true;
 		
@@ -84,13 +65,8 @@ class TextInlineBox extends InlineBox
 		initNativeTextElement(text, fontManager, elementRenderer.coreStyle, fontFamily);
 		
 		//get the dimensions of the text
-		bounds.width = getTextWidth();
-		bounds.height = getTextHeight();
-		
-		_renderRect = new RectangleVO();
-		_renderRect.width = bounds.width;
-		_renderRect.height = bounds.height;
-		_destinationPoint = new PointVO(0.0, 0.0);
+		bounds.width = _nativeText.width;
+		bounds.height = leadedAscent + leadedDescent;
 	}
 	
 	/**
@@ -104,9 +80,6 @@ class TextInlineBox extends InlineBox
 			_nativeText.dispose();
 			_nativeText = null;
 		}
-		_fontMetrics = null;
-		_renderRect = null;
-		_destinationPoint = null;
 	}
 	
 	/**

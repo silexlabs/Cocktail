@@ -627,42 +627,38 @@ class TextRenderer extends InvalidatingElementRenderer
 		var wordSpacing:Float = coreStyle.getAbsoluteLength(coreStyle.wordSpacing);
 		var spaceWidth:Float = fontMetrics.spaceWidth + letterSpacing + wordSpacing;
 		
+		//get the leading for the inline boxes
+		var leadedAscent:Float = getLeadedAscent();
+		var leadedDescent:Float = getLeadedDescent();
+		
 		var length:Int = _textTokens.length;
 		for (i in 0...length)
 		{
-			//create and store the line boxes
-			inlineBoxes.push(createTextInlineBoxFromTextToken(_textTokens[i], fontMetrics, fontManager, fontFamily, spaceWidth));
+			//create and store the inline boxes
+			inlineBoxes.push(createInlineBoxFromTextToken(_textTokens[i], leadedAscent, leadedDescent, fontMetrics, fontManager, fontFamily, spaceWidth));
 		}
 	}
 	
 	/**
-	 * Create and return a Text line box from a text token
+	 * Create and return an inline box from a text token
 	 */
-	private function createTextInlineBoxFromTextToken(textToken:TextToken, fontMetrics:FontMetricsVO, fontManager:FontManager, fontFamily:String, spaceWidth:Float):InlineBox
+	private function createInlineBoxFromTextToken(textToken:TextToken, leadedAscent:Float, leadedDescent:Float, fontMetrics:FontMetricsVO, fontManager:FontManager, fontFamily:String, spaceWidth:Float):InlineBox
 	{
-		//the text of the created text line box
-		var text:String;
-		
-		var textInlineBox:TextInlineBox;
-		
 		switch(textToken)
 		{
 			case word(value):
-				text = value;
-				textInlineBox = new TextInlineBox(this, text, fontMetrics, fontManager, fontFamily);
+				return new TextInlineBox(this, leadedAscent, leadedDescent, value, fontMetrics, fontManager, fontFamily);
 		
 			case space:
-				textInlineBox = new SpaceInlineBox(this, fontMetrics, fontManager, fontFamily, spaceWidth);
+				return new SpaceInlineBox(this, leadedAscent, leadedDescent, spaceWidth);
 				
 			//TODO 5 : implement tab and line feed	
 			case tab:
-				textInlineBox = new TextInlineBox(this, "", fontMetrics, fontManager, fontFamily);
+				return new TextInlineBox(this, leadedAscent, leadedDescent, "", fontMetrics, fontManager, fontFamily);
 				
 			case lineFeed:
-				textInlineBox = new TextInlineBox(this, "", fontMetrics, fontManager, fontFamily);
+				return new TextInlineBox(this, leadedAscent, leadedDescent, "", fontMetrics, fontManager, fontFamily);
 		}
-		
-		return textInlineBox;
 	}
 
 	/////////////////////////////////

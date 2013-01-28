@@ -107,7 +107,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//non-positioned box create embedded box, it can represent
 		//an embedded element llike a picture or an inline-block block
 		//box
-		var inlineBox:InlineBox = new EmbeddedInlineBox(this);
+		var inlineBox:InlineBox = new EmbeddedInlineBox(this, getLeadedAscent(), getLeadedDescent());
 		inlineBoxes.push(inlineBox);
 		
 			

@@ -925,8 +925,50 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	
 	/////////////////////////////////
 	// PUBLIC HELPER METHODS
-	// Overriden by inheriting classes
 	////////////////////////////////
+	
+	/**
+	 * Return the leaded ascent of the element renderer
+	 */
+	public function getLeadedAscent():Float 
+	{
+		var fontMetrics:FontMetricsVO = coreStyle.fontMetrics; 
+		
+		var ascent:Float = fontMetrics.ascent;
+		var descent:Float = fontMetrics.descent;
+		
+		var lineHeight:Float = coreStyle.usedValues.lineHeight;
+		
+		//the leading is an extra height to apply equally to the ascent
+		//and the descent when laying out lines of text
+		var leading:Float = lineHeight - (ascent + descent);
+
+		//apply leading to the ascent and descent
+		var leadedAscent:Float = ascent + leading / 2;
+		var leadedDescent:Float = descent + leading / 2;
+		
+		return leadedAscent;
+	}
+	
+	/**
+	 * Return the leaded descent of the element renderer
+	 */
+	public function getLeadedDescent():Float 
+	{
+		var fontMetrics:FontMetricsVO = coreStyle.fontMetrics; 
+		
+		var ascent:Float = fontMetrics.ascent;
+		var descent:Float = fontMetrics.descent;	
+	
+		var lineHeight:Float = coreStyle.usedValues.lineHeight;
+		
+		var leading:Float = lineHeight - (ascent + descent);
+
+		var leadedAscent:Float = ascent + leading / 2;
+		var leadedDescent:Float = descent + leading / 2;
+		
+		return leadedDescent;
+	}
 	
 	public function establishesNewBlockFormattingContext():Bool
 	{

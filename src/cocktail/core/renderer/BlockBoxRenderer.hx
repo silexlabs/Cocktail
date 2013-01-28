@@ -1135,7 +1135,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			//and not as sibling to respect the hierarchy of the previous line. Hierarchey
 			//must be preserved to render with the right z-order and to get the right
 			//bounds for each inline box renderer
-			var childInlineBox:InlineBox = new InlineBox(openedElementRenderers[i]);
+			var childInlineBox:InlineBox = new InlineBox(openedElementRenderers[i], openedElementRenderers[i].getLeadedAscent(), openedElementRenderers[i].getLeadedDescent());
 			childInlineBox.lineBox = newLineBox;
 			openedElementRenderers[i].inlineBoxes.push(childInlineBox);
 			currentInlineBox.appendChild(childInlineBox);
@@ -1276,7 +1276,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					child.inlineBoxes = new Array<InlineBox>();
 					
 					//create the first inline box for this inline box renderer
-					var childInlineBox:InlineBox = new InlineBox(child);
+					var childInlineBox:InlineBox = new InlineBox(child, child.getLeadedAscent(), child.getLeadedDescent());
 					childInlineBox.lineBox = inlineFormattingData.lineBox;
 					child.inlineBoxes.push(childInlineBox);
 					
