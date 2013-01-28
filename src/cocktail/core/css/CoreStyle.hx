@@ -1783,7 +1783,7 @@ class CoreStyle
 				return CSSConstants.MAX_WIDTH_IDL_NAME;
 			
 			default:
-				return null;
+				return CSSConstants.getPropertyNameFromIndex(propertyIndex);
 		}
 	}
 	
