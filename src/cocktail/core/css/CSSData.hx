@@ -252,12 +252,25 @@ class SelectorVO {
 	 */
 	public var firstClass:String;
 	
-	public function new(components:Array<SelectorComponentValue>, pseudoElement:PseudoElementSelectorValue, beginsWithClass:Bool, firstClass:String)
+	/**
+	 * same as beginsWithClass for Id selector
+	 */
+	public var beginsWithId:Bool;
+	
+	/**
+	 * same as fristClass for Id
+	 */
+	public var firstId:String;
+	
+	public function new(components:Array<SelectorComponentValue>, pseudoElement:PseudoElementSelectorValue,
+	beginsWithClass:Bool, firstClass:String, beginsWithId:Bool, firstId:String)
 	{
 		this.components = components;
 		this.pseudoElement = pseudoElement;
 		this.beginsWithClass = beginsWithClass;
 		this.firstClass = firstClass;
+		this.beginsWithId = beginsWithId;
+		this.firstId = firstId;
 	}
 }
 

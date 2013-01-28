@@ -260,6 +260,18 @@ class StyleManager
 									}
 								}
 							}
+							//if the selector begins with an id selector, only match node if
+							//it has an id
+							else if (selector.beginsWithId == true)
+							{
+								if (matchedPseudoClasses.hasId == true)
+								{
+									if (node.id == selector.firstId)
+									{
+										match = _selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true;
+									}
+								}
+							}
 							//in other cases, match
 							else
 							{

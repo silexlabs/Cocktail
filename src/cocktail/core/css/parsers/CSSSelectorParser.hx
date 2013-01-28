@@ -48,7 +48,7 @@ class CSSSelectorParser
 		var simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue> = [];
 		var components:Array<SelectorComponentValue> = [];
 		
-		var selectorData:SelectorVO = new SelectorVO(components, PseudoElementSelectorValue.NONE, false, null);
+		var selectorData:SelectorVO = new SelectorVO(components, PseudoElementSelectorValue.NONE, false, null, false, null);
 		
 		while (!c.isEOF())
 		{
@@ -275,10 +275,15 @@ class CSSSelectorParser
 		//combinators logic, so the array is reversed
 		selectorData.components.reverse();
 		
-		//if the selector begins with a clas return it, else return null
+		//if the selector begins with a class return it, else return null
 		var firstClass:String = getFirstClass(selectorData.components);
 		
-		var typedSelector:SelectorVO = new SelectorVO(selectorData.components, selectorData.pseudoElement, firstClass != null, firstClass);
+		//same as above for Id
+		var firstId:String = getFirstId(selectorData.components);
+		
+		var typedSelector:SelectorVO = new SelectorVO(selectorData.components, selectorData.pseudoElement,
+		firstClass != null, firstClass,
+		firstId != null, firstId);
 		
 		typedSelectors.push(typedSelector);
 	}
@@ -632,6 +637,40 @@ class CSSSelectorParser
 		}
 		return null;
 	}
+	
+	/**
+	 * if the selector begins with an Id selector, return it,
+	 * else return null
+	 */
+	private function getFirstId(components:Array<SelectorComponentValue>):String
+	{
+		switch(components[0])
+		{
+			case SIMPLE_SELECTOR_SEQUENCE(value):
+				//check that don't start with type selector
+				if (value.startValue == UNIVERSAL)
+				{
+					//check that has at least 1 simple selector
+					if (value.simpleSelectors.length != 0)
+					{
+						//check that the first simple selector is an Id selector
+						switch(value.simpleSelectors[0])
+						{
+							case ID(value):
+								return value;
+								
+							default:	
+						}
+					}
+				}
+				
+			//won't happen, selector always begins with selector sequence	
+			case COMBINATOR(value):
+		}
+		return null;
+	}
+	
+	
 	
 	static inline function isOperatorChar(c:Int):Bool
 	{
