@@ -48,7 +48,8 @@ class CSSSelectorParser
 		var simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue> = [];
 		var components:Array<SelectorComponentValue> = [];
 		
-		var selectorData:SelectorVO = new SelectorVO(components, PseudoElementSelectorValue.NONE, false, null, false, null);
+		var selectorData:SelectorVO = new SelectorVO(components, PseudoElementSelectorValue.NONE,
+		false, null, false, null, false, null);
 		
 		while (!c.isEOF())
 		{
@@ -281,9 +282,13 @@ class CSSSelectorParser
 		//same as above for Id
 		var firstId:String = getFirstId(selectorData.components);
 		
+		//same as above for type
+		var firstType:String = getFirstType(selectorData.components);
+		
 		var typedSelector:SelectorVO = new SelectorVO(selectorData.components, selectorData.pseudoElement,
 		firstClass != null, firstClass,
-		firstId != null, firstId);
+		firstId != null, firstId,
+		firstType != null, firstType);
 		
 		typedSelectors.push(typedSelector);
 	}
@@ -662,6 +667,29 @@ class CSSSelectorParser
 							default:	
 						}
 					}
+				}
+				
+			//won't happen, selector always begins with selector sequence	
+			case COMBINATOR(value):
+		}
+		return null;
+	}
+	
+	/**
+	 * if the selector begins with a type selector, return it,
+	 * else return null
+	 */
+	private function getFirstType(components:Array<SelectorComponentValue>):String
+	{
+		switch(components[0])
+		{
+			case SIMPLE_SELECTOR_SEQUENCE(value):
+				switch(value.startValue)
+				{
+					case TYPE(value):
+						return value;
+						
+					default:	
 				}
 				
 			//won't happen, selector always begins with selector sequence	

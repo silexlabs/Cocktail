@@ -272,6 +272,15 @@ class StyleManager
 									}
 								}
 							}
+							//if the selector begins with a type, only match node wih the
+							//same type
+							else if (selector.beginsWithType == true)
+							{
+								if (node.tagName == selector.firstType)
+								{
+									match = _selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true;
+								}
+							}
 							//in other cases, match
 							else
 							{
