@@ -32,9 +32,15 @@ class NativeWindowBase
 {
 	/**
 	 * The callback to call when
-	 * a native resize event is disptached
+	 * a native resize event is dispatched
 	 */
 	public var onResize:UIEvent->Void;
+	
+	/**
+	 * The callback called when the screen orientation change,
+	 * most likely on a handeld or tablet device
+	 */
+	public var onOrientationChange:Event->Void;
 	
 	/**
 	 * The callback called when entering/exiting fullscreen mode
@@ -148,6 +154,21 @@ class NativeWindowBase
 		if (onFullScreenChange != null)
 		{
 			onFullScreenChange(getEvent(event));
+		}
+	}
+	
+	/**
+	 * Create a cross-platform orientation change event from
+	 * the native orientation change event, and call 
+	 * the orientation change callback if provided
+	 * 
+	 * @param	event the native orientation change event
+	 */
+	private function onNativeOrientationChange(event:Dynamic):Void
+	{
+		if (onOrientationChange != null)
+		{
+			onOrientationChange(getEvent(event));
 		}
 	}
 	

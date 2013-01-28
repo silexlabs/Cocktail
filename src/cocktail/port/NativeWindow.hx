@@ -11,6 +11,9 @@ package cocktail.port;
 #if macro
 typedef NativeWindow =  cocktail.port.base.NativeWindowBase;
 
+#elseif air
+typedef NativeWindow =  cocktail.port.platform.air.NativeWindow;
+
 #elseif (flash9 || nme)
 typedef NativeWindow =  cocktail.port.platform.flash_player.NativeWindow;
 
