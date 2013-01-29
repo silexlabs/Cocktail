@@ -199,14 +199,7 @@ class CSSStyleDeclaration
 		
 		length = 0;
 		
-		//for the indexed property array, init as many item as there are
-		//supprted CSS style, each index will hold a CSS style value,
-		//always for the same style
-		resetIndexedProperties();
-		
-		//for the position array, init as many item as there are
-		//supported CSS styles, each index represents a CSS style and
-		//holds the position of where the item was inserted
+
 		resetPropertiesPositions();
 	}
 	
@@ -225,7 +218,9 @@ class CSSStyleDeclaration
 	}
 	
 	/**
-	 * reinit indexed properties array
+	 * for the indexed property array, init as many item as there are
+	 * supported CSS style, each index will hold a CSS style value,
+	 * always for the same style
 	 */
 	private function resetIndexedProperties():Void
 	{
@@ -236,9 +231,9 @@ class CSSStyleDeclaration
 	}
 	
 	/**
-	 * Init the positions of all the css styles, when
-	 * a style is not present in this style sheet, its
-	 * index has a -1 value
+	 * 	for the position array, init as many item as there are
+	 *	supported CSS styles, each index represents a CSS style and
+	 *	holds the position of where the item was inserted
 	 */
 	private function resetPropertiesPositions():Void
 	{
@@ -314,6 +309,13 @@ class CSSStyleDeclaration
 	 */
 	public function setProperty(index:Int, value:String, priority:String = null):Void
 	{
+		//initialised on first use
+		if (_indexedProperties == null)
+		{
+			resetIndexedProperties();
+			resetPropertiesPositions();
+		}
+		
 		if (value == null)
 		{
 			removeProperty(index);
