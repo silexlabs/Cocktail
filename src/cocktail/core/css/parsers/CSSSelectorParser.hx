@@ -49,7 +49,7 @@ class CSSSelectorParser
 		var components:Array<SelectorComponentValue> = [];
 		
 		var selectorData:SelectorVO = new SelectorVO(components, PseudoElementSelectorValue.NONE,
-		false, null, false, null, false, null);
+		false, null, false, null, false, null, false, false);
 		
 		while (!c.isEOF())
 		{
@@ -279,8 +279,21 @@ class CSSSelectorParser
 		//if the selector begins with a class return it, else return null
 		var firstClass:String = getFirstClass(selectorData.components);
 		
+		//check wether the selector only contains a single class
+		var isSimpleClassSelector:Bool = false;
+		if (firstClass != null)
+		{
+			isSimpleClassSelector = getIsSimpleClassSelector(selectorData.components);
+		}
+		
 		//same as above for Id
 		var firstId:String = getFirstId(selectorData.components);
+		
+		var isSimpleIdSelector:Bool = false;
+		if (firstId != null)
+		{
+			isSimpleIdSelector = getIsSimpleIdSelector(selectorData.components);
+		}
 		
 		//same as above for type
 		var firstType:String = getFirstType(selectorData.components);
@@ -288,7 +301,8 @@ class CSSSelectorParser
 		var typedSelector:SelectorVO = new SelectorVO(selectorData.components, selectorData.pseudoElement,
 		firstClass != null, firstClass,
 		firstId != null, firstId,
-		firstType != null, firstType);
+		firstType != null, firstType
+		, isSimpleClassSelector, isSimpleIdSelector);
 		
 		typedSelectors.push(typedSelector);
 	}
@@ -641,6 +655,75 @@ class CSSSelectorParser
 			case COMBINATOR(value):
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns wether this selector contains only one clss selector
+	 */
+	private function getIsSimpleClassSelector(components:Array<SelectorComponentValue>):Bool
+	{
+		// > 1 means that it has combinators
+		if (components.length > 1)
+		{
+			return false;
+		}
+		
+		switch(components[0])
+		{
+			case SIMPLE_SELECTOR_SEQUENCE(value):
+				//must start with universal selector
+				if (value.startValue == UNIVERSAL)
+				{
+					//check that has only 1 simple selector
+					if (value.simpleSelectors.length == 1)
+					{
+						//check that that this simple selector is a class selector
+						switch(value.simpleSelectors[0])
+						{
+							case CSS_CLASS(value):
+								return true;
+								
+							default:	
+						}
+					}
+				}
+				
+			case COMBINATOR(value):
+		}
+		return false;
+	}
+	
+	/**
+	 * Same as above for id selector
+	 */
+	private function getIsSimpleIdSelector(components:Array<SelectorComponentValue>):Bool
+	{
+		if (components.length > 1)
+		{
+			return false;
+		}
+		
+		switch(components[0])
+		{
+			case SIMPLE_SELECTOR_SEQUENCE(value):
+				
+				if (value.startValue == UNIVERSAL)
+				{
+					if (value.simpleSelectors.length == 1)
+					{
+						switch(value.simpleSelectors[0])
+						{
+							case ID(value):
+								return true;
+								
+							default:	
+						}
+					}
+				}
+				
+			case COMBINATOR(value):
+		}
+		return false;
 	}
 	
 	/**

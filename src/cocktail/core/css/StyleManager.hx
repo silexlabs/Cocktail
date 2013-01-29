@@ -250,12 +250,24 @@ class StyleManager
 							{
 								if (matchedPseudoClasses.hasClasses == true)
 								{
-									var classListLength:Int = node.classList.length;
+									var classListLength:Int = matchedPseudoClasses.nodeClassList.length;
 									for (l in 0...classListLength)
 									{
-										if (node.classList[l] == selector.firstClass)
+										if (matchedPseudoClasses.nodeClassList[l] == selector.firstClass)
 										{
-											match = _selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true;
+											//in this case, the selector only has a single
+											//class selector, so it is a match
+											if (selector.isSimpleClassSelector == true)
+											{
+												match = true;
+												break;
+											}
+											//else need to perform a full match
+											else
+											{
+												match = _selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true;
+												break;
+											}
 										}
 									}
 								}
@@ -266,9 +278,18 @@ class StyleManager
 							{
 								if (matchedPseudoClasses.hasId == true)
 								{
-									if (node.id == selector.firstId)
+									if (matchedPseudoClasses.nodeId == selector.firstId)
 									{
-										match = _selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true;
+										//if the selector consists of only an Id, it is a match
+										if (selector.isSimpleIdSelector == true)
+										{
+											match = true;
+										}
+										//else need to perform a full match
+										else
+										{
+											match = _selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true;
+										}
 									}
 								}
 							}
@@ -281,7 +302,7 @@ class StyleManager
 									match = _selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true;
 								}
 							}
-							//in other cases, match
+							//in other cases, full match
 							else
 							{
 								match = _selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true;

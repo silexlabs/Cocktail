@@ -290,7 +290,7 @@ class HTMLDocument extends Document
 		cascadeManager = new CascadeManager();
 		
 		_matchedPseudoClasses = new MatchedPseudoClassesVO(false, false, false,
-		false, false, false, false, false, false);
+		false, false, false, false, false, false, null, null);
 		
 		_focusManager = new FocusManager();
 		
@@ -514,9 +514,21 @@ class HTMLDocument extends Document
 		//useful to match it against classes selector
 		_matchedPseudoClasses.hasClasses = node.className != null;
 		
+		//store node classes
+		if (_matchedPseudoClasses.hasClasses == true)
+		{
+			_matchedPseudoClasses.nodeClassList = node.classList;
+		}
+		
 		//store wether the node has an ID to know
 		//if it is useful to match it against ID selectors
 		_matchedPseudoClasses.hasId = node.id != "";
+		
+		//store node id
+		if (_matchedPseudoClasses.hasId == true)
+		{
+			_matchedPseudoClasses.nodeId = node.id;
+		}
 		
 		_matchedPseudoClasses.hover = hover;
 		_matchedPseudoClasses.focus = focus;
