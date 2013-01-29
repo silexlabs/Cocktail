@@ -1608,13 +1608,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var parent:ElementRenderer = target;
 		while (parent != null)
 		{
-			offset.x += parent.bounds.x;
-			offset.y += parent.bounds.y;
-			
 			if (parent == source)
 			{
 				return offset;
 			}
+			
+			offset.x += parent.bounds.x;
+			offset.y += parent.bounds.y;
 			
 			parent = parent.parentNode;
 			
