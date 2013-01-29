@@ -12,6 +12,8 @@ using cocktail.core.utils.Utils;
 import cocktail.Config;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
+import cocktail.core.event.EventConstants;
+import cocktail.core.event.UIEvent;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
@@ -25,6 +27,7 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.stacking.StackingContext;
 import cocktail.core.utils.FastNode;
+import cocktail.Lib;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
@@ -1186,6 +1189,10 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
 		htmlDocument.invalidationManager.invalidateRendering(clipRect);
 		_canUpdateScrollRegion = true;
+		
+		//set up a scroll event to be dispatch on the dom node of the 
+		//root element renderer after the next update of the document
+		Lib.document.timer.delay(dispatchScrollEvent);
 	}
 	
 	/////////////////////////////////
@@ -1538,4 +1545,22 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		
 		return true;
 	}
+	
+	/////////////////////////////////
+	// PRIVATE UTILS METHOD
+	////////////////////////////////
+	
+	/**
+	 * dispatch a scroll event on the
+	 * dom node of the root element renderer
+	 */
+	private function dispatchScrollEvent(timestamp:Float):Void
+	{
+		var scrollEvent:UIEvent = new UIEvent();
+		//TODO 3 : When dispatched on the Document element, this event type must bubble to the defaultView object.
+		scrollEvent.initEvent(EventConstants.SCROLL, false, false);
+		
+		rootElementRenderer.domNode.dispatchEvent(scrollEvent);
+	}
+	
 }
