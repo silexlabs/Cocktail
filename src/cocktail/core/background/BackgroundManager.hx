@@ -111,7 +111,6 @@ class BackgroundManager
 			
 			graphicContext.graphics.fillRect(backgroundBox, style.usedValues.backgroundColor, clipRect);
 		}
-		
 		//if the element has no background image to draw,
 		//early return
 		if (style.hasBackgroundImage == false)
