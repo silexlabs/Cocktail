@@ -49,7 +49,7 @@ class CSSSelectorParser
 		var components:Array<SelectorComponentValue> = [];
 		
 		var selectorData:SelectorVO = new SelectorVO(components, PseudoElementSelectorValue.NONE,
-		false, null, false, null, false, null, false, false);
+		false, null, false, null, false, null, false, false, false);
 		
 		while (!c.isEOF())
 		{
@@ -298,11 +298,17 @@ class CSSSelectorParser
 		//same as above for type
 		var firstType:String = getFirstType(selectorData.components);
 		
+		var isSimpleTypeSelector:Bool = false;
+		if (firstType != null)
+		{
+			isSimpleTypeSelector = getIsSimpleTypeSelector(selectorData.components);
+		}
+		
 		var typedSelector:SelectorVO = new SelectorVO(selectorData.components, selectorData.pseudoElement,
 		firstClass != null, firstClass,
 		firstId != null, firstId,
 		firstType != null, firstType
-		, isSimpleClassSelector, isSimpleIdSelector);
+		, isSimpleClassSelector, isSimpleIdSelector, isSimpleTypeSelector);
 		
 		typedSelectors.push(typedSelector);
 	}
@@ -719,6 +725,36 @@ class CSSSelectorParser
 							default:	
 						}
 					}
+				}
+				
+			case COMBINATOR(value):
+		}
+		return false;
+	}
+	
+	/**
+	 * Same as above for type selector
+	 */
+	private function getIsSimpleTypeSelector(components:Array<SelectorComponentValue>):Bool
+	{
+		if (components.length > 1)
+		{
+			return false;
+		}
+		
+		switch(components[0])
+		{
+			case SIMPLE_SELECTOR_SEQUENCE(value):
+				switch(value.startValue)
+				{
+					case TYPE(typeValue):
+						if (value.simpleSelectors.length == 0)
+						{
+							return true;
+						}
+						
+					default:	
+						
 				}
 				
 			case COMBINATOR(value):

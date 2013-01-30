@@ -108,10 +108,11 @@ class MatchedPseudoClassesVO {
 	public var nodeId:String;
 	public var hasClasses:Bool;
 	public var nodeClassList:Array<String>;
+	public var nodeType:String;
 	
 	public function new(hover:Bool, focus:Bool, active:Bool, link:Bool, enabled:Bool,
 	disabled:Bool, checked:Bool,
-	hasId:Bool, hasClasses:Bool, nodeId:String, nodeClassList:Array<String>) 
+	hasId:Bool, hasClasses:Bool, nodeId:String, nodeClassList:Array<String>, nodeType:String) 
 	{
 		this.hover = hover;
 		this.focus = focus;
@@ -124,6 +125,7 @@ class MatchedPseudoClassesVO {
 		this.hasClasses = false;
 		this.nodeId = nodeId;
 		this.nodeClassList = nodeClassList;
+		this.nodeType = nodeType;
 	}
 }
 
@@ -284,13 +286,18 @@ class SelectorVO {
 	public var isSimpleClassSelector:Bool;
 	
 	/**
-	 * same as above for is selector
+	 * same as above for id selector
 	 */
 	public var isSimpleIdSelector:Bool;
 	
+	/**
+	 * same as above for type selector
+	 */
+	public var isSimpleTypeSelector:Bool;
+	
 	public function new(components:Array<SelectorComponentValue>, pseudoElement:PseudoElementSelectorValue,
 	beginsWithClass:Bool, firstClass:String, beginsWithId:Bool, firstId:String, beginsWithType:Bool, firstType:String
-	, isSimpleClassSelector:Bool, isSimpleIdSelector:Bool)
+	, isSimpleClassSelector:Bool, isSimpleIdSelector:Bool, isSimpleTypeSelector:Bool)
 	{
 		this.components = components;
 		this.pseudoElement = pseudoElement;
@@ -302,6 +309,7 @@ class SelectorVO {
 		this.firstType = firstType;
 		this.isSimpleClassSelector = isSimpleClassSelector;
 		this.isSimpleIdSelector = isSimpleIdSelector;
+		this.isSimpleTypeSelector = isSimpleTypeSelector;
 	}
 }
 

@@ -297,9 +297,18 @@ class StyleManager
 							//same type
 							else if (selector.beginsWithType == true)
 							{
-								if (node.tagName == selector.firstType)
+								if (matchedPseudoClasses.nodeType == selector.firstType)
 								{
-									match = _selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true;
+									//if the selector is only a type selector, then it matches
+									if (selector.isSimpleTypeSelector == true)
+									{
+										match = true;
+									}
+									//else a full match is needed
+									else
+									{
+										match = _selectorManager.matchSelector(node, selectors[k], matchedPseudoClasses) == true;
+									}
 								}
 							}
 							//in other cases, full match
