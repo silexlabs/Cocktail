@@ -418,9 +418,9 @@ class BackgroundManager
 		{
 			var matrix:Matrix = new Matrix();
 			
-			backgroundPaintingBox.x += backgroundBox.x;
-			backgroundPaintingBox.y += backgroundBox.y;
-
+			backgroundPaintingBox.x += backgroundBox.x + computedBackgroundPosition.x;
+			backgroundPaintingBox.y += backgroundBox.y + computedBackgroundPosition.y;
+			
 			while (totalHeight < maxHeight)
 			{
 				
