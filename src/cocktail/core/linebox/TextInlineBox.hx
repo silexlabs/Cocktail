@@ -102,7 +102,12 @@ class TextInlineBox extends InlineBox
 		_bitmapBounds.y = leadedAscent;
 		_bitmapBounds.width = bounds.width;
 		_bitmapBounds.height = bounds.height;
-		nativeTextBitmap = _nativeText.getBitmap(_bitmapBounds);
+		
+		//text size might be null if character not recognised
+		if (_bitmapBounds.width != 0 && _bitmapBounds.height != 0)
+		{
+			nativeTextBitmap = _nativeText.getBitmap(_bitmapBounds);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

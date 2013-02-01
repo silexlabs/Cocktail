@@ -186,8 +186,11 @@ class TextRenderer extends InvalidatingElementRenderer
 				
 				//need to type to get ref to native bitmap data
 				var typedTextInlineBox:TextInlineBox = cast(inlineBox);
-				graphicContext.graphics.copyPixels(typedTextInlineBox.nativeTextBitmap, _renderRect, _destPoint, clipRect);
 				
+				if (typedTextInlineBox.nativeTextBitmap != null)
+				{
+					graphicContext.graphics.copyPixels(typedTextInlineBox.nativeTextBitmap, _renderRect, _destPoint, clipRect);
+				}
 			}
 		}
 	}
