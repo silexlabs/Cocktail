@@ -1560,7 +1560,14 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		//TODO 3 : When dispatched on the Document element, this event type must bubble to the defaultView object.
 		scrollEvent.initEvent(EventConstants.SCROLL, false, false);
 		
-		rootElementRenderer.domNode.dispatchEvent(scrollEvent);
+		//as this method is called asynchronously, check if node was not deleted
+		if (rootElementRenderer != null)
+		{
+			if (rootElementRenderer.domNode != null)
+			{
+				rootElementRenderer.domNode.dispatchEvent(scrollEvent);
+			}
+		}
 	}
 	
 }
