@@ -194,9 +194,6 @@ class CSSStyleDeclaration
 		_onStyleChange = onStyleChange;
 		this.parentRule = parentRule;
 		
-		_indexedProperties = new Array<TypedPropertyVO>();
-		_propertiesPositions = new Array<Int>();
-		
 		length = 0;
 	}
 	
@@ -221,6 +218,11 @@ class CSSStyleDeclaration
 	 */
 	private function resetIndexedProperties():Void
 	{
+		if (_indexedProperties == null)
+		{
+			_indexedProperties = new Array<TypedPropertyVO>();
+		}
+		
 		for (i in 0...CSSConstants.SUPPORTED_STYLES_NUMBER)
 		{
 			_indexedProperties[i] = null;
@@ -234,6 +236,11 @@ class CSSStyleDeclaration
 	 */
 	private function resetPropertiesPositions():Void
 	{
+		if (_propertiesPositions == null)
+		{
+			_propertiesPositions = new Array<Int>();
+		}
+		
 		for (i in 0...CSSConstants.SUPPORTED_STYLES_NUMBER)
 		{
 			_propertiesPositions[i] = -1;
@@ -388,8 +395,15 @@ class CSSStyleDeclaration
 	 * Return the property with the given index as a typed property
 	 * object or null if it is not defined on this style declaration
 	 */
-	public inline function getTypedProperty(propertyIndex:Int):TypedPropertyVO
+	public function getTypedProperty(propertyIndex:Int):TypedPropertyVO
 	{
+		//initialised on first use
+		if (_indexedProperties == null)
+		{
+			resetIndexedProperties();
+			resetPropertiesPositions();
+		}
+		
 		return _indexedProperties[propertyIndex];
 	}
 	
@@ -399,6 +413,13 @@ class CSSStyleDeclaration
 	 */
 	public function setTypedProperty(propertyIndex:Int, typedValue:CSSPropertyValue, important:Bool):Void
 	{
+		//initialised on first use
+		if (_indexedProperties == null)
+		{
+			resetIndexedProperties();
+			resetPropertiesPositions();
+		}
+		
 		//check if the property already exists
 		var currentProperty:TypedPropertyVO = getTypedProperty(propertyIndex);
 		
@@ -449,6 +470,13 @@ class CSSStyleDeclaration
 		newProperty.typedValue = typedValue;
 		newProperty.index = propertyIndex;
 		
+		//initialised on first use
+		if (_indexedProperties == null)
+		{
+			resetIndexedProperties();
+			resetPropertiesPositions();
+		}
+
 		_propertiesPositions[length] = propertyIndex;
 		length++;
 		
