@@ -424,8 +424,8 @@ class CSSStyleDeclaration
 		var currentProperty:TypedPropertyVO = getTypedProperty(propertyIndex);
 		
 		//here the property doesn't exist yet, create it and store it
-		if (currentProperty == null)
-		{
+		//if (currentProperty == null)
+		//{
 			var newProperty:TypedPropertyVO = new TypedPropertyVO();
 			newProperty.important = important;
 			newProperty.typedValue = typedValue;
@@ -444,18 +444,18 @@ class CSSStyleDeclaration
 			}
 			
 			return;
-		}
+		//}
 		
 		//here the property exists, update it only if necessary
-		if (currentProperty.typedValue != typedValue || currentProperty.important != important)
-		{
-			currentProperty.typedValue = typedValue;
-			currentProperty.important = important;
-			if (_onStyleChange != null)
-			{
-				_onStyleChange(propertyIndex);
-			}
-		}
+		//if (currentProperty.typedValue != typedValue || currentProperty.important != important)
+		//{
+			//currentProperty.typedValue = typedValue;
+			//currentProperty.important = important;
+			//if (_onStyleChange != null)
+			//{
+				//_onStyleChange(propertyIndex);
+			//}
+		//}
 	}
 	
 	/**
