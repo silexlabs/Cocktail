@@ -49,6 +49,14 @@ class CharacterData extends HTMLElement
 		
 	}
 	
+	/**
+	 * text nodes can't have attributes
+	 */
+	override private function initAttributes():Void
+	{
+		
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -75,6 +83,14 @@ class CharacterData extends HTMLElement
 	 * text nodes can't have children
 	 */
 	override public function hasChildNodes():Bool
+	{
+		return false;
+	}
+	
+	/**
+	 * text nodes have no attributes
+	 */
+	override public function hasAttributes():Bool
 	{
 		return false;
 	}
