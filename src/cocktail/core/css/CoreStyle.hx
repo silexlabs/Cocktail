@@ -1740,9 +1740,9 @@ class CoreStyle
 		var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
 		htmlDocument.invalidationManager.invalidatePendingAnimations();
 		
-		//var transitionEvent:TransitionEvent = new TransitionEvent();
-		//transitionEvent.initTransitionEvent(EventConstants.TRANSITION_END, true, true, transition.propertyName, transition.transitionDuration, "");
-		//_pendingTransitionEndEvents.push(transitionEvent);
+		var transitionEvent:TransitionEvent = new TransitionEvent();
+		transitionEvent.initTransitionEvent(EventConstants.TRANSITION_END, true, true, CSSConstants.getPropertyNameFromIndex(transition.propertyIndex), transition.transitionDuration, "");
+		_pendingTransitionEndEvents.push(transitionEvent);
 	}
 	
 	/**
