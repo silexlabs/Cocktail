@@ -532,15 +532,21 @@ class CoreStyle
 		//TODO 3 : messy
 		fontMetrics = _fontManager.getFontMetrics("arial", 12);
 		
-		_animator = new Animator();
-		_animator.onTransitionCompleteCallback = onTransitionComplete;
-		_animator.onTransitionUpdateCallback = onTransitionUpdate;
-		
-		_pendingTransitionEndEvents = new Array<TransitionEvent>();
-		
 		_transitionManager = TransitionManager.getInstance();
 		
 		initUsedValues();
+	}
+	
+	/**
+	 * Init animator. Called first time
+	 * used instead of in constructor, as
+	 * most node are not animated at all
+	 */
+	private function initAnimator():Void
+	{
+		_animator = new Animator();
+		_animator.onTransitionCompleteCallback = onTransitionComplete;
+		_animator.onTransitionUpdateCallback = onTransitionUpdate;
 	}
 	
 	/**
@@ -1232,6 +1238,10 @@ class CoreStyle
 				{
 					if (isAnimatable(propertyIndex))
 					{
+						if (_animator == null)
+						{
+							initAnimator();
+						}
 						_animator.registerPendingAnimation(propertyIndex, getAnimatablePropertyValue(propertyIndex));
 						var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
 						htmlDocument.invalidationManager.invalidatePendingAnimations();
@@ -1699,6 +1709,14 @@ class CoreStyle
 	 */
 	public function startPendingAnimations():Bool
 	{
+		//if the animator was not instantiated yet
+		//then no animation were registered for this
+		//node yet
+		if (_animator == null)
+		{
+			return false;
+		}
+		
 		return _animator.startPendingAnimations(this);
 	}
 	
@@ -1709,6 +1727,12 @@ class CoreStyle
 	 */
 	public function endPendingAnimation():Void
 	{
+		//if null, no transition were started on this core style
+		if (_pendingTransitionEndEvents == null)
+		{
+			return;
+		}
+		
 		var length:Int = _pendingTransitionEndEvents.length;
 		if (length == 0)
 		{
@@ -1742,6 +1766,13 @@ class CoreStyle
 		
 		var transitionEvent:TransitionEvent = new TransitionEvent();
 		transitionEvent.initTransitionEvent(EventConstants.TRANSITION_END, true, true, CSSConstants.getPropertyNameFromIndex(transition.propertyIndex), transition.transitionDuration, "");
+		
+		//init on first use
+		if (_pendingTransitionEndEvents == null)
+		{
+			_pendingTransitionEndEvents = new Array<TransitionEvent>();
+		}
+		
 		_pendingTransitionEndEvents.push(transitionEvent);
 	}
 	
