@@ -198,9 +198,6 @@ class CSSStyleDeclaration
 		_propertiesPositions = new Array<Int>();
 		
 		length = 0;
-		
-
-		resetPropertiesPositions();
 	}
 	
 	/**
