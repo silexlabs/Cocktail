@@ -92,12 +92,9 @@ class DOMParser
 		//node type for element node
 		case Xml.Element:
 			
-			var htmlElement : HTMLElement;
-			var name:String = xml.nodeName.toLowerCase();
-	
 			//create an HTMLElement with the name of the xml element
 			//node
-			htmlElement = ownerDocument.createElement(name);
+			var htmlElement:HTMLElement = ownerDocument.createElement(xml.nodeName);
 			
 			//loop in all of the xml child node
 			for (child in xml)
@@ -124,7 +121,8 @@ class DOMParser
 			
 			//set all the attributes of the xml node on the 
 			//new HTMLElement node
-			for( attribute in xml.attributes() ){
+			var attributes:Iterator<String> = xml.attributes();
+			for( attribute in attributes ){
 				var value:String = xml.get(attribute);
 				attribute = attribute.toLowerCase();
 				
@@ -134,7 +132,6 @@ class DOMParser
 			return htmlElement;
 		}
 		
-		//TODO 2 : will cause bug if node type not supported
 		return null;
 	}
 	

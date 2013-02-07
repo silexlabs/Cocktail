@@ -8,22 +8,26 @@
 */
 package cocktail.core.renderer;
 
+import cocktail.core.css.CSSValueConverter;
 import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
+import cocktail.core.geom.GeomUtils;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.linebox.LineBox;
-import cocktail.core.linebox.SpaceLineBox;
-import cocktail.core.linebox.TextLineBox;
+import cocktail.core.linebox.InlineBox;
+import cocktail.core.linebox.SpaceInlineBox;
+import cocktail.core.linebox.TextInlineBox;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.css.CoreStyle;
-import cocktail.core.layout.formatter.FormattingContext;
 import cocktail.core.font.FontManager;
 import haxe.Log;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
 import cocktail.core.font.FontData;
+import haxe.Stack;
+using StringTools;
 
 /**
  * Renders a run of text by creating as many text line box
@@ -34,6 +38,18 @@ import cocktail.core.font.FontData;
  */
 class TextRenderer extends InvalidatingElementRenderer
 {
+	//states used for text parsers
+	
+	private static inline var COPY:Int = 0;
+	
+	private static inline var BUFFER:Int = 1;
+	
+	private static inline var AFTER_LINE_FEED:Int = 2;
+	
+	private static inline var CONCATENATE:Int = 3;
+	
+	private static inline var CAPITALIZE_STATE:Int = 4;
+	
 	/**
 	 * An array where each item contains a text token,
 	 * representing the kind of text contained (a word,
@@ -63,6 +79,23 @@ class TextRenderer extends InvalidatingElementRenderer
 	private var _textTokensNeedParsing:Bool;
 	
 	/**
+	 * A reusable rect used during rendering
+	 */
+	private static var _renderRect:RectangleVO = new RectangleVO();
+	
+	/**
+	 * A reusable rect used during rendering
+	 */
+	private static var _intersectBounds:RectangleVO = new RectangleVO();
+	
+	/**
+	 * a reusable point used to compute the 
+	 * position where to render each text inline
+	 * box
+	 */
+	private static var _destPoint:PointVO = new PointVO(0, 0);
+	
+	/**
 	 * Class constructor.
 	 */
 	public function new(node:HTMLElement) 
@@ -71,8 +104,9 @@ class TextRenderer extends InvalidatingElementRenderer
 		_text = cast(node);
 		_textNeedsRendering = true;
 		_textTokensNeedParsing = true;
+		
+		isText = true;
 	}
-	
 		
 	/**
 	 * Overriden, as text use the style of 
@@ -84,19 +118,80 @@ class TextRenderer extends InvalidatingElementRenderer
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC LAYOUT METHOD
+	// OVERRIDEN PUBLIC RENDERING METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When laid out, text might recreate its text line
-	 * box if they are now invalid
+	 * update text elements used 
+	 * for rendering
 	 */
-	override public function layout(forceLayout:Bool):Void
-	{	
+	override public function updateText():Void
+	{
+		var child:ElementRenderer = firstChild;
+		while (child != null)
+		{
+			child.updateText();
+			child = child.nextSibling;
+		}
+		
 		if (_textNeedsRendering == true)
 		{
 			createTextLines();
 			_textNeedsRendering = false;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PUBLIC RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	override public function render(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
+	{	
+		//check wether text is supposed to be rendered
+		if (coreStyle.isVisible == false)
+		{
+			return;
+		}
+		
+		//check wether text will be displayed on screen
+		_intersectBounds.x = hitTestingBounds.x;
+		_intersectBounds.y = hitTestingBounds.y;
+		_intersectBounds.width = hitTestingBounds.width;
+		_intersectBounds.height = hitTestingBounds.height;
+		
+		
+		GeomUtils.intersectBounds(_intersectBounds, clipRect, _intersectBounds);
+		if (_intersectBounds.width == 0 || _intersectBounds.height == 0)
+		{
+			return;
+		}
+		
+		var inlineBoxesLength:Int = inlineBoxes.length;
+		for (i in 0...inlineBoxesLength)
+		{
+			var inlineBox:InlineBox = inlineBoxes[i];
+			if (inlineBox.isSpace == false)
+			{
+				_renderRect.width = inlineBox.bounds.width;
+				_renderRect.height = inlineBox.bounds.height;
+				
+				_destPoint.x = inlineBox.bounds.x + globalBounds.x - scrollOffset.x;
+				_destPoint.y = inlineBox.bounds.y + globalBounds.y - scrollOffset.y;
+				if (inlineBox.lineBox != null)
+				{
+					_destPoint.y += inlineBox.lineBox.bounds.y;
+					_destPoint.x += inlineBox.lineBox.bounds.x;
+				}
+				
+				//need to type to get ref to native bitmap data
+				var typedTextInlineBox:TextInlineBox = cast(inlineBox);
+				
+				if (typedTextInlineBox.nativeTextBitmap != null)
+				{
+					graphicContext.graphics.copyPixels(typedTextInlineBox.nativeTextBitmap, _renderRect, _destPoint, clipRect);
+				}
+			}
 		}
 	}
 	
@@ -112,19 +207,6 @@ class TextRenderer extends InvalidatingElementRenderer
 	override public function invalidate():Void
 	{
 		_textNeedsRendering = true;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Overriden as the bounds of a TextRenderer is formed
-	 * by the bounds of its formatted text line boxes
-	 */
-	override public function updateBounds():Void
-	{
-		getLineBoxesBounds(lineBoxes, bounds);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -181,7 +263,7 @@ class TextRenderer extends InvalidatingElementRenderer
 				}
 			}
 			//If the character is a space
-			else if (StringTools.isSpace(text, i) == true)
+			else if (text.fastCodeAt(i) == ' '.code)
 			{
 				
 				//If a word was being formed by concatenating
@@ -225,50 +307,217 @@ class TextRenderer extends InvalidatingElementRenderer
 	}
 	
 	/**
-	 * Apply white space pre-processing tothe string
-	 * of rendered text
-	 * 
-	 * TODO 2 : this is only a partial implementation 
-	 * 
-	 * TODO 1 : the whole white-space processing should be re-factored in this way :
-		 * - when the update line box method is called, all line boxes are
-		 * created. For text, the white space processing is applied before creating
-		 * text line boxes
-		 * - a line box tree is created afterwards (another method
-		 * in HTMLDocument ?) (or should intead use rendering tree
-		 * as line box tree will be modified during layout ?). It is used to further clean the line boxes,
-		 * like for instance remove spaces following other spaces
-		 * - during layout, when each line is laid out, apply final white space
-		 * processing, like removing the spaces at the beggining and end
-	 * 
+	 * Apply white space pre-processing to the string
+	 * of rendered text. subsequent white space processing
+	 * is applied once the line boxes have been laid out
 	 */
-	private function applyWhiteSpace(text:String, whiteSpace:CSSKeywordValue):String
+	private function applyWhiteSpaceProcessing(text:String, whiteSpace:CSSKeywordValue):String
 	{
 		switch (whiteSpace)
 		{
-			case NORMAL, NO_WRAP: // remove new lines, spaces and tab
-
-			var er1 : EReg = ~/[ \t]+/;
-			//TODO 3 : at this point, CR should have been normalised as LF
-			var er2 : EReg = ~/\r+/g;
-			var er3 : EReg = ~/\n+/g;
-			var er4 : EReg = ~/\s+/g;
+			case NORMAL, NO_WRAP: 
+				
+				//flag to prevent unecessary processing
+				var hasLineFeed:Bool = text.indexOf("\n") != -1;
+				if (hasLineFeed == true)
+				{
+					text = removeControlCharactersSurroundingLineFeed(text);
+					text = convertLineFeedsToSpaces(text);
+				}
+				
+				var hasTab:Bool = text.indexOf("\t") != -1;
+				if (hasTab == true)
+				{
+					text = convertTabToSpaces(text);
+				}
+				
+				var hasSpace:Bool = text.indexOf(" ") != -1;
+				if (hasSpace == true)
+				{
+					text = concatenateSpaces(text);
+				}
 			
-			text = er4.replace(er3.replace(er2.replace( er1.replace( text , " " ) , " " ), " "), " ");
-			
-			case PRE_LINE: // remove spaces
-
-			var er1 : EReg = ~/ *$^ */m;
-			var er2 : EReg = ~/[ \t]+/;
-
-			text = er2.replace( er1.replace( text , "\n" ) , " " );
+			case PRE_LINE: 
+				text = removeControlCharactersSurroundingLineFeed(text);
+				text = convertTabToSpaces(text);
+				text = concatenateSpaces(text);
+				
+			case PRE, PRE_WRAP:
+				//TODO : If 'white-space' is set to 'pre' or 'pre-wrap', 
+				//any sequence of spaces (U+0020) unbroken by an element 
+				//boundary is treated as a sequence of non-breaking spaces.
+				//However, for 'pre-wrap', a line breaking opportunity exists 
+				//at the end of the sequence. 
 
 			default:
 		}
 		
 		return text;
 	}
+	
+	/**
+	 * remove all tab, carriage return, and spaces
+	 * surrounding a line feed
+	 */
+	private function removeControlCharactersSurroundingLineFeed(sourceText:String):String
+	{
+		var state:Int = COPY;
 		
+		var position:Int = 0;
+		var c:Int = sourceText.fastCodeAt(position);
+		
+		//the returned cleaned text
+		var outputText:String = "";
+		
+		//when spaces, carriage return and tabs are encountered
+		//they are buffered before being added to the output string
+		//to be sure that they don't surround a line feed
+		var buffer:String = "";
+		
+		//loop in all character of the text
+		while (!c.isEOF())
+		{
+			switch (state)
+			{
+				//in this state, regular charachter are copied
+				//to the output string
+				case COPY:
+					switch(c)
+					{
+						//when a tab, space or carirage return encountered
+						//it is buffered, as it is not yet certain that
+						//it should be added to the output
+						case '\t'.code, ' '.code, '\r'.code:
+							buffer += sourceText.charAt(position);
+							state = BUFFER;
+						
+						case '\n'.code:
+							outputText += sourceText.charAt(position);
+							state = AFTER_LINE_FEED;
+							
+						default:	
+							outputText += sourceText.charAt(position);
+					}
+					
+				case BUFFER:	
+					switch(c)
+					{
+						//if buffered tab, space or carriage return
+						//are followed by line feed, they are not added
+						case '\n'.code:
+							buffer = "";
+							outputText += sourceText.charAt(position);
+							state = AFTER_LINE_FEED;
+							
+						case '\t'.code, ' '.code, '\r'.code:
+							buffer += sourceText.charAt(position);
+						
+						//here buffer added to output text when regular character found	
+						default:
+							outputText += buffer;
+							buffer = "";
+							outputText += sourceText.charAt(position);
+							state = COPY;
+					}
+					
+				//after a line feed, all tab, space and
+				//carriage return immediately following
+				//are not added to output
+				case AFTER_LINE_FEED:
+					switch(c)
+					{
+						case '\t'.code, ' '.code, '\r'.code:
+							
+						case '\n'.code:
+							outputText += sourceText.charAt(position);
+							
+						default:
+							outputText += sourceText.charAt(position);
+							state = COPY;
+					}
+			}
+			
+			c = sourceText.fastCodeAt(++position);
+		}
+		
+		//add last buffered charachter if text
+		//ends with space tab or carriage return
+		outputText += buffer;
+		
+		return outputText;
+	}
+	
+	/**
+	 * Concatenate spaces of text, i.e if multiple space
+	 * are following ony one remains
+	 * 
+	 * TODO : should be aware wether last charachter of previous
+	 * inline in rendering tree is also space, if it does it should
+	 * start in state CONCATENATE
+	 */
+	private function concatenateSpaces(sourceText:String):String
+	{
+		var state:Int = COPY;
+		
+		var position:Int = 0;
+		var c:Int = sourceText.fastCodeAt(position);
+		
+		//the returned text with concatenated space
+		var outputText:String = "";
+		
+		while (!c.isEOF())
+		{
+			switch (state)
+			{
+				//in this state copy all charachter to output until space is
+				//found
+				case COPY:
+					switch(c)
+					{
+						case ' '.code:
+							outputText += sourceText.charAt(position);
+							state = CONCATENATE;
+							
+						default:
+							outputText += sourceText.charAt(position);
+					}
+					
+				//in this state omit to copy all subsequent spaces to output	
+				case CONCATENATE:
+					switch(c)
+					{
+						case ' '.code:
+							
+						default:
+							outputText += sourceText.charAt(position);
+							state = COPY;
+					}
+			}
+			
+			c = sourceText.fastCodeAt(++position);
+		}
+		
+		return outputText;
+	}
+	
+	/**
+	 * Remove line feeds from source text
+	 */
+	private function convertLineFeedsToSpaces(sourceText:String):String
+	{
+		var er : EReg = ~/\n/g;
+		return er.replace(sourceText, " ");
+	}
+	
+	/**
+	 * Convert all tab characters into spaces
+	 */
+	private function convertTabToSpaces(sourceText:String):String
+	{
+		var er : EReg = ~/\t/g;
+		return er.replace(sourceText, " ");
+	}
+	
 	/**
 	 * Transform a text letters into uppercase, lowercase
 	 * or capitalise them (only the first letter of each word
@@ -299,27 +548,50 @@ class TextRenderer extends InvalidatingElementRenderer
 	 * Capitalise a text (turn each word's first letter
 	 * to uppercase)
 	 */
-	private function capitalizeText(text:String):String
+	private function capitalizeText(sourceText:String):String
 	{
-		var capitalizedText:String = "";
+		var state:Int = CAPITALIZE_STATE;
+		var position:Int = 0;
+		var c:Int = sourceText.fastCodeAt(position);
 		
-		/**
-		 * concatenate each character and transform
-		 * the first to upper case
-		 */
-		for (i in 0...text.length)
-		{	
-			if (i == 0)
+		//the returned text with capitalised words
+		var outputText:String = "";
+		
+		while (!c.isEOF())
+		{
+			switch (state)
 			{
-				capitalizedText += text.charAt(i).toUpperCase();
-			}
-			else
-			{
-				capitalizedText += text.charAt(i);
+				//in this state copy all charachter to output until space is
+				//found
+				case COPY:
+					switch(c)
+					{
+						case ' '.code:
+							outputText += sourceText.charAt(position);
+							state = CAPITALIZE_STATE;
+							
+						default:
+							outputText += sourceText.charAt(position);
+					}
+					
+				//in this state, copy all spaces until a word begins
+				//and capitalize the first letter
+				case CAPITALIZE_STATE:
+					switch(c)
+					{
+						case ' '.code:
+							outputText += sourceText.charAt(position);
+							
+						default:
+							outputText += sourceText.charAt(position).toUpperCase();
+							state = COPY;
+					}
 			}
 			
+			c = sourceText.fastCodeAt(++position);
 		}
-		return capitalizedText;
+		
+		return outputText;
 	}
 	
 	/**
@@ -336,54 +608,60 @@ class TextRenderer extends InvalidatingElementRenderer
 			var processedText:String = _text.nodeValue;
 			//apply white space processing, for instance to collapse
 			//sequences of white spaces if needed
-			processedText = applyWhiteSpace(processedText, coreStyle.getKeyword(coreStyle.whiteSpace));
+			processedText = applyWhiteSpaceProcessing(processedText, coreStyle.getKeyword(coreStyle.whiteSpace));
 	
 			processedText = applyTextTransform(processedText, coreStyle.getKeyword(coreStyle.textTransform));
 			
 			_textTokens = doGetTextTokens(processedText);
 		}
 		
-		lineBoxes = [];
+		inlineBoxes = [];
 		
 		var fontMetrics:FontMetricsVO = coreStyle.fontMetrics;
 		var fontManager:FontManager = FontManager.getInstance();
 		
+		//return the font family for the text inline box as a string, formatted for
+		//the native platform
+		var fontFamily:String = fontManager.getNativeFontFamily(CSSValueConverter.getFontFamilyAsStringArray(coreStyle.fontFamily));
+		
+		//the width of a space is retrieved from the font metrics, plus the letter spacing
+		//which also apply to space and the word spacing which applies only to space
+		var letterSpacing:Float = coreStyle.usedValues.letterSpacing;
+		var wordSpacing:Float = coreStyle.getAbsoluteLength(coreStyle.wordSpacing);
+		var spaceWidth:Float = fontMetrics.spaceWidth + letterSpacing + wordSpacing;
+		
+		//get the leading for the inline boxes
+		var leadedAscent:Float = getLeadedAscent();
+		var leadedDescent:Float = getLeadedDescent();
+		
 		var length:Int = _textTokens.length;
 		for (i in 0...length)
 		{
-			//create and store the line boxes
-			lineBoxes.push(createTextLineBoxFromTextToken(_textTokens[i], fontMetrics, fontManager));
+			//create and store the inline boxes
+			inlineBoxes.push(createInlineBoxFromTextToken(_textTokens[i], leadedAscent, leadedDescent, fontMetrics, fontManager, fontFamily, spaceWidth));
 		}
 	}
 	
 	/**
-	 * Create and return a Text line box from a text token
+	 * Create and return an inline box from a text token
 	 */
-	private function createTextLineBoxFromTextToken(textToken:TextToken, fontMetrics:FontMetricsVO, fontManager:FontManager):LineBox
+	private function createInlineBoxFromTextToken(textToken:TextToken, leadedAscent:Float, leadedDescent:Float, fontMetrics:FontMetricsVO, fontManager:FontManager, fontFamily:String, spaceWidth:Float):InlineBox
 	{
-		//the text of the created text line box
-		var text:String;
-		
-		var textLineBox:TextLineBox;
-		
 		switch(textToken)
 		{
 			case word(value):
-				text = value;
-				textLineBox = new TextLineBox(this, text, fontMetrics, fontManager);
+				return new TextInlineBox(this, leadedAscent, leadedDescent, value, fontMetrics, fontManager, fontFamily);
 		
 			case space:
-				textLineBox = new SpaceLineBox(this, fontMetrics, fontManager);
+				return new SpaceInlineBox(this, leadedAscent, leadedDescent, spaceWidth);
 				
 			//TODO 5 : implement tab and line feed	
 			case tab:
-				textLineBox = new TextLineBox(this, "", fontMetrics, fontManager);
+				return new TextInlineBox(this, leadedAscent, leadedDescent, "", fontMetrics, fontManager, fontFamily);
 				
 			case lineFeed:
-				textLineBox = new TextLineBox(this, "", fontMetrics, fontManager);
+				return new TextInlineBox(this, leadedAscent, leadedDescent, "", fontMetrics, fontManager, fontFamily);
 		}
-		
-		return textLineBox;
 	}
 
 	/////////////////////////////////
@@ -398,11 +676,6 @@ class TextRenderer extends InvalidatingElementRenderer
 	override public function isPositioned():Bool
 	{
 		return false;
-	}
-	
-	override public function isText():Bool
-	{
-		return true;
 	}
 	
 	override public function isInlineLevel():Bool

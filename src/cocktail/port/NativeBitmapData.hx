@@ -7,9 +7,6 @@
 */
 package cocktail.port;
 
-/**
- * Set the right runtime specific NativeBitmapData at compile-time
- */
 #if macro
 typedef NativeBitmapData =  Dynamic;
 #elseif (flash9 || nme)

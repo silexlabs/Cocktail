@@ -94,14 +94,14 @@ class Animator
 	 * A pending animation is registered when the specified value of an
 	 * animatable property is changed
 	 * 
-	 * @param	propertyName the name of the property to animate
+	 * @param	propertyIndex the index of the property to animate
 	 * @param	startValue the current computed value of the animatable property, used as
 	 * starting value if the animation actually starts
 	 */
-	public function registerPendingAnimation(propertyName:String, startValue:Float):Void
+	public function registerPendingAnimation(propertyIndex:Int, startValue:Float):Void
 	{
 		var pendingAnimation:PendingAnimationVO = new PendingAnimationVO();
-		pendingAnimation.propertyName = propertyName;
+		pendingAnimation.propertyIndex = propertyIndex;
 		pendingAnimation.startValue = startValue;
 		if (_pendingAnimations == null)
 		{
@@ -154,7 +154,7 @@ class Animator
 			case IDENTIFIER(value):
 				//if only one property name is defined, it must
 				//match the name of the pending animation property
-				if (value != pendingAnimation.propertyName)
+				if (value != CSSConstants.getPropertyNameFromIndex(pendingAnimation.propertyIndex))
 				{
 					return false;
 				}		
@@ -171,11 +171,11 @@ class Animator
 						case IDENTIFIER(value):
 							//if there is a match, store the index
 							//of the match
-							if (value == pendingAnimation.propertyName)
+							if (value == CSSConstants.getPropertyNameFromIndex(pendingAnimation.propertyIndex))
 							{
-								propertyIndex = i;
-								foundFlag = true;
-								break;
+								//propertyIndex = i;
+								//foundFlag = true;
+								//break;
 							}	
 							
 						default:
@@ -225,7 +225,7 @@ class Animator
 		var transitionManager:TransitionManager = TransitionManager.getInstance();
 		
 		//check if a transition is already in progress for the same property
-		var transition:Transition = transitionManager.getTransition(pendingAnimation.propertyName, style);
+		var transition:Transition = transitionManager.getTransition(pendingAnimation.propertyIndex, style);
 		
 		//if the transition is not null, then a transition for the property is already
 		//in progress and no new transition must start
@@ -243,10 +243,10 @@ class Animator
 		//is now the end value of the transition
 		
 		//TODO 1 : really messy to use reflection + for now transition only work for number properties
-		var endValue:Float = getEndValue(style, pendingAnimation.propertyName);
+		var endValue:Float = getEndValue(style, pendingAnimation.propertyIndex);
 		
 		//start a transition using the TransitionManager
-		transitionManager.startTransition(style, pendingAnimation.propertyName, pendingAnimation.startValue, endValue, 
+		transitionManager.startTransition(style, pendingAnimation.propertyIndex, pendingAnimation.startValue, endValue, 
 		transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate);
 	
 		//the transition did in fact start
@@ -258,9 +258,9 @@ class Animator
 	 * a given property, which can be used as
 	 * end value
 	 */
-	private function getEndValue(style:CoreStyle, propertyName:String):Float
+	private function getEndValue(style:CoreStyle, propertyIndex:Int):Float
 	{
-		switch(propertyName)
+		switch(propertyIndex)
 		{
 			case CSSConstants.OPACITY:
 				switch(style.opacity)
@@ -276,7 +276,8 @@ class Animator
 				}
 			
 			default:
-				return Reflect.field(style.usedValues, propertyName);
+				
+				return Reflect.field(style.usedValues, CSSConstants.getPropertyNameFromIndex(propertyIndex));
 		}
 	}
 	

@@ -162,6 +162,8 @@ class HTMLConstants
 	
 	public static inline var HTML_CHECKED_ATTRIBUTE_NAME:String = "checked";
 	
+	public static inline var HTML_MAXLENGTH_ATTRIBUTE_NAME:String = "maxlength";
+	
 	
 	public static inline var HTML_PRELOAD_ATTRIBUTE_NAME:String = "preload";
 	

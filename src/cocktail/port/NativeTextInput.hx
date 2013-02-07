@@ -7,18 +7,15 @@
 */
 package cocktail.port;
 
-/**
- * Set the right runtime specific native text input at compile-time
- */
 #if macro
-typedef NativeTextInput = cocktail.port.platform.input.AbstractNativeTextInput;
+typedef NativeTextInput = cocktail.port.base.NativeTextInputBase;
 
 #elseif air
-typedef NativeTextInput =  cocktail.port.air.NativeTextInput;
+typedef NativeTextInput =  cocktail.port.platform.air.NativeTextInput;
 
 #elseif (flash9 || nme)
-typedef NativeTextInput =  cocktail.port.flash_player.NativeTextInput;
+typedef NativeTextInput =  cocktail.port.platform.flash_player.NativeTextInput;
 
 #else
-typedef NativeTextInput = cocktail.port.platform.input.AbstractNativeTextInput;
+typedef NativeTextInput = cocktail.port.base.NativeTextInputBase;
 #end

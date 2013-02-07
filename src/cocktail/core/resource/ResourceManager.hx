@@ -11,7 +11,7 @@ package cocktail.core.resource;
 import cocktail.core.http.HTTPConstants;
 import cocktail.port.ImageResource;
 import cocktail.port.NativeHttp;
-import cocktail.port.platform.nativeHttp.NativeHTTPData;
+import cocktail.core.http.HTTPData;
 
 /**
  * This is a static class used to retrive loaded asset
@@ -28,13 +28,13 @@ class ResourceManager
 	 * Stores each requested asset in a hash where the
 	 * key is the url of the asset
 	 */
-	private static var _resources:Hash<AbstractResource>;
+	private static var _resources:Hash<AbstractResource> = new Hash<AbstractResource>();
 	
 	/**
 	 * Store requested swf resources, where the 
 	 * key is the url of the swf
 	 */
-	private static var _swfResources:Hash<NativeHttp>;
+	private static var _swfResources:Hash<NativeHttp> = new Hash<NativeHttp>();
 	
 	/**
 	 * class constructor. Private as this class
@@ -46,40 +46,25 @@ class ResourceManager
 	}
 	
 	/**
-	 * Init resource hash on first use
-	 */
-	private static function init():Void
-	{
-		if (_resources == null)
-		{
-			_resources = new Hash<AbstractResource>();
-		}
-		
-		if (_swfResources == null)
-		{
-			_swfResources = new Hash<NativeHttp>();
-		}
-	}
-	
-	/**
 	 * Return the resource at the given url. If it is the first
 	 * time this resource is requested, create a new Resource
 	 * object which will starts its loading itself
 	 */
 	public static function getImageResource(url:String):AbstractResource
 	{
-		init();
+		//get the resource or null if not existant yet
+		var resource:AbstractResource = _resources.get(url);
 		
 		//if the resource with the given url is not
 		//yet stored, create it
-		if (_resources.exists(url) == false)
+		if (resource == null)
 		{
-			var resource:ImageResource = new ImageResource(url);
+			resource = new ImageResource(url);
 			_resources.set(url, resource);
 		}
 		
 		//return the resource with the right URL
-		return _resources.get(url);
+		return resource;
 	}
 	
 	/**
@@ -91,15 +76,15 @@ class ResourceManager
 	 */
 	public static function getSWFResource(url:String):NativeHttp
 	{
-		init();
+		var resource:NativeHttp = _swfResources.get(url);
 		
-		if (_swfResources.exists(url) == false)
+		if (resource == null)
 		{
-			var resource:NativeHttp = new NativeHttp();
+			resource = new NativeHttp();
 			resource.load(url, HTTPConstants.GET, null, null, DataFormatValue.BINARY);
 			_swfResources.set(url, resource);
 		}
 		
-		return _swfResources.get(url);
+		return resource;
 	}
 }

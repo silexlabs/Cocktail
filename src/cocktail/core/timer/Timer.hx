@@ -8,6 +8,7 @@
 package cocktail.core.timer;
 
 import cocktail.core.timer.TimerData;
+import cocktail.port.TimerImpl;
 import haxe.Log;
 import haxe.Stack;
 
@@ -34,17 +35,20 @@ class Timer
 	 */
 	private var _pendingCount:Int;
 	
+	/**
+	 * Uses platform specific API to
+	 * call the update method at regular interval
+	 */
+	private var _timerImpl:TimerImpl;
+	
 	public function new() 
 	{
 		_pendingCallbacks = new Array<TimerCallbackVO>();
 		_pendingCount = 0;
-		#if (macro || php)
-		#else
-		//TODO 3 : for now only support for flash runtime
-		//use enter frame intead of timer, seems more efficient because
-		//synchronised with screen refresh
-		flash.Lib.current.stage.addEventListener(flash.events.Event.ENTER_FRAME, function(e) {onUpdate(); } );
-		#end
+		
+		//give the update callback to the timer implementation, it
+		//will determine when to call it
+		_timerImpl = new TimerImpl(onUpdate);
 	}
 	
 	/////////////////////////////////

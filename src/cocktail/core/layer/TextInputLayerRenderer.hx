@@ -11,6 +11,7 @@ import cocktail.core.html.HTMLInputElement;
 import cocktail.core.html.HTMLObjectElement;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.TextInputRenderer;
+import haxe.Stack;
 
 /**
  * TODO 1 : this class is identical to PluginLayerRenderer
@@ -33,20 +34,25 @@ class TextInputLayerRenderer extends CompositingLayerRenderer
 	// OVERRIDEN PUBLIC RENDERING TREE METHODS
 	////////////////////////////////
 	
-	override public function attach():Void
+	override public function attachGraphicsContext():Void
 	{
-		super.attach();
-		var htmlInputElement:HTMLInputElement = cast(rootElementRenderer.domNode);
-		if (htmlInputElement.elementRenderer != null)
+		super.attachGraphicsContext();
+		
+		if (graphicsContext != null)
 		{
-			var textInputRenderer:TextInputRenderer = cast(htmlInputElement.elementRenderer);
-			textInputRenderer.nativeTextInput.attach(graphicsContext);
+			var htmlInputElement:HTMLInputElement = cast(rootElementRenderer.domNode);
+			if (htmlInputElement.elementRenderer != null)
+			{
+				var textInputRenderer:TextInputRenderer = cast(htmlInputElement.elementRenderer);
+				textInputRenderer.nativeTextInput.attach(graphicsContext);
+			}
 		}
 	}
 	
-	override public function detach():Void
+	override public function detachGraphicsContext():Void
 	{
-		if (hasOwnGraphicsContext == true)
+		//TODO 3 : is graphics context supposed to be null at some point ?
+		if (graphicsContext != null)
 		{
 			var htmlInputElement:HTMLInputElement = cast(rootElementRenderer.domNode);
 			if (htmlInputElement.elementRenderer != null)
@@ -55,16 +61,8 @@ class TextInputLayerRenderer extends CompositingLayerRenderer
 				textInputRenderer.nativeTextInput.detach(graphicsContext);
 			}
 		}
-		super.detach();
-	}
-	
-	/////////////////////////////////
-	// OVERRIDEN PRIVATE RENDERING METHODS
-	////////////////////////////////
-
-	override private function initBitmapData(width:Int, height:Int):Void
-	{
 		
+		super.detachGraphicsContext();
 	}
 	
 }

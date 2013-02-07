@@ -69,6 +69,14 @@ class SelectorManager
 					matched = matchCombinator(node, value, components[i + 1], matchedPseudoClasses);
 					lastWasCombinator = true;
 					
+					//if the combinator is a child combinator, the relevant
+					//node becomes the parent node as any subsequent would
+					//apply to it instead of the current node
+					if (value == CHILD)
+					{
+						node = node.parentNode;
+					}
+					
 				case SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(value):
 					//if the previous item was a combinator, then 
 					//this simple selector sequence was already
@@ -152,7 +160,7 @@ class SelectorManager
 	 * the preious selector sequence which precedes in 
 	 * the DOM tree
 	 */
-	private function  matchGeneralSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+	private function matchGeneralSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		var previousElementSibling:HTMLElement = node.previousElementSibling;
 		
@@ -352,8 +360,8 @@ class SelectorManager
 	}
 	
 	/**
-	 * return wether the valu of the "name" attribute is a hyphen
-	 * separated lsit whose first item is "value"
+	 * return wether the value of the "name" attribute is a hyphen
+	 * separated list whose first item is "value"
 	 */
 	private function matchAttributeBeginsHyphenList(node:HTMLElement, name:String, value:String):Bool
 	{
@@ -364,8 +372,15 @@ class SelectorManager
 			return false;
 		}
 		
-		var attributeValueAsList:Array<String> = attributeValue.split("-");
-		return attributeValueAsList[0] == value;
+		//valid if value exactly matches the attribute
+		if (attributeValue == value)
+		{
+			return true;
+		}
+		
+		//else valid if begins with value + hyphen
+		var hyphenValue:String = value + "-";
+		return attributeValue.substr(0, hyphenValue.length) == hyphenValue;
 	}
 	
 	/**
@@ -519,12 +534,35 @@ class SelectorManager
 				return node.hasChildNodes();
 				
 			case StructuralPseudoClassSelectorValue.FIRST_CHILD:
-				return node.previousSibling == null;
+				
+				//HTML root element is not considered a first child
+				//
+				//TODO : parent of root node should actually be a document
+				if (node.parentNode == null)
+				{
+					return false;
+				}
+				
+				return node.previousElementSibling == null;
 				
 			case StructuralPseudoClassSelectorValue.LAST_CHILD:
-				return node.nextSibling == null;
+				
+				//HTML root element not considered last child
+				if (node.parentNode == null)
+				{
+					return false;
+				}
+				
+				return node.nextElementSibling == null;
 				
 			case StructuralPseudoClassSelectorValue.ONLY_CHILD:
+				
+				//HTML root element is not considered only child
+				if (node.parentNode == null)
+				{
+					return false;
+				}
+				
 				return node.parentNode.childNodes.length == 1;
 				
 			case StructuralPseudoClassSelectorValue.ROOT:
@@ -719,13 +757,11 @@ class SelectorManager
 			}
 		}
 		
-		//specificity has 3 categories, whose int values are concatenated as a string then parsed as int
+		//specificity has 3 categories, whose int values are concatenated
 		//for instance, if idSelectorsNumber is equal to 1, classAttributesAndPseudoClassesNumber to 0
 		//and typeAndPseudoElementsNumber to 2,
 		//the specificity is 102
-		var concatenatedSpecificity:String = Std.string(_selectorSpecificityVO.idSelectorsNumber) + Std.string(_selectorSpecificityVO.classAttributesAndPseudoClassesNumber) + Std.string(_selectorSpecificityVO.typeAndPseudoElementsNumber);
-
-		return Std.parseInt(concatenatedSpecificity);
+		return _selectorSpecificityVO.idSelectorsNumber * 100 + _selectorSpecificityVO.classAttributesAndPseudoClassesNumber * 10 + _selectorSpecificityVO.typeAndPseudoElementsNumber;
 	}
 	
 	/**

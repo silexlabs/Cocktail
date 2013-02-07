@@ -187,7 +187,21 @@ class HTMLImageElement extends EmbeddedElement
 		intrinsicWidth = resource.intrinsicWidth;
 		intrinsicRatio = intrinsicHeight / intrinsicWidth;
 		
-		invalidate();
+		//if the picture has a defined width and height, only the rendering of the document
+		//needs to be updated
+		if (getAttribute(HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME) != null && getAttribute(HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME) != null)
+		{
+			if (elementRenderer != null)
+			{
+				_ownerHTMLDocument.invalidationManager.invalidateRendering(elementRenderer.hitTestingBounds);
+			}
+		}
+		//else the size of the loaded
+		//picture will probably affect layout too
+		else
+		{
+			invalidate();
+		}
 		
 		var loadEvent:UIEvent = new UIEvent();
 		loadEvent.initUIEvent(EventConstants.LOAD, false, false, null, 0.0);

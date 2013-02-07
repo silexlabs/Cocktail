@@ -274,6 +274,11 @@ class CSSStyleParser
 		//are comma separated
 		var styleValuesLists:Array<Array<CSSPropertyValue>> = [];
 		
+		//hold the value of each item of the font notation, for
+		//font-size and line height, like '12px/120%'. Can contain
+		//only 2 items else style is invalid
+		var fontNotations:Array<CSSPropertyValue> = [];
+		
 		while (!c.isEOF())
 		{
 			switch(state)
@@ -294,15 +299,31 @@ class CSSStyleParser
 				//in this state, either the end 
 				//of the style value is expected or
 				//another component of the style value
-				case SPACE_OR_END:
+				case COMPONENT_OR_END:
 					
 					if (c.isEOF())
 					{
 						state = END;
 						continue;
 					}
+					//there can only be 2 items for font notation, if 2
+					//slashes are found in a row, style is invalid
+					else if (c == '/'.code && fontNotations.length > 0)
+					{
+						state = INVALID_STYLE_VALUE;
+						continue;
+					}
 					else
 					{
+						//if last value was first part of font notation
+						//store font notation
+						if (fontNotations.length == 1)
+						{
+							fontNotations.push(styleValues.pop());
+							styleValues.push(FONT_SIZE_LINE_HEIGHT_GROUP(fontNotations[0], fontNotations[1]));
+							fontNotations = [];
+						}
+								
 						switch(c)
 						{
 							case ' '.code:
@@ -316,6 +337,28 @@ class CSSStyleParser
 								styleValues = [];
 								state = IGNORE_SPACES;
 								next = BEGIN_VALUE;
+							
+							//a slash signals a font notation	
+							case '/'.code:
+								
+								//the font notation can only happen for
+								//a 'font' style shorthand, else the style
+								//is invalid
+								if (propertyName == CSSConstants.FONT_NAME)
+								{
+									//get the last style value which is the
+									//first component of the font notation
+									fontNotations.push(styleValues.pop());
+									
+									state = IGNORE_SPACES;
+									next = BEGIN_VALUE;
+								}
+								else
+								{
+									state = INVALID_STYLE_VALUE;
+									continue;
+								}
+								
 								
 							case ';'.code:
 								state = END;
@@ -328,8 +371,6 @@ class CSSStyleParser
 					}
 				
 				//start parsing a value component
-				//
-				//TODO 1 : add String parsing
 				case BEGIN_VALUE:
 					
 					//try first special value start charachters
@@ -349,12 +390,7 @@ class CSSStyleParser
 							state = END;
 							continue;
 							
-						case '-'.code:
-							state = NUMBER_INTEGER_DIMENSION_PERCENTAGE;
-							start = position;
-							continue;
-							
-						case '.'.code:
+						case '-'.code, '+'.code, '.'.code:
 							state = NUMBER_INTEGER_DIMENSION_PERCENTAGE;
 							start = position;
 							continue;
@@ -424,9 +460,11 @@ class CSSStyleParser
 					if (endPosition != -1)
 					{
 						position = endPosition;
+						c = styles.fastCodeAt(position);
 						important = true;
 						state = IGNORE_SPACES;
 						next = END;
+						continue;
 					}
 					//if -1 is returned then the ident wasn't 
 					//exactly "!important" which makes the style invalid
@@ -446,7 +484,7 @@ class CSSStyleParser
 					if (endPosition != -1)
 					{
 						position = endPosition; 
-						state = SPACE_OR_END;
+						state = COMPONENT_OR_END;
 					}
 					else
 					{
@@ -463,7 +501,7 @@ class CSSStyleParser
 						position = endPosition;
 						c = styles.fastCodeAt(position);
 						
-						state = SPACE_OR_END;
+						state = COMPONENT_OR_END;
 						continue;
 					}
 					else
@@ -481,7 +519,7 @@ class CSSStyleParser
 						position = endPosition;
 						c = styles.fastCodeAt(position);
 						
-						state = SPACE_OR_END;
+						state = COMPONENT_OR_END;
 						continue;
 					}
 					else
@@ -501,7 +539,7 @@ class CSSStyleParser
 						position = endPosition;
 						c = styles.fastCodeAt(position);
 					
-						state = SPACE_OR_END;
+						state = COMPONENT_OR_END;
 						continue;
 					}
 					//if -1 is returned then the value was invalid
@@ -532,21 +570,32 @@ class CSSStyleParser
 		//styles can be parsed
 		_position = position;
 		
+		//flush font notation if needed
+		if (fontNotations.length == 1)
+		{
+			fontNotations.push(styleValues.pop());
+			styleValues.push(FONT_SIZE_LINE_HEIGHT_GROUP(fontNotations[0], fontNotations[1]));
+			fontNotations = [];
+		}
+		
+		//if there is no list of styles
 		if (styleValuesLists.length == 0)
 		{
+			//and no group of styles either
 			if (styleValues.length == 1)
 			{
-				var typedProperty:TypedPropertyVO = TypedPropertyVO.getPool().get();
+				var typedProperty:TypedPropertyVO = new TypedPropertyVO();
 				typedProperty.important = important;
-				typedProperty.name = propertyName;
+				typedProperty.index = CSSConstants.getPropertyIndexFromName(propertyName);
 				typedProperty.typedValue = styleValues[0];
 				return typedProperty;
 			}
+			//else group the style values
 			else
 			{
-				var typedProperty:TypedPropertyVO = TypedPropertyVO.getPool().get();
+				var typedProperty:TypedPropertyVO = new TypedPropertyVO();
 				typedProperty.important = important;
-				typedProperty.name = propertyName;
+				typedProperty.index = CSSConstants.getPropertyIndexFromName(propertyName);
 				typedProperty.typedValue = GROUP(styleValues);
 				return typedProperty;
 			}
@@ -572,9 +621,9 @@ class CSSStyleParser
 				}
 			}
 			
-			var typedProperty:TypedPropertyVO = TypedPropertyVO.getPool().get();
+			var typedProperty:TypedPropertyVO = new TypedPropertyVO();
 			typedProperty.important = important;
-			typedProperty.name = propertyName;
+			typedProperty.index = CSSConstants.getPropertyIndexFromName(propertyName);
 			typedProperty.typedValue = CSS_LIST(styleListProperty);
 			
 			return typedProperty;
@@ -591,18 +640,26 @@ class CSSStyleParser
 	private static function parseImportant(styles:String, position:Int):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
-		var start = position;
 		
+		//spaces are accepted between "!" and "important"
+		while (c == " ".code)
+		{
+			c = styles.fastCodeAt(++position);
+		}
+		
+		var start:Int = position;
 		while (isIdentChar(c))
 		{
 			c = styles.fastCodeAt(++position);
 		}
 		
 		var ident:String = styles.substr(start, position - start);
+		
 		if (ident == CSSConstants.IMPORTANT)
 		{
 			return position;
 		}
+		
 		return -1;
 	}
 	
@@ -617,8 +674,8 @@ class CSSStyleParser
 		var c:Int = styles.fastCodeAt(position);
 		var start = position;
 		
-		//increment is starts with minus
-		if (c == '-'.code)
+		//increment if starts with minus or plus sign
+		if (c == '-'.code || c == "+".code)
 		{
 			c = styles.fastCodeAt(++position);
 		}
@@ -853,6 +910,9 @@ class CSSStyleParser
 		
 	}
 	
+	/**
+	 * parse css functional notation, like : url(myurl) or rgb(red,green,blue)
+	 */
 	private static function parseFunctionnalNotation(ident:String, styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
@@ -870,6 +930,17 @@ class CSSStyleParser
 
 		
 		var cssFunction:String = styles.substr(start, position - start);
+		
+		//add quote to url if forgotten by author, url are
+		//parsed as string instead of indent to allow any charachter
+		if (ident == 'url')
+		{
+			if (cssFunction.charAt(0) != "'" && cssFunction.charAt(0) != '"')
+			{
+				cssFunction = "'" + cssFunction + "'";
+			}
+		}
+		
 		
 		var functionValues:TypedPropertyVO = parseStyleValue("", cssFunction, 0);
 		
@@ -1098,7 +1169,7 @@ class CSSStyleParser
 			case 'pre':
 				cssPropertyValue = KEYWORD(PRE);
 				
-			case 'no-wrap':
+			case 'nowrap':
 				cssPropertyValue = KEYWORD(NO_WRAP);	
 				
 			case 'pre-wrap':
@@ -1295,6 +1366,9 @@ class CSSStyleParser
 				
 			case 'transparent':
 				cssPropertyValue = COLOR(TRANSPARENT);
+				
+			case 'currentcolor':
+				cssPropertyValue = COLOR(CURRENT_COLOR);
 				
 			default:	
 				cssPropertyValue = parseColorKeyword(ident);

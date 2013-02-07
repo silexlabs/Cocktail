@@ -49,7 +49,7 @@ class CSSRule
 	 * STYLE_RULE, IMPORT_RULE, MEDIA_RULE, FONT_FACE_RULE, PAGE_RULE, NAMESPACE_RULE,
 	 * or a registered extension value.
 	 */
-	public var type(get_type, null):Int;
+	public var type(default, null):Int;
 	
 	/**
 	 * get/set the rule content. On getting return
@@ -93,10 +93,4 @@ class CSSRule
 	{
 		return cssText = value;
 	}
-	
-	private function get_type():Int
-	{
-		return -1;
-	}
-	
 }

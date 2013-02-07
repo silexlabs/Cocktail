@@ -48,7 +48,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		var usedWidth:Float = measureWidthAndHorizontalMargins(style, containingBlockData);
 		var usedHeight:Float = measureHeightAndVerticalMargins(style, containingBlockData);
 				
-		if (style.isAuto(style.width) == true && style.isAuto(style.height) == true)
+		if (style.hasAutoWidth == true && style.hasAutoHeight == true)
 		{
 			//apply a constrain algorithm specific to embedded elements
 			constrainDimensions(style, usedWidth, usedHeight);
@@ -81,13 +81,13 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		
 		//set flag for each contrain type
 		var widthSuperiorToMaxWidth:Bool = false;
-		if (style.isNone(style.maxWidth) == false)
+		if (style.hasMaxWidth == true)
 		{
 			widthSuperiorToMaxWidth = usedWidth > maxWidth;
 		}
 		
 		var heightSuperiorToMaxHeight:Bool = false;
-		if (style.isNone(style.maxHeight) == false)
+		if (style.hasMaxHeight == true)
 		{
 			heightSuperiorToMaxHeight = usedHeight > maxHeight;
 		}
@@ -251,7 +251,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			usedWidth = embeddedHTMLElement.width;
 		}
 		//if the 'height' style also is defined as 'auto'
-		else if (style.isAuto(style.height) == true)
+		else if (style.hasAutoHeight == true)
 		{
 			//first try to use the intrinsic width of the embedded
 			//HTMLElement if it exist (it might for instance be a
@@ -340,7 +340,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 			usedHeight = embeddedHTMLElement.height;
 		}
 		//if the 'width' style is also set to 'auto'
-		else if (style.isAuto(style.width) == true)
+		else if (style.hasAutoWidth == true)
 		{
 			//try to use the intrinsic height of the embedded
 			//HTMLElement if it exist (it might for instance be a

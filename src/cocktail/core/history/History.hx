@@ -62,7 +62,7 @@ class History
 	 */
 	public function getLength():Int 
 	{
-		return 0;
+		return stateDataArray.length;
 	}
 	/**
 	 * Goes back or forward the specified number of steps in the joint session history.

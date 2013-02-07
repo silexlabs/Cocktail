@@ -60,14 +60,4 @@ class EventListener
 	{
 		listener(evt);
 	}
-	
-	/**
-	 * clean-up method removing callback reference.
-	 * Called when the EventListener is removed
-	 * from an EventTarget
-	 */
-	public function dispose():Void
-	{
-		listener = null;
-	}
 }

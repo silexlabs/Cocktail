@@ -12,6 +12,7 @@ import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
+import cocktail.core.geom.GeomUtils;
 import cocktail.core.geom.Matrix;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.resource.AbstractResource;
@@ -47,12 +48,19 @@ class BackgroundManager
 	 * Represents the background box, reused
 	 * for each background
 	 */
-	private static var _box:RectangleVO;
+	private static var _box:RectangleVO = new RectangleVO();
 	
 	/**
 	 * Same as above for destination point
 	 */
-	private static var _destinationPoint:PointVO;
+	private static var _destinationPoint:PointVO = new PointVO(0.0, 0.0);
+	
+	/**
+	 * Those bounds are used to determine if the painted background
+	 * intersect with the clip rect, if it doesn't it won't
+	 * be displayed on screen
+	 */
+	private static var _intersectionBounds:RectangleVO = new RectangleVO();
 	
 	/**
 	 * class constructor.
@@ -77,7 +85,7 @@ class BackgroundManager
 	 * @param	style
 	 * @return
 	 */
-	public static function render(graphicContext:GraphicsContext, backgroundBox:RectangleVO, style:CoreStyle, elementRenderer:ElementRenderer):Void
+	public static function render(graphicContext:GraphicsContext, backgroundBox:RectangleVO, style:CoreStyle, elementRenderer:ElementRenderer, clipRect:RectangleVO):Void
 	{
 		//no need to draw the background if it has no width or height
 		if (Math.round(backgroundBox.width) <= 0 || Math.round(backgroundBox.height) <= 0 )
@@ -89,7 +97,37 @@ class BackgroundManager
 		//completely transparent
 		if (style.usedValues.backgroundColor.alpha != 0.0)
 		{
-			graphicContext.graphics.fillRect(backgroundBox, style.usedValues.backgroundColor);
+			_intersectionBounds.x = backgroundBox.x;
+			_intersectionBounds.y = backgroundBox.y;
+			_intersectionBounds.width = backgroundBox.width;
+			_intersectionBounds.height = backgroundBox.height;
+			
+			//determine wether the background box intersect with the clipped rect
+			GeomUtils.intersectBounds(_intersectionBounds, clipRect, _intersectionBounds);
+			if (_intersectionBounds.width == 0 || _intersectionBounds.height == 0)
+			{
+				return;
+			}
+			
+			graphicContext.graphics.fillRect(backgroundBox, style.usedValues.backgroundColor, clipRect);
+		}
+		//if the element has no background image to draw,
+		//early return
+		if (style.hasBackgroundImage == false)
+		{
+			return;
+		}
+		
+		_intersectionBounds.x = backgroundBox.x;
+		_intersectionBounds.y = backgroundBox.y;
+		_intersectionBounds.width = backgroundBox.width;
+		_intersectionBounds.height = backgroundBox.height;
+		
+		//determine wether the background box intersect with the clipped rect
+		GeomUtils.intersectBounds(_intersectionBounds, clipRect, _intersectionBounds);
+		if (_intersectionBounds.width == 0 || _intersectionBounds.height == 0)
+		{
+			return;
 		}
 		
 		var backgroundImages:Array<CSSPropertyValue> = getAsArray(style.backgroundImage);
@@ -116,7 +154,7 @@ class BackgroundManager
 				case URL(value):
 					drawBackgroundImage(graphicContext, value, style, backgroundBox,
 					backgroundPositions[i], backgroundSizes[i], backgroundOrigins[i], backgroundClips[i],
-					backgroundRepeats[i], backgroundImages[i], elementRenderer);
+					backgroundRepeats[i], backgroundImages[i], elementRenderer, clipRect);
 					
 				default:	
 			}
@@ -173,7 +211,7 @@ class BackgroundManager
 	 */
 	private static function drawBackgroundImage(graphicContext:GraphicsContext, url:String, style:CoreStyle, backgroundBox:RectangleVO,
 	backgroundPosition:CSSPropertyValue, backgroundSize:CSSPropertyValue, backgroundOrigin:CSSPropertyValue,
-	backgroundClip:CSSPropertyValue, backgroundRepeat:CSSPropertyValue, backgroundImage:CSSPropertyValue, elementRenderer:ElementRenderer):Void
+	backgroundClip:CSSPropertyValue, backgroundRepeat:CSSPropertyValue, backgroundImage:CSSPropertyValue, elementRenderer:ElementRenderer, clipRect:RectangleVO):Void
 	{
 		var foundResource:Bool = false;
 		
@@ -181,6 +219,17 @@ class BackgroundManager
 		
 		if (resource.loaded == true)
 		{
+				_intersectionBounds.x = backgroundBox.x;
+				_intersectionBounds.y = backgroundBox.y;
+				_intersectionBounds.width = backgroundBox.width;
+				_intersectionBounds.height = backgroundBox.height;
+		
+				//determine the clip rect for the background image, which is the intersection
+				//between the bounds of the element and its clip rect
+				//
+				//TODO 2 : can use hit testing bounds instead ?
+				GeomUtils.intersectBounds(_intersectionBounds, clipRect, _intersectionBounds);
+			
 				var computedGradientStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
 				style, backgroundBox, resource.intrinsicWidth, resource.intrinsicHeight, resource.intrinsicRatio, backgroundPosition,
 				backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
@@ -196,7 +245,7 @@ class BackgroundManager
 				resource.intrinsicRatio,
 				computedGradientStyles.backgroundSize,
 				computedGradientStyles.backgroundPosition,
-				computedGradientStyles.backgroundRepeat);
+				computedGradientStyles.backgroundRepeat, _intersectionBounds);
 				
 			foundResource = true;
 		}
@@ -242,7 +291,7 @@ class BackgroundManager
 	public static function doDrawBackgroundImage(backgroundBox:RectangleVO, graphicContext:GraphicsContext, resource:AbstractResource,
 	backgroundPositioningBox:RectangleVO, backgroundPaintingBox:RectangleVO, intrinsicWidth:Float,
 	intrinsicHeight:Float, intrinsicRatio:Float, computedBackgroundSize:DimensionVO,
-	computedBackgroundPosition:PointVO, backgroundRepeat:CSSPropertyValue):Void
+	computedBackgroundPosition:PointVO, backgroundRepeat:CSSPropertyValue, clipRect:RectangleVO):Void
 	{	
 
 		var backgroundRepeatX:CSSKeywordValue =  null;
@@ -337,21 +386,11 @@ class BackgroundManager
 		//TODO 3 : doc + separate in 2 methods
 		if ((imageWidth / intrinsicWidth == 1) && (imageHeight / intrinsicHeight == 1))
 		{
-			if (_destinationPoint == null)
-			{
-				_destinationPoint = new PointVO(0.0, 0.0);
-			}
-			
 			_destinationPoint.x = totalWidth + backgroundBox.x - computedBackgroundPosition.x;
 			_destinationPoint.y = totalHeight + backgroundBox.y - computedBackgroundPosition.y;
 				
 			var intWidth:Float = intrinsicWidth;
 			var intHeight:Float = intrinsicHeight;
-			
-			if (_box == null)
-			{
-				_box = new RectangleVO();
-			}
 			
 			_box.x = backgroundPaintingBox.x - computedBackgroundPosition.x;
 			_box.y = backgroundPaintingBox.y - computedBackgroundPosition.y;
@@ -360,7 +399,7 @@ class BackgroundManager
 			
 			while (totalHeight < maxHeight)
 			{
-				graphicContext.graphics.copyPixels(resource.nativeResource, _box, _destinationPoint );
+				graphicContext.graphics.copyPixels(resource.nativeResource, _box, _destinationPoint, clipRect );
 				
 				totalWidth += imageWidth;
 				
@@ -378,9 +417,9 @@ class BackgroundManager
 		{
 			var matrix:Matrix = new Matrix();
 			
-			backgroundPaintingBox.x += backgroundBox.x;
-			backgroundPaintingBox.y += backgroundBox.y;
-
+			backgroundPaintingBox.x += backgroundBox.x + computedBackgroundPosition.x;
+			backgroundPaintingBox.y += backgroundBox.y + computedBackgroundPosition.y;
+			
 			while (totalHeight < maxHeight)
 			{
 				
@@ -390,7 +429,7 @@ class BackgroundManager
 				
 				matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight);
 				
-				graphicContext.graphics.drawImage(resource.nativeResource, matrix, backgroundPaintingBox);
+				graphicContext.graphics.drawImage(resource.nativeResource, matrix, backgroundPaintingBox, clipRect);
 				
 				totalWidth += imageWidth;
 				

@@ -53,6 +53,20 @@ class AbstractGraphicsContextImpl
 	 * as defined by the _useTransparency flag
 	 */
 	private var _alpha:Float;
+	
+	/**
+	 * A flag determining wether to use the
+	 * provided transformations matrix when
+	 * drawing to bitmap
+	 */
+	private var _useTransformations:Bool;
+	
+	/**
+	 * The transformations matrix to use when
+	 * drawing if the use transformations flag
+	 * is true
+	 */
+	private var _matrix:Matrix;
 
 	/**
 	 * class constructor
@@ -60,6 +74,7 @@ class AbstractGraphicsContextImpl
 	public function new()
 	{
 		_useTransparency = false;
+		_useTransformations = false;
 		_alpha = 0.0;
 	}
 	
@@ -133,9 +148,10 @@ class AbstractGraphicsContextImpl
 	}
 	
 	/**
-	 * Clears the bitmap data
+	 * Clears a given rectangle of the bitmap data.
+	 * The coordinate are provided in viewport space
 	 */
-	public function clear():Void
+	public function clear(x:Float, y:Float, width:Float, height:Float):Void
 	{
 		//abstract
 	}
@@ -152,12 +168,42 @@ class AbstractGraphicsContextImpl
 	}
 	
 	/**
+	 * Takes a region of the current bitmap matching rect,
+	 * and duplicate it on the current at the x/y position
+	 */
+	public function copyRect(rect:RectangleVO, x:Float, y:Float):Void
+	{
+		//abstract
+	}
+	
+	/**
 	 * End the use of transparency when drawing 
 	 * bitmaps
 	 */
 	public function endTransparency():Void
 	{
 		_useTransparency = false;
+	}
+	
+	/**
+	 * When called, all subsequent calls to bitmap
+	 * drawing methods draw using the provided transformation
+	 * matrix, until endTransformations is called
+	 */
+	public function beginTransformations(matrix:Matrix):Void
+	{
+		_useTransformations = true;
+		_matrix = matrix;
+	}
+	
+	/**
+	 * End the use of the transformation
+	 * matrix when drawing
+	 */
+	public function endTransformations():Void
+	{
+		_matrix = null;
+		_useTransformations = false;
 	}
 	
 	/**
@@ -168,8 +214,10 @@ class AbstractGraphicsContextImpl
 	 * to the bitmap.
 	 * @param	sourceRect defines the zone from the source bitmap data that must be copied onto the 
 	 * native graphic dom element.
+	 * @param clipRect define the zone in the drawn bitmap where pixels can be painted, all pixels
+	 * outside of this rectangle are never painted
 	 */
-	public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix, sourceRect:RectangleVO):Void
+	public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix, sourceRect:RectangleVO, clipRect:RectangleVO):Void
 	{
 		//abstract
 	}
@@ -180,8 +228,10 @@ class AbstractGraphicsContextImpl
 	 * @param	sourceRect the area of the source bitmap data to use
 	 * @param	destPoint the upper left corner of the rectangular aeaa where the new
 	 * pixels are placed
+	 * @param clipRect define the zone in the drawn bitmap where pixels can be painted, all pixels
+	 * outside of this rectangle are never painted
 	 */
-	public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO):Void
+	public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO, clipRect:RectangleVO):Void
 	{
 		//abstract
 	}
@@ -190,8 +240,10 @@ class AbstractGraphicsContextImpl
 	 * Fill a rect with the specified color
 	 * @param rect the rectangle to fill
 	 * @param color the rectangle's color
+	 * @param clipRect define the zone in the drawn bitmap where pixels can be painted, all pixels
+	 * outside of this rectangle are never painted
 	 */
-	public function fillRect(rect:RectangleVO, color:ColorVO):Void
+	public function fillRect(rect:RectangleVO, color:ColorVO, clipRect:RectangleVO):Void
 	{
 		//abstract
 	}

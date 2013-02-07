@@ -8,9 +8,6 @@
 */
 package cocktail.port;
 
-/**
- * Set the right runtime specific NativeElement at compile-time
- */
 #if macro
 typedef NativeElement =  Dynamic;
 

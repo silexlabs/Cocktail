@@ -55,6 +55,8 @@ class CSSStyleRule extends CSSRule
 		_selectorParser = new CSSSelectorParser();
 		
 		selectors = new Array<SelectorVO>();
+		
+		type = CSSRule.STYLE_RULE;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -217,12 +219,6 @@ class CSSStyleRule extends CSSRule
 	override private function get_cssText():String
 	{
 		return serializeStyleRule();
-	}
-	
-	
-	override private function get_type():Int
-	{
-		return CSSRule.STYLE_RULE;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
