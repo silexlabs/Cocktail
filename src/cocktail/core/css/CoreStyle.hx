@@ -1196,16 +1196,25 @@ class CoreStyle
 		//check if the property has currently a value other than 
 		//the initial value, in which case the current value must
 		//be set to null
-		if (computedValues.getTypedProperty(propertyIndex) != null)
+		if (specifiedValues.getTypedProperty(propertyIndex) != null)
 		{
 			//TODO 2 : should check if start animation
 			
 			specifiedValues.removeProperty(propertyIndex);
 			computedValues.removeProperty(propertyIndex);
 			htmlElement.invalidateStyle(propertyIndex);
-			
 			//signal that the property value changed
 			return true;
+		}
+		//border case : the computed values might be set while specified value is
+		//null, for instance when applying position, float and display relationship.
+		//
+		//For instance, an inline element with an 'absolute' position will have a computed
+		//display value of 'block'. The value is reset but is it not considered that the
+		//calue changed
+		else if (computedValues.getTypedProperty(propertyIndex) != null)
+		{
+			computedValues.removeProperty(propertyIndex);
 		}
 		
 		

@@ -115,12 +115,19 @@ class SWFPlugin extends Plugin
 	private var _mask:Sprite;
 	
 	/**
+	 * Store wether the loaded swf is currently
+	 * added to the flash stage
+	 */
+	private var _swfAddedToStage:Bool;
+	
+	/**
 	 * class constructor, get a reference to the loaded swf
 	 */
 	public function new(elementAttributes:Hash<String>, params:Hash<String>, loadComplete:Void->Void, loadError:Void->Void) 
 	{
 		super(elementAttributes, params, loadComplete, loadError);
 		_swfBounds = new RectangleVO();
+		_swfAddedToStage = false;
 		init();
 	}
 	
@@ -239,9 +246,16 @@ class SWFPlugin extends Plugin
 	 */
 	override public function attach(graphicsContext:GraphicsContext):Void
 	{
-		//get a reference to the native layer, which is a flash Sprite
-		var containerGraphicContext:DisplayObjectContainer = cast(graphicsContext.nativeLayer);
-		containerGraphicContext.addChild(_swf);
+		//check to prevent adding multiple times
+		if (_swfAddedToStage == false)
+		{
+			//get a reference to the native layer, which is a flash Sprite
+			var containerGraphicContext:DisplayObjectContainer = cast(graphicsContext.nativeLayer);
+			containerGraphicContext.addChild(_swf);
+			
+			_swfAddedToStage = true;
+		}
+		
 	}
 	
 	/**
@@ -249,8 +263,15 @@ class SWFPlugin extends Plugin
 	 */
 	override public function detach(graphicsContext:GraphicsContext):Void
 	{
-		var containerGraphicContext:DisplayObjectContainer = cast(graphicsContext.nativeLayer);
-		containerGraphicContext.removeChild(_swf);
+		//check to prevent removing multiple times
+		if (_swfAddedToStage == true)
+		{
+			trace("remove swf");
+			var containerGraphicContext:DisplayObjectContainer = cast(graphicsContext.nativeLayer);
+			containerGraphicContext.removeChild(_swf);
+			
+			_swfAddedToStage = false;
+		}
 	}
 	
 	/**
