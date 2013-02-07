@@ -395,7 +395,7 @@ class CSSStyleDeclaration
 	 * Return the property with the given index as a typed property
 	 * object or null if it is not defined on this style declaration
 	 */
-	public function getTypedProperty(propertyIndex:Int):TypedPropertyVO
+	public inline function getTypedProperty(propertyIndex:Int):TypedPropertyVO
 	{
 		//initialised on first use
 		if (_indexedProperties == null)
@@ -442,12 +442,9 @@ class CSSStyleDeclaration
 			{
 				_onStyleChange(propertyIndex);
 			}
-			
-			return;
 		}
-		
 		//here the property exists, update it only if necessary
-		if (currentProperty.typedValue != typedValue || currentProperty.important != important)
+		else if (currentProperty.typedValue != typedValue || currentProperty.important != important)
 		{
 			currentProperty.typedValue = typedValue;
 			currentProperty.important = important;
