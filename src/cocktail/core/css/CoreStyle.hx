@@ -26,6 +26,7 @@ import cocktail.core.css.CSSValueConverter;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.resource.ResourceManager;
+import cocktail.Lib;
 
 /**
  * This class has 3 main purposes :
@@ -213,6 +214,13 @@ class CoreStyle
 	 * all the properties whose value changed
 	 */
 	private var _changedProperties:Array<Int>;
+	
+	/**
+	 * True while the first cascade did not occur,
+	 * for the first cascade, all styles need to
+	 * be cascaded
+	 */
+	private var _isFirstCascade:Bool;
 	
 	/**
 	 * The owning HTMLElement
@@ -473,6 +481,8 @@ class CoreStyle
 	{
 		this.htmlElement = htmlElement;
 		
+		_isFirstCascade = true;
+		
 		hasTransitionnableProperties = false;
 		isFloat = false;
 		isInlineLevel = false;
@@ -580,7 +590,7 @@ class CoreStyle
 		usedValues.color = new ColorVO(0, 1.0);
 		usedValues.transformOrigin = new PointVO(0.0, 0.0);
 		usedValues.transform = new Matrix();
-		usedValues.backgroundColor = new ColorVO(0, 1.0);
+		usedValues.backgroundColor = new ColorVO(0, 0.0);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -617,6 +627,7 @@ class CoreStyle
 		{
 			return;
 		}
+		cascadeManager.shouldCascadeAll();
 		
 		//will store all the properties which value
 		//change during cascading
@@ -670,7 +681,14 @@ class CoreStyle
 				}
 				
 				//refresh the font metrics when either font family or font size hanges
-				fontMetrics = _fontManager.getFontMetrics(computedValues.fontFamily, getAbsoluteLength(fontSize));
+				if (computedValues.fontFamily != null)
+				{
+					fontMetrics = _fontManager.getFontMetrics(computedValues.fontFamily, getAbsoluteLength(fontSize));
+				}
+				else
+				{
+					fontMetrics = _fontManager.getFontMetrics(initialStyleDeclaration.initialComputedStyleDeclaration.fontFamily, getAbsoluteLength(fontSize));
+				}
 			}
 			
 			//prevent from being cascaded twice
@@ -821,21 +839,29 @@ class CoreStyle
 		}
 		
 		//update property flags which need it
-		updateCoreStyleAttribute(cascadeManager);
+		updateCoreStyleAttribute(cascadeManager, _isFirstCascade);
 		
+		
+		//unset flag now that first cascade is done
+		if (_isFirstCascade == true)
+		{
+			_isFirstCascade = false;
+		}
 	}
 	
 	/**
-	 * update core style flags
+	 * update core style flags, always update all for first cascade, as 
+	 * all styles are cascaded
 	 */
-	private function updateCoreStyleAttribute(cascadeManager:CascadeManager):Void
+	private function updateCoreStyleAttribute(cascadeManager:CascadeManager, isFirstCascade:Bool):Void
 	{
-		if (cascadeManager.hasFloat == true)
+		if (cascadeManager.hasFloat == true || isFirstCascade == true)
 		{
 			isFloat = isNone(cssFloat) == false;
 		}
 		
-		if (cascadeManager.hasDisplay == true || cascadeManager.hasPosition == true || cascadeManager.hasFloat == true)
+		if (cascadeManager.hasDisplay == true || cascadeManager.hasPosition == true 
+		|| cascadeManager.hasFloat == true || isFirstCascade == true)
 		{
 			isInlineLevel = false;
 			isInlineBlock = false;
@@ -859,12 +885,12 @@ class CoreStyle
 			}
 		}
 		
-		if (cascadeManager.hasVisible == true)
+		if (cascadeManager.hasVisible == true || isFirstCascade == true)
 		{
 			isVisible = getKeyword(visibility) != HIDDEN;
 		}
 		
-		if (cascadeManager.hasPosition == true)
+		if (cascadeManager.hasPosition == true || isFirstCascade == true)
 		{
 			isPositioned = false;
 			isRelativePositioned = false;
@@ -892,7 +918,7 @@ class CoreStyle
 			}
 		}
 		
-		if (cascadeManager.hasOverflowX || cascadeManager.hasOverflowY)
+		if (cascadeManager.hasOverflowX || cascadeManager.hasOverflowY || isFirstCascade == true)
 		{
 			canAlwaysOverflow = true;
 			hasHiddenOrScrollOverflowX = false;
@@ -922,7 +948,7 @@ class CoreStyle
 			}
 		}
 		
-		if (cascadeManager.hasTransform || cascadeManager.hasPosition)
+		if (cascadeManager.hasTransform || cascadeManager.hasPosition || isFirstCascade == true)
 		{
 			isTransformed = false;
 			hasCSSTransform = false;
@@ -938,7 +964,7 @@ class CoreStyle
 			}
 		}
 		
-		if (cascadeManager.hasOpacity == true)
+		if (cascadeManager.hasOpacity == true || isFirstCascade == true)
 		{
 			isTransparent = false;
 			switch(opacity)
@@ -953,29 +979,29 @@ class CoreStyle
 			}
 		}
 		
-		if (cascadeManager.hasMarginTop == true)
+		if (cascadeManager.hasMarginTop == true || isFirstCascade == true)
 		{
 			hasAutoMarginTop = isAuto(marginTop);
 		}
 		
-		if (cascadeManager.hasMarginBottom == true)
+		if (cascadeManager.hasMarginBottom == true || isFirstCascade == true)
 		{
 			hasAutoMarginBottom = isAuto(marginBottom);
 		}
 		
-		if (cascadeManager.hasMarginLeft == true)
+		if (cascadeManager.hasMarginLeft == true || isFirstCascade == true)
 		{
 			hasAutoMarginLeft = isAuto(marginLeft);
 		}
 		
-		if (cascadeManager.hasMarginRight == true)
+		if (cascadeManager.hasMarginRight == true || isFirstCascade == true)
 		{
 			hasAutoMarginRight = isAuto(marginRight);
 		}
 		
 		//for background image, if an url is provided, 
 		//start loading the image
-		if (cascadeManager.hasBackgroundImage == true)
+		if (cascadeManager.hasBackgroundImage == true || isFirstCascade == true)
 		{
 			hasBackgroundImage = false;
 			if (isNone(backgroundImage) == false)
@@ -992,7 +1018,7 @@ class CoreStyle
 			}
 		}
 		
-		if (cascadeManager.hasVerticalAlign == true)
+		if (cascadeManager.hasVerticalAlign == true || isFirstCascade == true)
 		{
 			isTopAligned = false;
 			isBottomAligned = false;
@@ -1019,12 +1045,12 @@ class CoreStyle
 			}
 		}
 		
-		if (cascadeManager.hasClear == true)
+		if (cascadeManager.hasClear == true || isFirstCascade == true)
 		{
 			canHaveClearance = isNone(clear) == false;
 		}
 		
-		if (cascadeManager.hasWhiteSpace == true)
+		if (cascadeManager.hasWhiteSpace == true || isFirstCascade == true)
 		{
 			hasPreLineWhiteSpace = false;
 			hasPreWhiteSpace = false;
@@ -1053,27 +1079,27 @@ class CoreStyle
 			}
 		}
 		
-		if (cascadeManager.hasWidth == true)
+		if (cascadeManager.hasWidth == true || isFirstCascade == true)
 		{
 			hasAutoWidth = isAuto(width);
 		}
 		
-		if (cascadeManager.hasHeight == true)
+		if (cascadeManager.hasHeight == true || isFirstCascade == true)
 		{
 			hasAutoHeight = isAuto(height);
 		}
 		
-		if (cascadeManager.hasMaxHeight == true)
+		if (cascadeManager.hasMaxHeight == true || isFirstCascade == true)
 		{
 			hasMaxHeight = isNone(maxHeight) == false;
 		}
 		
-		if (cascadeManager.hasMaxWidth == true)
+		if (cascadeManager.hasMaxWidth == true || isFirstCascade == true)
 		{
 			hasMaxWidth = isNone(maxWidth) == false;
 		}
 		
-		if (cascadeManager.hasTextAlign == true)
+		if (cascadeManager.hasTextAlign == true || isFirstCascade == true)
 		{
 			isLeftAligned = false;
 			switch(getKeyword(textAlign))
@@ -1085,22 +1111,22 @@ class CoreStyle
 			}
 		}
 		
-		if (cascadeManager.hasTop == true)
+		if (cascadeManager.hasTop == true || isFirstCascade == true)
 		{
 			hasAutoTop = isAuto(top);
 		}
 		
-		if (cascadeManager.hasBottom == true)
+		if (cascadeManager.hasBottom == true || isFirstCascade == true)
 		{
 			hasAutoBottom = isAuto(bottom);
 		}
 		
-		if (cascadeManager.hasLeft == true)
+		if (cascadeManager.hasLeft == true || isFirstCascade == true)
 		{
 			hasAutoLeft = isAuto(left);
 		}
 		
-		if (cascadeManager.hasRight == true)
+		if (cascadeManager.hasRight == true || isFirstCascade == true)
 		{
 			hasAutoRight = isAuto(right);
 		}
@@ -1141,11 +1167,49 @@ class CoreStyle
 		//use the value from the parent
 		if (isInherited(propertyIndex) == true)
 		{
-			return setProperty(propertyIndex, parentStyleDeclaration.getTypedProperty(propertyIndex), parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, true, false);
+			if (parentStyleDeclaration.getTypedProperty(propertyIndex) != null)
+			{
+				return setProperty(propertyIndex, parentStyleDeclaration.getTypedProperty(propertyIndex), parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, true, false);
+			}
+			//if the parent has no defined property for this style, it
+			//means that it uses the initial property value
+			else
+			{
+				return setInitialProperty(propertyIndex);
+			}
 		}
 		
 		//else at last use the initial value of the property
-		return setProperty(propertyIndex, initialStyleDeclaration.getTypedProperty(propertyIndex), parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, true);
+		return setInitialProperty(propertyIndex);
+	}
+	
+	/**
+	 * This method is a special case used when the initial
+	 * value of a CSS property should be used. For this case,
+	 * no new typed property object is created as it will only
+	 * copy the initial CSS property value. Instead the value
+	 * for this property remains null, which means it uses
+	 * the initial value for the CSS style
+	 */
+	private function setInitialProperty(propertyIndex:Int):Bool
+	{
+		//check if the property has currently a value other than 
+		//the initial value, in which case the current value must
+		//be set to null
+		if (computedValues.getTypedProperty(propertyIndex) != null)
+		{
+			//TODO 2 : should check if start animation
+			
+			specifiedValues.removeProperty(propertyIndex);
+			computedValues.removeProperty(propertyIndex);
+			htmlElement.invalidateStyle(propertyIndex);
+			
+			//signal that the property value changed
+			return true;
+		}
+		
+		
+		return false;
 	}
 	
 	/**
@@ -1796,7 +1860,7 @@ class CoreStyle
 		//shortcut if there are not any transitions in progress
 		if (_transitionManager.hasTransitionsInProgress == false)
 		{
-			return computedValues.getTypedProperty(properyIndex).typedValue;
+			return getComputedOrInitialProperty(properyIndex).typedValue;
 		}
 		else
 		{
@@ -1811,7 +1875,7 @@ class CoreStyle
 			//else return the computed value for the given property
 			else
 			{
-				return computedValues.getTypedProperty(properyIndex).typedValue;
+				return getComputedOrInitialProperty(properyIndex).typedValue;
 			}
 		}
 	}
@@ -1819,7 +1883,26 @@ class CoreStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE UTILS METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	 
+	
+	/**
+	 * For a given CSS property, return its computed value for this style object.
+	 * It can either come from the computed style declaration of this style object
+	 * or if null for this style object, it means that it uses the initial computed
+	 * style value
+	 */
+	private function getComputedOrInitialProperty(propertyIndex:Int):TypedPropertyVO
+	{
+		var typedProperty:TypedPropertyVO = computedValues.getTypedProperty(propertyIndex);
+		
+		if (typedProperty == null)
+		{
+			typedProperty = Lib.document.initialStyleDeclaration.initialComputedStyleDeclaration.getTypedProperty(propertyIndex);
+		}
+		
+		return typedProperty;
+		
+	}
+	
 	/**
 	 * Return the IDL name of the property, i.e
 	 * the name used for scripting. For instance,
@@ -2153,92 +2236,92 @@ class CoreStyle
 	
 	private inline function get_display():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.DISPLAY).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.DISPLAY).typedValue;
 	}
 	
 	private inline inline function get_position():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.POSITION).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.POSITION).typedValue;
 	}
 	
 	private inline function get_cssFloat():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.FLOAT).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.FLOAT).typedValue;
 	}
 	
 	private inline function get_clear():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.CLEAR).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.CLEAR).typedValue;
 	}
 	
 	private inline function get_zIndex():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.Z_INDEX).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.Z_INDEX).typedValue;
 	}
 	
 	private inline function get_backgroundColor():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_COLOR).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_COLOR).typedValue;
 	}
 	
 	private inline function get_backgroundImage():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_IMAGE).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_IMAGE).typedValue;
 	}
 
 	private inline function get_backgroundOrigin():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_ORIGIN).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_ORIGIN).typedValue;
 	}
 	
 	private inline function get_backgroundClip():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_CLIP).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_CLIP).typedValue;
 	}
 	
 	private inline function get_backgroundAttachment():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_ATTACHMENT).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_ATTACHMENT).typedValue;
 	}
 	
 	private inline function get_backgroundRepeat():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_REPEAT).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_REPEAT).typedValue;
 	}
 	
 	private inline function get_backgroundSize():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_SIZE).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_SIZE).typedValue;
 	}
 	
 	private inline function get_backgroundPosition():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.BACKGROUND_POSITION).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_POSITION).typedValue;
 	}
 	
 	private inline function get_fontWeight():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.FONT_WEIGHT).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.FONT_WEIGHT).typedValue;
 	}
 	
 	private inline function get_fontStyle():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.FONT_STYLE).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.FONT_STYLE).typedValue;
 	}
 	
 	private inline function get_fontFamily():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.FONT_FAMILY).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.FONT_FAMILY).typedValue;
 	}
 	
 	private inline function get_fontVariant():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.FONT_VARIANT).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.FONT_VARIANT).typedValue;
 	}
 	
 	private inline function get_color():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.COLOR).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.COLOR).typedValue;
 	}
 	
 	private inline function get_lineHeight():CSSPropertyValue
@@ -2248,7 +2331,7 @@ class CoreStyle
 	
 	private inline function get_textTransform():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.TEXT_TRANSFORM).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.TEXT_TRANSFORM).typedValue;
 	}
 	
 	private inline function get_letterSpacing():CSSPropertyValue
@@ -2263,12 +2346,12 @@ class CoreStyle
 	
 	private inline function get_whiteSpace():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.WHITE_SPACE).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.WHITE_SPACE).typedValue;
 	}
 	
 	private inline function get_textAlign():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.TEXT_ALIGN).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.TEXT_ALIGN).typedValue;
 	}
 	
 	private inline function get_textIndent():CSSPropertyValue
@@ -2278,56 +2361,56 @@ class CoreStyle
 	
 	private inline function get_verticalAlign():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.VERTICAL_ALIGN).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.VERTICAL_ALIGN).typedValue;
 	}
 	
 	private inline function get_visibility():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.VISIBILITY).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.VISIBILITY).typedValue;
 	}
 	
 	private inline function get_overflowX():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.OVERFLOW_X).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.OVERFLOW_X).typedValue;
 	}
 	
 	private inline function get_overflowY():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.OVERFLOW_Y).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.OVERFLOW_Y).typedValue;
 	}
 	
 	private inline function get_transformOrigin():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.TRANSFORM_ORIGIN).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.TRANSFORM_ORIGIN).typedValue;
 	}
 	
 	private inline function get_transform():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.TRANSFORM).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.TRANSFORM).typedValue;
 	}
 	
 	private inline function get_cursor():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.CURSOR).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.CURSOR).typedValue;
 	}
 	
 	private inline function get_transitionProperty():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.TRANSITION_PROPERTY).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.TRANSITION_PROPERTY).typedValue;
 	}
 	
 	private inline function get_transitionDuration():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.TRANSITION_DURATION).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.TRANSITION_DURATION).typedValue;
 	}
 	
 	private inline function get_transitionTimingFunction():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.TRANSITION_TIMING_FUNCTION).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.TRANSITION_TIMING_FUNCTION).typedValue;
 	}
 	
 	private inline function get_transitionDelay():CSSPropertyValue
 	{
-		return computedValues.getTypedProperty(CSSConstants.TRANSITION_DELAY).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.TRANSITION_DELAY).typedValue;
 	}
 }

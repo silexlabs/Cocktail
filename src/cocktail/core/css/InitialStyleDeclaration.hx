@@ -253,7 +253,7 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		pushComputedProperty(CSSConstants.BACKGROUND_IMAGE, KEYWORD(NONE));
 		pushComputedProperty(CSSConstants.BACKGROUND_POSITION, GROUP([PERCENTAGE(0.0), PERCENTAGE(0.0)]));
 		pushComputedProperty(CSSConstants.BACKGROUND_SIZE, KEYWORD(AUTO));
-		pushComputedProperty(CSSConstants.BACKGROUND_REPEAT, KEYWORD(REPEAT));
+		pushComputedProperty(CSSConstants.BACKGROUND_REPEAT, GROUP([KEYWORD(REPEAT), KEYWORD(REPEAT)]));
 		pushComputedProperty(CSSConstants.BACKGROUND_CLIP, KEYWORD(BORDER_BOX));
 		pushComputedProperty(CSSConstants.BACKGROUND_ORIGIN, KEYWORD(PADDING_BOX));
 		pushComputedProperty(CSSConstants.BACKGROUND_ATTACHMENT, KEYWORD(SCROLL));
