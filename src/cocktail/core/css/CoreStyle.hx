@@ -1156,6 +1156,8 @@ class CoreStyle
 			{
 				return setProperty(propertyIndex, parentStyleDeclaration.getTypedProperty(propertyIndex), parentStyleDeclaration, initialStyleDeclaration,  parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, true, false);
 			}
+			//if the parent has no defined property for this style, it
+			//means that it uses the initial property value
 			else
 			{
 				return setInitialProperty(propertyIndex);
@@ -1166,20 +1168,32 @@ class CoreStyle
 		return setInitialProperty(propertyIndex);
 	}
 	
+	/**
+	 * This method is a special case used when the initial
+	 * value of a CSS property should be used. For this case,
+	 * no new typed property object is created as it will only
+	 * copy the initial CSS property value. Instead the value
+	 * for this property remains null, which means it uses
+	 * the initial value for the CSS style
+	 */
 	private function setInitialProperty(propertyIndex:Int):Bool
 	{
+		//check if the property has currently a value other than 
+		//the initial value, in which case the current value must
+		//be set to null
 		if (computedValues.getTypedProperty(propertyIndex) != null)
 		{
+			//TODO 2 : should check if start animation
+			
 			specifiedValues.removeProperty(propertyIndex);
 			computedValues.removeProperty(propertyIndex);
-			
-			
 			htmlElement.invalidateStyle(propertyIndex);
 			
+			//signal that the property value changed
 			return true;
 		}
 		
-		//htmlElement.invalidateStyle(propertyIndex);
+		
 		return false;
 	}
 	
@@ -1854,7 +1868,13 @@ class CoreStyle
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE UTILS METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	 
+	
+	/**
+	 * For a given CSS property, return its computed value for this style object.
+	 * It can either come from the computed style declaration of this style object
+	 * or if null for this style object, it means that it uses the initial computed
+	 * style value
+	 */
 	private function getComputedOrInitialProperty(propertyIndex:Int):TypedPropertyVO
 	{
 		var typedProperty:TypedPropertyVO = computedValues.getTypedProperty(propertyIndex);
