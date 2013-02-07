@@ -64,15 +64,23 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	
 	/**
 	 * class constructor. Set the name of the tag,
-	 * it can't be changed afterwards. Instantiate
-	 * the attribute node map here because it is the
-	 * only type of node which can have any
+	 * it can't be changed afterwards.
 	 */
 	public function new(tagName:String) 
 	{
 		this.tagName = tagName;
-		attributes = new NamedNodeMap<ElementClass>();
+		initAttributes();
 		super();
+	}
+	
+	/**
+	 * Instantiate
+	 * the attribute node map. Element node are the
+	 * only type of node which can have any
+	 */
+	private function initAttributes():Void
+	{
+		attributes = new NamedNodeMap<ElementClass>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

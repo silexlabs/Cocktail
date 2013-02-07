@@ -194,7 +194,7 @@ class CSSValueConverter
 	 * @param	reference the reference value
 	 * @return a percentage of the reference value
 	 */
-	public static function getPixelFromPercent(percent:Float, reference:Float):Float
+	public inline static function getPixelFromPercent(percent:Float, reference:Float):Float
 	{
 		return reference * (percent * 0.01);
 	}
@@ -205,7 +205,7 @@ class CSSValueConverter
 	 * @param	reference
 	 * @return
 	 */
-	public static function getPercentFromPixel(pixel:Float, reference:Float):Float
+	public inline static function getPercentFromPixel(pixel:Float, reference:Float):Float
 	{
 		return (reference / pixel) * 100;
 	}
@@ -215,8 +215,6 @@ class CSSValueConverter
 	 * Return the computed value of a CSS color from a specified
 	 * CSS Color. For instance, color keyword (blue, red...) are computed
 	 * into rgba color
-	 * 
-	 * TODO 2 : manage currentColor
 	 * 
 	 * @param	colorProperty the specified color value
 	 * @param	currentColor the computed value of the 'color' property
@@ -272,10 +270,20 @@ class CSSValueConverter
 				return RGBA(Math.round(255 * (red * 0.01)), Math.round(255 * (green * 0.01)), Math.round(255 * (blue * 0.01)), alpha);
 				
 			case HSL(hue, saturation, lightness):
-				return colorProperty;
+				
+				hue = 360 / hue;
+				saturation = 100 / saturation;
+				lightness = 100 / lightness;
+				
+				return HSLAToRGBA(hue, saturation, lightness, 1.0);
 				
 			case HSLA(hue, saturation, lightness, alpha):
-				return colorProperty;
+				
+				hue = 360 / hue;
+				saturation = 100 / saturation;
+				lightness = 100 / lightness;
+				
+				return HSLAToRGBA(hue, saturation, lightness, alpha);
 			
 			case HEX(value):
 				
@@ -320,11 +328,6 @@ class CSSValueConverter
 				colorValue = (colorValue << 8) + blue;
 				alphaValue = alpha;	
 				
-			case HSL(hue, saturation, lightness):
-				//TODO 2
-			case HSLA(hue, saturation, lightness, alpha): 
-				//TODO 2
-				
 			default:
 				//other color values (keyword, hex, rgb...) were converted to RGBA during 
 				//cascade
@@ -332,6 +335,66 @@ class CSSValueConverter
 		
 		colorVO.color = colorValue;
 		colorVO.alpha = alphaValue;
+	}
+	
+	/**
+	 * Convert an hsla value to an rgba value.
+	 * The hue,  saturation and lightness value should
+	 * be normalized to fractions of 0 to 1
+	 */
+	private static function HSLAToRGBA(hue:Float, saturation:Float, lightness:Float, alpha:Float):CSSColorValue
+	{
+		var m2:Float = 0;
+		if (lightness < 0.5)
+		{
+			m2 = lightness * (saturation + 1);
+		}
+		else
+		{
+			m2 = lightness + saturation - lightness * saturation;
+		}
+		
+		var m1:Float = lightness * 2 - m2;
+		
+		var r:Int = Math.round(hueToRGB(m1, m2, hue + 1 / 3));
+		var g:Int = Math.round(hueToRGB(m1, m2, hue));
+		var b:Int = Math.round(hueToRGB(m1, m2, hue - 1 / 3));
+		
+		return RGBA(r, g, b, alpha);
+	}
+	
+	/**
+	 * convert a hue to its corresponding
+	 * rgb value
+	 */
+	private static function hueToRGB(m1:Float, m2:Float, h:Float):Float
+	{
+		if (h < 0)
+		{
+			h = h + 1;
+		}
+		
+		if (h > 1)
+		{
+			h = h - 1;
+		}
+		
+		if (h * 6 < 1)
+		{
+			return m1 + (m2 - m1) * h * 6;
+		}
+		
+		if (h * 2 < 1)
+		{
+			return m2;
+		}
+		
+		if (h * 3 < 2)
+		{
+			return m1 + (m2 - m1) * (2 / 3 - h) * 6;
+		}
+		
+		return m1;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -806,7 +869,7 @@ class CSSValueConverter
 				return RGBA(176, 224, 230, 1.0);		
 				
 			case PURPLE:
-				return RGBA(255, 165, 0, 1.0);
+				return RGBA(128, 0, 128, 1.0);
 				
 			case RED:
 				return RGBA(255, 0, 0, 1.0);

@@ -74,9 +74,12 @@ class BoxStylesComputer
 		measureDimensionsAndMargins(style, containingBlockData);
 		
 		//measure the top, left, right and bottom offsets
-		//used when the HTMLElement is 'positioned' (any position style
+		//used when the element is 'positioned' (any position style
 		//but 'static')
-		measurePositionOffsets(style, containingBlockData);
+		if (style.isPositioned == true)
+		{
+			measurePositionOffsets(style, containingBlockData);
+		}
 		
 		//At this point, all the dimensions of the HTMLElement are known maybe except the
 		//content height if it was set to 'auto' and thus depends on its content's height.
@@ -182,7 +185,7 @@ class BoxStylesComputer
 	 */
 	private function measureWidthAndHorizontalMargins(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
-		if (style.isAuto(style.width) == true)
+		if (style.hasAutoWidth == true)
 		{
 			return measureAutoWidth(style, containingBlockData);
 		}
@@ -213,7 +216,26 @@ class BoxStylesComputer
 		style.usedValues.marginRight = getComputedMarginRight(style, usedWidth, containingBlockData);
 
 		//the width is computed now that the sizes of the margins are computed
-		return getComputedAutoWidth(style, containingBlockData);
+		var computedWidth:Float = getComputedAutoWidth(style, containingBlockData);
+		
+		//apply min-width and max-width constrain to the computed width
+		var constrainedWidth:Float = constrainWidth(style, computedWidth);
+		
+		//if the width was indeed constrain
+		if (constrainedWidth != computedWidth)
+		{
+			//and if both the left and right margin are auto, then they takes each half of the remaining space in the
+			//containing block so the element will be centered in its containing block
+			if (style.hasAutoMarginLeft && style.hasAutoMarginRight)
+			{
+				var marginWidth:Float = (containingBlockData.width - style.usedValues.paddingLeft - style.usedValues.paddingRight - constrainedWidth) / 2;
+				
+				style.usedValues.marginLeft = marginWidth;
+				style.usedValues.marginRight = marginWidth;
+			}
+		}
+		
+		return computedWidth;
 	}
 	
 	/**
@@ -251,7 +273,7 @@ class BoxStylesComputer
 		//the height might be null at this point if it must take the content size
 		//it will be set once all its children HTMLElements have been laid out
 		
-		if (style.isAuto(style.height) == true)
+		if (style.hasAutoHeight == true)
 		{
 			return measureAutoHeight(style, containingBlockData);
 		}
@@ -362,33 +384,33 @@ class BoxStylesComputer
 	/**
 	 * Compute the size of the left margin and return it as pixels
 	 */
-	private function getComputedMarginLeft(style:CoreStyle, computedWidth:Float, containingBlockData:ContainingBlockVO):Float
+	private inline function getComputedMarginLeft(style:CoreStyle, computedWidth:Float, containingBlockData:ContainingBlockVO):Float
 	{
-		return getComputedMargin(style.marginLeft, style.marginRight, containingBlockData.width, computedWidth, style.isAuto(style.width), style.usedValues.paddingRight + style.usedValues.paddingLeft, true );
+		return getComputedMargin(style.marginLeft, style.marginRight, containingBlockData.width, computedWidth, style.hasAutoWidth, style.usedValues.paddingRight + style.usedValues.paddingLeft, true );
 	}
 	
 	/**
 	 * Compute the size of the right margin and return it as pixels
 	 */
-	private function getComputedMarginRight(style:CoreStyle, computedWidth:Float, containingBlockData:ContainingBlockVO):Float
+	private inline function getComputedMarginRight(style:CoreStyle, computedWidth:Float, containingBlockData:ContainingBlockVO):Float
 	{
-		return getComputedMargin(style.marginRight, style.marginLeft, containingBlockData.width, computedWidth, style.isAuto(style.width), style.usedValues.paddingRight + style.usedValues.paddingLeft, true  );
+		return getComputedMargin(style.marginRight, style.marginLeft, containingBlockData.width, computedWidth, style.hasAutoWidth, style.usedValues.paddingRight + style.usedValues.paddingLeft, true  );
 	}
 	 
 	/**
 	 * Compute the size of the top margin and return it as pixels
 	 */
-	private function getComputedMarginTop(style:CoreStyle, computedHeight:Float, containingBlockData:ContainingBlockVO):Float
+	private inline function getComputedMarginTop(style:CoreStyle, computedHeight:Float, containingBlockData:ContainingBlockVO):Float
 	{
-		return getComputedMargin(style.marginTop, style.marginBottom, containingBlockData.height, computedHeight, style.isAuto(style.height), style.usedValues.paddingTop + style.usedValues.paddingBottom, false  );
+		return getComputedMargin(style.marginTop, style.marginBottom, containingBlockData.height, computedHeight, style.hasAutoHeight, style.usedValues.paddingTop + style.usedValues.paddingBottom, false  );
 	}
 	
 	/**
 	 * Compute the size of the bottom margin and return it as pixels
 	 */
-	private function getComputedMarginBottom(style:CoreStyle, computedHeight:Float, containingBlockData:ContainingBlockVO):Float
+	private inline function getComputedMarginBottom(style:CoreStyle, computedHeight:Float, containingBlockData:ContainingBlockVO):Float
 	{
-		return getComputedMargin(style.marginBottom, style.marginTop, containingBlockData.height, computedHeight, style.isAuto(style.height), style.usedValues.paddingTop + style.usedValues.paddingBottom, false  );
+		return getComputedMargin(style.marginBottom, style.marginTop, containingBlockData.height, computedHeight, style.hasAutoHeight, style.usedValues.paddingTop + style.usedValues.paddingBottom, false  );
 	}
 	
 	/**
@@ -409,7 +431,7 @@ class BoxStylesComputer
 	private function getComputedMargin(marginStyleValue:CSSPropertyValue, opositeMargin:CSSPropertyValue, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, isHorizontalMargin:Bool):Float
 	{
 		//the return value
-		var usedMargin:Float;
+		var usedMargin:Float = 0;
 		
 		//check which type of value is defined
 		switch (marginStyleValue)
@@ -454,7 +476,7 @@ class BoxStylesComputer
 	 */
 	private function getComputedAutoMargin(marginStyleValue:CSSPropertyValue, opositeMargin:CSSPropertyValue, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, isHorizontalMargin:Bool):Float
 	{
-		var computedMargin:Float;
+		var computedMargin:Float = 0;
 		
 		//if the containing dimension is set to auto,
 		//margin default to 0. Top and bottom margin also default to 0 with
@@ -501,7 +523,7 @@ class BoxStylesComputer
 	 */
 	private function getComputedConstrainedDimension(constrainedDimension:CSSPropertyValue, containingHTMLElementDimension:Float, isContainingDimensionAuto:Bool, isMinConstraint:Bool = false):Float
 	{
-		var computedConstraintDimension:Float;
+		var computedConstraintDimension:Float = 0;
 		
 		//check which type of value is defined
 		switch (constrainedDimension)
@@ -671,7 +693,7 @@ class BoxStylesComputer
 		//superior to max width. The max width
 		//can be defined as "none" if there are 
 		//no width limit on this HTMLElement
-		if (style.isNone(style.maxWidth) == false)
+		if (style.hasMaxWidth == true)
 		{
 			if (usedWidth > usedValues.maxWidth)
 			{
@@ -696,7 +718,7 @@ class BoxStylesComputer
 		var usedValues:UsedValuesVO = style.usedValues;
 	
 		//check that height is within authorised range
-		if (style.isNone(style.maxHeight) == false)
+		if (style.hasMaxHeight == true)
 		{
 			if (usedHeight > usedValues.maxHeight)
 			{

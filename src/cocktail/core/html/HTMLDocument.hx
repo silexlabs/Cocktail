@@ -8,6 +8,7 @@
 */
 package cocktail.core.html;
 
+import cocktail.Config;
 import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CSSRule;
 import cocktail.core.css.CSSStyleDeclaration;
@@ -36,8 +37,6 @@ import cocktail.core.html.HTMLImageElement;
 import cocktail.core.html.HTMLInputElement;
 import cocktail.core.invalidation.InvalidationManager;
 import cocktail.core.layout.floats.FloatsManager;
-import cocktail.core.layout.formatter.BlockFormattingContext;
-import cocktail.core.layout.formatter.InlineFormattingContext;
 import cocktail.core.layout.LayoutManager;
 import cocktail.core.multitouch.MultiTouchManager;
 import cocktail.core.parser.DOMParser;
@@ -165,9 +164,21 @@ class HTMLDocument extends Document
 	 * 
 	 * A click event is dispatched if there was a mouse down
 	 * event then a mouse up event dispatched on the same hovered
-	 * element
+	 * element.
+	 * 
+	 * Additionaly, if touch event are also dispatched, if
+	 * the touch moves too much between the mouse down / touch down
+	 * and mouse up / touch up event, then no click is dispatched
+	 * as it is assumed that the user is probably scrolling instead
 	 */
 	private var _shouldDispatchClickOnNextMouseUp:Bool;
+	
+	/**
+	 * When a touch start event is dispatched, store its
+	 * position so that the total touch offset can be processed
+	 * when subsequent touch move and touch end events are dispatched
+	 */
+	private var _lastTouchStartPosition:PointVO;
 	
 	/**
 	 * A timer controlling the whole document event loop.
@@ -249,17 +260,11 @@ class HTMLDocument extends Document
 	public var innerHTML(get_innerHTML, set_innerHTML):String;
 	
 	/**
-	 * class constructor. Init class attributes
+	 * class constructor.
 	 */
 	public function new(window:Window = null) 
 	{
 		super();
-		
-		timer = new Timer();
-		initStyleManager();
-		invalidationManager = new InvalidationManager(this);
-		
-		cascadeManager = new CascadeManager();
 		
 		//TODO 2 : hack, Document probably shouldn't have
 		//ref to Window
@@ -268,10 +273,25 @@ class HTMLDocument extends Document
 			window = new Window();
 		}
 		
-		_matchedPseudoClasses = new MatchedPseudoClassesVO(false, false, false,
-		false, false, false, false);
-		
 		this.window = window;
+		
+		init();	
+	}
+	
+	/**
+	 * global document init
+	 */
+	private function init():Void
+	{
+		timer = new Timer();
+		initStyleManager();
+		invalidationManager = new InvalidationManager(this);
+		
+		cascadeManager = new CascadeManager();
+		
+		_matchedPseudoClasses = new MatchedPseudoClassesVO(false, false, false,
+		false, false, false, false, false, false, null, null, null);
+		
 		_focusManager = new FocusManager();
 		
 		_hitTestManager = new HitTestManager();
@@ -283,6 +303,7 @@ class HTMLDocument extends Document
 		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
 		
 		_shouldDispatchClickOnNextMouseUp = false;
+		_lastTouchStartPosition = new PointVO(0, 0);
 		
 		layoutManager = new LayoutManager();
 	}
@@ -489,6 +510,29 @@ class HTMLDocument extends Document
 			}
 		}
 		
+		//store wether the store has an ID to know if it is
+		//useful to match it against classes selector
+		_matchedPseudoClasses.hasClasses = node.className != null;
+		
+		//store node classes
+		if (_matchedPseudoClasses.hasClasses == true)
+		{
+			_matchedPseudoClasses.nodeClassList = node.classList;
+		}
+		
+		//store wether the node has an ID to know
+		//if it is useful to match it against ID selectors
+		_matchedPseudoClasses.hasId = node.id != "";
+		
+		//store node id
+		if (_matchedPseudoClasses.hasId == true)
+		{
+			_matchedPseudoClasses.nodeId = node.id;
+		}
+		
+		//store the node type of the node
+		_matchedPseudoClasses.nodeType = node.tagName;
+		
 		_matchedPseudoClasses.hover = hover;
 		_matchedPseudoClasses.focus = focus;
 		_matchedPseudoClasses.active = active;
@@ -591,20 +635,24 @@ class HTMLDocument extends Document
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(wheelEvent.screenX, wheelEvent.screenY);
 		elementRendererAtPoint.domNode.dispatchEvent(wheelEvent);
 		
-		if (wheelEvent.defaultPrevented == false)
-		{
-			var htmlElement:HTMLElement = elementRendererAtPoint.domNode;
-			
+		//TODO 2 : automatic scrolling deactivated until scrollbar properly implemented
+		//for now, scrolling can be implemented by using scrollTop and scrollLeft property
+		//on an HTMLElement with an overflow = hidden style
+		
+		//if (wheelEvent.defaultPrevented == false)
+		//{
+			//var htmlElement:HTMLElement = elementRendererAtPoint.domNode;
+			//
 			//get the amount of vertical scrolling to apply in pixel
-			var scrollOffset:Int = Math.round(wheelEvent.deltaY * MOUSE_WHEEL_DELTA_MULTIPLIER) ;
-			
+			//var scrollOffset:Int = Math.round(wheelEvent.deltaY * MOUSE_WHEEL_DELTA_MULTIPLIER) ;
+			//
 			//get the first ancestor which can be vertically scrolled
-			var scrollableHTMLElement:HTMLElement = getFirstVerticallyScrollableHTMLElement(htmlElement, scrollOffset);
-			if (scrollableHTMLElement != null)
-			{
-				scrollableHTMLElement.scrollTop -= scrollOffset;
-			}
-		}
+			//var scrollableHTMLElement:HTMLElement = getFirstVerticallyScrollableHTMLElement(htmlElement, scrollOffset);
+			//if (scrollableHTMLElement != null)
+			//{
+				//scrollableHTMLElement.scrollTop -= scrollOffset;
+			//}
+		//}
 	}
 	
 	/**
@@ -726,17 +774,58 @@ class HTMLDocument extends Document
 		//dispatch the TouchEvent on the node onto which it was triggered
 		elementAtTouchPoint.domNode.dispatchEvent(touchEvent);
 		
-		//if a start or move touch event default behaviour is canceled
-		//it should prevent simulating a click event when the touch ends
-		switch(touchEvent.type)
+		//check if simulating a click event when the touch ends should
+		//be prevented
+		if (_shouldDispatchClickOnNextMouseUp == true)
 		{
-			case EventConstants.TOUCH_START, EventConstants.TOUCH_MOVE:
-				if (touchEvent.defaultPrevented == true)
-				{
-					_shouldDispatchClickOnNextMouseUp = false;
-				}
+			switch(touchEvent.type)
+			{	
+				case EventConstants.TOUCH_START:
+					//if default prevented, prevent click
+					if (touchEvent.defaultPrevented == true)
+					{
+						_shouldDispatchClickOnNextMouseUp = false;
+					}
+					//else if multi touch, prevent click
+					else if (touchEvent.touches.length > 1)
+					{
+						
+					}
+					//else store touch start position, if touch
+					//then moves too much, click prevented
+					else
+					{
+						_lastTouchStartPosition.x = touchEvent.touches.item(0).screenX;
+						_lastTouchStartPosition.y = touchEvent.touches.item(0).screenY;
+					}
+					
+				case EventConstants.TOUCH_MOVE:
+					//if default prevented, prevent click
+					if (touchEvent.defaultPrevented == true)
+					{
+						_shouldDispatchClickOnNextMouseUp = false;
+					}
+					//else check the offset of the current touch position
+					//from the place where it started, and if the distance
+					//is too great, prevent click dispatch
+					else
+					{
+						var yOffset:Float = touchEvent.touches.item(0).screenY - _lastTouchStartPosition.y;
+						if (Math.abs(yOffset) > Config.TOUCH_MOVE_PREVENT_CLICK_DISTANCE)
+						{
+							_shouldDispatchClickOnNextMouseUp = false;
+						}
+						else
+						{
+							var xOffset:Float = touchEvent.touches.item(0).screenX - _lastTouchStartPosition.x;
+							if (Math.abs(xOffset) > Config.TOUCH_MOVE_PREVENT_CLICK_DISTANCE)
+							{
+								_shouldDispatchClickOnNextMouseUp = false;
+							}
+						}
+					}
+			}
 		}
-		
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -904,7 +993,7 @@ class HTMLDocument extends Document
 	 */
 	private function getFirstElementRendererWhichCanDispatchMouseEvent(x:Int, y:Int):ElementRenderer
 	{
-		var elementRendererAtPoint:ElementRenderer = _hitTestManager.getTopMostElementRendererAtPoint(documentElement.elementRenderer.layerRenderer, x, y, 0, 0  );
+		var elementRendererAtPoint:ElementRenderer = _hitTestManager.getTopMostElementRendererAtPoint(documentElement.elementRenderer.layerRenderer.stackingContext, x, y);
 
 		//when no element is under mouse like for instance when the mouse leaves
 		//the window, return the body
@@ -933,17 +1022,20 @@ class HTMLDocument extends Document
 	 * The scrollOffset is also provided as if a vertically scrollable element
 	 * is completely scrolled and adding this offset won't make a difference,
 	 * then it is not considered scrollable
+	 * 
+	 * TODO 1 : should use htmlElement.scrollHeight - (htmlElement.scrollTop + scrollOffset)
+	 * + check wether a vertical scrollbar is displayed with layer
 	 */
 	private function getFirstVerticallyScrollableHTMLElement(htmlElement:HTMLElement, scrollOffset:Int):HTMLElement
 	{
-		while (htmlElement.isVerticallyScrollable(scrollOffset) == false)
-		{
-			htmlElement = htmlElement.parentNode;
-			if ( htmlElement == null)
-			{
-				return null;
-			}
-		}
+		//while (htmlElement.isVerticallyScrollable(scrollOffset) == false)
+		//{
+			//htmlElement = htmlElement.parentNode;
+			//if ( htmlElement == null)
+			//{
+				//return null;
+			//}
+		//}
 		
 		return htmlElement;
 	}

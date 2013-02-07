@@ -101,14 +101,6 @@ class HTMLVideoElement extends HTMLMediaElement
 		nativeMedia = new NativeVideo();
 	}
 	
-	/**
-	 * the embedded assed is held by the image loader
-	 */
-	override private function initEmbeddedAsset():Void
-	{
-		embeddedAsset = nativeMedia.nativeElement;
-	}
-	
 	/*
 	 * Init the image HTMLElement for the poster image
 	 */ 

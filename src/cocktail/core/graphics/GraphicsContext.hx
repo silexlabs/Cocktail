@@ -102,40 +102,76 @@ class GraphicsContext extends FastNode<GraphicsContext>
 	////////////////////////////////
 	
 	/**
-	 * Overriden to invalidate the native layer tree
+	 * Overriden to invalidate the native layer tree, and the
+	 * size of the bitmap
 	 */ 
 	override public function appendChild(newChild:GraphicsContext):Void
 	{
 		super.appendChild(newChild);
 		
 		newChild.invalidateNativeLayer();
+		newChild.invalidateBitmapSize();
 	}
 	
 	/**
-	 * Overriden to invalidate the native layer tree
+	 * Overriden to invalidate the native layer tree, the size
+	 * of the bitmap
 	 * and detach the old child
 	 */ 
 	override public function removeChild(oldChild:GraphicsContext):Void
 	{
 		oldChild.detach();
 		oldChild.invalidateNativeLayer();
+		oldChild.invalidateBitmapSize();
 		
 		super.removeChild(oldChild);
 	}
 	
 	/**
 	 * Overriden to invalidate the native layer tree
+	 * and the size of the bitmap
 	 */ 
 	override public function insertBefore(newChild:GraphicsContext, refChild:GraphicsContext):Void
 	{
 		super.insertBefore(newChild, refChild);
 
+		if (refChild == null)
+		{
+			return;
+		}
+		
 		newChild.invalidateNativeLayer();
+		newChild.invalidateBitmapSize();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC GRAPHICS CONTEXT TREE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when the size of the viewport changed
+	 * or when a new graphics context was added to
+	 * the graphics context tree. Update 
+	 * the size of the bitmaps used for rendering
+	 * 
+	 * @param	viewportWidth	the width of the viewport, used as the width of the bitmap
+	 * @param	viewportHeight	the height of the viewport, used as the height of the bitmap
+	 */
+	public function updateGraphicsSize(viewportWidth:Int, viewportHeight:Int):Void
+	{
+		//some layer don't need their own bitmap surface
+		if (layerRenderer.needsBitmap() ==  true)
+		{
+			graphics.initBitmapData(viewportWidth, viewportHeight);
+		}
+		
+		var child:GraphicsContext = firstChild;
+		while (child != null)
+		{
+			child.updateGraphicsSize(viewportWidth, viewportHeight);
+			child = child.nextSibling;
+		}
+	}
 	
 	/**
 	 * Main method building the native layer tree.
@@ -169,6 +205,17 @@ class GraphicsContext extends FastNode<GraphicsContext>
 		_needsNativeLayerUpdate = true;
 		var htmlDocument:HTMLDocument = cast(layerRenderer.rootElementRenderer.domNode.ownerDocument);
 		htmlDocument.invalidationManager.invalidateNativeLayerTree();
+	}
+	
+	/**
+	 * called when the graphics context is added to
+	 * the graphics context tree, its bitmap should
+	 * be instantiated/updated
+	 */
+	public function invalidateBitmapSize():Void
+	{
+		var htmlDocument:HTMLDocument = cast(layerRenderer.rootElementRenderer.domNode.ownerDocument);
+		htmlDocument.invalidationManager.invalidateBitmapSizes();
 	}
 	
 	/**

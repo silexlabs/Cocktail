@@ -48,7 +48,8 @@ class CSSSelectorParser
 		var simpleSelectorSequenceItemValues:Array<SimpleSelectorSequenceItemValue> = [];
 		var components:Array<SelectorComponentValue> = [];
 		
-		var selectorData:SelectorVO = new SelectorVO(components, PseudoElementSelectorValue.NONE);
+		var selectorData:SelectorVO = new SelectorVO(components, PseudoElementSelectorValue.NONE,
+		false, null, false, null, false, null, false, false, false);
 		
 		while (!c.isEOF())
 		{
@@ -82,7 +83,6 @@ class CSSSelectorParser
 							case '.'.code:
 								state = SIMPLE_SELECTOR;
 								next = END_CLASS_SELECTOR;
-								//TODO 1 : hack to add 1 ?
 								start = position + 1;
 								
 							case '#'.code:
@@ -143,7 +143,7 @@ class CSSSelectorParser
 				case END_SIMPLE_SELECTOR:
 					switch(c)
 					{
-						case ' '.code, '>'.code:
+						case ' '.code, '\n'.code, '\r'.code, '>'.code:
 							state = BEGIN_COMBINATOR;
 							continue;
 								
@@ -161,11 +161,11 @@ class CSSSelectorParser
 					{
 						switch(c)
 						{
-							case ' '.code, '>'.code, ':'.code, '#'.code, '.'.code, '['.code:
+							case ' '.code, '\n'.code, '\r'.code, '>'.code, ':'.code, '#'.code, '.'.code, '['.code:
 								state = next;
 								continue;
 								
-							default:	
+							default:
 								state = INVALID_SELECTOR;
 								continue;
 						}
@@ -276,7 +276,39 @@ class CSSSelectorParser
 		//combinators logic, so the array is reversed
 		selectorData.components.reverse();
 		
-		var typedSelector:SelectorVO = new SelectorVO(selectorData.components, selectorData.pseudoElement);
+		//if the selector begins with a class return it, else return null
+		var firstClass:String = getFirstClass(selectorData.components);
+		
+		//check wether the selector only contains a single class
+		var isSimpleClassSelector:Bool = false;
+		if (firstClass != null)
+		{
+			isSimpleClassSelector = getIsSimpleClassSelector(selectorData.components);
+		}
+		
+		//same as above for Id
+		var firstId:String = getFirstId(selectorData.components);
+		
+		var isSimpleIdSelector:Bool = false;
+		if (firstId != null)
+		{
+			isSimpleIdSelector = getIsSimpleIdSelector(selectorData.components);
+		}
+		
+		//same as above for type
+		var firstType:String = getFirstType(selectorData.components);
+		
+		var isSimpleTypeSelector:Bool = false;
+		if (firstType != null)
+		{
+			isSimpleTypeSelector = getIsSimpleTypeSelector(selectorData.components);
+		}
+		
+		var typedSelector:SelectorVO = new SelectorVO(selectorData.components, selectorData.pseudoElement,
+		firstClass != null, firstClass,
+		firstId != null, firstId,
+		firstType != null, firstType
+		, isSimpleClassSelector, isSimpleIdSelector, isSimpleTypeSelector);
 		
 		typedSelectors.push(typedSelector);
 	}
@@ -446,45 +478,81 @@ class CSSSelectorParser
 		var operator:String = null;
 		var value:String = null;
 		
-		var state:AttributeSelectorParserState = ATTRIBUTE;
+		var state:AttributeSelectorParserState = IGNORE_SPACES;
+		var next:AttributeSelectorParserState = ATTRIBUTE;
 		
 		while (true)
 		{
 			switch(state)
 			{
+				case IGNORE_SPACES:
+					switch(c)
+					{
+						case
+							'\n'.code,
+							'\r'.code,
+							'\t'.code,
+							' '.code:
+						default:
+							state = next;
+							continue;
+					}
+				
 				case ATTRIBUTE:
 					if (!isSelectorChar(c))
 					{
 						attribute = selector.substr(start, position - start);
-						state = OPERATOR;
-						start = position;
-						continue;
+						
+						if (c == ']'.code)
+						{
+							state = END_SELECTOR;
+						}
+						else
+						{
+							state = IGNORE_SPACES;
+							next = BEGIN_OPERATOR;
+							continue;
+						}
 					}
 				
+				case BEGIN_OPERATOR:
+					start = position;
+					state = OPERATOR;
+					
 				case OPERATOR:
 					if (!isOperatorChar(c))
 					{
-						switch (c)
+						operator = selector.substr(start, position - start);
+						state = IGNORE_SPACES;
+						next = END_OPERATOR;
+						continue;
+					}
+					
+				case END_OPERATOR:
+					switch(c)
 						{
 							case '"'.code, "'".code:
-								operator = selector.substr(start, position - start);
+								position++;
 								start = position;
-								state = BEGIN_VALUE;
+								state = STRING_VALUE;
 								
 							case ']'.code:
 								state = END_SELECTOR;
 								
 							default:
-								state = INVALID_SELECTOR;
+								
+								if (isSelectorChar(c) == true)
+								{
+									start = position;
+									state = IDENTIFIER_VALUE;
+								}
+								else
+								{
+									state = INVALID_SELECTOR;
+								}
 						}
-					}
 					
-					
-				case BEGIN_VALUE:
-					start = position;
-					state = VALUE;
-					
-				case VALUE:
+				case STRING_VALUE:
 					if (!isSelectorChar(c))
 					{
 						switch (c)
@@ -495,6 +563,20 @@ class CSSSelectorParser
 								
 							case ']'.code:
 								state = INVALID_SELECTOR;
+								
+							default:
+								state = INVALID_SELECTOR;
+						}
+					}
+					
+				case IDENTIFIER_VALUE:
+					if (!isSelectorChar(c))
+					{
+						switch (c)
+						{
+							case ']'.code:
+								value = selector.substr(start, position - start);
+								state = END_SELECTOR;
 								
 							default:
 								state = INVALID_SELECTOR;
@@ -548,6 +630,194 @@ class CSSSelectorParser
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * if the selector begins with a class selector, return it,
+	 * else return null
+	 */
+	private function getFirstClass(components:Array<SelectorComponentValue>):String
+	{
+		switch(components[0])
+		{
+			case SIMPLE_SELECTOR_SEQUENCE(value):
+				//check that don't start with type selector
+				if (value.startValue == UNIVERSAL)
+				{
+					//check that has at least 1 simple selector
+					if (value.simpleSelectors.length != 0)
+					{
+						//check that the first simple selector is a class selector
+						switch(value.simpleSelectors[0])
+						{
+							case CSS_CLASS(value):
+								return value;
+								
+							default:	
+						}
+					}
+				}
+				
+			//won't happen, selector always begins with selector sequence	
+			case COMBINATOR(value):
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns wether this selector contains only one clss selector
+	 */
+	private function getIsSimpleClassSelector(components:Array<SelectorComponentValue>):Bool
+	{
+		// > 1 means that it has combinators
+		if (components.length > 1)
+		{
+			return false;
+		}
+		
+		switch(components[0])
+		{
+			case SIMPLE_SELECTOR_SEQUENCE(value):
+				//must start with universal selector
+				if (value.startValue == UNIVERSAL)
+				{
+					//check that has only 1 simple selector
+					if (value.simpleSelectors.length == 1)
+					{
+						//check that that this simple selector is a class selector
+						switch(value.simpleSelectors[0])
+						{
+							case CSS_CLASS(value):
+								return true;
+								
+							default:	
+						}
+					}
+				}
+				
+			case COMBINATOR(value):
+		}
+		return false;
+	}
+	
+	/**
+	 * Same as above for id selector
+	 */
+	private function getIsSimpleIdSelector(components:Array<SelectorComponentValue>):Bool
+	{
+		if (components.length > 1)
+		{
+			return false;
+		}
+		
+		switch(components[0])
+		{
+			case SIMPLE_SELECTOR_SEQUENCE(value):
+				
+				if (value.startValue == UNIVERSAL)
+				{
+					if (value.simpleSelectors.length == 1)
+					{
+						switch(value.simpleSelectors[0])
+						{
+							case ID(value):
+								return true;
+								
+							default:	
+						}
+					}
+				}
+				
+			case COMBINATOR(value):
+		}
+		return false;
+	}
+	
+	/**
+	 * Same as above for type selector
+	 */
+	private function getIsSimpleTypeSelector(components:Array<SelectorComponentValue>):Bool
+	{
+		if (components.length > 1)
+		{
+			return false;
+		}
+		
+		switch(components[0])
+		{
+			case SIMPLE_SELECTOR_SEQUENCE(value):
+				switch(value.startValue)
+				{
+					case TYPE(typeValue):
+						if (value.simpleSelectors.length == 0)
+						{
+							return true;
+						}
+						
+					default:	
+						
+				}
+				
+			case COMBINATOR(value):
+		}
+		return false;
+	}
+	
+	/**
+	 * if the selector begins with an Id selector, return it,
+	 * else return null
+	 */
+	private function getFirstId(components:Array<SelectorComponentValue>):String
+	{
+		switch(components[0])
+		{
+			case SIMPLE_SELECTOR_SEQUENCE(value):
+				//check that don't start with type selector
+				if (value.startValue == UNIVERSAL)
+				{
+					//check that has at least 1 simple selector
+					if (value.simpleSelectors.length != 0)
+					{
+						//check that the first simple selector is an Id selector
+						switch(value.simpleSelectors[0])
+						{
+							case ID(value):
+								return value;
+								
+							default:	
+						}
+					}
+				}
+				
+			//won't happen, selector always begins with selector sequence	
+			case COMBINATOR(value):
+		}
+		return null;
+	}
+	
+	/**
+	 * if the selector begins with a type selector, return it,
+	 * else return null
+	 */
+	private function getFirstType(components:Array<SelectorComponentValue>):String
+	{
+		switch(components[0])
+		{
+			case SIMPLE_SELECTOR_SEQUENCE(value):
+				switch(value.startValue)
+				{
+					case TYPE(value):
+						return value;
+						
+					default:	
+				}
+				
+			//won't happen, selector always begins with selector sequence	
+			case COMBINATOR(value):
+		}
+		return null;
+	}
+	
+	
 	
 	static inline function isOperatorChar(c:Int):Bool
 	{

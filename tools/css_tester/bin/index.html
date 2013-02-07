@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en"> 
+	<head>
+		<link href="css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+		<link href="css/bootstrap-responsive.min.css" type="text/css" rel="stylesheet" />
+		<link href="css/style.css" type="text/css" rel="stylesheet" />
+		<script type="text/javascript" src="js/jquery.js" ></script>
+		<script type="text/javascript" src="js/bootstrap.min.js" ></script>
+		<script type="text/javascript" src="css_tester.js" ></script>
+	</head>
+	<body>
+		
+		<header class="container-fluid">
+			<a href="https://github.com/silexlabs/Cocktail"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+			<div class="page-header">
+				<div class="row-fluid">
+						<div id="span3">
+							<h1>Cocktail Sandbox</h1>
+							<p class="text-info lead">Select a sample and click the edit button to change its HTML and CSS</p>
+						</div>
+				</div>
+			</div>
+		</header>
+		
+		<div class="container-fluid" id="global-container">
+			<div class="row-fluid">
+				<div class="span3 well">
+					<div id="test-list"></div>
+				</div>
+				<div class="span9" id="main-container">
+					<div class="row-fluid">
+						<div class="span6">
+							<p class="text-info"><i class="icon-circle-arrow-down"></i> Rendered by your browser</p>
+							<div class="well">
+								<iframe id="js-test" ></iframe>
+							</div>
+							
+						</div>
+						<div class="span6">
+							<p class="text-info"><i class="icon-circle-arrow-down"></i> Rendered by <strong>Cocktail</strong></p>
+							<div class="well" id="flash-test">
+								
+							</div>
+						</div>
+					</div>
+					<div class="row-fluid">
+						<div class="span3">
+							<button type="button" data-toggle="modal" data-target="#editorModal" class="btn btn-primary btn-large btn-block"><i class="icon-pencil icon-white"></i> Edit</button>
+						</div>
+						<div class="span9 well">
+							<h3>About</h3>
+							<p>
+								Cocktail is an open-source HTML/CSS rendering engine written in Haxe. It implements the w3c web standards.
+							</p>
+						</div>	
+					</div>
+				</div>
+			</div>
+		</div>
+					
+		<div id="editorModal" class="modal hide fade">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h3>Edit the HTML and CSS</h3>
+		  </div>
+		  <div class="modal-body">
+				<div id="editor"></div>
+				<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+				<script>
+					var editor = ace.edit("editor");
+					editor.setTheme("ace/theme/chrome");
+					editor.getSession().setMode("ace/mode/javascript");
+				</script>
+				
+		  </div>
+		  <div class="modal-footer">
+			<a id="updateBtn" href="#" class="btn btn-primary" ><i class="icon-ok icon-white"></i> Apply changes</a>
+		  </div>
+		</div>
+		
+	</body>
+</html>

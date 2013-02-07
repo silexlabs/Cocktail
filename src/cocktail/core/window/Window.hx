@@ -102,6 +102,7 @@ class Window extends EventCallback
 		platform.keyboard.onKeyUp = htmlDocument.onPlatformKeyUpEvent;
 		
 		platform.nativeWindow.onResize = onPlatformResizeEvent;
+		platform.nativeWindow.onOrientationChange = onPlatformOrientationChangeEvent;
 		
 		platform.touchListener.onTouchStart = htmlDocument.onPlatformTouchEvent;
 		platform.touchListener.onTouchMove = htmlDocument.onPlatformTouchEvent;
@@ -211,6 +212,16 @@ class Window extends EventCallback
 	 * and rendering gets updated
 	 */
 	private function onPlatformResizeEvent(e:UIEvent):Void
+	{
+		document.invalidationManager.invalidateViewportSize();
+	}
+	
+	/**
+	 * When the viewport orientation is changed, invalidate
+	 * the html document so that its layout
+	 * and rendering gets updated
+	 */
+	private function onPlatformOrientationChangeEvent(e:Event):Void
 	{
 		document.invalidationManager.invalidateViewportSize();
 	}

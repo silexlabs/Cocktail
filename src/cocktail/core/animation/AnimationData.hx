@@ -22,7 +22,7 @@ import cocktail.core.renderer.RendererData;
  * is actually started on next layout
  */
 class PendingAnimationVO {
-	public var propertyName:String;
+	public var propertyIndex:Int;
 	public var startValue:Float;
 	public function new():Void
 	{
@@ -41,9 +41,9 @@ class TransitionsVO {
 	public var transitions:Array<Transition>;
 	
 	/**
-	 * The name of the transitioned CSS style
+	 * The index of the transitioned CSS style
 	 */
-	public var propertyName:String;
+	public var propertyIndex:Int;
 	
 	public function new():Void
 	{

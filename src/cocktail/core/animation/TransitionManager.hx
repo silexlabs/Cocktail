@@ -67,6 +67,13 @@ class TransitionManager
 	private var _currentTransitionsNumber:Int;
 	
 	/**
+	 * Wether at least one animation is in progress.
+	 * Meant to provide fast access to this info 
+	 * to exterior classes
+	 */
+	public var hasTransitionsInProgress:Bool;
+	
+	/**
 	 * The timestamp of the last tick of the update Timer.
 	 * Stored to compensate the elapsed time when the time between
 	 * two timer tick was longer than intended
@@ -81,6 +88,7 @@ class TransitionManager
 	{
 		_transitions = new Array<TransitionsVO>();
 		_currentTransitionsNumber = 0;
+		hasTransitionsInProgress = false;
 		_lastTick = 0;
 	}
 	
@@ -102,22 +110,15 @@ class TransitionManager
 	////////////////////////////////
 
 	/**
-	 * Return a transition currently in progress using the name of a property
+	 * Return a transition currently in progress using the index of a property
 	 * and a given target computed style.
 	 * 
 	 * Returns null if no transition matches
 	 */
-	public function getTransition(propertyName:String, style:CoreStyle):Transition
+	public function getTransition(propertyIndex:Int, style:CoreStyle):Transition
 	{
-		//shortcut, return null if no transition
-		//are currently in progress
-		if (_currentTransitionsNumber == 0)
-		{
-			return null;
-		}
-		
 		//get all the transitions in progress for the given property name
-		var transitionsForProperty:Array<Transition> = getTransitionsForProperty(propertyName);
+		var transitionsForProperty:Array<Transition> = getTransitionsForProperty(propertyIndex);
 		if (transitionsForProperty == null)
 		{
 			return null;
@@ -141,15 +142,15 @@ class TransitionManager
 	 * start a new transition by instantiating a new 
 	 * Transition obejct
 	 */
-	public function startTransition(target:CoreStyle, propertyName:String, startValue:Float, endValue:Float, transitionDuration:Float, 
+	public function startTransition(target:CoreStyle, propertyIndex:Int, startValue:Float, endValue:Float, transitionDuration:Float, 
 	transitionDelay:Float, transitionTimingFunction:CSSPropertyValue, onComplete:Transition->Void, onUpdate:Transition->Void):Void
 	{
 		//create a new transition
-		var transition:Transition = new Transition(propertyName, target, transitionDuration, transitionDelay, transitionTimingFunction,
+		var transition:Transition = new Transition(propertyIndex, target, transitionDuration, transitionDelay, transitionTimingFunction,
 		startValue, endValue, onComplete, onUpdate);
 		
 		//get the array to store the transition the new transition
-		var transitionsForProperty:Array<Transition> = getTransitionsForProperty(propertyName);
+		var transitionsForProperty:Array<Transition> = getTransitionsForProperty(propertyIndex);
 		
 		//if there is not an object yet for this property name, create it
 		if (transitionsForProperty == null)
@@ -157,7 +158,7 @@ class TransitionManager
 			transitionsForProperty = new Array<Transition>();
 			
 			var transitionsVO:TransitionsVO = new TransitionsVO();
-			transitionsVO.propertyName = propertyName;
+			transitionsVO.propertyIndex = propertyIndex;
 			transitionsVO.transitions = transitionsForProperty;
 			_transitions.push(transitionsVO);
 		}
@@ -170,6 +171,7 @@ class TransitionManager
 		if (_currentTransitionsNumber == 0)
 		{
 			startTransitionUpdate();
+			hasTransitionsInProgress = true;
 		}
 		
 		//increment the number of transition in progress
@@ -183,7 +185,7 @@ class TransitionManager
 	public function stopTransition(transition:Transition):Void
 	{
 		//remove the stored reference to the transition
-		var propertyTransitions:Array<Transition> = getTransitionsForProperty(transition.propertyName);
+		var propertyTransitions:Array<Transition> = getTransitionsForProperty(transition.propertyIndex);
 		propertyTransitions.remove(transition);
 		//clean-up
 		transition.dispose();
@@ -200,15 +202,15 @@ class TransitionManager
 	
 	/**
 	 * return the array of transitions
-	 * for a given CSS property name or null if there
+	 * for a given CSS property index or null if there
 	 * are none
 	 */
-	private function getTransitionsForProperty(propertyName:String):Array<Transition>
+	private function getTransitionsForProperty(propertyIndex:Int):Array<Transition>
 	{
 		var length:Int = _transitions.length;
 		for (i in 0...length)
 		{
-			if (_transitions[i].propertyName == propertyName)
+			if (_transitions[i].propertyIndex == propertyIndex)
 			{
 				return _transitions[i].transitions;
 			}
@@ -296,6 +298,10 @@ class TransitionManager
 		if (_currentTransitionsNumber > 0)
 		{
 			Lib.document.timer.delay(onTransitionTick);
+		}
+		else
+		{
+			hasTransitionsInProgress = false;
 		}
 	}
 	

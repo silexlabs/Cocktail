@@ -14,8 +14,6 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.layer.InitialLayerRenderer;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
-import cocktail.core.layout.formatter.BlockFormattingContext;
-import cocktail.core.layout.formatter.FormattingContext;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CoreStyle;
 import haxe.Log;
@@ -47,33 +45,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 		//addedToRenderingTree never called as initial 
 		//block is never attached to a parent
 		containingBlock = this;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC LAYOUT METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * for the initial bloc renderer, the global
-	 * bounds are the viewport bounds
-	 */
-	override public function updateGlobalBounds():Void
-	{
-		
-	}
-	
-	/**
-	 * overriden as the bounds of the initial block container
-	 * are always those of the Window (minus scrollbars dimensions
-	 * if displayed)
-	 */
-	override public function updateBounds():Void
-	{
-		var containerBlockData:ContainingBlockVO = getContainerBlockData();
-		bounds.x = 0.0;
-		bounds.y = 0.0;
-		bounds.width = containerBlockData.width;
-		bounds.height = containerBlockData.height;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -114,7 +85,42 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * As the initial block renderer has no containing block,
 	 * do nothing
 	 */
-	override private function invalidateContainingBlock(styleName:String):Void
+	override private function invalidateContainingBlock(styleIndex:Int):Void
+	{
+		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as the initial containing block always takes the size
+	 * of the viewport
+	 */
+	override private function layoutSelfIfNeeded(forceLayout:Bool):Void
+	{
+		var viewportData:ContainingBlockVO = getWindowData();
+		
+		coreStyle.usedValues.width = viewportData.width;
+		coreStyle.usedValues.height = viewportData.height;
+		
+		bounds.x = 0;
+		bounds.y = 0;
+		bounds.width = viewportData.width;
+		bounds.height = viewportData.height;
+		globalBounds.x = 0;
+		globalBounds.y = 0;
+		globalBounds.width = viewportData.width;
+		globalBounds.height = viewportData.height;
+	}
+	
+	/**
+	 * shrink-to-fit width never applies to the initial 
+	 * container which always has the same size as
+	 * the viewport's
+	 */
+	override private function applyShrinkToFitIfNeeded(layoutState:LayoutStateValue):Void
 	{
 		
 	}
@@ -137,7 +143,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * The initial block container always establishes a block formatting context
 	 * for its children
 	 */
-	override public function establishesNewFormattingContext():Bool
+	override public function establishesNewBlockFormattingContext():Bool
 	{
 		return true;
 	}
@@ -155,67 +161,7 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Overriden as the scontaining dimensionsn for the scrollbars
-	 * appearing for the initial containing block are the viewport's
-	 */
-	override private function getScrollbarContainerBlock():ContainingBlockVO
-	{
-		var width:Float = cocktail.Lib.window.innerWidth;
-		var height:Float = cocktail.Lib.window.innerHeight;
-		
-		return new ContainingBlockVO(width, false, height, false);
-	}
-	
-	/**
-	 * When dispatched on the HTMLHTMLElement,
-	 * the scroll event must bubble to be dispatched
-	 * on the Document and Window objects
-	 */
-	override private function mustBubbleScrollEvent():Bool
-	{
-		return true;
-	}
-	
-	/**
-	 * A computed value of visible for the overflow on the initial
-	 * block renderer is the same as auto, as it is likely that
-	 * scrollbar must be displayed to scroll through the document
-	 */
-	override private function treatVisibleOverflowAsAuto():Bool
-	{
-		return true;
-	}
-	
-	/**
-	 * Retrieve the dimension of the Window
-	 */
-	override private function getWindowData():ContainingBlockVO
-	{	
-		var width:Float = cocktail.Lib.window.innerWidth;
-		var height:Float = cocktail.Lib.window.innerHeight;
-		
-		//scrollbars dimension are removed from the Window dimension
-		//if displayed to return the actual available space
-		
-		if (_verticalScrollBar != null)
-		{
-			width -= _verticalScrollBar.coreStyle.usedValues.width;
-		}
-		
-		if (_horizontalScrollBar != null)
-		{
-			height -= _horizontalScrollBar.coreStyle.usedValues.height;
-		}
-		
-		_containerBlockData.width = width;
-		_containerBlockData.height = height;
-		_containerBlockData.isHeightAuto = false;
-		_containerBlockData.isWidthAuto = false;
-		return _containerBlockData;
-	}
-	
+
 	/**
 	 * The dimensions of the initial
 	 * block renderer are always the same as the Window's
@@ -232,19 +178,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	override private function getContainingBlock():FlowBoxRenderer
 	{	
 		return this;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * For the initial container, the bounds and
-	 * global bounds are the same
-	 */
-	override private function get_globalBounds():RectangleVO
-	{
-		return bounds;
 	}
 	
 }

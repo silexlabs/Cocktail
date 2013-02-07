@@ -143,10 +143,11 @@ class EventTarget
 		{
 			if (_registeredEventListeners != null)
 			{
+				var eventRegisteredForEventType:Null<Array<EventListener>> = _registeredEventListeners.get(evt.type);
 				//tries to dispatch event registered for the event type
-				if (_registeredEventListeners.exists(evt.type) == true)
+				if (eventRegisteredForEventType != null)
 				{
-					doDispatchEvent(_registeredEventListeners.get(evt.type), evt);
+					doDispatchEvent(eventRegisteredForEventType, evt);
 				}
 			}
 		}
@@ -193,8 +194,6 @@ class EventTarget
 			_registeredEventListeners.set(type, new Array<EventListener>());
 		}
 		
-		removeEventListener(type, listener, useCapture);
-		
 		var eventListener:EventListener = new EventListener(type, listener, useCapture);
 		
 		_registeredEventListeners.get(type).push(eventListener);
@@ -222,21 +221,17 @@ class EventTarget
 			return;
 		}
 		
-		if (_registeredEventListeners.exists(type) == true)
+		var registeredEventListenersForType:Array<EventListener> = _registeredEventListeners.get(type);
+		if (registeredEventListenersForType != null)
 		{
-			var registeredListeners:Array<EventListener> = _registeredEventListeners.get(type);
-			
 			var newEventListeners:Array<EventListener> = new Array<EventListener>();
 			
-			var length:Int = registeredListeners.length;
+			var length:Int = registeredEventListenersForType.length;
 			for (i in 0...length)
 			{
-				var eventListener:EventListener = registeredListeners[i];
+				var eventListener:EventListener = registeredEventListenersForType[i];
 				
-				if (eventListener.eventType == type && eventListener.useCapture == useCapture && eventListener.listener == listener) {
-					eventListener.dispose();
-				}
-				else
+				if (eventListener.eventType != type || eventListener.useCapture != useCapture || eventListener.listener != listener)
 				{
 					newEventListeners.push(eventListener);
 				}

@@ -36,9 +36,9 @@ class PluginLayerRenderer extends CompositingLayerRenderer
 	 * When attached, gives an opportunity to the
 	 * plugin to attch itself to the display list
 	 */
-	override public function attach():Void
+	override public function attachGraphicsContext():Void
 	{
-		super.attach();
+		super.attachGraphicsContext();
 		var htmlObjectElement:HTMLObjectElement = cast(rootElementRenderer.domNode);
 		htmlObjectElement.plugin.attach(graphicsContext);
 	}
@@ -48,17 +48,46 @@ class PluginLayerRenderer extends CompositingLayerRenderer
 	 * the plugin to detach itself from
 	 * the display list
 	 */
-	override public function detach():Void
+	override public function detachGraphicsContext():Void
 	{
 		//TODO 2 : when the layer is first created
 		//it has no graphics context yet, should
 		//not happen ?
-		if (hasOwnGraphicsContext == true)
+		if (graphicsContext != null)
 		{
 			var htmlObjectElement:HTMLObjectElement = cast(rootElementRenderer.domNode);
 			htmlObjectElement.plugin.detach(graphicsContext);
 		}
-		super.detach();
+		super.detachGraphicsContext();
+	}
+	
+	/////////////////////////////////
+	// OVERRIDEN PUBLIC HELPER METHODS
+	////////////////////////////////
+	
+	/**
+	 * A plugin layer is composited if its plugin 
+	 * requires it
+	 */
+	override public function isCompositingLayer():Bool
+	{
+		var htmlObjectElement:HTMLObjectElement = cast(rootElementRenderer.domNode);
+		return htmlObjectElement.plugin.isCompositedPlugin();
+	}
+	
+	/////////////////////////////////
+	// OVERRIDEN PRIVATE HELPER METHODS
+	////////////////////////////////
+	
+	/**
+	 * For composited plugin, they
+	 * use the bitmap of their parent
+	 * if they need to render border,
+	 * background...
+	 */
+	override public function needsBitmap():Bool
+	{
+		return false;
 	}
 	
 	/////////////////////////////////
@@ -66,22 +95,10 @@ class PluginLayerRenderer extends CompositingLayerRenderer
 	////////////////////////////////
 	
 	/**
-	 * override to prevent updating the bitmap
-	 * data, plugin don't need bitmap data
-	 * 
-	 * TODO 2 : might actually be useful to draw background, borders...
-	 * should use graphic context of parent
-	 */
-	override private function initBitmapData(width:Int, height:Int):Void
-	{
-		
-	}
-	
-	/**
 	 * No need to clear, its not suposed to have
 	 * bitmap
 	 */
-	override private function clear():Void
+	override private function doClear(x:Float, y:Float, width:Float, height:Float):Void
 	{
 	
 	}

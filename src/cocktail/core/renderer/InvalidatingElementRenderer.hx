@@ -96,19 +96,19 @@ class InvalidatingElementRenderer extends ElementRenderer
 	 * and rendering is needed for this element and for
 	 * its containing block
 	 */
-	override public function invalidateStyle(styleName:String):Void
+	override public function invalidateStyle(styleIndex:Int):Void
 	{
-		switch (styleName)
+		switch (styleIndex)
 		{
 			//if one of the position style (left, right,top, bottom) was changed,
 			//a layout and rendering is only needed for positioned child
 			case CSSConstants.LEFT, CSSConstants.RIGHT,
 			CSSConstants.TOP, CSSConstants.BOTTOM:
 				
-				if (isPositioned() == true && isRelativePositioned() == false)
+				if (isAbsolutelyPositioned() == true)
 				{
 					invalidateLayoutAndRendering();
-					invalidateContainingBlock(styleName);
+					invalidateContainingBlock(styleIndex);
 				}
 				//if the child is relatively positioned, it only needs a rendering, as its
 				//layout is not affected by those styles
@@ -123,7 +123,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 			CSSConstants.LETTER_SPACING, CSSConstants.TEXT_TRANSFORM, CSSConstants.WHITE_SPACE:
 				invalidateText();
 				invalidateLayoutAndRendering();
-				invalidateContainingBlock(styleName);
+				invalidateContainingBlock(styleIndex);
 			
 			//when opacity or visibility changes, only rendering
 			//needs to be updated
@@ -142,7 +142,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 			//the containing block
 			default:
 				invalidateLayout();
-				invalidateContainingBlock(styleName);
+				invalidateContainingBlock(styleIndex);
 		}
 	}
 	
@@ -171,7 +171,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 	 * which might be the parent, the first positioned ancestor
 	 * or the initial block renderer
 	 */
-	private function invalidateContainingBlock(styleName:String):Void
+	private function invalidateContainingBlock(styleIndex:Int):Void
 	{
 		//TODO 1 : not supposed to happen
 		if (containingBlock == null)
@@ -185,11 +185,11 @@ class InvalidatingElementRenderer extends ElementRenderer
 		//TODO 2 : might be redundant with the invalidationreason change ?
 		if (isPositioned() == true && isRelativePositioned() == false)
 		{
-			containingBlock.invalidatedChildStyle(styleName);
+			containingBlock.invalidatedChildStyle(styleIndex);
 		}
 		else
 		{
-			containingBlock.invalidatedPositionedChildStyle(styleName);
+			containingBlock.invalidatedPositionedChildStyle(styleIndex);
 		}
 	}
 	
@@ -197,9 +197,9 @@ class InvalidatingElementRenderer extends ElementRenderer
 	 * Called when a style change if this ElementRenderer
 	 * caused the invalidation
 	 */
-	private function invalidatedStyle(styleName:String):Void
+	private function invalidatedStyle(styleIndex:Int):Void
 	{
-		switch (styleName)
+		switch (styleIndex)
 		{
 			//if one of the position style (left, right,top, bottom) was changed,
 			//a layout and rendering is only needed for positioned child
@@ -209,7 +209,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 				if (isPositioned() == true && isRelativePositioned() == false)
 				{
 					invalidateLayoutAndRendering();
-					invalidateContainingBlock(styleName);
+					invalidateContainingBlock(styleIndex);
 				}
 				//if the child is relatively positioned, it only needs a rendering, as its
 				//layout is not affected by those styles
@@ -224,7 +224,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 			CSSConstants.LETTER_SPACING, CSSConstants.TEXT_TRANSFORM, CSSConstants.WHITE_SPACE:
 				invalidateText();
 				invalidateLayoutAndRendering();
-				invalidateContainingBlock(styleName);
+				invalidateContainingBlock(styleIndex);
 			
 			//when opacity or visibility changes, only rendering
 			//needs to be updated
@@ -243,16 +243,16 @@ class InvalidatingElementRenderer extends ElementRenderer
 			//the containing block
 			default:
 				invalidateLayout();
-				invalidateContainingBlock(styleName);
+				invalidateContainingBlock(styleIndex);
 		}
 	}
 	
 	/**
 	 * Called when an inflow child style was changed
 	 */
-	public function invalidatedChildStyle(styleName:String):Void
+	public function invalidatedChildStyle(styleIndex:Int):Void
 	{
-		switch (styleName)
+		switch (styleIndex)
 		{
 			//TODO 2 : not supposed to be called anyway
 			case CSSConstants.BACKGROUND_COLOR, CSSConstants.BACKGROUND_CLIP,
@@ -270,9 +270,9 @@ class InvalidatingElementRenderer extends ElementRenderer
 	/**
 	 * Called when a positioned children style was changed
 	 */
-	public function invalidatedPositionedChildStyle(styleName:String):Void
+	public function invalidatedPositionedChildStyle(styleIndex:Int):Void
 	{
-		switch (styleName)
+		switch (styleIndex)
 		{
 			case CSSConstants.BACKGROUND_COLOR, CSSConstants.BACKGROUND_CLIP,
 			CSSConstants.BACKGROUND_IMAGE, CSSConstants.BACKGROUND_POSITION,
@@ -327,7 +327,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 		var child:ElementRenderer = firstChild;
 		while(child != null)
 		{
-			if (child.isText() == true)
+			if (child.isText == true)
 			{
 				child.invalidate();
 			}

@@ -62,7 +62,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		var usedWidth:Float = 0.0;
 		
 		//first, any auto value for margins are computed to 0
-		if (style.isAuto(style.marginLeft) == true)
+		if (style.hasAutoMarginLeft == true)
 		{
 			usedValues.marginLeft = 0;
 		}
@@ -71,7 +71,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			usedValues.marginLeft = getComputedMarginLeft(style, usedWidth, containingBlockData);
 		}
 		
-		if (style.isAuto(style.marginRight) == true)
+		if (style.hasAutoMarginRight == true)
 		{
 			usedValues.marginRight = 0;
 		}
@@ -81,7 +81,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		}
 		
 		//if neither left or right are auto but width is
-		if (style.isAuto(style.left) == false && style.isAuto(style.right) == false)
+		if (style.hasAutoLeft == false && style.hasAutoRight == false)
 		{
 			//left and right are computed as they are defined either as length or percentage
 			usedValues.left = getComputedPositionOffset(style.left, containingBlockData.width);
@@ -92,26 +92,21 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			usedWidth = containingBlockData.width - usedValues.marginLeft - usedValues.left - usedValues.right - usedValues.marginRight - usedValues.paddingLeft - usedValues.paddingRight;
 		}
 		//if width is auto and left, right or both are auto, then the width will be "shrinked-to-fit" once all the children have been laid out,
-		//so the width is first set to the containing block width width which will allow to find the max line width of the formatted children
-		//used by the shrink-to-fit method during formatting
+		//so the width is first set to 0 and the shrink-to-fit width will be found during layout
 		else
 		{
 			//if only left is auto, compute right then deduce left from the remaining horizontal space
-			//TODO 4 : left is not actually computed yet, it must be computed during shrink-to-fit
-			if (style.isAuto(style.left) == true)
+			if (style.hasAutoLeft == true)
 			{
 				usedValues.right = getComputedPositionOffset(style.right, containingBlockData.width);
 			}
 			//same for right
-			else if(style.isAuto(style.right) == true)
+			else if(style.hasAutoRight == true)
 			{
 				usedValues.left = getComputedPositionOffset(style.left, containingBlockData.width);
 			}
 			
-			//TODO 2 : setting the containing element width is a hack which will not
-			//always work. The shrink to fit computation of this class needs to be 
-			//improved
-			usedWidth = containingBlockData.width;
+			usedWidth = 0;
 		}
 		
 		return usedWidth;
@@ -128,19 +123,19 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		var usedWidth:Float = getComputedWidth(style, containingBlockData);
 
 		//if neither left nor right are defined as auto
-		if (style.isAuto(style.left) == false && style.isAuto(style.right) == false)
+		if (style.hasAutoLeft == false && style.hasAutoRight == false)
 		{
 			//compute left and right defined either as length or percentage
 			usedValues.left = getComputedPositionOffset(style.left, containingBlockData.width);
 			usedValues.right = getComputedPositionOffset(style.right, containingBlockData.width);
 			
 			//if both margin are auto, they will take the same size
-			if (style.isAuto(style.marginLeft) == true && style.isAuto(style.marginRight) == true)
+			if (style.hasAutoMarginLeft == true && style.hasAutoMarginRight == true)
 			{
 				//compute the size of one of the margin, which is half the remaining horizontal space
 				//once all other values (padding, width, offset) are remove
-				var usedMargin:Float = (containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right) / 2;
-				
+				var usedMargin:Float = (containingBlockData.width - usedWidth - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right) / 2;
+
 				if (usedMargin >= 0)
 				{
 					usedValues.marginLeft = usedMargin;
@@ -150,23 +145,23 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 				else
 				{
 					usedValues.marginLeft = 0;
-					usedValues.marginRight = containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right;
+					usedValues.marginRight = containingBlockData.width - usedWidth - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right;
 				}
 			
 			}
 			//if only margin left is auto
-			else if (style.isAuto(style.marginLeft) == true)
+			else if (style.hasAutoMarginLeft == true)
 			{
 				//compute margin right then deduce margin left from the remaining horizontal
 				//space
 				usedValues.marginRight = getComputedMarginRight(style, usedWidth, containingBlockData);
-				usedValues.marginLeft = containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right - usedValues.marginRight;
+				usedValues.marginLeft = containingBlockData.width - usedWidth - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right - usedValues.marginRight;
 			}
 			//same if only margin right is auto
-			else if (style.isAuto(style.marginRight) == true)
+			else if (style.hasAutoMarginRight == true)
 			{
 				usedValues.marginLeft = getComputedMarginLeft(style, usedWidth, containingBlockData);
-				usedValues.marginRight = containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right - usedValues.marginLeft;
+				usedValues.marginRight = containingBlockData.width - usedWidth - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right - usedValues.marginLeft;
 			}
 			//else if no margins are auto, compute them
 			else
@@ -179,7 +174,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		else
 		{
 			//any auto margin computes to 0
-			if (style.isAuto(style.marginLeft) == true)
+			if (style.hasAutoMarginLeft == true)
 			{
 				usedValues.marginLeft = 0;
 			}
@@ -188,7 +183,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 				usedValues.marginLeft = getComputedMarginLeft(style, usedWidth, containingBlockData);
 			}
 			
-			if (style.isAuto(style.marginRight) == true)
+			if (style.hasAutoMarginRight == true)
 			{
 				usedValues.marginRight = 0;
 			}
@@ -198,22 +193,22 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			}
 			
 			//if left and right are both auto, the statc position of left is used, then right is computed
-			if (style.isAuto(style.left) == true && style.isAuto(style.right) == true)
+			if (style.hasAutoLeft == true && style.hasAutoRight == true)
 			{
 				usedValues.left = getComputedStaticLeft(style, containingBlockData);
-				usedValues.right = containingBlockData.width - usedValues.marginLeft - usedValues.marginRight - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left;
+				usedValues.right = containingBlockData.width - usedValues.marginLeft - usedValues.marginRight - usedWidth - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left;
 			}
 			//if only left is auto, compute right then deduce left from the remaining horizontal space
-			else if (style.isAuto(style.left) == true)
+			else if (style.hasAutoLeft == true)
 			{
 				usedValues.right = getComputedPositionOffset(style.right, containingBlockData.width);
-				usedValues.left = containingBlockData.width - usedValues.marginLeft - usedValues.marginRight - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.right;
+				usedValues.left = containingBlockData.width - usedValues.marginLeft - usedValues.marginRight - usedWidth - usedValues.paddingLeft - usedValues.paddingRight - usedValues.right;
 			}
 			//same for right
-			else if(style.isAuto(style.right) == true)
+			else if(style.hasAutoRight == true)
 			{
 				usedValues.left = getComputedPositionOffset(style.left, containingBlockData.width);
-				usedValues.right = containingBlockData.width - usedValues.marginLeft - usedValues.marginRight - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left;
+				usedValues.right = containingBlockData.width - usedValues.marginLeft - usedValues.marginRight - usedWidth - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left;
 			}
 		}
 		
@@ -234,7 +229,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		var usedHeight:Float = 0.0;
 		
 		//first, any auto value for margins are computed to 0
-		if (style.isAuto(style.marginTop) == true)
+		if (style.hasAutoMarginTop == true)
 		{
 			usedValues.marginTop = 0;
 		}
@@ -243,7 +238,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			usedValues.marginTop = getComputedMarginTop(style, usedHeight, containingBlockData);
 		}
 		
-		if (style.isAuto(style.marginBottom) == true)
+		if (style.hasAutoMarginBottom == true)
 		{
 			usedValues.marginBottom = 0;
 		}
@@ -253,7 +248,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		}
 		
 		//if neither top or bottom are auto but height is
-		if (style.isAuto(style.top) == false && style.isAuto(style.bottom) == false)
+		if (style.hasAutoTop == false && style.hasAutoBottom == false)
 		{
 			//top and bottom are computed as they are defined either as length or percentage
 			usedValues.top = getComputedPositionOffset(style.top, containingBlockData.height);
@@ -264,13 +259,13 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			usedHeight = containingBlockData.height - usedValues.marginTop - usedValues.top - usedValues.bottom - usedValues.marginBottom - usedValues.paddingTop - usedValues.paddingBottom;
 		}
 		//if only bottom is auto, compute top then deduce bottom from the remaining vertical space
-		else if (style.isAuto(style.bottom) == true)
+		else if (style.hasAutoBottom == true)
 		{
 			usedValues.top = getComputedPositionOffset(style.top, containingBlockData.height);
 			usedValues.bottom = containingBlockData.height - usedValues.marginTop - usedValues.marginBottom - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.top;
 		}
 		//same for top
-		else if(style.isAuto(style.top) == true)
+		else if(style.hasAutoTop == true)
 		{
 			usedValues.bottom = getComputedPositionOffset(style.bottom, containingBlockData.height);
 			usedValues.top = containingBlockData.height - usedValues.marginTop - usedValues.marginBottom - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.bottom;
@@ -292,14 +287,14 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		var usedHeight:Float = getComputedHeight(style, containingBlockData);
 		
 		//if neither top nor bottom are defined as auto
-		if (style.isAuto(style.top) == false && style.isAuto(style.bottom) == false)
+		if (style.hasAutoTop == false && style.hasAutoBottom == false)
 		{
 			//compute top and bottom defined either as length or percentage
 			usedValues.top = getComputedPositionOffset(style.top, containingBlockData.height);
 			usedValues.bottom = getComputedPositionOffset(style.bottom, containingBlockData.height);
 			
 			//if both margin are auto, they will take the same size
-			if (style.isAuto(style.marginTop) == true && style.isAuto(style.marginBottom) == true)
+			if (style.hasAutoMarginTop == true && style.hasAutoMarginBottom == true)
 			{
 				//compute the size of one of the margin, which is half the remaining vertical space
 				//once all other values (padding, width, offset) are removed
@@ -319,7 +314,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			
 			}
 			//if only margin top is auto
-			else if (style.isAuto(style.marginTop) == true)
+			else if (style.hasAutoMarginTop == true)
 			{
 				//compute margin top then deduce margin bottom from the remaining vertical
 				//space
@@ -327,7 +322,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 				usedValues.marginTop = containingBlockData.height - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.top - usedValues.bottom - usedValues.marginBottom;
 			}
 			//same if only margin bottom is auto
-			else if (style.isAuto(style.marginBottom) == true)
+			else if (style.hasAutoMarginBottom == true)
 			{
 				usedValues.marginTop = getComputedMarginTop(style, usedHeight, containingBlockData);
 				usedValues.marginBottom = containingBlockData.height - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.top - usedValues.bottom - usedValues.marginTop;
@@ -343,7 +338,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 		else
 		{
 			//any auto margin computes to 0
-			if (style.isAuto(style.marginTop) == true)
+			if (style.hasAutoMarginTop == true)
 			{
 				usedValues.marginTop = 0;
 			}
@@ -352,7 +347,7 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 				usedValues.marginTop = getComputedMarginTop(style, usedHeight, containingBlockData);
 			}
 			
-			if (style.isAuto(style.marginBottom) == true)
+			if (style.hasAutoMarginBottom == true)
 			{
 				usedValues.marginBottom = 0;
 			}
@@ -362,19 +357,19 @@ class PositionedBoxStylesComputer extends BoxStylesComputer
 			}
 		
 			//if top and bottom are both auto, the static position of top is used, then bottom is computed
-			if (style.isAuto(style.top) == true && style.isAuto(style.bottom) == true)
+			if (style.hasAutoTop == true && style.hasAutoBottom == true)
 			{
 				usedValues.top = getComputedStaticTop(style, containingBlockData);
 				usedValues.bottom = containingBlockData.height - usedValues.marginTop - usedValues.marginBottom - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.top;
 			}
 			//if only bottom is auto, compute top then deduce bottom from the remaining vertical space
-			else if (style.isAuto(style.bottom) == true)
+			else if (style.hasAutoBottom == true)
 			{
 				usedValues.top = getComputedPositionOffset(style.top, containingBlockData.height);
 				usedValues.bottom = containingBlockData.height - usedValues.marginTop - usedValues.marginBottom - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.top;
 			}
 			//same for top
-			else if(style.isAuto(style.top) == true)
+			else if(style.hasAutoTop == true)
 			{
 				usedValues.bottom = getComputedPositionOffset(style.bottom, containingBlockData.height);
 				usedValues.top = containingBlockData.height - usedValues.marginTop - usedValues.marginBottom - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.bottom;

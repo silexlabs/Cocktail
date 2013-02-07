@@ -284,11 +284,11 @@ class HTMLElement extends Element<HTMLElement>
 	private var _needsElementRendererUpdate:Bool;
 	
 	/**
-	 * Between 2 cascade, store the names of all the
+	 * Between 2 cascade, store the index of all the
 	 * properties whose value changed and which need
 	 * to be re-cascaded.
 	 */
-	private var _pendingChangedProperties:Array<String>;
+	private var _pendingChangedProperties:Array<Int>;
 	
 	/**
 	 * A flag determining wether all the CSS styles
@@ -325,7 +325,7 @@ class HTMLElement extends Element<HTMLElement>
 		_needsStyleDeclarationUpdate = false;
 		_shouldCascadeAllProperties = true;
 		_needsElementRendererUpdate = true;
-		_pendingChangedProperties = new Array<String>();
+		_pendingChangedProperties = new Array<Int>();
 	}
 	
 	/**
@@ -384,16 +384,11 @@ class HTMLElement extends Element<HTMLElement>
 		super.appendChild(newChild);
 		newChild.appended();
 		
-		//when added a child, this 
-		//HTMLElement should be re-cascaded
-		//so that the child can inherit
-		//its parent style
-		//
-		//TODO 3 : shouldn't instead the 
-		//new child retrieve the inheritable
-		//styles values from its parent
+		//when a new child is added, refreh the style of this html element
+		//TODO 2 : don't seem necessary, but tried to remove it and add
+		//regression when testing an html doc with just a body, style
+		//seemed not to be set on htmlhtmlelement
 		invalidateCascade();
-		
 		return newChild;
 	}
 	
@@ -429,9 +424,6 @@ class HTMLElement extends Element<HTMLElement>
 		if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
 		{
 			style.cssText = value;
-			
-			//TODO 1 : retrieve changed style or done automatically via callback ?
-			//when replacing style attribute, should first remove all styles ?
 			invalidateCascade();
 		}
 		//setting the class name must also update
@@ -548,23 +540,11 @@ class HTMLElement extends Element<HTMLElement>
 	 * changed, may invalidated the layout and/or
 	 * rendering of the element renderer
 	 */
-	public function invalidateStyle(styleName:String):Void
+	public function invalidateStyle(styleIndex:Int):Void
 	{
 		if (elementRenderer != null)
 		{
-			elementRenderer.invalidateStyle(styleName);
-		}
-	}
-	
-	/**
-	 * if the HTML element is rendered, update
-	 * the document synchronously
-	 */
-	public function updateDocumentImmediately():Void
-	{
-		if (elementRenderer != null)
-		{
-			_ownerHTMLDocument.invalidationManager.updateDocumentImmediately();
+			elementRenderer.invalidateStyle(styleIndex);
 		}
 	}
 	
@@ -637,6 +617,22 @@ class HTMLElement extends Element<HTMLElement>
 			_ownerHTMLDocument.invalidationManager.invalidateCascade();
 
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * update the document immediately instead of waiting
+	 * for the next scheduled update. Needed by some public
+	 * API, like for instance those returning the computed
+	 * position of an element, those dimensions should be returned
+	 * synchronously
+	 */
+	private function updateDocumentImmediately():Void
+	{
+		_ownerHTMLDocument.invalidationManager.updateDocumentImmediately();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -729,8 +725,6 @@ class HTMLElement extends Element<HTMLElement>
 			//synchronously detach the element renderer
 			//of this HTMLElement and its child, and 
 			//schedule an update of the rendering tree
-			//
-			//TODO 3 : is scheduling necessary ?
 			//
 			//only element and text node can belong to the
 			//rendering tree
@@ -986,15 +980,15 @@ class HTMLElement extends Element<HTMLElement>
 			//the HTMLElement. The element renderer is invalidated, so that it will be updated
 			//before next layout
 			if (cascadeManager.hasDisplay == true || cascadeManager.hasFloat == true
-			|| cascadeManager.hasOverflowX == true || cascadeManager.hasOverflowY == true)
+			|| cascadeManager.hasOverflowX == true || cascadeManager.hasOverflowY == true ||
+			cascadeManager.hasPosition == true)
 			{
 				detach(true);
 				invalidateElementRenderer();
 			}
 			//if one of those properties changed, then the layer renderer of the element renderer needs
 			//to be invalidated, so that it will be updated before next rendering
-			else if (cascadeManager.hasTransform == true || cascadeManager.hasZIndex == true ||
-			cascadeManager.hasPosition == true)
+			else if (cascadeManager.hasTransform == true || cascadeManager.hasZIndex == true)
 			{
 				invalidateLayerRenderer();
 			}
@@ -1104,20 +1098,20 @@ class HTMLElement extends Element<HTMLElement>
 	
 	/**
 	 * When a value of the inline style declaration
-	 * of the HTMLElement changes, store the name
+	 * of the HTMLElement changes, store the index
 	 * of the changed property in the properties
 	 * to cascade and invalidate the cascade
 	 * 
-	 * @param changedProperty the name of the property
+	 * @param changedPropertyIndex the index of the property
 	 * which changed
 	 */
-	private function onInlineStyleChange(changedProperty:String):Void
+	private function onInlineStyleChange(changedPropertyIndex:Int):Void
 	{
 		//no need to store the property if all properties
 		//are supposed to be cascaded anyway
 		if (_shouldCascadeAllProperties == false)
 		{
-			_pendingChangedProperties.push(changedProperty);
+			_pendingChangedProperties.push(changedPropertyIndex);
 		}
 		
 		invalidateCascade();
@@ -1210,8 +1204,6 @@ class HTMLElement extends Element<HTMLElement>
 	
 	/**
 	 * Return wether this HTMLElement is supposed to be rendered
-	 * 
-	 * TODO 3 : unit tests for "hidden" attribute
 	 */
 	private function isRendered():Bool
 	{
@@ -1478,45 +1470,11 @@ class HTMLElement extends Element<HTMLElement>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SCROLLING SETTER/GETTER AND METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Utils method determining wether
-	 * the HTMLElement displays an active
-	 * vertical scrolbar
-	 * @param scrollOffset an optionnal parameter determining
-	 * the scroll offset which tries to be applied to the vertical scrollbar.
-	 * If applying the offset doesn't scroll the HTMLElement, for instance
-	 * if the HTMLElement is completely scrolled and a positive offset
-	 * is applied to it, then the method return false
-	 * 
-	 * @return true if a vertical scrollbar is displayed
-	 * and isactive
-	 */
-	public function isVerticallyScrollable(scrollOffset:Int = 0):Bool
-	{
-		if (elementRenderer != null)
-		{
-			return elementRenderer.isVerticallyScrollable(scrollOffset);
-		}
-		return false;
-	}
-	
-	/**
-	 * same as absove for the horizontal scrollbar
-	 */
-	public function isHorizontallyScrollable(scrollOffset:Int = 0):Bool
-	{
-		if (elementRenderer != null)
-		{
-			return elementRenderer.isHorizontallyScrollable(scrollOffset);
-		}
-		return false;
-	}
-	
-	//TODO 3 : should unit test, not very sure what this getter
-	//is supposed to return
+
 	private function get_scrollHeight():Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.scrollHeight);
@@ -1526,6 +1484,8 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_scrollWidth():Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.scrollWidth);
@@ -1544,6 +1504,8 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_scrollLeft():Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.scrollLeft);
@@ -1562,6 +1524,8 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_scrollTop():Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.scrollTop);
@@ -1796,39 +1760,33 @@ class HTMLElement extends Element<HTMLElement>
 	private function get_offsetParent():HTMLElement
 	{
 		//here the HTMLElement is not
-		//attached to the DOM
-		if (parentNode == null)
+		//rendered 
+		if (elementRenderer == null)
 		{
 			return null;
 		}
 		
+		//fixed positioned element are relative to the viewport
+		switch(coreStyle.getKeyword(coreStyle.position))
+		{
+			case FIXED:
+				return null;
+			
+			default:	
+		}
+		
+		//find the first non-static parent or return the body
 		var parent:HTMLElement = parentNode;
-		
-		//if the parent is not rendered, it can't
-		//have an offset
-		if (parent.elementRenderer == null)
+		while (parent != null)
 		{
-			return null;
+			if (parent.elementRenderer.isPositioned() == true || parent.tagName == HTMLConstants.HTML_BODY_TAG_NAME)
+			{
+				return parent;
+			}
+			parent = parent.parentNode;
 		}
 		
-		//loop in all the parents until a positioned or a null parent is found
-		var isOffsetParent:Bool = parent.elementRenderer.isPositioned();
-		
-		while (isOffsetParent == false)
-		{
-			if (parent.parentNode != null)
-			{
-				parent = parent.parentNode;
-				isOffsetParent = parent.elementRenderer.isPositioned();
-			}
-			//break the loop if the current parent has no parent
-			else
-			{
-				isOffsetParent = true;
-			}
-		}
-		
-		return parent;
+		return null;
 	}
 	
 	private function get_offsetWidth():Int
@@ -1847,13 +1805,22 @@ class HTMLElement extends Element<HTMLElement>
 		return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
 	}
 	
-	//TODO 3  : unit test
 	private function get_offsetLeft():Int
 	{
 		updateDocumentImmediately();
 		if (elementRenderer != null)
 		{
-			return Math.round(elementRenderer.positionedOrigin.x);
+			var offsetParent:HTMLElement = get_offsetParent();
+			//if there is no offset parent, return x relative to the viewport
+			if (offsetParent == null)
+			{
+				return Math.round(elementRenderer.globalBounds.x);
+			}
+			//else subtract from offset parent x
+			else
+			{
+				return Math.round(elementRenderer.globalBounds.x - offsetParent.elementRenderer.globalBounds.x);
+			}
 		}
 		return 0;
 	}
@@ -1863,7 +1830,17 @@ class HTMLElement extends Element<HTMLElement>
 		updateDocumentImmediately();
 		if (elementRenderer != null)
 		{
-			return Math.round(elementRenderer.positionedOrigin.y);
+			var offsetParent:HTMLElement = get_offsetParent();
+			//if there is no offset parent, return y relative to the viewport
+			if (offsetParent == null)
+			{
+				return Math.round(elementRenderer.globalBounds.y);
+			}
+			//else subtract from offset parent y
+			else
+			{
+				return Math.round(elementRenderer.globalBounds.y - offsetParent.elementRenderer.globalBounds.y);
+			}
 		}
 		return 0;
 	}

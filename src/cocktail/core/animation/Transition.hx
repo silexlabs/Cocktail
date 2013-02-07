@@ -64,10 +64,9 @@ class Transition
 	private var _cubicBezier:CubicBezier;
 	
 	/**
-	 * The name of the transitioned property. This is
-	 * a CSS property name
+	 * The index of the transitioned property.
 	 */
-	public var propertyName(default, null):String;
+	public var propertyIndex(default, null):Int;
 	
 	/**
 	 * Returns the current value of the transitioned property,
@@ -108,7 +107,7 @@ class Transition
 	 * class constructor. Set
 	 * the transition attribute
 	 */
-	public function new(propertyName:String, target:CoreStyle, transitionDuration:Float, transitionDelay:Float, transitionTimingFunction:CSSPropertyValue,
+	public function new(propertyIndex:Int, target:CoreStyle, transitionDuration:Float, transitionDelay:Float, transitionTimingFunction:CSSPropertyValue,
 	startValue:Float, endValue:Float, onComplete:Transition->Void, onUpdate:Transition->Void) 
 	{
 		_transitionDelay = transitionDelay;
@@ -117,7 +116,7 @@ class Transition
 		_startValue = startValue;
 		_endValue = endValue;
 		this.target = target;
-		this.propertyName = propertyName;
+		this.propertyIndex = propertyIndex;
 		this.onComplete = onComplete;
 		this.onUpdate = onUpdate;
 		_elapsedTime = 0;

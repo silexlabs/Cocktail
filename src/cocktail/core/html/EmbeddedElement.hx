@@ -65,14 +65,6 @@ class EmbeddedElement extends HTMLElement
 	public var intrinsicRatio(get_intrinsicRatio, null):Null<Float>;
 	
 	/**
-	 * A reference to the embedded asset
-	 * 
-	 * TODO 1 :the embeddedasset attribute seems obsolete and shouldn't exist anymore
-	 * with the ResourceManager
-	 */
-	public var embeddedAsset(default, null):NativeElement;
-	
-	/**
 	 * class constructor
 	 */
 	public function new(tagName:String) 
@@ -82,16 +74,7 @@ class EmbeddedElement extends HTMLElement
 	
 	override private function init():Void
 	{
-		initEmbeddedAsset();
 		super.init();
-	}
-	
-	/**
-	 * get a reference to the embedded asset
-	 */
-	private function initEmbeddedAsset():Void
-	{
-		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

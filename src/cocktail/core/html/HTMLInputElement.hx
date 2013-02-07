@@ -52,6 +52,12 @@ class HTMLInputElement extends EmbeddedElement
 	public var value(get_value, set_value):String;
 	
 	/**
+	 * Limit the max number of characters whihc can
+	 * be inputed
+	 */
+	public var maxLength(get_maxLength, set_maxLength):Int;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
@@ -85,12 +91,17 @@ class HTMLInputElement extends EmbeddedElement
 		
 		var textInputElementRenderer:TextInputRenderer = cast(elementRenderer);
 		
+		//initialise max length of input
+		var maxLength:Int = get_maxLength();
+		if (maxLength != -1)
+		{
+			textInputElementRenderer.maxLength = maxLength;
+		}
+		
 		//initialise value of native text input
 		var value:String = getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
-		
 		if (value != null)
 		{
-			
 			textInputElementRenderer.value = value;
 		}
 	}
@@ -152,5 +163,36 @@ class HTMLInputElement extends EmbeddedElement
 		}
 		
 		return getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
+	}
+	
+	/**
+	 * When max length updated, update also
+	 * on the native text input
+	 */
+	private function set_maxLength(value:Int):Int
+	{
+		setAttribute(HTMLConstants.HTML_MAXLENGTH_ATTRIBUTE_NAME, Std.string(value));
+		
+		if (elementRenderer != null)
+		{
+			var textInputElementRenderer:TextInputRenderer = cast(elementRenderer);
+			textInputElementRenderer.maxLength = value;
+		}
+		
+		return value;
+	}
+	
+	private function get_maxLength():Int
+	{
+		var maxLength:String = getAttribute(HTMLConstants.HTML_MAXLENGTH_ATTRIBUTE_NAME);
+		//TODO 4 : should it return a Null<Int> instead ?
+		if (maxLength == null)
+		{
+			return -1;
+		}
+		else
+		{
+			return Std.parseInt(maxLength);
+		}
 	}
 }

@@ -8,6 +8,7 @@
 */
 package cocktail.core.renderer;
 import cocktail.core.html.HTMLConstants;
+import cocktail.core.html.HTMLElement;
 
 /**
  * Anonmymous block are used to wrap inlineBoxRenderer
@@ -23,11 +24,23 @@ import cocktail.core.html.HTMLConstants;
 class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 {
 	/**
+	 * a "dummy" html element reused for all
+	 * anonymous blocks
+	 */
+	private static var _node:HTMLElement;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
 	{
-		super(Lib.document.createElement(HTMLConstants.HTML_DIV_TAG_NAME));
+		//create dummy node first time
+		if (_node == null)
+		{
+			_node = Lib.document.createElement(HTMLConstants.HTML_DIV_TAG_NAME);
+		}
+		
+		super(_node);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -35,16 +48,17 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * An anonymous block has only one child, which is the 
-	 * wrapped inlineBoxRenderer. When this child
-	 * is removed form the DOM, the anonymous block must
-	 * also be removed
+	 * When all children of an anonymous block
+	 * are removed, it must also remove itself
 	 */
 	override public function removeChild(oldChild:ElementRenderer):Void
 	{
 		super.removeChild(oldChild);
-		//removes itself
-		parentNode.removeChild(this);
+		
+		if (firstChild == null)
+		{
+			parentNode.removeChild(this);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

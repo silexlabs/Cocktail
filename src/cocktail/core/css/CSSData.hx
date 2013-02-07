@@ -13,33 +13,15 @@ import cocktail.core.utils.ObjectPool;
 
 typedef CSSRuleList = Array<CSSRule>;
 
-class TypedPropertyVO implements IPoolable {
+class TypedPropertyVO {
 	
-	public var name:String;
+	public var index:Int;
 	public var typedValue:CSSPropertyValue;
 	public var important:Bool;
 	
-	private static var _pool:ObjectPool<TypedPropertyVO>;
-	
-	public static function getPool():ObjectPool<TypedPropertyVO>
-	{
-		if (_pool == null)
-		{
-			_pool = new ObjectPool<TypedPropertyVO>(TypedPropertyVO);
-		}
-		return _pool;
-	}
-	
 	public function new()
 	{
-		important = false;
-	}
-	
-	public function reset():Void
-	{
-		name = null;
-		typedValue = null;
-		important = false;
+		
 	}
 }
 
@@ -106,7 +88,11 @@ class StyleDeclarationVO implements IPoolable {
 /**
  * For a given element, when retrieving
  * its styles, stores which pseudo-classes
- * the element currently matches
+ * the element currently matches.
+ * 
+ * Also store some additional data about
+ * the node, such as wether it has an ID,
+ * used to optimise cascading
  */
 class MatchedPseudoClassesVO {
 	
@@ -118,8 +104,15 @@ class MatchedPseudoClassesVO {
 	public var disabled:Bool;
 	public var checked:Bool;
 	
+	public var hasId:Bool;
+	public var nodeId:String;
+	public var hasClasses:Bool;
+	public var nodeClassList:Array<String>;
+	public var nodeType:String;
+	
 	public function new(hover:Bool, focus:Bool, active:Bool, link:Bool, enabled:Bool,
-	disabled:Bool, checked:Bool) 
+	disabled:Bool, checked:Bool,
+	hasId:Bool, hasClasses:Bool, nodeId:String, nodeClassList:Array<String>, nodeType:String) 
 	{
 		this.hover = hover;
 		this.focus = focus;
@@ -128,6 +121,11 @@ class MatchedPseudoClassesVO {
 		this.enabled = enabled;
 		this.disabled = disabled;
 		this.checked = checked;
+		this.hasId = hasId;
+		this.hasClasses = false;
+		this.nodeId = nodeId;
+		this.nodeClassList = nodeClassList;
+		this.nodeType = nodeType;
 	}
 }
 
@@ -248,10 +246,70 @@ class SelectorVO {
 	 */
 	public var pseudoElement:PseudoElementSelectorValue;
 	
-	public function new(components:Array<SelectorComponentValue>, pseudoElement:PseudoElementSelectorValue)
+	/**
+	 * Store wether the first component (starting from the right)
+	 * of this selector is a class selector. Used for optimisations
+	 * during cascade
+	 */
+	public var beginsWithClass:Bool;
+	
+	/**
+	 * If the selector begins with a class, it is stored
+	 * here, else it is null
+	 */
+	public var firstClass:String;
+	
+	/**
+	 * same as beginsWithClass for Id selector
+	 */
+	public var beginsWithId:Bool;
+	
+	/**
+	 * same as firstClass for Id
+	 */
+	public var firstId:String;
+	
+	/**
+	 * same as beginsWithClass for type selector
+	 */
+	public var beginsWithType:Bool;
+	
+	/**
+	 * same as firstClass for type selector
+	 */
+	public var firstType:String;
+	
+	/**
+	 * Wether this selector only contains a single
+	 * class selector
+	 */
+	public var isSimpleClassSelector:Bool;
+	
+	/**
+	 * same as above for id selector
+	 */
+	public var isSimpleIdSelector:Bool;
+	
+	/**
+	 * same as above for type selector
+	 */
+	public var isSimpleTypeSelector:Bool;
+	
+	public function new(components:Array<SelectorComponentValue>, pseudoElement:PseudoElementSelectorValue,
+	beginsWithClass:Bool, firstClass:String, beginsWithId:Bool, firstId:String, beginsWithType:Bool, firstType:String
+	, isSimpleClassSelector:Bool, isSimpleIdSelector:Bool, isSimpleTypeSelector:Bool)
 	{
 		this.components = components;
 		this.pseudoElement = pseudoElement;
+		this.beginsWithClass = beginsWithClass;
+		this.firstClass = firstClass;
+		this.beginsWithId = beginsWithId;
+		this.firstId = firstId;
+		this.beginsWithType = beginsWithType;
+		this.firstType = firstType;
+		this.isSimpleClassSelector = isSimpleClassSelector;
+		this.isSimpleIdSelector = isSimpleIdSelector;
+		this.isSimpleTypeSelector = isSimpleTypeSelector;
 	}
 }
 
@@ -348,8 +406,6 @@ enum AttributeSelectorValue {
 	 * an element whose "name" attribute
 	 * value is a list of whitespace-separated values,
 	 * one of which is exactly equal to "value"
-	 * 
-	 * TODO 2 : value should be stored as string array
 	 */
 	ATTRIBUTE_LIST(name:String, value:String);
 	
@@ -374,8 +430,6 @@ enum AttributeSelectorValue {
 	/**
 	 * an element whose "name" attribute has a hyphen-separated
 	 * list of values beginning (from the left) with "value"
-	 * 
-	 * TODO 2 : value should be store as string array
 	 */
 	ATTRIBUTE_VALUE_BEGINS_HYPHEN_LIST(name:String, value:String);
 }
@@ -624,6 +678,15 @@ enum CSSPropertyValue {
 	 * with 2 length items
 	 */
 	GROUP(value:Array<CSSPropertyValue>);
+	
+	/**
+	 * represent a special notation for the font shorthand
+	 * where the first value is the font size and the second
+	 * the line height. It is noted like this : "12px/100%",
+	 * this value means a font size of 12px and a line height
+	 * of 100% of the font size
+	 */
+	FONT_SIZE_LINE_HEIGHT_GROUP(fontSize:CSSPropertyValue, lineHeight:CSSPropertyValue);
 	
 	/**
 	 * Like a group but for comma separated CSS values.
