@@ -672,7 +672,14 @@ class CoreStyle
 				}
 				
 				//refresh the font metrics when either font family or font size hanges
-				fontMetrics = _fontManager.getFontMetrics("arial", getAbsoluteLength(fontSize));
+				if (computedValues.fontFamily != null)
+				{
+					fontMetrics = _fontManager.getFontMetrics(computedValues.fontFamily, getAbsoluteLength(fontSize));
+				}
+				else
+				{
+					fontMetrics = _fontManager.getFontMetrics(initialStyleDeclaration.initialComputedStyleDeclaration.fontFamily, getAbsoluteLength(fontSize));
+				}
 			}
 			
 			//prevent from being cascaded twice
