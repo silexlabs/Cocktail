@@ -216,6 +216,13 @@ class CoreStyle
 	private var _changedProperties:Array<Int>;
 	
 	/**
+	 * True while the first cascade did not occur,
+	 * for the first cascade, all styles need to
+	 * be cascaded
+	 */
+	private var _isFirstCascade:Bool;
+	
+	/**
 	 * The owning HTMLElement
 	 */
 	public var htmlElement:HTMLElement;
@@ -473,6 +480,8 @@ class CoreStyle
 	public function new(htmlElement:HTMLElement) 
 	{
 		this.htmlElement = htmlElement;
+		
+		_isFirstCascade = true;
 		
 		hasTransitionnableProperties = false;
 		isFloat = false;
@@ -830,22 +839,30 @@ class CoreStyle
 		}
 		
 		//update property flags which need it
-		updateCoreStyleAttribute(cascadeManager);
+		updateCoreStyleAttribute(cascadeManager, _isFirstCascade);
 		
+		
+		//unset flag now that first cascade is done
+		if (_isFirstCascade == true)
+		{
+			_isFirstCascade = false;
+		}
 	}
 	
 	/**
-	 * update core style flags
+	 * update core style flags, always update all for first cascade, as 
+	 * all styles are cascaded
 	 */
-	private function updateCoreStyleAttribute(cascadeManager:CascadeManager):Void
+	private function updateCoreStyleAttribute(cascadeManager:CascadeManager, isFirstCascade:Bool):Void
 	{
-		//if (cascadeManager.hasFloat == true)
-		//{
+		if (cascadeManager.hasFloat == true || isFirstCascade == true)
+		{
 			isFloat = isNone(cssFloat) == false;
-		//}
+		}
 		
-		//if (cascadeManager.hasDisplay == true || cascadeManager.hasPosition == true || cascadeManager.hasFloat == true)
-		//{
+		if (cascadeManager.hasDisplay == true || cascadeManager.hasPosition == true 
+		|| cascadeManager.hasFloat == true || isFirstCascade == true)
+		{
 			isInlineLevel = false;
 			isInlineBlock = false;
 			isBlock = false;
@@ -866,15 +883,15 @@ class CoreStyle
 				
 				default:
 			}
-		//}
+		}
 		
-		//if (cascadeManager.hasVisible == true)
-		//{
+		if (cascadeManager.hasVisible == true || isFirstCascade == true)
+		{
 			isVisible = getKeyword(visibility) != HIDDEN;
-		//}
+		}
 		
-		//if (cascadeManager.hasPosition == true)
-		//{
+		if (cascadeManager.hasPosition == true || isFirstCascade == true)
+		{
 			isPositioned = false;
 			isRelativePositioned = false;
 			isFixedPositioned = false;
@@ -899,10 +916,10 @@ class CoreStyle
 					
 				default:	
 			}
-		//}
+		}
 		
-		//if (cascadeManager.hasOverflowX || cascadeManager.hasOverflowY)
-		//{
+		if (cascadeManager.hasOverflowX || cascadeManager.hasOverflowY || isFirstCascade == true)
+		{
 			canAlwaysOverflow = true;
 			hasHiddenOrScrollOverflowX = false;
 			
@@ -929,10 +946,10 @@ class CoreStyle
 				default:
 					canAlwaysOverflow = false;
 			}
-		//}
+		}
 		
-		//if (cascadeManager.hasTransform || cascadeManager.hasPosition)
-		//{
+		if (cascadeManager.hasTransform || cascadeManager.hasPosition || isFirstCascade == true)
+		{
 			isTransformed = false;
 			hasCSSTransform = false;
 			
@@ -945,10 +962,10 @@ class CoreStyle
 				isTransformed = true;
 				hasCSSTransform = true;
 			}
-		//}
+		}
 		
-		//if (cascadeManager.hasOpacity == true)
-		//{
+		if (cascadeManager.hasOpacity == true || isFirstCascade == true)
+		{
 			isTransparent = false;
 			switch(opacity)
 			{
@@ -960,32 +977,32 @@ class CoreStyle
 					
 				default:
 			}
-		//}
+		}
 		
-		//if (cascadeManager.hasMarginTop == true)
-		//{
+		if (cascadeManager.hasMarginTop == true || isFirstCascade == true)
+		{
 			hasAutoMarginTop = isAuto(marginTop);
-		//}
+		}
 		
-		//if (cascadeManager.hasMarginBottom == true)
-		//{
+		if (cascadeManager.hasMarginBottom == true || isFirstCascade == true)
+		{
 			hasAutoMarginBottom = isAuto(marginBottom);
-		//}
+		}
 		
-		//if (cascadeManager.hasMarginLeft == true)
-		//{
+		if (cascadeManager.hasMarginLeft == true || isFirstCascade == true)
+		{
 			hasAutoMarginLeft = isAuto(marginLeft);
-		//}
+		}
 		
-		//if (cascadeManager.hasMarginRight == true)
-		//{
+		if (cascadeManager.hasMarginRight == true || isFirstCascade == true)
+		{
 			hasAutoMarginRight = isAuto(marginRight);
-		//}
+		}
 		
 		//for background image, if an url is provided, 
 		//start loading the image
-		//if (cascadeManager.hasBackgroundImage == true)
-		//{
+		if (cascadeManager.hasBackgroundImage == true || isFirstCascade == true)
+		{
 			hasBackgroundImage = false;
 			if (isNone(backgroundImage) == false)
 			{
@@ -999,10 +1016,10 @@ class CoreStyle
 					default:	
 				}
 			}
-		//}
+		}
 		
-		//if (cascadeManager.hasVerticalAlign == true)
-		//{
+		if (cascadeManager.hasVerticalAlign == true || isFirstCascade == true)
+		{
 			isTopAligned = false;
 			isBottomAligned = false;
 			isBaselineAligned = false;
@@ -1026,15 +1043,15 @@ class CoreStyle
 					
 				default:	
 			}
-		//}
+		}
 		
-		//if (cascadeManager.hasClear == true)
-		//{
+		if (cascadeManager.hasClear == true || isFirstCascade == true)
+		{
 			canHaveClearance = isNone(clear) == false;
-		//}
+		}
 		
-		//if (cascadeManager.hasWhiteSpace == true)
-		//{
+		if (cascadeManager.hasWhiteSpace == true || isFirstCascade == true)
+		{
 			hasPreLineWhiteSpace = false;
 			hasPreWhiteSpace = false;
 			hasNoWrapWhiteSpace = false;
@@ -1060,32 +1077,30 @@ class CoreStyle
 					
 				default:	
 			}
-		//}
+		}
 		
-		//if (cascadeManager.hasWidth == true)
-		//{
+		if (cascadeManager.hasWidth == true || isFirstCascade == true)
+		{
 			hasAutoWidth = isAuto(width);
-			trace(htmlElement);
-			trace(width);
-		//}
+		}
 		
-		//if (cascadeManager.hasHeight == true)
-		//{
+		if (cascadeManager.hasHeight == true || isFirstCascade == true)
+		{
 			hasAutoHeight = isAuto(height);
-		//}
+		}
 		
-		//if (cascadeManager.hasMaxHeight == true)
-		//{
+		if (cascadeManager.hasMaxHeight == true || isFirstCascade == true)
+		{
 			hasMaxHeight = isNone(maxHeight) == false;
-		//}
+		}
 		
-		//if (cascadeManager.hasMaxWidth == true)
-		//{
+		if (cascadeManager.hasMaxWidth == true || isFirstCascade == true)
+		{
 			hasMaxWidth = isNone(maxWidth) == false;
-		//}
+		}
 		
-		//if (cascadeManager.hasTextAlign == true)
-		//{
+		if (cascadeManager.hasTextAlign == true || isFirstCascade == true)
+		{
 			isLeftAligned = false;
 			switch(getKeyword(textAlign))
 			{
@@ -1094,27 +1109,27 @@ class CoreStyle
 					
 				default:	
 			}
-		//}
+		}
 		
-		//if (cascadeManager.hasTop == true)
-		//{
+		if (cascadeManager.hasTop == true || isFirstCascade == true)
+		{
 			hasAutoTop = isAuto(top);
-		//}
+		}
 		
-		//if (cascadeManager.hasBottom == true)
-		//{
+		if (cascadeManager.hasBottom == true || isFirstCascade == true)
+		{
 			hasAutoBottom = isAuto(bottom);
-		//}
+		}
 		
-		//if (cascadeManager.hasLeft == true)
-		//{
+		if (cascadeManager.hasLeft == true || isFirstCascade == true)
+		{
 			hasAutoLeft = isAuto(left);
-		//}
+		}
 		
-		//if (cascadeManager.hasRight == true)
-		//{
+		if (cascadeManager.hasRight == true || isFirstCascade == true)
+		{
 			hasAutoRight = isAuto(right);
-		//}
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
