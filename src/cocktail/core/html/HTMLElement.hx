@@ -1832,6 +1832,7 @@ class HTMLElement extends Element<HTMLElement>
 				return Math.round(elementRenderer.globalBounds.x - offsetParent.elementRenderer.globalBounds.x);
 			}
 		}
+		
 		return 0;
 	}
 	
@@ -1852,6 +1853,7 @@ class HTMLElement extends Element<HTMLElement>
 				return Math.round(elementRenderer.globalBounds.y - offsetParent.elementRenderer.globalBounds.y);
 			}
 		}
+		
 		return 0;
 	}
 	
@@ -1863,6 +1865,7 @@ class HTMLElement extends Element<HTMLElement>
 			var usedValues:UsedValuesVO = coreStyle.usedValues;
 			return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight);
 		}
+		
 		return 0;
 	}
 	
@@ -1874,10 +1877,8 @@ class HTMLElement extends Element<HTMLElement>
 			var usedValues:UsedValuesVO = coreStyle.usedValues;
 			return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
 		}
-		else
-		{
-			return 0;
-		}
+		
+		return 0;
 	}
 	
 	//TODO 5 : should be top border height
