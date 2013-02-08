@@ -98,13 +98,13 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	/**
 	 * A reuseable rectangle used for fillRect rectangle
 	 */
-	private var _fillRectRectangle:RectangleVO;
+	private static var _fillRectRectangle:RectangleVO;
 	
 	/**
 	 * A resusable rectangle used as clip rect for
 	 * fillRect rectangle
 	 */
-	private var _clippedRectRectangle:RectangleVO;
+	private static var _clippedRectRectangle:RectangleVO;
 	
 	/**
 	 * A reuseable point used for fillRect rectangle
@@ -381,7 +381,6 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			
 			_nativeBitmap.bitmapData.fillRect(_flashRectangle, argbColor);
 		}
-	
 	}
 	
 	/**

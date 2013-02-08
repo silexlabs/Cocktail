@@ -266,7 +266,6 @@ class SWFPlugin extends Plugin
 		//check to prevent removing multiple times
 		if (_swfAddedToStage == true)
 		{
-			trace("remove swf");
 			var containerGraphicContext:DisplayObjectContainer = cast(graphicsContext.nativeLayer);
 			containerGraphicContext.removeChild(_swf);
 			
