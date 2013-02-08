@@ -33,6 +33,11 @@ class InitialGraphicsContext extends GraphicsContext
 	public function new(layerRenderer:LayerRenderer)
 	{
 		super(layerRenderer);
+		
+		//when the initial graphics context is created
+		//or re-created, the whole native layer tree needs
+		//an update
+		invalidateNativeLayer();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -48,6 +53,11 @@ class InitialGraphicsContext extends GraphicsContext
 	override private function doAttach():Void
 	{
 		graphics.attachToRoot();
+		
+		//when the initial graphics context, is attached,
+		//the bitmap size needs to be invalidated so that
+		//the bitmap surface gets initialised
+		invalidateBitmapSize();
 	}
 	
 	/**
