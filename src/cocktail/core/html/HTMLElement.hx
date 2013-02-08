@@ -259,7 +259,7 @@ class HTMLElement extends Element<HTMLElement>
 	 * attached to the DOM, meaning that
 	 * the document itself is its ancestor
 	 */
-	public var attachedToDOM(get_attachedToDOM, null):Bool;
+	public var attachedToDOM(default, null):Bool;
 	
 	/**
 	 * Wether the style of this HTMLElement need to be
@@ -1794,15 +1794,25 @@ class HTMLElement extends Element<HTMLElement>
 		//need to perform an immediate update to be sure
 		//that the computed styles are up to date
 		updateDocumentImmediately();
-		var usedValues:UsedValuesVO = coreStyle.usedValues;
-		return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight);
+		if (elementRenderer != null)
+		{
+			var usedValues:UsedValuesVO = coreStyle.usedValues;
+			return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight);
+		}
+		
+		return 0;
 	}
 	
 	private function get_offsetHeight():Int
 	{
 		updateDocumentImmediately();
-		var usedValues:UsedValuesVO = coreStyle.usedValues;
-		return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
+		if (elementRenderer != null)
+		{
+			var usedValues:UsedValuesVO = coreStyle.usedValues;
+			return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
+		}
+		
+		return 0;
 	}
 	
 	private function get_offsetLeft():Int
@@ -1822,6 +1832,7 @@ class HTMLElement extends Element<HTMLElement>
 				return Math.round(elementRenderer.globalBounds.x - offsetParent.elementRenderer.globalBounds.x);
 			}
 		}
+		
 		return 0;
 	}
 	
@@ -1842,21 +1853,32 @@ class HTMLElement extends Element<HTMLElement>
 				return Math.round(elementRenderer.globalBounds.y - offsetParent.elementRenderer.globalBounds.y);
 			}
 		}
+		
 		return 0;
 	}
 	
 	private function get_clientWidth():Int
 	{
 		updateDocumentImmediately();
-		var usedValues:UsedValuesVO = coreStyle.usedValues;
-		return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight);
+		if (elementRenderer != null)
+		{
+			var usedValues:UsedValuesVO = coreStyle.usedValues;
+			return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight);
+		}
+		
+		return 0;
 	}
 	
 	private function get_clientHeight():Int
 	{
 		updateDocumentImmediately();
-		var usedValues:UsedValuesVO = coreStyle.usedValues;
-		return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
+		if (elementRenderer != null)
+		{
+			var usedValues:UsedValuesVO = coreStyle.usedValues;
+			return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
+		}
+		
+		return 0;
 	}
 	
 	//TODO 5 : should be top border height
@@ -1871,10 +1893,5 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		updateDocumentImmediately();
 		return 0;
-	}
-	
-	private function get_attachedToDOM():Bool
-	{
-		return attachedToDOM;
 	}
 }
