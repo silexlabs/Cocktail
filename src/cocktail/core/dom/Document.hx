@@ -86,6 +86,8 @@ class Document extends Node<Document>
 	{
 		var text:Text = new Text();
 		text.nodeValue = data;
+		text.ownerDocument = this;
+		
 		return text;
 	}
 	

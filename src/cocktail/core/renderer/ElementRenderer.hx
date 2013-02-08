@@ -481,7 +481,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		
 		switch(domNode.nodeType)
 		{
-			case DOMConstants.ELEMENT_NODE:
+			case DOMConstants.ELEMENT_NODE, DOMConstants.TEXT_NODE:
 				var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
 				htmlDocument.invalidationManager.invalidateLayerTree();
 		}
