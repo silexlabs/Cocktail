@@ -62,7 +62,16 @@ class ImageRenderer extends EmbeddedBoxRenderer
 	 */
 	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
-		var resource:AbstractResource = ResourceManager.getImageResource(domNode.getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME));
+		//get source of picture
+		var src:String = domNode.getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME);
+		
+		//early return if image has no picture yet
+		if (src == null)
+		{
+			return;
+		}
+		
+		var resource:AbstractResource = ResourceManager.getImageResource(src);
 		
 		//don't paint anything is the image is not loaded or there was an error
 		//while loading

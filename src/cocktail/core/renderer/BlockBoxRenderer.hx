@@ -292,6 +292,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		anonymousBlock.coreStyle.specifiedValues = initialStyleDeclaration;
 		anonymousBlock.coreStyle.computedValues = initialStyleDeclaration.initialComputedStyleDeclaration;
 		anonymousBlock.coreStyle.isLeftAligned = true;
+		anonymousBlock.coreStyle.hasAutoHeight = true;
 		
 		return anonymousBlock;
 	}
@@ -918,9 +919,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						//update position of child
 						child.bounds.y = _childPosition.y;
 						
-						//for x position, it is either defined by floated elements or by the left
-						//margin, whichever is bigger
-						
 						var leftFloatOffset:Float = 0;
 						if (floatsManager.hasFloats == true)
 						{
@@ -931,6 +929,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 							leftFloatOffset -= _offsetFromBlockFormattingRoot.x;
 						}
 						
+						//for x position, it is either defined by floated elements or by the left
+						//margin, whichever is bigger
 						if (leftFloatOffset > child.coreStyle.usedValues.marginLeft)
 						{
 							child.bounds.x = leftFloatOffset;
