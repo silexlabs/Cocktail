@@ -733,7 +733,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 			{
 				if (createOwnLayer() == true)
 				{
-					parentNode.layerRenderer.insertBefore(layerRenderer, getNextLayerRendererSibling());
+					parentNode.layerRenderer.insertBefore(layerRenderer, getNextLayerRenderer(parentNode.layerRenderer.rootElementRenderer, this));
 				}
 			}
 				
@@ -1064,7 +1064,8 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		if (createOwnLayer() == true)
 		{
 			doCreateLayer();
-			parentLayer.insertBefore(layerRenderer, getNextLayerRendererSibling());
+			
+			parentLayer.insertBefore(layerRenderer, getNextLayerRenderer(parentLayer.rootElementRenderer, this));
 			_hasOwnLayer = true;
 		}
 		else
@@ -1084,37 +1085,112 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	}
 	
 	/**
-	 * Return the first next sibling which creates its own
-	 * layer. It is used to know the index where to attach
-	 * this element renderer's layer in the layer renderer
-	 * tree. If there is no suvh sibling, it will be appended
-	 * to its parent layer
+	 * Return the first layer renderer belonging to an element renderer
+	 * which created its own layer renderer and which is declared after
+	 * this element renderer in the rendering tree
 	 * 
-	 * @return a layer renderer or null if there is no next
-	 * sibling with its own layer
+	 * @param	rootElementRenderer the root element renderer of the parent layer renderer of this element
+	 * renderer
+	 * @param	referenceElementRenderer a reference to this element renderer, passed while
+	 * traversing the rendering tree recursively
+	 * @return either the layer renderer or null if no such layer renderer is found
 	 */
-	private function getNextLayerRendererSibling():LayerRenderer
+	private function getNextLayerRenderer(rootElementRenderer:ElementRenderer, referenceElementRenderer:ElementRenderer):LayerRenderer
 	{
-		var nextElementRendererSibling:ElementRenderer = nextSibling;
-		if (nextSibling == null)
+		//get the first element renderer declared after this one in the rendering 
+		//tree which has its own layer
+		var nextElementRendererWithOwnLayerRenderer:ElementRenderer = getNextElementRendererWithOwnLayerRenderer(rootElementRenderer, referenceElementRenderer);
+		
+		//it is null if there is no such element renderer
+		if (nextElementRendererWithOwnLayerRenderer == null)
 		{
 			return null;
 		}
-		
-		while (nextElementRendererSibling != null)
+		//a ref to this element renderer might be returned, if this element renderer
+		//was found, but no element renderer with their own layer renderer was found after
+		else if (nextElementRendererWithOwnLayerRenderer == referenceElementRenderer)
 		{
-			if (nextElementRendererSibling.layerRenderer != null)
+			return null;
+		}
+		//else return the layer renderer of the found element renderer
+		else
+		{
+			return nextElementRendererWithOwnLayerRenderer.layerRenderer;
+		}
+	}
+	
+	/**
+	 * Return the first element renderer which is 
+	 * declared after this element renderer and which
+	 * has its layer renderer
+	 * by traversing the rendering tree recursively.
+	 * Start at the rootElementRenderer of the parent layer
+	 * renderer of this element renderer
+	 * 
+	 * @return the next element renderer if found, null
+	 * if none were found or might return a ref to this
+	 * element renderer if it was found but no element
+	 * renderer with their own layer were found after
+	 */
+	private function getNextElementRendererWithOwnLayerRenderer(rootElementRenderer:ElementRenderer, referenceElementRenderer:ElementRenderer):ElementRenderer
+	{
+		//set to true when this element renderer is found in the rendering
+		//tree, means that the next element renderer with its own layer is
+		//returned
+		var foundSelf:Bool = false;
+		
+		var child:ElementRenderer = rootElementRenderer.firstChild;
+		while (child != null)
+		{
+			//here this element renderer is found
+			if (child == referenceElementRenderer)
 			{
-				if (nextElementRendererSibling.createOwnLayer() == true)
+				foundSelf = true;
+			}
+			//here an element renderer with its own layer is found
+			else if (child.createOwnLayer() == true && child.layerRenderer != null)
+			{
+				//if this element renderer was already found, 
+				//then return its first following element renderer
+				//with its layer renderer
+				if (foundSelf == true)
 				{
-					return nextElementRendererSibling.layerRenderer;
+					return child;
+				}
+			}
+			//else traverse the rendering tree
+			else if (child.firstChild != null)
+			{
+				//call this method recursively
+				var nextElementRendererWithOwnLayerRenderer:ElementRenderer = getNextElementRendererWithOwnLayerRenderer(child, referenceElementRenderer);
+				
+				if (nextElementRendererWithOwnLayerRenderer != null)
+				{
+					if (nextElementRendererWithOwnLayerRenderer == referenceElementRenderer)
+					{
+						foundSelf = true;
+					}
+					else
+					{
+						return nextElementRendererWithOwnLayerRenderer;
+					}
 				}
 			}
 			
-			nextElementRendererSibling = nextElementRendererSibling.nextSibling;
+			child = child.nextSibling;
 		}
 		
-		return null;
+		//if this element renderer was found, but not
+		//any following element renderer with layer
+		//return self
+		if (foundSelf == true)
+		{
+			return referenceElementRenderer;
+		}
+		else
+		{
+			return null;
+		}
 	}
 	
 	/**
