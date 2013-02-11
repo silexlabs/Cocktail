@@ -259,7 +259,9 @@ class SWFPlugin extends Plugin
 			//TODO 4 : cocktail's Config should not be known by plugins ?
 			if (Config.ENABLE_COMPOSITING == false && Config.OBJECT_BELOW_WHEN_NO_COMPOSITING == true)
 			{
-				containerGraphicContext.addChildAt(_swf, 0);
+				//TODO 3 : messy to reference parent, should cocktail instead provide right surface
+				//in this method ?
+				containerGraphicContext.parent.addChildAt(_swf, 0);
 			}
 			else
 			{
@@ -279,10 +281,7 @@ class SWFPlugin extends Plugin
 		//check to prevent removing multiple times
 		if (_swfAddedToStage == true)
 		{
-			trace("remove swf");
-			var containerGraphicContext:DisplayObjectContainer = cast(graphicsContext.nativeLayer);
-			containerGraphicContext.removeChild(_swf);
-			
+			_swf.parent.removeChild(_swf);
 			_swfAddedToStage = false;
 		}
 	}

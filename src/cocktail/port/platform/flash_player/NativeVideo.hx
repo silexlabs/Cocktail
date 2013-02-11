@@ -186,7 +186,9 @@ class NativeVideo extends NativeMedia
 		//video might be added below cocktail's bitmap when compositing is disabled
 		if (Config.ENABLE_COMPOSITING == false && Config.VIDEO_BELOW_WHEN_NO_COMPOSITING == true)
 		{
-			containerGraphicContext.addChildAt(_video, 0);
+			//TODO 3 : messy to reference parent, should cocktail instead provide right surface
+			//in this method ?
+			containerGraphicContext.parent.addChildAt(_video, 0);
 		}
 		else
 		{
