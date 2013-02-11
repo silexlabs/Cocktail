@@ -15,10 +15,12 @@ import cocktail.core.geom.GeomUtils;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
+import cocktail.Lib;
 import cocktail.plugin.Plugin;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.geom.GeomData;
 import cocktail.port.NativeHttp;
+import haxe.Timer;
 
 #if macro
 #elseif (flash || nme)
@@ -153,6 +155,19 @@ class SWFPlugin extends Plugin
 		//retrieve the loaded swf, the plugin is not instantiated
 		//until this swf is successfully loaded
 		var loadedSWF:NativeHttp = ResourceManager.getSWFResource(_elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
+		
+		//in some cases, the swf might be loaded with a flash loader instead of
+		//loaded as bytes to circumvent security sandbox. In this
+		//case, the loader is already ready
+		if (Std.is(loadedSWF.response, Loader))
+		{
+			var loader:Loader = cast(loadedSWF.response);
+			//delay the call to simulate asynchronous loading, else
+			//if load event dispatch immediately, this instance won't
+			//be ready yet
+			Lib.document.timer.delay(function(e) { onLoaderReady(loader); } );
+			return;
+		}
 		
 		//all swf are loaded as byte array to prevent them from playing
 		//until used with an object tag, the bytes are loaded via a flash loader
@@ -360,11 +375,20 @@ class SWFPlugin extends Plugin
 	// PRIVATE UTILS METHODS
 	//////////////////////////////////// //////////////////////////////////////////////////////
 	
+
+	/**
+	 * Called after a successful load
+	 */
+	private function onSWFLoadComplete(event:flash.events.Event):Void
+	{
+		onLoaderReady(_loader);
+	}
+	
 	/**
 	 * When the swf is done loading, store
 	 * its data
 	 */
-	private function onSWFLoadComplete(event:flash.events.Event):Void
+	private function onLoaderReady(loader:Loader):Void
 	{
 		_swfHeight = _loader.contentLoaderInfo.height;
 		_swfWidth = _loader.contentLoaderInfo.width;

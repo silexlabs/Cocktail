@@ -9,10 +9,12 @@ package cocktail.port.platform.flash_player;
 
 import cocktail.core.http.HTTPConstants;
 import cocktail.port.base.NativeHttpBase;
+import flash.display.Loader;
 import flash.events.Event;
 import flash.events.HTTPStatusEvent;
 import flash.events.IOErrorEvent;
 import flash.events.ProgressEvent;
+import flash.events.SecurityErrorEvent;
 import flash.net.URLLoader;
 import flash.net.URLLoaderDataFormat;
 import flash.net.URLRequest;
@@ -108,6 +110,7 @@ class NativeHttp extends NativeHttpBase
 		_urlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHttpStatus);
 		_urlLoader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 		_urlLoader.addEventListener(Event.COMPLETE, onNativeLoadComplete);
+		_urlLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 		
 		//actually starts the request
 		_urlLoader.load(urlRequest);
@@ -144,6 +147,24 @@ class NativeHttp extends NativeHttpBase
 	private function onHttpStatus(event:HTTPStatusEvent):Void
 	{
 		status = event.status;
+	}
+	
+	/**
+	 * Called when there is a cross-domain loading issue.
+	 * 
+	 * This can happen when a swf is loaded from another domain.
+	 * Restart the load with a specialised SWF loader which can
+	 * circumvent those errors, 
+	 * this is hackish
+	 */
+	private function onSecurityError(event:SecurityErrorEvent):Void
+	{
+		var resource:SWFResource = new SWFResource(_url);
+		resource.addEventListener("load", function(e) {
+			var swfLoader:Loader = resource.nativeResource;
+			response = swfLoader;
+			complete = true;
+		});
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

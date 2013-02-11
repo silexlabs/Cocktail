@@ -107,13 +107,13 @@ class SWFResource extends AbstractResource
 	
 
 	/**
-	 * When loaded, store the loaded swf, call the
-	 * success callback as the plugin is now ready
+	 * When loaded, store the loader, call the
+	 * success callback as the swf is now ready
 	 */
 	private function onSWFLoadComplete(event:flash.events.Event):Void
 	{	
 		removeLoaderListeners(_loader);
-		nativeResource = _loader.content;
+		nativeResource = _loader;
 		
 		//store width height metadata
 		//of the loaded swf

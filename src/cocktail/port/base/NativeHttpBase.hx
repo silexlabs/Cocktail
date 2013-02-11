@@ -75,6 +75,11 @@ class NativeHttpBase extends EventTarget
 	public var complete(default, null):Bool;
 	
 	/**
+	 * Store the last loaded url
+	 */
+	private var _url:String;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
@@ -107,6 +112,8 @@ class NativeHttpBase extends EventTarget
 		response = null;
 		error = false;
 		complete = false;
+		
+		_url = url;
 		
 		doLoad(url, method, data, authorRequestHeaders, dataFormat);
 		
