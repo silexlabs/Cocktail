@@ -46,6 +46,11 @@ class HTMLObjectElement extends EmbeddedElement
 	 */
 	private static inline var SWF_FILE_EXTENSION:String = ".swf";
 	
+	/**
+	 * MIME type for flash movie
+	 */
+	private static inline var SWF_FILE_MIME_TYPE:String = "application/x-shockwave-flash";
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// IDL attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -193,9 +198,10 @@ class HTMLObjectElement extends EmbeddedElement
 		//an url for the resource must be provided
 		if (data != null)
 		{
-			//check that the url contain swf file, for now
+			//check that the url contain swf file or that data type
+			//is swf MIME type, for now
 			//this is the only supported type
-			if (data.indexOf(SWF_FILE_EXTENSION) != -1)
+			if (data.indexOf(SWF_FILE_EXTENSION) != -1 || getAttribute(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME) == SWF_FILE_MIME_TYPE)
 			{
 				//retrieve the resource the plugin will use
 				var resource:NativeHttp = ResourceManager.getSWFResource(data);
