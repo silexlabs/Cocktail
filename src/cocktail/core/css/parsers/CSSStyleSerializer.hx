@@ -229,7 +229,7 @@ class CSSStyleSerializer
 				return "hsl(" + Std.string(hue) + "," + Std.string(saturation) + "," + Std.string(lightness) +"," + Std.string(alpha) + ")";	
 
 			case HEX(value):
-				return value;
+				return "#" + value;
 				
 			case CURRENT_COLOR:
 				return "currentColor";
