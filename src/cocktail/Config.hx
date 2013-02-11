@@ -21,20 +21,6 @@ package cocktail;
  */
 class Config 
 {
-
-	/**
-	 * Enable or disable compositing. Compositing is used
-	 * for elements which require their own rendering surface, to respect z-order of the document.
-	 * For instance, a video, a text input or a swf object in flash
-	 * needs their own native surface, for instance a Sprite in flash.
-	 * 
-	 * You can disable it to improve performance by avoiding creating
-	 * too many bitmap surface and/or native element, however element
-	 * which would be otherwise composited will now always be on top
-	 * of the rendered text and picture
-	 */
-	public static inline var ENABLE_COMPOSITING:Bool = true;
-	
 	/**
 	 * Disable listening to the platform mouse event. This is
 	 * mainly useful on mobile platform where touch events
@@ -83,7 +69,40 @@ class Config
 	 */
 	public static inline var ENABLE_SYNCHRONOUS_UPDATE:Bool = true;
 	
-	public function new() 
+	/////////////////////////////////////////////////
+	// COMPOSITING CONFIG
+	/////////////////////////////////////////////////
+	
+	/**
+	 * Enable or disable compositing. Compositing is used
+	 * for elements which require their own rendering surface, to respect z-order of the document.
+	 * For instance, a video, a text input or a swf object in flash
+	 * needs their own native surface, for instance a Sprite in flash.
+	 * 
+	 * You can disable it to improve performance by avoiding creating
+	 * too many bitmap surface and/or native element, however element
+	 * which would be otherwise composited will now always be on top
+	 * of the rendered text and picture
+	 */
+	public static inline var ENABLE_COMPOSITING:Bool = true;
+	
+	/**
+	 * This parameter only applies if ENABLE_COMPOSITING is false.
+	 * 
+	 * If false, plugin loaded with <object> tag, such as flash movies
+	 * are displayed on top of cocktail's bitmap. Else, those plugin
+	 * are below cocktail's bitmap and they can be seen if cocktail's bitmap
+	 * is transparent where the plugin appears.
+	 */
+	public static inline var OBJECT_BELOW_WHEN_NO_COMPOSITING:Bool = false;
+	
+	/**
+	 * Same as OBJECT_BELOW_WHEN_NO_COMPOSITING, 
+	 * but applies to video created with <Video> tag
+	 */
+	public static inline var VIDEO_BELOW_WHEN_NO_COMPOSITING:Bool = false;
+	
+	private function new() 
 	{
 		
 	}

@@ -7,6 +7,7 @@
 */
 package cocktail.port.platform.flash_player;
 
+import cocktail.Config;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLMediaElement;
 import cocktail.port.base.NativeMedia;
@@ -181,7 +182,16 @@ class NativeVideo extends NativeMedia
 	override public function attach(graphicContext:GraphicsContext):Void
 	{
 		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext.nativeLayer);
-		containerGraphicContext.addChild(_video);
+		
+		//video might be added below cocktail's bitmap when compositing is disabled
+		if (Config.ENABLE_COMPOSITING == false && Config.VIDEO_BELOW_WHEN_NO_COMPOSITING == true)
+		{
+			containerGraphicContext.addChildAt(_video, 0);
+		}
+		else
+		{
+			containerGraphicContext.addChild(_video);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

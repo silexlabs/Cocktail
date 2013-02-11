@@ -8,6 +8,7 @@
 */
 package cocktail.plugin.swf;
 
+import cocktail.Config;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.geom.GeomUtils;
@@ -251,7 +252,19 @@ class SWFPlugin extends Plugin
 		{
 			//get a reference to the native layer, which is a flash Sprite
 			var containerGraphicContext:DisplayObjectContainer = cast(graphicsContext.nativeLayer);
-			containerGraphicContext.addChild(_swf);
+			
+			//when compositing is not enabled, swf might be added below cocktail's
+			//main bitmap
+			//
+			//TODO 4 : cocktail's Config should not be known by plugins ?
+			if (Config.ENABLE_COMPOSITING == false && Config.OBJECT_BELOW_WHEN_NO_COMPOSITING == true)
+			{
+				containerGraphicContext.addChildAt(_swf, 0);
+			}
+			else
+			{
+				containerGraphicContext.addChild(_swf);
+			}
 			
 			_swfAddedToStage = true;
 		}
