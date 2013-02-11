@@ -644,7 +644,7 @@ class CoreStyle
 		//if the style defining which transition can be transitionned must be cascaded,
 		//cascade first to know if other properties will need to start transition during 
 		//cascade
-		if (cascadeManager.hasTransitionProperty == true)
+		if (cascadeManager.hasTransitionProperty == true || cascadeManager.cascadeAll == true)
 		{
 			cascadeProperty(CSSConstants.TRANSITION_PROPERTY, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
 			
