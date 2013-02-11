@@ -988,7 +988,7 @@ class HTMLElement extends Element<HTMLElement>
 			}
 			//if one of those properties changed, then the layer renderer of the element renderer needs
 			//to be invalidated, so that it will be updated before next rendering
-			else if (cascadeManager.hasTransform == true || cascadeManager.hasZIndex == true)
+			else if (cascadeManager.hasTransform == true || cascadeManager.hasZIndex == true || cascadeManager.hasOpacity == true)
 			{
 				invalidateLayerRenderer();
 			}
