@@ -234,7 +234,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//depending on its children height with children depending themselves on its height
 		if (containingBlockData.isHeightAuto == true)
 		{
-			if (isPositioned() == false || isRelativePositioned() == true)
+			if (coreStyle.isAbsolutelyPositioned == false)
 			{
 				switch(coreStyle.height)
 				{
@@ -256,7 +256,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//the same rule exist for the height
 		//so if the element is absolutely positioned, the height and width of its
 		//containing block is updated to include its paddings
-		if (isPositioned() == true && isRelativePositioned() == false)
+		if (coreStyle.isAbsolutelyPositioned == true)
 		{
 			//only apply if the containing block is a block box (not inline, might happen with
 			//relative positioning)
