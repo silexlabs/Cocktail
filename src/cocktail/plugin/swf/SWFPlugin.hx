@@ -34,6 +34,7 @@ import flash.net.URLRequest;
 #if flash
 import flash.system.ApplicationDomain;
 import flash.system.LoaderContext;
+import flash.display.ActionScriptVersion;
 #end
 #end
 
@@ -124,6 +125,16 @@ class SWFPlugin extends Plugin
 	private var _swfAddedToStage:Bool;
 	
 	/**
+	 * Wether the loaded swf was compiled for
+	 * AVM1 (actionscript 1 or 2) or AVM2 (actionscript 3)
+	 * 
+	 * For AVM1 swf, they can't be directly added to the
+	 * as3 display list and so there loader should be attached
+	 * instead
+	 */
+	private var _isAVM1swf:Bool;
+	
+	/**
 	 * class constructor, get a reference to the loaded swf
 	 */
 	public function new(elementAttributes:Hash<String>, params:Hash<String>, loadComplete:Void->Void, loadError:Void->Void) 
@@ -131,6 +142,7 @@ class SWFPlugin extends Plugin
 		super(elementAttributes, params, loadComplete, loadError);
 		_swfBounds = new RectangleVO();
 		_swfAddedToStage = false;
+		_isAVM1swf = false;
 		init();
 	}
 	
@@ -276,11 +288,27 @@ class SWFPlugin extends Plugin
 			{
 				//TODO 3 : messy to reference parent, should cocktail instead provide right surface
 				//in this method ?
-				containerGraphicContext.parent.addChildAt(_swf, 0);
+				if (_isAVM1swf == false)
+				{
+					containerGraphicContext.parent.addChildAt(_swf, 0);
+				}
+				//for avm1 movies, attach the Loader instead of the movie
+				else
+				{
+					containerGraphicContext.parent.addChildAt(_swf.parent, 0);
+				}
 			}
 			else
 			{
-				containerGraphicContext.addChild(_swf);
+				if ( _isAVM1swf == false)
+				{
+					containerGraphicContext.addChild(_swf);
+				}
+				//for avm1 movies, attach the Loader instead of the movie
+				else
+				{
+					containerGraphicContext.addChild(_swf.parent);
+				}
 			}
 			
 			_swfAddedToStage = true;
@@ -296,7 +324,15 @@ class SWFPlugin extends Plugin
 		//check to prevent removing multiple times
 		if (_swfAddedToStage == true)
 		{
-			_swf.parent.removeChild(_swf);
+			if (_isAVM1swf == false)
+			{
+				_swf.parent.removeChild(_swf);
+			}
+			//for avm1 movies, remove Loader parent instead of movie
+			else
+			{
+				_swf.parent.parent.removeChild(_swf.parent);
+			}
 			_swfAddedToStage = false;
 		}
 	}
@@ -390,6 +426,9 @@ class SWFPlugin extends Plugin
 	 */
 	private function onLoaderReady(loader:Loader):Void
 	{
+		//check if actionscript 1/2 or 3
+		_isAVM1swf = loader.contentLoaderInfo.actionScriptVersion == ActionScriptVersion.ACTIONSCRIPT2;
+		
 		_swfHeight = loader.contentLoaderInfo.height;
 		_swfWidth = loader.contentLoaderInfo.width;
 		_swf = loader.content;
