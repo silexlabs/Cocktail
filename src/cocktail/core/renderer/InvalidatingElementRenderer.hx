@@ -141,7 +141,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 			//for any other style change,invalidate layout, rendering and 
 			//the containing block
 			default:
-				invalidateLayout();
+				invalidateLayoutAndRendering();
 				invalidateContainingBlock(styleIndex);
 		}
 	}
