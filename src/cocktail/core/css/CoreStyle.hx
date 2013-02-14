@@ -1866,8 +1866,13 @@ class CoreStyle
 	 */
 	private inline function getTransitionablePropertyValue(properyIndex:Int):CSSPropertyValue
 	{
+		//sortcut if this style object has no transitionable property
+		if (hasTransitionnableProperties == false)
+		{
+			return getComputedOrInitialProperty(properyIndex).typedValue;
+		}
 		//shortcut if there are not any transitions in progress
-		if (_transitionManager.hasTransitionsInProgress == false)
+		else if (_transitionManager.hasTransitionsInProgress == false)
 		{
 			return getComputedOrInitialProperty(properyIndex).typedValue;
 		}
