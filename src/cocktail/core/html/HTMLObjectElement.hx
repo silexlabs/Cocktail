@@ -60,6 +60,11 @@ class HTMLObjectElement extends EmbeddedElement
 	 */
 	public var data(get_data, set_data):String;
 	
+	/**
+	 * Specifies the mime-type of the resource
+	 */
+	public var type(get_type, set_type):String;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -104,6 +109,10 @@ class HTMLObjectElement extends EmbeddedElement
 		if (name == HTMLConstants.HTML_DATA_ATTRIBUTE_NAME)
 		{
 			data = value;
+		}
+		else if (name == HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME)
+		{
+			type = value;
 		}
 		else
 		{
@@ -357,4 +366,14 @@ class HTMLObjectElement extends EmbeddedElement
 		return getAttribute(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME);
 	}
 	
+	private function set_type(value:String):String
+	{
+		super.setAttribute(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME, value);
+		return value;
+	}
+	
+	private function get_type():String
+	{
+		return getAttribute(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME);
+	}
 }

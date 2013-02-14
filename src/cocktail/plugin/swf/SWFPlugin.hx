@@ -390,9 +390,9 @@ class SWFPlugin extends Plugin
 	 */
 	private function onLoaderReady(loader:Loader):Void
 	{
-		_swfHeight = _loader.contentLoaderInfo.height;
-		_swfWidth = _loader.contentLoaderInfo.width;
-		_swf = _loader.content;
+		_swfHeight = loader.contentLoaderInfo.height;
+		_swfWidth = loader.contentLoaderInfo.width;
+		_swf = loader.content;
 		
 		//mask the swf, size of mask
 		//is updated with the viewport
