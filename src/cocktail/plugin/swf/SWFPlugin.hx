@@ -57,7 +57,7 @@ class SWFPlugin extends Plugin
 	
 	private static inline var EXACT_FIT:String = "exactfit";
 	
-	private static inline var SCALE_MODE:String = "scalemode";
+	private static inline var SCALE_MODE:String = "scale";
 	
 	//html attributes
 	
