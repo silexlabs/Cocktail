@@ -173,11 +173,12 @@ class SWFPlugin extends Plugin
 		//case, the loader is already ready
 		if (Std.is(loadedSWF.response, Loader))
 		{
-			var loader:Loader = cast(loadedSWF.response);
+			_loader = cast(loadedSWF.response);
+			
 			//delay the call to simulate asynchronous loading, else
 			//if load event dispatch immediately, this instance won't
 			//be ready yet
-			Lib.document.timer.delay(function(e) { onLoaderReady(loader); } );
+			Lib.document.timer.delay(function(e) { onLoaderReady(_loader); } );
 			return;
 		}
 		
@@ -295,7 +296,7 @@ class SWFPlugin extends Plugin
 				//for avm1 movies, attach the Loader instead of the movie
 				else
 				{
-					containerGraphicContext.parent.addChildAt(_swf.parent, 0);
+					containerGraphicContext.parent.addChildAt(_loader, 0);
 				}
 			}
 			else
@@ -304,10 +305,11 @@ class SWFPlugin extends Plugin
 				{
 					containerGraphicContext.addChild(_swf);
 				}
-				//for avm1 movies, attach the Loader instead of the movie
+				//for avm1 movies, attach the Loader instead of the movie,
+				//avm1 movies can't be attached to the avm2 display list
 				else
 				{
-					containerGraphicContext.addChild(_swf.parent);
+					containerGraphicContext.addChild(_loader);
 				}
 			}
 			
@@ -331,10 +333,20 @@ class SWFPlugin extends Plugin
 			//for avm1 movies, remove Loader parent instead of movie
 			else
 			{
-				_swf.parent.parent.removeChild(_swf.parent);
+				_loader.parent.removeChild(_loader);
 			}
 			_swfAddedToStage = false;
 		}
+	}
+	
+	/**
+	 * Clean up loaded swf 
+	 */
+	override public function dispose():Void
+	{
+		_loader.unloadAndStop();
+		_loader = null;
+		_swf = null;
 	}
 	
 	/**
