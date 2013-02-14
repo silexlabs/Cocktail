@@ -9,6 +9,7 @@ package cocktail.core.animation;
 
 
 import cocktail.core.css.CoreStyle;
+import cocktail.core.css.CSSConstants;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.renderer.RendererData;
@@ -54,11 +55,12 @@ class TransitionManager
 	
 	/**
 	 * Store a ref to each transitions in progress.
-	 * Each index corresponds to one CSS style
-	 * and the object at the index contains all
-	 * the current transitions for this property name
+	 * Each index corresponds to one CSS style, referenced by
+	 * its CSS property index,
+	 * and the array at the index contains all
+	 * the current transitions for this property index
 	 */
-	private var _transitions:Array<TransitionsVO>;
+	private var _transitions:Array<Array<Transition>>;
 	
 	/**
 	 * The current number of transition in progress. When it
@@ -86,7 +88,7 @@ class TransitionManager
 	 */
 	private function new() 
 	{
-		_transitions = new Array<TransitionsVO>();
+		initTransitions();
 		_currentTransitionsNumber = 0;
 		hasTransitionsInProgress = false;
 		_lastTick = 0;
@@ -105,6 +107,20 @@ class TransitionManager
 		return _instance;
 	}
 	
+	/**
+	 * Create the array holding transitions
+	 */
+	private function initTransitions():Void
+	{
+		_transitions = new Array<Array<Transition>>();
+		//create one array of transition for each supported
+		//CSS styles
+		for (i in 0...CSSConstants.SUPPORTED_STYLES_NUMBER)
+		{
+			_transitions[i] = new Array<Transition>();
+		}
+	}
+	
 	/////////////////////////////////
 	// PUBLIC METHODS
 	////////////////////////////////
@@ -119,7 +135,7 @@ class TransitionManager
 	{
 		//get all the transitions in progress for the given property name
 		var transitionsForProperty:Array<Transition> = getTransitionsForProperty(propertyIndex);
-		if (transitionsForProperty == null)
+		if (transitionsForProperty.length == 0)
 		{
 			return null;
 		}
@@ -151,17 +167,6 @@ class TransitionManager
 		
 		//get the array to store the transition the new transition
 		var transitionsForProperty:Array<Transition> = getTransitionsForProperty(propertyIndex);
-		
-		//if there is not an object yet for this property name, create it
-		if (transitionsForProperty == null)
-		{
-			transitionsForProperty = new Array<Transition>();
-			
-			var transitionsVO:TransitionsVO = new TransitionsVO();
-			transitionsVO.propertyIndex = propertyIndex;
-			transitionsVO.transitions = transitionsForProperty;
-			_transitions.push(transitionsVO);
-		}
 		
 		transitionsForProperty.push(transition);
 		
@@ -202,21 +207,11 @@ class TransitionManager
 	
 	/**
 	 * return the array of transitions
-	 * for a given CSS property index or null if there
-	 * are none
+	 * for a given CSS property index 
 	 */
-	private function getTransitionsForProperty(propertyIndex:Int):Array<Transition>
+	private inline function getTransitionsForProperty(propertyIndex:Int):Array<Transition>
 	{
-		var length:Int = _transitions.length;
-		for (i in 0...length)
-		{
-			if (_transitions[i].propertyIndex == propertyIndex)
-			{
-				return _transitions[i].transitions;
-			}
-		}
-		
-		return null;
+		return _transitions[propertyIndex];
 	}
 	
 	/**
@@ -258,7 +253,7 @@ class TransitionManager
 			//looping in it)
 			var completedTransitions:Array<Transition> = new Array<Transition>();
 			
-			var transitionsForProperty:Array<Transition> = _transitions[i].transitions;
+			var transitionsForProperty:Array<Transition> = _transitions[i];
 			var length:Int = transitionsForProperty.length;
 			for (j in 0...length)
 			{

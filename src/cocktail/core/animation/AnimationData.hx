@@ -29,24 +29,3 @@ class PendingAnimationVO {
 		
 	}
 }
-
-/**
- * Contain an array of all the transitions registered
- * for a given CSS property name
- */
-class TransitionsVO {
-	/**
-	 * every transition for the property name
-	 */
-	public var transitions:Array<Transition>;
-	
-	/**
-	 * The index of the transitioned CSS style
-	 */
-	public var propertyIndex:Int;
-	
-	public function new():Void
-	{
-		
-	}
-}

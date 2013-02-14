@@ -84,7 +84,7 @@ class Config
 	 * which would be otherwise composited will now always be on top
 	 * of the rendered text and picture
 	 */
-	public static inline var ENABLE_COMPOSITING:Bool = true;
+	public static inline var ENABLE_COMPOSITING:Bool = false;
 	
 	/**
 	 * This parameter only applies if ENABLE_COMPOSITING is false.
@@ -94,13 +94,13 @@ class Config
 	 * are below cocktail's bitmap and they can be seen if cocktail's bitmap
 	 * is transparent where the plugin appears.
 	 */
-	public static inline var OBJECT_BELOW_WHEN_NO_COMPOSITING:Bool = false;
+	public static inline var OBJECT_BELOW_WHEN_NO_COMPOSITING:Bool = true;
 	
 	/**
 	 * Same as OBJECT_BELOW_WHEN_NO_COMPOSITING, 
 	 * but applies to video created with <Video> tag
 	 */
-	public static inline var VIDEO_BELOW_WHEN_NO_COMPOSITING:Bool = false;
+	public static inline var VIDEO_BELOW_WHEN_NO_COMPOSITING:Bool = true;
 	
 	private function new() 
 	{
