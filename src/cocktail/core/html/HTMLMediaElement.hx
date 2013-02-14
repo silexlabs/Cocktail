@@ -10,6 +10,7 @@ import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
+import cocktail.Lib;
 import cocktail.port.base.NativeMedia;
 import cocktail.core.html.HTMLData;
 import cocktail.core.renderer.RendererData;
@@ -584,6 +585,20 @@ class HTMLMediaElement extends EmbeddedElement
 	{
 		networkState = NETWORK_NO_SOURCE;
 		
+		//most of the actual algorithm is implemented asynchronously,
+		//to await a stable state of the document so delay till next update.
+		//
+		//TODO 4 : stable state of the document is a larger concept
+		//which will need to be implemented eventually : 
+		//http://www.w3.org/TR/2012/CR-html5-20121217/webappapis.html#await-a-stable-state
+		_ownerHTMLDocument.timer.delay(doSelectResource);
+	}
+	
+	/**
+	 * The actual select resource algorithm
+	 */ 
+	private function doSelectResource(time:Float):Void
+	{
 		var mode:Int;
 		var candidate:HTMLSourceElement;
 		if (src != null)
