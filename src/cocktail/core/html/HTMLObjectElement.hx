@@ -204,6 +204,14 @@ class HTMLObjectElement extends EmbeddedElement
 			return;
 		}
 		
+		//plugin can only be
+		//created if the object tag is currently
+		//attached to the DOM
+		if (attachedToDOM == false)
+		{
+			return;
+		}
+		
 		//an url for the resource must be provided
 		if (data != null)
 		{
@@ -270,15 +278,7 @@ class HTMLObjectElement extends EmbeddedElement
 	 * change of data attribute value
 	 */
 	private function deletePlugin():Void
-	{
-		//no need to delete the plugin
-		//if the node is still attached to
-		//the DOM
-		if (parentNode != null)
-		{
-			return;
-		}
-		
+	{	
 		if (plugin != null)
 		{
 			_pluginReady = false;
@@ -358,6 +358,12 @@ class HTMLObjectElement extends EmbeddedElement
 	private function set_data(value:String):String
 	{
 		super.setAttribute(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME, value);
+		
+		//when calue of data changes, delete and create/recreate
+		//plugin if necessary
+		deletePlugin();
+		createPlugin();
+		
 		return value;
 	}
 	
