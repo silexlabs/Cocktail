@@ -223,11 +223,18 @@ class NativeVideo extends NativeMedia
 	 */
 	override public function seek(time:Float):Void 
 	{
-		//store seek time so that it can be immediatley
-		//return if current time is requested
-		_seeking = true;
-		_currentTime = time;
-		_netStream.seek(time);
+		//seeking is asynchronous, prevent from
+		//calling seek method too much, seek
+		//method is very expensive
+		if (_seeking == false)
+		{
+			//store seek time so that it can be immediatley
+			//return if current time is requested
+			_seeking = true;
+			_currentTime = time;
+			_netStream.seek(time);
+		}
+		
 	}
 	
 	/**
