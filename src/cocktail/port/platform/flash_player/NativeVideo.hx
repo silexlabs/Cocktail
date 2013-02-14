@@ -15,8 +15,12 @@ import cocktail.port.NativeElement;
 import flash.display.DisplayObjectContainer;
 import flash.events.AsyncErrorEvent;
 import flash.events.Event;
+import flash.events.StageVideoAvailabilityEvent;
+import flash.geom.Rectangle;
 import flash.Lib;
 import flash.media.SoundTransform;
+import flash.media.StageVideo;
+import flash.media.StageVideoAvailability;
 import flash.media.Video;
 import flash.net.NetConnection;
 import flash.net.NetStream;
@@ -26,7 +30,11 @@ import cocktail.core.geom.GeomData;
 /**
  * This is the flash as3 port of the native video,
  * allowing displaying an flv or mp4 video using
- * flash native video capabilities
+ * flash native video capabilities.
+ * 
+ * It can either use flash "new" (flash player 10.2) StageVideo API 
+ * for GPU accelerated video rendering if available, or the classic
+ * software rendered video
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -45,10 +53,45 @@ class NativeVideo extends NativeMedia
 	private static inline var NET_STREAM_SEEK_NOTIFY:String = "NetStream.Seek.Notify";
 	
 	/**
-	 * a reference to the native flash video
+	 * a reference to the native software flash video
 	 * player
 	 */
 	private var _video:Video;
+	
+	/**
+	 * a reference to the native hardware flash
+	 * video player. It might not always be
+	 * available based on the hardaware and how
+	 * the flash movie is embedded
+	 */
+	private var _stageVideo:StageVideo;
+	
+	/**
+	 * keep track of wether a StageVideo object
+	 * is currently available to be used, might
+	 * change during playback
+	 */
+	private var _stageVideoAvailable:Bool;
+	
+	/**
+	 * Keep track of wether hardware rendering is currently
+	 * used for the video. This might change during
+	 * playback of the video, for instance switching
+	 * to fullscreen mode might make the video switch
+	 * from sotware to hardware.
+	 * 
+	 * If false, can either mean that hardware video is 
+	 * not available or that no video is currently displayed
+	 */
+	private var _usesStageVideo:Bool;
+	
+	/**
+	 * Same as above for software video.
+	 * If true, means that video is currently displayed
+	 * with software rendering, if false, video might either
+	 * be not displayed or displayed with hardware rendering
+	 */
+	private var _usesSoftwareVideo:Bool;
 	
 	/**
 	 * The flash net stream object, 
@@ -95,8 +138,11 @@ class NativeVideo extends NativeMedia
 	{
 		super();
 		
-		_video = new Video();
-		_video.smoothing = true;
+		_stageVideoAvailable = false;
+		_usesSoftwareVideo = false;
+		_usesStageVideo = false;
+		
+		initVideo();
 		_currentTime = 0.0;
 		_seeking = false;
 		initNetConnection();
@@ -119,6 +165,34 @@ class NativeVideo extends NativeMedia
 	private function initNetStream():Void
 	{
 		_netStream = new NetStream(_nc);
+	}
+	
+	/**
+	 * Init software and hardware video object.
+	 * 
+	 * Software is always instantiated, as even if
+	 * hardware is available, during playback video
+	 * might fallback to software if hardware loses
+	 * os focus
+	 */
+	private function initVideo():Void
+	{
+		_video = new Video();
+		_video.smoothing = true;
+		
+		//hardware video not instantiated but made available asynchronously on stage object
+		Lib.current.stage.addEventListener(StageVideoAvailabilityEvent.STAGE_VIDEO_AVAILABILITY, onStageVideoState);
+	}
+	
+	/**
+	 * Called each time StageVideo determined to be available 
+	 * or not
+	 */
+	private function onStageVideoState(event:StageVideoAvailabilityEvent):Void
+	{
+		//store wether available or not
+		_stageVideoAvailable = event.availability == StageVideoAvailability.AVAILABLE;
+		toggleStageVideo();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -201,6 +275,51 @@ class NativeVideo extends NativeMedia
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Called each time StageVideo is determined to be available
+	 * or unavailable, and might toggle between software and hardware 
+	 * rendering
+	 */
+	private function toggleStageVideo():Void
+	{
+		//here, can use hardware rendering
+		if (_stageVideoAvailable == true)
+		{
+			_usesStageVideo = true;
+			
+			//get a ref to the first available stage video
+			//if not referenced yet
+			if (_stageVideo == null)
+			{
+				_stageVideo = Lib.current.stage.stageVideos[0];
+				_stageVideo.viewPort = new Rectangle(viewport.x, viewport.y, viewport.width, viewport.height);
+			}
+			
+			//attach netstream to it, automatically detaching it
+			//from software video if needed
+			_stageVideo.attachNetStream(_netStream);
+			
+			//hide software video if currently used, as
+			//stage video always behind
+			if (_usesSoftwareVideo == true)
+			{
+				_usesSoftwareVideo = false;
+				_video.visible = false;
+			}
+		}
+		//here uses software rendering
+		else
+		{
+			_usesStageVideo = false;
+			_usesSoftwareVideo = true;
+			_video.visible = true;
+			
+			//attach netstream to software video, detaching
+			//it from stage video if needed
+			_video.attachNetStream(_netStream);
+		}
+	}
+	
+	/**
 	 * Wait for the NetConnection object to connect before initialising
 	 * the net stream
 	 */
@@ -239,8 +358,7 @@ class NativeVideo extends NativeMedia
 	}
 	
 	/**
-	 * init the net stream and attach
-	 * it to the video object
+	 * init the net stream 
 	 */
 	private function connectStream():Void
 	{
@@ -251,7 +369,6 @@ class NativeVideo extends NativeMedia
 		}
 		
 		_netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-		_video.attachNetStream(_netStream);
 	}
 	
 	/**
@@ -322,7 +439,15 @@ class NativeVideo extends NativeMedia
 		{
 			return null;
 		}
-		return _video.videoHeight;
+		
+		if (_usesStageVideo == true)
+		{
+			return _stageVideo.videoHeight;
+		}
+		else
+		{
+			return _video.videoHeight;
+		}
 	}
 	
 	override private function get_width():Null<Int>
@@ -332,7 +457,14 @@ class NativeVideo extends NativeMedia
 			return null;
 		}
 		
-		return _video.videoWidth;
+		if (_usesStageVideo == true)
+		{
+			return _stageVideo.videoWidth;
+		}
+		else
+		{
+			return _video.videoWidth;
+		}
 	}
 	
 	/**
@@ -349,11 +481,6 @@ class NativeVideo extends NativeMedia
 		return value;
 	}
 	
-	override private function get_nativeElement():NativeElement
-	{
-		return _video;
-	}
-	
 	/**
 	 * Set/get the position of the native flash video object
 	 * to match those of its viewport
@@ -365,10 +492,17 @@ class NativeVideo extends NativeMedia
 	
 	override private function set_viewport(value:RectangleVO):RectangleVO
 	{
+		//refresh hardware if necessary and software video
+		if (_stageVideo != null)
+		{
+			_stageVideo.viewPort = new Rectangle(value.x, value.y, value.width, value.height);
+		}
+		
 		_video.x = value.x;
 		_video.y = value.y;
 		_video.width = value.width;
 		_video.height = value.height;
+		
 		viewport = value;
 		return value;
 	}

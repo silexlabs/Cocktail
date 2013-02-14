@@ -58,12 +58,6 @@ class NativeMedia
 	 * seconds
 	 */
 	public var currentTime(get_currentTime, never):Float;
-
-	/**
-	 * A reference to the nativeElement of the native media, used to attach
-	 * it to the rendering tree
-	 */
-	public var nativeElement(get_nativeElement, never):NativeElement;
 	
 	/**
 	 * get the currently loaded number of bytes of the 
@@ -193,11 +187,6 @@ class NativeMedia
 	}
 	
 	private function get_width():Null<Int>
-	{
-		return null;
-	}
-	
-	private function get_nativeElement():NativeElement
 	{
 		return null;
 	}
