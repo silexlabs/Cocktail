@@ -823,16 +823,12 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		}
 	}
 	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE RENDERING TREE METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
 	/**
 	 * Called by the parent ElementRenderer when
 	 * this ElementRenderer is appended to the
 	 * rendering tree
 	 */
-	private function addedToRenderingTree():Void
+	public function addedToRenderingTree():Void
 	{
 		//retrieve containing block
 		containingBlock = getContainingBlock();
@@ -848,7 +844,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * this ElementRenderer is removed from the
 	 * rendering tree
 	 */
-	private function removedFromRenderingTree():Void
+	public function removedFromRenderingTree():Void
 	{
 		//detach from layer render tree
 		detach();

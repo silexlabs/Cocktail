@@ -44,6 +44,17 @@ class InitialLayerRenderer extends LayerRenderer
 	}
 	
 	/**
+	 * Detach the initial graphics context
+	 */
+	override private function doDetachGraphicsContext():Void 
+	{
+		graphicsContext.removedFromGraphicsContextTree();
+		graphicsContext.dispose();
+		hasOwnGraphicsContext = false;
+		graphicsContext = null;
+	}
+	
+	/**
 	 * The initial layer renderer always creates the StackingContext
 	 * at the root of the stacking context tree
 	 */

@@ -108,9 +108,7 @@ class GraphicsContext extends FastNode<GraphicsContext>
 	override public function appendChild(newChild:GraphicsContext):Void
 	{
 		super.appendChild(newChild);
-		
-		newChild.invalidateNativeLayer();
-		newChild.invalidateBitmapSize();
+		newChild.addedToGraphicsContextTree();
 	}
 	
 	/**
@@ -120,10 +118,7 @@ class GraphicsContext extends FastNode<GraphicsContext>
 	 */ 
 	override public function removeChild(oldChild:GraphicsContext):Void
 	{
-		oldChild.detach();
-		oldChild.invalidateNativeLayer();
-		oldChild.invalidateBitmapSize();
-		
+		oldChild.removedFromGraphicsContextTree();
 		super.removeChild(oldChild);
 	}
 	
@@ -140,13 +135,35 @@ class GraphicsContext extends FastNode<GraphicsContext>
 			return;
 		}
 		
-		newChild.invalidateNativeLayer();
-		newChild.invalidateBitmapSize();
+		newChild.addedToGraphicsContextTree();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC GRAPHICS CONTEXT TREE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called by the parent GraphicsContext when
+	 * this GraphicsContext is appended to the
+	 * GraphicsContext tree
+	 */
+	public function addedToGraphicsContextTree():Void
+	{
+		invalidateNativeLayer();
+		invalidateBitmapSize();
+	}
+	
+	/**
+	 * Called by the parent GraphicsContext when
+	 * this GraphicsContext is removed from the
+	 * GraphicsContext tree
+	 */
+	public function removedFromGraphicsContextTree():Void
+	{
+		detach();
+		invalidateNativeLayer();
+		invalidateBitmapSize();
+	}
 	
 	/**
 	 * Called when the size of the viewport changed

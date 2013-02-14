@@ -90,12 +90,12 @@ class HTMLHtmlElement extends HTMLElement
 	}
 	
 	/**
-	 * As there is no parent ElementRenderer, no need
-	 * to detach from parent
+	 * As there is no parent ElementRenderer, need to 
+	 * detach explicitily the initial block renderer
 	 */
 	override private function detachFromParentElementRenderer():Void
 	{
-		
+		elementRenderer.removedFromRenderingTree();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -58,6 +58,18 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	override private function attachLayer():Void
 	{
 		layerRenderer = new InitialLayerRenderer(this);
+		_hasOwnLayer = true;
+	}
+	
+	/**
+	 * Overriden to detach the initial layer renderer
+	 */
+	override private function detachLayer():Void
+	{
+		layerRenderer.removedFromLayerTree();
+		_hasOwnLayer = false;
+		layerRenderer.dispose();
+		layerRenderer = null;
 	}
 	
 	/**

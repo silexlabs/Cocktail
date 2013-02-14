@@ -481,16 +481,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	override public function appendChild(newChild:LayerRenderer):Void
 	{
 		super.appendChild(newChild);
-		
-		newChild.invalidateStackingContext();
-		newChild.invalidateRendering();
-		
-		//needs to update graphic context, in case the new child
-		//changes it
-		//
-		//TODO 3 : eventually, it might not be needed to invalidate
-		//every time
-		newChild.invalidateGraphicsContext(newChild.isCompositingLayer());
+		newChild.addedToLayerTree();
 	}
 	
 	/**
@@ -507,14 +498,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 			return;
 		}
 		
-		newChild.invalidateStackingContext();
-		newChild.invalidateRendering();
-		//needs to update graphic context, in case the new child
-		//changes it
-		//
-		//TODO 3 : eventually, it might not be needed to invalidate
-		//every time
-		newChild.invalidateGraphicsContext(newChild.isCompositingLayer());
+		newChild.addedToLayerTree();
 	}
 	
 	/**
@@ -522,20 +506,47 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 */ 
 	override public function removeChild(oldChild:LayerRenderer):Void
 	{
-		//need to update graphic context after removing a child
-		//as it might trigger graphic contex creation/deletion
-		oldChild.invalidateGraphicsContext(oldChild.isCompositingLayer());
-		oldChild.invalidateStackingContext();
-		oldChild.invalidateRendering();
-		
-		oldChild.detachGraphicsContext();
-
+		oldChild.removedFromLayerTree();
 		super.removeChild(oldChild);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC ATTACHEMENT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called by the parent LayerRenderer when
+	 * this LayerRenderer is appended to the
+	 * layer tree
+	 */
+	public function addedToLayerTree():Void
+	{
+		invalidateStackingContext();
+		invalidateRendering();
+		
+		//needs to update graphic context, in case the new child
+		//changes it
+		//
+		//TODO 3 : eventually, it might not be needed to invalidate
+		//every time
+		invalidateGraphicsContext(isCompositingLayer());
+	}
+	
+	/**
+	 * Called by the parent LayerRenderer when
+	 * this LayerRenderer is removed from the
+	 * layer tree
+	 */
+	public function removedFromLayerTree():Void
+	{
+		//need to update graphic context after removing a child
+		//as it might trigger graphic contex creation/deletion
+		invalidateGraphicsContext(isCompositingLayer());
+		invalidateStackingContext();
+		invalidateRendering();
+		
+		detachGraphicsContext();
+	}
 	
 	/**
 	 * Attach the graphics context of the layer

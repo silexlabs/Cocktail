@@ -58,7 +58,7 @@ class InvalidatingElementRenderer extends ElementRenderer
 	 * when added to the rendering tree, 
 	 * this element needs a layout
 	 */
-	override private function addedToRenderingTree():Void
+	override public function addedToRenderingTree():Void
 	{
 		super.addedToRenderingTree();
 		invalidateLayout();
