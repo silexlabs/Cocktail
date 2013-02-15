@@ -206,7 +206,12 @@ class SWFPlugin extends Plugin
 		}
 		
 		//get content loader info parameters
-		loaderContext.parameters = getLoaderContextParams();
+		//set with reflection as this is a newish flash feature,
+		//available starting from flash player 11
+		if (Reflect.hasField(loaderContext, "parameters"))
+		{
+			Reflect.setField(loaderContext, "parameters",  getLoaderContextParams());
+		}
 		
 		_loader.loadBytes(loadedSWF.response, loaderContext);
 		#end

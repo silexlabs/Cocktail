@@ -72,7 +72,13 @@ class ImageResource extends AbstractResource
 		var loadingContext:LoaderContext = new LoaderContext(true);
 
 		//trigger decoding of picture in another thread
-		loadingContext.imageDecodingPolicy = flash.system.ImageDecodingPolicy.ON_LOAD;
+		//
+		//set with reflection as this is a newish property (flash player 11)
+		//this way, cocktail can still be built for older flash player
+		if (Reflect.hasField(loadingContext, "imageDecodingPolicy"))
+		{
+			Reflect.setField(loadingContext, "imageDecodingPolicy", "onLoad");
+		}
 		
 		//start the loading
 		_loader.load(request, loadingContext);
