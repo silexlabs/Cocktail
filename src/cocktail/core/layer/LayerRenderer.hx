@@ -1203,7 +1203,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		
 		//set up a scroll event to be dispatch on the dom node of the 
 		//root element renderer after the next update of the document
-		Lib.document.timer.delay(dispatchScrollEvent);
+		htmlDocument.timer.delay(dispatchScrollEvent);
 	}
 	
 	/////////////////////////////////
