@@ -17,6 +17,10 @@ import cocktail.core.css.CSSConstants;
  * property when it wasn't given an explicit
  * value for a given node
  * 
+ * Implemented as a Singleton, as it can be used by
+ * multiple documents, and only contains constant
+ * values which must never change during runtime
+ * 
  * @author Yannick DOMINGUEZ
  */
 class InitialStyleDeclaration extends CSSStyleDeclaration
@@ -47,11 +51,15 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 	 */
 	public var initialComputedStyleDeclaration:CSSStyleDeclaration;
 	
+	/**
+	 * Singleton
+	 */
+	private static var _instance:InitialStyleDeclaration;
 	
 	/**
 	 * Class constructor. Push all the initial values
 	 */
-	public function new() 
+	private function new() 
 	{
 		super();
 		
@@ -60,6 +68,19 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		initColorCSSProperties();
 		initProperties();
 		initComputedProperties();
+	}
+	
+	/**
+	 * Singleton entry point
+	 */
+	public static function getInstance():InitialStyleDeclaration
+	{
+		if (_instance == null)
+		{
+			_instance = new InitialStyleDeclaration();
+		}
+		
+		return _instance;
 	}
 	
 	private function initLengthCSSProperties():Void

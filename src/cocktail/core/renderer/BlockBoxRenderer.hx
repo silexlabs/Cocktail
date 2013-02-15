@@ -288,7 +288,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		//TODO 3 : all of this is very messy but before that styles of anonymous blocks
 		//were cascaded which was very expensive and useless
-		var initialStyleDeclaration:InitialStyleDeclaration = Lib.document.initialStyleDeclaration;
+		var initialStyleDeclaration:InitialStyleDeclaration = InitialStyleDeclaration.getInstance();
 		anonymousBlock.coreStyle.specifiedValues = initialStyleDeclaration;
 		anonymousBlock.coreStyle.computedValues = initialStyleDeclaration.initialComputedStyleDeclaration;
 		anonymousBlock.coreStyle.isLeftAligned = true;

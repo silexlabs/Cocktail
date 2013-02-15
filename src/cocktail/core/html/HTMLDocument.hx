@@ -15,7 +15,6 @@ import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.CSSStyleRule;
 import cocktail.core.css.CSSStyleSheet;
 import cocktail.core.css.DefaultCSSStyleSheet;
-import cocktail.core.css.InitialStyleDeclaration;
 import cocktail.core.css.StyleManager;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.DOMConstants;
@@ -216,20 +215,6 @@ class HTMLDocument extends Document
 	private var _styleManager:StyleManager;
 	
 	/**
-	 * an instance of the initial style declaration. 
-	 * This objects holds all the default values for each
-	 * supported CSS styles.
-	 * 
-	 * When a CSS style has no specified value for a given
-	 * HTML node, then its initial value from this object is used.
-	 * 
-	 * There is only one instance of it for the whole document, 
-	 * as the initial style values are always the same for each
-	 * node type. Every node use this object when cascading
-	 */
-	public var initialStyleDeclaration(default, null):InitialStyleDeclaration;
-	
-	/**
 	 * an instance of the class managing layout.
 	 * Holds instances of each class used during layout
 	 */
@@ -332,7 +317,6 @@ class HTMLDocument extends Document
 	 */
 	private function initStyleManager():Void
 	{
-		initialStyleDeclaration = new InitialStyleDeclaration();
 		_styleManager = new StyleManager();
 		_styleManager.addStyleSheet(new DefaultCSSStyleSheet());
 		

@@ -308,6 +308,12 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private var _ownerHTMLDocument:HTMLDocument;
 	
+	/**
+	 * a reference to an object containing all
+	 * the default CSS style defintions
+	 */
+	private var _initialStyleDeclaration:InitialStyleDeclaration;
+	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
 	/////////////////////////////////
@@ -326,6 +332,8 @@ class HTMLElement extends Element<HTMLElement>
 		_shouldCascadeAllProperties = true;
 		_needsElementRendererUpdate = true;
 		_pendingChangedProperties = new Array<Int>();
+		
+		_initialStyleDeclaration = InitialStyleDeclaration.getInstance();
 	}
 	
 	/**
@@ -1037,8 +1045,6 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function cascadeSelf(cascadeManager:CascadeManager, programmaticChange:Bool):Void
 	{
-		var initialStyleDeclaration:InitialStyleDeclaration = _ownerHTMLDocument.initialStyleDeclaration;
-		
 		if (parentNode != null)
 		{
 			if (parentNode.styleManagerCSSDeclaration != null)
@@ -1065,7 +1071,7 @@ class HTMLElement extends Element<HTMLElement>
 					}
 				}
 	
-				coreStyle.cascade(cascadeManager, initialStyleDeclaration, styleManagerCSSDeclaration, style, parentStyleDeclaration, parentFontMetrics.fontSize, parentFontMetrics.xHeight, programmaticChange);
+				coreStyle.cascade(cascadeManager, _initialStyleDeclaration, styleManagerCSSDeclaration, style, parentStyleDeclaration, parentFontMetrics.fontSize, parentFontMetrics.xHeight, programmaticChange);
 			}
 		}
 		else
@@ -1089,7 +1095,7 @@ class HTMLElement extends Element<HTMLElement>
 				}
 			}
 			
-			coreStyle.cascade(cascadeManager, initialStyleDeclaration, styleManagerCSSDeclaration, style, initialStyleDeclaration, 12, 12, programmaticChange);
+			coreStyle.cascade(cascadeManager, _initialStyleDeclaration, styleManagerCSSDeclaration, style, _initialStyleDeclaration, 12, 12, programmaticChange);
 		}
 		
 		_shouldCascadeAllProperties = false;

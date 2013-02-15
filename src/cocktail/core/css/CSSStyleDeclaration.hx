@@ -1695,11 +1695,12 @@ class CSSStyleDeclaration
 							switch(value)
 							{
 								case NONE:
-									setTypedProperty(CSSConstants.BACKGROUND_ATTACHMENT, Lib.document.initialStyleDeclaration.getTypedProperty(CSSConstants.BACKGROUND_ATTACHMENT).typedValue, important);
-									setTypedProperty(CSSConstants.BACKGROUND_POSITION, Lib.document.initialStyleDeclaration.getTypedProperty(CSSConstants.BACKGROUND_POSITION).typedValue, important);
-									setTypedProperty(CSSConstants.BACKGROUND_COLOR, Lib.document.initialStyleDeclaration.getTypedProperty(CSSConstants.BACKGROUND_COLOR).typedValue, important);
-									setTypedProperty(CSSConstants.BACKGROUND_REPEAT, Lib.document.initialStyleDeclaration.getTypedProperty(CSSConstants.BACKGROUND_REPEAT).typedValue, important);
-									setTypedProperty(CSSConstants.BACKGROUND_IMAGE, Lib.document.initialStyleDeclaration.getTypedProperty(CSSConstants.BACKGROUND_IMAGE).typedValue, important);
+									var initialStyleDeclaration:InitialStyleDeclaration = InitialStyleDeclaration.getInstance();
+									setTypedProperty(CSSConstants.BACKGROUND_ATTACHMENT, initialStyleDeclaration.getTypedProperty(CSSConstants.BACKGROUND_ATTACHMENT).typedValue, important);
+									setTypedProperty(CSSConstants.BACKGROUND_POSITION, initialStyleDeclaration.getTypedProperty(CSSConstants.BACKGROUND_POSITION).typedValue, important);
+									setTypedProperty(CSSConstants.BACKGROUND_COLOR, initialStyleDeclaration.getTypedProperty(CSSConstants.BACKGROUND_COLOR).typedValue, important);
+									setTypedProperty(CSSConstants.BACKGROUND_REPEAT, initialStyleDeclaration.getTypedProperty(CSSConstants.BACKGROUND_REPEAT).typedValue, important);
+									setTypedProperty(CSSConstants.BACKGROUND_IMAGE, initialStyleDeclaration.getTypedProperty(CSSConstants.BACKGROUND_IMAGE).typedValue, important);
 									
 								default:	
 							}

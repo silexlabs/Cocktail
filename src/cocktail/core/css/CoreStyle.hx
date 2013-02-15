@@ -227,6 +227,12 @@ class CoreStyle
 	 */
 	public var htmlElement:HTMLElement;
 	
+	/**
+	 * a reference to an object containing all
+	 * the default CSS style defintions
+	 */
+	private var _initialStyleDeclaration:InitialStyleDeclaration;
+	
 	///////////////////////////////////
 	// STYLE FLAGS
 	//////////////////////////////////
@@ -524,6 +530,8 @@ class CoreStyle
 		hasCSSTransform = false;
 		hasHiddenOrScrollOverflowX = false;
 		hasHiddenOrScrollOverflowY = false;
+		
+		_initialStyleDeclaration = InitialStyleDeclaration.getInstance();
 		
 		init();
 	}
@@ -1910,7 +1918,7 @@ class CoreStyle
 		
 		if (typedProperty == null)
 		{
-			typedProperty = Lib.document.initialStyleDeclaration.initialComputedStyleDeclaration.getTypedProperty(propertyIndex);
+			typedProperty = _initialStyleDeclaration.initialComputedStyleDeclaration.getTypedProperty(propertyIndex);
 		}
 		
 		return typedProperty;
