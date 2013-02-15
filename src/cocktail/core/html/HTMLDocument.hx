@@ -110,7 +110,9 @@ class HTMLDocument extends Document
 	/**
 	 * A reference to the ElementRenderer currently hovered by the
 	 * mouse pointer. Used to detect when to dispatch mouse over
-	 * and mouse out events 
+	 * and mouse out events.
+	 * 
+	 * Might be null if the mouse is not currently hovering the document
 	 */
 	private var _hoveredElementRenderer:ElementRenderer;
 	
@@ -320,7 +322,6 @@ class HTMLDocument extends Document
 		{	
 			body = htmlBodyElement;
 			documentElement.appendChild(body);
-			_hoveredElementRenderer = body.elementRenderer;
 			activeElement = body;
 		}
 	}
@@ -457,13 +458,11 @@ class HTMLDocument extends Document
 		var disabled:Bool = false;
 		var checked:Bool = false;
 		
-		//TODO 1 : shouldn't be null but his when setting style of HTML tag for the first time
-		//check if node is the currently hovered node
 		if (_hoveredElementRenderer != null)
 		{
 			hover = _hoveredElementRenderer.domNode == node;
 		}
-		//TODO 1 : shouldn't be null either
+		//TODO 1 : shouldn't be null
 		//check if node is the currently focused element
 		if (activeElement != null)
 		{
@@ -671,30 +670,38 @@ class HTMLDocument extends Document
 		{
 			return;
 		}
-		if (_hoveredElementRenderer == null)
-		{
-			_hoveredElementRenderer = body.elementRenderer;
-		}
 
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
 		
 		if (_hoveredElementRenderer != elementRendererAtPoint)
 		{
-			//dispatch mouse out on the old hovered HTML element
-			var mouseOutEvent:MouseEvent = new MouseEvent();
-			mouseOutEvent.initMouseEvent(EventConstants.MOUSE_OUT, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
-			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey, mouseEvent.metaKey, mouseEvent.button, elementRendererAtPoint.domNode);
-			
-			_hoveredElementRenderer.domNode.dispatchEvent(mouseOutEvent);
-			
 			var oldHoveredElementRenderer:ElementRenderer = _hoveredElementRenderer;
-			oldHoveredElementRenderer.domNode.invalidateStyleDeclaration(false);
+			//might be null if mouse pointer left the window
+			if (_hoveredElementRenderer != null)
+			{
+				//dispatch mouse out on the old hovered HTML element
+				var mouseOutEvent:MouseEvent = new MouseEvent();
+				mouseOutEvent.initMouseEvent(EventConstants.MOUSE_OUT, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
+				mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey, mouseEvent.metaKey, mouseEvent.button, elementRendererAtPoint.domNode);
+				
+				_hoveredElementRenderer.domNode.dispatchEvent(mouseOutEvent);
+			
+				oldHoveredElementRenderer.domNode.invalidateStyleDeclaration(false);
+			}
+			
 			_hoveredElementRenderer = elementRendererAtPoint;
+			
+			//send html elment which was just moused out
+			var relatedTarget:HTMLElement = null;
+			if (_hoveredElementRenderer != null)
+			{
+				relatedTarget = _hoveredElementRenderer.domNode;
+			}
 			
 			//dispatch mouse over on the newly hovered HTML element
 			var mouseOverEvent:MouseEvent = new MouseEvent();
 			mouseOverEvent.initMouseEvent(EventConstants.MOUSE_OVER, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
-			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, oldHoveredElementRenderer.domNode);
+			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, relatedTarget);
 			
 			elementRendererAtPoint.domNode.dispatchEvent(mouseOverEvent);
 			
