@@ -97,6 +97,7 @@ class Window extends EventCallback
 		platform.mouse.onMouseUp = htmlDocument.onPlatformMouseEvent;
 		platform.mouse.onMouseMove = htmlDocument.onPlatformMouseMoveEvent;
 		platform.mouse.onMouseWheel = htmlDocument.onPlatformMouseWheelEvent;
+		platform.mouse.onMouseLeave = htmlDocument.onPlatformMouseLeaveEvent;
 		
 		platform.keyboard.onKeyDown = htmlDocument.onPlatformKeyDownEvent;
 		platform.keyboard.onKeyUp = htmlDocument.onPlatformKeyUpEvent;

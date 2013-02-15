@@ -625,6 +625,32 @@ class HTMLDocument extends Document
 	}
 	
 	/**
+	 * Called when the mouse leaves the window of the document.
+	 * Dispatch mouse out event on previously hovered component
+	 * 
+	 * TODO 3 : for now mouse out event doesn't use position of
+	 * the mouse just before it left the window, store previous 
+	 * mouse move event ? In platform specific code, store
+	 * last mouse move event and dispatch one with the same 
+	 * data with mouse leave type ?
+	 */
+	public function onPlatformMouseLeaveEvent(event:Event):Void
+	{
+		if (_hoveredElementRenderer != null)
+		{
+			var oldHoveredElementRenderer:ElementRenderer = _hoveredElementRenderer;
+			//dispatch mouse out on the old hovered HTML element
+			var mouseOutEvent:MouseEvent = new MouseEvent();
+			mouseOutEvent.initMouseEvent(EventConstants.MOUSE_OUT, true, true, null, 0, 0, 0, 0,
+			0, false, false,false, false, 0, null);
+			
+			_hoveredElementRenderer.domNode.dispatchEvent(mouseOutEvent);
+			oldHoveredElementRenderer.domNode.invalidateStyleDeclaration(false);
+			_hoveredElementRenderer = null;
+		}
+	}
+	
+	/**
 	 * When a mouse wheel event occurs first dispatch it, and
 	 * if the default action wasn't prevented, vertically scroll
 	 * the first vertically scrollable parent of the event target
@@ -995,18 +1021,16 @@ class HTMLDocument extends Document
 	 * Utils method returning the first ElementRenderer whose dom node
 	 * is an Element node. This is used when dispatching MouseEvent, as their target
 	 * can only be Element node.
-	 * 
-	 * TODO 1 : should never return initial container block, should return body instead
 	 */
 	private function getFirstElementRendererWhichCanDispatchMouseEvent(x:Int, y:Int):ElementRenderer
 	{
 		var elementRendererAtPoint:ElementRenderer = _hitTestManager.getTopMostElementRendererAtPoint(documentElement.elementRenderer.layerRenderer.stackingContext, x, y);
 
-		//when no element is under mouse like for instance when the mouse leaves
-		//the window, return the body
+		//might be null, for instance when mouse leaves the
+		//window
 		if (elementRendererAtPoint == null)
 		{
-			return body.elementRenderer;
+			return null;
 		}
 		
 		while (elementRendererAtPoint.domNode.nodeType != DOMConstants.ELEMENT_NODE || elementRendererAtPoint.isAnonymousBlockBox() == true)

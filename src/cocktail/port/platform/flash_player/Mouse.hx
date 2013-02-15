@@ -7,6 +7,7 @@
 */
 package cocktail.port.platform.flash_player;
 
+import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
@@ -138,6 +139,7 @@ class Mouse extends MouseListenerBase
 		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
 		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
 		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_WHEEL, onNativeMouseWheel);
+		Lib.current.stage.addEventListener(flash.events.Event.MOUSE_LEAVE , onNativeMouseLeave);
 	}
 	
 	/**
@@ -149,6 +151,7 @@ class Mouse extends MouseListenerBase
 		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
 		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
 		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_WHEEL, onNativeMouseWheel);
+		Lib.current.stage.removeEventListener(flash.events.Event.MOUSE_LEAVE , onNativeMouseLeave);
 	}
 	
 	/**
@@ -206,5 +209,22 @@ class Mouse extends MouseListenerBase
 		Math.round(typedEvent.stageX), Math.round(typedEvent.stageY), 0, null, "", 0, typedEvent.delta, 0, 0 );
 		
 		return wheelEvent;
+	}
+	
+	/**
+	 * Create and return a cross-platform event
+	 * form the flash event
+	 * 
+	 * @param	event the native event
+	 */
+	override private function getEvent(event:Dynamic):Event
+	{
+		//cast as flash event
+		var typedEvent:flash.events.Event = cast(event);
+		
+		var event:Event = new Event();
+		event.initEvent(EventConstants.MOUSE_LEAVE, true, false);
+		
+		return event;
 	}
 }

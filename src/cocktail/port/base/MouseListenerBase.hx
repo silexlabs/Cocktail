@@ -8,6 +8,7 @@
 */
 package cocktail.port.base;
 
+import cocktail.core.event.Event;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.css.CSSData;
@@ -52,6 +53,13 @@ class MouseListenerBase
 	 * is rotated
 	 */
 	public var onMouseWheel:WheelEvent->Void;
+	
+	/**
+	 * The callback to call when a native mouse leave
+	 * event is dispatched, which is dispatched when
+	 * the mouse leaves the window of the document
+	 */
+	public var onMouseLeave:Event->Void;
 	
 	/**
 	 * class constructor
@@ -131,6 +139,17 @@ class MouseListenerBase
 		}
 	}
 	
+	/**
+	 * same as mouse down, for a mouse leave event
+	 */
+	private function onNativeMouseLeave(event:Dynamic):Void
+	{
+		if (onMouseLeave != null)
+		{
+			onMouseLeave(getEvent(event));
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Private mouse utils methods
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -169,6 +188,17 @@ class MouseListenerBase
 	 * @param	event the native mouse wheel event
 	 */
 	private function getWheelEvent(event:Dynamic):WheelEvent
+	{
+		return null;
+	}
+	
+	/**
+	 * Create and return a cross-platform event
+	 * from the dispatched native event
+	 * 
+	 * @param	event the native event
+	 */
+	private function getEvent(event:Dynamic):Event
 	{
 		return null;
 	}
