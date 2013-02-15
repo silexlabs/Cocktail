@@ -590,8 +590,14 @@ class HTMLDocument extends Document
 		var eventType:String = mouseEvent.type;
 		
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
+		
+		if (elementRendererAtPoint == null)
+		{
+			return;
+		}
+		
 		elementRendererAtPoint.domNode.dispatchEvent(mouseEvent);
-	
+		
 		switch(eventType)
 		{
 			case EventConstants.MOUSE_DOWN:
@@ -698,6 +704,11 @@ class HTMLDocument extends Document
 		}
 
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
+		
+		if (elementRendererAtPoint == null)
+		{
+			return;
+		}
 		
 		if (_hoveredElementRenderer != elementRendererAtPoint)
 		{
