@@ -350,21 +350,11 @@ class SWFPlugin extends Plugin
 	}
 	
 	/**
-	 * SWF plugin might be composited, based on its
-	 * wmode param
-	 * @return
+	 * SWF plugin are always composited
 	 */
 	override public function isCompositedPlugin():Bool
 	{
-		if (_params.exists(WMODE_ATTRIBUTE) == true)
-		{
-			if (_params.get(WMODE_ATTRIBUTE) == WMODE_TRANSPARENT)
-			{
-				return true;
-			}
-		}
-		
-		return false;
+		return true;
 	}
 	
 	/**
