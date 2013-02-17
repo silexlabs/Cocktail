@@ -69,6 +69,18 @@ class Config
 	 */
 	public static inline var ENABLE_SYNCHRONOUS_UPDATE:Bool = true;
 	
+	/**
+	 * This is the name of the font used by default for an element
+	 * when no other font is given
+	 */
+	public static inline var DEFAULT_FONT:String = "serif";
+	
+	/**
+	 * The default color to use to render text when no other
+	 * value is given for an element, as an hex value
+	 */
+	public static inline var DEFAULT_FONT_COLOR:String = "#000000";
+	
 	/////////////////////////////////////////////////
 	// COMPOSITING CONFIG
 	/////////////////////////////////////////////////

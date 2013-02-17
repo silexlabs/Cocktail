@@ -7,6 +7,7 @@
 */
 package cocktail.core.css;
 
+import cocktail.Config;
 import cocktail.core.css.CSSData;
 import cocktail.core.css.CSSConstants;
 
@@ -192,9 +193,8 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		
 		pushProperty(CSSConstants.CURSOR, KEYWORD(AUTO));
 		
-		//TODO 2 : this represents default value for whole document, should be in config file ?
-		pushProperty(CSSConstants.FONT_FAMILY, CSS_LIST([STRING("serif")]));
-		pushProperty(CSSConstants.COLOR, COLOR(CSSColorValue.KEYWORD(CSSColorKeyword.BLACK)));
+		pushProperty(CSSConstants.FONT_FAMILY, CSS_LIST([STRING(Config.DEFAULT_FONT)]));
+		pushProperty(CSSConstants.COLOR, COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
 	}
 	
 	/**
@@ -281,8 +281,8 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		
 		pushComputedProperty(CSSConstants.CURSOR, KEYWORD(AUTO));
 		
-		pushComputedProperty(CSSConstants.FONT_FAMILY, CSS_LIST([STRING("serif")]));
-		pushComputedProperty(CSSConstants.COLOR, COLOR(CSSColorValue.KEYWORD(CSSColorKeyword.BLACK)));
+		pushProperty(CSSConstants.FONT_FAMILY, CSS_LIST([STRING(Config.DEFAULT_FONT)]));
+		pushProperty(CSSConstants.COLOR, COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
 	}
 	
 		
