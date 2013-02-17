@@ -7,6 +7,7 @@
 */
 package cocktail.core.css;
 
+import cocktail.Config;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;	
 import cocktail.core.geom.GeomData;
@@ -125,38 +126,34 @@ class CSSValueConverter
 	
 	/**
 	 * Takes an absolute size value for a font size and return
-	 * a pixel value
-	 * 
-	 * TODO 2 : values are hard-coded, should go into config ?
+	 * a pixel valueSZ
 	 */
 	public static function getFontSizeFromAbsoluteSizeValue(absoluteSize:CSSKeywordValue):Float
 	{
 		var fontSize:Float = 0.0;
 		
-		var mediumFontSize:Int = 16;
-		
 		switch (absoluteSize)
 		{
 			case XX_SMALL:
-				fontSize = 9;
+				fontSize = Config.XX_SMALL_FONT_SIZE;
 				
 			case X_SMALL:
-				fontSize = 10;
+				fontSize = Config.X_SMALL_FONT_SIZE;
 				
 			case SMALL:
-				fontSize = 13;
+				fontSize = Config.SMALL_FONT_SIZE;
 				
 			case MEDIUM:
-				fontSize = 16;
+				fontSize = Config.MEDIUM_FONT_SIZE;
 				
 			case LARGE:
-				fontSize = 18;
+				fontSize = Config.LARGE_FONT_SIZE;
 				
 			case X_LARGE:
-				fontSize = 24;
+				fontSize = Config.X_LARGE_FONT_SIZE;
 				
 			case XX_LARGE:
-				fontSize = 32;
+				fontSize = Config.XX_LARGE_FONT_SIZE;
 				
 			default:
 				throw 'Illegal keyword value for font size';
@@ -964,7 +961,15 @@ class CSSValueConverter
 	 */
 	private static function getLargerFontSize(parentFontSize:Float):Float
 	{
-		var fontSizeTable:Array<Int> = [9, 10, 13, 16, 18, 24, 32];
+		var fontSizeTable:Array<Int> = [
+		Config.XX_SMALL_FONT_SIZE,
+		Config.X_SMALL_FONT_SIZE,
+		Config.SMALL_FONT_SIZE,
+		Config.MEDIUM_FONT_SIZE,
+		Config.LARGE_FONT_SIZE,
+		Config.X_LARGE_FONT_SIZE,
+		Config.XX_LARGE_FONT_SIZE];
+		
 		var fontSize:Float = fontSizeTable[fontSizeTable.length - 1];
 		
 		for (i in 0...fontSizeTable.length)
@@ -985,8 +990,15 @@ class CSSValueConverter
 	 */
 	private static function getSmallerFontSize(parentFontSize:Float):Float
 	{
+		var fontSizeTable:Array<Int> = [
+		Config.XX_SMALL_FONT_SIZE,
+		Config.X_SMALL_FONT_SIZE,
+		Config.SMALL_FONT_SIZE,
+		Config.MEDIUM_FONT_SIZE,
+		Config.LARGE_FONT_SIZE,
+		Config.X_LARGE_FONT_SIZE,
+		Config.XX_LARGE_FONT_SIZE];
 		
-		var fontSizeTable:Array<Int> = [9, 10, 13, 16, 18, 24, 32];
 		var fontSize:Float = fontSizeTable[0];
 		
 		var i:Int = fontSizeTable.length - 1;

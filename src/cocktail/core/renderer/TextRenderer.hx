@@ -73,8 +73,6 @@ class TextRenderer extends InvalidatingElementRenderer
 	 * flag determining if the text token must
 	 * be recreated, for instance after the value
 	 * of the Text dom node changed
-	 * 
-	 * TODO 2 : should add invalidation reason for this
 	 */
 	private var _textTokensNeedParsing:Bool;
 	

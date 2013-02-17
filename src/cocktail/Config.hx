@@ -69,6 +69,10 @@ class Config
 	 */
 	public static inline var ENABLE_SYNCHRONOUS_UPDATE:Bool = true;
 	
+	/////////////////////////////////////////////////
+	// FONT CONFIG
+	/////////////////////////////////////////////////
+	
 	/**
 	 * This is the name of the font used by default for an element
 	 * when no other font is given
@@ -80,6 +84,42 @@ class Config
 	 * value is given for an element, as an hex value
 	 */
 	public static inline var DEFAULT_FONT_COLOR:String = "#000000";
+	
+	/**
+	 * The actual font size when the 'xx-small' font size is
+	 * used for an element
+	 */
+	public static inline var XX_SMALL_FONT_SIZE:Int = 9;
+	
+	/**
+	 * same as above for x-small
+	 */
+	public static inline var X_SMALL_FONT_SIZE:Int = 10;
+	
+	/**
+	 * same as above for small
+	 */
+	public static inline var SMALL_FONT_SIZE:Int = 13;
+	
+	/**
+	 * same as above for medium
+	 */
+	public static inline var MEDIUM_FONT_SIZE:Int = 16;
+	
+	/**
+	 * same as above for large
+	 */
+	public static inline var LARGE_FONT_SIZE:Int = 18;
+	
+	/**
+	 * same as above for x-large
+	 */
+	public static inline var X_LARGE_FONT_SIZE:Int = 24;
+	
+	/**
+	 * same as above for xx-large
+	 */
+	public static inline var XX_LARGE_FONT_SIZE:Int = 32;
 	
 	/////////////////////////////////////////////////
 	// COMPOSITING CONFIG
