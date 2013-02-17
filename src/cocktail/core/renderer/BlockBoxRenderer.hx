@@ -281,7 +281,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 */ 
 	private function createAnonymousBlock(child:ElementRenderer):AnonymousBlockBoxRenderer
 	{
-		var anonymousBlock:AnonymousBlockBoxRenderer = new AnonymousBlockBoxRenderer();
+		var anonymousBlock:AnonymousBlockBoxRenderer = new AnonymousBlockBoxRenderer(domNode.ownerDocument);
 		anonymousBlock.appendChild(child);
 		
 		anonymousBlock.coreStyle = anonymousBlock.domNode.coreStyle;

@@ -7,6 +7,7 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.renderer;
+import cocktail.core.dom.Document;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 
@@ -32,12 +33,12 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(document:Document) 
 	{
 		//create dummy node first time
 		if (_node == null)
 		{
-			_node = Lib.document.createElement(HTMLConstants.HTML_DIV_TAG_NAME);
+			_node = document.createElement(HTMLConstants.HTML_DIV_TAG_NAME);
 		}
 		
 		super(_node);
