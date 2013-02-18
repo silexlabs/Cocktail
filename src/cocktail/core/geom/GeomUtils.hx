@@ -159,6 +159,12 @@ class GeomUtils
 	 */
 	public static function getCenteredBounds(maximumWidth:Float, maximumHeight:Float, boundsWidth:Float, boundsHeight:Float, resultBounds:RectangleVO):Void
 	{
+		//if one of the input is 0, do nothing, as bounds can't be centered
+		if (maximumWidth == 0 || maximumHeight == 0 || boundsWidth == 0 || boundsHeight == 0)
+		{
+			return;
+		}
+		
 		//those will hold the actual value used for
 		//dimensions, with the kept aspect ratio
 		var width:Float;
