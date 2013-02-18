@@ -116,7 +116,7 @@ class AbstractGraphicsContextImpl
 	 * of the native display list, used for
 	 * the root graphics context
 	 */
-	public function attachToRoot():Void
+	public function attachToRoot(rootLayer:NativeLayer):Void
 	{
 		//abstract
 	}

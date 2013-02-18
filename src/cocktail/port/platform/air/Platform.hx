@@ -63,4 +63,18 @@ class Platform extends cocktail.port.platform.flash_player.Platform
 		super.removeNativeListeners();
 		flash.Lib.current.stage.removeEventListener(flash.events.StageOrientationEvent.ORIENTATION_CHANGE, onNativeOrientationChange);
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden events method
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When orientation changes, the hit testing Sprite
+	 * must be updated
+	 */
+	override private function onNativeOrientationChange(event:Dynamic):Void
+	{
+		updateHitTestingSprite();
+		super.onNativeOrientationChange(event);
+	}
 }

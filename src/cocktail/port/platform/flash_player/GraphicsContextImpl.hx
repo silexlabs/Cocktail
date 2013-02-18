@@ -232,16 +232,16 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		}
 	}
 	
-	override public function attachToRoot():Void
+	override public function attachToRoot(rootLayer:NativeLayer):Void
 	{
-		Lib.current.addChild(_childrenNativeLayer);
+		rootLayer.addChild(_childrenNativeLayer);
 	}
 	
 	override public function detachFromRoot():Void
 	{
 		if (_childrenNativeLayer.parent != null)
 		{
-			Lib.current.removeChild(_childrenNativeLayer);
+			_childrenNativeLayer.parent.removeChild(_childrenNativeLayer);
 		}
 	}
 	

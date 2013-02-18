@@ -19,7 +19,7 @@ import cocktail.port.Platform;
 
 /**
  * This is the flash AVM2 implementation of the touch event listener.
- * Listens to flash native touch event on the flash Stage.
+ * Listens to flash native touch event
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -42,13 +42,14 @@ class TouchListener extends TouchListenerBase
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Set touch listeners on the stage
+	 * Set touch listeners on the hit testing sprite
+	 * set up by the platform
 	 */
 	override private function setNativeListeners():Void
 	{
-		Lib.current.stage.addEventListener(flash.events.TouchEvent.TOUCH_BEGIN, onNativeTouchStart);
-		Lib.current.stage.addEventListener(flash.events.TouchEvent.TOUCH_MOVE, onNativeTouchMove);
-		Lib.current.stage.addEventListener(flash.events.TouchEvent.TOUCH_END, onNativeTouchEnd);
+		_platform.hitTestingSprite.addEventListener(flash.events.TouchEvent.TOUCH_BEGIN, onNativeTouchStart);
+		_platform.hitTestingSprite.addEventListener(flash.events.TouchEvent.TOUCH_MOVE, onNativeTouchMove);
+		_platform.hitTestingSprite.addEventListener(flash.events.TouchEvent.TOUCH_END, onNativeTouchEnd);
 	}
 	
 	/**
@@ -56,9 +57,9 @@ class TouchListener extends TouchListenerBase
 	 */
 	override private function removeNativeListeners():Void
 	{
-		Lib.current.stage.removeEventListener(flash.events.TouchEvent.TOUCH_BEGIN, onNativeTouchStart);
-		Lib.current.stage.removeEventListener(flash.events.TouchEvent.TOUCH_MOVE, onNativeTouchMove);
-		Lib.current.stage.removeEventListener(flash.events.TouchEvent.TOUCH_END, onNativeTouchEnd);
+		_platform.hitTestingSprite.removeEventListener(flash.events.TouchEvent.TOUCH_BEGIN, onNativeTouchStart);
+		_platform.hitTestingSprite.removeEventListener(flash.events.TouchEvent.TOUCH_MOVE, onNativeTouchMove);
+		_platform.hitTestingSprite.removeEventListener(flash.events.TouchEvent.TOUCH_END, onNativeTouchEnd);
 	}
 	
 	/**

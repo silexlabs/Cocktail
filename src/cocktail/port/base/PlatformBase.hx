@@ -16,6 +16,7 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.port.Keyboard;
 import cocktail.port.Mouse;
+import cocktail.port.NativeLayer;
 import cocktail.port.TouchListener;
 
 /**
@@ -89,12 +90,12 @@ class PlatformBase
 	 */
 	public function new() 
 	{
+		//starts to listen to native platform input
+		setNativeListeners();
+		
 		mouse = new Mouse(cast(this));
 		keyboard = new Keyboard(cast(this));
 		touchListener = new TouchListener(cast(this));
-		
-		//starts to listen to native platform input
-		setNativeListeners();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -143,10 +144,10 @@ class PlatformBase
 	}
 	
 	/**
-	 * Return the root native element of the target native
+	 * Return the root native layer of the target native
 	 * display list
 	 */
-	public function getInitialNativeLayer():NativeElement
+	public function getInitialNativeLayer():NativeLayer
 	{
 		return null;
 	}

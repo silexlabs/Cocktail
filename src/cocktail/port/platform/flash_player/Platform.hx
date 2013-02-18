@@ -15,7 +15,9 @@ import cocktail.core.html.HTMLElement;
 import cocktail.port.base.PlatformBase;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
+import cocktail.port.NativeLayer;
 import flash.display.Bitmap;
+import flash.display.Sprite;
 import flash.display.StageDisplayState;
 import flash.display.StageQuality;
 import flash.Lib;
@@ -38,10 +40,38 @@ class Platform extends PlatformBase
 	private static inline var ALLOW_FULLSCREEN_ATTRIBUTE:String = "allowsFullScreen";
 	
 	/**
+	 * The Sprite that will be used as a root for the document,
+	 * is directly attached to flash Stage
+	 */
+	private var _rootSprite:Sprite;
+	
+	/**
+	 * The Sprite used as root for the native layers
+	 * of the document
+	 */
+	private var _nativeLayersRootSprite:Sprite;
+	
+	/**
+	 * The sprite used for hit testint, e.g listening
+	 * for mouse and touch event coming from the flash
+	 * player. 
+	 * 
+	 * It must always be on top of all the native layer 
+	 * tree, as if external swf are loaded, they might
+	 * otherwise interfer with hit testing
+	 * 
+	 * Set public so that mouse and touch listener classes
+	 * can access it
+	 */
+	public var hitTestingSprite:Sprite;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
 	{
+		initDisplayList();
+		
 		super();
 		
 		//in Flash, the Stage is always defined as no scale as the transformations
@@ -54,6 +84,24 @@ class Platform extends PlatformBase
 		{
 			Lib.current.stage.quality = StageQuality.LOW;
 		}
+	}
+	
+	/**
+	 * Init the flash display list used
+	 * for cocktail document
+	 */
+	private function initDisplayList():Void
+	{
+		_rootSprite = new Sprite();
+		
+		_nativeLayersRootSprite = new Sprite();
+		_rootSprite.addChild(_nativeLayersRootSprite);
+		
+		hitTestingSprite = new Sprite();
+		updateHitTestingSprite();
+		_rootSprite.addChild(hitTestingSprite);
+		
+		Lib.current.addChild(_rootSprite);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -105,9 +153,9 @@ class Platform extends PlatformBase
 	/**
 	 * Return the flash Stage
 	 */
-	override public function getInitialNativeLayer():NativeElement
+	override public function getInitialNativeLayer():NativeLayer
 	{
-		return flash.Lib.current;
+		return _nativeLayersRootSprite;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -169,6 +217,38 @@ class Platform extends PlatformBase
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// Overriden events method
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When the Stage is resize, the hit testing
+	 * sprite must be updated
+	 */
+	override private function onNativeResize(event:Dynamic):Void
+	{
+		updateHitTestingSprite();
+		super.onNativeResize(event);
+	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Private utils method
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * draw/redraw the background of the 
+	 * hit testing Sprite, which must
+	 * match the size of the Stage
+	 */
+	private function updateHitTestingSprite():Void
+	{
+		hitTestingSprite.graphics.clear();
+		hitTestingSprite.graphics.beginFill(0x000000, 0);
+		hitTestingSprite.graphics.drawRect(0, 0, innerWidth, innerHeight);
+		hitTestingSprite.graphics.endFill();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// Overriden GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -187,5 +267,7 @@ class Platform extends PlatformBase
 	{
 		return Lib.current.stage.stageWidth;
 	}
+	
+	
 	
 }

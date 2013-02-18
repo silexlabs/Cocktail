@@ -24,7 +24,7 @@ import cocktail.port.Platform;
 
 /**
  * This is the flash AVM2 implementation of the mouse event manager.
- * Listens to flash native mouse event on the flash Stage.
+ * Listens to flash native mouse event
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -132,32 +132,35 @@ class Mouse extends MouseListenerBase
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Set mouse listeners on the stage
+	 * Set mouse listeners on the hit testing sprite set
+	 * up for the platform
 	 */
 	override private function setNativeListeners():Void
 	{
-		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
-		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
-		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
-		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_WHEEL, onNativeMouseWheel);
+		_platform.hitTestingSprite.addEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
+		_platform.hitTestingSprite.addEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
+		_platform.hitTestingSprite.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		_platform.hitTestingSprite.addEventListener(flash.events.MouseEvent.MOUSE_WHEEL, onNativeMouseWheel);
+		
 		Lib.current.stage.addEventListener(flash.events.Event.MOUSE_LEAVE , onNativeMouseLeave);
 	}
 	
 	/**
-	 * Remove mouse listeners from the stage
+	 * Remove mouse listeners
 	 */
 	override private function removeNativeListeners():Void
 	{
-		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
-		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
-		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
-		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_WHEEL, onNativeMouseWheel);
+		_platform.hitTestingSprite.removeEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
+		_platform.hitTestingSprite.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
+		_platform.hitTestingSprite.removeEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		_platform.hitTestingSprite.removeEventListener(flash.events.MouseEvent.MOUSE_WHEEL, onNativeMouseWheel);
+		
 		Lib.current.stage.removeEventListener(flash.events.Event.MOUSE_LEAVE , onNativeMouseLeave);
 	}
 	
 	/**
 	 * Create and return a cross-platform mouse event
-	 * form the flash mouse event
+	 * from the flash mouse event
 	 * 
 	 * @param	event the native mouse event
 	 */

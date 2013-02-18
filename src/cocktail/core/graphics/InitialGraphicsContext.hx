@@ -14,6 +14,7 @@ import cocktail.core.renderer.ElementRenderer;
 import cocktail.port.GraphicsContextImpl;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
+import cocktail.port.NativeLayer;
 
 import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
@@ -52,7 +53,10 @@ class InitialGraphicsContext extends GraphicsContext
 	 */
 	override private function doAttach():Void
 	{
-		graphics.attachToRoot();
+		//retrieve platform specific root layer
+		var htmlDocument:HTMLDocument = cast(layerRenderer.rootElementRenderer.domNode.ownerDocument);
+		var rootNativeLayer:NativeLayer = htmlDocument.window.platform.getInitialNativeLayer();
+		graphics.attachToRoot(rootNativeLayer);
 		
 		//when the initial graphics context, is attached,
 		//the bitmap size needs to be invalidated so that
