@@ -965,7 +965,7 @@ class HTMLDocument extends Document
 	 */
 	private function get_fullscreenEnabled():Bool
 	{
-		return window.platform.nativeWindow.fullScreenEnabled();
+		return window.platform.fullScreenEnabled();
 	}
 	
 	/**

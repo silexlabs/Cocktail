@@ -16,7 +16,7 @@ import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.port.NativeBitmapData;
-import cocktail.port.platform.Platform;
+import cocktail.port.Platform;
 import cocktail.core.css.CSSData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.history.History;
@@ -102,8 +102,8 @@ class Window extends EventCallback
 		platform.keyboard.onKeyDown = htmlDocument.onPlatformKeyDownEvent;
 		platform.keyboard.onKeyUp = htmlDocument.onPlatformKeyUpEvent;
 		
-		platform.nativeWindow.onResize = onPlatformResizeEvent;
-		platform.nativeWindow.onOrientationChange = onPlatformOrientationChangeEvent;
+		platform.onResize = onPlatformResizeEvent;
+		platform.onOrientationChange = onPlatformOrientationChangeEvent;
 		
 		platform.touchListener.onTouchStart = htmlDocument.onPlatformTouchEvent;
 		platform.touchListener.onTouchMove = htmlDocument.onPlatformTouchEvent;
@@ -112,7 +112,7 @@ class Window extends EventCallback
 		//fullscreen callbacks
 		htmlDocument.onEnterFullscreen = onDocumentEnterFullscreen;
 		htmlDocument.onExitFullscreen = onDocumentExitFullscreen;
-		platform.nativeWindow.onFullScreenChange = onPlatformFullScreenChange;
+		platform.onFullScreenChange = onPlatformFullScreenChange;
 		
 		//mouse cursor callback
 		htmlDocument.onSetMouseCursor = onDocumentSetMouseCursor;
@@ -132,7 +132,7 @@ class Window extends EventCallback
 	 */
 	public function open(url:String, name:String = HTMLConstants.TARGET_BLANK):Void
 	{
-		platform.nativeWindow.open(url, name);
+		platform.open(url, name);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -151,7 +151,7 @@ class Window extends EventCallback
 	{
 		//if the platform just exited the fullscreen mode,
 		//then the document must also exit it
-		if (platform.nativeWindow.fullscreen() == false)
+		if (platform.fullscreen() == false)
 		{
 			document.exitFullscreen();
 		}
@@ -163,7 +163,7 @@ class Window extends EventCallback
 	 */
 	private function onDocumentEnterFullscreen():Void
 	{
-		platform.nativeWindow.enterFullscreen();
+		platform.enterFullscreen();
 	}
 		
 	/**
@@ -172,7 +172,7 @@ class Window extends EventCallback
 	 */
 	private function onDocumentExitFullscreen():Void
 	{
-		platform.nativeWindow.exitFullscreen();
+		platform.exitFullscreen();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -233,11 +233,11 @@ class Window extends EventCallback
 	
 	private function get_innerHeight():Int
 	{
-		return platform.nativeWindow.innerHeight;
+		return platform.innerHeight;
 	}
 	
 	private function get_innerWidth():Int
 	{
-		return platform.nativeWindow.innerWidth;
+		return platform.innerWidth;
 	}
 }
