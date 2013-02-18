@@ -20,6 +20,7 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
 import flash.Vector;
 import haxe.Log;
+import cocktail.port.Platform;
 
 /**
  * This is the flash AVM2 implementation of the mouse event manager.
@@ -32,9 +33,9 @@ class Mouse extends MouseListenerBase
 	/**
 	 * class constructor.
 	 */
-	public function new() 
+	public function new(platform:Platform) 
 	{
-		super();
+		super(platform);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

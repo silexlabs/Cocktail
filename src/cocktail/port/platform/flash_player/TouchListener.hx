@@ -15,6 +15,7 @@ import cocktail.core.event.EventData;
 import flash.Lib;
 import flash.ui.Multitouch;
 import flash.ui.MultitouchInputMode;
+import cocktail.port.Platform;
 
 /**
  * This is the flash AVM2 implementation of the touch event listener.
@@ -27,9 +28,9 @@ class TouchListener extends TouchListenerBase
 	/**
 	 * class constructor.
 	 */
-	public function new() 
+	public function new(platform:Platform) 
 	{
-		super();
+		super(platform);
 		
 		//must active the input only mode in flash to receive low level
 		//touch input instead of gesture

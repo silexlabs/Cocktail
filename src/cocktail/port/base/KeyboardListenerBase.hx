@@ -10,6 +10,7 @@ package cocktail.port.base;
 
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.html.HTMLElement;
+import cocktail.port.Platform;
 import haxe.Log;
 
 /**
@@ -41,10 +42,19 @@ class KeyboardListenerBase
 	public var onKeyUp:KeyboardEvent->Void;
 	
 	/**
+	 * Hold a ref to the owning platform, might
+	 * be needed for some platform specific
+	 * operations
+	 */
+	private var _platform:Platform;
+	
+	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(platform:Platform) 
 	{
+		_platform = platform;
+		
 		//starts to listen to native keyboard input
 		setNativeListeners();
 	}

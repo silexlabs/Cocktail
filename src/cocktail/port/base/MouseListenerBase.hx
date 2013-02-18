@@ -13,6 +13,7 @@ import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.css.CSSData;
 import cocktail.core.layout.LayoutData;
+import cocktail.port.Platform;
 
 /**
  * This class listens to native mouse event
@@ -62,10 +63,19 @@ class MouseListenerBase
 	public var onMouseLeave:Event->Void;
 	
 	/**
+	 * Hold a ref to the owning platform, might
+	 * be needed for some platform specific
+	 * operations
+	 */
+	private var _platform:Platform;
+	
+	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(platform:Platform) 
 	{
+		_platform = platform;
+		
 		//mouse event might be disabled entirely
 		if (Config.ENABLE_MOUSE_EVENT == true)
 		{

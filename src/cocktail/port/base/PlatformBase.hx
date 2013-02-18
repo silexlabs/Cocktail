@@ -89,9 +89,9 @@ class PlatformBase
 	 */
 	public function new() 
 	{
-		mouse = new Mouse();
-		keyboard = new Keyboard();
-		touchListener = new TouchListener();
+		mouse = new Mouse(cast(this));
+		keyboard = new Keyboard(cast(this));
+		touchListener = new TouchListener(cast(this));
 		
 		//starts to listen to native platform input
 		setNativeListeners();

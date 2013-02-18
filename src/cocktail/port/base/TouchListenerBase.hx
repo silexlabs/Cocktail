@@ -9,6 +9,7 @@ package cocktail.port.base;
 
 import cocktail.core.event.TouchEvent;
 import cocktail.core.event.EventData;
+import cocktail.port.Platform;
 
 /**
  * This class listens to native touch event
@@ -44,10 +45,19 @@ class TouchListenerBase
 	public var onTouchMove:TouchEvent->Void;
 	
 	/**
+	 * Hold a ref to the owning platform, might
+	 * be needed for some platform specific
+	 * operations
+	 */
+	private var _platform:Platform;
+	
+	/**
 	 * class constructor
 	 */
-	public function new()
+	public function new(platform:Platform)
 	{
+		_platform = platform;
+		
 		//starts to listen to native keyboard input
 		setNativeListeners();
 	}
