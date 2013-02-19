@@ -1465,7 +1465,7 @@ class CSSStyleDeclaration
 			case KEYWORD(value):
 				switch(value)
 				{
-					case LEFT, CENTER, RIGHT:
+					case LEFT, CENTER, RIGHT, BOTTOM, TOP:
 						return true;
 						
 					default:	

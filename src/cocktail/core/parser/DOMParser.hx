@@ -124,8 +124,6 @@ class DOMParser
 			var attributes:Iterator<String> = xml.attributes();
 			for( attribute in attributes ){
 				var value:String = xml.get(attribute);
-				attribute = attribute.toLowerCase();
-				
 				htmlElement.setAttribute(attribute, value);
 			}
 			
