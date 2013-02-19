@@ -1615,7 +1615,18 @@ class CoreStyle
 				switch(property)
 				{
 					case KEYWORD(value):
-						return GROUP([KEYWORD(value), KEYWORD(CENTER)]);
+						switch(value)
+						{
+							case LEFT, RIGHT:
+								return GROUP([KEYWORD(value), KEYWORD(CENTER)]);
+								
+							case TOP, BOTTOM:	
+								return GROUP([KEYWORD(CENTER), KEYWORD(value)]);
+								
+							default:
+								return GROUP([KEYWORD(value), KEYWORD(CENTER)]);
+						}
+						
 					
 					case LENGTH(value):
 						return GROUP([ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight)), KEYWORD(CENTER)]);
