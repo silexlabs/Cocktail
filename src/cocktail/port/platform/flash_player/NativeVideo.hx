@@ -331,7 +331,8 @@ class NativeVideo extends NativeMedia
 	private function toggleStageVideo():Void
 	{
 		//here, can use hardware rendering
-		if (_stageVideoAvailable == true)
+		//config param can force software rendering
+		if (_stageVideoAvailable == true && Config.USE_STAGE_VIDEO_IF_AVAILABLE == true)
 		{
 			_usesStageVideo = true;
 			

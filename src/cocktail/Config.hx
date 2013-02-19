@@ -84,6 +84,20 @@ class Config
 	 */
 	public static inline var USE_ADVANCED_HIT_TESTING:Bool = true;
 	
+	/**
+	 * Flash specific.
+	 * 
+	 * When true use flash StageVideo API introduce in flash player 10.2
+	 * which allows hardware rendering of video for reduced cpu usage.
+	 * If falls back to software rendering if hardware do not permit it.
+	 * 
+	 * It comes with some limitations, the main one being that the video
+	 * is always behind the flash display list
+	 * 
+	 * Set to false if you want to always use software video in flash
+	 */
+	public static inline var USE_STAGE_VIDEO_IF_AVAILABLE:Bool = true;
+	
 	/////////////////////////////////////////////////
 	// FONT CONFIG
 	/////////////////////////////////////////////////
