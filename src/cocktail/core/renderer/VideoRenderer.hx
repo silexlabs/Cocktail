@@ -15,6 +15,7 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLVideoElement;
 import cocktail.core.layer.CompositingLayerRenderer;
 import cocktail.core.layer.LayerRenderer;
+import cocktail.core.layer.VideoLayerRenderer;
 import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.graphics.GraphicsContext;
@@ -74,7 +75,7 @@ class VideoRenderer extends ImageRenderer
 	 */
 	override private function doCreateLayer():Void
 	{
-		layerRenderer = new CompositingLayerRenderer(this);
+		layerRenderer = new VideoLayerRenderer(this);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +105,7 @@ class VideoRenderer extends ImageRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Actually render the video
+	 * Rendering the video consists in updating its viewport
 	 * 
 	 * Video intrinsic aspect ratio is always preserved, so the
 	 * video might be letterboxed to fit in the available bounds,
@@ -129,10 +130,7 @@ class VideoRenderer extends ImageRenderer
 		videoViewport.width =  _videoBounds.width;
 		videoViewport.height =  _videoBounds.height;
 		
-		//TODO 2 : set to update native video position but clumsy
 		nativeVideo.viewport = videoViewport;
-		
-		nativeVideo.attach(graphicContext);
 	}
 	
 	/**

@@ -142,6 +142,16 @@ class NativeMedia
 		//abstract
 	}
 	
+	/**
+	 * Detach the native video using native APIs so
+	 * that it is no longer displayed, however it continues
+	 * to play if it is currently playing
+	 */
+	public function detach(graphicsContext:GraphicsContext):Void
+	{
+		
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// EVENTS
 	// Private native video event handler method
