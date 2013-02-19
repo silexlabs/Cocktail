@@ -198,6 +198,18 @@ class CoreStyle
 	private var _pendingTransitionEndEvents:Array<TransitionEvent>;
 	
 	/**
+	 * While a transition is in progress, if the computed value
+	 * of its property changes, it is stored here and applied 
+	 * at the end of the transition, most likely triggering another
+	 * transition.
+	 * 
+	 * Eac index in this array represents the css property with
+	 * the corresponding index, the index return null if there
+	 * are no pending computed values
+	 */
+	private var _pendingComputedValues:Array<TypedPropertyVO>;
+	
+	/**
 	 * Returns font metrics for the current style values.
 	 * Font metrics depends on the computed values of
 	 * the 'font-size' and 'font-family' properties
@@ -554,6 +566,20 @@ class CoreStyle
 		_transitionManager = TransitionManager.getInstance();
 		
 		initUsedValues();
+	}
+	
+	/**
+	 * init each index used to store pending 
+	 * computed valus when needed. Init one
+	 * index per style
+	 */
+	private function initPendingComputedValues():Void
+	{
+		_pendingComputedValues = new Array<TypedPropertyVO>();
+		for (i in 0...CSSConstants.SUPPORTED_STYLES_NUMBER)
+		{
+			_pendingComputedValues[i] = null;
+		}
 	}
 	
 	/**
@@ -1310,6 +1336,9 @@ class CoreStyle
 		
 		//try to start a transition on the property
 		
+		//hold wether this property is currently transitioning
+		var isTransitioning:Bool = false;
+
 		//non need if no property are declared to be transitioned
 		if (hasTransitionnableProperties == true)
 		{
@@ -1324,9 +1353,21 @@ class CoreStyle
 						{
 							initAnimator();
 						}
-						_animator.registerPendingAnimation(propertyIndex, getAnimatablePropertyValue(propertyIndex));
-						var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
-						htmlDocument.invalidationManager.invalidatePendingAnimations();
+						
+						//check wether this property is currently transitioning
+						if (_transitionManager.getTransition(propertyIndex, this) != null)
+						{
+							isTransitioning = true;
+						}
+						
+						//only try to start if not currently transitionning
+						if (isTransitioning == false)
+						{
+							_animator.registerPendingAnimation(propertyIndex, getAnimatablePropertyValue(propertyIndex));
+							
+							var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
+							htmlDocument.invalidationManager.invalidatePendingAnimations();
+						}
 					}
 				}
 			}
@@ -1334,11 +1375,33 @@ class CoreStyle
 		
 		if (specifiedProperty != null)
 		{
-			computedValues.setTypedProperty(propertyIndex, computedProperty, cascadedProperty.important);
+			if (isTransitioning == false)
+			{
+				computedValues.setTypedProperty(propertyIndex, computedProperty, cascadedProperty.important);
+			}
+			//if property is transitioning, store the computed value, it will be apply
+			//at the en d of the transition and might trigger a new transition
+			else
+			{
+				if (_pendingComputedValues == null)
+				{
+					initPendingComputedValues();
+				}
+				var typedComputedProperty:TypedPropertyVO = new TypedPropertyVO();
+				typedComputedProperty.important = cascadedProperty.important;
+				typedComputedProperty.index = propertyIndex;
+				typedComputedProperty.typedValue = computedProperty;
+				
+				_pendingComputedValues[propertyIndex] = typedComputedProperty;
+			}
+			
 		}
 		else
 		{
-			computedValues.setTypedPropertyInitial(propertyIndex, computedProperty, cascadedProperty.important);
+			if (isTransitioning == false)
+			{
+				computedValues.setTypedPropertyInitial(propertyIndex, computedProperty, cascadedProperty.important);
+			}
 		}
 		
 		
@@ -1856,6 +1919,27 @@ class CoreStyle
 		}
 		
 		_pendingTransitionEndEvents.push(transitionEvent);
+		
+		//check wether the computed value of the transitioned property change
+		//during the transition
+		if (_pendingComputedValues != null)
+		{
+			//if a pending computed property was registered for this property
+			if (_pendingComputedValues[transition.propertyIndex] != null)
+			{
+				//start a transition with the new current computed value
+				_animator.registerPendingAnimation(transition.propertyIndex, getAnimatablePropertyValue(transition.propertyIndex));
+				
+				htmlDocument.invalidationManager.invalidatePendingAnimations();
+				
+				//update the computed value to get the right value for the end of the transition
+				var pendingComputedProperty:TypedPropertyVO = _pendingComputedValues[transition.propertyIndex];
+				computedValues.setTypedProperty(pendingComputedProperty.index, pendingComputedProperty.typedValue, pendingComputedProperty.important);
+			
+				_pendingComputedValues[transition.propertyIndex] = null;
+			}
+		}
+		
 	}
 	
 	/**
