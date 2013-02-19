@@ -132,6 +132,12 @@ class NativeVideo extends NativeMedia
 	private var _seeking:Bool;
 	
 	/**
+	 * Store wether the video or stage video is currently
+	 * supposed to be attached to the stage
+	 */
+	private var _isAttachedToStage:Bool;
+	
+	/**
 	 * class constructor. Init video
 	 */
 	public function new() 
@@ -141,6 +147,7 @@ class NativeVideo extends NativeMedia
 		_stageVideoAvailable = false;
 		_usesSoftwareVideo = false;
 		_usesStageVideo = false;
+		_isAttachedToStage = false;
 		
 		initVideo();
 		_currentTime = 0.0;
@@ -262,6 +269,14 @@ class NativeVideo extends NativeMedia
 	 */
 	override public function attach(graphicContext:GraphicsContext):Void
 	{
+		//prevent too much attach
+		if (_isAttachedToStage == true)
+		{
+			return;
+		}
+		
+		_isAttachedToStage = true;
+		
 		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext.nativeLayer);
 		
 		//video might be added below cocktail's bitmap when compositing is disabled
@@ -274,6 +289,33 @@ class NativeVideo extends NativeMedia
 		else
 		{
 			containerGraphicContext.addChild(_video);
+		}
+		
+		//for stage video attaching/detaching is done with the NetStream
+		//as it is not a DisplayObject
+		if (_stageVideo != null && _usesStageVideo == true)
+		{
+			_stageVideo.attachNetStream(_netStream);
+		}
+	}
+	
+	override public function detach(graphicsContext:GraphicsContext):Void
+	{
+		//prevent too much detach
+		if (_isAttachedToStage == false)
+		{
+			return;
+		}
+		
+		_isAttachedToStage = false;
+		
+		//detach software video
+		_video.parent.removeChild(_video);
+		
+		//detach hardware video
+		if (_stageVideo != null && _usesStageVideo == true)
+		{
+			_stageVideo.attachNetStream(null);
 		}
 	}
 	
