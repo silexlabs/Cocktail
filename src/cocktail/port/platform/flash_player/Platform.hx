@@ -56,13 +56,25 @@ class Platform extends PlatformBase
 	private var _nativeLayersRootSprite:Sprite;
 	
 	/**
-	 * The sprite used for hit testint, e.g listening
+	 * The sprite used for hit testing, e.g listening
 	 * for mouse and touch event coming from the flash
 	 * player. 
 	 * 
-	 * It must always be on top of all the native layer 
-	 * tree, as if external swf are loaded, they might
-	 * otherwise interfer with hit testing
+	 * 
+	 * There are 2 types of hit testing which can be used,
+	 * defined by config : 
+	 * - "basic", the hit testing Sprite is below all of cocktail's
+	 * bitmap and loaded elements, such as swf movie. This is the 
+	 * fastest hit testing but the tradeof is that if there are loaded
+	 * swf movie, hit testing Sprite won't be able to catch mouse and touch
+	 * event on top of the loaded swf, as the hit testing Sprite will
+	 * always be below the swf movei
+	 * 
+	 * - "advanced", the hit testing Sprite is on top of all of cocktail's
+	 * bitmap and loaded elements such as swf movie. This is slower, because
+	 * each time the hit testing bounds of the document is updated, the
+	 * hit testing Sprite must also be redrawn to dig "holes" where swf movie
+	 * appears, so that swf movie can be interacted with
 	 * 
 	 * Set public so that mouse and touch listener classes
 	 * can access it
@@ -115,11 +127,21 @@ class Platform extends PlatformBase
 		_rootSprite = new Sprite();
 		
 		_nativeLayersRootSprite = new Sprite();
-		_rootSprite.addChild(_nativeLayersRootSprite);
+		
 		
 		hitTestingSprite = new Sprite();
 		updateHitTestingSprite();
-		_rootSprite.addChild(hitTestingSprite);
+		
+		if (Config.USE_ADVANCED_HIT_TESTING == true)
+		{
+			_rootSprite.addChild(_nativeLayersRootSprite);
+			_rootSprite.addChild(hitTestingSprite);
+		}
+		else
+		{
+			_rootSprite.addChild(hitTestingSprite);
+			_rootSprite.addChild(_nativeLayersRootSprite);
+		}
 		
 		Lib.current.addChild(_rootSprite);
 	}
@@ -201,6 +223,12 @@ class Platform extends PlatformBase
 	 */
 	override public function updateHitTestingBounds(stackingContext:StackingContext):Void
 	{
+		//only applies for advanced hit testing
+		if (Config.USE_ADVANCED_HIT_TESTING == false)
+		{
+			return;
+		}
+		
 		_objectTagsBounds = new Array<RectangleVO>();
 		_foundObjectTag = false;
 		
@@ -332,7 +360,7 @@ class Platform extends PlatformBase
 	private function resetHitTestingSprite():Void
 	{
 		hitTestingSprite.graphics.clear();
-		hitTestingSprite.graphics.beginFill(0xFF0000, 0.5);
+		hitTestingSprite.graphics.beginFill(0x000000, 0.0);
 		hitTestingSprite.graphics.drawRect(0, 0, innerWidth, innerHeight);
 		
 		
@@ -351,7 +379,7 @@ class Platform extends PlatformBase
 	 */
 	private function fillHitTestingSprite(rect:RectangleVO):Void
 	{
-		hitTestingSprite.graphics.beginFill(0xFF0000, 0.5);
+		hitTestingSprite.graphics.beginFill(0x000000, 0.0);
 		hitTestingSprite.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
 		hitTestingSprite.graphics.endFill();
 	}

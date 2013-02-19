@@ -69,6 +69,21 @@ class Config
 	 */
 	public static inline var ENABLE_SYNCHRONOUS_UPDATE:Bool = true;
 	
+	/**
+	 * Flash specific.
+	 * 
+	 * When true, if there are html elements displayed on top of a swf
+	 * loaded with an object tag, the html elements can be interacted with.
+	 * 
+	 * If false, the swf movie will receive all the mouse and touch event and
+	 * will prevent cocktail from receiving them
+	 * 
+	 * You can disable it for a small performance boost in the cases where
+	 * you either don't have any swf movie in your document or if there is
+	 * no interactive content on top of those swf movie
+	 */
+	public static inline var USE_ADVANCED_HIT_TESTING:Bool = true;
+	
 	/////////////////////////////////////////////////
 	// FONT CONFIG
 	/////////////////////////////////////////////////
