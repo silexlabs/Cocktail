@@ -14,6 +14,7 @@ import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
+import cocktail.core.stacking.StackingContext;
 import cocktail.port.Keyboard;
 import cocktail.port.Mouse;
 import cocktail.port.NativeLayer;
@@ -150,6 +151,17 @@ class PlatformBase
 	public function getInitialNativeLayer():NativeLayer
 	{
 		return null;
+	}
+	
+	/**
+	 * Called after the hit testing bounds of each
+	 * elements in the document is ready, gives the 
+	 * platform an opportunity to update its native
+	 * hit testing bounds if needed
+	 */
+	public function updateHitTestingBounds(stackingContext:StackingContext):Void
+	{
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

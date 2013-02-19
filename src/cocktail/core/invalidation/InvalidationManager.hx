@@ -560,6 +560,9 @@ class InvalidationManager
 			//update the hit testing bound to respond accurately to user interaction
 			_htmlDocument.documentElement.elementRenderer.updateHitTestingBounds();
 			
+			//update the native hit testing bounds of the platform if needeed
+			_htmlDocument.window.platform.updateHitTestingBounds(_htmlDocument.documentElement.elementRenderer.layerRenderer.stackingContext);
+			
 			//for each layer, compute its alpha by concatenating alpha of all ancestor layers
 			//TODO 2 : need not to be updated each rendering
 			initialLayerRenderer.updateLayerAlpha(1.0);
@@ -612,6 +615,9 @@ class InvalidationManager
 			
 			//update the hit testing bound to respond accurately to user interaction
 			_htmlDocument.documentElement.elementRenderer.updateHitTestingBounds();
+			
+			//update the native hit testing bounds of the platform if needeed
+			_htmlDocument.window.platform.updateHitTestingBounds(_htmlDocument.documentElement.elementRenderer.layerRenderer.stackingContext);
 			
 			_dirtyRect.x = 0;
 			_dirtyRect.y = 0; 
