@@ -18,7 +18,7 @@ class LineBox
 {
 	private var _unbreakableInlineBoxes:Array<InlineBox>;
 	
-	public var unbreakableWidth(default, null):Float;
+	public var unbreakableWidth(default, null):Int;
 	
 	public var rootInlineBox:InlineBox;
 	
@@ -69,7 +69,7 @@ class LineBox
 	
 	public function addUnbreakableWidth(width:Float):Void
 	{
-		unbreakableWidth += width;
+		unbreakableWidth += Math.floor(width);
 	}
 	
 	/**
@@ -129,10 +129,10 @@ class LineBox
 		_unbreakableInlineBoxes.push(inlineBox);	
 	
 		var inlineBoxWidth:Float = inlineBox.bounds.width + inlineBox.marginLeft + inlineBox.marginRight;
-		unbreakableWidth += inlineBoxWidth;
+		unbreakableWidth += Math.floor(inlineBoxWidth);
 		
 		//get the remaining available space on the current line
-		var remainingLineWidth:Float = _availableWidth - _addedWidth;
+		var remainingLineWidth:Int = Math.floor(_availableWidth - _addedWidth);
 
 		//line box always break if the inline box represents a line feed
 		if (inlineBox.isLineFeed == true)

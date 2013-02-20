@@ -285,6 +285,8 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			_flashColorTransform.alphaMultiplier = _alpha;
 		}
 		
+		roundFlashRect();
+		
 		//draw the bitmap data onto the current bitmap data with the right transformations
 		_nativeBitmap.bitmapData.draw(bitmapData, _flashMatrix, colorTransform, null, _flashRectangle, Config.ENABLE_BITMAP_SMOOTHING);
 	}
@@ -312,6 +314,8 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			_flashRectangle.height -= _matrix.f ;
 		}
 		
+		roundFlashRect();
+		roundFlashPoint();
 		
 		//create a transparency bitmap data if transparency is
 		//used
@@ -354,6 +358,8 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			_fillRectPoint.x = rect.x;
 			_fillRectPoint.y = rect.y;
 			
+			roundFlashRect();
+			
 			var fillRectBitmapData:BitmapData = new BitmapData(Math.round(rect.width), Math.round(rect.height), true, argbColor);
 			copyPixels(fillRectBitmapData, _fillRectRectangle, _fillRectPoint, clipRect );
 			fillRectBitmapData.dispose();
@@ -379,6 +385,8 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			_flashRectangle.width = _clippedRectRectangle.width;
 			_flashRectangle.height = _clippedRectRectangle.height;
 			
+			roundFlashRect();
+			
 			_nativeBitmap.bitmapData.fillRect(_flashRectangle, argbColor);
 		}
 	}
@@ -396,9 +404,38 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_flashPoint.x = x;
 		_flashPoint.y = y;
 		
+		roundFlashRect();
+		roundFlashPoint();
+		
 		_nativeBitmap.bitmapData.copyPixels(_nativeBitmap.bitmapData, _flashRectangle, _flashPoint, null, null, false);
 	}
 	
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Private helper method
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * 	Flash structure need to be rounded before calling native drawing API's,
+	 *  else during animation, flash seems to round randomly and make the
+	 *  animation seems shaky
+	 */
+	private static inline function roundFlashRect():Void
+	{
+		_flashRectangle.x = Math.round(_flashRectangle.x);
+		_flashRectangle.y = Math.round(_flashRectangle.y);
+		_flashRectangle.width = Math.round(_flashRectangle.width);
+		_flashRectangle.height = Math.round(_flashRectangle.height);
+	}
+	
+	/**
+	 * Same as above for flash point
+	 */
+	private static inline function roundFlashPoint():Void
+	{
+		_flashPoint.x = Math.round(_flashPoint.x);
+		_flashPoint.y = Math.round(_flashPoint.y);
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN GETTER
