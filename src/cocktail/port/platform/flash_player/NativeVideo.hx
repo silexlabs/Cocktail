@@ -353,7 +353,6 @@ class NativeVideo extends NativeMedia
 			if (_usesSoftwareVideo == true)
 			{
 				_usesSoftwareVideo = false;
-				_video.visible = false;
 			}
 		}
 		//here uses software rendering
@@ -361,7 +360,6 @@ class NativeVideo extends NativeMedia
 		{
 			_usesStageVideo = false;
 			_usesSoftwareVideo = true;
-			_video.visible = true;
 			
 			//attach netstream to software video, detaching
 			//it from stage video if needed
@@ -528,6 +526,12 @@ class NativeVideo extends NativeMedia
 		_src = value;
 		_netStream.play(value);
 		
+		//refresh video display if currently attached,
+		//now that a src is set
+		if (_isAttachedToStage == true)
+		{
+			toggleStageVideo();
+		}
 		return value;
 	}
 	
