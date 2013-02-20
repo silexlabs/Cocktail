@@ -1242,6 +1242,16 @@ class CSSStyleDeclaration
 							}
 						}
 						
+					case CSS_LIST(value):
+						for (i in 0...value.length)
+						{
+							if (isValidProperty(CSSConstants.BACKGROUND_REPEAT, value[i]) == false)
+							{
+								return false;
+							}
+						}
+						return true;
+						
 					case INHERIT, INITIAL:
 						return true;	
 						
@@ -1272,6 +1282,16 @@ class CSSStyleDeclaration
 							
 							return isValidBackgroundSize(value[1]);
 						}	
+						
+					case CSS_LIST(value):
+						for (i in 0...value.length)
+						{
+							if (isValidProperty(CSSConstants.BACKGROUND_SIZE, value[i]) == false)
+							{
+								return false;
+							}
+						}
+						return true;	
 						
 					default:
 						return isValidBackgroundSize(styleValue);
