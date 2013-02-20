@@ -484,7 +484,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//can now be found 
 		if (establishesNewBlockFormattingContext() == true)
 		{
-			applyShrinkToFitIfNeeded(layoutState);
+			//if this block box establishes a new block formatting context, just because
+			//of the value of its overflow style, then it is not shrink-to-fit 
+			if (establishesNewBlockFormattingContextOnlyBecauseOfOverflow() == false)
+			{
+				applyShrinkToFitIfNeeded(layoutState);
+			}
 		}
 		
 		//if the height of this block box depends on its content, 
@@ -1624,6 +1629,24 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return wether this block box establishes a new block formatting
+	 * context just because it has an overflow style different from visible.
+	 */
+	private function establishesNewBlockFormattingContextOnlyBecauseOfOverflow():Bool
+	{
+		//check that all other property which might cause a new block formatting are false
+		if (coreStyle.isFloat == false && coreStyle.isAbsolutelyPositioned == false
+		&& coreStyle.isInlineBlock == false && coreStyle.canAlwaysOverflow == false)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 	
 	/**
 	 * Return the x and y offset between a target and source
