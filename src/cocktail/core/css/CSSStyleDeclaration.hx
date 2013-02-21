@@ -1309,6 +1309,16 @@ class CSSStyleDeclaration
 							default:	
 						}
 						
+					case CSS_LIST(value):
+						for (i in 0...value.length)
+						{
+							if (isValidProperty(propertyIndex, value[i]) == false)
+							{
+								return false;
+							}
+						}
+						return true;	
+						
 					case INHERIT, INITIAL:
 						return true;	
 						

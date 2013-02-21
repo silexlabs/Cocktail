@@ -97,18 +97,6 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	public var hasOwnStackingContext(default, null):Bool;
 	
 	/**
-	 * A flag determining wether the layer renderer needs
-	 * to do any rendering. As soon as an ElementRenderer
-	 * from the LayerRenderer needs rendering, its
-	 * LayerRenderer needs rendering
-	 * 
-	 * TODO 2 : should actually be at graphics context level ?
-	 * event if a layer don't need to be updated, if another
-	 * sharing the same graphics context ease, it will get updated
-	 */
-	private var _needsRendering:Bool;
-	
-	/**
 	 * A flag determining wether the layer should
 	 * update its graphics context, it is the case for
 	 * instance when the layer is attached to the rendering
@@ -188,7 +176,6 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		hasOwnGraphicsContext = false;
 		hasOwnStackingContext = false;
 		
-		_needsRendering = true;
 		_needsGraphicsContextUpdate = true;
 		_needsStackingContextUpdate = true;
 		_canUpdateScrollRegion = false;
@@ -391,47 +378,12 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	}
 	
 	/**
-	 * Invalidate the rendering of this layer.
-	 * If this layer has its own graphic context,
-	 * each child layer using the same graphics
-	 * context is also invalidated
+	 * Invalidate the rendering of the document
 	 */
 	public function invalidateRendering():Void
 	{
-		_needsRendering = true;
-		
 		var htmlDocument:HTMLDocument = cast(rootElementRenderer.domNode.ownerDocument);
 		htmlDocument.invalidationManager.invalidateRendering();
-		
-		if (hasOwnGraphicsContext == true)
-		{
-			invalidateChildLayerRenderer(this);
-		}
-		else
-		{
-			//if the child has no graphics context, 
-			//invalidate instead the first parent which does
-			if (parentNode != null)
-			{
-				var parent = parentNode;
-				while(parent.establishesNewGraphicsContext() == false)
-				{
-					parent = parent.parentNode;
-				}
-				
-				parent.invalidateRendering();
-			}
-		}
-		
-	}
-	
-	/**
-	 * only invalidate self, used when invalidating
-	 * children to prevent infinite loop
-	 */
-	public function invalidateOwnRendering():Void
-	{
-		_needsRendering = true;
 	}
 	
 	/**
@@ -446,29 +398,6 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		_needsStackingContextUpdate = true;
 		
 		detachStackingContext();
-	}
-	
-	/////////////////////////////////
-	// PRIVATE INVALIDATION METHOD
-	////////////////////////////////
-	
-	/**
-	 * Invalidate all children with
-	 * the same graphic context as 
-	 * this one
-	 */
-	private function invalidateChildLayerRenderer(rootLayer:LayerRenderer):Void
-	{
-		var child:LayerRenderer = rootLayer.firstChild;
-		while (child != null)
-		{
-			if (child.hasOwnGraphicsContext == false)
-			{
-				child.invalidateOwnRendering();
-				invalidateChildLayerRenderer(child);
-			}
-			child = child.nextSibling;
-		}
 	}
 	
 	/////////////////////////////////
@@ -1241,49 +1170,49 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 */
 	public function render(dirtyRect:RectangleVO):Void
 	{
-		_needsRendering = true;
-		
-		//only render if necessary
-		if (_needsRendering == true)
+		//no need to render if completely transparent
+		if (_alpha == 0)
 		{
-			//intersect the global dirty rect and the clip rect of this
-			//layer to determine which rect of the layer needs to be repainted
-			GeomUtils.intersectBounds(dirtyRect, clipRect, _layerDirtyRect);
-			
-			//if the layer doesn't intersect the dirty rect at all, no need to 
-			//re-render
-			if (_layerDirtyRect.width == 0 || _layerDirtyRect.height == 0)
-			{
-				return;
-			}
-			
-			//if this layer is transparent, start a transparent
-			//layer with the graphics context
-			if (_alpha != 1.0)
-			{
-				graphicsContext.graphics.beginTransparency(_alpha);
-			}
-			
-			//apply layer matrix to graphics context, so that all element
-			//renderers of the lyer use those transformations
-			graphicsContext.graphics.beginTransformations(matrix);
-			
-			//render the rootElementRenderer itself which will also
-			//render all ElementRenderer belonging to this LayerRenderer
-			rootElementRenderer.render(graphicsContext, _layerDirtyRect, scrollOffset);
-			
-			//stop using the layer's transformations
-			graphicsContext.graphics.endTransformations();
-			
-			//end transparency layer
-			if (_alpha != 1.0)
-			{
-				graphicsContext.graphics.endTransparency();
-			}
+			return;
 		}
 		
-		//layer no longer needs rendering
-		_needsRendering = false;
+		//intersect the global dirty rect and the clip rect of this
+		//layer to determine which rect of the layer needs to be repainted
+		GeomUtils.intersectBounds(dirtyRect, clipRect, _layerDirtyRect);
+		
+		//if the layer doesn't intersect the dirty rect at all, no need to 
+		//re-render
+		if (_layerDirtyRect.width == 0 || _layerDirtyRect.height == 0)
+		{
+			return;
+		}
+		
+		//if this layer is transparent, start a transparent
+		//layer with the graphics context
+		if (_alpha != 1.0)
+		{
+			trace(rootElementRenderer.domNode.className);
+			trace(_alpha);
+			graphicsContext.graphics.beginTransparency(_alpha);
+		}
+		
+		//apply layer matrix to graphics context, so that all element
+		//renderers of the lyer use those transformations
+		graphicsContext.graphics.beginTransformations(matrix);
+		
+		//render the rootElementRenderer itself which will also
+		//render all ElementRenderer belonging to this LayerRenderer
+		rootElementRenderer.render(graphicsContext, _layerDirtyRect, scrollOffset);
+		
+		//stop using the layer's transformations
+		graphicsContext.graphics.endTransformations();
+		
+		//end transparency layer
+		if (_alpha != 1.0)
+		{
+			graphicsContext.graphics.endTransparency();
+		}
+		
 		_canUpdateScrollRegion = false;
 	}
 	
