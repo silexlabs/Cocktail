@@ -246,6 +246,13 @@ class CoreStyle
 	 */
 	private var _initialStyleDeclaration:InitialStyleDeclaration;
 	
+	/**
+	 * a reference to an object containing all
+	 * the default CSS style definition for
+	 * computed properties
+	 */
+	private var _initialComputedStyleDeclaration:CSSStyleDeclaration;
+	
 	///////////////////////////////////
 	// STYLE FLAGS
 	//////////////////////////////////
@@ -545,6 +552,7 @@ class CoreStyle
 		hasHiddenOrScrollOverflowY = false;
 		
 		_initialStyleDeclaration = InitialStyleDeclaration.getInstance();
+		_initialComputedStyleDeclaration = _initialStyleDeclaration.initialComputedStyleDeclaration;
 		
 		init();
 	}
@@ -2014,7 +2022,7 @@ class CoreStyle
 		
 		if (typedProperty == null)
 		{
-			typedProperty = _initialStyleDeclaration.initialComputedStyleDeclaration.getTypedProperty(propertyIndex);
+			typedProperty = _initialComputedStyleDeclaration.getTypedProperty(propertyIndex);
 		}
 		
 		return typedProperty;
