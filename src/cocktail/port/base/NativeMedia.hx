@@ -102,7 +102,9 @@ class NativeMedia
 	 */
 	public function new() 
 	{
-		
+		alpha = 1.0;
+		matrix = new Matrix();
+		viewport = new RectangleVO();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

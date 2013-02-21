@@ -587,10 +587,14 @@ class NativeVideo extends NativeMedia
 			_stageVideo.viewPort = new Rectangle(value.x, value.y, value.width, value.height);
 		}
 		
-		_video.x = value.x;
-		_video.y = value.y;
-		_video.width = value.width;
-		_video.height = value.height;
+		if (_video != null)
+		{
+			_video.x = value.x;
+			_video.y = value.y;
+			_video.width = value.width;
+			_video.height = value.height;
+		}
+		
 		
 		viewport = value;
 		return value;
@@ -624,7 +628,11 @@ class NativeVideo extends NativeMedia
 	override private function set_alpha(value:Float):Float
 	{
 		alpha = value;
-		_video.alpha = value;
+		
+		if (_video != null)
+		{
+			_video.alpha = value;
+		}
 		
 		if (_usesStageVideo != canUseStageVideo())
 		{
