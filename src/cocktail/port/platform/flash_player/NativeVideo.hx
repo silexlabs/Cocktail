@@ -606,7 +606,13 @@ class NativeVideo extends NativeMedia
 	override private function set_matrix(value:Matrix):Matrix
 	{
 		matrix = value;
-		toggleStageVideo();
+		
+		//check if new value enable/disable StageVideo
+		if (_usesStageVideo != canUseStageVideo())
+		{
+			toggleStageVideo();
+		}
+		
 		return matrix;
 	}
 	
@@ -619,7 +625,12 @@ class NativeVideo extends NativeMedia
 	{
 		alpha = value;
 		_video.alpha = value;
-		toggleStageVideo();
+		
+		if (_usesStageVideo != canUseStageVideo())
+		{
+			toggleStageVideo();
+		}
+		
 		return alpha;
 	}
 }
