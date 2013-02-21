@@ -1341,7 +1341,6 @@ class CoreStyle
 			computedProperty =  getComputedProperty(propertyIndex, property, parentFontSize, parentXHeight, fontSize, xHeight, parentColor);
 		}
 		
-		
 		//try to start a transition on the property
 		
 		//hold wether this property is currently transitioning
@@ -1351,31 +1350,29 @@ class CoreStyle
 		if (hasTransitionnableProperties == true)
 		{
 			//if property is inherited or style was not programmatic, don't start transition
-			if (programmaticChange == true && isInherited == false && specifiedProperty != null)
+			if (programmaticChange == true && isInherited == false)
 			{
-				if (computedValues.getTypedProperty(propertyIndex) != null)
+				if (isAnimatable(propertyIndex))
 				{
-					if (isAnimatable(propertyIndex))
+					
+					if (_animator == null)
 					{
-						if (_animator == null)
-						{
-							initAnimator();
-						}
+						initAnimator();
+					}
+					
+					//check wether this property is currently transitioning
+					if (_transitionManager.getTransition(propertyIndex, this) != null)
+					{
+						isTransitioning = true;
+					}
+					
+					//only try to start if not currently transitionning
+					if (isTransitioning == false)
+					{
+						_animator.registerPendingAnimation(propertyIndex, getAnimatablePropertyValue(propertyIndex));
 						
-						//check wether this property is currently transitioning
-						if (_transitionManager.getTransition(propertyIndex, this) != null)
-						{
-							isTransitioning = true;
-						}
-						
-						//only try to start if not currently transitionning
-						if (isTransitioning == false)
-						{
-							_animator.registerPendingAnimation(propertyIndex, getAnimatablePropertyValue(propertyIndex));
-							
-							var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
-							htmlDocument.invalidationManager.invalidatePendingAnimations();
-						}
+						var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
+						htmlDocument.invalidationManager.invalidatePendingAnimations();
 					}
 				}
 			}
