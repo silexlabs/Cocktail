@@ -120,7 +120,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	 * the alphas of this layer
 	 * and its ancestors
 	 */
-	private var _alpha:Float;
+	public var alpha(default, null):Float;
 	
 	/**
 	 * This is the transformation matrix
@@ -184,7 +184,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		_currentMatrix = new Matrix();
 		_relativeOffset = new PointVO(0, 0);
 		_layerDirtyRect = new RectangleVO();
-		_alpha = 1.0;
+		alpha = 1.0;
 	}
 	
 	/**
@@ -308,13 +308,13 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		}
 		
 		//combine alpha with parent alpha
-		_alpha = layerAlpha * parentAlpha;
+		alpha = layerAlpha * parentAlpha;
 		
 		//update the whole layer tree recursively
 		var child:LayerRenderer = firstChild;
 		while (child != null)
 		{
-			child.updateLayerAlpha(_alpha);
+			child.updateLayerAlpha(alpha);
 			child = child.nextSibling;
 		}
 	}
@@ -1171,7 +1171,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	public function render(dirtyRect:RectangleVO):Void
 	{
 		//no need to render if completely transparent
-		if (_alpha == 0)
+		if (alpha == 0)
 		{
 			return;
 		}
@@ -1189,9 +1189,9 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		
 		//if this layer is transparent, start a transparent
 		//layer with the graphics context
-		if (_alpha != 1.0)
+		if (alpha != 1.0)
 		{
-			graphicsContext.graphics.beginTransparency(_alpha);
+			graphicsContext.graphics.beginTransparency(alpha);
 		}
 		
 		//apply layer matrix to graphics context, so that all element
@@ -1206,7 +1206,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		graphicsContext.graphics.endTransformations();
 		
 		//end transparency layer
-		if (_alpha != 1.0)
+		if (alpha != 1.0)
 		{
 			graphicsContext.graphics.endTransparency();
 		}

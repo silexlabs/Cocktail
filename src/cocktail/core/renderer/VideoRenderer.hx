@@ -105,14 +105,12 @@ class VideoRenderer extends ImageRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Rendering the video consists in updating its viewport
+	 * Rendering the video consists in updating its viewport, matrix and alpha
 	 * 
 	 * Video intrinsic aspect ratio is always preserved, so the
 	 * video might be letterboxed to fit in the available bounds,
 	 * the video always takes the maximum amount of space available
 	 * while keeping its aspect ratio
-	 * 
-	 * TODO 3 : alpha of video no longer managed
 	 */
 	private function renderVideo(htmlVideoElement:HTMLVideoElement, graphicContext:GraphicsContext, scrollOffset:PointVO):Void
 	{
@@ -130,6 +128,8 @@ class VideoRenderer extends ImageRenderer
 		videoViewport.width =  _videoBounds.width;
 		videoViewport.height =  _videoBounds.height;
 		
+		nativeVideo.alpha = layerRenderer.alpha;
+		nativeVideo.matrix = layerRenderer.matrix;
 		nativeVideo.viewport = videoViewport;
 	}
 	

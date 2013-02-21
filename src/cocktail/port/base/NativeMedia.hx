@@ -10,6 +10,7 @@ package cocktail.port.base;
 
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
+import cocktail.core.geom.Matrix;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
@@ -83,6 +84,18 @@ class NativeMedia
 	 * displayed native video relative to the window
 	 */
 	public var viewport(get_viewport, set_viewport):RectangleVO;
+	
+	/**
+	 * Represents the 3x3 transformation matrix to 
+	 * apply to the displayed native video 
+	 */
+	public var matrix(get_matrix, set_matrix):Matrix;
+	
+	/**
+	 * Represents the alpha, from 0(transparent) to 1.0
+	 * (opaque) to apply to the displayed video
+	 */
+	public var alpha(get_alpha, set_alpha):Float;
 	
 	/**
 	 * class constructor
@@ -225,5 +238,23 @@ class NativeMedia
 		return viewport = value;
 	}
 	
+	private function get_matrix():Matrix
+	{
+		return matrix;
+	}
 	
+	private function set_matrix(value:Matrix):Matrix
+	{
+		return matrix = value;
+	}
+	
+	private function get_alpha():Float
+	{
+		return alpha;
+	}
+	
+	private function set_alpha(value:Float):Float
+	{
+		return alpha = value;
+	}
 }

@@ -8,6 +8,7 @@
 package cocktail.port.platform.flash_player;
 
 import cocktail.Config;
+import cocktail.core.geom.Matrix;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLMediaElement;
 import cocktail.port.base.NativeMedia;
@@ -331,8 +332,7 @@ class NativeVideo extends NativeMedia
 	private function toggleStageVideo():Void
 	{
 		//here, can use hardware rendering
-		//config param can force software rendering
-		if (_stageVideoAvailable == true && Config.USE_STAGE_VIDEO_IF_AVAILABLE == true)
+		if (canUseStageVideo() == true)
 		{
 			_usesStageVideo = true;
 			
@@ -374,6 +374,37 @@ class NativeVideo extends NativeMedia
 			//it from stage video if needed
 			_video.attachNetStream(_netStream);
 		}
+	}
+	
+	/**
+	 * Wether, under the current condition 
+	 * StageVideo can be used instead of 
+	 * software rendering
+	 */
+	private function canUseStageVideo():Bool
+	{
+		//can be disabled via config
+		if (Config.USE_STAGE_VIDEO_IF_AVAILABLE == false)
+		{
+			return false;
+		}
+		//not available because of hardware
+		else if (_stageVideoAvailable == false)
+		{
+			return false;
+		}
+		//no alpha compositing allowed for StageVideo
+		else if (alpha != 1.0)
+		{
+			return false;
+		}
+		//no transformations allowed for StageVideo
+		else if (matrix.isIdentity() == false)
+		{
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -545,14 +576,9 @@ class NativeVideo extends NativeMedia
 	}
 	
 	/**
-	 * Set/get the position of the native flash video object
+	 * Set the position of the native flash video object
 	 * to match those of its viewport
 	 */
-	override private function get_viewport():RectangleVO
-	{
-		return viewport;
-	}
-	
 	override private function set_viewport(value:RectangleVO):RectangleVO
 	{
 		//refresh hardware if necessary and software video
@@ -570,4 +596,30 @@ class NativeVideo extends NativeMedia
 		return value;
 	}
 	
+	/**
+	 * when transformation changes, check wether
+	 * video rendering should switch to software, as 
+	 * StageVideo doesn't support transformations
+	 * 
+	 * TODO 3 : apply transformations to software video
+	 */
+	override private function set_matrix(value:Matrix):Matrix
+	{
+		matrix = value;
+		toggleStageVideo();
+		return matrix;
+	}
+	
+	/**
+	 * When alpha changes, apply to software video
+	 * and check if video rendering should switch to
+	 * software, as StageVideo doesn't support alpha
+	 */
+	override private function set_alpha(value:Float):Float
+	{
+		alpha = value;
+		_video.alpha = value;
+		toggleStageVideo();
+		return alpha;
+	}
 }

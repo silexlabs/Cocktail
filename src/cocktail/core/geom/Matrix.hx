@@ -101,6 +101,15 @@ class Matrix
 		this.f = b * matrix.e + d * matrix.f + f;
 	}
 	
+	/**
+	 * Return this matrix currently represents 
+	 * an identity matrix
+	 */
+	public function isIdentity():Bool
+	{
+		return a == 1.0 && b == 0.0 && c == 0.0 && d == 1.0 && e == 0.0 && f == 0.0;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// High level matrix manipulation methods
 	//////////////////////////////////////////////////////////////////////////////////////////
