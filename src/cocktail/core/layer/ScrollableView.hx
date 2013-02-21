@@ -521,16 +521,23 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 		var child:ElementRenderer = rootElementRenderer.firstChild;
 		while(child != null)
 		{
-			//check that child belong to this layer
-			if (child.layerRenderer == thisAsLayer)
+			//don't use text bounds, as they are included
+			//in all block and inline element renderer during
+			//layout
+			if (child.isText == false)
 			{
-				//add bounds of child
-				GeomUtils.addBounds(child.globalBounds, bounds);
-				if (child.firstChild != null)
+				//check that child belong to this layer
+				if (child.layerRenderer == thisAsLayer)
 				{
-					doGetElementRenderersBounds(child, bounds);
+					//add bounds of child
+					GeomUtils.addBounds(child.globalBounds, bounds);
+					if (child.firstChild != null)
+					{
+						doGetElementRenderersBounds(child, bounds);
+					}
 				}
 			}
+		
 			
 			child = child.nextSibling;
 		}
