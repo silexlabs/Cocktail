@@ -1191,8 +1191,6 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 		//layer with the graphics context
 		if (_alpha != 1.0)
 		{
-			trace(rootElementRenderer.domNode.className);
-			trace(_alpha);
 			graphicsContext.graphics.beginTransparency(_alpha);
 		}
 		

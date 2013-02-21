@@ -352,13 +352,22 @@ class NativeVideo extends NativeMedia
 			//stage video always behind
 			if (_usesSoftwareVideo == true)
 			{
+				_video.visible = false;
 				_usesSoftwareVideo = false;
 			}
 		}
 		//here uses software rendering
 		else
 		{
-			_usesStageVideo = false;
+			//reset stage video reference, make softwre
+			//visible
+			if (_usesStageVideo == true)
+			{
+				_stageVideo = null;
+				_usesStageVideo = false;
+				_video.visible = true;
+			}
+			
 			_usesSoftwareVideo = true;
 			
 			//attach netstream to software video, detaching
