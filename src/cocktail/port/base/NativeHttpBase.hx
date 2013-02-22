@@ -80,6 +80,11 @@ class NativeHttpBase extends EventTarget
 	private var _url:String;
 	
 	/**
+	 * Set to true when close is called
+	 */
+	private var _closed:Bool;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
@@ -112,6 +117,7 @@ class NativeHttpBase extends EventTarget
 		response = null;
 		error = false;
 		complete = false;
+		_closed = false;
 		
 		_url = url;
 		
@@ -126,7 +132,7 @@ class NativeHttpBase extends EventTarget
 	 */
 	public function close():Void
 	{
-		//abstract
+		_closed = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -167,8 +173,9 @@ class NativeHttpBase extends EventTarget
 			dispatchEvent(loadEvent);
 		}
 		//here load still in progress, dispatched progress event
-		//then delay another call to this method
-		else
+		//then delay another call to this method, unless the loading
+		//was explicitely stopped by the user
+		else if (_closed == false)
 		{
 			var progressEvent:ProgressEvent = new ProgressEvent();
 			progressEvent.initProgressEvent(EventConstants.PROGRESS, false, false, false, loaded, total);

@@ -155,7 +155,8 @@ class NativeHttp extends NativeHttpBase
 	 * This can happen when a swf is loaded from another domain.
 	 * Restart the load with a specialised SWF loader which can
 	 * circumvent those errors, 
-	 * this is hackish
+	 * this is hackish, main hack is that it assumes that this is
+	 * a swf which is loaded
 	 */
 	private function onSecurityError(event:SecurityErrorEvent):Void
 	{
@@ -164,6 +165,14 @@ class NativeHttp extends NativeHttpBase
 			var swfLoader:Loader = resource.nativeResource;
 			response = swfLoader;
 			complete = true;
+			
+			//send the event instantaneously in this case, to prevent
+			//from missing init event dispatched by the loaded swf, close
+			//the loading to prevent scheduling another progress update which
+			//would dispatch another load event
+			close();
+			onLoadProgress(0);
+			
 		});
 	}
 	
