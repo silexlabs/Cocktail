@@ -1365,14 +1365,29 @@ class CoreStyle
 					//check wether this property is currently transitioning
 					if (transition != null)
 					{
-						//check if new computed property revert the animation
-						var didRevert:Bool = _animator.revertTransitionIfNeeded(transition,  getAbsoluteLength(computedProperty), this);
+						registerPengingComputedProperty = true;
 						
-						//if did not revert, then store to update computed
-						//property at the end of the transition
-						if (didRevert == false)
+						//TODO 2 : current limitation for revert is that
+						//only css property value which computes to absolute length
+						//wihout layout are supported.
+						//
+						//Should instead register a transition revert for next frame.
+						//Should have a used value for animation and one used value for
+						//actual value ?
+						switch (computedProperty)
 						{
-							registerPengingComputedProperty = true;
+							case ABSOLUTE_LENGTH(value):
+								//check if new computed property revert the animation
+								var didRevert:Bool = _animator.revertTransitionIfNeeded(transition,  value, this);
+								
+								//if did revert, then don't store computed property
+								//as the transiton now has a different end value
+								if (didRevert == true)
+								{
+									registerPengingComputedProperty = false;
+								}
+								
+							default:
 						}
 					}
 					//only try to start if not currently transitionning

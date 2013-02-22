@@ -50,7 +50,7 @@ class Transition
 	 * The value that the transitioned property
 	 * will have when the transition is complete
 	 */
-	private var _endValue:Float;
+	public var endValue(default, null):Float;
 	
 	/**
 	 * The elapsed time, in milliseconds, since the transition
@@ -114,7 +114,7 @@ class Transition
 		this.transitionDuration = transitionDuration;
 		this.transitionTimingFunction = transitionTimingFunction;
 		this.startValue = startValue;
-		_endValue = endValue;
+		this.endValue = endValue;
 		this.target = target;
 		this.propertyIndex = propertyIndex;
 		this.onComplete = onComplete;
@@ -139,15 +139,11 @@ class Transition
 	/**
 	 * clean-up method called once a 
 	 * transition is complete
-	 * 
-	 * TODO 2 : risks of destroying objets instead of
-	 * de-referencing, like for ElementRenderer.dispose
 	 */
 	public function dispose():Void
 	{
 		onComplete = null;
 		onUpdate = null;
-		//_target = null;
 		transitionTimingFunction = null;
 	}
 	
@@ -159,7 +155,14 @@ class Transition
 	 */
 	public function revert():Void
 	{
+		//"invert" elapsed time, including transition delay,
+		//as delay isn't used when reverting
+		_elapsedTime -= transitionDuration + transitionDelay;
 		
+		//swap end and start values
+		var oldEndValue:Float = endValue;
+		endValue = startValue;
+		startValue = oldEndValue;
 	}
 	
 	/////////////////////////////////
@@ -210,30 +213,30 @@ class Transition
 					//cubic bezier functions
 					case EASE:
 						_cubicBezier.init(0.25, 0.1, 0.25, 1.0);
-						return ((_endValue - startValue) * _cubicBezier.bezierY(completePercent)) + startValue;
+						return ((endValue - startValue) * _cubicBezier.bezierY(completePercent)) + startValue;
 						
 					case EASE_IN:
 						_cubicBezier.init(0.25, 0.1, 0.25, 1.0);
-						return ((_endValue - startValue) * _cubicBezier.bezierY(completePercent)) + startValue;
+						return ((endValue - startValue) * _cubicBezier.bezierY(completePercent)) + startValue;
 						
 					case EASE_OUT:
 						_cubicBezier.init(0.25, 0.1, 0.25, 1.0);
-						return ((_endValue - startValue) * _cubicBezier.bezierY(completePercent)) + startValue;	
+						return ((endValue - startValue) * _cubicBezier.bezierY(completePercent)) + startValue;	
 						
 					case EASE_IN_OUT:
 						_cubicBezier.init(0.25, 0.1, 0.25, 1.0);
-						return ((_endValue - startValue) * _cubicBezier.bezierY(completePercent)) + startValue;
+						return ((endValue - startValue) * _cubicBezier.bezierY(completePercent)) + startValue;
 						
 					//step functions	
 					case STEP_START:
-						return ((_endValue - startValue) * 1) + startValue;	
+						return ((endValue - startValue) * 1) + startValue;	
 						
 					case STEP_END:
-						return ((_endValue - startValue) * 0) + startValue;	
+						return ((endValue - startValue) * 0) + startValue;	
 						
 					//linear function
 					case LINEAR:
-						return ((_endValue - startValue) * completePercent) + startValue;	
+						return ((endValue - startValue) * completePercent) + startValue;	
 						
 					default:
 						throw 'Illegal keyword value for transition timing function style';
@@ -241,11 +244,11 @@ class Transition
 				
 			case CUBIC_BEZIER(x1, y1, x2, y2):
 				_cubicBezier.init(x1, y1, x2, y2);
-				return ((_endValue - startValue) * _cubicBezier.bezierY(completePercent)) + startValue;	
+				return ((endValue - startValue) * _cubicBezier.bezierY(completePercent)) + startValue;	
 			
 			//TODO 1 : implement stepping function	
 			case STEPS(intervalNumbers, intervalChange):
-				return ((_endValue - startValue) * completePercent) + startValue;	
+				return ((endValue - startValue) * completePercent) + startValue;	
 				
 			default:
 				throw 'Illegal value for transition timing function style';
