@@ -882,8 +882,12 @@ class HTMLElement extends Element<HTMLElement>
 			return;
 		}
 		
-		//actually instantiate the element renderer
-		createElementRenderer();
+		//check if can potentially be rendered
+		if (isRendered() == true)
+		{
+			//actually instantiate the element renderer
+			createElementRenderer();
+		}
 		
 		//if the ElementRenderer wasn't instantiated, then this
 		//HTMLElement is not supposed to be rendered
