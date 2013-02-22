@@ -157,7 +157,7 @@ class Transition
 	{
 		//"invert" elapsed time, including transition delay,
 		//as delay isn't used when reverting
-		_elapsedTime -= transitionDuration + transitionDelay;
+		_elapsedTime = transitionDuration + transitionDelay - _elapsedTime;
 		
 		//swap end and start values
 		var oldEndValue:Float = endValue;
