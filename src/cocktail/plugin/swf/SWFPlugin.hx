@@ -166,7 +166,7 @@ class SWFPlugin extends Plugin
 		
 		//retrieve the loaded swf, the plugin is not instantiated
 		//until this swf is successfully loaded
-		var loadedSWF:NativeHttp = ResourceManager.getSWFResource(_elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
+		var loadedSWF:NativeHttp = ResourceManager.getBinaryResource(_elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
 		
 		//in some cases, the swf might be loaded with a flash loader instead of
 		//loaded as bytes to circumvent security sandbox. In this

@@ -31,10 +31,10 @@ class ResourceManager
 	private static var _resources:Hash<AbstractResource> = new Hash<AbstractResource>();
 	
 	/**
-	 * Store requested swf resources, where the 
-	 * key is the url of the swf
+	 * Store requested binary resources, where the 
+	 * key is the url of the binary
 	 */
-	private static var _swfResources:Hash<NativeHttp> = new Hash<NativeHttp>();
+	private static var _binaryResources:Hash<NativeHttp> = new Hash<NativeHttp>();
 	
 	/**
 	 * class constructor. Private as this class
@@ -68,21 +68,18 @@ class ResourceManager
 	}
 	
 	/**
-	 * Return an SWF resource, start loading it if
+	 * Return a binary resource, start loading it if
 	 * first request.
-	 * 
-	 * TODO 2 : should SWF loading be in core ?
-	 * Should be abstracted as binary loading ?
 	 */
-	public static function getSWFResource(url:String):NativeHttp
+	public static function getBinaryResource(url:String):NativeHttp
 	{
-		var resource:NativeHttp = _swfResources.get(url);
+		var resource:NativeHttp = _binaryResources.get(url);
 		
 		if (resource == null)
 		{
 			resource = new NativeHttp();
 			resource.load(url, HTTPConstants.GET, null, null, DataFormatValue.BINARY);
-			_swfResources.set(url, resource);
+			_binaryResources.set(url, resource);
 		}
 		
 		return resource;

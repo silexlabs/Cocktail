@@ -167,7 +167,7 @@ class HTMLObjectElement extends EmbeddedElement
 				//start loading the resource, the resource
 				//need to be completely loaded before
 				//the plugin is instantiated
-				ResourceManager.getSWFResource(data);
+				ResourceManager.getBinaryResource(data);
 			}
 		}
 	}
@@ -221,7 +221,7 @@ class HTMLObjectElement extends EmbeddedElement
 			if (data.indexOf(SWF_FILE_EXTENSION) != -1 || getAttribute(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME) == SWF_FILE_MIME_TYPE)
 			{
 				//retrieve the resource the plugin will use
-				var resource:NativeHttp = ResourceManager.getSWFResource(data);
+				var resource:NativeHttp = ResourceManager.getBinaryResource(data);
 				
 				//if it couldn't be loaded, don't create the plugin
 				if (resource.error == true)
