@@ -110,6 +110,57 @@ class Animator
 		_pendingAnimations.push(pendingAnimation);
 	}
 	
+	/**
+	 * Revert a current transition which means that its start value
+	 * becomes its end value
+	 * @param	currentTransition the transition that might be reverted
+	 * @param	currentValue the new value that was the set for the transitioned property
+	 * @param	style
+	 * @return	wether the transition was reverted
+	 */
+	public function revertTransitionIfNeeded(currentTransition:Transition, currentValue:Float, style:CoreStyle):Bool
+	{
+		//the new value for the style must match the beginning value
+		//of the transition for the transition to be transitioned
+		if (currentTransition.startValue != currentValue)
+		{
+			return false;
+		}
+		
+		//check wether transition-duration, transition-delay and transition-timing-function
+		//are the same as when the transition started. Any changes prevent a revert
+		var indexInTransitionProperty:Int = getIndexOfPropertyInTransitionProperty(currentTransition.propertyIndex, style.transitionProperty);
+		if (indexInTransitionProperty == -1)
+		{
+			return false;
+		}
+		
+		var transitionDelays:Array<Float> = getAsFloatArray(style.transitionDelay);
+		var transitionDelay:Float = transitionDelays[getRepeatedIndex(indexInTransitionProperty, transitionDelays.length)];
+		if (currentTransition.transitionDelay != transitionDelay)
+		{
+			return false;
+		}
+		
+		var transitionDurations:Array<Float> = getAsFloatArray(style.transitionDuration);
+		var transitionDuration:Float = transitionDurations[getRepeatedIndex(indexInTransitionProperty, transitionDurations.length)];
+		if (currentTransition.transitionDuration != transitionDuration)
+		{
+			return false;
+		}
+		
+		var transitionTimingFunctionAsArray:Array<CSSPropertyValue> = getTransitionTimingFunctionsAsArray(style.transitionTimingFunction);
+		var transitionTimingFunction:CSSPropertyValue = transitionTimingFunctionAsArray[getRepeatedIndex(indexInTransitionProperty, transitionTimingFunctionAsArray.length)];
+		if (currentTransition.transitionTimingFunction != transitionTimingFunction)
+		{
+			return false;
+		}
+		
+		//do revert the transition
+		currentTransition.revert();
+		return true;
+	}
+	
 	/////////////////////////////////
 	// PRIVATE TRANSITION METHODS
 	////////////////////////////////
@@ -127,73 +178,18 @@ class Animator
 	{	
 		var usedValues:UsedValuesVO = style.usedValues;
 		
-		//will store the index of the property in the TransitionPorperty
+		//will store the index of the property in the TransitionProperty
 		//array, so that its duration, delay, and timing function can be found
 		//at the same index
-		var propertyIndex:Int = 0;
+		var indexInTransitionProperty:Int = getIndexOfPropertyInTransitionProperty(pendingAnimation.propertyIndex, style.transitionProperty);
 		
-		//check if the changed property is supposed to be transitioned
-		switch (style.transitionProperty)
+		//if -1 means that this property
+		//can't be transitioned
+		if (indexInTransitionProperty == -1)
 		{
-			case KEYWORD(value):
-				switch(value)
-				{
-					//if none, the method returns here as no property
-					//of this style should be transitioned
-					case NONE:
-						return false;
-						
-					//here all property can transition. The index
-					//will stay at 0	
-					case ALL:	
-						
-					default:
-						throw 'Illegal keyword value for transition property';
-				}
-				
-			case IDENTIFIER(value):
-				//if only one property name is defined, it must
-				//match the name of the pending animation property
-				if (value != CSSConstants.getPropertyNameFromIndex(pendingAnimation.propertyIndex))
-				{
-					return false;
-				}		
-			
-			//here, check in the list of transitionable property
-			//for a match
-			case CSS_LIST(value):
-				var foundFlag:Bool = false;
-				
-				for (i in 0...value.length)
-				{
-					switch(value[i])
-					{
-						case IDENTIFIER(value):
-							//if there is a match, store the index
-							//of the match
-							if (value == CSSConstants.getPropertyNameFromIndex(pendingAnimation.propertyIndex))
-							{
-								//propertyIndex = i;
-								//foundFlag = true;
-								//break;
-							}	
-							
-						default:
-							throw 'Illegal value for transition property';
-					}
-				}
-				
-				//if there is no match, the method stops
-				//here
-				if (foundFlag == false)
-				{
-					return false;
-				}
-			
-			default:
-				throw'Illegal values for transition property style';
+			return false;
 		}
-
+		
 		//the combined duration is the combined duration
 		//and delay of the transition, 
 		var combinedDuration:Float = 0.0;
@@ -206,8 +202,8 @@ class Animator
 		//get  the delay and duration of the transition in their respective array
 		//using the same index as the one in the transitionproperty array
 		
-		var transitionDelay:Float = transitionDelays[getRepeatedIndex(propertyIndex, transitionDelays.length)];
-		var transitionDuration:Float = transitionDurations[getRepeatedIndex(propertyIndex, transitionDurations.length)];
+		var transitionDelay:Float = transitionDelays[getRepeatedIndex(indexInTransitionProperty, transitionDelays.length)];
+		var transitionDuration:Float = transitionDurations[getRepeatedIndex(indexInTransitionProperty, transitionDurations.length)];
 		combinedDuration = transitionDuration + transitionDelay;
 			
 		//if the combined duration is not superior to
@@ -220,7 +216,7 @@ class Animator
 		var transitionTimingFunctionAsArray:Array<CSSPropertyValue> = getTransitionTimingFunctionsAsArray(style.transitionTimingFunction);
 		
 		//get the transition timing function
-		var transitionTimingFunction:CSSPropertyValue = transitionTimingFunctionAsArray[getRepeatedIndex(propertyIndex,transitionTimingFunctionAsArray.length)];
+		var transitionTimingFunction:CSSPropertyValue = transitionTimingFunctionAsArray[getRepeatedIndex(indexInTransitionProperty,transitionTimingFunctionAsArray.length)];
 		
 		var transitionManager:TransitionManager = TransitionManager.getInstance();
 		
@@ -251,6 +247,78 @@ class Animator
 	
 		//the transition did in fact start
 		return true;
+	}
+	
+	/**
+	 * Return the index of the propertyIndex in the list of properties
+	 * which can be transitioned
+	 * @param 	propertyIndex the index of the searched properties
+	 * @param	transitionProperty hold which property can be transitioned
+	 * @return	the index of the property or -1 if the property is not in
+	 * the list of transitioned properties
+	 */
+	private function getIndexOfPropertyInTransitionProperty(propertyIndex:Int, transitionProperty:CSSPropertyValue):Int
+	{
+		//check if the changed property is supposed to be transitioned
+		switch (transitionProperty)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					//if none, the method returns here as no property
+					//of this style should be transitioned
+					case NONE:
+						return -1;
+						
+					//here all property can transition. The index
+					//will stay at 0	
+					case ALL:	
+						return 0;
+						
+					default:
+						throw 'Illegal keyword value for transition property';
+				}
+				
+			case IDENTIFIER(value):
+				//if only one property name is defined, it must
+				//match the name of the pending animation property
+				if (value != CSSConstants.getPropertyNameFromIndex(propertyIndex))
+				{
+					return -1;
+				}		
+				else
+				{
+					return 0;
+				}
+			
+			//here, check in the list of transitionable property
+			//for a match
+			case CSS_LIST(value):
+				var foundFlag:Bool = false;
+				
+				for (i in 0...value.length)
+				{
+					switch(value[i])
+					{
+						case IDENTIFIER(value):
+							//if there is a match, store the index
+							//of the match
+							if (value == CSSConstants.getPropertyNameFromIndex(propertyIndex))
+							{
+								return i;
+							}	
+							
+						default:
+							throw 'Illegal value for transition property';
+					}
+				}
+				
+				//no match found
+				return -1;
+			
+			default:
+				throw'Illegal values for transition property style';
+		}
 	}
 	
 	/**

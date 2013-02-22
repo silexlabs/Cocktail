@@ -1343,8 +1343,9 @@ class CoreStyle
 		
 		//try to start a transition on the property
 		
-		//hold wether this property is currently transitioning
-		var isTransitioning:Bool = false;
+		//wether to update the computed property,
+		//it not updated if a transition is currently happening
+		var registerPengingComputedProperty:Bool = false;
 
 		//non need if no property are declared to be transitioned
 		if (hasTransitionnableProperties == true)
@@ -1360,17 +1361,24 @@ class CoreStyle
 						initAnimator();
 					}
 					
+					var transition:Transition = _transitionManager.getTransition(propertyIndex, this);
 					//check wether this property is currently transitioning
-					if (_transitionManager.getTransition(propertyIndex, this) != null)
+					if (transition != null)
 					{
-						isTransitioning = true;
+						//check if new computed property revert the animation
+						var didRevert:Bool = _animator.revertTransitionIfNeeded(transition,  getAbsoluteLength(computedProperty), this);
+						
+						//if did not revert, then store to update computed
+						//property at the end of the transition
+						if (didRevert == false)
+						{
+							registerPengingComputedProperty = true;
+						}
 					}
-					
 					//only try to start if not currently transitionning
-					if (isTransitioning == false)
+					else
 					{
 						_animator.registerPendingAnimation(propertyIndex, getAnimatablePropertyValue(propertyIndex));
-						
 						var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
 						htmlDocument.invalidationManager.invalidatePendingAnimations();
 					}
@@ -1380,7 +1388,7 @@ class CoreStyle
 		
 		if (specifiedProperty != null)
 		{
-			if (isTransitioning == false)
+			if (registerPengingComputedProperty == false)
 			{
 				computedValues.setTypedProperty(propertyIndex, computedProperty, cascadedProperty.important);
 			}
@@ -1399,11 +1407,10 @@ class CoreStyle
 				
 				_pendingComputedValues[propertyIndex] = typedComputedProperty;
 			}
-			
 		}
 		else
 		{
-			if (isTransitioning == false)
+			if (registerPengingComputedProperty == false)
 			{
 				computedValues.setTypedPropertyInitial(propertyIndex, computedProperty, cascadedProperty.important);
 			}

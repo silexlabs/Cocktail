@@ -32,19 +32,19 @@ class Transition
 	 * The delay to apply to the transition
 	 * before it actually starts
 	 */
-	private var _transitionDelay:Float;
+	public var transitionDelay(default, null):Float;
 	
 	/**
 	 * The easing function that should be used for
 	 * this property
 	 */
-	private var _transitionTimingFunction:CSSPropertyValue;
+	public var transitionTimingFunction(default, null):CSSPropertyValue;
 	
 	/**
 	 * The value of the transitioned property when
 	 * the transition started
 	 */
-	private var _startValue:Float;
+	public var startValue(default, null):Float;
 	
 	/**
 	 * The value that the transitioned property
@@ -110,10 +110,10 @@ class Transition
 	public function new(propertyIndex:Int, target:CoreStyle, transitionDuration:Float, transitionDelay:Float, transitionTimingFunction:CSSPropertyValue,
 	startValue:Float, endValue:Float, onComplete:Transition->Void, onUpdate:Transition->Void) 
 	{
-		_transitionDelay = transitionDelay;
+		this.transitionDelay = transitionDelay;
 		this.transitionDuration = transitionDuration;
-		_transitionTimingFunction = transitionTimingFunction;
-		_startValue = startValue;
+		this.transitionTimingFunction = transitionTimingFunction;
+		this.startValue = startValue;
 		_endValue = endValue;
 		this.target = target;
 		this.propertyIndex = propertyIndex;
@@ -148,7 +148,18 @@ class Transition
 		onComplete = null;
 		onUpdate = null;
 		//_target = null;
-		_transitionTimingFunction = null;
+		transitionTimingFunction = null;
+	}
+	
+	/**
+	 * Revert the transition, which set its
+	 * stat value to be its end value.
+	 * A transition can be reveted any
+	 * number of tmes while it is in progress
+	 */
+	public function revert():Void
+	{
+		
 	}
 	
 	/////////////////////////////////
@@ -163,7 +174,7 @@ class Transition
 	 */
 	private function get_complete():Bool
 	{
-		if (_elapsedTime >= (_transitionDelay + transitionDuration))
+		if (_elapsedTime >= (transitionDelay + transitionDuration))
 		{
 			return true;
 		}
@@ -181,17 +192,17 @@ class Transition
 		//offet between the elapsed time since the transition started 
 		//and the delay to apply to the transition before actually
 		//tweening value
-		var transitionTime:Float = _elapsedTime - (_transitionDelay);
+		var transitionTime:Float = _elapsedTime - (transitionDelay);
 		//if the offset is negative, it means that the transition delay time
 		//is not yet complete, and so the start value must be returned
 		if (transitionTime < 0)
 		{
-			return _startValue;
+			return startValue;
 		}
 		
 		var completePercent:Float = (transitionTime) / (transitionDuration);
 		
-		switch (_transitionTimingFunction)
+		switch (transitionTimingFunction)
 		{
 			case KEYWORD(value):
 				switch(value)
@@ -199,30 +210,30 @@ class Transition
 					//cubic bezier functions
 					case EASE:
 						_cubicBezier.init(0.25, 0.1, 0.25, 1.0);
-						return ((_endValue - _startValue) * _cubicBezier.bezierY(completePercent)) + _startValue;
+						return ((_endValue - startValue) * _cubicBezier.bezierY(completePercent)) + startValue;
 						
 					case EASE_IN:
 						_cubicBezier.init(0.25, 0.1, 0.25, 1.0);
-						return ((_endValue - _startValue) * _cubicBezier.bezierY(completePercent)) + _startValue;
+						return ((_endValue - startValue) * _cubicBezier.bezierY(completePercent)) + startValue;
 						
 					case EASE_OUT:
 						_cubicBezier.init(0.25, 0.1, 0.25, 1.0);
-						return ((_endValue - _startValue) * _cubicBezier.bezierY(completePercent)) + _startValue;	
+						return ((_endValue - startValue) * _cubicBezier.bezierY(completePercent)) + startValue;	
 						
 					case EASE_IN_OUT:
 						_cubicBezier.init(0.25, 0.1, 0.25, 1.0);
-						return ((_endValue - _startValue) * _cubicBezier.bezierY(completePercent)) + _startValue;
+						return ((_endValue - startValue) * _cubicBezier.bezierY(completePercent)) + startValue;
 						
 					//step functions	
 					case STEP_START:
-						return ((_endValue - _startValue) * 1) + _startValue;	
+						return ((_endValue - startValue) * 1) + startValue;	
 						
 					case STEP_END:
-						return ((_endValue - _startValue) * 0) + _startValue;	
+						return ((_endValue - startValue) * 0) + startValue;	
 						
 					//linear function
 					case LINEAR:
-						return ((_endValue - _startValue) * completePercent) + _startValue;	
+						return ((_endValue - startValue) * completePercent) + startValue;	
 						
 					default:
 						throw 'Illegal keyword value for transition timing function style';
@@ -230,11 +241,11 @@ class Transition
 				
 			case CUBIC_BEZIER(x1, y1, x2, y2):
 				_cubicBezier.init(x1, y1, x2, y2);
-				return ((_endValue - _startValue) * _cubicBezier.bezierY(completePercent)) + _startValue;	
+				return ((_endValue - startValue) * _cubicBezier.bezierY(completePercent)) + startValue;	
 			
 			//TODO 1 : implement stepping function	
 			case STEPS(intervalNumbers, intervalChange):
-				return ((_endValue - _startValue) * completePercent) + _startValue;	
+				return ((_endValue - startValue) * completePercent) + startValue;	
 				
 			default:
 				throw 'Illegal value for transition timing function style';
