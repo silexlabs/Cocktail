@@ -50,6 +50,11 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	private var _nativeLayer:Sprite;
 	
 	/**
+	 * A container for the native flash bitmapData
+	 */
+	private var _bitmapContainer:Sprite;
+	
+	/**
 	 * A container for the children layer of
 	 * this GraphicContext. A container is necessary
 	 * so that tha native Bitmap is always below the children
@@ -137,10 +142,14 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		_childrenNativeLayer = new Sprite();
 		_childrenNativeLayer.mouseEnabled = false;
 		
+		_bitmapContainer = new Sprite();
+		_bitmapContainer.mouseEnabled = false;
+		
 		_width = 0;
 		_height = 0;
 
 		//build native display list
+		_childrenNativeLayer.addChild(_bitmapContainer);
 		_childrenNativeLayer.addChild(_nativeLayer);
 		
 	}
@@ -154,7 +163,7 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		if (_nativeBitmap == null)
 		{
 			_nativeBitmap = new Bitmap(new BitmapData(width, height, true, 0x00000000), PixelSnapping.AUTO, false);
-			_childrenNativeLayer.addChildAt(_nativeBitmap, 0);
+			_bitmapContainer.addChild(_nativeBitmap);
 		}
 		else
 		{
@@ -200,14 +209,15 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		if (_nativeBitmap != null)
 		{
 			_nativeBitmap.bitmapData.dispose();
-			_childrenNativeLayer.removeChild(_nativeBitmap);
+			_bitmapContainer.removeChild(_nativeBitmap);
 			_nativeBitmap = null;
 		}
 		
-		
+		_childrenNativeLayer.removeChild(_bitmapContainer);
 		_childrenNativeLayer.removeChild(_nativeLayer);
 		_nativeLayer = null;
 		_childrenNativeLayer = null;
+		_bitmapContainer = null;
 	}
 	
 	/**
