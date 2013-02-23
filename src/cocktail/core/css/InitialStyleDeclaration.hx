@@ -94,14 +94,17 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		CSSConstants.PADDING_LEFT, CSSConstants.PADDING_RIGHT, CSSConstants.PADDING_TOP, CSSConstants.PADDING_BOTTOM,
 		CSSConstants.LEFT, CSSConstants.RIGHT, CSSConstants.TOP, CSSConstants.BOTTOM, CSSConstants.LETTER_SPACING,
 		CSSConstants.WORD_SPACING, CSSConstants.TEXT_INDENT, CSSConstants.TRANSFORM, CSSConstants.TRANSFORM_ORIGIN,
-		CSSConstants.BACKGROUND_POSITION, CSSConstants.BACKGROUND_SIZE
+		CSSConstants.BACKGROUND_POSITION, CSSConstants.BACKGROUND_SIZE, 
+		CSSConstants.BORDER_TOP_WIDTH, CSSConstants.BORDER_RIGHT_WIDTH, CSSConstants.BORDER_BOTTOM_WIDTH,
+		CSSConstants.BORDER_LEFT_WIDTH
 		];
 	}
 	
 	private function initColorCSSProperties():Void
 	{
 		colorCSSProperties = [
-			CSSConstants.BACKGROUND_COLOR, CSSConstants.COLOR
+			CSSConstants.BACKGROUND_COLOR, CSSConstants.COLOR, CSSConstants.BORDER_TOP_COLOR,
+			CSSConstants.BORDER_BOTTOM_COLOR, CSSConstants.BORDER_RIGHT_COLOR, CSSConstants.BORDER_LEFT_COLOR
 		];
 	}
 	
@@ -119,7 +122,10 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		CSSConstants.TEXT_TRANSFORM, CSSConstants.COLOR, CSSConstants.TRANSITION_PROPERTY, CSSConstants.TRANSITION_DURATION, CSSConstants.TRANSITION_DELAY,
 		CSSConstants.TRANSITION_TIMING_FUNCTION, CSSConstants.TRANSFORM, CSSConstants.TRANSFORM_ORIGIN, CSSConstants.BACKGROUND_COLOR,
 		CSSConstants.BACKGROUND_IMAGE, CSSConstants.BACKGROUND_POSITION, CSSConstants.BACKGROUND_SIZE, CSSConstants.BACKGROUND_REPEAT, CSSConstants.BACKGROUND_ATTACHMENT,
-		CSSConstants.BACKGROUND_ORIGIN, CSSConstants.BACKGROUND_CLIP, CSSConstants.CURSOR
+		CSSConstants.BACKGROUND_ORIGIN, CSSConstants.BACKGROUND_CLIP, CSSConstants.CURSOR,
+		CSSConstants.BORDER_TOP_WIDTH, CSSConstants.BORDER_RIGHT_WIDTH, CSSConstants.BORDER_BOTTOM_WIDTH, CSSConstants.BORDER_LEFT_WIDTH, 
+		CSSConstants.BORDER_TOP_COLOR, CSSConstants.BORDER_RIGHT_COLOR, CSSConstants.BORDER_BOTTOM_COLOR, CSSConstants.BORDER_LEFT_COLOR, 
+		CSSConstants.BORDER_TOP_STYLE, CSSConstants.BORDER_RIGHT_STYLE, CSSConstants.BORDER_BOTTOM_STYLE, CSSConstants.BORDER_LEFT_STYLE
 		];
 	}
 	
@@ -155,6 +161,21 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		pushProperty(CSSConstants.PADDING_TOP, INTEGER(0));
 		pushProperty(CSSConstants.PADDING_RIGHT, INTEGER(0));
 		pushProperty(CSSConstants.PADDING_BOTTOM, INTEGER(0));
+		
+		pushProperty(CSSConstants.BORDER_TOP_WIDTH, KEYWORD(MEDIUM));
+		pushProperty(CSSConstants.BORDER_RIGHT_WIDTH, KEYWORD(MEDIUM));
+		pushProperty(CSSConstants.BORDER_BOTTOM_WIDTH, KEYWORD(MEDIUM));
+		pushProperty(CSSConstants.BORDER_LEFT_WIDTH, KEYWORD(MEDIUM));
+		
+		pushProperty(CSSConstants.BORDER_TOP_COLOR, COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
+		pushProperty(CSSConstants.BORDER_RIGHT_COLOR, COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
+		pushProperty(CSSConstants.BORDER_BOTTOM_COLOR,COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
+		pushProperty(CSSConstants.BORDER_LEFT_COLOR, COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
+		
+		pushProperty(CSSConstants.BORDER_TOP_STYLE, KEYWORD(NONE));
+		pushProperty(CSSConstants.BORDER_RIGHT_STYLE, KEYWORD(NONE));
+		pushProperty(CSSConstants.BORDER_BOTTOM_STYLE, KEYWORD(NONE));
+		pushProperty(CSSConstants.BORDER_LEFT_STYLE, KEYWORD(NONE));
 		
 		pushProperty(CSSConstants.LEFT, KEYWORD(AUTO));
 		pushProperty(CSSConstants.RIGHT, KEYWORD(AUTO));
@@ -243,6 +264,21 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		pushComputedProperty(CSSConstants.PADDING_TOP, ABSOLUTE_LENGTH(0));
 		pushComputedProperty(CSSConstants.PADDING_RIGHT, ABSOLUTE_LENGTH(0));
 		pushComputedProperty(CSSConstants.PADDING_BOTTOM, ABSOLUTE_LENGTH(0));
+		
+		pushComputedProperty(CSSConstants.BORDER_TOP_WIDTH, ABSOLUTE_LENGTH(0));
+		pushComputedProperty(CSSConstants.BORDER_RIGHT_WIDTH, ABSOLUTE_LENGTH(0));
+		pushComputedProperty(CSSConstants.BORDER_BOTTOM_WIDTH, ABSOLUTE_LENGTH(0));
+		pushComputedProperty(CSSConstants.BORDER_LEFT_WIDTH, ABSOLUTE_LENGTH(0));
+		
+		pushComputedProperty(CSSConstants.BORDER_TOP_COLOR, COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
+		pushComputedProperty(CSSConstants.BORDER_RIGHT_COLOR, COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
+		pushComputedProperty(CSSConstants.BORDER_BOTTOM_COLOR,COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
+		pushComputedProperty(CSSConstants.BORDER_LEFT_COLOR, COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
+		
+		pushComputedProperty(CSSConstants.BORDER_TOP_STYLE, KEYWORD(NONE));
+		pushComputedProperty(CSSConstants.BORDER_RIGHT_STYLE, KEYWORD(NONE));
+		pushComputedProperty(CSSConstants.BORDER_BOTTOM_STYLE, KEYWORD(NONE));
+		pushComputedProperty(CSSConstants.BORDER_LEFT_STYLE, KEYWORD(NONE));
 		
 		pushComputedProperty(CSSConstants.LEFT, KEYWORD(AUTO));
 		pushComputedProperty(CSSConstants.RIGHT, KEYWORD(AUTO));
