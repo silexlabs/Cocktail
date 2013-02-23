@@ -993,6 +993,36 @@ class CSSStyleSerializer
 				
 			case REPEAT:
 				return "repeat";
+				
+			case THIN:
+				return "thin";
+				
+			case THICK:
+				return "thick";
+				
+			case DOTTED:
+				return "dotted";
+				
+			case DASHED:
+				return "dashed";
+				
+			case SOLID:
+				return "solid";
+				
+			case DOUBLE:
+				return "double";
+				
+			case GROOVE:
+				return "groove";
+				
+			case RIDGE:
+				return "ridge";
+				
+			case INSET:
+				return "inset";
+				
+			case OUTSET:
+				return "outset";
 		}
 	}
 	

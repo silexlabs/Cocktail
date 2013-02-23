@@ -1364,6 +1364,36 @@ class CSSStyleParser
 			case 'repeat':
 				cssPropertyValue = KEYWORD(REPEAT);
 				
+			case 'thin':
+				cssPropertyValue = KEYWORD(THIN);
+				
+			case 'thick':
+				cssPropertyValue = KEYWORD(THICK);
+				
+			case 'dotted':
+				cssPropertyValue = KEYWORD(DOTTED);
+				
+			case 'dashed':
+				cssPropertyValue = KEYWORD(DASHED);
+				
+			case 'solid':
+				cssPropertyValue = KEYWORD(SOLID);
+				
+			case 'double':
+				cssPropertyValue = KEYWORD(DOUBLE);
+				
+			case 'groove':
+				cssPropertyValue = KEYWORD(GROOVE);
+				
+			case 'ridge':
+				cssPropertyValue = KEYWORD(RIDGE);
+				
+			case 'inset':
+				cssPropertyValue = KEYWORD(INSET);
+				
+			case 'outset':
+				cssPropertyValue = KEYWORD(OUTSET);
+				
 			case 'transparent':
 				cssPropertyValue = COLOR(TRANSPARENT);
 				
