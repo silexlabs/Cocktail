@@ -100,6 +100,24 @@ class CoreStyle
 	public var backgroundAttachment(get_backgroundAttachment, null):CSSPropertyValue;
 	
 	/**
+	 * border styles
+	 */
+	public var borderTopWidth(get_borderTopWidth, null):CSSPropertyValue;
+	public var borderRightWidth(get_borderRightWidth, null):CSSPropertyValue;
+	public var borderBottomWidth(get_borderBottomWidth, null):CSSPropertyValue;
+	public var borderLeftWidth(get_borderLeftWidth, null):CSSPropertyValue;
+	
+	public var borderTopColor(get_borderTopColor, null):CSSPropertyValue;
+	public var borderRightColor(get_borderRightColor, null):CSSPropertyValue;
+	public var borderBottomColor(get_borderBottomColor, null):CSSPropertyValue;
+	public var borderLeftColor(get_borderLeftColor, null):CSSPropertyValue;
+	
+	public var borderTopStyle(get_borderTopStyle, null):CSSPropertyValue;
+	public var borderRightStyle(get_borderRightStyle, null):CSSPropertyValue;
+	public var borderBottomStyle(get_borderBottomStyle, null):CSSPropertyValue;
+	public var borderLeftStyle(get_borderLeftStyle, null):CSSPropertyValue;
+	
+	/**
 	 * font styles
 	 */
 	public var fontSize(get_fontSize, null):CSSPropertyValue;
@@ -2000,12 +2018,12 @@ class CoreStyle
 		//sortcut if this style object has no transitionable property
 		if (hasTransitionnableProperties == false)
 		{
-			return getComputedOrInitialProperty(properyIndex).typedValue;
+			return getComputedOrInitialProperty(properyIndex);
 		}
 		//shortcut if there are not any transitions in progress
 		else if (_transitionManager.hasTransitionsInProgress == false)
 		{
-			return getComputedOrInitialProperty(properyIndex).typedValue;
+			return getComputedOrInitialProperty(properyIndex);
 		}
 		else
 		{
@@ -2020,7 +2038,7 @@ class CoreStyle
 			//else return the computed value for the given property
 			else
 			{
-				return getComputedOrInitialProperty(properyIndex).typedValue;
+				return getComputedOrInitialProperty(properyIndex);
 			}
 		}
 	}
@@ -2035,17 +2053,18 @@ class CoreStyle
 	 * or if null for this style object, it means that it uses the initial computed
 	 * style value
 	 */
-	private function getComputedOrInitialProperty(propertyIndex:Int):TypedPropertyVO
+	private function getComputedOrInitialProperty(propertyIndex:Int):CSSPropertyValue
 	{
 		var typedProperty:TypedPropertyVO = computedValues.getTypedProperty(propertyIndex);
 		
 		if (typedProperty == null)
 		{
-			typedProperty = _initialComputedStyleDeclaration.getTypedProperty(propertyIndex);
+			return _initialComputedStyleDeclaration.getTypedProperty(propertyIndex).typedValue;
 		}
-		
-		return typedProperty;
-		
+		else
+		{
+			return typedProperty.typedValue;
+		}
 	}
 	
 	/**
@@ -2381,92 +2400,92 @@ class CoreStyle
 	
 	private inline function get_display():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.DISPLAY).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.DISPLAY);
 	}
 	
 	private inline inline function get_position():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.POSITION).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.POSITION);
 	}
 	
 	private inline function get_cssFloat():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.FLOAT).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.FLOAT);
 	}
 	
 	private inline function get_clear():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.CLEAR).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.CLEAR);
 	}
 	
 	private inline function get_zIndex():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.Z_INDEX).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.Z_INDEX);
 	}
 	
 	private inline function get_backgroundColor():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_COLOR).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_COLOR);
 	}
 	
 	private inline function get_backgroundImage():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_IMAGE).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_IMAGE);
 	}
 
 	private inline function get_backgroundOrigin():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_ORIGIN).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_ORIGIN);
 	}
 	
 	private inline function get_backgroundClip():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_CLIP).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_CLIP);
 	}
 	
 	private inline function get_backgroundAttachment():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_ATTACHMENT).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_ATTACHMENT);
 	}
 	
 	private inline function get_backgroundRepeat():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_REPEAT).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_REPEAT);
 	}
 	
 	private inline function get_backgroundSize():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_SIZE).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_SIZE);
 	}
 	
 	private inline function get_backgroundPosition():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_POSITION).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.BACKGROUND_POSITION);
 	}
 	
 	private inline function get_fontWeight():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.FONT_WEIGHT).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.FONT_WEIGHT);
 	}
 	
 	private inline function get_fontStyle():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.FONT_STYLE).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.FONT_STYLE);
 	}
 	
 	private inline function get_fontFamily():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.FONT_FAMILY).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.FONT_FAMILY);
 	}
 	
 	private inline function get_fontVariant():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.FONT_VARIANT).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.FONT_VARIANT);
 	}
 	
 	private inline function get_color():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.COLOR).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.COLOR);
 	}
 	
 	private inline function get_lineHeight():CSSPropertyValue
@@ -2476,7 +2495,7 @@ class CoreStyle
 	
 	private inline function get_textTransform():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.TEXT_TRANSFORM).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.TEXT_TRANSFORM);
 	}
 	
 	private inline function get_letterSpacing():CSSPropertyValue
@@ -2491,12 +2510,12 @@ class CoreStyle
 	
 	private inline function get_whiteSpace():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.WHITE_SPACE).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.WHITE_SPACE);
 	}
 	
 	private inline function get_textAlign():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.TEXT_ALIGN).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.TEXT_ALIGN);
 	}
 	
 	private inline function get_textIndent():CSSPropertyValue
@@ -2506,56 +2525,116 @@ class CoreStyle
 	
 	private inline function get_verticalAlign():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.VERTICAL_ALIGN).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.VERTICAL_ALIGN);
 	}
 	
 	private inline function get_visibility():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.VISIBILITY).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.VISIBILITY);
 	}
 	
 	private inline function get_overflowX():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.OVERFLOW_X).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.OVERFLOW_X);
 	}
 	
 	private inline function get_overflowY():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.OVERFLOW_Y).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.OVERFLOW_Y);
 	}
 	
 	private inline function get_transformOrigin():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.TRANSFORM_ORIGIN).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.TRANSFORM_ORIGIN);
 	}
 	
 	private inline function get_transform():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.TRANSFORM).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.TRANSFORM);
 	}
 	
 	private inline function get_cursor():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.CURSOR).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.CURSOR);
 	}
 	
 	private inline function get_transitionProperty():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.TRANSITION_PROPERTY).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.TRANSITION_PROPERTY);
 	}
 	
 	private inline function get_transitionDuration():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.TRANSITION_DURATION).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.TRANSITION_DURATION);
 	}
 	
 	private inline function get_transitionTimingFunction():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.TRANSITION_TIMING_FUNCTION).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.TRANSITION_TIMING_FUNCTION);
 	}
 	
 	private inline function get_transitionDelay():CSSPropertyValue
 	{
-		return getComputedOrInitialProperty(CSSConstants.TRANSITION_DELAY).typedValue;
+		return getComputedOrInitialProperty(CSSConstants.TRANSITION_DELAY);
+	}
+	
+	private inline function get_borderTopWidth():CSSPropertyValue
+	{
+		return getTransitionablePropertyValue(CSSConstants.BORDER_TOP_WIDTH);
+	}
+	
+	private inline function get_borderRightWidth():CSSPropertyValue
+	{
+		return getTransitionablePropertyValue(CSSConstants.BORDER_RIGHT_WIDTH);
+	}
+	
+	private inline function get_borderBottomWidth():CSSPropertyValue
+	{
+		return getTransitionablePropertyValue(CSSConstants.BORDER_BOTTOM_WIDTH);
+	}
+	
+	private inline function get_borderLeftWidth():CSSPropertyValue
+	{
+		return getTransitionablePropertyValue(CSSConstants.BORDER_LEFT_WIDTH);
+	}
+	
+	private inline function get_borderTopColor():CSSPropertyValue
+	{
+		return getTransitionablePropertyValue(CSSConstants.BORDER_TOP_COLOR);
+	}
+	
+	private inline function get_borderRightColor():CSSPropertyValue
+	{
+		return getTransitionablePropertyValue(CSSConstants.BORDER_RIGHT_COLOR);
+	}
+	
+	private inline function get_borderBottomColor():CSSPropertyValue
+	{
+		return getTransitionablePropertyValue(CSSConstants.BORDER_BOTTOM_COLOR);
+	}
+	
+	private inline function get_borderLeftColor():CSSPropertyValue
+	{
+		return getTransitionablePropertyValue(CSSConstants.BORDER_LEFT_COLOR);
+	}
+	
+	private inline function get_borderTopStyle():CSSPropertyValue
+	{
+		return getComputedOrInitialProperty(CSSConstants.BORDER_TOP_STYLE);
+	}
+	
+	private inline function get_borderRightStyle():CSSPropertyValue
+	{
+		return getComputedOrInitialProperty(CSSConstants.BORDER_RIGHT_STYLE);
+	}
+	
+	private inline function get_borderBottomStyle():CSSPropertyValue
+	{
+		return getComputedOrInitialProperty(CSSConstants.BORDER_BOTTOM_STYLE);
+	}
+	
+	private inline function get_borderLeftStyle():CSSPropertyValue
+	{
+		return getComputedOrInitialProperty(CSSConstants.BORDER_LEFT_STYLE);
 	}
 }
