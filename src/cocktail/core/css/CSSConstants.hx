@@ -18,7 +18,7 @@ class CSSConstants
 	/**
 	 * Holds the total number of supported CSS styles
 	 */
-	public static inline var SUPPORTED_STYLES_NUMBER:Int = 62;
+	public static inline var SUPPORTED_STYLES_NUMBER:Int = 82;
 	
 	//style names
 	
@@ -145,6 +145,46 @@ class CSSConstants
 	public static inline var TRANSFORM_ORIGIN:Int = 60;
 
 	public static inline var TRANSFORM:Int = 61;
+	
+	public static inline var BORDER_TOP_WIDTH:Int = 62;
+	
+	public static inline var BORDER_RIGHT_WIDTH:Int = 63;
+	
+	public static inline var BORDER_BOTTOM_WIDTH:Int = 64;
+	
+	public static inline var BORDER_LEFT_WIDTH:Int = 65;
+	
+	public static inline var BORDER_WIDTH:Int = 66;
+	
+	public static inline var BORDER_TOP_COLOR:Int = 67;
+	
+	public static inline var BORDER_RIGHT_COLOR:Int = 68;
+	
+	public static inline var BORDER_BOTTOM_COLOR:Int = 69;
+	
+	public static inline var BORDER_LEFT_COLOR:Int = 70;
+	
+	public static inline var BORDER_COLOR:Int = 71;
+	
+	public static inline var BORDER_TOP_STYLE:Int = 72;
+	
+	public static inline var BORDER_RIGHT_STYLE:Int = 73;
+	
+	public static inline var BORDER_BOTTOM_STYLE:Int = 74;
+	
+	public static inline var BORDER_LEFT_STYLE:Int = 75;
+	
+	public static inline var BORDER_STYLE:Int = 76;
+	
+	public static inline var BORDER_TOP:Int = 77;
+	
+	public static inline var BORDER_RIGHT:Int = 78;
+	
+	public static inline var BORDER_BOTTOM:Int = 79;
+	
+	public static inline var BORDER_LEFT:Int = 80;
+	
+	public static inline var BORDER:Int = 81;
 	
 	//CSS Ident
 	
@@ -303,6 +343,46 @@ class CSSConstants
 	public static inline var TRANSFORM_ORIGIN_NAME:String = "transform-origin";
 
 	public static inline var TRANSFORM_NAME:String = "transform";
+	
+	public static inline var BORDER_TOP_WIDTH_NAME:String = "border-top-width";
+	
+	public static inline var BORDER_RIGHT_WIDTH_NAME:String = "border-right-width";
+	
+	public static inline var BORDER_BOTTOM_WIDTH_NAME:String = "border-bottom-width";
+	
+	public static inline var BORDER_LEFT_WIDTH_NAME:String = "border-left-width";
+	
+	public static inline var BORDER_WIDTH_NAME:String = "border-width";
+	
+	public static inline var BORDER_TOP_COLOR_NAME:String = "border-top-color";
+	
+	public static inline var BORDER_RIGHT_COLOR_NAME:String = "border-right-color";
+	
+	public static inline var BORDER_BOTTOM_COLOR_NAME:String = "border-bottom-color";
+	
+	public static inline var BORDER_LEFT_COLOR_NAME:String = "border-left-color";
+	
+	public static inline var BORDER_COLOR_NAME:String = "border-color";
+	
+	public static inline var BORDER_TOP_STYLE_NAME:String = "border-top-style";
+	
+	public static inline var BORDER_RIGHT_STYLE_NAME:String = "border-right-style";
+	
+	public static inline var BORDER_BOTTOM_STYLE_NAME:String = "border-bottom-style";
+	
+	public static inline var BORDER_LEFT_STYLE_NAME:String = "border-left-style";
+	
+	public static inline var BORDER_STYLE_NAME:String = "border-style";
+	
+	public static inline var BORDER_TOP_NAME:String = "border-top";
+	
+	public static inline var BORDER_RIGHT_NAME:String = "border-right";
+	
+	public static inline var BORDER_BOTTOM_NAME:String = "border-bottom";
+	
+	public static inline var BORDER_LEFT_NAME:String = "border-left";
+	
+	public static inline var BORDER_NAME:String = "border";
 	
 	public function new() 
 	{
@@ -502,6 +582,66 @@ class CSSConstants
 			case TRANSFORM_NAME:
 				return TRANSFORM;
 				
+			case BORDER_TOP_WIDTH_NAME:
+				return BORDER_TOP_WIDTH;
+	
+			case BORDER_RIGHT_WIDTH_NAME:
+				return BORDER_RIGHT_WIDTH;
+
+			case BORDER_BOTTOM_WIDTH_NAME:
+				return BORDER_BOTTOM_WIDTH;
+
+			case BORDER_LEFT_WIDTH_NAME:
+				return BORDER_LEFT_WIDTH;
+
+			case BORDER_WIDTH_NAME:
+				return BORDER_WIDTH;
+
+			case BORDER_TOP_COLOR_NAME:
+				return BORDER_TOP_COLOR;
+
+			case BORDER_RIGHT_COLOR_NAME:
+				return BORDER_RIGHT_COLOR;
+
+			case BORDER_BOTTOM_COLOR_NAME:
+				return BORDER_BOTTOM_COLOR;
+
+			case BORDER_LEFT_COLOR_NAME:
+				return BORDER_LEFT_COLOR;
+
+			case BORDER_COLOR_NAME:
+				return BORDER_COLOR;
+
+			case BORDER_TOP_STYLE_NAME:
+				return BORDER_TOP_STYLE;
+
+			case BORDER_RIGHT_STYLE_NAME:
+				return BORDER_RIGHT_STYLE;
+
+			case BORDER_BOTTOM_STYLE_NAME:
+				return BORDER_BOTTOM_STYLE;
+
+			case BORDER_LEFT_STYLE_NAME:
+				return BORDER_LEFT_STYLE;
+
+			case BORDER_STYLE_NAME:
+				return BORDER_STYLE;
+
+			case BORDER_TOP_NAME:
+				return BORDER_TOP;
+
+			case BORDER_RIGHT_NAME:
+				return BORDER_RIGHT;
+
+			case BORDER_BOTTOM_NAME:
+				return BORDER_BOTTOM;
+
+			case BORDER_LEFT_NAME:
+				return BORDER_LEFT;
+
+			case BORDER_NAME:
+				return BORDER;
+				
 			default:
 				return -1;
 		}
@@ -699,6 +839,66 @@ class CSSConstants
 				
 			case TRANSFORM:
 				return TRANSFORM_NAME;
+				
+			case BORDER_TOP_WIDTH:
+				return BORDER_TOP_WIDTH_NAME;
+	
+			case BORDER_RIGHT_WIDTH:
+				return BORDER_RIGHT_WIDTH_NAME;
+
+			case BORDER_BOTTOM_WIDTH:
+				return BORDER_BOTTOM_WIDTH_NAME;
+
+			case BORDER_LEFT_WIDTH:
+				return BORDER_LEFT_WIDTH_NAME;
+
+			case BORDER_WIDTH:
+				return BORDER_WIDTH_NAME;
+
+			case BORDER_TOP_COLOR:
+				return BORDER_TOP_COLOR_NAME;
+
+			case BORDER_RIGHT_COLOR:
+				return BORDER_RIGHT_COLOR_NAME;
+
+			case BORDER_BOTTOM_COLOR:
+				return BORDER_BOTTOM_COLOR_NAME;
+
+			case BORDER_LEFT_COLOR:
+				return BORDER_LEFT_COLOR_NAME;
+
+			case BORDER_COLOR:
+				return BORDER_COLOR_NAME;
+
+			case BORDER_TOP_STYLE:
+				return BORDER_TOP_STYLE_NAME;
+
+			case BORDER_RIGHT_STYLE:
+				return BORDER_RIGHT_STYLE_NAME;
+
+			case BORDER_BOTTOM_STYLE:
+				return BORDER_BOTTOM_STYLE_NAME;
+
+			case BORDER_LEFT_STYLE:
+				return BORDER_LEFT_STYLE_NAME;
+
+			case BORDER_STYLE:
+				return BORDER_STYLE_NAME;
+
+			case BORDER_TOP:
+				return BORDER_TOP_NAME;
+
+			case BORDER_RIGHT:
+				return BORDER_RIGHT_NAME;
+
+			case BORDER_BOTTOM:
+				return BORDER_BOTTOM_NAME;
+
+			case BORDER_LEFT:
+				return BORDER_LEFT_NAME;
+
+			case BORDER:
+				return BORDER_NAME;	
 				
 			default:
 				throw "unknown property";
