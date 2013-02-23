@@ -75,7 +75,7 @@ class CSSStyleDeclaration
 	/**
 	 * background styles
 	 */
-	public var background(get_backgroundAttachment, set_background):String;
+	public var background(get_background, set_background):String;
 	public var backgroundColor(get_backgroundColor, set_backgroundColor):String;
 	public var backgroundImage(get_backgroundImage, set_backgroundImage):String;
 	public var backgroundRepeat(get_backgroundRepeat, set_backgroundRepeat):String;
@@ -84,6 +84,33 @@ class CSSStyleDeclaration
 	public var backgroundPosition(get_backgroundPosition, set_backgroundPosition):String;
 	public var backgroundClip(get_backgroundClip, set_backgroundClip):String;
 	public var backgroundAttachment(get_backgroundAttachment, set_backgroundAttachment):String;
+	
+	/**
+	 * border styles
+	 */
+	public var borderTopWidth(get_borderTopWidth, set_borderTopWidth):String;
+	public var borderRightWidth(get_borderRightWidth, set_borderRightWidth):String;
+	public var borderBottomWidth(get_borderBottomWidth, set_borderBottomWidth):String;
+	public var borderLeftWidth(get_borderLeftWidth, set_borderLeftWidth):String;
+	public var borderWidth(get_borderWidth, set_borderWidth):String;
+	
+	public var borderTopColor(get_borderTopColor, set_borderTopColor):String;
+	public var borderRightColor(get_borderRightColor, set_borderRightColor):String;
+	public var borderBottomColor(get_borderBottomColor, set_borderBottomColor):String;
+	public var borderLeftColor(get_borderLeftColor, set_borderLeftColor):String;
+	public var borderColor(get_borderColor, set_borderColor):String;
+	
+	public var borderTopStyle(get_borderTopStyle, set_borderTopStyle):String;
+	public var borderRightStyle(get_borderRightStyle, set_borderRightStyle):String;
+	public var borderBottomStyle(get_borderBottomStyle, set_borderBottomStyle):String;
+	public var borderLeftStyle(get_borderLeftStyle, set_borderLeftStyle):String;
+	public var borderStyle(get_borderStyle, set_borderStyle):String;
+	
+	public var borderTop(get_borderTop, set_borderTop):String;
+	public var borderRight(get_borderRight, set_borderRight):String;
+	public var borderBottom(get_borderBottom, set_borderBottom):String;
+	public var borderLeft(get_borderLeft, set_borderLeft):String;
+	public var border(get_border, set_border):String;
 	
 	/**
 	 * font styles
@@ -3721,5 +3748,225 @@ class CSSStyleDeclaration
 	{
 		setProperty(CSSConstants.TRANSFORM_ORIGIN, value);
 		return value;		
+	}
+	
+	private function get_borderTopWidth():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_TOP_WIDTH);
+	}
+	
+	private function set_borderTopWidth(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_TOP_WIDTH, value);
+		return value;
+	}
+	
+	private function get_borderRightWidth():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_RIGHT_WIDTH);
+	}
+	
+	private function set_borderRightWidth(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_RIGHT_WIDTH, value);
+		return value;
+	}
+	
+	private function get_borderBottomWidth():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_BOTTOM_WIDTH);
+	}
+	
+	private function set_borderBottomWidth(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_BOTTOM_WIDTH, value);
+		return value;
+	}
+	
+	private function get_borderLeftWidth():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_LEFT_WIDTH);
+	}
+	
+	private function set_borderLeftWidth(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_LEFT_WIDTH, value);
+		return value;
+	}
+	
+	private function get_borderWidth():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_WIDTH);
+	}
+	
+	private function set_borderWidth(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_WIDTH, value);
+		return value;
+	}
+	
+	private function get_borderTopColor():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_TOP_COLOR);
+	}
+	
+	private function set_borderTopColor(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_TOP_COLOR, value);
+		return value;
+	}
+	
+	private function get_borderRightColor():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_RIGHT_COLOR);
+	}
+	
+	private function set_borderRightColor(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_RIGHT_COLOR, value);
+		return value;
+	}
+	
+	private function get_borderBottomColor():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_BOTTOM_COLOR);
+	}
+	
+	private function set_borderBottomColor(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_BOTTOM_COLOR, value);
+		return value;
+	}
+		
+	private function get_borderLeftColor():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_LEFT_COLOR);
+	}
+	
+	private function set_borderLeftColor(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_LEFT_COLOR, value);
+		return value;
+	}
+	
+	private function get_borderColor():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_COLOR);
+	}
+	
+	private function set_borderColor(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_COLOR, value);
+		return value;
+	}
+	
+	private function get_borderTopStyle():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_TOP_STYLE);
+	}
+	
+	private function set_borderTopStyle(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_TOP_STYLE, value);
+		return value;
+	}
+	
+	private function get_borderRightStyle():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_RIGHT_STYLE);
+	}
+	
+	private function set_borderRightStyle(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_RIGHT_STYLE, value);
+		return value;
+	}
+	
+	private function get_borderBottomStyle():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_BOTTOM_STYLE);
+	}
+	
+	private function set_borderBottomStyle(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_BOTTOM_STYLE, value);
+		return value;
+	}
+		
+	private function get_borderLeftStyle():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_LEFT_STYLE);
+	}
+	
+	private function set_borderLeftStyle(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_LEFT_STYLE, value);
+		return value;
+	}
+	
+	private function get_borderStyle():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_STYLE);
+	}
+	
+	private function set_borderStyle(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_STYLE, value);
+		return value;
+	}
+	
+	private function get_borderTop():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_TOP);
+	}
+	
+	private function set_borderTop(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_TOP, value);
+		return value;
+	}
+	
+	private function get_borderRight():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_RIGHT);
+	}
+	
+	private function set_borderRight(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_RIGHT, value);
+		return value;
+	}
+	
+	private function get_borderBottom():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_BOTTOM);
+	}
+	
+	private function set_borderBottom(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_BOTTOM, value);
+		return value;
+	}
+		
+	private function get_borderLeft():String
+	{
+		return getPropertyValue(CSSConstants.BORDER_LEFT);
+	}
+	
+	private function set_borderLeft(value:String):String
+	{
+		setProperty(CSSConstants.BORDER_LEFT, value);
+		return value;
+	}
+	
+	private function get_border():String
+	{
+		return getPropertyValue(CSSConstants.BORDER);
+	}
+	
+	private function set_border(value:String):String
+	{
+		setProperty(CSSConstants.BORDER, value);
+		return value;
 	}
 }
