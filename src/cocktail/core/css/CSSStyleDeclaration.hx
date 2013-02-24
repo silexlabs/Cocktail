@@ -1967,6 +1967,185 @@ class CSSStyleDeclaration
 						setTypedProperty(CSSConstants.TRANSITION_TIMING_FUNCTION, CSS_LIST(transitionTimingFunctionValues), important);
 					}
 				}
+				
+			case CSSConstants.BORDER_WIDTH:
+				switch(styleValue)
+				{
+					case KEYWORD(value):
+						setTypedProperty(CSSConstants.BORDER_TOP_WIDTH, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_RIGHT_WIDTH, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_BOTTOM_WIDTH, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_LEFT_WIDTH, styleValue, important);
+					
+					case LENGTH(value):
+						setTypedProperty(CSSConstants.BORDER_TOP_WIDTH, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_RIGHT_WIDTH, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_BOTTOM_WIDTH, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_LEFT_WIDTH, styleValue, important);
+						
+					case INTEGER(value):
+						setTypedProperty(CSSConstants.BORDER_TOP_WIDTH, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_RIGHT_WIDTH, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_BOTTOM_WIDTH, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_LEFT_WIDTH, styleValue, important);
+						
+					case GROUP(value):
+						switch(value.length)
+						{
+							case 2:
+								setTypedProperty(CSSConstants.BORDER_TOP_WIDTH, value[0], important);
+								setTypedProperty(CSSConstants.BORDER_RIGHT_WIDTH, value[1], important);
+								setTypedProperty(CSSConstants.BORDER_BOTTOM_WIDTH, value[0], important);
+								setTypedProperty(CSSConstants.BORDER_LEFT_WIDTH, value[1], important);
+								
+							case 3:
+								setTypedProperty(CSSConstants.BORDER_TOP_WIDTH, value[0], important);
+								setTypedProperty(CSSConstants.BORDER_RIGHT_WIDTH, value[1], important);
+								setTypedProperty(CSSConstants.BORDER_BOTTOM_WIDTH, value[3], important);
+								setTypedProperty(CSSConstants.BORDER_LEFT_WIDTH, value[1], important);
+								
+							case 4:
+								setTypedProperty(CSSConstants.BORDER_TOP_WIDTH, value[0], important);
+								setTypedProperty(CSSConstants.BORDER_RIGHT_WIDTH, value[1], important);
+								setTypedProperty(CSSConstants.BORDER_BOTTOM_WIDTH, value[2], important);
+								setTypedProperty(CSSConstants.BORDER_LEFT_WIDTH, value[3], important);
+								
+							default:	
+						}
+						
+					case INHERIT, INITIAL:
+						setTypedProperty(CSSConstants.BORDER_TOP_WIDTH, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_RIGHT_WIDTH, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_BOTTOM_WIDTH, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_LEFT_WIDTH, styleValue, important);
+						
+					default:	
+				}
+				
+			case CSSConstants.BORDER_COLOR:
+				switch(styleValue)
+				{
+					case COLOR(value):
+						setTypedProperty(CSSConstants.BORDER_TOP_COLOR, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_RIGHT_COLOR, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_BOTTOM_COLOR, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_LEFT_COLOR, styleValue, important);
+						
+					case GROUP(value):
+						switch(value.length)
+						{
+							case 2:
+								setTypedProperty(CSSConstants.BORDER_TOP_COLOR, value[0], important);
+								setTypedProperty(CSSConstants.BORDER_RIGHT_COLOR, value[1], important);
+								setTypedProperty(CSSConstants.BORDER_BOTTOM_COLOR, value[0], important);
+								setTypedProperty(CSSConstants.BORDER_LEFT_COLOR, value[1], important);
+								
+							case 3:
+								setTypedProperty(CSSConstants.BORDER_TOP_COLOR, value[0], important);
+								setTypedProperty(CSSConstants.BORDER_RIGHT_COLOR, value[1], important);
+								setTypedProperty(CSSConstants.BORDER_BOTTOM_COLOR, value[3], important);
+								setTypedProperty(CSSConstants.BORDER_LEFT_COLOR, value[1], important);
+								
+							case 4:
+								setTypedProperty(CSSConstants.BORDER_TOP_COLOR, value[0], important);
+								setTypedProperty(CSSConstants.BORDER_RIGHT_COLOR, value[1], important);
+								setTypedProperty(CSSConstants.BORDER_BOTTOM_COLOR, value[2], important);
+								setTypedProperty(CSSConstants.BORDER_LEFT_COLOR, value[3], important);
+								
+							default:	
+						}
+						
+					case INHERIT, INITIAL:
+						setTypedProperty(CSSConstants.BORDER_TOP_WIDTH, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_RIGHT_WIDTH, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_BOTTOM_WIDTH, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_LEFT_WIDTH, styleValue, important);
+						
+					default:	
+				}	
+				
+			case CSSConstants.BORDER_STYLE:
+				switch(styleValue)
+				{
+					case KEYWORD(value):
+						setTypedProperty(CSSConstants.BORDER_TOP_STYLE, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_RIGHT_STYLE, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_BOTTOM_STYLE, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_LEFT_STYLE, styleValue, important);
+						
+					case GROUP(value):
+						switch(value.length)
+						{
+							case 2:
+								setTypedProperty(CSSConstants.BORDER_TOP_STYLE, value[0], important);
+								setTypedProperty(CSSConstants.BORDER_RIGHT_STYLE, value[1], important);
+								setTypedProperty(CSSConstants.BORDER_BOTTOM_STYLE, value[0], important);
+								setTypedProperty(CSSConstants.BORDER_LEFT_STYLE, value[1], important);
+								
+							case 3:
+								setTypedProperty(CSSConstants.BORDER_TOP_STYLE, value[0], important);
+								setTypedProperty(CSSConstants.BORDER_RIGHT_STYLE, value[1], important);
+								setTypedProperty(CSSConstants.BORDER_BOTTOM_STYLE, value[3], important);
+								setTypedProperty(CSSConstants.BORDER_LEFT_STYLE, value[1], important);
+								
+							case 4:
+								setTypedProperty(CSSConstants.BORDER_TOP_STYLE, value[0], important);
+								setTypedProperty(CSSConstants.BORDER_RIGHT_STYLE, value[1], important);
+								setTypedProperty(CSSConstants.BORDER_BOTTOM_STYLE, value[2], important);
+								setTypedProperty(CSSConstants.BORDER_LEFT_STYLE, value[3], important);
+								
+							default:	
+						}
+						
+					case INHERIT, INITIAL:
+						setTypedProperty(CSSConstants.BORDER_TOP_STYLE, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_RIGHT_STYLE, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_BOTTOM_STYLE, styleValue, important);
+						setTypedProperty(CSSConstants.BORDER_LEFT_STYLE, styleValue, important);
+						
+					default:	
+				}		
+				
+			case CSSConstants.BORDER_TOP, CSSConstants.BORDER_BOTTOM,
+			CSSConstants.BORDER_LEFT, CSSConstants.BORDER_RIGHT,
+			CSSConstants.BORDER:
+				var isBorderShorthand:Bool = propertyIndex == CSSConstants.BORDER;
+				switch(styleValue)
+				{
+					case KEYWORD(value):
+						if (isValidBorderWidthValue(styleValue) == true)
+						{
+							if (isBorderShorthand == true)
+							{
+								
+							}
+							else
+							{
+								
+							}
+						}
+						
+					case INTEGER(value):
+						
+					case LENGTH(value):	
+						
+					case GROUP(value):
+						switch(value.length)
+						{
+							case 2:
+								
+								
+							case 3:
+							
+								
+							default:	
+						}
+						
+					case INHERIT, INITIAL:
+						
+					default:	
+				}		
+				
 			default:	
 						
 		}
@@ -2225,6 +2404,9 @@ class CSSStyleDeclaration
 					case LENGTH(value):
 						return isValidBorderWidthValue(styleValue);
 						
+					case INTEGER(value):
+						return isValidBorderWidthValue(styleValue);
+						
 					case GROUP(value):
 						switch(value.length)
 						{
@@ -2337,7 +2519,82 @@ class CSSStyleDeclaration
 						return true;	
 						
 					default:	
-				}	
+				}
+				
+			case CSSConstants.BORDER_TOP, CSSConstants.BORDER_RIGHT,
+			CSSConstants.BORDER_BOTTOM, CSSConstants.BORDER_LEFT,
+			CSSConstants.BORDER:	
+				switch(styleValue)
+				{
+					case KEYWORD(value):
+						if (isValidBorderWidthValue(styleValue) == true || isValidBorderStyleValue(styleValue) == true)
+						{
+							return true;
+						}
+						
+					case COLOR(value):
+						return true;
+						
+					case INTEGER(value):
+						if (value == 0)
+						{
+							return true;
+						}
+						
+					case LENGTH(value):
+						if (isPositiveLength(value) == true)
+						{
+							return true;
+						}
+						
+					case GROUP(value):
+						if (value.length != 2 && value.length != 3)
+						{
+							return false;
+						}
+						
+						var foundBorderWidth:Bool = false;
+						var foundBorderStyle:Bool = false;
+						var foundBorderColor:Bool = false;
+						
+						for (i in 0...value.length)
+						{
+							if (isValidBorderWidthValue(value[i]) == true)
+							{
+								if (foundBorderWidth == true)
+								{
+									//means duplicate border width value provided
+									return false;
+								}
+								foundBorderWidth = true;
+							}
+							else if (isValidBorderColorValue(value[i]) == true)
+							{
+								if (foundBorderColor == true)
+								{
+									return false;
+								}
+								foundBorderColor = true;
+							}
+							else if (isValidBorderStyleValue(value[i]) == true)
+							{
+								if (foundBorderStyle == true)
+								{
+									return false;
+								}
+								foundBorderStyle = true;
+							}
+							else
+							{
+								return false;
+							}
+						}
+					
+					case INHERIT, INITIAL:
+						return true;	
+						
+					default:	
+				}
 				
 			default:	
 						
