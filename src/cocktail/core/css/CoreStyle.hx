@@ -591,7 +591,7 @@ class CoreStyle
 		
 		_transitionManager = TransitionManager.getInstance();
 		
-		initUsedValues();
+		usedValues = new UsedValuesVO();
 	}
 	
 	/**
@@ -618,40 +618,6 @@ class CoreStyle
 		_animator = new Animator();
 		_animator.onTransitionCompleteCallback = onTransitionComplete;
 		_animator.onTransitionUpdateCallback = onTransitionUpdate;
-	}
-	
-	/**
-	 * The used values are given a default
-	 * value
-	 */
-	private function initUsedValues():Void
-	{
-		usedValues = new UsedValuesVO();
-		usedValues.minHeight = 0.0;
-		usedValues.maxHeight = 0.0;
-		usedValues.minWidth = 0.0;
-		usedValues.maxWidth = 0.0;
-		usedValues.width = 0.0;
-		usedValues.height = 0.0;
-		usedValues.marginLeft = 0.0;
-		usedValues.marginRight = 0.0;
-		usedValues.marginTop = 0.0;
-		usedValues.marginBottom = 0.0;
-		usedValues.paddingLeft = 0.0;
-		usedValues.paddingRight = 0.0;
-		usedValues.paddingTop = 0.0;
-		usedValues.paddingBottom = 0.0;
-		usedValues.left = 0.0;
-		usedValues.right = 0.0;
-		usedValues.top = 0.0;
-		usedValues.bottom = 0.0;
-		usedValues.textIndent = 0;
-		usedValues.lineHeight = 0.0;
-		usedValues.letterSpacing = 0.0;
-		usedValues.color = new ColorVO(0, 1.0);
-		usedValues.transformOrigin = new PointVO(0.0, 0.0);
-		usedValues.transform = new Matrix();
-		usedValues.backgroundColor = new ColorVO(0, 0.0);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
