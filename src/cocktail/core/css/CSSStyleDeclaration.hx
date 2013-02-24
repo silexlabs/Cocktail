@@ -1407,6 +1407,70 @@ class CSSStyleDeclaration
 					default:	
 						return isValidTransitionTimingFunction(styleValue);
 				}
+				
+			case CSSConstants.BORDER_TOP_WIDTH, CSSConstants.BORDER_RIGHT_WIDTH,
+			CSSConstants.BORDER_BOTTOM_WIDTH, CSSConstants.BORDER_LEFT_WIDTH:
+				switch(styleValue)
+				{
+					case KEYWORD(value):
+						switch(value)
+						{
+							case THIN, MEDIUM, THICK:
+								return true;
+								
+							default:	
+						}
+						
+					case LENGTH(value):
+						if (isPositiveLength(value) == true)
+						{
+							return true;
+						}
+						
+					case INTEGER(value):
+						if (value == 0)
+						{
+							return true;
+						}
+						
+					case INHERIT, INITIAL:
+						return true;
+						
+					default:	
+				}
+				
+			case CSSConstants.BORDER_TOP_COLOR, CSSConstants.BORDER_RIGHT_COLOR,
+			CSSConstants.BORDER_BOTTOM_COLOR, CSSConstants.BORDER_LEFT_COLOR:	
+				switch(styleValue)
+				{
+					case COLOR(value):
+						return true;
+						
+					case INHERIT, INITIAL:
+						return true;
+						
+					default:	
+				}
+				
+			case CSSConstants.BORDER_TOP_STYLE, CSSConstants.BORDER_RIGHT_STYLE,
+			CSSConstants.BORDER_BOTTOM_STYLE, CSSConstants.BORDER_LEFT_STYLE:	
+				switch(styleValue)
+				{
+					case KEYWORD(value):
+						switch(value)
+						{
+							case NONE, HIDDEN, DOTTED, DASHED, SOLID, DOUBLE,
+							GROOVE, RIDGE, INSET, OUTSET:
+								return true;
+								
+							default:	
+						}
+						
+					case INHERIT, INITIAL:
+						return true;
+						
+					default:	
+				}
 		}
 		
 		return false;
