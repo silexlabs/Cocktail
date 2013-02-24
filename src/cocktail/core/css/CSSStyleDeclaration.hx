@@ -1423,33 +1423,22 @@ class CSSStyleDeclaration
 			CSSConstants.BORDER_BOTTOM_COLOR, CSSConstants.BORDER_LEFT_COLOR:	
 				switch(styleValue)
 				{
-					case COLOR(value):
-						return true;
-						
 					case INHERIT, INITIAL:
 						return true;
 						
 					default:	
+						return isValidBorderColorValue(styleValue);
 				}
 				
 			case CSSConstants.BORDER_TOP_STYLE, CSSConstants.BORDER_RIGHT_STYLE,
 			CSSConstants.BORDER_BOTTOM_STYLE, CSSConstants.BORDER_LEFT_STYLE:	
 				switch(styleValue)
 				{
-					case KEYWORD(value):
-						switch(value)
-						{
-							case NONE, HIDDEN, DOTTED, DASHED, SOLID, DOUBLE,
-							GROOVE, RIDGE, INSET, OUTSET:
-								return true;
-								
-							default:	
-						}
-						
 					case INHERIT, INITIAL:
 						return true;
 						
 					default:	
+						return isValidBorderStyleValue(styleValue);
 				}
 		}
 		
@@ -2270,6 +2259,86 @@ class CSSStyleDeclaration
 					default:	
 				}
 				
+			case CSSConstants.BORDER_COLOR:
+				switch(styleValue)
+				{
+					case COLOR(value):
+						return isValidBorderColorValue(styleValue);
+						
+					case GROUP(value):
+						switch(value.length)
+						{
+							case 2:
+								if (isValidBorderColorValue(value[0]) == true &&
+								isValidBorderColorValue(value[1]) == true)
+								{
+									return true;
+								}
+								
+							case 3:
+								if (isValidBorderColorValue(value[0]) == true &&
+								isValidBorderColorValue(value[1]) == true && isValidBorderColorValue(value[2]))
+								{
+									return true;
+								}	
+								
+							case 4:
+								if (isValidBorderColorValue(value[0]) == true &&
+								isValidBorderColorValue(value[1]) == true && isValidBorderColorValue(value[2])
+								&& isValidBorderColorValue(value[3]))
+								{
+									return true;
+								}	
+								
+							default:	
+						}
+						
+					case INHERIT, INITIAL:
+						return true;	
+						
+					default:	
+				}	
+				
+			case CSSConstants.BORDER_STYLE:
+				switch(styleValue)
+				{
+					case KEYWORD(value):
+						return isValidBorderStyleValue(styleValue);
+						
+					case GROUP(value):
+						switch(value.length)
+						{
+							case 2:
+								if (isValidBorderStyleValue(value[0]) == true &&
+								isValidBorderStyleValue(value[1]) == true)
+								{
+									return true;
+								}
+								
+							case 3:
+								if (isValidBorderStyleValue(value[0]) == true &&
+								isValidBorderStyleValue(value[1]) == true && isValidBorderStyleValue(value[2]))
+								{
+									return true;
+								}	
+								
+							case 4:
+								if (isValidBorderStyleValue(value[0]) == true &&
+								isValidBorderStyleValue(value[1]) == true && isValidBorderStyleValue(value[2])
+								&& isValidBorderStyleValue(value[3]))
+								{
+									return true;
+								}	
+								
+							default:	
+						}
+						
+					case INHERIT, INITIAL:
+						return true;	
+						
+					default:	
+				}	
+				
 			default:	
 						
 		}
@@ -2981,7 +3050,7 @@ class CSSStyleDeclaration
 	}
 	
 	/**
-	 * Return wether a CSS value is valid for a border-width style
+	 * Return wether a CSS value is valid for a border width style
 	 */
 	private function isValidBorderWidthValue(styleValue:CSSPropertyValue):Bool
 	{
@@ -3012,6 +3081,45 @@ class CSSStyleDeclaration
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Return wether a CSS value is valid for a border color style
+	 */
+	private function isValidBorderColorValue(styleValue:CSSPropertyValue):Bool
+	{
+		switch(styleValue)
+		{
+			case COLOR(value):
+				return true;
+				
+			default:	
+		}
+		
+		return false;		
+	}
+	
+	/**
+	 * Return wether a CSS value is valid for a border style style
+	 */
+	private function isValidBorderStyleValue(styleValue:CSSPropertyValue):Bool
+	{
+		switch(styleValue)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					case NONE, HIDDEN, DOTTED, DASHED, SOLID, DOUBLE,
+					GROOVE, RIDGE, INSET, OUTSET:
+						return true;
+						
+					default:	
+				}
+				
+			default:	
+		}
+		
+		return false;		
 	}
 	
 	/**
