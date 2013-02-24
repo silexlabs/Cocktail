@@ -1412,31 +1412,11 @@ class CSSStyleDeclaration
 			CSSConstants.BORDER_BOTTOM_WIDTH, CSSConstants.BORDER_LEFT_WIDTH:
 				switch(styleValue)
 				{
-					case KEYWORD(value):
-						switch(value)
-						{
-							case THIN, MEDIUM, THICK:
-								return true;
-								
-							default:	
-						}
-						
-					case LENGTH(value):
-						if (isPositiveLength(value) == true)
-						{
-							return true;
-						}
-						
-					case INTEGER(value):
-						if (value == 0)
-						{
-							return true;
-						}
-						
 					case INHERIT, INITIAL:
 						return true;
 						
 					default:	
+						return isValidBorderWidthValue(styleValue);
 				}
 				
 			case CSSConstants.BORDER_TOP_COLOR, CSSConstants.BORDER_RIGHT_COLOR,
@@ -1645,7 +1625,10 @@ class CSSStyleDeclaration
 		switch(propertyIndex)
 		{
 			case CSSConstants.MARGIN, CSSConstants.PADDING, CSSConstants.CSS_OVERFLOW,
-			CSSConstants.TRANSITION, CSSConstants.BACKGROUND, CSSConstants.FONT:
+			CSSConstants.TRANSITION, CSSConstants.BACKGROUND, CSSConstants.FONT,
+			CSSConstants.BORDER_TOP, CSSConstants.BORDER_LEFT, CSSConstants.BORDER_RIGHT,
+			CSSConstants.BORDER_BOTTOM, CSSConstants.BORDER_WIDTH, CSSConstants.BORDER_COLOR,
+			CSSConstants.BORDER_STYLE, CSSConstants.BORDER:
 				return true;
 				
 			default:
@@ -2242,6 +2225,49 @@ class CSSStyleDeclaration
 						
 					default:
 						return isValidTransitionShorthand(styleValue);
+				}
+				
+			case CSSConstants.BORDER_WIDTH:
+				switch(styleValue)
+				{
+					case KEYWORD(value):
+						return isValidBorderWidthValue(styleValue);
+					
+					case LENGTH(value):
+						return isValidBorderWidthValue(styleValue);
+						
+					case GROUP(value):
+						switch(value.length)
+						{
+							case 2:
+								if (isValidBorderWidthValue(value[0]) == true &&
+								isValidBorderWidthValue(value[1]) == true)
+								{
+									return true;
+								}
+								
+							case 3:
+								if (isValidBorderWidthValue(value[0]) == true &&
+								isValidBorderWidthValue(value[1]) == true && isValidBorderWidthValue(value[2]))
+								{
+									return true;
+								}	
+								
+							case 4:
+								if (isValidBorderWidthValue(value[0]) == true &&
+								isValidBorderWidthValue(value[1]) == true && isValidBorderWidthValue(value[2])
+								&& isValidBorderWidthValue(value[3]))
+								{
+									return true;
+								}	
+								
+							default:	
+						}
+						
+					case INHERIT, INITIAL:
+						return true;	
+						
+					default:	
 				}
 				
 			default:	
@@ -2949,6 +2975,40 @@ class CSSStyleDeclaration
 			}
 			
 			return true;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Return wether a CSS value is valid for a border-width style
+	 */
+	private function isValidBorderWidthValue(styleValue:CSSPropertyValue):Bool
+	{
+		switch(styleValue)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					case THIN, MEDIUM, THICK:
+						return true;
+						
+					default:	
+				}
+				
+			case LENGTH(value):
+				if (isPositiveLength(value) == true)
+				{
+					return true;
+				}
+				
+			case INTEGER(value):
+				if (value == 0)
+				{
+					return true;
+				}
+				
+			default:	
 		}
 		
 		return false;
