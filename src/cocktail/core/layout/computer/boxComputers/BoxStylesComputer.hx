@@ -59,9 +59,9 @@ class BoxStylesComputer
 	 */
 	public function measure(style:CoreStyle, containingBlockData:ContainingBlockVO):Void
 	{
-		//measure paddings
-		measureHorizontalPaddings(style, containingBlockData);
-		measureVerticalPaddings(style, containingBlockData);
+		measurePaddings(style, containingBlockData);
+		
+		measureBordersWidth(style);
 		
 		//The next step is to compute the dimensions
 		//constraint style (max-width, min-height...)
@@ -151,29 +151,36 @@ class BoxStylesComputer
 	/////////////////////////////////
 	
 	/**
-	 * Compute the top and bottom paddings of
+	 * Compute the paddings of
 	 * the HTMLElement's box model
 	 */
-	private function measureVerticalPaddings(style:CoreStyle, containingBlockData:ContainingBlockVO):Void
+	private function measurePaddings(style:CoreStyle, containingBlockData:ContainingBlockVO):Void
 	{
-		//top
+		style.usedValues.paddingLeft = getComputedPadding(style.paddingLeft, containingBlockData.width);
+		
+		style.usedValues.paddingRight = getComputedPadding(style.paddingRight, containingBlockData.width);
+		
 		style.usedValues.paddingTop = getComputedPadding(style.paddingTop, containingBlockData.width);
 		
-		//bottom
 		style.usedValues.paddingBottom = getComputedPadding(style.paddingBottom, containingBlockData.width);
 	}
 	
+	// BORDERS
+	/////////////////////////////////
+	
 	/**
-	 * Compute the left and right paddings of
-	 * the HTMLElement's box model
+	 * Compute the width of the borders
+	 * of the HTMLElement's box model
 	 */
-	private function measureHorizontalPaddings(style:CoreStyle, containingBlockData:ContainingBlockVO):Void
+	private function measureBordersWidth(style:CoreStyle):Void
 	{
-		//left
-		style.usedValues.paddingLeft = getComputedPadding(style.paddingLeft, containingBlockData.width);
+		style.usedValues.borderLeftWidth = getComputedBorderWidth(style.borderLeftWidth);
 		
-		//right
-		style.usedValues.paddingRight = getComputedPadding(style.paddingRight, containingBlockData.width);
+		style.usedValues.borderTopWidth = getComputedBorderWidth(style.borderTopWidth);
+		
+		style.usedValues.borderRightWidth = getComputedBorderWidth(style.borderRightWidth);
+		
+		style.usedValues.borderBottomWidth = getComputedBorderWidth(style.borderBottomWidth);
 	}
 	
 	// HORIZONTAL DIMENSIONS
@@ -676,6 +683,28 @@ class BoxStylesComputer
 		}
 		
 		return computedPaddingValue;
+	}
+	
+	/**
+	 * Compute a border width from a border width style value
+	 */
+	private function getComputedBorderWidth(borderWidthStyleValue:CSSPropertyValue):Float
+	{
+		var computedBorderWidthValue:Float;
+		
+		//border width can only be defined as length or 
+		//keyword which have already been converted to 
+		//absolute length at this point
+		switch (borderWidthStyleValue)
+		{
+			case ABSOLUTE_LENGTH(value):
+				computedBorderWidthValue = value;
+				
+			default:
+				throw 'illegal value for border width';
+		}
+		
+		return computedBorderWidthValue;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
