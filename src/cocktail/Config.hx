@@ -151,6 +151,26 @@ class Config
 	public static inline var XX_LARGE_FONT_SIZE:Int = 32;
 	
 	/////////////////////////////////////////////////
+	// BORDER CONFIG
+	/////////////////////////////////////////////////
+	
+	/**
+	 * The actual border width used when 'thin' is used
+	 * as border width
+	 */
+	public static inline var THIN_BORDER_WIDTH:Float = 1.0;
+	
+	/**
+	 * same as above for 'medium'
+	 */
+	public static inline var MEDIUM_BORDER_WIDTH:Float = 3.0;
+	
+	/**
+	 * same as above for 'thick'
+	 */
+	public static inline var THICK_BORDER_WIDTH:Float = 5.0;
+	
+	/////////////////////////////////////////////////
 	// COMPOSITING CONFIG
 	/////////////////////////////////////////////////
 	

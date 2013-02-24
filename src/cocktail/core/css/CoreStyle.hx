@@ -1498,6 +1498,37 @@ class CoreStyle
 					default:	
 				}
 				
+			case CSSConstants.BORDER_TOP_WIDTH, CSSConstants.BORDER_RIGHT_WIDTH,
+			CSSConstants.BORDER_BOTTOM_WIDTH, CSSConstants.BORDER_LEFT_WIDTH:
+				switch(property)
+				{
+					case LENGTH(value):
+						//if border style for border is 'none' or 'hidden', compute to
+						//0
+						if (hasNoneOrHiddenBorderStyle(propertyIndex) == true)
+						{
+							return ABSOLUTE_LENGTH(0);
+						}
+						else
+						{
+							return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+						}
+						
+					case INTEGER(value):
+						return ABSOLUTE_LENGTH(value);
+						
+					case KEYWORD(value):
+						switch(value)
+						{
+							case THIN, MEDIUM, THICK:
+								return ABSOLUTE_LENGTH(CSSValueConverter.getBorderWidthFromBorderWidthKeyword(value));
+								
+							default:	
+						}
+						
+					default:	
+				}
+				
 			//for transition property, "left" "right, "top" and "bottom"
 			//value are parsed as CSS keywords (they are used for 
 			//float style for instance), but should actually be  computed as
@@ -1708,7 +1739,9 @@ class CoreStyle
 					default:	
 				}
 				
-			case CSSConstants.BACKGROUND_COLOR:
+			case CSSConstants.BACKGROUND_COLOR,
+			CSSConstants.BORDER_TOP_COLOR, CSSConstants.BORDER_RIGHT_COLOR, 
+			CSSConstants.BORDER_BOTTOM_COLOR, CSSConstants.BORDER_LEFT_COLOR:
 				switch(property)
 				{
 					case COLOR(value):
@@ -2167,6 +2200,51 @@ class CoreStyle
 			default:
 				return false;
 		}
+	}
+	
+	/**
+	 * Wether the border, designated by the border width
+	 * index has a 'none' or 'hidden' border style
+	 */
+	private function hasNoneOrHiddenBorderStyle(propertyIndex:Int):Bool
+	{
+		var borderStyle:CSSPropertyValue = null;
+		if (propertyIndex == CSSConstants.BORDER_TOP_WIDTH)
+		{
+			borderStyle = borderTopStyle;
+		}
+		else if (propertyIndex == CSSConstants.BORDER_RIGHT_WIDTH)
+		{
+			borderStyle = borderRightStyle;
+		}
+		else if (propertyIndex == CSSConstants.BORDER_BOTTOM_WIDTH)
+		{
+			borderStyle = borderBottomStyle;
+		}
+		else if (propertyIndex == CSSConstants.BORDER_LEFT_WIDTH)
+		{
+			borderStyle = borderLeftStyle;
+		}
+		else
+		{
+			throw "not a border width style";
+		}
+		
+		switch(borderStyle)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					case NONE, HIDDEN:
+						return true;
+					
+					default:	
+				}
+				
+			default:	
+		}
+		
+		return false;
 	}
 	
 	/**

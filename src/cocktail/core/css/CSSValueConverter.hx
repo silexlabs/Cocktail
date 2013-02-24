@@ -86,6 +86,24 @@ class CSSValueConverter
 		return lengthValue;
 	}
 	
+	public static function getBorderWidthFromBorderWidthKeyword(value:CSSKeywordValue):Float
+	{
+		switch(value)
+		{
+			case THIN:
+				return Config.THIN_BORDER_WIDTH;
+				
+			case MEDIUM:
+				return Config.MEDIUM_BORDER_WIDTH;
+				
+			case THICK:
+				return Config.THICK_BORDER_WIDTH;
+				
+			default:
+				throw 'not a valid border width keyword';
+		}
+	}
+	
 	/**
 	 * Convert a font-family property into a string array
 	 * of font names
