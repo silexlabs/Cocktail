@@ -277,7 +277,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 				//constraint equation used for block-level, non-replaced elements in normal flow. 
 				if (containingBlockData.isWidthAuto == false)
 				{
-					usedWidth = containingBlockData.width - usedValues.marginLeft - usedValues.marginRight - usedValues.paddingLeft - usedValues.paddingRight;
+					usedWidth = containingBlockData.width - usedValues.marginLeft - usedValues.marginRight - usedValues.paddingLeft - usedValues.paddingRight - usedValues.borderLeftWidth - usedValues.borderRightWidth;
 				}
 				else
 				{
@@ -392,7 +392,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 	 * for block embedded HTMLElement, an 'auto' for vertical margin compute to 0, 
 	 * horizontal margin are computed like for non-embedded block HTMLElements
 	 */
-	override private function getComputedAutoMargin(marginStyleValue:CSSPropertyValue, opositeMargin:CSSPropertyValue, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, isHorizontalMargin:Bool):Float
+	override private function getComputedAutoMargin(marginStyleValue:CSSPropertyValue, opositeMargin:CSSPropertyValue, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsAndBordersDimension:Float, isHorizontalMargin:Bool):Float
 	{
 		var usedMargin:Float;
 	
@@ -404,7 +404,7 @@ class EmbeddedBlockBoxStylesComputer extends BoxStylesComputer
 		{
 			//the "isDimensionAuto" flag is set to false, as for embedded element, there is always a computed width 
 			//at this point
-			usedMargin = super.getComputedAutoMargin(marginStyleValue, opositeMargin, containingHTMLElementDimension, computedDimension, false, computedPaddingsDimension, isHorizontalMargin );
+			usedMargin = super.getComputedAutoMargin(marginStyleValue, opositeMargin, containingHTMLElementDimension, computedDimension, false, computedPaddingsAndBordersDimension, isHorizontalMargin );
 		}
 		
 		return usedMargin;

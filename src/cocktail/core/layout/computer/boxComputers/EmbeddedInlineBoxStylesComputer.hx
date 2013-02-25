@@ -32,7 +32,7 @@ class EmbeddedInlineBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 	/**
 	 * for inline embedded HTMLElement, auto margins compute to 0
 	 */
-	override private function getComputedAutoMargin(marginStyleValue:CSSPropertyValue, opositeMargin:CSSPropertyValue, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, isHorizontalMargin:Bool):Float
+	override private function getComputedAutoMargin(marginStyleValue:CSSPropertyValue, opositeMargin:CSSPropertyValue, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsAndBordersDimension:Float, isHorizontalMargin:Bool):Float
 	{
 		return 0.0;
 	}

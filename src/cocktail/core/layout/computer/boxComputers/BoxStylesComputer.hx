@@ -175,7 +175,7 @@ class BoxStylesComputer
 	private function measureBordersWidth(style:CoreStyle):Void
 	{
 		style.usedValues.borderLeftWidth = getComputedBorderWidth(style.borderLeftWidth);
-		
+	
 		style.usedValues.borderTopWidth = getComputedBorderWidth(style.borderTopWidth);
 		
 		style.usedValues.borderRightWidth = getComputedBorderWidth(style.borderRightWidth);
@@ -235,7 +235,7 @@ class BoxStylesComputer
 			//containing block so the element will be centered in its containing block
 			if (style.hasAutoMarginLeft && style.hasAutoMarginRight)
 			{
-				var marginWidth:Float = (containingBlockData.width - style.usedValues.paddingLeft - style.usedValues.paddingRight - constrainedWidth) / 2;
+				var marginWidth:Float = (containingBlockData.width - style.usedValues.paddingLeft - style.usedValues.paddingRight - style.usedValues.borderLeftWidth - style.usedValues.borderRightWidth - constrainedWidth) / 2;
 				
 				style.usedValues.marginLeft = marginWidth;
 				style.usedValues.marginRight = marginWidth;
@@ -355,12 +355,12 @@ class BoxStylesComputer
 	
 	/**
 	 * Compute the size of the width when 'auto' and return it as pixels. It is equal to
-	 * the remaining width of the containing HTMLElement once the margins and paddings width have been
+	 * the remaining width of the containing HTMLElement once the margins, paddings and borders width have been
 	 * removed
 	 */
 	private function getComputedAutoWidth(style:CoreStyle, containingBlockData:ContainingBlockVO):Float
 	{
-		return containingBlockData.width - style.usedValues.paddingLeft - style.usedValues.paddingRight - style.usedValues.marginLeft - style.usedValues.marginRight;
+		return containingBlockData.width - style.usedValues.paddingLeft - style.usedValues.paddingRight - style.usedValues.borderLeftWidth - style.usedValues.borderRightWidth - style.usedValues.marginLeft - style.usedValues.marginRight;
 	}
 	
 		
@@ -393,7 +393,7 @@ class BoxStylesComputer
 	 */
 	private inline function getComputedMarginLeft(style:CoreStyle, computedWidth:Float, containingBlockData:ContainingBlockVO):Float
 	{
-		return getComputedMargin(style.marginLeft, style.marginRight, containingBlockData.width, computedWidth, style.hasAutoWidth, style.usedValues.paddingRight + style.usedValues.paddingLeft, true );
+		return getComputedMargin(style.marginLeft, style.marginRight, containingBlockData.width, computedWidth, style.hasAutoWidth, style.usedValues.paddingRight + style.usedValues.paddingLeft + style.usedValues.borderLeftWidth + style.usedValues.borderRightWidth, true );
 	}
 	
 	/**
@@ -401,7 +401,7 @@ class BoxStylesComputer
 	 */
 	private inline function getComputedMarginRight(style:CoreStyle, computedWidth:Float, containingBlockData:ContainingBlockVO):Float
 	{
-		return getComputedMargin(style.marginRight, style.marginLeft, containingBlockData.width, computedWidth, style.hasAutoWidth, style.usedValues.paddingRight + style.usedValues.paddingLeft, true  );
+		return getComputedMargin(style.marginRight, style.marginLeft, containingBlockData.width, computedWidth, style.hasAutoWidth, style.usedValues.paddingRight + style.usedValues.paddingLeft + style.usedValues.borderLeftWidth + style.usedValues.borderRightWidth, true  );
 	}
 	 
 	/**
@@ -409,7 +409,7 @@ class BoxStylesComputer
 	 */
 	private inline function getComputedMarginTop(style:CoreStyle, computedHeight:Float, containingBlockData:ContainingBlockVO):Float
 	{
-		return getComputedMargin(style.marginTop, style.marginBottom, containingBlockData.height, computedHeight, style.hasAutoHeight, style.usedValues.paddingTop + style.usedValues.paddingBottom, false  );
+		return getComputedMargin(style.marginTop, style.marginBottom, containingBlockData.height, computedHeight, style.hasAutoHeight, style.usedValues.paddingTop + style.usedValues.paddingBottom + style.usedValues.borderTopWidth + style.usedValues.borderBottomWidth, false  );
 	}
 	
 	/**
@@ -417,7 +417,7 @@ class BoxStylesComputer
 	 */
 	private inline function getComputedMarginBottom(style:CoreStyle, computedHeight:Float, containingBlockData:ContainingBlockVO):Float
 	{
-		return getComputedMargin(style.marginBottom, style.marginTop, containingBlockData.height, computedHeight, style.hasAutoHeight, style.usedValues.paddingTop + style.usedValues.paddingBottom, false  );
+		return getComputedMargin(style.marginBottom, style.marginTop, containingBlockData.height, computedHeight, style.hasAutoHeight, style.usedValues.paddingTop + style.usedValues.paddingBottom + style.usedValues.borderTopWidth + style.usedValues.borderBottomWidth, false  );
 	}
 	
 	/**
@@ -430,12 +430,12 @@ class BoxStylesComputer
 	 * computing percentage values
 	 * @param	computedDimension a computed dimension (width or height) of the content of the current HTMLElement
 	 * @param isDimensionAuto wether the reference dimensions is auto, meaning its computed width id not set yet
-	 * @param	computedPaddingsDimension the computed dimensions of both horizontal or vertical paddings, depending if the computed
+	 * @param	computedPaddingsAndBordersDimension the computed dimensions of both horizontal or vertical paddings and borders, depending if the computed
 	 * margin is horizontal or vertical
 	 * @param	isHorizontalMargin true if the margin is horizontal (left or right)
 	 * @return the computed thickness of the margin
 	 */
-	private function getComputedMargin(marginStyleValue:CSSPropertyValue, opositeMargin:CSSPropertyValue, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, isHorizontalMargin:Bool):Float
+	private function getComputedMargin(marginStyleValue:CSSPropertyValue, opositeMargin:CSSPropertyValue, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsAndBordersDimension:Float, isHorizontalMargin:Bool):Float
 	{
 		//the return value
 		var usedMargin:Float = 0;
@@ -468,7 +468,7 @@ class BoxStylesComputer
 				{
 					throw 'Illegal keyword value for margin style';
 				}
-				usedMargin = getComputedAutoMargin(marginStyleValue, opositeMargin, containingHTMLElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension, isHorizontalMargin);
+				usedMargin = getComputedAutoMargin(marginStyleValue, opositeMargin, containingHTMLElementDimension, computedDimension, isDimensionAuto, computedPaddingsAndBordersDimension, isHorizontalMargin);
 			
 			default:
 				throw 'Illegal value for margin style';
@@ -481,7 +481,7 @@ class BoxStylesComputer
 	/**
 	 * Return the width of an auto margin
 	 */
-	private function getComputedAutoMargin(marginStyleValue:CSSPropertyValue, opositeMargin:CSSPropertyValue, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsDimension:Float, isHorizontalMargin:Bool):Float
+	private function getComputedAutoMargin(marginStyleValue:CSSPropertyValue, opositeMargin:CSSPropertyValue, containingHTMLElementDimension:Float, computedDimension:Float, isDimensionAuto:Bool, computedPaddingsAndBordersDimension:Float, isHorizontalMargin:Bool):Float
 	{
 		var computedMargin:Float = 0;
 		
@@ -505,12 +505,12 @@ class BoxStylesComputer
 						throw 'Illegal keyword value for margin';
 					}
 					
-					computedMargin = (containingHTMLElementDimension - computedDimension - computedPaddingsDimension) / 2;
+					computedMargin = (containingHTMLElementDimension - computedDimension - computedPaddingsAndBordersDimension) / 2;
 				
 				//else the oposite margin thickness is computed and the computed margin is deduced from the remaining space	
 				default:
-					var opositeComputedMargin:Float = getComputedMargin(opositeMargin, marginStyleValue, containingHTMLElementDimension, computedDimension, isDimensionAuto, computedPaddingsDimension, isHorizontalMargin);
-					computedMargin = containingHTMLElementDimension - computedDimension - computedPaddingsDimension - opositeComputedMargin; 
+					var opositeComputedMargin:Float = getComputedMargin(opositeMargin, marginStyleValue, containingHTMLElementDimension, computedDimension, isDimensionAuto, computedPaddingsAndBordersDimension, isHorizontalMargin);
+					computedMargin = containingHTMLElementDimension - computedDimension - computedPaddingsAndBordersDimension - opositeComputedMargin; 
 			}
 		}
 		

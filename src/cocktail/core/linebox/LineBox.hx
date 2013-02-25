@@ -493,7 +493,7 @@ class LineBox
 	 */
 	private function alignLeft(x:Float, inlineBox:InlineBox):Float
 	{
-		x += inlineBox.paddingLeft + inlineBox.marginLeft;
+		x += inlineBox.paddingLeft + inlineBox.borderLeft + inlineBox.marginLeft;
 		
 		var child:InlineBox = inlineBox.firstChild;
 		while(child != null)
@@ -511,7 +511,7 @@ class LineBox
 			child = child.nextSibling;
 		}
 		
-		x += inlineBox.paddingRight + inlineBox.marginRight;
+		x += inlineBox.paddingRight + inlineBox.borderRight + inlineBox.marginRight;
 		
 		return x;
 	}
@@ -522,7 +522,7 @@ class LineBox
 	 */
 	private function alignCenter(x:Float, remainingSpace:Float, inlineBox:InlineBox):Float
 	{
-		x += inlineBox.marginLeft + inlineBox.paddingLeft;
+		x += inlineBox.marginLeft + inlineBox.borderLeft + inlineBox.paddingLeft;
 		
 		var child:InlineBox = inlineBox.firstChild;
 		while(child != null)
@@ -538,7 +538,7 @@ class LineBox
 			child = child.nextSibling;
 		}
 		
-		x += inlineBox.marginRight + inlineBox.paddingRight;
+		x += inlineBox.marginRight + inlineBox.borderRight + inlineBox.paddingRight;
 		
 		return x;
 	}
@@ -549,7 +549,7 @@ class LineBox
 	 */
 	private function alignRight(x:Float, remainingSpace:Float, inlineBox:InlineBox):Float
 	{
-		x += inlineBox.marginLeft + inlineBox.paddingLeft;
+		x += inlineBox.marginLeft + inlineBox.borderLeft + inlineBox.paddingLeft;
 		
 		var child:InlineBox = inlineBox.firstChild;
 		while(child != null)
@@ -565,7 +565,7 @@ class LineBox
 			child = child.nextSibling;
 		}
 		
-		x += inlineBox.marginRight + inlineBox.paddingRight;
+		x += inlineBox.marginRight + inlineBox.borderRight + inlineBox.paddingRight;
 		
 		return x;
 	}
@@ -685,9 +685,9 @@ class LineBox
 			child = child.nextSibling;
 		}
 		
-		//add paddings of inline box
-		inlineBox.bounds.width += inlineBox.paddingLeft + inlineBox.paddingRight;
-		inlineBox.bounds.x -= inlineBox.paddingLeft;
+		//add paddings and borders of inline box
+		inlineBox.bounds.width += inlineBox.paddingLeft + inlineBox.paddingRight + inlineBox.borderLeft + inlineBox.borderRight;
+		inlineBox.bounds.x -= inlineBox.paddingLeft + inlineBox.borderLeft;
 	}
 	
 	/**

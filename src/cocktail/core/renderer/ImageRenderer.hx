@@ -82,8 +82,8 @@ class ImageRenderer extends EmbeddedBoxRenderer
 		
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		
-		_paintBounds.x = globalBounds.x + usedValues.paddingLeft - scrollOffset.x;
-		_paintBounds.y = globalBounds.y + usedValues.paddingTop - scrollOffset.y;
+		_paintBounds.x = globalBounds.x + usedValues.paddingLeft + usedValues.borderLeftWidth - scrollOffset.x;
+		_paintBounds.y = globalBounds.y + usedValues.paddingTop + usedValues.borderTopWidth - scrollOffset.y;
 		_paintBounds.width = usedValues.width;
 		_paintBounds.height = usedValues.height;
 		

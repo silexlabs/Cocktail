@@ -37,46 +37,59 @@ class InlineBox extends FastNode<InlineBox>
 	
 	/**
 	 * A reference to the element renderer which created this
-	 * line box
+	 * inline box
 	 */
 	public var elementRenderer(default, null):ElementRenderer;
 	
 	/**
-	 * the bounds of the line box, in the space of its containing
-	 * block (the block which started the inline formatting context)
+	 * the bounds of the inline, in the space of its line box
 	 */
 	public var bounds(default, null):RectangleVO;
 	
 	/**
-	 * the ascent of the line box with its leading applied
+	 * the ascent of the inline box with its leading applied
 	 */
 	public var leadedAscent:Float;
 	
 	/**
-	 * the descent of the line box with its leading applied
+	 * the descent of the inline box with its leading applied
 	 */
 	public var leadedDescent:Float;
 	
 	/**
-	 * the left margin of the line box
+	 * the left margin of the inline box
 	 */
 	public var marginLeft:Float;
 	
 	/**
-	 * the right margin of the line box
+	 * the right margin of the inline box
 	 */
 	public var marginRight:Float;
 	
 	/**
-	 * the left padding of the line box
+	 * the left padding of the inline box
 	 */
 	public var paddingLeft:Float;
 	
 	/**
-	 * the right margin of the line box
+	 * the right padding of the inline box
 	 */
 	public var paddingRight:Float;
 	
+	/**
+	 * the left border of the inline box
+	 */
+	public var borderLeft:Float;
+	
+	/**
+	 * the right border of the inline box
+	 */
+	public var borderRight:Float;
+	
+	/**
+	 * A reference to the line box owning this inline
+	 * box
+	 */
 	public var lineBox:LineBox;
 	
 	/**
@@ -108,6 +121,8 @@ class InlineBox extends FastNode<InlineBox>
 		marginRight = 0;
 		paddingLeft = 0;
 		paddingRight = 0;
+		borderLeft = 0;
+		borderRight = 0;
 		
 		this.leadedAscent = leadedAscent;
 		this.leadedDescent = leadedDescent;

@@ -547,8 +547,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			_offsetFromBlockFormattingRoot = getBlockBoxesOffset(this, blockFormattingContextRoot);
 			
 			//the offset is from the content area of this block
-			_offsetFromBlockFormattingRoot.x += coreStyle.usedValues.paddingLeft;
-			_offsetFromBlockFormattingRoot.y += coreStyle.usedValues.paddingTop;
+			_offsetFromBlockFormattingRoot.x += coreStyle.usedValues.paddingLeft + coreStyle.usedValues.borderLeftWidth;
+			_offsetFromBlockFormattingRoot.y += coreStyle.usedValues.paddingTop + coreStyle.usedValues.borderTopWidth;
 			
 			floatsManager.floats = blockFormattingContextRoot.floatsManager.floats;
 			floatsManager.childrenWithClearance = blockFormattingContextRoot.floatsManager.childrenWithClearance;

@@ -123,8 +123,8 @@ class VideoRenderer extends ImageRenderer
 		//set the position and size of the native video, relative
 		//to the Window
 		var videoViewport:RectangleVO = nativeVideo.viewport;
-		videoViewport.x =  globalBounds.x + coreStyle.usedValues.paddingLeft + _videoBounds.x - scrollOffset.x;
-		videoViewport.y =  globalBounds.y + coreStyle.usedValues.paddingTop + _videoBounds.y - scrollOffset.y;
+		videoViewport.x =  globalBounds.x + coreStyle.usedValues.paddingLeft + coreStyle.usedValues.borderLeftWidth + _videoBounds.x - scrollOffset.x;
+		videoViewport.y =  globalBounds.y + coreStyle.usedValues.paddingTop + coreStyle.usedValues.borderTopWidth + _videoBounds.y - scrollOffset.y;
 		videoViewport.width =  _videoBounds.width;
 		videoViewport.height =  _videoBounds.height;
 		
@@ -151,8 +151,8 @@ class VideoRenderer extends ImageRenderer
 		GeomUtils.getCenteredBounds(coreStyle.usedValues.width,
 		coreStyle.usedValues.height, resource.intrinsicWidth, resource.intrinsicHeight, _posterBounds);
 		
-		var x:Float = globalBounds.x + coreStyle.usedValues.paddingLeft + _posterBounds.x - scrollOffset.x;
-		var y:Float = globalBounds.y + coreStyle.usedValues.paddingTop + _posterBounds.y - scrollOffset.y;
+		var x:Float = globalBounds.x + coreStyle.usedValues.paddingLeft + coreStyle.usedValues.borderLeftWidth + _posterBounds.x - scrollOffset.x;
+		var y:Float = globalBounds.y + coreStyle.usedValues.paddingTop + coreStyle.usedValues.borderTopWidth + _posterBounds.y - scrollOffset.y;
 		var width:Float = _posterBounds.width;
 		var height:Float = _posterBounds.height;
 		

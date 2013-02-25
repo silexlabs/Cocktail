@@ -68,19 +68,19 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 			if (style.hasAutoLeft == true && style.hasAutoRight == true)
 			{
 				usedValues.left = getComputedStaticLeft(style, containingBlockData);
-				usedValues.right = containingBlockData.width - usedValues.width - usedValues.marginLeft - usedValues.marginRight - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left;
+				usedValues.right = containingBlockData.width - usedValues.width - usedValues.marginLeft - usedValues.marginRight - usedValues.paddingLeft - usedValues.paddingRight - usedValues.borderLeftWidth - usedValues.borderRightWidth - usedValues.left;
 			}
 			//if only left is auto, right is computed then left is deduced
 			else if (style.hasAutoLeft == true)
 			{
 				usedValues.right = getComputedPositionOffset(style.right, containingBlockData.width);
-				usedValues.left = containingBlockData.width - usedValues.width - usedValues.marginLeft - usedValues.marginRight - usedValues.right - usedValues.paddingLeft - usedValues.paddingRight;
+				usedValues.left = containingBlockData.width - usedValues.width - usedValues.marginLeft - usedValues.marginRight - usedValues.right - usedValues.paddingLeft - usedValues.paddingRight - usedValues.borderLeftWidth - usedValues.borderRightWidth;
 			}
 			//same for right
 			else if (style.hasAutoRight == true)
 			{
 				usedValues.left = getComputedPositionOffset(style.left, containingBlockData.width);
-				usedValues.right = containingBlockData.width - usedValues.width - usedValues.marginLeft - usedValues.marginRight - usedValues.left - usedValues.paddingLeft - usedValues.paddingRight;
+				usedValues.right = containingBlockData.width - usedValues.width - usedValues.marginLeft - usedValues.marginRight - usedValues.left - usedValues.paddingLeft - usedValues.paddingRight - usedValues.borderLeftWidth - usedValues.borderRightWidth;
 			}
 		}
 		//if neither left or right are auto
@@ -93,11 +93,11 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 			//then deduce the margins
 			if (style.hasAutoMarginLeft == true && style.hasAutoMarginRight == true)
 			{
-				var margin:Float = (containingBlockData.width - usedValues.left - usedValues.right - usedValues.paddingLeft - usedValues.paddingRight) / 2;
+				var margin:Float = (containingBlockData.width - usedValues.left - usedValues.right - usedValues.paddingLeft - usedValues.paddingRight - usedValues.borderLeftWidth - usedValues.borderRightWidth) / 2;
 				
 				//compute the size of one of the margin, which is half the remaining horizontal space
-				//once all other values (padding, width, offset) are remove
-				var usedMargin:Float = (containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right) / 2;
+				//once all other values (padding, width, border, offset) are removed
+				var usedMargin:Float = (containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.borderLeftWidth - usedValues.borderRightWidth - usedValues.left - usedValues.right) / 2;
 				
 				if (usedMargin >= 0)
 				{
@@ -108,18 +108,18 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 				else
 				{
 					usedValues.marginLeft = 0;
-					usedValues.marginRight = containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right;
+					usedValues.marginRight = containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.borderLeftWidth - usedValues.borderRightWidth - usedValues.left - usedValues.right;
 				}
 			
 				usedValues.marginLeft = 0;
 			}
 			else if (style.hasAutoMarginLeft == true)
 			{
-				usedValues.marginLeft = containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right - usedValues.marginRight;
+				usedValues.marginLeft = containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.borderLeftWidth - usedValues.borderRightWidth - usedValues.left - usedValues.right - usedValues.marginRight;
 			}
 			else if (style.hasAutoMarginRight == true)
 			{
-				usedValues.marginRight = containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.left - usedValues.right - usedValues.marginLeft;
+				usedValues.marginRight = containingBlockData.width - usedValues.width - usedValues.paddingLeft - usedValues.paddingRight - usedValues.borderLeftWidth - usedValues.borderRightWidth - usedValues.left - usedValues.right - usedValues.marginLeft;
 			}
 		}
 	}

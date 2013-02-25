@@ -285,8 +285,8 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//for the width and height of the bounds of this box. Width and height
 		//might be computed again, for instance if it depends on children height
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
-		bounds.width = usedValues.width + usedValues.paddingLeft + usedValues.paddingRight;
-		bounds.height = usedValues.height + usedValues.paddingTop + usedValues.paddingBottom;
+		bounds.width = usedValues.width + usedValues.paddingLeft + usedValues.paddingRight + usedValues.borderLeftWidth + usedValues.borderRightWidth;
+		bounds.height = usedValues.height + usedValues.paddingTop + usedValues.paddingBottom + usedValues.borderTopWidth + usedValues.borderBottomWidth;
 		
 		//reset dirty flag
 		_needsLayout = false;

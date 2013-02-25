@@ -1807,7 +1807,7 @@ class HTMLElement extends Element<HTMLElement>
 		if (elementRenderer != null)
 		{
 			var usedValues:UsedValuesVO = coreStyle.usedValues;
-			return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight);
+			return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight + usedValues.borderLeftWidth + usedValues.borderRightWidth);
 		}
 		
 		return 0;
@@ -1819,7 +1819,7 @@ class HTMLElement extends Element<HTMLElement>
 		if (elementRenderer != null)
 		{
 			var usedValues:UsedValuesVO = coreStyle.usedValues;
-			return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
+			return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom + usedValues.borderTopWidth + usedValues.borderBottomWidth);
 		}
 		
 		return 0;
@@ -1891,17 +1891,25 @@ class HTMLElement extends Element<HTMLElement>
 		return 0;
 	}
 	
-	//TODO 5 : should be top border height
 	private function get_clientTop():Int
 	{
 		updateDocumentImmediately();
+		if (elementRenderer != null)
+		{
+			var usedValues:UsedValuesVO = coreStyle.usedValues;
+			return Math.round(usedValues.borderTopWidth);
+		}
 		return 0;
 	}
 	
-	//TODO 5 : should be left border width
 	private function get_clientLeft():Int
 	{
 		updateDocumentImmediately();
+		if (elementRenderer != null)
+		{
+			var usedValues:UsedValuesVO = coreStyle.usedValues;
+			return Math.round(usedValues.borderBottomWidth);
+		}
 		return 0;
 	}
 }
