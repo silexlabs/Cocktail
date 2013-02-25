@@ -523,8 +523,8 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		//if is block container, set the normal flow position for its children
 		if (isBlockContainer == true)
 		{
-			addedX = globalBounds.x + coreStyle.usedValues.paddingLeft;
-			addedY = globalBounds.y + coreStyle.usedValues.paddingTop;
+			addedX = globalBounds.x + coreStyle.usedValues.paddingLeft + coreStyle.usedValues.borderLeftWidth;
+			addedY = globalBounds.y + coreStyle.usedValues.paddingTop + coreStyle.usedValues.borderTopWidth;
 		}
 		
 		//for each child of the element

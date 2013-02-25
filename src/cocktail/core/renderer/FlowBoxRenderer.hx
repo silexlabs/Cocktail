@@ -290,7 +290,7 @@ class FlowBoxRenderer extends BoxRenderer
 		var usedValues:UsedValuesVO = elementRenderer.coreStyle.usedValues;
 		
 		var rightOffset:Float = containingHTMLElementWidth - usedValues.width - usedValues.paddingLeft
-		- usedValues.paddingRight - usedValues.right - usedValues.marginRight;
+		- usedValues.paddingRight - usedValues.borderLeftWidth - usedValues.borderRightWidth - usedValues.right - usedValues.marginRight;
 		
 		//place relative to padding box instead of content box
 		if (isAbsolutelyPositioned == true)

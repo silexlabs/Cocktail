@@ -638,7 +638,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			}
 			
 			coreStyle.usedValues.width = shrinkToFitWidth;
-			bounds.width = shrinkToFitWidth + coreStyle.usedValues.paddingLeft + coreStyle.usedValues.paddingRight;
+			bounds.width = shrinkToFitWidth + coreStyle.usedValues.paddingLeft + coreStyle.usedValues.paddingRight + coreStyle.usedValues.borderLeftWidth + coreStyle.usedValues.borderRightWidth;
 			
 			//now that shrink to fit is known layout children with it
 			doLayoutChildren(LayoutStateValue.NORMAL);
@@ -899,7 +899,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						//where this child can fit given the floated elements must be found
 						var childMarginWidth:Float = child.bounds.width + child.coreStyle.usedValues.marginLeft + child.coreStyle.usedValues.marginRight;
 						var childMarginHeight:Float = child.bounds.height + child.getCollapsedTopMargin() + child.getCollapsedBottomMargin();
-						var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight;
+						var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight - coreStyle.usedValues.borderLeftWidth - coreStyle.usedValues.borderRightWidth;
 						
 						var firstYPosition:Float = _childPosition.y;
 						if (floatsManager.hasFloats == true)
@@ -1005,7 +1005,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		var blockFormattingContextRoot:BlockBoxRenderer = getNearestBlockFormattingContextRoot();
 		
 		//get this block box content width
-		var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight;
+		var contentWidth:Float = bounds.width - coreStyle.usedValues.paddingLeft - coreStyle.usedValues.paddingRight - coreStyle.usedValues.borderLeftWidth - coreStyle.usedValues.borderRightWidth;
 		
 		//update the bounds of the floated, taking other floated elements into account and return
 		//the bounds of the floated element in the block formatting root space
@@ -1314,12 +1314,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					
 					var childUsedValues:UsedValuesVO = child.coreStyle.usedValues;
 					
-					//the first inline box created by an inline box renderer has its left margin and padding
+					//the first inline box created by an inline box renderer has its left margin padding and border
 					childInlineBox.marginLeft = childUsedValues.marginLeft;
 					childInlineBox.paddingLeft = childUsedValues.paddingLeft;
+					childInlineBox.borderLeft = childUsedValues.borderLeftWidth;
 					//the left margin and padding are added as an unbreakable width, as it can't be separated
 					//from next inline box until a break opportunity occurs
-					inlineFormattingData.lineBox.addUnbreakableWidth(childUsedValues.marginLeft + childUsedValues.paddingLeft);
+					inlineFormattingData.lineBox.addUnbreakableWidth(childUsedValues.marginLeft + childUsedValues.paddingLeft + childUsedValues.borderLeftWidth);
 					
 					//attach the child inline box to its parent inline box to form the inline box tree for the current
 					//line box
