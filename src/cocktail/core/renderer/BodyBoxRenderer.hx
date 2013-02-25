@@ -53,7 +53,7 @@ class BodyBoxRenderer extends BlockBoxRenderer
 		{
 			var usedValues:UsedValuesVO = coreStyle.usedValues;
 			usedValues.height = containingBlock.getContainerBlockData().height - usedValues.marginTop - usedValues.marginBottom
-			- usedValues.paddingTop - usedValues.paddingBottom;
+			- usedValues.paddingTop - usedValues.paddingBottom - usedValues.borderTopWidth - usedValues.borderBottomWidth;
 		}
 	}
 	

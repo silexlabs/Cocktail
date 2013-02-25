@@ -777,7 +777,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			
 			coreStyle.usedValues.height = childrenHeight;
 			//bounds height matches the border box
-			bounds.height = childrenHeight + coreStyle.usedValues.paddingTop + coreStyle.usedValues.paddingBottom;
+			bounds.height = childrenHeight + coreStyle.usedValues.paddingTop + coreStyle.usedValues.paddingBottom + coreStyle.usedValues.borderTopWidth + coreStyle.usedValues.borderBottomWidth;
 		}
 	}
 	
@@ -1467,6 +1467,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		
 		//if padding prevent margins from adjoining, they can't collapse
 		if (coreStyle.usedValues.paddingTop != 0 || firstNormalFlowChild.coreStyle.usedValues.paddingTop != 0)
+		{
+			return false;
+		}
+		
+		//if border prevent margins from adjoining, they can't collapse
+		if (coreStyle.usedValues.borderTopWidth != 0 || firstNormalFlowChild.coreStyle.usedValues.borderTopWidth != 0)
 		{
 			return false;
 		}

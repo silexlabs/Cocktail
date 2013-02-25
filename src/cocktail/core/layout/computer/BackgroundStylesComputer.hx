@@ -419,8 +419,8 @@ class BackgroundStylesComputer
 						
 						
 					case CONTENT_BOX:
-						height = backgroundBox.height - style.usedValues.marginTop - style.usedValues.marginBottom - style.usedValues.paddingTop - style.usedValues.paddingBottom;
-						width = backgroundBox.width - style.usedValues.marginLeft - style.usedValues.marginRight - style.usedValues.paddingLeft - style.usedValues.paddingRight;
+						height = backgroundBox.height - style.usedValues.marginTop - style.usedValues.marginBottom - style.usedValues.paddingTop - style.usedValues.paddingBottom - style.usedValues.borderTopWidth - style.usedValues.borderBottomWidth;
+						width = backgroundBox.width - style.usedValues.marginLeft - style.usedValues.marginRight - style.usedValues.paddingLeft - style.usedValues.paddingRight - style.usedValues.borderLeftWidth - style.usedValues.borderRightWidth;
 						x = 0.0;
 						y = 0.0;
 						

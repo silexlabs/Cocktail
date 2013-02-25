@@ -590,6 +590,13 @@ class BoxRenderer extends InvalidatingElementRenderer
 			return false;
 		}
 		
+		//if a border separate the parent top margin and this box 
+		//top margin, they don't collapse
+		if (parentNode.coreStyle.usedValues.borderTopWidth != 0)
+		{
+			return false;
+		}
+		
 		//in all other cases, margins collapse
 		return true;
 	}
@@ -691,6 +698,12 @@ class BoxRenderer extends InvalidatingElementRenderer
 		
 		//if the box has vertical padding, then the margins are not adjoining
 		if (coreStyle.usedValues.paddingTop != 0 || coreStyle.usedValues.paddingBottom != 0)
+		{
+			return false;
+		}
+		
+		//if the box has vertical borders, then the margins are not adjoining
+		if (coreStyle.usedValues.borderTopWidth != 0 || coreStyle.usedValues.borderBottomWidth != 0)
 		{
 			return false;
 		}

@@ -146,18 +146,18 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 			if (style.hasAutoTop == true && style.hasAutoBottom == true)
 			{
 				usedValues.top = getComputedStaticTop(style, containingBlockData);
-				usedValues.bottom = containingBlockData.height - usedValues.height - usedValues.marginTop - usedValues.marginBottom - usedValues.paddingTop - usedValues.paddingBottom - usedValues.top;
+				usedValues.bottom = containingBlockData.height - usedValues.height - usedValues.marginTop - usedValues.marginBottom - usedValues.paddingTop - usedValues.paddingBottom - usedValues.borderTopWidth - usedValues.borderBottomWidth - usedValues.top;
 			}
 			
 			else if (style.hasAutoTop == true)
 			{
 				usedValues.bottom = getComputedPositionOffset(style.bottom, containingBlockData.height);
-				usedValues.top = containingBlockData.height - usedValues.height - usedValues.marginTop - usedValues.marginBottom - usedValues.bottom - usedValues.paddingTop - usedValues.paddingBottom;
+				usedValues.top = containingBlockData.height - usedValues.height - usedValues.marginTop - usedValues.marginBottom - usedValues.bottom - usedValues.paddingTop - usedValues.paddingBottom - usedValues.borderTopWidth - usedValues.borderBottomWidth;
 			}
 			else if (style.hasAutoBottom == true)
 			{
 				usedValues.top = getComputedPositionOffset(style.top, containingBlockData.height);
-				usedValues.bottom = containingBlockData.height - usedValues.height - usedValues.marginTop - usedValues.marginBottom - usedValues.top - usedValues.paddingTop - usedValues.paddingBottom;
+				usedValues.bottom = containingBlockData.height - usedValues.height - usedValues.marginTop - usedValues.marginBottom - usedValues.top - usedValues.paddingTop - usedValues.paddingBottom - usedValues.borderTopWidth - usedValues.borderBottomWidth;
 			}
 			else
 			{
@@ -173,9 +173,9 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 			
 			if (style.hasAutoMarginTop == true && style.hasAutoMarginBottom == true)
 			{
-				var margin:Float = (containingBlockData.height - usedValues.top - usedValues.bottom - usedValues.paddingTop - usedValues.paddingBottom) / 2;
+				var margin:Float = (containingBlockData.height - usedValues.top - usedValues.bottom - usedValues.paddingTop - usedValues.paddingBottom - usedValues.borderTopWidth - usedValues.borderBottomWidth) / 2;
 				
-				var usedMargin:Float = (containingBlockData.height - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.top - usedValues.bottom) / 2;
+				var usedMargin:Float = (containingBlockData.height - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.borderTopWidth - usedValues.borderBottomWidth - usedValues.top - usedValues.bottom) / 2;
 				
 				if (usedMargin >= 0)
 				{
@@ -185,16 +185,16 @@ class EmbeddedPositionedBoxStylesComputer extends EmbeddedBlockBoxStylesComputer
 				else
 				{
 					usedValues.marginTop = 0;
-					usedValues.marginBottom = containingBlockData.height - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.top - usedValues.bottom;
+					usedValues.marginBottom = containingBlockData.height - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.borderTopWidth - usedValues.borderBottomWidth - usedValues.top - usedValues.bottom;
 				}
 			}
 			else if (style.hasAutoMarginTop == true)
 			{
-				usedValues.marginTop = containingBlockData.height - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.top - usedValues.bottom - usedValues.marginBottom;
+				usedValues.marginTop = containingBlockData.height - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.borderTopWidth - usedValues.borderBottomWidth - usedValues.top - usedValues.bottom - usedValues.marginBottom;
 			}
 			else if (style.hasAutoMarginBottom == true)
 			{
-				usedValues.marginBottom = containingBlockData.height - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.top - usedValues.bottom - usedValues.marginTop;
+				usedValues.marginBottom = containingBlockData.height - usedValues.height - usedValues.paddingTop - usedValues.paddingBottom - usedValues.borderTopWidth - usedValues.borderBottomWidth - usedValues.top - usedValues.bottom - usedValues.marginTop;
 			}
 		}
 	}
