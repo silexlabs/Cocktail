@@ -8,6 +8,7 @@
 */
 package cocktail.port.base;
 
+import cocktail.core.config.Config;
 import cocktail.core.event.Event;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
@@ -77,7 +78,7 @@ class MouseListenerBase
 		_platform = platform;
 		
 		//mouse event might be disabled entirely
-		if (Config.ENABLE_MOUSE_EVENT == true)
+		if (Config.getInstance().enableMouseEvent == true)
 		{
 			//starts to listen to native mouse events
 			setNativeListeners();

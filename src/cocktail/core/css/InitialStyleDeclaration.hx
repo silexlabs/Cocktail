@@ -7,7 +7,7 @@
 */
 package cocktail.core.css;
 
-import cocktail.Config;
+import cocktail.core.config.Config;
 import cocktail.core.css.CSSData;
 import cocktail.core.css.CSSConstants;
 
@@ -193,8 +193,8 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		
 		pushProperty(CSSConstants.CURSOR, KEYWORD(AUTO));
 		
-		pushProperty(CSSConstants.FONT_FAMILY, CSS_LIST([STRING(Config.DEFAULT_FONT)]));
-		pushProperty(CSSConstants.COLOR, COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
+		pushProperty(CSSConstants.FONT_FAMILY, CSS_LIST([STRING(Config.getInstance().defaultFont)]));
+		pushProperty(CSSConstants.COLOR, COLOR(CSSColorValue.HEX(Config.getInstance().defaultFontColor)));
 	}
 	
 	/**
@@ -281,8 +281,8 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		
 		pushComputedProperty(CSSConstants.CURSOR, KEYWORD(AUTO));
 		
-		pushProperty(CSSConstants.FONT_FAMILY, CSS_LIST([STRING(Config.DEFAULT_FONT)]));
-		pushProperty(CSSConstants.COLOR, COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
+		pushProperty(CSSConstants.FONT_FAMILY, CSS_LIST([STRING(Config.getInstance().defaultFont)]));
+		pushProperty(CSSConstants.COLOR, COLOR(CSSColorValue.HEX(Config.getInstance().defaultFontColor)));
 	}
 	
 		

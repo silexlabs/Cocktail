@@ -36,7 +36,7 @@ class Config
 	 * anymore however a quick touch tap will still synthesize
 	 * a "click" mouse event
 	 */
-	public var enableMouseEvent(default, null):Bool = true;
+	public var enableMouseEvent(default, null):Bool;
 	
 	/**
 	 * The distance in pixel that a touch on screen has to move to 
@@ -46,14 +46,14 @@ class Config
 	 * that the user don't want to click but instead is scrolling 
 	 * or drag'n'dropping an element
 	 */ 
-	public var touchMovePreventClickDistance(default, null):Int = 10;
+	public var touchMovePreventClickDistance(default, null):Int;
 	
 	/**
 	 * When drawing bitmap, determine if smoothing should be applied
 	 * to it when it not displayed at 100% of its size. This improves
 	 * the rendering of the bitmap but decreases performances.
 	 */
-	public var enableBitmapSmoothing(default, null):Bool = true;
+	public var enableBitmapSmoothing(default, null):Bool;
 	
 	/**
 	 * Flash specific.
@@ -62,7 +62,7 @@ class Config
 	 * it degrades visual rendering. If the application is mostly bitmap
 	 * based, it doesn't make much difference in the rendering
 	 */
-	public var useLowStageQuality(default, null):Bool = false;
+	public var useLowStageQuality(default, null):Bool;
 	
 	/**
 	 * The document might be updated immediately instead of waiting
@@ -75,7 +75,7 @@ class Config
 	 * styles and immediately requesting the size or position of an element, set
 	 * a timer instead
 	 */
-	public var enableSynchronousUpdate(default, null):Bool = true;
+	public var enableSynchronousUpdate(default, null):Bool;
 	
 	/**
 	 * Flash specific.
@@ -90,7 +90,7 @@ class Config
 	 * you either don't have any swf movie in your document or if there is
 	 * no interactive content on top of those swf movie
 	 */
-	public var useAdvancedHitTesting(default, null):Bool = true;
+	public var useAdvancedHitTesting(default, null):Bool;
 	
 	/**
 	 * Flash specific.
@@ -104,7 +104,7 @@ class Config
 	 * 
 	 * Set to false if you want to always use software video in flash
 	 */
-	public var useStageVideoIfAvailable(default, null):Bool = true;
+	public var useStageVideoIfAvailable(default, null):Bool;
 	
 	/////////////////////////////////////////////////
 	// FONT CONFIG
@@ -114,49 +114,49 @@ class Config
 	 * This is the name of the font used by default for an element
 	 * when no other font is given
 	 */
-	public var defaultFont(default, null):String = "serif";
+	public var defaultFont(default, null):String;
 	
 	/**
 	 * The default color to use to render text when no other
 	 * value is given for an element, as an hex value
 	 */
-	public var defaultFontColor(default, null):String = "#000000";
+	public var defaultFontColor(default, null):String;
 	
 	/**
 	 * The actual font size when the 'xx-small' font size is
 	 * used for an element
 	 */
-	public var xxSmallFontSize(default, null):Int = 9;
+	public var xxSmallFontSize(default, null):Int;
 	
 	/**
 	 * same as above for x-small
 	 */
-	public var xSmallFontSize(default, null):Int = 10;
+	public var xSmallFontSize(default, null):Int;
 	
 	/**
 	 * same as above for small
 	 */
-	public var smallFontSize(default, null):Int = 13;
+	public var smallFontSize(default, null):Int;
 	
 	/**
 	 * same as above for medium
 	 */
-	public var mediumFontSize(default, null):Int = 16;
+	public var mediumFontSize(default, null):Int;
 	
 	/**
 	 * same as above for large
 	 */
-	public var largeFontSize(default, null):Int = 18;
+	public var largeFontSize(default, null):Int;
 	
 	/**
 	 * same as above for x-large
 	 */
-	public var xLargeFontSize(default, null):Int = 24;
+	public var xLargeFontSize(default, null):Int;
 	
 	/**
 	 * same as above for xx-large
 	 */
-	public var xxLargeFontSize(default, null):Int = 32;
+	public var xxLargeFontSize(default, null):Int;
 	
 	/////////////////////////////////////////////////
 	// COMPOSITING CONFIG
@@ -173,7 +173,7 @@ class Config
 	 * which would be otherwise composited will now always be on top
 	 * of the rendered text and picture
 	 */
-	public var enableCompositing(default, null):Bool = false;
+	public var enableCompositing(default, null):Bool;
 	
 	/**
 	 * This parameter only applies if ENABLE_COMPOSITING is false.
@@ -183,13 +183,13 @@ class Config
 	 * are below cocktail's bitmap and they can be seen if cocktail's bitmap
 	 * is transparent where the plugin appears.
 	 */
-	public var objectBelowWhenNoCompositing(default, null):Bool = true;
+	public var objectBelowWhenNoCompositing(default, null):Bool;
 	
 	/**
 	 * Same as OBJECT_BELOW_WHEN_NO_COMPOSITING, 
 	 * but applies to video created with <Video> tag
 	 */
-	public var videoBelowWhenNoCompositing(default, null):Bool = true;
+	public var videoBelowWhenNoCompositing(default, null):Bool;
 	
 	/**
 	 * instance for singleton
@@ -201,7 +201,27 @@ class Config
 	 */
 	private function new() 
 	{
+		enableMouseEvent = true;
+		touchMovePreventClickDistance = 10;
+		enableBitmapSmoothing = true;
+		useLowStageQuality = false;
+		enableSynchronousUpdate = true;
+		useAdvancedHitTesting = true;
+		useStageVideoIfAvailable = true;
+		defaultFont = "serif";
+		defaultFontColor = "#000000";
 		
+		xxSmallFontSize = 9;
+		xSmallFontSize = 10;
+		smallFontSize = 13;
+		mediumFontSize = 16;
+		largeFontSize = 18;
+		xLargeFontSize = 24;
+		xxLargeFontSize = 32;
+	
+		enableCompositing = false;
+		objectBelowWhenNoCompositing = true;
+		videoBelowWhenNoCompositing = true;
 	}
 	
 	/**
