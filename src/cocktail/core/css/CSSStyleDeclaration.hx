@@ -1431,7 +1431,7 @@ class CSSStyleDeclaration
 				}
 				
 			case CSSConstants.BORDER_TOP_STYLE, CSSConstants.BORDER_RIGHT_STYLE,
-			CSSConstants.BORDER_BOTTOM_STYLE, CSSConstants.BORDER_LEFT_STYLE:	
+			CSSConstants.BORDER_BOTTOM_STYLE, CSSConstants.BORDER_LEFT_STYLE:
 				switch(styleValue)
 				{
 					case INHERIT, INITIAL:

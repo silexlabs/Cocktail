@@ -167,10 +167,10 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		pushProperty(CSSConstants.BORDER_BOTTOM_WIDTH, KEYWORD(MEDIUM));
 		pushProperty(CSSConstants.BORDER_LEFT_WIDTH, KEYWORD(MEDIUM));
 		
-		pushProperty(CSSConstants.BORDER_TOP_COLOR, COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
-		pushProperty(CSSConstants.BORDER_RIGHT_COLOR, COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
-		pushProperty(CSSConstants.BORDER_BOTTOM_COLOR,COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
-		pushProperty(CSSConstants.BORDER_LEFT_COLOR, COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
+		pushProperty(CSSConstants.BORDER_TOP_COLOR, COLOR(CSSColorValue.HEX(Config.getInstance().defaultFontColor)));
+		pushProperty(CSSConstants.BORDER_RIGHT_COLOR, COLOR(CSSColorValue.HEX(Config.getInstance().defaultFontColor)));
+		pushProperty(CSSConstants.BORDER_BOTTOM_COLOR,COLOR(CSSColorValue.HEX(Config.getInstance().defaultFontColor)));
+		pushProperty(CSSConstants.BORDER_LEFT_COLOR, COLOR(CSSColorValue.HEX(Config.getInstance().defaultFontColor)));
 		
 		pushProperty(CSSConstants.BORDER_TOP_STYLE, KEYWORD(NONE));
 		pushProperty(CSSConstants.BORDER_RIGHT_STYLE, KEYWORD(NONE));
@@ -270,10 +270,10 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		pushComputedProperty(CSSConstants.BORDER_BOTTOM_WIDTH, ABSOLUTE_LENGTH(0));
 		pushComputedProperty(CSSConstants.BORDER_LEFT_WIDTH, ABSOLUTE_LENGTH(0));
 		
-		pushComputedProperty(CSSConstants.BORDER_TOP_COLOR, COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
-		pushComputedProperty(CSSConstants.BORDER_RIGHT_COLOR, COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
-		pushComputedProperty(CSSConstants.BORDER_BOTTOM_COLOR,COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
-		pushComputedProperty(CSSConstants.BORDER_LEFT_COLOR, COLOR(CSSColorValue.HEX(Config.DEFAULT_FONT_COLOR)));
+		pushComputedProperty(CSSConstants.BORDER_TOP_COLOR, COLOR(CSSColorValue.HEX(Config.getInstance().defaultFontColor)));
+		pushComputedProperty(CSSConstants.BORDER_RIGHT_COLOR, COLOR(CSSColorValue.HEX(Config.getInstance().defaultFontColor)));
+		pushComputedProperty(CSSConstants.BORDER_BOTTOM_COLOR,COLOR(CSSColorValue.HEX(Config.getInstance().defaultFontColor)));
+		pushComputedProperty(CSSConstants.BORDER_LEFT_COLOR, COLOR(CSSColorValue.HEX(Config.getInstance().defaultFontColor)));
 		
 		pushComputedProperty(CSSConstants.BORDER_TOP_STYLE, KEYWORD(NONE));
 		pushComputedProperty(CSSConstants.BORDER_RIGHT_STYLE, KEYWORD(NONE));

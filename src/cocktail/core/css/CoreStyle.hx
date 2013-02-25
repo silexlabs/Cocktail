@@ -684,6 +684,60 @@ class CoreStyle
 			cascadeManager.removePropertyToCascade(CSSConstants.TRANSITION_PROPERTY);
 		}
 		
+		//when a border style changes, its coressponding border width
+		//must be cascaded, as some value of border style (none and hidden)
+		//forces the border width to be 0
+		if (cascadeManager.hasLeftBorderStyle == true || cascadeManager.cascadeAll == true)
+		{
+			var leftBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_LEFT_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			if (leftBorderStyleDidChange == true)
+			{
+				_changedProperties.push(CSSConstants.BORDER_LEFT_WIDTH);
+				cascadeManager.addPropertyToCascade(CSSConstants.BORDER_LEFT_WIDTH);
+			}
+			
+			cascadeManager.removePropertyToCascade(CSSConstants.BORDER_LEFT_STYLE);
+		}
+		
+		//same for right border
+		if (cascadeManager.hasRightBorderStyle == true || cascadeManager.cascadeAll == true)
+		{
+			var leftBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_RIGHT_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			if (leftBorderStyleDidChange == true)
+			{
+				_changedProperties.push(CSSConstants.BORDER_RIGHT_WIDTH);
+				cascadeManager.addPropertyToCascade(CSSConstants.BORDER_RIGHT_WIDTH);
+			}
+			
+			cascadeManager.removePropertyToCascade(CSSConstants.BORDER_RIGHT_STYLE);
+		}
+		
+		//same for top border
+		if (cascadeManager.hasTopBorderStyle == true || cascadeManager.cascadeAll == true)
+		{
+			var leftBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_TOP_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			if (leftBorderStyleDidChange == true)
+			{
+				_changedProperties.push(CSSConstants.BORDER_TOP_WIDTH);
+				cascadeManager.addPropertyToCascade(CSSConstants.BORDER_TOP_WIDTH);
+			}
+			
+			cascadeManager.removePropertyToCascade(CSSConstants.BORDER_TOP_STYLE);
+		}
+		
+		//same for bottom border
+		if (cascadeManager.hasBottomBorderStyle == true || cascadeManager.cascadeAll == true)
+		{
+			var leftBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_BOTTOM_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			if (leftBorderStyleDidChange == true)
+			{
+				_changedProperties.push(CSSConstants.BORDER_BOTTOM_WIDTH);
+				cascadeManager.addPropertyToCascade(CSSConstants.BORDER_BOTTOM_WIDTH);
+			}
+			
+			cascadeManager.removePropertyToCascade(CSSConstants.BORDER_BOTTOM_STYLE);
+		}
+		
 		if (cascadeManager.hasFontSize == true || cascadeManager.hasFontFamily == true || cascadeManager.cascadeAll == true)
 		{
 			//when the value of font-size and/or font-family is cascaded,

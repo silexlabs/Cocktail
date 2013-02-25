@@ -107,6 +107,14 @@ class CascadeManager
 	
 	public var hasTransitionProperty:Bool;
 	
+	public var hasLeftBorderStyle:Bool;
+	
+	public var hasRightBorderStyle:Bool;
+	
+	public var hasTopBorderStyle:Bool;
+	
+	public var hasBottomBorderStyle:Bool;
+	
 	/**
 	 * class constructor
 	 */
@@ -165,6 +173,10 @@ class CascadeManager
 		hasMarginLeft = false;
 		hasMarginRight = false;
 		hasTransitionProperty = false;
+		hasLeftBorderStyle = false;
+		hasTopBorderStyle = false;
+		hasRightBorderStyle = false;
+		hasBottomBorderStyle = false;
 		
 		hasPropertiesToCascade = false;
 		cascadeAll = false;
@@ -319,6 +331,18 @@ class CascadeManager
 				
 			case CSSConstants.POSITION:
 				hasPosition = true;
+				
+			case CSSConstants.BORDER_LEFT_STYLE:
+				hasLeftBorderStyle = true;
+				
+			case CSSConstants.BORDER_TOP_STYLE:
+				hasTopBorderStyle = true;
+				
+			case CSSConstants.BORDER_RIGHT_STYLE:
+				hasRightBorderStyle = true;
+				
+			case CSSConstants.BORDER_BOTTOM_STYLE:
+				hasBottomBorderStyle = true;
 		}
 	}
 	
@@ -341,6 +365,18 @@ class CascadeManager
 				
 			case CSSConstants.TRANSITION_PROPERTY:
 				hasTransitionProperty = false;
+				
+			case CSSConstants.BORDER_TOP_STYLE:
+				hasTopBorderStyle = false;
+				
+			case CSSConstants.BORDER_RIGHT_STYLE:
+				hasRightBorderStyle = false;
+				
+			case CSSConstants.BORDER_LEFT_STYLE:
+				hasLeftBorderStyle = false;
+				
+			case CSSConstants.BORDER_BOTTOM_STYLE:
+				hasBottomBorderStyle = false;
 				
 			default:	
 		}
