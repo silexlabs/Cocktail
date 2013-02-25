@@ -8,7 +8,6 @@
 */
 package cocktail.core.layer;
 
-import cocktail.core.html.ScrollBar;
 import cocktail.core.utils.FastNode;
 import cocktail.core.geom.GeomData;
 import cocktail.core.geom.GeomUtils;
@@ -38,20 +37,6 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 	 * created the layer
 	 */
 	public var rootElementRenderer(default, null):ElementRenderer;
-	
-	/**
-	 * A reference to the horizontal scrollbar which
-	 * might be displayed on the layer. Is null while
-	 * no horizontal scrollbar is displayed
-	 */
-	private var _horizontalScrollBar:ScrollBar;
-	
-	/**
-	 * A reference to the vertical scrollbar which
-	 * might be displayed on the layer. Is null while
-	 * no vertical scrollbar is displayed
-	 */
-	private var _verticalScrollBar:ScrollBar;
 	
 	/**
 	 * This is the added scroll offsets of all
@@ -872,12 +857,14 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 			//when overflow is auto, the x axis is only
 			//clipped if a scrollbar is displayed
 			case AUTO:
-				return _horizontalScrollBar != null;
+				//TODO 3 : when scrollbar implemented, return
+				//wether scrollbar currently visible
+				return false;
 				
 			case VISIBLE:
 				if (treatVisibleOverflowAsAuto() == true)
 				{
-					return _horizontalScrollBar != null;
+					return false;
 				}
 				return false;
 				
@@ -916,12 +903,12 @@ class ScrollableView<ViewClass:ScrollableView<ViewClass>> extends FastNode<ViewC
 				return true;
 				
 			case AUTO:
-				return _verticalScrollBar != null;
+				return false;
 				
 			case VISIBLE:
 				if (treatVisibleOverflowAsAuto() == true)
 				{
-					return _verticalScrollBar != null;
+					return false;
 				}
 				return false;
 				

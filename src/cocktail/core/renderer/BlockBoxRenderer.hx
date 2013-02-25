@@ -17,7 +17,6 @@ import cocktail.core.event.WheelEvent;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.html.ScrollBar;
 import cocktail.core.linebox.LineBox;
 import cocktail.core.linebox.InlineBox;
 import cocktail.core.css.CoreStyle;

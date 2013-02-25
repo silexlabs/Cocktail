@@ -7,7 +7,7 @@
 */
 package cocktail.port.platform.flash_player;
 
-import cocktail.Config;
+import cocktail.core.config.Config;
 import cocktail.core.geom.Matrix;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLMediaElement;
@@ -281,7 +281,7 @@ class NativeVideo extends NativeMedia
 		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext.nativeLayer);
 		
 		//video might be added below cocktail's bitmap when compositing is disabled
-		if (Config.ENABLE_COMPOSITING == false && Config.VIDEO_BELOW_WHEN_NO_COMPOSITING == true)
+		if (Config.getInstance().enableCompositing == false && Config.getInstance().videoBelowWhenNoCompositing == true)
 		{
 			//TODO 3 : messy to reference parent, should cocktail instead provide right surface
 			//in this method ?
@@ -384,7 +384,7 @@ class NativeVideo extends NativeMedia
 	private function canUseStageVideo():Bool
 	{
 		//can be disabled via config
-		if (Config.USE_STAGE_VIDEO_IF_AVAILABLE == false)
+		if (Config.getInstance().useStageVideoIfAvailable == false)
 		{
 			return false;
 		}

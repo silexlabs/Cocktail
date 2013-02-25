@@ -8,7 +8,7 @@
 */
 package cocktail.core.html;
 
-import cocktail.Config;
+import cocktail.core.config.Config;
 import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CSSRule;
 import cocktail.core.css.CSSStyleDeclaration;
@@ -377,6 +377,9 @@ class HTMLDocument extends Document
 				
 			case HTMLConstants.HTML_BR_TAG_NAME:
 				element = new HTMLBRElement();
+				
+			case HTMLConstants.HTML_META_TAG_NAME:
+				element = new HTMLMetaElement();
 				
 			default:
 				element = new HTMLElement(tagName);
@@ -839,14 +842,14 @@ class HTMLDocument extends Document
 					else
 					{
 						var yOffset:Float = touchEvent.touches.item(0).screenY - _lastTouchStartPosition.y;
-						if (Math.abs(yOffset) > Config.TOUCH_MOVE_PREVENT_CLICK_DISTANCE)
+						if (Math.abs(yOffset) > Config.getInstance().touchMovePreventClickDistance)
 						{
 							_shouldDispatchClickOnNextMouseUp = false;
 						}
 						else
 						{
 							var xOffset:Float = touchEvent.touches.item(0).screenX - _lastTouchStartPosition.x;
-							if (Math.abs(xOffset) > Config.TOUCH_MOVE_PREVENT_CLICK_DISTANCE)
+							if (Math.abs(xOffset) > Config.getInstance().touchMovePreventClickDistance)
 							{
 								_shouldDispatchClickOnNextMouseUp = false;
 							}

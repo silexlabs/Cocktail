@@ -7,7 +7,7 @@
 */
 package cocktail.port.platform.flash_player;
 
-import cocktail.Config;
+import cocktail.core.config.Config;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
@@ -112,7 +112,7 @@ class Platform extends PlatformBase
 		
 		//optionnally may display with low quality
 		//to improve rendering speed.
-		if (Config.USE_LOW_STAGE_QUALITY == true)
+		if (Config.getInstance().useLowStageQuality == true)
 		{
 			Lib.current.stage.quality = StageQuality.LOW;
 		}
@@ -132,7 +132,7 @@ class Platform extends PlatformBase
 		hitTestingSprite = new Sprite();
 		updateHitTestingSprite();
 		
-		if (Config.USE_ADVANCED_HIT_TESTING == true)
+		if (Config.getInstance().useAdvancedHitTesting == true)
 		{
 			_rootSprite.addChild(_nativeLayersRootSprite);
 			_rootSprite.addChild(hitTestingSprite);
@@ -224,7 +224,7 @@ class Platform extends PlatformBase
 	override public function updateHitTestingBounds(stackingContext:StackingContext):Void
 	{
 		//only applies for advanced hit testing
-		if (Config.USE_ADVANCED_HIT_TESTING == false)
+		if (Config.getInstance().useAdvancedHitTesting == false)
 		{
 			return;
 		}

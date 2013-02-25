@@ -8,7 +8,7 @@
 */
 package cocktail.plugin.swf;
 
-import cocktail.Config;
+import cocktail.core.config.Config;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.geom.GeomUtils;
@@ -290,7 +290,7 @@ class SWFPlugin extends Plugin
 			//main bitmap
 			//
 			//TODO 4 : cocktail's Config should not be known by plugins ?
-			if (Config.ENABLE_COMPOSITING == false && Config.OBJECT_BELOW_WHEN_NO_COMPOSITING == true)
+			if (Config.getInstance().enableCompositing == false && Config.getInstance().objectBelowWhenNoCompositing == true)
 			{
 				//TODO 3 : messy to reference parent, should cocktail instead provide right surface
 				//in this method ?

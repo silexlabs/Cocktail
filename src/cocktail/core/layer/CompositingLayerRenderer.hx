@@ -7,6 +7,7 @@
 */
 package cocktail.core.layer;
 
+import cocktail.core.config.Config;
 import cocktail.core.renderer.ElementRenderer;
 
 /**
@@ -39,7 +40,7 @@ class CompositingLayerRenderer extends LayerRenderer
 	override private function establishesNewGraphicsContext():Bool
 	{
 		//compositing may be deactivated altogether 
-		if (Config.ENABLE_COMPOSITING == true)
+		if (Config.getInstance().enableCompositing == true)
 		{
 			if (isCompositingLayer() == true)
 			{

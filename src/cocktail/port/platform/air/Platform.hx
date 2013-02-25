@@ -7,7 +7,7 @@
 */
 package cocktail.port.platform.air;
 
-import cocktail.Config;
+import cocktail.core.config.Config;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;

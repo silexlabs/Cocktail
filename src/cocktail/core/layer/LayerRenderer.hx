@@ -9,7 +9,7 @@
 package cocktail.core.layer;
 
 using cocktail.core.utils.Utils;
-import cocktail.Config;
+import cocktail.core.config.Config;
 import cocktail.core.dom.Document;
 import cocktail.core.dom.Node;
 import cocktail.core.event.EventConstants;
@@ -17,7 +17,6 @@ import cocktail.core.event.UIEvent;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.html.ScrollBar;
 import cocktail.core.layer.ScrollableView;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.layout.computer.VisualEffectStylesComputer;
@@ -823,7 +822,7 @@ class LayerRenderer extends ScrollableView<LayerRenderer>
 	private function establishesNewGraphicsContext():Bool
 	{
 		//compositing may be entirely disabled
-		if (Config.ENABLE_COMPOSITING == true)
+		if (Config.getInstance().enableCompositing == true)
 		{
 			if (hasCompositingLayerDescendant(this) == true)
 			{

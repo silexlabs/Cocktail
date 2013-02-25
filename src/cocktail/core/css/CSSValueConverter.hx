@@ -7,7 +7,7 @@
 */
 package cocktail.core.css;
 
-import cocktail.Config;
+import cocktail.core.config.Config;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.LayoutData;	
 import cocktail.core.geom.GeomData;
@@ -153,25 +153,25 @@ class CSSValueConverter
 		switch (absoluteSize)
 		{
 			case XX_SMALL:
-				fontSize = Config.XX_SMALL_FONT_SIZE;
+				fontSize = Config.getInstance().xxSmallFontSize;
 				
 			case X_SMALL:
-				fontSize = Config.X_SMALL_FONT_SIZE;
+				fontSize = Config.getInstance().xSmallFontSize;
 				
 			case SMALL:
-				fontSize = Config.SMALL_FONT_SIZE;
+				fontSize = Config.getInstance().smallFontSize;
 				
 			case MEDIUM:
-				fontSize = Config.MEDIUM_FONT_SIZE;
+				fontSize = Config.getInstance().mediumFontSize;
 				
 			case LARGE:
-				fontSize = Config.LARGE_FONT_SIZE;
+				fontSize = Config.getInstance().largeFontSize;
 				
 			case X_LARGE:
-				fontSize = Config.X_LARGE_FONT_SIZE;
+				fontSize = Config.getInstance().xLargeFontSize;
 				
 			case XX_LARGE:
-				fontSize = Config.XX_LARGE_FONT_SIZE;
+				fontSize = Config.getInstance().xxLargeFontSize;
 				
 			default:
 				throw 'Illegal keyword value for font size';
@@ -980,13 +980,13 @@ class CSSValueConverter
 	private static function getLargerFontSize(parentFontSize:Float):Float
 	{
 		var fontSizeTable:Array<Int> = [
-		Config.XX_SMALL_FONT_SIZE,
-		Config.X_SMALL_FONT_SIZE,
-		Config.SMALL_FONT_SIZE,
-		Config.MEDIUM_FONT_SIZE,
-		Config.LARGE_FONT_SIZE,
-		Config.X_LARGE_FONT_SIZE,
-		Config.XX_LARGE_FONT_SIZE];
+		Config.getInstance().xxSmallFontSize,
+		Config.getInstance().xSmallFontSize,
+		Config.getInstance().smallFontSize,
+		Config.getInstance().mediumFontSize,
+		Config.getInstance().largeFontSize,
+		Config.getInstance().xLargeFontSize,
+		Config.getInstance().xxLargeFontSize];
 		
 		var fontSize:Float = fontSizeTable[fontSizeTable.length - 1];
 		
@@ -1009,13 +1009,13 @@ class CSSValueConverter
 	private static function getSmallerFontSize(parentFontSize:Float):Float
 	{
 		var fontSizeTable:Array<Int> = [
-		Config.XX_SMALL_FONT_SIZE,
-		Config.X_SMALL_FONT_SIZE,
-		Config.SMALL_FONT_SIZE,
-		Config.MEDIUM_FONT_SIZE,
-		Config.LARGE_FONT_SIZE,
-		Config.X_LARGE_FONT_SIZE,
-		Config.XX_LARGE_FONT_SIZE];
+		Config.getInstance().xxSmallFontSize,
+		Config.getInstance().xSmallFontSize,
+		Config.getInstance().smallFontSize,
+		Config.getInstance().mediumFontSize,
+		Config.getInstance().largeFontSize,
+		Config.getInstance().xLargeFontSize,
+		Config.getInstance().xxLargeFontSize];
 		
 		var fontSize:Float = fontSizeTable[0];
 		

@@ -8,7 +8,7 @@
 package cocktail.core.css;
 
 using cocktail.core.utils.Utils;
-import cocktail.Config;
+import cocktail.core.config.Config;
 import cocktail.core.css.CSSData;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.TransitionEvent;
@@ -587,7 +587,7 @@ class CoreStyle
 		
 		_fontManager = FontManager.getInstance();
 		//TODO 3 : messy
-		fontMetrics = _fontManager.getFontMetrics(Config.DEFAULT_FONT, Config.MEDIUM_FONT_SIZE);
+		fontMetrics = _fontManager.getFontMetrics(Config.getInstance().defaultFont, Config.getInstance().mediumFontSize);
 		
 		_transitionManager = TransitionManager.getInstance();
 		
