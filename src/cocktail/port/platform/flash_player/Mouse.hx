@@ -188,10 +188,11 @@ class Mouse extends MouseListenerBase
 		
 		
 		var mouseEvent:MouseEvent = new MouseEvent();
-
+		var offset = Lib.current.localToGlobal(new flash.geom.Point());
+		
 		//TODO 5 : screenX should be relative to sreen top left, but how to get this in flash ? use JavaScript ?
-		mouseEvent.initMouseEvent(eventType, true, true, null, 0.0, Math.round(typedEvent.stageX), Math.round(typedEvent.stageY),
-		Math.round(typedEvent.stageX), Math.round(typedEvent.stageY), typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, false, 0, null);
+		mouseEvent.initMouseEvent(eventType, true, true, null, 0.0, Math.round(typedEvent.stageX - offset.x), Math.round(typedEvent.stageY - offset.y),
+		Math.round(typedEvent.stageX - offset.x), Math.round(typedEvent.stageY - offset.y), typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, false, 0, null);
 
 		return mouseEvent;
 	}
@@ -208,10 +209,12 @@ class Mouse extends MouseListenerBase
 		var typedEvent:flash.events.MouseEvent = cast(event);
 		
 		var wheelEvent:WheelEvent = new WheelEvent();
+		var offset = Lib.current.localToGlobal(new flash.geom.Point());
 
-		wheelEvent.initWheelEvent(EventConstants.MOUSE_WHEEL, true, true, null, 0.0, Math.round(typedEvent.stageX), Math.round(typedEvent.stageY),
-		Math.round(typedEvent.stageX), Math.round(typedEvent.stageY), 0, null, "", 0, typedEvent.delta, 0, 0 );
-		
+		wheelEvent.initWheelEvent(EventConstants.MOUSE_WHEEL, true, true, null, 0.0, Math.round(typedEvent.stageX - offset.x), Math.round(typedEvent.stageY - offset.y),
+		Math.round(typedEvent.stageX - offset.x), Math.round(typedEvent.stageY - offset.y), 0, null, "", 0, typedEvent.delta, 0, 0 );
+
+
 		return wheelEvent;
 	}
 	
