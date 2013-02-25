@@ -50,23 +50,23 @@ class HTTPConstants
 	
 	// http methods
 	
-	public static inline var CONNECT:String = "connect";
+	public static inline var CONNECT:String = "CONNECT";
 	
-	public static inline var DELETE:String = "delete";
+	public static inline var DELETE:String = "DELETE";
 	
-	public static inline var GET:String = "get";
+	public static inline var GET:String = "GET";
 	
-	public static inline var HEAD:String = "head";
+	public static inline var HEAD:String = "HEAD";
 	
-	public static inline var OPTIONS:String = "options";
+	public static inline var OPTIONS:String = "OPTIONS";
 	
-	public static inline var POST:String = "post";
+	public static inline var POST:String = "POST";
 	
-	public static inline var PUT:String = "put";
+	public static inline var PUT:String = "PUT";
 	
-	public static inline var TRACE:String = "trace";
+	public static inline var TRACE:String = "TRACE";
 	
-	public static inline var TRACK:String = "track";
+	public static inline var TRACK:String = "TRACK";
 	
 	// http response type
 	
