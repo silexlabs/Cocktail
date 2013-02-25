@@ -237,4 +237,62 @@ class Config
 		return _instance;
 	}
 	
+	/**
+	 * Update the field of the config with the provided name
+	 * if it exists with the provided value
+	 */
+	public function updateConfig(name:String, value:String):Void
+	{
+		switch(name)
+		{
+			case "enableMouseEvent", "useLowStageQuality", "enableSynchronousUpdate",
+			"enableBitmapSmoothing", "useAdvancedHitTesting", "useStageVideoIfAvailable",
+			"enableCompositing", "objectBelowWhenNoCompositing", "videoBelowWhenNoCompositing":
+				updateBoolParam(name, value);
+				
+			case "touchMovePreventClickDistance", "xxSmallFontSize", "xSmallFontSize", "smallFontSize",
+			"mediumFontSize", "largeFontSize", "xLargeFontSize", "xxLargeFontSize":
+				updateIntParam(name, value);
+				
+			case "defaultFont", "defaultFontColor":
+				updateStringParam(name, value);
+		}
+	}
+	
+	/**
+	 * Set value for a Bool param, check validity of value
+	 */
+	private function updateBoolParam(name:String, value:String):Void
+	{
+		if (value == "true")
+		{
+			Reflect.setField(this, name, true);
+		}
+		else if (value == "false")
+		{
+			Reflect.setField(this, name, false);
+		}
+	}
+	
+	/**
+	 * Set value for int param, check that string can be parsed
+	 * as int
+	 */
+	private function updateIntParam(name:String, value:String):Void
+	{
+		var int:Null<Int> = Std.parseInt(value);
+		if (int != null)
+		{
+			Reflect.setField(this, name, int);
+		}
+	}
+	
+	/**
+	 * Set value of string param
+	 */
+	private function updateStringParam(name:String, value:String):Void
+	{
+		Reflect.setField(this, name, value);
+	}
+	
 }

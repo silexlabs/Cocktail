@@ -7,6 +7,7 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.html;
+import cocktail.core.config.Config;
 
 /**
  * The meta element represents various kinds of metadata that
@@ -37,28 +38,92 @@ class HTMLMetaElement extends HTMLElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN ATTRIBUTE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	override public function setAttribute(attributeName:String, value:String):Void
+	{
+		if (attributeName == HTMLConstants.HTML_NAME_ATTRIBUTE_NAME)
+		{
+			name = value;
+		}
+		else if (attributeName == HTMLConstants.HTML_CONTENT_ATTRIBUTE_NAME)
+		{
+			content = value;
+		}
+		else
+		{
+			super.setAttribute(attributeName, value);
+		}
+	}
+	
+	override public function getAttribute(attributeName:String):String
+	{
+		if (attributeName == HTMLConstants.HTML_NAME_ATTRIBUTE_NAME)
+		{
+			return name;
+		}
+		else if (attributeName == HTMLConstants.HTML_CONTENT_ATTRIBUTE_NAME)
+		{
+			return content;
+		}
+		else
+		{
+			return super.getAttribute(attributeName);
+		}
+	}
+	
+	/**
+	 * when added to dom, check wether this meta
+	 * update the config of the document
+	 */
+	override public function addedToDOM():Void
+	{
+		super.addedToDOM();
+		updateConfig();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Some meta tag might be used to override
+	 * config params of the document
+	 */
+	private function updateConfig():Void
+	{
+		if (isAttachedToDOM() == true && name != null && content != null)
+		{
+			Config.getInstance().updateConfig(name, content);
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// IDL GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	private function get_name():String
 	{
-		return getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME);
+		return super.getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME);
 	}
 	
 	private function set_name(value:String):String
 	{
-		setAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME, value);
+		super.setAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME, value);
+		updateConfig();
 		return value;
 	}
 	
 	private function get_content():String
 	{
-		return getAttribute(HTMLConstants.HTML_CONTENT_ATTRIBUTE_NAME);
+		return super.getAttribute(HTMLConstants.HTML_CONTENT_ATTRIBUTE_NAME);
 	}
 	
 	private function set_content(value:String):String
 	{
-		setAttribute(HTMLConstants.HTML_CONTENT_ATTRIBUTE_NAME, value);
+		super.setAttribute(HTMLConstants.HTML_CONTENT_ATTRIBUTE_NAME, value);
+		updateConfig();
 		return value;
 	}
 	
