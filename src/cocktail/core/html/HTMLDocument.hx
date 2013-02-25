@@ -378,6 +378,9 @@ class HTMLDocument extends Document
 			case HTMLConstants.HTML_BR_TAG_NAME:
 				element = new HTMLBRElement();
 				
+			case HTMLConstants.HTML_META_TAG_NAME:
+				element = new HTMLMetaElement();
+				
 			default:
 				element = new HTMLElement(tagName);
 		}
