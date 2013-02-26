@@ -413,6 +413,26 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
+	 * When a child is added to the DOM, an init
+	 * method is called on it
+	 */
+	override public function insertBefore(newChild:HTMLElement, refChild:HTMLElement):HTMLElement
+	{
+		super.insertBefore(newChild, refChild);
+		
+		//if refChild is null, this method
+		//will use appendChild which takes care
+		//of calling the init method
+		if (refChild != null)
+		{
+			newChild.appended();
+			invalidateCascade();
+		}
+	
+		return newChild;
+	}
+	
+	/**
 	 * Overriden to make the tag name case-insensitive in an
 	 * HTML document
 	 */

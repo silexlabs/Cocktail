@@ -202,6 +202,15 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	////////////////////////////////
 	
 	/**
+	 * set alpha on flash color transform object
+	 */
+	override public function beginTransparency(alpha:Float):Void
+	{
+		super.beginTransparency(alpha);
+		_flashColorTransform.alphaMultiplier = alpha;
+	}
+	
+	/**
 	 * clean-up flash native objects
 	 */
 	override public function dispose():Void
@@ -285,20 +294,17 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			_flashRectangle.height += _matrix.f ;
 		}
 		
-		var colorTransform:ColorTransform = null;
-		
-		//use a colorTransform to apply the alphe if 
-		//transparency is used
-		if (_useTransparency == true)
-		{
-			colorTransform = _flashColorTransform;
-			_flashColorTransform.alphaMultiplier = _alpha;
-		}
-		
 		roundFlashRect();
 		
-		//draw the bitmap data onto the current bitmap data with the right transformations
-		_nativeBitmap.bitmapData.draw(bitmapData, _flashMatrix, colorTransform, null, _flashRectangle, Config.getInstance().enableBitmapSmoothing);
+		//draw the bitmap data onto the current bitmap data with the right transformations and alpha
+		if (_useTransparency == true)
+		{
+			_nativeBitmap.bitmapData.draw(bitmapData, _flashMatrix, _flashColorTransform, null, _flashRectangle, Config.getInstance().enableBitmapSmoothing);
+		}
+		else
+		{
+			_nativeBitmap.bitmapData.draw(bitmapData, _flashMatrix, null, null, _flashRectangle, Config.getInstance().enableBitmapSmoothing);
+		}
 	}
 	
 	/**
@@ -327,21 +333,14 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		roundFlashRect();
 		roundFlashPoint();
 		
-		//create a transparency bitmap data if transparency is
-		//used
+		//use draw method for transparency, as color transform is needed
 		if (_useTransparency == true)
 		{
-			var color:Int = 0x000000;
-			var alpha:Int = Math.round(255 * _alpha);
-			color += alpha << 24;
+			_flashMatrix.identity();
+			_flashMatrix.tx = Math.floor(destPoint.x);
+			_flashMatrix.ty = Math.floor(destPoint.y);
 			
-			var alphaBitmapData:BitmapData = new BitmapData(Math.round(clipRect.width), Math.round(clipRect.height), true, color);
-			_flashAlphaPoint.x = 0;
-			_flashAlphaPoint.y = 0;
-			
-			_nativeBitmap.bitmapData.copyPixels(bitmapData, _flashRectangle, _flashPoint, alphaBitmapData, _flashAlphaPoint, true);
-			
-			alphaBitmapData.dispose();
+			_nativeBitmap.bitmapData.draw(bitmapData, _flashMatrix, _flashColorTransform, null, null, false);
 		}
 		else
 		{

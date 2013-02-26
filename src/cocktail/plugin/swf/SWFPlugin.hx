@@ -352,6 +352,15 @@ class SWFPlugin extends Plugin
 		_loader.unloadAndStop();
 		_loader = null;
 		_swf = null;
+		
+		//if the swf was loaded with a regular flash loader instead
+		//of being loaded as bytes, remove it from cache, this way if the
+		//swf is needed again, it will be cleanly reloaded
+		var loadedSWF:NativeHttp = ResourceManager.getBinaryResource(_elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
+		if (Std.is(loadedSWF.response, Loader) == true)
+		{
+			ResourceManager.removeBinaryResource(_elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
+		}
 	}
 	
 	/**
