@@ -349,15 +349,17 @@ class SWFPlugin extends Plugin
 	 */
 	override public function dispose():Void
 	{
+		_loader.unloadAndStop();
+		_loader = null;
+		_swf = null;
+		
 		//if the swf was loaded with a regular flash loader instead
-		//of being loaded as bytes, then it can't be disposed as it might
-		//need to be reused later
+		//of being loaded as bytes, remove it from cache, this way if the
+		//swf is needed again, it will be cleanly reloaded
 		var loadedSWF:NativeHttp = ResourceManager.getBinaryResource(_elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
-		if (Std.is(loadedSWF.response, Loader) == false)
+		if (Std.is(loadedSWF.response, Loader) == true)
 		{
-			_loader.unloadAndStop();
-			_loader = null;
-			_swf = null;
+			ResourceManager.removeBinaryResource(_elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
 		}
 	}
 	

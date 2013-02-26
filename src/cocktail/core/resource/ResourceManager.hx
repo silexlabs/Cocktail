@@ -68,6 +68,14 @@ class ResourceManager
 	}
 	
 	/**
+	 * Remove a cashed image resource
+	 */
+	public static function removeImageResource(url:String):Void
+	{
+		_resources.remove(url);
+	}
+	
+	/**
 	 * Return a binary resource, start loading it if
 	 * first request.
 	 */
@@ -83,5 +91,13 @@ class ResourceManager
 		}
 		
 		return resource;
+	}
+	
+	/**
+	 * Remove a cashed binary resource
+	 */
+	public static function removeBinaryResource(url:String):Void
+	{
+		_binaryResources.remove(url);
 	}
 }
