@@ -7,6 +7,7 @@
 */
 package cocktail.port.platform.flash_player;
 
+import cocktail.core.event.EventConstants;
 import cocktail.core.http.HTTPConstants;
 import cocktail.port.base.NativeHttpBase;
 import flash.display.Loader;
@@ -138,7 +139,7 @@ class NativeHttp extends NativeHttpBase
 	private function onSecurityError(event:SecurityErrorEvent):Void
 	{
 		var resource:SWFResource = new SWFResource(_url);
-		resource.addEventListener("load", function(e) {
+		resource.addEventListener(EventConstants.LOAD, function(e) {
 			var swfLoader:Loader = resource.nativeResource;
 			response = swfLoader;
 			complete = true;
