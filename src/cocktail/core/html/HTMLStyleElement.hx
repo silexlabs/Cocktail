@@ -30,7 +30,7 @@ class HTMLStyleElement extends HTMLElement
 	/**
 	 * A reference to the CSS style sheet created by this
 	 * node's content. It is null by default, a style sheet
-	 * is only created if this element has a text child
+	 * is only created if this element has at least one text child
 	 * node and is attached to the DOM
 	 */
 	public var sheet(default, null):CSSStyleSheet;
@@ -48,24 +48,23 @@ class HTMLStyleElement extends HTMLElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overriden to try to add a style sheet to the document if a
-	 * text node child is appended to this style node
+	 * Overriden to refresh the style sheet if a
+	 * text node child is added to this style node
 	 */
 	override public function appendChild(newChild:HTMLElement):HTMLElement
 	{
 		super.appendChild(newChild);
 		
-		//check that the style element is currently attach to the DOM
-		if (newChild.nodeType == DOMConstants.TEXT_NODE && parentNode != null)
+		if (newChild.nodeType == DOMConstants.TEXT_NODE)
 		{
-			addStyleSheet();
+			updateStyleSheet();
 		}
 		
 		return newChild;
 	}
 	
 	/**
-	 * remove the style sheet from the document when
+	 * update the style sheet from the document when
 	 * a text node child is removed
 	 */
 	override public function removeChild(oldChild:HTMLElement):HTMLElement
@@ -74,21 +73,39 @@ class HTMLStyleElement extends HTMLElement
 		
 		if (oldChild.nodeType == DOMConstants.TEXT_NODE)
 		{
-			removeStyleSheet();
+			updateStyleSheet();
 		}
 		
 		return oldChild;
 	}
 	
 	/**
+	 * Overriden to try to refresh the style sheet to the document if a
+	 * text node child is added to this style node
+	 */
+	override public function insertBefore(newChild:HTMLElement, refChild:HTMLElement):HTMLElement
+	{
+		super.insertBefore(newChild, refChild);
+		if (refChild != null)
+		{
+			if (newChild.nodeType == DOMConstants.TEXT_NODE)
+			{
+				updateStyleSheet();
+			}
+		}
+		
+		return newChild;
+	}
+	
+	/**
 	 * Overriden, as when the style element is added
 	 * to the DOM, it adds a style sheet to the 
-	 * document if it has a child text node
+	 * document if it has at least one child text node
 	 */
 	override public function addedToDOM():Void
 	{
 		super.addedToDOM();
-		addStyleSheet();
+		updateStyleSheet();
 	}
 
 	/**
@@ -99,7 +116,7 @@ class HTMLStyleElement extends HTMLElement
 	override public function removedFromDOM():Void
 	{
 		super.removedFromDOM();
-		removeStyleSheet();
+		updateStyleSheet();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -109,22 +126,26 @@ class HTMLStyleElement extends HTMLElement
 	/**
 	 * To actually add a style sheet to the 
 	 * document, the style node must both be
-	 * attached to the DOM and have a text
-	 * child node
+	 * attached to the DOM and have at least one
+	 * text node child
 	 */
-	private function addStyleSheet():Void
+	private function updateStyleSheet():Void
 	{
-		if (hasChildNodes() == true)
+		//stylesheet will be replaced
+		if (sheet != null)
 		{
-			if (childNodes[0].nodeType == DOMConstants.TEXT_NODE)
+			removeStyleSheet();
+		}
+		
+		if (attachedToDOM == true)
+		{
+			var css:String = concatenateChildTextNode();
+			if (css != "")
 			{
-				if (sheet == null)
-				{
-					//create a style sheet from the content of the child text node
-					sheet = new CSSStyleSheet(childNodes[0].nodeValue, PropertyOriginValue.AUTHOR, this);
-					var htmlDocument:HTMLDocument = cast(ownerDocument);
-					htmlDocument.addStyleSheet(sheet);
-				}
+				//create a style sheet from the content of all the childs node value
+				sheet = new CSSStyleSheet(css, PropertyOriginValue.AUTHOR, this);
+				var htmlDocument:HTMLDocument = cast(ownerDocument);
+				htmlDocument.addStyleSheet(sheet);
 			}
 		}
 	}
@@ -141,6 +162,27 @@ class HTMLStyleElement extends HTMLElement
 			htmlDocument.removeStyleSheet(sheet);
 			sheet = null;
 		}
+	}
+	
+	/**
+	 * Return the concatenated node value of all
+	 * text node child or an empty string if there
+	 * are no such child
+	 */
+	private function concatenateChildTextNode():String
+	{
+		var content:String = "";
+		
+		var length:Int = childNodes.length;
+		for (i in 0...length)
+		{
+			if (childNodes[i].nodeType == DOMConstants.TEXT_NODE)
+			{
+				content += childNodes[i].nodeValue;
+			}
+		}
+		
+		return content;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

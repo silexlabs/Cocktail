@@ -670,7 +670,6 @@ class CoreStyle
 		{
 			return;
 		}
-		cascadeManager.shouldCascadeAll();
 		
 		//will store all the properties which value
 		//change during cascading
