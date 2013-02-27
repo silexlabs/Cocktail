@@ -115,6 +115,14 @@ class CascadeManager
 	
 	public var hasBottomBorderStyle:Bool;
 	
+	public var hasLeftBorderColor:Bool;
+	
+	public var hasRightBorderColor:Bool;
+	
+	public var hasTopBorderColor:Bool;
+	
+	public var hasBottomBorderColor:Bool;
+	
 	/**
 	 * class constructor
 	 */
@@ -177,6 +185,10 @@ class CascadeManager
 		hasTopBorderStyle = false;
 		hasRightBorderStyle = false;
 		hasBottomBorderStyle = false;
+		hasBottomBorderColor = false;
+		hasTopBorderColor = false;
+		hasLeftBorderColor = false;
+		hasRightBorderColor = false;
 		
 		hasPropertiesToCascade = false;
 		cascadeAll = false;
@@ -343,6 +355,18 @@ class CascadeManager
 				
 			case CSSConstants.BORDER_BOTTOM_STYLE:
 				hasBottomBorderStyle = true;
+				
+			case CSSConstants.BORDER_TOP_COLOR:
+				hasTopBorderColor = true;
+				
+			case CSSConstants.BORDER_BOTTOM_COLOR:
+				hasBottomBorderColor = true;
+				
+			case CSSConstants.BORDER_RIGHT_COLOR:
+				hasRightBorderColor = true;
+				
+			case CSSConstants.BORDER_LEFT_COLOR:
+				hasLeftBorderColor = true;
 		}
 	}
 	

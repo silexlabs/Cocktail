@@ -1619,17 +1619,17 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * of its layer when rendering background, as they
 	 * should only apply to child element renderers and layers
 	 */
-	override private function getBackgroundBounds(scrollOffset:PointVO):RectangleVO
+	override private function getBackgroundAndBordersBounds(scrollOffset:PointVO):RectangleVO
 	{
-		var backgroundBounds:RectangleVO = super.getBackgroundBounds(scrollOffset);
+		var backgroundAndBordersBounds:RectangleVO = super.getBackgroundAndBordersBounds(scrollOffset);
 		
 		if (_hasOwnLayer == true)
 		{
-			backgroundBounds.x += layerRenderer.scrollLeft;
-			backgroundBounds.y += layerRenderer.scrollTop;
+			backgroundAndBordersBounds.x += layerRenderer.scrollLeft;
+			backgroundAndBordersBounds.y += layerRenderer.scrollTop;
 		}
 		
-		return backgroundBounds;
+		return backgroundAndBordersBounds;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

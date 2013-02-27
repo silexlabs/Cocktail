@@ -881,6 +881,27 @@ class CoreStyle
 			CSSValueConverter.getColorVOFromCSSColor(getColor(color), usedValues.color);
 		}
 		
+		//same as above for borders colors
+		if (cascadeManager.hasLeftBorderColor == true)
+		{
+			CSSValueConverter.getColorVOFromCSSColor(getColor(borderLeftColor), usedValues.borderLeftColor);
+		}
+		
+		if (cascadeManager.hasTopBorderColor == true)
+		{
+			CSSValueConverter.getColorVOFromCSSColor(getColor(borderTopColor), usedValues.borderTopColor);
+		}
+		
+		if (cascadeManager.hasRightBorderColor == true)
+		{
+			CSSValueConverter.getColorVOFromCSSColor(getColor(borderRightColor), usedValues.borderRightColor);
+		}
+		
+		if (cascadeManager.hasBottomBorderColor == true)
+		{
+			CSSValueConverter.getColorVOFromCSSColor(getColor(borderBottomColor), usedValues.borderBottomColor);
+		}
+		
 		//same as above for line height
 		//if (cascadeManager.hasLineHeight == true)
 		//{

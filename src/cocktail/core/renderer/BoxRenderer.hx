@@ -13,6 +13,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.geom.Matrix;
+import cocktail.core.graphics.BorderDrawer;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
@@ -71,10 +72,11 @@ class BoxRenderer extends InvalidatingElementRenderer
 	private var _windowData:ContainingBlockVO;
 	
 	/**
-	 * Holds the dimensions and position of the background
-	 * of this box renderer, in viewport bounds
+	 * Holds the dimensions and position of the box where
+	 * the background and borders are rendered
+	 * , in viewport bounds
 	 */
-	private var _backgroundBounds:RectangleVO;
+	private var _backgroundAndBorderBounds:RectangleVO;
 	
 	/**
 	 * A reusable rect used during rendering
@@ -89,7 +91,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		super(domNode);
 		_containerBlockData = new ContainingBlockVO(0.0, false, 0.0, false);
 		_windowData = new ContainingBlockVO(0.0, false, 0.0, false);
-		_backgroundBounds = new RectangleVO();
+		_backgroundAndBorderBounds = new RectangleVO();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -167,6 +169,8 @@ class BoxRenderer extends InvalidatingElementRenderer
 		{
 			renderBackground(graphicContext, clipRect, scrollOffset);
 		}
+		
+		renderBorder(graphicContext, clipRect, scrollOffset);
 	}
 	
 	/**
@@ -174,10 +178,17 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	private function renderBackground(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
-		var backgroundBounds:RectangleVO = getBackgroundBounds(scrollOffset);
-		
-		//TODO 3 : should only pass dimensions instead of bounds
+		var backgroundBounds:RectangleVO = getBackgroundAndBordersBounds(scrollOffset);
 		BackgroundManager.render(graphicContext, backgroundBounds, coreStyle, this, clipRect);
+	}
+	
+	/**
+	 * render the borders of the box using the provided graphic context
+	 */
+	private function renderBorder(graphicsContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
+	{
+		var borderBounds:RectangleVO = getBackgroundAndBordersBounds(scrollOffset);
+		BorderDrawer.draw(graphicsContext, borderBounds, coreStyle, clipRect);
 	}
 	
 	/**
@@ -919,19 +930,19 @@ class BoxRenderer extends InvalidatingElementRenderer
 	
 	/**
 	 * Helper method returning the bounds to 
-	 * be used to draw the background. Meant
+	 * be used to draw the background and borders. Meant
 	 * to be overriden as for instance the HTMLBodyElement's
 	 * ElementRenderer uses the viewport bounds for its background
-	 * instead of its own
+	 * and borders instead of its own
 	 */
-	private function getBackgroundBounds(scrollOffset:PointVO):RectangleVO
+	private function getBackgroundAndBordersBounds(scrollOffset:PointVO):RectangleVO
 	{
-		_backgroundBounds.x = globalBounds.x - scrollOffset.x;
-		_backgroundBounds.y = globalBounds.y - scrollOffset.y;
-		_backgroundBounds.width = globalBounds.width;
-		_backgroundBounds.height = globalBounds.height;
+		_backgroundAndBorderBounds.x = globalBounds.x - scrollOffset.x;
+		_backgroundAndBorderBounds.y = globalBounds.y - scrollOffset.y;
+		_backgroundAndBorderBounds.width = globalBounds.width;
+		_backgroundAndBorderBounds.height = globalBounds.height;
 		
-		return _backgroundBounds;
+		return _backgroundAndBorderBounds;
 	}
 	
 	/**
