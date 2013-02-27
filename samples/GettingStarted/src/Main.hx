@@ -17,6 +17,9 @@ import js.Dom;
  */
 class Main
 {
+	static inline var ICON_COCKTAIL_PATH:String = "assets/icone_cocktail_blanche_ombre.png";
+	static inline var ICON2_PATH:String = "assets/icone_haxe_blanche_ombre.png";
+	
 	/**
 	 * Constructor
 	 */
@@ -27,28 +30,27 @@ class Main
 		var image:Image = cast Lib.document.getElementById("icon");
 		
 		// create interactivity
-		image.onmousedown = onMouseDown;
 		image.onmouseup = onMouseUp;
 	}
 	
 	/**
-	 * Mouse Down callback. Changes the image to be displayed.
-	 * @param	event
-	 */
-	public static function onMouseDown(event:Event):Void
-	{
-		var image:Image = cast(event.target);
-		image.src = "assets/icone_haxe_blanche_ombre.png";
-	}
-	
-	/**
-	 * Mouse Up callback. Resets the image to be displayed and loads the dynamic data.
+	 * Mouse Up callback. Changes the image to be displayed.
 	 * @param	event
 	 */
 	public static function onMouseUp(event:Event):Void
 	{
 		var image:Image = cast(event.target);
-		image.src = "assets/icone_cocktail_blanche_ombre.png";
+		
+		// if image source is cocktail icon, change it to Haxe one
+		if(image.src.indexOf(ICON_COCKTAIL_PATH) != -1)
+		{
+			image.src = "assets/icone_haxe_blanche_ombre.png";
+		}
+		// if image source is not cocktail icon, change it back to cocktail
+		else
+		{
+			image.src = ICON_COCKTAIL_PATH;
+		}
 	}
 	
 }
