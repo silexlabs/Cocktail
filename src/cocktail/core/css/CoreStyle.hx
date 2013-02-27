@@ -701,8 +701,8 @@ class CoreStyle
 		//same for right border
 		if (cascadeManager.hasRightBorderStyle == true || cascadeManager.cascadeAll == true)
 		{
-			var leftBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_RIGHT_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
-			if (leftBorderStyleDidChange == true)
+			var rightBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_RIGHT_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			if (rightBorderStyleDidChange == true)
 			{
 				_changedProperties.push(CSSConstants.BORDER_RIGHT_WIDTH);
 				cascadeManager.addPropertyToCascade(CSSConstants.BORDER_RIGHT_WIDTH);
@@ -714,8 +714,8 @@ class CoreStyle
 		//same for top border
 		if (cascadeManager.hasTopBorderStyle == true || cascadeManager.cascadeAll == true)
 		{
-			var leftBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_TOP_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
-			if (leftBorderStyleDidChange == true)
+			var topBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_TOP_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			if (topBorderStyleDidChange == true)
 			{
 				_changedProperties.push(CSSConstants.BORDER_TOP_WIDTH);
 				cascadeManager.addPropertyToCascade(CSSConstants.BORDER_TOP_WIDTH);
@@ -727,8 +727,8 @@ class CoreStyle
 		//same for bottom border
 		if (cascadeManager.hasBottomBorderStyle == true || cascadeManager.cascadeAll == true)
 		{
-			var leftBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_BOTTOM_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
-			if (leftBorderStyleDidChange == true)
+			var bottomBorderStyleDidChange:Bool = cascadeProperty(CSSConstants.BORDER_BOTTOM_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			if (bottomBorderStyleDidChange == true)
 			{
 				_changedProperties.push(CSSConstants.BORDER_BOTTOM_WIDTH);
 				cascadeManager.addPropertyToCascade(CSSConstants.BORDER_BOTTOM_WIDTH);
@@ -863,6 +863,10 @@ class CoreStyle
 		//apply special computing relationship between
 		//display, float and position property
 		applyPositionFloatAndDisplayRelationship();
+		
+		//if borders have a style of 'none' or 'hidden',
+		//must enforce a 0 border width for the matching border
+		applyHiddenBordersWidth();
 		
 		//if the background color property was changed, computes
 		//its used value immediately, as for color, there is no need
@@ -1543,16 +1547,7 @@ class CoreStyle
 				switch(property)
 				{
 					case LENGTH(value):
-						//if border style for border is 'none' or 'hidden', compute to
-						//0
-						if (hasNoneOrHiddenBorderStyle(propertyIndex) == true)
-						{
-							return ABSOLUTE_LENGTH(0);
-						}
-						else
-						{
-							return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
-						}
+						return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
 						
 					case INTEGER(value):
 						return ABSOLUTE_LENGTH(value);
@@ -1971,6 +1966,33 @@ class CoreStyle
 					default:	
 				}
 				
+		}
+	}
+	
+	/**
+	 * If a border has a style of 'none' or 'hidden' its
+	 * width computes to 0
+	 */
+	private function applyHiddenBordersWidth():Void
+	{
+		if (hasNoneOrHiddenBorderStyle(CSSConstants.BORDER_TOP_WIDTH) == true)
+		{
+			computedValues.setTypedProperty(CSSConstants.BORDER_TOP_WIDTH, ABSOLUTE_LENGTH(0) , false);
+		}
+		
+		if (hasNoneOrHiddenBorderStyle(CSSConstants.BORDER_RIGHT_WIDTH) == true)
+		{
+			computedValues.setTypedProperty(CSSConstants.BORDER_RIGHT_WIDTH, ABSOLUTE_LENGTH(0) , false);
+		}
+		
+		if (hasNoneOrHiddenBorderStyle(CSSConstants.BORDER_BOTTOM_WIDTH) == true)
+		{
+			computedValues.setTypedProperty(CSSConstants.BORDER_BOTTOM_WIDTH, ABSOLUTE_LENGTH(0) , false);
+		}
+		
+		if (hasNoneOrHiddenBorderStyle(CSSConstants.BORDER_LEFT_WIDTH) == true)
+		{
+			computedValues.setTypedProperty(CSSConstants.BORDER_LEFT_WIDTH, ABSOLUTE_LENGTH(0) , false);
 		}
 	}
 	

@@ -166,17 +166,17 @@ class Config
 	 * The actual border width used when 'thin' is used
 	 * as border width
 	 */
-	public static inline var THIN_BORDER_WIDTH:Float = 1.0;
+	public var thinBorderWidth:Int;
 	
 	/**
 	 * same as above for 'medium'
 	 */
-	public static inline var MEDIUM_BORDER_WIDTH:Float = 3.0;
+	public var mediumBorderWidth:Int;
 	
 	/**
 	 * same as above for 'thick'
 	 */
-	public static inline var THICK_BORDER_WIDTH:Float = 5.0;
+	public var thickBorderWidth:Int;
 	
 	/////////////////////////////////////////////////
 	// COMPOSITING CONFIG
@@ -238,6 +238,10 @@ class Config
 		largeFontSize = 18;
 		xLargeFontSize = 24;
 		xxLargeFontSize = 32;
+		
+		thinBorderWidth = 1;
+		mediumBorderWidth = 3;
+		thickBorderWidth = 5;
 	
 		enableCompositing = false;
 		objectBelowWhenNoCompositing = true;
@@ -271,7 +275,8 @@ class Config
 				updateBoolParam(name, value);
 				
 			case "touchMovePreventClickDistance", "xxSmallFontSize", "xSmallFontSize", "smallFontSize",
-			"mediumFontSize", "largeFontSize", "xLargeFontSize", "xxLargeFontSize":
+			"mediumFontSize", "largeFontSize", "xLargeFontSize", "xxLargeFontSize", "thinBorderWidth",
+			"mediumBorderWidth", "thickBorderWidth":
 				updateIntParam(name, value);
 				
 			case "defaultFont", "defaultFontColor":

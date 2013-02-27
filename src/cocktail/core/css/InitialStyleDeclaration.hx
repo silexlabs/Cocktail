@@ -182,7 +182,6 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		pushProperty(CSSConstants.TOP, KEYWORD(AUTO));
 		pushProperty(CSSConstants.BOTTOM, KEYWORD(AUTO));
 		
-
 		pushProperty(CSSConstants.FONT_STYLE, KEYWORD(NORMAL));
 		pushProperty(CSSConstants.FONT_VARIANT, KEYWORD(NORMAL));
 		pushProperty(CSSConstants.FONT_WEIGHT, KEYWORD(NORMAL));
@@ -265,10 +264,10 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		pushComputedProperty(CSSConstants.PADDING_RIGHT, ABSOLUTE_LENGTH(0));
 		pushComputedProperty(CSSConstants.PADDING_BOTTOM, ABSOLUTE_LENGTH(0));
 		
-		pushComputedProperty(CSSConstants.BORDER_TOP_WIDTH, ABSOLUTE_LENGTH(0));
-		pushComputedProperty(CSSConstants.BORDER_RIGHT_WIDTH, ABSOLUTE_LENGTH(0));
-		pushComputedProperty(CSSConstants.BORDER_BOTTOM_WIDTH, ABSOLUTE_LENGTH(0));
-		pushComputedProperty(CSSConstants.BORDER_LEFT_WIDTH, ABSOLUTE_LENGTH(0));
+		pushComputedProperty(CSSConstants.BORDER_TOP_WIDTH, ABSOLUTE_LENGTH(Config.getInstance().mediumBorderWidth));
+		pushComputedProperty(CSSConstants.BORDER_RIGHT_WIDTH, ABSOLUTE_LENGTH(Config.getInstance().mediumBorderWidth));
+		pushComputedProperty(CSSConstants.BORDER_BOTTOM_WIDTH, ABSOLUTE_LENGTH(Config.getInstance().mediumBorderWidth));
+		pushComputedProperty(CSSConstants.BORDER_LEFT_WIDTH, ABSOLUTE_LENGTH(Config.getInstance().mediumBorderWidth));
 		
 		pushComputedProperty(CSSConstants.BORDER_TOP_COLOR, COLOR(CSSColorValue.HEX(Config.getInstance().defaultFontColor)));
 		pushComputedProperty(CSSConstants.BORDER_RIGHT_COLOR, COLOR(CSSColorValue.HEX(Config.getInstance().defaultFontColor)));

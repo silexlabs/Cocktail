@@ -91,13 +91,13 @@ class CSSValueConverter
 		switch(value)
 		{
 			case THIN:
-				return Config.THIN_BORDER_WIDTH;
+				return Config.getInstance().thinBorderWidth;
 				
 			case MEDIUM:
-				return Config.MEDIUM_BORDER_WIDTH;
+				return Config.getInstance().mediumBorderWidth;
 				
 			case THICK:
-				return Config.THICK_BORDER_WIDTH;
+				return Config.getInstance().thickBorderWidth;
 				
 			default:
 				throw 'not a valid border width keyword';

@@ -10,6 +10,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
+import cocktail.core.graphics.BorderDrawer;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.linebox.InlineBox;
@@ -57,22 +58,25 @@ class InlineBoxRenderer extends FlowBoxRenderer
 	 */
 	override public function render(graphicsContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{	
-		//render background if at least a background image or background color should be drawn
-		if (coreStyle.hasBackgroundImage == true || coreStyle.hasBackgroundColor == true)
+		var inlineBoxesLength:Int = inlineBoxes.length;
+		for (i in 0...inlineBoxesLength)
 		{
-			var inlineBoxesLength:Int = inlineBoxes.length;
-			for (i in 0...inlineBoxesLength)
-			{
-				var inlineBox:InlineBox = inlineBoxes[i];
+			var inlineBox:InlineBox = inlineBoxes[i];
 
-				_renderRect.width = inlineBox.bounds.width;
-				_renderRect.height = inlineBox.bounds.height;
-				_renderRect.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x + globalBounds.x - scrollOffset.x;
-				_renderRect.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y + globalBounds.y - scrollOffset.y;
-				
+			_renderRect.width = inlineBox.bounds.width;
+			_renderRect.height = inlineBox.bounds.height;
+			_renderRect.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x + globalBounds.x - scrollOffset.x;
+			_renderRect.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y + globalBounds.y - scrollOffset.y;
+			
+			//render background if at least a background image or background color should be drawn
+			if (coreStyle.hasBackgroundImage == true || coreStyle.hasBackgroundColor == true)
+			{
 				BackgroundManager.render(graphicsContext, _renderRect, coreStyle, this, clipRect);
 			}
+			
+			BorderDrawer.draw(graphicsContext, _renderRect, coreStyle, clipRect);
 		}
+		
 		
 		//only call if has children
 		if (firstChild != null)
