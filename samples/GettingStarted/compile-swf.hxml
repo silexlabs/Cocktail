@@ -4,10 +4,8 @@
 -cp src
 
 #binary
--swf bin/swf/Main.swf
+-swf bin/Main.swf
 -swf-version 10.2
 --remap js:cocktail
 --macro Cocktail.create('src/index.html','Main')
 
-#copy assets directory
--cmd cp -R assets bin\swf\
