@@ -2109,46 +2109,128 @@ class CSSStyleDeclaration
 			case CSSConstants.BORDER_TOP, CSSConstants.BORDER_BOTTOM,
 			CSSConstants.BORDER_LEFT, CSSConstants.BORDER_RIGHT,
 			CSSConstants.BORDER:
-				var isBorderShorthand:Bool = propertyIndex == CSSConstants.BORDER;
 				switch(styleValue)
 				{
-					case KEYWORD(value):
-						if (isValidBorderWidthValue(styleValue) == true)
-						{
-							if (isBorderShorthand == true)
-							{
-								
-							}
-							else
-							{
-								
-							}
-						}
-						
-					case INTEGER(value):
-						
-					case LENGTH(value):	
-						
 					case GROUP(value):
-						switch(value.length)
+						var borderColor:CSSPropertyValue = null;
+						var borderWidth:CSSPropertyValue = null;
+						var borderStyle:CSSPropertyValue = null;
+						for (i in 0...value.length)
 						{
-							case 2:
-								
-								
-							case 3:
-							
-								
-							default:	
+							if (isValidBorderColorValue(value[i]) == true)
+							{
+								borderColor = value[i];
+							}
+							else if (isValidBorderWidthValue(value[i]) == true)
+							{
+								borderWidth = value[i];
+							}
+							else if (isValidBorderStyleValue(value[i]) == true)
+							{
+								borderStyle = value[i];
+							}
 						}
-						
-					case INHERIT, INITIAL:
+						setTypedBordersProperties(CSSConstants.BORDER, borderWidth, borderColor, borderStyle, important);
 						
 					default:	
+						setBorderShorthand(propertyIndex, styleValue, important);
 				}		
 				
 			default:	
 						
 		}
+	}
+	
+	/**
+	 * Set the value for a border shorthand style, excluding 
+	 * groups values
+	 */
+	private function setBorderShorthand(propertyIndex:Int, styleValue:CSSPropertyValue, important:Bool):Void
+	{
+		switch(styleValue)
+		{
+			case KEYWORD(value):
+				if (isValidBorderWidthValue(styleValue) == true)
+				{
+					setTypedBordersProperties(propertyIndex, styleValue, null, null, important);
+				}
+				else if (isValidBorderStyleValue(styleValue) == true)
+				{
+					setTypedBordersProperties(propertyIndex, null, null, styleValue, important);
+				}
+				
+			case INTEGER(value):
+				setTypedBordersProperties(propertyIndex, styleValue, null, null, important);
+				
+			case LENGTH(value):	
+				setTypedBordersProperties(propertyIndex, styleValue, null, null, important);
+				
+			case COLOR(value):
+				setTypedBordersProperties(propertyIndex, null, styleValue, null, important);
+				
+			case INHERIT, INITIAL:
+				setTypedBordersProperties(propertyIndex, styleValue, styleValue, styleValue, important);
+				
+			default:	
+		}
+	}
+	
+	/**
+	 * Used for background shorthands "border-top", "border-left", "border-right", "border-bottom"
+	 * and "border", set all the properties on the matching border style 
+	 */
+	private function setTypedBordersProperties(propertyIndex:Int, borderWidth:CSSPropertyValue, borderColor:CSSPropertyValue, borderStyle:CSSPropertyValue, important:Bool):Void
+	{
+		switch(propertyIndex)
+		{
+			case CSSConstants.BORDER_TOP:
+				setTypedBorderProperties(CSSConstants.BORDER_TOP_WIDTH, borderWidth, CSSConstants.BORDER_TOP_COLOR, borderColor, CSSConstants.BORDER_TOP_STYLE, borderStyle, important);
+				
+			case CSSConstants.BORDER_RIGHT:
+				setTypedBorderProperties(CSSConstants.BORDER_RIGHT_WIDTH, borderWidth, CSSConstants.BORDER_RIGHT_COLOR, borderColor, CSSConstants.BORDER_RIGHT_STYLE, borderStyle, important);
+				
+			case CSSConstants.BORDER_BOTTOM:
+				setTypedBorderProperties(CSSConstants.BORDER_BOTTOM_WIDTH, borderWidth, CSSConstants.BORDER_BOTTOM_COLOR, borderColor, CSSConstants.BORDER_BOTTOM_STYLE, borderStyle, important);
+			
+			case CSSConstants.BORDER_LEFT:
+				setTypedBorderProperties(CSSConstants.BORDER_LEFT_WIDTH, borderWidth, CSSConstants.BORDER_LEFT_COLOR, borderColor, CSSConstants.BORDER_LEFT_STYLE, borderStyle, important);
+				
+			case CSSConstants.BORDER:
+				setTypedBorderProperties(CSSConstants.BORDER_TOP_WIDTH, borderWidth, CSSConstants.BORDER_TOP_COLOR, borderColor, CSSConstants.BORDER_TOP_STYLE, borderStyle, important);
+				setTypedBorderProperties(CSSConstants.BORDER_RIGHT_WIDTH, borderWidth, CSSConstants.BORDER_RIGHT_COLOR, borderColor, CSSConstants.BORDER_RIGHT_STYLE, borderStyle, important);
+				setTypedBorderProperties(CSSConstants.BORDER_BOTTOM_WIDTH, borderWidth, CSSConstants.BORDER_BOTTOM_COLOR, borderColor, CSSConstants.BORDER_BOTTOM_STYLE, borderStyle, important);
+				setTypedBorderProperties(CSSConstants.BORDER_LEFT_WIDTH, borderWidth, CSSConstants.BORDER_LEFT_COLOR, borderColor, CSSConstants.BORDER_LEFT_STYLE, borderStyle, important);
+			
+			default:	
+		}
+	}
+	
+	/**
+	 * For a givent border, set its width, color and style, using initial
+	 * css value if no other value are provided
+	 */
+	private function setTypedBorderProperties(borderWidthPropertyIndex:Int, borderWidth:CSSPropertyValue, borderColorPropertyIndex:Int, borderColor:CSSPropertyValue, borderStylePropertyIndex:Int, borderStyle:CSSPropertyValue, important:Bool):Void
+	{
+		if (borderWidth == null)
+		{
+			borderWidth = InitialStyleDeclaration.getInstance().getTypedProperty(CSSConstants.BORDER_TOP_WIDTH).typedValue;
+		}
+		
+		setTypedProperty(borderWidthPropertyIndex, borderWidth, important);
+		
+		if (borderColor == null)
+		{
+			borderColor = InitialStyleDeclaration.getInstance().getTypedProperty(CSSConstants.BORDER_TOP_COLOR).typedValue;
+		}
+		setTypedProperty(borderColorPropertyIndex, borderColor, important);
+		
+		if (borderStyle == null)
+		{
+			borderStyle = InitialStyleDeclaration.getInstance().getTypedProperty(CSSConstants.BORDER_TOP_STYLE).typedValue;
+		}
+		
+		setTypedProperty(borderStylePropertyIndex, borderStyle, important);
+		
 	}
 	
 	/**
@@ -2589,6 +2671,8 @@ class CSSStyleDeclaration
 								return false;
 							}
 						}
+						
+						return true;
 					
 					case INHERIT, INITIAL:
 						return true;	
