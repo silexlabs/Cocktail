@@ -1409,7 +1409,8 @@ class CSSStyleDeclaration
 				}
 				
 			case CSSConstants.BORDER_TOP_WIDTH, CSSConstants.BORDER_RIGHT_WIDTH,
-			CSSConstants.BORDER_BOTTOM_WIDTH, CSSConstants.BORDER_LEFT_WIDTH:
+			CSSConstants.BORDER_BOTTOM_WIDTH, CSSConstants.BORDER_LEFT_WIDTH,
+			CSSConstants.OUTLINE_WIDTH:
 				switch(styleValue)
 				{
 					case INHERIT, INITIAL:
@@ -1439,6 +1440,26 @@ class CSSStyleDeclaration
 						
 					default:	
 						return isValidBorderStyleValue(styleValue);
+				}
+				
+			case CSSConstants.OUTLINE_STYLE:
+				switch(styleValue)
+				{
+					case INHERIT, INITIAL:
+						return true;
+						
+					default:	
+						return isValidOutlineStyleValue(styleValue);
+				}
+				
+			case CSSConstants.OUTLINE_COLOR:
+				switch(styleValue)
+				{
+					case INHERIT, INITIAL:
+						return true;
+						
+					default:
+						return isValidOutlineColorValue(styleValue);
 				}
 		}
 		
@@ -1617,7 +1638,7 @@ class CSSStyleDeclaration
 			CSSConstants.TRANSITION, CSSConstants.BACKGROUND, CSSConstants.FONT,
 			CSSConstants.BORDER_TOP, CSSConstants.BORDER_LEFT, CSSConstants.BORDER_RIGHT,
 			CSSConstants.BORDER_BOTTOM, CSSConstants.BORDER_WIDTH, CSSConstants.BORDER_COLOR,
-			CSSConstants.BORDER_STYLE, CSSConstants.BORDER:
+			CSSConstants.BORDER_STYLE, CSSConstants.BORDER, CSSConstants.OUTLINE:
 				return true;
 				
 			default:
@@ -2134,7 +2155,46 @@ class CSSStyleDeclaration
 						
 					default:	
 						setBorderShorthand(propertyIndex, styleValue, important);
-				}		
+				}
+				
+			case CSSConstants.OUTLINE:
+				switch(styleValue)
+				{
+					case GROUP(value):
+						var outlineColor:CSSPropertyValue = null;
+						var outlineWidth:CSSPropertyValue = null;
+						var outlineStyle:CSSPropertyValue = null;
+						for (i in 0...value.length)
+						{
+							if (isValidOutlineColorValue(value[i]) == true)
+							{
+								outlineColor = value[i];
+							}
+							else if (isValidBorderWidthValue(value[i]) == true)
+							{
+								outlineWidth = value[i];
+							}
+							else if (isValidBorderStyleValue(value[i]) == true)
+							{
+								outlineStyle = value[i];
+							}
+						}
+						setTypedOutlineProperties(outlineWidth, outlineColor, outlineStyle, important);
+						
+					default:
+						if (isValidOutlineColorValue(styleValue) == true)
+						{
+							setTypedOutlineProperties(null, styleValue, null, important);
+						}
+						else if (isValidOutlineStyleValue(styleValue) == true)
+						{
+							setTypedOutlineProperties(null, null, styleValue, important);
+						}
+						else if (isValidBorderWidthValue(styleValue) == true)
+						{
+							setTypedOutlineProperties(styleValue, null, null, important);
+						}
+				}
 				
 			default:	
 						
@@ -2231,6 +2291,33 @@ class CSSStyleDeclaration
 		
 		setTypedProperty(borderStylePropertyIndex, borderStyle, important);
 		
+	}
+	
+	/**
+	 * set all outline properties at once, using initial css value if no
+	 * other values are provided
+	 */
+	private function setTypedOutlineProperties(outlineWidth:CSSPropertyValue, outlineColor:CSSPropertyValue, outlineStyle:CSSPropertyValue, important:Bool):Void
+	{
+		if (outlineWidth == null)
+		{
+			outlineWidth = InitialStyleDeclaration.getInstance().getTypedProperty(CSSConstants.OUTLINE_WIDTH).typedValue;
+		}
+		
+		setTypedProperty(CSSConstants.OUTLINE_WIDTH, outlineWidth, important);
+		
+		if (outlineColor == null)
+		{
+			outlineColor = InitialStyleDeclaration.getInstance().getTypedProperty(CSSConstants.OUTLINE_COLOR).typedValue;
+		}
+		setTypedProperty(CSSConstants.OUTLINE_COLOR, outlineColor, important);
+		
+		if (outlineStyle == null)
+		{
+			outlineStyle = InitialStyleDeclaration.getInstance().getTypedProperty(CSSConstants.OUTLINE_STYLE).typedValue;
+		}
+		
+		setTypedProperty(CSSConstants.OUTLINE_STYLE, outlineStyle, important);
 	}
 	
 	/**
@@ -2665,6 +2752,81 @@ class CSSStyleDeclaration
 									return false;
 								}
 								foundBorderStyle = true;
+							}
+							else
+							{
+								return false;
+							}
+						}
+						
+						return true;
+					
+					case INHERIT, INITIAL:
+						return true;	
+						
+					default:	
+				}
+				
+			case CSSConstants.OUTLINE:
+				switch(styleValue)
+				{
+					case KEYWORD(value):
+						if (isValidBorderWidthValue(styleValue) == true || isValidOutlineStyleValue(styleValue) == true || isValidOutlineColorValue(styleValue) == true)
+						{
+							return true;
+						}
+						
+					case COLOR(value):
+						return true;
+						
+					case INTEGER(value):
+						if (value == 0)
+						{
+							return true;
+						}
+						
+					case LENGTH(value):
+						if (isPositiveLength(value) == true)
+						{
+							return true;
+						}
+						
+					case GROUP(value):
+						if (value.length != 2 && value.length != 3)
+						{
+							return false;
+						}
+						
+						var foundOutlineWidth:Bool = false;
+						var foundOutlineStyle:Bool = false;
+						var foundOutlineColor:Bool = false;
+						
+						for (i in 0...value.length)
+						{
+							if (isValidBorderWidthValue(value[i]) == true)
+							{
+								if (foundOutlineWidth == true)
+								{
+									//means duplicate outline width value provided
+									return false;
+								}
+								foundOutlineWidth = true;
+							}
+							else if (isValidOutlineColorValue(value[i]) == true)
+							{
+								if (foundOutlineColor == true)
+								{
+									return false;
+								}
+								foundOutlineColor = true;
+							}
+							else if (isValidOutlineStyleValue(value[i]) == true)
+							{
+								if (foundOutlineStyle == true)
+								{
+									return false;
+								}
+								foundOutlineStyle = true;
 							}
 							else
 							{
@@ -3461,6 +3623,50 @@ class CSSStyleDeclaration
 		}
 		
 		return false;		
+	}
+	
+	/**
+	 * Return wether a CSS value is valid for a outline color style
+	 */
+	private function isValidOutlineColorValue(styleValue:CSSPropertyValue):Bool
+	{
+		switch(styleValue)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					case INVERT:
+						return true;
+					
+					default:
+						return isValidBorderStyleValue(styleValue);
+				}
+				
+			default:
+				return isValidBorderStyleValue(styleValue);
+		}
+	}
+	
+	/**
+	 * Return wether a CSS value is valid for a outline style style
+	 */
+	private function isValidOutlineStyleValue(styleValue:CSSPropertyValue):Bool
+	{
+		switch(styleValue)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					case HIDDEN:
+						return false;
+						
+					default:	
+						return isValidBorderStyleValue(styleValue);
+				}
+				
+			default:	
+				return isValidBorderStyleValue(styleValue);
+		}	
 	}
 	
 	/**
