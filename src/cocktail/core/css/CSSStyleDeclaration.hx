@@ -2130,7 +2130,7 @@ class CSSStyleDeclaration
 								borderStyle = value[i];
 							}
 						}
-						setTypedBordersProperties(CSSConstants.BORDER, borderWidth, borderColor, borderStyle, important);
+						setTypedBordersProperties(propertyIndex, borderWidth, borderColor, borderStyle, important);
 						
 					default:	
 						setBorderShorthand(propertyIndex, styleValue, important);
