@@ -285,9 +285,9 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		pushComputedProperty(CSSConstants.BORDER_BOTTOM_STYLE, KEYWORD(NONE));
 		pushComputedProperty(CSSConstants.BORDER_LEFT_STYLE, KEYWORD(NONE));
 		
-		pushProperty(CSSConstants.OUTLINE_WIDTH, ABSOLUTE_LENGTH(Config.getInstance().mediumBorderWidth));
-		pushProperty(CSSConstants.OUTLINE_STYLE, KEYWORD(NONE));
-		pushProperty(CSSConstants.OUTLINE_COLOR, KEYWORD(INVERT));
+		pushComputedProperty(CSSConstants.OUTLINE_WIDTH, ABSOLUTE_LENGTH(Config.getInstance().mediumBorderWidth));
+		pushComputedProperty(CSSConstants.OUTLINE_STYLE, KEYWORD(NONE));
+		pushComputedProperty(CSSConstants.OUTLINE_COLOR, KEYWORD(INVERT));
 		
 		pushComputedProperty(CSSConstants.LEFT, KEYWORD(AUTO));
 		pushComputedProperty(CSSConstants.RIGHT, KEYWORD(AUTO));

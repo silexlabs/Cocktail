@@ -154,6 +154,10 @@ class CoreStyle
 	 */
 	public var cursor(get_cursor, null):CSSPropertyValue;
 	
+	public var outlineWidth(get_outlineWidth, null):CSSPropertyValue;
+	public var outlineColor(get_outlineColor, null):CSSPropertyValue;
+	public var outlineStyle(get_outlineStyle, null):CSSPropertyValue;
+	
 	/**
 	 * transition styles
 	 */
@@ -867,6 +871,9 @@ class CoreStyle
 		//if borders have a style of 'none' or 'hidden',
 		//must enforce a 0 border width for the matching border
 		applyHiddenBordersWidth();
+		
+		//same as above for outline
+		applyNoneOutlineWidth();
 		
 		//if the background color property was changed, computes
 		//its used value immediately, as for color, there is no need
@@ -1996,6 +2003,27 @@ class CoreStyle
 		}
 	}
 	
+	/**
+	 * if the outline style is 'none', then
+	 * its width computes to 0
+	 */
+	private function applyNoneOutlineWidth():Void
+	{
+		switch(outlineStyle)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					case NONE:
+						computedValues.setTypedProperty(CSSConstants.OUTLINE_WIDTH, ABSOLUTE_LENGTH(0) , false);
+						
+					default:	
+				}
+				
+			default:	
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC ANIMATION METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -2776,5 +2804,20 @@ class CoreStyle
 	private inline function get_borderLeftStyle():CSSPropertyValue
 	{
 		return getComputedOrInitialProperty(CSSConstants.BORDER_LEFT_STYLE);
+	}
+	
+	private inline function get_outlineWidth():CSSPropertyValue
+	{
+		return getComputedOrInitialProperty(CSSConstants.OUTLINE_WIDTH);
+	}
+	
+	private inline function get_outlineStyle():CSSPropertyValue
+	{
+		return getComputedOrInitialProperty(CSSConstants.OUTLINE_STYLE);
+	}
+	
+	private inline function get_outlineColor():CSSPropertyValue
+	{
+		return getComputedOrInitialProperty(CSSConstants.OUTLINE_COLOR);
 	}
 }

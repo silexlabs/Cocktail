@@ -178,6 +178,8 @@ class UsedValuesVO {
 	public var borderRightColor:ColorVO;
 	public var borderBottomColor:ColorVO;
 	public var borderLeftColor:ColorVO;
+	public var outlineWidth:Float;
+	public var outlineColor:ColorVO;
 	
 	public function new() 
 	{
@@ -214,6 +216,8 @@ class UsedValuesVO {
 		borderRightColor = new ColorVO(0, 1.0);
 		borderTopColor = new ColorVO(0, 1.0);
 		borderBottomColor = new ColorVO(0, 1.0);
+		outlineWidth = 0.0;
+		outlineColor = new ColorVO(0, 1.0);
 
 	}
 }

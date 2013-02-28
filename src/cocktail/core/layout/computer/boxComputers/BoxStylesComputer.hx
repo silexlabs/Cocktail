@@ -63,6 +63,8 @@ class BoxStylesComputer
 		
 		measureBordersWidth(style);
 		
+		measureOutline(style);
+		
 		//The next step is to compute the dimensions
 		//constraint style (max-width, min-height...)
 		//which will be applied each time the computed height
@@ -165,7 +167,7 @@ class BoxStylesComputer
 		style.usedValues.paddingBottom = getComputedPadding(style.paddingBottom, containingBlockData.width);
 	}
 	
-	// BORDERS
+	// BORDERS AND OUTLINE
 	/////////////////////////////////
 	
 	/**
@@ -181,6 +183,16 @@ class BoxStylesComputer
 		style.usedValues.borderRightWidth = getComputedBorderWidth(style.borderRightWidth);
 		
 		style.usedValues.borderBottomWidth = getComputedBorderWidth(style.borderBottomWidth);
+	}
+	
+	/**
+	 * Compute the width of the outline
+	 * of the element's box model
+	 */
+	private function measureOutline(style:CoreStyle):Void
+	{
+		//can have same values as border width
+		style.usedValues.outlineWidth = getComputedBorderWidth(style.outlineWidth);
 	}
 	
 	// HORIZONTAL DIMENSIONS

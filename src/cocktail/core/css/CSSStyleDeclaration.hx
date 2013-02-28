@@ -164,6 +164,11 @@ class CSSStyleDeclaration
 	 */
 	public var cursor(get_cursor, set_cursor):String;
 	
+	public var outline(get_outline, set_outline):String;
+	public var outlineWidth(get_outlineWidth, set_outlineWidth):String;
+	public var outlineColor(get_outlineColor, set_outlineColor):String;
+	public var outlineStyle(get_outlineStyle, set_outlineStyle):String;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// ATTRIBUTES
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -4748,4 +4753,50 @@ class CSSStyleDeclaration
 		setProperty(CSSConstants.BORDER, value);
 		return value;
 	}
+	
+	private function get_outline():String
+	{
+		return getPropertyValue(CSSConstants.OUTLINE);
+	}
+	
+	private function set_outline(value:String):String
+	{
+		setProperty(CSSConstants.OUTLINE, value);
+		return value;
+	}
+		
+	private function get_outlineWidth():String
+	{
+		return getPropertyValue(CSSConstants.OUTLINE_WIDTH);
+	}
+	
+	private function set_outlineWidth(value:String):String
+	{
+		setProperty(CSSConstants.OUTLINE_WIDTH, value);
+		return value;
+	}
+
+	private function get_outlineColor():String
+	{
+		return getPropertyValue(CSSConstants.OUTLINE_COLOR);
+	}
+	
+	private function set_outlineColor(value:String):String
+	{
+		setProperty(CSSConstants.OUTLINE_COLOR, value);
+		return value;
+	}
+	
+	private function get_outlineStyle():String
+	{
+		return getPropertyValue(CSSConstants.OUTLINE_STYLE);
+	}
+	
+	private function set_outlineStyle(value:String):String
+	{
+		setProperty(CSSConstants.OUTLINE_STYLE, value);
+		return value;
+	}
+	
+	
 }
