@@ -292,6 +292,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		anonymousBlock.coreStyle.computedValues = initialStyleDeclaration.initialComputedStyleDeclaration;
 		anonymousBlock.coreStyle.isLeftAligned = true;
 		anonymousBlock.coreStyle.hasAutoHeight = true;
+		anonymousBlock.coreStyle.applyHiddenBordersWidth();
 		
 		return anonymousBlock;
 	}

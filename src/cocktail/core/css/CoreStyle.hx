@@ -2005,9 +2005,12 @@ class CoreStyle
 	
 	/**
 	 * If a border has a style of 'none' or 'hidden' its
-	 * width computes to 0
+	 * width computes to 0.
+	 * 
+	 * note : this method is public, as it is called directly
+	 * on anonymous block to set their border value to 0 (hackish)
 	 */
-	private function applyHiddenBordersWidth():Void
+	public function applyHiddenBordersWidth():Void
 	{
 		if (hasNoneOrHiddenBorderStyle(CSSConstants.BORDER_TOP_WIDTH) == true)
 		{
