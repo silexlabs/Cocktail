@@ -123,6 +123,10 @@ class CascadeManager
 	
 	public var hasBottomBorderColor:Bool;
 	
+	public var hasOutlineStyle:Bool;
+	
+	public var hasOutlineColor:Bool;
+	
 	/**
 	 * class constructor
 	 */
@@ -145,8 +149,6 @@ class CascadeManager
 				propertiesToCascade[i] = false;
 			}
 		}
-		
-		
 		
 		hasFontSize = false;
 		hasFontFamily = false;
@@ -189,6 +191,8 @@ class CascadeManager
 		hasTopBorderColor = false;
 		hasLeftBorderColor = false;
 		hasRightBorderColor = false;
+		hasOutlineStyle = false;
+		hasOutlineColor = false;
 		
 		hasPropertiesToCascade = false;
 		cascadeAll = false;
@@ -367,6 +371,12 @@ class CascadeManager
 				
 			case CSSConstants.BORDER_LEFT_COLOR:
 				hasLeftBorderColor = true;
+				
+			case CSSConstants.OUTLINE_STYLE:
+				hasOutlineStyle = true;
+				
+			case CSSConstants.OUTLINE_COLOR:
+				hasOutlineColor = true;
 		}
 	}
 	
@@ -401,6 +411,9 @@ class CascadeManager
 				
 			case CSSConstants.BORDER_BOTTOM_STYLE:
 				hasBottomBorderStyle = false;
+				
+			case CSSConstants.OUTLINE_STYLE:
+				hasOutlineStyle = false;
 				
 			default:	
 		}

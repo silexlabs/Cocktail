@@ -741,6 +741,20 @@ class CoreStyle
 			cascadeManager.removePropertyToCascade(CSSConstants.BORDER_BOTTOM_STYLE);
 		}
 		
+		//same for outline style which also might influence
+		//the outline width
+		if (cascadeManager.hasOutlineStyle == true || cascadeManager.cascadeAll == true)
+		{
+			var outlineStyleDidChange:Bool = cascadeProperty(CSSConstants.OUTLINE_STYLE, initialStyleDeclaration, styleSheetDeclaration, inlineStyleDeclaration, parentStyleDeclaration, parentColor, parentFontSize, parentXHeight, 0, 0, programmaticChange, hasInlineStyle, hasStyleSheetStyle);
+			if (outlineStyleDidChange == true)
+			{
+				_changedProperties.push(CSSConstants.OUTLINE_WIDTH);
+				cascadeManager.addPropertyToCascade(CSSConstants.OUTLINE_WIDTH);
+			}
+			
+			cascadeManager.removePropertyToCascade(CSSConstants.OUTLINE_STYLE);
+		}
+		
 		if (cascadeManager.hasFontSize == true || cascadeManager.hasFontFamily == true || cascadeManager.cascadeAll == true)
 		{
 			//when the value of font-size and/or font-family is cascaded,
@@ -911,6 +925,18 @@ class CoreStyle
 		if (cascadeManager.hasBottomBorderColor == true)
 		{
 			CSSValueConverter.getColorVOFromCSSColor(getColor(borderBottomColor), usedValues.borderBottomColor);
+		}
+		
+		//same as above for outline color
+		if (cascadeManager.hasOutlineColor == true)
+		{
+			switch(outlineColor)
+			{
+				case COLOR(value):
+					CSSValueConverter.getColorVOFromCSSColor(value, usedValues.outlineColor);
+					
+				default:	
+			}
 		}
 		
 		//same as above for line height
@@ -1550,7 +1576,8 @@ class CoreStyle
 				}
 				
 			case CSSConstants.BORDER_TOP_WIDTH, CSSConstants.BORDER_RIGHT_WIDTH,
-			CSSConstants.BORDER_BOTTOM_WIDTH, CSSConstants.BORDER_LEFT_WIDTH:
+			CSSConstants.BORDER_BOTTOM_WIDTH, CSSConstants.BORDER_LEFT_WIDTH, 
+			CSSConstants.OUTLINE_WIDTH:
 				switch(property)
 				{
 					case LENGTH(value):

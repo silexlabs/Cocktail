@@ -2179,7 +2179,7 @@ class CSSStyleDeclaration
 							{
 								outlineWidth = value[i];
 							}
-							else if (isValidBorderStyleValue(value[i]) == true)
+							else if (isValidOutlineStyleValue(value[i]) == true)
 							{
 								outlineStyle = value[i];
 							}
@@ -3644,11 +3644,11 @@ class CSSStyleDeclaration
 						return true;
 					
 					default:
-						return isValidBorderStyleValue(styleValue);
+						return isValidBorderColorValue(styleValue);
 				}
 				
 			default:
-				return isValidBorderStyleValue(styleValue);
+				return isValidBorderColorValue(styleValue);
 		}
 	}
 	
