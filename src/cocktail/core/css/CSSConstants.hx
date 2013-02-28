@@ -18,7 +18,7 @@ class CSSConstants
 	/**
 	 * Holds the total number of supported CSS styles
 	 */
-	public static inline var SUPPORTED_STYLES_NUMBER:Int = 82;
+	public static inline var SUPPORTED_STYLES_NUMBER:Int = 86;
 	
 	//style names
 	
@@ -185,6 +185,14 @@ class CSSConstants
 	public static inline var BORDER_LEFT:Int = 80;
 	
 	public static inline var BORDER:Int = 81;
+	
+	public static inline var OUTLINE_WIDTH:Int = 82;
+	
+	public static inline var OUTLINE_STYLE:Int = 83;
+	
+	public static inline var OUTLINE_COLOR:Int =  84;
+	
+	public static inline var OUTLINE:Int = 85;
 	
 	//CSS Ident
 	
@@ -383,6 +391,14 @@ class CSSConstants
 	public static inline var BORDER_LEFT_NAME:String = "border-left";
 	
 	public static inline var BORDER_NAME:String = "border";
+	
+	public static inline var OUTLINE_WIDTH_NAME:String = "outline-width";
+	
+	public static inline var OUTLINE_STYLE_NAME:String = "outline-style";
+	
+	public static inline var OUTLINE_COLOR_NAME:String = "outline-color";
+	
+	public static inline var OUTLINE_NAME:String = "outline";
 	
 	public function new() 
 	{
@@ -642,6 +658,19 @@ class CSSConstants
 			case BORDER_NAME:
 				return BORDER;
 				
+			case OUTLINE_WIDTH_NAME:
+				return OUTLINE_WIDTH;
+				
+			case OUTLINE_STYLE_NAME:
+				return OUTLINE_STYLE;
+				
+			case OUTLINE_COLOR_NAME:
+				return OUTLINE_COLOR;
+			
+			case OUTLINE_NAME:
+				return OUTLINE;
+				
+				
 			default:
 				return -1;
 		}
@@ -899,6 +928,18 @@ class CSSConstants
 
 			case BORDER:
 				return BORDER_NAME;	
+				
+			case OUTLINE_WIDTH:
+				return OUTLINE_WIDTH_NAME;
+				
+			case OUTLINE_STYLE:
+				return OUTLINE_STYLE_NAME;
+				
+			case OUTLINE_COLOR:
+				return OUTLINE_COLOR_NAME;
+				
+			case OUTLINE:
+				return OUTLINE_NAME;
 				
 			default:
 				throw "unknown property";

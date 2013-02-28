@@ -96,7 +96,7 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		CSSConstants.WORD_SPACING, CSSConstants.TEXT_INDENT, CSSConstants.TRANSFORM, CSSConstants.TRANSFORM_ORIGIN,
 		CSSConstants.BACKGROUND_POSITION, CSSConstants.BACKGROUND_SIZE, 
 		CSSConstants.BORDER_TOP_WIDTH, CSSConstants.BORDER_RIGHT_WIDTH, CSSConstants.BORDER_BOTTOM_WIDTH,
-		CSSConstants.BORDER_LEFT_WIDTH
+		CSSConstants.BORDER_LEFT_WIDTH, CSSConstants.OUTLINE_WIDTH
 		];
 	}
 	
@@ -104,7 +104,8 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 	{
 		colorCSSProperties = [
 			CSSConstants.BACKGROUND_COLOR, CSSConstants.COLOR, CSSConstants.BORDER_TOP_COLOR,
-			CSSConstants.BORDER_BOTTOM_COLOR, CSSConstants.BORDER_RIGHT_COLOR, CSSConstants.BORDER_LEFT_COLOR
+			CSSConstants.BORDER_BOTTOM_COLOR, CSSConstants.BORDER_RIGHT_COLOR, CSSConstants.BORDER_LEFT_COLOR,
+			CSSConstants.OUTLINE_COLOR
 		];
 	}
 	
@@ -125,7 +126,8 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		CSSConstants.BACKGROUND_ORIGIN, CSSConstants.BACKGROUND_CLIP, CSSConstants.CURSOR,
 		CSSConstants.BORDER_TOP_WIDTH, CSSConstants.BORDER_RIGHT_WIDTH, CSSConstants.BORDER_BOTTOM_WIDTH, CSSConstants.BORDER_LEFT_WIDTH, 
 		CSSConstants.BORDER_TOP_COLOR, CSSConstants.BORDER_RIGHT_COLOR, CSSConstants.BORDER_BOTTOM_COLOR, CSSConstants.BORDER_LEFT_COLOR, 
-		CSSConstants.BORDER_TOP_STYLE, CSSConstants.BORDER_RIGHT_STYLE, CSSConstants.BORDER_BOTTOM_STYLE, CSSConstants.BORDER_LEFT_STYLE
+		CSSConstants.BORDER_TOP_STYLE, CSSConstants.BORDER_RIGHT_STYLE, CSSConstants.BORDER_BOTTOM_STYLE, CSSConstants.BORDER_LEFT_STYLE,
+		CSSConstants.OUTLINE_WIDTH, CSSConstants.OUTLINE_STYLE, CSSConstants.OUTLINE_COLOR
 		];
 	}
 	
@@ -176,6 +178,10 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		pushProperty(CSSConstants.BORDER_RIGHT_STYLE, KEYWORD(NONE));
 		pushProperty(CSSConstants.BORDER_BOTTOM_STYLE, KEYWORD(NONE));
 		pushProperty(CSSConstants.BORDER_LEFT_STYLE, KEYWORD(NONE));
+		
+		pushProperty(CSSConstants.OUTLINE_WIDTH, KEYWORD(MEDIUM));
+		pushProperty(CSSConstants.OUTLINE_STYLE, KEYWORD(NONE));
+		pushProperty(CSSConstants.OUTLINE_COLOR, KEYWORD(INVERT));
 		
 		pushProperty(CSSConstants.LEFT, KEYWORD(AUTO));
 		pushProperty(CSSConstants.RIGHT, KEYWORD(AUTO));
@@ -279,11 +285,14 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		pushComputedProperty(CSSConstants.BORDER_BOTTOM_STYLE, KEYWORD(NONE));
 		pushComputedProperty(CSSConstants.BORDER_LEFT_STYLE, KEYWORD(NONE));
 		
+		pushProperty(CSSConstants.OUTLINE_WIDTH, ABSOLUTE_LENGTH(Config.getInstance().mediumBorderWidth));
+		pushProperty(CSSConstants.OUTLINE_STYLE, KEYWORD(NONE));
+		pushProperty(CSSConstants.OUTLINE_COLOR, KEYWORD(INVERT));
+		
 		pushComputedProperty(CSSConstants.LEFT, KEYWORD(AUTO));
 		pushComputedProperty(CSSConstants.RIGHT, KEYWORD(AUTO));
 		pushComputedProperty(CSSConstants.TOP, KEYWORD(AUTO));
 		pushComputedProperty(CSSConstants.BOTTOM, KEYWORD(AUTO));
-		
 
 		pushComputedProperty(CSSConstants.FONT_STYLE, KEYWORD(NORMAL));
 		pushComputedProperty(CSSConstants.FONT_VARIANT, KEYWORD(NORMAL));

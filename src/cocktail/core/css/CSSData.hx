@@ -1358,4 +1358,5 @@ enum CSSKeywordValue {
 	RIDGE;
 	INSET;
 	OUTSET;
+	INVERT;
 }

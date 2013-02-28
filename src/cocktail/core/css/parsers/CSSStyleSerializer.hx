@@ -1023,6 +1023,9 @@ class CSSStyleSerializer
 				
 			case OUTSET:
 				return "outset";
+				
+			case INVERT:
+				return "invert";
 		}
 	}
 	

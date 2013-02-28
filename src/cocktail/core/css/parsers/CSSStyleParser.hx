@@ -1394,6 +1394,9 @@ class CSSStyleParser
 			case 'outset':
 				cssPropertyValue = KEYWORD(OUTSET);
 				
+			case 'invert':
+				cssPropertyValue = KEYWORD(INVERT);
+				
 			case 'transparent':
 				cssPropertyValue = COLOR(TRANSPARENT);
 				
