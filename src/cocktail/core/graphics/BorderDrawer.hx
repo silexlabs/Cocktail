@@ -66,6 +66,9 @@ class BorderDrawer
 	 * draw the outline of the box, according
 	 * to the css oultine styles
 	 * 
+	 * TODO 1 : for now 'invert' value is not supported,
+	 * will instead draw last used outline color
+	 * 
 	 * @param	graphicContext
 	 * @param	outlineBox the bounding box of the outline, 
 	 * includes the outline width
