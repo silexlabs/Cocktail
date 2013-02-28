@@ -171,6 +171,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 		}
 		
 		renderBorder(graphicContext, clipRect, scrollOffset);
+		renderOutline(graphicContext, clipRect, scrollOffset);
 	}
 	
 	/**
@@ -189,6 +190,16 @@ class BoxRenderer extends InvalidatingElementRenderer
 	{
 		var borderBounds:RectangleVO = getBackgroundAndBordersBounds(scrollOffset);
 		BorderDrawer.draw(graphicsContext, borderBounds, coreStyle, clipRect);
+	}
+	
+	/**
+	 * Render the outline of the box using the provided graphics context
+	 */
+	private function renderOutline(graphicsContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
+	{
+		var outlineBounds:RectangleVO = getOutlineBounds(scrollOffset);
+		BorderDrawer.drawOutline(graphicsContext, outlineBounds, coreStyle, clipRect);
+		
 	}
 	
 	/**
@@ -943,6 +954,23 @@ class BoxRenderer extends InvalidatingElementRenderer
 		_backgroundAndBorderBounds.height = globalBounds.height;
 		
 		return _backgroundAndBorderBounds;
+	}
+	
+	/**
+	 * Helper method returning the bounds to
+	 * be used to draw the outline of the element,
+	 * which starts at its border box outer edge and add
+	 * the outline width
+	 */
+	private function getOutlineBounds(scrollOffset:PointVO):RectangleVO
+	{
+		var outlineBounds:RectangleVO = getBackgroundAndBordersBounds(scrollOffset);
+		outlineBounds.x -= coreStyle.usedValues.outlineWidth;
+		outlineBounds.y -= coreStyle.usedValues.outlineWidth;
+		outlineBounds.width += coreStyle.usedValues.outlineWidth * 2;
+		outlineBounds.height += coreStyle.usedValues.outlineWidth * 2;
+		
+		return outlineBounds;
 	}
 	
 	/**

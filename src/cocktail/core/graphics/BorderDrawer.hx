@@ -42,7 +42,7 @@ class BorderDrawer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * entry point of class, draw each border
+	 * draw each border
 	 * of the box according to their css styles,
 	 * each of the 4 border has individual css
 	 * styles
@@ -60,6 +60,24 @@ class BorderDrawer
 		drawBorder(graphicContext, getLeftBorderBox(borderBox, style.usedValues.borderLeftWidth), style.usedValues.borderLeftColor, style.getKeyword(style.borderLeftStyle), clipRect); 
 		drawBorder(graphicContext, getRightBorderBox(borderBox, style.usedValues.borderRightWidth), style.usedValues.borderRightColor, style.getKeyword(style.borderRightStyle), clipRect); 
 		drawBorder(graphicContext, getBottomBorderBox(borderBox, style.usedValues.borderBottomWidth), style.usedValues.borderBottomColor, style.getKeyword(style.borderBottomStyle), clipRect); 
+	}
+	
+	/**
+	 * draw the outline of the box, according
+	 * to the css oultine styles
+	 * 
+	 * @param	graphicContext
+	 * @param	outlineBox the bounding box of the outline, 
+	 * includes the outline width
+	 * @param	style
+	 * @param	clipRect
+	 */
+	public static function drawOutline(graphicContext:GraphicsContext, outlineBox:RectangleVO, style:CoreStyle, clipRect:RectangleVO):Void
+	{
+		drawBorder(graphicContext, getTopBorderBox(outlineBox, style.usedValues.outlineWidth), style.usedValues.outlineColor, style.getKeyword(style.outlineStyle), clipRect); 
+		drawBorder(graphicContext, getLeftBorderBox(outlineBox, style.usedValues.outlineWidth), style.usedValues.outlineColor, style.getKeyword(style.outlineStyle), clipRect); 
+		drawBorder(graphicContext, getRightBorderBox(outlineBox, style.usedValues.outlineWidth), style.usedValues.outlineColor, style.getKeyword(style.outlineStyle), clipRect); 
+		drawBorder(graphicContext, getBottomBorderBox(outlineBox, style.usedValues.outlineWidth), style.usedValues.outlineColor, style.getKeyword(style.outlineStyle), clipRect);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
