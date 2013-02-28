@@ -349,7 +349,11 @@ class SWFPlugin extends Plugin
 	 */
 	override public function dispose():Void
 	{
+		//not supprted by nme
+		#if !nme
 		_loader.unloadAndStop();
+		#end
+		
 		_loader = null;
 		_swf = null;
 		
@@ -443,7 +447,12 @@ class SWFPlugin extends Plugin
 	private function onLoaderReady(loader:Loader):Void
 	{
 		//check if actionscript 1/2 or 3
+		#if nme
+		//not supported in nme
+		_isAVM1swf = false;
+		#else
 		_isAVM1swf = loader.contentLoaderInfo.actionScriptVersion == ActionScriptVersion.ACTIONSCRIPT2;
+		#end
 		
 		_swfHeight = loader.contentLoaderInfo.height;
 		_swfWidth = loader.contentLoaderInfo.width;

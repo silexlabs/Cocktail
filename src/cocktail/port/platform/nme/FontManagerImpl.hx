@@ -100,20 +100,16 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	/**
 	 * Create and return a flash text field
 	 */
-	override public function createNativeTextElement(text:String, style:CoreStyle):NativeElement
+	override public function createNativeTextElement(text:String, style:CoreStyle, fontFamily:String):NativeElement
 	{
 		var textField:flash.text.TextField = new flash.text.TextField();
 		textField.text = text;
 		textField.selectable = false;
 		textField.autoSize = TextFieldAutoSize.LEFT;
-		textField.setTextFormat(getTextFormat(style));
+		textField.setTextFormat(getTextFormat(style, fontFamily));
 
 		return textField;
 	}	
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Private methods, font rendering and measure
-	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Takes the array containing every font to apply to the
@@ -124,7 +120,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 * @return a comma separated list of font, generally ordered from most
 	 * specific to most generic, e.g "Universe,Arial,_sans"
 	 */
-	private function getNativeFontFamily(value:Array<String>):String
+	override public function getNativeFontFamily(value:Array<String>):String
 	{
 		var fontFamily:String = "";
 		
@@ -155,17 +151,21 @@ class FontManagerImpl extends AbstractFontManagerImpl
 		return fontFamily;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// Private methods, font rendering and measure
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Return a flash TextFormat object, to be
 	 * used on the created Text Field
 	 */
-	private function getTextFormat(style:CoreStyle):TextFormat
+	private function getTextFormat(style:CoreStyle, fontFamily:String):TextFormat
 	{
 		
 		var usedValues:UsedValuesVO = style.usedValues;
 		
 		var textFormat:TextFormat = new TextFormat();
-		textFormat.font = getNativeFontFamily(CSSValueConverter.getFontFamilyAsStringArray(style.fontFamily));
+		textFormat.font = fontFamily;
 		
 		textFormat.letterSpacing = usedValues.letterSpacing;
 		textFormat.size = style.getAbsoluteLength(style.fontSize);
