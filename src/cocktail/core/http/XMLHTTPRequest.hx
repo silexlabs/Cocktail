@@ -195,7 +195,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 		//Let XMLHttpRequest base URL be the document base URL of the XMLHttpRequest document.
 		//Let XMLHttpRequest origin be the origin of the XMLHttpRequest document and let it be a globally unique identifier if the anonymous flag is set.
 		
-		switch (method.toLowerCase())
+		switch (method.toUpperCase())
 		{
 			//valid method names
 			case HTTPConstants.DELETE, HTTPConstants.GET, HTTPConstants.HEAD,
