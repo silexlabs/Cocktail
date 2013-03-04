@@ -138,6 +138,7 @@ class CoreStyle
 	public var textAlign(get_textAlign, null):CSSPropertyValue;
 	public var textIndent(get_textIndent, null):CSSPropertyValue;
 	public var verticalAlign(get_verticalAlign, null):CSSPropertyValue;
+	public var textDecoration(get_textDecoration, null):CSSPropertyValue;
 	
 	/**
 	 * visual effect styles
@@ -2849,5 +2850,10 @@ class CoreStyle
 	private inline function get_outlineColor():CSSPropertyValue
 	{
 		return getComputedOrInitialProperty(CSSConstants.OUTLINE_COLOR);
+	}
+	
+	private inline function get_textDecoration():CSSPropertyValue
+	{
+		return getComputedOrInitialProperty(CSSConstants.TEXT_DECORATION);
 	}
 }

@@ -134,6 +134,7 @@ class CSSStyleDeclaration
 	public var textAlign(get_textAlign, set_textAlign):String;
 	public var textIndent(get_textIndent, set_textIndent):String;
 	public var verticalAlign(get_verticalAlign, set_verticalAlign):String;
+	public var textDecoration(get_textDecoration, set_textDecoration):String;
 	
 	/**
 	 * visual effect styles
@@ -1465,6 +1466,84 @@ class CSSStyleDeclaration
 						
 					default:
 						return isValidOutlineColorValue(styleValue);
+				}
+				
+				
+			case CSSConstants.TEXT_DECORATION:
+				switch(styleValue)
+				{
+					case KEYWORD(value):
+						switch(value)
+						{
+							case NONE, UNDERLINE, OVERLINE, LINE_THROUGH, BLINK:
+								return true;
+							
+							default:	
+						}
+						
+					case GROUP(value):
+						if (value.length != 2 && value.length != 3 && value.length != 4)
+						{
+							return false;
+						}
+						
+						var foundUnderline:Bool = false;
+						var foundOverline:Bool = false;
+						var foundLineThrough:Bool = false;
+						var foundBlink:Bool = false;
+						
+						for (i in 0...value.length)
+						{
+							switch(value[i])
+							{
+								case KEYWORD(value):
+									switch(value)
+									{
+										case UNDERLINE:
+											if (foundUnderline == true)
+											{
+												//means that underline keyword was
+												//used twice
+												return false;
+											}
+											foundUnderline = true;
+											
+										case OVERLINE:
+											if (foundOverline == true)
+											{
+												return false;
+											}
+											foundOverline = true; 	
+											
+										case LINE_THROUGH:
+											if (foundLineThrough == true)
+											{
+												return false;
+											}
+											foundLineThrough = true; 
+											
+										case BLINK:
+											if (foundBlink == true)
+											{
+												return false;
+											}
+											foundBlink = true; 	
+											
+										default:
+											false;
+									}
+									
+								default:
+									false;
+							}
+						}
+						
+						return true;
+					
+					case INHERIT, INITIAL:
+						return true;
+						
+					default:	
 				}
 		}
 		
@@ -4798,5 +4877,15 @@ class CSSStyleDeclaration
 		return value;
 	}
 	
+	private function get_textDecoration():String
+	{
+		return getPropertyValue(CSSConstants.TEXT_DECORATION);
+	}
+	
+	private function set_textDecoration(value:String):String
+	{
+		setProperty(CSSConstants.TEXT_DECORATION, value);
+		return value;
+	}
 	
 }

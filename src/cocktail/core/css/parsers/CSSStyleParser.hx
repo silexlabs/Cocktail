@@ -1397,6 +1397,18 @@ class CSSStyleParser
 			case 'invert':
 				cssPropertyValue = KEYWORD(INVERT);
 				
+			case 'underline':
+				cssPropertyValue = KEYWORD(UNDERLINE);
+				
+			case 'overline':
+				cssPropertyValue = KEYWORD(OVERLINE);
+				
+			case 'line-through':
+				cssPropertyValue = KEYWORD(LINE_THROUGH);
+				
+			case 'blink':
+				cssPropertyValue = KEYWORD(BLINK);
+				
 			case 'transparent':
 				cssPropertyValue = COLOR(TRANSPARENT);
 				

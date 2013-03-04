@@ -1026,6 +1026,18 @@ class CSSStyleSerializer
 				
 			case INVERT:
 				return "invert";
+				
+			case UNDERLINE:
+				return "underline";
+				
+			case OVERLINE:
+				return "overline";
+				
+			case LINE_THROUGH:
+				return "line-through";
+				
+			case BLINK:
+				return "blink";
 		}
 	}
 	

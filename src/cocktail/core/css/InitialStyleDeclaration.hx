@@ -127,7 +127,7 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		CSSConstants.BORDER_TOP_WIDTH, CSSConstants.BORDER_RIGHT_WIDTH, CSSConstants.BORDER_BOTTOM_WIDTH, CSSConstants.BORDER_LEFT_WIDTH, 
 		CSSConstants.BORDER_TOP_COLOR, CSSConstants.BORDER_RIGHT_COLOR, CSSConstants.BORDER_BOTTOM_COLOR, CSSConstants.BORDER_LEFT_COLOR, 
 		CSSConstants.BORDER_TOP_STYLE, CSSConstants.BORDER_RIGHT_STYLE, CSSConstants.BORDER_BOTTOM_STYLE, CSSConstants.BORDER_LEFT_STYLE,
-		CSSConstants.OUTLINE_WIDTH, CSSConstants.OUTLINE_STYLE, CSSConstants.OUTLINE_COLOR
+		CSSConstants.OUTLINE_WIDTH, CSSConstants.OUTLINE_STYLE, CSSConstants.OUTLINE_COLOR, CSSConstants.TEXT_DECORATION
 		];
 	}
 	
@@ -199,6 +199,7 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		pushProperty(CSSConstants.TEXT_ALIGN, KEYWORD(LEFT));
 		pushProperty(CSSConstants.WHITE_SPACE, KEYWORD(NORMAL));
 		pushProperty(CSSConstants.TEXT_TRANSFORM, KEYWORD(NONE));
+		pushProperty(CSSConstants.TEXT_DECORATION, KEYWORD(NONE));
 		
 		pushProperty(CSSConstants.TRANSITION_PROPERTY, KEYWORD(ALL));
 		pushProperty(CSSConstants.TRANSITION_DURATION, TIME(SECONDS(0)));
@@ -305,6 +306,7 @@ class InitialStyleDeclaration extends CSSStyleDeclaration
 		pushComputedProperty(CSSConstants.TEXT_ALIGN, KEYWORD(LEFT));
 		pushComputedProperty(CSSConstants.WHITE_SPACE, KEYWORD(NORMAL));
 		pushComputedProperty(CSSConstants.TEXT_TRANSFORM, KEYWORD(NONE));
+		pushComputedProperty(CSSConstants.TEXT_DECORATION, KEYWORD(NONE));
 		
 		pushComputedProperty(CSSConstants.TRANSITION_PROPERTY, KEYWORD(ALL));
 		pushComputedProperty(CSSConstants.TRANSITION_DURATION, TIME(SECONDS(0)));

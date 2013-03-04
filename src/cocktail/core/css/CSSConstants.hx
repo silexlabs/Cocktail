@@ -18,7 +18,7 @@ class CSSConstants
 	/**
 	 * Holds the total number of supported CSS styles
 	 */
-	public static inline var SUPPORTED_STYLES_NUMBER:Int = 86;
+	public static inline var SUPPORTED_STYLES_NUMBER:Int = 87;
 	
 	//style names
 	
@@ -193,6 +193,8 @@ class CSSConstants
 	public static inline var OUTLINE_COLOR:Int =  84;
 	
 	public static inline var OUTLINE:Int = 85;
+	
+	public static inline var TEXT_DECORATION:Int = 86;
 	
 	//CSS Ident
 	
@@ -399,6 +401,8 @@ class CSSConstants
 	public static inline var OUTLINE_COLOR_NAME:String = "outline-color";
 	
 	public static inline var OUTLINE_NAME:String = "outline";
+	
+	public static inline var TEXT_DECORATION_NAME:String = "text-decoration";
 	
 	public function new() 
 	{
@@ -670,6 +674,8 @@ class CSSConstants
 			case OUTLINE_NAME:
 				return OUTLINE;
 				
+			case TEXT_DECORATION_NAME:
+				return TEXT_DECORATION;
 				
 			default:
 				return -1;
@@ -940,6 +946,9 @@ class CSSConstants
 				
 			case OUTLINE:
 				return OUTLINE_NAME;
+				
+			case TEXT_DECORATION:
+				return TEXT_DECORATION_NAME;
 				
 			default:
 				throw "unknown property";
