@@ -801,8 +801,11 @@ class LineBox
 			}
 			else
 			{
-				child.bounds.y = addedY + child.offsetFromParentInlineBox.y + (child.leadedAscent / 2 - child.leadedDescent / 2);
+				child.bounds.y = addedY + child.offsetFromParentInlineBox.y;
 			}
+			
+			//apply leading
+			child.bounds.y += child.leadedAscent / 2 - child.leadedDescent / 2;
 			
 			//call recursively for non-replaced inline boxes
 			if (child.isEmbedded == false && child.isText == false)
