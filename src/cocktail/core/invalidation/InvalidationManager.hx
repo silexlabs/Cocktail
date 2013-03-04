@@ -567,6 +567,11 @@ class InvalidationManager
 			//TODO 2 : need not to be updated each rendering
 			initialLayerRenderer.updateLayerAlpha(1.0);
 			
+			//for each element renderer, update the list of text
+			//decorations, such as underlining to apply to
+			//text elements
+			_htmlDocument.documentElement.elementRenderer.updateTextDecorations(false, false, false, false);
+			
 			//if the whole viewport is set to be repainted,
 			//the dirty rect becomes the whole viewport
 			if (_repaintWholeViewport == true)

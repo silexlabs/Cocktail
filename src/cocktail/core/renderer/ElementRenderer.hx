@@ -465,6 +465,94 @@ class ElementRenderer extends FastNode<ElementRenderer>
 		}
 	}
 	
+	/**
+	 * Text decoration style has a different inheritance scheme than
+	 * other properties. The css property itself is not inherited but
+	 * if a text decoration is applied to an element, it propagates to
+	 * its descendant, excluding floated, absolutely positioned and
+	 * inline block descendant.
+	 * 
+	 * Wether a text decoration applies or not, is stored only on text
+	 * renderer, as they are the only elements which need it
+	 * 
+	 * @param	inheritUnderline wether an underline text decoration is 
+	 * inherited from the parent
+	 * @param	inheritOverline same for overline
+	 * @param	inheritLineThrough same for line through
+	 * @param	inheritBlink same for blink
+	 */
+	public function updateTextDecorations(inheritUnderline:Bool, 
+	inheritOverline:Bool, inheritLineThrough:Bool, inheritBlink:Bool):Void
+	{
+		//apply any text decoration applied to this element
+		//to the decorations that will be inerithed by children
+		switch(coreStyle.textDecoration)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					case UNDERLINE:
+						inheritUnderline = true;
+						
+					case OVERLINE:
+						inheritOverline = true;
+						
+					case LINE_THROUGH:
+						inheritLineThrough = true;
+						
+					case BLINK:
+						inheritBlink = true;
+						
+					default:	
+				}
+				
+			case GROUP(value):
+				for (i in 0...value.length)
+				{
+					switch(value[i])
+					{
+						case KEYWORD(value):
+							switch(value)
+							{
+								case UNDERLINE:
+									inheritUnderline = true;
+									
+								case OVERLINE:
+									inheritOverline = true;
+									
+								case LINE_THROUGH:
+									inheritLineThrough = true;
+									
+								case BLINK:
+									inheritBlink = true;
+									
+								default:	
+							}
+							
+						default:	
+					}
+				}
+			
+			default:
+		}
+		
+		//apply to all descendants
+		var child:ElementRenderer = firstChild;
+		while (child != null)
+		{
+			//exclude from inheriting decorations
+			if (child.coreStyle.isFloat == true || child.coreStyle.isAbsolutelyPositioned == true || child.coreStyle.isInlineBlock == true)
+			{
+				child.updateTextDecorations(false, false, false, false);
+			}
+			else
+			{
+				child.updateTextDecorations(inheritUnderline, inheritOverline, inheritLineThrough, inheritBlink);
+			}
+			child = child.nextSibling;
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////

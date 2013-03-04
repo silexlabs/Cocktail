@@ -77,6 +77,27 @@ class TextRenderer extends InvalidatingElementRenderer
 	private var _textTokensNeedParsing:Bool;
 	
 	/**
+	 * Wether an underline text decoration should
+	 * apply the text inline box of this element
+	 */
+	private var _hasUnderline:Bool;
+	
+	/**
+	 * Same for overline
+	 */
+	private var _hasOverline:Bool;
+	
+	/**
+	 * Same for line through
+	 */
+	private var _hasLineThrough:Bool;
+	
+	/**
+	 * Same for blink
+	 */ 
+	private var _hasBlink:Bool;
+	
+	/**
 	 * A reusable rect used during rendering
 	 */
 	private static var _renderRect:RectangleVO = new RectangleVO();
@@ -102,6 +123,11 @@ class TextRenderer extends InvalidatingElementRenderer
 		_text = cast(node);
 		_textNeedsRendering = true;
 		_textTokensNeedParsing = true;
+		
+		_hasUnderline = false;
+		_hasOverline = false;
+		_hasLineThrough = false;
+		_hasBlink = false;
 		
 		isText = true;
 	}
@@ -191,6 +217,19 @@ class TextRenderer extends InvalidatingElementRenderer
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Store which text decorations apply to the text inline
+	 * boxes of this element
+	 */
+	override public function updateTextDecorations(inheritUnderline:Bool, 
+	inheritOverline:Bool, inheritLineThrough:Bool, inheritBlink:Bool):Void
+	{
+		_hasUnderline = inheritUnderline;
+		_hasOverline = inheritOverline;
+		_hasLineThrough = inheritLineThrough;
+		_hasBlink = inheritBlink;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
