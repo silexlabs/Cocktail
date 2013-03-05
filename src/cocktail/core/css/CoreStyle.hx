@@ -991,8 +991,11 @@ class CoreStyle
 	/**
 	 * update core style flags, always update all for first cascade, as 
 	 * all styles are cascaded
+	 * 
+	 * note : set as public so that it can be explicitely called for anonymous block
+	 * to set all their flags upon creation
 	 */
-	private function updateCoreStyleAttribute(cascadeManager:CascadeManager, isFirstCascade:Bool):Void
+	public function updateCoreStyleAttribute(cascadeManager:CascadeManager, isFirstCascade:Bool):Void
 	{
 		if (cascadeManager.hasFloat == true || isFirstCascade == true)
 		{

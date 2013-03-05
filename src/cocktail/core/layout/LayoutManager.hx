@@ -106,6 +106,11 @@ class LayoutManager
 				return positionedBoxStylesComputer;
 			}
 		}
+		//anonymous block always use block box style computer
+		else if (elementRenderer.isAnonymousBlockBox() == true)
+		{
+			return blockBoxStyleComputer;
+		}
 		//else get the box computer based on the display style
 		else
 		{
