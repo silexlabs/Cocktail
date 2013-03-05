@@ -1,31 +1,37 @@
 /*
- * Cocktail, HTML rendering engine
- * http://haxe.org/com/libs/cocktail
- *
- * Copyright (c) Silex Labs
- * Cocktail is available under the MIT license
- * http://www.silexlabs.org/labs/cocktail-licensing/
+	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
+	This project is © 2010-2011 Silex Labs and is released under the GPL License:
+	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
+	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.core.renderer;
 
+import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.dom.Document;
+import cocktail.core.dom.DOMConstants;
 import cocktail.core.dom.Node;
-import cocktail.core.dom.NodeBase;
+import cocktail.core.geom.GeomUtils;
+import cocktail.core.geom.Matrix;
+import cocktail.core.linebox.InlineBox;
+
+import cocktail.core.event.TransitionEvent;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.linebox.LineBox;
-import cocktail.port.NativeElement;
-import cocktail.port.DrawingManager;
+import cocktail.core.animation.Animator;
+import cocktail.core.animation.Transition;
 import cocktail.core.geom.GeomData;
-import cocktail.core.style.ComputedStyle;
-import cocktail.core.style.CoreStyle;
-import cocktail.core.style.CSSConstants;
-import cocktail.core.style.formatter.FormattingContext;
-import cocktail.core.style.StyleData;
+import cocktail.core.utils.FastNode;
+import haxe.Stack;
+
+import cocktail.core.css.CoreStyle;
+import cocktail.core.css.CSSConstants;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.layer.LayerRenderer;
-import haxe.Timer;
+import cocktail.core.graphics.GraphicsContext;
+import cocktail.core.css.CSSData;
 
 
 /**
@@ -60,7 +66,7 @@ import haxe.Timer;
  * 
  * @author Yannick DOMINGUEZ
  */
-class ElementRenderer extends NodeBase<ElementRenderer>
+class ElementRenderer extends FastNode<ElementRenderer>
 {
 	/**
 	 * The bounds of the ElementRenderer.
@@ -81,80 +87,60 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * which established the formatting context this ElementRenderer 
 	 * participates in.
 	 */
-	public var bounds(get_bounds, set_bounds):RectangleData;
+	public var bounds(default, null):RectangleVO;
 	
 	/**
-	 * The bounds of the ElementRenderer in the space of the Window.
+	 * The bounds of the ElementRenderer in the space of the document.
 	 * 
-	 * This is a utility read-only property which returns the
+	 * Returns the
 	 * relevant global bounds for an ElementRenderer. For instance
 	 * if the ElementRenderer uses the normal flow, then its bounds
 	 * will be used to determine its global bounds whereas if it
 	 * is absolutely positioned, it will use its positioned bounds
 	 */
-	public var globalBounds(get_globalBounds, never):RectangleData;
+	public var globalBounds(default, null):RectangleVO;
 	
 	/**
-	 * The scrollable bounds of the ElementRenderer in the space of the scrollable containing
-	 * block used to determine the scrolling area of the containing block. 
+	 * Those are the bounds of the element renderer used for hit testing,
+	 * for instance when a mouse pointer hovers the document, those
+	 * bounds are used to determine wheter this element renderer is under
+	 * the mouse pointer.
 	 * 
-	 * The difference with the regular bounds is that any offset needed
-	 * in the computation of scrollable bounds are added. 
-	 * 
-	 * For instance if the ElementRenderer is relatively positioned, its
-	 * bounds once transformed with the relative offset are returned
-	 * instead of its bounds in the flow like the regular bounds.
-	 * 
-	 * This is a utility read-only method
+	 * Those bounds are the global bounds converted to the viewport space
+	 * by adding the all the scroll offsets of ancestors layers, and
+	 * all transformations matrix of ancestors layers. Those
+	 * bounds are also clipped by all ancestors layer, as if a part
+	 * of the element is not displayed, this part can't be hit-tested
 	 */
-	public var scrollableBounds(get_scrollableBounds, never):RectangleData;
+	public var hitTestingBounds(default, null):RectangleVO;
 	
 	/**
-	 * This is the position of the top left padding box corner of the 
-	 * containing block of this ElementRenderer in the Window space.
-	 * This is used to render elements using the normal flow.
-	 * 
-	 * When added to the x and y bounds of the ElementRenderer, 
-	 * it gives the global x and y of the ElementRenderer
+	 * For absolutely positioned elements,
+	 * this represents their x and y offset relative
+	 * to their static containing block, which
+	 * is the containing block they would have had
+	 * if they weren't positioned. This origin
+	 * is used when the left and right and/or top and
+	 * bottom style are auto
 	 */
-	public var globalContainingBlockOrigin:PointData;
-	
-	/**
-	 * This is the position of the top left corner of this
-	 * ElementRenderer relative to the top left padding box
-	 * corner of the first positioned ancestor of this
-	 * ElementRenderer.
-	 * 
-	 * It is used when this ElementRenderer
-	 * is absolutely positioned. When added to the global
-	 * positioned ancestor origin, it gives the global
-	 * positioned origin of the ElementRenderer
-	 */
-	public var positionedOrigin:PointData;
-	
-	/**
-	 * This is the position of the top left padding box corner
-	 * of the first positioned ancestor of this ElementRenderer
-	 * in the Window space.
-	 * 
-	 * It is used when this ElementRenderer
-	 * is absolutely positioned.
-	 */
-	public var globalPositionnedAncestorOrigin:PointData;
+	public var staticOrigin:PointVO;
 	
 	/**
 	 * A reference to the Node in the DOM tree
 	 * which created this ElementRenderer. It might
 	 * be an HTMLElement or a Text node
+	 * 
+	 * TODO IMPORTANT : for now HTMLElement as even
+	 * Text inherits from HTMLElement in haxe JS API,
+	 * shouldn't be so
 	 */
-	public var node(default, null):HTMLElement;
+	public var domNode(default, null):HTMLElement;
 	
 	/**
 	 * A reference to the coreStyle from which
 	 * the styles of this ElementRenderer are retrieved
 	 */
-	private var _coreStyle:CoreStyle;
-	public var coreStyle(get_coreStyle, set_coreStyle):CoreStyle;
+	public var coreStyle:CoreStyle;
 	
 	/**
 	 * A reference to the LayerRenderer in the LayerRenderer tree
@@ -163,40 +149,37 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	public var layerRenderer(default, null):LayerRenderer;
 	
 	/**
-	 * A reference to the line boxes generated by this ElementRenderer. For
-	 * instance for a Text renderer, an array of Text line box will be created.
-	 * 
-	 * For a block box which doesn't establish an inline formatting context,
-	 * no line box will be created
+	 * A reference to the inline boxes generated by this ElementRenderer. For
+	 * instance for a Text renderer, an array of text inline box will be created.
+	 * An inline box renderer will create as many inline box as there line boxes
+	 * into which it has children
 	 */ 
-	public var lineBoxes:Array<LineBox>;
+	public var inlineBoxes:Array<InlineBox>;
 	
 	/**
 	 * Determine wheter this ElementRenderer establishes its own
 	 * stacking context (instantiates a new LayerRenderer)
-	 * 
-	 * TODO 2 : not very clean, should layerRenderer be null instead
-	 * for ElementRenderer not starting a layer ? -> or should use 
-	 * the establishesNewStackingContextMethod ? + doc is false
 	 */
 	private var _hasOwnLayer:Bool;
 	
 	/**
-	 * flag similar to hasOwnLayer. When an ElementRenderer is auto z-index
-	 * positioned, it must remove itself from its layerRenderer when detached.
-	 * This flag ensures that it does, as if for instance the detachement was
-	 * caused by the change of this ElementRenderer z-index from auto to an integer,
-	 * without this flags, it won't know that it was auto z-index positioned 
-	 * at the time of detachement
+	 * Wether the layer renderer for this element renderer
+	 * should be re-instantiated and re-attached to the
+	 * layer render tree. Happens for instance, when the 
+	 * 'position' style of the element renderer's html
+	 * element changes and requires the element renderer
+	 * to have its own layer renderer
 	 */
-	private var _wasAutoZIndexPositioned:Bool;
+	private var _needsLayerRendererUpdate:Bool;
 	
 	/**
-	 * Stores all of the value of styles once computed.
-	 * For example, if a size is set as a percentage, it will
-	 * be stored once computed to pixels into this structure
+	 * flag similar to the above. When an ElementRenderer is attached, if it
+	 * is absolutely positioned, it registers itself with its first positioned ancestor.
+	 * This flag is there to ensure that, when detached, the ElementRenderer
+	 * unregisters itself with its first positioned ancestor, even if the 
+	 * detachement was cause by a change to its display style
 	 */
-	public var computedStyle(getComputedStyle, setComputedStyle):ComputedStyle;
+	private var _wasAbsolutelyPositioned:Bool;
 	
 	/**
 	 * get/set the scrolling in the x axis of this ElementRenderer.
@@ -209,93 +192,142 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	public var scrollTop(get_scrollTop, set_scrollTop):Float;
 	
 	/**
-	 * get the larger width between the ElementRenderer's and its children
-	 * width
-	 * 
-	 * TODO 3 : does it mean that scrollBounds should also be computed for
-	 * this ElementRenderer ? renamed as childrenBounds ?
-	 * check http://dev.w3.org/csswg/cssom-view/#dom-element-scrollwidth
+	 * get the greater value between the element's content area 
+	 * width and its scrollable content width
 	 */
 	public var scrollWidth(get_scrollWidth, never):Float;
 	
 	/**
-	 * get the larger height between the ElementRenderer's and its children
-	 * height
+	 * get the greater value between the element's content area 
+	 * height and its scrollable content height
 	 */
 	public var scrollHeight(get_scrollHeight, never):Float;
-	
-	private var _needsLayout:Bool;
-	
-	private var _childrenNeedLayout:Bool;
-	
-	private var _positionedChildrenNeedLayout:Bool;
-	
-	private var _needsRendering:Bool;
-	
-	private var _childrenNeedRendering:Bool;
-	
-	private var _needsVisualEffectsRendering:Bool;
 
-	private var _containingBlock:FlowBoxRenderer;
+	/**
+	 * A reference to the containing block of this
+	 * ElementRenderer, which might be its parent,
+	 * its first positioned ancestor or the initial
+	 * block renderer based on its positioning
+	 * scheme
+	 */
+	public var containingBlock(default, null):FlowBoxRenderer;
 	
+	/**
+	 * Return the first previous sibling belonging to the
+	 * normal flow (not floatged or absolutely positioned)
+	 * or null if no such sibling exists
+	 */
+	public var previousNormalFlowSibling(get_previousNormalFlowSibling, null):ElementRenderer;
+	
+	/**
+	 * Return the first next sibling belonging to the
+	 * normal flow (not floatged or absolutely positioned)
+	 * or null if no such sibling exists
+	 */
+	public var nextNormalFlowSibling(get_nextNormalFlowSibling, null):ElementRenderer;
+	
+	/**
+	 * Return the first child belonging to the
+	 * normal flow (not floatged or absolutely positioned)
+	 * or null if no such child exists
+	 */
+	public var firstNormalFlowChild(get_firstNormalFlowChild, null):ElementRenderer;
+	
+	/**
+	 * Return the last child belonging to the
+	 * normal flow (not floatged or absolutely positioned)
+	 * or null if no such child exists
+	 */
+	public var lastNormalFlowChild(get_lastNormalFlowChild, null):ElementRenderer;
+	
+	/**
+	 * Helper attribute, return wether
+	 * this ElementRenderer is a replaced
+	 * element, like an ImageRenderer
+	 */
+	public var isReplaced:Bool;
+	
+	/**
+	 * Helper attribute, return wether
+	 * this ElementRenderer is a 
+	 * block box renderer
+	 */
+	public var isBlockContainer:Bool;
+	
+	/**
+	 * Helper atribute, return wether
+	 * this ElementRenderer is a TextRenderer
+	 */
+	public var isText:Bool;
+	
+	/**
+	 * Wether this element renderer has at
+	 * least one line box. It must be 
+	 * a block box renderer with inline 
+	 * children to have line boxes
+	 */
+	public var hasLineBoxes:Bool;
 	
 	/**
 	 * class constructor. init class attribute
 	 */
-	public function new(node:HTMLElement) 
+	public function new(domNode:HTMLElement) 
 	{
 		super();
 
-		this.node = node;
+		this.domNode = domNode;
 		
-		
+		initCoreStyle();
 		_hasOwnLayer = false;
-		_wasAutoZIndexPositioned = false;
+		_wasAbsolutelyPositioned = false;
+		_needsLayerRendererUpdate = true;
 		
-		bounds = {
-			x:0.0,
-			y:0.0,
-			width : 0.0,
-			height: 0.0
-		}
+		bounds = new RectangleVO();
 		
-		positionedOrigin = {
-			x:0.0,
-			y:0.0
-		}
+		globalBounds = new RectangleVO();
 		
-		globalPositionnedAncestorOrigin = {
-			x:0.0,
-			y:0.0
-		}
+		staticOrigin = new PointVO(0.0, 0.0);
 		
-		globalContainingBlockOrigin = {
-			x:0.0,
-			y:0.0
-		}
+		hitTestingBounds = new RectangleVO();
 		
-		_needsRendering = true;
-		_childrenNeedRendering = true;
-		_needsLayout = true;
-		_childrenNeedLayout = true;
-		_positionedChildrenNeedLayout = true;
-		_needsVisualEffectsRendering = true;
+		inlineBoxes = new Array<InlineBox>();
 		
-		lineBoxes = new Array<LineBox>();
+		isBlockContainer = false;
+		isReplaced = false;
+		isText = false;
+		hasLineBoxes = false;
 	}
 	
 	/**
 	 * clean-up method
-	 * 
-	 * TODO 1 : when setting to null, in flash, don't
-	 *	dereference but instead set the actual object to null
 	 */
 	public function dispose():Void
 	{
-		//_lineBoxes = null;
-		//_graphicsContext = null;
-		//_coreStyle = null;
-		//_layerRenderer = null;
+		domNode = null;
+		coreStyle = null;
+		
+		bounds = null;
+		globalBounds = null;
+		staticOrigin = null;
+		hitTestingBounds = null;
+		layerRenderer = null;
+		
+		var length:Int = inlineBoxes.length;
+		for (i in 0...length)
+		{
+			inlineBoxes[i].dispose();
+		}
+		
+		inlineBoxes = null;
+	}
+	
+	/**
+	 * Retrieve a reference to the dom 
+	 * node style object
+	 */
+	private function initCoreStyle():Void
+	{
+		coreStyle = domNode.coreStyle;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -303,78 +335,107 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * overriden as when an ElementRenderer is appended, it must be attached
-	 * to the LayerRenderer tree
-	 */
-	override public function appendChild(newChild:ElementRenderer):ElementRenderer
+	 * overriden as when an ElementRenderer is appended, an init 
+	 * method is called on it
+	 */ 
+	override public function appendChild(newChild:ElementRenderer):Void
 	{
 		super.appendChild(newChild);
 		
-		var elementRendererChild:ElementRenderer = newChild;
-		elementRendererChild.attach();
-		
-		invalidate(InvalidationReason.other);
-		return newChild;
+		newChild.addedToRenderingTree();
+		invalidate();
 	}
 	
-	
 	/**
-	 * overriden as when an ElementRenderer is removed, it must be
-	 * removed from the LayerRenderer tree
+	 * overriden as when an ElementRenderer is removed, a clean-up 
+	 * method is called on it
 	 */
-	override public function removeChild(oldChild:ElementRenderer):ElementRenderer
+	override public function removeChild(oldChild:ElementRenderer):Void
 	{
-		//must happen before calling super, else the ElementRenderer
-		//won't have a parent anymore
-		var elementRendererChild:ElementRenderer = oldChild;
-		elementRendererChild.detach();
+		oldChild.removedFromRenderingTree();
 		
 		super.removeChild(oldChild);
-		invalidate(InvalidationReason.other);
-		return oldChild;
+		invalidate();
+	}
+	
+	/**
+	 * Overriden as when an ElementRenderer is inserted, its
+	 * init method should be called
+	 */
+	override public function insertBefore(newChild:ElementRenderer, refChild:ElementRenderer):Void
+	{
+		super.insertBefore(newChild, refChild);
+		
+		//if the ref child is null, then the 
+		//new child was inserted using appendChild,
+		//which already calls the init method
+		if (refChild == null)
+		{
+			return;
+		}
+		
+		newChild.addedToRenderingTree();
+		invalidate();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC ANIMATION METHOD
+	// PUBLIC HIT TESTING METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
-
+	
 	/**
-	 * Recursively start pending animation
+	 * Update the bounds of the element renderer used for
+	 * hit testing. Update the whole rendering tree recursively
 	 */
-	public function startPendingAnimation():Bool
+	public function updateHitTestingBounds():Void
 	{
-		return doStartPendingAnimation(this);
-	}
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE ANIMATION METHOD
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * start pending animations of self and of all children 
-	 */
-	private function doStartPendingAnimation(elementRenderer:ElementRenderer):Bool
-	{
-		var atLeastOneAnimationStarted:Bool = false;
-
-		var animationStarted:Bool = elementRenderer.coreStyle.startPendingAnimations();
-
-		if (animationStarted == true)
+		
+		//set initial value for hit testing bounds, start
+		//with global bounds
+		hitTestingBounds.x = globalBounds.x;
+		hitTestingBounds.y = globalBounds.y;
+		hitTestingBounds.width = globalBounds.width;
+		hitTestingBounds.height = globalBounds.height;
+		
+		//if inline box renderer or text, add x and y
+		//bounds of all inline boxes
+		if (coreStyle.isInline == true || isText == true)
 		{
-			atLeastOneAnimationStarted = true;
+			hitTestingBounds.x += bounds.x;
+			hitTestingBounds.y += bounds.y;
 		}
-
-		for (i in 0...childNodes.length)
+		
+		//apply offset and matrix of layer to converted document bounds
+		//to viewport bounds
+		var scrollOffset:PointVO = layerRenderer.scrollOffset;
+		hitTestingBounds.x -= scrollOffset.x;
+		hitTestingBounds.y -= scrollOffset.y;
+		
+		//TODO 2 : for now, only translations supported, if layer
+		//is rotated or scaled, it won't hit test properly
+		var matrix:Matrix = layerRenderer.matrix;
+		hitTestingBounds.x += matrix.e;
+		hitTestingBounds.y += matrix.f;
+		
+		//if the element renderer is the root of its layer, then it
+		//shouldn't use its scrollLeft and srollTop, which should only
+		//apply to child element renderers and child layers
+		if (_hasOwnLayer == true)
 		{
-			var animationStarted:Bool = childNodes[i].startPendingAnimation();
-
-			if (animationStarted == true)
-			{
-				atLeastOneAnimationStarted = true;
-			}
+			hitTestingBounds.x += layerRenderer.scrollLeft;
+			hitTestingBounds.y += layerRenderer.scrollTop;
 		}
-
-		return atLeastOneAnimationStarted;
+		
+		//clip the hit testing bounds with the clip rect of the layer, which
+		//is also defined in viewport space
+		GeomUtils.intersectBounds(layerRenderer.clipRect, hitTestingBounds, hitTestingBounds);
+		
+		//update hit test bounds of all element renderers
+		var child:ElementRenderer = firstChild;
+		while (child != null)
+		{
+			child.updateHitTestingBounds();
+			child = child.nextSibling;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -385,9 +446,45 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * Render this ElementRenderer using the provided
 	 * graphic context as canvas
 	 */
-	public function render(parentGraphicContext:NativeElement, forceRendering:Bool):Void
+	public function render(parentGraphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		//abstract
+	}
+	
+	/**
+	 * update text elements used 
+	 * for rendering
+	 */
+	public function updateText():Void
+	{
+		var child:ElementRenderer = firstChild;
+		while (child != null)
+		{
+			child.updateText();
+			child = child.nextSibling;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when the layer renderer of this
+	 * element renderer has been invalidated
+	 * and needs to be re-created before
+	 * next rendering
+	 */
+	public function invalidateLayerRenderer():Void
+	{
+		_needsLayerRendererUpdate = true;
+		
+		switch(domNode.nodeType)
+		{
+			case DOMConstants.ELEMENT_NODE, DOMConstants.TEXT_NODE:
+				var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
+				htmlDocument.invalidationManager.invalidateLayerTree();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -398,10 +495,10 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 * Layout this ElementRenderer so that it knows its
 	 * bounds and can be rendered to the screen
 	 * 
-	 * @param forceLayout force the layout of this
+	 * @param	forceLayout force the layout of this
 	 * ElementRenderer and of its children
 	 */ 
-	public function layout(forceLayout:Bool):Void
+	public function layout(forceLayout:Bool, layoutState:LayoutStateValue):Void
 	{	
 		//abstract
 	}
@@ -417,51 +514,240 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	public function setGlobalOrigins(addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
 	{
-		//if the element establishes a new formatting context, then its
-		//bounds must be added to the global x and y bounds for the normal flow
-		if (establishesNewFormattingContext() == true)
-		{
-			var globalBounds:RectangleData = globalBounds;
-			addedX = globalBounds.x;
-			addedY = globalBounds.y;
-		}
-		
-		//if the element is positioned, it must also add
-		//its bounds to the global positioned origin
+		//if is positioned, set the global position for its own children
 		if (isPositioned() == true)
 		{
-			var globalBounds:RectangleData = globalBounds;
 			addedPositionedX = globalBounds.x;
 			addedPositionedY = globalBounds.y;
 		}
-		
-		//for its child of the element
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		//if is block container, set the normal flow position for its children
+		if (isBlockContainer == true)
 		{
-			var child:ElementRenderer = childNodes[i];
-			
-			child.globalContainingBlockOrigin = {
-				x: addedX,
-				y : addedY
+			addedX = globalBounds.x + coreStyle.usedValues.paddingLeft;
+			addedY = globalBounds.y + coreStyle.usedValues.paddingTop;
+		}
+		
+		//for each child of the element
+		var child:ElementRenderer = firstChild;
+		while(child != null)
+		{
+			//set global bounds for absolutely positioned child
+			if (child.isAbsolutelyPositioned())
+			{
+				setAbsolutelyPositionedGlobalOrigins(child, addedX, addedY, addedPositionedX, addedPositionedY);
+			}
+			//set global bounds for normal flow child
+			else
+			{
+				child.globalBounds.x = addedX;
+				child.globalBounds.y = addedY;
+				
+				//block level and replaced child also add their their own
+				//offset relative to their containing block,
+				//whereas non-replaced inline level child are represented 
+				//by inline boxes which take care of this offset
+				if (child.isInlineLevel() == false || child.isReplaced == true)
+				{
+					child.globalBounds.x += child.bounds.x;
+					child.globalBounds.y += child.bounds.y;
+				}
+				//here the element is an inline-block whose bounds
+				//matches the one inline box it generated during 
+				//inline formatting
+				else if (child.isBlockContainer == true)
+				{
+					child.globalBounds.x += child.bounds.x;
+					child.globalBounds.y += child.bounds.y;
+				}
 			}
 			
-			child.globalPositionnedAncestorOrigin = {
-				x: addedPositionedX,
-				y : addedPositionedY
-			}
+			//set global dimension for child
+			child.globalBounds.width = child.bounds.width;
+			child.globalBounds.height = child.bounds.height;
 			
 			//call the method recursively if the child has children itself
-			if (child.hasChildNodes() == true)
+			if (child.firstChild != null)
 			{
 				child.setGlobalOrigins(addedX, addedY, addedPositionedX, addedPositionedY);
+			}
+			
+			child = child.nextSibling;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE LAYOUT METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Set the global bounds of an absolutely positioned
+	 * element
+	 */
+	public function setAbsolutelyPositionedGlobalOrigins(elementRenderer:ElementRenderer, addedX:Float, addedY:Float, addedPositionedX:Float, addedPositionedY:Float):Void
+	{
+		var elementRendererCoreStyle:CoreStyle = elementRenderer.coreStyle;
+		
+		//here the element is fixed positioned (relative to the viewport)
+		if (elementRendererCoreStyle.isFixedPositioned)
+		{
+			//if both left and right are auto, static position is used
+			if (elementRendererCoreStyle.hasAutoLeft == true && elementRendererCoreStyle.hasAutoRight == true)
+			{
+				elementRenderer.globalBounds.x = addedX + elementRenderer.staticOrigin.x;
+			}
+			//else use own bounds, for fixed element, no need to add previous global bounds
+			//as they are always positioned relative to the viewport
+			else
+			{
+				elementRenderer.globalBounds.x = elementRenderer.bounds.x;
+			}
+			//same for vertical position
+			if (elementRendererCoreStyle.hasAutoTop == true && elementRendererCoreStyle.hasAutoBottom == true)
+			{
+				elementRenderer.globalBounds.y = addedY + elementRenderer.staticOrigin.y;
+			}
+			else
+			{
+				elementRenderer.globalBounds.y = elementRenderer.bounds.y;
+			}
+		}
+		//here the element is absolute positioned (relative to first positioned ancestor)
+		else
+		{
+			//if left and right auto, use static position
+			if (elementRendererCoreStyle.hasAutoLeft == true && elementRendererCoreStyle.hasAutoRight == true)
+			{
+				//add global normal flow position to static position
+				elementRenderer.globalBounds.x = addedX + elementRenderer.staticOrigin.x;
+			}
+			//here uses bounds which are relative to first positioned ancestor
+			else
+			{
+				//add previous positioned ancestor global position
+				elementRenderer.globalBounds.x = addedPositionedX + elementRenderer.bounds.x;
+			}
+			//same for vertical position
+			if (elementRendererCoreStyle.hasAutoTop == true && elementRendererCoreStyle.hasAutoBottom == true)
+			{
+				elementRenderer.globalBounds.y = addedY + elementRenderer.staticOrigin.y;
+			}
+			else
+			{
+				elementRenderer.globalBounds.y = addedPositionedY + elementRenderer.bounds.y;
 			}
 		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC MARGIN COLLAPSING METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * return the top margin of an element which 
+	 * might be the result of collapsing multiple
+	 * adjoining margins
+	 */
+	public function getCollapsedTopMargin():Float
+	{
+		return 0.0;
+	}
+	
+	/**
+	 * same as getCollapsedTopMargin for bottom
+	 * margin
+	 */
+	public function getCollapsedBottomMargin():Float
+	{
+		return 0.0;
+	}
+	
+	/**
+	 * push the width of each adjoining margin 
+	 * of this element's top margin
+	 */
+	public function getAdjoiningTopMargins(adjoiningMargins:Array<Float>):Void
+	{
+		
+	}
+	
+	/**
+	 * same as getAdjoiningTopMargins for bottom margins
+	 */
+	public function getAdjoiningBottomMargins(adjoiningMargins:Array<Float>):Void
+	{
+		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC ATTACHEMENT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Main method to update the layer tree.
+	 * Traverse the rendering tree recursively
+	 * until all of the layer render tree is
+	 * updated
+	 * 
+	 * ElementRenderer with invalid layer renderer
+	 * attach/detach them as necessary
+	 * 
+	 * Called by the document before rendering
+	 * if the layer tree was invalidated since
+	 * last rendering
+	 * 
+	 * TODO 1 : not optimised yet, no need to
+	 * detach/attach all in most cases
+	 */
+	public function updateLayerRenderer():Void
+	{
+		if (_needsLayerRendererUpdate == true)
+		{	
+			//here the layer is consider updated
+			_needsLayerRendererUpdate = false;
+			//if the element renderer currently
+			//doesn't have a layer, always attach it,
+			//element renderer should always have a
+			//layer when rendering
+			if (layerRenderer == null)
+			{
+				attach();
+				
+				//return as attaching also attach all
+				//the children
+				return;
+			}
+			//else re-attach the layer if the state
+			//of the layer changed, meaning the element
+			//renderer is now supposed to have or no 
+			//longer have its own layer
+			else if (_hasOwnLayer != createOwnLayer())
+			{
+				detach();
+				attach();
+				return;
+			}
+			//else, if the element renderer has its own
+			//layer, refresh its position in its parent child
+			//node list
+			else
+			{
+				if (createOwnLayer() == true)
+				{
+					parentNode.layerRenderer.insertBefore(layerRenderer, getNextLayerRenderer(parentNode.layerRenderer.rootElementRenderer, this));
+				}
+			}
+				
+		}
+		
+		//update all the children if this element renderer
+		//didn't do it already
+		var child:ElementRenderer = firstChild;
+		while(child != null)
+		{
+			child.updateLayerRenderer();
+			child = child.nextSibling;
+		}
+	}
 	
 	/**
 	 * Attach the LayerRenderer of this ElementRenderer
@@ -473,16 +759,12 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		
 		//the ElementRenderer is attached to the LayerRenderer
 		//tree and must now also attach its children
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			var child:ElementRenderer = childNodes[i];
 			child.attach();
+			child = child.nextSibling;
 		}
-		
-		_containingBlock = getContainingBlock();
-		
-		attachContaininingBlock();
 	}
 	
 	/**
@@ -491,40 +773,107 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	public function detach():Void
 	{
-		detachContainingBlock();
-		_containingBlock = null;
-		
 		//first detach the LayerRenderer of all its children
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		var child:ElementRenderer = firstChild;
+		while(child != null)
 		{
-			var child:ElementRenderer = childNodes[i];
 			child.detach();
+			child = child.nextSibling;
 		}
 		
-		detachLayer();
+		if (layerRenderer != null)
+		{
+			detachLayer();
+		}
+	}
+	
+	/**
+	 * Called by the document as part of the update of the
+	 * rendering tree. Wraps element renderer in anonymous
+	 * block if necessary by traversing all the 
+	 * rendering tree. For instance if an element renderer
+	 * has both inline and blocjk children, the inline children
+	 * should be wrapped in anonymous blocks
+	 * 
+	 * Wrapping element renderer is only done by BlockBoxRenderer,
+	 * see this class for more info
+	 */
+	public function updateAnonymousBlock():Void
+	{
+		
+	}
+	
+	/**
+	 * Called by the document when the line box
+	 * trees belonging to block box element renderer
+	 * establishing an inline formatting context
+	 * needs to be updated
+	 * 
+	 * inline boxes are generated for elements 
+	 * participating in an inline formatting
+	 * context
+	 */
+	public function updateInlineBoxes():Void
+	{
+		var child:ElementRenderer = firstChild;
+		while(child != null)
+		{
+			child.updateInlineBoxes();
+			child = child.nextSibling;
+		}
+	}
+	
+	/**
+	 * Called by the parent ElementRenderer when
+	 * this ElementRenderer is appended to the
+	 * rendering tree
+	 */
+	public function addedToRenderingTree():Void
+	{
+		//retrieve containing block
+		containingBlock = getContainingBlock();
+		registerWithContaininingBlock();
+		
+		//schedule update of layer renderer before
+		//next rendering
+		invalidateLayerRenderer();
+	}
+	
+	/**
+	 * Called by the parent ElementRenderer when
+	 * this ElementRenderer is removed from the
+	 * rendering tree
+	 */
+	public function removedFromRenderingTree():Void
+	{
+		//detach from layer render tree
+		detach();
+		
+		//remove itself from containing block
+		unregisterWithContainingBlock();
+		containingBlock = null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRVIATE ATTACHEMENT METHODS
+	// PRIVATE ATTACHEMENT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
+	/**
+	 * Create a LayerRenderer or use the one
+	 * of the parent to be rendered
+	 */
 	private function attachLayer():Void
 	{
 		//create the LayerRenderer if needed
-		if (layerRenderer == null)
+		if (parentNode != null)
 		{
-			if (parentNode != null)
-			{
-				var parent:ElementRenderer = parentNode;
-				if (parent.layerRenderer != null)
-				{
-					createLayer(parent.layerRenderer);
-				}
-			}
+			createLayer(parentNode.layerRenderer);
 		}
 	}
 	
+	/**
+	 * Detach the LayerRenderer
+	 */
 	private function detachLayer():Void
 	{
 		//only detach the LayerRenderer if this ElementRenderer
@@ -532,73 +881,102 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		//which created it when detached
 		if (_hasOwnLayer == true)
 		{
-			var parent:ElementRenderer = parentNode;
-			parent.layerRenderer.removeChild(layerRenderer);
+			parentNode.layerRenderer.removeChild(layerRenderer);
 			_hasOwnLayer = false;
-		}
-		//else if the ElementRenderer was auto z-index positioned when attached,
-		//it means that it was added to the LayerRenderer
-		//as a auto positioned child and must now be removed from it
-		else if (_wasAutoZIndexPositioned == true)
-		{
-			//TODO 3 : is LayerRenderer supposed to be null ?, detachLayer seems
-			//to be called before attachLayer in some case, shouldn't arrive here
-			//if it does
-			if (layerRenderer != null)
-			{
-				layerRenderer.removeAutoZIndexChildElementRenderer(this);
-			}
-			_wasAutoZIndexPositioned = false;
+			layerRenderer.dispose();
 		}
 		
 		layerRenderer = null;
 	}
 	
-	private function attachContaininingBlock():Void
+	/**
+	 * If the ElementRenderer is absolutely positioned, it
+	 * must register itself with its first positioned
+	 * ancestor
+	 */
+	private function registerWithContaininingBlock():Void
 	{
-		//TODO 2 : shouldn't be applied to Scrollbar, or scrollbar ContainingBlock
-		//should always be the parent block box
-		//if the ElementRenderer is positioned, it registers itself
-		//with its first positioned ancestor
-		if (isPositioned() == true)
+		if (isAbsolutelyPositioned() == true)
 		{
-			_containingBlock.addPositionedChildren(this);
+			containingBlock.addAbsolutelyPositionedChildren(this);
+			//flag remembering that the child was absolutely positioned at
+			//attach time
+			_wasAbsolutelyPositioned = true;
 		}
 	}
 	
-	private function detachContainingBlock():Void
+	/**
+	 * If the ElementRenderer was absolutely positioned when attached,
+	 * it must unregister itself from its first positioned
+	 * ancestor
+	 */
+	private function unregisterWithContainingBlock():Void
 	{
-		//the ElementRenderer tries to unregister itself
-		//form its containing block, won't have any effect
-		//if the ElementRenderer is not positionned
-		//
-		//TODO 2 : shouldn't always call it but won't work if the detachement
-		//was caused by the change of the position style
-		_containingBlock.removePositionedChild(this);
+		if (_wasAbsolutelyPositioned == true)
+		{
+			containingBlock.removeAbsolutelyPositionedChild(this);
+			_wasAbsolutelyPositioned = false;
+		}
 	}
 	
 	/////////////////////////////////
 	// PUBLIC HELPER METHODS
-	// Overriden by inheriting classes
-	// TODO 3 : should copy most doc from BoxRenderer
 	////////////////////////////////
 	
-	public function isVerticallyScrollable(scrollOffset:Int):Bool
+	/**
+	 * Return the leaded ascent of the element renderer
+	 */
+	public function getLeadedAscent():Float 
 	{
-		return false;
+		var fontMetrics:FontMetricsVO = coreStyle.fontMetrics; 
+		
+		var ascent:Float = fontMetrics.ascent;
+		var descent:Float = fontMetrics.descent;
+		
+		var lineHeight:Float = coreStyle.usedValues.lineHeight;
+		
+		//the leading is an extra height to apply equally to the ascent
+		//and the descent when laying out lines of text
+		var leading:Float = lineHeight - (ascent + descent);
+
+		//apply leading to the ascent and descent
+		var leadedAscent:Float = ascent + leading / 2;
+		var leadedDescent:Float = descent + leading / 2;
+		
+		return leadedAscent;
 	}
 	
-	public function isHorizontallyScrollable(scrollOffset:Int):Bool
+	/**
+	 * Return the leaded descent of the element renderer
+	 */
+	public function getLeadedDescent():Float 
 	{
-		return false;
+		var fontMetrics:FontMetricsVO = coreStyle.fontMetrics; 
+		
+		var ascent:Float = fontMetrics.ascent;
+		var descent:Float = fontMetrics.descent;	
+	
+		var lineHeight:Float = coreStyle.usedValues.lineHeight;
+		
+		var leading:Float = lineHeight - (ascent + descent);
+
+		var leadedAscent:Float = ascent + leading / 2;
+		var leadedDescent:Float = descent + leading / 2;
+		
+		return leadedDescent;
 	}
 	
-	public function establishesNewFormattingContext():Bool
+	public function establishesNewBlockFormattingContext():Bool
 	{
 		return false;
 	}
 	
 	public function isScrollBar():Bool
+	{
+		return false;
+	}
+	
+	public function canHaveClearance():Bool
 	{
 		return false;
 	}
@@ -613,17 +991,12 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		return false;
 	}
 	
+	public function isAbsolutelyPositioned():Bool
+	{
+		return false;
+	}
+	
 	public function isInlineLevel():Bool
-	{
-		return false;
-	}
-	
-	public function isReplaced():Bool
-	{
-		return false;
-	}
-	
-	public function isText():Bool
 	{
 		return false;
 	}
@@ -633,7 +1006,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		return false;
 	}
 	
-	public function isBlockContainer():Bool
+	public function isTransparent():Bool
 	{
 		return false;
 	}
@@ -648,12 +1021,28 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		return false;
 	}
 	
+	public function isTransformed():Bool
+	{
+		return false;
+	}
+	
+	public function hasCSSTransform():Bool
+	{
+		return false;
+	}
+	
+	public function isVisible():Bool
+	{
+		return true;
+	}
+	
+	
 	/**
 	 * Determine wether this ElementRenderer creates a
 	 * new LayerRenderer for itself or use the
 	 * one of its parent
 	 */
-	public function establishesNewStackingContext():Bool
+	public function createOwnLayer():Bool
 	{
 		return false;
 	}
@@ -663,101 +1052,140 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	////////////////////////////////
 	
 	/**
-	 * Return the relative offset applied by this ElementRenderer
-	 * when rendering. Only relatively positioned ElementRenderer
-	 * have this offset
-	 */
-	private function getRelativeOffset():PointData
-	{
-		var relativeOffset:PointData = { x:0.0, y:0.0 };
-		
-		//only relatively positioned ElementRenderer can have
-		//an offset
-		if (isRelativePositioned() == true)
-		{
-			//first try to apply the left offset of the ElementRenderer if it is
-			//not auto
-			if (coreStyle.left != PositionOffset.cssAuto)
-			{
-				relativeOffset.x += coreStyle.computedStyle.left;
-			}
-			//else the right offset,
-			else if (coreStyle.right != PositionOffset.cssAuto)
-			{
-				relativeOffset.x -= coreStyle.computedStyle.right;
-			}
-			
-			//if both left and right offset are auto, then the ElementRenderer uses its static
-			//position (its normal position in the flow) and no relative offset needs to
-			//be applied
-		
-			//same for vertical offset
-			if (coreStyle.top != PositionOffset.cssAuto)
-			{
-				relativeOffset.y += coreStyle.computedStyle.top; 
-			}
-			else if (coreStyle.bottom != PositionOffset.cssAuto)
-			{
-				relativeOffset.y -= coreStyle.computedStyle.bottom; 
-			}
-		}
-		
-		return relativeOffset;
-	}
-	
-	/**
-	 * Determine wether this ElementRenderer is rendered
-	 * as if it started a stacking context itself. 
-	 * 
-	 * For instance, an ElementRenderer which doesn't start
-	 * a stacking context but as a display of inline-block is rendered
-	 * as if it established a new stacking context, but it won't try
-	 * to render the child layers of its LayerRenderer.
-	 */
-	private function rendersAsIfEstablishingStackingContext():Bool
-	{
-		return false;
-	}
-	
-	/**
-	 * Determine wether this ElementRenderer is 
-	 * both positioned and has an 'auto' z-index value,
-	 * which influence the rendering order of its
-	 * LayerRenderer
-	 */
-	private function isAutoZIndexPositioned():Bool
-	{
-		return false;
-	}
-	
-	/**
 	 * Create a new LayerRenderer for this ElementRenderer or
 	 * use the one from its parent
 	 */
 	private function createLayer(parentLayer:LayerRenderer):Void
 	{
-		if (establishesNewStackingContext() == true)
+		if (createOwnLayer() == true)
 		{
-			layerRenderer = new LayerRenderer(this);
-			parentLayer.appendChild(layerRenderer);
+			doCreateLayer();
+			
+			parentLayer.insertBefore(layerRenderer, getNextLayerRenderer(parentLayer.rootElementRenderer, this));
 			_hasOwnLayer = true;
 		}
 		else
 		{
 			layerRenderer = parentLayer;
-			
-			//if the ElementRenderer is positioned with
-			//an 'auto' z-index value, then it must be added
-			//in a special array in its LayerRenderer has it will
-			//be rendered during its own rendering phase
-			if (isAutoZIndexPositioned() == true)
+		}
+	}
+	
+	/**
+	 * Actually instantiate the layer whose
+	 * type might vary based on the type
+	 * of renderer
+	 */
+	private function doCreateLayer():Void
+	{
+		layerRenderer = new LayerRenderer(this);
+	}
+	
+	/**
+	 * Return the first layer renderer belonging to an element renderer
+	 * which created its own layer renderer and which is declared after
+	 * this element renderer in the rendering tree
+	 * 
+	 * @param	rootElementRenderer the root element renderer of the parent layer renderer of this element
+	 * renderer
+	 * @param	referenceElementRenderer a reference to this element renderer, passed while
+	 * traversing the rendering tree recursively
+	 * @return either the layer renderer or null if no such layer renderer is found
+	 */
+	private function getNextLayerRenderer(rootElementRenderer:ElementRenderer, referenceElementRenderer:ElementRenderer):LayerRenderer
+	{
+		//get the first element renderer declared after this one in the rendering 
+		//tree which has its own layer
+		var nextElementRendererWithOwnLayerRenderer:ElementRenderer = getNextElementRendererWithOwnLayerRenderer(rootElementRenderer, referenceElementRenderer);
+		
+		//it is null if there is no such element renderer
+		if (nextElementRendererWithOwnLayerRenderer == null)
+		{
+			return null;
+		}
+		//a ref to this element renderer might be returned, if this element renderer
+		//was found, but no element renderer with their own layer renderer was found after
+		else if (nextElementRendererWithOwnLayerRenderer == referenceElementRenderer)
+		{
+			return null;
+		}
+		//else return the layer renderer of the found element renderer
+		else
+		{
+			return nextElementRendererWithOwnLayerRenderer.layerRenderer;
+		}
+	}
+	
+	/**
+	 * Return the first element renderer which is 
+	 * declared after this element renderer and which
+	 * has its layer renderer
+	 * by traversing the rendering tree recursively.
+	 * Start at the rootElementRenderer of the parent layer
+	 * renderer of this element renderer
+	 * 
+	 * @return the next element renderer if found, null
+	 * if none were found or might return a ref to this
+	 * element renderer if it was found but no element
+	 * renderer with their own layer were found after
+	 */
+	private function getNextElementRendererWithOwnLayerRenderer(rootElementRenderer:ElementRenderer, referenceElementRenderer:ElementRenderer):ElementRenderer
+	{
+		//set to true when this element renderer is found in the rendering
+		//tree, means that the next element renderer with its own layer is
+		//returned
+		var foundSelf:Bool = false;
+		
+		var child:ElementRenderer = rootElementRenderer.firstChild;
+		while (child != null)
+		{
+			//here this element renderer is found
+			if (child == referenceElementRenderer)
 			{
-				layerRenderer.insertAutoZIndexChildElementRenderer(this);
-				
-				//flag that this ElementRenderer was added as auto zindex child,
-				//to be sure that it is removed when detach is called
-				_wasAutoZIndexPositioned = true;
+				foundSelf = true;
 			}
+			//here an element renderer with its own layer is found
+			else if (child.createOwnLayer() == true && child.layerRenderer != null)
+			{
+				//if this element renderer was already found, 
+				//then return its first following element renderer
+				//with its layer renderer
+				if (foundSelf == true)
+				{
+					return child;
+				}
+			}
+			//else traverse the rendering tree
+			else if (child.firstChild != null)
+			{
+				//call this method recursively
+				var nextElementRendererWithOwnLayerRenderer:ElementRenderer = getNextElementRendererWithOwnLayerRenderer(child, referenceElementRenderer);
+				
+				if (nextElementRendererWithOwnLayerRenderer != null)
+				{
+					if (nextElementRendererWithOwnLayerRenderer == referenceElementRenderer)
+					{
+						foundSelf = true;
+					}
+					else
+					{
+						return nextElementRendererWithOwnLayerRenderer;
+					}
+				}
+			}
+			
+			child = child.nextSibling;
+		}
+		
+		//if this element renderer was found, but not
+		//any following element renderer with layer
+		//return self
+		if (foundSelf == true)
+		{
+			return referenceElementRenderer;
+		}
+		else
+		{
+			return null;
 		}
 	}
 	
@@ -767,11 +1195,11 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function getContainingBlock():FlowBoxRenderer
 	{	
-		if (isPositioned() == true && isRelativePositioned() == false)
+		if (isAbsolutelyPositioned() == true)
 		{
 			//for absolutely positioned fixed elements, the containing block
 			//is the viewport
-			if (computedStyle.position == fixed)
+			if (coreStyle.isFixedPositioned == true)
 			{
 				return getInitialContainingBlock();
 			}
@@ -783,10 +1211,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 			}
 		}
 		//for normal flow children, it is the first block
-		//parent. 
-		//
-		//TODO 1 : what about inline box renderer ? should
-		//return first block or first parent?
+		//parent.
 		else
 		{
 			return getFirstBlockContainer();
@@ -801,7 +1226,17 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 		var parent:ElementRenderer = parentNode;
 		while (parent.isPositioned() == false)
 		{
+			//TODO 3 : this check was introduced for anonymous block.
+			//when a positioned element is the descendant of an anonymous block
+			//at the time where this method is first called, the anonymous block
+			//is not attached to the rendering tree yet, so its parent is null.
+			//Be sure that it doesn't cause trouble down the line
+			if (parent.parentNode == null)
+			{
+				break;
+			}
 			parent = parent.parentNode;
+			
 		}
 		return cast(parent);
 	}
@@ -811,7 +1246,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	 */
 	private function getInitialContainingBlock():InitialBlockRenderer
 	{
-		return cast(node.ownerDocument.documentElement.elementRenderer);
+		return cast(domNode.ownerDocument.documentElement.elementRenderer);
 	}
 	
 	/**
@@ -820,7 +1255,7 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	private function getFirstBlockContainer():FlowBoxRenderer
 	{
 		var parent:ElementRenderer = parentNode;
-		while (parent.isBlockContainer() == false)
+		while (parent.isBlockContainer == false)
 		{
 			parent = parent.parentNode;
 		}
@@ -829,425 +1264,268 @@ class ElementRenderer extends NodeBase<ElementRenderer>
 	}
 	
 	/**
-	 * Determine the bounds of the children of this ElementRenderer
-	 * in this ElementRenderer space
+	 * Set the bounds of an array of inlinebox
+	 * on a provided bounds object
 	 */
-	private function getChildrenBounds(childrenBounds:Array<RectangleData>):RectangleData
+	private function getInlineBoxesBounds(inLineBoxes:Array<InlineBox>, bounds:RectangleVO):Void
 	{
-		var bounds:RectangleData;
+		//first reset the bounds
+		bounds.x = 50000;
+		bounds.y = 50000;
+		bounds.width = 0;
+		bounds.height = 0;
 		
-		var left:Float = 50000;
-		var top:Float = 50000;
-		var right:Float = -50000;
-		var bottom:Float = -50000;
-
-		
-		var length:Int = childrenBounds.length;
+		var length:Int = inLineBoxes.length;
 		for (i in 0...length)
 		{
-			var childBounds:RectangleData = childrenBounds[i];
-			if (childBounds.x < left)
-			{
-				left = childBounds.x;
-			}
-			if (childBounds.y < top)
-			{
-				top = childBounds.y;
-			}
-			if (childBounds.x + childBounds.width > right)
-			{
-				right = childBounds.x + childBounds.width;
-			}
-			if (childBounds.y + childBounds.height  > bottom)
-			{
-				bottom = childBounds.y + childBounds.height;
-			}
+			GeomUtils.addBounds(inLineBoxes[i].bounds, bounds);
 		}
+	}
+	
+	/**
+	 * Traverse all the children recursively
+	 * and apply their bounds to the
+	 * target bounds
+	 */
+	private function doGetChildrenBounds(rootElementRenderer:ElementRenderer, bounds:RectangleVO):Void
+	{
+		var child:ElementRenderer = rootElementRenderer.firstChild;
+		while(child != null)
+		{
+			GeomUtils.addBounds(child.bounds, bounds);
+			if (child.firstChild != null)
+			{
+				doGetChildrenBounds(child, bounds);
+			}
 			
-		
-		
-		bounds = {
-					x:left,
-					y:top,
-					width : right - left,
-					height :  bottom - top,
-				}
-				
-		//TODO 4 : need to implement better fix,
-		//sould not be negative
-		if (bounds.width < 0)
-		{
-			bounds.width = 0;
+			child = child.nextSibling;
 		}
-		if (bounds.height < 0)
-		{
-			bounds.height = 0;
-		}
-				
-		return bounds;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	public function invalidate(invalidationReason:InvalidationReason):Void
+	/**
+	 * An ElementRenderer is invalidated for instance when one of its style value changes,
+	 * or when a child is appended to it. When this happens, the ElementRenderer determinates
+	 * the steps to take (wether to re-layout and/or re-render the element)
+	 * 
+	 * In most cases, an invalidation schedule an update of the docuement
+	 * layout and rendering
+	 * 
+	 * This method is a generic invalidation method
+	 * for cases which are not yet optimised
+	 */
+	public function invalidate():Void
 	{
-		switch(invalidationReason)
-		{
-			case InvalidationReason.styleChanged(styleName):
-				invalidatedStyle(styleName, invalidationReason);
-			
-			case InvalidationReason.childStyleChanged(styleName):
-				invalidatedChildStyle(styleName, invalidationReason);
-				
-			case InvalidationReason.positionedChildStyleChanged(styleName):
-				invalidatedPositionedChildStyle(styleName, invalidationReason);
-				
-			case InvalidationReason.needsImmediateLayout:
-				//TODO 1 : should probably also set global origin
-				layout(true);
-				
-			case InvalidationReason.windowResize:
-				_needsLayout = true;
-				_childrenNeedLayout = true;
-				_childrenNeedRendering = true;
-				_needsRendering = true;
-				_positionedChildrenNeedLayout = true;
-				invalidateDocumentLayoutAndRendering();
-				
-			case InvalidationReason.backgroundImageLoaded:
-				_needsRendering = true;
-				invalidateDocumentRendering();
-				
-			case InvalidationReason.other:
-				_needsLayout = true;
-				_childrenNeedLayout = true;
-				_childrenNeedRendering = true;
-				_needsRendering = true;
-				_positionedChildrenNeedLayout = true;
-				invalidateContainingBlock(invalidationReason);
-		}
-	}
-	
-	public function childInvalidated(invalidationReason:InvalidationReason):Void
-	{
-		invalidate(invalidationReason);
-	}
-	
-	public function positionedChildInvalidated(invalidationReason:InvalidationReason):Void
-	{
-		invalidate(invalidationReason);
-	}
-	
-	private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
-	{
-		//TODO 1 : not supposed to happen but bug with scrollbars for now
-		if (parentNode == null)
-		{
-			return;
-		}
-		
-		var containingBlockInvalidationReason:InvalidationReason;
-		
-		switch (invalidationReason)
-		{
-			case InvalidationReason.styleChanged(styleName):
-				if (isPositioned() == true)
-				{
-					containingBlockInvalidationReason = InvalidationReason.positionedChildStyleChanged(styleName);
-				}
-				else
-				{
-					containingBlockInvalidationReason = InvalidationReason.childStyleChanged(styleName);
-				}
-				
-			default:
-				containingBlockInvalidationReason = invalidationReason;
-				
-		}
-		
-		if (isPositioned() == true && isRelativePositioned() == false)
-		{
-			_containingBlock.positionedChildInvalidated(containingBlockInvalidationReason);
-		}
-		else
-		{
-			_containingBlock.childInvalidated(containingBlockInvalidationReason);
-		}
-	}
-	
-	private function invalidateDocumentLayout():Void
-	{
-		var htmlDocument:HTMLDocument = cast(node.ownerDocument);
-		htmlDocument.invalidateLayout();
-	}
-	
-	private function invalidateDocumentRendering():Void
-	{
-		var htmlDocument:HTMLDocument = cast(node.ownerDocument);
-		htmlDocument.invalidateRendering();
-	}
-	
-	private function invalidateDocumentLayoutAndRendering():Void
-	{
-		var htmlDocument:HTMLDocument = cast(node.ownerDocument);
-		htmlDocument.invalidateLayout();
-		htmlDocument.invalidateRendering();
-	}
-	
-	private function invalidatedStyle(styleName:String, invalidationReason:InvalidationReason):Void
-	{
-		switch (styleName)
-		{
-			case CSSConstants.LEFT_STYLE_NAME, CSSConstants.RIGHT_STYLE_NAME,
-			CSSConstants.TOP_STYLE_NAME, CSSConstants.BOTTOM_STYLE_NAME:
-				
-				_needsRendering = true;
-				if (isPositioned() == true && isRelativePositioned() == false)
-				{
-					_needsLayout = true;
-					invalidateContainingBlock(invalidationReason);
-				}
-				else
-				{
-					invalidateDocumentRendering();
-				}
-				
-			case CSSConstants.COLOR_STYLE_NAME, CSSConstants.FONT_FAMILY_STYLE_NAME, CSSConstants.FONT_SIZE_STYLE_NAME,
-			CSSConstants.FONT_VARIANT_STYLE_NAME, CSSConstants.FONT_STYLE_STYLE_NAME, CSSConstants.FONT_WEIGHT_STYLE_NAME,
-			CSSConstants.LETTER_SPACING_STYLE_NAME, CSSConstants.TEXT_TRANSFORM_STYLE_NAME, CSSConstants.WHITE_SPACE_STYLE_NAME:
-				invalidateText();
-				_needsLayout = true;
-				_needsRendering = true;
-				invalidateContainingBlock(invalidationReason);
-			
-			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
-			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
-			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
-			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:
-				_needsRendering = true;
-				invalidateDocumentRendering();
-				
-			default:
-				_needsLayout = true;
-				_needsRendering = true;
-				_childrenNeedRendering = true;
-				invalidateDocumentRendering();
-				invalidateContainingBlock(invalidationReason);
-		
-				
-		}
-	}
-	
-	private function invalidatedChildStyle(styleName:String, invalidationReason:InvalidationReason):Void
-	{
-		switch (styleName)
-		{
-			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
-			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
-			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
-			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:
-			
-			default:
-				_needsLayout = true;
-				_childrenNeedRendering = true;
-				invalidateContainingBlock(invalidationReason);
-				invalidateDocumentLayoutAndRendering();
-		}
-	}
-	
-	private function invalidatedPositionedChildStyle(styleName:String, invalidationReason:InvalidationReason):Void
-	{
-		switch (styleName)
-		{
-			case CSSConstants.BACKGROUND_COLOR_STYLE_NAME, CSSConstants.BACKGROUND_CLIP_STYLE_NAME,
-			CSSConstants.BACKGROUND_IMAGE_STYLE_NAME, CSSConstants.BACKGROUND_POSITION_STYLE_NAME,
-			CSSConstants.BACKGROUND_ORIGIN_STYLE_NAME, CSSConstants.BACKGROUND_REPEAT_STYLE_NAME,
-			CSSConstants.BACKGROUND_SIZE_STYLE_NAME:	
-			
-			default:
-				_positionedChildrenNeedLayout = true;
-				_childrenNeedRendering = true;
-				invalidateDocumentLayoutAndRendering();
-		}
+		//abstract
 	}
 	
 	/**
-	 * Call when a style which require a re-layout
-	 * of the text (such as font-size, fon-family...)
-	 * is changed
+	 * Called when a style of the owning HTMLElement
+	 * changed
+	 * @param	styleIndex the index of the style whose
+	 * value changed
 	 */
-	private function invalidateText():Void
+	public function invalidateStyle(styleIndex:Int):Void
 	{
-		var length:Int = childNodes.length;
-		for (i in 0...length)
+		//abstract
+	}
+	
+	/**
+	 * Called when this element renderer needs
+	 * to be re-rendered
+	 */
+	public function invalidateRendering():Void
+	{
+		//abstract
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// SCROLL GETTER/SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * If this element renderer creates its own
+	 * layer, then forward scroll left update
+	 * to the layer. If it doesn't create
+	 * any layer, then no need to forward as
+	 * it won't be taken into account anyway.
+	 * Element renderer which can be scrolled
+	 * ('overflow' different from visible)
+	 * always create their own layer
+	 * 
+	 * The layer will determine 
+	 * wether to actually update scroll left.
+	 */
+	private function set_scrollLeft(value:Float):Float 
+	{
+		if (_hasOwnLayer == true)
 		{
-			childNodes[i].invalidateText();
+			layerRenderer.scrollLeft = value;
 		}
+		
+		return value;
+	}
+	
+	/**
+	 * same as when setting scroll left, if element
+	 * has own layer, retrieve scroll left from layer,
+	 * else it doesn't have any scroll left
+	 */
+	private function get_scrollLeft():Float
+	{
+		if (_hasOwnLayer == true)
+		{
+			return layerRenderer.scrollLeft;
+		}
+		
+		return 0;
+	}
+	
+	/**
+	 * same as setting scroll left for top
+	 */
+	private function set_scrollTop(value:Float):Float 
+	{
+		if (_hasOwnLayer == true)
+		{
+			layerRenderer.scrollTop = value;
+		}
+		
+		return value;
+	}
+	
+	/**
+	 * same as getting scroll left for top
+	 */
+	private function get_scrollTop():Float
+	{
+		if (_hasOwnLayer == true)
+		{
+			return layerRenderer.scrollTop;
+		}
+		
+		return 0;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// TREE TRAVERSAL GETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	private function get_previousNormalFlowSibling():ElementRenderer
+	{
+		var previousElementRendererSibling:ElementRenderer = previousSibling;
+		
+		while (previousElementRendererSibling != null)
+		{
+			if (previousElementRendererSibling.isFloat() == false)
+			{
+				if (previousElementRendererSibling.isAbsolutelyPositioned() == false)
+				{
+					return previousElementRendererSibling;
+				}
+			}
+			
+			previousElementRendererSibling = previousElementRendererSibling.previousSibling;
+		}
+		
+		return null;
+	}
+	
+	private function get_nextNormalFlowSibling():ElementRenderer
+	{
+		var nextElementRendererSibling:ElementRenderer = nextSibling;
+	
+		while (nextElementRendererSibling != null)
+		{
+			if (nextElementRendererSibling.isFloat() == false)
+			{
+				if (nextElementRendererSibling.isAbsolutelyPositioned() == false)
+				{
+					return nextElementRendererSibling;
+				}
+			}
+			
+			nextElementRendererSibling = nextElementRendererSibling.nextSibling;
+		}
+		
+		return null;
+	}
+	
+	private function get_firstNormalFlowChild():ElementRenderer
+	{
+		var firstElementRendererChild:ElementRenderer = firstChild;
+		
+		if (firstElementRendererChild != null)
+		{
+			if (firstElementRendererChild.isFloat() == false)
+			{
+				if (firstElementRendererChild.isAbsolutelyPositioned() == false)
+				{
+					return firstElementRendererChild;
+				}
+			}
+			
+			return firstElementRendererChild.nextNormalFlowSibling;
+		}
+		
+		return null;
+	}
+	
+	private function get_lastNormalFlowChild():ElementRenderer
+	{
+		var lastElementRendererChild:ElementRenderer = lastChild;
+		
+		if (lastElementRendererChild != null)
+		{
+			if (lastElementRendererChild.isFloat() == false)
+			{
+				if (lastElementRendererChild.isAbsolutelyPositioned() == false)
+				{
+					return lastElementRendererChild;
+				}
+			}
+			
+			return lastElementRendererChild.previousNormalFlowSibling;
+		}
+		
+		return null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Return the bounds of the ElementRenderer relative to the
-	 * Window, depending on its positioning scheme
-	 */
-	private function get_globalBounds():RectangleData
-	{
-		var globalX:Float;
-		var globalY:Float;
-		
-		//fixed positioned
-		if (_coreStyle.position == fixed)
-		{
-			//here it uses its static position for x
-			if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
-			{
-				globalX = globalContainingBlockOrigin.x + bounds.x;
-			}
-			//here it uses its position relative to the Window for x
-			else
-			{
-				globalX = positionedOrigin.x;
-			}
-			//static position
-			if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
-			{
-				globalY = globalContainingBlockOrigin.y + bounds.y;
-			}
-			else
-			{
-				globalY = positionedOrigin.y;
-			}
-		}
-		//absolute positioned
-		else if (_coreStyle.position == absolute)
-		{
-			//static position for x
-			if (_coreStyle.left == PositionOffset.cssAuto && _coreStyle.right == PositionOffset.cssAuto)
-			{
-				globalX = globalContainingBlockOrigin.x + bounds.x;
-			}
-			else
-			{
-				globalX = globalPositionnedAncestorOrigin.x + positionedOrigin.x;
-			}
-			//static position for y
-			if (_coreStyle.top == PositionOffset.cssAuto && _coreStyle.bottom == PositionOffset.cssAuto)
-			{
-				globalY = globalContainingBlockOrigin.y + bounds.y;
-			}
-			else
-			{
-				globalY = globalPositionnedAncestorOrigin.y + positionedOrigin.y;
-			}
-		}
-		//here the ElementRenderer uses the normal flow
-		else
-		{
-			globalX = globalContainingBlockOrigin.x + bounds.x;
-			globalY = globalContainingBlockOrigin.y + bounds.y;
-		}
-		
-		return {
-			x:globalX,
-			y:globalY,
-			width:bounds.width,
-			height:bounds.height
-		}
-	}
-	
-	/**
-	 * Return the bounds of the ElementRenderer as they
-	 * need to be to compute the scrollable bounds of its
-	 * containing block
-	 * 
-	 * TODO 3 : should implement the case of absolutely 
-	 * positioned children
-	 */
-	private function get_scrollableBounds():RectangleData
-	{
-		//if the elementRenderer is not relatively positioned,
-		//the bounds are the same as the regular bounds
-		if (isRelativePositioned() == false)
-		{
-			return bounds;
-		}
-		
-		//else the bounds with the relative offset applied to them
-		//are returned
-		var relativeOffset:PointData = getRelativeOffset();
-		var bounds:RectangleData = get_bounds();
-		
-		return {
-			x: bounds.x + relativeOffset.x,
-			y: bounds.y + relativeOffset.y,
-			width: bounds.width,
-			height: bounds.height
-		};
-	}
-	
-	private function getComputedStyle():ComputedStyle
-	{
-		return _coreStyle.computedStyle;
-	}
-	
-	private function setComputedStyle(value:ComputedStyle):ComputedStyle
-	{
-		return _coreStyle.computedStyle = value;
-	}
-	
-	private function get_coreStyle():CoreStyle
-	{
-		return _coreStyle;
-	}
-	 
-	private function set_coreStyle(value:CoreStyle):CoreStyle
-	{
-		_coreStyle = value;
-		return value;
-	}
-	
-	private function get_bounds():RectangleData
-	{
-		return bounds;
-	}
-	
-	private function set_bounds(value:RectangleData):RectangleData
-	{
-		return bounds = value;
-	}
-	
-	private function get_scrollLeft():Float 
-	{
-		return 0;
-	}
-	
-	private function set_scrollLeft(value:Float):Float 
-	{
-		return value;
-	}
-	
-	private function get_scrollTop():Float 
-	{
-		return 0;
-	}
-	
-	private function set_scrollTop(value:Float):Float 
-	{
-		return value;
-	}
+
 	
 	private function get_scrollWidth():Float
 	{
+		if (_hasOwnLayer == true)
+		{
+			var scrollableWidth:Float = layerRenderer.scrollableBounds.width;
+			
+			if (scrollableWidth > bounds.width)
+			{
+				return scrollableWidth;
+			}
+		}
+		
 		return bounds.width;
 	}
 	
 	private function get_scrollHeight():Float
 	{
+		if (_hasOwnLayer == true)
+		{
+			var scrollableHeight:Float = layerRenderer.scrollableBounds.height;
+			
+			if (scrollableHeight > bounds.height)
+			{
+				return scrollableHeight;
+			}
+		}
+		
 		return bounds.height;
 	}
 }

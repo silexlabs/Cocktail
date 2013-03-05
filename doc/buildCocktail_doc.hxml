@@ -1,6 +1,6 @@
 #build doc files
--cp ../src/
--main Cocktail
+-cp ../src
+-main CocktailDoc
 -D doc
 -xml Cocktail.xml
 -cmd chxdoc -o cocktail/ --includeOnly=cocktail.*,  Cocktail.xml

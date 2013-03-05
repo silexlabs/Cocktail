@@ -8,13 +8,12 @@
 */
 package cocktail.port;
 
-/**
- * Set the right runtime specific keyboard manager at compile-time
- */
-#if (flash9 || nme)
-typedef Keyboard =  cocktail.port.flash_player.Keyboard;
+#if macro
+typedef Keyboard = cocktail.port.base.KeyboardListenerBase;
+
+#elseif (flash9 || nme)
+typedef Keyboard =  cocktail.port.platform.flash_player.Keyboard;
 
 #else
-typedef Keyboard = cocktail.port.server.Keyboard;
-
+typedef Keyboard = cocktail.port.base.KeyboardListenerBase;
 #end

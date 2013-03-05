@@ -10,14 +10,15 @@ package cocktail.core.html;
 
 import cocktail.core.dom.Attr;
 import cocktail.core.dom.Node;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.EventTarget;
 import cocktail.core.event.UIEvent;
+import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
+import cocktail.port.ImageResource;
 import cocktail.port.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.renderer.ImageRenderer;
-import cocktail.core.resource.ImageLoader;
-import cocktail.port.Resource;
 import haxe.Log;
 import cocktail.core.html.EmbeddedElement;
 import cocktail.core.renderer.RendererData;
@@ -138,14 +139,14 @@ class HTMLImageElement extends EmbeddedElement
 	{
 		super.setAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME, value);
 		
-		var resource:Resource = ResourceManager.getResource(value);
-		
+		var resource:AbstractResource = ResourceManager.getImageResource(value);
+
 		if (resource.loaded == false)
 		{
 			_resourceLoadedCallback = onResourceLoaded;
 			_resourceLoadError = onResourceLoadError;
-			resource.addEventListener(UIEvent.LOAD, _resourceLoadedCallback);
-			resource.addEventListener(UIEvent.ERROR, _resourceLoadError);
+			resource.addEventListener(EventConstants.LOAD, _resourceLoadedCallback);
+			resource.addEventListener(EventConstants.ERROR, _resourceLoadError);
 		}
 		else
 		{
@@ -176,27 +177,41 @@ class HTMLImageElement extends EmbeddedElement
 	
 	private function removeListeners(resource:EventTarget):Void
 	{
-		resource.removeEventListener(UIEvent.LOAD, _resourceLoadedCallback);
-		resource.removeEventListener(UIEvent.ERROR, _resourceLoadError);
+		resource.removeEventListener(EventConstants.LOAD, _resourceLoadedCallback);
+		resource.removeEventListener(EventConstants.ERROR, _resourceLoadError);
 	}
 	
-	private function onLoadComplete(resource:Resource):Void
+	private function onLoadComplete(resource:AbstractResource):Void
 	{	
 		intrinsicHeight = resource.intrinsicHeight;
 		intrinsicWidth = resource.intrinsicWidth;
 		intrinsicRatio = intrinsicHeight / intrinsicWidth;
 		
-		invalidate(InvalidationReason.other);
+		//if the picture has a defined width and height, only the rendering of the document
+		//needs to be updated
+		if (getAttribute(HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME) != null && getAttribute(HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME) != null)
+		{
+			if (elementRenderer != null)
+			{
+				_ownerHTMLDocument.invalidationManager.invalidateRendering(elementRenderer.hitTestingBounds);
+			}
+		}
+		//else the size of the loaded
+		//picture will probably affect layout too
+		else
+		{
+			invalidate();
+		}
 		
 		var loadEvent:UIEvent = new UIEvent();
-		loadEvent.initUIEvent(UIEvent.LOAD, false, false, null, 0.0);
+		loadEvent.initUIEvent(EventConstants.LOAD, false, false, null, 0.0);
 		dispatchEvent(loadEvent);
 	}
 	
 	private function onLoadError():Void
 	{
 		var errorEvent:UIEvent = new UIEvent();
-		errorEvent.initUIEvent(UIEvent.ERROR, false, false, null, 0.0);
+		errorEvent.initUIEvent(EventConstants.ERROR, false, false, null, 0.0);
 		dispatchEvent(errorEvent);
 	}
 	
@@ -215,7 +230,7 @@ class HTMLImageElement extends EmbeddedElement
 		{
 			return 0;
 		}
-		return intrinsicHeight;
+		return Math.round(intrinsicHeight);
 	}
 	
 	private function get_naturalWidth():Int
@@ -224,7 +239,7 @@ class HTMLImageElement extends EmbeddedElement
 		{
 			return 0;
 		}
-		return intrinsicWidth;
+		return Math.round(intrinsicWidth);
 	}
 	
 }

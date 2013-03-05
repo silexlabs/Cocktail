@@ -10,8 +10,10 @@ package cocktail.core.renderer;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
+
 import cocktail.port.NativeElement;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.LayoutData;
+import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 
 /**
@@ -34,18 +36,46 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overiden as the body's element renderer computed height is a special
+	 * Overiden as the body's element renderer used height is a special
 	 * case where the height should be the height of the initial containing block
 	 * if it specified as 'auto'
 	 */
-	override private function layoutSelf():Void
+	override private function layoutSelfIfNeeded(forceLayout:Bool):Void
 	{
-		super.layoutSelf();
-		if (_coreStyle.height == Dimension.cssAuto && (isPositioned() == false || isRelativePositioned() == true))
+		if (_needsLayout == false && forceLayout == false)
 		{
-			this.computedStyle.height = _containingBlock.getContainerBlockData().height - computedStyle.marginTop - computedStyle.marginBottom
-			- computedStyle.paddingTop - computedStyle.paddingBottom;
+			return;
 		}
+		
+		super.layoutSelfIfNeeded(forceLayout);
+		
+		if (coreStyle.hasAutoHeight == true && (isPositioned() == false || isRelativePositioned() == true))
+		{
+			var usedValues:UsedValuesVO = coreStyle.usedValues;
+			usedValues.height = containingBlock.getContainerBlockData().height - usedValues.marginTop - usedValues.marginBottom
+			- usedValues.paddingTop - usedValues.paddingBottom;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE MARGIN COLLAPSING METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * the body renderer don't collapse with the initial
+	 * block box
+	 */
+	override private function collapseTopMarginWithParentTopMargin():Bool
+	{
+		return false;
+	}
+	
+	/**
+	 * same as above
+	 */
+	override private function collapseBottomMarginWithParentBottomMargin():Bool
+	{
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -53,24 +83,38 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Overriden as when the body's height is specified as auto,
+	 * it is considered not auto for its children at it takes
+	 * the viewport's height instead of its content height
+	 */
+	override public function getContainerBlockData():ContainingBlockVO
+	{
+		super.getContainerBlockData();
+		
+		if (coreStyle.hasAutoHeight == true && (isPositioned() == false || isRelativePositioned() == true))
+		{
+			_containerBlockData.isHeightAuto = false;
+		}
+		
+		return _containerBlockData;
+	}
+	
+	/**
 	 * The HTMLBodyElement uses the bounds of the viewport
 	 * for its background
 	 */
-	override private function getBackgroundBounds():RectangleData
+	override private function getBackgroundBounds(scrollOffset:PointVO):RectangleVO
 	{
-		var windowData:ContainingBlockData = getWindowData();
+		var windowData:ContainingBlockVO = getWindowData();
 		
 		var width:Float = windowData.width;
 		var height:Float = windowData.height;
+		bounds.width = width;
+		bounds.height = height;
+		bounds.x = 0.0;
+		bounds.y = 0.0;
 		
-		var bodyBounds:RectangleData = {
-			x:0.0,
-			y:0.0,
-			width:width,
-			height:height
-		}
-		
-		return bodyBounds;
+		return bounds;
 	}
 	
 	

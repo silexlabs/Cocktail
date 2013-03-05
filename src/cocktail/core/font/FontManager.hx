@@ -8,11 +8,12 @@
 */
 package cocktail.core.font;
 
+import cocktail.core.css.CoreStyle;
 import cocktail.core.font.FontData;
 import cocktail.port.FontManagerImpl;
 import cocktail.port.NativeElement;
-import cocktail.core.style.ComputedStyle;
-import cocktail.core.style.StyleData;
+
+import cocktail.core.layout.LayoutData;
 
 /**
  * The FontManager is used to get metrics for fonts and
@@ -65,7 +66,7 @@ class FontManager
 	 * Returns metrics for a given
 	 * font and font size
 	 */
-	public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsData
+	public function getFontMetrics(fontFamily:String, fontSize:Float):FontMetricsVO
 	{
 		return _fontManagerImpl.getFontMetrics(fontFamily, fontSize);
 	}
@@ -76,8 +77,18 @@ class FontManager
 	 * and the styles that were computed for
 	 * this text
 	 */
-	public function createNativeTextElement(text:String, computedStyle:ComputedStyle):NativeElement
+	public function createNativeTextElement(text:String, style:CoreStyle, fontFamily:String):NativeElement
 	{
-		return _fontManagerImpl.createNativeTextElement(text, computedStyle);
+		return _fontManagerImpl.createNativeTextElement(text, style, fontFamily);
+	}
+	
+	/**
+	 * Get a css cont family array and return it
+	 * as a string of font family formatted for the
+	 * native runtime
+	 */
+	public function getNativeFontFamily(fontFamily:Array<String>):String
+	{
+		return _fontManagerImpl.getNativeFontFamily(fontFamily);
 	}
 }

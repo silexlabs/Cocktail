@@ -14,10 +14,11 @@ package cocktail;
 
 typedef Image = cocktail.core.html.HTMLImageElement;
 typedef Video = cocktail.core.html.HTMLVideoElement;
+typedef Audio = cocktail.core.html.HTMLAudioElement; 
 typedef HtmlDom = cocktail.core.html.HTMLElement;
 typedef Anchor = cocktail.core.html.HTMLAnchorElement;
 typedef Body = cocktail.core.html.HTMLBodyElement;
-typedef Style = cocktail.core.style.adapter.Style;
+typedef Style = cocktail.core.css.CSSStyleDeclaration;
 typedef Window = cocktail.core.window.Window;
 typedef Document = cocktail.core.html.HTMLDocument;
 typedef FormElement = cocktail.core.html.HTMLInputElement;
@@ -26,5 +27,9 @@ typedef Event = cocktail.core.event.Event;
 typedef MouseEvent = cocktail.core.event.MouseEvent;
 typedef UIEvent = cocktail.core.event.UIEvent;
 typedef CustomEvent = cocktail.core.event.CustomEvent;
+typedef TouchEvent = cocktail.core.event.TouchEvent;
 
 typedef HtmlCollection<Dynamic> = Array<Dynamic>;
+
+typedef History = cocktail.core.history.History;
+typedef PopStateEvent = cocktail.core.event.PopStateEvent;

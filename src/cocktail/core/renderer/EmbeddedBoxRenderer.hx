@@ -7,24 +7,19 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.renderer;
-
-import cocktail.core.background.BackgroundManager;
-import cocktail.core.dom.Node;
-import cocktail.core.html.EmbeddedElement;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
-import cocktail.port.NativeElement;
-import cocktail.core.style.computer.boxComputers.BoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
-import cocktail.core.style.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
-import cocktail.core.style.CoreStyle;
-import cocktail.core.font.FontData;
-import cocktail.core.style.formatter.FormattingContext;
-import cocktail.core.style.StyleData;
+import cocktail.core.layout.computer.boxComputers.BoxStylesComputer;
+import cocktail.core.layout.computer.boxComputers.EmbeddedBlockBoxStylesComputer;
+import cocktail.core.layout.computer.boxComputers.EmbeddedFloatBoxStylesComputer;
+import cocktail.core.layout.computer.boxComputers.EmbeddedInlineBlockBoxStylesComputer;
+import cocktail.core.layout.computer.boxComputers.EmbeddedInlineBoxStylesComputer;
+import cocktail.core.layout.computer.boxComputers.EmbeddedPositionedBoxStylesComputer;
 import cocktail.core.geom.GeomData;
-import haxe.Log;
+import cocktail.core.layout.LayoutManager;
+import cocktail.core.graphics.GraphicsContext;
+import cocktail.core.layout.LayoutData;
+import cocktail.core.css.CSSData;
 
 /**
  * Base class for embedded element
@@ -37,6 +32,7 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	public function new(node:HTMLElement) 
 	{
 		super(node);
+		isReplaced = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -47,21 +43,11 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	 * overriden to also render the embedded asset, for instance a picture for
 	 * an image renderer
 	 */
-	override private function renderSelf(graphicContext:NativeElement):Void
-	{
-		super.renderSelf(graphicContext);
-		renderEmbeddedAsset(graphicContext);
+	override private function renderSelf(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
+	{ 
+		super.renderSelf(graphicContext, clipRect, scrollOffset);
+		renderEmbeddedAsset(graphicContext, clipRect, scrollOffset);
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	override public function isReplaced():Bool
-	{
-		return true;
-	}
-
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE RENDERING METHODS
@@ -70,21 +56,8 @@ class EmbeddedBoxRenderer extends BoxRenderer
 	/**
 	 * Renders an embedded asset using the graphic context as canvas
 	 */
-	private function renderEmbeddedAsset(graphicContext:NativeElement)
+	private function renderEmbeddedAsset(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO)
 	{
 		//abstract
-	}
-	
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN SETTER/GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	//TODO 4 : messy
-	override private function get_bounds():RectangleData
-	{
-		bounds.width = computedStyle.width + computedStyle.paddingLeft + computedStyle.paddingRight;
-		bounds.height = computedStyle.height + computedStyle.paddingTop + computedStyle.paddingBottom;
-		return bounds;
 	}
 }

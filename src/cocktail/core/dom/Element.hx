@@ -64,15 +64,23 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	
 	/**
 	 * class constructor. Set the name of the tag,
-	 * it can't be changed afterwards. Instantiate
-	 * the attribute node map here because it is the
-	 * only type of node which can have any
+	 * it can't be changed afterwards.
 	 */
 	public function new(tagName:String) 
 	{
 		this.tagName = tagName;
-		attributes = new NamedNodeMap<ElementClass>();
+		initAttributes();
 		super();
+	}
+	
+	/**
+	 * Instantiate
+	 * the attribute node map. Element node are the
+	 * only type of node which can have any
+	 */
+	private function initAttributes():Void
+	{
+		attributes = new NamedNodeMap<ElementClass>();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -281,6 +289,28 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as for element node, attributes
+	 * are cloned as well
+	 */
+	override private function doCloneNode():ElementClass
+	{
+		var clonedElement:Element<ElementClass> = new Element<ElementClass>(this.tagName);
+		
+		var length:Int = attributes.length;
+		for (i in 0...length)
+		{
+			var clonedAttr:Attr<ElementClass> = attributes.item(i).cloneNode(false);
+			clonedElement.setAttributeNode(clonedAttr);
+		}
+		
+		return cast(clonedElement);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -295,7 +325,7 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:HTMLElement = cast(node.childNodes[i]);
+				var childNode:HTMLElement = node.childNodes[i];
 				
 				//if matching tagName, push child node
 				if (childNode.nodeName == tagName)
@@ -324,22 +354,20 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 			var length:Int = node.childNodes.length;
 			for (i in 0...length)
 			{
-				var childNode:HTMLElement = cast(node.childNodes[i]);
+				var childNode:HTMLElement = node.childNodes[i];
 				switch (childNode.nodeType)
 				{
 					case DOMConstants.ELEMENT_NODE:
-						var elementNode:HTMLElement = childNode;
-						var elementClassName:String = elementNode.getAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME);
-						if (elementClassName != null)
+						var classList:Array<String> = childNode.classList;
+						if (classList != null)
 						{
-							var elementClassNames:Array<String> = elementClassName.split(" ");
-							
 							var foundFlag:Bool = false;
-							for (j in 0...elementClassNames.length)
+							var classListLength:Int = classList.length;
+							for (j in 0...classListLength)
 							{
-								if (elementClassNames[j] == className && foundFlag == false)
+								if (classList[j] == className && foundFlag == false)
 								{
-									elements.push(elementNode);
+									elements.push(childNode);
 									foundFlag = true;
 								}
 							}

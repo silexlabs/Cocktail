@@ -42,7 +42,12 @@ class CubicBezier
 	/**
 	 * Class constructor
 	 */
-	public function new(x1:Float, y1:Float, x2:Float, y2:Float) 
+	public function new() 
+	{
+		
+	}
+	
+	public function init(x1:Float, y1:Float, x2:Float, y2:Float):Void
 	{
 		_x1 = x1;
 		_y1 = y1;

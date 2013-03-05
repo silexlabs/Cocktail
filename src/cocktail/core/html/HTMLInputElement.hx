@@ -9,7 +9,7 @@
 package cocktail.core.html;
 
 import cocktail.core.renderer.TextInputRenderer;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
 
 /**
  * Form control.
@@ -30,12 +30,13 @@ import cocktail.core.style.CoreStyle;
 class HTMLInputElement extends EmbeddedElement
 {
 	/**
-	 * The intrinsic width and ratio of a text input, 
-	 * as they seem to be in Firefox on Windows
+	 * The intrinsic width and height of a text input used
+	 * when no width or height attribute or CSS style defined, 
+	 * values are abitrary, based on observation
 	 */
 	private static inline var HTML_INPUT_TEXT_INTRINSIC_WIDTH:Int = 150;
 	
-	private static inline var HTML_INPUT_TEXT_INTRINSIC_RATIO:Float = 0.15;
+	private static inline var HTML_INPUT_TEXT_INTRINSIC_HEIGHT:Float = 30;
 	
 	/**
 	 * When the type attribute of the element has the value "text",
@@ -49,6 +50,12 @@ class HTMLInputElement extends EmbeddedElement
 	 * the HTML value attribute of the element.
 	 */
 	public var value(get_value, set_value):String;
+	
+	/**
+	 * Limit the max number of characters whihc can
+	 * be inputed
+	 */
+	public var maxLength(get_maxLength, set_maxLength):Int;
 	
 	/**
 	 * class constructor
@@ -84,12 +91,17 @@ class HTMLInputElement extends EmbeddedElement
 		
 		var textInputElementRenderer:TextInputRenderer = cast(elementRenderer);
 		
+		//initialise max length of input
+		var maxLength:Int = get_maxLength();
+		if (maxLength != -1)
+		{
+			textInputElementRenderer.maxLength = maxLength;
+		}
+		
 		//initialise value of native text input
 		var value:String = getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
-		
 		if (value != null)
 		{
-			
 			textInputElementRenderer.value = value;
 		}
 	}
@@ -111,14 +123,14 @@ class HTMLInputElement extends EmbeddedElement
 	// OVERRIDEN SETTER/GETTER
 	/////////////////////////////////
 	
-	override private function get_intrinsicWidth():Null<Int> 
+	override private function get_intrinsicWidth():Null<Float> 
 	{
 		return HTML_INPUT_TEXT_INTRINSIC_WIDTH;
 	}
 	
-	override private function get_intrinsicRatio():Null<Float> 
+	override private function get_intrinsicHeight():Null<Float> 
 	{
-		return HTML_INPUT_TEXT_INTRINSIC_RATIO;
+		return HTML_INPUT_TEXT_INTRINSIC_HEIGHT;
 	}
 	
 	/////////////////////////////////
@@ -151,5 +163,36 @@ class HTMLInputElement extends EmbeddedElement
 		}
 		
 		return getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
+	}
+	
+	/**
+	 * When max length updated, update also
+	 * on the native text input
+	 */
+	private function set_maxLength(value:Int):Int
+	{
+		setAttribute(HTMLConstants.HTML_MAXLENGTH_ATTRIBUTE_NAME, Std.string(value));
+		
+		if (elementRenderer != null)
+		{
+			var textInputElementRenderer:TextInputRenderer = cast(elementRenderer);
+			textInputElementRenderer.maxLength = value;
+		}
+		
+		return value;
+	}
+	
+	private function get_maxLength():Int
+	{
+		var maxLength:String = getAttribute(HTMLConstants.HTML_MAXLENGTH_ATTRIBUTE_NAME);
+		//TODO 4 : should it return a Null<Int> instead ?
+		if (maxLength == null)
+		{
+			return -1;
+		}
+		else
+		{
+			return Std.parseInt(maxLength);
+		}
 	}
 }

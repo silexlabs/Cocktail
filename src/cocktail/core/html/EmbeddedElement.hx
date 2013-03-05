@@ -11,7 +11,7 @@ package cocktail.core.html;
 import cocktail.core.dom.Node;
 import cocktail.core.renderer.EmbeddedBoxRenderer;
 import cocktail.core.layer.LayerRenderer;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.css.CoreStyle;
 import cocktail.port.NativeElement;
 
 /**
@@ -50,27 +50,19 @@ class EmbeddedElement extends HTMLElement
 	 * to a loaded asset and retrieve the intrisic dimensions from
 	 * it, they are not supposed to be stored here
 	 */
-	public var intrinsicHeight(get_intrinsicHeight, null):Null<Int>;
+	public var intrinsicHeight(get_intrinsicHeight, null):Null<Float>;
 	
 	/**
 	 * The intrinsic width of the embedded asset, for instance
 	 * for an image, its width in pixel
 	 */
-	public var intrinsicWidth(get_intrinsicWidth, null):Null<Int>;
+	public var intrinsicWidth(get_intrinsicWidth, null):Null<Float>;
 	
 	/**
 	 * The intrinsic ratio of the embedded asset, for instance
 	 * for a video, its pixel ratio
 	 */
 	public var intrinsicRatio(get_intrinsicRatio, null):Null<Float>;
-	
-	/**
-	 * A reference to the embedded asset
-	 * 
-	 * TODO 1 :the embeddedasset attribute seems obsolete and shouldn't exist anymore
-	 * with the ResourceManager
-	 */
-	public var embeddedAsset(default, null):NativeElement;
 	
 	/**
 	 * class constructor
@@ -82,16 +74,7 @@ class EmbeddedElement extends HTMLElement
 	
 	override private function init():Void
 	{
-		initEmbeddedAsset();
 		super.init();
-	}
-	
-	/**
-	 * get a reference to the embedded asset
-	 */
-	private function initEmbeddedAsset():Void
-	{
-		//abstract
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -134,12 +117,12 @@ class EmbeddedElement extends HTMLElement
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	private function get_intrinsicHeight():Null<Int> 
+	private function get_intrinsicHeight():Null<Float> 
 	{
 		return intrinsicHeight;
 	}
 	
-	private function get_intrinsicWidth():Null<Int> 
+	private function get_intrinsicWidth():Null<Float> 
 	{
 		return intrinsicWidth;
 	}

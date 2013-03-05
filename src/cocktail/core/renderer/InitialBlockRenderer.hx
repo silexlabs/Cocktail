@@ -11,17 +11,15 @@ package cocktail.core.renderer;
 import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.layer.InitialLayerRenderer;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
-import cocktail.core.style.formatter.BlockFormattingContext;
-import cocktail.core.style.formatter.FormattingContext;
-import cocktail.core.style.StyleData;
-import cocktail.core.style.CoreStyle;
+import cocktail.core.layout.LayoutData;
+import cocktail.core.css.CoreStyle;
 import haxe.Log;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.font.FontData;
-import haxe.Timer;
 
 /**
  * This is the root ElementRenderer of the rendering
@@ -39,10 +37,14 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	{
 		super(node);
 		
-		//call the attachement method itself as it is 
-		//supposed to be called by parent ElementRenderer
-		//otherwise
-		attach();
+		//as this is the root of the rendering
+		//tree, it is considered to be its
+		//own containing block
+		//
+		//TODO 3 :maybe not very clean, trouble is that
+		//addedToRenderingTree never called as initial 
+		//block is never attached to a parent
+		containingBlock = this;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -51,35 +53,38 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	
 	/**
 	 * Overriden as initial block renderer always create
-	 * a new layer
+	 * a new intitial layer renderer.
 	 */
 	override private function attachLayer():Void
 	{
-		layerRenderer = new LayerRenderer(this);
+		layerRenderer = new InitialLayerRenderer(this);
+		_hasOwnLayer = true;
 	}
 	
 	/**
-	 * Overriden as initial block renderer always delete
-	 * its own layer
+	 * Overriden to detach the initial layer renderer
 	 */
 	override private function detachLayer():Void
 	{
+		layerRenderer.removedFromLayerTree();
+		_hasOwnLayer = false;
+		layerRenderer.dispose();
 		layerRenderer = null;
 	}
 	
 	/**
-	 * never attach to containing block as it has
-	 * none
+	 * never register with containing block as it is
+	 * itself
 	 */
-	override private function attachContaininingBlock():Void
+	override private function registerWithContaininingBlock():Void
 	{
 		
 	}
 	
 	/**
-	 * same as above for detach
+	 * same as above for unregister
 	 */
-	override private function detachContainingBlock():Void
+	override private function unregisterWithContainingBlock():Void
 	{
 		
 	}
@@ -90,11 +95,46 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	
 	/**
 	 * As the initial block renderer has no containing block,
-	 * invalidate the document instead
+	 * do nothing
 	 */
-	override private function invalidateContainingBlock(invalidationReason:InvalidationReason):Void
+	override private function invalidateContainingBlock(styleIndex:Int):Void
 	{
-		invalidateDocumentLayoutAndRendering();
+		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE LAYOUT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as the initial containing block always takes the size
+	 * of the viewport
+	 */
+	override private function layoutSelfIfNeeded(forceLayout:Bool):Void
+	{
+		var viewportData:ContainingBlockVO = getWindowData();
+		
+		coreStyle.usedValues.width = viewportData.width;
+		coreStyle.usedValues.height = viewportData.height;
+		
+		bounds.x = 0;
+		bounds.y = 0;
+		bounds.width = viewportData.width;
+		bounds.height = viewportData.height;
+		globalBounds.x = 0;
+		globalBounds.y = 0;
+		globalBounds.width = viewportData.width;
+		globalBounds.height = viewportData.height;
+	}
+	
+	/**
+	 * shrink-to-fit width never applies to the initial 
+	 * container which always has the same size as
+	 * the viewport's
+	 */
+	override private function applyShrinkToFitIfNeeded(layoutState:LayoutStateValue):Void
+	{
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -115,17 +155,17 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	 * The initial block container always establishes a block formatting context
 	 * for its children
 	 */
-	override public function establishesNewFormattingContext():Bool
+	override public function establishesNewBlockFormattingContext():Bool
 	{
 		return true;
 	}
 	
 	/**
-	 * Overriden as initial block container alwyas establishes a new
-	 * stacking context and creates the root LayerRenderer of the
+	 * Overriden as initial block container alwyas establishes
+	 * creates the root LayerRenderer of the
 	 * LayerRenderer tree
 	 */
-	override public function establishesNewStackingContext():Bool
+	override public function createOwnLayer():Bool
 	{
 		return true;
 	}
@@ -133,82 +173,12 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Overriden as the scontaining dimensionsn for the scrollbars
-	 * appearing for the initial containing block are the viewport's
-	 */
-	override private function getScrollbarContainerBlock():ContainingBlockData
-	{
-		var width:Float = cocktail.Lib.window.innerWidth;
-		var height:Float = cocktail.Lib.window.innerHeight;
-		
-		var windowData:ContainingBlockData = {
-			isHeightAuto:false,
-			isWidthAuto:false,
-			width:width,
-			height:height
-		}
-		
-		return windowData;
-	}
-	
-	/**
-	 * When dispatched on the HTMLHTMLElement,
-	 * the scroll event must bubble to be dispatched
-	 * on the Document and Window objects
-	 */
-	override private function mustBubbleScrollEvent():Bool
-	{
-		return true;
-	}
-	
-	/**
-	 * A computed value of visible for the overflow on the initial
-	 * block renderer is the same as auto, as it is likely that
-	 * scrollbar must be displayed to scroll through the document
-	 */
-	override private function treatVisibleOverflowAsAuto():Bool
-	{
-		return true;
-	}
-	
-	/**
-	 * Retrieve the dimension of the Window
-	 */
-	override private function getWindowData():ContainingBlockData
-	{	
-		var width:Float = cocktail.Lib.window.innerWidth;
-		var height:Float = cocktail.Lib.window.innerHeight;
-		
-		var windowData:ContainingBlockData = {
-			isHeightAuto:false,
-			isWidthAuto:false,
-			width:width,
-			height:height
-		}
-		
-		//scrollbars dimension are removed from the Window dimension
-		//if displayed to return the actual available space
-		
-		if (_verticalScrollBar != null)
-		{
-			windowData.width -= _verticalScrollBar.coreStyle.computedStyle.width;
-		}
-		
-		if (_horizontalScrollBar != null)
-		{
-			windowData.height -= _horizontalScrollBar.coreStyle.computedStyle.height;
-		}
-		
-		return windowData;
-	}
-	
+
 	/**
 	 * The dimensions of the initial
 	 * block renderer are always the same as the Window's
 	 */
-	override public function getContainerBlockData():ContainingBlockData
+	override public function getContainerBlockData():ContainingBlockVO
 	{
 		return getWindowData();
 	}
@@ -220,39 +190,6 @@ class InitialBlockRenderer extends BlockBoxRenderer
 	override private function getContainingBlock():FlowBoxRenderer
 	{	
 		return this;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN GETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * overriden as the bounds of the initial block container
-	 * are always those of the Window (minus scrollbars dimensions
-	 * if displayed)
-	 */
-	override private function get_bounds():RectangleData
-	{
-		var containerBlockData:ContainingBlockData = getContainerBlockData();
-		
-		var width:Float = containerBlockData.width;
-		var height:Float = containerBlockData.height;
-		
-		return {
-			x:0.0,
-			y:0.0,
-			width:width,
-			height:height
-		};
-	}
-	
-	/**
-	 * For the initial container, the bounds and
-	 * global bounds are the same
-	 */
-	override private function get_globalBounds():RectangleData
-	{
-		return bounds;
 	}
 	
 }

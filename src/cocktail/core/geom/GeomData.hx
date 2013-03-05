@@ -7,7 +7,8 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.geom;
-
+import cocktail.core.utils.IPoolable;
+import cocktail.core.utils.ObjectPool;
 /**
  * This file contains geometry themed struct and enums
  */
@@ -23,47 +24,65 @@ package cocktail.core.geom;
 	/**
 	 * represent a rectangle
 	 */
-	typedef RectangleData = {
-		var x:Float;
-		var y:Float;
-		var width:Float;
-		var height:Float;
+	class RectangleVO implements IPoolable
+	{
+		public var x:Float;
+		public var y:Float;
+		public var width:Float;
+		public var height:Float;
+		
+		private static var _pool:ObjectPool<RectangleVO>;
+		
+		public static function getPool():ObjectPool<RectangleVO>
+		{
+			if (_pool == null)
+			{
+				_pool = new ObjectPool<RectangleVO>(RectangleVO);
+			}
+			return _pool;
+		}
+		
+		public function new()
+		{
+			reset();
+		}
+		
+		public function reset():Void
+		{
+			x = 0;
+			y = 0;
+			width = 0;
+			height = 0;
+		}
 	}
 	
 	/**
 	 * Represents a point in 2d space
 	 */
-	typedef PointData = {
-		var x:Float;
-		var y:Float;
+	class PointVO {
+		public var x:Float;
+		public var y:Float;
+		
+		public function new(x:Float, y:Float)
+		{
+			this.x = x;
+			this.y = y;
+		}
 	}
 	
 	/**
 	 * Represents a width and
 	 * height dimension
 	 */
-	typedef DimensionData = {
-		var width:Float;
-		var height:Float;
-	}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// Matrix structures and enums
-//////////////////////////////////////////////////////////////////////////////////////////
-
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// Structures
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Represents the values of a 3x3 Matrix
-	 */
-	typedef MatrixData = {
-		var a:Float;
-		var b:Float;
-		var c:Float;
-		var d:Float;
-		var e:Float;
-		var f:Float;
+	class DimensionVO {
+		
+		public var width:Float;
+		public var height:Float;
+		
+		public function new(width:Float, height:Float)
+		{
+			this.width = width;
+			this.height = height;
+		}
 	}
 

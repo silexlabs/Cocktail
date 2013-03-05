@@ -21,20 +21,45 @@ import cocktail.core.geom.GeomData;
  */
 class Matrix 
 {
+	/**
+	 * matrix data for 3x3
+	 */
+	public var a:Float;
+	
+	public var b:Float;
+	
+	public var c:Float;
+	
+	public var e:Float;
+	
+	public var d:Float;
+	
+	public var f:Float;
 	
 	/**
-	 * Stores each value of this 3x3 matrix
+	 * Used internally when an helper
+	 * method is called, like rotation,
+	 * to represent the matrix of this
+	 * transformation.
+	 * 
+	 * static, only one instance needed for
+	 * all matrices
 	 */
-	public var data(default, set_data):MatrixData;
+	private static var _concatenationMatrix:Matrix;
 	
 	/**
 	 * Class constructor. Creates a 3x3 matrix with the given parameters.
 	 * It defaults to an identity matrix (no transformations), if the given
 	 * matrix data are null.
 	 */
-	public function new(data:MatrixData = null) 
+	public function new(a:Float = 1.0, b:Float = 0.0, c:Float = 0.0, d:Float = 1.0, e:Float = 0.0, f:Float = 0.0) 
 	{
-		this.data = data;
+		this.a = a;
+		this.b = b;
+		this.c = c;
+		this.d = d;
+		this.e = e;
+		this.f = f;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -46,33 +71,12 @@ class Matrix
 	 */
 	public function identity():Void
 	{
-		data = {
-			a : 1.0,
-			b : 0.0, 
-			c : 0.0,
-			d : 1.0,
-			e : 0.0,
-			f : 0.0
-		};
-	}
-	
-	/**
-	 * Set the values of this 3x3 matrix, fall back to an
-	 * identity matrix if null
-	 * 
-	 * @param contains 6 values
-	 */
-	private function set_data(data:MatrixData):MatrixData
-	{
-		this.data = data;
-		
-		//init the null matrix as an identity matrix
-		if (data == null)
-		{
-			identity();
-		}
-		
-		return data;
+		a = 1.0;
+		b = 0.0;
+		c = 0.0;
+		d = 1.0;
+		e = 0.0;
+		f = 0.0;
 	}
 	
 	/**
@@ -88,30 +92,22 @@ class Matrix
 	 */
 	public function concatenate(matrix:Matrix):Void
 	{
-		//get a ref to current and target matrix data
-		var currentMatrixData:MatrixData = data;
-		var targetMatrixData:MatrixData = matrix.data;
-		
 		//multiply the two matrix data values
-		var a:Float = currentMatrixData.a * targetMatrixData.a + currentMatrixData.c * targetMatrixData.b;
-		var b:Float = currentMatrixData.b * targetMatrixData.a + currentMatrixData.d * targetMatrixData.b;
-		var c:Float = currentMatrixData.a * targetMatrixData.c + currentMatrixData.c * targetMatrixData.d;
-		var d:Float = currentMatrixData.b * targetMatrixData.c + currentMatrixData.d * targetMatrixData.d;
-		var e:Float = currentMatrixData.a * targetMatrixData.e + currentMatrixData.c * targetMatrixData.f + currentMatrixData.e;
-		var f:Float = currentMatrixData.b * targetMatrixData.e + currentMatrixData.d * targetMatrixData.f + currentMatrixData.f;
-		
-		//concatenate the result
-		var concatenatedMatrixData:MatrixData = {
-			a : a,
-			b : b,
-			c : c,
-			d : d,
-			e : e,
-			f : f
-		};
-		
-		//then set it as this matrix data
-		this.data = concatenatedMatrixData;
+		this.a = a * matrix.a + c * matrix.b;
+		this.b = b * matrix.a + d * matrix.b;
+		this.c = a * matrix.c + c * matrix.d;
+		this.d = b * matrix.c + d * matrix.d;
+		this.e = a * matrix.e + c * matrix.f + e;
+		this.f = b * matrix.e + d * matrix.f + f;
+	}
+	
+	/**
+	 * Return this matrix currently represents 
+	 * an identity matrix
+	 */
+	public function isIdentity():Bool
+	{
+		return a == 1.0 && b == 0.0 && c == 0.0 && d == 1.0 && e == 0.0 && f == 0.0;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -126,23 +122,11 @@ class Matrix
 	 */
 	public function translate(x:Float, y:Float):Void
 	{
-		//create the matrix data corresponding to an identity matrix
-		//translated by x and y
-		var translationMatrixData:MatrixData = {
-			a:1.0,
-			b:0.0,
-			c:0.0,
-			d:1.0,
-			e:x,
-			f:y
-		}
-		
-		//create the corresponding matrix
-		var translationMatrix:Matrix = new Matrix(translationMatrixData);
-		
-		//concatenate the translation to the current matrix to prevent
+		//create the matrix corresponding to an identity matrix
+		//translated by x and y.
+		//concatenate the translation matrix to the current matrix to prevent
 		//losing any previous translation
-		concatenate(translationMatrix);
+		concatenate(getConcatenationMatrix(1.0, 0.0, 0.0, 1.0, x, y  ));
 	}
 	
 	/**
@@ -152,10 +136,6 @@ class Matrix
 	 */
 	public function rotate(angle:Float):Void
 	{
-		//the matrix that will be rotated. It will be
-		//concatenated with the current matrix. Default to an identity matrix
-		var rotatedMatrix:Matrix = new Matrix();
-		
 		var a:Float = 0.0;
 		var b:Float = 0.0;
 		var c:Float = 0.0;
@@ -187,25 +167,9 @@ class Matrix
 		
 		//create the matrix data corresponding to an identity matrix
 		//rotated by the angle
-		var rotationMatrixData:MatrixData = {
-			a:a,
-			b:b,
-			c:c * -1.0,
-			d:d,
-			e:0.0,
-			f:0.0
-		};
-		
-		//and set it to a matrix
-		var rotationMatrix:Matrix = new Matrix(rotationMatrixData);
-		
-		//concatenate the 2 matrices to obtain a matrix rotated around
-		//the transform origin
-		rotatedMatrix.concatenate(rotationMatrix);
-		
-		//concatenate the rotated matrix to the current matrix to
+		//concatenate the rotation matrix to the current matrix to
 		//prevent losing any previous transformation
-		concatenate(rotatedMatrix);
+		concatenate(getConcatenationMatrix(a, b, c * -1.0, d, 0.0, 0.0));
 	}
 	
 	/**
@@ -216,31 +180,11 @@ class Matrix
 	 */
 	public function scale(scaleX:Float, scaleY:Float):Void
 	{	
-		//the matrix that will be scaled . It will be
-		//concatenated with the current matrix. Default to an identity matrix
-		var scaledMatrix:Matrix = new Matrix();
-		
 		//create the matrix data corresponding to an identity matrix
 		//scaled by the scaleX and scaleY factors
-		var scalingMatrixData:MatrixData = {
-			a:scaleX,
-			b:0.0,
-			c:0.0,
-			d:scaleY,
-			e:0.0,
-			f:0.0
-		};
-		
-		//and set it to a matrix
-		var scalingMatrix:Matrix = new Matrix(scalingMatrixData);
-		
-		//concatenate the 2 matrices to obtain a matrix scaled around
-		//the transform origin point
-		scaledMatrix.concatenate(scalingMatrix);
-		
 		//concatenate the scaled matrix to the current matrix to
 		//prevent losing any previous transformation
-		concatenate(scaledMatrix);
+		concatenate(getConcatenationMatrix(scaleX, 0.0, 0.0, scaleY, 0.0, 0.0));
 	}
 	
 	/**
@@ -252,30 +196,39 @@ class Matrix
 	 */
 	public function skew(skewX:Float, skewY:Float):Void
 	{
-		//the matrix that will be skewed. It will be
-		//concatenated with the current matrix. Default to an identity matrix
-		var skewedMatrix:Matrix = new Matrix();
-		
 		//create the matrix data corresponding to an identity matrix
 		//skewed by the skewX and skewY factors
-		var skewingMatrixData:MatrixData = {
-			a:1.0,
-			b:Math.tan(skewY),
-			c:Math.tan(skewX),
-			d:1.0,
-			e:0.0,
-			f:0.0
-		};
-		
-		//and set it to a matrix
-		var skewingMatrix:Matrix = new Matrix(skewingMatrixData);
-		
-		//concatenate the 2 matrices to obtain a matrix skewed around
-		//the transform origin point
-		skewedMatrix.concatenate(skewingMatrix);
-		
 		//concatenate the skewed matrix to the current matrix to
 		//prevent losing any previous transformation
-		concatenate(skewedMatrix);
+		concatenate(getConcatenationMatrix(1.0, Math.tan(skewY), Math.tan(skewY), 1.0, 0.0, 0.0));
 	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE STATIC UTILS METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return the matrix instance 
+	 * used for concatenation. Instantiate
+	 * it if needed, and set its value as
+	 * given
+	 */
+	private static function getConcatenationMatrix(a:Float, b:Float, c:Float, d:Float, e:Float, f:Float):Matrix
+	{
+		if (_concatenationMatrix == null)
+		{
+			_concatenationMatrix = new Matrix();
+		}
+		
+		_concatenationMatrix.a = a;
+		_concatenationMatrix.b = b;
+		_concatenationMatrix.c = c;
+		_concatenationMatrix.d = d;
+		_concatenationMatrix.e = e;
+		_concatenationMatrix.f = f;
+		
+		return _concatenationMatrix;
+	}
+	
 }

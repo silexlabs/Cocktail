@@ -31,8 +31,6 @@ class Attr<ElementClass:Node<ElementClass>> extends Node<Attr<ElementClass>>
 	 * of the string, i.e. any characters
 	 * that an XML processor would recognize as markup
 	 * are instead treated as literal text.
-	 * 
-	 * TODO 5 : create a Text node ?
 	 */
 	public var value(get_value, set_value):String;
 	
@@ -67,6 +65,31 @@ class Attr<ElementClass:Node<ElementClass>> extends Node<Attr<ElementClass>>
 		this.name = name;
 		specified = false;
 		super();
+	}
+	
+	/**
+	 * attribute nodes can't have children
+	 */
+	override private function initChildNodes():Void
+	{
+		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as attr node clone its own attributes
+	 */
+	override private function doCloneNode():Attr<ElementClass>
+	{
+		var clonedAttr:Attr<ElementClass> = new Attr<ElementClass>(this.name);
+		clonedAttr.specified = this.specified;
+		clonedAttr.isId = this.isId;
+		clonedAttr.value = this.value;
+		
+		return clonedAttr;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

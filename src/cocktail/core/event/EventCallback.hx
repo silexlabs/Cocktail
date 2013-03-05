@@ -262,6 +262,16 @@ class EventCallback extends EventTarget
 	 * is removed, then the event will not fire.
 	 */
 	public var ontransitionend(default, set_onTransitionEnd):TransitionEvent->Void;
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// HISTORY callbacks
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * event.state contains a copy of the information that was provided to pushState() or replaceState()
+	 */
+	public var onpopstate(default, set_onPopState):PopStateEvent->Void;
+	
 	
 	/**
 	 * class constructor
@@ -270,7 +280,6 @@ class EventCallback extends EventTarget
 	{
 		super();
 	}
-
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CALLBACK HELPER
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -303,49 +312,49 @@ class EventCallback extends EventTarget
 	
 	private function set_onClick(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(MouseEvent.CLICK, cast(value), cast(onclick));
+		updateCallbackListener(EventConstants.CLICK, cast(value), cast(onclick));
 		return onclick = value;
 	}
 	
 	private function set_onDblClick(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(MouseEvent.DOUBLE_CLICK, cast(value), cast(ondblclick));
+		updateCallbackListener(EventConstants.DOUBLE_CLICK, cast(value), cast(ondblclick));
 		return ondblclick = value;
 	}
 	
 	private function set_onMouseDown(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(MouseEvent.MOUSE_DOWN, cast(value), cast(onmousedown));
+		updateCallbackListener(EventConstants.MOUSE_DOWN, cast(value), cast(onmousedown));
 		return onmousedown = value;
 	}
 	
 	private function set_onMouseUp(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(MouseEvent.MOUSE_UP, cast(value), cast(onmouseup));
+		updateCallbackListener(EventConstants.MOUSE_UP, cast(value), cast(onmouseup));
 		return onmouseup = value;
 	}
 	
 	private function set_onMouseOver(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(MouseEvent.MOUSE_OVER, cast(value), cast(onmouseover));
+		updateCallbackListener(EventConstants.MOUSE_OVER, cast(value), cast(onmouseover));
 		return onmouseover = value;
 	}
 	
 	private function set_onMouseOut(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(MouseEvent.MOUSE_OUT, cast(value), cast(onmouseout));
+		updateCallbackListener(EventConstants.MOUSE_OUT, cast(value), cast(onmouseout));
 		return onmouseout = value;
 	}
 	
 	private function set_onMouseMove(value:MouseEvent->Void):MouseEvent->Void
 	{
-		updateCallbackListener(MouseEvent.MOUSE_MOVE, cast(value), cast(onmousemove));
+		updateCallbackListener(EventConstants.MOUSE_MOVE, cast(value), cast(onmousemove));
 		return onmousemove = value;
 	}
 	
 	private function set_onMouseWheel(value:WheelEvent->Void):WheelEvent->Void
 	{
-		updateCallbackListener(WheelEvent.MOUSE_WHEEL, cast(value), cast(onmousewheel));
+		updateCallbackListener(EventConstants.MOUSE_WHEEL, cast(value), cast(onmousewheel));
 		return onmousewheel = value;
 	}
 	
@@ -354,13 +363,13 @@ class EventCallback extends EventTarget
 	
 	private function set_onKeyDown(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
-		updateCallbackListener(KeyboardEvent.KEY_DOWN, cast(value), cast(onkeydown));
+		updateCallbackListener(EventConstants.KEY_DOWN, cast(value), cast(onkeydown));
 		return onkeydown = value;
 	}
 	
 	private function set_onKeyUp(value:KeyboardEvent->Void):KeyboardEvent->Void
 	{
-		updateCallbackListener(KeyboardEvent.KEY_UP, cast(value), cast(onkeyup));
+		updateCallbackListener(EventConstants.KEY_UP, cast(value), cast(onkeyup));
 		return onkeyup = value;
 	}
 	
@@ -369,13 +378,13 @@ class EventCallback extends EventTarget
 	
 	private function set_onFocus(value:FocusEvent->Void):FocusEvent->Void
 	{
-		updateCallbackListener(FocusEvent.FOCUS, cast(value), cast(onfocus));
+		updateCallbackListener(EventConstants.FOCUS, cast(value), cast(onfocus));
 		return onfocus = value;
 	}
 	
 	private function set_onBlur(value:FocusEvent->Void):FocusEvent->Void
 	{
-		updateCallbackListener(FocusEvent.BLUR, cast(value), cast(onblur));
+		updateCallbackListener(EventConstants.BLUR, cast(value), cast(onblur));
 		return onblur = value;
 	}
 
@@ -384,31 +393,31 @@ class EventCallback extends EventTarget
 	
 	private function set_onResize(value:UIEvent->Void):UIEvent->Void
 	{
-		updateCallbackListener(UIEvent.RESIZE, cast(value), cast(onresize));
+		updateCallbackListener(EventConstants.RESIZE, cast(value), cast(onresize));
 		return onresize = value;
 	}
 	
 	private function set_onFullScreenChange(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.FULL_SCREEN_CHANGE, value, onfullscreenchange);
+		updateCallbackListener(EventConstants.FULL_SCREEN_CHANGE, value, onfullscreenchange);
 		return onfullscreenchange = value;
 	}
 	
 	private function set_onScroll(value:UIEvent->Void):UIEvent->Void
 	{
-		updateCallbackListener(UIEvent.SCROLL, cast(value), cast(onscroll));
+		updateCallbackListener(EventConstants.SCROLL, cast(value), cast(onscroll));
 		return onscroll = value;
 	}
 	
 	private function set_onLoad(value:UIEvent->Void):UIEvent->Void
 	{
-		updateCallbackListener(UIEvent.LOAD, cast(value), cast(onload));
+		updateCallbackListener(EventConstants.LOAD, cast(value), cast(onload));
 		return onload = value;
 	}
 		
 	private function set_onError(value:UIEvent->Void):UIEvent->Void
 	{
-		updateCallbackListener(UIEvent.ERROR, cast(value), cast(onerror));
+		updateCallbackListener(EventConstants.ERROR, cast(value), cast(onerror));
 		return onerror = value;
 	}
 	
@@ -418,124 +427,133 @@ class EventCallback extends EventTarget
 	
 	private function set_onLoadStart(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.LOAD_START, value, onloadstart);
+		updateCallbackListener(EventConstants.LOAD_START, value, onloadstart);
 		return onloadstart = value;
 	}
 	
 	private function set_onProgress(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.PROGRESS, value, onprogress);
+		updateCallbackListener(EventConstants.PROGRESS, value, onprogress);
 		return onprogress = value;
 	}
 	
 	private function set_onSuspend(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.SUSPEND, value, onsuspend);
+		updateCallbackListener(EventConstants.SUSPEND, value, onsuspend);
 		return onsuspend = value;
 	}
 	
 	private function set_onEmptied(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.EMPTIED, value, onemptied);
+		updateCallbackListener(EventConstants.EMPTIED, value, onemptied);
 		return onemptied = value;
 	}
 	
 	private function set_onStalled(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.STALLED, value, onstalled);
+		updateCallbackListener(EventConstants.STALLED, value, onstalled);
 		return onstalled = value;
 	}
 	
 	private function set_onLoadedMetadata(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.LOADED_METADATA, value, onloadedmetadata);
+		updateCallbackListener(EventConstants.LOADED_METADATA, value, onloadedmetadata);
 		return onloadedmetadata = value;
 	}
 	
 	private function set_onLoadedData(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.LOADED_DATA, value, onloadeddata);
+		updateCallbackListener(EventConstants.LOADED_DATA, value, onloadeddata);
 		return onloadeddata = value;
 	}
 	
 	private function set_onCanPlay(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.CAN_PLAY, value, oncanplay);
+		updateCallbackListener(EventConstants.CAN_PLAY, value, oncanplay);
 		return oncanplay = value;
 	}
 	
 	private function set_onCanPlayThrough(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.CAN_PLAY_THROUGH, value, oncanplaythrough);
+		updateCallbackListener(EventConstants.CAN_PLAY_THROUGH, value, oncanplaythrough);
 		return oncanplaythrough = value;
 	}
 	
 	private function set_onPlaying(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.PLAYING, value, onplaying);
+		updateCallbackListener(EventConstants.PLAYING, value, onplaying);
 		return onplaying = value;
 	}
 	
 	private function set_onWaiting(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.WAITING, value, onwaiting);
+		updateCallbackListener(EventConstants.WAITING, value, onwaiting);
 		return onwaiting = value;
 	}
 	
 	private function set_onSeeking(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.SEEKING, value, onseeking);
+		updateCallbackListener(EventConstants.SEEKING, value, onseeking);
 		return onwaiting = value;
 	}
 	
 	private function set_onSeeked(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.SEEKED, value, onseeked);
+		updateCallbackListener(EventConstants.SEEKED, value, onseeked);
 		return onseeked = value;
 	}
 	
 	private function set_onEnded(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.ENDED, value, onended);
+		updateCallbackListener(EventConstants.ENDED, value, onended);
 		return onended = value;
 	}
 	
 	private function set_onDurationChanged(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.DURATION_CHANGE, value, ondurationchange);
+		updateCallbackListener(EventConstants.DURATION_CHANGE, value, ondurationchange);
 		return ondurationchange = value;
 	}
 	
 	private function set_onTimeUpdate(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.TIME_UPDATE, value, ontimeupdate);
+		updateCallbackListener(EventConstants.TIME_UPDATE, value, ontimeupdate);
 		return ontimeupdate = value;
 	}
 	
 	private function set_onPlay(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.PLAY, value, onplay);
+		updateCallbackListener(EventConstants.PLAY, value, onplay);
 		return onplay = value;
 	}
 	
 	private function set_onPause(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.PAUSE, value, onpause);
+		updateCallbackListener(EventConstants.PAUSE, value, onpause);
 		return onpause = value;
 	}
 	
 	private function set_onVolumeChange(value:Event->Void):Event->Void
 	{
-		updateCallbackListener(Event.VOLUME_CHANGE, value, onvolumechange);
+		updateCallbackListener(EventConstants.VOLUME_CHANGE, value, onvolumechange);
 		return onvolumechange = value;
 	}
 	
-		// TRANSITION
+	// TRANSITION
 	////////////////////////////
 	
 	private function set_onTransitionEnd(value:TransitionEvent->Void):TransitionEvent->Void
 	{
-		updateCallbackListener(TransitionEvent.TRANSITION_END, cast(value), cast(ontransitionend));
+		updateCallbackListener(EventConstants.TRANSITION_END, cast(value), cast(ontransitionend));
 		return ontransitionend = value;
+	}
+
+	// HISTORY
+	////////////////////////////
+	
+	private function set_onPopState(value:PopStateEvent->Void):PopStateEvent->Void
+	{
+		updateCallbackListener(EventConstants.POP_STATE, cast(value), cast(onpopstate));
+		return onpopstate = value;
 	}
 }

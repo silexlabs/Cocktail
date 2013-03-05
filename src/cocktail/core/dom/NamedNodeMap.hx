@@ -55,10 +55,10 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 	 */
 	public function getNamedItem(name:String):Attr<ElementClass>
 	{
-		var nodesLength:Int = _nodes.length;
-		for (i in 0...nodesLength)
+		var length:Int = _nodes.length;
+		for (i in 0...length)
 		{
-			if (_nodes[i].nodeName == name)
+			if (_nodes[i].name == name)
 			{
 				return _nodes[i];
 			}
@@ -90,7 +90,7 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 		{
 			for (i in 0...length)
 			{
-				if (_nodes[i].isSameNode(replacedNode) == true)
+				if (_nodes[i] == replacedNode)
 				{
 					_nodes[i] = arg;
 					return replacedNode;
@@ -127,17 +127,7 @@ class NamedNodeMap<ElementClass:Node<ElementClass>>
 			return null;
 		}
 		
-		var newNodes:Array<Attr<ElementClass>> = new Array<Attr<ElementClass>>();
-		
-		for (i in 0...length)
-		{
-			if (_nodes[i].isSameNode(removedNode) == false)
-			{
-				newNodes.push(_nodes[i]);
-			}
-		}
-		
-		_nodes = newNodes;
+		_nodes.remove(removedNode);
 		
 		return removedNode;
 	}

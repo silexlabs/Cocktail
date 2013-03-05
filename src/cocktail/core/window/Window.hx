@@ -11,11 +11,15 @@ package cocktail.core.window;
 import cocktail.core.dom.Document;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventCallback;
+import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
-import cocktail.port.platform.Platform;
-import cocktail.core.style.StyleData;
+import cocktail.port.NativeBitmapData;
+import cocktail.port.Platform;
+import cocktail.core.css.CSSData;
+import cocktail.core.layout.LayoutData;
+import cocktail.core.history.History;
 
 /**
  * Represents the window through which the Document is
@@ -25,6 +29,9 @@ import cocktail.core.style.StyleData;
  * to platform specific event and methods
  * 
  * TODO 3 : should implement onload callback
+ * 
+ * TODO 2 : should Platform be owned by Window ? Document ?
+ * or by another DOMImplementation class ?
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -53,6 +60,17 @@ class Window extends EventCallback
 	 */
 	public var platform(default, null):Platform;
 	
+	/**
+	 * A reference to the history instance
+	 */
+	public var history:History;
+	
+	/**
+	 * Store the current mouse cursor value
+	 * to ensure that it needs changing
+	 */
+	private var _currentMouseCursor:CSSPropertyValue;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR & INIT
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -73,27 +91,36 @@ class Window extends EventCallback
 	private function init():Void
 	{
 		platform = new Platform();
-		var htmlDocument:HTMLDocument = new HTMLDocument();
+		var htmlDocument:HTMLDocument = new HTMLDocument(this);
 		
 		platform.mouse.onMouseDown = htmlDocument.onPlatformMouseEvent;
 		platform.mouse.onMouseUp = htmlDocument.onPlatformMouseEvent;
 		platform.mouse.onMouseMove = htmlDocument.onPlatformMouseMoveEvent;
 		platform.mouse.onMouseWheel = htmlDocument.onPlatformMouseWheelEvent;
+		platform.mouse.onMouseLeave = htmlDocument.onPlatformMouseLeaveEvent;
 		
 		platform.keyboard.onKeyDown = htmlDocument.onPlatformKeyDownEvent;
 		platform.keyboard.onKeyUp = htmlDocument.onPlatformKeyUpEvent;
 		
-		platform.nativeWindow.onResize = htmlDocument.onPlatformResizeEvent;
+		platform.onResize = onPlatformResizeEvent;
+		platform.onOrientationChange = onPlatformOrientationChangeEvent;
+		
+		platform.touchListener.onTouchStart = htmlDocument.onPlatformTouchEvent;
+		platform.touchListener.onTouchMove = htmlDocument.onPlatformTouchEvent;
+		platform.touchListener.onTouchEnd = htmlDocument.onPlatformTouchEvent;
 		
 		//fullscreen callbacks
 		htmlDocument.onEnterFullscreen = onDocumentEnterFullscreen;
 		htmlDocument.onExitFullscreen = onDocumentExitFullscreen;
-		platform.nativeWindow.onFullScreenChange = onPlatformFullScreenChange;
+		platform.onFullScreenChange = onPlatformFullScreenChange;
 		
 		//mouse cursor callback
 		htmlDocument.onSetMouseCursor = onDocumentSetMouseCursor;
 		
 		document = htmlDocument;
+
+		// history
+		history = new History();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -105,10 +132,9 @@ class Window extends EventCallback
 	 */
 	public function open(url:String, name:String = HTMLConstants.TARGET_BLANK):Void
 	{
-		platform.nativeWindow.open(url, name);
+		platform.open(url, name);
 	}
 	
-		
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// FULLSCREEN CALLBACKS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -125,7 +151,7 @@ class Window extends EventCallback
 	{
 		//if the platform just exited the fullscreen mode,
 		//then the document must also exit it
-		if (platform.nativeWindow.fullscreen() == false)
+		if (platform.fullscreen() == false)
 		{
 			document.exitFullscreen();
 		}
@@ -137,7 +163,7 @@ class Window extends EventCallback
 	 */
 	private function onDocumentEnterFullscreen():Void
 	{
-		platform.nativeWindow.enterFullscreen();
+		platform.enterFullscreen();
 	}
 		
 	/**
@@ -146,7 +172,7 @@ class Window extends EventCallback
 	 */
 	private function onDocumentExitFullscreen():Void
 	{
-		platform.nativeWindow.exitFullscreen();
+		platform.exitFullscreen();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -156,9 +182,49 @@ class Window extends EventCallback
 	/**
 	 * Change the current mouse cursor if needed
 	 */
-	private function onDocumentSetMouseCursor(cursor:Cursor):Void
+	private function onDocumentSetMouseCursor(cursor:CSSPropertyValue):Void
 	{
-		platform.mouse.setMouseCursor(cursor);
+		//null when first called
+		if (_currentMouseCursor == null)
+		{
+			_currentMouseCursor = cursor;
+			platform.mouse.setMouseCursor(cursor);
+		}
+		else
+		{
+			//only update mouse if the value is different
+			//from the current one
+			if (cursor != _currentMouseCursor)
+			{
+				_currentMouseCursor = cursor;
+				platform.mouse.setMouseCursor(cursor);
+			}
+		}
+		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When the viewport is resized, invalidate
+	 * the html document so that its layout
+	 * and rendering gets updated
+	 */
+	private function onPlatformResizeEvent(e:UIEvent):Void
+	{
+		document.invalidationManager.invalidateViewportSize();
+	}
+	
+	/**
+	 * When the viewport orientation is changed, invalidate
+	 * the html document so that its layout
+	 * and rendering gets updated
+	 */
+	private function onPlatformOrientationChangeEvent(e:Event):Void
+	{
+		document.invalidationManager.invalidateViewportSize();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -167,11 +233,11 @@ class Window extends EventCallback
 	
 	private function get_innerHeight():Int
 	{
-		return platform.nativeWindow.innerHeight;
+		return platform.innerHeight;
 	}
 	
 	private function get_innerWidth():Int
 	{
-		return platform.nativeWindow.innerWidth;
+		return platform.innerWidth;
 	}
 }

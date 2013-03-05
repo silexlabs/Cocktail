@@ -7,6 +7,7 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.event;
+using cocktail.core.utils.Utils;
 
 /**
  * Allows registration and removal 
@@ -26,11 +27,18 @@ class EventTarget
 	private var _registeredEventListeners:Hash<Array<EventListener>>;
 	
 	/**
-	 * class constructor. Init class attributes
+	 * When dispatching an event, 
+	 * holds all the parent
+	 * ancestors
+	 */
+	private var _targetAncestors:Array<EventTarget>;
+	
+	/**
+	 * class constructor
 	 */
 	public function new() 
 	{
-		_registeredEventListeners = new Hash<Array<EventListener>>();
+		
 	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +86,8 @@ class EventTarget
 			targetAncestors.reverse();
 			
 			//make all target ancestor dispatch their events
-			for (i in 0...targetAncestors.length)
+			var length:Int = targetAncestors.length;
+			for (i in 0...length)
 			{
 				targetAncestors[i].dispatchEvent(evt);
 				//if the previous target ancestor stopped propagation, stop
@@ -113,7 +122,8 @@ class EventTarget
 				targetAncestors.reverse();
 				
 				//dispatch all target ancestor, and stop propagation if needed
-				for (i in 0...targetAncestors.length)
+				var length:Int = targetAncestors.length;
+				for (i in 0...length)
 				{
 					targetAncestors[i].dispatchEvent(evt);
 					
@@ -131,10 +141,14 @@ class EventTarget
 		//itself at AT_TARGET phase
 		else
 		{
-			//tries to dispatch event registered for the event type
-			if (_registeredEventListeners.exists(evt.type) == true)
+			if (_registeredEventListeners != null)
 			{
-				doDispatchEvent(_registeredEventListeners.get(evt.type), evt);
+				var eventRegisteredForEventType:Null<Array<EventListener>> = _registeredEventListeners.get(evt.type);
+				//tries to dispatch event registered for the event type
+				if (eventRegisteredForEventType != null)
+				{
+					doDispatchEvent(eventRegisteredForEventType, evt);
+				}
 			}
 		}
 		
@@ -170,12 +184,15 @@ class EventTarget
 	 */
 	public function addEventListener(type:String, listener:Event->Void, useCapture:Bool = false):Void
 	{
+		if (_registeredEventListeners == null)
+		{
+			_registeredEventListeners = new Hash<Array<EventListener>>();
+		}
+		
 		if (_registeredEventListeners.exists(type) == false)
 		{
 			_registeredEventListeners.set(type, new Array<EventListener>());
 		}
-		
-		removeEventListener(type, listener, useCapture);
 		
 		var eventListener:EventListener = new EventListener(type, listener, useCapture);
 		
@@ -198,20 +215,23 @@ class EventTarget
 	 */
 	public function removeEventListener(type:String, listener:Event->Void, useCapture:Bool = false):Void
 	{
-		if (_registeredEventListeners.exists(type) == true)
+		//no event listener was added yet
+		if (_registeredEventListeners == null)
 		{
-			var registeredListeners:Array<EventListener> = _registeredEventListeners.get(type);
-			
+			return;
+		}
+		
+		var registeredEventListenersForType:Array<EventListener> = _registeredEventListeners.get(type);
+		if (registeredEventListenersForType != null)
+		{
 			var newEventListeners:Array<EventListener> = new Array<EventListener>();
 			
-			for (i in 0...registeredListeners.length)
+			var length:Int = registeredEventListenersForType.length;
+			for (i in 0...length)
 			{
-				var eventListener:EventListener = registeredListeners[i];
+				var eventListener:EventListener = registeredEventListenersForType[i];
 				
-				if (eventListener.eventType == type && eventListener.useCapture == useCapture && eventListener.listener == listener) {
-					eventListener.dispose();
-				}
-				else
+				if (eventListener.eventType != type || eventListener.useCapture != useCapture || eventListener.listener != listener)
 				{
 					newEventListeners.push(eventListener);
 				}
@@ -294,11 +314,21 @@ class EventTarget
 	
 	/**
 	 * Return all the EventTarget ancestors of this EventTarget,
-	 * implemented by inheriting classes
+	 * filling the arrayimplemented by inheriting classes
 	 */
 	private function getTargetAncestors():Array<EventTarget>
 	{
-		return [];
+		//create or reset the array
+		if (_targetAncestors == null)
+		{
+			_targetAncestors = new Array<EventTarget>();
+		}
+		else
+		{
+			_targetAncestors = _targetAncestors.clear();
+		}
+		
+		return _targetAncestors;
 	}
 	
 	/**

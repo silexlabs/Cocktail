@@ -8,13 +8,16 @@
 */
 package cocktail.core.resource;
 
-import cocktail.port.Resource;
+import cocktail.core.http.HTTPConstants;
+import cocktail.port.ImageResource;
+import cocktail.port.NativeHttp;
+import cocktail.core.http.HTTPData;
 
 /**
  * This is a static class used to retrive loaded asset
  * and start the loading of asset if they are not yet loaded.
  * 
- * This allows caching of asset which becomes useful for assets
+ * This allows caching of assets which becomes useful for assets
  * frequently redrawn such as backgrounds
  * 
  * @author Yannick DOMINGUEZ
@@ -25,7 +28,13 @@ class ResourceManager
 	 * Stores each requested asset in a hash where the
 	 * key is the url of the asset
 	 */
-	private static var _resources:Hash<Resource>;
+	private static var _resources:Hash<AbstractResource> = new Hash<AbstractResource>();
+	
+	/**
+	 * Store requested binary resources, where the 
+	 * key is the url of the binary
+	 */
+	private static var _binaryResources:Hash<NativeHttp> = new Hash<NativeHttp>();
 	
 	/**
 	 * class constructor. Private as this class
@@ -41,23 +50,54 @@ class ResourceManager
 	 * time this resource is requested, create a new Resource
 	 * object which will starts its loading itself
 	 */
-	public static function getResource(url:String):Resource
+	public static function getImageResource(url:String):AbstractResource
 	{
-		//init the hash if first request
-		if (_resources == null)
-		{
-			_resources = new Hash<Resource>();
-		}
+		//get the resource or null if not existant yet
+		var resource:AbstractResource = _resources.get(url);
 		
 		//if the resource with the given url is not
 		//yet stored, create it
-		if (_resources.exists(url) == false)
+		if (resource == null)
 		{
-			var resource:Resource = new Resource(url);
+			resource = new ImageResource(url);
 			_resources.set(url, resource);
 		}
 		
 		//return the resource with the right URL
-		return _resources.get(url);
+		return resource;
+	}
+	
+	/**
+	 * Remove a cashed image resource
+	 */
+	public static function removeImageResource(url:String):Void
+	{
+		_resources.remove(url);
+	}
+	
+	/**
+	 * Return a binary resource, start loading it if
+	 * first request.
+	 */
+	public static function getBinaryResource(url:String):NativeHttp
+	{
+		var resource:NativeHttp = _binaryResources.get(url);
+		
+		if (resource == null)
+		{
+			resource = new NativeHttp();
+			resource.load(url, HTTPConstants.GET, null, null, DataFormatValue.BINARY);
+			_binaryResources.set(url, resource);
+		}
+		
+		return resource;
+	}
+	
+	/**
+	 * Remove a cashed binary resource
+	 */
+	public static function removeBinaryResource(url:String):Void
+	{
+		_binaryResources.remove(url);
 	}
 }

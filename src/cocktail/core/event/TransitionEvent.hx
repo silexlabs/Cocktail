@@ -17,14 +17,6 @@ package cocktail.core.event;
 class TransitionEvent extends Event
 {
 	/**
-	 * The ‘transitionend’ event occurs at the completion
-	 * of the transition. In the case where a transition 
-	 * is removed before completion, such as if the 
-	 * transition-property is removed, then the event will not fire.
-	 */
-	public static inline var TRANSITION_END:String = "transitionend";
-	
-	/**
 	 * The name of the CSS property associated with the transition.
 	 */
 	public var propertyName(default, null):String;

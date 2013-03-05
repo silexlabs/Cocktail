@@ -8,10 +8,10 @@
 */
 package cocktail.core.html;
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.port.NativeElement;
 import cocktail.core.renderer.VideoRenderer;
-import cocktail.core.resource.ImageLoader;
 import cocktail.port.NativeVideo;
 import cocktail.core.renderer.RendererData;
 
@@ -98,15 +98,7 @@ class HTMLVideoElement extends HTMLMediaElement
 	 */
 	override private function initNativeMedia():Void
 	{
-		_nativeMedia = new NativeVideo();
-	}
-	
-	/**
-	 * the embedded assed is held by the image loader
-	 */
-	override private function initEmbeddedAsset():Void
-	{
-		embeddedAsset = _nativeMedia.nativeElement;
+		nativeMedia = new NativeVideo();
 	}
 	
 	/*
@@ -192,7 +184,7 @@ class HTMLVideoElement extends HTMLMediaElement
 	private function onPosterLoadComplete(e:Event):Void
 	{
 		removeListeners();
-		invalidate(InvalidationReason.other);
+		invalidate();
 	}
 	
 	/**
@@ -209,8 +201,8 @@ class HTMLVideoElement extends HTMLMediaElement
 	 */
 	private function removeListeners():Void
 	{
-		_posterImage.removeEventListener(UIEvent.LOAD, _onPosterLoadComplete);
-		_posterImage.removeEventListener(UIEvent.ERROR, _onPosterLoadError);
+		_posterImage.removeEventListener(EventConstants.LOAD, _onPosterLoadComplete);
+		_posterImage.removeEventListener(EventConstants.ERROR, _onPosterLoadError);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -226,8 +218,8 @@ class HTMLVideoElement extends HTMLMediaElement
 		
 		_onPosterLoadComplete = onPosterLoadComplete;
 		_onPosterLoadError = onPosterLoadError;
-		_posterImage.addEventListener(UIEvent.LOAD, _onPosterLoadComplete);
-		_posterImage.addEventListener(UIEvent.ERROR, _onPosterLoadError);
+		_posterImage.addEventListener(EventConstants.LOAD, _onPosterLoadComplete);
+		_posterImage.addEventListener(EventConstants.ERROR, _onPosterLoadError);
 		_posterImage.src = value;
 		return value;
 	}
@@ -248,9 +240,9 @@ class HTMLVideoElement extends HTMLMediaElement
 	 */
 	private function get_videoWidth():Int
 	{
-		if (_nativeMedia.width != null)
+		if (nativeMedia.width != null)
 		{
-			return Math.round(_nativeMedia.width);
+			return Math.round(nativeMedia.width);
 		}
 		else
 		{
@@ -263,9 +255,9 @@ class HTMLVideoElement extends HTMLMediaElement
 	 */
 	private function get_videoHeight():Int
 	{
-		if (_nativeMedia.height != null)
+		if (nativeMedia.height != null)
 		{
-			return Math.round(_nativeMedia.height);
+			return Math.round(nativeMedia.height);
 		}
 		else
 		{

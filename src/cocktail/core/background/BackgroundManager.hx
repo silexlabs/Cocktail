@@ -8,19 +8,24 @@
 */
 package cocktail.core.background;
 
+import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.event.Event;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
+import cocktail.core.geom.GeomUtils;
+import cocktail.core.geom.Matrix;
 import cocktail.core.renderer.ElementRenderer;
+import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
-import cocktail.port.Resource;
+import cocktail.core.graphics.GraphicsContext;
+import cocktail.port.ImageResource;
 import cocktail.port.NativeElement;
-import cocktail.core.style.StyleData;
-import cocktail.core.unit.UnitData;
+import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
-import cocktail.core.resource.ImageLoader;
-import cocktail.core.style.CoreStyle;
-import cocktail.core.style.computer.BackgroundStylesComputer;
-import cocktail.core.unit.UnitManager;
+import cocktail.core.css.CoreStyle;
+import cocktail.core.layout.computer.BackgroundStylesComputer;
+import cocktail.core.css.CSSValueConverter;
+import cocktail.core.css.CSSData;
 import cocktail.core.renderer.RendererData;
 import haxe.Log;
 
@@ -39,6 +44,24 @@ import haxe.Log;
  */
 class BackgroundManager 
 {
+	/**
+	 * Represents the background box, reused
+	 * for each background
+	 */
+	private static var _box:RectangleVO = new RectangleVO();
+	
+	/**
+	 * Same as above for destination point
+	 */
+	private static var _destinationPoint:PointVO = new PointVO(0.0, 0.0);
+	
+	/**
+	 * Those bounds are used to determine if the painted background
+	 * intersect with the clip rect, if it doesn't it won't
+	 * be displayed on screen
+	 */
+	private static var _intersectionBounds:RectangleVO = new RectangleVO();
+	
 	/**
 	 * class constructor.
 	 */
@@ -62,90 +85,105 @@ class BackgroundManager
 	 * @param	style
 	 * @return
 	 */
-	public static function render(backgroundBox:RectangleData, style:CoreStyle, elementRenderer:ElementRenderer):Array<NativeElement>
+	public static function render(graphicContext:GraphicsContext, backgroundBox:RectangleVO, style:CoreStyle, elementRenderer:ElementRenderer, clipRect:RectangleVO):Void
 	{
-		var nativeElements:Array<NativeElement> = new Array<NativeElement>();
-		
 		//no need to draw the background if it has no width or height
 		if (Math.round(backgroundBox.width) <= 0 || Math.round(backgroundBox.height) <= 0 )
 		{
-			return nativeElements;
+			return ;
 		}
+		
+		//no need to draw a background color if it is
+		//completely transparent
+		if (style.usedValues.backgroundColor.alpha != 0.0)
+		{
+			_intersectionBounds.x = backgroundBox.x;
+			_intersectionBounds.y = backgroundBox.y;
+			_intersectionBounds.width = backgroundBox.width;
+			_intersectionBounds.height = backgroundBox.height;
+			
+			//determine wether the background box intersect with the clipped rect
+			GeomUtils.intersectBounds(_intersectionBounds, clipRect, _intersectionBounds);
+			if (_intersectionBounds.width == 0 || _intersectionBounds.height == 0)
+			{
+				return;
+			}
+			
+			graphicContext.graphics.fillRect(backgroundBox, style.usedValues.backgroundColor, clipRect);
+		}
+		//if the element has no background image to draw,
+		//early return
+		if (style.hasBackgroundImage == false)
+		{
+			return;
+		}
+		
+		_intersectionBounds.x = backgroundBox.x;
+		_intersectionBounds.y = backgroundBox.y;
+		_intersectionBounds.width = backgroundBox.width;
+		_intersectionBounds.height = backgroundBox.height;
+		
+		//determine wether the background box intersect with the clipped rect
+		GeomUtils.intersectBounds(_intersectionBounds, clipRect, _intersectionBounds);
+		if (_intersectionBounds.width == 0 || _intersectionBounds.height == 0)
+		{
+			return;
+		}
+		
+		var backgroundImages:Array<CSSPropertyValue> = getAsArray(style.backgroundImage);
+		
+		var backgroundPositions:Array<CSSPropertyValue> = getAsArray(style.backgroundPosition);
+		
+		var backgroundOrigins:Array<CSSPropertyValue> = getAsArray(style.backgroundOrigin);
+		var backgroundClips:Array<CSSPropertyValue> = getAsArray(style.backgroundClip);
+		var backgroundSizes:Array<CSSPropertyValue> = getAsArray(style.backgroundSize);
+		var backgroundRepeats:Array<CSSPropertyValue> = getAsArray(style.backgroundRepeat);
+
 		
 		//loop in all the background images style of the HTMLElement. It is expected
 		//that each array of background styles (such as background origin, background size...)
 		//has the same length
-		var length:Int = style.backgroundImage.length;
+		var length:Int = backgroundImages.length;
 		for (i in 0...length)
 		{
-			switch (style.backgroundImage[i])
+			var backgroundImage:CSSPropertyValue = backgroundImages[i];
+			switch (backgroundImage)
 			{
-				//don't render anything in that case
-				case BackgroundImage.none:
+				case KEYWORD(value):
 				
-				case BackgroundImage.image(value):
+				case URL(value):
+					drawBackgroundImage(graphicContext, value, style, backgroundBox,
+					backgroundPositions[i], backgroundSizes[i], backgroundOrigins[i], backgroundClips[i],
+					backgroundRepeats[i], backgroundImages[i], elementRenderer, clipRect);
 					
-					switch (value)
-					{
-						//the background image is loaded from an external url
-						case ImageValue.url(value):
-							
-							//wrapped in an image declaration so that in can be treated the same
-							//way than a list of urls
-							var imageDeclaration:ImageDeclarationData = {
-								urls:[value],
-								fallbackColor:Color.transparent
-							}
-							
-							//draw the background image and store the resulting nativeElement
-							var imageNativeElement:NativeElement = drawBackgroundImage(imageDeclaration, style, backgroundBox,
-							style.backgroundPosition[i], style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i],
-							style.backgroundRepeat[i], style.backgroundImage[i], elementRenderer);
-							
-							nativeElements.push(imageNativeElement);
-						
-						//same as url but multiple urls are defined, to be used as fallback, with a defined
-						//fallback color if all urls are invalid
-						case ImageValue.imageList(value):
-							
-							var imageNativeElement:NativeElement = drawBackgroundImage(value, style, backgroundBox,
-							style.backgroundPosition[i], style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i],
-							style.backgroundRepeat[i], style.backgroundImage[i], elementRenderer);
-							
-							nativeElements.push(imageNativeElement);
-						
-						//draw a gradient and store it	
-						case ImageValue.gradient(value):
-							
-							var gradientNativeElement:NativeElement = drawBackgroundGradient(style, value, backgroundBox, style.backgroundPosition[i],
-							style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i], style.backgroundRepeat[i], style.backgroundImage[i]);
-
-							nativeElements.push(gradientNativeElement);
-					}
-			}
-			
-			//when the last of the background image property is rendered, render
-			//the background color which use the same property as the last background image
-			if (i == length - 1)
-			{
-				if (style.backgroundColor != BackgroundColor.transparent)
-				{
-					var backgroundColorNativeElement:NativeElement = drawBackgroundColor(style, style.computedStyle.backgroundColor, backgroundBox, style.backgroundPosition[i],
-					style.backgroundSize[i], style.backgroundOrigin[i], style.backgroundClip[i], style.backgroundRepeat[i], style.backgroundImage[i]);
-
-					//at this point the array contain only background image, reverse the array
-					//so that the background image declared first is on top of all the other
-					//background image
-					nativeElements.reverse();
-					
-					//then insert the background color so that it is under all the 
-					//background image
-					nativeElements.unshift(backgroundColorNativeElement);
-				}
+				default:	
 			}
 		}
 		
-		return nativeElements;
+	}
+	
+	private static function getAsArray(cssProperty:CSSPropertyValue):Array<CSSPropertyValue>
+	{
+		switch (cssProperty)
+		{
+			case KEYWORD(value):
+				return [cssProperty];
+			
+			case LENGTH(value):
+				return [cssProperty];
+				
+			case PERCENTAGE(value):
+				return [cssProperty];
+				
+			case GROUP(value):	
+				return [cssProperty];
+				
+			case URL(value):
+				return [cssProperty];
+				
+			default:
+				return null;
+		}
 	}
 		
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -171,139 +209,236 @@ class BackgroundManager
 	 * @param	backgroundImage
 	 * @return
 	 */
-	private static function drawBackgroundImage(imageDeclaration:ImageDeclarationData, style:CoreStyle, backgroundBox:RectangleData,
-	backgroundPosition:BackgroundPosition, backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin,
-	backgroundClip:BackgroundClip, backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage, elementRenderer:ElementRenderer):NativeElement
+	private static function drawBackgroundImage(graphicContext:GraphicsContext, url:String, style:CoreStyle, backgroundBox:RectangleVO,
+	backgroundPosition:CSSPropertyValue, backgroundSize:CSSPropertyValue, backgroundOrigin:CSSPropertyValue,
+	backgroundClip:CSSPropertyValue, backgroundRepeat:CSSPropertyValue, backgroundImage:CSSPropertyValue, elementRenderer:ElementRenderer, clipRect:RectangleVO):Void
 	{
-		var backgroundImageDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(
-		backgroundBox);
-		
-		var backgroundImageNativeElement:NativeElement = backgroundImageDrawingManager.nativeElement;
-		
 		var foundResource:Bool = false;
 		
-		for (i in 0...imageDeclaration.urls.length)
+		var resource:AbstractResource = ResourceManager.getImageResource(url);
+		
+		if (resource.loaded == true)
 		{
-			var resource:Resource = ResourceManager.getResource(imageDeclaration.urls[i]);
+				_intersectionBounds.x = backgroundBox.x;
+				_intersectionBounds.y = backgroundBox.y;
+				_intersectionBounds.width = backgroundBox.width;
+				_intersectionBounds.height = backgroundBox.height;
+		
+				//determine the clip rect for the background image, which is the intersection
+				//between the bounds of the element and its clip rect
+				//
+				//TODO 2 : can use hit testing bounds instead ?
+				GeomUtils.intersectBounds(_intersectionBounds, clipRect, _intersectionBounds);
 			
-			if (resource.loaded == true)
-			{
-					var computedGradientStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
-					style, backgroundBox, resource.intrinsicWidth, resource.intrinsicHeight, resource.intrinsicRatio, backgroundPosition,
-					backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
-					
-					#if (flash9 || nme)
-					var bitmap:flash.display.Bitmap = new flash.display.Bitmap(resource.nativeResource,  flash.display.PixelSnapping.AUTO, true);
-					
-					backgroundImageDrawingManager.drawBackgroundImage(
-					bitmap, resource,
-					computedGradientStyles.backgroundOrigin,
-					computedGradientStyles.backgroundClip,
-					resource.intrinsicWidth,
-					resource.intrinsicHeight,
-					resource.intrinsicRatio,
-					computedGradientStyles.backgroundSize,
-					computedGradientStyles.backgroundPosition,
-					computedGradientStyles.backgroundRepeat);
-					#end
-					
-				foundResource = true;	
-				break;
-			}
-			else if (resource.loadedWithError == false)
-			{
-				resource.addEventListener(UIEvent.LOAD, function(e) {
-					elementRenderer.invalidate(InvalidationReason.backgroundImageLoaded);
-				});
+				var computedGradientStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
+				style, backgroundBox, resource.intrinsicWidth, resource.intrinsicHeight, resource.intrinsicRatio, backgroundPosition,
+				backgroundSize, backgroundOrigin, backgroundClip, backgroundRepeat, backgroundImage);
 				
-				resource.addEventListener(UIEvent.ERROR, function(e) {
-					elementRenderer.invalidate(InvalidationReason.backgroundImageLoaded);
-				});
+				doDrawBackgroundImage(
+				backgroundBox,
+				graphicContext,
+				resource,
+				computedGradientStyles.backgroundOrigin,
+				computedGradientStyles.backgroundClip,
+				resource.intrinsicWidth,
+				resource.intrinsicHeight,
+				resource.intrinsicRatio,
+				computedGradientStyles.backgroundSize,
+				computedGradientStyles.backgroundPosition,
+				computedGradientStyles.backgroundRepeat, _intersectionBounds);
 				
-				foundResource = true;
-				break;
-			}
+			foundResource = true;
+		}
+		else if (resource.loadedWithError == false)
+		{
+			resource.addEventListener(EventConstants.LOAD, function(e) {
+				elementRenderer.invalidateRendering();
+			});
+			
+			resource.addEventListener(EventConstants.ERROR, function(e) {
+				elementRenderer.invalidateRendering();
+			});
+			
+			foundResource = true;
 		}
 		
 		
 		if (foundResource == false)
 		{
-			var computedBackgroundStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
-			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,
-			backgroundClip, backgroundRepeat, backgroundImage);
+			//TODO 1 : re-implement fallback color
+			//var backgroundColor:ColorVO = CSSValueConverter.getColorVOFromCSSColor(imageDeclaration.fallbackColor);
+			//graphicContext.fillRect(backgroundBox, backgroundColor);
+		}
+
+	}
+	
+	/**
+	 * Draw a background image form a nativeImage source.
+	 * The nativeImage source is repeated and transformed
+	 * as necessary to match the computed background
+	 * styles
+	 * 
+	 * @param	nativeImage
+	 * @param	backgroundPositioningBox
+	 * @param	backgroundPaintingBox
+	 * @param	intrinsicWidth
+	 * @param	intrinsicHeight
+	 * @param	intrinsicRatio
+	 * @param	computedBackgroundSize
+	 * @param	computedBackgroundPosition
+	 * @param	backgroundRepeat
+	 */
+	public static function doDrawBackgroundImage(backgroundBox:RectangleVO, graphicContext:GraphicsContext, resource:AbstractResource,
+	backgroundPositioningBox:RectangleVO, backgroundPaintingBox:RectangleVO, intrinsicWidth:Float,
+	intrinsicHeight:Float, intrinsicRatio:Float, computedBackgroundSize:DimensionVO,
+	computedBackgroundPosition:PointVO, backgroundRepeat:CSSPropertyValue, clipRect:RectangleVO):Void
+	{	
+
+		var backgroundRepeatX:CSSKeywordValue =  null;
+		var backgroundRepeatY:CSSKeywordValue = null;
+		
+		switch(backgroundRepeat)
+		{
+			case GROUP(value):
+				switch(value[0])
+				{
+					case KEYWORD(value):
+						backgroundRepeatX = value;
+						
+					default:	
+				}
+				
+				switch(value[1])
+				{
+					case KEYWORD(value):
+						backgroundRepeatY = value;
+						
+					default:	
+				}
 			
-			var backgroundColor:ColorData = UnitManager.getColorDataFromCSSColor(imageDeclaration.fallbackColor);
-			
-			var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(backgroundBox);
-			backgroundColorDrawingManager.drawBackgroundColor(backgroundColor, computedBackgroundStyles.backgroundClip);
-			
-			backgroundImageNativeElement = backgroundColorDrawingManager.nativeElement;
+			default:
 		}
 		
-		return backgroundImageNativeElement;
-	}
-	
-	/**
-	 * Draw a background color layer on the provided nativeElement
-	 * 
-	 * @param	style
-	 * @param	backgroundColor
-	 * @param	backgroundColorNativeElement
-	 * @param	backgroundBox
-	 * @param	backgroundPosition
-	 * @param	backgroundSize
-	 * @param	backgroundOrigin
-	 * @param	backgroundClip
-	 * @param	backgroundRepeat
-	 * @param	backgroundImage
-	 */
-	private static function drawBackgroundColor(style:CoreStyle, backgroundColor:ColorData, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
-	backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin, backgroundClip:BackgroundClip, 
-	backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):NativeElement
-	{
-		var computedBackgroundStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
-			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,
-			backgroundClip, backgroundRepeat, backgroundImage);
-
-		var backgroundColorDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(backgroundBox);
-		backgroundColorDrawingManager.drawBackgroundColor(backgroundColor, computedBackgroundStyles.backgroundClip);
+		var totalWidth:Float = computedBackgroundPosition.x + backgroundPositioningBox.x;
+		var maxWidth:Float =  backgroundPaintingBox.x + backgroundPaintingBox.width;
+		var imageWidth:Float = computedBackgroundSize.width;
 		
-		return backgroundColorDrawingManager.nativeElement;
-	}
-	
-	/**
-	 * Draw a gradient on a nativeElement and returns it
-	 * 
-	 * @param	style
-	 * @param	gradientValue
-	 * @param	backgroundBox
-	 * @param	backgroundPosition
-	 * @param	backgroundSize
-	 * @param	backgroundOrigin
-	 * @param	backgroundClip
-	 * @param	backgroundRepeat
-	 * @param	backgroundImage
-	 * @return
-	 */
-	private static function drawBackgroundGradient(style:CoreStyle, gradientValue:GradientValue, backgroundBox:RectangleData, backgroundPosition:BackgroundPosition,
-	backgroundSize:BackgroundSize, backgroundOrigin:BackgroundOrigin, backgroundClip:BackgroundClip,
-	backgroundRepeat:BackgroundRepeat, backgroundImage:BackgroundImage):NativeElement
-	{
-		var computedGradientStyles:ComputedBackgroundStyleData = BackgroundStylesComputer.computeIndividualBackground(
-			style, backgroundBox, null, null, null, backgroundPosition, backgroundSize, backgroundOrigin,
-			backgroundClip, backgroundRepeat, backgroundImage);
+		switch (backgroundRepeatX)
+		{
+			case NO_REPEAT:
+				maxWidth = totalWidth + imageWidth;
+				
+			case REPEAT:
+				while (totalWidth > backgroundPaintingBox.x)
+				{
+					totalWidth -= imageWidth;
+				}
+				
+			case SPACE:
+				imageWidth = Math.round(backgroundPositioningBox.width / computedBackgroundSize.width);
+				while (totalWidth > backgroundPaintingBox.x)
+				{
+					totalWidth -= imageWidth;
+				}
+				
+			case ROUND:
+				while (totalWidth > backgroundPaintingBox.x)
+				{
+					totalWidth -= imageWidth;
+				}
+				
+			default:	
+		}
+		var initialWidth:Float = totalWidth;
 		
-			var backgroundGradientDrawingManager:BackgroundDrawingManager = new BackgroundDrawingManager(
-			backgroundBox );
-			backgroundGradientDrawingManager.drawBackgroundGradient(
-			gradientValue,
-			computedGradientStyles.backgroundOrigin,
-			computedGradientStyles.backgroundClip,
-			computedGradientStyles.backgroundSize,
-			computedGradientStyles.backgroundPosition, 
-			computedGradientStyles.backgroundRepeat);
+		var totalHeight:Float = computedBackgroundPosition.y + Math.round(backgroundPositioningBox.y);
+		var maxHeight:Float = backgroundPaintingBox.y + backgroundPaintingBox.height;
+		var imageHeight:Float = computedBackgroundSize.height;
+		
+		switch (backgroundRepeatY)
+		{
+			case NO_REPEAT:
+				maxHeight = totalHeight + imageHeight;
+				
+			case REPEAT:
+				while (totalHeight > backgroundPaintingBox.y)
+				{
+					totalHeight -= imageHeight;
+				}
+				
+			case SPACE:
+				imageHeight = backgroundPositioningBox.height / computedBackgroundSize.height;
+				while (totalHeight > backgroundPaintingBox.y)
+				{
+					totalHeight -= imageHeight;
+				}
+				
+			case ROUND:
+				while (totalHeight > backgroundPaintingBox.y)
+				{
+					totalHeight -= imageHeight;
+				}
+				
+			default:	
+		}
+		
+		var initialHeight:Float = totalHeight;
+		//TODO 3 : doc + separate in 2 methods
+		if ((imageWidth / intrinsicWidth == 1) && (imageHeight / intrinsicHeight == 1))
+		{
+			_destinationPoint.x = totalWidth + backgroundBox.x - computedBackgroundPosition.x;
+			_destinationPoint.y = totalHeight + backgroundBox.y - computedBackgroundPosition.y;
+				
+			var intWidth:Float = intrinsicWidth;
+			var intHeight:Float = intrinsicHeight;
 			
-		return backgroundGradientDrawingManager.nativeElement;
+			_box.x = backgroundPaintingBox.x - computedBackgroundPosition.x;
+			_box.y = backgroundPaintingBox.y - computedBackgroundPosition.y;
+			_box.width = backgroundPaintingBox.width;
+			_box.height = backgroundPaintingBox.height;
+			
+			while (totalHeight < maxHeight)
+			{
+				graphicContext.graphics.copyPixels(resource.nativeResource, _box, _destinationPoint, clipRect );
+				
+				totalWidth += imageWidth;
+				
+				if (totalWidth >= maxWidth)
+				{
+					totalWidth = initialWidth;
+					totalHeight += imageHeight;
+				}
+				
+				_destinationPoint.x = totalWidth + backgroundBox.x - computedBackgroundPosition.x;
+				_destinationPoint.y = totalHeight + backgroundBox.y - computedBackgroundPosition.y;
+			}
+		}
+		else
+		{
+			var matrix:Matrix = new Matrix();
+			
+			backgroundPaintingBox.x += backgroundBox.x + computedBackgroundPosition.x;
+			backgroundPaintingBox.y += backgroundBox.y + computedBackgroundPosition.y;
+			
+			while (totalHeight < maxHeight)
+			{
+				
+				matrix.identity();
+				
+				matrix.translate(totalWidth+backgroundBox.x, totalHeight+backgroundBox.y);
+				
+				matrix.scale(imageWidth / intrinsicWidth ,  imageHeight / intrinsicHeight);
+				
+				graphicContext.graphics.drawImage(resource.nativeResource, matrix, backgroundPaintingBox, clipRect);
+				
+				totalWidth += imageWidth;
+				
+				if (totalWidth >= maxWidth)
+				{
+					totalWidth = initialWidth;
+					totalHeight += imageHeight;
+				}
+			}
+		}
 	}
-	
 }
