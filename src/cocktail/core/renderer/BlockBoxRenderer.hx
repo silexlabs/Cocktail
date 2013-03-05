@@ -862,6 +862,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					}
 				}
 				
+				//the child must first be laid out so that its width and height are known
+				child.layout(true, layoutState);
+				
 				//if the child is not a float
 				if (child.isFloat() == false)
 				{
@@ -883,18 +886,11 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						child.bounds.x = child.coreStyle.usedValues.marginLeft;
 						child.bounds.y = _childPosition.y;
 						
-						//child can now be layout, it needs to know its own x and y bounds
-						//before laying out its children to correctly deal with floated elements,
-						//as child need to convert floated elements to their own space
-						child.layout(true, layoutState);
 					}
 					//here the child is either a replaced block level element or a block box
 					//establishing a new block formatting
 					else
 					{
-						//the child must first be laid out so that its width and height are known
-						child.layout(true, layoutState);
-						
 						//this child x and y position is influenced by floated elements, so the first y position
 						//where this child can fit given the floated elements must be found
 						var childMarginWidth:Float = child.bounds.width + child.coreStyle.usedValues.marginLeft + child.coreStyle.usedValues.marginRight;
@@ -954,9 +950,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				//here the child is a floated element
 				else
 				{
-					//it must first be laid out so that its width and height are known
-					child.layout(true, layoutState);
-				
 					var childPosition:PointVO = _childPosition;
 					
 					//implementation of a border case, if the previous 
