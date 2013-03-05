@@ -13,6 +13,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.dom.Text;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.graphics.GraphicsContext;
+import cocktail.core.graphics.TextDrawer;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.linebox.InlineBox;
@@ -100,20 +101,8 @@ class TextRenderer extends InvalidatingElementRenderer
 	/**
 	 * A reusable rect used during rendering
 	 */
-	private static var _renderRect:RectangleVO = new RectangleVO();
-	
-	/**
-	 * A reusable rect used during rendering
-	 */
 	private static var _intersectBounds:RectangleVO = new RectangleVO();
-	
-	/**
-	 * a reusable point used to compute the 
-	 * position where to render each text inline
-	 * box
-	 */
-	private static var _destPoint:PointVO = new PointVO(0, 0);
-	
+
 	/**
 	 * Class constructor.
 	 */
@@ -169,7 +158,11 @@ class TextRenderer extends InvalidatingElementRenderer
 	// OVERRIDEN PUBLIC RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	
+	/**
+	 * Render all the text inline boxes of
+	 * this text renderer with the 
+	 * provided graphics context
+	 */
 	override public function render(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{	
 		//check wether text is supposed to be rendered
@@ -191,32 +184,7 @@ class TextRenderer extends InvalidatingElementRenderer
 			return;
 		}
 		
-		var inlineBoxesLength:Int = inlineBoxes.length;
-		for (i in 0...inlineBoxesLength)
-		{
-			var inlineBox:InlineBox = inlineBoxes[i];
-			if (inlineBox.isSpace == false)
-			{
-				_renderRect.width = inlineBox.bounds.width;
-				_renderRect.height = inlineBox.bounds.height;
-				
-				_destPoint.x = inlineBox.bounds.x + globalBounds.x - scrollOffset.x;
-				_destPoint.y = inlineBox.bounds.y + globalBounds.y - scrollOffset.y;
-				if (inlineBox.lineBox != null)
-				{
-					_destPoint.y += inlineBox.lineBox.bounds.y;
-					_destPoint.x += inlineBox.lineBox.bounds.x;
-				}
-				
-				//need to type to get ref to native bitmap data
-				var typedTextInlineBox:TextInlineBox = cast(inlineBox);
-				
-				if (typedTextInlineBox.nativeTextBitmap != null)
-				{
-					graphicContext.graphics.copyPixels(typedTextInlineBox.nativeTextBitmap, _renderRect, _destPoint, clipRect);
-				}
-			}
-		}
+		TextDrawer.draw(graphicContext, this, _hasUnderline, _hasOverline, _hasLineThrough, _hasBlink, scrollOffset, clipRect);
 	}
 	
 	/**

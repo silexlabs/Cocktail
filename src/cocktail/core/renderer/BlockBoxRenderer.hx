@@ -420,7 +420,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{
 				if (child.coreStyle.isInlineLevel == false)
 				{
-					if (child.isReplaced == false)
+					if (child.isReplaced == false && child.isText == false)
 					{
 						if (child.coreStyle.isFloat == false)
 						{
