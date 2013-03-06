@@ -1,5 +1,0 @@
--cp ../../../../../src/
--cp ../../../src/
--main classInstance.ClassInstanceTests
--lib utest
--js ../../bin/classInstance/classInstanceTestJS.js 
