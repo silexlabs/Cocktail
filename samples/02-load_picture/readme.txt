@@ -18,7 +18,7 @@ Updated on 2012-08-31
 ---------------
 
 Description: a simple image display example
-Tested targets: JavaScript, Flash & Windows (via NME)
+Tested targets: JavaScript, Flash
 Online demo: http://demos.silexlabs.org/cocktail/samples/02-load_picture/
 Status: source code up to date.
 

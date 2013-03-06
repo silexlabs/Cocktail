@@ -18,6 +18,6 @@ Updated on 2012-08-31
 -------------
 
 Description: a simple text display example
-Tested targets: JavaScript, Flash & Windows (via NME)
+Tested targets: JavaScript, Flash
 Online demo: http://demos.silexlabs.org/cocktail/samples/01-HelloWorld/
 Status: source code up to date.
