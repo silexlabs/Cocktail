@@ -1,0 +1,5 @@
+-cp ../../
+-main DOMTests
+-lib utest
+-swf DOMTestAs3.swf
+-swf-version 10.2

@@ -7,10 +7,17 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 
-package dom;
+package;
 
+import cocktail.core.dom.Attr;
+import cocktail.core.dom.Attr;
+import cocktail.core.dom.NamedNodeMap;
+import cocktail.core.dom.Node;
+import cocktail.core.dom.Text;
 import cocktail.Lib;
 import cocktail.Dom;
+import cocktail.core.dom.Node;
+import cocktail.core.dom.DOMConstants;
 
 import utest.Assert;
 import utest.Runner;
@@ -35,11 +42,11 @@ class DOMTests
 	function testDocument()
 	{
 		
-		Assert.equals(Lib.document.nodeType, Node.DOCUMENT_NODE);
+		Assert.equals(Lib.document.nodeType, DOMConstants.DOCUMENT_NODE);
 		
 		var div = Lib.document.createElement("div");
 		
-		Assert.equals(div.tagName, "div");
+		Assert.equals(div.tagName, "DIV");
 		
 		var txt = Lib.document.createTextNode("test text");
 		
@@ -75,58 +82,16 @@ class DOMTests
 		
 	}
 	
-	function testNode()
-	{
-		
-		var node = new Node();
-		var childNode = new Node();
-		node.appendChild(childNode);
-		
-		Assert.isTrue(node.hasChildNodes());
-		Assert.equals(node.childNodes.length, 1);
-		Assert.equals(node.firstChild, childNode);
-		Assert.equals(node.lastChild, childNode);
-		Assert.equals(childNode.parentNode, node);
-		
-		Assert.equals(node.nodeType, -1);
-		
-		var siblingNode = new Node();
-		node.appendChild(siblingNode);
-		
-		Assert.equals(childNode.nextSibling, siblingNode);
-		Assert.equals(siblingNode.previousSibling, childNode);
-		
-		var removedNode = node.removeChild(childNode);
-		
-		Assert.equals(removedNode, childNode);
-		Assert.isTrue(removedNode.isSameNode(childNode));
-		Assert.isNull(childNode.parentNode);
-		
-		siblingNode.appendChild(childNode);
-		
-		Assert.equals(siblingNode.firstChild, childNode);
-		
-		var nodeInsertedBefore = new Node();
-		siblingNode.insertBefore(nodeInsertedBefore, childNode);
-		
-		Assert.equals(siblingNode.firstChild, nodeInsertedBefore);
-		
-		var replacedNode = siblingNode.replaceChild(node, childNode);
-		
-		Assert.equals(replacedNode, childNode);
-		Assert.equals(siblingNode.lastChild, node);
-	}
-	
 	function testElement()
 	{
-		var el = new Element("div");
+		var el = Lib.document.createElement("div");
 		
-		Assert.equals(el.tagName, "div");
-		Assert.equals(el.nodeName, "div");
+		Assert.equals(el.tagName, "DIV");
+		Assert.equals(el.nodeName, "DIV");
 		Assert.isNull(el.nodeValue);
-		Assert.equals(el.nodeType, Node.ELEMENT_NODE);
+		Assert.equals(el.nodeType, DOMConstants.ELEMENT_NODE);
 		
-		var childEl = new Element("div");
+		var childEl = Lib.document.createElement("div");
 		el.appendChild(childEl);
 		
 		Assert.equals(el.firstElementChild, childEl);
@@ -138,7 +103,7 @@ class DOMTests
 		
 		Assert.equals(el.firstElementChild, childEl);
 		
-		var siblingEl =  new Element("div");
+		var siblingEl = Lib.document.createElement("div");
 		
 		el.appendChild(siblingEl);
 		
@@ -162,7 +127,7 @@ class DOMTests
 		Assert.isFalse(el.hasAttribute("test"));
 		Assert.isFalse(el.hasAttributes());
 		
-		var attr:Attr = new Attr("test");
+		var attr = Lib.document.createAttribute("test");
 		el.setAttributeNode(attr);
 		
 		Assert.equals(el.getAttributeNode("test"), attr);
@@ -191,13 +156,13 @@ class DOMTests
 		Assert.equals(txt.nodeValue, "bam");
 		Assert.equals(txt.data, "bam");
 		
-		Assert.equals(txt.nodeType, Node.TEXT_NODE);
+		Assert.equals(txt.nodeType, DOMConstants.TEXT_NODE);
 	}
 	
 	function testNamedNodeMap()
 	{
 		var nnm = new NamedNodeMap();
-		var attr:Attr = new Attr("test");
+		var attr = Lib.document.createAttribute("test");
 		var ret = nnm.setNamedItem(attr);
 		
 		Assert.isNull(ret);
@@ -217,10 +182,10 @@ class DOMTests
 	
 	function testAttr()
 	{
-		var attr = new Attr("test");
+		var attr = Lib.document.createAttribute("test");
 		
 		Assert.equals(attr.nodeName, "test");
-		Assert.equals(attr.nodeType, Node.ATTRIBUTE_NODE);
+		Assert.equals(attr.nodeType, DOMConstants.ATTRIBUTE_NODE);
 		Assert.isFalse(attr.specified);
 		
 		attr.value = "value";
