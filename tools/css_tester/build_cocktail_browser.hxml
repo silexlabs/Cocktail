@@ -1,6 +1,6 @@
 -swf bin/cocktail_browser.swf
 -main src.CocktailBrowser
 -cp src
--cp ../../src
+-cp ../../
 -swf-version 11.4
 --remap js:cocktail

@@ -5,7 +5,7 @@ Cocktail.htmlSource = null;
 Cocktail.customClassName = null;
 Cocktail.main = function() {
 	Main;
-	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<title>Cocktail Sample</title>\r\n\t</head>\r\n\t<body>\r\n\t\t<h1>My beautiful picture</h1>\r\n\t</body>\r\n</html>\r\n";
+	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<title>Getting Started with Cocktail</title>\r\n\t</head>\r\n\t<body>\r\n\t\t<h1 style=\"word-spacing:10px; color:orange; font-family:arial; margin-top:0px; margin-bottom:0px; text-align:center;\">Hello Cocktail</h1>\r\n\t\t<p style=\"text-align:center;\">Cocktail is a HTML rendering engine.</p>\r\n\t\t<div style=\"text-align:center;\">\r\n\t\t\t<img id=\"icon\" alt=\"cocktail\" src=\"assets/icone_cocktail_blanche_ombre.png\" width=\"132\" height=\"132\"></img>\r\n\t\t</div>\r\n\t</body>\r\n</html>";
 	var customClass = Type.resolveClass("Main");
 	if(customClass != null) Type.createInstance(customClass,[]);
 }
@@ -91,28 +91,16 @@ IntIter.prototype = {
 	,__class__: IntIter
 }
 var Main = $hxClasses["Main"] = function() {
-	var pic = js.Lib.document.createElement("img");
-	pic.onload = $bind(this,this.onPicLoaded);
-	pic.onerror = $bind(this,this.onPicError);
-	js.Lib.document.body.appendChild(pic);
-	pic.src = "assets/cocktail.jpg";
+	var image = js.Lib.document.getElementById("icon");
+	image.onmouseup = Main.onMouseUp;
 };
 Main.__name__ = ["Main"];
+Main.onMouseUp = function(event) {
+	var image = event.target;
+	if(image.src.indexOf("assets/icone_cocktail_blanche_ombre.png") != -1) image.src = "assets/icone_haxe_blanche_ombre.png"; else image.src = "assets/icone_cocktail_blanche_ombre.png";
+}
 Main.prototype = {
-	onPicError: function(e) {
-		var picErrorText = js.Lib.document.createTextNode("picture load error");
-		var paragraph = js.Lib.document.createElement("p");
-		paragraph.appendChild(picErrorText);
-		js.Lib.document.body.appendChild(paragraph);
-	}
-	,onPicLoaded: function(e) {
-		var picLoadedText = js.Lib.document.createTextNode("picture successfully loaded");
-		var paragraph = js.Lib.document.createElement("p");
-		paragraph.appendChild(picLoadedText);
-		js.Lib.document.body.appendChild(paragraph);
-	}
-	,title: null
-	,__class__: Main
+	__class__: Main
 }
 var Reflect = $hxClasses["Reflect"] = function() { }
 Reflect.__name__ = ["Reflect"];
@@ -544,8 +532,6 @@ js.Lib.eval = function(code) {
 js.Lib.setErrorHandler = function(f) {
 	js.Lib.onerror = f;
 }
-var $_;
-function $bind(o,m) { var f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; return f; };
 if(Array.prototype.indexOf) HxOverrides.remove = function(a,o) {
 	var i = a.indexOf(o);
 	if(i == -1) return false;
@@ -588,5 +574,7 @@ if(typeof window != "undefined") {
 	};
 }
 Cocktail.htmlSourcePath = "index.html";
+Main.ICON_COCKTAIL_PATH = "assets/icone_cocktail_blanche_ombre.png";
+Main.ICON2_PATH = "assets/icone_haxe_blanche_ombre.png";
 js.Lib.onerror = null;
 Cocktail.main();
