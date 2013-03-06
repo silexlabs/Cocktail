@@ -708,7 +708,20 @@ class LineBox
 			//first check if baseline aligned, most common case
 			if (childCoreStyle.isBaselineAligned == true)
 			{
-				var yOffset:Float = childCoreStyle.fontMetrics.ascent - inlineBox.elementRenderer.coreStyle.fontMetrics.ascent;
+				var childLeadedAscent:Float = child.leadedAscent;
+				
+				//for embedded element such as picture, 
+				//use margin box for leaded ascent
+				//
+				//TODO 3 : for inline-block, might use baseline of last
+				//line box if establish inline formatting 
+				if (child.isEmbedded == true)
+				{
+					childLeadedAscent = child.bounds.height + child.elementRenderer.coreStyle.usedValues.marginTop + child.elementRenderer.coreStyle.usedValues.marginBottom;
+				}
+				
+				
+				var yOffset:Float = childLeadedAscent - inlineBox.leadedAscent;
 				child.offsetFromParentInlineBox.y = -yOffset;
 			}
 			else
