@@ -6,7 +6,7 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-package focus;
+package;
 
 import cocktail.core.focus.FocusManager;
 import cocktail.Dom;
