@@ -1,0 +1,6 @@
+-cp ../../
+-main HistoryTests
+-lib utest
+-swf9 historyTestAS3.swf
+-swf-version 10.2
+--remap js:cocktail

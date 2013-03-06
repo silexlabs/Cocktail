@@ -1,5 +1,0 @@
--cp ../../../../../src/
--cp ../../../src/
--main html.HTMLTests
--lib utest
--js ../../bin/html/HTMLTestsJS.js

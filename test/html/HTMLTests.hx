@@ -7,8 +7,9 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 
-package html;
+package ;
 
+import cocktail.core.html.HTMLElement;
 import cocktail.Dom;
 import cocktail.Lib;
 
@@ -34,7 +35,7 @@ class HTMLTests
 	
 	function testHTMLElement()
 	{
-		var htmlEl = new HTMLElement("div");
+		var htmlEl = Lib.document.createElement("div");
 		Lib.document.body.appendChild(htmlEl);
 		
 		htmlEl.style.width = "50px";
