@@ -622,14 +622,22 @@ class LineBox
 		
 		_lineBoxesBounds.height = _elementRenderer.coreStyle.usedValues.lineHeight;
 		
-		getLineBoxHeight(rootInlineBox, _lineBoxesBounds, 0);
-		var lineBoxHeight:Float = _lineBoxesBounds.height;
-		
-		updateOffsetFromLineBox(rootInlineBox, lineBoxHeight, 0);
+		//TODO 2 : for now, 0 is passed for line box height, which will prevent
+		//bottom aligned box from being properly aligned. It was modified because
+		//the line box height should be computed after all the inline boxes
+		//are placed relative to the line box and not before, so that the right bounds, notably
+		//including leadings, can be found
+		//
+		//should split line height foud from top and bottom aligned box and
+		//other line box height ?
+		updateOffsetFromLineBox(rootInlineBox, 0, 0);
 		
 		var minimumTop:Float = getMinimumTop(rootInlineBox, 0);
 		
 		applyMinimumTop(rootInlineBox, minimumTop);
+		
+		getLineBoxHeight(rootInlineBox, _lineBoxesBounds, 0);
+		var lineBoxHeight:Float = _lineBoxesBounds.height;
 		
 		return lineBoxHeight;
 	}
@@ -930,7 +938,7 @@ class LineBox
 				_childBounds.width = 0;
 				_childBounds.height = 0;
 				
-				_childBounds.y = child.offsetFromParentInlineBox.y + addedY;
+				_childBounds.y = child.bounds.y + addedY;
 				_childBounds.height = child.bounds.height;
 				
 				GeomUtils.addBounds(_childBounds, lineBoxBounds);
