@@ -5,7 +5,7 @@ Cocktail.htmlSource = null;
 Cocktail.customClassName = null;
 Cocktail.main = function() {
 	Main;
-	js.Lib.document.documentElement.innerHTML = "<html>\n\t<head>\n\t\t<title>Cocktail Sample</title>\n\t</head>\n\t<body>\n\t\t<h1>My beautiful picture</h1>\n\t</body>\n</html>\n";
+	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<title>Cocktail Sample</title>\r\n\t</head>\r\n\t<body>\r\n\t\t<h1>My beautiful picture</h1>\r\n\t</body>\r\n</html>\r\n";
 	var customClass = Type.resolveClass("Main");
 	if(customClass != null) Type.createInstance(customClass,[]);
 }

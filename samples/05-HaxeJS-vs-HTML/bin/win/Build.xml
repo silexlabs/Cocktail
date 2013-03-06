@@ -1,0 +1,3557 @@
+<xml>
+<files id="haxe">
+<compilerflag value="-Iinclude"/>
+  <file name="src/sys/net/Socket.cpp">
+   <depend name="include/Type.h"/>
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/Input.h"/>
+   <depend name="include/haxe/io/Output.h"/>
+   <depend name="include/sys/net/Host.h"/>
+   <depend name="include/sys/net/Socket.h"/>
+   <depend name="include/sys/net/_Socket/SocketInput.h"/>
+   <depend name="include/sys/net/_Socket/SocketOutput.h"/>
+  </file>
+  <file name="src/sys/net/_Socket/SocketOutput.cpp">
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/Error.h"/>
+   <depend name="include/haxe/io/Output.h"/>
+   <depend name="include/sys/net/_Socket/SocketOutput.h"/>
+  </file>
+  <file name="src/sys/net/_Socket/SocketInput.cpp">
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/Eof.h"/>
+   <depend name="include/haxe/io/Error.h"/>
+   <depend name="include/haxe/io/Input.h"/>
+   <depend name="include/sys/net/_Socket/SocketInput.h"/>
+  </file>
+  <file name="src/sys/net/Host.cpp">
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/sys/net/Host.h"/>
+  </file>
+  <file name="src/sys/io/FileSeek.cpp">
+   <depend name="include/sys/io/FileSeek.h"/>
+  </file>
+  <file name="src/sys/io/FileOutput.cpp">
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/Error.h"/>
+   <depend name="include/haxe/io/Output.h"/>
+   <depend name="include/sys/io/FileOutput.h"/>
+   <depend name="include/sys/io/FileSeek.h"/>
+  </file>
+  <file name="src/sys/io/FileInput.cpp">
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/Eof.h"/>
+   <depend name="include/haxe/io/Error.h"/>
+   <depend name="include/haxe/io/Input.h"/>
+   <depend name="include/sys/io/FileInput.h"/>
+   <depend name="include/sys/io/FileSeek.h"/>
+  </file>
+  <file name="src/sys/io/File.cpp">
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/Input.h"/>
+   <depend name="include/haxe/io/Output.h"/>
+   <depend name="include/sys/io/File.h"/>
+   <depend name="include/sys/io/FileInput.h"/>
+   <depend name="include/sys/io/FileOutput.h"/>
+  </file>
+  <file name="src/sys/FileSystem.cpp">
+   <depend name="include/Date.h"/>
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/sys/FileSystem.h"/>
+   <depend name="include/sys/_FileSystem/FileKind.h"/>
+  </file>
+  <file name="src/sys/_FileSystem/FileKind.cpp">
+   <depend name="include/sys/_FileSystem/FileKind.h"/>
+  </file>
+  <file name="src/nme/VectorHelper.cpp">
+   <depend name="include/nme/VectorHelper.h"/>
+  </file>
+  <file name="src/nme/Lib.cpp">
+   <depend name="include/haxe/Log.h"/>
+   <depend name="include/native/Lib.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/ManagedStage.h"/>
+   <depend name="include/native/display/MovieClip.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/display/Stage.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/net/URLRequest.h"/>
+   <depend name="include/nme/Lib.h"/>
+  </file>
+  <file name="src/nme/Assets.cpp">
+   <depend name="include/Hash.h"/>
+   <depend name="include/format/display/MovieClip.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/media/Sound.h"/>
+   <depend name="include/native/text/Font.h"/>
+   <depend name="include/native/utils/ByteArray.h"/>
+   <depend name="include/native/utils/IDataInput.h"/>
+   <depend name="include/native/utils/IMemoryRange.h"/>
+   <depend name="include/nme/Assets.h"/>
+  </file>
+  <file name="src/native/utils/WeakRef.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/utils/WeakRef.h"/>
+  </file>
+  <file name="src/native/utils/Endian.cpp">
+   <depend name="include/native/utils/Endian.h"/>
+  </file>
+  <file name="src/native/utils/CompressionAlgorithm.cpp">
+   <depend name="include/native/utils/CompressionAlgorithm.h"/>
+  </file>
+  <file name="src/native/utils/ByteArray.cpp">
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/cpp/zip/Compress.h"/>
+   <depend name="include/cpp/zip/Uncompress.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/errors/EOFError.h"/>
+   <depend name="include/native/errors/Error.h"/>
+   <depend name="include/native/utils/ByteArray.h"/>
+   <depend name="include/native/utils/CompressionAlgorithm.h"/>
+   <depend name="include/native/utils/IDataInput.h"/>
+   <depend name="include/native/utils/IMemoryRange.h"/>
+  </file>
+  <file name="src/native/utils/IDataInput.cpp">
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/native/utils/ByteArray.h"/>
+   <depend name="include/native/utils/IDataInput.h"/>
+   <depend name="include/native/utils/IMemoryRange.h"/>
+  </file>
+  <file name="src/native/utils/IMemoryRange.cpp">
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/native/utils/ByteArray.h"/>
+   <depend name="include/native/utils/IDataInput.h"/>
+   <depend name="include/native/utils/IMemoryRange.h"/>
+  </file>
+  <file name="src/native/ui/MultitouchInputMode.cpp">
+   <depend name="include/native/ui/MultitouchInputMode.h"/>
+  </file>
+  <file name="src/native/ui/Multitouch.cpp">
+   <depend name="include/native/Lib.h"/>
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/MovieClip.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/display/Stage.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/ui/Multitouch.h"/>
+   <depend name="include/native/ui/MultitouchInputMode.h"/>
+  </file>
+  <file name="src/native/ui/Keyboard.cpp">
+   <depend name="include/native/ui/Keyboard.h"/>
+  </file>
+  <file name="src/native/text/TextFormat.cpp">
+   <depend name="include/native/text/TextFormat.h"/>
+  </file>
+  <file name="src/native/text/TextFieldType.cpp">
+   <depend name="include/native/text/TextFieldType.h"/>
+  </file>
+  <file name="src/native/text/TextFieldAutoSize.cpp">
+   <depend name="include/native/text/TextFieldAutoSize.h"/>
+  </file>
+  <file name="src/native/text/TextField.cpp">
+   <depend name="include/StringTools.h"/>
+   <depend name="include/Type.h"/>
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/text/AntiAliasType.h"/>
+   <depend name="include/native/text/TextField.h"/>
+   <depend name="include/native/text/TextFieldAutoSize.h"/>
+   <depend name="include/native/text/TextFieldType.h"/>
+   <depend name="include/native/text/TextFormat.h"/>
+  </file>
+  <file name="src/native/text/FontType.cpp">
+   <depend name="include/native/text/FontType.h"/>
+  </file>
+  <file name="src/native/text/FontStyle.cpp">
+   <depend name="include/native/text/FontStyle.h"/>
+  </file>
+  <file name="src/native/text/Font.cpp">
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/text/Font.h"/>
+   <depend name="include/native/text/FontStyle.h"/>
+   <depend name="include/native/text/FontType.h"/>
+  </file>
+  <file name="src/native/text/AntiAliasType.cpp">
+   <depend name="include/native/text/AntiAliasType.h"/>
+  </file>
+  <file name="src/native/net/URLVariables.cpp">
+   <depend name="include/Reflect.h"/>
+   <depend name="include/StringTools.h"/>
+   <depend name="include/native/net/URLVariables.h"/>
+  </file>
+  <file name="src/native/net/URLRequestMethod.cpp">
+   <depend name="include/native/net/URLRequestMethod.h"/>
+  </file>
+  <file name="src/native/net/URLRequestHeader.cpp">
+   <depend name="include/native/net/URLRequestHeader.h"/>
+  </file>
+  <file name="src/native/net/URLRequest.cpp">
+   <depend name="include/Reflect.h"/>
+   <depend name="include/Std.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/native/net/URLRequest.h"/>
+   <depend name="include/native/net/URLRequestHeader.h"/>
+   <depend name="include/native/net/URLVariables.h"/>
+   <depend name="include/native/utils/ByteArray.h"/>
+   <depend name="include/native/utils/IDataInput.h"/>
+   <depend name="include/native/utils/IMemoryRange.h"/>
+  </file>
+  <file name="src/native/net/URLLoaderDataFormat.cpp">
+   <depend name="include/native/net/URLLoaderDataFormat.h"/>
+  </file>
+  <file name="src/native/media/SoundTransform.cpp">
+   <depend name="include/native/media/SoundTransform.h"/>
+  </file>
+  <file name="src/native/media/SoundLoaderContext.cpp">
+   <depend name="include/native/media/SoundLoaderContext.h"/>
+  </file>
+  <file name="src/native/media/SoundChannel.cpp">
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/events/SampleDataEvent.h"/>
+   <depend name="include/native/media/SoundChannel.h"/>
+   <depend name="include/native/media/SoundTransform.h"/>
+   <depend name="include/native/utils/ByteArray.h"/>
+   <depend name="include/native/utils/IDataInput.h"/>
+   <depend name="include/native/utils/IMemoryRange.h"/>
+  </file>
+  <file name="src/native/media/Sound.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/errors/Error.h"/>
+   <depend name="include/native/events/ErrorEvent.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/events/IOErrorEvent.h"/>
+   <depend name="include/native/events/SampleDataEvent.h"/>
+   <depend name="include/native/events/TextEvent.h"/>
+   <depend name="include/native/media/ID3Info.h"/>
+   <depend name="include/native/media/Sound.h"/>
+   <depend name="include/native/media/SoundChannel.h"/>
+   <depend name="include/native/media/SoundLoaderContext.h"/>
+   <depend name="include/native/media/SoundTransform.h"/>
+   <depend name="include/native/net/URLRequest.h"/>
+   <depend name="include/native/utils/ByteArray.h"/>
+   <depend name="include/native/utils/IDataInput.h"/>
+   <depend name="include/native/utils/IMemoryRange.h"/>
+  </file>
+  <file name="src/native/media/ID3Info.cpp">
+   <depend name="include/native/media/ID3Info.h"/>
+  </file>
+  <file name="src/native/geom/Transform.cpp">
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/geom/ColorTransform.h"/>
+   <depend name="include/native/geom/Matrix.h"/>
+   <depend name="include/native/geom/Rectangle.h"/>
+   <depend name="include/native/geom/Transform.h"/>
+  </file>
+  <file name="src/native/geom/Rectangle.cpp">
+   <depend name="include/native/geom/Matrix.h"/>
+   <depend name="include/native/geom/Point.h"/>
+   <depend name="include/native/geom/Rectangle.h"/>
+  </file>
+  <file name="src/native/geom/Point.cpp">
+   <depend name="include/native/geom/Point.h"/>
+  </file>
+  <file name="src/native/geom/Matrix.cpp">
+   <depend name="include/native/geom/Matrix.h"/>
+   <depend name="include/native/geom/Point.h"/>
+  </file>
+  <file name="src/native/geom/ColorTransform.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/native/geom/ColorTransform.h"/>
+  </file>
+  <file name="src/native/filters/BitmapFilter.cpp">
+   <depend name="include/native/filters/BitmapFilter.h"/>
+  </file>
+  <file name="src/native/events/SampleDataEvent.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/SampleDataEvent.h"/>
+   <depend name="include/native/utils/ByteArray.h"/>
+   <depend name="include/native/utils/IDataInput.h"/>
+   <depend name="include/native/utils/IMemoryRange.h"/>
+  </file>
+  <file name="src/native/events/ProgressEvent.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/ProgressEvent.h"/>
+  </file>
+  <file name="src/native/events/KeyboardEvent.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/KeyboardEvent.h"/>
+  </file>
+  <file name="src/native/events/JoystickEvent.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/JoystickEvent.h"/>
+  </file>
+  <file name="src/native/events/IOErrorEvent.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/native/events/ErrorEvent.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/IOErrorEvent.h"/>
+   <depend name="include/native/events/TextEvent.h"/>
+  </file>
+  <file name="src/native/events/HTTPStatusEvent.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/HTTPStatusEvent.h"/>
+  </file>
+  <file name="src/native/events/FocusEvent.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/FocusEvent.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+  </file>
+  <file name="src/native/events/EventPhase.cpp">
+   <depend name="include/native/events/EventPhase.h"/>
+  </file>
+  <file name="src/native/events/Listener.cpp">
+   <depend name="include/Reflect.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/Listener.h"/>
+  </file>
+  <file name="src/native/events/ErrorEvent.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/native/events/ErrorEvent.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/TextEvent.h"/>
+  </file>
+  <file name="src/native/events/TextEvent.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/TextEvent.h"/>
+  </file>
+  <file name="src/native/errors/SecurityError.cpp">
+   <depend name="include/native/errors/Error.h"/>
+   <depend name="include/native/errors/SecurityError.h"/>
+  </file>
+  <file name="src/native/errors/RangeError.cpp">
+   <depend name="include/native/errors/Error.h"/>
+   <depend name="include/native/errors/RangeError.h"/>
+  </file>
+  <file name="src/native/errors/EOFError.cpp">
+   <depend name="include/native/errors/EOFError.h"/>
+   <depend name="include/native/errors/Error.h"/>
+  </file>
+  <file name="src/native/errors/ArgumentError.cpp">
+   <depend name="include/native/errors/ArgumentError.h"/>
+   <depend name="include/native/errors/Error.h"/>
+  </file>
+  <file name="src/native/errors/Error.cpp">
+   <depend name="include/native/errors/Error.h"/>
+  </file>
+  <file name="src/native/display/TriangleCulling.cpp">
+   <depend name="include/native/display/TriangleCulling.h"/>
+  </file>
+  <file name="src/native/display/Tilesheet.cpp">
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/Graphics.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/Tilesheet.h"/>
+   <depend name="include/native/geom/Point.h"/>
+   <depend name="include/native/geom/Rectangle.h"/>
+  </file>
+  <file name="src/native/display/StageScaleMode.cpp">
+   <depend name="include/native/display/StageScaleMode.h"/>
+  </file>
+  <file name="src/native/display/StageQuality.cpp">
+   <depend name="include/native/display/StageQuality.h"/>
+  </file>
+  <file name="src/native/display/StageDisplayState.cpp">
+   <depend name="include/native/display/StageDisplayState.h"/>
+  </file>
+  <file name="src/native/display/StageAlign.cpp">
+   <depend name="include/native/display/StageAlign.h"/>
+  </file>
+  <file name="src/native/display/TouchInfo.cpp">
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/TouchInfo.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+  </file>
+  <file name="src/native/display/SpreadMethod.cpp">
+   <depend name="include/native/display/SpreadMethod.h"/>
+  </file>
+  <file name="src/native/display/Shape.cpp">
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/Shape.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+  </file>
+  <file name="src/native/display/PixelSnapping.cpp">
+   <depend name="include/native/display/PixelSnapping.h"/>
+  </file>
+  <file name="src/native/display/MovieClip.cpp">
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/MovieClip.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+  </file>
+  <file name="src/native/display/ManagedStage.cpp">
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/ManagedStage.h"/>
+   <depend name="include/native/display/Stage.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+  </file>
+  <file name="src/native/display/Stage.cpp">
+   <depend name="include/IntHash.h"/>
+   <depend name="include/Reflect.h"/>
+   <depend name="include/Std.h"/>
+   <depend name="include/Type.h"/>
+   <depend name="include/haxe/Log.h"/>
+   <depend name="include/haxe/Timer.h"/>
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/display/Stage.h"/>
+   <depend name="include/native/display/StageAlign.h"/>
+   <depend name="include/native/display/StageDisplayState.h"/>
+   <depend name="include/native/display/StageQuality.h"/>
+   <depend name="include/native/display/StageScaleMode.h"/>
+   <depend name="include/native/display/TouchInfo.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/FocusEvent.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/events/JoystickEvent.h"/>
+   <depend name="include/native/events/KeyboardEvent.h"/>
+   <depend name="include/native/events/MouseEvent.h"/>
+   <depend name="include/native/events/TouchEvent.h"/>
+   <depend name="include/native/geom/Point.h"/>
+   <depend name="include/native/geom/Rectangle.h"/>
+   <depend name="include/native/media/SoundChannel.h"/>
+   <depend name="include/native/net/URLLoader.h"/>
+  </file>
+  <file name="src/native/events/TouchEvent.cpp">
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/events/MouseEvent.h"/>
+   <depend name="include/native/events/TouchEvent.h"/>
+   <depend name="include/native/geom/Point.h"/>
+  </file>
+  <file name="src/native/events/MouseEvent.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/events/MouseEvent.h"/>
+   <depend name="include/native/geom/Point.h"/>
+  </file>
+  <file name="src/native/events/Event.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventPhase.h"/>
+  </file>
+  <file name="src/native/display/LoaderInfo.cpp">
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/Loader.h"/>
+   <depend name="include/native/display/LoaderInfo.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/net/URLLoader.h"/>
+   <depend name="include/native/net/URLLoaderDataFormat.h"/>
+   <depend name="include/native/net/URLRequest.h"/>
+   <depend name="include/native/utils/ByteArray.h"/>
+   <depend name="include/native/utils/IDataInput.h"/>
+   <depend name="include/native/utils/IMemoryRange.h"/>
+  </file>
+  <file name="src/native/net/URLLoader.cpp">
+   <depend name="include/List.h"/>
+   <depend name="include/Std.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/events/ErrorEvent.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/HTTPStatusEvent.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/events/IOErrorEvent.h"/>
+   <depend name="include/native/events/ProgressEvent.h"/>
+   <depend name="include/native/events/TextEvent.h"/>
+   <depend name="include/native/net/URLLoader.h"/>
+   <depend name="include/native/net/URLLoaderDataFormat.h"/>
+   <depend name="include/native/net/URLRequest.h"/>
+   <depend name="include/native/net/URLVariables.h"/>
+   <depend name="include/native/utils/ByteArray.h"/>
+   <depend name="include/native/utils/IDataInput.h"/>
+   <depend name="include/native/utils/IMemoryRange.h"/>
+  </file>
+  <file name="src/native/display/Loader.cpp">
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/native/display/Bitmap.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/Loader.h"/>
+   <depend name="include/native/display/LoaderInfo.h"/>
+   <depend name="include/native/display/MovieClip.h"/>
+   <depend name="include/native/display/PixelSnapping.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/net/URLLoader.h"/>
+   <depend name="include/native/net/URLRequest.h"/>
+   <depend name="include/native/utils/ByteArray.h"/>
+   <depend name="include/native/utils/IDataInput.h"/>
+   <depend name="include/native/utils/IMemoryRange.h"/>
+  </file>
+  <file name="src/native/display/LineScaleMode.cpp">
+   <depend name="include/native/display/LineScaleMode.h"/>
+  </file>
+  <file name="src/native/display/JointStyle.cpp">
+   <depend name="include/native/display/JointStyle.h"/>
+  </file>
+  <file name="src/native/display/InterpolationMethod.cpp">
+   <depend name="include/native/display/InterpolationMethod.h"/>
+  </file>
+  <file name="src/native/display/IGraphicsData.cpp">
+   <depend name="include/native/display/IGraphicsData.h"/>
+  </file>
+  <file name="src/native/display/GraphicsPathWinding.cpp">
+   <depend name="include/native/display/GraphicsPathWinding.h"/>
+  </file>
+  <file name="src/native/display/Graphics.cpp">
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/CapsStyle.h"/>
+   <depend name="include/native/display/GradientType.h"/>
+   <depend name="include/native/display/Graphics.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/IGraphicsData.h"/>
+   <depend name="include/native/display/InterpolationMethod.h"/>
+   <depend name="include/native/display/JointStyle.h"/>
+   <depend name="include/native/display/LineScaleMode.h"/>
+   <depend name="include/native/display/SpreadMethod.h"/>
+   <depend name="include/native/display/Tilesheet.h"/>
+   <depend name="include/native/display/TriangleCulling.h"/>
+   <depend name="include/native/geom/Matrix.h"/>
+  </file>
+  <file name="src/native/display/GradientType.cpp">
+   <depend name="include/native/display/GradientType.h"/>
+  </file>
+  <file name="src/native/display/CapsStyle.cpp">
+   <depend name="include/native/display/CapsStyle.h"/>
+  </file>
+  <file name="src/native/display/BlendMode.cpp">
+   <depend name="include/native/display/BlendMode.h"/>
+  </file>
+  <file name="src/native/display/OptimizedPerlin.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/OptimizedPerlin.h"/>
+  </file>
+  <file name="src/native/display/BitmapData.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/BlendMode.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/OptimizedPerlin.h"/>
+   <depend name="include/native/filters/BitmapFilter.h"/>
+   <depend name="include/native/geom/ColorTransform.h"/>
+   <depend name="include/native/geom/Matrix.h"/>
+   <depend name="include/native/geom/Point.h"/>
+   <depend name="include/native/geom/Rectangle.h"/>
+   <depend name="include/native/utils/ByteArray.h"/>
+   <depend name="include/native/utils/IDataInput.h"/>
+   <depend name="include/native/utils/IMemoryRange.h"/>
+  </file>
+  <file name="src/native/display/Bitmap.cpp">
+   <depend name="include/native/display/Bitmap.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/Graphics.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/PixelSnapping.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/geom/Matrix.h"/>
+  </file>
+  <file name="src/native/Lib.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/haxe/Timer.h"/>
+   <depend name="include/native/Lib.h"/>
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/ManagedStage.h"/>
+   <depend name="include/native/display/MovieClip.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/display/Stage.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/net/URLRequest.h"/>
+  </file>
+  <file name="src/haxe/xml/Parser.cpp">
+   <depend name="include/Xml.h"/>
+   <depend name="include/haxe/xml/Parser.h"/>
+  </file>
+  <file name="src/haxe/io/Error.cpp">
+   <depend name="include/haxe/io/Error.h"/>
+  </file>
+  <file name="src/haxe/io/Eof.cpp">
+   <depend name="include/haxe/io/Eof.h"/>
+  </file>
+  <file name="src/haxe/io/BytesOutput.cpp">
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/BytesBuffer.h"/>
+   <depend name="include/haxe/io/BytesOutput.h"/>
+   <depend name="include/haxe/io/Error.h"/>
+   <depend name="include/haxe/io/Output.h"/>
+  </file>
+  <file name="src/haxe/io/BytesBuffer.cpp">
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/BytesBuffer.h"/>
+   <depend name="include/haxe/io/Error.h"/>
+  </file>
+  <file name="src/haxe/Unserializer.cpp">
+   <depend name="include/Date.h"/>
+   <depend name="include/Hash.h"/>
+   <depend name="include/IntHash.h"/>
+   <depend name="include/List.h"/>
+   <depend name="include/Std.h"/>
+   <depend name="include/StringTools.h"/>
+   <depend name="include/Type.h"/>
+   <depend name="include/haxe/Unserializer.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+  </file>
+  <file name="src/haxe/Timer.cpp">
+   <depend name="include/haxe/Log.h"/>
+   <depend name="include/haxe/Timer.h"/>
+   <depend name="include/native/Loader.h"/>
+  </file>
+  <file name="src/haxe/Stack.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/StringBuf.h"/>
+   <depend name="include/haxe/Stack.h"/>
+   <depend name="include/haxe/StackItem.h"/>
+  </file>
+  <file name="src/haxe/StackItem.cpp">
+   <depend name="include/haxe/StackItem.h"/>
+  </file>
+  <file name="src/haxe/Serializer.cpp">
+   <depend name="include/Date.h"/>
+   <depend name="include/Hash.h"/>
+   <depend name="include/IntHash.h"/>
+   <depend name="include/List.h"/>
+   <depend name="include/Reflect.h"/>
+   <depend name="include/Std.h"/>
+   <depend name="include/StringBuf.h"/>
+   <depend name="include/StringTools.h"/>
+   <depend name="include/Type.h"/>
+   <depend name="include/ValueType.h"/>
+   <depend name="include/haxe/Serializer.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+  </file>
+  <file name="src/haxe/Log.cpp">
+   <depend name="include/haxe/Log.h"/>
+  </file>
+  <file name="src/haxe/Http.cpp">
+   <depend name="include/EReg.h"/>
+   <depend name="include/Hash.h"/>
+   <depend name="include/Std.h"/>
+   <depend name="include/StringBuf.h"/>
+   <depend name="include/StringTools.h"/>
+   <depend name="include/haxe/Http.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/BytesBuffer.h"/>
+   <depend name="include/haxe/io/BytesOutput.h"/>
+   <depend name="include/haxe/io/Eof.h"/>
+   <depend name="include/haxe/io/Error.h"/>
+   <depend name="include/haxe/io/Input.h"/>
+   <depend name="include/haxe/io/Output.h"/>
+   <depend name="include/sys/net/Host.h"/>
+   <depend name="include/sys/net/Socket.h"/>
+  </file>
+  <file name="src/haxe/Firebug.cpp">
+   <depend name="include/haxe/Firebug.h"/>
+   <depend name="include/haxe/Log.h"/>
+  </file>
+  <file name="src/format/display/MovieClip.cpp">
+   <depend name="include/format/display/FrameLabel.h"/>
+   <depend name="include/format/display/MovieClip.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+  </file>
+  <file name="src/native/display/Sprite.cpp">
+   <depend name="include/Type.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/display/Stage.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/geom/Rectangle.h"/>
+  </file>
+  <file name="src/native/display/DisplayObjectContainer.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/errors/ArgumentError.h"/>
+   <depend name="include/native/errors/Error.h"/>
+   <depend name="include/native/errors/RangeError.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/geom/Point.h"/>
+  </file>
+  <file name="src/native/display/InteractiveObject.cpp">
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+  </file>
+  <file name="src/native/display/DisplayObject.cpp">
+   <depend name="include/Type.h"/>
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/native/display/BlendMode.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/Graphics.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/PixelSnapping.h"/>
+   <depend name="include/native/display/Stage.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/EventPhase.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/geom/ColorTransform.h"/>
+   <depend name="include/native/geom/Matrix.h"/>
+   <depend name="include/native/geom/Point.h"/>
+   <depend name="include/native/geom/Rectangle.h"/>
+   <depend name="include/native/geom/Transform.h"/>
+  </file>
+  <file name="src/sys/io/_Process/Stdout.cpp">
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/Eof.h"/>
+   <depend name="include/haxe/io/Error.h"/>
+   <depend name="include/haxe/io/Input.h"/>
+   <depend name="include/sys/io/_Process/Stdout.h"/>
+  </file>
+  <file name="src/haxe/io/Input.cpp">
+   <depend name="include/StringBuf.h"/>
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/BytesBuffer.h"/>
+   <depend name="include/haxe/io/Eof.h"/>
+   <depend name="include/haxe/io/Error.h"/>
+   <depend name="include/haxe/io/Input.h"/>
+  </file>
+  <file name="src/haxe/io/Bytes.cpp">
+   <depend name="include/StringBuf.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/Error.h"/>
+  </file>
+  <file name="src/sys/io/_Process/Stdin.cpp">
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/Eof.h"/>
+   <depend name="include/haxe/io/Output.h"/>
+   <depend name="include/sys/io/_Process/Stdin.h"/>
+  </file>
+  <file name="src/haxe/io/Output.cpp">
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/Eof.h"/>
+   <depend name="include/haxe/io/Error.h"/>
+   <depend name="include/haxe/io/Input.h"/>
+   <depend name="include/haxe/io/Output.h"/>
+  </file>
+  <file name="src/sys/io/Process.cpp">
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/haxe/io/Input.h"/>
+   <depend name="include/haxe/io/Output.h"/>
+   <depend name="include/sys/io/Process.h"/>
+   <depend name="include/sys/io/_Process/Stdin.h"/>
+   <depend name="include/sys/io/_Process/Stdout.h"/>
+  </file>
+  <file name="src/native/Loader.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/haxe/io/Input.h"/>
+   <depend name="include/native/Loader.h"/>
+   <depend name="include/sys/io/Process.h"/>
+  </file>
+  <file name="src/native/display/IBitmapDrawable.cpp">
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/geom/ColorTransform.h"/>
+   <depend name="include/native/geom/Matrix.h"/>
+   <depend name="include/native/geom/Rectangle.h"/>
+  </file>
+  <file name="src/native/events/EventDispatcher.cpp">
+   <depend name="include/Hash.h"/>
+   <depend name="include/Type.h"/>
+   <depend name="include/native/events/ErrorEvent.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/EventPhase.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/events/IOErrorEvent.h"/>
+   <depend name="include/native/events/Listener.h"/>
+   <depend name="include/native/events/TextEvent.h"/>
+   <depend name="include/native/utils/WeakRef.h"/>
+  </file>
+  <file name="src/native/events/IEventDispatcher.cpp">
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+  </file>
+  <file name="src/format/display/FrameLabel.cpp">
+   <depend name="include/format/display/FrameLabel.h"/>
+  </file>
+  <file name="src/cpp/zip/Uncompress.cpp">
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/cpp/zip/Flush.h"/>
+   <depend name="include/cpp/zip/Uncompress.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/BytesBuffer.h"/>
+   <depend name="include/haxe/io/Error.h"/>
+  </file>
+  <file name="src/cpp/zip/Flush.cpp">
+   <depend name="include/cpp/zip/Flush.h"/>
+  </file>
+  <file name="src/cpp/zip/Compress.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/cpp/zip/Compress.h"/>
+   <depend name="include/cpp/zip/Flush.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+  </file>
+  <file name="src/cpp/rtti/FieldNumericIntegerLookup.cpp">
+   <depend name="include/cpp/rtti/FieldNumericIntegerLookup.h"/>
+  </file>
+  <file name="src/cocktail/port/platform/nme/NativeText.cpp">
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/port/base/NativeTextBase.h"/>
+   <depend name="include/cocktail/port/platform/nme/NativeText.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/BlendMode.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/geom/ColorTransform.h"/>
+   <depend name="include/native/geom/Matrix.h"/>
+   <depend name="include/native/geom/Rectangle.h"/>
+   <depend name="include/native/text/TextField.h"/>
+  </file>
+  <file name="src/cocktail/port/platform/nme/NativeHttp.cpp">
+   <depend name="include/Hash.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/http/DataFormatValue.h"/>
+   <depend name="include/cocktail/port/base/NativeHttpBase.h"/>
+   <depend name="include/cocktail/port/platform/nme/NativeHttp.h"/>
+   <depend name="include/nme/Assets.h"/>
+  </file>
+  <file name="src/cocktail/port/platform/nme/NativeAudio.cpp">
+   <depend name="include/cocktail/port/base/NativeMedia.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/NativeAudio.h"/>
+   <depend name="include/cocktail/port/platform/nme/NativeAudio.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/media/Sound.h"/>
+   <depend name="include/nme/Assets.h"/>
+  </file>
+  <file name="src/cocktail/port/platform/nme/ImageResource.cpp">
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/resource/AbstractResource.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/ImageResource.h"/>
+   <depend name="include/cocktail/port/platform/nme/ImageResource.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/Loader.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/nme/Assets.h"/>
+  </file>
+  <file name="src/cocktail/port/platform/nme/FontManagerImpl.cpp">
+   <depend name="include/cocktail/core/animation/Transition.h"/>
+   <depend name="include/cocktail/core/animation/TransitionManager.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/ColorVO.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/font/AbstractFontManagerImpl.h"/>
+   <depend name="include/cocktail/core/font/FontMetricsVO.h"/>
+   <depend name="include/cocktail/port/platform/nme/FontManagerImpl.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/text/TextField.h"/>
+   <depend name="include/native/text/TextFieldAutoSize.h"/>
+   <depend name="include/native/text/TextFormat.h"/>
+  </file>
+  <file name="src/cocktail/port/platform/flash_player/TouchListener.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/TouchEvent.h"/>
+   <depend name="include/cocktail/core/event/TouchList.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/port/base/PlatformBase.h"/>
+   <depend name="include/cocktail/port/base/TouchListenerBase.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Platform.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/TouchListener.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/events/MouseEvent.h"/>
+   <depend name="include/native/events/TouchEvent.h"/>
+   <depend name="include/native/ui/Multitouch.h"/>
+   <depend name="include/native/ui/MultitouchInputMode.h"/>
+  </file>
+  <file name="src/cocktail/port/platform/flash_player/TimerImpl.cpp">
+   <depend name="include/cocktail/core/timer/AbstractTimerImpl.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/TimerImpl.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/MovieClip.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/display/Stage.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/nme/Lib.h"/>
+  </file>
+  <file name="src/cocktail/port/platform/flash_player/Platform.cpp">
+   <depend name="include/Reflect.h"/>
+   <depend name="include/cocktail/core/config/Config.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/stacking/StackingContext.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/port/base/PlatformBase.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Platform.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/Graphics.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/MovieClip.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/display/Stage.h"/>
+   <depend name="include/native/display/StageDisplayState.h"/>
+   <depend name="include/native/display/StageQuality.h"/>
+   <depend name="include/native/display/StageScaleMode.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/net/URLRequest.h"/>
+   <depend name="include/nme/Lib.h"/>
+  </file>
+  <file name="src/cocktail/port/platform/flash_player/NativeTextInput.cpp">
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/port/base/NativeTextInputBase.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/NativeTextInput.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/Graphics.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/MovieClip.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/display/Stage.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/text/TextField.h"/>
+   <depend name="include/native/text/TextFieldType.h"/>
+   <depend name="include/native/text/TextFormat.h"/>
+   <depend name="include/nme/Lib.h"/>
+  </file>
+  <file name="src/cocktail/port/platform/flash_player/NativeAudio.cpp">
+   <depend name="include/cocktail/port/base/NativeMedia.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/NativeAudio.h"/>
+   <depend name="include/native/events/ErrorEvent.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/events/IOErrorEvent.h"/>
+   <depend name="include/native/events/TextEvent.h"/>
+   <depend name="include/native/media/Sound.h"/>
+   <depend name="include/native/media/SoundChannel.h"/>
+   <depend name="include/native/media/SoundLoaderContext.h"/>
+   <depend name="include/native/media/SoundTransform.h"/>
+   <depend name="include/native/net/URLRequest.h"/>
+  </file>
+  <file name="src/cocktail/port/platform/flash_player/Mouse.cpp">
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/MouseEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/event/WheelEvent.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/port/base/MouseListenerBase.h"/>
+   <depend name="include/cocktail/port/base/PlatformBase.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Mouse.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Platform.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/MovieClip.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/display/Stage.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/events/MouseEvent.h"/>
+   <depend name="include/native/geom/Point.h"/>
+   <depend name="include/nme/Lib.h"/>
+  </file>
+  <file name="src/cocktail/port/platform/flash_player/Keyboard.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/KeyboardEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/port/base/KeyboardListenerBase.h"/>
+   <depend name="include/cocktail/port/base/PlatformBase.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Keyboard.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Platform.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/MovieClip.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/display/Stage.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/events/KeyboardEvent.h"/>
+   <depend name="include/nme/Lib.h"/>
+  </file>
+  <file name="src/cocktail/port/platform/flash_player/ImageResource.cpp">
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/resource/AbstractResource.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/ImageResource.h"/>
+   <depend name="include/haxe/Timer.h"/>
+   <depend name="include/native/display/Bitmap.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/Loader.h"/>
+   <depend name="include/native/display/LoaderInfo.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/events/ErrorEvent.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/events/IOErrorEvent.h"/>
+   <depend name="include/native/events/TextEvent.h"/>
+   <depend name="include/native/net/URLLoader.h"/>
+   <depend name="include/native/net/URLRequest.h"/>
+  </file>
+  <file name="src/cocktail/port/platform/flash_player/GraphicsContextImpl.cpp">
+   <depend name="include/cocktail/core/config/Config.h"/>
+   <depend name="include/cocktail/core/css/ColorVO.h"/>
+   <depend name="include/cocktail/core/geom/Matrix.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/AbstractGraphicsContextImpl.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/GraphicsContextImpl.h"/>
+   <depend name="include/native/display/Bitmap.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/BlendMode.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/PixelSnapping.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/geom/ColorTransform.h"/>
+   <depend name="include/native/geom/Matrix.h"/>
+   <depend name="include/native/geom/Point.h"/>
+   <depend name="include/native/geom/Rectangle.h"/>
+  </file>
+  <file name="src/cocktail/port/base/TouchListenerBase.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/TouchEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/port/base/PlatformBase.h"/>
+   <depend name="include/cocktail/port/base/TouchListenerBase.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Platform.h"/>
+  </file>
+  <file name="src/cocktail/port/base/PlatformBase.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/stacking/StackingContext.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/port/base/KeyboardListenerBase.h"/>
+   <depend name="include/cocktail/port/base/MouseListenerBase.h"/>
+   <depend name="include/cocktail/port/base/PlatformBase.h"/>
+   <depend name="include/cocktail/port/base/TouchListenerBase.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Keyboard.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Mouse.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Platform.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/TouchListener.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+  </file>
+  <file name="src/cocktail/port/base/NativeTextInputBase.cpp">
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/port/base/NativeTextInputBase.h"/>
+  </file>
+  <file name="src/cocktail/port/base/NativeTextBase.cpp">
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/port/base/NativeTextBase.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+  </file>
+  <file name="src/cocktail/port/base/NativeMedia.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/geom/Matrix.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/port/base/NativeMedia.h"/>
+  </file>
+  <file name="src/cocktail/port/base/NativeHttpBase.cpp">
+   <depend name="include/Hash.h"/>
+   <depend name="include/cocktail/Lib.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/ProgressEvent.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/http/DataFormatValue.h"/>
+   <depend name="include/cocktail/core/timer/Timer.h"/>
+   <depend name="include/cocktail/port/base/NativeHttpBase.h"/>
+  </file>
+  <file name="src/cocktail/port/base/MouseListenerBase.cpp">
+   <depend name="include/cocktail/core/config/Config.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/MouseEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/event/WheelEvent.h"/>
+   <depend name="include/cocktail/port/base/MouseListenerBase.h"/>
+   <depend name="include/cocktail/port/base/PlatformBase.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Platform.h"/>
+  </file>
+  <file name="src/cocktail/port/base/KeyboardListenerBase.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/KeyboardEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/port/base/KeyboardListenerBase.h"/>
+   <depend name="include/cocktail/port/base/PlatformBase.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Platform.h"/>
+  </file>
+  <file name="src/cocktail/plugin/swf/SWFPlugin.cpp">
+   <depend name="include/Hash.h"/>
+   <depend name="include/Std.h"/>
+   <depend name="include/cocktail/Lib.h"/>
+   <depend name="include/cocktail/core/config/Config.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/geom/GeomUtils.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/resource/ResourceManager.h"/>
+   <depend name="include/cocktail/core/timer/Timer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/plugin/Plugin.h"/>
+   <depend name="include/cocktail/plugin/swf/SWFPlugin.h"/>
+   <depend name="include/cocktail/port/base/NativeHttpBase.h"/>
+   <depend name="include/cocktail/port/platform/nme/NativeHttp.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/Graphics.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/display/Loader.h"/>
+   <depend name="include/native/display/LoaderInfo.h"/>
+   <depend name="include/native/display/Sprite.h"/>
+   <depend name="include/native/events/Event.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+   <depend name="include/native/geom/Matrix.h"/>
+   <depend name="include/native/geom/Transform.h"/>
+   <depend name="include/native/net/URLLoader.h"/>
+   <depend name="include/native/utils/ByteArray.h"/>
+   <depend name="include/native/utils/IDataInput.h"/>
+   <depend name="include/native/utils/IMemoryRange.h"/>
+  </file>
+  <file name="src/cocktail/plugin/Plugin.cpp">
+   <depend name="include/Hash.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/plugin/Plugin.h"/>
+  </file>
+  <file name="src/cocktail/core/window/Window.cpp">
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/KeyboardEvent.h"/>
+   <depend name="include/cocktail/core/event/MouseEvent.h"/>
+   <depend name="include/cocktail/core/event/TouchEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/event/WheelEvent.h"/>
+   <depend name="include/cocktail/core/history/History.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/invalidation/InvalidationManager.h"/>
+   <depend name="include/cocktail/core/window/Window.h"/>
+   <depend name="include/cocktail/port/base/KeyboardListenerBase.h"/>
+   <depend name="include/cocktail/port/base/MouseListenerBase.h"/>
+   <depend name="include/cocktail/port/base/PlatformBase.h"/>
+   <depend name="include/cocktail/port/base/TouchListenerBase.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Keyboard.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Mouse.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Platform.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/TouchListener.h"/>
+  </file>
+  <file name="src/cocktail/core/utils/Utils.cpp">
+   <depend name="include/cocktail/core/utils/Utils.h"/>
+  </file>
+  <file name="src/cocktail/core/utils/ObjectPool.cpp">
+   <depend name="include/Type.h"/>
+   <depend name="include/cocktail/core/utils/ObjectPool.h"/>
+  </file>
+  <file name="src/cocktail/core/timer/TimerCallbackVO.cpp">
+   <depend name="include/cocktail/core/timer/TimerCallbackVO.h"/>
+  </file>
+  <file name="src/cocktail/core/timer/Timer.cpp">
+   <depend name="include/Date.h"/>
+   <depend name="include/cocktail/core/timer/AbstractTimerImpl.h"/>
+   <depend name="include/cocktail/core/timer/Timer.h"/>
+   <depend name="include/cocktail/core/timer/TimerCallbackVO.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/TimerImpl.h"/>
+  </file>
+  <file name="src/cocktail/core/timer/AbstractTimerImpl.cpp">
+   <depend name="include/cocktail/core/timer/AbstractTimerImpl.h"/>
+  </file>
+  <file name="src/cocktail/core/stacking/StackingContext.cpp">
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/stacking/StackingContext.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/resource/ResourceManager.cpp">
+   <depend name="include/Hash.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/http/DataFormatValue.h"/>
+   <depend name="include/cocktail/core/resource/AbstractResource.h"/>
+   <depend name="include/cocktail/core/resource/ResourceManager.h"/>
+   <depend name="include/cocktail/port/base/NativeHttpBase.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/ImageResource.h"/>
+   <depend name="include/cocktail/port/platform/nme/ImageResource.h"/>
+   <depend name="include/cocktail/port/platform/nme/NativeHttp.h"/>
+  </file>
+  <file name="src/cocktail/core/resource/AbstractResource.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/resource/AbstractResource.h"/>
+  </file>
+  <file name="src/cocktail/core/renderer/VideoRenderer.cpp">
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/geom/GeomUtils.h"/>
+   <depend name="include/cocktail/core/geom/Matrix.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLMediaElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLVideoElement.h"/>
+   <depend name="include/cocktail/core/layer/CompositingLayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/layer/VideoLayerRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/EmbeddedBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ImageRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/VideoRenderer.h"/>
+   <depend name="include/cocktail/core/resource/AbstractResource.h"/>
+   <depend name="include/cocktail/core/resource/ResourceManager.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/port/base/NativeMedia.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+  </file>
+  <file name="src/cocktail/core/renderer/TextRenderer.cpp">
+   <depend name="include/EReg.h"/>
+   <depend name="include/cocktail/core/animation/Transition.h"/>
+   <depend name="include/cocktail/core/animation/TransitionManager.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSValueConverter.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/dom/CharacterData.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/dom/Text.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/font/FontManager.h"/>
+   <depend name="include/cocktail/core/font/FontMetricsVO.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/graphics/TextDrawer.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/linebox/InlineBox.h"/>
+   <depend name="include/cocktail/core/linebox/SpaceInlineBox.h"/>
+   <depend name="include/cocktail/core/linebox/TextInlineBox.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/TextRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/TextToken.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/renderer/TextInputRenderer.cpp">
+   <depend name="include/cocktail/core/animation/Transition.h"/>
+   <depend name="include/cocktail/core/animation/TransitionManager.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSValueConverter.h"/>
+   <depend name="include/cocktail/core/css/ColorVO.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/font/FontMetricsVO.h"/>
+   <depend name="include/cocktail/core/geom/Matrix.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/layer/CompositingLayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/layer/TextInputLayerRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/EmbeddedBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/TextInputRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/port/base/NativeTextInputBase.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/NativeTextInput.h"/>
+  </file>
+  <file name="src/cocktail/core/renderer/TextToken.cpp">
+   <depend name="include/cocktail/core/renderer/TextToken.h"/>
+  </file>
+  <file name="src/cocktail/core/renderer/ObjectRenderer.cpp">
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLObjectElement.h"/>
+   <depend name="include/cocktail/core/layer/CompositingLayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/PluginLayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/EmbeddedBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ObjectRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/plugin/Plugin.h"/>
+  </file>
+  <file name="src/cocktail/core/renderer/InlineBoxRenderer.cpp">
+   <depend name="include/cocktail/core/background/BackgroundManager.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/BorderDrawer.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/linebox/InlineBox.h"/>
+   <depend name="include/cocktail/core/linebox/LineBox.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InlineBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/renderer/InitialBlockRenderer.cpp">
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/layer/InitialLayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/layout/ContainingBlockVO.h"/>
+   <depend name="include/cocktail/core/layout/LayoutStateValue.h"/>
+   <depend name="include/cocktail/core/renderer/BlockBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InitialBlockRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/renderer/ImageRenderer.cpp">
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/geom/Matrix.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/AbstractGraphicsContextImpl.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/EmbeddedBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ImageRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/resource/AbstractResource.h"/>
+   <depend name="include/cocktail/core/resource/ResourceManager.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/GraphicsContextImpl.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+  </file>
+  <file name="src/cocktail/core/renderer/EmbeddedBoxRenderer.cpp">
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/EmbeddedBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/renderer/BodyBoxRenderer.cpp">
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/layout/ContainingBlockVO.h"/>
+   <depend name="include/cocktail/core/renderer/BlockBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BodyBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/renderer/AnonymousBlockBoxRenderer.cpp">
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/renderer/AnonymousBlockBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BlockBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+  </file>
+  <file name="src/cocktail/core/renderer/BlockBoxRenderer.cpp">
+   <depend name="include/cocktail/Lib.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleDeclaration.h"/>
+   <depend name="include/cocktail/core/css/CascadeManager.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/InitialStyleDeclaration.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/layout/FloatVO.h"/>
+   <depend name="include/cocktail/core/layout/FloatsVO.h"/>
+   <depend name="include/cocktail/core/layout/InlineFormattingVO.h"/>
+   <depend name="include/cocktail/core/layout/LayoutStateValue.h"/>
+   <depend name="include/cocktail/core/layout/floats/FloatsManager.h"/>
+   <depend name="include/cocktail/core/linebox/InlineBox.h"/>
+   <depend name="include/cocktail/core/linebox/LineBox.h"/>
+   <depend name="include/cocktail/core/renderer/AnonymousBlockBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BlockBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/renderer/FlowBoxRenderer.cpp">
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/layout/ContainingBlockVO.h"/>
+   <depend name="include/cocktail/core/layout/LayoutStateValue.h"/>
+   <depend name="include/cocktail/core/linebox/InlineBox.h"/>
+   <depend name="include/cocktail/core/linebox/LineBox.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/renderer/BoxRenderer.cpp">
+   <depend name="include/cocktail/Lib.h"/>
+   <depend name="include/cocktail/core/animation/Transition.h"/>
+   <depend name="include/cocktail/core/animation/TransitionManager.h"/>
+   <depend name="include/cocktail/core/background/BackgroundManager.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/BorderDrawer.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/layout/ContainingBlockVO.h"/>
+   <depend name="include/cocktail/core/layout/LayoutManager.h"/>
+   <depend name="include/cocktail/core/layout/LayoutStateValue.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/BoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/linebox/EmbeddedInlineBox.h"/>
+   <depend name="include/cocktail/core/linebox/InlineBox.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/core/window/Window.h"/>
+  </file>
+  <file name="src/cocktail/core/renderer/InvalidatingElementRenderer.cpp">
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/invalidation/InvalidationManager.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+  </file>
+  <file name="src/cocktail/core/renderer/ElementRenderer.cpp">
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/font/FontMetricsVO.h"/>
+   <depend name="include/cocktail/core/geom/Matrix.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/invalidation/InvalidationManager.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/layout/LayoutStateValue.h"/>
+   <depend name="include/cocktail/core/linebox/InlineBox.h"/>
+   <depend name="include/cocktail/core/renderer/BlockBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InitialBlockRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/parser/DOMParser.cpp">
+   <depend name="include/Xml.h"/>
+   <depend name="include/XmlType.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleDeclaration.h"/>
+   <depend name="include/cocktail/core/dom/Attr.h"/>
+   <depend name="include/cocktail/core/dom/CharacterData.h"/>
+   <depend name="include/cocktail/core/dom/Comment.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/NamedNodeMap.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/dom/Text.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/parser/DOMParser.h"/>
+   <depend name="include/haxe/xml/Parser.h"/>
+  </file>
+  <file name="src/cocktail/core/multitouch/MultiTouchManager.cpp">
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/TouchEvent.h"/>
+   <depend name="include/cocktail/core/event/TouchList.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/multitouch/MultiTouchManager.h"/>
+  </file>
+  <file name="src/cocktail/core/linebox/TextInlineBox.cpp">
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/font/FontManager.h"/>
+   <depend name="include/cocktail/core/font/FontMetricsVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/linebox/InlineBox.h"/>
+   <depend name="include/cocktail/core/linebox/TextInlineBox.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/port/base/NativeTextBase.h"/>
+   <depend name="include/cocktail/port/platform/nme/NativeText.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+  </file>
+  <file name="src/cocktail/core/linebox/SpaceInlineBox.cpp">
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/linebox/InlineBox.h"/>
+   <depend name="include/cocktail/core/linebox/SpaceInlineBox.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/linebox/LineBox.cpp">
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/font/FontMetricsVO.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/layout/LayoutStateValue.h"/>
+   <depend name="include/cocktail/core/linebox/InlineBox.h"/>
+   <depend name="include/cocktail/core/linebox/LineBox.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/core/utils/Utils.h"/>
+  </file>
+  <file name="src/cocktail/core/linebox/EmbeddedInlineBox.cpp">
+   <depend name="include/cocktail/core/linebox/EmbeddedInlineBox.h"/>
+   <depend name="include/cocktail/core/linebox/InlineBox.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+  </file>
+  <file name="src/cocktail/core/linebox/InlineBox.cpp">
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/linebox/InlineBox.h"/>
+   <depend name="include/cocktail/core/linebox/LineBox.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/floats/FloatsManager.cpp">
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/layout/FloatVO.h"/>
+   <depend name="include/cocktail/core/layout/FloatsVO.h"/>
+   <depend name="include/cocktail/core/layout/floats/FloatsManager.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/core/utils/Utils.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/computer/boxComputers/PositionedBoxStylesComputer.cpp">
+   <depend name="include/cocktail/core/animation/Transition.h"/>
+   <depend name="include/cocktail/core/animation/TransitionManager.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/layout/ContainingBlockVO.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/BoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/PositionedBoxStylesComputer.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/computer/boxComputers/InLineBoxStylesComputer.cpp">
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/layout/ContainingBlockVO.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/BoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/InLineBoxStylesComputer.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/computer/boxComputers/FloatBoxStylesComputer.cpp">
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/layout/ContainingBlockVO.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/BoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/FloatBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/InlineBlockBoxStylesComputer.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/computer/boxComputers/InlineBlockBoxStylesComputer.cpp">
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/BoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/InlineBlockBoxStylesComputer.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/computer/boxComputers/EmbeddedPositionedBoxStylesComputer.cpp">
+   <depend name="include/cocktail/core/animation/Transition.h"/>
+   <depend name="include/cocktail/core/animation/TransitionManager.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/layout/ContainingBlockVO.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/BoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/EmbeddedBlockBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/EmbeddedPositionedBoxStylesComputer.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/computer/boxComputers/EmbeddedInlineBlockBoxStylesComputer.cpp">
+   <depend name="include/cocktail/core/layout/computer/boxComputers/BoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/EmbeddedBlockBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/EmbeddedInlineBlockBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/EmbeddedInlineBoxStylesComputer.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/computer/boxComputers/EmbeddedFloatBoxStylesComputer.cpp">
+   <depend name="include/cocktail/core/layout/computer/boxComputers/BoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/EmbeddedBlockBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/EmbeddedFloatBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/EmbeddedInlineBoxStylesComputer.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/computer/boxComputers/EmbeddedInlineBoxStylesComputer.cpp">
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/BoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/EmbeddedBlockBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/EmbeddedInlineBoxStylesComputer.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/computer/boxComputers/EmbeddedBlockBoxStylesComputer.cpp">
+   <depend name="include/cocktail/core/animation/Transition.h"/>
+   <depend name="include/cocktail/core/animation/TransitionManager.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/dom/Attr.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/layout/ContainingBlockVO.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/BoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/EmbeddedBlockBoxStylesComputer.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/computer/boxComputers/BlockBoxStylesComputer.cpp">
+   <depend name="include/cocktail/core/layout/computer/boxComputers/BlockBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/BoxStylesComputer.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/computer/boxComputers/BoxStylesComputer.cpp">
+   <depend name="include/cocktail/core/animation/Transition.h"/>
+   <depend name="include/cocktail/core/animation/TransitionManager.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/layout/ContainingBlockVO.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/BoxStylesComputer.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/computer/VisualEffectStylesComputer.cpp">
+   <depend name="include/cocktail/core/css/CSSAngleValue.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSTransformFunctionValue.h"/>
+   <depend name="include/cocktail/core/css/CSSTranslationValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/geom/Matrix.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/layout/computer/VisualEffectStylesComputer.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/computer/BackgroundStylesComputer.cpp">
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/geom/DimensionVO.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/layout/computer/BackgroundStylesComputer.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/LayoutManager.cpp">
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/layout/LayoutManager.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/BlockBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/BoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/EmbeddedBlockBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/EmbeddedFloatBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/EmbeddedInlineBlockBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/EmbeddedInlineBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/EmbeddedPositionedBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/FloatBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/InLineBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/InlineBlockBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/computer/boxComputers/PositionedBoxStylesComputer.h"/>
+   <depend name="include/cocktail/core/layout/floats/FloatsManager.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/FloatVO.cpp">
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/layout/FloatVO.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/FloatsVO.cpp">
+   <depend name="include/cocktail/core/layout/FloatVO.h"/>
+   <depend name="include/cocktail/core/layout/FloatsVO.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/InlineFormattingVO.cpp">
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/layout/InlineFormattingVO.h"/>
+   <depend name="include/cocktail/core/linebox/InlineBox.h"/>
+   <depend name="include/cocktail/core/linebox/LineBox.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/LayoutStateValue.cpp">
+   <depend name="include/cocktail/core/layout/LayoutStateValue.h"/>
+  </file>
+  <file name="src/cocktail/core/layout/ContainingBlockVO.cpp">
+   <depend name="include/cocktail/core/layout/ContainingBlockVO.h"/>
+  </file>
+  <file name="src/cocktail/core/layer/VideoLayerRenderer.cpp">
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLMediaElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLVideoElement.h"/>
+   <depend name="include/cocktail/core/layer/CompositingLayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/layer/VideoLayerRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/port/base/NativeMedia.h"/>
+  </file>
+  <file name="src/cocktail/core/layer/TextInputLayerRenderer.cpp">
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLInputElement.h"/>
+   <depend name="include/cocktail/core/layer/CompositingLayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/layer/TextInputLayerRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/EmbeddedBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/TextInputRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/port/base/NativeTextInputBase.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/NativeTextInput.h"/>
+  </file>
+  <file name="src/cocktail/core/layer/PluginLayerRenderer.cpp">
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLObjectElement.h"/>
+   <depend name="include/cocktail/core/layer/CompositingLayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/PluginLayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/plugin/Plugin.h"/>
+  </file>
+  <file name="src/cocktail/core/layer/InitialLayerRenderer.cpp">
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/graphics/InitialGraphicsContext.h"/>
+   <depend name="include/cocktail/core/layer/InitialLayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/stacking/StackingContext.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+  </file>
+  <file name="src/cocktail/core/layer/CompositingLayerRenderer.cpp">
+   <depend name="include/cocktail/core/config/Config.h"/>
+   <depend name="include/cocktail/core/layer/CompositingLayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+  </file>
+  <file name="src/cocktail/core/layer/LayerRenderer.cpp">
+   <depend name="include/cocktail/core/animation/Transition.h"/>
+   <depend name="include/cocktail/core/animation/TransitionManager.h"/>
+   <depend name="include/cocktail/core/config/Config.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/geom/Matrix.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/AbstractGraphicsContextImpl.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/invalidation/InvalidationManager.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/layout/computer/VisualEffectStylesComputer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/stacking/StackingContext.h"/>
+   <depend name="include/cocktail/core/timer/Timer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/GraphicsContextImpl.h"/>
+  </file>
+  <file name="src/cocktail/core/layer/ScrollableView.cpp">
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/invalidation/InvalidationManager.cpp">
+   <depend name="include/cocktail/core/config/Config.h"/>
+   <depend name="include/cocktail/core/css/CascadeManager.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/geom/Matrix.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/invalidation/InvalidationManager.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/layout/LayoutStateValue.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/stacking/StackingContext.h"/>
+   <depend name="include/cocktail/core/timer/Timer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/core/window/Window.h"/>
+   <depend name="include/cocktail/port/base/PlatformBase.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Platform.h"/>
+  </file>
+  <file name="src/cocktail/core/http/XMLHttpRequestUpload.cpp">
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/XMLHttpRequestEventTarget.h"/>
+   <depend name="include/cocktail/core/http/XMLHttpRequestUpload.h"/>
+  </file>
+  <file name="src/cocktail/core/http/XMLHTTPRequest.cpp">
+   <depend name="include/Hash.h"/>
+   <depend name="include/cocktail/Lib.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/ProgressEvent.h"/>
+   <depend name="include/cocktail/core/event/XMLHttpRequestEventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/http/DataFormatValue.h"/>
+   <depend name="include/cocktail/core/http/XMLHTTPRequest.h"/>
+   <depend name="include/cocktail/core/http/XMLHttpRequestUpload.h"/>
+   <depend name="include/cocktail/core/timer/Timer.h"/>
+   <depend name="include/cocktail/port/base/NativeHttpBase.h"/>
+   <depend name="include/cocktail/port/platform/nme/NativeHttp.h"/>
+  </file>
+  <file name="src/cocktail/core/http/DataFormatValue.cpp">
+   <depend name="include/cocktail/core/http/DataFormatValue.h"/>
+  </file>
+  <file name="src/cocktail/core/http/HTTPConstants.cpp">
+   <depend name="include/cocktail/core/http/HTTPConstants.h"/>
+  </file>
+  <file name="src/cocktail/core/html/TimeRanges.cpp">
+   <depend name="include/cocktail/core/html/TimeRanges.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLVideoElement.cpp">
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLImageElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLMediaElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLVideoElement.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/EmbeddedBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ImageRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/VideoRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/port/base/NativeMedia.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLStyleElement.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/cocktail/core/css/CSSRule.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleSheet.h"/>
+   <depend name="include/cocktail/core/css/PropertyOriginValue.h"/>
+   <depend name="include/cocktail/core/css/StyleSheet.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLStyleElement.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLSourceElement.cpp">
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLSourceElement.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLParamElement.cpp">
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLParamElement.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLObjectElement.cpp">
+   <depend name="include/Hash.h"/>
+   <depend name="include/cocktail/core/dom/Attr.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/NamedNodeMap.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLObjectElement.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/EmbeddedBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ObjectRenderer.h"/>
+   <depend name="include/cocktail/core/resource/ResourceManager.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/plugin/Plugin.h"/>
+   <depend name="include/cocktail/plugin/swf/SWFPlugin.h"/>
+   <depend name="include/cocktail/port/base/NativeHttpBase.h"/>
+   <depend name="include/cocktail/port/platform/nme/NativeHttp.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLMetaElement.cpp">
+   <depend name="include/cocktail/core/config/Config.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLMetaElement.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLLinkElement.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/cocktail/core/css/CSSRule.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleSheet.h"/>
+   <depend name="include/cocktail/core/css/PropertyOriginValue.h"/>
+   <depend name="include/cocktail/core/css/StyleSheet.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/XMLHttpRequestEventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLLinkElement.h"/>
+   <depend name="include/cocktail/core/http/XMLHTTPRequest.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLInputElement.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLInputElement.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/EmbeddedBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/TextInputRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLImageElement.cpp">
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLImageElement.h"/>
+   <depend name="include/cocktail/core/invalidation/InvalidationManager.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/EmbeddedBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ImageRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/resource/AbstractResource.h"/>
+   <depend name="include/cocktail/core/resource/ResourceManager.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLHtmlElement.cpp">
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLBodyElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLHtmlElement.h"/>
+   <depend name="include/cocktail/core/renderer/BlockBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InitialBlockRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLDocument.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/cocktail/core/config/Config.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleDeclaration.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleSheet.h"/>
+   <depend name="include/cocktail/core/css/CascadeManager.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/DefaultCSSStyleSheet.h"/>
+   <depend name="include/cocktail/core/css/MatchedPseudoClassesVO.h"/>
+   <depend name="include/cocktail/core/css/StyleManager.h"/>
+   <depend name="include/cocktail/core/css/StyleSheet.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/KeyboardEvent.h"/>
+   <depend name="include/cocktail/core/event/MouseEvent.h"/>
+   <depend name="include/cocktail/core/event/TouchEvent.h"/>
+   <depend name="include/cocktail/core/event/TouchList.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/event/WheelEvent.h"/>
+   <depend name="include/cocktail/core/focus/FocusManager.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/hittest/HitTestManager.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLAnchorElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLAudioElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLBRElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLBodyElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLHtmlElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLImageElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLInputElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLLinkElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLMediaElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLMetaElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLObjectElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLParamElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLSourceElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLStyleElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLVideoElement.h"/>
+   <depend name="include/cocktail/core/invalidation/InvalidationManager.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/layout/LayoutManager.h"/>
+   <depend name="include/cocktail/core/multitouch/MultiTouchManager.h"/>
+   <depend name="include/cocktail/core/parser/DOMParser.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/stacking/StackingContext.h"/>
+   <depend name="include/cocktail/core/timer/Timer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/window/Window.h"/>
+   <depend name="include/cocktail/port/base/PlatformBase.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Platform.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLConstants.cpp">
+   <depend name="include/cocktail/core/html/HTMLConstants.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLBodyElement.cpp">
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleDeclaration.h"/>
+   <depend name="include/cocktail/core/css/CascadeManager.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLBodyElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/renderer/BlockBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BodyBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLBRElement.cpp">
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLBRElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLAudioElement.cpp">
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLAudioElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLMediaElement.h"/>
+   <depend name="include/cocktail/port/base/NativeMedia.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/NativeAudio.h"/>
+   <depend name="include/cocktail/port/platform/nme/NativeAudio.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLMediaElement.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLMediaElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLSourceElement.h"/>
+   <depend name="include/cocktail/core/html/TimeRanges.h"/>
+   <depend name="include/cocktail/core/timer/Timer.h"/>
+   <depend name="include/cocktail/port/base/NativeMedia.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLAnchorElement.cpp">
+   <depend name="include/cocktail/Lib.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/MouseEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/html/HTMLAnchorElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/window/Window.h"/>
+  </file>
+  <file name="src/cocktail/core/html/EmbeddedElement.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+  </file>
+  <file name="src/cocktail/core/hittest/HitTestManager.cpp">
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/hittest/HitTestManager.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/stacking/StackingContext.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/core/utils/Utils.h"/>
+  </file>
+  <file name="src/cocktail/core/history/History.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/StringTools.h"/>
+   <depend name="include/cocktail/Lib.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/PopStateEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/history/History.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/window/Window.h"/>
+   <depend name="include/haxe/Serializer.h"/>
+   <depend name="include/haxe/Unserializer.h"/>
+  </file>
+  <file name="src/cocktail/core/graphics/TextDrawer.cpp">
+   <depend name="include/cocktail/core/css/ColorVO.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/font/FontMetricsVO.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/AbstractGraphicsContextImpl.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/graphics/TextDrawer.h"/>
+   <depend name="include/cocktail/core/linebox/InlineBox.h"/>
+   <depend name="include/cocktail/core/linebox/LineBox.h"/>
+   <depend name="include/cocktail/core/linebox/TextInlineBox.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/GraphicsContextImpl.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+  </file>
+  <file name="src/cocktail/core/graphics/InitialGraphicsContext.cpp">
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/graphics/AbstractGraphicsContextImpl.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/graphics/InitialGraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/window/Window.h"/>
+   <depend name="include/cocktail/port/base/PlatformBase.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/GraphicsContextImpl.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/Platform.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+  </file>
+  <file name="src/cocktail/core/graphics/GraphicsContext.cpp">
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/graphics/AbstractGraphicsContextImpl.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/invalidation/InvalidationManager.h"/>
+   <depend name="include/cocktail/core/layer/LayerRenderer.h"/>
+   <depend name="include/cocktail/core/layer/ScrollableView.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/GraphicsContextImpl.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+  </file>
+  <file name="src/cocktail/core/utils/FastNode.cpp">
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+  </file>
+  <file name="src/cocktail/core/graphics/BorderDrawer.cpp">
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/ColorVO.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/AbstractGraphicsContextImpl.h"/>
+   <depend name="include/cocktail/core/graphics/BorderDrawer.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/GraphicsContextImpl.h"/>
+  </file>
+  <file name="src/cocktail/core/graphics/AbstractGraphicsContextImpl.cpp">
+   <depend name="include/cocktail/core/css/ColorVO.h"/>
+   <depend name="include/cocktail/core/geom/Matrix.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/AbstractGraphicsContextImpl.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/DisplayObject.h"/>
+   <depend name="include/native/display/DisplayObjectContainer.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/native/display/InteractiveObject.h"/>
+   <depend name="include/native/events/EventDispatcher.h"/>
+   <depend name="include/native/events/IEventDispatcher.h"/>
+  </file>
+  <file name="src/cocktail/core/geom/Matrix.cpp">
+   <depend name="include/cocktail/core/geom/Matrix.h"/>
+  </file>
+  <file name="src/cocktail/core/geom/GeomUtils.cpp">
+   <depend name="include/cocktail/core/geom/GeomUtils.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/geom/DimensionVO.cpp">
+   <depend name="include/cocktail/core/geom/DimensionVO.h"/>
+  </file>
+  <file name="src/cocktail/core/geom/CubicBezier.cpp">
+   <depend name="include/cocktail/core/geom/CubicBezier.h"/>
+  </file>
+  <file name="src/cocktail/core/font/FontManager.cpp">
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/font/AbstractFontManagerImpl.h"/>
+   <depend name="include/cocktail/core/font/FontManager.h"/>
+   <depend name="include/cocktail/core/font/FontMetricsVO.h"/>
+   <depend name="include/cocktail/port/platform/nme/FontManagerImpl.h"/>
+  </file>
+  <file name="src/cocktail/core/font/FontMetricsVO.cpp">
+   <depend name="include/cocktail/core/font/FontMetricsVO.h"/>
+  </file>
+  <file name="src/cocktail/core/font/AbstractFontManagerImpl.cpp">
+   <depend name="include/Hash.h"/>
+   <depend name="include/IntHash.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/font/AbstractFontManagerImpl.h"/>
+   <depend name="include/cocktail/core/font/FontMetricsVO.h"/>
+  </file>
+  <file name="src/cocktail/core/focus/FocusManager.cpp">
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/FocusEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/focus/FocusManager.h"/>
+   <depend name="include/cocktail/core/html/HTMLBodyElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+  </file>
+  <file name="src/cocktail/core/event/XMLHttpRequestEventTarget.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/ProgressEvent.h"/>
+   <depend name="include/cocktail/core/event/XMLHttpRequestEventTarget.h"/>
+  </file>
+  <file name="src/cocktail/core/event/WheelEvent.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/MouseEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/event/WheelEvent.h"/>
+  </file>
+  <file name="src/cocktail/core/event/TransitionEvent.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/TransitionEvent.h"/>
+  </file>
+  <file name="src/cocktail/core/event/TouchList.cpp">
+   <depend name="include/cocktail/core/event/TouchList.h"/>
+  </file>
+  <file name="src/cocktail/core/event/TouchEvent.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/TouchEvent.h"/>
+   <depend name="include/cocktail/core/event/TouchList.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+  </file>
+  <file name="src/cocktail/core/event/ProgressEvent.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/ProgressEvent.h"/>
+  </file>
+  <file name="src/cocktail/core/event/PopStateEvent.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/PopStateEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+  </file>
+  <file name="src/cocktail/core/event/MouseEvent.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/MouseEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+  </file>
+  <file name="src/cocktail/core/event/KeyboardEvent.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/KeyboardEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+  </file>
+  <file name="src/cocktail/core/event/FocusEvent.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/FocusEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+  </file>
+  <file name="src/cocktail/core/event/UIEvent.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+  </file>
+  <file name="src/cocktail/core/event/EventListener.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventListener.h"/>
+  </file>
+  <file name="src/cocktail/core/event/EventConstants.cpp">
+   <depend name="include/cocktail/core/event/EventConstants.h"/>
+  </file>
+  <file name="src/cocktail/core/event/CustomEvent.cpp">
+   <depend name="include/cocktail/core/event/CustomEvent.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+  </file>
+  <file name="src/cocktail/core/event/Event.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+  </file>
+  <file name="src/cocktail/core/dom/Text.cpp">
+   <depend name="include/cocktail/core/dom/CharacterData.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/dom/Text.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/TextRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+  </file>
+  <file name="src/cocktail/core/dom/NamedNodeMap.cpp">
+   <depend name="include/cocktail/core/dom/Attr.h"/>
+   <depend name="include/cocktail/core/dom/NamedNodeMap.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+  </file>
+  <file name="src/cocktail/core/dom/Document.cpp">
+   <depend name="include/cocktail/core/dom/Attr.h"/>
+   <depend name="include/cocktail/core/dom/CharacterData.h"/>
+   <depend name="include/cocktail/core/dom/Comment.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/NamedNodeMap.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/dom/Text.h"/>
+   <depend name="include/cocktail/core/event/CustomEvent.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/FocusEvent.h"/>
+   <depend name="include/cocktail/core/event/KeyboardEvent.h"/>
+   <depend name="include/cocktail/core/event/MouseEvent.h"/>
+   <depend name="include/cocktail/core/event/PopStateEvent.h"/>
+   <depend name="include/cocktail/core/event/TransitionEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/event/WheelEvent.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+  </file>
+  <file name="src/cocktail/core/dom/DOMException.cpp">
+   <depend name="include/cocktail/core/dom/DOMException.h"/>
+  </file>
+  <file name="src/cocktail/core/dom/DOMConstants.cpp">
+   <depend name="include/cocktail/core/dom/DOMConstants.h"/>
+  </file>
+  <file name="src/cocktail/core/dom/Comment.cpp">
+   <depend name="include/cocktail/core/dom/CharacterData.h"/>
+   <depend name="include/cocktail/core/dom/Comment.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+  </file>
+  <file name="src/cocktail/core/dom/CharacterData.cpp">
+   <depend name="include/cocktail/core/css/CascadeManager.h"/>
+   <depend name="include/cocktail/core/dom/CharacterData.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+  </file>
+  <file name="src/cocktail/core/html/HTMLElement.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/cocktail/Lib.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSRule.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleDeclaration.h"/>
+   <depend name="include/cocktail/core/css/CascadeManager.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/InitialStyleDeclaration.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/dom/Attr.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/MouseEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/font/FontMetricsVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/html/HTMLBodyElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/invalidation/InvalidationManager.h"/>
+   <depend name="include/cocktail/core/parser/DOMParser.h"/>
+   <depend name="include/cocktail/core/renderer/BlockBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/BoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/FlowBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InlineBoxRenderer.h"/>
+   <depend name="include/cocktail/core/renderer/InvalidatingElementRenderer.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/core/utils/Utils.h"/>
+   <depend name="include/cocktail/core/window/Window.h"/>
+  </file>
+  <file name="src/cocktail/core/dom/Element.cpp">
+   <depend name="include/cocktail/core/dom/Attr.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/NamedNodeMap.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+  </file>
+  <file name="src/cocktail/core/dom/Attr.cpp">
+   <depend name="include/cocktail/core/dom/Attr.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+  </file>
+  <file name="src/cocktail/core/dom/Node.cpp">
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/NamedNodeMap.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+  </file>
+  <file name="src/cocktail/core/event/EventCallback.cpp">
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/FocusEvent.h"/>
+   <depend name="include/cocktail/core/event/KeyboardEvent.h"/>
+   <depend name="include/cocktail/core/event/MouseEvent.h"/>
+   <depend name="include/cocktail/core/event/PopStateEvent.h"/>
+   <depend name="include/cocktail/core/event/TransitionEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/event/WheelEvent.h"/>
+  </file>
+  <file name="src/cocktail/core/event/EventTarget.cpp">
+   <depend name="include/Hash.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventListener.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/utils/Utils.h"/>
+  </file>
+  <file name="src/cocktail/core/css/parsers/SelectorSerializer.cpp">
+   <depend name="include/cocktail/core/css/AttributeSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/CombinatorValue.h"/>
+   <depend name="include/cocktail/core/css/LinkPseudoClassValue.h"/>
+   <depend name="include/cocktail/core/css/PseudoClassSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/PseudoElementSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/SelectorComponentValue.h"/>
+   <depend name="include/cocktail/core/css/SelectorVO.h"/>
+   <depend name="include/cocktail/core/css/SimpleSelectorSequenceItemValue.h"/>
+   <depend name="include/cocktail/core/css/SimpleSelectorSequenceStartValue.h"/>
+   <depend name="include/cocktail/core/css/SimpleSelectorSequenceVO.h"/>
+   <depend name="include/cocktail/core/css/StructuralPseudoClassSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/UIElementStatesValue.h"/>
+   <depend name="include/cocktail/core/css/UserActionPseudoClassValue.h"/>
+   <depend name="include/cocktail/core/css/parsers/SelectorSerializer.h"/>
+  </file>
+  <file name="src/cocktail/core/css/parsers/CSSStyleSerializer.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/cocktail/core/css/CSSAngleValue.h"/>
+   <depend name="include/cocktail/core/css/CSSColorKeyword.h"/>
+   <depend name="include/cocktail/core/css/CSSColorValue.h"/>
+   <depend name="include/cocktail/core/css/CSSFrequencyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSLengthValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSResolutionValue.h"/>
+   <depend name="include/cocktail/core/css/CSSTimeValue.h"/>
+   <depend name="include/cocktail/core/css/CSSTransformFunctionValue.h"/>
+   <depend name="include/cocktail/core/css/CSSTranslationValue.h"/>
+   <depend name="include/cocktail/core/css/parsers/CSSStyleSerializer.h"/>
+  </file>
+  <file name="src/cocktail/core/css/parsers/CSSStyleParser.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/cocktail/core/css/CSSAngleValue.h"/>
+   <depend name="include/cocktail/core/css/CSSColorKeyword.h"/>
+   <depend name="include/cocktail/core/css/CSSColorValue.h"/>
+   <depend name="include/cocktail/core/css/CSSConstants.h"/>
+   <depend name="include/cocktail/core/css/CSSFrequencyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSLengthValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSResolutionValue.h"/>
+   <depend name="include/cocktail/core/css/CSSTimeValue.h"/>
+   <depend name="include/cocktail/core/css/TypedPropertyVO.h"/>
+   <depend name="include/cocktail/core/css/parsers/CSSStyleParser.h"/>
+   <depend name="include/cocktail/core/css/parsers/StyleDeclarationParserState.h"/>
+   <depend name="include/cocktail/core/css/parsers/StyleValueParserState.h"/>
+   <depend name="include/cocktail/core/utils/Utils.h"/>
+  </file>
+  <file name="src/cocktail/core/css/parsers/CSSSelectorParser.cpp">
+   <depend name="include/cocktail/core/css/AttributeSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/CombinatorValue.h"/>
+   <depend name="include/cocktail/core/css/LinkPseudoClassValue.h"/>
+   <depend name="include/cocktail/core/css/PseudoClassSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/PseudoElementSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/SelectorComponentValue.h"/>
+   <depend name="include/cocktail/core/css/SelectorVO.h"/>
+   <depend name="include/cocktail/core/css/SimpleSelectorSequenceItemValue.h"/>
+   <depend name="include/cocktail/core/css/SimpleSelectorSequenceStartValue.h"/>
+   <depend name="include/cocktail/core/css/SimpleSelectorSequenceVO.h"/>
+   <depend name="include/cocktail/core/css/StructuralPseudoClassSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/UIElementStatesValue.h"/>
+   <depend name="include/cocktail/core/css/UserActionPseudoClassValue.h"/>
+   <depend name="include/cocktail/core/css/parsers/AttributeSelectorParserState.h"/>
+   <depend name="include/cocktail/core/css/parsers/CSSSelectorParser.h"/>
+   <depend name="include/cocktail/core/css/parsers/SelectorParserState.h"/>
+  </file>
+  <file name="src/cocktail/core/css/parsers/CSSRulesParser.cpp">
+   <depend name="include/cocktail/core/css/CSSMediaRule.h"/>
+   <depend name="include/cocktail/core/css/CSSRule.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleRule.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleSheet.h"/>
+   <depend name="include/cocktail/core/css/StyleSheet.h"/>
+   <depend name="include/cocktail/core/css/parsers/CSSRulesParser.h"/>
+   <depend name="include/cocktail/core/css/parsers/StyleSheetRuleParserState.h"/>
+   <depend name="include/cocktail/core/css/parsers/StyleSheetRulesParserState.h"/>
+  </file>
+  <file name="src/cocktail/core/css/parsers/StyleSheetRuleParserState.cpp">
+   <depend name="include/cocktail/core/css/parsers/StyleSheetRuleParserState.h"/>
+  </file>
+  <file name="src/cocktail/core/css/parsers/StyleSheetRulesParserState.cpp">
+   <depend name="include/cocktail/core/css/parsers/StyleSheetRulesParserState.h"/>
+  </file>
+  <file name="src/cocktail/core/css/parsers/StyleRuleParserState.cpp">
+   <depend name="include/cocktail/core/css/parsers/StyleRuleParserState.h"/>
+  </file>
+  <file name="src/cocktail/core/css/parsers/AttributeSelectorParserState.cpp">
+   <depend name="include/cocktail/core/css/parsers/AttributeSelectorParserState.h"/>
+  </file>
+  <file name="src/cocktail/core/css/parsers/StyleValueParserState.cpp">
+   <depend name="include/cocktail/core/css/parsers/StyleValueParserState.h"/>
+  </file>
+  <file name="src/cocktail/core/css/parsers/StyleDeclarationParserState.cpp">
+   <depend name="include/cocktail/core/css/parsers/StyleDeclarationParserState.h"/>
+  </file>
+  <file name="src/cocktail/core/css/parsers/SelectorParserState.cpp">
+   <depend name="include/cocktail/core/css/parsers/SelectorParserState.h"/>
+  </file>
+  <file name="src/cocktail/core/css/StyleManager.cpp">
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSRule.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleDeclaration.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleRule.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleSheet.h"/>
+   <depend name="include/cocktail/core/css/MatchedPseudoClassesVO.h"/>
+   <depend name="include/cocktail/core/css/PropertyOriginValue.h"/>
+   <depend name="include/cocktail/core/css/PropertyVO.h"/>
+   <depend name="include/cocktail/core/css/SelectorManager.h"/>
+   <depend name="include/cocktail/core/css/SelectorVO.h"/>
+   <depend name="include/cocktail/core/css/StyleDeclarationVO.h"/>
+   <depend name="include/cocktail/core/css/StyleManager.h"/>
+   <depend name="include/cocktail/core/css/StyleSheet.h"/>
+   <depend name="include/cocktail/core/css/TypedPropertyVO.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/core/utils/ObjectPool.h"/>
+   <depend name="include/cocktail/core/utils/Utils.h"/>
+  </file>
+  <file name="src/cocktail/core/css/SelectorManager.cpp">
+   <depend name="include/cocktail/core/css/AttributeSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/CombinatorValue.h"/>
+   <depend name="include/cocktail/core/css/LinkPseudoClassValue.h"/>
+   <depend name="include/cocktail/core/css/MatchedPseudoClassesVO.h"/>
+   <depend name="include/cocktail/core/css/PseudoClassSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/PseudoElementSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/SelectorComponentValue.h"/>
+   <depend name="include/cocktail/core/css/SelectorManager.h"/>
+   <depend name="include/cocktail/core/css/SelectorSpecificityVO.h"/>
+   <depend name="include/cocktail/core/css/SelectorVO.h"/>
+   <depend name="include/cocktail/core/css/SimpleSelectorSequenceItemValue.h"/>
+   <depend name="include/cocktail/core/css/SimpleSelectorSequenceStartValue.h"/>
+   <depend name="include/cocktail/core/css/SimpleSelectorSequenceVO.h"/>
+   <depend name="include/cocktail/core/css/StructuralPseudoClassArgumentValue.h"/>
+   <depend name="include/cocktail/core/css/StructuralPseudoClassSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/UIElementStatesValue.h"/>
+   <depend name="include/cocktail/core/css/UserActionPseudoClassValue.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+  </file>
+  <file name="src/cocktail/core/css/MediaList.cpp">
+   <depend name="include/cocktail/core/css/MediaList.h"/>
+  </file>
+  <file name="src/cocktail/core/css/InitialStyleDeclaration.cpp">
+   <depend name="include/cocktail/core/config/Config.h"/>
+   <depend name="include/cocktail/core/css/CSSColorValue.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSRule.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleDeclaration.h"/>
+   <depend name="include/cocktail/core/css/CSSTimeValue.h"/>
+   <depend name="include/cocktail/core/css/InitialStyleDeclaration.h"/>
+  </file>
+  <file name="src/cocktail/core/css/DefaultCSSStyleSheet.cpp">
+   <depend name="include/cocktail/core/css/CSSRule.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleSheet.h"/>
+   <depend name="include/cocktail/core/css/DefaultCSSStyleSheet.h"/>
+   <depend name="include/cocktail/core/css/PropertyOriginValue.h"/>
+   <depend name="include/cocktail/core/css/StyleSheet.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CoreStyle.cpp">
+   <depend name="include/Reflect.h"/>
+   <depend name="include/cocktail/core/animation/Animator.h"/>
+   <depend name="include/cocktail/core/animation/Transition.h"/>
+   <depend name="include/cocktail/core/animation/TransitionManager.h"/>
+   <depend name="include/cocktail/core/config/Config.h"/>
+   <depend name="include/cocktail/core/css/CSSColorValue.h"/>
+   <depend name="include/cocktail/core/css/CSSConstants.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSLengthValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSRule.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleDeclaration.h"/>
+   <depend name="include/cocktail/core/css/CSSValueConverter.h"/>
+   <depend name="include/cocktail/core/css/CascadeManager.h"/>
+   <depend name="include/cocktail/core/css/ColorVO.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/InitialStyleDeclaration.h"/>
+   <depend name="include/cocktail/core/css/TypedPropertyVO.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/TransitionEvent.h"/>
+   <depend name="include/cocktail/core/font/FontManager.h"/>
+   <depend name="include/cocktail/core/font/FontMetricsVO.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/invalidation/InvalidationManager.h"/>
+   <depend name="include/cocktail/core/resource/AbstractResource.h"/>
+   <depend name="include/cocktail/core/resource/ResourceManager.h"/>
+   <depend name="include/cocktail/core/utils/Utils.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CascadeManager.cpp">
+   <depend name="include/cocktail/core/css/CascadeManager.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSValueConverter.cpp">
+   <depend name="include/cocktail/core/config/Config.h"/>
+   <depend name="include/cocktail/core/css/CSSColorKeyword.h"/>
+   <depend name="include/cocktail/core/css/CSSColorValue.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSLengthValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSValueConverter.h"/>
+   <depend name="include/cocktail/core/css/ColorVO.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSStyleSheet.cpp">
+   <depend name="include/cocktail/core/css/CSSRule.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleSheet.h"/>
+   <depend name="include/cocktail/core/css/PropertyOriginValue.h"/>
+   <depend name="include/cocktail/core/css/StyleSheet.h"/>
+   <depend name="include/cocktail/core/css/parsers/CSSRulesParser.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+  </file>
+  <file name="src/cocktail/core/css/StyleSheet.cpp">
+   <depend name="include/cocktail/core/css/MediaList.h"/>
+   <depend name="include/cocktail/core/css/StyleSheet.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSStyleRule.cpp">
+   <depend name="include/cocktail/core/css/CSSRule.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleDeclaration.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleRule.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleSheet.h"/>
+   <depend name="include/cocktail/core/css/SelectorVO.h"/>
+   <depend name="include/cocktail/core/css/StyleSheet.h"/>
+   <depend name="include/cocktail/core/css/parsers/CSSSelectorParser.h"/>
+   <depend name="include/cocktail/core/css/parsers/SelectorSerializer.h"/>
+   <depend name="include/cocktail/core/css/parsers/StyleRuleParserState.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSStyleDeclaration.cpp">
+   <depend name="include/cocktail/core/css/CSSColorValue.h"/>
+   <depend name="include/cocktail/core/css/CSSConstants.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSLengthValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSRule.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleDeclaration.h"/>
+   <depend name="include/cocktail/core/css/CSSTimeValue.h"/>
+   <depend name="include/cocktail/core/css/InitialStyleDeclaration.h"/>
+   <depend name="include/cocktail/core/css/TypedPropertyVO.h"/>
+   <depend name="include/cocktail/core/css/parsers/CSSStyleParser.h"/>
+   <depend name="include/cocktail/core/css/parsers/CSSStyleSerializer.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSMediaRule.cpp">
+   <depend name="include/cocktail/core/css/CSSMediaRule.h"/>
+   <depend name="include/cocktail/core/css/CSSRule.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleSheet.h"/>
+   <depend name="include/cocktail/core/css/MediaList.h"/>
+   <depend name="include/cocktail/core/css/StyleSheet.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSRule.cpp">
+   <depend name="include/cocktail/core/css/CSSRule.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleSheet.h"/>
+   <depend name="include/cocktail/core/css/StyleSheet.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSKeywordValue.cpp">
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSTimeValue.cpp">
+   <depend name="include/cocktail/core/css/CSSTimeValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSLengthValue.cpp">
+   <depend name="include/cocktail/core/css/CSSLengthValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSAngleValue.cpp">
+   <depend name="include/cocktail/core/css/CSSAngleValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSResolutionValue.cpp">
+   <depend name="include/cocktail/core/css/CSSResolutionValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSFrequencyValue.cpp">
+   <depend name="include/cocktail/core/css/CSSFrequencyValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSTranslationValue.cpp">
+   <depend name="include/cocktail/core/css/CSSLengthValue.h"/>
+   <depend name="include/cocktail/core/css/CSSTranslationValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSTransformFunctionValue.cpp">
+   <depend name="include/cocktail/core/css/CSSAngleValue.h"/>
+   <depend name="include/cocktail/core/css/CSSTransformFunctionValue.h"/>
+   <depend name="include/cocktail/core/css/CSSTranslationValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSColorKeyword.cpp">
+   <depend name="include/cocktail/core/css/CSSColorKeyword.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSColorValue.cpp">
+   <depend name="include/cocktail/core/css/CSSColorKeyword.h"/>
+   <depend name="include/cocktail/core/css/CSSColorValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSPropertyValue.cpp">
+   <depend name="include/cocktail/core/css/CSSAngleValue.h"/>
+   <depend name="include/cocktail/core/css/CSSColorValue.h"/>
+   <depend name="include/cocktail/core/css/CSSFrequencyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSLengthValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSResolutionValue.h"/>
+   <depend name="include/cocktail/core/css/CSSTimeValue.h"/>
+   <depend name="include/cocktail/core/css/CSSTransformFunctionValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CombinatorValue.cpp">
+   <depend name="include/cocktail/core/css/CombinatorValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/PseudoElementSelectorValue.cpp">
+   <depend name="include/cocktail/core/css/PseudoElementSelectorValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/UIElementStatesValue.cpp">
+   <depend name="include/cocktail/core/css/UIElementStatesValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/UserActionPseudoClassValue.cpp">
+   <depend name="include/cocktail/core/css/UserActionPseudoClassValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/LinkPseudoClassValue.cpp">
+   <depend name="include/cocktail/core/css/LinkPseudoClassValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/StructuralPseudoClassArgumentValue.cpp">
+   <depend name="include/cocktail/core/css/StructuralPseudoClassArgumentValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/StructuralPseudoClassSelectorValue.cpp">
+   <depend name="include/cocktail/core/css/StructuralPseudoClassArgumentValue.h"/>
+   <depend name="include/cocktail/core/css/StructuralPseudoClassSelectorValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/PseudoClassSelectorValue.cpp">
+   <depend name="include/cocktail/core/css/LinkPseudoClassValue.h"/>
+   <depend name="include/cocktail/core/css/PseudoClassSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/SimpleSelectorSequenceVO.h"/>
+   <depend name="include/cocktail/core/css/StructuralPseudoClassSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/UIElementStatesValue.h"/>
+   <depend name="include/cocktail/core/css/UserActionPseudoClassValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/AttributeSelectorValue.cpp">
+   <depend name="include/cocktail/core/css/AttributeSelectorValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/SimpleSelectorSequenceStartValue.cpp">
+   <depend name="include/cocktail/core/css/SimpleSelectorSequenceStartValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/SimpleSelectorSequenceItemValue.cpp">
+   <depend name="include/cocktail/core/css/AttributeSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/PseudoClassSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/SimpleSelectorSequenceItemValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/SelectorComponentValue.cpp">
+   <depend name="include/cocktail/core/css/CombinatorValue.h"/>
+   <depend name="include/cocktail/core/css/SelectorComponentValue.h"/>
+   <depend name="include/cocktail/core/css/SimpleSelectorSequenceVO.h"/>
+  </file>
+  <file name="src/cocktail/core/css/SimpleSelectorSequenceVO.cpp">
+   <depend name="include/cocktail/core/css/SimpleSelectorSequenceItemValue.h"/>
+   <depend name="include/cocktail/core/css/SimpleSelectorSequenceStartValue.h"/>
+   <depend name="include/cocktail/core/css/SimpleSelectorSequenceVO.h"/>
+  </file>
+  <file name="src/cocktail/core/css/SelectorVO.cpp">
+   <depend name="include/cocktail/core/css/PseudoElementSelectorValue.h"/>
+   <depend name="include/cocktail/core/css/SelectorComponentValue.h"/>
+   <depend name="include/cocktail/core/css/SelectorVO.h"/>
+  </file>
+  <file name="src/cocktail/core/css/SelectorSpecificityVO.cpp">
+   <depend name="include/cocktail/core/css/SelectorSpecificityVO.h"/>
+  </file>
+  <file name="src/cocktail/core/css/ColorVO.cpp">
+   <depend name="include/cocktail/core/css/ColorVO.h"/>
+  </file>
+  <file name="src/cocktail/core/css/UsedValuesVO.cpp">
+   <depend name="include/cocktail/core/css/ColorVO.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/geom/Matrix.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+  </file>
+  <file name="src/cocktail/core/css/PropertyOriginValue.cpp">
+   <depend name="include/cocktail/core/css/PropertyOriginValue.h"/>
+  </file>
+  <file name="src/cocktail/core/css/MatchedPseudoClassesVO.cpp">
+   <depend name="include/cocktail/core/css/MatchedPseudoClassesVO.h"/>
+  </file>
+  <file name="src/cocktail/core/css/StyleDeclarationVO.cpp">
+   <depend name="include/cocktail/core/css/CSSStyleDeclaration.h"/>
+   <depend name="include/cocktail/core/css/SelectorVO.h"/>
+   <depend name="include/cocktail/core/css/StyleDeclarationVO.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/core/utils/ObjectPool.h"/>
+  </file>
+  <file name="src/cocktail/core/css/PropertyVO.cpp">
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/PropertyOriginValue.h"/>
+   <depend name="include/cocktail/core/css/PropertyVO.h"/>
+   <depend name="include/cocktail/core/css/SelectorVO.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/core/utils/ObjectPool.h"/>
+  </file>
+  <file name="src/cocktail/core/css/TypedPropertyVO.cpp">
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/TypedPropertyVO.h"/>
+  </file>
+  <file name="src/cocktail/core/css/CSSConstants.cpp">
+   <depend name="include/cocktail/core/css/CSSConstants.h"/>
+  </file>
+  <file name="src/cocktail/core/config/Config.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/cocktail/core/config/Config.h"/>
+  </file>
+  <file name="src/cocktail/core/background/BackgroundManager.cpp">
+   <depend name="include/cocktail/core/background/BackgroundManager.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSLengthValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/ColorVO.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/geom/DimensionVO.h"/>
+   <depend name="include/cocktail/core/geom/Matrix.h"/>
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/graphics/AbstractGraphicsContextImpl.h"/>
+   <depend name="include/cocktail/core/graphics/GraphicsContext.h"/>
+   <depend name="include/cocktail/core/layout/computer/BackgroundStylesComputer.h"/>
+   <depend name="include/cocktail/core/renderer/ElementRenderer.h"/>
+   <depend name="include/cocktail/core/resource/AbstractResource.h"/>
+   <depend name="include/cocktail/core/resource/ResourceManager.h"/>
+   <depend name="include/cocktail/core/utils/FastNode.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/port/platform/flash_player/GraphicsContextImpl.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+  </file>
+  <file name="src/cocktail/core/geom/PointVO.cpp">
+   <depend name="include/cocktail/core/geom/PointVO.h"/>
+  </file>
+  <file name="src/cocktail/core/geom/RectangleVO.cpp">
+   <depend name="include/cocktail/core/geom/RectangleVO.h"/>
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+   <depend name="include/cocktail/core/utils/ObjectPool.h"/>
+  </file>
+  <file name="src/cocktail/core/utils/IPoolable.cpp">
+   <depend name="include/cocktail/core/utils/IPoolable.h"/>
+  </file>
+  <file name="src/cocktail/core/animation/TransitionManager.cpp">
+   <depend name="include/Date.h"/>
+   <depend name="include/cocktail/Lib.h"/>
+   <depend name="include/cocktail/core/animation/Transition.h"/>
+   <depend name="include/cocktail/core/animation/TransitionManager.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/timer/Timer.h"/>
+  </file>
+  <file name="src/cocktail/core/animation/Transition.cpp">
+   <depend name="include/cocktail/core/animation/Transition.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/geom/CubicBezier.h"/>
+  </file>
+  <file name="src/cocktail/core/animation/Animator.cpp">
+   <depend name="include/Reflect.h"/>
+   <depend name="include/cocktail/core/animation/Animator.h"/>
+   <depend name="include/cocktail/core/animation/PendingAnimationVO.h"/>
+   <depend name="include/cocktail/core/animation/Transition.h"/>
+   <depend name="include/cocktail/core/animation/TransitionManager.h"/>
+   <depend name="include/cocktail/core/css/CSSConstants.h"/>
+   <depend name="include/cocktail/core/css/CSSKeywordValue.h"/>
+   <depend name="include/cocktail/core/css/CSSPropertyValue.h"/>
+   <depend name="include/cocktail/core/css/CSSTimeValue.h"/>
+   <depend name="include/cocktail/core/css/CoreStyle.h"/>
+   <depend name="include/cocktail/core/css/UsedValuesVO.h"/>
+   <depend name="include/cocktail/core/utils/Utils.h"/>
+  </file>
+  <file name="src/cocktail/core/animation/PendingAnimationVO.cpp">
+   <depend name="include/cocktail/core/animation/PendingAnimationVO.h"/>
+  </file>
+  <file name="src/cocktail/Lib.cpp">
+   <depend name="include/cocktail/Lib.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/window/Window.h"/>
+  </file>
+  <file name="src/Xml.cpp">
+   <depend name="include/Reflect.h"/>
+   <depend name="include/StringBuf.h"/>
+   <depend name="include/Type.h"/>
+   <depend name="include/Xml.h"/>
+   <depend name="include/XmlType.h"/>
+   <depend name="include/cpp/Lib.h"/>
+  </file>
+  <file name="src/XmlType.cpp">
+   <depend name="include/XmlType.h"/>
+  </file>
+  <file name="src/Type.cpp">
+   <depend name="include/Reflect.h"/>
+   <depend name="include/Type.h"/>
+   <depend name="include/ValueType.h"/>
+  </file>
+  <file name="src/ValueType.cpp">
+   <depend name="include/ValueType.h"/>
+  </file>
+  <file name="src/Sys.cpp">
+   <depend name="include/Hash.h"/>
+   <depend name="include/Sys.h"/>
+   <depend name="include/cpp/Lib.h"/>
+   <depend name="include/haxe/io/Input.h"/>
+   <depend name="include/haxe/io/Output.h"/>
+   <depend name="include/sys/io/FileInput.h"/>
+   <depend name="include/sys/io/FileOutput.h"/>
+  </file>
+  <file name="src/StringTools.cpp">
+   <depend name="include/StringTools.h"/>
+  </file>
+  <file name="src/StringBuf.cpp">
+   <depend name="include/StringBuf.h"/>
+  </file>
+  <file name="src/Std.cpp">
+   <depend name="include/Std.h"/>
+  </file>
+  <file name="src/Reflect.cpp">
+   <depend name="include/Reflect.h"/>
+  </file>
+  <file name="src/Main.cpp">
+   <depend name="include/Main.h"/>
+   <depend name="include/cocktail/Lib.h"/>
+   <depend name="include/cocktail/core/css/CSSStyleDeclaration.h"/>
+   <depend name="include/cocktail/core/dom/CharacterData.h"/>
+   <depend name="include/cocktail/core/dom/Document.h"/>
+   <depend name="include/cocktail/core/dom/Element.h"/>
+   <depend name="include/cocktail/core/dom/Node.h"/>
+   <depend name="include/cocktail/core/dom/Text.h"/>
+   <depend name="include/cocktail/core/event/Event.h"/>
+   <depend name="include/cocktail/core/event/EventCallback.h"/>
+   <depend name="include/cocktail/core/event/EventTarget.h"/>
+   <depend name="include/cocktail/core/event/MouseEvent.h"/>
+   <depend name="include/cocktail/core/event/UIEvent.h"/>
+   <depend name="include/cocktail/core/html/EmbeddedElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLBodyElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLDocument.h"/>
+   <depend name="include/cocktail/core/html/HTMLElement.h"/>
+   <depend name="include/cocktail/core/html/HTMLImageElement.h"/>
+   <depend name="include/native/display/BitmapData.h"/>
+   <depend name="include/native/display/IBitmapDrawable.h"/>
+   <depend name="include/nme/Lib.h"/>
+  </file>
+  <file name="src/List.cpp">
+   <depend name="include/List.h"/>
+   <depend name="include/Std.h"/>
+   <depend name="include/StringBuf.h"/>
+  </file>
+  <file name="src/IntIter.cpp">
+   <depend name="include/IntIter.h"/>
+  </file>
+  <file name="src/IntHash.cpp">
+   <depend name="include/IntHash.h"/>
+   <depend name="include/Std.h"/>
+   <depend name="include/StringBuf.h"/>
+  </file>
+  <file name="src/Hash.cpp">
+   <depend name="include/Hash.h"/>
+   <depend name="include/Std.h"/>
+   <depend name="include/StringBuf.h"/>
+  </file>
+  <file name="src/EReg.cpp">
+   <depend name="include/EReg.h"/>
+   <depend name="include/Std.h"/>
+   <depend name="include/StringBuf.h"/>
+   <depend name="include/cpp/Lib.h"/>
+  </file>
+  <file name="src/cpp/Lib.cpp">
+   <depend name="include/cpp/Lib.h"/>
+  </file>
+  <file name="src/Date.cpp">
+   <depend name="include/Date.h"/>
+   <depend name="include/Std.h"/>
+  </file>
+  <file name="src/__boot__.cpp">
+  </file>
+  <file name="src/__files__.cpp">
+  </file>
+  <file name="src/__resources__.cpp">
+  </file>
+</files>
+<files id="__lib__">
+<compilerflag value="-Iinclude"/>
+  <file name="src/__lib__.cpp">
+   <depend name="include/Main.h"/>
+  </file>
+</files>
+<files id="__main__">
+<compilerflag value="-Iinclude"/>
+  <file name="src/__main__.cpp">
+   <depend name="include/Main.h"/>
+  </file>
+</files>
+<set name="HAXE_OUTPUT" value="Main" />
+<include name="${HXCPP}/build-tool/BuildCommon.xml"/>
+</xml>
