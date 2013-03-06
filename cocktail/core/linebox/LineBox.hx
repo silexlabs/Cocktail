@@ -833,6 +833,11 @@ class LineBox
 		}
 	}
 	
+	/**
+	 * get the top position of the top most inline box
+	 * in the line box. If this inline box is higher than
+	 * the line box, the minimum top will be negative
+	 */
 	private function getMinimumTop(inlineBox:InlineBox, minimumTop:Float):Float
 	{
 		var child:InlineBox = inlineBox.firstChild;
@@ -860,6 +865,12 @@ class LineBox
 		return minimumTop;
 	}
 	
+	/**
+	 * Apply the miminum top by offsetting all inline boxes such
+	 * as the inline box which set the minimum top is set to the 
+	 * top of the line box and all the other inline boxes are offset
+	 * by the minimum top
+	 */
 	private function applyMinimumTop(inlineBox:InlineBox, minimumTop:Float):Void
 	{
 		var child:InlineBox = inlineBox.firstChild;
