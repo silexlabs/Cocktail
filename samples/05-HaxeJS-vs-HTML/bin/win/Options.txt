@@ -1,8 +1,0 @@
-cpp
-haxe_208
-haxe_209
-haxe_210
-nme
-sys
-true
-C:\Motion-Twin\Haxe\lib\hxcpp/3,0,0/
