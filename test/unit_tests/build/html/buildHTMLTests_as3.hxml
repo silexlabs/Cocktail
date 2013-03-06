@@ -1,6 +1,0 @@
--cp ../../../../../src/
--cp ../../../src/
--main html.HTMLTests
--lib utest
--swf ../../bin/html/HTMLTestAs3.swf
--swf-version 10.2

@@ -1,11 +1,10 @@
 #sources
 -main Main
--cp ../../lib/
 
 #binary
 -cpp bin/win
 -D nme
--cp ../../src/
+-cp ../../
 -lib nme
 -debug
 --remap flash:nme

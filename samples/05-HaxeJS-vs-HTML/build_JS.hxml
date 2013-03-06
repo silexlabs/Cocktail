@@ -1,6 +1,5 @@
 #sources
--cp ../../src/
--cp ../../lib/
+-cp ../../
 -main Main
 
 #binary

@@ -1,5 +1,0 @@
--cp ../../../../../src/
--cp ../../../src/
--main keyboard.KeyboardTests
--js ../../bin/keyboard/keyboardTestJS.js
--lib utest

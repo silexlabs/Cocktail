@@ -1,6 +1,6 @@
 #sources
 -main Cocktail
--cp ../../src/
+-cp ../../
 -cp src
 
 #binary

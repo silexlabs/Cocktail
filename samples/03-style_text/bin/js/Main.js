@@ -4,9 +4,9 @@ Cocktail.__name__ = ["Cocktail"];
 Cocktail.htmlSource = null;
 Cocktail.customClassName = null;
 Cocktail.main = function() {
-	Main;
-	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<title>Cocktail Sample</title>\r\n\t</head>\r\n\t<body>\r\n\t\t<h1>My beautiful picture</h1>\r\n\t</body>\r\n</html>\r\n";
-	var customClass = Type.resolveClass("Main");
+	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<title>Cocktail Sample</title>\r\n\t</head>\r\n\t<body>\r\n\t\t<p style=\"font-family: arial; \">Font family</p>\r\n\t\t<p style=\"font-size: small; \">Font size</p>\r\n\t\t<p style=\"font-size: 25px; \">Font size 2</p>\r\n\t\t<p style=\"font-size: 3em; \">Font size 3</p>\r\n\t\t<p style=\"color: orange; \">Font color</p>\r\n\t\t<p style=\"font-weight: bold; \">Bold text</p>\r\n\t\t<p style=\"font-style: italic; \">Italic text</p>\r\n\t\t<p style=\"letter-spacing: 10px; \">letter spacing</p>\r\n\t\t<p style=\"word-spacing: 50px; \">word spacing</p>\r\n\t\t<p style=\"text-transform: uppercase; \">uppercase text</p>\r\n\t</body>\r\n</html>\r\n";
+	return;
+	var customClass = Type.resolveClass(null);
 	if(customClass != null) Type.createInstance(customClass,[]);
 }
 var HxOverrides = $hxClasses["HxOverrides"] = function() { }
@@ -89,30 +89,6 @@ IntIter.prototype = {
 	,max: null
 	,min: null
 	,__class__: IntIter
-}
-var Main = $hxClasses["Main"] = function() {
-	var pic = js.Lib.document.createElement("img");
-	pic.onload = $bind(this,this.onPicLoaded);
-	pic.onerror = $bind(this,this.onPicError);
-	js.Lib.document.body.appendChild(pic);
-	pic.src = "assets/cocktail.jpg";
-};
-Main.__name__ = ["Main"];
-Main.prototype = {
-	onPicError: function(e) {
-		var picErrorText = js.Lib.document.createTextNode("picture load error");
-		var paragraph = js.Lib.document.createElement("p");
-		paragraph.appendChild(picErrorText);
-		js.Lib.document.body.appendChild(paragraph);
-	}
-	,onPicLoaded: function(e) {
-		var picLoadedText = js.Lib.document.createTextNode("picture successfully loaded");
-		var paragraph = js.Lib.document.createElement("p");
-		paragraph.appendChild(picLoadedText);
-		js.Lib.document.body.appendChild(paragraph);
-	}
-	,title: null
-	,__class__: Main
 }
 var Reflect = $hxClasses["Reflect"] = function() { }
 Reflect.__name__ = ["Reflect"];
@@ -544,8 +520,6 @@ js.Lib.eval = function(code) {
 js.Lib.setErrorHandler = function(f) {
 	js.Lib.onerror = f;
 }
-var $_;
-function $bind(o,m) { var f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; return f; };
 if(Array.prototype.indexOf) HxOverrides.remove = function(a,o) {
 	var i = a.indexOf(o);
 	if(i == -1) return false;

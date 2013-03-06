@@ -1,5 +1,0 @@
--cp ../../../../../src/
--cp ../../../src/
--main viewport.ViewportTests
--lib utest
--js ../../bin/viewport/testJS.js 
