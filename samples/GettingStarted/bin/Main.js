@@ -5,7 +5,7 @@ Cocktail.htmlSource = null;
 Cocktail.customClassName = null;
 Cocktail.main = function() {
 	Main;
-	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<title>Getting Started with Cocktail</title>\r\n\t</head>\r\n\t<body>\r\n\t\t<h1 style=\"word-spacing:10px; color:orange; font-family:arial; margin-top:0px; margin-bottom:0px; text-align:center;\">Hello Cocktail</h1>\r\n\t\t<p style=\"text-align:center;\">Cocktail is a HTML rendering engine.</p>\r\n\t\t<div style=\"text-align:center;\">\r\n\t\t\t<img id=\"icon\" alt=\"cocktail\" src=\"assets/icone_cocktail_blanche_ombre.png\" width=\"132\" height=\"132\"></img>\r\n\t\t</div>\r\n\t</body>\r\n</html>";
+	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<title>Getting Started with Cocktail</title>\r\n\t\t<link href=\"app.css\" type=\"text/css\" rel=\"stylesheet\"></link>\r\n\t</head>\r\n\t<body>\r\n\t\t<h1>Hello Cocktail</h1>\r\n\t\t<p>Cocktail is a HTML rendering engine.</p>\r\n\t\t<div>\r\n\t\t\t<img id=\"icon\" alt=\"cocktail\" src=\"assets/icone_cocktail_blanche_ombre.png\" width=\"132\" height=\"132\"></img>\r\n\t\t</div>\r\n\t</body>\r\n</html>";
 	var customClass = Type.resolveClass("Main");
 	if(customClass != null) Type.createInstance(customClass,[]);
 }
