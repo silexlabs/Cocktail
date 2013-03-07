@@ -498,7 +498,7 @@ class HTMLDocument extends Document
 		
 		//store wether the store has an ID to know if it is
 		//useful to match it against classes selector
-		_matchedPseudoClasses.hasClasses = node.className != null;
+		_matchedPseudoClasses.hasClasses = node.className != "";
 		
 		//store node classes
 		if (_matchedPseudoClasses.hasClasses == true)
