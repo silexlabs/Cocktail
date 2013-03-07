@@ -17,3 +17,5 @@ use src/Main.hx for your test code, src/index.html for yout test html and bin/st
 
 then build with the hxml files in this folder
 
+You can then run yout test in flash or js by opening the html files in the bin folder in a browser
+

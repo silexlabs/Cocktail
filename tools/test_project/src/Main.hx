@@ -11,10 +11,12 @@ import js.Dom;
 
 class Main
 {
-	
+	/**
+	 * The content of the index.html is
+	 * accessible with Lib.document
+	 */
 	public function new()
 	{
 		
 	}
-
 }
