@@ -5,7 +5,7 @@ Cocktail.htmlSource = null;
 Cocktail.customClassName = null;
 Cocktail.main = function() {
 	Main;
-	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<link type=\"text/css\" href=\"style.css\" rel=\"stylesheet\"></link>\r\n\t\t<title>Test Project</title>\r\n\t</head>\r\n\t<body>\r\n\t\t<!-- put the content of your test here -->\r\n\t\tHello ! \r\n\t</body>\r\n</html>\r\n";
+	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<!-- this import a default style sheet you can use for your project -->\r\n\t\t<link type=\"text/css\" href=\"style.css\" rel=\"stylesheet\"></link>\r\n\t\t<title>Cocktail Template</title>\r\n\t</head>\r\n\t<body>\r\n\t\t<!-- put the html of your project here -->\r\n\t\tHello ! \r\n\t</body>\r\n</html>\r\n";
 	var customClass = Type.resolveClass("Main");
 	if(customClass != null) Type.createInstance(customClass,[]);
 }
