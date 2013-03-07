@@ -122,7 +122,15 @@ class CSSStyleRule extends CSSRule
 					
 				case END_SELECTOR:	
 					var selector:String = css.substr(start, position - start);
-					_selectorParser.parseSelector(selector, selectors);
+					var isValid:Bool = _selectorParser.parseSelector(selector, selectors);
+					
+					//if one selector is invalid, the whole rule and selectors are
+					//invalid and won't be used during cascade
+					if (isValid == false)
+					{
+						selectors = new Array<SelectorVO>();
+						return;
+					}
 					state = next;
 					
 				case BEGIN_STYLES:

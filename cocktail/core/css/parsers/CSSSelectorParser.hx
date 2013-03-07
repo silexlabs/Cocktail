@@ -35,8 +35,10 @@ class CSSSelectorParser
 	 * Parse the selector string into typed selector
 	 * object and store them in the typed selector
 	 * attribute if the selector is valid
+	 * 
+	 * Return wether the selector is valid
 	 */
-	public function parseSelector(selector:String, typedSelectors:Array<SelectorVO>):Void
+	public function parseSelector(selector:String, typedSelectors:Array<SelectorVO>):Bool
 	{
 		var state:SelectorParserState = IGNORE_SPACES;
 		var next:SelectorParserState = BEGIN_SIMPLE_SELECTOR;
@@ -240,7 +242,7 @@ class CSSSelectorParser
 					}
 					
 				case INVALID_SELECTOR:
-					return;
+					return false;
 			}
 			c = selector.fastCodeAt(++position);
 		}
@@ -270,6 +272,13 @@ class CSSSelectorParser
 		}
 		
 		flushSelectors(simpleSelectorSequenceStartValue, simpleSelectorSequenceItemValues, components);
+		
+		//if at this point, there are no components in
+		//this selector, it is invalid
+		if (selectorData.components.length == 0)
+		{
+			return false;
+		}
 		
 		//simple selectors and combinators are parsed from left to 
 		//right but are matched from right to left to match
@@ -311,6 +320,7 @@ class CSSSelectorParser
 		, isSimpleClassSelector, isSimpleIdSelector, isSimpleTypeSelector);
 		
 		typedSelectors.push(typedSelector);
+		return true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
