@@ -19,7 +19,7 @@ package cocktail.core.config;
  * For instance, if you want to override the value
  * of the "enableMouseEvent" attribute to set it to false,
  * add the following meta tag to the document : 
-	 * <meta name="enableMouseEvent" value="false></meta>
+	 * <meta name="enableMouseEvent" content="false"></meta>
  * 
  * TODO 4 : for now implemented as singleton for simplicity,
  * if multiple document needed however, will need to be implemented

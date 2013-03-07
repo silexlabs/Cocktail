@@ -1503,6 +1503,14 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					return false;
 				}
 			}
+			
+			//as a last resort, check all inline boxes individually,
+			//might be needed for instance if called before layout,
+			//line boxes not ready yet
+			if (hasNonZeroHeightInlineBox(this) == true)
+			{
+				return false;
+			}
 		}
 		//block establish or participate in block formatting
 		else
@@ -1628,6 +1636,49 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE HELPER METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return wether one of the descendant of the root element renderer
+	 * has a children which has at least one inline box with a non 0 height.
+	 * 
+	 * Traverse the rendering tree recursively
+	 * 
+	 * TODO 3 : for now assumes that an inline box is non zero has soon as 
+	 * a text or embedded box is found. Probably won't work for every case.
+	 * Issue here is that when collapsing margin check if this element collapse
+	 * top and bottom marign before layout, when line boxes are not laid out yet,
+	 * margin collapsing should only be checked on already laid out elements
+	 */
+	private function hasNonZeroHeightInlineBox(rootElementRenderer:ElementRenderer):Bool
+	{
+		var child:ElementRenderer = rootElementRenderer.firstChild;
+		while (child != null)
+		{
+			var inlineBoxLength:Int = child.inlineBoxes.length;
+			for (i in 0...inlineBoxLength)
+			{
+				var inlineBox:InlineBox = child.inlineBoxes[i];
+				
+				//if the inline box is space, don't assume non-zero height,
+				//as if only one space exists, it might make a zero height
+				//line box
+				if (inlineBox.isText == true && inlineBox.isSpace == false)
+				{
+					return true;
+				}
+				else if (inlineBox.isEmbedded == true)
+				{
+					return true;
+				}
+			}
+			
+			hasNonZeroHeightInlineBox(child);
+			
+			child = child.nextSibling;
+		}
+		
+		return false;
+	}
 	
 	/**
 	 * Return wether this block box establishes a new block formatting
