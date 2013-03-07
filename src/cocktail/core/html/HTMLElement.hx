@@ -1626,7 +1626,12 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function get_className():String
 	{
-		return getAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME);
+		var className:String = getAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME);
+		if (className == null)
+		{
+			className = "";
+		}
+		return className;
 	}
 	
 	/**

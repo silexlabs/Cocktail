@@ -91,8 +91,12 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	 * Retrieves an attribute value by name.
 	 * 
 	 * @param	name The name of the attribute to retrieve.
-	 * @return The Attr value as a string, or the empty string
+	 * @return The Attr value as a string, or null
 	 * if that attribute does not have a specified or default value.
+	 * 
+	 * note : the spec defines that the empty string should be returned
+	 * instead of null but in pracice most browsers implementations
+	 * return null
 	 */
 	public function getAttribute(name:String):String
 	{
