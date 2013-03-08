@@ -673,11 +673,22 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			{
 				if (child.isAbsolutelyPositioned() == false)
 				{
-					_childBlockFormattingBounds.x = child.bounds.x + xOffset - child.coreStyle.usedValues.marginLeft;
-					_childBlockFormattingBounds.y = child.bounds.y + yOffset - child.coreStyle.usedValues.marginTop;
-					_childBlockFormattingBounds.width = child.bounds.width + child.coreStyle.usedValues.marginRight + child.coreStyle.usedValues.marginLeft;
-					_childBlockFormattingBounds.height = child.bounds.height + child.coreStyle.usedValues.marginBottom + child.coreStyle.usedValues.marginTop;
+					_childBlockFormattingBounds.x = child.bounds.x + xOffset;
+					_childBlockFormattingBounds.y = child.bounds.y + yOffset;
+					_childBlockFormattingBounds.width = child.bounds.width;
+					_childBlockFormattingBounds.height = child.bounds.height;
 
+					//TODO 3 : shouldn't be needed, Text should not be direct children of
+					//block box, they should instead be wrapped in anonymous inline boxes which set
+					//all non-inherited properties such as margins to their initial values (0 for margins)
+					if (child.isText == false)
+					{
+						_childBlockFormattingBounds.x -= child.coreStyle.usedValues.marginLeft;
+						_childBlockFormattingBounds.y -= child.coreStyle.usedValues.marginTop;
+						_childBlockFormattingBounds.width += child.coreStyle.usedValues.marginRight + child.coreStyle.usedValues.marginLeft;
+						_childBlockFormattingBounds.height += child.coreStyle.usedValues.marginBottom + child.coreStyle.usedValues.marginTop;
+					}
+					
 					GeomUtils.addBounds(_childBlockFormattingBounds, blockFormattingBounds);
 					
 					if (child.establishesNewBlockFormattingContext() == false && child.firstChild != null)
