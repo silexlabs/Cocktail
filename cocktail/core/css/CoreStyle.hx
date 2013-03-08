@@ -947,19 +947,7 @@ class CoreStyle
 		//TODO 3 : shouldn't update each time but for some reason, sometimes
 		//line height set wrong which causes text on same line to be misaligned
 		
-			switch (lineHeight)
-			{
-				case ABSOLUTE_LENGTH(value):
-					usedValues.lineHeight = value;
-					
-				case KEYWORD(value):
-					usedValues.lineHeight = fontSize * 1.2;
-					
-				case NUMBER(value):
-					usedValues.lineHeight = fontSize * value;
-					
-				default:	
-			}
+			setUsedLineHeight();
 		//}
 		
 		//same as above for letter spacing
@@ -1271,6 +1259,29 @@ class CoreStyle
 		if (cascadeManager.hasRight == true || isFirstCascade == true)
 		{
 			hasAutoRight = isAuto(right);
+		}
+	}
+	
+	/**
+	 * Compute the used value for line height
+	 * 
+	 * note : set as public so that it can be explicitely
+	 * be called for anonymous blocks
+	 */
+	public function setUsedLineHeight():Void
+	{
+		switch (lineHeight)
+		{
+			case ABSOLUTE_LENGTH(value):
+				usedValues.lineHeight = value;
+				
+			case KEYWORD(value):
+				usedValues.lineHeight = fontMetrics.fontSize * 1.2;
+				
+			case NUMBER(value):
+				usedValues.lineHeight = fontMetrics.fontSize * value;
+				
+			default:	
 		}
 	}
 	
