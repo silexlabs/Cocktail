@@ -262,7 +262,7 @@ class LineBox
 		bounds.height = alignInlineBoxesVertically();
 		
 		//an empty line box has a 0 height
-		if (isEmptyLineBox() == true)
+		if (isEmptyLineBox(rootInlineBox) == true)
 		{
 			bounds.height = 0;
 		}
@@ -397,16 +397,45 @@ class LineBox
 		 * as zero-height line boxes for the purposes of determining the positions 
 		 * of any elements inside of them, and must be treated as not
 		 * existing for any other purpose. 
+		 * 
+		 * TODO : missing preseved white space and newlines condition
 	 */
-	private function isEmptyLineBox():Bool
+	private function isEmptyLineBox(rootInlineBox:InlineBox):Bool
 	{
-		//TODO : implement all conditions
-		if (rootInlineBox.firstChild == null)
+		var child:InlineBox = rootInlineBox.firstChild;
+		while (child != null)
 		{
-			return true;
+			if (child.isText == true && child.isSpace == false)
+			{
+				return false;
+			}
+			else if (child.isEmbedded == true)
+			{
+				return false;
+			}
+			else
+			{
+				if (child.marginLeft != 0 || child.marginRight != 0
+				|| child.paddingLeft != 0 || child.paddingLeft != 0
+				|| child.borderLeft != 0 || child.borderRight != 0)
+				{
+					return false;
+				}
+				else
+				{
+					var isEmpty:Bool = isEmptyLineBox(child);
+					if (isEmpty == false)
+					{
+						return false;
+					}
+				}
+			}
+			
+			
+			child = child.nextSibling;
 		}
 		
-		return false;
+		return true;
 	}
 	
 	/////////////////////////////////
