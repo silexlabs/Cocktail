@@ -720,14 +720,20 @@ class LineBox
 				
 				//for embedded element such as picture, 
 				//use margin box for leaded ascent
-				//
-				//TODO 3 : for inline-block, might use baseline of last
-				//line box if establish inline formatting 
 				if (child.isEmbedded == true)
 				{
 					childLeadedAscent = child.bounds.height + child.elementRenderer.coreStyle.usedValues.marginTop + child.elementRenderer.coreStyle.usedValues.marginBottom;
+					
+					//special case for non-replaced inline block box, if establish an inline formatting, use baseline
+					//of last line box for its leaded ascent
+					if (child.elementRenderer.isBlockContainer == true && child.elementRenderer.coreStyle.isInlineBlock == true)
+					{
+						if (child.elementRenderer.childrenInline() == true)
+						{
+							childLeadedAscent =  child.elementRenderer.inlineBoxes[child.elementRenderer.inlineBoxes.length - 1].bounds.y + child.leadedAscent;
+						}
+					}
 				}
-				
 				
 				var yOffset:Float = childLeadedAscent - inlineBox.leadedAscent;
 				child.offsetFromParentInlineBox.y = -yOffset;
