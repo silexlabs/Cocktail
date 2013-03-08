@@ -272,11 +272,11 @@ class FlowBoxRenderer extends BoxRenderer
 		
 		//if the element is absolut positioned, then it is
 		//placed relative to the padding box and not content
-		//box of its first positioned ancestor, so any padding
+		//box of its first positioned ancestor, so any padding and border
 		//of this first positioned ancesotr is removed
 		if (isAbsolutelyPositioned == true)
 		{
-			leftOffset -= coreStyle.usedValues.paddingLeft;
+			leftOffset -= coreStyle.usedValues.paddingLeft - coreStyle.usedValues.borderLeftWidth;
 		}
 		
 		return leftOffset;
@@ -295,7 +295,7 @@ class FlowBoxRenderer extends BoxRenderer
 		//place relative to padding box instead of content box
 		if (isAbsolutelyPositioned == true)
 		{
-			rightOffset += coreStyle.usedValues.paddingRight;
+			rightOffset += coreStyle.usedValues.paddingRight + coreStyle.usedValues.borderRightWidth;
 		}
 		
 		return rightOffset;
@@ -313,7 +313,7 @@ class FlowBoxRenderer extends BoxRenderer
 		//place relative to padding box instead of content box
 		if (isAbsolutelyPositioned == true)
 		{
-			topOffset -= coreStyle.usedValues.paddingTop;
+			topOffset -= coreStyle.usedValues.paddingTop - coreStyle.usedValues.borderTopWidth;
 		}
 		
 		return topOffset;
@@ -332,7 +332,7 @@ class FlowBoxRenderer extends BoxRenderer
 		//place relative to padding box instead of content box
 		if (isAbsolutelyPositioned == true)
 		{
-			bottomOffset += coreStyle.usedValues.paddingBottom;
+			bottomOffset += coreStyle.usedValues.paddingBottom + coreStyle.usedValues.borderBottomWidth;
 		}
 		
 		return bottomOffset;
