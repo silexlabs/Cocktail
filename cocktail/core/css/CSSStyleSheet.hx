@@ -57,7 +57,7 @@ class CSSStyleSheet extends StyleSheet
 		
 		for (i in 0...rules.length)
 		{
-			insertRule(rules[i], cssRules.length - 1);
+			insertRule(rules[i], cssRules.length);
 		}
 	}
 	
