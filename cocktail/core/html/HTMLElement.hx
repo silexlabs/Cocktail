@@ -346,9 +346,6 @@ class HTMLElement extends Element<HTMLElement>
 		
 		//init the CSS inline style declaration
 		initStyle();
-		
-		//init the Id attribute
-		initId();
 	}
 	
 	/**
@@ -366,17 +363,6 @@ class HTMLElement extends Element<HTMLElement>
 	private function initStyle():Void
 	{
 		style = new CSSStyleDeclaration(null, onInlineStyleChange);
-	}
-	
-	/**
-	 * Define the id attribute in the
-	 * attribute maps, but it has no
-	 * value yet
-	 */
-	private function initId():Void
-	{
-		var id:Attr<HTMLElement> = new Attr<HTMLElement>(HTMLConstants.HTML_ID_ATTRIBUTE_NAME);
-		setIdAttributeNode(id, true);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1603,12 +1589,17 @@ class HTMLElement extends Element<HTMLElement>
 	/**
 	 * Retrieve the id value from the attributes
 	 * map
-	 * @return the id as a String or null
+	 * @return the id as a string or the empty string
 	 * if it was not set 
 	 */
 	private function get_id():String
 	{
-		return getAttribute(HTMLConstants.HTML_ID_ATTRIBUTE_NAME);
+		var id:String = getAttribute(HTMLConstants.HTML_ID_ATTRIBUTE_NAME);
+		if (id == null)
+		{
+			id = "";
+		}
+		return id;
 	}
 	
 	/**
