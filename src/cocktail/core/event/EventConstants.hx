@@ -471,4 +471,14 @@ class EventConstants
 	 */
 	public static inline var POP_STATE:String = "popstate";
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// INTERNAL (ONLY USED WITHIN COCKTAIL)
+	//////////////////////////////////////////////////////////////////////////////////////////
+		
+	/**
+	 * When a config parameter is changed, the Config object
+	 * dispatch an event of this type
+	 */
+	public static inline var CONFIG_CHANGED:String = "configchanged";
+	
 }

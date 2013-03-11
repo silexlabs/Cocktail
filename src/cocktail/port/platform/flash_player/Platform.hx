@@ -8,6 +8,7 @@
 package cocktail.port.platform.flash_player;
 
 import cocktail.core.config.Config;
+import cocktail.core.event.CustomEvent;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
@@ -116,6 +117,10 @@ class Platform extends PlatformBase
 		{
 			Lib.current.stage.quality = StageQuality.LOW;
 		}
+		
+		//listen to config change which might require change of the platform
+		//at runtime
+		Config.getInstance().addEventListener(EventConstants.CONFIG_CHANGED,cast(onConfigChanged));
 	}
 	
 	/**
@@ -335,6 +340,11 @@ class Platform extends PlatformBase
 	 */
 	override private function get_innerHeight():Int
 	{
+		var configStageHeight = Config.getInstance().stageHeight;
+		if (configStageHeight != -1)
+		{
+			return configStageHeight;
+		}
 		return Lib.current.stage.stageHeight;
 	}
 	
@@ -343,6 +353,12 @@ class Platform extends PlatformBase
 	 */
 	override private function get_innerWidth():Int
 	{
+		var configStageWidth = Config.getInstance().stageWidth;
+		if (configStageWidth != -1)
+		{
+			return configStageWidth;
+		}
+		
 		return Lib.current.stage.stageWidth;
 	}
 	
@@ -482,6 +498,25 @@ class Platform extends PlatformBase
 			}
 			
 			child = child.nextSibling;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE HELPER METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called a config parameter of the document
+	 * changed
+	 */
+	private function onConfigChanged(event:CustomEvent):Void
+	{
+		switch(event.detail)
+		{
+			//when the used stage width or height is changed, simulate a
+			//resize to update all the flahs display list
+			case "stageWidth", "stageHeight":
+				onNativeResize(null);
 		}
 	}
 }
