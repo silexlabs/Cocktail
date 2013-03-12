@@ -22,7 +22,7 @@ import cocktail.core.event.EventTarget;
  * For instance, if you want to override the value
  * of the "enableMouseEvent" attribute to set it to false,
  * add the following meta tag to the document : 
-	 * <meta name="enableMouseEvent" value="false></meta>
+	 * <meta name="enableMouseEvent" content="false></meta>
  * 
  * When a config value is updated this way, it dispatches an
  * event providing the name of the changed param
