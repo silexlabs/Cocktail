@@ -7,6 +7,9 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.config;
+import cocktail.core.event.CustomEvent;
+import cocktail.core.event.EventConstants;
+import cocktail.core.event.EventTarget;
 
 /**
  * This class exposes global configuration parameters
@@ -21,13 +24,16 @@ package cocktail.core.config;
  * add the following meta tag to the document : 
 	 * <meta name="enableMouseEvent" content="false"></meta>
  * 
+ * When a config value is updated this way, it dispatches an
+ * event providing the name of the changed param
+ * 
  * TODO 4 : for now implemented as singleton for simplicity,
  * if multiple document needed however, will need to be implemented
  * as a document instance
  * 
  * @author Yannick Dominguez 
  */
-class Config 
+class Config extends EventTarget
 {
 	/**
 	 * Disable listening to the platform mouse event. This is
@@ -105,6 +111,26 @@ class Config
 	 * Set to false if you want to always use software video in flash
 	 */
 	public var useStageVideoIfAvailable(default, null):Bool;
+	
+	/**
+	 * Flash specific.
+	 * 
+	 * Used to override the default stage width which is
+	 * used by cocktail to define the document viewport.
+	 * 
+	 * It is useful when a cocktail application is loaded
+	 * into a regular flash application. The flash loader
+	 * can be placed with x and y 
+	 * 
+	 * note : eventually this param should be replaced by
+	 * a proper viewport implementation
+	 */
+	public var stageWidth(default, null):Int;
+	
+	/**
+	 * Same as stageWidth, for stage height
+	 */
+	public var stageHeight(default, null):Int;
 	
 	/////////////////////////////////////////////////
 	// FONT CONFIG
@@ -221,6 +247,8 @@ class Config
 	 */
 	private function new() 
 	{
+		super();
+		
 		enableMouseEvent = true;
 		touchMovePreventClickDistance = 10;
 		enableBitmapSmoothing = true;
@@ -243,6 +271,9 @@ class Config
 		mediumBorderWidth = 3;
 		thickBorderWidth = 5;
 	
+		stageHeight = -1;
+		stageWidth = -1;
+		
 		enableCompositing = false;
 		objectBelowWhenNoCompositing = true;
 		videoBelowWhenNoCompositing = true;
@@ -267,20 +298,33 @@ class Config
 	 */
 	public function updateConfig(name:String, value:String):Void
 	{
+		var didUpdate:Bool = false;
+		
 		switch(name)
 		{
 			case "enableMouseEvent", "useLowStageQuality", "enableSynchronousUpdate",
 			"enableBitmapSmoothing", "useAdvancedHitTesting", "useStageVideoIfAvailable",
 			"enableCompositing", "objectBelowWhenNoCompositing", "videoBelowWhenNoCompositing":
 				updateBoolParam(name, value);
+				didUpdate = true;
 				
 			case "touchMovePreventClickDistance", "xxSmallFontSize", "xSmallFontSize", "smallFontSize",
 			"mediumFontSize", "largeFontSize", "xLargeFontSize", "xxLargeFontSize", "thinBorderWidth",
-			"mediumBorderWidth", "thickBorderWidth":
+			"mediumBorderWidth", "thickBorderWidth", "stageWidth", "stageHeight":
 				updateIntParam(name, value);
+				didUpdate = true;
 				
 			case "defaultFont", "defaultFontColor":
 				updateStringParam(name, value);
+				didUpdate = true;
+		}
+		
+		//if config actually changed, notify classes using config
+		if (didUpdate == true)
+		{
+			var configEvent:CustomEvent = new CustomEvent();
+			configEvent.initCustomEvent(EventConstants.CONFIG_CHANGED, false, false, name);
+			dispatchEvent(configEvent);
 		}
 	}
 	
