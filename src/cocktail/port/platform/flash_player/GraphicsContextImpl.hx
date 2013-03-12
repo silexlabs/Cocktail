@@ -273,6 +273,12 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	 */
 	override public function drawImage(bitmapData:NativeBitmapData, matrix:Matrix, sourceRect:RectangleVO, clipRect:RectangleVO):Void
 	{	
+		//not ready to draw yet
+		if (_nativeBitmap == null)
+		{
+			return;
+		}
+		
 		//convert the cross-platform rectangle into flash native one
 		_flashRectangle.x = sourceRect.x + clipRect.x - matrix.e;
 		_flashRectangle.y = sourceRect.y + clipRect.y - matrix.f;
@@ -313,6 +319,12 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	 */
 	override public function copyPixels(bitmapData:NativeBitmapData, sourceRect:RectangleVO, destPoint:PointVO, clipRect:RectangleVO):Void
 	{
+		//not ready to draw yet
+		if (_nativeBitmap == null)
+		{
+			return;
+		}
+		
 		_flashRectangle.x = sourceRect.x + clipRect.x - destPoint.x;
 		_flashRectangle.y = sourceRect.y + clipRect.y - destPoint.y;
 		_flashRectangle.width = clipRect.width ;
@@ -354,6 +366,12 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 	 */
 	override public function fillRect(rect:RectangleVO, color:ColorVO, clipRect:RectangleVO):Void
 	{
+		//not ready to draw yet
+		if (_nativeBitmap == null)
+		{
+			return;
+		}
+		
 		var argbColor:Int = color.color;
 		var alpha:Int = Math.round(255 * color.alpha);
 		argbColor += alpha << 24;
