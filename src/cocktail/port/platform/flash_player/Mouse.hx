@@ -142,6 +142,8 @@ class Mouse extends MouseListenerBase
 		_platform.hitTestingSprite.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
 		_platform.hitTestingSprite.addEventListener(flash.events.MouseEvent.MOUSE_WHEEL, onNativeMouseWheel);
 		
+		//when either mouse exist stage flash or hit testing boundaries, it is considered to have left the document
+		_platform.hitTestingSprite.addEventListener(flash.events.MouseEvent.MOUSE_OUT, onNativeMouseLeave);
 		Lib.current.stage.addEventListener(flash.events.Event.MOUSE_LEAVE , onNativeMouseLeave);
 	}
 	
@@ -155,6 +157,7 @@ class Mouse extends MouseListenerBase
 		_platform.hitTestingSprite.removeEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
 		_platform.hitTestingSprite.removeEventListener(flash.events.MouseEvent.MOUSE_WHEEL, onNativeMouseWheel);
 		
+		_platform.hitTestingSprite.removeEventListener(flash.events.MouseEvent.MOUSE_OUT, onNativeMouseLeave);
 		Lib.current.stage.removeEventListener(flash.events.Event.MOUSE_LEAVE , onNativeMouseLeave);
 	}
 	

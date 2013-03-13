@@ -640,6 +640,9 @@ class HTMLDocument extends Document
 			_hoveredElementRenderer.domNode.dispatchEvent(mouseOutEvent);
 			oldHoveredElementRenderer.domNode.invalidateStyleDeclaration(false);
 			_hoveredElementRenderer = null;
+			
+			//when mouse leave, reset mouse cursor to let OS manage it
+			setMouseCursor(CSSPropertyValue.KEYWORD(AUTO));
 		}
 	}
 	
