@@ -17,6 +17,7 @@ import cocktail.core.event.TransitionEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.event.PopStateEvent;
+import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLElement;
 
 /**
@@ -200,44 +201,29 @@ class Document extends Node<Document>
 	 */
 	private function doGetElementById(node:HTMLElement, elementId:String):HTMLElement
 	{
-		//call method recursively if node has child and is itself an element
-		if (node.hasChildNodes() == true && node.nodeType == DOMConstants.ELEMENT_NODE)
+		//ID can only be matched by element node or descendant of element node
+		if (node.nodeType == DOMConstants.ELEMENT_NODE)
 		{
-			var length:Int = node.childNodes.length;
-			for (i in 0...length)
+			//first check id on cildren, as the first child in tree order with matching
+			//id should be returned
+			if (node.hasChildNodes() == true)
 			{
-				var matchingElement:HTMLElement = doGetElementById(cast(node.childNodes[i]), elementId);
-				//if a matching element is found, return it
-				if (matchingElement != null)
+				var length:Int = node.childNodes.length;
+				for (i in 0...length)
 				{
-					return matchingElement;
-				}
-			}
-		}
-		
-		//check if node has atribute, as it can't have
-		//an Id with no attributes
-		if (node.hasAttributes() == true)
-		{
-			var attributes:NamedNodeMap<HTMLElement> = node.attributes;
-			var element:HTMLElement = node;
-			
-			//loop in all the element's attributes to find the
-			//Id attribute if defined
-			var attributesLength:Int = attributes.length;
-			for (i in 0...attributesLength)
-			{
-				var attribute:Attr<HTMLElement> = element.getAttributeNode(attributes.item(i).nodeName);
-				
-				//if an Id attribute is found and specified
-				if (attribute.isId == true && attribute.specified == true)
-				{
-					//if it matches the searched element Id, return the element
-					if (attribute.value == elementId)
+					var matchingElement:HTMLElement = doGetElementById(cast(node.childNodes[i]), elementId);
+					//if a matching element is found, return it
+					if (matchingElement != null)
 					{
-						return element;
+						return matchingElement;
 					}
 				}
+			}
+			
+			//check ID attribute, returns null if no ID attribute for this node
+			if (node.getAttribute(HTMLConstants.HTML_ID_ATTRIBUTE_NAME) == elementId)
+			{
+				return node;
 			}
 		}
 		
