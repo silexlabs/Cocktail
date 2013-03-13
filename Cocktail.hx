@@ -52,7 +52,7 @@ class Cocktail
 	 */
 	static public function main()
 	{
-		Lib.document.innerHTML = getSourceHtmlSource();
+		Lib.document.documentElement.innerHTML = getSourceHtmlSource();
 
 		if (getCustomClassName() == null)
 			return;
