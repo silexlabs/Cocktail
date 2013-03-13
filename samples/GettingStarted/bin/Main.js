@@ -5,7 +5,7 @@ Cocktail.htmlSource = null;
 Cocktail.customClassName = null;
 Cocktail.main = function() {
 	Main;
-	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<title>Getting Started with Cocktail</title>\r\n\t\t<link href=\"app.css\" type=\"text/css\" rel=\"stylesheet\"></link>\r\n\t</head>\r\n\t<body>\r\n\t\t<h1>Hello Cocktail</h1>\r\n\t\t<p>Cocktail is a HTML rendering engine.</p>\r\n\t\t<div>\r\n\t\t\t<img id=\"icon\" alt=\"cocktail\" src=\"assets/icone_cocktail_blanche_ombre.png\" width=\"132\" height=\"132\"></img>\r\n\t\t</div>\r\n\t</body>\r\n</html>";
+	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<title>Getting Started with Cocktail</title>\r\n\t\t<link href=\"app.css\" type=\"text/css\" rel=\"stylesheet\"></link>\r\n\t</head>\r\n\t<body>\r\n\t\t<h1>Hello Cocktail</h1>\r\n\t\t<p>Cocktail is a HTML/CSS rendering engine.</p>\r\n\t\t<div>\r\n\t\t\t<img id=\"icon\" alt=\"cocktail\" src=\"assets/icone_cocktail_blanche_ombre.png\" width=\"132\" height=\"132\"></img>\r\n\t\t</div>\r\n\t</body>\r\n</html>";
 	var customClass = Type.resolveClass("Main");
 	if(customClass != null) Type.createInstance(customClass,[]);
 }
@@ -92,13 +92,11 @@ IntIter.prototype = {
 }
 var Main = $hxClasses["Main"] = function() {
 	var image = js.Lib.document.getElementById("icon");
-	image.onmouseup = Main.onMouseUp;
+	image.onmouseup = function(event) {
+		if(image.src.indexOf("assets/icone_cocktail_blanche_ombre.png") != -1) image.src = "assets/icone_haxe_blanche_ombre.png"; else image.src = "assets/icone_cocktail_blanche_ombre.png";
+	};
 };
 Main.__name__ = ["Main"];
-Main.onMouseUp = function(event) {
-	var image = event.target;
-	if(image.src.indexOf("assets/icone_cocktail_blanche_ombre.png") != -1) image.src = "assets/icone_haxe_blanche_ombre.png"; else image.src = "assets/icone_cocktail_blanche_ombre.png";
-}
 Main.prototype = {
 	__class__: Main
 }
@@ -575,6 +573,6 @@ if(typeof window != "undefined") {
 }
 Cocktail.htmlSourcePath = "index.html";
 Main.ICON_COCKTAIL_PATH = "assets/icone_cocktail_blanche_ombre.png";
-Main.ICON2_PATH = "assets/icone_haxe_blanche_ombre.png";
+Main.ICON_HAXE_PATH = "assets/icone_haxe_blanche_ombre.png";
 js.Lib.onerror = null;
 Cocktail.main();
