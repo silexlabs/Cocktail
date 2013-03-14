@@ -12,18 +12,9 @@ import cocktail.core.renderer.TextInputRenderer;
 import cocktail.core.css.CoreStyle;
 
 /**
- * Form control.
- * 
- * TODO IMPORTANT : for now only the text input form control
- * is implemented and its implementation, relying on Flash
- * TextField is not ideal. It should be entirely abstracted, using
- * only a Text node.
- * The following features are missing for this : 
-	 * text selection
-	 * caret management
-	 * text can be scrolled with
-	 * the mouse when the mouse is down
-	 * on an element
+ * The input element represents a typed data field, usually with
+ * a form control to allow the user to edit the data.
+ *
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -56,6 +47,40 @@ class HTMLInputElement extends EmbeddedElement
 	 * be inputed
 	 */
 	public var maxLength(get_maxLength, set_maxLength):Int;
+	
+	/**
+	 * The checked IDL attribute allows scripts to manipulate the checkedness of an
+	 * input element. On getting, it must return the current checkedness 
+	 * of the element; and on setting, it must set the element's
+	 * checkedness to the new value and set the element's
+	 * dirty checkedness flag to true.
+	 */
+	public var checked(get_checked, set_checked):Bool;
+	
+	/**
+	 * The readonly attribute is a boolean attribute that controls
+	 * whether or not the user can edit the form control.
+	 */
+	public var readOnly(get_readOnly, set_readOnly):Bool;
+	
+	/**
+	 * A form control that is disabled must prevent any click events
+	 * that are queued on the user interaction task source
+	 * from being dispatched on the element.
+	 */
+	public var disabled(get_disabled, set_disabled):Bool;
+	
+	/**
+	 * The type attribute controls the data type 
+	 * (and associated control) of the element
+	 */
+	public var type(get_type, set_type):String;
+	
+	/**
+	 * The name content attribute gives the name of the form control,
+	 * as used in form submission and in the form element's elements object
+	 */
+	public var name(get_name, set_name):String;
 	
 	/**
 	 * class constructor
@@ -194,5 +219,55 @@ class HTMLInputElement extends EmbeddedElement
 		{
 			return Std.parseInt(maxLength);
 		}
+	}
+	
+	private function get_checked():Bool
+	{
+		return false;
+	}
+	
+	private function set_checked(value:Bool):Bool
+	{
+		return value;
+	}
+	
+	private function get_readOnly():Bool
+	{
+		return false;
+	}
+	
+	private function set_readOnly(value:Bool):Bool
+	{
+		return value;
+	}
+	
+	private function get_disabled():Bool
+	{
+		return false;
+	}
+	
+	private function set_disabled(value:Bool):Bool
+	{
+		return value;
+	}
+	
+	private function get_type():String
+	{
+		return type;
+	}
+	
+	private function set_type(value:String):String
+	{
+		return value;
+	}
+	
+	private function get_name():String
+	{
+		return name;
+	}
+	
+	private function set_name(value:String):String
+	{
+		return value;
 	}
 }

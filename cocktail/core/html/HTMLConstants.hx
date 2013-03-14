@@ -188,6 +188,24 @@ class HTMLConstants
 	
 	public static inline var TARGET_TOP:String = "_top";
 	
+	//input types values
+	
+	public static inline var INPUT_TYPE_HIDDEN:String = "hidden";
+	
+	public static inline var INPUT_TYPE_TEXT:String = "text";
+	
+	public static inline var INPUT_TYPE_PASSWORD:String = "password";
+	
+	public static inline var INPUT_TYPE_CHECKBOX:String = "checkbox";
+	
+	public static inline var INPUT_TYPE_RADIO:String = "radio";
+	
+	public static inline var INPUT_TYPE_SUBMIT:String = "submit";
+	
+	public static inline var INPUT_TYPE_RESET:String = "reset";
+	
+	public static inline var INPUT_TYPE_BUTTON:String = "button";
+	
 	// html tokens
 	
 	public static inline var HTML_TOKEN_LESS_THAN:String = "<";
