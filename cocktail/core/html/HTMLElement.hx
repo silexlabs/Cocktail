@@ -1661,10 +1661,12 @@ class HTMLElement extends Element<HTMLElement>
 	 * @param	allowedValues the value allowed for this particular attribute
 	 * @param	missingValueDefault the value to use if the attribute is not set, might be
 	 * null
+	 * @param	invalidValueDefault, the value to use if the attribute doesn't match any of 
+	 * the enumerated values, might be null
 	 * @return	the value of the attribute or the empty string, if no attribute is set and
 	 * there is no missing default values
 	 */
-	private function getEnumeratedAttributeAsDOMString(name:String, allowedValues:Array<String>, missingValueDefault:String):String
+	private function getEnumeratedAttributeAsDOMString(name:String, allowedValues:Array<String>, missingValueDefault:String, invalidValueDefault:String):String
 	{
 		var attribute:String = getAttribute(name);
 		
@@ -1686,13 +1688,25 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			if (attribute == allowedValues[i])
 			{
-				//attribute as an allowed value
+				//attribute has an allowed value
 				return attribute;
 			}
 		}
 		
 		//attribute has not an allowed value
-		return "";
+		//might take invalid or missing default
+		if (invalidValueDefault != null)
+		{
+			return invalidValueDefault;
+		}
+		else if (missingValueDefault != null)
+		{
+			return missingValueDefault;
+		}
+		else
+		{
+			return "";
+		}
 	}
 	
 	/**
