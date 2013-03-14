@@ -121,7 +121,7 @@ class HTMLAnchorElement extends HTMLElement
 	
 	private function get_href():String
 	{
-		return getAttribute(HTMLConstants.HTML_HREF_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_HREF_ATTRIBUTE_NAME);
 	}
 		
 	private function set_target(value:String):String
@@ -132,14 +132,7 @@ class HTMLAnchorElement extends HTMLElement
 	
 	private function get_target():String
 	{
-		var target:String = getAttribute(HTMLConstants.HTML_TARGET_ATTRIBUTE_NAME);
-		
-		if (target == null)
-		{
-			return HTMLConstants.TARGET_SELF;
-		}
-		
-		return target;
+		return getAttributeAsDOMString(HTMLConstants.HTML_TARGET_ATTRIBUTE_NAME);
 	}
 	
 	

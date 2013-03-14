@@ -68,7 +68,7 @@ class HTMLParamElement extends HTMLElement
 	
 	private function get_name():String
 	{
-		return getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME);
 	}
 	
 	private function set_name(value:String):String
@@ -79,7 +79,7 @@ class HTMLParamElement extends HTMLElement
 	
 	private function get_value():String
 	{
-		return getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
 	}
 	
 	private function set_value(value:String):String

@@ -221,25 +221,18 @@ class HTMLLinkElement extends HTMLElement
 	
 	private function get_disabled():Bool
 	{
-		if (getAttribute(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME) != null)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return getAttributeAsBool(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME);
 	}
 	
 	private function set_disabled(value:Bool):Bool
 	{
-		super.setAttribute(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME, Std.string(value));
+		setAttributeAsBool(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME, value);
 		return value;
 	}
 	
 	private function get_href():String
 	{
-		return getAttribute(HTMLConstants.HTML_HREF_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_HREF_ATTRIBUTE_NAME);
 	}
 	
 	private function set_href(value:String):String
@@ -250,7 +243,7 @@ class HTMLLinkElement extends HTMLElement
 	
 	private function get_rel():String
 	{
-		return getAttribute(HTMLConstants.HTML_REL_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_REL_ATTRIBUTE_NAME);
 	}
 	
 	private function set_rel(value:String):String
@@ -267,7 +260,7 @@ class HTMLLinkElement extends HTMLElement
 	
 	private function get_media():String
 	{
-		return getAttribute(HTMLConstants.HTML_MEDIA_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_MEDIA_ATTRIBUTE_NAME);
 	}
 	
 	private function set_media(value:String):String
@@ -278,7 +271,7 @@ class HTMLLinkElement extends HTMLElement
 	
 	private function get_hreflang():String
 	{
-		return getAttribute(HTMLConstants.HTML_HREFLANG_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_HREFLANG_ATTRIBUTE_NAME);
 	}
 	
 	private function set_hreflang(value:String):String
@@ -289,7 +282,7 @@ class HTMLLinkElement extends HTMLElement
 	
 	private function get_type():String
 	{
-		return getAttribute(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME);
 	}
 	
 	private function set_type(value:String):String
