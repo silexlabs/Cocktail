@@ -164,10 +164,12 @@ class HTMLConstants
 	
 	public static inline var HTML_CHECKED_ATTRIBUTE_NAME:String = "checked";
 	
+	public static inline var HTML_READ_ONLY_ATTRIBUTE_NAME:String = "readonly";
+	
 	public static inline var HTML_MAXLENGTH_ATTRIBUTE_NAME:String = "maxlength";
 	
 	public static inline var HTML_CONTENT_ATTRIBUTE_NAME:String = "content";
-	
+		
 	public static inline var HTML_PRELOAD_ATTRIBUTE_NAME:String = "preload";
 	
 	//preload attribute values

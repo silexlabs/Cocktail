@@ -209,45 +209,39 @@ class HTMLInputElement extends EmbeddedElement
 	
 	private function get_maxLength():Int
 	{
-		var maxLength:String = getAttribute(HTMLConstants.HTML_MAXLENGTH_ATTRIBUTE_NAME);
-		//TODO 4 : should it return a Null<Int> instead ?
-		if (maxLength == null)
-		{
-			return -1;
-		}
-		else
-		{
-			return Std.parseInt(maxLength);
-		}
+		return getAttributeAsPositiveSignedInteger(HTMLConstants.HTML_MAXLENGTH_ATTRIBUTE_NAME, null);
 	}
 	
 	private function get_checked():Bool
 	{
-		return false;
+		return getAttributeAsBool(HTMLConstants.HTML_CHECKED_ATTRIBUTE_NAME);
 	}
 	
 	private function set_checked(value:Bool):Bool
 	{
+		setAttributeAsBool(HTMLConstants.HTML_CHECKED_ATTRIBUTE_NAME, value);
 		return value;
 	}
 	
 	private function get_readOnly():Bool
 	{
-		return false;
+		return getAttributeAsBool(HTMLConstants.HTML_READ_ONLY_ATTRIBUTE_NAME);
 	}
 	
 	private function set_readOnly(value:Bool):Bool
 	{
+		setAttributeAsBool(HTMLConstants.HTML_READ_ONLY_ATTRIBUTE_NAME, value);
 		return value;
 	}
 	
 	private function get_disabled():Bool
 	{
-		return false;
+		return getAttributeAsBool(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME);
 	}
 	
 	private function set_disabled(value:Bool):Bool
 	{
+		setAttributeAsBool(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME, value);
 		return value;
 	}
 	
@@ -263,11 +257,12 @@ class HTMLInputElement extends EmbeddedElement
 	
 	private function get_name():String
 	{
-		return name;
+		return getAttributeAsDOMString(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME);
 	}
 	
 	private function set_name(value:String):String
 	{
+		setAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME, value);
 		return value;
 	}
 }

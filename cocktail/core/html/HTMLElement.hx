@@ -461,20 +461,11 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		//special case for the style attribute, as it has
 		//its dedicated object
-		if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
-		{
-			return style.cssText;
-		}
-		else if (name == HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME)
-		{
-			return Std.string(get_tabIndex());
-		}
 		//TODO 1 : a "style" attribute should always be specified, like for the id
 		//attribute else, it won't be serialized when calling get_innerHTML, or add
 		//it in the html serializer if not empty string ?
-		else if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
+		if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
 		{
-			//serialize the inline style object into a css string
 			return style.cssText;
 		}
 		else

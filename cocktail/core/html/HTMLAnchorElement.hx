@@ -74,26 +74,6 @@ class HTMLAnchorElement extends HTMLElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Overriden as getting the target attribute require 
-	 * extra logic
-	 */
-	override public function getAttribute(name:String):String
-	{
-		if (name == HTMLConstants.HTML_TARGET_ATTRIBUTE_NAME)
-		{
-			return target;
-		}
-		else
-		{
-			return super.getAttribute(name);
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDE PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -152,7 +132,7 @@ class HTMLAnchorElement extends HTMLElement
 	
 	private function get_target():String
 	{
-		var target:String = super.getAttribute(HTMLConstants.HTML_TARGET_ATTRIBUTE_NAME);
+		var target:String = getAttribute(HTMLConstants.HTML_TARGET_ATTRIBUTE_NAME);
 		
 		if (target == null)
 		{
