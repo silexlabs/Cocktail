@@ -10,6 +10,7 @@ package cocktail.core.html;
 
 import cocktail.core.renderer.TextInputRenderer;
 import cocktail.core.css.CoreStyle;
+import cocktail.core.html.HTMLData;
 
 /**
  * The input element represents a typed data field, usually with
@@ -83,11 +84,50 @@ class HTMLInputElement extends EmbeddedElement
 	public var name(get_name, set_name):String;
 	
 	/**
+	 * This var keeps track of the native input
+	 * value, it is separate from the value attribute
+	 * of this node.
+	 * 
+	 * For instance if the input is a text input with
+	 * a "value" attribute with the value "default", 
+	 * at first _value will be "default" but as soon as the
+	 * user input or delete text, it will be changed to the text field
+	 * content, whereas the "value" attribute of the node remains "default"
+	 */
+	private var _value:String;
+	
+	/**
+	 * the current mode of the "value" attribute, 
+	 * based on the current input type
+	 */
+	private var _valueMode:ValueModeValue;
+	
+	/**
+	 * The dirty value flag must be initially set to false when
+	 * the element is created, and must be set to true whenever 
+	 * the user interacts with the control in a way that changes the
+	 * value. It is also set to true when the value is programmatically changed
+	 */
+	private var _valueIsDirty:Bool;
+	
+	/**
+	 *  The dirty checkedness flag must be initially set 
+	 * to false when the element is created, and must be set to 
+	 * true whenever the user interacts with the control in 
+	 * a way that changes the checkedness.
+	 */
+	private var _checkednessIsDirty:Bool;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
 	{
 		super(HTMLConstants.HTML_INPUT_TAG_NAME);
+		
+		_valueIsDirty = false;
+		_checkednessIsDirty = false;
+		_valueMode = ValueModeValue.VALUE;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -112,27 +152,22 @@ class HTMLInputElement extends EmbeddedElement
 	 */
 	override private function createElementRenderer():Void
 	{
-		elementRenderer = new TextInputRenderer(this);
-		
-		var textInputElementRenderer:TextInputRenderer = cast(elementRenderer);
-		
-		//initialise max length of input
-		var maxLength:Int = get_maxLength();
-		if (maxLength != -1)
+		switch(type)
 		{
-			textInputElementRenderer.maxLength = maxLength;
+			case HTMLConstants.INPUT_TYPE_TEXT:
+				elementRenderer = new TextInputRenderer(this);
+				
+			default:	
 		}
 		
-		//initialise value of native text input
-		var value:String = getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
-		if (value != null)
-		{
-			textInputElementRenderer.value = value;
-		}
+		//TODO : should set callback for native input and activation
+		//event
+		
+		updateInputRendererState();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDE PRIVATE METHODS
+	// OVERRIDEN PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -158,22 +193,86 @@ class HTMLInputElement extends EmbeddedElement
 		return HTML_INPUT_TEXT_INTRINSIC_HEIGHT;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Update the model of the input renderer when an attribute
+	 * of this input element is changed
+	 */
+	private function updateInputRendererState():Void
+	{
+		if (elementRenderer != null)
+		{
+			//TODO : should update all the states of the input
+			//(value, checkedness, disabled...), change based on type, for isntance
+			//if radio, check if should be selected or not ? -> no, for radio, should be
+			//set as soon as value change ?
+		}
+	}
+	
+	/**
+	 * Called after the type attribute value
+	 * changed, perform all actions required
+	 * by an input type change
+	 * 
+	 * @param oldType the input type before the type change.
+	 * The new type is held by the type attribute
+	 */
+	private function updateInputType(oldType:String):Void
+	{
+		//TODO : update valueMode
+		//TODO : update checkedness ?
+		//TODO : update value ?
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// NATIVE INPUT CALLBACK
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when the native input is "activated".
+	 * Activated is used as a more generic name for 
+	 * clicked, touched or any other form of user input
+	 * 
+	 * Behaviour will vary based on the type of input
+	 */
+	private function onActivation():Void
+	{
+		//TODO : based on type, may submit form, set checkedness, 
+		//select a radio button
+	}
+	
+	/**
+	 * Called when text is input in the native input.
+	 * Only applies to text base input such as "text"
+	 * or "password"
+	 */
+	private function onInput():Void
+	{
+		//TODO : dispatch an input event
+	}
+	
 	/////////////////////////////////
 	// SETTER/GETTER
 	/////////////////////////////////
-	 
-	/**
-	 * When value set/get, also set/get it on the native
-	 * text input
-	 */
+	
+	
 	private function set_value(value:String):String
 	{
-		setAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME, value);
-	
-		if (elementRenderer != null)
+		switch(_valueMode)
 		{
-			var textInputElementRenderer:TextInputRenderer = cast(elementRenderer);
-			textInputElementRenderer.value = value;
+			case ValueModeValue.VALUE:
+				_value = value;
+				
+			case ValueModeValue.DEFAULT, ValueModeValue.DEFAULT_ON:
+				setAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME, value);
+				
+			case ValueModeValue.FILENAME:	
+				//TODO : On setting, if the new value is the empty string,
+				//it must empty the list of selected files; otherwise,
+				//it must throw an InvalidStateError exception.
 		}
 		
 		return value;
@@ -181,29 +280,30 @@ class HTMLInputElement extends EmbeddedElement
 	
 	private function get_value():String
 	{
-		if (elementRenderer != null)
+		switch(_valueMode)
 		{
-			var textInputElementRenderer:TextInputRenderer = cast(elementRenderer);
-			return textInputElementRenderer.value;
+			case ValueModeValue.VALUE:
+				return _value;
+				
+			case ValueModeValue.DEFAULT:
+				return getAttributeAsDOMString(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
+				
+			case ValueModeValue.DEFAULT_ON:
+				return getAttributeAsDOMString(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
+				//TODO : On getting, if the element has a value attribute,
+				//it must return that attribute's value; otherwise, it must return the string "on"
+				
+			case ValueModeValue.FILENAME:	
+				return ""; 
+				//TODO : On getting, it must return the string "C:\fakepath\"
+				//followed by the filename of the first file in the list of selected
+				//files, if any, or the empty string if the list is empty.
 		}
-		
-		return getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
 	}
 	
-	/**
-	 * When max length updated, update also
-	 * on the native text input
-	 */
 	private function set_maxLength(value:Int):Int
 	{
 		setAttribute(HTMLConstants.HTML_MAXLENGTH_ATTRIBUTE_NAME, Std.string(value));
-		
-		if (elementRenderer != null)
-		{
-			var textInputElementRenderer:TextInputRenderer = cast(elementRenderer);
-			textInputElementRenderer.maxLength = value;
-		}
-		
 		return value;
 	}
 	
@@ -247,11 +347,14 @@ class HTMLInputElement extends EmbeddedElement
 	
 	private function get_type():String
 	{
-		return type;
+		return getEnumeratedAttributeAsDOMString(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME, HTMLConstants.INPUT_TYPE_VALUES, HTMLConstants.INPUT_TYPE_TEXT, null);
 	}
 	
 	private function set_type(value:String):String
 	{
+		var oldType:String = type;
+		setAttribute(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME, value);
+		updateInputType(oldType);
 		return value;
 	}
 	
