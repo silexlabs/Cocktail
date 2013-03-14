@@ -183,6 +183,8 @@ class HTMLInputElement extends EmbeddedElement
 	// OVERRIDEN SETTER/GETTER
 	/////////////////////////////////
 	
+	//TODO : should bary based on input type, should be provided by
+	//native input through elment renderer for som input types
 	override private function get_intrinsicWidth():Null<Float> 
 	{
 		return HTML_INPUT_TEXT_INTRINSIC_WIDTH;
@@ -232,24 +234,24 @@ class HTMLInputElement extends EmbeddedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Called when the native input is "activated".
+	 * Called when the native input is "activated" by the user.
 	 * Activated is used as a more generic name for 
 	 * clicked, touched or any other form of user input
 	 * 
 	 * Behaviour will vary based on the type of input
 	 */
-	private function onActivation():Void
+	private function onUserActivation():Void
 	{
 		//TODO : based on type, may submit form, set checkedness, 
 		//select a radio button
 	}
 	
 	/**
-	 * Called when text is input in the native input.
+	 * Called when text is input by the user in the native input.
 	 * Only applies to text base input such as "text"
 	 * or "password"
 	 */
-	private function onInput():Void
+	private function onUserInput():Void
 	{
 		//TODO : dispatch an input event
 	}
