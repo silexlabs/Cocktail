@@ -1567,7 +1567,7 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		var tabIndex:String = super.getAttribute(HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME);
 		
-		if (tabIndex == "")
+		if (tabIndex == null)
 		{
 			//default value for focusable element is 0,
 			//else its -1
@@ -1594,12 +1594,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function get_id():String
 	{
-		var id:String = getAttribute(HTMLConstants.HTML_ID_ATTRIBUTE_NAME);
-		if (id == null)
-		{
-			id = "";
-		}
-		return id;
+		return getAttributeAsDOMString(HTMLConstants.HTML_ID_ATTRIBUTE_NAME);
 	}
 	
 	/**
@@ -1617,12 +1612,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function get_className():String
 	{
-		var className:String = getAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME);
-		if (className == null)
-		{
-			className = "";
-		}
-		return className;
+		return getAttributeAsDOMString(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME);
 	}
 	
 	/**
@@ -1645,6 +1635,81 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_hidden():Bool
 	{
+		return getAttributeAsBool(HTMLConstants.HTML_HIDDEN_ATTRIBUTE_NAME);
+	}
+	
+	private function set_hidden(value:Bool):Bool
+	{
+		setAttributeAsBool(HTMLConstants.HTML_HIDDEN_ATTRIBUTE_NAME, value);
+		return value;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// IDL GETTER/SETTER HELPERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return the named attribute's value as a string, or
+	 * the empty string if the attribute does not exist
+	 */
+	private function getAttributeAsDOMString(name:String):String
+	{
+		var attribute:String = getAttribute(name);
+		if (attribute == null)
+		{
+			attribute = "";
+		}
+		return attribute;
+	}
+	
+	/**
+	 * Return the named attribute's value as a string. This is a special
+	 * case for enumerated attribute, which can only take a limited number
+	 * of values
+	 * @param	name
+	 * @param	allowedValues the value allowed for this particular attribute
+	 * @param	missingValueDefault the value to use if the attribute is not set, might be
+	 * null
+	 * @return	the value of the attribute or the empty string, if no attribute is set and
+	 * there is no missing default values
+	 */
+	private function getEnumeratedAttributeAsDOMString(name:String, allowedValues:Array<String>, missingValueDefault:String):String
+	{
+		var attribute:String = getAttribute(name);
+		
+		//attribute is missing
+		if (attribute == null)
+		{
+			if (missingValueDefault != null)
+			{
+				return missingValueDefault;
+			}
+			else
+			{
+				return "";
+			}
+		}
+		
+		var allowedValuesLength:Int = allowedValues.length;
+		for (i in 0...allowedValuesLength)
+		{
+			if (attribute == allowedValues[i])
+			{
+				//attribute as an allowed value
+				return attribute;
+			}
+		}
+		
+		//attribute has not an allowed value
+		return "";
+	}
+	
+	/**
+	 * For attribute of type Bool, they are always
+	 * true if any value is specified
+	 */
+	private function getAttributeAsBool(name:String):Bool
+	{
 		if (getAttribute(HTMLConstants.HTML_HIDDEN_ATTRIBUTE_NAME) != null)
 		{
 			return true;
@@ -1655,10 +1720,75 @@ class HTMLElement extends Element<HTMLElement>
 		}
 	}
 	
-	private function set_hidden(value:Bool):Bool
+	/**
+	 * When an attribute is set to false, its attribute node
+	 * is removed, else its attribute value is set to the empty
+	 * string
+	 */
+	private function setAttributeAsBool(name:String, value:Bool):Void
 	{
-		super.setAttribute(HTMLConstants.HTML_HIDDEN_ATTRIBUTE_NAME, Std.string(value));
-		return value;
+		var attribute:String = getAttribute(name);
+		if (value == false)
+		{
+			if (attribute != null)
+			{
+				removeAttribute(name);
+			}
+		}
+		else
+		{
+			setAttribute(name, "");
+		}
+	}
+	
+	/**
+	 * If unsigned attribute absent, returns default value or 0
+	 */
+	private function getAttributeAsSignedInteger(name:String, defaultValue:Null<Int>):Int
+	{
+		var attribute:String = getAttribute(name);
+		if (attribute == null)
+		{
+			if (defaultValue != null)
+			{
+				return defaultValue;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		
+		return Std.parseInt(attribute);
+	}
+	
+	/**
+	 * Same as above but returns -1 instead of 0 if missing value and default
+	 */
+	private function getAttributeAsPositiveSignedInteger(name:String, defaultValue:Null<Int>):Int
+	{
+		var attribute:String = getAttribute(name);
+		if (attribute == null)
+		{
+			if (defaultValue != null)
+			{
+				return defaultValue;
+			}
+			else
+			{
+				return -1;
+			}
+		}
+		
+		var valueAsInt:Int = Std.parseInt(attribute);
+		if (valueAsInt < 0)
+		{
+			return -1;
+		}
+		else
+		{
+			return valueAsInt;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
