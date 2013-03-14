@@ -1,10 +1,10 @@
 /*
  * Cocktail, HTML rendering engine
- * http://haxe.org/com/libs/cocktail
+ * http://www.silexlabs.org/haxe/cocktail/
  *
  * Copyright (c) Silex Labs
  * Cocktail is available under the MIT license
- * http://www.silexlabs.org/labs/cocktail-licensing/
+ * http://www.silexlabs.org/haxe/cocktail/licensing/
 */
 
 == Cocktail, HTML rendering engine ==
@@ -25,6 +25,15 @@ This has a positive impact on the performances and allows access to native funct
 
 Silex Labs Cocktail library is released under MIT.
 
+
+== Pre requisites ==
+
+Haxe 2.10 needs to be installed first.
+http://haxe.org/download
+
+Then Cocktail can be installed via haxelib:
+haxelib install cocktail
+
 == Links ==
 
 Tutorials
@@ -34,8 +43,8 @@ Tutorials
 
 Developer resources
 
-* Main wiki on Haxe libs
-=> http://haxe.org/com/libs/cocktail
+* Official Cocktail page
+=> http://www.silexlabs.org/haxe/cocktail/
 * Forums and working group
 => http://www.silexlabs.org/groups/labs/cocktail/forum/
 * Cocktail download and source code
@@ -46,17 +55,13 @@ Developer resources
 Other resources
 
 * Cocktail supported platforms
-=> http://haxe.org/com/libs/cocktail/supported_platforms
+=> http://www.silexlabs.org/haxe/cocktail/documentation/supported-platforms/
 * Cocktail future platforms
 => http://www.silexlabs.org/groups/labs/cocktail/docs/cocktail-future-platforms
-* Official Cocktail definition
-=> http://www.silexlabs.org/groups/labs/cocktail/docs/official-cocktail-definition
 * Cocktail road map
-=> http://haxe.org/com/libs/cocktail/cocktail_s_road_map
+=> https://docs.google.com/spreadsheet/ccc?key=0AoCymbuV0hQfdFZNVmc0bnZmRGZHTWlpemszMUd6THc#gid=0
 * Cocktail MIT license
-=> http://www.silexlabs.org/labs/cocktail-licensing/
-* W3C CSS unit tests
-=> http://haxe.org/com/libs/cocktail/w3c_css_unit_tests
+=> http://www.silexlabs.org/haxe/cocktail/licensing/
 
 Release notes
 
@@ -67,11 +72,12 @@ Release notes
 
 Articles and demos
 
-* Cocktail web app demo
-=> http://haxe.org/com/libs/cocktail/cocktail_web_app_demo
+* WWX 2012 - Cocktail v1.0 Sunrise, HTML / CSS rendering engine
+=> http://www.silexlabs.org/133902/the-blog/cocktail-v1-0-sunrise-cross-platform-uis-with-haxe/
+* Building cross-platform applications with Cocktail
+=> http://www.silexlabs.org/haxe/cocktail/documentation/building-cross-platform-applications-with-cocktail/
 * Cocktail v1.0 Sunrise: progress report
 => http://www.silexlabs.org/?p=130892
 * Cocktail, for an open bar community !
 => http://www.silexlabs.org/the-blog* Cocktail, for an open bar community !
-* Combining Cocktail with PhoneGap
-=> http://www.blog.elimak.com/2012/07/combining-cocktail-haxe-with-phonegap/
+
