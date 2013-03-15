@@ -474,9 +474,11 @@ class HTMLDocument extends Document
 		//TODO 2 : check if it shouldn't apply to other elements
 		if (node.tagName == HTMLConstants.HTML_INPUT_TAG_NAME)
 		{
+			var inputNode:HTMLInputElement = cast(node);
+			
 			//check if a disabled attribute is present on the node
 			//to determine wether the form control is enabled or disabled
-			if (node.getAttribute(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME) == null)
+			if (inputNode.disabled = false)
 			{
 				enabled = true;
 				disabled = false;
@@ -488,11 +490,12 @@ class HTMLDocument extends Document
 			}
 			
 			//check if the input element is checked
-			//
-			//might eventually need extra check, what if a text input has a checked attribute ?
-			if (node.getAttribute(HTMLConstants.HTML_CHECKED_ATTRIBUTE_NAME) != null)
+			if (inputNode.type == HTMLConstants.INPUT_TYPE_CHECKBOX || inputNode.type == HTMLConstants.INPUT_TYPE_RADIO)
 			{
-				checked = true;
+				if (inputNode.checked == true)
+				{
+					checked = true;
+				}
 			}
 		}
 		

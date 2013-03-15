@@ -321,10 +321,6 @@ class HTMLInputElement extends EmbeddedElement
 	{
 		if (elementRenderer != null)
 		{
-			//TODO : should update all the states of the input
-			//(value, checkedness, disabled...), change based on type, for isntance
-			//if radio, check if should be selected or not ? -> no, for radio, should be
-			//set as soon as value change ?
 			var inputRenderer:InputRenderer = cast(elementRenderer);
 			inputRenderer.readonly = readonly;
 			inputRenderer.disabled = disabled;
@@ -347,8 +343,6 @@ class HTMLInputElement extends EmbeddedElement
 	 */
 	private function updateInputType(oldType:String):Void
 	{
-		trace(oldType);
-		trace(type);
 		//no actual type change
 		if (oldType == type)
 		{
