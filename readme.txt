@@ -13,7 +13,7 @@ Cocktail is cross-platform, embeddable and native.
 It renders HTML5, CSS3 and Haxe Javascript in native applications and web apps.
 
 Cross-platform
-Same rendering on all the targets, desktop, browser and mobile. Cocktail compiles to javascript/HTML5, ActionScript Flash, neko and php versions.
+Same rendering on all the targets, desktop, browser and mobile. Cocktail compiles to javascript, ActionScript and C++ (using NME).
 
 Embeddable
 Cocktail classes are made to be compiled with your application in order to render its user interface.
@@ -21,7 +21,7 @@ Cocktail is compatible with NME, Adobe AIR or PhoneGap.
 
 Native
 Cocktail do not require any virtual machine, it is not interpreted.
-This has a positive impact on the performances and allows access to native functionnalities and libraries in native language such as objective C, C++, php, ActionScript…
+This has a positive impact on the performances and allows access to native functionnalities and libraries in native language such as objective C, C++, ActionScript…
 
 Silex Labs Cocktail library is released under MIT.
 
