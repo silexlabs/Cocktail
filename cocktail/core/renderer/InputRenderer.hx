@@ -161,14 +161,14 @@ class InputRenderer extends EmbeddedBoxRenderer
 		viewport.y = y;
 		viewport.width = width;
 		viewport.height = height;
-		//nativeTextInput.viewport = viewport;
+		nativeInput.viewport = viewport;
 		
 		//update clip rect of native text input, so that
 		//it doesn't overflow its layer clip rect
 		//
 		//TODO 3 : use direct reference to layerRenderer clipRect as there
 		//seems to be a bug with the provided clip rect which is modified
-		//nativeTextInput.clipRect = layerRenderer.clipRect;
+		nativeInput.clipRect = layerRenderer.clipRect;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -177,27 +177,27 @@ class InputRenderer extends EmbeddedBoxRenderer
 	
 	private function get_value():String 
 	{
-		return value;
+		return nativeInput.value;
 	}
 	
 	private function set_value(value:String):String 
 	{
-		return value;
+		return nativeInput.value = value;
 	}
 	
 	private function set_maxLength(value:Int):Int
 	{
-		return value;
+		return nativeInput.maxLength = value;
 	}
 	
 	private function set_disabled(value:Bool):Bool
 	{
-		return value;
+		return nativeInput.disabled = value;
 	}
 	
 	private function set_readonly(value:Bool):Bool
 	{
-		return value;
+		return nativeInput.readonly = value;
 	}
 	
 	private function get_checked():Bool 

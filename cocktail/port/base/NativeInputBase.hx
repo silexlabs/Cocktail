@@ -39,6 +39,12 @@ class NativeInputBase
 	public var disabled(default, set_disabled):Bool;
 	
 	/**
+	 * get/set read-only, similar to disabled but
+	 * only for text based controls
+	 */
+	public var readonly(default, set_readonly):Bool;
+	
+	/**
 	 * get/set the position of the input relative to
 	 * the viewport
 	 */
@@ -153,5 +159,10 @@ class NativeInputBase
 	private function set_disabled(value:Bool):Bool 
 	{
 		return disabled = value;
+	}
+	
+	private function set_readonly(value:Bool):Bool 
+	{
+		return readonly = value;
 	}
 }

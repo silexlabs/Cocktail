@@ -32,7 +32,6 @@ import cocktail.core.css.CSSData;
  */
 class TextInputRenderer extends InputRenderer
 {
-	
 	/**
 	 * A reference to a class wrapping a native, 
 	 * runtime specific text input
@@ -46,8 +45,6 @@ class TextInputRenderer extends InputRenderer
 	public function new(node:HTMLElement) 
 	{
 		super(node);
-
-		nativeTextInput = new NativeTextInput();
 		
 		//listen to cocktail focus events on the HTMLInputElement
 		//TODO : should be generalised and managed by HTMLInputElement
@@ -59,7 +56,8 @@ class TextInputRenderer extends InputRenderer
 	 */
 	override private function createNativeInput():Void
 	{
-		nativeInput = new NativeTextInput();
+		nativeTextInput = new NativeTextInput();
+		nativeInput = nativeTextInput;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

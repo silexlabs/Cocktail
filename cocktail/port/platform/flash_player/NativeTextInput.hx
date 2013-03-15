@@ -164,7 +164,6 @@ class NativeTextInput extends NativeTextInputBase
 		_mask.graphics.beginFill(0xFF0000, 0.5);
 		_mask.graphics.drawRect(value.x, value.y, value.width, value.height);
 		_mask.graphics.endFill();
-		
 		return value;
 	}
 	
