@@ -22,9 +22,14 @@ import cocktail.core.graphics.GraphicsContext;
 class NativeInputBase
 {
 	/**
-	 * get/set the text of the input
+	 * get/set the value of the input
 	 */
 	public var value(get_value, set_value):String;
+	
+	/**
+	 * get/set the checkedness of the input
+	 */
+	public var checked(get_checked, set_checked):Bool;
 	
 	/**
 	 * get/set the maxLength of the input, used only
@@ -149,6 +154,16 @@ class NativeInputBase
 	private function set_value(textValue:String):String 
 	{
 		return value = textValue;
+	}
+	
+	private function get_checked():Bool
+	{
+		return checked;
+	}
+	
+	private function set_checked(value:Bool):Bool
+	{
+		return checked = value;
 	}
 	
 	private function set_maxLength(value:Int):Int 

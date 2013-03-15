@@ -10,6 +10,8 @@ package cocktail.core.html;
 
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.MouseEvent;
+import cocktail.core.renderer.CheckboxRenderer;
+import cocktail.core.renderer.InputRenderer;
 import cocktail.core.renderer.TextInputRenderer;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.html.HTMLData;
@@ -64,7 +66,7 @@ class HTMLInputElement extends EmbeddedElement
 	 * The readonly attribute is a boolean attribute that controls
 	 * whether or not the user can edit the form control.
 	 */
-	public var readOnly(get_readOnly, set_readOnly):Bool;
+	public var readonly(get_readonly, set_readonly):Bool;
 	
 	/**
 	 * A form control that is disabled must prevent any click events
@@ -202,7 +204,8 @@ class HTMLInputElement extends EmbeddedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Instantiate an input specific renderer
+	 * Instantiate an input specific renderer if needed (for instance
+	 * hidden input don't render)
 	 */
 	override private function createElementRenderer():Void
 	{
@@ -211,13 +214,21 @@ class HTMLInputElement extends EmbeddedElement
 			case HTMLConstants.INPUT_TYPE_TEXT:
 				elementRenderer = new TextInputRenderer(this);
 				
+			case HTMLConstants.INPUT_TYPE_CHECKBOX:
+				elementRenderer = new CheckboxRenderer(this);
+				
 			default:	
 		}
 		
-		//TODO : should set callback for native input and activation
-		//event
-		
-		updateInputRendererState();
+		//listen to event from native input and set its model
+		if (elementRenderer != null)
+		{
+			var inputRenderer:InputRenderer = cast(elementRenderer);
+			inputRenderer.onActivate = onUserActivation;
+			inputRenderer.onInput = onUserInput;
+			
+			updateInputRendererState();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -314,6 +325,12 @@ class HTMLInputElement extends EmbeddedElement
 			//(value, checkedness, disabled...), change based on type, for isntance
 			//if radio, check if should be selected or not ? -> no, for radio, should be
 			//set as soon as value change ?
+			var inputRenderer:InputRenderer = cast(elementRenderer);
+			inputRenderer.readonly = readonly;
+			inputRenderer.disabled = disabled;
+			inputRenderer.maxLength = maxLength;
+			inputRenderer.value = _value;
+			inputRenderer.checked = _checkedness;
 		}
 	}
 	
@@ -419,9 +436,9 @@ class HTMLInputElement extends EmbeddedElement
 		{
 			return false;
 		}
-		else if (readOnlyApplies() == true)
+		else if (readonlyApplies() == true)
 		{
-			return readOnly == false;
+			return readonly == false;
 		}
 		
 		return true;
@@ -431,7 +448,7 @@ class HTMLInputElement extends EmbeddedElement
 	 * Return wether the readonly attribute
 	 * applies to the current input type
 	 */
-	private function readOnlyApplies():Bool
+	private function readonlyApplies():Bool
 	{
 		//TODO : implement fully
 		switch(type)
@@ -500,7 +517,11 @@ class HTMLInputElement extends EmbeddedElement
 	private function onUserInput():Void
 	{
 		_valueIsDirty = true;
-		//TODO : dispatch an input event, retrieve value from native text input
+		
+		//update text value
+		var inputRenderer:InputRenderer = cast(elementRenderer);
+		_value = inputRenderer.value;
+		fireEvent(EventConstants.INPUT, true, false);
 	}
 	
 	/////////////////////////////////
@@ -590,12 +611,12 @@ class HTMLInputElement extends EmbeddedElement
 		return value;
 	}
 	
-	private function get_readOnly():Bool
+	private function get_readonly():Bool
 	{
 		return getAttributeAsBool(HTMLConstants.HTML_READ_ONLY_ATTRIBUTE_NAME);
 	}
 	
-	private function set_readOnly(value:Bool):Bool
+	private function set_readonly(value:Bool):Bool
 	{
 		setAttributeAsBool(HTMLConstants.HTML_READ_ONLY_ATTRIBUTE_NAME, value);
 		return value;

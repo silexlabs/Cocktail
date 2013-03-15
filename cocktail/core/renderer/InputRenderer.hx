@@ -202,11 +202,11 @@ class InputRenderer extends EmbeddedBoxRenderer
 	
 	private function get_checked():Bool 
 	{
-		return checked;
+		return nativeInput.checked;
 	}
 	
 	private function set_checked(value:Bool):Bool 
 	{
-		return value;
+		return nativeInput.checked = value;
 	}
 }
