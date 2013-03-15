@@ -26,15 +26,6 @@ import cocktail.core.html.HTMLData;
 class HTMLInputElement extends EmbeddedElement
 {
 	/**
-	 * The intrinsic width and height of a text input used
-	 * when no width or height attribute or CSS style defined, 
-	 * values are abitrary, based on observation
-	 */
-	private static inline var HTML_INPUT_TEXT_INTRINSIC_WIDTH:Int = 150;
-	
-	private static inline var HTML_INPUT_TEXT_INTRINSIC_HEIGHT:Float = 30;
-	
-	/**
 	 * When the type attribute of the element has the value "text",
 	 * "file" or "password", this represents the current contents
 	 * of the corresponding form control, in an interactive user
@@ -523,16 +514,26 @@ class HTMLInputElement extends EmbeddedElement
 	// OVERRIDEN SETTER/GETTER
 	/////////////////////////////////
 	
-	//TODO : should bary based on input type, should be provided by
-	//native input through elment renderer for som input types 
 	override private function get_intrinsicWidth():Null<Float> 
 	{
-		return HTML_INPUT_TEXT_INTRINSIC_WIDTH;
+		if (elementRenderer != null)
+		{
+			var inputRenderer:InputRenderer = cast(elementRenderer);
+			return inputRenderer.intrinsicWidth;
+		}
+		
+		return 0;
 	}
 	
 	override private function get_intrinsicHeight():Null<Float> 
 	{
-		return HTML_INPUT_TEXT_INTRINSIC_HEIGHT;
+		if (elementRenderer != null)
+		{
+			var inputRenderer:InputRenderer = cast(elementRenderer);
+			return inputRenderer.intrinsicHeight;
+		}
+		
+		return 0;
 	}
 	
 	/////////////////////////////////

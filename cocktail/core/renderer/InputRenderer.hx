@@ -50,6 +50,16 @@ class InputRenderer extends EmbeddedBoxRenderer
 	public var readonly(default, set_readonly):Bool;
 	
 	/**
+	 * Return the instrinsic width of the native control
+	 */
+	public var intrinsicWidth(get_intrinsicWidth, null):Int;
+	
+	/**
+	 * Return the instrinsic height of the native control
+	 */
+	public var intrinsicHeight(get_intrinsicHeight, null):Int;
+	
+	/**
 	 * a reference to the native input renderedd by
 	 * this input renderer
 	 */
@@ -208,5 +218,15 @@ class InputRenderer extends EmbeddedBoxRenderer
 	private function set_checked(value:Bool):Bool 
 	{
 		return nativeInput.checked = value;
+	}
+	
+	private function get_intrinsicWidth():Int
+	{
+		return nativeInput.intrinsicWidth;
+	}
+	
+	private function get_intrinsicHeight():Int
+	{
+		return nativeInput.intrinsicHeight;
 	}
 }

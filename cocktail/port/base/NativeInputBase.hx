@@ -50,6 +50,16 @@ class NativeInputBase
 	public var readonly(default, set_readonly):Bool;
 	
 	/**
+	 * Return the instrinsic width of the native control
+	 */
+	public var intrinsicWidth(get_intrinsicWidth, null):Int;
+	
+	/**
+	 * Return the instrinsic height of the native control
+	 */
+	public var intrinsicHeight(get_intrinsicHeight, null):Int;
+	
+	/**
 	 * get/set the position of the input relative to
 	 * the viewport
 	 */
@@ -179,5 +189,15 @@ class NativeInputBase
 	private function set_readonly(value:Bool):Bool 
 	{
 		return readonly = value;
+	}
+	
+	private function get_intrinsicWidth():Int
+	{
+		return 0;
+	}
+	
+	private function get_intrinsicHeight():Int
+	{
+		return 0;
 	}
 }

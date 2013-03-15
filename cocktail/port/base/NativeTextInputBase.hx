@@ -19,6 +19,15 @@ import cocktail.port.NativeElement;
  */
 class NativeTextInputBase extends NativeInputBase
 {
+	/**
+	 * The intrinsic width and height of a text input used
+	 * when no width or height attribute or CSS style defined, 
+	 * values are abitrary, based on observation in browser
+	 */
+	private static inline var INPUT_TEXT_INTRINSIC_WIDTH:Int = 150;
+	
+	private static inline var INPUT_TEXT_INTRINSIC_HEIGHT:Float = 30;
+	
 	//getter/seter for style attributes
 	
 	public var italic(get_italic, set_italic):Bool;
@@ -103,5 +112,15 @@ class NativeTextInputBase extends NativeInputBase
 	private function get_letterSpacing():Float
 	{
 		return letterSpacing;
+	}
+	
+	override private function get_intrinsicWidth():Int
+	{
+		return INPUT_TEXT_INTRINSIC_WIDTH;
+	}
+	
+	override private function get_intrinsicHeight():Int
+	{
+		return INPUT_TEXT_INTRINSIC_HEIGHT;
 	}
 }
