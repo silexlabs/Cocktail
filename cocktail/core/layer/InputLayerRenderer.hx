@@ -10,17 +10,16 @@ package cocktail.core.layer;
 import cocktail.core.html.HTMLInputElement;
 import cocktail.core.html.HTMLObjectElement;
 import cocktail.core.renderer.ElementRenderer;
+import cocktail.core.renderer.InputRenderer;
 import cocktail.core.renderer.TextInputRenderer;
 import haxe.Stack;
 
 /**
- * TODO 1 : this class is identical to PluginLayerRenderer
- * but for native text input, should use CompositingLayerRenderer
- * base class, need to implement same thing for video
+ * A layer used to display a native input
  * 
  * @author Yannick DOMINGUEZ
  */
-class TextInputLayerRenderer extends CompositingLayerRenderer
+class InputLayerRenderer extends CompositingLayerRenderer
 {
 	/**
 	 * class constructor
@@ -43,8 +42,8 @@ class TextInputLayerRenderer extends CompositingLayerRenderer
 			var htmlInputElement:HTMLInputElement = cast(rootElementRenderer.domNode);
 			if (htmlInputElement.elementRenderer != null)
 			{
-				var textInputRenderer:TextInputRenderer = cast(htmlInputElement.elementRenderer);
-				textInputRenderer.nativeTextInput.attach(graphicsContext);
+				var inputRenderer:InputRenderer = cast(htmlInputElement.elementRenderer);
+				//inputRenderer.nativeInput.attach(graphicsContext);
 			}
 		}
 	}
@@ -57,8 +56,8 @@ class TextInputLayerRenderer extends CompositingLayerRenderer
 			var htmlInputElement:HTMLInputElement = cast(rootElementRenderer.domNode);
 			if (htmlInputElement.elementRenderer != null)
 			{
-				var textInputRenderer:TextInputRenderer = cast(htmlInputElement.elementRenderer);
-				textInputRenderer.nativeTextInput.detach(graphicsContext);
+				var inputRenderer:InputRenderer = cast(htmlInputElement.elementRenderer);
+				//inputRenderer.nativeInput.detach(graphicsContext);
 			}
 		}
 		

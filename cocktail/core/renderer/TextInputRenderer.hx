@@ -18,7 +18,6 @@ import cocktail.core.css.CSSValueConverter;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layer.CompositingLayerRenderer;
 import cocktail.core.layer.LayerRenderer;
-import cocktail.core.layer.TextInputLayerRenderer;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
 import cocktail.core.graphics.GraphicsContext;
@@ -26,19 +25,12 @@ import cocktail.port.NativeTextInput;
 import cocktail.core.css.CSSData;
 
 /**
- * This is an ElementRenderer in charge of
+ * This is an input renderer in charge of
  * rendering a text input form control
- * 
- * TODO 1 IMPORTANT : this might be a temporary 
- * implementation. Another approach, instead of 
- * using a NativeTextInput wrapper would be to
- * implement the text input entirely cross-platform.
- * It will allow more fidelity of rendering but less OS
- * integration
  * 
  * @author Yannick DOMINGUEZ
  */
-class TextInputRenderer extends EmbeddedBoxRenderer
+class TextInputRenderer extends InputRenderer
 {
 	
 	/**
@@ -46,16 +38,6 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	 * runtime specific text input
 	 */
 	public var nativeTextInput(default, null):NativeTextInput;
-	
-	/**
-	 * Get/set the value of the text input
-	 */
-	public var value(get_value, set_value):String;
-	
-	/**
-	 * Get/set the maxLength of the text input
-	 */
-	public var maxLength(default, set_maxLength):Int;
 	
 	/**
 	 * class constructor
@@ -68,6 +50,7 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		nativeTextInput = new NativeTextInput();
 		
 		//listen to cocktail focus events on the HTMLInputElement
+		//TODO : should be generalised and managed by HTMLInputElement
 		node.addEventListener(EventConstants.FOCUS, onTextInputFocus);
 	}
 	
@@ -76,29 +59,11 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * A text input always create its own layer,
-	 * has it is needs to be composited to
-	 * leverage the native platfrom text input
-	 */
-	override public function createOwnLayer():Bool
-	{
-		return true;
-	}
-	
-	/**
-	 * A text input always create its own compositing
-	 * layer
-	 */
-	override private function doCreateLayer():Void
-	{
-		layerRenderer = new TextInputLayerRenderer(this);
-	}
-	
-	/**
 	 * Overriden to update the native text input display
 	 */
 	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO)
 	{
+		super.renderEmbeddedAsset(graphicContext, clipRect, scrollOffset);
 		updateNativeTextInput(scrollOffset, clipRect);
 	}
 	
@@ -121,36 +86,6 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 	 */
 	private function updateNativeTextInput(scrollOffset:PointVO, clipRect:RectangleVO):Void
 	{
-		var globalBounds:RectangleVO = this.globalBounds;
-		
-		//set the position and size of the native text input, relative
-		//to the Window
-		var x:Float = globalBounds.x - scrollOffset.x;
-		var y:Float =  globalBounds.y + globalBounds.height / 2 - coreStyle.fontMetrics.fontSize + coreStyle.fontMetrics.ascent / 2 - scrollOffset.y;
-		
-		//add the layer's transformations if it has any
-		//
-		//TODO 3 : only translation for now
-		var layerMatrix:Matrix = layerRenderer.matrix;
-		x += layerMatrix.e;
-		y += layerMatrix.f;
-		
-		var width:Float =  globalBounds.width;
-		var height:Float =  globalBounds.height;
-		var viewport:RectangleVO = new RectangleVO();
-		viewport.x = x;
-		viewport.y = y;
-		viewport.width = width;
-		viewport.height = height;
-		nativeTextInput.viewport = viewport;
-		
-		//update clip rect of native text input, so that
-		//it doesn't overflow its layer clip rect
-		//
-		//TODO 3 : use direct reference to layerRenderer clipRect as there
-		//seems to be a bug with the provided clip rect which is modified
-		nativeTextInput.clipRect = layerRenderer.clipRect;
-		
 		//set the style of the text input text using the CSS applying to it
 		//Based on the platform not all of those style might be taken into account
 		
@@ -185,24 +120,5 @@ class TextInputRenderer extends EmbeddedBoxRenderer
 		nativeTextInput.italic = coreStyle.getKeyword(coreStyle.fontStyle) == ITALIC;
 		nativeTextInput.letterSpacing = coreStyle.usedValues.letterSpacing;
 		nativeTextInput.color = coreStyle.usedValues.color.color;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTER/SETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_value():String 
-	{
-		return nativeTextInput.value;
-	}
-	
-	private function set_value(value:String):String 
-	{
-		return nativeTextInput.value = value;
-	}
-	
-	private function set_maxLength(value:Int):Int
-	{
-		return nativeTextInput.maxLength = value;
 	}
 }
