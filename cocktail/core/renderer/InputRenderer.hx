@@ -11,6 +11,7 @@ import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.geom.GeomData;
 import cocktail.core.layer.InputLayerRenderer;
+import cocktail.port.NativeInput;
 
 /**
  * This is an base ElementRenderer in charge of
@@ -49,12 +50,34 @@ class InputRenderer extends EmbeddedBoxRenderer
 	public var readonly(default, set_readonly):Bool;
 	
 	/**
+	 * a reference to the native input renderedd by
+	 * this input renderer
+	 */
+	public var nativeInput(default, null):NativeInput;
+	
+	/**
+	 * Callback, called when the native input is
+	 * "activated" (clicked, touched...)
+	 */
+	public var onActivate:Void->Void;
+	
+	/**
+	 * Callback, called when text is input
+	 * by the user, only applies to text based
+	 * input
+	 */
+	public var onInput:Void->Void;
+	
+	/**
 	 * class constructor
 	 * @param	node
 	 */
 	public function new(node:HTMLElement) 
 	{
 		super(node);
+		
+		createNativeInput();
+		setNativeInputCallbacks();
 	}
 	
 	/**
@@ -63,7 +86,18 @@ class InputRenderer extends EmbeddedBoxRenderer
 	 */
 	private function createNativeInput():Void
 	{
-		
+		//abstract
+	}
+	
+	/**
+	 * set up callbacks to respond to event of
+	 * the native input
+	 */
+	private function setNativeInputCallbacks():Void
+	{
+		//forwad native element callbacs
+		nativeInput.onActivate = function() { onActivate(); }
+		nativeInput.onInput = function() { onInput(); };
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

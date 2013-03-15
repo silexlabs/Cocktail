@@ -43,7 +43,7 @@ class InputLayerRenderer extends CompositingLayerRenderer
 			if (htmlInputElement.elementRenderer != null)
 			{
 				var inputRenderer:InputRenderer = cast(htmlInputElement.elementRenderer);
-				//inputRenderer.nativeInput.attach(graphicsContext);
+				inputRenderer.nativeInput.attach(graphicsContext);
 			}
 		}
 	}
@@ -57,7 +57,7 @@ class InputLayerRenderer extends CompositingLayerRenderer
 			if (htmlInputElement.elementRenderer != null)
 			{
 				var inputRenderer:InputRenderer = cast(htmlInputElement.elementRenderer);
-				//inputRenderer.nativeInput.detach(graphicsContext);
+				inputRenderer.nativeInput.detach(graphicsContext);
 			}
 		}
 		

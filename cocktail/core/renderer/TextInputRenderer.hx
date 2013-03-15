@@ -54,6 +54,14 @@ class TextInputRenderer extends InputRenderer
 		node.addEventListener(EventConstants.FOCUS, onTextInputFocus);
 	}
 	
+	/**
+	 * Instantiate a text native input
+	 */
+	override private function createNativeInput():Void
+	{
+		nativeInput = new NativeTextInput();
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
