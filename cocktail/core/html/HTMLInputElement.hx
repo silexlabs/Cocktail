@@ -128,6 +128,7 @@ class HTMLInputElement extends EmbeddedElement
 		_valueIsDirty = false;
 		_checkednessIsDirty = false;
 		_valueMode = ValueModeValue.VALUE;
+		_value = "";
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -141,6 +142,39 @@ class HTMLInputElement extends EmbeddedElement
 	override public function isVoidElement():Bool
 	{
 		return true;
+	}
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN ATTRIBUTE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * If the "value" attribute is set, 
+	 * must update the internal value of
+	 * the input, is it is not dirty (changed
+	 * by the user or programmatically).
+	 * 
+	 * Same for the "checked" attribute
+	 */
+	override public function setAttribute(name:String, value:String):Void
+	{
+		super.setAttribute(name, value);
+		
+		if (name == HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME)
+		{
+			if (_valueIsDirty == false)
+			{
+				_value = value;
+			}
+		}
+		else if (name == HTMLConstants.HTML_CHECKED_ATTRIBUTE_NAME)
+		{
+			if (_checkednessIsDirty == false)
+			{
+				_checkednessIsDirty = checked;
+			}
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -184,7 +218,7 @@ class HTMLInputElement extends EmbeddedElement
 	/////////////////////////////////
 	
 	//TODO : should bary based on input type, should be provided by
-	//native input through elment renderer for som input types
+	//native input through elment renderer for som input types 
 	override private function get_intrinsicWidth():Null<Float> 
 	{
 		return HTML_INPUT_TEXT_INTRINSIC_WIDTH;
@@ -219,14 +253,67 @@ class HTMLInputElement extends EmbeddedElement
 	 * changed, perform all actions required
 	 * by an input type change
 	 * 
+	 * This method is mostly an implementation of this algorithm :
+	 * http://www.w3.org/TR/2012/CR-html5-20121217/forms.html#input-type-change
+	 * 
 	 * @param oldType the input type before the type change.
 	 * The new type is held by the type attribute
 	 */
 	private function updateInputType(oldType:String):Void
 	{
-		//TODO : update valueMode
-		//TODO : update checkedness ?
-		//TODO : update value ?
+		//no actual type change
+		if (oldType == type)
+		{
+			return;
+		}
+		
+		if (useValueMode(oldType) == true && useDefaultOrDefaultOnMode(type) == true)
+		{
+			if (_value != "")
+			{
+				setAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME, _value);
+			}
+		}
+		else if (useValueMode(oldType) == false && useValueMode(type) == true)
+		{
+			_value = getAttributeAsDOMString(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
+			_valueIsDirty = false;
+		}
+		
+		invalidateElementRenderer();
+		
+		applyValueSanitization();
+	}
+	
+	/**
+	 * Return wether the given
+	 * input type use the "value"
+	 * mode for its value
+	 */
+	private function useValueMode(type:String):Bool
+	{
+		//TODO : implement
+		return true;
+	}
+	
+	/**
+	 * Return wether the given
+	 * input type use the "default" or "default/on"
+	 * mode for its value
+	 */
+	private function useDefaultOrDefaultOnMode(type:String):Bool
+	{
+		//TODO : implement
+		return true;
+	} 
+	
+	/**
+	 * Sanitize the value of the input, based
+	 * on its type
+	 */
+	private function applyValueSanitization():Void
+	{
+		//TODO : implement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -253,6 +340,7 @@ class HTMLInputElement extends EmbeddedElement
 	 */
 	private function onUserInput():Void
 	{
+		_valueIsDirty = true;
 		//TODO : dispatch an input event
 	}
 	
@@ -263,6 +351,8 @@ class HTMLInputElement extends EmbeddedElement
 	
 	private function set_value(value:String):String
 	{
+		_valueIsDirty = true;
+		
 		switch(_valueMode)
 		{
 			case ValueModeValue.VALUE:
