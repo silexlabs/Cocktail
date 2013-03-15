@@ -160,17 +160,17 @@ class HTMLInputElement extends EmbeddedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * If the "value" attribute is set, 
-	 * must update the internal value of
-	 * the input, is it is not dirty (changed
-	 * by the user or programmatically).
-	 * 
-	 * Same for the "checked" attribute
+	 * perform input specific operation when
+	 * some attributes are set
 	 */
 	override public function setAttribute(name:String, value:String):Void
 	{
 		super.setAttribute(name, value);
 		
+		//If the "value" attribute is set, 
+	    //must update the internal value of
+	    //the input, is it is not dirty (changed
+	    //by the user or programmatically).
 		if (name == HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME)
 		{
 			if (_valueIsDirty == false)
@@ -178,11 +178,21 @@ class HTMLInputElement extends EmbeddedElement
 				_value = value;
 			}
 		}
+		//Same for the "checked" attribute
 		else if (name == HTMLConstants.HTML_CHECKED_ATTRIBUTE_NAME)
 		{
 			if (_checkednessIsDirty == false)
 			{
-				_checkedness = checked;
+				updateCheckedness(checked);
+			}
+		}
+		//if name is changed, for radio input check if must
+		//update radio button group
+		else if (name == HTMLConstants.HTML_NAME_ATTRIBUTE_NAME)
+		{
+			if (_checkedness == true && type == HTMLConstants.INPUT_TYPE_RADIO)
+			{
+				updateRadioButtonGroup();
 			}
 		}
 	}
@@ -259,7 +269,12 @@ class HTMLInputElement extends EmbeddedElement
 		{
 			//invert checkedness
 			case HTMLConstants.INPUT_TYPE_CHECKBOX:
-				_checkedness = !_checkedness;
+				updateCheckedness(!_checkedness);
+				
+			//always set to true fro radio, and set all other
+			//radio in the group to false
+			case HTMLConstants.INPUT_TYPE_RADIO:
+				updateCheckedness(true);
 				
 		}
 	}
@@ -278,7 +293,7 @@ class HTMLInputElement extends EmbeddedElement
 		switch(type)
 		{
 			//fire simple change event
-			case HTMLConstants.INPUT_TYPE_CHECKBOX:
+			case HTMLConstants.INPUT_TYPE_CHECKBOX, HTMLConstants.INPUT_TYPE_RADIO:
 				fireEvent(EventConstants.CHANGE, false, false);
 		}
 	}
@@ -315,6 +330,8 @@ class HTMLInputElement extends EmbeddedElement
 	 */
 	private function updateInputType(oldType:String):Void
 	{
+		trace(oldType);
+		trace(type);
 		//no actual type change
 		if (oldType == type)
 		{
@@ -346,7 +363,7 @@ class HTMLInputElement extends EmbeddedElement
 	 */
 	private function useValueMode(type:String):Bool
 	{	
-		//TODO : implement
+		//TODO : implement fully
 		switch(type)
 		{
 			case HTMLConstants.INPUT_TYPE_HIDDEN, HTMLConstants.INPUT_TYPE_CHECKBOX,
@@ -365,7 +382,7 @@ class HTMLInputElement extends EmbeddedElement
 	 */
 	private function useDefaultOrDefaultOnMode(type:String):Bool
 	{
-		//TODO : implement
+		//TODO : implement fully
 		switch(type)
 		{
 			case HTMLConstants.INPUT_TYPE_TEXT, HTMLConstants.INPUT_TYPE_PASSWORD:
@@ -382,10 +399,10 @@ class HTMLInputElement extends EmbeddedElement
 	 */
 	private function applyValueSanitization(value:String, type:String):String
 	{
-		//TODO : implement
+		//TODO : implement fully
 		switch(type)
 		{
-			case HTMLConstants.INPUT_TYPE_TEXT:
+			case HTMLConstants.INPUT_TYPE_TEXT, HTMLConstants.INPUT_TYPE_PASSWORD:
 				return StringTools.replace(value, "\n", "");
 		}
 		
@@ -398,19 +415,62 @@ class HTMLInputElement extends EmbeddedElement
 	 */
 	private function isMutable():Bool
 	{
-		//TODO : implement, check disabled and readonly if applies
+		if (disabled == true)
+		{
+			return false;
+		}
+		else if (readOnlyApplies() == true)
+		{
+			return readOnly == false;
+		}
+		
 		return true;
 	}
 	
 	/**
 	 * Return wether the readonly attribute
 	 * applies to the current input type
-	 * @return
 	 */
 	private function readOnlyApplies():Bool
 	{
-		//TODO : implement
-		return false;
+		//TODO : implement fully
+		switch(type)
+		{
+			case HTMLConstants.INPUT_TYPE_TEXT, HTMLConstants.INPUT_TYPE_PASSWORD:
+				return true;
+				
+			default:
+				return false;
+		}
+	}
+	
+	/**
+	 * Update checkedness of input. 
+	 * 
+	 * If it is a radio input, might need to
+	 * also update checkedness of other radio input
+	 * in the group
+	 */
+	private function updateCheckedness(value:Bool):Void
+	{
+		_checkedness = value;
+		
+		//only update other radio if checkedness is true, means
+		//that it is possible that no radio input in the group are
+		//checked at some point
+		if (_checkedness == true && type == HTMLConstants.INPUT_TYPE_RADIO)
+		{
+			updateRadioButtonGroup();
+		}
+	}
+	
+	/**
+	 * Get all the radio input in the same radio group
+	 * as this input and set their checkedness to false
+	 */
+	private function updateRadioButtonGroup():Void
+	{
+		//TODO : implement once form element implemented
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -440,7 +500,7 @@ class HTMLInputElement extends EmbeddedElement
 	private function onUserInput():Void
 	{
 		_valueIsDirty = true;
-		//TODO : dispatch an input event
+		//TODO : dispatch an input event, retrieve value from native text input
 	}
 	
 	/////////////////////////////////
@@ -462,7 +522,6 @@ class HTMLInputElement extends EmbeddedElement
 	/////////////////////////////////
 	// SETTER/GETTER
 	/////////////////////////////////
-	
 	
 	private function set_value(value:String):String
 	{
@@ -521,12 +580,13 @@ class HTMLInputElement extends EmbeddedElement
 	
 	private function get_checked():Bool
 	{
-		return getAttributeAsBool(HTMLConstants.HTML_CHECKED_ATTRIBUTE_NAME);
+		return _checkedness;
 	}
 	
 	private function set_checked(value:Bool):Bool
-	{	
-		setAttributeAsBool(HTMLConstants.HTML_CHECKED_ATTRIBUTE_NAME, value);
+	{
+		_checkednessIsDirty = true;
+		updateCheckedness(value);
 		return value;
 	}
 	
