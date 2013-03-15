@@ -12,6 +12,7 @@ import cocktail.core.event.EventConstants;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.renderer.CheckboxRenderer;
 import cocktail.core.renderer.InputRenderer;
+import cocktail.core.renderer.PasswordInputRenderer;
 import cocktail.core.renderer.TextInputRenderer;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.html.HTMLData;
@@ -204,6 +205,9 @@ class HTMLInputElement extends EmbeddedElement
 		{
 			case HTMLConstants.INPUT_TYPE_TEXT:
 				elementRenderer = new TextInputRenderer(this);
+				
+			case HTMLConstants.INPUT_TYPE_PASSWORD:
+				elementRenderer = new PasswordInputRenderer(this);
 				
 			case HTMLConstants.INPUT_TYPE_CHECKBOX:
 				elementRenderer = new CheckboxRenderer(this);
