@@ -49,26 +49,15 @@ Developer resources
 => http://www.silexlabs.org/groups/labs/cocktail/forum/
 * Cocktail download and source code
 => https://github.com/silexlabs/Cocktail
-* Old Wiki on Git Hub
-=> https://github.com/silexlabs/Cocktail/wiki
 
 Other resources
 
 * Cocktail supported platforms
 => http://www.silexlabs.org/haxe/cocktail/documentation/supported-platforms/
-* Cocktail future platforms
-=> http://www.silexlabs.org/groups/labs/cocktail/docs/cocktail-future-platforms
 * Cocktail road map
 => https://docs.google.com/spreadsheet/ccc?key=0AoCymbuV0hQfdFZNVmc0bnZmRGZHTWlpemszMUd6THc#gid=0
 * Cocktail MIT license
 => http://www.silexlabs.org/haxe/cocktail/licensing/
-
-Release notes
-
-* Cocktail Release notes – v1.0.0alpha1
-=> http://www.silexlabs.org/groups/labs/cocktail/docs/cocktail-release-notes-v1-0-0alpha1
-* Cocktail Release notes – v1.0.0alpha2
-=> http://www.silexlabs.org/groups/labs/cocktail/docs/cocktail-release-notes-v1-0-0alpha2
 
 Articles and demos
 
@@ -76,8 +65,5 @@ Articles and demos
 => http://www.silexlabs.org/133902/the-blog/cocktail-v1-0-sunrise-cross-platform-uis-with-haxe/
 * Building cross-platform applications with Cocktail
 => http://www.silexlabs.org/haxe/cocktail/documentation/building-cross-platform-applications-with-cocktail/
-* Cocktail v1.0 Sunrise: progress report
-=> http://www.silexlabs.org/?p=130892
-* Cocktail, for an open bar community !
-=> http://www.silexlabs.org/the-blog* Cocktail, for an open bar community !
+
 
