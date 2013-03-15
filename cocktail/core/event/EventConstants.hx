@@ -446,6 +446,13 @@ class EventConstants
 	 */
 	public static inline var ERROR:String = "error";
 	
+	/**
+	 * Used at various places to signal a change, for instance used
+	 * when the value of a checkbox input changes. I didn't found
+	 * a formal definition in the w3c specs
+	 */
+	public static inline var CHANGE:String = "change";
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// MOUSE WHEEL
 	//////////////////////////////////////////////////////////////////////////////////////////

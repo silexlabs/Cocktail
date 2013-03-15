@@ -8,6 +8,8 @@
 */
 package cocktail.core.html;
 
+import cocktail.core.event.EventConstants;
+import cocktail.core.event.MouseEvent;
 import cocktail.core.renderer.TextInputRenderer;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.html.HTMLData;
@@ -111,6 +113,13 @@ class HTMLInputElement extends EmbeddedElement
 	private var _valueIsDirty:Bool;
 	
 	/**
+	 * This var keeps track of the native input current checkedness, it is
+	 * separate from the checked attribute in the same way that
+	 * _value is different from the value attribute
+	 */
+	private var _checkedness:Bool;
+	
+	/**
 	 *  The dirty checkedness flag must be initially set 
 	 * to false when the element is created, and must be set to 
 	 * true whenever the user interacts with the control in 
@@ -129,6 +138,7 @@ class HTMLInputElement extends EmbeddedElement
 		_checkednessIsDirty = false;
 		_valueMode = ValueModeValue.VALUE;
 		_value = "";
+		_checkedness = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -172,7 +182,7 @@ class HTMLInputElement extends EmbeddedElement
 		{
 			if (_checkednessIsDirty == false)
 			{
-				_checkednessIsDirty = checked;
+				_checkedness = checked;
 			}
 		}
 	}
@@ -213,20 +223,64 @@ class HTMLInputElement extends EmbeddedElement
 		return true;
 	}
 	
-	/////////////////////////////////
-	// OVERRIDEN SETTER/GETTER
-	/////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN ACTIVATION BEHAVIOUR
+	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	//TODO : should bary based on input type, should be provided by
-	//native input through elment renderer for som input types 
-	override private function get_intrinsicWidth():Null<Float> 
+	/**
+	* most input types have activation behaviour
+	*/
+	override public function hasActivationBehaviour():Bool
 	{
-		return HTML_INPUT_TEXT_INTRINSIC_WIDTH;
+		switch(type)
+		{
+			case HTMLConstants.INPUT_TYPE_BUTTON, HTMLConstants.INPUT_TYPE_CHECKBOX,
+			HTMLConstants.INPUT_TYPE_RADIO, HTMLConstants.INPUT_TYPE_RESET, 
+			HTMLConstants.INPUT_TYPE_SUBMIT:
+				return true;
+			
+			default:
+				return false;
+		}
 	}
 	
-	override private function get_intrinsicHeight():Null<Float> 
+	/**
+	 * based on input type, pre click activation vary
+	 */
+	override public function runPreClickActivation():Void
 	{
-		return HTML_INPUT_TEXT_INTRINSIC_HEIGHT;
+		//no behaviour for immutable elements
+		if (isMutable() == false)
+		{
+			return;
+		}
+		
+		switch(type)
+		{
+			//invert checkedness
+			case HTMLConstants.INPUT_TYPE_CHECKBOX:
+				_checkedness = !_checkedness;
+				
+		}
+	}
+	
+	/**
+	 * based on input type, post click activation vary
+	 */
+	override public function runPostClickActivationStep(event:MouseEvent):Void
+	{
+		//no behaviour for immutable elements
+		if (isMutable() == false)
+		{
+			return;
+		}
+		
+		switch(type)
+		{
+			//fire simple change event
+			case HTMLConstants.INPUT_TYPE_CHECKBOX:
+				fireEvent(EventConstants.CHANGE, false, false);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -282,7 +336,7 @@ class HTMLInputElement extends EmbeddedElement
 		
 		invalidateElementRenderer();
 		
-		applyValueSanitization();
+		_value = applyValueSanitization(_value, type);
 	}
 	
 	/**
@@ -291,9 +345,17 @@ class HTMLInputElement extends EmbeddedElement
 	 * mode for its value
 	 */
 	private function useValueMode(type:String):Bool
-	{
+	{	
 		//TODO : implement
-		return true;
+		switch(type)
+		{
+			case HTMLConstants.INPUT_TYPE_HIDDEN, HTMLConstants.INPUT_TYPE_CHECKBOX,
+			HTMLConstants.INPUT_TYPE_RADIO:
+				return false;
+			
+			default:
+				return true;
+		}
 	}
 	
 	/**
@@ -304,16 +366,51 @@ class HTMLInputElement extends EmbeddedElement
 	private function useDefaultOrDefaultOnMode(type:String):Bool
 	{
 		//TODO : implement
-		return true;
+		switch(type)
+		{
+			case HTMLConstants.INPUT_TYPE_TEXT, HTMLConstants.INPUT_TYPE_PASSWORD:
+				return false;
+			
+			default:
+				return true;
+		}
 	} 
 	
 	/**
 	 * Sanitize the value of the input, based
 	 * on its type
 	 */
-	private function applyValueSanitization():Void
+	private function applyValueSanitization(value:String, type:String):String
 	{
 		//TODO : implement
+		switch(type)
+		{
+			case HTMLConstants.INPUT_TYPE_TEXT:
+				return StringTools.replace(value, "\n", "");
+		}
+		
+		return value;
+	}
+	
+	/**
+	 * Return wether the input
+	 * is currently mutable
+	 */
+	private function isMutable():Bool
+	{
+		//TODO : implement, check disabled and readonly if applies
+		return true;
+	}
+	
+	/**
+	 * Return wether the readonly attribute
+	 * applies to the current input type
+	 * @return
+	 */
+	private function readOnlyApplies():Bool
+	{
+		//TODO : implement
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -331,6 +428,8 @@ class HTMLInputElement extends EmbeddedElement
 	{
 		//TODO : based on type, may submit form, set checkedness, 
 		//select a radio button
+		//TODO : just simulate click  on this element for the document to run 
+		//pre and post click activation?
 	}
 	
 	/**
@@ -342,6 +441,22 @@ class HTMLInputElement extends EmbeddedElement
 	{
 		_valueIsDirty = true;
 		//TODO : dispatch an input event
+	}
+	
+	/////////////////////////////////
+	// OVERRIDEN SETTER/GETTER
+	/////////////////////////////////
+	
+	//TODO : should bary based on input type, should be provided by
+	//native input through elment renderer for som input types 
+	override private function get_intrinsicWidth():Null<Float> 
+	{
+		return HTML_INPUT_TEXT_INTRINSIC_WIDTH;
+	}
+	
+	override private function get_intrinsicHeight():Null<Float> 
+	{
+		return HTML_INPUT_TEXT_INTRINSIC_HEIGHT;
 	}
 	
 	/////////////////////////////////
@@ -410,7 +525,7 @@ class HTMLInputElement extends EmbeddedElement
 	}
 	
 	private function set_checked(value:Bool):Bool
-	{
+	{	
 		setAttributeAsBool(HTMLConstants.HTML_CHECKED_ATTRIBUTE_NAME, value);
 		return value;
 	}
