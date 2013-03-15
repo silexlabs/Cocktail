@@ -77,6 +77,9 @@ class NativeTextInput extends NativeTextInputBase
 		//make the text field editable
 		_textField.type = TextFieldType.INPUT;
 		
+		//forward input event
+		_textField.addEventListener(flash.events.TextEvent.TEXT_INPUT, function(e) { onInput(); } );
+		
 		_textFormat = new TextFormat();
 		
 		updateTextFormat();
@@ -260,6 +263,12 @@ class NativeTextInput extends NativeTextInputBase
 	
 	override private function set_maxLength(value:Int):Int
 	{
+		//in HTML, -1 means no max length, while in flash
+		//its 0
+		if (value == -1)
+		{
+			value = 0;
+		}
 		return _textField.maxChars = value;
 	}
 	

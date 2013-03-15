@@ -521,6 +521,7 @@ class HTMLInputElement extends EmbeddedElement
 		//update text value
 		var inputRenderer:InputRenderer = cast(elementRenderer);
 		_value = inputRenderer.value;
+		
 		fireEvent(EventConstants.INPUT, true, false);
 	}
 	
