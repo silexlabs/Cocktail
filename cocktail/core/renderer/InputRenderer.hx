@@ -154,8 +154,8 @@ class InputRenderer extends EmbeddedBoxRenderer
 		
 		//set the position and size of the native input, relative
 		//to the viewport
-		var x:Float = globalBounds.x - scrollOffset.x;
-		var y:Float =  globalBounds.y + globalBounds.height / 2 - coreStyle.fontMetrics.fontSize + coreStyle.fontMetrics.ascent / 2 - scrollOffset.y;
+		var x:Float = globalBounds.x + coreStyle.usedValues.borderLeftWidth - scrollOffset.x;
+		var y:Float =  globalBounds.y + coreStyle.usedValues.borderTopWidth + (globalBounds.height - coreStyle.usedValues.borderTopWidth - coreStyle.usedValues.borderBottomWidth) / 2 - coreStyle.fontMetrics.fontSize + coreStyle.fontMetrics.ascent / 2 - scrollOffset.y;
 		
 		//add the layer's transformations if it has any
 		//
@@ -164,8 +164,8 @@ class InputRenderer extends EmbeddedBoxRenderer
 		x += layerMatrix.e;
 		y += layerMatrix.f;
 		
-		var width:Float =  globalBounds.width;
-		var height:Float =  globalBounds.height;
+		var width:Float =  globalBounds.width - coreStyle.usedValues.borderLeftWidth - coreStyle.usedValues.borderRightWidth;
+		var height:Float =  globalBounds.height - coreStyle.usedValues.borderTopWidth - coreStyle.usedValues.borderBottomWidth;
 		var viewport:RectangleVO = new RectangleVO();
 		viewport.x = x;
 		viewport.y = y;
