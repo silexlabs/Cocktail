@@ -11,6 +11,7 @@ package cocktail.core.html;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.renderer.CheckboxRenderer;
+import cocktail.core.renderer.InputButtonRenderer;
 import cocktail.core.renderer.InputRenderer;
 import cocktail.core.renderer.PasswordInputRenderer;
 import cocktail.core.renderer.RadioRenderer;
@@ -225,6 +226,9 @@ class HTMLInputElement extends EmbeddedElement
 				
 			case HTMLConstants.INPUT_TYPE_RADIO:
 				elementRenderer = new RadioRenderer(this);
+				
+			case HTMLConstants.INPUT_TYPE_BUTTON:
+				elementRenderer = new InputButtonRenderer(this);
 				
 			default:	
 		}
