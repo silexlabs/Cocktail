@@ -227,7 +227,9 @@ class HTMLInputElement extends EmbeddedElement
 			case HTMLConstants.INPUT_TYPE_RADIO:
 				elementRenderer = new RadioRenderer(this);
 				
-			case HTMLConstants.INPUT_TYPE_BUTTON:
+			case HTMLConstants.INPUT_TYPE_BUTTON,
+			HTMLConstants.INPUT_TYPE_RESET,
+			HTMLConstants.INPUT_TYPE_SUBMIT:
 				elementRenderer = new InputButtonRenderer(this);
 				
 			default:	

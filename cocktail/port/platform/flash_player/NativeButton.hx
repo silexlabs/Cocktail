@@ -5,38 +5,34 @@
 	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
-package cocktail.core.renderer;
-import cocktail.core.geom.Matrix;
-import cocktail.core.graphics.GraphicsContext;
+package cocktail.port.platform.flash_player;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.geom.GeomData;
-import cocktail.core.layer.InputLayerRenderer;
-import cocktail.port.NativeButton;
-import cocktail.port.NativeCheckbox;
-import cocktail.port.NativeInput;
+import cocktail.port.base.NativeInputBase;
 
 /**
- * This is an input element renderrer in charge of
- * rendering a button
+ * This is the flash port of for the native button.
+ * 
+ * note : this is one possible implementation of a button
+ * for flash. The idea here, is to set the inner html of
+ * the input to the value, this way the button can be entirely
+ * styled in CSS. An alternative solution might be to use 
+ * a true flash button and attach it to the display list
  * 
  * @author Yannick DOMINGUEZ
  */
-class InputButtonRenderer extends InputRenderer
+class NativeButton extends NativeInputBase
 {
 	/**
 	 * class constructor
-	 * @param	node
 	 */
 	public function new(node:HTMLElement) 
 	{
 		super(node);
 	}
 	
-	/**
-	 * Instantiate a native button input
-	 */
-	override private function createNativeInput():Void
+	override private function set_value(textValue:String):String 
 	{
-		nativeInput = new NativeButton(domNode);
+		_node.innerHTML = textValue;
+		return textValue;
 	}
 }

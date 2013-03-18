@@ -7,4 +7,12 @@
 */
 package cocktail.port;
 
+#if macro
 typedef NativeButton = cocktail.port.base.NativeInputBase;
+
+#elseif (flash9 || nme)
+typedef NativeButton =  cocktail.port.platform.flash_player.NativeButton;
+
+#else
+typedef NativeButton = cocktail.port.base.NativeInputBase;
+#end
