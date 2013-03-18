@@ -37,6 +37,6 @@ class InputButtonRenderer extends InputRenderer
 	 */
 	override private function createNativeInput():Void
 	{
-		nativeInput = new NativeButton();
+		nativeInput = new NativeButton(domNode);
 	}
 }

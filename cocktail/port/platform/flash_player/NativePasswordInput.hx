@@ -6,6 +6,7 @@
 	To read the license please visit http://www.gnu.org/copyleft/gpl.html
 */
 package cocktail.port.platform.flash_player;
+import cocktail.core.html.HTMLElement;
 
 /**
  * This is the flash port of for the native password input,
@@ -18,9 +19,9 @@ class NativePasswordInput extends NativeTextInput
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(node:HTMLElement) 
 	{
-		super();
+		super(node);
 		_textField.displayAsPassword = true;
 	}
 }

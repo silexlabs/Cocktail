@@ -9,6 +9,7 @@ package cocktail.port.base;
 
 import cocktail.core.geom.GeomData;
 import cocktail.core.graphics.GraphicsContext;
+import cocktail.core.html.HTMLElement;
 import cocktail.port.NativeElement;
 
 /**
@@ -45,9 +46,9 @@ class NativeTextInputBase extends NativeInputBase
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(node:HTMLElement) 
 	{
-		super();
+		super(node);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -36,6 +36,6 @@ class CheckboxRenderer extends InputRenderer
 	 */
 	override private function createNativeInput():Void
 	{
-		nativeInput = new NativeCheckbox();
+		nativeInput = new NativeCheckbox(domNode);
 	}
 }

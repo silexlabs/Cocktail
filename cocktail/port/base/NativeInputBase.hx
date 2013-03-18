@@ -10,6 +10,7 @@ package cocktail.port.base;
 
 import cocktail.core.geom.GeomData;
 import cocktail.core.graphics.GraphicsContext;
+import cocktail.core.html.HTMLElement;
 
 /**
  * a base class exposing method
@@ -85,9 +86,15 @@ class NativeInputBase
 	 */
 	public var onInput:Void->Void;
 	
-	public function new() 
+	/**
+	 * a reference to the html node instantiating
+	 * this native input
+	 */
+	private var _node:HTMLElement;
+	
+	public function new(node:HTMLElement) 
 	{
-		
+		_node = node;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

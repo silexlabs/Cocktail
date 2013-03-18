@@ -8,6 +8,7 @@
 package cocktail.port.platform.flash_player;
 
 import cocktail.core.graphics.GraphicsContext;
+import cocktail.core.html.HTMLElement;
 import cocktail.port.base.NativeTextInputBase;
 import cocktail.port.NativeElement;
 import flash.display.DisplayObjectContainer;
@@ -60,9 +61,9 @@ class NativeTextInput extends NativeTextInputBase
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(node:HTMLElement) 
 	{
-		super();
+		super(node);
 		
 		_textField = new TextField();
 		

@@ -32,7 +32,7 @@ class PasswordInputRenderer extends TextInputRenderer
 	 */
 	override private function createNativeInput():Void
 	{
-		nativeTextInput = new NativePasswordInput();
+		nativeTextInput = new NativePasswordInput(domNode);
 		nativeInput = nativeTextInput;
 	} 
 }

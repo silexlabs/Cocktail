@@ -37,6 +37,6 @@ class RadioRenderer extends InputRenderer
 	 */
 	override private function createNativeInput():Void
 	{
-		nativeInput = new NativeRadio();
+		nativeInput = new NativeRadio(domNode);
 	}
 }

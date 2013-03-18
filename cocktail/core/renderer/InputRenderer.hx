@@ -19,7 +19,7 @@ import cocktail.port.NativeInput;
  * 
  * @author Yannick DOMINGUEZ
  */
-class InputRenderer extends EmbeddedBoxRenderer
+class InputRenderer extends BlockBoxRenderer
 {
 	/**
 	 * get/set the value of the input
@@ -136,8 +136,9 @@ class InputRenderer extends EmbeddedBoxRenderer
 	/**
 	 * Overriden to update the native input display
 	 */
-	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO)
+	override private function renderSelf(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO)
 	{
+		super.renderSelf(graphicContext, clipRect, scrollOffset);
 		updateNativeInputViewport(scrollOffset, clipRect);
 	}
 	

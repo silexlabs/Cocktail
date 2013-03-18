@@ -56,7 +56,7 @@ class TextInputRenderer extends InputRenderer
 	 */
 	override private function createNativeInput():Void
 	{
-		nativeTextInput = new NativeTextInput();
+		nativeTextInput = new NativeTextInput(domNode);
 		nativeInput = nativeTextInput;
 	}
 	
@@ -67,9 +67,9 @@ class TextInputRenderer extends InputRenderer
 	/**
 	 * Overriden to update the native text input display
 	 */
-	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO)
+	override private function renderSelf(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO)
 	{
-		super.renderEmbeddedAsset(graphicContext, clipRect, scrollOffset);
+		super.renderSelf(graphicContext, clipRect, scrollOffset);
 		updateNativeTextInput(scrollOffset, clipRect);
 	}
 	
