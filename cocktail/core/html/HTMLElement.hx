@@ -1317,10 +1317,19 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function click():Void
 	{
+		dispatchEvent(createMouseClickEvent());
+	}
+	
+	/**
+	 * Create and return a simulated click event
+	 */
+	private function createMouseClickEvent():MouseEvent
+	{
 		var mouseEvent:MouseEvent = new MouseEvent();
 		mouseEvent.initMouseEvent(EventConstants.CLICK, false, false, null, 0, 0, 0, 0, 0, false, false, false, false,
 		0, null); 
-		dispatchEvent(mouseEvent);
+		
+		return mouseEvent;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1432,6 +1441,45 @@ class HTMLElement extends Element<HTMLElement>
 	 * it will trigger its activation behaviour
 	 */
 	
+	 /**
+	 * Run the full activation behaviour of this element, including
+	 * dispatching the click event which triggered the activation. If the click event
+	 * is null, for instance if it was triggered by keyboard, simulate a click instead
+	 */
+	public function triggerActivationBehaviour(clickEvent:MouseEvent = null):Void
+	{
+		//find the first parent which has an activation behaviour, might
+		//return null
+		var nearestActivatableElement:HTMLElement = getNearestActivatableElement();
+
+		//execute pre activation
+		if (nearestActivatableElement != null)
+		{
+			nearestActivatableElement.runPreClickActivation();
+		}
+		
+		//might be null if triggered by keyboard or other input method
+		if (clickEvent == null)
+		{
+			clickEvent = createMouseClickEvent();
+		}
+		
+		dispatchEvent(clickEvent);
+		
+		//execute post or canceled activation behaviour
+		if (nearestActivatableElement != null)
+		{
+			if (clickEvent.defaultPrevented == true)
+			{
+				nearestActivatableElement.runCanceledActivationStep();
+			}
+			else
+			{
+				nearestActivatableElement.runPostClickActivationStep(clickEvent);
+			}
+		}
+	}
+	 
 	 /**
 	  * Wheter this HTMLElement has any activation 
 	  * behaviour associated with it

@@ -777,10 +777,9 @@ class HTMLDocument extends Document
 	
 			case ENTER_KEY_CODE, SPACE_KEY_CODE:
 				//only simulate click if default was not prevented
-				//TODO 3 : should run activation behaviour steps ?
 				if (keyboardEvent.defaultPrevented == false)
 				{
-					activeElement.click();
+					activeElement.triggerActivationBehaviour();
 				}
 		}
 	}
@@ -889,36 +888,13 @@ class HTMLDocument extends Document
 		
 		var htmlElement:HTMLElement = elementRendererAtPoint.domNode;
 		
-		//find the first parent of the HTMLElement which has an activation behaviour, might
-		//return null
-		var nearestActivatableElement:HTMLElement = htmlElement.getNearestActivatableElement();
-
-		//execute pre activation
-		if (nearestActivatableElement != null)
-		{
-			nearestActivatableElement.runPreClickActivation();
-		}
-		
 		//create a mouse click event from the mouse up event
 		var clickEvent:MouseEvent = new MouseEvent();
 		clickEvent.initMouseEvent(EventConstants.CLICK, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY,
 		mouseEvent.clientX, mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey,
 		mouseEvent.metaKey, mouseEvent.button, null);
 		
-		htmlElement.dispatchEvent(clickEvent);
-		
-		//execute post or canceled activation behaviour
-		if (nearestActivatableElement != null)
-		{
-			if (clickEvent.defaultPrevented == true)
-			{
-				nearestActivatableElement.runCanceledActivationStep();
-			}
-			else
-			{
-				nearestActivatableElement.runPostClickActivationStep(clickEvent);
-			}
-		}
+		htmlElement.triggerActivationBehaviour(clickEvent);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
