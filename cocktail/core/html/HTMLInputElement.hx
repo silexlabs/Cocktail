@@ -325,6 +325,20 @@ class HTMLInputElement extends EmbeddedElement
 			//radio in the group to false
 			case HTMLConstants.INPUT_TYPE_RADIO:
 				updateCheckedness(true);
+				
+			//reset the form if has form owner
+			case HTMLConstants.INPUT_TYPE_RESET:
+				if (form != null)
+				{
+					form.reset();
+				}
+			
+			//sumbit the form if has form owner	
+			case HTMLConstants.INPUT_TYPE_SUBMIT:
+				if (form != null)
+				{
+					form.submit();
+				}
 		}
 	}
 	
@@ -676,10 +690,7 @@ class HTMLInputElement extends EmbeddedElement
 	 */
 	private function onUserActivation():Void
 	{
-		//TODO : based on type, may submit form, set checkedness, 
-		//select a radio button
-		//TODO : just simulate click  on this element for the document to run 
-		//pre and post click activation?
+		triggerActivationBehaviour();
 	}
 	
 	/**
