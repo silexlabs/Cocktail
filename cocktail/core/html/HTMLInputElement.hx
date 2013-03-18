@@ -13,6 +13,7 @@ import cocktail.core.event.MouseEvent;
 import cocktail.core.renderer.CheckboxRenderer;
 import cocktail.core.renderer.InputRenderer;
 import cocktail.core.renderer.PasswordInputRenderer;
+import cocktail.core.renderer.RadioRenderer;
 import cocktail.core.renderer.TextInputRenderer;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.html.HTMLData;
@@ -26,59 +27,6 @@ import cocktail.core.html.HTMLData;
  */
 class HTMLInputElement extends EmbeddedElement
 {
-	/**
-	 * When the type attribute of the element has the value "text",
-	 * "file" or "password", this represents the current contents
-	 * of the corresponding form control, in an interactive user
-	 * agent. Changing this attribute changes the contents of the
-	 * form control, but does not change the value of the HTML
-	 * value attribute of the element. When the type attribute
-	 * of the element has the value "button", "hidden", "submit",
-	 * "reset", "image", "checkbox" or "radio", this represents 
-	 * the HTML value attribute of the element.
-	 */
-	public var value(get_value, set_value):String;
-	
-	/**
-	 * Limit the max number of characters whihc can
-	 * be inputed
-	 */
-	public var maxLength(get_maxLength, set_maxLength):Int;
-	
-	/**
-	 * The checked IDL attribute allows scripts to manipulate the checkedness of an
-	 * input element. On getting, it must return the current checkedness 
-	 * of the element; and on setting, it must set the element's
-	 * checkedness to the new value and set the element's
-	 * dirty checkedness flag to true.
-	 */
-	public var checked(get_checked, set_checked):Bool;
-	
-	/**
-	 * The readonly attribute is a boolean attribute that controls
-	 * whether or not the user can edit the form control.
-	 */
-	public var readonly(get_readonly, set_readonly):Bool;
-	
-	/**
-	 * A form control that is disabled must prevent any click events
-	 * that are queued on the user interaction task source
-	 * from being dispatched on the element.
-	 */
-	public var disabled(get_disabled, set_disabled):Bool;
-	
-	/**
-	 * The type attribute controls the data type 
-	 * (and associated control) of the element
-	 */
-	public var type(get_type, set_type):String;
-	
-	/**
-	 * The name content attribute gives the name of the form control,
-	 * as used in form submission and in the form element's elements object
-	 */
-	public var name(get_name, set_name):String;
-	
 	/**
 	 * This var keeps track of the native input
 	 * value, it is separate from the value attribute
@@ -120,6 +68,69 @@ class HTMLInputElement extends EmbeddedElement
 	 * a way that changes the checkedness.
 	 */
 	private var _checkednessIsDirty:Bool;
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// IDL attributes
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When the type attribute of the element has the value "text",
+	 * "file" or "password", this represents the current contents
+	 * of the corresponding form control, in an interactive user
+	 * agent. Changing this attribute changes the contents of the
+	 * form control, but does not change the value of the HTML
+	 * value attribute of the element. When the type attribute
+	 * of the element has the value "button", "hidden", "submit",
+	 * "reset", "image", "checkbox" or "radio", this represents 
+	 * the HTML value attribute of the element.
+	 */
+	public var value(get_value, set_value):String;
+	
+	/**
+	 * Limit the max number of characters whihc can
+	 * be inputed
+	 */
+	public var maxLength(get_maxLength, set_maxLength):Int;
+	
+	/**
+	 * The checked IDL attribute allows scripts to manipulate the checkedness of an
+	 * input element. On getting, it must return the current checkedness 
+	 * of the element; and on setting, it must set the element's
+	 * checkedness to the new value and set the element's
+	 * dirty checkedness flag to true.
+	 */
+	public var checked(get_checked, set_checked):Bool;
+	
+	/**
+	 * The readonly attribute is a boolean attribute that controls
+	 * whether or not the user can edit the form control.
+	 */
+	public var readOnly(get_readonly, set_readonly):Bool;
+	
+	/**
+	 * A form control that is disabled must prevent any click events
+	 * that are queued on the user interaction task source
+	 * from being dispatched on the element.
+	 */
+	public var disabled(get_disabled, set_disabled):Bool;
+	
+	/**
+	 * The type attribute controls the data type 
+	 * (and associated control) of the element
+	 */
+	public var type(get_type, set_type):String;
+	
+	/**
+	 * The name content attribute gives the name of the form control,
+	 * as used in form submission and in the form element's elements object
+	 */
+	public var name(get_name, set_name):String;
+	
+	/**
+	 * Returns the element's form owner.
+	 * Returns null if there isn't one.
+	 */
+	public var form(default, null):HTMLFormElement;
 	
 	/**
 	 * class constructor
@@ -212,6 +223,9 @@ class HTMLInputElement extends EmbeddedElement
 			case HTMLConstants.INPUT_TYPE_CHECKBOX:
 				elementRenderer = new CheckboxRenderer(this);
 				
+			case HTMLConstants.INPUT_TYPE_RADIO:
+				elementRenderer = new RadioRenderer(this);
+				
 			default:	
 		}
 		
@@ -237,6 +251,30 @@ class HTMLInputElement extends EmbeddedElement
 	override private function isDefaultFocusable():Bool
 	{
 		return true;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE DOM METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Should update from owner when appended
+	 * to a node
+	 */
+	override private function appended():Void
+	{
+		super.appended();
+		resetFormOwner();
+	}
+	
+	/**
+	 * Should update the form owner when
+	 * removed from a node
+	 */
+	override private function removed():Void
+	{
+		super.removed();
+		resetFormOwner();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -281,7 +319,6 @@ class HTMLInputElement extends EmbeddedElement
 			//radio in the group to false
 			case HTMLConstants.INPUT_TYPE_RADIO:
 				updateCheckedness(true);
-				
 		}
 	}
 	
@@ -317,7 +354,7 @@ class HTMLInputElement extends EmbeddedElement
 		if (elementRenderer != null)
 		{
 			var inputRenderer:InputRenderer = cast(elementRenderer);
-			inputRenderer.readonly = readonly;
+			inputRenderer.readonly = readOnly;
 			inputRenderer.disabled = disabled;
 			inputRenderer.maxLength = maxLength;
 			inputRenderer.value = _value;
@@ -427,7 +464,7 @@ class HTMLInputElement extends EmbeddedElement
 		}
 		else if (readonlyApplies() == true)
 		{
-			return readonly == false;
+			return readOnly == false;
 		}
 		
 		return true;
@@ -461,6 +498,10 @@ class HTMLInputElement extends EmbeddedElement
 	{
 		_checkedness = value;
 		
+		//style declaration must be updated as 
+		//checkedness is linked to the :checked pseudo-class
+		invalidateStyleDeclaration(false);
+		
 		//only update other radio if checkedness is true, means
 		//that it is possible that no radio input in the group are
 		//checked at some point
@@ -476,7 +517,114 @@ class HTMLInputElement extends EmbeddedElement
 	 */
 	private function updateRadioButtonGroup():Void
 	{
-		//TODO : implement once form element implemented
+		//can't belong to a radio group with no name
+		if (name == "")
+		{
+			return;
+		}
+		
+		//TODO : instead of requesting from document, should be home subtree as even
+		//if not inserted into document, might belong to same radio group
+		var inputElements:Array<HTMLElement> = _ownerHTMLDocument.getElementsByTagName(HTMLConstants.HTML_INPUT_TAG_NAME);
+		
+		var inputLength:Int = inputElements.length;
+		for (i in 0...inputLength)
+		{
+			var input:HTMLInputElement = cast(inputElements[i]);
+			if (input.type == HTMLConstants.INPUT_TYPE_RADIO && input != this)
+			{
+				//must have either same form as this or both 
+				//have null form
+				if (input.form == form)
+				{
+					//both must have same name
+					if (input.name == name)
+					{
+						input.checked = false;
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Associate this input with its
+	 * form owner if any.
+	 * 
+	 * This is an implementatio of the following
+	 * algorithm :
+	 * http://www.w3.org/TR/2012/CR-html5-20121217/forms.html#reset-the-form-owner
+	 * 
+	 * TODO : incomplete implementation, doesn't
+	 * implement form attribute
+	 */
+	private function resetFormOwner():Void
+	{
+		var firstFormAncestor:HTMLFormElement = getFirstFormAncestor();
+		
+		//do nothing, if already associated or if both
+		//are null
+		if (firstFormAncestor == form)
+		{
+			return;
+		}
+		
+		//dissociate from previous form if any
+		if (form != null)
+		{
+			dissociateFormElement(form);
+			form = null;
+		}
+		
+		//associate with new form if any
+		if (firstFormAncestor != null)
+		{
+			form = firstFormAncestor;
+			associateFormElement(form);
+			
+			//if is a radio input, set all other radio input
+			//to false
+			if (_checkedness == true && type == HTMLConstants.INPUT_TYPE_RADIO)
+			{
+				updateRadioButtonGroup();
+			}
+		}
+	}
+	
+	/**
+	 * Return the first form element ancestor
+	 * of this input or null if there is
+	 * no such ancestor
+	 */
+	private function getFirstFormAncestor():HTMLFormElement
+	{
+		var parent:HTMLElement = parentNode;
+		while (parent != null)
+		{
+			if (parent.tagName == HTMLConstants.HTML_FORM_TAG_NAME)
+			{
+				return cast(parent);
+			}
+			parent = parent.parentNode;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * associate this input with the provided form element
+	 */
+	private function associateFormElement(form:HTMLFormElement):Void
+	{
+		form.elements.push(this);
+	}
+	
+	/**
+	 * dissociate this input from the provided form element
+	 */
+	private function dissociateFormElement(form:HTMLFormElement):Void
+	{
+		form.elements.remove(this);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

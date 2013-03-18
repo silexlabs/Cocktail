@@ -7,4 +7,4 @@
 */
 package cocktail.port;
 
-typedef NativeCheckbox = cocktail.port.base.NativeInputBase;
+typedef NativeRadio = cocktail.port.base.NativeInputBase;

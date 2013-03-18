@@ -605,7 +605,6 @@ class HTMLElement extends Element<HTMLElement>
 			}
 		}
 		invalidateCascade();
-		
 	}
 	
 	/**
@@ -621,6 +620,18 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			_ownerHTMLDocument.invalidationManager.invalidateCascade();
 
+		}
+	}
+	
+	/**
+	 * invalidate the rendering of this HTMLElement, 
+	 * so that it gets redrawn on next update
+	 */
+	private function invalidateRendering():Void
+	{
+		if (elementRenderer != null)
+		{
+			_ownerHTMLDocument.invalidationManager.invalidateRendering();
 		}
 	}
 	

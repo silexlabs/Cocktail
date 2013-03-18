@@ -191,10 +191,7 @@ class HTMLImageElement extends EmbeddedElement
 		//needs to be updated
 		if (getAttributeNode(HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME) != null && getAttributeNode(HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME) != null)
 		{
-			if (elementRenderer != null)
-			{
-				_ownerHTMLDocument.invalidationManager.invalidateRendering(elementRenderer.hitTestingBounds);
-			}
+			invalidateRendering();
 		}
 		//else the size of the loaded
 		//picture will probably affect layout too
