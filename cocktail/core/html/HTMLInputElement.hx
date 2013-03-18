@@ -363,7 +363,7 @@ class HTMLInputElement extends EmbeddedElement
 			inputRenderer.readonly = readOnly;
 			inputRenderer.disabled = disabled;
 			inputRenderer.maxLength = maxLength;
-			inputRenderer.value = _value;
+			inputRenderer.value = getElementRendererValue();
 			inputRenderer.checked = _checkedness;
 		}
 	}
@@ -631,6 +631,36 @@ class HTMLInputElement extends EmbeddedElement
 	private function dissociateFormElement(form:HTMLFormElement):Void
 	{
 		form.elements.remove(this);
+	}
+	
+	/**
+	 * return the "value" that should be provided to
+	 * the element renderer of the input, varies based
+	 * on the type of the input
+	 */
+	private function getElementRendererValue():String
+	{
+		switch(type)
+		{
+			//reset and submit buttons use the value attribute as label or
+			//a default if no value is provided
+			case HTMLConstants.INPUT_TYPE_RESET, HTMLConstants.INPUT_TYPE_SUBMIT:
+				var valueAttribute:String = getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
+				if (valueAttribute == null)
+				{
+					if (type == HTMLConstants.INPUT_TYPE_RESET)
+					{
+						return HTMLConstants.INPUT_RESET_LABEL;
+					}
+					else
+					{
+						return HTMLConstants.INPUT_SUBMIT_LABEL;
+					}
+				}
+		}
+		
+		//in other cases, use the current value
+		return value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
