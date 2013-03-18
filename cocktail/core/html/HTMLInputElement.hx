@@ -204,6 +204,28 @@ class HTMLInputElement extends EmbeddedElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN FORM METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Reset the input
+	 */
+	override public function reset():Void
+	{
+		_valueIsDirty = false;
+		_checkednessIsDirty = false;
+		_value = getAttributeAsDOMString(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
+		updateCheckedness(getAttributeAsBool(HTMLConstants.HTML_CHECKED_ATTRIBUTE_NAME));
+
+		//TODO : reset list of selected files once file type implemented
+		
+		applyValueSanitization(value, type);
+
+		//refresh native input
+		updateInputRendererState();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN PRIVATE RENDERING METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	

@@ -524,6 +524,24 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC FORM METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Resets the element, implementation vary
+	 * based on wether the element is a form or
+	 * a form element
+	 * 
+	 * note : implemented here as it is used
+	 * by multiple form related element not sharing
+	 * a base class or interface
+	 */
+	public function reset():Void
+	{
+		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -1339,12 +1357,16 @@ class HTMLElement extends Element<HTMLElement>
 	
 	/**
 	 * dispatch event of type Event
+	 * 
+	 * @return wether the default action was prevented
 	 */
-	private function fireEvent(eventType:String, bubbles:Bool, cancelable:Bool):Void
+	private function fireEvent(eventType:String, bubbles:Bool, cancelable:Bool):Bool
 	{
 		var event:Event = new Event();
 		event.initEvent(eventType, bubbles, cancelable);
 		dispatchEvent(event);
+		
+		return event.defaultPrevented;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -7,6 +7,7 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.html;
+import cocktail.core.event.EventConstants;
 
 /**
  * The form element represents a collection of form-associated elements, 
@@ -45,7 +46,7 @@ class HTMLFormElement extends HTMLElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC METHODS
+	// PUBLIC FORM METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -59,9 +60,21 @@ class HTMLFormElement extends HTMLElement
 	/**
 	 * Resets the form.
 	 */
-	public function reset():Void
+	override public function reset():Void
 	{
-		//TODO : implement
+		var defaultPrevented:Bool = fireEvent(EventConstants.RESET, false, true);
+		
+		//reset was canceled
+		if (defaultPrevented == true)
+		{
+			return;
+		}
+		
+		//reset all form elements
+		for (i in 0...length)
+		{
+			elements[i].reset();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
