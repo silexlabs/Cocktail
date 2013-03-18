@@ -297,7 +297,7 @@ class FocusManager
 			
 			
 			//update the styles of the focus element,
-			//as :focud psuedo-class styles might now apply
+			//as :focus pseudo-class styles might now apply
 			//to it
 			activeElement.invalidateStyleDeclaration(false);
 			

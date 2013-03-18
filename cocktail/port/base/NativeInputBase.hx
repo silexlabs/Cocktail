@@ -130,6 +130,17 @@ class NativeInputBase
 		//abstract
 	}
 	
+		
+	/**
+	 * When the HTMLInputElement creating this input
+	 * loses focus, allow the native input to lose 
+	 * native focus
+	 */
+	public function blur():Void
+	{
+		//abstract
+	}
+	
 	/**
 	 * Called when the native input
 	 * is no longer displayed

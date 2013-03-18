@@ -118,6 +118,16 @@ class NativeTextInput extends NativeTextInputBase
 		flash.Lib.current.stage.focus = _textField;
 	}
 	
+		
+	/**
+	 * set the flash native foxus on the text field
+	 */
+	override public function blur():Void
+	{	
+		//TODO 2 : seems to do nothing in NME
+		flash.Lib.current.stage.focus = null;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -45,10 +45,6 @@ class TextInputRenderer extends InputRenderer
 	public function new(node:HTMLElement) 
 	{
 		super(node);
-		
-		//listen to cocktail focus events on the HTMLInputElement
-		//TODO : should be generalised and managed by HTMLInputElement
-		node.addEventListener(EventConstants.FOCUS, onTextInputFocus);
 	}
 	
 	/**
@@ -76,16 +72,6 @@ class TextInputRenderer extends InputRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * When the HTMLInputElement gains focus, 
-	 * set the native focus on the native text
-	 * input
-	 */
-	private function onTextInputFocus(e:Event):Void
-	{
-		nativeTextInput.focus();
-	}
 	
 	/**
 	 * Update the display of the native text input

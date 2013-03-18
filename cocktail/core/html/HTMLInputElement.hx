@@ -8,6 +8,7 @@
 */
 package cocktail.core.html;
 
+import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.renderer.CheckboxRenderer;
@@ -160,6 +161,34 @@ class HTMLInputElement extends EmbeddedElement
 		return true;
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN EVENT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to focus or blur native input
+	 * when needed
+	 */
+	override public function dispatchEvent(evt:Event):Bool
+	{
+		var defaultPrevented:Bool = super.dispatchEvent(evt);
+		
+		if (elementRenderer != null)
+		{
+			if (evt.type == EventConstants.FOCUS)
+			{
+				var inputRenderer:InputRenderer = cast(elementRenderer);
+				inputRenderer.focus();
+			}
+			else if (evt.type == EventConstants.BLUR)
+			{
+				var inputRenderer:InputRenderer = cast(elementRenderer);
+				inputRenderer.blur();
+			}
+		}
+		
+		return defaultPrevented;
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDEN ATTRIBUTE METHODS
