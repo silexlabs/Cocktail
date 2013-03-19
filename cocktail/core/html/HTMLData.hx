@@ -72,3 +72,14 @@ enum ValueModeValue {
 	 */
 	FILENAME;
 }
+
+/**
+ * when submitting a form,
+ * hold the data of one submitted
+ * form element
+ */
+typedef FormData = {
+	var name:String;
+	var value:String;
+	var type:String;
+}

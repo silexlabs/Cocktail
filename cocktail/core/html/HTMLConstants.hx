@@ -118,6 +118,10 @@ class HTMLConstants
 	
 	public static inline var HTML_META_TAG_NAME:String = "META";
 	
+	public static inline var HTML_BUTTON_TAG_NAME:String = "BUTTON";
+	
+	public static inline var HTML_SELECT_TAG_NAME:String = "SELECT";
+	
 	//attributes names
 	
 	public static inline var HTML_ID_ATTRIBUTE_NAME:String = "id";
@@ -208,14 +212,21 @@ class HTMLConstants
 	
 	public static inline var INPUT_TYPE_BUTTON:String = "button";
 	
+	public static inline var INPUT_TYPE_FILE:String = "file";
+	
 	public static inline var INPUT_TYPE_VALUES:Array<String> = [INPUT_TYPE_HIDDEN, INPUT_TYPE_TEXT,
-	INPUT_TYPE_PASSWORD, INPUT_TYPE_CHECKBOX, INPUT_TYPE_RADIO, INPUT_TYPE_SUBMIT, INPUT_TYPE_RESET, INPUT_TYPE_BUTTON];
+	INPUT_TYPE_PASSWORD, INPUT_TYPE_CHECKBOX, INPUT_TYPE_RADIO, INPUT_TYPE_SUBMIT, INPUT_TYPE_RESET, INPUT_TYPE_BUTTON,
+	INPUT_TYPE_FILE];
 	
 	//input labels
 	
 	public static inline var INPUT_RESET_LABEL:String = "Reset";
 	
 	public static inline var INPUT_SUBMIT_LABEL:String = "Submit";
+	
+	//input misc
+	
+	public static inline var RADIO_OR_CHECKBOX_ON = "on";
 	
 	// html tokens
 	
