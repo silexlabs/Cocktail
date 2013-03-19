@@ -822,9 +822,15 @@ class HTMLInputElement extends EmbeddedElement
 				return getAttributeAsDOMString(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
 				
 			case ValueModeValue.DEFAULT_ON:
-				return getAttributeAsDOMString(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
-				//TODO : On getting, if the element has a value attribute,
-				//it must return that attribute's value; otherwise, it must return the string "on"
+				var value:String = getAttributeAsDOMString(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
+				if (value == "")
+				{
+					return HTMLConstants.RADIO_OR_CHECKBOX_ON;
+				}
+				else
+				{
+					return value;
+				}
 				
 			case ValueModeValue.FILENAME:	
 				return ""; 

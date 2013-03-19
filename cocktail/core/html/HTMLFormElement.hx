@@ -10,6 +10,7 @@ package cocktail.core.html;
 import cocktail.core.event.EventConstants;
 import cocktail.core.html.HTMLData;
 import cocktail.core.http.HTTPConstants;
+import cocktail.core.url.URL;
 
 /**
  * The form element represents a collection of form-associated elements, 
@@ -47,6 +48,27 @@ class HTMLFormElement extends HTMLElement
 	 * the result of a user action
 	 */
 	private var _submittedFromSubmitMethod:Bool;
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// IDL attributes
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * http method to use when submitting, defaults to 
+	 * GET
+	 */
+	public var method(get_method, set_method):String;
+	
+	/**
+	 * encoding type used to submit data, 
+	 * default to url encoded
+	 */
+	public var enctype(get_enctype, set_enctype):String;
+	
+	/**
+	 * contains the URL where to submit the form
+	 */
+	public var action(get_action, set_action):String;
 	
 	public function new() 
 	{
@@ -138,7 +160,7 @@ class HTMLFormElement extends HTMLElement
 		
 		//TODO : If action is the empty string, let action be the document's address of the form document.
 		
-		//TODO : Let scheme be the <scheme> of the resulting absolute URL.
+		var scheme:String = URL.fromString(action).scheme;
 		
 		var enctype:String = getSubmitEnctype(submitter);
 		
@@ -156,14 +178,18 @@ class HTMLFormElement extends HTMLElement
 		//or if the form document has not yet completely loaded,
 		//then let replace be true. Otherwise, let it be false.
 		
-		//TODO : switch scheme
-		if (method == HTTPConstants.GET)
+		//TODO : only http for now
+		switch(scheme)
 		{
-			mutateActionUrl(formDataSet, action);
-		}
-		else if (method == HTTPConstants.POST)
-		{
-			submitAsEntityBody(formDataSet, action, enctype);
+			case HTTPConstants.HTTP:
+				if (method.toUpperCase() == HTTPConstants.GET)
+				{
+					mutateActionUrl(formDataSet, action);
+				}
+				else if (method.toUpperCase() == HTTPConstants.POST)
+				{
+					submitAsEntityBody(formDataSet, action, enctype);
+				}
 		}
 		
 	}
@@ -176,9 +202,11 @@ class HTMLFormElement extends HTMLElement
 	{
 		var query:String = encodeAsURLQuery(formDataSet);
 		
-		//TODO : Let destination be a new URL that is equal to the action except
-		//that its <query> component is replaced by query (adding a "?" (U+003F) character if appropriate).
-		
+		//replace query string
+		var actionURL:URL = URL.fromString(action);
+		actionURL.query = query;
+		var destination:String = URL.toString(actionURL);
+	
 		//TODO : Navigate target browsing context to destination. If replace is true, 
 		//then target browsing context must be navigated with replacement enabled.
 	}
@@ -227,7 +255,7 @@ class HTMLFormElement extends HTMLElement
 	 */
 	private function getSubmitAction(submitter:HTMLElement):String
 	{
-		return getAttributeAsDOMString(HTMLConstants.HTML_ACTION_ATTRIBUTE_NAME);
+		return action;
 	}
 	
 	/**
@@ -237,7 +265,7 @@ class HTMLFormElement extends HTMLElement
 	 */
 	private function getSubmitEnctype(submitter:HTMLElement):String
 	{
-		return getAttributeAsDOMString(HTMLConstants.HTML_ENCTYPE_ATTRIBUTE_NAME);
+		return enctype;
 	}
 	
 	/**
@@ -247,7 +275,16 @@ class HTMLFormElement extends HTMLElement
 	 */
 	private function getSubmitMethod(submitter:HTMLElement):String
 	{
-		return getAttributeAsDOMString(HTMLConstants.HTML_METHOD_ATTRIBUTE_NAME);
+		var formMethod:String = method;
+		
+		//TODO : should default to GET as no missing default value provided ?
+		//seems to match browser implementation
+		if (formMethod == "")
+		{
+			formMethod = HTTPConstants.GET;
+		}
+		
+		return formMethod;
 	}
 	
 	/**
@@ -296,7 +333,8 @@ class HTMLFormElement extends HTMLElement
 				else if (submittableElement.tagName == HTMLConstants.HTML_INPUT_TAG_NAME && 
 				(type == HTMLConstants.INPUT_TYPE_CHECKBOX || type == HTMLConstants.INPUT_TYPE_RADIO))
 				{
-					var value:String = submittableElement.getAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
+					var inputElement:HTMLInputElement = cast(submittableElement);
+					var value:String = inputElement.value;
 					if (value == "")
 					{
 						value = HTMLConstants.RADIO_OR_CHECKBOX_ON;
@@ -504,4 +542,38 @@ class HTMLFormElement extends HTMLElement
 		return elements.length;
 	}
 	
+	private function get_method():String
+	{
+		return getEnumeratedAttributeAsDOMString(HTMLConstants.HTML_METHOD_ATTRIBUTE_NAME, HTTPConstants.FORM_SUBMIT_METHODS, 
+		null, HTTPConstants.GET);
+	}
+	
+	private function set_method(value:String):String
+	{
+		setAttribute(HTMLConstants.HTML_METHOD_ATTRIBUTE_NAME, value);
+		return value;
+	}
+	
+	private function get_enctype():String
+	{
+		return getEnumeratedAttributeAsDOMString(HTMLConstants.HTML_ENCTYPE_ATTRIBUTE_NAME, HTTPConstants.FORM_ENCODINGS, 
+		null, HTTPConstants.URL_ENCODING);
+	}
+	
+	private function set_enctype(value:String):String
+	{
+		setAttribute(HTMLConstants.HTML_ENCTYPE_ATTRIBUTE_NAME, value);
+		return value;
+	}
+	
+	private function get_action():String
+	{
+		return getAttributeAsDOMString(HTMLConstants.HTML_ACTION_ATTRIBUTE_NAME);
+	}
+	
+	private function set_action(value:String):String
+	{
+		setAttribute(HTMLConstants.HTML_ACTION_ATTRIBUTE_NAME, value);
+		return value;
+	}
 }
