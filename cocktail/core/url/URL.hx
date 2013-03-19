@@ -16,7 +16,7 @@ package cocktail.core.url;
  * some part of the URL have been renamed to match
  * w3c spec
  * 
- * @author 
+ * @author Yannick Dominguez
  */
 class URL
 {	
