@@ -173,6 +173,12 @@ class HTMLConstants
 	public static inline var HTML_MAXLENGTH_ATTRIBUTE_NAME:String = "maxlength";
 	
 	public static inline var HTML_CONTENT_ATTRIBUTE_NAME:String = "content";
+	
+	public static inline var HTML_ACTION_ATTRIBUTE_NAME:String = "action";
+	
+	public static inline var HTML_ENCTYPE_ATTRIBUTE_NAME:String = "enctype";
+	
+	public static inline var HTML_METHOD_ATTRIBUTE_NAME:String = "method";
 		
 	public static inline var HTML_PRELOAD_ATTRIBUTE_NAME:String = "preload";
 	

@@ -388,7 +388,7 @@ class HTMLInputElement extends EmbeddedElement
 			case HTMLConstants.INPUT_TYPE_SUBMIT:
 				if (form != null)
 				{
-					form.submit();
+					form.submitFrom(this);
 				}
 		}
 	}
