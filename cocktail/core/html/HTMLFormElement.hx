@@ -206,9 +206,8 @@ class HTMLFormElement extends HTMLElement
 		var actionURL:URL = URL.fromString(action);
 		actionURL.query = query;
 		var destination:String = URL.toString(actionURL);
-	
-		//TODO : Navigate target browsing context to destination. If replace is true, 
-		//then target browsing context must be navigated with replacement enabled.
+		
+		_ownerHTMLDocument.window.open(destination, HTMLConstants.TARGET_SELF);
 	}
 	
 	/**
@@ -240,7 +239,7 @@ class HTMLFormElement extends HTMLElement
 			}
 			
 			var formData:FormData = formDataSet[i];
-			result += formData.name + "=" + formData.value;
+			result += StringTools.urlEncode(formData.name) + "=" + StringTools.urlEncode(formData.value);
 		}
 		
 		return result;
