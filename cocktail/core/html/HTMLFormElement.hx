@@ -133,7 +133,7 @@ class HTMLFormElement extends HTMLElement
 		}
 		
 		var formDataSet:Array<FormData> = constructFormDataSet(submitter);
-		
+	
 		var action:String = getSubmitAction(submitter);
 		
 		//TODO : If action is the empty string, let action be the document's address of the form document.
@@ -202,6 +202,19 @@ class HTMLFormElement extends HTMLElement
 	private function encodeAsURLQuery(formDataSet:Array<FormData>):String
 	{
 		var result:String = "";
+		
+		var length:Int = formDataSet.length;
+		for (i in 0...length)
+		{
+			if (result != "")
+			{
+				result += "&";
+			}
+			
+			var formData:FormData = formDataSet[i];
+			result += formData.name + "=" + formData.value;
+		}
+		
 		return result;
 	}
 	
@@ -260,12 +273,14 @@ class HTMLFormElement extends HTMLElement
 	private function constructFormDataSet(submitter:HTMLElement):Array<FormData>
 	{
 		var submittableElements:Array<HTMLElement> = getSubmittablesElements(this, new Array<HTMLElement>());
+		
 		var formDataSet:Array<FormData> = new Array<FormData>();
 		
 		var length:Int = submittableElements.length;
 		for (i in 0...length)
 		{
 			var submittableElement:HTMLElement = submittableElements[i];
+			
 			if (canBeSubmitted(submittableElement, submitter) == true)
 			{
 				var type:String = getElementType(submittableElement);
@@ -311,7 +326,7 @@ class HTMLFormElement extends HTMLElement
 		//TODO : End: For the name of each entry in the form data set, and for the 
 		//value of each entry in the form data set whose type is not "file"
 		//or "textarea", replace every occurrence of a "CR"...
-		
+	
 		return formDataSet;
 	}
 	
@@ -352,7 +367,7 @@ class HTMLFormElement extends HTMLElement
 		//TODO : The field element has a datalist element ancestor.
 		
 		//disabled
-		if (element.getAttribute(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME) != "")
+		if (element.getAttribute(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME) != null)
 		{
 			return false;
 		}
@@ -372,10 +387,14 @@ class HTMLFormElement extends HTMLElement
 			return false;
 		}
 		
-		//TODO : The field element is not an input element whose
-		//type attribute is in the Image Button state, and either the 
-		//field element does not have a name attribute specified, or its
-		//name attribute's value is the empty string.
+		if (getElementType(element) != HTMLConstants.INPUT_TYPE_IMAGE)
+		{
+			if (element.getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME) == null ||
+			element.getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME) == "")
+			{
+				return false;
+			}
+		}
 		
 		if (element.tagName == HTMLConstants.HTML_OBJECT_TAG_NAME)
 		{
