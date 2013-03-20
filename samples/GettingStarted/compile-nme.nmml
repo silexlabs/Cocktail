@@ -13,6 +13,7 @@
 	<haxelib name="nme" />
 
 	<assets path="bin/assets" rename="assets"></assets>
+	<assets path="bin/app.css" rename="app.css" ></assets>
 
 	<ndll name="std" />
 	<ndll name="regexp" />
