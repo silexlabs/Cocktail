@@ -189,7 +189,7 @@ class HTMLImageElement extends EmbeddedElement
 		
 		//if the picture has a defined width and height, only the rendering of the document
 		//needs to be updated
-		if (getAttribute(HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME) != null && getAttribute(HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME) != null)
+		if (getAttributeNode(HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME) != null && getAttributeNode(HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME) != null)
 		{
 			if (elementRenderer != null)
 			{
