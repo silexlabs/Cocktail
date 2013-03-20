@@ -8,6 +8,7 @@
 package cocktail.port.platform.flash_player;
 
 import cocktail.core.graphics.GraphicsContext;
+import cocktail.core.html.HTMLElement;
 import cocktail.port.base.NativeTextInputBase;
 import cocktail.port.NativeElement;
 import flash.display.DisplayObjectContainer;
@@ -60,9 +61,9 @@ class NativeTextInput extends NativeTextInputBase
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(node:HTMLElement) 
 	{
-		super();
+		super(node);
 		
 		_textField = new TextField();
 		
@@ -76,6 +77,9 @@ class NativeTextInput extends NativeTextInputBase
 		
 		//make the text field editable
 		_textField.type = TextFieldType.INPUT;
+		
+		//forward input event
+		_textField.addEventListener(flash.events.TextEvent.TEXT_INPUT, function(e) { onInput(); } );
 		
 		_textFormat = new TextFormat();
 		
@@ -112,6 +116,16 @@ class NativeTextInput extends NativeTextInputBase
 	{	
 		//TODO 2 : seems to do nothing in NME
 		flash.Lib.current.stage.focus = _textField;
+	}
+	
+		
+	/**
+	 * set the flash native foxus on the text field
+	 */
+	override public function blur():Void
+	{	
+		//TODO 2 : seems to do nothing in NME
+		flash.Lib.current.stage.focus = null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -164,7 +178,6 @@ class NativeTextInput extends NativeTextInputBase
 		_mask.graphics.beginFill(0xFF0000, 0.5);
 		_mask.graphics.drawRect(value.x, value.y, value.width, value.height);
 		_mask.graphics.endFill();
-		
 		return value;
 	}
 	
@@ -261,6 +274,12 @@ class NativeTextInput extends NativeTextInputBase
 	
 	override private function set_maxLength(value:Int):Int
 	{
+		//in HTML, -1 means no max length, while in flash
+		//its 0
+		if (value == -1)
+		{
+			value = 0;
+		}
 		return _textField.maxChars = value;
 	}
 	

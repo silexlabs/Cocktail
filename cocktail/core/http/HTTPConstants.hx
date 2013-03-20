@@ -68,6 +68,24 @@ class HTTPConstants
 	
 	public static inline var TRACK:String = "TRACK";
 	
+	public static inline var FORM_SUBMIT_METHODS:Array<String> = [GET, POST];
+	
+	//encodings
+	
+	public static inline var URL_ENCODING:String = "application/x-www-form-urlencoded";
+	
+	public static inline var FORM_DATA:String = "multipart/form-data";
+	
+	public static inline var PLAIN_TEXT:String = "text/plain";
+	
+	public static inline var FORM_ENCODINGS:Array<String> = [URL_ENCODING, FORM_DATA, PLAIN_TEXT];
+	
+	// schemes
+	
+	public static inline var HTTP:String = "http";
+	
+	public static inline var HTTPS:String = "https";
+	
 	// http response type
 	
 	public static inline var TYPE_TEXT:String = "text";

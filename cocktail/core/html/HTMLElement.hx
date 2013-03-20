@@ -461,20 +461,11 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		//special case for the style attribute, as it has
 		//its dedicated object
-		if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
-		{
-			return style.cssText;
-		}
-		else if (name == HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME)
-		{
-			return Std.string(get_tabIndex());
-		}
 		//TODO 1 : a "style" attribute should always be specified, like for the id
 		//attribute else, it won't be serialized when calling get_innerHTML, or add
 		//it in the html serializer if not empty string ?
-		else if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
+		if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
 		{
-			//serialize the inline style object into a css string
 			return style.cssText;
 		}
 		else
@@ -530,6 +521,24 @@ class HTMLElement extends Element<HTMLElement>
 		super.set_ownerDocument(value);
 		_ownerHTMLDocument = cast(value);
 		return value;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC FORM METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Resets the element, implementation vary
+	 * based on wether the element is a form or
+	 * a form element
+	 * 
+	 * note : implemented here as it is used
+	 * by multiple form related element not sharing
+	 * a base class or interface
+	 */
+	public function reset():Void
+	{
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -614,7 +623,6 @@ class HTMLElement extends Element<HTMLElement>
 			}
 		}
 		invalidateCascade();
-		
 	}
 	
 	/**
@@ -630,6 +638,18 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			_ownerHTMLDocument.invalidationManager.invalidateCascade();
 
+		}
+	}
+	
+	/**
+	 * invalidate the rendering of this HTMLElement, 
+	 * so that it gets redrawn on next update
+	 */
+	private function invalidateRendering():Void
+	{
+		if (elementRenderer != null)
+		{
+			_ownerHTMLDocument.invalidationManager.invalidateRendering();
 		}
 	}
 	
@@ -1315,10 +1335,19 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function click():Void
 	{
+		dispatchEvent(createMouseClickEvent());
+	}
+	
+	/**
+	 * Create and return a simulated click event
+	 */
+	private function createMouseClickEvent():MouseEvent
+	{
 		var mouseEvent:MouseEvent = new MouseEvent();
 		mouseEvent.initMouseEvent(EventConstants.CLICK, false, false, null, 0, 0, 0, 0, 0, false, false, false, false,
 		0, null); 
-		dispatchEvent(mouseEvent);
+		
+		return mouseEvent;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1328,12 +1357,16 @@ class HTMLElement extends Element<HTMLElement>
 	
 	/**
 	 * dispatch event of type Event
+	 * 
+	 * @return wether the default action was prevented
 	 */
-	private function fireEvent(eventType:String, bubbles:Bool, cancelable:Bool):Void
+	private function fireEvent(eventType:String, bubbles:Bool, cancelable:Bool):Bool
 	{
 		var event:Event = new Event();
 		event.initEvent(eventType, bubbles, cancelable);
 		dispatchEvent(event);
+		
+		return event.defaultPrevented;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1430,6 +1463,45 @@ class HTMLElement extends Element<HTMLElement>
 	 * it will trigger its activation behaviour
 	 */
 	
+	 /**
+	 * Run the full activation behaviour of this element, including
+	 * dispatching the click event which triggered the activation. If the click event
+	 * is null, for instance if it was triggered by keyboard, simulate a click instead
+	 */
+	public function triggerActivationBehaviour(clickEvent:MouseEvent = null):Void
+	{
+		//find the first parent which has an activation behaviour, might
+		//return null
+		var nearestActivatableElement:HTMLElement = getNearestActivatableElement();
+
+		//execute pre activation
+		if (nearestActivatableElement != null)
+		{
+			nearestActivatableElement.runPreClickActivation();
+		}
+		
+		//might be null if triggered by keyboard or other input method
+		if (clickEvent == null)
+		{
+			clickEvent = createMouseClickEvent();
+		}
+		
+		dispatchEvent(clickEvent);
+		
+		//execute post or canceled activation behaviour
+		if (nearestActivatableElement != null)
+		{
+			if (clickEvent.defaultPrevented == true)
+			{
+				nearestActivatableElement.runCanceledActivationStep();
+			}
+			else
+			{
+				nearestActivatableElement.runPostClickActivationStep(clickEvent);
+			}
+		}
+	}
+	 
 	 /**
 	  * Wheter this HTMLElement has any activation 
 	  * behaviour associated with it
@@ -1567,7 +1639,7 @@ class HTMLElement extends Element<HTMLElement>
 	{
 		var tabIndex:String = super.getAttribute(HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME);
 		
-		if (tabIndex == "")
+		if (tabIndex == null)
 		{
 			//default value for focusable element is 0,
 			//else its -1
@@ -1594,12 +1666,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function get_id():String
 	{
-		var id:String = getAttribute(HTMLConstants.HTML_ID_ATTRIBUTE_NAME);
-		if (id == null)
-		{
-			id = "";
-		}
-		return id;
+		return getAttributeAsDOMString(HTMLConstants.HTML_ID_ATTRIBUTE_NAME);
 	}
 	
 	/**
@@ -1617,12 +1684,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function get_className():String
 	{
-		var className:String = getAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME);
-		if (className == null)
-		{
-			className = "";
-		}
-		return className;
+		return getAttributeAsDOMString(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME);
 	}
 	
 	/**
@@ -1645,6 +1707,95 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_hidden():Bool
 	{
+		return getAttributeAsBool(HTMLConstants.HTML_HIDDEN_ATTRIBUTE_NAME);
+	}
+	
+	private function set_hidden(value:Bool):Bool
+	{
+		setAttributeAsBool(HTMLConstants.HTML_HIDDEN_ATTRIBUTE_NAME, value);
+		return value;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// IDL GETTER/SETTER HELPERS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return the named attribute's value as a string, or
+	 * the empty string if the attribute does not exist
+	 */
+	private function getAttributeAsDOMString(name:String):String
+	{
+		var attribute:String = getAttribute(name);
+		if (attribute == null)
+		{
+			attribute = "";
+		}
+		return attribute;
+	}
+	
+	/**
+	 * Return the named attribute's value as a string. This is a special
+	 * case for enumerated attribute, which can only take a limited number
+	 * of values
+	 * @param	name
+	 * @param	allowedValues the value allowed for this particular attribute
+	 * @param	missingValueDefault the value to use if the attribute is not set, might be
+	 * null
+	 * @param	invalidValueDefault, the value to use if the attribute doesn't match any of 
+	 * the enumerated values, might be null
+	 * @return	the value of the attribute or the empty string, if no attribute is set and
+	 * there is no missing default values
+	 */
+	private function getEnumeratedAttributeAsDOMString(name:String, allowedValues:Array<String>, missingValueDefault:String, invalidValueDefault:String):String
+	{
+		var attribute:String = getAttribute(name);
+		
+		//attribute is missing
+		if (attribute == null)
+		{
+			if (missingValueDefault != null)
+			{
+				return missingValueDefault;
+			}
+			else
+			{
+				return "";
+			}
+		}
+		
+		var allowedValuesLength:Int = allowedValues.length;
+		for (i in 0...allowedValuesLength)
+		{
+			if (attribute == allowedValues[i])
+			{
+				//attribute has an allowed value
+				return attribute;
+			}
+		}
+		
+		//attribute has not an allowed value
+		//might take invalid or missing default
+		if (invalidValueDefault != null)
+		{
+			return invalidValueDefault;
+		}
+		else if (missingValueDefault != null)
+		{
+			return missingValueDefault;
+		}
+		else
+		{
+			return "";
+		}
+	}
+	
+	/**
+	 * For attribute of type Bool, they are always
+	 * true if any value is specified
+	 */
+	private function getAttributeAsBool(name:String):Bool
+	{
 		if (getAttribute(HTMLConstants.HTML_HIDDEN_ATTRIBUTE_NAME) != null)
 		{
 			return true;
@@ -1655,10 +1806,75 @@ class HTMLElement extends Element<HTMLElement>
 		}
 	}
 	
-	private function set_hidden(value:Bool):Bool
+	/**
+	 * When an attribute is set to false, its attribute node
+	 * is removed, else its attribute value is set to the empty
+	 * string
+	 */
+	private function setAttributeAsBool(name:String, value:Bool):Void
 	{
-		super.setAttribute(HTMLConstants.HTML_HIDDEN_ATTRIBUTE_NAME, Std.string(value));
-		return value;
+		var attribute:String = getAttribute(name);
+		if (value == false)
+		{
+			if (attribute != null)
+			{
+				removeAttribute(name);
+			}
+		}
+		else
+		{
+			setAttribute(name, "");
+		}
+	}
+	
+	/**
+	 * If unsigned attribute absent, returns default value or 0
+	 */
+	private function getAttributeAsSignedInteger(name:String, defaultValue:Null<Int>):Int
+	{
+		var attribute:String = getAttribute(name);
+		if (attribute == null)
+		{
+			if (defaultValue != null)
+			{
+				return defaultValue;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		
+		return Std.parseInt(attribute);
+	}
+	
+	/**
+	 * Same as above but returns -1 instead of 0 if missing value and default
+	 */
+	private function getAttributeAsPositiveSignedInteger(name:String, defaultValue:Null<Int>):Int
+	{
+		var attribute:String = getAttribute(name);
+		if (attribute == null)
+		{
+			if (defaultValue != null)
+			{
+				return defaultValue;
+			}
+			else
+			{
+				return -1;
+			}
+		}
+		
+		var valueAsInt:Int = Std.parseInt(attribute);
+		if (valueAsInt < 0)
+		{
+			return -1;
+		}
+		else
+		{
+			return valueAsInt;
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
