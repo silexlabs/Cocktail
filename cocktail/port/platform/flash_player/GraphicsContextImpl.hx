@@ -325,14 +325,37 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			return;
 		}
 		
-		_flashRectangle.x = sourceRect.x + clipRect.x - destPoint.x;
-		_flashRectangle.y = sourceRect.y + clipRect.y - destPoint.y;
-		_flashRectangle.width = clipRect.width ;
-		_flashRectangle.height = clipRect.height;
+		_flashRectangle.x = 0;
+		_flashRectangle.y = 0;
+		_flashRectangle.width = sourceRect.width;
+		_flashRectangle.height = sourceRect.height;
 		
+		_flashPoint.x = destPoint.x;
+		_flashPoint.y = destPoint.y;
 		
-		_flashPoint.x = clipRect.x;
-		_flashPoint.y = clipRect.y;
+		//TODO : should be done before this method
+		if (destPoint.x + sourceRect.width > clipRect.x + clipRect.width)
+		{
+			_flashRectangle.width += (clipRect.x + clipRect.width) - (destPoint.x + sourceRect.width);
+		}
+		
+		if (destPoint.x < clipRect.x)
+		{
+			_flashRectangle.x += clipRect.x - destPoint.x;
+			_flashPoint.x += clipRect.x - destPoint.x;
+			_flashRectangle.width -= clipRect.x - destPoint.x;
+		}
+		
+		if (destPoint.y + sourceRect.height > clipRect.y + clipRect.height)
+		{
+			_flashRectangle.height += (clipRect.y + clipRect.height) - (destPoint.y + sourceRect.height);
+		}
+		if (destPoint.y < clipRect.y)
+		{
+			_flashRectangle.y += clipRect.y - destPoint.y;
+			_flashPoint.y += clipRect.y - destPoint.y;
+			_flashRectangle.height -= clipRect.y - destPoint.y;
+		}
 		
 		if (_useTransformations == true)
 		{
