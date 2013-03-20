@@ -10,7 +10,7 @@ package cocktail.port;
 #if macro
 typedef NativePasswordInput = cocktail.port.base.NativeTextInputBase;
 
-#elseif flash9
+#elseif (flash9 || nme)
 typedef NativePasswordInput =  cocktail.port.platform.flash_player.NativePasswordInput;
 
 #else
