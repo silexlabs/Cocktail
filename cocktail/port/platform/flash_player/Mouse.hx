@@ -137,10 +137,20 @@ class Mouse extends MouseListenerBase
 	 */
 	override private function setNativeListeners():Void
 	{
+		#if flash9
 		_platform.hitTestingSprite.addEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
 		_platform.hitTestingSprite.addEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
 		_platform.hitTestingSprite.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
 		_platform.hitTestingSprite.addEventListener(flash.events.MouseEvent.MOUSE_WHEEL, onNativeMouseWheel);
+		
+		//for nme use stage, as transparent sprite, such as the hit testing sprite
+		//are not hit tested
+		#elseif nme
+		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
+		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
+		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		Lib.current.stage.addEventListener(flash.events.MouseEvent.MOUSE_WHEEL, onNativeMouseWheel);
+		#end
 		
 		//when either mouse exist stage flash or hit testing boundaries, it is considered to have left the document
 		_platform.hitTestingSprite.addEventListener(flash.events.MouseEvent.MOUSE_OUT, onNativeMouseLeave);
@@ -152,10 +162,20 @@ class Mouse extends MouseListenerBase
 	 */
 	override private function removeNativeListeners():Void
 	{
+		#if flash9
 		_platform.hitTestingSprite.removeEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
 		_platform.hitTestingSprite.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
 		_platform.hitTestingSprite.removeEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
 		_platform.hitTestingSprite.removeEventListener(flash.events.MouseEvent.MOUSE_WHEEL, onNativeMouseWheel);
+		
+		//for nme use stage, as transparent sprite, such as the hit testing sprite
+		//are not hit tested
+		#elseif nme
+		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_DOWN, onNativeMouseDown);
+		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_UP, onNativeMouseUp);
+		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_MOVE, onNativeMouseMove);
+		Lib.current.stage.removeEventListener(flash.events.MouseEvent.MOUSE_WHEEL, onNativeMouseWheel);
+		#end
 		
 		_platform.hitTestingSprite.removeEventListener(flash.events.MouseEvent.MOUSE_OUT, onNativeMouseLeave);
 		Lib.current.stage.removeEventListener(flash.events.Event.MOUSE_LEAVE , onNativeMouseLeave);
@@ -188,7 +208,6 @@ class Mouse extends MouseListenerBase
 			default:
 				eventType = typedEvent.type;	
 		}
-		
 		
 		var mouseEvent:MouseEvent = new MouseEvent();
 		var offset = Lib.current.localToGlobal(new flash.geom.Point());
