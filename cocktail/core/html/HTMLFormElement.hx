@@ -215,7 +215,7 @@ class HTMLFormElement extends HTMLElement
 	 * Used for http and https POST request, implement the following algorithm : 
 	 * http://www.w3.org/TR/2012/CR-html5-20121217/forms.html#submit-body
 	 */
-	private function submitAsEntityBody(formDataSet:Array<FormData>, action:String, enctype:String) 
+	private function submitAsEntityBody(formDataSet:Array<FormData>, action:String, enctype:String):Void
 	{
 		
 	}
