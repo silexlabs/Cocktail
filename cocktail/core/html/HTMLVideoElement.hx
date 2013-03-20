@@ -150,7 +150,7 @@ class HTMLVideoElement extends HTMLMediaElement
 	public function shouldRenderPosterFrame():Bool
 	{
 		//no poster frame is provided
-		if (poster == null)
+		if (poster == "")
 		{
 			return false;
 		}

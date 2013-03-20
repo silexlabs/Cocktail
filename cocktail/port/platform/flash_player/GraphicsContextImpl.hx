@@ -325,8 +325,8 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 			return;
 		}
 		
-		_flashRectangle.x = 0;
-		_flashRectangle.y = 0;
+		_flashRectangle.x = sourceRect.x;
+		_flashRectangle.y = sourceRect.y;
 		_flashRectangle.width = sourceRect.width;
 		_flashRectangle.height = sourceRect.height;
 		
