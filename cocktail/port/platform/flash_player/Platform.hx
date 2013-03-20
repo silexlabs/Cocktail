@@ -13,7 +13,9 @@ import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLConstants;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
+import cocktail.core.html.HTMLInputElement;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.stacking.StackingContext;
 import cocktail.core.geom.GeomData;
@@ -69,13 +71,15 @@ class Platform extends PlatformBase
 	 * fastest hit testing but the tradeof is that if there are loaded
 	 * swf movie, hit testing Sprite won't be able to catch mouse and touch
 	 * event on top of the loaded swf, as the hit testing Sprite will
-	 * always be below the swf movei
+	 * always be below the swf movie. 
+	 * note : also cause issues with flash native text field
 	 * 
 	 * - "advanced", the hit testing Sprite is on top of all of cocktail's
 	 * bitmap and loaded elements such as swf movie. This is slower, because
 	 * each time the hit testing bounds of the document is updated, the
 	 * hit testing Sprite must also be redrawn to dig "holes" where swf movie
-	 * appears, so that swf movie can be interacted with
+	 * appears, so that swf movie can be interacted with.
+	 * note : now also applies to flash native text fields
 	 * 
 	 * Set public so that mouse and touch listener classes
 	 * can access it
@@ -84,19 +88,20 @@ class Platform extends PlatformBase
 	
 	/**
 	 * During update of hit testing Sprite, hold a ref
-	 * to the bounds of layer created by object tag, so
+	 * to the bounds of layer created by "hollowing" tags such
+	 * as the object tag, so
 	 * that they can be used to create "hole" in the hit
-	 * testing Sprite, so that swf movie can be interacted
-	 * with
+	 * testing Sprite, so that native flash display objects
+	 * can be interacted with
 	 */
-	private var _objectTagsBounds:Array<RectangleVO>;
+	private var _hollowedTagsBounds:Array<RectangleVO>;
 	
 	/**
 	 * During update of hit testing Sprite, set to true
-	 * as soon as one layer created by an "object" tag
+	 * as soon as one layer created by an "hollowed" tag
 	 * is found
 	 */
-	private var _foundObjectTag:Bool;
+	private var _foundHollowedTag:Bool;
 	
 	/**
 	 * class constructor
@@ -209,6 +214,7 @@ class Platform extends PlatformBase
 	 * Update the hit testing Sprite in flash, so that it covers the bounds
 	 * of all the layer in the document except the layer created by 
 	 * object elements.
+	 * addendum : now also applies to layer created by text input elements
 	 * 
 	 * Note : this solution is a workaround for the fact that if there is an
 	 * object tag which load a swf movie in the document, the swf movie will prevent
@@ -234,8 +240,8 @@ class Platform extends PlatformBase
 			return;
 		}
 		
-		_objectTagsBounds = new Array<RectangleVO>();
-		_foundObjectTag = false;
+		_hollowedTagsBounds = new Array<RectangleVO>();
+		_foundHollowedTag = false;
 		
 		updateHitTestingSprite();
 		doUpdateHitTestingBounds(stackingContext);
@@ -368,9 +374,9 @@ class Platform extends PlatformBase
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Called when a layer created by an "object" element
+	 * Called when a layer created by an "hollowed" element
 	 * is found, reset the hit testing Sprite by filling
-	 * its surface then create hole for each object layer
+	 * its surface then create hole for each hollowed layer
 	 * found so far
 	 */
 	private function resetHitTestingSprite():Void
@@ -379,19 +385,18 @@ class Platform extends PlatformBase
 		hitTestingSprite.graphics.beginFill(0x000000, 0.0);
 		hitTestingSprite.graphics.drawRect(0, 0, innerWidth, innerHeight);
 		
-		
-		for (i in 0..._objectTagsBounds.length)
+		for (i in 0..._hollowedTagsBounds.length)
 		{
-			hitTestingSprite.graphics.drawRect(_objectTagsBounds[i].x,
-			_objectTagsBounds[i].y, _objectTagsBounds[i].width, _objectTagsBounds[i].height);
+			hitTestingSprite.graphics.drawRect(_hollowedTagsBounds[i].x,
+			_hollowedTagsBounds[i].y, _hollowedTagsBounds[i].width, _hollowedTagsBounds[i].height);
 		}
 		
 		hitTestingSprite.graphics.endFill();
 	}
 	
 	/**
-	 * Called when a layer which is not created by an object tag is found,
-	 * fill the hit testing Sprite withits bound, so that the layer can be clicked
+	 * Called when a layer which is not created by an hollowed tag is found,
+	 * fill the hit testing Sprite within bound, so that the layer can be clicked
 	 */
 	private function fillHitTestingSprite(rect:RectangleVO):Void
 	{
@@ -401,7 +406,7 @@ class Platform extends PlatformBase
 	}
 	
 	/**
-	 * Check wether a layer was created with an object element
+	 * Check wether a layer was created with an hollowed element
 	 * If it does, create hole in hit testing Sprite for those
 	 * else fill the hit testing Sprite with the bounds of the layer
 	 */
@@ -409,16 +414,35 @@ class Platform extends PlatformBase
 	{
 		if (layerRenderer.rootElementRenderer.domNode.tagName == HTMLConstants.HTML_OBJECT_TAG_NAME)
 		{
-			_foundObjectTag = true;
-			_objectTagsBounds.push(layerRenderer.bounds);
+			_foundHollowedTag = true;
+			_hollowedTagsBounds.push(layerRenderer.bounds);
 			resetHitTestingSprite();
+			return;
 		}
-		else
+		
+		//for input element, special case :
+		//exclude from hit testing if this is a text based input,
+		//creating a native flash text field and if it is the currently
+		//focused element of the document
+		if (layerRenderer.rootElementRenderer.domNode.tagName == HTMLConstants.HTML_INPUT_TAG_NAME)
 		{
-			if (_foundObjectTag == true)
+			var inputElement:HTMLInputElement = cast(layerRenderer.rootElementRenderer.domNode);
+			if (inputElement.type == HTMLConstants.INPUT_TYPE_TEXT || inputElement.type == HTMLConstants.INPUT_TYPE_PASSWORD)
 			{
-				fillHitTestingSprite(layerRenderer.bounds);
+				var htmlDocument:HTMLDocument = cast(inputElement.ownerDocument);
+				if (htmlDocument.activeElement == inputElement)
+				{
+					_foundHollowedTag = true;
+					_hollowedTagsBounds.push(layerRenderer.bounds);
+					resetHitTestingSprite();
+					return;
+				}
 			}
+		}
+
+		if (_foundHollowedTag == true)
+		{
+			fillHitTestingSprite(layerRenderer.bounds);
 		}
 	}
 	
@@ -469,7 +493,6 @@ class Platform extends PlatformBase
 			hitTestChildrenInSameStackingContext(stackingContext.layerRenderer);
 		}
 	}
-	
 	
 	/**
 	 * hit test layer 

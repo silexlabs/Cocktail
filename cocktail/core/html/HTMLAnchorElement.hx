@@ -74,26 +74,6 @@ class HTMLAnchorElement extends HTMLElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Overriden as getting the target attribute require 
-	 * extra logic
-	 */
-	override public function getAttribute(name:String):String
-	{
-		if (name == HTMLConstants.HTML_TARGET_ATTRIBUTE_NAME)
-		{
-			return target;
-		}
-		else
-		{
-			return super.getAttribute(name);
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// OVERRIDE PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -141,7 +121,7 @@ class HTMLAnchorElement extends HTMLElement
 	
 	private function get_href():String
 	{
-		return getAttribute(HTMLConstants.HTML_HREF_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_HREF_ATTRIBUTE_NAME);
 	}
 		
 	private function set_target(value:String):String
@@ -152,14 +132,7 @@ class HTMLAnchorElement extends HTMLElement
 	
 	private function get_target():String
 	{
-		var target:String = super.getAttribute(HTMLConstants.HTML_TARGET_ATTRIBUTE_NAME);
-		
-		if (target == null)
-		{
-			return HTMLConstants.TARGET_SELF;
-		}
-		
-		return target;
+		return getAttributeAsDOMString(HTMLConstants.HTML_TARGET_ATTRIBUTE_NAME);
 	}
 	
 	

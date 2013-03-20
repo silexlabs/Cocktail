@@ -226,7 +226,7 @@ class HTMLVideoElement extends HTMLMediaElement
 	
 	private function get_poster():String
 	{
-		return getAttribute(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_POSTER_ATTRIBUTE_NAME);
 	}
 	
 	/////////////////////////////////

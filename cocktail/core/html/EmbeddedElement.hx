@@ -78,42 +78,6 @@ class EmbeddedElement extends HTMLElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	override public function setAttribute(name:String, value:String):Void
-	{
-		if (name == HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME)
-		{
-			height = Std.parseInt(value);
-		}
-		else if (name == HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME)
-		{
-			width = Std.parseInt(value);
-		}
-		else
-		{
-			super.setAttribute(name, value);
-		}
-	}
-	
-	override public function getAttribute(name:String):String
-	{
-		if (name == HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME)
-		{
-			return Std.string(get_height());
-		}
-		else if (name == HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME)
-		{
-			return Std.string(get_width());
-		}
-		else
-		{
-			return super.getAttribute(name);
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
 	// SETTERS/GETTERS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -138,39 +102,23 @@ class EmbeddedElement extends HTMLElement
 	
 	private function set_width(value:Int):Int
 	{
-		super.setAttribute(HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME, Std.string(value));
+		setAttribute(HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}
 	
 	private function get_width():Int
 	{
-		var width:String = super.getAttribute(HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME);
-		if (width == null)
-		{
-			return 0;
-		}
-		else
-		{
-			return Std.parseInt(width);
-		}
+		return getAttributeAsPositiveSignedInteger(HTMLConstants.HTML_WIDTH_ATTRIBUTE_NAME, 0);
 	}
 	
 	private function set_height(value:Int):Int
 	{
-		super.setAttribute(HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME, Std.string(value));
+		setAttribute(HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}
 	
 	private function get_height():Int
 	{
-		var height:String = super.getAttribute(HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME);
-		if (height == null)
-		{
-			return 0;
-		}
-		else
-		{
-			return Std.parseInt(height);
-		}
+		return getAttributeAsPositiveSignedInteger(HTMLConstants.HTML_HEIGHT_ATTRIBUTE_NAME, 0);
 	}
 }

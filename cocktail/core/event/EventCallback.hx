@@ -135,6 +135,18 @@ class EventCallback extends EventTarget
 	 */
 	public var onerror(default, set_onError):UIEvent->Void;
 	
+	/**
+	 * Callback called when a value change in a form input,
+	 * for instance when a checkbox value changes
+	 */
+	public var onchange(default, set_onChange):Event->Void;
+	
+	/**
+	 * Callback called when is input by the user in a
+	 * text based form control
+	 */
+	public var oninput(default, set_onInput):Event->Void;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Media callbacks
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -421,6 +433,17 @@ class EventCallback extends EventTarget
 		return onerror = value;
 	}
 	
+	private function set_onChange(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(EventConstants.CHANGE, cast(value), cast(onchange));
+		return onchange = value;
+	}
+	
+	private function set_onInput(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(EventConstants.INPUT, cast(value), cast(oninput));
+		return oninput = value;
+	}
 	
 		// VIDEO
 	////////////////////////////

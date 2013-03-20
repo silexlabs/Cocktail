@@ -41,38 +41,6 @@ class HTMLMetaElement extends HTMLElement
 	// OVERRIDEN ATTRIBUTE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	override public function setAttribute(attributeName:String, value:String):Void
-	{
-		if (attributeName == HTMLConstants.HTML_NAME_ATTRIBUTE_NAME)
-		{
-			name = value;
-		}
-		else if (attributeName == HTMLConstants.HTML_CONTENT_ATTRIBUTE_NAME)
-		{
-			content = value;
-		}
-		else
-		{
-			super.setAttribute(attributeName, value);
-		}
-	}
-	
-	override public function getAttribute(attributeName:String):String
-	{
-		if (attributeName == HTMLConstants.HTML_NAME_ATTRIBUTE_NAME)
-		{
-			return name;
-		}
-		else if (attributeName == HTMLConstants.HTML_CONTENT_ATTRIBUTE_NAME)
-		{
-			return content;
-		}
-		else
-		{
-			return super.getAttribute(attributeName);
-		}
-	}
-	
 	/**
 	 * when added to dom, check wether this meta
 	 * update the config of the document
@@ -105,24 +73,24 @@ class HTMLMetaElement extends HTMLElement
 	
 	private function get_name():String
 	{
-		return super.getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME);
 	}
 	
 	private function set_name(value:String):String
 	{
-		super.setAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME, value);
+		setAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME, value);
 		updateConfig();
 		return value;
 	}
 	
 	private function get_content():String
 	{
-		return super.getAttribute(HTMLConstants.HTML_CONTENT_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_CONTENT_ATTRIBUTE_NAME);
 	}
 	
 	private function set_content(value:String):String
 	{
-		super.setAttribute(HTMLConstants.HTML_CONTENT_ATTRIBUTE_NAME, value);
+		setAttribute(HTMLConstants.HTML_CONTENT_ATTRIBUTE_NAME, value);
 		updateConfig();
 		return value;
 	}

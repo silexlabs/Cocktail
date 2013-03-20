@@ -204,19 +204,12 @@ class HTMLStyleElement extends HTMLElement
 	
 	private function get_disabled():Bool
 	{
-		if (getAttribute(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME) != null)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return getAttributeAsBool(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME);
 	}
 	
 	private function set_disabled(value:Bool):Bool
 	{
-		super.setAttribute(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME, Std.string(value));
+		setAttribute(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME, Std.string(value));
 		return value;
 	}
 	

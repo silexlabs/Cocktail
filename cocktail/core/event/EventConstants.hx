@@ -446,6 +446,29 @@ class EventConstants
 	 */
 	public static inline var ERROR:String = "error";
 	
+	/**
+	 * Used at various places to signal a change, for instance used
+	 * when the value of a checkbox input changes. I didn't found
+	 * a formal definition in the w3c specs
+	 */
+	public static inline var CHANGE:String = "change";
+	
+	/**
+	 * Used to signal a user input in a text based form control
+	 */
+	public static inline var INPUT:String = "input";
+	
+	/**
+	 * Sent when a form content is reseted
+	 */
+	public static inline var RESET:String = "reset";
+	
+	/**
+	 * Sent when a form is submitted as the result of
+	 * a user action
+	 */
+	public static inline var SUBMIT:String = "submit";
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// MOUSE WHEEL
 	//////////////////////////////////////////////////////////////////////////////////////////

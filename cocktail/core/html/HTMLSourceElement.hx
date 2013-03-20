@@ -87,7 +87,7 @@ class HTMLSourceElement extends HTMLElement
 	
 	private function get_src():String
 	{
-		return getAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME);
 	}
 	
 	private function set_src(value:String):String
@@ -98,7 +98,7 @@ class HTMLSourceElement extends HTMLElement
 	
 	private function get_type():String
 	{
-		return getAttribute(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME);
 	}
 	
 	private function set_type(value:String):String
@@ -109,7 +109,7 @@ class HTMLSourceElement extends HTMLElement
 	
 	private function get_media():String
 	{
-		return getAttribute(HTMLConstants.HTML_MEDIA_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_MEDIA_ATTRIBUTE_NAME);
 	}
 	
 	private function set_media(value:String):String

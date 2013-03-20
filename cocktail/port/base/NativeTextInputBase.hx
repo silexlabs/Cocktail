@@ -9,6 +9,7 @@ package cocktail.port.base;
 
 import cocktail.core.geom.GeomData;
 import cocktail.core.graphics.GraphicsContext;
+import cocktail.core.html.HTMLElement;
 import cocktail.port.NativeElement;
 
 /**
@@ -17,32 +18,18 @@ import cocktail.port.NativeElement;
  * 
  * @author Yannick DOMINGUEZ
  */
-class NativeTextInputBase
+class NativeTextInputBase extends NativeInputBase
 {
 	/**
-	 * get/set the text of the text input
+	 * The intrinsic width and height of a text input used
+	 * when no width or height attribute or CSS style defined, 
+	 * values are abitrary, based on observation in browser
 	 */
-	public var value(get_value, set_value):String;
+	private static inline var INPUT_TEXT_INTRINSIC_WIDTH:Int = 150;
 	
-	/**
-	 * get/set the maxLength of the text input
-	 */
-	public var maxLength(default, set_maxLength):Int;
+	private static inline var INPUT_TEXT_INTRINSIC_HEIGHT:Float = 30;
 	
-	/**
-	 * get/set the position of the text input relative to
-	 * the Window
-	 */
-	public var viewport(get_viewport, set_viewport):RectangleVO;
-	
-	/**
-	 * get/set the cliprect of the text input which is the rectangle,
-	 * relative to the Window where the text input can be displayed 
-	 * without being masked
-	 */
-	public var clipRect(get_clipRect, set_clipRect):RectangleVO;
-	
-	//get/set style attributes
+	//getter/seter for style attributes
 	
 	public var italic(get_italic, set_italic):Bool;
 	
@@ -59,67 +46,14 @@ class NativeTextInputBase
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(node:HTMLElement) 
 	{
-		
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Allow the native text input to attach itself
-	 * to the rendering tree. How the text input
-	 * is attach varies based on the platform
-	 */
-	public function attach(graphicContext:GraphicsContext):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * Allow the native text input to detach itself 
-	 * from the rendering tree
-	 */
-	public function detach(graphicContext:GraphicsContext):Void
-	{
-		//abstract
-	}
-	
-	/**
-	 * When the HTMLInputElement creating this text input
-	 * gains focus, allow the native text input to gain 
-	 * native focus
-	 */
-	public function focus():Void
-	{
-		//abstract
+		super(node);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_viewport():RectangleVO
-	{
-		return viewport;
-	}
-	
-	private function set_viewport(value:RectangleVO):RectangleVO
-	{
-		return viewport = value;
-	}
-	
-	private function get_clipRect():RectangleVO
-	{
-		return clipRect;
-	}
-	
-	private function set_clipRect(value:RectangleVO):RectangleVO
-	{
-		return clipRect = value;
-	}
 	
 	private function set_italic(value:Bool):Bool
 	{
@@ -171,21 +105,6 @@ class NativeTextInputBase
 		return fontSize;
 	}
 	
-	private function get_value():String 
-	{
-		return value;
-	}
-	
-	private function set_value(textValue:String):String 
-	{
-		return value = textValue;
-	}
-	
-	private function set_maxLength(value:Int):Int 
-	{
-		return maxLength = value;
-	}
-	
 	private function set_letterSpacing(value:Float):Float
 	{
 		return letterSpacing = value;
@@ -196,4 +115,13 @@ class NativeTextInputBase
 		return letterSpacing;
 	}
 	
+	override private function get_intrinsicWidth():Int
+	{
+		return INPUT_TEXT_INTRINSIC_WIDTH;
+	}
+	
+	override private function get_intrinsicHeight():Int
+	{
+		return INPUT_TEXT_INTRINSIC_HEIGHT;
+	}
 }

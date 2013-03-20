@@ -118,6 +118,10 @@ class HTMLConstants
 	
 	public static inline var HTML_META_TAG_NAME:String = "META";
 	
+	public static inline var HTML_BUTTON_TAG_NAME:String = "BUTTON";
+	
+	public static inline var HTML_SELECT_TAG_NAME:String = "SELECT";
+	
 	//attributes names
 	
 	public static inline var HTML_ID_ATTRIBUTE_NAME:String = "id";
@@ -164,10 +168,18 @@ class HTMLConstants
 	
 	public static inline var HTML_CHECKED_ATTRIBUTE_NAME:String = "checked";
 	
+	public static inline var HTML_READ_ONLY_ATTRIBUTE_NAME:String = "readonly";
+	
 	public static inline var HTML_MAXLENGTH_ATTRIBUTE_NAME:String = "maxlength";
 	
 	public static inline var HTML_CONTENT_ATTRIBUTE_NAME:String = "content";
 	
+	public static inline var HTML_ACTION_ATTRIBUTE_NAME:String = "action";
+	
+	public static inline var HTML_ENCTYPE_ATTRIBUTE_NAME:String = "enctype";
+	
+	public static inline var HTML_METHOD_ATTRIBUTE_NAME:String = "method";
+		
 	public static inline var HTML_PRELOAD_ATTRIBUTE_NAME:String = "preload";
 	
 	//preload attribute values
@@ -187,6 +199,42 @@ class HTMLConstants
 	public static inline var TARGET_PARENT:String = "_parent";
 	
 	public static inline var TARGET_TOP:String = "_top";
+	
+	//input types values
+	
+	public static inline var INPUT_TYPE_HIDDEN:String = "hidden";
+	
+	public static inline var INPUT_TYPE_TEXT:String = "text";
+	
+	public static inline var INPUT_TYPE_PASSWORD:String = "password";
+	
+	public static inline var INPUT_TYPE_CHECKBOX:String = "checkbox";
+	
+	public static inline var INPUT_TYPE_RADIO:String = "radio";
+	
+	public static inline var INPUT_TYPE_SUBMIT:String = "submit";
+	
+	public static inline var INPUT_TYPE_RESET:String = "reset";
+	
+	public static inline var INPUT_TYPE_BUTTON:String = "button";
+	
+	public static inline var INPUT_TYPE_FILE:String = "file";
+	
+	public static inline var INPUT_TYPE_IMAGE:String = "image";
+	
+	public static inline var INPUT_TYPE_VALUES:Array<String> = [INPUT_TYPE_HIDDEN, INPUT_TYPE_TEXT,
+	INPUT_TYPE_PASSWORD, INPUT_TYPE_CHECKBOX, INPUT_TYPE_RADIO, INPUT_TYPE_SUBMIT, INPUT_TYPE_RESET, INPUT_TYPE_BUTTON,
+	INPUT_TYPE_FILE, INPUT_TYPE_IMAGE];
+	
+	//input labels
+	
+	public static inline var INPUT_RESET_LABEL:String = "Reset";
+	
+	public static inline var INPUT_SUBMIT_LABEL:String = "Submit";
+	
+	//input misc
+	
+	public static inline var RADIO_OR_CHECKBOX_ON = "on";
 	
 	// html tokens
 	

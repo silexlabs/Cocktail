@@ -369,7 +369,7 @@ class HTMLObjectElement extends EmbeddedElement
 	
 	private function get_data():String
 	{
-		return getAttribute(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME);
 	}
 	
 	private function set_type(value:String):String
@@ -380,6 +380,6 @@ class HTMLObjectElement extends EmbeddedElement
 	
 	private function get_type():String
 	{
-		return getAttribute(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME);
+		return getAttributeAsDOMString(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME);
 	}
 }

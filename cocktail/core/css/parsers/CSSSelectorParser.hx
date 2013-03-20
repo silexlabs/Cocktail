@@ -516,6 +516,7 @@ class CSSSelectorParser
 						if (c == ']'.code)
 						{
 							state = END_SELECTOR;
+							continue;
 						}
 						else
 						{
@@ -548,6 +549,7 @@ class CSSSelectorParser
 								
 							case ']'.code:
 								state = END_SELECTOR;
+								continue;
 								
 							default:
 								
@@ -587,6 +589,7 @@ class CSSSelectorParser
 							case ']'.code:
 								value = selector.substr(start, position - start);
 								state = END_SELECTOR;
+								continue;
 								
 							default:
 								state = INVALID_SELECTOR;
