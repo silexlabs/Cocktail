@@ -8,6 +8,7 @@
 package cocktail.port.platform.flash_player;
 
 import cocktail.core.resource.AbstractResource;
+import cocktail.core.url.URL;
 import cocktail.port.NativeElement;
 import flash.display.Bitmap;
 import flash.display.DisplayObject;
@@ -163,7 +164,9 @@ class ImageResource extends AbstractResource
 		else 
 		{
 			#if flash
-			flash.system.Security.loadPolicyFile(loader.contentLoaderInfo.url + "crossdomain.xml");
+			var url:URL = URL.fromString(loader.contentLoaderInfo.url);
+			var reconstitutedURL:String = url.scheme +"://"+ url.authority + "/";
+			flash.system.Security.loadPolicyFile(reconstitutedURL + "crossdomain.xml");
 			//poll at regular interval to see if the 
 			//cross domain was loaded. This is the only way,
 			//as flash doesn't have an event for it
