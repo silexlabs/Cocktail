@@ -1,6 +1,0 @@
-#sources
--cp ../../
--main Main
-
-#binary
--js bin/Main.js

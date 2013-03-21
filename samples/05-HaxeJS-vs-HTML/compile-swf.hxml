@@ -1,8 +1,10 @@
 #sources
+-main Cocktail
 -cp ../../
--main Main
+-cp src
 
 #binary
 -swf bin/Main.swf
 -swf-version 10.2
 --remap js:cocktail
+--macro Cocktail.create('src/index.html','Main')

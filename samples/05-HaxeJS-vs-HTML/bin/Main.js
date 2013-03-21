@@ -1,5 +1,16 @@
-var HxOverrides = function() { }
-HxOverrides.__name__ = true;
+var $hxClasses = $hxClasses || {},$estr = function() { return js.Boot.__string_rec(this,''); };
+var Cocktail = $hxClasses["Cocktail"] = function() { }
+Cocktail.__name__ = ["Cocktail"];
+Cocktail.htmlSource = null;
+Cocktail.customClassName = null;
+Cocktail.main = function() {
+	Main;
+	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<title>Cocktail Sample</title>\r\n\t</head>\r\n\t<body>\r\n\t</body>\r\n</html>\r\n";
+	var customClass = Type.resolveClass("Main");
+	if(customClass != null) Type.createInstance(customClass,[]);
+}
+var HxOverrides = $hxClasses["HxOverrides"] = function() { }
+HxOverrides.__name__ = ["HxOverrides"];
 HxOverrides.dateStr = function(date) {
 	var m = date.getMonth() + 1;
 	var d = date.getDate();
@@ -63,11 +74,11 @@ HxOverrides.iter = function(a) {
 		return this.arr[this.cur++];
 	}};
 }
-var IntIter = function(min,max) {
+var IntIter = $hxClasses["IntIter"] = function(min,max) {
 	this.min = min;
 	this.max = max;
 };
-IntIter.__name__ = true;
+IntIter.__name__ = ["IntIter"];
 IntIter.prototype = {
 	next: function() {
 		return this.min++;
@@ -75,13 +86,15 @@ IntIter.prototype = {
 	,hasNext: function() {
 		return this.min < this.max;
 	}
+	,max: null
+	,min: null
 	,__class__: IntIter
 }
-var Main = function() {
+var Main = $hxClasses["Main"] = function() {
 	this.buildDomHaxeJS();
 	this.addInteractivity();
 };
-Main.__name__ = true;
+Main.__name__ = ["Main"];
 Main.main = function() {
 	new Main();
 }
@@ -119,8 +132,82 @@ Main.prototype = {
 	}
 	,__class__: Main
 }
-var Std = function() { }
-Std.__name__ = true;
+var Reflect = $hxClasses["Reflect"] = function() { }
+Reflect.__name__ = ["Reflect"];
+Reflect.hasField = function(o,field) {
+	return Object.prototype.hasOwnProperty.call(o,field);
+}
+Reflect.field = function(o,field) {
+	var v = null;
+	try {
+		v = o[field];
+	} catch( e ) {
+	}
+	return v;
+}
+Reflect.setField = function(o,field,value) {
+	o[field] = value;
+}
+Reflect.getProperty = function(o,field) {
+	var tmp;
+	return o == null?null:o.__properties__ && (tmp = o.__properties__["get_" + field])?o[tmp]():o[field];
+}
+Reflect.setProperty = function(o,field,value) {
+	var tmp;
+	if(o.__properties__ && (tmp = o.__properties__["set_" + field])) o[tmp](value); else o[field] = value;
+}
+Reflect.callMethod = function(o,func,args) {
+	return func.apply(o,args);
+}
+Reflect.fields = function(o) {
+	var a = [];
+	if(o != null) {
+		var hasOwnProperty = Object.prototype.hasOwnProperty;
+		for( var f in o ) {
+		if(hasOwnProperty.call(o,f)) a.push(f);
+		}
+	}
+	return a;
+}
+Reflect.isFunction = function(f) {
+	return typeof(f) == "function" && !(f.__name__ || f.__ename__);
+}
+Reflect.compare = function(a,b) {
+	return a == b?0:a > b?1:-1;
+}
+Reflect.compareMethods = function(f1,f2) {
+	if(f1 == f2) return true;
+	if(!Reflect.isFunction(f1) || !Reflect.isFunction(f2)) return false;
+	return f1.scope == f2.scope && f1.method == f2.method && f1.method != null;
+}
+Reflect.isObject = function(v) {
+	if(v == null) return false;
+	var t = typeof(v);
+	return t == "string" || t == "object" && !v.__enum__ || t == "function" && (v.__name__ || v.__ename__);
+}
+Reflect.deleteField = function(o,f) {
+	if(!Reflect.hasField(o,f)) return false;
+	delete(o[f]);
+	return true;
+}
+Reflect.copy = function(o) {
+	var o2 = { };
+	var _g = 0, _g1 = Reflect.fields(o);
+	while(_g < _g1.length) {
+		var f = _g1[_g];
+		++_g;
+		o2[f] = Reflect.field(o,f);
+	}
+	return o2;
+}
+Reflect.makeVarArgs = function(f) {
+	return function() {
+		var a = Array.prototype.slice.call(arguments);
+		return f(a);
+	};
+}
+var Std = $hxClasses["Std"] = function() { }
+Std.__name__ = ["Std"];
 Std["is"] = function(v,t) {
 	return js.Boot.__instanceof(v,t);
 }
@@ -142,9 +229,190 @@ Std.parseFloat = function(x) {
 Std.random = function(x) {
 	return Math.floor(Math.random() * x);
 }
+var ValueType = $hxClasses["ValueType"] = { __ename__ : ["ValueType"], __constructs__ : ["TNull","TInt","TFloat","TBool","TObject","TFunction","TClass","TEnum","TUnknown"] }
+ValueType.TNull = ["TNull",0];
+ValueType.TNull.toString = $estr;
+ValueType.TNull.__enum__ = ValueType;
+ValueType.TInt = ["TInt",1];
+ValueType.TInt.toString = $estr;
+ValueType.TInt.__enum__ = ValueType;
+ValueType.TFloat = ["TFloat",2];
+ValueType.TFloat.toString = $estr;
+ValueType.TFloat.__enum__ = ValueType;
+ValueType.TBool = ["TBool",3];
+ValueType.TBool.toString = $estr;
+ValueType.TBool.__enum__ = ValueType;
+ValueType.TObject = ["TObject",4];
+ValueType.TObject.toString = $estr;
+ValueType.TObject.__enum__ = ValueType;
+ValueType.TFunction = ["TFunction",5];
+ValueType.TFunction.toString = $estr;
+ValueType.TFunction.__enum__ = ValueType;
+ValueType.TClass = function(c) { var $x = ["TClass",6,c]; $x.__enum__ = ValueType; $x.toString = $estr; return $x; }
+ValueType.TEnum = function(e) { var $x = ["TEnum",7,e]; $x.__enum__ = ValueType; $x.toString = $estr; return $x; }
+ValueType.TUnknown = ["TUnknown",8];
+ValueType.TUnknown.toString = $estr;
+ValueType.TUnknown.__enum__ = ValueType;
+var Type = $hxClasses["Type"] = function() { }
+Type.__name__ = ["Type"];
+Type.getClass = function(o) {
+	if(o == null) return null;
+	return o.__class__;
+}
+Type.getEnum = function(o) {
+	if(o == null) return null;
+	return o.__enum__;
+}
+Type.getSuperClass = function(c) {
+	return c.__super__;
+}
+Type.getClassName = function(c) {
+	var a = c.__name__;
+	return a.join(".");
+}
+Type.getEnumName = function(e) {
+	var a = e.__ename__;
+	return a.join(".");
+}
+Type.resolveClass = function(name) {
+	var cl = $hxClasses[name];
+	if(cl == null || !cl.__name__) return null;
+	return cl;
+}
+Type.resolveEnum = function(name) {
+	var e = $hxClasses[name];
+	if(e == null || !e.__ename__) return null;
+	return e;
+}
+Type.createInstance = function(cl,args) {
+	switch(args.length) {
+	case 0:
+		return new cl();
+	case 1:
+		return new cl(args[0]);
+	case 2:
+		return new cl(args[0],args[1]);
+	case 3:
+		return new cl(args[0],args[1],args[2]);
+	case 4:
+		return new cl(args[0],args[1],args[2],args[3]);
+	case 5:
+		return new cl(args[0],args[1],args[2],args[3],args[4]);
+	case 6:
+		return new cl(args[0],args[1],args[2],args[3],args[4],args[5]);
+	case 7:
+		return new cl(args[0],args[1],args[2],args[3],args[4],args[5],args[6]);
+	case 8:
+		return new cl(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7]);
+	default:
+		throw "Too many arguments";
+	}
+	return null;
+}
+Type.createEmptyInstance = function(cl) {
+	function empty() {}; empty.prototype = cl.prototype;
+	return new empty();
+}
+Type.createEnum = function(e,constr,params) {
+	var f = Reflect.field(e,constr);
+	if(f == null) throw "No such constructor " + constr;
+	if(Reflect.isFunction(f)) {
+		if(params == null) throw "Constructor " + constr + " need parameters";
+		return f.apply(e,params);
+	}
+	if(params != null && params.length != 0) throw "Constructor " + constr + " does not need parameters";
+	return f;
+}
+Type.createEnumIndex = function(e,index,params) {
+	var c = e.__constructs__[index];
+	if(c == null) throw index + " is not a valid enum constructor index";
+	return Type.createEnum(e,c,params);
+}
+Type.getInstanceFields = function(c) {
+	var a = [];
+	for(var i in c.prototype) a.push(i);
+	HxOverrides.remove(a,"__class__");
+	HxOverrides.remove(a,"__properties__");
+	return a;
+}
+Type.getClassFields = function(c) {
+	var a = Reflect.fields(c);
+	HxOverrides.remove(a,"__name__");
+	HxOverrides.remove(a,"__interfaces__");
+	HxOverrides.remove(a,"__properties__");
+	HxOverrides.remove(a,"__super__");
+	HxOverrides.remove(a,"prototype");
+	return a;
+}
+Type.getEnumConstructs = function(e) {
+	var a = e.__constructs__;
+	return a.slice();
+}
+Type["typeof"] = function(v) {
+	switch(typeof(v)) {
+	case "boolean":
+		return ValueType.TBool;
+	case "string":
+		return ValueType.TClass(String);
+	case "number":
+		if(Math.ceil(v) == v % 2147483648.0) return ValueType.TInt;
+		return ValueType.TFloat;
+	case "object":
+		if(v == null) return ValueType.TNull;
+		var e = v.__enum__;
+		if(e != null) return ValueType.TEnum(e);
+		var c = v.__class__;
+		if(c != null) return ValueType.TClass(c);
+		return ValueType.TObject;
+	case "function":
+		if(v.__name__ || v.__ename__) return ValueType.TObject;
+		return ValueType.TFunction;
+	case "undefined":
+		return ValueType.TNull;
+	default:
+		return ValueType.TUnknown;
+	}
+}
+Type.enumEq = function(a,b) {
+	if(a == b) return true;
+	try {
+		if(a[0] != b[0]) return false;
+		var _g1 = 2, _g = a.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			if(!Type.enumEq(a[i],b[i])) return false;
+		}
+		var e = a.__enum__;
+		if(e != b.__enum__ || e == null) return false;
+	} catch( e ) {
+		return false;
+	}
+	return true;
+}
+Type.enumConstructor = function(e) {
+	return e[0];
+}
+Type.enumParameters = function(e) {
+	return e.slice(2);
+}
+Type.enumIndex = function(e) {
+	return e[1];
+}
+Type.allEnums = function(e) {
+	var all = [];
+	var cst = e.__constructs__;
+	var _g = 0;
+	while(_g < cst.length) {
+		var c = cst[_g];
+		++_g;
+		var v = Reflect.field(e,c);
+		if(!Reflect.isFunction(v)) all.push(v);
+	}
+	return all;
+}
 var js = js || {}
-js.Boot = function() { }
-js.Boot.__name__ = true;
+js.Boot = $hxClasses["js.Boot"] = function() { }
+js.Boot.__name__ = ["js","Boot"];
 js.Boot.__unhtml = function(s) {
 	return s.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
 }
@@ -278,8 +546,10 @@ js.Boot.__instanceof = function(o,cl) {
 js.Boot.__cast = function(o,t) {
 	if(js.Boot.__instanceof(o,t)) return o; else throw "Cannot cast " + Std.string(o) + " to " + Std.string(t);
 }
-js.Lib = function() { }
-js.Lib.__name__ = true;
+js.Lib = $hxClasses["js.Lib"] = function() { }
+js.Lib.__name__ = ["js","Lib"];
+js.Lib.document = null;
+js.Lib.window = null;
 js.Lib.debug = function() {
 	debugger;
 }
@@ -302,27 +572,28 @@ Math.__name__ = ["Math"];
 Math.NaN = Number.NaN;
 Math.NEGATIVE_INFINITY = Number.NEGATIVE_INFINITY;
 Math.POSITIVE_INFINITY = Number.POSITIVE_INFINITY;
+$hxClasses.Math = Math;
 Math.isFinite = function(i) {
 	return isFinite(i);
 };
 Math.isNaN = function(i) {
 	return isNaN(i);
 };
-String.prototype.__class__ = String;
-String.__name__ = true;
-Array.prototype.__class__ = Array;
-Array.__name__ = true;
-Date.prototype.__class__ = Date;
+String.prototype.__class__ = $hxClasses.String = String;
+String.__name__ = ["String"];
+Array.prototype.__class__ = $hxClasses.Array = Array;
+Array.__name__ = ["Array"];
+Date.prototype.__class__ = $hxClasses.Date = Date;
 Date.__name__ = ["Date"];
-var Int = { __name__ : ["Int"]};
-var Dynamic = { __name__ : ["Dynamic"]};
-var Float = Number;
+var Int = $hxClasses.Int = { __name__ : ["Int"]};
+var Dynamic = $hxClasses.Dynamic = { __name__ : ["Dynamic"]};
+var Float = $hxClasses.Float = Number;
 Float.__name__ = ["Float"];
-var Bool = Boolean;
+var Bool = $hxClasses.Bool = Boolean;
 Bool.__ename__ = ["Bool"];
-var Class = { __name__ : ["Class"]};
+var Class = $hxClasses.Class = { __name__ : ["Class"]};
 var Enum = { };
-var Void = { __ename__ : ["Void"]};
+var Void = $hxClasses.Void = { __ename__ : ["Void"]};
 if(typeof document != "undefined") js.Lib.document = document;
 if(typeof window != "undefined") {
 	js.Lib.window = window;
@@ -332,4 +603,6 @@ if(typeof window != "undefined") {
 		return f(msg,[url + ":" + line]);
 	};
 }
-Main.main();
+Cocktail.htmlSourcePath = "index.html";
+js.Lib.onerror = null;
+Cocktail.main();

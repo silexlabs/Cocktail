@@ -19,12 +19,7 @@ class Main
 {
 	public static function main()
 	{	
-		#if nme
-			nme.Lib.create(function() { new Main(); }, 1024, 768, 60, 0xffffff, (1 * nme.Lib.HARDWARE) | nme.Lib.RESIZABLE);
-		#else
-		    new Main();
-		#end
-		
+	    new Main();
 	}
 	
 	public function new()
