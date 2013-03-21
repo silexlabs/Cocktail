@@ -7,7 +7,7 @@
 
 	<set name="SWF_VERSION" value="10.2" />
 
-	<classpath name="../../src" />
+	<classpath name="../../" />
 	<classpath name="src" />
 
 	<haxelib name="nme" />
