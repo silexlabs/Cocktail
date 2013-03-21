@@ -1,0 +1,16 @@
+#sources
+-main Main
+-cp ../../lib/
+
+#binary
+-cpp bin/win
+-D nme
+-cp ../../src/
+-lib nme
+-debug
+--remap flash:nme
+--remap js:cocktail
+
+#copy assets directory
+# will not work in windos, TODO: use nmml file instead of hxml
+-cmd cp -R assets bin\win\
