@@ -10,6 +10,8 @@
 	<classpath name="../.." />
 	<classpath name="src" />
 
+	<assets path="bin/assets" rename="assets"></assets>
+	
 	<haxelib name="nme" />
 
 	<ndll name="std" />
