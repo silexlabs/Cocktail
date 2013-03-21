@@ -11,13 +11,13 @@
 == Cocktail Samples ==
 ======================
 
-Updated on 2013-03-06
+Updated on 2012-08-31
 
 This file gathers the description and the status of each sample.
 
 Possible targets for all samples are:
  -Haxe targets: JavaScript, Flash
- -NME targets (not yet supported): iOS, Android, Blackberry, Windows, Mac, Linux
+ -NME targets: iOS, Android, Blackberry, Windows, Mac, Linux
  -Air targets: iOS, Android, Blackberry, Windows, Mac, Linux, Smart TVs
  -PhoneGap targets: iOS, Android, Windows Phone, Blackberry, webOS, Symbian
 
@@ -26,7 +26,7 @@ Possible targets for all samples are:
 -------------
 
 Description: a simple text display example
-Tested targets: JavaScript, Flash
+Tested targets: JavaScript, Flash & Windows (via NME)
 Online demo: http://demos.silexlabs.org/cocktail/samples/01-HelloWorld/
 Status: source code up to date.
 
@@ -35,7 +35,7 @@ Status: source code up to date.
 ---------------
 
 Description: a simple image display example
-Tested targets: JavaScript, Flash
+Tested targets: JavaScript, Flash & Windows (via NME)
 Online demo: http://demos.silexlabs.org/cocktail/samples/02-load_picture/
 Status: source code up to date.
 
@@ -44,7 +44,7 @@ Status: source code up to date.
 -------------
 
 Description: a simple text styling example
-Tested targets: JavaScript, Flash
+Tested targets: JavaScript, Flash & Windows (via NME)
 Online demo: http://demos.silexlabs.org/cocktail/samples/03-style_text/
 Status: source code up to date.
 
@@ -53,7 +53,7 @@ Status: source code up to date.
 -------------
 
 Description: an innerHtml usage example
-Tested targets: JavaScript, Flash
+Tested targets: JavaScript, Flash & Windows (via NME)
 Online demo: http://demos.silexlabs.org/cocktail/samples/04-inner_html/
 Status: source code up to date
 
@@ -62,7 +62,7 @@ GettingStarted
 --------------
 
 Description: Cocktail getting started. Article is available here: http://haxe.org/com/libs/cocktail/getting_started_with_cocktail
-Tested targets: JavaScript, Flash
+Tested targets: JavaScript, Flash, Windows
 Online demo: http://demos.silexlabs.org/cocktail/samples/GettingStarted/
 Status: source code up to date.
 
