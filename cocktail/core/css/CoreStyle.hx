@@ -2110,7 +2110,12 @@ class CoreStyle
 		
 		for (i in 0...length)
 		{
-			htmlElement.dispatchEvent(_pendingTransitionEndEvents[i]);
+			//makes sure that only dispatched once, else may cause
+			//infinite loop if a listener triggers a synchronous update
+			if (_pendingTransitionEndEvents[i].dispatched == false)
+			{
+				htmlElement.dispatchEvent(_pendingTransitionEndEvents[i]);
+			}
 		}
 		//reset the array, each event must be dispatched only once
 		_pendingTransitionEndEvents = _pendingTransitionEndEvents.clear();
