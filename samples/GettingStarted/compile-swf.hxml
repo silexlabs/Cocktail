@@ -1,6 +1,6 @@
 #sources
 -main Cocktail
--cp ../../
+-lib cocktail
 -cp src
 
 #binary
@@ -8,4 +8,3 @@
 -swf-version 10.2
 --remap js:cocktail
 --macro Cocktail.create('src/index.html','Main')
-

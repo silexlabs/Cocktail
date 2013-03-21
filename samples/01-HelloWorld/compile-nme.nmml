@@ -7,10 +7,10 @@
 
 	<set name="SWF_VERSION" value="10.2" />
 
-	<classpath name="../../" />
 	<classpath name="src" />
 
 	<haxelib name="nme" />
+	<haxelib name="cocktail" />
 
 	<ndll name="std" />
 	<ndll name="regexp" />
