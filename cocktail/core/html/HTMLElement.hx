@@ -2071,7 +2071,16 @@ class HTMLElement extends Element<HTMLElement>
 			//else subtract from offset parent x
 			else
 			{
-				return Math.round(elementRenderer.globalBounds.x - offsetParent.elementRenderer.globalBounds.x);
+				var globalX:Float = offsetParent.elementRenderer.globalBounds.x;
+				
+				//special case if the parent is the body, unless absolutely positioned, always
+				//considered to be at the origin of the viewport
+				if (offsetParent.tagName == HTMLConstants.HTML_BODY_TAG_NAME && offsetParent.elementRenderer.isAbsolutelyPositioned() == false)
+				{
+					globalX = 0;
+				}
+				
+				return Math.round(elementRenderer.globalBounds.x - globalX);
 			}
 		}
 		
@@ -2092,7 +2101,16 @@ class HTMLElement extends Element<HTMLElement>
 			//else subtract from offset parent y
 			else
 			{
-				return Math.round(elementRenderer.globalBounds.y - offsetParent.elementRenderer.globalBounds.y);
+				var globalY:Float = offsetParent.elementRenderer.globalBounds.y;
+				
+				//special case if the parent is the body, unless absolutely positioned, always
+				//considered to be at the origin of the viewport
+				if (offsetParent.tagName == HTMLConstants.HTML_BODY_TAG_NAME && offsetParent.elementRenderer.isAbsolutelyPositioned() == false)
+				{
+					globalY = 0;
+				}
+				
+				return Math.round(elementRenderer.globalBounds.y - globalY);
 			}
 		}
 		
