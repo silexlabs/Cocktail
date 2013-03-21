@@ -18,7 +18,7 @@ Updated on 2012-08-31
 -------------
 
 Description: an innerHtml usage example
-Tested targets: JavaScript, Flash
+Tested targets: JavaScript, Flash & Windows (via NME)
 Online demo: http://demos.silexlabs.org/cocktail/samples/04-inner_html/
 Status: source code up to date
 

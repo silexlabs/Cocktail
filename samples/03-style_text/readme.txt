@@ -18,7 +18,7 @@ Updated on 2012-08-31
 -------------
 
 Description: a simple text styling example
-Tested targets: JavaScript, Flash
+Tested targets: JavaScript, Flash & Windows (via NME)
 Online demo: http://demos.silexlabs.org/cocktail/samples/03-style_text/
 Status: source code up to date.
 
