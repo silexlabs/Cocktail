@@ -19,6 +19,12 @@ class Main
 {
 	public function new()
 	{
+		#if nme
+		var fps = new nme.display.FPS();
+		fps.y = 60;
+		nme.Lib.current.addChild(fps);
+		#end
+		
 		addTransitionBox();
 	}
 	

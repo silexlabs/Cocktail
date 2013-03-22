@@ -1,0 +1,14 @@
+-main ApplicationMain 
+-D nme_install_tool
+-cp src
+-lib nme
+-lib cocktail
+--remap js:cocktail
+--macro Cocktail.create('src/index.html','Main')
+-D desktop
+-D windows
+-cp bin/cpp/windows/haxe
+-cpp bin/cpp/windows/obj
+-cp bin/cpp/haxe
+--remap flash:nme
+-debug
