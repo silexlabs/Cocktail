@@ -2051,8 +2051,11 @@ class CoreStyle
 	/**
 	 * if the outline style is 'none', then
 	 * its width computes to 0
+	 * 	
+	 * note : this method is public, as it is called directly
+	 * on anonymous block to set their outline width value to 0 (hackish)
 	 */
-	private function applyNoneOutlineWidth():Void
+	public function applyNoneOutlineWidth():Void
 	{
 		switch(outlineStyle)
 		{
