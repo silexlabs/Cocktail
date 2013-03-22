@@ -1655,10 +1655,10 @@ class CoreStyle
 											value[i] = IDENTIFIER(CSSConstants.RIGHT_IDENT);
 											
 										case TOP:	
-											return IDENTIFIER(CSSConstants.TOP_IDENT);
+											value[i] = IDENTIFIER(CSSConstants.TOP_IDENT);
 								
 										case BOTTOM:	
-											return IDENTIFIER(CSSConstants.BOTTOM_IDENT);		
+											value[i] = IDENTIFIER(CSSConstants.BOTTOM_IDENT);		
 											
 										default:	
 									}
@@ -2110,12 +2110,18 @@ class CoreStyle
 		
 		for (i in 0...length)
 		{
-			//makes sure that only dispatched once, else may cause
-			//infinite loop if a listener triggers a synchronous update
-			if (_pendingTransitionEndEvents[i].dispatched == false)
+			//might be null if asynchronous update reseted the 
+			//pending end transitions array before transition ended
+			if (_pendingTransitionEndEvents[i] != null)
 			{
-				htmlElement.dispatchEvent(_pendingTransitionEndEvents[i]);
+				//makes sure that only dispatched once, else may cause
+				//infinite loop if a listener triggers a synchronous update
+				if (_pendingTransitionEndEvents[i].dispatched == false)
+				{
+					htmlElement.dispatchEvent(_pendingTransitionEndEvents[i]);
+				}
 			}
+			
 		}
 		//reset the array, each event must be dispatched only once
 		_pendingTransitionEndEvents = _pendingTransitionEndEvents.clear();
