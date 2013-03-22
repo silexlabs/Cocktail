@@ -205,7 +205,7 @@ class Animator
 		var transitionDelay:Float = transitionDelays[getRepeatedIndex(indexInTransitionProperty, transitionDelays.length)];
 		var transitionDuration:Float = transitionDurations[getRepeatedIndex(indexInTransitionProperty, transitionDurations.length)];
 		combinedDuration = transitionDuration + transitionDelay;
-			
+		
 		//if the combined duration is not superior to
 		//0, then there is no transition
 		if (combinedDuration <= 0)
@@ -436,7 +436,12 @@ class Animator
 		{
 			return index;
 		}
+		else if (length == 1)
+		{
+			return 0;
+		}
 		
+		//TODO : probably wrong
 		return length % index;
 	}
 	
