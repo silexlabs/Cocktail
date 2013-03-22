@@ -1,0 +1,11 @@
+#sources
+-main Cocktail
+-lib cocktail
+-cp src
+
+#binary
+-swf bin/Main.swf
+-swf-version 10.2
+--remap js:cocktail
+--macro Cocktail.create('src/index.html','Main')
+-swf-header 500:500:60
