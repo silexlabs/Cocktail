@@ -616,8 +616,8 @@ class HTMLDocument extends Document
 				//no longer applies
 				if (_mousedDownedElementRenderer != null)
 				{
+					_mousedDownedElementRenderer.domNode.invalidateStyleDeclaration(false);
 					_mousedDownedElementRenderer = null;
-					elementRendererAtPoint.domNode.invalidateStyleDeclaration(false);
 				}
 				
 		}
