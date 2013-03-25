@@ -69,7 +69,7 @@ class Timer
 		
 		//represents the absolute time in milliseconds when this
 		//method should be called
-		var callbackTime:Float = Date.now().getTime() + delay;
+		var callbackTime:Float = getTimer() + delay;
 		
 		//try to re-use a pending callback object
 		var length:Int = _pendingCallbacks.length;
@@ -94,6 +94,15 @@ class Timer
 		_pendingCallbacks.push(newTimerCallback);
 	}
 	
+	/**
+	 * Return the current timestamp
+	 * in milliseconds
+	 */
+	public function getTimer():Float
+	{
+		return _timerImpl.getTimer();
+	}
+	
 	/////////////////////////////////
 	// PRIVATE METHODS
 	////////////////////////////////
@@ -107,7 +116,7 @@ class Timer
 		//do nothing if no callbacks are registered
 		if (_pendingCount > 0)
 		{
-			var time:Float = Date.now().getTime();
+			var time:Float = getTimer();
 			
 			var length:Int = _pendingCallbacks.length;
 			for (i in 0...length)

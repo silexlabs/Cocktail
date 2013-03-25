@@ -27,4 +27,12 @@ class TimerImpl extends AbstractTimerImpl
 		super(updateCallback);
 		flash.Lib.current.stage.addEventListener(flash.events.Event.ENTER_FRAME, function(e) {updateCallback(); } );
 	}
+	
+	/**
+	 * Return flash current timestamp
+	 */
+	override public function getTimer():Float
+	{
+		return flash.Lib.getTimer();
+	}
 }

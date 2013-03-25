@@ -222,7 +222,7 @@ class TransitionManager
 		//store the current date timestamp, so that
 		//on each tick, the actual elapsed
 		//time can be calculated
-		_lastTick = Date.now().getTime();
+		_lastTick = Lib.document.timer.getTimer();
 		
 		//set a delayed method call which will be repeated
 		//as long as needed

@@ -31,4 +31,12 @@ class AbstractTimerImpl
 	{
 		
 	}
+	
+	/**
+	 * Return the current timestamp, in millisecond
+	 */
+	public function getTimer():Float
+	{
+		return -1;
+	}
 }
