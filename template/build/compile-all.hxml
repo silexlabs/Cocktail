@@ -2,7 +2,7 @@
 
 #sources
 -main Cocktail
--cp ../../
+-lib cocktail
 -cp ../src
 
 #binary
@@ -15,7 +15,7 @@
 
 #sources
 -main Cocktail
--cp ../../
+-lib cocktail
 -cp ../src
 
 #binary
