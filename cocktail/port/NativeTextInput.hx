@@ -10,9 +10,6 @@ package cocktail.port;
 #if macro
 typedef NativeTextInput = cocktail.port.base.NativeTextInputBase;
 
-#elseif air
-typedef NativeTextInput =  cocktail.port.platform.air.NativeTextInput;
-
 #elseif (flash9 || nme)
 typedef NativeTextInput =  cocktail.port.platform.flash_player.NativeTextInput;
 

@@ -12,7 +12,6 @@ import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLElement;
-import cocktail.port.base.NativeWindowBase;
 import cocktail.port.base.PlatformBase;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;
