@@ -690,8 +690,13 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						_childBlockFormattingBounds.height += child.coreStyle.usedValues.marginBottom + child.coreStyle.usedValues.marginTop;
 					}
 					
-					GeomUtils.addBounds(_childBlockFormattingBounds, blockFormattingBounds);
-					
+					//TODO 3 : again, a bit hackish, only text which is direct child  of block and not inline renderer
+					//is included. Text children of block box should be wrapped in anonymous inline box
+					if (child.isText == false || child.parentNode.isBlockContainer == true)
+					{
+						GeomUtils.addBounds(_childBlockFormattingBounds, blockFormattingBounds);
+					}
+				
 					if (child.establishesNewBlockFormattingContext() == false && child.firstChild != null)
 					{
 						doGetBlockFormattingBounds(child, blockFormattingBounds, xOffset + child.bounds.x, yOffset + child.bounds.y);
