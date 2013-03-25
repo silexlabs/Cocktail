@@ -1870,11 +1870,25 @@ class CoreStyle
 						
 					case GROUP(value):
 						var backgroundPositionX:CSSPropertyValue = null;
-						var backgroundPostionY:CSSPropertyValue = null;
+						var backgroundPositionY:CSSPropertyValue = null;
+						
+						var firstValueIsBackgroundPositionY:Bool = false;
+						
 						switch(value[0])
 						{
 							case LENGTH(value):
 								backgroundPositionX = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+								
+							case KEYWORD(keywordValue):
+								switch(keywordValue)
+								{
+									case BOTTOM, TOP:
+										backgroundPositionY = value[0];
+										firstValueIsBackgroundPositionY = true;
+										
+									default:
+										backgroundPositionX = value[0];
+								}
 								
 							default:	
 								backgroundPositionX = value[0];
@@ -1883,13 +1897,28 @@ class CoreStyle
 						switch(value[1])
 						{
 							case LENGTH(value):
-								backgroundPostionY = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+								if (firstValueIsBackgroundPositionY == false)
+								{
+									backgroundPositionY = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+								}
+								else
+								{
+									backgroundPositionX = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+								}
 								
 							default:	
-								backgroundPostionY = value[1];
+								if (firstValueIsBackgroundPositionY == false)
+								{
+									backgroundPositionY = value[1];
+								}
+								else
+								{
+									backgroundPositionX = value[1];
+								}
+								
 						}
 						
-						return GROUP([backgroundPositionX, backgroundPostionY]);
+						return GROUP([backgroundPositionX, backgroundPositionY]);
 					
 					default:	
 				}
