@@ -126,7 +126,12 @@ class CSSRulesParser
 					{
 						state = IGNORE_SPACES;
 						next = BEGIN;
-					}	
+					}
+					//was not actual comment end, just isolated '*'
+					else
+					{
+						state = COMMENT;
+					}
 			}
 			
 			c = css.fastCodeAt(++position);
