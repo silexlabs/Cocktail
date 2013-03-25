@@ -98,6 +98,10 @@ class DefaultCSSStyleSheet extends CSSStyleSheet
 				center          { text-align: center }
 				:link, :visited { text-decoration: underline; cursor:pointer; }
 				:focus          { outline: thin dotted invert }
+				
+				a:link          { color: rgb(0, 0, 238) }
+				a:active        { color: red }
+				
 		";
 	}
 	
