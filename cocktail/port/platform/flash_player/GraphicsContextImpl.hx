@@ -361,8 +361,6 @@ class GraphicsContextImpl extends AbstractGraphicsContextImpl
 		{
 			_flashPoint.x += _matrix.e;
 			_flashPoint.y += _matrix.f;
-			_flashRectangle.width -= _matrix.e ;
-			_flashRectangle.height -= _matrix.f ;
 		}
 		
 		roundFlashRect();
