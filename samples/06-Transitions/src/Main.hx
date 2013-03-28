@@ -17,6 +17,15 @@ import js.Dom;
  */
 class Main
 {
+	/**
+	 * width/height of each box and
+	 * of the container fro the boxes
+	 */
+	var boxWidth:Int;
+	var boxHeight:Int;
+	var containerWidth:Int;
+	var containerHeight:Int;
+	
 	public function new()
 	{
 		#if nme
@@ -25,7 +34,40 @@ class Main
 		nme.Lib.current.addChild(fps);
 		#end
 		
-		addTransitionBox();
+		//match width and height of css stylsheet
+		boxWidth = 50;
+		boxHeight = 50;
+		
+		containerHeight = Lib.window.innerHeight;
+		containerWidth = Lib.window.innerWidth;
+		
+		//add a stylesheet and wait for it to be loaded before start
+		//
+		//note : added here instead of html because in NME, loading is synchronous
+		//because it is local, so we need to add load listener before starting loading
+		var link = Lib.document.createElement("link");
+		link.addEventListener("load",
+		function(e) {
+			start();
+			
+		}, false);
+		
+		link.setAttribute("href", "app.css");
+		link.setAttribute("type", "text/css");
+		link.setAttribute("rel", "stylesheet");
+		
+		Lib.document.getElementsByTagName("head")[0].appendChild(link);
+	}
+	
+	/**
+	 * add a bunch of boxes
+	 */
+	function start() 
+	{
+		for (i in 0...1000)
+		{
+			addTransitionBox();
+		}
 	}
 	
 	/**
@@ -33,15 +75,8 @@ class Main
 	 */
 	function transition(transitionBox:HtmlDom)
 	{
-		var container = Lib.document.getElementById("container");
-		
-		var transWidth = transitionBox.clientWidth;
-		var transHeight = transitionBox.clientHeight;
-		var containerWidth = container.clientWidth;
-		var containerHeight = container.clientHeight;
-		
-		transitionBox.style.left = Std.string(Math.round(Math.random() * (containerWidth - transWidth))) + "px";
-		transitionBox.style.top = Std.string(Math.round(Math.random() * (containerHeight - transHeight))) + "px";
+		transitionBox.style.left = Std.string(Math.round(Math.random() * (containerWidth - boxWidth))) + "px";
+		transitionBox.style.top = Std.string(Math.round(Math.random() * (containerHeight - boxHeight))) + "px";
 	}
 	
 	/**
@@ -52,10 +87,12 @@ class Main
 		var transitionBox = Lib.document.createElement("div");
 		transitionBox.className = "trans";
 		
+		//random background color
 		var randColor = function() {return Math.floor(Math.random() * 255); };
-		
 		transitionBox.style.backgroundColor = "rgb(" + randColor() + "," + randColor() + "," + randColor() + ")";
 		
+		//restart transition after end of current 
+		//transition
 		transitionBox.addEventListener("transitionend",
 		function(e) {
 			transition(transitionBox);
@@ -68,6 +105,7 @@ class Main
 		},
 		false);
 		
+		//add more boxes when one is clicked
 		transitionBox.onclick = function(e) {
 			addTransitionBox();
 		}
