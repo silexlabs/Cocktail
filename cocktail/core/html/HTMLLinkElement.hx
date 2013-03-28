@@ -169,9 +169,13 @@ class HTMLLinkElement extends HTMLElement
 		{
 			_hasLoadedResource = true;
 			
+			//delay load event until linked resource is loaded
+			_ownerHTMLDocument.delayLoadEvent();
+			
 			var xmlHttpRequest:XMLHTTPRequest = new XMLHTTPRequest();
 			xmlHttpRequest.open(HTTPConstants.GET, href);
 			xmlHttpRequest.addEventListener(EventConstants.LOAD_END, onCSSLoaded);
+			xmlHttpRequest.addEventListener(EventConstants.ERROR, onCSSLoadError);
 			xmlHttpRequest.send();
 		}
 	}
@@ -204,7 +208,25 @@ class HTMLLinkElement extends HTMLElement
 		createStyleSheet(xmlHttpRequest.responseText);
 		
 		//signal end of loading
-		fireEvent(EventConstants.LOAD, false, false);
+		var loadEvent:UIEvent = new UIEvent();
+		loadEvent.initUIEvent(EventConstants.LOAD, false, false, null, 0.0);
+		dispatchEvent(loadEvent);
+		
+		//document load event can now be dispatched
+		_ownerHTMLDocument.undelayLoadEvent();
+	}
+	
+	/**
+	 * Callback called when there was an error
+	 * was loading the linked CSS stylsheet
+	 */
+	private function onCSSLoadError(event:Event):Void
+	{
+		//signal loading error
+		fireEvent(EventConstants.ERROR, false, false);
+		
+		//document load event can now be dispatched
+		_ownerHTMLDocument.undelayLoadEvent();
 	}
 	
 	/**
