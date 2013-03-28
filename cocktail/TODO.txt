@@ -72,6 +72,7 @@ This is not an exhaustive list, only used as a remainder
 
 - implement the "onload" event and generally improve startup
 - managing html entities
+- implement text selection
 
 === missing tags
 
