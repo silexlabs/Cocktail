@@ -182,6 +182,21 @@ class HTMLDocument extends Document
 	private var _lastTouchStartPosition:PointVO;
 	
 	/**
+	 * Initialy false, set to true once the document
+	 * is fully loaded, meaning that all embedded element, such
+	 * as pictures are also fully loaded
+	 */
+	private var _documentLoaded:Bool;
+	
+	/**
+	 * Each time an element delay dispatching
+	 * the load event of the document, it increments
+	 * this counter and decrements it once it no 
+	 * longer needs to delay the load event
+	 */
+	private var _delayLoadEventCounter:Int;
+	
+	/**
 	 * A timer controlling the whole document event loop.
 	 * Method which must be called asynchronously register
 	 * themselves with the timer
@@ -293,6 +308,9 @@ class HTMLDocument extends Document
 		_lastTouchStartPosition = new PointVO(0, 0);
 		
 		layoutManager = new LayoutManager();
+		
+		_delayLoadEventCounter = 0;
+		_documentLoaded = false;
 	}
 	
 	/**
@@ -391,6 +409,58 @@ class HTMLDocument extends Document
 		element.ownerDocument = this;
 		
 		return element;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PUBLIC INIT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * before the document is fully loaded, 
+	 * elements which delay its load, such as
+	 * an img element with a src, delay dispatching
+	 * the load event of the document until they
+	 * finished their loading task
+	 */
+	public function delayLoadEvent():Void
+	{
+		_delayLoadEventCounter++;
+	}
+	
+	/**
+	 * called by an element delaying the load event
+	 * of the document once it doesn't need to delay it
+	 * anymore, for instance for an img when its picture
+	 * has been loaded or there was an error loading it
+	 */
+	public function undelayLoadEvent():Void
+	{	
+		_delayLoadEventCounter--;
+		
+		if (_delayLoadEventCounter == 0 && _documentLoaded == false)
+		{
+			onDocumentLoaded();
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE INIT METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called when the document and all embedded
+	 * element, such as pictures, CSS stylesheet...
+	 * are loaded.
+	 * 
+	 * Dispatch a load event on the window
+	 */
+	private function onDocumentLoaded():Void
+	{
+		_documentLoaded = true;
+		
+		var event:UIEvent = new UIEvent();
+		event.initUIEvent(EventConstants.LOAD, false, false, null, 0);
+		window.dispatchEvent(event);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

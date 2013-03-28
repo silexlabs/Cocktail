@@ -141,6 +141,10 @@ class HTMLImageElement extends EmbeddedElement
 		
 		var resource:AbstractResource = ResourceManager.getImageResource(value);
 
+		//delay load until picture loaded or there is an error while loading,
+		//only useful before the document is loaded
+		_ownerHTMLDocument.delayLoadEvent();
+	
 		if (resource.loaded == false)
 		{
 			_resourceLoadedCallback = onResourceLoaded;
@@ -203,6 +207,9 @@ class HTMLImageElement extends EmbeddedElement
 		var loadEvent:UIEvent = new UIEvent();
 		loadEvent.initUIEvent(EventConstants.LOAD, false, false, null, 0.0);
 		dispatchEvent(loadEvent);
+		
+		//document can now dispatch load event if no other element prevent it
+		_ownerHTMLDocument.undelayLoadEvent();
 	}
 	
 	private function onLoadError():Void
@@ -210,6 +217,8 @@ class HTMLImageElement extends EmbeddedElement
 		var errorEvent:UIEvent = new UIEvent();
 		errorEvent.initUIEvent(EventConstants.ERROR, false, false, null, 0.0);
 		dispatchEvent(errorEvent);
+		
+		_ownerHTMLDocument.undelayLoadEvent();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
