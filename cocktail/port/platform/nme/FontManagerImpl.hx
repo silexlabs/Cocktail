@@ -40,7 +40,7 @@ class FontManagerImpl extends AbstractFontManagerImpl
 	 * used to hold a runtime specific default
 	 * font name for sans-serif font
 	 */
-	private static inline var SANS_SERIF_GENERIC_FONT_NAME:String = "sans";
+	private static inline var SANS_SERIF_GENERIC_FONT_NAME:String = "sans-serif";
 	private static inline var SANS_SERIF_FLASH_FONT_NAME:String = "_sans";
 	
 	/**
