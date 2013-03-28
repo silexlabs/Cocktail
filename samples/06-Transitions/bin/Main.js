@@ -5,7 +5,7 @@ Cocktail.htmlSource = null;
 Cocktail.customClassName = null;
 Cocktail.main = function() {
 	Main;
-	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<title>CSS transitions with Cocktail</title>\r\n\t\t<link href=\"app.css\" type=\"text/css\" rel=\"stylesheet\"></link>\r\n\t</head>\r\n\t<body>\r\n\t\t<h1>Click on boxes to add more</h1>\r\n\t\t<div id=\"container\">\r\n\t\t</div>\r\n\t</body>\r\n</html>";
+	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<title>CSS transitions with Cocktail</title>\r\n\t</head>\r\n\t<body>\r\n\t\t<h1>Click on boxes to add more</h1>\r\n\t\t<h2>Built for : <span id=\"target\"></span></h2>\r\n\t\t<div id=\"container\">\r\n\t\t</div>\r\n\t</body>\r\n</html>";
 	var customClass = Type.resolveClass("Main");
 	if(customClass != null) Type.createInstance(customClass,[]);
 }
@@ -91,7 +91,21 @@ IntIter.prototype = {
 	,__class__: IntIter
 }
 var Main = $hxClasses["Main"] = function() {
-	this.addTransitionBox();
+	var _g = this;
+	var target = js.Lib.document.getElementById("target");
+	target.innerHTML = "JS";
+	this.boxWidth = 50;
+	this.boxHeight = 50;
+	this.containerHeight = js.Lib.window.innerHeight;
+	this.containerWidth = js.Lib.window.innerWidth;
+	var link = js.Lib.document.createElement("link");
+	link.addEventListener("load",function(e) {
+		_g.start();
+	},false);
+	link.setAttribute("href","app.css");
+	link.setAttribute("type","text/css");
+	link.setAttribute("rel","stylesheet");
+	js.Lib.document.getElementsByTagName("head")[0].appendChild(link);
 };
 Main.__name__ = ["Main"];
 Main.prototype = {
@@ -118,14 +132,20 @@ Main.prototype = {
 		},1000);
 	}
 	,transition: function(transitionBox) {
-		var container = js.Lib.document.getElementById("container");
-		var transWidth = transitionBox.clientWidth;
-		var transHeight = transitionBox.clientHeight;
-		var containerWidth = container.clientWidth;
-		var containerHeight = container.clientHeight;
-		transitionBox.style.left = Std.string(Math.round(Math.random() * (containerWidth - transWidth))) + "px";
-		transitionBox.style.top = Std.string(Math.round(Math.random() * (containerHeight - transHeight))) + "px";
+		transitionBox.style.left = Std.string(Math.round(Math.random() * (this.containerWidth - this.boxWidth))) + "px";
+		transitionBox.style.top = Std.string(Math.round(Math.random() * (this.containerHeight - this.boxHeight))) + "px";
 	}
+	,start: function() {
+		var _g = 0;
+		while(_g < 500) {
+			var i = _g++;
+			this.addTransitionBox();
+		}
+	}
+	,containerHeight: null
+	,containerWidth: null
+	,boxHeight: null
+	,boxWidth: null
 	,__class__: Main
 }
 var Reflect = $hxClasses["Reflect"] = function() { }

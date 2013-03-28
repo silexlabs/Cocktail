@@ -1,0 +1,1 @@
+nme test compile-nme.nmml flash

@@ -1,1 +1,1 @@
-nme test compile-nme.nmml windows -debug
+nme test compile-nme.nmml windows

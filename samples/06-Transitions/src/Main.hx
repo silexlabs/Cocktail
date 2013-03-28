@@ -30,8 +30,21 @@ class Main
 	{
 		#if nme
 		var fps = new nme.display.FPS();
-		fps.y = 60;
+		fps.y = 50;
+		fps.x = 170;
 		nme.Lib.current.addChild(fps);
+		#end
+		
+		//helps on mobile to know wether app uses nme or air
+		var target = Lib.document.getElementById("target");
+		#if air
+		target.innerHTML = "AIR";
+		#elseif flash
+		target.innerHTML = "Flash";
+		#elseif nme
+		target.innerHTML = "NME";
+		#elseif js
+		target.innerHTML = "JS";
 		#end
 		
 		//match width and height of css stylsheet
@@ -64,7 +77,7 @@ class Main
 	 */
 	function start() 
 	{
-		for (i in 0...1000)
+		for (i in 0...500)
 		{
 			addTransitionBox();
 		}
