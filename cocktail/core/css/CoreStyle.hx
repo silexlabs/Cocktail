@@ -1295,8 +1295,21 @@ class CoreStyle
 	 */
 	private function cascadeProperty(propertyIndex:Int, initialStyleDeclaration:CSSStyleDeclaration, styleSheetDeclaration:CSSStyleDeclaration, inlineStyleDeclaration:CSSStyleDeclaration, parentStyleDeclaration:CSSStyleDeclaration, parentColor:CSSColorValue, parentFontSize:Float, parentXHeight:Float, fontSize:Float, xHeight:Float, programmaticChange:Bool, hasInlineStyle:Bool, hasStyleSheetStyle:Bool):Bool
 	{
-		//first check if this property is defined inline which always has the
-		//highest priority
+		//the highest priority is for style defined in a stylesheet with an !important declaration.
+		//It has an even higher priority than inline style
+		if (hasStyleSheetStyle == true)
+		{
+			var typedProperty:TypedPropertyVO = styleSheetDeclaration.getTypedProperty(propertyIndex);
+			if (typedProperty != null)
+			{
+				if (typedProperty.important == true)
+				{
+					return setProperty(propertyIndex, typedProperty, parentStyleDeclaration, initialStyleDeclaration, parentColor, parentFontSize, parentXHeight, fontSize, xHeight, programmaticChange, false, false);
+				}
+			}
+		}
+		
+		//check if this property is defined inline
 		if (hasInlineStyle == true)
 		{
 			var typedProperty:TypedPropertyVO = inlineStyleDeclaration.getTypedProperty(propertyIndex);
