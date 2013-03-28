@@ -202,6 +202,9 @@ class HTMLLinkElement extends HTMLElement
 	{
 		var xmlHttpRequest:XMLHTTPRequest = cast(event.target);
 		createStyleSheet(xmlHttpRequest.responseText);
+		
+		//signal end of loading
+		fireEvent(EventConstants.LOAD, false, false);
 	}
 	
 	/**

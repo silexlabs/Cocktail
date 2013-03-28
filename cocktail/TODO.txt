@@ -70,6 +70,7 @@ This is not an exhaustive list, only used as a remainder
 === features
 
 - implement the "onload" event and generally improve startup
+- managing html entities
 
 === missing tags
 
