@@ -582,6 +582,9 @@ class HTMLDocument extends Document
 		//reseted after dispatch
 		var eventType:String = mouseEvent.type;
 		
+		//hovered element must also be refreshed when there is a mouse click
+		refreshHoveredElement(mouseEvent);
+		
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
 		
 		if (elementRendererAtPoint == null)
@@ -653,33 +656,14 @@ class HTMLDocument extends Document
 	}
 	
 	/**
-	 * When a mouse wheel event occurs first dispatch it, and
-	 * if the default action wasn't prevented, vertically scroll
-	 * the first vertically scrollable parent of the event target
+	 * When a mouse wheel event occurs first dispatch it 
+	 * 
+	 * TODO 2 : once scrollbar properly implemented, implement default scrolling
 	 */
 	public function onPlatformMouseWheelEvent(wheelEvent:WheelEvent):Void
 	{
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(wheelEvent.screenX, wheelEvent.screenY);
 		elementRendererAtPoint.domNode.dispatchEvent(wheelEvent);
-		
-		//TODO 2 : automatic scrolling deactivated until scrollbar properly implemented
-		//for now, scrolling can be implemented by using scrollTop and scrollLeft property
-		//on an HTMLElement with an overflow = hidden style
-		
-		//if (wheelEvent.defaultPrevented == false)
-		//{
-			//var htmlElement:HTMLElement = elementRendererAtPoint.domNode;
-			//
-			//get the amount of vertical scrolling to apply in pixel
-			//var scrollOffset:Int = Math.round(wheelEvent.deltaY * MOUSE_WHEEL_DELTA_MULTIPLIER) ;
-			//
-			//get the first ancestor which can be vertically scrolled
-			//var scrollableHTMLElement:HTMLElement = getFirstVerticallyScrollableHTMLElement(htmlElement, scrollOffset);
-			//if (scrollableHTMLElement != null)
-			//{
-				//scrollableHTMLElement.scrollTop -= scrollOffset;
-			//}
-		//}
 	}
 	
 	/**
@@ -698,61 +682,9 @@ class HTMLDocument extends Document
 		{
 			return;
 		}
-
-		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
 		
-		if (elementRendererAtPoint == null)
-		{
-			return;
-		}
-		
-		if (_hoveredElementRenderer != elementRendererAtPoint)
-		{
-			var oldHoveredElementRenderer:ElementRenderer = _hoveredElementRenderer;
-			//might be null if mouse pointer left the window
-			if (_hoveredElementRenderer != null)
-			{
-				//dispatch mouse out on the old hovered HTML element
-				var mouseOutEvent:MouseEvent = new MouseEvent();
-				mouseOutEvent.initMouseEvent(EventConstants.MOUSE_OUT, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
-				mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey, mouseEvent.metaKey, mouseEvent.button, elementRendererAtPoint.domNode);
-				
-				_hoveredElementRenderer.domNode.dispatchEvent(mouseOutEvent);
-			
-				oldHoveredElementRenderer.domNode.invalidateStyleDeclaration(false);
-			}
-			
-			_hoveredElementRenderer = elementRendererAtPoint;
-			
-			//send html elment which was just moused out
-			var relatedTarget:HTMLElement = null;
-			if (_hoveredElementRenderer != null)
-			{
-				relatedTarget = _hoveredElementRenderer.domNode;
-			}
-			
-			//dispatch mouse over on the newly hovered HTML element
-			var mouseOverEvent:MouseEvent = new MouseEvent();
-			mouseOverEvent.initMouseEvent(EventConstants.MOUSE_OVER, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
-			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, relatedTarget);
-			
-			elementRendererAtPoint.domNode.dispatchEvent(mouseOverEvent);
-			
-			//refresh the style of the newly hovered html element as a :hover
-			//pseudo-class might apply to it
-			elementRendererAtPoint.domNode.invalidateStyleDeclaration(false);
-			
-			//when the hovered element changes, if a mouse up event is dispatched
-			//on the new hovered element, no click should be dispatched on it, as 
-			//no mouse down was dispatched on it
-			_shouldDispatchClickOnNextMouseUp = false;
-			
-			//update the mouse cursor with the cursor style of the newly hovered 
-			//element
-			setMouseCursor(elementRendererAtPoint.domNode.coreStyle.cursor);
-		}
-		
-		elementRendererAtPoint.domNode.dispatchEvent(mouseEvent);
+		//update hovered element after mouse move
+		refreshHoveredElement(mouseEvent);
 	}
 	
 	
@@ -898,7 +830,7 @@ class HTMLDocument extends Document
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// MOUSE CURSOR METHODS
+	// MOUSE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -911,6 +843,67 @@ class HTMLDocument extends Document
 		{
 			onSetMouseCursor(cursor);
 		}
+	}
+	
+	/**
+	 * Refresh the currently hovered element after a mouse event
+	 */
+	private function refreshHoveredElement(mouseEvent:MouseEvent):Void
+	{
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
+		
+		if (elementRendererAtPoint == null)
+		{
+			return;
+		}
+		
+		if (_hoveredElementRenderer != elementRendererAtPoint)
+		{
+			var oldHoveredElementRenderer:ElementRenderer = _hoveredElementRenderer;
+			//might be null if mouse pointer left the window
+			if (_hoveredElementRenderer != null)
+			{
+				//dispatch mouse out on the old hovered HTML element
+				var mouseOutEvent:MouseEvent = new MouseEvent();
+				mouseOutEvent.initMouseEvent(EventConstants.MOUSE_OUT, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
+				mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.altKey, mouseEvent.shiftKey, mouseEvent.metaKey, mouseEvent.button, elementRendererAtPoint.domNode);
+				
+				_hoveredElementRenderer.domNode.dispatchEvent(mouseOutEvent);
+			
+				oldHoveredElementRenderer.domNode.invalidateStyleDeclaration(false);
+			}
+			
+			_hoveredElementRenderer = elementRendererAtPoint;
+			
+			//send html elment which was just moused out
+			var relatedTarget:HTMLElement = null;
+			if (_hoveredElementRenderer != null)
+			{
+				relatedTarget = _hoveredElementRenderer.domNode;
+			}
+			
+			//dispatch mouse over on the newly hovered HTML element
+			var mouseOverEvent:MouseEvent = new MouseEvent();
+			mouseOverEvent.initMouseEvent(EventConstants.MOUSE_OVER, true, true, null, 0.0, mouseEvent.screenX, mouseEvent.screenY, mouseEvent.clientX,
+			mouseEvent.clientY, mouseEvent.ctrlKey, mouseEvent.shiftKey,  mouseEvent.altKey, mouseEvent.metaKey, mouseEvent.button, relatedTarget);
+			
+			elementRendererAtPoint.domNode.dispatchEvent(mouseOverEvent);
+			
+			//refresh the style of the newly hovered html element as a :hover
+			//pseudo-class might apply to it
+			elementRendererAtPoint.domNode.invalidateStyleDeclaration(false);
+			
+			//when the hovered element changes, if a mouse up event is dispatched
+			//on the new hovered element, no click should be dispatched on it, as 
+			//no mouse down was dispatched on it
+			_shouldDispatchClickOnNextMouseUp = false;
+			
+			//update the mouse cursor with the cursor style of the newly hovered 
+			//element
+			setMouseCursor(elementRendererAtPoint.domNode.coreStyle.cursor);
+		}
+		
+		elementRendererAtPoint.domNode.dispatchEvent(mouseEvent);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
