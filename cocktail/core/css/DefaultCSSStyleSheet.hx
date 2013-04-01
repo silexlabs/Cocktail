@@ -102,6 +102,67 @@ class DefaultCSSStyleSheet extends CSSStyleSheet
 				a:link          { color: rgb(0, 0, 238) }
 				a:active        { color: red }
 				
+				input[type=button] {
+					background-image:url('button.png');
+					font:13px sans-serif;
+					text-align:center;
+					color:#505050;
+					width:74px;
+					height:18px;
+					padding-top:6px;
+				}
+				
+				input[type=button]:hover {
+					background-position:-74px 0;
+					color:#734b1f;
+				}
+				
+				input[type=button]:active {
+					background-position:-148px 0;
+					color:#854500;
+				}
+				
+				input[type=checkbox] {
+					background-image:url('checkbox.png');
+				}
+				
+				input[type=radio] {
+					background-image:url('radio.png');
+				}
+				
+				input[type=checkbox], input[type=radio] {
+					height:16px;
+					width:16px;
+					background-position:-64px 0;
+				}
+				
+				input[type=checkbox]:hover, input[type=radio]:hover {
+					background-position:-80px 0;
+				}
+				
+				input[type=checkbox]:active, input[type=radio]:active {
+					background-position:-96px 0;
+				}
+				
+				input[type=checkbox]:checked, input[type=radio]:checked {
+					background-position:0;
+				}
+				
+				input[type=checkbox]:checked:hover, input[type=radio]:checked:hover {
+					background-position:-16px;
+				}
+				
+				input[type=checkbox]:checked:active, input[type=radio]:checked:active {
+					background-position:-32px;
+				}
+				
+				input[type=checkbox]:disabled, input[type=radio]:disabled {
+					background-position:-48px;
+				}
+				
+				input[type=checkbox]:checked:disabled, input[type=radio]:checked:disabled {
+					background-position:-112px;
+				}
 		";
 	}
 	
