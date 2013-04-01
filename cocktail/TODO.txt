@@ -67,14 +67,12 @@ This is not an exhaustive list, only used as a remainder
 
 - CSS transition, only style with 1 float value works now (like width, height...), no color or matrix transitions for instance.
 - CSS transform (2d), mostly implemented but currently broken.
-- for background styles, support for list of values (for instance to have multiple background-image) mostly implemented but currently broken.
 - anonymous text element should be wrapped in anonymous inline box
 
 == HTML 4 == 
 
 === features
 
-- implement the "onload" event and generally improve startup
 - managing html entities
 - implement text selection
 

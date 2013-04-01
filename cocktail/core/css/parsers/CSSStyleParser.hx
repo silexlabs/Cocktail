@@ -958,7 +958,10 @@ class CSSStyleParser
 		
 	}
 	
-	
+	/**
+	 * parse a CSS functionnal notation (an ident preceding a parenthesis)
+	 * @return null if invalid
+	 */
 	private static function getFunctionalNotation(name:String, value:CSSPropertyValue):CSSPropertyValue
 	{
 		switch (name)
@@ -980,10 +983,266 @@ class CSSStyleParser
 					default:	
 						return null;
 				}
+			
+			//CSS TRANSFORMS
+			
+			case 'matrix':
+				switch(value)
+				{
+					case CSS_LIST(value):
+						if (value.length == 6)
+						{
+							var matrixNumbers:Array<Float> = new Array<Float>();
+							
+							for (i in 0...value.length)
+							{
+								switch(value[i])
+								{
+									case NUMBER(value):
+										matrixNumbers.push(value);
+										
+									case INTEGER(value):
+										matrixNumbers.push(value);
+										
+									default:
+										return null;
+								}
+							}
+							
+							return TRANSFORM_FUNCTION(MATRIX(matrixNumbers[0], matrixNumbers[1], matrixNumbers[2], matrixNumbers[3], matrixNumbers[4], matrixNumbers[5]));
+						}
+						
+					default:	
+				}
+			
+			case 'rotate':
+				switch(value)
+				{
+					case ANGLE(value):
+						return CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.ROTATE(value));
+						
+					default:	
+				}
+				
+			case 'scaleX':
+				switch(value)
+				{
+					case NUMBER(value):
+						return CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SCALE_X(value));
+						
+					case INTEGER(value):
+						return CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SCALE_X(value));
+						
+					default:	
+						
+				}
+			
+			case 'scaleY':
+				switch(value)
+				{
+					case NUMBER(value):
+						return CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SCALE_Y(value));
+						
+					case INTEGER(value):
+						return CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SCALE_Y(value));
+						
+					default:	
+						
+				}	
+				
+			case 'scale':
+				switch(value)
+				{
+					case NUMBER(value):
+						return GROUP([CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SCALE_X(value)), CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SCALE_X(value))]);
+					
+					case INTEGER(value):
+						return GROUP([CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SCALE_X(value)), CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SCALE_X(value))]);
+					
+					case CSS_LIST(value):
+						if (value.length == 2)
+						{
+							var scaleX:Float = 0.0;
+							var scaleY:Float = 0.0;
+							switch(value[0])
+							{
+								case NUMBER(value):
+									scaleX = value;
+									
+								case INTEGER(value):
+									scaleX = value;
+								
+								//invalid scale declarations	
+								default:
+									return null;
+							}
+							
+							switch(value[1])
+							{
+								case NUMBER(value):
+									scaleY = value;
+									
+								case INTEGER(value):
+									scaleY = value;
+								
+								//invalid scale declarations	
+								default:
+									return null;
+							}
+							
+							return GROUP([CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SCALE_X(scaleX)), CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SCALE_X(scaleY))]);
+						}
+						
+					default:	
+				}
+				
+			case 'skew':
+				switch(value)
+				{
+					case ANGLE(value):
+						return GROUP([CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SKEW_X(value)), CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SKEW_Y(value))]);
+					
+					case CSS_LIST(value):
+						if (value.length == 2)
+						{
+							var skewX:CSSAngleValue = null;
+							var skewY:CSSAngleValue = null;
+							
+							switch(value[0])
+							{
+								case ANGLE(value):
+									skewX = value;
+									
+								default:
+									return null;
+							}
+							
+							switch(value[1])
+							{
+								case ANGLE(value):
+									skewY = value;
+									
+								default:
+									return null;
+							}
+							
+							return GROUP([TRANSFORM_FUNCTION(CSSTransformFunctionValue.SKEW_X(skewX)), CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SKEW_Y(skewY))]);
+						}
+						
+					default:	
+				}
+				
+			case 'skewX':
+				switch(value)
+				{
+					case ANGLE(value):
+						return TRANSFORM_FUNCTION(CSSTransformFunctionValue.SKEW_X(value));
+						
+					default:	
+						
+				}		
+				
+			case 'skewY':
+				switch(value)
+				{
+					case ANGLE(value):
+						return TRANSFORM_FUNCTION(CSSTransformFunctionValue.SKEW_Y(value));
+						
+					default:	
+						
+				}			
+				
+			case 'translateX':
+				switch(value)
+				{
+					case ABSOLUTE_LENGTH(value):
+						return TRANSFORM_FUNCTION(TRANSLATE_X(CSSTranslationValue.ABSOLUTE_LENGTH(value)));
+						
+					case PERCENTAGE(value):
+						return TRANSFORM_FUNCTION(TRANSLATE_X(CSSTranslationValue.PERCENTAGE(value)));
+						
+					case LENGTH(value):
+						return TRANSFORM_FUNCTION(TRANSLATE_X(CSSTranslationValue.LENGTH(value)));	
+						
+					default:	
+				}
+				
+			case 'translateY':
+				switch(value)
+				{
+					case ABSOLUTE_LENGTH(value):
+						return TRANSFORM_FUNCTION(TRANSLATE_Y(CSSTranslationValue.ABSOLUTE_LENGTH(value)));
+						
+					case PERCENTAGE(value):
+						return TRANSFORM_FUNCTION(TRANSLATE_Y(CSSTranslationValue.PERCENTAGE(value)));
+						
+					case LENGTH(value):
+						return TRANSFORM_FUNCTION(TRANSLATE_Y(CSSTranslationValue.LENGTH(value)));	
+						
+					default:	
+				}	
+				
+			case 'translate':
+				switch(value)
+				{
+					case ABSOLUTE_LENGTH(value):
+						return GROUP([TRANSFORM_FUNCTION(TRANSLATE_X(CSSTranslationValue.ABSOLUTE_LENGTH(value))), TRANSFORM_FUNCTION(TRANSLATE_Y(CSSTranslationValue.ABSOLUTE_LENGTH(value)))]);
+						
+					case PERCENTAGE(value):
+						return GROUP([TRANSFORM_FUNCTION(TRANSLATE_X(CSSTranslationValue.PERCENTAGE(value))), TRANSFORM_FUNCTION(TRANSLATE_Y(CSSTranslationValue.PERCENTAGE(value)))]);
+						
+					case LENGTH(value):
+						return GROUP([TRANSFORM_FUNCTION(TRANSLATE_X(CSSTranslationValue.LENGTH(value))), TRANSFORM_FUNCTION(TRANSLATE_Y(CSSTranslationValue.LENGTH(value)))]);
+						
+					case CSS_LIST(value):
+						
+						var translateX:CSSTranslationValue = null;
+						var translateY:CSSTranslationValue = null;
+						
+						if (value.length == 2)
+						{
+							switch(value[0])
+							{
+								case ABSOLUTE_LENGTH(value):
+									translateX = CSSTranslationValue.ABSOLUTE_LENGTH(value);
+									
+								case PERCENTAGE(value):
+									translateX = CSSTranslationValue.PERCENTAGE(value);
+									
+								case LENGTH(value):
+									translateX = CSSTranslationValue.LENGTH(value);
+									
+								default:
+									return null;
+							}
+							
+							switch(value[1])
+							{
+								case ABSOLUTE_LENGTH(value):
+									translateY = CSSTranslationValue.ABSOLUTE_LENGTH(value);
+									
+								case PERCENTAGE(value):
+									translateY = CSSTranslationValue.PERCENTAGE(value);
+									
+								case LENGTH(value):
+									translateY = CSSTranslationValue.LENGTH(value);
+									
+								default:
+									return null;	
+							}
+							
+							return GROUP([TRANSFORM_FUNCTION(TRANSLATE_X(translateX)), TRANSFORM_FUNCTION(TRANSLATE_Y(translateY))]);
+						}
+					
+					default:	
+				}		
+				
+				
 				
 			default:
-				return null;
 		}
+		
+		return null;
 	}
 	
 	private static function parseRGBOrRGBA(property:CSSPropertyValue, isRGBA:Bool):CSSPropertyValue
