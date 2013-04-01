@@ -108,7 +108,7 @@ class DefaultCSSStyleSheet extends CSSStyleSheet
 					border:solid thin gray;
 				}
 				
-				input[type=button] {
+				input[type=button], input[type=reset], input[type=submit] {
 					background-image:url('button.png');
 					font:13px sans-serif;
 					text-align:center;
@@ -119,12 +119,12 @@ class DefaultCSSStyleSheet extends CSSStyleSheet
 					border:none;
 				}
 				
-				input[type=button]:hover {
+				input[type = button]:hover, input[type = reset]:hover, input[type = submit]:hover {
 					background-position:-74px 0;
 					color:#734b1f;
 				}
 				
-				input[type=button]:active {
+				input[type=button]:active, input[type = reset]:active, input[type = submit]:active {
 					background-position:-148px 0;
 					color:#854500;
 				}
