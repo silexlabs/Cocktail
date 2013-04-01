@@ -1796,7 +1796,7 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function getAttributeAsBool(name:String):Bool
 	{
-		if (getAttribute(HTMLConstants.HTML_HIDDEN_ATTRIBUTE_NAME) != null)
+		if (getAttribute(name) != null)
 		{
 			return true;
 		}

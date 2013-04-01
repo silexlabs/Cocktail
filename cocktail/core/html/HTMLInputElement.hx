@@ -230,6 +230,11 @@ class HTMLInputElement extends EmbeddedElement
 				updateRadioButtonGroup();
 			}
 		}
+		//update native input rendering if disabled state is changed
+		else if (name == HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME)
+		{
+			updateInputRendererState();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -882,6 +887,7 @@ class HTMLInputElement extends EmbeddedElement
 	private function set_disabled(value:Bool):Bool
 	{
 		setAttributeAsBool(HTMLConstants.HTML_DISABLED_ATTRIBUTE_NAME, value);
+		updateInputRendererState();
 		return value;
 	}
 	
