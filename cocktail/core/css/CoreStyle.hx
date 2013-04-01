@@ -1874,7 +1874,9 @@ class CoreStyle
 								return GROUP([KEYWORD(value), KEYWORD(CENTER)]);
 						}
 						
-					
+					case INTEGER(value):
+						return GROUP([ABSOLUTE_LENGTH(0), ABSOLUTE_LENGTH(0)]);
+						
 					case LENGTH(value):
 						return GROUP([ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight)), KEYWORD(CENTER)]);
 						
