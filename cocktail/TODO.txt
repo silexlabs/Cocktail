@@ -59,6 +59,10 @@ This is not an exhaustive list, only used as a remainder
 - media queries
 - font-face
 
+=== incomplete styles
+
+- background shorthand is at level 2.1 and not 3 of CSS
+
 === buggy implementations
 
 - CSS transition, only style with 1 float value works now (like width, height...), no color or matrix transitions for instance.

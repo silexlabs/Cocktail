@@ -139,12 +139,10 @@ class BackgroundManager
 		var backgroundSizes:Array<CSSPropertyValue> = getAsArray(style.backgroundSize);
 		var backgroundRepeats:Array<CSSPropertyValue> = getAsArray(style.backgroundRepeat);
 
-		
-		//loop in all the background images style of the HTMLElement. It is expected
-		//that each array of background styles (such as background origin, background size...)
-		//has the same length
-		var length:Int = backgroundImages.length;
-		for (i in 0...length)
+		//loop in all the background images style of the HTMLElement. Loop in reverse order, first
+		//declarted image should appear on top
+		var i:Int = backgroundImages.length - 1;
+		while(i >= 0)
 		{
 			var backgroundImage:CSSPropertyValue = backgroundImages[i];
 			switch (backgroundImage)
@@ -153,11 +151,18 @@ class BackgroundManager
 				
 				case URL(value):
 					drawBackgroundImage(graphicContext, value, style, backgroundBox,
-					backgroundPositions[i], backgroundSizes[i], backgroundOrigins[i], backgroundClips[i],
-					backgroundRepeats[i], backgroundImages[i], elementRenderer, clipRect);
+					backgroundPositions[getRepeatedIndex(i, backgroundPositions.length)],
+					backgroundSizes[getRepeatedIndex(i, backgroundSizes.length)],
+					backgroundOrigins[getRepeatedIndex(i, backgroundOrigins.length)],
+					backgroundClips[getRepeatedIndex(i, backgroundClips.length)],
+					backgroundRepeats[getRepeatedIndex(i, backgroundRepeats.length)], 
+					backgroundImages[i], 
+					elementRenderer, clipRect);
 					
 				default:	
 			}
+			
+			i--;
 		}
 		
 	}
@@ -181,9 +186,42 @@ class BackgroundManager
 			case URL(value):
 				return [cssProperty];
 				
+			case CSS_LIST(value):
+				var arr:Array<CSSPropertyValue> = [];
+				for (i in 0...value.length)
+				{
+					arr.push(value[i]);
+				}
+				return arr;
+				
 			default:
 				return null;
 		}
+	}
+	
+	/**
+	 * Utils method, which return, given
+	 * an index and the length of an array, the 
+	 * actual index to use by looping in the length
+	 * if the length is inferior to the index
+	 * 
+	 * @example if the length is 2 and the index is 3,
+	 * the returned index will be 0, as by looping in the length,
+	 * the index will be 0,1,0
+	 */
+	private static function getRepeatedIndex(index:Int, length:Int):Int
+	{
+		if (index < length)
+		{
+			return index;
+		}
+		else if (length == 1)
+		{
+			return 0;
+		}
+		
+		//TODO : probably wrong
+		return length % index;
 	}
 		
 	//////////////////////////////////////////////////////////////////////////////////////////

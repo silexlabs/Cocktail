@@ -1847,7 +1847,6 @@ class CoreStyle
 					default:	
 				}	
 			
-			//TODO : add support for list of item	
 			case CSSConstants.BACKGROUND_IMAGE:
 				switch(property)
 				{
