@@ -102,6 +102,12 @@ class DefaultCSSStyleSheet extends CSSStyleSheet
 				a:link          { color: rgb(0, 0, 238) }
 				a:active        { color: red }
 				
+				input[type=text], input[type=password], input {
+					width:150px;
+					height:25px;
+					border:solid thin gray;
+				}
+				
 				input[type=button] {
 					background-image:url('button.png');
 					font:13px sans-serif;
@@ -110,6 +116,7 @@ class DefaultCSSStyleSheet extends CSSStyleSheet
 					width:74px;
 					height:18px;
 					padding-top:6px;
+					border:none;
 				}
 				
 				input[type=button]:hover {
@@ -133,7 +140,8 @@ class DefaultCSSStyleSheet extends CSSStyleSheet
 				input[type=checkbox], input[type=radio] {
 					height:16px;
 					width:16px;
-					background-position:-64px 0;
+					background-position: -64px 0;
+					border:none;
 				}
 				
 				input[type=checkbox]:hover, input[type=radio]:hover {
