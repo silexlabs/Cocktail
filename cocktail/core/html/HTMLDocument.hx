@@ -551,7 +551,7 @@ class HTMLDocument extends Document
 			
 			//check if a disabled attribute is present on the node
 			//to determine wether the form control is enabled or disabled
-			if (inputNode.disabled = false)
+			if (inputNode.disabled == false)
 			{
 				enabled = true;
 				disabled = false;
