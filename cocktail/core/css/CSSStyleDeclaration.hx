@@ -795,8 +795,6 @@ class CSSStyleDeclaration
 					default:	
 				}
 				
-			
-			//TOSO : don't check transform functions	
 			case CSSConstants.TRANSFORM:
 				switch(styleValue)
 				{
@@ -807,7 +805,24 @@ class CSSStyleDeclaration
 								return true;
 								
 							default:	
+						}	
+						
+					case TRANSFORM_FUNCTION(value):
+						return true;
+						
+					case CSS_LIST(value):
+						for (i in 0...value.length)
+						{
+							switch(value[i])
+							{
+								case TRANSFORM_FUNCTION(value):
+									
+								default:
+									return false;
+							}
 						}
+						
+						return true;
 						
 					case INHERIT, INITIAL:
 						return true;

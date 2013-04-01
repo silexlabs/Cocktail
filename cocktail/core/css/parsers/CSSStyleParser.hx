@@ -1054,11 +1054,11 @@ class CSSStyleParser
 				switch(value)
 				{
 					case NUMBER(value):
-						return GROUP([CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SCALE_X(value)), CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SCALE_X(value))]);
-					
+						return TRANSFORM_FUNCTION(SCALE(value, value));
+						
 					case INTEGER(value):
-						return GROUP([CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SCALE_X(value)), CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SCALE_X(value))]);
-					
+						return TRANSFORM_FUNCTION(SCALE(value, value));
+						
 					case CSS_LIST(value):
 						if (value.length == 2)
 						{
@@ -1090,7 +1090,7 @@ class CSSStyleParser
 									return null;
 							}
 							
-							return GROUP([CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SCALE_X(scaleX)), CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SCALE_X(scaleY))]);
+							return TRANSFORM_FUNCTION(SCALE(scaleX, scaleY));
 						}
 						
 					default:	
@@ -1100,7 +1100,7 @@ class CSSStyleParser
 				switch(value)
 				{
 					case ANGLE(value):
-						return GROUP([CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SKEW_X(value)), CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SKEW_Y(value))]);
+						return TRANSFORM_FUNCTION(SKEW(value, value));
 					
 					case CSS_LIST(value):
 						if (value.length == 2)
@@ -1126,7 +1126,7 @@ class CSSStyleParser
 									return null;
 							}
 							
-							return GROUP([TRANSFORM_FUNCTION(CSSTransformFunctionValue.SKEW_X(skewX)), CSSPropertyValue.TRANSFORM_FUNCTION(CSSTransformFunctionValue.SKEW_Y(skewY))]);
+							return TRANSFORM_FUNCTION(SKEW(skewX, skewY));
 						}
 						
 					default:	
@@ -1186,13 +1186,13 @@ class CSSStyleParser
 				switch(value)
 				{
 					case ABSOLUTE_LENGTH(value):
-						return GROUP([TRANSFORM_FUNCTION(TRANSLATE_X(CSSTranslationValue.ABSOLUTE_LENGTH(value))), TRANSFORM_FUNCTION(TRANSLATE_Y(CSSTranslationValue.ABSOLUTE_LENGTH(value)))]);
+						return TRANSFORM_FUNCTION(TRANSLATE(CSSTranslationValue.ABSOLUTE_LENGTH(value), CSSTranslationValue.ABSOLUTE_LENGTH(value)));
 						
 					case PERCENTAGE(value):
-						return GROUP([TRANSFORM_FUNCTION(TRANSLATE_X(CSSTranslationValue.PERCENTAGE(value))), TRANSFORM_FUNCTION(TRANSLATE_Y(CSSTranslationValue.PERCENTAGE(value)))]);
+						return TRANSFORM_FUNCTION(TRANSLATE(CSSTranslationValue.PERCENTAGE(value), CSSTranslationValue.PERCENTAGE(value)));
 						
 					case LENGTH(value):
-						return GROUP([TRANSFORM_FUNCTION(TRANSLATE_X(CSSTranslationValue.LENGTH(value))), TRANSFORM_FUNCTION(TRANSLATE_Y(CSSTranslationValue.LENGTH(value)))]);
+						return TRANSFORM_FUNCTION(TRANSLATE(CSSTranslationValue.LENGTH(value), CSSTranslationValue.LENGTH(value)));
 						
 					case CSS_LIST(value):
 						
@@ -1231,7 +1231,7 @@ class CSSStyleParser
 									return null;	
 							}
 							
-							return GROUP([TRANSFORM_FUNCTION(TRANSLATE_X(translateX)), TRANSFORM_FUNCTION(TRANSLATE_Y(translateY))]);
+							return TRANSFORM_FUNCTION(TRANSLATE(translateX, translateY));
 						}
 					
 					default:	
