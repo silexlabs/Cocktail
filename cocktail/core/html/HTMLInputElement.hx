@@ -307,11 +307,23 @@ class HTMLInputElement extends EmbeddedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * An html form control element is inherently
-	 * focusable
+	 * An html form control element is
+	 * focusable in most cases
 	 */
 	override private function isDefaultFocusable():Bool
 	{
+		//not focusable if disabled
+		if (disabled == true)
+		{
+			return false;
+		}
+		
+		//some type of input can't be focused
+		if (isFocusableType() == false)
+		{
+			return false;
+		}
+		
 		return true;
 	}
 	
@@ -560,6 +572,22 @@ class HTMLInputElement extends EmbeddedElement
 				
 			default:
 				return false;
+		}
+	}
+	
+	/**
+	 * Return wether the current type of
+	 * input can be focused
+	 */
+	private function isFocusableType():Bool
+	{
+		switch(type)
+		{
+			case HTMLConstants.INPUT_TYPE_HIDDEN:
+				return false;
+				
+			default:
+				return true;
 		}
 	}
 	
