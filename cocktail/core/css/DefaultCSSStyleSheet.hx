@@ -119,14 +119,19 @@ class DefaultCSSStyleSheet extends CSSStyleSheet
 					border:none;
 				}
 				
-				input[type = button]:hover, input[type = reset]:hover, input[type = submit]:hover {
+				input[type=button]:hover, input[type=reset]:hover, input[type=submit]:hover {
 					background-position:-74px 0;
 					color:#734b1f;
 				}
 				
-				input[type=button]:active, input[type = reset]:active, input[type = submit]:active {
+				input[type=button]:active, input[type=reset]:active, input[type=submit]:active {
 					background-position:-148px 0;
 					color:#854500;
+				}
+				
+				input[type=button]:disabled, input[type=reset]:disabled, input[type=submit]:disabled {
+					background-position:-223px 0;
+					color:#9f9f9f;
 				}
 				
 				input[type=checkbox] {
@@ -165,11 +170,11 @@ class DefaultCSSStyleSheet extends CSSStyleSheet
 				}
 				
 				input[type=checkbox]:disabled, input[type=radio]:disabled {
-					background-position:-48px;
+					background-position:-112px;
 				}
 				
 				input[type=checkbox]:checked:disabled, input[type=radio]:checked:disabled {
-					background-position:-112px;
+					background-position:-48px;
 				}
 		";
 	}
