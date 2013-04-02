@@ -264,7 +264,7 @@ class HTMLObjectElement extends EmbeddedElement
 				}
 				
 				//instantiate the plugin, for now hard-coded SWF plugin
-				plugin = new SWFPlugin(elementAttributes, params, onLoadComplete, onLoadError);
+				plugin = new SWFPlugin(this, elementAttributes, params, onLoadComplete, onLoadError);
 			}
 		}
 	}

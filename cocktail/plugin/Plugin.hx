@@ -12,6 +12,7 @@ import cocktail.core.event.Event;
 import cocktail.core.event.EventCallback;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.geom.GeomData;
+import cocktail.core.html.HTMLElement;
 
 /**
  * base class for third-party plugin, instantiated through
@@ -51,6 +52,12 @@ class Plugin
 	private var _loadError:Void->Void;
 	
 	/**
+	 * Contains a reference to the node which instantiated
+	 * this plugin
+	 */
+	private var _node:HTMLElement;
+	
+	/**
 	 * Contain all the attributes of the instantiating
 	 * object or embed node, as key/value pair where
 	 * key is the name of the attribute
@@ -64,9 +71,10 @@ class Plugin
 	 */
 	private var _params:Hash<String>;
 	
-	public function new(elementAttributes:Hash<String>, params:Hash<String>,loadComplete:Void->Void, loadError:Void->Void) 
+	public function new(node:HTMLElement, elementAttributes:Hash<String>, params:Hash<String>,loadComplete:Void->Void, loadError:Void->Void) 
 	{
 		viewport = new RectangleVO();
+		_node = node;
 		_loadComplete = loadComplete;
 		_loadError = loadError;
 		_elementAttributes = elementAttributes;

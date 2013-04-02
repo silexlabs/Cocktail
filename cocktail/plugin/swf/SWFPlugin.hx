@@ -13,6 +13,8 @@ import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.html.HTMLConstants;
+import cocktail.core.html.HTMLDocument;
+import cocktail.core.html.HTMLElement;
 import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
 import cocktail.Lib;
@@ -137,9 +139,9 @@ class SWFPlugin extends Plugin
 	/**
 	 * class constructor, get a reference to the loaded swf
 	 */
-	public function new(elementAttributes:Hash<String>, params:Hash<String>, loadComplete:Void->Void, loadError:Void->Void) 
+	public function new(node:HTMLElement, elementAttributes:Hash<String>, params:Hash<String>, loadComplete:Void->Void, loadError:Void->Void) 
 	{
-		super(elementAttributes, params, loadComplete, loadError);
+		super(node, elementAttributes, params, loadComplete, loadError);
 		_swfBounds = new RectangleVO();
 		_swfAddedToStage = false;
 		_isAVM1swf = false;
@@ -178,7 +180,8 @@ class SWFPlugin extends Plugin
 			//delay the call to simulate asynchronous loading, else
 			//if load event dispatch immediately, this instance won't
 			//be ready yet
-			Lib.document.timer.delay(function(e) { onLoaderReady(_loader); } );
+			var htmlDocument:HTMLDocument = cast(_node.ownerDocument);
+			htmlDocument.timer.delay(function(e) { onLoaderReady(_loader); } );
 			return;
 		}
 		
