@@ -154,11 +154,11 @@ class History
 		var event:PopStateEvent = new PopStateEvent();
 		event.initPopStateEvent(EventConstants.POP_STATE, true, false, null, 0.0, clonedState);
   		// dispatch event on window
-		Lib.window.dispatchEvent(event);
+		document.window.dispatchEvent(event);
 
 		// call callback
-		if(Lib.window.onpopstate != null)
-			Lib.window.onpopstate(event);
+		if(document.window.onpopstate != null)
+			document.window.onpopstate(event);
 	}
 
 	/**

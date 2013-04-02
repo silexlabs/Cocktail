@@ -105,7 +105,7 @@ class HTMLAnchorElement extends HTMLElement
 	{
 		if (href != null)
 		{
-			Lib.window.open(href, target);
+			_ownerHTMLDocument.window.open(href, target);
 		}
 	}
 	

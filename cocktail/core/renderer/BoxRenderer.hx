@@ -993,7 +993,8 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	private function getWindowData():ContainingBlockVO
 	{	
-		var window:Window = Lib.window;
+		var htmlDocuement:HTMLDocument = cast(domNode.ownerDocument);
+		var window:Window = htmlDocuement.window;
 		var width:Float = window.innerWidth;
 		var height:Float = window.innerHeight;
 		
