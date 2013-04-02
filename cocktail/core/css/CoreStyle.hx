@@ -2003,6 +2003,46 @@ class CoreStyle
 						
 					default:	
 				}	
+				
+				case CSSConstants.TRANSFORM_ORIGIN:
+					switch(property)
+					{
+						case LENGTH(value):
+							return ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+							
+						case INTEGER(value):
+							return ABSOLUTE_LENGTH(value);
+							
+						case GROUP(value):
+							var transformOriginX:CSSPropertyValue = value[0];
+							var transformOriginY:CSSPropertyValue = value[1];
+							
+							switch(value[0])
+							{
+								case LENGTH(value):
+									transformOriginX = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+							
+								case INTEGER(value):
+									transformOriginX = ABSOLUTE_LENGTH(value); 
+									
+								default:	
+							}
+							
+							switch(value[1])
+							{
+								case LENGTH(value):
+									transformOriginY = ABSOLUTE_LENGTH(CSSValueConverter.getPixelFromLength(value, fontSize, xHeight));
+							
+								case INTEGER(value):
+									transformOriginY = ABSOLUTE_LENGTH(value); 
+									
+								default:	
+							}
+							
+							return GROUP([transformOriginX, transformOriginY]);
+							
+						default:	
+					}
 		}
 		
 		return property;
