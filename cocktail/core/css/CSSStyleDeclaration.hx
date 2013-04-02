@@ -830,6 +830,33 @@ class CSSStyleDeclaration
 					default:	
 				}
 				
+			case CSSConstants.TRANSFORM_ORIGIN:
+				switch(styleValue)
+				{
+					case GROUP(value):
+						
+						if (value.length != 2)
+						{
+							return false;
+						}
+						
+						var horizontalValueIsValid:Bool = isValidTransformOrigin(value[0], true, false);
+						
+						if (horizontalValueIsValid == false)
+						{
+							return false;
+						}
+						
+						return isValidTransformOrigin(value[1], false, true);
+					
+					
+					case INHERIT, INITIAL:
+						return true;
+						
+					default:
+						return isValidTransformOrigin(styleValue, true, true);
+				}
+				
 				
 			case CSSConstants.OVERFLOW_X, CSSConstants.OVERFLOW_Y:
 				switch(styleValue)
@@ -3854,6 +3881,53 @@ class CSSStyleDeclaration
 				
 			case INHERIT:
 				return true;
+				
+			default:	
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Return wether a value is valid for a transform origin style, excluding group value
+	 * @param	styleValue
+	 */
+	private function isValidTransformOrigin(styleValue:CSSPropertyValue, areHorizontalKeywordValueAllowed:Bool, areVerticalKeywordAllowed:Bool):Bool
+	{
+		switch(styleValue)
+		{
+			case LENGTH(value):
+				return true;
+				
+			case INTEGER(value):
+				if (value == 0)
+				{
+					return true;
+				}
+				
+			case PERCENTAGE(value):
+				return true;
+				
+			case KEYWORD(value):
+				switch(value)
+				{
+					case CENTER:
+						return true;
+						
+					case LEFT, RIGHT:
+						if (areHorizontalKeywordValueAllowed == true)
+						{
+							return true;
+						}
+						
+					case TOP, BOTTOM:
+						if (areVerticalKeywordAllowed ==  true)
+						{
+							return true;
+						}
+						
+					default:	
+				}
 				
 			default:	
 		}
