@@ -163,7 +163,7 @@ class VisualEffectStylesComputer
 		//retrieve the transform functions
 		switch (style.transform)
 		{
-			case GROUP(value):
+			case CSS_LIST(value):
 				for (i in 0...value.length)
 				{
 					switch(value[i])
