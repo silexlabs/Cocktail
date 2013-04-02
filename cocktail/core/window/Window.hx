@@ -120,7 +120,7 @@ class Window extends EventCallback
 		document = htmlDocument;
 
 		// history
-		history = new History();
+		history = new History(htmlDocument);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

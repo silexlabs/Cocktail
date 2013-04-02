@@ -292,7 +292,8 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		anonymousBlock.coreStyle.computedValues = initialStyleDeclaration.initialComputedStyleDeclaration;
 		anonymousBlock.coreStyle.applyHiddenBordersWidth();
 		anonymousBlock.coreStyle.applyNoneOutlineWidth();
-		anonymousBlock.coreStyle.updateCoreStyleAttribute(Lib.document.cascadeManager, true);
+		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
+		anonymousBlock.coreStyle.updateCoreStyleAttribute(htmlDocument.cascadeManager, true);
 		anonymousBlock.coreStyle.setUsedLineHeight();
 		
 		return anonymousBlock;

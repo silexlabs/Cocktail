@@ -11,6 +11,7 @@ import cocktail.core.history.HistoryData;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.event.PopStateEvent;
 import cocktail.core.event.EventConstants;
+import cocktail.core.html.HTMLDocument;
 /**
  * Implementation of the history API as stated here http://dev.w3.org/html5/spec/single-page.html#history
  * Notes
@@ -41,13 +42,19 @@ class History
 	 */
 	private var currentIdx:Int;
 	/**
+	 * store the document owning this instance
+	 */
+	private var document:HTMLDocument;
+	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(document:HTMLDocument) 
 	{
 		// intial state is the browser state
 		stateDataArray = new Array();
 		currentIdx = 0;
+		
+		this.document = document;
 
 		// add the initial browser state to the history
 		// todo: use the location to resolve the url
@@ -208,7 +215,7 @@ class History
 		if (base == null)
 		{
 			// retrieve the base meta tag
-			var tags = Lib.document.getElementsByTagName("base");
+			var tags = document.getElementsByTagName("base");
 			for (idx in 0...tags.length)
 			{
 				if (tags[idx].hasAttribute(HTMLConstants.HTML_HREF_ATTRIBUTE_NAME))
@@ -221,7 +228,7 @@ class History
 			if (base == null)
 			{
 				// todo: use location
-				//base = Lib.document.location.href;
+				//base = document.location.href;
 				// throw("location is not yet implemented");
 				base = "";
 			}
