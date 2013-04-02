@@ -166,7 +166,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	{	
 		super();
 		
-		_nativeHttp = new NativeHttp();
+		_nativeHttp = new NativeHttp(Lib.document);
 		
 		
 		responseType = "";

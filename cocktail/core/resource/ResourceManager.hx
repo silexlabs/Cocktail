@@ -9,6 +9,7 @@
 package cocktail.core.resource;
 
 import cocktail.core.http.HTTPConstants;
+import cocktail.Lib;
 import cocktail.port.ImageResource;
 import cocktail.port.NativeHttp;
 import cocktail.core.http.HTTPData;
@@ -85,7 +86,7 @@ class ResourceManager
 		
 		if (resource == null)
 		{
-			resource = new NativeHttp();
+			resource = new NativeHttp(Lib.document);
 			resource.load(url, HTTPConstants.GET, null, null, DataFormatValue.BINARY);
 			_binaryResources.set(url, resource);
 		}

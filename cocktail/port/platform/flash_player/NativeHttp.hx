@@ -8,6 +8,7 @@
 package cocktail.port.platform.flash_player;
 
 import cocktail.core.event.EventConstants;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.http.HTTPConstants;
 import cocktail.port.base.NativeHttpBase;
 import flash.display.Loader;
@@ -38,9 +39,9 @@ class NativeHttp extends NativeHttpBase
 	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(document:HTMLDocument) 
 	{
-		super();
+		super(document);
 		_urlLoader = new URLLoader();
 	}
 	

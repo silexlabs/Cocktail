@@ -11,6 +11,7 @@ import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
 import cocktail.core.event.EventTarget;
 import cocktail.core.event.ProgressEvent;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.http.HTTPData;
 
 /**
@@ -85,11 +86,17 @@ class NativeHttpBase extends EventTarget
 	private var _closed:Bool;
 	
 	/**
+	 * a reference to the document owning this instance
+	 */
+	private var _document:HTMLDocument;
+	
+	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(document:HTMLDocument) 
 	{
 		super();
+		_document = document;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -124,7 +131,7 @@ class NativeHttpBase extends EventTarget
 		doLoad(url, method, data, authorRequestHeaders, dataFormat);
 		
 		//start dispatching progress events
-		Lib.document.timer.delay(onLoadProgress, PROGRESS_UPDATE_FREQUENCY);
+		_document.timer.delay(onLoadProgress, PROGRESS_UPDATE_FREQUENCY);
 	}
 	
 	/**
@@ -181,7 +188,7 @@ class NativeHttpBase extends EventTarget
 			progressEvent.initProgressEvent(EventConstants.PROGRESS, false, false, false, loaded, total);
 			dispatchEvent(progressEvent);
 			
-			Lib.document.timer.delay(onLoadProgress, PROGRESS_UPDATE_FREQUENCY);
+			_document.timer.delay(onLoadProgress, PROGRESS_UPDATE_FREQUENCY);
 		}
 	}
 	

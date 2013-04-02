@@ -486,8 +486,8 @@ class HTMLElement extends Element<HTMLElement>
 	override private function getTargetAncestors():Array<EventTarget>
 	{
 		var targetAncestors:Array<EventTarget> = super.getTargetAncestors();
-		targetAncestors.push(Lib.document);
-		targetAncestors.push(Lib.window);
+		targetAncestors.push(_ownerHTMLDocument);
+		targetAncestors.push(_ownerHTMLDocument.window);
 		return targetAncestors;
 	}
 	
