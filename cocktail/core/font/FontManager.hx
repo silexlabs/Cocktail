@@ -17,20 +17,13 @@ import cocktail.core.layout.LayoutData;
 
 /**
  * The FontManager is used to get metrics for fonts and
- * create native text rendering element
- * 
- * This is a Singleton instantiatin the actual FontManager
- * implementation class which is platform specific
+ * create native text rendering element using platform
+ * specific API
  * 
  * @author Yannick DOMINGUEZ
  */
 class FontManager 
 {	
-	/**
-	 * singleton instance
-	 */
-	private static var _instance:FontManager;
-	
 	/**
 	 * The instance of the platform specific
 	 * FontManager implementation
@@ -38,24 +31,11 @@ class FontManager
 	private var _fontManagerImpl:FontManagerImpl;
 	
 	/**
-	 * Class constructor. Private to respect Singleton
-	 * pattern
+	 * Class constructor
 	 */
-	private function new()
+	public function new()
 	{
 		_fontManagerImpl = new FontManagerImpl();
-	}
-	
-	/**
-	 * Singleton method
-	 */
-	public static function getInstance():FontManager
-	{
-		if (_instance == null)
-		{
-			_instance = new FontManager();
-		}
-		return _instance;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

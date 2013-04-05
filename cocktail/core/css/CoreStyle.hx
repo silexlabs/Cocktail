@@ -590,7 +590,9 @@ class CoreStyle
 		
 		_changedProperties = new Array<Int>();
 		
-		_fontManager = FontManager.getInstance();
+		var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
+		_fontManager = htmlDocument.fontManager;
+		
 		//TODO 3 : messy
 		fontMetrics = _fontManager.getFontMetrics(Config.getInstance().defaultFont, Config.getInstance().mediumFontSize);
 		

@@ -28,6 +28,7 @@ import cocktail.core.event.TouchEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.focus.FocusManager;
+import cocktail.core.font.FontManager;
 import cocktail.core.hittest.HitTestManager;
 import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLElement;
@@ -204,6 +205,12 @@ class HTMLDocument extends Document
 	public var timer(default, null):Timer;
 	
 	/**
+	 * an instance of the class managing the font 
+	 * of the document
+	 */
+	public var fontManager(default, null):FontManager;
+	
+	/**
 	 * This class is in charge of keeping track of the
 	 * current touch points and of creating cross-platform
 	 * TouchEvent
@@ -286,8 +293,12 @@ class HTMLDocument extends Document
 	private function init():Void
 	{
 		timer = new Timer();
+		
+		fontManager = new FontManager();
+		
 		initStyleManager();
 		invalidationManager = new InvalidationManager(this);
+		
 		
 		cascadeManager = new CascadeManager();
 		

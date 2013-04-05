@@ -623,7 +623,9 @@ class TextRenderer extends InvalidatingElementRenderer
 		inlineBoxes = [];
 		
 		var fontMetrics:FontMetricsVO = coreStyle.fontMetrics;
-		var fontManager:FontManager = FontManager.getInstance();
+		
+		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
+		var fontManager:FontManager = htmlDocument.fontManager;
 		
 		//return the font family for the text inline box as a string, formatted for
 		//the native platform

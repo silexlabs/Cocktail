@@ -314,19 +314,25 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private var _initialStyleDeclaration:InitialStyleDeclaration;
 	
+	/**
+	 * wether the init method was already called
+	 */
+	private var _isInitialised:Bool;
+	
 	/////////////////////////////////
 	// CONSTRUTOR & INIT
 	/////////////////////////////////
 	
 	/**
-	 * class constructor.
+	 * class constructor. Html element is initialised
+	 * once it is given a reference to a document
 	 */
 	public function new(tagName:String) 
 	{
 		super(tagName);
-		init();
 		
 		attachedToDOM = false;
+		_isInitialised = false;
 		_needsCascading = false;
 		_needsStyleDeclarationUpdate = false;
 		_shouldCascadeAllProperties = true;
@@ -363,6 +369,30 @@ class HTMLElement extends Element<HTMLElement>
 	private function initStyle():Void
 	{
 		style = new CSSStyleDeclaration(null, onInlineStyleChange);
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN SETTER
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden to initialise the html element once is document is
+	 * set. The document is set immediately after the html element creation.
+	 * Also store a casted ref to the html document
+	 */
+	override private function set_ownerDocument(value:Document):Document
+	{
+		super.set_ownerDocument(value);
+		
+		if (_isInitialised == false)
+		{
+			init();
+			_isInitialised = true;
+		}
+		
+		_ownerHTMLDocument = cast(value);
+		
+		return value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -507,20 +537,6 @@ class HTMLElement extends Element<HTMLElement>
 					focus();
 			}
 		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN SETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Overriden to also store a casted HTMLDocument
-	 */
-	override private function set_ownerDocument(value:Document):Document
-	{
-		super.set_ownerDocument(value);
-		_ownerHTMLDocument = cast(value);
-		return value;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
