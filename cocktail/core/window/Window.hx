@@ -28,11 +28,6 @@ import cocktail.core.history.History;
  * It holds a reference to the class proxying access
  * to platform specific event and methods
  * 
- * TODO 3 : should implement onload callback
- * 
- * TODO 2 : should Platform be owned by Window ? Document ?
- * or by another DOMImplementation class ?
- * 
  * @author Yannick DOMINGUEZ
  */
 class Window extends EventCallback

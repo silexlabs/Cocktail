@@ -96,7 +96,6 @@ class NativeTextInput extends NativeTextInputBase
 	override public function attach(graphicContext:GraphicsContext):Void
 	{
 		var containerGraphicContext:DisplayObjectContainer = cast(graphicContext.nativeLayer);
-		//TODO 3 : in NME, seems to make text field lose focus
 		containerGraphicContext.addChild(_textField);
 	}
 	
@@ -114,7 +113,6 @@ class NativeTextInput extends NativeTextInputBase
 	 */
 	override public function focus():Void
 	{	
-		//TODO 2 : seems to do nothing in NME
 		flash.Lib.current.stage.focus = _textField;
 	}
 	

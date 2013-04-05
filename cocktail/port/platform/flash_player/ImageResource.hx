@@ -187,8 +187,6 @@ class ImageResource extends AbstractResource
 	/**
 	 * Poll at regular interval to check that the cross-domain
 	 * policy file was loaded
-	 * 
-	 * TODO 4 : add a max retry count
 	 */
 	private function onChildAllowsParentTick():Void
 	{
