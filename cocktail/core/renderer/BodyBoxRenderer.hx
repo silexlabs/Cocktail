@@ -7,7 +7,6 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.renderer;
-import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 

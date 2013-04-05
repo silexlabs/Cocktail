@@ -8,7 +8,6 @@
 */
 package cocktail.core.renderer;
 
-import cocktail.core.background.BackgroundManager;
 import cocktail.core.dom.Node;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.layer.InitialLayerRenderer;

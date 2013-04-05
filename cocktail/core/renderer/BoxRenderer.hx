@@ -29,7 +29,7 @@ import cocktail.core.window.Window;
 import cocktail.Lib;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeElement;
-import cocktail.core.background.BackgroundManager;
+import cocktail.core.graphics.BackgroundDrawer;
 import cocktail.core.layout.computer.BackgroundStylesComputer;
 import cocktail.core.layout.computer.boxComputers.BlockBoxStylesComputer;
 import cocktail.core.layout.computer.boxComputers.BoxStylesComputer;
@@ -180,7 +180,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	private function renderBackground(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		var backgroundBounds:RectangleVO = getBackgroundAndBordersBounds(scrollOffset);
-		BackgroundManager.render(graphicContext, backgroundBounds, coreStyle, this, clipRect);
+		BackgroundDrawer.render(graphicContext, backgroundBounds, coreStyle, this, clipRect);
 	}
 	
 	/**

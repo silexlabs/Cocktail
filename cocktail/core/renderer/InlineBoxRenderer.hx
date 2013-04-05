@@ -8,7 +8,7 @@
 */
 package cocktail.core.renderer;
 
-import cocktail.core.background.BackgroundManager;
+import cocktail.core.graphics.BackgroundDrawer;
 import cocktail.core.dom.Node;
 import cocktail.core.graphics.BorderDrawer;
 import cocktail.core.html.HTMLElement;
@@ -71,7 +71,7 @@ class InlineBoxRenderer extends FlowBoxRenderer
 			//render background if at least a background image or background color should be drawn
 			if (coreStyle.hasBackgroundImage == true || coreStyle.hasBackgroundColor == true)
 			{
-				BackgroundManager.render(graphicsContext, _renderRect, coreStyle, this, clipRect);
+				BackgroundDrawer.render(graphicsContext, _renderRect, coreStyle, this, clipRect);
 			}
 			
 			BorderDrawer.draw(graphicsContext, _renderRect, coreStyle, clipRect);

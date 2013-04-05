@@ -6,7 +6,7 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-package cocktail.core.background;
+package cocktail.core.graphics;
 
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.event.Event;
@@ -42,7 +42,7 @@ import haxe.Log;
  * 
  * @author Yannick DOMINGUEZ
  */
-class BackgroundManager 
+class BackgroundDrawer
 {
 	/**
 	 * Represents the background box, reused
