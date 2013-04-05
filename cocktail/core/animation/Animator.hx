@@ -48,9 +48,14 @@ class Animator
 	 */
 	public var onTransitionUpdateCallback:Transition->Void;
 
-	public function new() 
+	/**
+	 * a reference to the instance managing the document's transition
+	 */
+	private var _transitionManager:TransitionManager;
+	
+	public function new(transitionManager:TransitionManager) 
 	{
-		
+		_transitionManager = transitionManager;
 	}
 	
 	/////////////////////////////////
@@ -218,10 +223,8 @@ class Animator
 		//get the transition timing function
 		var transitionTimingFunction:CSSPropertyValue = transitionTimingFunctionAsArray[getRepeatedIndex(indexInTransitionProperty,transitionTimingFunctionAsArray.length)];
 		
-		var transitionManager:TransitionManager = TransitionManager.getInstance();
-		
 		//check if a transition is already in progress for the same property
-		var transition:Transition = transitionManager.getTransition(pendingAnimation.propertyIndex, style);
+		var transition:Transition = _transitionManager.getTransition(pendingAnimation.propertyIndex, style);
 		
 		//if the transition is not null, then a transition for the property is already
 		//in progress and no new transition must start
@@ -242,7 +245,7 @@ class Animator
 		var endValue:Float = getEndValue(style, pendingAnimation.propertyIndex);
 		
 		//start a transition using the TransitionManager
-		transitionManager.startTransition(style, pendingAnimation.propertyIndex, pendingAnimation.startValue, endValue, 
+		_transitionManager.startTransition(style, pendingAnimation.propertyIndex, pendingAnimation.startValue, endValue, 
 		transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate);
 	
 		//the transition did in fact start

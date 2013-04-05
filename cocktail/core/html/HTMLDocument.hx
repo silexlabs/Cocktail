@@ -8,6 +8,7 @@
 */
 package cocktail.core.html;
 
+import cocktail.core.animation.TransitionManager;
 import cocktail.core.config.Config;
 import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CSSRule;
@@ -211,6 +212,12 @@ class HTMLDocument extends Document
 	public var fontManager(default, null):FontManager;
 	
 	/**
+	 * an instance of the class managing the 
+	 * transitions of the document
+	 */
+	public var transitionManager(default, null):TransitionManager;
+	
+	/**
 	 * This class is in charge of keeping track of the
 	 * current touch points and of creating cross-platform
 	 * TouchEvent
@@ -295,6 +302,8 @@ class HTMLDocument extends Document
 		timer = new Timer();
 		
 		fontManager = new FontManager();
+		
+		transitionManager = new TransitionManager();
 		
 		initStyleManager();
 		invalidationManager = new InvalidationManager(this);

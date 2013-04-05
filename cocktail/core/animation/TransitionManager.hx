@@ -49,11 +49,6 @@ import cocktail.Lib;
 class TransitionManager 
 {
 	/**
-	 * The instance for the singleton pattern
-	 */
-	private static var _instance:TransitionManager;
-	
-	/**
 	 * Store a ref to each transitions in progress.
 	 * Each index corresponds to one CSS style, referenced by
 	 * its CSS property index,
@@ -83,28 +78,14 @@ class TransitionManager
 	private var _lastTick:Float;
 	
 	/**
-	 * class constructor. private for
-	 * singleton
+	 * class constructor
 	 */
-	private function new() 
+	public function new() 
 	{
 		initTransitions();
 		_currentTransitionsNumber = 0;
 		hasTransitionsInProgress = false;
 		_lastTick = 0;
-	}
-	
-	/**
-	 * Singleton method
-	 */
-	public static function getInstance():TransitionManager
-	{
-		if (_instance == null)
-		{
-			_instance = new TransitionManager();
-		}
-		
-		return _instance;
 	}
 	
 	/**

@@ -592,11 +592,12 @@ class CoreStyle
 		
 		var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
 		_fontManager = htmlDocument.fontManager;
+		_transitionManager = htmlDocument.transitionManager;
 		
 		//TODO 3 : messy
 		fontMetrics = _fontManager.getFontMetrics(Config.getInstance().defaultFont, Config.getInstance().mediumFontSize);
 		
-		_transitionManager = TransitionManager.getInstance();
+		
 		
 		usedValues = new UsedValuesVO();
 	}
@@ -622,7 +623,7 @@ class CoreStyle
 	 */
 	private function initAnimator():Void
 	{
-		_animator = new Animator();
+		_animator = new Animator(_transitionManager);
 		_animator.onTransitionCompleteCallback = onTransitionComplete;
 		_animator.onTransitionUpdateCallback = onTransitionUpdate;
 	}
