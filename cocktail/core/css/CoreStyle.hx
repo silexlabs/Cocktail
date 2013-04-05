@@ -1144,7 +1144,8 @@ class CoreStyle
 				switch (backgroundImage)
 				{
 					case URL(value):
-						ResourceManager.getImageResource(value);
+						var htmlDocument:HTMLDocument = cast(htmlElement.ownerDocument);
+						htmlDocument.resourceManager.getImageResource(value);
 						
 					default:	
 				}

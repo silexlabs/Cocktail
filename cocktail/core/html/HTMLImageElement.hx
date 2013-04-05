@@ -139,7 +139,7 @@ class HTMLImageElement extends EmbeddedElement
 	{
 		super.setAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME, value);
 		
-		var resource:AbstractResource = ResourceManager.getImageResource(value);
+		var resource:AbstractResource = _ownerHTMLDocument.resourceManager.getImageResource(value);
 
 		//delay load until picture loaded or there is an error while loading,
 		//only useful before the document is loaded

@@ -168,7 +168,8 @@ class SWFPlugin extends Plugin
 		
 		//retrieve the loaded swf, the plugin is not instantiated
 		//until this swf is successfully loaded
-		var loadedSWF:NativeHttp = ResourceManager.getBinaryResource(_elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
+		var htmlDocument:HTMLDocument = cast(_node.ownerDocument);
+		var loadedSWF:NativeHttp = htmlDocument.resourceManager.getBinaryResource(_elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
 		
 		//in some cases, the swf might be loaded with a flash loader instead of
 		//loaded as bytes to circumvent security sandbox. In this
@@ -363,10 +364,11 @@ class SWFPlugin extends Plugin
 		//if the swf was loaded with a regular flash loader instead
 		//of being loaded as bytes, remove it from cache, this way if the
 		//swf is needed again, it will be cleanly reloaded
-		var loadedSWF:NativeHttp = ResourceManager.getBinaryResource(_elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
+		var htmlDocument:HTMLDocument = cast(_node.ownerDocument);
+		var loadedSWF:NativeHttp = htmlDocument.resourceManager.getBinaryResource(_elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
 		if (Std.is(loadedSWF.response, Loader) == true)
 		{
-			ResourceManager.removeBinaryResource(_elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
+			htmlDocument.resourceManager.removeBinaryResource(_elementAttributes.get(HTMLConstants.HTML_DATA_ATTRIBUTE_NAME));
 		}
 	}
 	

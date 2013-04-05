@@ -12,6 +12,7 @@ import cocktail.core.dom.Node;
 import cocktail.core.geom.Matrix;
 import cocktail.core.html.EmbeddedElement;
 import cocktail.core.html.HTMLConstants;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.resource.AbstractResource;
@@ -71,7 +72,8 @@ class ImageRenderer extends EmbeddedBoxRenderer
 			return;
 		}
 		
-		var resource:AbstractResource = ResourceManager.getImageResource(src);
+		var htmlDocument:HTMLDocument = cast(domNode.ownerDocument);
+		var resource:AbstractResource = htmlDocument.resourceManager.getImageResource(src);
 		
 		//don't paint anything is the image is not loaded or there was an error
 		//while loading

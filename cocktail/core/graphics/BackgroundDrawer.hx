@@ -14,6 +14,7 @@ import cocktail.core.event.EventConstants;
 import cocktail.core.event.UIEvent;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.geom.Matrix;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
@@ -253,7 +254,8 @@ class BackgroundDrawer
 	{
 		var foundResource:Bool = false;
 		
-		var resource:AbstractResource = ResourceManager.getImageResource(url);
+		var htmlDocument:HTMLDocument = cast(elementRenderer.domNode.ownerDocument);
+		var resource:AbstractResource = htmlDocument.resourceManager.getImageResource(url);
 		
 		if (resource.loaded == true)
 		{

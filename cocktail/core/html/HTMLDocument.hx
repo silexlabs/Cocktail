@@ -46,6 +46,7 @@ import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.event.EventData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.event.FocusEvent;
+import cocktail.core.resource.ResourceManager;
 import cocktail.core.timer.Timer;
 import cocktail.core.window.Window;
 import cocktail.Lib;
@@ -218,6 +219,12 @@ class HTMLDocument extends Document
 	public var transitionManager(default, null):TransitionManager;
 	
 	/**
+	 * An instance of the class managing loading and storing 
+	 * the document's assets
+	 */
+	public var resourceManager(default, null):ResourceManager;
+	
+	/**
 	 * This class is in charge of keeping track of the
 	 * current touch points and of creating cross-platform
 	 * TouchEvent
@@ -302,7 +309,7 @@ class HTMLDocument extends Document
 		timer = new Timer();
 		
 		fontManager = new FontManager();
-		
+		resourceManager = new ResourceManager(this);
 		transitionManager = new TransitionManager(this);
 		
 		initStyleManager();

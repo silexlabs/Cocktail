@@ -8,6 +8,7 @@
 */
 package cocktail.core.resource;
 
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.http.HTTPConstants;
 import cocktail.Lib;
 import cocktail.port.ImageResource;
@@ -15,10 +16,10 @@ import cocktail.port.NativeHttp;
 import cocktail.core.http.HTTPData;
 
 /**
- * This is a static class used to retrive loaded asset
+ * This is used to retrieve loaded asset
  * and start the loading of asset if they are not yet loaded.
  * 
- * This allows caching of assets which becomes useful for assets
+ * This allows caching of assets which is useful for assets
  * frequently redrawn such as backgrounds
  * 
  * @author Yannick DOMINGUEZ
@@ -29,21 +30,28 @@ class ResourceManager
 	 * Stores each requested asset in a hash where the
 	 * key is the url of the asset
 	 */
-	private static var _resources:Hash<AbstractResource> = new Hash<AbstractResource>();
+	private var _resources:Hash<AbstractResource>;
 	
 	/**
 	 * Store requested binary resources, where the 
 	 * key is the url of the binary
 	 */
-	private static var _binaryResources:Hash<NativeHttp> = new Hash<NativeHttp>();
+	private var _binaryResources:Hash<NativeHttp>;
 	
 	/**
-	 * class constructor. Private as this class
-	 * is meant to be used through its static methods
+	 * a reference to the document owning this
+	 * instance
 	 */
-	private function new() 
+	private var _document:HTMLDocument;
+	
+	/**
+	 * class constructor
+	 */
+	public function new(document:HTMLDocument) 
 	{
-		
+		_document = document;
+		_resources = new Hash<AbstractResource>();
+		_binaryResources = new Hash<NativeHttp>();
 	}
 	
 	/**
@@ -51,7 +59,7 @@ class ResourceManager
 	 * time this resource is requested, create a new Resource
 	 * object which will starts its loading itself
 	 */
-	public static function getImageResource(url:String):AbstractResource
+	public function getImageResource(url:String):AbstractResource
 	{
 		//get the resource or null if not existant yet
 		var resource:AbstractResource = _resources.get(url);
@@ -71,7 +79,7 @@ class ResourceManager
 	/**
 	 * Remove a cashed image resource
 	 */
-	public static function removeImageResource(url:String):Void
+	public function removeImageResource(url:String):Void
 	{
 		_resources.remove(url);
 	}
@@ -80,13 +88,13 @@ class ResourceManager
 	 * Return a binary resource, start loading it if
 	 * first request.
 	 */
-	public static function getBinaryResource(url:String):NativeHttp
+	public function getBinaryResource(url:String):NativeHttp
 	{
 		var resource:NativeHttp = _binaryResources.get(url);
 		
 		if (resource == null)
 		{
-			resource = new NativeHttp(Lib.document);
+			resource = new NativeHttp(_document);
 			resource.load(url, HTTPConstants.GET, null, null, DataFormatValue.BINARY);
 			_binaryResources.set(url, resource);
 		}
@@ -97,7 +105,7 @@ class ResourceManager
 	/**
 	 * Remove a cashed binary resource
 	 */
-	public static function removeBinaryResource(url:String):Void
+	public function removeBinaryResource(url:String):Void
 	{
 		_binaryResources.remove(url);
 	}
