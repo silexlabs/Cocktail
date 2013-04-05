@@ -11,6 +11,7 @@ package cocktail.core.animation;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSConstants;
 import cocktail.core.css.CSSStyleDeclaration;
+import cocktail.core.html.HTMLDocument;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.animation.AnimationData;
@@ -78,11 +79,18 @@ class TransitionManager
 	private var _lastTick:Float;
 	
 	/**
+	 * a reference to the document owning
+	 * this instance
+	 */
+	private var _document:HTMLDocument;
+	
+	/**
 	 * class constructor
 	 */
-	public function new() 
+	public function new(document:HTMLDocument) 
 	{
 		initTransitions();
+		_document = document;
 		_currentTransitionsNumber = 0;
 		hasTransitionsInProgress = false;
 		_lastTick = 0;
@@ -203,11 +211,11 @@ class TransitionManager
 		//store the current date timestamp, so that
 		//on each tick, the actual elapsed
 		//time can be calculated
-		_lastTick = Lib.document.timer.getTimer();
+		_lastTick = _document.timer.getTimer();
 		
 		//set a delayed method call which will be repeated
 		//as long as needed
-		Lib.document.timer.delay(onTransitionTick);
+		_document.timer.delay(onTransitionTick);
 	}
 	
 	/**
@@ -273,7 +281,7 @@ class TransitionManager
 		//drop to 0, delay a call to this method
 		if (_currentTransitionsNumber > 0)
 		{
-			Lib.document.timer.delay(onTransitionTick);
+			_document.timer.delay(onTransitionTick);
 		}
 		else
 		{

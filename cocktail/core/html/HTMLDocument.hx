@@ -303,7 +303,7 @@ class HTMLDocument extends Document
 		
 		fontManager = new FontManager();
 		
-		transitionManager = new TransitionManager();
+		transitionManager = new TransitionManager(this);
 		
 		initStyleManager();
 		invalidationManager = new InvalidationManager(this);
