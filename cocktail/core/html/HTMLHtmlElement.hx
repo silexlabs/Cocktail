@@ -12,7 +12,7 @@ import cocktail.core.dom.Document;
 import cocktail.core.dom.DOMException;
 import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.layer.LayerRenderer;
-import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.ParserData;
 import cocktail.core.parser.DOMParser;
 
 /**

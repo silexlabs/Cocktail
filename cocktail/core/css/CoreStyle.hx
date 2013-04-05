@@ -24,7 +24,7 @@ import cocktail.core.animation.Animator;
 import cocktail.core.animation.Transition;
 import cocktail.core.animation.TransitionManager;
 import cocktail.core.css.CSSValueConverter;
-import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.ParserData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.resource.ResourceManager;
 import cocktail.Lib;

@@ -13,7 +13,7 @@ import cocktail.core.css.CSSConstants;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.layout.LayoutData;
-import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.ParserData;
 import cocktail.core.animation.AnimationData;
 import cocktail.core.css.CSSData;
 import cocktail.Lib;

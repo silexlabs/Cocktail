@@ -28,7 +28,7 @@ import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSConstants;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.font.FontData;
-import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.ParserData;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.css.CSSData;

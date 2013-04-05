@@ -27,7 +27,7 @@ import cocktail.core.css.CoreStyle;
 import cocktail.core.layout.computer.BackgroundStylesComputer;
 import cocktail.core.css.CSSValueConverter;
 import cocktail.core.css.CSSData;
-import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.ParserData;
 import haxe.Log;
 
 /**

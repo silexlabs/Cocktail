@@ -13,7 +13,7 @@ import cocktail.core.event.EventConstants;
 import cocktail.Lib;
 import cocktail.port.base.NativeMedia;
 import cocktail.core.html.HTMLData;
-import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.ParserData;
 
 /**
  * This is an abstract base class for media elements,

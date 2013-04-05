@@ -43,7 +43,7 @@ import haxe.Log;
 import cocktail.core.focus.FocusManager;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CSSData;
-import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.ParserData;
 import cocktail.core.font.FontData;
 
 /**

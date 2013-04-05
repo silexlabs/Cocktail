@@ -16,7 +16,7 @@ import cocktail.core.resource.ResourceManager;
 import cocktail.plugin.Plugin;
 import cocktail.plugin.swf.SWFPlugin;
 import cocktail.core.renderer.ImageRenderer;
-import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.ParserData;
 import cocktail.port.NativeHttp;
 
 /**

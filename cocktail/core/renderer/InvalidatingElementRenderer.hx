@@ -9,7 +9,7 @@ package cocktail.core.renderer;
 
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
-import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.ParserData;
 import cocktail.core.css.CSSConstants;
 import haxe.Stack;
 

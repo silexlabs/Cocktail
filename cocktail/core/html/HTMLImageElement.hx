@@ -21,7 +21,7 @@ import cocktail.core.event.Event;
 import cocktail.core.renderer.ImageRenderer;
 import haxe.Log;
 import cocktail.core.html.EmbeddedElement;
-import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.ParserData;
 
 
 /**

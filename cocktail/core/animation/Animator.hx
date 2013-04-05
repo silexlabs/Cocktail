@@ -15,7 +15,7 @@ using cocktail.core.utils.Utils;
 
 import cocktail.core.animation.AnimationData;
 import cocktail.core.css.CSSData;
-import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.ParserData;
 
 /**
  * 

@@ -16,7 +16,7 @@ import cocktail.core.geom.GeomData;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.css.CoreStyle;
 import haxe.Log;
-import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.ParserData;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.font.FontData;
 

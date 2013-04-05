@@ -44,7 +44,7 @@ import cocktail.core.parser.DOMParser;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.event.EventData;
-import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.ParserData;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.timer.Timer;

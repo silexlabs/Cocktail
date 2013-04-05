@@ -13,7 +13,7 @@ import cocktail.core.event.UIEvent;
 import cocktail.port.NativeElement;
 import cocktail.core.renderer.VideoRenderer;
 import cocktail.port.NativeVideo;
-import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.ParserData;
 
 /**
  * A video element is used for playing videos or movies.

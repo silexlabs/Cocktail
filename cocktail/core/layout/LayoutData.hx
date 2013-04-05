@@ -16,7 +16,7 @@ import cocktail.core.linebox.LineBox;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InlineBoxRenderer;
 import cocktail.core.renderer.TextRenderer;
-import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.ParserData;
 import cocktail.core.css.CSSData;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

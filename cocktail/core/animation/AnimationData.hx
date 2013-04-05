@@ -7,7 +7,7 @@
 */
 package cocktail.core.animation;
 
-import cocktail.core.renderer.RendererData;
+import cocktail.core.parser.ParserData;
 
 /**
  * Animation and transition struct
