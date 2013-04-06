@@ -10,6 +10,7 @@ package cocktail.port.base;
 
 import cocktail.core.event.Event;
 import cocktail.core.event.EventCallback;
+import cocktail.core.event.EventConstants;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
 import cocktail.core.event.UIEvent;
@@ -18,6 +19,7 @@ import cocktail.core.stacking.StackingContext;
 import cocktail.port.Keyboard;
 import cocktail.port.Mouse;
 import cocktail.port.NativeLayer;
+import cocktail.core.geom.GeomData;
 import cocktail.port.TouchListener;
 
 /**
@@ -69,16 +71,40 @@ class PlatformBase
 	public var onFullScreenChange:Event->Void;
 	
 	/**
-	 * Height (in pixels) of the browser window viewport including,
-	 * if rendered, the horizontal scrollbar.
+	 * Height (in pixels) of the viewport. Might be either, the
+	 * same as viewport.width if set explicitely or is dependant
+	 * on the platform
 	 */
-	public var innerHeight(get_innerHeight, never):Int;
+	public var viewportHeight(get_viewportHeight, never):Float;
 	
 	/**
-	 * Width (in pixels) of the browser window viewport including,
-	 * if rendered, the vertical scrollbar.
+	 * Same as above for viewport's width
 	 */
-	public var innerWidth(get_innerWidth, never):Int;
+	public var viewportWidth(get_viewportWidth, never):Float;
+	
+	/**
+	 * Same as above for viewport's x
+	 */
+	public var viewportX(get_viewportX, never):Float;
+	
+	/**
+	 * Same as above for viewport's y
+	 */
+	public var viewportY(get_viewportY, never):Float;
+	
+	/**
+	 * the viewport of the current document, in the space
+	 * of its native container (for instance in a browser, it is
+	 * the browser tab, for a desktop application, it is the window
+	 * of the application).
+	 * 
+	 * The viewport is initially null.
+	 * When the viewport is null, it has the following consequence :
+	 * The native platform will determine the viewport, for instance in flash
+	 * it will use the stage width and height, and will use the top left of the 
+	 * flash movie as viewport
+	 */
+	public var viewport(default, set_viewport):RectangleVO;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CONSTRUCTOR & INIT
@@ -100,7 +126,7 @@ class PlatformBase
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC METHOD
+	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
@@ -165,6 +191,53 @@ class PlatformBase
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Return the height of the platform viewport
+	 * (for instance the stage height in flash)
+	 */
+	private function getNativeViewportHeight():Float
+	{
+		return -1;
+	}
+	
+	/**
+	 * Same as above for viewport width
+	 */
+	private function getNativeViewportWidth():Float
+	{
+		return -1;
+	}
+	
+	/**
+	 * Same as above for viewport x
+	 */
+	private function getNativeViewportX():Float
+	{
+		return -1;
+	}
+	
+	/**
+	 * Same as above for viewport y
+	 */
+	private function getNativeViewportY():Float
+	{
+		return -1;
+	}
+	
+	/**
+	 * Called after the viewport was updated.
+	 * Perform all native api calls required
+	 * to update the viewport
+	 */
+	private function onViewportUpdate():Void
+	{
+		//abstract
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// EVENTS
 	// Private native event handler method
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -219,6 +292,21 @@ class PlatformBase
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * simulate a platform resize event, used
+	 * when the viewport is updated
+	 */
+	private function triggerResizeEvent():Void
+	{
+		var resizeEvent:UIEvent = new UIEvent();
+		resizeEvent.initUIEvent(EventConstants.RESIZE, false, false, null, 0.0);
+		
+		if (onResize != null)
+		{
+			onResize(resizeEvent);
+		}
+	}
+	
+	/**
 	 * Set listeners for platform specific events
 	 */
 	private function setNativeListeners():Void
@@ -260,13 +348,64 @@ class PlatformBase
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////
 
-	private function get_innerHeight():Int
+	/**
+	 * update viewport, then trigger fake
+	 * resize event
+	 */
+	private function set_viewport(value:RectangleVO):RectangleVO
 	{
-		return -1;
+		viewport = value;
+		onViewportUpdate();
+		triggerResizeEvent();
+		
+		return viewport = value;
 	}
 	
-	private function get_innerWidth():Int
+	private function get_viewportHeight():Float
 	{
-		return -1;
+		if (viewport != null)
+		{
+			return viewport.height;
+		}
+		else
+		{
+			return getNativeViewportHeight();
+		}
+	}
+	
+	private function get_viewportWidth():Float
+	{
+		if (viewport != null)
+		{
+			return viewport.width;
+		}
+		else
+		{
+			return getNativeViewportWidth();
+		}
+	}
+	
+	private function get_viewportX():Float
+	{
+		if (viewport != null)
+		{
+			return viewport.x;
+		}
+		else
+		{
+			return getNativeViewportX();
+		}
+	}
+	
+	private function get_viewportY():Float
+	{
+		if (viewport != null)
+		{
+			return viewport.y;
+		}
+		else
+		{
+			return getNativeViewportY();
+		}
 	}
 }

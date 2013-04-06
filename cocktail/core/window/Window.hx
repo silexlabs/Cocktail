@@ -205,7 +205,7 @@ class Window extends EventCallback
 	/**
 	 * When the viewport is resized, invalidate
 	 * the html document so that its layout
-	 * and rendering gets updated
+	 * and rendering gets updated.
 	 */
 	private function onPlatformResizeEvent(e:UIEvent):Void
 	{
@@ -228,11 +228,11 @@ class Window extends EventCallback
 	
 	private function get_innerHeight():Int
 	{
-		return platform.innerHeight;
+		return Math.floor(platform.viewportHeight);
 	}
 	
 	private function get_innerWidth():Int
 	{
-		return platform.innerWidth;
+		return Math.floor(platform.viewportWidth);
 	}
 }
