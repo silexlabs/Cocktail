@@ -101,10 +101,8 @@ class Cheers
 		var iframe:Dynamic = Lib.document.getElementById("browser");
 		iframe.src = "data:text/html;charset=utf-8," + htmlCodeMirror.getValue();
 		iframe.contentDocument.head.appendChild(style);
-		trace(iframe);
-		var object:Dynamic = Lib.document.getElementById("cocktail");
-		trace(object);
-		//object.updateDocument(htmlCodeMirror.getValue(), cssCodeMirror.getValue());
-		
+	
+		var object:Dynamic = Lib.document.getElementById("cocktail");	
+		object.updateDocument(htmlCodeMirror.getValue(), cssCodeMirror.getValue());
 	}
 }

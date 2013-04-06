@@ -1,5 +1,6 @@
 package src;
 import flash.external.ExternalInterface;
+import js.Lib;
 
 /**
  * display html and css with cocktail.
@@ -25,7 +26,6 @@ class CocktailBrowser
 	
 	function updateDocument(html, css)
 	{
-		trace(html);
-		trace(css);
+		Lib.document.documentElement.innerHTML = html;
 	}
 }
