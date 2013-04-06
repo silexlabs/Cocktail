@@ -1,0 +1,3 @@
+-js bin/cheers.js
+-main src.Cheers
+-cp src
