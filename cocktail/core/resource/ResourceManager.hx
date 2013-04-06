@@ -94,7 +94,7 @@ class ResourceManager
 		
 		if (resource == null)
 		{
-			resource = new NativeHttp(_document);
+			resource = new NativeHttp(_document.timer);
 			resource.load(url, HTTPConstants.GET, null, null, DataFormatValue.BINARY);
 			_binaryResources.set(url, resource);
 		}

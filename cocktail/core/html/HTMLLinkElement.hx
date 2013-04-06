@@ -17,6 +17,8 @@ import cocktail.core.http.XMLHTTPRequest;
 import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.css.CSSData;
+import cocktail.port.NativeHttp;
+import cocktail.core.http.HTTPData;
 
 /**
  * The link element allows authors to link their document to other resources.
@@ -172,11 +174,10 @@ class HTMLLinkElement extends HTMLElement
 			//delay load event until linked resource is loaded
 			_ownerHTMLDocument.delayLoadEvent();
 			
-			var xmlHttpRequest:XMLHTTPRequest = new XMLHTTPRequest();
-			xmlHttpRequest.open(HTTPConstants.GET, href);
-			xmlHttpRequest.addEventListener(EventConstants.LOAD_END, onCSSLoaded);
-			xmlHttpRequest.addEventListener(EventConstants.ERROR, onCSSLoadError);
-			xmlHttpRequest.send();
+			var nativeHttp:NativeHttp = new NativeHttp(_ownerHTMLDocument.timer);
+			nativeHttp.addEventListener(EventConstants.LOAD, onCSSLoaded);
+			nativeHttp.addEventListener(EventConstants.ERROR, onCSSLoadError);
+			nativeHttp.load(href, HTTPConstants.GET, null, null, DataFormatValue.TEXT);
 		}
 	}
 	
@@ -204,8 +205,8 @@ class HTMLLinkElement extends HTMLElement
 	 */
 	private function onCSSLoaded(event:Event):Void
 	{
-		var xmlHttpRequest:XMLHTTPRequest = cast(event.target);
-		createStyleSheet(xmlHttpRequest.responseText);
+		var nativeHttp:NativeHttp = cast(event.target);
+		createStyleSheet(nativeHttp.response);
 		
 		//signal end of loading
 		var loadEvent:UIEvent = new UIEvent();

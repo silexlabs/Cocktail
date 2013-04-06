@@ -8,6 +8,7 @@
 package cocktail.port.platform.nme;
 
 import cocktail.core.html.HTMLDocument;
+import cocktail.core.timer.Timer;
 import cocktail.port.base.NativeHttpBase;
 import cocktail.core.http.HTTPData;
 
@@ -29,9 +30,9 @@ class NativeHttp extends NativeHttpBase
 	/**
 	 * class constructor
 	 */
-	public function new(document:HTMLDocument) 
+	public function new(timer:Timer) 
 	{
-		super(document);
+		super(timer);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

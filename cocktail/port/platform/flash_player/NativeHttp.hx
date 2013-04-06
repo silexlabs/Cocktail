@@ -10,6 +10,7 @@ package cocktail.port.platform.flash_player;
 import cocktail.core.event.EventConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.http.HTTPConstants;
+import cocktail.core.timer.Timer;
 import cocktail.port.base.NativeHttpBase;
 import flash.display.Loader;
 import flash.events.Event;
@@ -39,9 +40,9 @@ class NativeHttp extends NativeHttpBase
 	/**
 	 * class constructor
 	 */
-	public function new(document:HTMLDocument) 
+	public function new(timer:Timer) 
 	{
-		super(document);
+		super(timer);
 		_urlLoader = new URLLoader();
 	}
 	

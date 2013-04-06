@@ -15,6 +15,7 @@ import cocktail.core.event.EventTarget;
 import cocktail.core.event.ProgressEvent;
 import cocktail.core.event.XMLHttpRequestEventTarget;
 import cocktail.core.resource.ResourceManager;
+import cocktail.core.timer.Timer;
 import cocktail.port.NativeHttp;
 import cocktail.core.http.HTTPData;
 import haxe.Http;
@@ -160,13 +161,19 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	private var _uploadEvents:Bool;
 	
 	/**
+	 * a timer used to schedule updates during network calls
+	 */
+	private var _timer:Timer;
+	
+	/**
 	 * class constructor.
 	 */
 	public function new() 
 	{	
 		super();
 		
-		_nativeHttp = new NativeHttp(Lib.document);
+		_timer = new Timer();
+		_nativeHttp = new NativeHttp(_timer);
 		
 		
 		responseType = "";
@@ -495,7 +502,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 		}
 		
 		//if the resource is not done loading, schedule a method call
-		Lib.document.timer.delay(onHttpProgressTick, PROGRESS_UPDATE_FREQUENCY);
+		_timer.delay(onHttpProgressTick, PROGRESS_UPDATE_FREQUENCY);
 	}
 	
 	/**
