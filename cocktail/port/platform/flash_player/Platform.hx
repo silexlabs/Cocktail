@@ -391,9 +391,8 @@ class Platform extends PlatformBase
 	 */
 	override private function onViewportUpdate():Void
 	{
-		var initialNativeLayer:NativeLayer = getInitialNativeLayer();
-		initialNativeLayer.x = viewportX;
-		initialNativeLayer.y = viewportY;
+		_rootSprite.x = viewportX;
+		_rootSprite.y = viewportY;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

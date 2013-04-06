@@ -210,11 +210,11 @@ class Mouse extends MouseListenerBase
 		}
 		
 		var mouseEvent:MouseEvent = new MouseEvent();
-		var offset = Lib.current.localToGlobal(new flash.geom.Point());
 		
-		//TODO 5 : screenX should be relative to sreen top left, but how to get this in flash ? use JavaScript ?
-		mouseEvent.initMouseEvent(eventType, true, true, null, 0.0, Math.round(typedEvent.stageX - offset.x), Math.round(typedEvent.stageY - offset.y),
-		Math.round(typedEvent.stageX - offset.x), Math.round(typedEvent.stageY - offset.y), typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, false, 0, null);
+		//use local x and y for mouse event, as they should be relative to hit testing sprite which represents
+		//the viewport of the document
+		mouseEvent.initMouseEvent(eventType, true, true, null, 0.0, Math.round(typedEvent.localX), Math.round(typedEvent.localY),
+		Math.round(typedEvent.localX), Math.round(typedEvent.localY), typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, false, 0, null);
 
 		return mouseEvent;
 	}

@@ -99,14 +99,10 @@ class PlatformBase
 	 * of the application).
 	 * 
 	 * The viewport is initially null.
-	 * When the viewport is null, it has the following consequences :
-		 * - The native platform will determine the viewport, for instance in flash
-		 * it will use the stage width and height, and will use the top left of the 
-		 * flash movie as viewport
-		 * - When a native resize event is dispatched, it triggers an update (layout, rendering...)
-		 * of the document. This is not not the case when the viewport is explicitely set, as it becomes
-		 * the responsability of the application embedding cocktail to update the viewport as needed, each
-		 * time the viewport is updated, it will trigger an update of the document
+	 * When the viewport is null, it has the following consequence :
+	 * The native platform will determine the viewport, for instance in flash
+	 * it will use the stage width and height, and will use the top left of the 
+	 * flash movie as viewport
 	 */
 	public var viewport(default, set_viewport):RectangleVO;
 	
