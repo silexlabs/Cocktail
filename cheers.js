@@ -313,9 +313,8 @@ src.Cheers.prototype = {
 		var iframe = js.Lib.document.getElementById("browser");
 		iframe.src = "data:text/html;charset=utf-8," + Std.string(this.htmlCodeMirror.getValue());
 		iframe.contentDocument.head.appendChild(style);
-		haxe.Log.trace(iframe,{ fileName : "Cheers.hx", lineNumber : 104, className : "src.Cheers", methodName : "update"});
 		var object = js.Lib.document.getElementById("cocktail");
-		haxe.Log.trace(object,{ fileName : "Cheers.hx", lineNumber : 106, className : "src.Cheers", methodName : "update"});
+		object.updateDocument(this.htmlCodeMirror.getValue(),this.cssCodeMirror.getValue());
 	}
 	,onInput: function(e) {
 		var _g = this;
