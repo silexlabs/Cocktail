@@ -210,11 +210,18 @@ class Window extends EventCallback
 	/**
 	 * When the viewport is resized, invalidate
 	 * the html document so that its layout
-	 * and rendering gets updated
+	 * and rendering gets updated.
+	 * 
+	 * note : if an explicit viewport has been set for
+	 * the document, then the document is not invalidated,
+	 * it is only invalidated when the viewport is updated
 	 */
 	private function onPlatformResizeEvent(e:UIEvent):Void
 	{
-		document.invalidationManager.invalidateViewportSize();
+		if (platform.viewport == null)
+		{
+			document.invalidationManager.invalidateViewportSize();
+		}
 	}
 	
 	/**
@@ -233,11 +240,11 @@ class Window extends EventCallback
 	
 	private function get_innerHeight():Int
 	{
-		return platform.innerHeight;
+		return Math.floor(platform.viewportHeight);
 	}
 	
 	private function get_innerWidth():Int
 	{
-		return platform.innerWidth;
+		return Math.floor(platform.viewportWidth);
 	}
 }

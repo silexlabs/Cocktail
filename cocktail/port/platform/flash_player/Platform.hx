@@ -203,7 +203,8 @@ class Platform extends PlatformBase
 	}
 	
 	/**
-	 * Return the flash Stage
+	 * Return the root Sprite of the document, which will needs
+	 * to be attached to the Stage to display the whole document
 	 */
 	override public function getInitialNativeLayer():NativeLayer
 	{
@@ -333,18 +334,18 @@ class Platform extends PlatformBase
 	{
 		hitTestingSprite.graphics.clear();
 		hitTestingSprite.graphics.beginFill(0x000000, 0);
-		hitTestingSprite.graphics.drawRect(0, 0, innerWidth, innerHeight);
+		hitTestingSprite.graphics.drawRect(0, 0, viewportWidth, viewportHeight);
 		hitTestingSprite.graphics.endFill();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// Overriden GETTER/SETTER
+	// OVERRIDEN PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * Return the flash Stage height
 	 */
-	override private function get_innerHeight():Int
+	override private function getNativeViewportHeight():Float
 	{
 		var configStageHeight = Config.getInstance().stageHeight;
 		if (configStageHeight != -1)
@@ -357,7 +358,7 @@ class Platform extends PlatformBase
 	/**
 	 * Return the flash Stage width
 	 */
-	override private function get_innerWidth():Int
+	override private function getNativeViewportWidth():Float
 	{
 		var configStageWidth = Config.getInstance().stageWidth;
 		if (configStageWidth != -1)
@@ -368,6 +369,32 @@ class Platform extends PlatformBase
 		return Lib.current.stage.stageWidth;
 	}
 	
+	/**
+	 * Return the x origin of the stage
+	 */
+	override private function getNativeViewportX():Float
+	{	
+		return 0;
+	}
+	
+	/**
+	 * return the y origin of the stage
+	 */
+	override private function getNativeViewportY():Float 
+	{
+		return 0;
+	}
+	
+	
+	/**
+	 * update display list to reflect new viewport
+	 */
+	override private function onViewportUpdate():Void
+	{
+		var initialNativeLayer:NativeLayer = getInitialNativeLayer();
+		initialNativeLayer.x = viewportX;
+		initialNativeLayer.y = viewportY;
+	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
@@ -383,7 +410,7 @@ class Platform extends PlatformBase
 	{
 		hitTestingSprite.graphics.clear();
 		hitTestingSprite.graphics.beginFill(0x000000, 0.0);
-		hitTestingSprite.graphics.drawRect(0, 0, innerWidth, innerHeight);
+		hitTestingSprite.graphics.drawRect(0, 0, viewportWidth, viewportHeight);
 		
 		for (i in 0..._hollowedTagsBounds.length)
 		{
