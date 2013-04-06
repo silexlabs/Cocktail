@@ -115,17 +115,6 @@ class Platform extends PlatformBase
 		//in Flash, the Stage is always defined as no scale as the transformations
 		//will be managed by Cocktail
 		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
-		
-		//optionnally may display with low quality
-		//to improve rendering speed.
-		if (Config.getInstance().useLowStageQuality == true)
-		{
-			Lib.current.stage.quality = StageQuality.LOW;
-		}
-		
-		//listen to config change which might require change of the platform
-		//at runtime
-		Config.getInstance().addEventListener(EventConstants.CONFIG_CHANGED,cast(onConfigChanged));
 	}
 	
 	/**
@@ -347,11 +336,6 @@ class Platform extends PlatformBase
 	 */
 	override private function getNativeViewportHeight():Float
 	{
-		var configStageHeight = Config.getInstance().stageHeight;
-		if (configStageHeight != -1)
-		{
-			return configStageHeight;
-		}
 		return Lib.current.stage.stageHeight;
 	}
 	
@@ -360,12 +344,6 @@ class Platform extends PlatformBase
 	 */
 	override private function getNativeViewportWidth():Float
 	{
-		var configStageWidth = Config.getInstance().stageWidth;
-		if (configStageWidth != -1)
-		{
-			return configStageWidth;
-		}
-		
 		return Lib.current.stage.stageWidth;
 	}
 	
@@ -547,25 +525,6 @@ class Platform extends PlatformBase
 			}
 			
 			child = child.nextSibling;
-		}
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE HELPER METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Called a config parameter of the document
-	 * changed
-	 */
-	private function onConfigChanged(event:CustomEvent):Void
-	{
-		switch(event.detail)
-		{
-			//when the used stage width or height is changed, simulate a
-			//resize to update all the flahs display list
-			case "stageWidth", "stageHeight":
-				onNativeResize(null);
 		}
 	}
 }

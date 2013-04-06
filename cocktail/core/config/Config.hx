@@ -62,15 +62,6 @@ class Config extends EventTarget
 	public var enableBitmapSmoothing(default, null):Bool;
 	
 	/**
-	 * Flash specific.
-	 * 
-	 * Use a low stage quality to slightly improve performance, however
-	 * it degrades visual rendering. If the application is mostly bitmap
-	 * based, it doesn't make much difference in the rendering
-	 */
-	public var useLowStageQuality(default, null):Bool;
-	
-	/**
 	 * The document might be updated immediately instead of waiting
 	 * for next update on some conditions. For instance, getting
 	 * the offsetWidth or offsetTop of an HTMLElement requires the document
@@ -111,26 +102,6 @@ class Config extends EventTarget
 	 * Set to false if you want to always use software video in flash
 	 */
 	public var useStageVideoIfAvailable(default, null):Bool;
-	
-	/**
-	 * Flash specific.
-	 * 
-	 * Used to override the default stage width which is
-	 * used by cocktail to define the document viewport.
-	 * 
-	 * It is useful when a cocktail application is loaded
-	 * into a regular flash application. The flash loader
-	 * can be placed with x and y 
-	 * 
-	 * note : eventually this param should be replaced by
-	 * a proper viewport implementation
-	 */
-	public var stageWidth(default, null):Int;
-	
-	/**
-	 * Same as stageWidth, for stage height
-	 */
-	public var stageHeight(default, null):Int;
 	
 	/////////////////////////////////////////////////
 	// FONT CONFIG
@@ -252,7 +223,6 @@ class Config extends EventTarget
 		enableMouseEvent = true;
 		touchMovePreventClickDistance = 10;
 		enableBitmapSmoothing = true;
-		useLowStageQuality = false;
 		enableSynchronousUpdate = true;
 		useAdvancedHitTesting = true;
 		useStageVideoIfAvailable = true;
@@ -270,9 +240,6 @@ class Config extends EventTarget
 		thinBorderWidth = 1;
 		mediumBorderWidth = 3;
 		thickBorderWidth = 5;
-	
-		stageHeight = -1;
-		stageWidth = -1;
 		
 		enableCompositing = false;
 		objectBelowWhenNoCompositing = true;
@@ -302,7 +269,7 @@ class Config extends EventTarget
 		
 		switch(name)
 		{
-			case "enableMouseEvent", "useLowStageQuality", "enableSynchronousUpdate",
+			case "enableMouseEvent", "enableSynchronousUpdate",
 			"enableBitmapSmoothing", "useAdvancedHitTesting", "useStageVideoIfAvailable",
 			"enableCompositing", "objectBelowWhenNoCompositing", "videoBelowWhenNoCompositing":
 				updateBoolParam(name, value);
@@ -310,7 +277,7 @@ class Config extends EventTarget
 				
 			case "touchMovePreventClickDistance", "xxSmallFontSize", "xSmallFontSize", "smallFontSize",
 			"mediumFontSize", "largeFontSize", "xLargeFontSize", "xxLargeFontSize", "thinBorderWidth",
-			"mediumBorderWidth", "thickBorderWidth", "stageWidth", "stageHeight":
+			"mediumBorderWidth", "thickBorderWidth":
 				updateIntParam(name, value);
 				didUpdate = true;
 				
