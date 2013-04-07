@@ -27,6 +27,7 @@ import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.display.StageDisplayState;
 import flash.display.StageQuality;
+import flash.display.Graphics;
 import flash.Lib;
 import flash.net.URLRequest;
 import haxe.Log;
@@ -322,9 +323,23 @@ class Platform extends PlatformBase
 	private function updateHitTestingSprite():Void
 	{
 		hitTestingSprite.graphics.clear();
-		hitTestingSprite.graphics.beginFill(0x000000, 0);
+		setupTransparentFill(hitTestingSprite.graphics);
 		hitTestingSprite.graphics.drawRect(0, 0, viewportWidth, viewportHeight);
 		hitTestingSprite.graphics.endFill();
+	}
+	
+	/**
+	 * start transparent fill
+	 */
+	private function setupTransparentFill(graphics:Graphics):Void
+	{
+		//hack for nme, completely transparent Sprite don't
+		//recive mouse events
+		#if nme
+		graphics.beginFill(0x000000, 0.01);
+		#else
+		graphics.beginFill(0x000000, 0.0);
+		#end
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -386,7 +401,7 @@ class Platform extends PlatformBase
 	private function resetHitTestingSprite():Void
 	{
 		hitTestingSprite.graphics.clear();
-		hitTestingSprite.graphics.beginFill(0x000000, 0.0);
+		setupTransparentFill(hitTestingSprite.graphics);
 		hitTestingSprite.graphics.drawRect(0, 0, viewportWidth, viewportHeight);
 		
 		for (i in 0..._hollowedTagsBounds.length)
@@ -404,7 +419,7 @@ class Platform extends PlatformBase
 	 */
 	private function fillHitTestingSprite(rect:RectangleVO):Void
 	{
-		hitTestingSprite.graphics.beginFill(0x000000, 0.0);
+		setupTransparentFill(hitTestingSprite.graphics);
 		hitTestingSprite.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
 		hitTestingSprite.graphics.endFill();
 	}
