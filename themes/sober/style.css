@@ -1,10 +1,4 @@
 /**
-	links colors
-*/
-a:link          { color: rgb(0, 0, 238) }
-a:active        { color: red }
-
-/**
 	form element styles
 */
 input[type=text], input[type=password], input {
