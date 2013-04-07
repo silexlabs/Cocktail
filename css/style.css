@@ -1,7 +1,21 @@
+* {
+	margin:0;
+	padding:0;
+}
 
 object, iframe, embed {
 	border: none;
 	width:500px;
 	height:500px;
 	border:solid thick black;
+}
+
+header {
+	height:100px;
+}
+
+.box {
+	background: -moz-linear-gradient(45deg, #1D1F20, #2F3031);
+	width:300px;
+	height:500px;
 }
