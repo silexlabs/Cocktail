@@ -679,10 +679,10 @@ class HTMLDocument extends Document
 		//reseted after dispatch
 		var eventType:String = mouseEvent.type;
 		
-		//hovered element must also be refreshed when there is a mouse click
-		refreshHoveredElement(mouseEvent);
-		
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
+		
+		//hovered element must also be refreshed when there is a mouse click
+		refreshHoveredElement(elementRendererAtPoint, mouseEvent);
 		
 		if (elementRendererAtPoint == null)
 		{
@@ -780,8 +780,11 @@ class HTMLDocument extends Document
 			return;
 		}
 		
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
+		
 		//update hovered element after mouse move
-		refreshHoveredElement(mouseEvent);
+		refreshHoveredElement(elementRendererAtPoint, mouseEvent);
+		elementRendererAtPoint.domNode.dispatchEvent(mouseEvent);
 	}
 	
 	
@@ -945,10 +948,8 @@ class HTMLDocument extends Document
 	/**
 	 * Refresh the currently hovered element after a mouse event
 	 */
-	private function refreshHoveredElement(mouseEvent:MouseEvent):Void
+	private function refreshHoveredElement(elementRendererAtPoint:ElementRenderer, mouseEvent:MouseEvent):Void
 	{
-		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
-		
 		if (elementRendererAtPoint == null)
 		{
 			return;
@@ -999,8 +1000,6 @@ class HTMLDocument extends Document
 			//element
 			setMouseCursor(elementRendererAtPoint.domNode.coreStyle.cursor);
 		}
-		
-		elementRendererAtPoint.domNode.dispatchEvent(mouseEvent);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
