@@ -10,9 +10,16 @@
 		<script src="lib/mode/css.js"></script>
 	</head>
 	<body>
-		<div style='width:500px; height:500px;' id="html-editor"></div>
-		<div style='width:500px; height:500px;' id="css-editor"></div>
-		<iframe width="300" height="300" id="browser"></iframe>
+		<header></header>
+		<div class="box">
+			<div class="title">HTML</div>
+			<div id="html-editor"></div>
+		</div>
+		<div class="box">
+			<div class="title">CSS</div>
+			<div id="css-editor"></div>
+		</div>
+		<iframe width="300" height="300" id="browser" ></iframe>
 		<object width="300" height="300" id="cocktail" data="cocktail.swf">
 			<param name="allowScriptAccess" value="sameDomain" />
 		</object> 
