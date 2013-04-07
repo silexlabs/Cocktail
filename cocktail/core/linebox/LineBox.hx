@@ -2,6 +2,7 @@ package cocktail.core.linebox;
 import cocktail.core.css.CoreStyle;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.linebox.InlineBox;
+import cocktail.core.renderer.BlockBoxRenderer;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.font.FontData;
 import cocktail.core.geom.GeomData;
@@ -719,6 +720,7 @@ class LineBox
 			_childBounds.height = child.bounds.height;
 			
 			GeomUtils.addBounds(_childBounds, inlineBox.bounds);
+
 			child = child.nextSibling;
 		}
 		
@@ -759,7 +761,8 @@ class LineBox
 					{
 						if (child.elementRenderer.childrenInline() == true)
 						{
-							childLeadedAscent =  child.elementRenderer.inlineBoxes[child.elementRenderer.inlineBoxes.length - 1].bounds.y + child.leadedAscent;
+							var blockBox:BlockBoxRenderer = cast(child.elementRenderer);
+							childLeadedAscent =  blockBox.lineBoxes[blockBox.lineBoxes.length - 1].bounds.y + child.leadedAscent;
 						}
 					}
 				}
