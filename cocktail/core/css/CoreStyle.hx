@@ -1842,7 +1842,8 @@ class CoreStyle
 				
 			case CSSConstants.BACKGROUND_COLOR,
 			CSSConstants.BORDER_TOP_COLOR, CSSConstants.BORDER_RIGHT_COLOR, 
-			CSSConstants.BORDER_BOTTOM_COLOR, CSSConstants.BORDER_LEFT_COLOR:
+			CSSConstants.BORDER_BOTTOM_COLOR, CSSConstants.BORDER_LEFT_COLOR,
+			CSSConstants.OUTLINE_COLOR:
 				switch(property)
 				{
 					case COLOR(value):
