@@ -784,7 +784,11 @@ class HTMLDocument extends Document
 		
 		//update hovered element after mouse move
 		refreshHoveredElement(elementRendererAtPoint, mouseEvent);
-		elementRendererAtPoint.domNode.dispatchEvent(mouseEvent);
+
+		if (elementRendererAtPoint != null)
+		{
+			elementRendererAtPoint.domNode.dispatchEvent(mouseEvent);
+		}
 	}
 	
 	
