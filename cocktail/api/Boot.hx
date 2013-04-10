@@ -1,3 +1,5 @@
+package cocktail.api;
+
 #if !macro
 import js.Lib;
 #end
@@ -9,10 +11,10 @@ import haxe.macro.Expr;
 /**
  * This class implements the glue that allows to make a Cocktail application out of a HTML file.
  * 
- * @author Thomas Fétiveau
+ * @author Thomas FÃ©tiveau
  */
-#if !macro @:build(Cocktail.build()) #end
-class Cocktail
+#if !macro @:build(cocktail.api.Boot.build()) #end
+class Boot
 {
 	/**
 	 * The path to the HTML source file.
@@ -52,8 +54,13 @@ class Cocktail
 	 */
 	static public function main()
 	{
-		Lib.document.innerHTML = getSourceHtmlSource();
-
+		var cocktail = new Cocktail(getSourceHtmlSource());
+		Lib.init(cocktail.document);
+		
+		#if (flash || nme)
+		flash.Lib.current.addChild(cocktail.root);
+		#end
+		
 		if (getCustomClassName() == null)
 			return;
 

@@ -22,12 +22,12 @@ class Lib
 	/**
 	 * Return the html document
 	 */
-	public static var document(get_document, null):HTMLDocument;
+	public static var document(default, null):HTMLDocument;
 	
 	/**
 	 * return the window
 	 */
-	public static var window(get_window, null):Window;
+	public static var window(default, null):Window;
 	
 	/**
 	 * class constructor. private as this
@@ -39,43 +39,16 @@ class Lib
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE STATIC METHOD
+	// PUBLIC STATIC METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * instantiate Docuement and Window, called
 	 * the first time either of them is requested
 	 */
-	private static function init():Void
+	public static function init(htmlDocument:HTMLDocument):Void
 	{
-		
-		//window = new Window();
-		//document = window.document;
+		document = htmlDocument;
+		window = document.window;
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// STATIC GETTERS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private static function get_document():HTMLDocument 
-	{
-		if (document == null)
-		{
-			init();
-		}
-		
-		return document;
-	}
-	
-	private static function get_window():Window
-	{
-		if (window == null)
-		{
-			init();
-		}
-		return window;
-	}
-	
-	
-	
 }
