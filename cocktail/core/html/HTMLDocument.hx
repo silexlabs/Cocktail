@@ -327,9 +327,6 @@ class HTMLDocument extends Document
 		
 		_multiTouchManager = new MultiTouchManager();
 		
-		documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
-		
-		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
 		
 		_shouldDispatchClickOnNextMouseUp = false;
 		_lastTouchStartPosition = new PointVO(0, 0);
