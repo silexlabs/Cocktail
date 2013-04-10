@@ -112,10 +112,6 @@ class Platform extends PlatformBase
 		initDisplayList();
 		
 		super();
-		
-		//in Flash, the Stage is always defined as no scale as the transformations
-		//will be managed by Cocktail
-		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
 	}
 	
 	/**
@@ -127,7 +123,6 @@ class Platform extends PlatformBase
 		_rootSprite = new Sprite();
 		
 		_nativeLayersRootSprite = new Sprite();
-		
 		
 		hitTestingSprite = new Sprite();
 		updateHitTestingSprite();
@@ -142,8 +137,6 @@ class Platform extends PlatformBase
 			_rootSprite.addChild(hitTestingSprite);
 			_rootSprite.addChild(_nativeLayersRootSprite);
 		}
-		
-		Lib.current.addChild(_rootSprite);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -198,7 +191,7 @@ class Platform extends PlatformBase
 	 */
 	override public function getInitialNativeLayer():NativeLayer
 	{
-		return _nativeLayersRootSprite;
+		return _rootSprite;
 	}
 	
 	/**
