@@ -54,10 +54,11 @@ class Boot
 	 */
 	static public function main()
 	{
+		#if js
+		js.Lib.document.documentElement.innerHTML = getSourceHtmlSource();
+		#elseif (flash || nme)
 		var cocktail = new Cocktail(getSourceHtmlSource());
 		Lib.init(cocktail.document);
-		
-		#if (flash || nme)
 		flash.Lib.current.addChild(cocktail.root);
 		#end
 		
