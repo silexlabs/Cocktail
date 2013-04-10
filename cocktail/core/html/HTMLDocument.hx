@@ -242,7 +242,7 @@ class HTMLDocument extends Document
 	/**
 	 * A ref to the global Window object
 	 */
-	public var window(default, null):Window;
+	public var window:Window;
 	
 	/**
 	 * A ref to the style manager holding all the
@@ -285,19 +285,9 @@ class HTMLDocument extends Document
 	/**
 	 * class constructor.
 	 */
-	public function new(window:Window = null) 
+	public function new() 
 	{
 		super();
-		
-		//TODO 2 : hack, Document probably shouldn't have
-		//ref to Window
-		if (window == null)
-		{
-			window = new Window();
-		}
-		
-		this.window = window;
-		
 		init();	
 	}
 	
@@ -898,6 +888,26 @@ class HTMLDocument extends Document
 					}
 			}
 		}
+	}
+	
+	/**
+	 * When the viewport is resized, invalidate
+	 * the html document so that its layout
+	 * and rendering gets updated.
+	 */
+	public function onPlatformResizeEvent(e:UIEvent):Void
+	{
+		invalidationManager.invalidateViewportSize();
+	}
+	
+	/**
+	 * When the viewport orientation is changed, invalidate
+	 * the html document so that its layout
+	 * and rendering gets updated
+	 */
+	public function onPlatformOrientationChangeEvent(e:Event):Void
+	{
+		invalidationManager.invalidateViewportSize();
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////

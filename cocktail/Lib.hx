@@ -48,8 +48,9 @@ class Lib
 	 */
 	private static function init():Void
 	{
-		window = new Window();
-		document = window.document;
+		
+		//window = new Window();
+		//document = window.document;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
