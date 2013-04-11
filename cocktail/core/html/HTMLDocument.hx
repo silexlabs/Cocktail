@@ -416,6 +416,9 @@ class HTMLDocument extends Document
 			case HTMLConstants.HTML_FORM_TAG_NAME:
 				element = new HTMLFormElement();
 				
+			case HTMLConstants.HTML_TEXT_AREA_TAG_NAME:
+				element = new HTMLTextAreaElement();
+				
 			default:
 				element = new HTMLElement(tagName);
 		}

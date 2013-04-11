@@ -27,7 +27,7 @@ import cocktail.core.html.HTMLData;
  * 
  * @author Yannick DOMINGUEZ
  */
-class HTMLInputElement extends EmbeddedElement
+class HTMLInputElement extends FormAssociatedElement
 {
 	/**
 	 * This var keeps track of the native input
@@ -127,12 +127,6 @@ class HTMLInputElement extends EmbeddedElement
 	 * as used in form submission and in the form element's elements object
 	 */
 	public var name(get_name, set_name):String;
-	
-	/**
-	 * Returns the element's form owner.
-	 * Returns null if there isn't one.
-	 */
-	public var form(default, null):HTMLFormElement;
 	
 	/**
 	 * class constructor
@@ -328,27 +322,22 @@ class HTMLInputElement extends EmbeddedElement
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PRIVATE DOM METHODS
+	// OVERRIDEN PRIVATE FORM METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
+		
 	/**
-	 * Should update from owner when appended
-	 * to a node
+	 * when form is set, need to update state if radio button
 	 */
-	override private function appended():Void
+	override private function associateFormElement(form:HTMLFormElement):Void
 	{
-		super.appended();
-		resetFormOwner();
-	}
-	
-	/**
-	 * Should update the form owner when
-	 * removed from a node
-	 */
-	override private function removed():Void
-	{
-		super.removed();
-		resetFormOwner();
+		super.associateFormElement(form);
+		
+		//if is a radio input, set all other radio input
+		//to false
+		if (_checkedness == true && type == HTMLConstants.INPUT_TYPE_RADIO)
+		{
+			updateRadioButtonGroup();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -649,86 +638,6 @@ class HTMLInputElement extends EmbeddedElement
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Associate this input with its
-	 * form owner if any.
-	 * 
-	 * This is an implementatio of the following
-	 * algorithm :
-	 * http://www.w3.org/TR/2012/CR-html5-20121217/forms.html#reset-the-form-owner
-	 * 
-	 * TODO : incomplete implementation, doesn't
-	 * implement form attribute
-	 */
-	private function resetFormOwner():Void
-	{
-		var firstFormAncestor:HTMLFormElement = getFirstFormAncestor();
-		
-		//do nothing, if already associated or if both
-		//are null
-		if (firstFormAncestor == form)
-		{
-			return;
-		}
-		
-		//dissociate from previous form if any
-		if (form != null)
-		{
-			dissociateFormElement(form);
-			form = null;
-		}
-		
-		//associate with new form if any
-		if (firstFormAncestor != null)
-		{
-			form = firstFormAncestor;
-			associateFormElement(form);
-			
-			//if is a radio input, set all other radio input
-			//to false
-			if (_checkedness == true && type == HTMLConstants.INPUT_TYPE_RADIO)
-			{
-				updateRadioButtonGroup();
-			}
-		}
-	}
-	
-	/**
-	 * Return the first form element ancestor
-	 * of this input or null if there is
-	 * no such ancestor
-	 */
-	private function getFirstFormAncestor():HTMLFormElement
-	{
-		var parent:HTMLElement = parentNode;
-		while (parent != null)
-		{
-			if (parent.tagName == HTMLConstants.HTML_FORM_TAG_NAME)
-			{
-				return cast(parent);
-			}
-			parent = parent.parentNode;
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * associate this input with the provided form element
-	 */
-	private function associateFormElement(form:HTMLFormElement):Void
-	{
-		form.elements.push(this);
-	}
-	
-	/**
-	 * dissociate this input from the provided form element
-	 */
-	private function dissociateFormElement(form:HTMLFormElement):Void
-	{
-		form.elements.remove(this);
 	}
 	
 	/**

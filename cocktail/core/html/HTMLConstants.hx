@@ -122,6 +122,8 @@ class HTMLConstants
 	
 	public static inline var HTML_SELECT_TAG_NAME:String = "SELECT";
 	
+	public static inline var HTML_TEXT_AREA_TAG_NAME:String = "TEXTAREA";
+	
 	//attributes names
 	
 	public static inline var HTML_ID_ATTRIBUTE_NAME:String = "id";
