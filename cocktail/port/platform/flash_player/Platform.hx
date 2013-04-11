@@ -16,6 +16,7 @@ import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLInputElement;
+import cocktail.core.html.HTMLTextAreaElement;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.stacking.StackingContext;
 import cocktail.core.geom.GeomData;
@@ -450,6 +451,20 @@ class Platform extends PlatformBase
 					return;
 				}
 			}
+		}
+		//same for text area element
+		else if (layerRenderer.rootElementRenderer.domNode.tagName == HTMLConstants.HTML_TEXT_AREA_TAG_NAME)
+		{
+			
+			var textArea:HTMLElement = layerRenderer.rootElementRenderer.domNode;
+			var htmlDocument:HTMLDocument = cast(textArea.ownerDocument);
+				if (htmlDocument.activeElement == textArea)
+				{
+					_foundHollowedTag = true;
+					_hollowedTagsBounds.push(layerRenderer.bounds);
+					resetHitTestingSprite();
+					return;
+				}
 		}
 
 		if (_foundHollowedTag == true)

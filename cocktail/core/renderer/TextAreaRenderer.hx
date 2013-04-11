@@ -62,4 +62,17 @@ class TextAreaRenderer extends TextInputRenderer
 	{
 		 return globalBounds.y + coreStyle.usedValues.borderTopWidth;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE RENDERING METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Overriden as a the content of the text area is used for default value
+	 * but should not be rendered
+	 */
+	override private function renderChildren(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
+	{
+		
+	}
 }

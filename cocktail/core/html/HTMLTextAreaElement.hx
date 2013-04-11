@@ -39,15 +39,7 @@ class HTMLTextAreaElement extends FormAssociatedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * When the type attribute of the element has the value "text",
-	 * "file" or "password", this represents the current contents
-	 * of the corresponding form control, in an interactive user
-	 * agent. Changing this attribute changes the contents of the
-	 * form control, but does not change the value of the HTML
-	 * value attribute of the element. When the type attribute
-	 * of the element has the value "button", "hidden", "submit",
-	 * "reset", "image", "checkbox" or "radio", this represents 
-	 * the HTML value attribute of the element.
+	 * get/set the raw value of the text area
 	 */
 	public var value(get_value, set_value):String;
 	
@@ -75,8 +67,9 @@ class HTMLTextAreaElement extends FormAssociatedElement
 	 */
 	public var type(get_type, null):String;
 	
-	
-	
+	/**
+	 * class constructor
+	 */
 	public function new() 
 	{
 		super(HTMLConstants.HTML_TEXT_AREA_TAG_NAME);
@@ -101,11 +94,13 @@ class HTMLTextAreaElement extends FormAssociatedElement
 		{
 			if (evt.type == EventConstants.FOCUS)
 			{
-				//TODO : focus text are renderer
+				var inputRenderer:InputRenderer = cast(elementRenderer);
+				inputRenderer.focus();
 			}
 			else if (evt.type == EventConstants.BLUR)
 			{
-				//TODO : blur texyt area
+				var inputRenderer:InputRenderer = cast(elementRenderer);
+				inputRenderer.blur();
 			}
 		}
 		
@@ -117,13 +112,10 @@ class HTMLTextAreaElement extends FormAssociatedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Instantiate an input specific renderer if needed (for instance
-	 * hidden input don't render)
+	 * Instantiate a text area rendered
 	 */
 	override private function createElementRenderer():Void
 	{
-		//TODO : instantiate text area renderer
-		
 		elementRenderer = new TextAreaRenderer(this);
 		
 		if (_valueIsDirty == false)
@@ -146,11 +138,10 @@ class HTMLTextAreaElement extends FormAssociatedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * a text area is focusable unless 
+	 * a text area is focusable unless disabled
 	 */
 	override private function isDefaultFocusable():Bool
 	{
-		//not focusable if disabled
 		if (disabled == true)
 		{
 			return false;
