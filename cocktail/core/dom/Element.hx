@@ -382,6 +382,34 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 			}
 		}
 	}
+	
+	/**
+	 * return the concatenation of the text of all
+	 * descendant elements of node
+	 */
+	private function doGetTextContent(node:HTMLElement):String
+	{
+		var text:String = "";
+		
+		if (node.hasChildNodes() == true)
+		{
+			var length:Int = node.childNodes.length;
+			for (i in 0...length)
+			{
+				var childNode:HTMLElement = node.childNodes[i];
+				switch (childNode.nodeType)
+				{
+					case DOMConstants.TEXT_NODE:
+						var textNode:Text = cast(childNode);
+						text += textNode.data;
+				}
+				
+				text += doGetTextContent(childNode);
+			}
+		}
+		
+		return text;
+	}
 
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -405,6 +433,12 @@ class Element<ElementClass:Element<ElementClass>> extends Node<ElementClass>
 	override private function get_nodeType():Int
 	{
 		return DOMConstants.ELEMENT_NODE;
+	}
+	
+		
+	override private function get_textContent():String
+	{
+		return doGetTextContent(cast(this));
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
