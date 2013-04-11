@@ -9,6 +9,8 @@
 package cocktail.core.html;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
+import cocktail.core.renderer.InputRenderer;
+import cocktail.core.renderer.TextAreaRenderer;
 
 /**
  * The textarea element represents a multiline plain text edit control for the element's raw value.
@@ -18,7 +20,20 @@ import cocktail.core.event.EventConstants;
  */
 class HTMLTextAreaElement extends FormAssociatedElement
 {
-
+	/**
+	 * A textarea element has a dirty value flag, which must be 
+	 * initially set to false, and must be set to true
+	 * whenever the user interacts with the
+	 * control in a way that changes the raw value.
+	 */
+	private var _valueIsDirty:Bool;
+	
+	/**
+	 * the current raw value of the 
+	 * text area control
+	 */
+	private var _rawValue:String;
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// IDL attributes
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -56,14 +71,18 @@ class HTMLTextAreaElement extends FormAssociatedElement
 	public var disabled(get_disabled, set_disabled):Bool;
 	
 	/**
-	 * The type attribute controls the data type 
-	 * (and associated control) of the element
+	 *	return the text area type
 	 */
 	public var type(get_type, null):String;
+	
+	
 	
 	public function new() 
 	{
 		super(HTMLConstants.HTML_TEXT_AREA_TAG_NAME);
+		
+		_valueIsDirty = false;
+		_rawValue = "";
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -104,6 +123,13 @@ class HTMLTextAreaElement extends FormAssociatedElement
 	override private function createElementRenderer():Void
 	{
 		//TODO : instantiate text area renderer
+		
+		elementRenderer = new TextAreaRenderer(this);
+		
+		if (_valueIsDirty == false)
+		{
+			_rawValue = textContent;
+		}
 		
 		//listen to event from native input and set its model
 		if (elementRenderer != null)
@@ -148,7 +174,7 @@ class HTMLTextAreaElement extends FormAssociatedElement
 		
 		//update text value
 		var inputRenderer:InputRenderer = cast(elementRenderer);
-		_value = inputRenderer.value;
+		_rawValue = inputRenderer.value;
 		
 		fireEvent(EventConstants.INPUT, true, false);
 	}
@@ -169,8 +195,7 @@ class HTMLTextAreaElement extends FormAssociatedElement
 			inputRenderer.readonly = readOnly;
 			inputRenderer.disabled = disabled;
 			inputRenderer.maxLength = maxLength;
-			inputRenderer.value = getElementRendererValue();
-			inputRenderer.checked = _checkedness;
+			inputRenderer.value = value;
 		}
 	}
 	
@@ -194,51 +219,16 @@ class HTMLTextAreaElement extends FormAssociatedElement
 	private function set_value(value:String):String
 	{
 		_valueIsDirty = true;
-		
-		switch(_valueMode)
-		{
-			case ValueModeValue.VALUE:
-				_value = value;
-				
-			case ValueModeValue.DEFAULT, ValueModeValue.DEFAULT_ON:
-				setAttribute(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME, value);
-				
-			case ValueModeValue.FILENAME:	
-				//TODO : On setting, if the new value is the empty string,
-				//it must empty the list of selected files; otherwise,
-				//it must throw an InvalidStateError exception.
-		}
+		_rawValue = value;
+		updateInputRendererState();
 		
 		return value;
 	}
 	
 	private function get_value():String
 	{
-		switch(_valueMode)
-		{
-			case ValueModeValue.VALUE:
-				return _value;
-				
-			case ValueModeValue.DEFAULT:
-				return getAttributeAsDOMString(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
-				
-			case ValueModeValue.DEFAULT_ON:
-				var value:String = getAttributeAsDOMString(HTMLConstants.HTML_VALUE_ATTRIBUTE_NAME);
-				if (value == "")
-				{
-					return HTMLConstants.RADIO_OR_CHECKBOX_ON;
-				}
-				else
-				{
-					return value;
-				}
-				
-			case ValueModeValue.FILENAME:	
-				return ""; 
-				//TODO : On getting, it must return the string "C:\fakepath\"
-				//followed by the filename of the first file in the list of selected
-				//files, if any, or the empty string if the list is empty.
-		}
+		//TODO : value normalization
+		return _rawValue;
 	}
 	
 	private function set_maxLength(value:Int):Int
@@ -277,7 +267,6 @@ class HTMLTextAreaElement extends FormAssociatedElement
 	
 	private function get_type():String
 	{
-		return getEnumeratedAttributeAsDOMString(HTMLConstants.HTML_TYPE_ATTRIBUTE_NAME, HTMLConstants.INPUT_TYPE_VALUES, HTMLConstants.INPUT_TYPE_TEXT, null);
+		return HTMLConstants.INPUT_TEXT_AREA;
 	}
-	
 }

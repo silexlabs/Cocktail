@@ -204,6 +204,8 @@ class HTMLConstants
 	
 	//input types values
 	
+	public static inline var INPUT_TEXT_AREA:String = "textarea";
+	
 	public static inline var INPUT_TYPE_HIDDEN:String = "hidden";
 	
 	public static inline var INPUT_TYPE_TEXT:String = "text";
