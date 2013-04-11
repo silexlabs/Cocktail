@@ -164,15 +164,13 @@ class HTMLTextAreaElement extends FormAssociatedElement
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Called when text is input by the user in the native input.
-	 * Only applies to text base input such as "text"
-	 * or "password"
+	 * Called when text is input by the user in the text area
 	 */
 	private function onUserInput():Void
 	{
 		_valueIsDirty = true;
 		
-		//update text value
+		//update text area value
 		var inputRenderer:InputRenderer = cast(elementRenderer);
 		_rawValue = inputRenderer.value;
 		
@@ -185,7 +183,7 @@ class HTMLTextAreaElement extends FormAssociatedElement
 	
 	/**
 	 * Update the model of the input renderer when an attribute
-	 * of this input element is changed
+	 * of this text area is changed
 	 */
 	private function updateInputRendererState():Void
 	{

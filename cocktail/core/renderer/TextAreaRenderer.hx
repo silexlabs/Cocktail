@@ -42,6 +42,10 @@ class TextAreaRenderer extends TextInputRenderer
 		super(node);
 	}
 	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Instantiate a native text area
 	 */
@@ -49,5 +53,13 @@ class TextAreaRenderer extends TextInputRenderer
 	{
 		nativeTextInput = new NativeTextArea(domNode);
 		nativeInput = nativeTextInput;
+	}
+	
+	/**
+	 * set top of bounds for text area
+	 */
+	override private function getViewportY(scrollOffset:PointVO):Float
+	{
+		 return globalBounds.y + coreStyle.usedValues.borderTopWidth;
 	}
 }

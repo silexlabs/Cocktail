@@ -176,7 +176,7 @@ class InputRenderer extends BlockBoxRenderer
 		//set the position and size of the native input, relative
 		//to the viewport
 		var x:Float = globalBounds.x + coreStyle.usedValues.borderLeftWidth - scrollOffset.x;
-		var y:Float =  globalBounds.y + coreStyle.usedValues.borderTopWidth + (globalBounds.height - coreStyle.usedValues.borderTopWidth - coreStyle.usedValues.borderBottomWidth) / 2 - coreStyle.fontMetrics.fontSize + coreStyle.fontMetrics.ascent / 2 - scrollOffset.y;
+		var y:Float =  getViewportY(scrollOffset);
 		
 		//add the layer's transformations if it has any
 		//
@@ -200,6 +200,14 @@ class InputRenderer extends BlockBoxRenderer
 		//TODO 3 : use direct reference to layerRenderer clipRect as there
 		//seems to be a bug with the provided clip rect which is modified
 		nativeInput.clipRect = layerRenderer.clipRect;
+	}
+	
+	/**
+	 * special case for viewport's y which might vary based on inputs
+	 */
+	private function getViewportY(scrollOffset:PointVO):Float
+	{
+		 return globalBounds.y + coreStyle.usedValues.borderTopWidth + (globalBounds.height - coreStyle.usedValues.borderTopWidth - coreStyle.usedValues.borderBottomWidth) / 2 - coreStyle.fontMetrics.fontSize + coreStyle.fontMetrics.ascent / 2 - scrollOffset.y;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
