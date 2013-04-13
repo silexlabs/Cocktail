@@ -2187,18 +2187,9 @@ class CSSStyleParser
 		}
 		
 		var typedBaseURL:URL = cocktail.core.url.URL.fromString(baseURL);
-		if (URL.isRelative(typedBaseURL) == true)
-		{
-			
-		}
-		else
-		{
-			typedBaseURL.file = null;
-		}
 		
-		var baseURLWithoutFile:String = cocktail.core.url.URL.toString(typedBaseURL);
-		trace(baseURLWithoutFile);
-		return value;
+		//append url to base url
+		return cocktail.core.url.URL.toString(cocktail.core.url.URL.appendURL(typedBaseURL, url));
 	}
 	
 	static inline function isHexaChar(c) {

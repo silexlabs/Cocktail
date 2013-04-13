@@ -76,6 +76,16 @@ class URL
             Reflect.setField(url, _parts[i],  r.matched(i));
         }
 		
+		//hack for relative url with only a file
+		if (isRelative(url) == true)
+		{
+			if (url.directory == null && url.host != null)
+			{
+				url.file = url.host;
+				url.host = null;
+			}
+		}
+		
 		return url;
 	}
 	
@@ -146,6 +156,89 @@ class URL
 	 */
 	public static function appendURL(url:URL, appendedURL:URL):URL
 	{
+		if (isRelative(url) == true)
+		{
+			return appendToRelativeURL(url, appendedURL);
+		}
+		else
+		{
+			return appendToAbsoluteURL(url, appendedURL);
+		}
+	}
+	
+	/**
+	 * return wether the url is relative (true)
+	 * or absolute (false)
+	 */
+	public static function isRelative(url:URL):Bool
+	{
+		return url.scheme == null;
+	}
+	
+	/**
+	 * append the appended url to a relative url 
+	 */
+	private static function appendToRelativeURL(url:URL, appendedURL:URL):URL
+	{
+		//when relative url parsed, if it contains only a file (ex : "style.css")
+		//then it will store it in the host attribute. So if the url has no directory
+		//then only the appended url content is returned, as this method replace the file
+		//part of the base url anyway
+		if (url.directory == null || url.host == null)
+		{
+			return cloneURL(appendedURL);
+		}
+		
+		var resultURL:URL = new URL();
+		resultURL.host = url.host;
+		resultURL.directory = url.directory;
+
+		if (appendedURL.host != null)
+		{
+			resultURL.directory += appendedURL.host;
+		}
+		
+		if (appendedURL.directory != null)
+		{
+			var directory = appendedURL.directory;
+			if (appendedURL.host == null)
+			{
+				//remove the initial '/' char if no host, as already present
+				//in base url
+				resultURL.directory += directory.substr(1);
+			}
+			else
+			{
+				resultURL.directory += directory;
+			}
+			resultURL.directory += appendedURL.directory.substr(1);
+		}
+		
+		if (appendedURL.file != null)
+		{
+			resultURL.file = appendedURL.file;
+		}
+		
+		resultURL.path = resultURL.directory + resultURL.file;
+		
+		if (appendedURL.query != null)
+		{
+			resultURL.query = appendedURL.query;
+		}
+		
+		if (appendedURL.fragment != null)
+		{
+			resultURL.fragment = appendedURL.fragment;
+		}
+		
+		return resultURL;
+	}
+	
+	/**
+	 * append the appended url to an absolute url 
+	 */
+	private static function appendToAbsoluteURL(url:URL, appendedURL:URL):URL
+	{
 		var resultURL:URL = new URL();
 		
 		if (url.scheme != null)
@@ -193,16 +286,31 @@ class URL
 			resultURL.fragment = appendedURL.fragment;
 		}
 		
-		
 		return resultURL;
 	}
 	
 	/**
-	 * return wether the url is relative (true)
-	 * or absolute (false)
+	 * clone the provided url
 	 */
-	public static function isRelative(url:URL):Bool
+	private static function cloneURL(url:URL):URL
 	{
-		return url.scheme == null;
+		var clonedURL:URL = new URL();
+		
+		clonedURL.url = url.url;
+		clonedURL.source = url.source;
+		clonedURL.scheme = url.scheme;
+		clonedURL.authority = url.authority;
+		clonedURL.userInfo = url.userInfo;
+		clonedURL.password = url.password;
+		clonedURL.host = url.host;
+		clonedURL.port = url.port;
+		clonedURL.relative = url.relative;
+		clonedURL.path = url.path;
+		clonedURL.directory = url.directory;
+		clonedURL.file = url.file;
+		clonedURL.query = url.query;
+		clonedURL.fragment = url.fragment;
+		
+		return clonedURL;
 	}
 }
