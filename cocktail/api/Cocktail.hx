@@ -126,7 +126,7 @@ class Cocktail
 	private function initPlatform():Platform
 	{
 		var platform:Platform = new Platform();
-		root = platform.getInitialNativeLayer();
+		root = platform.getRootNativeLayer();
 		return platform;
 	}
 	
