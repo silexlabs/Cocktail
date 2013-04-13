@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project>
 
-	<app main="Cocktail" path="../bin" file="Main"/>
+	<app main="cocktail.api.Boot" path="../bin" file="Main"/>
 	<meta title="Cocktail" package="org.silexlabs.cocktail" version="1.0.0" company="Silex Labs" />
 	<window width="350" height="350" fps="30" orientation="portrait" resizable="true" unless="target_flash" />
 
@@ -20,6 +20,6 @@
 	<ndll name="nme" haxelib="nme" />
 
 	<compilerflag name="--remap js:cocktail" />
-	<compilerflag name="--macro Cocktail.create('../src/index.html','Main')" />
+	<compilerflag name="--macro cocktail.api.Boot.create('../src/index.html','Main')" />
 
 </project>
