@@ -1,5 +1,5 @@
 #sources
--main cocktail.api.Boot.api.Boot
+-main cocktail.api.Boot
 -cp ../../
 -cp src
 
