@@ -5,4 +5,4 @@
 
 #binary
 -js bin/js/Main.js
---macro cocktail.api.Boot.create('index.html','Main')
+--macro cocktail.api.Boot.create('index.html')

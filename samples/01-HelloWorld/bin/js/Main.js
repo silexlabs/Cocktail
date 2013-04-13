@@ -1,14 +1,4 @@
 var $hxClasses = $hxClasses || {},$estr = function() { return js.Boot.__string_rec(this,''); };
-var Cocktail = $hxClasses["Cocktail"] = function() { }
-Cocktail.__name__ = ["Cocktail"];
-Cocktail.htmlSource = null;
-Cocktail.customClassName = null;
-Cocktail.main = function() {
-	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<title>Cocktail Sample</title>\r\n\t</head>\r\n\t<body>\r\n\t\t<h1>Hello World !</h1>\r\n\t\tLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras dignissim lorem a purus semper scelerisque. Mauris eu quam lacus, a pellentesque neque. Suspendisse nec tristique turpis. Mauris et eros non nisi congue condimentum. Aliquam erat volutpat. Integer eget dignissim libero. Aliquam tellus odio, mollis vel pellentesque at, dapibus pulvinar mi. Ut convallis, quam nec tincidunt porttitor, velit odio pharetra lectus, sit amet sodales lacus risus in urna. Aliquam imperdiet, massa ut placerat viverra, justo odio tempor purus, a ultricies neque lectus vel ipsum.\r\n\t</body>\r\n</html>";
-	return;
-	var customClass = Type.resolveClass(null);
-	if(customClass != null) Type.createInstance(customClass,[]);
-}
 var HxOverrides = $hxClasses["HxOverrides"] = function() { }
 HxOverrides.__name__ = ["HxOverrides"];
 HxOverrides.dateStr = function(date) {
@@ -368,6 +358,18 @@ Type.allEnums = function(e) {
 	}
 	return all;
 }
+var cocktail = cocktail || {}
+if(!cocktail.api) cocktail.api = {}
+cocktail.api.Boot = $hxClasses["cocktail.api.Boot"] = function() { }
+cocktail.api.Boot.__name__ = ["cocktail","api","Boot"];
+cocktail.api.Boot.htmlSource = null;
+cocktail.api.Boot.customClassName = null;
+cocktail.api.Boot.main = function() {
+	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<title>Cocktail Sample</title>\r\n\t</head>\r\n\t<body>\r\n\t\t<h1>Hello World !</h1>\r\n\t\tLorem ipsum dolor sit amet, consectetur adipiscing elit. Cras dignissim lorem a purus semper scelerisque. Mauris eu quam lacus, a pellentesque neque. Suspendisse nec tristique turpis. Mauris et eros non nisi congue condimentum. Aliquam erat volutpat. Integer eget dignissim libero. Aliquam tellus odio, mollis vel pellentesque at, dapibus pulvinar mi. Ut convallis, quam nec tincidunt porttitor, velit odio pharetra lectus, sit amet sodales lacus risus in urna. Aliquam imperdiet, massa ut placerat viverra, justo odio tempor purus, a ultricies neque lectus vel ipsum.\r\n\t</body>\r\n</html>";
+	return;
+	var customClass = Type.resolveClass(null);
+	if(customClass != null) Type.createInstance(customClass,[]);
+}
 var js = js || {}
 js.Boot = $hxClasses["js.Boot"] = function() { }
 js.Boot.__name__ = ["js","Boot"];
@@ -561,6 +563,6 @@ if(typeof window != "undefined") {
 		return f(msg,[url + ":" + line]);
 	};
 }
-Cocktail.htmlSourcePath = "index.html";
+cocktail.api.Boot.htmlSourcePath = "index.html";
 js.Lib.onerror = null;
-Cocktail.main();
+cocktail.api.Boot.main();
