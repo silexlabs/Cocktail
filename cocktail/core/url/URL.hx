@@ -60,13 +60,13 @@ class URL
 	 * note : implementation originate from here :
 	 * http://haxe.org/doc/snip/uri_parser
 	 */
-	public static function fromString(url:String):URL
+	public static function fromString(stringUrl:String):URL
 	{
 		// The almighty regexp (courtesy of http://blog.stevenlevithan.com/archives/parseuri)
         var r : EReg = ~/^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
  
         // Match the regexp to the url
-        r.match(url);
+        r.match(stringUrl);
  
 		var url:URL = new URL();
 		
@@ -112,9 +112,14 @@ class URL
 			result += ":" + url.port;
 		}
 		
-		if (url.path != null)
+		if (url.directory != null)
 		{
-			result += url.path;
+			result += url.directory;
+		}
+		
+		if (url.file != null)
+		{
+			result += url.file;
 		}
 		
 		if (url.query != null)
@@ -128,5 +133,76 @@ class URL
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * takes 2 urls and return a new url which is the result
+	 * of appending the second url to the first.
+	 * 
+	 * if the first url points to a file, the file is removed
+	 * and the appended url is added after the last directory
+	 * 
+	 * only the query string and fragment of the appended url are used
+	 */
+	public static function appendURL(url:URL, appendedURL:URL):URL
+	{
+		var resultURL:URL = new URL();
+		
+		if (url.scheme != null)
+		{
+			resultURL.scheme = url.scheme;
+		}
+		
+		if (url.host != null)
+		{
+			resultURL.host = url.host;
+		}
+		
+		var directory:String = "";
+		if (url.directory != null)
+		{
+			directory = url.directory;
+		}
+		
+		if (appendedURL.host != null)
+		{
+			appendedURL.directory += appendedURL.host;
+		}
+		
+		if (appendedURL.directory != null)
+		{
+			directory += appendedURL.directory;
+		}
+		
+		resultURL.directory = directory;
+		
+		if (appendedURL.file != null)
+		{
+			resultURL.file = appendedURL.file;
+		}
+		
+		resultURL.path = resultURL.directory + resultURL.file;
+		
+		if (appendedURL.query != null)
+		{
+			resultURL.query = appendedURL.query;
+		}
+		
+		if (appendedURL.fragment != null)
+		{
+			resultURL.fragment = appendedURL.fragment;
+		}
+		
+		
+		return resultURL;
+	}
+	
+	/**
+	 * return wether the url is relative (true)
+	 * or absolute (false)
+	 */
+	public static function isRelative(url:URL):Bool
+	{
+		return url.scheme == null;
 	}
 }

@@ -10,6 +10,7 @@ package cocktail.core.css.parsers;
 import cocktail.core.css.CSSConstants;
 import cocktail.core.css.CSSData;
 import cocktail.core.css.parsers.CSSParsersData;
+import cocktail.core.url.URL;
 using StringTools;
 using cocktail.core.utils.Utils;
 
@@ -56,8 +57,12 @@ class CSSStyleParser
 	 * of css name/value pair. This method parse property names and when
 	 * a css separator ":" is found, parse the style value until an
 	 * end separator ";" is found
+	 * 
+	 * @param styles the CSS style string
+	 * @param baseURL base url of the css stylesheet, if any or null (styles might be provided
+	 * by inline style tag)
 	 */
-	public static function parseStyle(styles:String):Array<TypedPropertyVO>
+	public static function parseStyle(styles:String, baseURL:String):Array<TypedPropertyVO>
 	{
 		//reset the position when parsing multiple styles
 		_position = 0;
@@ -202,7 +207,7 @@ class CSSStyleParser
 				//where the style value ends. store the parsed
 				case STYLE_VALUE:
 					//parse the property value,null is returned if the property is invalid
-					var typedProperty:TypedPropertyVO = parseStyleValue(styleName, styles, position);
+					var typedProperty:TypedPropertyVO = parseStyleValue(styleName, styles, position, baseURL);
 					
 					//global position was updated in the parseStyleValue
 					//to correspond to the end of the style value, separated
@@ -241,10 +246,13 @@ class CSSStyleParser
 	 * multiple css name/value properties
 	 * @param	position the position where the style value begins
 	 * in the parsed css string
+	 * @param	baseURL the url of the CSS stylesheet where the style value originates,
+	 * or null or if doesn't come from a CSS stylesheet. Used for style value pointing
+	 * to a url to make the url relative to the document instead of the stylesheet
 	 * @return the typed property resulting from the parsing or null
 	 * if the style was invalid
 	 */
-	public static function parseStyleValue(propertyName:String, styles:String, position:Int):TypedPropertyVO
+	public static function parseStyleValue(propertyName:String, styles:String, position:Int, baseURL:String):TypedPropertyVO
 	{
 		var c:Int = styles.fastCodeAt(position);
 		
@@ -511,7 +519,7 @@ class CSSStyleParser
 					}
 					
 				case IDENT_FUNCTION:
-					var endPosition:Int = parseIdentOrFunctionnalNotation(styles, position, styleValues);
+					var endPosition:Int = parseIdentOrFunctionnalNotation(styles, position, styleValues, baseURL);
 					
 					//if different from -1, style value is valid
 					if (endPosition != -1)
@@ -864,7 +872,7 @@ class CSSStyleParser
 	}
 	
 	
-	private static function parseIdentOrFunctionnalNotation(styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
+	private static function parseIdentOrFunctionnalNotation(styles:String, position:Int, styleValues:Array<CSSPropertyValue>, baseURL:String):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		var start = position;
@@ -879,7 +887,7 @@ class CSSStyleParser
 		switch(c)
 		{
 			case '('.code:
-				position = parseFunctionnalNotation(ident, styles, ++position, styleValues);
+				position = parseFunctionnalNotation(ident, styles, ++position, styleValues, baseURL);
 				
 			default:	
 				parseIdent(ident, styleValues);
@@ -913,7 +921,7 @@ class CSSStyleParser
 	/**
 	 * parse css functional notation, like : url(myurl) or rgb(red,green,blue)
 	 */
-	private static function parseFunctionnalNotation(ident:String, styles:String, position:Int, styleValues:Array<CSSPropertyValue>):Int
+	private static function parseFunctionnalNotation(ident:String, styles:String, position:Int, styleValues:Array<CSSPropertyValue>, baseURL:String):Int
 	{
 		var c:Int = styles.fastCodeAt(position);
 		var start:Int = position;
@@ -942,9 +950,9 @@ class CSSStyleParser
 		}
 		
 		
-		var functionValues:TypedPropertyVO = parseStyleValue("", cssFunction, 0);
+		var functionValues:TypedPropertyVO = parseStyleValue("", cssFunction, 0, baseURL);
 		
-		var functionValue:CSSPropertyValue = getFunctionalNotation(ident, functionValues.typedValue);
+		var functionValue:CSSPropertyValue = getFunctionalNotation(ident, functionValues.typedValue, baseURL);
 		
 		if (functionValue == null)
 		{
@@ -962,7 +970,7 @@ class CSSStyleParser
 	 * parse a CSS functionnal notation (an ident preceding a parenthesis)
 	 * @return null if invalid
 	 */
-	private static function getFunctionalNotation(name:String, value:CSSPropertyValue):CSSPropertyValue
+	private static function getFunctionalNotation(name:String, value:CSSPropertyValue, baseURL:String):CSSPropertyValue
 	{
 		switch (name)
 		{
@@ -976,9 +984,9 @@ class CSSStyleParser
 				switch(value)
 				{
 					case IDENTIFIER(value):
-						return CSSPropertyValue.URL(value);
+						return CSSPropertyValue.URL(getURLRelativeToDocument(value, baseURL));
 					case STRING(value):	
-						return CSSPropertyValue.URL(value);
+						return CSSPropertyValue.URL(getURLRelativeToDocument(value, baseURL));
 						
 					default:	
 						return null;
@@ -2152,6 +2160,46 @@ class CSSStyleParser
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE UTILS METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * for url style value, convert the url to a url relative to document
+	 * if needed, as by default url declared in an external stylsheet are relative
+	 * to this stylesheet
+	 * @param	value the url to convert
+	 * @param	baseURL the url of css style sheet owning the value, or null if the
+	 * style is embedded
+	 * @return	the url relative to the document
+	 */
+	static function getURLRelativeToDocument(value:String, baseURL:String):String
+	{
+		//no need to convert if style don't come from an external stylesheet
+		if (baseURL == null)
+		{
+			return value;
+		}
+		
+		var url:URL = cocktail.core.url.URL.fromString(value);
+		
+		//absolute url don't need to be converted
+		if (cocktail.core.url.URL.isRelative(url) == false)
+		{
+			return value;
+		}
+		
+		var typedBaseURL:URL = cocktail.core.url.URL.fromString(baseURL);
+		if (URL.isRelative(typedBaseURL) == true)
+		{
+			
+		}
+		else
+		{
+			typedBaseURL.file = null;
+		}
+		
+		var baseURLWithoutFile:String = cocktail.core.url.URL.toString(typedBaseURL);
+		trace(baseURLWithoutFile);
+		return value;
+	}
 	
 	static inline function isHexaChar(c) {
 		return (c >= 'a'.code && c <= 'f'.code) || (c >= 'A'.code && c <= 'F'.code) || (c >= '0'.code && c <= '9'.code);
