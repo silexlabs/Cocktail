@@ -231,6 +231,21 @@ class CSSStyleDeclaration
 	}
 	
 	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		_indexedProperties = null;
+		_propertiesPositions = null;
+		_onStyleChange = null;
+		if (parentRule != null)
+		{
+			parentRule.dispose();
+			parentRule = null;
+		}
+	}
+	
+	/**
 	 * clean-up method to reuse
 	 * style declaration
 	 */

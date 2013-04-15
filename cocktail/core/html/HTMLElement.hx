@@ -343,6 +343,21 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		_ownerHTMLDocument = null;
+		ownerDocument = null;
+		_initialStyleDeclaration = null;
+		_pendingChangedProperties = null;
+		coreStyle.dispose();
+		coreStyle = null;
+		style.dispose();
+		style = null;
+	}
+	
+	/**
 	 * Init the HTMLElement attributes
 	 */
 	private function init():Void

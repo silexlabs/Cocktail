@@ -318,6 +318,13 @@ class HTMLDocument extends Document
 		_lastTouchStartPosition = null;
 		layoutManager.dispose();
 		layoutManager = null;
+		
+		if (documentElement != null)
+		{
+			documentElement.dispose();
+			documentElement = null;
+			body = null;
+		}
 	}
 	
 	/**
