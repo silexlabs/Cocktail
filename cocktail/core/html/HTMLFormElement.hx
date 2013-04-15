@@ -391,7 +391,7 @@ class HTMLFormElement extends HTMLElement
 			switch(child.tagName)
 			{
 				case HTMLConstants.HTML_INPUT_TAG_NAME, 
-				HTMLConstants.HTML_OBJECT_TAG_NAME:
+				HTMLConstants.HTML_OBJECT_TAG_NAME, HTMLConstants.HTML_TEXT_AREA_TAG_NAME:
 					submittableElements.push(child);
 			}
 			
@@ -447,6 +447,16 @@ class HTMLFormElement extends HTMLElement
 		{
 			var objectElement:HTMLObjectElement = cast(element);
 			if (objectElement.plugin == null)
+			{
+				return false;
+			}
+		}
+		
+		//text area
+		if (element.tagName == HTMLConstants.HTML_TEXT_AREA_TAG_NAME)
+		{
+			if (element.getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME) == null ||
+			element.getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME) == "")
 			{
 				return false;
 			}
@@ -536,6 +546,10 @@ class HTMLFormElement extends HTMLElement
 			case HTMLConstants.HTML_INPUT_TAG_NAME:
 				var inputElement:HTMLInputElement = cast(element);
 				return inputElement.value;
+				
+			case HTMLConstants.HTML_TEXT_AREA_TAG_NAME:
+				var textAreaElement:HTMLTextAreaElement = cast(element);
+				return textAreaElement.value;
 				
 			default:
 				return "";
