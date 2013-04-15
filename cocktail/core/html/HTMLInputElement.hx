@@ -212,7 +212,14 @@ class HTMLInputElement extends FormAssociatedElement
 		{
 			if (_checkednessIsDirty == false)
 			{
-				updateCheckedness(checked);
+				if (value == "true")
+				{
+					updateCheckedness(true);
+				}
+				else 
+				{
+					updateCheckedness(false);
+				}
 			}
 		}
 		//if name is changed, for radio input check if must
