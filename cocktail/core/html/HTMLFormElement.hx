@@ -179,19 +179,27 @@ class HTMLFormElement extends HTMLElement
 		//then let replace be true. Otherwise, let it be false.
 		
 		//TODO : only http for now
-		switch(scheme)
-		{
-			case HTTPConstants.HTTP:
-				if (method.toUpperCase() == HTTPConstants.GET)
-				{
-					mutateActionUrl(formDataSet, action);
-				}
-				else if (method.toUpperCase() == HTTPConstants.POST)
-				{
-					submitAsEntityBody(formDataSet, action, enctype);
-				}
-		}
 		
+		//if action empty, default to GET
+		if (action != "")
+		{
+			switch(scheme)
+			{
+				case HTTPConstants.HTTP:
+					if (method.toUpperCase() == HTTPConstants.GET)
+					{
+						mutateActionUrl(formDataSet, action);
+					}
+					else if (method.toUpperCase() == HTTPConstants.POST)
+					{
+						submitAsEntityBody(formDataSet, action, enctype);
+					}
+			}
+		}
+		else
+		{
+			mutateActionUrl(formDataSet, action);
+		}
 	}
 	
 	/**
@@ -206,7 +214,8 @@ class HTMLFormElement extends HTMLElement
 		var actionURL:URL = URL.fromString(action);
 		actionURL.query = query;
 		var destination:String = URL.toString(actionURL);
-	
+		
+		_ownerHTMLDocument.window.open(destination);
 		//TODO : navigate to the url, need to refactor cocktail so that
 		//it acts more like a browser
 	}
