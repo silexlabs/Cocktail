@@ -471,7 +471,7 @@ class EventCallback extends EventTarget
 	private function set_onSubmit(value:Event->Void):Event->Void
 	{
 		updateCallbackListener(EventConstants.SUBMIT, cast(value), cast(onsubmit));
-		return onreset = value;
+		return onsubmit = value;
 	}
 	
 		// VIDEO
