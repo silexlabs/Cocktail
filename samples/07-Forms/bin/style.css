@@ -1,0 +1,18 @@
+* {
+	font-family:sans-serif;
+}
+
+h2, h3 {
+	border-bottom:black solid thin;
+}
+
+
+form {
+	width:500px;
+	border:black solid thin;
+	padding:20px;
+}
+
+textarea {
+	width:100%;
+}
