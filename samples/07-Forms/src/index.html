@@ -5,29 +5,29 @@
 		<link type="text/css" href="style.css" rel="stylesheet"></link>
 	</head>
 	<body>
-		<form>
+		<form id="frm" >
 			<h1>Subscribe</h1>
 			<h4>(Don't worry, it's fake )</h4>
 			<div>
 				<h3>Info</h3>
-				name : <input />
-				password : <input type="password" />
+				name : <input name="name" />
+				password : <input type="password" name="pass" />
 			</div>
 			<div>
 				<h3>I'am a...</h3>
-				man : <input type="radio" name="sex" />
-				woman : <input type="radio" name="sex" />
-				other : <input type="radio" name="sex" />
+				man : <input type="radio" name="sex" value="man" />
+				woman : <input type="radio" name="sex" value="woman" />
+				other : <input type="radio" name="sex" value="other" />
 			</div>
 			<div>
 				<h3>I want to...</h3>
-				subscribe : <input type="checkbox" checked="true" />
-				receive update : <input type="checkbox" />
-				receive spam : <input type="checkbox" />
+				subscribe : <input type="checkbox" checked="true" name="subscribe" />
+				receive update : <input type="checkbox" name="update" />
+				receive spam : <input type="checkbox" name="spam" />
 			</div>
 			<div>
 				<h3>comment</h3>
-				<textarea>I think that...</textarea>
+				<textarea name="comment">I think that...</textarea>
 			</div>
 			<div>
 				<input type="submit" />
