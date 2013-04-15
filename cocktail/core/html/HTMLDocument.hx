@@ -292,6 +292,16 @@ class HTMLDocument extends Document
 	}
 	
 	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		timer.dispose();
+		
+		fontManager.dispose();
+	}
+	
+	/**
 	 * global document init
 	 */
 	private function init():Void
