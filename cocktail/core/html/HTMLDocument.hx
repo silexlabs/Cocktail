@@ -297,8 +297,27 @@ class HTMLDocument extends Document
 	public function dispose():Void
 	{
 		timer.dispose();
-		
+		timer = null;
 		fontManager.dispose();
+		fontManager = null;
+		resourceManager.dispose();
+		resourceManager = null;
+		transitionManager.dispose();
+		transitionManager = null;
+		invalidationManager.dispose();
+		invalidationManager = null;
+		cascadeManager.dispose();
+		cascadeManager = null;
+		_matchedPseudoClasses = null;
+		_focusManager.dispose();
+		_focusManager = null;
+		_hitTestManager.dispose();
+		_hitTestManager = null;
+		_multiTouchManager.dispose();
+		_multiTouchManager = null;
+		_lastTouchStartPosition = null;
+		layoutManager.dispose();
+		layoutManager = null;
 	}
 	
 	/**

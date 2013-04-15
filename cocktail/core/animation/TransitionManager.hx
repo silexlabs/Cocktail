@@ -97,6 +97,15 @@ class TransitionManager
 	}
 	
 	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		_transitions = null;
+		_document = null;
+	}
+	
+	/**
 	 * Create the array holding transitions
 	 */
 	private function initTransitions():Void

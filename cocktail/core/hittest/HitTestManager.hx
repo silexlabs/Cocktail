@@ -51,6 +51,15 @@ class HitTestManager
 		_elementRenderersAtPoint = new Array<ElementRenderer>();
 	}
 	
+	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		_elementRenderersAtPoint = null;
+		_targetPoint = null;
+	}
+	
 	/////////////////////////////////
 	// PUBLIC HIT-TESTING METHODS
 	////////////////////////////////
