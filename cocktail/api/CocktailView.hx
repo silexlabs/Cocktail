@@ -188,8 +188,6 @@ class CocktailView
 		window = new Window(document, platform);
 		document.window = window;
 		updateViewport(viewport);
-		
-		setPlatformBindings(platform, document);
 	}
 	
 	/**
@@ -221,6 +219,8 @@ class CocktailView
 			//starts the loading of the document
 			htmlDocument.innerHTML = html;
 		}
+		
+		setPlatformBindings(window.platform, document);
 	}
 	
 	/**
