@@ -36,9 +36,7 @@ class Cocktail
 		cocktailView.loadURL(url);
 		
 		//for flash and NME, attach to stage
-		#if (flash || nme)
 		flash.Lib.current.addChild(cocktailView.root);
-		#end
 		
 		//set static reference to the document and window,
 		//so that they can be accessed with cocktail.Lib.document
