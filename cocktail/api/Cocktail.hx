@@ -18,6 +18,9 @@ package cocktail.api;
  * This class will create a cocktail application taking the full 
  * available space of the window or browser tab containing it.
  * 
+ * It is compatible with flash/air and NME and will also wrap js
+ * target so that it can be used like the others
+ * 
  * @author Yannick DOMINGUEZ
  */
 class Cocktail
