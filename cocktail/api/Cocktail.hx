@@ -7,7 +7,6 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.api;
-import haxe.Http;
 
 /**
  * This class provides an easy, one step way of
@@ -31,22 +30,28 @@ class Cocktail
 	{
 		#if (flash || nme)
 		
+		//use a cocktail view
 		var cocktailView = new CocktailView();
+		//load the html document
 		cocktailView.loadURL(url);
 		
+		//for flash and NME, attach to stage
 		#if (flash || nme)
 		flash.Lib.current.addChild(cocktailView.root);
 		#end
 		
+		//set static reference to the document and window,
+		//so that they can be accessed with cocktail.Lib.document
+		//and cocktail.Lib.window
 		cocktail.Lib.init(cocktailView.document);
 			
+		//for js, load and set the document so that it matches the flash
+		//and NME application
 		#elseif js
-		
-		var http:Http = new Http(url);
+		var http:haxe.Http = new haxe.Http(url);
 		http.onData = function(e) js.Lib.document.documentElement.innerHTML = e;
 		http.onError = function(e) throw "could not load : " + url;
 		http.request(false);
-		
 		#end
 	}
 }

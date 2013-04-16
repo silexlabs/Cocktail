@@ -8,10 +8,15 @@
 */
 package cocktail.api;
 
+import cocktail.core.event.EventConstants;
 import cocktail.core.html.HTMLDocument;
+import cocktail.core.http.HTTPConstants;
+import cocktail.core.timer.Timer;
 import cocktail.core.window.Window;
+import cocktail.port.NativeHttp;
 import cocktail.port.Platform;
 import cocktail.core.geom.GeomData;
+import cocktail.core.http.HTTPData;
 import haxe.Http;
 import haxe.Resource;
 
@@ -141,16 +146,19 @@ class CocktailView
 		}
 		
 		//then try to load over network
-		var http:Http = new Http(url);
-		http.onData = function (e) {
-			initDocument(document, e, url);
+		var nativeHttp:NativeHttp = new NativeHttp(document.timer);
+		
+		var onHTMLLoaded = function (e) {
+			initDocument(document, nativeHttp.response, url);
 		}
 		
-		http.onError = function(e) {
+		var onLoadError = function(e) {
 			throw "could not load " + url;
 		}
 		
-		http.request(false);
+		nativeHttp.addEventListener(EventConstants.LOAD, onHTMLLoaded);
+		nativeHttp.addEventListener(EventConstants.ERROR, onLoadError);
+		nativeHttp.load(url, HTTPConstants.GET, null, null, DataFormatValue.TEXT);
 	}
 	
 	/**
