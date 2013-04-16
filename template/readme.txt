@@ -13,9 +13,10 @@
 
 A cocktail project template, ready to build
 
-- use src/Main.hx for your code, src/index.html for your html and bin/style.css for styling
+- use src/Main.hx for your code, bin/index.html for your html and bin/style.css for styling
 
-- build with the hxml files in this folder
+- build with the hxml files in build
 
 - run your project in flash or js by opening the html files in the bin folder in a browser
+  or run in NME by using the provided the nmml file
 
