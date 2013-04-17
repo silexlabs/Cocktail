@@ -1,8 +1,4 @@
-#sources
--main cocktail.api.Boot
+-main Main
 -cp ../../
 -cp src
-
-#binary
 -js bin/Main.js
---macro cocktail.api.Boot.create('src/index.html','Main')
