@@ -135,7 +135,8 @@ class Platform extends PlatformBase
 		}
 		else
 		{
-			_rootSprite.addChild(hitTestingSprite);
+			hitTestingSprite = _nativeLayersRootSprite;
+			//_rootSprite.addChild(hitTestingSprite);
 			_rootSprite.addChild(_nativeLayersRootSprite);
 		}
 	}

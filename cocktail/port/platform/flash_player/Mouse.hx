@@ -15,6 +15,9 @@ import cocktail.port.base.MouseListenerBase;
 import cocktail.port.NativeBitmapData;
 import cocktail.core.layout.LayoutData;
 import flash.display.BitmapData;
+import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
+import flash.geom.Point;
 import flash.Lib;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
@@ -191,10 +194,13 @@ class Mouse extends MouseListenerBase
 		
 		var mouseEvent:MouseEvent = new MouseEvent();
 		
+		var localPoint:Point = new Point(typedEvent.localX, typedEvent.localY);
+		localPoint = convertToHitTestingSpriteSpace(localPoint, event.target);
+		
 		//use local x and y for mouse event, as they should be relative to hit testing sprite which represents
 		//the viewport of the document
-		mouseEvent.initMouseEvent(eventType, true, true, null, 0.0, Math.round(typedEvent.localX), Math.round(typedEvent.localY),
-		Math.round(typedEvent.localX), Math.round(typedEvent.localY), typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, false, 0, null);
+		mouseEvent.initMouseEvent(eventType, true, true, null, 0.0, Math.round(localPoint.x), Math.round(localPoint.y),
+		Math.round(localPoint.x), Math.round(localPoint.y), typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, false, 0, null);
 
 		return mouseEvent;
 	}
@@ -235,5 +241,40 @@ class Mouse extends MouseListenerBase
 		event.initEvent(EventConstants.MOUSE_LEAVE, true, false);
 		
 		return event;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// private utils method
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * when the mouse event target is not the hit testing sprite (might be a text field for instance),
+	 * convert the mouse event point ot th space of the hit testing sprite
+	 */
+	private function convertToHitTestingSpriteSpace(point:Point, target:DisplayObject):Point
+	{
+		if (target == _platform.hitTestingSprite)
+		{
+			return point;
+		}
+		
+		point.x += target.x;
+		point.y += target.y;
+		
+		var parent:DisplayObjectContainer = target.parent;
+		while (parent != _platform.hitTestingSprite)
+		{
+			point.x += parent.x;
+			point.y += parent.y;
+			
+			parent = parent.parent;
+			
+			if (parent == null)
+			{
+				return point;
+			}
+		}
+		
+		return point;
 	}
 }
