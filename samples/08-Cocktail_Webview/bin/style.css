@@ -5,3 +5,34 @@
 /**
 	example
 */
+
+body {
+	background-color:rgba(125,125,125,0.9);
+	color:white;
+	font-family:sans-serif;
+	border-left:black solid thin;
+}
+
+h3:hover {
+	background-color:rgba(125,125,125,1.0);
+}
+
+#button {
+	padding:10px;
+	width:200px;
+	height:180px;
+	position:fixed;
+	background:rgb(200,200,200);
+	top:50%;
+	margin-top:-100px;
+	left:50%;
+	margin-left:-100px;
+}
+
+#button:hover {
+	background:rgb(180,180,180);
+}
+
+#button:active {
+	background:rgb(160,160,160);
+}

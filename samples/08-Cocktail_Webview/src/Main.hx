@@ -6,11 +6,15 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-import cocktail.api.Cocktail;
 import cocktail.api.CocktailView;
 import flash.display.Sprite;
+import flash.text.TextField;
 import js.Lib;
 
+/**
+ * This sample show how to use cocktail as a
+ * webview, and how to mix the flash and DOM api
+ */
 class Main
 {
 	static function main()
@@ -18,18 +22,28 @@ class Main
 		new Main();
 	}
 	
+	/**
+	 * cocktail's "web view"
+	 */
+	var cv:CocktailView;
+	
+	/**
+	 * flash interface's root sprite
+	 */
+	var mc:Sprite;
+	
 	public function new()
 	{
 		initFlash();
 		initCocktailView();
 	}
 	
+	/**
+	 * build flash interface
+	 */
 	function initFlash()
 	{
-		var mc = new Sprite();
-		mc.graphics.beginFill(0xDDDDDD, 1.0);
-		mc.graphics.drawRect(0, 0, 200, 200);
-		mc.graphics.endFill();
+		mc = new Sprite();
 		
 		var txt = new flash.text.TextField();
 		txt.width = 200;
@@ -37,14 +51,66 @@ class Main
 		
 		mc.addChild(txt);
 		
+		var button = new Sprite();
+		button.graphics.beginFill(0xDDDDDD, 1.0);
+		button.graphics.drawRect(0, 0, 200, 200);
+		button.graphics.endFill();
+		
+		button.x = flash.Lib.current.stage.stageWidth / 4 - 100;
+		button.y = flash.Lib.current.stage.stageHeight / 2 - 100;
+		mc.addChild(button);
+		
+		var label = new TextField();
+		label.text = "Click to show/hide cocktail view";
+		label.width = 200;
+		button.addChild(label);
+		
+		button.addEventListener(flash.events.MouseEvent.CLICK, onFlashClick);
+		
 		flash.Lib.current.addChild(mc);
 	}
 	
+	/**
+	 * toggle cocktail view visibility
+	 */
+	function onFlashClick(e)
+	{
+		cv.root.visible = !cv.root.visible;
+	}
+	
+	/**
+	 * build cocktail interface
+	 */
 	function initCocktailView()
 	{
-		var cv = new CocktailView();
-		cv.viewport = { x:200, y:0, width:200, height:200 };
+		//build a cocktail webview
+		cv = new CocktailView();
+		
+		//place the webview in the flash/NME app
+		cv.viewport = { 
+			x:Std.int(flash.Lib.current.stage.stageWidth / 2),
+			y:0,
+			width:Std.int(flash.Lib.current.stage.stageWidth / 2),
+			height:flash.Lib.current.stage.stageHeight
+			};
+		
+		//use an external html for the document
 		cv.loadURL("index.html");
-		flash.Lib.current.addChild(cv.root);
+		
+		//wait for document ready
+		cv.window.onload = function(e) { 
+			
+			var document = cv.document;
+			
+			//access to DOM
+			var button = document.getElementById("button");
+			button.onclick = function(e) {
+				//toggle flash interface visibility
+				mc.visible = !mc.visible;
+			}
+			
+			//attach cocktail root to native flash root
+			flash.Lib.current.addChild(cv.root);
+		};
 	}
 }
