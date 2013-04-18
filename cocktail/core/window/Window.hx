@@ -73,37 +73,19 @@ class Window extends EventCallback
 	/**
 	 * class constructor. Initialise the Document
 	 */
-	public function new() 
+	public function new(htmlDocument:HTMLDocument, platform:Platform) 
 	{
 		super();
-		init();
+		this.platform = platform;
+		init(htmlDocument, platform);
 	}
 	
 	/**
 	 * Initialise the Document and set platform specific
 	 * listener on it
 	 */
-	private function init():Void
+	private function init(htmlDocument:HTMLDocument, platform:Platform):Void
 	{
-		platform = new Platform();
-		var htmlDocument:HTMLDocument = new HTMLDocument(this);
-		
-		platform.mouse.onMouseDown = htmlDocument.onPlatformMouseEvent;
-		platform.mouse.onMouseUp = htmlDocument.onPlatformMouseEvent;
-		platform.mouse.onMouseMove = htmlDocument.onPlatformMouseMoveEvent;
-		platform.mouse.onMouseWheel = htmlDocument.onPlatformMouseWheelEvent;
-		platform.mouse.onMouseLeave = htmlDocument.onPlatformMouseLeaveEvent;
-		
-		platform.keyboard.onKeyDown = htmlDocument.onPlatformKeyDownEvent;
-		platform.keyboard.onKeyUp = htmlDocument.onPlatformKeyUpEvent;
-		
-		platform.onResize = onPlatformResizeEvent;
-		platform.onOrientationChange = onPlatformOrientationChangeEvent;
-		
-		platform.touchListener.onTouchStart = htmlDocument.onPlatformTouchEvent;
-		platform.touchListener.onTouchMove = htmlDocument.onPlatformTouchEvent;
-		platform.touchListener.onTouchEnd = htmlDocument.onPlatformTouchEvent;
-		
 		//fullscreen callbacks
 		htmlDocument.onEnterFullscreen = onDocumentEnterFullscreen;
 		htmlDocument.onExitFullscreen = onDocumentExitFullscreen;
@@ -196,30 +178,6 @@ class Window extends EventCallback
 			}
 		}
 		
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * When the viewport is resized, invalidate
-	 * the html document so that its layout
-	 * and rendering gets updated.
-	 */
-	private function onPlatformResizeEvent(e:UIEvent):Void
-	{
-		document.invalidationManager.invalidateViewportSize();
-	}
-	
-	/**
-	 * When the viewport orientation is changed, invalidate
-	 * the html document so that its layout
-	 * and rendering gets updated
-	 */
-	private function onPlatformOrientationChangeEvent(e:Event):Void
-	{
-		document.invalidationManager.invalidateViewportSize();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

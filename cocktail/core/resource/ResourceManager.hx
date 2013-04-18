@@ -55,6 +55,16 @@ class ResourceManager
 	}
 	
 	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		_document = null;
+		_resources = null;
+		_binaryResources = null;
+	}
+	
+	/**
 	 * Return the resource at the given url. If it is the first
 	 * time this resource is requested, create a new Resource
 	 * object which will starts its loading itself

@@ -51,6 +51,16 @@ class Timer
 		_timerImpl = new TimerImpl(onUpdate);
 	}
 	
+	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		_pendingCallbacks = null;
+		
+		_timerImpl.dispose();
+	}
+	
 	/////////////////////////////////
 	// PUBLIC METHODS
 	////////////////////////////////

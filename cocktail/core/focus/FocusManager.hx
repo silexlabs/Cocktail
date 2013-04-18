@@ -41,6 +41,14 @@ class FocusManager
 		
 	}
 	
+	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		activeElement = null;
+	}
+	
 	/////////////////////////////////
 	// PUBLIC METHODS
 	/////////////////////////////////

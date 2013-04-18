@@ -236,7 +236,7 @@ class HTMLLinkElement extends HTMLElement
 	 */
 	private function createStyleSheet(css:String):Void
 	{
-		sheet = new CSSStyleSheet(css, PropertyOriginValue.AUTHOR);
+		sheet = new CSSStyleSheet(css, PropertyOriginValue.AUTHOR, null, href);
 		var htmlDocument:HTMLDocument = cast(ownerDocument);
 		htmlDocument.addStyleSheet(sheet);
 	}

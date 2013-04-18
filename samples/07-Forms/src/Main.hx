@@ -11,8 +11,8 @@ import js.Dom;
 
 class Main
 {
-	public function new()
+	static function main()
 	{
-		
+		cocktail.api.Cocktail.boot();
 	}
 }

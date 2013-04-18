@@ -242,7 +242,7 @@ class HTMLDocument extends Document
 	/**
 	 * A ref to the global Window object
 	 */
-	public var window(default, null):Window;
+	public var window:Window;
 	
 	/**
 	 * A ref to the style manager holding all the
@@ -285,20 +285,46 @@ class HTMLDocument extends Document
 	/**
 	 * class constructor.
 	 */
-	public function new(window:Window = null) 
+	public function new() 
 	{
 		super();
-		
-		//TODO 2 : hack, Document probably shouldn't have
-		//ref to Window
-		if (window == null)
-		{
-			window = new Window();
-		}
-		
-		this.window = window;
-		
 		init();	
+	}
+	
+	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		timer.dispose();
+		timer = null;
+		fontManager.dispose();
+		fontManager = null;
+		resourceManager.dispose();
+		resourceManager = null;
+		transitionManager.dispose();
+		transitionManager = null;
+		invalidationManager.dispose();
+		invalidationManager = null;
+		cascadeManager.dispose();
+		cascadeManager = null;
+		_matchedPseudoClasses = null;
+		_focusManager.dispose();
+		_focusManager = null;
+		_hitTestManager.dispose();
+		_hitTestManager = null;
+		_multiTouchManager.dispose();
+		_multiTouchManager = null;
+		_lastTouchStartPosition = null;
+		layoutManager.dispose();
+		layoutManager = null;
+		
+		if (documentElement != null)
+		{
+			documentElement.dispose();
+			documentElement = null;
+			body = null;
+		}
 	}
 	
 	/**
@@ -327,9 +353,6 @@ class HTMLDocument extends Document
 		
 		_multiTouchManager = new MultiTouchManager();
 		
-		documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
-		
-		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
 		
 		_shouldDispatchClickOnNextMouseUp = false;
 		_lastTouchStartPosition = new PointVO(0, 0);
@@ -428,6 +451,9 @@ class HTMLDocument extends Document
 				
 			case HTMLConstants.HTML_FORM_TAG_NAME:
 				element = new HTMLFormElement();
+				
+			case HTMLConstants.HTML_TEXT_AREA_TAG_NAME:
+				element = new HTMLTextAreaElement();
 				
 			default:
 				element = new HTMLElement(tagName);
@@ -901,6 +927,26 @@ class HTMLDocument extends Document
 					}
 			}
 		}
+	}
+	
+	/**
+	 * When the viewport is resized, invalidate
+	 * the html document so that its layout
+	 * and rendering gets updated.
+	 */
+	public function onPlatformResizeEvent(e:UIEvent):Void
+	{
+		invalidationManager.invalidateViewportSize();
+	}
+	
+	/**
+	 * When the viewport orientation is changed, invalidate
+	 * the html document so that its layout
+	 * and rendering gets updated
+	 */
+	public function onPlatformOrientationChangeEvent(e:Event):Void
+	{
+		invalidationManager.invalidateViewportSize();
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////

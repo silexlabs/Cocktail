@@ -101,6 +101,25 @@ class Node<NodeClass:Node<NodeClass>> extends EventCallback
 	public var ownerDocument(default, set_ownerDocument):Document;
 	
 	/**
+	 * The textContent attribute must return the following, depending on the context object:
+	 *
+	 *	DocumentFragment
+	 *	Element
+	 *	The concatenation of data of all the Text node descendants of the context object, in tree order.
+	 *
+	 *	Text
+	 *	ProcessingInstruction
+	 * 	Comment
+	 *	The context object's data.
+	 * 
+	 *  Any other node
+	 *	Null.
+	 * 
+	 * TODO : implement setting
+	 */
+	public var textContent(get_textContent, null):String;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
@@ -463,6 +482,11 @@ class Node<NodeClass:Node<NodeClass>> extends EventCallback
 	}
 	
 	private function get_nodeName():String
+	{
+		return null;
+	}
+	
+	private function get_textContent():String
 	{
 		return null;
 	}

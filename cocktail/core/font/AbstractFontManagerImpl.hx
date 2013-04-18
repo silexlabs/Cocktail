@@ -36,6 +36,14 @@ class AbstractFontManagerImpl
 		_computedFontMetrics = new Hash<IntHash<FontMetricsVO>>();
 	}
 	
+	/**
+	 * clean up method
+	 */
+	public function dispose()
+	{
+		_computedFontMetrics = null;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Public methods, font creation and measure
 	//////////////////////////////////////////////////////////////////////////////////////////

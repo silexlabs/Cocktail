@@ -1,14 +1,4 @@
 var $hxClasses = $hxClasses || {},$estr = function() { return js.Boot.__string_rec(this,''); };
-var Cocktail = $hxClasses["Cocktail"] = function() { }
-Cocktail.__name__ = ["Cocktail"];
-Cocktail.htmlSource = null;
-Cocktail.customClassName = null;
-Cocktail.main = function() {
-	Main;
-	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<title>HTML forms with Cocktail</title>\r\n\t\t<link type=\"text/css\" href=\"style.css\" rel=\"stylesheet\"></link>\r\n\t\t<link type=\"text/css\" href=\"sober/style.css\" rel=\"stylesheet\"></link>\r\n\t</head>\r\n\t<body>\r\n\t\t\r\n\t</body>\r\n</html>";
-	var customClass = Type.resolveClass("Main");
-	if(customClass != null) Type.createInstance(customClass,[]);
-}
 var HxOverrides = $hxClasses["HxOverrides"] = function() { }
 HxOverrides.__name__ = ["HxOverrides"];
 HxOverrides.dateStr = function(date) {
@@ -374,6 +364,18 @@ Type.allEnums = function(e) {
 	}
 	return all;
 }
+var cocktail = cocktail || {}
+if(!cocktail.api) cocktail.api = {}
+cocktail.api.Boot = $hxClasses["cocktail.api.Boot"] = function() { }
+cocktail.api.Boot.__name__ = ["cocktail","api","Boot"];
+cocktail.api.Boot.htmlSource = null;
+cocktail.api.Boot.customClassName = null;
+cocktail.api.Boot.main = function() {
+	Main;
+	js.Lib.document.documentElement.innerHTML = "<html>\r\n\t<head>\r\n\t\t<title>HTML forms with Cocktail</title>\r\n\t\t<link type=\"text/css\" href=\"style.css\" rel=\"stylesheet\"></link>\r\n\t\t<link type=\"text/css\" href=\"sober/style.css\" rel=\"stylesheet\"></link>\r\n\t</head>\r\n\t<body>\r\n\t\t<form>\r\n\t\t\t<h1>Question ?</h1>\r\n\t\t\t<div>\r\n\t\t\t\tYes : <input type=\"radio\" name=\"rad\" />\r\n\t\t\t\tNo : <input type=\"radio\" name=\"rad\" />\r\n\t\t\t</div>\r\n\t\t\t<div>\r\n\t\t\t\tchoice 1 : <input type=\"checkbox\" />\r\n\t\t\t\tchoice 2 : <input type=\"checkbox\" />\r\n\t\t\t\tchoice 3 : <input type=\"checkbox\" />\r\n\t\t\t</div>\r\n\t\t\t<div>\r\n\t\t\t\tname : <input />\r\n\t\t\t\tpassword : <input type=\"password\" />\r\n\t\t\t</div>\r\n\t\t\t<div>\r\n\t\t\t\tcomment : \r\n\t\t\t</div>\r\n\t\t\t<div>\r\n\t\t\t\t<input type=\"submit\" />\r\n\t\t\t\t<input type=\"reset\" />\r\n\t\t\t</div>\r\n\t\t</form>\r\n\t</body>\r\n</html>";
+	var customClass = Type.resolveClass("Main");
+	if(customClass != null) Type.createInstance(customClass,[]);
+}
 var js = js || {}
 js.Boot = $hxClasses["js.Boot"] = function() { }
 js.Boot.__name__ = ["js","Boot"];
@@ -567,6 +569,6 @@ if(typeof window != "undefined") {
 		return f(msg,[url + ":" + line]);
 	};
 }
-Cocktail.htmlSourcePath = "index.html";
+cocktail.api.Boot.htmlSourcePath = "index.html";
 js.Lib.onerror = null;
-Cocktail.main();
+cocktail.api.Boot.main();

@@ -231,6 +231,21 @@ class CSSStyleDeclaration
 	}
 	
 	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		_indexedProperties = null;
+		_propertiesPositions = null;
+		_onStyleChange = null;
+		if (parentRule != null)
+		{
+			parentRule.dispose();
+			parentRule = null;
+		}
+	}
+	
+	/**
 	 * clean-up method to reuse
 	 * style declaration
 	 */
@@ -361,7 +376,7 @@ class CSSStyleDeclaration
 		{
 			//parse the proeprty, the return property is null
 			//if the style is invalid
-			var typedProperty:TypedPropertyVO = CSSStyleParser.parseStyleValue(CSSConstants.getPropertyNameFromIndex(index), value, 0);
+			var typedProperty:TypedPropertyVO = CSSStyleParser.parseStyleValue(CSSConstants.getPropertyNameFromIndex(index), value, 0, null);
 			
 			if (typedProperty != null)
 			{
@@ -4013,7 +4028,17 @@ class CSSStyleDeclaration
 		resetPropertiesPositions();
 		length = 0;
 		
-		var typedProperties:Array<TypedPropertyVO> = CSSStyleParser.parseStyle(value);
+		//retrieve url of stylsheet owning this style declaration
+		var baseUrl:String = null;
+		if (parentRule != null)
+		{
+			if (parentRule.parentStyleSheet != null)
+			{
+				baseUrl = parentRule.parentStyleSheet.href;
+			}
+		}
+		
+		var typedProperties:Array<TypedPropertyVO> = CSSStyleParser.parseStyle(value, baseUrl);
 		var length:Int = typedProperties.length;
 		for (i in 0...length)
 		{

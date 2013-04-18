@@ -80,6 +80,23 @@ class CSSRule
 		this.parentRule = parentRule;
 	}
 	
+	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		if (parentRule != null)
+		{
+			parentRule.dispose();
+			parentRule = null;
+		}
+		
+		if (parentStyleSheet != null)
+		{
+			parentStyleSheet.dispose();
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// GETTER/SETTER
 	//////////////////////////////////////////////////////////////////////////////////////////

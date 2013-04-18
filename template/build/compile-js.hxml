@@ -1,8 +1,4 @@
-#sources
--main Cocktail
--lib cocktail
+-main Main
 -cp ../src
-
-#binary
+-lib cocktail
 -js ../bin/Main.js
---macro Cocktail.create('../src/index.html','Main')

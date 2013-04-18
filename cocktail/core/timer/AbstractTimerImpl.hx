@@ -33,6 +33,14 @@ class AbstractTimerImpl
 	}
 	
 	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		
+	}
+	
+	/**
 	 * Return the current timestamp, in millisecond
 	 */
 	public function getTimer():Float

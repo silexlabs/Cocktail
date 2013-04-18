@@ -137,6 +137,14 @@ class CascadeManager
 	}
 	
 	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		propertiesToCascade = null;
+	}
+	
+	/**
 	 * Init/reset the cascade state
 	 */
 	public function reset():Void
