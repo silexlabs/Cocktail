@@ -32,9 +32,11 @@ class Main extends Sprite
 	 */
 	var mc:Sprite;
 	
+	var resizeCallbacks : List<Void->Void>;
 	public function new()
 	{
 		super();
+		resizeCallbacks = new List();
 		addEventListener( flash.events.Event.ADDED_TO_STAGE, onAdded );
 	}
 
@@ -59,6 +61,8 @@ class Main extends Sprite
 		//reset();
 		if (!inited) init();
 		// else (resize or orientation change)
+		for( cb in resizeCallbacks )
+			cb();
 	}
 
 	function init()
@@ -68,6 +72,12 @@ class Main extends Sprite
 		initCocktailView();
 	}
 	
+	function registerResizable( cb : Void->Void )
+	{
+		resizeCallbacks.add( cb );
+		return cb;
+	}
+
 	/**
 	 * build flash interface
 	 */
@@ -86,16 +96,19 @@ class Main extends Sprite
 		button.graphics.drawRect(0, 0, 200, 200);
 		button.graphics.endFill();
 		
-		button.x = flash.Lib.current.stage.stageWidth / 4 - 100;
-		button.y = flash.Lib.current.stage.stageHeight / 2 - 100;
+		function updateButtonPosition()
+		{
+			button.x = (stage.stageWidth / 2 - button.width) / 2;
+			button.y = stage.stageHeight / 2 - 100;
+		}
+		registerResizable( updateButtonPosition )();
+
 		mc.addChild(button);
 		
 		var label = new TextField();
 		label.text = "Click to show/hide cocktail view";
 		label.width = 200;
 		button.addChild(label);
-
-		//mc.x = Std.int(flash.Lib.current.stage.stageWidth / 2);
 		
 		button.addEventListener(flash.events.MouseEvent.CLICK, onFlashClick);
 		
@@ -118,13 +131,17 @@ class Main extends Sprite
 		//build a cocktail webview
 		cv = new CocktailView();
 		
-		//place the webview in the flash/NME app
-		cv.viewport = { 
-			x:Std.int(flash.Lib.current.stage.stageWidth / 2),
-			y:0,
-			width:Std.int(flash.Lib.current.stage.stageWidth / 2),
-			height:flash.Lib.current.stage.stageHeight
-			};
+		function updateViewportPosition()
+		{
+			//place the webview in the flash/NME app
+			cv.viewport = { 
+				x:Std.int(stage.stageWidth / 2),
+				y:0,
+				width:Std.int(stage.stageWidth / 2),
+				height:stage.stageHeight
+				};
+		}
+		registerResizable( updateViewportPosition )();
 		
 		//use an external html for the document
 		cv.loadURL("index.html");
