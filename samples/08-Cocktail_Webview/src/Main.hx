@@ -15,11 +15,11 @@ import js.Lib;
  * This sample show how to use cocktail as a
  * webview, and how to mix the flash and DOM api
  */
-class Main
+class Main extends Sprite
 {
 	static function main()
 	{
-		new Main();
+		flash.Lib.current.addChild( new Main() );
 	}
 	
 	/**
@@ -34,6 +34,36 @@ class Main
 	
 	public function new()
 	{
+		super();
+		addEventListener( flash.events.Event.ADDED_TO_STAGE, onAdded );
+	}
+
+	function onAdded(_)
+	{
+
+		stage.align = flash.display.StageAlign.TOP_LEFT;
+		stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
+
+		removeEventListener(flash.events.Event.ADDED_TO_STAGE, onAdded);
+		stage.addEventListener(flash.events.Event.RESIZE, resize);
+		#if ios
+		haxe.Timer.delay(init, 100); // iOS 6
+		#else
+		init();
+		#end
+	}
+
+	var inited : Bool;
+	function resize(e) 
+	{
+		//reset();
+		if (!inited) init();
+		// else (resize or orientation change)
+	}
+
+	function init()
+	{
+		inited = true;
 		initFlash();
 		initCocktailView();
 	}
@@ -64,6 +94,8 @@ class Main
 		label.text = "Click to show/hide cocktail view";
 		label.width = 200;
 		button.addChild(label);
+
+		//mc.x = Std.int(flash.Lib.current.stage.stageWidth / 2);
 		
 		button.addEventListener(flash.events.MouseEvent.CLICK, onFlashClick);
 		
