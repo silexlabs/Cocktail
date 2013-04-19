@@ -22,11 +22,18 @@ import cocktail.core.css.CSSData;
 class SelectorManager 
 {
 	/**
+	 * Used to count the current selector specifity.
+	 * Implemented as class attribute to only 
+	 * instantiate one
+	 */
+	private var _selectorSpecificityVO:SelectorSpecificityVO;
+	
+	/**
 	 * class constructor
 	 */
 	public function new() 
 	{
-		
+		_selectorSpecificityVO = new SelectorSpecificityVO();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -61,6 +68,14 @@ class SelectorManager
 				case SelectorComponentValue.COMBINATOR(value):
 					matched = matchCombinator(node, value, components[i + 1], matchedPseudoClasses);
 					lastWasCombinator = true;
+					
+					//if the combinator is a child combinator, the relevant
+					//node becomes the parent node as any subsequent would
+					//apply to it instead of the current node
+					if (value == CHILD)
+					{
+						node = node.parentNode;
+					}
 					
 				case SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(value):
 					//if the previous item was a combinator, then 
@@ -145,7 +160,7 @@ class SelectorManager
 	 * the preious selector sequence which precedes in 
 	 * the DOM tree
 	 */
-	private function  matchGeneralSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
+	private function matchGeneralSiblingCombinator(node:HTMLElement, nextSelectorSequence:SimpleSelectorSequenceVO, matchedPseudoClasses:MatchedPseudoClassesVO):Bool
 	{
 		var previousElementSibling:HTMLElement = node.previousElementSibling;
 		
@@ -234,7 +249,7 @@ class SelectorManager
 		switch(simpleSelectorSequenceStart)
 		{
 			case SimpleSelectorSequenceStartValue.TYPE(value):
-				return node.tagName == value.toUpperCase();
+				return node.tagName == value;
 				
 			case SimpleSelectorSequenceStartValue.UNIVERSAL:
 				return true;
@@ -252,7 +267,7 @@ class SelectorManager
 		switch(simpleSelectorSequenceItem)
 		{
 			//for this check the list of class of the node	
-			case CLASS(value):
+			case CSS_CLASS(value):
 				var classList:Array<String> = node.classList;
 				
 				//here the node has no classes
@@ -345,8 +360,8 @@ class SelectorManager
 	}
 	
 	/**
-	 * return wether the valu of the "name" attribute is a hyphen
-	 * separated lsit whose first item is "value"
+	 * return wether the value of the "name" attribute is a hyphen
+	 * separated list whose first item is "value"
 	 */
 	private function matchAttributeBeginsHyphenList(node:HTMLElement, name:String, value:String):Bool
 	{
@@ -357,8 +372,15 @@ class SelectorManager
 			return false;
 		}
 		
-		var attributeValueAsList:Array<String> = attributeValue.split("-");
-		return attributeValueAsList[0] == value;
+		//valid if value exactly matches the attribute
+		if (attributeValue == value)
+		{
+			return true;
+		}
+		
+		//else valid if begins with value + hyphen
+		var hyphenValue:String = value + "-";
+		return attributeValue.substr(0, hyphenValue.length) == hyphenValue;
 	}
 	
 	/**
@@ -512,12 +534,35 @@ class SelectorManager
 				return node.hasChildNodes();
 				
 			case StructuralPseudoClassSelectorValue.FIRST_CHILD:
-				return node.previousSibling == null;
+				
+				//HTML root element is not considered a first child
+				//
+				//TODO : parent of root node should actually be a document
+				if (node.parentNode == null)
+				{
+					return false;
+				}
+				
+				return node.previousElementSibling == null;
 				
 			case StructuralPseudoClassSelectorValue.LAST_CHILD:
-				return node.nextSibling == null;
+				
+				//HTML root element not considered last child
+				if (node.parentNode == null)
+				{
+					return false;
+				}
+				
+				return node.nextElementSibling == null;
 				
 			case StructuralPseudoClassSelectorValue.ONLY_CHILD:
+				
+				//HTML root element is not considered only child
+				if (node.parentNode == null)
+				{
+					return false;
+				}
+				
 				return node.parentNode.childNodes.length == 1;
 				
 			case StructuralPseudoClassSelectorValue.ROOT:
@@ -677,10 +722,13 @@ class SelectorManager
 	 */
 	public function getSelectorSpecifity(selector:SelectorVO):Int
 	{
-		//holds the specificity data, is passe by reference
+		//holds the specificity data, is passed by reference
 		//to all methods which can increment the specificity
 		//attribute
-		var selectorSpecificity:SelectorSpecificityVO = new SelectorSpecificityVO();
+		//reset before usage
+		_selectorSpecificityVO.classAttributesAndPseudoClassesNumber = 0;
+		_selectorSpecificityVO.idSelectorsNumber = 0;
+		_selectorSpecificityVO.typeAndPseudoElementsNumber = 0;
 		
 		//a pseudo element increment the specificity
 		switch (selector.pseudoElement)
@@ -689,7 +737,7 @@ class SelectorManager
 			PseudoElementSelectorValue.FIRST_LINE,
 			PseudoElementSelectorValue.AFTER,
 			PseudoElementSelectorValue.BEFORE:
-				selectorSpecificity.typeAndPseudoElementsNumber++;
+				_selectorSpecificityVO.typeAndPseudoElementsNumber++;
 			
 			case PseudoElementSelectorValue.NONE:	
 		}
@@ -705,7 +753,7 @@ class SelectorManager
 				case SelectorComponentValue.COMBINATOR(value):
 					
 				case SelectorComponentValue.SIMPLE_SELECTOR_SEQUENCE(value):
-					getSimpleSelectorSequenceSpecificity(value, selectorSpecificity);
+					getSimpleSelectorSequenceSpecificity(value, _selectorSpecificityVO);
 			}
 		}
 		
@@ -713,7 +761,7 @@ class SelectorManager
 		//for instance, if idSelectorsNumber is equal to 1, classAttributesAndPseudoClassesNumber to 0
 		//and typeAndPseudoElementsNumber to 2,
 		//the specificity is 102
-		var concatenatedSpecificity:String = Std.string(selectorSpecificity.idSelectorsNumber) + Std.string(selectorSpecificity.classAttributesAndPseudoClassesNumber) + Std.string(selectorSpecificity.typeAndPseudoElementsNumber);
+		var concatenatedSpecificity:String = Std.string(_selectorSpecificityVO.idSelectorsNumber) + Std.string(_selectorSpecificityVO.classAttributesAndPseudoClassesNumber) + Std.string(_selectorSpecificityVO.typeAndPseudoElementsNumber);
 
 		return Std.parseInt(concatenatedSpecificity);
 	}
@@ -761,7 +809,7 @@ class SelectorManager
 			case PSEUDO_CLASS(value):
 				selectorSpecificity.classAttributesAndPseudoClassesNumber++;
 				
-			case CLASS(value):
+			case CSS_CLASS(value):
 				selectorSpecificity.classAttributesAndPseudoClassesNumber++;
 				
 			case ID(value):

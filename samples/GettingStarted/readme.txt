@@ -19,5 +19,5 @@ GettingStarted
 
 Description: Cocktail getting started. Article is available here: http://haxe.org/com/libs/cocktail/getting_started_with_cocktail
 Tested targets: JavaScript, Flash, Windows
-Online demo: http://demos.silexlabs.org/cocktail/GettingStarted/
+Online demo: http://demos.silexlabs.org/cocktail/samples/GettingStarted/
 Status: source code up to date.

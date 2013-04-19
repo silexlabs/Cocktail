@@ -262,6 +262,16 @@ class EventCallback extends EventTarget
 	 * is removed, then the event will not fire.
 	 */
 	public var ontransitionend(default, set_onTransitionEnd):TransitionEvent->Void;
+
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// HISTORY callbacks
+	//////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * event.state contains a copy of the information that was provided to pushState() or replaceState()
+	 */
+	public var onpopstate(default, set_onPopState):PopStateEvent->Void;
+	
 	
 	/**
 	 * class constructor
@@ -270,7 +280,6 @@ class EventCallback extends EventTarget
 	{
 		super();
 	}
-
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CALLBACK HELPER
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -530,12 +539,21 @@ class EventCallback extends EventTarget
 		return onvolumechange = value;
 	}
 	
-		// TRANSITION
+	// TRANSITION
 	////////////////////////////
 	
 	private function set_onTransitionEnd(value:TransitionEvent->Void):TransitionEvent->Void
 	{
 		updateCallbackListener(EventConstants.TRANSITION_END, cast(value), cast(ontransitionend));
 		return ontransitionend = value;
+	}
+
+	// HISTORY
+	////////////////////////////
+	
+	private function set_onPopState(value:PopStateEvent->Void):PopStateEvent->Void
+	{
+		updateCallbackListener(EventConstants.POP_STATE, cast(value), cast(onpopstate));
+		return onpopstate = value;
 	}
 }

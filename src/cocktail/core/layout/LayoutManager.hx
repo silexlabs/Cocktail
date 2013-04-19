@@ -19,8 +19,6 @@ import cocktail.core.layout.computer.boxComputers.InlineBlockBoxStylesComputer;
 import cocktail.core.layout.computer.boxComputers.InLineBoxStylesComputer;
 import cocktail.core.layout.computer.boxComputers.PositionedBoxStylesComputer;
 import cocktail.core.layout.floats.FloatsManager;
-import cocktail.core.layout.formatter.BlockFormattingContext;
-import cocktail.core.layout.formatter.InlineFormattingContext;
 import cocktail.core.renderer.ElementRenderer;
 
 /**
@@ -33,18 +31,6 @@ import cocktail.core.renderer.ElementRenderer;
  */
 class LayoutManager 
 {
-	/**
-	 * An instance of the class laying out inline elements,
-	 * the instance is reused for each inline elements
-	 */
-	public var inlineFormattingContext(default, null):InlineFormattingContext;
-	
-	/**
-	 * An instance of the class laying out block elements,
-	 * the instance is reused for each inline elements
-	 */
-	public var blockFormattingContext(default, null):BlockFormattingContext;
-	
 	/**
 	 * Box styles computer, keep an instance of each box style computer
 	 */
@@ -77,8 +63,6 @@ class LayoutManager
 		//there is ony need for one floats manager and it is 
 		//shared among the formatting contexts
 		var floatsManager:FloatsManager = new FloatsManager();
-		inlineFormattingContext = new InlineFormattingContext(floatsManager);
-		blockFormattingContext = new BlockFormattingContext(inlineFormattingContext, floatsManager);
 		
 		embeddedBlockBoxStylesComputer = new EmbeddedBlockBoxStylesComputer();
 		embeddedFloatBoxStylesComputer = new EmbeddedFloatBoxStylesComputer();

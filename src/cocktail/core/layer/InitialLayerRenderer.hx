@@ -7,9 +7,10 @@
 */
 package cocktail.core.layer;
 
+import cocktail.core.graphics.InitialGraphicsContext;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.port.GraphicsContext;
-import cocktail.port.NativeElement;
+import cocktail.core.graphics.GraphicsContext;
+import cocktail.core.stacking.StackingContext;
 
 /**
  * This a special LayerRenderer used as the root of the 
@@ -26,46 +27,39 @@ class InitialLayerRenderer extends LayerRenderer
 	public function new(rootElementRenderer:ElementRenderer) 
 	{
 		super(rootElementRenderer);
-		
-		//As this is the root of the LayerRenderer, it attaches
-		//itself as it has no parents
-		attach();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
-	// OVERRIDEN PUBLIC ATTACHEMENT METHODS
+	// OVERRIDEN PRIVATE ATTACHEMENT METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
 	 * The initial LayerRenderer always creates the GraphicsContext
 	 * at the root of the GraphicsContext tree
 	 */
-	override private function attachGraphicsContext():Void
+	override private function doAttachGraphicsContext():Void
 	{
-		//TODO 1 : should use Platform class
-		#if macro
-		#elseif (flash9 || nme)
-		var initialNativeLayer:NativeElement = new flash.display.Sprite();
-		flash.Lib.current.addChild(initialNativeLayer);
-		graphicsContext = new GraphicsContext(this, initialNativeLayer);
-		_needsBitmapSizeUpdate = true;
-		#end
+		graphicsContext = new InitialGraphicsContext(this);
 		hasOwnGraphicsContext = true;
 	}
 	
 	/**
-	 * The initial LayerRenderer always dispose of its GraphicsContext
+	 * The initial layer renderer always creates the StackingContext
+	 * at the root of the stacking context tree
 	 */
-	override private function detachGraphicsContext():Void 
+	override private function doAttachStackingContext():Void
 	{
-		//TODO 2 : should also use Platform class
-		#if macro
-		#elseif (flash9 || nme)
-		flash.Lib.current.removeChild(graphicsContext.nativeLayer);
-		graphicsContext.dispose();
-		graphicsContext = null;
-		#end
-		hasOwnGraphicsContext = false;
+		stackingContext = new StackingContext(this);
+		hasOwnStackingContext = true;
+	}
+	
+	/**
+	 * always detach stacking context
+	 */
+	override private function doDetachStackingContext():Void
+	{
+		stackingContext = null;
+		hasOwnStackingContext = false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -93,5 +87,26 @@ class InitialLayerRenderer extends LayerRenderer
 		return true;
 	}
 	
+	/**
+	 * The root layer has no siblings
+	 */
+	override private function hasCompositingLayerSibling():Bool
+	{
+		return false;
+	}
+	
+	/////////////////////////////////
+	// OVERRIDEN PRIVATE UTILS METHODS
+	////////////////////////////////	
+	
+	/**
+	 * overriden as for the initial layer, a computed value
+	 * of visible for overflow behaves the same as a computed
+	 * value of auto
+	 */
+	override private function treatVisibleOverflowAsAuto():Bool
+	{
+		return true;
+	}
 	
 }

@@ -16,6 +16,7 @@ import cocktail.core.event.ProgressEvent;
 import cocktail.core.event.XMLHttpRequestEventTarget;
 import cocktail.core.resource.ResourceManager;
 import cocktail.port.NativeHttp;
+import cocktail.core.http.HTTPData;
 import haxe.Http;
 
 /**
@@ -304,7 +305,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 		{
 			//TODO 2 : If the synchronous flag is set, release the storage mutex.
 		}
-		else if (_registeredEventListeners.keys().hasNext() == true)
+		else if (_registeredEventListeners != null)
 		{
 			_uploadEvents = true;
 		}
@@ -334,8 +335,8 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 			}
 		}
 		
-		_nativeHttp.load(_url, _method, data, _authorRequestHeaders);
-		onHttpProgressTick();
+		_nativeHttp.load(_url, _method, data, _authorRequestHeaders, DataFormatValue.TEXT);
+		onHttpProgressTick(0);
 	}
 	
 	/**
@@ -408,7 +409,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 	 * send method is called. Manage changes
 	 * of ready state
 	 */
-	private function onHttpProgressTick():Void
+	private function onHttpProgressTick(timeStamp:Float):Void
 	{
 		//always update the http status
 		status = _nativeHttp.status;
@@ -494,10 +495,7 @@ class XMLHTTPRequest extends XMLHttpRequestEventTarget
 		}
 		
 		//if the resource is not done loading, schedule a method call
-		#if macro
-		#elseif (flash9 || nme)
-		haxe.Timer.delay(function() { onHttpProgressTick(); }, PROGRESS_UPDATE_FREQUENCY); 
-		#end
+		Lib.document.timer.delay(onHttpProgressTick, PROGRESS_UPDATE_FREQUENCY);
 	}
 	
 	/**

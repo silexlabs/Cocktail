@@ -20,6 +20,7 @@ import js.Dom;
 import js.Lib;
 import org.intermedia.model.ApplicationModel;
 import haxe.Timer;
+import org.intermedia.model.Feed;
 
 class ThumbTextListRssStandard 
 {
@@ -29,13 +30,14 @@ class ThumbTextListRssStandard
 	 * @param	rss
 	 * @return
 	 */
-	public static function rss2Cells(rss:Xml,?listId:String = ""):Array<CellData>
+	public static function rss2Cells(rss:Xml,?feed:Feed):Array<CellData>
 	{
 		// init cells Array
 		var cells:Array<CellData> = new Array<CellData>();
 
 		// set channel node
 		var channelNode:Xml = rss.firstElement().firstElement();
+		//var channelNode:Xml = rss.firstElement().elementsNamed("channel").next();
 		
 		// exit if no data
 		if (channelNode == null)
@@ -78,9 +80,8 @@ class ThumbTextListRssStandard
 					{
 						// get and clean the node text
 						cell.description = cleanText(itemParam.firstChild().nodeValue);
-						
 						// get the thumb image
-						cell.thumbUrl = getThumb(cell.description);
+						if(cell.thumbUrl == "") cell.thumbUrl = getThumb(cell.description);
 						
 					}
 					
@@ -99,11 +100,7 @@ class ThumbTextListRssStandard
 				// if thumb url is empty, fill it with default image
 				if (cell.thumbUrl == "")
 				{
-					// for silicon sentier feed, add thumb if missing
-					if (listId == Feeds.FEED_2.url)
-					{
-						cell.thumbUrl = Feeds.FEED_2.thumb;
-					}
+					cell.thumbUrl = feed.thumb;
 				}
 				
 				// if the cell contains at least a title, a thumb and a either a description or a content
@@ -119,7 +116,7 @@ class ThumbTextListRssStandard
 	}
 	
 	/**
-	 * Cleans a text by converting html codes and html entities in it
+	 * Cleans a text by converting html codes and html entities in its equivalent
 	 * 
 	 * @param	text	dirty string
 	 * @return			cleaned string

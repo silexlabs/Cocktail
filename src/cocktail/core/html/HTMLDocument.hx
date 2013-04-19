@@ -1,12 +1,14 @@
 /*
-	This file is part of Cocktail http://www.silexlabs.org/groups/labs/cocktail/
-	This project is © 2010-2011 Silex Labs and is released under the GPL License:
-	This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. 
-	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-	To read the license please visit http://www.gnu.org/copyleft/gpl.html
+ * Cocktail, HTML rendering engine
+ * http://haxe.org/com/libs/cocktail
+ *
+ * Copyright (c) Silex Labs
+ * Cocktail is available under the MIT license
+ * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 package cocktail.core.html;
 
+import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CSSRule;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.CSSStyleRule;
@@ -26,14 +28,14 @@ import cocktail.core.event.TouchEvent;
 import cocktail.core.event.UIEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.core.focus.FocusManager;
+import cocktail.core.hittest.HitTestManager;
 import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLHtmlElement;
 import cocktail.core.html.HTMLImageElement;
 import cocktail.core.html.HTMLInputElement;
+import cocktail.core.invalidation.InvalidationManager;
 import cocktail.core.layout.floats.FloatsManager;
-import cocktail.core.layout.formatter.BlockFormattingContext;
-import cocktail.core.layout.formatter.InlineFormattingContext;
 import cocktail.core.layout.LayoutManager;
 import cocktail.core.multitouch.MultiTouchManager;
 import cocktail.core.parser.DOMParser;
@@ -42,13 +44,15 @@ import cocktail.core.renderer.InitialBlockRenderer;
 import cocktail.core.event.EventData;
 import cocktail.core.renderer.RendererData;
 import cocktail.core.event.FocusEvent;
+import cocktail.core.timer.Timer;
 import cocktail.core.window.Window;
 import cocktail.Lib;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import haxe.Log;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
+import haxe.Stack;
 
 /**
  * An HTMLDocument is the root of the HTML hierarchy and holds the entire content.
@@ -81,13 +85,6 @@ class HTMLDocument extends Document
 	 * on Windows implementation
 	 */
 	private static inline var MOUSE_WHEEL_DELTA_MULTIPLIER:Int = 10;
-	
-	/**
-	 * The minimum amount of time between two layout and rendering. Can
-	 * be used to set the framerate of the application. Dividing 1000
-	 * by this value gives the framerate of the application
-	 */
-	private static inline var INVALIDATION_INTERVAL:Int = 20;
 	
 	/**
 	 * The element that contains the content for the document.
@@ -140,13 +137,6 @@ class HTMLDocument extends Document
 	public var fullscreenElement(default, set_fullscreenElement):HTMLElement;
 	
 	/**
-	 * getter/setter to set the whole document content with an 
-	 * html string or to serialise the whole document into
-	 * an html string
-	 */
-	public var innerHTML(get_innerHTML, set_innerHTML):String;
-	
-	/**
 	 * Callback listened to by the Window object
 	 * to enter fullscreen mode when needed using
 	 * platform specific API
@@ -178,30 +168,11 @@ class HTMLDocument extends Document
 	private var _shouldDispatchClickOnNextMouseUp:Bool;
 	
 	/**
-	 * Wether a call to the invalidation method is already
-	 * scheduled, only one call to this method
-	 * method can be scheduled at a time to prevent too many
-	 * re-layout and re-rendering
+	 * A timer controlling the whole document event loop.
+	 * Method which must be called asynchronously register
+	 * themselves with the timer
 	 */
-	private var _invalidationScheduled:Bool;
-	
-	/*
-	 * Wheter the document needs a re-layout on next
-	 * ivnvalidation method call
-	 */ 
-	private var _documentNeedsLayout:Bool;
-	
-	/*
-	 * Wheter the document needs a re-rendering on next
-	 * ivnvalidation method call
-	 */ 
-	private var _documentNeedsRendering:Bool;
-	
-	/**
-	 * Wether the document needs to cascade the styles
-	 * on nex invalidation method call
-	 */
-	private var _documentNeedsCascading:Bool;
+	public var timer(default, null):Timer;
 	
 	/**
 	 * This class is in charge of keeping track of the
@@ -211,9 +182,17 @@ class HTMLDocument extends Document
 	private var _multiTouchManager:MultiTouchManager;
 	
 	/**
+	 * Used to perform hit test on the layer and
+	 * rendering trees to determine for instance 
+	 * which element renderer is currently under
+	 * the mouse pointer
+	 */
+	private var _hitTestManager:HitTestManager;
+	
+	/**
 	 * A ref to the global Window object
 	 */
-	private var _window:Window;
+	public var window(default, null):Window;
 	
 	/**
 	 * A ref to the style manager holding all the
@@ -242,11 +221,30 @@ class HTMLDocument extends Document
 	public var layoutManager(default, null):LayoutManager;
 	
 	/**
-	 * the current mouse point, used when
-	 * retrieving the ElementRenderer
-	 * under mouse
+	 * an instance of the class managing the invalidation
+	 * and update of the document
 	 */
-	private var _mousePoint:PointVO;
+	public var invalidationManager(default, null):InvalidationManager;
+	
+	/**
+	 * For a given HTMLElement, store
+	 * which CSS pseudo classes it currently matches
+	 */
+	private var _matchedPseudoClasses:MatchedPseudoClassesVO;
+	
+	/**
+	 * An instance of the cascade manager. During the cascade,
+	 * keep track of the styles which must be updated
+	 * for each HTMLElement
+	 */
+	public var cascadeManager(default, null):CascadeManager;
+		
+   /**  	
+	* getter/setter to set the whole document content with an  	
+	* html string or to serialise the whole document into
+	* an html string  	
+   */ 	
+	public var innerHTML(get_innerHTML, set_innerHTML):String;
 	
 	/**
 	 * class constructor. Init class attributes
@@ -255,7 +253,11 @@ class HTMLDocument extends Document
 	{
 		super();
 		
+		timer = new Timer();
 		initStyleManager();
+		invalidationManager = new InvalidationManager(this);
+		
+		cascadeManager = new CascadeManager();
 		
 		//TODO 2 : hack, Document probably shouldn't have
 		//ref to Window
@@ -264,8 +266,13 @@ class HTMLDocument extends Document
 			window = new Window();
 		}
 		
-		_window = window;
+		_matchedPseudoClasses = new MatchedPseudoClassesVO(false, false, false,
+		false, false, false, false);
+		
+		this.window = window;
 		_focusManager = new FocusManager();
+		
+		_hitTestManager = new HitTestManager();
 		
 		_multiTouchManager = new MultiTouchManager();
 		
@@ -274,12 +281,6 @@ class HTMLDocument extends Document
 		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
 		
 		_shouldDispatchClickOnNextMouseUp = false;
-				
-		_invalidationScheduled = false;
-		_documentNeedsLayout = true;
-		_documentNeedsRendering = true;
-		_documentNeedsCascading = true;
-		_mousePoint = new PointVO(0.0, 0.0);
 		
 		layoutManager = new LayoutManager();
 	}
@@ -292,12 +293,15 @@ class HTMLDocument extends Document
 	 */
 	public function initBody(htmlBodyElement:HTMLBodyElement):Void
 	{
-		body = htmlBodyElement;
-		documentElement.appendChild(body);
-		_hoveredElementRenderer = body.elementRenderer;
-		activeElement = body;
+		if (htmlBodyElement != null)
+		{	
+			body = htmlBodyElement;
+			documentElement.appendChild(body);
+			_hoveredElementRenderer = body.elementRenderer;
+			activeElement = body;
+		}
 	}
-	
+
 	/**
 	 * Instantaite the style manager and add a default
 	 * style sheet to it
@@ -363,6 +367,9 @@ class HTMLDocument extends Document
 			case HTMLConstants.HTML_STYLE_TAG_NAME:
 				element = new HTMLStyleElement();
 				
+			case HTMLConstants.HTML_BR_TAG_NAME:
+				element = new HTMLBRElement();
+				
 			default:
 				element = new HTMLElement(tagName);
 		}
@@ -370,33 +377,6 @@ class HTMLDocument extends Document
 		element.ownerDocument = this;
 		
 		return element;
-	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// DOM PARSER GETTER/SETTER AND METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * parse the string representing the
-	 * whole document. The returned node
-	 * is the root of the html document
-	 */
-	private function set_innerHTML(value:String):String
-	{
-		//parse the html string into a node object
-		var node:HTMLElement = DOMParser.parse(value, this);
-		documentElement = node;
-		initBody(cast(documentElement.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
-		return value;
-	}
-	
-	/**
-	 * Return the serialized documentElement
-	 * (the <HTML> element)
-	 */
-	private function get_innerHTML():String
-	{
-		return DOMParser.serialize(documentElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -412,7 +392,7 @@ class HTMLDocument extends Document
 	{
 		_styleManager.addStyleSheet(stylesheet);
 		documentElement.invalidateStyleDeclaration(true);
-		startCascade(false);
+		documentElement.cascade(cascadeManager, false);
 	}
 	
 	/**
@@ -423,7 +403,7 @@ class HTMLDocument extends Document
 	{
 		_styleManager.removeStyleSheet(stylesheet);
 		documentElement.invalidateStyleDeclaration(true);
-		startCascade(false);
+		documentElement.cascade(cascadeManager, false);
 	}
 	
 	/**
@@ -507,7 +487,43 @@ class HTMLDocument extends Document
 			}
 		}
 		
-		return new MatchedPseudoClassesVO(hover, focus, active, link, enabled, disabled, checked);
+		_matchedPseudoClasses.hover = hover;
+		_matchedPseudoClasses.focus = focus;
+		_matchedPseudoClasses.active = active;
+		_matchedPseudoClasses.link = link;
+		_matchedPseudoClasses.enabled = enabled;
+		_matchedPseudoClasses.disabled = disabled;
+		_matchedPseudoClasses.checked = checked;
+		
+		return _matchedPseudoClasses;
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// DOM PARSER GETTER/SETTER AND METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+  
+	/**
+	 * parse the string representing the
+	 * whole document. The returned node
+	 * is the root of the html document
+	 */
+	private function set_innerHTML(value:String):String
+	{
+		//parse the html string into a node object
+		var node:HTMLElement = DOMParser.parse(value, this);
+		documentElement = node;
+		initBody(cast(documentElement.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
+		
+		return value;
+	}
+
+   /**
+	* Return the serialized documentElement
+	* (the <HTML> element)
+	*/
+	private function get_innerHTML():String
+	{
+		return DOMParser.serialize(documentElement);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -573,21 +589,24 @@ class HTMLDocument extends Document
 		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(wheelEvent.screenX, wheelEvent.screenY);
 		elementRendererAtPoint.domNode.dispatchEvent(wheelEvent);
 		
-		if (wheelEvent.defaultPrevented == false)
-		{
-			var htmlElement:HTMLElement = elementRendererAtPoint.domNode;
-			
-			//get the amount of vertical scrolling to apply in pixel
-			var scrollOffset:Int = Math.round(wheelEvent.deltaY * MOUSE_WHEEL_DELTA_MULTIPLIER) ;
-			
-			//get the first ancestor which can be vertically scrolled
-			var scrollableHTMLElement:HTMLElement = getFirstVerticallyScrollableHTMLElement(htmlElement, scrollOffset);
-			if (scrollableHTMLElement != null)
-			{
-				scrollableHTMLElement.scrollTop -= scrollOffset;
-			}
+		//TODO 2 : automatic scrolling deactivated until scrollbar properly implemented
+		//for now, scrolling can be implemented by using scrollTop and scrollLeft property
+		//on an HTMLElement with an overflow = hidden style
 		
-		}
+		//if (wheelEvent.defaultPrevented == false)
+		//{
+			//var htmlElement:HTMLElement = elementRendererAtPoint.domNode;
+			//
+			//get the amount of vertical scrolling to apply in pixel
+			//var scrollOffset:Int = Math.round(wheelEvent.deltaY * MOUSE_WHEEL_DELTA_MULTIPLIER) ;
+			//
+			//get the first ancestor which can be vertically scrolled
+			//var scrollableHTMLElement:HTMLElement = getFirstVerticallyScrollableHTMLElement(htmlElement, scrollOffset);
+			//if (scrollableHTMLElement != null)
+			//{
+				//scrollableHTMLElement.scrollTop -= scrollOffset;
+			//}
+		//}
 	}
 	
 	/**
@@ -600,8 +619,19 @@ class HTMLDocument extends Document
 	 */
 	public function onPlatformMouseMoveEvent(mouseEvent:MouseEvent):Void
 	{
-		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
+		//TODO 1 : hackish, mouse event shouldn't be 
+		//listened to until docuement is ready
+		if (documentElement.elementRenderer == null)
+		{
+			return;
+		}
+		if (_hoveredElementRenderer == null)
+		{
+			_hoveredElementRenderer = body.elementRenderer;
+		}
 
+		var elementRendererAtPoint:ElementRenderer = getFirstElementRendererWhichCanDispatchMouseEvent(mouseEvent.screenX, mouseEvent.screenY);
+		
 		if (_hoveredElementRenderer != elementRendererAtPoint)
 		{
 			//dispatch mouse out on the old hovered HTML element
@@ -679,15 +709,6 @@ class HTMLDocument extends Document
 	}
 	
 	/**
-	 * When the Window is resized, invalidate
-	 * the body, redraw.
-	 */
-	public function onPlatformResizeEvent(event:UIEvent):Void
-	{
-		documentElement.invalidate(InvalidationReason.windowResize);
-	}
-	
-	/**
 	 * When a native touch event occurs, the state of the current
 	 * active touch must be updated, then a new 
 	 * 
@@ -706,6 +727,17 @@ class HTMLDocument extends Document
 		
 		//dispatch the TouchEvent on the node onto which it was triggered
 		elementAtTouchPoint.domNode.dispatchEvent(touchEvent);
+		
+		//if a start or move touch event default behaviour is canceled
+		//it should prevent simulating a click event when the touch ends
+		switch(touchEvent.type)
+		{
+			case EventConstants.TOUCH_START, EventConstants.TOUCH_MOVE:
+				if (touchEvent.defaultPrevented == true)
+				{
+					_shouldDispatchClickOnNextMouseUp = false;
+				}
+		}
 		
 	}
 	
@@ -818,7 +850,7 @@ class HTMLDocument extends Document
 	 */
 	private function get_fullscreenEnabled():Bool
 	{
-		return _window.platform.nativeWindow.fullScreenEnabled();
+		return window.platform.nativeWindow.fullScreenEnabled();
 	}
 	
 	/**
@@ -861,180 +893,6 @@ class HTMLDocument extends Document
 		return value;
 	}
 	
-	/////////////////////////////////////////////////////////////////////////////////////////
-	// PUBLIC INVALIDATION METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * schedule a layout of the document
-	 */
-	public function invalidateLayout():Void
-	{
-		_documentNeedsLayout = true;
-		invalidate();
-	}
-	
-	/**
-	 * schedule a rendering of the document
-	 */
-	public function invalidateRendering():Void
-	{
-		_documentNeedsRendering = true;
-		invalidate();
-	}
-	
-	/**
-	 * schedule a cascade of the document
-	 */
-	public function invalidateCascade():Void
-	{
-		_documentNeedsCascading = true;
-		invalidate();
-	}
-	
-	/////////////////////////////////////////////////////////////////////////////////////////
-	// PRIVATE INVALIDATION METHODS
-	//////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * schedule an invalidation
-	 */
-	private function invalidate():Void
-	{
-		if (_invalidationScheduled == false)
-		{
-			doInvalidate();
-		}
-	}
-	
-	/**
-	 * Actually schedule an invalidation if one
-	 * is not yet scheduled
-	 */
-	private function doInvalidate():Void
-	{
-		_invalidationScheduled = true;
-		scheduleCascadeLayoutAndRender();
-	}
-	
-	/**
-	 * cascade, layout and render the document
-	 * as needed
-	 */
-	private function cascadeLayoutAndRender():Void
-	{
-		//only cascade if needed
-		if (_documentNeedsCascading == true)
-		{
-			startCascade(true);
-		}
-		
-		//only layout if the invalidate layout
-		//method was called
-		if (_documentNeedsLayout == true)
-		{
-			startLayout(false);
-			_documentNeedsLayout = false;
-			
-			//start all pending animations
-			var atLeastOneAnimationStarted:Bool = startPendingAnimation();
-			
-			//if at least one pending animation started, an immediate layout
-			//must be performed before rendering, else the rendering will be
-			//done with the end value of the animations instead of the beggining
-			//value, resulting in a visual glitch
-			if (atLeastOneAnimationStarted == true)
-			{
-				startLayout(true);
-			}
-		}
-		
-		//same as for layout
-		if (_documentNeedsRendering == true)
-		{
-			startRendering();
-			_documentNeedsRendering = false;
-		}
-	}
-	
-	/**
-	 * Callback called after an invalidation is
-	 * scheduled, starts the layout and rendering
-	 */
-	private function onLayoutSchedule():Void
-	{
-		cascadeLayoutAndRender();
-		_invalidationScheduled = false;
-	}
-	
-	/**
-	 * Start rendering the rendering
-	 * tree, starting with the root LayerRenderer
-	 */ 
-	private function startRendering():Void
-	{
-		documentElement.elementRenderer.layerRenderer.render(_window.innerWidth, _window.innerHeight);
-	}
-	
-	/**
-	 * Start all the pending animation by calling
-	 * the start animation method on all elements of the
-	 * rendering tree
-	 */
-	private function startPendingAnimation():Bool
-	{
-		return documentElement.startPendingAnimation();
-	}
-	
-	/**
-	 * Star cascading the whole document
-	 * 
-	 * @param programmaticChange whether the cascading
-	 * is the result of a programmatic change to the DOM/CSS.
-	 * It is used to determine wether animation/transition
-	 * can be started during the cascade 
-	 */
-	private function startCascade(programmaticChange:Bool):Void
-	{
-		documentElement.cascade(new Hash<Void>(), programmaticChange);
-		_documentNeedsCascading = false;
-	}
-	
-	
-	/**
-	 * Start the layout of the rendering tree,
-	 * starting with the root ElementRenderer
-	 */
-	private function startLayout(forceLayout:Bool):Void
-	{
-		//layout all ElementRenderer, after this, ElementRenderer are 
-		//aware of their bounds relative to their containing block
-		documentElement.elementRenderer.layout(forceLayout);
-		
-		//set the global bounds on the rendering tree. After this, ElementRenderer
-		//are aware of their bounds relative ot the viewport
-		documentElement.elementRenderer.setGlobalOrigins(0, 0, 0, 0, 0 ,0);
-	}
-	
-	/**
-	 * Set a timer to trigger a layout and rendering of the document asynchronously.
-	 * Setting a timer to execute the layout and rendering ensure that it only
-	 * happen once when a series of style values are set or when many elements
-	 * are attached/removed from the DOM, instead of happening for every change.
-	 */
-	private function scheduleCascadeLayoutAndRender():Void
-	{
-		var onLayoutScheduleDelegate:Void->Void = onLayoutSchedule;
-		#if macro
-		#elseif (flash9 || nme)
-		//calling the methods 1 millisecond later is enough to ensure
-		//that first all synchronous code is executed
-		haxe.Timer.delay(function () { 
-			onLayoutScheduleDelegate();
-		}, INVALIDATION_INTERVAL);
-		#end
-	}
-	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1048,10 +906,8 @@ class HTMLDocument extends Document
 	 */
 	private function getFirstElementRendererWhichCanDispatchMouseEvent(x:Int, y:Int):ElementRenderer
 	{
-		_mousePoint.x = x;
-		_mousePoint.y = y;
-		var elementRendererAtPoint:ElementRenderer = documentElement.elementRenderer.layerRenderer.getTopMostElementRendererAtPoint( _mousePoint, 0, 0  );
-		
+		var elementRendererAtPoint:ElementRenderer = _hitTestManager.getTopMostElementRendererAtPoint(documentElement.elementRenderer.layerRenderer.stackingContext, x, y);
+
 		//when no element is under mouse like for instance when the mouse leaves
 		//the window, return the body
 		if (elementRendererAtPoint == null)
@@ -1079,17 +935,20 @@ class HTMLDocument extends Document
 	 * The scrollOffset is also provided as if a vertically scrollable element
 	 * is completely scrolled and adding this offset won't make a difference,
 	 * then it is not considered scrollable
+	 * 
+	 * TODO 1 : should use htmlElement.scrollHeight - (htmlElement.scrollTop + scrollOffset)
+	 * + check wether a vertical scrollbar is displayed with layer
 	 */
 	private function getFirstVerticallyScrollableHTMLElement(htmlElement:HTMLElement, scrollOffset:Int):HTMLElement
 	{
-		while (htmlElement.isVerticallyScrollable(scrollOffset) == false)
-		{
-			htmlElement = htmlElement.parentNode;
-			if ( htmlElement == null)
-			{
-				return null;
-			}
-		}
+		//while (htmlElement.isVerticallyScrollable(scrollOffset) == false)
+		//{
+			//htmlElement = htmlElement.parentNode;
+			//if ( htmlElement == null)
+			//{
+				//return null;
+			//}
+		//}
 		
 		return htmlElement;
 	}

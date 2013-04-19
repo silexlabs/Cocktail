@@ -11,7 +11,8 @@ import cocktail.core.dom.Node;
 import cocktail.core.geom.GeomData;
 import cocktail.core.geom.Matrix;
 import cocktail.core.css.CoreStyle;
-import cocktail.core.layout.formatter.FormattingContext;
+import cocktail.core.linebox.InlineBox;
+import cocktail.core.linebox.LineBox;
 import cocktail.core.renderer.ElementRenderer;
 import cocktail.core.renderer.InlineBoxRenderer;
 import cocktail.core.renderer.TextRenderer;
@@ -30,9 +31,9 @@ import cocktail.core.css.CSSData;
 	 */
 	class ContainingBlockVO {
 		public var width:Float;
-		public var isWidthAuto(default, null):Bool;
+		public var isWidthAuto:Bool;
 		public var height:Float;
-		public var isHeightAuto(default, null):Bool;
+		public var isHeightAuto:Bool;
 		
 		public function new(width:Float, isWidthAuto:Bool, height:Float, isHeightAuto:Bool)
 		{
@@ -41,6 +42,28 @@ import cocktail.core.css.CSSData;
 			this.height = height;
 			this.isHeightAuto = isHeightAuto;
 		}
+	}
+	
+	/**
+	 * During layout, specifies the
+	 * current layout being measured
+	 */
+	enum LayoutStateValue {
+		
+		//normal layout for normal flow
+		NORMAL;
+		
+		//when a block box width is shrink-to-fit, 
+		//use this state to get its prefered width,
+		//which is the total width of its content,
+		//without breaks except explicit breaks
+		SHRINK_TO_FIT_PREFERED_WIDTH;
+		
+		//when a block box width is shrink-to-fit, 
+		//use this state to get its prefered minimum width,
+		//which is the total width of its content,
+		//wit breaks happening between each elements
+		SHRINK_TO_FIT_PREFERED_MINIMUM_WIDTH;
 	}
 	
 	/**
@@ -90,6 +113,40 @@ import cocktail.core.css.CSSData;
 		var backgroundImage:CSSPropertyValue;
 	}
 	
+	/**
+	 * Holds all the data necessary
+	 * when performing an inline formatting
+	 */
+	class InlineFormattingVO {
+		
+		/**
+		 * the current line box where inlineBox can be inserted
+		 */
+		public var lineBox:LineBox;
+		
+		/**
+		 * the current inlineBox where other inlineBox can be attached 
+		 * to create the inline box tree for the current line box
+		 */
+		public var inlineBox:InlineBox;
+		
+		/**
+		 * the stack of inline box renderer which still have 
+		 * children to layout
+		 */
+		public var openedElementRenderers:Array<ElementRenderer>;
+		
+		/**
+		 * the current x and y position where to place the next
+		 * line box relative to the containing block (this)
+		 */
+		public var lineBoxPosition:PointVO;
+		
+		public function new()
+		{
+			
+		}
+	}
 	
 	/**
 	 * Represents the left and right
@@ -98,10 +155,10 @@ import cocktail.core.css.CSSData;
 	 */
 	class FloatsVO {
 		
-		public var left:Array<RectangleVO>;
-		public var right:Array<RectangleVO>;
+		public var left:Array<FloatVO>;
+		public var right:Array<FloatVO>;
 		
-		public function new(left:Array<RectangleVO>, right:Array<RectangleVO>)
+		public function new(left:Array<FloatVO>, right:Array<FloatVO>)
 		{
 			this.left = left;
 			this.right = right;

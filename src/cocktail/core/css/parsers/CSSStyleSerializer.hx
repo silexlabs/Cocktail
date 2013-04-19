@@ -44,9 +44,8 @@ class CSSStyleSerializer
 			case IDENTIFIER(value):
 				return value;
 			
-			//TODO 2 : add quotes ?
 			case STRING(value):
-				return value;
+				return '"'+value+'"';
 				
 			//TODO 2 : should be the absolute escaped url	
 			case URL(value):
@@ -100,6 +99,9 @@ class CSSStyleSerializer
 			case GROUP(value):
 				return serializeGroup(value);
 				
+			case FONT_SIZE_LINE_HEIGHT_GROUP(fontSize, lineHeight):
+				return serialize(fontSize) + "/" + serialize(lineHeight);
+				
 			case CSS_LIST(value):
 				return serializeList(value);
 				
@@ -148,8 +150,8 @@ class CSSStyleSerializer
 	{
 		switch(transformFunction)
 		{
-			case MATRIX(data):
-				return "matrix(" + Std.string(data.a) + "," + Std.string(data.b) + "," + Std.string(data.c) + "," + Std.string(data.d) + "," + Std.string(data.e) + "," + Std.string(data.f) + ")";
+			case MATRIX(a, b, c, d, e, f):
+				return "matrix(" + Std.string(a) + "," + Std.string(b) + "," + Std.string(c) + "," + Std.string(d) + "," + Std.string(e) + "," + Std.string(f) + ")";
 				
 			case TRANSLATE(tx, ty):
 				return "translate(" + serializeTranslation(tx) + "," + serializeTranslation(ty) + ")";

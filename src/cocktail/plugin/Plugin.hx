@@ -10,11 +10,11 @@ package cocktail.plugin;
 
 import cocktail.core.event.Event;
 import cocktail.core.event.EventCallback;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.geom.GeomData;
 
 /**
- * base class fro third-party plugin, instantiated through
+ * base class for third-party plugin, instantiated through
  * object or embed tag
  * 
  * note : this is a first draft of a plugin system, for now
@@ -35,7 +35,7 @@ class Plugin
 	 * It is computed by the instantiating object
 	 * or mebed node
 	 */
-	public var viewport(get_viewport, set_viewport):RectangleVO;
+	public var viewport(default, null):RectangleVO;
 	
 	/**
 	 * A callback provided by the instantiating class, 
@@ -66,7 +66,7 @@ class Plugin
 	
 	public function new(elementAttributes:Hash<String>, params:Hash<String>,loadComplete:Void->Void, loadError:Void->Void) 
 	{
-		viewport = new RectangleVO(0.0, 0.0, 0.0, 0.0);
+		viewport = new RectangleVO();
 		_loadComplete = loadComplete;
 		_loadError = loadError;
 		_elementAttributes = elementAttributes;
@@ -78,12 +78,34 @@ class Plugin
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Called when the viewport where the plugin
+	 * should be displayed is updated
+	 */
+	public function updateViewport(x:Float, y:Float, width:Float, height:Float):Void
+	{
+		
+	}
+	
+	/**
 	 * Called before the plugin is destroyed to perform
 	 * necessary clean-up
 	 */
 	public function dispose():Void
 	{
 		
+	}
+	
+	/**
+	 * The plugin must return wether it is a
+	 * composited layer, meaning that it will need
+	 * its own bitmap surface to be rendered.
+	 * 
+	 * Default is false to prevent creating too
+	 * many bitmaps
+	 */
+	public function isCompositedPlugin():Bool
+	{
+		return false;
 	}
 	
 	/**
@@ -109,19 +131,4 @@ class Plugin
 	{
 		
 	}
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
-	// GETTER/SETTER
-	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function get_viewport():RectangleVO
-	{
-		return viewport;
-	}
-	
-	private function set_viewport(value:RectangleVO):RectangleVO
-	{
-		return viewport = value;
-	}
-	
 }

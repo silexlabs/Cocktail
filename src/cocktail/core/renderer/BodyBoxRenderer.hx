@@ -36,20 +36,46 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Overiden as the body's element renderer computed height is a special
+	 * Overiden as the body's element renderer used height is a special
 	 * case where the height should be the height of the initial containing block
 	 * if it specified as 'auto'
 	 */
-	override private function layoutSelf():Void
+	override private function layoutSelfIfNeeded(forceLayout:Bool):Void
 	{
-		super.layoutSelf();
+		if (_needsLayout == false && forceLayout == false)
+		{
+			return;
+		}
+		
+		super.layoutSelfIfNeeded(forceLayout);
 		
 		if (coreStyle.isAuto(coreStyle.height) == true && (isPositioned() == false || isRelativePositioned() == true))
 		{
 			var usedValues:UsedValuesVO = coreStyle.usedValues;
-			usedValues.height = _containingBlock.getContainerBlockData().height - usedValues.marginTop - usedValues.marginBottom
+			usedValues.height = containingBlock.getContainerBlockData().height - usedValues.marginTop - usedValues.marginBottom
 			- usedValues.paddingTop - usedValues.paddingBottom;
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// OVERRIDEN PRIVATE MARGIN COLLAPSING METHOD
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * the body renderer don't collapse with the initial
+	 * block box
+	 */
+	override private function collapseTopMarginWithParentTopMargin():Bool
+	{
+		return false;
+	}
+	
+	/**
+	 * same as above
+	 */
+	override private function collapseBottomMarginWithParentBottomMargin():Bool
+	{
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -57,17 +83,38 @@ class BodyBoxRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
+	 * Overriden as when the body's height is specified as auto,
+	 * it is considered not auto for its children at it takes
+	 * the viewport's height instead of its content height
+	 */
+	override public function getContainerBlockData():ContainingBlockVO
+	{
+		super.getContainerBlockData();
+		
+		if (coreStyle.isAuto(coreStyle.height) == true && (isPositioned() == false || isRelativePositioned() == true))
+		{
+			_containerBlockData.isHeightAuto = false;
+		}
+		
+		return _containerBlockData;
+	}
+	
+	/**
 	 * The HTMLBodyElement uses the bounds of the viewport
 	 * for its background
 	 */
-	override private function getBackgroundBounds():RectangleVO
+	override private function getBackgroundBounds(scrollOffset:PointVO):RectangleVO
 	{
 		var windowData:ContainingBlockVO = getWindowData();
 		
 		var width:Float = windowData.width;
 		var height:Float = windowData.height;
+		bounds.width = width;
+		bounds.height = height;
+		bounds.x = 0.0;
+		bounds.y = 0.0;
 		
-		return new RectangleVO(0.0, 0.0, width, height);
+		return bounds;
 	}
 	
 	

@@ -48,16 +48,9 @@ class FontAndTextStylesComputer
 	public static function compute(style:CoreStyle, containingBlockData:ContainingBlockVO):Void
 	{
 		var usedValues:UsedValuesVO = style.usedValues;
-
-		//line height
-		var fontSize:Float = style.getAbsoluteLength(style.fontSize);
-		usedValues.lineHeight = getUsedLineHeight(style, fontSize);
 		
 		//text indent
 		usedValues.textIndent = getUsedTextIndent(style, containingBlockData);
-		
-		//letter spacing
-		usedValues.letterSpacing = getUsedLetterSpacing(style);
 		
 	}
 	
@@ -84,48 +77,5 @@ class FontAndTextStylesComputer
 		}
 		
 		return usedTextIndent;
-	}
-	
-	/**
-	 * Compute the line height of a HTMLElement in an inline
-	 * formatting context
-	 */
-	private static function getUsedLineHeight(style:CoreStyle, fontSize:Float):Float
-	{
-		var usedLineHeight:Float = 0.0;
-		
-		switch (style.lineHeight)
-		{
-			case ABSOLUTE_LENGTH(value):
-				usedLineHeight = value;
-				
-			case KEYWORD(value):
-				usedLineHeight = fontSize * 1.2;
-				
-			case NUMBER(value):
-				usedLineHeight = fontSize * value;
-				
-			default:	
-		}
-		
-		return usedLineHeight;
-	}
-	
-	private static function getUsedLetterSpacing(style:CoreStyle):Float
-	{
-		var usedLetterSpacing:Float = 0.0;
-		
-		switch(style.letterSpacing)
-		{
-			case ABSOLUTE_LENGTH(value):
-				usedLetterSpacing = value;
-				
-			case KEYWORD(value):
-				usedLetterSpacing = 0.0;
-				
-			default:	
-		}
-		
-		return usedLetterSpacing;
 	}
 }

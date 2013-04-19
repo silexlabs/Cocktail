@@ -11,6 +11,7 @@ package cocktail.core.window;
 import cocktail.core.dom.Document;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventCallback;
+import cocktail.core.event.UIEvent;
 import cocktail.core.html.HTMLAnchorElement;
 import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
@@ -18,6 +19,7 @@ import cocktail.port.NativeBitmapData;
 import cocktail.port.platform.Platform;
 import cocktail.core.css.CSSData;
 import cocktail.core.layout.LayoutData;
+import cocktail.core.history.History;
 
 /**
  * Represents the window through which the Document is
@@ -59,6 +61,11 @@ class Window extends EventCallback
 	public var platform(default, null):Platform;
 	
 	/**
+	 * A reference to the history instance
+	 */
+	public var history:History;
+	
+	/**
 	 * Store the current mouse cursor value
 	 * to ensure that it needs changing
 	 */
@@ -94,7 +101,7 @@ class Window extends EventCallback
 		platform.keyboard.onKeyDown = htmlDocument.onPlatformKeyDownEvent;
 		platform.keyboard.onKeyUp = htmlDocument.onPlatformKeyUpEvent;
 		
-		platform.nativeWindow.onResize = htmlDocument.onPlatformResizeEvent;
+		platform.nativeWindow.onResize = onPlatformResizeEvent;
 		
 		platform.touchListener.onTouchStart = htmlDocument.onPlatformTouchEvent;
 		platform.touchListener.onTouchMove = htmlDocument.onPlatformTouchEvent;
@@ -109,6 +116,9 @@ class Window extends EventCallback
 		htmlDocument.onSetMouseCursor = onDocumentSetMouseCursor;
 		
 		document = htmlDocument;
+
+		// history
+		history = new History();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -182,13 +192,27 @@ class Window extends EventCallback
 		{
 			//only update mouse if the value is different
 			//from the current one
-			if (Type.enumEq(cursor, _currentMouseCursor) == false)
+			if (cursor != _currentMouseCursor)
 			{
 				_currentMouseCursor = cursor;
 				platform.mouse.setMouseCursor(cursor);
 			}
 		}
 		
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * When the viewport is resized, invalidate
+	 * the html document so that its layout
+	 * and rendering gets updated
+	 */
+	private function onPlatformResizeEvent(e:UIEvent):Void
+	{
+		document.invalidationManager.invalidateViewportSize();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

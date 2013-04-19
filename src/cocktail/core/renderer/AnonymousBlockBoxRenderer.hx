@@ -35,17 +35,17 @@ class AnonymousBlockBoxRenderer extends BlockBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * An anonymous block has only one child, which is the 
-	 * wrapped inlineBoxRenderer. When this child
-	 * is removed form the DOM, the anonymous block must
-	 * also be removed
+	 * When all children of an anonymous block
+	 * are removed, it must also remove itself
 	 */
-	override public function removeChild(oldChild:ElementRenderer):ElementRenderer
+	override public function removeChild(oldChild:ElementRenderer):Void
 	{
 		super.removeChild(oldChild);
-		//removes itself
-		parentNode.removeChild(this);
-		return oldChild;
+		
+		if (firstChild == null)
+		{
+			parentNode.removeChild(this);
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

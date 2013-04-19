@@ -51,7 +51,18 @@ class DOMParser
 	 */
 	public static function serialize(node:HTMLElement):String
 	{
+		// serialize node's children
 		var xml:Xml = doGetInnerHTML(node, Xml.createElement(node.nodeName));
+		// serialize node's attributes
+		for (i in 0...node.attributes.length)
+		{
+			var attribute:Attr<HTMLElement> = cast(node.attributes.item(i));
+
+			if (attribute.specified == true)
+			{
+				xml.set(attribute.name, attribute.value);
+			}
+		}
 		return xml.toString();
 	}
 	
@@ -123,7 +134,6 @@ class DOMParser
 			return htmlElement;
 		}
 		
-		//TODO 2 : will cause bug if node type not supported
 		return null;
 	}
 	
@@ -157,16 +167,20 @@ class DOMParser
 					for (j in 0...childAttributesLength)
 					{
 						var attribute:Attr<HTMLElement> = cast(childAttributes.item(j));
-						
+
 						if (attribute.specified == true)
 						{
 							childXml.set(attribute.name, attribute.value);
 						}
 					}
 					
-					//concatenate all the of the specified styles of the HTMLElement
-					//children into a CSS string
-					var htmlChild:HTMLElement = child;
+					//special case for the "style" attribute,
+					//retrived from the style declaration object
+					//and serialized if at least one style is declared
+					if (child.style.length > 0)
+					{
+						childXml.set(HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME, child.style.cssText);
+					}
 					
 					//add the children's content to the Xml of the child
 					xml.addChild(doGetInnerHTML(child, childXml));

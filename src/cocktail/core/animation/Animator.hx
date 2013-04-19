@@ -11,6 +11,7 @@ import cocktail.core.css.CoreStyle;
 import cocktail.core.css.CSSConstants;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.event.TransitionEvent;
+using cocktail.core.utils.Utils;
 
 import cocktail.core.animation.AnimationData;
 import cocktail.core.css.CSSData;
@@ -35,7 +36,7 @@ class Animator
 	 * An array holding the data necessary to start all pending
 	 * animations on next layout
 	 */
-	private var _pendingAnimations:Array<PendingAnimationData>;
+	private var _pendingAnimations:Array<PendingAnimationVO>;
 	
 	/**
 	 * Called when a transition has just been completed
@@ -49,7 +50,7 @@ class Animator
 
 	public function new() 
 	{
-		_pendingAnimations = new Array<PendingAnimationData>();
+		
 	}
 	
 	/////////////////////////////////
@@ -63,9 +64,16 @@ class Animator
 	 */
 	public function startPendingAnimations(style:CoreStyle):Bool
 	{
+		//do nothing if there are no pending animations
+		if (_pendingAnimations == null)
+		{
+			return false;
+		}
+		
 		var atLeastOneAnimationStarted:Bool = false;
 		
-		for (i in 0..._pendingAnimations.length)
+		var length:Int = _pendingAnimations.length;
+		for (i in 0...length)
 		{
 			var animationStarted:Bool = startTransitionIfNeeded(_pendingAnimations[i], style);
 			if (animationStarted == true)
@@ -76,7 +84,7 @@ class Animator
 		
 		//clear the pending animation to prevent from being started
 		//for each layout
-		_pendingAnimations = new Array<PendingAnimationData>();
+		_pendingAnimations = _pendingAnimations.clear();
 		
 		return atLeastOneAnimationStarted;
 	}
@@ -87,17 +95,19 @@ class Animator
 	 * animatable property is changed
 	 * 
 	 * @param	propertyName the name of the property to animate
-	 * @param	invalidationReason the invalidation reason caused by the property change
 	 * @param	startValue the current computed value of the animatable property, used as
 	 * starting value if the animation actually starts
 	 */
-	public function registerPendingAnimation(propertyName:String, invalidationReason:InvalidationReason, startValue:Float):Void
+	public function registerPendingAnimation(propertyName:String, startValue:Float):Void
 	{
-		_pendingAnimations.push( {
-			propertyName:propertyName,
-			invalidationReason:invalidationReason,
-			startValue:startValue
-		});
+		var pendingAnimation:PendingAnimationVO = new PendingAnimationVO();
+		pendingAnimation.propertyName = propertyName;
+		pendingAnimation.startValue = startValue;
+		if (_pendingAnimations == null)
+		{
+			_pendingAnimations = new Array<PendingAnimationVO>();
+		}
+		_pendingAnimations.push(pendingAnimation);
 	}
 	
 	/////////////////////////////////
@@ -113,7 +123,7 @@ class Animator
 	 * start
 	 * @return wheter the animation did start
 	 */
-	private function startTransitionIfNeeded(pendingAnimation:PendingAnimationData, style:CoreStyle):Bool
+	private function startTransitionIfNeeded(pendingAnimation:PendingAnimationVO, style:CoreStyle):Bool
 	{	
 		var usedValues:UsedValuesVO = style.usedValues;
 		
@@ -237,7 +247,7 @@ class Animator
 		
 		//start a transition using the TransitionManager
 		transitionManager.startTransition(style, pendingAnimation.propertyName, pendingAnimation.startValue, endValue, 
-		transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate, pendingAnimation.invalidationReason);
+		transitionDuration, transitionDelay, transitionTimingFunction, onTransitionComplete, onTransitionUpdate);
 	
 		//the transition did in fact start
 		return true;
@@ -266,7 +276,7 @@ class Animator
 				}
 			
 			default:
-				return Reflect.getProperty(style.usedValues, propertyName);
+				return Reflect.field(style.usedValues, propertyName);
 		}
 	}
 	

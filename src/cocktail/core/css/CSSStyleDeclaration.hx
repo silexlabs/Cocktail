@@ -12,6 +12,7 @@ import cocktail.core.css.parsers.CSSStyleParser;
 import cocktail.core.css.parsers.CSSStyleSerializer;
 import cocktail.core.css.CSSConstants;
 using StringTools;
+using cocktail.core.utils.Utils;
 
 /**
  * This objects holds declarations of style properties in key/value
@@ -24,7 +25,7 @@ using StringTools;
  * @author Yannick DOMINGUEZ
  */
 
-class CSSStyleDeclaration 
+class CSSStyleDeclaration
 {
 
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -72,6 +73,7 @@ class CSSStyleDeclaration
 	/**
 	 * background styles
 	 */
+	public var background(get_backgroundAttachment, set_background):String;
 	public var backgroundColor(get_backgroundColor, set_backgroundColor):String;
 	public var backgroundImage(get_backgroundImage, set_backgroundImage):String;
 	public var backgroundRepeat(get_backgroundRepeat, set_backgroundRepeat):String;
@@ -79,10 +81,12 @@ class CSSStyleDeclaration
 	public var backgroundSize(get_backgroundSize, set_backgroundSize):String;
 	public var backgroundPosition(get_backgroundPosition, set_backgroundPosition):String;
 	public var backgroundClip(get_backgroundClip, set_backgroundClip):String;
+	public var backgroundAttachment(get_backgroundAttachment, set_backgroundAttachment):String;
 	
 	/**
 	 * font styles
 	 */
+	public var font(get_font, set_font):String;
 	public var fontSize(get_fontSize, set_fontSize):String;
 	public var fontWeight(get_fontWeight, set_fontWeight):String;
 	public var fontStyle(get_fontStyle, set_fontStyle):String;
@@ -162,13 +166,6 @@ class CSSStyleDeclaration
 	private var _properties:Array<TypedPropertyVO>;
 	
 	/**
-	 * Holds the same data as the _properties
-	 * array but allows fast access with
-	 * property name
-	 */
-	private var _propertiesHash:Hash<TypedPropertyVO>;
-	
-	/**
 	 * Optionnal callback, called when the value
 	 * of a style changes
 	 */
@@ -179,18 +176,27 @@ class CSSStyleDeclaration
 	 */
 	public function new(parentRule:CSSRule = null, onStyleChange:String->Void = null) 
 	{
-		initPropertiesStructure();
 		_onStyleChange = onStyleChange;
 		this.parentRule = parentRule;
+		_properties = new Array<TypedPropertyVO>();
 	}
 	
 	/**
-	 * Init/reset the properties array and hash
+	 * clean-up method to reuse
+	 * style declaration
 	 */
-	private function initPropertiesStructure():Void
+	public function reset():Void
 	{
-		_properties = new Array<TypedPropertyVO>();
-		_propertiesHash = new Hash<TypedPropertyVO>();
+		_onStyleChange = null;
+		parentRule = null;
+		
+		var length:Int = _properties.length;
+		for (i in 0...length)
+		{
+			TypedPropertyVO.getPool().release(_properties[i]);
+		}
+		
+		_properties = _properties.clear();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -213,7 +219,7 @@ class CSSStyleDeclaration
 	 */
 	public function getPropertyValue(property:String):String
 	{
-		var typedProperty:TypedPropertyVO = _propertiesHash.get(property);
+		var typedProperty:TypedPropertyVO = getTypedProperty(property);
 		if (typedProperty != null)
 		{
 			return CSSStyleSerializer.serialize(typedProperty.typedValue);
@@ -226,11 +232,8 @@ class CSSStyleDeclaration
 	 * Do nothing if the name or the value are not valid.
 	 * If the name is valid and the value is null, remove
 	 * the property
-	 * 
-	 * TODO 1 : check that property name is valid and that
-	 * "!important" is not in parsed value
 	 */
-	public function setProperty(name:String, value:String, priority:String = null)
+	public function setProperty(name:String, value:String, priority:String = null):Void
 	{
 		if (value == null)
 		{
@@ -246,8 +249,6 @@ class CSSStyleDeclaration
 			{
 				applyProperty(typedProperty.name, typedProperty.typedValue, typedProperty.important);
 			}
-			
-			
 		}
 	}
 	
@@ -258,12 +259,12 @@ class CSSStyleDeclaration
 	 */
 	public function removeProperty(property:String):String
 	{
-		var typedProperty:TypedPropertyVO = _propertiesHash.get(property);
+		var typedProperty:TypedPropertyVO = getTypedProperty(property);
 		//first check that the property exists
 		if (typedProperty != null)
 		{
 			_properties.remove(typedProperty);
-			_propertiesHash.remove(property);
+			TypedPropertyVO.getPool().release(typedProperty);
 			
 			//call the style update callback if provided
 			if (_onStyleChange != null)
@@ -285,7 +286,7 @@ class CSSStyleDeclaration
 	 */
 	public function getPropertyPriority(property:String):String
 	{
-		var typedProperty:TypedPropertyVO = _propertiesHash.get(property);
+		var typedProperty:TypedPropertyVO = getTypedProperty(property);
 		if (typedProperty != null)
 		{
 			if (typedProperty.important == true)
@@ -305,9 +306,18 @@ class CSSStyleDeclaration
 	 * Return the property with the given name as a typed property
 	 * object or null if it is not defined on this style declaration
 	 */
-	public function getTypedProperty(property:String):TypedPropertyVO
+	public inline function getTypedProperty(property:String):TypedPropertyVO
 	{
-		return _propertiesHash.get(property);
+		var typedProperty:TypedPropertyVO = null;
+		var length:Int = _properties.length;
+		for (i in 0...length)
+		{
+			if (_properties[i].name == property)
+			{
+				typedProperty =  _properties[i];
+			}
+		}
+		return typedProperty;
 	}
 	
 	/**
@@ -317,16 +327,15 @@ class CSSStyleDeclaration
 	public function setTypedProperty(property:String, typedValue:CSSPropertyValue, important:Bool):Void
 	{
 		//check if the property already exists
-		var currentProperty:TypedPropertyVO = _propertiesHash.get(property);
+		var currentProperty:TypedPropertyVO = getTypedProperty(property);
 		
 		//here the property doesn't exist yet, create it and store it
 		if (currentProperty == null)
 		{
-			var newProperty:TypedPropertyVO = new TypedPropertyVO(property, typedValue, important);
-			
-			//always update the properties hash to keep data in 
-			//sync with properties array
-			_propertiesHash.set(property, newProperty);
+			var newProperty:TypedPropertyVO = TypedPropertyVO.getPool().get();
+			newProperty.important = important;
+			newProperty.typedValue = typedValue;
+			newProperty.name = property;
 			_properties.push(newProperty);
 			
 			if (_onStyleChange != null)
@@ -338,7 +347,7 @@ class CSSStyleDeclaration
 		}
 		
 		//here the property exists, update it only if necessary
-		if (Type.enumEq(currentProperty.typedValue, typedValue) == false || currentProperty.important != important)
+		if (currentProperty.typedValue != typedValue || currentProperty.important != important)
 		{
 			currentProperty.typedValue = typedValue;
 			currentProperty.important = important;
@@ -664,15 +673,32 @@ class CSSStyleDeclaration
 						
 					default:
 				}
-				
-			//TODO 1 : need better check	
+					
 			case CSSConstants.FONT_FAMILY:
 				switch(styleValue)
 				{
 					case CSS_LIST(values):
+						
+						var length:Int = values.length;
+						for (i in 0...length)
+						{
+							switch(values[i])
+							{
+								case IDENTIFIER(value):
+									
+								case STRING(value):
+									
+								default:
+									return false;
+							}
+						}
+						
 						return true;
 						
 					case IDENTIFIER(value):
+						return true;
+						
+					case STRING(value):
 						return true;
 						
 					case INHERIT, INITIAL:
@@ -681,7 +707,7 @@ class CSSStyleDeclaration
 					default:
 				}
 				
-			case CSSConstants.FLOAT:
+			case CSSConstants.FLOAT, CSSConstants.CLEAR:
 				switch(styleValue)
 				{
 					case KEYWORD(value):
@@ -698,7 +724,6 @@ class CSSStyleDeclaration
 						
 					default:	
 				}
-				
 				
 			case CSSConstants.WHITE_SPACE:
 				switch(styleValue)
@@ -885,6 +910,12 @@ class CSSStyleDeclaration
 							return true;
 						}
 						
+					case INTEGER(value):
+						if (value >= 0)
+						{
+							return true;
+						}
+						
 					case PERCENTAGE(value):
 						if (value >= 0)
 						{
@@ -987,6 +1018,24 @@ class CSSStyleDeclaration
 						
 					case INHERIT, INITIAL:
 						return true;	
+						
+					default:	
+				}
+				
+			case CSSConstants.BACKGROUND_ATTACHMENT:
+				switch(styleValue)
+				{
+					case KEYWORD(value):
+						switch(value)
+						{
+							case SCROLL, FIXED:
+								return true;
+								
+							default:	
+						}
+						
+					case INHERIT, INITIAL:
+						return true;
 						
 					default:	
 				}
@@ -1221,9 +1270,9 @@ class CSSStyleDeclaration
 			case KEYWORD(value):
 				switch(value)
 				{
-					//add special case for left and right which 
-					//might be both style names and css keyword
-					case NONE, ALL, LEFT, RIGHT:
+					//add special case for left, right, top and bottom which 
+					//might both be style names and css keyword
+					case NONE, ALL, LEFT, RIGHT, TOP, BOTTOM:
 						return true;
 						
 					default:	
@@ -1334,7 +1383,6 @@ class CSSStyleDeclaration
 		
 		return false;
 	}
-
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE SHORTHANDS METHODS
@@ -1343,15 +1391,13 @@ class CSSStyleDeclaration
 	/**
 	 * Return wether a property is a
 	 * CSS shorthand, usgin its name
-	 * 
-	 * TODO 1 : complete shorthands
 	 */
 	private function isShorthand(propertyName:String):Bool
 	{
 		switch(propertyName)
 		{
 			case CSSConstants.MARGIN, CSSConstants.PADDING, CSSConstants.CSS_OVERFLOW,
-			CSSConstants.TRANSITION:
+			CSSConstants.TRANSITION, CSSConstants.BACKGROUND, CSSConstants.FONT:
 				return true;
 				
 			default:
@@ -1450,7 +1496,6 @@ class CSSStyleDeclaration
 						setTypedProperty(CSSConstants.PADDING_TOP, styleValue, important);
 						setTypedProperty(CSSConstants.PADDING_BOTTOM, styleValue, important);	
 						
-					//TODO 2 : is inherit allowed for each value in shorthand ?	
 					case INHERIT, INITIAL:	
 						setTypedProperty(CSSConstants.PADDING_LEFT, styleValue, important);
 						setTypedProperty(CSSConstants.PADDING_RIGHT,styleValue, important);
@@ -1492,6 +1537,114 @@ class CSSStyleDeclaration
 					case GROUP(value):
 						setTypedProperty(CSSConstants.OVERFLOW_X, value[0], important);
 						setTypedProperty(CSSConstants.OVERFLOW_Y, value[1], important);
+						
+					default:	
+				}
+				
+			case CSSConstants.BACKGROUND:
+				switch(styleValue)
+				{
+					case URL(value):
+						setTypedProperty(CSSConstants.BACKGROUND_IMAGE, styleValue, important);
+						
+					case COLOR(value):
+						setTypedProperty(CSSConstants.BACKGROUND_COLOR, styleValue, important);
+						
+					case KEYWORD(value):
+						if (isValidBackgroundRepeat(styleValue) == true)
+						{
+							setTypedProperty(CSSConstants.BACKGROUND_REPEAT, styleValue, important);
+						}
+						else if (isValidBackgroundPosition(styleValue) == true)
+						{
+							setTypedProperty(CSSConstants.BACKGROUND_POSITION, styleValue, important);
+						}
+						else if (isValidBackgroundAttachment(styleValue) == true)
+						{
+							setTypedProperty(CSSConstants.BACKGROUND_ATTACHMENT, styleValue, important);
+						}
+						
+					case GROUP(value):
+						var length:Int = value.length;
+						
+						//background position can have 2 components, store the first so
+						//that if another is found, group them
+						var firstBackgroundPosition:CSSPropertyValue = null;
+						
+						for (i in 0...length)
+						{
+							switch(value[i])
+							{
+								case COLOR(color):
+									setTypedProperty(CSSConstants.BACKGROUND_COLOR, value[i], important);
+									
+								case URL(url):
+									setTypedProperty(CSSConstants.BACKGROUND_IMAGE, value[i], important);
+									
+								default:
+									if (isValidBackgroundRepeat(value[i]) == true)
+									{
+										setTypedProperty(CSSConstants.BACKGROUND_REPEAT, value[i], important);
+									}
+									else if (isValidBackgroundAttachment(value[i]) == true)
+									{
+										setTypedProperty(CSSConstants.BACKGROUND_ATTACHMENT, value[i], important);
+									}
+									else if (isValidBackgroundPosition(value[i]) == true)
+									{
+										if (firstBackgroundPosition == null)
+										{
+											setTypedProperty(CSSConstants.BACKGROUND_POSITION, value[i], important);
+											firstBackgroundPosition = value[i];
+										}
+										//when a second value is found which is a background
+										//position, group it with the first
+										else
+										{
+											setTypedProperty(CSSConstants.BACKGROUND_POSITION, CSSPropertyValue.GROUP([firstBackgroundPosition, value[i]]), important);
+										}
+									}
+							}
+						}
+						
+					default:	
+				}
+				
+			case CSSConstants.FONT:
+				switch(styleValue)
+				{
+					case GROUP(values):
+						//set all font styles except font family
+						setFontShorthandGoup(values, important);
+						//in this case, font-family has only one font name which is the last value
+						setTypedProperty(CSSConstants.FONT_FAMILY, values[values.length - 1], important);
+						
+					case CSS_LIST(values):
+						switch(values[0])
+						{
+							case GROUP(groupValues):
+								//set all font styles except font family
+								setFontShorthandGoup(groupValues, important);
+								
+								//in list case, the font names are the last item of the group
+								//which is the first font name and all the subsequent list
+								//values are the other font names
+								var fontNames:Array<CSSPropertyValue> = [];
+								fontNames.push(groupValues[groupValues.length - 1]);
+								
+								var length:Int = values.length;
+								var i:Int = 1;
+								while (i < length)
+								{
+									fontNames.push(values[i]);
+									i++;
+								}
+								
+								//set the list of font name
+								setTypedProperty(CSSConstants.FONT_FAMILY, CSS_LIST(fontNames), important);
+								
+							default:
+						}
 						
 					default:	
 				}
@@ -1579,7 +1732,6 @@ class CSSStyleDeclaration
 						setTypedProperty(CSSConstants.TRANSITION_TIMING_FUNCTION, CSS_LIST(transitionTimingFunctionValues), important);
 					}
 				}
-				
 			default:	
 						
 		}
@@ -1779,6 +1931,12 @@ class CSSStyleDeclaration
 						
 					default:
 				}	
+			
+			//TODO : for now only support background shorthand for CSS 2.1
+			//when using a CSS 3 background style, need to use individual property
+			//for now
+			case CSSConstants.BACKGROUND:
+				return isValidBackgroundShorthand(styleValue);
 				
 			case CSSConstants.CSS_OVERFLOW:
 				switch(styleValue)
@@ -1800,6 +1958,9 @@ class CSSStyleDeclaration
 					default:	
 						
 				}
+			
+			case CSSConstants.FONT:
+				return isValidFontShorthand(styleValue);
 				
 			case CSSConstants.TRANSITION:
 				switch(styleValue)
@@ -1822,6 +1983,175 @@ class CSSStyleDeclaration
 				
 			default:	
 						
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Return wether a background shorthand value
+	 * is valid, excluding list value
+	 */
+	private function isValidBackgroundShorthand(styleValue:CSSPropertyValue):Bool
+	{
+		switch(styleValue)
+		{
+			case URL(value):
+				return true;
+				
+			case COLOR(value):
+				return true;
+				
+			case KEYWORD(value):
+				switch (value)
+				{
+					//list all valid keywords for background-repeat, background-attachment
+					//and background-position
+					case REPEAT, REPEAT_X, REPEAT_Y, NO_REPEAT, FIXED, SCROLL,
+					LEFT, CENTER, RIGHT, TOP, BOTTOM:
+						return true;
+						
+					default:	
+				}
+				
+			case GROUP(value):	
+				
+				var length:Int = value.length;
+				
+				//one flag for each property, as property
+				//order must be respected for background shorthand
+				//property can be ommited however
+				var foundBackgroundColor:Bool = false;
+				var foundBackgroundImage:Bool = false;
+				var foundBackgroundRepeat:Bool = false;
+				var foundBackgroundAttachment:Bool = false;
+				
+				//background position can have 2 components
+				var foundFirstBackgroundPosition:Bool = false;
+				var foundSecondBackgroundPosition:Bool = false;
+				
+				for (i in 0...length)
+				{
+					switch(value[i])
+					{
+						case COLOR(value):
+							//if a color was already found, then style is
+							//invalid
+							if (foundBackgroundColor == true)
+							{
+								return false;
+							}
+							foundBackgroundColor = true;
+							
+						case URL(value):
+							if (foundBackgroundImage == true)
+							{
+								return false;
+							}
+							foundBackgroundImage = true;
+							//set also as true, as now that a url was found
+							//no color can be defined after
+							foundBackgroundColor = true;
+							
+						default:
+							if (isValidBackgroundRepeat(value[i]) == true)
+							{
+								if (foundBackgroundRepeat == true)
+								{
+									return false;
+								}
+								
+								foundBackgroundRepeat = true;
+								foundBackgroundImage = true;
+								foundBackgroundColor = true;
+							}
+							else if (isValidBackgroundAttachment(value[i]) == true)
+							{
+								if (foundBackgroundAttachment == true)
+								{
+									return false;
+								}
+								
+								foundBackgroundAttachment = true;
+								foundBackgroundColor = true;
+								foundBackgroundRepeat = true;
+								foundBackgroundImage = true; 
+							}
+							else if (isValidBackgroundPosition(value[i]) == true)
+							{
+								if (foundSecondBackgroundPosition == true)
+								{
+									return false;
+								}
+								
+								if (foundFirstBackgroundPosition == true)
+								{
+									foundSecondBackgroundPosition = true;
+								}
+								else
+								{
+									foundFirstBackgroundPosition = true;
+								}
+								
+								foundBackgroundAttachment = true;
+								foundBackgroundColor = true;
+								foundBackgroundRepeat = true;
+								foundBackgroundImage = true; 
+							}
+					}
+				}
+				return true;
+				
+			case INHERIT, INITIAL:
+				return true;
+				
+			default:	
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Wether the style is a valid background repeat value,
+	 * excluding inherit and initial
+	 */
+	private function isValidBackgroundRepeat(styleValue:CSSPropertyValue):Bool
+	{
+		switch (styleValue)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					case REPEAT, REPEAT_X, REPEAT_Y, NO_REPEAT:
+						return true;
+						
+					default:
+				}	
+				
+			default:	
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Wether the style is a valid background attachment value,
+	 * excluding inherit and initial
+	 */
+	private function isValidBackgroundAttachment(styleValue:CSSPropertyValue):Bool
+	{
+		switch (styleValue)
+		{
+			case KEYWORD(value):
+				switch(value)
+				{
+					case FIXED, SCROLL:
+						return true;
+						
+					default:
+				}	
+				
+			default:	
 		}
 		
 		return false;
@@ -1861,10 +2191,341 @@ class CSSStyleDeclaration
 	}
 	
 	/**
+	 * Apply all the values of the font shorthand when font shorthand
+	 * is a group or list of values, excluding the font family values
+	 */
+	private function setFontShorthandGoup(styleValues:Array<CSSPropertyValue>, important:Bool):Void
+	{
+		var foundFontStyle:Bool = false;
+		var foundFontVariant:Bool = false;
+		var foundFontWeight:Bool = false;
+		
+		var length:Int = styleValues.length;
+		for (i in 0...length)
+		{
+			switch(styleValues[i])
+			{
+				case KEYWORD(value):
+					switch(value)
+					{
+						case ITALIC, OBLIQUE:
+							setTypedProperty(CSSConstants.FONT_STYLE, styleValues[i], important);
+							foundFontStyle = true;
+							
+						case SMALL_CAPS:
+							setTypedProperty(CSSConstants.FONT_VARIANT, styleValues[i], important);
+							foundFontVariant = true;
+							
+						case BOLD, BOLDER, LIGHTER:
+							setTypedProperty(CSSConstants.FONT_WEIGHT, styleValues[i], important);
+							foundFontWeight = true;
+							
+						case XX_SMALL, X_SMALL, SMALL, MEDIUM,
+						LARGE, X_LARGE, XX_LARGE, LARGER, SMALLER:
+							setTypedProperty(CSSConstants.FONT_SIZE, styleValues[i], important);
+							
+						case NORMAL:
+							if (foundFontStyle == true)
+							{
+								if (foundFontVariant == true)
+								{
+									setTypedProperty(CSSConstants.FONT_WEIGHT, styleValues[i], important);
+								}
+								else
+								{
+									setTypedProperty(CSSConstants.FONT_VARIANT, styleValues[i], important);
+								}
+							}
+							else
+							{
+								setTypedProperty(CSSConstants.FONT_STYLE, styleValues[i], important);
+							}
+							
+						default:
+					}
+					
+				case INTEGER(value):
+					switch(value)
+					{
+						case 100, 200, 300, 400, 500,
+						600, 700, 800, 900:
+							setTypedProperty(CSSConstants.FONT_WEIGHT, styleValues[i], important);
+							foundFontWeight = true;
+					
+							
+						default:
+					}
+					
+				case LENGTH(value):
+					setTypedProperty(CSSConstants.FONT_SIZE, styleValues[i], important);
+					
+				case PERCENTAGE(value):
+					setTypedProperty(CSSConstants.FONT_SIZE, styleValues[i], important);
+				
+				case FONT_SIZE_LINE_HEIGHT_GROUP(fontSize, lineHeight):
+					setTypedProperty(CSSConstants.FONT_SIZE, fontSize, important);
+					setTypedProperty(CSSConstants.LINE_HEIGHT, lineHeight, important);
+					
+				default:
+					
+			}
+		}
+	}
+	
+	/**
+	 * Wether the stylevalue is a
+	 * valid value for the font shorthand
+	 */
+	private function isValidFontShorthand(styleValue:CSSPropertyValue):Bool
+	{
+		switch (styleValue)
+		{
+			case GROUP(values):
+				return isValidFontGroup(values);
+				
+			//when parsed, if font family has more than one item
+			//(like 'arial, times...'), it results in a list where
+			//the first item is a group of all the font styles including
+			//the first font name for font family, and all the other list
+			//items are subsequent font names for font-family
+			case CSS_LIST(values):
+				switch(values[0])
+				{
+					case GROUP(groupValues):
+						var isValidFontGroup:Bool = isValidFontGroup(groupValues);
+						if (isValidFontGroup == true)
+						{
+							var length:Int = values.length;
+							var i:Int = 1;
+							while (i < length)
+							{
+								switch(values[i])
+								{
+									case STRING(value):
+										
+									case IDENTIFIER(value):
+										
+									default:
+										return false;
+								}
+								
+								i++;
+							}
+						}
+						else
+						{
+							return false;
+						}
+						
+					default:
+						return false;
+				}
+				
+				
+			case INHERIT, INITIAL:
+				return true;
+				
+			default:
+				return false;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Return wether a group of styles are valid
+	 * for the font shorthand, excluding inherit and initial
+	 * values
+	 */
+	private function isValidFontGroup(styleValues:Array<CSSPropertyValue>):Bool
+	{
+		//flag for all font style which can be found,
+		//set to true when found or if a style which
+		//should always be declared after it is found.
+		//if a style is found twice, the shorthand
+		//is invalid
+		var foundFontStyle:Bool = false;
+		var foundFontVariant:Bool = false;
+		var foundFontWeight:Bool = false;
+		var foundFontSize:Bool = false;
+		var foundFontNotation:Bool = false;
+		var foundFontFamily:Bool = false;
+		
+		var length:Int = styleValues.length;
+		for (i in 0...length)
+		{
+			switch(styleValues[i])
+			{
+				case KEYWORD(value):
+					switch(value)
+					{
+						case ITALIC, OBLIQUE:
+							if (foundFontStyle == true)
+							{
+								return false;
+							}
+							
+							foundFontStyle = true;
+							
+						case SMALL_CAPS:
+							if (foundFontVariant == true)
+							{
+								return false;
+							}
+							
+							foundFontVariant = true;
+							
+						case BOLD, BOLDER, LIGHTER:
+							if (foundFontWeight == true)
+							{
+								return false;
+							}
+							
+							foundFontWeight = true;
+							
+						case XX_SMALL, X_SMALL, SMALL, MEDIUM,
+						LARGE, X_LARGE, XX_LARGE, LARGER, SMALLER:
+							if (foundFontSize == true)
+							{
+								return false;
+							}
+							
+							foundFontSize = true;
+							foundFontStyle = true;
+							foundFontVariant = true;
+							
+						case NORMAL:
+							if (foundFontStyle == true)
+							{
+								if (foundFontVariant == true)
+								{
+									if (foundFontWeight == true)
+									{
+										return false;
+									}
+									else
+									{
+										foundFontWeight = true;
+									}
+								}
+								else
+								{
+									foundFontVariant = true;
+								}
+							}
+							else
+							{
+								foundFontStyle = true;
+							}
+							
+						default:
+							return false;
+					}
+					
+				case INTEGER(value):
+					switch(value)
+					{
+						case 100, 200, 300, 400, 500,
+						600, 700, 800, 900:
+							if (foundFontWeight == true)
+							{
+								return false;
+							}
+							
+							foundFontWeight = true;
+					
+							
+						default:
+							return false;
+					}
+					
+					
+				case STRING(value):
+					
+					//a font size should always be
+					//declared before a font family
+					if (foundFontSize == false)
+					{
+						return false;
+					}
+					
+					foundFontFamily = true;
+					foundFontNotation = true;
+					foundFontSize = true;
+					foundFontStyle = true;
+					foundFontVariant = true;
+					foundFontWeight = true;
+				
+				case IDENTIFIER(value):
+					
+					//a font size should always be
+					//declared before a font family
+					if (foundFontSize == false)
+					{
+						return false;
+					}
+					
+					foundFontFamily = true;
+					foundFontNotation = true;
+					foundFontSize = true;
+					foundFontStyle = true;
+					foundFontVariant = true;
+					foundFontWeight = true;
+				
+				case LENGTH(value):
+					if (foundFontSize == true)
+					{
+						return false;
+					}
+					
+					foundFontNotation = true;
+					foundFontSize = true;
+					foundFontStyle = true;
+					foundFontVariant = true;
+					foundFontWeight = true;
+					
+				case PERCENTAGE(value):
+					if (foundFontSize == true)
+					{
+						return false;
+					}
+					
+					foundFontNotation = true;
+					foundFontSize = true;
+					foundFontStyle = true;
+					foundFontVariant = true;
+					foundFontWeight = true;
+				
+				case FONT_SIZE_LINE_HEIGHT_GROUP(fontSize, lineHeight):
+					if (foundFontNotation == true)
+					{
+						return false;
+					}
+					
+					foundFontNotation = true;
+					foundFontSize = true;
+					foundFontStyle = true;
+					foundFontVariant = true;
+					foundFontWeight = true;
+					
+				default:
+					return false;
+					
+			}
+		}
+		
+		//font family and font size are both required
+		if (foundFontFamily == false || foundFontSize == false)
+		{
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
 	 * Return wether a group value for the 
 	 * transition shorthand is valid
-	 * 
-	 * TODO 2 : messy should be separated in sub methods
 	 */
 	private function isValidTransitionGroup(styleValues:Array<CSSPropertyValue>):Bool
 	{
@@ -2198,11 +2859,11 @@ class CSSStyleDeclaration
 	private function set_cssText(value:String):String
 	{
 		//reset properties
-		initPropertiesStructure();
+		_properties = _properties.clear();
 		
 		var typedProperties:Array<TypedPropertyVO> = CSSStyleParser.parseStyle(value);
-		
-		for (i in 0...typedProperties.length)
+		var length:Int = typedProperties.length;
+		for (i in 0...length)
 		{
 			var typedProperty:TypedPropertyVO = typedProperties[i];
 			applyProperty(typedProperty.name, typedProperty.typedValue, typedProperty.important);
@@ -2518,6 +3179,17 @@ class CSSStyleDeclaration
 		return value;
 	}
 	
+	private function set_font(value:String):String
+	{
+		setProperty(CSSConstants.FONT, value);
+		return value;
+	}
+	
+	private function get_font():String
+	{
+		return getPropertyValue(CSSConstants.FONT);
+	}
+	
 	private function get_fontSize():String
 	{
 		return getPropertyValue(CSSConstants.FONT_SIZE);
@@ -2673,6 +3345,17 @@ class CSSStyleDeclaration
 		return value;
 	}
 	
+	private function set_background(value:String):String
+	{
+		setProperty(CSSConstants.BACKGROUND, value);
+		return value;
+	}
+	
+	private function get_background():String
+	{
+		return getPropertyValue(CSSConstants.BACKGROUND);
+	}
+	
 	private function set_backgroundColor(value:String):String
 	{
 		setProperty(CSSConstants.BACKGROUND_COLOR, value);
@@ -2726,6 +3409,17 @@ class CSSStyleDeclaration
 	private function get_backgroundClip():String
 	{
 		return getPropertyValue(CSSConstants.BACKGROUND_CLIP);
+	}
+	
+	private function set_backgroundAttachment(value:String):String
+	{
+		setProperty(CSSConstants.BACKGROUND_ATTACHMENT, value);
+		return value;
+	}
+	
+	private function get_backgroundAttachment():String
+	{
+		return getPropertyValue(CSSConstants.BACKGROUND_ATTACHMENT);
 	}
 	
 	private function set_backgroundPosition(value:String):String

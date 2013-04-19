@@ -10,7 +10,7 @@ import cocktail.core.dom.Element;
 import cocktail.core.dom.Node;
 import cocktail.core.event.Event;
 import cocktail.core.event.EventConstants;
-import cocktail.port.platform.nativeMedia.NativeMedia;
+import cocktail.port.base.NativeMedia;
 import cocktail.core.html.HTMLData;
 import cocktail.core.renderer.RendererData;
 
@@ -516,7 +516,7 @@ class HTMLMediaElement extends EmbeddedElement
 	private function doPlay():Void
 	{
 		nativeMedia.play();
-		onTimeUpdateTick();
+		onTimeUpdateTick(0);
 	}
 	
 	/**
@@ -940,11 +940,11 @@ class HTMLMediaElement extends EmbeddedElement
 		establishMediaTimeline();
 		
 		//refresh the layout
-		invalidate(InvalidationReason.other);
+		invalidate();
 		
 		//start listening to loading event, as it begins
 		//as soon as the metadata are loaded
-		onProgressTick();
+		onProgressTick(0);
 		
 		//if the media resource was stalled by
 		//the value of the preload attribute,
@@ -962,7 +962,7 @@ class HTMLMediaElement extends EmbeddedElement
 	 * Called at a regular frequency while
 	 * the media is playing
 	 */
-	private function onTimeUpdateTick():Void
+	private function onTimeUpdateTick(timeStamp:Float):Void
 	{
 		//stop dispatching time updates if the
 		//media is paused
@@ -1011,17 +1011,14 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		//if the media has not ended playing,
 		//set this method to be called again 
-		#if macro
-		#elseif (flash9 || nme)
-		haxe.Timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
-		#end
+		_ownerHTMLDocument.timer.delay(onTimeUpdateTick, TIME_UPDATE_FREQUENCY);
 	}
 	
 	/**
 	 * Called at a regular frequency whild the media is
 	 * being loaded
 	 */
-	private function onProgressTick():Void
+	private function onProgressTick(timeStamp:Float):Void
 	{
 		//dispatch a load progress event
 		//TODO 4 : should it be dispatched before suspend ?
@@ -1047,10 +1044,7 @@ class HTMLMediaElement extends EmbeddedElement
 		
 		//if not all of the media has been loaded, dispatch
 		//a progress event and set this method to be called again
-		#if macro
-		#elseif (flash9 || nme)
-		haxe.Timer.delay(onProgressTick, PROGRESS_FREQUENCY);
-		#end
+		_ownerHTMLDocument.timer.delay(onProgressTick, PROGRESS_FREQUENCY);
 	}
 	
 	/////////////////////////////////

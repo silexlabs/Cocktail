@@ -81,6 +81,10 @@ class CSSConstants
 	
 	public static inline var BACKGROUND_CLIP:String = "background-clip";
 	
+	public static inline var BACKGROUND_ATTACHMENT:String = "background-attachment";
+	
+	public static inline var BACKGROUND:String = "background";
+	
 	public static inline var FONT_SIZE:String = "font-size";
 	
 	public static inline var FONT_WEIGHT:String = "font-weight";
@@ -90,6 +94,8 @@ class CSSConstants
 	public static inline var FONT_FAMILY:String = "font-family";
 	
 	public static inline var FONT_VARIANT:String = "font-variant";
+	
+	public static inline var FONT:String = "font";
 	
 	public static inline var COLOR:String = "color";
 	

@@ -68,7 +68,7 @@ class CSSSelectorParser
 					}
 					
 				case BEGIN_SIMPLE_SELECTOR:
-					if (isAsciiChar(c))
+					if (isSelectorChar(c))
 					{
 						state = SIMPLE_SELECTOR;
 						next = END_TYPE_SELECTOR;
@@ -82,7 +82,6 @@ class CSSSelectorParser
 							case '.'.code:
 								state = SIMPLE_SELECTOR;
 								next = END_CLASS_SELECTOR;
-								//TODO 1 : hack to add 1 ?
 								start = position + 1;
 								
 							case '#'.code:
@@ -116,7 +115,7 @@ class CSSSelectorParser
 					next = IGNORE_SPACES;
 					
 				case BEGIN_PSEUDO_SELECTOR:
-					if (isAsciiChar(c))
+					if (isSelectorChar(c))
 					{
 						position = parsePseudoClass(selector, position, simpleSelectorSequenceItemValues);
 						state = END_SIMPLE_SELECTOR;
@@ -143,7 +142,7 @@ class CSSSelectorParser
 				case END_SIMPLE_SELECTOR:
 					switch(c)
 					{
-						case ' '.code, '>'.code:
+						case ' '.code, '\n'.code, '\r'.code, '>'.code:
 							state = BEGIN_COMBINATOR;
 							continue;
 								
@@ -161,11 +160,11 @@ class CSSSelectorParser
 					{
 						switch(c)
 						{
-							case ' '.code, '>'.code, ':'.code, '#'.code, '.'.code, '['.code:
+							case ' '.code, '\n'.code, '\r'.code, '>'.code, ':'.code, '#'.code, '.'.code, '['.code:
 								state = next;
 								continue;
 								
-							default:	
+							default:
 								state = INVALID_SELECTOR;
 								continue;
 						}
@@ -173,13 +172,13 @@ class CSSSelectorParser
 					
 				case END_TYPE_SELECTOR:
 					var type:String = selector.substr(start, position - start);
-					simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.TYPE(type);
+					simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.TYPE(type.toUpperCase());
 					state = END_SIMPLE_SELECTOR;
 					continue;
 					
 				case END_CLASS_SELECTOR:
 					var className:String = selector.substr(start, position - start);
-					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className));
+					simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CSS_CLASS(className));
 					state = END_SIMPLE_SELECTOR;
 					continue;
 					
@@ -207,7 +206,7 @@ class CSSSelectorParser
 					
 				case COMBINATOR:
 					
-					if (isAsciiChar(c))
+					if (isSelectorChar(c))
 					{
 						state = BEGIN_SIMPLE_SELECTOR;
 						components.push(SelectorComponentValue.COMBINATOR(CombinatorValue.DESCENDANT));
@@ -251,14 +250,15 @@ class CSSSelectorParser
 		{
 			case END_TYPE_SELECTOR:
 				var type = selector.substr(start, position - start);
-				simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.TYPE(type);
+				//type stored internally as uppercase to match html tag name
+				simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.TYPE(type.toUpperCase());
 				
 			case END_UNIVERSAL_SELECTOR:	
 				simpleSelectorSequenceStartValue = SimpleSelectorSequenceStartValue.UNIVERSAL;
 				
 			case END_CLASS_SELECTOR:
 				var className:String = selector.substr(start, position - start);
-				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CLASS(className));
+				simpleSelectorSequenceItemValues.push(SimpleSelectorSequenceItemValue.CSS_CLASS(className));
 				state = END_SIMPLE_SELECTOR;
 				
 			case END_ID_SELECTOR:
@@ -445,46 +445,82 @@ class CSSSelectorParser
 		var operator:String = null;
 		var value:String = null;
 		
-		var state:AttributeSelectorParserState = ATTRIBUTE;
+		var state:AttributeSelectorParserState = IGNORE_SPACES;
+		var next:AttributeSelectorParserState = ATTRIBUTE;
 		
 		while (true)
 		{
 			switch(state)
 			{
-				case ATTRIBUTE:
-					if (!isAsciiChar(c))
+				case IGNORE_SPACES:
+					switch(c)
 					{
-						attribute = selector.substr(start, position - start);
-						state = OPERATOR;
-						start = position;
-						continue;
+						case
+							'\n'.code,
+							'\r'.code,
+							'\t'.code,
+							' '.code:
+						default:
+							state = next;
+							continue;
 					}
 				
+				case ATTRIBUTE:
+					if (!isSelectorChar(c))
+					{
+						attribute = selector.substr(start, position - start);
+						
+						if (c == ']'.code)
+						{
+							state = END_SELECTOR;
+						}
+						else
+						{
+							state = IGNORE_SPACES;
+							next = BEGIN_OPERATOR;
+							continue;
+						}
+					}
+				
+				case BEGIN_OPERATOR:
+					start = position;
+					state = OPERATOR;
+					
 				case OPERATOR:
 					if (!isOperatorChar(c))
 					{
-						switch (c)
+						operator = selector.substr(start, position - start);
+						state = IGNORE_SPACES;
+						next = END_OPERATOR;
+						continue;
+					}
+					
+				case END_OPERATOR:
+					switch(c)
 						{
 							case '"'.code, "'".code:
-								operator = selector.substr(start, position - start);
+								position++;
 								start = position;
-								state = BEGIN_VALUE;
+								state = STRING_VALUE;
 								
 							case ']'.code:
 								state = END_SELECTOR;
 								
 							default:
-								state = INVALID_SELECTOR;
+								
+								if (isSelectorChar(c) == true)
+								{
+									start = position;
+									state = IDENTIFIER_VALUE;
+								}
+								else
+								{
+									state = INVALID_SELECTOR;
+								}
 						}
-					}
 					
-					
-				case BEGIN_VALUE:
-					start = position;
-					state = VALUE;
-					
-				case VALUE:
-					if (!isAsciiChar(c))
+				case STRING_VALUE:
+					if (!isSelectorChar(c))
 					{
 						switch (c)
 						{
@@ -494,6 +530,20 @@ class CSSSelectorParser
 								
 							case ']'.code:
 								state = INVALID_SELECTOR;
+								
+							default:
+								state = INVALID_SELECTOR;
+						}
+					}
+					
+				case IDENTIFIER_VALUE:
+					if (!isSelectorChar(c))
+					{
+						switch (c)
+						{
+							case ']'.code:
+								value = selector.substr(start, position - start);
+								state = END_SELECTOR;
 								
 							default:
 								state = INVALID_SELECTOR;
@@ -558,7 +608,7 @@ class CSSSelectorParser
 	}
 	
 	static inline function isSelectorChar(c) {
-		return isAsciiChar(c) || c == '-'.code;
+		return isAsciiChar(c) || c == '-'.code || c == '_'.code;
 	}
 	
 	static inline function isPseudoClassChar(c) {

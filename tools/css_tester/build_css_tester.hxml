@@ -1,0 +1,3 @@
+-js bin/css_tester.js
+-main src.CSSTester
+-cp src

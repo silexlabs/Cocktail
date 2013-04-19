@@ -7,227 +7,807 @@
 	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
 	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
 	>
-
 <channel>
-	<title>TechCrunch France</title>
-	<atom:link href="http://fr.techcrunch.com/feed/" rel="self" type="application/rss+xml" />
-	<link>http://fr.techcrunch.com</link>
-	<description>Just another WordPress site</description>
-	<lastBuildDate>Fri, 30 Mar 2012 14:37:17 +0000</lastBuildDate>
-
-	<language>en</language>
+	<title>FrAndroid</title>
+	<atom:link href="http://www.frandroid.com/feed?posts_per_page=15&#038;paged=1" rel="self" type="application/rss+xml" />
+	<link>http://www.frandroid.com</link>
+	<description>Communauté mobile Android</description>
+	<lastBuildDate>Thu, 27 Dec 2012 14:16:14 +0000</lastBuildDate>
+	<language>fr-FR</language>
 	<sy:updatePeriod>hourly</sy:updatePeriod>
 	<sy:updateFrequency>1</sy:updateFrequency>
-	<generator>http://wordpress.org/?v=3.0</generator>
+	<generator>http://wordpress.org/?v=3.5</generator>
 		<item>
-		<title>Pitchez au TEDxParisUniversités et partez en Californie !</title>
-		<link>http://siliconsentier.org/pitchez-au-tedxparisuniversites-et-partez-en-californie/</link>
-		<comments>http://siliconsentier.org/pitchez-au-tedxparisuniversites-et-partez-en-californie/#comments</comments>
-		<pubDate>Mon, 23 Apr 2012 13:33:18 +0000</pubDate>
-		<dc:creator>Silicon Sentier</dc:creator>
-				<category><![CDATA[a_la_une]]></category>
-
-		<guid isPermaLink="false">http://siliconsentier.org/?p=90301</guid>
-		<description><![CDATA[<p>assets/Silicon-Sentier.jpg</p>
-]]></description>
-			<content:encoded><![CDATA[<p>&nbsp;</p>
-<p>Vous avez une startup qui va changer le monde ? Silicon Maniacs vous donne la chance de monter sur scène le 19 mai pour TEDxParisUniversité. Aux cotés d’étudiants et de doctorants triés sur le volet, vous pourrez pitcher votre startup et peut-être gagner un billet pour la conférence TED à Long Beach, en Californie !</p>
-<p><strong>Pour participer, c’est très simple, envoyez une vidéo de 3 minutes avec votre pitch à <a href="mailto:concours@siliconmaniacs.org?subject=Concours%20I.T%20Boys%20%2F%20Girls%20Challenge%202012&amp;body=Voici%20mon%20pitch%20%21%0A">concours@siliconmaniacs.org</a>. Date limite, le 1er mai à minuit. Les vidéos seront ensuite jugées par un jury d’experts des nouvelles technologies et de l’innovation</strong>.</p>
+		<title>Le Sony Odin sera appelé Xperia X et sera annoncé au CES</title>
+		<link>http://www.frandroid.com/materiels-accessoires/122600_sony-xperia-x-odin-smartphone-android/</link>
+		<comments>http://www.frandroid.com/materiels-accessoires/122600_sony-xperia-x-odin-smartphone-android/#comments</comments>
+		<pubDate>Thu, 27 Dec 2012 14:14:09 +0000</pubDate>
+		<dc:creator>Edouard Marquez</dc:creator>
+				<category><![CDATA[Matériels / Accessoires]]></category>
+		<category><![CDATA[Android]]></category>
+		<category><![CDATA[CES 2013]]></category>
+		<category><![CDATA[odin]]></category>
+		<category><![CDATA[smartphone]]></category>
+		<category><![CDATA[sony odin]]></category>
+		<category><![CDATA[Sony Xperia Z]]></category>
+		<category><![CDATA[xperia z]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122600</guid>
+		<description><![CDATA[Les annonces de Sony Mobile au CES sont déjà connues à l&#8217;avance : le Sony Xperia Z (Yuga) et le Sony Xperia X (Odin). Sony Ericsson n&#8217;a jamais été une entreprise dont le secret était le maître-mot. Chez Sony Mobile, rien ne semble avoir changé, car si l&#8217;entreprise doit faire une annonce au CES dans quelques jours, nous connaissons une grande partie des nouveautés. Il y aura tout d&#8217;abord le Xperia Z (L36h/L36i/L36a) qui sera... <a class="more-link" href="http://www.frandroid.com/materiels-accessoires/122600_sony-xperia-x-odin-smartphone-android/">Lire la suite...</a>]]></description>
+				<content:encoded><![CDATA[<p>Les annonces de Sony Mobile au CES sont déjà connues à l&rsquo;avance : le Sony Xperia Z (Yuga) et le Sony Xperia X (Odin).</p>
+<div id="attachment_122601" class="wp-caption aligncenter" style="width: 254px"><a href="http://www.frandroid.com/materiels-accessoires/122600_sony-xperia-x-odin-smartphone-android/attachment/xperia_odin_render-2/" rel="attachment wp-att-122601"><img class="size-full wp-image-122601 colorbox-122600" alt="Sony Xperia X" src="assets/feeds_images/Xperia_odin_render.jpeg" width="244" height="432" /></a><p class="wp-caption-text">Visuel supposé du Xperia X (Odin)</p></div>
+<p>Sony Ericsson n&rsquo;a jamais été une entreprise dont le secret était le maître-mot. Chez Sony Mobile, rien ne semble avoir changé, car si l&rsquo;entreprise doit faire une annonce au CES dans quelques jours, nous connaissons une grande partie des nouveautés. Il y aura tout d&rsquo;abord le Xperia Z (L36h/L36i/L36a) qui sera le nouveau haut de gamme avec son écran de 5 pouces 1080p et sa puce quadruple-coeur. La commercialisation devrait être très rapide, car on parle de mi-janvier pour la Chine et Taïwan.</p>
+<p>Alors que les rumeurs se sont concentrées sur le Xperia Z (Yuga), l&rsquo;Odin qui avait été dévoilé en premier était resté plutôt discret, mais voilà qu&rsquo;il refait surface. Son nom commercial devrait être le <strong>Xperia X (L35h)</strong>. Ses caractéristiques devraient être quasi-similaires avec le Xperia Z : écran <strong>IPS de 5 pouce</strong>s avec une définition <strong>Full HD (1920 x 1080 pixels)</strong>, processeur quadruple-coeur Qualcomm Snapdragon <strong>S4 Pro</strong>, <strong>2 Go de mémoire vive</strong>, caméra de <strong>13 mégapixels</strong> et lecteur de <strong>carte microSD</strong>. Tous les deux sont déjà sous <strong>Android 4.1</strong> (Jelly Bean), ce qui est plutôt une bonne nouvelle, sachant que Sony n&rsquo;est pas des plus rapides pour mettre à jour.<span id="more-122600"></span></p>
+<p>Il semblerait que l&rsquo;on se retrouve dans la même situation qu&rsquo;au CES 2012, c&rsquo;est-à-dire que les deux terminaux annoncés soient similaires. A l&rsquo;époque, nous avions les Xperia S et Xperia Ion qui se différenciaient par la connectivité (LTE pour le Ion dans un premier temps) et la taille de l&rsquo;écran (4,3 pouces contre 4,6 pouces).</p>
+<p>Cette année, nous savons que le Xperia Z est résistant à l&rsquo;eau, aux poussières et aux rayures, tandis que le Xperia X ne bénéficiera pas d&rsquo;un tel traitement de faveur. Les designs devraient être différents : le Xperia Z a un dos en verre, mais le Xperia X devrait être plus classique dans le domaine.</p>
+<p>Pour l&rsquo;instant, il est un peu difficile de voir clair dans le jeu de Sony Mobile, mais le Xperia Z (Yuga) est le modèle phare de la marque en début d&rsquo;année.</p>
+<p><a href="http://www.frandroid.com/materiels-accessoires/122600_sony-xperia-x-odin-smartphone-android/attachment/hichong_1_102_d8005282d58ac82b0fb27b61be0a53c2/" rel="attachment wp-att-122613"><img class="aligncenter size-full wp-image-122613 colorbox-122600" alt="hichong_1_102_d8005282d58ac82b0fb27b61be0a53c2" src="assets/feeds_images/hichong_1_102_d8005282d58ac82b0fb27b61be0a53c2.jpg" width="606" height="363" /></a></p>
+<p><a target="_blank" href="http://www.eprice.com.cn/mobile/talk/102/4507165" target="_blank">Source</a></p>
+]]></content:encoded>
+			<wfw:commentRss>http://www.frandroid.com/materiels-accessoires/122600_sony-xperia-x-odin-smartphone-android/feed/</wfw:commentRss>
+		<slash:comments>20</slash:comments>
+		</item>
+		<item>
+		<title>Une vidéo concept pour le Samsung Galaxy S IV</title>
+		<link>http://www.frandroid.com/actualites-generales/122596_une-video-concept-pour-le-samsung-galaxy-s-iv/</link>
+		<comments>http://www.frandroid.com/actualites-generales/122596_une-video-concept-pour-le-samsung-galaxy-s-iv/#comments</comments>
+		<pubDate>Thu, 27 Dec 2012 13:54:08 +0000</pubDate>
+		<dc:creator>Dalavara</dc:creator>
+				<category><![CDATA[Actualités Générales]]></category>
+		<category><![CDATA[Rumeurs]]></category>
+		<category><![CDATA[Galaxy S]]></category>
+		<category><![CDATA[Galaxy S4]]></category>
+		<category><![CDATA[rumeurs galaxy S IV]]></category>
+		<category><![CDATA[rumeurs samsung]]></category>
+		<category><![CDATA[rumeurs samsung galaxy]]></category>
+		<category><![CDATA[samsung]]></category>
+		<category><![CDATA[Samsung Galaxy S IV]]></category>
+		<category><![CDATA[vidéo galaxy S4]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122596</guid>
+		<description><![CDATA[S&#8217;il y a bien un signe qui montre qu&#8217;un téléphone est devenue une icône, c&#8217;est quand les spéculations sur son évolution future partent dans tous les sens et que de sombres fous font des vidéos pour essayer de rassembler toutes les rumeurs, en lui donnant une allure crédible. Si jusqu&#8217;à maintenant, c&#8217;était l&#8217;iPhone qui était le plus propice à ce genre de spéculations, l&#8217;année 2012 aura vu passer Samsung au dessus d&#8217;Apple grâce à son... <a class="more-link" href="http://www.frandroid.com/actualites-generales/122596_une-video-concept-pour-le-samsung-galaxy-s-iv/">Lire la suite...</a>]]></description>
+				<content:encoded><![CDATA[<p>S&rsquo;il y a bien un signe qui montre qu&rsquo;un téléphone est devenue une icône, c&rsquo;est quand les spéculations sur son évolution future partent dans tous les sens et que de sombres fous font des vidéos pour essayer de rassembler toutes les rumeurs, en lui donnant une allure crédible. Si jusqu&rsquo;à maintenant, c&rsquo;était l&rsquo;iPhone qui était le plus propice à ce genre de spéculations, l&rsquo;année 2012 aura vu passer Samsung au dessus d&rsquo;Apple grâce à son Samsung Galaxy S III, de loin l&rsquo;iPhone Killer le plus vendu.</p>
+<p><a href="http://www.frandroid.com/actualites-generales/122596_une-video-concept-pour-le-samsung-galaxy-s-iv/attachment/capture-11/" rel="attachment wp-att-122609"><img class="aligncenter size-full wp-image-122609 colorbox-122596" alt="Samsung Galaxy S IV" src="assets/feeds_images/Capture.jpg" width="634" height="348" /></a></p>
+<p>Même si le S3 n&rsquo;est pas exempt de défauts  - on peut notamment citer le problème récent<a href="http://www.frandroid.com/actualites-generales/122523_galaxy-s3-ne-demarre-plus/"> de mort subite après 200 jours</a>, il est en tout cas celui qui fait le plus parler (même si le Nexus 4 aurait tendance à lui tailler des croupières). Pas étonnant que n&rsquo;importe quelle rumeur sur le prochain Galaxy S fasse le tour de la toile en un rien de temps, quitte même à dépasser le maître invétéré de cette catégorie qu&rsquo;était jusqu&rsquo;à maintenant l&rsquo;iPhone 5.</p>
+<p>Après la date (<a href="http://www.frandroid.com/rumeurs/119936_samsung-galaxy-s4-debarquement-en-avril-2013/">à priori plutôt avril-mai</a>) et les rumeurs peu réalistes en l&rsquo;état d&rsquo;un écran flexible, voici un autre exemple d&rsquo;un buzz réussi : la vidéo du concept du produit.<span id="more-122596"></span><br />
+<iframe width="560" height="315" src="http://www.youtube.com/embed/p5YPaBkhKZI" frameborder="0" allowfullscreen></iframe>
+<p style='text-align: center'><i><a target="_blank" href="http://www.youtube.com/watch?v=p5YPaBkhKZI" target="_newtab">Lien Youtube</a></i></p>
+<p>Dans cette vidéo sont donc résumées les principales caractéristiques supposées et / ou rêvées de l&rsquo;appareil :</p>
+<ul>
+<li>Ecran 1080p AMOLED</li>
+<li>Caméra de 13 mégapixels</li>
+<li>Processeur quadruple-coeur Samsung Exynos cadencé à 2.0GHz</li>
+<li>Android 5.0 Key Lime Pie</li>
+<li>plus fin que le Galaxy S3 et l&rsquo;iPhone 5</li>
+<li>un dock permettant de projeter un clavier en laser intégré</li>
+</ul>
+<p>Si l&rsquo;écran AMOLED et 1080p semble acquis et la caméra 13 mégapixel plus que plausibles, les autres caractéristiques sont plus fantaisistes. Le processeur sera certainement un processeur maison (Samsung Exynos) et possiblement un processeur quad-core, reste à voir si ce sera un processeur cadencé à 2 GHz. Pareil pour la version d&rsquo;Android, si la sortie du produit est prévue pour avril-mai, il semble peu probable que ce soit Android 5.0 à l&rsquo;intérieur, Key Lime Pie ne devant à priori sortir que durant la Google I/O en mai prochain, voire un peu plus tard.</p>
+<p>Reste deux éléments à observer maintenant : la finesse et le dock laser. A propos de la finesse, je pense qu&rsquo;on est arrivé en 2012 au seuil maximum et il sera difficile, et pas forcément souhaitable, d&rsquo;aller en dessous des 8 mm d&rsquo;épaisseur. Difficile car à un moment, on est limité par certains éléments physiques qu&rsquo;on ne peut pas réduire comme le diamètre de la prise jack ou du micro-usb et pas souhaitable, car qui dit plus fin, dit aussi souvent plus fragile ou pas forcément pratique à utiliser. On peut aussi se demander quel est l&rsquo;intérêt de faire le téléphone le plus fin au monde, alors qu&rsquo;il pourrait être un petit peu plus épais en mettant une batterie d&rsquo;une plus grande capacité. A choisir entre une finesse exagérée ou une batterie un peu meilleure, je choisis sans hésiter la meilleure batterie.</p>
+<p><a target="_blank" href="http://www.phonearena.com/news/Samsung-Galaxy-S-IV-concept-drools-on-the-possibilities-of-the-next-big-thing_id38099">Source</a></p>
 <p>&nbsp;</p>
-<p><a href="http://www.siliconmaniacs.org/i-t-boys-i-t-girls-challenge-2012-gagne-ton-billet-pour-long-beach/">En savoir plus</a></p>
+]]></content:encoded>
+			<wfw:commentRss>http://www.frandroid.com/actualites-generales/122596_une-video-concept-pour-le-samsung-galaxy-s-iv/feed/</wfw:commentRss>
+		<slash:comments>24</slash:comments>
+		</item>
+		<item>
+		<title>Galaxy Note : Samsung confirme que la Premium Suite comportera le multi-fenêtres</title>
+		<link>http://www.frandroid.com/actualites-generales/122591_galaxy-note-premium-suite/</link>
+		<comments>http://www.frandroid.com/actualites-generales/122591_galaxy-note-premium-suite/#comments</comments>
+		<pubDate>Thu, 27 Dec 2012 13:10:18 +0000</pubDate>
+		<dc:creator>Edouard Marquez</dc:creator>
+				<category><![CDATA[Actualités Générales]]></category>
+		<category><![CDATA[Mises à jour Android]]></category>
+		<category><![CDATA[Android]]></category>
+		<category><![CDATA[easy clip]]></category>
+		<category><![CDATA[galaxy note]]></category>
+		<category><![CDATA[google now]]></category>
+		<category><![CDATA[jelly bean]]></category>
+		<category><![CDATA[paper artist]]></category>
+		<category><![CDATA[photo frame]]></category>
+		<category><![CDATA[photo note]]></category>
+		<category><![CDATA[popup note]]></category>
+		<category><![CDATA[premium suite]]></category>
+		<category><![CDATA[s calendrier]]></category>
+		<category><![CDATA[s note]]></category>
+		<category><![CDATA[s planner]]></category>
+		<category><![CDATA[samsung]]></category>
+		<category><![CDATA[samsung galaxy note]]></category>
+		<category><![CDATA[smartphone]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122591</guid>
+		<description><![CDATA[Pour rappel, la mise à jour qui devait initialement être disponible au mois de décembre a été repoussée au mois prochain. Beaucoup de constructeurs négligent aujourd&#8217;hui la mise à jour de leurs terminaux, alors qu&#8217;il s&#8217;agit pourtant d&#8217;un élément clé permettant de fidéliser les clients. Samsung a bien compris la démarche, même si le coréen a parfois des difficultés à respecter ses délais. Là où des LG, Sony et bien d&#8217;autres constructeurs oublient rapidement leurs... <a class="more-link" href="http://www.frandroid.com/actualites-generales/122591_galaxy-note-premium-suite/">Lire la suite...</a>]]></description>
+				<content:encoded><![CDATA[<p><strong>Pour rappel, la mise à jour qui devait initialement être disponible au mois de décembre a été repoussée au mois prochain.</strong></p>
+<p><a href="http://www.frandroid.com/actualites-generales/122591_galaxy-note-premium-suite/attachment/galaxy-note-premium-suite-2/" rel="attachment wp-att-122592"><img class="aligncenter size-full wp-image-122592 colorbox-122591" alt="Galaxy-Note-Premium-Suite" src="assets/feeds_images/Galaxy-Note-Premium-Suite.jpg" width="244" height="394" /></a></p>
+<p>Beaucoup de constructeurs négligent aujourd&rsquo;hui la mise à jour de leurs terminaux, alors qu&rsquo;il s&rsquo;agit pourtant d&rsquo;un élément clé permettant de fidéliser les clients. Samsung a bien compris la démarche, même si le coréen a parfois des difficultés à respecter ses délais. Là où des LG, Sony et bien d&rsquo;autres constructeurs oublient rapidement leurs terminaux, y compris les hauts de gamme de l&rsquo;année passée, Samsung est beaucoup plus respectueux.</p>
+<p>C&rsquo;est ainsi que le premier Galaxy Note va recevoir sa mise à jour vers Android 4.1 (Jelly Bean). Comme le coréen en a pris l&rsquo;habitude, il ne se contente pas des ajouts de Google (Project Butter, notifications améliorées, Google Now, reconnaissance vocale hors ligne&#8230;), en proposant la Premium Suite. Pour le Galaxy Note, la quasi-totalité des nouveautés introduites sur le Galaxy Note II vont être intégrées.<span id="more-122591"></span></p>
+<p><a href="http://www.frandroid.com/actualites-generales/122591_galaxy-note-premium-suite/attachment/img_bencon22/" rel="attachment wp-att-122593"><img class="aligncenter size-medium wp-image-122593 colorbox-122591" alt="img_bencon22" src="assets/feeds_images/img_bencon22-630x342.jpg" width="630" height="342" /></a></p>
+<p><a target="_blank" href="http://www.samsung.com/global/microsite/galaxynote/note/benefit.html?type=find" target="_blank">Sur le site officiel du terminal</a>, on peut ainsi voir les fonctionnalités qui seront proposées :</p>
+<ul>
+<li>Le multi-fenêtre : afficher deux applications à la fois sur l&rsquo;écran</li>
+<li>Popup Note : écrire avec le stylet dans une Popup, sans avoir besoin de lancer SNote</li>
+<li>Popup Video</li>
+<li>Navigateur contextuel (Popup Browser)</li>
+<li>Photo Note / Photo frame : annoter des photos (devant ou derrière)</li>
+<li>Easy Clip : découper une image avec le stylet ou sélectionner du texte en dessinant une ligne</li>
+<li>Paper Artist : une application pour ajouter divers effets sur les photos</li>
+<li>Ecriture manuscrite sur S Calendrier et Email</li>
+<li>S Note amélioré</li>
+</ul>
+<p>Alors que la mise à jour de Gingerbread vers Ice Cream Sandwich avait posé beaucoup de problèmes aux utilisateurs français, nous espérons que cette fois Samsung va faire le nécessaire pour offrir une mise à jour à la hauteur du terminal.</p>
+<p><a href="http://www.frandroid.com/actualites-generales/122591_galaxy-note-premium-suite/attachment/img_bencon23/" rel="attachment wp-att-122594"><img class="aligncenter size-full wp-image-122594 colorbox-122591" alt="img_bencon23" src="assets/feeds_images/img_bencon23.jpg" width="521" height="391" /></a></p>
+]]></content:encoded>
+			<wfw:commentRss>http://www.frandroid.com/actualites-generales/122591_galaxy-note-premium-suite/feed/</wfw:commentRss>
+		<slash:comments>22</slash:comments>
+		</item>
+		<item>
+		<title>Google Music &#171;&#160;Scan &amp; Match&#160;&#187; censure les paroles explicites aux Etats-Unis</title>
+		<link>http://www.frandroid.com/actualites-generales/122570_google-music-match-censure-paroles/</link>
+		<comments>http://www.frandroid.com/actualites-generales/122570_google-music-match-censure-paroles/#comments</comments>
+		<pubDate>Thu, 27 Dec 2012 07:30:03 +0000</pubDate>
+		<dc:creator>Samy</dc:creator>
+				<category><![CDATA[Actualités Générales]]></category>
+		<category><![CDATA[Google Play]]></category>
+		<category><![CDATA[censure]]></category>
+		<category><![CDATA[google music]]></category>
+		<category><![CDATA[google play]]></category>
+		<category><![CDATA[Musique]]></category>
+		<category><![CDATA[paroles explicites]]></category>
+		<category><![CDATA[scan & match]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122570</guid>
+		<description><![CDATA[Nous vous l&#8217;annoncions la semaine dernière : après l&#8217;Europe, la fonctionnalité Scan &#38; Match de reconnaissance de morceaux musicaux de Google Music vient tout juste d&#8217;être mise en service aux Etats-Unis. Cette fonctionnalité bien pratique permet de s&#8217;affranchir de l&#8217;upload fastidieux des morceaux de musique de sa bibliothèque vers Google Music, puisque étant reconnus, ils sont automatiquement remplacés par les morceaux équivalents déjà  disponibles sur les serveurs de Google. Mais voilà, aux Etats-Unis, un nombre important de... <a class="more-link" href="http://www.frandroid.com/actualites-generales/122570_google-music-match-censure-paroles/">Lire la suite...</a>]]></description>
+				<content:encoded><![CDATA[<p><strong>Nous vous l&rsquo;annoncions <a href="http://www.frandroid.com/actualites-generales/121731_google-music-itunes-match/" target="_blank">la semaine dernière</a> : après l&rsquo;Europe, la fonctionnalité Scan &amp; Match de reconnaissance de morceaux musicaux de Google Music vient tout juste d&rsquo;être mise en service aux Etats-Unis. Cette fonctionnalité bien pratique permet de s&rsquo;affranchir de l&rsquo;upload fastidieux des morceaux de musique de sa bibliothèque vers Google Music, puisque étant reconnus, ils sont automatiquement remplacés par les morceaux équivalents déjà  disponibles sur les serveurs de Google.</strong></p>
+<p><img class="aligncenter size-full wp-image-122571 colorbox-122570" alt="Google Music" src="assets/feeds_images/05011514-photo-google-play-logo.jpg" width="521" height="336" /><span id="more-122570"></span></p>
+<p>Mais voilà, aux Etats-Unis, un nombre important de nouveaux utilisateurs du service de musique dans le cloud rapportent que les morceaux de leur bibliothèque musicale contenant des <strong>paroles explicites</strong> sont automatiquement remplacés par des versions dénuées de toute grossièreté.</p>
+<p>Ce bug qu&rsquo;on pourrait prendre pour <strong>une forme de censure</strong> génère beaucoup de mécontentement Outre-Atlantique, surtout que Google n&rsquo;a toujours pas communiqué sur l&rsquo;éventuelle correction de son algorithme. Le plus étonnant est que le même comportement avait été remarqué lors du lancement du service similaire proposé par Apple (<strong>iTunes Match</strong>).</p>
+<p>Nous ignorons si ce bug touche les utilisateurs européens (tenez-nous au courant via les commentaires). Quoi qu&rsquo;il en soit, si votre chanson a été remplacée par une version qui ne vous convient pas, vous pouvez toujours <strong>uploader le fichier d&rsquo;origine</strong> grâce à la fonction &laquo;&nbsp;Corriger la correspondance incorrecte&nbsp;&raquo; comme illustré ci-dessous :<a href="http://www.frandroid.com/?attachment_id=122572" rel="attachment wp-att-122572"><img class="aligncenter size-full wp-image-122572 colorbox-122570" alt="Google Music" src="assets/feeds_images/ScreenShot193.jpg" width="306" height="368" /></a></p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
+<p><a target="_blank" href="http://www.droid-life.com/2012/12/24/googles-scan-and-match-feature-isnt-a-fan-of-explicit-music/" target="_blank">Source</a></p>
 ]]></content:encoded>
-			<wfw:commentRss>http://siliconsentier.org/pitchez-au-tedxparisuniversites-et-partez-en-californie/feed/</wfw:commentRss>
-		<slash:comments>0</slash:comments>
+			<wfw:commentRss>http://www.frandroid.com/actualites-generales/122570_google-music-match-censure-paroles/feed/</wfw:commentRss>
+		<slash:comments>14</slash:comments>
 		</item>
 		<item>
-		<title>[Exclu] MyERP.com lance une version de son application de gestion cloud dédiée au PME au UK</title>
-		<link>http://fr.techcrunch.com/2012/03/28/exclu-myerp-com-lance-une-version-de-son-application-de-gestion-cloud-dediee-au-pme-au-uk/</link>
-
-		<comments>http://fr.techcrunch.com/2012/03/28/exclu-myerp-com-lance-une-version-de-son-application-de-gestion-cloud-dediee-au-pme-au-uk/#comments</comments>
-		<pubDate>Wed, 28 Mar 2012 12:24:33 +0000</pubDate>
-		<dc:creator>Aurelie Perruche</dc:creator>
-				<category><![CDATA[Non classé]]></category>
-		<category><![CDATA[myERP]]></category>
-
-		<guid isPermaLink="false">http://fr.techcrunch.com/?p=23897</guid>
-
-		<description><![CDATA[<img class="alignleft size-full wp-image-23900" title="myerp" src="http://fr.techcrunch.com/wp-content/uploads/2012/03/myerp.png" alt="" width="243" height="111" /><a href="http://myerp.com/" target="_self">MyERP.com</a> est le <strong>premier service cloud de gestion</strong> à destination des PME, la société lance aujourd'hui une version de son application sur le marché britannique alors que son concurrent local SAGE n'a toujours pas de solution cloud. Lancé officiellement en <strong>mars 2010</strong> avec le lancement de Google Apps Marketplace, myERP compte près de 50000 PME à travers plus de 100 pays différents qui utilisent régulièrement la plateforme pour gérer toutes les activités de leur société depuis le cloud : la comptabilité en ligne, la facturation, le CRM, les stocks et bien plus, le tout intégré avec Google Apps. C'est une <a href="http://fr.techcrunch.com/2010/07/16/les-francais-de-la-valley-tour-dhorzon-des-startups-ou-entrepreneurs-francais/" target="_blank">startup française partie dans la silicon Valley</a>.]]></description>
-			<content:encoded><![CDATA[<p><img class="alignleft size-full wp-image-23900" title="myerp" src="http://fr.techcrunch.com/wp-content/uploads/2012/03/myerp.png" alt="" width="243" height="111" /><a href="http://myerp.com/" target="_self">MyERP.com</a> est le <strong>premier service cloud de gestion</strong> à destination des PME, la société lance aujourd&#8217;hui une version de son application sur le marché britannique alors que son concurrent local SAGE n&#8217;a toujours pas de solution cloud. Lancé officiellement en <strong>mars 2010</strong> avec le lancement de Google Apps Marketplace, myERP compte près de 50000 PME à travers plus de 100 pays différents qui utilisent régulièrement la plateforme pour gérer toutes les activités de leur société depuis le cloud : la comptabilité en ligne, la facturation, le CRM, les stocks et bien plus, le tout intégré avec Google Apps. C&#8217;est une <a href="http://fr.techcrunch.com/2010/07/16/les-francais-de-la-valley-tour-dhorzon-des-startups-ou-entrepreneurs-francais/" target="_blank">startup française partie dans la silicon Valley</a>.</p>
-<p>L&#8217;offre de myERP permet aux PME d&#8217;acheter une seule application simple et complète au lieu de multiples applications chères et difficiles à utiliser. Grâce à son interface simple avec une barre de navigation à la Google et son algorithme intelligent et prédictif qui arrive à comprendre exactement ce que l&#8217;utilisateur souhaite faire, l&#8217;application myERP ne nécessite aucune formation afin de l&#8217;utiliser.</p>
-<p style="text-align: center;"><img class="aligncenter size-full wp-image-23904" title="myerp" src="http://fr.techcrunch.com/wp-content/uploads/2012/03/myerp2.png" alt="" width="556" height="302" /></p>
-<p style="text-align: left;"><strong>François Nadal</strong>, PDG de myERP, explique le lancement de la version britannique: &#8220;<em>le marché britannique représente selon nos estimations le 4ème marché le plus intéressant pour les applications cloud</em>&#8220;. Il précise en plus que &#8220;<em>le marché UK est dominé par l&#8217;acteur historique, Sage, qui n&#8217;a pas su proposer à ses clients une version cloud. Nous estimons qu&#8217;en 2011, 35% des entreprises britanniques souhaitaient déjà migrer leur gestion dans le cloud. En 2012, myERP arrive enfin avec une solution mature, robuste et sécurisée pour assurer cette migration.</em>&#8220;</p>
-<p style="text-align: left;">L&#8217;ouverture du compte myERP est gratuit avec des fonctionnalités illimitées pour 1 utilisateur. Les offres payantes &#8220;Premium&#8221; sont disponibles pour 2 utilisateurs ou 5 utilisateurs, au delà, l&#8217;utilisateur supplémentaire est facturé 12€ par mois. Bon lancement !</p>
+		<title>LG annonce sept nouveaux téléviseurs sous Google TV pour 2013</title>
+		<link>http://www.frandroid.com/actualites-generales/122574_lg-google-tv-2013/</link>
+		<comments>http://www.frandroid.com/actualites-generales/122574_lg-google-tv-2013/#comments</comments>
+		<pubDate>Thu, 27 Dec 2012 06:00:08 +0000</pubDate>
+		<dc:creator>Samy</dc:creator>
+				<category><![CDATA[Actualités Générales]]></category>
+		<category><![CDATA[CES 2013]]></category>
+		<category><![CDATA[Google TV]]></category>
+		<category><![CDATA[3D]]></category>
+		<category><![CDATA[ces2013]]></category>
+		<category><![CDATA[LG]]></category>
+		<category><![CDATA[TV]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122574</guid>
+		<description><![CDATA[On en saura plus au prochain CES 2013 mais LG a d&#8217;ores et déjà annoncé une gamme de sept nouveaux téléviseurs pour l&#8217;année à venir, qui tourneront tous sous Google TV. Cette annonce démontre l&#8217;intention de la firme coréenne de s&#8217;investir d&#8217;avantage dans l&#8217;OS de Google pour téléviseurs connectés. Les téléviseurs en question des gammes GA6400 et GA7900 seront proposés dans cinq diagonales d&#8217;écran (42, 47, 50, 55 et 60 pouces). Les premiers visuels laissent entrevoir un design impressionnant à base... <a class="more-link" href="http://www.frandroid.com/actualites-generales/122574_lg-google-tv-2013/">Lire la suite...</a>]]></description>
+				<content:encoded><![CDATA[<p><strong>On en saura plus au prochain CES 2013 mais LG a d&rsquo;ores et déjà annoncé une gamme de sept nouveaux téléviseurs pour l&rsquo;année à venir, qui tourneront tous sous Google TV. Cette annonce démontre l&rsquo;intention de la firme coréenne de s&rsquo;investir d&rsquo;avantage dans l&rsquo;OS de Google pour téléviseurs connectés.</strong></p>
+<p><img class="aligncenter size-medium wp-image-122575 colorbox-122574" alt="google tv" src="assets/feeds_images/lg-googletv-630x398.jpg" width="630" height="398" /></p>
+<p>Les téléviseurs en question des gammes <strong>GA6400</strong> et <strong>GA7900</strong> seront proposés dans <strong>cinq diagonales d&rsquo;écran</strong> (42, 47, 50, 55 et 60 pouces). Les premiers visuels laissent entrevoir un design impressionnant à base de pieds d&rsquo;une grande finesse (je parle des téléviseurs hein !) et d&rsquo;un bezel très faible, voire inexistant.</p>
+<p><a href="http://www.frandroid.com/?attachment_id=122575" rel="attachment wp-att-122575"><span id="more-122574"></span></a></p>
+<p><strong>La télécommande</strong> a elle aussi fait l&rsquo;objet d&rsquo;une grande attention, puisqu&rsquo;il est dit qu&rsquo;elle permettra la saisie facilitée de texte via un clavier complet, la reconnaissance vocale via un microphone incorporé, ainsi que la reconnaissance des mouvements.</p>
+<p><a href="http://www.frandroid.com/?attachment_id=122576" rel="attachment wp-att-122576"><img class="aligncenter size-full wp-image-122576 colorbox-122574" alt="google tv" src="assets/feeds_images/a7gp-460.jpg" width="460" height="345" /></a></p>
+<p>Les modèles présentés devraient faire l&rsquo;objet d&rsquo;un lancement commercial aux Etats-Unis au <strong>premier semestre 2013</strong>, puis d&rsquo;une disponibilité globale dans les mois suivants.</p>
+<p>L&rsquo;année 2013 sera t&rsquo;elle celle de la démocratisation du service <strong>Google TV</strong> et des télés connectées ? Le pari n&rsquo;est pas gagné d&rsquo;avance en France où ce terrain est déjà largement occupé par les box muti-services des différents fournisseurs d&rsquo;accès à internet.</p>
 ]]></content:encoded>
-			<wfw:commentRss>http://fr.techcrunch.com/2012/03/28/exclu-myerp-com-lance-une-version-de-son-application-de-gestion-cloud-dediee-au-pme-au-uk/feed/</wfw:commentRss>
-		<slash:comments>3</slash:comments>
+			<wfw:commentRss>http://www.frandroid.com/actualites-generales/122574_lg-google-tv-2013/feed/</wfw:commentRss>
+		<slash:comments>18</slash:comments>
 		</item>
 		<item>
-		<title>Citiversity, le feu de camp 2.0</title>
-
-		<link>http://fr.techcrunch.com/2012/03/28/citiversity-le-feu-de-camp-2-0/</link>
-		<comments>http://fr.techcrunch.com/2012/03/28/citiversity-le-feu-de-camp-2-0/#comments</comments>
-		<pubDate>Wed, 28 Mar 2012 12:08:35 +0000</pubDate>
-		<dc:creator>Julien Mechin</dc:creator>
-				<category><![CDATA[Non classé]]></category>
-		<category><![CDATA[cityversity]]></category>
-
-		<guid isPermaLink="false">http://fr.techcrunch.com/?p=23888</guid>
-		<description><![CDATA[<img class="alignleft" title="cityversity" src="http://ebmedia.eventbrite.com/s3-build/images/124085/26706299585/1/logo.png" alt="" width="225" height="55" />Article écrit par <a href="https://twitter.com/#!/PEntremont">Pierre Entremont</a>.
-
-Permettre à des passionnés de partager leur expérience avec une quinzaine de personnes en deux heures et dans un lieu adapté, tel est l’objectif que s’est fixé <a href="http://citiversity.eventbrite.com"> Citiversity</a>.
-
-Un objectif qui n’est pas sans rappeler celui de <a href="http://www.skillshare.com">Skillshare</a>, start-up new-yorkaise bien connue mais qui souffre de la liberté laissée à ses utilisateurs ; n’importe qui pouvant proposer un cours, comment savoir si le professeur sera de qualité? Comment, pour les professeurs, trouver et réserver une salle adaptée sans mettre gravement en danger la rentabilité de l’opération ? Telles sont les questions auxquelles répond Citiversity, qui sélectionne méticuleusement ses animateurs et prend en charge l’aspect logistique de l’organisation de l’atelier (un service pour lequel Citiversity prélève 25% du total, frais d’organisation déduits).]]></description>
-			<content:encoded><![CDATA[<p><img class="alignleft" title="cityversity" src="http://ebmedia.eventbrite.com/s3-build/images/124085/26706299585/1/logo.png" alt="" width="225" height="55" />Article écrit par <a href="https://twitter.com/#!/PEntremont">Pierre Entremont</a>.</p>
-<p>Permettre à des passionnés de partager leur expérience avec une quinzaine de personnes en deux heures et dans un lieu adapté, tel est l’objectif que s’est fixé <a href="http://citiversity.eventbrite.com"> Citiversity</a>.</p>
-<p>Un objectif qui n’est pas sans rappeler celui de <a href="http://www.skillshare.com">Skillshare</a>, start-up new-yorkaise bien connue mais qui souffre de la liberté laissée à ses utilisateurs ; n’importe qui pouvant proposer un cours, comment savoir si le professeur sera de qualité? Comment, pour les professeurs, trouver et réserver une salle adaptée sans mettre gravement en danger la rentabilité de l’opération ? Telles sont les questions auxquelles répond Citiversity, qui sélectionne méticuleusement ses animateurs et prend en charge l’aspect logistique de l’organisation de l’atelier (un service pour lequel Citiversity prélève 25% du total, frais d’organisation déduits).</p>
-<p>Très centré sur la qualité de l’échange, Citiversity rêve ainsi de faire éclore en chacun l’envie de partager ce qui le rend unique : son expérience. Ainsi a-t-on pu participer en Mars à un atelier de découverte du ballet animé par une danseuse classique confirmée, ou à un autre visant à former les auditeurs à l’art de l’interview proposé par un journaliste renommé.</p>
-<p>Fondé par <a href="https://twitter.com/#!/knilfo"> Keyvan Nilforoushan </a>après une première carrière de VC chez NextStage, Citiversity illustre parfaitement deux concepts très en vogue: le <em>lean</em> et la <em>curation</em>. Dans un premier temps, Citiversity a en effet choisi d’utiliser la solution Eventbrite (ainsi que Mailchimp et Launchrock) le temps de préciser son modèle. Bien lui en a pris aux vues du succès des premiers ateliers, qui ont validé sa conviction qu’il y a une véritable valeur ajoutée à ne proposer que des expériences qualitatives (le tarif moyen étant de 50 euros par personne.)</p>
-<p>En attendant la version 2.0, de nombreux ateliers sont déjà programmés, parmi lesquels « Faire ses courses à Chinatown », « Prendre les monuments parisiens en photo » et « Le piano en 4 heures » (en deux parties).</p>
-<p>Vous rêvez d’un atelier en particulier ? Demandez-le, <a href="http://feedback.citiversity.com">une page dédiée</a> est là pour ça. Si la communauté vote pour votre idée, <a href="http://citiversity.eventbrite.com"> Citiversity</a> se chargera de trouver l’intervenant idéal, et de donner vie à l’atelier.  Et vous, qu’avez-vous à partager ?</p>
+		<title>VMK Elikia et Way-C : un smartphone et une tablette conçus en Afrique</title>
+		<link>http://www.frandroid.com/actualites-generales/122496_vmk-elika-way-c-smartphone-tablette-concus-afrique/</link>
+		<comments>http://www.frandroid.com/actualites-generales/122496_vmk-elika-way-c-smartphone-tablette-concus-afrique/#comments</comments>
+		<pubDate>Wed, 26 Dec 2012 23:16:27 +0000</pubDate>
+		<dc:creator>Edouard Marquez</dc:creator>
+				<category><![CDATA[Actualités Générales]]></category>
+		<category><![CDATA[afrique]]></category>
+		<category><![CDATA[congo]]></category>
+		<category><![CDATA[RDC]]></category>
+		<category><![CDATA[smartphone]]></category>
+		<category><![CDATA[tablette]]></category>
+		<category><![CDATA[vmk]]></category>
+		<category><![CDATA[vmk elikia]]></category>
+		<category><![CDATA[vmk way-c]]></category>
+		<category><![CDATA[way-c]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122496</guid>
+		<description><![CDATA[La conception a lieu en République du Congo, mais la production reste en Chine. Lorsqu&#8217;on pense aux constructeurs de smartphones ou de tablettes, ils sont situés soit en Amérique du Nord (Motorola, Apple&#8230;), soit en Europe (Wiko, Nokia&#8230;), soit en Asie (Samsung, Huawei, ZTE, HTC&#8230;). Mais dès qu&#8217;il est question de l&#8217;Afrique, c&#8217;est un grand vide&#8230; du moins c&#8217;était ! Car une toute jeune startup congolaise nommée VMK se lance dans les smartphones et tablettes.... <a class="more-link" href="http://www.frandroid.com/actualites-generales/122496_vmk-elika-way-c-smartphone-tablette-concus-afrique/">Lire la suite...</a>]]></description>
+				<content:encoded><![CDATA[<p>La conception a lieu en République du Congo, mais la production reste en Chine.</p>
+<p><a href="http://www.frandroid.com/actualites-generales/122496_vmk-elika-way-c-smartphone-tablette-concus-afrique/attachment/vmk-elikia/" rel="attachment wp-att-122501"><img class="aligncenter size-medium wp-image-122501 colorbox-122496" alt="VMK-Elikia" src="assets/feeds_images/VMK-Elikia-630x294.jpg" width="630" height="294" /></a></p>
+<p>Lorsqu&rsquo;on pense aux constructeurs de smartphones ou de tablettes, ils sont situés soit en Amérique du Nord (Motorola, Apple&#8230;), soit en Europe (Wiko, Nokia&#8230;), soit en Asie (Samsung, Huawei, ZTE, HTC&#8230;). Mais dès qu&rsquo;il est question de l&rsquo;Afrique, c&rsquo;est un grand vide&#8230; du moins c&rsquo;était ! Car une toute jeune startup congolaise nommée VMK se lance dans les smartphones et tablettes. L&rsquo;entrepreneur à sa tête, Verone Mankou, a de très belles ambitions :</p>
+<blockquote><p>&laquo;&nbsp;Apple est géant aux Etats-Unis, Samsung est énorme en Asie et nous voulons que VMK soit aussi important en Afrique.&nbsp;&raquo;</p></blockquote>
+<p>Pour commencer cette belle aventure, un smartphone ainsi qu&rsquo;une tablette viennent d&rsquo;être annoncés. L&rsquo;Elikia (qui signifie espoir) est un smartphone de 3,5 pouces avec une définition QVGA (480 x 320 pixels), un processeur cadencé à 650 MHz, 512 Mo de mémoire vive et seulement 126 Mo de mémoire interne, mais qui est compensé par un lecteur de carte microSDHC (jusqu&rsquo;à 32 Go).<span id="more-122496"></span></p>
+<p>Android 2.3.6 (Gingerbread) est utilisé, avec une batterie de 1300 mAh (6 heures d&rsquo;autonomie en navigation WiFi), un capteur photo de 5 mégapixels sur l&rsquo;avant, une caméra frontale VGA et une connectivité 2G/3G, Bluetooth, AGPS, WiFi 802.11 b/g/n. Le tout est vendu depuis le 22 décembre pour 85 000 FCFA (~ 130 euros). On est certes ici très loin des haut de gamme actuels, mais l&rsquo;Elikia est adapté au marché local.</p>
+<p><a href="http://www.frandroid.com/actualites-generales/122496_vmk-elika-way-c-smartphone-tablette-concus-afrique/attachment/vmk-way-c/" rel="attachment wp-att-122502"><img class="aligncenter size-medium wp-image-122502 colorbox-122496" alt="VMK-way-c" src="assets/feeds_images/VMK-way-c-630x262.jpg" width="630" height="262" /></a></p>
+<p>Vient ensuite une tablette de 7 pouces nommée Way-C, qui essaie de répondre à toutes les utilisations : éducation, navigation sur Internet ou encore borne multimédia. Elle utilise Android 2.3.3 (Gingerbread), ce qui n&rsquo;est pas la meilleure chose dans la mesure où Android 3.0 (Honeycomb) a permis de faire un bon en avant en matière d&rsquo;interface utilisateur, mais qui est un peu plus gourmand en terme de ressources.</p>
+<p>Le processeur utilisé est cadencé à 1,2 GHz et s&rsquo;appuie sur 512 Mo de mémoire vive, 4 Go de mémoire interne et un lecteur de carte microSDHC (jusqu&rsquo;à 32 Go). L&rsquo;écran est en définition WVGA (800 x 480 pixels), la connectivité limitée à du WiFi 802.11 b/g. Pour ce qui est de la batterie, elle a une capacité de 4200 mAh. Le prix est 150 000 FCFA, soit 230 euros.</p>
+<p>Pour plus d&rsquo;informations, rendez-vous sur le <a target="_blank" href="http://www.vmktech.com/" target="_blank">site officiel de VMK</a>.</p>
 ]]></content:encoded>
-			<wfw:commentRss>http://fr.techcrunch.com/2012/03/28/citiversity-le-feu-de-camp-2-0/feed/</wfw:commentRss>
-		<slash:comments>1</slash:comments>
+			<wfw:commentRss>http://www.frandroid.com/actualites-generales/122496_vmk-elika-way-c-smartphone-tablette-concus-afrique/feed/</wfw:commentRss>
+		<slash:comments>36</slash:comments>
 		</item>
 		<item>
-
-		<title>Le Jeudi 12 Avril, les réseaux sociaux s’invitent au Palais de la découverte</title>
-		<link>http://fr.techcrunch.com/2012/03/28/le-jeudi-12-avril-les-reseaux-sociaux-s%e2%80%99invitent-au-palais-de-la-decouverte/</link>
-		<comments>http://fr.techcrunch.com/2012/03/28/le-jeudi-12-avril-les-reseaux-sociaux-s%e2%80%99invitent-au-palais-de-la-decouverte/#comments</comments>
-		<pubDate>Tue, 27 Mar 2012 23:00:32 +0000</pubDate>
-		<dc:creator>Aurelie Perruche</dc:creator>
-				<category><![CDATA[Non classé]]></category>
-
-		<guid isPermaLink="false">http://fr.techcrunch.com/?p=23868</guid>
-		<description><![CDATA[<img class="alignleft size-full wp-image-23869" title="reseaux sociaux" src="assets/feeds_images/reseaux-sociaux.jpg" alt="" width="271" height="148" />Les 12 et 13 avril 2012, l’Université de Versailles Saint-Quentin-en-Yvelines organise au Palais de la découverte <a title="Réseaux sociaux" href="http://www.nouveauxmedias.uvsq.fr/mediapolis-176063.kjsp?RH=1327518213790&#38;RF=1327318776030" target="_blank">un</a>
-<a title="Réseaux sociaux" href="http://www.nouveauxmedias.uvsq.fr/mediapolis-176063.kjsp?RH=1327518213790&#38;RF=1327318776030" target="_blank">colloque consacré aux nouveaux médias</a>. Une table ronde sur la thématique de <strong>la culture et des réseaux sociaux</strong> est
-proposée le <strong>jeudi 12 avril 2012 de 9h30 à 12h00</strong>.
-
-Depuis plusieurs années, les réseaux sociaux sont devenus de véritables outils de partage.]]></description>
-			<content:encoded><![CDATA[<p><img class="alignleft size-full wp-image-23869" title="reseaux sociaux" src="assets/feeds_images/reseaux-sociaux.jpg" alt="" width="271" height="148" />Les 12 et 13 avril 2012, l’Université de Versailles Saint-Quentin-en-Yvelines organise au Palais de la découverte <a title="Réseaux sociaux" href="http://www.nouveauxmedias.uvsq.fr/mediapolis-176063.kjsp?RH=1327518213790&amp;RF=1327318776030" target="_blank">un</a><br />
-<a title="Réseaux sociaux" href="http://www.nouveauxmedias.uvsq.fr/mediapolis-176063.kjsp?RH=1327518213790&amp;RF=1327318776030" target="_blank">colloque consacré aux nouveaux médias</a>. Une table ronde sur la thématique de <strong>la culture et des réseaux sociaux</strong> est<br />
-proposée le <strong>jeudi 12 avril 2012 de 9h30 à 12h00</strong>.</p>
-<p>Depuis plusieurs années, les réseaux sociaux sont devenus de véritables outils de partage. Diffusant de la musique, des films, des représentations théâtrales et bien d’autres créations artistiques, ils sont d’incroyables plateformes d’échange, un véritable tremplin pour les artistes et un nouveau vecteur de transmission de la culture. Dans une société gouvernée par la communication et la rapidité des échanges, les pratiques culturelles ont subi la mutation de cette instantanéité absolue. En quelques clics, les internautes peuvent aujourd’hui découvrir des vidéos et des contenus publiés sur tous les continents, soutenir un artiste qu’ils affectionnent et lire un roman numérisé en ligne.</p>
-<p>Les réseaux sociaux agissent comme des révélateurs de talents par le biais des plateformes participatives et permettent à des artistes de se faire connaître du public sans avoir à se soumettre aux cercles de légitimation<br />
-traditionnels. Cependant, évoquer l’exploitation des réseaux sociaux par les artistes nécessite de s’interroger sur leur contrôle et l’impact qu’ils sont susceptibles d’avoir sur le droit d’auteur et sur la propriété intellectuelle.</p>
-<p>Pour répondre à ces questions nouvelles, autour de cette table ronde différents spécialistes seront présents : <strong>Julien RASTEGAR</strong> (journaliste scientifique), <strong>Nicolas LOUBET</strong> (entrepreneur et consultant Umaps)<br />
-<strong>Marine JOUAN</strong> (chargé des projets de KissKiss BankBank), <strong>Amylee</strong> (artiste plasticienne) et <strong>Nathalie DREYFUS</strong> (juriste).</p>
+		<title>Le Huawei Ascend D2 se dévoile en photos avant le CES</title>
+		<link>http://www.frandroid.com/materiels-accessoires/122545_photos-huawei-ascend-d2/</link>
+		<comments>http://www.frandroid.com/materiels-accessoires/122545_photos-huawei-ascend-d2/#comments</comments>
+		<pubDate>Wed, 26 Dec 2012 16:06:24 +0000</pubDate>
+		<dc:creator>Edouard Marquez</dc:creator>
+				<category><![CDATA[Matériels / Accessoires]]></category>
+		<category><![CDATA[Ascend D2]]></category>
+		<category><![CDATA[CES]]></category>
+		<category><![CDATA[CES 2013]]></category>
+		<category><![CDATA[Huawei]]></category>
+		<category><![CDATA[Huawei Ascend D2]]></category>
+		<category><![CDATA[K3V2]]></category>
+		<category><![CDATA[Windows Phone 8]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122545</guid>
+		<description><![CDATA[Pour rappel, Huawei présentera (au moins) l&#8217;Ascend D2 sous Android et l&#8217;Ascend W1, son premier Windows Phone, sous Windows Phone 8, lors du salon de Las Vegas. Alors que les fêtes de fin d&#8217;année sont souvent synonymes d&#8217;actualités minces, le cru 2012 tranche complètement, avec de nombreuses annonces nous parvenant. Le salon international CES de Las Vegas se tiendra du 8 au 11 janvier 2013, et certaines entreprises n&#8217;arrivent pas à contenir les fuites d&#8217;informations,... <a class="more-link" href="http://www.frandroid.com/materiels-accessoires/122545_photos-huawei-ascend-d2/">Lire la suite...</a>]]></description>
+				<content:encoded><![CDATA[<p style="text-align: left;">Pour rappel, Huawei présentera (au moins) l&rsquo;Ascend D2 sous Android et l&rsquo;Ascend W1, son premier Windows Phone, sous Windows Phone 8, lors du salon de Las Vegas. <a href="http://www.frandroid.com/materiels-accessoires/122545_photos-huawei-ascend-d2/attachment/20121226_143647_737/" rel="attachment wp-att-122548"><img class="aligncenter size-full wp-image-122548 colorbox-122545" alt="Huawei Ascend D2" src="assets/feeds_images/20121226_143647_737.jpg" width="450" height="255" /></a> Alors que les fêtes de fin d&rsquo;année sont souvent synonymes d&rsquo;actualités minces, le cru 2012 tranche complètement, avec de nombreuses annonces nous parvenant. Le salon international CES de Las Vegas se tiendra du 8 au 11 janvier 2013, et certaines entreprises n&rsquo;arrivent pas à contenir les fuites d&rsquo;informations, pour notre plus grand bonheur, même si cela enlève une grande part du mystère et de la découverte.</p>
+<p>Nous savons qu&rsquo;au CES, le constructeur chinois Huawei annoncera un nouveau smartphone sous Android nommé <a title="Le Huawei Ascend D2 sera présenté au CES 2013" href="http://www.frandroid.com/actualites-generales/121685_le-huawei-ascend-d2-sera-presente-au-ces-2013/" target="_blank"><em>Ascend D2</em></a>. Alors que ce téléphone a déjà passé l&rsquo;étape de validation des autorités chinoises et qu&rsquo;il est prêt à être lancé dans le pays du milieu, voilà que plusieurs photos apparaissent sur des forums chinois.<span id="more-122545"></span></p>
+<p style="text-align: center;"><a href="http://www.frandroid.com/materiels-accessoires/122545_photos-huawei-ascend-d2/attachment/20121226_143651_47/" rel="attachment wp-att-122549"><img class="aligncenter size-full wp-image-122549 colorbox-122545" alt="Huawei Ascend D2" src="assets/feeds_images/20121226_143651_47.jpg" width="450" height="255" /></a></p>
+<p><a href="http://www.frandroid.com/actualites-generales/121685_le-huawei-ascend-d2-sera-presente-au-ces-2013/" target="_blank">Après la photo presse &laquo;&nbsp;volée&nbsp;&raquo;</a>, ces clichés nous prouvent qu&rsquo;il s&rsquo;agit bel et bien du même téléphone. Pour ce qui est des caractéristiques techniques, il est question d&rsquo;un écran de 5 pouces avec une définition Full HD (1920 x 1080 pixels &#8211; densité de pixels de 440 ppi). Le processeur utilisé est un modèle maison, le quadruple-coeur K3V2 cadencé à 1,4 GHz. La version d&rsquo;Android est la 4.1 (Jelly Bean), la batterie a une capacité de 3000 mAh (équivalent à un Samsung Galaxy Note 2) et le capteur photo réalise des clichés en 13 mégapixels.</p>
+<p>Il ne reste plus qu&rsquo;à attendre le 7 janvier pour en savoir plus !</p>
+<p style="text-align: center;"><a href="http://www.frandroid.com/materiels-accessoires/122545_photos-huawei-ascend-d2/attachment/20121226_143653_866/" rel="attachment wp-att-122550"><img class="aligncenter size-full wp-image-122550 colorbox-122545" alt="Huawei Ascend D2" src="assets/feeds_images/20121226_143653_866.jpg" width="450" height="254" /></a> <a href="http://www.frandroid.com/materiels-accessoires/122545_photos-huawei-ascend-d2/attachment/20121226_143656_860/" rel="attachment wp-att-122551"><img class="aligncenter size-full wp-image-122551 colorbox-122545" alt="Huawei Ascend D2" src="assets/feeds_images/20121226_143656_860.jpg" width="450" height="226" /></a></p>
+<p style="text-align: left;"><a target="_blank" href="http://www.ithome.com/html/digi/33699.htm" target="_blank">Source</a></p>
 ]]></content:encoded>
-			<wfw:commentRss>http://fr.techcrunch.com/2012/03/28/le-jeudi-12-avril-les-reseaux-sociaux-s%e2%80%99invitent-au-palais-de-la-decouverte/feed/</wfw:commentRss>
-		<slash:comments>1</slash:comments>
+			<wfw:commentRss>http://www.frandroid.com/materiels-accessoires/122545_photos-huawei-ascend-d2/feed/</wfw:commentRss>
+		<slash:comments>39</slash:comments>
 		</item>
 		<item>
-
-		<title>SPEAR professionnalise le crowdlending éthique</title>
-		<link>http://fr.techcrunch.com/2012/03/27/spear-professionnalise-le-crowdlending-ethique/</link>
-		<comments>http://fr.techcrunch.com/2012/03/27/spear-professionnalise-le-crowdlending-ethique/#comments</comments>
-		<pubDate>Tue, 27 Mar 2012 16:08:49 +0000</pubDate>
-		<dc:creator>Julien Mechin</dc:creator>
-				<category><![CDATA[Non classé]]></category>
-
-		<category><![CDATA[crowdlending]]></category>
-		<category><![CDATA[spear]]></category>
-
-		<guid isPermaLink="false">http://fr.techcrunch.com/?p=23880</guid>
-		<description><![CDATA[<img class="alignleft size-full wp-image-23882" title="spear" src="http://fr.techcrunch.com/wp-content/uploads/2012/03/spear.png" alt="" width="250" height="69" />
-
-Article écrit par <a href="https://twitter.com/#!/PEntremont">Pierre Entremont</a>.
-
-Internet permet de créer des banques moins chères, mais aussi des banques plus éthiques. C’est en tout cas la conviction de <a href="http://spear.fr">SPEAR</a> (Société pour une Épargne Activement Responsable), coopérative fondée avant même leur sortie d’école par <a href="http://twitter.com/#!/nicodabbaghian">Nicolas Dabbaghian</a> (HEC), <a href="http://twitter.com/#!/quentinbdh">Quentin Brackers de Hugo</a> (Centrale Paris) et <a href=" http://twitter.com/#!/fdesroziers ">François Desroziers</a> (Dauphine).]]></description>
-			<content:encoded><![CDATA[<p><img class="alignleft size-full wp-image-23882" title="spear" src="http://fr.techcrunch.com/wp-content/uploads/2012/03/spear.png" alt="" width="250" height="69" /></p>
-<p>Article écrit par <a href="https://twitter.com/#!/PEntremont">Pierre Entremont</a>.</p>
-<p>Internet permet de créer des banques moins chères, mais aussi des banques plus éthiques. C’est en tout cas la conviction de <a href="http://spear.fr">SPEAR</a> (Société pour une Épargne Activement Responsable), coopérative fondée avant même leur sortie d’école par <a href="http://twitter.com/#!/nicodabbaghian">Nicolas Dabbaghian</a> (HEC), <a href="http://twitter.com/#!/quentinbdh">Quentin Brackers de Hugo</a> (Centrale Paris) et <a href=" http://twitter.com/#!/fdesroziers ">François Desroziers</a> (Dauphine).</p>
-<p>SPEAR propose de fédérer les épargnants afin de leur permettre de mettre leur argent au service de projets qu’ils choisissent, et qui ont du sens à leurs yeux (écologiques, sociaux ou culturels). À la différence de structures comme Kickstarter ou Mymajorcompany, SPEAR propose d’investir en dette, et sélectionne les initiatives qu’il est possible d’aider en fonction de critères éthiques et financiers.  Le tout sans aucun risque pour l’épargnant.</p>
-<p>Pour rendre possible cette équation, SPEAR s’est allié à des banques (le Crédit Municipal de Paris  pour le moment, des partenariat avec le Crédit Coopératif et la Caisse d’ Épargne sont en bonne voie) qui sécurisent le prêt moyennant une commission destinée à compenser le risque de défaut. L’entrepreneur obtient ainsi facilement un crédit pour un taux inférieur au taux du marché et l’épargnant, moyennant une modique diminution de son taux de rendement, met son argent au service de ses convictions. Un bénéfice auquel s’ajoutent les classiques dispositifs de déduction de l’ISF et de l’IRPP, puisque l’épargne se réalise par la souscription de parts sociales de SPEAR.</p>
-<p style="text-align: center;"><a href="http://fr.techcrunch.com/wp-content/uploads/2012/03/Capture-d’écran-2012-03-26-à-23.36.46.png"><img class="size-full wp-image-23881 aligncenter" title="Capture d’écran 2012-03-26 à 23.36.46" src="http://fr.techcrunch.com/wp-content/uploads/2012/03/Capture-d’écran-2012-03-26-à-23.36.46.png" alt="" width="487" height="374" /></a></p>
-<p>Moins de 15% des projets soumis à SPEAR sont retenus par son comité. Pour le moment, 200 000 euros d’ « épargne transparente » ont financés 3 projets, et 2 sont en passe de l’être (<a href="http://spear.fr/projets/16"> Clair &amp; Net </a>, entreprise d’insertion par le travail dans le secteur de l’écopropreté et <a href="http://spear.fr/projets/18"> Basiliade </a>, structure d’aide aux malades du SIDA). 5 autres les rejoindront d’ici l’été (un projet visant à fournir des lunettes de réalité augmentée aux malades chroniques immobilisés serait notamment dans les tuyaux).</p>
-<p>Avis aux geeks au grand cœur : la plateforme, lauréate du Prix SFR Jeunes Talents Entrepreneuriat Social, est codée en Ruby on Rails. Et des recrutements sont au programme…</p>
+		<title>ZTE officialise le Nubia Z5 : un smartphone (de plus) de 5 pouces 1080p</title>
+		<link>http://www.frandroid.com/actualites-generales/122538_zte-nubia-z5/</link>
+		<comments>http://www.frandroid.com/actualites-generales/122538_zte-nubia-z5/#comments</comments>
+		<pubDate>Wed, 26 Dec 2012 15:25:37 +0000</pubDate>
+		<dc:creator>Edouard Marquez</dc:creator>
+				<category><![CDATA[Actualités Générales]]></category>
+		<category><![CDATA[Matériels / Accessoires]]></category>
+		<category><![CDATA[1080p]]></category>
+		<category><![CDATA[ZTE]]></category>
+		<category><![CDATA[zte nubia z5]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122538</guid>
+		<description><![CDATA[Pour l&#8217;instant, l&#8217;annonce du ZTE Nubia Z5 ne concerne que la Chine. HTC a été le premier à se lancer dans l&#8217;aventure des écrans dits 1080p (ou FullHD) avec son J Butterfly qui est disponible au Japon, suivi par d&#8217;autres constructeurs depuis. ZTE de son côté nous avait jusqu&#8217;alors habitué à des terminaux plutôt milieu de gamme, mais semble vouloir suivre la voie ouverte par Huawei en 2012, qui consiste à monter en gamme. Le... <a class="more-link" href="http://www.frandroid.com/actualites-generales/122538_zte-nubia-z5/">Lire la suite...</a>]]></description>
+				<content:encoded><![CDATA[<p>Pour l&rsquo;instant, l&rsquo;annonce du ZTE Nubia Z5 ne concerne que la Chine.</p>
+<p><a href="http://www.frandroid.com/actualites-generales/122538_zte-nubia-z5/attachment/zte-nubia-25/" rel="attachment wp-att-122539"><img class="aligncenter size-medium wp-image-122539 colorbox-122538" alt="ZTE Nubia Z5" src="assets/feeds_images/ZTE-Nubia-25-630x252.jpg" width="630" height="252" /></a></p>
+<p>HTC a été le premier à se lancer dans l&rsquo;aventure des écrans dits 1080p (ou FullHD) avec son J Butterfly qui est disponible au Japon, suivi par d&rsquo;autres constructeurs depuis. ZTE de son côté nous avait jusqu&rsquo;alors habitué à des terminaux plutôt milieu de gamme, mais semble vouloir suivre la voie ouverte par Huawei en 2012, qui consiste à monter en gamme. Le Nubia Z5 en est un parfait exemple et vient tout juste d&rsquo;être officialisé (alors que nous l&rsquo;attendions un peu plus tôt).</p>
+<p>ZTE ne fait vraiment pas dans la demie-mesure avec ce téléphone sous <strong>Android 4.1.1</strong>, car les caractéristiques techniques sont très intéressantes. Son écran <strong>IPS de 5 pouces </strong>affiche une définition <strong>FullHD</strong> (1920 x 1080 pixels), lui offrant une densité de pixels de <strong>441 ppi</strong>, ce qui est loin des hauts de gamme actuels (Sony Xperia S, Samsung Galaxy S3, HTC One X+, Acer CloudMobile&#8230;) qui plafonnent à 340 ppi. L&rsquo;oeil humain ne fait plus la différence lorsque le palier des ~300 ppi est dépassé, mais sur les formats 5 pouces et plus, le 720p était un peu trop juste pour certains (sur le Galaxy Note 2 par exemple).<span id="more-122538"></span></p>
+<p>Le processeur est taillé pour ce téléphone : un quadruple-coeur <strong>Qualcomm Snapdragon S4 Pro</strong> (APQ8064) cadencé à 1,5 GHz accompagné de <strong>2 Go de mémoire vive</strong> et de <strong>32 Go de mémoire interne</strong>. Pour ce qui est de la photographie, deux capteurs sont présents : <strong>13 mégapixels</strong> sur le dos et 2 mégapixels en façade  La connectivité est complète, mais n&rsquo;est pas LTE (sur la version chinoise), HSPA+, Wi-Fi 802.11 a/b/g/n, Bluetooth 4.0, NFC. Si l&rsquo;autonomie d&rsquo;un tel engin vous effraie, sachez que ZTE a mis une batterie de <strong>2300 mAh</strong>, ce qui devrait offrir de bons résultats.</p>
+<p style="text-align: center;"><a href="http://www.frandroid.com/actualites-generales/122538_zte-nubia-z5/attachment/zte-nubia-z5-android-jelly-bean-1080p-official/" rel="attachment wp-att-122540"><img class="aligncenter size-full wp-image-122540 colorbox-122538" alt="ZTE Nubia Z5" src="assets/feeds_images/ZTE-Nubia-Z5-Android-Jelly-Bean-1080p-official.jpg" width="400" height="395" /></a></p>
+<p>Qui dit smartphone de 5 pouces, dit forcément des dimensions surhumaines, mais au final votre jean sera bien &laquo;&nbsp;Nubia Z5 compatible&nbsp;&raquo; : 138 x 69.2 x 7.6 mm, pour un poids plume de 126 grammes. Au niveau des coloris, on retrouve dans un premier temps du blanc et du noir, avec peut-être prochainement une autre variante. Ils seront disponibles début janvier en Chine pour 3,456 yuans, soit environ 420 euros.</p>
+<p>Le ZTE d&rsquo;il y a quelques années semble très loin et ce constructeur devrait devenir un acteur majeur de la scène de la mobilité en 2013. N&rsquo;oubliez pas que le Grand X sera par exemple annoncé au CES.</p>
+<p><a target="_blank" href="http://www.unwiredview.com/2012/12/26/zte-nubia-z5-now-official-android-jelly-bean-1080p-screen-price-555/?utm_source=feedburner&amp;utm_medium=feed&amp;utm_campaign=Feed%3A+UnwiredView+%28Unwired+View%29" target="_blank">Source</a></p>
 ]]></content:encoded>
-			<wfw:commentRss>http://fr.techcrunch.com/2012/03/27/spear-professionnalise-le-crowdlending-ethique/feed/</wfw:commentRss>
-		<slash:comments>3</slash:comments>
-
+			<wfw:commentRss>http://www.frandroid.com/actualites-generales/122538_zte-nubia-z5/feed/</wfw:commentRss>
+		<slash:comments>68</slash:comments>
 		</item>
 		<item>
-		<title>Wallit crée des murs virtuels en réalité augmentée dans les lieux publics</title>
-		<link>http://fr.techcrunch.com/2012/03/27/wallit-cree-des-murs-virtuels-en-realite-augmentee-dans-les-lieux-publics/</link>
-		<comments>http://fr.techcrunch.com/2012/03/27/wallit-cree-des-murs-virtuels-en-realite-augmentee-dans-les-lieux-publics/#comments</comments>
-		<pubDate>Tue, 27 Mar 2012 09:29:06 +0000</pubDate>
-		<dc:creator>Julien Mechin</dc:creator>
-
-				<category><![CDATA[Non classé]]></category>
-		<category><![CDATA[wallit]]></category>
-
-		<guid isPermaLink="false">http://fr.techcrunch.com/?p=23852</guid>
-		<description><![CDATA[<img class="alignleft" title="wallit" src="assets/feeds_images/logo_wallit_icon.jpg" alt="" width="232" height="92" /> Article écrit par <a href="https://twitter.com/#!/ceciloge" target="_blank">Cécile Logé</a>.
-
-Créée par <a href="http://www.linkedin.com/pub/veysel-berk/10/111/212">Veysel Berk</a>, un ancien de UC Berkeley plein d’idées et détenteur d’un PhD en Physique, <a href="http://www.wallitapp.com/">Wallit</a> est une nouvelle application iPhone gratuite qui cherche à changer notre vision des lieux publics: lancée début mars, l’application permet de communiquer avec les personnes qui sont au même endroit au même moment par l’intermédiaire de la réalité augmentée.]]></description>
-			<content:encoded><![CDATA[<p><img class="alignleft" title="wallit" src="assets/feeds_images/logo_wallit_icon.jpg" alt="" width="232" height="92" /> Article écrit par <a href="https://twitter.com/#!/ceciloge" target="_blank">Cécile Logé</a>.</p>
-<p>Créée par <a href="http://www.linkedin.com/pub/veysel-berk/10/111/212">Veysel Berk</a>, un ancien de UC Berkeley plein d’idées et détenteur d’un PhD en Physique, <a href="http://www.wallitapp.com/">Wallit</a> est une nouvelle application iPhone gratuite qui cherche à changer notre vision des lieux publics: lancée début mars, l’application permet de communiquer avec les personnes qui sont au même endroit au même moment par l’intermédiaire de la réalité augmentée.</p>
-<p style="text-align: center;"><a href="http://fr.techcrunch.com/wp-content/uploads/2012/03/wallit.png"><img class="size-full wp-image-23853 aligncenter" title="wallit" src="http://fr.techcrunch.com/wp-content/uploads/2012/03/wallit.png" alt="" width="443" height="297" /></a></p>
-<p style="text-align: left;">E?n fait, Wallit mélange les traits des plus grands réseaux sociaux: les interactions sociales de Facebook, les 140 caractères maximum de Twitter et la géolocalisation de Foursquare, le tout appliqué à des murs virtuels accessibles en réalité augmentée. Imaginons un évènement important comme un match de foot, ou un festival: les participants n’auront qu’à ouvrir l’application, et se géolocaliser pour voir apparaitre le mur virtuel à travers la caméra de leur iPhone et communiquer entre eux. Photos, commentaires, vidéos, ou messages audios.. Tout est possible!</p>
-<p style="text-align: center;"><a href="http://fr.techcrunch.com/wp-content/uploads/2012/03/wallit2.png"><img class="size-full wp-image-23854 aligncenter" title="wallit2" src="http://fr.techcrunch.com/wp-content/uploads/2012/03/wallit2.png" alt="" width="441" height="297" /></a></p>
-<p>Wallit a déjà créé plus de 700 murs un peu partout dans le monde (Londres, Tokyo, New-York, Paris..). Une fois sur place, on peut apporter sa contribution soit anonymement, soit en se loggant sur Facebook ou Twitter: bientôt, des fonctions sociales permettant de filtrer les posts (amis Facebook  seulement par exemple) seront également disponibles.</p>
-<p>Alors que les autres apps géolocalisées et les réseaux sociaux comme Foursquare se focalisent généralement sur les profils des utilisateurs, celle-ci ambitionne de donner vie aux lieux eux-mêmes grâce à leurs visiteurs. Berk insiste d’ailleurs sur l’idée que Wallit “<em>contribue à entretenir l’essence des lieux</em>” et à “<em>cultiver leur personnalité</em>” grâce au partage d’expériences, de photos, de commentaires des gens qui y passent physiquement.</p>
-<p><iframe width="560" height="315" src="http://www.youtube.com/embed/Mx1Cy3smRr0" frameborder="0" allowfullscreen></iframe></p>
-<p>Wallit a récemment levé 1.2M$ de fonds auprès de différents business angels et fonds d’investissements, et des versions iPad et Android sont en cours de développement. Il s’agira ensuite de monétiser le projet en impliquant des partenaires et des grandes marques, notamment en les aidant à créer leurs propres murs/panneaux de pub interactifs et virtuels.</p>
+		<title>Des cas de mort subite relevés pour le Samsung Galaxy S3</title>
+		<link>http://www.frandroid.com/actualites-generales/122523_galaxy-s3-ne-demarre-plus/</link>
+		<comments>http://www.frandroid.com/actualites-generales/122523_galaxy-s3-ne-demarre-plus/#comments</comments>
+		<pubDate>Wed, 26 Dec 2012 13:52:34 +0000</pubDate>
+		<dc:creator>Edouard Marquez</dc:creator>
+				<category><![CDATA[Actualités Générales]]></category>
+		<category><![CDATA[carte mère]]></category>
+		<category><![CDATA[Galaxy S3]]></category>
+		<category><![CDATA[gs3suddendeath]]></category>
+		<category><![CDATA[hardware]]></category>
+		<category><![CDATA[problème]]></category>
+		<category><![CDATA[samsung galaxy s3]]></category>
+		<category><![CDATA[samsung gate]]></category>
+		<category><![CDATA[sav]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122523</guid>
+		<description><![CDATA[&#8230; la faute à sa carte mère qui est remplacée gratuitement, par le même modèle. Que l&#8217;on aime ou pas le Samsung Galaxy S3, une chose est sûre : il se vend comme des petits pains. Malheureusement il n&#8217;a pas eu une vie aussi tranquille : dans un premier temps le bug des codes USSD qui permettait très facilement de supprimer toutes les données du téléphone en visitant par exemple une page web. Il y... <a class="more-link" href="http://www.frandroid.com/actualites-generales/122523_galaxy-s3-ne-demarre-plus/">Lire la suite...</a>]]></description>
+				<content:encoded><![CDATA[<p>&#8230; la faute à sa carte mère qui est remplacée gratuitement, par le même modèle.</p>
+<p style="text-align: center;"><a href="http://www.frandroid.com/actualites-generales/122523_galaxy-s3-ne-demarre-plus/attachment/sgsiii/" rel="attachment wp-att-122528"><img class="aligncenter size-medium wp-image-122528 colorbox-122523" alt="carte mère galaxy s3" src="assets/feeds_images/SGSIII-630x472.jpg" width="630" height="472" /></a></p>
+<p>Que l&rsquo;on aime ou pas le Samsung Galaxy S3, une chose est sûre : il se vend comme des petits pains. Malheureusement il n&rsquo;a pas eu une vie aussi tranquille : dans un premier temps <a href="http://www.frandroid.com/actualites-generales/111907_samsung-deploie-un-correctif-pour-la-vulnerabilite-du-galaxy-siii/" target="_blank">le bug des codes USSD</a> qui permettait très facilement de supprimer toutes les données du téléphone en visitant par exemple une page web. Il y a quelques jours une faille majeure a été trouvée <a href="http://www.frandroid.com/actualites-generales/121768_samsung-confirme-la-faille-et-prepare-un-correctif/" target="_blank">dans les processeurs Exynos</a> permettant de lire et effacer le contenu de la mémoire vive. Et la liste vient de s&rsquo;allonger avec un nouveau problème majeur.</p>
+<p>Alors que le smartphone phare du coréen est sorti il y a environ six mois, les premiers acheteurs se plaignent que leur modèle ait rendu l&rsquo;âme après environ 200 jours d&rsquo;utilisation. <a target="_blank" href="http://forum.xda-developers.com/showthread.php?t=1993044&amp;page=1" target="_blank">Le thread ouvert sur xda-developers</a> il y a plus d&rsquo;un mois compte désormais plus de 1000 messages, preuve qu&rsquo;il ne s&rsquo;agit pas d&rsquo;un cas isolé. Il en est de même <a target="_blank" href="http://forum.frandroid.com/topic/131611-galaxy-s3-victime-de-sa-memoire-au-bout-de-6-mois/" target="_blank">sur notre forum</a>, <a target="_blank" href="http://www.reddit.com/r/Android/comments/155tw0/galaxy_s3_mainboards_dying_without_warning/" target="_blank">Reddit</a> ou encore le hashtag <a target="_blank" href="https://twitter.com/search?q=%23gs3suddendeath&amp;src=hash" target="_blank">#gs3suddendeath</a> sur Twitter.<span id="more-122523"></span></p>
+<p>Le Samsung Galaxy S3 refuse tout à coup de s&rsquo;allumer, même après plusieurs recharges. Certaines personnes ont noté des gels d&rsquo;écran quelques jours avant cette mort prématurée. Il ne s&rsquo;agirait pas d&rsquo;un problème logiciel, ni d&rsquo;une ROM en particulier, ni du noyau (kernel) utilisé, mais bien d&rsquo;un problème d&rsquo;origine matérielle. Il viendrait de la carte mère, mais plusieurs sources pointent du doigt la mémoire flash (NAND) qui altérerait peu à peu l&rsquo;élément central du téléphone.</p>
+<p>Il n&rsquo;y a pour l&rsquo;instant aucune information, ni confirmation donnée par voix officielle du côté de chez Samsung. En revanche, les acheteurs qui ont rencontré ce problème ont tous eu un changement gratuit de carte mère, quel que soit l&rsquo;état dans lequel le téléphone était renvoyé (root, ROM personnalisée&#8230;). Hélas, un matériel de même génération est mis à la place, ce qui laisse penser que d&rsquo;ici quelques mois, le syndrome de la &laquo;&nbsp;mort subite&nbsp;&raquo; se produira à nouveau.</p>
+<p><a target="_blank" href="http://pocketnow.com/2012/12/21/sgsiii-dying" target="_blank">Source</a></p>
+<p>&nbsp;</p>
 ]]></content:encoded>
-			<wfw:commentRss>http://fr.techcrunch.com/2012/03/27/wallit-cree-des-murs-virtuels-en-realite-augmentee-dans-les-lieux-publics/feed/</wfw:commentRss>
+			<wfw:commentRss>http://www.frandroid.com/actualites-generales/122523_galaxy-s3-ne-demarre-plus/feed/</wfw:commentRss>
+		<slash:comments>243</slash:comments>
+		</item>
+
+		<item>
+		<title>Test de la Samsung Galaxy Camera</title>
+		<link>http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/</link>
+		<comments>http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/#comments</comments>
+		<pubDate>Wed, 26 Dec 2012 10:33:06 +0000</pubDate>
+		<dc:creator>Ulrich Rozier</dc:creator>
+				<category><![CDATA[Photo]]></category>
+		<category><![CDATA[Test]]></category>
+		<category><![CDATA[Android]]></category>
+		<category><![CDATA[camera]]></category>
+		<category><![CDATA[Galaxy]]></category>
+		<category><![CDATA[galaxy camera]]></category>
+		<category><![CDATA[samsung]]></category>
+		<category><![CDATA[Samsung Galaxy Camera]]></category>
+		<category><![CDATA[Test de la Samsung Galaxy Camera]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122407</guid>
+		<description><![CDATA[Longtemps en rumeurs, le Galaxy Camera (EK-GC100) a été annoncé par Samsung dans les semaines qui ont suivi l’annonce du compact de Nikon. Malgré quelques points communs comme le capteur 16Mpix, wifi, Bluetooth et GPS intégrés, il est mieux pourvu techniquement avec un zoom 21x, une connectivité 3G, et surtout Android 4.1 ; pour un prix conseillé de 549€ (mais disponible à 434€, auxquels on peut déduire une ODR de 100€). Test du Nikon Coolpix S800c... <a class="more-link" href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/">Lire la suite...</a>]]></description>
+				<content:encoded><![CDATA[<p><b id="internal-source-marker_0.4906790438108146">Longtemps en rumeurs, le Galaxy Camera (EK-GC100) a été annoncé par Samsung dans les semaines qui ont suivi l’annonce du compact de Nikon. </b></p>
+<p><a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/dsc03607/" rel="attachment wp-att-122420"><img class="aligncenter size-medium wp-image-122420 colorbox-122407" alt="DSC03607" src="assets/feeds_images/DSC03607-630x353.jpg" width="630" height="353" /></a></p>
+<p><b id="internal-source-marker_0.4906790438108146">Malgré quelques points communs comme le capteur 16Mpix, wifi, Bluetooth et GPS intégrés, il est mieux pourvu techniquement avec un zoom 21x, une connectivité 3G, et surtout Android 4.1 ; pour un prix conseillé de 549€ (mais disponible à 434€, auxquels on peut <a target="_blank" href="http://www.samsung.com/fr/promotions/detail?eventId=1996">déduire une ODR de 100€</a>).<span id="more-122407"></span></b></p>
+<ul>
+<li><a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/" target="_blank">Test du Nikon Coolpix S800c</a></li>
+<li><strong><a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/" target="_blank">Test de la Samsung Galaxy Camera</a></strong></li>
+<li><a href="http://www.frandroid.com/photo/122437_face-a-face-nikon-coolpix-s800c-vs-samsung-galaxy-camera/" target="_blank">Face à face : Nikon Coolpix S800c vs Samsung Galaxy Camera</a></li>
+</ul>
+<h1>Aspect général</h1>
+<p>Avec un écran de 4,8 pouces, le Samsung Galaxy Camera est assez massif (et pèse 480 grammes) tout en n’atteignant pas la taille d’un Galaxy Note.</p>
+<p><a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/dsc03578-2/" rel="attachment wp-att-122413"><img class="aligncenter size-medium wp-image-122413 colorbox-122407" alt="DSC03578" src="assets/feeds_images/DSC03578-630x353.jpg" width="630" height="353" /></a> <a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/dsc03584/" rel="attachment wp-att-122414"><img class="aligncenter size-medium wp-image-122414 colorbox-122407" alt="DSC03584" src="assets/feeds_images/DSC03584-630x353.jpg" width="630" height="353" /></a> <a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/dsc03585/" rel="attachment wp-att-122415"><img class="aligncenter size-medium wp-image-122415 colorbox-122407" alt="DSC03585" src="assets/feeds_images/DSC03585-630x353.jpg" width="630" height="353" /></a> <a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/dsc03586/" rel="attachment wp-att-122416"><img class="aligncenter size-medium wp-image-122416 colorbox-122407" alt="DSC03586" src="assets/feeds_images/DSC03586-630x353.jpg" width="630" height="353" /></a> <a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/dsc03587/" rel="attachment wp-att-122417"><img class="aligncenter size-medium wp-image-122417 colorbox-122407" alt="DSC03587" src="assets/feeds_images/DSC03587-630x353.jpg" width="630" height="353" /></a></p>
+<p><a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/comparaison-de-taille-du-samsung-galaxy-camera/" rel="attachment wp-att-122418"><img class="aligncenter size-medium wp-image-122418 colorbox-122407" alt="Comparaison de taille du Samsung Galaxy Camera" src="assets/feeds_images/Photo_Comparaison-de-taille-du-Samsung-Galaxy-Camera_De-gauche-à-droite-un-Samsung-Galaxy-S-un-iPod-Touch-5e-génération-un-Samsung-Galaxy-Camera-un-Samsung-Galaxy-Note-630x420.jpg" width="630" height="420" /></a></p>
+<p style="text-align: center;">De gauche à droite &#8211; un Samsung Galaxy S, un iPod Touch (5e génération), un Samsung Galaxy Camera, un Samsung Galaxy Note</p>
+<p>Cette taille lui permet d’hériter d’une poignée antidérapante sur son côté droit. Très pratique en utilisation photo, cette forme convient moins si l’on a un usage baladeur numérique…</p>
+<p><a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/avant-du-samsung-galaxy-camera-2/" rel="attachment wp-att-122419"><img class="aligncenter size-medium wp-image-122419 colorbox-122407" alt="Avant du Samsung Galaxy Camera" src="assets/feeds_images/Photo_Avant-du-Samsung-Galaxy-Camera_1-630x420.jpg" width="630" height="420" /></a></p>
+<p>Son objectif reste protubérant, même replié, ce qui donne à l’ensemble une bonne épaisseur : l’appareil ne sera pas discret dans une poche et la couleur blanche du boîtier vous fera passer encore moins inaperçu…</p>
+<h1>Interfaces</h1>
+<p>Grâce à sa taille (occupant presque tout le dos), la plupart des interactions se font par l’écran tactile du Galaxy Camera. Physiquement, seuls subsistent un bouton marche/arrêt, un déclencheur et un sélecteur de zoom/dézoom.</p>
+<p><a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/dessus-du-samsung-galaxy-camera/" rel="attachment wp-att-122421"><img class="aligncenter size-medium wp-image-122421 colorbox-122407" alt="Dessus du Samsung Galaxy Camera" src="assets/feeds_images/Photo_Dessus-du-Samsung-Galaxy-Camera_Flash-rétractable-Bouton-On-Off-Déclencheur-et-Sélecteur-de-zoom-630x420.jpg" width="630" height="420" /></a></p>
+<p style="text-align: center;"><em>Flash rétractable, Bouton On/Off, Déclencheur et Sélecteur de zoom.</em></p>
+<p>Equipé d’Android 4.1, l’appareil a ainsi ses boutons Accueil, Retour et Menu intégrés à l’écran. L’interface est facile à appréhender mais on peut regretter qu’en mode photo/vidéo, le bouton Accueil (qui sert de bouton Retour) change constamment d’emplacement d’un écran à l’autre.</p>
+<p><a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/ecran-photo-samsung-2/" rel="attachment wp-att-122422"><img class="aligncenter size-medium wp-image-122422 colorbox-122407" alt="Ecran photo Samsung" src="assets/feeds_images/Ecran-photo-Samsung1-630x354.jpg" width="630" height="354" /></a></p>
+<p>Toujours en mode photo, les réglages manuels se font grâce à des molettes virtuelles, très faciles d’utilisation.</p>
+<p><a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/dsc03593/" rel="attachment wp-att-122423"><img class="aligncenter size-medium wp-image-122423 colorbox-122407" alt="Mode manuel" src="assets/feeds_images/DSC03593-630x353.jpg" width="630" height="353" /></a></p>
+<h1>Optique</h1>
+<p>Comme Nikon, Samsung propose un capteur CMOS 1/2,3 pouce d’environ 17Mpix (avec 16Mpix effectifs soit 4608 par 3456 pixels).</p>
+<p>Le zoom 21x est de conception maison avec une focale variant de 4.1 à 86.1mm (équivalent en 35mm à un objectif 23-483mm), et une ouverture maximale ƒ/2.8-5.9.<br />
+Cette longue focale de 483mm lui permet de rivaliser avec des téléobjectifs, surtout avec une ouverture de ƒ/5.9 qui reste raisonnable, mais l’autofocus a alors un peu de mal pour avoir une bonne mise au point.</p>
+<p><a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/zoom-a-41mm-2/" rel="attachment wp-att-122424"><img class="aligncenter size-medium wp-image-122424 colorbox-122407" alt="Zoom à 4,1mm" src="assets/feeds_images/EK-GC100_Zoom-à-41mm_1-630x472.jpg" width="630" height="472" /></a></p>
+<p style="text-align: center;">Zoom à 4,1 mm</p>
+<p style="text-align: center;"><a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/zoom-a-861mm-2/" rel="attachment wp-att-122425"><img class="aligncenter size-medium wp-image-122425 colorbox-122407" alt="Zoom à 86,1mm" src="assets/feeds_images/EK-GC100_Zoom-à-861mm_1-630x472.jpg" width="630" height="472" /></a></p>
+<p style="text-align: center;">Zoom à 86,1mm</p>
+<h1 style="text-align: left;">Ecran</h1>
+<p style="text-align: left;">L’écran LCD du Galaxy Camera est d’une taille confortable avec sa diagonale de 12cm (4.8 pouces). Il propose une résolution HD de 1280&#215;720 avec une profondeur de 16 millions de bit.</p>
+<p><a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/dos-du-samsung-galaxy-camera/" rel="attachment wp-att-122426"><img class="aligncenter size-medium wp-image-122426 colorbox-122407" alt="Dos du Samsung Galaxy Camera" src="assets/feeds_images/Photo_Dos-du-Samsung-Galaxy-Camera_-630x420.jpg" width="630" height="420" /></a></p>
+<p>Doté d’un traitement brillant (“glossy”), il offre une apparence avantageuse à vos images et est (relativement) fidèle au rendu final, la contrepartie étant que les traces de doigts deviennent immédiatement plus visibles…</p>
+<h1>Stockage</h1>
+<p>De base, l’appareil dispose de 8Go de mémoire interne (4Go système et 4Go utilisateur) . Il dispose à côté de cela d’un slot pour carte micro-SD (compatible micro-SDHC et micro-SDXC dans la limite de 64Go).</p>
+<p><a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/dessous-du-samsung-galaxy-camera/" rel="attachment wp-att-122427"><img class="aligncenter size-medium wp-image-122427 colorbox-122407" alt="Dessous du Samsung Galaxy Camera" src="assets/feeds_images/Photo_Dessous-du-Samsung-Galaxy-Camera_Vis-et-trappe-slot-micro-SD-slot-micro-SIM-et-batterie-630x157.jpg" width="630" height="157" /></a></p>
+<p>Ce choix du format micro-SD est regrettable : même s’il permet de gagner en volume, à prix équivalent, on perd en vitesse d’écriture et en capacité à moins de sortir le portefeuille. La plupart des possesseurs d’appareils Android seront cependant heureux de pouvoir réutiliser les cartes acquises en complément de leur mobile ou tablette.</p>
+<h1>Connectivité</h1>
+<p>L’un des points forts du Galaxy Camera est sa connectivité variée qui permet de l’utiliser dans de nombreuses situations.</p>
+<p>Doté de la 3G (HSPA+21) via une micro-SIM, ce qui le séparerait d’un smartphone ne serait que l’aptitude à émettre et recevoir des appels (et des SMS/MMS).<br />
+Il propose à côté les incontournables Wifi (a/b/g/n), Bluetooth (4.0), HDMI (format micro), micro-USB…</p>
+<p><a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/profil-droit-du-samsung-galaxy-camera/" rel="attachment wp-att-122428"><img class="aligncenter size-medium wp-image-122428 colorbox-122407" alt="Profil droit du Samsung Galaxy Camera" src="assets/feeds_images/Photo_Profil-droit-du-Samsung-Galaxy-Camera_Prise-jack-prise-micro-USB-fixation-de-la-dragonne-630x315.jpg" width="630" height="315" /></a></p>
+<p>Bonus : une prise jack destinée à recevoir un casque (mais a priori pas de micro externe), inutile pour filmer (vue la qualité médiocre des micros intégré) mais bienvenue si l’on utilise son Galaxy Camera comme baladeur ou mini-tablette.</p>
+<h1>Modes photo et vidéo</h1>
+<p>Le Galaxy Camera propose au premier lancement de prendre des photos en mode “Smart Auto” qui est simplement un mode Automatique.</p>
+<p>Ses modes dits “Intelligents” correspondent à des scènes et effets (Beauté, Meilleure image, Rafale, Meilleures poses, Nuit, Panorama, Paysage, Coucher de soleil, Feu d’artifice, Macro, Action, Cascade, Lumière, Silhouette, Ton riche).</p>
+<p>Des filtres sont aussi proposés, sous l’appellation “effets” : Sépia, Noir et Blanc, Négatif, Effet vieille image, Soleil, Classique, Rétro, Couleurs Atténuées, Nostalgie, Bande dessinée, Esquisse pastel, Noir Gothique, Impressionniste.</p>
+<p>Contrairement au Coolpix S800c, des modes Expert avec plus de contrôles sont disponibles : P (Program : auto avec paramètres supplémentaires), A (Aperture : priorité à l’ouverture), S (Speed : priorité à la vitesse),M (Manuel). Les réglages disponibles deviennent alors très complets.</p>
+<p><a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/ecran-photo-samsung-3/" rel="attachment wp-att-122429"><img class="aligncenter size-medium wp-image-122429 colorbox-122407" alt="Ecran photo Samsung" src="assets/feeds_images/Ecran-photo-Samsung2-630x354.jpg" width="630" height="354" /></a></p>
+<p>Avec une montée en prix (et en gamme, n’ayant pas peur des mots) par rapport au Coolpix S800c, le Galaxy Camera aurait pu proposer les fichiers RAW, mais non, les photos sont directement enregistrées en JPEG.</p>
+<p>En vidéo, il propose le FullHD 1920x1080px à 30ips, de la haute fréquence 1280x720px à 60ips voire du slow motion grâce à un mode d’enregistrement en 768x512px à 120ips. De nombreux formats vidéo et audio sont proposés : AVI, MP4/3GP, WMV, FLV, MKV, WEBM, MP3, AAC, AMR, WMA, OGG, FLAC, 3GA/M4A, WAV.</p>
+<h1>Qualité photo</h1>
+<p>Le piqué du Galaxy Camera est plutôt moyen. Pas de super netteté, c’est même mou en grand angle où les effets de flare et de diffraction sont fréquents et prononcés dès qu’une source lumineuse approche ou est dans le champ.</p>
+<p>C’est en usage téléobjectif que le Galaxy Camera se révèle de bonne facture en proposant des images avec de nombreux détails même à bonne distance du sujet.</p>
+<p><a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/ecran-photo-zoom-samsung-2/" rel="attachment wp-att-122430"><img class="aligncenter size-medium wp-image-122430 colorbox-122407" alt="Ecran photo zoom Samsung" src="assets/feeds_images/Ecran-photo-zoom-Samsung1-630x354.jpg" width="630" height="354" /></a></p>
+<p>En terme de bruit, il reste raisonnable jusque ISO800 ce qui permet au Galaxy Camera de capturer des images de sujets se déplaçant un peu (par exemple parole ou marche) même s’il fait sombre. En revanche, il vaut mieux éviter de s’aventurer au-delà de ISO1600, l’ISO3200 étant vraiment un dernier recours.<br />
+La stabilisation optique fait son travail, mais trouve ses limites. De nuit et en mode auto, le Samsung privilégie une exposition longue à l’augmentation de la sensibilité et le système OIS est alors inefficace. Autant dire aussi qu’avec le zoom 21x, le moindre tremblement sera trop important pour être compensé.</p>
+<p><a href="http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/attachment/nuit-auto-4/" rel="attachment wp-att-122431"><img class="aligncenter size-medium wp-image-122431 colorbox-122407" alt="Nuit Auto" src="assets/feeds_images/EK-GC100_Nuit-Auto_1-630x472.jpg" width="630" height="472" /></a></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h1>Rapidité et réactivité</h1>
+<p>C’est avec une certaine lourdeur que le Galaxy Camera démarre. Malgré une configuration très à son avantage (processeur quadcore Exynos 1.4GHz et 1 Go de RAM), il se traîne et se lance presque 2 fois plus lentement que le Nikon en prenant jusqu’à 27 secondes.</p>
+<p>Heureusement, il se met aussi en veille et permet ensuite de reprendre des photos en 3 secondes, le temps que sorte l’objectif.</p>
+<p>Globalement, le Galaxy Camera est réactif et rapide, mais il est parfois même un peu trop sensible : la main agrippant l’appareil par la droite, l’écran est parfois en contact avec le pouce, activant inopinément le bouton Retour ou Accueil.</p>
+<h1>Autonomie</h1>
+<p>Avec une batterie de 1650mAh, le Galaxy Camera permet de faire 340 photos en norme CIPA.</p>
+<p>En utilisation touriste, mes tests montrent une autonomie d’environ 11h. Sur wifi environ 7h, par contre ne pas compter sur plus de 3h avec le géotaggage GPS activé. Activer la 3G permet de réduire d’un tiers les durées mentionnées…</p>
+<h1>En résumé</h1>
+<p>En apparence solide et très moderne, le Samsung Galaxy Camera donne des résultats assez corrects en photo, mais très variables selon les situations. Le zoom &#8211; pratique dès qu’il faut prendre des sujets lointains &#8211; ne donne en effet pas des résultats homogènes sur toutes les focales et la détection autofocus peut être aléatoire. Il reste toutefois au-dessus des photophones grâce à une formulation optique plus complexe et à la taille de son capteur.</p>
+<p>Il est en revanche très bien connecté avec l’alliance de la 3G au wifi. Attention toutefois à l’autonomie, car la mutliplication des liaisons sans-fil et le GPS réduisent très rapidement le niveau de batterie.</p>
+<p>Au final, un appareil polyvalent &#8211; qui peut servir de baladeur ou de mini-tablette &#8211; mais pas discret car visible par sa couleur blanche, et volumineux dans les poches.<br />
+Par ses imperfections, le prix public conseillé du Galaxy Camera semble gonflé (plus cher qu’une tablette !), mais l’offre de remboursement en cours (pourvu qu’elle dure !) la ramène à un prix raisonnable.</p>
+<p>Les plus</p>
+<ul>
+<li>Zoom de grande amplitude</li>
+<li>Version récente d’Android</li>
+<li>Ecran confortable</li>
+<li>Consommation optimisée</li>
+</ul>
+<p>Les moins</p>
+<ul>
+<li>Encombrant et voyant</li>
+<li>Stabilisation d’image efficace que sur les plages grand angle</li>
+<li>GPS énergivore</li>
+</ul>
+<p>&nbsp;</p>
+<table width="100%">
+<tbody>
+<tr>
+<td><strong>Ergonomie</strong> :</td>
+<td style="text-align: right;"><div class="hreview-aggregate"><strong>Note :</strong> 4 out of 5 stars</div></td>
+</tr>
+</tbody>
+</table>
+<p><em>Un écran large, une poignée, des sous-menus bien conçus dans l’ensemble et le recours à Jelly Bean (4.1.1) confèrent au Samsung Galaxy Caméra un appareil agréable à utiliser.</em></p>
+<table width="100%">
+<tbody>
+<tr>
+<td><strong>Qualité optique</strong> :</td>
+<td style="text-align: right;"><div class="hreview-aggregate"><strong>Note :</strong> 3 out of 5 stars</div></td>
+</tr>
+</tbody>
+</table>
+<p><em>L’objectif de Samsung a une grande amplitude de zoom, mais le “21x” ne fait pas tout et la qualité est variable. Dans l’ensemble, les détails ressortent mollement. La stabilisation est efficace mais connait ses limites dès qu’on zoome.</em></p>
+<table width="100%">
+<tbody>
+<tr>
+<td><b>Qualité d&rsquo;image</b> :</td>
+<td style="text-align: right;"><div class="hreview-aggregate"><strong>Note :</strong> 4 out of 5 stars</div></td>
+</tr>
+</tbody>
+</table>
+<p><em>Les images produites par le Samsung n’ont pas un très bon piqué : les détails ressortent légèrement floutés. Les autres défauts : un flare sur les sources lumineuses et des couleurs rapidement délavées s’il fait sombre.</em></p>
+<table width="100%">
+<tbody>
+<tr>
+<td><strong>Logiciel</strong> :</td>
+<td style="text-align: right;"><div class="hreview-aggregate"><strong>Note :</strong> 4 out of 5 stars</div></td>
+</tr>
+</tbody>
+</table>
+<p><em>Equipé d’Android 4.1 et disposant d’un grand écran de 4,8 pouces, le Samsung Galaxy Camera permet la plupart des usages de smartphones. La connectivité 3G – si vous avez une micro-SIM disponible – permet d’étendre les possibilité de partage en direc</em>t.</p>
+<table width="100%">
+<tbody>
+<tr>
+<td><strong>Performances</strong> :</td>
+<td style="text-align: right;"><div class="hreview-aggregate"><strong>Note :</strong> 3.5 out of 5 stars</div></td>
+</tr>
+</tbody>
+</table>
+<p><em>Très réactif sur les utilisations baladeur numérique, le Galaxy Camera se traine au lancement avec 27 secondes de temps de démarrage ! La sortie de mode veille fait aussi prendre du temps avec l’initialisation et la sortie de l’objectif. Néanmoins, cette architecture Exynos quadruple coeur est un des processeurs mobiles les plus puissants du marché.</em></p>
+<table width="100%">
+<tbody>
+<tr>
+<td><strong>Autonomie</strong> :</td>
+<td style="text-align: right;"><div class="hreview-aggregate"><strong>Note :</strong> 2.5 out of 5 stars</div></td>
+</tr>
+</tbody>
+</table>
+<p><em>Samsung a relativement bien optimisé l’autonomie du Galaxy Camera pour des utilisations en appareil photo simple ou en baladeur numérique. Mais des utilisations combinées, ou requérant la 3G ou le GPS, vident rapidement la batterie.</em></p>
+<h1></h1>
+<h1>Note finale</h1>
+<h3><div class="hreview-aggregate"><strong>Note :</strong> 3.5 out of 5 stars</div></h3>
+<p>&nbsp;</p>
+<p><strong>Test réalité par Richard Ying (<a target="_blank" href="https://fr.twitter.com/richardying" target="_blank">twitter</a>)</strong></p>
+<p>Richard Ying travaille sur les projets web et applications mobile d&rsquo;un groupe média. Blogueur vétéran (mais retraité), c&rsquo;est un amateur de photographie et de voyages, mais aussi de geekeries scifi+hightech.</p>
+]]></content:encoded>
+			<wfw:commentRss>http://www.frandroid.com/photo/122407_test-de-la-samsung-galaxy-camera/feed/</wfw:commentRss>
+		<slash:comments>26</slash:comments>
+		</item>
+		<item>
+		<title>Test du Nikon Coolpix S800c</title>
+		<link>http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/</link>
+		<comments>http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/#comments</comments>
+		<pubDate>Wed, 26 Dec 2012 10:13:41 +0000</pubDate>
+		<dc:creator>Ulrich Rozier</dc:creator>
+				<category><![CDATA[Photo]]></category>
+		<category><![CDATA[Test]]></category>
+		<category><![CDATA[Android]]></category>
+		<category><![CDATA[appareil photo]]></category>
+		<category><![CDATA[camera]]></category>
+		<category><![CDATA[Compact]]></category>
+		<category><![CDATA[Coolpix]]></category>
+		<category><![CDATA[Coolpix S800C]]></category>
+		<category><![CDATA[Nikon]]></category>
+		<category><![CDATA[Nikon COOLPIX S800c]]></category>
+		<category><![CDATA[S800c]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122084</guid>
+		<description><![CDATA[Nikon a été le premier à lancer un appareil photo sous Android avec le Coolpix S800c, mais qui reste avant tout un compact par sa taille et ses fonctionnalités principales. Equipé d’Android 2.3 (Gingerbread datant de février 2011), il propose un capteur 16 mégapixels allié à un zoom 10x, une connectivité WiFi, Bluetooth et un GPS ; le tout pour un prix public conseillé de 379 euros (au moment où j’écris, il peut se trouver... <a class="more-link" href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/">Lire la suite...</a>]]></description>
+				<content:encoded><![CDATA[<p><b id="internal-source-marker_0.04873263812623918">Nikon a été le premier à lancer un appareil photo sous Android avec le Coolpix S800c, mais qui reste avant tout un compact par sa taille et ses fonctionnalités principales.</b></p>
+<p><a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/dsc03570/" rel="attachment wp-att-122392"><img class="aligncenter size-medium wp-image-122392 colorbox-122084" alt="Nikon Coolpix S800c" src="assets/feeds_images/DSC03570-630x353.jpg" width="630" height="353" /></a></p>
+<p><b id="internal-source-marker_0.04873263812623918">Equipé d’Android 2.3 (Gingerbread datant de février 2011), il propose un capteur 16 mégapixels allié à un zoom 10x, une connectivité WiFi, Bluetooth et un GPS ; le tout pour un prix public conseillé de 379 euros (au moment où j’écris, il peut se trouver à 309 euros).<span id="more-122084"></span></b> <a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/dsc03581/" rel="attachment wp-att-122396"><img class="aligncenter size-medium wp-image-122396 colorbox-122084" alt="Nikon Coolpix S800c" src="assets/feeds_images/DSC03581-630x353.jpg" width="630" height="353" /></a></p>
+<p>Je n’ai malheureusement pas trouvé comment faire des captures d’écran dessus, ni comment activer le mode développeur, et vous devrez donc vous contenter de vues d’écran mal photographiées (il me manque deux bras supplémentaires).</p>
+<p><a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/dsc03569/" rel="attachment wp-att-122435"><img class="aligncenter size-medium wp-image-122435 colorbox-122084" alt="Boite Coolpix" src="assets/feeds_images/DSC03569-630x353.jpg" width="630" height="353" /></a></p>
+<h1><b id="internal-source-marker_0.04873263812623918"> Aspect général</b></h1>
+<p>Disponible en noir et en blanc, le Coolpix S800c ressemble à l’avant à un compact et à l’arrière à un petit smartphone Android.</p>
+<p><a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/dsc03583/" rel="attachment wp-att-122390"><img class="aligncenter size-medium wp-image-122390 colorbox-122084" alt="Coolpix Android" src="assets/feeds_images/DSC03583-630x353.jpg" width="630" height="353" /></a></p>
+<p>Il en a d’ailleurs une taille comparable.</p>
+<p><a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/comparaison-de-taille-du-nikon-coolpix-s800c-2/" rel="attachment wp-att-122391"><img class="aligncenter size-medium wp-image-122391 colorbox-122084" alt="Comparaison de taille du Nikon Coolpix S800c" src="assets/feeds_images/Photo_Comparaison-de-taille-du-Nikon-Coolpix-S800c_De-gauche-à-droite-un-Samsung-WB550-un-Nikon-Coolpix-S800c-un-Samsung-Galaxy-S-un-iPod-Touch-5e-génération1-630x420.jpg" width="630" height="420" /></a></p>
+<p style="text-align: center;">De gauche à droite: un Samsung WB550, un Nikon Coolpix S800c, un Samsung Galaxy S, un iPod Touch (5e génération)</p>
+<p>De par son format réduit et sa construction plastique, le Coolpix S800c est léger (184 grammes avec carte mémoire et batterie), mais n’a pas une bonne prise en main car démuni de partie antidérapante ou de surface suffisamment large pour le tenir sans gêner la prise de vue. Sans dragonne (fournie), un incident pourrait facilement arriver. <a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/photo_taille-et-ecran-du-nikon-coolpix-s800c_/" rel="attachment wp-att-122394"><img class="aligncenter size-medium wp-image-122394 colorbox-122084" alt="Photo_Taille et écran du Nikon Coolpix S800c_" src="assets/feeds_images/Photo_Taille-et-écran-du-Nikon-Coolpix-S800c_-630x472.jpg" width="630" height="472" /></a></p>
+<h1>Interfaces</h1>
+<p>L’appareil est pourvu de boutons physiques – Accueil, Retour et Menu – situés sur la droite de l’écran, d’un bouton marche/arrêt, d’un déclencheur et d’un sélecteur de zoom/dézoom. <a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/dsc03577/" rel="attachment wp-att-122393"><img class="aligncenter size-medium wp-image-122393 colorbox-122084" alt="DSC03577" src="assets/feeds_images/DSC03577-630x353.jpg" width="630" height="353" /></a>   Pour le reste tout se passe sur l’écran et les possesseurs d’appareils Android ne devraient pas être dépaysés. Cependant le système embarqué étant une version datée (2.3) d’Android, les personnes n’ayant connu que Android 4.x risquent d’être légèrement dépassées. Nikon proposera peut-être une mise à jour du système, mais rien de sûr… <a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/ecran-coolpix-2/" rel="attachment wp-att-122395"><img class="aligncenter size-medium wp-image-122395 colorbox-122084" alt="Ecran Coolpix" src="assets/feeds_images/Ecran-Coolpix1-630x353.jpg" width="630" height="353" /></a></p>
+<h1>Optique</h1>
+<p>Nikon propose un capteur CMOS de 1/2,3 pouce avec 16,79 mégapixels (4608 par 3456 pixels effectifs). Il est associé à un zoom optique NIKKOR 10x dont la focale varie de 4,5 à 45mm (équivalent en 35mm d’un objectif 25-250mm) pour une ouverture maximale de ƒ/3.2-5.8.</p>
+<p style="text-align: center;"><a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/zoom-a-45mm-4/" rel="attachment wp-att-122398"><img class="aligncenter size-medium wp-image-122398 colorbox-122084" alt="Zoom à 4,5mm" src="assets/feeds_images/COOLPIX-S800c_Zoom-à-45mm_3-630x472.jpg" width="630" height="472" /></a>  COOLPIX S800c - Zoom à 4,5mm</p>
+<p>  <a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/zoom-a-45mm-3/" rel="attachment wp-att-122397"><img class="aligncenter colorbox-122084" alt="Zoom à 45mm" src="assets/feeds_images/COOLPIX-S800c_Zoom-à-45mm_2-630x472.jpg" width="630" height="472" /></a></p>
+<p style="text-align: center;">COOLPIX S800c &#8211; Zoom à 45mm</p>
+<p>&nbsp;</p>
+<h1>Ecran</h1>
+<p>Extérieurement, l’écran du Coolpix S800c mesure 8,7 cm (3,5 pouces) et semble se rayer facilement (l’exemplaire de test que j’avais l’était d’ailleurs quand je l’ai découvert). <a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/dos-du-nikon-coolpix-s800c/" rel="attachment wp-att-122399"><img class="aligncenter size-medium wp-image-122399 colorbox-122084" alt="Dos du Nikon Coolpix S800c" src="assets/feeds_images/Photo_Dos-du-Nikon-Coolpix-S800c_-630x420.jpg" width="630" height="420" /></a></p>
+<p>Une fois allumé, l’écran OLED tactile (819000 pixels environ) semble donner des couleurs légèrement délavées. L’écran n’est pas un RVB mais un écran PenTile (avec une apparence bleutée caractéristique) qui donne un agencement RVBV des pixels, il y a plus de points, mais la définition est moindre.</p>
+<p>Autre explication de ces couleurs : le traitement anti-reflet, qui donnent une impression défavorable sur l’affichage alors qu’au final les images enregistrées sont tout à fait convenables. Un traitement glossy (à la place de l’anti-reflet) aurait peut-être limité cette impression.</p>
+<h1>Stockage</h1>
+<p style="text-align: left;">De base, l’appareil dispose d’environ 1,7Go de mémoire interne disponible pour l’utilisateur (sur un total de 4Go). Il dispose à côté de cela d’un slot pour carte SD (compatible SDHC mais pas MMC).</p>
+<p style="text-align: center;"><a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/dessous-du-nikon-coolpix-s800c/" rel="attachment wp-att-122400"><img class="aligncenter size-medium wp-image-122400 colorbox-122084" alt="Dessous du Nikon Coolpix S800c" src="assets/feeds_images/Photo_Dessous-du-Nikon-Coolpix-S800c_Vis-derrière-la-trappe-slot-SD-batterie-630x157.jpg" width="630" height="157" /></a> Vis derrière la trappe, slot SD, batterie</p>
+<h1>Connectivité</h1>
+<p>Le Coolpix S800c propose deux prises : une prise mini HDMI et une prise USB (3.0). La prise USB est toutefois un modèle UC-E6, non standard quand la plupart des appareils recourent au micro-USB.</p>
+<p><a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/profil-droit-du-nikon-coolpix-s800c/" rel="attachment wp-att-122402"><img class="aligncenter size-medium wp-image-122402 colorbox-122084" alt="Profil droit du Nikon Coolpix S800c" src="assets/feeds_images/Photo_Profil-droit-du-Nikon-Coolpix-S800c_Emplacement-de-la-prise-USB-type-UC-E6-fixation-de-la-dragonne-emplacement-de-la-prise-mini-HDMI-630x315.jpg" width="630" height="315" /></a></p>
+<p>&nbsp;</p>
+<p style="text-align: center;">Emplacement de la prise USB type UC-E6, fixation de la dragonne, emplacement de la prise mini-HDMI</p>
+<p>En connectivité sans-fil, l’appareil dispose du WiFi b/g/n et du Bluetooth 2.1+EDR. Malheureusement, l’appareil ne dispose pas d’une prise micro ou d’une prise casque. Pas non plus de 3G intégrée, Nikon explique et considère que l’on peut très bien partager la connexion du smartphone en WiFi et ainsi éviter de payer deux forfaits data, ce qui est un bon argument.</p>
+<h1>Modes photo et vidéo</h1>
+<p>Par défaut, le Coolpix S800c propose des prises de vue en mode Auto simplifié où flash intégré et exposition peuvent facilement être modifiés. Le mode Auto permet de choisir quelques options supplémentaires : sensibilités, balances des blancs, cadence (jusqu’à 8 images par seconde).</p>
+<p><a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/ecran-prise-de-vue-coolpix-2/" rel="attachment wp-att-122408"><img class="aligncenter size-medium wp-image-122408 colorbox-122084" alt="Ecran prise de vue Coolpix" src="assets/feeds_images/Ecran-prise-de-vue-Coolpix1-630x353.jpg" width="630" height="353" /></a></p>
+<p>Il propose à côté de cela de nombreux modes scènes (Portrait, Paysage, Sport, Portrait de nuit, Fête/intérieur, Plage, Neige, Coucher de soleil, Aurore/crépuscule, Paysage de nuit, Gros plan, Aliments, Feux d&rsquo;artifice, Reproduction N&amp;B, Contre-jour, Panoramique simplifié, Animaux domestiques) et des effets (qui sont en fait des filtres).</p>
+<p><a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/ecran-effets-coolpix-2/" rel="attachment wp-att-122409"><img class="aligncenter size-medium wp-image-122409 colorbox-122084" alt="Ecran effets Coolpix" src="assets/feeds_images/Ecran-effets-Coolpix1-630x353.jpg" width="630" height="353" /></a></p>
+<p>Pour le malheur de ceux qui voudraient éditer leurs images sur leur ordinateur, les photos sont directement compressées en JPEG et les formats RAW (données brutes du capteur permettant de retravailler davantage des images) ne sont pas proposés.</p>
+<p>En vidéo, le Coolpix permet d’avoir du Full HD (1920 x 1080 pixels en H.264/MPEG-4 AVC) en 30ips avec du son capturé en stéréo par les micros intégrés (format AAC stéréo).</p>
+<p><a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/ecran-video-coolpix-2/" rel="attachment wp-att-122411"><img class="aligncenter size-medium wp-image-122411 colorbox-122084" alt="Ecran vidéo Coolpix" src="assets/feeds_images/Ecran-vidéo-Coolpix1-630x353.jpg" width="630" height="353" /></a></p>
+<p>Il propose un autofocus en continu pendant la capture, mais le mécanisme d’autofocus peut s’entendre dans la séquence, mais cela ne gênera que peu de gens (un compact n’étant pas destiné à filmer des vidéos de qualité pro).</p>
+<h1>Qualité photo</h1>
+<p>Avec un écran aussi peu flatteur, le Coolpix S800c fait s’attendre au pire. Au final, il est dans la moyenne des appareils photos compacts de cette taille. Les sensibilités proposées varient de ISO125 à ISO3200, mais les images se dégradent dès ISO400. L’appareil s’utilise ainsi de façon optimale dans des environnement bien éclairés et restitue des images assez fidèles, d’autant plus que la balance des blancs est bien détectée.</p>
+<p>Le bloc optique de conception Nikon fait un travail fort correct et restitue un piqué correct dans ces conditions. Les ISO élevés sont en revanche à éviter car donnant des images délavées et perdant grandement en netteté. Doté d’une stabilisation optique (qui réduit les effets des tremblements du photographe), le Coolpix S800c laisse heureusement la possibilité de se limiter à ISO800 (où le bruit est perceptible mais raisonnable), limitant ainsi la perte de couleurs quand la lumière décline. Il faudra quand même éviter les flous de mouvement et retenir les enfants en place pour les photos de famille en intérieur.</p>
+<p><a href="http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/attachment/nuit-auto-3/" rel="attachment wp-att-122401"><img class="aligncenter size-medium wp-image-122401 colorbox-122084" alt="Nuit Auto" src="assets/feeds_images/COOLPIX-S800c_Nuit-Auto_1-630x472.jpg" width="630" height="472" /></a></p>
+<p style="text-align: center;">Nuit en automatique</p>
+<h1>Rapidité et réactivité</h1>
+<p>Lorsque l’on allume le Coolpix S800c (ce qui prend 15 secondes), il ne faut pas s’attendre à prendre la photo dans la foulée. Normal car ce n’est pas un reflex, mais il est vrai qu’une configuration un peu faible (processeur Cortex-A9 1GHz et 512 Mo de RAM) n’accélèrent pas le démarrage d’Android. Heureusement, une fois allumé, l’appareil se met en veille et l’attente est beaucoup plus courte avec environ 2 secondes de délai. Dans l’ensemble, l’appareil subit des lenteurs avec de nombreux messages “Veuillez patienter…”, quelques crashs d’applis système sont même à signaler. En mode photo, après un certain temps d’utilisation, les actions (que ce soit sur boutons ou sur écran) nécessitent parfois d’être répétées plusieurs fois avant d’être prises en compte.</p>
+<h1>Autonomie</h1>
+<p>L’autonomie du Nikon Coolpix S800c est relativement faible, la batterie EN-EL12 (1050 mAh) fournie ne permet selon la norme CIPA que de prendre 140 photos. En utilisation touriste (prises fréquentes mais pas en continu), j’ai eu environ 9 heures de photos. Attention, avec le WiFi en utilisation cela baisse à 5h30 et avec le géotaggage GPS activé vous en aurez à peine pour 2 heures !</p>
+<h1>En résumé</h1>
+<p>Un format réduit mais une finition imparfaite, une optique de qualité mais alliée à des réglages restreints de prise de vue, une exploitation d’Android réduite à cause d’une version datée et d’un écran trop petit, une intégration énergivore… Le Nikon Coolpix S800c est assez cher alors que des compacts similaires mais sans Android sont disponibles pour une centaine d’euros de moins.</p>
+<p>L’intégration du système lui vaut donc une inflation du coût, qui ne pourrait se justifier que sur les successeurs de ce modèle. A part son capteur et son zoom plus qualitatifs, il ne justifie pas non plus de se substituer à un photophone récent. De nombreux points sont ainsi encore à améliorer sur ce premier Nikon sous Android et les successeurs de ce modèle devraient être fort convenables.</p>
+<p>&nbsp;</p>
+<p><strong>Les plus</strong></p>
+<ul>
+<li>Optique de bonne qualité</li>
+<li>Fidélité des images</li>
+</ul>
+<p><strong>Les moins</strong></p>
+<ul>
+<li>Version d’Android datée</li>
+<li>Ecran médiocre</li>
+<li>Manque de réactivité</li>
+<li>Autonomie très réduite</li>
+<li>Prix relativement élevé</li>
+</ul>
+<p>&nbsp;</p>
+<table width="100%">
+<tbody>
+<tr>
+<td><strong>Design</strong> :</td>
+<td style="text-align: right;"><div class="hreview-aggregate"><strong>Note :</strong> 2 out of 5 stars</div></td>
+</tr>
+</tbody>
+</table>
+<p><em>Le Nikon Coolpix S800c est un compact de taille un peu juste pour une utilisation aisée d’Android, les commandes ne sont pas des plus intuitives avec des paramètres regroupés dans les menus, l’écran ne rend pas correctement les images.</em></p>
+<table width="100%">
+<tbody>
+<tr>
+<td><strong>Qualité optique</strong> :</td>
+<td style="text-align: right;"><div class="hreview-aggregate"><strong>Note :</strong> 3.5 out of 5 stars</div></td>
+</tr>
+</tbody>
+</table>
+<p><em>Le zoom intégré par Nikon donne dans l’ensemble des performances convenables sur toutes les focales, le système de stabilisation est un peu léger.</em></p>
+<table width="100%">
+<tbody>
+<tr>
+<td><b>Qualité d&rsquo;image</b> :</td>
+<td style="text-align: right;"><div class="hreview-aggregate"><strong>Note :</strong> 3.5 out of 5 stars</div></td>
+</tr>
+</tbody>
+</table>
+<p><em>Avec une optique de qualité, les images du Coolpix S800c restituent de façon plutôt fidèle la réalité. Il a toutefois tendance à tirer sur les couleurs chaudes dès que la sensibilité augmente même si la balance des blancs est relativement bien faite.</em></p>
+<table width="100%">
+<tbody>
+<tr>
+<td><strong>Logiciel</strong> :</td>
+<td style="text-align: right;"><div class="hreview-aggregate"><strong>Note :</strong> 1.5 out of 5 stars</div></td>
+</tr>
+</tbody>
+</table>
+<p><em>Ecran trop petit et recours à Gingerbread limitent les possibilités d’usages du système Android. Nikon manque d&rsquo;expérience avec Android.</em></p>
+<table width="100%">
+<tbody>
+<tr>
+<td><strong>Performances</strong> :</td>
+<td style="text-align: right;"><div class="hreview-aggregate"><strong>Note :</strong> 2 out of 5 stars</div></td>
+</tr>
+</tbody>
+</table>
+<p><em>Malgré un mode de mise en veille, le temps de démarrage est relativement long. Les commandes ne sont pas des plus réactives.</em></p>
+<table width="100%">
+<tbody>
+<tr>
+<td><strong>Autonomie</strong> :</td>
+<td style="text-align: right;"><div class="hreview-aggregate"><strong>Note :</strong> 1 out of 5 stars</div></td>
+</tr>
+</tbody>
+</table>
+<p><em>Le Nikon Coolpix S800c a une autonomie faible pour des composants somme toute peu puissants. Les connexions sans-fil et surtout le GPS sont de véritables gloutons et vident trop rapidement la batterie.</em></p>
+<h1></h1>
+<h1>Note finale</h1>
+<h3><div class="hreview-aggregate"><strong>Note :</strong> 2 out of 5 stars</div></h3>
+<p>&nbsp;</p>
+<p><strong>Test réalité par Richard Ying (<a target="_blank" href="https://fr.twitter.com/richardying" target="_blank">twitter</a>)</strong></p>
+<p>Richard Ying travaille sur les projets web et applications mobile d&rsquo;un groupe média. Blogueur vétéran (mais retraité), c&rsquo;est un amateur de photographie et de voyages, mais aussi de geekeries scifi+hightech.</p>
+]]></content:encoded>
+			<wfw:commentRss>http://www.frandroid.com/photo/122084_test-du-nikon-coolpix-s800c/feed/</wfw:commentRss>
+		<slash:comments>2</slash:comments>
+		</item>
+		<item>
+		<title>World of Goo est gratuit aujourd&#8217;hui sur l&#8217;Amazon App-Shop</title>
+		<link>http://www.frandroid.com/applications/jeux-android-applications/122491_world-of-goo-gratuitamazon-app-shop/</link>
+		<comments>http://www.frandroid.com/applications/jeux-android-applications/122491_world-of-goo-gratuitamazon-app-shop/#comments</comments>
+		<pubDate>Wed, 26 Dec 2012 10:13:26 +0000</pubDate>
+		<dc:creator>Edouard Marquez</dc:creator>
+				<category><![CDATA[Bons plans]]></category>
+		<category><![CDATA[Jeux]]></category>
+		<category><![CDATA[Amazon]]></category>
+		<category><![CDATA[amazon app shop]]></category>
+		<category><![CDATA[Amazon App Store]]></category>
+		<category><![CDATA[amazon appshop]]></category>
+		<category><![CDATA[Amazon Appstore]]></category>
+		<category><![CDATA[App Shop]]></category>
+		<category><![CDATA[bon plan]]></category>
+		<category><![CDATA[Jeu]]></category>
+		<category><![CDATA[World of Goo]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122491</guid>
+		<description><![CDATA[Un bon plan toujours inimaginable sur le Play Store. Le Play Store est aujourd&#8217;hui la boutique d&#8217;applications la plus complète sur Android. Un problème l&#8217;entache vraiment : une application qui devient gratuite, ne peut plus devenir payante. C&#8217;est ainsi qu&#8217;il n&#8217;est pas possible d&#8217;avoir des baisses de prix temporaires aussi aggressives que sur l&#8217;App Store d&#8217;Apple. Mais grâce à l&#8217;ouverture du système d&#8217;exploitation, il existe de très nombreux markets tiers, dont le plus important est... <a class="more-link" href="http://www.frandroid.com/applications/jeux-android-applications/122491_world-of-goo-gratuitamazon-app-shop/">Lire la suite...</a>]]></description>
+				<content:encoded><![CDATA[<p><strong>Un bon plan toujours inimaginable sur le Play Store.</strong></p>
+<p style="text-align: center;"><a href="http://www.frandroid.com/applications/jeux-android-applications/122491_world-of-goo-gratuitamazon-app-shop/attachment/framed_screenshot_2012-12-26-10-43-47/" rel="attachment wp-att-122492"><img class="aligncenter  wp-image-122492 colorbox-122491" alt="framed_Screenshot_2012-12-26-10-43-47" src="assets/feeds_images/framed_Screenshot_2012-12-26-10-43-47-630x1094.jpg" width="302" height="525" /></a></p>
+<p>Le Play Store est aujourd&rsquo;hui la boutique d&rsquo;applications la plus complète sur Android. Un problème l&rsquo;entache vraiment : une application qui devient gratuite, ne peut plus devenir payante. C&rsquo;est ainsi qu&rsquo;il n&rsquo;est pas possible d&rsquo;avoir des baisses de prix temporaires aussi aggressives que sur l&rsquo;App Store d&rsquo;Apple. Mais grâce à l&rsquo;ouverture du système d&rsquo;exploitation, il existe de très nombreux markets tiers, dont le plus important est tenu par Amazon : l&rsquo;App Shop (ou Amazon AppStore en dehors des frontières françaises).<span id="more-122491"></span></p>
+<p>Chaque jour, une application devient gratuite, via &laquo;&nbsp;l&rsquo;Application gratuite du jour&nbsp;&raquo;. Aujourd&rsquo;hui, c&rsquo;est au tour du célèbre jeu World of Goo de passer gratuit (3,99 € sur le Play Store). Si vous ne connaissez pas ce jeu indépendant, il s&rsquo;agit d&rsquo;un puzzle-game dans lequel vous allez devoir amener un certain nombre de boules noires (les Goos) vers un tuyau qui va les aspirer. Les Goos ont une particularité : ils peuvent créer des liaisons entre eux, permettant ainsi de créer des structures qui vont permettront d&rsquo;aller jusqu&rsquo;au tuyau. De niveau en niveau, la difficulté se corse, mais reste toujours très accessible :</p>
+<p><a href="http://www.frandroid.com/applications/jeux-android-applications/122491_world-of-goo-gratuitamazon-app-shop/attachment/framed_screenshot_2012-12-26-10-53-27/" rel="attachment wp-att-122493"><img class="aligncenter size-medium wp-image-122493 colorbox-122491" alt="framed_Screenshot_2012-12-26-10-53-27" src="assets/feeds_images/framed_Screenshot_2012-12-26-10-53-27-630x362.jpg" width="630" height="362" /></a></p>
+]]></content:encoded>
+			<wfw:commentRss>http://www.frandroid.com/applications/jeux-android-applications/122491_world-of-goo-gratuitamazon-app-shop/feed/</wfw:commentRss>
+		<slash:comments>23</slash:comments>
+		</item>
+		<item>
+		<title>Finalement, le Oppo Find 5 sortira en Europe !</title>
+		<link>http://www.frandroid.com/actualites-generales/122481_finalement-le-oppo-find-5-sort-en-europe/</link>
+		<comments>http://www.frandroid.com/actualites-generales/122481_finalement-le-oppo-find-5-sort-en-europe/#comments</comments>
+		<pubDate>Wed, 26 Dec 2012 01:42:14 +0000</pubDate>
+		<dc:creator>Tony Balt</dc:creator>
+				<category><![CDATA[Actualités Générales]]></category>
+		<category><![CDATA[Android]]></category>
+		<category><![CDATA[Europe]]></category>
+		<category><![CDATA[find 5]]></category>
+		<category><![CDATA[oppo]]></category>
+		<category><![CDATA[Oppo Find 5]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122481</guid>
+		<description><![CDATA[Oppo l&#8217;a annoncé officiellement, le Find 5 sortira en Europe. Finalement il semblerait que Oppo ait plus d&#8217;une corde à son arc, le constructeur vient d&#8217;annoncer qu&#8217;il allait finalement aussi investir le marché européen avec son smartphone sous la forme d&#8217;un nouveau modèle 32 Go. Nouveau ? Oui il s&#8217;agit d&#8217;un tout autre modèle, étant donné que Oppo avait évoqué ne pas pouvoir répondre à la demande d&#8217;une commercialisation mondiale pour sa version 16 Go, néanmoins... <a class="more-link" href="http://www.frandroid.com/actualites-generales/122481_finalement-le-oppo-find-5-sort-en-europe/">Lire la suite...</a>]]></description>
+				<content:encoded><![CDATA[<p>Oppo l&rsquo;a annoncé officiellement, le <a href="http://www.frandroid.com/actualites-generales/120995_oppo-le-find-5-est-officiel-et-arrivera-en-janvier-en-chine/">Find 5</a> sortira en Europe.</p>
+<p style="text-align: center;"><a target="_blank" href="assets/feeds_images/android-oppo-find-5-32-go-europe-image-1.jpg"><img class=" wp-image-122483 aligncenter colorbox-122481" alt="android-oppo-find-5-32-go-europe-image-1" src="assets/feeds_images/android-oppo-find-5-32-go-europe-image-1-630x364.jpg" width="567" height="328" /></a></p>
+<p>Finalement il semblerait que Oppo ait plus d&rsquo;une corde à son arc, le constructeur vient d&rsquo;annoncer qu&rsquo;il allait finalement aussi investir le marché européen avec son smartphone sous la forme d&rsquo;un nouveau modèle 32 Go. Nouveau ? Oui il s&rsquo;agit d&rsquo;un tout autre modèle, étant donné que Oppo avait évoqué <a href="http://www.frandroid.com/actualites-generales/121826_oppo-find-5-leurope-ne-sera-pas-servie/">ne pas pouvoir répondre à la demande</a> d&rsquo;une commercialisation mondiale pour sa version 16 Go, néanmoins ce modèle 32 Go change la donne.</p>
+<p>La totalité des pays concernés sont le Canada, le Royaume-Uni, l&rsquo;Espagne, l&rsquo;Australie, l&rsquo;Allemagne, la France, la Belgique, la Malaisie, la Suède, Singapour, la Finlande, la Grèce, le Danemark, la Nouvelle-Zélande, la Norvège, le Japon et Hong Kong. Oppo aurait également déclaré qu&rsquo;il s&rsquo;agit d&rsquo;une liste partielle et qu&rsquo;elle pourrait s&rsquo;agrandir dans les prochaines semaines, ainsi on imagine qu&rsquo;elle évoluera en fonction des stocks disponibles.<span id="more-122481"></span></p>
+<p><span style="text-decoration: underline;">Retour sur la fiche technique :</span></p>
+<ul>
+<li>Android 4.1.2 Jelly Bean</li>
+<li>Ecran tactile IPS de 5 pouces</li>
+<li>Résolution Full HD (1080 x 1920 pixels)</li>
+<li>Architecture quadruple-coeur Snapdragon S4 Pro (APQ8064)</li>
+<li>Puce graphique Adreno 320 et 2 Go de mémoire vive (RAM)</li>
+<li>Appareil photo (HDR et F/2.2 lens) de 13 mégapixels</li>
+<li>NFC, WiFi, Bluetooth, GPS/A-GPS, 3G (HSPA+) et 4G (LTE)</li>
+<li>Dimensions 141.8 x 68.8 x 8.86mm</li>
+<li>Batterie de 2500 mAh</li>
+</ul>
+<p>La date de sortie n&rsquo;a pas exactement été précisée, mais on parle de début 2013.<br />
+Son prix de vente serait de 569 dollars (soit 431 euros) pour le modèle 32 Go.</p>
+<p>source <a target="_blank" href="https://www.facebook.com/photo.php?fbid=190874347719610&amp;set=a.184452371695141.46105.180203662120012&amp;type=1&amp;theater">Facebook Oppo</a><br />
+<em>Merci à <strong>Sacha</strong> pour l&rsquo;info !</em></p>
+]]></content:encoded>
+			<wfw:commentRss>http://www.frandroid.com/actualites-generales/122481_finalement-le-oppo-find-5-sort-en-europe/feed/</wfw:commentRss>
+		<slash:comments>44</slash:comments>
+		</item>
+
+		<item>
+		<title>Oppo Ulike 2, le premier mobile avec une webcam de 5 mpx</title>
+		<link>http://www.frandroid.com/actualites-generales/122377_oppo-ulike-2-le-premier-smartphone-avec-une-camera-frontale-de-5-megapixels-sous-android/</link>
+		<comments>http://www.frandroid.com/actualites-generales/122377_oppo-ulike-2-le-premier-smartphone-avec-une-camera-frontale-de-5-megapixels-sous-android/#comments</comments>
+		<pubDate>Tue, 25 Dec 2012 10:14:40 +0000</pubDate>
+		<dc:creator>Tony Balt</dc:creator>
+				<category><![CDATA[Actualités Générales]]></category>
+		<category><![CDATA[Android]]></category>
+		<category><![CDATA[chine]]></category>
+		<category><![CDATA[oppo]]></category>
+		<category><![CDATA[oppo ulike 2]]></category>
+		<category><![CDATA[ulike 2]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122377</guid>
+		<description><![CDATA[Actuellement en cours de lancement sur le territoire chinois, voici le Oppo Ulike 2. Et en effet, le Ulike 2 serait bel et bien le premier smartphone Android au monde à inclure une caméra frontale de 5 mégapixels, là où les autres constructeurs stagnent encore à ce jour autour des 1.3 et 2 mégapixels. Ici, il est difficile de parler de révolution, néanmoins on peut tout de même qualifier cela telle une évolution technique puisque... <a class="more-link" href="http://www.frandroid.com/actualites-generales/122377_oppo-ulike-2-le-premier-smartphone-avec-une-camera-frontale-de-5-megapixels-sous-android/">Lire la suite...</a>]]></description>
+				<content:encoded><![CDATA[<p>Actuellement en cours de lancement sur le territoire chinois, voici le <strong>Oppo Ulike 2</strong>.</p>
+<p style="text-align: center;"><a target="_blank" href="assets/feeds_images/android-oppo-ulike-2-chine-image-0.jpg"><img class=" wp-image-122378 aligncenter colorbox-122377" alt="android-oppo-ulike-2-chine-image-0" src="assets/feeds_images/android-oppo-ulike-2-chine-image-0.jpg" width="558" height="377" /></a></p>
+<p>Et en effet, le Ulike 2 serait bel et bien le premier smartphone Android au monde à inclure une caméra frontale de 5 mégapixels, là où les autres constructeurs stagnent encore à ce jour autour des 1.3 et 2 mégapixels.</p>
+<p><span id="more-122377"></span>Ici, il est difficile de parler de révolution, néanmoins on peut tout de même qualifier cela telle une évolution technique puisque d&rsquo;un coté il ne serait pas impossible que Oppo inspire d&rsquo;autres fabricants à adopter ce type de caméras frontales dans un futur proche. Evidemment, le nombre de pixels ne veut clairement rien dire .. il faut plus se fier à la qualité propre de ses pixels pour s&rsquo;en faire une opinion concise.</p>
+<p>Quant aux autres caractéristiques techniques, l&rsquo;Oppo Ulike 2 se compose :</p>
+<ul>
+<li>de la version d&rsquo;Android 4.0</li>
+<li>d&rsquo;un écran tactile LCD de 4.5 pouces</li>
+<li>en résolution qHD (540 x 960 pixels)</li>
+<li>1 Go de mémoire vive (RAM)</li>
+<li>caméra frontale (webcam) de 5 mégapixels</li>
+<li>appareil photo (arrière) de 8 mégapixels</li>
+<li>16 Go de mémoire interne</li>
+<li>le premier à être compatible <a target="_blank" href="http://en.wikipedia.org/wiki/TD-SCDMA">TD-SCDMA</a></li>
+<li>batterie de 2020 mAh</li>
+</ul>
+<p>Avec la conversion, le Ulike 5 est vendu autour des 370 dollars en Chine.<br />
+Aucune information communiquée sur une éventuelle sortie dans le monde.</p>
+<p>via <a target="_blank" href="http://cn.engadget.com/2012/12/20/oppo-ulike-2-2298/">Engadget Chinese</a></p>
+]]></content:encoded>
+			<wfw:commentRss>http://www.frandroid.com/actualites-generales/122377_oppo-ulike-2-le-premier-smartphone-avec-une-camera-frontale-de-5-megapixels-sous-android/feed/</wfw:commentRss>
+		<slash:comments>24</slash:comments>
+		</item>
+		<item>
+		<title>Google : des fonds d&#8217;écran Android sur le thème de noël</title>
+		<link>http://www.frandroid.com/actualites-generales/122366_google-des-fonds-decran-android-sur-le-theme-de-noel/</link>
+		<comments>http://www.frandroid.com/actualites-generales/122366_google-des-fonds-decran-android-sur-le-theme-de-noel/#comments</comments>
+		<pubDate>Tue, 25 Dec 2012 09:02:12 +0000</pubDate>
+		<dc:creator>Tony Balt</dc:creator>
+				<category><![CDATA[Actualités Générales]]></category>
+		<category><![CDATA[Android]]></category>
+		<category><![CDATA[carte de vœux]]></category>
+		<category><![CDATA[fond d'écran]]></category>
+		<category><![CDATA[noel]]></category>
+		<category><![CDATA[wallpaper]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122366</guid>
+		<description><![CDATA[Disponible depuis quelques jours, j&#8217;attendais le jour de noël pour vous partager ses cartes de noël sur le thème d&#8217;Android. Publié par Google sur sa page officielle Nexus, ses cartes de vœux électroniques peuvent également être utilisées à d&#8217;autres fins, tels des fonds d&#8217;écran et même des posters grand format. Pour télécharger les modèles en grand format, rendez-vous à cette adresse. source Google Nexus]]></description>
+				<content:encoded><![CDATA[<p>Disponible depuis quelques jours, j&rsquo;attendais le jour de noël pour vous partager ses cartes de noël sur le thème d&rsquo;Android.</p>
+<p style="text-align: center;"><a target="_blank" href="assets/feeds_images/Nexus_fireplace_front-1.jpg"><img class=" wp-image-122367 aligncenter colorbox-122366" alt="Nexus_fireplace_front-1" src="assets/feeds_images/Nexus_fireplace_front-1.jpg" width="567" height="385" /></a></p>
+<p>Publié par Google sur sa page officielle Nexus, ses cartes de vœux électroniques peuvent également être utilisées à d&rsquo;autres fins, tels des fonds d&rsquo;écran et même des posters grand format.<span id="more-122366"></span></p>
+<p style="text-align: center;"><a target="_blank" href="assets/feeds_images/Nexus_skating_front-1.jpg"><img class=" wp-image-122370 aligncenter colorbox-122366" alt="Nexus_skating_front-1" src="assets/feeds_images/Nexus_skating_front-1.jpg" width="567" height="385" /></a> <a target="_blank" href="assets/feeds_images/Nexus_igloo_front-1.jpg"><img class=" wp-image-122369 aligncenter colorbox-122366" alt="Nexus_igloo_front-1" src="assets/feeds_images/Nexus_igloo_front-1.jpg" width="567" height="385" /></a> <a target="_blank" href="assets/feeds_images/Nexus_campfire_front-1.jpg"><img class=" wp-image-122368 aligncenter colorbox-122366" alt="Nexus_campfire_front-1" src="assets/feeds_images/Nexus_campfire_front-1.jpg" width="428" height="630" /></a></p>
+<p>Pour télécharger les modèles en grand format, rendez-vous à <a target="_blank" href="https://plus.google.com/u/0/+Nexus/posts/TdSWAiaPSTJ">cette adresse</a>.</p>
+<p>source <a target="_blank" href="https://plus.google.com/u/0/+Nexus/posts/TdSWAiaPSTJ">Google Nexus</a></p>
+]]></content:encoded>
+			<wfw:commentRss>http://www.frandroid.com/actualites-generales/122366_google-des-fonds-decran-android-sur-le-theme-de-noel/feed/</wfw:commentRss>
 		<slash:comments>4</slash:comments>
+		</item>
 
+		<item>
+		<title>Android 4.1.1 en cours de déploiement sur le HTC One S</title>
+		<link>http://www.frandroid.com/actualites-generales/122344_android-4-1-1-en-cours-de-deploiement-sur-le-htc-one-s/</link>
+		<comments>http://www.frandroid.com/actualites-generales/122344_android-4-1-1-en-cours-de-deploiement-sur-le-htc-one-s/#comments</comments>
+		<pubDate>Mon, 24 Dec 2012 14:05:41 +0000</pubDate>
+		<dc:creator>Edouard Marquez</dc:creator>
+				<category><![CDATA[Actualités Générales]]></category>
+		<category><![CDATA[Android]]></category>
+		<category><![CDATA[HTC]]></category>
+		<category><![CDATA[htc one s]]></category>
+		<category><![CDATA[mise à jour]]></category>
+		<category><![CDATA[one s]]></category>
+		<category><![CDATA[update]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122344</guid>
+		<description><![CDATA[HTC délivre un beau cadeau juste avant Noël. Vous n&#8217;y croyiez plus ? HTC a enfin réussi l&#8217;impossible : déployer la mise à jour vers Android 4.1.1 sur le HTC One S ! A quelques heures de Noël, voilà qui fera plaisir à plus d&#8217;un ! Au niveau du changelog, on retrouve : - Android 4.1.1 et HTC Sense 4+ - Nouvelle interface pour l&#8217;application Appareil Photo - Nouvelle page d&#8217;accueil et classement des photos... <a class="more-link" href="http://www.frandroid.com/actualites-generales/122344_android-4-1-1-en-cours-de-deploiement-sur-le-htc-one-s/">Lire la suite...</a>]]></description>
+				<content:encoded><![CDATA[<p>HTC délivre un beau cadeau juste avant Noël.</p>
+<p style="text-align: center;"><a href="http://www.frandroid.com/actualites-generales/122344_android-4-1-1-en-cours-de-deploiement-sur-le-htc-one-s/attachment/a-4i6ozcyaapwgz-jpg-large/" rel="attachment wp-att-122345"><img class="aligncenter  wp-image-122345 colorbox-122344" alt="A-4i6oZCYAAPWgz.jpg-large" src="assets/feeds_images/A-4i6oZCYAAPWgz.jpg-large.jpeg" width="378" height="672" /></a></p>
+<p>Vous n&rsquo;y croyiez plus ? HTC a enfin réussi l&rsquo;impossible : déployer la mise à jour vers Android 4.1.1 sur le HTC One S ! A quelques heures de Noël, voilà qui fera plaisir à plus d&rsquo;un ! Au niveau du changelog, on retrouve :</p>
+<blockquote><p>- Android 4.1.1 et HTC Sense 4+<br />
+- Nouvelle interface pour l&rsquo;application Appareil Photo<br />
+- Nouvelle page d&rsquo;accueil et classement des photos par événement ou sur une carte dans la Galerie<br />
+- Optimisation de la batterie<span id="more-122344"></span></p></blockquote>
+<p>N&rsquo;hésitez pas à <a target="_blank" href="http://forum.frandroid.com/topic/102909-les-mise-a-jour-du-htc-one-s-discussion/page__st__1140" target="_blank">vous rendre sur le forum</a> pour obtenir plus d&rsquo;informations.</p>
+<p>Merci à <a target="_blank" href="https://twitter.com/sebgob" target="_blank">@sebgob</a> de nous l&rsquo;avoir signalé, mais aussi aux <a target="_blank" href="http://forum.frandroid.com/topic/102909-les-mise-a-jour-du-htc-one-s-discussion/page__st__1140" target="_blank">membres du forum</a>.</p>
+<p>&nbsp;</p>
+]]></content:encoded>
+			<wfw:commentRss>http://www.frandroid.com/actualites-generales/122344_android-4-1-1-en-cours-de-deploiement-sur-le-htc-one-s/feed/</wfw:commentRss>
+		<slash:comments>90</slash:comments>
 		</item>
 		<item>
-		<title>Scientipole Initiative fête ses 10 ans</title>
-		<link>http://fr.techcrunch.com/2012/03/26/scientipole-initiative-fete-ses-10-ans/</link>
-		<comments>http://fr.techcrunch.com/2012/03/26/scientipole-initiative-fete-ses-10-ans/#comments</comments>
-		<pubDate>Mon, 26 Mar 2012 09:18:26 +0000</pubDate>
-		<dc:creator>Julien Mechin</dc:creator>
-
-				<category><![CDATA[Non classé]]></category>
-		<category><![CDATA[scientipole initiative]]></category>
-
-		<guid isPermaLink="false">http://fr.techcrunch.com/?p=23841</guid>
-		<description><![CDATA[<a href="http://fr.techcrunch.com/wp-content/uploads/2012/03/scientipole.png"><img class="alignleft size-full wp-image-23845" title="scientipole" src="http://fr.techcrunch.com/wp-content/uploads/2012/03/scientipole.png" alt="" width="377" height="91" /><a href="http://10ans-scientipole-initiative.org">Scientipôle Initiative</a> est une association dont le but est de financer les startups innovantes en Ile de France. Membre de France Initiative, premier réseau de financement et d’accompagnement des entreprises en France, Scientipôle Initiative apporte une solution de financement par le biais du prêt d’honneur depuis 10 ans !
-]]></description>
-			<content:encoded><![CDATA[<p><a href="http://fr.techcrunch.com/wp-content/uploads/2012/03/scientipole.png"><img class="alignleft size-full wp-image-23845" title="scientipole" src="http://fr.techcrunch.com/wp-content/uploads/2012/03/scientipole.png" alt="" width="377" height="91" /></a><a href="http://10ans-scientipole-initiative.org">Scientipôle Initiative</a> est une association dont le but est de financer les startups innovantes en Ile de France. Membre de France Initiative, premier réseau de financement et d’accompagnement des entreprises en France, Scientipôle Initiative apporte une solution de financement par le biais du prêt d’honneur depuis 10 ans !</p>
-<p>Le prêt d’honneur est un prêt à taux 0 que peut recevoir tout créateur d’entreprise, sans garantie personnelle et dont le montant peut aller jusqu’à 60 000 euros par entreprise. L’objectif du prêt d’honneur est d’amorcer la commercialisation d’un produit ou d’une technologie en vue d’un effet de levier pour l’obtention de prêts bancaires.</p>
-<p>Pour prétendre à ce type de prêt, l&#8217;entreprise doit avoir moins de 3 ans, être installée en Ile de France, proposer une innovation, et posséder un potentiel de créations d&#8217;emplois.</p>
-<p>Pour fêter sa 10ème année de soutien aux start up, Scientipôle Initiative organise un évènement de 14h à 19h le 28 Mars à l’hôtel de ville de Paris. Le <a href="http://www.10ans-scientipole-initiative.org/programme.html">programme</a> annonce la venue de Raoul Mallart, Directeur Business Developpement d&#8217;Archos, ou encore de Rafi Haladjian, fondateur de Nabaztag. Les inscriptions sont <a href="http://www.10ans-scientipole-initiative.org/inscription.html">ici</a> et l&#8217;actualité du Scientipole est <a href="https://twitter.com/#!/ScientInitiativ">là. </a></p>
-<p><iframe width="560" height="315" src="http://www.youtube.com/embed/CqV0Uo6H1bU" frameborder="0" allowfullscreen></iframe></p>
+		<title>Une vidéo du Sony Xperia T sous Jelly Bean</title>
+		<link>http://www.frandroid.com/actualites-generales/122239_une-video-du-sony-xperia-t-sous-jelly-bean/</link>
+		<comments>http://www.frandroid.com/actualites-generales/122239_une-video-du-sony-xperia-t-sous-jelly-bean/#comments</comments>
+		<pubDate>Mon, 24 Dec 2012 13:33:12 +0000</pubDate>
+		<dc:creator>Edouard Marquez</dc:creator>
+				<category><![CDATA[Actualités Générales]]></category>
+		<category><![CDATA[Android 4.1.2]]></category>
+		<category><![CDATA[jelly bean]]></category>
+		<category><![CDATA[sony xperia t]]></category>
+		<category><![CDATA[xperia t]]></category>
+		<guid isPermaLink="false">http://www.frandroid.com/?p=122239</guid>
+		<description><![CDATA[&#8230;mais qui n&#8217;arrivera qu&#8217;en février/mars sur les téléphones. En cette veille de Noël, les bonnes nouvelles se multiplient pour les possesseurs de smartphones Sony. Après la nouvelle version du launcher, voici une vidéo du Sony Xperia T qui utilise Android 4.1.2 (Jelly Bean). Certes ce n&#8217;est pas la dernière version proposée par Google, mais Sony Mobile a concocté de nombreuses nouveautés et modifications de l&#8217;interface. Cette version qui est encore en développement montre notamment le... <a class="more-link" href="http://www.frandroid.com/actualites-generales/122239_une-video-du-sony-xperia-t-sous-jelly-bean/">Lire la suite...</a>]]></description>
+				<content:encoded><![CDATA[<p><strong>&#8230;mais qui n&rsquo;arrivera qu&rsquo;en février/mars sur les téléphones.</strong></p>
+<p><a href="http://www.frandroid.com/actualites-generales/122239_une-video-du-sony-xperia-t-sous-jelly-bean/attachment/screen-shot-2012-12-24-at-10-53-47-am/" rel="attachment wp-att-122242"><img class="aligncenter size-medium wp-image-122242 colorbox-122239" alt="Screen Shot 2012-12-24 at 10.53.47 AM" src="assets/feeds_images/Screen-Shot-2012-12-24-at-10.53.47-AM-630x353.jpg" width="630" height="353" /></a></p>
+<p>En cette veille de Noël, les bonnes nouvelles se multiplient pour les possesseurs de smartphones Sony. <a href="http://www.frandroid.com/actualites-generales/122234_launcher-sony-xperia-z/" target="_blank">Après la nouvelle version du launcher</a>, voici une vidéo du Sony Xperia T qui utilise Android 4.1.2 (Jelly Bean). Certes ce n&rsquo;est pas la dernière version proposée par Google, mais Sony Mobile a concocté de nombreuses nouveautés et modifications de l&rsquo;interface.</p>
+<p>Cette version qui est encore en développement montre notamment le nouvel écran de déverrouillage avec une nouvelle animation, l&rsquo;ajout d&rsquo;un mode &laquo;&nbsp;Superior Auto&nbsp;&raquo; dans l&rsquo;application Appareil photo ou encore l&rsquo;ajout du mode ClearAudio+ pour la musique. On note également que l&rsquo;application Téléphone utilise maintenant un thème clair.<span id="more-122239"></span></p>
 ]]></content:encoded>
-			<wfw:commentRss>http://fr.techcrunch.com/2012/03/26/scientipole-initiative-fete-ses-10-ans/feed/</wfw:commentRss>
-		<slash:comments>1</slash:comments>
-
-		</item>
-		<item>
-		<title>TCFR – Le zapping de la semaine</title>
-		<link>http://fr.techcrunch.com/2012/03/23/tcfr-%e2%80%93-le-zapping-de-la-semaine-2/</link>
-		<comments>http://fr.techcrunch.com/2012/03/23/tcfr-%e2%80%93-le-zapping-de-la-semaine-2/#comments</comments>
-		<pubDate>Fri, 23 Mar 2012 18:24:35 +0000</pubDate>
-		<dc:creator>Cedric O'Neill</dc:creator>
-
-				<category><![CDATA[Non classé]]></category>
-		<category><![CDATA[startup]]></category>
-		<category><![CDATA[tcfr]]></category>
-		<category><![CDATA[zapping]]></category>
-
-		<guid isPermaLink="false">http://fr.techcrunch.com/?p=23832</guid>
-		<description><![CDATA[<img class="alignleft" src="http://fr.techcrunch.com/wp-content/uploads/2011/11/bref.jpg" alt="" width="245" height="183" />- La startup française <strong>Sofun Gaming</strong> a introduit cette semaine les mises d'argent sur son site de paris sportifs communautaire <a href="http://www.betkup.fr/">Betkup</a>. Parallèlement à cette introduction, le site offre également un plus grand choix de compétitions sportives sur lesquelles parier.
-
-- Antoine Vialle, serial entrepreneur vient de cartographier les aides et subventions disponibles en France pour les créateurs d'entreprise. Chaque ligne correspond au niveau de maturité d'une société. Vous pourrez la retrouver à <a href="http://www.aides-creation.fr/offre-speacuteciale-internet.html">cette adresse</a>.]]></description>
-			<content:encoded><![CDATA[<p><img class="alignleft" src="http://fr.techcrunch.com/wp-content/uploads/2011/11/bref.jpg" alt="" width="245" height="183" />- La startup française <strong>Sofun Gaming</strong> a introduit cette semaine les mises d&#8217;argent sur son site de paris sportifs communautaire <a href="http://www.betkup.fr/">Betkup</a>. Parallèlement à cette introduction, le site offre également un plus grand choix de compétitions sportives sur lesquelles parier.</p>
-<p>- Antoine Vialle, serial entrepreneur vient de cartographier les aides et subventions disponibles en France pour les créateurs d&#8217;entreprise. Chaque ligne correspond au niveau de maturité d&#8217;une société. Vous pourrez la retrouver à <a href="http://www.aides-creation.fr/offre-speacuteciale-internet.html">cette adresse</a>.</p>
-<p>- <a href="http://www.youseemii.fr/" target="_blank">Youseemii </a>présente sa nouvelle version, avec un nouveau design, et surtout une nouvelle expérience utilisateur. Désormais, le logiciel permet aussi d&#8217;analyser sa présence web sur Foursquare, Google +, Dailymotion, Vimeo, et même auprès des kiosques Relay.</p>
-<p>-Le réseau social mobile <a href="https://path.com/">Path</a> lève 20 millions de dollars. Le réseau social de partage de photos limité à 50 contacts et disponible exclusivement sur l’appli iPhone du même nom serait ainsi valorisé 250M$.</p>
-<p>- <a href="http://www.bedycasa.com/">BedyCasa</a> gagne les Travel d’Or dans la catégorie start-up, qui récompense les meilleurs sites d’e-tourisme. Bedycasa, permet la location de chambres chez l’habitant.</p>
-<p>-<a href="https://seesmic.com/">Seesmic</a> annonce une vague de licenciements. La start-up fondée par <strong>Loïc Le Meur</strong>, organisateur de la conférence <strong>LeWeb</strong> devrait licencier 18 personnes faute de business model viable.</p>
-<p>-<a href="http://www.easy-verres.com/">Easy-verres</a>, l’opticien low cost qui compterait près de 750 opticiens partenaires vient de lever 1M€.</p>
-<p>- <a href="http://www.illicotravel.com/" target="_blank">illicotravel</a>, le comparateur de vols et de voyages online vient de lancer une nouvelle version de son interface.</p>
-<p>-<strong> <a href="http://www.royalcactus.com/">Royal Cactus</a></strong>, spécialiste du jeu en ligne communautaire, vient de lever 500 000 euros auprès du fonds d&#8217;investissement <strong>XAnge Private Equity</strong>. Objectif affiché : devenir un des leaders français du Social Gaming en menant une stratégie cross-channel.</p>
-]]></content:encoded>
-			<wfw:commentRss>http://fr.techcrunch.com/2012/03/23/tcfr-%e2%80%93-le-zapping-de-la-semaine-2/feed/</wfw:commentRss>
-
-		<slash:comments>3</slash:comments>
+			<wfw:commentRss>http://www.frandroid.com/actualites-generales/122239_une-video-du-sony-xperia-t-sous-jelly-bean/feed/</wfw:commentRss>
+		<slash:comments>19</slash:comments>
 		</item>
 	</channel>
 </rss>
+<!-- generated in 0.344 seconds -->
+<!-- Served from: _ @ 2012-12-27 16:14:56 by W3 Total Cache -->

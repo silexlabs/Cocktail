@@ -7,6 +7,8 @@
 */
 package cocktail.core.html;
 
+using cocktail.core.utils.Utils;
+import cocktail.core.css.CascadeManager;
 import cocktail.core.css.CSSStyleDeclaration;
 import cocktail.core.css.InitialStyleDeclaration;
 import cocktail.core.dom.Attr;
@@ -25,9 +27,9 @@ import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.parser.DOMParser;
 import cocktail.core.css.CSSConstants;
+import cocktail.core.timer.Timer;
 import haxe.Stack;
 import haxe.xml.Parser;
-import cocktail.port.NativeElement;
 import cocktail.core.event.Event;
 import cocktail.core.event.KeyboardEvent;
 import cocktail.core.event.MouseEvent;
@@ -139,10 +141,16 @@ class HTMLElement extends Element<HTMLElement>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * sets or gets the HTML
+	 * sets or gets the inner HTML
 	 * syntax describing the element's descendants.
 	 */
 	public var innerHTML(get_innerHTML, set_innerHTML):String;
+	
+	/**
+	 * sets or gets the outer HTML
+	 * syntax describing the element and its descendants.
+	 */
+	public var outerHTML(get_outerHTML, set_outerHTML):String;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// Rendering attributes
@@ -247,6 +255,13 @@ class HTMLElement extends Element<HTMLElement>
 	////////////////////////////////
 	
 	/**
+	 * Wether the htmlElement is currently
+	 * attached to the DOM, meaning that
+	 * the document itself is its ancestor
+	 */
+	public var attachedToDOM(get_attachedToDOM, null):Bool;
+	
+	/**
 	 * Wether the style of this HTMLElement need to be
 	 * cascaded. Cascading determine for each supported
 	 * style, which value to use
@@ -260,15 +275,28 @@ class HTMLElement extends Element<HTMLElement>
 	private var _needsStyleDeclarationUpdate:Bool;
 	
 	/**
+	 * Wheter the ElementRenderer for this HTMLElement
+	 * should be re-instantiated and attached to the
+	 * rendering tree. Happens for instance when a style
+	 * affecting positioning shceme is changed, like
+	 * "display"
+	 */
+	private var _needsElementRendererUpdate:Bool;
+	
+	/**
 	 * Between 2 cascade, store the names of all the
 	 * properties whose value changed and which need
 	 * to be re-cascaded.
-	 * 
-	 * Stored as a hash, for easy retrieval and so that properties
-	 * which are changed multiple times between cascade are
-	 * only stored and cascaded once
 	 */
-	private var _pendingChangedProperties:Hash<Void>;
+	private var _pendingChangedProperties:Array<String>;
+	
+	/**
+	 * A flag determining wether all the CSS styles
+	 * of this HTMLElement needs to be cascaded.
+	 * Happens for instance the first time this
+	 * HTMLElement is added to the DOM
+	 */
+	private var _shouldCascadeAllProperties:Bool;
 	
 	/**
 	 * A reference to the ownerDocument, typed as
@@ -292,9 +320,12 @@ class HTMLElement extends Element<HTMLElement>
 		super(tagName);
 		init();
 		
+		attachedToDOM = false;
 		_needsCascading = false;
 		_needsStyleDeclarationUpdate = false;
-		_pendingChangedProperties = new Hash<Void>();
+		_shouldCascadeAllProperties = true;
+		_needsElementRendererUpdate = true;
+		_pendingChangedProperties = new Array<String>();
 	}
 	
 	/**
@@ -345,50 +376,36 @@ class HTMLElement extends Element<HTMLElement>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * try to attach the new child to the
-	 * rendering tree
+	 * When a child is added to the DOM, an init
+	 * method is called on it
 	 */
 	override public function appendChild(newChild:HTMLElement):HTMLElement
 	{
 		super.appendChild(newChild);
+		newChild.appended();
 		
-		//only element and text node are visual and can be
-		//attached to the rendering tree
-		switch (newChild.nodeType)
-		{
-			case DOMConstants.ELEMENT_NODE:
-				newChild.attach();
-				
-			case DOMConstants.TEXT_NODE:
-				var textChild:Text = cast(newChild);
-				textChild.attach();
-		}
+		//when added a child, this 
+		//HTMLElement should be re-cascaded
+		//so that the child can inherit
+		//its parent style
+		//
+		//TODO 3 : shouldn't instead the 
+		//new child retrieve the inheritable
+		//styles values from its parent
+		invalidateCascade();
 		
 		return newChild;
 	}
 	
 	/**
-	 * try to detach the old child from the
-	 * rendering tree
+	 * When a child is removed, a method is
+	 * called on it so that it
+	 * can be cleaned-up
 	 */
 	override public function removeChild(oldChild:HTMLElement):HTMLElement
 	{
-		//must happen before calling super, else
-		//the HTMLElement won't have a parent to be detached
-		//from anymore
-		switch (oldChild.nodeType)
-		{
-			case DOMConstants.ELEMENT_NODE:
-				var htmlChild:HTMLElement = oldChild;
-				htmlChild.detach();
-				
-			case DOMConstants.TEXT_NODE:
-				var textChild:Text = cast(oldChild);
-				textChild.detach();
-		}
-		
 		super.removeChild(oldChild);
-	
+		oldChild.removed();
 		return oldChild;
 	}
 	
@@ -408,14 +425,10 @@ class HTMLElement extends Element<HTMLElement>
 	override public function setAttribute(name:String, value:String):Void
 	{
 		//when the value of the "style" attribute changes, the whole
-		//inline style delcaration is refreshed
+		//inline style declaration is refreshed
 		if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
 		{
 			style.cssText = value;
-			super.setAttribute(name, value);
-			
-			//TODO 1 : retrieve changed style or done automatically via callback ?
-			//when replacing style attribute, should first remove all styles ?
 			invalidateCascade();
 		}
 		//setting the class name must also update
@@ -437,7 +450,13 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	override public function getAttribute(name:String):String
 	{
-		if (name == HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME)
+		//special case for the style attribute, as it has
+		//its dedicated object
+		if (name == HTMLConstants.HTML_STYLE_ATTRIBUTE_NAME)
+		{
+			return style.cssText;
+		}
+		else if (name == HTMLConstants.HTML_TAB_INDEX_ATTRIBUTE_NAME)
 		{
 			return Std.string(get_tabIndex());
 		}
@@ -509,43 +528,55 @@ class HTMLElement extends Element<HTMLElement>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Called when the specified value of a style requiring a re-layout
-	 * is changed, for instance when the width is changed. Invalidate
-	 * the layout of the elementRenderer if the HTMLElement is rendered
+	 * generic invalidation method, invalidate
+	 * all aspects of the element renderer
+	 * if not null
 	 */
-	public function invalidate(invalidationReason:InvalidationReason):Void
+	public function invalidate():Void
 	{
 		if (elementRenderer != null)
 		{
-			elementRenderer.invalidate(invalidationReason);
+			elementRenderer.invalidate();
 		}
 	}
 	
 	/**
-	 * When a style defining the positioning scheme of this HTMLElement
-	 * changes, such as display or position, this special case happen, as the 
-	 * ElementRenderer might need to be changed.
-	 * 
-	 * For instance if the previous value of Display was
-	 * "block" and it is changed to "none", then the ElementRenderer
-	 * must be removed from the rendering tree and destroyed
-	 * 
-	 * Another example is if the value of Display is "inline" and
-	 * it is swiched to "block", then the current inline ElementRenderer
-	 * must be replaced by a block ElementRenderer
-	 * 
-	 * The detach and attach method are called on the parent HTMLElement. They
-	 * should be called on the parent as for instance if an HTMLElement was displayed
-	 * as block and is now displayed as inline, the formatting context of the parent
-	 * ElementRenderer might be affected. Calling detach and attach on the parent also
-	 * refresh all th siblings of the element whose positioning scheme changed
+	 * Called when the specified value of a style 
+	 * changed, may invalidated the layout and/or
+	 * rendering of the element renderer
 	 */
-	public function invalidatePositioningScheme():Void
+	public function invalidateStyle(styleName:String):Void
 	{
-		if (parentNode != null)
+		if (elementRenderer != null)
 		{
-			parentNode.detach();
-			parentNode.attach();
+			elementRenderer.invalidateStyle(styleName);
+		}
+	}
+	
+	/**
+	 * Called when the element renderer of this HTMLElement
+	 * has become invalid and needs to be re-created before
+	 * next layout and rendering
+	 */
+	public function invalidateElementRenderer():Void
+	{
+		_needsElementRendererUpdate = true;
+		if (_ownerHTMLDocument != null)
+		{
+			_ownerHTMLDocument.invalidationManager.invalidateRenderingTree();
+		}
+	}
+	
+	/**
+	 * Called when the layer renderer of the element
+	 * renderer becomes invalid and needs to be 
+	 * re-created before next layout
+	 */
+	public function invalidateLayerRenderer():Void
+	{
+		if (elementRenderer != null)
+		{
+			elementRenderer.invalidateLayerRenderer();
 		}
 	}
 	
@@ -564,13 +595,15 @@ class HTMLElement extends Element<HTMLElement>
 		//apply to all child if recursive
 		if (recursive == true)
 		{
-			var length:Int = childNodes.length;
-			for (i in 0...length)
+			if (nodeType == DOMConstants.ELEMENT_NODE)
 			{
-				childNodes[i].invalidateStyleDeclaration(true);
+				var length:Int = childNodes.length;
+				for (i in 0...length)
+				{
+					childNodes[i].invalidateStyleDeclaration(true);
+				}
 			}
 		}
-		
 		invalidateCascade();
 		
 	}
@@ -582,12 +615,153 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	public function invalidateCascade():Void
 	{
-		#if macro
-		#else
 		_needsCascading = true;
-		_ownerHTMLDocument.invalidateCascade();
-			
-		#end
+		
+		if (_ownerHTMLDocument != null)
+		{
+			_ownerHTMLDocument.invalidationManager.invalidateCascade();
+
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE INVALIDATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * update the document immediately instead of waiting
+	 * for the next scheduled update. Needed by some public
+	 * API, like for instance those returning the computed
+	 * position of an element, those dimensions should be returned
+	 * synchronously
+	 */
+	private function updateDocumentImmediately():Void
+	{
+		_ownerHTMLDocument.invalidationManager.updateDocumentImmediately();
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// PRIVATE DOM METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Called by the parent HTMLElement
+	 * when this HTMLElement is attached to it,
+	 * check wether this HTMLElement is now
+	 * attached to the DOM, meaning that
+	 * the document itself is its ancesotr
+	 */
+	private function appended():Void
+	{
+		//do nothing if already attached to the DOM
+		if (attachedToDOM == false)
+		{
+			if (isAttachedToDOM() == true)
+			{
+				attachedToDOM = true;
+				addedToDOM();
+				
+				//all the child of this htmlelement are
+				//now attached to the DOM as well
+				var child:HTMLElement = firstChild;
+				while (child != null)
+				{
+					child.appended();
+					child = child.nextSibling;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Called by the parent HTMLElement
+	 * when this HTMLElement is removed from it
+	 */
+	private function removed():Void
+	{
+		attachedToDOM = false;
+		
+		removedFromDOM();
+		
+		//all child are now detached from DOM
+		//as well
+		var child:HTMLElement = firstChild;
+		while (child != null)
+		{
+			child.removed();
+			child = child.nextSibling;
+		}
+	}
+	
+	/**
+	 * Called when the htmlelement is attached
+	 * to the DOM
+	 */
+	private function addedToDOM():Void
+	{
+		//schedule an update of the element renderer of this
+		//HTMLElement
+		//
+		//only element and text node are visual and can be
+		//attached to the rendering tree, no need to 
+		//update the rendering tree for other types
+		switch (nodeType)
+		{
+			case DOMConstants.ELEMENT_NODE, DOMConstants.TEXT_NODE:
+				invalidateElementRenderer();
+				
+		}
+		
+		//when attached to a new parent, 
+		//the styles definition must be updated
+		//and cascaded
+		invalidateStyleDeclaration(true);
+		invalidateCascade();
+	}
+	
+	/**
+	 * Called when the htmlelement is
+	 * removed from the DOM
+	 */
+	private function removedFromDOM():Void
+	{
+		switch (nodeType)
+		{
+			//synchronously detach the element renderer
+			//of this HTMLElement and its child, and 
+			//schedule an update of the rendering tree
+			//
+			//only element and text node can belong to the
+			//rendering tree
+			case DOMConstants.ELEMENT_NODE, DOMConstants.TEXT_NODE:
+				detach(true);
+				invalidateElementRenderer();
+		}
+	}
+	
+	/**
+	 * Return wether this htmlelement is attached to the
+	 * DOM. Check all ancestors until either a document
+	 * is found, meaning the htmlelement is in factg attached
+	 * to the DOM or null
+	 * 
+	 * TODO 3 : for now check wether ancestor is HTML HTML element
+	 * but should be document instead. Trouble is for now, document
+	 * element is not attached as a child of document
+	 */
+	private function isAttachedToDOM():Bool
+	{
+		var parent:HTMLElement = parentNode;
+		while (parent != null)
+		{
+			if (parent.nodeName == HTMLConstants.HTML_HTML_TAG_NAME)
+			{
+				return true;
+			}
+			parent = parent.parentNode;
+		}
+		
+		return false;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -596,116 +770,185 @@ class HTMLElement extends Element<HTMLElement>
 	// The HTMLElement is in charge of attaching and detaching its ElementRenderer to/from
 	// the rendering tree when appropriate. The HTMLElement is only displayed to the screen
 	// when attached to the rendering tree.
-	//
-	// When attached, the HTMLElement also retrieve the style declarations applying to 
-	// to it, and cascade them
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
 	/**
-	 * Tries to attach the ElementRender to the rendering tree. If it is
-	 * in fact attached, all of its children will be attached too.
+	 * Main method to update the rendering tree.
+	 * Traverse the DOM tree recursively until
+	 * the rendering tree is updated
 	 * 
-	 * The parent HTMLElement's ElementRenderer is always attached before
-	 * its children ElementRenderers
+	 * HTMLElements with invalid element renderer
+	 * detach/attach them as needed so that the
+	 * rendering becomes again valid
 	 * 
-	 * Also responsible to start an initial cascade of the HTMLElement's
-	 * style now that it is attached to the DOM
+	 * Called by the document when the rendering tree
+	 * needs to be updated
 	 */
-	public function attach():Void
+	public function updateElementRenderer():Void
 	{
-		//do an initial cascading
-		//of the style of this HTMLElement
-		initialCascadeSelf();
-
-		//if the parent HTMLElement ElementRenderers is null, then
-		//the parent is either not attached to the DOM or not rendered,
-		//and this HTMLElement is not rendered either
-		if (isParentRendered() == true)
+		//check wether this HTMLElement needs to update
+		//its element renderer
+		if (_needsElementRendererUpdate == true)
 		{
-			//create the ElementRenderer if needed
-			if (elementRenderer == null && isRendered() == true)
+			//once here, the element renderer is considered
+			//updated
+			_needsElementRendererUpdate = false;
+		
+			//here the HTMLElement should not
+			//be rendered
+			if (isRendered() == false)
 			{
-				createElementRenderer();
+				//if it was previously rendered, it
+				//is detached
 				if (elementRenderer != null)
 				{
-					attachCoreStyle();
+					detach(true);
+		
+					//return as none of its children
+					//needs to be attached
+					return;
 				}
 			}
-			
-			//if the ElementRenderer wasn't instantiated, then this
-			//HTMLElement is not supposed to be rendered
-			if (elementRenderer != null)
+			//here the HTMLElement should be
+			//rendered
+			else
 			{
-				attachToParentElementRenderer();
+				//if it is not yet rendered, attach
+				//it and attach its children
+				if (elementRenderer == null)
+				{
+					attach(true);
+					
+					//return as all its children are now attached
+					return;
+				}
+				//else, update only its own
+				//element renderer, no need
+				//to re-create all its children
+				else
+				{
+					//var elementRendererChildren:Array<ElementRenderer> = elementRenderer.childNodes;
+				
+					//detach and attach only own element renderer
+					detach(false);
+					attach(false);
+					
+					//TODO 2 : is it necessary to re-append all child ?
+					
+					//re-append all children
+					//var length:Int = elementRendererChildren.length;
+					//for (i in 0...length) 
+					//{
+						//elementRenderer.appendChild(elementRendererChildren[0]);
+					//}
+				}	
 			}
-			
-			//the HTMLElement is now attached and can attach its children
+		}
+		
+		if (nodeType == DOMConstants.ELEMENT_NODE)
+		{
+			//traverse all the DOM recursively to be
+			//sure to update all element renderers
 			var length:Int = childNodes.length;
 			for (i in 0...length)
 			{
-				//only text and element node can be attached, as other nodes
-				//types are not visual
-				switch (childNodes[i].nodeType)
-				{
-					//attach element node
-					case DOMConstants.ELEMENT_NODE:
-						var child:HTMLElement = childNodes[i];
-						child.attach();
-					
-					//attach text node
-					case DOMConstants.TEXT_NODE:
-						var child:Text = cast(childNodes[i]);
-						child.attach();
-				}
+				childNodes[i].updateElementRenderer();
 			}
 		}
+		
+	}
+		
+		
+	
+	/**
+	 * Tries to attach the ElementRender to the rendering tree.
+	 * 
+	 * if the attachement is recursive, all children are attached
+	 * too
+	 * 
+	 * The parent HTMLElement's ElementRenderer is always attached before
+	 * its children ElementRenderers
+	 */
+	public function attach(recursive:Bool):Void
+	{
+		//if its parent is not rendered, then
+		//this HTMLElemenet should not be
+		//rendered either
+		if (isParentRendered() == false)
+		{
+			return;
+		}
+		
+		//actually instantiate the element renderer
+		createElementRenderer();
+		
+		//if the ElementRenderer wasn't instantiated, then this
+		//HTMLElement is not supposed to be rendered
+		//
+		//TODO 3 : element renderers should always be rendered at this
+		//point ? for instance, for head element should not be rendered
+		//because has a display none style ?
+		if (elementRenderer != null)
+		{
+			attachToParentElementRenderer();
+			
+			//if recursive, now attach all the children
+			if (recursive == true)
+			{
+				if (nodeType == DOMConstants.ELEMENT_NODE)
+				{
+					var length:Int = childNodes.length;
+					for (i in 0...length)
+					{
+						childNodes[i].attach(true);
+					}
+				}
+				
+			}
+		}
+		
+		_needsElementRendererUpdate = false;
 	}
 	
 	/**
 	 * Detach the ElementRenderer from the rendering tree
-	 * and all of its children.
+	 * 
+	 * if the detachement is recursive, detach also all 
+	 * of its children
 	 * 
 	 * The children ElementRenderer are always detached before
 	 * their parent ElementRenderer
 	 */
-	public function detach():Void
+	public function detach(recursive:Bool):Void
 	{
-		//if the parent is not attached, then this ElementRenderer
-		//is not attached
-		if (isParentRendered() == true)
-		{
-			//if this HTMLElement isn't currently rendered, no need
-			//to detach it
-			if (elementRenderer != null)
-			{	
-				//detach first all children
-				var length:Int = childNodes.length;
-				for (i in 0...length)
+		//if this HTMLElement isn't currently rendered, no need
+		//to detach it
+		if (elementRenderer != null)
+		{			
+			//detach all children element renderer
+			if (recursive == true)
+			{
+				if (nodeType == DOMConstants.ELEMENT_NODE)
 				{
-					switch (childNodes[i].nodeType)
+					var length:Int = childNodes.length;
+					for (i in 0...length)
 					{
-						case DOMConstants.ELEMENT_NODE:
-							var child:HTMLElement = childNodes[i];
-							child.detach();
-							
-						case DOMConstants.TEXT_NODE:
-							var child:Text = cast(childNodes[i]);
-							child.detach();
+						childNodes[i].detach(true);
 					}
 				}
-											
-				//then detach this ElementRenderer from the parent 
-				//ElementRenderer, then destroy it
-				detachFromParentElementRenderer();
-				
-				elementRenderer = null;
 			}
+			
+			//then detach this ElementRenderer from the parent 
+			//ElementRenderer
+			detachFromParentElementRenderer();
+			
+			//TODO 1 : trouble for now in HTMLDocument, when disposing
+			//of element renderer, if it is the currently hovered element
+			//throws exception when mouse move. Store hovered HTMLElement 
+			//instead ?
+			//elementRenderer.dispose();
+			elementRenderer = null;
 		}
-		
-		//the style declaration is now invalide as
-		//the HTMLElement is no longer attached to the
-		//DOM
-		_needsStyleDeclarationUpdate = true;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -719,39 +962,41 @@ class HTMLElement extends Element<HTMLElement>
 	 * for each supported CSS style, find the right value to use among
 	 * the different provided values
 	 * 
-	 * @param parentChangedProperties a hash containing the names of all of the
-	 * styles of the parent whose values changed during cascading
+	 * @param cascadeManager keep track of the style that need to be cascaded. For
+	 * instance contain the styles of the parent which were just cascaded
 	 * 
 	 * @param programmaticChange wether the cascade was caused by a scripted property
 	 * cahnge. Some pseudo class like :hover are also considered like scripting a change
 	 */
-	public function cascade(parentChangedProperties:Hash<Void>, programmaticChange:Bool):Void
+	public function cascade(cascadeManager:CascadeManager, programmaticChange:Bool):Void
 	{	
-		//will hold all the property of this HTMLElement which changed during
-		//cascading
-		var changedProperties:Hash<Void> = new Hash<Void>();
-		
 		//cascade the style of this HTMLElement if needed, and store
 		//the name of all the style which changed during cascading
 		//
 		//style is cascaded either id tis HTMLElement explicitely needs cascading
 		//for instance, if one of its attribute changed since last cascade or
 		//if some of its parent styles just changed
-		if (_needsCascading == true || parentChangedProperties.keys().hasNext() == true)
+		if (_needsCascading == true || cascadeManager.hasPropertiesToCascade == true)
 		{
-			changedProperties = cascadeSelf(parentChangedProperties, programmaticChange);
+			cascadeSelf(cascadeManager, programmaticChange);
 			_needsCascading = false;
-		}
-		
-		//when one of those property specified value changes, it may affect the rendering of
-		//the HTMLElement. The cascade is interupted and the element is re-attached
-		if (changedProperties.exists(CSSConstants.DISPLAY) || changedProperties.exists(CSSConstants.POSITION) ||
-		changedProperties.exists(CSSConstants.FLOAT) || changedProperties.exists(CSSConstants.TRANSFORM) ||
-		changedProperties.exists(CSSConstants.Z_INDEX) || changedProperties.exists(CSSConstants.OVERFLOW_X) ||
-		changedProperties.exists(CSSConstants.OVERFLOW_Y))
-		{
-			invalidatePositioningScheme();
-			return;
+			
+			//when one of those property specified value changes, it may affect the rendering of
+			//the HTMLElement. The element renderer is invalidated, so that it will be updated
+			//before next layout
+			if (cascadeManager.hasDisplay == true || cascadeManager.hasFloat == true
+			|| cascadeManager.hasOverflowX == true || cascadeManager.hasOverflowY == true ||
+			cascadeManager.hasPosition == true)
+			{
+				detach(true);
+				invalidateElementRenderer();
+			}
+			//if one of those properties changed, then the layer renderer of the element renderer needs
+			//to be invalidated, so that it will be updated before next rendering
+			else if (cascadeManager.hasTransform == true || cascadeManager.hasZIndex == true)
+			{
+				invalidateLayerRenderer();
+			}
 		}
 		
 		//cascade all the children, to cascade all the DOM tree
@@ -761,7 +1006,7 @@ class HTMLElement extends Element<HTMLElement>
 		for (i in 0...childLength)
 		{
 			var childNode:HTMLElement = childNodes[i];
-			childNode.cascade(changedProperties, programmaticChange);
+			childNode.cascade(cascadeManager, programmaticChange);
 		}
 	}
 	
@@ -775,67 +1020,29 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function getStyleDeclaration():Void
 	{
-		//store all the current style of the style declaration
-		//which will need to be cascaded on next cascade
-		if (styleManagerCSSDeclaration != null)
-		{
-			for (i in 0...styleManagerCSSDeclaration.length)
-			{
-				_pendingChangedProperties.set(styleManagerCSSDeclaration.item(i), null);
-			}
-		}
+		//set all the styles to be cascaded
+		//
+		//TODO 3 : eventually, should only update style which actually changed
+		_shouldCascadeAllProperties = true;
 		
 		//update style definition
 		styleManagerCSSDeclaration = _ownerHTMLDocument.getStyleDeclaration(this);
-		
-		//store all the new declared styles which will need to be
-		//cascaded too
-		//
-		//TODO 2 : should do same thing when updating "style" attribute
-		if (styleManagerCSSDeclaration != null)
-		{
-			for (i in 0...styleManagerCSSDeclaration.length)
-			{
-				_pendingChangedProperties.set(styleManagerCSSDeclaration.item(i), null);
-			}
-		}
-	}
-	
-	/**
-	 * Called when the HTMLElement is attached to the DOM
-	 * to do an initial cascading of its styles
-	 */
-	private function initialCascadeSelf():Void
-	{
-		_needsCascading = true;
-		_needsStyleDeclarationUpdate = true;
-		
-		_ownerHTMLDocument.invalidateCascade();
-		
-		var initialStyleDeclaration:InitialStyleDeclaration = _ownerHTMLDocument.initialStyleDeclaration;
-		//set all the supported CSS properties to be updated
-		_pendingChangedProperties = initialStyleDeclaration.supportedCSSProperties;
-		
-		cascadeSelf(new Hash<Void>(), false);
 	}
 	
 	/**
 	 * Make the HTMLElement cascade its styles. The cascaded styles are those whihc have
 	 * been modified since last cascade on this HTMLElement and the styles of the direct
 	 * parent which have been modified during this cascade
-	 * @param	parentChangedProperties the properties which changed on the parent during this
+	 * @param	cascadeManager contain the properties which changed on the parent during this
 	 * cascade
 	 * @param	programmaticChange wether the change is programmatic. If it is,
 	 * animations may be started
-	 * @return
 	 * 
 	 * TODO 1 : should subclass in HTMLHTMLElement
 	 */
-	private function cascadeSelf(parentChangedProperties:Hash<Void>, programmaticChange:Bool):Hash<Void>
+	private function cascadeSelf(cascadeManager:CascadeManager, programmaticChange:Bool):Void
 	{
 		var initialStyleDeclaration:InitialStyleDeclaration = _ownerHTMLDocument.initialStyleDeclaration;
-		
-		var changedProperties:Hash<Void> = new Hash<Void>();
 		
 		if (parentNode != null)
 		{
@@ -850,15 +1057,20 @@ class HTMLElement extends Element<HTMLElement>
 				var parentStyleDeclaration:CSSStyleDeclaration = parentNode.coreStyle.computedValues;
 				var parentFontMetrics:FontMetricsVO = parentNode.coreStyle.fontMetrics;
 			
-				for (propertyName in parentChangedProperties.keys())
+				if (_shouldCascadeAllProperties == true)
 				{
-					_pendingChangedProperties.set(propertyName, null);
+					cascadeManager.shouldCascadeAll();
 				}
-				
-
-				changedProperties = coreStyle.cascade(_pendingChangedProperties, initialStyleDeclaration, styleManagerCSSDeclaration, style, parentStyleDeclaration, parentFontMetrics.fontSize, parentFontMetrics.xHeight, programmaticChange);
-				
-		
+				else
+				{
+					var length:Int = _pendingChangedProperties.length;
+					for (i in 0...length)
+					{
+						cascadeManager.addPropertyToCascade(_pendingChangedProperties[i]);
+					}
+				}
+	
+				coreStyle.cascade(cascadeManager, initialStyleDeclaration, styleManagerCSSDeclaration, style, parentStyleDeclaration, parentFontMetrics.fontSize, parentFontMetrics.xHeight, programmaticChange);
 			}
 		}
 		else
@@ -869,18 +1081,30 @@ class HTMLElement extends Element<HTMLElement>
 				_needsStyleDeclarationUpdate = false;
 			}
 			
-			changedProperties = coreStyle.cascade(_pendingChangedProperties, initialStyleDeclaration, styleManagerCSSDeclaration, style, initialStyleDeclaration, 12, 12, programmaticChange);
+			if (_shouldCascadeAllProperties == true)
+			{
+				cascadeManager.shouldCascadeAll();
+			}
+			else
+			{
+				var length:Int = _pendingChangedProperties.length;
+				for (i in 0...length)
+				{
+					cascadeManager.addPropertyToCascade(_pendingChangedProperties[i]);
+				}
+			}
+			
+			coreStyle.cascade(cascadeManager, initialStyleDeclaration, styleManagerCSSDeclaration, style, initialStyleDeclaration, 12, 12, programmaticChange);
 		}
 		
-		_pendingChangedProperties = new Hash<Void>();
-		
-		return changedProperties;
+		_shouldCascadeAllProperties = false;
+		_pendingChangedProperties = _pendingChangedProperties.clear();
 	}
 	
 	/**
 	 * When a value of the inline style declaration
 	 * of the HTMLElement changes, store the name
-	 * of the changed property in the hash of property
+	 * of the changed property in the properties
 	 * to cascade and invalidate the cascade
 	 * 
 	 * @param changedProperty the name of the property
@@ -888,7 +1112,13 @@ class HTMLElement extends Element<HTMLElement>
 	 */
 	private function onInlineStyleChange(changedProperty:String):Void
 	{
-		_pendingChangedProperties.set(changedProperty, null);
+		//no need to store the property if all properties
+		//are supposed to be cascaded anyway
+		if (_shouldCascadeAllProperties == false)
+		{
+			_pendingChangedProperties.push(changedProperty);
+		}
+		
 		invalidateCascade();
 	}
 	
@@ -924,6 +1154,7 @@ class HTMLElement extends Element<HTMLElement>
 					{
 						return elementRenderParent;
 					}
+					
 					return nextSibling.elementRenderer;
 				}
 				
@@ -977,17 +1208,7 @@ class HTMLElement extends Element<HTMLElement>
 	}
 	
 	/**
-	 * Set the ElementRenderer's style
-	 */
-	private function attachCoreStyle():Void
-	{
-		elementRenderer.coreStyle = coreStyle;
-	}
-	
-	/**
 	 * Return wether this HTMLElement is supposed to be rendered
-	 * 
-	 * TODO 3 : unit tests for "hidden" attribute
 	 */
 	private function isRendered():Bool
 	{
@@ -1016,15 +1237,7 @@ class HTMLElement extends Element<HTMLElement>
 		{
 			return false;
 		}
-		var htmlParent:HTMLElement = parentNode;
-		if (htmlParent.elementRenderer != null)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return parentNode.elementRenderer != null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1060,6 +1273,21 @@ class HTMLElement extends Element<HTMLElement>
 		return atLeastOneAnimationStarted;
 	}
 	
+	/**
+	 * end pending animation of self and
+	 * children
+	 */
+	public function endPendingAnimation():Void
+	{
+		coreStyle.endPendingAnimation();
+	
+		var length:Int = childNodes.length;
+		for (i in 0...length)
+		{
+			childNodes[i].endPendingAnimation();
+		}
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// CLICK SYNTHESIS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1090,10 +1318,10 @@ class HTMLElement extends Element<HTMLElement>
 	/**
 	 * dispatch event of type Event
 	 */
-	private function fireEvent(eventTye:String, bubbles:Bool, cancelable:Bool):Void
+	private function fireEvent(eventType:String, bubbles:Bool, cancelable:Bool):Void
 	{
 		var event:Event = new Event();
-		event.initEvent(eventTye, bubbles, cancelable);
+		event.initEvent(eventType, bubbles, cancelable);
 		dispatchEvent(event);
 	}
 	
@@ -1247,45 +1475,11 @@ class HTMLElement extends Element<HTMLElement>
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// SCROLLING SETTER/GETTER AND METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * Utils method determining wether
-	 * the HTMLElement displays an active
-	 * vertical scrolbar
-	 * @param scrollOffset an optionnal parameter determining
-	 * the scroll offset which tries to be applied to the vertical scrollbar.
-	 * If applying the offset doesn't scroll the HTMLElement, for instance
-	 * if the HTMLElement is completely scrolled and a positive offset
-	 * is applied to it, then the method return false
-	 * 
-	 * @return true if a vertical scrollbar is displayed
-	 * and isactive
-	 */
-	public function isVerticallyScrollable(scrollOffset:Int = 0):Bool
-	{
-		if (elementRenderer != null)
-		{
-			return elementRenderer.isVerticallyScrollable(scrollOffset);
-		}
-		return false;
-	}
-	
-	/**
-	 * same as absove for the horizontal scrollbar
-	 */
-	public function isHorizontallyScrollable(scrollOffset:Int = 0):Bool
-	{
-		if (elementRenderer != null)
-		{
-			return elementRenderer.isHorizontallyScrollable(scrollOffset);
-		}
-		return false;
-	}
-	
-	//TODO 3 : should unit test, not very sure what this getter
-	//is supposed to return
+
 	private function get_scrollHeight():Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.scrollHeight);
@@ -1295,6 +1489,8 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_scrollWidth():Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.scrollWidth);
@@ -1304,6 +1500,8 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function set_scrollLeft(value:Int):Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			elementRenderer.scrollLeft = value;
@@ -1313,6 +1511,8 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_scrollLeft():Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.scrollLeft);
@@ -1322,6 +1522,8 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function set_scrollTop(value:Int):Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			elementRenderer.scrollTop = value;
@@ -1331,6 +1533,8 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_scrollTop():Int
 	{
+		updateDocumentImmediately();
+		
 		if (elementRenderer != null)
 		{
 			return Math.round(elementRenderer.scrollTop);
@@ -1411,6 +1615,7 @@ class HTMLElement extends Element<HTMLElement>
 	private function set_className(value:String):String
 	{
 		super.setAttribute(HTMLConstants.HTML_CLASS_ATTRIBUTE_NAME, value);
+		
 		//update the class list as well
 		classList = value.split(" ");
 		
@@ -1445,7 +1650,7 @@ class HTMLElement extends Element<HTMLElement>
 	
 	/**
 	 * Remove all the currently added child nodes,
-	 * deserialise the passed HTML string and attach
+	 * deserialize the passed HTML string and attach
 	 * the resulting child nodes
 	 * 
 	 * @param	value an HTML String 
@@ -1485,9 +1690,34 @@ class HTMLElement extends Element<HTMLElement>
 		
 		return value;
 	}
-	
+
 	/**
-	 * Serialise the descendant nodes of this HTMLElement
+	 * Remove all the currently added child nodes,
+	 * deserialize the passed HTML string and attach
+	 * the resulting child nodes
+	 * 
+	 * @param	value an HTML String 
+	 */
+	private function set_outerHTML(value:String):String
+	{
+		//parse the html string into a node object
+		var node:HTMLElement = DOMParser.parse(value, ownerDocument);
+
+		var oldNextSibling:HTMLElement = this.nextSibling;
+		parentNode.removeChild(cast(this));
+
+		if (node == null)
+		{
+			return value;
+		}
+
+		parentNode.insertBefore( node, oldNextSibling );
+
+		return value;
+	}
+
+	/**
+	 * Serialize the descendant nodes of this HTMLElement
 	 * and return the result as an HTML String
 	 */
 	private function get_innerHTML():String
@@ -1498,6 +1728,18 @@ class HTMLElement extends Element<HTMLElement>
 		//remove the first and last tag, as they correspond to this HTMLElement
 		//tag which should not be returned as its inner html
 		str = str.substr(str.indexOf(HTMLConstants.HTML_TOKEN_MORE_THAN) + 1 , str.lastIndexOf(HTMLConstants.HTML_TOKEN_LESS_THAN) - str.indexOf(HTMLConstants.HTML_TOKEN_MORE_THAN) - 1);
+		
+		return str;
+	}
+	
+	/**
+	 * Serialize the HTMLElement and it's children
+	 * and return the result as an HTML String
+	 */
+	private function get_outerHTML():String
+	{
+		//serialise this node into an HTML string
+		var str:String = DOMParser.serialize(this);
 		
 		return str;
 	}
@@ -1535,6 +1777,13 @@ class HTMLElement extends Element<HTMLElement>
 		
 		var parent:HTMLElement = parentNode;
 		
+		//if the parent is not rendered, it can't
+		//have an offset
+		if (parent.elementRenderer == null)
+		{
+			return null;
+		}
+		
 		//loop in all the parents until a positioned or a null parent is found
 		var isOffsetParent:Bool = parent.elementRenderer.isPositioned();
 		
@@ -1557,45 +1806,50 @@ class HTMLElement extends Element<HTMLElement>
 	
 	private function get_offsetWidth():Int
 	{
-		//need to perform an immediate layout to be sure
+		//need to perform an immediate update to be sure
 		//that the computed styles are up to date
-		invalidate(InvalidationReason.needsImmediateLayout);
+		updateDocumentImmediately();
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight);
 	}
 	
 	private function get_offsetHeight():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
+		updateDocumentImmediately();
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
 	}
 	
-	//TODO 3  : unit test
 	private function get_offsetLeft():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
-		return Math.round(elementRenderer.positionedOrigin.x);
+		updateDocumentImmediately();
+		if (elementRenderer != null)
+		{
+			return Math.round(elementRenderer.bounds.x);
+		}
+		return 0;
 	}
 	
 	private function get_offsetTop():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
-		return Math.round(elementRenderer.positionedOrigin.y);
+		updateDocumentImmediately();
+		if (elementRenderer != null)
+		{
+			return Math.round(elementRenderer.bounds.y);
+		}
+		return 0;
 	}
 	
 	private function get_clientWidth():Int
 	{
-		//need to perform an immediate layout to be sure
-		//that the computed styles are up to date
-		invalidate(InvalidationReason.needsImmediateLayout);
+		updateDocumentImmediately();
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.width + usedValues.paddingLeft + usedValues.paddingRight);
 	}
 	
 	private function get_clientHeight():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
+		updateDocumentImmediately();
 		var usedValues:UsedValuesVO = coreStyle.usedValues;
 		return Math.round(usedValues.height + usedValues.paddingTop + usedValues.paddingBottom);
 	}
@@ -1603,14 +1857,19 @@ class HTMLElement extends Element<HTMLElement>
 	//TODO 5 : should be top border height
 	private function get_clientTop():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
+		updateDocumentImmediately();
 		return 0;
 	}
 	
 	//TODO 5 : should be left border width
 	private function get_clientLeft():Int
 	{
-		invalidate(InvalidationReason.needsImmediateLayout);
+		updateDocumentImmediately();
 		return 0;
+	}
+	
+	private function get_attachedToDOM():Bool
+	{
+		return attachedToDOM;
 	}
 }

@@ -187,7 +187,7 @@ class HTMLImageElement extends EmbeddedElement
 		intrinsicWidth = resource.intrinsicWidth;
 		intrinsicRatio = intrinsicHeight / intrinsicWidth;
 		
-		invalidate(InvalidationReason.other);
+		invalidate();
 		
 		var loadEvent:UIEvent = new UIEvent();
 		loadEvent.initUIEvent(EventConstants.LOAD, false, false, null, 0.0);

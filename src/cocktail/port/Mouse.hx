@@ -8,15 +8,12 @@
 */
 package cocktail.port;
 
-/**
- * Set the right runtime specific mouse manager at compile-time
- */
 #if macro
-typedef Mouse = cocktail.port.platform.mouse.AbstractMouse;
+typedef Mouse = cocktail.port.base.MouseListenerBase;
+
 #elseif (flash9 || nme)
-typedef Mouse =  cocktail.port.flash_player.Mouse;
+typedef Mouse =  cocktail.port.platform.flash_player.Mouse;
 
 #else
-typedef Mouse = cocktail.port.platform.mouse.AbstractMouse;
-
+typedef Mouse = cocktail.port.base.MouseListenerBase;
 #end

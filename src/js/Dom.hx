@@ -101,7 +101,7 @@ var onmouseup : Event -> Void;
 var onresize : Event -> Void;
 
 function addEventListener( event : String, listener: Event -> Void, useCapture : Bool ) : Void;
-function removeEventListener( type : String, listener: Event -> Void, useCapture : Bool ) : Bool;
+function removeEventListener( type : String, listener: Event -> Void, useCapture : Bool ) : Void;
 function dispatchEvent( event : CustomEvent ) : Void;
 
 function requestFullScreen() : Void;
@@ -210,6 +210,9 @@ var target : HtmlDom;
 var type : String;
 
 // TO COMPLETE... (need infos)
+var pageX:Int;
+var pageY:Int;
+
 var clientX : Int;
 var clientY : Int;
 var offsetX : Int;
@@ -242,6 +245,13 @@ typedef TouchEvent = { > Event,
 var touches:TouchList;
 var changedTouches:TouchList;
 var targetTouches:TouchList;
+}
+
+typedef WheelEvent = { > Event,
+var deltaX : Float;
+var deltaY : Float;
+var deltaZ : Float;
+var deltaMode : Int;
 }
 
 typedef TouchList = {
@@ -309,9 +319,17 @@ var defaultValue : String;
 
 typedef History = {
 var length : Int;
+var state : Dynamic;
 function back() : Void;
 function forward() : Void;
-function go( p : Dynamic ) : Void;
+function go( delta:Int ) : Void;
+function pushState( data : Dynamic, title : String, ?url : String):Void;
+function replaceState( data : Dynamic, title : String, ?url : String):Void;
+}
+// The popstate event is fired in certain cases when navigating to a session history entry.
+typedef PopStateEvent = {> Event,
+	// contains the object passed to pushState or replaceState, or null if it is the initial document state
+	var state : Null<Dynamic>; 
 }
 
 typedef IFrame = {> HtmlDom,
@@ -498,6 +516,14 @@ var borderTopWidth : Dynamic;
 var borderColor : Dynamic;
 var borderStyle : String;
 var borderWidth : Dynamic;
+
+var borderTopLeftRadius : Dynamic;
+var borderTopRightRadius : Dynamic;
+var borderBottomRightRadius : Dynamic;
+var borderBottomLeftRadius : Dynamic;
+var borderRadius : Dynamic;
+
+
 
 
 var margin : Dynamic;
@@ -700,12 +726,15 @@ showHelp()
 show...()
 */
 
-  // events
+// events
+function addEventListener( event : String, listener: Event -> Void, useCapture : Bool ) : Void;
+function removeEventListener( type : String, listener: Event -> Void, useCapture : Bool ) : Void;
 var onload : Event -> Void;
 var onresize : Event -> Void;
 var onscroll : Event -> Void;
 var onunload : Event -> Void;
 
 var onerror : String -> String -> Int -> Bool;
+var onpopstate : Event -> Void;
 
 }

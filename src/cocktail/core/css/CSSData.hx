@@ -3,6 +3,8 @@ package cocktail.core.css;
 import cocktail.core.geom.Matrix;
 import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.GeomData;
+import cocktail.core.utils.IPoolable;
+import cocktail.core.utils.ObjectPool;
 
 /**
  * ...
@@ -11,45 +13,93 @@ import cocktail.core.geom.GeomData;
 
 typedef CSSRuleList = Array<CSSRule>;
 
-class TypedPropertyVO {
+class TypedPropertyVO implements IPoolable {
 	
-	public var name(default, null):String;
+	public var name:String;
 	public var typedValue:CSSPropertyValue;
 	public var important:Bool;
 	
-	public function new(name:String, typedValue:CSSPropertyValue, important:Bool)
+	private static var _pool:ObjectPool<TypedPropertyVO>;
+	
+	public static function getPool():ObjectPool<TypedPropertyVO>
 	{
-		this.name = name;
-		this.typedValue = typedValue;
-		this.important = important;
+		if (_pool == null)
+		{
+			_pool = new ObjectPool<TypedPropertyVO>(TypedPropertyVO);
+		}
+		return _pool;
+	}
+	
+	public function new()
+	{
+		important = false;
+	}
+	
+	public function reset():Void
+	{
+		name = null;
+		typedValue = null;
+		important = false;
 	}
 }
 
-class PropertyVO {
+class PropertyVO implements IPoolable {
 	
-	public var important(default, null):Bool;
-	public var origin(default, null):PropertyOriginValue;
-	public var typedValue(default, null):CSSPropertyValue;
-	public var selector(default, null):SelectorVO;
+	public var important:Bool;
+	public var origin:PropertyOriginValue;
+	public var typedValue:CSSPropertyValue;
+	public var selector:SelectorVO;
 	
-	public function new(selector:SelectorVO, typedValue:CSSPropertyValue, origin:PropertyOriginValue, important:Bool)
+	private static var _pool:ObjectPool<PropertyVO>;
+	
+	public static function getPool():ObjectPool<PropertyVO>
 	{
-		this.important = important;
-		this.origin = origin;
-		this.typedValue = typedValue;
-		this.selector = selector;
+		if (_pool == null)
+		{
+			_pool = new ObjectPool<PropertyVO>(PropertyVO);
+		}
+		return _pool;
+	}
+	
+	public function new()
+	{
+		reset();
+	}
+	
+	public function reset():Void
+	{
+		this.important = false;
+		this.origin = null;
+		this.typedValue = null;
+		this.selector = null;
 	}
 }
 
-class StyleDeclarationVO {
+class StyleDeclarationVO implements IPoolable {
 	
-	public var style(default, null):CSSStyleDeclaration;
-	public var selector(default, null):SelectorVO;
+	public var style:CSSStyleDeclaration;
+	public var selector:SelectorVO;
 	
-	public function new(style:CSSStyleDeclaration, selector:SelectorVO)
+	private static var _pool:ObjectPool<StyleDeclarationVO>;
+	
+	public static function getPool():ObjectPool<StyleDeclarationVO>
 	{
-		this.style = style;
-		this.selector = selector;
+		if (_pool == null)
+		{
+			_pool = new ObjectPool<StyleDeclarationVO>(StyleDeclarationVO);
+		}
+		return _pool;
+	}
+	
+	public function new()
+	{
+		
+	}
+	
+	public function reset():Void
+	{
+		this.style = null;
+		this.selector = null;
 	}
 }
 
@@ -60,13 +110,13 @@ class StyleDeclarationVO {
  */
 class MatchedPseudoClassesVO {
 	
-	public var hover(default, null):Bool;
-	public var focus(default, null):Bool;
-	public var active(default, null):Bool;
-	public var link(default, null):Bool;
-	public var enabled(default, null):Bool;
-	public var disabled(default, null):Bool;
-	public var checked(default, null):Bool;
+	public var hover:Bool;
+	public var focus:Bool;
+	public var active:Bool;
+	public var link:Bool;
+	public var enabled:Bool;
+	public var disabled:Bool;
+	public var checked:Bool;
 	
 	public function new(hover:Bool, focus:Bool, active:Bool, link:Bool, enabled:Bool,
 	disabled:Bool, checked:Bool) 
@@ -254,7 +304,7 @@ enum SelectorComponentValue {
 enum SimpleSelectorSequenceItemValue {
 	ATTRIBUTE(value:AttributeSelectorValue);
 	PSEUDO_CLASS(value:PseudoClassSelectorValue);
-	CLASS(value:String);
+	CSS_CLASS(value:String);
 	ID(value:String);
 }
 
@@ -298,8 +348,6 @@ enum AttributeSelectorValue {
 	 * an element whose "name" attribute
 	 * value is a list of whitespace-separated values,
 	 * one of which is exactly equal to "value"
-	 * 
-	 * TODO 2 : value should be stored as string array
 	 */
 	ATTRIBUTE_LIST(name:String, value:String);
 	
@@ -324,8 +372,6 @@ enum AttributeSelectorValue {
 	/**
 	 * an element whose "name" attribute has a hyphen-separated
 	 * list of values beginning (from the left) with "value"
-	 * 
-	 * TODO 2 : value should be store as string array
 	 */
 	ATTRIBUTE_VALUE_BEGINS_HYPHEN_LIST(name:String, value:String);
 }
@@ -574,6 +620,15 @@ enum CSSPropertyValue {
 	 * with 2 length items
 	 */
 	GROUP(value:Array<CSSPropertyValue>);
+	
+	/**
+	 * represent a special notation for the font shorthand
+	 * where the first value is the font size and the second
+	 * the line height. It is noted like this : "12px/100%",
+	 * this value means a font size of 12px and a line height
+	 * of 100% of the font size
+	 */
+	FONT_SIZE_LINE_HEIGHT_GROUP(fontSize:CSSPropertyValue, lineHeight:CSSPropertyValue);
 	
 	/**
 	 * Like a group but for comma separated CSS values.
@@ -857,7 +912,7 @@ enum CSSTransformFunctionValue {
 	 * specify a 2D transformation in the form of
 	 * a transformation matrix
 	 */
-	MATRIX(data:MatrixData);
+	MATRIX(a:Float, b:Float, c:Float, d:Float, e:Float, f:Float);
 	
 	/**
 	 * specify a 2D translation by the vector [tx, ty]

@@ -8,14 +8,14 @@
 package cocktail.port;
 
 #if macro
-typedef NativeHttp =  cocktail.port.platform.nativeHttp.AbstractNativeHttp;
+typedef NativeHttp =  cocktail.port.base.NativeHttpBase;
 
 #elseif nme
-typedef NativeHttp =  cocktail.port.nme.NativeHttp;
+typedef NativeHttp =  cocktail.port.platform.nme.NativeHttp;
 
 #elseif flash9
-typedef NativeHttp =  cocktail.port.flash_player.NativeHttp;
+typedef NativeHttp =  cocktail.port.platform.flash_player.NativeHttp;
 
 #else
-typedef NativeHttp =  cocktail.port.platform.nativeHttp.AbstractNativeHttp;
+typedef NativeHttp =  cocktail.port.base.NativeHttpBase;
 #end

@@ -53,6 +53,8 @@ class CellStyle
 		//node.style.overflowY = "hidden";
 		
 		node.style.backgroundColor = Constants.CELL_BG_COLOR;
+
+		node.style.cursor = "pointer";
 	}
 	
 	/**

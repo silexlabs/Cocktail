@@ -15,8 +15,9 @@ import cocktail.core.html.HTMLImageElement;
 import cocktail.core.html.HTMLObjectElement;
 import cocktail.core.layer.CompositingLayerRenderer;
 import cocktail.core.layer.LayerRenderer;
+import cocktail.core.layer.PluginLayerRenderer;
 import cocktail.core.resource.ResourceManager;
-import cocktail.port.GraphicsContext;
+import cocktail.core.graphics.GraphicsContext;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;
 
@@ -53,13 +54,12 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	}
 	
 	/**
-	 * Instantitate own compositing glayer
+	 * Instantitate its own compositing layer, which
+	 * is a subclass dedicated to plugin rendering
 	 */
-	override private function createLayer(parentLayer:LayerRenderer):Void
+	override private function doCreateLayer():Void
 	{
-		layerRenderer = new CompositingLayerRenderer(this);
-		parentLayer.appendChild(layerRenderer);
-		_hasOwnLayer = true;
+		layerRenderer = new PluginLayerRenderer(this);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -67,40 +67,13 @@ class ObjectRenderer extends EmbeddedBoxRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * When attached, gives an opportunity to the
-	 * plugin to attch itself to the display list
-	 */
-	override public function attach():Void
-	{
-		super.attach();
-		var htmlObjectElement:HTMLObjectElement = cast(domNode);
-		htmlObjectElement.plugin.attach(layerRenderer.graphicsContext);
-	}
-	
-	/**
-	 * When detached, gives an opportunity to
-	 * the plugin to detach itself
-	 */
-	override public function detach():Void
-	{
-		var htmlObjectElement:HTMLObjectElement = cast(domNode);
-		htmlObjectElement.plugin.detach(layerRenderer.graphicsContext);
-		super.detach();
-	}
-	
-	/**
 	 * When rendering, update the viewport
 	 * of the plugin, so that the plugin
 	 * can update its display
 	 */
-	override private function renderEmbeddedAsset(graphicContext:GraphicsContext):Void
+	override private function renderEmbeddedAsset(graphicContext:GraphicsContext, clipRect:RectangleVO, scrollOffset:PointVO):Void
 	{
 		var htmlObjectElement:HTMLObjectElement = cast(domNode);
-		
-		var viewport:RectangleVO = this.globalBounds;
-		viewport.x += coreStyle.usedValues.paddingLeft;
-		viewport.y += coreStyle.usedValues.paddingTop;
-		
-		htmlObjectElement.plugin.viewport = viewport;
+		htmlObjectElement.plugin.updateViewport(globalBounds.x + coreStyle.usedValues.paddingLeft, globalBounds.y + coreStyle.usedValues.paddingTop, globalBounds.width, globalBounds.height);
 	}
 }
