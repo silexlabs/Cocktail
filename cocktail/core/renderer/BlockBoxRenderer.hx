@@ -1438,13 +1438,16 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//inlineBox bounds are relative to their line box, so the
 					//x and y of the line box needs to be added to get the inline
 					//box bounds in the space of the containing block
+					//
+					//line boxes themselves are positioned relative to content area
+					//so padding and border of this block must be added to get global bounds
 					_inlineBoxGlobalBounds.width = inlineBox.bounds.width;
 					_inlineBoxGlobalBounds.height = inlineBox.bounds.height;
 					
 					if (inlineBox.lineBox != null)
 					{
-						_inlineBoxGlobalBounds.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x;
-						_inlineBoxGlobalBounds.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y;
+						_inlineBoxGlobalBounds.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x + coreStyle.usedValues.paddingLeft + coreStyle.usedValues.paddingRight + coreStyle.usedValues.borderLeftWidth + coreStyle.usedValues.borderRightWidth;
+						_inlineBoxGlobalBounds.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y + coreStyle.usedValues.paddingTop + coreStyle.usedValues.paddingBottom + coreStyle.usedValues.borderTopWidth + coreStyle.usedValues.borderBottomWidth;
 					}
 					
 					
