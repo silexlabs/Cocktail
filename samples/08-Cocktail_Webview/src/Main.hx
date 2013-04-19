@@ -15,11 +15,11 @@ import js.Lib;
  * This sample show how to use cocktail as a
  * webview, and how to mix the flash and DOM api
  */
-class Main
+class Main extends Sprite
 {
 	static function main()
 	{
-		new Main();
+		flash.Lib.current.addChild( new Main() );
 	}
 	
 	/**
@@ -32,12 +32,52 @@ class Main
 	 */
 	var mc:Sprite;
 	
+	var resizeCallbacks : List<Void->Void>;
 	public function new()
 	{
+		super();
+		resizeCallbacks = new List();
+		addEventListener( flash.events.Event.ADDED_TO_STAGE, onAdded );
+	}
+
+	function onAdded(_)
+	{
+
+		stage.align = flash.display.StageAlign.TOP_LEFT;
+		stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
+
+		removeEventListener(flash.events.Event.ADDED_TO_STAGE, onAdded);
+		stage.addEventListener(flash.events.Event.RESIZE, resize);
+		#if ios
+		haxe.Timer.delay(init, 100); // iOS 6
+		#else
+		init();
+		#end
+	}
+
+	var inited : Bool;
+	function resize(e) 
+	{
+		//reset();
+		if (!inited) init();
+		// else (resize or orientation change)
+		for( cb in resizeCallbacks )
+			cb();
+	}
+
+	function init()
+	{
+		inited = true;
 		initFlash();
 		initCocktailView();
 	}
 	
+	function registerResizable( cb : Void->Void )
+	{
+		resizeCallbacks.add( cb );
+		return cb;
+	}
+
 	/**
 	 * build flash interface
 	 */
@@ -56,8 +96,13 @@ class Main
 		button.graphics.drawRect(0, 0, 200, 200);
 		button.graphics.endFill();
 		
-		button.x = flash.Lib.current.stage.stageWidth / 4 - 100;
-		button.y = flash.Lib.current.stage.stageHeight / 2 - 100;
+		function updateButtonPosition()
+		{
+			button.x = (stage.stageWidth / 2 - button.width) / 2;
+			button.y = stage.stageHeight / 2 - 100;
+		}
+		registerResizable( updateButtonPosition )();
+
 		mc.addChild(button);
 		
 		var label = new TextField();
@@ -86,13 +131,17 @@ class Main
 		//build a cocktail webview
 		cv = new CocktailView();
 		
-		//place the webview in the flash/NME app
-		cv.viewport = { 
-			x:Std.int(flash.Lib.current.stage.stageWidth / 2),
-			y:0,
-			width:Std.int(flash.Lib.current.stage.stageWidth / 2),
-			height:flash.Lib.current.stage.stageHeight
-			};
+		function updateViewportPosition()
+		{
+			//place the webview in the flash/NME app
+			cv.viewport = { 
+				x:Std.int(stage.stageWidth / 2),
+				y:0,
+				width:Std.int(stage.stageWidth / 2),
+				height:stage.stageHeight
+				};
+		}
+		registerResizable( updateViewportPosition )();
 		
 		//use an external html for the document
 		cv.loadURL("index.html");

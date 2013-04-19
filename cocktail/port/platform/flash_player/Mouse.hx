@@ -13,6 +13,7 @@ import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.port.base.MouseListenerBase;
 import cocktail.port.NativeBitmapData;
+import cocktail.port.platform.flash_player.Tools;
 import cocktail.core.layout.LayoutData;
 import flash.display.BitmapData;
 import flash.display.DisplayObject;
@@ -195,7 +196,7 @@ class Mouse extends MouseListenerBase
 		var mouseEvent:MouseEvent = new MouseEvent();
 		
 		var localPoint:Point = new Point(typedEvent.localX, typedEvent.localY);
-		localPoint = convertToHitTestingSpriteSpace(localPoint, event.target);
+		localPoint = Tools.convertToHitTestingSpriteSpace(localPoint, event.target, _platform.hitTestingSprite);
 		
 		//use local x and y for mouse event, as they should be relative to hit testing sprite which represents
 		//the viewport of the document
@@ -247,34 +248,4 @@ class Mouse extends MouseListenerBase
 	// private utils method
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * when the mouse event target is not the hit testing sprite (might be a text field for instance),
-	 * convert the mouse event point ot th space of the hit testing sprite
-	 */
-	private function convertToHitTestingSpriteSpace(point:Point, target:DisplayObject):Point
-	{
-		if (target == _platform.hitTestingSprite)
-		{
-			return point;
-		}
-		
-		point.x += target.x;
-		point.y += target.y;
-		
-		var parent:DisplayObjectContainer = target.parent;
-		while (parent != _platform.hitTestingSprite)
-		{
-			point.x += parent.x;
-			point.y += parent.y;
-			
-			parent = parent.parent;
-			
-			if (parent == null)
-			{
-				return point;
-			}
-		}
-		
-		return point;
-	}
 }
