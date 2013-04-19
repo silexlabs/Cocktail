@@ -157,7 +157,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//flag determining wether inline children must be wrapped
 		//in anonymous block
 		var shouldMakeChildrenNonInline:Bool = false;
-		
+
 		//the BlockBoxRenderer should have at least one normal flow child to determine wether to 
 		//establish/participate in a block or inline formatting context, and thus if inline children
 		//shoud be wrapped in anonymous block
@@ -178,15 +178,20 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				{	
 					if (child.isFloat() == false)
 					{
-						//if this child doesn't match the display of the other children,
-						///for instance if it is the first inline while all the other
-						//children are block, all the inline children should be wrapped in 
-						//anonymous blocks
-						if (child.isInlineLevel() != childrenInline)
+						//anonymous block are not taken into account either
+						if (child.isAnonymousBlockBox() == false)
 						{
-							shouldMakeChildrenNonInline = true;
-							break;
+							//if this child doesn't match the display of the other children,
+							///for instance if it is the first inline while all the other
+							//children are block, all the inline children should be wrapped in 
+							//anonymous blocks
+							if (child.isInlineLevel() != childrenInline)
+							{
+								shouldMakeChildrenNonInline = true;
+								break;
+							}
 						}
+						
 					}
 				}
 				
