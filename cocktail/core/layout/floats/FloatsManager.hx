@@ -424,8 +424,8 @@ class FloatsManager
 			var floatBounds:RectangleVO = floats.left[i].bounds;
 			
 			//determine if the float intersects the line
-			if (floatBounds.y + floatBounds.height > y && floatBounds.y <= y
-			|| floatBounds.y <= (y + elementHeight) && floatBounds.y > y)
+			if (floatBounds.y + floatBounds.height > y && floatBounds.y < y
+			|| floatBounds.y < (y + elementHeight) && floatBounds.y > y)
 			{
 				//if it does, if its offset from the left border of the block formatting root
 				//is superior to the current stored left offset, use it
@@ -455,8 +455,8 @@ class FloatsManager
 		for (i in 0...length)
 		{
 			var floatBounds:RectangleVO = floats.right[i].bounds;
-			if (floatBounds.y + floatBounds.height > y && floatBounds.y <= y
-			|| floatBounds.y <= (y + elementHeight) && floatBounds.y > y)
+			if (floatBounds.y + floatBounds.height > y && floatBounds.y < y
+			|| floatBounds.y < (y + elementHeight) && floatBounds.y > y)
 			{
 				if (floatBounds.x < rightFloatOffset)
 				{
