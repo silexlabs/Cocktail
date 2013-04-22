@@ -127,8 +127,15 @@ class Platform extends PlatformBase
 			_rootSprite.parent.removeChild(_rootSprite);
 		}
 		
-		_rootSprite.removeChild(_nativeLayersRootSprite);
-		_rootSprite.removeChild(hitTestingSprite);
+		if (_nativeLayersRootSprite.parent != null)
+		{
+			_nativeLayersRootSprite.parent.removeChild(_nativeLayersRootSprite);
+		}
+		
+		if (hitTestingSprite.parent != null)
+		{
+			hitTestingSprite.parent.removeChild(hitTestingSprite);
+		}
 	}
 	
 	/**
@@ -152,7 +159,6 @@ class Platform extends PlatformBase
 		else
 		{
 			hitTestingSprite = _nativeLayersRootSprite;
-			//_rootSprite.addChild(hitTestingSprite);
 			_rootSprite.addChild(_nativeLayersRootSprite);
 		}
 	}

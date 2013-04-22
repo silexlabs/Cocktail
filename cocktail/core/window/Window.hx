@@ -87,7 +87,9 @@ class Window extends EventCallback
 	{
 		document = null;
 		history.dispose();
+		history = null;
 		platform.dispose();
+		platform = null;
 	}
 	
 	/**

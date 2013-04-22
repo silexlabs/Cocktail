@@ -133,8 +133,11 @@ class PlatformBase
 		removeNativeListeners();
 		
 		mouse.dispose();
+		mouse = null;
 		keyboard.dispose();
+		keyboard = null;
 		touchListener.dispose();
+		touchListener = null;
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
