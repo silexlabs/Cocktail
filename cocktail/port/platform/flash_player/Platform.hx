@@ -116,6 +116,22 @@ class Platform extends PlatformBase
 	}
 	
 	/**
+	 * clean up method
+	 */
+	override public function dispose():Void
+	{
+		super.dispose();
+		
+		if (_rootSprite.parent != null)
+		{
+			_rootSprite.parent.removeChild(_rootSprite);
+		}
+		
+		_rootSprite.removeChild(_nativeLayersRootSprite);
+		_rootSprite.removeChild(hitTestingSprite);
+	}
+	
+	/**
 	 * Init the flash display list used
 	 * for cocktail document
 	 */

@@ -59,6 +59,15 @@ class KeyboardListenerBase
 		setNativeListeners();
 	}
 	
+	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		removeNativeListeners();
+		_platform = null;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// EVENTS
 	// Private native keyboard event handler method

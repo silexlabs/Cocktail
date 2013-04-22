@@ -171,6 +171,11 @@ class CocktailView
 		{
 			document.dispose();
 		}
+		
+		if (window != null)
+		{
+			window.dispose();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

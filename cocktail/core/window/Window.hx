@@ -81,6 +81,16 @@ class Window extends EventCallback
 	}
 	
 	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		document = null;
+		history.dispose();
+		platform.dispose();
+	}
+	
+	/**
 	 * Initialise the Document and set platform specific
 	 * listener on it
 	 */

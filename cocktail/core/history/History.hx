@@ -65,6 +65,16 @@ class History
 		});
 	}
 	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		stateDataArray = null;
+		document = null;
+		state = null;
+	}
+	
+	/**
 	 * getter for the length property
 	 */
 	public function getLength():Int 
