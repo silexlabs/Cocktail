@@ -49,6 +49,7 @@ import cocktail.core.parser.ParserData;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.timer.Timer;
+import cocktail.core.url.URL;
 import cocktail.core.window.Window;
 import cocktail.Lib;
 import cocktail.core.graphics.GraphicsContext;
@@ -1072,6 +1073,36 @@ class HTMLDocument extends Document
 	private function onLocationChanged():Void
 	{
 		//TODO : update document
+	}
+	
+	/**
+	 * utils method returning the provided url
+	 * as an url relative to the document base url
+	 * @return a new url or the same if the provided
+	 * url is absolute
+	 */
+	public function getAbsoluteURL(url:String):String
+	{
+		//if the document has no base url, 
+		//return as-is
+		if (location.href == null)
+		{
+			return url;
+		}
+		
+		//if the provided url is absolute, return as-is
+		var typedURL:cocktail.core.url.URL = cocktail.core.url.URL.fromString(url);
+		if (cocktail.core.url.URL.isRelative(typedURL) == false)
+		{
+			return url;
+		}
+		
+		var documentURL:cocktail.core.url.URL = cocktail.core.url.URL.fromString(location.href);
+		
+		//concatenate document url and provided url
+		var retURL:cocktail.core.url.URL = cocktail.core.url.URL.appendURL(documentURL, typedURL);
+		
+		return cocktail.core.url.URL.toString(retURL);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
