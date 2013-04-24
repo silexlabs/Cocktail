@@ -177,7 +177,11 @@ class HTMLLinkElement extends HTMLElement
 			var nativeHttp:NativeHttp = new NativeHttp(_ownerHTMLDocument.timer);
 			nativeHttp.addEventListener(EventConstants.LOAD, onCSSLoaded);
 			nativeHttp.addEventListener(EventConstants.ERROR, onCSSLoadError);
-			nativeHttp.load(href, HTTPConstants.GET, null, null, DataFormatValue.TEXT);
+			
+			//convert to absolute url if needed before loading
+			var absoluteHref:String = _ownerHTMLDocument.getAbsoluteURL(href);
+			
+			nativeHttp.load(absoluteHref, HTTPConstants.GET, null, null, DataFormatValue.TEXT);
 		}
 	}
 	
