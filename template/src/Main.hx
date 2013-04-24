@@ -6,22 +6,23 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-import cocktail.api.Cocktail;
 import js.Lib;
 
 class Main
 {
 	static function main()
 	{
-		//init cocktail with the content of the index.html file
-		Cocktail.boot();
+		//init cocktail with the content of the index.html file,
+		//no need for js, the browser takes care of it !
+		#if !js
+		cocktail.api.Cocktail.boot();
+		#end
 		
 		//document and window now accessible
 		Lib.window.onload = function(e) {
 			 
 			//document is now loaded
 			var document = Lib.document;
-			
 		};
 	}
 }

@@ -18,8 +18,7 @@ package cocktail.api;
  * This class will create a cocktail application taking the full 
  * available space of the window or browser tab containing it.
  * 
- * It is compatible with flash/air and NME and will also wrap js
- * target so that it can be used like the others
+ * It is compatible with flash/air and NME. 
  * 
  * @author Yannick DOMINGUEZ
  */
@@ -31,8 +30,6 @@ class Cocktail
 	 */
 	public static function boot(url:String = "index.html")
 	{
-		#if (flash || nme)
-		
 		//use a cocktail view
 		var cocktailView = new CocktailView();
 		//load the html document
@@ -45,14 +42,5 @@ class Cocktail
 		//so that they can be accessed with cocktail.Lib.document
 		//and cocktail.Lib.window
 		cocktail.Lib.init(cocktailView.document);
-			
-		//for js, load and set the document so that it matches the flash
-		//and NME application
-		#elseif js
-		var http:haxe.Http = new haxe.Http(url);
-		http.onData = function(e) js.Lib.document.documentElement.innerHTML = e;
-		http.onError = function(e) throw "could not load : " + url;
-		http.request(false);
-		#end
 	}
 }

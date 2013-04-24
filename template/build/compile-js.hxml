@@ -1,4 +1,3 @@
 -main Main
 -cp ../src
--lib cocktail
 -js ../bin/Main.js
