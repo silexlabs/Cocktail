@@ -125,12 +125,20 @@ class CocktailView
 	 * url. 
 	 * @param	url the url of the html document to load,
 	 * will also be used as base url
+	 * @param	baseUrl an optionnal url to use as the base
+	 * url for the document, else the loaded url is used instead
 	 */
-	public function loadURL(url:String):Void
+	public function loadURL(url:String, baseUrl:String = null):Void
 	{
 		if (document != null)
 		{
 			dispose();
+		}
+		
+		//use default url as base base url
+		if (baseUrl == null)
+		{
+			baseUrl = url;
 		}
 		
 		//init document and window
@@ -141,7 +149,7 @@ class CocktailView
 		var res = Resource.getString(url);
 		if (res != null)
 		{
-			initDocument(document, res, url);
+			initDocument(document, res, baseUrl);
 			return;
 		}
 		
@@ -149,7 +157,7 @@ class CocktailView
 		var nativeHttp:NativeHttp = new NativeHttp(document.timer);
 		
 		var onHTMLLoaded = function (e) {
-			initDocument(document, nativeHttp.response, url);
+			initDocument(document, nativeHttp.response, baseUrl);
 		}
 		
 		var onLoadError = function(e) {
