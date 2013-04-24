@@ -970,16 +970,23 @@ class LineBox
 				//}
 			}
 			else 
-			{
-				_childBounds.x = 0;
-				_childBounds.y = 0;
-				_childBounds.width = 0;
-				_childBounds.height = 0;
+			{	
+				//only embedded/inline-block box and text inline box height
+				//is used, as ampty inlinebox arer not taken into account
+				if (child.isEmbedded == true || child.isText == true)
+				{
+					_childBounds.x = 0;
+					_childBounds.y = 0;
+					_childBounds.width = 0;
+					_childBounds.height = 0;
+					
+					_childBounds.y = child.bounds.y + addedY;
+					_childBounds.height = child.bounds.height;
+					
+					GeomUtils.addBounds(_childBounds, lineBoxBounds);
+				}
 				
-				_childBounds.y = child.bounds.y + addedY;
-				_childBounds.height = child.bounds.height;
-				
-				GeomUtils.addBounds(_childBounds, lineBoxBounds);
+				//TODO : take vertical margin into account ?
 				
 				//for non-replaced inline boxes which are not
 				//top or bottom aligned, call recursively

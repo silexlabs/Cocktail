@@ -248,6 +248,11 @@ class Document extends Node<Document>
 	 */
 	public function getElementsByTagName(tagName:String):Array<HTMLElement>
 	{
+		//might be null if document not already initialised
+		if (documentElement == null)
+		{
+			return [];
+		}
 		//use the implementation on the document element (for instance,
 		//the HTML element in HTML)
 		return documentElement.getElementsByTagName(tagName);

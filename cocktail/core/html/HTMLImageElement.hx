@@ -15,6 +15,7 @@ import cocktail.core.event.EventTarget;
 import cocktail.core.event.UIEvent;
 import cocktail.core.resource.AbstractResource;
 import cocktail.core.resource.ResourceManager;
+import cocktail.core.url.URL;
 import cocktail.port.ImageResource;
 import cocktail.port.NativeElement;
 import cocktail.core.event.Event;
@@ -137,7 +138,12 @@ class HTMLImageElement extends EmbeddedElement
 	 */
 	private function set_src(value:String):String
 	{
+		//convert to absolute url if needed
+		value = _ownerHTMLDocument.getAbsoluteURL(value);
+		
 		super.setAttribute(HTMLConstants.HTML_SRC_ATTRIBUTE_NAME, value);
+		
+		_ownerHTMLDocument.getAbsoluteURL(value);
 		
 		var resource:AbstractResource = _ownerHTMLDocument.resourceManager.getImageResource(value);
 

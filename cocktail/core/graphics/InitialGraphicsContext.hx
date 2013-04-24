@@ -55,7 +55,7 @@ class InitialGraphicsContext extends GraphicsContext
 	{
 		//retrieve platform specific root layer
 		var htmlDocument:HTMLDocument = cast(layerRenderer.rootElementRenderer.domNode.ownerDocument);
-		var rootNativeLayer:NativeLayer = htmlDocument.window.platform.getInitialNativeLayer();
+		var rootNativeLayer:NativeLayer = htmlDocument.window.platform.getTopNativeLayer();
 		graphics.attachToRoot(rootNativeLayer);
 		
 		//when the initial graphics context, is attached,

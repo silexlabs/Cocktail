@@ -7,6 +7,7 @@
 */
 package cocktail.core.layer;
 
+import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLInputElement;
 import cocktail.core.html.HTMLObjectElement;
 import cocktail.core.renderer.ElementRenderer;
@@ -39,7 +40,7 @@ class InputLayerRenderer extends CompositingLayerRenderer
 		
 		if (graphicsContext != null)
 		{
-			var htmlInputElement:HTMLInputElement = cast(rootElementRenderer.domNode);
+			var htmlInputElement:HTMLElement = rootElementRenderer.domNode;
 			if (htmlInputElement.elementRenderer != null)
 			{
 				var inputRenderer:InputRenderer = cast(htmlInputElement.elementRenderer);
@@ -53,7 +54,7 @@ class InputLayerRenderer extends CompositingLayerRenderer
 		//TODO 3 : is graphics context supposed to be null at some point ?
 		if (graphicsContext != null)
 		{
-			var htmlInputElement:HTMLInputElement = cast(rootElementRenderer.domNode);
+			var htmlInputElement:HTMLElement = rootElementRenderer.domNode;
 			if (htmlInputElement.elementRenderer != null)
 			{
 				var inputRenderer:InputRenderer = cast(htmlInputElement.elementRenderer);

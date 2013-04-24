@@ -706,7 +706,11 @@ class HTMLMediaElement extends EmbeddedElement
 			}
 		}
 		nativeMedia.onLoadedMetaData = onNativeMediaLoadedMetaData;
-		nativeMedia.src = url;
+		
+		//convert to absolut if needed before loading
+		var absoluteUrl:String = _ownerHTMLDocument.getAbsoluteURL(url);
+		
+		nativeMedia.src = absoluteUrl;
 	}
 	
 	/**

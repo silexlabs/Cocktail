@@ -581,6 +581,20 @@ class CoreStyle
 	}
 	
 	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		specifiedValues.dispose();
+		computedValues.dispose();
+		_changedProperties = null;
+		_fontManager = null;
+		_transitionManager = null;
+		usedValues = null;
+		fontMetrics = null;
+	}
+	
+	/**
 	 * Init class attributes
 	 */
 	private function init():Void

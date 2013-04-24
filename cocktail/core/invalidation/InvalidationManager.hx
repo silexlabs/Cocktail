@@ -209,6 +209,16 @@ class InvalidationManager
 		_repaintWholeViewport = true;
 	}
 	
+	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		_htmlDocument = null;
+		_initialMatrix = null;
+		_dirtyRect = null;
+	}
+	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC INVALIDATION METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////

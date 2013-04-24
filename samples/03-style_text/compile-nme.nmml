@@ -18,6 +18,6 @@
 	<ndll name="nme" haxelib="nme" />
 
 	<compilerflag name="--remap js:cocktail" />
-	<compilerflag name="--macro Cocktail.create('index.html')" />
+	<compilerflag name="--macro cocktail.api.Boot.create('index.html')" />
 
 </project>

@@ -70,4 +70,12 @@ class StyleSheet
 		this.parentStyleSheet = parentStyleSheet;
 	}
 	
+	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		
+	}
+	
 }

@@ -224,7 +224,7 @@ class Config extends EventTarget
 		touchMovePreventClickDistance = 10;
 		enableBitmapSmoothing = true;
 		enableSynchronousUpdate = true;
-		useAdvancedHitTesting = true;
+		useAdvancedHitTesting = false;
 		useStageVideoIfAvailable = true;
 		defaultFont = "serif";
 		defaultFontColor = "#000000";
