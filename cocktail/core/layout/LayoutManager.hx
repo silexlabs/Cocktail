@@ -60,10 +60,6 @@ class LayoutManager
 	 */
 	public function new() 
 	{
-		//there is ony need for one floats manager and it is 
-		//shared among the formatting contexts
-		var floatsManager:FloatsManager = new FloatsManager();
-		
 		embeddedBlockBoxStylesComputer = new EmbeddedBlockBoxStylesComputer();
 		embeddedFloatBoxStylesComputer = new EmbeddedFloatBoxStylesComputer();
 		embeddedInlineBlockBoxStylesComputer = new EmbeddedInlineBlockBoxStylesComputer();
@@ -75,6 +71,24 @@ class LayoutManager
 		inlineBoxStylesComputer = new InLineBoxStylesComputer();
 		inlineBlockBoxStylesComputer = new InlineBlockBoxStylesComputer();
 		positionedBoxStylesComputer = new PositionedBoxStylesComputer();
+	}
+	
+	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		embeddedBlockBoxStylesComputer = null;
+		embeddedFloatBoxStylesComputer = null;
+		embeddedInlineBlockBoxStylesComputer = null;
+		embeddedInlineBoxStylesComputer = null;
+		embeddedPositionedBoxStylesComputer = null;
+		
+		blockBoxStyleComputer = null;
+		floatBoxStylesComputer = null;
+		inlineBoxStylesComputer = null;
+		inlineBlockBoxStylesComputer = null;
+		positionedBoxStylesComputer = null;
 	}
 	
 	/**

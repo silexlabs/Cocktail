@@ -7,6 +7,12 @@ input[type=text], input[type=password], input {
 	border:solid thin gray;
 }
 
+textarea {
+	width:150px;
+	height:100px;
+	border:solid thin gray;
+}
+
 input[type=button], input[type=reset], input[type=submit] {
 	background-image:url('assets/button.png');
 	font:13px sans-serif;

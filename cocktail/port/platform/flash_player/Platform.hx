@@ -16,6 +16,7 @@ import cocktail.core.html.HTMLConstants;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.html.HTMLElement;
 import cocktail.core.html.HTMLInputElement;
+import cocktail.core.html.HTMLTextAreaElement;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.stacking.StackingContext;
 import cocktail.core.geom.GeomData;
@@ -112,10 +113,29 @@ class Platform extends PlatformBase
 		initDisplayList();
 		
 		super();
+	}
+	
+	/**
+	 * clean up method
+	 */
+	override public function dispose():Void
+	{
+		super.dispose();
 		
-		//in Flash, the Stage is always defined as no scale as the transformations
-		//will be managed by Cocktail
-		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
+		if (_rootSprite.parent != null)
+		{
+			_rootSprite.parent.removeChild(_rootSprite);
+		}
+		
+		if (_nativeLayersRootSprite.parent != null)
+		{
+			_nativeLayersRootSprite.parent.removeChild(_nativeLayersRootSprite);
+		}
+		
+		if (hitTestingSprite.parent != null)
+		{
+			hitTestingSprite.parent.removeChild(hitTestingSprite);
+		}
 	}
 	
 	/**
@@ -128,7 +148,6 @@ class Platform extends PlatformBase
 		
 		_nativeLayersRootSprite = new Sprite();
 		
-		
 		hitTestingSprite = new Sprite();
 		updateHitTestingSprite();
 		
@@ -139,11 +158,9 @@ class Platform extends PlatformBase
 		}
 		else
 		{
-			_rootSprite.addChild(hitTestingSprite);
+			hitTestingSprite = _nativeLayersRootSprite;
 			_rootSprite.addChild(_nativeLayersRootSprite);
 		}
-		
-		Lib.current.addChild(_rootSprite);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -196,7 +213,16 @@ class Platform extends PlatformBase
 	 * Return the root Sprite of the document, which will needs
 	 * to be attached to the Stage to display the whole document
 	 */
-	override public function getInitialNativeLayer():NativeLayer
+	override public function getRootNativeLayer():NativeLayer
+	{
+		return _rootSprite;
+	}
+	
+	/**
+	 * Return the Sprite to be used for the top of the
+	 * native layer tree
+	 */
+	override public function getTopNativeLayer():NativeLayer
 	{
 		return _nativeLayersRootSprite;
 	}
@@ -457,6 +483,20 @@ class Platform extends PlatformBase
 					return;
 				}
 			}
+		}
+		//same for text area element
+		else if (layerRenderer.rootElementRenderer.domNode.tagName == HTMLConstants.HTML_TEXT_AREA_TAG_NAME)
+		{
+			
+			var textArea:HTMLElement = layerRenderer.rootElementRenderer.domNode;
+			var htmlDocument:HTMLDocument = cast(textArea.ownerDocument);
+				if (htmlDocument.activeElement == textArea)
+				{
+					_foundHollowedTag = true;
+					_hollowedTagsBounds.push(layerRenderer.bounds);
+					resetHitTestingSprite();
+					return;
+				}
 		}
 
 		if (_foundHollowedTag == true)

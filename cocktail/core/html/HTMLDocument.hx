@@ -39,6 +39,7 @@ import cocktail.core.html.HTMLInputElement;
 import cocktail.core.invalidation.InvalidationManager;
 import cocktail.core.layout.floats.FloatsManager;
 import cocktail.core.layout.LayoutManager;
+import cocktail.core.location.Location;
 import cocktail.core.multitouch.MultiTouchManager;
 import cocktail.core.parser.DOMParser;
 import cocktail.core.renderer.ElementRenderer;
@@ -48,6 +49,7 @@ import cocktail.core.parser.ParserData;
 import cocktail.core.event.FocusEvent;
 import cocktail.core.resource.ResourceManager;
 import cocktail.core.timer.Timer;
+import cocktail.core.url.URL;
 import cocktail.core.window.Window;
 import cocktail.Lib;
 import cocktail.core.graphics.GraphicsContext;
@@ -242,7 +244,7 @@ class HTMLDocument extends Document
 	/**
 	 * A ref to the global Window object
 	 */
-	public var window(default, null):Window;
+	public var window:Window;
 	
 	/**
 	 * A ref to the style manager holding all the
@@ -275,6 +277,11 @@ class HTMLDocument extends Document
 	 */
 	public var cascadeManager(default, null):CascadeManager;
 		
+	/**
+	 * holds the location of this document
+	 */
+	public var location(default, null):Location;
+	
    /**  	
 	* getter/setter to set the whole document content with an  	
 	* html string or to serialise the whole document into
@@ -285,20 +292,48 @@ class HTMLDocument extends Document
 	/**
 	 * class constructor.
 	 */
-	public function new(window:Window = null) 
+	public function new() 
 	{
 		super();
-		
-		//TODO 2 : hack, Document probably shouldn't have
-		//ref to Window
-		if (window == null)
-		{
-			window = new Window();
-		}
-		
-		this.window = window;
-		
 		init();	
+	}
+	
+	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		timer.dispose();
+		timer = null;
+		fontManager.dispose();
+		fontManager = null;
+		resourceManager.dispose();
+		resourceManager = null;
+		transitionManager.dispose();
+		transitionManager = null;
+		invalidationManager.dispose();
+		invalidationManager = null;
+		cascadeManager.dispose();
+		cascadeManager = null;
+		_matchedPseudoClasses = null;
+		_focusManager.dispose();
+		_focusManager = null;
+		_hitTestManager.dispose();
+		_hitTestManager = null;
+		_multiTouchManager.dispose();
+		_multiTouchManager = null;
+		_lastTouchStartPosition = null;
+		layoutManager.dispose();
+		layoutManager = null;
+		location.dispose();
+		location = null;
+		
+		if (documentElement != null)
+		{
+			documentElement.dispose();
+			documentElement = null;
+			body = null;
+		}
 	}
 	
 	/**
@@ -312,9 +347,11 @@ class HTMLDocument extends Document
 		resourceManager = new ResourceManager(this);
 		transitionManager = new TransitionManager(this);
 		
+		location = new Location(this);
+		location.onLocationChanged = onLocationChanged;
+		
 		initStyleManager();
 		invalidationManager = new InvalidationManager(this);
-		
 		
 		cascadeManager = new CascadeManager();
 		
@@ -327,9 +364,6 @@ class HTMLDocument extends Document
 		
 		_multiTouchManager = new MultiTouchManager();
 		
-		documentElement = createElement(HTMLConstants.HTML_HTML_TAG_NAME);
-		
-		initBody(cast(createElement(HTMLConstants.HTML_BODY_TAG_NAME)));
 		
 		_shouldDispatchClickOnNextMouseUp = false;
 		_lastTouchStartPosition = new PointVO(0, 0);
@@ -428,6 +462,9 @@ class HTMLDocument extends Document
 				
 			case HTMLConstants.HTML_FORM_TAG_NAME:
 				element = new HTMLFormElement();
+				
+			case HTMLConstants.HTML_TEXT_AREA_TAG_NAME:
+				element = new HTMLTextAreaElement();
 				
 			default:
 				element = new HTMLElement(tagName);
@@ -903,6 +940,26 @@ class HTMLDocument extends Document
 		}
 	}
 	
+	/**
+	 * When the viewport is resized, invalidate
+	 * the html document so that its layout
+	 * and rendering gets updated.
+	 */
+	public function onPlatformResizeEvent(e:UIEvent):Void
+	{
+		invalidationManager.invalidateViewportSize();
+	}
+	
+	/**
+	 * When the viewport orientation is changed, invalidate
+	 * the html document so that its layout
+	 * and rendering gets updated
+	 */
+	public function onPlatformOrientationChangeEvent(e:Event):Void
+	{
+		invalidationManager.invalidateViewportSize();
+	}
+	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE CLICK METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -1004,6 +1061,48 @@ class HTMLDocument extends Document
 			//element
 			setMouseCursor(elementRendererAtPoint.domNode.coreStyle.cursor);
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// LOCATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * called when the location's href is set
+	 */
+	private function onLocationChanged():Void
+	{
+		//TODO : update document
+	}
+	
+	/**
+	 * utils method returning the provided url
+	 * as an url relative to the document base url
+	 * @return a new url or the same if the provided
+	 * url is absolute
+	 */
+	public function getAbsoluteURL(url:String):String
+	{
+		//if the document has no base url, 
+		//return as-is
+		if (location.href == null)
+		{
+			return url;
+		}
+		
+		//if the provided url is absolute, return as-is
+		var typedURL:cocktail.core.url.URL = cocktail.core.url.URL.fromString(url);
+		if (cocktail.core.url.URL.isRelative(typedURL) == false)
+		{
+			return url;
+		}
+		
+		var documentURL:cocktail.core.url.URL = cocktail.core.url.URL.fromString(location.href);
+		
+		//concatenate document url and provided url
+		var retURL:cocktail.core.url.URL = cocktail.core.url.URL.appendURL(documentURL, typedURL);
+		
+		return cocktail.core.url.URL.toString(retURL);
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

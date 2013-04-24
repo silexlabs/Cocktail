@@ -7,16 +7,22 @@
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
 import js.Lib;
-import js.Dom;
 
 class Main
 {
-	/**
-	 * The content of the index.html is
-	 * accessible with Lib.document
-	 */
-	public function new()
+	static function main()
 	{
+		//init cocktail with the content of the index.html file,
+		//no need for js, the browser takes care of it !
+		#if !js
+		cocktail.api.Cocktail.boot();
+		#end
 		
+		//document and window now accessible
+		Lib.window.onload = function(e) {
+			 
+			//document is now loaded
+			var document = Lib.document;
+		};
 	}
 }

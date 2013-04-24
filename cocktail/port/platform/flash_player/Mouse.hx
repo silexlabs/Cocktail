@@ -13,8 +13,12 @@ import cocktail.core.event.MouseEvent;
 import cocktail.core.event.WheelEvent;
 import cocktail.port.base.MouseListenerBase;
 import cocktail.port.NativeBitmapData;
+import cocktail.port.platform.flash_player.Tools;
 import cocktail.core.layout.LayoutData;
 import flash.display.BitmapData;
+import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
+import flash.geom.Point;
 import flash.Lib;
 import cocktail.core.geom.GeomData;
 import cocktail.core.css.CSSData;
@@ -191,10 +195,13 @@ class Mouse extends MouseListenerBase
 		
 		var mouseEvent:MouseEvent = new MouseEvent();
 		
+		var localPoint:Point = new Point(typedEvent.localX, typedEvent.localY);
+		localPoint = Tools.convertToHitTestingSpriteSpace(localPoint, event.target, _platform.hitTestingSprite);
+		
 		//use local x and y for mouse event, as they should be relative to hit testing sprite which represents
 		//the viewport of the document
-		mouseEvent.initMouseEvent(eventType, true, true, null, 0.0, Math.round(typedEvent.localX), Math.round(typedEvent.localY),
-		Math.round(typedEvent.localX), Math.round(typedEvent.localY), typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, false, 0, null);
+		mouseEvent.initMouseEvent(eventType, true, true, null, 0.0, Math.round(localPoint.x), Math.round(localPoint.y),
+		Math.round(localPoint.x), Math.round(localPoint.y), typedEvent.ctrlKey, typedEvent.altKey, typedEvent.shiftKey, false, 0, null);
 
 		return mouseEvent;
 	}
@@ -236,4 +243,9 @@ class Mouse extends MouseListenerBase
 		
 		return event;
 	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// private utils method
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
 }

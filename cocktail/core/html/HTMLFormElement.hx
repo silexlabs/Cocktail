@@ -179,19 +179,27 @@ class HTMLFormElement extends HTMLElement
 		//then let replace be true. Otherwise, let it be false.
 		
 		//TODO : only http for now
-		switch(scheme)
-		{
-			case HTTPConstants.HTTP:
-				if (method.toUpperCase() == HTTPConstants.GET)
-				{
-					mutateActionUrl(formDataSet, action);
-				}
-				else if (method.toUpperCase() == HTTPConstants.POST)
-				{
-					submitAsEntityBody(formDataSet, action, enctype);
-				}
-		}
 		
+		//if action empty, default to GET
+		if (action != "")
+		{
+			switch(scheme)
+			{
+				case HTTPConstants.HTTP:
+					if (method.toUpperCase() == HTTPConstants.GET)
+					{
+						mutateActionUrl(formDataSet, action);
+					}
+					else if (method.toUpperCase() == HTTPConstants.POST)
+					{
+						submitAsEntityBody(formDataSet, action, enctype);
+					}
+			}
+		}
+		else
+		{
+			mutateActionUrl(formDataSet, action);
+		}
 	}
 	
 	/**
@@ -206,7 +214,8 @@ class HTMLFormElement extends HTMLElement
 		var actionURL:URL = URL.fromString(action);
 		actionURL.query = query;
 		var destination:String = URL.toString(actionURL);
-	
+		
+		_ownerHTMLDocument.window.open(destination);
 		//TODO : navigate to the url, need to refactor cocktail so that
 		//it acts more like a browser
 	}
@@ -382,7 +391,7 @@ class HTMLFormElement extends HTMLElement
 			switch(child.tagName)
 			{
 				case HTMLConstants.HTML_INPUT_TAG_NAME, 
-				HTMLConstants.HTML_OBJECT_TAG_NAME:
+				HTMLConstants.HTML_OBJECT_TAG_NAME, HTMLConstants.HTML_TEXT_AREA_TAG_NAME:
 					submittableElements.push(child);
 			}
 			
@@ -438,6 +447,16 @@ class HTMLFormElement extends HTMLElement
 		{
 			var objectElement:HTMLObjectElement = cast(element);
 			if (objectElement.plugin == null)
+			{
+				return false;
+			}
+		}
+		
+		//text area
+		if (element.tagName == HTMLConstants.HTML_TEXT_AREA_TAG_NAME)
+		{
+			if (element.getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME) == null ||
+			element.getAttribute(HTMLConstants.HTML_NAME_ATTRIBUTE_NAME) == "")
 			{
 				return false;
 			}
@@ -527,6 +546,10 @@ class HTMLFormElement extends HTMLElement
 			case HTMLConstants.HTML_INPUT_TAG_NAME:
 				var inputElement:HTMLInputElement = cast(element);
 				return inputElement.value;
+				
+			case HTMLConstants.HTML_TEXT_AREA_TAG_NAME:
+				var textAreaElement:HTMLTextAreaElement = cast(element);
+				return textAreaElement.value;
 				
 			default:
 				return "";

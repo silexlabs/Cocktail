@@ -77,7 +77,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	 * converted to the space of the containing block 
 	 * (this)
 	 */
-	private var _inlineBoxGlobalBounds:RectangleVO;
+	private var _inlineBoxContainingBlockBounds:RectangleVO;
 	
 	/**
 	 * If this block box establishes a new formatting
@@ -132,7 +132,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		lineBoxes = new Array<LineBox>();
 		floatsManager = new FloatsManager();
 		_floatFound = false;
-		_inlineBoxGlobalBounds = new RectangleVO();
+		_inlineBoxContainingBlockBounds = new RectangleVO();
 		_blockFormattingBounds = new RectangleVO();
 		_floatedElementsBounds = new RectangleVO();
 		_childBlockFormattingBounds = new RectangleVO();
@@ -157,7 +157,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//flag determining wether inline children must be wrapped
 		//in anonymous block
 		var shouldMakeChildrenNonInline:Bool = false;
-		
+
 		//the BlockBoxRenderer should have at least one normal flow child to determine wether to 
 		//establish/participate in a block or inline formatting context, and thus if inline children
 		//shoud be wrapped in anonymous block
@@ -178,15 +178,20 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				{	
 					if (child.isFloat() == false)
 					{
-						//if this child doesn't match the display of the other children,
-						///for instance if it is the first inline while all the other
-						//children are block, all the inline children should be wrapped in 
-						//anonymous blocks
-						if (child.isInlineLevel() != childrenInline)
+						//anonymous block are not taken into account either
+						if (child.isAnonymousBlockBox() == false)
 						{
-							shouldMakeChildrenNonInline = true;
-							break;
+							//if this child doesn't match the display of the other children,
+							///for instance if it is the first inline while all the other
+							//children are block, all the inline children should be wrapped in 
+							//anonymous blocks
+							if (child.isInlineLevel() != childrenInline)
+							{
+								shouldMakeChildrenNonInline = true;
+								break;
+							}
 						}
+						
 					}
 				}
 				
@@ -1433,17 +1438,17 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//inlineBox bounds are relative to their line box, so the
 					//x and y of the line box needs to be added to get the inline
 					//box bounds in the space of the containing block
-					_inlineBoxGlobalBounds.width = inlineBox.bounds.width;
-					_inlineBoxGlobalBounds.height = inlineBox.bounds.height;
+					_inlineBoxContainingBlockBounds.width = inlineBox.bounds.width;
+					_inlineBoxContainingBlockBounds.height = inlineBox.bounds.height;
 					
 					if (inlineBox.lineBox != null)
 					{
-						_inlineBoxGlobalBounds.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x;
-						_inlineBoxGlobalBounds.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y;
+						_inlineBoxContainingBlockBounds.x = inlineBox.bounds.x + inlineBox.lineBox.bounds.x;
+						_inlineBoxContainingBlockBounds.y = inlineBox.bounds.y + inlineBox.lineBox.bounds.y;
 					}
 					
 					
-					GeomUtils.addBounds(_inlineBoxGlobalBounds, child.bounds);
+					GeomUtils.addBounds(_inlineBoxContainingBlockBounds, child.bounds);
 				}
 			}
 			

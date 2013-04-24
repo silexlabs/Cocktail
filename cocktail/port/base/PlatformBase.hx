@@ -125,6 +125,21 @@ class PlatformBase
 		touchListener = new TouchListener(cast(this));
 	}
 	
+	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		removeNativeListeners();
+		
+		mouse.dispose();
+		mouse = null;
+		keyboard.dispose();
+		keyboard = null;
+		touchListener.dispose();
+		touchListener = null;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PUBLIC METHODS
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -171,10 +186,19 @@ class PlatformBase
 	}
 	
 	/**
-	 * Return the root native layer of the target native
-	 * display list
+	 * return the native layer used as the root
+	 * of the document
 	 */
-	public function getInitialNativeLayer():NativeLayer
+	public function getRootNativeLayer():NativeLayer
+	{
+		return null;
+	}
+	
+	/**
+	 * Return the native layer used as the top of the
+	 * native layer tree
+	 */
+	public function getTopNativeLayer():NativeLayer
 	{
 		return null;
 	}

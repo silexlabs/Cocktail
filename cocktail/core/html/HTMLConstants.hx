@@ -122,6 +122,8 @@ class HTMLConstants
 	
 	public static inline var HTML_SELECT_TAG_NAME:String = "SELECT";
 	
+	public static inline var HTML_TEXT_AREA_TAG_NAME:String = "TEXTAREA";
+	
 	//attributes names
 	
 	public static inline var HTML_ID_ATTRIBUTE_NAME:String = "id";
@@ -201,6 +203,8 @@ class HTMLConstants
 	public static inline var TARGET_TOP:String = "_top";
 	
 	//input types values
+	
+	public static inline var INPUT_TEXT_AREA:String = "textarea";
 	
 	public static inline var INPUT_TYPE_HIDDEN:String = "hidden";
 	

@@ -62,6 +62,15 @@ class TouchListenerBase
 		setNativeListeners();
 	}
 	
+	/**
+	 * clean up method
+	 */
+	public function dispose():Void
+	{
+		removeNativeListeners();
+		_platform = null;
+	}
+	
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// EVENTS
 	// Private native touch event handler method

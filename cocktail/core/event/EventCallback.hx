@@ -148,6 +148,20 @@ class EventCallback extends EventTarget
 	public var oninput(default, set_onInput):Event->Void;
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
+	// Form callbacks
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Callback called on a form when it is reseted
+	 */
+	public var onreset(default, set_onReset):Event->Void;
+	
+	/**
+	 * Callback called on a form when it is reseted
+	 */
+	public var onsubmit(default, set_onSubmit):Event->Void;
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
 	// Media callbacks
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -443,6 +457,21 @@ class EventCallback extends EventTarget
 	{
 		updateCallbackListener(EventConstants.INPUT, cast(value), cast(oninput));
 		return oninput = value;
+	}
+	
+		// FORM
+	////////////////////////////
+	
+	private function set_onReset(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(EventConstants.RESET, cast(value), cast(onreset));
+		return onreset = value;
+	}
+	
+	private function set_onSubmit(value:Event->Void):Event->Void
+	{
+		updateCallbackListener(EventConstants.SUBMIT, cast(value), cast(onsubmit));
+		return onsubmit = value;
 	}
 	
 		// VIDEO

@@ -1,5 +1,5 @@
 #sources
--main Cocktail
+-main cocktail.api.Boot
 -lib cocktail
 -cp src
 
@@ -7,4 +7,4 @@
 -swf bin/swf/Main.swf
 -swf-version 10.2
 --remap js:cocktail
---macro Cocktail.create('index.html')
+--macro cocktail.api.Boot.create('index.html')

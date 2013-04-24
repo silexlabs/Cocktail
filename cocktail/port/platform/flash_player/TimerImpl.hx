@@ -8,6 +8,7 @@
 */
 package cocktail.port.platform.flash_player;
 import cocktail.core.timer.AbstractTimerImpl;
+import flash.events.Event;
 
 /**
  * Timer implementation for flash and nme.
@@ -19,13 +20,36 @@ import cocktail.core.timer.AbstractTimerImpl;
 class TimerImpl extends AbstractTimerImpl
 {
 	/**
+	 * store a ref to the enter frame callback
+	 */
+	private var _callback:Event->Void;
+	
+	/**
+	 * called on enter frame
+	 */
+	private var _updateCallback:Void->Void;
+	
+	/**
 	 * class constructor. Call the update
 	 * callback on each frame
 	 */
 	public function new(updateCallback:Void->Void) 
 	{
 		super(updateCallback);
-		flash.Lib.current.stage.addEventListener(flash.events.Event.ENTER_FRAME, function(e) {updateCallback(); } );
+		_callback = onEnterFrame;
+		_updateCallback = updateCallback;
+		flash.Lib.current.stage.addEventListener(flash.events.Event.ENTER_FRAME, _callback );
+	}
+	
+	/**
+	 * clean up method
+	 */
+	override public function dispose():Void 
+	{
+		 super.dispose();
+		 flash.Lib.current.stage.removeEventListener(flash.events.Event.ENTER_FRAME, _callback );
+		 _callback = null;
+		 _updateCallback = null;
 	}
 	
 	/**
@@ -34,5 +58,13 @@ class TimerImpl extends AbstractTimerImpl
 	override public function getTimer():Float
 	{
 		return flash.Lib.getTimer();
+	}
+	
+	/**
+	 * call update method on enter frame
+	 */
+	private function onEnterFrame(e:Event):Void
+	{
+		_updateCallback();
 	}
 }

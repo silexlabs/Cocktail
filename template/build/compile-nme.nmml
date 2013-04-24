@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project>
 
-	<app main="Cocktail" path="../bin" file="Main"/>
+	<app main="Main" path="../bin" file="Main"/>
 	<meta title="Cocktail" package="org.silexlabs.cocktail" version="1.0.0" company="Silex Labs" />
 	<window width="350" height="350" fps="30" orientation="portrait" resizable="true" unless="target_flash" />
 
@@ -13,6 +13,7 @@
 	<haxelib name="cocktail" />
 
 	<assets path="../bin/style.css" rename="style.css"></assets>
+	<assets path="../bin/index.html" rename="index.html"></assets>
 
 	<ndll name="std" />
 	<ndll name="regexp" />
@@ -20,6 +21,5 @@
 	<ndll name="nme" haxelib="nme" />
 
 	<compilerflag name="--remap js:cocktail" />
-	<compilerflag name="--macro Cocktail.create('../src/index.html','Main')" />
 
 </project>
