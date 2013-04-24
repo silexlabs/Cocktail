@@ -216,7 +216,8 @@ class CocktailView
 	{
 		if (url != null)
 		{
-			//todo : set base url on document
+			//set base url of document
+			htmlDocument.location.href = url;
 		}
 		
 		if (html != null)

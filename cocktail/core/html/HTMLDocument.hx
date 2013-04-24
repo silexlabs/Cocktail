@@ -39,6 +39,7 @@ import cocktail.core.html.HTMLInputElement;
 import cocktail.core.invalidation.InvalidationManager;
 import cocktail.core.layout.floats.FloatsManager;
 import cocktail.core.layout.LayoutManager;
+import cocktail.core.location.Location;
 import cocktail.core.multitouch.MultiTouchManager;
 import cocktail.core.parser.DOMParser;
 import cocktail.core.renderer.ElementRenderer;
@@ -275,6 +276,11 @@ class HTMLDocument extends Document
 	 */
 	public var cascadeManager(default, null):CascadeManager;
 		
+	/**
+	 * holds the location of this document
+	 */
+	public var location(default, null):Location;
+	
    /**  	
 	* getter/setter to set the whole document content with an  	
 	* html string or to serialise the whole document into
@@ -318,6 +324,8 @@ class HTMLDocument extends Document
 		_lastTouchStartPosition = null;
 		layoutManager.dispose();
 		layoutManager = null;
+		location.dispose();
+		location = null;
 		
 		if (documentElement != null)
 		{
@@ -338,9 +346,11 @@ class HTMLDocument extends Document
 		resourceManager = new ResourceManager(this);
 		transitionManager = new TransitionManager(this);
 		
+		location = new Location(this);
+		location.onLocationChanged = onLocationChanged;
+		
 		initStyleManager();
 		invalidationManager = new InvalidationManager(this);
-		
 		
 		cascadeManager = new CascadeManager();
 		
@@ -1050,6 +1060,18 @@ class HTMLDocument extends Document
 			//element
 			setMouseCursor(elementRendererAtPoint.domNode.coreStyle.cursor);
 		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	// LOCATION METHODS
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * called when the location's href is set
+	 */
+	private function onLocationChanged():Void
+	{
+		//TODO : update document
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
