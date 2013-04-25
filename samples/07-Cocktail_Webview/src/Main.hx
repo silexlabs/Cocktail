@@ -13,7 +13,8 @@ import js.Lib;
 
 /**
  * This sample show how to use cocktail as a
- * webview, and how to mix the flash and DOM api
+ * webview, and how to communicate between the flash and DOM api
+ * when building a flash/NME app
  */
 class Main extends Sprite
 {
