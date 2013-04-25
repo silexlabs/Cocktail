@@ -6,62 +6,55 @@
  * Cocktail is available under the MIT license
  * http://www.silexlabs.org/labs/cocktail-licensing/
 */
-
-package ;
-
 import js.Lib;
 import js.Dom;
 
 /**
- * This is a simple Cocktail example of an Html page with styles and interactivity.
+ * an example of using the DOM api to build an html document
  */
-class Main 
+class Main
 {
-	public static function main()
-	{	
-	    new Main();
+	static function main()
+	{
+		#if !js
+		//init cocktail with the content of the index.html file
+		cocktail.api.Cocktail.boot();
+		#end
+		
+		Lib.window.onload = function(e) new Main();
 	}
+
 	
 	public function new()
 	{
-		// use Haxe JS Api to build the DOM
-		buildDomHaxeJS();
-		// or use Html content to build the DOM
-		//hs.buildDomHtml();
+		buildDom();
 		
 		// add interactivity
 		addInteractivity();
-		
 	}
 	
 	/**
-	 * Builds the DOM using Haxe JS Api
+	 * Builds the DOM 
 	 */
-	function buildDomHaxeJS()
+	function buildDom()
 	{
-
-		//HTML DOM & JavaScript
 		var title = Lib.document.createElement("h1");
 		title.appendChild(Lib.document.createTextNode("Hello Cocktail"));
 		Lib.document.body.appendChild(title);
 		
-		//HTML & semantics
 		var paragraph = Lib.document.createElement("p");
 		paragraph.appendChild(Lib.document.createTextNode("Cocktail is a HTML rendering engine."));
 		Lib.document.body.appendChild(paragraph);
 	
-		//CSS text
 		title.style.wordSpacing = "10px";
 		title.style.color = "orange";
 		title.style.fontFamily = "arial";
 					
-		//HTML4
 		var img:Image = cast(Lib.document.createElement("img"));
 		img.id = "pic";
 		img.src = "assets/cocktail.png";
 		paragraph.appendChild(img);
 		
-		//CSS layouts
 		var site = Lib.document.createElement("div");
 		site.appendChild(title);
 		site.appendChild(paragraph);
@@ -71,23 +64,11 @@ class Main
 		
 		Lib.document.body.appendChild(site);
 		
-		//CSS backgrounds
 		site.style.backgroundColor = "rgba(255,255,255,0.5)";
-		
-	}
-		
-	/**
-	 * Builds the DOM using Html content directly
-	 */
-	function buildDomHtml()
-	{
-		//HxTML
-		Lib.document.body.innerHTML = '<div style="width: 50%; margin-right: auto; margin-left: auto; background-color: rgba(255, 255, 255, 0.5);"><h1 style="word-spacing: 10px; color: orange; font-family: arial;">Hello Cocktail</h1><p>Cocktail is a HTML rendering engine.<img id="pic" src="assets/cocktail.png" /></p></div>';
-
 	}
 	
 	/**
-	 * Add interactivity
+	 * Add click listener on body
 	 */
 	function addInteractivity()
 	{
