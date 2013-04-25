@@ -17,6 +17,16 @@ import js.Dom;
  */
 class Main
 {
+	static function main()
+	{
+		//init cocktail with the content of the index.html file
+		#if !js
+		cocktail.api.Cocktail.boot();
+		#end
+		
+		Lib.window.onload = function(e) new Main();
+	}
+	
 	/**
 	 * width/height of each box and
 	 * of the container fro the boxes
@@ -65,7 +75,7 @@ class Main
 			
 		}, false);
 		
-		link.setAttribute("href", "app.css");
+		link.setAttribute("href", "style.css");
 		link.setAttribute("type", "text/css");
 		link.setAttribute("rel", "stylesheet");
 		
