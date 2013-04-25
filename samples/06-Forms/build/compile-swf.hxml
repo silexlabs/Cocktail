@@ -1,0 +1,7 @@
+-main Main
+-cp ../src
+-swf ../bin/Main.swf
+-swf-version 10.2
+
+-lib cocktail
+--remap js:cocktail
