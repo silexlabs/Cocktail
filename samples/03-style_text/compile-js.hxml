@@ -1,8 +1,0 @@
-#sources
--main cocktail.api.Boot
--lib cocktail
--cp src
-
-#binary
--js bin/js/Main.js
---macro cocktail.api.Boot.create('index.html')
