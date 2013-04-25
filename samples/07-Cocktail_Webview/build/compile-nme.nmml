@@ -4,7 +4,7 @@
 	<app main="Main" path="../bin" file="Main"/>
 	<meta title="Cocktail" package="org.silexlabs.cocktail" version="1.0.0" company="Silex Labs" />
 	
-	<window background="#3790e8" fps="40" />
+	<window fps="40" />
 	<window width="600" height="600" unless="mobile" />
 	<window vsync="true" antialiasing="0" resizable="true" />
 
@@ -13,7 +13,7 @@
 	<classpath name="../src" />
 
 	<haxelib name="nme" />
-	<haxelib name="cocktail-api" />
+	<haxelib name="cocktail" />
 
 	<assets path="../bin">
 		<assets path="style.css" name="style.css" type="text" />
