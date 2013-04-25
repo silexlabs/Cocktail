@@ -1,0 +1,12 @@
+h1 {
+	word-spacing:10px;
+	color:orange;
+	font-family:arial;
+	margin-top:0;
+	margin-bottom:0;
+	text-align:center;
+}
+
+p, div {
+	text-align:center;
+}
