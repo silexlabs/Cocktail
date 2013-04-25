@@ -501,10 +501,7 @@ class HTMLDocument extends Document
 	{	
 		_delayLoadEventCounter--;
 		
-		if (_delayLoadEventCounter == 0 && _documentLoaded == false)
-		{
-			onDocumentLoaded();
-		}
+		checkifDocumentLoaded();
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -525,6 +522,18 @@ class HTMLDocument extends Document
 		var event:UIEvent = new UIEvent();
 		event.initUIEvent(EventConstants.LOAD, false, false, null, 0);
 		window.dispatchEvent(event);
+	}
+	
+	/**
+	 * check wether all elements delaying the load event 
+	 * are done
+	 */
+	private function checkifDocumentLoaded()
+	{
+		if (_delayLoadEventCounter == 0 && _documentLoaded == false)
+		{
+			onDocumentLoaded();
+		}
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////////////////
@@ -685,6 +694,10 @@ class HTMLDocument extends Document
 		var node:HTMLElement = DOMParser.parse(value, this);
 		documentElement = node;
 		initBody(cast(documentElement.getElementsByTagName(HTMLConstants.HTML_BODY_TAG_NAME)[0]));
+		
+		//check if document can dispatch load event instantly,
+		//if no element is delaying the load of the document
+		checkifDocumentLoaded();
 		
 		return value;
 	}
