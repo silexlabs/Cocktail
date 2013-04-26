@@ -4,8 +4,9 @@
 	<tag v="js"/>
 	<tag v="flash"/>
 	<tag v="javascript"/>
+	<tag v="nme"/>
     <tag v="html"/>
 	<tag v="css"/>
     <description>A Haxe HTML/CSS rendering engine library</description>
-    <version name="1.0beta3">See changes.txt</version>
+    <version name="1.0beta4">See changes.txt</version>
 </project>
