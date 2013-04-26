@@ -1,4 +1,13 @@
+/*
+ * Cocktail, HTML rendering engine
+ * http://haxe.org/com/libs/cocktail
+ *
+ * Copyright (c) Silex Labs
+ * Cocktail is available under the MIT license
+ * http://www.silexlabs.org/labs/cocktail-licensing/
+*/
 package cocktail.core.linebox;
+
 import cocktail.core.css.CoreStyle;
 import cocktail.core.geom.GeomUtils;
 import cocktail.core.linebox.InlineBox;
