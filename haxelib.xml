@@ -1,0 +1,12 @@
+<project name="cocktail" url="http://haxe.org/com/libs/cocktail" license="MIT">
+    <user name="silexlabs"/>
+    <tag v="cross"/>
+	<tag v="js"/>
+	<tag v="flash"/>
+	<tag v="javascript"/>
+	<tag v="nme"/>
+    <tag v="html"/>
+	<tag v="css"/>
+    <description>A Haxe HTML/CSS rendering engine library</description>
+    <version name="1.0beta4">See changes.txt</version>
+</project>

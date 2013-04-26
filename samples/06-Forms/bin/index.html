@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>HTML forms with Cocktail</title>
+		<link type="text/css" href="sober/style.css" rel="stylesheet"></link>
+		<link type="text/css" href="style.css" rel="stylesheet"></link>
+		<script type="text/javascript" src="Main.js"></script>
+	</head>
+	<body>
+		<form id="frm" >
+			<h1>Subscribe</h1>
+			<h4>(Don't worry, it's fake )</h4>
+			<div>
+				<h3>Info</h3>
+				name : <input name="name" />
+				password : <input type="password" name="pass" />
+			</div>
+			<div>
+				<h3>I'am a...</h3>
+				man : <input type="radio" name="sex" value="man" />
+				woman : <input type="radio" name="sex" value="woman" />
+				other : <input type="radio" name="sex" value="other" />
+			</div>
+			<div>
+				<h3>I want to...</h3>
+				subscribe : <input type="checkbox" checked="true" name="subscribe" />
+				receive update : <input type="checkbox" name="update" />
+				receive spam : <input type="checkbox" name="spam" />
+			</div>
+			<div>
+				<h3>comment</h3>
+				<textarea name="comment">I think that...</textarea>
+			</div>
+			<div>
+				<input type="submit" />
+				<input type="reset" />
+			</div>
+		</form>
+	</body>
+</html>

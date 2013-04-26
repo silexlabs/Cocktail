@@ -1,0 +1,25 @@
+/*
+ * Cocktail, HTML rendering engine
+ * http://www.silexlabs.org/haxe/cocktail/
+ *
+ * Copyright (c) Silex Labs
+ * Cocktail is available under the MIT license
+ * http://www.silexlabs.org/haxe/cocktail/licensing/
+*/
+
+Changes
+=======
+
+beta 3 
+-------------
+* samples can now be compiled with NME too, though performance is too bad to be usabled now
+* started implementation of form and input tag, not quite usable yet
+
+beta 2
+-------------
+* bug fix to make samples work
+* added template project
+
+beta 1
+-------------
+* Initial haxelib release

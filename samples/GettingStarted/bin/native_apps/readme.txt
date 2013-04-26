@@ -1,1 +1,0 @@
-This is the directory where the native apps are generated

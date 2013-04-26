@@ -1,0 +1,102 @@
+/*
+ * Cocktail, HTML rendering engine
+ * http://haxe.org/com/libs/cocktail
+ *
+ * Copyright (c) Silex Labs
+ * Cocktail is available under the MIT license
+ * http://www.silexlabs.org/labs/cocktail-licensing/
+*/
+
+== TODO ==
+
+High level TODO list for the project, there are also TODO in the code for smaller tasks.
+This is not an exhaustive list, only used as a remainder
+
+
+== CSS 2.1 == 
+
+=== missing styles
+
+==== IMPORTANT
+
+- list styles (list-style, list-style-image...)
+- tables styles, table layout
+
+==== LESS IMPORTANT
+
+- content (with :after and :before pseudo-styles)
+- direction, unicode-bidi (useful for right to left languages)
+- clip
+- counter
+- paged media styles
+
+=== incomplete styles
+
+- display, misses list and tables related values
+- border/outline, only support for solid lines
+- outline, no support for "invert" value (inverted color)
+- overflow, no implementation of the "scroll" value
+- for color style, hsl and hsla not implemented
+- for selectors, lang pseudoClass not implemented
+
+=== buggy/incomplete implementations
+
+- margin collapsing has some bugs
+- "clear" style implementation should be improved
+- background-attachment implemented as CSS style but not implemented at rendering
+- vertical-align, other than baseline, not tested enough
+- white-space, not tested enough
+- float, regression, don't work properly when applied to inline level element
+- in text, \n and \t are ignored
+- text parser in TextRenderer needs to be rewritten
+- html document needs a base URL and css urls should be resolved relative to this base
+- graphics context owns native layers, it should be the opposite
+
+== CSS 3 ==
+
+=== missing styles (not all CSS 3 styles here, only those that we plan to implement in the year)
+
+- border-radius
+- box-shadow / text-shadow
+- gradient
+
+=== nice to have
+
+- media queries
+- font-face
+
+=== incomplete styles
+
+- background shorthand is at level 2.1 and not 3 of CSS
+
+=== buggy implementations
+
+- CSS transition, only style with 1 float value works now (like width, height...), no color or matrix transitions for instance.
+- CSS transform (2d), mostly implemented but currently broken.
+- anonymous text element should be wrapped in anonymous inline box
+
+== HTML 4 == 
+
+=== features
+
+- managing html entities
+- implement text selection
+
+=== missing tags
+
+- textarea
+- select
+- button
+- embed
+
+=== nice to have
+
+- plugin system for object and embed tag
+- true html parser (instead of haxe xml parser)
+- iframe
+
+== HTML 5 ==
+
+=== nice to have
+
+- canvas 2d

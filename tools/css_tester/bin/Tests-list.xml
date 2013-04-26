@@ -104,6 +104,14 @@
 		<test name="position-relative-007" description="relative-positioning-with-'left'-set-and-'right'-'auto'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-007.xht"></test>
 		<test name="position-relative-008" description="relative-positioning-with-'right'-set-and-'left'-'auto'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-008.xht"></test>
 		<test name="position-relative-009" description="over-constrained-situation-with-position-'left'-property" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-009.xht"></test>
+		<test name="position-relative-010" description="Over-constrained situation with position 'right' property" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-010.xht"></test>
+		<test name="position-relative-013" description="Relative positioning with top and bottom do not change element dimensions" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-013.xht"></test>
+		<test name="position-relative-014" description="Relative positioning with top" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-014.xht"></test>
+		<test name="position-relative-015" description="Relative positioning with bottom" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-015.xht"></test>
+		<test name="position-relative-016" description="Relative positioning and computed top/bottom values" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-016.xht"></test>
+		<test name="position-relative-017" description="Relative positioning and computed 'top'/'bottom' set to 'auto'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-017.xht"></test>
+		<test name="position-relative-018" description="Relative positioning and computed values when 'bottom' is set to 'auto'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-018.xht"></test>
+		<test name="position-relative-019" description="Relative positioning 'bottom' ignored if 'top' and 'bottom' are both not 'auto'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-019.xht"></test>
 		<test name="position-relative-020" description="relative-positioning-and-overflow:-auto" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-020.xht"></test>
 		<test name="position-relative-021" description="relative-positioning-and-overflow:-scroll" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/position-relative-021.xht"></test>
 	</section>
@@ -318,6 +326,11 @@
 </chapter>
 
 <chapter name="chapter-11-visual-effects">
+	<section name="11.1-overflow-and-clipping">
+		<test name="abspos-overflow-004" description="Absolutely positioned children of overflow: hidden" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/abspos-overflow-004.xht"></test>
+		<test name="abspos-overflow-005" description="Absolutely positioned children of overflow: hidden" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/abspos-overflow-005.xht"></test>
+		<test name="abspos-overflow-006" description="Absolutely positioned children of overflow: hidden" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/abspos-overflow-006.xht"></test>
+	</section>
 	<section name="11.1.1-overflow:-the-'overflow'-property">
 		<test name="clipping-002" description="overflow':-basic-test" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-002.xht"></test>
 		<test name="clipping-003" description="css-test" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/clipping-003.xht"></test>
@@ -367,6 +380,11 @@
 </chapter>
 
 <chapter name="chapter-16-text">
+	<section name="16.3.1 Underlining, overlining, striking, and blinking: the 'text-decoration' property">
+		<test name="text-decoration-001" description="Text-decoration set to 'underline'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-decoration-001.xht"></test>
+		<test name="text-decoration-002" description="Text-decoration set to 'overline'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-decoration-002.xht"></test>
+		<test name="text-decoration-003" description="Text-decoration set to 'line-through'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-decoration-003.xht"></test>
+	</section>
 	<section name="16.4-letter-and-word-spacing:-the-'letter-spacing'-and-'word-spacing'-properties">
 		<test name="letter-spacing-007" description="letter-spacing-using-pixels-with-a-nominal-value,-96px" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/letter-spacing-007.xht"></test>
 		<test name="letter-spacing-justify-001" description="letter-spacing-and-'text-align:-justify'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/letter-spacing-justify-001.xht"></test>
@@ -393,6 +411,13 @@
 		<test name="text-transform-002" description="text-transform-set-to-'lowercase'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-transform-002.xht"></test>
 		<test name="text-transform-003" description="text-transform-set-to-'uppercase'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-transform-003.xht"></test>
 		<test name="text-transform-004" description="text-transform-set-to-'none'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/text-transform-004.xht"></test>
+	</section>
+	<section name="16.6 Whitespace: the 'white-space' property">
+		<test name="white-space-001" description="White-space set to 'normal'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/white-space-001.xht"></test>
+		<test name="white-space-002" description="White-space set to 'pre'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/white-space-002.xht"></test>
+		<test name="white-space-003" description="White-space set to 'nowrap'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/white-space-003.xht"></test>
+		<test name="white-space-004" description="White-space set to 'pre-wrap'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/white-space-004.xht"></test>
+		<test name="white-space-005" description="White-space set to 'pre-line'" url="http://test.csswg.org/suites/css2.1/20110323/xhtml1/white-space-005.xht"></test>
 	</section>
 </chapter>
 </data>

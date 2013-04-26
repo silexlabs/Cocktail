@@ -1,0 +1,4 @@
+-main Main
+-cp ../src
+-js ../bin/Main.js
+-lib cocktail

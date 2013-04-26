@@ -1,9 +1,0 @@
-#sources
--cp ../../src/
--cp ../../lib/
--main Main
-
-#binary
--swf bin/Main.swf
--swf-version 10.2
---remap js:cocktail

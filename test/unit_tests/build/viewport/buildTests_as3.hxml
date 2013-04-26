@@ -1,5 +1,0 @@
--cp ../../../../../src/
--cp ../../../src/
--main viewport.ViewportTests
--lib utest
--swf9 ../../bin/viewport/testAS3.swf

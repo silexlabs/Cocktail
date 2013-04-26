@@ -1,0 +1,83 @@
+/**
+	form element styles
+*/
+input[type=text], input[type=password], input {
+	width:150px;
+	height:25px;
+	border:solid thin gray;
+}
+
+textarea {
+	width:150px;
+	height:100px;
+	border:solid thin gray;
+}
+
+input[type=button], input[type=reset], input[type=submit] {
+	background-image:url('assets/button.png');
+	font:13px sans-serif;
+	text-align:center;
+	color:#505050;
+	width:201px;
+	height:36px;
+	padding-top:26px;
+	border:none;
+}
+
+input[type=button]:hover, input[type=reset]:hover, input[type=submit]:hover {
+	background-position:-202px 0;
+	color:#734b1f;
+}
+
+input[type=button]:active, input[type=reset]:active, input[type=submit]:active {
+	background-position:-404px 0;
+	color:#854500;
+}
+
+input[type=button]:disabled, input[type=reset]:disabled, input[type=submit]:disabled {
+	background-position:-606px 0;
+	color:#9f9f9f;
+}
+
+input[type=checkbox] {
+	background-image:url('assets/checkbox.png');
+}
+
+input[type=radio] {
+	background-image:url('assets/radio.png');
+}
+
+input[type=checkbox], input[type=radio] {
+	height:47px;
+	width:47px;
+	background-position: -188px 0;
+	border:none;
+}
+
+input[type=checkbox]:hover, input[type=radio]:hover {
+	background-position:-235px 0;
+}
+
+input[type=checkbox]:active, input[type=radio]:active {
+	background-position:-282px 0;
+}
+
+input[type=checkbox]:checked, input[type=radio]:checked {
+	background-position:0;
+}
+
+input[type=checkbox]:checked:hover, input[type=radio]:checked:hover {
+	background-position:-47px;
+}
+
+input[type=checkbox]:checked:active, input[type=radio]:checked:active {
+	background-position:-94px;
+}
+
+input[type=checkbox]:disabled, input[type=radio]:disabled {
+	background-position:-329px;
+}
+
+input[type=checkbox]:checked:disabled, input[type=radio]:checked:disabled {
+	background-position:-141px;
+}

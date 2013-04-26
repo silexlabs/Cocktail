@@ -1,5 +1,0 @@
--cp ../../../../../src/
--cp ../../../src/
--main classInstance.ClassInstanceTests
--lib utest
--swf9 ../../bin/classInstance/classInstanceTestAs3.swf
