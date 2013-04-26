@@ -11,7 +11,7 @@ import cocktail.core.geom.Matrix;
 import cocktail.core.html.HTMLDocument;
 import cocktail.core.layer.LayerRenderer;
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.utils.FastNode;
+import cocktail.core.ds.FastNode;
 import cocktail.port.GraphicsContextImpl;
 import cocktail.port.NativeBitmapData;
 import cocktail.port.NativeElement;

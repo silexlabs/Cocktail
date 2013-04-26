@@ -1,7 +1,7 @@
 package cocktail.core.linebox;
 
 import cocktail.core.renderer.ElementRenderer;
-import cocktail.core.utils.FastNode;
+import cocktail.core.ds.FastNode;
 import cocktail.core.font.FontData;
 import cocktail.core.geom.GeomData;
 

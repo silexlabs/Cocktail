@@ -8,7 +8,7 @@
 */
 package cocktail.core.stacking;
 import cocktail.core.layer.LayerRenderer;
-import cocktail.core.utils.FastNode;
+import cocktail.core.ds.FastNode;
 import cocktail.core.css.CSSData;
 import cocktail.core.geom.GeomData;
 

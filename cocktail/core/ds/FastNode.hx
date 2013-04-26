@@ -1,10 +1,25 @@
-package cocktail.core.utils;
+/*
+ * Cocktail, HTML rendering engine
+ * http://haxe.org/com/libs/cocktail
+ *
+ * Copyright (c) Silex Labs
+ * Cocktail is available under the MIT license
+ * http://www.silexlabs.org/labs/cocktail-licensing/
+*/
+package cocktail.core.ds;
 
 /**
- * ...
+ * This is a node data structure for building 
+ * data trees. This is used for all data tress in
+ * cocktail (element render tree, layer tree...)
+ * except for the DOM tree which needs indexed
+ * access for the standard api (such as childNodes)
+ * 
+ * This structure is lighter as it doesn't need to manipulate
+ * a bunch of arrays when appending or removing child
+ * 
  * @author Yannick DOMINGUEZ
  */
-
 class FastNode<NodeClass:FastNode<NodeClass>>
 {
 	public var parentNode:NodeClass;

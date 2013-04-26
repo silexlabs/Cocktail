@@ -25,7 +25,7 @@ import cocktail.core.layout.LayoutData;
 import cocktail.core.geom.Matrix;
 import cocktail.core.graphics.GraphicsContext;
 import cocktail.core.stacking.StackingContext;
-import cocktail.core.utils.FastNode;
+import cocktail.core.ds.FastNode;
 import cocktail.Lib;
 import cocktail.port.NativeElement;
 import cocktail.core.geom.GeomData;

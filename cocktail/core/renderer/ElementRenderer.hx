@@ -21,7 +21,7 @@ import cocktail.core.html.HTMLElement;
 import cocktail.core.animation.Animator;
 import cocktail.core.animation.Transition;
 import cocktail.core.geom.GeomData;
-import cocktail.core.utils.FastNode;
+import cocktail.core.ds.FastNode;
 import haxe.Stack;
 
 import cocktail.core.css.CoreStyle;
