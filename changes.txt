@@ -10,6 +10,18 @@
 Changes
 =======
 
+beta 4
+-------------
+* Implemented an api to embed a cocktail instance like a webview
+* Added CSS themes for forms elements
+* Implemented viewport obejct to position and size document
+* Removed most static reference to document and singletons
+* Implemented window "load" event when document ready
+* Various layout and css bug fixes
+* Timer bug fix for NME target, prevented more than 1fps, preformance now in the
+same ballpark as for flash
+* Stabilised input and form support
+
 beta 3 
 -------------
 * samples can now be compiled with NME too, though performance is too bad to be usabled now
