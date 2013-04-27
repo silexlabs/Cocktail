@@ -103,7 +103,7 @@ class HTMLStyleElement extends HTMLElement
 	 * to the DOM, it adds a style sheet to the 
 	 * document if it has at least one child text node
 	 */
-	override public function addedToDOM():Void
+	override private function addedToDOM():Void
 	{
 		super.addedToDOM();
 		updateStyleSheet();
@@ -114,7 +114,7 @@ class HTMLStyleElement extends HTMLElement
 	 * from the dom, it must also remove its 
 	 * style sheet from the document if any
 	 */
-	override public function removedFromDOM():Void
+	override private function removedFromDOM():Void
 	{
 		super.removedFromDOM();
 		updateStyleSheet();

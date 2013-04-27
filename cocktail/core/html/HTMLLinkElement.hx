@@ -117,7 +117,7 @@ class HTMLLinkElement extends HTMLElement
 	 * to the DOM, the link element
 	 * tries to load its linked resource
 	 */
-	override public function addedToDOM():Void
+	override private function addedToDOM():Void
 	{
 		if (_hasLoadedResource == false)
 		{	
@@ -131,7 +131,7 @@ class HTMLLinkElement extends HTMLElement
 	 * the DOM, the link dispose of its
 	 * linked resource as needed
 	 */
-	override public function removedFromDOM():Void
+	override private function removedFromDOM():Void
 	{
 		super.removedFromDOM();
 		if (_hasLoadedResource == true)

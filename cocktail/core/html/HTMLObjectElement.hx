@@ -183,7 +183,7 @@ class HTMLObjectElement extends EmbeddedElement
 	 * to 'none', it is not deleted as it is assumed
 	 * that it might be shown again
 	 */
-	override public function removedFromDOM():Void
+	override private function removedFromDOM():Void
 	{
 		super.removedFromDOM();
 		deletePlugin();

@@ -45,7 +45,7 @@ class HTMLMetaElement extends HTMLElement
 	 * when added to dom, check wether this meta
 	 * update the config of the document
 	 */
-	override public function addedToDOM():Void
+	override private function addedToDOM():Void
 	{
 		super.addedToDOM();
 		updateConfig();
