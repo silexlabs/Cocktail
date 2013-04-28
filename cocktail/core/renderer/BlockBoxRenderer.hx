@@ -544,7 +544,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			
 			//update this block's offset relative to its first block formatting ancestor
 			_offsetFromBlockFormattingRoot = getBlockBoxesOffset(this, blockFormattingContextRoot);
-			
+		
 			//the offset is from the content area of this block
 			_offsetFromBlockFormattingRoot.x += coreStyle.usedValues.paddingLeft + coreStyle.usedValues.borderLeftWidth;
 			_offsetFromBlockFormattingRoot.y += coreStyle.usedValues.paddingTop + coreStyle.usedValues.borderTopWidth;
@@ -877,9 +877,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					}
 				}
 				
-				//the child must first be laid out so that its width and height are known
-				child.layout(true, layoutState);
-				
 				//if the child is not a float
 				if (child.isFloat() == false)
 				{
@@ -901,11 +898,18 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						child.bounds.x = child.coreStyle.usedValues.marginLeft;
 						child.bounds.y = _childPosition.y;
 						
+						//block box can now be laid out, it needs to know its x and y relative to 
+						//its containing block before layout to deal with floated element
+						child.layout(true, layoutState);
+						
 					}
 					//here the child is either a replaced block level element or a block box
 					//establishing a new block formatting
 					else
 					{
+						//the child must first be laid out so that its width and height are known
+						child.layout(true, layoutState);
+						
 						//this child x and y position is influenced by floated elements, so the first y position
 						//where this child can fit given the floated elements must be found
 						var childMarginWidth:Float = child.bounds.width + child.coreStyle.usedValues.marginLeft + child.coreStyle.usedValues.marginRight;
@@ -965,6 +969,9 @@ class BlockBoxRenderer extends FlowBoxRenderer
 				//here the child is a floated element
 				else
 				{
+					//the child must first be laid out so that its width and height are known
+					child.layout(true, layoutState);
+					
 					var childPosition:PointVO = _childPosition;
 					
 					//implementation of a border case, if the previous 
@@ -1110,7 +1117,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//
 		//start with client width
 		var availableWidth:Float =  coreStyle.usedValues.width;
-		trace(floatsManager.hasFloats );
+		
 		//remove float width if there are any
 		if (floatsManager.hasFloats == true)
 		{
@@ -1131,7 +1138,10 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			
 			//convert from block formatting root space to this block space
 			leftFloatOffset -= _offsetFromBlockFormattingRoot.x;
+			
+			
 		}
+		
 		
 		lineBox.bounds.x = leftFloatOffset;
 	}
