@@ -971,6 +971,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					//sibling is an anonymous block starting an inline formatting context,
 					//then the float should be aligned to the top of its last line box
 					var previousFlowSibling:ElementRenderer = child.previousNormalFlowSibling;
+					var needToLayoutPreviousSibling:Bool = false;
 					if (previousFlowSibling != null)
 					{
 						if (previousFlowSibling.isAnonymousBlockBox() == true)
@@ -981,11 +982,19 @@ class BlockBoxRenderer extends FlowBoxRenderer
 								var blockPreviousSibling:AnonymousBlockBoxRenderer = cast(previousFlowSibling);
 								var lastLineBox:LineBox = blockPreviousSibling.lineBoxes[blockPreviousSibling.lineBoxes.length - 1];
 								childPosition.y = lastLineBox.bounds.y + blockPreviousSibling.bounds.y;
+								needToLayoutPreviousSibling = true;
 							}
 						}
 					}
 					
 					registerFloatedElement(child, childPosition);
+					
+					//the previous anonymous sibling, must now be laid out again
+					//taking the newly registered float into account
+					if (needToLayoutPreviousSibling == true)
+					{
+						previousFlowSibling.layout(true, layoutState);
+					}
 				}
 			}
 			
@@ -1101,7 +1110,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 		//
 		//start with client width
 		var availableWidth:Float =  coreStyle.usedValues.width;
-		
+		trace(floatsManager.hasFloats );
 		//remove float width if there are any
 		if (floatsManager.hasFloats == true)
 		{
@@ -1241,6 +1250,7 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						
 						if (canFitFloat == true)
 						{
+							
 							//if there is enough space, register the float at the current line box position
 							registerFloatedElement(child, inlineFormattingData.lineBoxPosition);
 							
