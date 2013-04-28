@@ -1138,8 +1138,6 @@ class BlockBoxRenderer extends FlowBoxRenderer
 			
 			//convert from block formatting root space to this block space
 			leftFloatOffset -= _offsetFromBlockFormattingRoot.x;
-			
-			
 		}
 		
 		
@@ -1256,29 +1254,20 @@ class BlockBoxRenderer extends FlowBoxRenderer
 						//check wether there is enough space in the current line to fit the floated
 						//element.
 						var floatMarginWidth:Float = child.bounds.width + child.coreStyle.usedValues.marginLeft + child.coreStyle.usedValues.marginRight;
-						var canFitFloat:Bool = inlineFormattingData.lineBox.widthCanFit(floatMarginWidth);
-						
-						if (canFitFloat == true)
-						{
-							
-							//if there is enough space, register the float at the current line box position
-							registerFloatedElement(child, inlineFormattingData.lineBoxPosition);
-							
-							//update size and position of current line box, as it will be shorthened by the
-							//the floated element
-							setLineBoxPositionAndWidth(inlineFormattingData.lineBox);
-						}
-						else
+						if (inlineFormattingData.lineBox.widthCanFit(floatMarginWidth) == false)
 						{
 							//here, there is not enough space for the float,
 							//layout the current line
 							layoutLineBox(inlineFormattingData, layoutState);
-							
-							//the float can now be positioned on a new line 
-							registerFloatedElement(child, inlineFormattingData.lineBoxPosition);
 						}
+						
+						//the float can now be registered at the current line position
+						registerFloatedElement(child, inlineFormattingData.lineBoxPosition);
+						
+						//update size and position of current line box, as it will be shorthened by the
+						//the floated element
+						setLineBoxPositionAndWidth(inlineFormattingData.lineBox);
 					}
-					
 				}
 				//here the child is a TextRenderer, which has as many text inline box
 				//as needed to represent all the content of the TextRenderer
