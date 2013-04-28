@@ -49,7 +49,6 @@ This is not an exhaustive list, only used as a remainder
 - float, regression, don't work properly when applied to inline level element
 - in text, \n and \t are ignored
 - text parser in TextRenderer needs to be rewritten
-- html document needs a base URL and css urls should be resolved relative to this base
 - graphics context owns native layers, it should be the opposite
 
 == CSS 3 ==
@@ -84,7 +83,6 @@ This is not an exhaustive list, only used as a remainder
 
 === missing tags
 
-- textarea
 - select
 - button
 - embed
