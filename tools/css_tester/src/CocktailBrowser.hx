@@ -1,4 +1,6 @@
 package src;
+import cocktail.api.Cocktail;
+import cocktail.api.CocktailView;
 import haxe.Firebug;
 import haxe.Http;
 
@@ -13,6 +15,14 @@ class CocktailBrowser
 
 	static function main()
 	{
+		//init a cocktail document
+		var cocktailView = new CocktailView();
+		cocktailView.loadHTML("<html><head></head><body></body></html>");
+		flash.Lib.current.addChild(cocktailView.root);
+		cocktail.Lib.init(cocktailView.document);
+		
+		flash.Lib.current.stage.scaleMode = flash.display.StageScaleMode.NO_SCALE;
+		
 		new CocktailBrowser();
 	}
 	
