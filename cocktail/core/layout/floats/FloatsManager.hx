@@ -43,7 +43,7 @@ class FloatsManager
 	 * Holds a reference to each of the current left and right
 	 * floats, in the current block formatting context
 	 */
-	public var floats(default, set_floats):FloatsVO;
+	public var floats:FloatsVO;
 	
 	/**
 	 * Holds a reference to each element whit clearance
@@ -52,9 +52,9 @@ class FloatsManager
 	public var childrenWithClearance:Array<ElementRenderer>;
 	
 	/**
-	 * Holds wether this float manager has any registered float
+	 * Return wether this float manager has any registered float
 	 */
-	public var hasFloats:Bool;
+	public var hasFloats(get_hasFloats, null):Bool;
 	
 	/**
 	 * Class constructor, init the structure holding
@@ -66,7 +66,6 @@ class FloatsManager
 		var floatsRight:Array<FloatVO> = new Array<FloatVO>();
 		childrenWithClearance = new Array<ElementRenderer>();
 		floats = new FloatsVO(floatsLeft, floatsRight);
-		hasFloats = false;
 	}
 	
 	/**
@@ -78,7 +77,6 @@ class FloatsManager
 		{
 			floats.left = floats.left.clear();
 			floats.right = floats.right.clear();
-			hasFloats = false;
 		}
 		childrenWithClearance = new Array<ElementRenderer>();
 	}
@@ -216,23 +214,54 @@ class FloatsManager
 	 */
 	public function registerFloat(elementRenderer:ElementRenderer, floatY:Float, containingBlockWidth:Float, containingBlockXOffset:Float):RectangleVO
 	{
+		//first check wether the floated element is already registered,
+		//and return its bounds if it is
+		var bounds:RectangleVO = getFloatBoundsIfAlreadyRegistered(elementRenderer);
+		if (bounds != null)
+		{
+			return bounds;
+		}
+		
 		switch (elementRenderer.coreStyle.getKeyword(elementRenderer.coreStyle.cssFloat))
 		{
 			case LEFT:
 				var floatBounds:RectangleVO = getLeftFloatBounds(elementRenderer, floatY, containingBlockWidth, containingBlockXOffset);
 				floats.left.push(new FloatVO(elementRenderer, floatBounds));
-				hasFloats = true;
 				return floatBounds;
 
 			case RIGHT:
 				var floatBounds:RectangleVO = getRightFloatBounds(elementRenderer, floatY, containingBlockWidth, containingBlockXOffset);
 				floats.right.push(new FloatVO(elementRenderer, floatBounds));
-				hasFloats = true;
 				return floatBounds;
 				
 			default:
 				throw 'Illegal value for float style';
 		}
+	}
+	
+	/**
+	 * return the bounds of the element if it is already registered
+	 * or null if it isn't
+	 */
+	private function getFloatBoundsIfAlreadyRegistered(elementRenderer:ElementRenderer):RectangleVO
+	{
+		for (i in 0...floats.left.length)
+		{
+			if (floats.left[i].node == elementRenderer)
+			{	
+				return floats.left[i].bounds;
+			}
+		}
+		
+		for (i in 0...floats.right.length)
+		{
+			if (floats.right[i].node == elementRenderer)
+			{	
+				return floats.right[i].bounds;
+			}
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -473,25 +502,8 @@ class FloatsManager
 	// SETTER METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
 	
-	/**
-	 * Set when floated elements are
-	 * retrieved from the block formatting
-	 * root, evaluate wether there are any floats
-	 * on the block formatting root
-	 */
-	private function set_floats(value:FloatsVO):FloatsVO
+	private function get_hasFloats():Bool
 	{
-		floats = value;
-		
-		if (value.left.length > 0 || value.right.length > 0)
-		{
-			hasFloats = true;
-		}
-		else
-		{
-			hasFloats = false;
-		}
-		
-		return value;
+		return floats.left.length > 0 || floats.right.length > 0;
 	}
 }
