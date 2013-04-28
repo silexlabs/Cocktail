@@ -50,7 +50,7 @@ class LineBox
 	
 	private static var _childBounds:RectangleVO = new RectangleVO();
 	
-	private static var _lineBoxesBounds:RectangleVO = new RectangleVO();
+	private static var _inlineBoxesBounds:RectangleVO = new RectangleVO();
 	
 	/**
 	 * Store the current width of all the
@@ -654,12 +654,12 @@ class LineBox
 	{
 		updateOffsetFromParentInlineBox(rootInlineBox);
 		
-		_lineBoxesBounds.x = 0;
-		_lineBoxesBounds.y = 0;
-		_lineBoxesBounds.width = 0;
-		_lineBoxesBounds.height = 0;
+		_inlineBoxesBounds.x = 0;
+		_inlineBoxesBounds.y = 0;
+		_inlineBoxesBounds.width = 0;
+		_inlineBoxesBounds.height = 0;
 		
-		_lineBoxesBounds.height = _elementRenderer.coreStyle.usedValues.lineHeight;
+		_inlineBoxesBounds.height = _elementRenderer.coreStyle.usedValues.lineHeight;
 		
 		//TODO 2 : for now, 0 is passed for line box height, which will prevent
 		//bottom aligned box from being properly aligned. It was modified because
@@ -675,8 +675,8 @@ class LineBox
 		
 		applyMinimumTop(rootInlineBox, minimumTop);
 		
-		getLineBoxHeight(rootInlineBox, _lineBoxesBounds, 0);
-		var lineBoxHeight:Float = _lineBoxesBounds.height;
+		getLineBoxHeight(rootInlineBox, _inlineBoxesBounds, 0);
+		var lineBoxHeight:Float = _inlineBoxesBounds.height;
 		
 		return lineBoxHeight;
 	}
