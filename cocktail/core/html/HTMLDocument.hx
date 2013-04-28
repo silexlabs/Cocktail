@@ -547,9 +547,17 @@ class HTMLDocument extends Document
 	 */
 	public function addStyleSheet(stylesheet:CSSStyleSheet):Void
 	{
-		_styleManager.addStyleSheet(stylesheet);
-		documentElement.invalidateStyleDeclaration(true);
-		documentElement.cascade(cascadeManager, false);
+		_styleManager.addStyleSheet(stylesheet); 
+		
+		//document element might be null at this point. 
+		//for instance if the added stylsheet is inline (style tag)
+		//during document parsing
+		if (documentElement != null)
+		{
+			documentElement.invalidateStyleDeclaration(true);
+			documentElement.cascade(cascadeManager, false);
+		}
+		
 	}
 	
 	/**
