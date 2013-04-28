@@ -34,8 +34,6 @@ class LineBox
 	
 	private var _addedWidth:Float;
 	
-	private var _availableWidth:Float;
-	
 	public var bounds:RectangleVO;
 	
 	private var _isFirstLine:Bool;
@@ -50,7 +48,7 @@ class LineBox
 	
 	private static var _childBounds:RectangleVO = new RectangleVO();
 	
-	private static var _lineBoxesBounds:RectangleVO = new RectangleVO();
+	private static var _inlineBoxesBounds:RectangleVO = new RectangleVO();
 	
 	/**
 	 * Store the current width of all the
@@ -60,9 +58,8 @@ class LineBox
 	 */
 	private var _trailingSpaceWidth:Float;
 	
-	public function new(elementRenderer:ElementRenderer, availableWidth:Float, isFirstLine:Bool, layoutState:LayoutStateValue) 
+	public function new(elementRenderer:ElementRenderer, isFirstLine:Bool, layoutState:LayoutStateValue) 
 	{
-		_availableWidth = availableWidth;
 		_isFirstLine = isFirstLine;
 		_elementRenderer = elementRenderer;
 		_spacesNumber = 0;
@@ -97,7 +94,7 @@ class LineBox
 		_trailingSpaceWidth = 0;
 		getTrailingSpacesWidth(rootInlineBox);
 		
-		if (_addedWidth + width - _trailingSpaceWidth <= _availableWidth)
+		if (_addedWidth + width - _trailingSpaceWidth <= bounds.width)
 		{
 			return true;
 		}
@@ -142,7 +139,7 @@ class LineBox
 		unbreakableWidth += Math.floor(inlineBoxWidth);
 		
 		//get the remaining available space on the current line
-		var remainingLineWidth:Int = Math.floor(_availableWidth - _addedWidth);
+		var remainingLineWidth:Int = Math.floor(bounds.width - _addedWidth);
 
 		//line box always break if the inline box represents a line feed
 		if (inlineBox.isLineFeed == true)
@@ -464,7 +461,7 @@ class LineBox
 		//get the remaining space left on the line after
 		//withdrawing all inline boxes length
 		//this space is used when centering inline boxes
-		var remainingSpace:Float =  _availableWidth - concatenatedLength;
+		var remainingSpace:Float =  bounds.width - concatenatedLength;
 		var x:Float = 0;
 		
 		//if this line box is the first of its containing block
@@ -510,7 +507,7 @@ class LineBox
 							default:	
 								//when justifying, inline boxes takes the whole
 								//line box width
-								concatenatedLength = _availableWidth;
+								concatenatedLength = bounds.width;
 								alignJustify(x, remainingSpace, rootInlineBox, _spacesNumber);
 						}
 						
@@ -654,12 +651,12 @@ class LineBox
 	{
 		updateOffsetFromParentInlineBox(rootInlineBox);
 		
-		_lineBoxesBounds.x = 0;
-		_lineBoxesBounds.y = 0;
-		_lineBoxesBounds.width = 0;
-		_lineBoxesBounds.height = 0;
+		_inlineBoxesBounds.x = 0;
+		_inlineBoxesBounds.y = 0;
+		_inlineBoxesBounds.width = 0;
+		_inlineBoxesBounds.height = 0;
 		
-		_lineBoxesBounds.height = _elementRenderer.coreStyle.usedValues.lineHeight;
+		_inlineBoxesBounds.height = _elementRenderer.coreStyle.usedValues.lineHeight;
 		
 		//TODO 2 : for now, 0 is passed for line box height, which will prevent
 		//bottom aligned box from being properly aligned. It was modified because
@@ -675,8 +672,8 @@ class LineBox
 		
 		applyMinimumTop(rootInlineBox, minimumTop);
 		
-		getLineBoxHeight(rootInlineBox, _lineBoxesBounds, 0);
-		var lineBoxHeight:Float = _lineBoxesBounds.height;
+		getLineBoxHeight(rootInlineBox, _inlineBoxesBounds, 0);
+		var lineBoxHeight:Float = _inlineBoxesBounds.height;
 		
 		return lineBoxHeight;
 	}
