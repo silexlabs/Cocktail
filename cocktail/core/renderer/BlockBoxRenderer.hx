@@ -1500,12 +1500,35 @@ class BlockBoxRenderer extends FlowBoxRenderer
 	/**
 	 * same as collapseTopMarginWithFirstChildTopMargin
 	 * for bottom margin
-	 * 
-	 * TODO : implement
 	 */
 	override private function collapseBottomMarginWithLastChildBottomMargin():Bool
 	{ 
-		return false;
+		if (lastNormalFlowChild == null)
+		{
+			return false;
+		}
+		
+		if (lastNormalFlowChild.isBlockContainer == false)
+		{
+			return false;
+		}
+		
+		if (establishesNewBlockFormattingContext() == true)
+		{
+			return false;
+		}
+		
+		if (coreStyle.usedValues.paddingBottom != 0 || lastNormalFlowChild.coreStyle.usedValues.paddingBottom != 0)
+		{
+			return false;
+		}
+		
+		if (coreStyle.usedValues.borderBottomWidth != 0 || lastNormalFlowChild.coreStyle.usedValues.borderBottomWidth != 0)
+		{
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
