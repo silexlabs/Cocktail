@@ -400,7 +400,10 @@ class BoxRenderer extends InvalidatingElementRenderer
 			if (untyped previousNormalFlowSibling.collapseTopMarginWithBottomMargin() == false)
 			{
 				var adjoiningMargins:Array<Float> = new Array<Float>();
-				adjoiningMargins.push(previousNormalFlowSibling.coreStyle.usedValues.marginBottom);
+				if (collapseBottomMarginWithParentBottomMargin() == false)
+				{
+					adjoiningMargins.push(previousNormalFlowSibling.coreStyle.usedValues.marginBottom);
+				}
 				
 				getNextAdjoiningMargins(adjoiningMargins);
 				
@@ -423,7 +426,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 			var adjoiningMargins:Array<Float> = new Array<Float>();
 			
 			getNextAdjoiningMargins(adjoiningMargins);
-			trace(adjoiningMargins);
+			
 			if (adjoiningMargins.length == 0)
 			{
 				return coreStyle.usedValues.marginTop;
@@ -499,6 +502,14 @@ class BoxRenderer extends InvalidatingElementRenderer
 				nextNormalFlowSibling.getNextAdjoiningMargins(adjoiningMargins);
 			}
 		}
+		else if (collapseTopMarginWithParentTopMargin() == true)
+		{
+			adjoiningMargins.push(coreStyle.usedValues.marginTop);
+		}
+		else if (collapseTopMarginWithPreviousSiblingBottomMargin() == true)
+		{
+			adjoiningMargins.push(coreStyle.usedValues.marginTop);
+		}
 	}
 	
 	/**
@@ -523,6 +534,14 @@ class BoxRenderer extends InvalidatingElementRenderer
 			{
 				previousNormalFlowSibling.getPreviousAdjoiningMargins(adjoiningMargins);
 			}
+		}
+		else if (collapseBottomMarginWithParentBottomMargin() == true)
+		{
+			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+		}
+		else if (collapseBottomMarginWithNextSiblingTopMargin() == true)
+		{
+			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
 		}
 	}
 	
