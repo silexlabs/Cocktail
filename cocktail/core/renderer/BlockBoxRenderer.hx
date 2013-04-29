@@ -964,7 +964,12 @@ class BlockBoxRenderer extends FlowBoxRenderer
 					_childPosition.y += child.bounds.height;
 					//add child bottom margin, collapsed with adjoining margins
 					//if needed
+					//trace(child.domNode.id);
+					//trace(child.getCollapsedBottomMargin());
 					_childPosition.y += child.getCollapsedBottomMargin();
+					//trace(child.domNode.id);
+					//trace(child.getCollapsedBottomMargin());
+					
 				}
 				//here the child is a floated element
 				else
