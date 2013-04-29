@@ -433,6 +433,48 @@ class BoxRenderer extends InvalidatingElementRenderer
 	}
 	
 	/**
+	 * same as getCollapsedTopMargin for bottom margins
+	 */
+	override public function getCollapsedBottomMargin():Float
+	{
+		//makes sure that used values for margin are up to date
+		layoutSelfIfNeeded(false);
+		
+		if (collapseBottomMarginWithParentBottomMargin() == true)
+		{
+			
+			return 0;
+		}
+		else if (collapseBottomMarginWithNextSiblingTopMargin() == true)
+		{
+			return 0;
+		}
+		
+		if (collapseBottomMarginWithLastChildBottomMargin() == true)
+		{
+			var adjoiningMargins:Array<Float> = new Array<Float>();
+			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+			lastNormalFlowChild.getAdjoiningBottomMargins(adjoiningMargins);
+			
+			return getCollapsedMargin(adjoiningMargins);
+		}
+		else if (collapseTopMarginWithBottomMargin() == true)
+		{
+			var adjoiningMargins:Array<Float> = new Array<Float>();
+			adjoiningMargins.push(coreStyle.usedValues.marginTop);
+			
+			if (previousNormalFlowSibling != null)
+			{
+				previousNormalFlowSibling.getAdjoiningBottomMargins(adjoiningMargins);
+			}
+			
+			return getCollapsedMargin(adjoiningMargins);
+		}
+		
+		return coreStyle.usedValues.marginBottom;
+	}
+	
+	/**
 	 * When called on an element, store all its adjoining top margin
 	 * which collapse with its top margin so that it can determine
 	 * its collapsed margin width
@@ -473,43 +515,6 @@ class BoxRenderer extends InvalidatingElementRenderer
 	}
 	
 	/**
-	 * same as getCollapsedTopMargin for bottom margins
-	 */
-	override public function getCollapsedBottomMargin():Float
-	{
-		//makes sure that used values for margin are up to date
-		layoutSelfIfNeeded(false);
-		
-		if (collapseBottomMarginWithParentBottomMargin() == true)
-		{
-			return 0;
-		}
-		else if (collapseTopMarginWithBottomMargin() == true)
-		{
-			return 0;
-		}
-		
-		if (collapseBottomMarginWithLastChildBottomMargin() == true)
-		{
-			var adjoiningMargins:Array<Float> = new Array<Float>();
-			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-			lastNormalFlowChild.getAdjoiningBottomMargins(adjoiningMargins);
-			
-			return getCollapsedMargin(adjoiningMargins);
-		}
-		else if (collapseBottomMarginWithNextSiblingTopMargin() == true)
-		{
-			var adjoiningMargins:Array<Float> = new Array<Float>();
-			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-			nextNormalFlowSibling.getAdjoiningTopMargins(adjoiningMargins);
-			
-			return getCollapsedMargin(adjoiningMargins);
-		}
-		
-		return coreStyle.usedValues.marginBottom;
-	}
-	
-	/**
 	 * same as getAdjoiningTopMargins for bottom margins
 	 */
 	override public function getAdjoiningBottomMargins(adjoiningMargins:Array<Float>):Void
@@ -533,9 +538,9 @@ class BoxRenderer extends InvalidatingElementRenderer
 		else if (collapseTopMarginWithBottomMargin() == true)
 		{
 			adjoiningMargins.push(coreStyle.usedValues.marginTop);
-			if (previousSibling != null)
+			if (previousNormalFlowSibling != null)
 			{
-				previousSibling.getAdjoiningBottomMargins(adjoiningMargins);
+				previousNormalFlowSibling.getAdjoiningBottomMargins(adjoiningMargins);
 			}
 		}
 	}
