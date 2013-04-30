@@ -405,17 +405,27 @@ class BoxRenderer extends InvalidatingElementRenderer
 		
 		var adjoiningMargins:Array<Float> = new Array<Float>();
 		
-		getPreviousAdjoiningMargins(adjoiningMargins, isTopMargin);
+		getPreviousAdjoiningMargins(adjoiningMargins, isTopMargin, true);
+		
+		adjoiningMargins.reverse();
+		
+		getNextAdjoiningMargins(adjoiningMargins, isTopMargin, true);
+		
+		
+		
+		if (isTopMargin == true)
+		{
+			adjoiningMargins.push(coreStyle.usedValues.marginTop);
+		}
+		else
+		{
+			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+		}
 		
 		var marginIndex:Int = adjoiningMargins.length - 1;
 		
-		getNextAdjoiningMargins(adjoiningMargins, isTopMargin);
 		
-		if (adjoiningMargins.length == 0)
-		{
-			return coreStyle.usedValues.marginBottom;
-		}
-		else if (isCollapsedMargin(marginIndex, adjoiningMargins) == true)
+		if (isCollapsedMargin(marginIndex, adjoiningMargins) == true)
 		{
 			return getCollapsedMargin(adjoiningMargins);
 		}
@@ -425,52 +435,77 @@ class BoxRenderer extends InvalidatingElementRenderer
 		}
 	}
 	
-	override public function getNextAdjoiningMargins(adjoiningMargins:Array<Float>, startWithTopMargin:Bool):Void
+	override public function getNextAdjoiningMargins(adjoiningMargins:Array<Float>, startWithTopMargin:Bool, isFirst:Bool):Void
 	{
 		//makes sure that used values for margin are up to date
 		layoutSelfIfNeeded(false);
 		
 		if (startWithTopMargin == true)
 		{
+			
 			if (collapseTopMarginWithFirstChildTopMargin() == true)
 			{
-				adjoiningMargins.push(coreStyle.usedValues.marginTop);
-				firstNormalFlowChild.getNextAdjoiningMargins(adjoiningMargins, true);
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				}
+				
+				firstNormalFlowChild.getNextAdjoiningMargins(adjoiningMargins, true, false);
 			}
 			else if (collapseTopMarginWithBottomMargin() == true)
 			{
-				adjoiningMargins.push(coreStyle.usedValues.marginTop);
-				getNextAdjoiningMargins(adjoiningMargins, false);
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				}
+				
+				getNextAdjoiningMargins(adjoiningMargins, false, false);
 			}
 			else if (collapseTopMarginWithParentTopMargin() == true)
 			{
-				adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				}
 			}
 			else if (collapseTopMarginWithPreviousSiblingBottomMargin() == true)
 			{
-				adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				}
 			}
 		}
 		else
 		{
 			if (collapseBottomMarginWithLastChildBottomMargin() == true)
 			{
-				adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
+				
 			}
 			else if (collapseBottomMarginWithNextSiblingTopMargin() == true)
 			{
-				adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-				nextNormalFlowSibling.getNextAdjoiningMargins(adjoiningMargins, true);
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
+				nextNormalFlowSibling.getNextAdjoiningMargins(adjoiningMargins, true, false);
 			}
 			else if (collapseBottomMarginWithParentBottomMargin() == true)
 			{
-				adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-				parentNode.getNextAdjoiningMargins(adjoiningMargins, false);
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
+				parentNode.getNextAdjoiningMargins(adjoiningMargins, false, false);
 			}
 		}
 	}
 	
-	override public function getPreviousAdjoiningMargins(adjoiningMargins:Array<Float>, startWithTopMargin:Bool):Void
+	override public function getPreviousAdjoiningMargins(adjoiningMargins:Array<Float>, startWithTopMargin:Bool, isFirst:Bool):Void
 	{
 		//makes sure that used values for margin are up to date
 		layoutSelfIfNeeded(false);
@@ -479,38 +514,66 @@ class BoxRenderer extends InvalidatingElementRenderer
 		{
 			if (collapseTopMarginWithPreviousSiblingBottomMargin() == true)
 			{
-				adjoiningMargins.push(coreStyle.usedValues.marginTop);
-				previousNormalFlowSibling.getPreviousAdjoiningMargins(adjoiningMargins, false);
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				}
+				previousNormalFlowSibling.getPreviousAdjoiningMargins(adjoiningMargins, false, false);
 			}
 			else if (collapseTopMarginWithParentTopMargin() == true)
 			{
-				adjoiningMargins.push(coreStyle.usedValues.marginTop);
-				parentNode.getPreviousAdjoiningMargins(adjoiningMargins, true);
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				}
+				parentNode.getPreviousAdjoiningMargins(adjoiningMargins, true, false);
 			}
 			else if (collapseTopMarginWithBottomMargin() == true)
 			{
-				adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				}
 			}
 			else if (collapseTopMarginWithFirstChildTopMargin() == true)
 			{
-				adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginTop);
+				}
 			}
 		}
 		else
 		{
 			if (collapseBottomMarginWithLastChildBottomMargin() == true)
 			{
-				adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-				lastNormalFlowChild.getPreviousAdjoiningMargins(adjoiningMargins, false);
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
+				lastNormalFlowChild.getPreviousAdjoiningMargins(adjoiningMargins, false, false);
 			}
 			else if (collapseTopMarginWithBottomMargin() == true)
 			{
-				adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-				getPreviousAdjoiningMargins(adjoiningMargins, true);
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
+				getPreviousAdjoiningMargins(adjoiningMargins, true, false);
 			}
 			else if (collapseBottomMarginWithParentBottomMargin() == true)
 			{
-				adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
+			}
+			else if (collapseBottomMarginWithNextSiblingTopMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
 			}
 		}
 	}
