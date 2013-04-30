@@ -738,7 +738,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * might be the result of collapsing multiple
 	 * adjoining margins
 	 */
-	public function getCollapsedTopMargin():Float
+	public function getCollapsedTopMargin(onlyIfFirstAdjoiningMargin:Bool):Float
 	{
 		return 0.0;
 	}
@@ -747,7 +747,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * same as getCollapsedTopMargin for bottom
 	 * margin
 	 */
-	public function getCollapsedBottomMargin():Float
+	public function getCollapsedBottomMargin(onlyIfFirstAdjoiningMargin:Bool):Float
 	{
 		return 0.0;
 	}

@@ -385,24 +385,23 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 * on the parent, it will return the width of the collapsed margin
 	 * and it will return 0 when called on the first child
 	 */
-	override public function getCollapsedTopMargin():Float
+	override public function getCollapsedTopMargin(onlyIfFirstAdjoiningMargin:Bool):Float
 	{
-		return doGetCollapsedMargin(true);
+		return doGetCollapsedMargin(true, onlyIfFirstAdjoiningMargin);
 	}
 	
 	/**
 	 * same as getCollapsedTopMargin for bottom margins
 	 */
-	override public function getCollapsedBottomMargin():Float
+	override public function getCollapsedBottomMargin(onlyIfFirstAdjoiningMargin:Bool):Float
 	{
-		return doGetCollapsedMargin(false);
+		return doGetCollapsedMargin(false, onlyIfFirstAdjoiningMargin);
 	}
 	
-	private function doGetCollapsedMargin(isTopMargin:Bool):Float
+	private function doGetCollapsedMargin(isTopMargin:Bool, onlyIfFirstAdjoiningMargin:Bool):Float
 	{
 		//makes sure that used values for margin are up to date
 		layoutSelfIfNeeded(false);
-		
 		
 		var previousAdjoiningMargins:Array<Float> = new Array<Float>();
 		getPreviousAdjoiningMargins(previousAdjoiningMargins, isTopMargin, true);
@@ -423,6 +422,20 @@ class BoxRenderer extends InvalidatingElementRenderer
 			{
 				return coreStyle.usedValues.marginBottom;
 			}
+		}
+		else if (onlyIfFirstAdjoiningMargin == false)
+		{
+			var adjoiningMargins = nextAdjoiningMargins.concat(previousAdjoiningMargins);
+			if (isTopMargin == true)
+			{
+				adjoiningMargins.push(coreStyle.usedValues.marginTop);
+			}
+			else
+			{
+				adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+			}
+			
+			return getCollapsedMargin(adjoiningMargins);
 		}
 		else if (isFirstAdjoiningMargin == true)
 		{
