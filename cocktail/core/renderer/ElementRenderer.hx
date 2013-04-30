@@ -756,7 +756,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	 * push the width of each adjoining margin 
 	 * of this element's top margin
 	 */
-	public function getNextAdjoiningMargins(adjoiningMargins:Array<Float>):Void
+	public function getNextAdjoiningMargins(adjoiningMargins:Array<Float>, startWithTopMargin:Bool):Void
 	{
 		
 	}
@@ -764,7 +764,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	/**
 	 * same as getAdjoiningTopMargins for bottom margins
 	 */
-	public function getPreviousAdjoiningMargins(adjoiningMargins:Array<Float>):Void
+	public function getPreviousAdjoiningMargins(adjoiningMargins:Array<Float>, startWithTopMargin:Bool):Void
 	{
 		
 	}
