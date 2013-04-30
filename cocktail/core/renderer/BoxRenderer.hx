@@ -387,44 +387,7 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function getCollapsedTopMargin():Float
 	{
-		//makes sure that used values for margin are up to date
-		layoutSelfIfNeeded(false);
-		
-		var adjoiningMargins:Array<Float> = new Array<Float>();
-		
-		if (collapseTopMarginWithParentTopMargin() == true)
-		{
-			parentNode.getPreviousAdjoiningMargins(adjoiningMargins);
-		}
-		else if (collapseTopMarginWithPreviousSiblingBottomMargin() == true)
-		{
-			previousNormalFlowSibling.getPreviousAdjoiningMargins(adjoiningMargins);
-		}
-		
-		adjoiningMargins.push(coreStyle.usedValues.marginTop);
-		var marginIndex:Int = adjoiningMargins.length - 1;
-		
-		if (collapseTopMarginWithFirstChildTopMargin() == true)
-		{
-			firstNormalFlowChild.getNextAdjoiningMargins(adjoiningMargins);
-		}
-		else if (collapseTopMarginWithBottomMargin() == true)
-		{
-			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-			if (nextNormalFlowSibling != null)
-			{
-				nextNormalFlowSibling.getNextAdjoiningMargins(adjoiningMargins);
-			}
-		}
-		
-		if (isCollapsedMargin(marginIndex, adjoiningMargins) == true)
-		{
-			return getCollapsedMargin(adjoiningMargins);
-		}
-		else
-		{
-			return 0;
-		}
+		return doGetCollapsedMargin(true);
 	}
 	
 	/**
@@ -432,37 +395,27 @@ class BoxRenderer extends InvalidatingElementRenderer
 	 */
 	override public function getCollapsedBottomMargin():Float
 	{
+		return doGetCollapsedMargin(false);
+	}
+	
+	private function doGetCollapsedMargin(isTopMargin:Bool):Float
+	{
 		//makes sure that used values for margin are up to date
 		layoutSelfIfNeeded(false);
 		
 		var adjoiningMargins:Array<Float> = new Array<Float>();
 		
-		if (collapseBottomMarginWithLastChildBottomMargin() == true)
-		{
-			parentNode.getPreviousAdjoiningMargins(adjoiningMargins);
-		}
-		else if (collapseTopMarginWithPreviousSiblingBottomMargin() == true)
-		{
-			previousNormalFlowSibling.getPreviousAdjoiningMargins(adjoiningMargins);
-		}
+		getPreviousAdjoiningMargins(adjoiningMargins, isTopMargin);
 		
-		adjoiningMargins.push(coreStyle.usedValues.marginTop);
 		var marginIndex:Int = adjoiningMargins.length - 1;
 		
-		if (collapseTopMarginWithFirstChildTopMargin() == true)
-		{
-			firstNormalFlowChild.getNextAdjoiningMargins(adjoiningMargins);
-		}
-		else if (collapseTopMarginWithBottomMargin() == true)
-		{
-			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-			if (nextNormalFlowSibling != null)
-			{
-				nextNormalFlowSibling.getNextAdjoiningMargins(adjoiningMargins);
-			}
-		}
+		getNextAdjoiningMargins(adjoiningMargins, isTopMargin);
 		
-		if (isCollapsedMargin(marginIndex, adjoiningMargins) == true)
+		if (adjoiningMargins.length == 0)
+		{
+			return coreStyle.usedValues.marginBottom;
+		}
+		else if (isCollapsedMargin(marginIndex, adjoiningMargins) == true)
 		{
 			return getCollapsedMargin(adjoiningMargins);
 		}
