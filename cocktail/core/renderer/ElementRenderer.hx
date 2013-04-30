@@ -753,8 +753,12 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	}
 	
 	/**
-	 * push the width of each adjoining margin 
-	 * of this element's top margin
+	 * get the width of each adjoining margin of the target margin,
+	 * by climbing up the rendering tree
+	 * 
+	 * @param	adjoiningMargins holds the width of all the adjoining margins of the first margin
+	 * @param	startWithTopMargin wether the current margin is a top or bottom margin
+	 * @param	isFirst wether the current margin is the first margin searching for adjoining margins
 	 */
 	public function getNextAdjoiningMargins(adjoiningMargins:Array<Float>, startWithTopMargin:Bool, isFirst:Bool):Void
 	{
@@ -762,7 +766,7 @@ class ElementRenderer extends FastNode<ElementRenderer>
 	}
 	
 	/**
-	 * same as getAdjoiningTopMargins for bottom margins
+	 * same as getAdjoiningTopMargins but climbing down the rendering tree
 	 */
 	public function getPreviousAdjoiningMargins(adjoiningMargins:Array<Float>, startWithTopMargin:Bool, isFirst:Bool):Void
 	{

@@ -403,31 +403,39 @@ class BoxRenderer extends InvalidatingElementRenderer
 		//makes sure that used values for margin are up to date
 		layoutSelfIfNeeded(false);
 		
-		var adjoiningMargins:Array<Float> = new Array<Float>();
 		
-		getPreviousAdjoiningMargins(adjoiningMargins, isTopMargin, true);
+		var previousAdjoiningMargins:Array<Float> = new Array<Float>();
+		getPreviousAdjoiningMargins(previousAdjoiningMargins, isTopMargin, true);
 		
-		adjoiningMargins.reverse();
+		var isFirstAdjoiningMargin:Bool = previousAdjoiningMargins.length == 0;
 		
-		getNextAdjoiningMargins(adjoiningMargins, isTopMargin, true);
+		var nextAdjoiningMargins:Array<Float> = new Array<Float>();
+		getNextAdjoiningMargins(nextAdjoiningMargins, isTopMargin, true);
 		
-		
-		
-		if (isTopMargin == true)
+	
+		if (nextAdjoiningMargins.length == 0 && previousAdjoiningMargins.length == 0)
 		{
-			adjoiningMargins.push(coreStyle.usedValues.marginTop);
+			if (isTopMargin == true)
+			{
+				return coreStyle.usedValues.marginTop;
+			}
+			else
+			{
+				return coreStyle.usedValues.marginBottom;
+			}
 		}
-		else
+		else if (isFirstAdjoiningMargin == true)
 		{
-			adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-		}
-		
-		var marginIndex:Int = adjoiningMargins.length - 1;
-		
-		
-		if (isCollapsedMargin(marginIndex, adjoiningMargins) == true)
-		{
-			return getCollapsedMargin(adjoiningMargins);
+			if (isTopMargin == true)
+			{
+				nextAdjoiningMargins.push(coreStyle.usedValues.marginTop);
+				return getCollapsedMargin(nextAdjoiningMargins);
+			}
+			else
+			{
+				nextAdjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				return getCollapsedMargin(nextAdjoiningMargins);
+			}
 		}
 		else
 		{
@@ -435,14 +443,18 @@ class BoxRenderer extends InvalidatingElementRenderer
 		}
 	}
 	
+	/**
+	 * Traverse the rendering tree to get all the following adjoining margins
+	 * of this element, starting with this element's top or bottom margin
+	 */
 	override public function getNextAdjoiningMargins(adjoiningMargins:Array<Float>, startWithTopMargin:Bool, isFirst:Bool):Void
 	{
 		//makes sure that used values for margin are up to date
 		layoutSelfIfNeeded(false);
 		
+		//current margin is top margin
 		if (startWithTopMargin == true)
 		{
-			
 			if (collapseTopMarginWithFirstChildTopMargin() == true)
 			{
 				if (isFirst == false)
@@ -476,17 +488,10 @@ class BoxRenderer extends InvalidatingElementRenderer
 				}
 			}
 		}
+		//current margin is bottom
 		else
 		{
-			if (collapseBottomMarginWithLastChildBottomMargin() == true)
-			{
-				if (isFirst == false)
-				{
-					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
-				}
-				
-			}
-			else if (collapseBottomMarginWithNextSiblingTopMargin() == true)
+			if (collapseBottomMarginWithNextSiblingTopMargin() == true)
 			{
 				if (isFirst == false)
 				{
@@ -502,9 +507,26 @@ class BoxRenderer extends InvalidatingElementRenderer
 				}
 				parentNode.getNextAdjoiningMargins(adjoiningMargins, false, false);
 			}
+			else if (collapseBottomMarginWithLastChildBottomMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
+			}
+			else if (collapseTopMarginWithBottomMargin() == true)
+			{
+				if (isFirst == false)
+				{
+					adjoiningMargins.push(coreStyle.usedValues.marginBottom);
+				}
+			}
 		}
 	}
 	
+	/**
+	 * same as getNextAdjoiningMargins but climbing up the rendering tree
+	 */
 	override public function getPreviousAdjoiningMargins(adjoiningMargins:Array<Float>, startWithTopMargin:Bool, isFirst:Bool):Void
 	{
 		//makes sure that used values for margin are up to date
@@ -581,40 +603,6 @@ class BoxRenderer extends InvalidatingElementRenderer
 	//////////////////////////////////////////////////////////////////////////////////////////
 	// PRIVATE MARGIN COLLAPSING METHOD
 	//////////////////////////////////////////////////////////////////////////////////////////
-	
-	private function isCollapsedMargin(index:Int, adjoiningMargins:Array<Float>):Bool
-	{
-		//positive and negative margin are stored separately
-		var maximumPositiveMargin:Float = 0.0;
-		var maximumNegativeMargin:Float = 0.0;
-		
-		var maximumPositiveMarginIndex:Int = 0;
-		var maximumNegativeMarginIndex:Int = 0;
-		
-		//loop in all adjoining margins width to find the
-		//most positive and the most negative ones
-		var length:Int = adjoiningMargins.length;
-		for (i in 0...length)
-		{
-			var adjoiningMargin:Float = adjoiningMargins[i];
-			if (adjoiningMargin > maximumPositiveMargin)
-			{
-				maximumPositiveMargin = adjoiningMargin;
-				maximumPositiveMarginIndex = i;
-			}
-			else if (adjoiningMargin < maximumNegativeMargin)
-			{
-				maximumNegativeMargin = adjoiningMargin;
-				maximumNegativeMarginIndex = i;
-			}
-		}
-		
-		return index == maximumPositiveMarginIndex || index == maximumNegativeMarginIndex;
-		
-		//the collapsed value is the difference between the most positive
-		//margin width and the absolute value of the most negative one
-		//return maximumPositiveMargin - Math.abs(maximumNegativeMargin);
-	}
 	
 	/**
 	 * for a given list of adjoining margins width,
