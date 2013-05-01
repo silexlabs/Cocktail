@@ -80,7 +80,9 @@ class NativeTextInput extends NativeTextInputBase
 		_textField.type = TextFieldType.INPUT;
 		
 		//forward input event
-		_textField.addEventListener(flash.events.TextEvent.TEXT_INPUT, function(e) { onInput(); } );
+		//note : "change" used instead of "input", as input is dispatched before
+		//actual text field value changed
+		_textField.addEventListener(flash.events.Event.CHANGE, function(e) { onInput(); } );
 		
 		_textFormat = new TextFormat();
 		
