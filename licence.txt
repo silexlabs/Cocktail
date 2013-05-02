@@ -1,0 +1,8 @@
+/*
+ * Cocktail, HTML rendering engine
+ * http://www.silexlabs.org/haxe/cocktail/
+ *
+ * Copyright (c) Silex Labs
+ * Cocktail is available under the MIT license
+ * http://www.silexlabs.org/haxe/cocktail/licensing/
+*/

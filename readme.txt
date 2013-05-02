@@ -1,12 +1,3 @@
-/*
- * Cocktail, HTML rendering engine
- * http://www.silexlabs.org/haxe/cocktail/
- *
- * Copyright (c) Silex Labs
- * Cocktail is available under the MIT license
- * http://www.silexlabs.org/haxe/cocktail/licensing/
-*/
-
 == Cocktail, an HTML/CSS rendering engine for the Haxe language ==
 
 * With Cocktail, write HTML/CSS applications in Haxe and build them for NME and flash/Air. As Cocktail uses the standard DOM API, you can also build your app to regular JavaScript.
